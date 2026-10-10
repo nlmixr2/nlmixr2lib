@@ -6502,6 +6502,20 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `vanderWalt_2013_dapagliflozin.R`.
 
+### dxor (**canonical dextrorphan metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Dextrorphan (DXO) metabolite suffix. Dextrorphan is the CYP2D6 O-demethylation product of dextromethorphan (CHEBI:29133). Used for whole-body states of the metabolite (`liver_dxor`, `venous_dxor`, `urine_dxor`, ...) and for its central-compartment concentration in compartmental models (`central_dxor`).
+- **Source aliases:**
+  - `DXO`, `dor` -- Grzegorzewski 2022 and its model archive (the archive renamed `dor` to `dxo`).
+- **Example models:** `Grzegorzewski_2022_dextromethorphan_pbpk.R` (founding example; whole-body PBPK), `TerHeine_2014_dextromethorphan.R` (`central_dxor`).
+
+### dxorgluc (**canonical dextrorphan O-glucuronide metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Dextrorphan O-glucuronide (DXO-Glu) metabolite suffix, the UGT glucuronidation product of dextrorphan (CHEBI:32645). Composes `dxor` (dextrorphan) with the `gluc` glucuronide-conjugate pattern. Used for whole-body states of the glucuronide (`liver_dxorgluc`, `venous_dxorgluc`, `urine_dxorgluc`, ...).
+- **Source aliases:**
+  - `DXO-Glu`, `dor_glu` -- Grzegorzewski 2022 and its model archive (the archive renamed `dor_glu` to `dxo_glu`).
+- **Example models:** `Grzegorzewski_2022_dextromethorphan_pbpk.R` (founding example).
+
 ### su12662 (**canonical SU12662 sunitinib metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** SU12662 sunitinib active metabolite suffix.

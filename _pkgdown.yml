@@ -1788,6 +1788,8 @@ navbar:
         href: articles/Castelli_2022_dextroamphetamine.html
       - text: "Dextromethorphan (TerHeine 2014)"
         href: articles/TerHeine_2014_tamoxifen.html
+      - text: "Dextromethorphan pbpk (Grzegorzewski 2022)"
+        href: articles/Grzegorzewski_2022_dextromethorphan_pbpk.html
       - text: "Dha ring early (Cao 2017)"
         href: articles/Cao_2017_dha_artemisinin_stress_model.html
       - text: "Dha ring mid (Cao 2017)"
@@ -8156,6 +8158,7 @@ articles:
   - articles/Groenendaal_2007_morphine_brain_rat
   - articles/Groenendaal_2007_morphine_rat_eeg
   - articles/Grover_2011_tacrolimus
+  - articles/Grzegorzewski_2022_dextromethorphan_pbpk
   - articles/Grzesk_2016_m3M3FBS
   - articles/Gu_2025_heart_failure_pbpk
   - articles/Gu_2025_rivaroxaban

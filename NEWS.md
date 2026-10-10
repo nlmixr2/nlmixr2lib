@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tikiso 2022 ethambutol ([doi:10.1093/jac/dkac127](https://doi.org/10.1093/jac/dkac127)) -- African children with tuberculosis, with and without HIV and lopinavir/ritonavir.
+- Add Grzegorzewski 2022 dextromethorphan whole-body PBPK ([doi:10.3389/fphar.2022.1029073](https://doi.org/10.3389/fphar.2022.1029073)) -- healthy adults; CYP2D6 metabolic phenotyping via the urinary dextromethorphan/dextrorphan ratio (registers the `dxor` and `dxorgluc` metabolite suffixes).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
