@@ -1650,6 +1650,8 @@ navbar:
         href: articles/Benavent_2025_dalbavancin.html
       - text: "Dalbavancin (Carrothers 2020)"
         href: articles/Carrothers_2020_dalbavancin.html
+      - text: "Dalbavancin (Carrothers 2023)"
+        href: articles/Carrothers_2023_dalbavancin.html
       - text: "Dalbavancin (Cojutti 2022)"
         href: articles/Cojutti_2022_dalbavancin.html
       - text: "Dalbavancin (Cojutti 2024)"
@@ -7726,6 +7728,7 @@ articles:
   - articles/CarlssonPetri_2021_liraglutide
   - articles/Carmichael_2003_hydroxychloroquine
   - articles/Carrothers_2020_dalbavancin
+  - articles/Carrothers_2023_dalbavancin
   - articles/Castelli_2022_dextroamphetamine
   - articles/CatalanLatorre_2018_taurine_rat
   - articles/Cazaubon_2019_mitotane
