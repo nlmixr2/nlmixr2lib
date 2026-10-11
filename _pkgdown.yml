@@ -86,6 +86,10 @@ navbar:
         href: articles/Zhang_2025_abemaciclib.html
       - text: "Abrocitinib (Wojciechowski 2022)"
         href: articles/Wojciechowski_2022_abrocitinib.html
+      - text: "Abrocitinib HR (Wang 2022)"
+        href: articles/Wang_2022_abrocitinib_QTc.html
+      - text: "Abrocitinib QTcF (Wang 2022)"
+        href: articles/Wang_2022_abrocitinib_QTc.html
       - text: "Acalabrutinib (Edlund 2022)"
         href: articles/Edlund_2022_acalabrutinib.html
       - text: "Acalabrutinib (Zhou 2019)"
@@ -9759,6 +9763,7 @@ articles:
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2021_polymyxinB
   - articles/Wang_2021_sunitinib
+  - articles/Wang_2022_abrocitinib_QTc
   - articles/Wang_2022_aripiprazole
   - articles/Wang_2022_daidzein_equol
   - articles/Wang_2022_latamoxef
