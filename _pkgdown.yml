@@ -2016,6 +2016,8 @@ navbar:
         href: articles/Reif_2013_ethinylestradiol_drospirenone.html
       - text: "DrugA (Zhang 2025)"
         href: articles/Zhang_2025_drugA.html
+      - text: "Dsm265 (CherkaouiRbati 2023)"
+        href: articles/CherkaouiRbati_2023_dsm265.html
       - text: "Dupilumab (Kovalenko 2016)"
         href: articles/Kovalenko_2016_dupilumab.html
       - text: "Dupilumab (Kovalenko 2020)"
@@ -7818,6 +7820,7 @@ articles:
   - articles/Cheng_2026_immunoglobulin
   - articles/Cheng_2026_levamisole_interspecies
   - articles/CherkaouiRbati_2017_midazolam_qsp
+  - articles/CherkaouiRbati_2023_dsm265
   - articles/Chetty_2014_efalizumab_cd11a_pasi
   - articles/Chi_2018_propofol
   - articles/Chien_2022_imatinib
