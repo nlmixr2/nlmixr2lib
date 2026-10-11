@@ -2896,6 +2896,10 @@ navbar:
         href: articles/Taneja_2019_glpg1690.html
       - text: "Glucarpidase (Kimura 2023)"
         href: articles/Kimura_2023_glucarpidase.html
+      - text: "Glucarpidase healthy (Fukaya 2023)"
+        href: articles/Fukaya_2023_glucarpidase.html
+      - text: "Glucarpidase methotrexate (Fukaya 2023)"
+        href: articles/Fukaya_2023_glucarpidase.html
       - text: "Glutamine (Sadaf 2024)"
         href: articles/Sadaf_2024_glutamine.html
       - text: "Glycopyrronium (Bartels 2021)"
@@ -8108,6 +8112,7 @@ articles:
   - articles/Fuhr_2020_dabigatran
   - articles/Fuhr_2022_felodipine
   - articles/Fukae_2024_valemetostat_exposure_response
+  - articles/Fukaya_2023_glucarpidase
   - articles/Fukumoto_2023_meropenem
   - articles/Fukushima_2022_soybeanOilLipidEmulsion
   - articles/Fung_2008_butanediol_rat
