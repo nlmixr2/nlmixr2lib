@@ -10523,6 +10523,17 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Example models:** `Aoyama_2012_sepantronium.R` (proportional change of +24% on CL for melanoma patients relative to the NSCLC reference; ratio THETA_MM = 1.24 in the paper's power form), `Hu_2024_ipilimumab.R` (exponential effect on ipilimumab CL for pediatric (< 18 y) melanoma: `exp(-0.347)` = 0.707, i.e. 29% lower than the adult-melanoma reference; adult melanoma is the reference level and carries no coefficient).
 - **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` / `TUMTP_NSCLC` decomposition pattern. The canonical name uses `MEL` (not `MM`) to disambiguate from the existing `MM` register entry for multiple myeloma. Scope: general because melanoma cohorts recur across PD-1 / PD-L1 / BRAF-inhibitor / small-molecule popPK analyses.
 
+### TUMTP_NF1 (**canonical for neurofibromatosis type 1 tumor-type indicator**)
+- **Description:** 1 = neurofibromatosis type 1 (NF1; in MEK-inhibitor cohorts typically symptomatic or inoperable plexiform neurofibromas), 0 = other tumor type.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 = other tumor type (per source paper; in Tan 2023 the reference is advanced NRAS-aberrant melanoma, the only other diagnosis in the pooled cohort).
+- **Source aliases:**
+  - `TYPE` (Tan 2023 'cancer type', 0 = melanoma, 1 = NF1) -- use directly as `TUMTP_NF1 = TYPE`.
+- **Example models:** `Tan_2023_luvometinib.R` (relative oral bioavailability 1.29 for NF1 vs 1 for melanoma; disease and study are fully confounded, since every NF1 subject came from one study and every melanoma subject from the other).
+- **Notes:** A member of the `TUMTP_<type>` decomposition family. NF1 is a genetic tumor-predisposition syndrome rather than a single histology, but in pooled oncology popPK it plays the same role as a tumor-type level. Distinct from `DIS_SCOL_NONIDIO`, which lists NF1 among several syndromic causes of scoliosis and does not identify NF1 itself. A cohort that is entirely NF1 needs no indicator; record the disease in `population$disease_state`.
+
 ### TUMTP_LYMPH (**canonical for lymphoma (pooled) tumor-type indicator**)
 - **Description:** 1 = lymphoma (heterogeneous lymphoma pool spanning multiple lymphoma histologies -- e.g., classical Hodgkin lymphoma combined with extranodal NK/T-cell lymphoma; or any-histology lymphoma pooled with solid-tumor and leukemia cohorts), 0 = solid tumor or other tumor type.
 - **Units:** (binary)

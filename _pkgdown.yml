@@ -3770,6 +3770,8 @@ navbar:
         href: articles/Chen_2021_luspatercept.html
       - text: "Lusutrombopag (Shimizu 2021)"
         href: articles/Shimizu_2021_lusutrombopag.html
+      - text: "Luvometinib (Tan 2023)"
+        href: articles/Tan_2023_luvometinib.html
       - text: "M3g rat (Xie 2000)"
         href: articles/Xie_2000_m3g_rat.html
       - text: "M8891 human (Lignet 2023)"
@@ -9566,6 +9568,7 @@ articles:
   - articles/Tammara_2017_rivipansel
   - articles/Tamura_2023_remdesivir
   - articles/Tan_2009_artesunate
+  - articles/Tan_2023_luvometinib
   - articles/Tan_2024_cabozantinib
   - articles/Tan_2025_cabotegravir_rilpivirine
   - articles/Tanaka_2012_phenytoin
