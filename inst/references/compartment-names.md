@@ -772,13 +772,20 @@ The three canonicals below describe the drug-target-effector-cell mass-action bi
 - **Type:** compartment
 - **Role:** Endogenous plasma glucose used by glucose / lactate turnover sub-models with drug-stimulated production. State holds a concentration (mmol/L), mirroring the source paper's mass-balance parameterisation. Also used by integrated glucose-insulin homeostasis models (e.g., Silber 2007 framework, Hong 2013 HGC / MTT models) as the dynamic-state glucose amount or concentration; per-model `units` field documents which.
 - **Source aliases:** none.
-- **Example models:** `Oualha_2014_epinephrine.R`, `Hong_2013_glucose_insulin_HGC.R`, `Hong_2013_glucose_insulin_MTT.R`.
+- **Example models:** `Oualha_2014_epinephrine.R`, `Hong_2013_glucose_insulin_HGC.R`, `Hong_2013_glucose_insulin_MTT.R`, `Rambiritch_2016_glibenclamide_dose_glucoseprofile.R` and `Rambiritch_2016_glibenclamide_cpss_glucoseprofile.R` (an algebraic instantaneous glucose profile, not a state: a Fourier-series baseline scaled by an inhibitory Emax drug effect; see `e0_glucose_fourier_cos1` in the parameter register).
 
 ### fpg (**canonical fasting plasma glucose output**)
 - **Type:** compartment
 - **Role:** Fasting plasma glucose as a single-arm PD output, in mmol/L. Use for exposure-response models whose endpoint is the clinical fasting measurement rather than a dynamically modelled glucose pool: `fpg` is typically an algebraic direct effect of drug exposure on a baseline, not a state with its own ODE. Distinct from `glucose`, which is the dynamic endogenous plasma-glucose state of a turnover or glucose-insulin homeostasis model with a mass-balance parameterisation. The un-suffixed base name of the existing `fpg_placebo` / `fpg_drug` pair, which the MBMA arm-splitting convention uses when a model carries separate placebo and drug arms of the same endpoint.
 - **Source aliases:** `FPG` -- used in `Xiang_2025_tacrolimus_fpg.R` (Xiang 2025 Eq. 2).
-- **Example models:** `Xiang_2025_tacrolimus_fpg.R` (founding example; linear direct effect of tacrolimus trough concentration on the pre-transplantation baseline, `fpg <- rbase_fpg + slope * Cc`, as a model of post-transplantation diabetes mellitus risk).
+- **Example models:** `Xiang_2025_tacrolimus_fpg.R` (founding example; linear direct effect of tacrolimus trough concentration on the pre-transplantation baseline, `fpg <- rbase_fpg + slope * Cc`, as a model of post-transplantation diabetes mellitus risk), `Rambiritch_2016_glibenclamide_dose_fpg.R` and `Rambiritch_2016_glibenclamide_cpss_fpg.R` (inhibitory Emax of the daily glibenclamide dose or its average steady-state concentration on the drug-free fasting blood glucose).
+
+### glucose_mean (**canonical time-averaged plasma glucose output**)
+- **Type:** compartment
+- **Role:** Blood or plasma glucose averaged over a defined observation window -- the area under the glucose-versus-time curve divided by the window duration -- as a single-arm PD output, in mmol/L. One value per subject per observation window (in the founding example, per 8-hour sampling day on each dose level), typically an algebraic direct effect of drug exposure on a baseline with no ODE state. Distinct from `fpg`, a single fasting measurement, and from `glucose`, the instantaneous concentration (whether a dynamic turnover state or an algebraic time profile): a model of the time-averaged endpoint and a model of either instantaneous one predict different quantities and should not share an output name. The `_mean` suffix is a role suffix on the analyte, read the same way as the `fpg_placebo` / `fpg_drug` arm suffixes.
+- **Source aliases:** none (Rambiritch 2016 "mean glucose concentration").
+- **Example models:** `Rambiritch_2016_glibenclamide_dose_meanglucose.R` (founding example; inhibitory Emax on the daily glibenclamide dose, Rambiritch 2016 Model 3), `Rambiritch_2016_glibenclamide_cpss_meanglucose.R` (the same endpoint driven by the average steady-state concentration, Model 4).
+- **Notes:** Ratified by the maintainers on 2026-09-21 with the Rambiritch 2016 glibenclamide PK/PD extraction.
 
 ### insulin (**canonical plasma insulin compartment**)
 - **Type:** compartment
