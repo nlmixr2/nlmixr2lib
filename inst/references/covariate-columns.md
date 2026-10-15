@@ -18333,6 +18333,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (raises the maximum attainable heart rate by a fraction of 0.15 and lowers all three EC50 values by a fraction of 0.711, both via the paper's `1 + COV * theta` categorical form), `Dings_2026_neonatal_acidosis.R` (+2.64 mmol/L base excess and +5.46 mg/dL lactate relative to untreated).
 - **Notes:** Specific scope (a per-drug arm indicator). The `TRT_` prefix distinguishes a patient-level randomised / assigned treatment indicator from the bare-INN MBMA arm indicators (`NAPROXEN`, `TRAMADOL`, `TAPENTADOL`) and from the `CONMED_<INN>` concomitant-medication family; use `TRT_<INN>` when the drug is the study treatment under investigation. Pairs with `TRT_CAFEDRINE_THEODRENALINE`; the two are mutually exclusive per subject.
 
+### TRT_RIFAMPICIN (**canonical for rifampicin treatment-group indicator**)
+- **Description:** Binary treatment-group indicator: 1 = the animal was in a rifampicin-treated group, 0 = the untreated (natural-growth) group. A per-subject property of the experimental assignment.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (untreated / natural-growth group).
+- **Source aliases:**
+  - `DRUG` -- Chen 2017 (PMC5376397) Electronic Supplementary Material S2 control stream (`IF(DRUG.EQ.0) TVAF = THETA(8)`, selecting the untreated-mouse inoculum).
+- **Example models:** `Chen_2017_TB_MTP_rifampicin_mouse.R` (selects the initial fast-multiplying bacterial inoculum F0: 331000 CFU/lungs in rifampicin-treated mice vs 8340 CFU/lungs in untreated mice). The rifampicin drug effects themselves are concentration-driven in this model and need no indicator; the indicator only switches the baseline inoculum.
+- **Notes:** Specific scope. Well-formed member of the `TRT_<INN>` family established by `TRT_EPHEDRINE`: use `TRT_<INN>` when the drug is the study treatment under investigation, `CONMED_<INN>` when it is background co-medication, and a bare INN only for MBMA trial-arm indicators. Here the indicator is needed because the baseline inoculum (not a drug effect) differs between the treated and untreated groups.
+
 ### TRT_CAFEDRINE_THEODRENALINE (**canonical for cafedrine/theodrenaline treatment-arm indicator**)
 - **Description:** Binary treatment-arm indicator: 1 = the subject received the 20:1 fixed combination of cafedrine and theodrenaline, 0 = the subject did not. A patient-level indicator.
 - **Units:** (binary)
