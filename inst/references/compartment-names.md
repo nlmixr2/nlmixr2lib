@@ -87,6 +87,14 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Example models:** `Jung_2023_HL2351.R` (founding example: free drug in `abs_site` equilibrates with FcRn by the QSS quadratic, is degraded at `kdeg`, moves onward to plasma either at the fractal rate `kf` or by FcRn-mediated recycling at `ka2`, and is taken back up from plasma at `kup`), `Ngo_2020_HL2351.R` (the same space in the upstream base model).
 - **Notes:** Registered 2026-09-04 (PMC9867137), following the precedent by which `presystemic` was itself ratified. Three alternatives were considered and rejected, recorded here so they are not re-opened. `depot2` / `depot_sc` would misdescribe the state as a **second dosing route**, whereas it is strictly sequential -- downstream of the one depot that actually receives the dose. `presystemic` was rejected because that canonical is scoped to gut-wall / portal **first-pass metabolism** on the oral route, where the defining feature is competing metabolite-formation pathways; widening it to cover an extravascular FcRn-recycling space would give one name two mechanisms and lose the ability to search the register for either. `isf` was rejected because it is registered for body-fluid distribution **volumes** in mechanistic mAb models -- it carries a concentration in a physiologic volume -- while `abs_site` carries a bare amount, and neither Jung 2023 nor Ngo 2020 calls the space interstitial fluid. Naming this state `peripheral1` is a specific known error: it collides with the true peripheral compartment and silently builds one fewer ODE state than the paper published (the defect fixed in `Ngo_2020_HL2351.R` when this entry was founded).
 
+### endosome (**canonical lumped endosomal FcRn-recycling space**)
+- **Type:** compartment
+- **Role:** Single lumped endosomal space in semi-mechanistic (non-PBPK) mAb / Fc-fusion models. Drug reaches it by fluid-phase uptake (pinocytosis, `kup`) from an interstitial or plasma space -- not directly from a dosing depot -- binds FcRn there, and is either degraded (`kdeg`) or recycled as the FcRn complex back out (`krec`). The state carries an amount and may have an apparent volume used to form the concentration that enters the FcRn binding term.
+- **Source aliases:**
+  - `DISTRIBUTION2` -- `$MODEL` compartment 5 in Byun 2024 S1 Text (e)-(h) (case 2), commented "FcRn recycling space" and "Endosomal space (Injection site & Lymph)".
+- **Example models:** `Byun_2024_efineptakin_alfa_tmdd.R` (founding example: fed from `isf` at `kup`; the drug-FcRn complex is a separate `complex_fcrn` state), `Byun_2024_efineptakin_alfa_mtmdd.R`, `Byun_2024_efineptakin_alfa_qtmdd.R`, `Byun_2024_efineptakin_alfa_ptmdd.R` (the state holds the total, free + FcRn-bound, under the approximations).
+- **Notes:** Distinct from `abs_site`, which sits directly downstream of the dosing depot and receives the dose; an `endosome` is fed only by uptake from another space. Distinct from the PBPK endosomal states (`tissue_endo_u` / `tissue_endo_b`, `bbb_endo_u` / `bbb_endo_b`, `eu_<organ>` / `eb_<organ>`), which are per-organ and split unbound from FcRn-bound into separate states; `endosome` is one lumped space for the whole body. A model that resolves pH-specific endosomal stages uses the `endoearly_` / `endosort_` / `endorecyc_` family instead.
+
 ### peripheral1 (**canonical first peripheral compartment**)
 - **Type:** compartment
 - **Role:** First peripheral / tissue distribution compartment in 2- and 3-compartment models. Connected to central via inter-compartmental clearance `q` (and volume `vp`).
@@ -134,6 +142,14 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Source aliases:** none.
 - **Example models:** TMDD popPK extractions.
 - **Notes:** Location-suffixed variants (`complex_csf`, `complex_isf`, `complex_peripheral`) are accepted via `targetLocationRegex`.
+
+### complex_fcrn (**canonical drug-FcRn complex compartment**)
+- **Type:** compartment
+- **Role:** Drug-FcRn complex (amount) in semi-mechanistic mAb / Fc-fusion models that resolve FcRn binding with explicit association / dissociation kinetics. The complex forms in the FcRn-bearing space (`abs_site` or `endosome`) and is recycled to plasma, so FcRn binding protects the drug from degradation. Coexists in the same model with the pharmacological drug-target `complex`, which is why it is named by its binding PARTNER rather than by a location suffix.
+- **Source aliases:**
+  - `CPX1` -- `$MODEL` compartment 5 in Byun 2024 S1 Text (a) (case 1, "Distribution space- CPX HL2351 amount") and compartment 7 in S1 Text (e) (case 2).
+- **Example models:** `Byun_2024_HL2351_tmdd.R` (founding example: forms in `abs_site`, recycled to `central` at `krec`), `Byun_2024_efineptakin_alfa_tmdd.R` (forms in `endosome`, recycled at `krec` and split between `central` and `isf` by the recycling fraction).
+- **Notes:** Use only when the complex is an ODE state. Quasi-steady-state and Michaelis-Menten approximations of the same binding carry no complex state -- the bound amount is an algebraic function of the total -- and so need no compartment name (`Byun_2024_HL2351_qtmdd.R`). The partner-named `complex_<partner>` shape is also used, via `paper_specific_compartments`, for the soluble-target complexes `complex_scd38` / `complex_sbcma` in `ChandralayamAyyappaMenon_2026_isb2001_qsp.R`.
 
 ### total_target (**canonical total target compartment**)
 - **Type:** compartment
