@@ -2131,6 +2131,19 @@ These are internationally standardised clinical abbreviations registered as cano
 
 ---
 
+## Steady-state dose-prediction outputs
+
+Outputs of empirical steady-state dose-concentration models, in which the dependent variable is the dose rate rather than a concentration. These models have no compartments and no dose events: the measured steady-state concentration is supplied as a covariate column, and the model predicts the dose that sustains it.
+
+### daily_dose (**canonical model-predicted steady-state total daily dose output**)
+- **Type:** compartment
+- **Role:** Observation output of an empirical steady-state dose-concentration model: the total daily dose (dose per day, e.g. mg/day; document the unit per model in `units`) predicted to sustain a measured steady-state concentration, with the residual error on the dose scale. The founding form is the Michaelis-Menten dose-rate relation `daily_dose <- vmax * CTROUGH / (km + CTROUGH)`, in which `vmax` is the maximum steady-state dose rate and `km` the steady-state concentration at half of it. Inverting the typical-value model at a target concentration gives the starting dose, which is how source papers use it.
+- **Source aliases:**
+  - `DD` -- Cai 2022 ('daily tacrolimus dose', Eq. 7), used in `Cai_2022_tacrolimus_mm.R`.
+  - `R` -- the classical phenytoin dosing-rate notation (`R = Vmax * Css / (Km + Css)`, Yukawa 1990 Eq. 1).
+- **Example models:** `Cai_2022_tacrolimus_mm.R` (founding example; tacrolimus in adult liver transplant recipients, mg/day from the whole-blood trough `CTROUGH`, `km` scaled by the time factor `10 / min(POD, 10)`, combined proportional 20.4% + additive 0.568 mg/day residual error).
+- **Notes:** Not an ODE state, so no `compartmentData` entry is required. Use it only when the source paper fits the DOSE as the dependent variable (goodness-of-fit and VPC axes in dose per day, residual error in dose units). Do not invert such a model to predict a concentration `Cc` from a dose covariate: the dose-scale residual error does not carry over, and the inverted prediction is undefined at or above `vmax`. Equally, do not convert it to a compartmental Michaelis-Menten elimination model, which needs a volume and an absorption rate the source does not estimate (`Yukawa_1990_phenytoin.R` took that route with literature-assumed constants). A daily dose supplied as an INPUT covariate is a different concept and uses the drug-specific `DOSE_<drug>_MGD` covariate columns in `covariate-columns.md`.
+
 ## Paper-specific PD-endpoint output states
 
 Each entry below is a paper-mechanistic PD endpoint registered as a canonical compartment / output-state name so single-output PD models that use them pass the relaxed `Cc` rule.
