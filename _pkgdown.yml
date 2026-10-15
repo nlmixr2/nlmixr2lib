@@ -1152,6 +1152,10 @@ navbar:
         href: articles/Wurthwein_2013_caspofungin.html
       - text: "Caspofungin (Xu 2026)"
         href: articles/Xu_2026_caspofungin.html
+      - text: "Caspofungin (Yang 2022)"
+        href: articles/Yang_2022_caspofungin.html
+      - text: "Caspofungin icu (Yang 2022)"
+        href: articles/Yang_2022_caspofungin.html
       - text: "Caspofungin mouse qsp (Liu 2018)"
         href: articles/Liu_2018_pneumocystis_qsp.html
       - text: "Caspofungin optimalDesign (Xu 2026)"
@@ -9917,6 +9921,7 @@ articles:
   - articles/Yang_2020_enrofloxacin_rainbowTrout_pbpk
   - articles/Yang_2021_cemiplimab
   - articles/Yang_2021_unecritinib
+  - articles/Yang_2022_caspofungin
   - articles/Yang_2023_diclazuril
   - articles/Yang_2023_ganciclovir_model_repository
   - articles/Yang_2024_axatilimab
