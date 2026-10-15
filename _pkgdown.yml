@@ -4726,6 +4726,8 @@ navbar:
         href: articles/Rodrigues_2017_oxcarbazepine.html
       - text: "Oxcarbazepine (Sinha 2026)"
         href: articles/Sinha_2026_oxcarbazepine.html
+      - text: "Oxfendazole (Assmus 2026)"
+        href: articles/Assmus_2026_oxfendazole.html
       - text: "Oxycodone (Agema 2021)"
         href: articles/Agema_2021_oxycodone.html
       - text: "Oxycodone (Franke 2015)"
@@ -7515,6 +7517,7 @@ articles:
   - articles/Assmus_2025_benznidazole
   - articles/Assmus_2025_benznidazole_mouse
   - articles/Assmus_2026_dndi6148
+  - articles/Assmus_2026_oxfendazole
   - articles/Aston_2017_receptor_rebound
   - articles/Athanassa_2025_minocycline
   - articles/Attarwala_2023_mRNA3927
