@@ -164,6 +164,8 @@ navbar:
         href: articles/Nakao_2019_afatinib.html
       - text: "Aficamten (Xu 2025)"
         href: articles/Xu_2025_aficamten.html
+      - text: "Aflibercept (Bihorel 2026)"
+        href: articles/Bihorel_2026_aflibercept.html
       - text: "Aflibercept (Thai 2011)"
         href: articles/Thai_2011_aflibercept.html
       - text: "Agomelatine (Xie 2019)"
@@ -7602,6 +7604,7 @@ articles:
   - articles/Bihorel_2021_BMS986166
   - articles/Bihorel_2023_molnupiravir
   - articles/Bihorel_2025_evinacumab
+  - articles/Bihorel_2026_aflibercept
   - articles/Bijleveld_2016_gentamicin
   - articles/Bijleveld_2017_gentamicin
   - articles/BilbaoMeseguer_2021_levetiracetam
