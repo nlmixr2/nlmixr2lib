@@ -4718,7 +4718,15 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
 - **Type:** compartment
 - **Role:** Oral depot used in parallel-route popPK models alongside `depot_im`.
 - **Source aliases:** none.
-- **Example models:** `Dunn_2025_tranexamicAcid.R`.
+- **Example models:** `Dunn_2025_tranexamicAcid.R`, `Han_2024_cabotegravir.R` (alongside `depot_im_gluteal` / `depot_im_thigh`).
+
+### depot_im_gluteal, depot_im_thigh (**canonical site-resolved intramuscular depots**)
+- **Type:** compartment
+- **Role:** Two intramuscular depots that differ only by injection SITE -- the gluteal muscle and the lateral thigh (vastus lateralis) muscle -- each emptying into `central` at its own first-order rate. Used when one subject can carry both depots at the same time, so the site cannot be a covariate switching a single `depot_im`. The dose record's `cmt` selects the site.
+- **Source aliases:**
+  - Gluteal and thigh "injection compartment" -- Han 2024 Figure 6, which adds the thigh depot to the Han 2022 oral + gluteal model (`KA2` = gluteal, `KA3` = thigh in the Supplemental Table).
+- **Example models:** `Han_2024_cabotegravir.R` (founding example; cabotegravir long-acting injection. In ATLAS-2M the last gluteal injection is at Week -4 and the thigh injections start at Day 1, so with an absorption half-life of 4-11 weeks both depots absorb together for months).
+- **Notes:** Composes the registered `depot_im` route with an injection-site token, keeping the route visible: a bare `depot_thigh` would not distinguish an IM thigh depot from a subcutaneous one, and `INJSITE_THIGH` is mostly a subcutaneous covariate. The generic `depot_im` stays route-only, for single-site IM models. The matching rate constants and bioavailabilities drop the `im_` infix (`lka_gluteal`, `lka_thigh`, `lfdepot_thigh`; see `parameter-names.md`). Use this pair only when the model needs two simultaneous IM sites; a single-site model whose site is a covariate keeps `depot_im` with `INJSITE_<site>`. Ratified by the maintainers 2026-09-11.
 
 ### depot_brain (**canonical intranasal direct-to-brain depot**)
 - **Type:** compartment

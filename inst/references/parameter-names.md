@@ -685,6 +685,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Sun_2026_tilmicosin_pbpk.R` (founding example).
 - **Notes:** Use the segment-suffixed `lka_<segment>` form only when the model resolves more than one absorbing luminal segment with distinct rate constants; a single-site oral model keeps the plain `lka`.
 
+### lka_gluteal, lka_thigh, lfdepot_thigh (**canonical site-resolved intramuscular absorption parameters**)
+- **Type:** log-transformed-pk
+- **Role:** `lka_gluteal` and `lka_thigh` are the first-order absorption rate constants (1 / time) out of the compartments `depot_im_gluteal` and `depot_im_thigh`; `lfdepot_thigh` is the bioavailability of a thigh injection relative to a gluteal one. Bare forms inside `model()` are `ka_gluteal`, `ka_thigh` and `f(depot_im_thigh)`. The suffix is the bare site token: the `im_` infix of the compartment names is dropped, as `lka_duodenum` drops the `a_` of `a_duodenum`.
+- **Source aliases:**
+  - `KA gluteal` / `KA2`, `KA thigh` / `KA3`, `F thigh/gluteal` / `F3` -- Han 2024 Table 2 and Supplemental Table.
+- **Example models:** `Han_2024_cabotegravir.R` (founding example; `lka_gluteal = fixed(log(0.000733))`, `lfdepot_thigh = log(0.899)`, with the oral route on `lka_oral` / `lfdepot_oral`). That model has no `lka_thigh` in `ini()`: its typical thigh rate is the typical gluteal rate PLUS an increment `dka_thigh` (Supplemental Table `TV_KA3 = TV_KA2 + THETA1`), which has no log-scale form, so the thigh eta keeps the name `etalka_thigh`.
+- **Notes:** The gluteal depot is the bioavailability reference of the apparent parameters in the founding example, so there is no `lfdepot_gluteal`. Ratified by the maintainers 2026-09-11.
+
 ### lka_small_intestine (**canonical log-transformed lumped small-intestinal absorption rate constant**)
 - **Type:** log-transformed-pk
 - **Role:** First-order rate constant for absorption out of the lumped post-duodenal small intestine (`a_small_intestine`) into the systemic or portal circulation (1 / time). Sibling of `lka_duodenum`.

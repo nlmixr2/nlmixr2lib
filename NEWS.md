@@ -18,6 +18,8 @@
 
 - Add Han 2022 cabotegravir oral and long-acting intramuscular ([doi:10.1111/bcp.15439](https://doi.org/10.1111/bcp.15439)) -- adults with and without HIV-1 in 16 phase 1-3 studies.
 
+- Add Han 2024 cabotegravir intramuscular thigh injection ([doi:10.1128/aac.00880-24](https://doi.org/10.1128/aac.00880-24)) -- adults with and without HIV-1 switching between gluteal and thigh injections.
+
 - Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
 
 - Add Leven 2020 roscovitine (seliciclib) and its carboxylate metabolite M3 ([doi:10.3390/pharmaceutics12111087](https://doi.org/10.3390/pharmaceutics12111087)) -- adults with cystic fibrosis chronically infected with Pseudomonas aeruginosa.
