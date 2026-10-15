@@ -2734,6 +2734,10 @@ navbar:
         href: articles/Siebinga_2023_hadotatate.html
       - text: "Gabapentin (AlZubaydi 2024)"
         href: articles/AlZubaydi_2024_gabapentin.html
+      - text: "Gabapentin milkcmt (Silvola 2025)"
+        href: articles/Silvola_2025_gabapentin.html
+      - text: "Gabapentin mpr (Silvola 2025)"
+        href: articles/Silvola_2025_gabapentin.html
       - text: "Gadoxetate rat pbpk (Scotcher 2021)"
         href: articles/Scotcher_2021_gadoxetate_rat_pbpk.html
       - text: "Galcanezumab (Kielbasa 2020)"
@@ -9429,6 +9433,7 @@ articles:
   - articles/Sikma_2020_tacrolimus_unbound_plasma
   - articles/Silva_2023_perampanel
   - articles/Silva_2024_apx3330
+  - articles/Silvola_2025_gabapentin
   - articles/Sima_2022_ciprofloxacin
   - articles/Sime_2019_ceftolozane_tazobactam
   - articles/Sime_2019_posaconazole
