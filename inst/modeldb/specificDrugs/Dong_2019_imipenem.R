@@ -15,9 +15,10 @@ Dong_2019_imipenem <- function() {
     sep = " "
   )
   reference <- paste(
-    "Dong L, Zhai XY, Yang YL, Wang L, Zhou Y, Shi HY, et al.",
-    "Population pharmacokinetics and dosing optimization of imipenem in",
-    "children with hematological malignancies.",
+    "Dong L, Zhai XY, Yang YL, Wang L, Zhou Y, Shi HY, Tang BH, Wu YE, Yang F,",
+    "Wen L, Kong HX, Zhi LJ, Jacqz-Aigrain E, Zhao W. Population",
+    "Pharmacokinetics and Dosing Optimization of Imipenem in Children with",
+    "Hematological Malignancies.",
     "Antimicrob Agents Chemother. 2019;63(6):e00006-19.",
     "doi:10.1128/AAC.00006-19.",
     "Parameters transcribed from Zhang P, Zhao Y, Zhu J, Yang Y, Liang G,",

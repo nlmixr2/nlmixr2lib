@@ -19,10 +19,10 @@ library(ggplot2)
 # Model and source
 
 * Citation: Perez-Ruixo C, Valenzuela B, Peris JE, Bretcha-Boix P,
-  Escudero-Ortiz V, Farre-Alegre J, Perez-Ruixo JJ. Platelet Dynamics
-  in Peritoneal Carcinomatosis Patients Treated with Cytoreductive
-  Surgery and Hyperthermic Intraperitoneal Oxaliplatin. *AAPS J* 2016;
-  18(1):245-257 (published online 17 Nov 2015).
+  Escudero-Ortiz V, Farre-Alegre J, Perez-Ruixo JJ. Platelet Dynamics in
+  Peritoneal Carcinomatosis Patients Treated with Cytoreductive Surgery and
+  Hyperthermic Intraperitoneal Oxaliplatin. *AAPS J*. 2016;18(1):239-250.
+  doi:10.1208/s12248-015-9839-0.
 * Article: [doi:10.1208/s12248-015-9839-0](https://doi.org/10.1208/s12248-015-9839-0)
 * Upstream oxaliplatin popPK (Cp source, NOT packaged in nlmixr2lib):
   Perez-Ruixo C, Valenzuela B, Peris JE, et al. Population

@@ -1,6 +1,13 @@
 Choules_2024_enfortumab <- function() {
   description <- "Compartmental reduction of the Simcyp ADC-module physiologically based pharmacokinetic (PBPK) model for enfortumab vedotin (conjugated antibody) and its released payload monomethyl auristatin E (MMAE) in patients with locally advanced/metastatic urothelial carcinoma and other solid tumours (Choules 2024). The conjugated antibody is a linear 2-compartment model with first-order elimination from the central compartment; every milligram of eliminated antibody releases its full MMAE payload (mean drug-antibody ratio 3.735) into a 1-compartment MMAE disposition model whose volume and clearance are the paper's published Simcyp compound-file inputs. Combined P-gp / CYP3A4 perpetrators (ketoconazole, rifampin) act as multiplicative factors on MMAE clearance. The published model itself is a Simcyp platform PBPK model whose whole-body physiology is not tabulated; the antibody parameters here were determined from the paper's published simulated summary statistics and concentration-time figures, so this file is a compartmental reduction and not a PBPK model. See the vignette for the derivation and the held-out validation gates."
-  reference <- "Choules MP, Zuo P, Otsuka Y, Garg A, Tang M, Bonate P. Physiologically based pharmacokinetic model to predict drug-drug interactions with the antibody-drug conjugate enfortumab vedotin. J Pharmacokinet Pharmacodyn. 2024;51(5):417-428. doi:10.1007/s10928-023-09877-5. PMID 37624557; PMCID PMC11576838."
+  reference <- paste(
+    "Choules MP, Zuo P, Otsuka Y, Garg A, Tang M, Bonate P. Physiologically",
+    "based pharmacokinetic model to predict drug-drug interactions with the",
+    "antibody-drug conjugate enfortumab vedotin. J Pharmacokinet Pharmacodyn.",
+    "2024;51(5):417-428. doi:10.1007/s10928-023-09877-5. PMID 37632598; PMCID",
+    "PMC11576838.",
+    sep = " "
+  )
   vignette <- "Choules_2024_vedotin_ddi"
 
   units <- list(

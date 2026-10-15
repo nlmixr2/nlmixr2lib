@@ -247,10 +247,13 @@ if (requireNamespace("patchwork", quietly = TRUE)) {
 The Solana 2014 abstract states that "model-based simulations suggested that
 the most suitable dose was 1 mg/kg because this yielded similar exposure
 (defined by the area under the concentration-time curve) to that obtained in
-adults after a 20-mg dose of omeprazole intravenously." The published adult
-20-mg IV omeprazole AUC0-inf is commonly reported in the literature as
-approximately 1.0-1.5 mg*h/L (e.g., Andersson 1991, Anderssen 1990); the
-abstract does not quote a specific reference adult AUC value. The PKNCA block
+adults after a 20-mg dose of omeprazole intravenously." The abstract does
+not quote the adult AUC it compared against. For orientation, Regardh et al.
+(Ther Drug Monit. 1990;12(2):163-172, doi:10.1097/00007691-199003000-00010)
+report a median omeprazole plasma clearance of 624 mL/min (range 59-828
+mL/min) in eight healthy young adults, which corresponds to an AUC0-inf of
+about 0.53 mg*h/L after 20 mg IV (20 mg / 37.4 L/h); the lowest clearance
+corresponds to about 5.6 mg*h/L. The PKNCA block
 below computes AUC0-tau (over the 12-hour BID interval) for each dose arm in
 the typical-value simulation and reports the median, so the relative exposure
 between the two dose arms can be inspected.
@@ -349,9 +352,9 @@ knitr::kable(
   reproduce a published figure because the abstract does not include one.
 - **Source-faithful peripheral volume (Vp = 674 L/70 kg).** The reported
   peripheral volume is roughly 160-fold larger than the central volume
-  (4.23 L/70 kg), which is unusually large for omeprazole (typical adult
-  total volume of distribution is ~0.35 L/kg, i.e. ~25 L for a 70 kg
-  adult; see Andersson 1991, doi:10.1007/BF03259353). The encoded value
+  (4.23 L/70 kg), which is unusually large for omeprazole (Regardh 1990
+  report a mean steady-state volume of 0.23 L/kg in healthy adults, i.e.
+  ~16 L for a 70 kg adult). The encoded value
   reproduces the abstract verbatim and is not silently "corrected"; the
   large Vp drives a long terminal phase in the simulated VPC that is not
   consistent with the omeprazole-class half-life of 0.5-1 h reported for
@@ -403,8 +406,8 @@ knitr::kable(
   reports that the 1 mg/kg dose yields "similar exposure" (AUC) to a 20 mg
   adult IV dose. The simulated 1 mg/kg arm median AUC0-tau in the table
   above can be compared informally against the adult 20-mg IV exposure
-  range (approximately 1.0-1.5 mg*h/L from the published adult literature)
-  to confirm that the relative exposure is in the right neighbourhood;
+  (about 0.53 mg*h/L at the median adult clearance in Regardh 1990, see
+  above) to confirm that the relative exposure is in the right neighbourhood;
   exact agreement is not expected because the abstract does not specify
   which adult comparator value was used.
 - **Errata.** No erratum or corrigendum to Solana 2014 was located when

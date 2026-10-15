@@ -9,10 +9,11 @@ Bi_2017_peginterferon_alfa_2a <- function() {
     "plasma concentration."
   )
   reference <- paste(
-    "Bi J, Li X, Liu J, Chen D, Li S, Hou J, Zhou Y, Zhu S, Zhao Z,",
-    "Qin E, Wei Z. Population pharmacokinetics of peginterferon alfa-2a",
-    "in patients with chronic hepatitis B.",
-    "Sci Rep. 2017;7. doi:10.1038/s41598-017-08205-5"
+    "Bi J, Li X, Liu J, Chen D, Li S, Hou J, Zhou Y, Zhu S, Zhao Z, Qin E, Wei",
+    "Z. Population pharmacokinetics of peginterferon alpha2a in patients with",
+    "chronic hepatitis B. Sci Rep. 2017;7(1):7893.",
+    "doi:10.1038/s41598-017-08205-5.",
+    sep = " "
   )
   vignette <- "Bi_2017_peginterferon_alfa_2a"
   units <- list(time = "h", dosing = "ng", concentration = "ng/L")

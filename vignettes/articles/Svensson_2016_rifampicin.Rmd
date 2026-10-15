@@ -26,7 +26,7 @@ ui <- rxode2::rxode(readModelDb("Svensson_2016_rifampicin"))
 * Description: `r ui$meta$description`
 * Article: <https://doi.org/10.1002/psp4.12079>
 * Upstream PK paper (Smythe 2012): <https://doi.org/10.1128/AAC.05792-11>
-* Upstream MTP paper (Clewe 2016): <https://doi.org/10.1093/jac/dkv478>
+* Upstream MTP paper (Clewe 2016): <https://doi.org/10.1093/jac/dkv416>
 
 # Population
 

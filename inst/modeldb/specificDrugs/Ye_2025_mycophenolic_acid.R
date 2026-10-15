@@ -1,10 +1,10 @@
 Ye_2025_mycophenolic_acid <- function() {
   description <- "Population PK model for total mycophenolic acid (MPA, the active moiety of mycophenolate mofetil MMF) in paediatric patients with lupus nephritis receiving oral MMF twice daily (Ye 2025). Two-compartment disposition with first-order absorption, an absorption lag time and linear elimination, fitted in Phoenix NLME. Body weight is the only retained covariate and enters the apparent peripheral volume as a power term Vp/F = 1287.12 * (WT/41.13)^2.05; no covariate was retained on clearance, so steady-state exposure in this model is independent of body weight. Inter-individual variability is log-normal on Vc/F, Vp/F and Q/F only -- the random effects on ka, CL/F and Tlag were dropped for high eta-shrinkage. Residual error is combined proportional plus additive. Doses are MMF mass (mg) with no MMF-to-MPA molecular-weight conversion: CL/F, Vc/F, Vp/F and Q/F are apparent parameters absorbing both the molecular-weight ratio and oral bioavailability."
   reference <- paste(
-    "Ye C, Liu B, Chen L, Zhang L, Zheng Y, Tang K, Jiang X, Chen P.",
-    "Impact of body weight on mycophenolic acid population pharmacokinetics",
-    "in paediatric lupus nephritis: a pharmacogenomic integration study.",
-    "Lupus Science & Medicine. 2025;12(1):e001535.",
+    "Ye C, Liu B, Chen L, Zhang L, Zheng Y, Tang K, Jiang X, Chen P. Impact of",
+    "body weight on mycophenolic acid population pharmacokinetics in",
+    "paediatric lupus nephritis: a pharmacogenomic integration study. Lupus",
+    "Sci Med. 2025;12(2):e001535.",
     "doi:10.1136/lupus-2025-001535.",
     sep = " "
   )

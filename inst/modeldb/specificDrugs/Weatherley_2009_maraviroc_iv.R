@@ -13,10 +13,9 @@ Weatherley_2009_maraviroc_iv <- function() {
     "vignette but not implemented here."
   )
   reference <- paste(
-    "Weatherley B, McFadyen L (2009).",
-    "Maraviroc modelling strategy: use of early phase 1 data to support a",
-    "semi-mechanistic population pharmacokinetic model.",
-    "Br J Clin Pharmacol 68(5):648-657.",
+    "Weatherley B, McFadyen L. Maraviroc modelling strategy: use of early",
+    "phase 1 data to support a semi-mechanistic population pharmacokinetic",
+    "model. Br J Clin Pharmacol. 2009;68(3):355-369.",
     "doi:10.1111/j.1365-2125.2009.03455.x.",
     sep = " "
   )

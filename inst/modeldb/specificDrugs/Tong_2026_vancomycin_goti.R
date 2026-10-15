@@ -12,9 +12,11 @@ Tong_2026_vancomycin_goti <- function() {
     sep = " "
   )
   reference <- paste(
-    "Tong DMH, Brooks JT, Keizer RJ, Hughes JH. Vancomycin target attainment improved following",
-    "population pharmacokinetic model switch: a large-scale quasi-experimental study of precision",
-    "dosing. JAC Antimicrob Resist. 2026. doi:10.1093/jacamr/dlag016 (Supplementary data, Code section,",
+    "Tong DMH, Brooks JT, Keizer RJ, Hughes JH. Vancomycin target attainment",
+    "improved following population pharmacokinetic model switch: a large-scale",
+    "quasi-experimental study of precision dosing. JAC Antimicrob Resist.",
+    "2026;8(1):dlag016. doi:10.1093/jacamr/dlag016. (Supplementary data, Code",
+    "section,",
     "\"Modified Goti (Tong) model\" NONMEM control stream; Table S1).",
     "Structural model and parameter estimates originate from Goti V, Chaturvedula A, Fossler MJ et al.",
     "Ther Drug Monit 2018;40:212-221. doi:10.1097/FTD.0000000000000490; the age-adjusted-creatinine",

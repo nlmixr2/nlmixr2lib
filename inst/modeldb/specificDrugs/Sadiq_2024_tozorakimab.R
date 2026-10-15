@@ -1,6 +1,14 @@
 Sadiq_2024_tozorakimab <- function() {
   description <- "Two-compartment population PK / target-engagement model for tozorakimab (anti-IL-33 IgG1 monoclonal antibody) with explicit central-compartment binding of IL-33 to tozorakimab and to the soluble decoy receptor sST2, in healthy adults and patients with mild COPD"
-  reference <- "Sadiq MW, Yu H, Astrand M, et al. Population pharmacokinetic/target engagement modelling of tozorakimab in healthy volunteers and patients with chronic obstructive pulmonary disease. Br J Clin Pharmacol. 2024;90(12):3286-3295. doi:10.1111/bcp.16195"
+  reference <- paste(
+    "Sadiq MW, Yu H, Astrand M, Scott IC, Williams A, Hewitt L, White N,",
+    "Killick H, Gavala M, Cohen ES, Reid F, Kell C, Pandya H, Jimenez E.",
+    "Population pharmacokinetic/target engagement modelling of tozorakimab in",
+    "healthy volunteers and patients with chronic obstructive pulmonary",
+    "disease. Br J Clin Pharmacol. 2024;90(12):3286-3295.",
+    "doi:10.1111/bcp.16195.",
+    sep = " "
+  )
   vignette <- "Sadiq_2024_tozorakimab"
   units <- list(time = "day", dosing = "nmol", concentration = "nM")
 

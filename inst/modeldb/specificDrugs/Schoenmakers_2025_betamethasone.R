@@ -1,11 +1,12 @@
 Schoenmakers_2025_betamethasone <- function() {
   description <- "Two-compartment population PK model with first-order absorption (no lag time) for intramuscular betamethasone in pregnant women admitted with imminent preterm birth, including early-onset pre-eclampsia (eoPE; diagnosed before 34 weeks gestation). Apparent clearance is multiplied by 0.617 (a 38% reduction, or ~60% of the non-eoPE clearance) when eoPE is present; this is the only retained covariate after backward elimination at P < 0.01. Body weight, BMI, lean body weight, age, gestational age, number of foetuses, white blood cell counts and CRP were screened but did not retain after backward elimination."
   reference <- paste(
-    "Schoenmakers S, Li L, Kluivers ACM, Broekhuizen M, Harhangi MS, Ronde E,",
-    "DeKoninck PLJ, Reiss I, Danser AHJ, Allegaert K, van den Berg SAA, van Zelst BD,",
-    "van Schaik RHN, Simons SHP, Koch BCP, Sassen SDT. (2025).",
-    "Pharmacokinetics of betamethasone in pre-eclampsia: An in vivo and ex vivo study.",
-    "Br J Clin Pharmacol 91(11):2327-2339. doi:10.1002/bcp.70035.",
+    "Schoenmakers S, Li L, Kluivers ACM, Broekhuizen M, Harhangi MS, Danser",
+    "AHJ, Reiss I, Allegaert K, van den Berg SAA, van Zelst BD, van Schaik",
+    "RHN, DeKoninck PLJ, Ronde E, Sassen SDT, Simons SHP, Koch BCP.",
+    "Pharmacokinetics of betamethasone in pre-eclampsia: An in vivo and ex",
+    "vivo study. Br J Clin Pharmacol. 2025;91(8):2327-2339.",
+    "doi:10.1002/bcp.70035.",
     sep = " "
   )
   vignette <- "Schoenmakers_2025_betamethasone"

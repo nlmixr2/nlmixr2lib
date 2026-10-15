@@ -1,6 +1,13 @@
 Fromage_2025_mycophenolic_acid <- function() {
   description <- "One-compartment population PK model for mycophenolic acid (MPA) after oral enteric-coated mycophenolate sodium (EC-MPS, Myfortic) in a multi-indication cohort of solid-organ transplant, haematopoietic cell transplant and autoimmune-disease patients (Fromage 2025), with double-gamma absorption describing the characteristic double concentration peak, first-order elimination, a steady-state trough offset, and an indication effect on the second gamma rate constant. Evaluated in the closed form published by the authors (Monolix fitted the analytic solution), so the model is a steady-state single-dosing-interval model."
-  reference <- "Fromage Y, Sayadi H, Koloskoff K, Labriffe M, Monchaud C, Marquet P, Woillard JB. Killing several birds with one stone: A multi-indication population pharmacokinetic model and Bayesian estimator for enteric-coated mycophenolate sodium. Br J Clin Pharmacol. 2025;91(5):1396-1408. doi:10.1111/bcp.16374"
+  reference <- paste(
+    "Fromage Y, Sayadi H, Koloskoff K, Marquet P, Labriffe M, Monchaud C,",
+    "Woillard JB. Killing several birds with one stone: A multi-indication",
+    "population pharmacokinetic model and Bayesian estimator for",
+    "enteric-coated mycophenolate sodium. Br J Clin Pharmacol.",
+    "2025;91(5):1396-1408. doi:10.1111/bcp.16374.",
+    sep = " "
+  )
   vignette <- "Fromage_2025_mycophenolic_acid"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

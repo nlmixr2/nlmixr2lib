@@ -110,18 +110,27 @@ Foo_2016_droperidol <- function() {
 
     # ================================================================
     # Inter-individual variability.
-    # ka: variance fixed at 1 (= log(1 + ~100% CV)^2 approximately;
-    # the paper states 'a value of between subject variance of 1
-    # (approximately equivalent to a between subject CV% of 100%)').
+    # Table 2 prints "CV%" as omega x 100, so omega^2 = (CV/100)^2. The
+    # paper states the convention itself: "a value of between subject
+    # variance of 1 (approximately equivalent to a between subject CV%
+    # of 100%)", i.e. sqrt(1) x 100 = 100%. (Read as log(1 + CV^2), a
+    # variance of 1 would be a CV of 131%.) The Table 2 CI agrees: for
+    # CL 51% (31.2-64.4%), a Wald CI on omega^2 squared back has
+    # midpoint (0.312^2 + 0.644^2)/2 = 0.2560, inside the rounding
+    # interval of 0.51^2 (0.2550-0.2652). Read as log(1 + CV^2), the
+    # midpoint is 0.2199, outside its rounding interval (0.2271-0.2352).
+    # Before 2026-10 this file used log(1 + 0.51^2) = 0.2312; see the
+    # vignette Errata.
+    # ka: variance fixed at 1 (Results paragraph quoted above).
     # CL and Vc: a single shared random effect drives both parameters
     # (Table 2 footnote a). Reported as CV% = 51% for CL; Vc carries
     # the same value, footnote a. Encoded as a single eta (etalcl)
     # referenced from both cl and vc in model(); omega^2 =
-    # log(1 + 0.51^2) = 0.231.
+    # 0.51^2 = 0.2601.
     # Q and Vp: '-' in Table 2 (no random effect estimated).
     # ================================================================
     etalka ~ fixed(1)                                                               # Table 2: omega_ka^2 = 1 (~ 100% CV)
-    etalcl ~ log(1 + 0.51^2)                                                        # Table 2: CV_CL = 51% (95% CI 31.2-64.4%); same eta also drives Vc per footnote a -> omega^2 = log(1 + 0.51^2) = 0.231
+    etalcl ~ 0.2601                                                                  # Table 2: CV_CL = 51% (95% CI 31.2-64.4%); same eta also drives Vc per footnote a -> omega^2 = 0.51^2 = 0.2601
 
     # ================================================================
     # Residual error -- combined proportional + additive (Methods:
@@ -129,6 +138,8 @@ Foo_2016_droperidol <- function() {
     # model with combined error model'). The additive component was
     # fixed at 0.0001 ug/L for numerical stability.
     # ================================================================
+    # propSd: 22% read on the same omega x 100 convention; the row is too
+    # narrow to discriminate the two readings.
     propSd <- 0.22
     label("Proportional residual error (fraction)")                                  # Table 2: sigma (CV%) = 22% (95% CI 8.5-30.3%)
     addSd  <- fixed(0.0001)

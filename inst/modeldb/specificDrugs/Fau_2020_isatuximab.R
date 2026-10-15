@@ -1,6 +1,13 @@
 Fau_2020_isatuximab <- function() {
   description <- "Two-compartment population PK model for intravenous isatuximab (anti-CD38 IgG1) in adults with relapsed/refractory multiple myeloma, with parallel time-varying linear and Michaelis-Menten eliminations from the central compartment (Fau 2020). The linear clearance follows a sigmoidal Emax decay from baseline to steady state; the magnitude of the decay differs by multiple-myeloma immunoglobulin type."
-  reference <- "Fau JB, El-Cheikh R, Brillac C, et al. Drug-Disease Interaction and Time-Dependent Population Pharmacokinetics of Isatuximab in Relapsed/Refractory Multiple Myeloma Patients. CPT Pharmacometrics Syst Pharmacol. 2020;9(11):649-658. doi:10.1002/psp4.12561"
+  reference <- paste(
+    "Fau JB, El-Cheikh R, Brillac C, Koiwai K, Mace N, Campana F, Semiond D,",
+    "Nguyen L. Drug-Disease Interaction and Time-Dependent Population",
+    "Pharmacokinetics of Isatuximab in Relapsed/Refractory Multiple Myeloma",
+    "Patients. CPT Pharmacometrics Syst Pharmacol. 2020;9(11):649-658.",
+    "doi:10.1002/psp4.12561.",
+    sep = " "
+  )
   vignette <- "Fau_2020_isatuximab"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

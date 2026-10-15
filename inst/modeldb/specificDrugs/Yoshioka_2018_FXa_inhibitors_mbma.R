@@ -1,6 +1,12 @@
 Yoshioka_2018_FXa_inhibitors_mbma <- function() {
   description <- "MBMA. PT-ratio-driven logistic event-rate model for direct oral factor Xa inhibitors (rivaroxaban, apixaban, edoxaban) in non-valvular atrial fibrillation. Inputs a population-mean prothrombin-time ratio (PTR) supplied per observation time; outputs per-arm probability of ischemic stroke/SE (p_isse) and of major bleeding (p_mb), plus a derived per-arm mortality probability. Fit by NONMEM 7.3 to per-arm event counts from 5 large RCTs (Yoshioka 2018; 57,655 patients). Suitable for simulating per-arm summary outcomes only; the upstream popPK -> PT-ratio layer for each FXa inhibitor is out of scope and PTR must be supplied externally."
-  reference <- "Yoshioka H, Sato H, Hatakeyama H, Hisaka A. Model-based meta-analysis to evaluate optimal doses of direct oral factor Xa inhibitors in atrial fibrillation patients. Blood Adv. 2018;2(10):1066-1076. doi:10.1182/bloodadvances.2017013805."
+  reference <- paste(
+    "Yoshioka H, Sato H, Hatakeyama H, Hisaka A. Model-based meta-analysis to",
+    "evaluate optimal doses of direct oral factor Xa inhibitors in atrial",
+    "fibrillation patients. Blood Adv. 2018;2(10):1066-1075.",
+    "doi:10.1182/bloodadvances.2017013805.",
+    sep = " "
+  )
   vignette <- "Yoshioka_2018_FXa_inhibitors_mbma"
   # Algebraic MBMA model: no rxode2 dose events are consumed (the input is the
   # PTR covariate column), and the model outputs p_isse / p_mb / p_death which

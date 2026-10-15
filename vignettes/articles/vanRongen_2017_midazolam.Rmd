@@ -19,9 +19,10 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: van Rongen A, Brill MJE, Vaughns JD, et al. Higher Midazolam
+* Citation: van Rongen A, Brill MJE, Vaughns JD, Valitalo PAJ, van Dongen EPA,
+  van Ramshorst B, Barrett JS, van den Anker JN, Knibbe CAJ. Higher Midazolam
   Clearance in Obese Adolescents Compared with Morbidly Obese Adults. Clin
-  Pharmacokinet 57(5):601-611 (2018; online publication 7 August 2017).
+  Pharmacokinet. 2018;57(5):601-611. doi:10.1007/s40262-017-0579-4.
 * Article: <https://doi.org/10.1007/s40262-017-0579-4>
 * Upstream popPK reference for the morbidly obese adult cohort:
   `modellib('Brill_2014_midazolam')` (Brill MJE et al., 2014, Clin

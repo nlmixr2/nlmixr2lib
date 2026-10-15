@@ -43,7 +43,7 @@ Duong_2016_WHIG_T2DM <- function() {
     "Weight-HbA1c-insulin-glucose model for describing disease",
     "progression of type 2 diabetes.",
     "CPT Pharmacometrics Syst Pharmacol 5(1):11-19.",
-    "doi:10.1002/psp4.12058.",
+    "doi:10.1002/psp4.12051.",
     "PMID 26844011; PMCID PMC4728293.",
     sep = " "
   )

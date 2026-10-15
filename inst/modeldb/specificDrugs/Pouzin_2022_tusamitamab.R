@@ -1,6 +1,13 @@
 Pouzin_2022_tusamitamab <- function() {
   description <- "Integrated multi-analyte semi-mechanistic population PK model of tusamitamab ravtansine (SAR408701, anti-CEACAM5 IgG1-SPDB-DM4 ADC) in adults with advanced solid tumors (Pouzin 2022): explicit two-compartment disposition for DAR1-DAR8 ADC species and a separate naked-antibody (NAB) chain sharing Vc/Vp/Q, irreversible first-order DAR_n -> DAR_(n-1) deconjugation feeding a one-compartment DM4 catabolite that converts to MeDM4."
-  reference <- "Pouzin C, Gibiansky L, Fagniez N, Tod M, Chadjaa M, Nguyen L. Integrated multiple analytes and semi-mechanistic population pharmacokinetic model of tusamitamab ravtansine, a DM4 anti-CEACAM5 antibody-drug conjugate. J Pharmacokinet Pharmacodyn. 2022;49(4):381-394. doi:10.1007/s10928-021-09799-0"
+  reference <- paste(
+    "Pouzin C, Gibiansky L, Fagniez N, Chadjaa M, Tod M, Nguyen L. Integrated",
+    "multiple analytes and semi-mechanistic population pharmacokinetic model",
+    "of tusamitamab ravtansine, a DM4 anti-CEACAM5 antibody-drug conjugate. J",
+    "Pharmacokinet Pharmacodyn. 2022;49(3):381-394.",
+    "doi:10.1007/s10928-021-09799-0.",
+    sep = " "
+  )
   vignette <- "Pouzin_2022_tusamitamab"
   units <- list(
     time = "day",

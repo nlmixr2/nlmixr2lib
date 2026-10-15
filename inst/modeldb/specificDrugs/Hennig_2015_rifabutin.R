@@ -1,6 +1,13 @@
 Hennig_2015_rifabutin <- function() {
   description <- "Two-compartment population pharmacokinetic model for rifabutin with simultaneous two-compartment metabolite (25-O-desacetyl rifabutin) modelling in 44 African HIV-infected adults with pulmonary tuberculosis on 300 mg daily oral rifabutin (Hennig 2015). Body weight allometrically scaled (a priori; CL exponent 0.75, V exponent 1) on all rifabutin apparent clearances and apparent volumes; sex effect on rifabutin V/F (males 1.84-fold higher than females); SLCO1B1 rs11045819 heterozygous-AC genotype increases rifabutin bioavailability F by 30.4 percent relative to homozygous-CC reference. Des-rifabutin parameters are apparent (with respect to rifabutin F and metabolite-formation fraction) and were estimated without allometric scaling, with metabolite Q and peripheral V fixed."
-  reference <- "Hennig S, Naiker S, Reddy T, Egan D, Kellerman T, Wiesner L, Owen A, McIlleron H, Pym A. The effect of SLCO1B1 polymorphisms on the pharmacokinetics of rifabutin in African HIV-infected patients with tuberculosis. Antimicrob Agents Chemother. 2016 Jan;60(1):617-20. doi:10.1128/AAC.01195-15"
+  reference <- paste(
+    "Hennig S, Naiker S, Reddy T, Egan D, Kellerman T, Wiesner L, Owen A,",
+    "McIlleron H, Pym A. Effect of SLCO1B1 polymorphisms on rifabutin",
+    "pharmacokinetics in African HIV-infected patients with tuberculosis.",
+    "Antimicrob Agents Chemother. 2016;60(1):617-620.",
+    "doi:10.1128/AAC.01195-15.",
+    sep = " "
+  )
   vignette <- "Hennig_2015_rifabutin"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 

@@ -1,11 +1,10 @@
 Oualha_2018_enoxaparin <- function() {
   description <- "Population PK model for subcutaneous enoxaparin in 22 children during the first post-operative week after paediatric liver transplantation (Oualha 2018). One-compartment open model with first-order absorption (ka fixed at 1/h) and first-order elimination, measured as anti-Xa activity (target 0.2-0.4 IU/mL). Apparent clearance CL/F is allometrically scaled by pre-operative bodyweight BWPREOP (fixed exponent 0.75); apparent central volume V/F is allometrically scaled (fixed exponent 1) by a time-varying post-operative bodyweight BW(t) that captures peri-operative fluid resuscitation followed by post-operative diuresis: BW(t) = (BWPREOP + PFA/1000) * (1 - (1 - fbw) * t^hill_bw / (tbw50^hill_bw + t^hill_bw)). Bodyweight-evolution parameters fbw / hill_bw / tbw50 are jointly estimated with the enoxaparin PK and carry their own between-subject variability."
   reference <- paste(
-    "Oualha M, Chardot C, Debray D, Lesage F, Harroche A,",
-    "Renolleau S, Treluyer J-M, Urien S (2018).",
-    "Population pharmacokinetics of enoxaparin in early stage",
-    "of paediatric liver transplantation.",
-    "British Journal of Clinical Pharmacology 84(8):1736-1745.",
+    "Oualha M, Chardot C, Debray D, Lesage F, Harroche A, Renolleau S,",
+    "Treluyer JM, Urien S. Population pharmacokinetics of enoxaparin in early",
+    "stage of paediatric liver transplantation. Br J Clin Pharmacol.",
+    "2018;84(6):1206-1214.",
     "doi:10.1111/bcp.13543.",
     sep = " "
   )

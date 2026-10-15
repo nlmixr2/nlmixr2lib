@@ -1,12 +1,12 @@
 Sanchez_2011_efavirenz <- function() {
   description <- "One-compartment population PK/pharmacogenetic model for oral efavirenz in Caucasian HIV-infected adults (Sanchez 2011), with GGT, CYP2B6*6 genotype (linked 516G>T + 785A>G), and ABCC4 (MRP4) 1497C>T carrier covariate effects on apparent oral clearance CL/F. Absorption rate ka fixed at 0.3 h^-1 (sparse TDM data could not estimate it); no covariate effect on V/F."
   reference <- paste(
-    "Sanchez A, Cabrera S, Santos D, Valverde MP, Fuertes A,",
-    "Dominguez-Gil A, Garcia MJ, and the Tormes Group.",
-    "Population pharmacokinetic/pharmacogenetic model for optimization",
-    "of efavirenz therapy in Caucasian HIV-infected patients.",
-    "Antimicrob Agents Chemother. 2011;55(11):5616-5623.",
-    "doi:10.1128/AAC.00194-11."
+    "Sanchez A, Cabrera S, Santos D, Valverde MP, Fuertes A, Dominguez-Gil A,",
+    "Garcia MJ; the Tormes Group. Population pharmacokinetic/pharmacogenetic",
+    "model for optimization of efavirenz therapy in Caucasian HIV-infected",
+    "patients. Antimicrob Agents Chemother. 2011;55(11):5314-5324.",
+    "doi:10.1128/AAC.00194-11.",
+    sep = " "
   )
   vignette <- "Sanchez_2011_efavirenz"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")

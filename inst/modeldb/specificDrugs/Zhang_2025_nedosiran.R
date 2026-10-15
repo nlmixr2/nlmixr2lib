@@ -1,6 +1,13 @@
 Zhang_2025_nedosiran <- function() {
   description <- "Two-compartment population PK model for nedosiran (GalNAc-conjugated anti-LDHA siRNA) after subcutaneous dosing, with dual parallel transit absorption (a slow one-transit pathway carrying fraction FR1 of the dose and a fast three-transit pathway carrying the remainder), parallel linear and saturable Michaelis-Menten elimination, allometric body-weight scaling and eGFR effects on CL/F and Vc/F, and a primary-hyperoxaluria-type-1 effect on the slow absorption rate, developed from 2087 plasma concentrations in 148 healthy volunteers and patients with primary hyperoxaluria across six trials (Zhang 2025)"
-  reference <- "Zhang S, Gamallo P, Rawson V. Population Pharmacokinetic and Pharmacodynamic Modelling and Simulation for Nedosiran Clinical Development and Dose Guidance in Pediatric Patients with Primary Hyperoxaluria Type 1. Clin Pharmacokinet. 2025;64(8):1213-1227. doi:10.1007/s40262-025-01540-1"
+  reference <- paste(
+    "Zhang S, Gamallo P, Rawson V. Population Pharmacokinetic and",
+    "Pharmacodynamic Modelling and Simulation for Nedosiran Clinical",
+    "Development and Dose Guidance in Pediatric Patients with Primary",
+    "Hyperoxaluria Type 1. Clin Pharmacokinet. 2025;64(9):1395-1411.",
+    "doi:10.1007/s40262-025-01540-1.",
+    sep = " "
+  )
   vignette <- "Zhang_2025_nedosiran"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 

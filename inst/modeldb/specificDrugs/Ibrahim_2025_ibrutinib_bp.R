@@ -15,9 +15,9 @@ Ibrahim_2025_ibrutinib_bp <- function() {
     "runs: modellib('Ibrahim_2023_ibrutinib_sbp'), modellib('Ibrahim_2023_ibrutinib_dbp')."
   )
   reference <- paste(
-    "Ibrahim EIK, Friberg LE.",
-    "Optimizing ibrutinib posology in chronic lymphocytic leukemia using a semi-mechanistic pharmacometric framework.",
-    "CPT Pharmacometrics Syst Pharmacol. 2025;14(12):2186-2198.",
+    "Ibrahim EIK, Friberg LE. Optimizing Ibrutinib Posology in Chronic",
+    "Lymphocytic Leukemia Using a Semi-Mechanistic Pharmacometric Framework.",
+    "CPT Pharmacometrics Syst Pharmacol. 2025;14(12):2186-2197.",
     "doi:10.1002/psp4.70124.",
     "Open Access under CC BY-NC.",
     "Structural equations transcribed from the authors' own RxODE control stream",

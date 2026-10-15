@@ -1,10 +1,9 @@
 Shin_2014_sevoflurane <- function() {
   description <- "Pharmacodynamic sigmoid Emax model for the probability of recovery of consciousness (ROC) vs end-tidal sevoflurane concentration (vol %) during emergence from general anesthesia in pediatric dental-surgery patients (Shin 2014). Mentality (intact vs severely mentally disabled, MENT_DISABLED) stratifies both the concentration at 50% probability of ROC (C50) and the Hill coefficient. NONMEM Bernoulli likelihood in the source paper; this implementation exposes the typical-value probability with a placeholder additive residual error (see vignette Assumptions and deviations)."
   reference <- paste(
-    "Shin TJ, Noh GJ, Koo YS, Han DW. (2014).",
-    "Modeling of Recovery Profiles in Mentally Disabled and Intact Patients",
-    "after Sevoflurane Anesthesia; A Pharmacodynamic Analysis.",
-    "Yonsei Med J 55(6):1624-1629.",
+    "Shin TJ, Noh GJ, Koo YS, Han DW. Modeling of recovery profiles in",
+    "mentally disabled and intact patients after sevoflurane anesthesia; a",
+    "pharmacodynamic analysis. Yonsei Med J. 2014;55(6):1624-1630.",
     "doi:10.3349/ymj.2014.55.6.1624.",
     sep = " "
   )

@@ -247,7 +247,7 @@ Anbari_2023_atezolizumab_cibisatamab_qsp <- function() {
     TGF_50_ctl <- fixed(0.28); label("Half-Maximal TGFb level for CD8 T cell inhibition (Robertson-Tessi 2012... [molarity]")  # Table S4 (TGF_50_ctl = 2.8e-10 molarity)
     Kc_rec <- fixed(20200000); label("Half-Maximal cancer cell number for T cell recruitment (Phillis 2006, PMID:... [cell^2]")  # Table S4 (Kc_rec = 20200000 cell^2)
     TGFbase <- fixed(0.02); label("Baseline TGFb level in tumor (Manuyakorn 2008, PMID: 19317336; Panis 2013... [molarity]")  # Table S4 (TGFbase = 2e-11 molarity)
-    k_IFNg_sec <- fixed(4e-13); label("IFNg secretion rate by T helper cell (Borj 2017, doi:10.15171/ijbms.2017.05) [nanomole/cell/day]")  # Table S4 (k_IFNg_sec = 4e-13 nanomole/cell/day)
+    k_IFNg_sec <- fixed(4e-13); label("IFNg secretion rate by T helper cell (Borj 2017, doi:10.15171/ijbsm.2017.05) [nanomole/cell/day]")  # Table S4 (k_IFNg_sec = 4e-13 nanomole/cell/day)
     k_IFNg_deg <- fixed(7.68); label("IFNg degradation rate (Hofstra 1998, PMID: 9806748) [1/day]")  # Table S4 (k_IFNg_deg = 7.68 1/day)
     IFNg_50_ind <- fixed(0.00296); label("Half-Maximal IFNg level for PD-L1 induction (Shin 2017, PMID: 27903500) [molarity]")  # Table S4 (IFNg_50_ind = 2.96e-12 molarity)
 

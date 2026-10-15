@@ -22,10 +22,10 @@ Richardson_2025_ribociclib <- function() {
     sep = " "
   )
   reference <- paste(
-    "Richardson S, Irurzun Arana I, Nowojewski A, Zhou D, Leander J,",
-    "Tang W, Dearden R, Gibbs M.",
-    "A machine learning approach to population pharmacokinetic modelling",
-    "automation. Commun Med. 2025;5:325. doi:10.1038/s43856-025-01054-8.",
+    "Richardson S, Irurzun Arana I, Nowojewski A, Zhou D, Leander J, Tang W,",
+    "Dearden R, Gibbs M. A machine learning approach to population",
+    "pharmacokinetic modelling automation. Commun Med (Lond). 2025;5(1):327.",
+    "doi:10.1038/s43856-025-01054-8.",
     "Parameter estimates from Supplementary Table 2; omega values and dose",
     "effects from the authors' published NONMEM output FinalResultFile.lst",
     "in the Code Availability repository",

@@ -26,12 +26,11 @@ Yoshii_2016_acotiamide_rat_pbpk <- function() {
     "variance terms are fixed to zero."
   )
   reference <- paste(
-    "Yoshii K, Iikura M, Hirayama M, Toda R, Kawabata Y.",
-    "Physiologically-based pharmacokinetic and pharmacodynamic modeling",
-    "for the inhibition of acetylcholinesterase by acotiamide, a novel",
-    "gastroprokinetic agent for the treatment of functional dyspepsia, in",
-    "rat stomach.",
-    "Pharmaceutical Research. 2016;33(2):292-298.",
+    "Yoshii K, Iikura M, Hirayama M, Toda R, Kawabata Y. Physiologically-Based",
+    "Pharmacokinetic and Pharmacodynamic Modeling for the Inhibition of",
+    "Acetylcholinesterase by Acotiamide, A Novel Gastroprokinetic Agent for",
+    "the Treatment of Functional Dyspepsia, in Rat Stomach. Pharm Res.",
+    "2016;33(2):292-300.",
     "doi:10.1007/s11095-015-1787-y.",
     sep = " "
   )

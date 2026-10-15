@@ -30,7 +30,7 @@ pediatric exposure is materially lower, and the paper proposes three alternative
 regimens that close the gap.
 
 * Article: <https://doi.org/10.1002/psp4.70050> (PMC12439283), CPT Pharmacometrics
-  Syst Pharmacol. 2025;14(8):1449-1457.
+  Syst Pharmacol. 2025;14(9):1449-1458.
 * Data S2 of the supplement contains the **final NONMEM control stream**
   (ADVAN11 TRANS4); Data S1 contains **Tables S1 and S2**, the exposure-response
   coefficients and the predicted efficacy outcomes.
