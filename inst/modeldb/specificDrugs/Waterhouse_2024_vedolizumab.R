@@ -1,6 +1,13 @@
 Waterhouse_2024_vedolizumab <- function() {
   description <- "Two-compartment population PK model with first-order (linear) elimination for vedolizumab (humanised anti-alpha4-beta7 integrin IgG1 monoclonal antibody) as acute graft-versus-host disease (aGvHD) prophylaxis in adults undergoing allogeneic hematopoietic stem cell transplantation (allo-HSCT) (Waterhouse 2024)."
-  reference <- "Waterhouse T, Baron K, Eure W, Chen C, Akbari M, Dirks NL, Jansson J, Mehrotra S. Population pharmacokinetic modeling of vedolizumab for graft-versus-host disease prophylaxis in adults with allogeneic hematopoietic stem cell transplant. Pharmacol Res Perspect. 2024;12(6):e1257. doi:10.1002/prp2.1257"
+  reference <- paste(
+    "Waterhouse T, Baron K, Eure W, Chen C, Dirks NL, Jansson J, Akbari M,",
+    "Mehrotra S. Population pharmacokinetic modeling of vedolizumab for",
+    "graft-versus-host disease prophylaxis in adults with allogeneic",
+    "hematopoietic stem cell transplant. Pharmacol Res Perspect.",
+    "2024;12(5):e1257. doi:10.1002/prp2.1257.",
+    sep = " "
+  )
   vignette <- "Waterhouse_2024_vedolizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

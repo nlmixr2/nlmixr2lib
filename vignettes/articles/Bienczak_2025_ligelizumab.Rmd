@@ -27,7 +27,7 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode(readModelDb("Bienczak_2025_ligelizumab"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Bienczak_2025_ligelizumab"))$description`
-* Article: <https://doi.org/10.1002/psp4.70090>
+* Article: <https://doi.org/10.1002/psp4.70098>
 
 # Population
 

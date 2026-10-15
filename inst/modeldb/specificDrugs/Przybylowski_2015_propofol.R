@@ -2,10 +2,9 @@ Przybylowski_2015_propofol <- function() {
   description <- "Three-compartment IV population PK plus effect-compartment sigmoidal Emax PD model for propofol in adult ASA III cancer patients undergoing major lung surgery under propofol-fentanyl total intravenous anesthesia (Przybylowski 2015; N = 23). The PD response is the AAI (A-line ARX-Index) auditory-evoked-potential depth-of-anesthesia index with the maximum effect fixed to 1 and the pretreatment baseline fixed to 87 from a prior study. Inter-individual variability was estimated on Vc, CL, and the deep-compartment intercompartmental clearance Q2 for PK and on Ce50, gamma (Hill), and ke0 for PD; IIV on Vt1, Q1, Vt2 was fixed to 0 (data uninformative). No demographic, biochemical, or hemodynamic covariates were retained in the final model (Results)."
   reference <- paste(
     "Przybylowski K, Tyczka J, Szczesny D, Bienert A, Wiczling P, Kut K,",
-    "Plenzler E, Kaliszan R, Grzeskowiak E.",
-    "Pharmacokinetics and pharmacodynamics of propofol in cancer patients",
-    "undergoing major lung surgery.",
-    "J Pharmacokinet Pharmacodyn. 2015;42(3):111-122.",
+    "Plenzler E, Kaliszan R, Grzeskowiak E. Pharmacokinetics and",
+    "pharmacodynamics of propofol in cancer patients undergoing major lung",
+    "surgery. J Pharmacokinet Pharmacodyn. 2015;42(2):111-122.",
     "doi:10.1007/s10928-015-9404-6.",
     sep = " "
   )

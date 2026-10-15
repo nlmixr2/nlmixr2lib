@@ -19,9 +19,9 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Papachristos A, Karatza E, Kalofonos H, Karalis V.
-  Pharmacogenetics in Model-Based Optimization of Bevacizumab Therapy
-  for Metastatic Colorectal Cancer. *Int J Mol Sci.* 2020;21(11):3753.
+* Citation: Papachristos A, Karatza E, Kalofonos H, Sivolapenko G.
+  Pharmacogenetics in Model-Based Optimization of Bevacizumab Therapy for
+  Metastatic Colorectal Cancer. *Int J Mol Sci*. 2020;21(11):3753.
   doi:[10.3390/ijms21113753](https://doi.org/10.3390/ijms21113753).
 * Description: Two-compartment population PK model for IV bevacizumab
   in adults with metastatic colorectal cancer (mCRC), with allometric

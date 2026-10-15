@@ -1,6 +1,13 @@
 Lioger_2017_rituximab <- function() {
   description <- "Two-compartment population PK model of rituximab in rheumatoid arthritis patients, parameterised with first-order distribution (k12, k21) and elimination (k10) rate constants (per Lioger 2017 Methods 'Structural pharmacokinetics model design': rate-constant parameterisation gave lower AIC, shrinkages, and Vc/elimination correlation than CL/Vc). Final covariate model: BSA, sex, and rituximab treatment course on V1; time-varying CD19+ B-cell count and IgG serum concentration on k10 (Lioger 2017 Table 2)."
-  reference <- "Lioger B, Edupuganti SR, Mulleman D, Passot C, Desvignes C, Bejan-Angoulvant T, Thibault G, Gouilleux-Gruart V, Melet J, Paintaud G, Ternant D. Antigenic burden and serum IgG concentrations influence rituximab pharmacokinetics in rheumatoid arthritis patients. Br J Clin Pharmacol. 2017 Sep;83(9):1773-1781. doi:10.1111/bcp.13270. PMID:28230269."
+  reference <- paste(
+    "Lioger B, Edupuganti SR, Mulleman D, Passot C, Desvignes C,",
+    "Bejan-Angoulvant T, Thibault G, Gouilleux-Gruart V, Melet J, Paintaud G,",
+    "Ternant D. Antigenic burden and serum IgG concentrations influence",
+    "rituximab pharmacokinetics in rheumatoid arthritis patients. Br J Clin",
+    "Pharmacol. 2017;83(8):1773-1781. doi:10.1111/bcp.13270. PMID:28230269.",
+    sep = " "
+  )
   vignette <- "Lioger_2017_rituximab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 

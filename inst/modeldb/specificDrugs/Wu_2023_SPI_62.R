@@ -30,10 +30,11 @@ Wu_2023_SPI_62 <- function() {
     sep = " "
   )
   reference <- paste(
-    "Wu N, Katz DA, An G. Population target-mediated pharmacokinetic/pharmacodynamic modeling to",
-    "evaluate SPI-62 exposure and hepatic 11beta-hydroxysteroid dehydrogenase type 1 (HSD-1)",
-    "inhibition in healthy adults. Clin Pharmacokinet. 2023;62(9):1275-1288.",
-    "doi:10.1007/s40262-023-01278-8. PMID:37452986. PMCID:PMC10449972.",
+    "Wu N, Katz DA, An G. Population Target-Mediated",
+    "Pharmacokinetic/Pharmacodynamic Modeling to Evaluate SPI-62 Exposure and",
+    "Hepatic 11beta-Hydroxysteroid Dehydrogenase Type 1 (HSD-1) Inhibition in",
+    "Healthy Adults. Clin Pharmacokinet. 2023;62(9):1275-1288.",
+    "doi:10.1007/s40262-023-01278-8. PMID:37452998. PMCID:PMC10449972.",
     sep = " "
   )
   vignette <- "Wu_2023_SPI_62"

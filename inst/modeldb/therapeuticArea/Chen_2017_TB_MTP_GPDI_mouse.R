@@ -12,7 +12,7 @@ Chen_2017_TB_MTP_GPDI_mouse <- function() {
     "Coates AR, Simonsson US. J Antimicrob Chemother 71(4):964-974 (2016)",
     "doi:10.1093/jac/dkv416; INH/EMB/PZA absorption rate constants fixed",
     "from Chen C, Ortega F, Alameda L, Ferrer S, Simonsson US.",
-    "Eur J Pharm Sci 93:319-333 (2016) doi:10.1016/j.ejps.2016.07.014."
+    "Eur J Pharm Sci 93:319-333 (2016) doi:10.1016/j.ejps.2016.07.017."
   )
   vignette <- "Chen_2017_TB_MTP_GPDI_mouse"
   units <- list(

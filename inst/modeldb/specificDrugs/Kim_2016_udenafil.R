@@ -1,10 +1,10 @@
 Kim_2016_udenafil <- function() {
   description <- "Parent-metabolite population PK model for oral udenafil and its active metabolite DA-8164 in healthy subjects and patients with mild (Child-Pugh A) and moderate (Child-Pugh B) hepatic impairment (Kim 2016). Two-compartment udenafil with first-order absorption and an absorption lag time, two parallel parent-side clearances (CLp/F = non-metabolic apparent clearance, CLpm/F = apparent formation clearance to DA-8164) feeding a two-compartment metabolite. Central and peripheral apparent volumes are assumed equal for parent and metabolite (the fraction metabolised f_m and the metabolite volume of distribution are not separately identifiable from this dataset). Mass-balance is preserved by multiplying the formation flux into the metabolite central compartment by the molecular-weight ratio Rpm = MW(DA-8164) / MW(udenafil) = 405.4 / 516.66. Prothrombin time expressed as INR (PT) acts on CLpm/F via a power covariate normalised to the cohort median 1.13: CLpm/F = theta1 * (PT/1.13)^theta10 with theta10 = -1.65 (decrease in CLpm/F with increasing PT)."
   reference <- paste(
-    "Kim A, Lee J, Shin D, Jung YJ, Bahng MY, Cho JY, Jang IJ.",
-    "Population pharmacokinetic analysis to recommend the optimal dose",
-    "of udenafil in patients with mild and moderate hepatic impairment.",
-    "Br J Clin Pharmacol. 2016;82(4):1024-1033.",
+    "Kim A, Lee J, Shin D, Jung YJ, Bahng MY, Cho JY, Jang IJ. Population",
+    "pharmacokinetic analysis to recommend the optimal dose of udenafil in",
+    "patients with mild and moderate hepatic impairment. Br J Clin Pharmacol.",
+    "2016;82(2):389-398.",
     "doi:10.1111/bcp.12977.",
     sep = " "
   )

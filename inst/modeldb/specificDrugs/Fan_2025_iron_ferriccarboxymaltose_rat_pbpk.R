@@ -23,12 +23,12 @@ Fan_2025_iron_ferriccarboxymaltose_rat_pbpk <- function() {
   )
   reference <- paste(
     "Fan X, Cao K, Wong RSM, Yan X. A whole-body mechanistic",
-    "physiologically-based pharmacokinetic modeling of intravenous iron.",
-    "Drug Deliv Transl Res. 2025;15(3):1109-1120.",
-    "doi:10.1007/s13346-024-01675-x (PMCID: PMC11870943).",
-    "The complete NONMEM control stream for the MOUSE run, the rat and human",
-    "physiology tables and every digitised observed dataset are in the",
-    "Electronic Supplementary Material (MOESM1)."
+    "physiologically-based pharmacokinetic modeling of intravenous iron. Drug",
+    "Deliv Transl Res. 2025;15(4):1109-1120. doi:10.1007/s13346-024-01675-x",
+    "(PMCID: PMC11870943). The complete NONMEM control stream for the MOUSE",
+    "run, the rat and human physiology tables and every digitised observed",
+    "dataset are in the Electronic Supplementary Material (MOESM1).",
+    sep = " "
   )
   vignette <- "Fan_2025_iron_wholebody_pbpk"
 

@@ -19,7 +19,7 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Girard P, Brockhaus B, Massimini G, Asiatiani E, Rejeb N, Rajeswaran RA, Lupfert C, von Richter O, Munafo A. (2012). Simultaneous ocular adverse event and treatment discontinuation model of pimasertib. *PAGE* 21 Abstr 2458.
+* Citation: Girard P, Brockhaus B, Massimini G, Asatiani E, Rejeb N, Rajeswaran RA, Lupfert C, von Richter O, Munafo A. (2012). Simultaneous ocular adverse event and treatment discontinuation model of pimasertib. *PAGE* 21 Abstr 2458.
 * Conference abstract URL: <https://www.page-meeting.org/?abstract=2458>
 * DDMORE Foundation Model Repository entry: [DDMODEL00000215](https://repository.ddmore.eu/model/DDMODEL00000215)
 

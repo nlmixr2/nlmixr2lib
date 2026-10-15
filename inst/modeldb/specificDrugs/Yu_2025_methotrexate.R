@@ -20,10 +20,10 @@ Yu_2025_methotrexate <- function() {
     sep = " "
   )
   reference <- paste(
-    "Yu B, Wan Y, Mei K, Zhan D, Tang Q, Hu X, Ji W, Cai H (2025).",
-    "Population Pharmacokinetics and Covariate Analysis of Methotrexate in",
-    "Pediatric Acute Lymphoblastic Leukemia.",
-    "Drug Des Devel Ther 19:8473-8486. doi:10.2147/DDDT.S545368.",
+    "Yu B, Wan Y, Mei K, Zhan D, Tang Q, Hu X, Ji W, Cai H. Population",
+    "Pharmacokinetics and Covariate Analysis of Methotrexate in Pediatric",
+    "Acute Lymphoblastic Leukemia. Drug Des Devel Ther. 2025;19:8475-8488.",
+    "doi:10.2147/DDDT.S545368.",
     sep = " "
   )
   vignette <- "Yu_2025_methotrexate"

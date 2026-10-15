@@ -14,10 +14,10 @@ Gracia_2025_cr51edta_tc99mdtpa <- function() {
     "proportional residual error is tracer-specific."
   )
   reference <- paste(
-    "Gracia M, Ankaoua V, Alonso M, Pasquet M, Chatelut E (2025).",
-    "A population pharmacokinetic approach to compare 51Cr-EDTA and",
-    "99mTc-DTPA clearances in measuring renal glomerular filtration rate",
-    "in oncopediatrics. Pediatric Nephrology 40(10):3163-3168.",
+    "Gracia M, Ankaoua V, Alonso M, Pasquet M, Chatelut E. A population",
+    "pharmacokinetic approach to compare (51)Cr-EDTA and (99 m)Tc-DTPA",
+    "clearances in measuring renal glomerular filtration rate in",
+    "oncopediatrics. Pediatr Nephrol. 2025;40(10):3163-3168.",
     "doi:10.1007/s00467-025-06828-9.",
     sep = " "
   )

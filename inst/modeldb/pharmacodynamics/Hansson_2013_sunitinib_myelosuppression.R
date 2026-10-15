@@ -1,11 +1,10 @@
 Hansson_2013_sunitinib_myelosuppression <- function() {
   description <- "Semi-physiological Friberg-Karlsson myelosuppression model for sunitinib in adults with imatinib-resistant gastrointestinal stromal tumours (GIST). Absolute neutrophil count (ANC) is described by a self-renewing proliferating progenitor pool, three transit compartments reflecting cell maturation, and a circulating-neutrophil pool, with an Emax drug-effect function driven by the relative change in soluble VEGFR-3 from baseline (sVEGFR-3 REL) inhibiting proliferation and a (ANC0/circ)^gamma feedback term. sVEGFR-3 itself is simulated in-model as a one-compartment indirect-response turnover with simple-Imax inhibition of Kin by the per-cycle drug-exposure summary AUC = DOSE / CLI. The PD model has no PK ODE and consumes individual posthoc upstream-PD parameters (BAS_SVEGFR3, MRT_SVEGFR3, EC50_SVEGFR3) plus posthoc upstream-PK clearance (CLI) and a Japanese-cohort indicator (RACE_JAPANESE) as data covariates. The Japanese-cohort indicator switches the typical baseline ANC0 between 4.94 (non-Japanese) and 3.69 (10^9/L) per Hansson 2013 Table 2."
   reference <- paste(
-    "Hansson EK, Ma G, Amantea MA, French J, Milligan PA, Friberg LE,",
-    "Karlsson MO.",
-    "PKPD modeling of predictors for adverse effects and overall survival",
-    "in sunitinib-treated patients with GIST.",
-    "CPT Pharmacometrics Syst Pharmacol. 2013;2(11):e85.",
+    "Hansson EK, Ma G, Amantea MA, French J, Milligan PA, Friberg LE, Karlsson",
+    "MO. PKPD Modeling of Predictors for Adverse Effects and Overall Survival",
+    "in Sunitinib-Treated Patients With GIST. CPT Pharmacometrics Syst",
+    "Pharmacol. 2013;2(12):e85.",
     "doi:10.1038/psp.2013.62.",
     "Sister model files from the same paper:",
     "modellib('Hansson_2013_sunitinib_dbp'),",

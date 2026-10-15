@@ -52,7 +52,7 @@ Table 1); the companion anakinra model (Ngo 2020 Table S2 in the
 Supplementary Materials) is not included.
 
 * Citation: `r rxode2::rxode(nlmixr2lib::readModelDb("Ngo_2020_HL2351"))$reference`
-* Article: <https://doi.org/10.1002/psp4.12552>
+* Article: <https://doi.org/10.1002/psp4.12555>
 
 # Population
 

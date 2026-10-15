@@ -1,6 +1,14 @@
 Scheuher_2023_ADC_invitro_qsp <- function() {
   description <- "QSP. In vitro cellular ADC processing model for HER2-targeting antibody-drug conjugates (T-DM1 default; T-DXd variant supported via parameter overrides). 13 ODE states describing extracellular ADC / Ab / free payload, cell-surface HER2 with reversible ADC and antibody binding, endosomal HER2 species, endosomal / cytosolic payload, and cytosolic intracellular target (tubulin for DM1, TOPO-1 for DXd). Amounts in nmol per paper Modeling Convention; concentrations are amount/volume. Parameter set defaults to SK-BR-3 cell line with T-DM1 (Erickson 2012 in vitro incubation)."
-  reference <- "Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J, Subramanian K, Betts A. Towards a platform quantitative systems pharmacology (QSP) model for preclinical to clinical translation of antibody drug conjugates (ADCs). J Pharmacokinet Pharmacodyn. 2023;51(1):5-30. doi:10.1007/s10928-023-09884-6. In vitro cellular model = Tables S1a, S2a, S3a-b."
+  reference <- paste(
+    "Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J,",
+    "Subramanian K, Betts A. Towards a platform quantitative systems",
+    "pharmacology (QSP) model for preclinical to clinical translation of",
+    "antibody drug conjugates (ADCs). J Pharmacokinet Pharmacodyn.",
+    "2024;51(5):429-447. doi:10.1007/s10928-023-09884-6. In vitro cellular",
+    "model = Tables S1a, S2a, S3a-b.",
+    sep = " "
+  )
   vignette <- "Scheuher_2023_ADC_platform_qsp"
   units <- list(time = "h", dosing = "nmol", concentration = "nM")
 

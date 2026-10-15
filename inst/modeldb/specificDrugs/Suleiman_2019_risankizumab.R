@@ -1,6 +1,13 @@
 Suleiman_2019_risankizumab <- function() {
   description <- "Two-compartment population PK model of risankizumab (anti-IL-23 mAb) with first-order SC absorption in healthy subjects and patients with moderate-to-severe plaque psoriasis (Suleiman 2019)"
-  reference <- "Suleiman AA, Khatri A, Minocha M, Othman AA. Population Pharmacokinetics of Risankizumab in Healthy Volunteers and Subjects with Moderate to Severe Plaque Psoriasis: Integrated Analyses of Phase I-III Clinical Trials. Clin Pharmacokinet. 2019;58(10):1309-1321. doi:10.1007/s40262-019-00759-z"
+  reference <- paste(
+    "Suleiman AA, Minocha M, Khatri A, Pang Y, Othman AA. Population",
+    "Pharmacokinetics of Risankizumab in Healthy Volunteers and Subjects with",
+    "Moderate to Severe Plaque Psoriasis: Integrated Analyses of Phase I-III",
+    "Clinical Trials. Clin Pharmacokinet. 2019;58(10):1309-1321.",
+    "doi:10.1007/s40262-019-00759-z.",
+    sep = " "
+  )
   vignette <- "Suleiman_2019_risankizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

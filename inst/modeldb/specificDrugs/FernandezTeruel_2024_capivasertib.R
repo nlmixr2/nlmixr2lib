@@ -1,6 +1,12 @@
 FernandezTeruel_2024_capivasertib <- function() {
   description <- "Three-compartment population PK model for capivasertib (oral pan-AKT inhibitor) with parallel first-order and zero-order absorption, absorption lag time, and sigmoidal time-dependent auto-inhibition of apparent clearance, in patients with advanced or metastatic solid tumours (Fernandez-Teruel 2024)"
-  reference <- "Fernandez-Teruel C, Cullberg M, Eberlein C, Barry ST, Zhou D. Population pharmacokinetics of capivasertib in patients with advanced or metastatic solid tumours. Clin Pharmacokinet. 2024;63(9):1191-1201. doi:10.1007/s40262-024-01407-x"
+  reference <- paste(
+    "Fernandez-Teruel C, Cullberg M, Eberlein C, Barry ST, Zhou D. Population",
+    "Pharmacokinetics of Capivasertib in Patients with Advanced or Metastatic",
+    "Solid Tumours. Clin Pharmacokinet. 2024;63(8):1191-1204.",
+    "doi:10.1007/s40262-024-01407-x.",
+    sep = " "
+  )
   vignette <- "FernandezTeruel_2024_capivasertib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 

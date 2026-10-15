@@ -1,6 +1,11 @@
 Talke_2018_dexmedetomidine <- function() {
   description <- "Three-compartment IV population PK plus effect-compartment sigmoid Emax PD model for dexmedetomidine-induced peripheral vasoconstriction (ADC units from finger photoplethysmography) in healthy adult volunteers, with a priori allometric body-weight scaling on CL, Q2, Q3 (exponent 0.75) and V1, V2, V3 (exponent 1) at a 70 kg reference weight (Talke and Anderson 2018, Tables 3 and 4)"
-  reference <- "Talke P, Anderson BJ. Pharmacokinetics and pharmacodynamics of dexmedetomidine-induced vasoconstriction in healthy volunteers. Br J Clin Pharmacol. 2018;84(7):1364-1372. doi:10.1111/bcp.13571"
+  reference <- paste(
+    "Talke P, Anderson BJ. Pharmacokinetics and pharmacodynamics of",
+    "dexmedetomidine-induced vasoconstriction in healthy volunteers. Br J Clin",
+    "Pharmacol. 2018;84(6):1364-1372. doi:10.1111/bcp.13571.",
+    sep = " "
+  )
   vignette <- "Talke_2018_dexmedetomidine"
   units <- list(time = "min", dosing = "ug", concentration = "ug/L") # Methods + Tables: dose ug, plasma in ug/L (= ng/mL); time in minutes (CL in L/min, t1/2 keo in min)
 

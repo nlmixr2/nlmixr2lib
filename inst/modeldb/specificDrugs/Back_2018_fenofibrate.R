@@ -14,11 +14,12 @@ Back_2018_fenofibrate <- function() {
     "high-fat meals."
   )
   reference <- paste(
-    "Back H, Song B, Pradhan S, Chae J, Han N, Kang W, Chang MJ, Zheng J,",
-    "Kwon K, Karlsson MO, Yun H. A mechanism-based pharmacokinetic model of",
+    "Back HM, Song B, Pradhan S, Chae JW, Han N, Kang W, Chang MJ, Zheng J,",
+    "Kwon KI, Karlsson MO, Yun HY. A mechanism-based pharmacokinetic model of",
     "fenofibrate for explaining increased drug absorption after food",
-    "consumption. BMC Pharmacology and Toxicology. 2018;19:5.",
-    "doi:10.1186/s40360-018-0194-5"
+    "consumption. BMC Pharmacol Toxicol. 2018;19(1):4.",
+    "doi:10.1186/s40360-018-0194-5.",
+    sep = " "
   )
   vignette <- "Back_2018_fenofibrate"
   paper_specific_compartments <- c("stomach_food", "duodenum_food")

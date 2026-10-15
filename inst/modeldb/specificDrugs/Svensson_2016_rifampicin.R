@@ -12,7 +12,7 @@ Svensson_2016_rifampicin <- function() {
     "doi:10.1128/AAC.05792-11.",
     "MTP disease model structure (three bacterial substates with",
     "time-dependent fast-to-slow transfer) from Clewe et al. (2016)",
-    "J Antimicrob Chemother 71(4):964-974 doi:10.1093/jac/dkv478.",
+    "J Antimicrob Chemother 71(4):964-974 doi:10.1093/jac/dkv416.",
     sep = " "
   )
   vignette <- "Svensson_2016_rifampicin"

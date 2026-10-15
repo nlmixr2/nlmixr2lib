@@ -1,10 +1,9 @@
 Jiao_2009_sirolimus <- function() {
   description <- "One-compartment population PK model for oral sirolimus in Chinese adult de novo renal transplant recipients on triple immunosuppression with ciclosporin and corticosteroids (Jiao 2009). First-order absorption with ka fixed at the literature value 0.752 1/h. Covariate effects on apparent clearance: linear-deviation effects of total cholesterol and whole-blood ciclosporin trough concentration centred on the cohort medians, multiplicative power-form effects of concomitant silymarin and glycyrrhizin co-therapy in hepatically impaired patients, and a power-form effect of the current sirolimus daily dose centred at 2 mg. Apparent volume of distribution carries a linear-deviation effect of ciclosporin trough concentration."
   reference <- paste(
-    "Jiao Z, Shi XJ, Li ZD, Zhong MK.",
-    "Population pharmacokinetics of sirolimus in de novo Chinese adult",
-    "renal transplant patients.",
-    "Br J Clin Pharmacol. 2009;68(1):47-54.",
+    "Jiao Z, Shi XJ, Li ZD, Zhong MK. Population pharmacokinetics of sirolimus",
+    "in de novo Chinese adult renal transplant patients. Br J Clin Pharmacol.",
+    "2009;68(1):47-60.",
     "doi:10.1111/j.1365-2125.2009.03392.x.",
     sep = " "
   )

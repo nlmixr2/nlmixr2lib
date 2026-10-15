@@ -1,6 +1,12 @@
 Patel_2025_eteplirsen <- function() {
   description <- "Three-compartment IV-infusion population PK model for eteplirsen, an exon-51-skipping phosphorodiamidate morpholino oligomer (PMO), in 157 male patients with Duchenne muscular dystrophy aged 6 months to 16.4 years pooled from six clinical studies (Patel 2025). Clearance uses an age-cutoff structure at 4 years: a separate typical clearance is estimated in each age stratum (6.98 L/h for age > 4 years, 4.97 L/h for age <= 4 years), both normalized to a 37 kg reference weight and an eGFR of 145 mL/min/1.73 m^2. Body weight enters every disposition parameter allometrically with exponents fixed at 0.75 on the three clearance terms and 1 on the three volumes; cystatin-C-based CKD-EPI eGFR enters CL as a power effect with an estimated exponent of 1.60. Interindividual variability is a full 4x4 block on CL, V1, V2 and Q2 (none on V3 or Q3), and residual error is additive on the log scale. Both age strata come from a single joint NONMEM fit."
-  reference <- "Patel Y, Orogun L, Yocum N, Rodino-Klapac LR, East L. A population pharmacokinetic model to inform extension of the eteplirsen dosing regimen across the broad DMD population. CPT Pharmacometrics Syst Pharmacol. 2025;14(5):891-901. doi:10.1002/psp4.70001"
+  reference <- paste(
+    "Patel Y, Orogun L, Yocum N, Rodino-Klapac LR, East L. A Population",
+    "Pharmacokinetic Model to Inform Extension of the Eteplirsen Dosing",
+    "Regimen Across the Broad DMD Population. CPT Pharmacometrics Syst",
+    "Pharmacol. 2025;14(5):891-903. doi:10.1002/psp4.70001.",
+    sep = " "
+  )
   vignette <- "Patel_2025_eteplirsen"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 

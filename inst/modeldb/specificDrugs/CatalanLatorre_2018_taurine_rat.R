@@ -19,10 +19,9 @@ CatalanLatorre_2018_taurine_rat <- function() {
     "endogenous taurine concentration is reproduced at t = 0."
   )
   reference <- paste(
-    "Catalan-Latorre A, Nacher A, Merino V, Diez O, Merino Sanjuan M.",
-    "A preclinical study to model taurine pharmacokinetics in the",
-    "undernourished rat.",
-    "British Journal of Nutrition. 2018;119(7):732-741.",
+    "Catalan-Latorre A, Nacher A, Merino V, Diez O, Merino Sanjuan M. A",
+    "preclinical study to model taurine pharmokinetics in the undernourished",
+    "rat. Br J Nutr. 2018;119(7):826-835.",
     "doi:10.1017/S0007114518000156.",
     sep = " "
   )

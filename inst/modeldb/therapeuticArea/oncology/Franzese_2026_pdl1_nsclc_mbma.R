@@ -41,8 +41,8 @@ Franzese_2026_pdl1_nsclc_mbma <- function() {
   reference <- paste(
     "Franzese RC, Qin L, Fu S, Rich B, Zografos E, Zierhut ML, Visser SAG.",
     "Model-Based Meta-Analysis of Objective Response Rate and Survival",
-    "Endpoints to Compare PD-1 and PD-L1 Treatment Outcomes in Non-Small",
-    "Cell Lung Cancer. CPT Pharmacometrics Syst Pharmacol. 2026.",
+    "Endpoints to Compare PD-1 and PD-L1 Treatment Outcomes in Non-Small Cell",
+    "Lung Cancer. CPT Pharmacometrics Syst Pharmacol. 2026;15(3):e70196.",
     "doi:10.1002/psp4.70196.",
     sep = " "
   )

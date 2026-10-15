@@ -1,6 +1,14 @@
 Shiau_2026_vancomycin <- function() {
   description <- "Two-compartment IV population PK model for vancomycin in critically ill children with multiple organ dysfunction syndrome (MODS), 1 month to 17 years (Shiau 2026). Clearance and intercompartmental clearance scale allometrically with body weight (exponent 0.75, reference 28.4 kg), and clearance additionally scales as a power function of CKiD Under-25 (U25) estimated GFR (exponent 0.85, reference 96 mL/min/1.73 m^2); central and peripheral volumes scale linearly with body weight (exponent 1, reference 28.4 kg). Between-subject variability is exponential on all four structural parameters and residual variability is proportional. The source is a conference poster abstract, but its Table 1 reports the complete Monolix parameter set together with the individual-parameter equations, so no value in this file is inferred."
-  reference <- "Shiau J, Amajor V, Marianski S, Rhodes NJ, Bwint A, Sharova A, Hall M, Pai MP, Wen B, Downes KJ, Scheetz MH. P-1237. Vancomycin Population Pharmacokinetics and Toxicity-Exposure Relationships in Children with Multiple Organ Dysfunction Syndrome. Open Forum Infect Dis. 2026;13(Suppl 1):S810. doi:10.1093/ofid/ofaf695.1429. IDWeek 2025 poster abstract (Session 148, PK/PD Studies); PMCID PMC12791793."
+  reference <- paste(
+    "Shiau J, Amajor V, Marianski S, Rhodes NJ, Bwint A, Sharova A, Hall M,",
+    "Pai MP, Wen B, Downes KJ, Scheetz MH. P-1237. Vancomycin Population",
+    "Pharmacokinetics and Toxicity-Exposure Relationships in Children with",
+    "Multiple Organ Dysfunction Syndrome. Open Forum Infectious Diseases.",
+    "2026;13(Supplement_1):ofaf695.1429. doi:10.1093/ofid/ofaf695.1429. IDWeek",
+    "2025 poster abstract (Session 148, PK/PD Studies); PMCID PMC12791793.",
+    sep = " "
+  )
   vignette <- "Shiau_2026_vancomycin"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 

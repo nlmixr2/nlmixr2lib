@@ -1,10 +1,9 @@
 Allegaert_2015_paracetamol <- function() {
   description <- "Eight-compartment population PK model for IV propacetamol/paracetamol (APAP) and its glucuronide and sulphate metabolites in young women (Allegaert 2015), distributed in the DDMORE Foundation Model Repository as DDMODEL00000267. The structural model carries a three-compartment plasma disposition for parent APAP (central + two peripherals), two plasma metabolite compartments (APAP-glucuronide and APAP-sulphate, each with a metabolite-specific volume V_meta = 0.18 * V_central), and three cumulative-urine compartments (urine APAP, urine APAP-glucuronide, urine APAP-sulphate). Pregnancy state, time post partum, term-vs-preterm birth, oral-contraceptive use, and time-varying urine flow rate enter as covariates on the parent and metabolite-formation clearances; an OCC-conditional residual-error model gives non-pregnant volunteers on birth control a combined proportional + additive plasma error while every other occasion uses a proportional-only plasma error."
   reference <- paste(
-    "Allegaert K, van der Marel CD, Debeer A, Pluim MAL, Van Lingen RA, Vanhole C,",
-    "Tibboel D, Devlieger H. (2015).",
-    "Pharmacokinetics of single-dose intravenous propacetamol in young women.",
-    "BMC Anesthesiol 15:151.",
+    "Allegaert K, Peeters MY, Beleyn B, Smits A, Kulo A, van Calsteren K,",
+    "Deprest J, de Hoon J, Knibbe CA. Paracetamol pharmacokinetics and",
+    "metabolism in young women. BMC Anesthesiol. 2015;15(1):163.",
     "doi:10.1186/s12871-015-0144-3.",
     "DDMORE Foundation Model Repository: DDMODEL00000267.",
     sep = " "

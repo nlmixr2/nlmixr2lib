@@ -1,10 +1,10 @@
 Li_2026_alvespimycin_nep5 <- function() {
   description <- "One-compartment population PK model for the heat shock protein 90 inhibitor 17-DMAG (alvespimycin) given as an IV infusion to adult patients with advanced solid tumors, recovered as the most parsimonious non-dominated solution (5 estimated parameters, OFV 9813.4) on the NSGA-II multi-objective Pareto front of Li 2026, with first-order elimination, log-normal IIV on CL and Vc, and an exponential residual error model. This is a machine-search model structure from a multi-objective model-selection study, not an expert-developed final model."
   reference <- paste(
-    "Li X, Sale M, Craig J, Nieforth K, Mazur A, Bies RR. (2026).",
-    "Multi-objective optimization in population pharmacokinetic model",
-    "selection and optimization: application of NSGA-II in pyDarwin.",
-    "J Pharmacokinet Pharmacodyn 53(1):26.",
+    "Li X, Sale M, Craig J, Nieforth K, Mazur A, Bies RR. Multi-objective",
+    "optimization in population pharmacokinetic model selection and",
+    "optimization: application of NSGA-II in pyDarwin. J Pharmacokinet",
+    "Pharmacodyn. 2026;53(4):26.",
     "doi:10.1007/s10928-026-10036-9.",
     "Parameter values from Supplementary Table S2 (Model a, NEP = 5).",
     "Structural parameterization (occasion structure, residual-error form,",

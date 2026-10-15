@@ -1,6 +1,14 @@
 Bellon_2020_fibrinogen <- function() {
   description <- "One-compartment population PK model with non-centred estimated allometric body-weight scaling on CL and V for a triple-secured human plasma fibrinogen concentrate (CLOTTAFACT / FibCLOT; plasma fibrinogen activity by Clauss assay) in children, adolescents and adults with congenital afibrinogenaemia (Bellon 2020)"
-  reference <- "Bellon A, Fuseau E, Roumanie O, Stevens W, Henriet C, Dahmane A, Lamazure J, Barthez-Toullec M, Golly D, Bridey F. Population pharmacokinetics of a triple-secured fibrinogen concentrate administered to afibrinogenaemic patients: Observed age- and body weight-related differences and consequences for dose adjustment in children. Br J Clin Pharmacol. 2020;86(2):329-337. doi:10.1111/bcp.14147"
+  reference <- paste(
+    "Bellon A, Fuseau E, Roumanie O, Lamazure J, Stevens W, Dahmane A,",
+    "Barthez-Toullec M, Golly D, Henriet C, Bridey F. Population",
+    "pharmacokinetics of a triple-secured fibrinogen concentrate administered",
+    "to afibrinogenaemic patients: Observed age- and body weight-related",
+    "differences and consequences for dose adjustment in children. Br J Clin",
+    "Pharmacol. 2020;86(2):329-337. doi:10.1111/bcp.14147.",
+    sep = " "
+  )
   vignette <- "Bellon_2020_fibrinogen"
   units <- list(time = "h", dosing = "g", concentration = "g/L")
 

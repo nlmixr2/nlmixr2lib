@@ -1,6 +1,15 @@
 Zhao_2026_infliximab <- function() {
   description <- "Two-compartment population PK model of intravenous infliximab in young paediatric patients with inflammatory bowel disease aged 10 years or younger, with allometric body-weight scaling (exponents fixed at 0.75 on clearance terms and 1 on volume terms) and power effects of serum albumin and C-reactive protein on clearance (Zhao 2026). Developed on 640 serum concentrations from 104 children across 14 European and Canadian centres; 14.4 percent of measurements were below the limit of quantification and were handled with the M3 method. Peripheral volume V2 and inter-compartmental clearance Q could not be estimated from the sparse trough-dominated data and are FIXED to the values of the published Chung and Clemente-Bautista paediatric models. Inter-individual variability sits on clearance only. Residual variability is proportional with six separate magnitudes selected per observation by which commercial infliximab ELISA measured the sample, the paper's central methodological contribution. Typical clearance in this cohort (0.779 L/day/65 kg) is roughly twice that reported for older children and adults."
-  reference <- "Zhao Q, Jongsma MME, Vuijk SA, de Winter BCM, Martinez-Vinson C, Kolho KL, Norsa L, Hussey S, Wine E, Cohen S, Shouval DS, Assa A, Lev-Tzion R, de Meij T, Wolters VM, Huynh HQ, Preijers T, de Ridder L. Population Pharmacokinetics Analysis of Infliximab in up to 10-Year-Old Patients with Paediatric Inflammatory Bowel Disease: Label-Recommended Dose Fails to Achieve Therapeutic Target Concentration. Clin Pharmacokinet. 2026;65(1):79-94. doi:10.1007/s40262-025-01565-6"
+  reference <- paste(
+    "Zhao Q, Jongsma MME, Vuijk SA, de Winter BCM, Martinez-Vinson C, Kolho",
+    "KL, Norsa L, Hussey S, Wine E, Cohen S, Shouval DS, Assa A, Lev-Tzion R,",
+    "de Meij T, Wolters VM, Huynh HQ, Preijers T, de Ridder L. Population",
+    "Pharmacokinetics Analysis of Infliximab in up to 10-Year-Old Patients",
+    "with Paediatric Inflammatory Bowel Disease: Label-Recommended Dose Fails",
+    "to Achieve Therapeutic Target Concentration. Clin Pharmacokinet.",
+    "2026;65(1):81-95. doi:10.1007/s40262-025-01565-6.",
+    sep = " "
+  )
   vignette <- "Zhao_2026_infliximab"
   paper_specific_residual_sds <- c(
     "propSdSanquin",
