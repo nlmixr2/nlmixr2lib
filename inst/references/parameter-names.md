@@ -3077,6 +3077,29 @@ Two members were added 2026-09-23 alongside the Bulitta 2019 pefloxacin extracti
 - **Example models:** `Qi_2014_sapropterin.R`, `Muntau_2017_sapropterin.R` (additive-offset form), `Hard_2017_aripiprazole_lauroxil.R` (initial-condition form).
 - **Notes:** Documented 2026-09-16 alongside the Hard 2017 aripiprazole lauroxil extraction; `lc0` / `c0` was already in consistent use in the two sapropterin models without a register entry. May carry IIV as `etalc0` and may be `fixed()` when the source holds it constant. A very large IIV is common and is not a transcription error -- the quantity is a nuisance term mopping up a handful of quantifiable pre-dose samples, so the log-normal it is fitted with has a long tail (Hard 2017 reports a CV of 1898%). Do not use this name for the `c0` of a QSP cytokine baseline that is a state rather than a plasma concentration of the dosed analyte; those models (`Anbari_2023_atezolizumab_cibisatamab_qsp.R` and siblings) carry a paper-specific `c0` documented in their own files.
 
+### rpg0_<sub>, rpg1_<sub>, rpg2_<sub>, rpg3_<sub> (**canonical Royston-Parmar restricted-cubic-spline survival coefficients**)
+- **Type:** paper-named-param
+- **Role:** Coefficients of a Royston-Parmar flexible parametric survival model, which writes the log cumulative hazard as a restricted cubic spline in log time: `log H(t) = rpg0 + rpg1 * log(t) + sum_j rpg<j+1> * v_j(log t)` with `S(t) = exp(-H(t))`. `rpg0` is the intercept (log cumulative hazard), `rpg1` the log-time coefficient, and `rpg2`, `rpg3`, ... multiply the spline basis functions `v_j(x) = (x - k_j)^3_+ - lam_j * (x - kmin)^3_+ - (1 - lam_j) * (x - kmax)^3_+`, `lam_j = (kmax - k_j) / (kmax - kmin)`, built from the knots `rpk*_<sub>`. With no internal knots only `rpg0` and `rpg1` exist and the model is a Weibull. `<sub>` is a short lower-case token naming the sub-model (disease stage, treatment arm); a model with a single survival curve may drop the suffix.
+- **Source aliases:**
+  - `gamma0`, `gamma1`, `gamma2`, `gamma3` -- Kudryashova 2024 Eqs. 2-6 and Supplementary Table S2a; also the flexsurv `flexsurvspline()` coefficient names.
+- **Example models:** `Kudryashova_2024_nsclc_survival_mbma.R` (founding example; twelve NSCLC overall-survival sub-models with 0, 1 or 2 internal knots).
+- **Notes:** Ratified by the maintainers 2026-09-11. The `rp` prefix marks the Royston-Parmar family; it is deliberately not a bare `g<n>_` (opaque) or a spline-generic `spl` prefix. Unitless apart from `rpg0`, which is on the log cumulative-hazard scale. Distinct from the Weibull `lambda` / shape parameterisation used by hazard-integrating TTE models (`cumhaz_*` states): a Royston-Parmar model is evaluated in closed form, not by integrating a hazard.
+
+### rpkmin_<sub>, rpk1_<sub>, rpk2_<sub>, rpkmax_<sub> (**canonical Royston-Parmar spline knot positions**)
+- **Type:** paper-named-param
+- **Role:** Knot positions of the restricted cubic spline in a Royston-Parmar survival model, on the log-time scale (log of the model's time unit). `rpkmin` and `rpkmax` are the boundary knots, beyond which the spline is linear in log time; `rpk1`, `rpk2`, ... are the internal knots, in increasing order. Paired with the `rpg*_<sub>` coefficients of the same `<sub>`.
+- **Source aliases:**
+  - `k_min`, `k_1`, ..., `k_max` -- Kudryashova 2024 Eqs. 4-6 and Supplementary Table S2a (whose knot list includes both boundary knots).
+- **Example models:** `Kudryashova_2024_nsclc_survival_mbma.R` (founding example).
+- **Notes:** Ratified by the maintainers 2026-09-11. The `rp` prefix keeps knot names clear of the PK micro-rate-constant namespace, where a bare `k1_` / `k2_` would read as a transfer rate constant. For a Weibull sub-model (no internal knots) the boundary knots do not enter the survival function and need not be carried as parameters.
+
+### util_<stage> (**canonical health-state utility score**)
+- **Type:** paper-named-param
+- **Role:** Dimensionless quality-of-life utility weight (typically 0-1) attached to a disease stage or health state, which multiplies time spent in that state to convert life-years into quality-adjusted life-years: `QALY = sum_n util_n * integral(frac_n * S_n(t) dt)`. `<stage>` is a short lower-case token naming the state (`stage1`, `stage3b4`).
+- **Source aliases:**
+  - `u_n`, 'Utility Score' -- Kudryashova 2024 Eq. 11 and Table 1.
+- **Example models:** `Kudryashova_2024_nsclc_survival_mbma.R` (founding example; NSCLC stage I 0.87, II 0.87, IIIa 0.77, IIIb/IV 0.57).
+- **Notes:** Ratified by the maintainers 2026-09-11 at SPECIFIC scope: it may later consolidate into a broader health-economics family, so do not treat it as a settled general canonical. Named for the multiplier, not for its product; `QALY_<stage>` was rejected because the values are dimensionless weights that multiply life-years to give QALYs.
 
 ## Nested (multi-level) random effects
 
