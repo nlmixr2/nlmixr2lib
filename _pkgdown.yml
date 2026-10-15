@@ -6342,6 +6342,8 @@ navbar:
         href: articles/Leding_2026_tbaj587.html
       - text: "Tbm mortality (Panjasawatwong 2020)"
         href: articles/Panjasawatwong_2020_antituberculosis_tbm.html
+      - text: "Tcell mouse (Khot 2019)"
+        href: articles/Khot_2019_tcell_mouse.html
       - text: "Tebipenem (Ebihara 2025)"
         href: articles/Ebihara_2025_tebipenem.html
       - text: "Tebipenem (Ganesan 2023)"
@@ -8527,6 +8529,7 @@ articles:
   - articles/KhanAsa_2020_voriconazole
   - articles/Khan_2015_ciprofloxacin
   - articles/Khaowroongrueng_2024_sufentanil
+  - articles/Khot_2019_tcell_mouse
   - articles/Khwarg_2024_donepezil
   - articles/Khwarg_2024_proguanil
   - articles/Kielbasa_2020_galcanezumab

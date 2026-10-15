@@ -194,7 +194,7 @@ Khot_2019_tcell_mouse <- function() {
     # ---------------------------------------------------------------------
     v_blood <- fixed(1.717)
     label("Whole-blood volume (mL)") # Shah 2012 ESM1: PL_V_M 0.00094435 + BC_V_M 0.00077265 L
-    v_lnode <- fixed(0.113)
+    lv_lnode <- fixed(log(0.113))
     label("Whole-body lymph-node volume (mL)") # Shah 2012 ESM1: LN_V_M 0.000113 L
     f_lymph <- fixed(0.002)
     label("Lymph flow as a fraction of tissue plasma flow (fraction)") # Shah 2012 ESM1: <tissue>_LF_M = <tissue>_PLQ_M*0.002
@@ -314,6 +314,7 @@ Khot_2019_tcell_mouse <- function() {
 
   model({
     kel <- exp(lkel)
+    v_lnode <- exp(lv_lnode)
 
     # Lymph flows: f_lymph of each tissue's plasma flow (Shah 2012 ESM1). The
     # liver lymph also carries the portal plasma arriving from the gut organs
