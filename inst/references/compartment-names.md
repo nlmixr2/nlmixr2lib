@@ -1668,6 +1668,14 @@ PBPK organ-vascular concentration compartments used by membrane-limited PBPK ext
   - `vp_th` -- deprecated.
 - **Example models:** `Parhiz_2024_mRNALNP.R`, `Shah_2012_mAb_PBPK.R`.
 
+### vp_gonads (**canonical PBPK female-gonad vascular concentration**)
+- **Type:** compartment
+- **Role:** Vascular (tissue-blood) concentration of the permeability-limited uterus + ovaries compartment. Receives arterial inflow, returns venous outflow, and exchanges with the cellular `gonads` state through first-order uptake / efflux rate constants.
+- **Source aliases:**
+  - `{Gonads_blood}` / `E2(Gonads_blood)` -- Sier 2017 Additional file 1 and BioModels species `E2_Gonads_blood`.
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
+- **Notes:** Member of the `vp_<organ>` family; the vascular partner of the bare `gonads` canonical.
+
 ### vp_portal (**canonical PBPK portal vascular concentration**)
 - **Type:** compartment
 - **Role:** Vascular concentration in portal circulation.
@@ -3428,6 +3436,22 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Jones_2013_perfusionLimited_pbpk.R`.
 - **Notes:** Unlike `gut`, `spleen`, `stomach` and `pancreas`, testes is NOT a splanchnic organ: its venous outflow returns directly to `venous` blood rather than draining to `liver` through the portal vein. Models that resolve testes therefore include it in the venous-return sum, not in the portal tributary sum.
 
+### thymus (**canonical bare thymus compartment**)
+- **Type:** compartment
+- **Role:** Bare thymus organ compartment in whole-body PBPK extractions that resolve the thymus as its own perfusion-limited (well-mixed) organ. Total tissue drug concentration, paired with the other bare organ states (`spleen`, `pancreas`, `stomach`, `testes`, `other`, ...). Its venous outflow returns directly to `venous` blood.
+- **Source aliases:**
+  - `{Thymus}` / `E2(Thymus)` -- COPASI compartment and species label in Sier 2017 (Additional file 1 balance equations; BioModels MODEL1711210001 species `s12`).
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
+- **Notes:** The tissue-state partner of the registered `vp_thymus`, which is the thymus VASCULAR concentration in membrane-limited (two-subcompartment) PBPK models. A perfusion-limited model that carries a single thymus state uses bare `thymus`; a membrane-limited model carries `vp_thymus` plus the interstitial / cellular sub-compartments. Thymus volume is strongly age-dependent (Sier 2017 uses the Bosgra 2012 involution curve), so the organ is worth resolving in adult-age-range populations.
+
+### gonads (**canonical bare female-gonad / estrogen-target tissue compartment**)
+- **Type:** compartment
+- **Role:** Cellular (tissue) compartment of the lumped uterus + ovaries estrogen-target organ in whole-body PBPK models of women. In the founding example it is permeability-limited: a vascular sub-compartment `vp_gonads` exchanges with this cellular state through first-order uptake and efflux rate constants, and the cellular state carries the endogenous estradiol biosynthesis input and estrogen-receptor binding (`target_er_gonads` / `complex_er_gonads`).
+- **Source aliases:**
+  - `{Gonads_cells}` / `E2(Gonads_cells)` -- Sier 2017 Additional file 1 balance equations and BioModels MODEL1711210001 / MODEL1711210002 species `E2_Gonads_cells`.
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
+- **Notes:** Use this for the FEMALE (or sex-unspecified lumped) gonadal / reproductive-tract compartment. The male gonad organ has its own canonical `testes`, which is a perfusion-limited whole-organ state; do not reuse `testes` for an ovary / uterus compartment or vice versa. The paper's lumped label is kept (rather than `uterus`) because the compartment explicitly includes the ovaries and stands for estradiol target tissue generally; record the membership in the model `description`. Like `testes`, it is not splanchnic: its venous outflow returns to `venous` blood.
+
 ### tendon (**canonical bare tendon / connective-tissue compartment**)
 - **Type:** compartment
 - **Role:** Bare tendon (dense connective tissue) compartment in full-body PBPK extractions built on the Levitt PKQuest standard-human physiology, which resolves tendon as its own organ with a distinct mass and perfusion (3 kg, 0.6 L/h/kg at the 70 kg reference) separate from the `other` lumped remainder (5.56 kg, 1.2 L/h/kg). Total tissue (well-stirred) drug amount, paired with the surrounding bare organ compartments.
@@ -3884,6 +3908,99 @@ Population body-composition / disease-risk PD output states from the Oniki 2018 
 - **Source aliases:** none.
 - **Example models:** `Jensen_2023_lngIus52mg.R`.
 - **Notes:** SHBG has generalisable scope beyond a single paper (any drug modulating sex-hormone binding — contraceptives, HRT, androgens — may reuse this canonical).
+
+---
+
+## Plasma-protein and receptor binding states in whole-body PBPK
+
+States for an endogenous ligand (or drug) that binds plasma proteins or an intracellular receptor explicitly, by reversible mass-action kinetics, inside a location-resolved whole-body PBPK model. Free binding-protein pools are named `<protein>_<location>`; the ligand-protein complex is `complex_<protein>_<location>`, extending the registered `complex` root with a two-token qualifier (cf. `complex_monomer_isf`, `complex_bonemarrow`). Free receptor pools use the three-token target form `target_<receptor>_<location>` of `target_cd3_central`, and the complex is `complex_<receptor>_<location>`. These are explicit entries: `targetLocationRegex` admits only `csf` / `isf` / `peripheral<n>` locations. The free-ligand state in the same location keeps its bare canonical name (`venous`, `arterial`, `liver`, `gonads`).
+
+### shbg_venous (**canonical free SHBG in venous plasma**)
+- **Type:** compartment
+- **Role:** Unoccupied sex hormone-binding globulin in venous plasma (nM), depleted by ligand association and restored by dissociation; total SHBG (free + complex) is conserved.
+- **Source aliases:**
+  - `SHBG(venous)` -- Sier 2017 Additional file 1 balance equations; BioModels species `s18`.
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
+- **Notes:** Location-resolved binding-protein pool. Distinct from the registered bare `shbg`, which is an SHBG biomarker TURNOVER state (zero-order synthesis, first-order loss) in a non-physiological model (Jensen 2023).
+
+### shbg_arterial (**canonical free SHBG in arterial plasma**)
+- **Type:** compartment
+- **Role:** Unoccupied sex hormone-binding globulin in arterial plasma (nM); arterial counterpart of `shbg_venous`.
+- **Source aliases:**
+  - `SHBG(arterial)` -- Sier 2017 Additional file 1; BioModels species `s17`.
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
+
+### albumin_venous (**canonical free albumin in venous plasma**)
+- **Type:** compartment
+- **Role:** Unoccupied serum albumin in venous plasma (nM) available for ligand binding; total albumin (free + complex) is conserved.
+- **Source aliases:**
+  - `Albumin(venous)` -- Sier 2017 Additional file 1; BioModels species `s19`.
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
+- **Notes:** Spelled out on purpose: the registered `alb` is a metabolite SUFFIX and must not be used for albumin-binding forms.
+
+### albumin_arterial (**canonical free albumin in arterial plasma**)
+- **Type:** compartment
+- **Role:** Unoccupied serum albumin in arterial plasma (nM); arterial counterpart of `albumin_venous`.
+- **Source aliases:**
+  - `Albumin(arterial)` -- Sier 2017 Additional file 1; BioModels species `s20`.
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
+
+### complex_shbg_venous (**canonical ligand-SHBG complex in venous plasma**)
+- **Type:** compartment
+- **Role:** Ligand bound to SHBG in venous plasma (nM). Total venous ligand is the free `venous` state plus `complex_shbg_venous` plus `complex_albumin_venous`.
+- **Source aliases:**
+  - `E2.SHBG(venous)` -- Sier 2017 Additional file 1; BioModels species `s32`.
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
+
+### complex_shbg_arterial (**canonical ligand-SHBG complex in arterial plasma**)
+- **Type:** compartment
+- **Role:** Ligand bound to SHBG in arterial plasma (nM).
+- **Source aliases:**
+  - `E2.SHBG(arterial)` -- Sier 2017 Additional file 1; BioModels species `s21`.
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
+
+### complex_albumin_venous (**canonical ligand-albumin complex in venous plasma**)
+- **Type:** compartment
+- **Role:** Ligand bound to albumin in venous plasma (nM).
+- **Source aliases:**
+  - `E2.Albumin(venous)` -- Sier 2017 Additional file 1; BioModels species `s33`.
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
+
+### complex_albumin_arterial (**canonical ligand-albumin complex in arterial plasma**)
+- **Type:** compartment
+- **Role:** Ligand bound to albumin in arterial plasma (nM).
+- **Source aliases:**
+  - `E2.Albumin(arterial)` -- Sier 2017 Additional file 1; BioModels species `s29`.
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
+
+### target_er_liver (**canonical free estrogen receptor in liver cells**)
+- **Type:** compartment
+- **Role:** Unoccupied estrogen receptor in hepatocytes (nM), bound reversibly by free hepatocyte ligand (`liver`); total receptor (free + complex) is conserved.
+- **Source aliases:**
+  - `ER(Liver_cells)` -- Sier 2017 Additional file 1; BioModels species `ER_Liver_cells`.
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
+- **Notes:** Receptor named explicitly in the `target_cd3_central` three-token form (maintainers' ruling, 2026-09-21), so that a model with a second receptor in the same organ stays unambiguous.
+
+### target_er_gonads (**canonical free estrogen receptor in gonad cells**)
+- **Type:** compartment
+- **Role:** Unoccupied estrogen receptor in the cells of the uterus + ovaries compartment (`gonads`) (nM).
+- **Source aliases:**
+  - `ER(Gonads_cells)` -- Sier 2017 Additional file 1; BioModels species `ER_Gonads_cells`.
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
+
+### complex_er_liver (**canonical ligand-estrogen receptor complex in liver cells**)
+- **Type:** compartment
+- **Role:** Ligand bound to the estrogen receptor in hepatocytes (nM); binding partner of `target_er_liver`.
+- **Source aliases:**
+  - `E2.ER(Liver_cells)` -- Sier 2017 Additional file 1; BioModels species `ER_E2_Liver_cells`.
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
+
+### complex_er_gonads (**canonical ligand-estrogen receptor complex in gonad cells**)
+- **Type:** compartment
+- **Role:** Ligand bound to the estrogen receptor in the cells of the uterus + ovaries compartment (nM); binding partner of `target_er_gonads`.
+- **Source aliases:**
+  - `E2.ER(Gonads_cells)` -- Sier 2017 Additional file 1; BioModels species `ER_E2_Gonads_cells`.
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
 
 ---
 
@@ -4742,7 +4859,7 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
   - `Xdose` -- Tsuchitani 2026 Data S1 (`d/dt(Xdose)`).
   - `In_IVDum` -- Schropp 2019 Eq 42 (the paper's own name for the device).
   - `IN` -- the hard-coded infusion-rate variable of Schropp 2019's NONMEM streams S5, S9 and S10, which mimic an i.v. bolus by a short infusion of duration `TDUR = 0.0001` day.
-- **Example models:** `Nemitz_2026_dapagliflozin_pbpk.R`, `Tsuchitani_2026_apixaban_pbpk.R`, `Schropp_2019_bsab_tmdd_qe.R`, `Schropp_2019_bsab_tmdd_qeconst.R`, `Bulitta_2024_contezolid.R` (holds the infused prodrug contezolid acefosamil as an amount; drains by amount-based Michaelis-Menten conversion into `central_mrx1352` plus a first-order loss, rather than the single first-order rate of the other examples).
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`, `Nemitz_2026_dapagliflozin_pbpk.R`, `Tsuchitani_2026_apixaban_pbpk.R`, `Schropp_2019_bsab_tmdd_qe.R`, `Schropp_2019_bsab_tmdd_qeconst.R`, `Bulitta_2024_contezolid.R` (holds the infused prodrug contezolid acefosamil as an amount; drains by amount-based Michaelis-Menten conversion into `central_mrx1352` plus a first-order loss, rather than the single first-order rate of the other examples).
 - **Notes:** Canonical name ratified by the maintainers on 2026-09-21 (PMC5732473) as the single named i.v. bolus input compartment, parallel to `depot_kpd`; do not mint a second name for this role. Use case (b) is needed whenever a QE/QSS reduction multiplies the input function into the right-hand side rather than leaving it additive on one state -- under rapid binding the arriving dose is instantaneously partitioned between free and bound species, so adding it to the free-drug state alone is simply the wrong model. Schropp 2019 devotes a Methods subsection to this ("Implementation of the QE approximation with an i.v. administration") and notes that NONMEM and MONOLIX cannot express it with their internal dosing mechanisms; there the drain rate is set to `1 / TDUR` to reproduce a published short-infusion duration. A model carrying this compartment MUST declare it in `dosing` and MUST NOT also accept i.v. doses into `central`; the two routes are not interchangeable. Distinct from `depot` (extravascular absorption of a real dose), from `depot_kpd` (which holds an amount of real drug in a virtual body with no measured concentration), and from `depot_placebo` (a dimensionless dummy dose driving a placebo response).
 
 ### depot_lung (**canonical pulmonary deposition depot**)
