@@ -29,10 +29,10 @@ Sun_2026_tilmicosin_pkpd_pif <- function() {
     "basis for concluding that tilmicosin performs better at the infection site than in plasma."
   )
   reference <- paste(
-    "Sun L, Zhang C, Mi K, Wang H, Pan Y, Tao Y, Huang L.",
-    "Dose optimization of tilmicosin against Pasteurella multocida in swine",
-    "by physiologically based pharmacokinetic-pharmacodynamic model.",
-    "J Agric Food Chem. 2026;74(8):4754-4766.",
+    "Sun L, Zhang C, Mi K, Wang H, Pan Y, Tao Y, Huang L. Dose Optimization of",
+    "Tilmicosin against Pasteurella multocida in Swine by Physiologically",
+    "Based Pharmacokinetic-Pharmacodynamic Model. J Agric Food Chem.",
+    "2026;74(5):4754-4766.",
     "doi:10.1021/acs.jafc.5c11368.",
     "Model equation from eq 8; parameter values from Table 3, column 'PIF';",
     "PK/PD index data from Supporting Information Table S10.",

@@ -19,7 +19,10 @@ Marcantonio_2022_trastuzumab <- function() {
     sep = " "
   )
   reference <- paste(
-    "Marcantonio DH et al. (2022). Front Pharmacol 13:864768.",
+    "Marcantonio DH, Matteson A, Presler M, Burke JM, Hagen DR, Hua F, Apgar",
+    "JF. Early Feasibility Assessment: A Method for Accurately Predicting",
+    "Biotherapeutic Dosing to Inform Early Drug Discovery Decisions. Front",
+    "Pharmacol. 2022;13:864768.",
     "doi:10.3389/fphar.2022.864768. Case Study 3 (trastuzumab HER2, breast",
     "cancer). Drug-specific parameters from paper Supplementary Table S7",
     "and the Assess run file JSON (Data Sheet 2).",

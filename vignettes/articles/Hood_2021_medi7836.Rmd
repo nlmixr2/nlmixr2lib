@@ -27,11 +27,11 @@ library(PKNCA)
 
 # Model and source
 
-* Citation: Hood T, Slob CJ, Slager J, Yates JWT, Bouzom F, Mistry HB.
+* Citation: Hood J, Gonzalez-Garcia I, White N, Marshall L, Dubois VFS, Vicini P, Baverel PG.
   Pharmacokinetic-Pharmacodynamic Modelling of Systemic IL13 Blockade by
   Monoclonal Antibody Therapy: A Free Assay Disguised as Total.
-  *Pharmaceutics*. 2021;13(5):613.
-* Article (open access): [doi:10.3390/pharmaceutics13050613](https://doi.org/10.3390/pharmaceutics13050613)
+  *Pharmaceutics*. 2021;13(4):519.
+* Article (open access): [doi:10.3390/pharmaceutics13040519](https://doi.org/10.3390/pharmaceutics13040519)
 * Trial registry: [NCT02388347](https://clinicaltrials.gov/study/NCT02388347)
 
 MEDI7836 is a fully human IgG1λ-YTE anti-IL13 monoclonal antibody developed

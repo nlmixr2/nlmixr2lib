@@ -1,6 +1,12 @@
 Crass_2024_pegcetacoplan_ldh <- function() {
   description <- "Direct sigmoidal Emax PK/PD model relating pegcetacoplan serum concentration to serum lactate dehydrogenase in adults with paroxysmal nocturnal hemoglobinuria (Crass 2024). Lactate dehydrogenase is a direct (no-delay) function of the concurrent pegcetacoplan concentration, ldh = rbase * (1 - emax * Cc^hill / (ec50^hill + Cc^hill)), with the pegcetacoplan concentration supplied by the companion one-compartment-plus-single-transit population PK model of the same paper, whose parameters are carried here as fixed values because the PK/PD model was fitted sequentially on individual empirical Bayes estimates of the PK parameters. Baseline lactate dehydrogenase and the maximal fractional suppression are each estimated separately for patients who were eculizumab-naive versus eculizumab-treated at baseline, and concurrent eculizumab co-treatment adds a further shift to the maximal suppression in the baseline-eculizumab stratum. The baseline is estimated in the log domain and the maximal effect in the logit domain. Inter-individual variability is log-normal on the baseline, the logit maximal effect, and EC50 as a correlated 3x3 block; residual error is additive on the log scale (log-normal)."
-  reference <- "Crass RL, Smith B, Adriaens S, Chapel S, Langdon G. Population Pharmacokinetic and Pharmacokinetic/Pharmacodynamic Analyses of Pegcetacoplan in Patients with Paroxysmal Nocturnal Hemoglobinuria. Drugs R D. 2024;24(4):565-577. doi:10.1007/s40268-024-00500-7"
+  reference <- paste(
+    "Crass RL, Smith B, Adriaens S, Chapel S, Langdon G. Population",
+    "Pharmacokinetic and Pharmacokinetic/Pharmacodynamic Analyses of",
+    "Pegcetacoplan in Patients with Paroxysmal Nocturnal Hemoglobinuria. Drugs",
+    "R D. 2024;24(4):563-573. doi:10.1007/s40268-024-00500-7.",
+    sep = " "
+  )
   vignette <- "Crass_2024_pegcetacoplan"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 

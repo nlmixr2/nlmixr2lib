@@ -2,10 +2,9 @@ Sharma_2016_hydroxyprogesteroneCaproate <- function() {
   description <- "Population PK model for 17alpha-hydroxyprogesterone caproate (17-OHPC) in pregnant women with singleton gestation receiving 250 mg weekly IM injections for prevention of recurrent preterm birth (Sharma 2016). Structural model is a maternal central compartment with first-order IM absorption (ka fixed to 3 /day) and first-order elimination, linked by reversible first-order rate constants kMF / kFM to a fetal compartment whose amount is tracked as a dynamic state. Allometric (power) scaling on apparent CL/F (exponent 0.80) and apparent Vmaternal/F (exponent 0.84) around the cohort median weight of 68 kg. Inter-individual variability is encoded as a shared random effect on log(CL) with an estimated scale factor (Theta6 = 1.90) applied to the same eta on log(Vmaternal), preserving the > 0.9 ETA correlation reported in the source. Inter-occasion variability (PK1 = 20-24 weeks gestation, PK2 = 31-34 weeks gestation) on CL and Vmaternal is encoded as paired per-occasion etas keyed to OCC. Residual error is combined proportional + additive on linear-scale ng/mL concentrations."
   reference <- paste(
     "Sharma S, Caritis S, Hankins G, Miodovnik M, Hebert MF, Mattison D,",
-    "Venkataramanan R.",
-    "Population pharmacokinetics of 17alpha-hydroxyprogesterone caproate",
-    "in singleton gestation.",
-    "Br J Clin Pharmacol. 2016 Nov;82(5):1084-1093.",
+    "Venkataramanan R. Population pharmacokinetics of",
+    "17alpha-hydroxyprogesterone caproate in singleton gestation. Br J Clin",
+    "Pharmacol. 2016;82(4):1084-1093.",
     "doi:10.1111/bcp.12990.",
     "ClinicalTrials.gov NCT00409825.",
     sep = " "

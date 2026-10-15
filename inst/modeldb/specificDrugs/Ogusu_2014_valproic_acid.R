@@ -24,8 +24,8 @@ Ogusu_2014_valproic_acid <- function() {
     "a retraction; see the reference field and the vignette Errata."
   )
   reference <- paste(
-    "Ogusu N, Saruwatari J, Nakashima H, Noai M, Nishimura M, Deguchi M,",
-    "Oniki K, Yasui-Furukori N, Kaneko S, Ishitsu T, Nakagawa K.",
+    "Ogusu N, Saruwatari J, Nakashima H, Noai M, Nishimura M, Deguchi M, Oniki",
+    "K, Yasui-Furukori N, Kaneko S, Ishitsu T, Nakagaswa K.",
     "Impact of the superoxide dismutase 2 Val16Ala polymorphism on the",
     "relationship between valproic acid exposure and elevation of",
     "gamma-glutamyltransferase in patients with epilepsy: a population",

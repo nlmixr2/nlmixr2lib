@@ -1,6 +1,6 @@
 FiedlerKelly_2020_fremanezumab_em <- function() {
   description <- "Population PD exposure-response model relating fremanezumab average plasma concentration (Cav) to monthly migraine days in adults with episodic migraine. Placebo time-course is an exponential growth in months (predicted reduction = exp(exponent * t)) and the drug effect is an Emax/EC50 of Cav scaled by individual baseline migraine days. Fitted to 4444 monthly observations from 1142 episodic-migraine patients pooled across the LBR-101-022 phase 2b and TV48125-CNS-30050 phase 3 studies (Fiedler-Kelly 2020)."
-  reference <- "Fiedler-Kelly JB, Passarell J, Ludwig E, Levi M, Cohen-Barak O. Effect of Fremanezumab Monthly and Quarterly Doses on Efficacy Responses. Headache. 2020 Jul;60(7):1376-1391. doi:10.1111/head.13855. PMID: 32445498."
+  reference <- "Fiedler-Kelly JB, Passarell J, Ludwig E, Levi M, Cohen-Barak O. Effect of Fremanezumab Monthly and Quarterly Doses on Efficacy Responses. Headache. 2020 Jul;60(7):1376-1391. doi:10.1111/head.13845. PMID: 32445498."
   vignette <- "FiedlerKelly_2020_fremanezumab_em"
   units <- list(
     time = "month",

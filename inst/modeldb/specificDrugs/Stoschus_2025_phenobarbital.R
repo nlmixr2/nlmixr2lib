@@ -13,12 +13,11 @@ Stoschus_2025_phenobarbital <- function() {
     "intervals, with a proportional residual-error model."
   )
   reference <- paste(
-    "Stoschus M, Schmidbauer ML, Starp J, Kunst S, Gakis G, Paal M,",
-    "Vogeser M, Scharf-Janssen C, Liebchen U, Dimitriadis K (2025).",
-    "Optimizing phenobarbital dosing in critically ill patients with",
-    "refractory and superrefractory status epilepticus using a population",
-    "pharmacokinetic model.",
-    "Epilepsia 66(11):3757-3768.",
+    "Stoschus M, Schmidbauer ML, Starp J, Kunst S, Gakis G, Paal M, Vogeser M,",
+    "Scharf-Janssen C, Liebchen U, Dimitriadis K. Optimizing phenobarbital",
+    "dosing in critically ill patients with refractory and superrefractory",
+    "status epilepticus using a population pharmacokinetic model. Epilepsia.",
+    "2025;66(10):3757-3768.",
     "doi:10.1111/epi.18517.",
     sep = " "
   )

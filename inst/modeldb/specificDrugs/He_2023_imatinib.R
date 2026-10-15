@@ -13,19 +13,19 @@ He_2023_imatinib <- function() {
     "models, not from the primary publication. Re-extract from He 2023 ",
     "when that paper is obtained."
   )
-  reference <- paste0(
-    "He S, Shao Q, Zhao J, Bian J, Zhao Y, Hao X, Li Y, Wang L, Cui C, ",
-    "Chen J. Population pharmacokinetics and pharmacogenetics analyses of ",
-    "imatinib in Chinese patients with chronic myeloid leukemia in a ",
-    "real-world situation. Cancer Chemother Pharmacol. ",
-    "2023;92(5):399-410. doi:10.1007/s00280-023-04581-0. ",
-    "PARAMETER SOURCE (secondary): Yang T, Rasmussen ASB, Weimann A, ",
-    "Thastrup M, Rank CU, Als-Nielsen B, Malmros J, Wik HS, Lohi O, ",
-    "Overgaard U, Johannsdottir IMR, Vaitkeviciene G, Dalhoff K, ",
-    "Schmiegelow K, Lund TM. Published population pharmacokinetic models ",
-    "of imatinib perform poorly on TDM data from pediatric patients. ",
-    "Target Oncol. 2025;20(5):871-886. Table 1, row 'He et al. (2023)' ",
-    "and Table 1 footnote h. doi:10.1007/s11523-025-01172-2."
+  reference <- paste(
+    "He S, Shao Q, Zhao J, Bian J, Zhao Y, Hao X, Li Y, Hu L, Liu B, He H,",
+    "Huang L, Jiang Q. Population pharmacokinetics and pharmacogenetics",
+    "analyses of imatinib in Chinese patients with chronic myeloid leukemia in",
+    "a real-world situation. Cancer Chemother Pharmacol. 2023;92(5):399-410.",
+    "doi:10.1007/s00280-023-04581-0. PARAMETER SOURCE (secondary): Yang T,",
+    "Rasmussen ASB, Weimann A, Thastrup M, Rank CU, Als-Nielsen B, Malmros J,",
+    "Wik HS, Lohi O, Overgaard U, Johannsdottir IMR, Vaitkeviciene G, Dalhoff",
+    "K, Schmiegelow K, Lund TM. Published population pharmacokinetic models of",
+    "imatinib perform poorly on TDM data from pediatric patients. Target",
+    "Oncol. 2025;20(5):871-886. Table 1, row 'He et al. (2023)' and Table 1",
+    "footnote h. doi:10.1007/s11523-025-01172-2.",
+    sep = " "
   )
   vignette <- "Yang_2025_imatinib_external_evaluation"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")

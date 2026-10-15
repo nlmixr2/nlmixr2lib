@@ -11,8 +11,8 @@ Yuen_1995_ganciclovir <- function() {
     sep = " "
   )
   reference <- paste(
-    "Yuen GJ, Drusano GL, Fletcher C, Capparelli E, Connor JD, Lalezari JP, Drew L,",
-    "Follansbee S, Busch D, Jacobson M, et al. Population differences in",
+    "Yuen GJ, Drusano GL, Fletcher C, Capparelli E, Connor JD, Lalezari JP,",
+    "Drew L, Follansbee S, Busch D, Jacobson M. Population differences in",
     "ganciclovir clearance as determined by nonlinear mixed-effects modelling.",
     "Antimicrob Agents Chemother. 1995;39(10):2350-2352. doi:10.1128/AAC.39.10.2350.",
     "Parameters transcribed from Yang W, Mak W, Gwee A, Gu M, Wu Y, Shi Y, He Q,",

@@ -25,19 +25,19 @@ Wickramasinghe_2025_abemaciclib_cns_pbpk <- function() {
     "none is estimated here."
   )
   reference <- paste(
-    "Wickramasinghe CD, Kim S, Li J. SpatialCNS-PBPK: An R/Shiny",
-    "Web-Based Application for Physiologically Based Pharmacokinetic",
-    "Modeling of Spatial Pharmacokinetics in the Human Central Nervous",
-    "System and Brain Tumors. CPT Pharmacometrics Syst Pharmacol.",
-    "2025;14(5):864-875. doi:10.1002/psp4.70026.",
-    "The nine differential equations are given in Data S1 of the",
-    "Supporting Information; the system-specific parameters in Table 1;",
-    "the drug-specific parameter definitions in Table 2 and their",
+    "Wickramasinghe CD, Kim S, Li J. SpatialCNS-PBPK: An R/Shiny Web-Based",
+    "Application for Physiologically Based Pharmacokinetic Modeling of Spatial",
+    "Pharmacokinetics in the Human Central Nervous System and Brain Tumors.",
+    "CPT Pharmacometrics Syst Pharmacol. 2025;14(5):864-880.",
+    "doi:10.1002/psp4.70026. The nine differential equations are given in Data",
+    "S1 of the Supporting Information; the system-specific parameters in Table",
+    "1; the drug-specific parameter definitions in Table 2 and their",
     "abemaciclib values, the interindividual variability and the driving",
-    "plasma profile in Table S2. The 9-CNS model was originally developed",
-    "and validated across six drugs in Li J, Wickramasinghe C, Jiang J,",
-    "et al. Clin Pharmacol Ther. 2025;117(3):690-703 (reference 7 of the",
-    "2025 tutorial), which was not available when this model was built."
+    "plasma profile in Table S2. The 9-CNS model was originally developed and",
+    "validated across six drugs in Li J, Wickramasinghe C, Jiang J, et al.",
+    "Clin Pharmacol Ther. 2025;117(3):690-703 (reference 7 of the 2025",
+    "tutorial), which was not available when this model was built.",
+    sep = " "
   )
   vignette <- "Wickramasinghe_2025_spatial_cns_pbpk"
 

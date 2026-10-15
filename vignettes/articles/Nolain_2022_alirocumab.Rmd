@@ -1,0 +1,465 @@
+---
+title: "Alirocumab, PCSK9 and LDL-C TMDD-QSS PK/PD (Nolain 2022)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Alirocumab, PCSK9 and LDL-C TMDD-QSS PK/PD (Nolain 2022)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Nolain_2022_alirocumab"))$reference`
+* Article: [Eur J Drug Metab Pharmacokinet 47:789-802 (2022)](https://doi.org/10.1007/s13318-022-00787-4) (open access)
+
+Nolain et al. 2022 fitted, in one step, a joint model of total alirocumab,
+total PCSK9 and LDL cholesterol (LDL-C) to nine phase I-III studies. The
+pharmacokinetic layer is a two-compartment quasi-steady-state (QSS)
+target-mediated drug disposition (TMDD) model in which alirocumab binds its
+circulating target PCSK9; the pharmacodynamic layer is an indirect-response
+model in which **free PCSK9** (not the drug) inhibits LDL-C degradation
+through a steep sigmoid Imax function. Removing free PCSK9 therefore speeds up
+LDL-C clearance from its pre-treatment rate `kout(0)` towards `kout`.
+
+```{r model}
+mod <- readModelDb("Nolain_2022_alirocumab")
+ui <- rxode2::rxode2(mod)
+ui
+```
+
+# Population
+
+The modelling dataset held 527 alirocumab-treated subjects (13,731
+observations) from nine studies (Table 1): healthy volunteers (28.5%) and
+patients with primary hypercholesterolaemia (71.5%; 30.0% heterozygous
+familial hypercholesterolaemia), all with LDL-C >= 100 mg/dL. Mean (SD)
+characteristics (Table 2): age 52.5 (13.0) years, body weight 80.6 (16.4) kg,
+46.9% female, baseline total PCSK9 7.66 (3.06) nM (median 6.99 nM), baseline
+LDL-C 140 (33.1) mg/dL. 60.9% were on a statin, 12.9% on ezetimibe and 4.7%
+on a fibrate. Alirocumab was given SC at 50-300 mg (single dose, Q2W or Q4W)
+and, in one phase I study, IV at 0.3-12 mg/kg.
+
+The same information is available as `ui$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its location in the
+paper. The equations follow Table 3.
+
+| Element | Value | Source |
+|---|---|---|
+| CL | 0.221 L/day | Table 4 |
+| Vc (no statin) | 3.20 L | Table 4 |
+| Q | 0.557 L/day | Table 4 |
+| Vp | 2.61 L (fixed) | Table 4, Sect. 3.2.1 |
+| ka | 0.346 /day | Table 4 |
+| F | 68.1% (logit-normal) | Table 4, Sect. 3.2.1 |
+| LAG | 0.0283 day | Table 4 |
+| kclear (`kint`) | 0.127 /day | Table 4 |
+| kdeg | 1.34 /day | Table 4 |
+| kD (`kd`) | 0.58 nM (fixed, in vitro) | Table 4, Table 3 |
+| kon (`k1`) | 559 /nM/day (fixed) | Table 4, Sect. 3.2.1 |
+| kout | 0.260 /day | Table 4 |
+| Imax (no statin) | 74.1% (logit-normal) | Table 4 |
+| IC50 of free PCSK9 (`ki50`) | 6.03 nM | Table 4 |
+| Hill coefficient gamma | 11.6 | Table 4 |
+| Statin on Vc | x 1.75 | Table 4, Eq. 3 |
+| Statin on Imax | + 0.140 | Table 4, Eq. 5 |
+| Baseline total PCSK9 on IC50 | (TBSPCSK9 / 6.99)^0.930 | Table 4, Eq. 6 |
+| IIV variances (CL, kclear, kdeg, Vc, ka, F, kout, Imax, IC50) | 0.270, 0.0554, 0.124, 0.0648, 0.344, 0.626, 0.256, 0.146, 0.00578 | Table 4 |
+| Residual error (add / prop) | alirocumab 0.426 nM / 25.5%; PCSK9 1.07 nM / 27.9%; LDL-C 5.71 mg/dL / 14.2% | Table 4 |
+| Depot, total alirocumab, peripheral ODEs | -- | Table 3 |
+| kss = kD + kclear / kon; QSS free drug | -- | Table 3 |
+| Total PCSK9 ODE, ksyn = kdeg * [Ptot]baseline, Ptot(0) = [Ptot]baseline * Vc | -- | Table 3 |
+| LDL-C ODE, kout(0), kin = kout(0) * [LDLC]baseline | -- | Table 3 |
+
+# Virtual cohort
+
+Covariates are drawn to match Table 2: 61% statin users, baseline total
+PCSK9 log-normal with mean 7.66 nM and SD 3.06 nM truncated to the observed
+2.36-19.6 nM, and baseline LDL-C log-normal with mean 140 mg/dL and SD
+33.1 mg/dL truncated to 88.5-356 mg/dL. The three regimens are the ones the
+paper simulates in Figure 4: 75 mg SC Q2W, 150 mg SC Q2W and 300 mg SC Q4W,
+each for 12 weeks.
+
+```{r cohort}
+rxode2::rxSetSeed(20221016)
+n_per_arm <- 150
+
+rlnorm_ms <- function(n, mean, sd, lo, hi) {
+  sdlog <- sqrt(log(1 + (sd / mean)^2))
+  x <- rlnorm(n, log(mean) - sdlog^2 / 2, sdlog)
+  pmin(pmax(x, lo), hi)
+}
+
+regimens <- tibble::tribble(
+  ~treatment,    ~amt, ~ii, ~ndose,
+  "75 mg Q2W",     75,  14,      6,
+  "150 mg Q2W",   150,  14,      6,
+  "300 mg Q4W",   300,  28,      3
+)
+
+cov <- tibble(id = seq_len(n_per_arm * nrow(regimens))) |>
+  mutate(
+    treatment = rep(regimens$treatment, each = n_per_arm),
+    CONMED_STATIN = rbinom(n(), 1, 0.609),
+    TPCSK9_BASE = rlnorm_ms(n(), 7.66, 3.06, 2.36, 19.6),
+    LDLC = rlnorm_ms(n(), 140, 33.1, 88.5, 356)
+  )
+
+obs_times <- sort(unique(c(seq(0, 28, by = 0.5), seq(29, 150, by = 1))))
+
+make_events <- function(cov, regimens, obs_times) {
+  doses <- cov |>
+    inner_join(regimens, by = "treatment") |>
+    group_by(id) |>
+    reframe(
+      treatment = treatment, CONMED_STATIN = CONMED_STATIN,
+      TPCSK9_BASE = TPCSK9_BASE, LDLC = LDLC,
+      time = seq(0, by = ii[1], length.out = ndose[1]), amt = amt[1]
+    ) |>
+    mutate(evid = 1L, cmt = "depot", dvid = NA_integer_)
+  obs <- tidyr::crossing(cov, time = obs_times) |>
+    mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+  bind_rows(doses, obs) |>
+    arrange(id, time, desc(evid)) |>
+    select(id, time, evid, amt, cmt, dvid, treatment, CONMED_STATIN, TPCSK9_BASE, LDLC)
+}
+
+events <- make_events(cov, regimens, obs_times)
+```
+
+# Simulation
+
+Observation rows sit on the `central` state with `dvid = 1`; rxode2 returns
+every model output (total alirocumab `Cc`, total PCSK9 `Ctotal_target`,
+`ldl`, free PCSK9 `pfree`) on each of those rows. Concentrations below are
+individual predictions (between-subject variability, no residual error).
+
+```{r simulate}
+sim <- rxode2::rxSolve(ui, events, sigma = NA, keep = "treatment",
+                       returnType = "data.frame") |>
+  mutate(
+    treatment = factor(treatment, levels = regimens$treatment),
+    ldl_pct = 100 * (ldl / LDLC - 1)
+  )
+stopifnot(!anyNA(sim$Cc), !anyNA(sim$ldl))
+```
+
+```{r vpc, fig.height = 8}
+vpc <- sim |>
+  select(treatment, time, `Total alirocumab (nM)` = Cc,
+         `Total PCSK9 (nM)` = Ctotal_target, `Free PCSK9 (nM)` = pfree,
+         `LDL-C change from baseline (%)` = ldl_pct) |>
+  pivot_longer(-c(treatment, time), names_to = "output") |>
+  group_by(treatment, time, output) |>
+  summarise(q05 = quantile(value, 0.05), q50 = median(value),
+            q95 = quantile(value, 0.95), .groups = "drop")
+
+ggplot(vpc, aes(time, q50, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.15, colour = NA) +
+  geom_line() +
+  facet_wrap(~output, ncol = 1, scales = "free_y") +
+  labs(x = "Time (day)", y = NULL, colour = NULL, fill = NULL,
+       caption = "Median and 90% prediction interval, 150 virtual subjects per regimen.") +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+# Replicate published figures
+
+## Figure 4: typical profiles by regimen
+
+Figure 4 shows typical alirocumab, free PCSK9 and LDL-C profiles for the three
+regimens with a baseline free PCSK9 of 5 nM (read off Figure 4b). The paper
+does not state whether these curves are for a statin user, so both covariate
+states are drawn here.
+
+```{r fig4, fig.height = 8}
+typ_cov <- tidyr::crossing(treatment = regimens$treatment, CONMED_STATIN = 0:1) |>
+  mutate(id = row_number(), TPCSK9_BASE = 5, LDLC = 140)
+typ_events <- make_events(typ_cov, regimens, obs_times)
+typ <- rxode2::rxSolve(ui, typ_events, omega = NA, sigma = NA,
+                       keep = "treatment", returnType = "data.frame") |>
+  mutate(
+    treatment = factor(treatment, levels = regimens$treatment),
+    statin = ifelse(CONMED_STATIN == 1, "with statin (Vc 5.6 L, Imax 88.1%)",
+                    "without statin (Vc 3.2 L, Imax 74.1%)"),
+    ldl_pct = 100 * (ldl / LDLC - 1)
+  )
+
+typ |>
+  select(treatment, statin, time, `a: Total alirocumab (nM)` = Cc,
+         `b: Free PCSK9 (nM)` = pfree, `c: LDL-C change from baseline (%)` = ldl_pct) |>
+  pivot_longer(-c(treatment, statin, time), names_to = "panel") |>
+  ggplot(aes(time, value, colour = treatment, linetype = statin)) +
+  geom_line() +
+  facet_wrap(~panel, ncol = 1, scales = "free_y") +
+  labs(x = "Time (day)", y = NULL, colour = NULL, linetype = NULL,
+       caption = "Replicates Figure 4 of Nolain 2022 (typical values, baseline PCSK9 5 nM).") +
+  theme_bw() + theme(legend.position = "bottom", legend.box = "vertical")
+```
+
+The values digitised from Figure 4 fall between the two typical curves:
+
+```{r fig4-check}
+fig4 <- typ |>
+  group_by(treatment, CONMED_STATIN) |>
+  summarise(
+    cmax_first = max(Cc[time < 14]),
+    pfree_day14 = pfree[time == 13.5],
+    ldl_plateau = min(ldl_pct),
+    .groups = "drop"
+  )
+
+fig4_75 <- fig4 |> filter(treatment == "75 mg Q2W") |> arrange(CONMED_STATIN)
+fig4_digitised <- c(cmax_first = 43, pfree_day14 = 4.1, ldl_plateau = -68.6)
+
+fig4_75 |>
+  select(CONMED_STATIN, cmax_first, pfree_day14, ldl_plateau) |>
+  mutate(across(-CONMED_STATIN, ~ signif(.x, 3))) |>
+  bind_rows(tibble(CONMED_STATIN = NA, !!!as.list(fig4_digitised))) |>
+  mutate(Curve = c("Model, no statin", "Model, statin", "Figure 4 (digitised)")) |>
+  select(Curve, `First-dose Cmax (nM)` = cmax_first,
+         `Free PCSK9 before dose 2 (nM)` = pfree_day14,
+         `LDL-C plateau (%)` = ldl_plateau) |>
+  knitr::kable(caption = "75 mg SC Q2W, baseline PCSK9 5 nM.")
+
+stopifnot(
+  # Each digitised value lies inside the [statin, no-statin] typical envelope.
+  fig4_digitised[["cmax_first"]] > fig4_75$cmax_first[2],
+  fig4_digitised[["cmax_first"]] < fig4_75$cmax_first[1],
+  fig4_digitised[["pfree_day14"]] > fig4_75$pfree_day14[1],
+  fig4_digitised[["pfree_day14"]] < fig4_75$pfree_day14[2],
+  fig4_digitised[["ldl_plateau"]] > fig4_75$ldl_plateau[2],
+  fig4_digitised[["ldl_plateau"]] < fig4_75$ldl_plateau[1]
+)
+```
+
+## Figure 2: size of each retained covariate effect
+
+Figure 2 quantifies each covariate relationship by switching it on alone at
+75 mg Q2W and reading alirocumab AUC over weeks 10-12 and the LDL-C decrease
+at week 12, relative to a reference subject (no statin, baseline PCSK9 at the
+median 6.99 nM). The paper reports an AUC decrease of about 45% for the statin
+effect on Vc (Sect. 3.2.2); the LDL-C distributions for the statin effects on
+Vc and on Imax are centred near -20% and +20% (Fig. 2a; 42% and 48%
+probability of exceeding a 20% change). The AUC is computed with PKNCA.
+
+```{r fig2}
+fig2_scenarios <- list(
+  "Reference" = list(mod = ui, statin = 0, ic50_pcsk9 = 6.99),
+  "Statin on Vc only" = list(mod = rxode2::ini(ui, e_conmed_statin_imax = 0), statin = 1, ic50_pcsk9 = 6.99),
+  "Statin on Imax only" = list(mod = rxode2::ini(ui, e_conmed_statin_vc = 1), statin = 1, ic50_pcsk9 = 6.99),
+  "IC50 at baseline PCSK9 9.10 nM (p75) only" = list(mod = ui, statin = 0, ic50_pcsk9 = 9.10)
+)
+
+fig2_cov <- tibble(id = 1L, treatment = "75 mg Q2W", CONMED_STATIN = 0L,
+                   TPCSK9_BASE = 6.99, LDLC = 140)
+fig2_events <- make_events(fig2_cov, regimens, seq(0, 84, by = 0.25))
+
+fig2_sim <- bind_rows(lapply(names(fig2_scenarios), function(nm) {
+  sc <- fig2_scenarios[[nm]]
+  # The p75 scenario moves only the covariate inside the IC50 equation (Eq. 6)
+  # and keeps the PCSK9 turnover at the median baseline, as Figure 2b does.
+  m <- rxode2::ini(sc$mod, lki50 = log(6.03 * (sc$ic50_pcsk9 / 6.99)^0.930))
+  ev <- mutate(fig2_events, CONMED_STATIN = sc$statin)
+  rxode2::rxSolve(m, ev, omega = NA, sigma = NA, returnType = "data.frame") |>
+    mutate(scenario = nm, id = 1L)
+}))
+
+conc_obj <- PKNCA::PKNCAconc(
+  fig2_sim |> filter(!is.na(Cc)) |> select(scenario, id, time, Cc),
+  Cc ~ time | scenario + id
+)
+dose_obj <- PKNCA::PKNCAdose(
+  fig2_events |> filter(evid == 1) |> select(id, time, amt) |>
+    tidyr::crossing(scenario = names(fig2_scenarios)),
+  amt ~ time | scenario + id
+)
+fig2_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_obj, dose_obj,
+  intervals = data.frame(start = 70, end = 84, auclast = TRUE, cmax = TRUE)
+))
+
+fig2_tab <- as.data.frame(fig2_nca$result) |>
+  filter(PPTESTCD == "auclast") |>
+  select(scenario, auc = PPORRES) |>
+  left_join(
+    fig2_sim |> filter(time == 84) |> transmute(scenario, ldl_drop = 100 * (1 - ldl / 140)),
+    by = "scenario"
+  ) |>
+  mutate(
+    auc_change = 100 * (auc / auc[scenario == "Reference"] - 1),
+    ldl_change = 100 * (ldl_drop / ldl_drop[scenario == "Reference"] - 1)
+  ) |>
+  arrange(factor(scenario, levels = names(fig2_scenarios)))
+
+fig2_tab |>
+  mutate(across(where(is.numeric), ~ round(.x, 1))) |>
+  select(Scenario = scenario, `AUC wk 10-12 (nM*day)` = auc,
+         `AUC change (%)` = auc_change, `LDL-C decrease wk 12 (%)` = ldl_drop,
+         `Change in LDL-C decrease (%)` = ldl_change) |>
+  knitr::kable()
+
+get_row <- function(nm) fig2_tab[fig2_tab$scenario == nm, ]
+stopifnot(
+  # Statin on Vc: paper reports approximately -45% AUC.
+  abs(get_row("Statin on Vc only")$auc_change - (-45)) < 5,
+  # Statin effects on LDL-C decrease: Figure 2a centres near -20% and +20%.
+  abs(get_row("Statin on Vc only")$ldl_change - (-20)) < 5,
+  abs(get_row("Statin on Imax only")$ldl_change - 20) < 5,
+  # Imax does not enter the PK, so its AUC equals the reference up to the
+  # ODE solver tolerance.
+  abs(get_row("Statin on Imax only")$auc_change) < 0.01
+)
+```
+
+For the IC50 relationship the paper states that subjects with a baseline
+PCSK9 at or above 9.10 nM would have a lipid-lowering effect reduced by about
+60% versus the median subject (Sect. 3.2.2); Figure 2b shows a wide
+distribution centred near -60%. Moving only the IC50 covariate gives a
+reduction of `r round(-get_row("IC50 at baseline PCSK9 9.10 nM (p75) only")$ldl_change)`%
+with the typical parameters, inside the spread of Figure 2b (which reflects
+the uncertainty of the estimates, and in particular of the steep Hill
+coefficient).
+
+Note that this is a property of the single relationship, not of a real
+high-PCSK9 subject. In the full model a higher baseline PCSK9 also raises the
+total-PCSK9 initial condition and `kout(0)`. Because the IC50 exponent (0.930)
+is close to 1, the ratio of baseline PCSK9 to IC50 hardly changes, and the
+week-12 LDL-C reduction at 9.10 nM is only a few percent smaller than at the
+median:
+
+```{r p75-full}
+p75_full <- rxode2::rxSolve(ui, mutate(fig2_events, TPCSK9_BASE = 9.10),
+                            omega = NA, sigma = NA, returnType = "data.frame")
+ref_full <- rxode2::rxSolve(ui, fig2_events, omega = NA, sigma = NA, returnType = "data.frame")
+round(100 * (1 - c(median_6.99 = ref_full$ldl[ref_full$time == 84],
+                   p75_9.10 = p75_full$ldl[p75_full$time == 84]) / 140), 1)
+```
+
+# Mechanistic checks
+
+Without drug the system must stay at its pre-treatment steady state (total
+PCSK9 at baseline, LDL-C at baseline). With free PCSK9 fully suppressed, the
+LDL-C turnover settles at `kin / kout`, so the maximal fractional reduction is
+`Imax * H0` with `H0 = P0^gamma / (IC50^gamma + P0^gamma)` evaluated at the
+baseline PCSK9 `P0`. At the median baseline (6.99 nM) that is 62.8% without a
+statin and 74.6% with one, consistent with the "up to 62.7%" LDL-C reduction
+the paper cites from the clinical programme.
+
+```{r mechanistic}
+mech_cov <- tidyr::crossing(treatment = c("none", "300 mg Q2W"), CONMED_STATIN = 0:1) |>
+  mutate(id = row_number(), TPCSK9_BASE = 6.99, LDLC = 140)
+mech_regimens <- tibble(treatment = c("none", "300 mg Q2W"), amt = c(0, 300), ii = 14, ndose = c(1, 12))
+mech <- rxode2::rxSolve(ui, make_events(mech_cov, mech_regimens, seq(0, 168, by = 1)),
+                        omega = NA, sigma = NA, keep = "treatment", returnType = "data.frame")
+
+imax_typ <- c(0.741, 0.741 + 0.140)
+h0 <- 1 / (1 + (6.03 / 6.99)^11.6)
+closed_form <- 100 * imax_typ * h0
+
+mech_summary <- mech |>
+  group_by(treatment, CONMED_STATIN) |>
+  summarise(
+    ptot_range = diff(range(Ctotal_target)),
+    ldl_range = diff(range(ldl)),
+    max_ldl_drop = 100 * (1 - min(ldl) / 140),
+    .groups = "drop"
+  )
+mech_summary |> mutate(closed_form = closed_form[CONMED_STATIN + 1]) |> knitr::kable(digits = 3)
+
+untreated <- filter(mech_summary, treatment == "none")
+treated <- filter(mech_summary, treatment == "300 mg Q2W") |> arrange(CONMED_STATIN)
+stopifnot(
+  # The same drawn parameters on both sides: pure numerical error, so tight.
+  all(untreated$ptot_range < 1e-6),
+  all(untreated$ldl_range < 1e-6),
+  all(abs(treated$max_ldl_drop - closed_form) < 0.5)
+)
+```
+
+# PKNCA validation
+
+The paper reports no non-compartmental summaries. PKNCA is run on total
+alirocumab for the first dosing interval and the last (twelfth week) Q2W
+interval of the virtual cohort, grouped by regimen.
+
+```{r pknca}
+nca_conc <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, treatment, time, Cc)
+nca_dose <- events |>
+  filter(evid == 1) |>
+  select(id, treatment, time, amt)
+
+intervals <- bind_rows(
+  data.frame(treatment = c("75 mg Q2W", "150 mg Q2W"), start = 0, end = 14),
+  data.frame(treatment = "300 mg Q4W", start = 0, end = 28),
+  data.frame(treatment = c("75 mg Q2W", "150 mg Q2W"), start = 70, end = 84),
+  data.frame(treatment = "300 mg Q4W", start = 56, end = 84)
+) |>
+  mutate(cmax = TRUE, tmax = TRUE, auclast = TRUE, cmin = TRUE)
+
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_conc, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(nca_dose, amt ~ time | treatment + id),
+  intervals = intervals
+))
+
+as.data.frame(nca$result) |>
+  group_by(treatment, start, end, PPTESTCD) |>
+  summarise(median = signif(median(PPORRES), 3), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  select(Regimen = treatment, Start = start, End = end,
+         `Cmax (nM)` = cmax, `Tmax (day)` = tmax,
+         `Cmin (nM)` = cmin, `AUClast (nM*day)` = auclast) |>
+  knitr::kable(caption = "Median NCA of total alirocumab in the virtual cohort.")
+```
+
+# Assumptions and deviations
+
+* **Molecular weight.** Nolain 2022 doses in nmol and does not state the
+  alirocumab molecular weight. The model accepts doses in mg and converts with
+  146,000 g/mol, the approximate molecular weight on the Praluent label (the
+  value also used by `Sokolov_2019_antipcsk9_qsp`). `Djebli_2017_alirocumab`
+  uses 144,100 g/mol; the 1.3% difference is negligible against the 68.1%
+  bioavailability.
+* **IV dosing.** IV doses go to `central` in mg and are converted to nmol
+  with the same factor (bioavailability 1). The paper's IV infusion term
+  `In(t)` is reproduced by an infusion record on `central`.
+* **Statin effect on Imax.** Eq. 5 adds the statin coefficient to the
+  typical Imax (74.1% + 14.0% = 88.1%, matching the 88% in the abstract and
+  Sect. 3.2.3). The logit-normal between-subject variability is applied
+  around that sum.
+* **Free-drug QSS root.** Table 3's free alirocumab expression is evaluated
+  in the algebraically identical form `2 kss [Atot] / (sqrt(.) - a)` when
+  `a = [Atot] - [Ptot] - kss` is negative, which avoids cancellation when the
+  drug is far below the target.
+* **Parameter names.** The paper's complex clearance rate `kclear` is stored
+  as the canonical `kint`, `kon` as `k1`, `kD` as `kd`, and the IC50 of
+  **free PCSK9** (a target concentration, not a drug concentration) as `ki50`.
+* **Dropped covariates.** The statin effect on kout, the sex effect on Imax
+  and the baseline-PCSK9 effect on kdeg were tested a priori and removed in
+  the covariate reduction step (Sect. 3.2.2); they are not encoded.
+* **Figure 4 covariates.** Figure 4 does not state the statin status of the
+  simulated subject. Its curves fall between the no-statin and statin typical
+  curves for every panel read (first-dose peak, free PCSK9 before dose 2,
+  LDL-C plateau), and a population median with the dataset's 61% statin mix
+  does not reproduce them either. The figure is therefore compared as an
+  envelope, not point by point.
+* **Supplement.** The supplement (base-model estimates, VPCs) was not used;
+  the final model is fully specified by Table 3, Eqs. 3-7 and Table 4.
+* **Virtual cohort.** Baseline PCSK9 and LDL-C are drawn independently from
+  log-normal distributions matched to the Table 2 means and SDs; the
+  correlation between them is not reported.

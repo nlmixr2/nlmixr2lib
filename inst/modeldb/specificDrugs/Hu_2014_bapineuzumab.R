@@ -1,6 +1,12 @@
 Hu_2014_bapineuzumab <- function() {
   description <- "Two-compartment population PK model for bapineuzumab in adults with mild-to-moderate Alzheimer's disease following IV administration (Hu 2014, reduced model)"
-  reference <- "Hu C, Yu G, Tomaszewski EN, et al. Confirmatory population pharmacokinetic analysis for bapineuzumab phase 3 studies in patients with mild to moderate Alzheimer's disease. J Clin Pharmacol. 2015;55(2):221-229. doi:10.1002/jcph.393"
+  reference <- paste(
+    "Hu C, Adedokun O, Ito K, Raje S, Lu M. Confirmatory population",
+    "pharmacokinetic analysis for bapineuzumab phase 3 studies in patients",
+    "with mild to moderate Alzheimer's disease. J Clin Pharmacol.",
+    "2015;55(2):221-229. doi:10.1002/jcph.393.",
+    sep = " "
+  )
   vignette <- "Hu_2014_bapineuzumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

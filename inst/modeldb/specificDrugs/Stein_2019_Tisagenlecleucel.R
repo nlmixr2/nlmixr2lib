@@ -1,6 +1,13 @@
 Stein_2019_Tisagenlecleucel <- function() {
   description <- "Cellular kinetic model for tisagenlecleucel CAR-T cells in pediatric and young adult patients with relapsed or refractory B-cell acute lymphoblastic leukemia (Stein 2019). Single-infusion expansion-then-biexponential-decline analytical model: transgene levels grow exponentially at rate rho up to Tmax, after which effector cells decline at rate alpha and a fraction FB transitions to memory cells declining at rate beta."
-  reference <- "Stein AM, Grupp SA, Levine JE, et al. Tisagenlecleucel Model-Based Cellular Kinetic Analysis of Chimeric Antigen Receptor-T Cells. CPT Pharmacometrics Syst Pharmacol. 2019;8(5):285-295. doi:10.1002/psp4.12388"
+  reference <- paste(
+    "Stein AM, Grupp SA, Levine JE, Laetsch TW, Pulsipher MA, Boyer MW, August",
+    "KJ, Levine BL, Tomassian L, Shah S, Leung M, Huang PH, Awasthi R, Mueller",
+    "KT, Wood PA, June CH. Tisagenlecleucel Model-Based Cellular Kinetic",
+    "Analysis of Chimeric Antigen Receptor-T Cells. CPT Pharmacometrics Syst",
+    "Pharmacol. 2019;8(5):285-295. doi:10.1002/psp4.12388.",
+    sep = " "
+  )
   vignette <- "Stein_2019_Tisagenlecleucel"
   units <- list(
     time = "day",

@@ -22,7 +22,6 @@ library(ggplot2)
 * Citation: `r readModelDb("Byrne_2022_imr687")()$reference`
 * Description: `r readModelDb("Byrne_2022_imr687")()$description`
 * Poster (PDF): <https://metrumrg.com/wp-content/uploads/2022/10/FINALPOSTER_BYRNE2022.pdf>
-* DOI: <https://doi.org/10.70534/zdmj9414>
 
 The packaged model implements the published one-compartment population PK
 + repeated time-to-event (RTTE) exposure-response model for IMR-687

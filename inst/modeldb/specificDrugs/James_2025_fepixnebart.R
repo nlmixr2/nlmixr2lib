@@ -1,6 +1,12 @@
 James_2025_fepixnebart <- function() {
   description <- "Simultaneous population PK/PD model for fepixnebart (LY3016859, a humanized IgG4 monoclonal antibody against epiregulin and TGF-alpha) and its soluble target epiregulin in adults with chronic pain (James 2025): two-compartment IV disposition with parallel linear and Michaelis-Menten elimination, an indirect-response epiregulin turnover compartment in which fepixnebart inhibits epiregulin degradation through a sigmoid Emax (Emax fixed to 1) relationship, estimated allometric weight exponents on CL, Q, Vc and Vp, sex and glomerular filtration rate on CL, and sex and pain indication on Vc. The drug-effect fraction doubles as the predicted soluble target engagement."
-  reference <- "James DE, Bailey J, van der Walt J-S, Winkler J, Schoemaker R. Population pharmacokinetics and pharmacodynamics of fepixnebart (LY3016859) and epiregulin in patients with chronic pain. Clin Pharmacokinet. 2025;64(5):757-766. doi:10.1007/s40262-025-01506-3"
+  reference <- paste(
+    "James DE, Bailey J, van der Walt JS, Winkler J, Schoemaker R. Population",
+    "Pharmacokinetics and Pharmacodynamics of Fepixnebart (LY3016859) and",
+    "Epiregulin in Patients with Chronic Pain. Clin Pharmacokinet.",
+    "2025;64(5):757-767. doi:10.1007/s40262-025-01506-3.",
+    sep = " "
+  )
   vignette <- "James_2025_fepixnebart"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

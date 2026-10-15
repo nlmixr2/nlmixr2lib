@@ -1,6 +1,25 @@
 HernandezLozano_2025_apramycin_mouse <- function() {
   description <- "Preclinical (mouse, C3H/HeJ female). Translational pharmacokinetic-pharmacodynamic model of apramycin in a murine model of complicated urinary tract infection, describing the time course of Escherichia coli burden in kidneys and bladder tissue after twice-daily subcutaneous dosing. A one-compartment subcutaneous PK model with a dose-dependent absorption rate constant (Sou 2021) drives an unbound plasma concentration into two independent organ pharmacodynamic systems, one for kidneys and one for bladder. Each organ carries the in vitro time-kill structure re-estimated on the in vivo data: two bacterial subpopulations (1 = main, apramycin-susceptible; 2 = decreased susceptibility), each with a growing drug-susceptible state S and a dormant drug-insusceptible state D entered at rate ksr = (kg - kd) * Btot / Bmax. Apramycin adds to the death rate of the S states through a power model normalized to the in vitro MIC, kdrug = Slope * (Cu/MIC)^gamma with gamma fixed to 1, and drives transfer from subpopulation 1 to subpopulation 2 at rate kada * (Cu/MIC). The kidney is assumed to be at pH 7.4 and the bladder at pH 6, so each organ normalizes by the MIC measured at its own pH. Net bacterial growth is 76-99% lower and apramycin potency 3- to 145-fold higher in vivo than in vitro. Model time zero is 6 h after bacterial inoculation. Sibling models: HernandezLozano_2025_apramycin_invitro (the underlying time-kill fit) and HernandezLozano_2025_apramycin_human (the same in vivo PD component driven by the human population PK model of Zhao 2022)."
-  reference <- "Hernandez-Lozano I, Aranzana-Climent V, Cao S, Matias C, Hansen JU, Liepinsh E, Hughes D, Hobbie SN, Vingsbo Lundberg C, Friberg LE. Model-informed drug development for antimicrobials: translational pharmacokinetic-pharmacodynamic modelling of apramycin to facilitate prediction of efficacious dose in complicated urinary tract infections. J Antimicrob Chemother. 2025 Feb 3;80(2):302-311. doi:10.1093/jac/dkae409. PMID: 39545353. PMCID: PMC11695905. PD structure: Materials and methods, 'PKPD modelling', plus the schematic in Figure 1. In vivo PD estimates and 95% CIs: Table 1, section 'In vivo PD parameters'. MIC values and the kidney-pH-7.4 / bladder-pH-6 assumption: Results, 'In vitro time-kill curves and PD modelling', and Discussion. Unbound fraction in mouse plasma (91.6%): Materials and methods, 'PKPD modelling'. Mouse PK parameters are NOT re-estimated here; they are taken from Sou T, Hansen J, Liepinsh E, et al. Model-informed drug development for antimicrobials: translational PK and PK/PD modeling to predict an efficacious human dose for apramycin. Clin Pharmacol Ther 2021;109:1063-73. doi:10.1002/cpt.2104, Table 1 (mouse column) and Eqs. 1-3."
+  reference <- paste(
+    "Hernandez-Lozano I, Aranzana-Climent V, Cao S, Matias C, Hansen JU,",
+    "Liepinsh E, Hughes D, Hobbie SN, Vingsbo Lundberg C, Friberg LE.",
+    "Model-informed drug development for antimicrobials: translational",
+    "pharmacokinetic-pharmacodynamic modelling of apramycin to facilitate",
+    "prediction of efficacious dose in complicated urinary tract infections. J",
+    "Antimicrob Chemother. 2025;80(1):301-310. doi:10.1093/jac/dkae409. PMID:",
+    "39548844. PMCID: PMC11695905. PD structure: Materials and methods, 'PKPD",
+    "modelling', plus the schematic in Figure 1. In vivo PD estimates and 95%",
+    "CIs: Table 1, section 'In vivo PD parameters'. MIC values and the",
+    "kidney-pH-7.4 / bladder-pH-6 assumption: Results, 'In vitro time-kill",
+    "curves and PD modelling', and Discussion. Unbound fraction in mouse",
+    "plasma (91.6%): Materials and methods, 'PKPD modelling'. Mouse PK",
+    "parameters are NOT re-estimated here; they are taken from Sou T, Hansen",
+    "J, Liepinsh E, et al. Model-informed drug development for antimicrobials:",
+    "translational PK and PK/PD modeling to predict an efficacious human dose",
+    "for apramycin. Clin Pharmacol Ther 2021;109:1063-73.",
+    "doi:10.1002/cpt.2104, Table 1 (mouse column) and Eqs. 1-3.",
+    sep = " "
+  )
   vignette <- "HernandezLozano_2025_apramycin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

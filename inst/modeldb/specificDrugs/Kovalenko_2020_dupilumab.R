@@ -1,6 +1,12 @@
 Kovalenko_2020_dupilumab <- function() {
   description <- "Dupilumab PK model (Kovalenko 2020)"
-  reference <- "Kovalenko P, Davis JD, Li M, et al. Base and Covariate Population Pharmacokinetic Analyses of Dupilumab Using Phase 3 Data. Clinical Pharmacology in Drug Development. 2020;9(6):756-767. doi:10.1002/cpdd.780"
+  reference <- paste(
+    "Kovalenko P, Davis JD, Li M, Rippley R, Ardeleanu M, Shumel B, Graham",
+    "NMH, Pirozzi G, Kamal MA, DiCioccio AT. Base and Covariate Population",
+    "Pharmacokinetic Analyses of Dupilumab Using Phase 3 Data. Clin Pharmacol",
+    "Drug Dev. 2020;9(6):756-767. doi:10.1002/cpdd.780.",
+    sep = " "
+  )
   vignette <- "Kovalenko_2020_dupilumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
   # Model 1 from Table 1 and Supplementary Table S2 of Kovalenko 2020.

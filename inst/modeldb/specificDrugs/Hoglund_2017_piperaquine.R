@@ -21,10 +21,12 @@ Hoglund_2017_piperaquine <- function() {
     sep = " "
   )
   reference <- paste(
-    "Hoglund RM, Workman L, Edstein MD, Thanh NX, Quang NN, Zongo I, et al.",
-    "(2017). Population Pharmacokinetic Properties of Piperaquine in",
-    "Falciparum Malaria: An Individual Participant Data Meta-Analysis.",
-    "PLoS Medicine 14(1):e1002212.",
+    "Hoglund RM, Workman L, Edstein MD, Thanh NX, Quang NN, Zongo I, Ouedraogo",
+    "JB, Borrmann S, Mwai L, Nsanzabana C, Price RN, Dahal P, Sambol NC,",
+    "Parikh S, Nosten F, Ashley EA, Phyo AP, Lwin KM, McGready R, Day NP,",
+    "Guerin PJ, White NJ, Barnes KI, Tarning J. Population Pharmacokinetic",
+    "Properties of Piperaquine in Falciparum Malaria: An Individual",
+    "Participant Data Meta-Analysis. PLoS Med. 2017;14(1):e1002212.",
     "doi:10.1371/journal.pmed.1002212.",
     sep = " "
   )

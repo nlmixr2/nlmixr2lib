@@ -1,6 +1,12 @@
 Fasanmade_2009_infliximab <- function() {
   description <- "Two-compartment population PK model of infliximab (anti-TNF-alpha) in patients with ulcerative colitis (Fasanmade 2009)"
-  reference <- "Fasanmade AA, Adedokun OJ, Blank M, Zhou H, Davis HM. Population pharmacokinetic analysis of infliximab in patients with ulcerative colitis. Eur J Clin Pharmacol. 2009;65(12):1211-1228. doi:10.1007/s00228-009-0718-4"
+  reference <- paste(
+    "Fasanmade AA, Adedokun OJ, Ford J, Hernandez D, Johanns J, Hu C, Davis",
+    "HM, Zhou H. Population pharmacokinetic analysis of infliximab in patients",
+    "with ulcerative colitis. Eur J Clin Pharmacol. 2009;65(12):1211-1228.",
+    "doi:10.1007/s00228-009-0718-4.",
+    sep = " "
+  )
   vignette <- "Fasanmade_2009_infliximab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

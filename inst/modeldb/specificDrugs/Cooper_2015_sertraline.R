@@ -1,6 +1,11 @@
 Cooper_2015_sertraline <- function() {
   description <- "One-compartment first-order absorption population PK model for sertraline in overdose (Cooper 2015). Apparent clearance is increased 1.92-fold in subjects who received single-dose activated charcoal; the model holds relative bioavailability F at 1 and a shifted lag time at 1 h, with between-subject variability on F, ts_lag, ka, Vc, and CL absorbing the overdose-specific dose-amount and dose-time uncertainty."
-  reference <- "Cooper JM, Duffull SB, Saiao AS, Isbister GK. The pharmacokinetics of sertraline in overdose and the effect of activated charcoal. Br J Clin Pharmacol. 2015 May;79(5):307-15. doi:10.1111/bcp.12500"
+  reference <- paste(
+    "Cooper JM, Duffull SB, Saiao AS, Isbister GK. The pharmacokinetics of",
+    "sertraline in overdose and the effect of activated charcoal. Br J Clin",
+    "Pharmacol. 2015;79(2):307-315. doi:10.1111/bcp.12500.",
+    sep = " "
+  )
   vignette <- "Cooper_2015_sertraline"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

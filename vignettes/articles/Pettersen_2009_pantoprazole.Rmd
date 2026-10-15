@@ -74,10 +74,10 @@ below collects the equation / parameter sources in one place.
 | SIRS multiplicative factor (CL)  | 0.377      | Table 3 (RSE 28.5 %); 62.3 % CL reduction when SIRS positive |
 | CYP2C19 inhibitor factor (CL)    | 0.342      | Table 3 (RSE 37.1 %); 65.8 % CL reduction when present       |
 | Hepatic dysfunction factor (CL)  | 0.495      | Table 3 (RSE 20.9 %); 50.5 % CL reduction when present       |
-| IIV CL                           | 32.5 % CV  | Table 3                                                      |
-| IIV Vc                           | 40.6 % CV  | Table 3                                                      |
-| IIV Q                            | 24.7 % CV  | Table 3                                                      |
-| IIV V2                           | 98.1 % CV  | Table 3                                                      |
+| IIV CL                           | 32.5 % = omega x 100; omega^2 = 0.105625 | Table 3 and footnote ("square root of the variance"); see Errata |
+| IIV Vc                           | 40.6 % = omega x 100; omega^2 = 0.164836 | Table 3 and footnote ("square root of the variance"); see Errata |
+| IIV Q                            | 24.7 % = omega x 100; omega^2 = 0.061009 | Table 3 and footnote ("square root of the variance"); see Errata |
+| IIV V2                           | 98.1 % = omega x 100; omega^2 = 0.962361 | Table 3 and footnote ("square root of the variance"); see Errata |
 | Additive residual SD             | 1e-5 mg/L  | Table 3 (fixed)                                              |
 | Proportional residual SD         | 19.5 % CV  | Table 3 (RSE 22.5 %)                                         |
 | Final-model CL equation          | n/a        | Results, Population PK analysis paragraph 4 (boxed equations) |
@@ -191,6 +191,55 @@ sim_typical <- rxode2::rxSolve(
              "CONMED_CYP2C19_INH", "HEPIMP")
 ) |>
   as.data.frame()
+```
+
+# Variability scale check
+
+The figures and NCA below use typical-value simulations, so they do not
+exercise the random effects. The Pettersen 2009 Table 3 footnote defines
+each IIV percentage as "an approximate CV (square root of the variance)",
+i.e. omega x 100 (see the Errata section). The first check confirms that the
+packaged omega matrix holds exactly (P/100)^2 for each printed percentage
+P. It compares the file with the table, so the bound is tight.
+
+The second check confirms that the etas reach the parameters on that scale.
+It solves 10000 reference patients (20 kg, 5 years, no comorbidity) at a
+single time point, so the per-subject SD of log(CL), log(Vc), log(Q) and
+log(V2) estimates omega directly. The SD of a sample of 10000 has about
+0.7% sampling error, so the +/-4% band is about six standard errors wide and
+holds for any random-number stream. The bound is on the sample SD, a centre
+statistic, not on any per-subject extreme. It fails on the originally
+shipped V2 variance, whose SD of 0.821 is 0.837 times the printed 0.981.
+
+```{r iiv-scale-check}
+omega <- rxode2::rxode(mod)$omega
+printed_pct <- c(etalcl = 32.5, etalvc = 40.6, etalq = 24.7, etalvp = 98.1)
+stopifnot(
+  isTRUE(all.equal(unname(diag(omega)[names(printed_pct)]),
+                   unname((printed_pct / 100)^2), tolerance = 1e-12))
+)
+
+ev_spread <- tibble::tibble(
+  id = seq_len(10000L), time = 0, amt = NA_real_, evid = 0L,
+  cmt = "central", WT = 20, AGE = 5, DIS_SIRS = 0L,
+  CONMED_CYP2C19_INH = 0L, HEPIMP = 0L
+)
+per_subject <- rxode2::rxSolve(mod, events = ev_spread) |>
+  as.data.frame() |>
+  dplyr::distinct(id, cl, vc, q, vp)
+spread <- tibble::tibble(
+  quantity      = c("log(CL)", "log(Vc)", "log(Q)", "log(V2)"),
+  printed_omega = unname(printed_pct / 100),
+  simulated_sd  = c(stats::sd(log(per_subject$cl)),
+                    stats::sd(log(per_subject$vc)),
+                    stats::sd(log(per_subject$q)),
+                    stats::sd(log(per_subject$vp)))
+) |>
+  dplyr::mutate(ratio = simulated_sd / printed_omega)
+knitr::kable(spread, digits = 3,
+             caption = paste0("Per-subject spread vs. printed omega (N = ",
+                              nrow(per_subject), ", reference patient)."))
+stopifnot(all(spread$ratio > 0.96 & spread$ratio < 1.04))
 ```
 
 # Replicate published figures
@@ -426,3 +475,30 @@ knitr::kable(
   3 panels. A stochastic VPC of the cohort I + II sampling design would
   require the original observed concentration data, which is not
   publicly available.
+
+# Errata
+
+## Correction to the packaged IIV values (2026-10)
+
+The model as first released in nlmixr2lib put the inter-individual
+variances on the wrong scale. It read each Table 3 IIV percentage as a
+coefficient of variation and converted it with omega^2 = log(1 + CV^2),
+although its own comment quoted the footnote that defines the numbers. The
+Table 3 footnote reads: "Interindividual variability (IIV) and residual
+proportional error are given as an approximate CV (square root of the
+variance)". The printed percentage is therefore omega x 100, the standard
+deviation of the eta on the log scale, and omega^2 = (P/100)^2. The paper's
+bootstrap percentile CIs cannot discriminate the two scales, so the
+footnote is the evidence.
+
+| eta | Shipped before 2026-10 | Corrected | Ratio |
+| --- | --- | --- | --- |
+| `etalcl` | 0.10043 | 0.105625 | 1.052 |
+| `etalvc` | 0.15267 | 0.164836 | 1.080 |
+| `etalq` | 0.05924 | 0.061009 | 1.030 |
+| `etalvp` | 0.67413 | 0.962361 | 1.428 |
+
+The proportional residual error `propSd = 0.195` follows the same footnote
+and was already on the omega x 100 scale; it is unchanged. Typical values,
+covariate effects and the model structure are unchanged, so the
+typical-value figures and NCA comparisons in this article do not move.

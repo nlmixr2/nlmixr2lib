@@ -20,7 +20,7 @@ library(ggplot2)
 # Model and source
 
 * Citation: `r readModelDb("Yang_2024_axatilimab")() |> (\(x) x$meta$reference)()`
-* Article: <https://doi.org/10.1002/cpt.3503> — Yang et al., *Clin Pharmacol Ther* 117(3):704-714, 2025 (PubMed PMID 39704205).
+* Article: <https://doi.org/10.1002/cpt.3503> — Yang et al., *Clin Pharmacol Ther* 117(3):704-715, 2025 (PubMed PMID 39704205).
 * Supplemental MLXTRAN code: open-access supplement bundled with the article.
 
 This model is a **semimechanistic population PK/PD model** that integrates axatilimab pharmacokinetics with the dynamics of four pharmacodynamic biomarkers:

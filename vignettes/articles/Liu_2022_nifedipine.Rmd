@@ -1,0 +1,389 @@
+---
+title: "Nifedipine (Liu 2022)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Nifedipine (Liu 2022)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Liu_2022_nifedipine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Liu_2022_nifedipine"))$description`
+* Article: <https://doi.org/10.3389/fphar.2022.970539> (open access, PMC9462537)
+
+Apatinib, a VEGFR-2 tyrosine kinase inhibitor, causes hypertension in most
+treated patients, and nifedipine is the antihypertensive most often used for
+it. Apatinib also inhibits CYP3A4, the main clearance pathway of nifedipine,
+and raises nifedipine exposure. Liu 2022 asks whether that pharmacokinetic
+interaction also produces a clinically important *pharmacodynamic*
+interaction -- an excessive fall in blood pressure -- by chaining three pieces:
+
+1. a Simcyp v16 minimal-PBPK model of nifedipine (immediate-release tablet with
+   first-order absorption; controlled-release tablet with the ADAM absorption
+   model and a Weibull dissolution profile);
+2. the authors' previously published Simcyp PBPK model of apatinib (Liu 2021),
+   linked to nifedipine through competitive CYP3A4 inhibition
+   (`Ki = 0.12 uM`, `fu,mic = 0.65`);
+3. an **ordinary Emax model** (equation 3) relating the nifedipine plasma
+   concentration to the change in systolic blood pressure (SBP).
+
+**Only the third component, the PD layer, is packaged in nlmixr2lib.** The
+reasoning is in [Assumptions and deviations](#assumptions-and-deviations): the
+two PBPK layers are Simcyp platform models whose clearance is entered per pmol
+of recombinant enzyme and whose controlled-release absorption depends on a
+dissolution profile the paper does not print, so they cannot be reproduced from
+the publication. The PD layer is fully specified by the paper and is
+self-contained once the nifedipine plasma concentration is supplied through the
+`CEFFECT` covariate.
+
+```{r model}
+mod <- readModelDb("Liu_2022_nifedipine")
+mod
+```
+
+# Population
+
+No subject-level data were fitted. Every simulation in the paper used Simcyp
+virtual populations of 100 subjects aged 26-65 years, half of them female (24
+subjects of the Sim-Chinese population for the DDI verification against Zhu
+2020). The PD layer was checked against published mean SBP changes in
+hypertensive patients after a single 60 mg controlled-release (CR) tablet and a
+single 10 mg immediate-release (IR) tablet (Figure 3, Table 5), and was then
+applied to virtual cancer patients (Table 6, Figure 4) and to patients with
+Child-Pugh A, B and C hepatic impairment (Table 7), each with and without
+apatinib 750 mg once daily.
+
+```{r population}
+str(rxode2::rxode(readModelDb("Liu_2022_nifedipine"))$population)
+```
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in `inst/modeldb/specificDrugs/Liu_2022_nifedipine.R`. The table
+below collects them in one place.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `dsbp <- -emax * conc / (ec50 + conc)` | n/a | Equation 3, Methods "Development and verification of pharmacodynamic model for nifedipine" |
+| `conc <- CEFFECT` (direct link, no effect compartment) | n/a | Equation 3 uses the concentration `C` directly; Discussion: "a close and direct relationship between circulating drug concentrations and antihypertensive effect" |
+| `lemax` (Emax) | 30 mmHg magnitude (paper: -30 mmHg), fixed | Methods PD paragraph "set at -30 mmHg"; Results "When the Emax was set to -30 mmHg, the PD model fitted best" |
+| `lec50` (EC50) | 12.12 ng/mL, fixed | Methods PD paragraph "set at ... 12.12 ng/ml"; Discussion "the EC50 value was set to 12.12 ng/ml in this study" |
+| `addSd` | 0 (fixed) | No residual-error model is reported |
+| (no IIV) | n/a | No inter-individual variability is reported for the PD parameters |
+
+## Units
+
+| Symbol | Quantity | Units |
+|--------|----------|-------|
+| `CEFFECT` / `conc` | nifedipine plasma concentration | ng/mL (EC50 is given in ng/ml) |
+| `ec50` | half-maximal plasma concentration | ng/mL |
+| `emax`, `dsbp` | reduction / change in systolic blood pressure | mmHg (Table 5 and Figure 3 units) |
+| `time` | time | h (Figures 3 and 4) |
+
+`conc / (ec50 + conc)` is a ratio of concentrations and therefore unitless, so
+`dsbp` carries the units of `emax` (mmHg). The model has no ODE state and no
+dose record; `time` only orders the records and does not enter any equation.
+
+# Simulation
+
+The model is an algebraic map from a nifedipine plasma concentration to a
+change in SBP. A simulation is therefore a set of observation records carrying
+the `CEFFECT` covariate. Because the model declares no `eta`, do **not** pass
+`omega = NA` or apply `rxode2::zeroRe()`.
+
+```{r simulate}
+conc_values <- seq(0, 250, by = 0.5)
+conc_grid <- data.frame(
+  id = 1L,
+  time = seq_along(conc_values),
+  CEFFECT = conc_values,
+  evid = 0L,
+  amt = 0
+)
+
+sim <- rxode2::rxSolve(mod, events = conc_grid) |>
+  as.data.frame()
+
+head(sim[, c("CEFFECT", "dsbp")])
+```
+
+## Concentration-effect curve
+
+The paper does not plot the concentration-effect curve itself, so the figure
+below marks on it the mean predicted nifedipine Cmax values the paper prints for
+its PBPK simulations (Tables 3 and 4).
+
+```{r ce-curve, fig.width = 6.5, fig.height = 4.2}
+printed_cmax <- tibble::tribble(
+  ~scenario, ~CEFFECT,
+  "60 mg CR, healthy (Table 3)", 26.51,
+  "20 mg IR, healthy (Table 3)", 144.59,
+  "30 mg CR alone (Table 4)", 20.97,
+  "30 mg CR + apatinib (Table 4)", 29.51
+) |>
+  mutate(dsbp = -30 * CEFFECT / (12.12 + CEFFECT))
+
+ggplot(sim, aes(CEFFECT, dsbp)) +
+  geom_line(linewidth = 0.9) +
+  geom_hline(yintercept = -30, linetype = "dashed", colour = "grey50") +
+  geom_point(data = printed_cmax, aes(colour = scenario), size = 2.6) +
+  labs(
+    x = "Nifedipine plasma concentration (ng/mL)",
+    y = "Change in SBP (mmHg)",
+    colour = NULL,
+    title = "Liu 2022 equation 3: change in SBP versus nifedipine concentration",
+    caption = paste(
+      "Dashed line: Emax = -30 mmHg.",
+      "Points: mean predicted Cmax printed in Liu 2022 Tables 3 and 4."
+    )
+  ) +
+  theme(legend.position = "bottom", legend.direction = "vertical")
+```
+
+# Validation
+
+NCA is not an applicable validation for this model: there is no dose, no
+compartment and no concentration-time profile to integrate. The checks below
+follow the pattern for mechanistic models: definitional identities, boundary
+behaviour, and agreement with the summary values the paper prints. Every
+quantity is **deterministic** (the model has no random effects), so the
+identity checks use tight tolerances; where a bound is looser it is because the
+paper's value comes from a different calculation, explained alongside.
+
+## Definitional identities
+
+These hold by algebra and must match to solver precision. A wrong `ec50` moves
+the half-maximal point and breaks the second identity immediately; a wrong
+`emax` breaks the second and third.
+
+```{r definitional}
+anchor <- rxode2::rxSolve(
+  mod,
+  events = data.frame(
+    id = 1L, time = 1:3, evid = 0L, amt = 0,
+    CEFFECT = c(0, 12.12, 1e9)
+  )
+) |>
+  as.data.frame()
+
+identities <- tibble::tibble(
+  Property = c(
+    "C = 0 gives no change",
+    "C = EC50 gives Emax / 2",
+    "C -> infinity gives Emax"
+  ),
+  Expected = c(0, -15, -30),
+  Model = anchor$dsbp
+)
+knitr::kable(identities, digits = 6,
+             caption = "Definitional identities of the ordinary Emax model.")
+
+stopifnot(
+  isTRUE(all.equal(anchor$dsbp[1], 0)),
+  isTRUE(all.equal(anchor$dsbp[2], -15, tolerance = 1e-10)),
+  isTRUE(all.equal(anchor$dsbp[3], -30, tolerance = 1e-6))
+)
+```
+
+The change in SBP must also fall monotonically with concentration and can never
+go beyond Emax:
+
+```{r shape}
+stopifnot(
+  all(diff(sim$dsbp) < 0),
+  all(sim$dsbp > -30)
+)
+```
+
+## Maximum SBP reduction against the paper's printed exposures
+
+With a direct Emax link the largest SBP reduction a subject experiences,
+`Rmax`, occurs at that subject's Cmax, so `Rmax_i = f(Cmax_i)`. The paper
+prints mean predicted Cmax for the 30 mg CR DDI design (Table 4) and mean
+predicted Rmax for 30 mg CR in virtual cancer patients with and without
+apatinib (Table 6). Because `f` is concave, the mean of the individual `Rmax`
+values is *smaller in magnitude* than `f(mean Cmax)` (Jensen's inequality), so
+the model evaluated at the printed mean Cmax should slightly overshoot the
+printed mean Rmax, never undershoot it.
+
+```{r rmax-ddi}
+ddi <- tibble::tibble(
+  Arm = c("30 mg CR alone", "30 mg CR + apatinib"),
+  `Mean Cmax, Table 4 (ng/mL)` = c(20.97, 29.51),
+  `Mean Rmax, Table 6 (mmHg)` = c(-18.62, -20.30)
+)
+
+ddi_sim <- rxode2::rxSolve(
+  mod,
+  events = data.frame(
+    id = 1L, time = 1:2, evid = 0L, amt = 0,
+    CEFFECT = ddi$`Mean Cmax, Table 4 (ng/mL)`
+  )
+) |>
+  as.data.frame()
+
+ddi <- ddi |>
+  mutate(
+    `Model f(mean Cmax) (mmHg)` = ddi_sim$dsbp,
+    `Difference (%)` = 100 * (`Model f(mean Cmax) (mmHg)` -
+      `Mean Rmax, Table 6 (mmHg)`) / `Mean Rmax, Table 6 (mmHg)`
+  )
+knitr::kable(ddi, digits = 2,
+             caption = "Model SBP reduction at the printed mean Cmax versus the printed mean Rmax.")
+
+stopifnot(
+  # Jensen direction: the model at the mean Cmax is at least as large a
+  # reduction as the paper's mean of individual maxima.
+  all(ddi$`Model f(mean Cmax) (mmHg)` <= ddi$`Mean Rmax, Table 6 (mmHg)`),
+  # Size: a wrong EC50 or Emax moves these by tens of percent. Achieved:
+  # +2.1% and +4.8%.
+  all(abs(ddi$`Difference (%)`) < 10)
+)
+```
+
+Table 4 comes from the Sim-Chinese DDI-verification population (24 subjects)
+and Table 6 from the virtual cancer-patient population (100 subjects), so the
+two tables do not describe exactly the same cohort; the agreement within 5% is
+nevertheless what the paper's Emax and EC50 imply.
+
+## The pharmacodynamic interaction is attenuated by saturation
+
+The paper's central conclusion is that a 1.41-fold rise in nifedipine Cmax
+(and 1.73-fold rise in AUC) with apatinib changes the SBP response by no more
+than 1.25-fold. Equation 3 alone explains why: for a concentration increase by
+a factor R, the effect increases by the factor R (EC50 + C) / (EC50 + R C), which
+is R at very low concentration and falls towards 1 as `C` approaches and
+passes EC50.
+
+```{r attenuation}
+ratio_model <- ddi_sim$dsbp[2] / ddi_sim$dsbp[1]
+attenuation <- tibble::tibble(
+  Quantity = c(
+    "Cmax ratio, with / without apatinib (Table 4)",
+    "Rmax ratio, paper (Table 6, 30 mg CR)",
+    "Rmax ratio, model at the Table 4 mean Cmax"
+  ),
+  Value = c(1.41, 1.09, ratio_model)
+)
+knitr::kable(attenuation, digits = 3)
+
+stopifnot(
+  isTRUE(all.equal(
+    ratio_model,
+    1.41 * (12.12 + 20.97) / (12.12 + 1.41 * 20.97),
+    tolerance = 1e-2
+  )),
+  ratio_model < 1.25,
+  abs(ratio_model - 1.09) < 0.05
+)
+```
+
+```{r attenuation-plot, fig.width = 6.5, fig.height = 4}
+base_conc <- seq(0.5, 150, by = 0.5)
+atten_curve <- bind_rows(
+  tibble::tibble(CEFFECT = base_conc, r = 1.41),
+  tibble::tibble(CEFFECT = base_conc, r = 1.73)
+) |>
+  mutate(
+    effect_ratio = r * (12.12 + CEFFECT) / (12.12 + r * CEFFECT),
+    label = paste0("Exposure ratio ", r)
+  )
+
+ggplot(atten_curve, aes(CEFFECT, effect_ratio, colour = label)) +
+  geom_line(linewidth = 0.9) +
+  geom_hline(yintercept = 1.25, linetype = "dashed", colour = "grey50") +
+  geom_vline(xintercept = 12.12, linetype = "dotted", colour = "grey50") +
+  labs(
+    x = "Nifedipine concentration without apatinib (ng/mL)",
+    y = "Ratio of SBP change, with / without apatinib",
+    colour = NULL,
+    caption = paste(
+      "Dashed line: the paper's 1.25-fold criterion.",
+      "Dotted line: EC50 = 12.12 ng/mL."
+    )
+  )
+```
+
+## Comparison with the PD-verification table (Table 5)
+
+Table 5 compares predicted and observed Rmax in hypertensive patients. The
+paper does not print the nifedipine Cmax of the hypertensive-patient
+simulations, so the nearest printed exposures are the healthy-volunteer
+predictions of Table 3. For the 10 mg IR tablet, the 20 mg IR Cmax is halved
+(the PBPK model has linear clearance at these doses). These are indicative
+comparisons across populations, not validation gates.
+
+```{r table5}
+t5 <- tibble::tibble(
+  `Dose (Table 5)` = c("60 mg CR", "10 mg IR"),
+  `Exposure used (ng/mL)` = c(26.51, 144.59 / 2),
+  `Exposure source` = c("Table 3, 60 mg CR Cmax", "Table 3, 20 mg IR Cmax / 2"),
+  `Predicted Rmax, Table 5 (mmHg)` = c(-22.21, -30.13),
+  `Observed Rmax, Table 5 (mmHg)` = c(-23.09, -33.20)
+) |>
+  mutate(`Model f(Cmax) (mmHg)` = -30 * `Exposure used (ng/mL)` /
+    (12.12 + `Exposure used (ng/mL)`))
+knitr::kable(t5, digits = 2)
+```
+
+The printed predicted Rmax of -30.13 mmHg for 10 mg IR is *beyond* the model's
+Emax of -30 mmHg, and the 5th percentile of the predicted curve in Figure 3B
+reaches about -33 mmHg. No concentration can produce that with a single
+deterministic Emax of -30 mmHg, so the paper's Simcyp PD simulation must have
+carried between-subject variability on Emax and/or EC50 that the paper does not
+report. This is recorded under
+[Assumptions and deviations](#assumptions-and-deviations).
+
+# Assumptions and deviations
+
+* **PBPK layers not reproduced.** The nifedipine PK layer is a Simcyp v16
+  minimal-PBPK model. Its clearance is entered as recombinant CYP3A4 and CYP3A5
+  Vmax (pmol/min/pmol of enzyme) and Km (Table 1). Turning those into a hepatic
+  and gut-wall clearance needs the enzyme abundances, microsomal protein per
+  gram of liver, liver weight, hepatic blood flow and the intersystem
+  extrapolation factors of the Simcyp population library, none of which the
+  paper prints, and no in-vivo clearance is given to anchor them. The CR tablet
+  is absorbed through the ADAM model with a Weibull dissolution profile taken
+  from Doki 2017 whose parameters are not printed either. The apatinib layer is
+  a separate Simcyp model (Liu 2021) whose clearance is also entered per mg of
+  microsomal protein. The PK layers therefore cannot be reproduced from the
+  publication, and the nifedipine plasma concentration is supplied through
+  `CEFFECT`. The printed Table 1 compound inputs are kept in the `CEFFECT` notes
+  of the model file for provenance.
+* **Total plasma concentration.** Equation 3 uses "nifedipine concentration"
+  without saying total or unbound. Every concentration the paper reports is
+  total plasma (Tables 3 and 4, Figures 1 and 2), and the EC50 of 12.12 ng/mL
+  is a total-plasma literature value, so `CEFFECT` is total plasma.
+* **Emax and EC50 are fixed.** Both were set rather than estimated: EC50 from
+  the literature, Emax chosen as the best of a range of literature values by
+  comparing predicted with observed SBP changes. Neither carries a standard
+  error, so both are wrapped in `fixed()`.
+* **No between-subject variability.** The paper reports none for the PD layer,
+  but its predicted mean Rmax for 10 mg IR (-30.13 mmHg, Table 5) is beyond
+  Emax, and Figures 3 and 4 show 5th-95th percentile bands, so the Simcyp PD
+  simulation must have included variability on Emax and/or EC50 (probably the
+  platform default). Its magnitude is not reported and is not invented here;
+  the model is typical-value only and `addSd` is fixed at zero.
+* **Sign convention.** The paper's Emax is signed (-30 mmHg). The model
+  carries the magnitude on the log scale (`lemax = log(30)`) and applies the
+  sign in `model()`, so `dsbp` is negative for a reduction, matching
+  equation 3 and Figures 3 and 4.
+* **AUE is not checked.** The area under the effect-time curve (Tables 5 to 7)
+  depends on the full predicted concentration-time course of the virtual
+  populations, which the paper shows only as raster mean curves for a different
+  population (Figure 2, Sim-Chinese DDI design) than its AUE tables. The
+  windows over which AUE was integrated are also not stated (Tables 5 and 6
+  give 433.98 and 787.55 mmHg*h for the same 60 mg CR Rmax of -22.21 mmHg).
+* **No erratum.** A Europe PMC search on 2026-10-09 found no correction notice
+  for this article and no supplementary material.

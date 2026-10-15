@@ -1,6 +1,12 @@
 Duffull_2025_mab_tmdd_simplified <- function() {
   description <- "Two-compartment TMDD model for an unnamed monoclonal antibody (mAb) simplified under the target-saturated limit, and the model the Duffull 2025 tutorial adopted to resolve the instability of its full counterpart (Equations 2, 4 and 5; Table 2 'Simplified model' column). Because the free-antibody amount in the central compartment exceeds Km*Vc by roughly two orders of magnitude over the 24 h observation window, the binding saturation fraction LC/(LC + Km*Vc) is set to 1: the binding constant Km drops out of the model entirely and target-mediated removal of antibody becomes kint*Rtot, independent of antibody amount. The total target still has zero-order synthesis and first-order internalisation, and kdeg survives only through the drug-free initial condition ksyn*Vc/kdeg. Cc is the free antibody concentration and Ctotal_target is the total target concentration, both nmol/L. All parameters were estimated with relative standard errors below 30% under the reduced clinical sampling design that made the full model unidentifiable. IMPORTANT: this approximation is valid only while the target remains saturated -- it makes target-mediated antibody removal a constant-rate sink, so the free-antibody state can be driven negative once antibody washes out. Restrict simulations to the 24 h window the source validated. The full model is packaged as Duffull_2025_mab_tmdd_qss."
-  reference <- "Duffull SB, Wright DFB, Zhu X, Liu X, Abulfathi A, Hishe H. A pharmacometric workflow for resolving model instability in model use-reuse settings. CPT Pharmacometrics Syst Pharmacol. 2025;14(10):1547-1556. doi:10.1002/psp4.70049"
+  reference <- paste(
+    "Duffull SB, Wright DFB, Zhu X, Liu X, Abulfathi A, Hishe H. A",
+    "Pharmacometric Workflow for Resolving Model Instability in Model",
+    "Use-Reuse Settings. CPT Pharmacometrics Syst Pharmacol.",
+    "2025;14(10):1544-1555. doi:10.1002/psp4.70049.",
+    sep = " "
+  )
   vignette <- "Duffull_2025_tmdd_model_instability"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 

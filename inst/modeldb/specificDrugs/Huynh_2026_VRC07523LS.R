@@ -1,6 +1,14 @@
 Huynh_2026_VRC07523LS <- function() {
   description <- "Two-compartment population PK model with zero-order subcutaneous absorption, allometric weight scaling, and binary effects of age (adult vs infant) and repeat dosing for the broadly neutralizing HIV-1 monoclonal antibody VRC07-523LS in healthy adults and HIV-exposed infants (Huynh 2026)."
-  reference <- "Huynh D, Nikanjam M, Cunningham CK, McFarland EJ, Muresan P, Perlowski C, Yin DE, Moye J, Spiegel H, Gama L, Gaudinski M, Capparelli EV. Model-based assessment of VRC07-523LS dosing in infants through population pharmacokinetic-pharmacodynamic modelling in adults and infants. J Antimicrob Chemother. 2026; doi:10.1093/jac/dkaf449"
+  reference <- paste(
+    "Huynh D, Nikanjam M, Cunningham CK, McFarland EJ, Muresan P, Perlowski C,",
+    "Yin DE, Moye J, Spiegel H, Gama L, Gaudinski M, Capparelli EV.",
+    "Model-based assessment of VRC07-523LS dosing in infants through",
+    "population pharmacokinetic -pharmacodynamic modelling in adults and",
+    "infants. J Antimicrob Chemother. 2026;81(2):dkaf449.",
+    "doi:10.1093/jac/dkaf449.",
+    sep = " "
+  )
   vignette <- "Huynh_2026_VRC07523LS"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

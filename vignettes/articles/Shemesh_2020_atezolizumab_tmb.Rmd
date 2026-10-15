@@ -19,10 +19,11 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Shemesh CS, Chan P, Legrand FA, et al. Pan-cancer population
-  pharmacokinetics and exposure-safety and -efficacy analyses of atezolizumab
-  in patients with high tumor mutational burden. Pharmacol Res Perspect.
-  2020;8(6):e00685.
+* Citation: Shemesh CS, Chan P, Legrand FA, Shames DS, Das Thakur M, Shi J,
+  Bailey L, Vadhavkar S, He X, Zhang W, Bruno R. Pan-cancer population
+  pharmacokinetics and exposure-safety and -efficacy analyses of atezolizumab in
+  patients with high tumor mutational burden. Pharmacol Res Perspect.
+  2020;8(6):e00685. doi:10.1002/prp2.685.
 * Article: <https://doi.org/10.1002/prp2.685> (open access; Supporting
   Information file s001 holds Tables S1-S3 and Figures S1-S7)
 

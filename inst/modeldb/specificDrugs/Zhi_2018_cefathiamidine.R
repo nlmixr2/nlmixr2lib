@@ -1,12 +1,11 @@
 Zhi_2018_cefathiamidine <- function() {
   description <- "Two-compartment population PK model for intravenous cefathiamidine (a first-generation cephalosporin) in 54 children (age 2.0-11.8 years; weight 8.0-36.0 kg) with hematologic disease, developed in NONMEM v7.2 (FOCE-I) from 120 sparse plasma samples. Structural model: first-order elimination from a central compartment, with allometric body-weight scaling on CL, Q (exponent 0.75) and V1, V2 (exponent 1), reference weight 17.75 kg (the cohort median current weight). Inter-individual variability (exponential) is estimated for CL and V2 only; residual variability is exponential (lognormal on the linear scale). Bodyweight was the only retained covariate; age and creatinine clearance were not significant in the limited cohort (CrCL range 130-462 mL/min)."
   reference <- paste(
-    "Zhi LJ, Wang L, Chen XK, Zhai XY, Wen L, Dong L, Jacqz-Aigrain E,",
-    "Shi ZR, Zhao W. (2018).",
-    "Population pharmacokinetics and dosing optimization of cefathiamidine",
-    "in children with hematologic infection.",
-    "Drug Des Devel Ther 12:1845-1853.",
-    "doi:10.2147/DDDT.S160329"
+    "Zhi LJ, Wang L, Chen XK, Zhai XY, Wen L, Dong L, Jacqz-Aigrain E, Shi ZR,",
+    "Zhao W. Population pharmacokinetics and dosing optimization of",
+    "cefathiamidine in children with hematologic infection. Drug Des Devel",
+    "Ther. 2018;12:855-862. doi:10.2147/DDDT.S160329.",
+    sep = " "
   )
   vignette <- "Zhi_2018_cefathiamidine"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")

@@ -1,6 +1,12 @@
 Yin_2021_trastuzumabDeruxtecan <- function() {
   description <- "Two-compartment population PK model for intact trastuzumab deruxtecan (T-DXd, DS-8201, anti-HER2 antibody-drug conjugate) with linear elimination and covariate effects of body weight, albumin, baseline tumor size, sex, and Japan-country indicator in patients with HER2-positive breast cancer or other HER2-expressing solid tumors (Yin 2021)"
-  reference <- "Yin O, Iwata H, Lin C-C, Tamura K, Watanabe J, Wada R, Kastrissios H, Garimella T, Lee C, Zhang L, Shahidi J, Fujisaki Y, LaCreta F. Population Pharmacokinetics of Trastuzumab Deruxtecan in Patients With HER2-Positive Breast Cancer and Other Solid Tumors. Clin Pharmacol Ther. 2021;109(5):1314-1325. doi:10.1002/cpt.2096"
+  reference <- paste(
+    "Yin O, Xiong Y, Endo S, Yoshihara K, Garimella T, AbuTarif M, Wada R,",
+    "LaCreta F. Population Pharmacokinetics of Trastuzumab Deruxtecan in",
+    "Patients With HER2-Positive Breast Cancer and Other Solid Tumors. Clin",
+    "Pharmacol Ther. 2021;109(5):1314-1325. doi:10.1002/cpt.2096.",
+    sep = " "
+  )
   vignette <- "Yin_2021_trastuzumabDeruxtecan"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

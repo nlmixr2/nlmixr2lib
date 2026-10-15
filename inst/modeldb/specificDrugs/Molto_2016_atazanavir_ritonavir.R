@@ -25,11 +25,11 @@ Molto_2016_atazanavir_ritonavir <- function() {
     "negligible) (Molto 2016)."
   )
   reference <- paste(
-    "Molto J, Estevez JA, Miranda C, Cedeno S, Clotet B, Valle M.",
-    "Population pharmacokinetic modelling of the changes in atazanavir",
-    "plasma clearance caused by ritonavir plasma concentrations in",
-    "HIV-1 infected patients. Br J Clin Pharmacol.",
-    "doi:10.1111/bcp.13072."
+    "Molto J, Estevez JA, Miranda C, Cedeno S, Clotet B, Valle M. Population",
+    "pharmacokinetic modelling of the changes in atazanavir plasma clearance",
+    "caused by ritonavir plasma concentrations in HIV-1 infected patients. Br",
+    "J Clin Pharmacol. 2016;82(6):1528-1538. doi:10.1111/bcp.13072.",
+    sep = " "
   )
   vignette <- "Molto_2016_atazanavir_ritonavir"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")

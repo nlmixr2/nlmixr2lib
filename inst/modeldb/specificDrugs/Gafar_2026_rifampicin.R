@@ -14,7 +14,7 @@ Gafar_2026_rifampicin <- function() {
     "Supplementary Appendix 1.",
     "The saturable-hepatic-extraction structure was adapted from",
     "Chirehwa et al. (2016) Antimicrob Agents Chemother 60(1):487-494",
-    "doi:10.1128/AAC.01084-15, with autoinduction omitted because",
+    "doi:10.1128/AAC.01830-15, with autoinduction omitted because",
     "sampling was performed only once at week 4.",
     "Fat-free mass follows Janmahasatian et al. (2005)",
     "Clin Pharmacokinet 44(10):1051-1065 doi:10.2165/00003088-200544100-00004.",

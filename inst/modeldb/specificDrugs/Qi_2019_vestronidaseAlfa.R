@@ -1,10 +1,10 @@
 Qi_2019_vestronidaseAlfa <- function() {
   description <- "Joint population PK + inhibitory-Imax-on-AUC exposure-response model for vestronidase alfa (recombinant human beta-glucuronidase, UX003) enzyme replacement therapy in patients with mucopolysaccharidosis type VII (Sly syndrome). The PK layer (Table 2) is a two-compartment model with zero-order intravenous input and linear elimination from the central compartment, carrying baseline body weight as the only retained covariate via two estimated allometric exponents (a shared exponent on CL and Q, and a shared exponent on Vc and Vp), both centered on a 20 kg reference weight. The PD layer (Table 4) is a static inhibitory Emax model linking the individual vestronidase alfa AUC over a dosing interval to the percent change from pretreatment baseline in urinary chondroitin sulfate (uCS) and urinary dermatan sulfate (uDS), fit sequentially on post hoc individual exposures. AUC is integrated inside an extra rxode2 state, so both uGAG observables are meaningful at the end of a dosing interval (the vignette documents the time-window discipline)."
   reference <- paste(
-    "Qi Y, Mc Namara MP, Haller C, Song W, Gutierrez F, Kolodny E, Ma J.",
-    "Pharmacokinetic and pharmacodynamic modeling to optimize the dose of",
-    "vestronidase alfa, an enzyme replacement therapy for treatment of patients",
-    "with mucopolysaccharidosis type VII: results from three trials.",
+    "Qi Y, McKeever K, Taylor J, Haller C, Song W, Jones SA, Shi J.",
+    "Pharmacokinetic and Pharmacodynamic Modeling to Optimize the Dose of",
+    "Vestronidase Alfa, an Enzyme Replacement Therapy for Treatment of",
+    "Patients with Mucopolysaccharidosis Type VII: Results from Three Trials.",
     "Clin Pharmacokinet. 2019;58(5):673-683. doi:10.1007/s40262-018-0721-y.",
     "Erratum: Clin Pharmacokinet. 2019;58(5):685.",
     "doi:10.1007/s40262-018-0726-6 (corrects a ClinicalTrials.gov identifier in",

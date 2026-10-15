@@ -1,13 +1,11 @@
 Koele_2025_btz043_bacterialload <- function() {
   description <- "Joint bilinear exposure-response model for the decline in sputum mycobacterial load during 14 days of BTZ-043 monotherapy in adults with drug-susceptible pulmonary tuberculosis, fitted simultaneously to log10 colony-forming units on solid medium and log10 time to positivity in liquid MGIT culture. Both endpoints share one breakpoint (node) fixed at 48 h; the first-phase slope of each endpoint is an Emax function of the individual model-predicted BTZ-043total (BTZ-043 plus metabolite M2) AUC(0-24), with a single shared EC50, while the second-phase slope (Days 2-14) is exposure-independent. Baseline loads and slopes carry correlated between-subject variability and the residual error is additive on the log10 scale. This is a $PRED regression on time and exposure with no differential equations and no dosing events; the driving exposure is supplied per subject as a covariate column."
   reference <- paste(
-    "Koele S. E., Heinrich N., De Jager V. R., Dreisbach J., Phillips P. P. J.,",
-    "Gross-Demel P., Dawson R., Narunsky K., Wildner L. M., Mchugh T. D.,",
-    "Te Brake L. H. M., Diacon A. H., Aarnoutse R. E., Hoelscher M.,",
-    "Svensson E. M. (2025).",
-    "Population pharmacokinetics and exposure-response relationship of the",
-    "antituberculosis drug BTZ-043.",
-    "Journal of Antimicrobial Chemotherapy 80(5):1319-1327.",
+    "Koele SE, Heinrich N, De Jager VR, Dreisbach J, Phillips PPJ, Gross-Demel",
+    "P, Dawson R, Narunsky K, Wildner LM, Mchugh TD, Te Brake LHM, Diacon AH,",
+    "Aarnoutse RE, Hoelscher M, Svensson EM. Population pharmacokinetics and",
+    "exposure-response relationship of the antituberculosis drug BTZ-043. J",
+    "Antimicrob Chemother. 2025;80(5):1315-1323.",
     "doi:10.1093/jac/dkaf076.",
     "Structural equations and random-effect variances transcribed from the",
     "final NONMEM control stream in the Supplementary data",

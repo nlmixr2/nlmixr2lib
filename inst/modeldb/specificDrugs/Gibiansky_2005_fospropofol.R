@@ -1,10 +1,10 @@
 Gibiansky_2005_fospropofol <- function() {
   description <- "Joint two-compartment fospropofol (GPI 15715, AQUAVAN) prodrug + intermediate delay compartment + two-compartment propofol active-metabolite population PK model in adults receiving IV bolus AQUAVAN for procedural sedation (Gibiansky 2005, ASCPT poster, colonoscopy sedation Phase II study). The model assumes complete metabolism of GPI 15715 to propofol via systemic alkaline-phosphatase hydrolysis; the intermediate compartment captures the appearance delay between GPI 15715 elimination from plasma and the corresponding rise in propofol concentration. Lean body mass (LBM, reference 55 kg) was retained as a linear-fractional covariate on GPI 15715 central volume Vc_GPI, GPI 15715 metabolic clearance CL_GPI, and propofol central volume Vc_PR; fentanyl premedication exposure, age, sex, and other demographics/laboratory covariates were tested but not retained. Propofol Vc_PR (6.91 L) was fixed as the data were insufficient for joint estimation with CL_PR (the model is identifiable on CL_PR = K10_PR * Vc_PR = 4.53 L/min)."
   reference <- paste(
-    "Gibiansky E, Gibiansky L, Enriquez J.",
-    "Population pharmacokinetic model of sedative doses of GPI 15715 and propofol",
-    "liberated from GPI 15715. Clin Pharmacol Ther. 2005;77(2):P32 (PII-87, ASCPT",
-    "Annual Meeting poster). doi:10.1016/j.clpt.2004.12.076.",
+    "Gibiansky E, Gibiansky L, Enriquez J. Population pharmacokinetic model of",
+    "sedative doses of GPI 15715 and propofol liberated from GPI 15715. Clin",
+    "Pharmacol Ther. 2005;77(2):P48 (PII-87, ASCPT Annual Meeting poster).",
+    "doi:10.1016/j.clpt.2004.12.076.",
     "Poster PDF hosted at https://metrumrg.com/wp-content/uploads/2018/08/ascpt_2005_ppkmodelgpi.pdf",
     sep = " "
   )

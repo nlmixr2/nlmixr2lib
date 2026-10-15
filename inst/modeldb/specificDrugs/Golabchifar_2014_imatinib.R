@@ -19,7 +19,7 @@ Golabchifar_2014_imatinib <- function() {
     "Rouini MR. Population pharmacokinetics of imatinib in Iranian ",
     "patients with chronic-phase chronic myeloid leukemia. Cancer ",
     "Chemother Pharmacol. 2014;74(1):85-93. ",
-    "doi:10.1007/s00280-014-2455-3. ",
+    "doi:10.1007/s00280-014-2473-1. ",
     "PARAMETER SOURCE (secondary): Yang T, Rasmussen ASB, Weimann A, ",
     "Thastrup M, Rank CU, Als-Nielsen B, Malmros J, Wik HS, Lohi O, ",
     "Overgaard U, Johannsdottir IMR, Vaitkeviciene G, Dalhoff K, ",

@@ -1,13 +1,14 @@
 Xia_2024_warfarin <- function() {
   description <- "K-PD warfarin PK/PD model for adult Han Chinese (Alfalfa-Warfarin-PPK/PD; Xia 2024). PK parameters fixed from the Hamberg model; PD EC50 re-estimated, with VKORC1 -1639 G/A and CYP2C9 *1/*2/*3 allele-specific contributions, body-weight power scaling, and amiodarone effect on EC50. Two parallel coagulation-factor transit chains drive INR."
   reference <- paste(
-    "Xia X, Cai X, Chen J, Jiang S, Zhang J.",
-    "Construction of warfarin population pharmacokinetics and pharmacodynamics model",
-    "in Han population based on Bayesian method.",
-    "Sci Rep. 2024;14:14894. doi:10.1038/s41598-024-65048-7.",
-    "PK structural parameters (CL per CYP2C9*1/*2/*3 allele, age effect on CL, V/F,",
-    "Emax, gamma, MTT1, MTT2, INRmax) are fixed from the Hamberg model",
-    "as reported in Table 3 of Xia 2024."
+    "Xia X, Cai X, Chen J, Jiang S, Zhang J. Construction of warfarin",
+    "population pharmacokinetics and pharmacodynamics model in Han population",
+    "based on Bayesian method. Sci Rep. 2024;14(1):14846.",
+    "doi:10.1038/s41598-024-65048-7. PK structural parameters (CL per",
+    "CYP2C9*1/*2/*3 allele, age effect on CL, V/F, Emax, gamma, MTT1, MTT2,",
+    "INRmax) are fixed from the Hamberg model as reported in Table 3 of Xia",
+    "2024.",
+    sep = " "
   )
   vignette <- "Xia_2024_warfarin"
   paper_specific_compartments <- c("coag_s1", "coag_s2", "coag_s3", "coag_l1", "coag_l2", "coag_l3")

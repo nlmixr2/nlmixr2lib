@@ -1,11 +1,11 @@
 Chen_2025_avibactam <- function() {
   description <- "One-compartment IV population PK model for the avibactam component of ceftazidime-avibactam in critically and non-critically ill Chinese adults with carbapenem-resistant Klebsiella pneumoniae infection (Chen 2025), with a median-normalized power-form creatinine-clearance effect on clearance."
   reference <- paste(
-    "Chen Y, Chen B, Huang Y, Li X, Wu J, Lin R, Chen M, Liu M, Qiu H, Cheng Y.",
-    "Population Pharmacokinetics-Based Evaluation of Ceftazidime-Avibactam",
+    "Chen Y, Chen B, Huang Y, Li X, Wu J, Lin R, Chen M, Liu M, Qiu H, Cheng",
+    "Y. Population Pharmacokinetics-Based Evaluation of Ceftazidime-Avibactam",
     "Dosing Regimens in Critically and Non-Critically Ill Patients With",
-    "Carbapenem-Resistant Klebsiella pneumoniae.",
-    "Infect Drug Resist. 2025;18:941-953.",
+    "Carbapenem-Resistant Klebsiella pneumoniae. Infect Drug Resist.",
+    "2025;18:941-955.",
     "doi:10.2147/IDR.S495279.",
     sep = " "
   )

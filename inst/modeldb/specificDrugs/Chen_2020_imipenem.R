@@ -17,10 +17,10 @@ Chen_2020_imipenem <- function() {
     sep = " "
   )
   reference <- paste(
-    "Chen W, Zhang D, Lian W, Wang X, Du W, Zhang Z, et al.",
-    "Imipenem population pharmacokinetics: therapeutic drug monitoring data",
-    "collected in critically ill patients with or without extracorporeal",
-    "membrane oxygenation.",
+    "Chen W, Zhang D, Lian W, Wang X, Du W, Zhang Z, Guo D, Zhang X, Zhan Q,",
+    "Li P. Imipenem Population Pharmacokinetics: Therapeutic Drug Monitoring",
+    "Data Collected in Critically Ill Patients with or without Extracorporeal",
+    "Membrane Oxygenation.",
     "Antimicrob Agents Chemother. 2020;64(6):e00385-20.",
     "doi:10.1128/AAC.00385-20.",
     "Parameters transcribed from Zhang P, Zhao Y, Zhu J, Yang Y, Liang G,",

@@ -23,10 +23,11 @@ Kloprogge_2015_artesunate <- function() {
   )
   reference <- paste(
     "Kloprogge F, McGready R, Phyo AP, Rijken MJ, Hanpithakpon W, Than HH,",
-    "Hlaing N, Zin NT, Day NP, White NJ, Nosten F, Tarning J (2015).",
-    "Opposite malaria and pregnancy effect on oral bioavailability of artesunate",
-    "- a population pharmacokinetic evaluation.",
-    "Br J Clin Pharmacol 80(3):642-653. doi:10.1111/bcp.12660."
+    "Hlaing N, Zin NT, Day NP, White NJ, Nosten F, Tarning J. Opposite malaria",
+    "and pregnancy effect on oral bioavailability of artesunate - a population",
+    "pharmacokinetic evaluation. Br J Clin Pharmacol. 2015;80(4):642-653.",
+    "doi:10.1111/bcp.12660.",
+    sep = " "
   )
   vignette <- "Kloprogge_2015_artesunate"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
