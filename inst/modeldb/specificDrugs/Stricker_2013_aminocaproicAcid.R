@@ -14,8 +14,8 @@ Stricker_2013_aminocaproicAcid <- function() {
     "Stricker PA, Zuppa AF, Fiadjoe JE, Maxwell LG, Sussman EM, Pruitt EY,",
     "Goebel TK, Gastonguay MR, Taylor JA, Bartlett SP, Schreiner MS.",
     "Population pharmacokinetics of epsilon-aminocaproic acid in infants",
-    "undergoing craniofacial reconstruction surgery.",
-    "Br J Anaesth 2013;112(5):788-795. doi:10.1093/bja/aes507.",
+    "undergoing craniofacial reconstruction surgery. Br J Anaesth.",
+    "2013;110(5):788-799. doi:10.1093/bja/aes507.",
     sep = " "
   )
   vignette <- "Stricker_2013_aminocaproicAcid"

@@ -29,10 +29,10 @@ Sun_2026_tilmicosin_pbpk <- function() {
     "vignette Errata."
   )
   reference <- paste(
-    "Sun L, Zhang C, Mi K, Wang H, Pan Y, Tao Y, Huang L.",
-    "Dose optimization of tilmicosin against Pasteurella multocida in swine",
-    "by physiologically based pharmacokinetic-pharmacodynamic model.",
-    "J Agric Food Chem. 2026;74(8):4754-4766.",
+    "Sun L, Zhang C, Mi K, Wang H, Pan Y, Tao Y, Huang L. Dose Optimization of",
+    "Tilmicosin against Pasteurella multocida in Swine by Physiologically",
+    "Based Pharmacokinetic-Pharmacodynamic Model. J Agric Food Chem.",
+    "2026;74(5):4754-4766.",
     "doi:10.1021/acs.jafc.5c11368.",
     "Model equations transcribed from the Supporting Information (Berkeley",
     "Madonna code) and main-text equations 3-5; parameter values from",

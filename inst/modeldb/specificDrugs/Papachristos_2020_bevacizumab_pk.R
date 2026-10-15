@@ -1,6 +1,12 @@
 Papachristos_2020_bevacizumab_pk <- function() {
   description <- "Two-compartment population PK model for IV bevacizumab in adults with metastatic colorectal cancer, with allometric weight scaling and ICAM-1 / VEGF-A genotype covariates (Papachristos 2020, Table 1)"
-  reference <- "Papachristos A, Karatza E, Kalofonos H, Karalis V. Pharmacogenetics in Model-Based Optimization of Bevacizumab Therapy for Metastatic Colorectal Cancer. Int J Mol Sci. 2020;21(11):3753. doi:10.3390/ijms21113753"
+  reference <- paste(
+    "Papachristos A, Karatza E, Kalofonos H, Sivolapenko G. Pharmacogenetics",
+    "in Model-Based Optimization of Bevacizumab Therapy for Metastatic",
+    "Colorectal Cancer. Int J Mol Sci. 2020;21(11):3753.",
+    "doi:10.3390/ijms21113753.",
+    sep = " "
+  )
   vignette <- "Papachristos_2020_bevacizumab_pk"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 

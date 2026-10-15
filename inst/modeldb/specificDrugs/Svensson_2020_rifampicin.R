@@ -39,7 +39,7 @@ Svensson_2020_rifampicin <- function() {
     "('NONMEM code pharmacokinetic model'), which also carries the model",
     "equations. The saturable-hepatic-extraction structure follows",
     "Chirehwa et al. (2016) Antimicrob Agents Chemother 60(1):487-494",
-    "doi:10.1128/AAC.01084-15; the transit absorption follows Savic et al.",
+    "doi:10.1128/AAC.01830-15; the transit absorption follows Savic et al.",
     "(2007) J Pharmacokinet Pharmacodyn 34(5):711-726.",
     sep = " "
   )

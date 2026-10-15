@@ -21,7 +21,7 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode(readModelDb("PillayFuentesLorente_2024_albendazole"))$reference`
 * Description: `r rxode2::rxode(readModelDb("PillayFuentesLorente_2024_albendazole"))$description`
-* Article: [Drugs R D. 2024;24(2):205-215](https://doi.org/10.1007/s40268-024-00476-4)
+* Article: [Drugs R D. 2024;24(2):331-340](https://doi.org/10.1007/s40268-024-00476-4)
 
 Albendazole is rapidly and almost completely pre-systemically metabolised, so
 the parent drug is barely measurable in plasma. The published final model

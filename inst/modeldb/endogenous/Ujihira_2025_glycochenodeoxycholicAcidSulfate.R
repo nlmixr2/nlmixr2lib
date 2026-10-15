@@ -1,11 +1,10 @@
 Ujihira_2025_glycochenodeoxycholicAcidSulfate <- function() {
   description <- "Coupled three-drug turnover model for the endogenous OATP1B3 / OAT3 biomarker glycochenodeoxycholic acid 3-O-sulfate (GCDCA-S) in healthy adults (Ujihira 2025), fit simultaneously with the perpetrator PK of rifampicin and probenecid. GCDCA-S is produced at a zero-order synthesis rate ksyn and eliminated by hepatobiliary clearance CLh (the dominant route, ~98% of total systemic clearance, giving fe < 5%) and renal clearance CLR, with plasma concentration and cumulative urinary amount as the two biomarker outputs. Rifampicin competitively inhibits CLh through the unbound OATP1B3 constant Ki,u,OATP1B3 driven by its own one-compartment zero-order-absorption PK; probenecid competitively inhibits CLR through the unbound OAT3 constant Ki,u,OAT3 driven by its own one-compartment first-order-absorption PK, and additionally reduces CLh by a concentration-independent 1.7-fold factor X gated by the binary CONMED_PROBENECID indicator. All three drugs live in this one file because the paper fit them as a single coupled system (Figure 2); dosing rifampicin or probenecid alone drives the corresponding interaction, and dosing neither collapses the model to the inhibitor-free steady-state baseline of about 65 nmol/L (typical value). Perpetrator doses are given in umol, not mg, because the whole system runs in umol / umol per L."
   reference <- paste(
-    "Ujihira Y, Georgiev V, Ogungbenro K, Galetin A.",
-    "Population Pharmacokinetic Modeling of Glycochenodeoxycholic Acid",
-    "3-O-Sulfate (GCDCA-S) as Endogenous Biomarker of OATP1B3 and OAT3",
-    "Transporters.",
-    "Clin Pharmacol Ther. 2025;118(6):1532-1543.",
+    "Ujihira Y, Georgiev V, Ogungbenro K, Galetin A. Population",
+    "Pharmacokinetic Modeling of Glycochenodeoxycholic Acid 3-O-Sulfate",
+    "(GCDCA-S) as Endogenous Biomarker of OATP1B3 and OAT3 Transporters. Clin",
+    "Pharmacol Ther. 2025;118(6):1532-1542.",
     "doi:10.1002/cpt.70023.",
     "Structural equations from Eqs 1-4 of the main text; all parameter",
     "values from Table 2. Supplementary Material S1 (Tables S1-S7) was",

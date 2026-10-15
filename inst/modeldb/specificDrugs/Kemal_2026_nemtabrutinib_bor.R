@@ -1,10 +1,10 @@
 Kemal_2026_nemtabrutinib_bor <- function() {
   description <- "Logistic-regression exposure-efficacy model for best overall response (BOR) to nemtabrutinib monotherapy in patients with CLL/SLL, from Kemal 2026. BOR (investigator-assessed partial or complete response per iwCLL 2018 criteria, attained at any time on treatment) is modelled on the logit scale as a linear function of the individual average on-treatment concentration (Cavg, a post-hoc exposure metric from the companion population PK model) plus a saturable Emax-type function of time on treatment. Fitted with glm in R, not in NONMEM, on the CLL/SLL subset (n = 288) of the population PK analysis set. Sister model files from the same paper: modellib('Kemal_2026_nemtabrutinib') for the population PK model that generates Cavg, and modellib('Kemal_2026_nemtabrutinib_ae') / modellib('Kemal_2026_nemtabrutinib_hypertension') for the two exposure-safety models."
   reference <- paste(
-    "Kemal CC, Zweers TJ, Krekels EHJ, Chatterjee MS.",
-    "Population Pharmacokinetic Modeling and Exposure-Response Analyses of",
-    "Nemtabrutinib in Patients With Hematologic Malignancies.",
-    "CPT Pharmacometrics Syst Pharmacol. 2026;15(5). doi:10.1002/psp4.70257.",
+    "Kemal CC, Zweers TJ, Krekels EHJ, Chatterjee MS. Population",
+    "Pharmacokinetic Modeling and Exposure-Response Analyses of Nemtabrutinib",
+    "in Patients With Hematologic Malignancies. CPT Pharmacometrics Syst",
+    "Pharmacol. 2026;15(5):e70257. doi:10.1002/psp4.70257.",
     "Exposure-response methods are in Methods section 2.4;",
     "the coefficients this model carries are Table S4 of the supplement,",
     "and the fitted curves are drawn in Figure 3 (p. 9).",

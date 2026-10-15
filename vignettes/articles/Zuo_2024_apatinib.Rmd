@@ -21,7 +21,7 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode(readModelDb("Zuo_2024_apatinib"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Zuo_2024_apatinib"))$description`
-* Article: [BMC Cancer 24:1338 (2024)](https://doi.org/10.1186/s12885-024-13118-4)
+* Article: [BMC Cancer 24:1346 (2024)](https://doi.org/10.1186/s12885-024-13118-4)
 
 Apatinib is an orally administered small-molecule VEGFR-2 tyrosine-kinase
 inhibitor, cleared predominantly by hepatic CYP3A4/5. Zuo and colleagues built a

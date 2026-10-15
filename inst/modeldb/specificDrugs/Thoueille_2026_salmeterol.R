@@ -17,11 +17,12 @@ Thoueille_2026_salmeterol <- function() {
   )
   reference <- paste(
     "Thoueille P, Danion A, Hostrup M, Petrou M, Deventer K, Buclin T,",
-    "Girardin FR, Mazzoni I, Rabin O, Guidi M. Pharmacometric-Based",
-    "Evaluation of Salmeterol and Its Metabolite alpha-Hydroxysalmeterol in",
-    "Plasma and Urine: Practical Implications for Doping Control.",
-    "CPT Pharmacometrics Syst Pharmacol. 2026. doi:10.1002/psp4.70187.",
-    "Final NONMEM control stream and data-formatting description in Data S1."
+    "Girardin FR, Mazzoni I, Rabin O, Guidi M. Pharmacometric-Based Evaluation",
+    "of Salmeterol and Its Metabolite alpha-Hydroxysalmeterol in Plasma and",
+    "Urine: Practical Implications for Doping Control. CPT Pharmacometrics",
+    "Syst Pharmacol. 2026;15(2):e70187. doi:10.1002/psp4.70187. Final NONMEM",
+    "control stream and data-formatting description in Data S1.",
+    sep = " "
   )
   vignette <- "Thoueille_2026_salmeterol"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")

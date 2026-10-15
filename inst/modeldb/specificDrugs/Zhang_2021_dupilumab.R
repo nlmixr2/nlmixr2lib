@@ -1,6 +1,12 @@
 Zhang_2021_dupilumab <- function() {
   description <- "Two-compartment population PK model for dupilumab in adult and adolescent patients with asthma (Zhang 2021), with first-order SC absorption and parallel linear plus Michaelis-Menten elimination from the central compartment."
-  reference <- "Zhang L, Gao Y, Li M, et al. Population pharmacokinetic analysis of dupilumab in adult and adolescent patients with asthma. CPT Pharmacometrics Syst Pharmacol. 2021;10(9):941-952. doi:10.1002/psp4.12667"
+  reference <- paste(
+    "Zhang L, Gao Y, Li M, Xu C, Davis JD, Kanamaluru V, Lu Q. Population",
+    "pharmacokinetic analysis of dupilumab in adult and adolescent patients",
+    "with asthma. CPT Pharmacometrics Syst Pharmacol. 2021;10(8):941-952.",
+    "doi:10.1002/psp4.12667.",
+    sep = " "
+  )
   vignette <- "Zhang_2021_dupilumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 

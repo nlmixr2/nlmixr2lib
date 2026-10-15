@@ -1,11 +1,10 @@
 MarquesMinana_2010_vancomycin <- function() {
   description <- "One-compartment IV-infusion population PK model for vancomycin in neonates (Marques-Minana 2010). Developed from 70 NICU neonates (postmenstrual age 25.1-48.1 weeks; weight 0.7-3.7 kg). Weight-normalized clearance is linear in postmenstrual age and increased by concomitant amoxicillin-clavulanic acid; weight-normalized volume of distribution is decreased by concomitant spironolactone. Additive interindividual variability on CL and V per the paper's Step 4 error-model selection; additive residual error."
   reference <- paste(
-    "Marques-Minana M-R, Saadeddin A, Peris J-E.",
-    "Population pharmacokinetic analysis of vancomycin in neonates.",
-    "A new proposal of initial dosage guideline.",
-    "Br J Clin Pharmacol. 2010;70(5):713-722.",
-    "doi:10.1111/j.1365-2125.2010.03736.x",
+    "Marques-Minana MR, Saadeddin A, Peris JE. Population pharmacokinetic",
+    "analysis of vancomycin in neonates. A new proposal of initial dosage",
+    "guideline. Br J Clin Pharmacol. 2010;70(5):713-720.",
+    "doi:10.1111/j.1365-2125.2010.03736.x.",
     sep = " "
   )
   vignette <- "MarquesMinana_2010_vancomycin"

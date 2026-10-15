@@ -11,9 +11,8 @@ Dodds_2005_rfxiii_cyno <- function() {
     sep = " "
   )
   reference <- paste(
-    "Dodds MG, Visich JE, Vicini P.",
-    "Population Pharmacokinetics of Recombinant Factor XIII in Cynomolgus Monkeys.",
-    "AAPS J. 2005 Oct 27;7(3):Article 70 (E693-E702).",
+    "Dodds MG, Visich JE, Vicini P. Population pharmacokinetics of recombinant",
+    "factor XIII in cynomolgus monkeys. AAPS J. 2005;7(3):E693-E703.",
     "doi:10.1208/aapsj070370.",
     sep = " "
   )

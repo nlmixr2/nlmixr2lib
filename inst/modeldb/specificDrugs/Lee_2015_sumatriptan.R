@@ -1,9 +1,9 @@
 Lee_2015_sumatriptan <- function() {
   description <- "One-compartment population PK model for oral sumatriptan in healthy Korean male volunteers (Lee 2015): two parallel absorption routes (first-order absorption with lag time, and a transit-compartment chain with the Savic 2007 analytical input form) into a single central compartment with linear elimination. Captures the multiple-peaks absorption phenomenon reported in oral sumatriptan."
   reference <- paste(
-    "Lee J, Lim M, Seong SJ, Park S-M, Gwon M-R, Han S, Lee SM, Kim W, Yoon Y-R, Yoo H-D.",
-    "Population pharmacokinetic analysis of the multiple peaks phenomenon in sumatriptan.",
-    "Transl Clin Pharmacol. 2015;23(2):66-74.",
+    "Lee J, Lim MS, Seong SJ, Park SM, Gwon MR, Han S, Lee SM, Kim W, Yoon YR,",
+    "Yoo HD. Population pharmacokinetic analysis of the multiple peaks",
+    "phenomenon in sumatriptan. Transl Clin Pharmacol. 2015;23(2):66.",
     "doi:10.12793/tcp.2015.23.2.66.",
     sep = " "
   )

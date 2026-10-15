@@ -23,7 +23,7 @@ library(ggplot2)
 * Description: `r rxode2::rxode(readModelDb("Gastonguay_2005_efaproxiral"))$description`
 * Article (open-access poster PDF):
   <https://metrumrg.com/wp-content/uploads/2018/08/ascpt_2005_efapoxiral.pdf>
-* Conference abstract: Clin Pharmacol Ther 2005;77(2):P55,
+* Conference abstract: Clin Pharmacol Ther 2005;77(2):P89,
   doi:10.1016/j.clpt.2004.12.233.
 
 Efaproxiral (EFP, RSR13) is a synthetic allosteric modifier of hemoglobin that

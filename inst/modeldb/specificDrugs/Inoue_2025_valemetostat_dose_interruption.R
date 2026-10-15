@@ -19,7 +19,7 @@ Inoue_2025_valemetostat_dose_interruption <- function() {
     "models in the Inoue_2025_valemetostat_* family."
   )
   reference <- paste(
-    "Inoue H, Wang X, Garcia R, et al.",
+    "Inoue H, Wang X, Garcia R, Reilly B, Tachibana M, Yoo Y, Lau Y, Chen Y.",
     "Population Pharmacokinetics of Valemetostat and Exposure-Response Analyses of",
     "Efficacy and Safety in Patients with Relapsed/Refractory Peripheral T-Cell Lymphoma.",
     "J Clin Pharmacol. 2025;65(12):1699-1711. doi:10.1002/jcph.70100.",

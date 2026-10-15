@@ -10,7 +10,7 @@ Sheiner_1979_tubocurarine <- function() {
     "Karlsson MO, In the cradle of pharmacometric methodology:",
     "introducing population PKPD modeling, simultaneous analysis and the",
     "effect-compartment model. Commentary on Sheiner et al.",
-    "Clin Pharmacol Ther. 2025;117(6):1517-1532.",
+    "Clin Pharmacol Ther. 2025;117(6):1516-1532.",
     "doi:10.1002/cpt.3663 (PMC12087688), pages 1519-1532.",
     sep = " "
   )

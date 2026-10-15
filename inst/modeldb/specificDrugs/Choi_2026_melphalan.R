@@ -1,6 +1,13 @@
 Choi_2026_melphalan <- function() {
   description <- "Two-compartment IV-infusion population PK model for melphalan in pediatric patients undergoing autologous hematopoietic stem cell transplantation with busulfan-, thiotepa-, etoposide/carboplatin-, BCNU- or fludarabine-containing conditioning regimens (Choi 2026); allometric body-weight scaling on CL, V1 and V2, a serum-creatinine power effect on CL, and a concomitant-busulfan multiplier on CL."
-  reference <- "Choi JY, Kim B, Park HJ, Kim BK, Hong KT, Lee S, Lee S, Kang HJ. Population Pharmacokinetics of Melphalan in Pediatric Patients Undergoing Autologous Hematopoietic Stem Cell Transplantation with Various Conditioning Regimens. Eur J Drug Metab Pharmacokinet. 2026. doi:10.1007/s13318-026-01000-6"
+  reference <- paste(
+    "Choi JY, Kim B, Park HJ, Kim BK, Hong KT, Lee S, Lee S, Kang HJ.",
+    "Population Pharmacokinetics of Melphalan in Pediatric Patients Undergoing",
+    "Autologous Hematopoietic Stem Cell Transplantation with Various",
+    "Conditioning Regimens. Eur J Drug Metab Pharmacokinet.",
+    "2026;51(4):391-400. doi:10.1007/s13318-026-01000-6.",
+    sep = " "
+  )
   vignette <- "Choi_2026_melphalan"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

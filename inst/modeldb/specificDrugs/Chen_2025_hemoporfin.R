@@ -27,11 +27,11 @@ Chen_2025_hemoporfin <- function() {
     "AUC(0-30min) to the probability of a favourable efficacy outcome."
   )
   reference <- paste(
-    "Chen R, Zhang B, Tao J, Yao Q, Zhou T, Ma L, Xu Z.",
-    "Population Pharmacokinetics and Exposure-Response Relationship of",
-    "Hemoporfin in Pediatric Patients With Port-Wine Stain.",
-    "CPT Pharmacometrics Syst Pharmacol. 2025;14(8):1449-1457.",
-    "doi:10.1002/psp4.70050. PMCID: PMC12439283.",
+    "Chen R, Zhang B, Tao J, Yao Q, Zhou T, Ma L, Xu Z. Population",
+    "Pharmacokinetics and Exposure-Response Relationship of Hemoporfin in",
+    "Pediatric Patients With Port-Wine Stain. CPT Pharmacometrics Syst",
+    "Pharmacol. 2025;14(9):1449-1458. doi:10.1002/psp4.70050. PMCID:",
+    "PMC12439283.",
     "Structure from the final NONMEM control stream in Data S2;",
     "values from Table 2.",
     sep = " "

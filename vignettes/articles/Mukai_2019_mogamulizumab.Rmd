@@ -22,7 +22,7 @@ library(ggplot2)
 * Citation: `r rxode2::rxode(readModelDb("Mukai_2019_mogamulizumab"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Mukai_2019_mogamulizumab"))$description`
 * Article: <https://doi.org/10.1002/jcph.1564>
-* Supplement: <https://doi.org/10.1002/jcph.1564-sup-0001>
+* Supplement: Supporting Information of the article above (Wiley gives it no DOI of its own)
 
 # Population
 

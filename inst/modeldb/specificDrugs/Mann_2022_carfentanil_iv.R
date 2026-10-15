@@ -29,7 +29,7 @@ Mann_2022_carfentanil_iv <- function() {
     "Half-life anchor: Minkowski CP, Epstein D, Frost JJ, Gorelick DA.",
     "Differential response to IV carfentanil in chronic cocaine users",
     "and healthy controls. Addict Biol. 2012;17(1):149-155.",
-    "doi:10.1111/j.1369-1600.2010.00280.x.",
+    "doi:10.1111/j.1369-1600.2010.00256.x.",
     "Modified-rate-constant prescription:",
     "https://github.com/FDA/Mechanistic-PK-PD-Model-to-Rescue-Opioid-Overdose,",
     "Figure_7/simulateToGetOD_IM.R lines 169-183",

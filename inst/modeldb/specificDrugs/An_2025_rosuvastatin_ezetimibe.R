@@ -1,10 +1,9 @@
 An_2025_rosuvastatin_ezetimibe <- function() {
   description <- "Joint population PK/PD model of co-administered rosuvastatin and ezetimibe with enterohepatic recirculation, fitted to a two-part open-label multiple-dose crossover drug-interaction study in 50 healthy Korean male volunteers (An 2025 Table 2). Rosuvastatin has first-order absorption and two-compartment disposition. Total ezetimibe (unchanged ezetimibe plus its phenolic glucuronide, which together are the measured analyte) has a four-compartment structure: a gastrointestinal / absorption compartment, central and peripheral compartments, and a gallbladder reservoir. Drug moves from the ezetimibe central compartment into the gallbladder continuously at kbm, and is released back into the GASTROINTESTINAL compartment (not the central compartment) during three 0.75 h post-prandial windows, from which it is re-absorbed at ka - this GI-linked return is the structure the authors found superior on goodness-of-fit. The two PK models drive one shared LDL-cholesterol indirect-response compartment through independent, multiplicative (Bliss-independent) inhibition of LDL-C production, with Imax fixed at 1 and the Hill coefficient fixed at 1; there is no PK or PD interaction term. The meal gate is anchored to TIME AFTER DOSE, matching the protocol's standard meals 4, 10 and 24 h after an administration, so a single-dose event table reproduces the paper's Equations 3-6 indicator exactly. No covariate was significant on any PK or PD parameter; the screened covariates are recorded in covariatesDataExcluded. Concentrations are in ng/mL and LDL-C in mg/dL, so model() scales amount/volume by 1000 to convert mg/L to ng/mL."
   reference <- paste(
-    "An H, Shin D.",
-    "Population pharmacokinetics and pharmacodynamics with enterohepatic",
-    "recirculation of co-medication of rosuvastatin and ezetimibe.",
-    "Drug Des Devel Ther. 2025;19:4775-4787.",
+    "An H, Shin D. Population Pharmacokinetics and Pharmacodynamics with",
+    "Enterohepatic Recirculation of Co-Medication of Rosuvastatin and",
+    "Ezetimibe. Drug Des Devel Ther. 2025;19:4777-4787.",
     "doi:10.2147/DDDT.S522863.",
     sep = " "
   )

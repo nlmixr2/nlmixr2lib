@@ -1,6 +1,12 @@
 Duffull_2025_mab_tmdd_qss <- function() {
   description <- "Two-compartment target-mediated drug disposition (TMDD) model with quasi-steady-state target binding confined to the central compartment, for an unnamed monoclonal antibody (mAb) and its soluble target; case example 1 of the Duffull 2025 model-instability tutorial (Equations 1-3; Table 2 'Nominal value' column). Free antibody exchanges with a peripheral compartment by first-order rate constants and is removed both by linear clearance and by saturable target-mediated internalisation of the antibody-target complex. The total target (free target plus antibody-target complex) is a dynamic state with zero-order synthesis and first-order degradation, initialised at its drug-free steady state ksyn*Vc/kdeg. Cc is the free antibody concentration and Ctotal_target is the total target concentration, both nmol/L. This is the FULL model that the tutorial shows to be structurally identifiable under a rich design but NOT deterministically identifiable under the reduced clinical design (Km relative standard error 1495.65%); the target-saturated simplification that the authors adopted instead is packaged separately as Duffull_2025_mab_tmdd_simplified. Parameter values are the nominal set used for the Fisher-information evaluations, not a fit to observed patient data: the tutorial's datasets were generated under the stated sampling designs."
-  reference <- "Duffull SB, Wright DFB, Zhu X, Liu X, Abulfathi A, Hishe H. A pharmacometric workflow for resolving model instability in model use-reuse settings. CPT Pharmacometrics Syst Pharmacol. 2025;14(10):1547-1556. doi:10.1002/psp4.70049"
+  reference <- paste(
+    "Duffull SB, Wright DFB, Zhu X, Liu X, Abulfathi A, Hishe H. A",
+    "Pharmacometric Workflow for Resolving Model Instability in Model",
+    "Use-Reuse Settings. CPT Pharmacometrics Syst Pharmacol.",
+    "2025;14(10):1544-1555. doi:10.1002/psp4.70049.",
+    sep = " "
+  )
   vignette <- "Duffull_2025_tmdd_model_instability"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 

@@ -19,14 +19,13 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Ding J, Hoglund RM, van der Pluijm RW, Callery JJ, Peto TJ,
-  Tripura R, Das S, Nguyen HC, Promnarate C, Mukaka M, Dysoley L, Fanello C,
-  Onyamboko MA, Anvikar AR, Mayxay M, Smithuis F, von Seidlein L, Dhorda M,
-  Amaratunga C, Faiz MA, Ho DTN, White NJ, Day NPJ, Dondorp AM, Tarning J
-  (2026). Population pharmacokinetics of artemether-lumefantrine plus
-  amodiaquine in patients with uncomplicated *Plasmodium falciparum*
-  malaria. *British Journal of Clinical Pharmacology* 92(2):589-605.
-  doi:10.1002/bcp.70301.
+* Citation: Ding J, Hoglund RM, van der Pluijm RW, Callery JJ, Peto TJ, Tripura
+  R, Das S, Chau NH, Promnarate C, Mukaka M, Dysoley L, Fanello C, Onyamboko MA,
+  Anvikar AR, Mayxay M, Smithuis F, von Seidlein L, Dhorda M, Amaratunga C, Faiz
+  MA, Nghia HDT, White NJ, Day NPJ, Dondorp AM, Tarning J. Population
+  pharmacokinetics of artemether-lumefantrine plus amodiaquine in patients with
+  uncomplicated *Plasmodium falciparum* malaria. *Br J Clin Pharmacol*.
+  2026;92(2):589-605. doi:10.1002/bcp.70301.
 * Article: <https://doi.org/10.1002/bcp.70301>
 * Europe PMC: PMC12850606 (open access, CC-BY).
 * Trials: TRACII, ClinicalTrials.gov NCT02453308; TACT-CV, NCT03355664.

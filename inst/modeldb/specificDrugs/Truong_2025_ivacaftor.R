@@ -1,6 +1,16 @@
 Truong_2025_ivacaftor <- function() {
   description <- "One-compartment population PK model for oral ivacaftor in children with cystic fibrosis aged 2-18 years carrying at least one F508del allele (Truong 2025, MODUL-CF). Absorption lag time and first-order absorption, first-order elimination, with allometric scaling of CL/F (exponent 0.75 fixed) and V/F (exponent 1 fixed) on body weight normalised to 70 kg. The lag time and absorption rate constant were not estimable from the sparse therapeutic-drug-monitoring design and were fixed to previously published values. Between-subject variability was estimable on apparent clearance only; residual variability is combined additive plus proportional, the only one of the three drugs to need an additive term. One of three independent per-drug models the paper reports for the elexacaftor/tezacaftor/ivacaftor combination; ivacaftor is dosed every 12 h whereas the two correctors are dosed once daily."
-  reference <- "Truong NH, Benaboud S, Bouazza N, et al. Elexacaftor/Tezacaftor/Ivacaftor Population Pharmacokinetics in Pediatric Patients With Cystic Fibrosis. Clin Transl Sci. 2025;18(5):e70245. doi:10.1111/cts.70245"
+  reference <- paste(
+    "Truong NH, Benaboud S, Bouazza N, Barboura M, Bardin E, Miralles M, Lui",
+    "G, Froelicher-Bournaud L, Rouillon S, Bihouee T, Bui S, Reix P, Dalphin",
+    "ML, Laurans M, Languepin J, Corvol H, Troussier F, Weiss L, Cinthia R,",
+    "Tatopoulos A, Deneuville E, Chiron R, Stremler N, Llerena C, Ramel S,",
+    "Perisson C, Houdoin V, Mittaine M, Treluyer JM, Sermet-Gaudelus I, et al.",
+    "Elexacaftor/Tezacaftor/Ivacaftor Population Pharmacokinetics in Pediatric",
+    "Patients With Cystic Fibrosis. Clin Transl Sci. 2025;18(5):e70245.",
+    "doi:10.1111/cts.70245.",
+    sep = " "
+  )
   vignette <- "Truong_2025_elexacaftor_tezacaftor_ivacaftor"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

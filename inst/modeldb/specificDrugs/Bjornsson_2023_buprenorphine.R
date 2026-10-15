@@ -1,7 +1,7 @@
 # Population PK model for buprenorphine (BPN) after intravenous, sublingual,
 # and subcutaneous CAM2038 weekly / monthly depot administration in healthy
 # participants and participants with opioid use disorder (Bjornsson 2023,
-# Clin Pharmacokinet 62(9):1429-1443; doi:10.1007/s40262-023-01288-6).
+# Clin Pharmacokinet 62(10):1427-1443; doi:10.1007/s40262-023-01288-6).
 
 Bjornsson_2023_buprenorphine <- function() {
   description <- paste(
@@ -32,11 +32,11 @@ Bjornsson_2023_buprenorphine <- function() {
     sep = " "
   )
   reference <- paste(
-    "Bjornsson M, Acharya C, Strandgarden K, Tiberg F (2023). Population",
-    "pharmacokinetic analysis supports initiation treatment and bridging from",
-    "sublingual buprenorphine to subcutaneous administration of a",
-    "buprenorphine depot (CAM2038) in the treatment of opioid use disorder.",
-    "Clinical Pharmacokinetics 62(9):1429-1443.",
+    "Bjornsson M, Acharya C, Strandgarden K, Tiberg F. Population",
+    "Pharmacokinetic Analysis Supports Initiation Treatment and Bridging from",
+    "Sublingual Buprenorphine to Subcutaneous Administration of a",
+    "Buprenorphine Depot (CAM2038) in the Treatment of Opioid Use Disorder.",
+    "Clin Pharmacokinet. 2023;62(10):1427-1443.",
     "doi:10.1007/s40262-023-01288-6.",
     sep = " "
   )

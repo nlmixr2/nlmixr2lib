@@ -1,11 +1,10 @@
 PerezRuixo_2015_oxaliplatin_platelet_dynamics <- function() {
   description <- "Semi-mechanistic PD-only platelet-dynamics model for peritoneal carcinomatosis (PC) patients treated with cytoreductive surgery (CRS) alone or CRS followed by hyperthermic intraperitoneal oxaliplatin (HIO). Extends the Harker (2000) cytokinetic model with (i) a self-renewing megakaryocyte progenitor pool (prol) coupled to a (PLT0/PLT)^gamma feedback on the proliferation rate, (ii) a five-compartment Friberg-Bulitta transit chain for platelet aging (transit1 -> transit2 -> ... -> transit5) with a random-destruction rate ks on each transit compartment, (iii) a fixed release factor eta = 4000 platelets per maturing megakaryocyte, (iv) a transient post-surgery stimulation of prol proliferation with maximum effect SPmax that attenuates first-order with rate kp starting at surgery time t = 0, and (v) a power-function drug effect E_drug = alpha * CP_OXA_MGL^beta that inhibits prol proliferation. The paper does NOT develop an oxaliplatin PK model of its own; CP_OXA_MGL is obtained from empirical Bayes estimates of an upstream popPK model (Perez-Ruixo 2013 Cancer Chemother Pharmacol 71:693-704, cited as reference 15 -- not packaged in nlmixr2lib), and is consumed here as an exogenous time-varying covariate column (oxaliplatin plasma concentration in mg/L). Prior splenectomy multiplies ks by Phi = 0.475, prolonging platelet lifespan from 3.23 to 7.78 days. Age, body surface area, sex, total proteins and HIO carrier solution were tested and dropped. The paper additionally models platelet transfusions as a bolus of TRF0 = 255 x 10^9/L platelet-count-equivalent decaying first-order with rate kt = 0.104/h (t1/2 = 6.66 h); this transfusion sub-model is NOT retained in the packaged model file (only 5 / 80 patients received transfusions in the source cohort, kt has the highest RSE 53.8% in the model, and the paper itself notes 'this finding should be interpreted with caution given the limited number of patients who received transfusions'). Downstream users who need transfusion simulation can layer an exogenous decay on the observation."
   reference <- paste(
-    "Perez-Ruixo C, Valenzuela B, Peris JE, Bretcha-Boix P,",
-    "Escudero-Ortiz V, Farre-Alegre J, Perez-Ruixo JJ.",
-    "Platelet Dynamics in Peritoneal Carcinomatosis Patients Treated with",
-    "Cytoreductive Surgery and Hyperthermic Intraperitoneal Oxaliplatin.",
-    "AAPS J. 2016;18(1):245-257 (published online 17 Nov 2015).",
+    "Perez-Ruixo C, Valenzuela B, Peris JE, Bretcha-Boix P, Escudero-Ortiz V,",
+    "Farre-Alegre J, Perez-Ruixo JJ. Platelet Dynamics in Peritoneal",
+    "Carcinomatosis Patients Treated with Cytoreductive Surgery and",
+    "Hyperthermic Intraperitoneal Oxaliplatin. AAPS J. 2016;18(1):239-250.",
     "doi:10.1208/s12248-015-9839-0.",
     "CP_OXA_MGL driver comes from the upstream oxaliplatin popPK (Perez-Ruixo C,",
     "Valenzuela B, Peris JE, et al. Cancer Chemother Pharmacol.",

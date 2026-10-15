@@ -25,10 +25,9 @@ Yang_2025_osimertinib <- function() {
   reference <- paste(
     "Yang J, Olabode D, Sawant-Basak A, Baldry R, Vishwanathan K, Bachina S,",
     "Todd A, Ghiorghiu D, Rukazenkov Y, Zhou D, Shahraz A. Population",
-    "Pharmacokinetics and Exposure-Response Analysis of First-Line",
-    "Osimertinib Plus Chemotherapy in Patients with EGFR-Mutated Advanced",
-    "NSCLC. Clin Pharmacol Ther. 2025;118(5):1110-1120.",
-    "doi:10.1002/cpt.3759",
+    "Pharmacokinetics and Exposure-Response Analysis of First-Line Osimertinib",
+    "Plus Chemotherapy in Patients with EGFR-Mutated Advanced NSCLC. Clin",
+    "Pharmacol Ther. 2025;118(5):1110-1121. doi:10.1002/cpt.3759.",
     sep = " "
   )
   vignette <- "Yang_2025_osimertinib"

@@ -1,11 +1,10 @@
 Hansson_2013_sunitinib_os <- function() {
   description <- "Weibull time-to-event model for overall survival (OS) in adults with imatinib-resistant gastrointestinal stromal tumours (GIST) on sunitinib. The hazard function is h(t) = lambda * alpha * (lambda * t)^(alpha - 1) * exp(beta_anc * ANC + beta_dbprel * DBP_REL + beta_tumor * TUMSZ), where the three log-linear hazard modulators are the time-varying absolute neutrophil count ANC(t) (from the upstream Hansson 2013 myelosuppression model), the relative change in diastolic blood pressure from baseline DBP_REL(t) (from the upstream Hansson 2013 dBP indirect-response model), and the time-fixed baseline tumor size TUMSZ in mm (paper Table 2 'beta3 Tumor base'). All three modulators are consumed as data covariates. Time units inside the model are hours; the source paper reports the Weibull lambda in per-week units, converted to per-hour inside ini() so the parameter values match Table 2 row 'lambda (/week)'. A separate Weibull censoring distribution (lambdacens, alphacens) is exposed as a derived output for use in simulation-based dropout."
   reference <- paste(
-    "Hansson EK, Ma G, Amantea MA, French J, Milligan PA, Friberg LE,",
-    "Karlsson MO.",
-    "PKPD modeling of predictors for adverse effects and overall survival",
-    "in sunitinib-treated patients with GIST.",
-    "CPT Pharmacometrics Syst Pharmacol. 2013;2(11):e85.",
+    "Hansson EK, Ma G, Amantea MA, French J, Milligan PA, Friberg LE, Karlsson",
+    "MO. PKPD Modeling of Predictors for Adverse Effects and Overall Survival",
+    "in Sunitinib-Treated Patients With GIST. CPT Pharmacometrics Syst",
+    "Pharmacol. 2013;2(12):e85.",
     "doi:10.1038/psp.2013.62.",
     "Sister model files from the same paper:",
     "modellib('Hansson_2013_sunitinib_myelosuppression'),",

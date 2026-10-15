@@ -28,7 +28,7 @@ ui <- rxode2::rxode(readModelDb("Hard_2017_aripiprazole_lauroxil"))
 * Article: <https://doi.org/10.1007/s40263-017-0447-7>
 * Electronic Supplementary Material (parameter table): <https://doi.org/10.1007/s40263-017-0447-7> (Supplementary file 1, `40263_2017_447_MOESM1_ESM.pdf`)
 * Earlier PopPK model from which Vp/F, Q/F and the weight centering are carried:
-  <https://doi.org/10.1097/JCP.0000000000000685>
+  <https://doi.org/10.1097/JCP.0000000000000691>
 
 Aripiprazole lauroxil (AL) is an intramuscular extended-release prodrug of
 aripiprazole. The prodrug itself is not measurable in plasma; the model

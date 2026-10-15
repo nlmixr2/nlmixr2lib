@@ -1,6 +1,14 @@
 Lin_2024_casirivimab <- function() {
   description <- "Two-compartment population PK model for casirivimab in pediatric and adult subjects (non-infected, ambulatory or hospitalized SARS-CoV-2-infected, or household contacts) following IV or SC administration (Lin 2024, casirivimab arm of the joint casirivimab + imdevimab popPK model)"
-  reference <- "Lin K-J, Turner MA, Pasoll D, et al. Population Pharmacokinetics of Casirivimab and Imdevimab in Pediatric and Adult Non-Infected Individuals, Pediatric and Adult Ambulatory or Hospitalized Patients or Household Contacts of Patients Infected with SARS-COV-2. Pharmaceutical Research. 2024;41(10):1933-1949. doi:10.1007/s11095-024-03764-5"
+  reference <- paste(
+    "Lin KJ, Turner KC, Rosario M, Harnisch LO, Davis JD, DiCioccio AT.",
+    "Population Pharmacokinetics of Casirivimab and Imdevimab in Pediatric and",
+    "Adult Non-Infected Individuals, Pediatric and Adult Ambulatory or",
+    "Hospitalized Patients or Household Contacts of Patients Infected with",
+    "SARS-COV-2. Pharm Res. 2024;41(10):1933-1949.",
+    "doi:10.1007/s11095-024-03764-5.",
+    sep = " "
+  )
   vignette <- "Lin_2024_casirivimab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 

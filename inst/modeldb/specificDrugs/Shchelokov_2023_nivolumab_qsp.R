@@ -1,6 +1,11 @@
 Shchelokov_2023_nivolumab_qsp <- function() {
   description <- "QSP. Nivolumab PK linked to single-cell PD-1 receptor occupancy: two-compartment IV PK drives a receptor module with PD-1 synthesis, degradation, two-step bivalent antibody binding and internalization of all bound forms on CD4 and CD8 T cells, and returns the four receptor-occupancy readouts (free-receptor vs bound-receptor assay format, each normalized either to the predose baseline or to total receptor at each time point) that flow-cytometry RO assays report (Shchelokov 2023)"
-  reference <- "Shchelokov D, Demin O Jr. Receptor occupancy assessment and interpretation in terms of quantitative systems pharmacology: nivolumab case study. MAbs. 2023;15(1):e2156317. doi:10.1080/19420862.2022.2156317"
+  reference <- paste(
+    "Shchelokov D, Demin O Jr. Receptor occupancy assessment and",
+    "interpretation in terms of quantitative systems pharmacology: nivolumab",
+    "case study. MAbs. 2023;15(1):2156317. doi:10.1080/19420862.2022.2156317.",
+    sep = " "
+  )
   vignette <- "Shchelokov_2023_nivolumab_qsp"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 

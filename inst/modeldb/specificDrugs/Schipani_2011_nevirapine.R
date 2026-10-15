@@ -1,11 +1,13 @@
 Schipani_2011_nevirapine <- function() {
   description <- "One-compartment population PK model for oral nevirapine in HIV-infected adults (Schipani 2011), with CYP2B6 516G>T (rs3745274) and 983T>C (rs28399499) genotype and body-weight covariate effects on CL/F. Covariate effects are additive on linear-scale CL/F per the published equation."
   reference <- paste(
-    "Schipani A, Wyen C, Mahungu T, Hendra H, Egan D, Siccardi M, Davies G, Khoo S,",
-    "Fatkenheuer G, Rockstroh J, Brockmeyer NH, Johnson MA, Owen A, Back DJ.",
-    "Integration of population pharmacokinetics and pharmacogenetics: an aid to",
-    "optimal nevirapine dose selection in HIV-infected individuals.",
-    "J Antimicrob Chemother. 2011;66(6):1332-1339. doi:10.1093/jac/dkr087."
+    "Schipani A, Wyen C, Mahungu T, Hendra H, Egan D, Siccardi M, Davies G,",
+    "Khoo S, Fatkenheuer G, Youle M, Rockstroh J, Brockmeyer NH, Johnson MA,",
+    "Owen A, Back DJ. Integration of population pharmacokinetics and",
+    "pharmacogenetics: an aid to optimal nevirapine dose selection in",
+    "HIV-infected individuals. J Antimicrob Chemother. 2011;66(6):1332-1339.",
+    "doi:10.1093/jac/dkr087.",
+    sep = " "
   )
   vignette <- "Schipani_2011_nevirapine"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")

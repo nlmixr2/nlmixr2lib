@@ -17,9 +17,9 @@ Ibrahim_2025_ibrutinib_venetoclax <- function() {
     "modellib('Ibrahim_2025_ibrutinib_cll'), modellib('Ibrahim_2025_ibrutinib_bp')."
   )
   reference <- paste(
-    "Ibrahim EIK, Friberg LE.",
-    "Optimizing ibrutinib posology in chronic lymphocytic leukemia using a semi-mechanistic pharmacometric framework.",
-    "CPT Pharmacometrics Syst Pharmacol. 2025;14(12):2186-2198.",
+    "Ibrahim EIK, Friberg LE. Optimizing Ibrutinib Posology in Chronic",
+    "Lymphocytic Leukemia Using a Semi-Mechanistic Pharmacometric Framework.",
+    "CPT Pharmacometrics Syst Pharmacol. 2025;14(12):2186-2197.",
     "doi:10.1002/psp4.70124.",
     "Open Access under CC BY-NC.",
     "Ibrutinib structure and parameters from the authors' RxODE control stream",

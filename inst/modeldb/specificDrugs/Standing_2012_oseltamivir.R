@@ -39,7 +39,7 @@ Standing_2012_oseltamivir <- function() {
       units = "months",
       type = "continuous",
       reference_category = NULL,
-      notes = "Range in the Standing 2012 cohort (Table 1) converted to months: ~6.4-12.0 months PAGE (Standing reports postmenstrual age in weeks; here it is rendered in months to match the canonical PAGE convention). The model converts PAGE back to weeks internally for the maturation Hill sigmoids because Standing 2012 and Rhodin 2009 published their TM50 values in weeks. Renal maturation: F_renal(PMA_wk) = PMA_wk^3.4 / (47.7^3.4 + PMA_wk^3.4) from Rhodin et al. 2009 doi:10.1007/s00228-008-0577-4 Table 1 (referenced by Standing 2012 ref 23; the TM50 and Hill values are not reproduced in the Standing text). HCE1 maturation: F_HCE1(PMA_wk) = PMA_wk^3.17 / (86.1^3.17 + PMA_wk^3.17), fitted by Standing 2012 to HCE1 expression data from Yang et al. 2009 (Standing 2012 Fig 2 caption: PM50 = 86.1 weeks; Hill = 3.17).",
+      notes = "Range in the Standing 2012 cohort (Table 1) converted to months: ~6.4-12.0 months PAGE (Standing reports postmenstrual age in weeks; here it is rendered in months to match the canonical PAGE convention). The model converts PAGE back to weeks internally for the maturation Hill sigmoids because Standing 2012 and Rhodin 2009 published their TM50 values in weeks. Renal maturation: F_renal(PMA_wk) = PMA_wk^3.4 / (47.7^3.4 + PMA_wk^3.4) from Rhodin et al. 2009 doi:10.1007/s00467-008-0997-5 Table 1 (referenced by Standing 2012 ref 23; the TM50 and Hill values are not reproduced in the Standing text). HCE1 maturation: F_HCE1(PMA_wk) = PMA_wk^3.17 / (86.1^3.17 + PMA_wk^3.17), fitted by Standing 2012 to HCE1 expression data from Yang et al. 2009 (Standing 2012 Fig 2 caption: PM50 = 86.1 weeks; Hill = 3.17).",
       source_name = "PMA (weeks)"
     )
   )
@@ -90,8 +90,8 @@ Standing_2012_oseltamivir <- function() {
     # Renal maturation Hill-sigmoid parameters from Rhodin et al. 2009 (cited
     # in Standing 2012 as ref 23 but the TM50 / Hill values are not reproduced
     # in the Standing text; they come from Rhodin 2009 Table 1 directly).
-    pma50_renal <- fixed(47.7); label("PMA for 50% mature renal function (weeks) [Rhodin 2009]")                        # Rhodin et al. 2009 doi:10.1007/s00228-008-0577-4 Table 1; referenced by Standing 2012 ref 23 but values not in Standing text
-    hill_renal  <- fixed(3.4);  label("Hill coefficient for renal maturation [Rhodin 2009]")                            # Rhodin et al. 2009 doi:10.1007/s00228-008-0577-4 Table 1
+    pma50_renal <- fixed(47.7); label("PMA for 50% mature renal function (weeks) [Rhodin 2009]")                        # Rhodin et al. 2009 doi:10.1007/s00467-008-0997-5 Table 1; referenced by Standing 2012 ref 23 but values not in Standing text
+    hill_renal  <- fixed(3.4);  label("Hill coefficient for renal maturation [Rhodin 2009]")                            # Rhodin et al. 2009 doi:10.1007/s00467-008-0997-5 Table 1
 
     # IIV. Standing 2012 Table 2 reports BSV as %CV (log-normal). Convert via
     # omega^2 = log(1 + CV^2): 57.5% -> 0.2858, 59.4% -> 0.3023, 71.0% -> 0.4082.

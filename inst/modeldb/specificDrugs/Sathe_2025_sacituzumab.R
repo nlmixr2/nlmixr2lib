@@ -1,6 +1,12 @@
 Sathe_2025_sacituzumab <- function() {
   description <- "Updated coupled three-analyte population PK model for sacituzumab govitecan (SG, the ADC; output Cc), free SN-38 (released payload; output Cc_sn38), and total antibody (tAB; output Cc_tab) after pooling data from TROPiCS-02 (HR+/HER2- mBC) with IMMU-132-01 and ASCENT (mTNBC + mUC + HR+/HER2- mBC + other solid tumors) (Sathe 2025). Structure is identical to Sathe 2024 (see Sathe_2024_sacituzumab): three two-compartment models with body-weight allometric scaling; SG has IIV on CL and a baseline-albumin power covariate on CL; free SN-38 is generated from SG central by a first-order release rate KREL with apparent V1 and V2 fixed to literature values; tAB has time-dependent CL (asymptotic onset), correlated IIV on CL and V1, and covariates of baseline albumin (CL), tumor type (CL), and sex (V1). Parameter values are the pooled 3-study updated estimates from Sathe 2025 Tables 2, 3, and 4. Simulation requires dosing two compartments simultaneously (central and central_tab) for each SG infusion event."
-  reference <- "Sathe AG, Jones AK, Diderichsen PM, Wang X, Chang P, Verret W, Girish S. Sacituzumab Govitecan Population Pharmacokinetics: Updated Analyses Using HR+/HER2- Metastatic Breast Cancer Data From the Phase 3 TROPiCS-02 Trial. Clin Transl Sci. 2025;18(8):e70291. doi:10.1111/cts.70291"
+  reference <- paste(
+    "Sathe AG, Jones AK, Diderichsen PM, Wang X, Chang P, Verret W, Girish S.",
+    "Sacituzumab Govitecan Population Pharmacokinetics: Updated Analyses Using",
+    "HR+/HER2- Metastatic Breast Cancer Data From the Phase 3 TROPiCS-02",
+    "Trial. Clin Transl Sci. 2025;18(7):e70291. doi:10.1111/cts.70291.",
+    sep = " "
+  )
   vignette <- "Sathe_2025_sacituzumab"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 

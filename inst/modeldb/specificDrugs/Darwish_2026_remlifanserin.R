@@ -1,6 +1,12 @@
 Darwish_2026_remlifanserin <- function() {
   description <- "Population PK model for oral remlifanserin (ACP-204), a selective 5-HT2A receptor inverse agonist (Darwish 2026): one-compartment with first-order absorption, an absorption lag time and linear elimination, pooled across seven Phase 1 studies in healthy young and older adults. Fed status shifts the absorption lag time and female sex lowers the apparent central volume."
-  reference <- "Darwish M, Lin N, Dirks B, Jaworowicz D, Maxwell K, Pathak S. Population pharmacokinetics of remlifanserin (ACP-204), a serotonin 2A receptor inverse agonist. Alzheimer's & Dementia: Translational Research & Clinical Interventions. 2026;12(1):e70254. doi:10.1002/trc2.70254"
+  reference <- paste(
+    "Darwish M, Lin N, Dirks B, Jaworowicz D, Maxwell K, Pathak S. Population",
+    "pharmacokinetics of remlifanserin (ACP-204), a serotonin 2A receptor",
+    "inverse agonist. Alzheimers Dement (N Y). 2026;12(2):e70254.",
+    "doi:10.1002/trc2.70254.",
+    sep = " "
+  )
   vignette <- "Darwish_2026_remlifanserin"
 
   # The model is parameterised in DAYS throughout, exactly as Darwish 2026
