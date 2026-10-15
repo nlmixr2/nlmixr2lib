@@ -18,7 +18,10 @@ Marcantonio_2022_amivantamab <- function() {
     sep = " "
   )
   reference <- paste(
-    "Marcantonio DH et al. (2022). Front Pharmacol 13:864768.",
+    "Marcantonio DH, Matteson A, Presler M, Burke JM, Hagen DR, Hua F, Apgar",
+    "JF. Early Feasibility Assessment: A Method for Accurately Predicting",
+    "Biotherapeutic Dosing to Inform Early Drug Discovery Decisions. Front",
+    "Pharmacol. 2022;13:864768.",
     "doi:10.3389/fphar.2022.864768. Case Study 2 (amivantamab EGFR + c-Met",
     "bispecific, NSCLC). Drug-specific parameters from paper Tables 3 and",
     "4 and the Assess run file JSON (Data Sheet 2).",

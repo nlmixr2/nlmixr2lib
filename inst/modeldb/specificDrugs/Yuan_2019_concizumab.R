@@ -1,6 +1,17 @@
 Yuan_2019_concizumab <- function() {
   description <- "QSP. Systems PK/PD model for concizumab (humanized anti-TFPI IgG4) describing binding to both membrane-bound TFPI (mTFPI; non-linear clearance via receptor-mediated endocytosis) and soluble TFPI (sTFPI; linear clearance via FcRn-recycled pinocytosis) in a minimal physiologically-based PK framework with two nested endothelial endosome compartments. Parameter values for 70 kg adult humans (Yuan 2019 Tables 1-2); the paper also tabulates monkey and rabbit parameter sets."
-  reference <- "Yuan D, Rode F, Cao Y. A systems pharmacokinetic/pharmacodynamic model for concizumab to explore the potential of anti-TFPI recycling antibodies. Eur J Pharm Sci. 2019 Oct 1;138:105032. doi:10.1016/j.ejps.2019.105032. PMID 31374317. mTFPI baseline, kdegm = kint, and koff optimized in the reduced PK/PD model using human PK/PD data digitized from Chowdary 2015 (J Thromb Haemost 13:743-754). Linear-clearance endosome parameters (CLup, CLe, krec, k1on, k1off, FcRn_b) inherited from Yuan 2018 (J Pharmacokinet Pharmacodyn 45:851-864), calibrated using adalimumab."
+  reference <- paste(
+    "Yuan D, Rode F, Cao Y. A systems pharmacokinetic/pharmacodynamic model",
+    "for concizumab to explore the potential of anti-TFPI recycling",
+    "antibodies. Eur J Pharm Sci. 2019;138:105032.",
+    "doi:10.1016/j.ejps.2019.105032. PMID 31394258. mTFPI baseline, kdegm =",
+    "kint, and koff optimized in the reduced PK/PD model using human PK/PD",
+    "data digitized from Chowdary 2015 (J Thromb Haemost 13:743-754).",
+    "Linear-clearance endosome parameters (CLup, CLe, krec, k1on, k1off,",
+    "FcRn_b) inherited from Yuan 2018 (J Pharmacokinet Pharmacodyn",
+    "45:851-864), calibrated using adalimumab.",
+    sep = " "
+  )
   vignette <- "Yuan_2019_concizumab"
   paper_specific_compartments <- c(
     "a_p",

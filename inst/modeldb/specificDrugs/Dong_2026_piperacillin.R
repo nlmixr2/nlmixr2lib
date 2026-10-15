@@ -14,10 +14,9 @@ Dong_2026_piperacillin <- function() {
     "clearance."
   )
   reference <- paste(
-    "Dong Z, Shi H, Yang Y, Yi Q, Jiang Z, Li Y (2026).",
-    "Population pharmacokinetics and dosing regimen optimization of",
-    "piperacillin in critically ill patients.",
-    "Drug Des Devel Ther 20.",
+    "Dong Z, Shi H, Yang Y, Yi Q, Jiang Z, Li Y. Population Pharmacokinetics",
+    "and Dosing Regimen Optimization of Piperacillin in Critically Ill",
+    "Patients. Drug Des Devel Ther. 2026;20:551307.",
     "doi:10.2147/DDDT.S551307.",
     sep = " "
   )

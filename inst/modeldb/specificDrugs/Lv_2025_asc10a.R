@@ -20,10 +20,10 @@ Lv_2025_asc10a <- function() {
     sep = " "
   )
   reference <- paste(
-    "Lv D, Li S, Li Y, Lin M, Zhai Y, Wu M, Qiu Y, Zhao Q, Liu J.",
-    "Population Pharmacokinetic Modeling Analysis of ASC10, a Novel",
-    "Antiviral Agent Targeted COVID-19, in Chinese Healthy Subjects.",
-    "Drug Des Devel Ther. 2025;19:7391-7402.",
+    "Lv D, Li S, Li Y, Lin M, Zhai Y, Wu M, Qiu Y, Zhao Q, Liu J. Population",
+    "Pharmacokinetic Modeling Analysis of ASC10, a Novel Antiviral Agent",
+    "Targeted COVID-19, in Chinese Healthy Subjects. Drug Des Devel Ther.",
+    "2025;19:7393-7404.",
     "doi:10.2147/DDDT.S517282.",
     sep = " "
   )

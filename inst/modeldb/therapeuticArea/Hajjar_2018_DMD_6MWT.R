@@ -30,7 +30,6 @@ Hajjar_2018_DMD_6MWT <- function() {
     "A Latent Variable Disease Progression Model for Duchenne Muscular Dystrophy.",
     "Poster T-011 presented at the American Conference on Pharmacometrics",
     "(ACoP9), Oct 7-10 2018, San Diego, CA.",
-    "doi:10.36255/duchenne-muscular-dystrophy-public-education.",
     sep = " "
   )
   vignette <- "Hajjar_2018_DMD_6MWT"

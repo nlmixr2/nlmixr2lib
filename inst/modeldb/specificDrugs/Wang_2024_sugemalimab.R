@@ -57,7 +57,7 @@ Wang_2024_sugemalimab <- function() {
       description = "Lymphoma tumour-type indicator (heterogeneous lymphoma pool)",
       units = "(binary)",
       type = "binary",
-      reference_category = "0 (any non-lymphoma tumour type — when paired with TUMTP_OTHER = TUMTP_GASTRIC = TUMTP_ESCC = 0, the reference is lung cancer / NSCLC)",
+      reference_category = "0 (any non-lymphoma tumour type -- when paired with TUMTP_OTHER = TUMTP_GASTRIC = TUMTP_ESCC = 0, the reference is lung cancer / NSCLC)",
       notes = "Exponential effect on baseline CL and on Vc. Wang 2024 pools two lymphoma histologies (extranodal NK/T-cell lymphoma from CS1001-201 / NCT03595657 and classical / relapsed-refractory Hodgkin lymphoma from CS1001-202 / NCT03505996) into a single indicator (n = 164 in the pooled dataset). Source column TTYPE level 1.",
       source_name = "TTYPE1"
     ),
@@ -153,31 +153,58 @@ Wang_2024_sugemalimab <- function() {
     e_gc_vc     <- log(1.14);  label("Exponential coefficient of GCGEJ tumour type (TTYPE4) on Vc (unitless; log(exp(theta21)))") # Wang 2024 Table 3: exp(theta21) = 1.14
     e_escc_vc   <- log(1.08);  label("Exponential coefficient of ESCC tumour type (TTYPE5) on Vc (unitless; log(exp(theta22)))") # Wang 2024 Table 3: exp(theta22) = 1.08
 
-    # IIV. CL and Vc form a 2x2 log-normal block; Vp and T50 are independent
-    # log-normal etas; cl_time_max has an independent additive eta on the linear
-    # scale (Wang 2024 Table 3 footnote: "cl_time_max_i = theta5 + eta_Emax,i").
-    # Q has no IIV reported. Source CV%-to-omega^2 conversions (log-normal):
-    #   omega^2 = log(1 + CV%^2)
-    #   CL  19.5%  -> 0.0373
-    #   Vc  15.5%  -> 0.0237
-    #   Vp  68.5%  -> 0.3847
-    #   T50 64.2%  -> 0.3451
-    # Source covariance Cov(CL, Vc) = 0.0161 reported directly on the
-    # omega-block scale; correlation = 0.0161 / sqrt(0.0373 * 0.0237) = 0.541.
-    # cl_time_max additive-eta variance: source CV% 18.5% interpreted as
-    # SD(eta_Emax) / |cl_time_max| -> SD = 0.185 * 0.528 = 0.0977,
-    # variance = 0.00955.
-    etalcl + etalvc ~ c(0.0373,
-                        0.0161, 0.0237)  # Wang 2024 Table 3: IIV CL 19.5%, IIV Vc 15.5%, Cov(CL,Vc) 0.0161
-    etalvp   ~ 0.3847                    # Wang 2024 Table 3: IIV Vp 68.5%
-    etacl_time_max  ~ 0.00955                   # Wang 2024 Table 3: IIV cl_time_max 18.5% (additive eta on linear-scale cl_time_max)
-    etalcl_t50  ~ 0.3451                    # Wang 2024 Table 3: IIV T50 64.2%
+    # ---- Inter-individual variability (Wang 2024 Table 3) ----
+    # CL and Vc form a 2x2 log-normal block; Vp and T50 are independent
+    # log-normal etas; cl_time_max has an independent additive eta (Table 3
+    # footnote: "Emax_i = theta5 + eta_Emax,i"). Q has no IIV reported.
+    #
+    # Table 3 note: "IIV for CL, Vc, Vp, Emax, T50, and proportional error are
+    # reported as approximate CV%". Each reported percentage is omega itself
+    # (the SD on the estimation scale) x 100, so omega^2 = (P / 100)^2. It is
+    # NOT a CV% to be converted with omega^2 = log(1 + CV^2). This is settled
+    # arithmetically by the published "(%RSE, 95% CI)" column. The CI is
+    # computed on the estimated quantity omega^2, so squaring the printed CI
+    # endpoints must give an interval symmetric about omega^2, and the printed
+    # RSE (reported for omega, i.e. half the RSE of omega^2) must equal
+    # (hi^2 - lo^2) / (2 * 1.96) / omega^2 / 2:
+    #   row   P     CI           omega^2    CI midpoint  RSE implied  printed RSE
+    #   CL    19.5  18.3-20.6    0.038025   0.037963     3.00%        2.91%
+    #   Vc    15.5  14.7-16.3    0.024025   0.024089     2.63%        2.56%
+    #   Vp    68.5  61.1-75.2    0.469225   0.469412     5.22%        5.23%
+    #   Emax  18.5  17.1-19.9    0.034225   0.034421     3.86%        3.94%
+    #   T50   64.2  59.0-69.1    0.412164   0.412790     4.00%        3.98%
+    # The two readings coincide for small percentages (log(1 + x) ~ x); the
+    # wide Vp and T50 rows discriminate. The log(1 + CV^2) reading implies
+    # RSEs of 4.34% (Vp) and 3.39% (T50), 15-17% below the printed values, and
+    # a less symmetric CI (Vp midpoint 0.52% off the point estimate vs 0.04%).
+    # The same convention is proven row by row in the sibling Wang 2025
+    # serplulimab model (same first author, same reporting routine).
+    #
+    # The Emax eta is additive, but the reporting routine emitted
+    # sqrt(omega^2) x 100 for every row, so omega_Emax = 0.185 (NOT
+    # 0.185 x |Emax|). Emax is the "change of CL (Emax) in log scale"
+    # (Wang 2024 Results), so an additive eta on Emax is a log-normal eta on
+    # the CL(inf) / CL(0) ratio exp(Emax_i), and 18.5% is that ratio's
+    # approximate CV%. (Scaling by |theta5| is a constant factor, so the CI
+    # test above cannot by itself rule it out for this one row.)
+    #
+    # Cov(CL, Vc) = 0.0161 is printed as a raw covariance on the omega-block
+    # scale: its own CI 0.0135-0.0186 has midpoint 0.01605 and implies an RSE
+    # of 8.08%, exactly as printed. Correlation = 0.0161 / (0.195 * 0.155)
+    # = 0.533.
+    etalcl + etalvc ~ c(0.038025,
+                        0.0161, 0.024025)  # Wang 2024 Table 3: IIV CL 19.5% -> 0.195^2, IIV Vc 15.5% -> 0.155^2, Cov(CL,Vc) 0.0161
+    etalvp         ~ 0.469225              # Wang 2024 Table 3: IIV Vp 68.5% -> 0.685^2
+    etacl_time_max ~ 0.034225              # Wang 2024 Table 3: IIV Emax 18.5% -> 0.185^2 (additive eta on linear-scale Emax)
+    etalcl_t50     ~ 0.412164              # Wang 2024 Table 3: IIV T50 64.2% -> 0.642^2
 
     # Residual error. Source residual model: ln(y_ij) = ln(yhat_ij) + eps_ij
     # with var(eps) = sigma^2; sigma reported as 17.9% in Wang 2024 Table 3.
-    # NONMEM "additive on log-scale" residual maps to nlmixr2 prop() with
-    # propSd = sigma on the linear-fraction scale.
-    propSd <- 0.179; label("Proportional residual error (fraction)")  # Wang 2024 Table 3: Residual error 17.9%
+    # The same omega x 100 convention applies (the squared CI 17.7-18.1 has
+    # midpoint 0.032045 vs 0.179^2 = 0.032041), so sigma = 0.179 on the log
+    # scale. NONMEM "additive on log-scale" residual maps to nlmixr2 prop()
+    # with propSd = sigma on the linear-fraction scale.
+    propSd <- 0.179; label("Proportional residual error (fraction)")  # Wang 2024 Table 3: Residual error 17.9% (RSE 0.5%, 95% CI 17.7-18.1)
   })
   model({
     # Individual baseline CL (CL at t = 0). Power form for continuous covariates

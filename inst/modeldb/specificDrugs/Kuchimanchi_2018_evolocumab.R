@@ -1,6 +1,13 @@
 Kuchimanchi_2018_evolocumab <- function() {
   description <- "One-compartment population PK model for evolocumab with first-order SC absorption and parallel linear plus Michaelis-Menten (target-mediated) elimination from the central compartment, in healthy adults and patients with hypercholesterolemia (Kuchimanchi 2018)"
-  reference <- "Kuchimanchi M, Monine M, Kandadi Muralidharan K, Woodhead JL, Horner TJ. Population pharmacokinetics and exposure-response modeling and simulation for evolocumab in healthy volunteers and patients with hypercholesterolemia. J Pharmacokinet Pharmacodyn. 2019;46(2):133-148. doi:10.1007/s10928-018-9592-y"
+  reference <- paste(
+    "Kuchimanchi M, Grover A, Emery MG, Somaratne R, Wasserman SM, Gibbs JP,",
+    "Doshi S. Population pharmacokinetics and exposure-response modeling and",
+    "simulation for evolocumab in healthy volunteers and patients with",
+    "hypercholesterolemia. J Pharmacokinet Pharmacodyn. 2018;45(3):505-522.",
+    "doi:10.1007/s10928-018-9592-y.",
+    sep = " "
+  )
   vignette <- "Kuchimanchi_2018_evolocumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

@@ -1,6 +1,13 @@
 Kotani_2022_astegolimab <- function() {
   description <- "Two-compartment population PK model for astegolimab (anti-ST2 IgG2) in adults with severe asthma (Kotani 2022)"
-  reference <- "Kotani N, Dolton M, Svensson RJ, et al. Population Pharmacokinetics and Exposure-Response Relationships of Astegolimab in Patients With Severe Asthma. J Clin Pharmacol. 2022;62(7):905-917. doi:10.1002/jcph.2021"
+  reference <- paste(
+    "Kotani N, Dolton M, Svensson RJ, Ribbing J, Friberg LE, Vadhavkar S,",
+    "Cheung D, Staton T, Sperinde G, Jin J, Putnam WS, Quartino A. Population",
+    "Pharmacokinetics and Exposure-Response Relationships of Astegolimab in",
+    "Patients With Severe Asthma. J Clin Pharmacol. 2022;62(7):905-917.",
+    "doi:10.1002/jcph.2021.",
+    sep = " "
+  )
   vignette <- "Kotani_2022_astegolimab"
   paper_specific_etas <- c("etafrel")
 

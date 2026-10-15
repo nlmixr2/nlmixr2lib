@@ -1,6 +1,6 @@
 Gandhi_2021_abatacept <- function() {
   description <- "Two-compartment population PK model for abatacept (CTLA4-Ig Fc-fusion) pooled across adults with rheumatoid arthritis and patients aged 2-17 years with polyarticular juvenile idiopathic arthritis (Gandhi 2021), with first-order SC absorption, zero-order IV infusion support, first-order linear elimination, logit-scale SC bioavailability with disease/age/weight covariates, and a KA parameterisation that enforces KA > k_el."
-  reference <- "Gandhi V, Sun H, Subramanian K, Lon HK, Roy A. Model-Based Selection and Recommendation for Subcutaneous Abatacept Dose in Patients With Polyarticular Juvenile Idiopathic Arthritis. J Clin Pharmacol. 2021 May;61(5):651-661. doi:10.1002/jcph.1781"
+  reference <- "Gandhi Y, Passarell JA, Roy A, Murthy B. Model-Based Selection and Recommendation for Subcutaneous Abatacept Dose in Patients With Polyarticular Juvenile Idiopathic Arthritis. J Clin Pharmacol. 2021 May;61(5):688-699. doi:10.1002/jcph.1797"
   vignette <- "Gandhi_2021_abatacept"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 

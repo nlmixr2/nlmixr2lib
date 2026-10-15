@@ -1,10 +1,11 @@
 Pelligand_2016_robenacoxib_cat <- function() {
   description <- "Preclinical/clinical veterinary (cat). Two-compartment population PK model for robenacoxib in cats, parameterised per kg body weight, pooling intravenous and subcutaneous dosing from eight studies. Subcutaneous absorption is a parallel mixed-order input: a fraction F0 of the bioavailable dose enters the central compartment by a zero-order process of duration Tk0 = 1.78 h and the remainder arrives first-order through a depot with ka = 0.68 1/h, giving flip-flop kinetics because ka is slower than the disposition terminal rate constant. General anaesthesia doubles the central volume of distribution; no other covariate was retained (Pelligand 2016)"
   reference <- paste(
-    "Pelligand L, Soubret A, King JN, Elliott J, Mochel JP. Modeling of large",
-    "pharmacokinetic data using nonlinear mixed-effects: a paradigm shift in",
-    "veterinary pharmacology. A case study with robenacoxib in cats. CPT",
-    "Pharmacometrics Syst Pharmacol. 2016;5(12):625-635. doi:10.1002/psp4.12141.",
+    "Pelligand L, Soubret A, King JN, Elliott J, Mochel JP. Modeling of Large",
+    "Pharmacokinetic Data Using Nonlinear Mixed-Effects: A Paradigm Shift in",
+    "Veterinary Pharmacology. A Case Study With Robenacoxib in Cats. CPT",
+    "Pharmacometrics Syst Pharmacol. 2016;5(11):625-635.",
+    "doi:10.1002/psp4.12141.",
     "Structural model transcribed from the MLXTRAN source listing deposited as",
     "Supplementary Data (PSP4-5-625-s008.txt); residual-error magnitudes and the",
     "anaesthesia effect on V1 digitised from the SAEM convergence traces of",

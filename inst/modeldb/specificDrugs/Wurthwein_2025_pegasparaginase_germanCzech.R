@@ -1,6 +1,13 @@
 Wurthwein_2025_pegasparaginase_germanCzech <- function() {
   description <- "Fourteen-compartment de-PEGylation transit population PK model for intravenous PEGylated asparaginase (PEG-ASNase) in children with acute lymphoblastic leukemia treated in induction (protocol IA days 12 and 26) and re-induction (protocol II day 8) in the German/Czech group of the AIEOP-BFM ALL 2009 trial (Wurthwein 2025, ESM Table S13 model 223015). Asparaginase activity is carried by a chain of 14 serial compartments sharing one serum volume; drug moves down the chain with intercompartmental clearance Qtr, which mimics stepwise de-PEGylation, and every compartment is eliminated with the initial clearance CLinitial while the terminal compartment is eliminated with CLinitial + Qtr. Apparent clearance therefore rises within a dosing interval from CLinitial toward CLinitial + Qtr as the enzyme de-PEGylates. Body surface area enters volume and the two clearance terms linearly, centred on the model-building median of 0.79 m^2. Initial clearance rises linearly with age above 8 years and is lower in females. Initial clearance and volume drop stepwise between administrations, encoded as fractional changes against the first induction dose. Inter-individual variability on initial clearance, inter-occasion variability on both initial clearance and volume, and combined proportional plus additive residual error."
-  reference <- "Wurthwein G, Siebel C, Lanvers-Kaminsky C, Smisek P, Nath CE, Matteo C, Rizzari C, Schrappe M, Boos J. PEGylated Asparaginase in Children with Acute Lymphoblastic Leukemia Treated within the AIEOP-BFM ALL 2009 Trial: Population Pharmacokinetics and Drug Exposure. Eur J Drug Metab Pharmacokinet. 2025;50(6):683-696. doi:10.1007/s13318-025-00962-3"
+  reference <- paste(
+    "Wurthwein G, Siebel C, Lanvers-Kaminsky C, Smisek P, Nath CE, Matteo C,",
+    "Rizzari C, Schrappe M, Boos J. PEGylated Asparaginase in Children with",
+    "Acute Lymphoblastic Leukemia Treated within the AIEOP-BFM ALL 2009 Trial:",
+    "Population Pharmacokinetics and Drug Exposure. Eur J Drug Metab",
+    "Pharmacokinet. 2025;50(6):501-514. doi:10.1007/s13318-025-00962-3.",
+    sep = " "
+  )
   vignette <- "Wurthwein_2025_pegasparaginase"
   units <- list(time = "day", dosing = "U", concentration = "U/L")
 

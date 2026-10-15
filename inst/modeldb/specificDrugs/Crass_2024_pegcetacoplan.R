@@ -1,6 +1,12 @@
 Crass_2024_pegcetacoplan <- function() {
   description <- "One-compartment population PK model for pegcetacoplan with a single-transit-compartment subcutaneous absorption chain and direct intravenous input, pooled across 11 studies in healthy adults, adults with renal impairment, and adults with paroxysmal nocturnal hemoglobinuria (Crass 2024). Subcutaneous dose enters a depot that transfers to one transit compartment and then to the central compartment, all at the same first-order rate ka; intravenous dose enters the central compartment directly. Clearance carries a fractional increase in patients with paroxysmal nocturnal hemoglobinuria, and both clearance and central volume carry estimated body-weight power exponents referenced to 70 kg. Subcutaneous bioavailability carries a fractional increase for the lyophilized-powder formulation relative to the ready-to-use solution formulations. Inter-individual variability is log-normal on clearance and central volume (correlated block) and on ka (diagonal). Residual error is additive on the log scale (log-normal) and is stratified across three paper-defined sub-populations (healthy participants, phase 1/2 paroxysmal nocturnal hemoglobinuria studies, phase 3 paroxysmal nocturnal hemoglobinuria studies), switched at runtime via the canonical DIS_PNH and STUDY_PEGCET_PHASE3 covariates."
-  reference <- "Crass RL, Smith B, Adriaens S, Chapel S, Langdon G. Population Pharmacokinetic and Pharmacokinetic/Pharmacodynamic Analyses of Pegcetacoplan in Patients with Paroxysmal Nocturnal Hemoglobinuria. Drugs R D. 2024;24(4):565-577. doi:10.1007/s40268-024-00500-7"
+  reference <- paste(
+    "Crass RL, Smith B, Adriaens S, Chapel S, Langdon G. Population",
+    "Pharmacokinetic and Pharmacokinetic/Pharmacodynamic Analyses of",
+    "Pegcetacoplan in Patients with Paroxysmal Nocturnal Hemoglobinuria. Drugs",
+    "R D. 2024;24(4):563-573. doi:10.1007/s40268-024-00500-7.",
+    sep = " "
+  )
   vignette <- "Crass_2024_pegcetacoplan"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 

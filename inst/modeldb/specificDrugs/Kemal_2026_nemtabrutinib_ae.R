@@ -1,10 +1,10 @@
 Kemal_2026_nemtabrutinib_ae <- function() {
   description <- "Logistic-regression exposure-safety model for any-grade investigator-assessed drug-related adverse events during nemtabrutinib monotherapy in patients with hematologic malignancies, from Kemal 2026. The probability of experiencing at least one any-grade drug-related AE is modelled on the logit scale as a linear function of the individual average on-treatment concentration (Cavg, a post-hoc exposure metric from the companion population PK model). Time on treatment was tested and was NOT a significant covariate for this endpoint, so no time term appears. Fitted with glm in R, not in NONMEM, on all 578 treated patients regardless of primary diagnosis. IMPORTANT: the source prints no coefficients for either exposure-safety model, so both values here are recovered by digitizing the fitted curve in the left panel of Figure 4 - see the model file's SOURCING NOTE and the vignette. Sister model files from the same paper: modellib('Kemal_2026_nemtabrutinib') for the population PK model that generates Cavg, modellib('Kemal_2026_nemtabrutinib_hypertension') for the companion hypertension endpoint, and modellib('Kemal_2026_nemtabrutinib_bor') for the exposure-efficacy model."
   reference <- paste(
-    "Kemal CC, Zweers TJ, Krekels EHJ, Chatterjee MS.",
-    "Population Pharmacokinetic Modeling and Exposure-Response Analyses of",
-    "Nemtabrutinib in Patients With Hematologic Malignancies.",
-    "CPT Pharmacometrics Syst Pharmacol. 2026;15(5). doi:10.1002/psp4.70257.",
+    "Kemal CC, Zweers TJ, Krekels EHJ, Chatterjee MS. Population",
+    "Pharmacokinetic Modeling and Exposure-Response Analyses of Nemtabrutinib",
+    "in Patients With Hematologic Malignancies. CPT Pharmacometrics Syst",
+    "Pharmacol. 2026;15(5):e70257. doi:10.1002/psp4.70257.",
     "Exposure-safety methods are in Methods section 2.4;",
     "the fitted curve this model is recovered from is the LEFT panel of",
     "Figure 4 (p. 10), and the narrative is in Results section 3.5.",

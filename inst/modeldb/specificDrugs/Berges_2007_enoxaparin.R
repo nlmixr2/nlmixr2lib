@@ -65,19 +65,31 @@ Berges_2007_enoxaparin <- function() {
     e_crcl_cl <- 0.25; label("Power exponent of (CRCL / 69) on CL/F (unitless)")              # Berges 2007 Table 3: theta7 = 0.25 (95% CI 0.05, 0.45)
     e_wt_vc   <- 1.25; label("Power exponent of (WT / 65) on V2/F (unitless)")                # Berges 2007 Table 3: theta8 = 1.25 (95% CI 0.72, 1.78)
 
-    # Inter-individual variability. The paper reports IIV as %CV from a log-normal
-    # exponential parameterisation; omega^2 = log(CV^2 + 1).
+    # Inter-individual variability. Table 3 prints IIV as "CV (95% CI)" for an
+    # exponential (log-normal) eta. The printed % is omega x 100, so
+    # omega^2 = (CV/100)^2. The table note says the CI is "point estimate
+    # +/- 1.96 x SE" from the NONMEM covariance step, i.e. a Wald CI on
+    # omega^2. Squared back, the CI endpoints must then be symmetric about
+    # omega^2. The wide V3 row decides the scale:
+    #   V3 93% (22, 130): reading (CV/100)^2 gives a squared-CI midpoint
+    #   +0.5% from 0.93^2; reading log(1 + CV^2) gives -16.8%.
+    # On the narrow CL row the two readings coincide (+0.7% vs +0.1%), and
+    # the V2 row's lower endpoint is truncated at 0, so neither tests it.
+    # Before 2026-10 this file used log(1 + CV^2) (V3 0.6229, CL 0.0654,
+    # V2 0.0223); see the vignette Errata.
     # The paper states (Results > Model building) that a block matrix was added to
     # take into account the correlation between CL and V2, but the covariance value
     # itself is not reported in Table 3 (only the diagonal CV%s). The model is
     # encoded with diagonal etas (no off-diagonal); see vignette Assumptions and
     # deviations for the deviation from the published block structure.
-    etalcl ~ 0.065361 # log(0.26^2 + 1); 26% CV on CL/F (95% CI 20, 31), Berges 2007 Table 3
-    etalvc ~ 0.022275 # log(0.15^2 + 1); 15% CV on V2/F (95% CI  0, 23), Berges 2007 Table 3
-    etalvp ~ 0.622924 # log(0.93^2 + 1); 93% CV on V3/F (95% CI 22, 130), Berges 2007 Table 3
+    etalcl ~ 0.0676 # 0.26^2; 26% CV on CL/F (95% CI 20, 31), Berges 2007 Table 3
+    etalvc ~ 0.0225 # 0.15^2; 15% CV on V2/F (95% CI  0, 23), Berges 2007 Table 3
+    etalvp ~ 0.8649 # 0.93^2; 93% CV on V3/F (95% CI 22, 130), Berges 2007 Table 3
     # IIV on KA and Q were fixed to 0 (Berges 2007 Table 3: "0 FIXED").
 
     # Residual error (Berges 2007 Table 3: proportional model, CV 30% (95% CI 26, 33)).
+    # Read on the same omega x 100 convention, sigma = 0.30. The row is too
+    # narrow to discriminate (-1.9% vs -2.1% midpoint offset).
     propSd <- 0.30; label("Proportional residual error on anti-Xa activity (fraction)")     # Berges 2007 Table 3: sigma = 30% (95% CI 26, 33)
   })
   model({

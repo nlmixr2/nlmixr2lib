@@ -11,10 +11,12 @@ Zhu_2026_denosumab_reference <- function() {
     "Zhu_2026_denosumab_kn012."
   )
   reference <- paste(
-    "Zhu X, Liu J, Mao Y, Li J, Shao F, Lin H.",
-    "Comparison of KN012, a denosumab biosimilar, versus reference denosumab in Chinese postmenopausal",
-    "women with osteoporosis: efficacy, safety, and population pharmacokinetics in a 12-month phase III",
-    "study. Bone Rep. 2026;101916. doi:10.1016/j.bonr.2026.101916"
+    "Zhu X, Liu J, Mao Y, Li J, Shao F, Lin H. Comparison of KN012, a",
+    "denosumab biosimilar, versus reference denosumab in Chinese",
+    "postmenopausal women with osteoporosis: efficacy, safety, and population",
+    "pharmacokinetics in a 12-month phase III study. Bone Rep. 2026;29:101916.",
+    "doi:10.1016/j.bonr.2026.101916.",
+    sep = " "
   )
   vignette <- "Zhu_2026_denosumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")

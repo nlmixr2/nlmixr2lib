@@ -1,6 +1,13 @@
 Chawla_2023_gefapixant <- function() {
   description <- "Two-compartment population PK model with first-order absorption and an absorption lag time for the P2X3-receptor antagonist gefapixant in healthy volunteers and adults with refractory or unexplained chronic cough (Chawla 2023)"
-  reference <- "Chawla A, Largajolli A, Hussain A, et al. Population pharmacokinetic analysis of the P2X3-receptor antagonist gefapixant. CPT Pharmacometrics Syst Pharmacol. 2023;12(8):1107-1118. doi:10.1002/psp4.12978"
+  reference <- paste(
+    "Chawla A, Largajolli A, Hussain A, Kleijn H, Ait-Oudhia S, Anton J,",
+    "Krishna Ananthula H, Nussbaum J, La Rosa C, Gheyas F. Population",
+    "pharmacokinetic analysis of the P2X3-receptor antagonist gefapixant. CPT",
+    "Pharmacometrics Syst Pharmacol. 2023;12(8):1107-1118.",
+    "doi:10.1002/psp4.12978.",
+    sep = " "
+  )
   vignette <- "Chawla_2023_gefapixant"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 

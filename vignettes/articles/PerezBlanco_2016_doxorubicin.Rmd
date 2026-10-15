@@ -47,7 +47,7 @@ doxorubicinol. The same information is available programmatically via
 
 Final parameter estimates come from Perez-Blanco 2016 Table 2 column
 "Final model (n = 44)". Five volumes are FIXED: the DOX volumes V1, V2,
-V3 to the Kontny 2013 (doi:10.1007/s00280-013-2261-3) adult-reference
+V3 to the Kontny 2013 (doi:10.1007/s00280-013-2069-1) adult-reference
 values; the DOXol volumes V4 and V5 to the values obtained from the
 authors' sensitivity analysis. Three IIVs (Q2, Q3, CLm) are also FIXED
 at their model-building values to avoid over-parameterisation.

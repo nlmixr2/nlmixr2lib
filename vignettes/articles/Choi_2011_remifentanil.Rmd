@@ -19,7 +19,10 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Choi BM et al. Temporal linear mode complexity as a surrogate measure of the effect of remifentanil on the central nervous system in healthy volunteers. Br J Clin Pharmacol 2011; 71(6):879-888.
+* Citation: Choi BM, Shin DH, Noh MH, Kim YH, Jeong YB, Lee SH, Lee EK, Noh GJ.
+  Temporal linear mode complexity as a surrogate measure of the effect of
+  remifentanil on the central nervous system in healthy volunteers. Br J Clin
+  Pharmacol. 2011;71(6):871-885. doi:10.1111/j.1365-2125.2011.03904.x.
 * Article: <https://doi.org/10.1111/j.1365-2125.2011.03904.x>
 * Upstream popPK source (PK parameters fixed from this paper):
   Kang SH et al. Population pharmacokinetic and pharmacodynamic models of remifentanil in healthy volunteers using artificial neural network analysis. Br J Clin Pharmacol 2007; 64(1):3-13.

@@ -1,6 +1,13 @@
 Wang_2020_ontamalimab <- function() {
   description <- "Two-compartment population PK model for ontamalimab (SHP647), a fully human IgG2 anti-MAdCAM-1 monoclonal antibody, in adults with moderate-to-severe ulcerative colitis or Crohn's disease (Wang 2020), with first-order SC absorption, absorption lag time, parallel linear and Michaelis-Menten elimination from the central compartment, and allometric weight scaling on CL, Vc, Q, Vp, and Vmax."
-  reference <- "Wang Y, Marier J-F, Kassir N, Chabot JR, Smith B, Cao C, Lewis L, Dorner AJ, Padula SJ, Banfield C. Population Pharmacokinetics and Pharmacodynamics of Ontamalimab (SHP647), a Fully Human Monoclonal Antibody Against Mucosal Addressin Cell Adhesion Molecule-1 (MAdCAM-1), in Patients With Ulcerative Colitis or Crohn's Disease. J Clin Pharmacol. 2020 Jul;60(7):903-914. doi:10.1002/jcph.1590"
+  reference <- paste(
+    "Wang Y, Marier JF, Lavigne J, Kassir N, Martin P. Population",
+    "Pharmacokinetics and Pharmacodynamics of Ontamalimab (SHP647), a Fully",
+    "Human Monoclonal Antibody Against Mucosal Addressin Cell Adhesion",
+    "Molecule-1 (MAdCAM-1), in Patients With Ulcerative Colitis or Crohn's",
+    "Disease. J Clin Pharmacol. 2020;60(7):903-914. doi:10.1002/jcph.1590.",
+    sep = " "
+  )
   vignette <- "Wang_2020_ontamalimab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 

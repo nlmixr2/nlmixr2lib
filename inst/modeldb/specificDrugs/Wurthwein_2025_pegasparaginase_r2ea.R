@@ -1,6 +1,13 @@
 Wurthwein_2025_pegasparaginase_r2ea <- function() {
   description <- "Fourteen-compartment de-PEGylation transit population PK model for intravenous PEGylated asparaginase (PEG-ASNase) in non-high-risk children with acute lymphoblastic leukemia randomised to the experimental arm of the R2 randomisation (R2-EA) of the AIEOP-BFM ALL 2009 trial, German/Czech group (Wurthwein 2025, ESM Table S9 model 493158). Covers twelve administrations: induction protocol IA days 12 and 26, then the ten biweekly re-induction and maintenance doses from protocol II day 8 through maintenance dose M10. Asparaginase activity is carried by a chain of 14 serial compartments sharing one serum volume; drug moves down the chain with intercompartmental clearance Qtr, which mimics stepwise de-PEGylation, and every compartment is eliminated with the initial clearance CLinitial while the terminal compartment is eliminated with CLinitial + Qtr. Body surface area enters volume and the two clearance terms linearly, centred on 0.79 m^2. Initial clearance rises linearly with age above 8 years, is lower in females, and rises with a pre-existing anti-polyethylene-glycol IgM antibody level above a hockey-stick cut point, the antibody effect acting only on the first induction dose. Repeated dosing drives initial clearance down in three steps to 60.1 percent below the first induction dose, the largest accumulation effect reported in the trial. Inter-individual variability on initial clearance, inter-occasion variability on both initial clearance and volume, and combined proportional plus additive residual error."
-  reference <- "Wurthwein G, Siebel C, Lanvers-Kaminsky C, Smisek P, Nath CE, Matteo C, Rizzari C, Schrappe M, Boos J. PEGylated Asparaginase in Children with Acute Lymphoblastic Leukemia Treated within the AIEOP-BFM ALL 2009 Trial: Population Pharmacokinetics and Drug Exposure. Eur J Drug Metab Pharmacokinet. 2025;50(6):683-696. doi:10.1007/s13318-025-00962-3"
+  reference <- paste(
+    "Wurthwein G, Siebel C, Lanvers-Kaminsky C, Smisek P, Nath CE, Matteo C,",
+    "Rizzari C, Schrappe M, Boos J. PEGylated Asparaginase in Children with",
+    "Acute Lymphoblastic Leukemia Treated within the AIEOP-BFM ALL 2009 Trial:",
+    "Population Pharmacokinetics and Drug Exposure. Eur J Drug Metab",
+    "Pharmacokinet. 2025;50(6):501-514. doi:10.1007/s13318-025-00962-3.",
+    sep = " "
+  )
   vignette <- "Wurthwein_2025_pegasparaginase"
   units <- list(time = "day", dosing = "U", concentration = "U/L")
 

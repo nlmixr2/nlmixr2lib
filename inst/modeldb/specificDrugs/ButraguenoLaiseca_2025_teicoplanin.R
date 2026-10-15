@@ -23,13 +23,13 @@ ButraguenoLaiseca_2025_teicoplanin <- function() {
     "glomerular filtration rate and serum albumin, was retained."
   )
   reference <- paste(
-    "Butragueno-Laiseca L, Garcia-Orueta G, Riva N, Troconiz IF,",
-    "Fernandez SN, Camacho Vicente V, Padilla B, Slocker M, Santiago MJ.",
-    "Population pharmacokinetic analysis of teicoplanin in paediatric",
-    "patients, including those receiving continuous kidney replacement",
-    "therapy: a prospective cohort study.",
-    "J Antimicrob Chemother. 2025;80(3):868-876.",
-    "doi:10.1093/jac/dkaf012"
+    "Butragueno-Laiseca L, Garcia-Orueta G, Riva N, Troconiz IF, Fernandez SN,",
+    "Camacho Vicente V, Padilla B, Slocker M, Santiago MJ. Population",
+    "pharmacokinetic analysis of teicoplanin in paediatric patients, including",
+    "those receiving continuous kidney replacement therapy: a prospective",
+    "cohort study. J Antimicrob Chemother. 2025;80(3):868-875.",
+    "doi:10.1093/jac/dkaf012.",
+    sep = " "
   )
   vignette <- "ButraguenoLaiseca_2025_teicoplanin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")

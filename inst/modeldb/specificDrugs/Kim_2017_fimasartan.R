@@ -1,6 +1,15 @@
 Kim_2017_fimasartan <- function() {
   description <- "Population PK-PD model for fimasartan (an angiotensin II receptor blocker) in healthy adult Korean men and men with mild or moderate hepatic impairment (Kim 2017). Plasma fimasartan is described by a 2-compartment model with parallel mixed-input absorption: a first-order arm with rate Ka and absorption lag time LAG (fraction F1 = (1 - alpha) * F of the dose) running in parallel with a zero-order arm of virtual duration D2 (fraction F2 = alpha * F of the dose), where the total relative bioavailability F is fixed at 0.18 in healthy subjects (Kim 2008) and incremented to 0.18 + IL1 in mild and 0.18 + IL2 in moderate hepatic impairment to capture the markedly higher Cmax observed in cirrhotic patients via reduced first-pass extraction and intrahepatic shunting. The PD model describes systolic and diastolic blood pressures as indirect-response (turnover) compartments with zero-order synthesis Kin inhibited by fimasartan via a sigmoid-Imax function E(C) = 1 - Emax * Cc / (EC50 + Cc) and first-order loss Kout = Kin / Base; the steady-state baseline rides a fixed cosinor circadian rhythm Bsl(t) = MESOR * (1 + Amp1% * cos(2*pi*(t - AC1)/24) + Amp2% * cos(2*pi*(t - AC2)/12)) with amplitudes and phases inherited from Park 2014 (healthy Korean reference). EC50 is stratified by hepatic-impairment severity: for SBP, healthy versus any-impairment pooled (mild + moderate); for DBP, healthy + mild versus moderate alone, reflecting the contrasting impact of hepatic dysfunction on the two pressure outputs."
-  reference <- "Kim CO, Jeon S, Han S, Hong T, Park MS, Yoon Y-R, Yim D-S. Decreased potency of fimasartan in liver cirrhosis was quantified using mixed-effects analysis. Transl Clin Pharmacol. 2017;25(1):43-49. doi:10.12793/tcp.2017.25.1.43. Bioavailability in healthy subjects (F = 0.18) inherited from Kim TH et al. (Eur J Drug Metab Pharmacokinet 2010). Circadian-rhythm amplitudes and phase shifts (Table 3) inherited from the Park 2014 cosinor model of blood-pressure rhythm in healthy Koreans."
+  reference <- paste(
+    "Kim CO, Jeon S, Han S, Hong T, Park MS, Yoon YR, Yim DS. Decreased",
+    "potency of fimasartan in liver cirrhosis was quantified using",
+    "mixed-effects analysis. Transl Clin Pharmacol. 2017;25(1):43-51.",
+    "doi:10.12793/tcp.2017.25.1.43. Bioavailability in healthy subjects (F =",
+    "0.18) inherited from Kim TH et al. (Eur J Drug Metab Pharmacokinet 2010).",
+    "Circadian-rhythm amplitudes and phase shifts (Table 3) inherited from the",
+    "Park 2014 cosinor model of blood-pressure rhythm in healthy Koreans.",
+    sep = " "
+  )
   vignette <- "Kim_2017_fimasartan"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 

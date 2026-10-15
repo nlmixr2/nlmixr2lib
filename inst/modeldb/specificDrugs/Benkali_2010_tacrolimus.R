@@ -6,6 +6,7 @@ Benkali_2010_tacrolimus <- function() {
     "and Bayesian estimation of tacrolimus exposure in renal transplant",
     "recipients on a new once-daily formulation.",
     "Clin Pharmacokinet. 2010;49(10):683-692.",
+    "doi:10.2165/11535950-000000000-00000.",
     sep = " "
   )
   vignette <- "Benkali_2010_tacrolimus"

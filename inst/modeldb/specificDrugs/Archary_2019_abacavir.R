@@ -1,6 +1,13 @@
 Archary_2019_abacavir <- function() {
   description <- "Two-compartment population PK model for abacavir in severely malnourished HIV-infected children (Archary 2019); CL/F steps up between day 1 and day 14 of antiretroviral treatment and bioavailability is 31% higher in the early-ART arm"
-  reference <- "Archary M, McIlleron H, Bobat R, LaRussa P, Sibaya T, Wiesner L, Hennig S. Population pharmacokinetics of abacavir and lamivudine in severely malnourished human immunodeficiency virus-infected children in relation to treatment outcomes. Br J Clin Pharmacol. 2019;85(8):1881-1890. doi:10.1111/bcp.13998"
+  reference <- paste(
+    "Archary M, Mcllleron H, Bobat R, LaRussa P, Sibaya T, Wiesner L, Hennig",
+    "S. Population pharmacokinetics of abacavir and lamivudine in severely",
+    "malnourished human immunodeficiency virus-infected children in relation",
+    "to treatment outcomes. Br J Clin Pharmacol. 2019;85(9):2066-2075.",
+    "doi:10.1111/bcp.13998.",
+    sep = " "
+  )
   vignette <- "Archary_2019_abacavir"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

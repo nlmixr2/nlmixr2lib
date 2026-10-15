@@ -13,7 +13,7 @@ Sampson_2014_gentamicin <- function() {
     "Every 36-h gentamicin dosing in neonates with hypoxic-ischemic",
     "encephalopathy receiving hypothermia.",
     "J Perinatol. 2013;33(10):778-782. doi:10.1038/jp.2013.59",
-    "(PMID 23553582); the present file reproduces the parameter values stated",
+    "(PMID 23702622); the present file reproduces the parameter values stated",
     "in Sampson 2014 Methods (page 585).",
     sep = " "
   )

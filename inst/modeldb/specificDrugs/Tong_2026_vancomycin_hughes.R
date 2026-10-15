@@ -12,9 +12,10 @@ Tong_2026_vancomycin_hughes <- function() {
     sep = " "
   )
   reference <- paste(
-    "Tong DMH, Brooks JT, Keizer RJ, Hughes JH. Vancomycin target attainment improved following",
-    "population pharmacokinetic model switch: a large-scale quasi-experimental study of precision",
-    "dosing. JAC Antimicrob Resist. 2026. doi:10.1093/jacamr/dlag016 (Supplementary data, Code",
+    "Tong DMH, Brooks JT, Keizer RJ, Hughes JH. Vancomycin target attainment",
+    "improved following population pharmacokinetic model switch: a large-scale",
+    "quasi-experimental study of precision dosing. JAC Antimicrob Resist.",
+    "2026;8(1):dlag016. doi:10.1093/jacamr/dlag016. (Supplementary data, Code",
     "section, \"Hughes model\" NONMEM control stream; Table S2).",
     "Structural model and parameter estimates originate from Hughes MSA, Hughes JH, Endicott J et al.",
     "Developing parametric and nonparametric models for model-informed precision dosing: a quality",

@@ -1,6 +1,16 @@
 Diao_2016_daclizumab_cd25 <- function() {
   description <- "Kinetic-binding PK/PD model of CD25 receptor occupancy on peripheral CD4+ T cells following subcutaneous daclizumab high-yield process (HYP) in adults with relapsing-remitting multiple sclerosis (Diao 2016). The receptor-occupancy state occ_cd25 obeys dOcc/dt = kon*Cc*(1 - Occ) - koff*Occ; the PD output is the percentage of CD4+ T cells staining positive for unoccupied CD25, computed as E0 * (1 - occ_cd25). This is a REPARAMETERISATION of the paper's published sigmoidal Emax (Equation 1) with its two-parameter-set (saturation-phase / desaturation-phase) Hill function -- kon and koff are calibrated to reproduce the paper's phenomenology (rapid saturation within 7 h after first 150 mg SC dose per Figure 1A; return of unoccupied CD25 to baseline in ~24 weeks after last steady-state dose per Figure 1B) rather than transcribed from a paper table. See the companion vignette Assumptions and deviations for the calibration rationale. The PK backbone is inherited verbatim from Othman 2014."
-  reference <- "Diao L, Hang Y, Othman AA, Nestorov I, Tran JQ, Mehta D, Amaravadi L. Population PK/PD analyses of CD25 occupancy, CD56 bright NK cell expansion and regulatory T cell reduction by daclizumab HYP in subjects with multiple sclerosis. Br J Clin Pharmacol. 2016;82(5):1333-1342. doi:10.1111/bcp.13051 (PMID 27333593). PK backbone: Othman AA, Tran JQ, Tang MT, Dutta S. Population Pharmacokinetics of Daclizumab High-Yield Process in Healthy Volunteers. Clin Pharmacokinet. 2014;53(10):907-918. doi:10.1007/s40262-014-0159-9."
+  reference <- paste(
+    "Diao L, Hang Y, Othman AA, Mehta D, Amaravadi L, Nestorov I, Tran JQ.",
+    "Population PK-PD analyses of CD25 occupancy, CD56(bright) NK cell",
+    "expansion, and regulatory T cell reduction by daclizumab HYP in subjects",
+    "with multiple sclerosis. Br J Clin Pharmacol. 2016;82(5):1333-1342.",
+    "doi:10.1111/bcp.13051 (PMID 27333593). PK backbone: Othman AA, Tran JQ,",
+    "Tang MT, Dutta S. Population Pharmacokinetics of Daclizumab High-Yield",
+    "Process in Healthy Volunteers. Clin Pharmacokinet. 2014;53(10):907-918.",
+    "doi:10.1007/s40262-014-0159-9.",
+    sep = " "
+  )
   vignette <- "Diao_2016_daclizumab_cd25"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL", response = "% of CD4+ T cells unoccupied CD25")
 

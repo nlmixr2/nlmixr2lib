@@ -2,10 +2,10 @@ Lodise_2018_iclaprim <- function() {
   description <- "Two-compartment IV-infusion population PK model for iclaprim, a bacterial dihydrofolate reductase inhibitor, in adult patients with complicated skin and skin-structure infections from the pooled ASSIST-1 and ASSIST-2 phase 3 trials (Lodise 2018). Structural typical-value equations are additive-linear (NONMEM theta-sum form rather than power form): central volume V1 carries a body-weight slope; clearance CL carries age + sex (male shift) + sampling-occasion (day 1-2 vs day 4 +/- 1) shifts; peripheral volume V2 has no covariates; inter-compartmental clearance Q carries a severe-cSSSI-infection shift. Block-correlated log-normal IIV on V1, CL, V2 was retained in the source paper but only diagonal CV% values are tabulated -- off-diagonal covariances are not reported and are implemented here as diagonal-only (documented in the vignette Assumptions and deviations section). Combined proportional + additive residual error."
   reference <- paste(
     "Lodise TP, Bosso J, Kelly C, Williams PJ, Lane JR, Huang DB.",
-    "Pharmacokinetic and pharmacodynamic analyses to determine the optimal",
-    "fixed dosing regimen of iclaprim for treatment of patients with serious",
-    "infections caused by Gram-positive pathogens.",
-    "Antimicrob Agents Chemother. 2018;62(4):e01184-17.",
+    "Pharmacokinetic and Pharmacodynamic Analyses To Determine the Optimal",
+    "Fixed Dosing Regimen of Iclaprim for Treatment of Patients with Serious",
+    "Infections Caused by Gram-Positive Pathogens. Antimicrob Agents",
+    "Chemother. 2018;62(2):e01184-17.",
     "doi:10.1128/AAC.01184-17.",
     sep = " "
   )

@@ -1,6 +1,12 @@
 Ogasawara_2019_fedratinib <- function() {
   description <- "Two compartment oral PK model of fedratinib with first-order absorption and a lag time in patients with myelofibrosis, polycythemia vera or essential thrombocythemia (Ogasawara 2019)"
-  reference <- "Ogasawara K, Zhou S, Krishna G, Palmisano M, Li Y. Population pharmacokinetics of fedratinib in patients with myelofibrosis, polycythemia vera, and essential thrombocythemia. Cancer Chemother Pharmacol. 2019;84(4):707-718. doi:10.1007/s00280-019-03929-9"
+  reference <- paste(
+    "Ogasawara K, Zhou S, Krishna G, Palmisano M, Li Y. Population",
+    "pharmacokinetics of fedratinib in patients with myelofibrosis,",
+    "polycythemia vera, and essential thrombocythemia. Cancer Chemother",
+    "Pharmacol. 2019;84(4):891-898. doi:10.1007/s00280-019-03929-9.",
+    sep = " "
+  )
   vignette <- "Ogasawara_2019_fedratinib"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 

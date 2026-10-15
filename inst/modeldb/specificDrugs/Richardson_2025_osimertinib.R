@@ -21,10 +21,10 @@ Richardson_2025_osimertinib <- function() {
     sep = " "
   )
   reference <- paste(
-    "Richardson S, Irurzun Arana I, Nowojewski A, Zhou D, Leander J,",
-    "Tang W, Dearden R, Gibbs M.",
-    "A machine learning approach to population pharmacokinetic modelling",
-    "automation. Commun Med. 2025;5:325. doi:10.1038/s43856-025-01054-8.",
+    "Richardson S, Irurzun Arana I, Nowojewski A, Zhou D, Leander J, Tang W,",
+    "Dearden R, Gibbs M. A machine learning approach to population",
+    "pharmacokinetic modelling automation. Commun Med (Lond). 2025;5(1):327.",
+    "doi:10.1038/s43856-025-01054-8.",
     "Parameter estimates from Supplementary Table 4; model structure from",
     "Table 4, Supplementary Data 1 and the pyDarwin model-space files",
     "(template.txt, tokens.json) in the Code Availability repository",

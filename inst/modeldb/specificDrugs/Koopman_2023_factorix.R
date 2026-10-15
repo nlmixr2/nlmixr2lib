@@ -1,6 +1,14 @@
 Koopman_2023_factorix <- function() {
   description <- "Two-compartment population PK model for recombinant factor IX-Fc fusion concentrate (rFIX-Fc, eftrenonacog alfa) in haemophilia B patients aged 2-71 years (Koopman 2023)"
-  reference <- "Koopman SF, Goedhart TMHJ, Bukkems LH, et al. A new population pharmacokinetic model for recombinant factor IX-Fc fusion concentrate including young children with haemophilia B. Br J Clin Pharmacol. 2024;90(1):220-231. doi:10.1111/bcp.15881"
+  reference <- paste(
+    "Koopman SF, Goedhart TMHJ, Bukkems LH, Mulders TM, Leebeek FWG,",
+    "Fijnvandraat K, Coppens M, Mathias M, Collins PW, Tait RC, Bagot CN,",
+    "Curry N, Payne J, Chowdary P, Cnossen MH, Mathot RAA. A new population",
+    "pharmacokinetic model for recombinant factor IX-Fc fusion concentrate",
+    "including young children with haemophilia B. Br J Clin Pharmacol.",
+    "2024;90(1):220-231. doi:10.1111/bcp.15881.",
+    sep = " "
+  )
   vignette <- "Koopman_2023_factorix"
   units <- list(time = "h", dosing = "IU", concentration = "IU/dL")
 

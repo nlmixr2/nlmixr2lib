@@ -20,7 +20,7 @@ library(ggplot2)
 
 * Citation: `r nlmixr2lib::readModelDb("Duong_2016_WHIG_T2DM")()$reference`
 * Article: <https://doi.org/10.1111/bcp.13144>
-* Upstream WHIG framework (Choy 2016): <https://doi.org/10.1002/psp4.12058>
+* Upstream WHIG framework (Choy 2016): <https://doi.org/10.1002/psp4.12051>
 
 Duong 2016 applies the Choy 2016 semi-mechanistic Weight -- HbA1c -- Insulin -- Glucose (WHIG) framework to a pooled placebo cohort spanning three trials in type 2 diabetes mellitus (T2DM): one newly-diagnosed obese cohort (Study 1, NCT00236600, n = 181, 66 weeks of follow-up with an ancillary weight-loss counselling arm) and two advanced-T2DM cohorts (Study 2 NCT01071850 and Study 3 NCT01117584; n = 59 and n = 64; 14-week trials on stable diet and exercise). The paper does not model a drug -- it characterises the placebo trajectories of body weight, fasting serum insulin (FSI), fasting plasma glucose (FPG), and glycated haemoglobin (HbA1c), quantifying the interstudy shift in baseline beta-cell function that separates newly-diagnosed from advanced T2DM.
 

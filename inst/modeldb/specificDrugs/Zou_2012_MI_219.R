@@ -1,10 +1,10 @@
 Zou_2012_MI_219 <- function() {
   description <- "Predicted-human two-compartment IV PK model for MI-219 (a small-molecule HDM2/p53 inhibitor) in adults, with parameters projected from NONMEM-based interspecies allometric scaling of single-dose IV plasma profiles in rats (5 mg/kg), beagle dogs (2 mg/kg), and cynomolgus monkeys (10 mg/kg). Linear elimination from the central compartment; mouse data were excluded from the joint NONMEM fit because the mouse profile was not superimposable on the other species under Wajima / Dedrick normalisation. The model file encodes the predicted human typical values at a 70 kg reference body weight (Zou 2012 Table 5, NONMEM column)."
   reference <- paste(
-    "Zou P, Zheng N, Yu Y, Yu S, Sun W, McEachern D, Yang Y, Yu LX,",
-    "Wang S, Sun D. (2012). Preclinical pharmacokinetics of MI-219, a",
-    "novel human double minute 2 (HDM2) inhibitor and prediction of",
-    "human pharmacokinetics. J Pharm Pharm Sci 15(2):265-280.",
+    "Zou P, Zheng N, Yu Y, Yu S, Sun W, McEachem D, Yang Y, Yu LX, Wang S, Sun",
+    "D. Preclinical pharmacokinetics of MI-219, a novel human double minute 2",
+    "(HDM2) inhibitor and prediction of human pharmacokinetics. J Pharm Pharm",
+    "Sci. 2012;15(2):265-280.",
     "doi:10.18433/j34s4n.",
     sep = " "
   )

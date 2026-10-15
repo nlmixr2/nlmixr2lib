@@ -21,8 +21,8 @@ Lafaurie_2023_imipenem_recovery <- function() {
     sep = " "
   )
   reference <- paste(
-    "Lafaurie M, Burdet C, Hammas K, Goldwirt L, Bercot B, Sauvageon H,",
-    "et al.",
+    "Lafaurie M, Burdet C, Hammas K, Goldwirt L, Bercot B, Sauvageon H, Houze",
+    "P, Fourmont M, Mentre F, Molina JM.",
     "Population pharmacokinetics and pharmacodynamics of imipenem in",
     "neutropenic adult patients.",
     "Infect Dis Now. 2023;53(1):104625. doi:10.1016/j.idnow.2022.09.020.",

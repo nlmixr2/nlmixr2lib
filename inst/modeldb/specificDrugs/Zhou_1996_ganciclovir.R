@@ -10,8 +10,9 @@ Zhou_1996_ganciclovir <- function() {
     sep = " "
   )
   reference <- paste(
-    "Zhou XJ, Gruber W, Demmler G, Jacobs R, Reuman P, Adler S, Shelton M, Pass R,",
-    "Britt B, Trang JM, et al. Population pharmacokinetics of ganciclovir in",
+    "Zhou XJ, Gruber W, Demmler G, Jacobs R, Reuman P, Adler S, Shelton M,",
+    "Pass R, Britt B, Trang JM, Whitley RJ, Sommadossi JP. Population",
+    "pharmacokinetics of ganciclovir in",
     "newborns with congenital cytomegalovirus infections. NIAID Collaborative",
     "Antiviral Study Group. Antimicrob Agents Chemother. 1996;40(9):2202-2205.",
     "doi:10.1128/AAC.40.9.2202.",

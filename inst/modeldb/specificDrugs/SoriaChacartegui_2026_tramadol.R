@@ -1,6 +1,12 @@
 SoriaChacartegui_2026_tramadol <- function() {
   description <- "Two-compartment population PK model for oral tramadol in European healthy volunteers (Soria-Chacartegui 2026), with a Savic transit-compartment chain delivering the dose into a depot compartment, first-order absorption from the depot into the central compartment, first-order elimination, a linear body-weight effect on the central volume, and a CYP2D6 intermediate-metabolizer effect that lowers clearance by 19.8% relative to the pooled normal-plus-ultrarapid-metabolizer reference group."
-  reference <- "Soria-Chacartegui P, Wurthwein G, Zubiaur P, Almenara S, Ochoa D, Abad-Santos F, Hempel G. Role of pharmacogenetics on tramadol pharmacokinetics: a population pharmacokinetic model. Eur J Drug Metab Pharmacokinet. 2026. doi:10.1007/s13318-026-00986-3"
+  reference <- paste(
+    "Soria-Chacartegui P, Wurthwein G, Zubiaur P, Almenara S, Ochoa D,",
+    "Abad-Santos F, Hempel G. Role of Pharmacogenetics on Tramadol",
+    "Pharmacokinetics: A Population Pharmacokinetic Model. Eur J Drug Metab",
+    "Pharmacokinet. 2026;51(2):205-216. doi:10.1007/s13318-026-00986-3.",
+    sep = " "
+  )
   vignette <- "SoriaChacartegui_2026_tramadol"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 

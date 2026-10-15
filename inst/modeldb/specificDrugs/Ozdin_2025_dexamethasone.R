@@ -24,8 +24,9 @@ Ozdin_2025_dexamethasone <- function() {
     "Pharmacokinetic Modeling and Pediatric Exposure of Dexamethasone Sodium",
     "Phosphate Encapsulated in Erythrocytes (eDSP) Administered Monthly for",
     "Treatment of Neurological Symptoms of Patients With Ataxia",
-    "Telangiectasia. CPT Pharmacometrics Syst Pharmacol. 2025;14(11):1882-1893.",
-    "doi:10.1002/psp4.70103"
+    "Telangiectasia. CPT Pharmacometrics Syst Pharmacol.",
+    "2025;14(11):1882-1892. doi:10.1002/psp4.70103.",
+    sep = " "
   )
   vignette <- "Ozdin_2025_dexamethasone"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")

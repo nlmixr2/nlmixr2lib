@@ -8,7 +8,7 @@ Heuberger_2018_salbutamol <- function() {
     "physiological scaling on the cardiac-output-driven urine production",
     "rate, synthesised from literature (Auclair 2000 dog model, Morgan 1986",
     "renal CL, Holt 1968 cardiac output, Moerkeberg 2009 haematocrit) and",
-    "calibrated to Haase 2009 inhaled-salbutamol data (Heuberger 2018)."
+    "calibrated to Haase 2016 inhaled-salbutamol data (Heuberger 2018)."
   )
   reference <- paste(
     "Heuberger JAAC, van Dijkman SC, Cohen AF. Futility of current urine",
@@ -66,8 +66,8 @@ Heuberger_2018_salbutamol <- function() {
     regions = NA_character_,
     notes = paste(
       "Virtual cohort. Parameters synthesised from literature, not fit to",
-      "individual data. Calibration target was the Haase 2009 [BJSM",
-      "doi:10.1136/bjsm.2008.052522] mean concentration-time profile after",
+      "individual data. Calibration target was the Haase 2016 [Drug Test",
+      "Anal 8(7):613-620, doi:10.1002/dta.1828] mean concentration-time profile after",
       "a single 1600 ug salbutamol inhalation in 13 exercised, dehydrated",
       "cyclists. See Table 1 of Heuberger 2018 for the final parameter set",
       "(source labels: Holt, Moerkeberg, Auclair, Morgan)."
@@ -80,7 +80,7 @@ Heuberger_2018_salbutamol <- function() {
     # parameter structure; see comments below for the exact lineage.
 
     # --- Structural absorption parameters (Auclair 2000 dog model,
-    # calibrated to Haase 2009 by the authors). All wrapped in fixed():
+    # calibrated to Haase 2016 by the authors). All wrapped in fixed():
     # this is a synthesis / simulation model with no individual-data fit,
     # so the source authors held every value constant.
     lka      <- fixed(log(0.5));        label("Gut absorption rate constant ka (1/h)")            # Table 1: 0.5 1/h (Auclair, footnote a: adjusted from dog 1.5 1/h)

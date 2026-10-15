@@ -21,7 +21,7 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode(readModelDb("Ng_2018_exendin939"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Ng_2018_exendin939"))$description`
-* Article: [Br J Clin Pharmacol 2018;84(3):520-528](https://doi.org/10.1111/bcp.13463)
+* Article: [Br J Clin Pharmacol 2018;84(3):520-532](https://doi.org/10.1111/bcp.13463)
 
 # Population
 

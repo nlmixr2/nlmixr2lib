@@ -18,7 +18,10 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: Plan EL, Elshoff JP, Stockis A, Sargentini-Maier ML, Karlsson MO. (2012). Likert pain score modeling: a Markov integer model and an autoregressive continuous model. *Clin Pharmacol Ther* 91(4):820-828.
+* Citation: Plan EL, Elshoff JP, Stockis A, Sargentini-Maier ML, Karlsson MO.
+  Likert pain score modeling: a Markov integer model and an autoregressive
+  continuous model. *Clin Pharmacol Ther*. 2012;91(5):820-828.
+  doi:10.1038/clpt.2011.301.
 * Article: <https://doi.org/10.1038/clpt.2011.301>
 * DDMORE Foundation Model Repository entry: [DDMODEL00000194](https://repository.ddmore.eu/model/DDMODEL00000194)
 

@@ -1,6 +1,6 @@
 Rosario_2015_vedolizumab <- function() {
   description <- "Two-compartment population PK model for vedolizumab (humanised anti-alpha4-beta7 integrin IgG1 monoclonal antibody) with parallel linear and Michaelis-Menten elimination in adults with moderately-to-severely active ulcerative colitis or Crohn's disease and healthy volunteers (Rosario 2015)."
-  reference <- "Rosario M, Dirks NL, Gastonguay MR, Fasanmade AA, Wyant T, Parikh A, Sandborn WJ, Feagan BG, Reinisch W, Fox I. Population pharmacokinetics-pharmacodynamics of vedolizumab in patients with ulcerative colitis and Crohn's disease. Aliment Pharmacol Ther. 2015;42(2):188-202. doi:10.1111/apt.13243 (PMID 25996351). A corrigendum (doi:10.1111/apt.15571; PMC6885991) corrects a unit typo in the text (ng/mL -> ug/mL) and does not change any parameter value."
+  reference <- "Rosario M, Dirks NL, Gastonguay MR, Fasanmade AA, Wyant T, Parikh A, Sandborn WJ, Feagan BG, Reinisch W, Fox I. Population pharmacokinetics-pharmacodynamics of vedolizumab in patients with ulcerative colitis and Crohn's disease. Aliment Pharmacol Ther. 2015;42(2):188-202. doi:10.1111/apt.13243 (PMID 25996351). A corrigendum (doi:10.1111/apt.13365; PMC6885991) corrects a unit typo in the text (ng/mL -> ug/mL) and does not change any parameter value."
   vignette <- "Rosario_2015_vedolizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

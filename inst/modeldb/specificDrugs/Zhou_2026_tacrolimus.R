@@ -1,10 +1,10 @@
 Zhou_2026_tacrolimus <- function() {
   description <- "One-compartment population PK model with first-order absorption and elimination for oral immediate-release tacrolimus in adult Chinese patients with nephrotic syndrome, built from steady-state trough (Cmin) therapeutic drug monitoring data. Because only troughs were available the absorption rate constant is fixed at a literature value. Apparent clearance CL/F carries two multiplicative covariate effects: a reduction with concomitant Wuzhi capsule and a reduction in CYP3A5*3/*3 non-expressers; no covariate was retained on apparent volume of distribution. Exponential inter-individual variability on CL/F only, with a proportional residual error. This is the population PK half of a paper whose second half feeds the individual CL/F estimate into a machine-learning ensemble; only the pharmacokinetic model is represented here."
   reference <- paste(
-    "Zhou Y, Zhou Z, Chen S, Zhu L, Yun Y, Yuan Y, Chen C, Zou J, Zhao J.",
-    "An Integrated Population Pharmacokinetic and Machine Learning Model for",
+    "Zhou Y, Zhou Z, Chen S, Zhu L, Yun Y, Yuan Y, Chen C, Zou J, Zhao J. An",
+    "Integrated Population Pharmacokinetic and Machine Learning Model for",
     "Predicting Tacrolimus Exposure in Adult Patients with Nephrotic Syndrome.",
-    "Drug Des Devel Ther. 2026;20.",
+    "Drug Des Devel Ther. 2026;20:576598.",
     "doi:10.2147/DDDT.S576598.",
     "Parameter values are the 'Final model' Estimate column of Supplementary",
     "Table S1; the structural covariate equation is the displayed equation in",

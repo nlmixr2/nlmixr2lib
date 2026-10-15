@@ -11,9 +11,11 @@ Franck_2021_ganciclovir <- function() {
     sep = " "
   )
   reference <- paste(
-    "Franck B, Autmizguine J, Marquet P, Ovetchkine P, Woillard JB. Population",
-    "pharmacokinetics of ganciclovir and valganciclovir in paediatric solid organ",
-    "and stem cell transplant recipients. Br J Clin Pharmacol. 2021.",
+    "Franck B, Woillard JB, Theoret Y, Bittencourt H, Demers E, Briand A,",
+    "Marquet P, Lapeyraque AL, Ovetchkine P, Autmizguine J. Population",
+    "pharmacokinetics of ganciclovir and valganciclovir in paediatric solid",
+    "organ and stem cell transplant recipients. Br J Clin Pharmacol.",
+    "2021;87(8):3105-3114. doi:10.1111/bcp.14719.",
     "Cited as reference 9 of the Yang 2023 model repository.",
     "Parameters transcribed from Yang W, Mak W, Gwee A, Gu M, Wu Y, Shi Y, He Q,",
     "Xiang X, Han B, Zhu X. Establishment and Evaluation of a Parametric Population",
