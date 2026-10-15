@@ -17148,6 +17148,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Jeong_2021_methotrexate_nanoemulsion_rat.R` (linear-deviation effects on V -0.986, CL -0.990, ka +1.552 and F +0.193).
 - **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` canonical family, a sibling of `FORM_MTX_NANO` (which contrasts any nanoformulation against the free solution). Name the specific nanoemulsion and nanoparticle compositions in the per-model notes; the founding model uses olive-oil/Labrasol nanoemulsions (173.77 nm) and PLGA nanoparticles (163.7 nm). The same dose confounding as `FORM_MTX_NANO` applies: 0.06 / 0.024 mg/kg nanoemulsion versus 5 mg/kg nanoparticle doses, with no dose effect fitted.
 
+### FORM_FV60165_NANOSUSP (**canonical for the FV-60165 prodrug ophthalmic nanosuspension versus solution indicator**)
+- **Description:** 1 = the prodrug FV-80228 of the src tyrosine kinase inhibitor FV-60165 was instilled as the 0.6% nanosuspension (0.5% carboxymethylcellulose and 0.015% Tween 80 in phosphate-buffered saline, pH 7.4); 0 = instilled as the 0.6% solution (7% 2-hydroxypropyl-beta-cyclodextrin, pH 5). Per-eye (per-individual) indicator; every dose an eye receives uses one formulation.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (0.6% solution).
+- **Source aliases:** `FORMULATION` -- Djebli 2017 Results, `k12 = theta_i * FORMULATION + theta_j * (1 - FORMULATION)`.
+- **Example models:** `Djebli_2017_FV60165_rabbit.R` (selects the tear-to-naso-lacrimal-duct rate constant: 0.259 1/h nanosuspension vs 0.299 1/h solution).
+- **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` canonical family. The source does not state which formulation it coded as 1; the model carries the two typical values as separate parameters, so this column only selects between them and the 1 = nanosuspension coding is the library's choice, not a reported one.
+
 ### FORM_LNG_IUS20 (**canonical for the levonorgestrel-releasing intrauterine system 20 (Mirena) device indicator**)
 - **Description:** 1 = the modelled device is the levonorgestrel-releasing intrauterine system 20 (LNG-IUS 20, Mirena), 0 = one of the sibling intrauterine systems. Mutually exclusive with `FORM_LNG_IUS12` and `FORM_LNG_IUS8`; exactly one of the three is 1 in any record. The three devices differ in reservoir loading, release kinetics and indicated duration of use, so the indicator selects a whole parameter set rather than scaling a single effect.
 - **Units:** (binary)

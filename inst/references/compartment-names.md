@@ -3291,6 +3291,34 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** none.
 - **Example models:** ocular-PK models.
 
+### tear (**canonical bare tear-film compartment**)
+- **Type:** compartment
+- **Role:** Precorneal tear film of the eye. In topical ocular PK models it is the dose site: an instilled drop is dosed into `tear`, and drug leaves it by drainage to `nasolacrimal_duct` and by absorption into `cornea`. Unlike `depot`, `tear` is a sampled matrix with its own volume and observed concentration (tears collected on Schirmer strips), so its `compartmentData` specimen is `"tear fluid"`, not `"administration site"`.
+- **Source aliases:** "tear" / "tears" / V1 (Djebli 2017 Fig. 1 and Table 1).
+- **Example models:** `Djebli_2017_FV60165_rabbit.R`.
+- **Notes:** Observation `Ctear`. Use `tear` for the precorneal fluid only; a conjunctival-sac depot with no sampled concentration is `depot`.
+
+### nasolacrimal_duct (**canonical bare naso-lacrimal duct compartment**)
+- **Type:** compartment
+- **Role:** Naso-lacrimal duct, the drainage route from the tear film to the nasal cavity. In topical ocular PK models it receives drug drained from `tear` and is the main non-productive loss pathway from the eye surface.
+- **Source aliases:** "naso-lacrymal duct" / V2 (Djebli 2017 Fig. 1 and Table 1).
+- **Example models:** `Djebli_2017_FV60165_rabbit.R`.
+- **Notes:** Spelled out in full (not `nasolacrimal`) so the token names the anatomical structure. Observation `Cnasolacrimal_duct`. Assayed as a tissue homogenate, so its `compartmentData` specimen is `"tissue"`.
+
+### cornea (**canonical bare cornea compartment**)
+- **Type:** compartment
+- **Role:** Cornea, the main absorption barrier between the tear film and the anterior chamber, and the target tissue for corneal-disease drugs given topically. Receives drug from `tear` and exchanges it with `aqueous_humour`.
+- **Source aliases:** "cornea" / V3 (Djebli 2017 Fig. 1 and Table 1).
+- **Example models:** `Djebli_2017_FV60165_rabbit.R`.
+- **Notes:** Observation `Ccornea`. Assayed as a tissue homogenate, so its `compartmentData` specimen is `"tissue"`. Distinct from the `prob_corneal_epitheliopathy_grade2` output, which is a probability of an adverse event, not a drug amount.
+
+### aqueous_humour (**canonical bare aqueous-humour compartment**)
+- **Type:** compartment
+- **Role:** Aqueous humour of the anterior chamber of the eye. In topical ocular PK models it exchanges drug with `cornea` and is cleared by aqueous-humour turnover; in intracameral or systemic ocular models it is the anterior-chamber fluid.
+- **Source aliases:** "aqueous humor" / V4 (Djebli 2017 Fig. 1 and Table 1).
+- **Example models:** `Djebli_2017_FV60165_rabbit.R`.
+- **Notes:** British spelling, matching the existing `compartmentData` specimen string `"aqueous humour"` exactly. Observation `Caqueous_humour`. Sibling of `vitreous` and `retina` in the bare ocular-anatomy namespace.
+
 ### res_vasc (**canonical bare lumped-remainder vascular compartment**)
 - **Type:** compartment
 - **Role:** Lumped remainder vascular compartment in PBPK.

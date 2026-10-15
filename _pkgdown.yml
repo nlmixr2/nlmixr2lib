@@ -2432,6 +2432,8 @@ navbar:
         href: articles/Zhang_2024_f53b_pbpk.html
       - text: "F53b mouse pbpk (Zhang 2024)"
         href: articles/Zhang_2024_f53b_pbpk.html
+      - text: "FV60165 rabbit (Djebli 2017)"
+        href: articles/Djebli_2017_FV60165_rabbit.html
       - text: "FXa inhibitors mbma (Yoshioka 2018)"
         href: articles/Yoshioka_2018_FXa_inhibitors_mbma.html
       - text: "Factor viii (Hazendonk 2016)"
@@ -7958,6 +7960,7 @@ articles:
   - articles/Ding_2026_vancomycin
   - articles/Dings_2026_cafedrine_theodrenaline_ephedrine
   - articles/Dirks_2008_cetuximab
+  - articles/Djebli_2017_FV60165_rabbit
   - articles/Djebli_2017_alirocumab
   - articles/Djerada_2014_nefopam
   - articles/Dodds_2005_rfxiii_cyno

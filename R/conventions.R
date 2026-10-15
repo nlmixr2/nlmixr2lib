@@ -789,6 +789,7 @@
     "vitreous",
     "aqueous humour",
     "retina",
+    "tear fluid",
     "tissue",
     "tumor",
     "lymph",
