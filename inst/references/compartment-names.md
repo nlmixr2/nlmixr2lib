@@ -1743,7 +1743,7 @@ Ratified 2026-09-02 (PMC13274749).
 - **Role:** Plasma sub-compartment of the drug-contacting body of an extracorporeal circuit (the hemofilter, oxygenator or column together with its tubing prime volume). Receives blood from the patient or reservoir at the circuit blood flow rate split on the systemic hematocrit, returns it at the return-line flow split on the post-device hematocrit, and is the phase from which unbound drug crosses the membrane.
 - **Source aliases:**
   - `HF1000|Plasma` -- McKnite 2026 deposited MoBi project; `CRRTpls` in Supplement S1 Equations 8-10.
-- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example).
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example), `Adamiszak_2025_ceftaroline.R` (the lumped case: Figure 1's `CRRT` compartment, `Acrrt` in the mlxtran, volume `VCRRT` estimated at 2.69 L, entered at `Qb / Vcent` and left at `Qb / VCRRT` to [[circuit_postfilter]] and `Qeff / VCRRT` to [[circuit_dialysate]]; no red-cell phase).
 - **Notes:** Pairs with [[circuit_rbc]]. A circuit model that does not resolve the red-cell phase uses `circuit_plasma` alone for the whole blood-side volume only if the paper genuinely lumps them; otherwise carry both.
 
 ### circuit_rbc (**canonical extracorporeal circuit red-cell compartment**)
@@ -1759,8 +1759,17 @@ Ratified 2026-09-02 (PMC13274749).
 - **Role:** Dialysate-side volume of a hemofilter or dialyser, separated from [[circuit_plasma]] by the semipermeable membrane. Gains drug by diffusion down the unbound concentration gradient and by convection with the filtrate, and drains to [[circuit_effluent]] at the effluent flow rate.
 - **Source aliases:**
   - `PrisMax|Dialysate` -- McKnite 2026 deposited MoBi project; `Dialysate` in Supplement S1 Equations 9-11.
-- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example).
-- **Notes:** The membrane permeability-surface product `D * SA / h` is typically several orders of magnitude larger than every other circuit flow, so this state usually sits at quasi-equilibrium with the unbound plasma concentration; carry it as a state anyway, because it is what the effluent assay measures.
+  - `Effluent`, `Aeff` -- Adamiszak 2025 Figure 1 and mlxtran. **The paper's word is "Effluent", but the state is this one, not [[circuit_effluent]]:** it gains drug from the filter at `Qeff / VCRRT` and drains onward at `Qeff / VEffluent`, so it is a flow-through mixing volume whose concentration is the effluent assay, not the accumulating bag.
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example), `Adamiszak_2025_ceftaroline.R` (lumped flow-limited form, volume 0.60 L estimated, observed as `Ceffluent`).
+- **Notes:** The membrane permeability-surface product `D * SA / h` is typically several orders of magnitude larger than every other circuit flow, so this state usually sits at quasi-equilibrium with the unbound plasma concentration; carry it as a state anyway, because it is what the effluent assay measures. A source that labels a flow-through effluent-line volume "effluent" maps here; [[circuit_effluent]] is reserved for a state nothing leaves.
+
+### circuit_postfilter (**canonical extracorporeal circuit post-filter return-limb compartment**)
+- **Type:** compartment
+- **Role:** Blood-side volume of an extracorporeal circuit downstream of the drug-contacting device body ([[circuit_plasma]]) and upstream of the return to the patient -- the post-filter (venous return) limb. Receives drug from the device body at the blood flow rate and returns it to the patient's central compartment at the blood flow rate. Carried as a state when the source samples and fits post-filter concentrations against their own estimated volume.
+- **Source aliases:**
+  - `Post-filter`, `Apost` -- Adamiszak 2025 Figure 1 and mlxtran (`ddt_Apost = IS_CRRT * (k34*Acrrt - k41*Apost)`, `k34 = Qb/Vcrrt`, `k41 = Qb/Vpost`).
+- **Example models:** `Adamiszak_2025_ceftaroline.R` (founding example; volume `VPost-filter` 1.15 L, observed as `Cpostfilter`).
+- **Notes:** Volume parameter `vpostfilter` (log form `lvpostfilter`). Distinct from the algebraic `Cpostfilter` observable that most CRRT models compute as `Cc * (1 - extraction)` with no state: use this compartment only when the post-filter limb has its own mass balance. Distinct from [[circuit_plasma]] (the device body, from which drug leaves to the dialysate side) and from [[circuit_dialysate]] / [[circuit_effluent]] (the waste side). `Sime_2019b_ceftolozane.R` carries a `postfilter` state as a paper-specific compartment because its fitted ~18 L volume and peripheral exchange make it an empirical compartment rather than a circuit limb.
 
 ### circuit_effluent (**canonical extracorporeal effluent waste compartment**)
 - **Type:** compartment

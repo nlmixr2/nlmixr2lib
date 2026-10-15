@@ -3376,15 +3376,22 @@ Prescription, geometry and transport parameters of an extracorporeal blood circu
 ### vfilter (**canonical circuit blood-side volume**)
 - **Type:** paper-named-param
 - **Role:** Blood-side volume of the circuit's drug-contacting body -- the hemofilter (or oxygenator) together with the tubing prime volume; splits on the mean filter haematocrit into the `circuit_plasma` and `circuit_rbc` volumes.
-- **Source aliases:** `filter volume`, `Filter Blood Volume`, `Circuit Blood Volume`
-- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
-- **Notes:** Device product guides tabulate the filter blood volume and the circuit blood volume separately; a model that lumps the tubing into the filter state should carry the *circuit* volume here and say which it used.
+- **Source aliases:** `filter volume`, `Filter Blood Volume`, `Circuit Blood Volume`, `VCRRT` (Adamiszak 2025 Table 2)
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example), `Adamiszak_2025_ceftaroline.R` (estimated, so carried in the log form `lvfilter = log(2.69)`; the filter compartment lumps plasma and red cells)
+- **Notes:** Device product guides tabulate the filter blood volume and the circuit blood volume separately; a model that lumps the tubing into the filter state should carry the *circuit* volume here and say which it used. A device constant is written bare; an estimated volume takes the log form `lvfilter`.
 
 ### vdialysate (**canonical hemofilter dialysate-side volume**)
 - **Type:** paper-named-param
 - **Role:** Dialysate-side volume of a hemofilter or dialyser; the volume of the `circuit_dialysate` state.
-- **Source aliases:** `dialysate volume`, `filter prime volume`
-- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Source aliases:** `dialysate volume`, `filter prime volume`, `VEffluent` (Adamiszak 2025 Table 2; see the `circuit_dialysate` entry for why that paper's "effluent" volume belongs here)
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example), `Adamiszak_2025_ceftaroline.R` (estimated, log form `lvdialysate = log(0.60)`)
+
+### vpostfilter (**canonical circuit post-filter return-limb volume**)
+- **Type:** paper-named-param
+- **Role:** Volume of the `circuit_postfilter` state -- the blood-side return limb between the device body and the patient. Sets the post-filter-to-patient return rate constant `qbfr / vpostfilter` and the post-filter concentration `circuit_postfilter / vpostfilter`.
+- **Source aliases:** `VPost-filter`, `Vpost` -- Adamiszak 2025 Table 2 and mlxtran.
+- **Example models:** `Adamiszak_2025_ceftaroline.R` (founding example; estimated, log form `lvpostfilter = log(1.15)`)
+- **Notes:** Written bare as a device constant and as `lvpostfilter` when estimated, like `vfilter` / `lvfilter`. `Sime_2019b_ceftolozane.R` also uses the name `lvpostfilter`, for the volume of its paper-specific empirical `postfilter` compartment (~18 L, exchanging with the peripheral compartment); that is a fitted body-side volume, not a circuit limb.
 
 ### safilter (**canonical hemofilter membrane surface area**)
 - **Type:** paper-named-param

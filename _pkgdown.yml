@@ -1264,6 +1264,8 @@ navbar:
         href: articles/Mi_2023_cefquinome_pbpk.html
       - text: "Cefquinome pkpd index (Gao 2025)"
         href: articles/Gao_2025_cefquinome.html
+      - text: "Ceftaroline (Adamiszak 2025)"
+        href: articles/Adamiszak_2025_ceftaroline.html
       - text: "Ceftaroline (Chauzy 2022)"
         href: articles/Chauzy_2022_ceftaroline.html
       - text: "Ceftaroline (Minichmayr 2024)"
@@ -7423,6 +7425,7 @@ articles:
   - articles/Abuhelwa_2015_itraconazole
   - articles/Abulfathi_2021_meropenem
   - articles/Abuqayyas_2012_8C2
+  - articles/Adamiszak_2025_ceftaroline
   - articles/Adamiszak_2025_fluconazole
   - articles/Adams_1998_zalcitabine
   - articles/Adeojo_2024_levonorgestrel
