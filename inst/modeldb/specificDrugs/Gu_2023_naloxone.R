@@ -6,8 +6,9 @@ Gu_2023_naloxone <- function() {
     "(no IIV on ka), bioavailability fixed to 0.01 at the 8 mg dose level",
     "with a power effect of dose (exponent -0.36), and combined additive and",
     "proportional residual error. The dose is entered as the labelled",
-    "buprenorphine strength of the combination dose (8 mg for two 4 mg",
-    "tablets carrying 2 mg naloxone), as in the published model. The",
+    "buprenorphine strength of the combination dose (8 mg for four",
+    "2 mg/0.5 mg tablets carrying 2 mg naloxone), as in the published",
+    "model. The",
     "buprenorphine and norbuprenorphine component is a separately fitted",
     "model (Gu_2023_buprenorphine)."
   )
@@ -27,23 +28,33 @@ Gu_2023_naloxone <- function() {
   )
 
   compartmentData <- list(
-    depot = list(analyte = "naloxone", units = "mg (labelled buprenorphine strength)", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "naloxone", units = "mg (labelled buprenorphine strength)", specimen = "plasma", verified = TRUE)
+    depot = list(
+      analyte = "naloxone",
+      units = "mg (labelled buprenorphine strength)",
+      specimen = "administration site",
+      verified = TRUE
+    ),
+    central = list(
+      analyte = "naloxone",
+      units = "mg (labelled buprenorphine strength)",
+      specimen = "plasma",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
-    DOSE = list(
-      description = "Labelled buprenorphine dose of the administered sublingual buprenorphine/naloxone dose",
+    DOSE_BPN_SL_MG = list(
+      description = "Sublingual buprenorphine dose of the buprenorphine/naloxone tablets administered (mg buprenorphine)",
       units = "mg",
       type = "continuous",
       reference_category = NULL,
       notes = paste(
-        "Use case (a) of the DOSE canonical. Power effect on naloxone",
-        "bioavailability F = 0.01 * (DOSE / 8)^-0.36 (supplementary control",
-        "stream 'TVF1 = THETA(4)*(DOSE/8)**THETA(7)'; Table 3 'Exponent for",
-        "dose on F' = -0.36). The same column carries the dose-group level",
-        "(4, 8 or 16 mg buprenorphine) as in Gu_2023_buprenorphine; it is",
-        "also the value to supply as amt (see the model description)."
+        "Power effect on naloxone bioavailability",
+        "F = 0.01 * (DOSE_BPN_SL_MG / 8)^-0.36 (supplementary control stream",
+        "'TVF1 = THETA(4)*(DOSE/8)**THETA(7)'; Table 3 'Exponent for dose on",
+        "F' = -0.36). The same column carries the dose-group level (4, 8 or",
+        "16 mg buprenorphine) as in Gu_2023_buprenorphine; it is also the",
+        "value to supply as amt (see the model description)."
       ),
       source_name = "DOSE"
     )
@@ -136,7 +147,7 @@ Gu_2023_naloxone <- function() {
 
     d / dt(depot) <- -ka * depot
     d / dt(central) <- ka * depot - kel * central
-    f(depot) <- exp(lfdepot) * (DOSE / 8)^e_dose_fdepot
+    f(depot) <- exp(lfdepot) * (DOSE_BPN_SL_MG / 8)^e_dose_fdepot
 
     # Dose in mg, volume in L -> mg/L; x 1000 gives ng/mL.
     Cc <- 1000 * central / vc

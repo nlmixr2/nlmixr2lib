@@ -10,8 +10,10 @@ Gu_2023_buprenorphine <- function() {
     "of swallows after dosing (reference 3 swallows). Norbuprenorphine:",
     "two-compartment disposition formed from the whole buprenorphine",
     "clearance (fraction metabolised fixed to 1, multiplied by 1.98 in the",
-    "16 mg dose group). The naloxone component is a separately fitted model",
-    "(Gu_2023_naloxone)."
+    "16 mg dose group). The transit chain is explicit, so the dose (mg",
+    "buprenorphine) is given to transit1; the absorbed amount carries the",
+    "factor from the control stream's Stirling approximation to log(n!).",
+    "The naloxone component is a separately fitted model (Gu_2023_naloxone)."
   )
   reference <- paste(
     "Gu M, Li A, Mak W, Dong F, Xu N, Zhang J, Shi Y, Zheng N, Tang Z, He Q,",
@@ -26,13 +28,24 @@ Gu_2023_buprenorphine <- function() {
 
   # Amounts are mg of buprenorphine; norbuprenorphine is carried in
   # buprenorphine-mass equivalents (no molecular-weight conversion in the
-  # supplementary control stream, CM = A(4)/V4*1000000).
-  compartmentData <- list(
-    depot = list(analyte = "buprenorphine", units = "mg", specimen = "administration site", verified = TRUE),
-    central = list(analyte = "buprenorphine", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1 = list(analyte = "buprenorphine", units = "mg", specimen = "tissue", verified = TRUE),
-    central_norbup = list(analyte = "norbuprenorphine", units = "mg", specimen = "plasma", verified = TRUE),
-    peripheral1_norbup = list(analyte = "norbuprenorphine", units = "mg", specimen = "tissue", verified = TRUE)
+  # supplementary control stream, CM = A(4)/V4*1000000). The Savic transit
+  # absorption is an explicit 9-compartment chain, so the DOSE IS
+  # ADMINISTERED TO `transit1`, not to `depot`; `depot` is the absorption
+  # compartment emptied at ka (control stream A(1)).
+  compartmentData <- c(
+    stats::setNames(
+      lapply(1:9, function(i) {
+        list(analyte = "buprenorphine", units = "mg", specimen = "administration site", verified = TRUE)
+      }),
+      paste0("transit", 1:9)
+    ),
+    list(
+      depot = list(analyte = "buprenorphine", units = "mg", specimen = "administration site", verified = TRUE),
+      central = list(analyte = "buprenorphine", units = "mg", specimen = "plasma", verified = TRUE),
+      peripheral1 = list(analyte = "buprenorphine", units = "mg", specimen = "tissue", verified = TRUE),
+      central_norbup = list(analyte = "norbuprenorphine", units = "mg", specimen = "plasma", verified = TRUE),
+      peripheral1_norbup = list(analyte = "norbuprenorphine", units = "mg", specimen = "tissue", verified = TRUE)
+    )
   )
 
   covariateData <- list(
@@ -52,18 +65,21 @@ Gu_2023_buprenorphine <- function() {
       ),
       source_name = "NOS"
     ),
-    DOSE = list(
-      description = "Labelled buprenorphine dose of the administered sublingual buprenorphine/naloxone dose",
+    DOSE_BPN_SL_MG = list(
+      description = "Sublingual buprenorphine dose of the buprenorphine/naloxone tablets administered (mg buprenorphine)",
       units = "mg",
       type = "continuous",
       reference_category = NULL,
       notes = paste(
-        "Use case (a) of the DOSE canonical: the dose-group level (4, 8 or",
-        "16 mg buprenorphine). Enters only as the 16 mg indicator on the",
-        "fraction metabolised to norbuprenorphine, Fm = 1 * 1.98^(DOSE == 16)",
-        "(control stream 'IF(DOSE.EQ.16) FFACTOR = THETA(18)'). Any other",
-        "dose level takes Fm = 1, so doses other than 4, 8 and 16 mg are",
-        "extrapolations for norbuprenorphine."
+        "The dose-group level (4, 8 or 16 mg buprenorphine). Enters only as",
+        "the 16 mg indicator on the fraction metabolised to",
+        "norbuprenorphine, Fm = 1 * 1.98^(DOSE_BPN_SL_MG == 16) (control",
+        "stream 'IF(DOSE.EQ.16) FFACTOR = THETA(18)'). Any other dose level",
+        "takes Fm = 1, so doses other than 4, 8 and 16 mg are extrapolations",
+        "for norbuprenorphine. The control stream drives the transit input",
+        "from this column (SLDO = DOSE * ...); the model takes it from the",
+        "dose-record amt instead, so amt and DOSE_BPN_SL_MG carry the same",
+        "value."
       ),
       source_name = "DOSE"
     )
@@ -193,7 +209,7 @@ Gu_2023_buprenorphine <- function() {
     # Relative bioavailability per swallow, centred on 3 swallows as in the
     # control stream (TVSLDO = DOSE * (1 + THETA(8) * (NOS - 3))).
     fdepot <- 1 + e_nswallows_fdepot * (NSWALLOWS - 3)
-    fm_i <- fm * e_dose16_fm^(DOSE == 16)
+    fm_norbup <- fm * e_dose16_fm^(DOSE_BPN_SL_MG == 16)
 
     kel <- cl / vc
     k12 <- q / vc
@@ -202,16 +218,34 @@ Gu_2023_buprenorphine <- function() {
     k12_norbup <- q_norbup / vc_norbup
     k21_norbup <- q_norbup / vp_norbup
 
-    # Savic analytical transit input (ktr = (ntr + 1) / mtt inside
-    # transit()) into the absorption compartment; the control stream sets
-    # F1 = 0 so the dose itself enters only through the transit term.
-    d / dt(depot) <- transit(ntr, mtt, fdepot) - ka * depot
+    # Savic transit absorption (control stream $DES DADT(1)). A dose entering
+    # the first of ntr + 1 = 9 compartments that each transfer at ktr leaves
+    # the last at exactly the Savic density ktr * (ktr*t)^ntr * exp(-ktr*t) /
+    # ntr!, so the chain is used instead of the closed form: the closed-form
+    # input is zero at the dose and lasts only ~0.2 h, and the solver steps
+    # over it on a sparse observation grid. The control stream normalises
+    # with Stirling's approximation to log(ntr!) (LNFAC), which delivers
+    # 1.0105 times the bioavailable dose at ntr = 8; that factor is carried
+    # on f(transit1). The chain length is fixed at ntr + 1 = 9, so changing
+    # lntr alters ktr and the factor but not the number of compartments.
+    ktr <- (ntr + 1) / mtt
+    lnfac <- log(2.5066) + (ntr + 0.5) * log(ntr) - ntr
+    d / dt(transit1) <- -ktr * transit1
+    d / dt(transit2) <- ktr * transit1 - ktr * transit2
+    d / dt(transit3) <- ktr * transit2 - ktr * transit3
+    d / dt(transit4) <- ktr * transit3 - ktr * transit4
+    d / dt(transit5) <- ktr * transit4 - ktr * transit5
+    d / dt(transit6) <- ktr * transit5 - ktr * transit6
+    d / dt(transit7) <- ktr * transit6 - ktr * transit7
+    d / dt(transit8) <- ktr * transit7 - ktr * transit8
+    d / dt(transit9) <- ktr * transit8 - ktr * transit9
+    d / dt(depot) <- ktr * transit9 - ka * depot
     d / dt(central) <- ka * depot - kel * central - k12 * central + k21 * peripheral1
     d / dt(peripheral1) <- k12 * central - k21 * peripheral1
-    d / dt(central_norbup) <- fm_i * kel * central - kel_norbup * central_norbup -
+    d / dt(central_norbup) <- fm_norbup * kel * central - kel_norbup * central_norbup -
       k12_norbup * central_norbup + k21_norbup * peripheral1_norbup
     d / dt(peripheral1_norbup) <- k12_norbup * central_norbup - k21_norbup * peripheral1_norbup
-    f(depot) <- 0
+    f(transit1) <- fdepot * exp(lgamma(ntr + 1) - lnfac)
 
     # Dose in mg, volumes in L -> mg/L; x 1000 gives ng/mL.
     Cc <- 1000 * central / vc
