@@ -24,10 +24,10 @@ Kapitanov_2025_dupilumab_qsp <- function() {
     sep = " "
   )
   reference <- paste(
-    "Kapitanov GI, Flowers D, Marcantonio DH, Lezon TR, Apgar JF, Hua F.",
-    "A Tutorial on the Development of a Physiologically Inspired PKRO",
-    "Model for Monoclonal Antibodies. CPT: Pharmacometrics & Systems",
-    "Pharmacology. 2025. doi:10.1002/psp4.70160.",
+    "Kapitanov GI, Flowers D, Marcantonio DH, Lezon TR, Apgar JF, Hua F. A",
+    "Tutorial on the Development of a Physiologically Inspired PKRO Model for",
+    "Monoclonal Antibodies. CPT Pharmacometrics Syst Pharmacol.",
+    "2026;15(2):e70160. doi:10.1002/psp4.70160.",
     "Case Study 2 (2-compartment piPKRO fitted to digitised dupilumab",
     "single-dose IV PK from Li E et al., J Clin Pharmacol 2015 [Kapitanov",
     "2025 ref 35]).",

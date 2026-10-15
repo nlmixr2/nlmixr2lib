@@ -1,6 +1,13 @@
 Kovalenko_2016_dupilumab <- function() {
   description <- "Dupilumab exploratory population PK model (Kovalenko 2016; 2-cmt with parallel linear + Michaelis-Menten elimination)"
-  reference <- "Kovalenko P, DiCioccio AT, Davis JD, et al. Exploratory Population PK Analysis of Dupilumab, a Fully Human Monoclonal Antibody Against IL-4Ralpha, in Atopic Dermatitis Patients and Normal Volunteers. CPT Pharmacometrics Syst Pharmacol. 2016;5(11):617-624. doi:10.1002/psp4.12136"
+  reference <- paste(
+    "Kovalenko P, DiCioccio AT, Davis JD, Li M, Ardeleanu M, Graham N, Soltys",
+    "R. Exploratory Population PK Analysis of Dupilumab, a Fully Human",
+    "Monoclonal Antibody Against IL-4Ralpha, in Atopic Dermatitis Patients and",
+    "Normal Volunteers. CPT Pharmacometrics Syst Pharmacol.",
+    "2016;5(11):617-624. doi:10.1002/psp4.12136.",
+    sep = " "
+  )
   vignette <- "Kovalenko_2016_dupilumab"
   replicate_of <- "inst/modeldb/ddmore/Kovalenko_2016_dupilumab_ddmore.R"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")

@@ -25,10 +25,11 @@ Sun_2025_maribavir_thrombocytopenia <- function() {
     "family."
   )
   reference <- paste(
-    "Sun K, Jomphe C, Gosselin NH, Pheng L, Durairaj C, Hang Y, Bhattacharya I.",
-    "Population Pharmacokinetics and Exposure-Response Relationships of Maribavir",
-    "in Transplant Recipients With First Episode or Refractory Cytomegalovirus.",
-    "CPT Pharmacometrics Syst Pharmacol. 2025;14(8):1346-1356.",
+    "Sun K, Jomphe C, Gosselin NH, Pheng L, Durairaj C, Hang Y, Bhattacharya",
+    "I. Population Pharmacokinetics and Exposure-Response Relationships of",
+    "Maribavir in Transplant Recipients With First Episode or Refractory",
+    "Cytomegalovirus. CPT Pharmacometrics Syst Pharmacol.",
+    "2025;14(8):1346-1358.",
     "doi:10.1002/psp4.70054.",
     "Logistic-regression coefficients in the Figure S3 parameter tables, Supporting Information file s002; the corresponding odds ratios are also tabulated in Table S4, file s001.",
     sep = " "

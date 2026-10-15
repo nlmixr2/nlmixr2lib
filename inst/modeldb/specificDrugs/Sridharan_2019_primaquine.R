@@ -2,10 +2,9 @@ Sridharan_2019_primaquine <- function() {
   description <- "One-compartment population PK model for primaquine after a single oral 15-mg dose in 53 Indian adults: 13 healthy volunteers, 12 with mild and 6 with moderate hepatic dysfunction (Child-Pugh), and 22 with renal dysfunction. First-order absorption and first-order elimination; during estimation the absorption rate constant was constrained above the elimination rate constant to avoid flip-flop. Apparent volume of distribution is normalized linearly to a 70-kg person and rises 3.86-fold in moderate hepatic dysfunction, the only covariate retained; mild hepatic dysfunction, renal dysfunction, age and sex were screened and dropped, and neither hepatic nor renal dysfunction affected clearance. Exponential between-subject variability on CL/F, V/F and Ka, with combined proportional-plus-additive residual error."
   reference <- paste(
     "Sridharan K, Sannala CKR, Mallayasamy S, Chaturvedula A, Kadam P, Hase N,",
-    "Shukla A, Gogtay N, Thatte U.",
-    "Population pharmacokinetics of primaquine and the effect of hepatic and",
-    "renal dysfunction: An exploratory approach.",
-    "Indian J Pharmacol. 2019;51(1):17-23. doi:10.4103/ijp.ijp_230_16.",
+    "Shukla A, Gogtay N, Thatte U. Population pharmacokinetics of primaquine",
+    "and the effect of hepatic and renal dysfunction: An exploratory approach.",
+    "Indian J Pharmacol. 2019;51(1):17-24. doi:10.4103/ijp.ijp_230_16.",
     "Structural model from Methods, 'Population pharmacokinetic modeling', and",
     "Results, 'Model development and evaluation'; parameter values from Table 2",
     "('Population estimates' column); covariate function from the Methods",

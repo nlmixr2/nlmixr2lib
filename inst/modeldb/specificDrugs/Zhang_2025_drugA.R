@@ -26,11 +26,10 @@ Zhang_2025_drugA <- function() {
     "registered under the paper's own compound label."
   )
   reference <- paste(
-    "Zhang X, Xiao Y, Wu J, Marshall S, Zhou X.",
-    "Pharmacometric Model-Based Sample Size Allocation for a Region of",
-    "Interest in a Multi-Regional Phase 2 Trial: A Case Study of an",
-    "Anti-Psoriatic Drug.",
-    "CPT Pharmacometrics Syst Pharmacol. 2025;14(10):1673-1682.",
+    "Zhang X, Xiao Y, Wu J, Marshall S, Zhou X. Pharmacometric Model-Based",
+    "Sample Size Allocation for a Region of Interest in a Multi-Regional Phase",
+    "2 Trial: A Case Study of an Anti-Psoriatic Drug. CPT Pharmacometrics Syst",
+    "Pharmacol. 2025;14(10):1673-1681.",
     "doi:10.1002/psp4.70090.",
     "Parameter values from Table S1; structural equations and variance terms",
     "from the Data S4 NONMEM control streams.",

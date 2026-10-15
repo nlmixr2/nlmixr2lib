@@ -26,7 +26,7 @@ cat("* Description: ", ui$description, "\n", sep = "")
 ```
 
 * Article: <https://doi.org/10.1002/jcph.70038>
-* Upstream framework paper (Rostami 2022): <https://doi.org/10.1038/s41598-022-06209-4>
+* Upstream framework paper (Rostami 2022): <https://doi.org/10.1038/s41598-022-05108-y>
 
 Salehi 2025 couples a fit-for-purpose buccal-cavity (BC) tissue permeation
 model to the whole-body nicotine PBPK model of Rostami 2022, in order to

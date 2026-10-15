@@ -10,7 +10,7 @@ Straube_2025_linagliptin_2cmt <- function() {
     "total-drug time courses digitised from Glassman PM, Muzykantov VR.",
     "Target-Mediated Exposure Enhancement: A Previously Unexplored Limit of TMDD. J Pharmacokinet Pharmacodyn. 2020;47(5):411-420; doi:10.1007/s10928-020-09693-1.",
     "koff and Kd were fixed at values reported in Wu N, An G. AAPS J. 2020;22:125;",
-    "doi:10.1208/s12248-020-00514-4.",
+    "doi:10.1208/s12248-020-00481-w.",
     sep = " "
   )
   vignette <- "Straube_2025_TMDD_high_vs_low_affinity"

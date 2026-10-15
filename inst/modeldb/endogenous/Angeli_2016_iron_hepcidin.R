@@ -1,6 +1,12 @@
 Angeli_2016_iron_hepcidin <- function() {
   description <- "Joint turnover model of serum iron and serum hepcidin during the menstrual cycle in healthy non-menopausal women; both molecules follow first-order turnover with a menses-induced increase in elimination (kloss) shared across iron and hepcidin and a delayed post-menses rebound in synthesis (krelI, krelH) starting on day 2 of the cycle, with serum iron multiplicatively modulating hepcidin synthesis around the iron baseline."
-  reference <- "Angeli A, Laine F, Lavenu A, Ropert M, Lacut K, Gissot V, Sacher-Huvelin S, Jezequel C, Moignet A, Laviolle B, Comets E. Joint Model of Iron and Hepcidin During the Menstrual Cycle in Healthy Women. AAPS J. 2016 May;18(3):490-504. doi:10.1208/s12248-016-9875-4"
+  reference <- paste(
+    "Angeli A, Laine F, Lavenu A, Ropert M, Lacut K, Gissot V, Sacher-Huvelin",
+    "S, Jezequel C, Moignet A, Laviolle B, Comets E. Joint Model of Iron and",
+    "Hepcidin During the Menstrual Cycle in Healthy Women. AAPS J.",
+    "2016;18(2):490-504. doi:10.1208/s12248-016-9875-4.",
+    sep = " "
+  )
   vignette <- "Angeli_2016_iron_hepcidin"
   units <- list(
     time = "day",

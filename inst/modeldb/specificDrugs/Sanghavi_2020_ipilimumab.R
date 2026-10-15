@@ -1,6 +1,12 @@
 Sanghavi_2020_ipilimumab <- function() {
   description <- "Two-compartment population PK model for intravenous ipilimumab (anti-CTLA-4 IgG1) with time-varying clearance via a sigmoid cl_time_max function in patients with advanced solid tumors receiving ipilimumab alone or in combination with nivolumab (Sanghavi 2020)"
-  reference <- "Sanghavi K, Zhang J, Zhao X, et al. Population Pharmacokinetics of Ipilimumab in Combination With Nivolumab in Patients With Advanced Solid Tumors. CPT Pharmacometrics Syst Pharmacol. 2020;9(1):29-39. doi:10.1002/psp4.12477"
+  reference <- paste(
+    "Sanghavi K, Zhang J, Zhao X, Feng Y, Statkevich P, Sheng J, Roy A, Vezina",
+    "HE. Population Pharmacokinetics of Ipilimumab in Combination With",
+    "Nivolumab in Patients With Advanced Solid Tumors. CPT Pharmacometrics",
+    "Syst Pharmacol. 2020;9(1):29-39. doi:10.1002/psp4.12477.",
+    sep = " "
+  )
   vignette <- "Sanghavi_2020_ipilimumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 

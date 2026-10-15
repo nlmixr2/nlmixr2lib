@@ -1,6 +1,13 @@
 Bartels_2021_mometasoneFuroate <- function() {
   description <- "Two-compartment population PK model with mixed (simultaneous) zero-order/first-order absorption for inhaled mometasone furoate in adults and adolescents with asthma receiving the indacaterol/mometasone furoate (IND/MF) or indacaterol/glycopyrronium/mometasone furoate (IND/GLY/MF) fixed-dose combinations, or MF monotherapy, via the Breezhaler device (PALLADIUM, IRIDIUM and E2201 studies), with estimated allometric body-weight exponents on CL/F and Vc/F, baseline FEV1 on CL/F and Vc/F, and formulation (IND/GLY/MF; medium-dose MF strength) and IRIDIUM-study effects on Vc/F and relative bioavailability (Bartels 2021). The MF Twisthaler monotherapy comparator arms are not covered: their Vc/F, F and Vp/F formulation effects are not reported."
-  reference <- "Bartels C, Jain M, Yu J, Tillmann HC, Vaidya S. Population Pharmacokinetic Analysis of Indacaterol/Glycopyrronium/Mometasone Furoate After Administration of Combination Therapies Using the Breezhaler Device in Patients with Asthma. Eur J Drug Metab Pharmacokinet. 2021;46(4):489-506. doi:10.1007/s13318-021-00689-x"
+  reference <- paste(
+    "Bartels C, Jain M, Yu J, Tillmann HC, Vaidya S. Population",
+    "Pharmacokinetic Analysis of Indacaterol/Glycopyrronium/Mometasone Furoate",
+    "After Administration of Combination Therapies Using the Breezhaler()",
+    "Device in Patients with Asthma. Eur J Drug Metab Pharmacokinet.",
+    "2021;46(4):487-504. doi:10.1007/s13318-021-00689-x.",
+    sep = " "
+  )
   vignette <- "Bartels_2021_indacaterol_glycopyrronium_mometasone"
   units <- list(time = "h", dosing = "ug", concentration = "pg/mL")
   # Unit note: doses are nominal MF ug and volumes in L, so central / vc is in

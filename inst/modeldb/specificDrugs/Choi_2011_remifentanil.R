@@ -18,9 +18,9 @@ Choi_2011_remifentanil <- function() {
   )
   reference <- paste(
     "Choi BM, Shin DH, Noh MH, Kim YH, Jeong YB, Lee SH, Lee EK, Noh GJ.",
-    "Temporal linear mode complexity as a surrogate measure of the effect of remifentanil",
-    "on the central nervous system in healthy volunteers.",
-    "Br J Clin Pharmacol 2011; 71(6):879-888.",
+    "Temporal linear mode complexity as a surrogate measure of the effect of",
+    "remifentanil on the central nervous system in healthy volunteers. Br J",
+    "Clin Pharmacol. 2011;71(6):871-885.",
     "doi:10.1111/j.1365-2125.2011.03904.x.",
     "PK structure and parameter values adapted from",
     "Kang SH, Poynton MR, Kim KM, Lee H, Kim DH, Lee SH, Bae KS, Linares O, Kern SE, Noh GJ.",

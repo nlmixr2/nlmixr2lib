@@ -25,9 +25,10 @@ Huang_2026_tiapride <- function() {
   )
   reference <- paste(
     "Huang W, Shen J, Luo X, Wu Y, Zheng Y, Zhou J, Xu B, Yin X, Wu X.",
-    "Population Pharmacokinetics of Tiapride in Children and Adolescents with Tic Disorders:",
-    "Leveraging Plasma and Saliva Concentration to Guide Individualized Dosing.",
-    "Drug Des Devel Ther. 2026;20. doi:10.2147/DDDT.S587387",
+    "Population Pharmacokinetics of Tiapride in Children and Adolescents with",
+    "Tic Disorders: Leveraging Plasma and Saliva Concentration to Guide",
+    "Individualized Dosing. Drug Des Devel Ther. 2026;20:587387.",
+    "doi:10.2147/DDDT.S587387.",
     sep = " "
   )
   vignette <- "Huang_2026_tiapride"

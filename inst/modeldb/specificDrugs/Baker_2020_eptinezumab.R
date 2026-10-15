@@ -1,11 +1,16 @@
 Baker_2020_eptinezumab <- function() {
   description <- "Two-compartment population PK model for intravenous eptinezumab (humanized IgG1 anti-CGRP mAb) in healthy adults and adults with episodic or chronic migraine, with linear elimination; body weight on all four disposition parameters (shared exponent on CL/Q and on Vc/Vp), disease state (healthy/episodic/chronic migraine), capped creatinine clearance and baseline monthly migraine days on CL, and disease state and sex on Vc (Baker 2020)"
   reference <- paste(
-    "Baker B, Schaeffler B, Pederson S, Trinh M, Smith J, Latham J, Beliveau M, Rubets I.",
-    "Population pharmacokinetic and exposure-response analysis of eptinezumab in the treatment of episodic and chronic migraine.",
-    "Pharmacol Res Perspect. 2020;8(2):e00567. doi:10.1002/prp2.567.",
-    "Covariate coefficients, Q, Vp and the CLp/Vp BSV are from the FDA Clinical Pharmacology Review of BLA 761119 (Vyepti), Table 12",
-    "(reproducing sponsor report ALD403-088-PK Table 7), and the shared weight exponents from the EMA Vyepti assessment report (EMA/9446/2022, procedure EMEA/H/C/005287/0000) Table 6."
+    "Baker B, Schaeffler B, Beliveau M, Rubets I, Pederson S, Trinh M, Smith",
+    "J, Latham J. Population pharmacokinetic and exposure-response analysis of",
+    "eptinezumab in the treatment of episodic and chronic migraine. Pharmacol",
+    "Res Perspect. 2020;8(2):e00567. doi:10.1002/prp2.567. Covariate",
+    "coefficients, Q, Vp and the CLp/Vp BSV are from the FDA Clinical",
+    "Pharmacology Review of BLA 761119 (Vyepti), Table 12 (reproducing sponsor",
+    "report ALD403-088-PK Table 7), and the shared weight exponents from the",
+    "EMA Vyepti assessment report (EMA/9446/2022, procedure",
+    "EMEA/H/C/005287/0000) Table 6.",
+    sep = " "
   )
   vignette <- "Baker_2020_eptinezumab"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")

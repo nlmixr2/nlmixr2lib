@@ -28,12 +28,12 @@ Wolowich_2025_thc_gedm <- function() {
     "Wolowich WR, Greif R, Theiler L, Kleine-Brueggeney M.",
     "Pharmacokinetic/Pharmacodynamic Modeling of the Acute Heart Rate Effects",
     "of Delta-9 Tetrahydrocannabinol and Its Major Metabolites After",
-    "Intravenous Injection in Healthy Volunteers.",
-    "Eur J Drug Metab Pharmacokinet. 2025;50(3):229-241.",
-    "doi:10.1007/s13318-025-00941-8.",
-    "The GEDM interaction model itself is from Gabrielsson J, Weiner D.",
+    "Intravenous Injection in Healthy Volunteers. Eur J Drug Metab",
+    "Pharmacokinet. 2025;50(3):229-242. doi:10.1007/s13318-025-00941-8. The",
+    "GEDM interaction model itself is from Gabrielsson J, Weiner D.",
     "Pharmacokinetic and Pharmacodynamic Data Analysis: Concepts and",
-    "Applications, cited as reference 20 of the paper."
+    "Applications, cited as reference 20 of the paper.",
+    sep = " "
   )
   vignette <- "Wolowich_2025_thc_heart_rate"
 

@@ -14,11 +14,12 @@ Wang_2019_linezolid <- function() {
     "opportunistic therapeutic-drug-monitoring sampling in a 37-patient ",
     "single-centre cohort."
   )
-  reference <- paste0(
-    "Wang D, Zheng X, Yang Y, Chen X. Population pharmacokinetic analysis ",
-    "of linezolid in patients with different types of shock: Effect of ",
-    "platelet count. Exp Ther Med. 2019;18(2):1786-1792. ",
-    "doi:10.3892/etm.2019.7747. PMCID: PMC6676194."
+  reference <- paste(
+    "Wang D, Zheng X, Yang Y, Chen X. Population pharmacokinetic analysis of",
+    "linezolid in patients with different types of shock: Effect of platelet",
+    "count. Exp Ther Med. 2019;18(3):1786-1792. doi:10.3892/etm.2019.7747.",
+    "PMCID: PMC6676194.",
+    sep = " "
   )
   vignette <- "Wang_2019_linezolid"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")

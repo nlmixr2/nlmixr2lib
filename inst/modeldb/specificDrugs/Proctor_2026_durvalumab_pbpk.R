@@ -1,6 +1,12 @@
 Proctor_2026_durvalumab_pbpk <- function() {
   description <- "PBPK / QSP (whole-body two-pore, 15 organs, 219 ODE states). Durvalumab (anti-PD-L1) with cachexia-driven time-dependent clearance, jointly describing endogenous albumin, endogenous IgG and the dosed antibody through a shared, competable FcRn recycling pathway. The endosomal degradation rate constant of FcRn-unbound protein decays exponentially over time, reproducing the ~12% fall in durvalumab clearance seen in cancer patients whose cachexia improves on treatment. Extends the Liu 2024 translational two-pore PBPK model; only the three parameters of the kdeg(t) decay were fitted, to longitudinal serum albumin (no clinical PK was used in the fit)."
-  reference <- "Proctor JR, Wong H. Albumin Levels Are Predictive of Cachexia-Induced Time-Dependent Clearance of Therapeutic Antibodies: A Physiologically Based Pharmacokinetic Model of Durvalumab. CPT Pharmacometrics Syst Pharmacol. 2026;15(1):e70185. doi:10.1002/psp4.70185"
+  reference <- paste(
+    "Proctor JR, Wong H. Albumin Levels Are Predictive of Cachexia-Induced",
+    "Time-Dependent Clearance of Therapeutic Antibodies: A Physiologically",
+    "Based Pharmacokinetic Model of Durvalumab. CPT Pharmacometrics Syst",
+    "Pharmacol. 2026;15(2):e70185. doi:10.1002/psp4.70185.",
+    sep = " "
+  )
   vignette <- "Proctor_2026_durvalumab_cachexia"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 

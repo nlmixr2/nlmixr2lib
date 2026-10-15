@@ -13,12 +13,14 @@ Yamakawa_2011_imatinib <- function() {
     "population PK models, not from the primary publication. Re-extract ",
     "from Yamakawa 2011 when that paper is obtained."
   )
+  # Cited by PMID: the DOI PubMed lists for this paper is registered with
+  # Crossref to a different article.
   reference <- paste0(
     "Yamakawa Y, Hamada A, Nakashima R, Yuki M, Hirayama C, Kawaguchi T, ",
     "Saito H. Association of genetic polymorphisms in the influx ",
     "transporter SLCO1B3 and the efflux transporter ABCB1 with imatinib ",
     "pharmacokinetics in patients with chronic myeloid leukemia. Ther Drug ",
-    "Monit. 2011;33(2):244-250. doi:10.1097/FTD.0b013e31820beb02. ",
+    "Monit. 2011;33(2):244-250. PMID: 21311410. ",
     "PARAMETER SOURCE (secondary): Yang T, Rasmussen ASB, Weimann A, ",
     "Thastrup M, Rank CU, Als-Nielsen B, Malmros J, Wik HS, Lohi O, ",
     "Overgaard U, Johannsdottir IMR, Vaitkeviciene G, Dalhoff K, ",

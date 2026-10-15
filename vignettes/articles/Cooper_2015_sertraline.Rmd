@@ -21,7 +21,7 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode(readModelDb("Cooper_2015_sertraline"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Cooper_2015_sertraline"))$description`
-* Article: [Br J Clin Pharmacol 2015;79(5):307-15](https://doi.org/10.1111/bcp.12500)
+* Article: [Br J Clin Pharmacol 2015;79(2):307-315](https://doi.org/10.1111/bcp.12500)
 
 # Population
 

@@ -15,7 +15,8 @@ Dao_2022_imipenem <- function() {
     sep = " "
   )
   reference <- paste(
-    "Dao K, Fuchs A, Andre P, Giannoni E, Decosterd LA, Marchetti O, et al.",
+    "Dao K, Fuchs A, Andre P, Giannoni E, Decosterd LA, Marchetti O, Asner SA,",
+    "Pfister M, Widmer N, Buclin T, Csajka C, Guidi M.",
     "Dosing strategies of imipenem in neonates based on pharmacometric",
     "modelling and simulation.",
     "J Antimicrob Chemother. 2022;77(2):457-465. doi:10.1093/jac/dkab394.",

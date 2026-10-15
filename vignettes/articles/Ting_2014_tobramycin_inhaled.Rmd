@@ -20,7 +20,10 @@ library(purrr)
 
 # Model and source
 
-* Citation: Ting L, Aksenov S, Bhansali SG, Ramakrishna R, Tang P, Geller DE. (2014). Population pharmacokinetics of inhaled tobramycin powder in cystic fibrosis patients. CPT Pharmacometrics Syst Pharmacol 3(9):e99.
+* Citation: Ting L, Aksenov S, Bhansali SG, Ramakrishna R, Tang P, Geller DE.
+  Population pharmacokinetics of inhaled tobramycin powder in cystic fibrosis
+  patients. CPT Pharmacometrics Syst Pharmacol. 2014;3(2):e99.
+  doi:10.1038/psp.2013.76.
 * Article: <https://doi.org/10.1038/psp.2013.76>
 
 ```{r model-meta}

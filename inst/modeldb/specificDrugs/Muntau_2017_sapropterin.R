@@ -1,6 +1,15 @@
 Muntau_2017_sapropterin <- function() {
   description <- "One-compartment population PK model with first-order oral absorption, an absorption lag, linear elimination, and an additive endogenous BH4 baseline for sapropterin dihydrochloride in pediatric patients <4 years with BH4-responsive phenylketonuria or mild hyperphenylalaninemia (Muntau 2017 SPARK trial)."
-  reference <- "Muntau AC, Burlina A, Eyskens F, et al. Efficacy, safety and population pharmacokinetics of sapropterin in PKU patients <4 years: results from the SPARK open-label, multicentre, randomized phase IIIb trial. Orphanet Journal of Rare Diseases. 2017;12:47. doi:10.1186/s13023-017-0600-x"
+  reference <- paste(
+    "Muntau AC, Burlina A, Eyskens F, Freisinger P, De Laet C, Leuzzi V,",
+    "Rutsch F, Sivri HS, Vijay S, Bal MO, Gramer G, Pazdirkova R, Cleary M,",
+    "Lotz-Havla AS, Munafo A, Mould DR, Moreau-Stucker F, Rogoff D. Efficacy,",
+    "safety and population pharmacokinetics of sapropterin in PKU patients <4",
+    "years: results from the SPARK open-label, multicentre, randomized phase",
+    "IIIb trial. Orphanet J Rare Dis. 2017;12(1):47.",
+    "doi:10.1186/s13023-017-0600-x.",
+    sep = " "
+  )
   vignette <- "Muntau_2017_sapropterin"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 

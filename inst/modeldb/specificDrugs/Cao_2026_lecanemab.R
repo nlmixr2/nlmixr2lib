@@ -30,12 +30,10 @@ Cao_2026_lecanemab <- function() {
     sep = " "
   )
   reference <- paste(
-    "Cao Y, Willis BA, Horie K, Wildsmith KR, Koyama A, Sachdev P,",
-    "Penner N, Charil A, Irizarry M, Reyderman L (2026).",
-    "Neuro-Dynamic Quantitative Systems Pharmacology (QSP) model",
-    "describing Alzheimer's disease pathophysiology and treatment",
-    "effects.",
-    "npj Systems Biology and Applications.",
+    "Cao Y, Willis BA, Horie K, Wildsmith KR, Koyama A, Sachdev P, Penner N,",
+    "Charil A, Irizarry M, Reyderman L. Neuro-Dynamic Quantitative Systems",
+    "Pharmacology (QSP) model describing Alzheimer's disease pathophysiology",
+    "and treatment effects. NPJ Syst Biol Appl. 2026;12(1):55.",
     "doi:10.1038/s41540-026-00677-4.",
     sep = " "
   )

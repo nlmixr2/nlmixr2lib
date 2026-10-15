@@ -1,6 +1,12 @@
 Mukai_2019_mogamulizumab <- function() {
   description <- "Two-compartment population PK model for mogamulizumab in adults with cutaneous T-cell lymphoma or adult T-cell lymphoma (Mukai 2019)"
-  reference <- "Mukai M, Mould DR, Nishimura K, Gallerani E, Grimwood D. Population Pharmacokinetic Modeling of Mogamulizumab in Adults With Cutaneous T-Cell Lymphoma or Adult T-Cell Lymphoma. J Clin Pharmacol. 2020;60(1):58-66. doi:10.1002/jcph.1564"
+  reference <- paste(
+    "Mukai M, Maeda H, Narushima K, Mould DR, Greene D. Population",
+    "Pharmacokinetic Modeling of Mogamulizumab in Adults With Cutaneous T-Cell",
+    "Lymphoma or Adult T-Cell Lymphoma. J Clin Pharmacol. 2020;60(1):58-66.",
+    "doi:10.1002/jcph.1564.",
+    sep = " "
+  )
   vignette <- "Mukai_2019_mogamulizumab"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 

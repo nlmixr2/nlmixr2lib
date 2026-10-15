@@ -23,14 +23,14 @@ Bosch_2025_glp1ra_hba1c <- function() {
     sep = " "
   )
   reference <- paste(
-    "Bosch R, Petrone M, Arends R, Sijbrands EJG, Hoefman S, Snelder N.",
-    "From In Vitro Efficacy to Long-Term HbA1c Response for GLP-1R /",
-    "GlucagonR Agonism Using the 4GI-HbA1c Systems Model.",
-    "CPT Pharmacometrics Syst Pharmacol. 2025.",
+    "Bosch R, Petrone M, Arends R, Sijbrands EJG, Hoefman S, Snelder N. From",
+    "In Vitro Efficacy to Long-Term HbA1c Response for GLP-1R/GlucagonR",
+    "Agonism Using the 4GI-HbA1c Systems Model. CPT Pharmacometrics Syst",
+    "Pharmacol. 2025;14(9):1515-1525.",
     "doi:10.1002/psp4.70074.",
-    "IGRH sub-model structure inherited from Lledo-Garcia R, Kjellsson MC,",
-    "Karlsson MO. Br J Clin Pharmacol. 2013;76(2):301-311.",
-    "doi:10.1111/bcp.12089.",
+    "IGRH sub-model structure inherited from Lledo-Garcia R, Mazer NA,",
+    "Karlsson MO. J Pharmacokinet Pharmacodyn. 2013;40(2):129-142.",
+    "doi:10.1007/s10928-012-9289-6.",
     sep = " "
   )
   vignette <- "Bosch_2025_glp1ra_hba1c"

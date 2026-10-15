@@ -17,10 +17,11 @@ Nguyen_2026_linezolid <- function() {
     sep = " "
   )
   reference <- paste(
-    "Nguyen TA, Nguyen TP, Nguyen AT, Dinh LV, Nguyen HB, Vu HD, Nguyen TNB, Vu D, Fox GJ,",
-    "Alffenaar JWC, Stocker SL. Single Saliva Sample Linezolid Dosing for Multidrug-Resistant",
-    "Tuberculosis: A Population Pharmacokinetic Modelling of Plasma and Saliva.",
-    "Clin Pharmacokinet. 2026. doi:10.1007/s40262-026-01626-4",
+    "Nguyen TA, Nguyen TP, Nguyen AT, Dinh LV, Nguyen HB, Vu HD, Nguyen TNB,",
+    "Vu D, Fox GJ, Alffenaar JC, Stocker SL. Single Saliva Sample Linezolid",
+    "Dosing for Multidrug-Resistant Tuberculosis: A Population Pharmacokinetic",
+    "Modelling of Plasma and Saliva. Clin Pharmacokinet. 2026;65(5):719-730.",
+    "doi:10.1007/s40262-026-01626-4.",
     sep = " "
   )
   vignette <- "Nguyen_2026_linezolid"

@@ -11,8 +11,9 @@ Horvatits_2014_ganciclovir <- function() {
     sep = " "
   )
   reference <- paste(
-    "Horvatits T, Kitzberger R, Drolz A, Zauner C, Jager W, Bohmdorfer M, Kraff S,",
-    "Fritsch A, Thalhammer F, Fuhrmann V, et al. Pharmacokinetics of ganciclovir",
+    "Horvatits T, Kitzberger R, Drolz A, Zauner C, Jager W, Bohmdorfer M,",
+    "Kraff S, Fritsch A, Thalhammer F, Fuhrmann V, Schenk P. Pharmacokinetics",
+    "of ganciclovir",
     "during continuous venovenous hemodiafiltration in critically ill patients.",
     "Antimicrob Agents Chemother. 2014;58(1):94-101. doi:10.1128/AAC.00892-13.",
     "Parameters transcribed from Yang W, Mak W, Gwee A, Gu M, Wu Y, Shi Y, He Q,",

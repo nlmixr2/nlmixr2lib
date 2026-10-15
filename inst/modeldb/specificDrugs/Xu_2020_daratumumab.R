@@ -1,6 +1,14 @@
 Xu_2020_daratumumab <- function() {
   description <- "Two-compartment population PK model for intravenous daratumumab (anti-CD38 IgG1k) in adults with multiple myeloma, with parallel linear and Michaelis-Menten eliminations from the central compartment. The maximum velocity of the saturable (target-mediated) elimination decays mono-exponentially from its baseline value at first-order rate KDES, mimicking depletion of the CD38 target over weekly 16 mg/kg therapy (Xu 2020 MMY1001 D-Kd / D-KRd cohorts)."
-  reference <- "Xu XS, Moreau P, Usmani SZ, et al. Split First Dose Administration of Intravenous Daratumumab for the Treatment of Multiple Myeloma (MM): Clinical and Population Pharmacokinetic Analyses. Adv Ther. 2020;37(4):1464-1478. doi:10.1007/s12325-020-01247-8"
+  reference <- paste(
+    "Xu XS, Moreau P, Usmani SZ, Lonial S, Jakubowiak A, Oriol A, Krishnan A,",
+    "Blade J, Luo M, Sun YN, Zhou H, Nnane I, Deraedt W, Qi M, Ukropec J,",
+    "Clemens PL. Split First Dose Administration of Intravenous Daratumumab",
+    "for the Treatment of Multiple Myeloma (MM): Clinical and Population",
+    "Pharmacokinetic Analyses. Adv Ther. 2020;37(4):1464-1478.",
+    "doi:10.1007/s12325-020-01247-8.",
+    sep = " "
+  )
   vignette <- "Xu_2020_daratumumab"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
