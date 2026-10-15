@@ -1770,6 +1770,14 @@ Ratified 2026-09-02 (PMC13274749).
 - **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example).
 - **Notes:** Accumulation-only by construction: nothing leaves it and nothing upstream can be influenced by it, so it is the circuit analogue of `urine`.
 
+### circuit_return (**canonical extracorporeal circuit return-limb compartment**)
+- **Type:** compartment
+- **Role:** Blood in the return limb of an extracorporeal circuit -- downstream of the drug-contacting device ([[circuit_plasma]]) and upstream of the patient. Filled from the device and emptied back into `central` by first-order transfer, so unlike [[circuit_effluent]] it is not a sink: drug that reaches it returns to the patient. Modality-neutral: an ECMO return cannula or an apheresis return line plays the same role as the post-filter line of a CRRT circuit.
+- **Source aliases:**
+  - `X[3]`, 'post-filter blood' -- Reed 2025 Methods, 'Model development', equations 1-3, where it is filled by `K23` from the filter and drained to pre-filter blood by `K31`.
+- **Example models:** `Reed_2025_meropenem_vaborbactam.R` (founding example; one copy per drug, `circuit_return` for meropenem and `circuit_return_vab` for vaborbactam).
+- **Notes:** Ratified by the maintainers 2026-09-11 (PMC12217465). In the founding example the circuit carries no volumes, so the state holds an amount only and is never observed; the transfers in and out are the `k_circuit_return` / `k_return_central` pair of parameter-names.md.
+
 ### reservoir_plasma (**canonical ex vivo circuit blood-reservoir plasma compartment**)
 - **Type:** compartment
 - **Role:** Plasma sub-compartment of the closed-loop blood reservoir of an *ex vivo* bench circuit. Stands in for the patient in a bench experiment: the circuit draws from it and returns to it, and it is the phase the ex vivo assay samples.
@@ -6315,6 +6323,14 @@ canonical names; the co-analyte carries the suffix throughout.
 - **Example models:**
   - `Vollmer_2023_cefepime_enmetazobactam.R` (doi:10.1093/ofid/ofad500.2147), joint two-compartment-per-drug model pooled across Phase 1 to Phase 3, where cefepime is the unsuffixed parent.
 - **Notes:** Directly parallel to `taz`, and registered for the same reason: enmetazobactam is a sibling drug, not a metabolite -- it is co-formulated with cefepime in a fixed 4:1 mass ratio (EXBLIFEP, 2 g cefepime / 0.5 g enmetazobactam), dosed into its own central compartment, and fitted simultaneously with cefepime without interconversion. Do NOT reuse `taz`: enmetazobactam and tazobactam are distinct molecules with distinct clearances, and a model pairing cefepime with either one must name which inhibitor it carries.
+
+### vab (**canonical vaborbactam sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Vaborbactam (cyclic boronic acid beta-lactamase inhibitor) sibling-drug suffix, used when vaborbactam is co-modelled with its fixed-ratio partner meropenem and meropenem is the unsuffixed parent. Drives `central_vab` and the circuit states `circuit_plasma_vab` / `circuit_return_vab`, the `lcl_vab` / `lcl_residual_vab` / `lvc_vab` PK parameters and the `lk_<from>_<to>_vab` circuit transfer constants, and the `propSd_vab` / `addSd_vab` residuals on the `Cc_vab` vaborbactam plasma concentration.
+- **Source aliases:**
+  - `VAB` -- abbreviation used throughout Reed 2025 (Table 2, Table S1 'VAB Bias').
+- **Example models:** `Reed_2025_meropenem_vaborbactam.R` (doi:10.1128/aac.00108-25), joint model in acutely ill adults including CRRT, where meropenem is the unsuffixed parent.
+- **Notes:** Ratified by the maintainers 2026-09-11 (PMC12217465). Parallel to `taz` and `enm`: vaborbactam is a sibling drug, not a metabolite -- co-formulated with meropenem in a fixed 1:1 mass ratio (Vabomere, 1 g / 1 g), dosed into its own central compartment, and fitted simultaneously with meropenem without interconversion. `Trang_2021_meropenem.R` / `Trang_2021_vaborbactam.R` predate this suffix and carry the two drugs as separate, unsuffixed model files.
 
 ### sdz (**canonical sulfadiazine sibling-drug suffix**)
 - **Type:** metabolite-suffix

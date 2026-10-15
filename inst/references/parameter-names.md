@@ -338,6 +338,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:** none.
 - **Example models:** `Jonckheere_2019_cefepime.R`.
 
+### lcl_residual (**canonical log-transformed residual body clearance during extracorporeal therapy**)
+- **Type:** log-transformed-pk
+- **Role:** The patient's own clearance that persists while an extracorporeal circuit is running, in a model that carries circuit removal as explicit structure (the `circuit_*` states and the `k_<from>_<to>` circuit constants) rather than as an additive clearance arm. Replaces the off-therapy body clearance `lcl` while the gate is on: `cl <- cl_off * (1 - RRT_CRRT_ACTIVE) + cl_residual * RRT_CRRT_ACTIVE`.
+- **Source aliases:**
+  - `CL residual` / `CL_CRRT` -- Reed 2025 Table 2 and Results Equation 1 respectively (the same quantity).
+- **Example models:** `Reed_2025_meropenem_vaborbactam.R` (founding example; meropenem 2.1 L/h, vaborbactam 1.15 L/h).
+- **Notes:** Ratified by the maintainers 2026-09-11 (PMC12217465). Deliberately NOT `lcl_crrt`, which names the extracorporeal clearance ARM itself (`Zurawska_2026_piperacillin.R`) -- here the circuit clearance lives in the ODE states, so `lcl_crrt` would name the opposite quantity. Also not `lcl_nonren`: the residual clearance includes whatever native renal function remains. Distinct from `cl_other`, which is a subtraction residue of a route-decomposed total clearance, not a gated replacement for the body clearance.
+
 ### lcl_hemodialysis (**canonical log-transformed dialysis-active clearance arm**)
 - **Type:** log-transformed-pk
 - **Role:** Extracorporeal renal-replacement-therapy clearance arm contributed by an active hemodialysis (or hemofiltration / hemodiafiltration) session. Paired with the canonical body-CL parameter `lcl` (and the per-time-point `RRT_HEMODIAL_ACTIVE` covariate) to express total apparent clearance as a SINGLE assignment to `cl`: `cl <- exp(lcl + etalcl) * <covariate terms> + RRT_HEMODIAL_ACTIVE * cl_hemodialysis`. Do NOT route the gated sum through a separate `cl_total` variable -- that shape silently disables the dialysis arm in some models; see the encoding rule in the `RRT_HEMODIAL_ACTIVE` entry of `covariate-columns.md` and the mechanical gate `tests/testthat/test-modeldb-active-gate.R`. The `cl_hemodialysis` arm is added to the body baseline only while a session is running.
@@ -981,6 +989,14 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Source aliases:** none.
 - **Example models:** rate-constant-parameterised 3-compartment popPK extractions.
 
+### lk_central_circuit, lk_circuit_return, lk_return_central, lk_circuit_effluent (**canonical log-transformed extracorporeal circuit transfer and filter-elimination rate constants**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constants (1 / time) that carry drug around an extracorporeal circuit modelled as structure: `lk_central_circuit` from `central` into the device (`circuit_plasma`), `lk_circuit_return` from the device into the return limb (`circuit_return`), `lk_return_central` from the return limb back to `central`, and `lk_circuit_effluent` out of the device to waste. The bare counterparts inside `model()` are `k_central_circuit`, `k_circuit_return`, `k_return_central` and `k_circuit_effluent`. The four together give a steady-state extracorporeal clearance of `k_central_circuit * vc * k_circuit_effluent / (k_circuit_return + k_circuit_effluent)`.
+- **Source aliases:**
+  - `K12`, `K23`, `K31`, `K20` -- Reed 2025 Methods, 'Model development', equations 1-3, and Table 2.
+- **Example models:** `Reed_2025_meropenem_vaborbactam.R` (founding example; the three transfers are gated by `RRT_CRRT_ACTIVE`, and `k_circuit_effluent` is multiplied by the effluent flow standardised to 2000 mL/h).
+- **Notes:** Ratified by the maintainers 2026-09-11 (PMC12217465). Members of the `k_<from>_<to>` directional-transfer family (`k_central_elf` / `k_elf_central`, `k_lnode_central`), whose note directs the family be used whenever a transfer connects `central` to a named non-numbered compartment; the source paper's `K12` / `K31` are deliberately NOT reused, because `k12` / `k31` are bound to `peripheral1` / `peripheral2` and would make the circuit read as ordinary distribution. `circuit` and `return` abbreviate `circuit_plasma` and `circuit_return`; `effluent` names the waste destination even when, as in the founding example, no `circuit_effluent` state is carried.
+
 ### k_central_elf, k_elf_central (**canonical bare central-to-ELF and ELF-to-central rate constants**)
 - **Type:** bare-pk
 - **Role:** First-order transfer rate constants between `central` and the canonical `elf` compartment (1 / time). Deliberately a directional PAIR rather than a single inter-compartmental clearance, because plasma-to-ELF distribution is typically asymmetric -- `k_central_elf < k_elf_central` is what generates the sub-unity ELF penetration ratio that lung PK/PD analyses turn on, and a symmetric `q` / `velf` parameterisation cannot express it. The log-transformed `lk_central_elf` / `lk_elf_central` forms are used in `ini`.
@@ -1168,6 +1184,12 @@ units rather than a dimensionless-per-time rate.
 - **Role:** Bare counterpart of `lcl_nonren`. Non-renal component of an additive renal + non-renal clearance decomposition.
 - **Source aliases:** none.
 - **Example models:** `Jonckheere_2019_cefepime.R`.
+
+### cl_residual (**canonical bare residual body clearance during extracorporeal therapy**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lcl_residual`.
+- **Source aliases:** none.
+- **Example models:** `Reed_2025_meropenem_vaborbactam.R`.
 
 ### crcl_hinge (**canonical breakpoint of a piecewise-linear renal-function covariate relationship**)
 - **Type:** bare-pk
