@@ -426,16 +426,19 @@ checkModelConventions <- function(model, verbose = TRUE) {
   FALSE
 }
 
-# Recognize an inter-study / inter-arm-variability (IAV) eta of the form
-# `eta_study_<param>` where `<param>` corresponds to an existing
+# Recognize an MBMA trial-level eta of the form `eta_study_<param>`
+# (between-study variability) or `eta_arm_<param>` (between-treatment-arm
+# variability within a study) where `<param>` corresponds to an existing
 # fixed-effect parameter. The eta name passed in has had its leading
-# "eta" stripped, so `suffix` is "_study_<param>" (note the leading
-# underscore -- this is why the `.isPaperMechanisticEtaSuffix` "study_"
-# branch, which expects no leading underscore, does not catch it). Used
-# by model-based meta-analysis (MBMA) extractions that encode
-# study-arm-level random effects in place of between-subject variability
-# (Wang 2018 daclatasvir/asunaprevir; Boucher 2018 naproxen). Acceptance
-# routes for `<param>`:
+# "eta" stripped, so `suffix` is "_study_<param>" or "_arm_<param>" (note
+# the leading underscore -- this is why the `.isPaperMechanisticEtaSuffix`
+# "study_" branch, which expects no leading underscore, does not catch
+# it). Used by model-based meta-analysis (MBMA) extractions that encode
+# trial-level random effects in place of between-subject variability
+# (Wang 2018 daclatasvir/asunaprevir; Boucher 2018 naproxen; both levels
+# in Zou_2026_pembrolizumab_qol_mbma and
+# Vaskeikina_2026_systemicSclerosis_mbma). Acceptance routes for
+# `<param>`:
 #   (a) `<param>` (or `l<param>`) is itself a fixed-effect parameter
 #       -- covers eta_study_lcl (lcl), eta_study_e0 (e0), eta_study_ld_asv;
 #   (b) some fixed-effect name extends `<param>` (startsWith);
@@ -444,10 +447,10 @@ checkModelConventions <- function(model, verbose = TRUE) {
 #       typical value built from sibling anchors, e.g. logit_fk_asv
 #       pairing with logit_fk_cap_asv / logit_fk_sol_asv.
 .isStudyEtaSuffix <- function(suffix, fixed_names) {
-  if (!startsWith(suffix, "_study_")) {
+  if (!grepl("^_(study|arm)_", suffix)) {
     return(FALSE)
   }
-  param <- substr(suffix, 8L, nchar(suffix)) # strip leading "_study_"
+  param <- sub("^_(study|arm)_", "", suffix)
   if (!nzchar(param)) {
     return(FALSE)
   }
@@ -593,7 +596,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
         # positive integer occasion index. No issue is emitted.
       } else if (.isStudyEtaSuffix(suffix, fixed$name)) {
         # Inter-study / inter-arm-variability eta of the form
-        # eta_study_<param> (MBMA study-arm-level random effect) where
+        # eta_study_<param> or eta_arm_<param> (MBMA trial-level random
+        # effect) where
         # <param> is an existing fixed-effect parameter (bare, log-
         # prefixed, prefix-extended, or token-bridged to a combined
         # typical value). No issue is emitted.
