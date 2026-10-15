@@ -481,6 +481,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Schreib_2024_busulfan.R` (`lkel_exp_kdes = -2.965`, giving 0.0516 1/h and a 13.4 h half-life for the decline in busulfan `k` and `CL` over a conditioning course).
 - **Notes:** The `kel` counterpart of the registered `cl_exp_kdes` role in the time-varying-clearance family; reuses the `_kdes` role token deliberately so both families are found by the same stem.
 
+### lfdepot_exp_kdes (**canonical log-transformed decay-rate constant of a time-varying relative bioavailability**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale rate constant governing how fast a time-varying relative bioavailability relaxes from its value at the first dose toward its steady-state asymptote, in the `_exp_` family form `fdepot(t) = fdepot_exp_inf + fdepot_exp_component * exp(-fdepot_exp_kdes * t)` (1 / time), with `t` the time since the first dose (`T_FIRSTDOSE`). `log(2) / fdepot_exp_kdes` is the half-life of the transition.
+- **Source aliases:**
+  - `lambda` -- Tate 2018 Eq. 5 and Table 3 ('rate at which steady-state relative bioavailability is attained').
+- **Example models:** `Tate_2018_abemaciclib.R` (founding example; `lfdepot_exp_kdes = log(0.00197)` 1/h, a 14.7-day half-life for the fall of abemaciclib Frel from 1 at the first dose to a dose-dependent steady-state value).
+- **Notes:** The bioavailability counterpart of `cl_exp_kdes` and `lkel_exp_kdes`; the `_exp_` family transposed to `fdepot` by maintainers' ruling 2026-09-21. Bare form `fdepot_exp_kdes`. Distinct from the `T_FIRSTDOSE`-driven `k_tfirstdose` of `Eechoute_2012_imatinib.R`, which is shared between `ka` and `F` and is expressed per day.
+
 ### ltlag (**canonical log-transformed absorption lag time**)
 - **Type:** log-transformed-pk
 - **Role:** Log-scale absorption lag time before drug enters the depot (time).
@@ -956,6 +964,22 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
   - `kappa_k` -- used in `Schreib_2024_busulfan.R`.
 - **Example models:** `Schreib_2024_busulfan.R` (`kel_exp_kdes = exp(lkel_exp_kdes) = 0.0516 1/h`).
 - **Notes:** Bare counterpart of `lkel_exp_kdes`; see that entry for the functional form. The sibling `kel_exp_famp` is registered under "Paper-named mechanistic parameters" instead of here, because it is signed and must never be log-transformed.
+
+### fdepot_exp_kdes (**canonical bare decay-rate constant of a time-varying relative bioavailability**)
+- **Type:** bare-pk
+- **Role:** Bare (natural-scale) form of `lfdepot_exp_kdes`: the rate constant at which a time-varying relative bioavailability relaxes toward its steady-state asymptote (1 / time).
+- **Source aliases:**
+  - `lambda` -- Tate 2018 Eq. 5.
+- **Example models:** `Tate_2018_abemaciclib.R` (`fdepot_exp_kdes = exp(lfdepot_exp_kdes) = 0.00197 1/h`).
+- **Notes:** Bare counterpart of `lfdepot_exp_kdes`; see that entry for the functional form.
+
+### fdepot_exp_inf (**canonical bare steady-state asymptote of a time-varying relative bioavailability**)
+- **Type:** bare-pk
+- **Role:** The value a time-varying relative bioavailability approaches after long treatment, in `fdepot(t) = fdepot_exp_inf + fdepot_exp_component * exp(-fdepot_exp_kdes * t)` (unitless). Log-scale form `lfdepot_exp_inf` when the source estimates it as a typical value; IIV is `etalfdepot_exp_inf`.
+- **Source aliases:**
+  - `F_rel,ss` -- Tate 2018 Eq. 4-5 and Table 3 ('steady-state relative bioavailability').
+- **Example models:** `Tate_2018_abemaciclib.R` (founding example; derived in `model()` as `ed50 / (ed50 + podo(depot)) * exp(etalfdepot_exp_inf)` -- Tate 2018 estimates no typical value of its own, only the dose-saturation constant `D50` (`led50`) and an IIV of 123 on it, so `ini()` carries only `etalfdepot_exp_inf`).
+- **Notes:** The bioavailability counterpart of `cl_exp_inf`; maintainers' ruling 2026-09-21. The value at the first dose is the ordinary `fdepot` / `lfdepot`, and the difference between the two is `fdepot_exp_component`.
 
 ### k12 (**canonical bare central-to-first-peripheral rate constant**)
 - **Type:** bare-pk
@@ -1531,6 +1555,14 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `dk` -- used in `Schreib_2024_busulfan.R` (paper `theta_dk1`).
 - **Example models:** `Schreib_2024_busulfan.R` (`kel_exp_famp = -0.167`, a 16.7% average fall in busulfan `k` and `CL` at steady state; carries its own additive IIV `etakel_exp_famp` and an additive covariate effect `e_hlhxlp_kel_exp_famp = -0.145` that takes the amplitude to -0.312).
 - **Notes:** `_famp` is the fractional-amplitude role token, introduced because the registered `cl_exp_` time-varying-clearance family parameterises by an absolute decaying component (`cl_exp_inf` + `cl_exp_component`) rather than by a fraction of the baseline. It is additive in its covariate and random-effect terms for the same reason. Prefer this fractional parameterisation over reparameterising into `cl_exp_inf` / `cl_exp_component` whenever the source estimates `V` and `kel` separately with *different* covariate sets, because the absolute-component form is a product of the two and entangles their covariates -- in the founding model the infusion-duration covariate has opposite signs on `ln(V)` and `ln(k)`, so the product would cancel it. The sibling decay rate is `kel_exp_kdes` / `lkel_exp_kdes` in the bare and log-transformed PK sections. The parallel clearance form is [[cl_exp_famp]].
+
+### fdepot_exp_component (**canonical bare decaying component of a time-varying relative bioavailability**)
+- **Type:** paper-named-param
+- **Role:** Initial offset of a time-varying relative bioavailability from its steady-state asymptote, `fdepot(0) - fdepot_exp_inf`, which decays as `exp(-fdepot_exp_kdes * t)` (unitless). Signed: positive when bioavailability falls over treatment, negative when it rises.
+- **Source aliases:**
+  - `F_rel,i - F_rel,ss` -- Tate 2018 Eq. 5, `F_rel = F_rel,ss - (F_rel,ss - F_rel,i) * exp(-lambda * t)`.
+- **Example models:** `Tate_2018_abemaciclib.R` (founding example; derived in `model()` from the individual `fdepot` at the first dose and `fdepot_exp_inf`).
+- **Notes:** The bioavailability counterpart of `cl_exp_component`; maintainers' ruling 2026-09-21. Typed `paper-named-param` rather than `bare-pk` because it is signed and must never be log-transformed. Never use it as a bioavailability in its own right -- it is the decaying part only, the failure the `cl_exp_component` naming warns against.
 
 ### cl_exp_famp (**canonical fractional amplitude of a time-varying clearance**)
 - **Type:** paper-named-param
