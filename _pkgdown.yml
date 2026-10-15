@@ -2278,6 +2278,8 @@ navbar:
         href: articles/Knebel_2008_epoetinDelta.html
       - text: "Eptinezumab (Baker 2020)"
         href: articles/Baker_2020_eptinezumab.html
+      - text: "Eravacycline (Ji 2025)"
+        href: articles/Ji_2025_eravacycline.html
       - text: "Ergothioneine pbpk (Okumura 2025)"
         href: articles/Okumura_2025_ergothioneine_pbpk.html
       - text: "Eribulin (Kawamura 2018)"
@@ -8429,6 +8431,7 @@ articles:
   - articles/Ji_2018_tacrolimus
   - articles/Ji_2022_pemigatinib
   - articles/Ji_2025_TDI01
+  - articles/Ji_2025_eravacycline
   - articles/Jia_2015_unfractionatedHeparin
   - articles/Jia_2025_tak_071
   - articles/Jia_2026_rivaroxaban
