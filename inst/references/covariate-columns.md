@@ -2568,7 +2568,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Source aliases:**
   - `baseline DAS28` -- Leil 2021 Table 2 / Table S3 label (arm mean, DAS28-ESR values converted to the CRP scale).
   - `DAS28-ESR` (convert, not rename) -- Leil 2021 Eq. 1 / Results give `SCORE_DAS28CRP = 0.899 * DAS28-ESR - 0.194` at the arm-mean level.
-- **Example models:** `Leil_2021_rheumatoidArthritis_das28_mbma.R` (STUDY-ARM MEAN baseline; additive `1.60 * log(SCORE_DAS28CRP / 6.2)` on the placebo Emax and exponent `1.30` on the placebo ET50 of the DAS28 change from baseline).
+- **Example models:** `Leil_2021_rheumatoidArthritis_das28_mbma.R` (STUDY-ARM MEAN baseline; additive `1.60 * log(SCORE_DAS28CRP / 6.2)` on the placebo Emax and exponent `1.30` on the placebo ET50 of the DAS28 change from baseline), `Mohamed_2019_upadacitinib_mtxir.R` (PER-SUBJECT baseline; power `(SCORE_DAS28CRP / 5.66)^-2.26` on the Markov ACR20 -> no-response rate; 5.66 is the BALANCE II baseline mean, the paper prints no centring value).
 - **Notes:** Distinct from the `das28` / `das28cfb` model OUTPUTS registered in `compartment-names.md`: this column carries the observed score as an input. The ESR-based variant is a different score (on average ~0.2-0.8 units higher) and should get its own `SCORE_DAS28ESR` canonical rather than share this column. In MBMA models record the grain (arm mean) and the centring constant in the per-model notes.
 
 ### SCORE_PPNRS (**canonical for Peak Pruritus Numerical Rating Scale score**)
@@ -3283,7 +3283,7 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
   - `CRPHS` -- used in `Thakre_2022_risankizumab.R` (baseline, high-sensitivity assay).
   - `BLCRP` -- baseline CRP; used in `Xu_2019_sarilumab.R` and `Ma_2020_sarilumab_das28crp.R`.
   - `BCRP` -- baseline CRP as named in Tsuchiwata 2026; used in `Tsuchiwata_2026_tofacitinib.R`. Do not confuse this source abbreviation with the BCRP efflux transporter (ABCG2).
-- **Example models:** `Thakre_2022_risankizumab.R`, `Xu_2019_sarilumab.R`, `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Ma_2020_sarilumab_das28crp.R`, `Wang_2020_ontamalimab.R` (mg/dL, reference 0.837), `Tsuchiwata_2026_tofacitinib.R` (**mg/dL**, baseline, standard assay, reference 0.851 mg/dL = 8.51 mg/L; enters CL/F as `(CRP / 0.851)^-0.0185`), `Yu_2022_crohns_cdai150_mbma.R`, `Yu_2022_crohns_cdai100_mbma.R`, `Yu_2022_crohns_cdai70_mbma.R`, `Yu_2022_crohns_dcrp_mbma.R` (**mg/dL**, study-arm mean baseline standard-assay CRP in a Crohn's disease MBMA; power form on every drug effect with references 1.688, 1.742, 1.657 and 1.786, the arm means of each endpoint's analysis dataset. The source Methods state mg/L but its values are on the mg/dL scale).
+- **Example models:** `Thakre_2022_risankizumab.R`, `Xu_2019_sarilumab.R`, `Mohamed_2019_upadacitinib_tnfir.R` (baseline hs-CRP, power `(CRP / 13.4)^0.276` on the drug Emax of a Markov ACR model; 13.4 mg/L is the BALANCE I baseline mean, the paper prints no centring value), `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Ma_2020_sarilumab_das28crp.R`, `Wang_2020_ontamalimab.R` (mg/dL, reference 0.837), `Tsuchiwata_2026_tofacitinib.R` (**mg/dL**, baseline, standard assay, reference 0.851 mg/dL = 8.51 mg/L; enters CL/F as `(CRP / 0.851)^-0.0185`), `Yu_2022_crohns_cdai150_mbma.R`, `Yu_2022_crohns_cdai100_mbma.R`, `Yu_2022_crohns_cdai70_mbma.R`, `Yu_2022_crohns_dcrp_mbma.R` (**mg/dL**, study-arm mean baseline standard-assay CRP in a Crohn's disease MBMA; power form on every drug effect with references 1.688, 1.742, 1.657 and 1.786, the arm means of each endpoint's analysis dataset. The source Methods state mg/L but its values are on the mg/dL scale).
 - **Notes:** The prior separate `hsCRP`, `BLCRP`, and standard-assay `CRP` canonicals were merged on 2026-04-20 to a single general-scope `CRP` canonical. Assay type (standard vs hs-CRP), baseline-vs-time-varying status, and the paper-specific reference value all live in each model's `covariateData[[CRP]]$description` / `notes`. Only aggregate values from hs-validated assays as CRP when the downstream analysis relies on low-range sensitivity; for most inflammatory-disease cohorts (IBD, RA/PsA), baseline CRP is well above the hs-sensitivity range and the distinction is moot.
 
 ### AAG (**canonical for alpha-1 acid glycoprotein concentration**)
@@ -9526,6 +9526,18 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
   - `OXYSTAT2` -- used in `Lin_2024_casirivimab.R`.
 - **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL; +38.0%).
 - **Notes:** Companion indicator to `OXYSUP_LOW`. In Lin 2024 the rare mechanical-ventilation cases were pooled into the high-flow indicator (n = 24 across the 7598-subject dataset).
+
+### ANTICCP_POS (**canonical for baseline anti-cyclic citrullinated peptide (anti-CCP) antibody positive indicator**)
+- **Description:** 1 = baseline anti-cyclic citrullinated peptide (anti-CCP) antibody positive, 0 = anti-CCP negative. Anti-CCP is the standard clinical assay for anti-citrullinated protein antibodies (ACPA); seropositivity is a diagnostic and prognostic marker within rheumatoid arthritis (more erosive, more persistent disease) and a standard baseline stratifier in RA trials.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (anti-CCP negative).
+- **Source aliases:**
+  - `baseline anti-CCP status` -- used in `Mohamed_2019_upadacitinib_mtxir.R` (Mohamed 2019 Table S2 row 'Ratio of K10 in anti-CCP positive relative to negative status subject'; same orientation as the canonical).
+  - `ACPA status` -- the antibody-class name for the same measurement.
+- **Example models:** `Mohamed_2019_upadacitinib_mtxir.R` (multiplier `0.394^ANTICCP_POS` on the Markov ACR20 -> no-response transition rate: anti-CCP-positive patients lose an ACR20 response more slowly).
+- **Notes:** Named for the anti-CCP assay because that is how RA trials and population analyses report the status; anti-CCP2 / anti-CCP3 results and an ACPA-positive flag map here without transformation. A disease-phase / serologic marker within the primary indication, like `HBEAG_POS`, not a comorbidity flag. Distinct from `RHEUMATOID_FACTOR` (a continuous rheumatoid-factor concentration); a binary rheumatoid-factor seropositivity indicator would need its own `_POS` canonical.
 
 ### HIV_POS (**canonical for HIV-positive comorbidity indicator**)
 - **Description:** 1 = HIV-1 antibody positive at study entry, 0 = HIV-negative. Time-fixed per subject. Used as a binary comorbidity indicator on PK parameters (typically bioavailability or clearance) when a study population pools HIV-positive and HIV-negative subjects on a non-HIV primary indication (tuberculosis treatment, hepatitis treatment, etc.).
