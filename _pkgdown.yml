@@ -2678,6 +2678,8 @@ navbar:
         href: articles/Shoji_2017_fosdagrocorat_oc.html
       - text: "Fosdagrocorat p1np (Shoji 2017)"
         href: articles/Shoji_2017_fosdagrocorat_p1np.html
+      - text: "Fosfomycin (Cojutti 2026)"
+        href: articles/Cojutti_2026_fosfomycin.html
       - text: "Fosfomycin (Gotz 2025)"
         href: articles/Gotz_2025_fosfomycin.html
       - text: "Fosfomycin (Huppe 2023)"
@@ -7873,6 +7875,7 @@ articles:
   - articles/Cojutti_2022_dalbavancin
   - articles/Cojutti_2023_ceftobiprole
   - articles/Cojutti_2024_dalbavancin
+  - articles/Cojutti_2026_fosfomycin
   - articles/Colin_2014_moxifloxacin
   - articles/Collins_2023_belantamab_mprotein
   - articles/Collins_2025_midazolam
