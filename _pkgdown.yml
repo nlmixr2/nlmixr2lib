@@ -790,6 +790,8 @@ navbar:
         href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Benzylpenicillin (Shah 2023)"
         href: articles/Shah_2023_benzylpenicillin.html
+      - text: "Benzylpenicillin (Yoo 2025)"
+        href: articles/Yoo_2025_benzylpenicillin.html
       - text: "Benzylpenicillin horse (Lallemand 2023)"
         href: articles/Lallemand_2023_benzylpenicillin_horse.html
       - text: "Bepirovirsen (Youssef 2024)"
@@ -9956,6 +9958,7 @@ articles:
   - articles/Yin_2026_ceftazidime
   - articles/Yoneyama_2017_emicizumab
   - articles/Yoo_2009_cilostazol
+  - articles/Yoo_2025_benzylpenicillin
   - articles/Yoon_2013_metformin
   - articles/Yoon_2023_vancomycin
   - articles/Yoshida_2018_coproporphyrin_I_GDC0810
