@@ -5242,6 +5242,8 @@ navbar:
         href: articles/Bustinduy_2020_praziquantel.html
       - text: "Prednisolone (Bouazza 2025)"
         href: articles/Bouazza_2025_prednisolone.html
+      - text: "Prednisolone (Mohlmann 2026)"
+        href: articles/Mohlmann_2026_prednisolone.html
       - text: "Pregabalin (Chan 2021)"
         href: articles/Chan_2021_pregabalin.html
       - text: "Pregabalin (Hong 2016)"
@@ -8954,6 +8956,7 @@ articles:
   - articles/MohammedAli_2023_tacrolimus
   - articles/MohammedAli_2025_tacrolimus
   - articles/Mohanan_2017_fludarabine
+  - articles/Mohlmann_2026_prednisolone
   - articles/Molto_2016_atazanavir_ritonavir
   - articles/Momper_2016_fluconazole
   - articles/Mondick_2006_dactinomycin
