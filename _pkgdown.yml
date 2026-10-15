@@ -6018,6 +6018,10 @@ navbar:
         href: articles/Isbister_2015_snake_antivenom.html
       - text: "Snake venom (Sanhajariya 2018)"
         href: articles/Sanhajariya_2018_snake_venom.html
+      - text: "Snx2112 nanocrystal rat pbpk (Dong 2015)"
+        href: articles/Dong_2015_snx2112_nanocrystals.html
+      - text: "Snx2112 rat pbpk (Dong 2015)"
+        href: articles/Dong_2015_snx2112_nanocrystals.html
       - text: "Sodium nitrite qsp (VegaVilla 2013)"
         href: articles/VegaVilla_2013_sodium_nitrite_qsp.html
       - text: "Somatrogon (Wang 2025)"
@@ -7969,6 +7973,7 @@ articles:
   - articles/DoldanMartelli_2013_EGF_IFN_chimera
   - articles/DominguezMore_2024_rutin_physalis
   - articles/Dong_2014_mycophenolic_acid
+  - articles/Dong_2015_snx2112_nanocrystals
   - articles/Dong_2016_hydroxyurea
   - articles/Dong_2026_piperacillin
   - articles/Dorajoo_2019_vancomycin
