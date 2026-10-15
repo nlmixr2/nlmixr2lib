@@ -1084,6 +1084,39 @@ The MTP framework partitions the bacterial population into three states. The ori
 
 ---
 
+## Liver-histology ordinal scores (NASH CRN)
+
+These four outputs are the component scores of the NASH Clinical Research Network (Kleiner) histology system, read from a liver biopsy. Each is an ORDINAL grade, not a continuous quantity: a model of one of them is a proportional-odds model (`logite0` plus `logitstep<m>` thresholds) whose observation is the rxode2 ordinal endpoint `<score> ~ c(p0, p1, ...)`, so the simulated value is a category (category `k` is grade `k - 1`) and the per-grade probabilities `p0`, `p1`, ... are the outputs to summarise. A source that reports the score on a different range (some trials grade steatosis or ballooning 0-4) is a different scale; say which scale a model uses in its `units` and do not mix ranges under one name.
+
+### steatosis (**canonical NASH CRN hepatic steatosis grade output**)
+- **Type:** compartment
+- **Role:** Hepatic steatosis grade 0-3 by the share of hepatocytes containing fat: 0 < 5%, 1 5-33%, 2 > 33-66%, 3 > 66% (Tran 2026 Table S1). Ordinal PD output.
+- **Source aliases:** `Steatosis` -- Tran 2026 Table 1.
+- **Example models:** `Tran_2026_pioglitazone_steatosis_mbma.R`.
+- **Notes:** Distinct from a continuous liver-fat measure such as MRI proton-density fat fraction, which should get its own name.
+
+### inflammation (**canonical NASH CRN lobular inflammation grade output**)
+- **Type:** compartment
+- **Role:** Lobular inflammation grade 0-3 by inflammatory foci per 200x field: 0 none, 1 < 2, 2 2-4, 3 > 4 (Tran 2026 Table S1). Ordinal PD output.
+- **Source aliases:** `Inflammation` -- Tran 2026 Table 1.
+- **Example models:** `Tran_2026_pioglitazone_inflammation_mbma.R`.
+- **Notes:** Liver histology only. A systemic inflammation biomarker (CRP, IL-6, ...) has its own canonical and must not use this name.
+
+### ballooning (**canonical NASH CRN hepatocyte ballooning grade output**)
+- **Type:** compartment
+- **Role:** Hepatocyte ballooning grade 0-2: 0 none, 1 few balloon cells, 2 many balloon cells (Tran 2026 Table S1). Ordinal PD output.
+- **Source aliases:** `Ballooning` -- Tran 2026 Table 1.
+- **Example models:** `Tran_2026_pioglitazone_ballooning_mbma.R`.
+
+### fibrosis (**canonical NASH CRN fibrosis stage output**)
+- **Type:** compartment
+- **Role:** Liver fibrosis stage 0-4: 0 none, 1 perisinusoidal or periportal, 2 perisinusoidal and portal or periportal, 3 bridging fibrosis, 4 cirrhosis (Tran 2026 Table S1). Ordinal PD output.
+- **Source aliases:** `Fibrosis` -- Tran 2026 Table 1.
+- **Example models:** `Tran_2026_pioglitazone_fibrosis_mbma.R`.
+- **Notes:** Liver fibrosis. Pulmonary fibrosis endpoints are lung-function measures (for example FVC) and have their own names.
+
+---
+
 ## Body-weight PD output
 
 ### bw (**canonical body-weight PD output**)
@@ -3937,7 +3970,14 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Type:** compartment
 - **Role:** Aspartate aminotransferase liver-function biomarker.
 - **Source aliases:** none.
-- **Example models:** `Yang_2024_axatilimab.R`.
+- **Example models:** `Yang_2024_axatilimab.R`, `Tran_2026_pioglitazone_ast_mbma.R` (study-arm mean AST in U/L).
+
+### alt (**canonical alanine aminotransferase PD output**)
+- **Type:** compartment
+- **Role:** Alanine aminotransferase liver-function biomarker, the sibling of `ast`.
+- **Source aliases:** `ALT` -- Tran 2026 Table 2.
+- **Example models:** `Tran_2026_pioglitazone_alt_mbma.R` (study-arm mean ALT in U/L).
+- **Notes:** Kept distinct from `ast`, as the `prob_alt_increase` / `prob_ast_increase` pair already is; the two enzymes are not pooled under one name.
 
 ### cpk (**canonical creatine phosphokinase PD output**)
 - **Type:** compartment

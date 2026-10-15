@@ -5054,8 +5054,20 @@ navbar:
         href: articles/He_2020_phosphocreatine.html
       - text: "Pinatuzumab polatuzumab (Lu 2016)"
         href: articles/Lu_2016_pinatuzumab_polatuzumab.html
+      - text: "Pioglitazone alt mbma (Tran 2026)"
+        href: articles/Tran_2026_pioglitazone_mash.html
+      - text: "Pioglitazone ast mbma (Tran 2026)"
+        href: articles/Tran_2026_pioglitazone_mash.html
+      - text: "Pioglitazone ballooning mbma (Tran 2026)"
+        href: articles/Tran_2026_pioglitazone_mash.html
+      - text: "Pioglitazone fibrosis mbma (Tran 2026)"
+        href: articles/Tran_2026_pioglitazone_mash.html
+      - text: "Pioglitazone inflammation mbma (Tran 2026)"
+        href: articles/Tran_2026_pioglitazone_mash.html
       - text: "Pioglitazone rifampicin pbpk (Asaumi 2019)"
         href: articles/Asaumi_2019_rifampicin_ddi_pbpk.html
+      - text: "Pioglitazone steatosis mbma (Tran 2026)"
+        href: articles/Tran_2026_pioglitazone_mash.html
       - text: "Pipamperone (Kloosterboer 2020)"
         href: articles/Kloosterboer_2020_pipamperone.html
       - text: "Piperacillin (BoerPerez 2026)"
@@ -9632,6 +9644,7 @@ articles:
   - articles/Toukam_2025_biib107
   - articles/Toutain_2025_doxycycline_pig
   - articles/Toyoshima_2021_peficitinib
+  - articles/Tran_2026_pioglitazone_mash
   - articles/Trang_2019_plazomicin
   - articles/Trang_2021_meropenem_vaborbactam
   - articles/Traynard_2017_prostateSignaling_qsp

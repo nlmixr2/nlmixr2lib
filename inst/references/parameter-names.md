@@ -1507,6 +1507,46 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Chan_2021_pregabalin_lsr28.R` (`rmax_lsr28` = -0.924, common to children and adults, with population-specific intercepts 0.110 (adults) and -0.409 (children)).
 - **Notes:** Do not use `emax` here. Because the level is shared while the intercepts differ, the implied increment `int - rmax_lsr28` is 1.034 for adults and 0.515 for children; encoding the paper's value as an increment would give both populations the same drug effect, which is not the fitted model.
 
+### lrmin_alt, lrmin_ast (**canonical log-transformed asymptotic plateau level of a declining PD output**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed level that a DECLINING PD endpoint approaches as time goes to infinity, in the endpoint's own clinical units -- the floor counterpart of the `lrmax_<output>` ceiling. It is an asymptotic PLATEAU, not the pre-treatment value: in a decline-to-asymptote model `y(t) = rmin + amplitude * g(t)` with `g(0) = 1` and `g(Inf) = 0`, the pre-treatment value is `rmin + amplitude`. Inside `model()` the bare names are `rmin_alt`, `rmin_ast` (or a bare `rmin` when the file has one output); the per-output suffix follows the `lrmax_<output>` precedent.
+- **Source aliases:**
+  - `Baseline` -- Tran 2026 Table 2 label for the term outside the Weibull exponential. Despite the label it is the asymptote: the pre-treatment arm means are Baseline + A = 73.0 U/L (ALT) and 45.7 U/L (AST), and the plateaus are 33.9 and 29.6 U/L.
+- **Example models:** `Tran_2026_pioglitazone_alt_mbma.R` (`rmin_alt` = 33.9 U/L), `Tran_2026_pioglitazone_ast_mbma.R` (`rmin_ast` = 29.6 U/L), each with the Weibull amplitude `lwamp_<output>`.
+- **Notes:** Do not use `lrbase` for this quantity even when the source calls it "Baseline": `lrbase` is the pre-treatment level, and the two differ by the whole amplitude of the decline (39.1 U/L for the founding ALT model). Register additional `lrmin_<output>` members as new endpoints appear rather than reusing an existing one.
+
+### lwamp_alt, lwamp_ast (**canonical log-transformed amplitude of a Weibull decline to a plateau**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed amplitude of a Weibull decline-to-asymptote time course `y(t) = rmin + wamp * exp(-wlambda * t^wgamma)`: the distance between the pre-treatment value (`t = 0`) and the plateau `rmin`, in the endpoint's units. Inside `model()` the bare name is `wamp`.
+- **Source aliases:**
+  - `A` -- Tran 2026 Table 2 ("scale factor" in Methods 2.2.2).
+- **Example models:** `Tran_2026_pioglitazone_alt_mbma.R` (`wamp` = 39.1 U/L), `Tran_2026_pioglitazone_ast_mbma.R` (`wamp` = 16.1 U/L).
+- **Notes:** Part of the Weibull time-course family with `lwlambda_<stratum>` and `lwgamma`. Distinct from `lemax` (a drug-effect increment driven by exposure); here the decline happens on placebo too and the drug changes only its rate. Distinct from the Weibull-ABSORPTION stems `lra` / `lgam1`, which parameterise an input rate as `exp(-(ra * t)^gam1)`.
+
+### lwlambda_placebo, lwlambda_drug (**canonical log-transformed Weibull rate coefficients by treatment stratum**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed rate coefficient of the Weibull decline `exp(-wlambda * t^wgamma)`, in time^-wgamma. `wlambda_placebo` applies to placebo arms and `wlambda_drug` to drug-treated arms when the drug acts by switching the rate of decline. Inside `model()` the bare name is `wlambda`, selected per record.
+- **Source aliases:**
+  - `lambda1 (Placebo group)`, `lambda2 (Drug group)` -- Tran 2026 Table 2 (called the "shape factor" in Methods 2.2.2 and the Discussion).
+- **Example models:** `Tran_2026_pioglitazone_alt_mbma.R` (0.0689 placebo, 0.534 pioglitazone), `Tran_2026_pioglitazone_ast_mbma.R` (0.0352 placebo, 0.694 pioglitazone).
+- **Notes:** The `_placebo` / `_drug` stratum suffix matches the registered `slope_placebo` / `slope_drug` pair. A model with a single Weibull rate and no treatment split uses the plain `lwlambda`. Because `wlambda` multiplies `t^wgamma`, its units depend on `wgamma` and its value is not comparable across models with different exponents.
+
+### lwgamma (**canonical log-transformed Weibull time exponent of a decline-to-plateau time course**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed exponent on time in a Weibull decline `exp(-wlambda * t^wgamma)` (unitless). `wgamma < 1` gives a fast early fall that slows with time; `wgamma = 1` reduces the model to a mono-exponential decline. Inside `model()` the bare name is `wgamma`.
+- **Source aliases:**
+  - `gamma` -- Tran 2026 Table 2.
+- **Example models:** `Tran_2026_pioglitazone_alt_mbma.R` (0.703), `Tran_2026_pioglitazone_ast_mbma.R` (0.591).
+- **Notes:** Kept distinct from `lgamma` (Friberg feedback and TGI growth exponents), `lhill` (sigmoid Emax exponent) and `lgam1` (Weibull-absorption shape, which raises the product `ra * t` rather than `t` alone). The `w` prefix ties it to `lwamp_<output>` and `lwlambda_<stratum>`.
+
+### logitstep1, logitstep2, logitstep3 (**canonical threshold increments of a proportional-odds ordered-categorical model**)
+- **Type:** paper-named-param
+- **Role:** In a proportional-odds (cumulative-logit) model of an ordinal score with grades `0..K`, `logit P(Y <= m) = logite0 + logitstep1 + ... + logitstep<m> + f(covariates, drug) + eta` for `m = 0..K-1`. `logite0` is the cumulative logit of the lowest grade, and `logitstep<m>` is the increment that steps the cumulative logit from threshold `m - 1` to threshold `m`. A score with `K + 1` grades needs `logite0` plus `logitstep1..logitstep<K-1>`. The increments are positive (cumulative probabilities rise with `m`) but are kept on the bare scale, so the stored values are the thetas the source prints; the same names are used in `ini()` and `model()`.
+- **Source aliases:**
+  - `beta_1`, `beta_2`, `beta_3` -- Tran 2026 Table 1, with `beta_0` mapped to `logite0`.
+- **Example models:** `Tran_2026_pioglitazone_steatosis_mbma.R` and `Tran_2026_pioglitazone_inflammation_mbma.R` (0-3 scores: `logitstep1`, `logitstep2`), `Tran_2026_pioglitazone_ballooning_mbma.R` (0-2: `logitstep1`), `Tran_2026_pioglitazone_fibrosis_mbma.R` (0-4: `logitstep1` to `logitstep3`).
+- **Notes:** This is the library-wide convention for proportional-odds models; the numeral indexes the threshold, which is its meaning, so it does not conflict with the rule against bare ordinal suffixes. Extend the family (`logitstep4`, ...) for longer scales. Store the increments the source prints, not running sums: a paper that reports the cumulative thresholds themselves (`theta_m = logit P(Y <= m)`) should have its values differenced into increments, and the source trace should say so. The between-subject eta of such a model usually enters the linear predictor once and is shared by every threshold, so it is `etalogite0`; a drug or covariate term enters the same linear predictor, conventionally as `e_<predictor>_<endpoint>`. The model's per-grade probabilities `p0 = P(Y <= 0)`, `p<m> = P(Y <= m) - P(Y <= m-1)` feed the rxode2 ordinal endpoint `<score> ~ c(p0, p1, ..., p<K-1>)`, whose simulated category `k` is grade `k - 1`; use this unnamed form, because the named form `c(p0 = 0, ...)` adds the category values to `ini()` as pseudo-parameters.
+
 ### lktr, lktr_slow, lktr_fast (**canonical log-transformed first-order transit / effect-delay rate constant**)
 - **Type:** paper-named-param
 - **Role:** Log-transformed first-order rate constant of a transit or effect-delay cascade (1/time). Inside `model()` the bare names are `ktr`, `ktr_slow`, `ktr_fast`. For a chain of `n` stages the mean transit time is `n / ktr`. `lktr` is the single-chain form; `lktr_slow` / `lktr_fast` are the qualified forms used when a model carries two parallel cascades of different speed, and they pair one-to-one with the `effect_slow<n>` / `effect_fast<n>` compartment families.
@@ -1757,7 +1797,8 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Role:** Bare counterpart of `le0`; the baseline (drug-free) PD response value used inside `model`.
 - **Source aliases:**
   - `beta0`, `Intercept` -- the intercept of a binary logistic exposure-response regression `logit(p) = beta0 + beta1 * x`. The intercept IS the baseline (zero-exposure) response on the logit scale, so it takes the registered `logit` transform prefix: `logite0`. When one paper fits several parallel univariate regressions of the same endpoint against different exposure predictors, suffix by endpoint and predictor -- `logite0_<endpoint>_<predictor>` -- in the same way multi-output residual SDs are suffixed by output. The matching slope is a normal `e_<predictor>_<endpoint>` covariate-effect parameter. Used in `Assmus_2025_benznidazole_mouse.R` (`logite0_cure_auc` / `e_auc_cure` and `logite0_cure_tmic` / `e_tmic_cure`, Assmus 2025 Table 4).
-- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R`, `Assmus_2025_benznidazole_mouse.R`.
+  - `beta_0` -- the lowest cumulative threshold of a proportional-odds ordered-categorical model, `logit P(Y <= 0)` without drug, is likewise `logite0`; the higher thresholds are the increments `logitstep1`, `logitstep2`, ... (see that entry). Used in the four `Tran_2026_pioglitazone_*_mbma.R` histology models.
+- **Example models:** `Kleijn_2011_sugammadex_rocuronium.R`, `Assmus_2025_benznidazole_mouse.R`, `Tran_2026_pioglitazone_steatosis_mbma.R`.
 
 ### lfcirc (**canonical log-transformed fitted frequency of a circadian baseline oscillation**)
 - **Type:** paper-named-param
