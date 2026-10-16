@@ -3542,6 +3542,8 @@ navbar:
         href: articles/Senek_2020_levodopa.html
       - text: "Levodopa (Suksai 2026)"
         href: articles/Suksai_2026_levodopa.html
+      - text: "Levodopa carbidopa (Senek 2018)"
+        href: articles/Senek_2018_levodopa_carbidopa.html
       - text: "Levofloxacin (Denti 2018)"
         href: articles/Denti_2018_levofloxacin.html
       - text: "Levofloxacin (Lee 2025)"
@@ -9370,6 +9372,7 @@ articles:
   - articles/Selig_2022_piperacillin_tazobactam
   - articles/Selvaggio_2021_mRNA_vaccine_QSP
   - articles/SemereGebreyesus_2024_rifabutin
+  - articles/Senek_2018_levodopa_carbidopa
   - articles/Senek_2020_levodopa
   - articles/Seng_2015_isoniazid
   - articles/Seo_2023_cefepime

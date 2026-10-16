@@ -121,6 +121,13 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (three slow stages at `ktr_slow` = 0.107/min, mean transit time 28.0 min; four fast stages at `ktr_fast` = 1.76/min, mean transit time 2.27 min; `conc = effect_slow3 + effect_fast4` drives three parallel Emax haemodynamic endpoints).
 - **Notes:** Arbitrary chain lengths are accepted via `compartmentRegex`, which allows an optional `_slow` / `_fast` qualifier on the numbered-chain prefixes; the headings above enumerate only the stage counts the founding model uses. Mean transit time for a chain of `n` stages is `n / ktr` (**not** `(n + 1) / ktr` -- that form belongs to rxode2's `transit()` closed form, where the dosing depot counts as a stage). Prefer these over `transit<n>` when the cascade smooths a PD signal rather than transporting a dose through an absorption path; `transit<n>` remains correct for absorption. The paired rate-constant parameters are `lktr_slow` / `lktr_fast` in `parameter-names.md`.
 
+### transit_fast1, transit_fast2, transit_fast3, transit_fast4, transit_fast5, transit_slow1, transit_slow2, transit_slow3, transit_slow4, transit_slow5, transit_slow6, transit_slow7, transit_slow8, transit_slow9, transit_slow10 (**canonical dual-rate parallel transit-absorption chain families**)
+- **Type:** compartment
+- **Role:** Two parallel transit-compartment absorption chains that carry complementary fractions of the same oral dose to `central` at different speeds, used to reproduce double-peak concentration profiles. `transit_fast<n>` is fed by `depot` and carries the fraction `fa1` with the short mean transit time; `transit_slow<n>` is fed by `depot2` and carries `1 - fa1` with the long one. Each stage is a mass transfer `d/dt(transit_fast1) = ktr1 * (depot - transit_fast1)`, so the states carry amounts; the terminal member of each chain empties into `central` at its chain's `ktr`.
+- **Source aliases:** none -- Senek 2018 describes the chains in prose only ("parallel absorption compartments including transit compartments", with five and six transit compartments for levodopa and three and ten for carbidopa).
+- **Example models:** `Senek_2018_levodopa_carbidopa.R` (levodopa `transit_fast1..5` and `transit_slow1..6`; carbidopa `transit_fast1..3_carbidopa` and `transit_slow1..10_carbidopa`; `ktr = (n + 1) / MTT` per Savic 2007, the paper's transit-model reference).
+- **Notes:** The absorption analogue of the `effect_slow<n>` / `effect_fast<n>` families above: the same `_slow` / `_fast` qualifier on the `transit` prefix of `compartmentRegex`, chosen over splitting one `transit<n>` numbering between two chains because both chains are the same kind of state, distinguished only by their rate constant. Arbitrary chain lengths validate through the regex; the heading enumerates the lengths the founding model uses. Unlike the effect families, these are dose-transporting chains fed by a dosing compartment, so the mean transit time from the dosing compartment to `central` is `(n + 1) / ktr` for `n` transit states. Use plain `transit<n>` when a model has a single absorption chain, and `depot` / `depot2` (not `depot_fast` / `depot_slow`) for the two dosing compartments, per the parallel-absorption depot convention.
+
 ### target (**canonical target compartment**)
 - **Type:** compartment
 - **Role:** Free target species in TMDD / receptor-binding models (amount).
@@ -6251,6 +6258,19 @@ Sibling-drug suffix for the Yang 2024 mechanistic opioid-induced-respiratory-dep
 - **Role:** Naloxone (competitive mu-opioid receptor antagonist) sibling-drug suffix for opioid-overdose-reversal PK-PD models in which a full naloxone PK model runs alongside the opioid agonist's. Drives the `depot_naloxone` / `transit1_naloxone` / `transit2_naloxone` / `transit3_naloxone` / `central_naloxone` / `peripheral1_naloxone` / `effect_naloxone` compartment chain and the `lktr_naloxone` / `lcl_naloxone` / `lvc_naloxone` / `lq_naloxone` / `lvp_naloxone` / `lke0_naloxone` / `lec50_naloxone` parameters. Naloxone always needs its own effect compartment here, because it is the naloxone biophase concentration -- not the plasma concentration -- that competes with the opioid at the receptor.
 - **Source aliases:** none.
 - **Example models:** `Yang_2024_naloxone_buprenorphine.R`, `Yang_2024_naloxone_morphine.R`, `Yang_2024_naloxone_fentanyl.R`, `Yang_2024_naloxone_carfentanil.R` (all doi:10.1002/psp4.13215). The standalone naloxone population PK model `Yang_2024_naloxone.R` uses unsuffixed canonical names, since there naloxone is the only drug.
+
+---
+
+## Dopa-decarboxylase-inhibitor sibling-drug suffixes
+
+Sibling-drug suffix for co-formulated levodopa products, where levodopa is the unsuffixed parent and the peripheral dopa-decarboxylase inhibitor dosed with it carries its own suffix. Levodopa keeps the bare canonical names because it is the therapeutic analyte and the one whose disposition the inhibitor modifies.
+
+### carbidopa (**canonical carbidopa sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Carbidopa (peripheral dopa-decarboxylase inhibitor) sibling-drug suffix for joint levodopa/carbidopa PK models in which a full carbidopa PK model is fitted alongside levodopa's. Drives the `depot_carbidopa` / `depot2_carbidopa` / `transit_fast<n>_carbidopa` / `transit_slow<n>_carbidopa` / `central_carbidopa` states, the `Cc_carbidopa` observation and the `lcl_carbidopa` / `lvc_carbidopa` / `lmtt1_carbidopa` / `lmtt2_carbidopa` / `logitffo_carbidopa` / `lfdepot_carbidopa` / `lc0_carbidopa` parameters and their residual SDs.
+- **Source aliases:** `CD` -- Senek 2018 throughout.
+- **Example models:** `Senek_2018_levodopa_carbidopa.R` (doi:10.1007/s00228-018-2497-2; one-compartment carbidopa with two parallel transit chains, jointly fitted with two-compartment levodopa).
+- **Notes:** A co-administered drug rather than a metabolite of levodopa, registered as a `metabolite-suffix` on the `naloxone` precedent so the `<canonical>_carbidopa` compositions validate. Benserazide, the other dopa-decarboxylase inhibitor, would take its own suffix in the same section. A levodopa model that only uses the carbidopa DOSE as a covariate needs no suffix -- see `DOSE_CARBIDOPA_MG` in `covariate-columns.md`.
 
 ---
 
