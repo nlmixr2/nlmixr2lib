@@ -6898,6 +6898,8 @@ navbar:
         href: articles/Ding_2026_vancomycin.html
       - text: "Vancomycin (Dorajoo 2019)"
         href: articles/Dorajoo_2019_vancomycin.html
+      - text: "Vancomycin (Downes 2020)"
+        href: articles/Downes_2020_vancomycin.html
       - text: "Vancomycin (Fu 2021)"
         href: articles/Fu_2021_vancomycin.html
       - text: "Vancomycin (Garreau 2021)"
@@ -7975,6 +7977,7 @@ articles:
   - articles/Dorlo_2008_miltefosine
   - articles/Dorlo_2017_miltefosine
   - articles/Dowling_2008_naloxone
+  - articles/Downes_2020_vancomycin
   - articles/Downes_2022_tobramycin
   - articles/Downes_2023_vancomycin
   - articles/Drweesh_2026_adalimumab
