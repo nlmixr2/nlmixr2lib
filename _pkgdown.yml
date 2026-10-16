@@ -2454,6 +2454,8 @@ navbar:
         href: articles/Larsen_2018_haemophilia_animal_popPK.html
       - text: "Factorviii (Allard 2020)"
         href: articles/Allard_2020_factorviii.html
+      - text: "Factorviii (Bukkems 2022)"
+        href: articles/Bukkems_2022_factorviii_thrombin_plasmin.html
       - text: "Factorviii (Nestorov 2014)"
         href: articles/Nestorov_2014_factorviii.html
       - text: "Factorviii (Valke 2024)"
@@ -2466,12 +2468,18 @@ navbar:
         href: articles/Larsen_2018_haemophilia_animal_popPK.html
       - text: "Factorviii mouse (Larsen 2018)"
         href: articles/Larsen_2018_haemophilia_animal_popPK.html
+      - text: "Factorviii plasminPeak (Bukkems 2022)"
+        href: articles/Bukkems_2022_factorviii_thrombin_plasmin.html
       - text: "Factorviii plasminPeak (Valke 2024)"
         href: articles/Valke_2024_factorviii_thrombin_plasmin.html
       - text: "Factorviii rat (Larsen 2018)"
         href: articles/Larsen_2018_haemophilia_animal_popPK.html
+      - text: "Factorviii thrombinPeak (Bukkems 2022)"
+        href: articles/Bukkems_2022_factorviii_thrombin_plasmin.html
       - text: "Factorviii thrombinPeak (Valke 2024)"
         href: articles/Valke_2024_factorviii_thrombin_plasmin.html
+      - text: "Factorviii thrombinPotential (Bukkems 2022)"
+        href: articles/Bukkems_2022_factorviii_thrombin_plasmin.html
       - text: "Factorviii thrombinPotential (Valke 2024)"
         href: articles/Valke_2024_factorviii_thrombin_plasmin.html
       - text: "Farletuzumab (Farrell 2012)"
@@ -7673,6 +7681,7 @@ articles:
   - articles/BuilBruna_2015_lanreotide
   - articles/Bukkems_2021_raltegravir
   - articles/Bukkems_2022_doravirine_placentaperfusion
+  - articles/Bukkems_2022_factorviii_thrombin_plasmin
   - articles/Bulitta_2007_piperacillin
   - articles/Bulitta_2009_ceftazidime
   - articles/Bulitta_2009_cefuroxime_axetil
