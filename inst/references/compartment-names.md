@@ -4704,6 +4704,17 @@ A recurring device in placebo-controlled PD modelling is to give the placebo res
 
 ---
 
+## Measured-only duplicate central compartments
+
+### central_contam (**canonical contamination-carrying duplicate of the central compartment**)
+- **Type:** compartment
+- **Role:** A second copy of `central` with identical disposition (same volume, same elimination) that receives the same doses but starts from a pre-study contaminating amount. It exists only to form the *measured* concentration; the bare `central`, which starts at zero, is the pool that drives the pharmacodynamics. Both pools are needed when elimination is non-linear, because the contaminated and uncontaminated trajectories then do not differ by a separable decaying term, so a single state cannot give both the measured concentration and the pharmacologically active one.
+- **Source aliases:** `ETX` (S1 Text `$MODEL` compartment 1, `DEFDOSE DEFOBS`, of Thorsted 2019; the bare `central` there is compartment 2, `DUMMY`).
+- **Example models:** `Thorsted_2019_endotoxin.R` (`central_contam(0) <- MIX_ETX_CONTAM * rbase_etx * prop_cont`; measured endotoxin `Cc <- rbase_etx + central_contam / vc`; TNF-alpha and IL-6 driven by `central / vc`).
+- **Notes:** Ratified 2026-09-22 with the Thorsted 2019 endotoxin extraction (PMC6383944). Composes the canonical `central` role with a `contam` qualifier, following the ratified `central_placebo` precedent for a `central_<qualifier>` state that is not a metabolite. The bare canonical was kept for the active pool because that is what `central` means everywhere else in the register; the qualifier names the assay artefact. Every dosing record must be given to both `central` and `central_contam`, which the source dataset does with two `EVID = 1` rows (CMT 1 and CMT 2) of the same amount and rate.
+
+---
+
 ## Depot dosing-route compartments
 
 The `depot_<route>` pattern distinguishes parallel dosing routes when a model carries more than one. Sibling of the canonical `depot` / numbered `depot1`, `depot2` forms.

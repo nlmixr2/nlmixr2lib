@@ -21186,6 +21186,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `MuellerSchoell_2021_axicabtageneCiloleucel_qsp.R` (selects the baseline maximum expansion rate `Vmax1,base` between the reference anchor `exp(lvmax1_base_ref) = 0.00846` and the low-expansion anchor `exp(lvmax1_base_low) = 0.000700`; the reference branch additionally carries the day-7 CD4/CD8 power effect and the 150% CV IIV, both of which the low-expansion branch drops; Equations 10-11 and Table 1).
 - **Notes:** Registered as a new member of the `MIX_*` family on the standing instruction that mixture indicators from unrelated dichotomies register a new canonical name. Population probability of `MIX_LOW_EXPANSION = 1` is recorded per-model in `covariateData[[MIX_LOW_EXPANSION]]$notes`; in Mueller-Schoell 2021 it is `1 - MIXP = 1 - 0.803 = 0.197` (Table 1 `MIXP` = 0.803, RSE 11%; 4 of 19 patients). For typical-value simulation set `MIX_LOW_EXPANSION = 0` (dominant reference phenotype); for population simulation draw `MIX_LOW_EXPANSION ~ Bernoulli(0.197)` per subject. Distinct from the tumour-dynamics growth-phenotype mixtures (`MIX_FAST_GROW`, `MIX_NO_GROW`), which index tumour-growth latent classes; here the mixture is on the CAR-T CELL expansion capacity, a distinct biological dichotomy. General scope because a low-vs-reference cellular-expansion latent class is expected to recur across adoptive cell-therapy (CAR-T, TIL, TCR-T) cellular-kinetic models, where a subset of patients reliably fails to expand.
 
+### MIX_ETX_CONTAM (**canonical for binary mixture-model class indicator: pre-study endotoxin contamination vs none**)
+- **Description:** Per-subject latent mixture-model class indicator from the Thorsted 2019 piglet endotoxin / cytokine model. 1 = subject in the sub-population whose measured endotoxin compartment starts at a contaminating amount `BASE_ETX * Propcont` (Thorsted 2019 Eq 1); 0 = subject whose endotoxin compartment starts at zero. Not a measured covariate -- the per-subject latent-class index of a NONMEM `$MIX` block (S1 Text, `NSPOP = 2`, sub-population 2). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no contamination; majority class at 60.1 % of the source cohort).
+- **Source aliases:** `MIXNUM` -- NONMEM mixture sub-population index in Thorsted 2019 S1 Text (`IF (MIXNUM == 2) SOIL = EBASE * PROP`); the binary indicator is `MIX_ETX_CONTAM = as.integer(MIXNUM == 2)`.
+- **Example models:** `Thorsted_2019_endotoxin.R` (sets `central_contam(0) <- MIX_ETX_CONTAM * rbase_etx * prop_cont`; the contamination enters only the measured endotoxin `Cc`, never the cytokine drive).
+- **Notes:** Population probability of `MIX_ETX_CONTAM = 1` is 0.399, fixed in the final Thorsted 2019 run to the estimate of the endotoxin sub-model (Table 2 `MIX`; Results, "because the inclusion of individuals without ETX observations led to instability in the estimation of this parameter"). It is documented here and in `covariateData` rather than carried as an unused `ini()` parameter, following the `MIX_LARGE_BASE` precedent. For population simulation draw `MIX_ETX_CONTAM ~ Bernoulli(0.399)` per subject; for typical-value simulation of an uncontaminated animal set it to 0. Scope specific because the dichotomy is an assay / handling artefact tied to that dataset.
+
 ### SEIZURE_ACUTE (**canonical for acute focal-seizure-activity indicator in preclinical brain-distribution studies**)
 - **Description:** 1 = the animal is undergoing acute focal seizure activity (typically chemoconvulsant-induced, e.g., intrahippocampal pilocarpine perfusion in a microdialysis design) during the modelled observation window; 0 = no acute seizure activity. Captures the experimental flag used by preclinical BBB / biophase-distribution PK studies to test whether seizure-driven changes in blood-brain barrier permeability or brain redistribution alter brain PK parameters relative to non-seizing control animals. Time-fixed per animal in single-condition allocations (each rat in one arm); a time-varying form is permitted when a study induces transient seizures during a sampling window and the model's author chooses to gate the covariate only over the seizure interval (document in `covariateData[[SEIZURE_ACUTE]]$notes`).
 - **Units:** (binary)
@@ -22746,6 +22756,50 @@ sibling such as `AUC_BAST_FW`.
   - `Study E` -- the paper-text label used throughout Riggs 2014 Methods, Table 1 and Table 2.
 - **Example models:** `Riggs_2014_empagliflozin.R` (selects baseline FPG 9.49 mmol/L, Table 2 theta_4, and baseline HbA1c 7.89 pct, theta_25, and scales C*50 by theta_21 = 1.93, giving the study E AUC50 of 1210 nmol*h/L against the 626 nmol*h/L reference).
 - **Notes:** Follows the auto-approved `STUDY_<id>` canonical family. Study E contributed no urinary-glucose-excretion observations, so the UGE parameters fall back to the study A reference. Its roughly two-fold higher AUC50 is the single largest inter-study difference in the Riggs 2014 model and drives the paper's sensitivity analysis: the same 10 and 25 mg doses give 80 / 90 pct of maximal response on the pooled A + B + D estimate but only 65 / 82 pct on the study E estimate. See [[STUDY_EMPA_A]] for the naming rationale.
+
+### STUDY_ETX_C (**canonical for Thorsted 2019 piglet endotoxin study C cohort indicator**)
+- **Description:** 1 = piglet from study C of the pooled porcine endotoxaemia analysis of Thorsted 2019 (Table 1: six-hour IV infusion of E. coli O111:B4 endotoxin at 0-16 ug/kg/h, batch potency 3000 EU/ug, n = 20; ETX by Endochrome, TNF-alpha by BioSource, IL-6 by Quantikine); 0 = otherwise. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. One of the mutually exclusive four-member set `STUDY_ETX_C`.. `STUDY_ETX_F`; all four 0 means study A or B, the implicit reference.
+- **Source aliases:**
+  - `STUDY == 3` -- Thorsted 2019 S1 Text `$PK` and S1 Table column `STUDY` (1-6 = A-F).
+- **Example models:** `Thorsted_2019_endotoxin.R` (selects the BioSource TNF-alpha baseline 3.06 ng/L and the BioSource/Quantikine IL-6 baseline 8.19 ng/L; ETX uses the Endochrome baseline 155 EU/L shared with study E).
+- **Notes:** Follows the auto-approved `STUDY_<id>` canonical family, named for the challenge agent rather than the bare letter so it cannot collide with another paper's study C (precedent `STUDY_EMPA_A`..`E`). The study effects are assay effects: Table 2 labels each baseline by assay and study. Study A and B have no indicator of their own because no parameter separates them. The held-out evaluation study G is not part of the fit and has no indicator.
+
+### STUDY_ETX_D (**canonical for Thorsted 2019 piglet endotoxin study D cohort indicator**)
+- **Description:** 1 = piglet from study D of Thorsted 2019 (Table 1: three-hour IV endotoxin infusion with hourly accelerating 0.063 / 1.0 / 4.0 or decelerating 4.0 / 1.0 / 0.063 ug/kg/h rates, batch 3000 EU/ug, n = 18; TNF-alpha by BioSource, IL-6 by Quantikine; no ETX measured); 0 = otherwise. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. One of the mutually exclusive four-member set `STUDY_ETX_C`.. `STUDY_ETX_F`.
+- **Source aliases:**
+  - `STUDY == 4` -- Thorsted 2019 S1 Text `$PK`.
+- **Example models:** `Thorsted_2019_endotoxin.R` (selects the study-D BioSource TNF-alpha baseline 68.2 ng/L and the IL-6 baseline 8.19 ng/L).
+- **Notes:** See [[STUDY_ETX_C]] for the naming rationale.
+
+### STUDY_ETX_E (**canonical for Thorsted 2019 piglet endotoxin study E cohort indicator**)
+- **Description:** 1 = piglet from study E of Thorsted 2019 (Table 1: one-, two- or three-hour IV endotoxin infusion at 0.063 or 4.0 ug/kg/h, batch 1000 EU/ug, n = 26; ETX by Endochrome, TNF-alpha and IL-6 by DuoSet); 0 = otherwise. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. One of the mutually exclusive four-member set `STUDY_ETX_C`.. `STUDY_ETX_F`.
+- **Source aliases:**
+  - `STUDY == 5` -- Thorsted 2019 S1 Text `$PK`.
+- **Example models:** `Thorsted_2019_endotoxin.R` (selects the study-E DuoSet TNF-alpha baseline 25.4 ng/L; IL-6 keeps the DuoSet baseline 49.2 ng/L shared with studies A and B).
+- **Notes:** See [[STUDY_ETX_C]] for the naming rationale.
+
+### STUDY_ETX_F (**canonical for Thorsted 2019 piglet endotoxin study F cohort indicator**)
+- **Description:** 1 = piglet from study F of Thorsted 2019 (Table 1: six-hour IV endotoxin infusion at 1.0 or 4.0 ug/kg/h, starting at a higher rate for the first 30 min, batch 3000 EU/ug, n = 4; ETX by Coatest, TNF-alpha by BioSource, IL-6 by Quantikine); 0 = otherwise. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. One of the mutually exclusive four-member set `STUDY_ETX_C`.. `STUDY_ETX_F`.
+- **Source aliases:**
+  - `STUDY == 6` -- Thorsted 2019 S1 Text `$PK`.
+- **Example models:** `Thorsted_2019_endotoxin.R` (selects the Coatest ETX baseline 1810 EU/L, the BioSource TNF-alpha baseline 3.06 ng/L and the IL-6 baseline 8.19 ng/L).
+- **Notes:** See [[STUDY_ETX_C]] for the naming rationale.
 
 ### STUDY_PROACTIVE (**canonical for the PROACTIVE olaparib-boosting trial cohort indicator**)
 - **Description:** 1 = subject enrolled in PROACTIVE (NCT05078671), the randomised cross-over trial of reduced-dose olaparib 100 mg twice daily boosted with cobicistat 150 mg twice daily against olaparib 300 mg twice daily monotherapy in patients with solid tumours; 0 = subject enrolled in one of the other three cobicistat studies pooled into the same analysis (DATE-4, PANNA or PRACTICAL, all cobicistat 150 mg once daily). Subject-level (time-fixed).
