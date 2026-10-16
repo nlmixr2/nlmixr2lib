@@ -6260,6 +6260,8 @@ navbar:
         href: articles/Lu_2019_tacrolimus_industry_meta.html
       - text: "Tacrolimus metaanalysis (Nanga 2019)"
         href: articles/Nanga_2019_tacrolimus_metaanalysis.html
+      - text: "Tacrolimus pbpk (Itohara 2019)"
+        href: articles/Itohara_2019_tacrolimus.html
       - text: "Tacrolimus pbpk (Pei 2023)"
         href: articles/Pei_2023_tacrolimus.html
       - text: "Tacrolimus sheep (Leber 2023)"
@@ -8389,6 +8391,7 @@ articles:
   - articles/Ishibashi_2024_ensitrelvir
   - articles/Ishihara_2020_piperacillin_tazobactam
   - articles/Isla_2024_fosfomycinCalcium
+  - articles/Itohara_2019_tacrolimus
   - articles/Ivanova_2024_synucleinopathy_qsp
   - articles/Ivaturi_2017_RBP_7000
   - articles/Iwama_2024_febuxostat
