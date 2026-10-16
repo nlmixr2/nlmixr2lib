@@ -2852,10 +2852,14 @@ navbar:
         href: articles/Kelman_1984_gentamicin.html
       - text: "Gentamicin manchester2 (Kelman 1984)"
         href: articles/Kelman_1984_gentamicin.html
+      - text: "Gentamicin preterm (Zazo 2022)"
+        href: articles/Zazo_2022_gentamicin.html
       - text: "Gentamicin rea (Duong 2022)"
         href: articles/Duong_2022_gentamicin.html
       - text: "Gentamicin teigen (Lee 2024)"
         href: articles/Lee_2024_gentamicin.html
+      - text: "Gentamicin term (Zazo 2022)"
+        href: articles/Zazo_2022_gentamicin.html
       - text: "Gepotidacin (Nguyen 2022)"
         href: articles/Nguyen_2022_gepotidacin.html
       - text: "Gevokizumab (Cao 2013)"
@@ -9990,6 +9994,7 @@ articles:
   - articles/Zandvliet_2008_carboplatin
   - articles/Zandvliet_2016_corifollitropin_alfa
   - articles/Zavrelova_2025_linezolid
+  - articles/Zazo_2022_gentamicin
   - articles/Zazo_2024_ceftazidime_avibactam
   - articles/Zecchin_2016_survival
   - articles/Zecchin_2016_tumorovarian
