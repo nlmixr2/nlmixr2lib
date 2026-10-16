@@ -2614,13 +2614,14 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Description:** Best-corrected visual acuity score measured on the Early Treatment Diabetic Retinopathy Study (ETDRS) chart, expressed as the number of letters read correctly (0-100; higher values = better vision). Used as a baseline severity covariate in ophthalmology PK/PD models of anti-VEGF treatment.
 - **Units:** ETDRS letters (0-100)
 - **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a -- used as a baseline input to set the initial condition of an indirect-response SCORE_BCVA state or as a power-form effect on response parameters. Reference value observed: 55 letters (Mulyukov 2018 narrative: mean study-population baseline SCORE_BCVA).
+- **Scope:** general
+- **Reference category:** n/a -- used as a baseline input to set the initial condition of an indirect-response SCORE_BCVA state or as a power-form effect on response parameters. Reference values observed: 55 letters (Mulyukov 2018 narrative: mean study-population baseline SCORE_BCVA); 56.4 letters (Luu 2022: median of the 55 arm-average baselines).
 - **Source aliases:**
   - `BCVA` -- prior canonical name (pre-2026-06-19 standardization audit).
   - `BVA` (baseline visual acuity) -- used in `Mulyukov_2018_ranibizumab.R`.
-- **Example models:** `Mulyukov_2018_ranibizumab.R` (baseline SCORE_BCVA used as the center for the initial-condition draw `g0 = SCORE_BCVA + eta_g0`).
-- **Notes:** Ophthalmology-specific. Baseline-only in Mulyukov 2018 (carried once per subject and used only as the starting SCORE_BCVA for the indirect-response model). Canonical name drops the `B` prefix to match the `SCORE_EASI` / `AGE` / `WT` / `ALB` pattern (baseline-vs-time-varying status recorded in `covariateData[[SCORE_BCVA]]$notes`). Scope is `specific` until a second ophthalmology model ratifies the name; at that point promote to `general`.
+  - `Average Baseline Best-Corrected Visual Acuity` -- Luu 2022 Table 2 column (an arm-average value in that MBMA).
+- **Example models:** `Mulyukov_2018_ranibizumab.R` (baseline SCORE_BCVA used as the center for the initial-condition draw `g0 = SCORE_BCVA + eta_g0`), `Luu_2022_antiVegf_mbma.R` (arm-average baseline: initial condition of the SCORE_BCVA state, power covariate on the kout half-life and logit-scale covariate on Emax_ss, both centred at 56.4 letters).
+- **Notes:** Ophthalmology-specific. Baseline-only in Mulyukov 2018 (carried once per subject and used only as the starting SCORE_BCVA for the indirect-response model) and in Luu 2022 (one value per trial arm). Canonical name drops the `B` prefix to match the `SCORE_EASI` / `AGE` / `WT` / `ALB` pattern (baseline-vs-time-varying status recorded in `covariateData[[SCORE_BCVA]]$notes`). Promoted to `general` scope when `Luu_2022_antiVegf_mbma.R`, the second ophthalmology model, adopted the name.
 
 ### PREV_AE_SCORE (**canonical for previous-time-step ordinal adverse-event score**)
 - **Description:** Ordinal adverse-event score recorded at the immediately preceding observation time, used as a Markov-state covariate that conditions the current-time logit / probability calculation on the previous outcome. Integer 0..N where N is the maximum AE grade in the source-paper grading scheme; convention is that the value is 0 at the first observation (no prior AE).
@@ -20550,6 +20551,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `DP (PF-06439535=1, Bevacizumab-EU=2)` -- Li 2020 Figure 2 axis label; the final-model equations apply the effect '(1.02 in PF-06439535)' on CL and '(1.07 in PF-06439535)' on V1.
 - **Example models:** `Li_2020_bevacizumab.R` (multiplicative theta^COV effect, Li 2020 Eq. 5: 1.02 on CL and 1.07 on V1).
 - **Notes:** Specific scope; sibling of `TRT_SB16` in the `TRT_<product>` family, named for the development code because both arms receive bevacizumab. **This indicator carries a deliberately non-significant effect**: Li 2020 retained drug product in the final model to quantify similarity even though the stepwise covariate search did not select it (Table 2 footnote b); both 95% bootstrap CIs include unity. Consumers reproducing the typical bevacizumab-EU patient should leave it at 0.
+
+### TRT_RANIBIZUMAB, TRT_AFLIBERCEPT, TRT_BROLUCIZUMAB, TRT_ABICIPAR (**canonical for per-drug MBMA treatment-arm indicators of intravitreal anti-VEGF agents**)
+- **Description:** Binary study-arm treatment indicators: 1 = the trial arm received the named intravitreal anti-VEGF drug, 0 = it received a different drug or sham. A property of the published trial arm in a model-based meta-analysis (MBMA), not of an individual patient. Ranibizumab is a humanised anti-VEGF-A Fab fragment, aflibercept a VEGF-receptor-Fc fusion protein, brolucizumab a single-chain Fv anti-VEGF-A fragment, and abicipar pegol a pegylated designed ankyrin repeat protein (DARPin) that binds VEGF-A.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. All four 0 = sham arm.
+- **Source aliases:**
+  - drug named in the 'Arms' column of Luu 2022 Table 2 -- one indicator per drug, no value transformation.
+- **Example models:** `Luu_2022_antiVegf_mbma.R` (each indicator selects the drug's fixed vitreous half-life, molecular weight and EC50 in a shared one-compartment vitreous PK / indirect-response SCORE_BCVA model; all four 0 also selects the sham residual SD).
+- **Notes:** Specific scope. Members of the `TRT_<INN>` MBMA arm-indicator family (maintainers' ruling of 2026-09-12; see `TRT_BENRALIZUMAB`). The indicators are mutually exclusive: at most one is 1 per arm, because Luu 2022 analysed monotherapy arms only. They are needed although the drug effect is concentration-driven, because the drug-specific PK and potency parameters must be selected per arm and the sham arms carry their own residual SD. Bevacizumab arms were in the Luu 2022 data set but have no published half-life or EC50, so no `TRT_BEVACIZUMAB` is registered.
 
 ### IGA_MOD_PCT (**canonical for moderate-IGA-severity cohort prevalence percentage**)
 - **Description:** Study-arm-level percentage (0-100) of the enrolled cohort whose baseline Investigator's Global Assessment (IGA) was 3 (moderate) rather than 4 (severe). Continuous covariate scaled in percent (not fraction). An arm enriched for severe disease (a LOW value here) leaves more room for improvement, so this column typically carries a negative coefficient on a drug-effect maximum.
