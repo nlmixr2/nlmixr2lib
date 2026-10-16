@@ -437,9 +437,12 @@ The monotherapy panels follow the published curves: linezolid is
 bacteriostatic, fosfomycin kills over the first 4-8 h and the count regrows to
 the stationary phase by 24 h (the regrowth is somewhat later with the printed
 Ke because fosfomycin accumulates). In the combination panels the published
-curves fall to a plateau of ~3-4.5 log10 CFU/mL with no regrowth, whereas the
-packaged model drives the count to near zero within 6-8 h and then regrows as
-the adaptive-resistance factor rises.
+curves fall to a plateau of ~3-4.5 log10 CFU/mL with no regrowth. The
+packaged model departs from them in a strain-dependent way: for ATCC 29212 and
+the lower combination for No. 2 it drives the count to ~1 log10 or below within
+6-8 h and then regrows as the adaptive-resistance factor rises; for No. 6 and
+the higher combination for No. 2 it sterilises; and for No. 1, whose
+interaction exponent is negative, it produces little kill and regrows.
 
 # Interaction equation checks
 
