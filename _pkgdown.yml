@@ -2458,6 +2458,8 @@ navbar:
         href: articles/Nestorov_2014_factorviii.html
       - text: "Factorviii (Valke 2024)"
         href: articles/Valke_2024_factorviii_thrombin_plasmin.html
+      - text: "Factorviii (deJager 2020)"
+        href: articles/deJager_2020_factorviii.html
       - text: "Factorviii dog (Larsen 2018)"
         href: articles/Larsen_2018_haemophilia_animal_popPK.html
       - text: "Factorviii fanhdi (Chelle 2019)"
@@ -10123,6 +10125,7 @@ articles:
   - articles/deBruijn_2022_bile_acid_cholestasis
   - articles/deCastroSuarez_2020_nimotuzumab
   - articles/deHoogd_2017_morphine
+  - articles/deJager_2020_factorviii
   - articles/deJonge_2005_paclitaxel
   - articles/deKock_2017_sulfadoxinePyrimethamine
   - articles/deKock_2018_sulfadoxinePyrimethamine

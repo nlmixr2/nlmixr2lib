@@ -2490,9 +2490,11 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Units:** IU/dL (equivalent to % of pooled normal plasma); document per-model via `covariateData[[VWF]]$units`. Some sources report `VWF:Ag` (antigen) versus `VWF:RCo` (ristocetin cofactor activity); record which assay was used in `covariateData[[VWF]]$notes`.
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- used with power scaling `(VWF / ref)^exponent`. Reference values observed: 118 IU/dL (Nestorov 2014, study-population median).
-- **Source aliases:** none; `VWF` is the universal abbreviation. Source papers may write `vWF` (lowercase v) or specify the assay (`VWF:Ag`).
-- **Example models:** `Nestorov_2014_factorviii.R` (reference 118 IU/dL, exponent -0.343 on CL; VWF antigen).
+- **Reference category:** n/a -- used with power scaling `(VWF / ref)^exponent`. Reference values observed: 118 IU/dL (Nestorov 2014, study-population median); 165 IU/dL = 1.65 IU/mL (de Jager 2020, VWF activity).
+- **Source aliases:** none; `VWF` is the universal abbreviation. Source papers may write `vWF` (lowercase v) or specify the assay (`VWF:Ag`, `VWF:Act`). A paper reporting IU/mL multiplies by 100.
+- **Example models:**
+  - `Nestorov_2014_factorviii.R` (reference 118 IU/dL, exponent -0.343 on CL; VWF antigen).
+  - `deJager_2020_factorviii.R` (reference 165 IU/dL, exponent -0.263 on CL; VWF activity measured after VWF/FVIII concentrate dosing, carried forward between measurements as a time-varying covariate).
 - **Notes:** Higher VWF protects FVIII from clearance, so the exponent on CL is negative. VWF is time-varying within an individual (acute-phase response, age, blood group, etc.), but most published population PK models use baseline-only VWF when the within-subject dynamics are not characterized; document the per-model convention in `covariateData[[VWF]]$notes`.
 
 ### FVIIIRECENT (**canonical for most recently measured untreated FVIII:C activity**)
@@ -2508,7 +2510,19 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:**
   - `Schutte_2018_desmopressin.R` (reference 0.15 IU/mL; exponents +0.74 on baseline FVIII, -0.61 on V1, -0.73 on CL; Schütte 2018 Table 2 final covariate model).
   - `Preijers_2021_factor_viii.R` (additive endogenous baseline in the observation equation `Cc = (C_pred + FVIIIRECENT) * (1 - 0.30 * FORM_FVIII_BDD)`; Preijers 2021 Methods Eq. 1). Set to 0 to simulate the drug-attributable FVIII only.
-- **Notes:** General scope since the second model (Preijers 2021) registered it; the two founding models use it in different roles (power-scaled covariate on PK parameters vs. additive observation offset), so always read the per-model `covariateData[[FVIIIRECENT]]$notes`. Time-fixed per treatment episode (one pre-treatment measurement per desmopressin occasion or per surgical procedure). Schütte 2018 additionally defines a binary missing-data branch with flat correction factors (1.2 / 1.1 / 0.78 on baseline FVIII / V1 / CL) when FVIIIRECENT was unavailable for a fitted subject; per the standing nlmixr2lib pattern, the missing branch is documented in the validation vignette deviations rather than encoded as a separate `MISSING_FVIIIRECENT` covariate, and simulation users are expected to supply FVIIIRECENT for every simulated patient. Distinct from `FVIII-lowest` (ever-lowest historical FVIII:C), which Schütte 2018 tested but did NOT retain in the final covariate model.
+- **Notes:** General scope since the second model (Preijers 2021) registered it; the two founding models use it in different roles (power-scaled covariate on PK parameters vs. additive observation offset), so always read the per-model `covariateData[[FVIIIRECENT]]$notes`. Time-fixed per treatment episode (one pre-treatment measurement per desmopressin occasion or per surgical procedure). Schütte 2018 additionally defines a binary missing-data branch with flat correction factors (1.2 / 1.1 / 0.78 on baseline FVIII / V1 / CL) when FVIIIRECENT was unavailable for a fitted subject; per the standing nlmixr2lib pattern, the missing branch is documented in the validation vignette deviations rather than encoded as a separate `MISSING_FVIIIRECENT` covariate, and simulation users are expected to supply FVIIIRECENT for every simulated patient. Distinct from `FVIII-lowest` (ever-lowest historical FVIII:C), which Schütte 2018 tested but did NOT retain in the final covariate model; a model whose endogenous baseline is the ever-lowest value uses `FVIII_BL`.
+
+### FVIII_BL (**canonical for lowest-ever measured endogenous FVIII:C activity**)
+- **Description:** The lowest plasma factor VIII coagulant activity (FVIII:C) ever measured in the patient, taken as the patient's endogenous baseline. Added to the predicted exogenous FVIII in the observation equation of an FVIII-concentrate model. Time-fixed per subject.
+- **Units:** IU/mL (1 IU/mL = 100 IU/dL = 100% of pooled normal plasma FVIII activity).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- an additive offset with no reference value.
+- **Source aliases:**
+  - `Baseline FVIII level`, `baseline FVIII:C`, "FVIII activity levels (lowest levels ever measured in the patient)" -- de Jager 2020 Methods 2.1, Table 1 and Supplement 1 Eq. 2; used in `deJager_2020_factorviii.R`.
+  - `FVIII-lowest` -- Schütte 2018 (tested, not retained).
+- **Example models:** `deJager_2020_factorviii.R` (observation `Cc = (central + virtual) / vc / 1000 + FVIII_BL`; Supplement 1 Eq. 2). Set to 0 to simulate the drug-attributable FVIII only.
+- **Notes:** Distinct from `FVIIIRECENT`, the most recent untreated FVIII:C. The two differ in practice: in de Jager 2020 the pre-dose FVIII was often higher than the lowest-ever value (Methods 2.2), and the model fits a virtual dose to carry the difference. Use `FVIIIRECENT` when the paper's baseline is the latest pre-treatment measurement, and this column when it is the historical minimum.
 
 ### DDIMER (**canonical for plasma D-dimer concentration**)
 - **Description:** Plasma D-dimer protein concentration, the fibrin-degradation peptide produced by plasmin-mediated cleavage of cross-linked fibrin. Used in vascular / coagulation-pathology models as a circulating biomarker of fibrin turnover, intra-aneurysmal thrombus burden, or systemic fibrinolytic activity.
@@ -7970,6 +7984,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Hazendonk_2016_factor_viii.R` (multiplicative effect on CL: `(1 + (-0.07) * SURG_SEV_MAJOR)` -- equivalent to `0.93 ^ SURG_SEV_MAJOR` when binary; reference category 0 = minor surgery).
 - **Notes:** General scope because major-vs-minor surgery severity classification recurs across perioperative popPK models for hemostatic factor concentrates and other drugs where surgical stress affects clearance. The exact severity taxonomy is paper-specific -- Hazendonk 2016 follows Koshy et al. 1995 (a hemophilia-specific major / minor / high-risk classification, with major and high-risk collapsed into `SURG_SEV_MAJOR = 1`), while other surgical popPK models may use ASA physical-status class, RACHS-1 (cardiac only), or ad-hoc paper-specific criteria. Record the source-paper severity taxonomy in `covariateData[[SURG_SEV_MAJOR]]$notes`. Distinct from `INTRAOP` (time-varying within-surgery window indicator, applicable to any procedure regardless of severity), from `RACHS1` (ordinal cardiac-surgery-specific risk score, cardiac only), and from `MAJORSURG_HISTORY` (would be a lifetime prior-major-surgery indicator, not yet ratified). Sign of the effect on CL is paper-specific and physiologically ambiguous: major surgery can plausibly increase FVIII clearance through blood loss and consumption OR decrease it through VWF-mediated stabilization from the surgical stress response (Hazendonk 2016 Discussion attributes the 7% decrease to confounding by age -- older patients underwent more major procedures).
 
+### ASA_GE3 (**canonical for American Society of Anesthesiologists physical status class III or higher indicator**)
+- **Description:** 1 = the patient's American Society of Anesthesiologists (ASA) physical status class before the surgical procedure is III or higher (severe systemic disease or worse); 0 = class I or II. Time-fixed per surgical occasion.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (ASA class I or II).
+- **Source aliases:**
+  - `ASA class III or IV`, `ASAclass3,4` -- de Jager 2020 Table 2 and footnote ('0.555^ASAclass3,4'); used in `deJager_2020_factorviii.R`. That cohort had only classes II-IV, so the reference category is class II. From an ordinal ASA column: `ASA_GE3 = as.integer(ASA >= 3)`.
+- **Example models:** `deJager_2020_factorviii.R` (multiplicative factor 0.555 on FVIII clearance: `e_asa_ge3_cl^ASA_GE3`).
+- **Notes:** General scope because ASA class is recorded routinely in perioperative popPK and is often retained as a dichotomy. Follows the `ECOG_GE1` / `ECOG_GE2` threshold-indicator pattern; a paper that retains another cut-point registers a sibling `ASA_GE<n>` rather than an ordinal column. Distinct from `SURG_SEV_MAJOR`, which classifies the procedure rather than the patient.
+
 ### SURG_CARD_VASOACTIVE (**canonical for cardiothoracic surgery with concomitant vasoactive support**)
 - **Description:** 1 = the subject underwent cardiothoracic surgery AND is receiving concomitant vasoactive / inotropic agents (milrinone, dopamine, dobutamine, epinephrine, norepinephrine, vasopressin, or equivalent) over the drug-therapy window; 0 = neither, or cardiothoracic surgery without concomitant vasoactive agents. Both halves of the conjunction are required for a 1 -- the surgery alone does not qualify -- because the column is a marker of the post-cardiotomy LOW-CARDIAC-OUTPUT state rather than of the operation itself. Captures the composite haemodynamic perturbation of that state (reduced renal perfusion, cardiopulmonary-bypass-associated systemic inflammatory response, elevated acute-kidney-injury risk) as it depresses renal drug clearance. Typically time-fixed per subject over a single course of therapy.
 - **Units:** (binary)
@@ -7997,11 +8022,14 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Units:** h
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- typically a power-centred effect `(T_SURG / ref)^exponent`. Reference values observed: 5 h (Wang 2020 caspofungin, printed in the final-model equations).
+- **Reference category:** n/a -- typically a power-centred effect `(T_SURG / ref)^exponent`. Reference values observed: 5 h (Wang 2020 caspofungin, printed in the final-model equations); 1.35 h = 81 min (de Jager 2020 FVIII, Table 2 footnote).
 - **Source aliases:**
   - `OPT` -- Wang 2020 final-model equations and Table 4 ('Theta OPT on CL', 'Theta OPT on VC'); used in `Wang_2020_caspofungin.R`.
-- **Example models:** `Wang_2020_caspofungin.R` (power effects on clearance and central volume: `(T_SURG / 5)^1.30` and `(T_SURG / 5)^0.93`; longer lung-transplant operations raised both).
-- **Notes:** Distinct from `T_CPB`, which is the duration of the cardiopulmonary-bypass run within a cardiac operation rather than of the operation as a whole, and from `T_ANAESTHESIA` / `T_INCISION`, which are times relative to the modelled treatment. Hours, not minutes: a paper reporting operative time in minutes must divide by 60 (and scale any centring value) before using this column.
+  - `Surgery duration`, `duration of procedure` (minutes) -- de Jager 2020 Table 1 and Table 2 footnote ('(Surgery duration_i / 81)^-0.416'); used in `deJager_2020_factorviii.R`. Divide by 60: `T_SURG = duration_min / 60`.
+- **Example models:**
+  - `Wang_2020_caspofungin.R` (power effects on clearance and central volume: `(T_SURG / 5)^1.30` and `(T_SURG / 5)^0.93`; longer lung-transplant operations raised both).
+  - `deJager_2020_factorviii.R` (power effect on FVIII clearance `(T_SURG / 1.35)^-0.416`; longer surgery lowered CL).
+- **Notes:** In a cohort where a patient has several surgeries, the value is time-fixed per surgical occasion rather than per subject (de Jager 2020). Distinct from `T_CPB`, which is the duration of the cardiopulmonary-bypass run within a cardiac operation rather than of the operation as a whole, and from `T_ANAESTHESIA` / `T_INCISION`, which are times relative to the modelled treatment. Hours, not minutes: a paper reporting operative time in minutes must divide by 60 (and scale any centring value) before using this column.
 
 ### CPB_ON (**canonical for cardiopulmonary bypass phase indicator, before rewarming begins**)
 - **Description:** 1 = the observation or dosing record falls within the cardiopulmonary bypass (CPB) phase proper, i.e. from commencement of bypass until rewarming begins; 0 = pre-CPB, during rewarming, or post-CPB. Time-varying within subject. Captures the acute intra-CPB physiological perturbation -- hemodilution by the circuit priming volume, non-pulsatile flow, hypothermia, altered regional perfusion, and drug sequestration onto circuit components -- as it applies during bypass but before the rewarming manoeuvre. Pairs with `CPB_REWARM` (below): the two are mutually exclusive, and the patient is on the bypass circuit whenever `CPB_ON + CPB_REWARM == 1`. A source paper that records the intra-operative CPB phase as a single multi-level column (commonly coded 0 = pre-CPB, 1 = CPB, 2 = warming, 3 = post-CPB) decomposes into these two binary indicators per the standing policy of decomposing categorical covariates rather than testing levels inside `model`; the post-CPB level carries no indicator of its own and therefore collapses onto the pre-CPB reference unless a paper retains a distinct post-CPB effect (in which case register a sibling `CPB_POST`).
