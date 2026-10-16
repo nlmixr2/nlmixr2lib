@@ -4494,6 +4494,8 @@ navbar:
         href: articles/OlssonGisleskog_2021_nicotine.html
       - text: "Nicotine oral (OlssonGisleskog 2021)"
         href: articles/OlssonGisleskog_2021_nicotine.html
+      - text: "Nicotine pbpk (Amice 2021)"
+        href: articles/Amice_2021_nicotine_pbpk.html
       - text: "Nicotine pbpk (Rostami 2022)"
         href: articles/Rostami_2022_nicotine_pbpk.html
       - text: "Nicotine pbpk (Salehi 2025)"
@@ -7478,6 +7480,7 @@ articles:
   - articles/Alvarez_2021_lopinavir
   - articles/Alvarez_2022_hydroxychloroquine
   - articles/Ambery_2015_batefenterol
+  - articles/Amice_2021_nicotine_pbpk
   - articles/An_2012_mitoxantrone_pbpk
   - articles/An_2025_rosuvastatin_ezetimibe
   - articles/Anbari_2023_atezolizumab_cibisatamab_qsp
