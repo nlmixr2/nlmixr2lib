@@ -2516,8 +2516,14 @@ navbar:
         href: articles/Wu_2022_fentanyl.html
       - text: "Fentanyl iv (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
+      - text: "Fentanyl lumped a (Pan 2019)"
+        href: articles/Pan_2019_fentanyl_lumping.html
+      - text: "Fentanyl lumped b (Pan 2019)"
+        href: articles/Pan_2019_fentanyl_lumping.html
       - text: "Fentanyl pbpk (Han 2025)"
         href: articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk.html
+      - text: "Fentanyl pbpk (Pan 2019)"
+        href: articles/Pan_2019_fentanyl_lumping.html
       - text: "Fepixnebart (James 2025)"
         href: articles/James_2025_fepixnebart.html
       - text: "FerricCarboxymaltose rat (Cao 2025)"
@@ -9120,6 +9126,7 @@ articles:
   - articles/Paiboonvong_2025_sitafloxacin
   - articles/Paioni_2021_gentamicin
   - articles/Palmer_2025_moxifloxacin
+  - articles/Pan_2019_fentanyl_lumping
   - articles/Pan_2026_adalimumab
   - articles/Panday_2025_sert_tremor_mbma
   - articles/Panetta_2024_palbociclib

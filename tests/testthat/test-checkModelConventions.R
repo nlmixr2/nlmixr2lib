@@ -668,6 +668,19 @@ test_that("the caseum<n> TB granuloma chain is accepted", {
   expect_equal(nrow(cmts), 0)
 })
 
+test_that("proper-lumped states and a second organ deep pool are canonical", {
+  # Pan_2019_fentanyl_lumped_a / _b carry lumped<n> aggregate states, and
+  # Pan_2019_fentanyl_pbpk a three-compartment gut (gut, gut_deep, gut_deep2).
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  expect_true(nlmixr2lib:::.matchesCompartment("lumped", conv))
+  expect_true(nlmixr2lib:::.matchesCompartment("lumped1", conv))
+  expect_true(nlmixr2lib:::.matchesCompartment("lumped3", conv))
+  expect_true(nlmixr2lib:::.matchesCompartment("gut_deep2", conv))
+  expect_true(nlmixr2lib:::.matchesCompartment("liver_deep2", conv))
+  expect_false(nlmixr2lib:::.matchesCompartment("lumpedx", conv))
+  expect_false(nlmixr2lib:::.matchesCompartment("gut_deep3", conv))
+})
+
 test_that("shared-exponent covariate effects (e_<cov>_<param1>_<param2>) are accepted", {
   good <- function() {
     description <- "Shared allometric exponent"
