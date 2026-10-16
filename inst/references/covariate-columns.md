@@ -2894,6 +2894,18 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Svensson_2020_rifampicin_survival.R` (baseline GCS as a linear factor on the hazard of death in tuberculous meningitis, `(1 + e_gcs_haz * (SCORE_GCS - 13))` with `e_gcs_haz = -0.256`, i.e. each point below 13 raises the hazard by 25.6%).
 - **Notes:** Member of the `SCORE_<INSTRUMENT>` family (`SCORE_NIHSS`, `SCORE_MMSE`, `SCORE_CDR_SOB`, ...). Orientation is opposite to `SCORE_NIHSS` (there a lower score is better). Some datasets carry the three component subscores (E, V, M) separately; sum them before storing here, and register sibling canonicals if a model uses a subscore on its own. The pediatric GCS shares the 3-15 range and may be stored here with a note.
 
+### SCORE_GBS_DISABILITY (**canonical for Guillain-Barre syndrome disability score (Hughes GBS-DS)**)
+- **Description:** Guillain-Barre syndrome disability score (Hughes functional grading scale, GBS-DS), the standard outcome and severity measure in Guillain-Barre syndrome. Ordinal 0-6: 0 = healthy; 1 = minor symptoms, able to run; 2 = able to walk 10 m unaided but unable to run; 3 = able to walk 10 m with an aid; 4 = bedridden or chair-bound; 5 = requires assisted ventilation for at least part of the day; 6 = dead. **A HIGHER value is worse.** Store the raw score; any grouping a model uses (e.g. 0-2 / 3-4 / 5) is derived inside `model()` so the grouping stays visible.
+- **Units:** `(GBS-DS points, 0-6)`
+- **Type:** continuous (ordinal integer)
+- **Scope:** general
+- **Reference category:** n/a -- ordinal; each model states its own reference grouping in `covariateData[[SCORE_GBS_DISABILITY]]$reference_category`. Baseline-versus-time-varying status is recorded per model in `covariateData[[SCORE_GBS_DISABILITY]]$notes`, following the `SCORE_NIHSS` convention of not carrying a `_BL` suffix on the canonical name.
+- **Source aliases:**
+  - `GBS` -- the NONMEM `$INPUT` column in the Fokkink 2022 ESM control stream (integer 0-5; CIDP patients coded -99).
+  - `GBS-DS` / `GBSDS` -- the abbreviation used throughout the GBS literature.
+- **Example models:** `Fokkink_2022_immunoglobulin.R` (IVIg clearance multiplied by `e_score_gbs_disability_34_cl = 1.22` for GBS-DS 3-4 and `e_score_gbs_disability_5_cl = 1.83` for GBS-DS 5, reference 0-2; founding example).
+- **Notes:** Member of the `SCORE_<INSTRUMENT>` family (`SCORE_NIHSS`, `SCORE_GCS`, `SCORE_MGADL`, ...). The instrument is spelled out rather than registered as the `GBSDS` acronym. A score of 6 (death) has no PK meaning; Fokkink 2022 disregarded it. Distinct from the Medical Research Council sum score of limb strength (0-60, higher is better), which GBS studies record alongside and which needs its own canonical if a model uses it.
+
 ### SCORE_NIHSS_PREV (**canonical for previous-occasion NIHSS total score**)
 - **Description:** NIHSS total score recorded at the immediately preceding observation occasion, on the RAW 0-42 scale (lower is better). A Markov-state predictor: it conditions the current occasion's transition probabilities and score reconstruction on the score the subject was last observed at, which is what makes a non-monotonic assessment-scale trajectory tractable as a sequence of discrete transitions. Time-varying per observation.
 - **Units:** `(NIHSS points, 0-42)`
@@ -9098,6 +9110,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Darwish_2025a_trofinetide.R` (two proportional shifts from Darwish 2025 Table 2: `cl * (1 + e_rett_cl * DIS_RETT)` with `e_rett_cl = -0.169` (16.9% lower clearance) and `vp * (1 + e_rett_vp * DIS_RETT)` with `e_rett_vp = 0.616` (61.6% larger peripheral volume). The indicator additionally selects the disease-cohort residual-error magnitude, which Darwish 2025 pooled across Rett syndrome, fragile X syndrome, and traumatic brain injury -- founding example), `Darwish_2025b_trofinetide.R` (two proportional shifts from Darwish 2025 Table 2: `cl * (1 + e_rett_cl * DIS_RETT)` with `e_rett_cl = -0.169` (16.9% lower clearance) and `vp * (1 + e_rett_vp * DIS_RETT)` with `e_rett_vp = 0.616` (61.6% larger peripheral volume). The indicator additionally selects the disease-cohort residual-error magnitude, which Darwish 2025 pooled across Rett syndrome, fragile X syndrome, and traumatic brain injury -- founding example).
   - `Darwish_2025b_trofinetide.R` (the 14-study update of the same sponsor analysis: `e_rett_cl = -0.146` (14.6% lower clearance) and `e_rett_vp = 0.805` (80.5% larger peripheral volume), Darwish 2025b Table 2. These two shifts were the ONLY covariate effects to move by more than 10% when the DAFFODIL pediatric data were added -- by +13.6% and +30.7% respectively -- which makes them the sharpest available check that a transcription used the updated table rather than the stale equation block printed in that paper's Table 2 footnote).
 - **Notes:** Member of the `DIS_<CONDITION>` family of disease-state indicators. The covariate-effect parameter form is `e_rett_<param>` (drops the `DIS_` prefix, per the `DIS_CANCER -> e_cancer_<param>` and `DIS_CHF -> e_chf_<param>` precedents). Distinct from `DIS_FXS` (fragile X syndrome) even though both are monogenic neurodevelopmental disorders studied with overlapping trofinetide programmes -- the two cohorts have opposite sex distributions and Darwish 2025 estimated separate, differently-signed effects on different PK parameters, so they must not be collapsed into a single "neurodevelopmental disorder" indicator.
+
+### DIS_GBS (**canonical for Guillain-Barre syndrome disease-state indicator**)
+- **Description:** 1 = participant has Guillain-Barre syndrome (GBS), an acute immune-mediated polyradiculoneuropathy; 0 = any other cohort in the analysis. Subject-level, time-fixed.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (the comparator cohort; in `Fokkink_2022_immunoglobulin.R` the 0 group is chronic inflammatory demyelinating polyneuropathy (CIDP) on IVIg maintenance).
+- **Source aliases:**
+  - `TYPE` -- the NONMEM `$INPUT` column in the Fokkink 2022 ESM control stream (1 = GBS, 0 = CIDP).
+- **Example models:** `Fokkink_2022_immunoglobulin.R` (endogenous baseline IgG multiplied by `e_dis_gbs_bl_igg = 0.65` for GBS vs CIDP; founding example).
+- **Notes:** Member of the `DIS_<CONDITION>` family. Ratified with the IVIg disease-indication indicators of the van der Zeeuw 2026 immunoglobulin review. Disease severity within GBS is a separate covariate, `SCORE_GBS_DISABILITY`.
 
 ### DIS_TBI (**canonical for traumatic brain injury disease-state indicator**)
 - **Description:** 1 = participant has a traumatic brain injury (TBI); 0 = healthy volunteers and any other disease cohort. Subject-level, time-fixed. Used where a source paper pools a TBI cohort with healthy volunteers or other patient groups and retains a TBI shift on a PK parameter.
