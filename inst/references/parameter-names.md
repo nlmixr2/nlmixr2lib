@@ -626,6 +626,22 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Larsen_2018_factorviii_rat.R`, `Larsen_2018_factorviii_monkey.R` (founding examples; rat `beta_cl = 0.162 mL/IU`, monkey `beta_cl = 0.0355 mL/IU`, both fitting the exponential-nonlinear-CL form on total FVIII activity).
 - **Notes:** Distinct from `lhill` (sigmoidal Emax / Imax exponent), `lgamma` (Friberg / TGI kinetic exponents), and `lvmax` / `km` (Michaelis-Menten saturable elimination — a different mathematical form). Choose `lbeta_cl` when the source paper explicitly parameterises CL as an exponential function of concentration; choose `lvmax` / `km` when the paper fits Michaelis-Menten saturation instead. The `_cl` suffix marks that the slope acts on clearance; parallel `beta_<param>` names are permitted for other parameters when a paper extends the exponential-nonlinear form to `V` or `Q`.
 
+### lfhair (**canonical log-transformed fraction of plasma elimination deposited in hair**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the unitless fraction of the drug eliminated from the central compartment that is deposited into a non-eliminating `hair` accumulation compartment, `d/dt(hair) <- fhair * kel * central`. The deposited fraction does not reduce plasma elimination (the hair term is a side branch of the elimination flux, not a separate clearance), so mass in `hair` is a running record of exposure. The bare counterpart inside `model` is `fhair`; covariate effects follow the standard `e_<cov>_fhair` shape.
+- **Source aliases:**
+  - `Frac` -- Ngara 2020 Equation 3 and Tables 3 / 5 ('amount of drug cleared into the hair as a proportion of the amount of drug in plasma at steady-state troughs').
+- **Example models:** `Ngara_2020_atazanavir.R` (founding example; `lfhair = log(0.16)` with PsN-linear effects of occasion, adherence, BMI-for-age and caregiver), `Ngara_2020_ritonavir.R` (`lfhair = log(0.18)`, effects of occasion and adherence).
+- **Notes:** Shares its shape with the `f<matrix>` family below (`lf<matrix>`, a secondary-matrix:plasma **concentration ratio** with no kinetics) but is a different quantity: `fhair` multiplies an elimination **flux** into a kinetic state, and the hair concentration is that state divided by `vhair`, not `fhair * Cc`. A paper that instead reports a hair:plasma concentration ratio as a time-invariant scale factor with no hair compartment belongs under `f<matrix>`, not here. Ngara 2020's own prose calls `Frac` a hair-to-plasma-trough ratio, but its Equation 3 makes it a fraction of the elimination flux, and the equation governs. Ratified by the maintainers with the Ngara 2020 extraction.
+
+### lvhair (**canonical log-transformed apparent volume of the hair compartment**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the apparent volume that converts the drug amount in the `hair` compartment into the observed hair concentration, `Chair <- hair / vhair`. The bare counterpart inside `model` is `vhair`.
+- **Source aliases:**
+  - `Vh` -- Ngara 2020 Equation 4 and Tables 3 / 5.
+- **Example models:** `Ngara_2020_atazanavir.R`, `Ngara_2020_ritonavir.R` (founding examples; both `fixed(log(1))`, the paper fixing an estimate that was close to 1).
+- **Notes:** With a single hair observation per occasion, `vhair` and `fhair` are not separately identifiable, which is why the founding paper fixed `vhair`. Its unit carries the hair-matrix unit bookkeeping (amount in the dose unit per volume, read against an assay reported per mass of hair), so record the conversion the paper assumes in the model's `units` field.
+
 ### lcmpr (**canonical log-transformed milk-to-plasma concentration ratio**)
 - **Type:** log-transformed-pk
 - **Role:** Log of the ratio of drug concentration in breast milk to the concentration in maternal plasma, used to derive a milk observable algebraically from the plasma compartment (`Cmilk <- cmpr * Cc`) when the source data are too sparse to support a separate milk compartment with its own transfer clearances. Unitless. May be estimated with IIV (`etalcmpr`) and may carry covariate effects, e.g. a power function of time postpartum during the colostrum period. The bare counterpart inside `model` is `cmpr`.
@@ -1356,6 +1372,22 @@ units rather than a dimensionless-per-time rate.
 - **Source aliases:**
   - `β` -- Greek letter used in Larsen 2018 Table 3 and Eq. 1.
 - **Example models:** `Larsen_2018_factorviii_rat.R`, `Larsen_2018_factorviii_monkey.R` (founding examples).
+
+### fhair (**canonical bare fraction of plasma elimination deposited in hair**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lfhair`, used inside `model` after exponentiation and covariate scaling (`fhair <- exp(lfhair) * <covariate factors>`) and applied as `d/dt(hair) <- fhair * kel * central`.
+- **Source aliases:**
+  - `Frac` -- Ngara 2020.
+- **Example models:** `Ngara_2020_atazanavir.R`, `Ngara_2020_ritonavir.R` (founding examples).
+- **Notes:** See `lfhair` above for the distinction from the `f<matrix>` concentration-ratio family.
+
+### vhair (**canonical bare apparent volume of the hair compartment**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lvhair`; `Chair <- hair / vhair`.
+- **Source aliases:**
+  - `Vh` -- Ngara 2020.
+- **Example models:** `Ngara_2020_atazanavir.R`, `Ngara_2020_ritonavir.R` (founding examples).
+- **Notes:** See `lvhair` above.
 
 ### cmpr (**canonical bare milk-to-plasma concentration ratio**)
 - **Type:** bare-pk

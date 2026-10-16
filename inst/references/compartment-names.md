@@ -438,6 +438,14 @@ The corresponding derived observation variables are `Cmilk` / `Cmilk_<metab>` an
 - **Example models:** `Hansson_2013_sunitinib_myelosuppression.R`.
 - **Notes:** Names the proliferating head state explicitly when the source model separates proliferation from a numbered `transit1..N` maturation chain feeding the canonical `circ` circulating pool (some library models instead use the `precursor1..N` chain form documented under `circ`). Distinct from `cycling_cells` (the Simeoni 2004 oncology TGI proliferating pool); `prol` is the hematopoietic stem/progenitor pool of the neutrophil / platelet / leukocyte maturation cascade.
 
+### hair (**canonical hair-matrix accumulation compartment**)
+- **Type:** compartment
+- **Role:** Non-eliminating accumulation sink for drug incorporated into scalp hair, the matrix sampled by hair-concentration adherence and exposure monitoring. Fed by a fraction `fhair` of the elimination flux out of `central` (`d/dt(hair) <- fhair * kel * central`) and never emptied, so its content integrates past exposure. The observed concentration output name is `Chair <- hair / vhair`, with the per-output residuals `addSd_Chair` / `propSd_Chair`. The `specimen` is `tissue`; the specimen vocabulary has no separate hair entry.
+- **Source aliases:**
+  - `A3` / hair compartment -- Ngara 2020 Equations 3-4 and Figure 1.
+- **Example models:** `Ngara_2020_atazanavir.R` (founding example), `Ngara_2020_ritonavir.R`.
+- **Notes:** Because the state never loses drug, a model fitted to hair cut at separate visits needs the hair content reset (or a fresh subject record) per sampling occasion when the sample represents recent growth only; record in the model's vignette how the source handled this. A model with a hair:plasma concentration ratio and no hair state uses the `f<matrix>` scale-factor family in `parameter-names.md` instead (`C<matrix> <- f<matrix> * Cc`), not this compartment. Ratified by the maintainers with the Ngara 2020 extraction.
+
 ---
 
 ## Urinary excretion
