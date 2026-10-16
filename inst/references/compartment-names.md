@@ -6427,7 +6427,26 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Type:** metabolite-suffix
 - **Role:** Simvastatin acid active metabolite of simvastatin.
 - **Source aliases:** none.
-- **Example models:** `Jin_2014_simvastatin.R`.
+- **Example models:** `Jin_2014_simvastatin.R`, `Ogungbenro_2019_simvastatin.R`.
+
+### hmsv (**canonical 6-hydroxymethyl simvastatin suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 6-hydroxymethyl simvastatin (HMSV), the CYP3A4/5 hydroxylation product of the simvastatin lactone.
+- **Source aliases:** `HMSV` -- Ogungbenro 2019.
+- **Example models:** `Ogungbenro_2019_simvastatin.R`.
+- **Notes:** The lactone metabolite. Its open-acid counterpart is [[hmsva]]; the two interconvert in vivo, and Ogungbenro 2019 models only the HMSV -> HMSVA direction.
+
+### hmsva (**canonical 6-hydroxymethyl simvastatin acid suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 6-hydroxymethyl simvastatin acid (HMSVA), formed by hydroxylation of simvastatin acid and by hydrolysis of [[hmsv]]; pharmacologically active as an HMG-CoA reductase inhibitor.
+- **Source aliases:** `HMSVA` -- Ogungbenro 2019.
+- **Example models:** `Ogungbenro_2019_simvastatin.R` (formed from both `central_acid` and `central_hmsv`).
+
+### dhsv (**canonical 3,5-dihydrodiol simvastatin suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 3,5-dihydrodiol simvastatin (DHSV), a CYP3A4/5 oxidation product of the simvastatin lactone.
+- **Source aliases:** `DHSV` -- Ogungbenro 2019.
+- **Example models:** `Ogungbenro_2019_simvastatin.R`.
 
 ### act (**canonical ACT-333679 selexipag metabolite suffix**)
 - **Type:** metabolite-suffix
