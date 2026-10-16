@@ -4880,6 +4880,8 @@ navbar:
         href: articles/Ozbey_2021_pazopanib.html
       - text: "Pazopanib mouse (Ouerdani 2015)"
         href: articles/Ouerdani_2015_pazopanib_mouse.html
+      - text: "Pb212dotamtate mouse pbpk (Zaid 2021)"
+        href: articles/Zaid_2021_pb212dotamtate_mouse_pbpk.html
       - text: "Peficitinib (Toyoshima 2021)"
         href: articles/Toyoshima_2021_peficitinib.html
       - text: "Peficitinib healthy (Toyoshima 2021)"
@@ -9986,6 +9988,7 @@ articles:
   - articles/Yuan_2021_lithium
   - articles/Yukawa_1990_phenytoin
   - articles/Yukawa_2002_clonazepam_pediatric
+  - articles/Zaid_2021_pb212dotamtate_mouse_pbpk
   - articles/Zakria_2026_voriconazole
   - articles/Zandvliet_2008_carboplatin
   - articles/Zandvliet_2016_corifollitropin_alfa
