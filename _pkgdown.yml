@@ -576,6 +576,8 @@ navbar:
         href: articles/Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp.html
       - text: "Atezolizumab cibisatamab qsp (Anbari 2023)"
         href: articles/Anbari_2023_atezolizumab_cibisatamab_qsp.html
+      - text: "Atezolizumab cibisatamab qsp (Ma 2020)"
+        href: articles/Ma_2020_atezolizumab_cibisatamab_qsp.html
       - text: "Atezolizumab isr (Chan 2025)"
         href: articles/Chan_2025_atezolizumab_sc_nsclc.html
       - text: "Atezolizumab nabpaclitaxel qsp (Wang 2021)"
@@ -8842,6 +8844,7 @@ articles:
   - articles/Lv_2025_asc10a
   - articles/Ly_2023_cabozantinib
   - articles/Lyauk_2016_methylphenidate
+  - articles/Ma_2020_atezolizumab_cibisatamab_qsp
   - articles/Ma_2020_sarilumab_anc
   - articles/Ma_2020_sarilumab_das28crp
   - articles/Ma_2020_vancomycin
