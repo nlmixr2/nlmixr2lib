@@ -481,6 +481,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Schreib_2024_busulfan.R` (`lkel_exp_kdes = -2.965`, giving 0.0516 1/h and a 13.4 h half-life for the decline in busulfan `k` and `CL` over a conditioning course).
 - **Notes:** The `kel` counterpart of the registered `cl_exp_kdes` role in the time-varying-clearance family; reuses the `_kdes` role token deliberately so both families are found by the same stem.
 
+### lvmax_exp_kdes (**canonical log-transformed decay-rate constant of a time-varying Michaelis-Menten Vmax**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale first-order rate constant at which a Michaelis-Menten maximum elimination rate decays multiplicatively toward zero, in the form `vmax(t) = vmax * exp(-vmax_exp_kdes * t)` consumed as `vmax(t) * Cc / (km + Cc)` (1 / time). `log(2) / vmax_exp_kdes` is the half-life of the saturable pathway.
+- **Source aliases:**
+  - `lambda1` -- used in `Ferl_2018_mosunetuzumab_cyno.R`, `Ferl_2018_mosunetuzumab_cyno_covariates.R`, `Ferl_2018_mosunetuzumab_human.R` (paper `V_max(t) = V_max^0 * exp(-lambda1 * t)`).
+- **Example models:** `Ferl_2018_mosunetuzumab_cyno.R` (founding example; `lvmax_exp_kdes = log(0.144)`, a 4.8-day half-life of the saturable elimination of an anti-CD20/CD3 T-cell-dependent bispecific antibody in cynomolgus monkeys, alongside a separate `cl_exp_kdes = 10.1 1/day` on the decaying linear clearance), `Ferl_2018_mosunetuzumab_cyno_covariates.R`, `Ferl_2018_mosunetuzumab_human.R`.
+- **Notes:** Third member of the `_exp_kdes` role-token family after `cl_exp_kdes` and `kel_exp_kdes`, ratified by the maintainers 2026-09-22. Distinct from `kel_exp_kdes`, which relaxes a rate *constant* toward a non-zero asymptote; here a maximum *rate* (amount / time) falls to zero, so the model needs no `_inf` / `_component` split and keeps the bare `vmax` as the value at t = 0. A model can carry `cl_exp_kdes` and `vmax_exp_kdes` together, as the founding example does, which is why the two decay constants must not share a name.
+
 ### ltlag (**canonical log-transformed absorption lag time**)
 - **Type:** log-transformed-pk
 - **Role:** Log-scale absorption lag time before drug enters the depot (time).
@@ -956,6 +964,14 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
   - `kappa_k` -- used in `Schreib_2024_busulfan.R`.
 - **Example models:** `Schreib_2024_busulfan.R` (`kel_exp_kdes = exp(lkel_exp_kdes) = 0.0516 1/h`).
 - **Notes:** Bare counterpart of `lkel_exp_kdes`; see that entry for the functional form. The sibling `kel_exp_famp` is registered under "Paper-named mechanistic parameters" instead of here, because it is signed and must never be log-transformed.
+
+### vmax_exp_kdes (**canonical bare decay-rate constant of a time-varying Michaelis-Menten Vmax**)
+- **Type:** bare-pk
+- **Role:** Bare (natural-scale) form of `lvmax_exp_kdes`: the first-order rate constant at which a Michaelis-Menten Vmax decays toward zero, `vmax(t) = vmax * exp(-vmax_exp_kdes * t)` (1 / time).
+- **Source aliases:**
+  - `lambda1` -- used in `Ferl_2018_mosunetuzumab_cyno.R`.
+- **Example models:** `Ferl_2018_mosunetuzumab_cyno.R` (`vmax_exp_kdes = exp(lvmax_exp_kdes) = 0.144 1/day`).
+- **Notes:** Bare counterpart of `lvmax_exp_kdes`; see that entry for the functional form.
 
 ### k12 (**canonical bare central-to-first-peripheral rate constant**)
 - **Type:** bare-pk

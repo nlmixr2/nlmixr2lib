@@ -4294,6 +4294,12 @@ navbar:
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Mosunetuzumab (Bender 2024)"
         href: articles/Bender_2024_mosunetuzumab.html
+      - text: "Mosunetuzumab cyno (Ferl 2018)"
+        href: articles/Ferl_2018_mosunetuzumab.html
+      - text: "Mosunetuzumab cyno covariates (Ferl 2018)"
+        href: articles/Ferl_2018_mosunetuzumab.html
+      - text: "Mosunetuzumab human (Ferl 2018)"
+        href: articles/Ferl_2018_mosunetuzumab.html
       - text: "Motesanib (Gosselin 2015)"
         href: articles/Gosselin_2015_motesanib.html
       - text: "Moxidectin (Smit 2022)"
@@ -8055,6 +8061,7 @@ articles:
   - articles/Feng_2023_cyclosporine
   - articles/Feng_2026_imipenem_pbpk
   - articles/FergusonSells_2022_tadalafil
+  - articles/Ferl_2018_mosunetuzumab
   - articles/FernandezRubio_2025_ceftriaxone
   - articles/FernandezTeruel_2024_capivasertib
   - articles/FernandezTeruel_2025_capivasertib

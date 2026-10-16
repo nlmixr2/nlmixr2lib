@@ -17808,6 +17808,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `FORM_CHO_PHASE2` -- prior canonical name (pre-2026-06-19 FORM_<DRUG>_<FEATURE> standardization).
 - **Example models:** `Zhu_2017_lebrikizumab.R`.
 
+### FORM_MOSU_CHO (**canonical for mosunetuzumab CHO-cell vs E. coli-derived drug-substance indicator**)
+- **Description:** 1 = mosunetuzumab (BTCT4465A) drug substance expressed in Chinese hamster ovary (CHO) cells, 0 = drug substance expressed in E. coli. Subject-level in the founding analysis: each cynomolgus-monkey cohort received material from one source.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (E. coli-derived).
+- **Source aliases:**
+  - `cell line source` -- Ferl 2018 Table S3, which reports separate `E.coli` and `CHO` estimates of V1, CLd and CL2_0.
+- **Example models:** `Ferl_2018_mosunetuzumab_cyno_covariates.R` (CHO material: V1 108 vs 43.6 mL/kg, CLd 61.8 vs 34.3 mL/day/kg, CL2_0 120 vs 855 mL/day/kg, each encoded as a symmetric `_ecoli` / `_cho` pair of log-scale parameters selected by the indicator).
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family, and a manufacturing cell-line comparability indicator in the same sense as `FORM_LEB_NS0` / `FORM_LEB_CHO_PHASE2`. Only two of the seven NHP cohorts received CHO material, most of it in one study (n = 44), so Ferl 2018 cautions that the effect may be confounded with between-study variability. Set to 0 to reproduce the paper's human projection, which uses the E. coli reference values.
+
 ### FORM_GCSF_PEG (**canonical for pegylated vs non-pegylated recombinant human G-CSF formulation indicator**)
 - **Description:** 1 = pegfilgrastim (recombinant human G-CSF conjugated to a 20 kDa monomethoxy-polyethylene-glycol moiety, apparent MW approximately 39 kDa), 0 = filgrastim (non-pegylated recombinant human G-CSF, MW 18.8 kDa). Categorical drug-type covariate on the SC absorption / distribution / clearance / binding-affinity parameters (FSC, KSC, VD, CLD, KD). Subject-level (each subject received one drug per study cohort in the pooled analyses).
 - **Units:** (binary)
