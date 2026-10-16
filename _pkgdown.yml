@@ -1096,6 +1096,8 @@ navbar:
         href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Captopril rat (Kiriyama 2024)"
         href: articles/Kiriyama_2024_nifedipine_captopril_rat.html
+      - text: "Carbamazepine (Yip 2021)"
+        href: articles/Yip_2021_carbamazepine.html
       - text: "Carbamazepine invitro (Almond 2016)"
         href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Carbamazepine rat pbpk hcmec (SanchezDengra 2021)"
@@ -9954,6 +9956,7 @@ articles:
   - articles/Yin_2023_soticlestat
   - articles/Yin_2024_soticlestat
   - articles/Yin_2026_ceftazidime
+  - articles/Yip_2021_carbamazepine
   - articles/Yoneyama_2017_emicizumab
   - articles/Yoo_2009_cilostazol
   - articles/Yoon_2013_metformin
