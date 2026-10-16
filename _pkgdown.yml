@@ -842,6 +842,14 @@ navbar:
         href: articles/Togawa_2016_bilastine.html
       - text: "Bilastine wheal (Togawa 2016)"
         href: articles/Togawa_2016_bilastine.html
+      - text: "BisphenolA pbpk (Karrer 2018)"
+        href: articles/Karrer_2018_bisphenols_pbpk.html
+      - text: "BisphenolAF pbpk (Karrer 2018)"
+        href: articles/Karrer_2018_bisphenols_pbpk.html
+      - text: "BisphenolF pbpk (Karrer 2018)"
+        href: articles/Karrer_2018_bisphenols_pbpk.html
+      - text: "BisphenolS pbpk (Karrer 2018)"
+        href: articles/Karrer_2018_bisphenols_pbpk.html
       - text: "Bitopertin (Rognas 2025)"
         href: articles/Rognas_2025_bitopertin.html
       - text: "Bivalirudin (Zhang 2012)"
@@ -8494,6 +8502,7 @@ articles:
   - articles/Karakitsios_2025_bedaquiline_lung_pbpk
   - articles/Karlsson_2009_voriconazole
   - articles/Karlsson_2010_acute_stroke
+  - articles/Karrer_2018_bisphenols_pbpk
   - articles/Karunajeewa_2009_sulfadoxinePyrimethamine
   - articles/Kashihara_2026_rsvVaccine_immune_correlates
   - articles/Kassem_2021_candesartan

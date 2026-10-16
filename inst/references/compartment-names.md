@@ -1336,6 +1336,14 @@ PBPK organ-amount compartments used by mass-balance whole-body PBPK extractions.
 - **Source aliases:** none.
 - **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
 
+### a_gonads (**canonical PBPK gonad-amount compartment**)
+- **Type:** compartment
+- **Role:** Gonad organ compartment in mass-balance PBPK extractions, treated as a single flow-limited lump holding the drug amount in the ovaries (female) or testes (male). Carried as one state whose volume fraction and blood-flow fraction are sex-specific (female/male pairs in the source physiology table). The gonads are the endpoint of endocrine-disruptor PBPK models, so the gonadal concentration (`a_gonads / v_gonads`) is a reported output alongside serum.
+- **Source aliases:**
+  - `Agonad` / `Cgonad` -- Karrer 2018 (deposited deSolve code and paper Figure 4B).
+- **Example models:** `Karrer_2018_bisphenolA_pbpk.R` (founding example), `Karrer_2018_bisphenolS_pbpk.R`, `Karrer_2018_bisphenolF_pbpk.R`, `Karrer_2018_bisphenolAF_pbpk.R`.
+- **Notes:** Distinct from the bare male-only `testes` compartment (`Jones_2013_perfusionLimited_pbpk.R`): `a_gonads` carries either sex via sex-specific volume and flow fractions, which is required because the Karrer models' headline analysis is adult females of childbearing age. A well-formed member of the enumerated `a_<organ>` amount namespace, which is not covered by `pbpkSubCompartmentRegex`, so the organ token needs its own entry even though the family is mature.
+
 ### a_blood (**canonical PBPK single well-mixed blood pool**)
 - **Type:** compartment
 - **Role:** Single well-mixed blood pool in a PBPK model that has no separate arterial / venous split and no lung compartment: it simultaneously supplies the arterial concentration `Cart` to every tissue and receives all venous return.
@@ -4783,6 +4791,22 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
   - `SKIN` -- Jung 2023 NONMEM compartment name for the patch reservoir (`COMP = (SKIN)`, `DADT(4) = -KF*A(4) ; Skin (formulation)` in Code S3 and Code S5).
 - **Example models:** `Jung_2023_donepezil_singledose.R` (founding example; donepezil patch reservoir draining through `transit1` / `transit2` into `central`, with a fractal release rate).
 - **Notes:** Registered as a well-formed member of the existing `depot_<route>` family (`depot_im`, `depot_oral`, `depot_sc`, `depot_ip`, `depot_brain`), on the same reasoning recorded for `depot_ip`: the route is load-bearing, the two depots in an oral-plus-patch model are not interchangeable, they carry route-specific release/absorption rate constants, and a study arm selects exactly one of them. Preferred over the numbered `depot` / `depot2` form for that reason. `td` rather than `patch` so the token names the route (transdermal) rather than one dosage form, matching the route-naming of its siblings.
+
+### depot_td_thermalpaper (**canonical transdermal skin-surface depot, thermal-paper source**)
+- **Type:** compartment
+- **Role:** Skin-surface reservoir holding chemical deposited on the skin from handling thermal (receipt) paper, in an aggregate dermal-exposure model with more than one simultaneous dermal source. Receives a zero-order input over the uptake period (scaled by the source-specific absorbed fraction) and drains by first-order penetration into the perfused skin organ (`a_skin`), with a source-specific penetration half-life. Member of the `depot_td_<source>` sub-family of `depot_td`.
+- **Source aliases:**
+  - `SSD` -- Karrer 2018 (deposited deSolve code, "Skin surface depot Thermal paper").
+- **Example models:** `Karrer_2018_bisphenolA_pbpk.R` (founding example), `Karrer_2018_bisphenolS_pbpk.R`, `Karrer_2018_bisphenolF_pbpk.R`, `Karrer_2018_bisphenolAF_pbpk.R`.
+- **Notes:** Registered alongside `depot_td_personalcare` because the two dermal sources carry different absorbed fractions (thermal paper 20%, personal care products 60%) and different penetration half-lives (6 h vs 10 min), so they cannot be collapsed into one state. The source-named form is preferred over a numbered `depot_td` / `depot_td2`, matching the route-named preference recorded for `depot_td`. Distinct from `depot_td`, which holds unabsorbed drug still in a patch matrix; these states hold drug resident on the skin surface awaiting percutaneous penetration.
+
+### depot_td_personalcare (**canonical transdermal skin-surface depot, personal-care-product source**)
+- **Type:** compartment
+- **Role:** Skin-surface reservoir holding chemical deposited on the skin from personal care products (PCPs), the second parallel dermal source in an aggregate dermal-exposure model. Same mechanism as `depot_td_thermalpaper` (zero-order input over the uptake period, first-order penetration into `a_skin`) but with the PCP-specific absorbed fraction and penetration half-life.
+- **Source aliases:**
+  - `SSD2` -- Karrer 2018 (deposited deSolve code, "Skin surface depot PCPs").
+- **Example models:** `Karrer_2018_bisphenolA_pbpk.R` (founding example), `Karrer_2018_bisphenolS_pbpk.R`, `Karrer_2018_bisphenolF_pbpk.R`, `Karrer_2018_bisphenolAF_pbpk.R`.
+- **Notes:** See `depot_td_thermalpaper`. Spelled-out source qualifier (`personalcare`, not `pcp`) per the standing operator preference to spell canonical tokens out.
 
 ---
 
