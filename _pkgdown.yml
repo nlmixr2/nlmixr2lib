@@ -1356,6 +1356,8 @@ navbar:
         href: articles/Dhondt_2017_cox2inhibitors_cockatiel.html
       - text: "Celecoxib cockatiel oral std (Dhondt 2017)"
         href: articles/Dhondt_2017_cox2inhibitors_cockatiel.html
+      - text: "Celecoxib painrelief (Thiel 2018)"
+        href: articles/Thiel_2018_cox2_pge2_painrelief.html
       - text: "Cemiplimab (Nguyen 2022)"
         href: articles/Nguyen_2022_cemiplimab.html
       - text: "Cemiplimab (Yang 2021)"
@@ -1842,6 +1844,8 @@ navbar:
         href: articles/Henin_2012_gastrointestinal_transit_time_absorption.html
       - text: "Diclofenac (Standing 2008)"
         href: articles/Standing_2008_diclofenac.html
+      - text: "Diclofenac painrelief (Thiel 2018)"
+        href: articles/Thiel_2018_cox2_pge2_painrelief.html
       - text: "Didanosine (Hirt 2009)"
         href: articles/Hirt_2009_didanosine.html
       - text: "Difloxacin crucianCarp (Ma 2023)"
@@ -9601,6 +9605,7 @@ articles:
   - articles/Thakre_2022_risankizumab
   - articles/Themans_2019_meropenem
   - articles/Themans_2020_hydroxychloroquine
+  - articles/Thiel_2018_cox2_pge2_painrelief
   - articles/Thomson_1989_lisinopril
   - articles/Thomson_2003_gentamicin
   - articles/Thorsted_2016_somatropin_human
