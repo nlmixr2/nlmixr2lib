@@ -42,6 +42,9 @@ ui <- lapply(c(qsp_models, pneumocystis = pd_model), \(n) rxode2::rxode(readMode
 * Citation: `r ui[["anidulafungin"]]$reference[1]`
 * Article: <https://doi.org/10.1186/s12918-018-0603-9>
 * PubMed Central: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6050661/>
+* Correction (2019): <https://doi.org/10.1186/s12918-019-0708-9>
+  (PubMed Central: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6691546/>).
+  Every figure number in this vignette follows the corrected numbering.
 
 ```{r model-table, echo = FALSE}
 tibble::tibble(
@@ -67,7 +70,7 @@ infected with *Pneumocystis murina*; organism burden was read out either by
 RT-qPCR of *Pneumocystis* mitochondrial large-subunit rRNA (total nuclei, which
 cannot distinguish the two life-cycle stages) or by microscopic quantification,
 using cresyl echt violet to stain asci specifically and a rapid Wright-Giemsa
-stain to count nuclei of all stages. The nuclei-count time course of Figure 3b
+stain to count nuclei of all stages. The nuclei-count time course of Figure 5b
 has n = 2 or 3 mice per time point.
 
 The PK modules were **not** fitted to new data. Liu 2018 digitised published
@@ -182,7 +185,7 @@ stopifnot(
 )
 ```
 
-## Untreated accumulation (Figure 3b, and the pre-treatment phase of Figure 4c)
+## Untreated accumulation (Figure 5b, and the pre-treatment phase of Figure 6c)
 
 Liu 2018 describes the untreated time course in words: "The initial growth of
 the organism was very slow within the first two weeks, however, starting from
@@ -192,7 +195,7 @@ trophic forms and asci reached a steady state of about 10^7". Those three
 landmarks are what the day-0 inoculum was back-solved against (see
 "Assumptions and deviations").
 
-```{r figure-3b}
+```{r figure-5b}
 ev_pd <- data.frame(
   id = 1L, time = seq(0, 60, by = 0.25),
   amt = NA_real_, evid = 0L, cmt = "trophic"
@@ -220,13 +223,13 @@ sim_pd |>
     colour = "Life stage",
     title = "Untreated Pneumocystis accumulation",
     caption = paste(
-      "Replicates the drug-free dynamics of Figure 3b and the pre-treatment",
-      "phase of Figure 4c of Liu 2018. Dashed line: day 35."
+      "Replicates the drug-free dynamics of Figure 5b and the pre-treatment",
+      "phase of Figure 6c of Liu 2018. Dashed line: day 35."
     )
   )
 ```
 
-```{r figure-3b-landmarks}
+```{r figure-5b-landmarks}
 at <- function(d) sim_pd$normalised_total[which.min(abs(sim_pd$time - d))]
 frac_35 <- sim_pd$trophic[which.min(abs(sim_pd$time - 35))] / tro_ss
 t_half <- sim_pd$time[which(sim_pd$trophic >= 0.5 * tro_ss)[1]]
@@ -240,7 +243,7 @@ tibble::tibble(
   ),
   Value = c(at(14), at(21), frac_35, t_half)
 ) |>
-  knitr::kable(digits = 3, caption = "Figure 3b landmarks reproduced by the PD module.")
+  knitr::kable(digits = 3, caption = "Figure 5b landmarks reproduced by the PD module.")
 
 # Deterministic run (no IIV in this model), so exact bounds are appropriate.
 stopifnot(
@@ -251,15 +254,15 @@ stopifnot(
 )
 ```
 
-## Asci repopulation after echinocandin withdrawal (Figure 3a)
+## Asci repopulation after echinocandin withdrawal (Figure 5a)
 
-Figure 3a starts "from an initial state with a high level of trophic forms and
+Figure 5a starts "from an initial state with a high level of trophic forms and
 a low level of asci" and shows that "it takes several weeks for asci to
 repopulate". Rather than invent that initial state, it is taken from the
 anidulafungin QSP model's own day-56 output (built in Part 3 below) and the
 drug-free PD module is then integrated forward.
 
-```{r figure-3a}
+```{r figure-5a}
 dose_days <- c(35, 37, 39, 42, 44, 46, 49, 51, 53)
 
 make_qsp_events <- function(ac0, dose_days, tmax = 56, by = 0.25) {
@@ -317,11 +320,11 @@ sim_recover |>
     x = "Days after withdrawal of anidulafungin", y = "Organisms per lung (log10 scale)",
     colour = "Life stage",
     title = "Asci repopulate over several weeks once the echinocandin stops",
-    caption = "Replicates Figure 3a of Liu 2018."
+    caption = "Replicates Figure 5a of Liu 2018."
   )
 ```
 
-```{r figure-3a-check}
+```{r figure-5a-check}
 # Time for the asci to recover to within 0.3 log10 of their drug-free plateau.
 t_recover <- sim_recover$time[which(sim_recover$asci >= 10^(log10(asci_ss) - 0.3))[1]]
 cat(sprintf(
@@ -333,7 +336,7 @@ cat(sprintf(
 stopifnot(t_recover > 7, t_recover < 70)
 ```
 
-## Population of PD models (Figures 3c and 3d)
+## Population of PD models (Figures 5c and 5d)
 
 "To recapture these experimentally observed distributions, we constructed a
 population of PD models with parameter values selected from a uniform
@@ -344,7 +347,7 @@ The five PD rate constants are therefore resampled independently on
 `U(0.7 x basal, 1.3 x basal)`. These draws come from R's RNG, not rxode2's, so
 the cohort is reproducible across machines and thread counts.
 
-```{r figure-3cd}
+```{r figure-5cd}
 set.seed(20260918)
 n_pop <- 200L # cohort cap is 200 per arm
 pd_names <- c("kstro", "kdtro", "kta", "kat", "kdasci")
@@ -382,13 +385,13 @@ sim_pop |>
   labs(
     x = "log10 organisms per lung at day 60", y = "Simulated mice",
     title = "Simulated burden distributions under 70-130% parameter resampling",
-    caption = "Replicates Figures 3c and 3d of Liu 2018."
+    caption = "Replicates Figures 5c and 5d of Liu 2018."
   )
 ```
 
-```{r figure-3cd-table}
-# Liu 2018 Results: 'the simulated distributions of the trophic forms (Fig. 3c)
-# and asci (Fig. 3d) are consistent to the observed levels of the fungi
+```{r figure-5cd-table}
+# Liu 2018 Results: 'the simulated distributions of the trophic forms (Fig. 5c)
+# and asci (Fig. 5d) are consistent to the observed levels of the fungi
 # (7.62 +/- 0.17 for trophic forms and 7.79 +/- 0.13 for asci) [33]'.
 burden_summary <- tibble::tibble(
   Stage = c("trophic form", "asci"),
@@ -476,13 +479,13 @@ sim_pk <- lapply(names(qsp_models), function(d) {
   s
 }) |>
   dplyr::bind_rows() |>
-  # Report time in hours: Table 1 is in 1/h and Figure 5 is plotted in hours.
+  # Report time in hours: Table 1 is in 1/h and Figure 3 is plotted in hours.
   dplyr::mutate(time_h = time * 24)
 
 stopifnot(all(sim_pk$Cc >= 0))
 ```
 
-```{r figure-5}
+```{r figure-3}
 sim_pk |>
   dplyr::filter(time_h <= 48) |>
   ggplot(aes(time_h, Cc)) +
@@ -492,21 +495,21 @@ sim_pk |>
     x = "Time (h)", y = "Plasma concentration (ug/mL)",
     title = "Single-dose plasma profiles from the four PK modules",
     caption = paste(
-      "Replicates the black construction curves of Figure 5 of Liu 2018",
+      "Replicates the black construction curves of Figure 3 of Liu 2018",
       "(anidulafungin, caspofungin, micafungin 10 mg/kg i.p.;",
       "sulfamethoxazole 200 mg/kg p.o.)."
     )
   )
 ```
 
-The module also reproduces the paper's i.v.-versus-i.p. contrast (Figure 5a,
+The module also reproduces the paper's i.v.-versus-i.p. contrast (Figure 3a,
 blue): "in order to mimic i.v. injection, we elevated the initial level of the
 drug in the plasma compartment", which is a dose into `central` rather than
 `depot`. The two routes share the same disposition parameters, so an i.v. dose
 of `AC0/RAP` must give the same plasma AUC as an i.p. dose of `AC0` -- another
 exact consequence of the structure.
 
-```{r figure-5a-iv}
+```{r figure-3a-iv}
 ev_iv <- dplyr::bind_rows(
   data.frame(id = 1L, time = 0, amt = 90 / 3, evid = 1L, cmt = "central"),
   data.frame(
@@ -530,7 +533,7 @@ dplyr::bind_rows(
   labs(
     x = "Time (h)", y = "Plasma anidulafungin (ug/mL)", colour = NULL,
     title = "Anidulafungin: i.v. versus i.p. administration",
-    caption = "Replicates the route contrast of Figure 5a of Liu 2018."
+    caption = "Replicates the route contrast of Figure 3a of Liu 2018."
   ) +
   theme(legend.position = "bottom")
 ```
@@ -616,9 +619,9 @@ stopifnot(
 )
 ```
 
-## Multiple dosing three times a week (Figure 6)
+## Multiple dosing three times a week (Figure 4)
 
-```{r figure-6}
+```{r figure-4}
 mw_days <- c(0, 2, 4, 7, 9, 11, 14, 16, 18)
 echino_doses <- list(
   anidulafungin = c(`10 mg/kg` = 90, `1 mg/kg` = 10, `0.1 mg/kg` = 1),
@@ -626,7 +629,7 @@ echino_doses <- list(
   micafungin = c(`10 mg/kg` = 25, `1 mg/kg` = 5, `0.1 mg/kg` = 1)
 )
 
-sim_fig6 <- lapply(names(echino_doses), function(d) {
+sim_fig4 <- lapply(names(echino_doses), function(d) {
   lapply(names(echino_doses[[d]]), function(lv) {
     ev <- make_qsp_events(echino_doses[[d]][[lv]], mw_days, tmax = 21, by = 0.02)
     s <- solve_qsp(qsp_models[[d]], ev)
@@ -637,7 +640,7 @@ sim_fig6 <- lapply(names(echino_doses), function(d) {
 }) |>
   dplyr::bind_rows()
 
-sim_fig6 |>
+sim_fig4 |>
   dplyr::filter(time <= 7) |>
   ggplot(aes(time, Cc, colour = dose)) +
   geom_line(linewidth = 0.7) +
@@ -645,12 +648,12 @@ sim_fig6 |>
   labs(
     x = "Time (day)", y = "Plasma concentration (ug/mL)", colour = "Dose",
     title = "Echinocandin plasma levels over one week of 3-doses-per-week treatment",
-    caption = "Replicates panels a-c of Figure 6 of Liu 2018 (first week shown)."
+    caption = "Replicates panels a-c of Figure 4 of Liu 2018 (first week shown)."
   ) +
   theme(legend.position = "bottom")
 ```
 
-```{r figure-6-smx}
+```{r figure-4-smx}
 ev_smx3w <- make_qsp_events(500, mw_days, tmax = 21, by = 0.02)
 sim_smx3w <- solve_qsp(qsp_models[["sulfamethoxazole"]], ev_smx3w)
 
@@ -659,15 +662,15 @@ ggplot(sim_smx3w, aes(time, Cc)) +
   labs(
     x = "Time (day)", y = "Plasma sulfamethoxazole (ug/mL)",
     title = "Sulfamethoxazole 200 mg/kg orally, 3 doses per week for 3 weeks",
-    caption = "Replicates panel d of Figure 6 of Liu 2018."
+    caption = "Replicates panel d of Figure 4 of Liu 2018."
   )
 ```
 
-```{r figure-6-check}
+```{r figure-4-check}
 # Liu 2018 shows no drug accumulation across the 3-doses-per-week schedule: the
 # echinocandin half-lives are hours and the inter-dose interval is 2-3 days, so
 # each peak should repeat rather than climb. Deterministic, so assert exactly.
-peaks <- sim_fig6 |>
+peaks <- sim_fig4 |>
   dplyr::filter(dose == "10 mg/kg") |>
   dplyr::mutate(week = findInterval(time, c(0, 7, 14))) |>
   dplyr::group_by(drug, week) |>
@@ -686,9 +689,9 @@ day 56"; the pre-treatment plateau is reached "at about 35 days", and
 35 + 21 = 56, so the treatment window is days 35 to 56 on a Monday /
 Wednesday / Friday schedule.
 
-## Day-56 burden by drug and dose (Figures 4a and 4b)
+## Day-56 burden by drug and dose (Figures 6a and 6b)
 
-```{r figure-4ab}
+```{r figure-6ab}
 arms <- tibble::tribble(
   ~drug, ~dose_label, ~ac0,
   "anidulafungin", "1 mg/kg", 10,
@@ -747,11 +750,11 @@ dplyr::bind_rows(
   ) |>
   knitr::kable(
     digits = 2,
-    caption = "Day-56 Pneumocystis burden. Replicates Figures 4a and 4b of Liu 2018."
+    caption = "Day-56 Pneumocystis burden. Replicates Figures 6a and 6b of Liu 2018."
   )
 ```
 
-```{r figure-4ab-plot}
+```{r figure-6ab-plot}
 dplyr::bind_rows(
   tibble::tibble(
     drug = "control", dose_label = "-",
@@ -761,7 +764,7 @@ dplyr::bind_rows(
 ) |>
   tidyr::pivot_longer(c(log10_asci, log10_trophic), names_to = "stage", values_to = "log10_organisms") |>
   dplyr::mutate(
-    stage = dplyr::recode(stage, log10_asci = "asci (Fig. 4a)", log10_trophic = "trophic form (Fig. 4b)"),
+    stage = dplyr::recode(stage, log10_asci = "asci (Fig. 6a)", log10_trophic = "trophic form (Fig. 6b)"),
     arm = paste(drug, dose_label)
   ) |>
   ggplot(aes(reorder(arm, log10_organisms), log10_organisms)) +
@@ -771,7 +774,7 @@ dplyr::bind_rows(
   labs(
     x = NULL, y = "log10 organisms per lung at day 56",
     title = "Day-56 burden by treatment arm",
-    caption = "Replicates Figures 4a and 4b of Liu 2018."
+    caption = "Replicates Figures 6a and 6b of Liu 2018."
   )
 ```
 
@@ -785,7 +788,7 @@ a simulated cohort.
 One claim is **not** reproduced and is marked as such rather than having its
 bound widened until it passes: see the narrative below the table.
 
-```{r figure-4ab-claims}
+```{r figure-6ab-claims}
 red <- function(d, lab, what) {
   v <- day56[[paste0(what, "_reduction")]][day56$drug == d & day56$dose_label == lab]
   if (length(v) != 1L) stop("no unique row for ", d, " ", lab)
@@ -823,7 +826,7 @@ claims <- tibble::tribble(
   "maximum trophic reduction across all nine echinocandin arms (log10)",
   max_troph, max_troph < 0.05, FALSE,
 
-  "Micafungin is the weakest of the three echinocandins at every tested dose (the ordering behind the Figure 4a claim)",
+  "Micafungin is the weakest of the three echinocandins at every tested dose (the ordering behind the Figure 6a claim)",
   "smallest margin, across the three doses, by which micafungin is out-reduced by both other drugs (log10)",
   min(mica_margin), min(mica_margin) > 0.03, FALSE,
 
@@ -839,7 +842,7 @@ claims <- tibble::tribble(
 claims |>
   dplyr::mutate(Pass = ifelse(Deviation, paste0(Pass, " (deviation)"), as.character(Pass))) |>
   dplyr::select(-Deviation) |>
-  knitr::kable(digits = 3, caption = "Liu 2018 Figure 4a / 4b claims, checked against the packaged models.")
+  knitr::kable(digits = 3, caption = "Liu 2018 Figure 6a / 6b claims, checked against the packaged models.")
 
 # Gate on everything except the row recorded as a known deviation.
 stopifnot(all(claims$Pass[!claims$Deviation]))
@@ -851,14 +854,14 @@ micafungin last at every dose -- that ordering is reproduced, and it is what
 distinguishes micafungin's `ME = 0.1 /day` from anidulafungin's `0.42` and
 caspofungin's `0.45` -- but it still predicts a
 `r sprintf("%.2f", asci_red("micafungin", "0.1 mg/kg"))` log10 asci reduction
-at 0.1 mg/kg, which is not "no notable decrease". Figure 4a plots the
+at 0.1 mg/kg, which is not "no notable decrease". Figure 6a plots the
 simulations against experimental dot plots with standard errors, so a
 0.6 log10 shift may well be inside the experimental scatter the authors were
 judging against; no parameter was changed to close the gap.
 
-## Anidulafungin time course (Figure 4c)
+## Anidulafungin time course (Figure 6c)
 
-```{r figure-4c}
+```{r figure-6c}
 sim_anid |>
   dplyr::select(time, trophic, asci) |>
   tidyr::pivot_longer(-time, names_to = "stage", values_to = "organisms") |>
@@ -870,13 +873,13 @@ sim_anid |>
     x = "Time (day)", y = "Organisms per lung (log10 scale)", colour = "Life stage",
     title = "Anidulafungin 1 mg/kg i.p., 3 doses/week from day 35",
     caption = paste(
-      "Replicates Figure 4c of Liu 2018: asci fall sharply while the trophic",
+      "Replicates Figure 6c of Liu 2018: asci fall sharply while the trophic",
       "burden is unchanged. Dashed line: start of treatment."
     )
   )
 ```
 
-## TMP/SMX time course and the seven-day effect delay (Figure 4d)
+## TMP/SMX time course and the seven-day effect delay (Figure 6d)
 
 The sulfamethoxazole model is the only one of the four that is a genuine delay
 differential equation: the effect is driven by `central(t - 7 days)`, encoded
@@ -884,7 +887,7 @@ with `rxode2::delay()`. Liu 2018 introduced the delay because "in comparison
 with the rapid antifungal effect of anidulafungin, the experimental evidence
 suggests that the effect of TMP-SMX was delayed".
 
-```{r figure-4d}
+```{r figure-6d}
 sim_smx <- solve_qsp(qsp_models[["sulfamethoxazole"]], make_qsp_events(500, dose_days))
 
 sim_smx |>
@@ -898,13 +901,13 @@ sim_smx |>
     x = "Time (day)", y = "Organisms per lung (log10 scale)", colour = "Life stage",
     title = "TMP/SMX 200 mg/kg orally, 3 doses/week from day 35",
     caption = paste(
-      "Replicates Figure 4d of Liu 2018. Dashed line: first dose (day 35).",
+      "Replicates Figure 6d of Liu 2018. Dashed line: first dose (day 35).",
       "Dotted line: day 42, when the 7-day-delayed effect can first appear."
     )
   )
 ```
 
-```{r figure-4d-delay-check}
+```{r figure-6d-delay-check}
 # The delay is a hard structural feature: before day 35 + tau the delayed
 # plasma level is still the pre-dose value of zero, so NO effect is possible.
 tau <- ui[["sulfamethoxazole"]]$theta[["tau"]]
@@ -938,7 +941,7 @@ stopifnot(
 
 * **Day-0 organism inoculum is not reported.** Liu 2018 tabulates initial drug
   concentrations (Table 3) but nowhere states the day-0 *Pneumocystis* burden
-  that Figures 3b and 4c start from. `trophic0` and `asci0` are therefore
+  that Figures 5b and 6c start from. `trophic0` and `asci0` are therefore
   **back-solved**, not transcribed: the drug-free system's linearised net
   growth rate is 0.910/day, and a unit inoculum of each stage is the value that
   reproduces all three landmarks the paper does state in prose -- growth "very
@@ -955,7 +958,7 @@ stopifnot(
   by 24. The `ini()` values remain the Table 1 numbers verbatim, inside
   `log()`. Running the PK module on an hour base instead would leave the PK
   identical and scale every PD rate by 1/24; that the day base reproduces the
-  Figure 4a dose ranking, including micafungin's lack of effect at 0.1 mg/kg,
+  Figure 6a dose ranking, including micafungin's lack of effect at 0.1 mg/kg,
   is evidence it is the base the authors used.
 * **No IIV and no residual error.** Liu 2018 reports neither an omega nor a
   sigma; it is a deterministic model tuned by hand ("all parameters sets and
@@ -963,10 +966,10 @@ stopifnot(
   No etas and no residual-error terms were invented. Every parameter is wrapped
   in `fixed()` to record that it was held, not estimated. Variability in the
   paper is generated instead by resampling the five PD rate constants on
-  `U(70%, 130%)` of their basal values, which the Figure 3c / 3d chunk above
+  `U(70%, 130%)` of their basal values, which the Figure 5c / 5d chunk above
   reproduces explicitly.
 * **The simulated burden distribution sits about 0.6 log10 below the observed
-  levels the paper compares it with.** Liu 2018 states that the Figure 3c / 3d
+  levels the paper compares it with.** Liu 2018 states that the Figure 5c / 5d
   distributions "are consistent to the observed levels of the fungi (7.62 +/-
   0.17 for trophic forms and 7.79 +/- 0.13 for asci)". With the Table 4 values
   the trophic plateau is exactly `KsTro / KdTro = 1 / 1e-7 = 1e7`, i.e.
@@ -978,16 +981,16 @@ stopifnot(
   in that chunk tests the algebra the model does commit to (the plateau is the
   basal `KsTro / KdTro` and every draw lies inside the resampling envelope).
 * **Micafungin's "no notable decrease" at low dose is not reproduced
-  literally.** Liu 2018 reads Figure 4a as showing that at 0.5 and
+  literally.** Liu 2018 reads Figure 6a as showing that at 0.5 and
   0.1 mg/kg "anidulafungin and caspofungin still decreased the number of asci,
   while micafungin caused no notable decrease". The packaged models reproduce
   the *ordering* -- micafungin is the weakest of the three at every tested
   dose, which is what its `ME = 0.1 /day` versus 0.42 and 0.45 buys -- but
   predict a 0.62 log10 asci reduction for micafungin at 0.1 mg/kg, which is
-  not literally "no notable decrease". Figure 4a compares simulations against
+  not literally "no notable decrease". Figure 6a compares simulations against
   experimental dot plots with standard errors, so a shift of that size may sit
   inside the scatter the authors were judging against. The claim is carried in
-  the Figure 4a / 4b claims table as an explicit deviation row and excluded
+  the Figure 6a / 6b claims table as an explicit deviation row and excluded
   from that chunk's assertion; nothing was retuned to close it.
 * **Monday / Wednesday / Friday dosing schedule.** Liu 2018 says only "three
   times a week for 3 weeks" following Cushion 2010, without printing the
@@ -1020,6 +1023,16 @@ stopifnot(
   reference 35 (Gumbo 2006), which is the anidulafungin PK source named in
   Table 2. The model files cite Gumbo 2006; the "(34)" in the prose is an
   unlinked typographical slip.
+* **Figure numbers follow the 2019 Correction, not the original article.**
+  The Correction (BMC Syst Biol 13:40) replaces the figures and legends of
+  Liu 2018 and, in its Table 1, re-points the in-text citations: original
+  Figures 3 and 5 trade places, as do Figures 4 and 6; Figures 1 and 2 are
+  unchanged. So Figure 3 is the PK validation panel, Figure 4 the three-times-
+  weekly PK prediction, Figure 5 the drug-free PD module, and Figure 6 the
+  day-56 burden and treated time courses. Each corrected legend independently
+  confirms its pairing. Quotations from the Results are given with the
+  corrected figure numbers. The Correction revises no parameter value,
+  equation or unit.
 * **`useLinCmt = FALSE` on every solve.** These models carry `k12` / `k21`
   peripheral transfer alongside non-PK ODE states. rxode2's default automatic
   ODE-to-`linCmt()` conversion mishandles that shape, so every `rxSolve()` call

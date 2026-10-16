@@ -1,10 +1,12 @@
 Liu_2018_pneumocystis_mouse_qsp <- function() {
-  description <- "QSP. Preclinical (mouse, C3H/HeN). Pharmacodynamic module of the Liu 2018 Pneumocystis quantitative systems pharmacology model: the untreated natural history of a Pneumocystis murina lung infection described as a two-stage life cycle of trophic forms and asci. Trophic forms proliferate first-order (KsTro), are lost by a second-order (logistic, crowding) death term (KdTro), and interconvert with asci through the forward transformation KTA and the reverse transformation KAT; asci do not proliferate and are lost by a first-order death term (KdAsci) that the paper sets to a near-zero value. The KsTro : KdTro ratio sets the carrying capacity, so the untreated organism burden plateaus at (KsTro - KTA + KAT*KTA/(KAT + KdAsci)) / KdTro = 1e7 organisms with the Table 4 basal values, reproducing the reported steady state of about 1e7 reached at roughly 35 days (Figure 3b, Figure 4c). Liu 2018 does not report the day-0 inoculum, so trophic0 / asci0 are exposed as parameters and defaulted to a single organism of each form, the value that reproduces the paper's own described time course (slow accumulation over the first two weeks, exponential growth from week three, plateau at the end of week five). This is the drug-free module that Figure 3 validates; the four integrated PK/PD models add a drug on top of exactly these equations -- see modellib('Liu_2018_anidulafungin_mouse_qsp'), modellib('Liu_2018_caspofungin_mouse_qsp'), modellib('Liu_2018_micafungin_mouse_qsp') and modellib('Liu_2018_sulfamethoxazole_mouse_qsp')."
+  description <- "QSP. Preclinical (mouse, C3H/HeN). Pharmacodynamic module of the Liu 2018 Pneumocystis quantitative systems pharmacology model: the untreated natural history of a Pneumocystis murina lung infection described as a two-stage life cycle of trophic forms and asci. Trophic forms proliferate first-order (KsTro), are lost by a second-order (logistic, crowding) death term (KdTro), and interconvert with asci through the forward transformation KTA and the reverse transformation KAT; asci do not proliferate and are lost by a first-order death term (KdAsci) that the paper sets to a near-zero value. The KsTro : KdTro ratio sets the carrying capacity, so the untreated organism burden plateaus at (KsTro - KTA + KAT*KTA/(KAT + KdAsci)) / KdTro = 1e7 organisms with the Table 4 basal values, reproducing the reported steady state of about 1e7 reached at roughly 35 days (Figure 5b, Figure 6c). Liu 2018 does not report the day-0 inoculum, so trophic0 / asci0 are exposed as parameters and defaulted to a single organism of each form, the value that reproduces the paper's own described time course (slow accumulation over the first two weeks, exponential growth from week three, plateau at the end of week five). This is the drug-free module that Figure 5 validates; the four integrated PK/PD models add a drug on top of exactly these equations -- see modellib('Liu_2018_anidulafungin_mouse_qsp'), modellib('Liu_2018_caspofungin_mouse_qsp'), modellib('Liu_2018_micafungin_mouse_qsp') and modellib('Liu_2018_sulfamethoxazole_mouse_qsp')."
   reference <- paste(
     "Liu GS, Ballweg R, Ashbaugh A, Zhang Y, Facciolo J, Cushion MT, Zhang T.",
     "(2018). A quantitative systems pharmacology (QSP) model for Pneumocystis",
     "treatment in mice. BMC Syst Biol 12(1):77.",
     "doi:10.1186/s12918-018-0603-9.",
+    "Figure numbering follows the Correction (2019), BMC Syst Biol 13(1):40,",
+    "doi:10.1186/s12918-019-0708-9, which swaps original Figures 3/5 and 4/6.",
     "Constraining organism-burden data (Liu 2018 reference 33) from",
     "Cushion MT, Linke MJ, Ashbaugh A, Sesterhenn T, Collins MS, Lynch K,",
     "Brubaker R, Walzer PD. (2010). Echinocandin treatment of pneumocystis",
@@ -66,7 +68,7 @@ Liu_2018_pneumocystis_mouse_qsp <- function() {
 
   population <- list(
     species = "mouse (C3H/HeN)",
-    n_subjects = "n = 2 or 3 immunosuppressed, Pneumocystis-infected mice per nuclei-count time point (Liu 2018 Figure 3b legend); the reported steady-state organism levels (log10 7.62 +/- 0.17 trophic forms, log10 7.79 +/- 0.13 asci) come from Cushion 2010 (Liu 2018 reference 33)",
+    n_subjects = "n = 2 or 3 immunosuppressed, Pneumocystis-infected mice per nuclei-count time point (Liu 2018 Figure 5b legend); the reported steady-state organism levels (log10 7.62 +/- 0.17 trophic forms, log10 7.79 +/- 0.13 asci) come from Cushion 2010 (Liu 2018 reference 33)",
     n_studies = 2L,
     age_range = "6 weeks old at the start of the study",
     sex_female_pct = 0,
@@ -141,7 +143,7 @@ Liu_2018_pneumocystis_mouse_qsp <- function() {
     trophic(0) <- trophic0
     asci(0) <- asci0
 
-    # Liu 2018 plots both stages on a log10 scale (Figures 3a, 4c, 4d) and
+    # Liu 2018 plots both stages on a log10 scale (Figures 5a, 6c, 6d) and
     # reports the observed burdens as log10 values (7.62 trophic forms,
     # 7.79 asci), so both log10 transforms are exposed as observations.
     log10_trophic <- log10(trophic)
