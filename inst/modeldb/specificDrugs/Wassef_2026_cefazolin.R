@@ -135,14 +135,11 @@ Wassef_2026_cefazolin <- function() {
     # Structural parameters -- Supplementary Table S2 (final model).
     lcl <- log(3.9); label("Clearance at the covariate medians (L/h)") # Table S2 'CLpop' = 3.9 L/h (RSE 20.25%)
     lvc <- log(3.6); label("Central volume of distribution V1 at the covariate medians (L)") # Table S2 'V1pop' = 3.6 L (RSE 21.48%)
-    # Q and V2 below are deliberately TRANSPOSED relative to Table S2, which
-    # prints Qpop = 11 L/h (RSE 10.33%) and V2pop = 1.1 L (RSE 40.53%). As
-    # printed, V1 + V2 = 4.7 L and the terminal half-life is ~0.85 h against the
-    # paper's own NCA (Table 2) Vss 11.12 L and t1/2 2.58 h; transposed,
-    # V1 + V2 = 14.6 L, matching CL * t1/2 / ln 2 = 14.5 L. The maintainers
-    # adopted the transposed reading; see the vignette's deviations section.
-    lq <- log(1.1); label("Intercompartmental clearance (L/h)") # Table S2 'V2pop' row value 1.1, transposed (see above)
-    lvp <- log(11); label("Peripheral volume of distribution V2 at the covariate median (L)") # Table S2 'Qpop' row value 11, transposed (see above)
+    # As printed, V1 + V2 = 4.7 L and the terminal half-life is ~0.85 h, short
+    # of the paper's own NCA (Table 2: Vss 11.12 L, t1/2 2.58 h); see the
+    # vignette's deviations section. Swapping the two values fits Fig. 2 worse.
+    lq <- log(11); label("Intercompartmental clearance (L/h)") # Table S2 'Qpop' = 11 L/h (RSE 10.33%)
+    lvp <- log(1.1); label("Peripheral volume of distribution V2 at the covariate median (L)") # Table S2 'V2pop' = 1.1 L (RSE 40.53%)
     lke0 <- log(1.91); label("Plasma-to-biophase equilibration rate constant at the WT median (1/h)") # Table S2 'ke0pop' = 1.91 1/h (RSE 91.49%)
     lkp_adipose <- log(0.37); label("Subcutaneous adipose to plasma partition coefficient at the BODYFAT_PCT median (unitless)") # Table S2 'Kppop' = 0.37 (RSE 32.67%)
 
