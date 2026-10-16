@@ -1432,6 +1432,8 @@ navbar:
         href: articles/Hien_2017_cipargamin.html
       - text: "Ciprofloxacin (Abdulla 2020)"
         href: articles/Abdulla_2020_ciprofloxacin.html
+      - text: "Ciprofloxacin (Alihodzic 2022)"
+        href: articles/Alihodzic_2022_ciprofloxacin.html
       - text: "Ciprofloxacin (Guo 2022)"
         href: articles/Guo_2022_ciprofloxacin.html
       - text: "Ciprofloxacin (Schaefer 1996)"
@@ -7460,6 +7462,7 @@ articles:
   - articles/Alghamdi_2019_cycloserine
   - articles/Ali_2018_amodiaquine
   - articles/Ali_2022_artemisinin_naphthoquine
+  - articles/Alihodzic_2022_ciprofloxacin
   - articles/Allard_2020_factorviii
   - articles/Allegaert_2015_paracetamol
   - articles/Almond_2016_cyp3a4_induction
