@@ -16,6 +16,8 @@
 
 - Fix the inter-individual variability scale of Denti 2010 glucose minimal model ([doi:10.1152/ajpendo.00656.2009](https://doi.org/10.1152/ajpendo.00656.2009)): the paper reports "the square root of the elements on the diagonal of Omega", so the SG/VOL and SI/P2 blocks are now `(P/100)^2` on the diagonal with the printed correlations unchanged (SI +11 %, P2 +7 %).
 
+- Add Asaumi 2022 rifampicin P-gp DDI PBPK with talinolol and quinidine victims ([doi:10.1002/psp4.12807](https://doi.org/10.1002/psp4.12807)) -- healthy adults (the digoxin victim is deferred pending unreported tissue volumes).
+
 - Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
 
 - Add Leven 2020 roscovitine (seliciclib) and its carboxylate metabolite M3 ([doi:10.3390/pharmaceutics12111087](https://doi.org/10.3390/pharmaceutics12111087)) -- adults with cystic fibrosis chronically infected with Pseudomonas aeruginosa.

@@ -23393,3 +23393,47 @@ is the experimental condition itself, held constant for the whole solve.
   - `FIH study, MAD part` -- Taneja 2019 Table 3 row 'Imax at day 14 and later of the FIH study, MAD part'. Free-text label, not a column header.
 - **Example models:** `Taneja_2019_glpg1690.R` (founding example; enters only in the product `STUDY_FIH_MAD * DAY14`, which adds 0.2043 to the probit of Imax from day 14 of the MAD part, 90.8% -> 93.7%).
 - **Notes:** Member of the `STUDY_<id>` auto-approve family. The study gate is needed because the 12-week proof-of-concept study also samples past day 14 without carrying the effect.
+
+### STUDY_TUBIC2006 (**canonical for the Tubic 2006 single-dose talinolol study indicator**)
+- **Description:** 1 = simulate the Tubic 2006 single-dose talinolol study (25 to 400 mg oral; the nonlinear P-gp-saturation characterization) of the Asaumi 2022 rifampicin P-gp DDI PBPK model; 0 = the Westphal 2000 study (the rifampicin-talinolol DDI study, which is the default). Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Westphal 2000).
+- **Source aliases:**
+  - `Tubic et al. (2006)` -- Asaumi 2022 Table S2B column header; the Westphal 2000 column is the reference.
+- **Example models:** `Asaumi_2022_talinolol_rifampicin_pbpk.R` (switches the stomach transit rate constant 0.27 -> 0.59 1/h, the common Kp scaling factor 2.3 -> 1.7, and fB*CLint,all 0.64 -> 0.81 L/h/kg).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. Asaumi 2022 fitted talinolol's three absorption / distribution / clearance parameters separately to each clinical study (Table S2B); this indicator selects the Tubic 2006 set used to characterise nonlinear absorption, while the default reproduces the Westphal 2000 DDI arms (Figure 5a,b, Table S3). Sibling of the quinidine indicators `STUDY_TWUM1981_IV`, `STUDY_TWUM1981_PO` and `STUDY_DAMKIER1999` in the same paper.
+
+### STUDY_TWUM1981_IV (**canonical for the Twum-Barima 1981 intravenous quinidine study arm indicator**)
+- **Description:** 1 = simulate the Twum-Barima 1981 intravenous quinidine arm (350 mg, 30-min infusion, 24 h after rifampicin) of the Asaumi 2022 rifampicin P-gp DDI PBPK model; 0 = the Maeda 2011 study (the single-dose nonlinear characterization, the default). Subject-level (time-fixed). Mutually exclusive with `STUDY_TWUM1981_PO` and `STUDY_DAMKIER1999`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Maeda 2011).
+- **Source aliases:**
+  - `Twum et al. (1981) (infusion)` -- Asaumi 2022 Table S2B column header.
+- **Example models:** `Asaumi_2022_quinidine_rifampicin_pbpk.R` (switches the common Kp scaling factor 6.1 -> 5.5 and fB*CLint,all 0.35 -> 0.17 L/h/kg).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. Asaumi 2022 fitted quinidine's SF_Kp and fB*CLint,all separately per clinical study (Table S2B); the Twum 1981 infusion and oral arms carry different values and are therefore separate indicators. Sibling of `STUDY_TWUM1981_PO`, `STUDY_DAMKIER1999` and the talinolol indicator `STUDY_TUBIC2006`.
+
+### STUDY_TWUM1981_PO (**canonical for the Twum-Barima 1981 oral quinidine study arm indicator**)
+- **Description:** 1 = simulate the Twum-Barima 1981 oral quinidine arm (350 mg, 24 h after rifampicin) of the Asaumi 2022 rifampicin P-gp DDI PBPK model; 0 = the Maeda 2011 study (default). Subject-level (time-fixed). Mutually exclusive with `STUDY_TWUM1981_IV` and `STUDY_DAMKIER1999`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Maeda 2011).
+- **Source aliases:**
+  - `Twum et al. (1981) (p.o.)` -- Asaumi 2022 Table S2B column header.
+- **Example models:** `Asaumi_2022_quinidine_rifampicin_pbpk.R` (switches the common Kp scaling factor 6.1 -> 1.2 and fB*CLint,all 0.35 -> 0.12 L/h/kg).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. The oral and intravenous arms of the same Twum-Barima 1981 study carry different fitted SF_Kp and fB*CLint,all values (Table S2B), so each is its own indicator. Sibling of `STUDY_TWUM1981_IV`, `STUDY_DAMKIER1999` and `STUDY_TUBIC2006`.
+
+### STUDY_DAMKIER1999 (**canonical for the Damkier 1999 oral quinidine study indicator**)
+- **Description:** 1 = simulate the Damkier 1999 oral quinidine study (166 mg, simultaneous with rifampicin) of the Asaumi 2022 rifampicin P-gp DDI PBPK model; 0 = the Maeda 2011 study (default). Subject-level (time-fixed). Mutually exclusive with `STUDY_TWUM1981_IV` and `STUDY_TWUM1981_PO`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Maeda 2011).
+- **Source aliases:**
+  - `Damkier et al. (1999)` -- Asaumi 2022 Table S2B column header.
+- **Example models:** `Asaumi_2022_quinidine_rifampicin_pbpk.R` (switches the common Kp scaling factor 6.1 -> 6.2 and fB*CLint,all 0.35 -> 0.14 L/h/kg).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. Sibling of `STUDY_TWUM1981_IV`, `STUDY_TWUM1981_PO` and `STUDY_TUBIC2006` in the same paper.

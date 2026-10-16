@@ -5390,6 +5390,8 @@ navbar:
         href: articles/Syvanen_2012_quinidine_rat.html
       - text: "Quinidine rat pbpk (Yamamoto 2017)"
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
+      - text: "Quinidine rifampicin pbpk (Asaumi 2022)"
+        href: articles/Asaumi_2022_rifampicin_pgp_ddi_pbpk.html
       - text: "Quinine (Kloprogge 2014)"
         href: articles/Kloprogge_2014_quinine.html
       - text: "Quinine (LeJouan 2005)"
@@ -6290,6 +6292,8 @@ navbar:
         href: articles/Hadigol_2026_talazoparib_enzalutamide.html
       - text: "TaldefgrobepAlfa qsp (Nguyen 2020)"
         href: articles/Nguyen_2020_myostatin_activin_dmd_qsp.html
+      - text: "Talinolol rifampicin pbpk (Asaumi 2022)"
+        href: articles/Asaumi_2022_rifampicin_pgp_ddi_pbpk.html
       - text: "Tamibarotene pediatric (Azechi 2024)"
         href: articles/Azechi_2024_tamibarotene_pediatric.html
       - text: "Tamsulosin (Tsuda 2010)"
@@ -7506,6 +7510,7 @@ articles:
   - articles/Arshad_2021_methotrexate
   - articles/Aruldhas_2021_methadone
   - articles/Asaumi_2019_rifampicin_ddi_pbpk
+  - articles/Asaumi_2022_rifampicin_pgp_ddi_pbpk
   - articles/Asberg_2020_iohexol
   - articles/Ashraf_2018_s_ketamine_ticlopidine
   - articles/Ashraf_2024_codeine
