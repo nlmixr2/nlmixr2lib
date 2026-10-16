@@ -3919,6 +3919,17 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Cosson_2021_linvencorvir.R` (single doses 150-2,500 mg and multiple doses of 200-1,000 mg q.d. or 200-800 mg b.i.d.).
 - **Notes:** Member of the auto-approved `DOSE_<DRUG>_<UNITS>` family. A dedicated column rather than `podo()` because the stream reads the treatment-arm column `TRT`, not the dose record's `AMT`. The per-administration reading (not the daily total) follows the paper's definition of the reference value as "CL when dose equals 200 mg" and its Figure 3, whose dose axis spans the single-dose range up to 2,500 mg. rxode2 can drop a dose-named covariate that precedes `amt` in the event data, so place this column after the event columns.
 
+### DOSE_TOLVAPTAN_MG (**canonical for the tolvaptan amount of the current administration**)
+- **Description:** Oral tolvaptan amount of the current administration, in mg, carried as a covariate because the relative bioavailability falls with the amount administered. Time-varying within a split-dose regimen: for a 90/30 mg regimen it is 90 on the morning dose record and 30 on the afternoon dose record.
+- **Units:** mg (per administration)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the relative bioavailability `f(central) <- fdepot_dosemax / (fdepot_dose50 + DOSE_TOLVAPTAN_MG)` with `fdepot_dose50 = 166 mg` and `fdepot_dosemax = 182 mg`, so bioavailability is 1.006 at 15 mg and 0.636 at 120 mg.
+- **Source aliases:**
+  - `Dose` -- Lanke 2019 Equation 4.
+- **Example models:** `Lanke_2019_tolvaptan.R` (adults with ADPKD; single doses 15-120 mg and split-dose regimens 15/15 to 90/30 mg).
+- **Notes:** Member of the auto-approved `DOSE_<DRUG>_<UNITS>` family. The per-administration reading (not the daily total) follows the paper's anchoring of bioavailability to the lowest single dose of 15 mg, which is also the smallest amount given in any split regimen. A dedicated column rather than `podo()`, because `f()` is evaluated on the dose record itself. rxode2 can read a dose-named column that precedes `amt` as the dose amount, so place this column after the event columns.
+
 ### DOSE_RIFAMPICIN_MG (**canonical for the administered daily rifampicin dose in milligrams**)
 - **Description:** Daily rifampicin dose in mg, carried as a covariate in victim-drug models where the magnitude of rifampicin-mediated enzyme induction is dose-graded rather than all-or-none. 0 when rifampicin is not coadministered. Paired with the binary `CONMED_RIFAMPICIN` indicator, which gates whether the column is read at all.
 - **Units:** mg (per day)
