@@ -3626,6 +3626,14 @@ navbar:
         href: articles/Zhang_2026_linezolid.html
       - text: "Linezolid cns pbpk (Litjens 2023)"
         href: articles/Litjens_2023_linezolid_tuberculous_meningitis.html
+      - text: "Linezolid fosfomycin ATCC29212 (Mao 2021)"
+        href: articles/Mao_2021_linezolid_fosfomycin.html
+      - text: "Linezolid fosfomycin strain1 (Mao 2021)"
+        href: articles/Mao_2021_linezolid_fosfomycin.html
+      - text: "Linezolid fosfomycin strain2 (Mao 2021)"
+        href: articles/Mao_2021_linezolid_fosfomycin.html
+      - text: "Linezolid fosfomycin strain6 (Mao 2021)"
+        href: articles/Mao_2021_linezolid_fosfomycin.html
       - text: "Linvencorvir (Cosson 2021)"
         href: articles/Cosson_2021_linvencorvir.html
       - text: "Linzagolix (Pohl 2022)"
@@ -8863,6 +8871,7 @@ articles:
   - articles/Mandema_2011_biologicDMARDs_mbma
   - articles/MangasSanjuan_2016_axomadol
   - articles/Mao_2012_vernakalant
+  - articles/Mao_2021_linezolid_fosfomycin
   - articles/Mao_2022_methotrexate
   - articles/Mao_2024_sirolimus
   - articles/Maranchick_2026_pyrazinamide_ethambutol
