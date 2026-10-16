@@ -195,3 +195,36 @@ test_that("the removed deprecation tombstones are gone from the registers", {
   expect_true("DIAL" %in% canon$RRT_HEMODIAL_ACTIVE$aliases)
   expect_true("DIAL" %in% canon$RRT_HEMODIAL_STATUS$aliases)
 })
+
+test_that(".classifyCovEffect assigns every third-token category", {
+  # Each category of the classifier gets a representative name, so a
+  # category whose helper stops matching (or a new token that shadows an
+  # existing one) changes one of these exact values.
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  f <- function(nm) nlmixr2lib:::.classifyCovEffect(nm, conv)
+  expect_equal(f("e_wt_cl"), "two_token")
+  expect_equal(f("e_wt_cl_mmae"), "metabolite")
+  expect_equal(f("e_wt_cl_renal"), "component")
+  expect_equal(f("e_wt_cl_q"), "shared")
+  expect_equal(f("e_wt_cl_bdecoef"), "bde")
+  expect_equal(f("e_wt_cl_bdeexp"), "bde")
+  expect_equal(f("e_wt_cl_notatoken"), "unknown")
+  # Not covariate-effect names at all.
+  expect_equal(f("lcl"), NA_character_)
+  expect_equal(f("e_wt"), NA_character_)
+})
+
+test_that("BDE shape tokens are disjoint from the other third-token sets", {
+  # The classifier checks metabolites, CL components and bare PK parameters
+  # by suffix; a BDE token that collided with any of them would be
+  # classified as that category instead.
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  expect_equal(conv$bdeShapeTokens, c("bdecoef", "bdeexp"))
+  expect_length(
+    intersect(
+      conv$bdeShapeTokens,
+      c(conv$registeredMetabolites, conv$clComponents, conv$pkBareParams)
+    ),
+    0
+  )
+})
