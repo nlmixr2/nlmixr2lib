@@ -3253,6 +3253,22 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** none.
 - **Example models:** `Zhang_2011_nutlin3a.R`.
 
+### red_marrow (**canonical bare red (haematopoietic) bone-marrow compartment**)
+- **Type:** compartment
+- **Role:** Bare red-marrow tissue compartment in whole-body PBPK extractions that split bone marrow into its red (haematopoietic, highly perfused) and yellow (adipose-rich, poorly perfused) fractions, as the GastroPlus default physiologies do. Total tissue (well-stirred) drug amount; perfused from `arterial` and drained to `venous`.
+- **Source aliases:**
+  - `Red marrow` -- Table 1 / Table 3 row label in Tan 2021 (GastroPlus 9.7 default physiology).
+- **Example models:** `Tan_2021_cefadroxil_mouse_pbpk.R`, `Tan_2021_cefadroxil_rat_pbpk.R`, `Tan_2021_cefadroxil_human_pbpk.R`.
+- **Notes:** Use `bonemarrow` when a model carries a single undivided marrow pool. Use `red_marrow` and `yellow_marrow` together when the source resolves the two fractions; they differ several-fold in perfusion per unit volume (Tan 2021 mouse: 0.0163 vs 0.0016 mL/s per mL) and usually in partition coefficient, so neither is an alias of `bonemarrow`.
+
+### yellow_marrow (**canonical bare yellow (fatty) bone-marrow compartment**)
+- **Type:** compartment
+- **Role:** Bare yellow-marrow tissue compartment, the adipose-rich, poorly perfused fraction of bone marrow, in whole-body PBPK extractions that resolve it separately from `red_marrow`. Total tissue (well-stirred) drug amount; perfused from `arterial` and drained to `venous`.
+- **Source aliases:**
+  - `Yellow marrow` -- Table 1 / Table 3 row label in Tan 2021 (GastroPlus 9.7 default physiology).
+- **Example models:** `Tan_2021_cefadroxil_mouse_pbpk.R`, `Tan_2021_cefadroxil_rat_pbpk.R`, `Tan_2021_cefadroxil_human_pbpk.R`.
+- **Notes:** See `red_marrow` for when to use the split pair rather than `bonemarrow`.
+
 ### muscle (**canonical bare muscle compartment**)
 - **Type:** compartment
 - **Role:** Bare muscle tissue compartment.
@@ -3427,6 +3443,14 @@ One family in this section is validated by shape rather than by enumeration -- s
   - `Ate` / `Ctestes` -- amount and concentration state labels in the Berkeley Madonna code deposited as the Supplementary Data of Jones and Rowland-Yeo 2013.
 - **Example models:** `Jones_2013_perfusionLimited_pbpk.R`.
 - **Notes:** Unlike `gut`, `spleen`, `stomach` and `pancreas`, testes is NOT a splanchnic organ: its venous outflow returns directly to `venous` blood rather than draining to `liver` through the portal vein. Models that resolve testes therefore include it in the venous-return sum, not in the portal tributary sum.
+
+### reproductive_organ (**canonical bare sex-unspecified reproductive-organ compartment**)
+- **Type:** compartment
+- **Role:** Bare reproductive-organ tissue compartment in whole-body PBPK extractions whose physiology lumps the gonads and accessory reproductive tissue into one organ without stating the sex, as the GastroPlus default physiologies do with their `ReproOrg` tissue. Total tissue (well-stirred) drug amount; perfused from `arterial` and drained directly to `venous` (not a splanchnic organ).
+- **Source aliases:**
+  - `ReproOrg` -- Table 1 row label in Tan 2021 (GastroPlus 9.7 default physiology); `Reproductive organ` in its Table 3.
+- **Example models:** `Tan_2021_cefadroxil_mouse_pbpk.R`, `Tan_2021_cefadroxil_rat_pbpk.R`, `Tan_2021_cefadroxil_human_pbpk.R`.
+- **Notes:** Use `testes` only when the source states the organ is the testes of a male reference subject; reading a sex-unspecified reproductive-organ tissue as `testes` would assert a sex the source does not.
 
 ### tendon (**canonical bare tendon / connective-tissue compartment**)
 - **Type:** compartment

@@ -1164,8 +1164,14 @@ navbar:
         href: articles/Li_2017_cediranib.html
       - text: "Cefaclor (Jeong 2021)"
         href: articles/Jeong_2021_cefaclor.html
+      - text: "Cefadroxil human pbpk (Tan 2021)"
+        href: articles/Tan_2021_cefadroxil_pbpk.html
       - text: "Cefadroxil mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
+      - text: "Cefadroxil mouse pbpk (Tan 2021)"
+        href: articles/Tan_2021_cefadroxil_pbpk.html
+      - text: "Cefadroxil rat pbpk (Tan 2021)"
+        href: articles/Tan_2021_cefadroxil_pbpk.html
       - text: "Cefathiamidine (Du 2021)"
         href: articles/Du_2021_cefathiamidine.html
       - text: "Cefathiamidine (Zhi 2018)"
@@ -9566,6 +9572,7 @@ articles:
   - articles/Tammara_2017_rivipansel
   - articles/Tamura_2023_remdesivir
   - articles/Tan_2009_artesunate
+  - articles/Tan_2021_cefadroxil_pbpk
   - articles/Tan_2024_cabozantinib
   - articles/Tan_2025_cabotegravir_rilpivirine
   - articles/Tanaka_2012_phenytoin
