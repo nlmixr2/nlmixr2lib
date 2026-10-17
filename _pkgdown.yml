@@ -2612,6 +2612,8 @@ navbar:
         href: articles/Zhang_2025_fluconazole.html
       - text: "Flucytosine (Stott 2023)"
         href: articles/Stott_2023_flucytosine.html
+      - text: "Fludarabine (Ivaturi 2017)"
+        href: articles/Ivaturi_2017_fludarabine.html
       - text: "Fludarabine (Langenhorst 2019)"
         href: articles/Langenhorst_2019_fludarabine.html
       - text: "Fludarabine (Mohanan 2017)"
@@ -8391,6 +8393,7 @@ articles:
   - articles/Isla_2024_fosfomycinCalcium
   - articles/Ivanova_2024_synucleinopathy_qsp
   - articles/Ivaturi_2017_RBP_7000
+  - articles/Ivaturi_2017_fludarabine
   - articles/Iwama_2024_febuxostat
   - articles/Izat_2025_aldehyde_oxidase_substrates
   - articles/Jackson_2022_ixekizumab

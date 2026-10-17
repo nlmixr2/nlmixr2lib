@@ -6403,6 +6403,14 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Example models:** `Chen_2016_tenofovir_emtricitabine.R` (bare `tfvdp` state, declared through that file's `paper_specific_compartments` escape hatch); `Yu_2026_tenofovir.R` (`pbmc_tfvdp` and `rbc_tfvdp`, one per assayed cell type); `Burns_2015_tenofovir.R` (`pbmc_tfvdp`, with `kmet_tfvdp` / `kel_tfvdp` naming the formation and elimination rate constants).
 - **Notes:** Prefer the matrix-qualified `pbmc_tfvdp` / `rbc_tfvdp` form over the bare `tfvdp`: tenofovir diphosphate is assayed in more than one cell type, the two compartments have materially different kinetics, and `pbmc` / `rbc_<analyte>` are themselves canonical so the qualified name validates natively without a per-model escape hatch. The paired rate-constant names take a SINGLE suffix (`kmet_tfvdp`, `kel_tfvdp`) rather than repeating the matrix, because `.isPkParam()` strips only one suffix and a two-layer `kel_pbmc_tfvdp` would pass compartment validation but fail parameter validation.
 
+### faraatp (**canonical fludarabine triphosphate suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Fludarabine triphosphate (f-ara-ATP, 9-beta-D-arabinofuranosyl-2-fluoroadenine 5'-triphosphate), the cytotoxic intracellular active anabolite of fludarabine. Intravenous fludarabine phosphate (f-ara-AMP) is dephosphorylated in plasma to the nucleoside f-ara-a, which enters cells through nucleoside transporters and is phosphorylated to f-ara-ATP. In fludarabine models the dosed and circulating species, f-ara-a, keeps the unsuffixed `central` / `Cc`, and this suffix names the intracellular triphosphate pool and its rate constants.
+- **Source aliases:**
+  - `f-ara-ATP` / `F-ara-ATP` -- the standard abbreviation in the fludarabine literature.
+- **Example models:** `Ivaturi_2017_fludarabine.R` (doi:10.1016/j.bbmt.2017.06.021; `pbmc_faraatp` state in pmol per million peripheral blood mononuclear cells, formation `kmet_faraatp` driven by the plasma f-ara-a concentration with a power-of-time decline, elimination `kel_faraatp`, observation `Cpbmc_faraatp`).
+- **Notes:** Follows the `tfvdp` pattern: qualify the state with its matrix (`pbmc_faraatp`), because the triphosphate is cell-type specific, and give the rate constants a single suffix (`kmet_faraatp`, `kel_faraatp`). The spelled-out `faraatp` was preferred over the shorter `fatp`, which also reads as fatty-acid transport protein.
+
 ### ftctp (**canonical emtricitabine triphosphate suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Emtricitabine triphosphate active intracellular metabolite suffix.
