@@ -2368,6 +2368,8 @@ navbar:
         href: articles/Freyer_2000_AVI_regimen.html
       - text: "Etoposide (Toffoli 2001)"
         href: articles/Toffoli_2001_etoposide.html
+      - text: "Etranacogene (Li 2026)"
+        href: articles/Li_2026_etranacogene.html
       - text: "Etrolizumab (Moein 2022)"
         href: articles/Moein_2022_etrolizumab.html
       - text: "Etrolizumab (Moein 2025)"
@@ -8758,6 +8760,7 @@ articles:
   - articles/Li_2025_modakafuspAlfa
   - articles/Li_2026_alvespimycin
   - articles/Li_2026_epcoritamab
+  - articles/Li_2026_etranacogene
   - articles/Liang_2023_polymyxinB
   - articles/Liang_2024_lenalidomide
   - articles/Liang_2024_osimertinib
