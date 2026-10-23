@@ -1710,6 +1710,8 @@ navbar:
         href: articles/Damle_2021_dalteparin.html
       - text: "Dalteparin (Schoemaker 1996)"
         href: articles/Schoemaker_1996_low_molecular_weight_heparin_modeling.html
+      - text: "Danofloxacin carp (Song 2022)"
+        href: articles/Song_2022_danofloxacin_carp.html
       - text: "Danoprevir (Canini 2015)"
         href: articles/Canini_2015_danoprevir.html
       - text: "Dapagliflozin (Kobuchi 2025)"
@@ -9771,7 +9773,7 @@ articles:
   - articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide
   - articles/Song_2017_vancomycin
   - articles/Song_2019_dexmedetomidine
-  - articles/Song_2024_maribavir
+  - articles/Song_2022_danofloxacin_carp
   - articles/Song_2024_tigecycline
   - articles/Song_2025_infliximab
   - articles/Songvut_2026_andrographolide
