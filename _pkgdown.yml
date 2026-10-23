@@ -6748,6 +6748,8 @@ navbar:
         href: articles/Jorga_2000_tolcapone.html
       - text: "Tolcapone nonfluctuators (Jorga 2000)"
         href: articles/Jorga_2000_tolcapone.html
+      - text: "Tolvaptan (Lanke 2019)"
+        href: articles/Lanke_2019_tolvaptan.html
       - text: "Tominersen (Yamamoto 2023)"
         href: articles/Yamamoto_2023_tominersen.html
       - text: "Topiramate (Ahmed 2015)"
@@ -8841,6 +8843,7 @@ articles:
   - articles/Langdon_2010_PF00821385
   - articles/Langenhorst_2019_fludarabine
   - articles/Langeskov_2022_semaglutide_ddi
+  - articles/Lanke_2019_tolvaptan
   - articles/Lanoiselee_2021_cefazolin
   - articles/Laouenan_2015_ribavirin
   - articles/LaporteAmargos_2026_piperacillin

@@ -14,6 +14,9 @@ Log-transform any parameter that must be positive. Prefix `l` (lower-case L).
 - `lvp`, `lvp2` — first / second peripheral volume
 - `lq`, `lq2` — inter-compartmental clearance to `peripheral1` / `peripheral2`
 - `lfdepot` — log bioavailability for the depot compartment
+- `lfdepot_dose50`, `lfdepot_dosemax` — dose-scale constants (mg) of a
+  bioavailability that falls with the administered amount,
+  `f <- fdepot_dosemax / (fdepot_dose50 + DOSE_<DRUG>_MG)` (Lanke 2019)
 - `lvmax` — Michaelis-Menten vmax (for nonlinear / saturable elimination)
 
 Derived quantities inside `model()` are un-prefixed:
