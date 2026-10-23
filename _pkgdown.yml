@@ -6734,6 +6734,8 @@ navbar:
         href: articles/Tiede_2021_turoctocogAlfa.html
       - text: "Tusamitamab (Pouzin 2022)"
         href: articles/Pouzin_2022_tusamitamab.html
+      - text: "Tusamitamab (Pouzin 2023)"
+        href: articles/Pouzin_2023_tusamitamab.html
       - text: "Tuvusertib (Mukker 2026)"
         href: articles/Mukker_2026_tuvusertib.html
       - text: "Tuvusertib HR (Mukker 2026)"
@@ -9200,6 +9202,7 @@ articles:
   - articles/Polito_2016_fludrocortisone
   - articles/Por_2021_imipenem
   - articles/Pouzin_2022_tusamitamab
+  - articles/Pouzin_2023_tusamitamab
   - articles/Preijers_2021_factor_viii
   - articles/Press_2010_ciclosporin
   - articles/Pressiat_2022_amikacin
