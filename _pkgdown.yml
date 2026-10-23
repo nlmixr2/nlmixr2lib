@@ -2732,6 +2732,8 @@ navbar:
         href: articles/Jager_2020_flucloxacillin.html
       - text: "Flucloxacillin (Landersdorfer 2007)"
         href: articles/Landersdorfer_2007_flucloxacillin.html
+      - text: "Flucloxacillin (Meenks 2023)"
+        href: articles/Meenks_2023_flucloxacillin.html
       - text: "Fluconazole (Adamiszak 2025)"
         href: articles/Adamiszak_2025_fluconazole.html
       - text: "Fluconazole (Han 2013)"
@@ -9367,6 +9369,7 @@ articles:
   - articles/McLachlan_1996_fluconazole
   - articles/McLaughlin_2024_tld_1
   - articles/MedellinGaribay_2015_gentamicin
+  - articles/Meenks_2023_flucloxacillin
   - articles/Mehta_2018_fluticasoneFuroate_umeclidinium_vilanterol
   - articles/Mehta_2020_fluticasoneFuroate_umeclidinium_vilanterol
   - articles/Mehta_2023_tb_lesion_mpbpk
