@@ -3283,6 +3283,42 @@ not have and giving no hint that the nesting is the cause. And `omega` must be
 passed explicitly (`omega = mod$omega`), because a nested omega is a *list* of
 matrices keyed by level rather than a single matrix.
 
+**MBMA trial-level random effects (`eta_study_<param>`, `eta_arm_<param>`).**
+A model-based meta-analysis (MBMA) fitted to study-arm-level aggregates has no
+subject-level eta at all: each record is an arm mean, so its random effects sit
+on the trial hierarchy instead. Name them by level, with the transformed
+parameter name after the level token:
+
+- `eta_study_<param>` -- **between-study variability** (BSV, ISV, IIV-between-
+  trials): one draw per study, shared by every arm and timepoint of that study.
+- `eta_arm_<param>` -- **between-treatment-arm variability** (BTAV, IAV,
+  inter-arm variability): one draw per treatment arm *within* a study, shared
+  by every timepoint of that arm.
+
+`<param>` is the `ini()` fixed-effect name the eta acts on, spelled as in
+`ini()` (`eta_study_e0` for `e0`, `eta_arm_emax_mrss` for `emax_mrss`,
+`eta_study_lcl` for `lcl`). `checkModelConventions()` pairs both prefixes with
+that fixed effect (`.isStudyEtaSuffix()`), so neither needs a
+`paper_specific_etas` declaration.
+
+Each simulated `id` is one study arm. When a paper has both levels, a single
+`rxSolve()` draws them independently per `id`, so a simulation in which several
+arms share one study draw must supply the `eta_study_*` values itself (or zero
+them and keep `eta_arm_*`). Between-arm variance is commonly scaled by arm size
+-- variance `gamma^2 / N` -- which is written in `model()` as
+`eta_arm_<param> / sqrt(N_ARM)` with the arm size in the `N_ARM` covariate
+column; the between-study variance is normally left unscaled. These are not
+`rxode2` nested levels (`| SIDN`): no grouping column is involved, because each
+arm is its own `id`.
+
+Founding examples: `Chen_2025_methotrexate_das28_mbma.R` (`eta_study_emax`,
+between-study only), `Zou_2026_pembrolizumab_qol_mbma.R` (`eta_study_e0`,
+`eta_study_emax`, `eta_arm_e0`, `eta_arm_slp`; the `eta_arm_e0` term is divided
+by `sqrt(N_ARM)`) and `Vaskeikina_2026_systemicSclerosis_mbma.R` (both levels on
+each of two endpoint-specific additive Emax values, `eta_arm_*` divided by
+`sqrt(N_ARM)`). Do not relabel these as `eta<lparam>`: that name claims
+between-subject variability, which an arm-level MBMA does not estimate.
+
 ### boxcox_<param> (**canonical Box-Cox shape parameter for an interindividual random-effect distribution**)
 - **Type:** paper-named-param
 - **Role:** Estimated shape parameter (lambda) of a Box-Cox transformation applied to the *interindividual* random effect of `<param>`, used when a paper reports that the eta distribution deviates visibly from log-normal. Unitless and signed. Because rxode2's `boxCox` attaches to the residual-error model and cannot be applied to an eta, the transform is written out explicitly in `model` in the Petersson (2009) form `phi_<param> <- (exp(eta<param>)^lambda - 1) / lambda`, followed by `<param> <- exp(l<param> + phi_<param>)`. A Box-Cox shape is a structural THETA, so it belongs in `ini` (wrapped in `fixed` only when the paper fixed it).
