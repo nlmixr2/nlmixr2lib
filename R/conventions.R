@@ -1481,7 +1481,7 @@
 #   "component"  - matches e_<cov>_<param>_<component> (multi-CL arm)
 #   "bde"        - matches e_<cov>_<param>_bdecoef / _bdeexp (coefficient
 #                  or power of a body-weight-dependent exponent)
-#   "unknown"   - has a third-token suffix that doesn't match any
+#   "unknown"    - has a third-token suffix that doesn't match any
 #                  registered category
 .classifyCovEffect <- function(name, conv) {
   if (!startsWith(name, "e_")) {
