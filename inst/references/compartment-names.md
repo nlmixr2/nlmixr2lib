@@ -3761,6 +3761,22 @@ One family in this section is validated by shape rather than by enumeration -- s
 
 ---
 
+### thymus (**canonical bare thymus compartment**)
+- **Type:** compartment
+- **Role:** Bare thymus organ compartment in whole-body PBPK extractions that resolve the thymus as its own perfusion-limited (well-mixed) organ. Total tissue drug concentration, paired with the other bare organ states (`spleen`, `pancreas`, `stomach`, `testes`, `other`, ...). Its venous outflow returns directly to `venous` blood.
+- **Source aliases:**
+  - `{Thymus}` / `E2(Thymus)` -- COPASI compartment and species label in Sier 2017 (Additional file 1 balance equations; BioModels MODEL1711210001 species `s12`).
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
+- **Notes:** The tissue-state partner of the registered `vp_thymus`, which is the thymus VASCULAR concentration in membrane-limited (two-subcompartment) PBPK models. A perfusion-limited model that carries a single thymus state uses bare `thymus`; a membrane-limited model carries `vp_thymus` plus the interstitial / cellular sub-compartments. Thymus volume is strongly age-dependent (Sier 2017 uses the Bosgra 2012 involution curve), so the organ is worth resolving in adult-age-range populations.
+
+### gonads (**canonical bare female-gonad / estrogen-target tissue compartment**)
+- **Type:** compartment
+- **Role:** Cellular (tissue) compartment of the lumped uterus + ovaries estrogen-target organ in whole-body PBPK models of women. In the founding example it is permeability-limited: a vascular sub-compartment `vp_gonads` exchanges with this cellular state through first-order uptake and efflux rate constants, and the cellular state carries the endogenous estradiol biosynthesis input and estrogen-receptor binding (`target_er_gonads` / `complex_er_gonads`).
+- **Source aliases:**
+  - `{Gonads_cells}` / `E2(Gonads_cells)` -- Sier 2017 Additional file 1 balance equations and BioModels MODEL1711210001 / MODEL1711210002 species `E2_Gonads_cells`.
+- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
+- **Notes:** Use this for the FEMALE (or sex-unspecified lumped) gonadal / reproductive-tract compartment. The male gonad organ has its own canonical `testes`, which is a perfusion-limited whole-organ state; do not reuse `testes` for an ovary / uterus compartment or vice versa. The paper's lumped label is kept (rather than `uterus`) because the compartment explicitly includes the ovaries and stands for estradiol target tissue generally; record the membership in the model `description`. Like `testes`, it is not splanchnic: its venous outflow returns to `venous` blood.
+
 ## Adaptive-resistance bacterial states
 
 ### aron (**canonical adaptive-resistance on state**)
