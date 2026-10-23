@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yang 2021 metformin OCT/MATE drug-drug-interaction PBPK ([doi:10.3390/pharmaceutics13050698](https://doi.org/10.3390/pharmaceutics13050698)) -- whole-body model of metformin with a parameterised perpetrator slot (cimetidine, pyrimethamine, trimethoprim, ondansetron, rabeprazole, verapamil) in healthy adults.
+- Add Yang 2021 tigecycline ([doi:10.3389/fmicb.2021.678165](https://doi.org/10.3389/fmicb.2021.678165)) -- Chinese adults with hospital-acquired pneumonia, complicated skin or intra-abdominal infection.
 
 - Fix the inter-individual variability scale of Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)): the Table 3 percentages are omega x 100, not CV%, so the CL, V2 and V3 variances are now `(P/100)^2` (V3 0.6229 -> 0.8649, +39 %; CL and V2 +1-3 %). The Table 3 Wald CI on the V3 row decides the scale.
 

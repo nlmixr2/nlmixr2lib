@@ -6720,6 +6720,8 @@ navbar:
         href: articles/Song_2024_tigecycline.html
       - text: "Tigecycline (Su 2024)"
         href: articles/Su_2024_tigecycline.html
+      - text: "Tigecycline (Yang 2021)"
+        href: articles/Yang_2021_tigecycline.html
       - text: "Tilmicosin (Chen 2023)"
         href: articles/Chen_2023_tilmicosin.html
       - text: "Tilmicosin pbpk (Sun 2026)"
@@ -10169,7 +10171,7 @@ articles:
   - articles/Yang_2017_remifentanil
   - articles/Yang_2020_enrofloxacin_rainbowTrout_pbpk
   - articles/Yang_2021_cemiplimab
-  - articles/Yang_2021_metformin_ddi_pbpk
+  - articles/Yang_2021_tigecycline
   - articles/Yang_2021_unecritinib
   - articles/Yang_2023_diclazuril
   - articles/Yang_2023_ganciclovir_model_repository
