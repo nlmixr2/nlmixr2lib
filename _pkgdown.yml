@@ -3840,6 +3840,8 @@ navbar:
         href: articles/Xu_2024_linezolid.html
       - text: "Linezolid (Zavrelova 2025)"
         href: articles/Zavrelova_2025_linezolid.html
+      - text: "Linezolid (Zhang 2022)"
+        href: articles/Zhang_2022_linezolid.html
       - text: "Linezolid (Zhang 2026)"
         href: articles/Zhang_2026_linezolid.html
       - text: "Linezolid cns pbpk (Litjens 2023)"

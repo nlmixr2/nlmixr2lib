@@ -18,7 +18,7 @@
 
 - Fix the inter-individual variability scale of Denti 2010 glucose minimal model ([doi:10.1152/ajpendo.00656.2009](https://doi.org/10.1152/ajpendo.00656.2009)): the paper reports "the square root of the elements on the diagonal of Omega", so the SG/VOL and SI/P2 blocks are now `(P/100)^2` on the diagonal with the printed correlations unchanged (SI +11 %, P2 +7 %).
 
-- Add Krause 2023 daridorexant ([doi:10.1002/psp4.12877](https://doi.org/10.1002/psp4.12877)) -- healthy subjects and adults with insomnia disorder.
+- Add Zhang 2022 linezolid ([doi:10.3389/fphar.2022.1032674](https://doi.org/10.3389/fphar.2022.1032674)) -- Chinese adults with multidrug-resistant tuberculosis.
 
 - Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
 
