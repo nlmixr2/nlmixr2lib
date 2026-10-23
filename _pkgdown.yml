@@ -638,6 +638,8 @@ navbar:
         href: articles/Franzese_2022_ceftazidime_avibactam.html
       - text: "Avibactam (Li 2019)"
         href: articles/Li_2019_ceftazidime_avibactam.html
+      - text: "Avibactam (Zhou 2016)"
+        href: articles/Zhou_2016_ceftazidime_avibactam.html
       - text: "Avibactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Axatilimab (Yang 2024)"
@@ -1310,6 +1312,8 @@ navbar:
         href: articles/WerumeusBuning_2021_ceftazidime.html
       - text: "Ceftazidime (Yin 2026)"
         href: articles/Yin_2026_ceftazidime.html
+      - text: "Ceftazidime (Zhou 2016)"
+        href: articles/Zhou_2016_ceftazidime_avibactam.html
       - text: "Ceftazidime (Zieck 2023)"
         href: articles/Zieck_2023_ceftazidime.html
       - text: "Ceftazidime avibactam control (Zazo 2024)"
@@ -10203,6 +10207,7 @@ articles:
   - articles/Zhong_2026_abatacept
   - articles/Zhou_2010_digoxin
   - articles/Zhou_2015_bms911543_invitro
+  - articles/Zhou_2016_ceftazidime_avibactam
   - articles/Zhou_2016_warfarin_vk2
   - articles/Zhou_2018_alisertib
   - articles/Zhou_2018_remimazolam
