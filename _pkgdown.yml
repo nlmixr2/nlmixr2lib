@@ -2362,6 +2362,10 @@ navbar:
         href: articles/Gidal_2018_eslicarbazepine_exposure_response.html
       - text: "Eslicarbazepine weekly seizures (Gidal 2018)"
         href: articles/Gidal_2018_eslicarbazepine_exposure_response.html
+      - text: "Estradiol liverode pbpk (Sier 2017)"
+        href: articles/Sier_2017_estradiol.html
+      - text: "Estradiol pbpk (Sier 2017)"
+        href: articles/Sier_2017_estradiol.html
       - text: "Etanercept (Fang 2010)"
         href: articles/Fang_2010_etanercept.html
       - text: "Etanercept (Ling 2024)"
@@ -9575,6 +9579,7 @@ articles:
   - articles/Siebinga_2024_lu177psmaIT
   - articles/Siederer_2016_fluticasoneFuroate_vilanterol
   - articles/Siemers_2025_sabirnetug
+  - articles/Sier_2017_estradiol
   - articles/Sikma_2020_tacrolimus_thoracic
   - articles/Sikma_2020_tacrolimus_unbound_plasma
   - articles/Silva_2023_perampanel
