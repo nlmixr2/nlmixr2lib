@@ -1024,6 +1024,10 @@ navbar:
         href: articles/Ferron_2013_cabazitaxel.html
       - text: "Cabazitaxel (Janssen 2017)"
         href: articles/Janssen_2017_cabazitaxel_phenotyping.html
+      - text: "Cabotegravir (Han 2022)"
+        href: articles/Han_2022_cabotegravir.html
+      - text: "Cabotegravir (Han 2024)"
+        href: articles/Han_2024_cabotegravir.html
       - text: "Cabotegravir (Tan 2025)"
         href: articles/Tan_2025_cabotegravir_rilpivirine.html
       - text: "Cabozantinib (Lacy 2018)"
@@ -8269,7 +8273,9 @@ articles:
   - articles/Han_2015_sibutramine
   - articles/Han_2016_bevacizumab
   - articles/Han_2018_methionineMetabolismCycle
+  - articles/Han_2022_cabotegravir
   - articles/Han_2024_ainuovirine
+  - articles/Han_2024_cabotegravir
   - articles/Han_2025_clozapine
   - articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk
   - articles/Han_2025_fluoxetine
