@@ -18,7 +18,7 @@
 
 - Fix the inter-individual variability scale of Denti 2010 glucose minimal model ([doi:10.1152/ajpendo.00656.2009](https://doi.org/10.1152/ajpendo.00656.2009)): the paper reports "the square root of the elements on the diagonal of Omega", so the SG/VOL and SI/P2 blocks are now `(P/100)^2` on the diagonal with the printed correlations unchanged (SI +11 %, P2 +7 %).
 
-- Add Schalkwijk 2018 efavirenz ([doi:10.1007/s40262-018-0642-9](https://doi.org/10.1007/s40262-018-0642-9)) -- pregnant and non-pregnant women with HIV.
+- Add Downes 2020 vancomycin ([doi:10.1097/FTD.0000000000000796](https://doi.org/10.1097/FTD.0000000000000796)) -- critically ill children aged 2-18 years in the PICU.
 
 - Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
 
