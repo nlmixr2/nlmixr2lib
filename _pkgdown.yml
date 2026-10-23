@@ -4766,6 +4766,8 @@ navbar:
         href: articles/Marchand_2017_nicotine.html
       - text: "Nicotine gum (OlssonGisleskog 2021)"
         href: articles/OlssonGisleskog_2021_nicotine.html
+      - text: "Nicotine human pbpk (Porchet 1987)"
+        href: articles/Porchet_1987_nicotine_pbpk.html
       - text: "Nicotine inhaler (OlssonGisleskog 2021)"
         href: articles/OlssonGisleskog_2021_nicotine.html
       - text: "Nicotine iv (OlssonGisleskog 2021)"
@@ -4782,6 +4784,8 @@ navbar:
         href: articles/Rostami_2022_nicotine_pbpk.html
       - text: "Nicotine pbpk (Salehi 2025)"
         href: articles/Salehi_2025_nicotine_pbpk.html
+      - text: "Nicotine rabbit pbpk (Porchet 1987)"
+        href: articles/Porchet_1987_nicotine_pbpk.html
       - text: "Nicotine transdermal (OlssonGisleskog 2021)"
         href: articles/OlssonGisleskog_2021_nicotine.html
       - text: "NicotinicAcid rat (Ahlstrom 2010)"
@@ -9683,6 +9687,7 @@ articles:
   - articles/Polito_2016_fludrocortisone
   - articles/PonceBobadilla_2023_upadacitinib
   - articles/Por_2021_imipenem
+  - articles/Porchet_1987_nicotine_pbpk
   - articles/Pouzin_2022_tusamitamab
   - articles/Preijers_2021_factor_viii
   - articles/Press_2010_ciclosporin

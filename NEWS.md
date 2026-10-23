@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Meenks 2023 flucloxacillin ([doi:10.1186/s13054-023-04353-5](https://doi.org/10.1186/s13054-023-04353-5)) -- critically ill adults, with total and unbound concentrations.
+- Add Porchet 1987 nicotine physiological brain-distribution PBPK ([doi:10.1172/JCI113227](https://doi.org/10.1172/JCI113227)) -- New Zealand white rabbits and healthy adult male smokers given intravenous nicotine; rabbit fit and human scaling as two models.
 
 - Fix the inter-individual variability scale of Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)): the Table 3 percentages are omega x 100, not CV%, so the CL, V2 and V3 variances are now `(P/100)^2` (V3 0.6229 -> 0.8649, +39 %; CL and V2 +1-3 %). The Table 3 Wald CI on the V3 row decides the scale.
 
