@@ -1786,6 +1786,8 @@ navbar:
         href: articles/Chen_2016_deoxypodophyllotoxin.html
       - text: "Deoxypodophyllotoxin rat pbpk (Chen 2016)"
         href: articles/Chen_2016_deoxypodophyllotoxin.html
+      - text: "Desipramine pbpk (Samant 2017)"
+        href: articles/Samant_2017_desipramine_pbpk.html
       - text: "Desmopressin (Agerso 2004)"
         href: articles/Agerso_2004_desmopressin.html
       - text: "Desmopressin (Schutte 2018)"
@@ -9461,6 +9463,7 @@ articles:
   - articles/Salgado_2022_antibody_tumor_lymph_node_pbpk
   - articles/Salinger_2013_magnesiumSulfate
   - articles/Salinger_2019_pretomanid
+  - articles/Samant_2017_desipramine_pbpk
   - articles/Samb_2022_gentamicin
   - articles/Sampson_2014_azithromycin
   - articles/Sampson_2014_gentamicin
