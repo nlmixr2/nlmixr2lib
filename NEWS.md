@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Stott 2022 liposomal amphotericin B ([doi:10.1093/jac/dkac389](https://doi.org/10.1093/jac/dkac389)) -- adults with HIV-associated cryptococcal meningoencephalitis in Botswana, Tanzania and Malawi.
+- Add Kim 2022 SCR430 minimal PBPK ([doi:10.3390/pharmaceutics14122562](https://doi.org/10.3390/pharmaceutics14122562)) -- female Sprague-Dawley rats, untreated and after 14 days of oral SCR430 (two files: control and repeated-dosing).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
