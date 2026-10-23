@@ -6994,6 +6994,8 @@ navbar:
         href: articles/Stockmann_2015_vancomycin.html
       - text: "Vancomycin (Takada 2025)"
         href: articles/Takada_2025_vancomycin.html
+      - text: "Vancomycin (Tsai 2024)"
+        href: articles/Tsai_2024_vancomycin.html
       - text: "Vancomycin (Tseng 2026)"
         href: articles/Tseng_2026_vancomycin.html
       - text: "Vancomycin (Wei 2022)"
@@ -9678,6 +9680,7 @@ articles:
   - articles/Truong_2025_elexacaftor_tezacaftor_ivacaftor
   - articles/Tsai_2022_cart_local_delivery
   - articles/Tsai_2023_ceftriaxone
+  - articles/Tsai_2024_vancomycin
   - articles/Tse_2020_tofacitinib
   - articles/Tseng_2026_piperacillin
   - articles/Tseng_2026_vancomycin
