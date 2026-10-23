@@ -106,6 +106,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** widespread across oral popPK extractions.
 - **Notes:** Always paired with a `depot` compartment.
 
+### lkaratio (**canonical log-transformed ratio of the absorption to the elimination rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** Log of a unitless multiplier that sets the absorption rate constant relative to each subject's own elimination rate constant, `ka <- karatio * kel` with `kel <- cl / vc`. Used when the source fits ka as a multiple of kel, typically with a lower bound of 1 (`lkaratio` bound at 0 on the log scale) so that absorption is constrained to be faster than elimination and flip-flop kinetics are excluded. The bare counterpart inside `model` is `karatio`.
+- **Source aliases:**
+  - `THETA(1)` labelled `;KA` -- Silvola 2025 Data S1 / S2 control streams (`TVKA = THETA(1)*KE`, `$THETA (1, 7.67)`). The papers' tables then print the derived product as 'KA (h-1)', not this ratio.
+- **Example models:** `Silvola_2025_gabapentin_mpr.R` (founding example; ratio 7.828 back-solved from Table 2 KA 0.43 h-1, CL/F 15.6 L/h, V2/F 284 L), `Silvola_2025_gabapentin_milkcmt.R` (ratio 9.904).
+- **Notes:** Not an alias of `lka`. With between-subject variability on `cl` and `vc`, the individual ka inherits each subject's kel, so the simulated absorption-phase spread differs from a free `lka` with the same typical value even though the typical-value profile is identical. When a source reports only the derived ka, back-solve the ratio as `ka / (cl / vc)` at the typical values and say so in the source-trace comment. Named `karatio` rather than `kakel` so that the name states the quantity is dimensionless without relying on concatenation to mean a quotient (maintainers' ruling 2026-09-11).
+
 ### lcl (**canonical log-transformed total clearance**)
 - **Type:** log-transformed-pk
 - **Role:** Apparent total drug clearance from the central compartment (volume / time).
@@ -873,6 +881,14 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Role:** First-order absorption rate constant from depot into central (1 / time).
 - **Source aliases:** none.
 - **Example models:** universal in oral popPK extractions.
+
+### karatio (**canonical bare ratio of the absorption to the elimination rate constant**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lkaratio`. Unitless multiplier of the elimination rate constant used inside `model` as `karatio <- exp(lkaratio)` and `ka <- karatio * kel`.
+- **Source aliases:**
+  - `THETA(1)` labelled `;KA` -- Silvola 2025 Data S1 / S2.
+- **Example models:** `Silvola_2025_gabapentin_mpr.R` (founding example), `Silvola_2025_gabapentin_milkcmt.R`.
+- **Notes:** See `lkaratio` above for why this is not an alias of `ka`.
 
 ### cl (**canonical bare total clearance**)
 - **Type:** bare-pk
