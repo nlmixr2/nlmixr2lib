@@ -18,7 +18,7 @@
 
 - Fix the inter-individual variability scale of Denti 2010 glucose minimal model ([doi:10.1152/ajpendo.00656.2009](https://doi.org/10.1152/ajpendo.00656.2009)): the paper reports "the square root of the elements on the diagonal of Omega", so the SG/VOL and SI/P2 blocks are now `(P/100)^2` on the diagonal with the printed correlations unchanged (SI +11 %, P2 +7 %).
 
-- Add Tan 2021 cefadroxil whole-body PBPK ([doi:10.3389/fphar.2021.692741](https://doi.org/10.3389/fphar.2021.692741)) -- mouse, rat and healthy adult human (disposition layer).
+- Add Samineni 2022 venetoclax population PK and exposure-response (grade >= 3 adverse events, serious adverse events, PET-CT complete response) models ([doi:10.1007/s12325-021-01919-z](https://doi.org/10.1007/s12325-021-01919-z)) -- adults with non-Hodgkin lymphoma, mostly diffuse large B-cell lymphoma, receiving venetoclax with R-CHOP in CAVALLI.
 
 - Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
 

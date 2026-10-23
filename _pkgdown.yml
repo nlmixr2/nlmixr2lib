@@ -7270,14 +7270,42 @@ navbar:
         href: articles/Stodtmann_2021_veliparib.html
       - text: "Venetoclax (Dave 2019)"
         href: articles/Dave_2019_venetoclax.html
+      - text: "Venetoclax (Samineni 2022)"
+        href: articles/Samineni_2022_venetoclax.html
       - text: "Venetoclax (Yang 2025)"
         href: articles/Yang_2025_venetoclax.html
       - text: "Venetoclax (Zhao 2026)"
         href: articles/Zhao_2026_venetoclax.html
       - text: "Venetoclax apoptosis qsp (Derippe 2024)"
         href: articles/Derippe_2024_BH3_mimetics_virtual_tumors.html
+      - text: "Venetoclax febrile neutropenia (Samineni 2022)"
+        href: articles/Samineni_2022_venetoclax.html
+      - text: "Venetoclax febrile neutropenia base (Samineni 2022)"
+        href: articles/Samineni_2022_venetoclax.html
+      - text: "Venetoclax infection (Samineni 2022)"
+        href: articles/Samineni_2022_venetoclax.html
+      - text: "Venetoclax infection base (Samineni 2022)"
+        href: articles/Samineni_2022_venetoclax.html
       - text: "Venetoclax mouse (Derippe 2024)"
         href: articles/Derippe_2024_BH3_mimetics_virtual_tumors.html
+      - text: "Venetoclax neutropenia (Samineni 2022)"
+        href: articles/Samineni_2022_venetoclax.html
+      - text: "Venetoclax neutropenia base (Samineni 2022)"
+        href: articles/Samineni_2022_venetoclax.html
+      - text: "Venetoclax petcr (Samineni 2022)"
+        href: articles/Samineni_2022_venetoclax.html
+      - text: "Venetoclax petcr bcl2 fish (Samineni 2022)"
+        href: articles/Samineni_2022_venetoclax.html
+      - text: "Venetoclax petcr bcl2 ihc (Samineni 2022)"
+        href: articles/Samineni_2022_venetoclax.html
+      - text: "Venetoclax sae (Samineni 2022)"
+        href: articles/Samineni_2022_venetoclax.html
+      - text: "Venetoclax sae base (Samineni 2022)"
+        href: articles/Samineni_2022_venetoclax.html
+      - text: "Venetoclax thrombocytopenia (Samineni 2022)"
+        href: articles/Samineni_2022_venetoclax.html
+      - text: "Venetoclax thrombocytopenia base (Samineni 2022)"
+        href: articles/Samineni_2022_venetoclax.html
       - text: "Venlafaxine fluoxetine mbma (Maringwa 2025)"
         href: articles/Maringwa_2025_venlafaxine_fluoxetine_mbma.html
       - text: "Verapamil rat (Syvanen 2011)"
@@ -9582,6 +9610,7 @@ articles:
   - articles/Salinger_2019_pretomanid
   - articles/Samant_2017_desipramine_pbpk
   - articles/Samb_2022_gentamicin
+  - articles/Samineni_2022_venetoclax
   - articles/Sampson_2014_azithromycin
   - articles/Sampson_2014_gentamicin
   - articles/Sanches_2022_piperacillin
