@@ -1878,6 +1878,22 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `f` -- Mukherjee 2018 Table 3 notation.
 - **Example models:** `Mukherjee_2018_amlodipine.R`.
 
+### e0_glucose_fourier_cos1, e0_glucose_fourier_sin1, e0_glucose_fourier_cos2, e0_glucose_fourier_sin2 (**canonical Fourier-series coefficients of a biorhythmic glucose PD baseline**)
+- **Type:** paper-named-param
+- **Role:** Signed coefficients of a truncated Fourier series that describes the drug-free time course of a glucose PD baseline: `e0(t) = a0 + cos1 * cos(2*pi*t/P) + sin1 * sin(2*pi*t/P) + cos2 * cos(4*pi*t/P) + sin2 * sin(4*pi*t/P)`, with `P` the period `e0_glucose_fourier_period` and the constant term `a0` carried by the canonical `le0` / `e0`. The `cos<k>` / `sin<k>` token names the basis function the coefficient multiplies and `k` the harmonic, so a higher-order series continues as `e0_glucose_fourier_cos3`, `e0_glucose_fourier_sin3`, ... without a new entry. Units are those of the baseline (mmol/L for glucose). The coefficients are on the bare linear scale, never log-transformed, because they take either sign; their between-subject variability is additive (`etae0_glucose_fourier_cos1`, ...), for the same reason the register records for `iplac`.
+- **Source aliases:**
+  - `A1`, `B1`, `A2`, `B2` -- Rambiritch 2016 Equation 4 and Table 3 notation, with `A` the cosine and `B` the sine coefficients.
+- **Example models:** `Rambiritch_2016_glibenclamide_dose_glucoseprofile.R` (founding example; A1 = 0.95, B1 = 1.45, A2 = -1.95, B2 = 2.63 mmol/L for the breakfast-and-lunch glucose profile over an 8-hour sampling day), `Rambiritch_2016_glibenclamide_cpss_glucoseprofile.R`.
+- **Notes:** The method is the Fourier-analysis algorithm for biorhythmic baselines of Krzyzanski, Chakraborty and Jusko (Chronobiol Int 2000;17:77-93). Distinct from the cosinor-shaped circadian families `lamp` / `ltacro` / `lfcirc` (one harmonic, a positive amplitude plus an acrophase or frequency) and `cl_circ_famp_day` / `cl_circ_famp_night` (fractional amplitude with a fixed day / night phase): a two-harmonic series can be rewritten in amplitude / phase form, but an additive random effect on each signed coefficient -- in Rambiritch 2016 one variance shared by all four -- does not map onto a multiplicative amplitude and a phase, so rewriting would change the random-effects model. The stem names both the baseline parameter the series modulates (`e0`) and the analyte (`glucose`); a Fourier baseline on another endpoint takes the same shape with its own analyte token (e.g. `e0_cortisol_fourier_cos1`). Ratified by the maintainers on 2026-09-21 with the Rambiritch 2016 glibenclamide PK/PD extraction.
+
+### e0_glucose_fourier_period (**canonical period of a Fourier-series glucose PD baseline**)
+- **Type:** paper-named-param
+- **Role:** Period `P`, in hours, of the truncated Fourier series whose coefficients are `e0_glucose_fourier_cos<k>` / `e0_glucose_fourier_sin<k>`; harmonic `k` has angular frequency `2*pi*k/P`. In Krzyzanski-style Fourier baselines the period is set to the observation window rather than estimated, so it is normally encoded `fixed()`.
+- **Source aliases:**
+  - `Period` -- Rambiritch 2016 Equation 4 ("Period was 8 hours, ie, the time during which glucose concentrations were measured").
+- **Example models:** `Rambiritch_2016_glibenclamide_dose_glucoseprofile.R` (founding example; `fixed(8)` h), `Rambiritch_2016_glibenclamide_cpss_glucoseprofile.R`.
+- **Notes:** A structural constant, not an estimated parameter, but kept in `ini()` so the series' period is visible and can be changed without editing `model()`. Distinct from `lfcirc` / `fcirc`, a fitted frequency in cycles per day of a single-harmonic cosinor baseline. Ratified by the maintainers on 2026-09-21 alongside the coefficient entry above.
+
 ### kdes (**canonical desensitisation rate**)
 - **Type:** paper-named-param
 - **Role:** Receptor / target desensitisation rate constant (1 / time).

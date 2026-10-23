@@ -2930,6 +2930,18 @@ navbar:
         href: articles/Renaud_2020_glenzocimab.html
       - text: "Glibenclamide (Rambiritch 2016)"
         href: articles/Rambiritch_2016_glibenclamide.html
+      - text: "Glibenclamide cpss fpg (Rambiritch 2016)"
+        href: articles/Rambiritch_2016_glibenclamide_glucose_response.html
+      - text: "Glibenclamide cpss glucoseprofile (Rambiritch 2016)"
+        href: articles/Rambiritch_2016_glibenclamide_glucose_response.html
+      - text: "Glibenclamide cpss meanglucose (Rambiritch 2016)"
+        href: articles/Rambiritch_2016_glibenclamide_glucose_response.html
+      - text: "Glibenclamide dose fpg (Rambiritch 2016)"
+        href: articles/Rambiritch_2016_glibenclamide_glucose_response.html
+      - text: "Glibenclamide dose glucoseprofile (Rambiritch 2016)"
+        href: articles/Rambiritch_2016_glibenclamide_glucose_response.html
+      - text: "Glibenclamide dose meanglucose (Rambiritch 2016)"
+        href: articles/Rambiritch_2016_glibenclamide_glucose_response.html
       - text: "Glibenclamide rifampicin pbpk (Asaumi 2019)"
         href: articles/Asaumi_2019_rifampicin_ddi_pbpk.html
       - text: "Glp1ra bodyweight (Bosch 2024)"
@@ -9348,6 +9360,7 @@ articles:
   - articles/Quintairos_2021_tacrolimus_mycophenolic_acid
   - articles/Ramachandran_2023_tuberculosis_eptb_pbpk
   - articles/Rambiritch_2016_glibenclamide
+  - articles/Rambiritch_2016_glibenclamide_glucose_response
   - articles/Ramharter_2019_mefloquine
   - articles/Rancic_2024_meropenem
   - articles/Randell_2024_metronidazole
