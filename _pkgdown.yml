@@ -1000,6 +1000,8 @@ navbar:
         href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Buprenorphine (Bjornsson 2023)"
         href: articles/Bjornsson_2023_buprenorphine.html
+      - text: "Buprenorphine (Gu 2023)"
+        href: articles/Gu_2023_buprenorphine_naloxone.html
       - text: "Buprenorphine (Jones 2021)"
         href: articles/Jones_2021_buprenorphine.html
       - text: "Buprenorphine (Kovar 2020)"
@@ -4666,6 +4668,8 @@ navbar:
         href: articles/Laffont_2024_nalmefene.html
       - text: "Naloxone (Dowling 2008)"
         href: articles/Dowling_2008_naloxone.html
+      - text: "Naloxone (Gu 2023)"
+        href: articles/Gu_2023_buprenorphine_naloxone.html
       - text: "Naloxone (Laffont 2024)"
         href: articles/Laffont_2024_naloxone.html
       - text: "Naloxone (Yang 2024)"
@@ -8606,7 +8610,7 @@ articles:
   - articles/Grover_2011_tacrolimus
   - articles/Grzegorzewski_2022_dextromethorphan_pbpk
   - articles/Grzesk_2016_m3M3FBS
-  - articles/Grzeskowiak_2023_sugammadex_rocuronium
+  - articles/Gu_2023_buprenorphine_naloxone
   - articles/Gu_2025_heart_failure_pbpk
   - articles/Gu_2025_rivaroxaban
   - articles/Guan_2021_yimitasvir

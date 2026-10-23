@@ -6439,6 +6439,15 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Agema_2021_oxycodone.R` (doi:10.3390/cancers13112768).
 - **Notes:** Same construction as `noroxycod`. Distinct from oxymorphone itself (the O-demethylated CYP2D6 metabolite), which would take its own suffix.
 
+### norbup (**canonical norbuprenorphine (N-dealkylbuprenorphine) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Norbuprenorphine, the CYP3A4-formed N-dealkylated metabolite of buprenorphine. A potent mu-opioid agonist with limited blood-brain-barrier penetration, measured in plasma alongside the parent after sublingual buprenorphine. Used on `central_norbup` / `peripheral1_norbup`, `lcl_norbup` / `lvc_norbup` / `lvp_norbup` / `lq_norbup`, `Cc_norbup` and `propSd_norbup`.
+- **Source aliases:**
+  - `norBUP` -- the abbreviation of Gu 2023 (Table 4, Figure 1A).
+  - `MET`, `MPERI`, `CM` -- the compartment and concentration names of the Gu 2023 supplementary control stream.
+- **Example models:** `Gu_2023_buprenorphine.R` (founding example; doi:10.3389/fphar.2023.1089862 -- two-compartment norbuprenorphine formed from the whole buprenorphine clearance with Fm fixed to 1 and multiplied by 1.98 in the 16 mg dose group).
+- **Notes:** Follows the `norcloz` / `norfluox` / `noroxycod` construction (`nor` + truncated parent stem). Distinct from the buprenorphine glucuronides, which would take their own suffixes.
+
 ### dnef (**canonical desmethyl-nefopam suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Desmethyl-nefopam (nor-nefopam), N-demethyl metabolite of nefopam formed by CYP3A4-mediated N-demethylation. Followed in plasma alongside the parent in joint parent + metabolite popPK models of postoperative nefopam analgesia. Used as the metabolite suffix on `central_dnef` compartments, `lcl_dnef` / `lvc_dnef` / `lcl_form_dnef` parameters, and `addSd_dnef` / `propSd_dnef` residual SDs.
