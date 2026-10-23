@@ -296,8 +296,9 @@ stopifnot(
 # NCA with PKNCA
 
 Tate 2018 does not tabulate NCA results (they are in the phase I clinical
-report, its reference 8, which was not available when the model was built), so the simulated NCA below is
-reported for the two arms without a published comparator. Two intervals are
+report, its reference 8, which was not available when the model was built),
+so the simulated NCA below is reported for the two arms without a published
+comparator. Two intervals are
 summarised: the day -3 single dose (0-72 h) and the day 28 dose (720-744 h).
 
 ```{r nca}
