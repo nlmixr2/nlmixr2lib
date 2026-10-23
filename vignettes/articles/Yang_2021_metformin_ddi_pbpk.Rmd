@@ -1,0 +1,322 @@
+---
+title: "Metformin drug-drug interactions with OCT/MATE perpetrators (Yang 2021)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Metformin drug-drug interactions with OCT/MATE perpetrators (Yang 2021)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Yang_2021_metformin_ddi_pbpk"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Yang_2021_metformin_ddi_pbpk"))$description`
+* Article: <https://doi.org/10.3390/pharmaceutics13050698> (open access, PMC8151202)
+* Supplement: Table S1 (physiology), Table S2 (tissue:plasma ratios), Table S3/S4
+  (observed/predicted metformin dose ranging), Table S5 (perpetrator PK) and
+  Table S6 (DDI schedules).
+
+Yang and colleagues built a whole-body PBPK model for metformin in which
+disposition is controlled by the organic-cation transporters OCT1 (hepatic),
+OCT2 (renal), OCT3 (intestinal), the plasma-membrane monoamine transporter
+PMAT (intestinal) and the multidrug/toxin extrusion transporters MATE1/2-K
+(renal). Intestinal absorption is nonlinear, driven by Michaelis-Menten uptake
+through OCT3 and PMAT. The model predicts the interaction of metformin with six
+perpetrators that competitively inhibit these carriers: cimetidine,
+pyrimethamine, trimethoprim, ondansetron, rabeprazole and verapamil.
+
+This is the same China Pharmaceutical University group, and the same Table S1
+human physiology, as `Kong_2020_vonoprazan_human_pbpk`.
+
+# How the parameterised perpetrator slot works
+
+The paper solves metformin together with one perpetrator at a time. The model
+carries that as two coupled blocks of states:
+
+* the **metformin** block (bare state names, output `Cc`): the victim, always
+  the full transporter-resolved whole-body model;
+* the **perpetrator** block (`_perpetrator` suffix, output `Cperp`): a
+  parameterised slot that ships set to cimetidine and whose values are swapped
+  for any of the six perpetrators from the model's `drugLibrary` metadata.
+
+The perpetrator inhibits the four metformin carriers competitively, each term
+of the form `1 / (1 + fub_perp * C_perp / Ki)`. Dosing the perpetrator states
+with nothing recovers the metformin-alone (control) arm, so one model object
+gives both arms of each interaction.
+
+Cimetidine uses the same transporter-resolved liver (hepatic blood +
+hepatocytes) and kidney (renal blood + tubule) structure as metformin
+(`p_tr = 1`); the other five perpetrators are described by a well-stirred
+liver and kidney (`p_tr = 0`). Both structures are present in every solve and
+the inactive one is held at zero by the `p_tr` / `1 - p_tr` multipliers. This
+follows the parameterised-perpetrator design of
+`CherkaouiRbati_2017_midazolam_qsp` and `Stader_2021_bictegravir_ddi_pbpk`.
+
+```{r model}
+mod <- readModelDb("Yang_2021_metformin_ddi_pbpk")
+ui <- rxode2::rxode(mod)
+lib <- ui$meta$drugLibrary
+
+perps <- c("cimetidine", "pyrimethamine", "trimethoprim", "ondansetron", "rabeprazole", "verapamil")
+
+# Load a drugLibrary column into a named parameter vector for rxSolve.
+perp_params <- function(drug) stats::setNames(lib[[drug]], lib$parameter)
+
+# Solve metformin +/- a perpetrator. Doses in mg (converted to ug); times in
+# minutes. A zero perpetrator dose is the control arm.
+solve_run <- function(drug, met_mg, met_t = 0, perp_mg = 0, perp_t = 0, tend_min = 24 * 60) {
+  ev <- rxode2::et(amt = met_mg * 1000, cmt = "stomach", time = met_t)
+  if (perp_mg > 0) {
+    ev <- ev |> rxode2::et(amt = perp_mg * 1000, cmt = "stomach_perpetrator", time = perp_t)
+  }
+  ev <- ev |> rxode2::et(seq(0, met_t + tend_min, by = 2))
+  s <- as.data.frame(rxode2::rxSolve(ui, perp_params(drug), ev, atol = 1e-10, rtol = 1e-10))
+  s[s$time >= met_t, ]
+}
+
+# Trapezoidal AUC of Cc over the window, minutes -> hours.
+trap_auc <- function(time, conc) sum(diff(time) * (head(conc, -1) + tail(conc, -1)) / 2) / 60
+```
+
+# Population
+
+A PBPK model has no fitted population. The transporter and metabolism
+parameters came from in vitro data and prior models (Table 1), the physiology
+from Table S1 (a 70-kg adult), and the tissue:plasma ratios from Table S2. The
+clinical plasma data used for comparison came from healthy-volunteer studies.
+The paper's visual predictive check estimated inter-individual variances on
+Vmax,OCT3, the hepatic OCT1, renal OCT2 and renal MATE clearances, and the
+gastrointestinal transit rate, but did not report them, so this model is
+typical-value only (no random effects). The same information is available from
+`readModelDb("Yang_2021_metformin_ddi_pbpk")()$population`.
+
+# Source trace
+
+Every `ini()` value carries a comment giving the table or equation it comes
+from. The `drugLibrary` metadata holds the per-perpetrator inputs (Table 1 drug
+parameters and Table S2 tissue:blood ratios); molecular weights are from
+PubChem. A column loaded into the `p_*` / `ki_*_um` / `kp_p` parameters
+reproduces that perpetrator.
+
+```{r source-trace-drugs}
+lib |>
+  knitr::kable(
+    caption = paste(
+      "Per-perpetrator inputs of the parameterised perpetrator slot",
+      "(drugLibrary metadata). Units are those of the corresponding ini() labels."
+    ),
+    digits = 5
+  )
+```
+
+```{r source-trace-equations}
+tibble::tribble(
+  ~Component, ~Source,
+  "Gut lumen / wall transit, 6 segments", "Eqs 1-3; Table S1 transit constants",
+  "Metformin OCT3 + PMAT M-M absorption", "Eqs 2-3; Table 1 / Methods Vmax, Km, PBSF, Tsf",
+  "Hepatic OCT1 uptake + passive diffusion + metabolism", "Eqs 7-8; Table 1",
+  "Renal OCT2 uptake/back-flux, MATE efflux, GFR", "Eqs 12-13; Table 1",
+  "Competitive inhibition at OCT1/OCT2/OCT3/MATE", "Eqs 4, 7-8, 12-13; Table 1 Ki",
+  "Perpetrator well-stirred liver / kidney (tr = 0)", "Eqs 11, 14-15",
+  "Whole-body blood and tissue mass balance", "Eqs 16-17; Table S1",
+  "Tissue:blood partition ratios", "Table S2 (Kp / Rb)"
+) |>
+  knitr::kable(caption = "Source location for each model component.")
+```
+
+# Metformin nonlinear absorption (Table S4)
+
+The paper's headline absorption result is that metformin oral clearance
+(dose/AUC) rises with dose because intestinal OCT3/PMAT uptake saturates. The
+model reproduces the predicted dose-ranging Cmax and AUC of Table S4.
+
+```{r dose-ranging}
+doses <- c(250, 500, 750, 850, 1000)
+sim_conc <- bind_rows(lapply(doses, function(d) {
+  s <- solve_run("cimetidine", met_mg = d, perp_mg = 0)
+  data.frame(treatment = paste(d, "mg"), dose = d, time = s$time / 60, Cc = s$Cc)
+}))
+
+# PKNCA single-dose NCA, grouped by dose. One id per dose arm.
+nca_conc <- sim_conc |>
+  filter(!is.na(Cc)) |>
+  mutate(id = dose) |>
+  select(id, treatment, dose, time, Cc)
+nca_dose <- data.frame(id = doses, treatment = paste(doses, "mg"), dose = doses, time = 0)
+met_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_conc, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(nca_dose, dose ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = 24, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+))
+```
+
+```{r dose-ranging-compare}
+sim_wide <- as.data.frame(met_nca) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+# Table S4 predicted values (the model's own target).
+tableS4 <- tibble::tibble(
+  treatment = paste(doses, "mg"),
+  cmax = c(0.67, 0.95, 1.22, 1.32, 1.47),
+  auclast = c(4.80, 7.68, 10.19, 11.15, 12.55)
+)
+met_cmp <- nlmixr2lib::ncaComparisonTable(
+  sim_wide, tableS4,
+  by = "treatment",
+  params = c("cmax", "auclast"),
+  units = c(cmax = "ug/mL", auclast = "h*ug/mL")
+)
+knitr::kable(
+  met_cmp,
+  caption = "Metformin dose ranging: PKNCA of the simulation vs Table S4 predictions. * > 20% difference."
+)
+# Structural gate: the as-run model must reproduce Table S4 to a few percent.
+met_diff <- as.numeric(gsub("[^0-9.eE-]", "", met_cmp[["% diff"]]))
+stopifnot(all(abs(met_diff) < 3))
+```
+
+```{r dose-ranging-plot, fig.cap = "Metformin plasma concentration by oral dose (replicates Figure 3a of Yang 2021)."}
+ggplot(sim_conc, aes(time, Cc, colour = factor(dose))) +
+  geom_line() +
+  labs(x = "Time (h)", y = "Metformin plasma (ug/mL)", colour = "Dose (mg)") +
+  theme_bw()
+```
+
+# Transporter contributions to metformin exposure (Figure 6b)
+
+The individual contribution of each transporter is the percent change in
+metformin AUC when that transporter is removed. The model reproduces the Figure
+6b values: renal OCT2 and MATE dominate (each roughly +160% when removed),
+intestinal OCT3 and PMAT act in the opposite direction, and hepatic OCT1 is
+minor.
+
+```{r contributions}
+auc250 <- function(over = NULL) {
+  ev <- rxode2::et(amt = 250 * 1000, cmt = "stomach") |> rxode2::et(seq(0, 24 * 60, by = 2))
+  s <- as.data.frame(rxode2::rxSolve(ui, if (is.null(over)) numeric(0) else over, ev, atol = 1e-10, rtol = 1e-10))
+  trap_auc(s$time, s$Cc)
+}
+ctrl <- auc250()
+ko <- c(OCT3 = "vmax_oct3", PMAT = "vmax_pmat", OCT1 = "clint_up_oct1", OCT2 = "clint_up_oct2", MATE = "clint_eff_mate")
+paper_pct <- c(OCT3 = -35.94, PMAT = -12.06, OCT1 = 15.67, OCT2 = 160.30, MATE = 159.80)
+contrib <- data.frame(
+  Transporter = names(ko),
+  `Simulated %` = round(sapply(ko, function(p) 100 * (auc250(stats::setNames(0, p)) / ctrl - 1)), 2),
+  `Paper %` = paper_pct,
+  check.names = FALSE
+)
+knitr::kable(contrib, row.names = FALSE, caption = "Contribution of each transporter to metformin AUC (Figure 6b).")
+# Deterministic structural gate: each contribution reproduces Figure 6b to <1%.
+stopifnot(all(abs(contrib[["Simulated %"]] - contrib[["Paper %"]]) < 1))
+```
+
+# Perpetrator standalone pharmacokinetics (Table 2)
+
+Each perpetrator's own plasma PK is reproduced by loading its `drugLibrary`
+column and dosing only the perpetrator slot.
+
+```{r perp-standalone}
+perp_doses <- list(cimetidine = 400, pyrimethamine = 50, trimethoprim = 210, ondansetron = 8, rabeprazole = 40, verapamil = 40)
+perp_tbl <- bind_rows(lapply(names(perp_doses), function(d) {
+  dose <- perp_doses[[d]]
+  ev <- rxode2::et(amt = dose * 1000, cmt = "stomach_perpetrator") |> rxode2::et(seq(0, 24 * 60, by = 2))
+  s <- as.data.frame(rxode2::rxSolve(ui, perp_params(d), ev, atol = 1e-10, rtol = 1e-10))
+  data.frame(Perpetrator = d, `Dose (mg)` = dose, Cmax = max(s$Cperp), `AUC0-24` = trap_auc(s$time, s$Cperp), check.names = FALSE)
+}))
+# Paper Table 2 predicted Cmax / AUC (same doses).
+perp_tbl$`Paper Cmax` <- c(2.06, 0.57, 2.18, 0.046, 0.40, 0.050)
+perp_tbl$`Paper AUC` <- c(9.17, 31.18, 28.26, 0.203, 1.27, 0.28)
+knitr::kable(perp_tbl, digits = 3, caption = "Perpetrator standalone Cmax (ug/mL) and AUC0-24 (ug*h/mL) vs Table 2 predictions.")
+```
+
+# Drug-drug interactions with metformin (Table 3)
+
+Loading a perpetrator and dosing both drugs on the Table S6 schedule gives the
+interaction. The interaction ratio is AUC (or Cmax) with perpetrator over the
+metformin-alone control.
+
+```{r ddi}
+# perpetrator, metformin dose (mg), metformin time offset (min), perpetrator dose (mg)
+ddi_cases <- tibble::tribble(
+  ~perp,            ~met_mg, ~met_t, ~perp_mg,
+  "cimetidine",     500,     120,    400,
+  "pyrimethamine",  500,     0,      50,
+  "ondansetron",    850,     60,     8,
+  "verapamil",      750,     0,      180,
+  "rabeprazole",    500,     720,    20
+)
+ddi <- bind_rows(lapply(seq_len(nrow(ddi_cases)), function(i) {
+  r <- ddi_cases[i, ]
+  a <- solve_run(r$perp, r$met_mg, r$met_t, 0)
+  b <- solve_run(r$perp, r$met_mg, r$met_t, r$perp_mg, 0)
+  data.frame(
+    Perpetrator = r$perp,
+    `AUCR (sim)` = round(trap_auc(b$time, b$Cc) / trap_auc(a$time, a$Cc), 2),
+    `CmaxR (sim)` = round(max(b$Cc) / max(a$Cc), 2),
+    check.names = FALSE
+  )
+}))
+# Paper Table 3 AUCR / CmaxR for the matched rows.
+ddi$`AUCR (paper)` <- c(1.52, 2.09, 1.16, 1.09, 1.00)
+ddi$`CmaxR (paper)` <- c(1.40, 1.73, 1.16, 1.05, 0.95)
+knitr::kable(ddi, caption = "Metformin interaction ratios vs Table 3. See the deviations section for cimetidine and pyrimethamine.")
+```
+
+# Assumptions and deviations (Errata)
+
+The model is an as-run reproduction of the published WinNonlin model, and
+several values deviate from the printed equations and constants. Each is
+documented inline in the model file and summarised here.
+
+* **Metformin OCT3/PMAT absorption (Table 1 constants).** The model reproduces
+  Table S4 only when (i) the Michaelis-Menten uptake is driven by the gut-lumen
+  concentration `A_i / V_i` rather than the enterocyte concentration of the
+  printed Eqs 2-3 (taken literally, the printed form drives the lumen negative
+  and makes absorption linear), and (ii) the reported Km (2.46 and 1.68 mM) and
+  Vmax (12.08 and 15.28 nmol/mg/min, used as /1000) are applied to the ug
+  amounts without molar-to-mass conversion. This dimensionally inconsistent
+  as-run form reproduces Table S4 at every dose, the oral microdose and the
+  OCT3/PMAT knockouts; the dimensionally correct form predicts a Cmax four to
+  six times too high. The maintainers ship the as-run form that reproduces the
+  paper.
+* **Hepatic passive-diffusion clearance CLint,pd.** Eqs 7-8 use a
+  hepatocyte-to-blood passive-diffusion clearance that is printed nowhere in
+  the paper or supplement. Six independent printed metformin outputs (the
+  control AUC, the no-OCT1 and no-OCT2 percentages, the no-OCT2 AUC, and the
+  500 and 1000 mg AUCs) all back-solve to a value between 10 and 12 mL/min, so
+  the maintainers ship 11 mL/min. Cimetidine is insensitive to its own
+  hepatic passive diffusion, so the perpetrator value is 0.
+* **Rabeprazole metabolic clearance.** The printed `fub * CLint` form (fub 0.04,
+  CLint 955.6 mL/min) over-predicts rabeprazole exposure about 17-fold. The
+  published rabeprazole PK is reproduced when CLint is applied as a blood
+  clearance without `fub`; the model encodes this for rabeprazole only by
+  shipping `p_clmet = 955.6 / 0.04 = 23890`, so the model's `fub * CLint` term
+  recovers 955.6 mL/min.
+* **Cimetidine interaction is under-predicted.** With the printed
+  transporter-resolved cimetidine structure the model gives an interaction of
+  about AUCR 1.11 / CmaxR 1.10, against the published 1.52 / 1.40. A
+  well-stirred cimetidine reproduces the interaction but then over-predicts
+  cimetidine's own exposure about two-fold, so neither structure reproduces
+  both. The maintainers follow the Methods text and keep the printed
+  transporter structure, and note the interaction shortfall here.
+* **Pyrimethamine interaction.** Pyrimethamine's own exposure is poorly
+  predicted by the paper (Table 2 predicted AUC 31-47 vs observed 42-124), and
+  its interaction ratio is correspondingly approximate.
+* **Printed-equation typos, corrected by mass balance.** Eq 7 as printed has an
+  `A_h,b / V_h,c` term (should be `V_h,b`) and multiplies a portal inflow by
+  `Kg:b` rather than dividing; Eq 11 has a hepatic outflow without the `Kh:b`
+  partition. The model uses the mass-balance-consistent forms.
+* **No inter-individual variability.** The paper's VPC estimated variances but
+  did not report them, so the model is typical-value only.
+* **Molecular weights** used for the Ki unit conversion (uM to ug/mL) are from
+  PubChem, not the paper.
