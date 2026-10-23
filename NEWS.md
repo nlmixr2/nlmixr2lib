@@ -18,7 +18,7 @@
 
 - Fix the inter-individual variability scale of Denti 2010 glucose minimal model ([doi:10.1152/ajpendo.00656.2009](https://doi.org/10.1152/ajpendo.00656.2009)): the paper reports "the square root of the elements on the diagonal of Omega", so the SG/VOL and SI/P2 blocks are now `(P/100)^2` on the diagonal with the printed correlations unchanged (SI +11 %, P2 +7 %).
 
-- Add Song 2022 danofloxacin ([doi:10.3389/fvets.2022.868966](https://doi.org/10.3389/fvets.2022.868966)) -- Yellow River carp (*Cyprinus carpio haematopterus*) after a single oral dose.
+- Add Alihodzic 2022 ciprofloxacin ([doi:10.3390/pharmaceutics14050965](https://doi.org/10.3390/pharmaceutics14050965)) -- critically ill adults on ECMO. Registers the `BICARBONATE` covariate (plasma bicarbonate, mmol/L).
 
 - Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
 
