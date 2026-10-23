@@ -1,10 +1,12 @@
 Liu_2018_sulfamethoxazole_mouse_qsp <- function() {
-  description <- "QSP. Preclinical (mouse, C3H/HeN). Integrated quantitative systems pharmacology model of trimethoprim-sulfamethoxazole (TMP-SMX) against Pneumocystis murina. A three-compartment PK module (administration compartment -> plasma -> peripheral tissue, with first-order decay from both plasma and tissue and the two dimensionless scaling factors RAP and RTP that Liu 2018 uses instead of volumes) drives the two-stage Pneumocystis life-cycle PD module of trophic forms and asci. Because the TMP:SMX ratio was fixed at 1:5 in the constraining data, Liu 2018 uses the sulfamethoxazole level alone as the proxy for the combination, so this model carries a single drug. TMP-SMX represses folate synthesis and therefore genome replication, so unlike the echinocandins it acts on all three PD rates: it inhibits trophic proliferation (complete inhibition at saturating concentration), multiplies the second-order trophic death rate by up to 1 + 650, and adds a sigmoidal Emax increment to the asci death rate. The effect is driven not by the current plasma level but by the plasma level seven days earlier (SMXeff = SMXpla(t - tau), tau = 7 days), a genuine delay differential equation encoded with rxode2's delay(); this reproduces the delayed onset the authors observed in Figure 4d. All states are concentrations or counts, not amounts -- the PK module carries no volume term, so a dose is administered as an initial concentration increment (500 ug/mL for 200 mg/kg, 550 ug/mL for 250 mg/kg; Liu 2018 Table 3 footnote). PK rate constants are reported in 1/h and PD rate constants in 1/day, so the PK right-hand side is scaled by 24 to put the whole model on a day time base. Drug-free, this file reduces exactly to modellib('Liu_2018_pneumocystis_mouse_qsp')."
+  description <- "QSP. Preclinical (mouse, C3H/HeN). Integrated quantitative systems pharmacology model of trimethoprim-sulfamethoxazole (TMP-SMX) against Pneumocystis murina. A three-compartment PK module (administration compartment -> plasma -> peripheral tissue, with first-order decay from both plasma and tissue and the two dimensionless scaling factors RAP and RTP that Liu 2018 uses instead of volumes) drives the two-stage Pneumocystis life-cycle PD module of trophic forms and asci. Because the TMP:SMX ratio was fixed at 1:5 in the constraining data, Liu 2018 uses the sulfamethoxazole level alone as the proxy for the combination, so this model carries a single drug. TMP-SMX represses folate synthesis and therefore genome replication, so unlike the echinocandins it acts on all three PD rates: it inhibits trophic proliferation (complete inhibition at saturating concentration), multiplies the second-order trophic death rate by up to 1 + 650, and adds a sigmoidal Emax increment to the asci death rate. The effect is driven not by the current plasma level but by the plasma level seven days earlier (SMXeff = SMXpla(t - tau), tau = 7 days), a genuine delay differential equation encoded with rxode2's delay(); this reproduces the delayed onset the authors observed in Figure 6d. All states are concentrations or counts, not amounts -- the PK module carries no volume term, so a dose is administered as an initial concentration increment (500 ug/mL for 200 mg/kg, 550 ug/mL for 250 mg/kg; Liu 2018 Table 3 footnote). PK rate constants are reported in 1/h and PD rate constants in 1/day, so the PK right-hand side is scaled by 24 to put the whole model on a day time base. Drug-free, this file reduces exactly to modellib('Liu_2018_pneumocystis_mouse_qsp')."
   reference <- paste(
     "Liu GS, Ballweg R, Ashbaugh A, Zhang Y, Facciolo J, Cushion MT, Zhang T.",
     "(2018). A quantitative systems pharmacology (QSP) model for Pneumocystis",
     "treatment in mice. BMC Syst Biol 12(1):77.",
     "doi:10.1186/s12918-018-0603-9.",
+    "Figure numbering follows the Correction (2019), BMC Syst Biol 13(1):40,",
+    "doi:10.1186/s12918-019-0708-9, which swaps original Figures 3/5 and 4/6.",
     "PK construction and validation data (Liu 2018 Table 2 / reference 41) from",
     "Misiek M, Buck RE, Pursiano TA, Chisholm DR, Tsai YH, Price KE,",
     "Leitner F. (1985). Antibacterial activity of phosphanilic acid, alone and",
@@ -84,7 +86,7 @@ Liu_2018_sulfamethoxazole_mouse_qsp <- function() {
     age_range = "6 weeks old at the start of the authors' own experiments",
     sex_female_pct = 0,
     disease_state = "Pneumocystis murina lung infection in immunosuppressed mice (the model of Pneumocystis pneumonia, PCP)",
-    dose_range = "200 and 250 mg/kg sulfamethoxazole orally, giving initial administration-compartment concentrations of 500 and 550 ug/mL respectively (Liu 2018 Table 3 footnote); the PK validation profile of Figure 5d is an oral dose of 50 mg/kg, and the Figure 4 treatment arm is 200 mg/kg three times a week for three weeks",
+    dose_range = "200 and 250 mg/kg sulfamethoxazole orally, giving initial administration-compartment concentrations of 500 and 550 ug/mL respectively (Liu 2018 Table 3 footnote); the PK validation profile of Figure 3d is an oral dose of 50 mg/kg, and the Figure 6 treatment arm is 200 mg/kg three times a week for three weeks",
     co_medication = "trimethoprim, co-administered at a fixed TMP:SMX ratio of 1:5 in the constraining data; Liu 2018 therefore models the sulfamethoxazole level alone as a proxy for the combination",
     regions = "United States (University of Cincinnati; mice supplied by Charles River)",
     notes = "Liu 2018 Experimental methods: 6-week-old male C3H/HeN mice. Organism burden quantified by RT-qPCR of Pneumocystis mitochondrial large-subunit rRNA (total nuclei) or by microscopic quantification with cresyl echt violet (asci) and a rapid Wright-Giemsa stain (all stages)."
@@ -264,7 +266,7 @@ Liu_2018_sulfamethoxazole_mouse_qsp <- function() {
     trophic(0) <- trophic0
     asci(0) <- asci0
 
-    # Liu 2018 plots both stages on a log10 scale (Figures 4a-4d).
+    # Liu 2018 plots both stages on a log10 scale (Figures 6a-6d).
     log10_trophic <- log10(trophic)
     log10_asci <- log10(asci)
   })
