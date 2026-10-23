@@ -6008,6 +6008,8 @@ navbar:
         href: articles/Marques_2024_salbutamol.html
       - text: "Salbutamol (Marques 2025)"
         href: articles/Marques_2025_salbutamol.html
+      - text: "Salbutamol (Vet 2020)"
+        href: articles/Vet_2020_salbutamol.html
       - text: "Salbutamol rat pbpk (Wen 2025)"
         href: articles/Wen_2025_pulmonary_pbpk.html
       - text: "Salmeterol (Rosenborg 2025)"
@@ -9925,6 +9927,7 @@ articles:
   - articles/Verrest_2024_leishmania
   - articles/Verscheijden_2021_morphine
   - articles/Vet_2016_midazolam
+  - articles/Vet_2020_salbutamol
   - articles/Vezina_2010_valganciclovir
   - articles/Vezina_2014_valganciclovir
   - articles/Viberg_2006_cefuroxime
