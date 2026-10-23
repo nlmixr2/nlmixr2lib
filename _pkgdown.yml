@@ -1186,6 +1186,8 @@ navbar:
         href: articles/Duke_2024_cefazolin.html
       - text: "Cefazolin (Lanoiselee 2021)"
         href: articles/Lanoiselee_2021_cefazolin.html
+      - text: "Cefazolin (Wassef 2026)"
+        href: articles/Wassef_2026_cefazolin.html
       - text: "Cefazolin dog (Cagnardi 2018)"
         href: articles/Cagnardi_2018_cefazolin_dog.html
       - text: "Cefazolin empirical (vanHasselt 2014)"
@@ -9909,6 +9911,7 @@ articles:
   - articles/Wang_2026_serplulimab
   - articles/Ward_2026_magnesium_pbpk
   - articles/Warren_2025_pde4_il13_atopic_dermatitis
+  - articles/Wassef_2026_cefazolin
   - articles/Waterhouse_2024_vedolizumab
   - articles/Watson_2010_liraglutide
   - articles/Watson_2019_tapentadol
