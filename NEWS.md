@@ -18,7 +18,7 @@
 
 - Fix the inter-individual variability scale of Denti 2010 glucose minimal model ([doi:10.1152/ajpendo.00656.2009](https://doi.org/10.1152/ajpendo.00656.2009)): the paper reports "the square root of the elements on the diagonal of Omega", so the SG/VOL and SI/P2 blocks are now `(P/100)^2` on the diagonal with the printed correlations unchanged (SI +11 %, P2 +7 %).
 
-- Add Gu 2023 buprenorphine/norbuprenorphine and naloxone ([doi:10.3389/fphar.2023.1089862](https://doi.org/10.3389/fphar.2023.1089862)) -- Chinese male healthy volunteers and patients with opioid use disorder taking sublingual buprenorphine/naloxone.
+- Add Tan 2023 luvometinib (FCN-159) ([doi:10.3389/fphar.2023.1101991](https://doi.org/10.3389/fphar.2023.1101991)) -- Chinese adults with advanced NRAS-aberrant melanoma or neurofibromatosis type 1.
 
 - Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
 
