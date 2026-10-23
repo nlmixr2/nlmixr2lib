@@ -4132,6 +4132,8 @@ navbar:
         href: articles/Wittau_2015_meropenem.html
       - text: "Meropenem (Zou 2026)"
         href: articles/Zou_2026_meropenem.html
+      - text: "Meropenem (Zylbersztajn 2021)"
+        href: articles/Zylbersztajn_2021_vancomycin_meropenem.html
       - text: "Meropenem ciprofloxacin (Rees 2018)"
         href: articles/Rees_2018_meropenem_ciprofloxacin.html
       - text: "Meropenem pbpk (Yang 2024)"
@@ -7188,6 +7190,8 @@ navbar:
         href: articles/Zhao_2025_vancomycin.html
       - text: "Vancomycin (Zhou 2019)"
         href: articles/Zhou_2019_vancomycin.html
+      - text: "Vancomycin (Zylbersztajn 2021)"
+        href: articles/Zylbersztajn_2021_vancomycin_meropenem.html
       - text: "Vancomycin all (Li 2021)"
         href: articles/Li_2021_vancomycin_renal_function.html
       - text: "Vancomycin arc (Li 2021)"
@@ -10385,6 +10389,7 @@ articles:
   - articles/Zurawska_2026_piperacillin
   - articles/Zurlinden_2016_paracetamol
   - articles/Zvada_2010_rifapentine
+  - articles/Zylbersztajn_2021_vancomycin_meropenem
   - articles/daCosta_2020_magnesiumSulfate
   - articles/deAlwis_1998_ondansetron
   - articles/deBruijn_2022_bile_acid_cholestasis
