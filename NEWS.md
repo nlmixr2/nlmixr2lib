@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Adamiszak 2025 ceftaroline ([doi:10.3390/antibiotics14040347](https://doi.org/10.3390/antibiotics14040347)) -- critically ill adults with and without continuous renal replacement therapy.
+- Add Wong 2025 efanesoctocog alfa ([doi:10.1002/jcph.70008](https://doi.org/10.1002/jcph.70008)) -- adults, adolescents and children with severe hemophilia A: the PopPK model plus the adult/adolescent and pediatric bleed repeated-time-to-event models. Registers the `REGIMEN_ONDEMAND` covariate column (on-demand vs scheduled prophylaxis).
 
 - Fix the inter-individual variability scale of Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)): the Table 3 percentages are omega x 100, not CV%, so the CL, V2 and V3 variances are now `(P/100)^2` (V3 0.6229 -> 0.8649, +39 %; CL and V2 +1-3 %). The Table 3 Wald CI on the V3 row decides the scale.
 

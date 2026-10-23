@@ -20284,6 +20284,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Hansson_2013_sunitinib_dbp.R` (switches the typical baseline diastolic blood pressure `dbp0` from 71.8 mmHg in the active arm to 77.6 mmHg in the placebo run-in arm via `exp(ldbp0 + e_placebo_dbp0 * PLACEBO)`; the sunitinib AUC drug effect on `kin` is modelled separately and exposure-driven), `Lalovic_2020_lemborexant_somnolence.R`, `Hammer_2020_acetaminophen.R` (0.524-fold multiplier on acetaminophen clearance in the saline-placebo arm, whose subjects had residual acetaminophen concentrations, via `e_placebo_cl^PLACEBO`).
 - **Notes:** Distinct from `ON_TREATMENT` (the generic pooled active-vs-placebo on/off switch used when the active arm REPLACES exposure in the structural model, reference 0 = placebo): `PLACEBO` has the opposite polarity (1 = placebo) and is used alongside, not instead of, an exposure-driven drug effect, marking the placebo subpopulation for an arm-specific structural parameter. If a model needs the pooled on/off drug switch, use `ON_TREATMENT` (= `1 - PLACEBO`) instead.
 
+### REGIMEN_ONDEMAND (**canonical for on-demand (episodic) vs scheduled-prophylaxis treatment-strategy indicator**)
+- **Description:** Treatment-strategy indicator: 1 = on-demand (episodic) dosing, in which the drug is given to treat an event such as a bleed, 0 = scheduled prophylaxis at a fixed interval.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (scheduled prophylaxis).
+- **Source aliases:**
+  - `Arm effect: on-demand` (Wong 2025 Table S6 row label; XTEND-1 Arm B on-demand vs Arm A once-weekly prophylaxis; "treatment strategy (QW prophylaxis and on-demand treatment)" in the Results) -- used in `Wong_2025_efanesoctocog_bleed_adult.R`.
+- **Example models:** `Wong_2025_efanesoctocog_bleed_adult.R` (exponential effect on the Weibull base-hazard constant of a bleed repeated-time-to-event model: `lam = exp(llam_haz + 2.21 * REGIMEN_ONDEMAND)`, a 9.1-fold higher constant on demand; the FVIII-activity effect on the hazard is modelled separately and exposure-driven).
+- **Notes:** May be TIME-VARYING within a subject: in trials where an on-demand arm switches to prophylaxis partway through (XTEND-1 Arm B: 26 weeks on demand, then 26 weeks of once-weekly prophylaxis), set the indicator per record to the strategy in force at that time. Both levels receive active drug, so this is not a placebo or on/off contrast: use `PLACEBO` or `ON_TREATMENT` for those. Use `ON_TREATMENT` only when the structural model has no drug exposure and the active arm enters as a pooled switch; here the drug exposure (doses given to treat events, or scheduled doses) still drives the model, and `REGIMEN_ONDEMAND` captures the residual difference between the two strategies, such as the different bleed phenotype of patients managed on demand. Distinct from `TRT` (paper-specific cohort indexing). The `REGIMEN_<strategy>` prefix is reserved for dosing-strategy contrasts of a single product; head-to-head comparisons of two products use `DRUG_<INN>`.
+
 ### SEMESTER (**canonical for paired-season indicator (winter or spring vs summer or fall)**)
 - **Description:** Calendar paired-season indicator: 1 = winter or spring (December 21 to June 19), 0 = summer or fall (June 20 to December 20). Time-fixed per subject (or per simulation) based on the calendar date at which the observation occurred.
 - **Units:** (binary)
