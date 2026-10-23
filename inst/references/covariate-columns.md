@@ -567,6 +567,28 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 
 ## Nutritional status
 
+### BMI_FOR_AGE_THIN (**canonical for WHO BMI-for-age thinness category indicator**)
+- **Description:** 1 = the child or adolescent falls in the thinness category of the WHO BMI-for-age reference (BMI-for-age z-score below -2 SD); 0 = otherwise. One of two indicators decomposing a three-level BMI-for-age category (`BMI_FOR_AGE_THIN` / `BMI_FOR_AGE_OVERWEIGHT`); both 0 is the normal-BMI-for-age reference.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (normal BMI-for-age, when `BMI_FOR_AGE_OVERWEIGHT` is also 0).
+- **Source aliases:**
+  - `Body Mass Index-for-age (Thin)` -- Ngara 2020 Table 3 (the category level of the dataset's BMI-for-age column).
+- **Example models:** `Ngara_2020_atazanavir.R` (PsN-linear effect +0.54 on the hair-deposition fraction `fhair`).
+- **Notes:** A categorised form of `BMIZ`. Use `BMIZ` when the paper models the continuous z-score; use these indicators when it models the WHO category. The WHO cut-offs are -2 SD (thinness) and +1 SD (overweight) for ages 5-19 years; record in the model's `covariateData` notes if the paper defines the categories differently. The name is spelled out, following the standing preference for new canonicals. Ratified by the maintainers with the Ngara 2020 extraction.
+
+### BMI_FOR_AGE_OVERWEIGHT (**canonical for WHO BMI-for-age overweight category indicator**)
+- **Description:** 1 = the child or adolescent falls in the overweight (or obese) category of the WHO BMI-for-age reference (BMI-for-age z-score above +1 SD); 0 = otherwise. Paired with `BMI_FOR_AGE_THIN`; both 0 is the normal-BMI-for-age reference.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (normal BMI-for-age, when `BMI_FOR_AGE_THIN` is also 0).
+- **Source aliases:**
+  - `Body Mass Index-for-age (Over-weight)` -- Ngara 2020 Table 3.
+- **Example models:** `Ngara_2020_atazanavir.R` (PsN-linear effect -0.21 on `fhair`).
+- **Notes:** See `BMI_FOR_AGE_THIN`. Ngara 2020 has no separate obese level; a paper that separates overweight from obesity should register a `BMI_FOR_AGE_OBESE` sibling and record that `BMI_FOR_AGE_OVERWEIGHT` then excludes obesity.
+
 ### MAL_NOURISH (**canonical for malnutrition status indicator**)
 - **Description:** 1 = subject is malnourished at study entry per a paper-defined anthropometric criterion (e.g., WHO height-for-age and weight-for-age Z-scores both < -2.0 in Tikiso 2021); 0 = not malnourished. Subject-level baseline indicator; the time-decaying recovery during nutritional supplementation is carried by the paired `T_NUT_SUPP` column rather than as a time-varying value of `MAL_NOURISH`.
 - **Units:** (binary)
@@ -16357,6 +16379,39 @@ Per-model `covariateData[[CYP2C19]]$notes` must document which orientation is in
 
 ## Lifestyle / medical history
 
+### CAREGIVER_PARENT (**canonical for parent-as-primary-caregiver indicator**)
+- **Description:** 1 = the paediatric or adolescent participant's primary caregiver is a parent; 0 = otherwise. One of a set of mutually exclusive caregiver indicators (`CAREGIVER_PARENT` / `CAREGIVER_AUNT_UNCLE` / `CAREGIVER_SIBLING`); all 0 is the model's reference caregiver (a grandparent in Ngara 2020).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (reference caregiver, when the other `CAREGIVER_` indicators are also 0; record which caregiver the model treats as reference).
+- **Source aliases:**
+  - `Guardian (Parent)` -- Ngara 2020 Table 3.
+- **Example models:** `Ngara_2020_atazanavir.R` (PsN-linear effect +0.53 on the hair-deposition fraction `fhair`, grandparent reference).
+- **Notes:** A caregiver-structure proxy for adherence support in paediatric HIV care. A paper using a different reference caregiver may reuse this family; a paper with another caregiver level registers a further `CAREGIVER_<ROLE>` member. Spelled-out names, following the standing preference for new canonicals. Ratified by the maintainers with the Ngara 2020 extraction.
+
+### CAREGIVER_AUNT_UNCLE (**canonical for aunt-or-uncle-as-primary-caregiver indicator**)
+- **Description:** 1 = the participant's primary caregiver is an aunt or uncle; 0 = otherwise. Member of the `CAREGIVER_` indicator set.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (reference caregiver, when the other `CAREGIVER_` indicators are also 0).
+- **Source aliases:**
+  - `Guardian (Uncle/Aunt)` -- Ngara 2020 Table 3.
+- **Example models:** `Ngara_2020_atazanavir.R` (PsN-linear effect +0.12 on `fhair`, grandparent reference).
+- **Notes:** See `CAREGIVER_PARENT`.
+
+### CAREGIVER_SIBLING (**canonical for sibling-as-primary-caregiver indicator**)
+- **Description:** 1 = the participant's primary caregiver is a sibling (in Ngara 2020, a sibling younger than 19 years, i.e. a child-headed household); 0 = otherwise. Member of the `CAREGIVER_` indicator set.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (reference caregiver, when the other `CAREGIVER_` indicators are also 0).
+- **Source aliases:**
+  - `Guardian (Sibling)` -- Ngara 2020 Table 3.
+- **Example models:** `Ngara_2020_atazanavir.R` (PsN-linear effect -0.54 on `fhair`, grandparent reference).
+- **Notes:** See `CAREGIVER_PARENT`.
+
 ### SMOKE (**canonical for current-smoker binary indicator**)
 - **Description:** 1 = current smoker at baseline, 0 = non-smoker.
 - **Units:** (binary)
@@ -22966,6 +23021,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `FLG1` -- the NONMEM flag in the deposited control stream (Supplementary Materials 3), set by `IF (ID.GT.300) FLG1=1`.
 - **Example models:** `Lau_2026_paracetamol.R` (founding example).
 - **Notes:** The most load-bearing of the two indicators. It selects the Study 2 gallbladder-emptying schedule (480 and 660 min post-dose, the latest of the three studies, consistent with the fasted state), four structural multipliers -- 1.94 on the oxidative intrinsic hepatic clearance, 0.650 on the PCM-GLU elimination clearance, 0.826 on the PCM-SUL elimination clearance and 1.59 on the PCM-CYS & PCM-MER elimination clearance -- the switch of the PCM-CYS & PCM-MER residual error from proportional to purely additive (0.288 umol/L), and the Study 2 fold increase in the combined paracetamol residual error (1.87). Lau 2026 Discussion attributes the structural multipliers to the higher BMI of the Study 2 cohort at total body weights comparable to the other studies, hypothesising metabolic-associated fatty liver disease (MAFLD) as the mechanism; the covariate is therefore a cohort marker standing in for an unmeasured hepatic-status covariate rather than a study-conduct artefact, and that reading should be preserved in the per-model `covariateData` notes.
+
+### ADHERENCE_VAS (**canonical for self-reported adherence on a 0-100% visual analogue scale**)
+- **Description:** Self-reported adherence to the prescribed regimen over a recent recall period, scored by the patient on a 0-100% visual analogue scale (VAS). Continuous; time-varying when collected at each visit.
+- **Units:** %
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous; record the centring value used by each model in its `covariateData` notes).
+- **Source aliases:**
+  - `Adherence score` / `Adherence VAS` -- Ngara 2020 Tables 2, 3 and 5 ('Adherence by visual inspection of analogue scale', Table 1).
+- **Example models:** `Ngara_2020_atazanavir.R`, `Ngara_2020_ritonavir.R` (PsN-linear effect +0.02 per unit on the hair-deposition fraction `fhair`, centred on 84%).
+- **Notes:** `VAS` is kept as the standard abbreviation of the instrument. Distinct from `SELFADMIN` (whether a single dose was observed) and from objective adherence measures such as pill counts or electronic monitoring, which deserve their own canonicals if a paper uses them. Ratified by the maintainers with the Ngara 2020 extraction.
 
 ### SELFADMIN (**canonical for self-administered (not directly observed) dosing-occasion indicator**)
 - **Description:** 1 = the dosing occasion was self-administered, i.e. taken by the patient or a caregiver without direct supervision by study or clinic staff; 0 = the dosing occasion was directly observed therapy (DOT). Per-DOSING-OCCASION and time-varying within a subject -- a subject typically contributes both observed and unobserved occasions. Acts as an adherence proxy on relative oral bioavailability: an apparent reduction in F on unobserved occasions is the pharmacokinetic signature of missed or partial doses and should be interpreted as such rather than as a true absorption effect unless the source argues otherwise.

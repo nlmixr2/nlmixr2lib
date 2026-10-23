@@ -532,6 +532,8 @@ navbar:
         href: articles/Hong_2011_atazanavir.html
       - text: "Atazanavir (Kengo 2025)"
         href: articles/Kengo_2025_atazanavir_ritonavir_rifampicin.html
+      - text: "Atazanavir (Ngara 2020)"
+        href: articles/Ngara_2020_atazanavir_ritonavir_hair.html
       - text: "Atazanavir (Rekic 2011)"
         href: articles/Rekic_2011_atazanavir.html
       - text: "Atazanavir a5231 (Kengo 2025)"
@@ -5816,6 +5818,8 @@ navbar:
         href: articles/Kengo_2025_atazanavir_ritonavir_rifampicin.html
       - text: "Ritonavir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
+      - text: "Ritonavir (Ngara 2020)"
+        href: articles/Ngara_2020_atazanavir_ritonavir_hair.html
       - text: "Ritonavir (Tsirizani 2025)"
         href: articles/Tsirizani_2025_ritonavir.html
       - text: "Rituximab (Candelaria 2018)"
@@ -9243,6 +9247,7 @@ articles:
   - articles/Netterberg_2018_breast_cancer_FN
   - articles/Ng_2018_exendin939
   - articles/Ngamprasertwong_2016_propofol_sheep
+  - articles/Ngara_2020_atazanavir_ritonavir_hair
   - articles/Ngo_2020_HL2351
   - articles/Ngo_2023_rivaroxaban
   - articles/NgougniPokem_2022_temocillin
