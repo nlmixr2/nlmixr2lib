@@ -6954,6 +6954,8 @@ navbar:
         href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Torsemide (Jeong 2022)"
         href: articles/Jeong_2022_torsemide.html
+      - text: "Torsemide pbpk (Jeong 2022)"
+        href: articles/Jeong_2022_torsemide_pbpk.html
       - text: "Tovecimig (Na 2024)"
         href: articles/Na_2024_tovecimig.html
       - text: "Tozorakimab (Sadiq 2024)"
@@ -8812,6 +8814,7 @@ articles:
   - articles/Jeong_2021_fexuprazan
   - articles/Jeong_2021_methotrexate_nanoformulations
   - articles/Jeong_2022_torsemide
+  - articles/Jeong_2022_torsemide_pbpk
   - articles/Jeong_2023_rabeprazole
   - articles/Jeong_2025_imc002
   - articles/Jermain_2020_ivermectin_pbpk
