@@ -836,6 +836,46 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 
 ---
 
+### lratio_pbmc_central (**canonical log-transformed PBMC:central (whole-blood) concentration ratio**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the fitted, unitless ratio of the drug concentration in peripheral blood mononuclear cells to the concentration in the central compartment, used to derive a PBMC observable algebraically when distribution into the cells is instantaneous (`Cpbmc <- ratio_pbmc_central * Cc`) and there is therefore no PBMC ODE state. May carry IIV (`etalratio_pbmc_central`, optionally Box-Cox transformed via `boxcox_lratio_pbmc_central`) and covariate effects. The bare counterpart inside `model` is `ratio_pbmc_central`.
+- **Source aliases:**
+  - `R_C:PBMC` -- Agergaard 2025 tacrolimus ('extent of tacrolimus distribution into PBMC').
+- **Example models:** `Agergaard_2025_tacrolimus.R` (founding example; `lratio_pbmc_central = log(1.96)`, RSE 4.97%, for a CYP3A5 expresser carrying at least one NR1I2-25385 C allele; IIV 37.8% Box-Cox transformed with lambda -2.50; fractional shifts +0.424 for CYP3A5 non-expressers and +0.607 for NR1I2-25385 TT, and a 0.709 multiplier for erythrocyte-contaminated samples).
+- **Notes:** Founds the `lratio_<numerator>_<denominator>` family, ratified by the maintainers on 2026-09-11: the name states both what is divided and what it is divided by, where `lcmpr` and `f<matrix>` leave the denominator implicit. `<numerator>` and `<denominator>` are canonical compartment stems (`pbmc`, `central`, ...). Future fitted concentration ratios between two matrices that are not kinetically distinct should follow the same shape. Overlaps in meaning with the older `f<matrix>` secondary-matrix scale factor (`fsaliva`, `fcortical`) and with the lactation-scoped `lcmpr`; those entries are left as they are. Distinct from `lkp_<tissue>` (predicted or literature-fixed partition constants feeding a tissue ODE) and from `lkinf_pbmc` (a rate constant into a PBMC ODE state, used when PBMC uptake is not instantaneous). Pair with the `Cpbmc` observable and a `propSd_Cpbmc` residual.
+
+### lfdepot_exp_kdes (**canonical log-transformed decay-rate constant of a time-varying relative bioavailability**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale rate constant governing how fast a time-varying relative bioavailability relaxes from its value at the first dose toward its steady-state asymptote, in the `_exp_` family form `fdepot(t) = fdepot_exp_inf + fdepot_exp_component * exp(-fdepot_exp_kdes * t)` (1 / time), with `t` the time since the first dose (`T_FIRSTDOSE`). `log(2) / fdepot_exp_kdes` is the half-life of the transition.
+- **Source aliases:**
+  - `lambda` -- Tate 2018 Eq. 5 and Table 3 ('rate at which steady-state relative bioavailability is attained').
+- **Example models:** `Tate_2018_abemaciclib.R` (founding example; `lfdepot_exp_kdes = log(0.00197)` 1/h, a 14.7-day half-life for the fall of abemaciclib Frel from 1 at the first dose to a dose-dependent steady-state value).
+- **Notes:** The bioavailability counterpart of `cl_exp_kdes` and `lkel_exp_kdes`; the `_exp_` family transposed to `fdepot` by maintainers' ruling 2026-09-21. Bare form `fdepot_exp_kdes`. Distinct from the `T_FIRSTDOSE`-driven `k_tfirstdose` of `Eechoute_2012_imatinib.R`, which is shared between `ka` and `F` and is expressed per day.
+
+### lvmax_exp_kdes (**canonical log-transformed decay-rate constant of a time-varying Michaelis-Menten Vmax**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale first-order rate constant at which a Michaelis-Menten maximum elimination rate decays multiplicatively toward zero, in the form `vmax(t) = vmax * exp(-vmax_exp_kdes * t)` consumed as `vmax(t) * Cc / (km + Cc)` (1 / time). `log(2) / vmax_exp_kdes` is the half-life of the saturable pathway.
+- **Source aliases:**
+  - `lambda1` -- used in `Ferl_2018_mosunetuzumab_cyno.R`, `Ferl_2018_mosunetuzumab_cyno_covariates.R`, `Ferl_2018_mosunetuzumab_human.R` (paper `V_max(t) = V_max^0 * exp(-lambda1 * t)`).
+- **Example models:** `Ferl_2018_mosunetuzumab_cyno.R` (founding example; `lvmax_exp_kdes = log(0.144)`, a 4.8-day half-life of the saturable elimination of an anti-CD20/CD3 T-cell-dependent bispecific antibody in cynomolgus monkeys, alongside a separate `cl_exp_kdes = 10.1 1/day` on the decaying linear clearance), `Ferl_2018_mosunetuzumab_cyno_covariates.R`, `Ferl_2018_mosunetuzumab_human.R`.
+- **Notes:** Third member of the `_exp_kdes` role-token family after `cl_exp_kdes` and `kel_exp_kdes`, ratified by the maintainers 2026-09-22. Distinct from `kel_exp_kdes`, which relaxes a rate *constant* toward a non-zero asymptote; here a maximum *rate* (amount / time) falls to zero, so the model needs no `_inf` / `_component` split and keeps the bare `vmax` as the value at t = 0. A model can carry `cl_exp_kdes` and `vmax_exp_kdes` together, as the founding example does, which is why the two decay constants must not share a name.
+
+### lkel_renal (**canonical log-transformed renal elimination rate constant arm**)
+- **Type:** log-transformed-pk
+- **Role:** Renal component of an additive renal + non-renal decomposition of the first-order elimination RATE CONSTANT, `kel = kel_nonren + kel_renal * (CRCL / ref)` (1 / time). The rate-constant-scale analogue of `lcl_renal`, for papers that estimate `ke` arms and an explicit volume rather than clearance arms. When the renal arm is scaled by a renal-function covariate, the estimate is the arm's value AT that covariate's reference.
+- **Source aliases:**
+  - `Ke0` -- Liu 2020 Table 2 and ESM equation 4, `Ke = (KeIntcpt + (CrCL/120) * Ke0) * (weight/70)^-0.25`.
+- **Example models:** `Liu_2020_cefepime.R` (founding example; `Ke0` = 0.236 1/h at CrCL = 120 mL/min).
+- **Notes:** Ratified by the maintainers 2026-09-26 (PMC6810068 sidecar). Combines the base `kel` with the registered `_renal` component suffix. Do not reparameterise onto `lcl_renal` + `lvc`: when the paper puts independent random effects on the rate-constant arms and on V, the clearance arms are products of two of the paper's random effects and their variances are not published. The paper symbol `Ke0` must never be carried as `lke0`, which is the effect-compartment equilibration rate constant.
+
+### lkel_nonren (**canonical log-transformed non-renal elimination rate constant arm**)
+- **Type:** log-transformed-pk
+- **Role:** Non-renal (intercept) component of an additive renal + non-renal decomposition of the first-order elimination rate constant (1 / time). The rate-constant-scale analogue of `lcl_nonren`; pairs with `lkel_renal`.
+- **Source aliases:**
+  - `KeIntcpt` -- Liu 2020 Table 2 and ESM equation 4.
+- **Example models:** `Liu_2020_cefepime.R` (founding example; `KeIntcpt` = 0.506 1/h).
+- **Notes:** Ratified by the maintainers 2026-09-26 together with `lkel_renal`; see that entry.
+
 ## Bare structural PK parameters
 
 The bare counterparts of the log-transformed parameters above. Used when the source paper estimates the parameter directly on the linear scale, or when the parameter appears in the `model` block as the exponentiated form `<base> <- exp(l<base> + eta_<base>)`.
@@ -1569,6 +1609,44 @@ units rather than a dimensionless-per-time rate.
 - **Source aliases:** none.
 - **Example models:** `SchaedeliStark_2024_balovaptan.R`.
 - **Notes:** See the log-transformed entries for the full role descriptions and for the distinctions from `lbmax`, `lkfec` and `lka`.
+
+### ratio_pbmc_central (**canonical bare PBMC:central (whole-blood) concentration ratio**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lratio_pbmc_central`. Unitless ratio of the PBMC to the central-compartment drug concentration, computed in `model` and applied as `Cpbmc <- ratio_pbmc_central * Cc`.
+- **Source aliases:**
+  - `R_C:PBMC` -- Agergaard 2025 tacrolimus.
+- **Example models:** `Agergaard_2025_tacrolimus.R` (founding example).
+- **Notes:** See `lratio_pbmc_central` above for the `lratio_<numerator>_<denominator>` family shape and the distinction from `f<matrix>`, `cmpr` and `kp_<tissue>`.
+
+### cl_residual (**canonical bare residual body clearance during extracorporeal therapy**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lcl_residual`.
+- **Source aliases:** none.
+- **Example models:** `Reed_2025_meropenem_vaborbactam.R`.
+
+### fdepot_exp_kdes (**canonical bare decay-rate constant of a time-varying relative bioavailability**)
+- **Type:** bare-pk
+- **Role:** Bare (natural-scale) form of `lfdepot_exp_kdes`: the rate constant at which a time-varying relative bioavailability relaxes toward its steady-state asymptote (1 / time).
+- **Source aliases:**
+  - `lambda` -- Tate 2018 Eq. 5.
+- **Example models:** `Tate_2018_abemaciclib.R` (`fdepot_exp_kdes = exp(lfdepot_exp_kdes) = 0.00197 1/h`).
+- **Notes:** Bare counterpart of `lfdepot_exp_kdes`; see that entry for the functional form.
+
+### fdepot_exp_inf (**canonical bare steady-state asymptote of a time-varying relative bioavailability**)
+- **Type:** bare-pk
+- **Role:** The value a time-varying relative bioavailability approaches after long treatment, in `fdepot(t) = fdepot_exp_inf + fdepot_exp_component * exp(-fdepot_exp_kdes * t)` (unitless). Log-scale form `lfdepot_exp_inf` when the source estimates it as a typical value; IIV is `etalfdepot_exp_inf`.
+- **Source aliases:**
+  - `F_rel,ss` -- Tate 2018 Eq. 4-5 and Table 3 ('steady-state relative bioavailability').
+- **Example models:** `Tate_2018_abemaciclib.R` (founding example; derived in `model()` as `ed50 / (ed50 + podo(depot)) * exp(etalfdepot_exp_inf)` -- Tate 2018 estimates no typical value of its own, only the dose-saturation constant `D50` (`led50`) and an IIV of 123 on it, so `ini()` carries only `etalfdepot_exp_inf`).
+- **Notes:** The bioavailability counterpart of `cl_exp_inf`; maintainers' ruling 2026-09-21. The value at the first dose is the ordinary `fdepot` / `lfdepot`, and the difference between the two is `fdepot_exp_component`.
+
+### vmax_exp_kdes (**canonical bare decay-rate constant of a time-varying Michaelis-Menten Vmax**)
+- **Type:** bare-pk
+- **Role:** Bare (natural-scale) form of `lvmax_exp_kdes`: the first-order rate constant at which a Michaelis-Menten Vmax decays toward zero, `vmax(t) = vmax * exp(-vmax_exp_kdes * t)` (1 / time).
+- **Source aliases:**
+  - `lambda1` -- used in `Ferl_2018_mosunetuzumab_cyno.R`.
+- **Example models:** `Ferl_2018_mosunetuzumab_cyno.R` (`vmax_exp_kdes = exp(lvmax_exp_kdes) = 0.144 1/day`).
+- **Notes:** Bare counterpart of `lvmax_exp_kdes`; see that entry for the functional form.
 
 ## Paper-named mechanistic parameters
 
