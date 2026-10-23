@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ponce-Bobadilla 2023 upadacitinib ([doi:10.1007/s40262-022-01191-6](https://doi.org/10.1007/s40262-022-01191-6)) -- adults with moderately to severely active ulcerative colitis (population PK pooled with healthy volunteers and rheumatoid arthritis, Crohn's disease and atopic dermatitis patients), plus nine Week-8 induction and Week-52 maintenance exposure-response models.
+- Add Fukaya 2023 glucarpidase and methotrexate ([doi:10.3389/fonc.2023.1003633](https://doi.org/10.3389/fonc.2023.1003633)): glucarpidase popPK in healthy Japanese men, and glucarpidase-methotrexate popPK-PD in Japanese patients with delayed methotrexate excretion.
 
 - Fix the inter-individual variability scale of Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)): the Table 3 percentages are omega x 100, not CV%, so the CL, V2 and V3 variances are now `(P/100)^2` (V3 0.6229 -> 0.8649, +39 %; CL and V2 +1-3 %). The Table 3 Wald CI on the V3 row decides the scale.
 
