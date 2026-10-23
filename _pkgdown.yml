@@ -80,6 +80,8 @@ navbar:
         href: articles/Takahashi_2023_abatacept.html
       - text: "Abatacept (Zhong 2026)"
         href: articles/Zhong_2026_abatacept.html
+      - text: "Abemaciclib (Tate 2018)"
+        href: articles/Tate_2018_abemaciclib.html
       - text: "Abemaciclib cns pbpk (Wickramasinghe 2025)"
         href: articles/Wickramasinghe_2025_spatial_cns_pbpk.html
       - text: "Abemaciclib qsp (Zhang 2025)"
@@ -9737,6 +9739,7 @@ articles:
   - articles/Tarning_2012_artemether
   - articles/Tarning_2012_dihydroartemisinin_piperaquine
   - articles/Tarning_2014_piperaquine
+  - articles/Tate_2018_abemaciclib
   - articles/Taubert_2016_linezolid
   - articles/Taubert_2018_finafloxacin
   - articles/Taylor_2020_methotrexate
