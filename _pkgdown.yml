@@ -1834,6 +1834,8 @@ navbar:
         href: articles/Ozdin_2025_dexamethasone.html
       - text: "Dexamethasone rat (Li 2012)"
         href: articles/Li_2012_dexamethasone_rat.html
+      - text: "Dexketoprofen pbpk (Zhang 2022)"
+        href: articles/Zhang_2022_dexketoprofen_pbpk.html
       - text: "Dexmedetomidine (Huang 2025)"
         href: articles/Huang_2025_dexmedetomidine.html
       - text: "Dexmedetomidine (PerezGuille 2018)"
@@ -10332,6 +10334,7 @@ articles:
   - articles/Zhang_2021_ceftolozane_tazobactam
   - articles/Zhang_2021_dupilumab
   - articles/Zhang_2021_realgar_indigo
+  - articles/Zhang_2022_dexketoprofen_pbpk
   - articles/Zhang_2022_ferricPyrophosphateCitrate
   - articles/Zhang_2022_ici_irae_nsclc_mbma
   - articles/Zhang_2022_ormutivimab
