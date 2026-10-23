@@ -5506,6 +5506,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** ADC popPK extractions with MMAE payload.
 
+### mcmmaf (**canonical cys-mcMMAF payload suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Cysteine-maleimidocaproyl monomethyl auristatin F (cys-mcMMAF), the circulating payload catabolite of the MMAF ADC belantamab mafodotin, released by proteolytic degradation and deconjugation of the conjugate.
+- **Source aliases:**
+  - `cys-mcMMAF`, `MMAF` -- Rathi 2021 (the control stream compartment is `MMAF`).
+- **Example models:** `Rathi_2021_belantamab.R` (`central_mcmmaf` / `peripheral1_mcmmaf` in nmol, observation `Cc_mcmmaf` in nM).
+- **Notes:** Named for the measured catabolite, not bare `mmaf`: the assay measures the cysteine adduct of the maleimidocaproyl-linked payload rather than free MMAF. A model of free MMAF would take a separate `mmaf` suffix.
+
 ### dxd (**canonical Dxd payload suffix**)
 - **Type:** metabolite-suffix
 - **Role:** DXd (exatecan derivative) ADC payload species suffix.
@@ -5621,8 +5629,9 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 ### dar0 (**canonical DAR-0 ADC isoform suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Drug-to-antibody ratio 0 (unconjugated antibody) ADC isoform species suffix.
-- **Source aliases:** none.
-- **Example models:** DAR-resolved ADC popPK extractions.
+- **Source aliases:**
+  - `naked mAb`, `UMAB` -- Rathi 2021 total-mAb control stream (`CUMAB = A(3)/S1`).
+- **Example models:** DAR-resolved ADC popPK extractions; `Rathi_2021_belantamab.R` (`central_dar0` / `peripheral1_dar0`, the naked antibody formed from the ADC by first-order deconjugation in a model that does not resolve the other DAR species).
 
 ### dar1 (**canonical DAR-1 ADC isoform suffix**)
 - **Type:** metabolite-suffix

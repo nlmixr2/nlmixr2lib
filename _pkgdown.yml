@@ -744,6 +744,8 @@ navbar:
         href: articles/Karakitsios_2025_bedaquiline_lung_pbpk.html
       - text: "Belantamab (Papathanasiou 2025)"
         href: articles/Papathanasiou_2025_belantamab.html
+      - text: "Belantamab (Rathi 2021)"
+        href: articles/Rathi_2021_belantamab.html
       - text: "Belantamab mprotein (Collins 2023)"
         href: articles/Collins_2023_belantamab_mprotein.html
       - text: "Belatacept (Shen 2013)"
@@ -9464,6 +9466,7 @@ articles:
   - articles/Randell_2024_metronidazole
   - articles/Rao_2021_antituberculosis_critical_illness
   - articles/Rao_2023_covid19_qsp
+  - articles/Rathi_2021_belantamab
   - articles/Ravix_2024_trametinib
   - articles/Ravva_2009_varenicline
   - articles/Ravva_2010_varenicline_exposure_response
