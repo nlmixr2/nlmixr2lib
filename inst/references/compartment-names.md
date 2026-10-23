@@ -4747,6 +4747,13 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Hansson_2013_sunitinib_os.R` (Weibull PH `sur = exp(-cumhaz)`; the observation variable), `Struemper_2025_tumorsize_OS_nsclc.R` (AFT log-normal `sur = 1 - pnorm(z_os)`, derived OS output).
 - **Notes:** Founding models expose `sur` with a small placeholder residual so the nlmixr2 likelihood machinery accepts the forward-simulation model.
 
+### mpfs (**canonical study-arm median progression-free survival output**)
+- **Type:** compartment
+- **Role:** Median progression-free survival of a trial ARM, in months, as the algebraic observation variable of a study-level model-based meta-analysis that predicts one median per arm from arm-level characteristics (for example the arm's response rate). A scalar per arm with no time course: the model carries no ODE state, no dose and no survival curve.
+- **Source aliases:** `PFS` / `median PFS` (Teng 2018 regression `PFS (months) = -23.46 + 0.56*ORR`).
+- **Example models:** `Teng_2018_rrmm_pfs_orr_mbma.R` (linear in the arm's overall response rate `RESP_ORR_PCT`; also exposes `mpfs_se`, the standard error of the prediction from binomial sampling error in a phase II ORR), `Teng_2018_rrmm_pfs_vgpr_mbma.R` (linear in the arm's >=VGPR rate `RESP_VGPR_PCT`).
+- **Notes:** An ARM-level summary, not a patient's event time: never simulate it as an individual PFS and never compare it with a per-patient `sur` curve without first deriving that curve's median. Distinct from `cumhaz_pfs` / `sur`, which are the state and output of a patient-level time-to-event model. The overall-survival sibling is the `mos` output of `Zierhut_2016_hcc_antiangiogenic_os_mbma.R`.
+
 ### prob_scc (**canonical sputum-culture-conversion probability output**)
 - **Type:** compartment
 - **Role:** Marginal probability of occupying the sputum-culture-converted state at time `t` in a tuberculosis treatment-outcome multistate model, i.e. the probability that a patient has achieved sputum culture conversion (SCC) and has not since relapsed, dropped out or died. Sputum culture conversion is the standard early efficacy endpoint in TB drug development, so `prob_scc` is the natural single PD output to expose for a TB multistate model whose remaining state-occupancy probabilities (active TB, recurrent TB, dropout, death) are returned alongside it as ordinary `model` outputs.
