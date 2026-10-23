@@ -88,6 +88,19 @@ required for them, and `covEffectPattern` already admits the `e_` forms.
   `kel <- exp(lkel) + e_wt_kel * wtn`), as in
   `McLachlan_1996_fluconazole.R` and `Blair_2004_raltitrexed.R`. Precedent for
   the bare form: `b1_int` / `b2_int` in `Sherer_2012_AAA.R`.
+- `_bdecoef` / `_bdeexp` -- the coefficient `a` and the power `b` of a
+  **power-function body-weight-dependent exponent** (BDE), appended to the
+  `e_<cov>_<param>` name of the effect whose exponent varies with the
+  covariate: `cl <- tvcl * (WT / ref)^((e_wt_cl_bdecoef * WT)^e_wt_cl_bdeexp)`.
+  `_bdecoef` carries 1 / covariate units, `_bdeexp` is unitless and usually
+  negative, so both stay on the linear scale. Use them instead of a plain
+  `e_wt_cl` when the source estimates the exponent as a function of the
+  covariate; the sigmoidal Emax-type BDE (Wang 2013 morphine: `lkmin`,
+  `lkdec`, `lkhal`, `lhill`) is a different, four-parameter form.
+  `R/conventions.R::.classifyCovEffect()` classifies both tokens as `"bde"`.
+  Founding example: `Admiraal_2019_alemtuzumab.R` (`e_wt_cl_bdecoef = 0.038`
+  1/kg, `e_wt_cl_bdeexp = -0.79`; the exponent falls from 3.7 at 5 kg to 0.41
+  at 80 kg). Ratified 2026-10-02.
 
 Founding example: `Wahlquist_2024_propofol.R` (symbolic-regression network
 covariate model on all four inter-compartmental rate constants, the
@@ -134,6 +147,15 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:** none.
 - **Example models:** any 2-compartment or higher popPK extraction.
 - **Notes:** Pairs with `peripheral1` compartment and inter-compartmental clearance `lq`.
+
+### lvp_ratio (**canonical log-transformed ratio of peripheral to central volume**)
+- **Type:** paper-named-param
+- **Role:** Log of the factor by which the individual central volume is multiplied to give the first peripheral volume, `vp <- vc * exp(lvp_ratio)` (unitless). Used when the source estimates V2 as a fraction or multiple of V1 rather than as a free volume, so any IIV and covariate effects on `vc` carry through to `vp` unchanged.
+- **Source aliases:**
+  - `V2 = V1 * THETA(3)` -- Admiraal 2019 control stream; Table 2 'V2,pop (factor of V1)'.
+  - `Ratio Vp/F and Vc/F` -- van den Berg 2021 Table 2.
+- **Example models:** `vandenBerg_2021_finerenone.R` (`lvp_ratio = fixed(log(1))`, peripheral volume held equal to central volume), `Admiraal_2019_alemtuzumab.R` (`lvp_ratio = log(0.7)`, estimated to stabilise an otherwise poorly identified two-compartment fit).
+- **Notes:** Use `lvp` instead whenever the source estimates the peripheral volume as its own parameter; re-expressing a ratio as an absolute `lvp` would drop the propagation of the `vc` random effect and covariates to `vp`. Ratified 2026-10-02 with the Admiraal 2019 extraction.
 
 ### lvp2 (**canonical log-transformed second peripheral volume**)
 - **Type:** log-transformed-pk

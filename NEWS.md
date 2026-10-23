@@ -18,7 +18,7 @@
 
 - Fix the inter-individual variability scale of Denti 2010 glucose minimal model ([doi:10.1152/ajpendo.00656.2009](https://doi.org/10.1152/ajpendo.00656.2009)): the paper reports "the square root of the elements on the diagonal of Omega", so the SG/VOL and SI/P2 blocks are now `(P/100)^2` on the diagonal with the printed correlations unchanged (SI +11 %, P2 +7 %).
 
-- Add Ogungbenro 2019 simvastatin and four metabolites ([doi:10.1007/s00228-019-02697-y](https://doi.org/10.1007/s00228-019-02697-y)) -- hyperlipidemic children and adolescents. The printed estimates give exposures below the paper's own VPC; see the vignette.
+- Add Admiraal 2019 alemtuzumab ([doi:10.1007/s40262-019-00782-0](https://doi.org/10.1007/s40262-019-00782-0)) -- children receiving alemtuzumab serotherapy for allogeneic hematopoietic cell transplantation.
 
 - Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
 
