@@ -6784,6 +6784,10 @@ navbar:
         href: articles/Bhatnagar_2024_upadacitinib.html
       - text: "Upadacitinib asas40 nraxspa (Bhatnagar 2024)"
         href: articles/Bhatnagar_2024_upadacitinib.html
+      - text: "Upadacitinib mtxir (Mohamed 2019)"
+        href: articles/Mohamed_2019_upadacitinib.html
+      - text: "Upadacitinib tnfir (Mohamed 2019)"
+        href: articles/Mohamed_2019_upadacitinib.html
       - text: "Uprifosbuvir pbpk (vandenBerg 2021)"
         href: articles/vandenBerg_2021_uprifosbuvir.html
       - text: "Ustekinumab (Aguiar 2021)"
@@ -8951,6 +8955,7 @@ articles:
   - articles/Mohamed_2012_gentamicin
   - articles/Mohamed_2013_procainamide
   - articles/Mohamed_2016_colistin_meropenem
+  - articles/Mohamed_2019_upadacitinib
   - articles/MohammedAli_2023_tacrolimus
   - articles/MohammedAli_2025_tacrolimus
   - articles/Mohanan_2017_fludarabine
