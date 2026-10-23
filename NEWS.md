@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sier 2017 estradiol whole-body PBPK and PBPK-LiverODE ([doi:10.1186/s12918-017-0520-3](https://doi.org/10.1186/s12918-017-0520-3)) -- endogenous and exogenous estradiol in women.
+- Add Thiel 2018 diclofenac and celecoxib PGE2-decrease pain-relief exposure-response models ([doi:10.1038/s41540-018-0062-3](https://doi.org/10.1038/s41540-018-0062-3)) -- adults with acute pain after oral surgery.
 
 - Fix the inter-individual variability scale of Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)): the Table 3 percentages are omega x 100, not CV%, so the CL, V2 and V3 variances are now `(P/100)^2` (V3 0.6229 -> 0.8649, +39 %; CL and V2 +1-3 %). The Table 3 Wald CI on the V3 row decides the scale.
 
