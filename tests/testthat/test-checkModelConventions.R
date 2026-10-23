@@ -159,6 +159,64 @@ test_that("a covariate used but not in covariateData is an error", {
   expect_true(any(cov$severity == "error"))
 })
 
+test_that("DV read by an ll() likelihood is not treated as a covariate", {
+  # A custom likelihood must read the observation, so rxode2 lists DV among
+  # ui$covariates; it is a reserved data item, not a covariate.
+  clean <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1; label("a")
+      lvc <- 1; label("b")
+      propSd <- 0.1; label("d")
+      logitp <- 0; label("e")
+    })
+    model({
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      kel <- cl / vc
+      d/dt(central) <- -kel * central
+      Cc <- central / vc
+      p <- expit(logitp)
+      Cc ~ prop(propSd)
+      ll(resp) ~ DV * log(p) + (1 - DV) * log(1 - p)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(clean, verbose = FALSE))
+  expect_equal(nrow(res[res$name == "DV", ]), 0L)
+  expect_equal(
+    nrow(res[res$category == "file_metadata" & grepl("covariateData", res$message), ]),
+    0L
+  )
+
+  # The exemption is for DV only: a real covariate in the same model still errors.
+  with_wt <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1; label("a")
+      lvc <- 1; label("b")
+      propSd <- 0.1; label("d")
+      logitp <- 0; label("e")
+    })
+    model({
+      cl <- exp(lcl) * (WT / 70)^0.75
+      vc <- exp(lvc)
+      kel <- cl / vc
+      d/dt(central) <- -kel * central
+      Cc <- central / vc
+      p <- expit(logitp)
+      Cc ~ prop(propSd)
+      ll(resp) ~ DV * log(p) + (1 - DV) * log(1 - p)
+    })
+  }
+  res_wt <- suppressWarnings(checkModelConventions(with_wt, verbose = FALSE))
+  expect_equal(nrow(res_wt[res_wt$name == "DV", ]), 0L)
+  expect_true(any(res_wt$category == "covariates" & res_wt$name == "WT" & res_wt$severity == "error"))
+})
+
 test_that("a covariate alias without declared source_name produces a warning", {
   bad <- function() {
     description <- "A"

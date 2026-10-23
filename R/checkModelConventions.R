@@ -247,7 +247,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
   # from a PK model); subtract them so they don't trigger a spurious
   # covariateData-missing error.
   depends <- meta$depends %||% character()
-  covs_for_check <- setdiff(ui$covariates %||% character(), depends)
+  covs_for_check <- setdiff(ui$covariates %||% character(), c(depends, .reservedDataItems))
   uses_covariates <- length(covs_for_check) > 0
   if (uses_covariates && is.null(meta$covariateData)) {
     issues <- rbind(
@@ -795,7 +795,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
   depends <- as.list(ui$meta)$depends %||% character()
   # `depends` names are model inputs supplied by an upstream model (e.g., Cc
   # threaded into a PD model); they are not epidemiological covariates.
-  covs <- setdiff(covs_all, depends)
+  covs <- setdiff(covs_all, c(depends, .reservedDataItems))
   covData <- as.list(ui$meta)$covariateData
   covDataNames <- names(covData %||% list())
 
@@ -1648,6 +1648,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
 )
 
 .estimatedDisclaimerPattern <- "\\b(?:is|was|were|are) estimated\\b|\\bestimated\\b[^.;]*\\bper\\b"
+
+# Dataset columns a model body may read that are not covariates. rxode2 lists
+# them in `ui$covariates`, but a custom likelihood `ll(<endpoint>) ~ ...` must
+# read the observation itself (e.g. Iwaki_2021_guselkumab's beta-CDF interval
+# probability of the observed PPPASI score).
+.reservedDataItems <- "DV"
 
 # Issue #481: a clearance that depends on time must say so in its parameter
 # names. The old spellings cannot simply be banned by name -- `emax`, `imax`,
