@@ -2124,6 +2124,14 @@ navbar:
         href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Efineptakin alfa (Park 2025)"
         href: articles/Park_2025_efineptakin_alfa.html
+      - text: "Efineptakin alfa mtmdd (Byun 2024)"
+        href: articles/Byun_2024_tmdd_approximations.html
+      - text: "Efineptakin alfa ptmdd (Byun 2024)"
+        href: articles/Byun_2024_tmdd_approximations.html
+      - text: "Efineptakin alfa qtmdd (Byun 2024)"
+        href: articles/Byun_2024_tmdd_approximations.html
+      - text: "Efineptakin alfa tmdd (Byun 2024)"
+        href: articles/Byun_2024_tmdd_approximations.html
       - text: "Eflornithine rat (Jansson 2008)"
         href: articles/Jansson_2008_eflornithine.html
       - text: "Efpeglenatide (Choi 2025)"
@@ -2916,6 +2924,14 @@ navbar:
         href: articles/Jung_2023_fractal_kinetics.html
       - text: "HL2351 (Ngo 2020)"
         href: articles/Ngo_2020_HL2351.html
+      - text: "HL2351 mtmdd (Byun 2024)"
+        href: articles/Byun_2024_tmdd_approximations.html
+      - text: "HL2351 ptmdd (Byun 2024)"
+        href: articles/Byun_2024_tmdd_approximations.html
+      - text: "HL2351 qtmdd (Byun 2024)"
+        href: articles/Byun_2024_tmdd_approximations.html
+      - text: "HL2351 tmdd (Byun 2024)"
+        href: articles/Byun_2024_tmdd_approximations.html
       - text: "Haloperidol (Franken 2017)"
         href: articles/Franken_2017_haloperidol.html
       - text: "Haloperidol panss subscales (PillaReddy 2013)"
@@ -7694,6 +7710,7 @@ articles:
   - articles/ButraguenoLaiseca_2024_meropenem
   - articles/ButraguenoLaiseca_2025_teicoplanin
   - articles/Byrne_2022_imr687
+  - articles/Byun_2024_tmdd_approximations
   - articles/Cagnardi_2018_cefazolin_dog
   - articles/Cai_2022_polymyxinB
   - articles/Cai_2025_diamorphine
