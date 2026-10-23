@@ -38,7 +38,12 @@ Gibiansky_2010_mab_two_target_tmdd_full <- function() {
       specimen = "administration site",
       verified = TRUE
     ),
-    central = list(analyte = "monoclonal antibody (unnamed), free", units = "nmol", specimen = "serum", verified = TRUE),
+    central = list(
+      analyte = "monoclonal antibody (unnamed), free",
+      units = "nmol",
+      specimen = "serum",
+      verified = TRUE
+    ),
     peripheral1 = list(
       analyte = "monoclonal antibody (unnamed), free",
       units = "nmol",
