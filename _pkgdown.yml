@@ -6202,6 +6202,8 @@ navbar:
         href: articles/Thorsted_2016_somatropin_rat.html
       - text: "Sonidegib (Goel 2016)"
         href: articles/Goel_2016_Sonidegib.html
+      - text: "Sorafenib (Huh 2021)"
+        href: articles/Huh_2021_sorafenib.html
       - text: "Sorafenib (Jain 2011)"
         href: articles/Jain_2011_sorafenib.html
       - text: "Sorafenib bcrp (Agarwal 2011)"
@@ -8567,6 +8569,7 @@ articles:
   - articles/Huang_2026_tiapride
   - articles/Hughes_2022_brepocitinib
   - articles/Hughes_2024_vancomycin
+  - articles/Huh_2021_sorafenib
   - articles/Huh_2024_ritlecitinib
   - articles/Humphries_2021_tb_lung_pbpk
   - articles/Huo_2025_lamotrigine
