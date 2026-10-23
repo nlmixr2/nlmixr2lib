@@ -519,21 +519,13 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Schreib_2024_busulfan.R` (`lkel_exp_kdes = -2.965`, giving 0.0516 1/h and a 13.4 h half-life for the decline in busulfan `k` and `CL` over a conditioning course).
 - **Notes:** The `kel` counterpart of the registered `cl_exp_kdes` role in the time-varying-clearance family; reuses the `_kdes` role token deliberately so both families are found by the same stem.
 
-### lkel_renal (**canonical log-transformed renal elimination rate constant arm**)
+### lemax_exp_kdes (**canonical log-transformed decay-rate constant of a time-varying maximal drug effect**)
 - **Type:** log-transformed-pk
-- **Role:** Renal component of an additive renal + non-renal decomposition of the first-order elimination RATE CONSTANT, `kel = kel_nonren + kel_renal * (CRCL / ref)` (1 / time). The rate-constant-scale analogue of `lcl_renal`, for papers that estimate `ke` arms and an explicit volume rather than clearance arms. When the renal arm is scaled by a renal-function covariate, the estimate is the arm's value AT that covariate's reference.
+- **Role:** Log-scale rate constant at which a maximal drug effect relaxes from its value at the first dose toward its asymptote, in the exponential form `emax(t) = emax * (1 + emax_exp_famp * (1 - exp(-emax_exp_kdes * t)))` (1 / time, `t` = time after the first dose). `log(2) / emax_exp_kdes` is the half-life of the change; with `emax_exp_famp = -1` it is the half-life of tachyphylaxis.
 - **Source aliases:**
-  - `Ke0` -- Liu 2020 Table 2 and ESM equation 4, `Ke = (KeIntcpt + (CrCL/120) * Ke0) * (weight/70)^-0.25`.
-- **Example models:** `Liu_2020_cefepime.R` (founding example; `Ke0` = 0.236 1/h at CrCL = 120 mL/min).
-- **Notes:** Ratified by the maintainers 2026-09-26 (PMC6810068 sidecar). Combines the base `kel` with the registered `_renal` component suffix. Do not reparameterise onto `lcl_renal` + `lvc`: when the paper puts independent random effects on the rate-constant arms and on V, the clearance arms are products of two of the paper's random effects and their variances are not published. The paper symbol `Ke0` must never be carried as `lke0`, which is the effect-compartment equilibration rate constant.
-
-### lkel_nonren (**canonical log-transformed non-renal elimination rate constant arm**)
-- **Type:** log-transformed-pk
-- **Role:** Non-renal (intercept) component of an additive renal + non-renal decomposition of the first-order elimination rate constant (1 / time). The rate-constant-scale analogue of `lcl_nonren`; pairs with `lkel_renal`.
-- **Source aliases:**
-  - `KeIntcpt` -- Liu 2020 Table 2 and ESM equation 4.
-- **Example models:** `Liu_2020_cefepime.R` (founding example; `KeIntcpt` = 0.506 1/h).
-- **Notes:** Ratified by the maintainers 2026-09-26 together with `lkel_renal`; see that entry.
+  - `kTCPX` -- Wojciechowski 2022 (Br J Clin Pharmacol) Equation 7 and Table 2 'Half-life of tachyphylaxis (kTCPX; days)' = 151, printed as a half-life, so `lemax_exp_kdes = log(log(2) / (151 * 24))` in 1/h.
+- **Example models:** `Wojciechowski_2022_abrocitinib_platelets.R` (founding example; the Emax of abrocitinib on platelet proliferation wanes with a 151-day half-life, 32% lost by week 12).
+- **Notes:** The Emax member of the `<param>_exp_famp` / `<param>_exp_kdes` time-varying-parameter family (`lkel_exp_kdes`, `lcl_exp_kdes`), reusing the `_kdes` role token so all members are found by the same stem. Distinct from an effect-compartment or tolerance-compartment model, where the waning follows a state rather than a closed form in time.
 
 ### ltlag (**canonical log-transformed absorption lag time**)
 - **Type:** log-transformed-pk
@@ -1059,13 +1051,13 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Example models:** `Schreib_2024_busulfan.R` (`kel_exp_kdes = exp(lkel_exp_kdes) = 0.0516 1/h`).
 - **Notes:** Bare counterpart of `lkel_exp_kdes`; see that entry for the functional form. The sibling `kel_exp_famp` is registered under "Paper-named mechanistic parameters" instead of here, because it is signed and must never be log-transformed.
 
-### vmax_exp_kdes (**canonical bare decay-rate constant of a time-varying Michaelis-Menten Vmax**)
+### emax_exp_kdes (**canonical bare decay-rate constant of a time-varying maximal drug effect**)
 - **Type:** bare-pk
-- **Role:** Bare (natural-scale) form of `lvmax_exp_kdes`: the first-order rate constant at which a Michaelis-Menten Vmax decays toward zero, `vmax(t) = vmax * exp(-vmax_exp_kdes * t)` (1 / time).
+- **Role:** Bare (natural-scale) form of `lemax_exp_kdes`: the rate constant at which a time-varying maximal drug effect relaxes toward its asymptote (1 / time).
 - **Source aliases:**
-  - `lambda1` -- used in `Ferl_2018_mosunetuzumab_cyno.R`.
-- **Example models:** `Ferl_2018_mosunetuzumab_cyno.R` (`vmax_exp_kdes = exp(lvmax_exp_kdes) = 0.144 1/day`).
-- **Notes:** Bare counterpart of `lvmax_exp_kdes`; see that entry for the functional form.
+  - `kTCPX` -- Wojciechowski 2022 (Br J Clin Pharmacol), printed as a half-life.
+- **Example models:** `Wojciechowski_2022_abrocitinib_platelets.R` (`emax_exp_kdes = exp(lemax_exp_kdes) = log(2) / 3624 1/h`).
+- **Notes:** Bare counterpart of `lemax_exp_kdes`; see that entry for the functional form. The sibling `emax_exp_famp` is registered under the paper-named parameters because it is signed and must never be log-transformed.
 
 ### k12 (**canonical bare central-to-first-peripheral rate constant**)
 - **Type:** bare-pk
@@ -1757,6 +1749,14 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `TAFOCLDELTA` -- Wojciechowski 2022 Online Resource 2 (`COVTAFOCL = 1+TAFOCLDELTA*(1-EXP(-1*(LOG(2)/TAFOCLHL)*TAFO))`); Table 2 'Maximum change in CL with respect to time (TAFO)' = -0.186, already signed, with the rate given as a half-life `TAFOCLHL` = 21.6 h, so `lcl_exp_kdes = log(log(2) / 21.6)`.
 - **Example models:** `Yang_2021_unecritinib.R` (founding example; `cl_exp_famp = -0.41`, a 41% fall in the apparent clearance of the active metabolite crizotinib from its first-dose value, with `KTDPK = 0.0363 1/h` as `lcl_exp_kdes`), `Wojciechowski_2022_abrocitinib.R` (`cl_exp_famp = -0.186`, an 18.6% fall in abrocitinib clearance over a treatment period, with a 21.6 h half-life).
 - **Notes:** The clearance counterpart of [[kel_exp_famp]]; same sign convention (negative = decline) and same reason for existing: the `cl_exp_` family otherwise parameterises by an absolute decaying component (`cl_exp_inf` + `cl_exp_component`), and a source that estimates a fraction of the baseline should keep that parameterisation so its estimate and RSE map one-to-one onto an `ini()` value. Linear (never log-transformed) because it is signed. In the founding model it acts on the metabolite clearance `cl_crizotinib`; the bare name is kept because the model carries only one such amplitude.
+
+### emax_exp_famp (**canonical fractional amplitude of a time-varying maximal drug effect**)
+- **Type:** paper-named-param
+- **Role:** Dimensionless *signed* fractional amplitude of an exponential change in a maximal drug effect with time after the first dose: `emax(t) = emax * (1 + emax_exp_famp * (1 - exp(-emax_exp_kdes * t)))`, so `emax(0) = emax`, `emax(inf) = emax * (1 + emax_exp_famp)`. A negative value is tachyphylaxis; `-1` means the effect is eventually lost entirely. The decay rate is `emax_exp_kdes` (log scale `lemax_exp_kdes`).
+- **Source aliases:**
+  - `DELTATCPX` -- Wojciechowski 2022 (Br J Clin Pharmacol) Equation 7, `TCPX = DELTATCPX * (1 - exp(-ln2 / kTCPX * t))` with `Emax(t) = Emax * (1 - TCPX)`; printed as a positive extent of diminished response, so `emax_exp_famp = -DELTATCPX`. Estimated at 0.991 and fixed to 1 in the final model (Results 3.2).
+- **Example models:** `Wojciechowski_2022_abrocitinib_platelets.R` (founding example; `emax_exp_famp = fixed(-1)` on the Emax of abrocitinib inhibition of platelet proliferation).
+- **Notes:** The Emax counterpart of [[kel_exp_famp]] and [[cl_exp_famp]]; same sign convention (negative = decline) and linear (never log-transformed) because it is signed. In the founding paper the term is set to 0 for placebo and while drug is withdrawn; the model file applies it on time after the first dose, which only matters while residual drug is present.
 
 ### cl_circ_famp_day (**canonical daytime circadian fractional amplitude on clearance**)
 - **Type:** paper-named-param

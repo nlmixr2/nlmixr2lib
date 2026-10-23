@@ -902,6 +902,14 @@ time-dependence: all of them are also standard PD parameter names, and several
 models carry both a PD `emax` and a clearance one. The `cl_` prefix is what
 keeps `cl_t50` and `cl_time_hill` distinct from their PD namesakes.
 
+The fractional exponential form also applies to a PD parameter. A maximal
+drug effect that wanes with time after the first dose (tachyphylaxis) is
+`emax <- emax * (1 + emax_exp_famp * (1 - exp(-emax_exp_kdes * t)))`, with
+`emax_exp_famp` signed and linear (`-1` = the effect is eventually lost) and
+`lemax_exp_kdes` on the log scale. A paper that prints the rate as a
+half-life gives `lemax_exp_kdes = log(log(2) / thalf)`. Founding example:
+`Wojciechowski_2022_abrocitinib_platelets.R` (paper `DELTATCPX`, `kTCPX`).
+
 **The symbol the ODE consumes is the total clearance.** Name components so they
 cannot be mistaken for it -- `cl_exp_component`, not `cl_time` or `cl_t_now`. A
 decaying component can fall by dozens of orders of magnitude over a treatment

@@ -88,6 +88,8 @@ navbar:
         href: articles/Zhang_2025_abemaciclib.html
       - text: "Abrocitinib (Wojciechowski 2022)"
         href: articles/Wojciechowski_2022_abrocitinib.html
+      - text: "Abrocitinib platelets (Wojciechowski 2022)"
+        href: articles/Wojciechowski_2022_abrocitinib_platelets.html
       - text: "Acalabrutinib (Edlund 2022)"
         href: articles/Edlund_2022_acalabrutinib.html
       - text: "Acalabrutinib (Zhou 2019)"
@@ -10215,6 +10217,7 @@ articles:
   - articles/Woillard_2017_tacrolimus
   - articles/Wojciechowski_2015_rheumatoidArthritis
   - articles/Wojciechowski_2022_abrocitinib
+  - articles/Wojciechowski_2022_abrocitinib_platelets
   - articles/Wojciechowski_2022_domagrozumab
   - articles/Wojciechowski_2023_ritlecitinib
   - articles/Wolowich_2025_thc_heart_rate

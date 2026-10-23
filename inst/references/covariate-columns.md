@@ -2436,7 +2436,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Scope:** general
 - **Reference category:** n/a -- used with power scaling `(WBC / ref)^exponent`. Reference values observed: 10 x 10^9/L (Mould 2007, typical CLL Vmax normalization).
 - **Source aliases:** none known (`WBC` is the universal clinical-PK abbreviation).
-- **Example models:** `Mould_2007_alemtuzumab.R` (reference 10 x 10^9/L; exponent 0.194 on Vmax), `Dirks_2008_cetuximab.R` (reference 6.8 x 10^9/L; additive linear-deviation effect 0.0216 per 10^9/L on Vmax; baseline only -- cetuximab does not deplete circulating leukocytes, so WBC is treated as a static covariate), `Gibiansky_2021_rituximab.R` (CLL; reference 100 x 10^9/L; baseline only; power exponent 0.223 on the time-dependent target-mediated clearance component `cl_exp_component`, consistent with leukaemic B cells carrying the CD20 target).
+- **Example models:** `Mould_2007_alemtuzumab.R` (reference 10 x 10^9/L; exponent 0.194 on Vmax), `Dirks_2008_cetuximab.R` (reference 6.8 x 10^9/L; additive linear-deviation effect 0.0216 per 10^9/L on Vmax; baseline only -- cetuximab does not deplete circulating leukocytes, so WBC is treated as a static covariate), `Gibiansky_2021_rituximab.R` (CLL; reference 100 x 10^9/L; baseline only; power exponent 0.223 on the time-dependent target-mediated clearance component `cl_exp_component`, consistent with leukaemic B cells carrying the CD20 target), `Wojciechowski_2022_abrocitinib_platelets.R` (baseline only; reference 6.9 x 10^9/L; power exponent 0.199 on the baseline platelet count of a Friberg platelet model, not on a PK parameter).
 - **Notes:** Time-varying in treatment studies where the drug depletes the leukaemic clone (e.g., alemtuzumab in CLL): WBC must be supplied at every observation time in the event dataset. In diseases where WBC is not therapeutically targeted the column can be treated as a baseline-only covariate; record the per-model convention in `covariateData[[WBC]]$notes`.
 
 ### NLR (**canonical for neutrophil-to-lymphocyte ratio**)
@@ -2456,7 +2456,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Scope:** general
 - **Reference category:** n/a -- used with power scaling `(HCT / ref)^exponent`. Reference values observed: 45 % (Nestorov 2014, study-population median for severe hemophilia A adults).
 - **Source aliases:** none; `HCT` is the universal NONMEM / clinical-PK abbreviation. Note that source papers report hematocrit on either the percent scale (45) or the volume-fraction scale (0.45); the canonical column is **percent**, so a paper reporting fractions must have both its per-subject values and its reference value multiplied by 100 before they are recorded against this column (`Zhou_2025_tacrolimus.R` does exactly this: paper median 0.265 -> canonical reference 26.5 %).
-- **Example models:** `Nestorov_2014_factorviii.R` (reference 45 %, exponent -0.419 on V1), `Zhou_2025_tacrolimus.R` (reference 26.5 % = the Zhou 2025 cohort median of 0.265 rescaled to percent, exponent -0.71 on tacrolimus CL/F; a *negative* exponent on clearance rather than on volume -- see Notes).
+- **Example models:** `Nestorov_2014_factorviii.R` (reference 45 %, exponent -0.419 on V1), `Zhou_2025_tacrolimus.R` (reference 26.5 % = the Zhou 2025 cohort median of 0.265 rescaled to percent, exponent -0.71 on tacrolimus CL/F; a *negative* exponent on clearance rather than on volume -- see Notes), `Wojciechowski_2022_abrocitinib_platelets.R` (baseline only; reference 43 %; power exponent -0.203 on the baseline platelet count of a Friberg platelet model, a third use alongside the volume and clearance mechanisms in Notes).
 - **Notes:** Higher HCT (more red-cell volume) leaves a smaller plasma fraction within total body volume; for plasma-restricted distribution (e.g., factor VIII activity, which circulates in plasma) the central volume of distribution decreases as HCT rises, so the exponent is negative. Document baseline-vs-time-varying status in `covariateData[[HCT]]$notes`. Distinct from `HGB` (mass concentration of hemoglobin); the two correlate but enter different mechanistic relationships. **Two distinct mechanisms put HCT on different parameters with the same negative sign.** (a) On *volume*, via the plasma-fraction argument above (Nestorov 2014 factor VIII). (b) On *apparent clearance of an erythrocyte-partitioned drug*: tacrolimus is extensively bound to red blood cells, so whole-blood clearance falls as HCT rises because a larger share of the measured whole-blood drug is sequestered in erythrocytes and unavailable to hepatic metabolism. Because the assay measures whole blood, the negative exponent on CL/F is an artefact-free consequence of the partitioning, not a change in intrinsic clearance (Zhou 2025 Discussion: 'Recipients with low levels of HCT have more free tacrolimus in the plasma, resulting in a corresponding increase in clearance'). The exponent magnitude is reproducible across independent lung-transplant cohorts: -0.71 (Zhou 2025) versus -0.868 (Cai et al., cited in Zhou 2025 Discussion). Because the effect enters as a *ratio* `(HCT / ref)^exponent`, a model that mistakenly mixes the percent and fraction scales between the column and the reference is off by a factor of `100^exponent` -- a 24-fold error at exponent -0.71 -- so the scale of both must be checked together, not separately.
 
 ### THB_MASS (**canonical for total hemoglobin mass**)
@@ -4508,7 +4508,7 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Reference category:** n/a. Observed range 3-800 mg.
 - **Source aliases:**
   - `DOSE` -- Wojciechowski 2022 Online Resource 2 (`Dose amount associated with record (mg)`).
-- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; sets the first-order fraction `min(1, amt_fo / DOSE_ABROCITINIB_MG)` of the parallel zero-/first-order absorption, and switches on a -0.778 logit-bioavailability shift at exactly 800 mg).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; sets the first-order fraction `min(1, amt_fo / DOSE_ABROCITINIB_MG)` of the parallel zero-/first-order absorption, and switches on a -0.778 logit-bioavailability shift at exactly 800 mg), `Wojciechowski_2022_abrocitinib_platelets.R` (the same abrocitinib PK, carried unchanged as the PK layer of the platelet PK-PD model).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. Needed as a column, not read from `amt`, because the model splits each administration into two dose records and evaluates the split at the dose. Distinct from [[DOSE_ABROCITINIB_MGD]], the daily total.
 
 ### DOSE_ABROCITINIB_MGD (**canonical for the randomized total daily abrocitinib dose**)
@@ -4519,7 +4519,7 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Reference category:** 200 mg/day, the reference of the clearance power term.
 - **Source aliases:**
   - `DOSR` -- Wojciechowski 2022 Online Resource 2 (`Randomized total daily dose (mg)`).
-- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; clearance scales as `(F * DOSE_ABROCITINIB_MGD / 200)^-0.169`, with `F` the individual absolute bioavailability, so the dose term acts on the effective amount reaching the circulation).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; clearance scales as `(F * DOSE_ABROCITINIB_MGD / 200)^-0.169`, with `F` the individual absolute bioavailability, so the dose term acts on the effective amount reaching the circulation), `Wojciechowski_2022_abrocitinib_platelets.R` (the same abrocitinib PK, carried unchanged as the PK layer of the platelet PK-PD model).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (sibling of `DOSE_LOR_MGD`). Distinct from [[DOSE_ABROCITINIB_MG]], the per-administration amount.
 
 ### DOSE_MANNAC_MG (**canonical for administered N-acetylmannosamine (ManNAc) dose level**)
@@ -9038,7 +9038,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Scope:** specific
 - **Reference category:** 0 (non-psoriasis subject; the complement group is paper-defined -- the union of other disease cohorts pooled in the source analysis).
 - **Source aliases:** none known; source NONMEM control streams typically use a categorical `DIS` indicator (e.g., Okada 2025: `DIS=1` for psoriasis, `DIS=0` for healthy, `DIS=2` for UC, `DIS=3` for AD), decomposed into a binary `DIS_PSORIASIS` indicator at ingestion.
-- **Example models:** `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.372` on linear CL when 1; reference complement is the pooled atopic dermatitis + ulcerative colitis + healthy-volunteer cohort), `Warren_2025_apremilast.R` (multiplicative factor `1.09` on CL/F when 0; reference complement is "other disease or missing", i.e. the FDA Otezla popPK model treats unknown disease status the same as a non-psoriasis indication, and Warren 2025 simulates atopic dermatitis patients at `DIS_PSORIASIS = 0`), `Wojciechowski_2022_abrocitinib.R` (shares one additive +0.489 shift on logit absolute bioavailability with [[DIS_ATOPIC_DERMATITIS]]; reference complement is healthy volunteers, with mild and moderate hepatic impairment carried by `HEPIMP_MILD` / `HEPIMP_MOD`), `Okubo_2021_apremilast.R` (multiplicative factor `0.834` on CL/F when 1; reference complement is healthy subjects together with the psoriatic-arthritis / rheumatoid-arthritis 'other' cohort of one phase 1 study, which the final model did not separate from healthy).
+- **Example models:** `Okada_2025_rocatinlimab.R` (multiplicative shift `1 - 0.372` on linear CL when 1; reference complement is the pooled atopic dermatitis + ulcerative colitis + healthy-volunteer cohort), `Warren_2025_apremilast.R` (multiplicative factor `1.09` on CL/F when 0; reference complement is "other disease or missing", i.e. the FDA Otezla popPK model treats unknown disease status the same as a non-psoriasis indication, and Warren 2025 simulates atopic dermatitis patients at `DIS_PSORIASIS = 0`), `Wojciechowski_2022_abrocitinib.R` (shares one additive +0.489 shift on logit absolute bioavailability with [[DIS_ATOPIC_DERMATITIS]]; reference complement is healthy volunteers, with mild and moderate hepatic impairment carried by `HEPIMP_MILD` / `HEPIMP_MOD`), `Okubo_2021_apremilast.R` (multiplicative factor `0.834` on CL/F when 1; reference complement is healthy subjects together with the psoriatic-arthritis / rheumatoid-arthritis 'other' cohort of one phase 1 study, which the final model did not separate from healthy), `Wojciechowski_2022_abrocitinib_platelets.R` (two roles: the abrocitinib PK layer shares the +0.489 logit-bioavailability shift with [[DIS_ATOPIC_DERMATITIS]] against a healthy-volunteer reference, and the platelet layer multiplies the baseline platelet count by `1 - 0.118` against an atopic dermatitis reference).
 - **Notes:** Used when a population PK model pools plaque-psoriasis patients with a non-psoriasis reference population and psoriasis disease status is retained as a covariate. Scope: specific because the disease-pooling reference category is paper-defined -- the two registered models differ in it (Okada 2025 pools three named non-psoriasis cohorts; the FDA Otezla model behind Warren 2025 pools every non-psoriasis indication together with subjects whose disease status is missing), so the `1`-side is transferable across papers but the `0`-side is not.
 
 ### DIS_ATOPIC_DERMATITIS (**canonical for atopic dermatitis disease-state indicator**)
@@ -9049,7 +9049,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 (the paper-defined non-atopic-dermatitis complement; healthy volunteers in the founding model).
 - **Source aliases:**
   - `PTST = 2` -- Wojciechowski 2022 Online Resource 2 patient-type column (0 = healthy, 1 = psoriasis, 2 = atopic dermatitis, 3 = mild and 4 = moderate hepatic impairment), decomposed into binary indicators at ingestion.
-- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; shares one additive shift of +0.489 on logit absolute bioavailability with [[DIS_PSORIASIS]], `e_dis_f * (DIS_PSORIASIS + DIS_ATOPIC_DERMATITIS)`, because the paper could not distinguish the two inflammatory skin diseases; reference is healthy volunteers).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; shares one additive shift of +0.489 on logit absolute bioavailability with [[DIS_PSORIASIS]], `e_dis_f * (DIS_PSORIASIS + DIS_ATOPIC_DERMATITIS)`, because the paper could not distinguish the two inflammatory skin diseases; reference is healthy volunteers), `Wojciechowski_2022_abrocitinib_platelets.R` (the same abrocitinib PK, carried unchanged as the PK layer of the platelet PK-PD model).
 - **Notes:** Spelled out because `DIS_AD` is already the Alzheimer's-disease indicator. Scope specific because the 0 side is the union of whatever other cohorts a source pools.
 
 ### DIS_RA (**canonical for rheumatoid arthritis disease-state indicator**)
@@ -17293,7 +17293,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Reference category:** 0 (the reference studies B7451001, B7451004, B7451013, B7451017, B7451019, B7451020 and B7451027).
 - **Source aliases:**
   - `PROT = 1005` -- Wojciechowski 2022 Online Resource 2 protocol column (`IF (PROT.EQ.1005) COVPROTRUV = ...`).
-- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; moderate-variability study, proportional residual SD multiplied by `1 + 0.495`).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; moderate-variability study, proportional residual SD multiplied by `1 + 0.495`), `Wojciechowski_2022_abrocitinib_platelets.R` (the same abrocitinib PK, carried unchanged as the PK layer of the platelet PK-PD model).
 - **Notes:** Auto-approved member of the `STUDY_<id>` family; affects only the residual error.
 
 
@@ -17305,7 +17305,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Reference category:** 0 (the reference studies B7451001, B7451004, B7451013, B7451017, B7451019, B7451020 and B7451027).
 - **Source aliases:**
   - `PROT = 1006` -- Wojciechowski 2022 Online Resource 2 protocol column (`IF (PROT.EQ.1006) COVPROTRUV = ...`).
-- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; high-variability study, proportional residual SD multiplied by `1 + 1.16`).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; high-variability study, proportional residual SD multiplied by `1 + 1.16`), `Wojciechowski_2022_abrocitinib_platelets.R` (the same abrocitinib PK, carried unchanged as the PK layer of the platelet PK-PD model).
 - **Notes:** Auto-approved member of the `STUDY_<id>` family; affects only the residual error.
 
 
@@ -17317,7 +17317,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Reference category:** 0 (the reference studies B7451001, B7451004, B7451013, B7451017, B7451019, B7451020 and B7451027).
 - **Source aliases:**
   - `PROT = 1012` -- Wojciechowski 2022 Online Resource 2 protocol column (`IF (PROT.EQ.1012) COVPROTRUV = ...`).
-- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; moderate-variability study, proportional residual SD multiplied by `1 + 0.495`).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; moderate-variability study, proportional residual SD multiplied by `1 + 0.495`), `Wojciechowski_2022_abrocitinib_platelets.R` (the same abrocitinib PK, carried unchanged as the PK layer of the platelet PK-PD model).
 - **Notes:** Auto-approved member of the `STUDY_<id>` family; affects only the residual error.
 
 
@@ -17329,7 +17329,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Reference category:** 0 (the reference studies B7451001, B7451004, B7451013, B7451017, B7451019, B7451020 and B7451027).
 - **Source aliases:**
   - `PROT = 1043` -- Wojciechowski 2022 Online Resource 2 protocol column (`IF (PROT.EQ.1043) COVPROTRUV = ...`).
-- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; moderate-variability study, proportional residual SD multiplied by `1 + 0.495`).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; moderate-variability study, proportional residual SD multiplied by `1 + 0.495`), `Wojciechowski_2022_abrocitinib_platelets.R` (the same abrocitinib PK, carried unchanged as the PK layer of the platelet PK-PD model).
 - **Notes:** Auto-approved member of the `STUDY_<id>` family; affects only the residual error.
 
 ### STUDY_DAILY_RPE (**canonical for the Daily RPE rifapentine trial cohort indicator**)
@@ -23673,7 +23673,7 @@ sibling such as `AUC_BAST_FW`.
 - **Reference category:** 0. With all three `FORM_ABROCITINIB_*` indicators at 0 the dose is the phase II 100 mg tablet (D1400040).
 - **Source aliases:**
   - `FORMS = 1` -- Wojciechowski 2022 Online Resource 2 formulation column (1 = suspension, 2 = phase II 100 mg tablet, 3 = phase II 10 and 50 mg tablets, 4 = phase III 100 mg tablet); the companion column `FORM` (2 = tablet, 3 = suspension) selects the tablet-only absorption lag.
-- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; multiplies the first-order absorbed-amount cap `amt_fo` by `1 + 1.17` and removes the 0.183 h tablet lag).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; multiplies the first-order absorbed-amount cap `amt_fo` by `1 + 1.17` and removes the 0.183 h tablet lag), `Wojciechowski_2022_abrocitinib_platelets.R` (the same abrocitinib PK, carried unchanged as the PK layer of the platelet PK-PD model).
 - **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` family. Kept drug-specific rather than reusing [[FORM_SUSPENSION]] (an extemporaneously prepared suspension of a solid form) because here it is a manufactured development formulation contrasted against three tablet generations.
 
 ### FORM_ABROCITINIB_TAB_PH2B (**canonical for the abrocitinib phase IIb 10 mg and 50 mg tablet formulation indicator**)
@@ -23684,7 +23684,7 @@ sibling such as `AUC_BAST_FW`.
 - **Reference category:** 0 (see [[FORM_ABROCITINIB_SUSP]] for the all-zero reference).
 - **Source aliases:**
   - `FORMS = 3` -- Wojciechowski 2022 Online Resource 2; Table 2 rows 'Effect of phase IIb tablets on F' and '... on Ak1'.
-- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; additive shift of -1.02 on logit absolute bioavailability and the first-order amount cap multiplied by `1 - 0.68`).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; additive shift of -1.02 on logit absolute bioavailability and the first-order amount cap multiplied by `1 - 0.68`), `Wojciechowski_2022_abrocitinib_platelets.R` (the same abrocitinib PK, carried unchanged as the PK layer of the platelet PK-PD model).
 - **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` family.
 
 ### FORM_ABROCITINIB_TAB_PH3 (**canonical for the abrocitinib phase III 100 mg film-coated tablet formulation indicator**)
@@ -23695,7 +23695,7 @@ sibling such as `AUC_BAST_FW`.
 - **Reference category:** 0 (see [[FORM_ABROCITINIB_SUSP]] for the all-zero reference). The source paper's simulation reference scenario uses this tablet, so set it to 1 to reproduce that scenario.
 - **Source aliases:**
   - `FORMS = 4` -- Wojciechowski 2022 Online Resource 2; Table 2 row 'Effect of phase III tablet on F'.
-- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; additive shift of -0.766 on logit absolute bioavailability).
+- **Example models:** `Wojciechowski_2022_abrocitinib.R` (founding example; additive shift of -0.766 on logit absolute bioavailability), `Wojciechowski_2022_abrocitinib_platelets.R` (the same abrocitinib PK, carried unchanged as the PK layer of the platelet PK-PD model).
 - **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` family.
 
 ### STUDY_CGP_PK_02, STUDY_CGP_MD_01, STUDY_ATOGEPANT_PHASE3 (**canonical for the three non-reference residual-error study strata of the atogepant population PK analysis**)
