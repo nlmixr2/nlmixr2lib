@@ -23029,6 +23029,17 @@ sibling such as `AUC_BAST_FW`.
 - **Example models:** `Schlachter_2026_atogepant.R` (two power-model effects per the Schlachter 2026 Section 3.1 display equations: `Frel = (dose/60 mg)^0.119`, reproducing the paper's statement that Frel is approximately 1.24-fold higher at 60 mg than at 10 mg since `(60/10)^0.119 = 1.24`, and `Tk0 = 0.908 * (dose/60 mg)^0.199`. The second estimate appears in Table 2 under the label "Exponential dose effect on ka" because the model derives `ka = Fk0 / (Tk0 * (1 - Fk0))`, so a covariate applied to the zero-order duration propagates into the first-order rate constant; the display equation shows it applied to Tk0).
 - **Notes:** Auto-approved member of the `DOSE_<drug>_<units>` family. As with every member of that family, the column **must not be named `DOSE`**: a covariate column literally named `DOSE` (any casing) is consumed by rxode2's `etTrans()` and never reaches `model()`, so the dose amount must be supplied both as the event-table `amt` and as this separately-named covariate column.
 
+### DOSE_OXFENDAZOLE_MG (**canonical for the administered oxfendazole dose of a dosing record, in milligrams**)
+- **Description:** Per-dose-record administered oral oxfendazole dose, in mg. It is the dose of the current administration, not the daily dose: a twice-daily regimen of 50 mg carries 50 on each record.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as the power term `(DOSE_OXFENDAZOLE_MG / 34.7)^-0.541` on relative bioavailability, with the 34.7 mg reference dose and the exponent both fixed from an earlier oral-suspension single-ascending-dose study.
+- **Source aliases:**
+  - `DOSE` -- Assmus 2026 NONMEM `$INPUT` column ('Dose (mg)'), read in `$PK` as `COV = (DOSE/34.7)**(-0.541)`.
+- **Example models:** `Assmus_2026_oxfendazole.R` (dose-limited relative bioavailability, Eq. 1).
+- **Notes:** Auto-approved member of the `DOSE_<drug>_<units>` family. Must not be named `DOSE`: a covariate column literally named `DOSE` is consumed by rxode2's event translation and never reaches `model()`. The founding model is on the molar scale, so `amt` is in nmol and this column carries the same dose in mg (nmol = mg * 1e6 / 315.35 for oxfendazole).
+
 ### DOSE_NICOTINE_MG (**canonical for the nominal nicotine dose of the product used on an occasion**)
 - **Description:** Per-dose-record nominal nicotine content of the product used, in mg. For inhaled products this is the nominal nicotine ISO yield (0.5 mg for the Tobacco Heating System, 0.1-1.5 mg for conventional cigarettes depending on the individual brand); for nicotine replacement products it is the labelled nicotine content (1 mg for the regular nasal spray, 2 mg for the mentholated gum). Continuous, and time-varying in crossover designs where a subject uses more than one product. It is emphatically NOT the systemically available amount: how much of the nominal content is actually released and absorbed is exactly what the relative-bioavailability term it drives is there to estimate.
 - **Units:** mg

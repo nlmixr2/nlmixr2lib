@@ -6606,6 +6606,22 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Role:** Omeprazole sulfone metabolite suffix.
 - **Source aliases:** none.
 - **Example models:** `Zhao_2018_omeprazole.R`.
+- **Notes:** Scoped to omeprazole sulfone only, although the token itself carries no drug identity. A sulfone metabolite of another parent takes its own drug-specific token: oxfendazole sulfone is `oxfsfn` (below).
+
+### oxfsfn (**canonical oxfendazole sulfone suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Oxfendazole sulfone metabolite suffix. Oxfendazole sulfone is formed from oxfendazole both by first-pass metabolism during absorption and systemically from the oxfendazole central compartment. Drives `central_oxfsfn`, `Cc_oxfsfn`, `lcl_oxfsfn`, `lvc_oxfsfn`, `expSd_oxfsfn` and the first-pass fraction `logitfm_oxfsfn` / `fm_oxfsfn`.
+- **Source aliases:**
+  - `OXF-SO2` -- Assmus 2026 notation (`CL OXF-SO2/F`, `V OXF-SO2/F`, Figure 2); `M2` in its NONMEM control stream (`CL_M2`, `V_M2`).
+- **Example models:** `Assmus_2026_oxfendazole.R`.
+- **Notes:** Kept separate from `sfn`, which stays scoped to omeprazole sulfone, so that each sulfone token names one parent.
+
+### fenbendazole (**canonical fenbendazole metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Fenbendazole suffix, for models in which fenbendazole is a non-parent analyte. In oxfendazole popPK it is formed by reduction of oxfendazole (oxfendazole is the sulfoxide of fenbendazole); its states and parameters take the suffix (`central_fenbendazole`, `Cc_fenbendazole`, `lcl_fenbendazole`, `lvc_fenbendazole`, `expSd_fenbendazole`, `fm_fenbendazole`) and oxfendazole keeps the bare canonical names.
+- **Source aliases:**
+  - `FEN` -- Assmus 2026 notation (`CL FEN/F`, `V FEN/F`); `M1` in its NONMEM control stream (`CL_M1`, `V_M1`). The full INN is used, as for `morphine`, because fenbendazole is a marketed drug in its own right.
+- **Example models:** `Assmus_2026_oxfendazole.R`.
 
 ### d3og (**canonical dapagliflozin 3-O-glucuronide suffix**)
 - **Type:** metabolite-suffix
