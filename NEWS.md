@@ -18,7 +18,7 @@
 
 - Fix the inter-individual variability scale of Denti 2010 glucose minimal model ([doi:10.1152/ajpendo.00656.2009](https://doi.org/10.1152/ajpendo.00656.2009)): the paper reports "the square root of the elements on the diagonal of Omega", so the SG/VOL and SI/P2 blocks are now `(P/100)^2` on the diagonal with the printed correlations unchanged (SI +11 %, P2 +7 %).
 
-- Add Vet 2020 salbutamol (R- and S-enantiomers) ([doi:10.1007/s40262-019-00811-y](https://doi.org/10.1007/s40262-019-00811-y)) -- children with refractory status asthmaticus on continuous IV salbutamol in the PICU.
+- Add de Jager 2020 factor VIII after Haemate P ([doi:10.1111/jth.14652](https://doi.org/10.1111/jth.14652)) -- patients with von Willebrand disease undergoing surgery.
 
 - Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
 
