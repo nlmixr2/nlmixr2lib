@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liu 2022 dioxin-like compound mixture PBPK ([doi:10.3390/toxics10110700](https://doi.org/10.3390/toxics10110700)) -- lifetime human TCDD and binary TCDD + 2,3,4,7,8-PeCDF PBPK/QSP with AHR/CYP1A2 cross-induction.
+- Add Huang 2022 tacrolimus ([doi:10.3389/fphar.2022.942129](https://doi.org/10.3389/fphar.2022.942129)) -- Chinese children with refractory nephrotic syndrome, with CYP3A5, CTLA4 rs4553808 and Wuzhi capsule effects (ratifies the `SNP_CTLA4_RS4553808_GA` / `_AA` covariate canonicals).
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 

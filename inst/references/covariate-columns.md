@@ -15561,16 +15561,27 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Example models:** `Yin_2021_mitotane.R` (multiplicative effect on apparent clearance of mitotane; the TT group has CL/F 2.49x the TC reference, Table 2 `CL_SNP3 (TT)` = 2.49).
 - **Notes:** Companion to `SNP_SLCO1B1_RS4149057_CC`; see that entry's Notes for the TC-reference encoding, the distinction from rs4149056 / rs2306283 and the non-monotone effect direction.
 
-### SNP_ERCC1_RS3212986_CC (**canonical for ERCC1 rs3212986 (C8092A) homozygous wild-type C/C genotype indicator**)
-- **Description:** Binary genotype indicator for the *ERCC1* (excision repair cross-complementation group 1, nucleotide-excision-repair DNA-repair gene) rs3212986 (C8092A, 3'-UTR) polymorphism: 1 = subject carries the homozygous wild-type C/C genotype; 0 = otherwise (A/C heterozygote or A/A homozygote). Time-fixed per subject (germline genotype).
+### SNP_CTLA4_RS4553808_GA (**canonical for CTLA4 rs4553808 heterozygous GA genotype indicator**)
+- **Description:** Binary genotype indicator for the *CTLA4* (cytotoxic T-lymphocyte-associated protein 4) promoter polymorphism rs4553808 (-1661A>G): 1 = subject carries the heterozygous GA genotype; 0 = otherwise. Paired with `SNP_CTLA4_RS4553808_AA`; both indicators are 0 for the GG genotype, which the founding source uses as the reference category. Time-fixed per subject (germline genotype).
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0, i.e. the A/C + A/A (variant-A-carrier) group.
+- **Reference category:** 0 together with `SNP_CTLA4_RS4553808_AA` = 0, i.e. the GG genotype.
 - **Source aliases:**
-  - `ERCC1 (rs3212986) C/C` -- Cao 2022 final-model equation (`If ERCC1 phenotype (rs3212986) = C/C, theta_ERCC1 = theta_2 (0.83); else 0`).
-- **Example models:** `Cao_2022_pemetrexed.R` (exponential effect on intercompartmental clearance Q of intravenous pemetrexed; `exp(e_ercc1_q * SNP_ERCC1_RS3212986_CC)` with `e_ercc1_q = 0.83`, so C/C homozygotes have about 2.3-fold higher Q than the A-carrier reference; Figure 2B).
-- **Notes:** The variant allele at rs3212986 is A (the common / wild-type allele is C), so the covariate effect attaches to the **wild-type C/C homozygote** rather than to variant-allele carriage. A generic mutant-allele-presence indicator (`SNP_ERCC1_RS3212986`, 1 = any A allele) would group the A/C heterozygotes with the A/A homozygotes and flag exactly the reference stratum -- the inverse of the reported effect -- so the homozygote-specific `_CC` indicator is used (same wild-type-homozygote-anchored pattern as `SNP_SLCO1B1_RS4149057_CC`). Cao 2022 reports rs3212986 C/C homozygotes as having higher pemetrexed intercompartmental clearance than the two variant genotypes and speculates (Discussion) that ERCC1 genotype may modulate pemetrexed plasma-protein binding or tissue distribution; the mechanism is not established. Genotype counts in the cohort were A/A:A/C:C/C = 15:56:45 (Supplementary Table S2). Distinct from the other commonly investigated *ERCC1* variant rs11615 (T19007C / N118N), which Cao 2022 genotyped but did not retain.
+  - `CTLA4 GA` -- Huang 2022 text below Eq. 2 ("CTLA4 GA = 1 ... when genotypes are CTLA4 GA ..., 0 otherwise"); Table 3 row `dCLdCTLA4 GA`.
+- **Example models:** `Huang_2022_tacrolimus.R` (exponential effect on tacrolimus CL/F, `exp(e_ctla4_ga_cl * SNP_CTLA4_RS4553808_GA)` with `e_ctla4_ga_cl = -0.34`; Huang 2022 Table 3 and Eq. 2).
+- **Notes:** In the Huang 2022 paediatric nephrotic-syndrome cohort G is the minor allele (frequency 0.119) and the GG reference group holds only 2 of 139 patients, so the two indicators carry the contrast of the common genotypes against a very small reference group; the published coefficients are also non-monotone in allele count (GA -0.34, AA -0.15). The genotype-specific `_GA` / `_AA` suffixes follow the `SNP_SLCO1B1_RS4149057_CC` / `_TT` precedent, where the source likewise anchors the reference on a genotype other than the major-allele homozygote, rather than a `_HET` / `_HOM` pair whose "homozygous" would be ambiguous here.
+
+### SNP_CTLA4_RS4553808_AA (**canonical for CTLA4 rs4553808 homozygous AA genotype indicator**)
+- **Description:** Binary genotype indicator for the *CTLA4* promoter polymorphism rs4553808 (-1661A>G): 1 = subject carries the homozygous AA genotype; 0 = otherwise. Paired with `SNP_CTLA4_RS4553808_GA`; both indicators are 0 for the GG reference genotype. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 together with `SNP_CTLA4_RS4553808_GA` = 0, i.e. the GG genotype.
+- **Source aliases:**
+  - `CTLA4 AA` -- Huang 2022 text below Eq. 2; Table 3 row `dCldCTLA4 AA`.
+- **Example models:** `Huang_2022_tacrolimus.R` (exponential effect on tacrolimus CL/F, `exp(e_ctla4_aa_cl * SNP_CTLA4_RS4553808_AA)` with `e_ctla4_aa_cl = -0.15`; Huang 2022 Table 3 and Eq. 2).
+- **Notes:** Companion to `SNP_CTLA4_RS4553808_GA`; see that entry's Notes for the GG-reference encoding and the small reference group. AA is the major-allele homozygote (77.7% of the founding cohort).
 
 ### SNP_SLCO1B3_RS7311358_G_CARRIER (**canonical for SLCO1B3 699A>G G-allele carrier indicator**)
 - **Description:** Binary indicator for carriage of the *SLCO1B3* (OATP1B3 hepatic uptake transporter) c.699A>G polymorphism (rs7311358, I233M): 1 = subject carries at least one G allele (AG heterozygote or GG homozygote); 0 = AA. Time-fixed per subject (germline genotype).
