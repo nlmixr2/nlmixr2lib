@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Karrer 2018 bisphenol A, S, F and AF whole-body PBPK models ([doi:10.1289/EHP2739](https://doi.org/10.1289/EHP2739)) -- human reference adult (and age-group) peroral + dermal exposure to the bisphenols and their glucuronide/sulfate conjugates.
+- Add Thorsted 2019 endotoxin / TNF-alpha / IL-6 innate-immune model ([doi:10.1371/journal.pone.0211981](https://doi.org/10.1371/journal.pone.0211981)) — anaesthetised piglets with experimental endotoxaemia.
 
 - Fix the inter-individual variability scale of Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)): the Table 3 percentages are omega x 100, not CV%, so the CL, V2 and V3 variances are now `(P/100)^2` (V3 0.6229 -> 0.8649, +39 %; CL and V2 +1-3 %). The Table 3 Wald CI on the V3 row decides the scale.
 

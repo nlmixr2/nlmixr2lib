@@ -1577,6 +1577,14 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Cantillon_2018_brilaroxazine.R` (`emax = -31.6` PANSS units with an additive IIV of variance 464, per Cantillon 2018 Eq. 15 and Table 3; the paper notes the additive random effect is what lets an individual's Emax turn positive, i.e. worsen on treatment), `Ivaturi_2017_RBP_7000.R` and `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (bare `emax` derived inside `model()`).
 - **Notes:** The transform rule in "Transform prefixes" is conditioned on positivity -- "log-transform any parameter that must be positive" -- so a signed Emax is not an exception to the convention but an application of it. Registered here because the bare form was previously documented only as an in-`model()` name, alongside the parallel registered bare counterparts `ec50` and `e0`. The IIV partner follows the standard rule on the *transformed* name, hence `etaemax` for a bare `emax` and `etalemax` for `lemax`. Do not use `emax` for an attained plateau LEVEL -- that is `lrmax_<output>`.
 
+### lprop_cont, prop_cont (**canonical log-transformed proportionality of a measured baseline to a pre-study contaminating amount**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed unitless multiplier that turns an individual's constant assay baseline into the contaminating amount present at time zero in a contamination sub-population: `central_contam(0) <- MIX_<class> * rbase_<x> * prop_cont`. Inside `model()` the bare name is `prop_cont`.
+- **Source aliases:**
+  - `Propcont`, `PROP`, `SCALE` -- Thorsted 2019 Table 2, Eq 1 and S1 Text `$THETA(6)`.
+- **Example models:** `Thorsted_2019_endotoxin.R` (`prop_cont = 132`).
+- **Notes:** Ratified 2026-09-22 with the Thorsted 2019 endotoxin extraction (PMC6383944). Pairs with the `central_contam` compartment. Distinct from `lrbase`, which is the constant assay baseline itself, and from a bioavailability or dose fraction: the factor scales a baseline the model already estimates, so it has no meaning without that baseline.
+
 ### lrmax_map, lrmax_sbp, lrmax_hr (**canonical log-transformed maximum attainable plateau level of a PD output**)
 - **Type:** paper-named-param
 - **Role:** Log-transformed maximum attainable *level* of a PD endpoint under maximal drug effect, in the endpoint's own clinical units (mmHg, beats/min,...) -- the plateau-level counterpart of `lrbase`. Used when the source paper estimates the ceiling of the response rather than the increment, so the Emax term must be recovered as a difference: `emax_map <- rmax_map - MAP_BL`. Inside `model()` the bare names are `rmax_map`, `rmax_sbp`, `rmax_hr`; the per-output suffix follows the registered multi-analyte precedent.
