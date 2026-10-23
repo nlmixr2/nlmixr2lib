@@ -7,7 +7,7 @@ test_that("createMarkovModel", {
         "function() {",
         "  markovStates <- c(X1 = \"1\", X2 = \"2\")",
         "  ini({",
-        "    logitX1toX1 <- -0; label(\"Probability of transition from state 1 to 1 (logit probability)\")",
+        "    logitX1toX1 <- 0; label(\"Probability of transition from state 1 to 1 (logit probability)\")",
         "  })",
         "  model({",
         "    # Create the following one-hot encoded columns for previous and current Markov states (this can be done with `createMarkovModelDataset()`)", # nolint: line_length_linter.
