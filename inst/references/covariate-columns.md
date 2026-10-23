@@ -10232,6 +10232,43 @@ Members are named `<ANALYTE>_RATIO`, where `<ANALYTE>` is the measured immune ma
 - **Example models:** `Kashihara_2026_rsvVaccine_snaCmi_mbma.R` (enters as `log(IFNG_PBORATIO)` -- natural log, per Kashihara 2026 Equation 4 -- driving the interferon-gamma slope on RSV-LRTD 3+ only).
 - **Notes:** **Not an alias of `IFNG`**, which is an absolute total serum interferon-gamma concentration in pg/mL used for target-mediated-disposition scaling in anti-IFN-gamma antibody models. The two differ in every respect that matters to a user: unit-free ratio vs pg/mL, arm-level vs per-subject, control-referenced vs absolute, and functional T-cell readout vs circulating cytokine burden. A model must not silently substitute one for the other. In the founding paper only four of seven trials had an observed value (VANIR 3.5, D4420C00005 9.0, CYPRESS 12.8, RENOIR 20.6) and the rest were multiply imputed, so the calibrated span is roughly 3.5-20.6. The companion CD4+ T-cell CMI marker was collected in the same trials but excluded from the analysis for sparsity (two trials), so no `CD4_RATIO` sibling is registered yet.
 
+## Vaccine immunogenicity (absolute and convalescent-normalized serum neutralizing titres)
+
+Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses that are **not** placebo-corrected (so they are distinct from the `<ANALYTE>_RATIO` placebo-corrected family above). Two reference frames appear in this literature: the SN titre expressed on an absolute (log2) scale, and the SN titre normalized to a same-assay geometric-mean human convalescent serum (HCS) titre. Normalizing to HCS cancels the assay-specific scale across trials, exactly as placebo-correction does for the `_RATIO` family, but the reference is a convalescent-serum panel rather than a concurrent placebo arm. The founding paper (Kandala 2022) relates these immunogenicity axes to protection (viral-load reduction in rhesus macaques) and to clinical vaccine efficacy.
+
+### SN_SARSCOV2_LOG2 (**canonical for log2 serum neutralizing titre against SARS-CoV-2**)
+- **Description:** Study-arm-level serum neutralizing (SN) titre against SARS-CoV-2, on a log base-2 scale, measured at the timepoint closest to and prior to viral challenge (non-clinical rhesus-macaque studies) or closest to the start of the efficacy-assessment period (clinical studies). Study-arm level, not individual level. The absolute (un-normalized) neutralizing-titre axis; a value of 0 corresponds to an SN titre of 1 (control arms imputed to the lower limit of quantification/detection or to zero per the source's derivation rules).
+- **Units:** (log2 titre; the base-2 logarithm of the reciprocal neutralizing dilution)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- continuous. `0` corresponds to a reciprocal titre of 1 (near the assay's lower limit).
+- **Source aliases:**
+  - `log2[SN]` / `log2 SN titre` -- Kandala 2022 Equations 1, 3 and 11, the predictor driving peak viral-load suppression in the rhesus-macaque (RM) MBMA model.
+- **Example models:** `Kandala_2022_covid19Vaccine_rm_mbma.R` (drives the sigmoid suppression term in Equation 3), `Kandala_2022_covid19Vaccine_joint_mbma.R` (the RM arm of the joint species-covariate model, Equation 11).
+- **Notes:** Stored already log2-transformed (hence the `_LOG2` suffix), because the source tabulates and models the log2 titre directly rather than the raw reciprocal dilution. This differs from the `<ANALYTE>_RATIO` immunogenicity family, which stores the ratio on the original scale and leaves the log transform to each model; here the transform is baked into the column because the absolute log2 titre is the quantity the RM MBMA uses as its covariate axis and because SARS-CoV-2 SN titres span several orders of magnitude. **Not an alias of `SN_HCS_RATIO`**: that column is a dimensionless vaccine-to-convalescent ratio on the original scale, whereas this is an absolute titre on the log2 scale. Register a virus-qualified sibling (`SN_<VIRUS>_LOG2`) rather than overloading this name when another pathogen's absolute SN titre is needed.
+
+### SN_HCS_RATIO (**canonical for convalescent-normalized serum neutralizing titre ratio**)
+- **Description:** Study-arm-level ratio of a vaccine arm's serum neutralizing (SN) titre to the geometric-mean human convalescent serum (HCS) titre measured with the same assay and reported for the same trial, on the original (untransformed) scale. Dimensionless by construction: the assay-specific scale cancels in the ratio, so SN titres from different assays, laboratories and platforms become comparable. Study-arm level, not individual level.
+- **Units:** (fold; dimensionless ratio)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- continuous. A value of `1` means the vaccine arm's SN titre equals the convalescent-serum titre; must be strictly positive.
+- **Source aliases:**
+  - `SN/HCS` / `SN/HCS ratio` -- Kandala 2022 Equations 7, 11 and 12, and Figures 3-5 x-axis, computed from the Table 3 columns `SN Titre (GM)` and `HCS (GM)`.
+- **Example models:** `Kandala_2022_covid19Vaccine_calibrated_mbma.R` (scaled by the calibration factor and fed into the RM curve, Equation 7), `Kandala_2022_covid19Vaccine_joint_mbma.R` (human arm of the joint model, Equation 11), `Kandala_2022_covid19Vaccine_clinical_mbma.R` (the sole driver of the clinical sigmoid, Equation 12).
+- **Notes:** **Not an alias of `SNA_RSVA_PBORATIO`** (the nearest precedent), which is RSV-A and *placebo*-corrected -- the ratio to the concurrent placebo arm. This column is SARS-CoV-2 and *convalescent*-normalized -- the ratio to a human convalescent-serum panel. Both the virus and the normalization reference differ, so the columns are not interchangeable. The convalescent-serum reference is itself a published approach to harmonizing neutralizing titres across trials (Kandala 2022 cites Khoury 2021 and Earle 2021). Observed values across the eight founding clinical vaccine candidates span roughly 0.045 (Gam-COVID-Vac older adults) to 3.9 (mRNA-1273), so predictions outside that range extrapolate beyond the calibration data. Register a virus-qualified sibling (`SN_<VIRUS>_HCS_RATIO`) rather than overloading this name when another pathogen's convalescent-normalized titre is needed.
+
+### SPECIMEN_NASAL (**canonical for upper-vs-lower respiratory specimen indicator in viral-load protection models**)
+- **Description:** 1 = the protection endpoint is measured in an upper-respiratory specimen (nasal or nasopharyngeal swab); 0 = a lower-respiratory specimen (bronchoalveolar lavage [BAL] fluid or lung tissue). Study-arm level. Selects the specimen-specific 50%-protective-titre parameter (`it50_nasal` versus `it50`) in the rhesus-macaque viral-load MBMA, encoding the finding that higher neutralizing titres are required for protection in the upper airways than in the lower respiratory tract.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (BAL fluid / lung tissue, the lower-respiratory reference specimen whose `it50` is the base parameter).
+- **Source aliases:**
+  - `Specimen` (a categorical column with levels such as "Bal fluid", "nasal/nasopharyngeal", "lung tissue") -- Kandala 2022 Table 1 column `Specimen`, decomposed to a binary upper-vs-lower indicator; the final RM MBMA pools BAL and lung tissue against nasal/nasopharyngeal.
+- **Example models:** `Kandala_2022_covid19Vaccine_rm_mbma.R` (selects `it50_nasal` = 8.32 vs `it50` = 5.84 log2 units, Table 2), `Kandala_2022_covid19Vaccine_joint_mbma.R` (selects the joint-model `it50_rm_nasal` = 8.57 vs `it50_rm_bal` = 4.92 log2 units, Figure 4).
+- **Notes:** A specimen-type attribute of the protection measurement, distinct from the `compartmentData` specimen vocabulary (which names ODE-state biological matrices for concentration outputs); this is a covariate that *selects a parameter*, not a compartment label. The binary upper-vs-lower collapse mirrors the paper's final model, which found estimating one `it50` for BAL-and-lung and a separate `it50_nasal` for nasal tissue statistically superior to a single pooled value. Register a more granular specimen indicator rather than overloading this name if a future model needs to separate lung tissue from BAL fluid.
+
 ## Oncology
 
 ### RCFB1MAX (**canonical for week-1 maximum across-lesion relative change from baseline in SUVmax**)

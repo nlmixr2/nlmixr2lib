@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2022b mycophenolic acid after enteric-coated mycophenolate sodium ([doi:10.1155/2022/1881176](https://doi.org/10.1155/2022/1881176)) -- Chinese children after renal transplantation (registers the `ldtlag2` lag-increment parameter).
+- Add Kandala 2022 COVID-19 vaccine immune-correlate-of-protection MBMA ([doi:10.1016/j.ebiom.2022.104264](https://doi.org/10.1016/j.ebiom.2022.104264)) -- rhesus-macaque SARS-CoV-2 challenge studies and clinical vaccine trials (four models: the RM viral-load MBMA and the calibrated, joint and clinical vaccine-efficacy MBMAs). Registers the `SN_SARSCOV2_LOG2`, `SN_HCS_RATIO` and `SPECIMEN_NASAL` covariates and the `ve` output.
 
 - Fix the inter-individual variability scale of Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)): the Table 3 percentages are omega x 100, not CV%, so the CL, V2 and V3 variances are now `(P/100)^2` (V3 0.6229 -> 0.8649, +39 %; CL and V2 +1-3 %). The Table 3 Wald CI on the V3 row decides the scale.
 

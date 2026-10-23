@@ -1616,6 +1616,14 @@ navbar:
         href: articles/Zandvliet_2016_corifollitropin_alfa.html
       - text: "Cotadutide qsp (Bosch 2024)"
         href: articles/Bosch_2024_cotadutide_qsp.html
+      - text: "Covid19Vaccine calibrated mbma (Kandala 2022)"
+        href: articles/Kandala_2022_covid19Vaccine.html
+      - text: "Covid19Vaccine clinical mbma (Kandala 2022)"
+        href: articles/Kandala_2022_covid19Vaccine.html
+      - text: "Covid19Vaccine joint mbma (Kandala 2022)"
+        href: articles/Kandala_2022_covid19Vaccine.html
+      - text: "Covid19Vaccine rm mbma (Kandala 2022)"
+        href: articles/Kandala_2022_covid19Vaccine.html
       - text: "Cr51edta tc99mdtpa (Gracia 2025)"
         href: articles/Gracia_2025_cr51edta_tc99mdtpa.html
       - text: "Crisantaspase (Sassen 2017)"
@@ -8789,6 +8797,7 @@ articles:
   - articles/Kamal_2017_oseltamivir
   - articles/Kamp_2023_tacrolimus
   - articles/KandadiMuralidharan_2022_aducanumab
+  - articles/Kandala_2022_covid19Vaccine
   - articles/Kang_2020_adalimumab
   - articles/Kang_2020_cefpirome
   - articles/Kang_2020_quizartinib
