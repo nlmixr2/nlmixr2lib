@@ -1626,6 +1626,8 @@ navbar:
         href: articles/Debord_2001_cyclosporin.html
       - text: "Cyclosporin (Wang 2019)"
         href: articles/Wang_2019_cyclosporin.html
+      - text: "Cyclosporine (Back 2019)"
+        href: articles/Back_2019_pediatric_size_maturation.html
       - text: "Cyclosporine (Feng 2023)"
         href: articles/Feng_2023_cyclosporine.html
       - text: "Cyclosporine (Gao 2022)"
@@ -5158,6 +5160,8 @@ navbar:
         href: articles/Echterhof_2026_phage_pbpk.html
       - text: "Phage rat pbpk (Echterhof 2026)"
         href: articles/Echterhof_2026_phage_pbpk.html
+      - text: "Phenobarbital (Back 2019)"
+        href: articles/Back_2019_pediatric_size_maturation.html
       - text: "Phenobarbital (Grasela 1985)"
         href: articles/Grasela_1985_phenobarbital.html
       - text: "Phenobarbital (Stoschus 2025)"
@@ -7036,6 +7040,8 @@ navbar:
         href: articles/Alqurain_2024_vancomycin.html
       - text: "Vancomycin (Alsultan 2023)"
         href: articles/Alsultan_2023_vancomycin.html
+      - text: "Vancomycin (Back 2019)"
+        href: articles/Back_2019_pediatric_size_maturation.html
       - text: "Vancomycin (Buelga 2005)"
         href: articles/Buelga_2005_vancomycin.html
       - text: "Vancomycin (Chen 2023)"
@@ -7686,6 +7692,7 @@ articles:
   - articles/Azechi_2024_tamibarotene_pediatric
   - articles/Babel_2026_telisotuzumab
   - articles/Back_2018_fenofibrate
+  - articles/Back_2019_pediatric_size_maturation
   - articles/Bae_2026_MIT001
   - articles/Baheti_2011_tenofovir
   - articles/Bai_2021_mkAsodnLiposome_pbpk
