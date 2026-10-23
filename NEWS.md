@@ -18,7 +18,7 @@
 
 - Fix the inter-individual variability scale of Denti 2010 glucose minimal model ([doi:10.1152/ajpendo.00656.2009](https://doi.org/10.1152/ajpendo.00656.2009)): the paper reports "the square root of the elements on the diagonal of Omega", so the SG/VOL and SI/P2 blocks are now `(P/100)^2` on the diagonal with the printed correlations unchanged (SI +11 %, P2 +7 %).
 
-- Add Ferl 2018 mosunetuzumab (BTCT4465A) ([doi:10.1111/cts.12535](https://doi.org/10.1111/cts.12535)) -- cynomolgus monkeys (base and covariate models), with an allometric 70 kg human projection.
+- Add Senek 2018 levodopa and carbidopa ([doi:10.1007/s00228-018-2497-2](https://doi.org/10.1007/s00228-018-2497-2)) -- healthy adults and Parkinson's disease patients with motor fluctuations taking dispersible levodopa/carbidopa microtablets.
 
 - Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
 
