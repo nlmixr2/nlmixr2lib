@@ -1120,6 +1120,13 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Shigetome_2025_paroxetine_madrs.R` (Emax model in treatment duration, `EFF = Emax * Time / (ET50 + Time)`, with cumulative first-week paroxetine exposure on Emax and the week-1 MADRS score on ET50).
 - **Notes:** The state is a percentage on a roughly 0-100 scale but is not bounded by the model: a negative value is attainable when the score worsens from baseline, and the Emax term itself can exceed 100 at high exposure, so this endpoint should not be given a bounded (logit / probit) transform unless the source paper declares one. Distinct from the covariate `SCORE_MADRS` in `covariate-columns.md`, which carries an absolute MADRS reading at a stated visit; the baseline reading that defines this endpoint's denominator is part of the endpoint, not a covariate.
 
+### madrs (**canonical absolute MADRS total-score PD state**)
+- **Type:** compartment
+- **Role:** The absolute Montgomery-Asberg Depression Rating Scale (MADRS) total score (0-60 points) as a modelled PD state or output. Higher is more severe, so an antidepressant drives it DOWN. The absolute-score companion that the `madrsenh` entry reserves by name ("A future model fitting the ABSOLUTE MADRS reading should register a companion `madrs`").
+- **Source aliases:** `MADRS`, `EFF` / `A(7)` (the turnover compartment of the Abuhelwa 2022 NONMEM code).
+- **Example models:** `Abuhelwa_2022_ketamine_madrs.R` (indirect-response turnover state initialised at the individual baseline, `madrs(0) <- rbase_madrs`, whose zero-order production is inhibited by plasma ketamine, `d/dt(madrs) <- kin_madrs * (1 - inh_madrs) - kout_madrs * madrs`).
+- **Notes:** Distinct from `madrsenh` (percentage reduction from baseline, positive for improvement) and from the covariate `SCORE_MADRS` (an observed reading used as an input). A raw change-from-baseline endpoint should register `madrscfb`, as the `madrsenh` entry also reserves. Response and remission summaries (>= 50 percent reduction from baseline; MADRS <= 10) are derived from this state downstream rather than being separate outputs.
+
 ### ppsvcfb (**canonical change from baseline in prescribed parenteral support volume output**)
 - **Type:** compartment
 - **Role:** Change from baseline in the weekly prescribed parenteral support volume (PPSV; parenteral nutrition plus intravenous fluids) of patients with intestinal failure / short bowel syndrome, in L/week. The primary efficacy endpoint of GLP-2 analog trials. **Sign convention: NEGATIVE for clinical improvement**, because treatment reduces the volume of parenteral support a patient needs. Algebraic output in the founding model (no ODE state).
@@ -6872,6 +6879,13 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
   - `HNK`, `H` -- Simons 2022 (Figure 2 compartments `H1` / `H2`, Table 4 `VH1`, `CLH1`, 'MTT NK -> HNK').
 - **Example models:** `Simons_2022_s_ketamine.R` (`central_shnk` / `peripheral1_shnk`, fed by the two-compartment S-norketamine metabolism delay chain `transit1_shnk` / `transit2_shnk`; `Cc_shnk`, `lcl_shnk`, `lvc_shnk`, `fm_shnk`).
 - **Notes:** Simons 2022 measured total S-hydroxynorketamine without resolving the 4-, 5- and 6-hydroxy positional isomers (the assay standard is cis-6-hydroxynorketamine). A model that resolves a positional isomer should register its own suffix rather than reuse this one.
+
+### nk (**canonical racemic norketamine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Racemic (R,S)-norketamine, the N-demethylated metabolite of racemic ketamine.
+- **Source aliases:** `NK`, `NORKET` (Abuhelwa 2022 NONMEM code: `CENT_NK`, `PER_NK`, `CLNK`, `V1NK`).
+- **Example models:** `Abuhelwa_2022_ketamine.R` and its `_madrs` / `_map` / `_hr` PD siblings (`central_nk`, `peripheral1_nk`, `Cc_nk`).
+- **Notes:** Distinct from `snk`, which is the single S-enantiomer formed from S-ketamine (esketamine) dosing; models of racemic ketamine that assay norketamine without chiral separation use `nk`. A model that resolves both enantiomers of racemic ketamine should use `snk` plus a sibling R-enantiomer suffix rather than `nk`.
 
 ### acid (**canonical simvastatin acid suffix**)
 - **Type:** metabolite-suffix

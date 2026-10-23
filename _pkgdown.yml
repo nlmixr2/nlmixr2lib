@@ -3520,6 +3520,14 @@ navbar:
         href: articles/Chen_2024_guhongInjection.html
       - text: "Kanamycin (Humphries 2021)"
         href: articles/Humphries_2021_tb_lung_pbpk.html
+      - text: "Ketamine (Abuhelwa 2022)"
+        href: articles/Abuhelwa_2022_ketamine.html
+      - text: "Ketamine hr (Abuhelwa 2022)"
+        href: articles/Abuhelwa_2022_ketamine.html
+      - text: "Ketamine madrs (Abuhelwa 2022)"
+        href: articles/Abuhelwa_2022_ketamine.html
+      - text: "Ketamine map (Abuhelwa 2022)"
+        href: articles/Abuhelwa_2022_ketamine.html
       - text: "Ketoprofen (Park 2001)"
         href: articles/Park_2001_ketoprofen.html
       - text: "Ketorolac (Valitalo 2017)"
@@ -7709,6 +7717,7 @@ articles:
   - articles/Abrams_2022_sar442257_qsp
   - articles/Abrantes_2017_moroctocog
   - articles/Abuhelwa_2015_itraconazole
+  - articles/Abuhelwa_2022_ketamine
   - articles/Abulfathi_2021_meropenem
   - articles/Abuqayyas_2012_8C2
   - articles/Adamiszak_2025_ceftaroline
