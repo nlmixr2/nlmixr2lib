@@ -18,7 +18,7 @@
 
 - Fix the inter-individual variability scale of Denti 2010 glucose minimal model ([doi:10.1152/ajpendo.00656.2009](https://doi.org/10.1152/ajpendo.00656.2009)): the paper reports "the square root of the elements on the diagonal of Omega", so the SG/VOL and SI/P2 blocks are now `(P/100)^2` on the diagonal with the printed correlations unchanged (SI +11 %, P2 +7 %).
 
-- Add Asin-Prieto 2021 acute hepatitis B virus QSP model ([doi:10.1016/j.csbj.2021.08.052](https://doi.org/10.1016/j.csbj.2021.08.052)) -- adults with acute, self-resolving HBV infection.
+- Add Mao 2021 linezolid + fosfomycin ([doi:10.1128/spectrum.00871-21](https://doi.org/10.1128/spectrum.00871-21)) -- in vitro dynamic PK/PD time-kill against four Enterococcus strains (ATCC 29212 and clinical isolates No. 1, 2 and 6); the combination arms do not reproduce the published curves (see the vignette).
 
 - Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
 
