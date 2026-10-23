@@ -7134,6 +7134,8 @@ navbar:
         href: articles/Klunder_2017_upadacitinib.html
       - text: "Upadacitinib (Klunder 2019)"
         href: articles/Klunder_2019_upadacitinib.html
+      - text: "Upadacitinib (PonceBobadilla 2023)"
+        href: articles/PonceBobadilla_2023_upadacitinib.html
       - text: "Upadacitinib asas20 as (Bhatnagar 2024)"
         href: articles/Bhatnagar_2024_upadacitinib.html
       - text: "Upadacitinib asas20 nraxspa (Bhatnagar 2024)"
@@ -7142,10 +7144,24 @@ navbar:
         href: articles/Bhatnagar_2024_upadacitinib.html
       - text: "Upadacitinib asas40 nraxspa (Bhatnagar 2024)"
         href: articles/Bhatnagar_2024_upadacitinib.html
-      - text: "Upadacitinib mtxir (Mohamed 2019)"
-        href: articles/Mohamed_2019_upadacitinib.html
-      - text: "Upadacitinib tnfir (Mohamed 2019)"
-        href: articles/Mohamed_2019_upadacitinib.html
+      - text: "Upadacitinib induction clinrem (PonceBobadilla 2023)"
+        href: articles/PonceBobadilla_2023_upadacitinib.html
+      - text: "Upadacitinib induction clinresp (PonceBobadilla 2023)"
+        href: articles/PonceBobadilla_2023_upadacitinib.html
+      - text: "Upadacitinib induction endoimp (PonceBobadilla 2023)"
+        href: articles/PonceBobadilla_2023_upadacitinib.html
+      - text: "Upadacitinib induction endorem (PonceBobadilla 2023)"
+        href: articles/PonceBobadilla_2023_upadacitinib.html
+      - text: "Upadacitinib maintenance clinrem (PonceBobadilla 2023)"
+        href: articles/PonceBobadilla_2023_upadacitinib.html
+      - text: "Upadacitinib maintenance endoimp (PonceBobadilla 2023)"
+        href: articles/PonceBobadilla_2023_upadacitinib.html
+      - text: "Upadacitinib maintenance endorem (PonceBobadilla 2023)"
+        href: articles/PonceBobadilla_2023_upadacitinib.html
+      - text: "Upadacitinib maintenance hemi (PonceBobadilla 2023)"
+        href: articles/PonceBobadilla_2023_upadacitinib.html
+      - text: "Upadacitinib maintenance sfclinrem (PonceBobadilla 2023)"
+        href: articles/PonceBobadilla_2023_upadacitinib.html
       - text: "Uprifosbuvir pbpk (vandenBerg 2021)"
         href: articles/vandenBerg_2021_uprifosbuvir.html
       - text: "Ustekinumab (Aguiar 2021)"
@@ -9647,6 +9663,7 @@ articles:
   - articles/Pohl_2022_linzagolix
   - articles/Polaskova_2024_vancomycin
   - articles/Polito_2016_fludrocortisone
+  - articles/PonceBobadilla_2023_upadacitinib
   - articles/Por_2021_imipenem
   - articles/Pouzin_2022_tusamitamab
   - articles/Preijers_2021_factor_viii
