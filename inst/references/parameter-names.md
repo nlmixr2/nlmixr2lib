@@ -635,6 +635,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Li_2023_ornidazole.R` (founding example; `lcmpr = log(0.58)`, RSE 8.63%, IIV variance 0.327, power effect of time postpartum with exponent 1.37 centred on a back-solved median postpartum sampling time of 54 h).
 - **Notes:** Distinct from the `lkp_<tissue>` partition-coefficient family (including `lkp_milk`) in that `cmpr` is an **estimated popPK parameter** fitted to paired maternal plasma and milk observations, whereas a `kp` is a physicochemically predicted or literature-fixed partition constant used inside a mechanistic distribution model. Use `cmpr` when the paper estimates a concentration ratio as a model parameter; use `kp_milk` when the paper supplies a milk:plasma partition coefficient as a mechanistic input to a milk compartment. Use an AUC-based ratio name only if the paper actually parameterises the model on an exposure ratio -- Li 2023 reports `MPRauc` as a derived simulation **output**, not a model parameter, and it is deliberately not encoded. Pair with the `Cmilk` observable and the `propSd_Cmilk` residual.
 
+### lratio_pbmc_central (**canonical log-transformed PBMC:central (whole-blood) concentration ratio**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the fitted, unitless ratio of the drug concentration in peripheral blood mononuclear cells to the concentration in the central compartment, used to derive a PBMC observable algebraically when distribution into the cells is instantaneous (`Cpbmc <- ratio_pbmc_central * Cc`) and there is therefore no PBMC ODE state. May carry IIV (`etalratio_pbmc_central`, optionally Box-Cox transformed via `boxcox_lratio_pbmc_central`) and covariate effects. The bare counterpart inside `model` is `ratio_pbmc_central`.
+- **Source aliases:**
+  - `R_C:PBMC` -- Agergaard 2025 tacrolimus ('extent of tacrolimus distribution into PBMC').
+- **Example models:** `Agergaard_2025_tacrolimus.R` (founding example; `lratio_pbmc_central = log(1.96)`, RSE 4.97%, for a CYP3A5 expresser carrying at least one NR1I2-25385 C allele; IIV 37.8% Box-Cox transformed with lambda -2.50; fractional shifts +0.424 for CYP3A5 non-expressers and +0.607 for NR1I2-25385 TT, and a 0.709 multiplier for erythrocyte-contaminated samples).
+- **Notes:** Founds the `lratio_<numerator>_<denominator>` family, ratified by the maintainers on 2026-09-11: the name states both what is divided and what it is divided by, where `lcmpr` and `f<matrix>` leave the denominator implicit. `<numerator>` and `<denominator>` are canonical compartment stems (`pbmc`, `central`, ...). Future fitted concentration ratios between two matrices that are not kinetically distinct should follow the same shape. Overlaps in meaning with the older `f<matrix>` secondary-matrix scale factor (`fsaliva`, `fcortical`) and with the lactation-scoped `lcmpr`; those entries are left as they are. Distinct from `lkp_<tissue>` (predicted or literature-fixed partition constants feeding a tissue ODE) and from `lkinf_pbmc` (a rate constant into a PBMC ODE state, used when PBMC uptake is not instantaneous). Pair with the `Cpbmc` observable and a `propSd_Cpbmc` residual.
+
 ### lkp_adipose, lkp_brain, lkp_intestine, lkp_kidney, lkp_liver, lkp_lung, lkp_milk, lkp_muscle, lkp_other, lkp_rest, lkp_trachea (**canonical log-transformed tissue-to-plasma partition coefficients**)
 - **Type:** log-transformed-pk
 - **Role:** Log of the tissue-to-plasma (or tissue-to-blood) partition coefficient Kp for one named anatomical tissue, i.e. the equilibrium ratio of tissue concentration to plasma (or blood) concentration. Unitless. The family shape is `lkp_<tissue>`, where `<tissue>` is the same lowercase anatomical token used for the corresponding PBPK compartment name, so `lkp_liver` is the partition coefficient of the `liver` compartment. Each drives the perfusion- or permeability-limited distribution term for its tissue (e.g. `d/dt(liver) <- q_liver * (Cc - liver / vliver / kp_liver) -...`). The bare counterparts inside `model()` are `kp_<tissue>`, registered below. Usually fixed from the source paper's physicochemical predictions (Rodgers-Rowland, Poulin-Theil) or measured tissue:plasma ratios, but may be estimated when the paper fits them.
@@ -1372,6 +1380,14 @@ units rather than a dimensionless-per-time rate.
   - `MPRcon` -- Li 2023 ornidazole notation.
 - **Example models:** `Li_2023_ornidazole.R` (founding example).
 - **Notes:** See `lcmpr` above for the distinction from the `kp_<tissue>` partition-coefficient family and for why an AUC-based ratio is not encoded as a model parameter.
+
+### ratio_pbmc_central (**canonical bare PBMC:central (whole-blood) concentration ratio**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lratio_pbmc_central`. Unitless ratio of the PBMC to the central-compartment drug concentration, computed in `model` and applied as `Cpbmc <- ratio_pbmc_central * Cc`.
+- **Source aliases:**
+  - `R_C:PBMC` -- Agergaard 2025 tacrolimus.
+- **Example models:** `Agergaard_2025_tacrolimus.R` (founding example).
+- **Notes:** See `lratio_pbmc_central` above for the `lratio_<numerator>_<denominator>` family shape and the distinction from `f<matrix>`, `cmpr` and `kp_<tissue>`.
 
 ### kp_adipose, kp_bone, kp_brain, kp_cerebellum, kp_choroid_plexus, kp_cortex, kp_csf, kp_gut, kp_heart, kp_hippocampus, kp_intestine, kp_kidney, kp_liver, kp_lnode, kp_lung, kp_milk, kp_muscle, kp_other, kp_rest, kp_skin, kp_spleen, kp_striatum, kp_testes, kp_trachea (**canonical bare tissue-to-plasma partition coefficients**)
 - **Type:** bare-pk
@@ -3162,7 +3178,7 @@ matrices keyed by level rather than a single matrix.
 - **Source aliases:**
   - `Box-cox shape parameter` -- Siebinga 2024 Table 3.
   - `LAMBDA`, `SHAPE` -- common NONMEM `$THETA` labels for the same quantity.
-- **Example models:** `Siebinga_2024_lu177psmaIT.R` (`boxcox_lkgrow` = -0.822, RSE 28.3%, the shape of the PSA-growth-rate eta; the authors added it because the kG random effect deviated strongly from log-normal, dOFV -28.7).
+- **Example models:** `Siebinga_2024_lu177psmaIT.R` (`boxcox_lkgrow` = -0.822, RSE 28.3%, the shape of the PSA-growth-rate eta; the authors added it because the kG random effect deviated strongly from log-normal, dOFV -28.7); `Agergaard_2025_tacrolimus.R` (`boxcox_lratio_pbmc_central` = -2.50, RSE 26.7%, the shape of the eta on the PBMC:whole-blood concentration ratio; the negative lambda gives a long lower tail of the ratio).
 - **Notes:** Name the entry after the parameter whose eta is transformed, spelled as that parameter appears in `ini()`, so `boxcox_lkgrow` transforms `etalkgrow`. **Distinct from `lambda_<output>`** -- e.g. `lambda_ca125` in `Wilbaux_2014_ovarianCancer_ca125.R`, which is a Box-Cox transform of the *residual error*, declared through `rxode2::boxCox()` inside the error model and carried in the `paper_specific_residual_sds` metadata field. That mechanism cannot express an eta transform, which is why this separate canonical exists; do not conflate the two.
 
 ### lkd_direct, kd_direct, lkd_delay, kd_delay (**canonical linear drug-effect coefficients on a turnover loss rate**)

@@ -6184,6 +6184,8 @@ navbar:
         href: articles/Holford_1992_tacrine.html
       - text: "Tacrolimus (AbdelJalil 2013)"
         href: articles/AbdelJalil_2013_tacrolimus.html
+      - text: "Tacrolimus (Agergaard 2025)"
+        href: articles/Agergaard_2025_tacrolimus.html
       - text: "Tacrolimus (Andrews 2017)"
         href: articles/Andrews_2017_tacrolimus.html
       - text: "Tacrolimus (Andrews 2019)"
@@ -7471,6 +7473,7 @@ articles:
   - articles/Agarwal_2011_sorafenib_transporters
   - articles/Agbo_2021_apomorphine
   - articles/Agema_2021_oxycodone
+  - articles/Agergaard_2025_tacrolimus
   - articles/Agerso_2004_desmopressin
   - articles/Agoram_2006_darbepoetin_alfa
   - articles/Agoram_2006_darbepoetin_alfa_cia
