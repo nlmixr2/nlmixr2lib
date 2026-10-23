@@ -2910,6 +2910,8 @@ navbar:
         href: articles/Li_2022_gumokimab.html
       - text: "Guselkumab (Chen 2022)"
         href: articles/Chen_2022_guselkumab.html
+      - text: "Guselkumab (Iwaki 2021)"
+        href: articles/Iwaki_2021_guselkumab.html
       - text: "Guselkumab (Yao 2018)"
         href: articles/Yao_2018_guselkumab.html
       - text: "HL2351 (Jung 2023)"
@@ -8391,6 +8393,7 @@ articles:
   - articles/Isla_2024_fosfomycinCalcium
   - articles/Ivanova_2024_synucleinopathy_qsp
   - articles/Ivaturi_2017_RBP_7000
+  - articles/Iwaki_2021_guselkumab
   - articles/Iwama_2024_febuxostat
   - articles/Izat_2025_aldehyde_oxidase_substrates
   - articles/Jackson_2022_ixekizumab
