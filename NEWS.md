@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Byun 2024 TMDD approximations for HL2351 and efineptakin alfa ([doi:10.1371/journal.pcbi.1012066](https://doi.org/10.1371/journal.pcbi.1012066)) -- eight models (full TMDD, mTMDD, qTMDD and the new first-order pTMDD for each drug) in healthy adults. Registers the `endosome` and `complex_fcrn` compartments and the `BL_IL7` covariate.
+- Add Kudryashova 2024 NSCLC overall-survival and disease-burden MBMA ([doi:10.1016/j.csbj.2024.09.012](https://doi.org/10.1016/j.csbj.2024.09.012)) -- non-small cell lung cancer across all TNM stages (staging epidemiology plus five first-line stage IIIb/IV trials).
 
 - Fix the inter-individual variability scale of Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)): the Table 3 percentages are omega x 100, not CV%, so the CL, V2 and V3 variances are now `(P/100)^2` (V3 0.6229 -> 0.8649, +39 %; CL and V2 +1-3 %). The Table 3 Wald CI on the V3 row decides the scale.
 
