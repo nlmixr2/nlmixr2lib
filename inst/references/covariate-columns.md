@@ -8316,6 +8316,28 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Chen_2023_vancomycin.R` (multiplicative power-of-binary effect on CL: `cl *= e_cts_cl ^ SURG_CARD_VASOACTIVE` with `e_cts_cl = 0.761`, i.e. 23.9% lower vancomycin clearance in post-cardiothoracic-surgery children on vasoactive support relative to the non-CTS reference; Chen 2023 Table 3 `theta_1` and the 'The final model' equation block).
 - **Notes:** Specific scope pending corroboration by a second model that ratifies the same conjunction semantics. Deliberately distinct from three neighbours that each capture only one half of it, and none of which should be substituted: `CONMED_INOTROPE` is vasoactive coadministration in ANY patient regardless of surgical history; `SURG_SEV_MAJOR` is a major-vs-minor procedure severity classification with no haemodynamic-support requirement and no cardiac specificity; and `T_CPB` / `CPB_ON` / `CPB_REWARM` describe the bypass run itself (its duration, or an intra-operative phase) rather than the post-operative state. A future paper that retains a PLAIN cardiothoracic- or cardiac-surgery indicator with no vasoactive-agent requirement should register a sibling (e.g. `SURG_CARD`) rather than reuse this column, because the two select materially different subsets -- Chen 2023's conjunction picked out 68 of 673 subjects (10.1%), a strict subset of everyone who had the operation. Record the per-paper vasoactive-agent list in `covariateData[[SURG_CARD_VASOACTIVE]]$notes`, as the pooled drug set is paper-specific.
 
+### SURG_CPB_STD (**canonical for cardiac surgery performed on standard cardiopulmonary bypass (conventional extracorporeal circulation)**)
+- **Description:** 1 = the subject's cardiac operation was performed on a standard (conventional) cardiopulmonary-bypass circuit -- an open-reservoir extracorporeal circulation (ECC) system, typically with a roller pump, hard-shell venous reservoir and cardiotomy suction; 0 = off-pump surgery, or surgery on minimally invasive extracorporeal circulation (`SURG_CPB_MINI`). Subject-level and time-fixed: it records which circuit type the operation used and carries the same value on every record of the subject, including pre-bypass and post-operative records. Captures the composite disposition effects attributed to the circuit type (priming-volume hemodilution, circuit sequestration, hypothermia, systemic inflammatory response).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (off-pump surgery when `SURG_CPB_MINI` is also 0).
+- **Source aliases:**
+  - `ECC` -- used in `Santavy_2022_cefazolin.R` (Santavy 2022 Table 2 footnote: `Log (Vd2) = log (Vd2_pop) + beta_Vd2_MECC x MECC + beta_Vd2_ECC x ECC + eta_Vd2`; same orientation, no value transformation).
+- **Example models:** `Santavy_2022_cefazolin.R` (exponential effect on the peripheral volume, `exp(-0.77 * SURG_CPB_STD)`, reference = off-pump).
+- **Notes:** General scope because on-pump versus off-pump, and conventional versus minimally invasive circuits, are routine covariates in cardiac-surgery popPK. Mutually exclusive with `SURG_CPB_MINI`; a paper that pools both circuit types into one on-pump indicator should set `SURG_CPB_STD` and `SURG_CPB_MINI` from the per-patient circuit where known, or register a pooled sibling if it is not. Distinct from the time-varying intra-operative phase windows `CPB_ON` / `CPB_REWARM` / `CPB_POST` (which mark WHEN a record falls relative to the bypass run), from `T_CPB` (the duration of the run in minutes), and from the ECMO family (a different, post-operative or critical-care circuit). Record the circuit hardware, priming, hematocrit and temperature management in `covariateData[[SURG_CPB_STD]]$notes`, since what counts as "standard" varies by centre.
+
+### SURG_CPB_MINI (**canonical for cardiac surgery performed on minimally invasive extracorporeal circulation (MiECC)**)
+- **Description:** 1 = the subject's cardiac operation was performed on a minimally invasive extracorporeal circulation (MiECC) system -- a closed circuit with a centrifugal pump, reduced priming volume and tubing length, no blood-air contact and separation of shed blood; 0 = off-pump surgery, or surgery on standard extracorporeal circulation (`SURG_CPB_STD`). Subject-level and time-fixed, with the same value on every record of the subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (off-pump surgery when `SURG_CPB_STD` is also 0).
+- **Source aliases:**
+  - `MiECC` / `MECC` -- used in `Santavy_2022_cefazolin.R` (Santavy 2022 Table 2 row `beta_Vd2_MiECC`; the footnote equation writes the indicator as `MECC`; same orientation, no value transformation).
+- **Example models:** `Santavy_2022_cefazolin.R` (exponential effect on the peripheral volume, `exp(-0.79 * SURG_CPB_MINI)`, reference = off-pump).
+- **Notes:** Mutually exclusive with `SURG_CPB_STD`; see that entry for the distinction from the `CPB_` phase windows, `T_CPB` and the ECMO family. Record the circuit hardware and temperature management in `covariateData[[SURG_CPB_MINI]]$notes`.
+
 ### T_CPB (**canonical for total cardiopulmonary bypass duration during the most recent cardiac surgery**)
 - **Description:** Total time the patient spent on cardiopulmonary bypass (CPB) during their most recent cardiac-surgery operation. Time-fixed per subject (the duration of the bypass run is a single scalar set at the close of surgery). Captures composite physiological / pharmacological effects of CPB on post-operative drug disposition (hemodilution from priming volume, systemic inflammatory response, transient hepatic / renal hypoperfusion).
 - **Units:** minutes
