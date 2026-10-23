@@ -2,7 +2,7 @@
 
 # development version
 
-- Fix the figure citations of the Liu 2018 Pneumocystis treatment QSP models ([doi:10.1186/s12918-018-0603-9](https://doi.org/10.1186/s12918-018-0603-9)) to follow the 2019 Correction ([doi:10.1186/s12918-019-0708-9](https://doi.org/10.1186/s12918-019-0708-9)), which swaps original Figures 3 and 5 and Figures 4 and 6; the model descriptions, references and vignette now cite the corrected numbering. No parameter value changed.
+- Add Itohara 2019 tacrolimus minimal PBPK ([doi:10.1002/psp4.12420](https://doi.org/10.1002/psp4.12420)) - adult living-donor liver transplant recipients (liver regeneration, donor and recipient CYP3A5 genotypes).
 
 - Fix the inter-individual variability scale of Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)): the Table 3 percentages are omega x 100, not CV%, so the CL, V2 and V3 variances are now `(P/100)^2` (V3 0.6229 -> 0.8649, +39 %; CL and V2 +1-3 %). The Table 3 Wald CI on the V3 row decides the scale.
 
