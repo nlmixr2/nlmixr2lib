@@ -315,7 +315,7 @@ statement that most children need 60-80 mg/kg/day.
 
 - **Additive residual read as an SD.** Table 4 prints the additive residual as
   `2.44` with no units and no footnote, while the proportional row carries
-  footnote c ("reported as standard deviation"). Following a maintainers' ruling,
+  footnote c ("reported as standard deviation"). Following a maintainer ruling,
   2.44 is read as an SD in mg/L (`addSd = 2.44`). The alternative reading, a raw
   NONMEM SIGMA variance, would give `addSd = sqrt(2.44) = 1.562 mg/L`. The term
   has an RSE of 106%, so it is weakly identified either way. The choice affects

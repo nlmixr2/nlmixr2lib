@@ -474,7 +474,7 @@ exposure.
   deviations, and no control stream is published. They are read as NONMEM
   SIGMA variances (`addSd = sqrt(5.3)` = 2.30 ng/mL, `propSd = sqrt(0.18)` =
   0.424), consistent with the IIV block of the same table, which is provably
-  on the variance scale. This was a maintainers' ruling; it affects only the
+  on the variance scale. This was a maintainer ruling; it affects only the
   spread of simulated observations, not `Cc`.
 * **Per-administration dose in F1.** Equation 4 does not say whether `Dose`
   is the amount of each administration or the daily total. The model uses the
