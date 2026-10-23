@@ -843,18 +843,38 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 - **Example models:** `Pastuszak_2021_testosteroneUndecanoate.R` (baseline-only; power exponent -0.219 on the apparent clearance of total testosterone, referenced to 20 nmol/L; effect parameter `e_sex_hormone_binding_globulin_cl`).
 - **Notes:** Spelled out rather than abbreviated, per the maintainers' policy for new canonicals. A plain analyte name like `ALB`, used for both baseline and time-varying values; each model's `covariateData` notes say which one it uses. Distinct from the `shbg` turnover-STATE compartment in `compartment-names.md` (Jensen 2023, Reinecke 2018), which is a simulated amount, not a data column.
 
-### TRANSCORTIN (**canonical for plasma corticosteroid-binding globulin (transcortin) concentration**)
-- **Description:** Serum or plasma corticosteroid-binding globulin (CBG, transcortin, SERPINA6) concentration, the high-affinity, low-capacity binding protein for cortisol and for synthetic glucocorticoids such as prednisolone (baseline or time-varying). Binds 1:1, so at therapeutic glucocorticoid concentrations the bound fraction saturates and total-drug pharmacokinetics become non-linear.
-- **Units:** mg/L (mass concentration, consistent with `ALB` and `AAG`). Models whose binding constants are molar convert inside `model()` with the 52 kDa molecular weight: `cbg_um <- TRANSCORTIN / 52` (umol/L). 1 umol/L is about 52 mg/L.
+### PROG_BASE (**canonical for observed baseline serum progesterone (time-fixed)**)
+- **Description:** Subject-specific observed pre-dose serum progesterone concentration, carried as a time-fixed covariate. Endogenous measured hormone, not an administered progestin.
+- **Units:** ug/L (numerically equal to ng/mL). Document per-model via `covariateData[[PROG_BASE]]$units`; nmol/L is the other common clinical unit (1 ug/L = 3.18 nmol/L, MW 314.46 g/mol).
 - **Type:** continuous
-- **Scope:** general
-- **Reference category:** n/a -- in the founding model it is a STRUCTURAL binding-capacity input (no reference value, no `e_transcortin_*` coefficient). A future covariate-effect use should document its reference value per model.
+- **Scope:** specific
+- **Reference category:** n/a -- Rose 2016b enters it as the un-normalised power function `FSHbl * PROG_BASE^theta` (reference 1 ug/L). Cohort mean 0.652 ug/L, range 0.08-1.49 ug/L in GnRH-agonist-downregulated healthy women (Rose 2016b Table 1).
 - **Source aliases:**
-  - `CBG`, `C_CBG` -- Mohlmann 2026 text and tables (reported in umol/L; multiply by 52 for mg/L).
-  - `CBGp` -- Mohlmann 2026 Online Resource 3 `$INPUT`, the predicted time-varying CBG in mg/L; no value transformation.
-  - `CBGpm` -- Mohlmann 2026 Online Resource 3 `$INPUT`, the same series in umol/L (multiply by 52 for mg/L).
-- **Example models:** `Mohlmann_2026_prednisolone.R` (time-varying; capacity of the saturable arm of the total-prednisolone binding equation `Ctot = Cu + Cu * cbg_um / (Cu + KCBG) + Cu * alb_um / Kalb`, with KCBG = 0.0476 umol/L; the series is a per-individual circadian curve, two cosines with periods 24 h and 12 h, scaled to a once-per-occasion measured baseline; baseline median 1.04 umol/L, range 0.60-2.48).
-- **Notes:** Spelled out rather than abbreviated: `CBG` also commonly means capillary blood glucose. CBG has a circadian rhythm (about 23% peak-to-trough, maximum in the evening, minimum in the early morning), is raised by pregnancy and oestrogens and lowered in obesity, so a model fitted to once-measured values should say in its `covariateData` notes whether the column is the measured baseline or a reconstructed time-varying curve. Sibling in kind to `SEX_HORMONE_BINDING_GLOBULIN` (a steroid-binding globulin) and to `AAG` in its structural use (`Said_2025_imatinib.R`).
+  - `Prog` (progesterone at baseline) -- Rose 2016b Table 1 and Figure 2; no value transformation.
+- **Example models:** `Rose_2016b_follitropin_delta.R` (power exponent -0.246 on the endogenous FSH baseline; effect parameter `e_prog_base_rbase`).
+- **Notes:** Follows the `<X>_BASE` time-fixed-baseline pattern (`CRCL_BASE`, `TBILI_BASE`), as chosen by the maintainers. Distinct from `DOSE_PROGESTIN_UMOL`, which is an administered progestin dose. A time-varying progesterone column, if a future model needs one, would be the bare `PROG` with this entry as its paired baseline.
+
+### INHIBINB (**canonical for serum inhibin B, time-varying**)
+- **Description:** Observed serum inhibin B concentration, a granulosa-cell glycoprotein hormone that feeds back negatively on pituitary FSH secretion. Used as a time-varying covariate.
+- **Units:** pg/mL (numerically equal to ng/L).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- Rose 2016b enters it as the fractional Imax inhibition `1 - INHIBINB / (INHIBINB + ec50_inhibinb)` on the zero-order endogenous FSH production rate, with `ec50_inhibinb` = 100 pg/mL. Baseline cohort mean 22.0 pg/mL (range 4.0-89.0) in downregulated women, rising to the 1000-6000 pg/mL range under daily rFSH stimulation (Rose 2016b Table 1, Figure 5).
+- **Source aliases:**
+  - `InhB(t)` -- Rose 2016b Eq. 8 and Figure 5; no value transformation.
+- **Example models:** `Rose_2016b_follitropin_delta.R` (time-varying; measured once daily with the last value carried forward between samples, so solve with `covsInterpolation = "locf"`).
+- **Notes:** Spelled out rather than abbreviated (`INHB`), per the maintainers' policy for new canonicals. Paired with the time-fixed `INHIBINB_BASE` when the model needs the t = 0 value at later times. Distinct from inhibin A, which is a separate assay and would need its own entry.
+
+### INHIBINB_BASE (**canonical for observed baseline serum inhibin B (time-fixed)**)
+- **Description:** Subject-specific observed pre-dose serum inhibin B concentration, time-fixed; the baseline half of the time-varying `INHIBINB` column.
+- **Units:** pg/mL -- match the units of the paired `INHIBINB` column.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- not a scaling covariate. In Rose 2016b it enters the per-subject back-calculation of the endogenous FSH production rate from the pre-dose steady state, `kin = kel * FSHbl * V * (INHIBINB_BASE + ec50_inhibinb) / ec50_inhibinb`. Cohort mean 22.0 pg/mL, range 4.0-89.0 pg/mL (Rose 2016b Table 1).
+- **Source aliases:**
+  - `InhB(0)` -- the t = 0 value of Rose 2016b's `InhB(t)`; no value transformation.
+- **Example models:** `Rose_2016b_follitropin_delta.R`.
+- **Notes:** Follows the `<X>_BASE` paired-with-time-varying pattern of `CRCL_BASE`, as chosen by the maintainers. A separate column is required because rxode2 cannot reference a time-varying covariate's t = 0 value from inside `model()`; set it to the subject's first `INHIBINB` value.
 
 ## Vital signs
 

@@ -2700,6 +2700,8 @@ navbar:
         href: articles/Britz_2019_fluvoxamine.html
       - text: "Follitropin delta (Rose 2016)"
         href: articles/Rose_2016_follitropin_delta.html
+      - text: "Follitropin delta (Rose 2016b)"
+        href: articles/Rose_2016b_follitropin_delta.html
       - text: "Fondaparinux (Zufferey 2018)"
         href: articles/Zufferey_2018_fondaparinux.html
       - text: "Fosamprenavir (Fisher 2008)"
@@ -9402,6 +9404,7 @@ articles:
   - articles/Rosario_2008_maraviroc
   - articles/Rosario_2015_vedolizumab
   - articles/Rose_2016_follitropin_delta
+  - articles/Rose_2016b_follitropin_delta
   - articles/Rosenborg_2025_fluticasone_salmeterol
   - articles/Rostami_2022_nicotine_pbpk
   - articles/Rovei_1982_theophylline
