@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Murinova 2022 oxacillin ([doi:10.3390/antibiotics11121736](https://doi.org/10.3390/antibiotics11121736)) -- adults with staphylococcal infections receiving intravenous oxacillin.
+- Add Wu 2022 meropenem ([doi:10.3390/children9121998](https://doi.org/10.3390/children9121998)) -- Chinese neonates and young infants with bacterial infection.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
