@@ -143,8 +143,8 @@ Lanke_2019_tolvaptan <- function() {
     etalfdepot_dosemax ~ 0.019 # Table 3 IIV 'Dosemax' final = 0.019
 
     # Residual error -- Table 3 'Residual variability' final: Additive 5.3,
-    # Proportional 0.18, read as NONMEM SIGMA variances (operator ruling on
-    # the scale, sidecar 2026-09-29), so SD = sqrt(variance).
+    # Proportional 0.18, read as NONMEM SIGMA variances (maintainers' ruling on
+    # the scale, 2026-09-29), so SD = sqrt(variance).
     addSd <- 2.3022  ; label("Additive residual error SD (ng/mL)")    # sqrt(5.3); Table 3 'Additive' final = 5.3
     propSd <- 0.4243 ; label("Proportional residual error SD (fraction)") # sqrt(0.18); Table 3 'Proportional' final = 0.18
   })

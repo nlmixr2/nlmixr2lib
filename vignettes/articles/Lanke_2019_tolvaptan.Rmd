@@ -474,7 +474,7 @@ exposure.
   deviations, and no control stream is published. They are read as NONMEM
   SIGMA variances (`addSd = sqrt(5.3)` = 2.30 ng/mL, `propSd = sqrt(0.18)` =
   0.424), consistent with the IIV block of the same table, which is provably
-  on the variance scale. This was an operator ruling; it affects only the
+  on the variance scale. This was a maintainers' ruling; it affects only the
   spread of simulated observations, not `Cc`.
 * **Per-administration dose in F1.** Equation 4 does not say whether `Dose`
   is the amount of each administration or the daily total. The model uses the
@@ -482,7 +482,7 @@ exposure.
   paper anchors F1 to the lowest single dose of 15 mg, which is also the
   smallest administration in any split regimen.
 * **New parameter names.** `lfdepot_dose50` and `lfdepot_dosemax` were
-  registered for the two dose-scale constants (operator ruling), following
+  registered for the two dose-scale constants (maintainers' ruling), following
   the `lcl_dose50` grammar of the dose-dependent clearance family. The
   paper's own glosses for them ("the dose at which F1 is 50%", "the highest
   dose at which F1 is lowest") do not describe Equation 4.

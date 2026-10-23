@@ -5266,7 +5266,7 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
 - **Source aliases:**
   - `SSD2` -- Karrer 2018 (deposited deSolve code, "Skin surface depot PCPs").
 - **Example models:** `Karrer_2018_bisphenolA_pbpk.R` (founding example), `Karrer_2018_bisphenolS_pbpk.R`, `Karrer_2018_bisphenolF_pbpk.R`, `Karrer_2018_bisphenolAF_pbpk.R`.
-- **Notes:** See `depot_td_thermalpaper`. Spelled-out source qualifier (`personalcare`, not `pcp`) per the standing operator preference to spell canonical tokens out.
+- **Notes:** See `depot_td_thermalpaper`. Spelled-out source qualifier (`personalcare`, not `pcp`) per the maintainers' standing preference to spell canonical tokens out.
 
 ---
 

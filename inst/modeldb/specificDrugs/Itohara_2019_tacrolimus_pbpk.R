@@ -136,10 +136,10 @@ Itohara_2019_tacrolimus_pbpk <- function() {
   ini({
     # ---- Absorption --------------------------------------------------------
     # Not reported by Itohara 2019 (the SKA data item is a Simcyp output).
-    # Borrowed by operator ruling 2026-09-26 from Ji_2018_tacrolimus.R, a
+    # Borrowed by maintainers' ruling 2026-09-26 from Ji_2018_tacrolimus.R, a
     # literature-fixed ka for adult LDLT recipients; the paper's own data are
     # troughs and do not identify ka.
-    lka <- fixed(log(4.48)); label("First-order absorption rate constant (1/h)") # NOT IN PAPER: Ji 2018 Table 2 ka fixed 4.48 1/h (operator ruling 2026-09-26)
+    lka <- fixed(log(4.48)); label("First-order absorption rate constant (1/h)") # NOT IN PAPER: Ji 2018 Table 2 ka fixed 4.48 1/h (maintainers' ruling 2026-09-26)
     fa <- fixed(0.6); label("Fraction of the oral dose absorbed (unitless)") # Results 'PBPK modeling' Fa = 0.6 selected (smallest RMSE 5.69); Results 'Simulation' Fa designated 0.6
 
     # ---- Distribution ------------------------------------------------------

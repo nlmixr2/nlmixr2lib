@@ -383,7 +383,7 @@ stopifnot(
   probabilities (for example 28% at ORR 66%, against 34% from the
   frequentist Figure 2) are therefore not reproduced. Figure 4's
   alternative approach evaluates "equation (8) in Hong and Shi (2012)"
-  (Stat Med 31:831-843), which is not on disk. Neither layer is a model
+  (Stat Med 31:831-843), which was not available when the model was built. Neither layer is a model
   parameter; both are decision-analysis wrappers around the same
   regression.
 * **Figure 2 caption.** The caption says "for an ORR of 60%", but the

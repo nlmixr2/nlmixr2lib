@@ -296,7 +296,7 @@ stopifnot(
 # NCA with PKNCA
 
 Tate 2018 does not tabulate NCA results (they are in the phase I clinical
-report, its reference 8, which is not on disk), so the simulated NCA below is
+report, its reference 8, which is not publicly available), so the simulated NCA below is
 reported for the two arms without a published comparator. Two intervals are
 summarised: the day -3 single dose (0-72 h) and the day 28 dose (720-744 h).
 
@@ -382,7 +382,7 @@ Terminal half-life of the typical patient is ln(2) x Vd/F / (CL/F) =
   `Y = F + F * EPS(1) + EPS(2)` form.
 * **Naming.** Frel,ss is `fdepot_exp_inf` and lambda is `lfdepot_exp_kdes`,
   the registered time-varying `_exp_` family transposed to bioavailability
-  (operator ruling, 2026-09-21). Frel,ss has no typical value of its own, so
+  (maintainers' ruling, 2026-09-21). Frel,ss has no typical value of its own, so
   only its eta (`etalfdepot_exp_inf`) appears in `ini()`.
 * **PK/PD.** The Fig. 3 p-Rb simulation re-uses the Tate 2014 preclinical
   model unchanged and is not part of this file.

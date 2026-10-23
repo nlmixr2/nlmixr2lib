@@ -137,8 +137,8 @@ Downes_2020_vancomycin <- function() {
     # Residual error. Results: 'additive plus proportional error structure'.
     # Footnote c states the proportional term is reported as a standard
     # deviation; the additive row has no footnote and no units and is read as an
-    # SD in mg/L per operator ruling (sidecar oasweep_PMC6254693 request-001,
-    # 2026-09-22). The alternative reading, a NONMEM SIGMA variance, would give
+    # SD in mg/L by maintainers' ruling (2026-09-22). The alternative
+    # reading, a NONMEM SIGMA variance, would give
     # addSd = sqrt(2.44) = 1.562 mg/L.
     propSd <- 0.179; label("Proportional residual error (fraction)") # Table 4: residual proportional 0.179, RSE 65.1
     addSd <- 2.44;   label("Additive residual error (mg/L)")         # Table 4: residual additive 2.44, RSE 106.0

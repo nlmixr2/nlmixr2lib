@@ -866,7 +866,7 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:**
   - `Ke0` -- Liu 2020 Table 2 and ESM equation 4, `Ke = (KeIntcpt + (CrCL/120) * Ke0) * (weight/70)^-0.25`.
 - **Example models:** `Liu_2020_cefepime.R` (founding example; `Ke0` = 0.236 1/h at CrCL = 120 mL/min).
-- **Notes:** Ratified by the maintainers 2026-09-26 (PMC6810068 sidecar). Combines the base `kel` with the registered `_renal` component suffix. Do not reparameterise onto `lcl_renal` + `lvc`: when the paper puts independent random effects on the rate-constant arms and on V, the clearance arms are products of two of the paper's random effects and their variances are not published. The paper symbol `Ke0` must never be carried as `lke0`, which is the effect-compartment equilibration rate constant.
+- **Notes:** Ratified by the maintainers 2026-09-26. Combines the base `kel` with the registered `_renal` component suffix. Do not reparameterise onto `lcl_renal` + `lvc`: when the paper puts independent random effects on the rate-constant arms and on V, the clearance arms are products of two of the paper's random effects and their variances are not published. The paper symbol `Ke0` must never be carried as `lke0`, which is the effect-compartment equilibration rate constant.
 
 ### lkel_nonren (**canonical log-transformed non-renal elimination rate constant arm**)
 - **Type:** log-transformed-pk
@@ -2728,7 +2728,7 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Source aliases:**
   - `Ksi` -- Karrer 2018 Table 7 and paper Equation 4 ("Ksi is the constant of substrate inhibition").
 - **Example models:** `Karrer_2018_bisphenolAF_pbpk.R` (founding example; `k_substrateinh_gut_gluc = 82,200 nM` and `k_substrateinh_liver_gluc = 219,000 nM`), `Karrer_2018_bisphenolS_pbpk.R` and `Karrer_2018_bisphenolF_pbpk.R` (gut glucuronidation only).
-- **Notes:** Ratified 2026-09-22 (operator sidecar `oasweep_PMC6108829` request-001 / response-001, question q3). Spelled-out stem `k_substrateinh` rather than the paper's `Ksi` abbreviation, per the standing operator preference to spell canonical tokens out. Distinct from `ki50` / `ic50`, which are *inhibitory potencies* of a separate inhibitor species; `k_substrateinh` is the self-inhibition of the substrate of its own metabolism, a different quantity. Joins the `vmax_<process>` / `km_<process>` saturable-kinetics neighbourhood (`vmax_reab` / `km_reab`, `vmax_pah` / `km_pah`); not gated by `checkModelConventions()`, so this entry is documentation of the mechanistic concept.
+- **Notes:** Ratified by the maintainers 2026-09-22. Spelled-out stem `k_substrateinh` rather than the paper's `Ksi` abbreviation, per the maintainers' standing preference to spell canonical tokens out. Distinct from `ki50` / `ic50`, which are *inhibitory potencies* of a separate inhibitor species; `k_substrateinh` is the self-inhibition of the substrate of its own metabolism, a different quantity. Joins the `vmax_<process>` / `km_<process>` saturable-kinetics neighbourhood (`vmax_reab` / `km_reab`, `vmax_pah` / `km_pah`); not gated by `checkModelConventions()`, so this entry is documentation of the mechanistic concept.
 
 ### logitfdepot (**canonical logit-transformed depot fraction**)
 - **Type:** log-transformed-pk

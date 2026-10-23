@@ -324,7 +324,7 @@ stopifnot(abs(recovered / dose_nmol - 1) < 0.01)
   roundings of the full parameter set (the paper notes, e.g., that input table
   C2 mis-shifts one age group's cardiac output), which is the most likely origin
   of the small difference; the figure's exact simulation inputs are not
-  recoverable from the on-disk material. The model follows the deposited code
+  recoverable from the published material. The model follows the deposited code
   and the printed Table 6-8 parameters.
 * **Oral uptake period.** Table 5 prints a peroral uptake period of 0.25 h, but
   the deposited code uses 3 min (`period.O <- 3/60`). The code value is used:

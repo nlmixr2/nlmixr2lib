@@ -444,7 +444,7 @@ knitr::kable(cmp_d28, caption = "Day 28, simulated vs. Eckburg 2022 Table 2. * d
 ```
 
 ```{r nca-gate}
-# Robust central tendency only (CLAUDE.md, cohort assertions): a
+# Robust central tendency only: a
 # mis-transcribed CL, F, V or dose moves these medians by tens of percent.
 res_d1 <- as.data.frame(nca_d1)
 med <- function(res, reg, param, start) {

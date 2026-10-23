@@ -384,8 +384,8 @@ uncertainty of how the paper read Cmax off its simulation grid.
 * **Murine sub-model not packaged.** Figure 2a gives only CL1 = 16 mL/day/kg,
   KM = 0.015 ug/mL and a constant Vmax = 12 ug/day for the naive-pooled mouse
   fit. V1, V2 and CLd appear nowhere in the paper or supplement, so the model
-  cannot be written without inventing them. An author query for the missing
-  values is queued as an operator follow-up.
+  cannot be written without inventing them. The maintainers intend to ask the
+  authors for the missing values.
 * **Time origin.** `t` in CL2(t) and Vmax(t) is the time since the first dose
   and does not reset at later doses, matching Figure 3, where the decaying terms
   continue across the dosing interval.

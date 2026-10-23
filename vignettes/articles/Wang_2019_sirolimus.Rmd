@@ -494,7 +494,7 @@ stopifnot(
 # Assumptions and deviations
 
 * **Sex coding (not printed in the paper).** Encoded as 1 = male, 2 = female,
-  i.e. `exp(-0.818 * (1 + SEXF))`. The operator asked for an independent
+  i.e. `exp(-0.818 * (1 + SEXF))`. The maintainers asked for an independent
   verification before choosing between this and the literal 0/1 reading. The
   three checks above all favour 1/2: five other paediatric sirolimus models,
   including the same hospital's Chen 2020 KHE model; the level of the paper's
