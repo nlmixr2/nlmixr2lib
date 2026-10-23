@@ -18,7 +18,7 @@
 
 - Fix the inter-individual variability scale of Denti 2010 glucose minimal model ([doi:10.1152/ajpendo.00656.2009](https://doi.org/10.1152/ajpendo.00656.2009)): the paper reports "the square root of the elements on the diagonal of Omega", so the SG/VOL and SI/P2 blocks are now `(P/100)^2` on the diagonal with the printed correlations unchanged (SI +11 %, P2 +7 %).
 
-- Add Luu 2022 anti-VEGF (ranibizumab, aflibercept, brolucizumab, abicipar) best-corrected visual acuity MBMA ([doi:10.1002/jcph.2002](https://doi.org/10.1002/jcph.2002)) -- trial arms of adults with neovascular age-related macular degeneration.
+- Add Fokkink 2022 intravenous immunoglobulin ([doi:10.1007/s40262-022-01136-z](https://doi.org/10.1007/s40262-022-01136-z)) -- patients with Guillain-Barre syndrome (registers the `SCORE_GBS_DISABILITY` and `DIS_GBS` covariates).
 
 - Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
 
