@@ -37,7 +37,7 @@ A single token can appear under both Types (e.g., `lzd` is both a bare drug-stat
 
 The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2libConventionsStatic` because they are structural regular expressions rather than name lists:
 
-- `compartmentRegex = "^(bile_transit|transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|moderator|caseum|hb)(_slow|_fast)?[0-9]+$"` -- numbered-chain compartments: bile-duct delay chains of enterohepatic-recycling models (`bile_transit1`, `bile_transit2`, ...), transit absorption chains (`transit1`, `transit2`, ...), effect-compartment chains (`effect1`, `effect2`, ...), precursor pools for delayed-feedback IDR (`precursor1`, `precursor2`, ...), latent chains (`lat1`, ...), parallel-absorption depots (`depot1`, `depot2`, ...), erythrocyte age-transit chains (`erythrocytes1`, ..., `erythrocytes4`), the reticulocyte age-transit chain that feeds them (`reticulocytes1`, `reticulocytes2`, ...), the paired corpuscular-hemoglobin chain (`mch1`, ..., `mch4`), Gabrielsson-Hjorth moderator / tolerance chains (`moderator1`, `moderator2`, ...), the concentric caseum rings of a tuberculosis granuloma (`caseum1`, ..., `caseum6`), and hemoglobin age-transit chains (`hb1`, ..., `hb4`) that carry hemoglobin concentration per red-cell age bin. Numeric suffix is required (a model that lumps the structure into one state uses the bare canonical `effect` / `depot` / `erythrocytes` / `reticulocytes` / `mch` / `moderator` / `caseum` / `hb` / `bile_transit`).
+- `compartmentRegex = "^(bile_transit|transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|moderator|caseum|hb|lumped)(_slow|_fast)?[0-9]+$"` -- numbered-chain compartments: bile-duct delay chains of enterohepatic-recycling models (`bile_transit1`, `bile_transit2`, ...), transit absorption chains (`transit1`, `transit2`, ...), effect-compartment chains (`effect1`, `effect2`, ...), precursor pools for delayed-feedback IDR (`precursor1`, `precursor2`, ...), latent chains (`lat1`, ...), parallel-absorption depots (`depot1`, `depot2`, ...), erythrocyte age-transit chains (`erythrocytes1`, ..., `erythrocytes4`), the reticulocyte age-transit chain that feeds them (`reticulocytes1`, `reticulocytes2`, ...), the paired corpuscular-hemoglobin chain (`mch1`, ..., `mch4`), Gabrielsson-Hjorth moderator / tolerance chains (`moderator1`, `moderator2`, ...), the concentric caseum rings of a tuberculosis granuloma (`caseum1`, ..., `caseum6`), and hemoglobin age-transit chains (`hb1`, ..., `hb4`) that carry hemoglobin concentration per red-cell age bin, and the aggregate states of a proper-lumped linear system (`lumped1`, `lumped2`, ...). Numeric suffix is required (a model that lumps the structure into one state uses the bare canonical `effect` / `depot` / `erythrocytes` / `reticulocytes` / `mch` / `moderator` / `caseum` / `hb` / `bile_transit` / `lumped`).
 - `darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$"` -- DAR-numbered ADC isoform compartments (`dar0_central`, `dar4_peripheral1`, ...).
 - `targetLocationRegex = "^(target|complex)_(csf|isf|peripheral[0-9]?)$"` -- target species in physiologic / numbered-peripheral compartments (`target_csf`, `target_isf`, `target_peripheral`, `target_peripheral1`, `complex_peripheral`, ...).
 - `pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc|bound|memvas|memvasfr1|memvasfr2|memvasns|memint|memintfr1|memintfr2|memintns|endoearly|endoearlyfr1|endoearlyfr2|endosort|endosortfr1|endosortfr2|endorecyc|endorecycfr1|endorecycfr2|fcrnmemvas|fcrnmemint|fcrnendoearly|fcrnendosort|fcrnendorecyc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain_globus_pallidus|brain_olfactory_bulb|brain_cerebellum|brain|pituitary|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut|tumor|stomach)$` -- membrane-limited PBPK sub-compartments: vascular blood cells (`bc_`), endosomal unbound (`eu_`), endosomal FcRn-bound (`eb_`), endosomal free FcRn (`fr_`), interstitial space (`is_`), intracellular (`int_`), mRNA pool (`mrna_`), luciferase reporter (`luc_`), saturable bound / protein-complexed pool (`bound_`). See the "Saturable bound tissue pools" section below for `bound_`, and the Jones 2019 pH-resolved endothelial-transcytosis family (`memvas_`, `memint_`, `endoearly_`, `endosort_`, `endorecyc_`, their `fr1` / `fr2` FcRn-complex and `ns` non-specifically bound variants, and the `fcrn<location>_` free-FcRn pools). See the "pH-resolved endothelial transcytosis sub-compartments" section below for that family. Longer organ alternatives are listed before the prefixes they extend so the anchored alternation matches `brain_globus_pallidus` rather than stopping at `brain`.
@@ -3480,6 +3480,14 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Role:** Lumped remainder tissue compartment in PBPK.
 - **Source aliases:** none.
 - **Example models:** `Zhang_2011_nutlin3a.R`.
+
+### lumped (**canonical aggregate state of a proper-lumped linear system**)
+- **Type:** compartment
+- **Role:** Aggregate state produced by *proper lumping* of a linear ODE system (Dokoumetzidis and Aarons; lumped rate matrix `K_hat = M K M+`, where `M` is a 0/1 lumping matrix with one row per lumped state and `M+` its Moore-Penrose pseudo-inverse). Each lumped state pools several states of the original system (typically the perfused tissues of a whole-body PBPK model) into one, and its value is `M y`, the **sum** of the pooled original states. Numbered members `lumped1`, `lumped2`, ... are accepted via `compartmentRegex`; the bare `lumped` is for a model with a single lumped state. States of the original system that the lumping leaves unpooled keep their own canonical names (`venous`, `arterial`, ...), so only genuine aggregates take this name.
+- **Source aliases:**
+  - `L1`, `L2`, `L3` -- lumped states in `Pan_2019_fentanyl_lumped_a.R` / `Pan_2019_fentanyl_lumped_b.R` (Pan and Duffull 2019, Figure 4 and Supplementary Material 1 Sections 2-3).
+- **Example models:** `Pan_2019_fentanyl_lumped_a.R` (founding example), `Pan_2019_fentanyl_lumped_b.R`.
+- **Notes:** The mechanistic role is fixed but the membership is model-specific, as for `sstr`: record the original states pooled into each `lumped<n>` in the model file's `description`, since that membership is not recoverable from the name. Number the members to follow the source figure's own labels where it has them. Distinct from `other` / `res_tis`, which are rest-of-body remainder tissues of an unlumped PBPK model rather than the output of a lumping transform.
 
 ### lung (**canonical bare lung compartment**)
 - **Type:** compartment
@@ -7442,7 +7450,14 @@ PBPK organ sub-compartment suffixes used by Ayyar 2024 givosiran whole-organ ext
 - **Type:** metabolite-suffix
 - **Role:** Deep-bound / sequestered pool inside the named organ.
 - **Source aliases:** none.
-- **Example models:** `Ayyar_2024_givosiran.R`.
+- **Example models:** `Ayyar_2024_givosiran.R`, `Pan_2019_fentanyl_pbpk.R` (`gut_deep`, `liver_deep`, `spleen_deep`).
+
+### deep2 (**canonical second deep pool suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Second deep pool inside the named organ, exchanging only with the organ's first deep pool (`<organ>_deep`) in a single-tissue multi-compartment (catenary) organ sub-model: perfused state `<organ>` <-> `<organ>_deep` <-> `<organ>_deep2`. Use bare `<organ>_deep` when the organ has a single deep pool.
+- **Source aliases:**
+  - `G_cpt_2` -- second extra gut compartment in `Pan_2019_fentanyl_pbpk.R` (Pan and Duffull 2019 Figure 1; Bjorkman et al. 1994 single-tissue three-compartment gut).
+- **Example models:** `Pan_2019_fentanyl_pbpk.R` (`gut_deep2`).
 
 ### vas (**canonical vascular-pool suffix**)
 - **Type:** metabolite-suffix

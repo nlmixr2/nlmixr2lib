@@ -198,7 +198,11 @@
   # recycling models; it carries its own prefix rather than reusing the
   # absorption `transit[0-9]+` because a model with enterohepatic recycling
   # normally also carries an oral absorption chain, and the two would
-  # collide.
+  # collide. `lumped[0-9]+` is an aggregate state of a proper-lumped linear
+  # system (Dokoumetzidis-Aarons lumping, K_hat = M K M+): the role is fixed
+  # but the membership is model-specific, so the pooled original states are
+  # recorded in the model's `description`. Founding example
+  # Pan_2019_fentanyl_lumped_a.
   # The optional `_slow` / `_fast` qualifier registers the dual-rate
   # effect-delay cascade families (`effect_slow<n>` / `effect_fast<n>`):
   # two parallel first-order lag chains of different speed whose terminal
@@ -216,7 +220,7 @@
   # never take one side wholesale.
   compartmentRegex = paste0(
     "^(bile_transit|transit|effect|precursor|lat|depot|erythrocytes|",
-    "reticulocytes|mch|moderator|caseum|hb)(_slow|_fast)?[0-9]+$"
+    "reticulocytes|mch|moderator|caseum|hb|lumped)(_slow|_fast)?[0-9]+$"
   ),
   # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`
