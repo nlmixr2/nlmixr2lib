@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Courlet 2022 salbutamol plasma and urine MBMA ([doi:10.1002/psp4.12773](https://doi.org/10.1002/psp4.12773)) -- healthy volunteers, athletes and asthmatics from 13 published studies, inhaled and oral dosing.
+- Add Fu 2022 nifedipine ([doi:10.2147/DDDT.S362607](https://doi.org/10.2147/DDDT.S362607)) -- Chinese adults with chronic kidney disease and hypertension, not on dialysis. Registers the `PARATHYROID_HORMONE` covariate column.
 
 - Fix the inter-individual variability scale of Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)): the Table 3 percentages are omega x 100, not CV%, so the CL, V2 and V3 variances are now `(P/100)^2` (V3 0.6229 -> 0.8649, +39 %; CL and V2 +1-3 %). The Table 3 Wald CI on the V3 row decides the scale.
 

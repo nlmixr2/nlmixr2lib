@@ -1662,6 +1662,18 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Gong_2023_pemigatinib_phosphate.R` (mmol/L; uncentered linear coefficient -0.5730 mg/dL per mmol/L on the change-from-baseline endpoint, rescaled from the published -0.185 per mg/dL; the model's endpoint is retained in the paper's mg/dL so Table S2 remains usable verbatim).
 - **Notes:** Distinct from `ALP` (alkaline phosphatase, an enzyme activity) and from `CPK` (creatine phosphokinase) despite the shared word stem -- `PHOS` is the electrolyte. Housed in the renal / hepatic function section because phosphate homeostasis is renally regulated and because source papers report it inside the same serum-chemistry covariate panel as `ALB` / `ALP` / `ALT` / `AST` / `TBILI` (Gong 2023 tests exactly that panel); the register has no separate electrolyte section. When a source paper models the *change from baseline* in serum phosphate as an endpoint rather than as a covariate, that is a model output, not a covariate column -- register only the baseline (or time-varying) input value here.
 
+### PARATHYROID_HORMONE (**canonical for serum parathyroid hormone**)
+- **Description:** Serum parathyroid hormone (PTH) concentration (baseline or time-varying). A mineral-bone-metabolism hormone that rises with secondary hyperparathyroidism in chronic kidney disease; in CKD it is also a candidate mediator of hepatic CYP3A down-regulation, which is how it enters as a covariate on the clearance of CYP3A substrates.
+- **Units:** **pg/mL** (equivalently ng/L). Some laboratories report pmol/L; for PTH(1-84) 1 pmol/L = 9.43 pg/mL. Document the unit per-model via `covariateData[[PARATHYROID_HORMONE]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(PARATHYROID_HORMONE / ref)^exponent`. Reference values observed: 156.84 pg/mL (Fu 2022 cohort median, range 9.34-687.27, Chinese CKD stages 2-5 not on dialysis).
+- **Source aliases:**
+  - `PTH` -- Fu 2022 Table 1 and the final CL/F equation; also the screened-but-not-retained name in `Tuey_2024_cholecalciferol.R`.
+  - `iPTH` (intact PTH) -- common laboratory reporting name; map here and record the assay in the per-model notes.
+- **Example models:** `Fu_2022_nifedipine.R` (pg/mL, reference 156.84; power exponent -0.22 on nifedipine CL/F, so higher PTH lowers clearance).
+- **Notes:** Spelled out rather than the bare abbreviation `PTH`. The entry does not split intact from whole/bio-intact PTH assays, because the founding paper does not state its assay; record the assay in the per-model notes when the source gives it. Distinct from `PHOS` (serum phosphate) and from vitamin D metabolites, which are commonly tested in the same CKD mineral-bone panel.
+
 ### GGT (**canonical for gamma-glutamyltransferase**)
 - **Description:** Serum gamma-glutamyltransferase activity (baseline or time-varying); hepatic / cholestatic biliary-enzyme marker.
 - **Units:** **U/L** (SI; canonical as of 2026-06-19; IU/L is used interchangeably). Document per-model via `covariateData[[GGT]]$units`.

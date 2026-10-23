@@ -4662,6 +4662,8 @@ navbar:
         href: articles/OlssonGisleskog_2021_nicotine.html
       - text: "NicotinicAcid rat (Ahlstrom 2010)"
         href: articles/Ahlstrom_2010_nicotinicAcid_rat.html
+      - text: "Nifedipine (Fu 2022)"
+        href: articles/Fu_2022_nifedipine.html
       - text: "Nifedipine (Liu 2022)"
         href: articles/Liu_2022_nifedipine.html
       - text: "Nifedipine invitro (Almond 2016)"
@@ -8387,6 +8389,7 @@ articles:
   - articles/Fu_2019_paclitaxel_pbpk
   - articles/Fu_2021_vancomycin
   - articles/Fu_2022_atenolol_qsp
+  - articles/Fu_2022_nifedipine
   - articles/Fu_2023_cardiovascular
   - articles/Fuchs_2014_gentamicin
   - articles/Fuhr_2020_dabigatran
