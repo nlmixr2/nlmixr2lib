@@ -5532,6 +5532,10 @@ navbar:
         href: articles/Kang_2023_pyronaridine_artesunate_hamster_pbpk.html
       - text: "Pyrotinib (Zhu 2024)"
         href: articles/Zhu_2024_pyrotinib.html
+      - text: "QuantumDot blood mouse (Yaghini 2021)"
+        href: articles/Yaghini_2021_quantumDot.html
+      - text: "QuantumDot organ mouse (Yaghini 2021)"
+        href: articles/Yaghini_2021_quantumDot.html
       - text: "Quercetin rabbit (DominguezMore 2024)"
         href: articles/DominguezMore_2024_rutin_physalis.html
       - text: "Quetiapine rat (Dias 2024)"
@@ -10149,6 +10153,7 @@ articles:
   - articles/Xu_2026_caspofungin
   - articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas
   - articles/Yadav_2017_imipenem_tobramycin
+  - articles/Yaghini_2021_quantumDot
   - articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab
   - articles/Yamada_2025_zolbetuximab
   - articles/Yamamoto_2017_cns_pbpk_rat

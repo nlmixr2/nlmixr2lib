@@ -18,7 +18,7 @@
 
 - Fix the inter-individual variability scale of Denti 2010 glucose minimal model ([doi:10.1152/ajpendo.00656.2009](https://doi.org/10.1152/ajpendo.00656.2009)): the paper reports "the square root of the elements on the diagonal of Omega", so the SG/VOL and SI/P2 blocks are now `(P/100)^2` on the diagonal with the printed correlations unchanged (SI +11 %, P2 +7 %).
 
-- Add Ngara 2020 atazanavir and ritonavir hair-concentration models ([doi:10.1186/s40360-020-00437-y](https://doi.org/10.1186/s40360-020-00437-y)) -- HIV-infected Zimbabwean adolescents on ritonavir-boosted atazanavir.
+- Add Yaghini 2021 indium-based quantum dots (0-24 h blood and 90-day blood/liver/spleen models) ([doi:10.1016/j.ejps.2020.105639](https://doi.org/10.1016/j.ejps.2020.105639)) -- female Balb/c mice.
 
 - Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
 
