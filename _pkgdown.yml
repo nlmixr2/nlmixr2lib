@@ -6122,6 +6122,8 @@ navbar:
         href: articles/Zhou_2022_simurosertib.html
       - text: "Simvastatin (Jin 2014)"
         href: articles/Jin_2014_simvastatin.html
+      - text: "Simvastatin (Ogungbenro 2019)"
+        href: articles/Ogungbenro_2019_simvastatin.html
       - text: "Simvastatin qsp (PichardoAlmarza 2017)"
         href: articles/PichardoAlmarza_2017_simvastatin_qsp.html
       - text: "Sipoglitazar (Stringer 2013)"
@@ -9268,6 +9270,7 @@ articles:
   - articles/Ogasawara_2019_fedratinib
   - articles/Ogasawara_2020_durvalumab
   - articles/Ogungbenro_2009_penciclovir
+  - articles/Ogungbenro_2019_simvastatin
   - articles/Ogusu_2014_valproic_acid
   - articles/Ohara_2014_warfarin_s
   - articles/Ohk_2022_sumatriptan
