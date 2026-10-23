@@ -18,7 +18,7 @@
 
 - Fix the inter-individual variability scale of Denti 2010 glucose minimal model ([doi:10.1152/ajpendo.00656.2009](https://doi.org/10.1152/ajpendo.00656.2009)): the paper reports "the square root of the elements on the diagonal of Omega", so the SG/VOL and SI/P2 blocks are now `(P/100)^2` on the diagonal with the printed correlations unchanged (SI +11 %, P2 +7 %).
 
-- Add Ivaturi 2017 fludarabine ([doi:10.1016/j.bbmt.2017.06.021](https://doi.org/10.1016/j.bbmt.2017.06.021)) -- children undergoing hematopoietic cell transplantation; plasma f-ara-a and PBMC f-ara-ATP.
+- Add Gibiansky 2010 two-target (soluble + membrane) monoclonal antibody TMDD, full model and QSS approximation ([doi:10.1007/s10928-010-9163-3](https://doi.org/10.1007/s10928-010-9163-3)) -- methodology reference, 224 simulated subjects, unnamed mAb.
 
 - Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
 
