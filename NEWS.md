@@ -18,7 +18,7 @@
 
 - Fix the inter-individual variability scale of Denti 2010 glucose minimal model ([doi:10.1152/ajpendo.00656.2009](https://doi.org/10.1152/ajpendo.00656.2009)): the paper reports "the square root of the elements on the diagonal of Omega", so the SG/VOL and SI/P2 blocks are now `(P/100)^2` on the diagonal with the printed correlations unchanged (SI +11 %, P2 +7 %).
 
-- Add Yoo 2025 benzylpenicillin ([doi:10.1128/aac.00269-25](https://doi.org/10.1128/aac.00269-25)) -- healthy adult volunteers given an IV bolus and low-dose continuous infusions in the CHIPS challenge trial.
+- Add Tran 2026 pioglitazone MBMA of liver histology (steatosis, inflammation, ballooning, fibrosis) and ALT/AST ([doi:10.1002/psp4.70034](https://doi.org/10.1002/psp4.70034)) -- adults with metabolic dysfunction-associated steatohepatitis (MASH). These are the library's first ordered-categorical (proportional-odds) models.
 
 - Add Bell 2026 pirtobrutinib ([doi:10.1007/s00280-026-04951-4](https://doi.org/10.1007/s00280-026-04951-4)) -- adults with relapsed or refractory B-cell malignancies in the phase 1/2 BRUIN study.
 

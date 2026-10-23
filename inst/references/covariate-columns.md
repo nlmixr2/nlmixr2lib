@@ -3731,6 +3731,17 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Sato_2024_sglt2_hba1c_mbma.R` (study-arm mean daily dose divided by the 15.0 mg/day UGE reference dose; tofogliflozin's phase I programme ran to 640 mg, giving it by far the widest normalized-dose span of the six drugs and the narrowest observed UGE range).
 - **Notes:** Sibling of `DOSE_EMPA_MGD` in the `DOSE_<DRUG>_<UNITS>` auto-approve family. Tofogliflozin is a CYP-metabolised SGLT2 inhibitor approved in Japan, with the shortest elimination half-life of the six drugs in Sato 2024 Table 1 (5.29 h).
 
+### DOSE_PIO_MGD (**canonical for daily pioglitazone dose**)
+- **Description:** Daily oral pioglitazone dose of a treatment arm, in mg/day. Set to 0 mg/day for placebo arms. In a model whose drug term has no time dependence, it is also 0 on the pre-treatment (time 0) record of a pioglitazone arm, so the covariate is time-varying.
+- **Units:** mg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 mg/day (no drug) gives no drug effect. Models that use the natural log of the dose define the drug term as zero at 0 mg/day.
+- **Source aliases:**
+  - `dose` -- used in the `Tran_2026_pioglitazone_*_mbma.R` models (Tran 2026 Methods 2.2.1 and Table 1; trial doses 30 and 45 mg/day).
+- **Example models:** `Tran_2026_pioglitazone_steatosis_mbma.R` and `Tran_2026_pioglitazone_inflammation_mbma.R` and `Tran_2026_pioglitazone_fibrosis_mbma.R` (natural log of the dose on the cumulative logit), `Tran_2026_pioglitazone_ballooning_mbma.R` (dose enters linearly), `Tran_2026_pioglitazone_alt_mbma.R` and `Tran_2026_pioglitazone_ast_mbma.R` (any dose > 0 switches the Weibull rate; no dose-response).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (`DOSE_EMPA_MGD`). Pioglitazone is a once-daily thiazolidinedione; 15, 30 and 45 mg/day are the marketed strengths. In the Tran 2026 source trials, Belfort 2006 and Cusi 2016 started at 30 mg/day and stepped up to 45 mg/day after 2 months; those arms are coded at 45 mg/day.
+
 ### DOSE_EE_UG (**canonical for daily ethinyl estradiol dose in a combined oral contraceptive**)
 - **Description:** Daily dose of ethinyl estradiol (EE), the estrogen component of a combined oral contraceptive (COC), in ug. Constant within a treatment arm / subject for the duration of a conventional 21/7 monophasic regimen. Supplied as a covariate column rather than as a dosing event for models that describe a COC bleeding or efficacy endpoint without instantiating an EE PK compartment.
 - **Units:** ug (per day)
