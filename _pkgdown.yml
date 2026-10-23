@@ -7110,6 +7110,12 @@ navbar:
         href: articles/Zhang_2024_tucatinib.html
       - text: "TuroctocogAlfa (Tiede 2021)"
         href: articles/Tiede_2021_turoctocogAlfa.html
+      - text: "TuroctocogAlfaPegol cyno (Rode 2018)"
+        href: articles/Rode_2018_turoctocogAlfaPegol.html
+      - text: "TuroctocogAlfaPegol human (Rode 2018)"
+        href: articles/Rode_2018_turoctocogAlfaPegol.html
+      - text: "TuroctocogAlfaPegol mouse (Rode 2018)"
+        href: articles/Rode_2018_turoctocogAlfaPegol.html
       - text: "Tusamitamab (Pouzin 2022)"
         href: articles/Pouzin_2022_tusamitamab.html
       - text: "Tuvusertib (Mukker 2026)"
@@ -9761,6 +9767,7 @@ articles:
   - articles/Roberts_2011_vancomycin
   - articles/Roberts_2016_topotecan
   - articles/Roberts_2025_remdesivir
+  - articles/Rode_2018_turoctocogAlfaPegol
   - articles/Rodjun_2023_colistin_sitafloxacin
   - articles/Rodrigues_2017_oxcarbazepine
   - articles/RodriguezFernandez_2024_warfarin
