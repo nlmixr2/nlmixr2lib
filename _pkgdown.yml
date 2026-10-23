@@ -6446,6 +6446,8 @@ navbar:
         href: articles/Bergmann_2014_tacrolimus.html
       - text: "Tacrolimus (Brooks 2021)"
         href: articles/Brooks_2021_tacrolimus.html
+      - text: "Tacrolimus (Cai 2022)"
+        href: articles/Cai_2022_tacrolimus.html
       - text: "Tacrolimus (Chen 2017)"
         href: articles/Chen_2017_tacrolimus.html
       - text: "Tacrolimus (Chen 2020a)"
@@ -6540,8 +6542,8 @@ navbar:
         href: articles/Lu_2019_tacrolimus_industry_meta.html
       - text: "Tacrolimus metaanalysis (Nanga 2019)"
         href: articles/Nanga_2019_tacrolimus_metaanalysis.html
-      - text: "Tacrolimus pbpk (Itohara 2019)"
-        href: articles/Itohara_2019_tacrolimus.html
+      - text: "Tacrolimus mm (Cai 2022)"
+        href: articles/Cai_2022_tacrolimus.html
       - text: "Tacrolimus pbpk (Pei 2023)"
         href: articles/Pei_2023_tacrolimus.html
       - text: "Tacrolimus sheep (Leber 2023)"
@@ -8037,6 +8039,7 @@ articles:
   - articles/Byun_2024_tmdd_approximations
   - articles/Cagnardi_2018_cefazolin_dog
   - articles/Cai_2022_polymyxinB
+  - articles/Cai_2022_tacrolimus
   - articles/Cai_2025_diamorphine
   - articles/Calderin_2025_pyrazinamide_isoniazid_tbm
   - articles/Caldes_2009_ganciclovir
