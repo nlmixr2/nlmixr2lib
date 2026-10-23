@@ -899,6 +899,19 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 - **Example models:** `Rose_2016b_follitropin_delta.R`.
 - **Notes:** Follows the `<X>_BASE` paired-with-time-varying pattern of `CRCL_BASE`, as chosen by the maintainers. A separate column is required because rxode2 cannot reference a time-varying covariate's t = 0 value from inside `model()`; set it to the subject's first `INHIBINB` value.
 
+### TRANSCORTIN (**canonical for plasma corticosteroid-binding globulin (transcortin) concentration**)
+- **Description:** Serum or plasma corticosteroid-binding globulin (CBG, transcortin, SERPINA6) concentration, the high-affinity, low-capacity binding protein for cortisol and for synthetic glucocorticoids such as prednisolone (baseline or time-varying). Binds 1:1, so at therapeutic glucocorticoid concentrations the bound fraction saturates and total-drug pharmacokinetics become non-linear.
+- **Units:** mg/L (mass concentration, consistent with `ALB` and `AAG`). Models whose binding constants are molar convert inside `model()` with the 52 kDa molecular weight: `cbg_um <- TRANSCORTIN / 52` (umol/L). 1 umol/L is about 52 mg/L.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- in the founding model it is a STRUCTURAL binding-capacity input (no reference value, no `e_transcortin_*` coefficient). A future covariate-effect use should document its reference value per model.
+- **Source aliases:**
+  - `CBG`, `C_CBG` -- Mohlmann 2026 text and tables (reported in umol/L; multiply by 52 for mg/L).
+  - `CBGp` -- Mohlmann 2026 Online Resource 3 `$INPUT`, the predicted time-varying CBG in mg/L; no value transformation.
+  - `CBGpm` -- Mohlmann 2026 Online Resource 3 `$INPUT`, the same series in umol/L (multiply by 52 for mg/L).
+- **Example models:** `Mohlmann_2026_prednisolone.R` (time-varying; capacity of the saturable arm of the total-prednisolone binding equation `Ctot = Cu + Cu * cbg_um / (Cu + KCBG) + Cu * alb_um / Kalb`, with KCBG = 0.0476 umol/L; the series is a per-individual circadian curve, two cosines with periods 24 h and 12 h, scaled to a once-per-occasion measured baseline; baseline median 1.04 umol/L, range 0.60-2.48).
+- **Notes:** Spelled out rather than abbreviated: `CBG` also commonly means capillary blood glucose. CBG has a circadian rhythm (about 23% peak-to-trough, maximum in the evening, minimum in the early morning), is raised by pregnancy and oestrogens and lowered in obesity, so a model fitted to once-measured values should say in its `covariateData` notes whether the column is the measured baseline or a reconstructed time-varying curve. Sibling in kind to `SEX_HORMONE_BINDING_GLOBULIN` (a steroid-binding globulin) and to `AAG` in its structural use (`Said_2025_imatinib.R`).
+
 ## Vital signs
 
 ### HR (**canonical for heart rate**)
@@ -7180,6 +7193,17 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
   - `WZ` / '48h cumulative dosage of Wuzhi Capsule' -- used in `Chen_2021b_tacrolimus.R` (Chen 2021 Table 2 rows `WZ<45mg`, `WZ=45mg`, `WZ>45mg`, `WZ=0mg`).
 - **Example models:** `Chen_2021b_tacrolimus.R` (four-bin multiplier on tacrolimus CL/F in Chinese adult kidney transplant recipients).
 - **Notes:** Member of the auto-approved `DOSE_<drug>_<units>` family; the drug token is the product name, following [[CONMED_WUZHI]], because the herbal preparation has no single INN. The `MG48H` unit token records the 48-h accumulation window, which is part of the covariate's definition: the same regimen gives a different value under a 24-h window. Use [[CONMED_WUZHI]] instead when a paper models only presence / absence. The founding model's bins are non-monotone (the lowest dose gives the largest CL/F reduction), which the paper attributes to an inhibition-then-induction interplay; a simulation should use only the regimens that populate the bins in the source data (22.5, 45, 67.5, 90 and 135 mg per 48 h).
+
+### AUC_MBV_SS24 (**canonical for maribavir steady-state AUC over 0-24 h on the last day of exposure**)
+- **Description:** Area under the maribavir plasma concentration-time curve from 0 to 24 h at steady state on the **last day of exposure** -- a full-day integral, i.e. both doses of a twice-daily regimen -- used as the drug-exposure covariate in exposure-efficacy and exposure-safety logistic regressions. Derived per subject from the empirical-Bayes individual parameters of a maribavir population PK model (with the actual dosing history and time-varying strong CYP3A inhibitor / inducer use), so the column is supplied as data and the exposure-response model carries no PK layer.
+- **Units:** `ug*h/mL` (`= mg*h/L`). Song 2024 Tables 5 and S1.3 estimate the coefficient **per increment of 50 `ug*h/mL`**, so those models divide by 50 at the call site; the safety model digitised from Song 2024 Figure S1.5 carries its slope per 1 `ug*h/mL`. Document the per-model convention in `covariateData[[AUC_MBV_SS24]]$notes`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as an uncentred linear regressor on the logit. Calibration: the Song 2024 Figure S1.5 quartile boundaries of the 231-patient SOLSTICE analysis set are 72.2, 170, 238, 354 and 802 `ug*h/mL` (median about 238).
+- **Source aliases:**
+  - `AUCss` -- Song 2024 abbreviation list, "AUC from 0 to 24 h at steady state on the last day of exposure"; printed row label `AUCss of maribavir - increment of 50 ug.h/mL` in Song 2024 Table 5 and Table S1.3.
+- **Example models:** `Song_2024_maribavir_cmv_clearance_wk8.R` (slope `-0.131` per 50 `ug*h/mL`, OR 0.877; Table 5), `Song_2024_maribavir_cmv_clearance_wk16.R` (slope `-0.301` per 50 `ug*h/mL`, OR 0.740; Table S1.3), `Song_2024_maribavir_sae.R` (slope `+0.00348` per `ug*h/mL`, digitised from Figure S1.5).
+- **Notes:** **Distinct from `AUC_MBV_SS`**, which is the steady-state AUC over ONE dosing interval (12 h at twice-daily dosing; Sun 2025 Section 2.3). The two differ by a factor of 2 at steady state, and Song 2024's own numbers confirm the 24-h reading: its Table 3 AUC0-tau geometric mean of 129 `ug*h/mL` for the SOLSTICE refractory set corresponds to a daily AUC of about 258, against the printed AUCss median of about 238. Distinct also from `AUC_MBV_DAY` (the 24-h AUC on the day of an adverse event). Song 2024 calls the dosing-interval metric `AUC0-tau` and the daily one `AUCss`; Sun 2025 calls the dosing-interval metric `AUCss`, so the printed label alone does not identify the column -- read the source's definition. Derive from `modellib('Sun_2023_maribavir')`, which encodes the same NONMEM run (`RUN# 171`) Song 2024 used.
 
 ## Count / Markov-feedback PD covariates
 
