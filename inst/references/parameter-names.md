@@ -497,13 +497,13 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Schreib_2024_busulfan.R` (`lkel_exp_kdes = -2.965`, giving 0.0516 1/h and a 13.4 h half-life for the decline in busulfan `k` and `CL` over a conditioning course).
 - **Notes:** The `kel` counterpart of the registered `cl_exp_kdes` role in the time-varying-clearance family; reuses the `_kdes` role token deliberately so both families are found by the same stem.
 
-### lfdepot_exp_kdes (**canonical log-transformed decay-rate constant of a time-varying relative bioavailability**)
+### lvmax_exp_kdes (**canonical log-transformed decay-rate constant of a time-varying Michaelis-Menten Vmax**)
 - **Type:** log-transformed-pk
-- **Role:** Log-scale rate constant governing how fast a time-varying relative bioavailability relaxes from its value at the first dose toward its steady-state asymptote, in the `_exp_` family form `fdepot(t) = fdepot_exp_inf + fdepot_exp_component * exp(-fdepot_exp_kdes * t)` (1 / time), with `t` the time since the first dose (`T_FIRSTDOSE`). `log(2) / fdepot_exp_kdes` is the half-life of the transition.
+- **Role:** Log-scale first-order rate constant at which a Michaelis-Menten maximum elimination rate decays multiplicatively toward zero, in the form `vmax(t) = vmax * exp(-vmax_exp_kdes * t)` consumed as `vmax(t) * Cc / (km + Cc)` (1 / time). `log(2) / vmax_exp_kdes` is the half-life of the saturable pathway.
 - **Source aliases:**
-  - `lambda` -- Tate 2018 Eq. 5 and Table 3 ('rate at which steady-state relative bioavailability is attained').
-- **Example models:** `Tate_2018_abemaciclib.R` (founding example; `lfdepot_exp_kdes = log(0.00197)` 1/h, a 14.7-day half-life for the fall of abemaciclib Frel from 1 at the first dose to a dose-dependent steady-state value).
-- **Notes:** The bioavailability counterpart of `cl_exp_kdes` and `lkel_exp_kdes`; the `_exp_` family transposed to `fdepot` by maintainers' ruling 2026-09-21. Bare form `fdepot_exp_kdes`. Distinct from the `T_FIRSTDOSE`-driven `k_tfirstdose` of `Eechoute_2012_imatinib.R`, which is shared between `ka` and `F` and is expressed per day.
+  - `lambda1` -- used in `Ferl_2018_mosunetuzumab_cyno.R`, `Ferl_2018_mosunetuzumab_cyno_covariates.R`, `Ferl_2018_mosunetuzumab_human.R` (paper `V_max(t) = V_max^0 * exp(-lambda1 * t)`).
+- **Example models:** `Ferl_2018_mosunetuzumab_cyno.R` (founding example; `lvmax_exp_kdes = log(0.144)`, a 4.8-day half-life of the saturable elimination of an anti-CD20/CD3 T-cell-dependent bispecific antibody in cynomolgus monkeys, alongside a separate `cl_exp_kdes = 10.1 1/day` on the decaying linear clearance), `Ferl_2018_mosunetuzumab_cyno_covariates.R`, `Ferl_2018_mosunetuzumab_human.R`.
+- **Notes:** Third member of the `_exp_kdes` role-token family after `cl_exp_kdes` and `kel_exp_kdes`, ratified by the maintainers 2026-09-22. Distinct from `kel_exp_kdes`, which relaxes a rate *constant* toward a non-zero asymptote; here a maximum *rate* (amount / time) falls to zero, so the model needs no `_inf` / `_component` split and keeps the bare `vmax` as the value at t = 0. A model can carry `cl_exp_kdes` and `vmax_exp_kdes` together, as the founding example does, which is why the two decay constants must not share a name.
 
 ### ltlag (**canonical log-transformed absorption lag time**)
 - **Type:** log-transformed-pk
@@ -1013,21 +1013,13 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Example models:** `Schreib_2024_busulfan.R` (`kel_exp_kdes = exp(lkel_exp_kdes) = 0.0516 1/h`).
 - **Notes:** Bare counterpart of `lkel_exp_kdes`; see that entry for the functional form. The sibling `kel_exp_famp` is registered under "Paper-named mechanistic parameters" instead of here, because it is signed and must never be log-transformed.
 
-### fdepot_exp_kdes (**canonical bare decay-rate constant of a time-varying relative bioavailability**)
+### vmax_exp_kdes (**canonical bare decay-rate constant of a time-varying Michaelis-Menten Vmax**)
 - **Type:** bare-pk
-- **Role:** Bare (natural-scale) form of `lfdepot_exp_kdes`: the rate constant at which a time-varying relative bioavailability relaxes toward its steady-state asymptote (1 / time).
+- **Role:** Bare (natural-scale) form of `lvmax_exp_kdes`: the first-order rate constant at which a Michaelis-Menten Vmax decays toward zero, `vmax(t) = vmax * exp(-vmax_exp_kdes * t)` (1 / time).
 - **Source aliases:**
-  - `lambda` -- Tate 2018 Eq. 5.
-- **Example models:** `Tate_2018_abemaciclib.R` (`fdepot_exp_kdes = exp(lfdepot_exp_kdes) = 0.00197 1/h`).
-- **Notes:** Bare counterpart of `lfdepot_exp_kdes`; see that entry for the functional form.
-
-### fdepot_exp_inf (**canonical bare steady-state asymptote of a time-varying relative bioavailability**)
-- **Type:** bare-pk
-- **Role:** The value a time-varying relative bioavailability approaches after long treatment, in `fdepot(t) = fdepot_exp_inf + fdepot_exp_component * exp(-fdepot_exp_kdes * t)` (unitless). Log-scale form `lfdepot_exp_inf` when the source estimates it as a typical value; IIV is `etalfdepot_exp_inf`.
-- **Source aliases:**
-  - `F_rel,ss` -- Tate 2018 Eq. 4-5 and Table 3 ('steady-state relative bioavailability').
-- **Example models:** `Tate_2018_abemaciclib.R` (founding example; derived in `model()` as `ed50 / (ed50 + podo(depot)) * exp(etalfdepot_exp_inf)` -- Tate 2018 estimates no typical value of its own, only the dose-saturation constant `D50` (`led50`) and an IIV of 123 on it, so `ini()` carries only `etalfdepot_exp_inf`).
-- **Notes:** The bioavailability counterpart of `cl_exp_inf`; maintainers' ruling 2026-09-21. The value at the first dose is the ordinary `fdepot` / `lfdepot`, and the difference between the two is `fdepot_exp_component`.
+  - `lambda1` -- used in `Ferl_2018_mosunetuzumab_cyno.R`.
+- **Example models:** `Ferl_2018_mosunetuzumab_cyno.R` (`vmax_exp_kdes = exp(lvmax_exp_kdes) = 0.144 1/day`).
+- **Notes:** Bare counterpart of `lvmax_exp_kdes`; see that entry for the functional form.
 
 ### k12 (**canonical bare central-to-first-peripheral rate constant**)
 - **Type:** bare-pk
