@@ -6265,7 +6265,8 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:**
   - `CGP74588` -- the Novartis compound code, used interchangeably with the chemical name in the imatinib literature.
   - `N-desmethyl imatinib` / `metabolite` -- Yang 2025 Table 1 column headings (`CLm/fm`, `V1m/fm`, `Qm/fm`, `V2m/fm`).
-- **Example models:** `Petain_2008_imatinib.R` (one-compartment metabolite; `central_ndmima`), `MenonAndersen_2009_imatinib.R` (two-compartment metabolite; `central_ndmima`, `peripheral1_ndmima`), `Said_2025_imatinib.R` (merged from a duplicate register entry during merge dedup).
+  - `DM-imatinib` / `DMIMA` -- the source-paper abbreviation and control-stream token used by Said 2025; the canonical suffix keeps the `ndm` N-desmethyl marker instead.
+- **Example models:** `Petain_2008_imatinib.R` (one-compartment metabolite; `central_ndmima`), `MenonAndersen_2009_imatinib.R` (two-compartment metabolite; `central_ndmima`, `peripheral1_ndmima`), `Said_2025_imatinib.R` (doi:10.1002/psp4.13299; `central_ndmima`, `lcl_ndmima`, `lvc_ndmima`, `etalcl_ndmima`, `etalvc_ndmima`, `Cc_ndmima`, `expSd_ndmima`, `e_conmed_il6ri_cl_ndmima`).
 - **Notes:** Follows the `ndm<drug>` contraction established by `ndmsel` (N-desmethyl-selumetinib) rather than a bare `ndi`, so the suffix reads as `n-desmethyl-ima`. Both founding models parameterise the metabolite as apparent with respect to the unidentifiable fraction metabolized (`CLm/fm`, `V1m/fm`), so `central_ndmima` holds an fm-scaled amount; the predicted metabolite concentration is nonetheless the true one, because the same `fm` divides both the clearance and the volume.
 
 ### ndmclb (**canonical N-desmethylclobazam suffix**)
