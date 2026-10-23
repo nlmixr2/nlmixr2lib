@@ -4950,6 +4950,8 @@ navbar:
         href: articles/Crass_2025_pegcetacoplan_geographic_atrophy.html
       - text: "Pegcetacoplan hemoglobin (Crass 2024)"
         href: articles/Crass_2024_pegcetacoplan.html
+      - text: "Pegcetacoplan intravitreal (Crass 2025)"
+        href: articles/Crass_2025_pegcetacoplan_intravitreal.html
       - text: "Pegcetacoplan ldh (Crass 2024)"
         href: articles/Crass_2024_pegcetacoplan.html
       - text: "Pegfilgrastim (Brekkan 2018)"
@@ -7932,6 +7934,7 @@ articles:
   - articles/Courlet_2023_cabamiquine
   - articles/Crass_2024_pegcetacoplan
   - articles/Crass_2025_pegcetacoplan_geographic_atrophy
+  - articles/Crass_2025_pegcetacoplan_intravitreal
   - articles/Cristea_2021_oat13_renal_ontogeny_pbpk
   - articles/Crommentuyn_2005_lopinavir
   - articles/Csajka_2004_indinavir
