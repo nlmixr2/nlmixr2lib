@@ -1106,6 +1106,22 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Marier_2021_teduglutide_ppsv.R` (hyperbolic time-course Emax, `Delta PPSV(t) = Emax * t / (ET50 + t) * DrugEffect`, with ET50 fixed at 168 days, Emax -5.76 L/week scaled by the steady-state teduglutide Cmax, and an additive residual of 1.11 L/week).
 - **Notes:** The `cfb` suffix follows the `das28cfb` / `tmccfb` / `druglikingvascfb` precedent for a change-from-baseline endpoint and the lowercase run-together form of that family. A model of the ABSOLUTE prescribed volume (Marier 2021 Table S14 sensitivity analysis, which adds a baseline E0) should register a sibling `ppsv` rather than overload this name. Pediatric trials often record parenteral support as mL/kg/day; the canonical output is in L/week, so convert and say so per model.
 
+### crcfb (**canonical percentage change from baseline in serum creatinine output**)
+- **Type:** compartment
+- **Role:** Percentage change in serum creatinine from the patient's own pre-treatment value, `100 * (SCr(t) - SCr(0)) / SCr(0)`, used as a renal-function PD endpoint. **Sign convention: NEGATIVE for improvement** (creatinine falling as kidney function recovers). Algebraic output in the founding model (no ODE state).
+- **Source aliases:**
+  - `Delta Creatinine (%)` -- Wattanakul 2026 Methods Eq. 6-7 and Table 3.
+- **Example models:** `Wattanakul_2026_paracetamol_creatinine.R` (exponential approach to a plateau, `crcfb = Plateau * (1 - exp(-kappa * t))`, with the plateau scaled by the enrollment KDIGO stage and the rate constant by log10 paracetamol AUC0-72h; additive residual 7.94%).
+- **Notes:** The `cfb` suffix follows the `ppsvcfb` / `tmccfb` / `das28cfb` precedent. This is a PERCENT change; a model of the absolute creatinine concentration or of an absolute (umol/L) change should register a sibling rather than overload this name.
+
+### lnalt (**canonical natural-logarithm serum alanine aminotransferase output**)
+- **Type:** compartment
+- **Role:** Natural logarithm of serum alanine aminotransferase activity (ALT in U/L), used as a continuous hepatic-safety PD endpoint fitted on the log scale with an additive residual. Algebraic output in the founding model (no ODE state).
+- **Source aliases:**
+  - `ln(ALT)` -- Wattanakul 2026 Methods Eq. 10 and Table 4.
+- **Example models:** `Wattanakul_2026_paracetamol_alt.R` (log-linear in time, `lnalt = Intercept + Slope * t`, slope scaled by paracetamol AUC0-72h, age and baseline ALT; additive residual on the log scale).
+- **Notes:** Distinct from the `ALT` covariate column, which carries an ALT value (baseline or time-varying) as an input; `lnalt` is the modelled observation. Distinct from `prob_alt_increase`, the probability of an ALT-increase adverse event.
+
 ---
 
 ## Liver-histology ordinal scores (NASH CRN)

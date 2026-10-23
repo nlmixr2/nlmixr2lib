@@ -4906,12 +4906,22 @@ navbar:
         href: articles/Padavia_2024_paracetamol.html
       - text: "Paracetamol (Wattanakul 2016)"
         href: articles/Wattanakul_2016_paracetamol.html
+      - text: "Paracetamol (Wattanakul 2026)"
+        href: articles/Wattanakul_2026_paracetamol.html
       - text: "Paracetamol (Wu 2025)"
         href: articles/Wu_2025_paracetamol.html
       - text: "Paracetamol (Zhao 2025)"
         href: articles/Zhao_2025_paracetamol.html
+      - text: "Paracetamol alt (Wattanakul 2026)"
+        href: articles/Wattanakul_2026_paracetamol.html
+      - text: "Paracetamol creatinine (Wattanakul 2026)"
+        href: articles/Wattanakul_2026_paracetamol.html
       - text: "Paracetamol dog (Gasthuys 2023)"
         href: articles/Gasthuys_2023_paracetamol.html
+      - text: "Paracetamol fcta (Wattanakul 2026)"
+        href: articles/Wattanakul_2026_paracetamol.html
+      - text: "Paracetamol fctb (Wattanakul 2026)"
+        href: articles/Wattanakul_2026_paracetamol.html
       - text: "Paracetamol human (Gasthuys 2023)"
         href: articles/Gasthuys_2023_paracetamol.html
       - text: "ParathyroidHormone (Visscher 2025)"
@@ -9904,6 +9914,7 @@ articles:
   - articles/Wattanakul_2016_paracetamol
   - articles/Wattanakul_2020_piperaquine
   - articles/Wattanakul_2024_primaquine_lactation
+  - articles/Wattanakul_2026_paracetamol
   - articles/Weatherley_2009_maraviroc_iv
   - articles/Weatherley_2018_fosdagrocorat
   - articles/Weber_1993_remikiren
