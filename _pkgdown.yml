@@ -6988,6 +6988,8 @@ navbar:
         href: articles/Grimsley_1999_vancomycin.html
       - text: "Vancomycin (Hartinger 2023)"
         href: articles/Hartinger_2023_vancomycin.html
+      - text: "Vancomycin (Hirunsomboon 2026)"
+        href: articles/Hirunsomboon_2026_vancomycin.html
       - text: "Vancomycin (Ji 2017)"
         href: articles/Ji_2017_vancomycin.html
       - text: "Vancomycin (Jung 2024)"
@@ -8401,6 +8403,7 @@ articles:
   - articles/Hirt_2008_ibuprofen
   - articles/Hirt_2009_didanosine
   - articles/Hirt_2009_efavirenz
+  - articles/Hirunsomboon_2026_vancomycin
   - articles/Hodiamont_2017_gentamicin
   - articles/Hoefman_2021_asp8232
   - articles/Hoglund_2012_piperaquine
