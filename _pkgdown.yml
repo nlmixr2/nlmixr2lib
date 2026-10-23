@@ -4524,6 +4524,8 @@ navbar:
         href: articles/Wang_2021_mycophenolic_acid.html
       - text: "Mycophenolic acid (Wang 2022)"
         href: articles/Wang_2022_mycophenolic_acid.html
+      - text: "Mycophenolic acid (Wang 2022b)"
+        href: articles/Wang_2022b_mycophenolic_acid.html
       - text: "Mycophenolic acid (Wei 2022)"
         href: articles/Wei_2022_mycophenolic_acid.html
       - text: "Mycophenolic acid (Ye 2025)"
@@ -10107,6 +10109,7 @@ articles:
   - articles/Wang_2022_latamoxef
   - articles/Wang_2022_mycophenolic_acid
   - articles/Wang_2022_ornithinePhenylacetate
+  - articles/Wang_2022b_mycophenolic_acid
   - articles/Wang_2023_dorzagliatin
   - articles/Wang_2023_methotrexate
   - articles/Wang_2023_teicoplanin
