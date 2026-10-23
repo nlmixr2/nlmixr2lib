@@ -2482,6 +2482,8 @@ navbar:
         href: articles/Moein_2025_etrolizumab.html
       - text: "Etrolizumab maintenance endorem (Moein 2025)"
         href: articles/Moein_2025_etrolizumab.html
+      - text: "Everolimus (Itohara 2022)"
+        href: articles/Itohara_2022_everolimus.html
       - text: "Everolimus (Mo 2025)"
         href: articles/Mo_2025_everolimus.html
       - text: "Everolimus (Park 2023)"
@@ -2490,6 +2492,8 @@ navbar:
         href: articles/TerHeine_2018_everolimus.html
       - text: "Everolimus (deWit 2016)"
         href: articles/deWit_2016_everolimus.html
+      - text: "Everolimus prior tacrolimus (Itohara 2022)"
+        href: articles/Itohara_2022_everolimus.html
       - text: "Everolimus sheep (Leber 2023)"
         href: articles/Leber_2023_immunosuppressants_hemoperfusion.html
       - text: "Evinacumab (Bihorel 2025)"
@@ -8723,7 +8727,7 @@ articles:
   - articles/Ishibashi_2024_ensitrelvir
   - articles/Ishihara_2020_piperacillin_tazobactam
   - articles/Isla_2024_fosfomycinCalcium
-  - articles/Itohara_2019_tacrolimus
+  - articles/Itohara_2022_everolimus
   - articles/Ivanova_2024_synucleinopathy_qsp
   - articles/Ivaturi_2017_RBP_7000
   - articles/Iwama_2024_febuxostat
