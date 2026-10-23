@@ -2705,10 +2705,11 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Scope:** specific
 - **Reference category:** n/a -- an additive offset with no reference value.
 - **Source aliases:**
-  - `Baseline FVIII level`, `baseline FVIII:C`, "FVIII activity levels (lowest levels ever measured in the patient)" -- de Jager 2020 Methods 2.1, Table 1 and Supplement 1 Eq. 2.
+  - `Baseline FVIII level`, `baseline FVIII:C`, "FVIII activity levels (lowest levels ever measured in the patient)" -- de Jager 2020 Methods 2.1, Table 1 and Supplement 1 Eq. 2; used in `deJager_2020_factorviii.R`.
   - `baseline FVIII_i`, "the lowest FVIII activity level ever measured was regarded as the endogenous baseline" -- Bukkems 2022 Supplementary Methods Eq. 2 and Results 3.1; used in `Bukkems_2022_factorviii.R` and its three PD siblings.
   - `FVIII-lowest` -- Schütte 2018 (tested, not retained).
-- **Example models:**, `deJager_2020_factorviii.R` (merged from a duplicate register entry during merge dedup).
+- **Example models:**
+  - `deJager_2020_factorviii.R` (observation `Cc = (central + virtual) / vc / 1000 + FVIII_BL`; Supplement 1 Eq. 2).
   - `Bukkems_2022_factorviii.R` (observation `Cc = central / vc * 1.20^(1 - ASSAY_OSA) + 100 * FVIII_BL`, IU/dL; Supplementary Methods Eq. 2). `Bukkems_2022_factorviii_thrombinPeak.R`, `Bukkems_2022_factorviii_thrombinPotential.R` and `Bukkems_2022_factorviii_plasminPeak.R` also drive their Emax / Imax functions with `central / vc + 100 * FVIII_BL` (Bukkems 2022 Equation 1: C is "the FVIII activity level (including endogenous baseline)"). Set to 0 to simulate the drug-attributable FVIII only.
 - **Notes:** Distinct from `FVIIIRECENT`, the most recent untreated FVIII:C. The two differ in practice: in de Jager 2020 the pre-dose FVIII was often higher than the lowest-ever value (Methods 2.2), and that model fits a virtual dose to carry the difference. Use `FVIIIRECENT` when the paper's baseline is the latest pre-treatment measurement, and this column when it is the historical minimum. Hemophilia A severity bands (severe < 0.01, moderate 0.01-0.05, mild > 0.05-0.40 IU/mL) bound the plausible range; see `DIS_HEMOPHILIA_A_MILD`.
 
@@ -15654,6 +15655,17 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
   - `SNP3 SLCO1B1 571T>C (rs4149057)`, TT genotype -- Yin 2021 Table 2 row `CL_SNP3 (TT)`.
 - **Example models:** `Yin_2021_mitotane.R` (multiplicative effect on apparent clearance of mitotane; the TT group has CL/F 2.49x the TC reference, Table 2 `CL_SNP3 (TT)` = 2.49).
 - **Notes:** Companion to `SNP_SLCO1B1_RS4149057_CC`; see that entry's Notes for the TC-reference encoding, the distinction from rs4149056 / rs2306283 and the non-monotone effect direction.
+
+### SNP_ERCC1_RS3212986_CC (**canonical for ERCC1 rs3212986 (C8092A) homozygous wild-type C/C genotype indicator**)
+- **Description:** Binary genotype indicator for the *ERCC1* (excision repair cross-complementation group 1, nucleotide-excision-repair DNA-repair gene) rs3212986 (C8092A, 3'-UTR) polymorphism: 1 = subject carries the homozygous wild-type C/C genotype; 0 = otherwise (A/C heterozygote or A/A homozygote). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0, i.e. the A/C + A/A (variant-A-carrier) group.
+- **Source aliases:**
+  - `ERCC1 (rs3212986) C/C` -- Cao 2022 final-model equation (`If ERCC1 phenotype (rs3212986) = C/C, theta_ERCC1 = theta_2 (0.83); else 0`).
+- **Example models:** `Cao_2022_pemetrexed.R` (exponential effect on intercompartmental clearance Q of intravenous pemetrexed; `exp(e_ercc1_q * SNP_ERCC1_RS3212986_CC)` with `e_ercc1_q = 0.83`, so C/C homozygotes have about 2.3-fold higher Q than the A-carrier reference; Figure 2B).
+- **Notes:** The variant allele at rs3212986 is A (the common / wild-type allele is C), so the covariate effect attaches to the **wild-type C/C homozygote** rather than to variant-allele carriage. A generic mutant-allele-presence indicator (`SNP_ERCC1_RS3212986`, 1 = any A allele) would group the A/C heterozygotes with the A/A homozygotes and flag exactly the reference stratum -- the inverse of the reported effect -- so the homozygote-specific `_CC` indicator is used (same wild-type-homozygote-anchored pattern as `SNP_SLCO1B1_RS4149057_CC`). Cao 2022 reports rs3212986 C/C homozygotes as having higher pemetrexed intercompartmental clearance than the two variant genotypes and speculates (Discussion) that ERCC1 genotype may modulate pemetrexed plasma-protein binding or tissue distribution; the mechanism is not established. Genotype counts in the cohort were A/A:A/C:C/C = 15:56:45 (Supplementary Table S2). Distinct from the other commonly investigated *ERCC1* variant rs11615 (T19007C / N118N), which Cao 2022 genotyped but did not retain.
 
 ### SNP_CTLA4_RS4553808_GA (**canonical for CTLA4 rs4553808 heterozygous GA genotype indicator**)
 - **Description:** Binary genotype indicator for the *CTLA4* (cytotoxic T-lymphocyte-associated protein 4) promoter polymorphism rs4553808 (-1661A>G): 1 = subject carries the heterozygous GA genotype; 0 = otherwise. Paired with `SNP_CTLA4_RS4553808_AA`; both indicators are 0 for the GG genotype, which the founding source uses as the reference category. Time-fixed per subject (germline genotype).
