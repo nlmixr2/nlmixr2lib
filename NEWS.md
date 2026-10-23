@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wojciechowski 2022 abrocitinib platelet PK-PD ([doi:10.1111/bcp.15334](https://doi.org/10.1111/bcp.15334)) -- adolescents and adults with atopic dermatitis and adults with psoriasis.
+- Add Liu 2022 dabigatran PK with aPTT, PT and anti-factor IIa PD ([doi:10.3389/fcvm.2022.998751](https://doi.org/10.3389/fcvm.2022.998751)) -- healthy Chinese volunteers and Chinese adults with non-valvular atrial fibrillation.
 
 - Fix the inter-individual variability scale of Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)): the Table 3 percentages are omega x 100, not CV%, so the CL, V2 and V3 variances are now `(P/100)^2` (V3 0.6229 -> 0.8649, +39 %; CL and V2 +1-3 %). The Table 3 Wald CI on the V3 row decides the scale.
 

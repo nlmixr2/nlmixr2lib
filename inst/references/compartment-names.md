@@ -2071,6 +2071,23 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Example models:** `Edrich_2015_heparin.R` (linear direct effect on intraprocedural heparin, `ACT = ACT_BASE + k_ACT * Cc`).
 - **Notes:** Uppercase, following the `PT` / `INR` / `aPTT` / `ECT` / `PCA` coagulation-test-output family rather than the lowercase biomarker convention. Distinct from every other clotting-time canonical in this register and NOT interconvertible with any of them: `aPTT` is activated PARTIAL thromboplastin time on citrated plasma, `ECT` is an ecarin-activated assay selective for direct thrombin inhibitors, `PT` / `INR` read the extrinsic arm, and `PCA` is a clotting-factor ACTIVITY percentage rather than a time at all. Different activators, different specimens and different dynamic ranges, so a model must name the assay it actually fitted. The per-subject baseline that such a model adds to its prediction is the covariate `ACT_BASE`, registered in `inst/references/covariate-columns.md`; the `_BASE` suffix on the covariate is what keeps it from colliding with this observation-variable name inside `model()`. Point-of-care ACT devices have a hard measurement ceiling (400 s on the Hemochron Signature Elite used by the founding example), so much published post-heparin ACT data is right-censored; that is a property of the data, not of the model, and a source's estimation-time ceiling clamp should not be reproduced in the simulation model.
 
+### antiFIIa (**canonical anti-factor IIa activity**)
+- **Type:** compartment
+- **Role:** Anti-factor IIa (anti-thrombin) chromogenic activity PD output for direct thrombin inhibitors, reported as drug-equivalent concentration (ng/mL) read off an assay calibration curve. Carried as an algebraic observable in direct-effect models.
+- **Source aliases:**
+  - `Anti-IIa` -- Liu 2022 Table 2 (Sysmex CS-2100i chromogenic assay).
+  - `anti-FIIa activity` -- Liu 2022 text.
+- **Example models:** `Liu_2022_dabigatran.R`, `Liu_2022_dabigatran_healthy.R` (linear in total dabigatran concentration, `antiFIIa = E0 + K * Cc`).
+- **Notes:** **Mixed case is deliberate**, for the same reason as `aPTT` and `dTT`: `F` and the roman numeral `IIa` are the published coagulation-factor notation (activated factor II), so do not normalise to `antifiia` or `ANTI_FIIA`. Sibling of `antiFXa`. An ACTIVITY assay, not a clotting time, so it is not interconvertible with `aPTT` / `PT` / `ECT` / `dTT` / `TT`; and although its unit is a concentration, it is an assay-calibrated drug equivalent with its own baseline and slope, so it must not be pooled with the PK observable `Cc`. Founding example: `Liu_2022_dabigatran.R`.
+
+### antiFXa (**canonical anti-factor Xa activity**)
+- **Type:** compartment
+- **Role:** Anti-factor Xa chromogenic activity PD output for heparins and direct factor Xa inhibitors, in IU/mL (heparin-calibrated) or drug-equivalent ng/mL (drug-calibrated). Carried as an algebraic observable in direct-effect models.
+- **Source aliases:**
+  - `Anti-FXa` -- Zou 2025 Table 1.
+- **Example models:** `Zou_2025_edoxaban.R` (Emax in edoxaban concentration, IU/mL).
+- **Notes:** **Mixed case is deliberate**, as for `antiFIIa`: `FXa` is the published notation for activated factor X. Sibling of `antiFIIa`. A model must state which calibrator its unit refers to, because heparin-calibrated IU/mL and drug-calibrated ng/mL readings of the same sample are not interchangeable. Founding example: `Zou_2025_edoxaban.R`.
+
 ### hb (**canonical hemoglobin**)
 - **Type:** compartment
 - **Role:** Hemoglobin PD output.
