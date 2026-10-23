@@ -3402,6 +3402,22 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** none.
 - **Example models:** `Zhang_2011_nutlin3a.R`.
 
+### red_marrow (**canonical bare red (haematopoietic) bone-marrow compartment**)
+- **Type:** compartment
+- **Role:** Bare red-marrow tissue compartment in whole-body PBPK extractions that split bone marrow into its red (haematopoietic, highly perfused) and yellow (adipose-rich, poorly perfused) fractions, as the GastroPlus default physiologies do. Total tissue (well-stirred) drug amount; perfused from `arterial` and drained to `venous`.
+- **Source aliases:**
+  - `Red marrow` -- Table 1 / Table 3 row label in Tan 2021 (GastroPlus 9.7 default physiology).
+- **Example models:** `Tan_2021_cefadroxil_mouse_pbpk.R`, `Tan_2021_cefadroxil_rat_pbpk.R`, `Tan_2021_cefadroxil_human_pbpk.R`.
+- **Notes:** Use `bonemarrow` when a model carries a single undivided marrow pool. Use `red_marrow` and `yellow_marrow` together when the source resolves the two fractions; they differ several-fold in perfusion per unit volume (Tan 2021 mouse: 0.0163 vs 0.0016 mL/s per mL) and usually in partition coefficient, so neither is an alias of `bonemarrow`.
+
+### yellow_marrow (**canonical bare yellow (fatty) bone-marrow compartment**)
+- **Type:** compartment
+- **Role:** Bare yellow-marrow tissue compartment, the adipose-rich, poorly perfused fraction of bone marrow, in whole-body PBPK extractions that resolve it separately from `red_marrow`. Total tissue (well-stirred) drug amount; perfused from `arterial` and drained to `venous`.
+- **Source aliases:**
+  - `Yellow marrow` -- Table 1 / Table 3 row label in Tan 2021 (GastroPlus 9.7 default physiology).
+- **Example models:** `Tan_2021_cefadroxil_mouse_pbpk.R`, `Tan_2021_cefadroxil_rat_pbpk.R`, `Tan_2021_cefadroxil_human_pbpk.R`.
+- **Notes:** See `red_marrow` for when to use the split pair rather than `bonemarrow`.
+
 ### muscle (**canonical bare muscle compartment**)
 - **Type:** compartment
 - **Role:** Bare muscle tissue compartment.
@@ -3622,21 +3638,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Jones_2013_perfusionLimited_pbpk.R`.
 - **Notes:** Unlike `gut`, `spleen`, `stomach` and `pancreas`, testes is NOT a splanchnic organ: its venous outflow returns directly to `venous` blood rather than draining to `liver` through the portal vein. Models that resolve testes therefore include it in the venous-return sum, not in the portal tributary sum.
 
-### thymus (**canonical bare thymus compartment**)
+### reproductive_organ (**canonical bare sex-unspecified reproductive-organ compartment**)
 - **Type:** compartment
-- **Role:** Bare thymus organ compartment in whole-body PBPK extractions that resolve the thymus as its own perfusion-limited (well-mixed) organ. Total tissue drug concentration, paired with the other bare organ states (`spleen`, `pancreas`, `stomach`, `testes`, `other`, ...). Its venous outflow returns directly to `venous` blood.
+- **Role:** Bare reproductive-organ tissue compartment in whole-body PBPK extractions whose physiology lumps the gonads and accessory reproductive tissue into one organ without stating the sex, as the GastroPlus default physiologies do with their `ReproOrg` tissue. Total tissue (well-stirred) drug amount; perfused from `arterial` and drained directly to `venous` (not a splanchnic organ).
 - **Source aliases:**
-  - `{Thymus}` / `E2(Thymus)` -- COPASI compartment and species label in Sier 2017 (Additional file 1 balance equations; BioModels MODEL1711210001 species `s12`).
-- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
-- **Notes:** The tissue-state partner of the registered `vp_thymus`, which is the thymus VASCULAR concentration in membrane-limited (two-subcompartment) PBPK models. A perfusion-limited model that carries a single thymus state uses bare `thymus`; a membrane-limited model carries `vp_thymus` plus the interstitial / cellular sub-compartments. Thymus volume is strongly age-dependent (Sier 2017 uses the Bosgra 2012 involution curve), so the organ is worth resolving in adult-age-range populations.
-
-### gonads (**canonical bare female-gonad / estrogen-target tissue compartment**)
-- **Type:** compartment
-- **Role:** Cellular (tissue) compartment of the lumped uterus + ovaries estrogen-target organ in whole-body PBPK models of women. In the founding example it is permeability-limited: a vascular sub-compartment `vp_gonads` exchanges with this cellular state through first-order uptake and efflux rate constants, and the cellular state carries the endogenous estradiol biosynthesis input and estrogen-receptor binding (`target_er_gonads` / `complex_er_gonads`).
-- **Source aliases:**
-  - `{Gonads_cells}` / `E2(Gonads_cells)` -- Sier 2017 Additional file 1 balance equations and BioModels MODEL1711210001 / MODEL1711210002 species `E2_Gonads_cells`.
-- **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
-- **Notes:** Use this for the FEMALE (or sex-unspecified lumped) gonadal / reproductive-tract compartment. The male gonad organ has its own canonical `testes`, which is a perfusion-limited whole-organ state; do not reuse `testes` for an ovary / uterus compartment or vice versa. The paper's lumped label is kept (rather than `uterus`) because the compartment explicitly includes the ovaries and stands for estradiol target tissue generally; record the membership in the model `description`. Like `testes`, it is not splanchnic: its venous outflow returns to `venous` blood.
+  - `ReproOrg` -- Table 1 row label in Tan 2021 (GastroPlus 9.7 default physiology); `Reproductive organ` in its Table 3.
+- **Example models:** `Tan_2021_cefadroxil_mouse_pbpk.R`, `Tan_2021_cefadroxil_rat_pbpk.R`, `Tan_2021_cefadroxil_human_pbpk.R`.
+- **Notes:** Use `testes` only when the source states the organ is the testes of a male reference subject; reading a sex-unspecified reproductive-organ tissue as `testes` would assert a sex the source does not.
 
 ### tendon (**canonical bare tendon / connective-tissue compartment**)
 - **Type:** compartment
