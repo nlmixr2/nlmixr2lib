@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Papasouliotis 2022 evobrutinib PK and BTK occupancy ([doi:10.1111/cts.13417](https://doi.org/10.1111/cts.13417)) -- healthy adult Japanese and non-Japanese participants, fed and fasted.
+- Add Eckernas 2022 N,N-dimethyltryptamine PK/PD with the IAA metabolite and subjective psychedelic intensity ([doi:10.1111/cts.13410](https://doi.org/10.1111/cts.13410)) -- healthy adults given intravenous DMT fumarate.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
