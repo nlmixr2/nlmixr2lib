@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ramakrishnan 2023 amyloid-beta pathway QSP ([doi:10.1002/psp4.12876](https://doi.org/10.1002/psp4.12876)) -- APOE-epsilon4 carrier and non-carrier virtual patients with Alzheimer's disease (natural-history layer; the anti-A-beta antibody layer's values are unpublished).
+- Add Cherkaoui-Rbati 2023 DSM265 ([doi:10.1002/psp4.12875](https://doi.org/10.1002/psp4.12875)) -- semi-mechanistic malaria chemoprophylaxis PK/PD (QSP) model coupling DSM265 PK to two-stage (liver and blood) *Plasmodium falciparum* parasite dynamics in healthy volunteers and uncomplicated-malaria patients.
 
 - Fix the inter-individual variability scale of Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)): the Table 3 percentages are omega x 100, not CV%, so the CL, V2 and V3 variances are now `(P/100)^2` (V3 0.6229 -> 0.8649, +39 %; CL and V2 +1-3 %). The Table 3 Wald CI on the V3 row decides the scale.
 
