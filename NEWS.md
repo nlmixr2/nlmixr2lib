@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ganesan 2022 epetraborole ([doi:10.1093/ofid/ofac492.645](https://doi.org/10.1093/ofid/ofac492.645)) -- healthy adults and adults with complicated urinary tract or intra-abdominal infection, IV and oral, with epithelial lining fluid (registers `lkeff_elf`).
+- Add Hayato 2022 lecanemab population PK and amyloid PET SUVr, plasma Abeta42/40 and p-tau181 PK/PD models ([doi:10.1002/psp4.12862](https://doi.org/10.1002/psp4.12862)) -- adults with early Alzheimer's disease.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
