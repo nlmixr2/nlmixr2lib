@@ -4548,7 +4548,7 @@ regimen to steady state and recomputes PTA.</p>
 <span><span class="va">pta_sim</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod</span>, events <span class="op">=</span> <span class="va">pta_events</span>, keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cell"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:03</span></span></code></pre></div>
+<span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:02</span></span></code></pre></div>
 <p><code>fT&gt;MIC</code> is computed two ways. The closed form uses
 each simulated subject’s own <code>cl</code> and <code>vc</code>
 (returned as columns by <code>rxSolve</code>) and is exact for a

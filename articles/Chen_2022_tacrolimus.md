@@ -331,7 +331,7 @@ ev56 <- bind_rows(
 
 sim56 <- solve_typical(ev56, keep = c("WT", "CONMED_POSACONAZOLE", "reading"))
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:06
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:12
 stopifnot(
   !anyNA(sim56$Cc),
   nrow(sim56) == 2L * nrow(scenarios) * nrow(eta_grid) * length(trough_times)

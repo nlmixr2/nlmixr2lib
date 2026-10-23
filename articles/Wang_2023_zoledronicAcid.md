@@ -1200,7 +1200,7 @@ stopifnot(any(apr$apr_n > apr$total_n))   # the Table 3 inconsistency is real
     #> [4] rxode2_5.1.8          nlmixr2lib_0.3.2.9000
     #> 
     #> loaded via a namespace (and not attached):
-    #>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+    #>  [1] gtable_0.3.6        xfun_0.62           bslib_0.12.0       
     #>  [4] rxode2lincmt_0.1.0  vctrs_0.7.3         tools_4.6.1        
     #>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
     #> [10] symengine_0.2.14    pkgconfig_2.0.3     data.table_1.18.6.1

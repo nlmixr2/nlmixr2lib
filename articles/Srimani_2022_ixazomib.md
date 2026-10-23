@@ -216,10 +216,9 @@ pk_sim <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod_mp), pk_ev,
   atol = 1e-6, rtol = 1e-6, returnType = "data.frame"
 ))
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:00
-#> Warning: method requires an analytical Jacobian, but automatic Jacobian generation failed for this model:
-#>   error building model
-#>   Falling back to dop853 (dense, required for delays).
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:00 
+#> 
+#> ] 0:00:01
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalfdepot', 'etalvp2', 'etalkr', 'etalyss', 'etalkl'
 # A one-subject solve returns no id column.
 pk_sim$id <- 1L
@@ -253,7 +252,7 @@ nca_wide |>
 
 | Cmax (ng/mL) | Tmax (h) | t1/2 (h) | AUC0-inf (ng\*h/mL) | F*Dose/CL (ng*h/mL) |
 |-------------:|---------:|---------:|--------------------:|--------------------:|
-|        17.99 |     1.25 |   223.41 |             1247.33 |             1247.31 |
+|        17.99 |     1.25 |   223.78 |             1247.36 |             1247.31 |
 
 ``` r
 
@@ -324,9 +323,6 @@ eta_mp <- draw_etas(mod_mp, nrow(cohort), seed = 101)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 pass1 <- solve_ind(mod_mp, eff_ev, eta_mp)
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: method requires an analytical Jacobian, but automatic Jacobian generation failed for this model:
-#>   model previously failed Jacobian generation (cached)
-#>   Falling back to dop853 (dense, required for delays).
 #> Warning: multi-subject simulation without without 'omega'
 
 set.seed(102)
@@ -345,9 +341,6 @@ eff_ev2 <- eff_ev |>
   left_join(nadir_drawn, by = "id")
 pass2 <- solve_ind(mod_mp, eff_ev2, eta_mp)
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: method requires an analytical Jacobian, but automatic Jacobian generation failed for this model:
-#>   model previously failed Jacobian generation (cached)
-#>   Falling back to dop853 (dense, required for delays).
 #> Warning: multi-subject simulation without without 'omega'
 # Dropout is drawn from the second pass, whose dropout hazard sees the
 # M-protein regrowth after the nadir.

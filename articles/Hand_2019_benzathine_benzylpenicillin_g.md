@@ -426,7 +426,7 @@ mod
 #>     Cc ~ prop(propSd)
 #>   })
 #> }
-#> <environment: 0x55696c57b188>
+#> <environment: 0x55971d7eeb98>
 ```
 
 ## Structural checks against the typical-value model

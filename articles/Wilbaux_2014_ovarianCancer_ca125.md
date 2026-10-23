@@ -259,8 +259,8 @@ a sensible range.
 
 sim_vpc <- rxSolve(mod, ev_one, nSub = n_subj, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [intdy -- t = 4.64503e-310 illegal]: 226 warning(s) for subject(s): 1 (sim 2), 1 (sim 21), 1 (sim 68), 1 (sim 76)
-#> [intdy -- t = 6.93357e-310 illegal]: 2 warning(s) for subject(s): 1 (sim 2), 1 (sim 21)
+#> [intdy -- t = 4.67814e-310 illegal]: 227 warning(s) for subject(s): 1 (sim 2), 1 (sim 21), 1 (sim 68), 1 (sim 76)
+#> [intdy -- t = 6.9443e-310 illegal]: 1 warning(s) for subject(s): 1 (sim 2)
 #> [lsoda -- internal t + h = t (h too small for machine precision)]: 14 warning(s) for subject(s): 1 (sim 2), 1 (sim 21), 1 (sim 68), 1 (sim 76)
 # rxSolve duplicates rows when multiple cmts are observed at the same time;
 # dedup by (sim.id, time).
@@ -471,7 +471,7 @@ sessionInfo()
 #> [40] desc_1.4.3          rex_1.2.2           pkgdown_2.2.1      
 #> [43] pillar_1.11.1       bslib_0.12.0        gtable_0.3.6       
 #> [46] glue_1.8.1          data.table_1.18.6.1 Rcpp_1.1.2         
-#> [49] systemfonts_1.3.2   tidyselect_1.2.1    xfun_0.61          
+#> [49] systemfonts_1.3.2   tidyselect_1.2.1    xfun_0.62          
 #> [52] tibble_3.3.1        sys_3.4.3           knitr_1.52         
 #> [55] farver_2.1.2        dparser_1.3.1-14    htmltools_0.5.9    
 #> [58] labeling_0.4.3      rmarkdown_2.32      compiler_4.6.1     

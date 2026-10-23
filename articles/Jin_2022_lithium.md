@@ -256,7 +256,7 @@ sim_fig3 <- rxode2::rxSolve(
   as.data.frame() |>
   filter(time == 168) |>
   mutate(trough = pmax(sim, 0))
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:09
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:08
 stopifnot(nrow(sim_fig3) == nrow(cohort_fig3))
 ```
 

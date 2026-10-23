@@ -427,11 +427,11 @@ troughs <- bind_rows(
   trough_of(make_trough_events(10:17, 48, 1, 48), "q48h")
 )
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp'
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:02
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp'
 #> [====|====|====|====|====|====|====|====|====|====] 0:00:04
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp'
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:02
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:07
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp'
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:05
 p_tox <- troughs |>
   group_by(regimen, CRCL, WT, mgkg) |>
   summarise(p_tox = mean(Cc >= 24.3), .groups = "drop")

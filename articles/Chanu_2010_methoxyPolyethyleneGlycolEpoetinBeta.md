@@ -245,7 +245,7 @@ iv <- solve_typ(make_events(1, dose = 100, route = "iv", tau = 1e6, n_dose = 1,
                             obs = t_grid, covs = typical_covs()))
 #> [====|====|====|====|====|====|====|====|====|====] 0:00:00 
 #> 
-#> ] 0:00:01
+#> ] 0:00:02
 iv_closed <- 100 / theta[["vc"]] * exp(-kel * t_grid)
 
 # SC: C(t) = F * D * ka / (V * (ka - kel)) * (exp(-kel t) - exp(-ka t))
@@ -1083,7 +1083,7 @@ sessionInfo()
 #> [4] rxode2_5.1.8          PKNCA_0.12.1          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] gtable_0.3.6        xfun_0.61           bslib_0.12.0       
+#>  [1] gtable_0.3.6        xfun_0.62           bslib_0.12.0       
 #>  [4] rxode2lincmt_0.1.0  lattice_0.22-9      vctrs_0.7.3        
 #>  [7] tools_4.6.1         generics_0.1.4      parallel_4.6.1     
 #> [10] tibble_3.3.1        symengine_0.2.14    pkgconfig_2.0.3    

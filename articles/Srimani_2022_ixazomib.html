@@ -4176,10 +4176,9 @@ the unit handling of every file.</p>
 <span>  atol <span class="op">=</span> <span class="fl">1e-6</span>, rtol <span class="op">=</span> <span class="fl">1e-6</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:00</span></span>
-<span><span class="co">#&gt; Warning: method requires an analytical Jacobian, but automatic Jacobian generation failed for this model:</span></span>
-<span><span class="co">#&gt;   error building model</span></span>
-<span><span class="co">#&gt;   Falling back to dop853 (dense, required for delays).</span></span>
+<span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:00 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ] 0:00:01</span></span>
 <span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalfdepot', 'etalvp2', 'etalkr', 'etalyss', 'etalkl'</span></span>
 <span><span class="co"># A one-subject solve returns no id column.</span></span>
 <span><span class="va">pk_sim</span><span class="op">$</span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fl">1L</span></span>
@@ -4227,8 +4226,8 @@ the unit handling of every file.</p>
 <tbody><tr class="odd">
 <td align="right">17.99</td>
 <td align="right">1.25</td>
-<td align="right">223.41</td>
-<td align="right">1247.33</td>
+<td align="right">223.78</td>
+<td align="right">1247.36</td>
 <td align="right">1247.31</td>
 </tr></tbody>
 </table>
@@ -4337,9 +4336,6 @@ record.</p>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
 <span><span class="va">pass1</span> <span class="op">&lt;-</span> <span class="fu">solve_ind</span><span class="op">(</span><span class="va">mod_mp</span>, <span class="va">eff_ev</span>, <span class="va">eta_mp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; Warning: method requires an analytical Jacobian, but automatic Jacobian generation failed for this model:</span></span>
-<span><span class="co">#&gt;   model previously failed Jacobian generation (cached)</span></span>
-<span><span class="co">#&gt;   Falling back to dop853 (dense, required for delays).</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">102</span><span class="op">)</span></span>
@@ -4358,9 +4354,6 @@ record.</p>
 <span>  <span class="fu">left_join</span><span class="op">(</span><span class="va">nadir_drawn</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
 <span><span class="va">pass2</span> <span class="op">&lt;-</span> <span class="fu">solve_ind</span><span class="op">(</span><span class="va">mod_mp</span>, <span class="va">eff_ev2</span>, <span class="va">eta_mp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; Warning: method requires an analytical Jacobian, but automatic Jacobian generation failed for this model:</span></span>
-<span><span class="co">#&gt;   model previously failed Jacobian generation (cached)</span></span>
-<span><span class="co">#&gt;   Falling back to dop853 (dense, required for delays).</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span><span class="co"># Dropout is drawn from the second pass, whose dropout hazard sees the</span></span>
 <span><span class="co"># M-protein regrowth after the nadir.</span></span>
