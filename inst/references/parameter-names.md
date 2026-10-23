@@ -2570,6 +2570,34 @@ Two members were added 2026-09-23 alongside the Bulitta 2019 pefloxacin extracti
 - **Example models:** `Felmlee_2010_ghb_rat.R` (`Vkidney = 4.0 mL`, fixed to the rat physiological value; Table I footnote a).
 - **Notes:** Ratified by the maintainers 2026-09-02 (PMC2895455). Paired with `lq_kidney` in the founding example but independent of it -- a model may carry a kidney volume without an explicit perfusion flow, or vice versa.
 
+### lq_other, q_other (**canonical log-transformed blood flow to the lumped `other` tissue compartment**)
+- **Type:** log-transformed-pk
+- **Role:** Blood flow perfusing the canonical lumped `other` compartment (every tissue a minimal PBPK model does not resolve individually), applied as a flow-limited exchange with the serum / blood compartment: `q_other * Cc` out, `q_other * C_other / kp_other` back (volume / time). A member of the `lq_<destination>` family, taken under the standing authorisation in the `lq_kidney` entry that perfused organs take the same `lq_<organ>` shape. The bare form `q_other` is used inside `model()`. Pairs with `lv_other` and `lkp_other`.
+- **Source aliases:** `Qr` -- Zazo 2022 Table 1 ("Blood flow rates", rest of tissues) and Eq. 4.
+- **Example models:** `Zazo_2022_gentamicin_preterm.R`, `Zazo_2022_gentamicin_term.R` (`Qr = 217 mL/min/kg`, a PhysPK built-in, weight-scaled inside `model()`).
+- **Notes:** Registered 2026-10-16 with the Zazo 2022 gentamicin extraction (PMC9554458). The paper calls the pool "rest of tissues"; `other` is the register's lumped-pool token (see `other` in `compartment-names.md`), so `rest` is not used as a destination token.
+
+### lv_other, v_other (**canonical log-transformed volume of the lumped `other` tissue compartment**)
+- **Type:** log-transformed-pk
+- **Role:** Volume of the canonical lumped `other` compartment (volume). A member of the `lv_<space>` family (`lv_elf`, `lv_kidney`, `lv_lung`, ...): the bare volume canonicals `lvc` / `lvp` / `lvp2` are reserved for the central and numbered peripheral compartments of a classical-PK model. The bare form `v_other` is used inside `model()`, and the tissue concentration is `other / v_other`.
+- **Source aliases:** `Vr` -- Zazo 2022 Table 1 ("Organ volumes (ml)", rest of tissues) and Eq. 4.
+- **Example models:** `Zazo_2022_gentamicin_preterm.R`, `Zazo_2022_gentamicin_term.R` (`Vr = 0.87`, encoded in mL as printed; the vignette discusses the doubtful unit).
+- **Notes:** Registered 2026-10-16 with the Zazo 2022 gentamicin extraction (PMC9554458).
+
+### lv_heart_chamber, v_heart_chamber (**canonical log-transformed heart-chamber blood volume**)
+- **Type:** log-transformed-pk
+- **Role:** Volume of a well-stirred cardiac blood chamber through which the cardiac output recirculates, delaying the mixing of returning blood with the serum pool (volume). It measures the paper-specific `heart_chamber` state, which holds BLOOD, not myocardium; the `heart` organ compartment and `vp_heart` / `lkp_heart` describe heart tissue and do not apply. The `lv_<space>` token follows the state it measures, as `lv_ulf1` / `lv_ulf2` already do for paper-specific states. The bare form `v_heart_chamber` is used inside `model()`.
+- **Source aliases:** `Vh` -- Zazo 2022 Eq. 1 ("heart chamber volume").
+- **Example models:** `Zazo_2022_gentamicin_preterm.R`, `Zazo_2022_gentamicin_term.R`. The paper does not print a value (it is a PhysPK built-in); those files carry a maintainer-assumed 5 mL and their vignette quantifies the sensitivity.
+- **Notes:** Registered 2026-10-16 with the Zazo 2022 gentamicin extraction (PMC9554458).
+
+### lqc (**canonical log-transformed cardiac output**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale form of `qc`, the cardiac output, for models that place between-subject variability on it (`qc <- exp(lqc + etalqc) * ...`). Same quantity and meaning as the `qc` entry; use the bare `qc` in `ini()` only when the value carries no eta and no log transform.
+- **Source aliases:** `CO`, `Qh` -- Zazo 2022 Table 2 ("Cardiac output") and Eq. 1, where the cardiac output is the flow through the heart chamber.
+- **Example models:** `Zazo_2022_gentamicin_preterm.R`, `Zazo_2022_gentamicin_term.R` (`CO = 172 +/- 50.6 mL/min/kg`, varied log-normally in the authors' Monte Carlo).
+- **Notes:** Registered 2026-10-16 with the Zazo 2022 gentamicin extraction (PMC9554458).
+
 ### lq_stomach, q_stomach (**canonical log-transformed central-to-stomach perfusion flow**)
 - **Type:** log-transformed-pk
 - **Role:** Gastric blood flow perfusing a stomach vascular space, applied as a bidirectional flow between the systemic blood compartment and that space (volume / time). Fourth member of the `lq_<destination>` family (`lq_milk`, `lq_elf`, `lq_kidney`), taken under the standing authorisation in the `lq_kidney` entry that "other perfused organs should take the same `lq_<organ>` shape". The bare form `q_stomach` is used inside `model()`.
