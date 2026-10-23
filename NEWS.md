@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2022 abrocitinib concentration-QTc and concentration-heart rate ([doi:10.1002/cpdd.1111](https://doi.org/10.1002/cpdd.1111)) -- healthy adult volunteers in a thorough-QT crossover study.
+- Add Carrothers 2023 dalbavancin ([doi:10.1097/INF.0000000000003764](https://doi.org/10.1097/INF.0000000000003764)) -- pediatric patients from birth to <18 years.
 
 - Fix the inter-individual variability scale of Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)): the Table 3 percentages are omega x 100, not CV%, so the CL, V2 and V3 variances are now `(P/100)^2` (V3 0.6229 -> 0.8649, +39 %; CL and V2 +1-3 %). The Table 3 Wald CI on the V3 row decides the scale.
 
