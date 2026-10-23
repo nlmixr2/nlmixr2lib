@@ -2355,6 +2355,30 @@ Two members were added 2026-09-23 alongside the Bulitta 2019 pefloxacin extracti
 - **Example models:** `Kurup_2024_DZIF10c.R` (`V_L = 0.0364 L` at WT = 70 kg, estimated; allometrically scaled with a fixed exponent of 1). Bare-form precedent: `Parmar_2023_spectinamide_1599_mouse_pbpk.R` (`v_elf = 1.00e-5 L`, a fixed mouse physiological constant).
 - **Notes:** When a model carries regional `elf_<region>` pools alongside the bare `elf`, a single `v_elf` normally serves all of them and the whole-lung ELF concentration is the summed amount over that one volume; a model that gives each region its own volume should register `lv_elf_<region>` names.
 
+### lq_vitreous (**canonical log-transformed ocular clearance between the vitreous and the central compartment**)
+- **Type:** log-transformed-pk
+- **Role:** Bidirectional distribution clearance (volume / time) between the vitreous humor of an eye and the central compartment: `d/dt(vitreous) = q_vitreous / vc * central - q_vitreous / v_vitreous * vitreous`, with the mirror term in `central`. A member of the `lq_<destination>` family (`lq_milk`, `lq_elf`), where the destination token is the compartment name. In a two-eye model the same `q_vitreous` serves both `vitreous` and `vitreous_fellow`. The bare form `q_vitreous` is used inside `model`.
+- **Source aliases:**
+  - `QE` -- Bihorel 2026 Table 1 ('QE: Ocular clearance for AFL-2') and Figure 1 ODEs.
+- **Example models:** `Bihorel_2026_aflibercept.R` (founding example; `QE = 0.608 mL/day` for the 2 mg drug product, 39.4% slower for the 8 mg drug product, power age effect).
+- **Notes:** Not an alias of `lq` / `lq2`, which mean exchange with `peripheral1` / `peripheral2`; Bihorel 2026 carries all three clearances in one model. After an intravitreal dose the systemic profile is limited by this clearance, so it sets the apparent terminal half-life in plasma.
+
+### lv_vitreous (**canonical log-transformed vitreous volume**)
+- **Type:** log-transformed-pk
+- **Role:** Volume of the vitreous humor of one eye (volume). Usually a fixed physiological constant rather than an estimate. In a two-eye model one `v_vitreous` serves both `vitreous` and `vitreous_fellow`. The bare form `v_vitreous` is used inside `model`.
+- **Source aliases:**
+  - `V1`, `V5` -- Bihorel 2026 Table 1 ('V1 and V5: Volume of study and fellow eye').
+- **Example models:** `Bihorel_2026_aflibercept.R` (founding example; 4 mL, fixed).
+- **Notes:** Follows `lv_elf` / `lv_lung`: the bare volume canonicals `lvc` / `lvp` / `lvp2` belong to classical central and peripheral compartments, so a named physiological space takes the `lv_<compartment>` form.
+
+### lf_vitreous (**canonical log-transformed bioavailability of an intravitreal dose**)
+- **Type:** log-transformed-pk
+- **Role:** Fraction of an intravitreal dose that becomes available for exchange from the vitreous (fraction), applied as `f(vitreous) <- f_vitreous` (and `f(vitreous_fellow) <- f_vitreous` when the fellow eye is dosed). It is the vitreous analogue of `lfdepot` (`lf` + compartment token). The bare form `f_vitreous` is used inside `model`.
+- **Source aliases:**
+  - `FIVT`, `F_IVT` -- Bihorel 2026 Table 1 ('FIVT: Bioavailability after IVT administration').
+- **Example models:** `Bihorel_2026_aflibercept.R` (founding example; 0.701).
+- **Notes:** Distinct from `lfdepot` in the same model, which there holds the SC bioavailability. A logit-scale estimate would be `logitf_vitreous`, following `logitfdepot`. Where the loss is applied matters: Bihorel 2026 applies it on entry into the eye in the fit, while that paper's ocular-concentration simulations put the whole dose in the vitreous and apply the loss on exit. The two give nearly the same plasma profile (they differ only through the small plasma-to-eye return flux), but the vitreous concentrations differ by about the factor `f_vitreous`.
+
 ### lq_elf_lung (**canonical log-transformed ELF-to-lung inter-compartmental clearance**)
 - **Type:** log-transformed-pk
 - **Role:** Inter-compartmental clearance between the lung epithelial-lining-fluid space and a second, deeper lung distribution compartment (volume / time). Third member of the `lq_<destination>` family founded by `lq_milk` and continued by `lq_elf`, and shaped like the `lq_p1_p2` two-token form because neither end of the exchange is the central compartment: the bare `lq` / `lq2` mean exchange between `central` and `peripheral1` / `peripheral2` specifically, so an exchange whose SOURCE is `elf` needs both endpoints in the name. Unlike `lq_p1_p2` the flow is bidirectional. The bare form `q_elf_lung` is used inside `model()`; the ELF-to-lung micro-constant is `q_elf_lung / v_elf` and the lung-to-ELF one is `q_elf_lung / v_lung`.
@@ -2698,6 +2722,30 @@ Two members were added 2026-09-23 alongside the Bulitta 2019 pefloxacin extracti
   - `Kmm` -- used in `Gebhard_2023_mercaptopurine.R` (paper symbol `K_mm^6MP`).
 - **Example models:** `Gebhard_2023_mercaptopurine.R` (`K_mm^6MP = 0.016 umol/L`), `Gebhard_2023_mercaptopurine_anc.R` (`K_mm^6MP = 0.14 umol/L`), `Liu_2020_hydroxychloroquine_monkey.R` (`Acb50 = 7.05 mg`, an AMOUNT in the central compartment).
 - **Notes:** Paired with `lvmax_rbc`; both are meaningless alone.
+
+### lvmax_plt, vmax_plt (**canonical maximum uptake rate into the platelet analyte pool**)
+- **Type:** paper-named-param
+- **Role:** Maximum first-order uptake rate (1 / time / volume) of free drug from the central compartment into the platelet pool `plt_<analyte>`: `uptake = vmax_plt * vc * (1 - plt_<analyte> / (km_plt + plt_<analyte>)) * central`. The rate is first order in the free central amount and shuts off as the pool fills.
+- **Source aliases:**
+  - `Vmax,p` -- Bihorel 2026 Table 1 ('Vmax,p: Maximum binding rate to platelets (1/day/L)') and Figure 1 ODEs.
+- **Example models:** `Bihorel_2026_aflibercept.R` (founding example; 0.0310 1/day/L).
+- **Notes:** Named after `lvmax_rbc`, but the units differ. `vmax_rbc` is a Michaelis-Menten maximum flux (concentration or amount / time); `vmax_plt` in the founding example multiplies an amount and a volume, so it carries 1 / time / volume. Read the units from `label()`.
+
+### lkm_plt, km_plt (**canonical half-saturation amount of the platelet analyte pool**)
+- **Type:** paper-named-param
+- **Role:** Amount of drug in the platelet pool `plt_<analyte>` at which the uptake rate falls to half of its maximum. It saturates the uptake in the accumulated pool, not in the plasma concentration.
+- **Source aliases:**
+  - `Km,p` -- Bihorel 2026 Table 1 ('Km,p: Amount of free aflibercept at half Vmax,p (mg)').
+- **Example models:** `Bihorel_2026_aflibercept.R` (founding example; 42.7 mg, RSE 159%).
+- **Notes:** Paired with `lvmax_plt`; both are meaningless alone. Not a Michaelis constant on the driving concentration, unlike `km_rbc` and the bare `km`.
+
+### lkel_plt, kel_plt (**canonical irreversible elimination rate constant from the platelet analyte pool**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) for irreversible loss of drug out of the platelet pool `plt_<analyte>`; nothing returns to plasma. `lkel_plt` is the log-transformed `ini()` primary and `kel_plt` the bare form inside `model()`.
+- **Source aliases:**
+  - `K70` -- Bihorel 2026 Table 1 ('K70: Elimination rate constant from platelet') and Figure 1 ODEs.
+- **Example models:** `Bihorel_2026_aflibercept.R` (founding example; 0.0265 1/day).
+- **Notes:** A compartment-suffixed member of the `kel_<suffix>` pattern (`kel_saliva`). Use `keff_plt` instead for a return flux to plasma, following `keff_rbc`.
 
 ### lvmax_saliva, vmax_saliva (**canonical maximum rate of saturable central-to-saliva transport**)
 - **Type:** log-transformed-pk

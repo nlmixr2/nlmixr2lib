@@ -3398,9 +3398,18 @@ One family in this section is validated by shape rather than by enumeration -- s
 
 ### vitreous (**canonical bare vitreous compartment**)
 - **Type:** compartment
-- **Role:** Bare vitreous-humor compartment used in ocular PBPK extractions.
-- **Source aliases:** none.
-- **Example models:** ocular-PK models.
+- **Role:** Bare vitreous-humor compartment used in ocular PBPK extractions. In a model that carries both eyes, the bare name is the injected (study) eye and the untreated eye is `vitreous_fellow`.
+- **Source aliases:**
+  - `A1` -- Bihorel 2026 Figure 1 ('Study eye (A1, V1)').
+- **Example models:** ocular-PK models; `Bihorel_2026_aflibercept.R` (study eye, fixed 4 mL).
+
+### vitreous_fellow (**canonical vitreous compartment of the untreated fellow eye**)
+- **Type:** compartment
+- **Role:** Vitreous humor of the fellow (non-study) eye, in a model that carries both eyes as separate states exchanging drug with plasma. It receives drug from the systemic circulation after a dose into the study eye (`vitreous`), and it can also take its own intravitreal dose, since trial protocols allow the fellow eye to be treated as needed.
+- **Source aliases:**
+  - `A5` -- Bihorel 2026 Figure 1 ('Fellow eye (A5, V5)').
+- **Example models:** `Bihorel_2026_aflibercept.R` (fixed 4 mL; shares the ocular clearance `q_vitreous` and volume `v_vitreous` with the study eye).
+- **Notes:** The study eye keeps the bare `vitreous`, so single-eye ocular models need no change. Name a matching fellow-eye retina or aqueous state the same way (`<tissue>_fellow`).
 
 ### res_vasc (**canonical bare lumped-remainder vascular compartment**)
 - **Type:** compartment
@@ -4291,6 +4300,14 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Example models:** `Liu_2020_hydroxychloroquine_monkey.R`.
 - **Notes:** **Units** differ from `rbc_mtx` / `rbc_tgn`: this state is an amount (mg), not a concentration, because the source writes its ODEs in amounts and fits an apparent red-cell volume. As with `rbc_ghb`, the deviation from the family's usual units is recorded in `compartmentData`. Chloroquine-class drugs accumulate strongly in blood cells, so whole-blood and plasma concentrations differ by an order of magnitude and a separate red-cell state is needed to fit both matrices jointly.
 
+### plt_afl (**canonical platelet-associated aflibercept pool**)
+- **Type:** compartment
+- **Role:** Aflibercept taken up by circulating platelets, carried as an AMOUNT (mg). It fills from the free central amount through a capacity-limited uptake that shuts off as the pool fills, `vmax_plt * vc * (1 - plt_afl / (km_plt + plt_afl)) * central`, and drains irreversibly by first-order `kel_plt`.
+- **Source aliases:**
+  - `A7` -- Bihorel 2026 Figure 1 ('Platelet (A7)'); the caption calls it the 'tissue (platelet) compartment'.
+- **Example models:** `Bihorel_2026_aflibercept.R` (founding example).
+- **Notes:** Founding member of the `plt_<analyte>` namespace (see below). Bihorel 2026 presents the pool as a hypothesis: a saturable elimination pathway 'hypothesized to represent saturable uptake of anti-VEGF molecules by circulating platelets', added to fix the underprediction of free aflibercept at high IV and SC concentrations. Nothing measures the pool directly.
+
 ---
 
 ## Intracellular red-cell analyte pools (`rbc_<analyte>` namespace)
@@ -4302,6 +4319,16 @@ Validated by `rbcCompartmentRegex = "^rbc_[a-z0-9]+$"` in `R/conventions.R`, NOT
 Use `rbc_<analyte>` when the model carries the red-cell pool as an ODE state with its own influx / efflux kinetics. When a paper instead models red-cell drug **algebraically** as a fixed proportion of plasma (e.g. `Crbc <- slprbc * Cc` in `Gastonguay_2005_efaproxiral.R`, or the saturable whole-blood binding in `Storset_2014_tacrolimus.R`), no compartment is needed and no `rbc_` state should be introduced.
 
 The corresponding transport parameters are `lkinf_rbc` / `lkeff_rbc` (first-order influx / efflux rate constants) and `lvmax_rbc` / `lkm_rbc` (saturable influx); see `parameter-names.md`.
+
+---
+
+## Platelet-associated analyte pools (`plt_<analyte>` namespace)
+
+Naming rule: `plt_<analyte>`, where `<analyte>` is the lowercase short name of the drug held by circulating platelets (`afl` for aflibercept). The namespace mirrors `rbc_<analyte>` for a second blood-cell pool. It is an enumerated family: each member gets its own H3 entry, and no regex validates new members.
+
+Two differences from the red-cell family should be recorded in every member's entry. First, **units**: the founding member holds an amount (mg), not a concentration, because the source writes its ODEs in amounts. Second, **saturation form**: in the founding example the uptake saturates in the accumulated pool amount, not in the plasma concentration. So `km_plt` is a half-saturation amount of the pool, not a Michaelis constant on the driving concentration as `km_rbc` is.
+
+The corresponding parameters are `lvmax_plt`, `lkm_plt` and `lkel_plt`; see `parameter-names.md`.
 
 ---
 

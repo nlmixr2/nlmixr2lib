@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2026 etranacogene dezaparvovec ([doi:10.1002/psp4.70286](https://doi.org/10.1002/psp4.70286)) -- adults with hemophilia B treated with AAV5 gene therapy; a deterministic generation-ladder encoding of the authors' agent-based model of factor IX durability.
+- Add Bihorel 2026 intravitreal aflibercept ([doi:10.1002/psp4.70287](https://doi.org/10.1002/psp4.70287)) -- patients with nAMD or DME, healthy volunteers and patients with solid tumors given aflibercept intravitreally (2 mg and 8 mg drug products), intravenously or subcutaneously (registers the `vitreous_fellow` and `plt_afl` compartments, the `lq_vitreous` / `lv_vitreous` / `lf_vitreous` and `lvmax_plt` / `lkm_plt` / `lkel_plt` parameters, and the `FORM_AFL_HD` covariate).
 
 - Fix the inter-individual variability scale of Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)): the Table 3 percentages are omega x 100, not CV%, so the CL, V2 and V3 variances are now `(P/100)^2` (V3 0.6229 -> 0.8649, +39 %; CL and V2 +1-3 %). The Table 3 Wald CI on the V3 row decides the scale.
 
