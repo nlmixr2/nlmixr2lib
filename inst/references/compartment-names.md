@@ -5696,12 +5696,26 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Tuey_2024_cholecalciferol.R` (one-compartment 24,25D3 fed by the `1 - fm_125d3` remainder of 25D3 clearance, Tuey 2024 Table 2).
 - **Notes:** The comma of the published `24,25` is dropped for the same reason as `125d3`; read `2425d3` as "twenty-four-comma-twenty-five-D-three". Digit-leading, as for `25d3`.
 
-### 3oh (**canonical 3-hydroxy-agomelatine suffix**)
+### 3oh (**canonical 3-hydroxy metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** 3-hydroxy-agomelatine metabolite of agomelatine (Xie 2019).
-- **Source aliases:** none.
-- **Example models:** `Xie_2019_agomelatine.R`.
+- **Role:** 3-hydroxy metabolite of the parent drug: 3-hydroxy-agomelatine for agomelatine (Xie 2019), 3-hydroxycarbamazepine (3OH-CBZ) for carbamazepine (Yip 2021). Member of the positional-hydroxy family (`2oh` / `3oh` / `5oh` / `7oh` / `8oh` / `9oh` / `11oh`); the parent drug of the model disambiguates.
+- **Source aliases:** `3OH-CBZ` (Yip 2021).
+- **Example models:** `Xie_2019_agomelatine.R`; `Yip_2021_carbamazepine.R` (3OH-CBZ, one of three metabolites of a simultaneous parent + 3-metabolite popPK model; compartment `central_3oh`, observation `Cc_3oh`, apparent elimination clearance `lcl_3oh`, residual `expSd_3oh`).
 - **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier.
+
+### 2oh (**canonical 2-hydroxy metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 2-hydroxy metabolite of the parent drug: 2-hydroxycarbamazepine (2OH-CBZ) for carbamazepine (Yip 2021). Member of the positional-hydroxy family (`2oh` / `3oh` / `5oh` / `7oh` / `8oh` / `9oh` / `11oh`); the parent drug of the model disambiguates.
+- **Source aliases:** `2OH-CBZ` (Yip 2021).
+- **Example models:** `Yip_2021_carbamazepine.R` (2OH-CBZ, formed via an arene-oxide intermediate; compartment `central_2oh`, observation `Cc_2oh`, apparent elimination clearance `lcl_2oh`, residual `expSd_2oh`, and the autoinduction covariate effect `e_autoind_cl_2oh` on its elimination clearance).
+- **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier, following the `3oh` / `5oh` / `7oh` precedent.
+
+### cbze (**canonical carbamazepine-10,11-epoxide metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Carbamazepine-10,11-epoxide (CBZE), the major pharmacologically active and chemically reactive epoxide metabolite of carbamazepine, formed by CYP-mediated 10,11-epoxidation and hydrolysed by microsomal epoxide hydrolase (EPHX1) to the dihydrodiol. Followed as a second plasma analyte in parent + metabolite carbamazepine popPK models.
+- **Source aliases:** `CBZE`, `CBZ-E`, `carbamazepine 10,11-epoxide` (Yip 2021).
+- **Example models:** `Yip_2021_carbamazepine.R` (compartment `central_cbze`, observation `Cc_cbze`, apparent elimination clearance `lcl_cbze`, residual `expSd_cbze`, and the EPHX1 rs2234922 homozygous-variant covariate effect `e_ephx1_hom_cl_cbze` on its elimination clearance).
+- **Notes:** Epoxide-specific suffix; not a member of the positional-hydroxy family because CBZE is an epoxide rather than a hydroxy metabolite. Distinct from the downstream dihydrodiol (DiOH-CBZ), which a future extraction modelling that species should register separately.
 
 ### 7dm (**canonical 7-desmethyl-agomelatine suffix**)
 - **Type:** metabolite-suffix
