@@ -2074,6 +2074,8 @@ navbar:
         href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
       - text: "Doxycycline (Hopkins 2017)"
         href: articles/Hopkins_2017_doxycycline.html
+      - text: "Doxycycline chicken (Petkova 2022)"
+        href: articles/Petkova_2022_doxycycline_chicken.html
       - text: "Doxycycline duck ff20 (Li 2025)"
         href: articles/Li_2025_doxycycline_florfenicol_ducks.html
       - text: "Doxycycline duck ff40 (Li 2025)"
@@ -9560,6 +9562,7 @@ articles:
   - articles/Perlstein_2025_risperidone_tv46000
   - articles/Perlstein_2026_olanzapine
   - articles/Perrottet_2009_ganciclovir
+  - articles/Petkova_2022_doxycycline_chicken
   - articles/Petric_2023_vinpocetine
   - articles/Petrov_2024_romiplostim
   - articles/Pettersen_2009_pantoprazole
