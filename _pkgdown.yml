@@ -4640,8 +4640,8 @@ navbar:
         href: articles/Chen_2014_nab_paclitaxel.html
       - text: "Nadroparin (Chen 2024)"
         href: articles/Chen_2024_nadroparin.html
-      - text: "Nafamostat (Jeong 2022)"
-        href: articles/Jeong_2022_nafamostat.html
+      - text: "Nadroparin (Romano 2023)"
+        href: articles/Romano_2023_nadroparin.html
       - text: "Nalbuphine (Nie 2023)"
         href: articles/Nie_2023_nalbuphine.html
       - text: "Naldemedine (Kubota 2018)"
@@ -9724,7 +9724,7 @@ articles:
   - articles/Roiko_2012_ghb_brain_uptake
   - articles/Rolsma_2025_betalactams_cysticfibrosis
   - articles/Rolsma_2026_cefepime
-  - articles/RomanoAguilar_2022_meropenem
+  - articles/Romano_2023_nadroparin
   - articles/Rosario_2008_maraviroc
   - articles/Rosario_2015_vedolizumab
   - articles/Rose_2016_follitropin_delta
