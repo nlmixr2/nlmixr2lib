@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Itohara 2019 tacrolimus minimal PBPK ([doi:10.1002/psp4.12420](https://doi.org/10.1002/psp4.12420)) - adult living-donor liver transplant recipients (liver regeneration, donor and recipient CYP3A5 genotypes).
+- Add Liu 2020 cefepime ([doi:10.1007/s40262-020-00873-3](https://doi.org/10.1007/s40262-020-00873-3)) -- adults with febrile neutropenia or critical illness and hospitalised children.
 
 - Fix the inter-individual variability scale of Berges 2007 enoxaparin ([doi:10.1111/j.1365-2125.2007.02920.x](https://doi.org/10.1111/j.1365-2125.2007.02920.x)): the Table 3 percentages are omega x 100, not CV%, so the CL, V2 and V3 variances are now `(P/100)^2` (V3 0.6229 -> 0.8649, +39 %; CL and V2 +1-3 %). The Table 3 Wald CI on the V3 row decides the scale.
 

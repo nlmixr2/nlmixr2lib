@@ -497,13 +497,21 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Schreib_2024_busulfan.R` (`lkel_exp_kdes = -2.965`, giving 0.0516 1/h and a 13.4 h half-life for the decline in busulfan `k` and `CL` over a conditioning course).
 - **Notes:** The `kel` counterpart of the registered `cl_exp_kdes` role in the time-varying-clearance family; reuses the `_kdes` role token deliberately so both families are found by the same stem.
 
-### lvmax_exp_kdes (**canonical log-transformed decay-rate constant of a time-varying Michaelis-Menten Vmax**)
+### lkel_renal (**canonical log-transformed renal elimination rate constant arm**)
 - **Type:** log-transformed-pk
-- **Role:** Log-scale first-order rate constant at which a Michaelis-Menten maximum elimination rate decays multiplicatively toward zero, in the form `vmax(t) = vmax * exp(-vmax_exp_kdes * t)` consumed as `vmax(t) * Cc / (km + Cc)` (1 / time). `log(2) / vmax_exp_kdes` is the half-life of the saturable pathway.
+- **Role:** Renal component of an additive renal + non-renal decomposition of the first-order elimination RATE CONSTANT, `kel = kel_nonren + kel_renal * (CRCL / ref)` (1 / time). The rate-constant-scale analogue of `lcl_renal`, for papers that estimate `ke` arms and an explicit volume rather than clearance arms. When the renal arm is scaled by a renal-function covariate, the estimate is the arm's value AT that covariate's reference.
 - **Source aliases:**
-  - `lambda1` -- used in `Ferl_2018_mosunetuzumab_cyno.R`, `Ferl_2018_mosunetuzumab_cyno_covariates.R`, `Ferl_2018_mosunetuzumab_human.R` (paper `V_max(t) = V_max^0 * exp(-lambda1 * t)`).
-- **Example models:** `Ferl_2018_mosunetuzumab_cyno.R` (founding example; `lvmax_exp_kdes = log(0.144)`, a 4.8-day half-life of the saturable elimination of an anti-CD20/CD3 T-cell-dependent bispecific antibody in cynomolgus monkeys, alongside a separate `cl_exp_kdes = 10.1 1/day` on the decaying linear clearance), `Ferl_2018_mosunetuzumab_cyno_covariates.R`, `Ferl_2018_mosunetuzumab_human.R`.
-- **Notes:** Third member of the `_exp_kdes` role-token family after `cl_exp_kdes` and `kel_exp_kdes`, ratified by the maintainers 2026-09-22. Distinct from `kel_exp_kdes`, which relaxes a rate *constant* toward a non-zero asymptote; here a maximum *rate* (amount / time) falls to zero, so the model needs no `_inf` / `_component` split and keeps the bare `vmax` as the value at t = 0. A model can carry `cl_exp_kdes` and `vmax_exp_kdes` together, as the founding example does, which is why the two decay constants must not share a name.
+  - `Ke0` -- Liu 2020 Table 2 and ESM equation 4, `Ke = (KeIntcpt + (CrCL/120) * Ke0) * (weight/70)^-0.25`.
+- **Example models:** `Liu_2020_cefepime.R` (founding example; `Ke0` = 0.236 1/h at CrCL = 120 mL/min).
+- **Notes:** Ratified by the maintainers 2026-09-26 (PMC6810068 sidecar). Combines the base `kel` with the registered `_renal` component suffix. Do not reparameterise onto `lcl_renal` + `lvc`: when the paper puts independent random effects on the rate-constant arms and on V, the clearance arms are products of two of the paper's random effects and their variances are not published. The paper symbol `Ke0` must never be carried as `lke0`, which is the effect-compartment equilibration rate constant.
+
+### lkel_nonren (**canonical log-transformed non-renal elimination rate constant arm**)
+- **Type:** log-transformed-pk
+- **Role:** Non-renal (intercept) component of an additive renal + non-renal decomposition of the first-order elimination rate constant (1 / time). The rate-constant-scale analogue of `lcl_nonren`; pairs with `lkel_renal`.
+- **Source aliases:**
+  - `KeIntcpt` -- Liu 2020 Table 2 and ESM equation 4.
+- **Example models:** `Liu_2020_cefepime.R` (founding example; `KeIntcpt` = 0.506 1/h).
+- **Notes:** Ratified by the maintainers 2026-09-26 together with `lkel_renal`; see that entry.
 
 ### ltlag (**canonical log-transformed absorption lag time**)
 - **Type:** log-transformed-pk
@@ -1249,11 +1257,17 @@ units rather than a dimensionless-per-time rate.
 - **Source aliases:** none.
 - **Example models:** `Jonckheere_2019_cefepime.R`.
 
-### cl_residual (**canonical bare residual body clearance during extracorporeal therapy**)
+### kel_renal (**canonical bare renal elimination rate constant arm**)
 - **Type:** bare-pk
-- **Role:** Bare counterpart of `lcl_residual`.
+- **Role:** Bare counterpart of `lkel_renal`. Renal component of an additive renal + non-renal elimination rate constant (1 / time). Also the conventional name for a renal rate constant DERIVED inside `model()` as `cl_renal / vc` (e.g. to drive a `urine` compartment), in which case no `lkel_renal` is estimated.
 - **Source aliases:** none.
-- **Example models:** `Reed_2025_meropenem_vaborbactam.R`.
+- **Example models:** `Liu_2020_cefepime.R` (estimated arm); `Bulitta_2011_cefpirome.R`, `Borghardt_2016_olodaterol.R` (derived from `cl_renal`).
+
+### kel_nonren (**canonical bare non-renal elimination rate constant arm**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lkel_nonren`. Non-renal component of an additive renal + non-renal elimination rate constant (1 / time); like `kel_renal`, also used for the value derived as `cl_nonren / vc`.
+- **Source aliases:** none.
+- **Example models:** `Liu_2020_cefepime.R` (estimated arm); `Bulitta_2011_cefpirome.R`, `Borghardt_2016_olodaterol.R` (derived from `cl_nonren`).
 
 ### crcl_hinge (**canonical breakpoint of a piecewise-linear renal-function covariate relationship**)
 - **Type:** bare-pk

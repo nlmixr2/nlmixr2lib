@@ -1210,6 +1210,8 @@ navbar:
         href: articles/Capparelli_2005_cefepime.html
       - text: "Cefepime (Jonckheere 2019)"
         href: articles/Jonckheere_2019_cefepime.html
+      - text: "Cefepime (Liu 2020)"
+        href: articles/Liu_2020_cefepime.html
       - text: "Cefepime (MoralesJunior 2025)"
         href: articles/MoralesJunior_2025_cefepime.html
       - text: "Cefepime (Rolsma 2025)"
@@ -8993,6 +8995,7 @@ articles:
   - articles/Lioger_2017_rituximab
   - articles/Litjens_2023_linezolid_tuberculous_meningitis
   - articles/Liu_2018_pneumocystis_qsp
+  - articles/Liu_2020_cefepime
   - articles/Liu_2020_hydroxychloroquine_monkey
   - articles/Liu_2022_escitalopram
   - articles/Liu_2022_nifedipine
