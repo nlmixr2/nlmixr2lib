@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sidamo 2022 levofloxacin and moxifloxacin ([doi:10.2147/IDR.S389442](https://doi.org/10.2147/IDR.S389442)) -- Ethiopian adults with multidrug- or rifampicin-resistant tuberculosis.
+- Add Fu 2022 unbound teicoplanin ([doi:10.3389/fphar.2022.1045895](https://doi.org/10.3389/fphar.2022.1045895)) -- Chinese adult inpatients with Gram-positive infections.
 
 - Add Zhou 2021 remimazolam ([doi:10.1111/cts.12875](https://doi.org/10.1111/cts.12875)) -- healthy volunteers and procedural-sedation and general-anaesthesia patients with arterial and venous sampling.
 
