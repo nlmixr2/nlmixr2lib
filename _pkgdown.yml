@@ -2152,6 +2152,8 @@ navbar:
         href: articles/Salem_2014_efavirenz.html
       - text: "Efavirenz (Sanchez 2011)"
         href: articles/Sanchez_2011_efavirenz.html
+      - text: "Efavirenz (Schalkwijk 2018)"
+        href: articles/Schalkwijk_2018_efavirenz.html
       - text: "Efavirenz (Siccardi 2012)"
         href: articles/Siccardi_2012_efavirenz.html
       - text: "Efavirenz (Vucicevic 2025)"
@@ -9519,6 +9521,7 @@ articles:
   - articles/Sawe_2025_levofloxacin
   - articles/SchaedeliStark_2024_balovaptan
   - articles/Schaefer_1996_ciprofloxacin
+  - articles/Schalkwijk_2018_efavirenz
   - articles/Scheuher_2023_ADC_platform_qsp
   - articles/Schindler_2016_sunitinib
   - articles/Schindler_2017_imatinib
