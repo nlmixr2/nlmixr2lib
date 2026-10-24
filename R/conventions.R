@@ -198,7 +198,11 @@
   # recycling models; it carries its own prefix rather than reusing the
   # absorption `transit[0-9]+` because a model with enterohepatic recycling
   # normally also carries an oral absorption chain, and the two would
-  # collide.
+  # collide. `lumped[0-9]+` is an aggregate state of a proper-lumped linear
+  # system (Dokoumetzidis-Aarons lumping, K_hat = M K M+): the role is fixed
+  # but the membership is model-specific, so the pooled original states are
+  # recorded in the model's `description`. Founding example
+  # Pan_2019_fentanyl_lumped_a.
   # The optional `_slow` / `_fast` qualifier registers the dual-rate
   # effect-delay cascade families (`effect_slow<n>` / `effect_fast<n>`):
   # two parallel first-order lag chains of different speed whose terminal
@@ -216,7 +220,7 @@
   # never take one side wholesale.
   compartmentRegex = paste0(
     "^(bile_transit|transit|effect|precursor|lat|depot|erythrocytes|",
-    "reticulocytes|mch|moderator|caseum|hb)(_slow|_fast)?[0-9]+$"
+    "reticulocytes|mch|moderator|caseum|hb|lumped)(_slow|_fast)?[0-9]+$"
   ),
   # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`
@@ -699,6 +703,16 @@
     "capd",
     "hemoadsorption"
   ),
+  # Third-token suffixes for the two coefficients of a power-function
+  # body-weight-dependent exponent (BDE) on a covariate effect, where the
+  # exponent itself varies with the covariate:
+  #   cl <- tvcl * (WT / ref)^((e_wt_cl_bdecoef * WT)^e_wt_cl_bdeexp)
+  # `bdecoef` is the coefficient a (1 / covariate units) and `bdeexp` the
+  # power b (unitless) of Admiraal 2019 alemtuzumab Eq. 7. Distinct from a
+  # fixed exponent `e_wt_cl`, and from the sigmoidal Emax-type BDE of
+  # Wang 2013 morphine, which has four parameters (`lkmin`, `lkdec`,
+  # `lkhal`, `lhill`). Maintainer ruling.
+  bdeShapeTokens = c("bdecoef", "bdeexp"),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
   deprecatedResidualError = c(
@@ -789,6 +803,7 @@
     "vitreous",
     "aqueous humour",
     "retina",
+    "tear fluid",
     "tissue",
     "tumor",
     "lymph",
@@ -1441,6 +1456,15 @@
   FALSE
 }
 
+# TRUE when `name` ends with `_<token>` for a body-weight-dependent-exponent
+# shape token (`_bdecoef`, `_bdeexp`).
+.endsWithBdeToken <- function(name, conv) {
+  for (tok in conv$bdeShapeTokens) {
+    if (endsWith(name, paste0("_", tok))) return(TRUE)
+  }
+  FALSE
+}
+
 # TRUE when `name` ends with `_<param>` for any bare PK parameter.
 # Used to detect shared-exponent covariate effects like e_wt_cl_q.
 .endsWithBarePkParam <- function(name, conv) {
@@ -1455,6 +1479,8 @@
 #   "metabolite" - matches e_<cov>_<param>_<metab>
 #   "shared"     - matches e_<cov>_<param>_<param2> (shared exponent)
 #   "component"  - matches e_<cov>_<param>_<component> (multi-CL arm)
+#   "bde"        - matches e_<cov>_<param>_bdecoef / _bdeexp (coefficient
+#                  or power of a body-weight-dependent exponent)
 #   "unknown"    - has a third-token suffix that doesn't match any
 #                  registered category
 .classifyCovEffect <- function(name, conv) {
@@ -1464,22 +1490,25 @@
   if (!grepl(conv$covEffectPattern, name)) {
     return(NA_character_)
   }
+  # A single `<cov>_<param>` pair after the leading `e_` has no third-token
+  # suffix. Test this first: its final token is itself a bare PK parameter,
+  # so the suffix checks below would otherwise call it "shared".
+  rest <- substr(name, 3, nchar(name))
+  parts <- strsplit(rest, "_", fixed = TRUE)[[1]]
+  if (length(parts) == 2) {
+    return("two_token")
+  }
   if (.endsWithMetabolite(name, conv)) {
     return("metabolite")
   }
   if (.endsWithClComponent(name, conv)) {
     return("component")
   }
+  if (.endsWithBdeToken(name, conv)) {
+    return("bde")
+  }
   if (.endsWithBarePkParam(name, conv)) {
     return("shared")
-  }
-  # Strip the leading `e_` and check whether the rest is a single
-  # `<cov>_<param>` pair (no third-token suffix). If yes, two_token;
-  # otherwise the name has an unrecognized trailing suffix.
-  rest <- substr(name, 3, nchar(name))
-  parts <- strsplit(rest, "_", fixed = TRUE)[[1]]
-  if (length(parts) == 2) {
-    return("two_token")
   }
   "unknown"
 }

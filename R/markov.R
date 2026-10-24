@@ -153,11 +153,15 @@ createMarkovModelFromSingleState <- function(transitionRow, stateNames) {
   fromStateEscaped <- gsub('"', '\\\\"', fromState[notLastState], fixed = TRUE)
   toStateEscaped <- gsub('"', '\\\\"', toState[notLastState], fixed = TRUE)
 
+  # sprintf("%g") prints a negative zero as "-0", and rxode2 builds differ in
+  # whether logit(0.5) returns -0 or 0, so every zero is written as 0.
+  iniPrint <- signif(iniValue, digits = 4)
+  iniPrint[!is.na(iniPrint) & iniPrint == 0] <- 0
   retIni <-
     sprintf(
       '%s <- %g; label("Probability of transition from state %s to %s (%s)")',
       iniParams,
-      signif(iniValue, digits = 4),
+      iniPrint,
       fromStateEscaped,
       toStateEscaped,
       iniUnit

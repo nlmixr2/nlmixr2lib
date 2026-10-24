@@ -1,10 +1,12 @@
 Liu_2018_anidulafungin_mouse_qsp <- function() {
-  description <- "QSP. Preclinical (mouse, C3H/HeN). Integrated quantitative systems pharmacology model of anidulafungin against Pneumocystis murina. A three-compartment PK module (administration compartment -> plasma -> peripheral tissue, with first-order decay from both plasma and tissue and the two dimensionless scaling factors RAP and RTP that Liu 2018 uses instead of volumes) drives the two-stage Pneumocystis life-cycle PD module of trophic forms and asci. Echinocandins block cell-wall construction in the ascus, so anidulafungin acts only on the asci: it adds a sigmoidal Emax increment to the asci death rate and inhibits the trophic-to-asci transformation with the same EC50, leaving the trophic burden essentially untouched. All states are concentrations or counts, not amounts -- the PK module carries no volume term, so a dose is administered as the initial plasma or administration-compartment concentration increment tabulated in Liu 2018 Table 3. PK rate constants are reported in 1/h and PD rate constants in 1/day, so the PK right-hand side is scaled by 24 to put the whole model on a day time base. Reproduces the Figure 4a dose ranking in which anidulafungin reduces the day-56 asci burden at 1, 0.5 and 0.1 mg/kg while the trophic form is unchanged (Figure 4b). Drug-free, this file reduces exactly to modellib('Liu_2018_pneumocystis_mouse_qsp')."
+  description <- "QSP. Preclinical (mouse, C3H/HeN). Integrated quantitative systems pharmacology model of anidulafungin against Pneumocystis murina. A three-compartment PK module (administration compartment -> plasma -> peripheral tissue, with first-order decay from both plasma and tissue and the two dimensionless scaling factors RAP and RTP that Liu 2018 uses instead of volumes) drives the two-stage Pneumocystis life-cycle PD module of trophic forms and asci. Echinocandins block cell-wall construction in the ascus, so anidulafungin acts only on the asci: it adds a sigmoidal Emax increment to the asci death rate and inhibits the trophic-to-asci transformation with the same EC50, leaving the trophic burden essentially untouched. All states are concentrations or counts, not amounts -- the PK module carries no volume term, so a dose is administered as the initial plasma or administration-compartment concentration increment tabulated in Liu 2018 Table 3. PK rate constants are reported in 1/h and PD rate constants in 1/day, so the PK right-hand side is scaled by 24 to put the whole model on a day time base. Reproduces the Figure 6a dose ranking in which anidulafungin reduces the day-56 asci burden at 1, 0.5 and 0.1 mg/kg while the trophic form is unchanged (Figure 6b). Drug-free, this file reduces exactly to modellib('Liu_2018_pneumocystis_mouse_qsp')."
   reference <- paste(
     "Liu GS, Ballweg R, Ashbaugh A, Zhang Y, Facciolo J, Cushion MT, Zhang T.",
     "(2018). A quantitative systems pharmacology (QSP) model for Pneumocystis",
     "treatment in mice. BMC Syst Biol 12(1):77.",
     "doi:10.1186/s12918-018-0603-9.",
+    "Figure numbering follows the Correction (2019), BMC Syst Biol 13(1):40,",
+    "doi:10.1186/s12918-019-0708-9, which swaps original Figures 3/5 and 4/6.",
     "PK construction data (Liu 2018 Table 2 / reference 35) from",
     "Gumbo T, Drusano GL, Liu W, Ma L, Deziel MR, Drusano MF, Louie A. (2006).",
     "Anidulafungin pharmacokinetics and microbial response in neutropenic mice",
@@ -84,7 +86,7 @@ Liu_2018_anidulafungin_mouse_qsp <- function() {
     age_range = "6 weeks old at the start of the authors' own experiments",
     sex_female_pct = 0,
     disease_state = "Pneumocystis murina lung infection in immunosuppressed mice (the model of Pneumocystis pneumonia, PCP)",
-    dose_range = "0.1, 0.5, 1, 2.5, 5 and 10 mg/kg intraperitoneally (Liu 2018 Table 3); the Figure 4a treatment arms are 0.1, 0.5 and 1 mg/kg three times a week for three weeks",
+    dose_range = "0.1, 0.5, 1, 2.5, 5 and 10 mg/kg intraperitoneally (Liu 2018 Table 3); the Figure 6a treatment arms are 0.1, 0.5 and 1 mg/kg three times a week for three weeks",
     regions = "United States (University of Cincinnati; mice supplied by Charles River)",
     notes = "Liu 2018 Experimental methods: 6-week-old male C3H/HeN mice. Organism burden quantified by RT-qPCR of Pneumocystis mitochondrial large-subunit rRNA (total nuclei) or by microscopic quantification with cresyl echt violet (asci) and a rapid Wright-Giemsa stain (all stages)."
   )
@@ -240,7 +242,7 @@ Liu_2018_anidulafungin_mouse_qsp <- function() {
     trophic(0) <- trophic0
     asci(0) <- asci0
 
-    # Liu 2018 plots both stages on a log10 scale (Figures 4a-4d).
+    # Liu 2018 plots both stages on a log10 scale (Figures 6a-6d).
     log10_trophic <- log10(trophic)
     log10_asci <- log10(asci)
   })

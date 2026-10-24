@@ -1,0 +1,394 @@
+---
+title: "Amyloid-beta pathway QSP in Alzheimer's disease (Ramakrishnan 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Amyloid-beta pathway QSP in Alzheimer's disease (Ramakrishnan 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+mod <- rxode2::rxode2(readModelDb("Ramakrishnan_2023_amyloid_qsp"))
+mod$state
+```
+
+* Citation: `r mod$reference`
+* Article (open access): <https://doi.org/10.1002/psp4.12876> (PMC9835125).
+* The ODEs, the initial amounts (Table S1), the parameter values (Table S2)
+  and the rule definitions (Table S4) are in the Supplementary Material. The
+  APOE-epsilon4 non-carrier values are in main-text Table 3.
+
+Ramakrishnan and colleagues (Genentech, Rosa & Co. and Roche) built a MATLAB
+SimBiology QSP model of amyloid-beta (A-beta) in Alzheimer's disease. A-beta40
+and A-beta42 are produced from APP by BACE1 and gamma-secretase and tracked
+separately, aggregate into oligomers (10-mers), fibrils and plaque in the
+brain, and move between brain, CSF and plasma. The model was calibrated to an
+APOE-epsilon4 carrier virtual patient and then tested on an APOE-epsilon4
+non-carrier.
+
+## What this file encodes, and what it cannot
+
+**Encoded: the paper's own A-beta pathway (natural-history) layer.** APP
+processing, the two monomer pools with their five clearance routes, the
+sequestered A-beta42 pool, oligomer / fibril / plaque aggregation, CSF and
+plasma transport, peripheral production, and the APOE-epsilon4 non-carrier
+virtual patient. Every value is printed in the paper or its supplement, and
+the published initial amounts are a steady state of the printed equations
+(checked below).
+
+**Not encoded: the anti-A-beta antibody layer.** The paper calibrates
+solanezumab, crenezumab, aducanumab and gantenerumab, with 18 further
+antibody and complex states. Table S3 of the supplement lists the 34
+antibody-specific parameters (absorption, clearance, peripheral exchange,
+association and dissociation rates for each A-beta species and compartment,
+and the microglial-activation multipliers) by name, description and unit
+only, with no values. Main-text Table 2 gives equilibrium dissociation
+constants but not the association / dissociation rates the ODEs use. The
+brain, CSF and plasma volumes that the bimolecular binding terms divide by,
+and the rule that sets `Microglia_Activation` during treatment, are also not
+published. Figures 2, 3 and S1 (antibody PK, target engagement and SUVR
+change on treatment) therefore cannot be reproduced. The equations for those
+states are printed in the supplement, so the layer can be added once the
+values become available.
+
+# Population
+
+The model is a deterministic, typical-value QSP model, not a population fit.
+It represents an individual with Alzheimer's disease during the roughly
+20-year phase in which brain A-beta aggregation grows linearly. Table 1 of the
+paper lists the CSF A-beta42 and amyloid-PET SUVR values (normal, prodromal,
+AD) that guided virtual patient development. Brain A-beta amounts derive from
+McDonald 2015 and Roberts 2017, CSF A-beta42 from Genentech study ABE4869g,
+and plasma A-beta from Roher 2009, Ovod 2017 and internal data (Table S1).
+
+```{r population}
+str(mod$meta$population)
+```
+
+# Source trace
+
+| Model element | Source |
+|---|---|
+| APP, sAPP-beta, C99 ODEs and the BACE1 / gamma-secretase rate laws | Supplemental methods, ODEs for d(APP)/dt, d(sAPPbeta)/dt, d(C99)/dt |
+| A-beta40 and A-beta42 brain monomer ODEs (5 clearance routes, oligomerisation, sequestered pool) | Supplemental methods, d(Abeta40_M)/dt, d(Abeta42_M)/dt |
+| Oligomer, fibril and plaque ODEs | Supplemental methods, d(AbetaAll_O)/dt, d(AbetaAll_F)/dt, d(AbetaAll_P)/dt |
+| CSF and plasma ODEs, including the 0.125 A-beta42 dilution factor and the doubled CSF clearance term | Supplemental methods, d(Abeta40_M_CSF)/dt through d(AbetaAll_O_Pl)/dt |
+| Composite rate rules (`k_ab40_olig`, `k_olig_clr`, `k_olig_fib`, `k_fib_clr`, ...) | Table S4 'Rules calculations' |
+| All rate constants, fractions, EC50 / Emax values, production rates | Table S2 'Parameters that do not change across mAbs' |
+| BACE1 activity and gamma-secretase activity (both normalised to 1) | Table S1 |
+| Initial amounts of all 14 states | Table S1 'Initial Amount' (moles converted to pmol) |
+| APOE-epsilon4 non-carrier values (BACE1 Km 8.438, Vmax 0.253; receptor, CSF and plasma clearance fractions) | Main-text Table 3 |
+| SUVR proportional to insoluble (fibril + plaque) A-beta | Methods, paragraph on temporal scope |
+| `Microglia_Activation` = 0 without antibody | Results, 'Investigation of plaque clearance by plaque-binding IgG1 antibodies' (microglia are activated in the presence of therapeutic antibody) |
+
+```{r ini-table}
+ini_df <- as.data.frame(mod$iniDf)
+ini_df |>
+  dplyr::filter(!is.na(ntheta)) |>
+  dplyr::select(Parameter = name, Value = est, Description = label) |>
+  knitr::kable(digits = 6)
+```
+
+# Steady state of the soluble species
+
+Without antibody the soluble species should sit at their Table S1 amounts and
+insoluble A-beta should grow linearly ("constant linear growth", Methods).
+The initial amounts are printed to three significant figures, so the solved
+steady state is allowed a 2% offset from them.
+
+```{r natural-history}
+yr <- 24 * 365.25
+ev <- rxode2::et(seq(0, 20 * yr, by = yr / 4))
+sim_c <- as.data.frame(rxode2::rxSolve(mod, ev, params = c(APOE4_CARRIER = 1)))
+
+soluble <- c(
+  "app", "sappb", "c99", "ab40_brain", "ab42_brain", "olig_brain",
+  "fibril_brain", "ab40_csf", "ab42_csf", "olig_csf", "ab40_plasma",
+  "ab42_plasma", "olig_plasma"
+)
+bl <- setNames(
+  as.numeric(mod$theta[paste0("bl_", soluble)]),
+  soluble
+)
+end_state <- unlist(sim_c[nrow(sim_c), soluble])
+ss_check <- data.frame(
+  State = soluble,
+  `Table S1 initial` = signif(bl, 4),
+  `After 20 years` = signif(end_state, 4),
+  `Change (%)` = round(100 * (end_state / bl - 1), 2),
+  check.names = FALSE
+)
+knitr::kable(ss_check, row.names = FALSE)
+stopifnot(all(abs(end_state / bl - 1) < 0.02))
+```
+
+Fibrils are included above because their clearance (`k_fib_cl` 4e-5 /h) is
+balanced by oligomer aggregation at the Table S1 amounts. Plaque has no
+endogenous clearance (`k_plaque_cl` = 0), so it accumulates at the constant
+fibril-to-plaque flux:
+
+```{r plaque-linear}
+plaque_rate <- 0.7 * 4e-5 * 1.46e-8 * 1e12 * yr # pmol oligomer units per year
+slope <- diff(sim_c$plaque_brain) / diff(sim_c$time) * yr
+c(expected = plaque_rate, simulated_min = min(slope), simulated_max = max(slope))
+stopifnot(all(abs(slope / plaque_rate - 1) < 0.01))
+
+ggplot(sim_c, aes(time / yr, pct_insol)) +
+  geom_line(colour = "steelblue", linewidth = 1) +
+  labs(
+    x = "Time (years)", y = "Change in insoluble A-beta (%)",
+    title = "Untreated APOE-epsilon4 carrier: linear growth of fibril + plaque"
+  ) +
+  theme_bw()
+```
+
+## Flux balance at baseline
+
+The same check done by hand at the Table S1 amounts, for the monomer pools.
+Production and loss agree to the precision of the printed values.
+
+```{r flux-balance}
+th <- mod$theta
+c99 <- th[["bl_c99"]]
+prod40 <- 1e12 * th[["k_c99_abeta"]] * c99 * th[["gsec_ab40_emax"]] /
+  (th[["gsec_ab40_ec50"]] + c99)
+prod42 <- 1e12 * th[["k_c99_abeta"]] * c99 * th[["gsec_ab42_emax"]] /
+  (th[["gsec_ab42_ec50"]] + c99) + th[["k_ab42_seq"]]
+loss40 <- th[["k_ab40_cl"]] * th[["bl_ab40_brain"]] *
+  (th[["f_ab40_csf"]] + th[["f_ab40_bbb"]] + th[["f_ab40_astro"]] +
+    th[["f_ab40_degenz"]] + th[["f_ab40_mglia"]] + 10 * th[["f_ab40_olig"]])
+loss42 <- th[["k_ab42_cl"]] * th[["bl_ab42_brain"]] *
+  (th[["f_ab42_csf"]] + th[["f_ab42_bbb"]] + th[["f_ab42_astro"]] +
+    th[["f_ab42_degenz"]] + th[["f_ab42_mglia"]] + 10 * th[["f_ab42_olig"]])
+flux <- data.frame(
+  Pool = c("A-beta40 brain", "A-beta42 brain"),
+  `Production (pmol/h)` = signif(c(prod40, prod42), 4),
+  `Loss (pmol/h)` = signif(c(loss40, loss42), 4),
+  check.names = FALSE
+)
+knitr::kable(flux)
+stopifnot(abs(prod40 / loss40 - 1) < 0.01, abs(prod42 / loss42 - 1) < 0.01)
+```
+
+## Perturbation recovery
+
+Doubling the brain A-beta40 and A-beta42 monomer pools at time zero should
+relax back to the baseline within a few monomer half-lives (A-beta42 is the
+slower, `log(2) / k_ab42_cl` = `r round(log(2) / 0.0356, 1)` h, plus the
+oligomer time scale).
+
+```{r perturbation}
+ev_short <- rxode2::et(seq(0, 24 * 60, by = 6))
+pert <- as.data.frame(rxode2::rxSolve(
+  mod, ev_short,
+  # The starting amounts come from the bl_<state> parameters.
+  params = c(
+    APOE4_CARRIER = 1,
+    bl_ab40_brain = 2 * bl[["ab40_brain"]],
+    bl_ab42_brain = 2 * bl[["ab42_brain"]]
+  )
+))
+monomers <- c("ab40_brain", "ab42_brain")
+start_pert <- unlist(pert[1, monomers])
+end_pert <- unlist(pert[nrow(pert), monomers])
+rbind(start = start_pert / bl[monomers], end = end_pert / bl[monomers])
+stopifnot(
+  all(abs(start_pert / bl[monomers] - 2) < 1e-6),
+  all(abs(end_pert / bl[monomers] - 1) < 0.02)
+)
+```
+
+# Checks against values quoted in the paper
+
+```{r quoted-checks}
+s0 <- sim_c[1, ]
+# Plasma half-life of A-beta 'is ~3 h' (Results, Plasma and CSF).
+t_half_plasma <- log(2) / th[["k_ab40_pl_cl"]]
+# CSF A-beta40:A-beta42 'was ~10:1' (Supplemental methods; Table S1).
+csf_40_42 <- 1 / s0$ratio_ab4240_csf
+# '40% of A-beta in plasma was derived from effluxed A-beta from the brain'
+# (Results). Fraction of plasma A-beta input that comes from the brain,
+# either directly across the BBB or via CSF.
+in_bbb <- th[["f_ab40_bbb"]] * th[["k_ab40_cl"]] * bl[["ab40_brain"]] +
+  th[["f_ab42_dilution"]] * th[["f_ab42_bbb"]] * th[["k_ab42_cl"]] * bl[["ab42_brain"]]
+in_csf <- th[["k_ab40_csf_cl"]] * bl[["ab40_csf"]] + th[["k_ab42_csf_cl"]] * bl[["ab42_csf"]]
+in_periph <- th[["k_ab40_periph"]] + th[["k_ab42_periph"]]
+frac_bbb <- in_bbb / (in_bbb + in_csf + in_periph)
+frac_brain <- (in_bbb + in_csf) / (in_bbb + in_csf + in_periph)
+checks <- data.frame(
+  Quantity = c(
+    "Plasma A-beta half-life (h)",
+    "CSF A-beta40:A-beta42 ratio",
+    "Plasma A-beta input from brain, BBB only (%)",
+    "Plasma A-beta input from brain, BBB + CSF (%)"
+  ),
+  Paper = c("~3", "~10:1", "40", "40"),
+  Model = c(
+    round(t_half_plasma, 2), round(csf_40_42, 1),
+    round(100 * frac_bbb, 1), round(100 * frac_brain, 1)
+  )
+)
+knitr::kable(checks)
+stopifnot(
+  abs(t_half_plasma - 3) < 0.1,
+  abs(csf_40_42 - 10) < 1.5,
+  frac_bbb < 0.40, frac_brain > 0.40
+)
+```
+
+The plasma half-life and the CSF ratio match. The paper's 40% brain-derived
+share of plasma A-beta falls between the direct-BBB share (about 35%) and the
+share including the CSF-to-plasma route (about 50%). The paper does not say
+which routes its 40% counts.
+
+# Replicate Figure 4: APOE-epsilon4 carrier vs non-carrier
+
+Figure 4 of the paper shows the percent change in SUVR over 52 weeks for the
+two virtual patients. Both lines are straight from week 0: about 1.225% for
+the carrier and 0.65% for the non-carrier at week 52 (digitised by the
+maintainers).
+
+A straight non-carrier line requires its soluble and fibril pools to be at the
+non-carrier's own steady state at week 0. Started from the carrier's Table S1
+amounts, the non-carrier's oligomer pool first relaxes for several months and
+its curve bends. The non-carrier is therefore pre-equilibrated for 30 years
+(about 10 fibril time constants) and its plaque reset to the Table S1 value
+before the 52-week comparison.
+
+```{r fig4}
+pre <- as.data.frame(rxode2::rxSolve(
+  mod, rxode2::et(c(0, 30 * yr)),
+  params = c(APOE4_CARRIER = 0)
+))
+inits_nc <- unlist(pre[nrow(pre), soluble])
+inits_nc[["plaque_brain"]] <- mod$theta[["bl_plaque_brain"]]
+# The model sets each state's initial value from its bl_<state> parameter, so
+# a different starting state is supplied by overriding those parameters
+# (rxSolve's `inits =` would be overwritten by the model's state(0) lines).
+bl_nc <- setNames(inits_nc, paste0("bl_", names(inits_nc)))
+
+ev52 <- rxode2::et(seq(0, 52 * 7 * 24, by = 7 * 24))
+run52 <- function(carrier, bl_override = NULL, label) {
+  s <- as.data.frame(rxode2::rxSolve(
+    mod, ev52,
+    params = c(APOE4_CARRIER = carrier, bl_override)
+  ))
+  s$delta_insol <- s$insol_brain - s$insol_brain[1]
+  s$vp <- label
+  s
+}
+f4 <- dplyr::bind_rows(
+  run52(1, NULL, "APOE4 carrier"),
+  run52(0, bl_nc, "APOE4 non-carrier (pre-equilibrated)"),
+  run52(0, NULL, "APOE4 non-carrier (from carrier Table S1 state)")
+)
+
+ggplot(f4, aes(time / (7 * 24), delta_insol, colour = vp)) +
+  geom_line(linewidth = 1) +
+  scale_colour_manual(values = c("#1f4e9c", "#e8322b", "grey55")) +
+  labs(
+    x = "Time (weeks)", y = "Increase in insoluble A-beta (pmol oligomer units)",
+    colour = NULL,
+    title = "Replicates Figure 4 of Ramakrishnan 2023 (on the insoluble A-beta scale)"
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom", legend.direction = "vertical")
+```
+
+The SUVR-to-insoluble-A-beta constant is not published, so the absolute SUVR
+axis cannot be reproduced. The ratio of the two slopes can: under any linear
+mapping from insoluble A-beta to SUVR it equals the ratio of the insoluble
+A-beta increments.
+
+```{r fig4-ratio}
+w52 <- f4 |>
+  dplyr::filter(time == max(time)) |>
+  dplyr::select(vp, delta_insol, insol_brain)
+ratio_model <- w52$delta_insol[w52$vp == "APOE4 non-carrier (pre-equilibrated)"] /
+  w52$delta_insol[w52$vp == "APOE4 carrier"]
+ratio_paper <- 0.65 / 1.225
+data.frame(
+  Comparison = "Non-carrier / carrier progression at week 52",
+  `Figure 4 (digitised)` = round(ratio_paper, 3),
+  Model = round(ratio_model, 3),
+  check.names = FALSE
+) |>
+  knitr::kable()
+stopifnot(abs(ratio_model / ratio_paper - 1) < 0.05)
+```
+
+The non-carrier's slower progression comes from Table 3 alone: lower BACE1
+Vmax reduces C99 and so A-beta production, and doubled receptor, CSF and
+plasma clearance fractions lower the steady-state monomer pools. The
+oligomer pool, and with it the rate at which fibrils and plaque form, falls
+to about 53% of the carrier's.
+
+```{r apoe-steady-states}
+ss_nc <- inits_nc[c("app", "c99", "ab40_brain", "ab42_brain", "olig_brain", "fibril_brain")]
+ss_c <- bl[c("app", "c99", "ab40_brain", "ab42_brain", "olig_brain", "fibril_brain")]
+data.frame(
+  State = names(ss_c),
+  Carrier = signif(ss_c, 4),
+  `Non-carrier` = signif(ss_nc, 4),
+  `Non-carrier / carrier` = round(ss_nc / ss_c, 3),
+  check.names = FALSE
+) |>
+  knitr::kable(row.names = FALSE)
+```
+
+# Assumptions and deviations
+
+* **Antibody layer omitted.** See "What this file encodes, and what it cannot"
+  above. The 18 antibody and complex states, Table S3 and the
+  microglial-activation terms are not encoded because their values are not
+  published. With no antibody present, `Microglia_Activation` is 0 and every
+  term it multiplies drops out of the printed ODEs and Table S4 rules. This
+  reading is supported by the steady state: the soluble and fibril pools
+  balance at the Table S1 amounts only with those terms at zero.
+* **Units.** Table S1 gives A-beta amounts in moles; the model holds them in
+  pmol (x 1e12) so the states are numerically well scaled. Rates given in
+  moles per hour (sequestered A-beta42 secretion, peripheral production) are
+  scaled the same way. APP, sAPP-beta and C99 stay in umol/L.
+* **C99 loss to A-beta as printed.** The supplement's C99 ODE subtracts the
+  C99-to-A-beta flux in mol/h (`C99_to_Abeta_rate_k` carries mol/umol) from a
+  umol/L state without a neuronal volume. The term is kept as printed; at
+  baseline it is about 1.5e-10 against a C99 turnover of about 0.26 umol/L/h,
+  so it has no numerical effect.
+* **Doubled CSF clearance.** Each printed CSF ODE subtracts its CSF clearance
+  term twice, but only one copy enters plasma. Kept as printed: with the
+  doubled loss the Table S1 CSF amounts are exactly at steady state, and
+  without it they are not.
+* **Swapped Table S2 descriptions.** The descriptions of
+  `AbetaAllO_BraintoCSF_clearance_fraction` ('transport across BBB') and
+  `AbetaAllO_BraintoPlasma_Active_clearance_fraction` ('bulk flow to CSF')
+  appear swapped. The model follows the parameter names, which is how the ODEs
+  use them.
+* **SUVR.** The paper computes SUVR as linearly proportional to insoluble
+  (fibril + plaque) A-beta but does not publish the constant. The model
+  outputs the insoluble amount (`insol_brain`) and its percent change from the
+  Table S1 baseline (`pct_insol`). Insoluble A-beta grows by about 4.9% per
+  year, while Figure 4 shows about 1.2% per year in SUVR. The paper's mapping
+  must therefore include an offset, such as non-specific tracer binding. The
+  carrier versus non-carrier comparison above does not depend on it.
+* **Non-carrier initial state.** The paper reports one set of initial amounts.
+  The model starts every virtual patient from it; the Figure 4 replication
+  pre-equilibrates the non-carrier as described above.
+* **A-beta42:A-beta40 ratio.** The paper reports that the non-carrier has a
+  lower A-beta42:A-beta40 ratio. With the published values the steady-state
+  brain monomer ratio is essentially unchanged (lower A-beta42 production is
+  offset by the sequestered A-beta42 pool, which Table 3 does not change), and
+  the lower aggregation rate shows up in the oligomer pool instead.
+
+```{r session, include = FALSE}
+sessionInfo()
+```

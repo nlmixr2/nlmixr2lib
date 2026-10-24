@@ -14,6 +14,9 @@ Log-transform any parameter that must be positive. Prefix `l` (lower-case L).
 - `lvp`, `lvp2` — first / second peripheral volume
 - `lq`, `lq2` — inter-compartmental clearance to `peripheral1` / `peripheral2`
 - `lfdepot` — log bioavailability for the depot compartment
+- `lfdepot_dose50`, `lfdepot_dosemax` — dose-scale constants (mg) of a
+  bioavailability that falls with the administered amount,
+  `f <- fdepot_dosemax / (fdepot_dose50 + DOSE_<DRUG>_MG)` (Lanke 2019)
 - `lvmax` — Michaelis-Menten vmax (for nonlinear / saturable elimination)
 
 Derived quantities inside `model()` are un-prefixed:
@@ -898,6 +901,14 @@ Do **not** use `emax`, `imax`, `gamma`, `hill` or `t50` BARE for clearance
 time-dependence: all of them are also standard PD parameter names, and several
 models carry both a PD `emax` and a clearance one. The `cl_` prefix is what
 keeps `cl_t50` and `cl_time_hill` distinct from their PD namesakes.
+
+The fractional exponential form also applies to a PD parameter. A maximal
+drug effect that wanes with time after the first dose (tachyphylaxis) is
+`emax <- emax * (1 + emax_exp_famp * (1 - exp(-emax_exp_kdes * t)))`, with
+`emax_exp_famp` signed and linear (`-1` = the effect is eventually lost) and
+`lemax_exp_kdes` on the log scale. A paper that prints the rate as a
+half-life gives `lemax_exp_kdes = log(log(2) / thalf)`. Founding example:
+`Wojciechowski_2022_abrocitinib_platelets.R` (paper `DELTATCPX`, `kTCPX`).
 
 **The symbol the ODE consumes is the total clearance.** Name components so they
 cannot be mistaken for it -- `cl_exp_component`, not `cl_time` or `cl_t_now`. A

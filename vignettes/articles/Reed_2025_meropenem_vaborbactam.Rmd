@@ -1,0 +1,402 @@
+---
+title: "Meropenem-vaborbactam with CRRT (Reed 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Meropenem-vaborbactam with CRRT (Reed 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Reed_2025_meropenem_vaborbactam"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Reed_2025_meropenem_vaborbactam"))$description`
+* Article: <https://doi.org/10.1128/aac.00108-25> (open access, PMC12217465)
+* Supplement (Table S1 model build, Figures S1-S4): AAC00108-25-s0001.pdf on the article page.
+
+Reed 2025 is the first population PK analysis of meropenem (MEM) and
+vaborbactam (VAB) that carries the continuous renal replacement therapy (CRRT)
+circuit as model structure. Each drug runs through its own copy of a
+three-state system: the patient's pre-filter blood (`central`, the sampled
+matrix), the CRRT hemofilter (`circuit_plasma`) and the post-filter return
+limb (`circuit_return`). While CRRT runs, drug moves central -> filter ->
+return limb -> central, and the filter loses drug to the effluent at a rate
+proportional to the effluent flow. Off CRRT the circuit is disconnected and
+each drug is one-compartment, which is why the paper calls the final model
+"two-input, two-output, one-compartment".
+
+# Population
+
+Eighteen acutely ill hospitalised adults treated with meropenem-vaborbactam
+for suspected or confirmed carbapenem-resistant Enterobacterales infection at
+the University of Pittsburgh Medical Center (December 2017 - July 2022)
+contributed 83 plasma samples, each assayed for both analytes by LC-MS/MS
+(Reed 2025 Table 1). Mean (SD) age 54.7 (14.4) years, total body weight
+90.7 (32.6) kg, BSA 2.02 (0.36) m^2, serum creatinine 0.99 (0.74) mg/dL and
+baseline Cockcroft-Gault creatinine clearance 123.3 (103.7) mL/min/1.73 m^2;
+56% female. Two patients had acute kidney injury without CRRT and three
+(16.7%) required CRRT, with median effluent flow 2,000 mL/h, blood flow
+250 mL/min and dialysate flow 1,500 mL/h. Patients on intermittent
+hemodialysis, peritoneal or low-efficiency dialysis were excluded. Race and
+ethnicity are not reported.
+
+The same information is available programmatically via
+`readModelDb("Reed_2025_meropenem_vaborbactam")()$population`.
+
+# Source trace
+
+The equations are Methods, 'Model development', equations 1-3 (the ODE
+system) and Results Equations 1-2 (the covariate model); the typeset
+equations in the article are images, and the values below were read from
+them. Parameter values are the weighted medians of the Pmetrics NPAG
+non-parametric population distribution in Table 2.
+
+| Equation / parameter | Value (MEM / VAB) | Source location |
+|----------------------|-------------------|-----------------|
+| `lcl` / `lcl_vab` (CL non-CRRT, L/h at CrCL 120) | 10.6 / 6.64 | Table 2 |
+| `lcl_residual` / `lcl_residual_vab` (CL residual on CRRT, L/h) | 2.1 / 1.15 | Table 2 |
+| `lvc` / `lvc_vab` (Vd, L at 80 kg) | 27.4 / 24.3 | Table 2 |
+| `lk_central_circuit` / `_vab` (K12, 1/h) | 0.77 / 1.45 | Table 2 |
+| `lk_circuit_effluent` / `_vab` (K20, 1/h) | 4.44 / 0.59 | Table 2 |
+| `lk_circuit_return` / `_vab` (K23, 1/h) | 29.3 / 22.2 | Table 2 |
+| `lk_return_central` / `_vab` (K31, 1/h) | 1.67 / 4.31 | Table 2 |
+| `cl = CL_nonCRRT * (CRCL/120) * (1 - CRRT) + CL_CRRT * CRRT` | n/a | Results Equation 1 |
+| `vc = V1 * (WT/80)` | n/a | Results Equation 2 |
+| `d/dt(central) = -(K12 + K10) * central + K31 * circuit_return` | n/a | Methods equation 1 |
+| `d/dt(circuit_plasma) = K12 * central - (K23 + FLOW * K20) * circuit_plasma` | n/a | Methods equation 2 |
+| `d/dt(circuit_return) = K23 * circuit_plasma - K31 * circuit_return` | n/a | Methods equation 3 |
+| `FLOW = RRT_CRRT_EFFLUENT_FLOW / 2000` | 2,000 mL/h | Methods ('standardized to the median flow rate'); Results, 'Patient characteristics' (median 2,000 mL/h) |
+| K12, K23, K31 gated by `RRT_CRRT_ACTIVE` | n/a | Methods ('when CRRT was active') |
+| IIV, residual error | `fixed(0)` | Not reported (see Assumptions and deviations) |
+
+# Simulation design
+
+The paper's own Monte Carlo simulations (Methods, 'Monte Carlo simulations')
+gave 2 g (1 g MEM / 1 g VAB) or 4 g (2 g / 2 g) every 8 h as 3-hour
+infusions, predicted the first 24 h of dosing, held body weight constant, and
+studied CrCL 120 and 50 mL/min/1.73 m^2 off CRRT and an effluent flow of
+1,750 mL/h ("25 mL/kg/h for a 70 kg patient") on CRRT. The same arms are
+used below, at 70 kg. The CrCL value is not read on CRRT; 120 is supplied to
+keep the column finite.
+
+The paper reports no between-subject or residual variance that can be
+carried into a parametric model (see Assumptions and deviations), so every
+simulation here is a typical-value solve; a stochastic VPC is not possible.
+
+```{r model}
+mod <- readModelDb("Reed_2025_meropenem_vaborbactam")
+mod_typ <- rxode2::zeroRe(rxode2::rxode2(mod))
+
+arms <- tibble::tribble(
+  ~arm,                 ~CRCL, ~RRT_CRRT_ACTIVE, ~RRT_CRRT_EFFLUENT_FLOW,
+  "CrCL 120",           120,   0L,               0,
+  "CrCL 50",            50,    0L,               0,
+  "CRRT 1750 mL/h",     120,   1L,               1750
+)
+WT_SIM <- 70
+
+# Dose rows address the two real ODE states; observation rows use dvid
+# alone, which is the form that works for a two-endpoint rxUi.
+make_events <- function(arms, dose_mg, dose_times, obs_times, wt = WT_SIM) {
+  bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+    doses <- data.frame(
+      time = rep(dose_times, each = 2), amt = dose_mg, rate = dose_mg / 3,
+      evid = 1L, cmt = rep(c("central", "central_vab"), length(dose_times)),
+      dvid = NA_integer_
+    )
+    obs <- data.frame(
+      time = obs_times, amt = NA_real_, rate = NA_real_, evid = 0L,
+      cmt = NA_character_, dvid = 1L
+    )
+    bind_rows(doses, obs) |>
+      arrange(time, desc(evid)) |>
+      mutate(
+        id = i, arm = arms$arm[i], CRCL = arms$CRCL[i], WT = wt,
+        RRT_CRRT_ACTIVE = arms$RRT_CRRT_ACTIVE[i],
+        RRT_CRRT_EFFLUENT_FLOW = arms$RRT_CRRT_EFFLUENT_FLOW[i]
+      )
+  }))
+}
+
+solve_typ <- function(events) {
+  as.data.frame(rxode2::rxSolve(mod_typ, events, keep = "arm", returnType = "data.frame"))
+}
+```
+
+# Typical first-24-hour profiles
+
+```{r profiles}
+prof <- bind_rows(
+  solve_typ(make_events(arms, 1000, c(0, 8, 16), seq(0, 24, by = 0.05))) |>
+    mutate(regimen = "MVB 2 g q8h (1 g / 1 g)"),
+  solve_typ(make_events(arms, 2000, c(0, 8, 16), seq(0, 24, by = 0.05))) |>
+    mutate(regimen = "MVB 4 g q8h (2 g / 2 g)")
+)
+
+prof |>
+  select(time, arm, regimen, Meropenem = Cc, Vaborbactam = Cc_vab) |>
+  pivot_longer(c(Meropenem, Vaborbactam), names_to = "analyte", values_to = "conc") |>
+  ggplot(aes(time, conc, colour = arm)) +
+  geom_line() +
+  facet_grid(analyte ~ regimen) +
+  scale_x_continuous(breaks = seq(0, 24, by = 8)) +
+  labs(x = "Time (h)", y = "Total plasma concentration (mg/L)", colour = NULL,
+       title = "Typical-value profiles for the simulated regimens of Reed 2025") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+The circuit states carry drug only while CRRT runs. Off CRRT the transfer
+constants are gated to zero, so both circuit states stay empty:
+
+```{r circuit-gate}
+circ <- prof |>
+  group_by(arm) |>
+  summarise(
+    max_circuit = max(c(circuit_plasma, circuit_return, circuit_plasma_vab, circuit_return_vab)),
+    .groups = "drop"
+  )
+knitr::kable(circ |> rename("Arm" = arm, "Largest circuit amount (mg)" = max_circuit), digits = 3)
+
+stopifnot(
+  all(circ$max_circuit[circ$arm != "CRRT 1750 mL/h"] == 0),
+  circ$max_circuit[circ$arm == "CRRT 1750 mL/h"] > 0
+)
+```
+
+# Validation against the paper's statements
+
+The paper publishes no NCA table and no typical-value profile, so the model is
+checked against the quantitative statements it does make.
+
+## CRRT reduces meropenem clearance by 54%
+
+The Discussion states that "CRRT was associated with a 54% reduction in
+clearance" compared with patients with normal renal function. At steady state
+the circuit removes a fixed fraction of the drug that enters the filter, so the
+on-CRRT clearance has the closed form
+
+`CL_eff = CL_residual + K12 * Vd * FLOW * K20 / (K23 + FLOW * K20)`.
+
+At the reference effluent flow (FLOW = 1, 2,000 mL/h) and weight (80 kg) the
+meropenem value reproduces the paper's figure to three significant digits. The
+statement pins the structure (circuit gated, FLOW normalised to 2,000 mL/h,
+residual and filter routes additive) and the Table 2 values together.
+
+```{r reduction}
+p <- function(nm) exp(rxode2::rxode2(mod)$theta[[nm]])
+cl_eff <- function(sfx, flow, wt) {
+  vc <- p(paste0("lvc", sfx)) * wt / 80
+  k20 <- p(paste0("lk_circuit_effluent", sfx)) * flow / 2000
+  p(paste0("lcl_residual", sfx)) +
+    p(paste0("lk_central_circuit", sfx)) * vc * k20 / (p(paste0("lk_circuit_return", sfx)) + k20)
+}
+reduction <- tibble(
+  Analyte = c("Meropenem", "Vaborbactam"),
+  `CL at CrCL 120 (L/h)` = c(p("lcl"), p("lcl_vab")),
+  `CL on CRRT, 2,000 mL/h, 80 kg (L/h)` = c(cl_eff("", 2000, 80), cl_eff("_vab", 2000, 80))
+) |>
+  mutate(`Reduction (%)` = 100 * (1 - `CL on CRRT, 2,000 mL/h, 80 kg (L/h)` / `CL at CrCL 120 (L/h)`))
+knitr::kable(reduction, digits = 2)
+
+stopifnot(abs(reduction$`Reduction (%)`[1] - 54) < 0.5)
+```
+
+The vaborbactam reduction (69%) is larger than meropenem's, which is the
+paper's "greater accumulation of vaborbactam relative to meropenem" on CRRT;
+its filter elimination constant K20 is 4.44 / 0.59 = 7.5-fold lower than
+meropenem's (Discussion: "roughly 8-fold lower").
+
+```{r accumulation}
+stopifnot(
+  reduction$`Reduction (%)`[2] > reduction$`Reduction (%)`[1],
+  p("lk_circuit_effluent") / p("lk_circuit_effluent_vab") > 7
+)
+```
+
+## Vaborbactam exposure against the PTA and safety statements
+
+Reed 2025 evaluated vaborbactam against fAUC/MIC > 38 with a free fraction of
+0.67, over the first 24 h of dosing, and against an upper safety bound of
+fAUC0-24 = 1373.5 mg*h/L. Its Results state that:
+
+* PTA was > 90% for VAB 1 or 2 g doses at MICs up to 8 mg/L **except** the
+  1 g regimen at CrCL 120, so every other arm needs a 10th-percentile fAUC0-24
+  of at least 38 x 8 = 304 mg*h/L, and therefore a typical value above it;
+* 30.5% (CrCL 50) and 14.2% (CRRT) of simulated patients on the 2 g VAB
+  regimen exceeded 1373.5 mg*h/L, and none on the 1 g regimen did, so every
+  typical value lies below the bound.
+
+The typical-value solve is consistent with both, and the one excepted arm is
+also the one arm whose typical exposure falls below 304 mg*h/L.
+
+```{r vab-pta}
+fauc <- prof |>
+  group_by(regimen, arm) |>
+  summarise(
+    fauc_vab = 0.67 * sum(diff(time) * (head(Cc_vab, -1) + tail(Cc_vab, -1)) / 2),
+    .groups = "drop"
+  ) |>
+  mutate(fauc_mic8 = fauc_vab / 8)
+
+knitr::kable(
+  fauc |>
+    rename("Regimen" = regimen, "Arm" = arm,
+           "Typical VAB fAUC0-24 (mg*h/L)" = fauc_vab, "fAUC0-24 / MIC at MIC 8" = fauc_mic8),
+  digits = 1
+)
+
+excepted <- fauc$regimen == "MVB 2 g q8h (1 g / 1 g)" & fauc$arm == "CrCL 120"
+stopifnot(
+  all(fauc$fauc_vab[!excepted] > 38 * 8),
+  all(fauc$fauc_vab < 1373.5)
+)
+```
+
+# PKNCA validation
+
+PKNCA is run on a steady-state dosing interval (2 g MVB q8h, interval
+112-120 h) and on a single dose followed to 72 h, for each arm and analyte.
+With no published NCA to compare against, the reference values are the
+model's own closed forms: at steady state `AUC_tau = Dose / CL_eff`, and the
+terminal half-life is `log(2) / lambda`, where `lambda` is the smallest
+eigenvalue of the drug's 3 x 3 rate matrix (for an off-CRRT arm, simply
+`CL / Vd`). This checks that the integrated ODE system honours the clearance
+the circuit implies, which the 54% statement relies on.
+
+```{r pknca-sim}
+ss <- solve_typ(make_events(arms, 1000, seq(0, 112, by = 8), sort(unique(c(seq(0, 120, by = 0.1), 120)))))
+sd <- solve_typ(make_events(arms, 1000, 0, c(seq(0, 12, by = 0.05), seq(12.5, 72, by = 0.5))))
+
+to_long <- function(sim) {
+  sim |>
+    select(id, time, arm, Meropenem = Cc, Vaborbactam = Cc_vab) |>
+    pivot_longer(c(Meropenem, Vaborbactam), names_to = "analyte", values_to = "Cc") |>
+    filter(!is.na(Cc))
+}
+dose_rows <- function(times) {
+  tidyr::expand_grid(arm = arms$arm, analyte = c("Meropenem", "Vaborbactam"), time = times) |>
+    left_join(tibble(arm = arms$arm, id = seq_len(nrow(arms))), by = "arm") |>
+    mutate(amt = 1000)
+}
+
+run_nca <- function(conc, doses, intervals) {
+  o_conc <- PKNCA::PKNCAconc(conc, Cc ~ time | arm + analyte + id)
+  o_dose <- PKNCA::PKNCAdose(doses, amt ~ time | arm + analyte + id, duration = 3)
+  as.data.frame(PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals)))
+}
+
+nca_ss <- run_nca(to_long(ss), dose_rows(seq(0, 112, by = 8)),
+                  data.frame(start = 112, end = 120, auclast = TRUE, cmax = TRUE))
+nca_sd <- run_nca(to_long(sd), dose_rows(0),
+                  data.frame(start = 0, end = Inf, half.life = TRUE))
+```
+
+```{r pknca-compare}
+# Analytic references at WT_SIM.
+rate_matrix <- function(sfx, arm_row) {
+  act <- arm_row$RRT_CRRT_ACTIVE
+  vc <- p(paste0("lvc", sfx)) * WT_SIM / 80
+  cl <- p(paste0("lcl", sfx)) * arm_row$CRCL / 120 * (1 - act) + p(paste0("lcl_residual", sfx)) * act
+  k12 <- p(paste0("lk_central_circuit", sfx)) * act
+  k23 <- p(paste0("lk_circuit_return", sfx)) * act
+  k31 <- p(paste0("lk_return_central", sfx)) * act
+  k20 <- p(paste0("lk_circuit_effluent", sfx)) * arm_row$RRT_CRRT_EFFLUENT_FLOW / 2000
+  list(
+    cl_eff = cl + k12 * vc * k20 / (k23 + k20 + (k23 + k20 == 0)),
+    A = matrix(c(-(k12 + cl / vc), 0, k31,
+                 k12, -(k23 + k20), 0,
+                 0, k23, -k31), nrow = 3, byrow = TRUE)
+  )
+}
+ref <- tidyr::expand_grid(arm = arms$arm, analyte = c("Meropenem", "Vaborbactam")) |>
+  rowwise() |>
+  mutate(
+    rm = list(rate_matrix(if (analyte == "Vaborbactam") "_vab" else "", arms[arms$arm == arm, ])),
+    auc_ref = 1000 / rm$cl_eff,
+    # The off-CRRT circuit rows are all-zero, contributing eigenvalues of 0
+    # that do not belong to the central disposition; keep the negative ones.
+    hl_ref = log(2) / min(abs(Re(eigen(rm$A)$values[Re(eigen(rm$A)$values) < -1e-12])))
+  ) |>
+  ungroup() |>
+  select(-rm)
+
+cmp <- bind_rows(nca_ss, nca_sd) |>
+  filter(PPTESTCD %in% c("auclast", "half.life")) |>
+  select(arm, analyte, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(ref, by = c("arm", "analyte")) |>
+  mutate(auc_err_pct = 100 * (auclast / auc_ref - 1), hl_err_pct = 100 * (half.life / hl_ref - 1))
+
+knitr::kable(
+  cmp |>
+    select(arm, analyte, auclast, auc_ref, auc_err_pct, half.life, hl_ref, hl_err_pct) |>
+    rename(
+      "Arm" = arm, "Analyte" = analyte,
+      "AUC0-8,ss PKNCA (mg*h/L)" = auclast, "Dose / CL_eff (mg*h/L)" = auc_ref,
+      "AUC diff (%)" = auc_err_pct,
+      "t1/2 PKNCA (h)" = half.life, "t1/2 analytic (h)" = hl_ref, "t1/2 diff (%)" = hl_err_pct
+    ),
+  digits = 2
+)
+
+stopifnot(
+  nrow(cmp) == 6,
+  all(abs(cmp$auc_err_pct) < 1),
+  all(abs(cmp$hl_err_pct) < 2)
+)
+```
+
+# Assumptions and deviations
+
+* **No between-subject or residual variability.** Pmetrics NPAG estimates a
+  discrete non-parametric joint distribution. Table 2 summarises it only by
+  each parameter's weighted median, a 95% credible interval and a shrinkage;
+  no SD, CV%, covariance, support-point table or assay-error polynomial is
+  reported in the paper or its supplement. The intervals are strongly
+  asymmetric (MEM K31 0.51-35.0 around 1.67) and too narrow on clearance
+  (MEM CL non-CRRT 9.13-12.5) to be read as the spread of an ICU population,
+  so no omega was derived from them. Every random effect and both residual
+  components per analyte are carried as `fixed(0)`. The paper's PTA, CFR and
+  safety percentages, which come from semi-parametric sampling of that
+  distribution, therefore cannot be reproduced; they are checked here only for
+  consistency of the typical value.
+* **Gate covariate.** The paper's `CRRT` term is encoded as the time-varying
+  `RRT_CRRT_ACTIVE` gate rather than the subject-level `RRT_CRRT_STATUS`
+  flag, because the switch connects and disconnects the circuit states. For
+  the paper's three CRRT patients, who were on CRRT throughout sampling, the
+  two encodings are identical.
+* **Effluent flow off CRRT.** The paper gates K12, K23 and K31 but not the
+  `FLOW * K20` term. Supply `RRT_CRRT_EFFLUENT_FLOW = 0` (not `NA`) for
+  subjects off CRRT; any value gives the same result while
+  `RRT_CRRT_ACTIVE = 0` and the filter is empty.
+* **Circuit compartment names.** The paper's filter state (X[2]) is carried
+  as `circuit_plasma` and the post-filter blood (X[3]) as `circuit_return`.
+  Reed 2025 lumps plasma and red cells in the filter and assigns the circuit
+  states no volume, so they hold amounts only and are never observed.
+* **The return limb behaves as a distribution reservoir.** Because K31 is
+  much slower than K23 (MEM 1.67 vs 29.3 1/h), the fitted `circuit_return`
+  state holds roughly 40% of the meropenem amount in `central` at steady
+  state, far more than the blood volume of a real return line could carry.
+  This is the paper's fit as published and is kept unchanged; it means that
+  on CRRT the model is effectively multi-compartmental, and the volume `vc`
+  alone is not the total apparent volume.
+* **CrCL on CRRT.** Equation 1 does not read CrCL while CRRT is running, but
+  the column must still be finite; any value works.
+* **Simulation weight.** The paper held body weight constant in its
+  simulations without stating the value; 70 kg is used here, the weight its
+  1,750 mL/h effluent flow was derived from. The reference weight in the model
+  is 80 kg. The typical-value conclusions above also hold at 80 kg.
+* **Sampled matrix.** In CRRT patients the paper sampled pre-filter blood
+  (plasma), which is the `central` state; no post-filter or effluent samples
+  were collected, so the circuit states are not separately validated by data.

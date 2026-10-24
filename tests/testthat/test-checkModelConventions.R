@@ -668,6 +668,19 @@ test_that("the caseum<n> TB granuloma chain is accepted", {
   expect_equal(nrow(cmts), 0)
 })
 
+test_that("proper-lumped states and a second organ deep pool are canonical", {
+  # Pan_2019_fentanyl_lumped_a / _b carry lumped<n> aggregate states, and
+  # Pan_2019_fentanyl_pbpk a three-compartment gut (gut, gut_deep, gut_deep2).
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  expect_true(nlmixr2lib:::.matchesCompartment("lumped", conv))
+  expect_true(nlmixr2lib:::.matchesCompartment("lumped1", conv))
+  expect_true(nlmixr2lib:::.matchesCompartment("lumped3", conv))
+  expect_true(nlmixr2lib:::.matchesCompartment("gut_deep2", conv))
+  expect_true(nlmixr2lib:::.matchesCompartment("liver_deep2", conv))
+  expect_false(nlmixr2lib:::.matchesCompartment("lumpedx", conv))
+  expect_false(nlmixr2lib:::.matchesCompartment("gut_deep3", conv))
+})
+
 test_that("shared-exponent covariate effects (e_<cov>_<param1>_<param2>) are accepted", {
   good <- function() {
     description <- "Shared allometric exponent"
@@ -1804,6 +1817,62 @@ test_that("a bvv_ eta whose parameter has no fixed effect is still flagged", {
   }
   res <- suppressWarnings(checkModelConventions(bad_bvv, verbose = FALSE))
   expect_true(any(grepl("etabvv_nosuch_1", res$name, fixed = TRUE)))
+})
+
+# MBMA trial-level random effects. `eta_study_<param>` (between-study) and
+# `eta_arm_<param>` (between-treatment-arm within study) both pair with the
+# fixed effect `<param>`; Vaskeikina_2026_systemicSclerosis_mbma carries both
+# levels additively on a signed Emax.
+test_that("eta_study_ and eta_arm_ etas pair with their fixed effect", {
+  mbma_model <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "week", dosing = "none", concentration = "points")
+    covariateData <- list(
+      N_ARM = list(
+        description = "Arm size",
+        units = "participants",
+        type = "count",
+        reference_category = NULL,
+        notes = "n",
+        source_name = "N"
+      )
+    )
+    ini({
+      emax <- -5; label("Maximum change from baseline (points)")
+      let50 <- log(27); label("Time to 50% of maximum (log week)")
+      eta_study_emax ~ 20
+      eta_arm_emax ~ 100
+      addSd <- 4; label("Residual SD for an arm of one participant (points)")
+    })
+    model({
+      emaxArm <- emax + eta_study_emax + eta_arm_emax / sqrt(N_ARM)
+      y <- emaxArm * time / (exp(let50) + time)
+      sdArm <- addSd / sqrt(N_ARM)
+      y ~ add(sdArm)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(mbma_model, verbose = FALSE))
+  expect_false(any(res$name %in% c("eta_study_emax", "eta_arm_emax")))
+})
+
+test_that("an eta_arm_ eta whose parameter has no fixed effect is still flagged", {
+  bad_arm <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "week", dosing = "none", concentration = "points")
+    ini({
+      emax <- -5; label("Maximum change from baseline (points)")
+      eta_arm_nosuch ~ 100
+      addSd <- 4; label("Residual SD (points)")
+    })
+    model({
+      y <- (emax + eta_arm_nosuch) * time / (27 + time)
+      y ~ add(addSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(bad_arm, verbose = FALSE))
+  expect_true(any(res$name == "eta_arm_nosuch"))
 })
 
 
