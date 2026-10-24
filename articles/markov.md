@@ -114,7 +114,7 @@ cat(mod)
 #> function() {
 #>   markovStates <- c(none = "none", mild = "mild", moderate = "moderate")
 #>   ini({
-#>     logitnonetonone <- -0; label("Probability of transition from state none to none (logit probability)")
+#>     logitnonetonone <- 0; label("Probability of transition from state none to none (logit probability)")
 #>     lognonetomild <- -1.099; label("Probability of transition from state none to mild (log-logit link difference from prior state)")
 #>     logitmildtonone <- -0.6931; label("Probability of transition from state mild to none (logit probability)")
 #>     logmildtomild <- -0.6931; label("Probability of transition from state mild to mild (log-logit link difference from prior state)")
@@ -209,10 +209,10 @@ fit
 #> 
 #> ── Time (sec fit$time): ──
 #> 
-#>            setup    optimize  covariance preprocess postprocess table compress
-#> elapsed 2.473979 0.009822147 0.007039255      0.086        0.02 0.068    0.002
+#>            setup   optimize covariance preprocess postprocess table compress
+#> elapsed 1.938477 0.07177516 0.01168167      0.061       0.025 0.074    0.004
 #>             other
-#> elapsed 0.5401595
+#> elapsed 0.3470659
 #> 
 #> ── (fit$parFixed or fit$parFixedDf): ──
 #> 

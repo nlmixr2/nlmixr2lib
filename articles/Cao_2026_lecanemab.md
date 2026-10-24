@@ -281,7 +281,7 @@ relErr <- abs(neuronTotal - N0) / N0
 
 cat(sprintf("max |relative deviation from N0| over %.0f years: %.3g\n",
             max(natural$time), max(relErr)))
-#> max |relative deviation from N0| over 45 years: 3.51e-14
+#> max |relative deviation from N0| over 45 years: 3.53e-14
 
 stopifnot(max(relErr) < 1e-6)
 ```

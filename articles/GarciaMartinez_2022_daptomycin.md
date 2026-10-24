@@ -431,7 +431,7 @@ troughs <- bind_rows(
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp'
 #> [====|====|====|====|====|====|====|====|====|====] 0:00:07
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp'
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:05
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:04
 p_tox <- troughs |>
   group_by(regimen, CRCL, WT, mgkg) |>
   summarise(p_tox = mean(Cc >= 24.3), .groups = "drop")
