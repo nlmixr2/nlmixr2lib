@@ -7656,6 +7656,8 @@ navbar:
         href: articles/Ohara_2014_warfarin_s.html
       - text: "Warfarin vk2 (Zhou 2016)"
         href: articles/Zhou_2016_warfarin_vk2.html
+      - text: "XTMAB16 (Offman 2023)"
+        href: articles/Offman_2023_XTMAB16.html
       - text: "XZP5610 (Zhang 2024)"
         href: articles/Zhang_2024_XZP5610.html
       - text: "YH12852 (Kim 2021)"
@@ -9607,6 +9609,7 @@ articles:
   - articles/OBrien_2017_ramucirumab
   - articles/ObrinkHansen_2015_piperacillin
   - articles/Odongo_2015_sulfadoxinePyrimethamine
+  - articles/Offman_2023_XTMAB16
   - articles/Ogasawara_2019_fedratinib
   - articles/Ogasawara_2020_durvalumab
   - articles/Ogungbenro_2009_penciclovir
