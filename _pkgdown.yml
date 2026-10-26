@@ -5046,6 +5046,8 @@ navbar:
         href: articles/Decrane_2023_oxyfluorfen.html
       - text: "Oxyfluorfen rat (Decrane 2023)"
         href: articles/Decrane_2023_oxyfluorfen.html
+      - text: "Oxypurinol (Hishe 2023)"
+        href: articles/Hishe_2023_oxypurinol.html
       - text: "Oxypurinol (Stocker 2012)"
         href: articles/Stocker_2012_oxypurinol.html
       - text: "Oxytetracycline cattle (Winter 2024)"
@@ -8821,6 +8823,7 @@ articles:
   - articles/Hirt_2009_didanosine
   - articles/Hirt_2009_efavirenz
   - articles/Hirunsomboon_2026_vancomycin
+  - articles/Hishe_2023_oxypurinol
   - articles/Hodiamont_2017_gentamicin
   - articles/Hoefman_2021_asp8232
   - articles/Hoglund_2012_piperaquine
