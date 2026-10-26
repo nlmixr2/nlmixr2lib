@@ -412,6 +412,8 @@ navbar:
         href: articles/Gaspar_2023_apixaban.html
       - text: "Apixaban (Kolowrat 2025)"
         href: articles/Kolowrat_2025_apixaban.html
+      - text: "Apixaban (Merali 2023)"
+        href: articles/Merali_2023_apixaban.html
       - text: "Apixaban (Morath 2025)"
         href: articles/Morath_2025_apixaban.html
       - text: "Apixaban (Ueshima 2018)"
@@ -9447,6 +9449,7 @@ articles:
   - articles/Melhem_2022_dostarlimab
   - articles/Menon_2024_parkinsonPathogenesis
   - articles/Mensing_2017_3D_HCV_regimen
+  - articles/Merali_2023_apixaban
   - articles/Merchan_2015_azithromycin
   - articles/Mercier_2014_tramadol_tapentadol
   - articles/MerinoBohorquez_2021_piperacillin

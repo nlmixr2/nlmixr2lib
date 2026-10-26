@@ -2089,7 +2089,7 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Role:** Anti-factor Xa chromogenic activity PD output for heparins and direct factor Xa inhibitors, in IU/mL (heparin-calibrated) or drug-equivalent ng/mL (drug-calibrated). Carried as an algebraic observable in direct-effect models.
 - **Source aliases:**
   - `Anti-FXa` -- Zou 2025 Table 1.
-- **Example models:** `Zou_2025_edoxaban.R` (Emax in edoxaban concentration, IU/mL).
+- **Example models:** `Zou_2025_edoxaban.R` (Emax in edoxaban concentration, IU/mL), `Merali_2023_apixaban.R` (linear in apixaban concentration, `antiFXa = rbase + slope * Cc`, heparin-calibrated IU/mL; typical-value only, with no residual error because the paper reports none).
 - **Notes:** **Mixed case is deliberate**, as for `antiFIIa`: `FXa` is the published notation for activated factor X. Sibling of `antiFIIa`. A model must state which calibrator its unit refers to, because heparin-calibrated IU/mL and drug-calibrated ng/mL readings of the same sample are not interchangeable. Founding example: `Zou_2025_edoxaban.R`.
 
 ### hb (**canonical hemoglobin**)
