@@ -2511,6 +2511,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** none.
 - **Example models:** `Hamuro_2017_DMD_6MWT.R`.
 
+### nsaa (**canonical North Star Ambulatory Assessment total-score output compartment**)
+- **Type:** compartment
+- **Role:** North Star Ambulatory Assessment (NSAA) total-score output for Duchenne muscular dystrophy disease-progression models. Holds the ABSOLUTE total score (17 motor items, nominal 0-34 scale), not a change from baseline; a model that fits the change from baseline directly should register a companion `nsaacfb`, as `das28` and `das28cfb` are separated.
+- **Source aliases:** `NSAA` -- Hibma 2023 Equation 1.
+- **Example models:** `Hibma_2023_DMD_NSAA.R` (founding example; modified indirect response integrated over age from birth, `d/dt(nsaa) <- kin - kout * t * nsaa` with `nsaa(0) = 0`, joined to a log-normal loss-of-ambulation hazard).
+- **Notes:** Follows the lowercase run-together instrument convention of `pasi` / `ipss` / `das28`. The founding model lets the predicted score exceed 34 (the scale's ceiling is a test limit, not a limit on motor function); the authors capped simulated scores at 34 only in post-processing. Distinct from `walk_dist` (6-minute walk distance, a different DMD ambulatory endpoint).
+
 ### fev1pp (**canonical FEV1 percent predicted**)
 - **Type:** compartment
 - **Role:** FEV1 percent predicted pulmonary PD output (cystic fibrosis).
