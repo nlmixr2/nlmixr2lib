@@ -316,6 +316,8 @@ navbar:
         href: articles/Ding_2026_artemether_lumefantrine_amodiaquine.html
       - text: "Amoxicillin (Baklouti 2026)"
         href: articles/Baklouti_2026_amoxicillin.html
+      - text: "Amoxicillin (Carral 2023)"
+        href: articles/Carral_2023_cap_nonadherence.html
       - text: "Amoxicillin (Fournier 2018)"
         href: articles/Fournier_2018_amoxicillin.html
       - text: "Amoxicillin (Keij 2023)"
@@ -3778,6 +3780,8 @@ navbar:
         href: articles/Suksai_2026_levodopa.html
       - text: "Levodopa carbidopa (Senek 2018)"
         href: articles/Senek_2018_levodopa_carbidopa.html
+      - text: "Levofloxacin (Carral 2023)"
+        href: articles/Carral_2023_cap_nonadherence.html
       - text: "Levofloxacin (Denti 2018)"
         href: articles/Denti_2018_levofloxacin.html
       - text: "Levofloxacin (Lee 2025)"
@@ -4580,6 +4584,8 @@ navbar:
         href: articles/Gosselin_2015_motesanib.html
       - text: "Moxidectin (Smit 2022)"
         href: articles/Smit_2022_moxidectin.html
+      - text: "Moxifloxacin (Carral 2023)"
+        href: articles/Carral_2023_cap_nonadherence.html
       - text: "Moxifloxacin (Colin 2014)"
         href: articles/Colin_2014_moxifloxacin.html
       - text: "Moxifloxacin (Hong 2015)"
@@ -8207,6 +8213,7 @@ articles:
   - articles/CarlssonPetri_2018_semaglutide
   - articles/CarlssonPetri_2021_liraglutide
   - articles/Carmichael_2003_hydroxychloroquine
+  - articles/Carral_2023_cap_nonadherence
   - articles/Carrothers_2020_dalbavancin
   - articles/Carrothers_2023_dalbavancin
   - articles/Castelli_2022_dextroamphetamine
