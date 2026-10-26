@@ -1632,6 +1632,8 @@ navbar:
         href: articles/Forder_2019_calcitriolQuantumDots.html
       - text: "Copanlisib (Morcos 2023)"
         href: articles/Morcos_2023_copanlisib.html
+      - text: "Copanlisib (Morcos 2023b)"
+        href: articles/Morcos_2023b_copanlisib.html
       - text: "Corifollitropin alfa (Zandvliet 2016)"
         href: articles/Zandvliet_2016_corifollitropin_alfa.html
       - text: "Cotadutide qsp (Bosch 2024)"
@@ -9501,6 +9503,7 @@ articles:
   - articles/MoralesJunior_2025_cefepime
   - articles/Morath_2025_apixaban
   - articles/Morcos_2023_copanlisib
+  - articles/Morcos_2023b_copanlisib
   - articles/Morganroth_2015_moxifloxacin
   - articles/Mori_2018_zoledronicAcid
   - articles/Morris_2011_artesunate
