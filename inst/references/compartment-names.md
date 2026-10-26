@@ -5355,6 +5355,13 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
 - **Example models:** `Hu_2026_pemetrexed_osimertinib_mouse_qsp.R` (osimertinib as the co-administered third-generation EGFR-TKI alongside the parent cytotoxic pemetrexed, with its own two-compartment oral PK driving EGFR-signal depletion in a QSP tumour-growth-inhibition model).
 - **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `olaparib` / `ethinylestradiol` for whole co-administered agents: semantic clarity wins over abbreviation when the suffix names an entire sibling drug rather than a metabolite. Distinct from `az5104`, the registered suffix for osimertinib's active N-desmethyl metabolite; a joint osimertinib-plus-AZ5104 popPK model (`Brown_2017_osimertinib.R`) keeps bare canonical names for osimertinib because osimertinib is the parent there and uses `az5104` for the metabolite arm.
 
+### gabapentin (**canonical gabapentin sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Gabapentin drug-name suffix for the non-parent arm of trazodone + gabapentin combination PK/PD models, covering its two-compartment PK (`central_gabapentin`, `peripheral1_gabapentin`), the associated parameters (`lkel_gabapentin`, `lvc_gabapentin`, `lk12_gabapentin`, `lk21_gabapentin`, `ld1_gabapentin`, `lslope_gabapentin`), the plasma output `Cc_gabapentin` and its residual SD `propSd_gabapentin`.
+- **Source aliases:** `gaba` -- Oggianu 2023 Supplementary Table S6 column labels.
+- **Example models:** `Oggianu_2023_trazodone_gabapentin_mouse.R` (gabapentin given intraperitoneally alongside oral trazodone in the mouse acetic-acid writhing test; each drug's molar plasma concentration removes the nociceptive stimulus, with a concentration-product synergy term).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `olaparib` / `osimertinib` for whole co-administered agents. Trazodone keeps the bare canonical names because it is the parent drug of the combination; standalone gabapentin models (`AlZubaydi_2024_gabapentin.R`, `Silvola_2025_gabapentin_mpr.R`) keep the bare names because gabapentin is the parent there.
+
 ### dox (**canonical doxorubicin drug-name suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Doxorubicin drug-name suffix for combination-therapy compartments, parameters and residual SDs (`central_dox`, `peripheral1_dox`, `peripheral2_dox`, `transit1_dox`, `conc_dox`, `lkmax_dox`, `lkc50_dox`, `lktr_dox`, `lkdeg_dox`, `addSd_Cc_dox`).
