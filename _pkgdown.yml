@@ -7070,6 +7070,8 @@ navbar:
         href: articles/Chen_2019_trastuzumab.html
       - text: "Trastuzumab skbr3 (FehlingKaschek 2019)"
         href: articles/FehlingKaschek_2019_trastuzumab_skbr3.html
+      - text: "Trastuzumab vc mmae mouse qsp (Chang 2023)"
+        href: articles/Chang_2023_trastuzumab_vc_mmae.html
       - text: "TrastuzumabDeruxtecan (Yin 2021)"
         href: articles/Yin_2021_trastuzumabDeruxtecan.html
       - text: "TrastuzumabDeruxtecan mbma (Asiimwe 2025)"
@@ -8233,6 +8235,7 @@ articles:
   - articles/Chandorkar_2015_ceftolozane_tazobactam
   - articles/ChandralayamAyyappaMenon_2026_isb2001
   - articles/Chang_2011_PF04455242_prolactin
+  - articles/Chang_2023_trastuzumab_vc_mmae
   - articles/Chantharit_2019_voriconazole
   - articles/Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta
   - articles/Charles_2007_tafenoquine
