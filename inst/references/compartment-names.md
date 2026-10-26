@@ -7269,6 +7269,27 @@ concentration output, and the `propSd_<drug>` / `addSd_<drug>` residuals.
 - **Example models:** `Ujihira_2025_glycochenodeoxycholicAcidSulfate.R` (doi:10.1002/cpt.70023; `depot_prob` / `central_prob` drive `cu_prob` into the competitive OAT3 term on GCDCA-S renal clearance), `Ahmad_2021_pyridoxicAcid.R` and `Ahmad_2021_homovanillicAcid.R` (doi:10.1002/psp4.12610; the TOTAL probenecid concentration `Cc_prob` drives the competitive OAT1/3 term on biomarker renal clearance through a total-plasma `ki_oat13`, the unbound value being reported by the paper only for in vitro comparison).
 - **Notes:** Distinct from the covariate canonicals `CONMED_PROBENECID` (binary co-administration indicator) and `CP_PRB_MGL` (probenecid plasma concentration supplied directly as a time-varying column). Use `prob` only when the probenecid PK is carried as ODE states inside the model file; when the concentration is supplied externally, use `CP_PRB_MGL` and register no compartment. Probenecid MW = 285.34 g/mol, so a 500 mg oral dose is 1752 umol.
 
+### ciclosporin (**canonical ciclosporin perpetrator drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Ciclosporin (cyclosporine A, OATP1B / MRP2 inhibitor) perpetrator drug suffix, used when a model carries ciclosporin's own PK as coupled ODE states to drive a concentration-dependent hepatic-transporter inhibition term on a co-modelled substrate. Spelled out per the new-canonical policy (a coined abbreviation such as `csa` already denotes an unrelated "chromogenic substrate assay" fragment in the factor-VIII models).
+- **Source aliases:** none.
+- **Example models:** `Melillo_2023_gadoxetate_rat_pbpk.R` (doi:10.3390/pharmaceutics15030896; a three-compartment whole-blood model with saturable red-cell binding, `central_ciclosporin` / `peripheral1_ciclosporin` / `peripheral2_ciclosporin`, drives `cu_ciclosporin` into the gadoxetate active-uptake and biliary inhibition terms).
+- **Notes:** Distinct from the covariate canonicals `CONMED_CSA` (binary co-administration indicator) and `CONMED_CSA_DOSE` (total daily dose). Use the compartment suffix only when the ciclosporin PK is carried as ODE states inside the model file.
+
+### pioglitazone (**canonical pioglitazone perpetrator drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Pioglitazone (BSEP / weak OATP1B inhibitor) perpetrator drug suffix, used when a model carries pioglitazone's own PK as coupled ODE states to drive a concentration-dependent hepatic-transporter inhibition term on a co-modelled substrate. Spelled out per the new-canonical policy.
+- **Source aliases:** none.
+- **Example models:** `Melillo_2023_gadoxetate_rat_pbpk.R` (doi:10.3390/pharmaceutics15030896; a one-compartment model with an oral `depot_pioglitazone` plus `central_pioglitazone`, dosed intravenously in the imaging study).
+- **Notes:** Distinct from the covariate canonicals `CONMED_PIOGLITAZONE` and `DOSE_PIO_MGD`. The informal `_pio` parameter fragment in `Stringer_2015_pioglitazone.R` is a standalone-drug parameter name, not a coupled-perpetrator compartment suffix.
+
+### bosentan (**canonical bosentan perpetrator drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Bosentan (OATP1B / BSEP inhibitor) perpetrator drug suffix, used when a model carries bosentan's own PK as coupled ODE states to drive a concentration-dependent hepatic-transporter inhibition term on a co-modelled substrate. Spelled out per the new-canonical policy.
+- **Source aliases:** none.
+- **Example models:** `Melillo_2023_gadoxetate_rat_pbpk.R` (doi:10.3390/pharmaceutics15030896; a two-compartment model, `central_bosentan` / `peripheral1_bosentan`, drives `cu_bosentan` into the gadoxetate active-uptake inhibition term; bosentan does not inhibit rMrp2 and so has no biliary term).
+- **Notes:** Distinct from the covariate canonicals `CONMED_BOSENTAN` and `BOSENTAN` (treatment-arm indicator). The informal `_bos` fragment elsewhere (e.g. `Aoki_2024_bosentan_pbpk.R`) is a standalone-drug parameter name, not a coupled-perpetrator compartment suffix.
+
 ## TB-treatment drug suffixes (combination antibiotic)
 
 TB-treatment drug suffixes used in combination-antibiotic `central_<drug>` / `depot_<drug>` / `peripheral1_<drug>` PK subsystems. Each suffix is the canonical drug INN lowercase abbreviation.
