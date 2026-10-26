@@ -3186,6 +3186,8 @@ navbar:
         href: articles/Chen_2024_guhongInjection.html
       - text: "Hydroxyurea (Dong 2016)"
         href: articles/Dong_2016_hydroxyurea.html
+      - text: "Hydroxyurea (Pandey 2023)"
+        href: articles/Pandey_2023_hydroxyurea.html
       - text: "Hydroxyurea (Paule 2011)"
         href: articles/Paule_2011_hydroxyurea.html
       - text: "Hyperoside rat (Chen 2024)"
@@ -9664,6 +9666,7 @@ articles:
   - articles/Pan_2019_fentanyl_lumping
   - articles/Pan_2026_adalimumab
   - articles/Panday_2025_sert_tremor_mbma
+  - articles/Pandey_2023_hydroxyurea
   - articles/Panetta_2024_palbociclib
   - articles/Panjasawatwong_2020_antituberculosis_tbm
   - articles/Panoilia_2015_bevacizumab
