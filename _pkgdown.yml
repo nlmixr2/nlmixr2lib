@@ -5428,6 +5428,8 @@ navbar:
         href: articles/LaporteAmargos_2026_piperacillin.html
       - text: "Piperacillin (Lee 2025)"
         href: articles/Lee_2025_piperacillin_tazobactam.html
+      - text: "Piperacillin (MartinezCasanova 2023)"
+        href: articles/MartinezCasanova_2023_piperacillin.html
       - text: "Piperacillin (MerinoBohorquez 2021)"
         href: articles/MerinoBohorquez_2021_piperacillin.html
       - text: "Piperacillin (Nichols 2016)"
@@ -9419,6 +9421,7 @@ articles:
   - articles/Marsot_2017_rifampicin
   - articles/Martial_2017_micafungin
   - articles/Martial_2021_tacrolimus
+  - articles/MartinezCasanova_2023_piperacillin
   - articles/Martinez_2019_alirocumab
   - articles/Martson_2020_caspofungin
   - articles/Mascarenhas_2015_pentadecanoic_triheptadecanoic
