@@ -763,6 +763,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Han_2024_cabotegravir.R` (founding example; `lka_gluteal = fixed(log(0.000733))`, `lfdepot_thigh = log(0.899)`, with the oral route on `lka_oral` / `lfdepot_oral`). That model has no `lka_thigh` in `ini()`: its typical thigh rate is the typical gluteal rate PLUS an increment `dka_thigh` (Supplemental Table `TV_KA3 = TV_KA2 + THETA1`), which has no log-scale form, so the thigh eta keeps the name `etalka_thigh`.
 - **Notes:** The gluteal depot is the bioavailability reference of the apparent parameters in the founding example, so there is no `lfdepot_gluteal`. Ratified by the maintainers 2026-09-11.
 
+### lka_brain, ka_brain (**canonical log-transformed absorption rate constant out of the nose-to-brain depot**)
+- **Type:** log-transformed-pk
+- **Role:** First-order absorption rate constant (1 / time) out of the canonical intranasal direct-to-brain depot `depot_brain` into the `brain` compartment. A site-resolved member of the constant-`ka` shape, named by the compartment it drains in the way `lka_gluteal` / `lka_thigh` are; the bare form `ka_brain` is used inside `model()`.
+- **Source aliases:**
+  - `ka` ("brain absorption constant") -- Kaikousidis 2023 Tables 3 and 4, the rate out of the 'Abs' compartment at the end of the delayed nose-to-brain transit chain (Figure 4).
+- **Example models:** `Kaikousidis_2023_donepezil_intranasal_meandata_mouse.R` (`ka = 0.173 1/min`), `Kaikousidis_2023_donepezil_intranasal_rawdata_mouse.R`, `Kaikousidis_2023_donepezil_combined_mouse.R`.
+- **Notes:** Distinct from `lka`, the systemic (gut-to-blood) absorption rate, which a model with both routes carries alongside it. `Stevens_2012_remoxipride.R` encodes the same depot-to-brain step as the paper-named `lk24`.
+
 ### lka_small_intestine (**canonical log-transformed lumped small-intestinal absorption rate constant**)
 - **Type:** log-transformed-pk
 - **Role:** First-order rate constant for absorption out of the lumped post-duodenal small intestine (`a_small_intestine`) into the systemic or portal circulation (1 / time). Sibling of `lka_duodenum`.
@@ -1155,6 +1163,14 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
   - `K28` / `K82` -- Wattanakul 2024, where the pair is derived in `model()` from `q_milk`, `vc` and `pcmilk` rather than estimated.
 - **Example models:** `Bustinduy_2020_praziquantel.R` (estimated pair, no milk elimination), `Wattanakul_2024_primaquine.R` and `Wattanakul_2024_primaquine_motherinfant.R` (derived pair).
 - **Notes:** Member of the `k_<from>_<to>` directional-transfer family (`k_central_elf` / `k_elf_central`, `k_central_csf` / `k_csf_central`). Distinct from `keff_milk`, which removes drug from milk to a sink with no return to plasma, and from `kmilkinf`, the dyad milk-to-infant transfer. Pairs with `lvmilk`.
+
+### k_central_brain (**canonical bare central-to-brain rate constant**)
+- **Type:** bare-pk
+- **Role:** First-order transfer rate constant (1 / time) from `central` (blood / plasma) into the bare `brain` compartment of a compartmental (non-PBPK) brain-distribution model, depleting `central`. The log-transformed `lk_central_brain` form is used in `ini`. Use it alone when the model has no return leg -- every loss from brain (efflux to blood, lymphatic drainage, metabolism) is lumped into `keff_brain` -- and pair it with a `k_brain_central` return when the source fits one.
+- **Source aliases:**
+  - `k23` -- Kaikousidis 2023 Figures 2 and 4 and Tables 2-4 (states 1 = depot, 2 = blood, 3 = brain).
+- **Example models:** `Kaikousidis_2023_donepezil_oral_meandata_mouse.R` and its `_oral_rawdata_`, `_intranasal_meandata_`, `_intranasal_rawdata_` and `_combined_` siblings (k23 = 0.008-0.014 1/min).
+- **Notes:** Member of the `k_<from>_<to>` directional-transfer family (`k_central_elf`, `k_central_csf`, `k_central_milk`), whose note directs the family be used whenever a transfer connects `central` to a named non-numbered compartment; the source subscript `23` indexes that paper's own state numbering. With no return leg the structure is the parent-metabolite one, so only the ratio `k_central_brain / v_brain` is identifiable from brain concentrations unless the blood volume is fixed (Kaikousidis 2023 fixes it). Pairs with `lv_brain` and `keff_brain`. Distinct from the PBPK brain parameters (`kp_brain`, perfusion-limited exchange), which describe a tissue at partition equilibrium with its blood flow rather than an estimated transfer rate.
 
 ### fdepot (**canonical bare depot fraction**)
 - **Type:** bare-pk
@@ -2652,6 +2668,14 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Example models:** `Felmlee_2010_ghb_rat.R` (`Vkidney = 4.0 mL`, fixed to the rat physiological value; Table I footnote a).
 - **Notes:** Ratified by the maintainers 2026-09-02 (PMC2895455). Paired with `lq_kidney` in the founding example but independent of it -- a model may carry a kidney volume without an explicit perfusion flow, or vice versa.
 
+### lv_brain, v_brain (**canonical log-transformed apparent brain compartment volume**)
+- **Type:** log-transformed-pk
+- **Role:** Apparent volume of distribution of the bare `brain` compartment in a compartmental brain-distribution model (volume); the brain concentration is `brain / v_brain`. A member of the `lv_<space>` family (`lv_elf`, `lv_kidney`, `lv_lung`), for the reason given under `lv_kidney`: `lvp` / `lvp2` are reserved for numbered peripheral compartments and a sampled, named organ is not one. The bare form `v_brain` is used inside `model()`.
+- **Source aliases:**
+  - `Vbrain`, `V2` (intranasal tables), `Vbrain_PO` / `Vbrain_IN` -- Kaikousidis 2023 Tables 2-4.
+- **Example models:** `Kaikousidis_2023_donepezil_oral_meandata_mouse.R` (`Vbrain = 0.018 L`) and its siblings; `Kaikousidis_2023_donepezil_combined_mouse.R` carries route-stratified `lv_brain_oral` / `lv_brain_intranasal`.
+- **Notes:** An apparent volume, scaled by the unknown fraction of the dose reaching the brain, so in the founding paper it differs between routes (0.015 L oral vs 0.005 L intranasal in the joint fit) rather than approximating the anatomical brain volume. Distinct from `lvcsf` (a CSF / CNS fluid compartment) and from the `brain_<region>` extracellular-fluid volumes of brain-PBPK models.
+
 ### lq_other, q_other (**canonical log-transformed blood flow to the lumped `other` tissue compartment**)
 - **Type:** log-transformed-pk
 - **Role:** Blood flow perfusing the canonical lumped `other` compartment (every tissue a minimal PBPK model does not resolve individually), applied as a flow-limited exchange with the serum / blood compartment: `q_other * Cc` out, `q_other * C_other / kp_other` back (volume / time). A member of the `lq_<destination>` family, taken under the standing authorisation in the `lq_kidney` entry that perfused organs take the same `lq_<organ>` shape. The bare form `q_other` is used inside `model()`. Pairs with `lv_other` and `lkp_other`.
@@ -2980,6 +3004,14 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
   - `K40` -- used in `Ganesan_2022_epetraborole.R` (Ganesan 2022 Table 2, "rate constant out of the ELF compartment", NONMEM general-linear notation for compartment 4 to the output compartment 0).
 - **Example models:** `Ganesan_2022_epetraborole.R` (`K40 = 0.661 1/h`, with `K14 = 0.266 1/h` as `k_central_elf`).
 - **Notes:** Pool-token sibling of `lkeff_milk` in the `keff_<pool>` family, whose Role sentence describes the same quantity for the breast-milk compartment. Distinct from `lke0`, which `Zhang_2021_tazobactam.R` uses for the elimination rate of an ELF link compartment that does not deplete `central`: there the ELF is an effect-compartment-style link, here the ELF is a real compartment through which drug leaves the body.
+
+### lkeff_brain, keff_brain (**canonical first-order elimination rate constant out of the brain compartment**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) for loss of drug out of the bare `brain` compartment to a sink, lumping efflux back to blood, clearance to the lymph nodes and local metabolism into one rate. Enters as the `- keff_brain * brain` term of the brain ODE, paired with the `k_central_brain` influx that drains `central`; nothing returns to `central` in the model. Use it only for a UNIDIRECTIONAL brain compartment; when the source fits a return leg, use a `k_brain_central` transfer instead.
+- **Source aliases:**
+  - `k30` -- Kaikousidis 2023 Figures 2 and 4 and Tables 2-4 ("brain elimination constant"; Section 3.1 lists the lumped processes).
+- **Example models:** `Kaikousidis_2023_donepezil_oral_meandata_mouse.R` (`k30 = 0.325 1/min`) and its `_oral_rawdata_`, `_intranasal_meandata_`, `_intranasal_rawdata_` and `_combined_` siblings.
+- **Notes:** Brain-compartment sibling of `lkeff_elf` / `lkeff_milk` in the `keff_<pool>` family. The founding paper adopts the lumped brain-elimination rate from Stevens et al. (2011), and notes the structure is the parent-metabolite one, in which only the ratio of the influx rate to the brain volume is identifiable unless the blood volume is fixed.
 
 ### lvmax_rbc, vmax_rbc (**canonical saturable-influx maximum rate into the red-cell analyte pool**)
 - **Type:** paper-named-param

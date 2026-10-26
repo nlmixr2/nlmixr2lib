@@ -2024,14 +2024,24 @@ navbar:
         href: articles/Nguyen_2020_myostatin_activin_dmd_qsp.html
       - text: "Donepezil (Jung 2022)"
         href: articles/Jung_2022_donepezil.html
+      - text: "Donepezil combined mouse (Kaikousidis 2023)"
+        href: articles/Kaikousidis_2023_donepezil_mouse.html
       - text: "Donepezil im (Khwarg 2024)"
         href: articles/Khwarg_2024_donepezil.html
       - text: "Donepezil im (Park 2025)"
         href: articles/Park_2025_donepezil.html
+      - text: "Donepezil intranasal meandata mouse (Kaikousidis 2023)"
+        href: articles/Kaikousidis_2023_donepezil_mouse.html
+      - text: "Donepezil intranasal rawdata mouse (Kaikousidis 2023)"
+        href: articles/Kaikousidis_2023_donepezil_mouse.html
       - text: "Donepezil multipledose (Jung 2023)"
         href: articles/Jung_2023_fractal_kinetics.html
       - text: "Donepezil oral (Khwarg 2024)"
         href: articles/Khwarg_2024_donepezil.html
+      - text: "Donepezil oral meandata mouse (Kaikousidis 2023)"
+        href: articles/Kaikousidis_2023_donepezil_mouse.html
+      - text: "Donepezil oral rawdata mouse (Kaikousidis 2023)"
+        href: articles/Kaikousidis_2023_donepezil_mouse.html
       - text: "Donepezil singledose (Jung 2023)"
         href: articles/Jung_2023_fractal_kinetics.html
       - text: "Donidalorsen (Diep 2026)"
@@ -8989,6 +8999,7 @@ articles:
   - articles/Jung_2024_vancomycin
   - articles/Kado_2020_benzathine_benzylpenicillin_g
   - articles/Kado_2023_benzathine_benzylpenicillin_g
+  - articles/Kaikousidis_2023_donepezil_mouse
   - articles/Kakara_2014_statins_LDLC
   - articles/Kamal_2013_oseltamivir
   - articles/Kamal_2014_oseltamivir

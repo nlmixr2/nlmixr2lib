@@ -3660,9 +3660,10 @@ One family in this section is validated by shape rather than by enumeration -- s
 
 ### brain (**canonical bare brain compartment**)
 - **Type:** compartment
-- **Role:** Bare brain organ compartment in full-body PBPK extractions.
-- **Source aliases:** none.
-- **Example models:** `Zhang_2011_nutlin3a.R`.
+- **Role:** Bare brain organ compartment in full-body PBPK extractions, and the whole-brain (total tissue) compartment of compartmental brain-distribution models that sample brain homogenate rather than a resolved region or fluid.
+- **Source aliases:**
+  - `BRAIN` -- Kaikousidis 2023 Figures 2 and 4 (perfused whole-brain homogenate, observed as `Cbrain = brain / v_brain`).
+- **Example models:** `Zhang_2011_nutlin3a.R`; `Kaikousidis_2023_donepezil_oral_meandata_mouse.R` and its siblings (compartmental, fed by `k_central_brain` and, after intranasal dosing, by direct and delayed nose-to-brain inputs; drained by `keff_brain`).
 
 ### trachea (**canonical bare trachea compartment**)
 - **Type:** compartment
@@ -5191,8 +5192,9 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
 ### depot_brain (**canonical intranasal direct-to-brain depot**)
 - **Type:** compartment
 - **Role:** Intranasal direct-to-brain depot.
-- **Source aliases:** none.
-- **Example models:** `Stevens_2012_remoxipride.R`.
+- **Source aliases:**
+  - `Abs` -- Kaikousidis 2023 Figure 4, the absorption compartment at the end of the delayed nose-to-brain transit chain, drained into `brain` at `ka_brain`.
+- **Example models:** `Stevens_2012_remoxipride.R`; `Kaikousidis_2023_donepezil_intranasal_meandata_mouse.R`, `Kaikousidis_2023_donepezil_intranasal_rawdata_mouse.R` and `Kaikousidis_2023_donepezil_combined_mouse.R` (filled by an explicit Savic transit input keyed on the `depot_nasal` dose, not dosed directly).
 
 ### depot_ip (**canonical intraperitoneal depot**)
 - **Type:** compartment
@@ -5225,8 +5227,9 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
 - **Role:** Inhaled material deposited on the nasal respiratory epithelium and not yet absorbed; drains first-order into `nasal_respiratory`. The respiratory-region sibling of `depot_brain`, which carries the olfactory-region deposit.
 - **Source aliases:**
   - `ADEPNR` / `FDEPNR` / `KDEPNRC` -- Campbell 2023 supplement code notation.
-- **Example models:** `Campbell_2023_manganese_monkey_pbpk.R`, `Campbell_2023_manganese_human_pbpk.R`.
-- **Notes:** A well-formed member of the `depot_<route>` family, but note that the "route" element here names the deposition SITE within the airway rather than an administration route the way `depot_sc` / `depot_ip` / `depot_im` do. An inhalation PBPK that resolves regional deposition needs one depot per region: `depot_lung`, `depot_nasal`, and `depot_brain` for the olfactory region.
+  - `DEPOT I` -- Kaikousidis 2023 Figure 4 (intranasal model), the nasal-film deposit from which the dose is split into blood, direct-brain and delayed-brain fractions.
+- **Example models:** `Campbell_2023_manganese_monkey_pbpk.R`, `Campbell_2023_manganese_human_pbpk.R`; `Kaikousidis_2023_donepezil_intranasal_meandata_mouse.R`, `Kaikousidis_2023_donepezil_intranasal_rawdata_mouse.R`, `Kaikousidis_2023_donepezil_combined_mouse.R` (the whole administered nasal-film dose, released by explicit lagged zero-order and transit inputs).
+- **Notes:** In a compartmental intranasal model that does not resolve deposition regions, `depot_nasal` holds the whole administered intranasal dose, and `depot_brain` is reserved for drug already committed to the nose-to-brain route. A well-formed member of the `depot_<route>` family, but note that the "route" element here names the deposition SITE within the airway rather than an administration route the way `depot_sc` / `depot_ip` / `depot_im` do. An inhalation PBPK that resolves regional deposition needs one depot per region: `depot_lung`, `depot_nasal`, and `depot_brain` for the olfactory region.
 
 ### depot_buccal (**canonical oromucosal (buccal-cavity) absorption depot**)
 - **Type:** compartment
