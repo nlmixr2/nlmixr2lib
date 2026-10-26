@@ -3506,6 +3506,12 @@ navbar:
         href: articles/Cojutti_2021_isavuconazole.html
       - text: "Isavuconazole (Desai 2016)"
         href: articles/Desai_2016_isavuconazole.html
+      - text: "Isavuconazole anidulafungin (Caballero 2023)"
+        href: articles/Caballero_2023_isavuconazole_echinocandins.html
+      - text: "Isavuconazole caspofungin (Caballero 2023)"
+        href: articles/Caballero_2023_isavuconazole_echinocandins.html
+      - text: "Isavuconazole micafungin (Caballero 2023)"
+        href: articles/Caballero_2023_isavuconazole_echinocandins.html
       - text: "Isavuconazole secure (Desai 2016)"
         href: articles/Desai_2016_isavuconazole_secure.html
       - text: "Isb2001 qsp (ChandralayamAyyappaMenon 2026)"
@@ -8171,6 +8177,7 @@ articles:
   - articles/ButraguenoLaiseca_2025_teicoplanin
   - articles/Byrne_2022_imr687
   - articles/Byun_2024_tmdd_approximations
+  - articles/Caballero_2023_isavuconazole_echinocandins
   - articles/Cagnardi_2018_cefazolin_dog
   - articles/Cai_2022_polymyxinB
   - articles/Cai_2022_tacrolimus
