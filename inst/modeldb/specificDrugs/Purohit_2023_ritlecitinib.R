@@ -144,16 +144,26 @@ Purohit_2023_ritlecitinib <- function() {
     e_dis_ra_cl <- log(0.625); label("Log ratio of CL/F in rheumatoid arthritis patients (unitless)") # Table B 'RA on CL/F' = 0.625 (0.564-0.739); THETA(10)
     e_fed_highfat_ka <- -0.613; label("Fractional change in ka with a high-fat meal (unitless)") # Table B 'Food on ka' = -0.613 (-0.649 to -0.577); THETA(9), TVKA = THETA(1)*(1 + FED*THETA(9))
 
-    # IIV: $OMEGA BLOCK(2) variances and covariance, Table B.
+    # IIV: $OMEGA BLOCK(2). Table B's footnote calls these rows variances,
+    # but they are read as NONMEM's correlation-matrix print: SDs on the
+    # diagonal (0.156, 0.280) and a correlation off it (0.173). Only this
+    # reading reproduces the spread of the paper's own Table IV simulation
+    # (taken as variances, the trial-level AUC0-24 90% PI is ~2.2-fold too
+    # wide), and it matches the healthy-participant IIV SD on CL/F of 0.201
+    # in the Wojciechowski_2023_ritlecitinib_base sibling model.
+    # Variances: 0.156^2 = 0.024336, 0.280^2 = 0.0784;
+    # covariance: 0.173 * 0.156 * 0.280 = 0.00755664.
     etalcl + etalvc ~ c(
-      0.156,
-      0.173, 0.280
-    ) # Table B 'IIV-CL/F' = 0.156, 'Cov CL/F-V/F' = 0.173, 'IIV-V/F' = 0.280
+      0.024336,
+      0.00755664, 0.0784
+    ) # Table B 'IIV-CL/F' = 0.156, 'Cov CL/F-V/F' = 0.173, 'IIV-V/F' = 0.280, read as SD / correlation / SD
 
     # Residual error. Concentrations were log-transformed both sides,
     # Y = LOG(F) + EPS, with EPS(1) for healthy participants and EPS(2) for
-    # RA patients. Table B reports the $SIGMA variances (initial values 0.15
-    # and 0.7 in $SIGMA), so the nlmixr2 lnorm() SD is their square root.
+    # RA patients. These rows are read as the labelled $SIGMA variances
+    # (initial values 0.15 and 0.7 in $SIGMA), so the nlmixr2 lnorm() SD is
+    # their square root; as SDs the simulated Table IV Cmax medians fall
+    # about 15 percent short.
     expSdHv <- sqrt(0.166); label("Log-scale residual SD in healthy participants") # Table B 'RUV-HP' = 0.166 (variance); SD = 0.407
     expSdRa <- sqrt(0.860); label("Log-scale residual SD in rheumatoid arthritis patients") # Table B 'RUV-RA' = 0.860 (variance); SD = 0.927
   })

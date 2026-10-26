@@ -78,9 +78,9 @@ comment naming its origin. They are collected here for review.
 | `e_dose_high_cl` | log(0.666) | Table B 'Dose on CL/F' = 0.666 (0.641-0.691); THETA(7) |
 | `e_dis_ra_cl` | log(0.625) | Table B 'RA on CL/F' = 0.625 (0.564-0.739); THETA(10) |
 | `e_fed_highfat_ka` | -0.613 | Table B 'Food on ka' = -0.613 (-0.649 to -0.577); THETA(9) |
-| `var(etalcl)` | 0.156 | Table B 'IIV-CL/F' |
-| `cov(etalcl, etalvc)` | 0.173 | Table B 'Cov CL/F-V/F' |
-| `var(etalvc)` | 0.280 | Table B 'IIV-V/F' |
+| `var(etalcl)` | 0.156^2 = 0.024336 | Table B 'IIV-CL/F' = 0.156, read as an SD (see below) |
+| `cov(etalcl, etalvc)` | 0.173 x 0.156 x 0.280 = 0.00755664 | Table B 'Cov CL/F-V/F' = 0.173, read as a correlation |
+| `var(etalvc)` | 0.280^2 = 0.0784 | Table B 'IIV-V/F' = 0.280, read as an SD |
 | `expSdHv` | sqrt(0.166) = 0.407 | Table B 'RUV-HP' (a $SIGMA variance) |
 | `expSdRa` | sqrt(0.860) = 0.927 | Table B 'RUV-RA' (a $SIGMA variance) |
 | ka | `KA = THETA(1)*(1 + FED*THETA(9))` | control stream $PK (`FLG3 = 0 IF (FOOD.NE.0)`) |
@@ -90,16 +90,32 @@ comment naming its origin. They are collected here for review.
 | Cc (ng/mL) | `1000 * central / vc` | control stream `S2 = V2/1000` |
 | Residual error | `log(DV) = log(Cc) + eps`, SD by population | control stream $ERROR |
 
-## Reading the reported variances
+## Reading the variability rows of Table B
 
-Table B lists the IIV and residual-error rows as variances. The `$OMEGA BLOCK(2)`
-initial values (0.2, 0.1, 0.15) and `$SIGMA` initial values (0.15, 0.7) are on
-the same scale as the final estimates (0.156, 0.173, 0.280; 0.166, 0.860), so
-these are the NONMEM variances, not standard deviations. Because the control
-stream fits log-transformed concentrations with an additive epsilon
-(`Y = LOG(F) + EPS`), the log-scale residual SD for `lnorm()` is the square root
-of each $SIGMA variance. The IIV on CL/F corresponds to a 41% CV and on Vc/F to a
-56% CV; the implied CL/F-Vc/F correlation is 0.83.
+Table B's footnote calls the IIV rows 'inter-individual variance', and the
+off-diagonal row is labelled 'Cov CL/F-V/F'. Taken literally (variances 0.156
+and 0.280, covariance 0.173) the block is positive definite, so the label cannot
+be excluded on arithmetic alone. It does, however, contradict the paper's own
+simulation: under that reading the 90% prediction interval of the trial
+geometric-mean AUC0-24 in Table IV comes out about 2.2-fold too wide, and the
+implied 45% CV of AUC in healthy participants is far above the 16% observed in
+the eight Study 1 healthy participants (Table II).
+
+The packaged model therefore reads the IIV rows as NONMEM's correlation-matrix
+print -- SDs of 0.156 (CL/F) and 0.280 (Vc/F) on the diagonal, correlation 0.173
+off it -- and keeps the residual-error rows as the labelled $SIGMA variances
+(0.166 and 0.860, log-scale SDs 0.407 and 0.927). Reading the residual-error rows
+as SDs as well narrows the AUC interval further but leaves the simulated Table IV
+Cmax medians about 15% short. The section
+[Scale of the variability rows](#scale-of-the-variability-rows) below repeats the
+Table IV simulation under all three readings. The chosen magnitudes are also in
+line with the later model of the same programme fitted to overlapping data
+(`Wojciechowski_2023_ritlecitinib_base`: healthy-participant IIV SD on CL/F
+0.201 and on Vc/F 0.113, proportional residual SD 0.340).
+
+Because the control stream fits log-transformed concentrations with an additive
+epsilon (`Y = LOG(F) + EPS`), the log-scale residual SD for `lnorm()` is the
+square root of each $SIGMA variance.
 
 # Deterministic covariate checks
 
@@ -271,36 +287,26 @@ sim_insilico <- rxode2::rxSolve(
 ```
 
 ```{r insilico-nca}
-# `sim` is the concentration with residual error applied, as in the paper.
-conc_is <- sim_insilico |>
-  filter(!is.na(sim)) |>
-  select(id, study, tad, conc = sim)
-dose_is <- sim_insilico |>
-  distinct(id, study, dose_mg) |>
-  mutate(tad = 0)
-
-nca_is <- PKNCA::pk.nca(PKNCA::PKNCAdata(
-  PKNCA::PKNCAconc(conc_is, conc ~ tad | study + id),
-  PKNCA::PKNCAdose(dose_is, dose_mg ~ tad | study + id),
-  intervals = data.frame(start = 0, end = 24, auclast = TRUE, cmax = TRUE, tmax = TRUE),
-  options = list(auc.method = "lin up/log down")
-))
-
-subj_nca <- as.data.frame(nca_is$result) |>
-  filter(PPTESTCD %in% c("auclast", "cmax")) |>
-  select(id, study, PPTESTCD, PPORRES) |>
-  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
-
-# 1000 resampled trials of 8 participants per study (no new simulation).
-n_trials <- 1000
-gmean <- function(x) exp(mean(log(x)))
-trials <- bind_rows(lapply(split(subj_nca, subj_nca$study), function(d) {
-  bind_rows(lapply(seq_len(n_trials), function(k) {
-    pick <- d[sample.int(nrow(d), 8, replace = TRUE), ]
-    tibble::tibble(study = d$study[1], trial = k,
-                   auclast = gmean(pick$auclast), cmax = gmean(pick$cmax))
-  }))
-}))
+# Per-subject day-10 NCA. `sim` is the concentration with residual error
+# applied, as in the paper.
+subject_nca <- function(sim_df) {
+  conc <- sim_df |>
+    filter(!is.na(sim)) |>
+    select(id, study, tad, conc = sim)
+  doses <- sim_df |>
+    distinct(id, study, dose_mg) |>
+    mutate(tad = 0)
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, conc ~ tad | study + id),
+    PKNCA::PKNCAdose(doses, dose_mg ~ tad | study + id),
+    intervals = data.frame(start = 0, end = 24, auclast = TRUE, cmax = TRUE, tmax = TRUE),
+    options = list(auc.method = "lin up/log down")
+  ))
+  as.data.frame(res$result) |>
+    filter(PPTESTCD %in% c("auclast", "cmax")) |>
+    select(id, study, PPTESTCD, PPORRES) |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+}
 
 # Observed impairment-cohort geometric means (Table II / Table IV).
 observed <- tibble::tibble(
@@ -309,20 +315,35 @@ observed <- tibble::tibble(
   obs_cmax = c(194.3, 445.6)
 )
 
+# 1000 resampled trials of 8 participants per study (no new simulation),
+# summarised as in Table IV.
+n_trials <- 1000
+gmean <- function(x) exp(mean(log(x)))
 q <- function(x, p) unname(stats::quantile(x, p))
-trial_summary <- trials |>
-  left_join(observed, by = "study") |>
-  group_by(study) |>
-  summarise(
-    auc_med = median(auclast), auc_lo = q(auclast, 0.05), auc_hi = q(auclast, 0.95),
-    cmax_med = median(cmax), cmax_lo = q(cmax, 0.05), cmax_hi = q(cmax, 0.95),
-    gmr_auc_med = median(obs_auc / auclast),
-    gmr_auc_lo = q(obs_auc / auclast, 0.05), gmr_auc_hi = q(obs_auc / auclast, 0.95),
-    gmr_cmax_med = median(obs_cmax / cmax),
-    gmr_cmax_lo = q(obs_cmax / cmax, 0.05), gmr_cmax_hi = q(obs_cmax / cmax, 0.95),
-    pct_gmr_ge2 = 100 * mean(obs_auc / auclast >= 2),
-    .groups = "drop"
-  )
+summarise_trials <- function(subj) {
+  trials <- bind_rows(lapply(split(subj, subj$study), function(d) {
+    bind_rows(lapply(seq_len(n_trials), function(k) {
+      pick <- d[sample.int(nrow(d), 8, replace = TRUE), ]
+      tibble::tibble(study = d$study[1], trial = k,
+                     auclast = gmean(pick$auclast), cmax = gmean(pick$cmax))
+    }))
+  }))
+  trials |>
+    left_join(observed, by = "study") |>
+    group_by(study) |>
+    summarise(
+      auc_med = median(auclast), auc_lo = q(auclast, 0.05), auc_hi = q(auclast, 0.95),
+      cmax_med = median(cmax), cmax_lo = q(cmax, 0.05), cmax_hi = q(cmax, 0.95),
+      gmr_auc_med = median(obs_auc / auclast),
+      gmr_auc_lo = q(obs_auc / auclast, 0.05), gmr_auc_hi = q(obs_auc / auclast, 0.95),
+      gmr_cmax_med = median(obs_cmax / cmax),
+      gmr_cmax_lo = q(obs_cmax / cmax, 0.05), gmr_cmax_hi = q(obs_cmax / cmax, 0.95),
+      pct_gmr_ge2 = 100 * mean(obs_auc / auclast >= 2),
+      .groups = "drop"
+    )
+}
+
+trial_summary <- summarise_trials(subject_nca(sim_insilico))
 
 published <- tibble::tibble(
   study = c("Study 1 (30 mg QD)", "Study 2 (50 mg QD)"),
@@ -394,6 +415,98 @@ The simulated medians reproduce Table IV for both studies. The Study 1
 validation result -- the observed AUC0-24 GMR of 1.19 lies inside the 90% PI of
 the in silico GMR -- is reproduced as well.
 
+# Scale of the variability rows
+
+The Table IV simulation is repeated below with the same event table under the
+two readings of Table B that the packaged model rejects (see
+[Reading the variability rows of Table B](#reading-the-variability-rows-of-table-b)):
+
+* **As labelled**: IIV variances 0.156 and 0.280 with covariance 0.173;
+  residual-error variances 0.166 and 0.860.
+* **All SD**: IIV and residual-error rows all read as SDs, with a correlation
+  of 0.173.
+
+The packaged model is the third, mixed reading. The width of a 90% PI is
+compared with Table IV on the log scale, as `log(upper / lower)` relative to the
+published `log(upper / lower)`.
+
+```{r scale-readings}
+mod_labelled <- rxode2::ini(
+  mod,
+  etalcl + etalvc ~ c(0.156, 0.173, 0.280)
+)
+mod_all_sd <- rxode2::ini(
+  mod,
+  expSdHv = 0.166,
+  expSdRa = 0.860
+)
+
+run_reading <- function(m, seed) {
+  rxode2::rxSetSeed(seed)
+  set.seed(seed)
+  rxode2::rxSolve(m, ev_insilico, keep = c("study", "dose_mg"), returnType = "data.frame") |>
+    mutate(tad = time - 216) |>
+    subject_nca() |>
+    summarise_trials()
+}
+
+readings <- bind_rows(
+  trial_summary |> mutate(reading = "Mixed (packaged)"),
+  run_reading(mod_labelled, 101) |> mutate(reading = "As labelled"),
+  run_reading(mod_all_sd, 202) |> mutate(reading = "All SD")
+)
+
+pub_num <- tibble::tibble(
+  study = c("Study 1 (30 mg QD)", "Study 2 (50 mg QD)"),
+  auc_pub_med = c(345, 578), auc_pub_lo = c(309, 515), auc_pub_hi = c(388, 650),
+  cmax_pub_med = c(184, 314), cmax_pub_lo = c(152, 262), cmax_pub_hi = c(222, 372)
+)
+
+reading_chk <- readings |>
+  left_join(pub_num, by = "study") |>
+  mutate(
+    auc_med_pct = 100 * (auc_med / auc_pub_med - 1),
+    auc_width_ratio = log(auc_hi / auc_lo) / log(auc_pub_hi / auc_pub_lo),
+    cmax_med_pct = 100 * (cmax_med / cmax_pub_med - 1),
+    cmax_width_ratio = log(cmax_hi / cmax_lo) / log(cmax_pub_hi / cmax_pub_lo)
+  )
+
+reading_chk |>
+  transmute(
+    reading, study,
+    auc = fmt(auc_med, auc_lo, auc_hi), auc_med_pct, auc_width_ratio,
+    cmax = fmt(cmax_med, cmax_lo, cmax_hi), cmax_med_pct, cmax_width_ratio
+  ) |>
+  dplyr::rename(
+    Reading = reading, Study = study,
+    "AUC0-24 GM median (90% PI)" = auc, "AUC median vs Table IV (%)" = auc_med_pct,
+    "AUC PI width / Table IV" = auc_width_ratio,
+    "Cmax GM median (90% PI)" = cmax, "Cmax median vs Table IV (%)" = cmax_med_pct,
+    "Cmax PI width / Table IV" = cmax_width_ratio
+  ) |>
+  knitr::kable(digits = 2, caption = "Table IV reproduced under three readings of the Table B variability rows. Published: AUC0-24 345 (309-388) and 578 (515-650); Cmax 184 (152-222) and 314 (262-372).")
+
+chk_of <- function(r) filter(reading_chk, reading == r)
+stopifnot(
+  # Each statistic is averaged over the two studies so that one study's
+  # sampling scatter cannot decide the outcome. The PI width is set by the
+  # per-subject spread of 200 simulated subjects, whose SD carries a ~5%
+  # sampling error; the expected ratios are about 2.1 (as labelled) and 1.3
+  # (mixed), so a 1.7 boundary leaves wide margins on both sides.
+  mean(chk_of("As labelled")$auc_width_ratio) > 1.7,
+  mean(chk_of("Mixed (packaged)")$auc_width_ratio) < 1.7,
+  # Reading the residual error as SDs leaves the Cmax centre about 15% short;
+  # the median of 1000 trial means has ~2% sampling error per study.
+  mean(chk_of("All SD")$cmax_med_pct) < -8,
+  all(abs(chk_of("Mixed (packaged)")$cmax_med_pct) < 10)
+)
+```
+
+Only the mixed reading reproduces both the location of every Table IV summary
+and the spread of the AUC0-24 distribution to within about a third. The literal
+reading roughly doubles the spread, and the all-SD reading misses the Cmax
+centre.
+
 # Day-10 concentration-time profiles
 
 ```{r profile-plot, fig.cap = "Simulated day-10 ritlecitinib plasma concentrations (median and 90% interval of individual predictions, 200 in silico healthy participants per study) at the protocol sampling times."}
@@ -436,9 +549,21 @@ sim_insilico |>
   mapped to `FED_HIGHFAT`.
 * **Dose switch.** `DOSE_HIGH` is defined on the total daily dose
   (`TRT = DOSE*DFREQ > 100` mg), so 100 mg BID is in the high group.
-* **Residual error.** Table B reports the $SIGMA variances of the
-  log-transformed-both-sides model; `expSdHv` and `expSdRa` are their square
-  roots.
+* **Scale of the IIV rows (departure from the printed label).** Table B's
+  footnote calls the IIV rows variances, but the maintainers read them as SDs
+  (0.156 on CL/F, 0.280 on Vc/F) with a correlation of 0.173, as printed in
+  NONMEM's correlation matrix. The evidence is the paper's own Table IV, which
+  only this reading reproduces (see
+  [Scale of the variability rows](#scale-of-the-variability-rows)). The
+  magnitudes also agree with the healthy-participant IIV of the later
+  `Wojciechowski_2023_ritlecitinib_base` model (SD 0.201 on CL/F and 0.113 on
+  Vc/F), and with the 16% CV of AUC observed in the Study 1 healthy
+  participants. The labelled reading would imply about 45% CV.
+* **Residual error.** The residual-error rows are kept as the labelled $SIGMA
+  variances of the log-transformed-both-sides model; `expSdHv` and `expSdRa`
+  are their square roots (0.407 and 0.927). The healthy-participant value is
+  close to the 0.340 proportional residual SD of the Wojciechowski 2023 base
+  model.
 * **In silico cohorts.** The paper drew fresh weights for every one of 1000
   trials; here 200 participants per study are simulated once and the trials
   are resampled from them, which reproduces the trial-to-trial distribution of

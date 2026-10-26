@@ -5990,6 +5990,8 @@ navbar:
         href: articles/Perlstein_2025_risperidone_tv46000.html
       - text: "Ritlecitinib (Huh 2024)"
         href: articles/Huh_2024_ritlecitinib.html
+      - text: "Ritlecitinib (Purohit 2023)"
+        href: articles/Purohit_2023_ritlecitinib.html
       - text: "Ritlecitinib base (Wojciechowski 2023)"
         href: articles/Wojciechowski_2023_ritlecitinib.html
       - text: "Ritlecitinib final (Wojciechowski 2023)"
@@ -9757,6 +9759,7 @@ articles:
   - articles/Pu_2021_evinacumab
   - articles/Puisset_2007_docetaxel
   - articles/Punyawudho_2025_dolutegravir
+  - articles/Purohit_2023_ritlecitinib
   - articles/Qi_2014_sapropterin
   - articles/Qi_2019_vestronidaseAlfa
   - articles/Qi_2024_vosoritide
