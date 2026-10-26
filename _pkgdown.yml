@@ -3902,6 +3902,10 @@ navbar:
         href: articles/Jensen_2023_lngIus52mg.html
       - text: "Lobaplatin (Cheng 2019)"
         href: articles/Cheng_2019_lobaplatin.html
+      - text: "LonoctocogAlfa (Bukkems 2023)"
+        href: articles/Bukkems_2023_lonoctocogAlfa.html
+      - text: "LonoctocogAlfa bleed (Bukkems 2023)"
+        href: articles/Bukkems_2023_lonoctocogAlfa.html
       - text: "Lopinavir (Alvarez 2021)"
         href: articles/Alvarez_2021_lopinavir.html
       - text: "Lopinavir (Archary 2018)"
@@ -8153,6 +8157,7 @@ articles:
   - articles/Bukkems_2021_raltegravir
   - articles/Bukkems_2022_doravirine_placentaperfusion
   - articles/Bukkems_2022_factorviii_thrombin_plasmin
+  - articles/Bukkems_2023_lonoctocogAlfa
   - articles/Bulitta_2007_piperacillin
   - articles/Bulitta_2009_ceftazidime
   - articles/Bulitta_2009_cefuroxime_axetil
