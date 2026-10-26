@@ -3172,6 +3172,8 @@ navbar:
         href: articles/Ryu_2021_hyaluronicAcid_fillers_mouse.html
       - text: "Hydrochlorothiazide (Song 2013)"
         href: articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide.html
+      - text: "Hydrocortisone (Stachanow 2023)"
+        href: articles/Stachanow_2023_hydrocortisone.html
       - text: "Hydroxychloroquine (Alvarez 2022)"
         href: articles/Alvarez_2022_hydroxychloroquine.html
       - text: "Hydroxychloroquine (Carmichael 2003)"
@@ -10046,6 +10048,7 @@ articles:
   - articles/Sridharan_2019_primaquine
   - articles/Srimani_2022_ixazomib
   - articles/Staatz_2005_gentamicin_vancomycin
+  - articles/Stachanow_2023_hydrocortisone
   - articles/Stader_2021_bictegravir_ddi_pbpk
   - articles/Stader_2021_bictegravir_pbpk
   - articles/Stanczyk_2022_levonorgestrel_ethinylestradiol
