@@ -4278,6 +4278,8 @@ navbar:
         href: articles/Zou_2026_meropenem.html
       - text: "Meropenem (Zylbersztajn 2021)"
         href: articles/Zylbersztajn_2021_vancomycin_meropenem.html
+      - text: "Meropenem (Zyryanov 2023)"
+        href: articles/Zyryanov_2023_meropenem.html
       - text: "Meropenem ciprofloxacin (Rees 2018)"
         href: articles/Rees_2018_meropenem_ciprofloxacin.html
       - text: "Meropenem pbpk (Yang 2024)"
@@ -10719,6 +10721,7 @@ articles:
   - articles/Zurlinden_2016_paracetamol
   - articles/Zvada_2010_rifapentine
   - articles/Zylbersztajn_2021_vancomycin_meropenem
+  - articles/Zyryanov_2023_meropenem
   - articles/daCosta_2020_magnesiumSulfate
   - articles/deAlwis_1998_ondansetron
   - articles/deBruijn_2022_bile_acid_cholestasis
