@@ -5752,6 +5752,28 @@ navbar:
         href: articles/Aruldhas_2021_methadone.html
       - text: "RBP 7000 (Ivaturi 2017)"
         href: articles/Ivaturi_2017_RBP_7000.html
+      - text: "RC88 human (Li 2023)"
+        href: articles/Li_2023_RC88.html
+      - text: "RC88 hybrid h292 mouse tgi (Li 2023)"
+        href: articles/Li_2023_RC88.html
+      - text: "RC88 hybrid ovcar3m mouse tgi (Li 2023)"
+        href: articles/Li_2023_RC88.html
+      - text: "RC88 hybrid ovcar3s mouse tgi (Li 2023)"
+        href: articles/Li_2023_RC88.html
+      - text: "RC88 jumbe h292 mouse tgi (Li 2023)"
+        href: articles/Li_2023_RC88.html
+      - text: "RC88 jumbe ovcar3s mouse tgi (Li 2023)"
+        href: articles/Li_2023_RC88.html
+      - text: "RC88 monkey (Li 2023)"
+        href: articles/Li_2023_RC88.html
+      - text: "RC88 mouse (Li 2023)"
+        href: articles/Li_2023_RC88.html
+      - text: "RC88 simeoni h292 mouse tgi (Li 2023)"
+        href: articles/Li_2023_RC88.html
+      - text: "RC88 simeoni ovcar3m mouse tgi (Li 2023)"
+        href: articles/Li_2023_RC88.html
+      - text: "RC88 simeoni ovcar3s mouse tgi (Li 2023)"
+        href: articles/Li_2023_RC88.html
       - text: "RFIXFc (Diao 2014)"
         href: articles/Diao_2014_rFIXFc.html
       - text: "Rabeprazole (Jeong 2023)"
@@ -9270,6 +9292,7 @@ articles:
   - articles/Li_2021_voriconazole
   - articles/Li_2022_gumokimab
   - articles/Li_2022_paroxetine
+  - articles/Li_2023_RC88
   - articles/Li_2023_TQB3203
   - articles/Li_2023_granisetron
   - articles/Li_2023_ornidazole
