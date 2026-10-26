@@ -5090,6 +5090,8 @@ navbar:
         href: articles/He_2022_paclitaxel.html
       - text: "Paclitaxel (Janssen 2023)"
         href: articles/Janssen_2023_pregnancy_cytotoxics.html
+      - text: "Paclitaxel (Salem 2023)"
+        href: articles/Salem_2023_paclitaxel.html
       - text: "Paclitaxel (Sun 2025)"
         href: articles/Sun_2025_paclitaxel.html
       - text: "Paclitaxel (deJonge 2005)"
@@ -9866,6 +9868,7 @@ articles:
   - articles/Salehi_2025_nicotine_pbpk
   - articles/Salem_2013_cyp_ontogeny
   - articles/Salem_2014_efavirenz
+  - articles/Salem_2023_paclitaxel
   - articles/Salgado_2022_antibody_tumor_lymph_node_pbpk
   - articles/Salinger_2013_magnesiumSulfate
   - articles/Salinger_2019_pretomanid

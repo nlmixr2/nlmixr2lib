@@ -6798,6 +6798,13 @@ Sibling-drug suffix for co-formulated levodopa products, where levodopa is the u
 - **Example models:** `Senek_2018_levodopa_carbidopa.R` (doi:10.1007/s00228-018-2497-2; one-compartment carbidopa with two parallel transit chains, jointly fitted with two-compartment levodopa).
 - **Notes:** A co-administered drug rather than a metabolite of levodopa, registered as a `metabolite-suffix` on the `naloxone` precedent so the `<canonical>_carbidopa` compositions validate. Benserazide, the other dopa-decarboxylase inhibitor, would take its own suffix in the same section. A levodopa model that only uses the carbidopa DOSE as a covariate needs no suffix -- see `DOSE_CARBIDOPA_MG` in `covariate-columns.md`.
 
+### carboplatin (**canonical carboplatin sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Carboplatin sibling-drug suffix for combination-chemotherapy models in which carboplatin PK is carried as its own states alongside a partner drug that holds the bare canonical names. Drives the `central_carboplatin` / `peripheral1_carboplatin` states, the `Cc_carboplatin` concentration and the `lcl_carboplatin` / `lvc_carboplatin` / `lq_carboplatin` / `lvp_carboplatin` / `lslope_carboplatin` parameters (and `etalslope_carboplatin`).
+- **Source aliases:** `central_carb` / `Periph_carb` / `SLOPC` / `SLOPEC` -- Salem 2023 Appendix S1 and Table S1.
+- **Example models:** `Salem_2023_paclitaxel.R` (doi:10.1002/psp4.12963; fixed two-compartment carboplatin PK whose concentration inhibits neutrophil proliferation through a linear slope multiplied with the paclitaxel effect in a Friberg myelosuppression chain).
+- **Notes:** Spelled out rather than abbreviated (the source's `carb` would read as carbidopa or carbohydrate). A carboplatin-only model keeps the bare canonical names (`central`, `lcl`, `Cc`) as in `Ekhart_2008_carboplatin.R`; the suffix is only for a combination model in which another drug is the parent. Distinct from the `carbidopa` suffix above.
+
 ---
 
 ## Diagnostic-test co-analyte sibling suffixes
