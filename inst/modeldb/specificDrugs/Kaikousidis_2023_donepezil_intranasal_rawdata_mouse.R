@@ -76,8 +76,8 @@ Kaikousidis_2023_donepezil_intranasal_rawdata_mouse <- function() {
     # The whole nasal-film dose is recorded on depot_nasal and released by a
     # zero-order input over [tlag, tlag + d1] shared by blood and direct
     # brain, plus the Savic gamma-density input into depot_brain. Written
-    # out because rxode2 5.1.8 fails on a modelled dur() in a two-endpoint
-    # model; see Kaikousidis_2023_donepezil_intranasal_meandata_mouse.
+    # out because the equivalent f()/alag()/dur() form fails to solve in
+    # rxode2 5.1.8; see Kaikousidis_2023_donepezil_intranasal_meandata_mouse.
     # podo()/tad() refer to the most recent dose.
     t_in <- tad(depot_nasal)
     dose_in <- podo(depot_nasal)

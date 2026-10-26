@@ -224,8 +224,9 @@ stopifnot(all(sim$Cc >= -1e-6), all(sim$Cbrain >= -1e-6))
 The intranasal files write the lagged zero-order release and the transit
 input as explicit functions of the nasal-film dose (`podo()` / `tad()` of
 `depot_nasal`) rather than with `f()`, `alag()` and `dur()` on three dose
-records. A two-endpoint model with a modelled `dur()` does not solve in
-rxode2 5.1.8 ("Duration is zero/negative"). The check below solves the
+records. With two endpoints, that form (a lagged modelled-duration dose
+alongside the `f() = 0` bolus that anchors the transit input) does not solve
+in rxode2 5.1.8 ("Duration is zero/negative"). The check below solves the
 intranasal mean-data model against an independent single-endpoint
 formulation that uses rxode2's own lag, duration and bioavailability on three
 dose records, and confirms mass balance with elimination switched off.

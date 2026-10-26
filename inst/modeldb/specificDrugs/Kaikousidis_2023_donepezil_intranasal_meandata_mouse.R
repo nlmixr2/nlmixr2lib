@@ -80,8 +80,9 @@ Kaikousidis_2023_donepezil_intranasal_meandata_mouse <- function() {
     # Tlag and Tk0 for both), and the Savic gamma-density input into
     # depot_brain. Writing these out, rather than using f()/alag()/dur() on
     # central and brain with three dose records, is required because
-    # rxode2 5.1.8 fails ('Duration is zero/negative') on a modelled dur()
-    # in a two-endpoint model. podo()/tad() refer to the most recent dose,
+    # rxode2 5.1.8 fails ('Duration is zero/negative') when a lagged
+    # modelled-duration dose is given with an f() = 0 transit-anchor bolus in
+    # a two-endpoint model. podo()/tad() refer to the most recent dose,
     # so the model is valid for single doses or doses spaced beyond the
     # transit chain (about 3 x Mtt).
     t_in <- tad(depot_nasal)
