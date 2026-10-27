@@ -4772,6 +4772,8 @@ navbar:
         href: articles/Cortez_2015_nevirapine.html
       - text: "Nevirapine rat la2 (Cortez 2015)"
         href: articles/Cortez_2015_nevirapine.html
+      - text: "Niclosamide sheep (Weiss 2023)"
+        href: articles/Weiss_2023_niclosamide_sheep.html
       - text: "Nicorandil (Iida 2008)"
         href: articles/Iida_2008_nicorandil.html
       - text: "Nicotine (Marchand 2017)"
@@ -10391,6 +10393,7 @@ articles:
   - articles/Wei_2022_vancomycin
   - articles/Wei_2025_methotrexate
   - articles/Wei_2026_enrofloxacin_cefquinome
+  - articles/Weiss_2023_niclosamide_sheep
   - articles/Wen_2016_enrofloxacin_Pmultocida
   - articles/Wen_2022_osteoarthritis_placebo_mbma
   - articles/Wen_2025_pulmonary_pbpk
