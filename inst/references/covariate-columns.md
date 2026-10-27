@@ -18314,6 +18314,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Sasaki_2022_delamanid.R` (founding example; `mtt <- ... * (1 + 0.495 * FORM_DELAMANID_DT)` and `f_form <- 1 + (-0.158) * FORM_DELAMANID_DT`, both coefficients fixed from a model that included the adult bioequivalence trial 245).
 - **Notes:** Follows the auto-approved `FORM_<drug>_<formulation>` family and mirrors `FORM_DTG_DT`. In the founding trials the formulation is confounded with age group (0-5 years dispersible, 6-17 years film-coated), which is why the effects were fixed from adult bioequivalence data rather than estimated.
 
+### FORM_LEVOFLOXACIN_NONDISPERSIBLE (**canonical for the crushed levofloxacin non-dispersible adult-tablet indicator**)
+- **Description:** 1 = levofloxacin given as the 250 mg non-dispersible adult tablet, crushed and mixed in a small volume of water; 0 = levofloxacin given as the 100 mg dispersible paediatric tablet dispersed in water. Per-dose record.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (100 mg dispersible tablet; bioavailability fixed to 1).
+- **Source aliases:**
+  - formulation (dispersible / non-dispersible) -- van der Laan 2023 Table 2 row 'Effect of crushed non-dispersible tablet on bioavailability (%)'.
+- **Example models:** `vanderLaan_2023_levofloxacin.R` (founding example; `fbio <- ... * (1 + (-0.215) * FORM_LEVOFLOXACIN_NONDISPERSIBLE)`, a 21.5% lower bioavailability for the crushed adult tablet in a randomised crossover in children under 6 years, with no formulation effect on ka or MTT).
+- **Notes:** Follows the auto-approved `FORM_<drug>_<formulation>` family. The reference is the dispersible tablet, so the indicator flags the non-dispersible one, which keeps the source's sign. Both arms used Macleods products prepared the same way (tablet mixed in 2.5-5 mL water plus an equal rinse), so the contrast is the formulation, not the vehicle. Distinct from `FORM_CRUSHED_TABLET`, which is a crushed tablet swallowed dry, and from `ROUTE_NGT` (Denti 2018 levofloxacin), which is a route of administration.
+
 ### FORM_PRETOMANID_DT (**canonical for the pretomanid pediatric dispersible-tablet formulation indicator**)
 - **Description:** 1 = pretomanid given as the pediatric dispersible tablet (10 mg or 50 mg strengths, dispersed in water before administration); 0 = pretomanid given as the marketed adult 200 mg tablet.
 - **Units:** (binary)

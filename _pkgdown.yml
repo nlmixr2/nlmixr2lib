@@ -3792,6 +3792,8 @@ navbar:
         href: articles/Sidamo_2022_fluoroquinolones_mdr_tb.html
       - text: "Levofloxacin (Tao 2026)"
         href: articles/Tao_2026_levofloxacin.html
+      - text: "Levofloxacin (vanderLaan 2023)"
+        href: articles/vanderLaan_2023_levofloxacin.html
       - text: "Levofloxacin rat (Hurtado 2014)"
         href: articles/Hurtado_2014_levofloxacin_rat.html
       - text: "Levonorgestrel (Adeojo 2024)"
@@ -10760,6 +10762,7 @@ articles:
   - articles/vandenBerg_2025_genericMab
   - articles/vandenMaagdenberg_2025_a2ar_tme_qsp
   - articles/vanderGaag_2025_osimertinib_pbpk
+  - articles/vanderLaan_2023_levofloxacin
   - articles/vanderStoep_2019_treosulfan
   - articles/vanderWalt_2013_dapagliflozin
   - articles/vanderZeeuw_2026_immunoglobulin
