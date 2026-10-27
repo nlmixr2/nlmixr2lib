@@ -1002,6 +1002,8 @@ navbar:
         href: articles/Koele_2025_btz043.html
       - text: "Buagafuran rat (Yang 2017)"
         href: articles/Yang_2017_buagafuran.html
+      - text: "Budesonide dissolution (Han 2023)"
+        href: articles/Han_2023_budesonide_dissolution.html
       - text: "Bumetanide pbpk (Gu 2025)"
         href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Buprenorphine (Bjornsson 2023)"
@@ -8739,6 +8741,7 @@ articles:
   - articles/Han_2016_bevacizumab
   - articles/Han_2018_methionineMetabolismCycle
   - articles/Han_2022_cabotegravir
+  - articles/Han_2023_budesonide_dissolution
   - articles/Han_2024_ainuovirine
   - articles/Han_2024_cabotegravir
   - articles/Han_2025_clozapine
