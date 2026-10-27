@@ -5514,6 +5514,8 @@ navbar:
         href: articles/Li_2021_polymyxinB.html
       - text: "PolymyxinB (Liang 2023)"
         href: articles/Liang_2023_polymyxinB.html
+      - text: "PolymyxinB (Tang 2023)"
+        href: articles/Tang_2023_polymyxinB.html
       - text: "PolymyxinB (Wang 2020)"
         href: articles/Wang_2020_polymyxinB.html
       - text: "PolymyxinB (Wang 2021)"
@@ -10142,6 +10144,7 @@ articles:
   - articles/Tanaka_2012_phenytoin
   - articles/Taneja_2019_glpg1690
   - articles/Tang_2019_amoxicillin
+  - articles/Tang_2023_polymyxinB
   - articles/Tang_2023_tenecteplase
   - articles/Tang_2026_vixarelimab
   - articles/Tanzawa_2022_fluconazole
