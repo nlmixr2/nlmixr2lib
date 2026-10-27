@@ -5136,6 +5136,10 @@ navbar:
         href: articles/Brenner_2016_pamrevlumab_rat.html
       - text: "Panitumumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
+      - text: "Panitumumab folfox (Baaz 2023)"
+        href: articles/Baaz_2023_panitumumab_folfox.html
+      - text: "Panitumumab folfox dropout (Baaz 2023)"
+        href: articles/Baaz_2023_panitumumab_folfox.html
       - text: "Panobinostat (Savelieva 2015)"
         href: articles/Savelieva_2015_panobinostat.html
       - text: "Panobinostat allometric (Savelieva 2015)"
@@ -8000,6 +8004,7 @@ articles:
   - articles/Ayyar_2024_givosiran
   - articles/Ayyoub_2016_pyronaridine
   - articles/Azechi_2024_tamibarotene_pediatric
+  - articles/Baaz_2023_panitumumab_folfox
   - articles/Babel_2026_telisotuzumab
   - articles/Back_2018_fenofibrate
   - articles/Back_2019_pediatric_size_maturation

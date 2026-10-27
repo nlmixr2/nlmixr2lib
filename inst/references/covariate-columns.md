@@ -3500,6 +3500,28 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Beguin_2024_carboplatin_thrombocytopenia_dog.R`.
 - **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_MTX_MGM2`, `DOSE_EMPA_MGD`), so no separate ratification was required. A dedicated column rather than the general `DOSE` canonical, and rather than a `podo()`-derived amount, for two reasons: the model's `amt` is in ug per kg (the unit its ug/L concentration state demands) while the published regression is calibrated in mg/kg, so one shared column would silently mix units by a factor of 1000; and Beguin 2024 fitted the dose arm to the PRESCRIBED dose rather than to an amount reconstructed from the infusion record, so the covariate must remain evaluable when the PK layer is not solved. Convert with `amt [ug/kg] = DOSE_CARBOPLATIN_MGKG [mg/kg] * 1000`. Note that the paper prescribed on body-surface area, `BSA(m2) = 0.1 * WT(kg)^(2/3)` (Beguin 2024 Eq. 1), and reports the per-kg equivalent; the paper's own conclusion is that the per-kg figure is the better toxicity predictor of the two.
 
+### DOSE_FOLFOX_MGM2 (**canonical for total FOLFOX dose per treatment cycle per body-surface area**)
+- **Description:** The FOLFOX chemotherapy dose per 14-day treatment cycle, expressed as the SUM of the oxaliplatin, leucovorin (folinic acid) and fluorouracil amounts in mg/m^2; 0 for a subject or arm not receiving FOLFOX. Time-fixed per subject in its founding use (the protocol schedule is assumed for every patient).
+- **Units:** mg/m^2
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters linearly as the dose term of a dose-driven tumor kill rate, `kkill_folfox = kdrug_folfox * DOSE_FOLFOX_MGM2 * exp(-lambda * t)` (Baaz 2023, `aFOLFOX = 2.0e-4 m^2/(mg*month)`).
+- **Source aliases:**
+  - `D_FOLFOX` -- Baaz 2023 notation; the Monolix project in Data S1 declares the regressor as `Dose1`.
+- **Example models:** `Baaz_2023_panitumumab_folfox.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family, with a regimen name in the drug slot because the source combines the three FOLFOX drugs into one dose ('In the case of FOLFOX, we combine the three individual drugs' total doses'). Check how a model sums the components before supplying a value: Baaz 2023 does not print its number, and the value that reproduces its SLD VPC is 1285 mg/m^2 (85 + 200 + 400 + 600, each listed FOLFOX4 amount once), not the two-day cycle total of 2485 mg/m^2. Not interchangeable with per-component columns such as an oxaliplatin-only dose.
+
+### DOSE_PANITUMUMAB_MGKG (**canonical for panitumumab dose per treatment cycle per kilogram of body weight**)
+- **Description:** The panitumumab dose per treatment cycle in mg/kg; 0 for a subject or arm not receiving panitumumab. Time-fixed per subject in its founding use.
+- **Units:** mg/kg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters linearly as the dose term of a dose-driven tumor growth-rate reduction, `kdrug_panitumumab * DOSE_PANITUMUMAB_MGKG * exp(-lambda * t)` (Baaz 2023, `aPani = 7.3e-3 kg/(mg*month)`). PRIME dose: 6 mg/kg every 2 weeks.
+- **Source aliases:**
+  - `D_Pani` -- Baaz 2023 notation; the Monolix project in Data S1 uses a 0/1 regressor `Dose2` and a per-month rate, equal to `aPani * 6`.
+- **Example models:** `Baaz_2023_panitumumab_folfox.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family. A dose-per-cycle exposure surrogate used in place of a PK model; it is not an `amt` and should not be used to dose a PK compartment.
+
 ### CSF1 (**canonical for colony-stimulating factor 1 / macrophage-colony-stimulating factor concentration**)
 - **Description:** Plasma colony-stimulating factor 1 (CSF-1, also known as macrophage colony-stimulating factor, M-CSF) concentration (baseline or time-varying). The hematopoietic cytokine that signals through CSF-1R to drive monocyte / macrophage differentiation and survival; used as both a target-engagement biomarker (anti-CSF-1R mAbs increase circulating free CSF-1) and a baseline covariate on PK / PD parameters in CSF-1R-pathway PopPK/PD models.
 - **Units:** pg/mL (= ng/L; the two labels are numerically equivalent). Document per-model via `covariateData[[CSF1]]$units`.
