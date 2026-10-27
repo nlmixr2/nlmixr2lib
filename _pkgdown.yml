@@ -1872,6 +1872,8 @@ navbar:
         href: articles/Krzyzanski_2021_corticosteroids.html
       - text: "Dexamethasone (Ozdin 2025)"
         href: articles/Ozdin_2025_dexamethasone.html
+      - text: "Dexamethasone rabbit (Toffoletto 2023)"
+        href: articles/Toffoletto_2023_dexamethasone_rabbit.html
       - text: "Dexamethasone rat (Li 2012)"
         href: articles/Li_2012_dexamethasone_rat.html
       - text: "Dexketoprofen pbpk (Zhang 2022)"
@@ -10197,6 +10199,7 @@ articles:
   - articles/Tiraboschi_2025_amlitelimab
   - articles/Tobin_2026_atomoxetine
   - articles/Tod_1998_amikacin
+  - articles/Toffoletto_2023_dexamethasone_rabbit
   - articles/Toffoli_2001_etoposide
   - articles/Togawa_2016_bilastine
   - articles/Tohi_2023_nivolumab
