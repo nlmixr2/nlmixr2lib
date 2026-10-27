@@ -1,0 +1,485 @@
+---
+title: "SARS-CoV-2 viral dynamics and antiviral timing (Zhang 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SARS-CoV-2 viral dynamics and antiviral timing (Zhang 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Zhang_2023_covid19_tcle_immune"))$reference`
+* Article: [CPT Pharmacometrics Syst Pharmacol 2023;12(10):1450-1460](https://doi.org/10.1002/psp4.13022)
+  (open access, PMC10583246). The model equations and the authors' nlmixr
+  estimation and simulation code are in Supplementary material S1 and S2.
+
+Zhang et al. compared eight within-host viral dynamic models for SARS-CoV-2
+(slope-intercept, target-cell-limited (TCL), reduced TCL, TCL with an eclipse
+phase (TCLE), and four TCLE variants with an immune-response compartment) on
+daily upper-respiratory-tract viral loads from a UK community cohort followed
+from contact with an infectious case. The best model by BIC (Table 2, M7) is a
+TCLE model in which an immune response `F`, produced by productively infected
+cells, increases viral clearance through a saturable term
+`phi * F / (F + theta)`. Only M7 has published parameter estimates; the other
+seven structures are reported by BIC alone and are not reproducible.
+
+The paper contributes two models to nlmixr2lib:
+
+| Model | Fit | Used here for |
+|-------|-----|---------------|
+| `Zhang_2023_covid19_tcle_immune` | M7 on all 162 patients, `c` and `k` fixed (Table 3) | Figure 3 (timing and efficacy of an entry-blocking antiviral) |
+| `Zhang_2023_covid19_tcle_immune_age` | M7 with age on `delta`, fitted to unvaccinated patients (Supplement S2 simulation code) | Figure 4 (tixagevimab-cilgavimab phase III trial) |
+
+```{r models}
+mod_all <- readModelDb("Zhang_2023_covid19_tcle_immune")
+mod_age <- readModelDb("Zhang_2023_covid19_tcle_immune_age")
+```
+
+Both models are expressed in days since contact. The antiviral effect is the
+paper's blockade of de novo infection (Eq. 3-7): `beta` is multiplied by
+`1 - eta * H(t)` with `H(t) = 1` from the treatment start `t*` onward. In the
+model files `eta` is `imax_beta` and `t*` is `t_intervention`; both default to
+no treatment and can be set per subject by adding columns of the same name to
+the event table.
+
+# Population
+
+The ATACCC study (Assessment of Transmission and Contagiousness of COVID-19 in
+Contacts) recruited household and non-household contacts within 5 days of the
+index case's symptom onset and swabbed them daily. The analysis dataset has
+2155 viral loads from 162 patients (Table 1): ages 7-78 years (median 36),
+124 household and 38 non-household contacts, 114 unvaccinated, 10 partially and
+38 fully vaccinated, and pre-alpha (50), alpha (42) and delta (70) variants. No
+patient received antiviral treatment. ORF1ab Ct values were converted to
+copies/mL with Eq. 1, and Ct = 40 (31 copies/mL) was the limit of detection.
+Time zero is the contact with the infectious case; for household contacts it
+was imputed as 7 days before the viral-load peak.
+
+The age-covariate model was fitted to the unvaccinated patients: the Methods
+state that the simulation parameters came from "the model that was fitted to
+unvaccinated patients", and the BICs of the covariate models in Supplement S5
+(about 7880) are on a smaller dataset than the all-patient base model (12182).
+
+```{r population}
+str(mod_all()$population[c("species", "n_subjects", "n_observations", "disease_state")])
+str(mod_age()$population[c("n_subjects", "notes")])
+```
+
+# Source trace
+
+| Equation / parameter | `..._tcle_immune` | `..._tcle_immune_age` | Source location |
+|----------------------|-------------------|-----------------------|-----------------|
+| `dT/dt = -beta V T` | yes | yes | Supplement S1 (M7); Eq. 3 |
+| `dI1/dt = beta V T - k I1` | yes | yes | Supplement S1 (M7); Eq. 4 |
+| `dI2/dt = k I1 - delta I2` | yes | yes | Supplement S1 (M7); Eq. 5 |
+| `dV/dt = rho I2 - c V - phi F/(F+theta) V - beta V T` | yes | yes | Supplement S1 (M7); Eq. 6 |
+| `dF/dt = I2 - dF F` | yes | yes | Supplement S1 (M7); Eq. 7 |
+| `T(0) = T0, I1(0) = 0, I2(0) = 1/30, V(0) = V0, F(0) = 0` | yes | yes | Methods 'Assumptions on parameters'; Supplement S2 |
+| Antiviral `beta * (1 - eta H(t))` | yes | yes | Methods 'Simulations for antiviral therapies', Eq. 3-6 |
+| `R0` | 13.74 (`beta` derived) | derived output | Table 3; Results 'Parameter estimation' (definition) |
+| `beta` | from `R0` | exp(-14.654) = 4.33e-7 | Supplement S2 simulation code `tbeta` |
+| `delta` (1/day) | 1.04 | exp(-0.0242) = 0.976 at 35 y | Table 3; Supplement S2 `tdelta` |
+| `phi` (1/day) | 0.24 | exp(-1.549) = 0.212 | Table 3; Supplement S2 `tphi` |
+| `theta` | 542.46 | exp(6.281) = 534 | Table 3; Supplement S2 `ttheta` |
+| `V0` (copies/mL) | 23.33 | exp(3.193) = 24.4 | Table 3; Supplement S2 `tv0` |
+| Age on `delta` | none | `(AGE/35)^-0.11` | Supplement S2 simulation code |
+| `rho` (copies/cell/day) | 6000 fixed | 6000 fixed | Table 3 |
+| `c` (1/day) | 20 fixed | 20 fixed | Table 3 |
+| `k` (1/day) | 3 fixed | 3 fixed | Table 3 |
+| `dF` (1/day) | 0.4 fixed | 0.4 fixed | Table 3; Methods |
+| `T0` (cells/mL) | 1.33e5 fixed | 1.33e5 fixed | Table 3; Methods |
+| IIV variance on `beta`, `delta`, `V0`, `phi`, `theta` | 0.01 each | 0.01 each | Supplement S2 simulation code (`ombeta` ... `omtheta`) |
+| Residual SD | 3 (ln) = 1.303 (log10) | 3 (ln) = 1.303 (log10) | Eq. 2; Supplement S2 simulation code (`sd = 3`) |
+
+# Deterministic checks
+
+## R0 and the derived infection rate
+
+The all-patient model is parameterised by the published basic reproductive
+number. With `F(0) = 0` the paper's definition reduces to
+`R0 = rho beta T0 / (delta (c + beta T0))`, which the model inverts for `beta`.
+Recomputing `R0` from the solved `beta` must return the Table 3 value.
+
+```{r r0-check}
+ev0 <- data.frame(id = 1L, time = seq(0, 28, by = 0.05), evid = 0L, AGE = 35)
+typ_all <- rxode2::rxSolve(rxode2::zeroRe(readModelDb("Zhang_2023_covid19_tcle_immune")),
+  events = ev0, returnType = "data.frame"
+)
+typ_age <- rxode2::rxSolve(rxode2::zeroRe(readModelDb("Zhang_2023_covid19_tcle_immune_age")),
+  events = ev0, returnType = "data.frame"
+)
+r0_back <- with(typ_all[1, ], rho * beta * T0 / (delta * (c + beta * T0)))
+c(beta_all = typ_all$beta[1], R0_all = r0_back, beta_age = typ_age$beta[1], R0_age_35y = typ_age$R0[1])
+stopifnot(abs(r0_back / 13.74 - 1) < 1e-8)
+```
+
+The age model's `R0` at 35 years (about 17.6) is higher than the all-patient
+13.74, consistent with the higher `beta` of the unvaccinated fit. The Results
+text quotes `R0 = 13.36` in one sentence and 13.74 in Table 3 and the
+Discussion; the model uses the tabulated 13.74.
+
+## Untreated trajectory
+
+```{r untreated}
+lod <- 133.3333 * exp((37.933 - 40) / 1.418) # Eq. 1 at Ct = 40
+untreated <- bind_rows(
+  typ_all |> mutate(model = "all patients (Table 3)"),
+  typ_age |> mutate(model = "unvaccinated, age 35 y")
+)
+peaks <- untreated |>
+  group_by(model) |>
+  summarise(
+    tpeak = time[which.max(virus)],
+    peak = max(virus),
+    vl_day28 = virus[time == 28],
+    f_target_day28 = f_target[time == 28],
+    .groups = "drop"
+  )
+knitr::kable(peaks, digits = c(0, 2, 0, 1, 6), caption = "Typical untreated trajectories.")
+stopifnot(
+  all(peaks$tpeak > 3 & peaks$tpeak < 5),
+  all(peaks$peak > 1e7 & peaks$peak < 3e7),
+  all(peaks$vl_day28 < lod)
+)
+```
+
+Both typical trajectories peak near day 4 at about 2 x 10^7 copies/mL, as in
+Figure 3a, and fall below the limit of detection (`r signif(lod, 3)` copies/mL)
+before day 28, the end of the paper's simulation window.
+
+```{r untreated-plot, fig.width = 7, fig.height = 3.5}
+ggplot(untreated, aes(time, virus, colour = model)) +
+  geom_line() +
+  geom_hline(yintercept = lod, linetype = "dashed", colour = "grey50") +
+  scale_y_log10() +
+  labs(x = "Time since contact (days)", y = "Viral load (copies/mL)", colour = NULL) +
+  theme(legend.position = "bottom")
+```
+
+# Figure 3: timing and efficacy of an entry-blocking antiviral
+
+The authors' simulation script (Supplement S2) simulates 112 subjects aged 18
+to 78 years with the IIV listed above, starts treatment on day 1, 4 or 7 after
+contact with efficacy 0, 0.5, 0.8, 0.9 or 0.99, and plots the mean viral load
+and the mean fraction of target cells still uninfected on a daily grid. Two
+details of the script matter for the comparison:
+
+* the treatment indicator is linearly interpolated from 0 at `t*` to 1 at
+  `t* + 1` (`approxfun()`), whereas Eq. 3-6 write a step at `t*`; the model
+  files implement the equation. The ramp is reproduced below by supplying
+  `imax_beta` as a time-varying event-table column, so both versions are shown;
+* Figure 3 is reproduced by the all-patient (Table 3) parameters. The values
+  coded in the script's defaults belong to the age model and do not reproduce
+  it (see Assumptions and deviations).
+
+```{r fig3-sim}
+ages <- c(rep(18:65, 2), 65:75, 75, 75, 76, 77, 78) # Supplement S2 'Sims'
+stopifnot(length(ages) == 112L)
+scen <- tidyr::expand_grid(t_start = c(1, 4, 7), eff = c(0, 0.5, 0.8, 0.9, 0.99)) |>
+  mutate(scenario = row_number())
+
+make_fig3_events <- function(t_start, eff, scenario, ramp) {
+  ids <- (scenario - 1L) * length(ages) + seq_along(ages)
+  times <- sort(unique(c(0:28, seq(t_start, t_start + 1, by = 0.05))))
+  tidyr::expand_grid(id = ids, time = times) |>
+    mutate(
+      evid = 0L,
+      AGE = ages[id - (scenario - 1L) * length(ages)],
+      t_intervention = if (ramp) 0 else t_start,
+      imax_beta = if (ramp) eff * pmin(pmax(time - t_start, 0), 1) else eff,
+      t_start = t_start, eff = eff, scenario = scenario
+    )
+}
+simulate_fig3 <- function(ramp) {
+  ev <- lapply(seq_len(nrow(scen)), function(i) {
+    make_fig3_events(scen$t_start[i], scen$eff[i], scen$scenario[i], ramp = ramp)
+  }) |>
+    bind_rows()
+  stopifnot(!anyDuplicated(ev[, c("id", "time")]))
+  rxode2::rxSetSeed(20231001)
+  rxode2::rxSolve(readModelDb("Zhang_2023_covid19_tcle_immune"),
+    events = ev, keep = c("t_start", "eff", "scenario"),
+    returnType = "data.frame"
+  ) |>
+    filter(time %in% 0:28) |>
+    group_by(t_start, eff, time) |>
+    summarise(virus = mean(virus), f_target = mean(f_target), .groups = "drop") |>
+    mutate(indicator = if (ramp) "1-day ramp (authors' script)" else "step at t* (Eq. 3-6)")
+}
+fig3 <- bind_rows(simulate_fig3(ramp = TRUE), simulate_fig3(ramp = FALSE))
+```
+
+```{r fig3-plot, fig.width = 8, fig.height = 7}
+fig3_long <- fig3 |>
+  mutate(
+    start = paste("treatment from day", t_start),
+    efficacy = factor(eff)
+  )
+ggplot(fig3_long, aes(time, virus, colour = efficacy, linetype = indicator)) +
+  geom_line() +
+  geom_hline(yintercept = lod, colour = "grey60", linetype = "dashed") +
+  facet_wrap(~start) +
+  labs(
+    x = "Time since contact (days)", y = "Mean viral load (copies/mL)",
+    colour = "Efficacy", linetype = NULL,
+    caption = "Replicates Figure 3a-c of Zhang 2023."
+  ) +
+  theme(legend.position = "bottom", legend.box = "vertical")
+ggplot(fig3_long, aes(time, f_target, colour = efficacy, linetype = indicator)) +
+  geom_line() +
+  facet_wrap(~start) +
+  labs(
+    x = "Time since contact (days)", y = "Target cell ratio",
+    colour = "Efficacy", linetype = NULL,
+    caption = "Replicates Figure 3d-f of Zhang 2023."
+  ) +
+  theme(legend.position = "bottom", legend.box = "vertical")
+```
+
+The Results quote the outcome of four of these scenarios. The viral-load AUC
+is the trapezoidal integral of the mean daily viral load from day 0 to 28.
+
+```{r fig3-claims}
+fig3_auc <- fig3 |>
+  group_by(indicator, t_start, eff) |>
+  summarise(
+    auc = sum(diff(time) * (head(virus, -1) + tail(virus, -1)) / 2),
+    f28 = f_target[time == 28],
+    .groups = "drop"
+  ) |>
+  group_by(indicator, t_start) |>
+  mutate(auc_reduction_pct = 100 * (1 - auc / auc[eff == 0])) |>
+  ungroup()
+claim_value <- function(ind, ts, e, col) {
+  v <- fig3_auc[[col]][fig3_auc$indicator == ind & fig3_auc$t_start == ts & fig3_auc$eff == e]
+  if (length(v) != 1L) stop("no unique scenario row")
+  v
+}
+ramp <- "1-day ramp (authors' script)"
+step <- "step at t* (Eq. 3-6)"
+claims <- tibble::tribble(
+  ~claim, ~published, ~ind, ~ts, ~e, ~col,
+  "Control viral-load AUC (copies*day/mL)", 3.9e7, ramp, 4, 0, "auc",
+  "90% from day 1: AUC reduction (%)", 69.9, ramp, 1, 0.9, "auc_reduction_pct",
+  "90% from day 1: target cells uninfected at day 28 (%)", 69.35, ramp, 1, 0.9, "f28",
+  "90% from day 4: viral-load AUC (copies*day/mL)", 3.7e7, ramp, 4, 0.9, "auc",
+  "90% from day 4: target cells uninfected at day 28 (%)", 0.4, ramp, 4, 0.9, "f28"
+) |>
+  rowwise() |>
+  mutate(
+    scale = if (col == "f28") 100 else 1,
+    ramp_value = claim_value(ind, ts, e, col) * scale,
+    step_value = claim_value(step, ts, e, col) * scale
+  ) |>
+  ungroup()
+claims |>
+  select(claim, published, ramp_value, step_value) |>
+  dplyr::rename(
+    "Results statement" = claim, "Published" = published,
+    "Simulated, 1-day ramp" = ramp_value, "Simulated, step" = step_value
+  ) |>
+  knitr::kable(digits = 3, format.args = list(big.mark = ","))
+```
+
+```{r fig3-gate}
+auc_ctrl <- claim_value(ramp, 4, 0, "auc")
+# Untreated AUC is cohort-insensitive (IIV variances 0.01): a mis-transcribed
+# R0, delta, phi or theta moves it by tens of percent.
+stopifnot(abs(auc_ctrl / 3.9e7 - 1) < 0.15)
+# 99% efficacy from day 1 suppresses the infection; starting on day 4 or 7,
+# after the target cells are depleted, changes the AUC by little (Results).
+stopifnot(
+  claim_value(ramp, 1, 0.99, "auc_reduction_pct") > 95,
+  all(abs(fig3_auc$auc_reduction_pct[fig3_auc$t_start == 7]) < 5),
+  all(abs(fig3_auc$auc_reduction_pct[fig3_auc$t_start == 4 & fig3_auc$indicator == ramp]) < 10)
+)
+# 90% from day 1 sits close to the R0 = 1 threshold, so the cohort mean is
+# sensitive to the IIV draw; assert the paper's partial-protection regime
+# (69.9% reduction) rather than a tight value.
+stopifnot(
+  claim_value(ramp, 1, 0.9, "auc_reduction_pct") > 40,
+  claim_value(ramp, 1, 0.9, "auc_reduction_pct") < 90
+)
+```
+
+With the authors' 1-day ramp the simulation reproduces the Results: the
+untreated AUC, the near-complete protection at 99%, partial protection at 90%
+started on day 1, and almost no benefit when treatment starts on day 4 or
+later. The step of Eq. 3-6 acts half a day earlier on average and is therefore
+somewhat more protective at 90% from day 1.
+
+## Figure 3g-h: efficacy by initiation time
+
+A typical-value version of the heat maps, on the step indicator of Eq. 3-6.
+
+```{r fig3-heatmap, fig.width = 8, fig.height = 3.5}
+grid <- tidyr::expand_grid(t_start = 0:10, eff = seq(0, 1, by = 0.1)) |>
+  mutate(id = row_number())
+ev_grid <- tidyr::expand_grid(id = grid$id, time = seq(0, 28, by = 0.25)) |>
+  left_join(grid, by = "id") |>
+  mutate(evid = 0L, t_intervention = t_start, imax_beta = eff)
+heat <- rxode2::rxSolve(rxode2::zeroRe(readModelDb("Zhang_2023_covid19_tcle_immune")),
+  events = ev_grid, keep = c("t_start", "eff"), returnType = "data.frame"
+) |>
+  group_by(t_start, eff) |>
+  summarise(
+    auc = sum(diff(time) * (head(virus, -1) + tail(virus, -1)) / 2),
+    f28 = f_target[time == 28], .groups = "drop"
+  )
+p_auc <- ggplot(heat, aes(t_start, eff, fill = auc)) +
+  geom_tile() +
+  scale_fill_gradient(low = "white", high = "steelblue4") +
+  labs(x = "Initiation of therapy (days since contact)", y = "Antiviral effect", fill = "AUC")
+p_f <- ggplot(heat, aes(t_start, eff, fill = f28)) +
+  geom_tile() +
+  scale_fill_gradient(low = "firebrick", high = "white") +
+  labs(x = "Initiation of therapy (days since contact)", y = "Antiviral effect", fill = "f")
+p_auc
+p_f
+```
+
+As in Figure 3g-h, a clear benefit is confined to efficacy above about 80%
+started within about 3 days of contact.
+
+# Figure 4: tixagevimab-cilgavimab phase III trial
+
+Figure 4a simulates 112 patients per arm with the age model, treatment
+efficacy 99%, and plots the mean and SD of log10 viral load at 0, 3, 6, 15 and
+24 days after dosing, with a limit of quantification of 3.384 log10 copies/mL.
+The paper does not state the treatment start relative to contact. Here dosing
+is placed at the time the typical untreated log10 viral load first reaches
+5.77, the mean value the Results report at treatment initiation. Values below
+the limit of quantification are plotted at half the limit, matching the
+plateau near 3.08 log10 copies/mL in both panels of Figure 4.
+
+```{r fig4-sim}
+loq <- 3.384
+t_dose <- typ_age$time[which(log10(typ_age$virus) >= 5.77)[1]]
+t_dose
+obs_days <- c(0, 3, 6, 15, 24)
+make_arm <- function(eff, id_offset) {
+  tidyr::expand_grid(id = id_offset + seq_along(ages), time = t_dose + obs_days) |>
+    mutate(
+      evid = 0L,
+      AGE = ages[id - id_offset],
+      imax_beta = eff,
+      t_intervention = t_dose,
+      arm = if (eff > 0) "tixagevimab-cilgavimab" else "placebo"
+    )
+}
+ev4 <- bind_rows(make_arm(0.99, 0L), make_arm(0, 112L))
+stopifnot(!anyDuplicated(ev4[, c("id", "time")]))
+rxode2::rxSetSeed(20231002)
+sim4 <- rxode2::rxSolve(mod_age,
+  events = ev4, keep = c("arm"), returnType = "data.frame"
+) |>
+  mutate(
+    day = round(time - t_dose),
+    vl = ifelse(sim < loq, loq - log10(2), sim)
+  )
+fig4 <- sim4 |>
+  group_by(arm, day) |>
+  summarise(mean = mean(vl), sd = sd(vl), .groups = "drop")
+knitr::kable(fig4, digits = 2)
+```
+
+```{r fig4-plot, fig.width = 6, fig.height = 4}
+ggplot(fig4, aes(day, mean, colour = arm)) +
+  geom_line() +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), width = 0.6) +
+  geom_hline(yintercept = loq, linetype = "dashed", colour = "grey60") +
+  scale_colour_manual(values = c(placebo = "red3", "tixagevimab-cilgavimab" = "blue3")) +
+  coord_cartesian(ylim = c(0, 8)) +
+  labs(
+    x = "Days post dosing", y = "Log10 viral RNA (mean +/- SD)", colour = NULL,
+    caption = "Replicates Figure 4a of Zhang 2023."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+```{r fig4-gate}
+m4 <- function(a, d) fig4$mean[fig4$arm == a & fig4$day == d]
+stopifnot(
+  # Both arms start near the reported 5.77 log10 copies/mL (the dosing time is
+  # anchored on the typical curve, so this checks the cohort around it).
+  abs(m4("placebo", 0) - 5.77) < 0.6,
+  abs(m4("tixagevimab-cilgavimab", 0) - 5.77) < 0.6,
+  # Treatment lowers the mean viral load during the first week (Figure 4a:
+  # about 0.9 log10 at day 3 and 0.8 at day 6).
+  m4("placebo", 6) - m4("tixagevimab-cilgavimab", 6) > 0.3,
+  # Both arms are below the limit of quantification by day 15 (Results: by
+  # 12.7 days).
+  m4("placebo", 15) < loq,
+  m4("tixagevimab-cilgavimab", 15) < loq
+)
+```
+
+The simulated arms start near 5.8 log10 copies/mL with an SD of 1.1-1.4
+log10, close to the spread shown at day 0 of Figure 4a (about 1.4 to 1.6),
+which supports the script's residual SD of 3 on the natural-log scale. The placebo arm rises to its peak
+within the first days while the treated arm falls, and both reach the limit of
+quantification before day 15.
+
+# Assumptions and deviations
+
+* **IIV and residual error.** Neither is reported in the paper. Both models use
+  the values in the authors' simulation script (Supplement S2): variance 0.01
+  on `beta`, `delta`, `V0`, `phi` and `theta`, and residual SD 3 on the
+  natural-log viral load (`exp(rnorm(mean = log(pred), sd = 3))`), stored as
+  3 / log(10) = 1.303 on the log10 scale of the `log10_viral_load` output. The
+  IIV values equal the initial values in the estimation code, so they may not
+  be the final estimates. The day-0 spread of Figure 4a is consistent with the
+  residual SD.
+* **beta in the all-patient model.** Table 3 reports `R0` rather than `beta`.
+  `beta` is solved from the paper's `R0` definition with `F(0) = 0`; IIV is
+  applied to `beta`, as in the authors' code, not to `R0`. The eta keeps the
+  name `etalbeta` (matching the age model) even though this file has no
+  `lbeta` fixed effect, which the naming-convention check reports as a
+  warning.
+* **Age model values.** The parameters of the age-on-`delta` model are not
+  tabulated in the paper. They are the "from NM" values coded in the
+  Supplement S2 simulation script (`tbeta`, `tdelta`, `tv0`, `tphi`, `ttheta`,
+  age exponent -0.11 on `log(age / 35)`). The fit's population (the 114
+  unvaccinated patients) is inferred from the Methods and the Supplement S5
+  BICs.
+* **Which parameters generated Figure 3.** The script's default (age-model)
+  values give a smaller benefit than the Results report for 90% efficacy from
+  day 1 (about 27% AUC reduction against 69.9%), and peak timings that do not
+  match Figure 3a, whereas the Table 3 values reproduce both. Figure 3 is
+  therefore validated against `Zhang_2023_covid19_tcle_immune`, and the age
+  model against Figure 4, the simulation the Methods tie to the unvaccinated
+  fit.
+* **Treatment indicator.** The model files implement the step `H(t)` of Eq.
+  3-6. The authors' script ramps the indicator linearly over the day after
+  `t*`; the vignette reproduces that ramp through a time-varying `imax_beta`
+  column. The ramp reproduces the Results numbers more closely than the step.
+* **Figure legend.** The Figure 3 caption lists efficacies of 99%, 95%, 80%
+  and 50%, but its panels and the script use 0.99, 0.9, 0.8 and 0.5; the
+  vignette uses the panel values.
+* **Figure 4 dosing time.** Not reported; anchored on the reported mean viral
+  load at treatment initiation (5.77 log10 copies/mL) as described above.
+  Ages 18-78 follow the script's simulated population.
+* **Units of `phi`.** Table 3 gives no unit; `phi` multiplies the viral load in
+  `dV/dt`, so it is a rate (1/day). The immune response `F` and `theta` are in
+  arbitrary units because `F` is produced at unit rate by productively infected
+  cells.
+* **Other model structures.** M1-M6 and M8 are reported by BIC only (Table 2),
+  with no parameter estimates, and are not included. The Table 3 fit with `c`
+  and `k` estimated (BIC 12,328) is a sensitivity analysis and is not included.
+* **Covariates.** Vaccination status, contact type, variant and symptomatic
+  status were screened graphically and not retained; only age entered the
+  final model.
+* No correction notice for this article was found in PubMed (checked
+  2026-10-27).
