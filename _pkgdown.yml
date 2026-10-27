@@ -1872,6 +1872,8 @@ navbar:
         href: articles/Krzyzanski_2021_corticosteroids.html
       - text: "Dexamethasone (Ozdin 2025)"
         href: articles/Ozdin_2025_dexamethasone.html
+      - text: "Dexamethasone (Swierczek 2023)"
+        href: articles/Swierczek_2023_dexamethasone.html
       - text: "Dexamethasone rat (Li 2012)"
         href: articles/Li_2012_dexamethasone_rat.html
       - text: "Dexketoprofen pbpk (Zhang 2022)"
@@ -10117,6 +10119,7 @@ articles:
   - articles/Svensson_2020_rifampicin
   - articles/Swart_2004_lorazepam_midazolam
   - articles/Swartling_2022_cefotaxime
+  - articles/Swierczek_2023_dexamethasone
   - articles/Sy_2018_etirinotecanPegol
   - articles/Syvanen_2011_verapamil_rat
   - articles/Syvanen_2012_quinidine_rat

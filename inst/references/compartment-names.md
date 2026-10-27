@@ -4021,13 +4021,13 @@ Indirect-response state variables of the Xiang 2018 baicalein anti-inflammatory 
 - **Type:** compartment
 - **Role:** TNF-alpha indirect-response state (pg/mL) with LPS-stimulated zero-order production inhibited log-linearly by baicalein, and first-order elimination; drives the downstream IL-6 and iNOS responses via delay states.
 - **Source aliases:** none.
-- **Example models:** `Xiang_2018_baicalein.R`.
+- **Example models:** `Xiang_2018_baicalein.R`, `Swierczek_2023_dexamethasone.R`.
 
 ### il6 (**canonical IL-6 indirect-response state**)
 - **Type:** compartment
 - **Role:** IL-6 indirect-response state (pg/mL) produced at a rate proportional to the lag-delayed TNF-alpha signal, with first-order elimination.
 - **Source aliases:** none.
-- **Example models:** `Xiang_2018_baicalein.R`, `Hardiansyah_2019_CART_upn1_qsp.R`, `Hardiansyah_2019_CART_upn3_qsp.R`.
+- **Example models:** `Xiang_2018_baicalein.R`, `Hardiansyah_2019_CART_upn1_qsp.R`, `Hardiansyah_2019_CART_upn3_qsp.R`, `Swierczek_2023_dexamethasone.R`.
 - **Notes:** Distinct namespace from the `IL6` covariate (an upstream interleukin-6 covariate column); the lowercase `il6` compartment is the modelled IL-6 PD state, not a covariate. The state is not restricted to the founding TNF-alpha cascade: any model carrying a named IL-6 turnover pool with endogenous production and first-order elimination uses this name, including the CAR T-cell cytokine-release-syndrome models where production is driven by the effector-cell / target-cell product rather than by an upstream mediator.
 
 ### il10 (**canonical IL-10 indirect-response state**)
@@ -4312,7 +4312,7 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Type:** compartment
 - **Role:** C-reactive protein biomarker PD output.
 - **Source aliases:** none.
-- **Example models:** `Yang_2016_dilmapimod.R`, `AitOudhia_2012_canakinumab.R`.
+- **Example models:** `Yang_2016_dilmapimod.R`, `AitOudhia_2012_canakinumab.R`, `Swierczek_2023_dexamethasone.R`.
 
 ### sdma (**canonical symmetric dimethylarginine PD output**)
 - **Type:** compartment
