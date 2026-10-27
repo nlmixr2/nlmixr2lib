@@ -284,6 +284,8 @@ navbar:
         href: articles/Stricker_2013_aminocaproicAcid.html
       - text: "Amisulpride (Hopkins 2024)"
         href: articles/Hopkins_2024_amisulpride.html
+      - text: "Amisulpride (Li 2023)"
+        href: articles/Li_2023_amisulpride.html
       - text: "Amisulpride (Yan 2024)"
         href: articles/Yan_2024_amisulpride.html
       - text: "Amitriptyline RR (Tylutki 2018)"
@@ -9271,6 +9273,7 @@ articles:
   - articles/Li_2022_gumokimab
   - articles/Li_2022_paroxetine
   - articles/Li_2023_TQB3203
+  - articles/Li_2023_amisulpride
   - articles/Li_2023_granisetron
   - articles/Li_2023_ornidazole
   - articles/Li_2024_ceftazidime
