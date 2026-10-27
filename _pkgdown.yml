@@ -1224,6 +1224,8 @@ navbar:
         href: articles/Du_2021_cefathiamidine.html
       - text: "Cefathiamidine (Zhi 2018)"
         href: articles/Zhi_2018_cefathiamidine.html
+      - text: "Cefazolin (Alli 2023)"
+        href: articles/Alli_2023_cefazolin.html
       - text: "Cefazolin (Bausch 2024)"
         href: articles/Bausch_2024_cefazolin.html
       - text: "Cefazolin (Berthaud 2025)"
@@ -7935,6 +7937,7 @@ articles:
   - articles/Alihodzic_2022_ciprofloxacin
   - articles/Allard_2020_factorviii
   - articles/Allegaert_2015_paracetamol
+  - articles/Alli_2023_cefazolin
   - articles/Almond_2016_cyp3a4_induction
   - articles/Almquist_2015_Mig1
   - articles/Almquist_2016_ticagrelor
