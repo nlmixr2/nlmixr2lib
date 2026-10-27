@@ -7622,6 +7622,8 @@ navbar:
         href: articles/Zakria_2026_voriconazole.html
       - text: "Voriconazole pbpk (AbdullahKoolmees 2024)"
         href: articles/AbdullahKoolmees_2024_voriconazole_flucloxacillin_ddi.html
+      - text: "Voriconazole rat (Staudt 2023)"
+        href: articles/Staudt_2023_voriconazole_rat.html
       - text: "Vortioxetine (Naik 2016)"
         href: articles/Naik_2016_vortioxetine.html
       - text: "Vosoritide (Qi 2024)"
@@ -10051,6 +10053,7 @@ articles:
   - articles/Stanczyk_2022_levonorgestrel_ethinylestradiol
   - articles/Standing_2008_diclofenac
   - articles/Standing_2012_oseltamivir
+  - articles/Staudt_2023_voriconazole_rat
   - articles/Steffens_2025_amikacin
   - articles/Steichert_2025_enalapril_enalaprilat_pediatric
   - articles/Stein_2018_mAb_nonlinear_PK
