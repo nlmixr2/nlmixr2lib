@@ -1364,6 +1364,14 @@ navbar:
         href: articles/Zhou_2016_ceftazidime_avibactam.html
       - text: "Ceftazidime (Zieck 2023)"
         href: articles/Zieck_2023_ceftazidime.html
+      - text: "Ceftazidime avibactam colistin NARA1182 (Aubry 2023)"
+        href: articles/Aubry_2023_ceftazidime_avibactam_colistin.html
+      - text: "Ceftazidime avibactam colistin NARA1295 (Aubry 2023)"
+        href: articles/Aubry_2023_ceftazidime_avibactam_colistin.html
+      - text: "Ceftazidime avibactam colistin NARA1584 (Aubry 2023)"
+        href: articles/Aubry_2023_ceftazidime_avibactam_colistin.html
+      - text: "Ceftazidime avibactam colistin NARA864 (Aubry 2023)"
+        href: articles/Aubry_2023_ceftazidime_avibactam_colistin.html
       - text: "Ceftazidime avibactam control (Zazo 2024)"
         href: articles/Zazo_2024_ceftazidime_avibactam.html
       - text: "Ceftazidime avibactam fosfomycin hfim (Kroemer 2024)"
@@ -7995,6 +8003,7 @@ articles:
   - articles/Aston_2017_receptor_rebound
   - articles/Athanassa_2025_minocycline
   - articles/Attarwala_2023_mRNA3927
+  - articles/Aubry_2023_ceftazidime_avibactam_colistin
   - articles/Axelsen_2024_selexipag
   - articles/Ayyar_2022_il17a_target_engagement
   - articles/Ayyar_2024_givosiran
