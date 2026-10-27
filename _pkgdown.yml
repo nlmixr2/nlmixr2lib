@@ -5522,10 +5522,32 @@ navbar:
         href: articles/Wang_2026_polymyxinB.html
       - text: "PolymyxinB (Yang 2025)"
         href: articles/Yang_2025_polymyxinB.html
+      - text: "PolymyxinB (vanderMeijden 2023)"
+        href: articles/vanderMeijden_2023_polymyxinB.html
       - text: "PolymyxinB AB121D0 (Lacroix 2025)"
         href: articles/Lacroix_2025_polymyxinB_mucin.html
       - text: "PolymyxinB AB122D12 (Lacroix 2025)"
         href: articles/Lacroix_2025_polymyxinB_mucin.html
+      - text: "PolymyxinB Ecoli107 (vanderMeijden 2023)"
+        href: articles/vanderMeijden_2023_polymyxinB.html
+      - text: "PolymyxinB Ecoli15 (vanderMeijden 2023)"
+        href: articles/vanderMeijden_2023_polymyxinB.html
+      - text: "PolymyxinB Ecoli51 (vanderMeijden 2023)"
+        href: articles/vanderMeijden_2023_polymyxinB.html
+      - text: "PolymyxinB EcoliATCC25922 (vanderMeijden 2023)"
+        href: articles/vanderMeijden_2023_polymyxinB.html
+      - text: "PolymyxinB EcoliATCC25922 fractionation (vanderMeijden 2023)"
+        href: articles/vanderMeijden_2023_polymyxinB.html
+      - text: "PolymyxinB Kpneumoniae104 fractionation (vanderMeijden 2023)"
+        href: articles/vanderMeijden_2023_polymyxinB.html
+      - text: "PolymyxinB Kpneumoniae17 (vanderMeijden 2023)"
+        href: articles/vanderMeijden_2023_polymyxinB.html
+      - text: "PolymyxinB Kpneumoniae58 (vanderMeijden 2023)"
+        href: articles/vanderMeijden_2023_polymyxinB.html
+      - text: "PolymyxinB Kpneumoniae74 (vanderMeijden 2023)"
+        href: articles/vanderMeijden_2023_polymyxinB.html
+      - text: "PolymyxinB KpneumoniaeATCC43816 (vanderMeijden 2023)"
+        href: articles/vanderMeijden_2023_polymyxinB.html
       - text: "PolymyxinB meropenem fosfomycin BRKP28 (Mahadevan 2026)"
         href: articles/Mahadevan_2026_polymyxinB_combination_CRKP.html
       - text: "PolymyxinB meropenem fosfomycin BRKP61 (Mahadevan 2026)"
@@ -10760,6 +10782,7 @@ articles:
   - articles/vandenBerg_2025_genericMab
   - articles/vandenMaagdenberg_2025_a2ar_tme_qsp
   - articles/vanderGaag_2025_osimertinib_pbpk
+  - articles/vanderMeijden_2023_polymyxinB
   - articles/vanderStoep_2019_treosulfan
   - articles/vanderWalt_2013_dapagliflozin
   - articles/vanderZeeuw_2026_immunoglobulin
