@@ -4398,6 +4398,8 @@ navbar:
         href: articles/Suyagh_2011_metronidazole.html
       - text: "Metronidazole pbpk (Chauzy 2022)"
         href: articles/Chauzy_2022_metronidazole_pbpk.html
+      - text: "Mezigdomide (Wu 2023)"
+        href: articles/Wu_2023_mezigdomide.html
       - text: "Mg1113 human (Kwak 2025)"
         href: articles/Kwak_2025_mg1113.html
       - text: "Mg1113 monkey (Kwak 2025)"
@@ -10454,6 +10456,7 @@ articles:
   - articles/Wu_2022_meropenem
   - articles/Wu_2022_treprostinil
   - articles/Wu_2023_SPI_62
+  - articles/Wu_2023_mezigdomide
   - articles/Wu_2024_daptomycin
   - articles/Wu_2024_gfr_maturation
   - articles/Wu_2024_inotuzumab
