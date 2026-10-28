@@ -5379,6 +5379,20 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
 - **Example models:** `Choi_2021_doxorubicin_sorafenib_mouse.R` (founding example), `Choi_2021_doxorubicin_sorafenib_c1_mouse.R`, `Choi_2021_doxorubicin_sorafenib_c2_mouse.R`.
 - **Notes:** Full INN name (lowercase) per the `sunitinib` / `irinotecan` / `osimertinib` precedent for whole co-administered agents; the abbreviation `sor` is not used. Registered because the Choi 2021 combination models fit doxorubicin and sorafenib symmetrically against one shared tumor-growth state, so both arms are suffixed (`dox` / `sorafenib`), as in `Mody_2023_doxorubicin_dexrazoxane_*`. Standalone sorafenib models (`Choi_2021_sorafenib_mouse.R`, `Agarwal_2011_sorafenib_*`) keep bare canonical names because sorafenib is their sole analyte.
 
+### men1611 (**canonical MEN1611 drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** MEN1611 (oral PI3K inhibitor) drug-name suffix for combination-therapy compartments, parameters and outputs (`depot_men1611`, `central_men1611`, `peripheral1_men1611`, `lka_men1611`, `lcl_men1611`, `lvc_men1611`, `lq_men1611`, `lvp_men1611`, `lfdepot_men1611`, `ldrugSlope_men1611`, `ldamageTransit_men1611`, `Cc_men1611`).
+- **Source aliases:** `MEN1611` -- Tosca 2023 notation (`k1,MEN1611`, `k2,MEN1611`, `C_MEN1611`).
+- **Example models:** `Tosca_2023_men1611_trastuzumab_kpl4_mouse.R` (founding example) and its six sibling per-xenograft files `Tosca_2023_men1611_trastuzumab_<line>_mouse.R`.
+- **Notes:** Development code, lowercased, because MEN1611 has no INN; the INN replaces it if one is assigned. Registered because the Tosca 2023 2D tumor-growth-inhibition models carry the PK of MEN1611 and trastuzumab side by side against one shared tumor, so both arms are suffixed (`men1611` / `trastuzumab`). The standalone mouse PK model `Tosca_2023_men1611_mouse.R` keeps bare canonical names because MEN1611 is its sole analyte.
+
+### trastuzumab (**canonical trastuzumab drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Trastuzumab drug-name suffix for combination-therapy compartments, parameters and outputs (`depot_trastuzumab`, `central_trastuzumab`, `peripheral1_trastuzumab`, `lka_trastuzumab`, `lcl_trastuzumab`, `lvc_trastuzumab`, `lq_trastuzumab`, `lvp_trastuzumab`, `lfdepot_trastuzumab`, `ldrugSlope_trastuzumab`, `ldamageTransit_trastuzumab`, `Cc_trastuzumab`).
+- **Source aliases:** `TZB` -- Tosca 2023 abbreviation (`k1,TZB`, `k2,TZB`, `C_TZB`).
+- **Example models:** `Tosca_2023_men1611_trastuzumab_kpl4_mouse.R` (founding example) and its six sibling per-xenograft files `Tosca_2023_men1611_trastuzumab_<line>_mouse.R`.
+- **Notes:** Full INN name (lowercase) per the `sunitinib` / `irinotecan` / `osimertinib` / `sorafenib` precedent for whole co-administered agents; the abbreviation `tzb` is not used. Standalone trastuzumab models (`Tosca_2023_trastuzumab_mouse.R`, `Bruno_2005_trastuzumab.R`, ...) keep bare canonical names because trastuzumab is their sole analyte.
+
 ### amphotericinb (**canonical amphotericin B K-PD drug-name suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Amphotericin B drug-name suffix for combination K-PD compartments and rate constants (`depot_kpd_amphotericinb`, `lkel_amphotericinb`, `kel_amphotericinb`) and for the paired drug-specific linear kill slope (`lslope_amphotericinb`, `slope_amphotericinb`).

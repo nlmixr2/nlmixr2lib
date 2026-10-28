@@ -4212,6 +4212,22 @@ navbar:
         href: articles/Nath_2010_melphalan.html
       - text: "Melphalan unbound (Nath 2010)"
         href: articles/Nath_2010_melphalan.html
+      - text: "Men1611 mouse (Tosca 2023)"
+        href: articles/Tosca_2023_men1611_trastuzumab.html
+      - text: "Men1611 trastuzumab bcpdx67 mouse (Tosca 2023)"
+        href: articles/Tosca_2023_men1611_trastuzumab.html
+      - text: "Men1611 trastuzumab ctg0033 mouse (Tosca 2023)"
+        href: articles/Tosca_2023_men1611_trastuzumab.html
+      - text: "Men1611 trastuzumab hcc1954 mouse (Tosca 2023)"
+        href: articles/Tosca_2023_men1611_trastuzumab.html
+      - text: "Men1611 trastuzumab jimt1 mouse (Tosca 2023)"
+        href: articles/Tosca_2023_men1611_trastuzumab.html
+      - text: "Men1611 trastuzumab kpl4 mouse (Tosca 2023)"
+        href: articles/Tosca_2023_men1611_trastuzumab.html
+      - text: "Men1611 trastuzumab pdx153 mouse (Tosca 2023)"
+        href: articles/Tosca_2023_men1611_trastuzumab.html
+      - text: "Men1611 trastuzumab pdx173jal mouse (Tosca 2023)"
+        href: articles/Tosca_2023_men1611_trastuzumab.html
       - text: "Mepolizumab (Cao 2013)"
         href: articles/Cao_2013_mepolizumab.html
       - text: "Mercaptopurine (Gebhard 2023)"
@@ -7064,6 +7080,8 @@ navbar:
         href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
       - text: "Trastuzumab esophagogastric pbpk (Salgado 2022)"
         href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
+      - text: "Trastuzumab mouse (Tosca 2023)"
+        href: articles/Tosca_2023_men1611_trastuzumab.html
       - text: "Trastuzumab pf05280014 (Chen 2019)"
         href: articles/Chen_2019_trastuzumab.html
       - text: "Trastuzumab reference (Chen 2019)"
@@ -10204,6 +10222,7 @@ articles:
   - articles/Tong_2026_vancomycin
   - articles/Tornoe_2006_HPG_axis
   - articles/Tortorici_2017_a1pi
+  - articles/Tosca_2023_men1611_trastuzumab
   - articles/Toshimoto_2017_irinotecan_pbpk
   - articles/Toukam_2025_biib107
   - articles/Toutain_2025_doxycycline_pig
