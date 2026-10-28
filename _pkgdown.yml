@@ -1204,6 +1204,12 @@ navbar:
         href: articles/Liu_2018_pneumocystis_qsp.html
       - text: "Caspofungin optimalDesign (Xu 2026)"
         href: articles/Xu_2026_caspofungin.html
+      - text: "Cd123nkce human (Choi 2024)"
+        href: articles/Choi_2024_cd123nkce.html
+      - text: "Cd123nkce invitro (Choi 2024)"
+        href: articles/Choi_2024_cd123nkce.html
+      - text: "Cd123nkce nhp (Choi 2024)"
+        href: articles/Choi_2024_cd123nkce.html
       - text: "Cebranopadol (Kleideiter 2017)"
         href: articles/Kleideiter_2017_cebranopadol.html
       - text: "Cebranopadol (Kleideiter 2018)"
@@ -8316,6 +8322,7 @@ articles:
   - articles/Choi_2016_gcc4401c_rivaroxaban
   - articles/Choi_2018_metformin
   - articles/Choi_2021_doxorubicin_sorafenib_mouse
+  - articles/Choi_2024_cd123nkce
   - articles/Choi_2025_denosumab
   - articles/Choi_2025_efpeglenatide
   - articles/Choi_2026_melphalan
