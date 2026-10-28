@@ -13,7 +13,7 @@ Zhang_2024_vancomycin <- function() {
     "Zhang T, Krekels EHJ, Smit C, van Dongen EPA, Bruggemann RJM, Knibbe CAJ.",
     "How to Dose Vancomycin in Overweight and Obese Patients with Varying",
     "Renal (Dys)function in the Novel Era of AUC 400-600 mg*h/L-Targeted",
-    "Dosing. Clin Pharmacokinet. 2024;63(1):79. doi:10.1007/s40262-023-01324-5."
+    "Dosing. Clin Pharmacokinet. 2024;63(1):79-91. doi:10.1007/s40262-023-01324-5."
   )
   vignette <- "Zhang_2024_vancomycin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
