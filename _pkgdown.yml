@@ -5586,6 +5586,8 @@ navbar:
         href: articles/Chan_2021_pregabalin.html
       - text: "Pregabalin (Hong 2016)"
         href: articles/Hong_2016_pregabalin.html
+      - text: "Pregabalin (Park 2023)"
+        href: articles/Park_2023_pregabalin.html
       - text: "Pregabalin (Shoji 2011)"
         href: articles/Shoji_2011_pregabalin.html
       - text: "Pregabalin (vanEsdonk 2018)"
@@ -9683,6 +9685,7 @@ articles:
   - articles/Park_2014_triflusal
   - articles/Park_2023_everolimus
   - articles/Park_2023_mycophenolic_acid
+  - articles/Park_2023_pregabalin
   - articles/Park_2025_cd19_cart_sle_qsp
   - articles/Park_2025_donepezil
   - articles/Park_2025_efineptakin_alfa
