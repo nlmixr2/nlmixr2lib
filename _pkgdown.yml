@@ -3228,8 +3228,16 @@ navbar:
         href: articles/Wang_2021_icatibant.html
       - text: "Iclaprim (Lodise 2018)"
         href: articles/Lodise_2018_iclaprim.html
+      - text: "IdecabtageneVicleucel cr (Connarn 2023)"
+        href: articles/Connarn_2023_idecabtageneVicleucel.html
+      - text: "IdecabtageneVicleucel crs corticosteroid (Connarn 2023)"
+        href: articles/Connarn_2023_idecabtageneVicleucel.html
+      - text: "IdecabtageneVicleucel crs tocilizumab (Connarn 2023)"
+        href: articles/Connarn_2023_idecabtageneVicleucel.html
       - text: "IdecabtageneVicleucel human (Singh 2021)"
         href: articles/Singh_2021_idecabtageneVicleucel.html
+      - text: "IdecabtageneVicleucel orr (Connarn 2023)"
+        href: articles/Connarn_2023_idecabtageneVicleucel.html
       - text: "Ifosfamide (Brain 2008)"
         href: articles/Brain_2008_ifosfamide.html
       - text: "Ifosfamide (Freyer 2000)"
@@ -8367,6 +8375,7 @@ articles:
   - articles/Comisar_2025_zavegepant
   - articles/Conil_2007_ceftazidime
   - articles/Conil_2010_tobramycin
+  - articles/Connarn_2023_idecabtageneVicleucel
   - articles/Conrado_2014_alzheimer
   - articles/Cook_2016_paracetamol
   - articles/Cooper_2015_sertraline
