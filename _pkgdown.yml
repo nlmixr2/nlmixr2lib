@@ -198,6 +198,8 @@ navbar:
         href: articles/Riggs_2012_albinterferon.html
       - text: "AlbuminNanoparticles mouse pbpk (Kutumova 2024)"
         href: articles/Kutumova_2024_albuminNanoparticles.html
+      - text: "Alectinib (vanderHeijden 2023)"
+        href: articles/vanderHeijden_2023_alectinib.html
       - text: "Alemtuzumab (Admiraal 2019)"
         href: articles/Admiraal_2019_alemtuzumab.html
       - text: "Alemtuzumab (Mould 2007)"
@@ -10760,6 +10762,7 @@ articles:
   - articles/vandenBerg_2025_genericMab
   - articles/vandenMaagdenberg_2025_a2ar_tme_qsp
   - articles/vanderGaag_2025_osimertinib_pbpk
+  - articles/vanderHeijden_2023_alectinib
   - articles/vanderStoep_2019_treosulfan
   - articles/vanderWalt_2013_dapagliflozin
   - articles/vanderZeeuw_2026_immunoglobulin
