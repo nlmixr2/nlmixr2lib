@@ -870,6 +870,14 @@ navbar:
         href: articles/Togawa_2016_bilastine.html
       - text: "Bilastine wheal (Togawa 2016)"
         href: articles/Togawa_2016_bilastine.html
+      - text: "BintrafuspAlfa (Liu 2023)"
+        href: articles/Liu_2023_bintrafuspAlfa.html
+      - text: "BintrafuspAlfa multistate (Liu 2023)"
+        href: articles/Liu_2023_bintrafuspAlfa.html
+      - text: "BintrafuspAlfa multistate dose (Liu 2023)"
+        href: articles/Liu_2023_bintrafuspAlfa.html
+      - text: "BintrafuspAlfa tgi (Liu 2023)"
+        href: articles/Liu_2023_bintrafuspAlfa.html
       - text: "BisphenolA pbpk (Karrer 2018)"
         href: articles/Karrer_2018_bisphenols_pbpk.html
       - text: "BisphenolAF pbpk (Karrer 2018)"
@@ -9326,6 +9334,7 @@ articles:
   - articles/Liu_2022_escitalopram
   - articles/Liu_2022_nifedipine
   - articles/Liu_2022_tacrolimus
+  - articles/Liu_2023_bintrafuspAlfa
   - articles/Liu_2023_mAb_mouse_pbpk
   - articles/Liu_2024_deutenzalutamide
   - articles/Liu_2024_saf189s

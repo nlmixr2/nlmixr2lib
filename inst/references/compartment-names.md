@@ -4906,6 +4906,27 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Lin_2024_TB_multistate.R` (five-state pharmacometric multistate model; `prob_scc <- s_converted` is the observation variable and carries the placeholder additive residual, while `prob_active_tb`, `prob_recurrent_tb`, `prob_dropout` and `prob_death` expose the other four state-occupancy probabilities).
 - **Notes:** A probability output in `[0, 1]`, not a concentration or an amount. Distinct from `sur` (a survival probability derived from a cumulative hazard in a time-to-event sub-model) because `prob_scc` is a state-occupancy probability of a *transient, re-enterable* state: a patient can leave the converted state for recurrent TB and return to it, so `prob_scc` is not monotone in time and is not the complement of any cumulative hazard. Follows the `prob_<endpoint>` output-naming shape founded by `prob_roc`. Founding models expose `prob_scc` with a small placeholder residual so the nlmixr2 likelihood machinery accepts the forward-simulation model; the source analysis maximises an exact multistate event likelihood on the observed categorical state and has no observation-error model.
 
+### prob_death (**canonical death-state occupancy probability output of a multistate model**)
+- **Type:** compartment
+- **Role:** Marginal probability of having died by time `t` in a pharmacometric multistate model, i.e. the occupancy probability of the absorbing death state. Monotone non-decreasing; `1 - prob_death` is the overall-survival probability in the absence of dropout censoring.
+- **Source aliases:** `P_6` -- Liu 2023 Appendix S2 control stream ($ERROR block).
+- **Example models:** `Lin_2024_TB_multistate.R` (`prob_death <- s_death`, a derived output), `Liu_2023_bintrafuspAlfa_multistate.R` and `Liu_2023_bintrafuspAlfa_multistate_dose.R` (`prob_death <- s_death` is the observation variable and carries the placeholder additive residual, because overall survival is the endpoint the source's dose-response simulations target).
+- **Notes:** A probability output in `[0, 1]`. Distinct from `sur` (survival from a single cumulative hazard in a time-to-event sub-model): here death competes with, and is reached through, the other states of the multistate model.
+
+### prob_dropout (**canonical dropout-state occupancy probability output of a multistate model**)
+- **Type:** compartment
+- **Role:** Marginal probability of having dropped out (lost to follow-up) by time `t` in a pharmacometric multistate model, i.e. the occupancy probability of an absorbing dropout state that competes with death.
+- **Source aliases:** `P_5` -- Liu 2023 Appendix S2 control stream ($ERROR block).
+- **Example models:** `Lin_2024_TB_multistate.R`, `Liu_2023_bintrafuspAlfa_multistate.R`, `Liu_2023_bintrafuspAlfa_multistate_dose.R` (each `prob_dropout <- s_dropout`, a derived output).
+- **Notes:** A probability output in `[0, 1]`. Distinct from the landmark responder-fraction outputs of the form `prob_dropout_wk26` in `Hanzel_2022_vedolizumab.R`, which are discrete-time Markov quantities at a fixed visit rather than a continuous-time state occupancy.
+
+### prob_stable_disease, prob_tumor_response, prob_progressive_disease, prob_unknown_status (**canonical tumour-response-state occupancy probability outputs of an oncology multistate model**)
+- **Type:** compartment
+- **Role:** Marginal probabilities of occupying, at time `t`, the transient tumour-response states of an oncology multistate model built on RECIST 1.1 overall response: stable disease (`prob_stable_disease`, SD), response (`prob_tumor_response`, PR or CR), progression (`prob_progressive_disease`, PD) and unknown tumour status after treatment and tumour evaluation stopped without documented progression (`prob_unknown_status`).
+- **Source aliases:** `P_1`, `P_2`, `P_3`, `P_4` -- Liu 2023 Appendix S2 control stream ($ERROR block; states STABLE, DECREASE, PROGRESSION, UNKNOWN).
+- **Example models:** `Liu_2023_bintrafuspAlfa_multistate.R`, `Liu_2023_bintrafuspAlfa_multistate_dose.R` (derived outputs `<- s_stable`, `s_response`, `s_progression`, `s_unknown`; reproduce the state-proportion panels of Liu 2023 Figure 2).
+- **Notes:** Probability outputs in `[0, 1]`. `prob_tumor_response` is a state occupancy (responding now), not the overall response rate: a patient who responded and later progressed has left the state, so the cumulative best-overall-response rate is the integral of the inflow `k12 * prob_stable_disease`, not `prob_tumor_response` at any time. Deliberately not named `prob_response`, which is the seizure-responder output of `Gidal_2018_eslicarbazepine_response.R`, nor `prob_orr_*`, which are landmark adjudicated objective-response endpoints.
+
 ### prob_escape (**canonical escape-subpopulation membership probability output**)
 - **Type:** compartment
 - **Role:** Probability that a patient belongs to the "escape" latent class of a four-class longitudinal tumour-size mixture model -- the progressor class, in which the drug-driven kill rate is zero, the tumour grows unopposed and the baseline tumour burden is larger than in the responder classes. Time-invariant per subject: it is the output of a multinomial logistic regression on baseline covariates and a scalar exposure metric, not a state-occupancy probability that evolves along the solve. The reference (intercept) category of that regression, so its logit is fixed at 0 and the three responder logits are estimated relative to it.
