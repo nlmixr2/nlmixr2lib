@@ -1446,6 +1446,8 @@ navbar:
         href: articles/Melander_2025_cetirizine.html
       - text: "Cetuximab (Dirks 2008)"
         href: articles/Dirks_2008_cetuximab.html
+      - text: "Chemotherapy gcsf anc (Hughes 2023)"
+        href: articles/Hughes_2023_chemotherapy_gcsf_anc.html
       - text: "ChlorogenicAcid rat (Chen 2024)"
         href: articles/Chen_2024_guhongInjection.html
       - text: "Chloroquine (Hoglund 2016)"
@@ -8867,6 +8869,7 @@ articles:
   - articles/Huang_2025_dexmedetomidine
   - articles/Huang_2026_tiapride
   - articles/Hughes_2022_brepocitinib
+  - articles/Hughes_2023_chemotherapy_gcsf_anc
   - articles/Hughes_2024_vancomycin
   - articles/Huh_2021_sorafenib
   - articles/Huh_2024_ritlecitinib
