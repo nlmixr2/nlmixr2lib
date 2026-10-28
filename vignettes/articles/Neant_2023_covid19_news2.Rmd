@@ -1,0 +1,619 @@
+---
+title: "SARS-CoV-2 viral kinetics and NEWS-2 clinical score (Neant 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SARS-CoV-2 viral kinetics and NEWS-2 clinical score (Neant 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Neant_2023_covid19_news2"))$reference`
+* Article: [CPT Pharmacometrics Syst Pharmacol 2023;12(12):2027](https://doi.org/10.1002/psp4.13051)
+  (open access, PMC10725266). The subgroup and standard-of-care fits are in the
+  Supporting Information (Appendix S1, Tables S1-S3).
+
+Neant et al. fitted nasopharyngeal SARS-CoV-2 viral load and the National Early
+Warning Score 2 (NEWS-2) simultaneously in hospitalised COVID-19 patients of the
+DisCoVeRy trial (standard of care with or without remdesivir). Viral load
+follows a target-cell limited model with an eclipse phase and separate
+infectious / noninfectious virion pools; the normalised viral load drives an
+effect compartment, and NEWS-2 is a Hill function of the log10 effect-compartment
+viral load. Remdesivir reduces viral production by a fraction `eps`.
+
+The paper reports four fits of this structure, each a separate model here:
+
+| Model | Fit | Source |
+|-------|-----|--------|
+| `Neant_2023_covid19_news2` | all 664 patients, both arms (final model) | Table 2 |
+| `Neant_2023_covid19_news2_highvl` | patients with admission viral load >= 3.5 log10 copies/10^4 cells | Table S1 |
+| `Neant_2023_covid19_news2_lowvl` | patients with admission viral load < 3.5 log10 copies/10^4 cells | Table S2 |
+| `Neant_2023_covid19_news2_soc` | standard-of-care arm only, no remdesivir effect | Table S3 |
+
+Table S4 (NEWS-2-only refits used to show that the viral-load link improves the
+fit by 169 BIC units) is a robustness check that conditions on individual
+empirical Bayes estimates and is not packaged.
+
+# Population
+
+The analysis set is 664 hospitalised adults from 48 sites in France, Belgium,
+Portugal, Austria and Luxembourg, randomised between March 2020 and January
+2021 to standard of care (SoC, N = 329) or SoC plus intravenous remdesivir
+(200 mg on Day 1 then 100 mg once daily for up to 10 days, N = 335). Patients
+were randomised at most 20 days after symptom onset (median 9 days, IQR 7-11);
+456 (68.7%) were male and 349 (52.5%) were younger than 65 years; NEWS-2 was
+>= 7 at randomisation in 74.5% (SoC) and 67.7% (remdesivir). Viral load was
+missing at randomisation for 39.8% (SoC) and 34.0% (remdesivir) of patients
+(Table 1). Data were collected before variants of concern and before
+vaccination.
+
+The same information is available programmatically via
+`rxode2::rxode(readModelDb("Neant_2023_covid19_news2"))$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/therapeuticArea/Neant_2023_covid19_news2*.R`. The values
+of the four fits are collected below; random-effect SDs are on the log scale
+(logit scale for N0 and eps).
+
+| Parameter | Main (Table 2) | High VL (Table S1) | Low VL (Table S2) | SoC (Table S3) |
+|-----------|----------------|--------------------|-------------------|----------------|
+| `R0` (SD) | 6.71 (0.50, held) | 7.31 (0.50) | 7.60 (0.50) | 6.17 (0.50) |
+| `delta` < 65 / >= 65 y (1/day) (SD) | 0.84 / 0.74 (0.30) | 0.75 / 0.70 (0.17) | 0.63 / 0.62 (0.18) | 0.89 / 0.80 (0.32) |
+| `p` (virions/cell/day) (SD) | 1.56e5 (1.56) | 3.06e6 (0.14) | 2.55e3 (1.35) | 1.42e5 (1.70) |
+| `ke0` < 65 / >= 65 y (1/day) (SD) | 0.82 / 0.37 (1.42) | 0.52 / 0.33 (1.34) | 1.1 / 0.29 (1.65) | 1 / 0.29 (1.61) |
+| `n` Hill (SD) | 1 (0.23) | 1.44 (0.34) | 0.94 (1.15) | 0.98 (0.28) |
+| `LVL50` (log10 copies/10^4 cells) (SD) | 4.81 (0.72) | 6.07 (0.52) | 3.33 (0.77) | 4.43 (0.72) |
+| `N0` (logit SD) | 0.86 (3.35) | 1.5 (1.63) | 1.15 (3.78) | 0.8 (3.33) |
+| `eps` (logit SD) | 22% (2.43) | 78% (1.81) | 15% (0.8) | n/a |
+| Additive error, log10 viral load | 1.23 | 1.19 | 1.02 | 1.34 |
+| Additive / proportional error, NEWS-2 | 1.53 / 0.04 | 1.47 / 0.05 | 1.59 / 0.03 | 1.56 / 0.04 |
+
+| Equation / constant | Value | Source location |
+|---------------------|-------|-----------------|
+| `d/dt(target)`, `d/dt(eclipse)`, `d/dt(infected)`, `d/dt(virus)`, `d/dt(virus_ni)` | n/a | Equation 1; production terms with `(1 - eps)` from Equation 4 |
+| `beta = R0 * c * delta / (p * T0 * mu)` | n/a | Methods, definition of R0 |
+| `d/dt(effect) = ke0 * Vobs - ke0 * effect` | k1e = ke0 | Equation 2 and the k1e = ke0 assumption |
+| `news2 = N0 + (20 - N0) * log10(E)^n / (log10(E)^n + LVL50^n)` | maximum 20 | Equation 3 |
+| `k`, `c`, `mu` | 4 /day, 10 /day, 1e-4 | Methods, 'Assumptions on parameter values' |
+| `T0`, initial conditions | 4e6 cells; I1 = 0, I2 = 1, Vi = Vni = 0 | Methods, 'Assumptions on parameter values' |
+| `f` (`fscale`) | 2.5e-6 | Methods: 10^-3 x 10^4 / (4 x 10^6) |
+| Incubation period `tinc` | median 5 days, SD 0.125 | Methods (prior on the time of infection) |
+| `N0` bounds | 0 to 3, logit-normal | Methods and Table 2 footnote |
+
+# Typical trajectories
+
+Model time is days since infection. Observation rows carry `dvid = 1` and no
+`cmt`: both endpoints (`log10_viral_load`, `news2`) are algebraic and are
+returned on every row.
+
+```{r typical}
+mod <- readModelDb("Neant_2023_covid19_news2")
+
+obs_grid <- function(times, ...) {
+  tibble::tibble(time = times, evid = 0L, dvid = 1L, cmt = NA_integer_, ...)
+}
+
+ev_typ <- dplyr::bind_rows(
+  obs_grid(seq(0, 45, by = 0.1), id = 1L, AGE_GE65 = 0L, TRT_REMDESIVIR = 0L),
+  obs_grid(seq(0, 45, by = 0.1), id = 2L, AGE_GE65 = 1L, TRT_REMDESIVIR = 0L)
+)
+typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_typ,
+                       returnType = "data.frame") |>
+  dplyr::mutate(age = ifelse(id == 1, "< 65 years", ">= 65 years"))
+
+typ_summary <- typ |>
+  dplyr::group_by(age) |>
+  dplyr::summarise(
+    peak_vl = max(log10_viral_load),
+    tsymptom_peak_vl = tsymptom[which.max(log10_viral_load)],
+    peak_news2 = max(news2),
+    tsymptom_peak_news2 = tsymptom[which.max(news2)],
+    tsymptom_news2_below_3 = min(tsymptom[tsymptom > tsymptom_peak_news2 & news2 < 3]),
+    .groups = "drop"
+  )
+knitr::kable(typ_summary, digits = 2)
+
+stopifnot(
+  # Fig. 1 shows peak loads of roughly 4-7 log10 copies/10^4 cells near symptom
+  # onset. An exponent slip in p, T0 or f moves the peak by orders of magnitude.
+  all(typ_summary$peak_vl > 3.5 & typ_summary$peak_vl < 6),
+  all(abs(typ_summary$tsymptom_peak_vl) < 5),
+  # The slower ke0 of patients aged >= 65 years delays the NEWS-2 recovery.
+  diff(typ_summary$tsymptom_news2_below_3) > 2
+)
+```
+
+```{r typical-plot, fig.width = 7, fig.height = 3.5}
+typ |>
+  dplyr::select(tsymptom, age, `log10 viral load` = log10_viral_load,
+                `NEWS-2` = news2) |>
+  tidyr::pivot_longer(c(`log10 viral load`, `NEWS-2`)) |>
+  dplyr::filter(tsymptom >= -3, tsymptom <= 40) |>
+  ggplot(aes(tsymptom, value, colour = age)) +
+  geom_line() +
+  facet_wrap(~name, scales = "free_y") +
+  labs(x = "Time since symptom onset (days)", y = NULL, colour = "Age",
+       caption = paste("Typical-value trajectories (no random effects, no",
+                       "treatment); compare the shapes of Figure 1."))
+```
+
+## Effect compartment on the normalised viral-load scale
+
+Equation 2 writes the effect-compartment input as `Vi + Vni`, while Equation 3
+compares `log10(E)` with `LVL50` expressed in log10 copies/10^4 cells. The
+packaged models drive the effect compartment with the normalised viral load
+`f * (Vi + Vni)`, so that `E` and `LVL50` share a scale. The maintainers checked
+both readings against the paper's own simulation results: with the normalised
+input the model reproduces the reconstructed share of high-viral-load patients
+at randomisation (37.8%) and the time-to-improvement medians and treatment
+gains of Figure 2 (next section), whereas feeding the unscaled virion count adds
+about 5.6 log10 units to `log10(E)` and roughly doubles every median time to
+clinical improvement (about 24 days instead of 11.4 in low-viral-load,
+high-risk patients). Once `E` falls below 1 copy/10^4 cells the Hill input is
+held at 0, so the score returns to the baseline N0 instead of taking the log of
+a vanishing number.
+
+# Replicate Figure 2: antiviral efficacy and time to clinical improvement
+
+The paper simulated 5000 patients with the population's sex and age
+proportions, started a hypothetical antiviral of fixed efficacy (0%, 80%, 90%,
+99% or 99.9% inhibition of viral production) at randomisation, and computed the
+time from randomisation to NEWS-2 < 3 (patients with NEWS-2 < 7 at
+randomisation) or < 5 (NEWS-2 >= 7), stratified by viral load (< or >= 3.5
+log10 copies/10^4 cells) and NEWS-2 (< or >= 7) at randomisation.
+
+Here 200 virtual patients are reused across the five efficacy scenarios, so
+each scenario is compared with the untreated course of the same patients. The
+random effects are drawn in base R and passed as parameters to the
+zero-random-effect model, which makes the cohort identical on every machine.
+The paper sampled the time from infection to randomisation from a fitted Gamma
+distribution whose parameters are not reported; it is approximated here as the
+individual incubation period plus a Gamma(shape 10, scale 0.93) time from
+symptom onset to randomisation (median 9 days, IQR about 7-11, as in Table 1),
+truncated at the 20-day inclusion limit. 47.5% of patients are aged >= 65
+years (Table 1).
+
+```{r fig2-cohort}
+set.seed(20231205)
+n_pat <- 200L
+omega <- rxode2::rxode(mod)$omega
+eta <- matrix(rnorm(n_pat * nrow(omega)), n_pat) %*% chol(omega)
+colnames(eta) <- rownames(omega)
+
+age_ge65 <- rbinom(n_pat, 1, 0.475)
+tinc <- 5 * exp(eta[, "etaltinc"])
+onset_to_rand <- qgamma(runif(n_pat, 0, pgamma(20, shape = 10, scale = 0.93)),
+                        shape = 10, scale = 0.93)
+trand <- round((tinc + onset_to_rand) * 10) / 10
+
+efficacy <- c(0, 0.8, 0.9, 0.99, 0.999)
+fig2_grid <- seq(0, 65, by = 0.1)
+
+ev_fig2 <- dplyr::bind_rows(lapply(seq_along(efficacy), function(k) {
+  tidyr::expand_grid(pat = seq_len(n_pat), time = fig2_grid) |>
+    dplyr::mutate(
+      id = (k - 1L) * n_pat + pat,
+      efficacy = efficacy[k],
+      trand = trand[pat],
+      AGE_GE65 = age_ge65[pat],
+      TRT_REMDESIVIR = as.integer(efficacy[k] > 0 & time >= trand[pat] - 1e-8),
+      evid = 0L, dvid = 1L, cmt = NA_integer_
+    )
+})) |>
+  dplyr::arrange(id, time)
+
+# A fixed efficacy replaces the estimated remdesivir eps: the typical logit is
+# set to the scenario's efficacy and its random effect to zero. The 0% scenario
+# never switches the treatment indicator on, so its eps value is unused.
+params_fig2 <- dplyr::bind_rows(lapply(seq_along(efficacy), function(k) {
+  data.frame(id = (k - 1L) * n_pat + seq_len(n_pat), eta,
+             check.names = FALSE) |>
+    dplyr::mutate(logiteps = qlogis(max(efficacy[k], 0.5)), etalogiteps = 0)
+}))
+
+sim_fig2 <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), events = ev_fig2, params = params_fig2,
+  keep = c("efficacy", "trand"), covsInterpolation = "locf",
+  returnType = "data.frame"
+)
+```
+
+```{r fig2-outcomes}
+# Time from randomisation to clinical improvement, censored at 35 days (the
+# x-axis limit of Figure 2).
+outcome <- sim_fig2 |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    efficacy = efficacy[1],
+    at_rand = which.min(abs(time - trand[1])),
+    vl_rand = log10_viral_load[at_rand],
+    news2_rand = news2[at_rand],
+    threshold = ifelse(news2_rand < 7, 3, 5),
+    t_improve = {
+      ok <- time >= trand[1] - 1e-8 & news2 < threshold[1]
+      if (any(ok)) min(min(time[ok]) - trand[1], 35) else 35
+    },
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    pat = (id - 1L) %% n_pat + 1L,
+    vl_group = ifelse(vl_rand >= 3.5, "high viral load", "low viral load"),
+    risk = ifelse(news2_rand >= 7, "NEWS-2 >= 7", "NEWS-2 < 7")
+  )
+
+untreated <- outcome |>
+  dplyr::filter(efficacy == 0) |>
+  dplyr::select(pat, t_untreated = t_improve, vl_group, risk)
+
+strata <- untreated |>
+  dplyr::count(vl_group, risk) |>
+  dplyr::mutate(
+    simulated = 100 * n / sum(n),
+    published = c(9.2, 28.6, 28.9, 42.5)[match(
+      paste(vl_group, risk),
+      c("high viral load NEWS-2 < 7", "high viral load NEWS-2 >= 7",
+        "low viral load NEWS-2 < 7", "low viral load NEWS-2 >= 7"))]
+  )
+strata |>
+  dplyr::rename(`Viral load at randomisation` = vl_group,
+                `NEWS-2 at randomisation` = risk, `Patients` = n,
+                `Simulated (%)` = simulated, `Paper, Results (%)` = published) |>
+  knitr::kable(digits = 1)
+```
+
+```{r fig2-medians}
+median_times <- untreated |>
+  dplyr::group_by(vl_group, risk) |>
+  dplyr::summarise(simulated = median(t_untreated), .groups = "drop") |>
+  dplyr::mutate(published = c(14.6, 18.6, 5.8, 11.4)[match(
+    paste(vl_group, risk),
+    c("high viral load NEWS-2 < 7", "high viral load NEWS-2 >= 7",
+      "low viral load NEWS-2 < 7", "low viral load NEWS-2 >= 7"))])
+median_times |>
+  dplyr::rename(`Viral load at randomisation` = vl_group,
+                `NEWS-2 at randomisation` = risk,
+                `Simulated median (days)` = simulated,
+                `Paper, Results (days)` = published) |>
+  knitr::kable(digits = 1)
+
+gains <- outcome |>
+  dplyr::filter(efficacy > 0) |>
+  dplyr::select(pat, efficacy, t_improve) |>
+  dplyr::left_join(untreated, by = "pat") |>
+  dplyr::mutate(gain = t_untreated - t_improve)
+
+gain_table <- gains |>
+  dplyr::group_by(vl_group, risk, efficacy) |>
+  dplyr::summarise(median_gain = median(gain), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = efficacy, values_from = median_gain,
+                     names_prefix = "eff_")
+gain_table |>
+  dplyr::rename(`Viral load at randomisation` = vl_group,
+                `NEWS-2 at randomisation` = risk,
+                `80%` = eff_0.8, `90%` = eff_0.9, `99%` = eff_0.99,
+                `99.9%` = eff_0.999) |>
+  knitr::kable(digits = 1, caption = paste(
+    "Median gain in time to clinical improvement versus no treatment (days).",
+    "Paper, high viral load: 1.3 / 1.4 days at 80% and 2.0 / 2.2 days at",
+    "99.9% (NEWS-2 < 7 / >= 7); low viral load: less than 0.2 days in every",
+    "scenario."))
+
+pooled_gain <- gains |>
+  dplyr::group_by(vl_group, efficacy) |>
+  dplyr::summarise(median_gain = median(gain), .groups = "drop")
+gain_hi_999 <- pooled_gain$median_gain[pooled_gain$vl_group == "high viral load" & pooled_gain$efficacy == 0.999]
+gain_hi_80 <- pooled_gain$median_gain[pooled_gain$vl_group == "high viral load" & pooled_gain$efficacy == 0.8]
+gain_lo_max <- max(pooled_gain$median_gain[pooled_gain$vl_group == "low viral load"])
+median_by_vl <- untreated |>
+  dplyr::group_by(vl_group) |>
+  dplyr::summarise(m = median(t_untreated), .groups = "drop")
+
+stopifnot(
+  # Share of patients with a high viral load at randomisation (paper 37.8%).
+  abs(mean(untreated$vl_group == "high viral load") * 100 - 37.8) < 12,
+  # Share with NEWS-2 >= 7 at randomisation (paper 71.1%).
+  abs(mean(untreated$risk == "NEWS-2 >= 7") * 100 - 71.1) < 15,
+  # High viral load delays improvement by about 7 days (Results).
+  diff(median_by_vl$m) < -3,
+  # Antiviral gain: about 2 days at 99.9% and 1.3-1.4 days at 80% in high
+  # viral load, essentially none in low viral load.
+  gain_hi_999 > 1, gain_hi_999 < 5,
+  gain_hi_80 > 0.5, gain_hi_80 < 3,
+  gain_lo_max < 0.5
+)
+```
+
+```{r fig2-plot, fig.width = 7, fig.height = 6}
+fig2 <- outcome |>
+  dplyr::select(pat, efficacy, t_improve) |>
+  dplyr::left_join(untreated |> dplyr::select(pat, vl_group, risk), by = "pat") |>
+  dplyr::group_by(vl_group, risk, efficacy) |>
+  dplyr::arrange(t_improve, .by_group = TRUE) |>
+  dplyr::mutate(cum_incidence = 100 * dplyr::row_number() / dplyr::n()) |>
+  dplyr::ungroup() |>
+  dplyr::filter(t_improve < 35)
+
+ggplot(fig2, aes(t_improve, cum_incidence,
+                 colour = factor(100 * efficacy))) +
+  geom_step() +
+  facet_grid(risk ~ vl_group) +
+  coord_cartesian(xlim = c(0, 35), ylim = c(0, 100)) +
+  labs(x = "Time since randomisation (days)",
+       y = "Cumulative incidence of clinical improvement (%)",
+       colour = "Antiviral efficacy (%)",
+       caption = paste("Replicates Figure 2 of Neant 2023 (200 virtual",
+                       "patients reused across scenarios)."))
+```
+
+The simulated strata proportions match the published reconstruction, the
+median times to improvement are within about 4 days of the published values,
+and the antiviral gains show the published pattern -- a benefit of one to two
+days confined to patients with a high viral load. In a 1500-patient run of the
+same design the maintainers obtained gains of 1.4 / 1.7 days at 80% and 2.3 /
+3.6 days at 99.9% efficacy in high-viral-load patients (NEWS-2 < 7 / >= 7),
+against 1.3 / 1.4 and 2.0 / 2.2 days in the paper, and 0.2 days or less in
+low-viral-load patients, as published. The infection-to-randomisation
+distribution, which sets how far past the viral peak each patient is when
+stratified, is approximated, and the high-viral-load, NEWS-2 < 7 stratum holds
+only a handful of the 200 virtual patients.
+
+## Random effect on ke0 and the tail of Figure 2
+
+The published curves reach about 95% improvement or more by Day 35 in every
+panel, whereas the simulated curves level off lower in high-risk patients.
+The difference comes from the random effect on `ke0`, whose SD of 1.42 (log
+scale, Table 2) gives a sizeable share of virtual patients an effect
+compartment that empties over months. Re-solving the untreated scenario with
+that random effect removed (keeping the strata of the full solve) brings the
+share not improved by Day 35 down to the few percent of Figure 2. In a
+1500-patient run re-stratified on the solve without the `ke0` random effect,
+the maintainers obtained medians of 13.3, 19.3, 5.0 and 10.8 days against the
+published 14.6, 18.6, 5.8 and 11.4 days. The paper does not state which random
+effects entered its simulation, so the packaged model keeps the Table 2 value;
+the comparison is shown only to locate the discrepancy.
+
+```{r fig2-ke0}
+params_no_ke0 <- params_fig2 |>
+  dplyr::filter(id <= n_pat) |>
+  dplyr::mutate(etalke0 = 0)
+sim_no_ke0 <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), events = dplyr::filter(ev_fig2, efficacy == 0),
+  params = params_no_ke0, keep = c("efficacy", "trand"),
+  covsInterpolation = "locf", returnType = "data.frame"
+)
+no_ke0 <- sim_no_ke0 |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    at_rand = which.min(abs(time - trand[1])),
+    threshold = ifelse(news2[at_rand] < 7, 3, 5),
+    t_no_ke0 = {
+      ok <- time >= trand[1] - 1e-8 & news2 < threshold[1]
+      if (any(ok)) min(min(time[ok]) - trand[1], 35) else 35
+    },
+    .groups = "drop"
+  ) |>
+  dplyr::select(pat = id, t_no_ke0)
+
+ke0_check <- untreated |>
+  dplyr::left_join(no_ke0, by = "pat") |>
+  dplyr::group_by(vl_group, risk) |>
+  dplyr::summarise(
+    median_with = median(t_untreated),
+    median_without = median(t_no_ke0),
+    pct_not_improved_with = 100 * mean(t_untreated >= 35),
+    pct_not_improved_without = 100 * mean(t_no_ke0 >= 35),
+    .groups = "drop"
+  ) |>
+  dplyr::left_join(dplyr::select(median_times, vl_group, risk, published),
+                   by = c("vl_group", "risk"))
+ke0_check |>
+  dplyr::rename(`Viral load at randomisation` = vl_group,
+                `NEWS-2 at randomisation` = risk,
+                `Median, ke0 random effect (days)` = median_with,
+                `Median, no ke0 random effect (days)` = median_without,
+                `Paper median (days)` = published,
+                `Not improved by Day 35, ke0 random effect (%)` = pct_not_improved_with,
+                `Not improved by Day 35, no ke0 random effect (%)` = pct_not_improved_without) |>
+  knitr::kable(digits = 1)
+
+stopifnot(
+  # The ke0 random effect is what holds a fifth or more of the cohort above
+  # the improvement threshold at Day 35.
+  mean(untreated$t_untreated >= 35) - mean(no_ke0$t_no_ke0 >= 35) > 0.08
+)
+```
+
+# Remdesivir in the trial setting
+
+With the estimated remdesivir efficacy (22%, logit-normal SD 2.43) given for 10
+days from randomisation, the model predicts only a small difference between the
+arms, in line with the paper's conclusion that remdesivir's antiviral effect was
+too small to change NEWS-2 meaningfully.
+
+```{r trial}
+ev_trial <- dplyr::bind_rows(lapply(1:2, function(arm) {
+  tidyr::expand_grid(pat = seq_len(n_pat), time = fig2_grid) |>
+    dplyr::mutate(
+      id = (arm - 1L) * n_pat + pat,
+      trand = trand[pat],
+      AGE_GE65 = age_ge65[pat],
+      TRT_REMDESIVIR = as.integer(arm == 2L & time >= trand[pat] - 1e-8 &
+                                    time < trand[pat] + 10 - 1e-8),
+      arm = c("SoC", "SoC + remdesivir")[arm],
+      evid = 0L, dvid = 1L, cmt = NA_integer_
+    )
+})) |>
+  dplyr::arrange(id, time)
+# The same patients in both arms, each with their own drawn remdesivir
+# efficacy (the etalogiteps column of the eta draws).
+params_trial <- data.frame(id = seq_len(2 * n_pat),
+                           rbind(eta, eta), check.names = FALSE)
+
+sim_trial <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), events = ev_trial, params = params_trial,
+  keep = c("arm", "trand"), covsInterpolation = "locf",
+  returnType = "data.frame"
+)
+
+trial <- sim_trial |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    arm = arm[1],
+    at_rand = which.min(abs(time - trand[1])),
+    threshold = ifelse(news2[at_rand] < 7, 3, 5),
+    vl_day5 = log10_viral_load[which.min(abs(time - trand[1] - 5))],
+    t_improve = {
+      ok <- time >= trand[1] - 1e-8 & news2 < threshold[1]
+      if (any(ok)) min(min(time[ok]) - trand[1], 35) else 35
+    },
+    .groups = "drop"
+  )
+trial_summary <- trial |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(
+    `Mean log10 viral load, Day 5 after randomisation` = mean(vl_day5),
+    `Mean time to clinical improvement (days)` = mean(t_improve),
+    .groups = "drop"
+  )
+knitr::kable(trial_summary, digits = 2)
+
+# Same patients in both arms: the per-patient difference isolates the drug.
+trial_gain <- trial |>
+  dplyr::mutate(pat = (id - 1L) %% n_pat + 1L) |>
+  dplyr::select(pat, arm, t_improve, vl_day5) |>
+  tidyr::pivot_wider(names_from = arm, values_from = c(t_improve, vl_day5)) |>
+  dplyr::mutate(
+    gain = `t_improve_SoC` - `t_improve_SoC + remdesivir`,
+    vl_drop = `vl_day5_SoC` - `vl_day5_SoC + remdesivir`
+  )
+trial_gain |>
+  dplyr::summarise(
+    `Median gain in time to improvement (days)` = median(gain),
+    `Mean gain in time to improvement (days)` = mean(gain),
+    `Mean viral load reduction at Day 5 (log10)` = mean(vl_drop)
+  ) |>
+  knitr::kable(digits = 2)
+
+stopifnot(
+  # Remdesivir lowers viral load on average, but moves the time to clinical
+  # improvement by well under the ~2 days of a near-complete antiviral.
+  mean(trial_gain$vl_drop) > 0.05,
+  abs(median(trial_gain$gain)) < 1,
+  abs(mean(trial_gain$gain)) < 1
+)
+```
+
+# Subgroup and standard-of-care fits (Tables S1-S3)
+
+```{r subgroups, fig.width = 7, fig.height = 3.5}
+fits <- c(
+  "Main (Table 2)" = "Neant_2023_covid19_news2",
+  "High VL (Table S1)" = "Neant_2023_covid19_news2_highvl",
+  "Low VL (Table S2)" = "Neant_2023_covid19_news2_lowvl",
+  "SoC (Table S3)" = "Neant_2023_covid19_news2_soc"
+)
+sub_typ <- dplyr::bind_rows(lapply(names(fits), function(nm) {
+  m <- readModelDb(fits[[nm]])
+  ev <- obs_grid(seq(0, 45, by = 0.1), id = 1L, AGE_GE65 = 0L,
+                 TRT_REMDESIVIR = 0L)
+  if (nm == "SoC (Table S3)") ev$TRT_REMDESIVIR <- NULL
+  rxode2::rxSolve(rxode2::zeroRe(m), events = ev, returnType = "data.frame") |>
+    dplyr::mutate(fit = nm)
+}))
+
+sub_summary <- sub_typ |>
+  dplyr::group_by(fit) |>
+  dplyr::summarise(peak_vl = max(log10_viral_load), peak_news2 = max(news2),
+                   .groups = "drop")
+knitr::kable(sub_summary, digits = 2,
+             caption = "Typical patient aged < 65 years, no treatment.")
+
+peak <- setNames(sub_summary$peak_vl, sub_summary$fit)
+stopifnot(
+  # The subgroups were split on admission viral load, so the typical peak of
+  # the high-viral-load fit lies above, and of the low-viral-load fit below,
+  # the main fit (p differs by about 1.3 log10 units each way).
+  peak[["High VL (Table S1)"]] > peak[["Main (Table 2)"]] + 0.5,
+  peak[["Low VL (Table S2)"]] < peak[["Main (Table 2)"]] - 0.5,
+  abs(peak[["SoC (Table S3)"]] - peak[["Main (Table 2)"]]) < 0.5
+)
+
+sub_typ |>
+  dplyr::select(tsymptom, fit, `log10 viral load` = log10_viral_load,
+                `NEWS-2` = news2) |>
+  tidyr::pivot_longer(c(`log10 viral load`, `NEWS-2`)) |>
+  dplyr::filter(tsymptom >= -3, tsymptom <= 40) |>
+  ggplot(aes(tsymptom, value, colour = fit)) +
+  geom_line() +
+  facet_wrap(~name, scales = "free_y") +
+  labs(x = "Time since symptom onset (days)", y = NULL, colour = NULL)
+```
+
+# NCA
+
+The models contain no drug pharmacokinetics -- remdesivir enters only as an
+on-treatment indicator with a constant fractional effect -- so there is no
+concentration profile for PKNCA to summarise, and the paper reports no NCA
+metrics. Validation relies on the published strata, median times and treatment
+gains reproduced above.
+
+# Assumptions and deviations
+
+* **Effect-compartment scale.** Equation 2 is encoded with the normalised viral
+  load `f * (Vi + Vni)` as input rather than the virion count, so that
+  `log10(E)` is on the scale of `LVL50` (log10 copies/10^4 cells); see the
+  section on the effect compartment above for the evidence.
+* **Floor on log10(E).** `log10(E)` is held at 0 when `E` < 1 copy/10^4 cells.
+  The paper does not say how the Hill term was evaluated once the viral load
+  fell below one copy, where the logarithm turns negative and a non-integer
+  Hill exponent is undefined.
+* **NEWS-2 residual error.** The paper reports additive and proportional
+  components without the combination rule; the Monolix `combined1` form
+  (SD = a + b * f) is used.
+* **Viral load floor.** `log10_viral_load` adds 1e-10 to the normalised load so
+  the logarithm is finite at the infection time. Values below the limit of
+  detection (1 log10 copies/10^4 cells) were censored in the original fit.
+* **Time axis.** Model time is days since infection, with one productively
+  infected cell at time 0. The paper estimated each patient's infection time
+  with a log-normal incubation-period prior (median 5 days, SD 0.125); this is
+  carried as `tinc` with a non-estimated random effect, and the output
+  `tsymptom = time - tinc` gives days since symptom onset. Event tables must
+  place randomisation and treatment on the days-since-infection axis.
+* **Remdesivir indicator.** `TRT_REMDESIVIR` is time-varying: 1 only while
+  remdesivir is given. The paper does not state when the effect stopped in the
+  fit; the trial simulation above uses the 10-day maximum course, and the
+  Figure 2 scenarios keep the antiviral on through follow-up because the paper
+  only says it started at admission.
+* **Infection-to-randomisation distribution.** The fitted Gamma distribution
+  used by the paper is not reported; it is approximated from the incubation
+  prior and the Table 1 symptom-onset-to-randomisation median and IQR.
+* **Figure 2 tail.** With the Table 2 SD of 1.42 on the `ke0` random effect,
+  about a fifth to a quarter of simulated patients have not improved by Day
+  35, against about 5% in the published Figure 2; omitting that random effect
+  reproduces the published curves closely (see the section above). The
+  packaged value follows Table 2.
+* **Cohort size.** Figure 2 used 5000 simulated patients; this vignette reuses
+  200 across scenarios, so the smallest stratum holds only a handful of
+  patients.
+* **Table S2 ke0 for patients aged < 65 years.** The value cell in the
+  supplement reads '(29.60)' with the estimate carried by a Word multilevel
+  list number rather than typed text. That list level is formatted '%1.%2'
+  starting at 1, so it displays as 1.1; the model uses 1.1 /day.
+* **Subgroup sizes.** The number of patients in the high- and low-viral-load
+  fits (Tables S1 and S2) is not reported; Table 1 lists 183 and 236 patients
+  with an observed admission viral load in the two bands.
+* **Table S4** (NEWS-2-only refits) is a robustness check that conditions on
+  individual empirical Bayes estimates and is not packaged.

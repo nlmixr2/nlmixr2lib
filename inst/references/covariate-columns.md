@@ -94,6 +94,17 @@ notes: <free text>
 - **Example models:** `Overgaard_2016_liraglutide.R` (multiplicative log-scale effect on CL/F, coefficient -0.10 per Table S1).
 - **Notes:** Sibling to the `ECOG_GE1` / `ECOG_GE2` binary threshold family; captures a paper-defined age band as a decomposed binary indicator rather than a continuous `AGE` term. When the source paper describes the age band as ">= 70 y" (as in Overgaard 2016), use `AGE_GE70`; for other thresholds (e.g., >= 65 y, >= 75 y) register a sibling canonical (`AGE_GE65`, `AGE_GE75`). Use the `AGE_GT<n>` spelling instead when the paper's threshold is strictly greater than the cut point (see `AGE_GT65`). The underlying continuous `AGE` may still be recorded alongside for downstream re-derivation.
 
+### AGE_GE65 (**canonical for age >= 65 years indicator**)
+- **Description:** 1 = subject is aged 65 years or older at baseline, 0 = subject is younger than 65 years. Time-fixed at study entry per subject. Used when the source paper reports an age effect as a threshold indicator (>= 65 y vs < 65 y) rather than as a continuous covariate on `AGE`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (< 65 years).
+- **Source aliases:**
+  - `age >= 65 years` / `<65` and `>=65` subscripts -- derived from the continuous `AGE` column via `AGE_GE65 = as.integer(AGE >= 65)`; used in the `Neant_2023_covid19_news2*.R` models (Neant 2023 Table 2 rows 'delta<65' / 'delta>=65' and 'ke0<65' / 'ke0>=65', and Table 1 age bands '<65' / '>=65').
+- **Example models:** `Neant_2023_covid19_news2.R`, `Neant_2023_covid19_news2_highvl.R`, `Neant_2023_covid19_news2_lowvl.R`, `Neant_2023_covid19_news2_soc.R` (selects the age-specific typical values of the infected-cell loss rate delta and the viral-load-to-NEWS-2 effect-compartment rate constant ke0, with one random effect shared by both strata).
+- **Notes:** The `GE` sibling of `AGE_GT65`, pre-named in the `AGE_GE70` and `AGE_GT65` Notes. The spelling is load-bearing: a subject aged exactly 65 years is in the indicator group here but in the reference group under `AGE_GT65`. Neant 2023 writes the band as '<65' versus '>=65' in Table 1 and Table 2, so `AGE_GE65` is the match. The underlying continuous `AGE` may still be recorded alongside for downstream re-derivation.
+
 ### AGE_GT65 (**canonical for age > 65 years indicator**)
 - **Description:** 1 = subject is older than 65 years at baseline, 0 = subject is 65 years old or younger. Time-fixed at study entry per subject. Used when the source paper reports an age effect as a threshold indicator (> 65 y vs <= 65 y) rather than as a continuous covariate on `AGE`. This is the conventional geriatric cut point in anti-infective and oncology popPK.
 - **Units:** (binary)
@@ -19171,6 +19182,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `DRUG` -- Chen 2017 (PMC5376397) Electronic Supplementary Material S2 control stream (`IF(DRUG.EQ.0) TVAF = THETA(8)`, selecting the untreated-mouse inoculum).
 - **Example models:** `Chen_2017_TB_MTP_rifampicin_mouse.R` (selects the initial fast-multiplying bacterial inoculum F0: 331000 CFU/lungs in rifampicin-treated mice vs 8340 CFU/lungs in untreated mice). The rifampicin drug effects themselves are concentration-driven in this model and need no indicator; the indicator only switches the baseline inoculum.
 - **Notes:** Specific scope. Well-formed member of the `TRT_<INN>` family established by `TRT_EPHEDRINE`: use `TRT_<INN>` when the drug is the study treatment under investigation, `CONMED_<INN>` when it is background co-medication, and a bare INN only for MBMA trial-arm indicators. Here the indicator is needed because the baseline inoculum (not a drug effect) differs between the treated and untreated groups.
+
+### TRT_REMDESIVIR (**canonical for remdesivir on-treatment indicator**)
+- **Description:** Binary remdesivir treatment indicator: 1 = the subject is receiving remdesivir at this record, 0 = not (standard-of-care-only subjects, and remdesivir-arm subjects before their first infusion or after treatment has stopped). **Time-varying** in the founding models, whose time axis is days since infection, so a record before randomisation carries 0 even in the remdesivir arm.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no remdesivir; standard of care).
+- **Source aliases:**
+  - `SoC + remdesivir` arm -- Neant 2023 (DisCoVeRy trial) treatment arm; remdesivir 200 mg IV on Day 1 then 100 mg once daily for up to 10 days, started at randomisation.
+- **Example models:** `Neant_2023_covid19_news2.R`, `Neant_2023_covid19_news2_highvl.R`, `Neant_2023_covid19_news2_lowvl.R` (multiplies the viral production rate p by `1 - eps * TRT_REMDESIVIR`, where eps is the estimated fractional antiviral efficacy).
+- **Notes:** Specific scope. Well-formed member of the `TRT_<INN>` family (see `TRT_EPHEDRINE`, `TRT_RIFAMPICIN`): the study treatment under investigation, as opposed to `CONMED_<INN>` background co-medication. Unlike the time-fixed arm indicators of that family it switches on at the first dose, because the antiviral effect acts on an infection that started about two weeks before randomisation; supplying a time-fixed 1 for the whole remdesivir arm would apply the effect from infection onward and overstate it. The models carry no remdesivir PK -- the effect is a constant fractional inhibition while the indicator is 1 -- so the same indicator column can represent any antiviral of assumed efficacy by overriding eps, as the source paper does for its 80-99.9% efficacy scenarios.
 
 ### TRT_CAFEDRINE_THEODRENALINE (**canonical for cafedrine/theodrenaline treatment-arm indicator**)
 - **Description:** Binary treatment-arm indicator: 1 = the subject received the 20:1 fixed combination of cafedrine and theodrenaline, 0 = the subject did not. A patient-level indicator.

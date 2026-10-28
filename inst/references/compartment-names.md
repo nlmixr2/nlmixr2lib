@@ -2265,6 +2265,13 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Example models:** `Canini_2015_danoprevir.R`, `Canini_2018_setrobuvir.R`, `Dodds_2021_covid19_viralkinetic.R`, `Wang_2018_daclatasvir_asunaprevir.R`, `PiresdeMello_2018_zika_FAV_HFIM.R`, `PiresdeMello_2018_zika_FAV_IFN_RBV.R`.
 - **Notes:** Spelled out rather than the earlier `Vlog10`, which was used by four models without ever being registered and reads as a variable name rather than a quantity. Distinct from `viral_load`, which is the LINEAR-scale output, and from `d_viral_load`, which is a change from baseline. Do NOT name this `Cc` -- see the naming rule under `central`; two of these models did, and the drug concentration went unnamed.
 
+### news2 (**canonical National Early Warning Score 2 (NEWS-2) PD output**)
+- **Type:** compartment
+- **Role:** National Early Warning Score 2 (NEWS-2), the bedside aggregate of six physiological parameters (respiration rate, oxygen saturation, systolic blood pressure, pulse rate, level of consciousness, temperature) plus supplemental-oxygen use, on a 0-20 integer scale where higher means greater risk of clinical deterioration. Modelled as a continuous quantity: in the founding models it is an algebraic Hill function of the log10 normalised viral load in an effect compartment, rising from a pre-infection baseline toward the score maximum of 20.
+- **Source aliases:** `NEWS-2`, `NEWS2`, `NEWS-2 score` -- Neant 2023 notation.
+- **Example models:** `Neant_2023_covid19_news2.R`, `Neant_2023_covid19_news2_highvl.R`, `Neant_2023_covid19_news2_lowvl.R`, `Neant_2023_covid19_news2_soc.R` (joint SARS-CoV-2 viral-kinetic / NEWS-2 models of hospitalised COVID-19 patients; observed alongside `log10_viral_load`).
+- **Notes:** Not an ODE state -- the score is algebraic in the founding models, so it needs no `compartmentData` entry. The common clinical cut points are 5 (urgent review) and 7 (emergency response); Neant 2023 uses NEWS-2 >= 7 at randomisation to define a high risk of clinical deterioration and NEWS-2 < 3 (low risk) or < 5 (high risk) to define clinical improvement. Distinct from the covariate register's `SCORE_*` family, which holds instrument scores supplied as model INPUTS, and from the generic pain `score`.
+
 ### log_car (**canonical log CAR-T cell-count PD output**)
 - **Type:** compartment
 - **Role:** Log-transformed CAR-T cell count per microlitre of blood, the observed output of a CAR-T cellular-kinetics model. The linear state is the total CAR-T cell pool; this is the log of its per-uL concentration, with an epsilon floor so the transform stays finite before expansion and after contraction.
