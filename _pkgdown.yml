@@ -1392,6 +1392,20 @@ navbar:
         href: articles/Sime_2019b_ceftolozane_tazobactam.html
       - text: "Ceftolozane (Zhang 2021)"
         href: articles/Zhang_2021_ceftolozane_tazobactam.html
+      - text: "Ceftolozanetazobactam AmpC (Deroche 2023)"
+        href: articles/Deroche_2023_ceftolozane_imipenem_resistance.html
+      - text: "Ceftolozanetazobactam AmpCD (Deroche 2023)"
+        href: articles/Deroche_2023_ceftolozane_imipenem_resistance.html
+      - text: "Ceftolozanetazobactam AmpD (Deroche 2023)"
+        href: articles/Deroche_2023_ceftolozane_imipenem_resistance.html
+      - text: "Ceftolozanetazobactam PAO1 (Deroche 2023)"
+        href: articles/Deroche_2023_ceftolozane_imipenem_resistance.html
+      - text: "Ceftolozanetazobactam PaR (Deroche 2023)"
+        href: articles/Deroche_2023_ceftolozane_imipenem_resistance.html
+      - text: "Ceftolozanetazobactam PaRrev (Deroche 2023)"
+        href: articles/Deroche_2023_ceftolozane_imipenem_resistance.html
+      - text: "Ceftolozanetazobactam PaS (Deroche 2023)"
+        href: articles/Deroche_2023_ceftolozane_imipenem_resistance.html
       - text: "Ceftriaxone (FernandezRubio 2025)"
         href: articles/FernandezRubio_2025_ceftriaxone.html
       - text: "Ceftriaxone (Garot 2011)"
@@ -3322,6 +3336,14 @@ navbar:
         href: articles/Wang_2024_imipenem.html
       - text: "Imipenem (deVelde 2020)"
         href: articles/deVelde_2020_imipenem.html
+      - text: "Imipenem AmpC (Deroche 2023)"
+        href: articles/Deroche_2023_ceftolozane_imipenem_resistance.html
+      - text: "Imipenem AmpCD (Deroche 2023)"
+        href: articles/Deroche_2023_ceftolozane_imipenem_resistance.html
+      - text: "Imipenem AmpD (Deroche 2023)"
+        href: articles/Deroche_2023_ceftolozane_imipenem_resistance.html
+      - text: "Imipenem PAO1 (Deroche 2023)"
+        href: articles/Deroche_2023_ceftolozane_imipenem_resistance.html
       - text: "Imipenem amikacin PA001 (Yadav 2017)"
         href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
       - text: "Imipenem amikacin PA088 (Yadav 2017)"
@@ -8421,6 +8443,7 @@ articles:
   - articles/Denti_2010_glucoseMinimal
   - articles/Denti_2018_levofloxacin
   - articles/Derippe_2024_BH3_mimetics_virtual_tumors
+  - articles/Deroche_2023_ceftolozane_imipenem_resistance
   - articles/Desai_2016_isavuconazole
   - articles/Desai_2016_isavuconazole_secure
   - articles/Desai_2024_crisprCas9
