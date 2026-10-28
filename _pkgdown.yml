@@ -6556,6 +6556,8 @@ navbar:
         href: articles/CirrincioneDall_2011_tacrolimus.html
       - text: "Tacrolimus (Dunlap 2025)"
         href: articles/Dunlap_2025_tacrolimus.html
+      - text: "Tacrolimus (ElKhateeb 2023)"
+        href: articles/ElKhateeb_2023_tacrolimus.html
       - text: "Tacrolimus (Francke 2025)"
         href: articles/Francke_2025_tacrolimus.html
       - text: "Tacrolimus (Franken 2022)"
@@ -6624,8 +6626,12 @@ navbar:
         href: articles/Zhou_2026_tacrolimus.html
       - text: "Tacrolimus (Zhu 2014)"
         href: articles/Zhu_2014_tacrolimus.html
+      - text: "Tacrolimus ckdstage (ElKhateeb 2023)"
+        href: articles/ElKhateeb_2023_tacrolimus.html
       - text: "Tacrolimus cyp3a5 (Liu 2022)"
         href: articles/Liu_2022_tacrolimus.html
+      - text: "Tacrolimus egfr (ElKhateeb 2023)"
+        href: articles/ElKhateeb_2023_tacrolimus.html
       - text: "Tacrolimus egfr (Xiang 2025)"
         href: articles/Xiang_2025_tacrolimus.html
       - text: "Tacrolimus fpg (Xiang 2025)"
@@ -8501,6 +8507,7 @@ articles:
   - articles/Eissing_2024_finerenone
   - articles/Ekhart_2008_carboplatin
   - articles/Ekobena_2025_bictegravir
+  - articles/ElKhateeb_2023_tacrolimus
   - articles/ElassaissSchaap_2017_pembrolizumab
   - articles/Elhefnawy_2023_recurrent_ischemic_stroke
   - articles/Elhefnawy_2023_recurrent_ischemic_stroke_diabetes
