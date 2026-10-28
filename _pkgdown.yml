@@ -6060,6 +6060,12 @@ navbar:
         href: articles/Tammara_2017_rivipansel.html
       - text: "Rlyb212 (MocWilleford 2024)"
         href: articles/MocWilleford_2024_rlyb212.html
+      - text: "Ro7122290 cibisatamab qsp (Sanchez 2023)"
+        href: articles/Sanchez_2023_ro7122290_cibisatamab.html
+      - text: "Ro7122290 invitro (Sanchez 2023)"
+        href: articles/Sanchez_2023_ro7122290_cibisatamab.html
+      - text: "Ro7122290 qsp (Sanchez 2023)"
+        href: articles/Sanchez_2023_ro7122290_cibisatamab.html
       - text: "Robenacoxib cat (Pelligand 2016)"
         href: articles/Pelligand_2016_robenacoxib_cat.html
       - text: "Roblitinib (Wilbaux 2022)"
@@ -9878,6 +9884,7 @@ articles:
   - articles/SanchezDengra_2021_neuro_pbpk_rat
   - articles/SanchezPena_2005_enoxaparin
   - articles/Sanchez_2011_efavirenz
+  - articles/Sanchez_2023_ro7122290_cibisatamab
   - articles/Sandra_2024_siRNA_hbsag_mouse_mbma
   - articles/Sang_2021_doxorubicin_cardiotoxicity
   - articles/Sanghavi_2020_ipilimumab

@@ -6294,6 +6294,17 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Kosinsky_2022_camostat_invitro.R` (recombinant TMPRSS2 activity after 1 h incubation and SARS-2-S pseudovirus entry after 2 h incubation; data of Hoffmann et al. 2020 digitised in Kosinsky 2022 Figure 2).
 - **Notes:** Specific scope because the value is bound to FOY-251 and to the in-vitro TMPRSS2 assay design. Member of the in-vitro applied-drug-concentration `CONC_<drug>_<units>` family; the unit suffix is load-bearing because sibling entries such as `CONC_RIF_MGL` are reported in mg/L while this assay is reported in nM.
 
+### CONC_CIBISATAMAB_NM (**canonical for static in-vitro cibisatamab concentration driving T-cell activation in a tumor-cell / PBMC co-culture**)
+- **Description:** Applied (time-invariant) concentration of the CEA x CD3 T-cell bispecific cibisatamab in the medium of an in-vitro tumor-cell / PBMC / fibroblast co-culture, supplied as an exogenous covariate that drives the T-cell activation signal inducing 4-1BB expression. Applied experimental concentration in the in-vitro matrix; distinct from a state-derived plasma or tumor concentration and from the `CP_<drug>` plasma-PD-driver family.
+- **Units:** nM
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the sigmoid Emax Signal `SignalMAX * C^hill / (C^hill + EC50^hill)` of the 4-1BB expression model; set to 0 for the cibisatamab-free control well, where the model also keeps basal 4-1BB synthesis switched on.
+- **Source aliases:**
+  - `CEA` -- the Monolix regressor of the deposited Sanchez 2023 Model 1 code (cibisatamab is the CEA T-cell bispecific, CEA TCB).
+- **Example models:** `Sanchez_2023_ro7122290_invitro.R` (MKN-45 + PBMC + FAP-expressing fibroblast co-culture; 0, 0.2, 2, 20, 200 and 2000 nM in Experiment 1, 2 nM in Experiment 2, 0.2 nM in Experiment 3).
+- **Notes:** Specific scope because the value is bound to cibisatamab and to the in-vitro co-culture design. Member of the in-vitro applied-drug-concentration `CONC_<drug>_<units>` family (nM sibling `CONC_FOY251_NM`). The co-administered FAP-4-1BBL is not a covariate in the founding model: it is dosed into the well's free-drug state because it binds and is depleted.
+
 ### CONC_IPM_MGL (**canonical for in-vitro imipenem concentration driving an antibacterial PD or receptor-binding model**)
 - **Description:** Unbound imipenem concentration applied to an in-vitro bacterial system, supplied externally as an exogenous covariate. Applied experimental concentration in the in-vitro matrix; distinct from `Cc` and the `CP_<DRUG>` plasma-PD-driver family. Used both time-varying (hollow-fiber infection model growth medium, driving the bacterial-kill PD effect) and static (60-min whole-cell penicillin-binding-protein binding assay, scaling the rate of net influx and PBP access).
 - **Units:** mg/L
