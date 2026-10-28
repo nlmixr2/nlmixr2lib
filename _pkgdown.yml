@@ -2724,6 +2724,14 @@ navbar:
         href: articles/Goulooze_2022_finerenone_uacr_egfr.html
       - text: "Finerenone uacr (Snelder 2020)"
         href: articles/Snelder_2020_finerenone.html
+      - text: "Fitusiran mpbpk human (Sten 2023)"
+        href: articles/Sten_2023_galnacSirna.html
+      - text: "Fitusiran mpbpk monkey (Sten 2023)"
+        href: articles/Sten_2023_galnacSirna.html
+      - text: "Fitusiran mpbpk mouse (Sten 2023)"
+        href: articles/Sten_2023_galnacSirna.html
+      - text: "Fitusiran mpbpk rat (Sten 2023)"
+        href: articles/Sten_2023_galnacSirna.html
       - text: "Fleroxacin rat pbpk hcmec (SanchezDengra 2021)"
         href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
       - text: "Fleroxacin rat pbpk mdck (SanchezDengra 2021)"
@@ -2924,6 +2932,8 @@ navbar:
         href: articles/Scotcher_2021_gadoxetate_rat_pbpk.html
       - text: "Galcanezumab (Kielbasa 2020)"
         href: articles/Kielbasa_2020_galcanezumab.html
+      - text: "GalnacSirna 3cmt (Sten 2023)"
+        href: articles/Sten_2023_galnacSirna.html
       - text: "Ganciclovir (Acosta 2007)"
         href: articles/Yang_2023_ganciclovir_model_repository.html
       - text: "Ganciclovir (Caldes 2009)"
@@ -3064,6 +3074,10 @@ navbar:
         href: articles/Roiko_2012_ghb_brain_uptake.html
       - text: "Givosiran (Ayyar 2024)"
         href: articles/Ayyar_2024_givosiran.html
+      - text: "Givosiran aip (Sten 2023)"
+        href: articles/Sten_2023_galnacSirna.html
+      - text: "Givosiran che (Sten 2023)"
+        href: articles/Sten_2023_galnacSirna.html
       - text: "Glasdegib (Lin 2020)"
         href: articles/Lin_2020_glasdegib.html
       - text: "Glasdegib QTcF (Fostvedt 2021)"
@@ -3378,6 +3392,14 @@ navbar:
         href: articles/vanderZeeuw_2026_immunoglobulin.html
       - text: "Imr687 (Byrne 2022)"
         href: articles/Byrne_2022_imr687.html
+      - text: "Inclisiran renalmild (Sten 2023)"
+        href: articles/Sten_2023_galnacSirna.html
+      - text: "Inclisiran renalmoderate (Sten 2023)"
+        href: articles/Sten_2023_galnacSirna.html
+      - text: "Inclisiran renalnormal (Sten 2023)"
+        href: articles/Sten_2023_galnacSirna.html
+      - text: "Inclisiran renalsevere (Sten 2023)"
+        href: articles/Sten_2023_galnacSirna.html
       - text: "Indacaterol (Bartels 2021)"
         href: articles/Bartels_2021_indacaterol_glycopyrronium_mometasone.html
       - text: "Indacaterol (Renard 2011)"
@@ -3962,6 +3984,10 @@ navbar:
         href: articles/Golzaryan_2025_lu177psmaIT_pbpk.html
       - text: "Lucitanib (Liao 2022)"
         href: articles/Liao_2022_lucitanib.html
+      - text: "Lumasiran healthy (Sten 2023)"
+        href: articles/Sten_2023_galnacSirna.html
+      - text: "Lumasiran ph1 (Sten 2023)"
+        href: articles/Sten_2023_galnacSirna.html
       - text: "Lumefantrine (Chotsiri 2019)"
         href: articles/Chotsiri_2019_lumefantrine.html
       - text: "Lumefantrine (Ding 2026)"
@@ -4928,6 +4954,10 @@ navbar:
         href: articles/Borghardt_2016_olodaterol.html
       - text: "Olokizumab (Kretsos 2014)"
         href: articles/Kretsos_2014_olokizumab.html
+      - text: "Olpasiran 1cmt (Sten 2023)"
+        href: articles/Sten_2023_galnacSirna.html
+      - text: "Olpasiran 3cmt (Sten 2023)"
+        href: articles/Sten_2023_galnacSirna.html
       - text: "Olprinone (Kunisawa 2014)"
         href: articles/Kunisawa_2014_olprinone.html
       - text: "Omalizumab (Brekkan 2018)"
@@ -7632,6 +7662,8 @@ navbar:
         href: articles/Huang_2017_vrc01.html
       - text: "Vupanorsen (Ahn 2023)"
         href: articles/Ahn_2023_vupanorsen.html
+      - text: "Vutrisiran (Sten 2023)"
+        href: articles/Sten_2023_galnacSirna.html
       - text: "VwfFviii humateP (Bauer 2023)"
         href: articles/Bauer_2023_vonWillebrandFactor.html
       - text: "Warfarin (RodriguezFernandez 2024)"
@@ -10055,6 +10087,7 @@ articles:
   - articles/Steichert_2025_enalapril_enalaprilat_pediatric
   - articles/Stein_2018_mAb_nonlinear_PK
   - articles/Stein_2019_Tisagenlecleucel
+  - articles/Sten_2023_galnacSirna
   - articles/Stevens_2012_remoxipride
   - articles/Stillemans_2021_darunavir
   - articles/Stillemans_2021b_darunavir
