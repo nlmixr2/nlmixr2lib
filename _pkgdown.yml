@@ -5106,6 +5106,10 @@ navbar:
         href: articles/Fu_2019_paclitaxel_pbpk.html
       - text: "Paclitaxel myelosuppression (Wahlby 2004)"
         href: articles/Wahlby_2004_time_varying_covariates.html
+      - text: "Paclitaxel os (Ojara 2023)"
+        href: articles/Ojara_2023_paclitaxel_nsclc.html
+      - text: "Paclitaxel tgi (Ojara 2023)"
+        href: articles/Ojara_2023_paclitaxel_nsclc.html
       - text: "Pacmilimab qsp (Ippolito 2024)"
         href: articles/Ippolito_2024_pacmilimab_qsp.html
       - text: "Palbociclib (Courlet 2022)"
@@ -9615,6 +9619,7 @@ articles:
   - articles/Ohara_2014_warfarin_s
   - articles/Ohk_2022_sumatriptan
   - articles/Oishi_2014_fesoterodine
+  - articles/Ojara_2023_paclitaxel_nsclc
   - articles/Ojara_2024_lamivudine
   - articles/Okada_2024_triazolam
   - articles/Okada_2025_rocatinlimab
