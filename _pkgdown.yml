@@ -7642,6 +7642,8 @@ navbar:
         href: articles/Xia_2024_warfarin.html
       - text: "Warfarin node (Bram 2026)"
         href: articles/Bram_2026_node_lasso_model_development.html
+      - text: "Warfarin qsp (Augustin 2023)"
+        href: articles/Augustin_2023_warfarin_qsp.html
       - text: "Warfarin qsp (Falkenhagen 2023)"
         href: articles/Falkenhagen_2023_warfarin_qsp.html
       - text: "Warfarin r (Hamberg 2007)"
@@ -7995,6 +7997,7 @@ articles:
   - articles/Aston_2017_receptor_rebound
   - articles/Athanassa_2025_minocycline
   - articles/Attarwala_2023_mRNA3927
+  - articles/Augustin_2023_warfarin_qsp
   - articles/Axelsen_2024_selexipag
   - articles/Ayyar_2022_il17a_target_engagement
   - articles/Ayyar_2024_givosiran

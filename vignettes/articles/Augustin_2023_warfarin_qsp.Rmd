@@ -1,0 +1,713 @@
+---
+title: "Warfarin coagulation-network clinical-trial model (Augustin 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Warfarin coagulation-network clinical-trial model (Augustin 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+```{r load-model}
+# Build the model once; the inline citation below reuses this object.
+mod <- rxode2::rxode(readModelDb("Augustin_2023_warfarin_qsp"))
+mod_typ <- rxode2::zeroRe(mod)
+net_states <- setdiff(mod$state, c("depot", "central", "fibrin_auc"))
+```
+
+# Model and source
+
+* Citation: `r mod$reference`
+* Description: `r mod$description`
+* Article: <https://doi.org/10.3389/fphar.2023.1270443>
+* Authors' code and data (SBML model files, parameter tables, simulated trial
+  data): <https://github.com/DavAug/mipd-warfarin>
+
+Augustin 2023 is a methods paper: it builds a *clinical-trial (CT) model* that
+emulates warfarin treatment, uses it to simulate pre-MIPD phase I-III trials,
+fits three model-informed precision dosing (MIPD) approaches to the simulated
+data, and then compares those approaches in a simulated MIPD trial. The CT
+model is the reusable pharmacometric artefact and is what this library entry
+holds. It has five components (Section 2.1.2, Figure 1):
+
+1. **Mechanistic model** -- the Wajima 2009 humoral coagulation network (51
+   coagulation and vitamin K states) driven by one-compartment oral warfarin PK
+   (Eq 6, Supplementary Tables S1.1-S1.3).
+2. **Population model** -- Hartmann 2016 / 2020 normal IIV on ten
+   coagulation-factor production rates, and Hamberg 2010 style lognormal IIV
+   with CYP2C9, VKORC1 and age effects on the warfarin elimination rate, EC50
+   and volume, extended to the two VKORC-catalysed vitamin K conversion rates
+   (Eq S1.2-S1.9).
+3. **Inter-occasion model** -- the vitamin K input rate is multiplied by a
+   factor drawn from N(1, 0.1^2) each treatment day (Eq 7).
+4. **Execution model** -- dose and sampling times are delayed by an
+   exponentially distributed time with mean 30 min (Eq 8). This is a property of
+   the event table, not of the model, and is implemented below.
+5. **Measurement model** -- lognormal measurement error with scale 0.1 (Eq 9),
+   carried by the model's `expSd` residual.
+
+The three MIPD models of the paper (a neural-network regression, a deep
+reinforcement-learning policy and a Hamberg 2010 PKPD model re-fitted by
+hierarchical Bayesian inference) are not extracted: all three were trained on
+data simulated from this CT model rather than on patient data, so they carry no
+information about warfarin beyond what the CT model already holds.
+
+# Population
+
+The CT model is a simulator, not a fit, so its "population" is a virtual one.
+Supplementary Table S1 lists the simulated cohorts: a phase I trial (N = 60,
+single 10 mg dose, warfarin concentrations at 10, 35 and 60 h), a phase II
+trial (N = 100, three weeks of INR-guided daily dosing) and a phase III trial
+(N = 1000, eight weeks). CYP2C9 and VKORC1 genotype frequencies and ages were
+modelled after Hamberg 2010 (phase III: CYP2C9 \*1\*1 66.1%, \*1\*2 18.4%,
+\*1\*3 12.3%, \*2\*2 1.4%, \*2\*3 1.2%, \*3\*3 0.6%; VKORC1 GG 36.5%, GA 48.5%,
+AA 15%; median age 50 years). The MIPD trial cohort (N = 1000, Figure 6) was
+built the same way. The values the model uses were adopted from Wajima 2009,
+Hartmann 2016 / 2020 and Hamberg 2010, and three of them were calibrated by
+hand: the VKORC1 effect on the vitamin K conversion rates (against a plausible
+baseline-INR distribution, Figure S1.1) and the VKORC1 GG EC50 and its IIV
+(against 2543 IWPC maintenance doses, Figure S1.2).
+
+The same information is available programmatically via `mod$population`.
+
+# Source trace
+
+Every `ini()` value is annotated in
+`inst/modeldb/specificDrugs/Augustin_2023_warfarin_qsp.R` with the line of the
+authors' parameter file it came from. The paper itself prints the model
+structure (Tables S1.1-S1.3, Eq S1.1-S1.9) but defers the numeric values to the
+deposited file `models/hartmann_coagulation_model_parameters.csv`; the ODE
+right-hand sides were transcribed reaction by reaction from the deposited SBML
+file `models/wajima_coagulation_model.xml` and agree with Table S1.1.
+
+| Component | Model element | Value(s) | Source |
+|-----------|---------------|----------|--------|
+| PK structure | `depot` -> `central`, first-order `ka`, `kel` | -- | Eq 6; Section S1.1 |
+| Absorption | `lka` | log(2) 1/h | csv `Pooled dose.absorption_rate`; Section S4.2 (Hamberg 2010 fixed ka = 2 1/h) |
+| Volume | `lvc`, `etalvc` | 3.353 (28.6 L), log SD 0.054 | csv `central_warfarin.size` rows; Eq S1.7 |
+| Elimination | `lkel`, `etalkel` | -3.716 (0.0243 1/h), log SD 0.071 | csv `elimination_rate_warfarin` rows; Eq S1.5-S1.6 |
+| CYP2C9 on kel | `e_cyp2c9s2_kel`, `e_cyp2c9s3_kel` | 0.495, 0.757 (\*2\*2, \*3\*3; half per allele) | csv `Rel. elimination rate shift`; Eq S1.5 |
+| Age on kel | `e_age_kel` | 0.00571 1/year, 1 - tanh(r (AGE - 71)) | csv; Eq S1.5 |
+| Warfarin EC50 | `lec50`, `etalec50` | -2.0 (0.135 mg/L), log SD 0.1 | csv; Eq S1.3-S1.4; calibrated, Section S1.2 |
+| VKORC1 on EC50 | `e_vkorc1aa_ec50` | 0.532 (AA vs GG; half per A allele) | csv; Eq S1.3 |
+| Warfarin effect | `maximal_inhibitory_effect_warfarin`, `hill_warfarin` | 1, 1.15 | csv; Table S1.1 vitamin K equations; Section S4.4.2 |
+| VK conversions | `lconversion_rate_vk_vkh2`, `lconversion_rate_vko_vk` | -3.781, -1.478; log SD 0.24 each | csv; Eq S1.8-S1.9 |
+| VKORC1 on VK conversions | `e_vkorc1aa_vk_vkh2`, `e_vkorc1aa_vko_vk` | 0.2 each | csv; Section S1.2 (20% total reduction) |
+| Production-rate IIV | `tvproduction_rate_*`, `etatvproduction_rate_*` | ten factors, SD = 20% of mean (V: 19.4%) | csv `Mean` / `Std.` rows; Eq S1.2 |
+| Network rate constants | 136 parameters named as in Table S1.3 | see file | csv `Pooled global.*` rows |
+| Initial concentrations | `bl_*` | csv amounts / 24 L | csv `Pooled central.*_amount` rows |
+| Network ODEs | 51 states, 113 reactions | -- | SBML `wajima_coagulation_model.xml`; Table S1.1 |
+| Fibrin integral | `d/dt(fibrin_auc) <- fibrin` | -- | Section S1.1.2 |
+| Vitamin K IOV | `etaiov_vk_input_1` ... `_56` | variance 0.01 | Eq 7 |
+| Measurement error | `expSd` | 0.1 | Eq 9; csv `Pooled Sigma log` |
+| PT test | dilution 1:2, 300 nM TF, threshold 1500 nM*s, reference PT 11.8 s | -- | Section S1.1.2; deposited `model.py` |
+
+# The prothrombin-time test
+
+The INR is not an algebraic function of the model states. Following Section
+S1.1.2, a blood sample (the state vector at the sampling time) is diluted 1:2
+(all states divided by 3), thrombomodulin is removed, 300 nM tissue factor is
+added, and the network is integrated in vitro with all external inputs and
+non-vitamin-K-dependent production switched off. The prothrombin time (PT) is
+the time at which the fibrin integral reaches 1500 nM*s; INR = PT / 11.8 s.
+
+The authors' code performs the test with a reduced copy of the network
+(`models/wajima_inr_test_model.xml`) that omits the reactions which cannot
+proceed in the test tube. The helper below reproduces that exactly with a
+second solve of the *same* model: the omitted reactions are switched off by
+setting their rate constants to zero, and the sample is loaded with
+replacement (`evid = 5`) events at time 0. The test integrates over 120 s on a
+100-point grid and interpolates linearly, as the authors' code does.
+
+**Solver.** All solves use `method = "lsoda"`. With rxode2's default
+`liblsoda`, round-off of order 1e-20 nM in the activated factors is amplified
+by the network's thrombin feedback loops (several half-maximal constants are
+1e-4 nM) into a spurious coagulation burst under warfarin; `lsoda` does not do
+this, and it is the configuration under which the gates below reproduce the
+authors' own simulations.
+
+```{r pt-test}
+solve_method <- "lsoda"
+
+# Rate constants of the reactions absent from the authors' in-vitro test model.
+pt_zero_rates <- c(
+  "complex_formation_rate_aii_tmod", "complex_formation_rate_apc_ps",
+  "degradation_rate_aii_tmod_complex", "degradation_rate_apc_ps_complex",
+  "degradation_rate_ca", "degradation_rate_d_dimer", "degradation_rate_fdp",
+  "degradation_rate_kallikrein", "degradation_rate_pc", "degradation_rate_pc_activated",
+  "degradation_rate_prekallikrein", "degradation_rate_ps", "degradation_rate_tmod",
+  "degradation_rate_xf", "degradation_rate_xii", "degradation_rate_xii_activated",
+  "input_rate_vk", "maximal_activation_rate_aii_tmod_complex_pc",
+  "maximal_activation_rate_axii_xi", "maximal_activation_rate_ca_xii",
+  "maximal_activation_rate_kallikrein_xii",
+  "maximal_conversion_rate_apc_ps_complex_plasminogen",
+  "maximal_conversion_rate_axii_prekallikrein",
+  "maximal_degradation_rate_apc_ps_complex_av",
+  "maximal_degradation_rate_apc_ps_complex_av_ax_complex",
+  "maximal_degradation_rate_apc_ps_complex_aviii",
+  "maximal_degradation_rate_apc_ps_complex_xf", "maximal_degradation_rate_plasmin_xf",
+  "production_rate_fibrinogen", "tvproduction_rate_pc", "production_rate_plasminogen",
+  "production_rate_prekallikrein", "tvproduction_rate_ps", "production_rate_tfpi",
+  "production_rate_tmod", "tvproduction_rate_v", "production_rate_viii",
+  "tvproduction_rate_xi", "tvproduction_rate_xii", "tvproduction_rate_xiii",
+  "transition_rate_vk_central_to_peripheral", "transition_rate_vk_peripheral_to_central"
+)
+
+# Reference covariates for solves whose covariate-dependent parameters are
+# irrelevant (the in-vitro test) or supplied directly through `params`.
+add_reference_covariates <- function(ev) {
+  ev$CYP2C9_S2_COUNT <- 0
+  ev$CYP2C9_S3_COUNT <- 0
+  ev$VKORC1_1639G_COUNT <- 2
+  ev$AGE <- 71
+  ev$OCC <- 0
+  ev
+}
+
+# INR of each row of `samples` (one blood sample per row, network states as columns).
+inr_test <- function(samples, standard_pt = 11.8, duration_s = 120) {
+  n <- nrow(samples)
+  grid_h <- seq(0, duration_s, length.out = 100) / 3600
+  vals <- as.matrix(samples[, net_states]) / 3
+  vals[, "tissue_factor"] <- 300
+  vals[, "thrombomodulin"] <- 0
+  vals <- cbind(vals, fibrin_auc = 0)
+  load <- data.frame(
+    id = rep(seq_len(n), each = ncol(vals)), time = 0, evid = 5L,
+    cmt = rep(colnames(vals), times = n), amt = as.vector(t(vals))
+  )
+  obs <- data.frame(
+    id = rep(seq_len(n), each = length(grid_h)), time = rep(grid_h, n),
+    evid = 0L, cmt = "fibrin_auc", amt = 0
+  )
+  ev <- rbind(load, obs)
+  ev <- add_reference_covariates(ev[order(ev$id, ev$time, -ev$evid), ])
+  th <- setNames(rep(0, length(pt_zero_rates)), pt_zero_rates)
+  s <- rxode2::rxSolve(mod_typ, ev, params = th, method = solve_method,
+                       returnType = "data.frame")
+  if (is.null(s$id)) s$id <- 1L
+  threshold <- 1500 / 3600 # 1500 nM*s expressed in nM*h
+  pt <- vapply(split(s, s$id), pt_from_curve, numeric(1), threshold = threshold)
+  unname(pt) / standard_pt
+}
+
+# Time (s) at which the fibrin integral crosses the threshold; linear
+# extrapolation from the last two grid points when the test is too short.
+pt_from_curve <- function(d, threshold) {
+  t_s <- d$time * 3600
+  a <- d$fibrin_auc
+  k <- length(a)
+  if (a[k] < threshold) {
+    return(t_s[k] + (threshold - a[k]) / ((a[k] - a[k - 1]) / (t_s[k] - t_s[k - 1])))
+  }
+  stats::approx(a, t_s, xout = threshold, ties = "ordered")$y
+}
+```
+
+# Drug-free run-in and baseline INR
+
+Simulations start from the Wajima initial concentrations. The authors run each
+virtual patient drug-free for 100 days before the first dose so that the
+network settles at the individual's own steady state (`warmup = 100` days in
+the deposited trial scripts). For the typical patient the initial state is
+already the steady state, and the typical baseline INR is 1.
+
+```{r runin}
+ev_runin <- add_reference_covariates(
+  data.frame(id = 1L, time = c(0, 600, 1200, 2400), evid = 0L, cmt = "central", amt = 0)
+)
+runin <- rxode2::rxSolve(mod_typ, ev_runin, method = solve_method, returnType = "data.frame")
+runin |>
+  select(time, coagulation_factor_ii, coagulation_factor_vii, coagulation_factor_x,
+         fibrinogen, vitamin_k_hydroquinone) |>
+  knitr::kable(digits = 4, caption = "Typical patient, drug-free: network states (nM).")
+
+inr_baseline_typ <- inr_test(runin[runin$time == 2400, ])
+inr_baseline_typ
+stopifnot(
+  # Deterministic: same parameters, same solver; measured drift < 1e-4 nM.
+  max(abs(runin$coagulation_factor_ii / runin$coagulation_factor_ii[1] - 1)) < 1e-4,
+  # The reference PT of 11.8 s is the typical network's own clotting time.
+  abs(inr_baseline_typ - 1) < 0.01
+)
+```
+
+# Gate 1: individual maintenance doses from the authors' deposit
+
+The deposited file `maintenance_dose_distribution.csv` lists, for 1000 virtual
+patients sampled from the population model, every individual parameter value
+and the daily dose that the authors' optimiser found to give an INR of exactly
+2.5 on day 20 (after the 100-day run-in, no inter-occasion variability, no
+noise). This is the population that produced Figure S1.2. Twenty of those
+patients (every 50th row, spanning all three VKORC1 genotypes) are embedded
+below. Their individual parameters are passed to the model directly, so the
+check exercises the network, the PK, the warfarin effect and the PT test
+together: each patient's day-20 INR must come back as 2.5.
+
+```{r maintenance-data}
+maint <- read.csv(text = "
+id,vkorc1,cyp2c9,age,vc,kel,ec50,cvk,cvko,p_ii,p_v,p_vii,p_ix,p_x,p_xi,p_xii,p_xiii,p_pc,p_ps,dose
+1,2,0,71.3,27.10146,0.02465334,0.06423569,0.0140048,0.0973433,180.0782,1.249434,11.68906,26.64409,29.33518,2.518083,5.333917,0.1790214,29.6556,29.27996,2.059986
+51,2,0,69.6,28.63875,0.02359941,0.06272538,0.01710786,0.077244,108.1862,1.11528,8.488099,22.7082,27.2716,4.204937,3.54223,0.1964962,20.34279,45.74483,1.77651
+101,2,1,59.3,27.80313,0.02026781,0.06998511,0.0126112,0.125099,102.248,0.967735,15.27425,25.86967,35.41179,2.365893,4.132094,0.3054835,43.73491,56.60064,1.548424
+151,1,1,56.6,28.7435,0.01810668,0.0882218,0.01405224,0.2059379,127.8248,1.168323,12.66359,27.87918,28.89284,2.670567,5.172594,0.2597838,34.86933,58.08755,1.936112
+201,1,0,71.5,27.17774,0.02336589,0.1047107,0.01848383,0.1629457,140.7487,1.106938,10.51348,29.12108,24.9715,3.040228,4.190928,0.2236003,21.96359,43.67537,3.646134
+251,1,0,76.3,27.56104,0.02694317,0.09815641,0.01528356,0.1736664,141.4789,1.477626,16.25262,40.96252,40.96902,4.050726,4.69445,0.2242317,43.77653,59.18201,4.673672
+301,1,0,72.9,26.67942,0.02563038,0.1054005,0.0149227,0.1308483,160.532,0.9420056,13.51426,30.76161,25.24216,2.332201,3.336272,0.2661456,22.92508,47.61534,3.569888
+351,1,0,63.2,29.06699,0.0253613,0.1048292,0.01682736,0.122562,129.9306,1.15544,10.27449,18.13984,37.57169,3.32446,5.167022,0.1961203,23.96355,46.85413,4.286764
+401,1,0,70.1,30.07927,0.02419014,0.1059045,0.01272577,0.1647716,161.8929,1.145305,13.45872,21.70407,36.03417,3.209166,3.881985,0.2192279,34.19311,42.26476,3.612677
+451,1,0,70.3,30.76272,0.02380424,0.09431959,0.01770386,0.1873998,139.2181,1.494419,16.09343,31.0555,27.14099,2.943045,4.737454,0.3276761,25.99615,52.00087,4.397744
+501,1,1,63.3,25.16066,0.02033857,0.09775739,0.01665978,0.1340633,129.1696,1.044821,8.005874,29.14384,32.26952,1.632883,5.886331,0.3026575,26.94611,39.69898,2.29052
+551,1,2,62.2,27.11011,0.01441869,0.09679855,0.01534478,0.1863798,108.973,1.243703,11.79747,28.12579,32.36393,2.574288,3.344743,0.3027036,29.013,69.62121,1.70041
+601,1,0,66.7,25.19835,0.02264737,0.1080836,0.02408123,0.1256708,109.6308,1.693995,15.17402,24.78687,30.23712,2.634519,4.452494,0.1652782,18.60999,49.72054,5.179818
+651,0,1,69.7,28.10918,0.01785939,0.1316555,0.02972581,0.2051469,156.0732,1.014278,14.49083,21.41504,30.00312,2.079385,5.050091,0.3197942,36.47128,43.47353,7.649681
+701,0,0,55.5,30.5574,0.02989697,0.1418764,0.01613828,0.1736343,103.5597,0.7217821,11.50155,25.39551,32.35633,2.341271,4.20009,0.2502289,25.96333,56.38791,6.156721
+751,0,0,60.3,26.84254,0.02955199,0.1502445,0.0285109,0.2028524,110.3251,1.546279,15.47009,25.40005,34.41103,2.62348,4.77843,0.2176517,30.7905,51.06354,12.91268
+801,0,2,57.0,28.25769,0.01503652,0.1148707,0.02295149,0.1530914,147.9472,1.678125,11.67181,26.38705,29.89163,2.609481,5.537851,0.1681012,38.05513,38.23518,3.884841
+851,0,0,56.9,28.96514,0.03145887,0.1303611,0.01793737,0.2248592,124.0471,1.10964,11.52773,15.94942,22.50598,2.814058,5.198036,0.3094551,29.23469,40.31498,6.006057
+901,0,0,70.0,28.29344,0.02276665,0.1279639,0.01513446,0.2149372,157.5709,1.1207,13.90472,27.17955,33.13748,2.551938,4.150063,0.1280127,34.97162,55.15731,4.648408
+951,0,0,68.1,31.79349,0.02429616,0.1235917,0.02450908,0.2786605,179.6513,0.9557907,12.84114,35.21889,25.61814,2.651545,5.205054,0.3240496,22.1255,40.14871,8.700386
+")
+```
+
+```{r maintenance-gate}
+prod_names <- c("ii", "v", "vii", "ix", "x", "xi", "xii", "xiii", "pc", "ps")
+pp <- data.frame(
+  id = seq_len(nrow(maint)),
+  lvc = log(maint$vc), lkel = log(maint$kel), lec50 = log(maint$ec50),
+  lconversion_rate_vk_vkh2 = log(maint$cvk), lconversion_rate_vko_vk = log(maint$cvko)
+)
+for (p in prod_names) pp[[paste0("tvproduction_rate_", p)]] <- maint[[paste0("p_", p)]]
+
+ev_maint <- bind_rows(
+  data.frame(id = rep(seq_len(nrow(maint)), each = 21),
+             time = 2400 + 24 * rep(0:20, nrow(maint)), evid = 1L, cmt = "depot",
+             amt = rep(maint$dose, each = 21)),
+  data.frame(id = seq_len(nrow(maint)), time = 2400 + 20 * 24, evid = 0L,
+             cmt = "central", amt = 0)
+) |>
+  arrange(id, time, desc(evid)) |>
+  add_reference_covariates()
+
+sim_maint <- rxode2::rxSolve(mod_typ, ev_maint, params = pp, method = solve_method,
+                             returnType = "data.frame")
+day20 <- sim_maint[sim_maint$time == 2880, ]
+maint_check <- maint |>
+  transmute(
+    id_deposit = id,
+    VKORC1 = c("GG", "GA", "AA")[vkorc1 + 1],
+    CYP2C9 = c("*1/*1", "*1/*2", "*1/*3", "*2/*2", "*2/*3", "*3/*3")[cyp2c9 + 1],
+    dose_mg = dose,
+    inr_day20 = inr_test(day20)
+  )
+knitr::kable(maint_check, digits = 4,
+             caption = "Day-20 INR at the deposited maintenance dose (target 2.5).")
+stopifnot(
+  nrow(day20) == nrow(maint),
+  # Same individual parameters on both sides, so only solver and optimiser
+  # tolerance separate them: measured maximum deviation 8e-5.
+  max(abs(maint_check$inr_day20 - 2.5)) < 0.002
+)
+```
+
+# Gate 2: phase I trial (warfarin PK)
+
+The phase I trial (Algorithm S1) gives 60 patients a single 10 mg dose and
+measures warfarin concentrations at 10, 35 and 60 h, with exponentially
+delayed dosing and sampling and lognormal measurement error. The patients'
+covariates and the 5th-95th percentiles of the deposited simulated
+concentrations (`trial_phase_I.csv`) are embedded below; the packaged model is
+simulated with fresh random draws for the same patients.
+
+```{r phase1}
+p1_cov <- read.table(text = gsub(" ", "\n", "
+0:0:2:72.3 1:2:2:61.4 2:0:2:79.5 3:2:2:66.9 4:1:2:64.3 5:0:2:75.3 6:0:2:75.1 7:0:2:64.8 8:0:2:69.1 9:0:1:55.3
+10:0:1:77.3 11:0:1:76.1 12:0:1:75.8 13:0:1:56.6 14:0:1:66.8 15:2:1:69.0 16:0:1:71.8 17:0:1:71.0 18:1:1:78.6 19:0:1:59.3
+20:2:1:67.6 21:0:1:64.7 22:0:1:70.3 23:0:1:72.9 24:0:1:78.6 25:0:1:65.9 26:0:1:73.8 27:1:1:57.7 28:0:1:67.8 29:1:1:76.6
+30:1:1:66.3 31:3:1:71.3 32:0:1:76.5 33:1:1:76.5 34:0:1:75.1 35:0:1:68.2 36:2:1:69.9 37:1:1:66.8 38:1:1:75.0 39:0:0:86.4
+40:0:0:68.5 41:2:0:64.3 42:0:0:68.2 43:0:0:55.3 44:1:0:69.7 45:0:0:62.2 46:2:0:67.1 47:1:0:68.1 48:0:0:73.3 49:2:0:69.5
+50:1:0:74.0 51:4:0:58.8 52:0:0:59.1 53:0:0:67.3 54:0:0:64.4 55:0:0:67.0 56:1:0:70.5 57:5:0:67.8 58:0:0:72.0 59:0:0:79.4
+"), sep = ":", col.names = c("id", "cyp2c9", "vkorc1", "age"))
+p1_ref <- data.frame(
+  time = rep(c(10, 35, 60), each = 5),
+  q = rep(c(0.05, 0.25, 0.5, 0.75, 0.95), 3),
+  conc = c(0.2420, 0.2580, 0.2782, 0.3039, 0.3328,
+           0.1275, 0.1498, 0.1668, 0.1850, 0.2393,
+           0.0667, 0.0758, 0.0939, 0.1138, 0.1633)
+)
+cyp_s2 <- c(0, 1, 0, 2, 1, 0)
+cyp_s3 <- c(0, 0, 1, 0, 1, 2)
+
+set.seed(2023)
+rxode2::rxSetSeed(2023)
+n1 <- nrow(p1_cov)
+delay_dose <- rexp(n1, rate = 1 / 0.5)
+ev_p1 <- bind_rows(
+  data.frame(id = seq_len(n1), time = delay_dose, evid = 1L, cmt = "depot", amt = 10),
+  data.frame(id = rep(seq_len(n1), each = 3),
+             time = rep(c(10, 35, 60), n1) + rexp(3 * n1, rate = 1 / 0.5),
+             evid = 0L, cmt = "central", amt = 0)
+) |>
+  arrange(id, time, desc(evid)) |>
+  mutate(
+    CYP2C9_S2_COUNT = cyp_s2[p1_cov$cyp2c9[id] + 1],
+    CYP2C9_S3_COUNT = cyp_s3[p1_cov$cyp2c9[id] + 1],
+    VKORC1_1639G_COUNT = 2 - p1_cov$vkorc1[id],
+    AGE = p1_cov$age[id], OCC = 0
+  )
+sim_p1 <- rxode2::rxSolve(mod, ev_p1, method = solve_method, returnType = "data.frame") |>
+  filter(!is.na(Cc)) |>
+  mutate(nominal = c(10, 35, 60)[findInterval(time, c(0, 30, 55))],
+         conc = Cc * exp(rnorm(n(), 0, 0.1)))
+p1_sim_q <- sim_p1 |>
+  group_by(nominal) |>
+  reframe(q = c(0.05, 0.25, 0.5, 0.75, 0.95), conc_sim = quantile(conc, q))
+p1_cmp <- p1_ref |>
+  left_join(p1_sim_q, by = c("time" = "nominal", "q")) |>
+  mutate(ratio = conc_sim / conc)
+p1_cmp |>
+  pivot_wider(id_cols = time, names_from = q, values_from = c(conc, conc_sim)) |>
+  knitr::kable(digits = 4, caption = "Warfarin concentration (mg/L) percentiles: deposited phase I data (conc_) vs this model (conc_sim_).")
+
+ggplot(sim_p1, aes(nominal, conc)) +
+  geom_point(alpha = 0.3, position = position_jitter(width = 1)) +
+  geom_line(data = filter(p1_ref, q == 0.5), aes(time, conc), colour = "red") +
+  geom_line(data = filter(p1_ref, q %in% c(0.05, 0.95)), aes(time, conc, group = q),
+            colour = "red", linetype = 2) +
+  labs(x = "Time after dose (h)", y = "Warfarin concentration (mg/L)",
+       caption = "Points: this model. Red: median and 5th/95th percentiles of the authors' phase I data (Figure 5, left panel).")
+
+stopifnot(
+  # Centre: a wrong volume, clearance or covariate coding moves the medians by
+  # tens of percent; with n = 60 the sampling error of a median is ~3-5%.
+  all(abs(log(p1_cmp$ratio[p1_cmp$q == 0.5])) < 0.10),
+  # Spread: interquartile percentiles within 15%.
+  all(abs(log(p1_cmp$ratio[p1_cmp$q %in% c(0.25, 0.75)])) < 0.15)
+)
+```
+
+# Gate 3: phase II trial (INR under INR-guided dosing)
+
+The phase II trial (Algorithm S2, Figure 5 middle panel) treats 100 patients
+for three weeks: 10, 7.5 and 5 mg on days 0-2, then the dose is adjusted on
+days 3, 5, 7 and 13 whenever the INR measured that morning is outside 2-3,
+using `dose * 2.5 / INR` rounded to what tablets allow (0, 1, 2 mg or a
+multiple of 0.5 mg, at most 30 mg; `adjust_dosing_regimen()` in the authors'
+`3_perform_trial_phase_2.py`). INR is measured before dosing on days 0, 1, 2,
+3, 5, 7, 13 and 20. The trial is re-run here for the same 100 patients
+(covariates from the deposited `trial_phase_II.csv`, embedded below) with
+fresh draws of the IIV, the daily vitamin K factor, the execution delays and
+the measurement error, and with the dose adjustments made by the same rule on
+this model's own INR measurements. The INR quartiles on each measurement day
+and the quartiles of the dose chosen on day 13 are compared with the deposited
+trial.
+
+```{r phase2-data}
+p2 <- read.csv(text = "
+id,cyp2c9,vkorc1,age,d3,d5,d7,d13
+0,0,2,60.8,7.5,7.5,7.5,6
+1,2,2,61.8,5,3,2,1
+2,0,2,69.1,5,3.5,2,1
+3,0,2,68.8,5,5,5,4
+4,0,2,74.4,6.5,6.5,5,5
+5,0,2,76.5,5,3,2.5,2
+6,0,2,67.0,5,3.5,3,2.5
+7,4,2,68.0,5,5,3,1
+8,0,2,62.8,7,7,7,5.5
+9,1,2,63.0,5,3.5,2.5,2.5
+10,0,2,53.1,5,5,5,3
+11,1,2,58.1,5,3.5,2.5,2.5
+12,1,2,58.2,5,6.5,5,3.5
+13,0,2,66.6,5,5,5,3
+14,2,2,62.9,5,2.5,2,1
+15,0,1,79.0,7.5,10.5,10.5,10.5
+16,1,1,78.7,8.5,11.5,11.5,11.5
+17,0,1,71.3,5,5,5,3.5
+18,3,1,71.4,7,7,5.5,3.5
+19,0,1,73.0,8,11.5,11.5,8
+20,0,1,64.3,7,10,10,10
+21,0,1,64.4,8.5,8.5,8.5,8.5
+22,0,1,59.0,6.5,6.5,6.5,4.5
+23,1,1,62.6,8,10,10,6.5
+24,0,1,72.8,5,5,5,4
+25,0,1,65.9,5,5,5,5
+26,0,1,62.7,8.5,8.5,8.5,6
+27,2,1,63.1,7,7,7,4.5
+28,2,1,65.7,8.5,11.5,11.5,7.5
+29,0,1,72.9,7,7,7,7
+30,0,1,57.0,5,5,5,5
+31,1,1,63.2,5,5,5,5
+32,1,1,70.9,6.5,6.5,6.5,6.5
+33,1,1,56.3,7,10.5,10.5,7.5
+34,1,1,74.2,7,7,7,4.5
+35,0,1,59.8,7.5,7.5,7.5,7.5
+36,2,1,69.5,5,4,2.5,2
+37,0,1,65.6,7,9,9,5.5
+38,0,1,67.3,8.5,12,15.5,15.5
+39,0,1,57.6,5,6.5,6.5,6.5
+40,1,1,65.8,10,18,18,12
+41,0,1,62.7,5,5,5,5
+42,0,1,73.3,5,5,5,4
+43,1,1,61.6,5,5,5,5
+44,0,1,64.9,8,11,14,10.5
+45,1,1,63.1,5,5,4,4
+46,1,1,67.6,5,5,4,4
+47,0,1,73.3,8,12.5,12.5,9.5
+48,0,1,65.1,5,7,7,6
+49,0,1,68.0,7.5,10,10,10
+50,0,1,58.6,8,8,8,6.5
+51,1,1,65.4,6.5,5,3.5,2.5
+52,0,1,57.6,5,5,5,5
+53,0,1,59.4,7.5,7.5,7.5,6
+54,0,1,73.6,7.5,7.5,7.5,5.5
+55,2,1,64.5,6.5,6.5,9.5,6.5
+56,0,1,61.0,9,13.5,13.5,13.5
+57,4,1,65.1,6.5,6.5,5,2.5
+58,0,1,56.5,5,5,5,3.5
+59,0,1,77.2,8.5,11.5,11.5,9
+60,2,1,61.9,6.5,8,6.5,4
+61,0,1,66.7,7,7,7,7
+62,1,1,63.3,6.5,6.5,6.5,5
+63,0,1,64.6,9.5,9.5,9.5,7
+64,0,0,58.7,9,14.5,19.5,19.5
+65,0,0,62.9,8,8,8,8
+66,0,0,69.5,8,13,13,10.5
+67,2,0,61.0,8,11.5,11.5,8
+68,3,0,64.1,7,7,6,4
+69,0,0,77.9,7,7,7,7
+70,0,0,65.5,7,7,7,5.5
+71,1,0,59.5,8,11,11,8.5
+72,0,0,72.9,7.5,7.5,9.5,9.5
+73,2,0,70.8,8.5,8.5,8.5,8.5
+74,0,0,71.0,5,5,5,4
+75,2,0,66.9,11,19.5,26,16.5
+76,1,0,66.6,5,5,5,4
+77,0,0,74.7,9,15,19,14
+78,5,0,63.4,8,8,6.5,3.5
+79,2,0,71.9,5,5,5,4
+80,0,0,67.0,5,5,5,5
+81,1,0,70.5,7.5,7.5,7.5,7.5
+82,1,0,65.5,7.5,7.5,7.5,7.5
+83,0,0,63.4,7.5,9.5,9.5,9.5
+84,0,0,60.2,6.5,6.5,6.5,6.5
+85,0,0,59.6,5,7.5,7.5,7.5
+86,0,0,72.8,9.5,9.5,9.5,9.5
+87,0,0,60.1,5,5,5,5
+88,0,0,68.7,7.5,10.5,10.5,10.5
+89,0,0,63.2,9,9,9,9
+90,0,0,60.2,7,9.5,9.5,9.5
+91,2,0,72.5,6.5,8,8,8
+92,0,0,76.3,7,7,7,7
+93,0,0,53.7,5,5,5,5
+94,0,0,65.8,8.5,11,11,8
+95,2,0,69.2,7,7,7,5.5
+96,0,0,65.5,6.5,8.5,11,8
+97,0,0,82.0,6.5,11,11,7
+98,0,0,81.7,9,12,12,12
+99,0,0,67.6,7,9.5,9.5,7.5
+")
+p2_ref <- data.frame(
+  day = rep(c(0, 1, 2, 3, 5, 7, 13, 20), each = 3),
+  q = rep(c(0.25, 0.5, 0.75), 8),
+  inr = c(0.954, 1.083, 1.187, 1.241, 1.396, 1.629, 1.491, 1.683, 1.970,
+          1.603, 1.815, 2.101, 1.893, 2.170, 2.486, 2.203, 2.510, 2.833,
+          2.751, 3.122, 3.525, 2.698, 2.935, 3.180)
+)
+```
+
+```{r phase2-sim}
+# Dose update of the authors' phase II script: only outside the therapeutic
+# range, rounded to tablet strengths, capped at 30 mg.
+adjust_dose <- function(dose, inr, target = 2.5) {
+  out <- dose
+  move <- inr < 2 | inr > 3
+  d <- dose[move] * target / inr[move]
+  d <- ifelse(d < 0.5, 0, ifelse(d < 1.5, 1, ifelse(d < 2.25, 2, round(2 * d) / 2)))
+  out[move] <- pmin(d, 30)
+  out
+}
+
+n2 <- nrow(p2)
+meas_days <- c(0, 1, 2, 3, 5, 7, 13, 20)
+adjust_days <- c(3, 5, 7, 13)
+
+# One fixed random draw per patient, re-used by every sequential solve below so
+# the patient is the same person each time the trial is re-simulated.
+set.seed(4)
+omega_sd <- sqrt(diag(mod$omega))
+etas <- as.data.frame(matrix(rnorm(n2 * length(omega_sd)), n2) %*% diag(omega_sd))
+names(etas) <- names(omega_sd)
+delay <- matrix(rexp(n2 * 21, rate = 1 / 0.5), n2, 21) # days 0-20, one per day
+eps <- matrix(rnorm(n2 * length(meas_days), 0, mod$theta[["expSd"]]), n2)
+pars_p2 <- cbind(id = seq_len(n2), etas)
+
+p2_events <- function(doses, last_day) {
+  dose_rows <- data.frame(id = rep(seq_len(n2), each = 20), day = rep(0:19, n2),
+                          evid = 1L, cmt = "depot", amt = as.vector(t(doses)))
+  obs_rows <- data.frame(id = rep(seq_len(n2), each = 8), day = rep(meas_days, n2),
+                         evid = 0L, cmt = "central", amt = 0)
+  bind_rows(dose_rows, obs_rows) |>
+    filter(day <= last_day) |>
+    # INR is sampled just before that day's (equally delayed) dose
+    mutate(time = 2400 + 24 * day + delay[cbind(id, day + 1)] - ifelse(evid == 0L, 1e-6, 0),
+           OCC = day + 1) |>
+    bind_rows(data.frame(id = seq_len(n2), day = -1, evid = 0L, cmt = "central",
+                         amt = 0, time = 0, OCC = 0)) |>
+    mutate(CYP2C9_S2_COUNT = cyp_s2[p2$cyp2c9[id] + 1],
+           CYP2C9_S3_COUNT = cyp_s3[p2$cyp2c9[id] + 1],
+           VKORC1_1639G_COUNT = 2 - p2$vkorc1[id],
+           AGE = p2$age[id]) |>
+    arrange(id, time, desc(evid))
+}
+
+p2_inr <- function(doses, last_day) {
+  s <- rxode2::rxSolve(mod_typ, p2_events(doses, last_day), params = pars_p2,
+                       method = solve_method, returnType = "data.frame", keep = "day")
+  s <- s[s$day >= 0, ]
+  stopifnot(!anyNA(s$coagulation_factor_ii))
+  s$inr <- inr_test(s) * exp(eps[cbind(s$id, match(s$day, meas_days))])
+  s
+}
+
+doses <- matrix(rep(c(10, 7.5, 5, rep(5, 17)), each = n2), n2)
+for (d in adjust_days) {
+  s <- p2_inr(doses, d)
+  inr_d <- s$inr[s$day == d][order(s$id[s$day == d])]
+  doses[, (d + 1):20] <- adjust_dose(doses[, d], inr_d)
+}
+samp <- p2_inr(doses, 20)
+
+p2_cmp <- samp |>
+  group_by(day) |>
+  reframe(q = c(0.25, 0.5, 0.75), inr_sim = quantile(inr, q)) |>
+  left_join(p2_ref, by = c("day", "q")) |>
+  mutate(ratio = inr_sim / inr)
+p2_cmp |>
+  pivot_wider(id_cols = day, names_from = q, values_from = c(inr, inr_sim)) |>
+  knitr::kable(digits = 3, caption = "INR quartiles by trial day: deposited phase II data (inr_) vs this model (inr_sim_).")
+
+dose13 <- data.frame(q = c(0.25, 0.5, 0.75),
+                     deposited = quantile(p2$d13, c(0.25, 0.5, 0.75)),
+                     simulated = quantile(doses[, 14], c(0.25, 0.5, 0.75)))
+knitr::kable(dose13, digits = 2, row.names = FALSE,
+             caption = "Quartiles of the dose (mg) given from day 13 onwards.")
+
+ggplot(samp, aes(day, inr, group = id)) +
+  geom_line(alpha = 0.15) +
+  geom_line(data = filter(p2_ref, q == 0.5), aes(day, inr, group = NULL), colour = "red") +
+  geom_line(data = filter(p2_ref, q != 0.5), aes(day, inr, group = q), colour = "red",
+            linetype = 2) +
+  geom_hline(yintercept = c(2, 3), colour = "blue", linetype = 3) +
+  labs(x = "Day of treatment", y = "INR",
+       caption = "Grey: this model, one line per patient. Red: median and quartiles of the authors' phase II data (Figure 5, middle panel). Blue: therapeutic range.")
+
+stopifnot(
+  # Centre: an EC50, VKORC1 or network transcription error shifts the median
+  # INR trajectory by far more than the ~5% sampling error of n = 100.
+  all(abs(log(p2_cmp$ratio[p2_cmp$q == 0.5])) < 0.10),
+  # Quartiles within 15% on every measurement day.
+  all(abs(log(p2_cmp$ratio)) < 0.15),
+  # The titrated dose is the trial's integrated readout of sensitivity.
+  abs(log(dose13$simulated[2] / dose13$deposited[2])) < 0.2
+)
+```
+
+# PKNCA: single-dose warfarin PK by CYP2C9 genotype
+
+The paper reports no NCA. As a check of the PK layer, a single 10 mg dose is
+simulated without IIV for a 71-year-old in each CYP2C9 genotype group, and the
+NCA half-life is compared with the model's own log(2) / kel.
+
+```{r pknca}
+geno <- data.frame(
+  treatment = c("*1/*1", "*1/*2", "*1/*3", "*2/*2", "*2/*3", "*3/*3"),
+  CYP2C9_S2_COUNT = cyp_s2, CYP2C9_S3_COUNT = cyp_s3
+)
+tgrid <- c(0, 0.25, 0.5, 1, 2, 3, 4, 6, 8, 12, 24, 36, 48, 72, 96, 120, 168, 240, 336)
+ev_nca <- bind_rows(
+  data.frame(id = seq_len(6), time = 0, evid = 1L, cmt = "depot", amt = 10),
+  data.frame(id = rep(seq_len(6), each = length(tgrid)), time = rep(tgrid, 6), evid = 0L,
+             cmt = "central", amt = 0)
+) |>
+  arrange(id, time, desc(evid)) |>
+  mutate(CYP2C9_S2_COUNT = geno$CYP2C9_S2_COUNT[id], CYP2C9_S3_COUNT = geno$CYP2C9_S3_COUNT[id],
+         VKORC1_1639G_COUNT = 2, AGE = 71, OCC = 0)
+sim_nca <- rxode2::rxSolve(mod_typ, ev_nca, method = solve_method, returnType = "data.frame") |>
+  mutate(treatment = geno$treatment[id])
+
+conc_obj <- PKNCAconc(filter(sim_nca, !is.na(Cc)), Cc ~ time | treatment + id)
+dose_obj <- PKNCAdose(
+  data.frame(id = seq_len(6), time = 0, amt = 10, treatment = geno$treatment),
+  amt ~ time | treatment + id
+)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tab <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+kel_typ <- exp(mod$theta[["lkel"]]) *
+  (1 - (mod$theta[["e_cyp2c9s2_kel"]] * geno$CYP2C9_S2_COUNT +
+          mod$theta[["e_cyp2c9s3_kel"]] * geno$CYP2C9_S3_COUNT) / 2)
+nca_tab <- nca_tab |>
+  left_join(data.frame(treatment = geno$treatment, thalf_model = log(2) / kel_typ),
+            by = "treatment")
+nca_tab |>
+  rename("CYP2C9" = treatment, "Cmax (mg/L)" = cmax, "Tmax (h)" = tmax,
+         "AUC0-inf (h*mg/L)" = aucinf.obs, "t1/2 NCA (h)" = half.life,
+         "t1/2 = log(2)/kel (h)" = thalf_model) |>
+  knitr::kable(digits = 3, caption = "Single 10 mg dose, typical 71-year-old, VKORC1 GG.")
+stopifnot(
+  # Terminal phase is mono-exponential in kel once absorption (ka = 2 1/h) is over.
+  all(abs(nca_tab$half.life / nca_tab$thalf_model - 1) < 0.02),
+  # AUC = dose / (kel * V) for a one-compartment model.
+  all(abs(nca_tab$aucinf.obs / (10 / (kel_typ * exp(mod$theta[["lvc"]]))) - 1) < 0.02)
+)
+```
+
+# Assumptions and deviations
+
+* **Parameter source.** The paper prints the model structure but not the
+  parameter values; it points to the authors' GitHub repository for them. All
+  values were taken from `models/hartmann_coagulation_model_parameters.csv`
+  (repository commit `4710c062`), using the population-model rows ("Pooled",
+  "Log mean", "Log std.", "Mean", "Std.", "Rel. ... shift") rather than the
+  deterministic rows at the top of the file. The two differ only in the
+  absorption rate (pooled 2 1/h, the Hamberg 2010 value cited in Section S4.2,
+  vs 1 1/h).
+* **Fixed parameters.** Every value is wrapped in `fixed()` because the CT
+  model was assembled and hand-calibrated, never estimated.
+* **Production-rate IIV.** Eq S1.2 gives normal IIV with SD = 20% of the mean.
+  It is encoded as `rate = mean * (1 + eta)` with variance (SD / mean)^2,
+  which is the same distribution. The deposited SD for factor V is 0.223 for a
+  mean of 1.15 (19.4%), and that value is used.
+* **Inter-occasion variability.** The daily vitamin K factor is encoded as one
+  eta per treatment day for days 1-56 (`OCC` = treatment day), the longest
+  simulated trial. Records with `OCC = 0`, or beyond day 56, carry none.
+* **Execution model.** The exponential dose and sampling delays (Eq 8) belong
+  to the event table and are generated in the gates above, not in the model.
+* **Dose input.** The authors approximate an oral dose by a 0.01 h infusion
+  into the dose compartment (Section S1.1.1); the gates use a bolus into
+  `depot`, which differs by less than the solver tolerance after a few minutes.
+* **INR.** The PT test needs a second solve, so the INR cannot be an output of
+  the model itself; the helper `inr_test()` above implements Section S1.1.2 as
+  the authors' code does, including their use of a reduced reaction set in the
+  test tube, rather than the prose description that sets all production rates
+  to zero (the vitamin K-dependent production retained by the code changes the
+  120 s test negligibly).
+* **Volume of distribution.** The typical volume, 28.6 L, is twice the Hamberg
+  2010 S-warfarin volume of 14.3 L. The paper does not say whether the dose
+  should be read as racemic warfarin or as S-warfarin; the gates use the doses
+  exactly as the authors' trial scripts did.
+* **VKORC1 coding.** The paper writes the genotype as GG / GA / AA; this is
+  mapped to `VKORC1_1639G_COUNT` (2 / 1 / 0).
