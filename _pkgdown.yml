@@ -4420,6 +4420,14 @@ navbar:
         href: articles/Liu_2018_pneumocystis_qsp.html
       - text: "Micafungin noncancer (Alqahtani 2021)"
         href: articles/Alqahtani_2021_micafungin.html
+      - text: "Micafungin rpmi inoc1e3 (Beredaki 2024)"
+        href: articles/Beredaki_2024_micafungin.html
+      - text: "Micafungin rpmi inoc1e4 (Beredaki 2024)"
+        href: articles/Beredaki_2024_micafungin.html
+      - text: "Micafungin serum inoc1e3 (Beredaki 2024)"
+        href: articles/Beredaki_2024_micafungin.html
+      - text: "Micafungin serum inoc1e4 (Beredaki 2024)"
+        href: articles/Beredaki_2024_micafungin.html
       - text: "Midazolam (Brill 2014)"
         href: articles/Brill_2014_midazolam.html
       - text: "Midazolam (Collins 2025)"
@@ -8055,6 +8063,7 @@ articles:
   - articles/BeraldiMagalhaes_2021_ethambutol
   - articles/Beredaki_2023_micafungin
   - articles/Beredaki_2024_amphotericinB_liposomal
+  - articles/Beredaki_2024_micafungin
   - articles/Berends_2019_infliximab
   - articles/Bergen_2017_meropenem
   - articles/Berges_2007_enoxaparin
