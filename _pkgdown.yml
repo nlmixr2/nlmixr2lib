@@ -7408,6 +7408,8 @@ navbar:
         href: articles/Yu_2025_vancomycin.html
       - text: "Vancomycin (Yu 2025b)"
         href: articles/Yu_2025b_vancomycin.html
+      - text: "Vancomycin (Zhang 2024)"
+        href: articles/Zhang_2024_vancomycin.html
       - text: "Vancomycin (Zhao 2014)"
         href: articles/Zhao_2014_vancomycin.html
       - text: "Vancomycin (Zhao 2021)"
@@ -10627,6 +10629,7 @@ articles:
   - articles/Zhang_2024_sertraline
   - articles/Zhang_2024_tucatinib
   - articles/Zhang_2024_valproic_acid
+  - articles/Zhang_2024_vancomycin
   - articles/Zhang_2025_abemaciclib
   - articles/Zhang_2025_bietti_crystalline_dystrophy_mbma
   - articles/Zhang_2025_cefiderocol
