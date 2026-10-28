@@ -1,0 +1,652 @@
+---
+title: "Inflammation effects on CYP3A4 and GFR clearance (Liu 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Inflammation effects on CYP3A4 and GFR clearance (Liu 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  dpi = 96
+)
+```
+
+```{r libraries, message = FALSE, warning = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(ggplot2)
+
+mod <- rxode2::rxode2(readModelDb("Liu_2023_inflammation_cyp3a4_gfr"))
+```
+
+## Scope of this model
+
+Liu 2023 asked how acute inflammation, measured as the plasma interleukin-6
+(IL-6) concentration, changes the clearance of a drug that is eliminated by
+hepatic CYP3A4 metabolism, by renal glomerular filtration, or by both. The
+paper studies a panel of **hypothetical** drugs, so this model carries no
+drug of its own: the unbound fraction `fu`, the in vitro intrinsic clearance
+`clint` and the elimination-pathway index `fcl_h` are placeholders that a user
+sets for the compound of interest.
+
+The model has three layers.
+
+| Layer | Content | Source |
+|---|---|---|
+| IL-6 effects | CYP3A4 activity falls with IL-6 (sigmoid Imax, Eq. 1); GFR rises linearly with IL-6 (Eq. 2) | Table 2 |
+| Clearance | Hepatic clearance from the axial-dispersion liver model (Eqs. 3-6); renal clearance `fu * GFR` (Eq. 8); pathway selection (Eq. 7) | Table 1 |
+| PK | One-compartment model with optional first-order absorption (Eqs. 10-13) | Table 1 |
+
+The authors' supplementary R code normalises the clearance: the drug's
+total clearance in the absence of inflammation is 1, and inflammation scales
+it by the ratio of the physiological clearance at the current IL-6 to that at
+IL-6 = 0. The packaged model does the same, so `lcl` is the drug's
+no-inflammation clearance (1 L/h by default) and the output `cl_ratio` is the
+inflammation factor. Figure 3 of the paper confirms the normalisation: every
+no-inflammation profile peaks at exp(-1) = 0.368 at t = 1, which is what a
+unit dose with `ka = k = 1` and `V = 1` gives.
+
+Algebraic outputs besides `Cc`:
+
+* `cyp3a4_act` -- CYP3A4 activity as a fraction of the no-inflammation value.
+* `gfr_il6` -- GFR (mL/min) at the current IL-6.
+* `eh`, `eh0` -- hepatic extraction ratio at the current IL-6 and at IL-6 = 0.
+* `cl_ratio` -- total clearance relative to no inflammation.
+* `auc_ratio` -- AUC relative to no inflammation (`1 / cl_ratio`, Eqs. 9 and 14).
+
+## Population
+
+No patients were studied. The IL-6 to CYP3A4 relationship was fitted to
+human-hepatocyte data digitised from two published in vitro studies, and the
+IL-6 to GFR relationship to a healthy-volunteer endotoxaemia study (Methods,
+Fig. S1). The simulations use a single 70 kg, 1.73 m^2 reference adult with
+cardiac output 5500 mL/min and hepatic blood flow 1375 mL/min (Table 1).
+
+```{r population}
+str(mod$population)
+```
+
+## Source trace
+
+| Model element | Value | Source location |
+|---|---|---|
+| CYP3A4 activity vs IL-6 | `1 - imax * IL6^hill / (ic50^hill + IL6^hill)` | Eq. 1; supplementary R code `CLint_inflam_f()` |
+| `imax` | 0.7326 | Table 2 (73.26 percent) |
+| `ic50` | 43.65 pg/mL | Table 2 |
+| `hill` | 0.59 | Table 2 |
+| GFR vs IL-6 | `(gfr + e_il6_gfr * IL6) * BSA / 1.73` | Eq. 2; supplementary R code `dGFR_inflam_f()` |
+| `e_il6_gfr` | 0.01556 (mL/min/1.73 m^2)/(pg/mL) | supplementary R code (Table 2 prints 0.016) |
+| `gfr` | 113 mL/min/1.73 m^2 | Table 1 |
+| `qc` | 5500 mL/min | Table 1 |
+| `fq_liver` | 0.25 | Methods; supplementary R code `Qh <- 0.25 * Qco` (Table 1 QH 1375 mL/min) |
+| `bpr` | 1 | Table 1 |
+| `dn` | 0.27 | Table 1; Methods |
+| Hepatic clearance | `qh * eh * bpr` | Eq. 3 |
+| Extraction ratio | dispersion model | Eqs. 4-5; supplementary R code `ER_dispersion()` |
+| Efficiency number | `fu / bpr * clint * WT / qh` | Eq. 6; supplementary R code `CLint0 <- BW * CLint_bw` |
+| `fm_cyp3a4` | 1 | supplementary R code `fm_A <- 1` |
+| Renal clearance | `fu * GFR` | Eq. 8 |
+| Pathway selection | `fcl_h` 0 / 0.5 / 1 | Eq. 7 |
+| Clearance normalisation | `cl = exp(lcl) * cl_ratio` | supplementary R code (`CL <- CLhep / CLhep0`, ..., `AUC0 <- 1`) |
+| `fu`, `clint`, `fcl_h` defaults | 0.5, 54.4 mL/min/kg, 0.5 | Table 1 ranges; Fig. 2 (`fu` 0.5); Fig. 3 caption (`clint` 54.4) |
+| `lcl`, `lvc`, `lka`, `lfdepot` | log(1) each | Table 1 (Vd, ka, F = 1); supplementary R code (CL0 = 1) |
+| PK model | one compartment, IV or oral | Eqs. 10-13; supplementary R code `mod_PK_iv`, `mod_PK_oral` |
+
+## Simulation helpers
+
+The model is deterministic. Each "subject" below is one combination of drug
+properties and IL-6, and the drug properties are passed per subject through
+`params`.
+
+```{r helpers}
+# Covariates fixed at the paper's reference adult.
+ref_wt <- 70
+ref_bsa <- 1.73
+
+# The IL-6 levels the authors evaluated (supplementary R code `IL6_conc`)
+# and the 12 equally spaced in vitro CLint values (`CLint_bw`).
+il6_levels <- c(0, 5, 10, 15, 50, 100, 500, 1000, 1500, 2500)
+clint_levels <- seq(from = 0.5, to = 189, length.out = 12)
+
+pathway_label <- c(
+  "0" = "Kidney elimination",
+  "0.5" = "Hybrid elimination",
+  "1" = "Liver elimination"
+)
+
+er_category <- function(eh) {
+  cut(
+    eh,
+    breaks = c(-Inf, 0.3, 0.7, Inf),
+    labels = c("low", "intermediate", "high"),
+    right = FALSE
+  )
+}
+
+# One observation at time 0 per scenario: enough to read the algebraic
+# clearance outputs, which do not depend on time when IL-6 is constant.
+solve_clearance <- function(scen) {
+  scen$id <- seq_len(nrow(scen))
+  ev <- data.frame(
+    id = scen$id,
+    time = 0,
+    evid = 0,
+    amt = 0,
+    cmt = "central",
+    IL6 = scen$IL6,
+    WT = ref_wt,
+    BSA = ref_bsa
+  )
+  sim <- rxode2::rxSolve(
+    mod,
+    events = ev,
+    params = scen[, c("id", "fu", "clint", "fcl_h")],
+    returnType = "data.frame"
+  )
+  stopifnot(nrow(sim) == nrow(scen))
+  dplyr::left_join(
+    scen,
+    sim[, c("id", "cyp3a4_act", "gfr_il6", "eh", "eh0", "cl_ratio", "auc_ratio")],
+    by = "id"
+  )
+}
+```
+
+## Check 1: the IL-6 relationships (Table 2)
+
+At IL-6 = IC50 the sigmoid gives an activity of `1 - Imax / 2`, and at the top
+of the range the GFR rises by 0.01556 * 2500 = 38.9 mL/min/1.73 m^2.
+
+```{r check-il6}
+il6_check <- solve_clearance(data.frame(
+  IL6 = c(0, 43.65, 2500),
+  fu = 0.5,
+  clint = 54.4,
+  fcl_h = 0.5
+))
+il6_check |>
+  dplyr::select(IL6, cyp3a4_act, gfr_il6) |>
+  dplyr::rename(
+    "IL-6 (pg/mL)" = IL6,
+    "CYP3A4 activity (fraction)" = cyp3a4_act,
+    "GFR (mL/min)" = gfr_il6
+  ) |>
+  knitr::kable(digits = 4)
+
+stopifnot(
+  abs(il6_check$cyp3a4_act[1] - 1) < 1e-10,
+  abs(il6_check$cyp3a4_act[2] - (1 - 0.7326 / 2)) < 1e-6,
+  abs(il6_check$gfr_il6[1] - 113) < 1e-8,
+  abs(il6_check$gfr_il6[3] - (113 + 0.01556 * 2500)) < 1e-8
+)
+```
+
+```{r fig-s1, fig.height = 3.5}
+il6_grid <- solve_clearance(data.frame(
+  IL6 = c(0, 10^seq(-1, log10(2500), length.out = 80)),
+  fu = 0.5,
+  clint = 54.4,
+  fcl_h = 0.5
+))
+il6_long <- dplyr::bind_rows(
+  dplyr::transmute(il6_grid, IL6, value = 100 * cyp3a4_act, panel = "CYP3A4 activity (%)"),
+  dplyr::transmute(il6_grid, IL6, value = gfr_il6, panel = "GFR (mL/min)")
+)
+ggplot(il6_long, aes(IL6, value)) +
+  geom_line() +
+  facet_wrap(~panel, scales = "free_y") +
+  labs(x = "IL-6 (pg/mL)", y = NULL) +
+  theme_bw()
+```
+
+Model curves corresponding to Figure S1 of Liu 2023 (fitted relationships
+only; the digitised observations are not reproduced here).
+
+## Check 2: the dispersion liver model
+
+For a drug with low efficiency number the dispersion and well-stirred models
+converge on `ER = RN / (1 + RN)`, and the hepatic clearance tends to
+`fu * CLint`. For the paper's highest CLint the extraction ratio must exceed
+0.7 (the Fig. 3 caption uses 189 mL/min/kg as its high-ER drug).
+
+```{r check-dispersion}
+disp <- solve_clearance(data.frame(
+  IL6 = 0,
+  fu = 0.5,
+  clint = c(0.5, 54.4, 189),
+  fcl_h = 1
+))
+disp <- disp |>
+  dplyr::mutate(
+    rn = fu * clint * ref_wt / (0.25 * 5500),
+    eh_well_stirred = rn / (1 + rn),
+    category = er_category(eh)
+  )
+disp |>
+  dplyr::select(clint, rn, eh, eh_well_stirred, category) |>
+  dplyr::rename(
+    "CLint (mL/min/kg)" = clint,
+    "RN" = rn,
+    "ER, dispersion" = eh,
+    "ER, well-stirred" = eh_well_stirred,
+    "ER category" = category
+  ) |>
+  knitr::kable(digits = 4)
+
+stopifnot(
+  abs(disp$eh[1] / disp$eh_well_stirred[1] - 1) < 0.01,
+  identical(as.character(disp$category), c("low", "intermediate", "high"))
+)
+```
+
+## Replicate Figure 3: oral profiles
+
+Figure 3 shows oral profiles of one low-, one intermediate- and one high-ER
+drug (CLint 0.5, 54.4 and 189 mL/min/kg) for each elimination pathway at IL-6
+0, 10, 100, 1000 and 2500 pg/mL. The caption does not state the unbound
+fraction; `fu = 0.5`, the value of Figure 2, reproduces the published peaks
+(table below).
+
+```{r fig3-sim}
+fig3_scen <- expand.grid(
+  IL6 = c(0, 10, 100, 1000, 2500),
+  clint = c(0.5, 54.4, 189),
+  fcl_h = c(0, 0.5, 1),
+  fu = 0.5
+)
+fig3_scen$id <- seq_len(nrow(fig3_scen))
+fig3_scen$ER <- factor(
+  c("0.5" = "Low ER drug", "54.4" = "Intermediate ER drug", "189" = "High ER drug")[as.character(fig3_scen$clint)],
+  levels = c("Low ER drug", "Intermediate ER drug", "High ER drug")
+)
+fig3_scen$pathway <- factor(
+  pathway_label[as.character(fig3_scen$fcl_h)],
+  levels = pathway_label
+)
+fig3_scen$treatment <- paste(fig3_scen$pathway, fig3_scen$ER, paste0("IL-6 ", fig3_scen$IL6), sep = " / ")
+
+obs_times <- seq(0, 48, by = 0.05)
+fig3_ev <- dplyr::bind_rows(
+  data.frame(id = fig3_scen$id, time = 0, evid = 1, amt = 1, cmt = "depot"),
+  expand.grid(id = fig3_scen$id, time = obs_times) |>
+    dplyr::mutate(evid = 0, amt = 0, cmt = "central")
+) |>
+  dplyr::left_join(fig3_scen[, c("id", "IL6")], by = "id") |>
+  dplyr::mutate(WT = ref_wt, BSA = ref_bsa) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+fig3_sim <- rxode2::rxSolve(
+  mod,
+  events = fig3_ev,
+  params = fig3_scen[, c("id", "fu", "clint", "fcl_h")],
+  returnType = "data.frame",
+  rtol = 1e-10,
+  atol = 1e-12
+) |>
+  dplyr::select(id, time, Cc, cl_ratio) |>
+  dplyr::left_join(fig3_scen[, c("id", "ER", "pathway", "IL6", "treatment")], by = "id")
+stopifnot(length(unique(fig3_sim$id)) == nrow(fig3_scen))
+```
+
+```{r fig3-plot, fig.height = 6}
+ggplot(
+  dplyr::filter(fig3_sim, time <= 12),
+  aes(time, Cc, colour = factor(IL6))
+) +
+  geom_line() +
+  facet_grid(pathway ~ ER) +
+  labs(
+    x = "Time after dose (h)",
+    y = "Plasma drug concentration",
+    colour = "IL-6 (pg/mL)"
+  ) +
+  theme_bw()
+```
+
+Replicates Figure 3 of Liu 2023.
+
+The peak concentrations below were read from Figure 3 by the maintainers
+(reading resolution about 0.01).
+
+```{r fig3-peaks}
+fig3_read <- data.frame(
+  pathway = c(
+    "Kidney elimination", "Liver elimination", "Liver elimination",
+    "Liver elimination", "Hybrid elimination", "Hybrid elimination",
+    "Hybrid elimination", "Liver elimination"
+  ),
+  ER = c(
+    "Low ER drug", "Low ER drug", "Intermediate ER drug", "High ER drug",
+    "Low ER drug", "Intermediate ER drug", "High ER drug", "Low ER drug"
+  ),
+  IL6 = c(2500, 2500, 2500, 2500, 2500, 2500, 2500, 0),
+  cmax_figure = c(0.32, 0.58, 0.50, 0.42, 0.355, 0.48, 0.41, 0.37)
+)
+fig3_peaks <- fig3_sim |>
+  dplyr::group_by(pathway, ER, IL6) |>
+  dplyr::summarise(cmax_model = max(Cc), .groups = "drop") |>
+  dplyr::mutate(pathway = as.character(pathway), ER = as.character(ER)) |>
+  dplyr::inner_join(fig3_read, by = c("pathway", "ER", "IL6"))
+stopifnot(nrow(fig3_peaks) == nrow(fig3_read))
+fig3_peaks |>
+  dplyr::rename(
+    "Pathway" = pathway,
+    "Drug" = ER,
+    "IL-6 (pg/mL)" = IL6,
+    "Cmax, model" = cmax_model,
+    "Cmax, Figure 3" = cmax_figure
+  ) |>
+  knitr::kable(digits = 3)
+
+stopifnot(max(abs(fig3_peaks$cmax_model - fig3_peaks$cmax_figure)) < 0.015)
+```
+
+## PKNCA validation
+
+The oral profiles are analysed with PKNCA and compared with the closed-form
+one-compartment values implied by Eqs. 9-13: `AUCinf = F * Dose / CL`,
+`tmax = log(ka / k) / (ka - k)` (or `1 / k` when `ka = k`),
+`Cmax = F * Dose / V * exp(-k * tmax)` and `t1/2 = log(2) / k` (absorption is
+faster than or equal to elimination only when `k <= ka`; for `k > ka` the
+terminal phase is absorption-limited and `t1/2 = log(2) / ka`).
+
+```{r pknca}
+stopifnot(all(fig3_sim$Cc >= -1e-6 * max(fig3_sim$Cc)))
+conc_df <- fig3_sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(Cc = pmax(Cc, 0)) |>
+  dplyr::select(id, treatment, time, Cc)
+dose_df <- fig3_ev |>
+  dplyr::filter(evid == 1) |>
+  dplyr::left_join(fig3_scen[, c("id", "treatment")], by = "id") |>
+  dplyr::select(id, treatment, time, amt)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0,
+  end = Inf,
+  cmax = TRUE,
+  tmax = TRUE,
+  aucinf.obs = TRUE,
+  half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+closed_form <- fig3_scen |>
+  dplyr::left_join(
+    dplyr::distinct(fig3_sim, id, cl_ratio),
+    by = "id"
+  ) |>
+  dplyr::mutate(
+    k = cl_ratio,
+    ka = 1,
+    tmax = ifelse(abs(k - ka) < 1e-9, 1 / k, log(ka / k) / (ka - k)),
+    cmax = exp(-k * tmax),
+    aucinf.obs = 1 / cl_ratio,
+    half.life = log(2) / pmin(k, ka)
+  ) |>
+  dplyr::select(treatment, cmax, tmax, aucinf.obs, half.life)
+
+nca_cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = closed_form,
+  by = "treatment",
+  units = c(cmax = "mg/L", tmax = "h", aucinf.obs = "mg*h/L", half.life = "h"),
+  tolerance_pct = 5
+)
+knitr::kable(
+  nca_cmp,
+  caption = paste(
+    "PKNCA on the simulated oral profiles against the closed-form",
+    "one-compartment values. * marks a difference above 5%."
+  )
+)
+```
+
+Cmax, tmax and AUCinf agree with the closed form. The starred half-life rows
+are the scenarios with `k` within a few percent of `ka`: there the
+profile is close to `t * exp(-t)`, which is not mono-exponential within the
+48 h window, so a log-linear terminal fit overestimates `log(2) / min(k, ka)`
+by about 5 percent. This is a property of the NCA fit, not of the model.
+
+```{r pknca-gate}
+# ncaComparisonTable() returns formatted text, so the gate is computed from
+# the numeric inputs.
+nca_num <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  dplyr::select(treatment, PPTESTCD, sim = PPORRES) |>
+  dplyr::left_join(
+    tidyr::pivot_longer(closed_form, -treatment, names_to = "PPTESTCD", values_to = "ref"),
+    by = c("treatment", "PPTESTCD")
+  )
+stopifnot(
+  nrow(nca_num) == 4 * nrow(fig3_scen),
+  !anyNA(nca_num$sim),
+  # tmax is limited by the 0.05 h grid; Cmax and AUC by the trapezoid rule.
+  # Half-life is shown but not gated: when k is close to ka the profile is
+  # not mono-exponential within 48 h and a log-linear fit cannot recover
+  # log(2) / min(k, ka).
+  all(abs(nca_num$sim - nca_num$ref)[nca_num$PPTESTCD == "tmax"] <= 0.05),
+  all(abs(nca_num$sim / nca_num$ref - 1)[nca_num$PPTESTCD %in% c("cmax", "aucinf.obs")] < 0.01)
+)
+```
+
+## Replicate Figure 2: AUC change by elimination pathway
+
+Figure 2 sweeps the 12 CLint values over the 10 IL-6 levels for each
+pathway, with `fu = 0.5`, and colours each point by the extraction-ratio
+category at that IL-6 (panels are the category at IL-6 = 0).
+
+The published y-axis, "relative change of AUC", does not match Eq. 14 or the
+supplementary code (`dAUC <- (AUC - AUC0) / AUC0 * 100`). Its values equal
+`(AUC - AUC0) / AUC`, i.e. `1 - cl_ratio`: the renal panel bottoms out near
+-34 percent at 2500 pg/mL, where `(AUC - AUC0) / AUC0` would give -26 percent,
+and the low-ER hepatic panel tops out near +67 percent rather than +202
+percent. The plot below uses the published metric so it can be compared with
+the figure; the Eq. 14 metric is tabulated afterwards.
+
+```{r fig2-sim}
+fig2 <- solve_clearance(expand.grid(
+  IL6 = il6_levels,
+  clint = clint_levels,
+  fcl_h = c(0, 0.5, 1),
+  fu = 0.5
+)) |>
+  dplyr::mutate(
+    pathway = factor(pathway_label[as.character(fcl_h)], levels = pathway_label),
+    initial_er = factor(
+      paste(er_category(eh0), "initial ER"),
+      levels = paste(c("low", "intermediate", "high"), "initial ER")
+    ),
+    er_now = er_category(eh),
+    change_published = 1 - cl_ratio,
+    change_eq14 = auc_ratio - 1
+  )
+```
+
+```{r fig2-plot, fig.height = 6, warning = FALSE}
+ggplot(
+  dplyr::filter(fig2, IL6 > 0),
+  aes(IL6, change_published)
+) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey60") +
+  geom_line(aes(group = clint), colour = "grey80", linetype = "dotted") +
+  geom_point(aes(colour = er_now)) +
+  scale_x_log10() +
+  scale_y_continuous(labels = scales::percent) +
+  facet_grid(pathway ~ initial_er) +
+  labs(
+    x = "IL-6 level in plasma (pg/mL)",
+    y = "Relative change of AUC, (AUC - AUC0) / AUC",
+    colour = "ER category"
+  ) +
+  theme_bw()
+```
+
+Replicates Figure 2 of Liu 2023 (`fu = 0.5`).
+
+The checks below compare the extremes of each panel with values read from
+Figure 2 by the maintainers (reading resolution about 2 percentage points),
+and confirm the narrative claims of the Results.
+
+```{r fig2-gate}
+at_2500 <- dplyr::filter(fig2, IL6 == 2500)
+renal_2500 <- at_2500$change_published[at_2500$fcl_h == 0]
+liver_low_2500 <- at_2500$change_published[at_2500$fcl_h == 1 & at_2500$clint == 0.5]
+hybrid_low_2500 <- at_2500$change_published[at_2500$fcl_h == 0.5 & at_2500$clint == 0.5]
+
+data.frame(
+  quantity = c(
+    "Kidney elimination, any drug, IL-6 2500",
+    "Liver elimination, CLint 0.5, IL-6 2500",
+    "Hybrid elimination, CLint 0.5, IL-6 2500"
+  ),
+  model = c(renal_2500[1], liver_low_2500, hybrid_low_2500),
+  figure = c(-0.34, 0.66, -0.10)
+) |>
+  dplyr::rename(
+    "Quantity" = quantity,
+    "Model, (AUC - AUC0) / AUC" = model,
+    "Figure 2 (read)" = figure
+  ) |>
+  knitr::kable(digits = 3)
+
+stopifnot(
+  # Renal clearance does not depend on fu or CLint, so every renal drug moves
+  # together.
+  diff(range(renal_2500)) < 1e-10,
+  abs(renal_2500[1] - (-0.34)) < 0.02,
+  abs(liver_low_2500 - 0.66) < 0.02,
+  abs(hybrid_low_2500 - (-0.10)) < 0.02,
+  # Results: renal AUC decreases, hepatic low-ER AUC rises by over 50 percent.
+  all(at_2500$change_eq14[at_2500$fcl_h == 0] < 0),
+  liver_low_2500 > 0.5
+)
+```
+
+The same scenarios under the Eq. 14 metric, `AUC / AUC0 - 1`:
+
+```{r fig2-eq14}
+fig2 |>
+  dplyr::filter(IL6 %in% c(100, 1000, 2500), clint %in% range(clint_levels)) |>
+  dplyr::select(pathway, clint, IL6, change_published, change_eq14) |>
+  dplyr::arrange(pathway, clint, IL6) |>
+  dplyr::rename(
+    "Pathway" = pathway,
+    "CLint (mL/min/kg)" = clint,
+    "IL-6 (pg/mL)" = IL6,
+    "(AUC - AUC0) / AUC" = change_published,
+    "AUC / AUC0 - 1 (Eq. 14)" = change_eq14
+  ) |>
+  knitr::kable(digits = 3)
+```
+
+## Replicate Figure 4: protein binding, hepatic elimination
+
+```{r fig4, fig.height = 7, warning = FALSE}
+fig4 <- solve_clearance(expand.grid(
+  IL6 = il6_levels,
+  clint = clint_levels,
+  fcl_h = 1,
+  fu = c(0.01, 0.25, 0.5, 0.75, 1)
+)) |>
+  dplyr::mutate(
+    initial_er = factor(
+      paste(er_category(eh0), "initial ER"),
+      levels = paste(c("low", "intermediate", "high"), "initial ER")
+    ),
+    er_now = er_category(eh),
+    change_published = 1 - cl_ratio
+  )
+
+ggplot(
+  dplyr::filter(fig4, IL6 > 0),
+  aes(IL6, change_published)
+) +
+  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey60") +
+  geom_line(aes(group = clint), colour = "grey80", linetype = "dotted") +
+  geom_point(aes(colour = er_now)) +
+  scale_x_log10() +
+  scale_y_continuous(labels = scales::percent) +
+  facet_grid(paste("fu:", fu) ~ initial_er, drop = FALSE) +
+  labs(
+    x = "IL-6 concentration (pg/mL)",
+    y = "Relative change of AUC, (AUC - AUC0) / AUC",
+    colour = "ER category"
+  ) +
+  theme_bw()
+```
+
+Replicates Figure 4 of Liu 2023.
+
+At `fu = 0.01` every drug in the panel is a low-ER drug (Figure 4 has only
+the low-initial-ER column populated in that row), and for a given CLint the
+change in AUC shrinks as `fu` grows, most clearly for the drugs that become
+high-ER.
+
+```{r fig4-gate}
+fig4_2500 <- dplyr::filter(fig4, IL6 == 2500)
+by_clint <- fig4_2500 |>
+  dplyr::group_by(clint) |>
+  dplyr::arrange(fu, .by_group = TRUE) |>
+  dplyr::summarise(monotone = all(diff(change_published) <= 1e-12), .groups = "drop")
+stopifnot(
+  all(fig4$eh0[fig4$fu == 0.01] < 0.3),
+  all(by_clint$monotone)
+)
+```
+
+## Assumptions and deviations
+
+* **Hypothetical drug.** `fu`, `clint`, `fm_cyp3a4` and `fcl_h` describe the
+  drug, not the patient, and are carried as fixed `ini()` placeholders (one
+  scenario of the paper: `fu` 0.5, CLint 54.4 mL/min/kg, hybrid elimination).
+  Override them per subject through `rxSolve(params = ...)`, as this article
+  does, or with `ini()`.
+* **Clearance normalisation.** Eq. 13 gives `k = CL / Vd` with `Vd = 1`, but
+  the authors' code, and every published figure, use the clearance relative
+  to its no-inflammation value (`CL0 = 1`). The model follows the code. Set
+  `lcl` to a real drug's no-inflammation clearance to apply the inflammation
+  factor to that drug; `cl_ratio` and `auc_ratio` do not depend on `lcl`.
+* **GFR slope.** Table 2 prints alpha as 0.016 (two significant figures); the
+  model uses the code value 0.01556.
+* **Hybrid pathway.** Eq. 7 sums the hepatic and renal clearances for
+  `fcl_h = 0.5`; it does not weight them. The hybrid inflammation factor is
+  therefore `(CLhep + CLre) / (CLhep0 + CLre0)` with each arm in absolute
+  physiological units, exactly as in the code. `fcl_h` acts only as a
+  pathway switch (hepatic arm for `fcl_h > 0`, renal arm for `fcl_h < 1`).
+* **Dispersion model.** Eq. 4 is printed with exponents `(a - 1) / 2 * DN`;
+  the supplementary code and the standard dispersion model use
+  `(a - 1) / (2 * DN)`, which the model follows.
+* **Figure 2 and 4 y-axis.** As shown above, the plotted "relative change of
+  AUC" equals `(AUC - AUC0) / AUC = 1 - cl_ratio`, not Eq. 14. The model
+  exposes `auc_ratio` (Eq. 14 divided by 100); the published metric is
+  `1 - cl_ratio`.
+* **Figure 3 unbound fraction.** Not stated in the caption; `fu = 0.5`
+  reproduces the published peaks to within the reading resolution.
+* **Body size.** `WT` scales the per-kg CLint and `BSA` de-normalises GFR,
+  as in the code; the paper used 70 kg and 1.73 m^2. Hepatic blood flow is
+  not scaled.
+* **Instantaneous IL-6 effect.** The paper studies constant IL-6 levels. The
+  model applies the IL-6 effect without delay, so a time-varying `IL6` column
+  changes CYP3A4 activity and GFR immediately; enzyme turnover after an IL-6
+  change is not part of this model.
+* **No variability.** The paper reports no between-subject variability and no
+  residual error; the model is deterministic.
+* **Parameter names.** `dn` (dispersion number) and `fcl_h` (pathway index)
+  keep the paper's symbols.
+
+## Session info
+
+```{r session-info}
+sessionInfo()
+```
