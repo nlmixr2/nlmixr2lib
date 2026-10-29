@@ -15769,6 +15769,39 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (scales MRP2-mediated biliary excretion and enterocyte-to-lumen efflux to 33.3 percent of wild type, weighted by the per-compound MRP2 contribution).
 - **Notes:** Companion to `SNP_ABCC2_RS717620_HET`; see that entry's Notes for the `Assumption` provenance of the activity ratios and the cohort genotype frequencies.
 
+### SNP_MTHFR_RS1801131 (**canonical for MTHFR rs1801131 (A1298C) variant-carrier indicator**)
+- **Description:** Binary genotype indicator for the *MTHFR* (methylenetetrahydrofolate reductase) A1298C polymorphism (rs1801131). 1 = the subject carries at least one variant allele (heterozygous or homozygous mutant, a dominant inheritance model); 0 = wild-type. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (wild-type).
+- **Source aliases:**
+  - `MTHFR` / `MTHFR (rs1801131)` -- Campagne 2024 (Results 'The pharmacogenetic covariate analysis'; Table 2 rows 'MTHFR (rs1801131) variant'; coded 0 = wild-type, 1 = combined heterozygous + homozygous mutant per the Table 2 footnote dominant model). Supplementary Table S1 reports 61 WT / 48 HE / 8 HOM of 117 genotyped patients.
+- **Example models:** `Campagne_2024_methotrexate_genotype.R` (exponential effects lowering methotrexate non-metabolic clearance CL by exp(-0.083) and central volume V by exp(-0.076) in carriers).
+- **Notes:** Member of the `SNP_<GENE>_RS<rsid>` family. Dominant-model carrier indicator; does not distinguish heterozygous from homozygous carriers. Distinct from rs1801133 (the MTHFR C677T locus, a different SNP), which needs its own entry if a source uses it.
+
+### SNP_ABCC2_RS8187710 (**canonical for ABCC2 rs8187710 (C1515Y) variant-carrier indicator**)
+- **Description:** Binary genotype indicator for the *ABCC2* (MRP2 efflux transporter) rs8187710 polymorphism (c.4544G>A, C1515Y). 1 = the subject carries at least one variant allele (heterozygous or homozygous mutant, a dominant inheritance model); 0 = wild-type. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (wild-type).
+- **Source aliases:**
+  - `ABCC2` / `ABCC2 (rs8187710)` -- Campagne 2024 (Results; Table 2 row 'ABCC2 (rs8187710) variant'; dominant model per the Table 2 footnote). Supplementary Table S1 reports 101 WT / 15 HE / 1 HOM of 117 genotyped patients.
+- **Example models:** `Campagne_2024_methotrexate_genotype.R` (exponential effect lowering methotrexate central volume V by exp(-0.10) in carriers).
+- **Notes:** Member of the `SNP_<GENE>_RS<rsid>` family. Dominant-model carrier indicator. Distinct from the `SNP_ABCC2_RS717620_HET` / `_HOM` pair (the c.-24C>T promoter locus), which encode a different ABCC2 SNP by zygosity rather than as a single dominant-model carrier flag.
+
+### SNP_SLC19A1_RS4818789 (**canonical for SLC19A1 rs4818789 variant-carrier indicator**)
+- **Description:** Binary genotype indicator for the *SLC19A1* (reduced folate carrier RFC1, the principal cellular folate / methotrexate uptake transporter) rs4818789 polymorphism. 1 = the subject carries at least one variant allele (heterozygous or homozygous mutant, a dominant inheritance model); 0 = wild-type. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (wild-type).
+- **Source aliases:**
+  - `SLC19A1` / `SLC19A1 (rs4818789)` -- Campagne 2024 (Results; Table 2 row 'SLC19A1 (rs4818789) variant'; dominant model per the Table 2 footnote). Supplementary Table S1 reports 67 WT / 40 HE / 10 HOM of 117 genotyped patients.
+- **Example models:** `Campagne_2024_methotrexate_genotype.R` (exponential effect raising methotrexate metabolic 7OHMTX-forming clearance CLMET by exp(0.099) in carriers).
+- **Notes:** Member of the `SNP_<GENE>_RS<rsid>` family. Dominant-model carrier indicator. Distinct from rs1051266 (the SLC19A1 G80A / His27Arg locus, a different SNP screened in the same paper's Supplementary Table S1), which needs its own entry if a source uses it.
+
 ### SNP_ABCC4_RS2274407_G_COUNT (**canonical for ABCC4 rs2274407 variant G-allele count**)
 - **Description:** Continuous individual-level count of *ABCC4* rs2274407 variant alleles as defined on the T>G orientation: 0 = TT wild-type homozygote, 1 = TG heterozygote, 2 = GG variant homozygote. Time-invariant (germline genotype). *ABCC4* encodes multidrug-resistance protein 4 (MRP4), an ATP-binding-cassette C-subfamily efflux transporter expressed across many tissues and tumours. The variant sits at the 3' splice acceptor site of exon 8; the cited functional work reports that it does not alter MRP4 transport activity directly but may disrupt normal splicing of *ABCC4* pre-mRNA.
 - **Units:** (count, 0/1/2 alleles per subject)

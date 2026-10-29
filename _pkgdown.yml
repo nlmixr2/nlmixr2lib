@@ -4314,6 +4314,8 @@ navbar:
         href: articles/Wang_2023_methotrexate.html
       - text: "Methotrexate (Blackman 2026)"
         href: articles/Blackman_2026_methotrexate.html
+      - text: "Methotrexate (Campagne 2024)"
+        href: articles/Campagne_2024_methotrexate.html
       - text: "Methotrexate (Gao 2021)"
         href: articles/Wang_2023_methotrexate.html
       - text: "Methotrexate (Gebhard 2023)"
@@ -4352,6 +4354,8 @@ navbar:
         href: articles/Chen_2025_methotrexate_rheumatoid_arthritis.html
       - text: "Methotrexate das28 mbma (Chen 2025)"
         href: articles/Chen_2025_methotrexate_rheumatoid_arthritis.html
+      - text: "Methotrexate genotype (Campagne 2024)"
+        href: articles/Campagne_2024_methotrexate.html
       - text: "Methotrexate genotype (Wei 2025)"
         href: articles/Wei_2025_methotrexate.html
       - text: "Methotrexate mouse pbpk (Saleh 2023)"
@@ -8179,6 +8183,7 @@ articles:
   - articles/Caldes_2009_ganciclovir
   - articles/Cammarata_2024_sulbactam_durlobactam
   - articles/Campagne_2019_cyclophosphamide_mouse
+  - articles/Campagne_2024_methotrexate
   - articles/Campbell_2023_manganese
   - articles/Candelaria_2018_rituximab
   - articles/Canini_2015_danoprevir
