@@ -6978,6 +6978,8 @@ navbar:
         href: articles/Frey_2013_tocilizumab.html
       - text: "Tocilizumab (Moes 2022)"
         href: articles/Moes_2022_tocilizumab.html
+      - text: "Tofacitinib (Chang 2024)"
+        href: articles/Chang_2024_tofacitinib.html
       - text: "Tofacitinib (Tse 2020)"
         href: articles/Tse_2020_tofacitinib.html
       - text: "Tofacitinib (Tsuchiwata 2026)"
@@ -8233,6 +8235,7 @@ articles:
   - articles/Chandorkar_2015_ceftolozane_tazobactam
   - articles/ChandralayamAyyappaMenon_2026_isb2001
   - articles/Chang_2011_PF04455242_prolactin
+  - articles/Chang_2024_tofacitinib
   - articles/Chantharit_2019_voriconazole
   - articles/Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta
   - articles/Charles_2007_tafenoquine
