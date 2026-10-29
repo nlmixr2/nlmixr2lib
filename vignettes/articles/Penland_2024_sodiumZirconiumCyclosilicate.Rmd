@@ -1,0 +1,613 @@
+---
+title: "Sodium zirconium cyclosilicate (Penland 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sodium zirconium cyclosilicate (Penland 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-load}
+mod_name <- "Penland_2024_sodiumZirconiumCyclosilicate"
+mod <- readModelDb(mod_name)
+ui <- rxode2::rxode(mod)
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article: <https://doi.org/10.1007/s40262-024-01360-9> (open access; the
+  model equations and covariate functional forms are in its Electronic
+  Supplementary Material)
+
+Sodium zirconium cyclosilicate (SZC) is a non-absorbed oral potassium binder.
+No drug concentration can be measured, so the authors drive the effect with a
+virtual exposure (a K-PD compartment): each dose enters `depot_kpd` and is
+eliminated first-order with mean transit time 137 h. The exposure is scaled so
+that a steady-state 1 g once-daily (QD) regimen has a mean 24-h exposure of 1;
+EC50 is therefore expressed as a QD dose in grams. Serum potassium follows an
+indirect-response model,
+
+$$\frac{dSK}{dt} = K_{in} - K_{out} \cdot SK, \qquad
+K_{in} = BL \cdot K_{out} \cdot placebo \cdot
+\left(1 - \frac{I_{max} \cdot SZC^{h}}{SZC^{h} + EC_{50}^{h}}\right),$$
+
+with $SK(0) = BL$, the observed baseline serum potassium at the first dose.
+
+# Population
+
+The analysis pooled 2369 patients with hyperkalemia (screening serum potassium
+> 5.0 mmol/L) and 25,764 serum potassium observations from seven phase II/III
+SZC studies (ZS-002, ZS-003, ZS-004, ZS-005, D9480C00002, D9482C00001,
+D9482C00002; Table 1 and Supplementary Table S1). Mean (SD) age was 66.0 (12)
+years, 61% were male, 68% White, 9% Black/African American, 21% Asian and 2%
+other race; 34% had congestive heart failure and 62% diabetes. Mean (SD)
+baseline serum potassium was 5.49 (0.43) mmol/L and MDRD eGFR 45.9 (29)
+mL/min/1.73 m^2. Correction-phase dosing was 0-15 g three times daily (TID) for
+48-72 h, and maintenance dosing 0-15 g QD for up to 28 days.
+
+The same information is available programmatically via
+`readModelDb("Penland_2024_sodiumZirconiumCyclosilicate")()$population`.
+
+# Source trace
+
+Every value is from Table 2 ("Full model" column) of Penland 2024; the
+equations and functional forms are from the Supplementary Methods.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `d/dt(depot_kpd) = -kel * depot_kpd` | n/a | Supplementary Methods, dSZC/dt |
+| `exposure = depot_kpd * kel * 24` | n/a | Methods "Base Model": exposure scaled to 1 for steady-state 1 g QD |
+| `d/dt(serum_k) = kin - kout * serum_k`, `serum_k(0) = POT` | n/a | Supplementary Methods, dSK/dt and SK(0) = BL |
+| `kin = POT * kout * plac * (1 - inh)` | n/a | Supplementary Methods, Kin equation |
+| Continuous covariates: power `(cov / ref)^theta` | n/a | Supplementary Methods (power form); see Assumptions |
+| Categorical covariates: `exp(theta * cov)` | n/a | Supplementary Methods (proportional shift) |
+| `lkel` = log(1/137) | MTT 137 h | Table 2, SZC MTT |
+| `lkout` | 0.548 1/h | Table 2, Serum K+ Kout |
+| `lplac` | 0.923 | Table 2, Placebo effect on Kin |
+| `limax` | 0.633 | Table 2, Emax (% inhibition) 63.3 |
+| `lec50` | 32.8 g | Table 2, EC50 |
+| `lhill` | 1.36 | Table 2, Hill coefficient |
+| `e_pot_ec50` | -1.04 | Table 2, BL covariate on EC50 |
+| `e_age_ec50` | -0.486 | Table 2, Age covariate on EC50 |
+| `e_wt_ec50` | 0.515 | Table 2, Body weight covariate on EC50 |
+| `e_crcl_ec50` | 0.316 | Table 2, eGFR covariate on EC50 |
+| `e_race_black_ec50` | -0.325 | Table 2, Black/African American covariate on EC50 |
+| `e_race_asian_ec50` | -0.134 | Table 2, Asian covariate on EC50 |
+| `e_race_other_ec50` | -0.122 | Table 2, 'Other' race covariate on EC50 |
+| `e_pot_plac` | 0.44 | Table 2, BL covariate on placebo |
+| `e_crcl_plac` | 0.0371 | Table 2, eGFR covariate on placebo |
+| `e_dis_chf_plac` | 0.00121 | Table 2, Heart failure status covariate on placebo |
+| `e_dis_diab_plac` | -0.0133 | Table 2, Diabetes status covariate on placebo |
+| `e_sexf_kout` | 0.254 | Table 2, Sex covariate on Kout |
+| `etalplac` | 0.00296 | Table 2, BPV of placebo variance (log-normal) |
+| `etalec50` | 0.171 | Table 2, BPV of EC50 variance (log-normal) |
+| `addSd` | sqrt(0.118) mmol/L | Table 2, Residual error variance; additive (Supplementary Methods) |
+
+# Simulation helpers
+
+The paper's covariate and dose-response predictions are means over
+between-patient variability. To make every number below reproducible on any
+machine, the between-patient random effects are drawn in base R (seeded with
+`set.seed()`) and passed to `rxSolve()` through `params`, with the model's own
+random effects zeroed. The EC50 effects are placed on a deterministic normal
+quantile grid.
+
+```{r helpers}
+mod_fixed <- suppressMessages(rxode2::zeroRe(mod))
+th <- ui$theta
+om <- diag(ui$omega)
+
+ref_patient <- data.frame(
+  POT = 5.4, AGE = 65, WT = 85, CRCL = 45,
+  RACE_BLACK = 0, RACE_ASIAN = 0, RACE_OTHER = 0,
+  DIS_CHF = 0, DIS_DIAB = 0, SEXF = 0
+)
+
+# Regimen: `corr` g TID for 48 h (6 doses), then `maint` g every `maint_ii` h
+# from 48 h for 28 days. Observations of the serum_k state at the end of the
+# correction phase (48 h) and at day 28 of maintenance (48 + 672 h).
+t_corr <- 48
+t_maint <- 48 + 28 * 24
+make_events <- function(cov, corr, maint = 0, maint_ii = 24, regimen,
+                        obs_times = c(0, t_corr, t_maint)) {
+  n <- nrow(cov)
+  dose_times <- c(seq(0, 40, by = 8), if (maint > 0) seq(48, 48 + 27 * 24, by = maint_ii))
+  dose_amt <- c(rep(corr, 6), if (maint > 0) rep(maint, length(seq(48, 48 + 27 * 24, by = maint_ii))))
+  doses <- data.frame(time = dose_times, amt = dose_amt, evid = 1L, cmt = "depot_kpd") |>
+    dplyr::filter(amt > 0)
+  obs <- data.frame(time = obs_times, amt = 0, evid = 0L, cmt = "serum_k")
+  one <- dplyr::bind_rows(doses, obs)
+  tidyr::expand_grid(id = cov$id, one) |>
+    dplyr::left_join(cov, by = "id") |>
+    dplyr::mutate(regimen = regimen) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+solve_fixed <- function(events, etas) {
+  pars <- data.frame(
+    id = etas$id,
+    etalec50 = etas$etalec50,
+    etalplac = etas$etalplac
+  )
+  # The random effects arrive through `params`, so rxode2's warning that the
+  # zeroed model has no omega to sample from is expected; any other warning
+  # still propagates.
+  withCallingHandlers(
+    rxode2::rxSolve(mod_fixed, events, params = pars, keep = "regimen", returnType = "data.frame"),
+    warning = function(w) {
+      if (grepl("multi-subject simulation without", conditionMessage(w))) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+```
+
+# Structural checks
+
+## Exposure scaling
+
+The authors scale the virtual exposure so that a steady-state 1 g QD regimen
+has a mean 24-h exposure of 1 (Methods, "Base Model"). With
+`exposure = depot_kpd * kel * 24` the mean over a dosing interval at steady
+state equals the QD dose in grams exactly; this checks it numerically for 10 g
+QD.
+
+```{r exposure-check}
+# The grid is offset from the dose times so that no observation coincides
+# with a dose; the one dosing interval it spans adds < 2e-4 trapezoid error.
+ev_ss <- rxode2::et(amt = 10, ii = 24, addl = 120, cmt = "depot_kpd") |>
+  rxode2::et(seq(99 * 24 + 0.025, 100 * 24 + 0.025, by = 0.05))
+ss <- rxode2::rxSolve(mod_fixed, ev_ss, params = ref_patient, returnType = "data.frame")
+mean_exposure <- sum(diff(ss$time) * (head(ss$exposure, -1) + tail(ss$exposure, -1)) / 2) / 24
+mean_exposure
+# Same parameters on both sides (a solve against its own closed form), so the
+# tolerance reflects only integration and trapezoid error.
+stopifnot(abs(mean_exposure - 10) / 10 < 1e-3)
+```
+
+## Placebo steady state
+
+Without SZC, `kin = POT * kout * plac`, so serum potassium relaxes from its
+baseline to `POT * plac`; for the reference patient (baseline 5.4 mmol/L) this
+is 5.4 x 0.923 = 4.98 mmol/L, the plateau of the 0 g panel of Figure 3.
+
+```{r placebo-ss}
+ev_pbo <- rxode2::et(seq(0, 240, by = 24))
+pbo <- rxode2::rxSolve(mod_fixed, ev_pbo, params = ref_patient, returnType = "data.frame")
+stopifnot(
+  abs(pbo$serum_k[1] - 5.4) < 1e-8,
+  abs(tail(pbo$serum_k, 1) - 5.4 * exp(th[["lplac"]])) < 1e-4
+)
+tail(pbo$serum_k, 1)
+```
+
+# Reference-patient covariate effects (Figure 4 and Results text)
+
+The reference patient is a nondiabetic, non-CHF White male aged 65 years with
+eGFR 45 mL/min/1.73 m^2, body weight 85 kg and baseline serum potassium
+5.4 mmol/L. Each covariate profile below changes one value from the reference
+and reports the placebo-adjusted change from baseline after 48 h of 10 g TID
+(correction phase) and after a further 28 days of 10 g QD (maintenance phase),
+averaged over the EC50 and placebo between-patient variability (200 effects on
+a normal quantile grid, `set.seed()` for the placebo effect pairing).
+
+```{r fig4-profiles}
+n_eta <- 200
+set.seed(20240319)
+eta_grid <- data.frame(
+  etalec50 = qnorm((seq_len(n_eta) - 0.5) / n_eta) * sqrt(om[["etalec50"]]),
+  etalplac = sample(qnorm((seq_len(n_eta) - 0.5) / n_eta)) * sqrt(om[["etalplac"]])
+)
+
+profiles <- list(
+  "Reference patient" = list(),
+  "Potassium baseline: 6 mmol/L" = list(POT = 6),
+  "Potassium baseline: 5 mmol/L" = list(POT = 5),
+  "eGFR: 88 mL/min/1.73 m2" = list(CRCL = 88),
+  "eGFR: 17 mL/min/1.73 m2" = list(CRCL = 17),
+  "Diabetes mellitus" = list(DIS_DIAB = 1),
+  "Congestive heart failure" = list(DIS_CHF = 1),
+  "Body weight: 111 kg" = list(WT = 111),
+  "Body weight: 57 kg" = list(WT = 57),
+  "Black/African American" = list(RACE_BLACK = 1),
+  "Asian" = list(RACE_ASIAN = 1),
+  "Age: 81 years" = list(AGE = 81),
+  "Age: 49 years" = list(AGE = 49)
+)
+
+profile_cov <- function(k) {
+  cov <- ref_patient
+  for (nm in names(profiles[[k]])) cov[[nm]] <- profiles[[k]][[nm]]
+  cov <- cov[rep(1, n_eta), ]
+  cov$id <- (k - 1L) * n_eta + seq_len(n_eta)
+  cov$profile <- names(profiles)[k]
+  cov
+}
+prof_cov <- dplyr::bind_rows(lapply(seq_along(profiles), profile_cov))
+prof_eta <- cbind(id = prof_cov$id, eta_grid[rep(seq_len(n_eta), length(profiles)), ])
+
+# Active arm and the placebo comparator share covariates and random effects;
+# the comparator for the maintenance phase also received 10 g TID for 48 h.
+ev_act <- make_events(prof_cov, corr = 10, maint = 10, regimen = "active")
+ev_pbo_c <- make_events(prof_cov, corr = 0, regimen = "placebo") |>
+  dplyr::mutate(id = id + 10000L)
+ev_pbo_m <- make_events(prof_cov, corr = 10, regimen = "placebo_maint") |>
+  dplyr::mutate(id = id + 20000L)
+ev_prof <- dplyr::bind_rows(ev_act, ev_pbo_c, ev_pbo_m)
+stopifnot(!anyDuplicated(unique(ev_prof[, c("id", "time", "evid")])))
+eta_prof <- dplyr::bind_rows(
+  prof_eta,
+  dplyr::mutate(prof_eta, id = id + 10000L),
+  dplyr::mutate(prof_eta, id = id + 20000L)
+)
+
+sim_prof <- solve_fixed(ev_prof, eta_prof) |>
+  dplyr::mutate(base_id = id %% 10000L) |>
+  dplyr::left_join(dplyr::distinct(prof_cov, id, profile), by = c("base_id" = "id"))
+
+prof_tab <- sim_prof |>
+  dplyr::filter(time %in% c(t_corr, t_maint)) |>
+  dplyr::select(base_id, profile, regimen, time, serum_k) |>
+  tidyr::pivot_wider(names_from = regimen, values_from = serum_k) |>
+  dplyr::mutate(
+    pa_cfb = ifelse(time == t_corr, active - placebo, active - placebo_maint),
+    phase = ifelse(time == t_corr, "correction", "maintenance")
+  ) |>
+  dplyr::group_by(profile, phase) |>
+  dplyr::summarise(pa_cfb = mean(pa_cfb), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = phase, values_from = pa_cfb)
+
+# Correction-phase values stated in the Results text of Penland 2024.
+published_corr <- tibble::tribble(
+  ~profile, ~published,
+  "Reference patient", -0.48,
+  "eGFR: 88 mL/min/1.73 m2", -0.37,
+  "eGFR: 17 mL/min/1.73 m2", -0.71,
+  "Black/African American", -0.69,
+  "Asian", -0.55,
+  "Congestive heart failure", -0.48,
+  "Diabetes mellitus", -0.49
+)
+
+fig4_cmp <- prof_tab |>
+  dplyr::left_join(published_corr, by = "profile") |>
+  dplyr::mutate(pct_diff = 100 * (correction - published) / published) |>
+  dplyr::arrange(match(profile, names(profiles)))
+
+fig4_cmp |>
+  dplyr::rename(
+    "Covariate profile" = profile,
+    "Correction 48 h, simulated (mmol/L)" = correction,
+    "Correction 48 h, published (mmol/L)" = published,
+    "Difference (%)" = pct_diff,
+    "Maintenance day 28, simulated (mmol/L)" = maintenance
+  ) |>
+  knitr::kable(digits = 2, caption = "Placebo-adjusted serum K+ change from baseline with SZC 10 g (Penland 2024 Figure 4 and Results).")
+```
+
+```{r fig4-check}
+chk4 <- dplyr::filter(fig4_cmp, !is.na(published))
+stopifnot(nrow(chk4) == nrow(published_corr))
+# Deterministic: the random effects are a fixed grid and the covariates are
+# fixed, so the only noise is the integrator. A mis-transcribed EC50, Imax,
+# exponent or exposure scaling moves these values by far more than 10%.
+stopifnot(max(abs(chk4$pct_diff)) < 10)
+```
+
+The paper also states that the 5 g and 15 g responses of the reference
+patient span -0.21 to -0.76 mmol/L in the correction phase.
+
+```{r fig4-range}
+cov_ref <- ref_patient[rep(1, n_eta), ]
+cov_ref$id <- seq_len(n_eta)
+eta_ref <- cbind(id = cov_ref$id, eta_grid)
+corr_mean <- function(dose) {
+  act <- solve_fixed(make_events(cov_ref, corr = dose, regimen = "a"), eta_ref)
+  pbo <- solve_fixed(make_events(cov_ref, corr = 0, regimen = "p"), eta_ref)
+  mean(act$serum_k[act$time == t_corr] - pbo$serum_k[pbo$time == t_corr])
+}
+# The random effects passed through `params` must reach the solve: EC50 of
+# the reference patient is exactly exp(lec50 + etalec50).
+chk_ec50 <- solve_fixed(make_events(cov_ref, corr = 10, regimen = "a"), eta_ref) |>
+  dplyr::filter(time == 0) |>
+  dplyr::distinct(id, ec50)
+stopifnot(
+  nrow(chk_ec50) == n_eta,
+  max(abs(chk_ec50$ec50 / exp(th[["lec50"]] + eta_ref$etalec50) - 1)) < 1e-10
+)
+range_sim <- c("5 g" = corr_mean(5), "15 g" = corr_mean(15))
+range_sim
+stopifnot(
+  abs(range_sim[["5 g"]] - (-0.21)) / 0.21 < 0.10,
+  abs(range_sim[["15 g"]] - (-0.76)) / 0.76 < 0.10
+)
+```
+
+```{r fig4-plot, fig.width = 8, fig.height = 6}
+prof_tab |>
+  dplyr::filter(profile != "Reference patient") |>
+  tidyr::pivot_longer(c(correction, maintenance), names_to = "phase", values_to = "pa_cfb") |>
+  dplyr::mutate(profile = factor(profile, levels = rev(names(profiles)))) |>
+  ggplot(aes(pa_cfb, profile)) +
+  geom_point() +
+  geom_vline(
+    data = prof_tab |>
+      dplyr::filter(profile == "Reference patient") |>
+      tidyr::pivot_longer(c(correction, maintenance), names_to = "phase", values_to = "pa_cfb"),
+    aes(xintercept = pa_cfb)
+  ) +
+  facet_wrap(~phase) +
+  labs(
+    x = "Placebo-adjusted serum K+ change from baseline (mmol/L)", y = NULL,
+    title = "Covariate effects for the reference patient, SZC 10 g",
+    caption = "Replicates the point estimates of Figure 4 of Penland 2024 (vertical line: reference patient)."
+  )
+```
+
+The maintenance-phase reference value in Figure 4 reads about -0.57 mmol/L
+from the plot; the simulated value is listed in the table above.
+
+# Population dose-response (Figure 2)
+
+Figure 2 averages over 1000 patients resampled from the analysis database,
+which is not public. Here a 200-patient virtual cohort is built from the
+per-study demographics of Table 1 (study sizes, means and SDs of age, body
+weight, eGFR and baseline potassium, and the sex, race, heart-failure and
+diabetes proportions). Each dose arm reuses the same 200 patients and random
+effects.
+
+```{r cohort}
+set.seed(2369)
+table1 <- tibble::tribble(
+  ~study, ~n, ~age, ~age_sd, ~wt, ~wt_sd, ~egfr, ~egfr_sd, ~k, ~k_sd, ~male, ~white, ~black, ~asian, ~chf, ~diab,
+  "ZS-002", 90, 71.1, 9.6, 89.8, 23, 47.7, 8.8, 5.13, 0.30, 52, 88, 1, 0, 37, 50,
+  "ZS-003", 753, 65.6, 12, 87.1, 21, 47.3, 27, 5.35, 0.35, 448, 643, 86, 12, 300, 451,
+  "ZS-004", 258, 64.0, 13, 87.8, 23, 48.8, 32, 5.52, 0.45, 149, 214, 36, 4, 94, 170,
+  "ZS-005", 748, 63.6, 13, 86.4, 22, 50.0, 34, 5.57, 0.42, 447, 623, 88, 25, 284, 470,
+  "D9480C00002", 267, 67.8, 11, 68.0, 14, 31.4, 20, 5.69, 0.51, 171, 40, 0, 198, 50, 172,
+  "D9482C00001", 150, 71.5, 11, 62.8, 12, 46.0, 23, 5.51, 0.43, 112, 0, 0, 150, 22, 87,
+  "D9482C00002", 103, 73.2, 7.7, 63.0, 12, 34.9, 21, 5.54, 0.37, 77, 0, 0, 103, 14, 62
+)
+n_pop <- 200
+draw_study <- sample(table1$study, n_pop, replace = TRUE, prob = table1$n)
+rtrunc <- function(n, mean, sd, lo, hi) pmin(pmax(rnorm(n, mean, sd), lo), hi)
+pop <- dplyr::bind_rows(lapply(seq_len(n_pop), function(i) {
+  s <- table1[table1$study == draw_study[i], ]
+  sdlog <- sqrt(log(1 + (s$egfr_sd / s$egfr)^2))
+  race <- sample(
+    c("white", "black", "asian", "other"), 1,
+    prob = c(s$white, s$black, s$asian, s$n - s$white - s$black - s$asian)
+  )
+  data.frame(
+    study = s$study,
+    AGE = rtrunc(1, s$age, s$age_sd, 18, 95),
+    WT = rtrunc(1, s$wt, s$wt_sd, 35, 180),
+    CRCL = pmin(pmax(rlnorm(1, log(s$egfr) - sdlog^2 / 2, sdlog), 4), 190),
+    POT = rtrunc(1, s$k, s$k_sd, 4.0, 7.5),
+    SEXF = as.integer(runif(1) > s$male / s$n),
+    RACE_BLACK = as.integer(race == "black"),
+    RACE_ASIAN = as.integer(race == "asian"),
+    RACE_OTHER = as.integer(race == "other"),
+    DIS_CHF = as.integer(runif(1) < s$chf / s$n),
+    DIS_DIAB = as.integer(runif(1) < s$diab / s$n)
+  )
+}))
+pop$id <- seq_len(n_pop)
+pop_eta <- data.frame(
+  id = pop$id,
+  etalec50 = rnorm(n_pop, 0, sqrt(om[["etalec50"]])),
+  etalplac = rnorm(n_pop, 0, sqrt(om[["etalplac"]]))
+)
+summary(pop[, c("AGE", "WT", "CRCL", "POT")])
+```
+
+```{r fig2}
+doses <- c(0, 2.5, 5, 10, 15)
+arms <- dplyr::bind_rows(
+  tibble::tibble(phase = "correction", dose = doses, corr = doses, maint = 0, maint_ii = 24),
+  tibble::tibble(phase = "maintenance", dose = doses, corr = 10, maint = doses, maint_ii = 24),
+  tibble::tibble(phase = "maintenance QOD", dose = 5, corr = 10, maint = 5, maint_ii = 48)
+) |>
+  dplyr::mutate(arm = dplyr::row_number(), regimen = paste(phase, dose))
+
+ev_pop <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(a) {
+  cov <- pop
+  cov$id <- (a - 1L) * n_pop + pop$id
+  make_events(cov, corr = arms$corr[a], maint = arms$maint[a], maint_ii = arms$maint_ii[a], regimen = arms$regimen[a])
+}))
+stopifnot(!anyDuplicated(unique(ev_pop[, c("id", "time", "evid")])))
+eta_pop <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(a) {
+  dplyr::mutate(pop_eta, id = (a - 1L) * n_pop + id)
+}))
+
+sim_pop <- solve_fixed(ev_pop, eta_pop) |>
+  dplyr::mutate(arm = (id - 1L) %/% n_pop + 1L, pid = (id - 1L) %% n_pop + 1L) |>
+  dplyr::left_join(dplyr::select(arms, arm, phase, dose), by = "arm")
+
+cfb <- sim_pop |>
+  dplyr::filter((phase == "correction" & time == t_corr) | (phase != "correction" & time == t_maint)) |>
+  dplyr::select(pid, phase, dose, serum_k)
+pbo_ref <- cfb |>
+  dplyr::filter(dose == 0) |>
+  dplyr::select(pid, phase, serum_k_pbo = serum_k)
+dr <- cfb |>
+  dplyr::mutate(ref_phase = ifelse(phase == "maintenance QOD", "maintenance", phase)) |>
+  dplyr::left_join(pbo_ref, by = c("pid", "ref_phase" = "phase")) |>
+  dplyr::group_by(phase, dose) |>
+  dplyr::summarise(pa_cfb = mean(serum_k - serum_k_pbo), .groups = "drop")
+
+published_fig2 <- tibble::tribble(
+  ~phase, ~dose, ~published,
+  "correction", 2.5, -0.14,
+  "correction", 5, -0.32,
+  "correction", 10, -0.66,
+  "correction", 15, -0.95,
+  "maintenance", 2.5, -0.17,
+  "maintenance", 5, -0.37,
+  "maintenance", 10, -0.75,
+  "maintenance", 15, -1.06,
+  "maintenance QOD", 5, -0.19
+)
+fig2_cmp <- dplyr::inner_join(dr, published_fig2, by = c("phase", "dose")) |>
+  dplyr::mutate(pct_diff = 100 * (pa_cfb - published) / published)
+fig2_cmp |>
+  dplyr::rename(
+    "Phase" = phase, "SZC dose (g)" = dose,
+    "Simulated mean (mmol/L)" = pa_cfb, "Published mean (mmol/L)" = published,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2, caption = "Placebo-adjusted serum K+ change from baseline: correction phase at 48 h of TID dosing, maintenance phase at day 28 of QD (or 5 g every other day) dosing after 48 h of 10 g TID (Penland 2024 Figure 2 table and Results).")
+```
+
+```{r fig2-plot, fig.width = 8, fig.height = 4}
+dr |>
+  dplyr::filter(phase != "maintenance QOD") |>
+  ggplot(aes(dose, pa_cfb)) +
+  geom_line() +
+  geom_point(data = dplyr::filter(published_fig2, phase != "maintenance QOD"), aes(y = published), shape = 1, size = 2) +
+  facet_wrap(~phase) +
+  labs(
+    x = "SZC dose (g)", y = "Placebo-adjusted serum K+ CFB (mmol/L)",
+    title = "Population dose-response",
+    caption = "Line: simulated virtual-cohort mean; circles: Figure 2 table of Penland 2024."
+  )
+```
+
+The virtual-cohort means fall 9-17% below the published correction-phase
+values and 14-25% below the maintenance-phase values, with the largest
+relative gap at the lowest dose. The reference-patient values of the previous
+section match the paper to within 8%, so the gap is in the population average
+rather than the model: the authors resampled their patient database (not
+public) and averaged over parameter uncertainty drawn from a multivariate
+normal distribution (EC50 RSE 47%, Imax RSE 30%), neither of which this
+typical-parameter simulation of a Table 1-based cohort reproduces. This is
+recorded as a known deviation; the gate below covers the QD and TID dose arms
+only.
+
+```{r fig2-check}
+# The cohort is drawn with base-R RNG and fixed random effects, so these
+# numbers are identical on every machine. Realised gaps are -9% to -25%
+# (median -16%); a mis-transcribed EC50, Imax or exposure scaling moves the
+# mean response by far more than the bounds allow.
+chk2 <- dplyr::filter(fig2_cmp, phase != "maintenance QOD")
+stopifnot(
+  nrow(chk2) == 8,
+  abs(median(chk2$pct_diff)) < 20,
+  max(abs(chk2$pct_diff)) < 30
+)
+```
+
+The paper reports no clinically meaningful difference between 5 g every other
+day (QOD) and 2.5 g QD maintenance (-0.19 vs -0.17 mmol/L at day 28). The
+simulated pair also differs by only a few hundredths of a mmol/L, although
+here QOD is the slightly smaller response; the simulated values sit 24 h after
+the last dose of either regimen, and the paper does not state the sampling
+time relative to the QOD dose.
+
+```{r qod-check}
+qod <- dr$pa_cfb[dr$phase == "maintenance QOD" & dr$dose == 5]
+qd <- dr$pa_cfb[dr$phase == "maintenance" & dr$dose == 2.5]
+c("5 g QOD" = qod, "2.5 g QD" = qd)
+# Same exposure per 48 h, so the two regimens must agree closely.
+stopifnot(abs(qod - qd) < 0.05)
+```
+
+# Serum potassium time course (Figure 3)
+
+Figure 3 shows 1000 simulated patients starting from 5.4 mmol/L receiving 10 g
+TID for 48 h and then placebo or 5, 10 or 15 g QD for 4 weeks, with
+between-patient and residual variability. The simulation below uses the
+reference patient with 200 patients per arm (the EC50 and placebo random
+effects of the grid above) and adds the additive residual error in base R.
+
+```{r fig3, fig.width = 8, fig.height = 6}
+obs_grid <- c(0, 4, 8, 16, 24, 36, 48, seq(72, t_maint, by = 24))
+ev3 <- dplyr::bind_rows(lapply(seq_along(c(0, 5, 10, 15)), function(a) {
+  d <- c(0, 5, 10, 15)[a]
+  make_events(cov_ref, corr = 10, maint = d, regimen = paste(d, "g"), obs_times = obs_grid) |>
+    dplyr::mutate(id = id + (a - 1L) * n_eta)
+}))
+eta3 <- dplyr::bind_rows(lapply(0:3, function(a) dplyr::mutate(eta_ref, id = id + a * n_eta)))
+sim3 <- solve_fixed(ev3, eta3)
+set.seed(3)
+sim3$dv <- sim3$serum_k + rnorm(nrow(sim3), 0, th[["addSd"]])
+sim3$regimen <- factor(sim3$regimen, levels = paste(c(0, 5, 10, 15), "g"))
+
+sim3 |>
+  dplyr::group_by(regimen, time) |>
+  dplyr::summarise(
+    q05 = quantile(dv, 0.05), q25 = quantile(dv, 0.25), q50 = quantile(dv, 0.5),
+    q75 = quantile(dv, 0.75), q95 = quantile(dv, 0.95), .groups = "drop"
+  ) |>
+  ggplot(aes(time / 24, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.2) +
+  geom_ribbon(aes(ymin = q25, ymax = q75), alpha = 0.3) +
+  geom_line() +
+  facet_wrap(~regimen) +
+  coord_cartesian(ylim = c(2, 7)) +
+  labs(
+    x = "Time after first dose (days)", y = "Serum K+ (mmol/L)",
+    title = "Serum K+ after 48 h of 10 g TID then 4 weeks of 0-15 g QD",
+    caption = "Replicates Figure 3 of Penland 2024 (median, 25-75% and 5-95% bands)."
+  )
+```
+
+```{r fig3-check}
+# Day-28 medians of the error-free prediction; Figure 3 shows about 5.05,
+# 4.75, 4.45 and 4.1 mmol/L for 0, 5, 10 and 15 g (read off the plot).
+med28 <- sim3 |>
+  dplyr::filter(time == t_maint) |>
+  dplyr::group_by(regimen) |>
+  dplyr::summarise(median_k = median(serum_k), .groups = "drop")
+med28
+fig3_read <- c(5.05, 4.75, 4.45, 4.10)
+stopifnot(max(abs(med28$median_k - fig3_read)) < 0.15)
+```
+
+# Assumptions and deviations
+
+- **Exposure scaling.** The paper states that the virtual exposure was scaled
+  to a mean 24-h exposure of 1 for steady-state 1 g QD, without printing the
+  scaling factor. The model uses `exposure = depot_kpd * kel * 24`, which meets
+  that definition exactly (checked above); it reproduces the reference-patient
+  responses stated in the Results.
+- **Covariate functional forms.** The Supplementary Methods list linear and
+  power forms for continuous covariates without saying which was retained for
+  each. The maintainers used the power form for all continuous covariates: the
+  linear form gives implausible values with the Table 2 estimates (for
+  example `1 + 0.316 * (eGFR - 45)` makes EC50 negative below
+  eGFR 42), whereas the power form reproduces the eGFR, race and dose-range
+  values stated in the Results to within 10%.
+- **Covariate centring values.** The covariate equations centre on the
+  population median, which the paper does not report. The maintainers used the
+  paper's reference patient (65 years, 85 kg, eGFR 45 mL/min/1.73 m^2,
+  baseline serum potassium 5.4 mmol/L), which the paper describes as near the
+  population median.
+- **Sex coding.** The coding of the sex covariate is not printed; it is taken
+  as 1 = female (`SEXF`) because the reference patient is male and the
+  proportional-shift form gives the typical value at covariate = 0. Sex acts
+  only on `kout`, which cancels from the steady state, so the choice affects
+  only the speed of the response.
+- **Placebo factor.** The paper's placebo effect is a time-invariant factor on
+  `kin` applied from the first dose for every patient (active or placebo), so
+  simulated time zero must be the first dose.
+- **Table 1 body weight.** Table 1 gives a total-population mean body
+  weight of 87.6 kg, although the per-study means imply about 82 kg; the
+  virtual cohort above is built from the per-study rows.
+- **Figure 4 maintenance phase and Figure 3** are compared with values read
+  off the plots by the maintainers, so those comparisons carry plot-reading
+  error; the correction-phase covariate values come from the Results text.
+- No correction notice for this article was found as of 2026-10-29.
