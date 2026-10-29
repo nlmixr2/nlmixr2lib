@@ -1606,6 +1606,10 @@ navbar:
         href: articles/Plachouras_2009_colistin.html
       - text: "Colistin (Rodjun 2023)"
         href: articles/Rodjun_2023_colistin_sitafloxacin.html
+      - text: "Colistin elf (Lee 2024)"
+        href: articles/Lee_2024_colistin.html
+      - text: "Colistin plasma (Lee 2024)"
+        href: articles/Lee_2024_colistin.html
       - text: "ColistinSulfate (Huang 2025)"
         href: articles/Huang_2025_colistinSulfate.html
       - text: "ColistinSulfate (Jin 2026)"
@@ -9220,6 +9224,7 @@ articles:
   - articles/Lee_2023_patritumab
   - articles/Lee_2023_tripegfilgrastim
   - articles/Lee_2023_tylosin
+  - articles/Lee_2024_colistin
   - articles/Lee_2024_eculizumab
   - articles/Lee_2024_gentamicin
   - articles/Lee_2024_lserine
