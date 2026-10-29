@@ -10,10 +10,15 @@
 # interleaved slice (see .github/scripts/pkgdown-parallel-build.R), and
 # `assemble` downloads every shard's docs/, builds the non-article sections
 # once over the combined output, and deploys.
+# Stacked PRs (based on another PR's branch) skip CI; a PR runs once it
+# targets main, including when it is retargeted there (edited, base
+# changed).  Other PR edits start a run whose jobs are all skipped.
 on:
   push:
     branches: [main, master]
   pull_request:
+    branches: [main, master]
+    types: [opened, synchronize, reopened, edited]
   release:
     types: [published]
   workflow_dispatch:
@@ -32,7 +37,7 @@ permissions: read-all
 # gh-pages, and interrupting it half-way would publish a partial site. Those
 # runs queue behind each other instead.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}${{ github.event.action == 'edited' && !github.event.changes.base && format('-{0}', github.run_id) || '' }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
@@ -42,6 +47,7 @@ env:
 
 jobs:
   render:
+    if: github.event_name != 'pull_request' || github.event.action != 'edited' || github.event.changes.base
     runs-on: ubuntu-latest
     strategy:
       # Surface EVERY failing shard in one round. With fail-fast the first
@@ -104,6 +110,7 @@ jobs:
           if-no-files-found: error
 
   assemble:
+    if: github.event_name != 'pull_request' || github.event.action != 'edited' || github.event.changes.base
     needs: render
     runs-on: ubuntu-latest
     env:
