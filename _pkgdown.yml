@@ -1084,12 +1084,30 @@ navbar:
         href: articles/Lacy_2018_cabozantinib_exposure_response.html
       - text: "Cafedrine theodrenaline ephedrine (Dings 2026)"
         href: articles/Dings_2026_cafedrine_theodrenaline_ephedrine.html
+      - text: "Caffeine 32c6h (Szederkenyi 2024)"
+        href: articles/Szederkenyi_2024_transdermal_skinonachip.html
+      - text: "Caffeine ear acetone (Szederkenyi 2024)"
+        href: articles/Szederkenyi_2024_transdermal_skinonachip.html
+      - text: "Caffeine ear tncb (Szederkenyi 2024)"
+        href: articles/Szederkenyi_2024_transdermal_skinonachip.html
+      - text: "Caffeine imiquimod24h (Szederkenyi 2024)"
+        href: articles/Szederkenyi_2024_transdermal_skinonachip.html
+      - text: "Caffeine imiquimod96h (Szederkenyi 2024)"
+        href: articles/Szederkenyi_2024_transdermal_skinonachip.html
       - text: "Caffeine rat pbpk hcmec (SanchezDengra 2021)"
         href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
       - text: "Caffeine rat pbpk mdck (SanchezDengra 2021)"
         href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
       - text: "Caffeine rat pbpk mdckmdr1 (SanchezDengra 2021)"
         href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
+      - text: "Caffeine rt12h (Szederkenyi 2024)"
+        href: articles/Szederkenyi_2024_transdermal_skinonachip.html
+      - text: "Caffeine rt6h (Szederkenyi 2024)"
+        href: articles/Szederkenyi_2024_transdermal_skinonachip.html
+      - text: "Caffeine vaseline24h (Szederkenyi 2024)"
+        href: articles/Szederkenyi_2024_transdermal_skinonachip.html
+      - text: "Caffeine vaseline96h (Szederkenyi 2024)"
+        href: articles/Szederkenyi_2024_transdermal_skinonachip.html
       - text: "CalcitriolQuantumDot earlyIBC mouse pbpk (Forder 2019)"
         href: articles/Forder_2019_calcitriolQuantumDots.html
       - text: "CalcitriolQuantumDot healthy mouse pbpk (Forder 2019)"
@@ -1872,6 +1890,8 @@ navbar:
         href: articles/Krzyzanski_2021_corticosteroids.html
       - text: "Dexamethasone (Ozdin 2025)"
         href: articles/Ozdin_2025_dexamethasone.html
+      - text: "Dexamethasone (Szederkenyi 2024)"
+        href: articles/Szederkenyi_2024_transdermal_skinonachip.html
       - text: "Dexamethasone rat (Li 2012)"
         href: articles/Li_2012_dexamethasone_rat.html
       - text: "Dexketoprofen pbpk (Zhang 2022)"
@@ -1934,6 +1954,8 @@ navbar:
         href: articles/Henin_2012_gastrointestinal_transit_time_absorption.html
       - text: "Diclofenac (Standing 2008)"
         href: articles/Standing_2008_diclofenac.html
+      - text: "Diclofenac (Szederkenyi 2024)"
+        href: articles/Szederkenyi_2024_transdermal_skinonachip.html
       - text: "Diclofenac painrelief (Thiel 2018)"
         href: articles/Thiel_2018_cox2_pge2_painrelief.html
       - text: "Didanosine (Hirt 2009)"
@@ -3390,6 +3412,8 @@ navbar:
         href: articles/Keizer_2015_indisulam.html
       - text: "IndocyanineGreen pbpk (Koller 2021)"
         href: articles/Koller_2021_indocyanineGreen_pbpk.html
+      - text: "Indomethacin (Szederkenyi 2024)"
+        href: articles/Szederkenyi_2024_transdermal_skinonachip.html
       - text: "Inebilizumab (Yan 2022)"
         href: articles/Yan_2022_inebilizumab.html
       - text: "Infliximab (Berends 2019)"
@@ -5484,6 +5508,8 @@ navbar:
         href: articles/Wallender_2021_piperaquine.html
       - text: "Piperaquine qtc (Wattanakul 2020)"
         href: articles/Wattanakul_2020_piperaquine.html
+      - text: "Piroxicam (Szederkenyi 2024)"
+        href: articles/Szederkenyi_2024_transdermal_skinonachip.html
       - text: "Pirtobrutinib (Bell 2026)"
         href: articles/Bell_2026_pirtobrutinib.html
       - text: "Pirtobrutinib (Tian 2025)"
@@ -10120,6 +10146,7 @@ articles:
   - articles/Sy_2018_etirinotecanPegol
   - articles/Syvanen_2011_verapamil_rat
   - articles/Syvanen_2012_quinidine_rat
+  - articles/Szederkenyi_2024_transdermal_skinonachip
   - articles/Tadayasu_2014_linagliptin
   - articles/Taddio_2018_hepatobiliary_transport_pet_pbpk
   - articles/Takada_2022_roxadustat
