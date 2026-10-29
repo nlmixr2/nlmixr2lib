@@ -39,6 +39,9 @@ Clegg_2024_sodiumZirconiumCyclosilicate <- function() {
     "gi_kszc"
   )
 
+  # SZC doses (g) go into gi_szc; meals (mmol K+) go into gi_k.
+  dosing <- c("gi_szc", "gi_k")
+
   units <- list(
     time = "h",
     dosing = "g (SZC into gi_szc) and mmol (dietary potassium into gi_k; 1 mmol = 1 mEq for K+)",
