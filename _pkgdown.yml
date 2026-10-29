@@ -390,6 +390,8 @@ navbar:
         href: articles/Kletting_2015_antiCD66_pbpk.html
       - text: "AntiCD66 pbpk model2 (Kletting 2015)"
         href: articles/Kletting_2015_antiCD66_pbpk.html
+      - text: "AntiSarsCov2IgG (Huygens 2024)"
+        href: articles/Huygens_2024_antiSarsCov2IgG.html
       - text: "Antipcsk9 qsp (Sokolov 2019)"
         href: articles/Sokolov_2019_antipcsk9_qsp.html
       - text: "Antipyrine periventricular rat pbpk (Hirasawa 2022)"
@@ -8878,6 +8880,7 @@ articles:
   - articles/Hussein_2005_levocetirizine
   - articles/Huth_2019_siponimod
   - articles/HuttonSmith_2018_ranibizumab
+  - articles/Huygens_2024_antiSarsCov2IgG
   - articles/Huynh_2026_VRC07523LS
   - articles/Hwang_2022_tremelimumab
   - articles/Hwang_2023_carvedilol
