@@ -5538,6 +5538,10 @@ navbar:
         href: articles/Mahadevan_2026_polymyxinB_combination_CRKP.html
       - text: "PolymyxinB meropenem fosfomycin KP00521 (Mahadevan 2026)"
         href: articles/Mahadevan_2026_polymyxinB_combination_CRKP.html
+      - text: "PolymyxinB minocycline ARU613 (Olsson 2024)"
+        href: articles/Olsson_2024_polymyxinB_minocycline.html
+      - text: "PolymyxinB minocycline ARU705 (Olsson 2024)"
+        href: articles/Olsson_2024_polymyxinB_minocycline.html
       - text: "Pomalidomide (Li 2015)"
         href: articles/Li_2015_pomalidomide.html
       - text: "Pomalidomide crcl (Li 2017)"
@@ -9629,6 +9633,7 @@ articles:
   - articles/Olmos_2019_clozapine
   - articles/OlssonGisleskog_2021_nicotine
   - articles/OlssonGisleskog_2025_ibrutinib
+  - articles/Olsson_2024_polymyxinB_minocycline
   - articles/Onichimowski_2020_meropenem
   - articles/Oniki_2018_BMI_NAFLD
   - articles/Onita_2025_sulbactam
