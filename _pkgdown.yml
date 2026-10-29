@@ -5650,12 +5650,16 @@ navbar:
         href: articles/Wahlquist_2024_propofol.html
       - text: "Propofol (Wang 2012)"
         href: articles/Wang_2012_propofol.html
+      - text: "Propofol 2cmt (Kawata 2024)"
+        href: articles/Kawata_2024_propofol.html
       - text: "Propofol bis (BlussevanOudAlblas 2019)"
         href: articles/BlussevanOudAlblas_2019_propofol.html
       - text: "Propofol caai (BlussevanOudAlblas 2019)"
         href: articles/BlussevanOudAlblas_2019_propofol.html
       - text: "Propofol human (Knibbe 2005)"
         href: articles/Knibbe_2005_propofol.html
+      - text: "Propofol marsh (Kawata 2024)"
+        href: articles/Kawata_2024_propofol.html
       - text: "Propofol pbpk (Levitt 2005)"
         href: articles/Levitt_2005_propofol_pbpk.html
       - text: "Propofol rat (Knibbe 2005)"
@@ -9027,6 +9031,7 @@ articles:
   - articles/Kawaguchi_2018_cefiderocol
   - articles/Kawaguchi_2021_cefiderocol
   - articles/Kawamura_2018_eribulin
+  - articles/Kawata_2024_propofol
   - articles/Kawuma_2023_dolutegravir
   - articles/Kawuma_2023_tenofovir
   - articles/Kay_2018_dapivirine
