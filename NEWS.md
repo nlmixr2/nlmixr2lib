@@ -2,7 +2,7 @@
 
 # development version
 
-- Fix the signs of two omega covariances in `AlvarezJimenez_2016_scopolamine`: Table 2 prints both as negative, -0.06 for saccadic inaccuracy (EC50 vs. EMAX) and -0.153 for EEG delta Fz-Cz (EMAX vs. kIN), and the model carried both as positive.
+- Fix the signs of two omega covariances in `AlvarezJimenez_2016_scopolamine` ([doi:10.1111/bcp.13031](https://doi.org/10.1111/bcp.13031)): Table 2 prints both as negative, -0.06 for saccadic inaccuracy (EC50 vs. EMAX) and -0.153 for EEG delta Fz-Cz (EMAX vs. kIN), and the model carried both as positive.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
