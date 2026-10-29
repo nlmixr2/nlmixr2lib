@@ -295,15 +295,26 @@ cmp_vpc |>
   knitr::kable(caption = "Simulated percentiles (ug/L) against Lee 2024.")
 
 # Centre of a 200-subject cohort against the observed medians of 20 patients.
-# The between-subject SD of log concentration is 1.0-1.5, so the sampling SE
-# of a 200-subject median is about 0.1 on the log scale; the observed medians
-# carry far more noise (n = 20). A factor of 2 still breaks on a dose-unit or
-# bioavailability error, each of which moves every point 2.7- to 11-fold.
+# On a 20,000-subject cohort the simulated/observed median ratios are
+# 0.64-0.91 (geometric mean about 0.74). The between-subject SD of log
+# concentration is 1.0-1.9, so a 200-subject median carries a log-scale SE of
+# 0.1-0.17 per point: a per-point factor-of-2 bound would sit only 1.5 SE from
+# the ELF 5 h ratio. The gate is therefore on the geometric mean of the seven
+# ratios (bound 0.5-1.5, more than 3 SE either side), plus a factor-of-3
+# envelope per point. A dose-unit error (2.7-fold) or a dropped bioavailability
+# (11-fold) moves the geometric mean outside 0.5-1.5. Over six seeds and
+# 1/2/4 solver threads the realised geometric mean was 0.72-0.85 and the
+# smallest single ratio 0.60.
 ratio <- cmp_vpc$p50 / cmp_vpc$obs_median
-stopifnot(all(ratio > 0.5 & ratio < 2))
+stopifnot(
+  exp(mean(log(ratio))) > 0.5, exp(mean(log(ratio))) < 1.5,
+  all(ratio > 1 / 3 & ratio < 3)
+)
 ```
 
-The simulated medians track the observed medians in both matrices. With 200
+The simulated medians sit 10-35% below the observed medians, as the authors'
+own VPC medians do (Figures S3 and S4: 10,500 against an observed 15,386 ug/L in
+ELF at 3 h). With 200
 virtual patients the 10th and 90th percentiles are themselves noisy (roughly
 +/-30% between draws), so they are shown for orientation; the comparison of the
 IIV readings against these VPC percentiles was made on a 20,000-subject cohort
@@ -392,17 +403,19 @@ cmax_med <- as.data.frame(nca_res) |>
   dplyr::summarise(med = median(PPORRES), .groups = "drop") |>
   dplyr::left_join(published_nca, by = "treatment")
 cmax_med
-# Same factor-of-2 envelope and reasoning as the VPC medians above.
+# Factor-of-2 envelope: the realised ratio over six seeds was 0.86-0.94 (ELF)
+# and 0.69-0.80 (plasma); a dose-unit or bioavailability error moves it
+# 2.7- to 11-fold.
 stopifnot(all(cmax_med$med / cmax_med$cmax > 0.5 & cmax_med$med / cmax_med$cmax < 2))
 ```
 
-The simulated median peaks sit 10-20% below the observed medians in both
-matrices (the plasma row can be flagged at the 20% line, depending on the
-draw). The reference is the median of only 20 observed peaks, and the typical
-model curves already sit slightly below the observed medians at 3 h in Figure 1
-(ELF 15.2 vs 15.4 mg/L; plasma 34 vs 38 ug/L), so this is read as sampling
-noise in the reference rather than a transcription error, which would move the
-peak several-fold.
+The simulated median peaks sit roughly 5-30% below the observed medians in both
+matrices (over six seeds the ratio was 0.86-0.94 for ELF and 0.69-0.80 for
+plasma, so the plasma row is usually flagged at the 20% line). The reference is
+the median of only 20 observed peaks, and the typical model curves already sit
+slightly below the observed medians at 3 h in Figure 1 (ELF 15.2 vs 15.4 mg/L;
+plasma 34 vs 38 ug/L), so this is read as sampling noise in the reference
+rather than a transcription error, which would move the peak several-fold.
 
 # Assumptions and deviations
 
