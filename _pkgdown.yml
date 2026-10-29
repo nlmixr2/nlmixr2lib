@@ -1442,6 +1442,8 @@ navbar:
         href: articles/Wade_2015_certolizumab.html
       - text: "Cetagliptin (Zhou 2024)"
         href: articles/Zhou_2024_cetagliptin.html
+      - text: "Cetirizine (Liu 2024)"
+        href: articles/Liu_2024_cetirizine.html
       - text: "Cetirizine (Melander 2025)"
         href: articles/Melander_2025_cetirizine.html
       - text: "Cetuximab (Dirks 2008)"
@@ -9327,6 +9329,7 @@ articles:
   - articles/Liu_2022_nifedipine
   - articles/Liu_2022_tacrolimus
   - articles/Liu_2023_mAb_mouse_pbpk
+  - articles/Liu_2024_cetirizine
   - articles/Liu_2024_deutenzalutamide
   - articles/Liu_2024_saf189s
   - articles/Liu_2024_spatholobiCaulis
