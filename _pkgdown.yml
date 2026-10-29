@@ -3510,6 +3510,8 @@ navbar:
         href: articles/Desai_2016_isavuconazole_secure.html
       - text: "Isb2001 qsp (ChandralayamAyyappaMenon 2026)"
         href: articles/ChandralayamAyyappaMenon_2026_isb2001.html
+      - text: "Islatravir rat (Kinsale 2024)"
+        href: articles/Kinsale_2024_islatravir_rat.html
       - text: "Isolariciresinol rat (Liu 2024)"
         href: articles/Liu_2024_spatholobiCaulis.html
       - text: "Isoniazid (Calderin 2025)"
@@ -9074,6 +9076,7 @@ articles:
   - articles/Kim_2026_midazolam
   - articles/Kim_2026_zolpidem
   - articles/Kimura_2023_glucarpidase
+  - articles/Kinsale_2024_islatravir_rat
   - articles/Kir_2025_atenolol_metoprolol_malnutrition
   - articles/Kiriyama_2024_nifedipine_captopril_rat
   - articles/Kirubakaran_2022_tacrolimus
