@@ -5178,7 +5178,7 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
 - **Type:** compartment
 - **Role:** Oral depot used in parallel-route popPK models alongside `depot_im`.
 - **Source aliases:** none.
-- **Example models:** `Dunn_2025_tranexamicAcid.R`, `Han_2024_cabotegravir.R` (alongside `depot_im_gluteal` / `depot_im_thigh`).
+- **Example models:** `Dunn_2025_tranexamicAcid.R`, `Han_2024_cabotegravir.R` (alongside `depot_im_gluteal` / `depot_im_thigh`), `Lindemalm_2005_cladribine.R` (alongside `depot_sc`).
 
 ### depot_im_gluteal, depot_im_thigh (**canonical site-resolved intramuscular depots**)
 - **Type:** compartment
@@ -5199,7 +5199,7 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
 - **Role:** Intraperitoneal depot used in parallel-route preclinical PK models, typically alongside `depot_sc`. Each route carries its own absorption rate constant (`lka_ip` / `ka_ip`).
 - **Source aliases:**
   - `A1` -- Fan 2025 notation for the IP amount in eq 1.
-- **Example models:** `Fan_2025_nb457trimer_mouse.R` (founding example), `Fan_2025_ibalizumab_mouse.R`, `Fan_2025_nb457trimer_human.R`, `Fan_2025_ibalizumab_human.R`.
+- **Example models:** `Fan_2025_nb457trimer_mouse.R` (founding example), `Fan_2025_ibalizumab_mouse.R`, `Fan_2025_nb457trimer_human.R`, `Fan_2025_ibalizumab_human.R`, `Lindemalm_2005_cladribine.R` (alongside `depot_oral`).
 - **Notes:** Deliberately preferred over the numbered `depot1` / `depot2` form because the route is load-bearing: the two depots in a parallel-route model are not interchangeable, they carry route-specific absorption rate constants, and a study arm selects exactly one of them.
 
 
@@ -5241,7 +5241,7 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
 - **Role:** Subcutaneous depot used in parallel-route models where a bare `depot` would be ambiguous because a second dosing route is modelled explicitly. Pairs with the absorption rate constant `lka_sc` / `ka_sc`, which is already in use across the library.
 - **Source aliases:**
   - `A2` -- Fan 2025 notation for the SC amount in eq 2.
-- **Example models:** `Fan_2025_nb457trimer_mouse.R` (founding example), `Fan_2025_ibalizumab_mouse.R`, `Fan_2025_nb457trimer_human.R`, `Fan_2025_ibalizumab_human.R`.
+- **Example models:** `Fan_2025_nb457trimer_mouse.R` (founding example), `Fan_2025_ibalizumab_mouse.R`, `Fan_2025_nb457trimer_human.R`, `Fan_2025_ibalizumab_human.R`, `Lindemalm_2005_cladribine.R` (alongside `depot_oral`).
 - **Notes:** A single-route subcutaneous model should keep the bare canonical `depot`; use `depot_sc` only when the model carries a second, explicitly named dosing route.
 
 ### depot_td (**canonical transdermal depot**)

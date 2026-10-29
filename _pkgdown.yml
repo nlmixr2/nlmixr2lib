@@ -1528,6 +1528,8 @@ navbar:
         href: articles/Urien_2004_cisplatin.html
       - text: "Citalopram (Akil 2016)"
         href: articles/Akil_2016_citalopram.html
+      - text: "Cladribine (Lindemalm 2005)"
+        href: articles/Lindemalm_2005_cladribine.html
       - text: "Cladribine (Savic 2017)"
         href: articles/Savic_2017_cladribine.html
       - text: "Clarithromycin (Abduljalil 2009)"
@@ -9313,6 +9315,7 @@ articles:
   - articles/Lin_2026_sc1cmt_coxTte
   - articles/Lindauer_2017_lacosamide
   - articles/Lindauer_2017_pembrolizumab
+  - articles/Lindemalm_2005_cladribine
   - articles/Ling_2024_tnfi_biosimilars
   - articles/Ling_2024_voriconazole
   - articles/Ling_2025_ropivacaine
