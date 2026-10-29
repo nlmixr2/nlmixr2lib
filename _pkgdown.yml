@@ -7544,10 +7544,14 @@ navbar:
         href: articles/Landersdorfer_2012_vildagliptin_qsp.html
       - text: "Viloxazine (Nasser 2021)"
         href: articles/Nasser_2021_viloxazine.html
+      - text: "Vincristine (Centanni 2024)"
+        href: articles/Centanni_2024_vincristine.html
       - text: "Vincristine (Nijstad 2022)"
         href: articles/Nijstad_2022_vincristine.html
       - text: "Vincristine (vandeVelde 2020)"
         href: articles/vandeVelde_2020_vincristine.html
+      - text: "Vincristine mipd (Centanni 2024)"
+        href: articles/Centanni_2024_vincristine.html
       - text: "Vinflunine (Schmitt 2018)"
         href: articles/Schmitt_2018_vinflunine.html
       - text: "Vinpocetine (Petric 2023)"
@@ -8214,6 +8218,7 @@ articles:
   - articles/Cazaubon_2019_mitotane
   - articles/Cella_2012_midazolam_paediatric_scaling
   - articles/Cendros_2025_enflicoxib
+  - articles/Centanni_2024_vincristine
   - articles/Centanni_2025_sunitinib_thrombocytopenia
   - articles/Cerqueira_2025_resveratrol
   - articles/Chae_2012_metformin
