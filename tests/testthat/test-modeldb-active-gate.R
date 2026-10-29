@@ -121,15 +121,20 @@ activeGateNames <- function(covariateData) {
   grep("[A-Z0-9]_ACTIVE$", covariateData, value = TRUE)
 }
 
-# Two warnings are expected while building and solving these models and say
+# Three warnings are expected while building and solving these models and say
 # nothing about the gate:
 #   * "non-mu referenced" -- emitted for the inter-occasion variability idiom
 #     the affected models already ship with;
-#   * "No omega parameters in the model" -- emitted by zeroRe() for the
-#     deterministic models that carry no IIV to zero out.
-# Both are muffled BY MESSAGE PATTERN so that every OTHER warning still
+#   * "No omega parameters in the model" / "No sigma parameters in the model"
+#     -- emitted by zeroRe() for the deterministic models that carry no IIV or
+#     no residual error to zero out (e.g. Clegg_2024_sodiumZirconiumCyclosilicate).
+# All are muffled BY MESSAGE PATTERN so that every OTHER warning still
 # propagates; a new warning here would be worth seeing.
-activeGateExpectedWarnings <- c("non-mu referenced", "No omega parameters in the model")
+activeGateExpectedWarnings <- c(
+  "non-mu referenced",
+  "No omega parameters in the model",
+  "No sigma parameters in the model"
+)
 
 activeGateMuffle <- function(expr) {
   withCallingHandlers(

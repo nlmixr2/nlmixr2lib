@@ -6384,6 +6384,8 @@ navbar:
         href: articles/Dong_2015_snx2112_nanocrystals.html
       - text: "Sodium nitrite qsp (VegaVilla 2013)"
         href: articles/VegaVilla_2013_sodium_nitrite_qsp.html
+      - text: "SodiumZirconiumCyclosilicate (Clegg 2024)"
+        href: articles/Clegg_2024_sodiumZirconiumCyclosilicate.html
       - text: "Somatrogon (Wang 2025)"
         href: articles/Wang_2025_somatrogon.html
       - text: "Somatropin (Papathanasiou 2021)"
@@ -8340,6 +8342,7 @@ articles:
   - articles/Claret_2014_motesanib_nsclc
   - articles/Cleary_2023_risdiplam
   - articles/Clegg_2024_nirsevimab
+  - articles/Clegg_2024_sodiumZirconiumCyclosilicate
   - articles/Clegg_2024_tixagevimab_cilgavimab
   - articles/Clements_2020_blinatumomab
   - articles/Clewe_2015_rifampicin
