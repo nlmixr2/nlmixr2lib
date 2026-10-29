@@ -5936,6 +5936,8 @@ navbar:
         href: articles/Vinnard_2017_rifampicin.html
       - text: "Rifampicin (Wicha 2018)"
         href: articles/Wicha_2018_rifampicin.html
+      - text: "Rifampicin bacterialload (Koele 2024)"
+        href: articles/Koele_2024_tb_bacterialload.html
       - text: "Rifampicin invitro (Almond 2016)"
         href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Rifampicin invivo (Almond 2016)"
@@ -9104,6 +9106,7 @@ articles:
   - articles/Knights_2015_aripiprazole
   - articles/Kobuchi_2021_oxaliplatin_rat
   - articles/Kobuchi_2025_dapagliflozin
+  - articles/Koele_2024_tb_bacterialload
   - articles/Koele_2025_btz043
   - articles/Koenig_2025_cefiderocol
   - articles/Koh_2025_aspirin
