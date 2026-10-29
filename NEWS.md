@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Huber 2024 Mayneord-like tumour growth inhibition for the HCC1954 and KPL-4 xenografts ([doi:10.1007/s10928-023-09891-7](https://doi.org/10.1007/s10928-023-09891-7)) -- mice bearing human breast-cancer cell-line xenografts treated with PI3K-pathway inhibitors.
+
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
 - Add Byun 2024 TMDD approximations for HL2351 and efineptakin alfa ([doi:10.1371/journal.pcbi.1012066](https://doi.org/10.1371/journal.pcbi.1012066)) -- eight models (full TMDD, mTMDD, qTMDD and the new first-order pTMDD for each drug) in healthy adults. Registers the `endosome` and `complex_fcrn` compartments and the `BL_IL7` covariate.
