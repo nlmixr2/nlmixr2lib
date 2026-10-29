@@ -198,4 +198,5 @@ knitr::kable(nca_summary, digits = 2,
 
 - The paper's Table 2 caption reads "CWC: coefficient relating age and weight" which is a typo -- CWC is the coefficient relating weight and clearance per Supplemental Eq A.1. The model file uses the equation-defined interpretation (weight on CL).
 - The reported OC value 1.410 for EEG delta Fz-Cz (EC50 vs. EMAX) exceeds unity and is therefore not a Pearson correlation; interpreted as covariance the corresponding correlation is ~0.82.
+- Two OC values in Table 2 are negative: -0.06 +/- 0.157 for saccadic inaccuracy (EC50 vs. EMAX) and -0.153 +/- 0.0494 for EEG delta Fz-Cz (EMAX vs. kIN). Their minus signs are lost in text copies of the PDF, so check them against the printed table. Interpreted as covariances, they correspond to correlations of about -0.93 and -0.35.
 - No corrigenda or errata for the paper are indexed by the journal at the time of this extraction (2026-07-09).

@@ -205,10 +205,12 @@ AlvarezJimenez_2016_scopolamine <- function() {
     lemax_sacInacc <- log(0.388)  ; label("EMAX for saccadic inaccuracy (fraction)")        # Table 2 EMAX = 0.388
     lkin_sacInacc  <- log(22.8)   ; label("kIN for saccadic inaccuracy (%/min)")            # Table 2 kIN = 22.8
     lkout_sacInacc <- log(3.33)   ; label("kOUT for saccadic inaccuracy (1/min)")           # Table 2 kOUT = 3.33
-    # Omega block between EC50 and EMAX (OC (omega correlation) = 0.06
+    # Omega block between EC50 and EMAX (OC (omega correlation) = -0.06
     # interpreted as covariance;
     # var_ec50 = log(1+0.137^2) = 0.0186, var_emax = log(1+0.499^2) = 0.2216).
-    etalec50_sacInacc + etalemax_sacInacc ~ c(0.0186, 0.06, 0.2216)                          # Table 2 IIV 13.7% / 49.9%, OC (omega correlation) = 0.06
+    # Table 2 prints the OC as "-0.06 +/- 0.157"; text copies of the PDF drop
+    # its minus sign.
+    etalec50_sacInacc + etalemax_sacInacc ~ c(0.0186, -0.06, 0.2216)                         # Table 2 IIV 13.7% / 49.9%, OC (omega correlation) = -0.06
     etalkin_sacInacc  ~ 0.0175     ; label("IIV var on lkin_sacInacc (~13.2% CV)")           # Table 2 IIV(kIN) = 13.2%
     propSd_sacInacc   <- 0.22204   ; label("Proportional residual error for saccadic inaccuracy") # Table 2 sigma^2 = 0.0493
 
@@ -266,11 +268,12 @@ AlvarezJimenez_2016_scopolamine <- function() {
     # covariances per paper caption's imprecise labeling of OC (omega
     # correlation). Encoded as a
     # 3-parameter block; the EC50-vs-kIN off-diagonal (not reported) is set
-    # to zero via fixed().
+    # to zero via fixed(). Table 2 prints the EMAX-vs-kIN OC as
+    # "-0.153 +/- 0.0494"; text copies of the PDF drop its minus sign.
     etalec50_eegDfc + etalemax_eegDfc + etalkin_eegDfc ~
       c(1.209,
         1.410, 2.418,
-        fixed(0), 0.153, 0.0800)                                                             # Table 2 IIV 154.5%/325.4%/28.9%, OC (omega correlation) = 1.410 (EC50 vs EMAX), 0.153 (EMAX vs kIN)
+        fixed(0), -0.153, 0.0800)                                                            # Table 2 IIV 154.5%/325.4%/28.9%, OC (omega correlation) = 1.410 (EC50 vs EMAX), -0.153 (EMAX vs kIN)
     propSd_eegDfc   <- 0.184     ; label("Proportional residual error for EEG delta Fz-Cz")  # Table 2 sigma^2 = 0.0338
 
     # ---------- EEG delta Pz-Oz (uV) ----------
