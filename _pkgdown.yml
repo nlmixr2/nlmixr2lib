@@ -822,6 +822,8 @@ navbar:
         href: articles/Lallemand_2023_benzylpenicillin_horse.html
       - text: "Bepirovirsen (Youssef 2024)"
         href: articles/Youssef_2024_bepirovirsen.html
+      - text: "Bepotastine (Yoon 2024)"
+        href: articles/Yoon_2024_bepotastine.html
       - text: "Berotralstat (Mathis 2022)"
         href: articles/Mathis_2022_berotralstat.html
       - text: "Berzosertib (Terranova 2021)"
@@ -10553,6 +10555,7 @@ articles:
   - articles/Yoo_2025_benzylpenicillin
   - articles/Yoon_2013_metformin
   - articles/Yoon_2023_vancomycin
+  - articles/Yoon_2024_bepotastine
   - articles/Yoshida_2018_coproporphyrin_I_GDC0810
   - articles/Yoshida_2018_coproporphyrin_I_rifampin
   - articles/Yoshida_2021_ipatasertib
