@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Lu 2024 desflurane ([doi:10.3389/fphar.2024.1339690](https://doi.org/10.3389/fphar.2024.1339690)) -- mechanically ventilated piglets given 6% inspiratory desflurane for 2 h (end-tidal, arterial and mixed venous models).
+
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
 - Add Byun 2024 TMDD approximations for HL2351 and efineptakin alfa ([doi:10.1371/journal.pcbi.1012066](https://doi.org/10.1371/journal.pcbi.1012066)) -- eight models (full TMDD, mTMDD, qTMDD and the new first-order pTMDD for each drug) in healthy adults. Registers the `endosome` and `complex_fcrn` compartments and the `BL_IL7` covariate.

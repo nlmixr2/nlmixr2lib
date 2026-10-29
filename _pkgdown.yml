@@ -1858,6 +1858,12 @@ navbar:
         href: articles/Chen_2016_deoxypodophyllotoxin.html
       - text: "Deoxypodophyllotoxin rat pbpk (Chen 2016)"
         href: articles/Chen_2016_deoxypodophyllotoxin.html
+      - text: "Desflurane pig arterial (Lu 2024)"
+        href: articles/Lu_2024_desflurane.html
+      - text: "Desflurane pig endtidal (Lu 2024)"
+        href: articles/Lu_2024_desflurane.html
+      - text: "Desflurane pig mixedvenous (Lu 2024)"
+        href: articles/Lu_2024_desflurane.html
       - text: "Desipramine pbpk (Samant 2017)"
         href: articles/Samant_2017_desipramine_pbpk.html
       - text: "Desmopressin (Agerso 2004)"
@@ -9363,6 +9369,7 @@ articles:
   - articles/Lu_2019_polatuzumab
   - articles/Lu_2019_tacrolimus_industry_meta
   - articles/Lu_2022_patritumab
+  - articles/Lu_2024_desflurane
   - articles/Luo_2016_efavirenz
   - articles/Luo_2021_daratumumab
   - articles/Luo_2023_tigecycline
