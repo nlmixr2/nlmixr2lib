@@ -3518,6 +3518,8 @@ navbar:
         href: articles/Chen_2022_isoniazid.html
       - text: "Isoniazid (Horita 2018)"
         href: articles/Horita_2018_isoniazid.html
+      - text: "Isoniazid (Kengo 2024)"
+        href: articles/Kengo_2024_clofazimine_ddi.html
       - text: "Isoniazid (Kloprogge 2020)"
         href: articles/Kloprogge_2020_tuberculosis.html
       - text: "Isoniazid (Panjasawatwong 2020)"
@@ -3780,6 +3782,8 @@ navbar:
         href: articles/Senek_2018_levodopa_carbidopa.html
       - text: "Levofloxacin (Denti 2018)"
         href: articles/Denti_2018_levofloxacin.html
+      - text: "Levofloxacin (Kengo 2024)"
+        href: articles/Kengo_2024_clofazimine_ddi.html
       - text: "Levofloxacin (Lee 2025)"
         href: articles/Lee_2025_levofloxacin.html
       - text: "Levofloxacin (Nguyen 2026)"
@@ -3840,6 +3844,8 @@ navbar:
         href: articles/Duan_2024_linezolid.html
       - text: "Linezolid (GallegoHernandez 2026)"
         href: articles/GallegoHernandez_2026_linezolid.html
+      - text: "Linezolid (Kengo 2024)"
+        href: articles/Kengo_2024_clofazimine_ddi.html
       - text: "Linezolid (Milakovic 2024)"
         href: articles/Milakovic_2024_linezolid.html
       - text: "Linezolid (Mockeliunas 2022)"
@@ -9037,6 +9043,7 @@ articles:
   - articles/Keizer_2015_indisulam
   - articles/Kelman_1984_gentamicin
   - articles/Kemal_2026_nemtabrutinib
+  - articles/Kengo_2024_clofazimine_ddi
   - articles/Kengo_2025_atazanavir_ritonavir_rifampicin
   - articles/Kerbusch_2000_ifosfamide
   - articles/Kervezee_2014_quinidine_rat

@@ -12097,6 +12097,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `Kurosawa_2021_bedaquiline.R` (power-form effect on bedaquiline apparent clearance, `(1 + e_conmed_clarithromycin_cl)^CONMED_CLARITHROMYCIN` with `e_conmed_clarithromycin_cl = -0.37`, i.e. 37% lower CL/F with steady-state clarithromycin 500 mg every 12 hours; Kurosawa 2021 Table S1).
 - **Notes:** Auto-approved member of the `CONMED_<INN>` family. Record per-model the clarithromycin regimen (dose, interval, whether steady state was reached before the victim dose) and whether the indicator is time-varying. Distinct from `CONMED_AZITHROMYCIN` (a macrolide with little CYP3A inhibition) and `CONMED_ERYTHROMYCIN` (a moderate CYP3A inhibitor), and from the pooled class indicators `CONMED_CYP3A4_INH*`.
 
+### CONMED_CLOFAZIMINE (**canonical for concomitant clofazimine coadministration indicator**)
+- **Description:** 1 = clofazimine coadministered with the victim drug, 0 = no concomitant clofazimine. Clofazimine is a riminophenazine used in drug-resistant tuberculosis and leprosy regimens; it inhibits P-glycoprotein and BCRP in vitro and has a very long terminal half-life (weeks), so a clinical clofazimine-on/off contrast is usually a before/after (study-period) comparison rather than a cross-over.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant clofazimine).
+- **Source aliases:**
+  - `CFZ` -- the clofazimine indicator column name in `Salinger_2019_pretomanid.R` (control-stream column) and the abbreviation Kengo 2024 uses throughout.
+- **Example models:** `Kengo_2024_levofloxacin.R` (fractional effect `1 + e_conmed_clofazimine_cl * CONMED_CLOFAZIMINE` on levofloxacin clearance, `e_conmed_clofazimine_cl = -0.148`; time-varying within subject: 0 at the pre-clofazimine PK visit and 1 at the visit 21 days after clofazimine 100 mg daily was started). Screened and not retained, documented in `covariatesDataExcluded`: `Kengo_2024_isoniazid.R`, `Kengo_2024_linezolid.R`, `Salinger_2019_pretomanid.R`, `Nyangwa_2026_pretomanid.R` (the BPaLC arm).
+- **Notes:** Auto-approved member of the `CONMED_<INN>` family. Record per-model the clofazimine dose and how long it had been given before the victim-drug sampling, since clofazimine accumulates over weeks; a before/after design cannot separate a clofazimine effect from other changes between the two periods (e.g. clinical improvement), which the model's `notes` should say when it applies.
+
 ### CONMED_AZOLE (**canonical for concomitant azole antifungal therapy (CYP3A4/P-gp inhibitor)**)
 - **Description:** 1 = patient coadministered an azole antifungal (itraconazole, voriconazole, fluconazole, ketoconazole, posaconazole, isavuconazole, or another systemic azole) during the observation interval, 0 = no concomitant azole antifungal. Time-varying per subject because azole exposure starts and stops during the observation period.
 - **Units:** (binary)
