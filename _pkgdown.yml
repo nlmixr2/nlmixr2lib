@@ -5936,12 +5936,16 @@ navbar:
         href: articles/Vinnard_2017_rifampicin.html
       - text: "Rifampicin (Wicha 2018)"
         href: articles/Wicha_2018_rifampicin.html
+      - text: "Rifampicin ffm (Bilal 2024)"
+        href: articles/Bilal_2024_rifampicin.html
       - text: "Rifampicin invitro (Almond 2016)"
         href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Rifampicin invivo (Almond 2016)"
         href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Rifampicin pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
+      - text: "Rifampicin sexwt (Bilal 2024)"
+        href: articles/Bilal_2024_rifampicin.html
       - text: "Rifampicin survival (Svensson 2020)"
         href: articles/Svensson_2020_rifampicin.html
       - text: "Rifapentine (Francis 2019)"
@@ -8083,6 +8087,7 @@ articles:
   - articles/Bihorel_2026_aflibercept
   - articles/Bijleveld_2016_gentamicin
   - articles/Bijleveld_2017_gentamicin
+  - articles/Bilal_2024_rifampicin
   - articles/BilbaoMeseguer_2021_levetiracetam
   - articles/Biliouris_2018_nusinersen
   - articles/Billard_1995_methoxsalen
