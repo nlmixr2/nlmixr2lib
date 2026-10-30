@@ -206,7 +206,9 @@ AlvarezJimenez_2016_scopolamine <- function() {
     lkin_sacInacc  <- log(22.8)   ; label("kIN for saccadic inaccuracy (%/min)")            # Table 2 kIN = 22.8
     lkout_sacInacc <- log(3.33)   ; label("kOUT for saccadic inaccuracy (1/min)")           # Table 2 kOUT = 3.33
     # Omega block between EC50 and EMAX (OC (omega correlation) = -0.06
-    # interpreted as covariance;
+    # interpreted as covariance, like the rest of Table 2's OC column; the
+    # paper does not settle whether this one value is a correlation instead,
+    # see the vignette Errata;
     # var_ec50 = log(1+0.137^2) = 0.0186, var_emax = log(1+0.499^2) = 0.2216).
     # Table 2 prints the OC as "-0.06 +/- 0.157"; text copies of the PDF drop
     # its minus sign.
