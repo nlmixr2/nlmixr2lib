@@ -7708,6 +7708,8 @@ navbar:
         href: articles/Mori_2018_zoledronicAcid.html
       - text: "ZoledronicAcid mbma (Wang 2023)"
         href: articles/Wang_2023_zoledronicAcid.html
+      - text: "Zolpidem (Cha 2024)"
+        href: articles/Cha_2024_zolpidem.html
       - text: "Zolpidem (Kim 2026)"
         href: articles/Kim_2026_zolpidem.html
       - text: "Zolpidem crt (Kim 2026)"
@@ -8216,6 +8218,7 @@ articles:
   - articles/Cendros_2025_enflicoxib
   - articles/Centanni_2025_sunitinib_thrombocytopenia
   - articles/Cerqueira_2025_resveratrol
+  - articles/Cha_2024_zolpidem
   - articles/Chae_2012_metformin
   - articles/Chae_2026_teicoplanin
   - articles/Chairat_2016_oseltamivir
