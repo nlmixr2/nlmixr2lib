@@ -3410,6 +3410,8 @@ navbar:
         href: articles/Ternant_2021_infliximab.html
       - text: "Infliximab (Zhao 2026)"
         href: articles/Zhao_2026_infliximab.html
+      - text: "Infliximab (Zhu 2024)"
+        href: articles/Zhu_2024_infliximab.html
       - text: "Infliximab aubourg (Kim 2025)"
         href: articles/Kim_2025_infliximab.html
       - text: "Infliximab dubinsky (Kim 2025)"
@@ -10697,6 +10699,7 @@ articles:
   - articles/Zhu_2023_omalizumab_pediatric
   - articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer
   - articles/Zhu_2024_borneol_pbpk
+  - articles/Zhu_2024_infliximab
   - articles/Zhu_2024_pyrotinib
   - articles/Zhu_2026_denosumab
   - articles/Zieck_2023_ceftazidime
