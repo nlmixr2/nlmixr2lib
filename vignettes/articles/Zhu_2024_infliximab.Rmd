@@ -395,8 +395,9 @@ pta_cmp |>
 
 # A wrong FFM exponent or reference moves the 70 kg points by 20-50
 # percentage points (FFM taken equal to weight gives about 6% instead of
-# the printed 22% at 300 mg, 70 kg, 40 g/L); 200-subject Monte Carlo noise
-# and reading the figure stay within about 10.
+# the printed 22% at 300 mg, 70 kg, 40 g/L). With 200-subject Monte Carlo
+# noise and figure reading, the 90th percentile of |difference| was 4.0-4.7
+# over four seeds; single points reached 14.5.
 stopifnot(
   abs(median(pta_cmp$diff)) < 5,
   quantile(abs(pta_cmp$diff), 0.9) < 12
