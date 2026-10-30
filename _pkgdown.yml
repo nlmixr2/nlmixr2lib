@@ -6556,6 +6556,8 @@ navbar:
         href: articles/CirrincioneDall_2011_tacrolimus.html
       - text: "Tacrolimus (Dunlap 2025)"
         href: articles/Dunlap_2025_tacrolimus.html
+      - text: "Tacrolimus (FernandezAlarcon 2024)"
+        href: articles/FernandezAlarcon_2024_tacrolimus.html
       - text: "Tacrolimus (Francke 2025)"
         href: articles/Francke_2025_tacrolimus.html
       - text: "Tacrolimus (Franken 2022)"
@@ -8551,6 +8553,7 @@ articles:
   - articles/Feng_2026_imipenem_pbpk
   - articles/FergusonSells_2022_tadalafil
   - articles/Ferl_2018_mosunetuzumab
+  - articles/FernandezAlarcon_2024_tacrolimus
   - articles/FernandezRubio_2025_ceftriaxone
   - articles/FernandezTeruel_2024_capivasertib
   - articles/FernandezTeruel_2025_capivasertib
