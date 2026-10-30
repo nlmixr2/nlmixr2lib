@@ -4080,6 +4080,8 @@ navbar:
         href: articles/Kaushal_2024_mRNA0184.html
       - text: "MRNA3927 (Attarwala 2023)"
         href: articles/Attarwala_2023_mRNA3927.html
+      - text: "MRNA6231 (LiricRajlic 2024)"
+        href: articles/LiricRajlic_2024_mRNA6231.html
       - text: "MTMSATrp mouse (Niloy 2026)"
         href: articles/Niloy_2026_MTMSATrp_mouse.html
       - text: "Mab human pbpk (Jones 2019)"
@@ -9317,6 +9319,7 @@ articles:
   - articles/Ling_2024_voriconazole
   - articles/Ling_2025_ropivacaine
   - articles/Lioger_2017_rituximab
+  - articles/LiricRajlic_2024_mRNA6231
   - articles/Litjens_2023_linezolid_tuberculous_meningitis
   - articles/Liu_2018_pneumocystis_qsp
   - articles/Liu_2020_cefepime
