@@ -1268,6 +1268,8 @@ navbar:
         href: articles/Vollmer_2023_cefepime_enmetazobactam.html
       - text: "Cefepime qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Cefiderocol (Fouad 2024)"
+        href: articles/Fouad_2024_cefiderocol.html
       - text: "Cefiderocol (Kawaguchi 2021)"
         href: articles/Kawaguchi_2021_cefiderocol.html
       - text: "Cefiderocol (Koenig 2025)"
@@ -8570,6 +8572,7 @@ articles:
   - articles/Foster_2023_enrofloxacin_cat
   - articles/Fostvedt_2021_glasdegib
   - articles/Fouad_2021_diacerein
+  - articles/Fouad_2024_cefiderocol
   - articles/Fournier_2018_amoxicillin
   - articles/Frade_2022_benznidazole
   - articles/Francis_2019_rifapentine
