@@ -6538,6 +6538,8 @@ navbar:
         href: articles/Brooks_2021_tacrolimus.html
       - text: "Tacrolimus (Cai 2022)"
         href: articles/Cai_2022_tacrolimus.html
+      - text: "Tacrolimus (Chamzas 2024)"
+        href: articles/Chamzas_2024_tacrolimus.html
       - text: "Tacrolimus (Chen 2017)"
         href: articles/Chen_2017_tacrolimus.html
       - text: "Tacrolimus (Chen 2020a)"
@@ -8221,6 +8223,7 @@ articles:
   - articles/Chairat_2016_oseltamivir
   - articles/Chakraborty_2012_canakinumab
   - articles/Chala_2023_efavirenz
+  - articles/Chamzas_2024_tacrolimus
   - articles/Chan_2008_maraviroc
   - articles/Chan_2017_ipf_fvc
   - articles/Chan_2020_fenebrutinib
