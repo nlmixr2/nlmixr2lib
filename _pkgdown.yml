@@ -4254,6 +4254,8 @@ navbar:
         href: articles/Padari_2012_meropenem.html
       - text: "Meropenem (Peng 2025)"
         href: articles/Peng_2025_meropenem.html
+      - text: "Meropenem (Pokorna 2024)"
+        href: articles/Pokorna_2024_meropenem.html
       - text: "Meropenem (Rancic 2024)"
         href: articles/Rancic_2024_meropenem.html
       - text: "Meropenem (Rolsma 2025)"
@@ -9741,6 +9743,7 @@ articles:
   - articles/Plock_2014_ferumoxytol
   - articles/Poels_2025_elranatamab
   - articles/Pohl_2022_linzagolix
+  - articles/Pokorna_2024_meropenem
   - articles/Polaskova_2024_vancomycin
   - articles/Polito_2016_fludrocortisone
   - articles/PonceBobadilla_2023_upadacitinib
