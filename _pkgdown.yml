@@ -3832,6 +3832,10 @@ navbar:
         href: articles/Straube_2025_TMDD_high_vs_low_affinity.html
       - text: "Linagliptin 2cmt (Straube 2025)"
         href: articles/Straube_2025_TMDD_high_vs_low_affinity.html
+      - text: "Linagliptin human pbpk (Nakamura 2024)"
+        href: articles/Nakamura_2024_linagliptin_pbpk.html
+      - text: "Linagliptin rat pbpk (Nakamura 2024)"
+        href: articles/Nakamura_2024_linagliptin_pbpk.html
       - text: "Linezolid (Abdelgawad 2024)"
         href: articles/Abdelgawad_2024_linezolid.html
       - text: "Linezolid (Boak 2014)"
@@ -9549,6 +9553,7 @@ articles:
   - articles/Naik_2013_peginesatide
   - articles/Naik_2016_vortioxetine
   - articles/Nakai_2025_tranexamicAcid
+  - articles/Nakamura_2024_linagliptin_pbpk
   - articles/Nakao_2019_afatinib
   - articles/Nakashima_2015_valproic_acid_seizure_control
   - articles/Nanga_2019_tacrolimus_metaanalysis
