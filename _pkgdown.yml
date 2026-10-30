@@ -3726,6 +3726,8 @@ navbar:
         href: articles/Majid_2024_lenvatinib.html
       - text: "Lenvatinib tumor asdeposited (Majid 2024)"
         href: articles/Majid_2024_lenvatinib.html
+      - text: "Leritrelvir (Wang 2024)"
+        href: articles/Wang_2024_leritrelvir.html
       - text: "Letermovir (Royston 2025)"
         href: articles/Royston_2025_letermovir.html
       - text: "Letermovir healthy (Prohn 2021)"
@@ -10356,6 +10358,7 @@ articles:
   - articles/Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp
   - articles/Wang_2024_evorpacept_qsp
   - articles/Wang_2024_imipenem
+  - articles/Wang_2024_leritrelvir
   - articles/Wang_2024_omega3PUFA
   - articles/Wang_2024_risperidone_lai_switching
   - articles/Wang_2024_rnaLipidNanoparticle
