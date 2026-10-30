@@ -940,6 +940,8 @@ navbar:
         href: articles/Hughes_2022_brepocitinib.html
       - text: "Brepocitinib (Maleki 2024)"
         href: articles/Maleki_2024_brepocitinib.html
+      - text: "Brepocitinib (Tsamandouras 2024)"
+        href: articles/Tsamandouras_2024_brepocitinib.html
       - text: "Brexanolone (Wald 2022)"
         href: articles/Wald_2022_brexanolone.html
       - text: "Brexpiprazole (Frederiksen 2023)"
@@ -10220,6 +10222,7 @@ articles:
   - articles/Tsai_2022_cart_local_delivery
   - articles/Tsai_2023_ceftriaxone
   - articles/Tsai_2024_vancomycin
+  - articles/Tsamandouras_2024_brepocitinib
   - articles/Tse_2020_tofacitinib
   - articles/Tseng_2026_piperacillin
   - articles/Tseng_2026_vancomycin

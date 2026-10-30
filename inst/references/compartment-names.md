@@ -1033,8 +1033,15 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Type:** compartment
 - **Role:** Psoriasis Area and Severity Index (PASI) score output compartment for psoriasis PD models. Holds the ABSOLUTE score on the standard 0-72 clinical scale, so an indirect-response model initialises it at the baseline PASI (`pasi(0) <- rbase`) and its ODE is a synthesis / degradation balance whose steady state is that baseline. A future model that fits the PASI CHANGE FROM BASELINE directly should register a companion `pasicfb`, exactly as `das28` and `das28cfb` are separated; do not overload this name with a change score.
 - **Source aliases:** `PASI` -- Zhang 2025 paper notation and the `COMP=(PASI,DEFOBS)` state of its Data S4 control stream.
-- **Example models:** `Zhang_2025_drugA.R` (indirect-response PASI model with Imax inhibition of plaque formation by an effect-compartment concentration, plus a placebo effect that multiplies the degradation rate).
+- **Example models:** `Zhang_2025_drugA.R` (indirect-response PASI model with Imax inhibition of plaque formation by an effect-compartment concentration, plus a placebo effect that multiplies the degradation rate), `Tsamandouras_2024_brepocitinib.R` (not an ODE state but the name of a custom-likelihood endpoint, `ll(pasi) ~ ...`: the observed score, read from `DV` on its 0-72 scale, is divided by 72 and follows a zero-inflated beta distribution).
 - **Notes:** Follows the lowercase run-together convention of `das28` / `d_updrs` / `druglikingvascfb`. Distinct from the canonical `score`, which is registered specifically as a generic PAIN score and is not a general clinical-score slot. All previously registered psoriasis models are PK-only, so this is the first PASI PD state in the library.
+
+### latent_pasi (**canonical latent drug-effect variable driving the PASI score**)
+- **Type:** compartment
+- **Role:** Dimensionless latent variable `R(t)` of a type I indirect-response model whose loss drives the drug effect on the PASI score: `d/dt(latent_pasi) <- kin * (1 - imax * CAV / (ic50 + CAV)) - kout * latent_pasi` with `kin = kout` and `latent_pasi(0) <- 1`, and the drug effect enters as `rbase * (1 - pmax) * (1 - latent_pasi)` in PASI units. It has no physical units or matrix (`specimen = "not applicable"`).
+- **Source aliases:** `R(t)` -- Tsamandouras 2024 Eq. 11-12; `A(1)` / `COMP = (PASI)` in its Online Resource 1 NONMEM code, where the state is named after the score it drives but holds R, not the score.
+- **Example models:** `Tsamandouras_2024_brepocitinib.R` (inhibition of the production of R by the individual average steady-state brepocitinib concentration, IC50 53.24 ng/mL, Imax fixed at 1).
+- **Notes:** Member of the `latent_<endpoint>` family, in which the suffix names the endpoint the latent variable drives (`latent_pppasi` for the palmoplantar score of `Iwaki_2021_guselkumab.R`). Distinct from `pasi`, which holds the score itself, and from `effect` (a ke0 effect compartment holding a concentration).
 
 ---
 
