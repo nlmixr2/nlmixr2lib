@@ -1998,6 +1998,8 @@ navbar:
         href: articles/Puisset_2007_docetaxel.html
       - text: "Docetaxel (Rietveld 2025)"
         href: articles/Rietveld_2025_docetaxel.html
+      - text: "Docetaxel (Wang 2024)"
+        href: articles/Wang_2024_docetaxel.html
       - text: "Dolutegravir (Chandasana 2023)"
         href: articles/Chandasana_2023_dolutegravir.html
       - text: "Dolutegravir (Chandasana 2024)"
@@ -10354,6 +10356,7 @@ articles:
   - articles/Wang_2023_zoledronicAcid
   - articles/Wang_2024_amphenmulin
   - articles/Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp
+  - articles/Wang_2024_docetaxel
   - articles/Wang_2024_evorpacept_qsp
   - articles/Wang_2024_imipenem
   - articles/Wang_2024_omega3PUFA
