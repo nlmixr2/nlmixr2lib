@@ -2948,6 +2948,8 @@ navbar:
         href: articles/Yang_2023_ganciclovir_model_repository.html
       - text: "Ganciclovir (Perrottet 2009)"
         href: articles/Perrottet_2009_ganciclovir.html
+      - text: "Ganciclovir (Yang 2024)"
+        href: articles/Yang_2024_ganciclovir.html
       - text: "Ganciclovir (Yuen 1995)"
         href: articles/Yang_2023_ganciclovir_model_repository.html
       - text: "Ganciclovir (Zhao 2009)"
@@ -10514,6 +10516,7 @@ articles:
   - articles/Yang_2023_ganciclovir_model_repository
   - articles/Yang_2024_axatilimab
   - articles/Yang_2024_dabigatran
+  - articles/Yang_2024_ganciclovir
   - articles/Yang_2024_meropenem_pbpk
   - articles/Yang_2024_naloxone_opioid_reversal
   - articles/Yang_2024_zastaprazan
