@@ -2476,6 +2476,8 @@ navbar:
         href: articles/Rao_2021_antituberculosis_critical_illness.html
       - text: "Ethambutol (Tikiso 2022)"
         href: articles/Tikiso_2022_ethambutol.html
+      - text: "Ethambutol (Wijk 2024)"
+        href: articles/Wijk_2024_first_line_tb_drugs.html
       - text: "Ethambutol pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
       - text: "Ethanol (Lim 2017)"
@@ -3526,6 +3528,8 @@ navbar:
         href: articles/Seng_2015_isoniazid.html
       - text: "Isoniazid (Vinnard 2017)"
         href: articles/Vinnard_2017_isoniazid.html
+      - text: "Isoniazid (Wijk 2024)"
+        href: articles/Wijk_2024_first_line_tb_drugs.html
       - text: "Isoniazid (Wilkins 2011)"
         href: articles/Wilkins_2011_isoniazid.html
       - text: "Isoniazid nat2class (Chen 2022)"
@@ -5696,6 +5700,8 @@ navbar:
         href: articles/Panjasawatwong_2020_antituberculosis_tbm.html
       - text: "Pyrazinamide (Rao 2021)"
         href: articles/Rao_2021_antituberculosis_critical_illness.html
+      - text: "Pyrazinamide (Wijk 2024)"
+        href: articles/Wijk_2024_first_line_tb_drugs.html
       - text: "Pyrazinamide mpbpk (Mehta 2023)"
         href: articles/Mehta_2023_tb_lesion_mpbpk.html
       - text: "Pyrazinamide pbpk (Ramachandran 2023)"
@@ -5936,6 +5942,8 @@ navbar:
         href: articles/Vinnard_2017_rifampicin.html
       - text: "Rifampicin (Wicha 2018)"
         href: articles/Wicha_2018_rifampicin.html
+      - text: "Rifampicin (Wijk 2024)"
+        href: articles/Wijk_2024_first_line_tb_drugs.html
       - text: "Rifampicin invitro (Almond 2016)"
         href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Rifampicin invivo (Almond 2016)"
@@ -10406,6 +10414,7 @@ articles:
   - articles/Wickramasinghe_2025_pamiparib
   - articles/Wickramasinghe_2025_spatial_cns_pbpk
   - articles/Wiebe_2020_midazolam
+  - articles/Wijk_2024_first_line_tb_drugs
   - articles/Wilbaux_2014_ovarianCancer_ca125
   - articles/Wilbaux_2015_prostate
   - articles/Wilbaux_2022_roblitinib
