@@ -2624,6 +2624,8 @@ navbar:
         href: articles/Bukkems_2022_factorviii_thrombin_plasmin.html
       - text: "Factorviii thrombinPotential (Valke 2024)"
         href: articles/Valke_2024_factorviii_thrombin_plasmin.html
+      - text: "Falbikitug (Shahraz 2024)"
+        href: articles/Shahraz_2024_falbikitug.html
       - text: "Farletuzumab (Farrell 2012)"
         href: articles/Farrell_2012_farletuzumab.html
       - text: "Fasiglifam (Naik 2013)"
@@ -9943,6 +9945,7 @@ articles:
   - articles/Shah_2019_cefotiam
   - articles/Shah_2023_benzylpenicillin
   - articles/Shah_2025_clarithromycin
+  - articles/Shahraz_2024_falbikitug
   - articles/Shao_2023_bedaquiline
   - articles/Sharma_2016_hydroxyprogesteroneCaproate
   - articles/Sharma_2018_SHetA2
