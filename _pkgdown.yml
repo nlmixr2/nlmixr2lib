@@ -1272,6 +1272,8 @@ navbar:
         href: articles/Kawaguchi_2021_cefiderocol.html
       - text: "Cefiderocol (Koenig 2025)"
         href: articles/Koenig_2025_cefiderocol.html
+      - text: "Cefiderocol (Yamaguchi 2024)"
+        href: articles/Yamaguchi_2024_cefiderocol.html
       - text: "Cefiderocol (Zhang 2025)"
         href: articles/Zhang_2025_cefiderocol.html
       - text: "Cefiderocol clcr (Kawaguchi 2018)"
@@ -10493,6 +10495,7 @@ articles:
   - articles/Yaghini_2021_quantumDot
   - articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab
   - articles/Yamada_2025_zolbetuximab
+  - articles/Yamaguchi_2024_cefiderocol
   - articles/Yamamoto_2017_cns_pbpk_rat
   - articles/Yamamoto_2023_tominersen
   - articles/Yamazaki_2008_crizotinib_mouse
