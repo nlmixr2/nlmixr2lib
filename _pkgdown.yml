@@ -3506,6 +3506,8 @@ navbar:
         href: articles/Cojutti_2021_isavuconazole.html
       - text: "Isavuconazole (Desai 2016)"
         href: articles/Desai_2016_isavuconazole.html
+      - text: "Isavuconazole (MartinCerezuela 2024)"
+        href: articles/MartinCerezuela_2024_isavuconazole.html
       - text: "Isavuconazole secure (Desai 2016)"
         href: articles/Desai_2016_isavuconazole_secure.html
       - text: "Isb2001 qsp (ChandralayamAyyappaMenon 2026)"
@@ -9419,6 +9421,7 @@ articles:
   - articles/Marsot_2017_rifampicin
   - articles/Martial_2017_micafungin
   - articles/Martial_2021_tacrolimus
+  - articles/MartinCerezuela_2024_isavuconazole
   - articles/Martinez_2019_alirocumab
   - articles/Martson_2020_caspofungin
   - articles/Mascarenhas_2015_pentadecanoic_triheptadecanoic
