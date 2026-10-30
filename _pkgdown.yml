@@ -3026,6 +3026,8 @@ navbar:
         href: articles/Veinstein_2013_gentamicin.html
       - text: "Gentamicin (Wahlby 2004)"
         href: articles/Wahlby_2004_time_varying_covariates.html
+      - text: "Gentamicin (vanderVeer 2024)"
+        href: articles/vanderVeer_2024_gentamicin.html
       - text: "Gentamicin bos (Duong 2022)"
         href: articles/Duong_2022_gentamicin.html
       - text: "Gentamicin glasgow (Kelman 1984)"
@@ -10761,6 +10763,7 @@ articles:
   - articles/vandenMaagdenberg_2025_a2ar_tme_qsp
   - articles/vanderGaag_2025_osimertinib_pbpk
   - articles/vanderStoep_2019_treosulfan
+  - articles/vanderVeer_2024_gentamicin
   - articles/vanderWalt_2013_dapagliflozin
   - articles/vanderZeeuw_2026_immunoglobulin
   - articles/vonHentig_2009_saquinavir
