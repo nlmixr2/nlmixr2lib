@@ -1272,6 +1272,8 @@ navbar:
         href: articles/Kawaguchi_2021_cefiderocol.html
       - text: "Cefiderocol (Koenig 2025)"
         href: articles/Koenig_2025_cefiderocol.html
+      - text: "Cefiderocol (SanzCodina 2024)"
+        href: articles/SanzCodina_2024_cefiderocol.html
       - text: "Cefiderocol (Zhang 2025)"
         href: articles/Zhang_2025_cefiderocol.html
       - text: "Cefiderocol clcr (Kawaguchi 2018)"
@@ -9885,6 +9887,7 @@ articles:
   - articles/Sano_2023_fesoterodine
   - articles/Santamaria_2017_rupatadine
   - articles/Santavy_2022_cefazolin
+  - articles/SanzCodina_2024_cefiderocol
   - articles/Saporta_2026_meropenem
   - articles/Sarashina_2005_epinastine
   - articles/Sasaki_2022_delamanid
