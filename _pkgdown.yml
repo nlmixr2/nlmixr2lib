@@ -1802,6 +1802,10 @@ navbar:
         href: articles/Stillemans_2021_darunavir.html
       - text: "Darunavir (Stillemans 2021b)"
         href: articles/Stillemans_2021b_darunavir.html
+      - text: "Darunavir (Tsirizani 2024)"
+        href: articles/Tsirizani_2024_darunavir.html
+      - text: "Darunavir aagbinding (Tsirizani 2024)"
+        href: articles/Tsirizani_2024_darunavir.html
       - text: "Darunavir covid19 (Cojutti 2020)"
         href: articles/Cojutti_2020_darunavir.html
       - text: "Darunavir hiv (Cojutti 2020)"
@@ -10223,6 +10227,7 @@ articles:
   - articles/Tse_2020_tofacitinib
   - articles/Tseng_2026_piperacillin
   - articles/Tseng_2026_vancomycin
+  - articles/Tsirizani_2024_darunavir
   - articles/Tsirizani_2025_ritonavir
   - articles/Tsuchitani_2024_telmisartan_pbpk
   - articles/Tsuchitani_2026_apixaban_pbpk
