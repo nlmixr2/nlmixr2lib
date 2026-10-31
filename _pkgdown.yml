@@ -1734,6 +1734,8 @@ navbar:
         href: articles/Carrothers_2020_dalbavancin.html
       - text: "Dalbavancin (Carrothers 2023)"
         href: articles/Carrothers_2023_dalbavancin.html
+      - text: "Dalbavancin (Chiriac 2024)"
+        href: articles/Chiriac_2024_dalbavancin.html
       - text: "Dalbavancin (Cojutti 2022)"
         href: articles/Cojutti_2022_dalbavancin.html
       - text: "Dalbavancin (Cojutti 2024)"
@@ -8311,6 +8313,7 @@ articles:
   - articles/Chigutsa_2021_bamlanivimab_etesevimab
   - articles/Chigutsa_2025_tirzepatide
   - articles/Chirehwa_2017_pyrazinamide
+  - articles/Chiriac_2024_dalbavancin
   - articles/Choe_2012_busulfan
   - articles/Choi_2011_remifentanil
   - articles/Choi_2016_gcc4401c_rivaroxaban
