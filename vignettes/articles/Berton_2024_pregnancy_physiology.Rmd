@@ -1,0 +1,462 @@
+---
+title: "Pregnancy and postpartum physiology (Berton 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Pregnancy and postpartum physiology (Berton 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+ui <- rxode2::rxode(readModelDb("Berton_2024_pregnancy_physiology"))
+cat("* Citation: ", ui$reference, "\n", sep = "")
+cat("* Article: <https://doi.org/10.1093/ofid/ofae585>\n")
+cat("* PubMed Central: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11495486/>\n")
+```
+
+Berton 2024 asks when, after delivery, a pharmacokinetic study should be run
+so that the postpartum reference fully captures the effect of pregnancy on drug
+exposure. To answer it, the authors extended the Basel in-house Matlab
+whole-body PBPK framework (Stader 2019) with a pregnant and postpartum virtual
+population. They pooled 224 articles, normalised every anatomical,
+physiological and enzyme-abundance measurement to its non-pregnant value, and
+regressed the fold change on gestational age (Supplementary Table 2). The
+population was then verified with seven antiretrovirals and used to show that
+drug exposure is mostly back to its pre-pregnancy level 4 to 5 weeks after
+delivery.
+
+The packaged model is that **system layer**: the virtual pregnant / postpartum
+woman. It has no drug, no dose, no compartments and no ODEs. Every output is an
+algebraic function of the `rxode2` time variable, which the model interprets as
+**gestational age in weeks**. Delivery is at 40 weeks for every woman, so
+`time > 40` is postpartum and `time - 40` is the week after delivery; the
+equations were fitted and the population generated over 0 to 66 weeks.
+
+```{r description, echo = FALSE, results = "asis"}
+cat("> ", ui$description, "\n", sep = "")
+```
+
+## Why the drug layer is not included
+
+The seven drug PBPK models the paper verifies against this population
+(ritonavir, efavirenz, rilpivirine, doravirine, dolutegravir, bictegravir and
+raltegravir) "were developed previously" in the authors' obese and ageing
+papers (Berton 2024 Clin Infect Dis; Stader 2021 Br J Clin Pharmacol) and "were
+used without changing any drug parameters". None of their drug parameters is
+printed in Berton 2024, and the paper does not describe how the fetoplacental
+unit is connected to the PBPK ODEs (its partition coefficient, whether it is a
+perfusion-limited organ, how it is fed from the uterine flow). The drug layer
+can be added once those inputs are available. A bictegravir PBPK on the 2017
+version of the same framework is already in the library
+(`Stader_2021_bictegravir_pbpk`); its organ-weight and flow regressions are an
+earlier version of the non-pregnant equations used here, so the two models
+cannot be chained without re-deriving that PBPK on this population.
+
+# Population
+
+The development and verification data come from 224 published studies of
+pregnant and postpartum women (Supplementary Table 1). The authors generated
+1000 virtual women across 0 to 66 weeks of gestational age to compare against
+the verification data set (Figure 1; Supplementary Figures 1 and 2). The
+verification trials (Supplementary Table 3) enrolled pregnant women living with
+HIV aged 18 to 44 years, sampled at gestational ages of 13 to 40 weeks and 41
+to 80 weeks (postpartum).
+
+The non-pregnant baseline of every woman comes from the framework's age-,
+height- and sex-dependent regressions (Supplementary Table 2, citing the Stader
+2019 ageing repository of White adults), each with a population CV. Age is the
+only covariate; sex is fixed to female.
+
+# Source trace
+
+Every gestational-age coefficient is a point estimate of a regression the
+authors fitted in Matlab 2020a; **no standard error or confidence interval is
+reported**, so every `ini()` entry is `fixed()`. Equations inherited from other
+sources (non-pregnant regressions from Stader 2019; uterus, mammary gland,
+fetus, placenta and amniotic fluid from Abduljalil 2012; fetoplacental flow in
+the Gaohua 2012 form) are written as constants in `model()`, each with its
+Supplementary Table 2 row cited in an in-file comment.
+
+| Output (units) | Supplementary Table 2 rows | Form |
+|---|---|---|
+| `ht` (cm), `wt_np` (kg) | Body height; Body weight, Non pregnant | age (and height) regressions, CV 3.8% / 15.2% |
+| `wt` (kg), `bmi`, `bsa` | Body weight FC; BMI; BSA | quadratic FC in pregnancy and postpartum; DuBois BSA |
+| `w_adipose`, `w_brain`, `w_heart`, `w_kidney` (kg) | organ weight + organ weight FC | linear FC, own postpartum line, capped at 1 where printed |
+| `w_lung`, `w_bone`, `w_gonads`, `w_skin`, `w_thymus`, `w_gut`, `w_spleen`, `w_pancreas`, `w_liver` (kg) | organ weight; FC = 1 | non-pregnant regression only |
+| `w_uterus`, `w_mammary`, `w_muscle` (kg) | Uterus / Mammary gland (FC); Total muscle weight | Abduljalil 2012; both inside muscle |
+| `w_plasma`, `w_rbc`, `w_blood` (kg) | Plasma / Red blood cells weight (FC); Blood weight | see Assumptions for the blood-weight row |
+| `w_fetus`, `w_placenta`, `w_amniotic`, `w_fetoplacental` (kg) | Foetal / Placental / Amniotic fluid weight | Gompertz, cubic, quintic in GA; 0 after delivery |
+| `co` (L/h) | Cardiac output; Cardiac output FC | quadratic FC to 50.9 weeks |
+| `fq_*` (% of CO), `q_*` (L/h) | regional flows; Blood flows FC; Brain / Kidney / Uterus blood flow FC; Muscle blood flow; Foetal-placental blood flow | see the flow-budget check below |
+| `gfr` (mL/min) | GFR; GFR FC | quadratic FC to 67.5 weeks |
+| `hct` (fraction) | HCT; HCT FC | quadratic FC to 65 weeks |
+| `hsa`, `agp` (g/L) | Albumin (FC); AAG (FC) | quadratic FC; albumin has its own postpartum line |
+| `fc_cyp1a2` ... `fc_ugt1a4` | CYP / UGT FC rows | quadratic FC, 1 after the printed knot; CYP3A5 = CYP3A4 |
+
+```{r ini-table, echo = FALSE}
+ui$iniDf |>
+  dplyr::filter(is.na(neta1)) |>
+  dplyr::transmute(
+    Parameter = name,
+    Value = signif(est, 6),
+    Fixed = ifelse(fix, "yes", "no"),
+    Label = label
+  ) |>
+  knitr::kable(caption = "Gestational-age fold-change coefficients as packaged (all fixed; Berton 2024 Supplementary Table 2).")
+```
+
+```{r eta-table, echo = FALSE}
+ui$iniDf |>
+  dplyr::filter(!is.na(neta1), neta1 == neta2) |>
+  dplyr::transmute(
+    Draw = name,
+    Variance = signif(est, 6),
+    `CV (%)` = signif(100 * sqrt(est), 4)
+  ) |>
+  knitr::kable(caption = "Virtual-population draws: Mean x (1 + eta), eta ~ N(0, (CV/100)^2), CVs from Supplementary Table 2.")
+```
+
+# Simulation
+
+There is nothing to dose: a solve needs only an observation grid and each
+woman's age.
+
+```{r simulate}
+mod <- readModelDb("Berton_2024_pregnancy_physiology")
+mod_typ <- rxode2::zeroRe(mod)
+
+ga_grid <- seq(0, 66, by = 0.5)
+
+# Typical 30-year-old woman (all etas zero).
+d_typ <- data.frame(id = 1L, time = ga_grid, evid = 0L, AGE = 30)
+sim_typ <- rxode2::rxSolve(mod_typ, d_typ, returnType = "data.frame")
+stopifnot(nrow(sim_typ) == length(ga_grid))
+
+# Typical value at given gestational ages, matched by value rather than by row
+# position.
+typical_at <- function(ga) {
+  idx <- match(ga, sim_typ$time)
+  stopifnot(!anyNA(idx))
+  sim_typ[idx, , drop = FALSE]
+}
+
+# Virtual cohort of 200 women (the per-arm cap for these vignettes), ages drawn
+# uniformly over the 18 to 44 years of the verification trials, each followed
+# from conception to 26 weeks after delivery.
+rxode2::rxSetSeed(20241018)
+set.seed(20241018)
+n_women <- 200L
+ages <- data.frame(id = seq_len(n_women), AGE = runif(n_women, 18, 44))
+d_pop <- tidyr::expand_grid(id = seq_len(n_women), time = seq(0, 66, by = 1)) |>
+  dplyr::left_join(ages, by = "id") |>
+  dplyr::mutate(evid = 0L)
+sim_pop <- rxode2::rxSolve(mod, d_pop, returnType = "data.frame")
+stopifnot(dplyr::n_distinct(sim_pop$id) == n_women)
+```
+
+# Validation 1: changes at the third trimester
+
+The Results report the third-trimester change relative to non-pregnant women
+for several organ weights, cardiac output and the plasma proteins. The typical
+woman reproduces them.
+
+```{r val-third-trimester}
+base <- typical_at(0)
+term <- typical_at(40)
+pct <- function(x) round(100 * (term[[x]] / base[[x]] - 1), 1)
+
+tab_t3 <- data.frame(
+  Quantity = c("Adipose weight", "Heart weight", "Kidney weight", "Blood weight",
+               "Brain weight", "Cardiac output", "Albumin", "Alpha-1-acid glycoprotein"),
+  Output = c("w_adipose", "w_heart", "w_kidney", "w_blood", "w_brain", "co", "hsa", "agp"),
+  Published = c(25, 30, 30, 47, -7, 20, -25, -20)
+)
+tab_t3$Model <- vapply(tab_t3$Output, pct, numeric(1))
+tab_t3 |>
+  dplyr::rename(
+    `Published change, % (Results)` = Published,
+    `Model at 40 weeks, %` = Model
+  ) |>
+  knitr::kable(caption = "Typical 30-year-old woman at 40 weeks vs non-pregnant; published values from the Results text.")
+
+# The published values are rounded figures from the text; every modelled change
+# must be within 5 percentage points of them and in the same direction.
+stopifnot(
+  all(sign(tab_t3$Model) == sign(tab_t3$Published)),
+  all(abs(tab_t3$Model - tab_t3$Published) <= 5)
+)
+```
+
+Cardiac output "returned to baseline 10 weeks after delivery" (Results):
+
+```{r val-co-return}
+co_fc <- sim_typ$co / base$co
+first_baseline <- min(sim_typ$time[sim_typ$time > 40 & abs(co_fc - 1) < 1e-8])
+first_baseline - 40
+stopifnot(abs((first_baseline - 40) - 10) <= 1)
+```
+
+# Validation 2: Table 1, enzyme abundance and albumin
+
+Table 1 gives, for each enzyme and for albumin, the change at 37 to 40 weeks and
+the postpartum week by which it is back to baseline.
+
+```{r val-table1}
+fc_cols <- c(CYP1A2 = "fc_cyp1a2", CYP2B6 = "fc_cyp2b6", CYP2C9 = "fc_cyp2c9",
+             CYP2C19 = "fc_cyp2c19", CYP2D6 = "fc_cyp2d6", CYP3A4 = "fc_cyp3a4",
+             UGT1A1 = "fc_ugt1a1", UGT1A4 = "fc_ugt1a4")
+sim_typ$fc_hsa_out <- sim_typ$hsa / base$hsa
+fc_cols <- c(fc_cols, Albumin = "fc_hsa_out")
+
+t1_change <- c(CYP1A2 = -44, CYP2B6 = 30, CYP2C9 = 56, CYP2C19 = 24, CYP2D6 = 44,
+               CYP3A4 = 69, UGT1A1 = 23, UGT1A4 = 116, Albumin = -25)
+t1_weeks <- c(CYP1A2 = 12, CYP2B6 = 11, CYP2C9 = 2, CYP2C19 = 4, CYP2D6 = 11,
+              CYP3A4 = 5, UGT1A1 = 6, UGT1A4 = 12, Albumin = 5)
+
+w3740 <- sim_typ$time >= 37 & sim_typ$time <= 40
+tab_t1 <- data.frame(
+  Variable = names(fc_cols),
+  pub_change = t1_change[names(fc_cols)],
+  mod_mean = vapply(fc_cols, function(x) 100 * (mean(sim_typ[[x]][w3740]) - 1), numeric(1)),
+  mod_40 = vapply(fc_cols, function(x) 100 * (sim_typ[[x]][sim_typ$time == 40] - 1), numeric(1)),
+  pub_weeks = t1_weeks[names(fc_cols)],
+  mod_weeks = vapply(fc_cols, function(x) {
+    post <- sim_typ$time > 40
+    # First postpartum time from which the fold change stays at 1.
+    off <- sim_typ$time[post][abs(sim_typ[[x]][post] - 1) > 1e-8]
+    (if (length(off)) max(off) + 0.5 else 40.5) - 40
+  }, numeric(1)),
+  row.names = NULL
+)
+tab_t1 |>
+  dplyr::mutate(dplyr::across(c(mod_mean, mod_40), \(x) round(x, 1))) |>
+  dplyr::rename(
+    `Table 1 change, %` = pub_change,
+    `Model mean 37-40 wk, %` = mod_mean,
+    `Model at 40 wk, %` = mod_40,
+    `Table 1 back to baseline, pp wk` = pub_weeks,
+    `Model back to baseline, pp wk` = mod_weeks
+  ) |>
+  knitr::kable(caption = "Table 1 of Berton 2024 against the typical woman.")
+
+stopifnot(
+  # Direction of every change matches Table 1.
+  all(sign(tab_t1$mod_mean) == sign(tab_t1$pub_change)),
+  # The return-to-baseline week follows from the printed knots and agrees with
+  # Table 1 to within one week for all nine variables.
+  all(abs(tab_t1$mod_weeks - tab_t1$pub_weeks) <= 1)
+)
+```
+
+The return-to-baseline weeks agree for all nine variables. The size of the
+change is less consistent, and Table 1 does not use one rule for it: the
+albumin, CYP1A2, CYP2B6, CYP2C19 and CYP3A4 entries match the equations at 40
+weeks to within 3 percentage points, while the CYP2C9 entry (+56%) matches the
+37 to 40 week mean (+59%) and is twice the 40-week value. The CYP2D6 (+44%)
+and UGT1A1 (+23%) entries match neither; UGT1A1's +23% is the equation's peak
+at about 23 weeks, and UGT1A4's +116% is its value at 37 weeks. Table 1 is
+most likely summarised from the observed clinical data or the simulated
+population rather than read off the fitted curves; the packaged model follows
+the Supplementary Table 2 equations.
+
+# Validation 3: the regional blood-flow budget
+
+Supplementary Table 2 gives regional flows as percent of cardiac output. Most
+organs are assumed to keep their absolute flow, so a single "Blood flows FC"
+scales their percentages while the uterus and the fetoplacental unit take a
+growing share. If the fetoplacental flow is read as percent of cardiac output,
+as its place under the "% of cardiac output" heading implies, the listed
+percentages add to a near-constant total throughout pregnancy and after
+delivery: the shared FC was calibrated to keep the budget. Read as L/h (the
+unit of the Gaohua 2012 equation it is modelled on) the total would fall from
+78% to about 68% at term.
+
+```{r val-flow-budget}
+budget <- sim_typ |>
+  dplyr::mutate(
+    total = fq_adipose + fq_bone + fq_gonads + fq_heart + fq_skin + fq_thymus +
+      fq_liver + fq_kidney + fq_muscle + fq_fetoplacental,
+    total_if_lh = total - fq_fetoplacental + 100 * fq_fetoplacental / co
+  )
+budget |>
+  dplyr::filter(time %in% c(0, 10, 20, 30, 39, 41, 50, 60)) |>
+  dplyr::select(time, total, total_if_lh, fq_uterus, fq_fetoplacental) |>
+  dplyr::mutate(dplyr::across(-time, \(x) round(x, 1))) |>
+  dplyr::rename(
+    `GA (wk)` = time,
+    `Sum of listed flows, % CO` = total,
+    `Same, fetoplacental read as L/h` = total_if_lh,
+    `Uterus, % CO` = fq_uterus,
+    `Fetoplacental, % CO` = fq_fetoplacental
+  ) |>
+  knitr::kable(caption = "Percent of cardiac output taken by the organs listed in Supplementary Table 2 (typical woman).")
+
+stopifnot(
+  # Percent reading: the budget stays within 3 percentage points of baseline.
+  max(abs(budget$total - budget$total[budget$time == 0])) < 3,
+  # L/h reading: the budget would lose more than 8 points near term.
+  min(budget$total_if_lh) < budget$total[budget$time == 0] - 8
+)
+```
+
+# Validation 4: the virtual population against Figure 1 and Supplementary Figure 1
+
+```{r val-population}
+pop_summ <- function(var) {
+  sim_pop |>
+    dplyr::group_by(time) |>
+    dplyr::summarise(
+      p05 = quantile(.data[[var]], 0.05),
+      p50 = median(.data[[var]]),
+      p95 = quantile(.data[[var]], 0.95),
+      .groups = "drop"
+    )
+}
+bw <- pop_summ("wt")
+alb <- pop_summ("hsa")
+co_p <- pop_summ("co")
+qk <- pop_summ("q_kidney")
+
+# Centres of the grey simulated clouds, read by eye. Figure 1A: body weight
+# about 65 kg before pregnancy and about 75 kg at 36 to 40 weeks; Figure 1B:
+# albumin falls from about 45 to about 34 g/L at term and is back
+# near 45 g/L from about 45 weeks; Supplementary Figure 1c: cardiac output about
+# 330 L/h before pregnancy and about 420 L/h through the second and third
+# trimesters; Supplementary Figure 1d: renal blood flow about 60 L/h before and
+# about 85 L/h at mid-pregnancy.
+checks <- data.frame(
+  Check = c("Body weight median, GA 0 (kg)", "Body weight median, GA 38 (kg)",
+            "Albumin median, GA 0 (g/L)", "Albumin median, GA 38 (g/L)",
+            "Albumin median, GA 50 (g/L)", "Cardiac output median, GA 0 (L/h)",
+            "Cardiac output median, GA 30 (L/h)", "Renal blood flow median, GA 0 (L/h)",
+            "Renal blood flow median, GA 20 (L/h)"),
+  Model = c(bw$p50[bw$time == 0], bw$p50[bw$time == 38],
+            alb$p50[alb$time == 0], alb$p50[alb$time == 38], alb$p50[alb$time == 50],
+            co_p$p50[co_p$time == 0], co_p$p50[co_p$time == 30],
+            qk$p50[qk$time == 0], qk$p50[qk$time == 20]),
+  Figure = c(65, 75, 45, 34, 45, 330, 420, 60, 85)
+)
+checks$Model <- round(checks$Model, 1)
+checks |>
+  dplyr::rename(`Model (200 women)` = Model, `Read from figure` = Figure) |>
+  knitr::kable(caption = "Cohort medians against values read from the published figures.")
+
+# Medians are robust to which women land in the tails; 15% covers reading the
+# centre of a scatter cloud by eye.
+stopifnot(all(abs(checks$Model / checks$Figure - 1) < 0.15))
+```
+
+# Replicate published figures
+
+```{r fig1, fig.cap = "Replicates Figure 1A and 1B of Berton 2024: body weight and albumin against gestational age (200 virtual women; median and 5th to 95th percentiles)."}
+dplyr::bind_rows(
+  dplyr::mutate(bw, var = "Body weight (kg)"),
+  dplyr::mutate(alb, var = "Albumin (g/L)")
+) |>
+  ggplot(aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "grey80") +
+  geom_line() +
+  geom_vline(xintercept = 40, linetype = "dashed") +
+  facet_wrap(~var, scales = "free_y") +
+  scale_x_continuous(breaks = seq(0, 66, by = 6)) +
+  labs(x = "Gestational age (weeks)", y = NULL)
+```
+
+```{r fig-enzymes, fig.cap = "Replicates the fold-change shapes behind Figure 1C-1D and Supplementary Figure 2 of Berton 2024: liver enzyme abundance relative to the non-pregnant woman (typical values)."}
+sim_typ |>
+  dplyr::select(time, dplyr::all_of(unname(fc_cols[names(fc_cols) != "Albumin"]))) |>
+  tidyr::pivot_longer(-time, names_to = "enzyme", values_to = "fc") |>
+  dplyr::mutate(enzyme = toupper(sub("fc_", "", enzyme))) |>
+  ggplot(aes(time, fc)) +
+  geom_line() +
+  geom_hline(yintercept = 1, linetype = "dotted") +
+  geom_vline(xintercept = 40, linetype = "dashed") +
+  facet_wrap(~enzyme, ncol = 4) +
+  labs(x = "Gestational age (weeks)", y = "Fold change vs non-pregnant")
+```
+
+```{r fig-supp1, fig.cap = "Replicates Supplementary Figure 1c-1e of Berton 2024: cardiac output, renal blood flow and GFR (200 virtual women; median and 5th to 95th percentiles)."}
+dplyr::bind_rows(
+  dplyr::mutate(co_p, var = "Cardiac output (L/h)"),
+  dplyr::mutate(qk, var = "Renal blood flow (L/h)"),
+  dplyr::mutate(pop_summ("gfr"), var = "GFR (mL/min)")
+) |>
+  ggplot(aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "grey80") +
+  geom_line() +
+  geom_vline(xintercept = 40, linetype = "dashed") +
+  facet_wrap(~var, scales = "free_y", ncol = 3) +
+  labs(x = "Gestational age (weeks)", y = NULL)
+```
+
+Figures 2 to 4 and Tables 2 and 3 of the paper are drug-exposure results of the
+antiretroviral PBPK models, which are not part of this model.
+
+# Assumptions and deviations
+
+* **Blood weight in pregnancy.** The Supplementary Table 2 row prints
+  `Plasma weight * Plasma weight FC / (1 - 0.91*HCT) + RBC weight * RBC weight FC`.
+  The first term is already a whole-blood weight, so the red cells are counted
+  twice and blood weight more than doubles at term (+105% at 38 weeks). The
+  Results state that blood weight is 47% higher in the third trimester. The
+  model uses the sum of the two components, plasma x its FC plus red cells x
+  their FC, which gives +48% at 38 weeks. Dividing the pregnant plasma weight by
+  `1 - 0.91 * pregnant HCT` instead gives practically the same curve.
+* **Fetoplacental flow units.** The row gives no unit. It is listed under the
+  "Regional blood flows are expressed as % of cardiac output" heading and is
+  read as percent of cardiac output; Validation 3 shows that this reading keeps
+  the flow budget constant, which the L/h reading of the Gaohua 2012 equation
+  it is modelled on does not. The coefficients differ from Gaohua 2012
+  (refitted). The flow is zero before 2.23 weeks, where the cubic is negative,
+  and after delivery. The row's printed range is "> 2.23 and < 40"; the model
+  closes it at 40 weeks like every other pregnancy row, so that the flow and
+  the fetoplacental weight end together at delivery.
+* **Non-pregnant body surface area.** BSA appears both in the non-pregnant
+  regressions (heart, muscle, spleen, liver, blood weights, cardiac output,
+  brain and kidney flows, GFR) and as a pregnancy-wide row. The model evaluates
+  the non-pregnant regressions with the non-pregnant BSA, so that gestational
+  weight gain acts only through the printed fold changes, and reports `bsa` at
+  the current body weight separately.
+* **Distribution of the population CVs.** The paper gives a CV per quantity but
+  not the distribution. The model uses the `normrnd(Mean, (CV/100) * Mean)` draw
+  of the framework's published population generator (Stader 2019), so
+  `Mean x (1 + eta)` with `eta ~ N(0, (CV/100)^2)`. For the widest CVs (mammary
+  gland 51.65%, spleen 51.7%, thymus 44.8%) about 2% of draws are negative; the
+  framework's handling of such draws in the 2020a generator is not published,
+  and no truncation is applied here. The etas are independent.
+* **Height and weight are generated, not covariates.** As in the paper's
+  virtual population, height and non-pregnant body weight are drawn from their
+  age regressions (CV 3.8% and 15.2%). Age is the only covariate; sex is fixed
+  to female (`Sex = 1` in the framework convention).
+* **Discontinuities at the knots are as printed.** Several fold changes jump at
+  delivery (body weight, adipose, heart, plasma and uterus weights, uterine
+  flow, the shared blood-flow FC) or at the week where they are capped at 1
+  (red cells at 46.5 weeks, brain flow at 82.4 weeks). These reflect the
+  printed equations. Two printed curves do not return to 1 inside 0 to 66 weeks
+  (postpartum body weight and adipose weight), and the brain-flow FC is still
+  1.23 at 60 weeks; they are used as printed.
+* **Age range of the virtual cohort.** The paper draws age from a uniform
+  distribution without stating the range for the development population; this
+  vignette uses 18 to 44 years, the range of the verification trials
+  (Supplementary Table 3).
+* **Absolute enzyme abundances are not part of the model.** The paper reports
+  only fold changes; the non-pregnant abundances in Figure 1C-1D come from the
+  framework and are not printed. The fold changes apply equally to the liver
+  and to the intestinal enzymes.
+* **Organs without a printed row.** Lymph node and remaining-tissue weights and
+  flows, lymph flow, and the hepatic-artery / portal split are part of the
+  framework but have no Supplementary Table 2 row and are not modelled.
+* **No PKNCA validation.** There is no drug and no concentration-time profile,
+  so NCA does not apply. Validation uses the published third-trimester changes,
+  Table 1, the blood-flow budget and the published figures instead.
