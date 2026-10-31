@@ -2630,6 +2630,8 @@ navbar:
         href: articles/Naik_2013_fasiglifam.html
       - text: "Favipiravir (Irie 2021)"
         href: articles/Irie_2021_favipiravir.html
+      - text: "Favipiravir (Prasanchaimontri 2024)"
+        href: articles/Prasanchaimontri_2024_favipiravir.html
       - text: "Fazpilodemab (Yoshida 2024)"
         href: articles/Yoshida_2024_fazpilodemab.html
       - text: "Febuxostat (Chen 2024)"
@@ -9747,6 +9749,7 @@ articles:
   - articles/Por_2021_imipenem
   - articles/Porchet_1987_nicotine_pbpk
   - articles/Pouzin_2022_tusamitamab
+  - articles/Prasanchaimontri_2024_favipiravir
   - articles/Preijers_2021_factor_viii
   - articles/Press_2010_ciclosporin
   - articles/Pressiat_2022_amikacin
