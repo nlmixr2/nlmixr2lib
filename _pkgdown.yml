@@ -7346,6 +7346,8 @@ navbar:
         href: articles/Ji_2017_vancomycin.html
       - text: "Vancomycin (Jung 2024)"
         href: articles/Jung_2024_vancomycin.html
+      - text: "Vancomycin (Kim 2024)"
+        href: articles/Kim_2024_vancomycin.html
       - text: "Vancomycin (Kirwan 2021)"
         href: articles/Kirwan_2021_vancomycin.html
       - text: "Vancomycin (Lee 2021)"
@@ -9068,6 +9070,7 @@ articles:
   - articles/Kim_2023_pyrazinamide
   - articles/Kim_2024_meropenem
   - articles/Kim_2024_teicoplanin
+  - articles/Kim_2024_vancomycin
   - articles/Kim_2025_evogliptin
   - articles/Kim_2025_infliximab
   - articles/Kim_2026_lenalidomide
