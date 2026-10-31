@@ -168,6 +168,10 @@ navbar:
         href: articles/KandadiMuralidharan_2022_aducanumab.html
       - text: "Aducanumab qsp (Lin 2022)"
         href: articles/Lin_2022_aducanumab_qsp.html
+      - text: "Afabicin invitro (Saporta 2024)"
+        href: articles/Saporta_2024_afabicin.html
+      - text: "Afabicin invitro mouse (Saporta 2024)"
+        href: articles/Saporta_2024_afabicin.html
       - text: "Afatinib (Nakao 2019)"
         href: articles/Nakao_2019_afatinib.html
       - text: "Aficamten (Xu 2025)"
@@ -9885,6 +9889,7 @@ articles:
   - articles/Sano_2023_fesoterodine
   - articles/Santamaria_2017_rupatadine
   - articles/Santavy_2022_cefazolin
+  - articles/Saporta_2024_afabicin
   - articles/Saporta_2026_meropenem
   - articles/Sarashina_2005_epinastine
   - articles/Sasaki_2022_delamanid
