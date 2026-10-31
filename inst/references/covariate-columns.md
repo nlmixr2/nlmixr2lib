@@ -23292,6 +23292,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Teixeira_2026_meloxicam_dog.R` (exponential effects on the second-absorption lag time and on the apparent peripheral volume per Teixeira 2026 Table 2: `tlag2 = exp(ltlag2 + e_form_nanocapsule_tlag2 * FORM_MLX_NANOCAPSULE + etaltlag2)` with `e_form_nanocapsule_tlag2 = 0.74`, giving 1.22 h for free MLX and 1.22 * exp(0.74) = 2.56 h for NC-MLX; and `vp = exp(lvp + e_form_nanocapsule_vp * FORM_MLX_NANOCAPSULE + etalvp) * WT` with `e_form_nanocapsule_vp = 1.11`, giving 0.134 L/kg for free MLX and 0.134 * exp(1.11) = 0.407 L/kg for NC-MLX).
 - **Notes:** Specific scope because the contrast is between one particular nanoencapsulated drug product and its own free-drug solution comparator, not a generic dosage-form category. Distinct from the `FORM_LNP_*` family (`FORM_LNP_SM102`, `FORM_LNP_MC3`,...), which indexes the ionizable lipid of an RNA lipid nanoparticle where the drug is a nucleic-acid cargo; here the nanocarrier encapsulates a small molecule and the reference level is the same small molecule in solution. Distinct from `FORM_SOLUTION` / `FORM_SUSPENSION`, where both levels are conventional dosage forms. The mechanism the founding paper attributes the effect to is sustained release from the polymeric shell plus reduced opsonization of polysorbate-coated nanocapsules, which delays the second absorption wave and enlarges the apparent peripheral distribution volume; clearance is unaffected. Future polymeric-nanocapsule / nanosphere formulations of other small molecules should register a sibling `FORM_<INN>_NANOCAPSULE` canonical rather than reusing this drug-specific entry, unless a cross-drug polymeric-nanocarrier canonical is ratified first.
 
+### FORM_QUININE_NCP80 (**canonical for the polysorbate-80-coated quinine nanocapsule indicator**)
+- **Description:** 1 = the animal received quinine loaded in polysorbate-80-coated poly(epsilon-caprolactone) lipid-core nanocapsules (NCP80; anionic surface), 0 = otherwise (free quinine solution, or the Eudragit nanocapsule `FORM_QUININE_NCEUD`). Per-subject treatment-arm indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. With `FORM_QUININE_NCEUD` it forms a three-level formulation factor (free / NCP80 / NCEUD); the two indicators are mutually exclusive and both 0 means free quinine.
+- **Source aliases:**
+  - `NCP80` -- formulation label in Maciel 2024 Tables 1-3 (`V2_NCP80`, `Emax_NCP80`) and in Michels 2019.
+- **Example models:** `Maciel_2024_quinine_rat.R` (rat whole-blood PK: V2 = 0.204 L/kg vs 0.066 for free quinine; with `FORM_QUININE_NCEUD` it also forms the either-nanocapsule term `nc = FORM_QUININE_NCP80 + FORM_QUININE_NCEUD` that sets CL = 0.059 L/h/kg and V1 = 0.028 L/kg), `Maciel_2024_quinine_mouse.R` (allometric mouse PK with additive V2 shift +4.494 L/kg; Emax = 0.025 1/h vs 0.055 for free quinine).
+- **Notes:** Specific scope because the contrast is one nanoencapsulated product against its own free-drug comparator. Models that use one shared effect for both coatings (Maciel 2024 "NC" on CL and V1) form the sum of the two indicators inside `model()` rather than reading a third column, so the data never carry a redundant `NC` flag. A model of a different quinine nanocarrier registers its own `FORM_QUININE_<carrier>` sibling.
+
+### FORM_QUININE_NCEUD (**canonical for the Eudragit RS100 (cationic) quinine nanocapsule indicator**)
+- **Description:** 1 = the animal received quinine loaded in lipid-core nanocapsules prepared with the cationic polymethacrylate Eudragit RS100 (NCEUD; positive surface charge), 0 = otherwise (free quinine solution, or the polysorbate-80 nanocapsule `FORM_QUININE_NCP80`). Per-subject treatment-arm indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. Mutually exclusive with `FORM_QUININE_NCP80`; both 0 means free quinine.
+- **Source aliases:**
+  - `NCEUD` -- formulation label in Maciel 2024 Tables 1-3 (`V2_NCEUD`, `Emax_NCEUD`) and in Michels 2019.
+- **Example models:** `Maciel_2024_quinine_rat.R` (V2 = 0.099 L/kg vs 0.066 for free quinine, plus the shared nanocapsule CL and V1), `Maciel_2024_quinine_mouse.R` (additive V2 shift +0.274 L/kg; Emax = 0.069 1/h vs 0.055 for free quinine).
+- **Notes:** See `FORM_QUININE_NCP80` for how the shared "either nanocapsule" effect is formed.
+
 ### FORM_DRL17822_ASD (**canonical for the DRL-17822 amorphous solid dispersion formulation indicator**)
 - **Description:** 1 = the dose record is the amorphous solid dispersion (ASD) oral formulation of the CETP inhibitor DRL-17822, 0 = the nanocrystal (NC) oral formulation. Time-varying per dose record, because the food-by-formulation crossover (Goulooze 2020 study 4, parts A and B) gave both formulations to the same subjects.
 - **Units:** (binary)
