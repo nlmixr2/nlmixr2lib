@@ -1556,6 +1556,8 @@ navbar:
         href: articles/Tuo_2025_clobazam.html
       - text: "Clofarabine (Nijstad 2021)"
         href: articles/Nijstad_2021_clofarabine.html
+      - text: "Clofazimine (Stemkens 2024)"
+        href: articles/Stemkens_2024_clofazimine.html
       - text: "Clomethiazole (Zingmark 2003)"
         href: articles/Zingmark_2003_clomethiazole.html
       - text: "Clonazepam (Kruizinga 2022)"
@@ -10055,6 +10057,7 @@ articles:
   - articles/Steichert_2025_enalapril_enalaprilat_pediatric
   - articles/Stein_2018_mAb_nonlinear_PK
   - articles/Stein_2019_Tisagenlecleucel
+  - articles/Stemkens_2024_clofazimine
   - articles/Stevens_2012_remoxipride
   - articles/Stillemans_2021_darunavir
   - articles/Stillemans_2021b_darunavir
