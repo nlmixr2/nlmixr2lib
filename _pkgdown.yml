@@ -5010,6 +5010,14 @@ navbar:
         href: articles/Yang_2025_osimertinib.html
       - text: "Osimertinib brownbase (Westra 2025)"
         href: articles/Westra_2025_osimertinib.html
+      - text: "Osimertinib ild az5104 (Johnson 2024)"
+        href: articles/Johnson_2024_osimertinib_exposure_response.html
+      - text: "Osimertinib ild osimertinib (Johnson 2024)"
+        href: articles/Johnson_2024_osimertinib_exposure_response.html
+      - text: "Osimertinib lvef az5104 (Johnson 2024)"
+        href: articles/Johnson_2024_osimertinib_exposure_response.html
+      - text: "Osimertinib lvef osimertinib (Johnson 2024)"
+        href: articles/Johnson_2024_osimertinib_exposure_response.html
       - text: "Osimertinib pbpk (vanderGaag 2025)"
         href: articles/vanderGaag_2025_osimertinib_pbpk.html
       - text: "Osimertinib qsp (Liang 2024)"
@@ -8966,6 +8974,7 @@ articles:
   - articles/Jin_2026_colistinSulfate
   - articles/Joerger_2006_methotrexate
   - articles/Johnson_2011_olanzapine_rat
+  - articles/Johnson_2024_osimertinib_exposure_response
   - articles/Johnson_2025_osimertinib
   - articles/Johnston_2019_empagliflozin
   - articles/Johnston_2021_empagliflozin

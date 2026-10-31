@@ -1130,6 +1130,17 @@ Do **not** collapse the two onto one column, and do not use a single `_PRE` suff
 - **Example models:** `Sang_2021_doxorubicin_rat_qsp.R`, `Sang_2021_doxorubicin_human_qsp.R` (baseline SV and the steady-state production rate of LVEDV through the `(1 - FB_LVESV * LVESV)` dissipation feedback).
 - **Notes:** General scope; sibling of `LVEDV_BL`. When a source reports baseline LVEF instead, derive `LVESV_BL = LVEDV_BL * (1 - LVEF/100)`.
 
+### LVEF_BL (**canonical for left ventricular ejection fraction at treatment baseline**)
+- **Description:** Pre-dose left ventricular ejection fraction (echocardiography or MUGA scan), in percent, treated as a per-subject time-fixed covariate.
+- **Units:** % (percentage points of ejection fraction, e.g. 62; not a 0-1 fraction)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters the founding models as an uncentred linear term on the logit, `-0.087 * LVEF_BL` (per percentage point). Johnson 2024 does not tabulate the baseline LVEF distribution of its analysis set.
+- **Source aliases:**
+  - `Baseline LVEF` -- Johnson 2024 Table 2 and Tables S10 / S11 row label; no value transformation.
+- **Example models:** `Johnson_2024_osimertinib_lvef_osimertinib.R`, `Johnson_2024_osimertinib_lvef_az5104.R` (penalized logistic exposure-safety models for an LVEF decrease of at least 10 points to below 50%; a higher baseline lowers the event probability).
+- **Notes:** General scope. Member of the `_BL` cardiac anchor set with `LVEDV_BL` / `LVESV_BL`; when both volumes are available, `LVEF_BL = 100 * (LVEDV_BL - LVESV_BL) / LVEDV_BL`. Distinct from the `lvef` PD output, which carries the ejection fraction through time.
+
 ### DUR_MAP_BELOW_PRESURG (**canonical for cumulative duration of mean arterial pressure below the pre-surgery anchor**)
 - **Description:** Cumulative minutes for which a subject's mean arterial pressure stays below their own `MAP_PRESURG` value, over a defined window (in the founding model, from antihypotensive treatment until umbilical-cord clamping). A per-subject exposure-to-hypotension metric rather than an instantaneous measurement: it integrates both the depth-independent *time* spent hypotensive and, implicitly, the adequacy of treatment. Typically derived from a simulated or observed MAP-time profile rather than recorded directly.
 - **Units:** min
@@ -7207,6 +7218,28 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Song_2024_maribavir_cmv_clearance_wk8.R` (slope `-0.131` per 50 `ug*h/mL`, OR 0.877; Table 5), `Song_2024_maribavir_cmv_clearance_wk16.R` (slope `-0.301` per 50 `ug*h/mL`, OR 0.740; Table S1.3), `Song_2024_maribavir_sae.R` (slope `+0.00348` per `ug*h/mL`, digitised from Figure S1.5).
 - **Notes:** **Distinct from `AUC_MBV_SS`**, which is the steady-state AUC over ONE dosing interval (12 h at twice-daily dosing; Sun 2025 Section 2.3). The two differ by a factor of 2 at steady state, and Song 2024's own numbers confirm the 24-h reading: its Table 3 AUC0-tau geometric mean of 129 `ug*h/mL` for the SOLSTICE refractory set corresponds to a daily AUC of about 258, against the printed AUCss median of about 238. Distinct also from `AUC_MBV_DAY` (the 24-h AUC on the day of an adverse event). Song 2024 calls the dosing-interval metric `AUC0-tau` and the daily one `AUCss`; Sun 2025 calls the dosing-interval metric `AUCss`, so the printed label alone does not identify the column -- read the source's definition. Derive from `modellib('Sun_2023_maribavir')`, which encodes the same NONMEM run (`RUN# 171`) Song 2024 used.
 
+### AUC_OSIMERTINIB (**canonical for steady-state osimertinib AUC over the 24 h dosing interval**)
+- **Description:** Per-subject steady-state AUC of osimertinib over the once-daily dosing interval, `AUCss = dose / (CL/F)_i`, from the individual apparent clearance of an osimertinib population PK model, supplied as a static exposure column to exposure-response models that carry no PK layer.
+- **Units:** `nmol*h/L` (nM*h, the axis unit of Johnson 2024 Figures 2 and 3). From a model returning CL/F in L/h: `AUC_OSIMERTINIB = dose_mg / cl * 1e6 / 499.62` (osimertinib 499.62 g/mol).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the founding models on the natural-log scale, uncentred: `e_auc * log(AUC_OSIMERTINIB)`. Zero exposure (placebo) gives a probability of exactly 0. Calibration: Johnson 2024 Figure 2A AUCss quartile boundaries 6584.57, 9689.56, 12910.9 and 21683.3 nM*h; the typical 80 mg patient of `Johnson_2025_osimertinib` (CL/F 14.3 L/h) has 11 200 nM*h.
+- **Source aliases:**
+  - `AUCss` (osimertinib) -- Johnson 2024 Methods and figure axes; for the safety analyses the FIRST dose received is used, for the efficacy analyses the most prevalent dose.
+- **Example models:** `Johnson_2024_osimertinib_ild_osimertinib.R`, `Johnson_2024_osimertinib_lvef_osimertinib.R` (penalized logistic exposure-safety models; derive the column from `modellib('Johnson_2025_osimertinib')`, the population PK model of the same programme).
+- **Notes:** Member of the `AUC_<DRUG>` family, with the INN spelled out. Distinct from `AUC_AZ5104` (the active metabolite); the two are highly correlated and Johnson 2024 never enters both in one model.
+
+### AUC_AZ5104 (**canonical for steady-state AUC of AZ5104, the active osimertinib metabolite**)
+- **Description:** Per-subject steady-state AUC over the 24 h dosing interval of AZ5104 (N-desmethyl osimertinib), from the individual apparent AZ5104 clearance of a joint osimertinib / AZ5104 population PK model, supplied as a static exposure column to exposure-response models that carry no PK layer.
+- **Units:** `nmol*h/L`. From `Johnson_2025_osimertinib` (fixed parent-to-metabolite fraction fm = 0.25, cl_az5104 in L/h): `AUC_AZ5104 = 0.25 * dose_mg / cl_az5104 * 1e6 / 499.62`, i.e. the molar steady-state formation rate divided by the metabolite clearance.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the founding models on the natural-log scale, uncentred. The typical 80 mg patient of `Johnson_2025_osimertinib` (CL/F of AZ5104 31.3 L/h) has about 1280 nM*h.
+- **Source aliases:**
+  - `AUCss` (AZ5104) -- Johnson 2024 Methods and Tables S7 / S11.
+- **Example models:** `Johnson_2024_osimertinib_ild_az5104.R`, `Johnson_2024_osimertinib_lvef_az5104.R`.
+- **Notes:** Member of the `AUC_<DRUG>` family; the development code is used because AZ5104 has no INN. The fm = 0.25 conversion fraction is an identifiability anchor of the PK model, so an AZ5104 AUC is only meaningful together with the PK model that produced it.
+
 ## Count / Markov-feedback PD covariates
 
 These columns are specific to count / Markov / time-to-event PD models that
@@ -7339,7 +7372,7 @@ readable.
 - **Type:** binary
 - **Scope:** general
 - **Source aliases:** `ASIAN` -- used in `Hu_2026_clesrovimab.R`, `Robbie_2012_palivizumab.R`, `Fau_2020_isatuximab.R`. `RAAS` (race-Asian-vs-other indicator as named in Bajaj 2017 Table 1) -- used in `Bajaj_2017_nivolumab.R`. `RACEN` (race-numeric indicator as named in Lu 2019 / Shi 2020 NONMEM control stream; ASIAN = 1 if RACEN == 1) -- used in `Lu_2019_polatuzumab.R`.
-- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form), `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Fau_2020_isatuximab.R`, `Lu_2019_polatuzumab.R` (multiplicative factor `e_asian_vc = 0.929` on acMMAE Vc, i.e., 7.1% lower V1 in Asian patients; verbatim Shi 2020 (PMID 32770353) ethnicity-sensitivity re-quote of the Lu 2019 popPK Asian-race covariate), `Wada_2023_sparsentan.R` (log-additive effect on the apparent central volume: `exp(0.265 * RACE_ASIAN)`, i.e. 30% higher Vc/F than the White reference; paired with `RACE_BLACK` so both = 0 selects White).
+- **Example models:** `Zhu_2017_lebrikizumab.R` (canonical form), `Robbie_2012_palivizumab.R`, `Bajaj_2017_nivolumab.R`, `Fau_2020_isatuximab.R`, `Lu_2019_polatuzumab.R` (multiplicative factor `e_asian_vc = 0.929` on acMMAE Vc, i.e., 7.1% lower V1 in Asian patients; verbatim Shi 2020 (PMID 32770353) ethnicity-sensitivity re-quote of the Lu 2019 popPK Asian-race covariate), `Wada_2023_sparsentan.R` (log-additive effect on the apparent central volume: `exp(0.265 * RACE_ASIAN)`, i.e. 30% higher Vc/F than the White reference; paired with `RACE_BLACK` so both = 0 selects White), `Johnson_2024_osimertinib_ild_osimertinib.R` / `Johnson_2024_osimertinib_ild_az5104.R` (additive on the logit of an ILD-event probability, -0.567 / -0.551; here RACE_ASIAN means Asian NON-JAPANESE, paired with a mutually exclusive `RACE_JAPANESE` against a non-Asian reference, following the `Wade_2015_certolizumab.R` pairing).
 
 ### RACE_ASIAN_AMIND_OTH (**canonical for composite Asian / American Indian / Other group**)
 - **Description:** 1 = Asian, American Indian / Alaska Native, or Other race; 0 = White or Black. Composite indicator that pools the smaller-N race groups in a population dominated by White and Black subjects, with White + Black serving as the reference category. Distinct from `RACE_ASIAN_AMIND_MULTI` (Clegg 2024 grouping that includes Multiracial; pooled against a different reference), from `RACE_ASIAN_OTH` (within-Asian-population sub-indicator), and from `RACE_BLACK_OTH` (different composite).
@@ -7464,7 +7497,7 @@ readable.
 - **Source aliases:**
   - `JAPANESE_HV` -- used in `Wang_2017_benralizumab.R` (Japanese healthy-volunteer cohort indicator; the healthy-volunteer vs. asthma-patient distinction is captured separately, not in this covariate).
   - `RaceJapanese` -- used in `Rini_2013_axitinib.R` (Rini 2013 Results "PK model" typical-value clearance equation; Results "Effects of covariates" tested Asian and Japanese separately and in combination and retained only the Japanese indicator).
-- **Example models:** `Wade_2015_certolizumab.R` (multiplicative fractional effect on V/F; Wade 2015 breaks Japanese [RACE.EQ.8] out separately from RACE_ASIAN), `Wang_2017_benralizumab.R` (multiplicative factor 1.34 on Vc), `Rini_2013_axitinib.R` (linear-proportional effect on CL: `(1 - 0.249 * RACE_JAPANESE)`, i.e. 24.9% lower clearance; the Rini 2013 Discussion cautions that the effect may be confounded by the lower body weight and higher age of the Japanese subjects in the pooled dataset, and that a dedicated Caucasian-vs-Japanese healthy-volunteer comparison found no axitinib PK difference).
+- **Example models:** `Wade_2015_certolizumab.R` (multiplicative fractional effect on V/F; Wade 2015 breaks Japanese [RACE.EQ.8] out separately from RACE_ASIAN), `Wang_2017_benralizumab.R` (multiplicative factor 1.34 on Vc), `Rini_2013_axitinib.R` (linear-proportional effect on CL: `(1 - 0.249 * RACE_JAPANESE)`, i.e. 24.9% lower clearance; the Rini 2013 Discussion cautions that the effect may be confounded by the lower body weight and higher age of the Japanese subjects in the pooled dataset, and that a dedicated Caucasian-vs-Japanese healthy-volunteer comparison found no axitinib PK difference), `Johnson_2024_osimertinib_ild_osimertinib.R` / `Johnson_2024_osimertinib_ild_az5104.R` (additive on the logit of an ILD-event probability, 1.14 / 1.17 vs non-Asian; mutually exclusive with `RACE_ASIAN`, which there means Asian non-Japanese).
 - **Notes:** Distinct from `RACE_NEAS` (North East Asian composite, includes Chinese, Japanese, and Korean) and from `RACE_ASIAN`. Use `RACE_JAPANESE` only when the source paper breaks out Japanese heritage as its own indicator; do not aggregate with other Asian groups when the paper keeps them separate.
 
 ### RACE_CHINESE (**canonical for Chinese-heritage race indicator**)

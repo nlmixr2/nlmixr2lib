@@ -5107,6 +5107,20 @@ The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for
 - **Example models:** `Quintairos_2021_kidneyTransplantRejection.R` (founding example; logit = -5.89 + 3.51 * `MIR155_URINE`, urinary-pellet miR155-5p relative expression; adult de novo kidney recipients, visits at week 1 and months 1, 2, 3 and 6; 8 events in 183 visit records from 58 patients).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape, validated by `conv$probOutputRegex`; this entry documents what the endpoint means. The window is the interval to the next scheduled visit, so it is not a fixed duration: in the founding study it runs from about 3 weeks (week 1 to month 1) to 3 months (month 3 to month 6). A probability over a fixed landmark (for example "rejection by month 12") or a time-to-rejection hazard is a different quantity and needs its own name. The founding model has no drug-exposure term: tacrolimus and mycophenolic acid exposures were tested and not retained, which the authors attribute to concentration-guided dosing. Antibody-mediated rejection, or a rejection diagnosed clinically without biopsy, is a different endpoint (append a qualifier such as `_abmr` or `_clinical`).
 
+### prob_ild (**canonical interstitial-lung-disease adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences interstitial lung disease or an ILD-like event (pneumonitis, acute interstitial pneumonitis, alveolitis, diffuse alveolar damage, idiopathic pulmonary fibrosis, pulmonary toxicity, pulmonary fibrosis and related terms) during treatment, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Johnson_2024_osimertinib_ild_osimertinib.R` (penalized logistic regression on the natural log of the osimertinib AUCss in nM*h, with Japanese and Asian non-Japanese race on the intercept; Japanese patients carry about three times the non-Asian probability at the same exposure), `Johnson_2024_osimertinib_ild_az5104.R` (the same model driven by the AZ5104 metabolite AUCss).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape, validated by `conv$probOutputRegex`; this entry documents what the endpoint means. The endpoint is a GROUPED adverse-event definition, any grade, investigator-reported -- not a radiological score or a measured lung-function state (cf. `fvcpp`), so it must not be read as the probability of a lung-function decline.
+
+### prob_lvef_decrease (**canonical left-ventricular-ejection-fraction-decrease probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient has a post-baseline decrease in left ventricular ejection fraction of at least 10 percentage points to a value below 50%, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Johnson_2024_osimertinib_lvef_osimertinib.R` (penalized logistic regression on the natural log of the osimertinib AUCss in nM*h plus baseline LVEF in percent), `Johnson_2024_osimertinib_lvef_az5104.R` (the same model driven by the AZ5104 metabolite AUCss).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape (the `_decrease` suffix as in `prob_anc_decrease` / `prob_plt_decrease`). The event is a threshold crossing defined from serial echocardiography or MUGA LVEF values, not a heart-failure diagnosis. Distinct from the `lvef` PD output, which carries the LVEF value itself through time; this is the probability of crossing the 10-point / below-50% threshold, with no time dimension.
+
 ### fpg_placebo (**canonical fasting plasma glucose placebo arm**)
 - **Type:** compartment
 - **Role:** Fasting plasma glucose placebo-arm output state.
