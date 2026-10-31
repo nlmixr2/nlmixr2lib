@@ -6102,6 +6102,10 @@ navbar:
         href: articles/Qin_2025_ropeginterferon.html
       - text: "Ropeginterferon wbc (Qin 2025)"
         href: articles/Qin_2025_ropeginterferon.html
+      - text: "Ropinirole (Kaikousidis 2024)"
+        href: articles/Kaikousidis_2024_ropinirole.html
+      - text: "Ropinirole misspecified (Kaikousidis 2024)"
+        href: articles/Kaikousidis_2024_ropinirole.html
       - text: "Ropivacaine (Ling 2025)"
         href: articles/Ling_2025_ropivacaine.html
       - text: "Ropivacaine (Ollier 2015)"
@@ -8989,6 +8993,7 @@ articles:
   - articles/Jung_2024_vancomycin
   - articles/Kado_2020_benzathine_benzylpenicillin_g
   - articles/Kado_2023_benzathine_benzylpenicillin_g
+  - articles/Kaikousidis_2024_ropinirole
   - articles/Kakara_2014_statins_LDLC
   - articles/Kamal_2013_oseltamivir
   - articles/Kamal_2014_oseltamivir

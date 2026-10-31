@@ -541,8 +541,8 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Role:** Log-scale increment by which the lag time of the second arm of a parallel two-arm absorption model exceeds the lag time of the first arm (time). Inside `model` the bare `dtlag2` gives the second arm's lag as `tlag2 <- tlag + dtlag2`, which is then applied with `alag()` to the second arm's dosed compartment.
 - **Source aliases:**
   - `diffTlag2` -- Monolix notation in Wang 2022 (EC-mycophenolate sodium), `Tlag2 = Tlag1 + diffTlag2`.
-- **Example models:** `Wang_2022b_mycophenolic_acid.R` (founding example; diffTlag2 = 5.78 h with log-normal IIV SD 0.941 over Tlag1 = 8.45 h, the zero-order arm lagging the first-order arm).
-- **Notes:** Not an alias of `ltlag2`, which in shipped models is the second arm's lag time itself. Use `ldtlag2` only when the source estimates the increment as the parameter (with its own IIV), which guarantees the second arm starts after the first; a paper that estimates both lag times directly takes `ltlag` and `ltlag2`.
+- **Example models:** `Wang_2022b_mycophenolic_acid.R` (founding example; diffTlag2 = 5.78 h with log-normal IIV SD 0.941 over Tlag1 = 8.45 h, the zero-order arm lagging the first-order arm); `Kaikousidis_2024_ropinirole.R` (diffTlag2 = 11.985 h over the mean transit time Mtt1 of a transit-compartment first arm, `tlag2 <- mtt + dtlag2`).
+- **Notes:** Not an alias of `ltlag2`, which in shipped models is the second arm's lag time itself. Use `ldtlag2` only when the source estimates the increment as the parameter (with its own IIV), which guarantees the second arm starts after the first; a paper that estimates both lag times directly takes `ltlag` and `ltlag2`. When the first arm is delayed by a transit chain rather than a lag time, the increment is taken over the first arm's mean transit time (`tlag2 <- mtt + dtlag2`), as the source defines it.
 
 ### lka_early (**canonical log-transformed absorption rate constant before a sequential-absorption switch**)
 - **Type:** log-transformed-pk
@@ -1453,10 +1453,10 @@ units rather than a dimensionless-per-time rate.
 
 ### dtlag2 (**canonical bare increment of the second absorption arm's lag time over the first**)
 - **Type:** bare-pk
-- **Role:** Bare counterpart of `ldtlag2`. Increment of the second absorption arm's lag time over the first arm's lag (time); `tlag2 <- tlag + dtlag2`.
+- **Role:** Bare counterpart of `ldtlag2`. Increment of the second absorption arm's lag time over the first arm's lag (time); `tlag2 <- tlag + dtlag2`, or `tlag2 <- mtt + dtlag2` when the first arm is a transit chain.
 - **Source aliases:**
-  - `diffTlag2` -- Monolix notation (Wang 2022).
-- **Example models:** `Wang_2022b_mycophenolic_acid.R`.
+  - `diffTlag2` -- Monolix notation (Wang 2022; Kaikousidis 2024).
+- **Example models:** `Wang_2022b_mycophenolic_acid.R`, `Kaikousidis_2024_ropinirole.R`.
 
 ### tacro (**canonical bare acrophase**)
 - **Type:** bare-pk
