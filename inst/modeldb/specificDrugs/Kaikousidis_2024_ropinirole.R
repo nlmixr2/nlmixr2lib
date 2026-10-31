@@ -18,7 +18,7 @@ Kaikousidis_2024_ropinirole <- function() {
     "Kaikousidis C, Bies RR, Dokoumetzidis A.",
     "Simulating realistic patient profiles from pharmacokinetic models by a",
     "machine learning postprocessing correction of residual variability.",
-    "CPT Pharmacometrics Syst Pharmacol. 2024;13(9):1476-1484.",
+    "CPT Pharmacometrics Syst Pharmacol. 2024;13(9):1476-1487.",
     "doi:10.1002/psp4.13182.",
     sep = " "
   )
