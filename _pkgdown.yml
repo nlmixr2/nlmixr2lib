@@ -1552,6 +1552,10 @@ navbar:
         href: articles/Pfaffendorf_2026_fosmidomycin_clindamycin.html
       - text: "Clindamycin (Smith 2017)"
         href: articles/Smith_2017_clindamycin.html
+      - text: "Cliramitug human qsp (Michalon 2025)"
+        href: articles/Michalon_2025_cliramitug.html
+      - text: "Cliramitug rat (Michalon 2025)"
+        href: articles/Michalon_2025_cliramitug.html
       - text: "Clobazam (Tuo 2025)"
         href: articles/Tuo_2025_clobazam.html
       - text: "Clofarabine (Nijstad 2021)"
@@ -9459,6 +9463,7 @@ articles:
   - articles/Miano_2024_tacrolimus
   - articles/Miao_2023_teclistamab
   - articles/Michalickova_2020_riociguat
+  - articles/Michalon_2025_cliramitug
   - articles/Michelet_2025_BI754111_mpbpk
   - articles/Milakovic_2024_linezolid
   - articles/Mileva_2021_doxycycline_rabbit
