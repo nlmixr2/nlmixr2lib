@@ -4024,6 +4024,10 @@ navbar:
         href: articles/Tan_2023_luvometinib.html
       - text: "M3g rat (Xie 2000)"
         href: articles/Xie_2000_m3g_rat.html
+      - text: "M6495 cyno (Pereira 2024)"
+        href: articles/Pereira_2024_M6495.html
+      - text: "M6495 human (Pereira 2024)"
+        href: articles/Pereira_2024_M6495.html
       - text: "M8891 human (Lignet 2023)"
         href: articles/Lignet_2023_m8891.html
       - text: "M8891 mouse (Lignet 2023)"
@@ -9709,6 +9713,7 @@ articles:
   - articles/Peng_2024_SAL003
   - articles/Peng_2025_meropenem
   - articles/Penney_2025_tce_tmdd
+  - articles/Pereira_2024_M6495
   - articles/PerezBlanco_2016_doxorubicin
   - articles/PerezGuille_2018_dexmedetomidine
   - articles/PerezRuixo_2006_tipifarnib
