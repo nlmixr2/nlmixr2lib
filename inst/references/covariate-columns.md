@@ -5770,6 +5770,28 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Snelder_2013_cardiovascular_rat.R` (Emax inhibition of the CO production rate; Emax and IC50 both estimated, 0.335 and 9.82 ng/mL).
 - **Notes:** Specific scope; propranolol-specific. Follows the established `CP_<drug>_<units>` precedent. Snelder 2013 Table 3 used the three-compartment propranolol model of van Steeg et al. 2010 (Wistar-Kyoto rats) with absorption represented as an infusion of fixed 24 h duration (matching the drinking-water route) and the absorption rate constant estimated; no PK parameter values are published in Snelder 2013 and no propranolol PK model exists in the nlmixr2lib registry, so downstream users must supply this column externally. Propranolol is one of only two compounds in the Snelder 2013 training set acting primarily on cardiac output, and the only one of the two for which CO itself was not measured -- the paper attributes the residual kout_TPR / FB2 correlation (-0.984) partly to that gap.
 
+### CP_PROPOFOL_UGML (**canonical for instantaneous predicted plasma propofol concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of propofol, supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only anaesthesia models fitted against the plasma concentration that a target-controlled-infusion (TCI) controller predicted from its embedded PK model (typically Schnider 1998), when propofol was never assayed.
+- **Units:** ug/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as the concentration argument of an Emax expression. Set to 0 before induction and after washout. Reference values observed: effect-site TCI targets of about 0.8-5.1 ug/mL in Garraza-Obaldia 2024 (Table S1), against a fitted C50 of 8.79 ug/mL for inhibition of MAP production.
+- **Source aliases:**
+  - `CPropo` -- Garraza-Obaldia 2024 Equation (3); the Schnider-predicted plasma concentration.
+- **Example models:** `GarrazaObaldia_2024_propofol_remifentanil.R` (Emax inhibition of MAP production, `1 - emax_propofol * CP_PROPOFOL_UGML / (CP_PROPOFOL_UGML + ec50_propofol)`; the paper rejected effect-site propofol as the driver).
+- **Notes:** Specific scope; follows the `CP_<drug>_<units>` precedent. Distinct from `CEFFECT` (an effect-site concentration, which Garraza-Obaldia 2024 tested and rejected) and from `CONMED_PROPOFOL_CC` (a *measured* propofol concentration acting as the perpetrator on another drug's clearance). The column is a model prediction, not an assay, so it inherits the bias of whichever PK model the TCI pump ran; record that PK model in `covariateData[[CP_PROPOFOL_UGML]]$notes`.
+
+### CP_REMIFENTANIL_NGML (**canonical for instantaneous predicted plasma remifentanil concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of remifentanil, supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only anaesthesia models fitted against the plasma concentration that a target-controlled-infusion (TCI) controller predicted from its embedded PK model (typically Minto 1997), when remifentanil was never assayed.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as the concentration argument of a sigmoid Emax expression. Set to 0 before the infusion and after washout. Reference values observed: effect-site TCI targets of about 0.5-4 ng/mL in Garraza-Obaldia 2024 (Table S1), against a fitted C50 of 4.57 ng/mL for inhibition of HR production.
+- **Source aliases:**
+  - `CRemi` -- Garraza-Obaldia 2024 Equation (4); the Minto-predicted plasma concentration.
+- **Example models:** `GarrazaObaldia_2024_propofol_remifentanil.R` (sigmoid Emax inhibition of HR production, Hill coefficient 1.20; the paper found no direct remifentanil effect on MAP).
+- **Notes:** Specific scope; follows the `CP_<drug>_<units>` precedent. Distinct from `CEFFECT`. The column is a model prediction, not an assay; record the TCI PK model in `covariateData[[CP_REMIFENTANIL_NGML]]$notes`. Distinct from `CP_REM_NGML`, which is remikiren, not remifentanil.
+
 ### STIM_QUININE_MM (**canonical for applied quinine HCl dihydrate stimulus concentration in a brief-access taste aversion experiment**)
 - **Description:** Applied sipper-tube concentration of quinine HCl dihydrate (mM) directly presented to the rat during an 8-second brief-access taste aversion (BATA) trial. This is the experimental stimulus level that contacts the taste receptors in solution -- not a systemic plasma concentration of an absorbed drug. Drives the sigmoid-Emax effect on the logistic mixing probability in Sheng 2016's two-generalized-Poisson mixture model for bimodal lick-count data.
 - **Units:** mM
@@ -8049,6 +8071,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `I` -- Dings 2026 Eqs A12-A14 use the derived indicator directly (0 before incision, 1 after).
 - **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (`iu = (t >= T_INCISION) + (t >= T_UTEROTOMY)`, which adds `eff_event_hr` = 2.75 beats/min and `eff_event_pp` = 2.39 mmHg of pulse pressure per event).
 - **Notes:** General scope. Supplying the event *time* as a time-fixed covariate and deriving the indicator in `model()` is strongly preferred over supplying the indicator as a time-varying column: rxode2 silently drops covariate columns assigned onto an `rxEt` object, so a time-varying indicator is a recurring source of vignettes that render cleanly while modelling nothing.
+
+### T_SURG_START (**canonical for time of the start of the surgical procedure relative to model time zero**)
+- **Description:** Time at which the surgical procedure, and with it the surgical noxious stimulus, begins, relative to model time zero (usually the start of anaesthetic drug administration). Time-fixed per subject. Used to switch on a surgical-stimulus term inside `model()` as `t >= T_SURG_START`, for example a stimulus effect that peaks at onset and then dissipates. Member of the auto-approved `T_<event>` family.
+- **Units:** min
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- set to a time beyond the simulation horizon for a subject without surgery. Reference values observed: 20 min after induction in the simulated hysteroscopy scenario of Garraza-Obaldia 2024 (Figure 1).
+- **Source aliases:**
+  - `tStim` -- Garraza-Obaldia 2024 Equation (7) ('the time at which the noxious stimulus starts').
+- **Example models:** `GarrazaObaldia_2024_propofol_remifentanil.R` (`h_stim = 1 + emax_stim * exp(-kstim * (t - T_SURG_START))` from `T_SURG_START` onwards, multiplying MAP production; typical `emax_stim` = 0.284 and `kstim` = 0.021 1/min).
+- **Notes:** General scope. Distinct from `T_INCISION`: a procedure such as hysteroscopy starts without an incision, so the start of surgery is the more general event. Distinct from `T_SURG`, which is the *duration* of the operation (h), and from `T_ANAESTHESIA` (time from induction to the modelled treatment). Supply the time as a time-fixed covariate and derive any indicator in `model()`, as for `T_INCISION`.
 
 ### T_UTEROTOMY (**canonical for time from the modelled treatment to uterotomy**)
 - **Description:** Time of uterotomy (incision of the uterus during caesarean section) relative to model time zero. Used to derive a 0/1 indicator inside `model()` as `t >= T_UTEROTOMY`. Member of the auto-approved `T_<event>` family.

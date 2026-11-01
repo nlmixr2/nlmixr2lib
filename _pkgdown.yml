@@ -5660,6 +5660,8 @@ navbar:
         href: articles/Levitt_2005_propofol_pbpk.html
       - text: "Propofol rat (Knibbe 2005)"
         href: articles/Knibbe_2005_propofol.html
+      - text: "Propofol remifentanil (GarrazaObaldia 2024)"
+        href: articles/GarrazaObaldia_2024_propofol_remifentanil.html
       - text: "Propofol sheep (Ngamprasertwong 2016)"
         href: articles/Ngamprasertwong_2016_propofol_sheep.html
       - text: "Propranolol (DelFrari 2018)"
@@ -8637,6 +8639,7 @@ articles:
   - articles/Garmann_2017_BAY81_8973
   - articles/Garonzik_2016_daptomycin
   - articles/Garot_2011_ceftriaxone
+  - articles/GarrazaObaldia_2024_propofol_remifentanil
   - articles/Garreau_2021_vancomycin
   - articles/Garrett_2014_axitinib
   - articles/Garrett_2019_inotuzumab
