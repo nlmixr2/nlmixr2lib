@@ -3940,6 +3940,8 @@ navbar:
         href: articles/Chen_2021_lorlatinib_exposure_response.html
       - text: "Lorlatinib weight gain (Chen 2021)"
         href: articles/Chen_2021_lorlatinib_exposure_response.html
+      - text: "Lormetazepam (leNoble 2024)"
+        href: articles/leNoble_2024_lormetazepam.html
       - text: "Losmapimod (Yang 2013)"
         href: articles/Yang_2013_losmapimod.html
       - text: "Lserine (Lee 2024)"
@@ -10735,6 +10737,7 @@ articles:
   - articles/deWinter_2009_mycophenolic_acid
   - articles/deWit_2016_everolimus
   - articles/elDesoky_1997_theophylline_pediatric_asthma
+  - articles/leNoble_2024_lormetazepam
   - articles/vanEijk_2022_paclitaxel
   - articles/vanErp_2010_sunitinib
   - articles/vanEsdonk_2018_pregabalin_pain_models
