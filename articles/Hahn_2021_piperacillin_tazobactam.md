@@ -521,7 +521,7 @@ pta_events <- function(etas, covs) {
 
 cov_pip <- groups |> dplyr::transmute(grp = group, ECMO_STATUS, RRT_CRRT_STATUS)
 unit_pip <- quiet_solve(mod_pip, pta_events(eta_pip, cov_pip), keep = c("shape", "grp", "CRCLlev"))
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:10
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:17
 unit_pip <- split(unit_pip, paste(unit_pip$shape, unit_pip$grp, unit_pip$CRCLlev))
 ```
 
@@ -687,7 +687,7 @@ above 50% “regardless of ECMO and CrCL level”.
 
 cov_taz <- tibble::tibble(grp = 1:2, ECMO_STATUS = c(1L, 0L), RRT_CRRT_STATUS = 0L)
 unit_taz <- quiet_solve(mod_taz, pta_events(eta_taz, cov_taz), keep = c("shape", "grp", "CRCLlev"))
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:05
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:09
 unit_taz <- split(unit_taz, paste(unit_taz$shape, unit_taz$grp, unit_taz$CRCLlev))
 
 p_above_comb <- function(pred, thr, fu, prop_sd, add_sd) {

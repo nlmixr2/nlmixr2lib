@@ -187,6 +187,9 @@ model, for example to add drug effects, etc.
 fit <- nlmixr2est::nlmixr(modFun, data = dMarkov, est = "focei", control = list(print = 0))
 #> ℹ parameter labels from comments are typically ignored in non-interactive mode
 #> ℹ Need to run with the source intact to parse comments
+#> Registered S3 method overwritten by 'minqa':
+#>   method      from     
+#>   print.minqa RcppTrust
 #> ℹ moved zero initial estimate(s) off 0 (foceiControl(zeroTheta)): logitnonetonone
 #> → loading into symengine environment...
 #> → pruning branches (`if`/`else`) of full model...
@@ -209,10 +212,10 @@ fit
 #> 
 #> ── Time (sec fit$time): ──
 #> 
-#>            setup   optimize covariance preprocess postprocess table compress
-#> elapsed 1.938477 0.07177516 0.01168167      0.061       0.025 0.074    0.004
+#>            setup    optimize  covariance preprocess postprocess table compress
+#> elapsed 2.375915 0.008459548 0.006582869      0.089       0.019 0.058    0.002
 #>             other
-#> elapsed 0.3470659
+#> elapsed 0.4330423
 #> 
 #> ── (fit$parFixed or fit$parFixedDf): ──
 #> 

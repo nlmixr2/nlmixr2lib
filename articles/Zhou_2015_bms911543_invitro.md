@@ -799,7 +799,7 @@ of scope. {.table}
 ``` r
 
 sessionInfo()
-#> R version 4.6.1 (2026-06-24)
+#> R version 4.6.2 (2026-10-29)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.5 LTS
 #> 
@@ -826,14 +826,14 @@ sessionInfo()
 #> loaded via a namespace (and not attached):
 #>  [1] generics_0.1.4      sass_0.4.10         xml2_1.6.0         
 #>  [4] digest_0.6.39       magrittr_2.0.5      RColorBrewer_1.1-3 
-#>  [7] evaluate_1.0.5      grid_4.6.1          fastmap_1.2.0      
+#>  [7] evaluate_1.0.5      grid_4.6.2          fastmap_1.2.0      
 #> [10] lotri_1.0.5         jsonlite_2.0.0      whisker_0.4.1      
 #> [13] rxode2ll_2.0.18     backports_1.5.1     purrr_1.2.2        
 #> [16] scales_1.4.0        textshaping_1.0.5   jquerylib_0.1.4    
 #> [19] cli_3.6.6           crayon_1.5.3        symengine_0.2.14   
 #> [22] rlang_1.3.0         withr_3.0.3         cachem_1.1.0       
-#> [25] yaml_2.3.12         otel_0.2.0          tools_4.6.1        
-#> [28] parallel_4.6.1      memoise_2.0.1       checkmate_2.3.4    
+#> [25] yaml_2.3.12         otel_0.2.0          tools_4.6.2        
+#> [28] parallel_4.6.2      memoise_2.0.1       checkmate_2.3.4    
 #> [31] rxode2lincmt_0.1.0  vctrs_0.7.3         R6_2.6.1           
 #> [34] lifecycle_1.0.5     fs_2.1.0            ragg_1.5.2         
 #> [37] PreciseSums_0.7     fontawesome_0.5.3   pkgconfig_2.0.3    
@@ -843,7 +843,7 @@ sessionInfo()
 #> [49] systemfonts_1.3.2   tidyselect_1.2.1    xfun_0.62          
 #> [52] tibble_3.3.1        sys_3.4.3           knitr_1.52         
 #> [55] farver_2.1.2        dparser_1.3.1-14    htmltools_0.5.9    
-#> [58] labeling_0.4.3      rmarkdown_2.32      compiler_4.6.1     
+#> [58] labeling_0.4.3      rmarkdown_2.32      compiler_4.6.2     
 #> [61] S7_0.2.2            downlit_0.4.5       askpass_1.2.1      
 #> [64] openssl_2.4.2
 ```

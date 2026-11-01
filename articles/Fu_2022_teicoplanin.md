@@ -678,7 +678,7 @@ rxode2::rxSetSeed(3)
 fig3_sim <- rxode2::rxSolve(mod, fig3_ev, returnType = "data.frame") |>
   dplyr::mutate(arm = (id - 1) %/% n_arm + 1) |>
   dplyr::left_join(fig3_regs |> dplyr::select(arm, egfr, alb, ld), by = "arm")
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:01
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:02
 fig3 <- fig3_sim |>
   dplyr::group_by(egfr, alb, ld) |>
   dplyr::summarise(`0.75 mg/L` = 100 * mean(Cc >= 0.75), `1.13 mg/L` = 100 * mean(Cc >= 1.13),

@@ -4237,9 +4237,9 @@ difference is pure numerical error).</p>
 <span><span class="va">err_high</span> <span class="op">&lt;-</span> <span class="fu">rel_err_at_ages</span><span class="op">(</span><span class="va">s_high</span>, <span class="va">ref_tcdd_high</span>, <span class="va">cols_tcdd</span><span class="op">)</span></span>
 <span><span class="va">err_low</span> <span class="op">&lt;-</span> <span class="fu">rel_err_at_ages</span><span class="op">(</span><span class="va">s_low</span>, <span class="va">ref_tcdd_low</span>, <span class="va">cols_tcdd</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span>PoD <span class="op">=</span> <span class="va">err_high</span>, RfD <span class="op">=</span> <span class="va">err_low</span><span class="op">)</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            CA        CF       CRB       CL      CYP</span></span>
-<span><span class="co">#&gt; PoD 4.400e-08 4.200e-08 4.600e-08 7.00e-08 2.80e-08</span></span>
-<span><span class="co">#&gt; RfD 1.021e-06 1.032e-06 1.021e-06 1.51e-06 5.12e-07</span></span>
+<span><span class="co">#&gt;           CA        CF       CRB       CL      CYP</span></span>
+<span><span class="co">#&gt; PoD 4.40e-08 4.200e-08 4.700e-08 7.00e-08 2.80e-08</span></span>
+<span><span class="co">#&gt; RfD 1.02e-06 1.032e-06 1.021e-06 1.51e-06 5.12e-07</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
 <span>  <span class="st">"TCDD PoD reproduces the Octave reference"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">err_high</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-4</span>,</span>

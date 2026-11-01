@@ -1175,7 +1175,7 @@ stopifnot(any(apr$apr_n > apr$total_n))   # the Table 3 inconsistency is real
 
 &nbsp;
 
-    #> R version 4.6.1 (2026-06-24)
+    #> R version 4.6.2 (2026-10-29)
     #> Platform: x86_64-pc-linux-gnu
     #> Running under: Ubuntu 24.04.5 LTS
     #> 
@@ -1201,11 +1201,11 @@ stopifnot(any(apr$apr_n > apr$total_n))   # the Table 3 inconsistency is real
     #> 
     #> loaded via a namespace (and not attached):
     #>  [1] gtable_0.3.6        xfun_0.62           bslib_0.12.0       
-    #>  [4] rxode2lincmt_0.1.0  vctrs_0.7.3         tools_4.6.1        
-    #>  [7] generics_0.1.4      parallel_4.6.1      tibble_3.3.1       
+    #>  [4] rxode2lincmt_0.1.0  vctrs_0.7.3         tools_4.6.2        
+    #>  [7] generics_0.1.4      parallel_4.6.2      tibble_3.3.1       
     #> [10] symengine_0.2.14    pkgconfig_2.0.3     data.table_1.18.6.1
     #> [13] checkmate_2.3.4     RColorBrewer_1.1-3  S7_0.2.2           
-    #> [16] desc_1.4.3          lifecycle_1.0.5     compiler_4.6.1     
+    #> [16] desc_1.4.3          lifecycle_1.0.5     compiler_4.6.2     
     #> [19] farver_2.1.2        textshaping_1.0.5   fontawesome_0.5.3  
     #> [22] htmltools_0.5.9     sys_3.4.3           sass_0.4.10        
     #> [25] yaml_2.3.12         pillar_1.11.1       pkgdown_2.2.1      
@@ -1213,7 +1213,7 @@ stopifnot(any(apr$apr_n > apr$total_n))   # the Table 3 inconsistency is real
     #> [31] openssl_2.4.2       cachem_1.1.0        tidyselect_1.2.1   
     #> [34] digest_0.6.39       lotri_1.0.5         purrr_1.2.2        
     #> [37] labeling_0.4.3      rxode2ll_2.0.18     fastmap_1.2.0      
-    #> [40] grid_4.6.1          cli_3.6.6           dparser_1.3.1-14   
+    #> [40] grid_4.6.2          cli_3.6.6           dparser_1.3.1-14   
     #> [43] magrittr_2.0.5      utf8_1.2.6          withr_3.0.3        
     #> [46] scales_1.4.0        backports_1.5.1     rmarkdown_2.32     
     #> [49] otel_0.2.0          askpass_1.2.1       ragg_1.5.2         
