@@ -2160,6 +2160,18 @@ navbar:
         href: articles/Gisleskog_1999_dutasteride.html
       - text: "Dutogliptin (Marier 2014)"
         href: articles/Marier_2014_dutogliptin.html
+      - text: "Dyp688 cyno (Khera 2024)"
+        href: articles/Khera_2024_dyp688.html
+      - text: "Dyp688 fcrnmut mouse (Khera 2024)"
+        href: articles/Khera_2024_dyp688.html
+      - text: "Dyp688 human (Khera 2024)"
+        href: articles/Khera_2024_dyp688.html
+      - text: "Dyp688 mouse (Khera 2024)"
+        href: articles/Khera_2024_dyp688.html
+      - text: "Dyp688 mouse krogh qsp (Khera 2024)"
+        href: articles/Khera_2024_dyp688.html
+      - text: "Dyp688 mouse tgi (Khera 2024)"
+        href: articles/Khera_2024_dyp688.html
       - text: "E7820 human (Keizer 2011)"
         href: articles/Keizer_2011_E7820.html
       - text: "E7820 mouse (Keizer 2011)"
@@ -9046,6 +9058,7 @@ articles:
   - articles/KhanAsa_2020_voriconazole
   - articles/Khan_2015_ciprofloxacin
   - articles/Khaowroongrueng_2024_sufentanil
+  - articles/Khera_2024_dyp688
   - articles/Khot_2019_tcell_mouse
   - articles/Khwarg_2024_donepezil
   - articles/Khwarg_2024_proguanil
