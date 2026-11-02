@@ -2118,7 +2118,7 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Role:** Serum / plasma malondialdehyde (MDA, nmol/mL) biomarker PD output. MDA is the standard end-product marker of lipid peroxidation, i.e. oxidative *damage*; in antioxidant PK/PD models it typically falls after drug, and is fitted as an indirect response in which drug stimulates the first-order loss.
 - **Source aliases:** `MDA`.
 - **Example models:** `Shen_2026_shikimicAcid_broiler_mda.R` (founding example; effect-compartment-link indirect-response model in which shikimic acid linearly stimulates MDA elimination in broilers).
-- **Notes:** Directionally opposite to `taoc` and `sod` - it measures accumulated oxidative damage rather than defensive capacity, so a beneficial drug effect is a decrease and the indirect-response model stimulates kout rather than kin. Registered as part of the oxidative-status biomarker triad `taoc` / `sod` / `mda`.
+- **Notes:** Not the amphetamine metabolite 3,4-methylenedioxyamphetamine, which also abbreviates to MDA and is the `tenamfetamine` metabolite suffix. Directionally opposite to `taoc` and `sod` - it measures accumulated oxidative damage rather than defensive capacity, so a beneficial drug effect is a decrease and the indirect-response model stimulates kout rather than kin. Registered as part of the oxidative-status biomarker triad `taoc` / `sod` / `mda`.
 
 ### ldh (**canonical serum lactate dehydrogenase PD output**)
 - **Type:** compartment
@@ -7380,6 +7380,14 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
   - `AVBM` / `AABM` / `AML` / `AMR` / `AMM` / `AMF` / `AMS` -- Salehi 2025 and Rostami 2022 nicotine PBPK MCSim listings, where the metabolite states carry an infix `M` rather than a suffix.
 - **Example models:** `Salehi_2025_nicotine_pbpk.R` (founding example; `a_venous_cot`, `a_arterial_cot`, `a_liver_cot`, `a_muscle_cot`, `a_fat_cot`, `a_rapidly_perfused_cot`, `a_slowly_perfused_cot`, `a_hepatic_cot`, `a_urine_cot`).
 - **Notes:** Short-form suffix consistent with the register's other short metabolite suffixes (`3oh`, `7oh`, `8oh`, `cloca`). Nicotine glucuronide, the other named nicotine conjugate, reuses the existing generic `gluc` suffix rather than earning its own.
+
+### tenamfetamine (**canonical tenamfetamine (MDA, 3,4-methylenedioxyamphetamine) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Tenamfetamine, i.e. 3,4-methylenedioxyamphetamine (MDA), the N-demethylated active metabolite of midomafetamine (MDMA). Used on `central_tenamfetamine`, `peripheral1_tenamfetamine`, `lcl_tenamfetamine` / `lvc_tenamfetamine` / `lq_tenamfetamine` / `lvp_tenamfetamine`, `Cc_tenamfetamine` and `propSd_tenamfetamine` / `addSd_tenamfetamine`.
+- **Source aliases:**
+  - `MDA` -- Huestis 2025 throughout; its MDA parameters are `CLM`, `V3`, `QM` and `V4`.
+- **Example models:** `Huestis_2025_midomafetamine.R` (founding example; two-compartment MDA model formed from a fixed 10% of MDMA clearance).
+- **Notes:** The INN is used rather than the abbreviation because `mda` is already registered as the malondialdehyde PD output, an unrelated oxidative-damage biomarker; a `_mda` suffix would read as malondialdehyde. Same choice of INN over shorthand as `canrenone` and `ceftaroline`.
 
 ### metab (**canonical generic-metabolite template suffix**)
 - **Type:** metabolite-suffix

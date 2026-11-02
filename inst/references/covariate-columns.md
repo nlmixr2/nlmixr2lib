@@ -24521,3 +24521,14 @@ is the experimental condition itself, held constant for the whole solve.
   - `Damkier et al. (1999)` -- Asaumi 2022 Table S2B column header.
 - **Example models:** `Asaumi_2022_quinidine_rifampicin_pbpk.R` (switches the common Kp scaling factor 6.1 -> 6.2 and fB*CLint,all 0.35 -> 0.14 L/h/kg).
 - **Notes:** Auto-approved member of the `STUDY_<id>` family. Sibling of `STUDY_TWUM1981_IV`, `STUDY_TWUM1981_PO` and `STUDY_TUBIC2006` in the same paper.
+
+### STUDY_MPKF (**canonical for the MPKF midomafetamine food-effect study indicator**)
+- **Description:** 1 = record from MPKF, the open-label randomised-sequence two-period crossover phase I study of 120 mg MDMA HCl given fasted and after a high-fat/high-calorie meal to healthy volunteers; 0 = record from the NIDA study (single 1.0 and 1.6 mg/kg MDMA HCl doses after a light meal) pooled with it. Per-record (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (NIDA study).
+- **Source aliases:**
+  - `study` -- Huestis 2025 Table 2 rows 'Study effect on CL/F', 'Study effect on V2/F' and the study-specific 'Add. Error NIDA' / 'Add. Error MPKF' rows.
+- **Example models:** `Huestis_2025_midomafetamine.R` (founding example; proportional effects on MDMA CL/F, `(1 - 0.36 * STUDY_MPKF)`, and V2/F, `(1 - 0.263 * STUDY_MPKF)`, plus selection of the study-specific MDMA additive residual error, 8.11 ng/mL for NIDA and 2.5 ng/mL fixed for MPKF).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. The paper treats the effect as an idiosyncrasy of the pooled dataset rather than a patient-relevant covariate, so simulations for the intended population use `STUDY_MPKF = 0`.
