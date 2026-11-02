@@ -3902,6 +3902,10 @@ navbar:
         href: articles/Jensen_2023_lngIus52mg.html
       - text: "Lobaplatin (Cheng 2019)"
         href: articles/Cheng_2019_lobaplatin.html
+      - text: "Loperamide QTcF M1 (Valenzuela 2025)"
+        href: articles/Valenzuela_2025_loperamide.html
+      - text: "Loperamide QTcF parent (Valenzuela 2025)"
+        href: articles/Valenzuela_2025_loperamide.html
       - text: "Lopinavir (Alvarez 2021)"
         href: articles/Alvarez_2021_lopinavir.html
       - text: "Lopinavir (Archary 2018)"
@@ -10250,6 +10254,7 @@ articles:
   - articles/Valade_2015_emtricitabine
   - articles/Valadez_2025_cefepime
   - articles/Valenzuela_2011_oxaliplatin
+  - articles/Valenzuela_2025_loperamide
   - articles/Valenzuela_2025_nipocalimab
   - articles/Valitalo_2017_ketorolac
   - articles/Valitalo_2017_morphine
