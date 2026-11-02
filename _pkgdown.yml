@@ -5450,6 +5450,8 @@ navbar:
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Piperacillin tazobactam (Kong 2025)"
         href: articles/Kong_2025_piperacillin_tazobactam.html
+      - text: "Piperacillin tazobactam (Kong 2025b)"
+        href: articles/Kong_2025b_piperacillin_tazobactam.html
       - text: "Piperacillin tazobactam (Sulaiman 2026)"
         href: articles/Sulaiman_2026_piperacillin_tazobactam.html
       - text: "Piperacillin tazobactam (Wenker 2024)"
@@ -9117,6 +9119,7 @@ articles:
   - articles/Kong_2020_vonoprazan_pbpk
   - articles/Kong_2025_piperacillin_tazobactam
   - articles/Kong_2025_sudapyridine
+  - articles/Kong_2025b_piperacillin_tazobactam
   - articles/Koo_2012_propofol
   - articles/Koolen_2010_docetaxel
   - articles/Koopman_2023_factorix
