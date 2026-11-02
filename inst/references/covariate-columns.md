@@ -3525,6 +3525,29 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Thakre_2022_risankizumab.R`, `Xu_2019_sarilumab.R`, `Mohamed_2019_upadacitinib_tnfir.R` (baseline hs-CRP, power `(CRP / 13.4)^0.276` on the drug Emax of a Markov ACR model; 13.4 mg/L is the BALANCE I baseline mean, the paper prints no centring value), `Chua_2025_mirikizumab.R`, `Moein_2022_etrolizumab.R`, `Ma_2020_sarilumab_das28crp.R`, `Wang_2020_ontamalimab.R` (mg/dL, reference 0.837), `Tsuchiwata_2026_tofacitinib.R` (**mg/dL**, baseline, standard assay, reference 0.851 mg/dL = 8.51 mg/L; enters CL/F as `(CRP / 0.851)^-0.0185`), `Yu_2022_crohns_cdai150_mbma.R`, `Yu_2022_crohns_cdai100_mbma.R`, `Yu_2022_crohns_cdai70_mbma.R`, `Yu_2022_crohns_dcrp_mbma.R` (**mg/dL**, study-arm mean baseline standard-assay CRP in a Crohn's disease MBMA; power form on every drug effect with references 1.688, 1.742, 1.657 and 1.786, the arm means of each endpoint's analysis dataset. The source Methods state mg/L but its values are on the mg/dL scale).
 - **Notes:** The prior separate `hsCRP`, `BLCRP`, and standard-assay `CRP` canonicals were merged on 2026-04-20 to a single general-scope `CRP` canonical. Assay type (standard vs hs-CRP), baseline-vs-time-varying status, and the paper-specific reference value all live in each model's `covariateData[[CRP]]$description` / `notes`. Only aggregate values from hs-validated assays as CRP when the downstream analysis relies on low-range sensitivity; for most inflammatory-disease cohorts (IBD, RA/PsA), baseline CRP is well above the hs-sensitivity range and the distinction is moot.
 
+### ESR (**canonical for erythrocyte sedimentation rate**)
+- **Description:** Erythrocyte sedimentation rate (Westergren or equivalent), a non-specific marker of systemic inflammation. Covers baseline and time-varying usages; each model's `covariateData[[ESR]]$notes` must state which, and the paper-specific reference value used for power scaling.
+- **Units:** mm/h
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(ESR / ref)^exponent`. Reference values observed: 9 mm/h (Xiong 2021 paediatric Crohn's disease infliximab model, as carried by Samuels 2025).
+- **Source aliases:**
+  - `ESR` -- used in `Samuels_2025_infliximab.R` with the same canonical name.
+- **Example models:** `Samuels_2025_infliximab.R` (pre-treatment ESR, power `(ESR_pred / 9)^0.101` on infliximab clearance, where `ESR_pred = ESR * exp(-0.978 * f)` is the paper's predicted on-treatment value after successive infusions).
+- **Notes:** The power form is undefined at 0 mm/h; models must document how a reported zero is floored. Distinct from [[CRP]], the other routine acute-phase marker, which is a concentration rather than a rate.
+
+### NEUTROPHIL_CD64_RATIO (**canonical for neutrophil CD64 activity ratio (nCD64)**)
+- **Description:** Neutrophil surface expression of the Fc-gamma receptor I (CD64), measured by quantitative flow cytometry and reported as the ratio of granulocyte CD64 mean fluorescence intensity to lymphocyte CD64 mean fluorescence intensity. A marker of neutrophil activation in systemic inflammation and infection.
+- **Units:** (ratio)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(NEUTROPHIL_CD64_RATIO / ref)^exponent`. Reference values observed: 4.6 (Xiong 2021 paediatric Crohn's disease infliximab model, as carried by Samuels 2025).
+- **Source aliases:**
+  - `nCD64` -- printed name in Xiong 2021 and Samuels 2025.
+  - `NCAR_n` -- NONMEM data column in the Samuels 2025 Data S1 code. Used in `Samuels_2025_infliximab.R`.
+- **Example models:** `Samuels_2025_infliximab.R` (pre-treatment nCD64, power `(nCD64_pred / 4.6)^0.168` on infliximab clearance, where `nCD64_pred = NEUTROPHIL_CD64_RATIO * exp(-0.362 * f)` is the paper's predicted on-treatment value).
+- **Notes:** The older Trillium "CD64 index" (bead-calibrated) is a different scale; Xiong 2021 Figure S1 converts it as nCD64 = 5.37 * index + 0.9147. Convert before use rather than entering the index in this column.
+
 ### AAG (**canonical for alpha-1 acid glycoprotein concentration**)
 - **Description:** Serum alpha-1 acid glycoprotein (AAG; orosomucoid; ORM1) concentration, an acute-phase plasma glycoprotein that binds basic and lipophilic drugs (including taxanes such as docetaxel and paclitaxel). Elevated in cancer, inflammation, and infection; influences free-drug fraction and downstream PD effects in cytotoxic-chemotherapy myelosuppression models.
 - **Units:** g/L (= mg/mL; 1 g/L is the conventional clinical-PK reporting unit). Document per-model via `covariateData[[AAG]]$units` if a different unit is used.
