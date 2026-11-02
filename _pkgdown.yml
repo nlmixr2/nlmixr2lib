@@ -1280,6 +1280,10 @@ navbar:
         href: articles/Kawaguchi_2018_cefiderocol.html
       - text: "Cefiderocol egfradj (Kawaguchi 2018)"
         href: articles/Kawaguchi_2018_cefiderocol.html
+      - text: "Cefiderocol elf mouse (Fratoni 2025)"
+        href: articles/Fratoni_2025_humanized_exposures_mouse.html
+      - text: "Cefiderocol plasma mouse (Fratoni 2025)"
+        href: articles/Fratoni_2025_humanized_exposures_mouse.html
       - text: "Cefodizime rat pbpk (Hirasawa 2022)"
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Cefotaxime (Ahsman 2010)"
@@ -4280,8 +4284,12 @@ navbar:
         href: articles/Zylbersztajn_2021_vancomycin_meropenem.html
       - text: "Meropenem ciprofloxacin (Rees 2018)"
         href: articles/Rees_2018_meropenem_ciprofloxacin.html
+      - text: "Meropenem elf mouse (Fratoni 2025)"
+        href: articles/Fratoni_2025_humanized_exposures_mouse.html
       - text: "Meropenem pbpk (Yang 2024)"
         href: articles/Yang_2024_meropenem_pbpk.html
+      - text: "Meropenem plasma mouse (Fratoni 2025)"
+        href: articles/Fratoni_2025_humanized_exposures_mouse.html
       - text: "Meropenem qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Meropenem tobramycin PAO1 (Landersdorfer 2018)"
@@ -6962,8 +6970,12 @@ navbar:
         href: articles/Livio_2014_tobramycin.html
       - text: "Tobramycin (VanWart 2025)"
         href: articles/VanWart_2025_tobramycin.html
+      - text: "Tobramycin elf mouse (Fratoni 2025)"
+        href: articles/Fratoni_2025_humanized_exposures_mouse.html
       - text: "Tobramycin inhaled (Ting 2014)"
         href: articles/Ting_2014_tobramycin_inhaled.html
+      - text: "Tobramycin plasma mouse (Fratoni 2025)"
+        href: articles/Fratoni_2025_humanized_exposures_mouse.html
       - text: "Tobramycin rat (Dias 2022)"
         href: articles/Dias_2022_tobramycin_rat.html
       - text: "Tobramycin rat conventional (Marier 2002)"
@@ -8583,6 +8595,7 @@ articles:
   - articles/Franken_2022_tacrolimus
   - articles/Franzese_2022_ceftazidime_avibactam
   - articles/Franzese_2026_pdl1_nsclc_mbma
+  - articles/Fratoni_2025_humanized_exposures_mouse
   - articles/Frederiksen_2021_tedatioxetine
   - articles/Frederiksen_2023_brexpiprazole
   - articles/Freriksen_2020_dolutegravir_pregnancy_pbpk
