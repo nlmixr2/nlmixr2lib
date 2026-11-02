@@ -7214,6 +7214,18 @@ navbar:
         href: articles/Aguiar_2021_ustekinumab.html
       - text: "Ustekinumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
+      - text: "Ustekinumab (Yarur 2025)"
+        href: articles/Yarur_2025_ustekinumab.html
+      - text: "Ustekinumab clinbiorem cl (Yarur 2025)"
+        href: articles/Yarur_2025_ustekinumab.html
+      - text: "Ustekinumab clinbiorem ctrough (Yarur 2025)"
+        href: articles/Yarur_2025_ustekinumab.html
+      - text: "Ustekinumab clinbiorem time (Yarur 2025)"
+        href: articles/Yarur_2025_ustekinumab.html
+      - text: "Ustekinumab ehi50 cl (Yarur 2025)"
+        href: articles/Yarur_2025_ustekinumab.html
+      - text: "Ustekinumab ehi50 ctrough (Yarur 2025)"
+        href: articles/Yarur_2025_ustekinumab.html
       - text: "Utreloxastat (Hu 2026)"
         href: articles/Hu_2026_utreloxastat.html
       - text: "VRC07523LS (Huynh 2026)"
@@ -10532,6 +10544,7 @@ articles:
   - articles/Yao_2018_guselkumab
   - articles/Yao_2023_sglt2_inhibitors
   - articles/Yao_2025_flurbiprofen
+  - articles/Yarur_2025_ustekinumab
   - articles/Yassen_2025_asundexian
   - articles/Yata_2026_sildenafil_dog
   - articles/Yates_2023_dose_response_shape
