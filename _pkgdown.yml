@@ -6604,6 +6604,8 @@ navbar:
         href: articles/Rower_2017_tacrolimus.html
       - text: "Tacrolimus (Storset 2014)"
         href: articles/Storset_2014_tacrolimus.html
+      - text: "Tacrolimus (Sun 2024)"
+        href: articles/Sun_2024_tacrolimus.html
       - text: "Tacrolimus (Wang 2019a)"
         href: articles/Wang_2019a_tacrolimus.html
       - text: "Tacrolimus (Wang 2019b)"
@@ -10094,6 +10096,7 @@ articles:
   - articles/Suleiman_2019_risankizumab
   - articles/Sun_2021_olanzapine_samidorphan
   - articles/Sun_2023_maribavir
+  - articles/Sun_2024_tacrolimus
   - articles/Sun_2025_colistinSulfate
   - articles/Sun_2025_maribavir
   - articles/Sun_2025_paclitaxel
