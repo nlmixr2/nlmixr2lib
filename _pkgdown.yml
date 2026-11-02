@@ -5520,6 +5520,8 @@ navbar:
         href: articles/Wang_2021_polymyxinB.html
       - text: "PolymyxinB (Wang 2026)"
         href: articles/Wang_2026_polymyxinB.html
+      - text: "PolymyxinB (Xu 2024)"
+        href: articles/Xu_2024_polymyxinB.html
       - text: "PolymyxinB (Yang 2025)"
         href: articles/Yang_2025_polymyxinB.html
       - text: "PolymyxinB AB121D0 (Lacroix 2025)"
@@ -10485,6 +10487,7 @@ articles:
   - articles/Xu_2023_MBG453
   - articles/Xu_2023_busulfan
   - articles/Xu_2024_linezolid
+  - articles/Xu_2024_polymyxinB
   - articles/Xu_2025_aficamten
   - articles/Xu_2025_enrofloxacin_largemouthBass
   - articles/Xu_2026_caspofungin

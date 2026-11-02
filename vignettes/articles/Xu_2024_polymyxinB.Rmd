@@ -1,0 +1,355 @@
+---
+title: "Polymyxin B in ECMO (Xu 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Polymyxin B in ECMO (Xu 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse   = TRUE,
+  comment    = "#>",
+  fig.width  = 7,
+  fig.height = 4.5
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+options(cli.progress_show_after = Inf)
+```
+
+# Model and source
+
+```{r meta}
+mod_meta <- nlmixr2est::nlmixr(readModelDb("Xu_2024_polymyxinB"))$meta
+```
+
+* Citation: `r mod_meta$reference`
+* Description: `r mod_meta$description`
+* Article (DOI): <https://doi.org/10.2147/IDR.S486169>
+
+This vignette validates the packaged `Xu_2024_polymyxinB` model, a
+two-compartment population PK model for polymyxin B (PMB1 + PMB2 summed)
+developed in Phoenix NLME from 132 steady-state plasma samples in 11 critically
+ill adults supported by venoarterial (8) or venovenous (3) extracorporeal
+membrane oxygenation (ECMO). Two covariates were retained: the ECMO blood flow
+rate, which enters clearance as a linear centred term, and continuous renal
+replacement therapy (CRRT), which enters the central volume.
+
+```{r model}
+mod <- readModelDb("Xu_2024_polymyxinB")
+mod
+```
+
+# Population
+
+```{r population}
+tibble::tribble(
+  ~Characteristic,             ~Value,
+  "Subjects",                  "11 (132 plasma samples, pre- and post-oxygenator)",
+  "Sex",                       "8 male (72.73%), 3 female (27.27%)",
+  "Age (years)",               "56 (48, 64)",
+  "Weight (kg)",               "60 (57.05, 66.00)",
+  "BSA (m^2)",                 "1.69 (1.68, 1.79)",
+  "CrCL (mL/min)",             "79.70 (33.33, 94.89)",
+  "Albumin (g/L)",             "34.00 (30.55, 36.20)",
+  "CRRT",                      "8 (72.73%), all CVVHD",
+  "ECMO mode (VA / VV)",       "8 / 3",
+  "ECMO pump speed (RPM)",     "3500 (3000, 3770)",
+  "ECMO blood flow (L/min)",   "3.60 (3.00, 3.65)",
+  "ECMO duration (days)",      "16.18 (8.50, 23.00)",
+  "APACHE II / SOFA",          "14 (9.50, 18.00) / 10 (4.00, 11.50)"
+) |>
+  knitr::kable(caption = "Xu 2024 Table 1; continuous values are median (IQR).")
+```
+
+All patients had carbapenem-resistant *A. baumannii*, *K. pneumoniae* or
+*P. aeruginosa* infection (polymyxin B MIC 0.5 mg/L). They received a 200-300 mg
+loading dose on day 1, then 100-150 mg (2.5-3 mg/kg/day), each dose as a 1-hour
+infusion. Samples were drawn at steady state (after more than four doses) at 1,
+1.5, 2, 4, 8 and 12 h after the start of an infusion. Pre- and post-oxygenator
+concentrations did not differ (Figure 1), so the two sampling sites are pooled
+in the model.
+
+# Source trace
+
+```{r source_trace}
+tibble::tribble(
+  ~Quantity,                    ~`Model file`,     ~Value,          ~`Source location`,
+  "Clearance (Q_ECMO 3.48)",    "lcl",             "3.75 L/h",      "Table 2 tvCL; CL equation",
+  "Central volume (CRRT)",      "lvc",             "20.41 L",       "Table 2 tvV; V equation",
+  "Peripheral volume",          "lvp",             "9.86 L",        "Table 2 tvVp",
+  "Intercompartmental CL",      "lq",              "3.82 L/h",      "Table 2 tvQ",
+  "ECMO flow slope on CL",      "e_q_ecmo_cl",     "-0.321 per L/min", "Table 2 dCLdspeedECMO; CL equation",
+  "No-CRRT effect on V",        "e_nocrrt_vc",     "-0.525",        "Table 2 dVdCRRT0; V equation",
+  "IIV on CL (variance)",       "etalcl",          "0.038",         "Table 2 omega2 CL",
+  "IIV on V (variance)",        "etalvc",          "0.062",         "Table 2 omega2 V",
+  "Additive residual SD",       "addSd",           "0.361 mg/L",    "Table 2 stdev0; Results 'additive option'",
+  "Structural model",           "d/dt(central), d/dt(peripheral1)", "2-cmt", "Results, OFV 109.9 vs 126.6 for 1-cmt",
+  "Flow centring value",        "3.48",            "3.48 L/min",    "CL equation",
+  "Infusion duration",          "dur = 1",         "1 h",           "Methods, Drug Regimens"
+) |>
+  knitr::kable(caption = "Source trace for every ini() value and structural choice.")
+```
+
+The final-model equations printed in the Results are
+
+```
+CL = tvCL x (1 + (speadECMO - 3.48 L/min) x dCLdspeadECMO) x exp(nCL)
+V  = tvV  x (1 + dVdCRRTO x (if no CRRT)) x exp(nV)
+```
+
+In this Phoenix parameterization the typical central volume of 20.41 L belongs
+to a patient **on** CRRT and the -0.525 coefficient applies to patients
+**without** CRRT, so CRRT is associated with a larger central volume, as the
+Discussion states.
+
+## Typical parameter values by covariate
+
+```{r typical}
+typ <- tidyr::expand_grid(
+  RRT_CRRT_STATUS = c(1, 0),
+  Q_ECMO = c(3.0, 3.48, 3.6, 4.0, 5.0)
+) |>
+  mutate(
+    `CL (L/h)` = 3.75 * (1 - 0.321 * (Q_ECMO - 3.48)),
+    `V (L)` = 20.41 * (1 - 0.525 * (1 - RRT_CRRT_STATUS)),
+    CRRT = ifelse(RRT_CRRT_STATUS == 1, "CRRT", "no CRRT")
+  )
+typ |>
+  select(CRRT, `ECMO flow (L/min)` = Q_ECMO, `CL (L/h)`, `V (L)`) |>
+  knitr::kable(digits = 2, caption = "Typical CL and central volume across the covariate range.")
+```
+
+The packaged model must reproduce these closed-form typical values exactly.
+`zeroRe()` removes the random effects, so the comparison is pure arithmetic.
+
+```{r typical_check}
+mod_typ <- zeroRe(mod)
+typ_ev <- typ |>
+  mutate(id = row_number(), time = 0, amt = 0, evid = 0, cmt = "central") |>
+  select(id, time, amt, evid, cmt, Q_ECMO, RRT_CRRT_STATUS)
+typ_sim <- rxSolve(mod_typ, typ_ev, returnType = "data.frame", addDosing = FALSE)
+stopifnot(
+  max(abs(typ_sim$cl - typ$`CL (L/h)`)) < 1e-8,
+  max(abs(typ_sim$vc - typ$`V (L)`)) < 1e-8
+)
+```
+
+```{r cl_flow_plot, fig.cap = "Typical clearance against ECMO blood flow (Xu 2024 CL equation). The shaded band is the Table 1 interquartile range of flow (3.00-3.65 L/min)."}
+flow_grid <- tibble(Q_ECMO = seq(2.5, 5, by = 0.05)) |>
+  mutate(cl = 3.75 * (1 - 0.321 * (Q_ECMO - 3.48)))
+ggplot(flow_grid, aes(Q_ECMO, cl)) +
+  annotate("rect", xmin = 3.0, xmax = 3.65, ymin = -Inf, ymax = Inf, alpha = 0.15) +
+  geom_line() +
+  geom_point(data = tibble(Q_ECMO = 3.48, cl = 3.75), colour = "red") +
+  labs(x = "ECMO blood flow (L/min)", y = "Typical CL (L/h)")
+```
+
+# Virtual cohort
+
+Covariates are drawn to resemble Table 1: CRRT with probability 8/11, and ECMO
+blood flow from a normal distribution with mean 3.4 L/min and SD 0.45 L/min
+truncated to 2.5-4.5 L/min (Table 1 reports only the median and IQR). Two
+maintenance regimens bracket the reported dosing: 50 mg and 75 mg every 12 h
+(100 and 150 mg/day), each preceded by a 200 mg loading dose and given as 1-h
+infusions. Ten maintenance doses bring every subject to steady state, and the
+final interval is sampled densely.
+
+```{r cohort}
+set.seed(20241227)
+rxSetSeed(20241227)
+n_per_arm <- 200L
+tau <- 12
+n_maint <- 10L
+arms <- tibble(treatment = c("50 mg q12h", "75 mg q12h"), maint = c(50, 75))
+
+cov_df <- tidyr::expand_grid(arm_i = seq_len(nrow(arms)), j = seq_len(n_per_arm)) |>
+  mutate(
+    id = row_number(),
+    treatment = arms$treatment[arm_i],
+    maint = arms$maint[arm_i],
+    RRT_CRRT_STATUS = rbinom(n(), 1, 8 / 11),
+    Q_ECMO = pmin(pmax(rnorm(n(), 3.4, 0.45), 2.5), 4.5)
+  )
+
+dose_times <- c(0, tau * seq_len(n_maint))
+t_last <- max(dose_times)
+obs_times <- t_last + c(0, seq(0.25, tau, by = 0.25))
+
+dose_rows <- cov_df |>
+  tidyr::expand_grid(time = dose_times) |>
+  mutate(
+    amt = ifelse(time == 0, 200, maint),
+    evid = 1L,
+    dur = 1
+  )
+obs_rows <- cov_df |>
+  tidyr::expand_grid(time = obs_times) |>
+  mutate(amt = 0, evid = 0L, dur = 0)
+events <- bind_rows(dose_rows, obs_rows) |>
+  mutate(cmt = "central") |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, amt, evid, dur, cmt, treatment, Q_ECMO, RRT_CRRT_STATUS)
+
+sim <- rxSolve(mod, events, returnType = "data.frame", addDosing = FALSE,
+               keep = c("treatment")) |>
+  mutate(tad = time - t_last)
+```
+
+# Replicate Figure 3 (prediction-corrected VPC)
+
+Figure 3 of Xu 2024 is a prediction-corrected VPC of the steady-state interval.
+The points below are the observed median of that figure, digitised by the
+maintainers at the paper's sampling times; they are approximate and are shown
+for orientation only. The paper does not report the individual maintenance
+doses, so both simulated regimens are drawn.
+
+```{r fig3, fig.cap = "Simulated steady-state concentrations (median and 5th-95th percentile band) for the two maintenance regimens. Black points: observed median read from Xu 2024 Figure 3. Replicates Figure 3 of Xu 2024."}
+fig3_obs <- tibble(
+  tad = c(1.25, 2, 4, 7),
+  Cc = c(3.1, 2.3, 1.75, 1.0)
+)
+vpc <- sim |>
+  group_by(treatment, tad) |>
+  summarise(
+    p05 = quantile(Cc, 0.05),
+    p50 = median(Cc),
+    p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc, aes(tad, p50, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.15, colour = NA) +
+  geom_line() +
+  geom_point(data = fig3_obs, aes(tad, Cc), inherit.aes = FALSE) +
+  labs(x = "Time after dose (h)", y = "Polymyxin B concentration (mg/L)",
+       colour = NULL, fill = NULL)
+```
+
+The digitised observed median falls between the two simulated regimens, which
+is consistent with the 100-150 mg/day dosing the Methods describe.
+
+# PKNCA validation
+
+Steady-state NCA over the final 12-h interval, by regimen.
+
+```{r pknca}
+sim_nca <- sim |>
+  filter(!is.na(Cc)) |>
+  mutate(time = tad) |>
+  select(id, time, Cc, treatment)
+dose_nca <- events |>
+  filter(evid == 1, time == t_last) |>
+  mutate(time = 0) |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
+                             concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | treatment + id,
+                             doseu = "mg")
+intervals <- data.frame(
+  start = 0, end = tau,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+summary(nca_res)
+```
+
+## Mass balance at steady state
+
+At steady state the AUC over one interval equals dose / CL for every subject.
+Both sides use the same drawn parameters, so the difference is only the
+trapezoidal error of the 0.25-h grid.
+
+```{r mass_balance}
+cl_by_id <- sim |> distinct(id, cl)
+auc_chk <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, treatment, auclast = PPORRES) |>
+  left_join(cl_by_id, by = "id") |>
+  left_join(dose_nca |> select(id, amt), by = "id") |>
+  mutate(pct_diff = 100 * (auclast - amt / cl) / (amt / cl))
+summary(auc_chk$pct_diff)
+stopifnot(max(abs(auc_chk$pct_diff)) < 1)
+```
+
+## Comparison with the published Css,avg
+
+Xu 2024 reports Css,avg (AUC0-tau / tau from WinNonlin) only by microbiological
+outcome: 2.26 +/- 0.72 mg/L in the clearance group and 1.25 +/- 0.24 mg/L in the
+uncleared group (Results and Figure 4). Because those groups are defined by
+outcome rather than by regimen, the side-by-side table below is context rather
+than a like-for-like NCA comparison.
+
+```{r cav_compare}
+cav_sim <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "cav") |>
+  group_by(treatment) |>
+  summarise(
+    median = median(PPORRES),
+    p05 = quantile(PPORRES, 0.05),
+    p95 = quantile(PPORRES, 0.95),
+    .groups = "drop"
+  )
+bind_rows(
+  cav_sim |>
+    transmute(Source = paste("Simulated,", treatment),
+              Value = sprintf("%.2f (%.2f-%.2f)", median, p05, p95)),
+  tibble(Source = c("Xu 2024, clearance group", "Xu 2024, uncleared group"),
+         Value = c("2.26 +/- 0.72", "1.25 +/- 0.24"))
+) |>
+  rename(`Css,avg (mg/L)` = Value) |>
+  knitr::kable(caption = "Simulated median (5th-95th percentile) Css,avg against the published outcome-group mean +/- SD.")
+
+cav75 <- cav_sim$median[cav_sim$treatment == "75 mg q12h"]
+stopifnot(cav75 > 1.25, cav75 < 2.26)
+```
+
+The 150 mg/day regimen gives a median Css,avg between the two published group
+means, as expected for a cohort dosed at 100-150 mg/day whose individual
+exposures span both groups.
+
+# Assumptions and deviations
+
+* **Age is not carried.** The Results text says "CRRT and age were identified as
+  the covariates for V", and the Table 2 abbreviations define a `dVdage`
+  coefficient, but neither the printed V equation nor the Table 2 parameter rows
+  contain an age term or estimate. The printed final-model equation is
+  implemented; age is recorded in `covariatesDataExcluded`.
+* **ECMO flow, not pump speed.** The CL covariate is printed as `speadECMO` with
+  units of L/min, which identifies it as the delivered blood flow (Table 1
+  reports pump speed separately in RPM). It is mapped to `Q_ECMO`. The
+  centring value 3.48 L/min is the one in the printed equation, not the Table 1
+  median of 3.60 L/min. The Discussion at one point links ECMO flow to the
+  volume of distribution; the equation and Table 2 put the effect on CL, which
+  is what is implemented.
+* **Linear flow effect.** With a slope of -0.321 per L/min the typical CL
+  reaches zero at 6.60 L/min. The observed flows were 3.0-3.65 L/min (IQR); do
+  not extrapolate far outside that range.
+* **Residual error is additive.** Table 2 reports a single `stdev0` of 0.361.
+  The Results select "the two-compartment model with an additive option", and
+  the lower prediction band of the Figure 3 VPC falls below zero, which only an
+  additive error produces. It is encoded as an additive SD in mg/L.
+* **IIV.** Table 2 reports variances of 0.062 (V) and 0.038 (CL) for an
+  exponential model; no covariance is reported. No IIV is reported on Vp or Q.
+* **Dosing in the simulations.** The Methods give "100-150 mg (2.5-3
+  mg/kg/day)" without stating the interval; the 12-h sampling schedule and the
+  Figure 3 concentrations agree with 50-75 mg every 12 h, which is what is
+  simulated. The loading dose is taken as 200 mg.
+* **Covariate distribution.** Table 1 gives only the median and IQR of ECMO flow;
+  the truncated normal used for the virtual cohort is a maintainers' choice.
+* **Table 1 inconsistencies.** Serum creatinine is labelled mg/dL but the values
+  (median 137.27) are umol/L; the Results prose gives CrCL the same numbers as
+  serum creatinine and an age median of 60 (53.50-62.50) against Table 1's 56
+  (48, 64). The number of patients with bacterial clearance is 7 in the Results
+  and 6 in Table 1. None of these enters the model.
+* **Convention-check note.** `checkModelConventions()` warns that `e_q_ecmo_cl`
+  "looks like a reversed-order covariate effect" because its first token `q` is
+  also a PK parameter name. The covariate is `Q_ECMO`, so the name is in the
+  canonical `e_<cov>_<param>` order, matching `e_q_ecmo_cl_1ohm` in
+  `Kim_2026_midazolam_ecmo`.
