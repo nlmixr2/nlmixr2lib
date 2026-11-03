@@ -5454,6 +5454,10 @@ navbar:
         href: articles/Sulaiman_2026_piperacillin_tazobactam.html
       - text: "Piperacillin tazobactam (Wenker 2024)"
         href: articles/Wenker_2024_piperacillin_tazobactam.html
+      - text: "Piperacillin total (Tan 2025)"
+        href: articles/Tan_2025_piperacillin.html
+      - text: "Piperacillin unbound (Tan 2025)"
+        href: articles/Tan_2025_piperacillin.html
       - text: "Piperaquine (Chotsiri 2017)"
         href: articles/Chotsiri_2017_dihydroartemisinin_piperaquine.html
       - text: "Piperaquine (Chotsiri 2019)"
@@ -10139,6 +10143,7 @@ articles:
   - articles/Tan_2023_luvometinib
   - articles/Tan_2024_cabozantinib
   - articles/Tan_2025_cabotegravir_rilpivirine
+  - articles/Tan_2025_piperacillin
   - articles/Tanaka_2012_phenytoin
   - articles/Taneja_2019_glpg1690
   - articles/Tang_2019_amoxicillin
