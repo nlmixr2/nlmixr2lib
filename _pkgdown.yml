@@ -5434,6 +5434,8 @@ navbar:
         href: articles/Nichols_2016_piperacillin_tazobactam.html
       - text: "Piperacillin (ObrinkHansen 2015)"
         href: articles/ObrinkHansen_2015_piperacillin.html
+      - text: "Piperacillin (Reeder 2025)"
+        href: articles/Reeder_2025_piperacillin_tazobactam.html
       - text: "Piperacillin (Rolsma 2025)"
         href: articles/Rolsma_2025_betalactams_cysticfibrosis.html
       - text: "Piperacillin (Sanches 2022)"
@@ -6706,6 +6708,8 @@ navbar:
         href: articles/Lee_2025_piperacillin_tazobactam.html
       - text: "Tazobactam (Nichols 2016)"
         href: articles/Nichols_2016_piperacillin_tazobactam.html
+      - text: "Tazobactam (Reeder 2025)"
+        href: articles/Reeder_2025_piperacillin_tazobactam.html
       - text: "Tazobactam (Rolsma 2025)"
         href: articles/Rolsma_2025_betalactams_cysticfibrosis.html
       - text: "Tazobactam (Sime 2019)"
@@ -9781,6 +9785,7 @@ articles:
   - articles/Rayner_2013_oseltamivir_exposure_response
   - articles/Reddy_2015_oseltamivir_ferret
   - articles/Reed_2025_meropenem_vaborbactam
+  - articles/Reeder_2025_piperacillin_tazobactam
   - articles/Rees_2018_meropenem_ciprofloxacin
   - articles/Reif_2013_ethinylestradiol_drospirenone
   - articles/ReigLopez_2020_mbq167
