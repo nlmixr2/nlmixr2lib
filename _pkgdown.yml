@@ -7482,6 +7482,8 @@ navbar:
         href: articles/Dave_2019_venetoclax.html
       - text: "Venetoclax (Samineni 2022)"
         href: articles/Samineni_2022_venetoclax.html
+      - text: "Venetoclax (Thakre 2025)"
+        href: articles/Thakre_2025_venetoclax.html
       - text: "Venetoclax (Yang 2025)"
         href: articles/Yang_2025_venetoclax.html
       - text: "Venetoclax (Zhao 2026)"
@@ -10172,6 +10174,7 @@ articles:
   - articles/Thakkar_2017_amifampridine
   - articles/Thakkar_2018_tafenoquine
   - articles/Thakre_2022_risankizumab
+  - articles/Thakre_2025_venetoclax
   - articles/Themans_2019_meropenem
   - articles/Themans_2020_hydroxychloroquine
   - articles/Thiel_2018_cox2_pge2_painrelief
