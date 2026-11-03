@@ -6986,6 +6986,12 @@ navbar:
         href: articles/Vong_2021_tofacitinib.html
       - text: "Tofacitinib (Xie 2019)"
         href: articles/Xie_2019_tofacitinib.html
+      - text: "Tofacitinib acr (Menon 2025)"
+        href: articles/Menon_2025_tofacitinib.html
+      - text: "Tofacitinib hb (Menon 2025)"
+        href: articles/Menon_2025_tofacitinib.html
+      - text: "Tofacitinib hb decrease (Menon 2025)"
+        href: articles/Menon_2025_tofacitinib.html
       - text: "Tolcapone fluctuators (Jorga 2000)"
         href: articles/Jorga_2000_tolcapone.html
       - text: "Tolcapone nonfluctuators (Jorga 2000)"
@@ -9446,6 +9452,7 @@ articles:
   - articles/Melhem_2018_g_csf
   - articles/Melhem_2022_dostarlimab
   - articles/Menon_2024_parkinsonPathogenesis
+  - articles/Menon_2025_tofacitinib
   - articles/Mensing_2017_3D_HCV_regimen
   - articles/Merchan_2015_azithromycin
   - articles/Mercier_2014_tramadol_tapentadol
