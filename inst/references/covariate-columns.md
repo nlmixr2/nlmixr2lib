@@ -15620,8 +15620,10 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Reference category:** 0 (wild-type homozygote, when paired with `SNP_SLCO1B1_RS4149056_HET` = 0).
 - **Source aliases:**
   - `SLCO1B1 c.521T>C` -- Toshimoto 2017 Supplementary Table 2A.
+  - `SLCO1B1 c.521 CC` (`MT_GZR_*` states, `RA_mt`) -- Yoshikado 2025 Methods and deposited code.
 - **Example models:** `Toshimoto_2017_irinotecan_pbpk.R` (multiplies the OATP1B1-mediated hepatic uptake clearance PSact,inf,h of BOTH SN-38 and SN-38G by 0.268; Supplementary Table 2A), `Stillemans_2022_atorvastatin.R` (atorvastatin CL/F = theta_CL * (1 + theta), theta = -0.041 for 521C/C; Table 3).
   - `Beck_2022_elagolix.R` (OATP1B1 'poor transporter' = homozygous-variant 521T>C; raises elagolix relative bioavailability F1 by the fraction 0.963, i.e. F1 = 1.96; Beck 2022 Table 3 footnote d).
+  - `Yoshikado_2025_grazoprevir_pbpk.R` (multiplies the OATP1B1 Michaelis-Menten hepatic uptake term of grazoprevir by RA_mt = 0.344, from Tomita 2013; Table S1A; heterozygotes not modelled).
 - **Notes:** Companion to `SNP_SLCO1B1_RS4149056_HET`; see that entry's Notes for the \*15-haplotype relationship, the linkage-disequilibrium sampling and the unpublished-ratio caveat. Activity ratio 26.8 percent of wild type.
 
 ### SNP_SLCO1B1_RS4149056_MISSING (**canonical for SLCO1B1 c.521T>C genotype-missing indicator**)
