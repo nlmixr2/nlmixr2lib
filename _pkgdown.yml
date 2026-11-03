@@ -4956,6 +4956,10 @@ navbar:
         href: articles/Solana_2014_omeprazole.html
       - text: "Omeprazole (Zhao 2018)"
         href: articles/Zhao_2018_omeprazole.html
+      - text: "OncolyticVirus human qsp (Yamada 2025)"
+        href: articles/Yamada_2025_oncolytic_virus_pembrolizumab.html
+      - text: "OncolyticVirus mouse qsp (Yamada 2025)"
+        href: articles/Yamada_2025_oncolytic_virus_pembrolizumab.html
       - text: "Ondansetron (Lam 2025)"
         href: articles/Lam_2025_ondansetron.html
       - text: "Ondansetron (deAlwis 1998)"
@@ -10492,6 +10496,7 @@ articles:
   - articles/Yadav_2017_imipenem_tobramycin
   - articles/Yaghini_2021_quantumDot
   - articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab
+  - articles/Yamada_2025_oncolytic_virus_pembrolizumab
   - articles/Yamada_2025_zolbetuximab
   - articles/Yamamoto_2017_cns_pbpk_rat
   - articles/Yamamoto_2023_tominersen
