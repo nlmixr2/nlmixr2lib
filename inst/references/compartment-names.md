@@ -7214,6 +7214,13 @@ Favie 2020 (doi:10.1002/cpt.1917) fits seven drugs and five metabolites from the
 - **Source aliases:** none.
 - **Example models:** `Favie_2020_neonatalHypothermia.R`.
 
+### remifentanil (**canonical remifentanil sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Remifentanil as a co-administered, non-parent analyte whose own pharmacokinetics are carried as ODE states in another drug's model (`central_remifentanil`, `peripheral1_remifentanil`, `peripheral2_remifentanil`, `lcl_remifentanil`, `Cc_remifentanil`, `propSd_remifentanil`), typically because its plasma concentration modulates the parent's clearance or effect. Standalone remifentanil models keep the bare canonical names.
+- **Source aliases:** `REMIFENTANIL`, `PERIREM1`, `PERIREM2` -- Vellinga 2025 Supplement 5 `$MODEL` compartment names; `V1R`, `CLR`, `Q2R` and so on for its parameters.
+- **Example models:** `Vellinga_2025_remimazolam.R` and its four pharmacodynamic siblings (founding example; the Eleveld 2017 remifentanil model held at its published values, its plasma concentration inhibiting the apparent CNS 7054 clearance and adding to the remimazolam drug effect).
+- **Notes:** Spelled out rather than abbreviated: `remi` would be ambiguous between remifentanil and remimazolam, which co-occur in the founding example. Distinct from a covariate column that supplies a remifentanil concentration or co-medication flag as data instead of simulating it from remifentanil doses.
+
 ### hmg (**canonical hydroxymidazolam glucuronide suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 1'-hydroxymidazolam glucuronide (HMG), the UGT conjugate of `1ohm` and the terminal renally-cleared metabolite of midazolam. Named with the source papers' own abbreviation.
