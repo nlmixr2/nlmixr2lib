@@ -1,5 +1,5 @@
 vanderVeer_2025_amikacin <- function() {
-  description <- "Two-compartment IV-infusion population PK model for amikacin in neonates (van der Veer 2025 'optimized' model: the De Cock 2012 structure re-estimated on pooled Amsterdam UMC and University Hospitals Leuven NICU data). Clearance scales as a power of birth weight (reference 1685 g) times a linear function of postnatal age (1 + n * PNA / 5 days); central volume scales as a power of current weight (reference 1700 g); peripheral volume equals central volume and intercompartmental clearance is a fixed fraction of clearance. IIV on CL and V1 (fixed 30%); combined additive and proportional residual error."
+  description <- "Two-compartment IV-infusion population PK model for amikacin in neonates (van der Veer 2025 'optimized' model: the De Cock 2012 structure re-estimated on pooled Amsterdam UMC and University Hospitals Leuven NICU data). Clearance scales as a power of birth weight (reference 1685 g) times a linear function of postnatal age (1 + n * PNA / 5 days); central volume scales as a power of current weight (reference 1700 g); peripheral volume equals central volume and intercompartmental clearance is proportional to clearance (Q = 0.468 x CL). IIV on CL, and a 30% IIV on V1 set by the authors; combined additive and proportional residual error."
   reference <- "van der Veer MAA, Smits A, de Haan TR, Franken LGW, van Kaam AH, Hodiamont CJ, Bijleveld YA, Allegaert K, Mathot RAA. Amikacin dosing in neonates: evaluation of target attainment using a simplified and complex pharmacokinetic model-derived dosing regimen in clinical practice. Antimicrob Agents Chemother. 2025;69(4):e01118-24. doi:10.1128/aac.01118-24"
   vignette <- "vanderVeer_2025_amikacin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
@@ -90,7 +90,7 @@ vanderVeer_2025_amikacin <- function() {
     # IIV: Table S5 reports omega^2 (the 'IIV on V1' entry 0.09 is the
     # text's 30% fixed IIV, 0.3^2).
     etalcl ~ 0.0856 # Table S5: IIV on CL = 0.0856 (RSE 11.3%)
-    etalvc ~ fixed(0.09) # Table S5: IIV on V1 = 0.09, fixed at 30% (Results; Supplementary Data 4)
+    etalvc ~ fixed(0.09) # Table S5: IIV on V1 = 0.09, set to a 30% CV by the authors (Results; Supplementary Data 4)
 
     # Residual error: Table S5 reports NONMEM sigma^2; SD = sqrt(variance).
     propSd <- 0.16703
