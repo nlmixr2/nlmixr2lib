@@ -1049,6 +1049,17 @@ The MTP framework partitions the bacterial population into three states. The ori
 
 ---
 
+## PANSS schizophrenia symptom score
+
+### panss (**canonical Positive and Negative Syndrome Scale total-score output**)
+- **Type:** compartment
+- **Role:** Positive and Negative Syndrome Scale (PANSS) total score output for schizophrenia exposure-response and placebo-response models. Holds the ABSOLUTE total score on the standard 30-210 scale (30 items, each 1-7), not a change from baseline or a percent change. Typically an algebraic output of a Weibull placebo time course plus an Emax drug effect on the fraction of the baseline score. A model that fits the three subscales separately uses subscale-suffixed outputs instead (`PANSS_pos`, `PANSS_neg`, `PANSS_gen` in the `PillaReddy_2013_*_panss_subscales.R` family).
+- **Source aliases:** `PANSS`, `IPRED` / `IEFF` -- Lindauer 2025 supplemental control stream (`IEFF = BL * (1 - PLA - DE) + DRIFT * TIME`, `IPRED = IEFF`).
+- **Example models:** `Lindauer_2025_risperidone_panss.R` (founding example; `panss <- bl * (1 - placebo_eff - drug_eff) + drift_i * t`, additive residual error 4.78 PANSS points).
+- **Notes:** Follows the lowercase run-together convention of `ipss` / `pasi` / `das28` / `cows`. `Ivaturi_2017_RBP_7000.R` and `Cantillon_2018_brilaroxazine.R` predate this entry and carry the same quantity as the uppercase second output `PANSS` beside `Cc`. The score is discrete but is modelled as continuous. The observed baseline score used as a covariate is the separate column `PANSS_BL` in `covariate-columns.md`.
+
+---
+
 ## WOMAC osteoarthritis subscale scores
 
 ### womacpain, womacstiffness, womacfunction (**canonical WOMAC subscale score output compartments**)
