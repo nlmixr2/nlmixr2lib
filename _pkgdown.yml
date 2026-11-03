@@ -1230,6 +1230,8 @@ navbar:
         href: articles/Berthaud_2025_cefazolin.html
       - text: "Cefazolin (Duke 2024)"
         href: articles/Duke_2024_cefazolin.html
+      - text: "Cefazolin (Gebreyesus 2024)"
+        href: articles/Gebreyesus_2024_cefazolin.html
       - text: "Cefazolin (Lanoiselee 2021)"
         href: articles/Lanoiselee_2021_cefazolin.html
       - text: "Cefazolin (Santavy 2022)"
@@ -8648,6 +8650,7 @@ articles:
   - articles/Gatti_1996_dapsone
   - articles/Ge_2020_metoclopramide
   - articles/Gebhard_2023_leukemia_maintenance_therapy
+  - articles/Gebreyesus_2024_cefazolin
   - articles/Geers_2022_clozapine
   - articles/Geerts_2018_amyloidNeurotransmission_qsp
   - articles/Geldof_2008_fluvoxamine_rat
