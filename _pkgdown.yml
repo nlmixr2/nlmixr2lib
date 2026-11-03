@@ -7310,6 +7310,8 @@ navbar:
         href: articles/Alqurain_2024_vancomycin.html
       - text: "Vancomycin (Alsultan 2023)"
         href: articles/Alsultan_2023_vancomycin.html
+      - text: "Vancomycin (Avachat 2025)"
+        href: articles/Avachat_2025_vancomycin.html
       - text: "Vancomycin (Back 2019)"
         href: articles/Back_2019_pediatric_size_maturation.html
       - text: "Vancomycin (Buelga 2005)"
@@ -7995,6 +7997,7 @@ articles:
   - articles/Aston_2017_receptor_rebound
   - articles/Athanassa_2025_minocycline
   - articles/Attarwala_2023_mRNA3927
+  - articles/Avachat_2025_vancomycin
   - articles/Axelsen_2024_selexipag
   - articles/Ayyar_2022_il17a_target_engagement
   - articles/Ayyar_2024_givosiran
