@@ -2054,8 +2054,14 @@ navbar:
         href: articles/Nonoshita_2020_doripenem.html
       - text: "Doripenem qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Dorzagliatin (Jin 2025)"
+        href: articles/Jin_2025_dorzagliatin_pi3ki_hyperglycemia.html
       - text: "Dorzagliatin (Wang 2023)"
         href: articles/Wang_2023_dorzagliatin.html
+      - text: "Dorzagliatin alpelisib (Jin 2025)"
+        href: articles/Jin_2025_dorzagliatin_pi3ki_hyperglycemia.html
+      - text: "Dorzagliatin wx390 (Jin 2025)"
+        href: articles/Jin_2025_dorzagliatin_pi3ki_hyperglycemia.html
       - text: "Dostarlimab (Kuchimanchi 2024)"
         href: articles/Kuchimanchi_2024_dostarlimab.html
       - text: "Dostarlimab (Melhem 2022)"
@@ -8963,6 +8969,7 @@ articles:
   - articles/Jin_2020_amikacin
   - articles/Jin_2022_lithium
   - articles/Jin_2025_benralizumab
+  - articles/Jin_2025_dorzagliatin_pi3ki_hyperglycemia
   - articles/Jin_2026_colistinSulfate
   - articles/Joerger_2006_methotrexate
   - articles/Johnson_2011_olanzapine_rat
