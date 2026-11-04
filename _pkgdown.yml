@@ -1656,6 +1656,8 @@ navbar:
         href: articles/Desai_2024_crisprCas9.html
       - text: "Crizotinib mouse (Yamazaki 2008)"
         href: articles/Yamazaki_2008_crizotinib_mouse.html
+      - text: "Crovalimab (Cosson 2025)"
+        href: articles/Cosson_2025_crovalimab.html
       - text: "CyaaE7 (ParraGuillen 2013)"
         href: articles/ParraGuillen_2013_tumor_immunotherapy.html
       - text: "Cyanide pbpk (Harada 2025)"
@@ -8374,6 +8376,7 @@ articles:
   - articles/Cortez_2015_nevirapine
   - articles/Cosson_2018_basimglurant_exposure_dizziness
   - articles/Cosson_2021_linvencorvir
+  - articles/Cosson_2025_crovalimab
   - articles/Couffignal_2014_imipenem
   - articles/Courlet_2021_amlodipine
   - articles/Courlet_2022_palbociclib
