@@ -2868,6 +2868,8 @@ navbar:
         href: articles/OrtizZacarias_2018_fosfomycin.html
       - text: "Fosfomycin oral (OrtizZacarias 2018)"
         href: articles/OrtizZacarias_2018_fosfomycin.html
+      - text: "Fosfomycin pbpk (AlHroot 2025)"
+        href: articles/AlHroot_2025_fosfomycin.html
       - text: "FosfomycinCalcium (Isla 2024)"
         href: articles/Isla_2024_fosfomycinCalcium.html
       - text: "Fosmidomycin (Pfaffendorf 2026)"
@@ -7925,6 +7927,7 @@ articles:
   - articles/Akbar_2025_voriconazole
   - articles/Akil_2016_citalopram
   - articles/Aksenov_2018_uricAcid
+  - articles/AlHroot_2025_fosfomycin
   - articles/AlQurain_2022_tramadol
   - articles/AlSallami_2016_unfractionatedHeparin
   - articles/AlZubaydi_2024_gabapentin
