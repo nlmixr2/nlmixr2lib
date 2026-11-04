@@ -2606,6 +2606,27 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Patel_2025_radamts13_count_ldh.R` (founding example; log-linear reduction of the baseline count by average plasma ADAMTS13 activity in patients with congenital thrombotic thrombocytopenic purpura).
 - **Notes:** Member of the per-interval event-count PD-output family; sibling of `thrombocytopenia_count`, with which it shares a cohort, an exposure driver and a fitting interval but not a drug-effect form (the source authors retained a sigmoid Emax for thrombocytopenia and a linear slope for LDH, so the two are separate fits and separate model files). Named for the *event* (an LDH elevation crossing a threshold) rather than for the analyte, so it is distinct from a hypothetical `ldh` canonical holding a continuous LDH concentration -- register that separately if a paper models the LDH time course itself. Distinct from `cumhaz` in `Patel_2025_radamts13_rtte_ldh.R`, which models the timing of the same events.
 
+### infection_count (**canonical first-infection-adverse-event count PD output**)
+- **Type:** compartment
+- **Role:** Count of first infection adverse events (moderate or severe infections and those leading to discontinuation) from the first dose to the record time, used as the observation variable of a Poisson exposure-response model. The mean count is `lambda = time * exp(<log rate>)`, an algebraic product with no ODE state; the observation model is `infection_count ~ pois(lambda)`.
+- **Source aliases:** 'Infections' (Huh 2025 Table 2 'Infections ER model').
+- **Example models:** `Huh_2025_ritlecitinib_infections.R` (founding example; ritlecitinib in healthy volunteers and alopecia areata and vitiligo patients).
+- **Notes:** Member of the per-interval event-count PD-output family (`thrombocytopenia_count`, `ldh_elevation_count`, `seizure_count`, `exac_count`). The count is the number of FIRST events (0 or 1) accumulated from the first dose to the record time: the source fitted only the first event per subject, so with the log(time) offset the model is equivalent to a constant-hazard time-to-first-event model, and `time` on the observation record must be the time since the first dose in days. The exposure driver is `CAV`, the time-weighted average concentration over that same interval, entering through its square root.
+
+### herpes_zoster_count (**canonical first-herpes-zoster-adverse-event count PD output**)
+- **Type:** compartment
+- **Role:** Count of first herpes zoster adverse events from the first dose to the record time, used as the observation variable of a Poisson exposure-response model. Distinct from `infection_count`: herpes zoster was analysed as its own endpoint with its own intercept, covariates and exposure slope. The mean count is `lambda = time * exp(<log rate>)`, an algebraic product with no ODE state; the observation model is `herpes_zoster_count ~ pois(lambda)`.
+- **Source aliases:** 'Herpes Zoster' / 'HZ infections' (Huh 2025 Table 2 'Herpes Zoster ER model').
+- **Example models:** `Huh_2025_ritlecitinib_herpes_zoster.R` (founding example).
+- **Notes:** Member of the per-interval event-count PD-output family (`thrombocytopenia_count`, `ldh_elevation_count`, `seizure_count`, `exac_count`). The count is the number of FIRST events (0 or 1) accumulated from the first dose to the record time: the source fitted only the first event per subject, so with the log(time) offset the model is equivalent to a constant-hazard time-to-first-event model, and `time` on the observation record must be the time since the first dose in days. The exposure driver is `CAV`, the time-weighted average concentration over that same interval, entering through its square root.
+
+### rash_count (**canonical first-rash-adverse-event count PD output**)
+- **Type:** compartment
+- **Role:** Count of first rash adverse events (rash/dermatitis, drug eruption, urticaria, acne and related skin terms) from the first dose to the record time, used as the observation variable of a Poisson exposure-response model. The mean count is `lambda = time * exp(<log rate>)`, an algebraic product with no ODE state; the observation model is `rash_count ~ pois(lambda)`.
+- **Source aliases:** 'Rash' (Huh 2025 Table 2 'Rash ER model').
+- **Example models:** `Huh_2025_ritlecitinib_rash.R` (founding example).
+- **Notes:** Member of the per-interval event-count PD-output family (`thrombocytopenia_count`, `ldh_elevation_count`, `seizure_count`, `exac_count`). The count is the number of FIRST events (0 or 1) accumulated from the first dose to the record time: the source fitted only the first event per subject, so with the log(time) offset the model is equivalent to a constant-hazard time-to-first-event model, and `time` on the observation record must be the time since the first dose in days. The exposure driver is `CAV`, the time-weighted average concentration over that same interval, entering through its square root.
+
 ### viral_load (**canonical viral load**)
 - **Type:** compartment
 - **Role:** Viral load PD output (virology).

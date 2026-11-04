@@ -2,6 +2,10 @@
 
 # development version
 
+- Add Huh 2025 ritlecitinib safety exposure-response models (C-QTc, lymphocyte Friberg PK/PD, and infection, herpes zoster and rash Poisson models) ([doi:10.1002/psp4.70030](https://doi.org/10.1002/psp4.70030)) -- healthy volunteers and adolescents and adults with alopecia areata or vitiligo.
+
+- Restore the `DIS_ALOPECIA_AREATA`, `DIS_VITILIGO` and `FORM_RIT_OVERENCAP` covariate register entries used by the Wojciechowski 2023 ritlecitinib models.
+
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
 - Add Byun 2024 TMDD approximations for HL2351 and efineptakin alfa ([doi:10.1371/journal.pcbi.1012066](https://doi.org/10.1371/journal.pcbi.1012066)) -- eight models (full TMDD, mTMDD, qTMDD and the new first-order pTMDD for each drug) in healthy adults. Registers the `endosome` and `complex_fcrn` compartments and the `BL_IL7` covariate.

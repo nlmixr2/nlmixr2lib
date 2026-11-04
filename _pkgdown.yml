@@ -5990,10 +5990,20 @@ navbar:
         href: articles/Perlstein_2025_risperidone_tv46000.html
       - text: "Ritlecitinib (Huh 2024)"
         href: articles/Huh_2024_ritlecitinib.html
+      - text: "Ritlecitinib QTcF (Huh 2025)"
+        href: articles/Huh_2025_ritlecitinib_safety.html
       - text: "Ritlecitinib base (Wojciechowski 2023)"
         href: articles/Wojciechowski_2023_ritlecitinib.html
       - text: "Ritlecitinib final (Wojciechowski 2023)"
         href: articles/Wojciechowski_2023_ritlecitinib.html
+      - text: "Ritlecitinib herpes zoster (Huh 2025)"
+        href: articles/Huh_2025_ritlecitinib_safety.html
+      - text: "Ritlecitinib infections (Huh 2025)"
+        href: articles/Huh_2025_ritlecitinib_safety.html
+      - text: "Ritlecitinib lymphocytes (Huh 2025)"
+        href: articles/Huh_2025_ritlecitinib_safety.html
+      - text: "Ritlecitinib rash (Huh 2025)"
+        href: articles/Huh_2025_ritlecitinib_safety.html
       - text: "Ritlecitinib updated (Wojciechowski 2023)"
         href: articles/Wojciechowski_2023_ritlecitinib.html
       - text: "Ritonavir (Chen 2024)"
@@ -8870,6 +8880,7 @@ articles:
   - articles/Hughes_2024_vancomycin
   - articles/Huh_2021_sorafenib
   - articles/Huh_2024_ritlecitinib
+  - articles/Huh_2025_ritlecitinib_safety
   - articles/Humphries_2021_tb_lung_pbpk
   - articles/Huo_2025_lamotrigine
   - articles/Huppe_2023_fosfomycin
