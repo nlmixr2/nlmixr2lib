@@ -218,6 +218,10 @@ navbar:
         href: articles/Nicolas_2019_alirocumab.html
       - text: "Alirocumab (Nolain 2022)"
         href: articles/Nolain_2022_alirocumab.html
+      - text: "Alirocumab adult (Kovalenko 2025)"
+        href: articles/Kovalenko_2025_alirocumab.html
+      - text: "Alirocumab pediatric (Kovalenko 2025)"
+        href: articles/Kovalenko_2025_alirocumab.html
       - text: "Alisertib (Zhou 2018)"
         href: articles/Zhou_2018_alisertib.html
       - text: "Alisertib (Zhou 2022)"
@@ -9129,6 +9133,7 @@ articles:
   - articles/Kovalenko_2016_dupilumab_ddmore
   - articles/Kovalenko_2020_dupilumab
   - articles/Kovalenko_2021_dupilumab
+  - articles/Kovalenko_2025_alirocumab
   - articles/Kovar_2020_buprenorphine
   - articles/Kratochwil_2021_petesicatib
   - articles/Krause_2017_selexipag
