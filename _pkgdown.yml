@@ -826,6 +826,8 @@ navbar:
         href: articles/Mathis_2022_berotralstat.html
       - text: "Berzosertib (Terranova 2021)"
         href: articles/Terranova_2021_berzosertib.html
+      - text: "Betalactam pbp78 CRAB (Ho 2025)"
+        href: articles/Ho_2025_betalactam_pbp78_CRAB.html
       - text: "Betamethasone (Krzyzanski 2021)"
         href: articles/Krzyzanski_2021_corticosteroids.html
       - text: "Betamethasone (Schoenmakers 2025)"
@@ -8821,6 +8823,7 @@ articles:
   - articles/Hirt_2009_didanosine
   - articles/Hirt_2009_efavirenz
   - articles/Hirunsomboon_2026_vancomycin
+  - articles/Ho_2025_betalactam_pbp78_CRAB
   - articles/Hodiamont_2017_gentamicin
   - articles/Hoefman_2021_asp8232
   - articles/Hoglund_2012_piperaquine
