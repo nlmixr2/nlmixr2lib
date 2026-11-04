@@ -7664,6 +7664,8 @@ navbar:
         href: articles/He_2025_YPEGrhGH.html
       - text: "Yimitasvir (Guan 2021)"
         href: articles/Guan_2021_yimitasvir.html
+      - text: "Zabedosertib (Feldmuller 2025)"
+        href: articles/Feldmuller_2025_zabedosertib.html
       - text: "Zalcitabine (Adams 1998)"
         href: articles/Adams_1998_zalcitabine.html
       - text: "Zaleplon (Izat 2025)"
@@ -8540,6 +8542,7 @@ articles:
   - articles/Fediuk_2021b_ertugliflozin_ethnicity
   - articles/FehlingKaschek_2019_trastuzumab_skbr3
   - articles/Feillet_2008_sapropterin
+  - articles/Feldmuller_2025_zabedosertib
   - articles/Felmlee_2010_ghb_rat
   - articles/Feng_2006_enoxaparin
   - articles/Feng_2008_risperidone
