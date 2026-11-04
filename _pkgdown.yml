@@ -2624,6 +2624,8 @@ navbar:
         href: articles/Bukkems_2022_factorviii_thrombin_plasmin.html
       - text: "Factorviii thrombinPotential (Valke 2024)"
         href: articles/Valke_2024_factorviii_thrombin_plasmin.html
+      - text: "Fanastomig (Jiang 2025)"
+        href: articles/Jiang_2025_fanastomig.html
       - text: "Farletuzumab (Farrell 2012)"
         href: articles/Farrell_2012_farletuzumab.html
       - text: "Fasiglifam (Naik 2013)"
@@ -8956,6 +8958,7 @@ articles:
   - articles/Jiang_2022_voriconazole
   - articles/Jiang_2023_imatinib
   - articles/Jiang_2024_empagliflozin
+  - articles/Jiang_2025_fanastomig
   - articles/Jiang_2025_filgrastim
   - articles/Jiao_2008_mycophenolic_acid
   - articles/Jiao_2009_sirolimus
