@@ -6627,8 +6627,15 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Type:** metabolite-suffix
 - **Role:** 11-hydroxy-delta-9-tetrahydrocannabinol (11-OH-THC, commonly written THC-OH), the principal pharmacologically active metabolite of delta-9-tetrahydrocannabinol, formed by CYP2C9-dependent hydroxylation at the 11 position and itself further oxidised to the terminal carboxy metabolite. MW 330.46 g/mol.
 - **Source aliases:** `THC-OH`, `THCOH`, `11-OH-THC` (Wolowich 2025; also `THC-OH` in Storgaard 2026) -- translate to `11oh`.
-- **Example models:** `Wolowich_2025_thc.R`, `Wolowich_2025_thc_11oh.R`, `Wolowich_2025_thc_gedm.R` (2-compartment 11-OH-THC metabolite fed through one transit compartment from a 3-compartment THC parent), `Storgaard_2026_tetrahydrocannabinol.R` (2-compartment 11-OH-THC metabolite fed by an apparent formation clearance from a 1-compartment oromucosal THC parent).
-- **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier, following the `3oh` / `5oh` / `7oh` / `8oh` / `9oh` precedent. Disambiguation is by model context, as for the other five. A future extraction needing the terminal carboxy metabolite (THC-COOH) should register a separate token for it; `11oh` covers only the active hydroxy metabolite.
+- **Example models:** `Wolowich_2025_thc.R`, `Wolowich_2025_thc_11oh.R`, `Wolowich_2025_thc_gedm.R` (2-compartment 11-OH-THC metabolite fed through one transit compartment from a 3-compartment THC parent), `Storgaard_2026_tetrahydrocannabinol.R` (2-compartment 11-OH-THC metabolite fed by an apparent formation clearance from a 1-compartment oromucosal THC parent)., `Li_2025_tetrahydrocannabinol.R` (3-compartment 11-OH-THC metabolite whose second peripheral exchanges with an adipose compartment, `adipose_11oh`).
+- **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier, following the `3oh` / `5oh` / `7oh` / `8oh` / `9oh` precedent. Disambiguation is by model context, as for the other five. A future extraction needing the terminal carboxy metabolite (THC-COOH) should register a separate token for it; `11oh` covers only the active hydroxy metabolite. The terminal carboxy metabolite is `thccooh`.
+
+### thccooh (**canonical 11-nor-9-carboxy-delta-9-tetrahydrocannabinol suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 11-nor-9-carboxy-delta-9-tetrahydrocannabinol (THC-COOH), the inactive terminal oxidative metabolite of delta-9-tetrahydrocannabinol, formed from `11oh` and the principal circulating and urinary cannabinoid marker after the parent has cleared. MW 344.4 g/mol.
+- **Source aliases:** `THC-COOH`, `THCCOOH`, `11-nor-9-carboxy-THC`, `carboxy-THC` -- translate to `thccooh`.
+- **Example models:** `Li_2025_tetrahydrocannabinol.R` (founding example; `central_thccooh` / `peripheral1_thccooh` two-compartment metabolite fed by `fm` times the 11-OH-THC clearance, mass-based formation).
+- **Notes:** Carries the drug stem because a bare `cooh` would read as a generic carboxy metabolite of any parent; unlike the positional-hydroxy family (`3oh` ... `11oh`) there is no numeric locant to anchor it. Distinct from `11oh`, its precursor, and from `cpq` (carboxyprimaquine) and `oselcarb` (oseltamivir carboxylate).
 
 ### ohsal (**canonical alpha-hydroxysalmeterol suffix**)
 - **Type:** metabolite-suffix
