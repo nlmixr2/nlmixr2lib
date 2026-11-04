@@ -2568,21 +2568,21 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Type:** log-transformed-pk
 - **Role:** Inter-compartmental clearance between a central compartment and the lung epithelial-lining-fluid space (volume / time). Second member of the `lq_<destination>` family founded by `lq_milk`, for the same reason: the bare `lq` / `lq2` mean exchange with `peripheral1` / `peripheral2` specifically, so a lung-ELF exchange needs its own destination token. The bare form `q_elf` is used inside `model`. Note that the exchange is generally NOT symmetric in rate -- `q_elf` is a clearance applied to whichever compartment the drug is leaving, so the ELF-to-central micro-constant is `q_elf / v_elf` while the central-to-ELF one is `q_elf / vc`.
 - **Source aliases:** `Q1` -- Kurup 2024 Table 1 ("Intercompartmental clearance ELF - central") and supplement eqs. (1)-(4).
-- **Example models:** `Kurup_2024_DZIF10c.R` (`Q1 = 3.68e-5 L/h` at WT = 70 kg, allometrically scaled with a fixed exponent of 0.85).
+- **Example models:** `Kurup_2024_DZIF10c.R` (`Q1 = 3.68e-5 L/h` at WT = 70 kg, allometrically scaled with a fixed exponent of 0.85); `Li_2025_polymyxinB.R` (`Q = 0.03 L/h`, symmetric plasma-ELF exchange, no regional pools).
 - **Notes:** Applies whether the ELF space is carried as the bare `elf` compartment alone or as `elf` plus regional `elf_<region>` pools that share one volume; in the founding example one clearance serves all three pools.
 
 ### lcl_elf (**canonical log-transformed lung-ELF loss clearance**)
 - **Type:** log-transformed-pk
 - **Role:** First-order clearance of drug out of the lung epithelial-lining-fluid space by a route that is not distribution into the systemic circulation (volume / time) -- mucociliary escalator transport, local catabolism, or swallowing. It is a clearance FROM the `elf` compartment, so it is deliberately NOT one of the `lcl_<arm>` names (`lcl_renal`, `lcl_nonren`, `lcl_hemodialysis`,...), all of which are additive arms of the CENTRAL clearance. Reading it as an arm of `cl` would misplace the sink by a whole compartment. The bare form `cl_elf` is used inside `model()`, and the loss micro-constant is `cl_elf / v_elf`.
 - **Source aliases:** `CL_L`, `CLL` -- Kurup 2024 Table 1 ("Clearance from ELF (IT/INH)") and supplement eqs. (1)-(2).
-- **Example models:** `Kurup_2024_DZIF10c.R` (`CL_L = 0.000412 L/h` at WT = 70 kg; the paper attributes it to mucociliary clearance and it is what gives an inhaled dose its ~2.5-day effective lung half-life against the ~20-day systemic half-life).
+- **Example models:** `Kurup_2024_DZIF10c.R` (`CL_L = 0.000412 L/h` at WT = 70 kg; the paper attributes it to mucociliary clearance and it is what gives an inhaled dose its ~2.5-day effective lung half-life against the ~20-day systemic half-life); `Li_2025_polymyxinB.R` (`CL3 = 0.186 L/h`, power albumin covariate).
 - **Notes:** A model that resolves several distinct non-systemic lung sinks should suffix them further rather than overload this name.
 
 ### lv_elf (**canonical log-transformed lung-ELF volume**)
 - **Type:** log-transformed-pk
 - **Role:** Volume of the lung epithelial-lining-fluid space (volume). Needed because the bare volume canonicals `lvc` / `lvp` / `lvp2` / `lvp3` are reserved for the central and numbered peripheral compartments of a classical-PK model, and an ELF volume is a named physiological space rather than a peripheral compartment. The bare form `v_elf` inside `model` predates this entry -- it is already used as a hardcoded physiological constant in `Parmar_2023_spectinamide_1599_mouse_pbpk.R` -- so this registers the `l`-prefixed `ini` form for models that estimate it.
 - **Source aliases:** `V_L`, `VL` -- Kurup 2024 Table 1 ("ELF compartment volume") and supplement eqs. (1)-(3), (6).
-- **Example models:** `Kurup_2024_DZIF10c.R` (`V_L = 0.0364 L` at WT = 70 kg, estimated; allometrically scaled with a fixed exponent of 1). Bare-form precedent: `Parmar_2023_spectinamide_1599_mouse_pbpk.R` (`v_elf = 1.00e-5 L`, a fixed mouse physiological constant).
+- **Example models:** `Kurup_2024_DZIF10c.R` (`V_L = 0.0364 L` at WT = 70 kg, estimated; allometrically scaled with a fixed exponent of 1). Bare-form precedent: `Parmar_2023_spectinamide_1599_mouse_pbpk.R` (`v_elf = 1.00e-5 L`, a fixed mouse physiological constant); `Li_2025_polymyxinB.R` (`V3 = 0.896 L`, power age covariate).
 - **Notes:** When a model carries regional `elf_<region>` pools alongside the bare `elf`, a single `v_elf` normally serves all of them and the whole-lung ELF concentration is the summed amount over that one volume; a model that gives each region its own volume should register `lv_elf_<region>` names.
 
 ### lq_vitreous (**canonical log-transformed ocular clearance between the vitreous and the central compartment**)
@@ -2609,18 +2609,26 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Example models:** `Bihorel_2026_aflibercept.R` (founding example; 0.701).
 - **Notes:** Distinct from `lfdepot` in the same model, which there holds the SC bioavailability. A logit-scale estimate would be `logitf_vitreous`, following `logitfdepot`. Where the loss is applied matters: Bihorel 2026 applies it on entry into the eye in the fit, while that paper's ocular-concentration simulations put the whole dose in the vitreous and apply the loss on exit. The two give nearly the same plasma profile (they differ only through the small plasma-to-eye return flux), but the vitreous concentrations differ by about the factor `f_vitreous`.
 
+### lf_elf (**canonical log-transformed bioavailability of a dose delivered into the ELF**)
+- **Type:** log-transformed-pk
+- **Role:** Fraction of an inhaled or nebulized dose that reaches the canonical `elf` compartment when the model doses straight into it with no separate absorption depot (fraction), applied as `f(elf) <- f_elf`. The ELF analogue of `lf_vitreous` and `lfdepot` (`lf` + compartment token). The bare form `f_elf` is used inside `model()`.
+- **Source aliases:**
+  - `F` -- Li 2025 Table 2 ('F, bioavailability of nebulization'); Discussion: 'the fraction of drug reaching the lungs'.
+- **Example models:** `Li_2025_polymyxinB.R` (founding example; 0.557).
+- **Notes:** Not the ELF:plasma concentration ratio, which is the `f<matrix>` canonical `lfelf` / `felf` (no underscore; `Ji_2025_eravacycline.R`). `Themans_2019_meropenem.R` (ddmore) uses the spelling `lf_elf` for an ELF/V2 partition factor; that use predates this entry and is the `f<matrix>` concept, not a bioavailability. A model whose inhaled dose lands in a regional pool applies the fraction to that pool (`f(elf_lrt)`; `Kurup_2024_DZIF10c.R` carries it on the logit scale as `finh`).
+
 ### lq_elf_lung (**canonical log-transformed ELF-to-lung inter-compartmental clearance**)
 - **Type:** log-transformed-pk
 - **Role:** Inter-compartmental clearance between the lung epithelial-lining-fluid space and a second, deeper lung distribution compartment (volume / time). Third member of the `lq_<destination>` family founded by `lq_milk` and continued by `lq_elf`, and shaped like the `lq_p1_p2` two-token form because neither end of the exchange is the central compartment: the bare `lq` / `lq2` mean exchange between `central` and `peripheral1` / `peripheral2` specifically, so an exchange whose SOURCE is `elf` needs both endpoints in the name. Unlike `lq_p1_p2` the flow is bidirectional. The bare form `q_elf_lung` is used inside `model()`; the ELF-to-lung micro-constant is `q_elf_lung / v_elf` and the lung-to-ELF one is `q_elf_lung / v_lung`.
 - **Source aliases:** `Q2` -- Saporta 2026 Table 1 ("Apparent intercompartmental clearance (ELF-lung)") and Figure 2.
-- **Example models:** `Saporta_2026_meropenem.R` (`Q2 = 2.48 L/(h.kg)`, RSE 13%, in a mouse lung infection model whose ELF limb is a two-compartment system driven by, but not depleting, the plasma compartment).
+- **Example models:** `Saporta_2026_meropenem.R` (`Q2 = 2.48 L/(h.kg)`, RSE 13%, in a mouse lung infection model whose ELF limb is a two-compartment system driven by, but not depleting, the plasma compartment); `Li_2025_polymyxinB.R` (`CL4 = 3.44 L/h`, between the ELF central and ELF peripheral compartments).
 - **Notes:** Auto-approved 2026-09-01 as a well-formed member of the documented `lq_<destination>` family alongside the Saporta 2026 meropenem extraction (maintainers' ruling, PMC13041408, that compartment-derived names need no separate ruling). Pairs with `lv_lung`. Distinct from `lq_elf`, which is the CENTRAL-to-ELF clearance; a model resolving both, as Saporta 2026 does, uses the two names together.
 
 ### lv_lung (**canonical log-transformed lung-compartment volume**)
 - **Type:** log-transformed-pk
 - **Role:** Apparent volume of the canonical `lung` compartment (volume). Needed for the same reason as `lv_elf`: the bare volume canonicals `lvc` / `lvp` / `lvp2` / `lvp3` are reserved for the central and numbered peripheral compartments of a classical-PK model, and a lung distribution space is a named physiological compartment rather than a peripheral one. The bare form `v_lung` is used inside `model()` to convert the lung amount to a concentration, `Clung <- lung / v_lung`.
 - **Source aliases:** `VL2`, `V L2` -- Saporta 2026 Table 1 ("Apparent volume of distribution of second lung compartment").
-- **Example models:** `Saporta_2026_meropenem.R` (`VL2 = 9.27 L/kg`, RSE 26%; an apparent volume, because the lung limb is driven by plasma without mass transfer so the whole limb absorbs the unknown partitioning).
+- **Example models:** `Saporta_2026_meropenem.R` (`VL2 = 9.27 L/kg`, RSE 26%; an apparent volume, because the lung limb is driven by plasma without mass transfer so the whole limb absorbs the unknown partitioning); `Li_2025_polymyxinB.R` (`V4 = 4.35 L`, the ELF peripheral compartment).
 - **Notes:** Auto-approved 2026-09-01 as a well-formed member of the documented `lv_<compartment>` family founded by `lv_elf`, alongside the Saporta 2026 meropenem extraction (maintainers' ruling, PMC13041408, that compartment-derived names need no separate ruling). Pairs with `lq_elf_lung`. Distinct from the `kp_lung` / `lkp_lung` tissue-to-plasma partition coefficients, which are whole-body-PBPK partitioning constants rather than a fitted compartment volume.
 
 ### lq_lung (**canonical log-transformed central-to-lung inter-compartmental clearance**)
