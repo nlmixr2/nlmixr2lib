@@ -1244,6 +1244,8 @@ navbar:
         href: articles/vanHasselt_2014_cefazolin.html
       - text: "Cefepime (Capparelli 2005)"
         href: articles/Capparelli_2005_cefepime.html
+      - text: "Cefepime (Fouad 2025)"
+        href: articles/Fouad_2025_cefepime_taniborbactam_crrt.html
       - text: "Cefepime (Jonckheere 2019)"
         href: articles/Jonckheere_2019_cefepime.html
       - text: "Cefepime (Liu 2020)"
@@ -6676,6 +6678,8 @@ navbar:
         href: articles/Tsuda_2010_tamsulosin.html
       - text: "Tanezumab (Jonsson 2016)"
         href: articles/Jonsson_2016_tanezumab.html
+      - text: "Taniborbactam (Fouad 2025)"
+        href: articles/Fouad_2025_cefepime_taniborbactam_crrt.html
       - text: "Tapentadol (Watson 2019)"
         href: articles/Watson_2019_tapentadol.html
       - text: "Tapentadol allometryEstimated (Khalil 2020)"
@@ -8570,6 +8574,7 @@ articles:
   - articles/Foster_2023_enrofloxacin_cat
   - articles/Fostvedt_2021_glasdegib
   - articles/Fouad_2021_diacerein
+  - articles/Fouad_2025_cefepime_taniborbactam_crrt
   - articles/Fournier_2018_amoxicillin
   - articles/Frade_2022_benznidazole
   - articles/Francis_2019_rifapentine
