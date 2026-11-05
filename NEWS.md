@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Martinez-Casanova 2023 piperacillin ([doi:10.3390/antibiotics12030531](https://doi.org/10.3390/antibiotics12030531)) -- critically ill adults with preserved renal function on continuous infusion.
+- Add Purohit 2023 ritlecitinib ([doi:10.1208/s12248-023-00792-8](https://doi.org/10.1208/s12248-023-00792-8)) -- healthy participants and adults with rheumatoid arthritis.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
