@@ -1958,7 +1958,7 @@ Ratified 2026-09-02 (PMC13274749).
 - **Type:** compartment
 - **Role:** Lymph-node compartment. Covers both the whole-body lymph-node return pool of mAb PBPK models -- where lymph drained from every tissue's interstitial space converges before returning to plasma -- and a single anatomically named draining node that receives part of a subcutaneous dose in a classical compartmental absorption model.
 - **Source aliases:** `A_LN`, `LN`, `C_LN` -- Wu 2012 Eqs. (3), (5), (7) and Fig. 1 (`ALN,sc`, `CLN,sc`).
-- **Example models:** `Shah_2012_mAb_PBPK.R` (whole-body lymph-node return pool); `Wu_2012_bevacizumab_mouse.R` (single draining axillary node receiving the lymphatic fraction of a footpad SC dose); `Ramachandran_2023_rifampicin_pbpk.R`, `Michelet_2025_BI754111_mpbpk.R`, `Proctor_2026_durvalumab_pbpk.R`.
+- **Example models:** `Shah_2012_mAb_PBPK.R` (whole-body lymph-node return pool); `Wu_2012_bevacizumab_mouse.R` (single draining axillary node receiving the lymphatic fraction of a footpad SC dose); `Ramachandran_2023_rifampicin_pbpk.R`, `Michelet_2025_BI754111_mpbpk.R`, `Proctor_2026_durvalumab_pbpk.R`; `DeBonis_2025_il12_qsp.R`, `DeBonis_2025_il12_accelclearance_qsp.R`, `DeBonis_2025_il12_ip_qsp.R`, `DeBonis_2025_il12_iplocal_qsp.R` (the whole lymphatic system, V_L = 33 mL, through which ALL of an SC or i.p. IL-12 dose passes on its way to blood; in the reduced-bioavailability forms it also holds the T-cell receptor `target` / `complex` pools that sequester IL-12).
 - **Notes:** Role text broadened 2026-09-02 from "Lymph-node return compartment in mAb PBPK models" (ratified by the maintainers; PMC3326166): the concept is identical in the two settings, and a second lymph-node canonical would have been a duplicate that also desynchronised the `lnode` token already carried by `kp_lnode` / `lkp_lnode` in the parameter register. Distinct from `lymph`, which is the lymph-FLUID recycling pool of the Cao 2013 mAb mPBPK family and is ring-fenced to it. Pairs with the `lv_lnode` / `v_lnode` volume, the `lflnode` / `flnode` lymphatic-absorption fraction, the `lk_lnode_central` / `k_lnode_central` return rate constant, and the `Clnode` observable with its `propSd_Clnode` residual.
 
 ---
@@ -5285,7 +5285,7 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
 - **Role:** Intraperitoneal depot used in parallel-route preclinical PK models, typically alongside `depot_sc`. Each route carries its own absorption rate constant (`lka_ip` / `ka_ip`).
 - **Source aliases:**
   - `A1` -- Fan 2025 notation for the IP amount in eq 1.
-- **Example models:** `Fan_2025_nb457trimer_mouse.R` (founding example), `Fan_2025_ibalizumab_mouse.R`, `Fan_2025_nb457trimer_human.R`, `Fan_2025_ibalizumab_human.R`, `Lindemalm_2005_cladribine.R` (alongside `depot_oral`).
+- **Example models:** `Fan_2025_nb457trimer_mouse.R` (founding example), `Fan_2025_ibalizumab_mouse.R`, `Fan_2025_nb457trimer_human.R`, `Fan_2025_ibalizumab_human.R`, `DeBonis_2025_il12_ip_qsp.R` and `DeBonis_2025_il12_iplocal_qsp.R` (single-route i.p. models in which the peritoneal cavity is also an observed space: the i.p. concentration is `Cip = depot_ip / v_ip`, so the route-named state is kept rather than a bare `depot`).
 - **Notes:** Deliberately preferred over the numbered `depot1` / `depot2` form because the route is load-bearing: the two depots in a parallel-route model are not interchangeable, they carry route-specific absorption rate constants, and a study arm selects exactly one of them.
 
 

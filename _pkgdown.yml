@@ -3450,6 +3450,14 @@ navbar:
         href: articles/Kerbusch_2000_ifosfamide.html
       - text: "Il12 (ParraGuillen 2013)"
         href: articles/ParraGuillen_2013_tumor_immunotherapy.html
+      - text: "Il12 accelclearance qsp (DeBonis 2025)"
+        href: articles/DeBonis_2025_il12_qsp.html
+      - text: "Il12 ip qsp (DeBonis 2025)"
+        href: articles/DeBonis_2025_il12_qsp.html
+      - text: "Il12 iplocal qsp (DeBonis 2025)"
+        href: articles/DeBonis_2025_il12_qsp.html
+      - text: "Il12 qsp (DeBonis 2025)"
+        href: articles/DeBonis_2025_il12_qsp.html
       - text: "Ilaprazole (Yu 2024)"
         href: articles/Yu_2024_ilaprazole.html
       - text: "Iloperidone (Pei 2016)"
@@ -8918,6 +8926,7 @@ articles:
   - articles/Dasti_2025_mrna_vaccines
   - articles/Dave_2019_venetoclax
   - articles/Davis_2008_maraviroc
+  - articles/DeBonis_2025_il12_qsp
   - articles/DeCock_2012_propyleneGlycol
   - articles/DeJongh_2014_antithrombin
   - articles/DeJongh_2025_azd7648_olaparib_xenograft
