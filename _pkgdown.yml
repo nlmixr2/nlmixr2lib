@@ -5122,6 +5122,10 @@ navbar:
         href: articles/Panetta_2024_palbociclib.html
       - text: "Palbociclib plt (Panetta 2024)"
         href: articles/Panetta_2024_palbociclib.html
+      - text: "Paliperidone dog (Yu 2025)"
+        href: articles/Yu_2025_paliperidone.html
+      - text: "Paliperidone human (Yu 2025)"
+        href: articles/Yu_2025_paliperidone.html
       - text: "Paliperidone panss subscales (PillaReddy 2013)"
         href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Paliperidone rat pbpk (Yamamoto 2017)"
@@ -10571,6 +10575,7 @@ articles:
   - articles/Yu_2023_vancomycin
   - articles/Yu_2024_ilaprazole
   - articles/Yu_2025_methotrexate
+  - articles/Yu_2025_paliperidone
   - articles/Yu_2025_perampanel
   - articles/Yu_2025_vancomycin
   - articles/Yu_2025b_vancomycin
