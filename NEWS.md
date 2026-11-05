@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bokor 2025 procalcitonin after birth ([doi:10.1007/s10928-025-09965-8](https://doi.org/10.1007/s10928-025-09965-8)) -- Japanese preterm and term neonates and infants.
+- Add Reeder 2025 piperacillin and tazobactam ([doi:10.1002/jcph.6161](https://doi.org/10.1002/jcph.6161)) -- critically ill adults in the ICU, including patients on continuous renal replacement therapy.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
