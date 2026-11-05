@@ -7370,6 +7370,8 @@ navbar:
         href: articles/Pastuszak_2021_testosteroneUndecanoate.html
       - text: "Tetrahydrocannabinol (Henthorn 2024)"
         href: articles/Henthorn_2024_tetrahydrocannabinol.html
+      - text: "Tetrahydrocannabinol (Li 2025)"
+        href: articles/Li_2025_tetrahydrocannabinol.html
       - text: "Tetrahydrocannabinol (Storgaard 2026)"
         href: articles/Storgaard_2026_tetrahydrocannabinol.html
       - text: "Tezacaftor (Truong 2025)"
@@ -9899,6 +9901,7 @@ articles:
   - articles/Li_2025_epcoritamab
   - articles/Li_2025_lacosamide
   - articles/Li_2025_modakafuspAlfa
+  - articles/Li_2025_tetrahydrocannabinol
   - articles/Li_2026_alvespimycin
   - articles/Li_2026_epcoritamab
   - articles/Li_2026_etranacogene

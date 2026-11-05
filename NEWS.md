@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chun 2025 tramadol enantiomers, O-/N-desmethyltramadol and pain score ([doi:10.1002/psp4.13315](https://doi.org/10.1002/psp4.13315)) -- adults with chronic neuropathic pain from diabetic neuropathy or nerve compression. Registers the `DIS_DIAB_TYPE2` covariate.
+- Add Li 2025 delta-9-tetrahydrocannabinol with 11-OH-THC and THC-COOH ([doi:10.1002/jcph.6181](https://doi.org/10.1002/jcph.6181)) -- adult occasional cannabis users after oral or intravenous THC (pooled mean data from 10 studies). Registers the `thccooh` metabolite suffix.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
