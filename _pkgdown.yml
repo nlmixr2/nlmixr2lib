@@ -6620,6 +6620,8 @@ navbar:
         href: articles/Wu_2021_SPI_62.html
       - text: "SPI 62 (Wu 2023)"
         href: articles/Wu_2023_SPI_62.html
+      - text: "SR9009 qsp (Tseng 2025)"
+        href: articles/Tseng_2025_SR9009.html
       - text: "Sabirnetug (Siemers 2025)"
         href: articles/Siemers_2025_sabirnetug.html
       - text: "Sacituzumab (Sathe 2024)"
@@ -10809,6 +10811,7 @@ articles:
   - articles/Tsai_2024_vancomycin
   - articles/Tsamandouras_2024_brepocitinib
   - articles/Tse_2020_tofacitinib
+  - articles/Tseng_2025_SR9009
   - articles/Tseng_2026_piperacillin
   - articles/Tseng_2026_vancomycin
   - articles/Tsirizani_2024_darunavir

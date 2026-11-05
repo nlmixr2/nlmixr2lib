@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sundell 2025 balcinrenone concentration-QTcF model ([doi:10.1002/psp4.13272](https://doi.org/10.1002/psp4.13272)) -- healthy men in a single ascending dose study.
+- Add Tseng 2025 SR9009 lung circadian clock and SARS-CoV-2 QSP model ([doi:10.1002/psp4.13277](https://doi.org/10.1002/psp4.13277)) -- theoretical in silico lung epithelial cell (no subjects).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
