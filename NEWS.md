@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kaikousidis 2024 ropinirole, final and misspecified models ([doi:10.1002/psp4.13182](https://doi.org/10.1002/psp4.13182)) -- healthy adults after a single 2 mg prolonged-release tablet.
+- Add Prasanchaimontri 2024 favipiravir ([doi:10.1002/prp2.1233](https://doi.org/10.1002/prp2.1233)) -- Thai adults with mild COVID-19 without pneumonia.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
