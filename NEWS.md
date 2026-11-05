@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Han 2023 budesonide (Entocort EC) Weibull dissolution function ([doi:10.3390/pharmaceutics15092237](https://doi.org/10.3390/pharmaceutics15092237)) -- in vitro biorelevant (FaSSIF) dissolution of the controlled-release pellets.
+- Add van der Laan 2023 levofloxacin ([doi:10.1093/jac/dkad257](https://doi.org/10.1093/jac/dkad257)) -- South African children under 6 years on rifampicin-resistant tuberculosis preventive therapy, comparing dispersible and crushed non-dispersible tablets. Registers the `FORM_LEVOFLOXACIN_NONDISPERSIBLE` covariate.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
