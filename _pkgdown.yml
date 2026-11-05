@@ -5242,6 +5242,8 @@ navbar:
         href: articles/Li_2024_norepinephrine.html
       - text: "Norepinephrine (Oualha 2014)"
         href: articles/Oualha_2014_norepinephrine.html
+      - text: "Nortriptyline (Vos 2025)"
+        href: articles/Vos_2025_nortriptyline.html
       - text: "Norvancomycin (Li 2024)"
         href: articles/Li_2024_norvancomycin.html
       - text: "Noscapine (Chen 2024)"
@@ -11005,6 +11007,7 @@ articles:
   - articles/Vonk_2025_tezacaftor_ivacaftor
   - articles/Vorontsova_2022_misoprostol
   - articles/Vos_2025_iminobiotin
+  - articles/Vos_2025_nortriptyline
   - articles/Vucicevic_2025_efavirenz
   - articles/Vujkovic_2018_efavirenz
   - articles/Vuu_2016_topiramate_dog

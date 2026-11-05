@@ -2,7 +2,7 @@
 
 # development version
 
-- Add van den Berg 2025 natalizumab ([doi:10.1002/psp4.70014](https://doi.org/10.1002/psp4.70014)) -- adults with relapsing-remitting multiple sclerosis on standard or extended-interval IV maintenance dosing.
+- Add Vos 2025 nortriptyline ([doi:10.1007/s40262-025-01528-x](https://doi.org/10.1007/s40262-025-01528-x)) -- adults with major depressive disorder.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
