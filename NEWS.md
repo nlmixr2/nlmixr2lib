@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kim 2024 borofalan (10B) (L-4-boronophenylalanine, BPA) ([doi:10.3390/ph17030301](https://doi.org/10.3390/ph17030301)) -- whole-blood boron-10 in cancer patients receiving boron neutron capture therapy.
+- Add Yoon 2024 bepotastine ([doi:10.3390/pharmaceutics16030334](https://doi.org/10.3390/pharmaceutics16030334)) -- healthy Korean adults and Korean children aged 2-6 years with allergic rhinitis or urticaria.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
