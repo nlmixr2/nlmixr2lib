@@ -4830,10 +4830,8 @@ navbar:
         href: articles/Sahota_2015_miridesap.html
       - text: "Mirikizumab (Chua 2025)"
         href: articles/Chua_2025_mirikizumab.html
-      - text: "Mirikizumab phase2 (Chua 2023)"
-        href: articles/Chua_2023_mirikizumab.html
-      - text: "Mirikizumab phase3 (Chua 2023)"
-        href: articles/Chua_2023_mirikizumab.html
+      - text: "Mirikizumab (Otani 2025)"
+        href: articles/Otani_2025_mirikizumab.html
       - text: "Misoprostol (Vorontsova 2022)"
         href: articles/Vorontsova_2022_misoprostol.html
       - text: "Mitiperstat (Sunnaker 2026)"
@@ -10243,6 +10241,7 @@ articles:
   - articles/Oosten_2017_morphine
   - articles/OrtizZacarias_2018_fosfomycin
   - articles/Osawa_2018_daclatasvir_asunaprevir
+  - articles/Otani_2025_mirikizumab
   - articles/Othman_2007_carvedilol
   - articles/Othman_2013_ABT_102
   - articles/Othman_2014_daclizumab
