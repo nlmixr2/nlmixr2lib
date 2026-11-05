@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Melillo 2023 gadoxetate hepatic-transporter DDI PBPK ([doi:10.3390/pharmaceutics15030896](https://doi.org/10.3390/pharmaceutics15030896)) -- rats; a reduced gadoxetate PBPK model coupled with five perpetrator PK models (rifampicin, asunaprevir, ciclosporin, pioglitazone, bosentan) that prospectively predicts DCE-MRI AUC ratios.
+- Add Offman 2023 XTMAB-16 ([doi:10.3389/fphar.2023.1066454](https://doi.org/10.3389/fphar.2023.1066454)) -- healthy adults given a single intravenous infusion in the first-in-human study.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
