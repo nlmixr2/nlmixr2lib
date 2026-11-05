@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Caballero 2023 isavuconazole + anidulafungin, caspofungin and micafungin in vitro time-kill models ([doi:10.1002/psp4.12949](https://doi.org/10.1002/psp4.12949)) -- six Candida auris blood isolates in vitro.
+- Add Morcos 2023b copanlisib pediatric BSA-scaled adaptation ([doi:10.1111/cts.13523](https://doi.org/10.1111/cts.13523)) -- children and adolescents aged 4-21 years with relapsed/refractory solid tumors.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
