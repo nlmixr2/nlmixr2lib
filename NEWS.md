@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Jaber 2023 cyclophosphamide / phosphoramide mustard ([doi:10.1002/jcph.2144](https://doi.org/10.1002/jcph.2144)) -- adults receiving cyclophosphamide 50 mg/kg conditioning for allogeneic hematopoietic cell transplantation.
+- Add Merali 2023 apixaban ([doi:10.1002/psp4.12935](https://doi.org/10.1002/psp4.12935)) -- children from birth to <18 years at risk of thrombosis, pooled with healthy adults.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
