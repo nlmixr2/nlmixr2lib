@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Centanni 2024 vincristine PK and peripheral-neuropathy models ([doi:10.1007/s40262-023-01336-1](https://doi.org/10.1007/s40262-023-01336-1)) -- children with cancer given vincristine as a bolus or an infusion.
+- Add Clegg 2024 sodium zirconium cyclosilicate potassium-homeostasis QSP model ([doi:10.1002/psp4.13084](https://doi.org/10.1002/psp4.13084)) -- adults with hyperkalaemia (phase III trials ZS-003 and ZS-004), with an optional hemodialysis extension.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
