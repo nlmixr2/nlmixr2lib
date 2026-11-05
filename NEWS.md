@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kim 2024 in vivo CAR-T CAR mRNA nanoparticle cell-level PK-PD ([doi:10.1111/cts.70101](https://doi.org/10.1111/cts.70101)) -- QSP, in vitro human CD8+ T cells and in vivo NSG mice.
+- Add Pereira 2024 M6495 anti-ADAMTS-5 nanobody PK/PD with the ARGS biomarker ([doi:10.1007/s10928-024-09958-z](https://doi.org/10.1007/s10928-024-09958-z)) -- cynomolgus monkeys, plus the allometrically scaled human projection used to design the first-in-human study.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
