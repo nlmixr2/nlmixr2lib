@@ -2590,6 +2590,8 @@ navbar:
         href: articles/Baker_2020_eptinezumab.html
       - text: "Eravacycline (Ji 2025)"
         href: articles/Ji_2025_eravacycline.html
+      - text: "Erenumab rat (Gupta 2025)"
+        href: articles/Gupta_2025_erenumab_rat.html
       - text: "Ergothioneine pbpk (Okumura 2025)"
         href: articles/Okumura_2025_ergothioneine_pbpk.html
       - text: "Eribulin (Kawamura 2018)"
@@ -9438,6 +9440,7 @@ articles:
   - articles/Gupta_2021_brigatinib
   - articles/Gupta_2022_brigatinib_exposure_response
   - articles/Gupta_2022_mobocertinib
+  - articles/Gupta_2025_erenumab_rat
   - articles/Gurjar_2023_raltegravir
   - articles/Gwee_2020_ivermectin
   - articles/Hadigol_2026_talazoparib_enzalutamide

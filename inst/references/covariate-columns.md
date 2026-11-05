@@ -18610,16 +18610,15 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Yin_2020_pexidartinib.R` (multiplicative effect on the depot bioavailability: F1 = 1.0 when FORM_PEX_PHASE1 = 0 (Phase 3 reference) and F1 = 0.855 * exp(etalfdepot) when FORM_PEX_PHASE1 = 1, where the 0.855 typical-value anchor is held fixed in the source model and the IIV etalfdepot ~ N(0, 0.101) is gated by FORM_PEX_PHASE1 so it has no effect on Phase 3 subjects).
 - **Notes:** Scoped specific because the Phase-1-vs-Phase-3 formulation contrast is tied to the pexidartinib clinical-development timeline and does not generalise to other drugs. Future drug-specific Phase-1-vs-commercial bioavailability comparisons should register their own `FORM_<drug>_PHASE1` canonical rather than reuse this entry (sibling to `FORM_ABA_PHASE2` for abatacept). Distinct from the generic `FORM_TABLET` / `FORM_CAPSULE` / `FORM_SUSPENSION` family (oral solid-dosage manipulations) because the contrast here is two oral formulations differentiated by clinical-development phase rather than by dosage form. For typical simulations of the approved 800 mg/day TGCT regimen used in ENLIVEN, set FORM_PEX_PHASE1 = 0 for every subject.
 
-### FORM_MEZIGDOMIDE_B (**canonical for the mezigdomide formulation B indicator**)
-- **Description:** 1 = mezigdomide dosed as formulation B, 0 = dosed as formulation A, the formulation used in the first-in-human trials. Per-dose-occasion indicator: in the Study II randomized crossover each subject received both formulations.
+### FORM_ERENUMAB_AGGREGATE (**canonical for the aggregated-erenumab versus monomeric-erenumab dose indicator**)
+- **Description:** 1 = the administered erenumab dose was aggregated antibody; 0 = monomeric erenumab. Per-dose-record indicator.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (formulation A; the typical-value bioavailability reference).
-- **Source aliases:**
-  - `FORMU` -- used in `Wu_2023_mezigdomide.R` (Wu 2023 Methods, 'FORMU = 0 if mezigdomide is dosed in formulation A and FORMU = 1 if in formulation B'; Text S2 codes the raw column as A = 1 / B = 2).
-- **Example models:** `Wu_2023_mezigdomide.R` (on log F: `-0.236 * FORM_MEZIGDOMIDE_B`, relative bioavailability of formulation B 0.79 times formulation A; the formulation also selects which PPI effect applies to log ka, `-0.592` for A and `-1.99` for B).
-- **Notes:** Follows the auto-approved `FORM_<drug>_<formulation>` canonical family. Wu 2023 does not describe the composition of either formulation, and it labels formulation A the reference in its Methods but the test formulation in its Figure 1 caption; the indicator is defined by the letter, which the paper uses consistently in its equations and figures, not by the test/reference label.
+- **Reference category:** 0 (monomeric erenumab).
+- **Source aliases:** `aggregation state` (monomer = 0, aggregate = 1) -- Gupta 2025 Equation 3 and Table 1.
+- **Example models:** `Gupta_2025_erenumab_rat.R` (multiplicative effects theta^FORM on CL/F, 2.40, and ka, 0.12, and a switch of the dendritic-cell activation EC50 from 9.85 to 2.02 ug/mL in the immune-cell ADA model).
+- **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` family. Protein aggregation is a drug-product quality attribute rather than a dosage form, but it is recorded per dose like the other `FORM_` indicators. Confounded with `STUDY_ERENUMAB_S2` in the founding data set (aggregates were given only in Study 2, and at a 10-fold lower dose than the monomer), so the aggregate effects also absorb any study-level difference in typical values.
 
 ### FORM_GEF_F02 (**canonical for the gefapixant F02 wet-granulation citric-acid tablet formulation indicator**)
 - **Description:** 1 = dose record administered as gefapixant F02, the earlier wet-granulation film-coated immediate-release tablet (7.5, 20, and 50 mg strengths) that contains citric acid as an acidulant; 0 = dose record administered as F04 (gefapixant citrate active ingredient with a 20A film coating, used in two phase I studies) or F04A (gefapixant citrate with a 03K film coating, used in the phase III COUGH-1 and COUGH-2 trials). Per-dose-occasion indicator: within a single study the formulation is fixed, but a subject in a relative-bioavailability crossover study can carry both values across periods.
@@ -21728,6 +21727,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `Study 4` -- Ponce-Bobadilla 2023 OSM Table 7 and OSM Table 1.
 - **Example models:** `PonceBobadilla_2023_upadacitinib_induction_clinrem.R`, `PonceBobadilla_2023_upadacitinib_induction_clinresp.R`, `PonceBobadilla_2023_upadacitinib_induction_endoimp.R`, `PonceBobadilla_2023_upadacitinib_induction_endorem.R`.
 - **Notes:** Member of the `STUDY_<id>` family; sibling of `STUDY_UPA_UC_S2`.
+
+### STUDY_ERENUMAB_S2 (**canonical for the Gupta 2025 / Ryman erenumab rat immune-tolerance Study 2 indicator**)
+- **Description:** 1 = animal enrolled in Study 2 of the two 12-week erenumab immune-tolerance studies in Sprague-Dawley rats analysed by Gupta 2025 (1 mg/kg weekly SC erenumab given as aggregates, with or without tacrolimus/sirolimus); 0 = Study 1 (10 mg/kg weekly SC erenumab monomer, with or without methotrexate or tacrolimus/sirolimus). Time-fixed per animal.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Study 1).
+- **Source aliases:** `Study 1` / `Study 2` -- Gupta 2025 Section 2.1 and Table 1.
+- **Example models:** `Gupta_2025_erenumab_rat.R` (selects the study-specific IIV on Vd/F, the study-specific combined residual error, and the ADA-positivity S/N cut-off of 2 versus 1.5 used in the ADA power effect on CL/F).
+- **Notes:** Member of the auto-approved `STUDY_<id>` family. Acts only on variance terms and the assay cut-off, never on a typical value; the paper attributes the separate terms to different bioanalytical assays, instruments, erenumab batches and animal batches in studies run 15 months apart. In the source data it is identical to `FORM_ERENUMAB_AGGREGATE` (every Study 2 animal received aggregates), but the two are kept separate because they switch different model terms.
 
 ### STUDY_CHRONOS3 (**canonical for the CHRONOS-3 (Bayer study 17067) copanlisib trial cohort indicator**)
 - **Description:** 1 = subject enrolled in CHRONOS-3, the randomized double-blind phase III trial of copanlisib plus rituximab in relapsed indolent non-Hodgkin lymphoma (Bayer study 17067, NCT02367040); 0 = subject enrolled in any of the eight phase I / phase II copanlisib studies pooled alongside it (12871, 15205, 16270, 16349 parts A and B / CHRONOS-1, 16790, 16866, 17792, 18041). Carries two distinct roles in the founding model: a structural clearance shift, and selection of the phase III residual-error magnitude.
