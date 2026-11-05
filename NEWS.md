@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liu 2023 bintrafusp alfa PK, tumour-growth and multistate dose-response models ([doi:10.1002/psp4.12976](https://doi.org/10.1002/psp4.12976)) -- adults with second-line non-small cell lung cancer.
+- Add Ojara 2023 paclitaxel tumor growth inhibition and overall-survival models ([doi:10.1002/psp4.12937](https://doi.org/10.1002/psp4.12937)) -- adults with advanced non-small cell lung cancer on paclitaxel/platinum chemotherapy.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
