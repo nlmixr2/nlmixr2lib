@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Campagne 2024 methotrexate and 7-hydroxymethotrexate ([doi:10.1016/j.ejps.2023.106669](https://doi.org/10.1016/j.ejps.2023.106669)) -- infants and young children with brain tumors (two models: BSA/eGFR, and BSA/eGFR/SNP pharmacogenetic).
+- Add Centanni 2024 vincristine PK and peripheral-neuropathy models ([doi:10.1007/s40262-023-01336-1](https://doi.org/10.1007/s40262-023-01336-1)) -- children with cancer given vincristine as a bolus or an infusion.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
