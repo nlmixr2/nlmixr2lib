@@ -92,12 +92,12 @@ Chen_2014_nab_paclitaxel <- function() {
     # ---- PK inter-individual variability (Chen 2014 Table 2 'Interindividual variability' block) ----
     # Paper reports CV%; converted to log-normal eta variance via omega^2 = log(1 + CV^2).
     # No correlation structure is reported in Table 2 -- treat as diagonal.
-    #   V1   46.7% -> log(1 + 0.467^2) = 0.1958
+    #   V1   46.7% -> log(1 + 0.467^2) = 0.1973
     #   V2   25.5% -> log(1 + 0.255^2) = 0.0628
     #   VMTR 26.7% -> log(1 + 0.267^2) = 0.0688
     #   VMEL 22.3% -> log(1 + 0.223^2) = 0.0486
     # The 16.7% IIV on the WB / plasma ratio is not encoded here -- see population$notes.
-    etalvc   ~ 0.1958
+    etalvc   ~ log(1 + 0.467^2)
     etalvp   ~ 0.0628
     etalvmtr ~ 0.0688
     etalvmax ~ 0.0486

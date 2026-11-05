@@ -109,26 +109,26 @@ Netterberg_2018_breast_cancer_FN_biomarkers <- function() {
 
     # ----- Inter-individual variability (IIV) -- log-normal; Table 2 reports %CV -----
     # %CV -> log-scale variance: var = log(CV^2 + 1).
-    # IL-60: 68.0% CV -> var = log(0.680^2 + 1) = 0.3858
-    # CRP0:  80.5% CV -> var = log(0.805^2 + 1) = 0.4862
+    # IL-60: 68.0% CV -> var = log(0.680^2 + 1) = 0.3801
+    # CRP0:  80.5% CV -> var = log(0.805^2 + 1) = 0.4996
     # kout,IL-6: 130%  CV -> var = log(1.30^2 + 1) = 0.9883
-    etalbl_il6  ~ 0.3858  # Netterberg 2018 Table 2 IIV(IL-60) = 68.0% CV
-    etalbl_crp  ~ 0.4862  # Netterberg 2018 Table 2 IIV(CRP0)  = 80.5% CV
+    etalbl_il6  ~ log(1 + 0.68^2)  # Netterberg 2018 Table 2 IIV(IL-60) = 68.0% CV
+    etalbl_crp  ~ log(1 + 0.805^2)  # Netterberg 2018 Table 2 IIV(CRP0)  = 80.5% CV
     etalkout_il6 ~ 0.9883 # Netterberg 2018 Table 2 IIV(kout,IL-6) = 130%  CV
 
     # ----- Interoccasion variability (IOV; encoded as additional log-normal noise on the surge params) -----
     # Table 2 IOV(SA_CRP) = 61.4% CV  -> var = log(0.614^2 + 1) = 0.3198
-    # Table 2 IOV(SW_CRP) = 83.8% CV  -> var = log(0.838^2 + 1) = 0.5219
-    # Table 2 IOV(PT_IL-6) = 59.7% CV -> var = log(0.597^2 + 1) = 0.3036
-    # Table 2 IOV(PT_CRP+) = 81.3% CV -> var = log(0.813^2 + 1) = 0.4920
+    # Table 2 IOV(SW_CRP) = 83.8% CV  -> var = log(0.838^2 + 1) = 0.5319
+    # Table 2 IOV(PT_IL-6) = 59.7% CV -> var = log(0.597^2 + 1) = 0.3048
+    # Table 2 IOV(PT_CRP+) = 81.3% CV -> var = log(0.813^2 + 1) = 0.5074
     # rxode2/nlmixr2 does not have a first-class IOV construct; in this single-occasion
     # simulation model the IOV is encoded as additional eta terms applied per simulation
     # run. Users simulating multiple cycles per subject should resample these etas at
     # cycle change.
     etalsa_crp     ~ 0.3198  # Netterberg 2018 Table 2 IOV(SA_CRP)  = 61.4% CV
-    etalsw_crp     ~ 0.5219  # Netterberg 2018 Table 2 IOV(SW_CRP)  = 83.8% CV
-    etalpt_il6     ~ 0.3036  # Netterberg 2018 Table 2 IOV(PT_IL-6) = 59.7% CV
-    etalpt_crp_plus ~ 0.4920 # Netterberg 2018 Table 2 IOV(PT_CRP+) = 81.3% CV
+    etalsw_crp     ~ log(1 + 0.838^2)  # Netterberg 2018 Table 2 IOV(SW_CRP)  = 83.8% CV
+    etalpt_il6     ~ log(1 + 0.597^2)  # Netterberg 2018 Table 2 IOV(PT_IL-6) = 59.7% CV
+    etalpt_crp_plus ~ log(1 + 0.813^2)  # Netterberg 2018 Table 2 IOV(PT_CRP+) = 81.3% CV
 
     # ----- Residual error -----
     # IL-6: proportional 54.7% (Table 2 'Proportional error (IL-6) = 54.7%'). No log transform.

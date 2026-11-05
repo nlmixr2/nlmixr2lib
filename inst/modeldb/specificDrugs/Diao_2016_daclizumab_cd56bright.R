@@ -120,9 +120,9 @@ Diao_2016_daclizumab_cd56bright <- function() {
     # IIV (Diao 2016 Table 4): Kin 97% CV, Smax 67% CV. EC50 has no IIV reported.
     # omega^2 = log(1 + CV^2)
     # Kin  CV 97% -> omega^2 = log(1 + 0.97^2) = 0.66022
-    # Smax CV 67% -> omega^2 = log(1 + 0.67^2) = 0.36398
+    # Smax CV 67% -> omega^2 = log(1 + 0.67^2) = 0.37080
     etalcd56Kin  ~ 0.66022    # Diao 2016 Table 4 (Kin IIV 97% CV)
-    etalcd56Smax ~ 0.36398    # Diao 2016 Table 4 (Smax IIV 67% CV)
+    etalcd56Smax ~ log(1 + 0.67^2)  # Diao 2016 Table 4 (Smax IIV 67% CV)
 
     # Residual error: proportional on CD56 bright NK %, 29.1%.
     propSd_cd56bright <- 0.291; label("Proportional residual error on CD56 bright NK (fraction)") # Diao 2016 Table 4

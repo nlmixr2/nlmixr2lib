@@ -126,11 +126,11 @@ Hietala_2010_lumefantrine <- function() {
     # Inter-individual variability (IIV). Table 2 reports IIV as %CV per the
     # NONMEM log-normal convention; the corresponding internal variance is
     #   omega^2 = log((CV/100)^2 + 1)
-    #     ka  CV 156% -> log(1.56^2 + 1) = 1.241237
+    #     ka  CV 156% -> log(1.56^2 + 1) = 1.233609
     #     V/F CV  82% -> log(0.82^2 + 1) = 0.515660
     # IIV on Lag and CL/F was not estimated (Table 2 "NE") and is therefore
     # omitted here.
-    etalka ~ 1.241237          # Hietala 2010 Table 2: IIV on ka  = 156% CV (95% CI 126-190)
+    etalka ~ log(1 + 1.56^2)  # Hietala 2010 Table 2: IIV on ka  = 156% CV (95% CI 126-190)
     etalvc ~ 0.515660          # Hietala 2010 Table 2: IIV on V/F =  82% CV (95% CI  66-102)
 
     # Residual error. Hietala 2010 reports separate proportional and additive

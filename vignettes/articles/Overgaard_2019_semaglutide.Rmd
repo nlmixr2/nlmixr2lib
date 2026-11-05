@@ -56,7 +56,7 @@ Per-parameter origins are recorded as in-file comments next to each `ini()` entr
 | IIV CL = 15.2% CV -> omega^2 = log(1 + 0.152^2) = 0.022840 | 0.022840 | Table 4, IIV (% CV) column for CL |
 | IIV Vc = 15.4% CV -> omega^2 = log(1 + 0.154^2) = 0.023438 | 0.023438 | Table 4, IIV (% CV) column for Vc |
 | Cov(eta_CL, eta_Vc) | 0.0172 | Table 4 footnote ("A covariance of 0.0172 was found between CL and Vc") |
-| IIV ka = 37.9% CV -> omega^2 = log(1 + 0.379^2) = 0.133844 | 0.133844 | Table 4, IIV (% CV) column for ka |
+| IIV ka = 37.9% CV -> omega^2 = log(1 + 0.379^2) = 0.134217 | 0.134217 | Table 4, IIV (% CV) column for ka |
 | `propSd` (additive on log scale ~ proportional in linear) | 0.103 | Table 4, row "Residual error" + Methods page 654 ("residual error model was additive for log-transformed observations") |
 
 Covariate-effect parameterization (Methods page 653, equations on page 653-654):

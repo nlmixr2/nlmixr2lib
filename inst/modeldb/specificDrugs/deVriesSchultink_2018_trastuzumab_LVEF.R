@@ -142,13 +142,13 @@ deVriesSchultink_2018_trastuzumab_LVEF <- function() {
     # Inter-individual variability (de Vries Schultink 2018 Table 2;
     # CV%). Block correlation between LVEF0 and EC50 with r = 0.585.
     # omega^2 = log(CV^2 + 1). Off-diagonal cov = r * sqrt(var1 * var2).
-    #   omega^2_LVEF0 = log(0.0707^2 + 1) = 0.0049745
-    #   omega^2_EC50  = log(0.829^2 + 1)  = 0.5091924
-    #   cov           = 0.585 * sqrt(0.0049745 * 0.5091924) = 0.029439
     # No IIV reported on T1/2rec (paper: BSV could not be identified for
     # the recovery; not included in the final model).
-    etallvef0 + etalec50 ~ c(0.0049745,
-                             0.029439, 0.5091924)                                                    # Table 2: omega_LVEF0 = 7.07% CV, omega_EC50 = 82.9% CV, correlation 0.585
+    etallvef0 + etalec50 ~ c(
+      log(1 + 0.0707^2),
+      0.585 * sqrt(log(1 + 0.0707^2) * log(1 + 0.829^2)),
+      log(1 + 0.829^2)
+    ) # Table 2: omega_LVEF0 = 7.07% CV, omega_EC50 = 82.9% CV, correlation 0.585
 
     # Residual error on LVEF: proportional 7.8% (Table 2, shrinkage
     # 8.3%). Single PD output -> use the bare `propSd` form. No residual

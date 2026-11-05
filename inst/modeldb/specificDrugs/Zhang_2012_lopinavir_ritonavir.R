@@ -211,18 +211,21 @@ Zhang_2012_lopinavir_ritonavir <- function() {
     # only BOV is reported. The IOV on residual unexplained variability (17.1%
     # for LPV) cannot be straightforwardly encoded as a BSV-equivalent on a
     # residual-error magnitude and is dropped with a note in the vignette.
-    # omega^2 = log(1 + CV^2) converts the CV%-on-SD scale to the log-scale
-    # variance.
+    # Methods: 'Since variability in such a model can be approximately
+    # interpreted as a deviation proportional to the typical value, it will
+    # be reported as % coefficient of variation (CV).' The printed CV is
+    # therefore the SD of the eta (CV ~ omega), so each variance is the
+    # square of the printed CV, not log(1 + CV^2).
     # ==========================================================================
-    etalcl     ~ 0.04004    # Table 2 LPV IIV CL/F = 20.2% (95% CI 12.7%-25.1%); IOV CL/F 11.8% dropped per convention; omega^2 = log(1 + 0.202^2) = 0.04004
-    etalvc     ~ 0.07113    # Table 2 LPV IIV Vc/F = 27.2% (95% CI 10.3%-41.4%); omega^2 = log(1 + 0.272^2) = 0.07113
-    etalka     ~ log(1 + 0.942^2)  # Table 2 LPV IOV ka  = 94.2% (95% CI 46.5%-150.1%) folded in as BSV-equivalent (no separate BSV reported)
-    etalfdepot ~ 0.04692    # Table 2 LPV IOV F   = 21.9% (95% CI 17.1%-24.0%) folded in as BSV-equivalent (no separate BSV reported); omega^2 = log(1 + 0.219^2) = 0.04692
+    etalcl     ~ 0.202^2    # Table 2 LPV IIV CL/F = 20.2% (95% CI 12.7%-25.1%); IOV CL/F 11.8% dropped per convention
+    etalvc     ~ 0.272^2    # Table 2 LPV IIV Vc/F = 27.2% (95% CI 10.3%-41.4%)
+    etalka     ~ 0.942^2    # Table 2 LPV IOV ka  = 94.2% (95% CI 46.5%-150.1%) folded in as BSV-equivalent (no separate BSV reported)
+    etalfdepot ~ 0.219^2    # Table 2 LPV IOV F   = 21.9% (95% CI 17.1%-24.0%) folded in as BSV-equivalent (no separate BSV reported)
 
-    etalcl_rtv     ~ 0.04525  # Table 2 RTV IIV CL/F = 21.5% (95% CI 11.5%-31.7%); IOV CL/F 20.4% dropped per convention; omega^2 = log(1 + 0.215^2) = 0.04525
-    etalvc_rtv     ~ 0.01035  # Table 2 RTV IIV Vc/F = 10.2% (95% CI 9.85%-10.5%); omega^2 = log(1 + 0.102^2) = 0.01035
-    etalfdepot_rtv ~ log(1 + 0.303^2)  # Table 2 RTV IIV F   = 30.3% (95% CI 17.4%-49.6%); IOV F 30.3% dropped per convention
-    etalmtt_rtv    ~ 0.07480  # Table 2 RTV IOV MTT = 27.9% (95% CI 19.6%-38.2%) folded in as BSV-equivalent (no separate BSV reported); omega^2 = log(1 + 0.279^2) = 0.07480
+    etalcl_rtv     ~ 0.215^2  # Table 2 RTV IIV CL/F = 21.5% (95% CI 11.5%-31.7%); IOV CL/F 20.4% dropped per convention
+    etalvc_rtv     ~ 0.102^2  # Table 2 RTV IIV Vc/F = 10.2% (95% CI 9.85%-10.5%)
+    etalfdepot_rtv ~ 0.303^2  # Table 2 RTV IIV F   = 30.3% (95% CI 17.4%-49.6%); IOV F 30.3% dropped per convention
+    etalmtt_rtv    ~ 0.279^2  # Table 2 RTV IOV MTT = 27.9% (95% CI 19.6%-38.2%) folded in as BSV-equivalent (no separate BSV reported)
 
     # ==========================================================================
     # Residual error (Zhang 2012 Table 2 rows 'Residual variability

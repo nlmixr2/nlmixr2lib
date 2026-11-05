@@ -178,8 +178,8 @@ Suyagh_2012_canrenone <- function() {
     etalcl ~ 0.15581
     label("IIV variance on log CL/F (paper omega_CL/F 41.06% CV per Table 3)")  # log(1 + 0.4106^2) = 0.15581
 
-    etalvc ~ 0.19019
-    label("IIV variance on log V/F (paper omega_V/F 45.76% CV per Table 3)")    # log(1 + 0.4576^2) = 0.19019
+    etalvc ~ log(1 + 0.4576^2)
+    label("IIV variance on log V/F (paper omega_V/F 45.76% CV per Table 3)")    # log(1 + 0.4576^2) = 0.19012
 
     # ---- Residual error ----
     # Combined additive + proportional was tested but the additive term

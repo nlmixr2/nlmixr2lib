@@ -67,12 +67,12 @@ Wang_2017_benralizumab <- function() {
     e_jpn_vc   <- 1.34   ; label("Multiplicative factor on Vc for Japanese healthy volunteers (unitless)")
 
     # Inter-individual variability (diagonal)
-    etalcl ~ 0.0608   # 24.9% CV
-    etalvc ~ 0.0524   # 23.1% CV
-    etalq  ~ 0.0791   # 28.5% CV
-    etalvp ~ 0.1029   # 32.7% CV
+    etalcl ~ log(1 + 0.249^2)  # 24.9% CV
+    etalvc ~ log(1 + 0.231^2)  # 23.1% CV
+    etalq  ~ log(1 + 0.285^2)  # 28.5% CV
+    etalvp ~ log(1 + 0.327^2)  # 32.7% CV
     etalka ~ log(1 + 0.527^2)  # 52.7% CV
-    etalfdepot ~ 0.1013   # 32.4% CV
+    etalfdepot ~ log(1 + 0.324^2)  # 32.4% CV
 
     # Residual error (combined, separate for SC and IV routes)
     # Using SC route residual error as the default
