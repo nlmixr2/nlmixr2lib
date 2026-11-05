@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Shahraz 2024 falbikitug (AZD0171, anti-LIF) mechanistic PK/PD model ([doi:10.1002/psp4.13204](https://doi.org/10.1002/psp4.13204)) -- adults with advanced solid tumors and metastatic pancreatic ductal adenocarcinoma.
+- Add Berton 2024 pregnancy and postpartum physiology ([doi:10.1093/ofid/ofae585](https://doi.org/10.1093/ofid/ofae585)) -- PBPK system parameters for healthy women from conception to 26 weeks after delivery.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
