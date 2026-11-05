@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Park 2023 pregabalin ([doi:10.12793/tcp.2023.31.e20](https://doi.org/10.12793/tcp.2023.31.e20)) -- Korean adults with near-normal renal function or moderate renal impairment receiving a once-daily sustained-release tablet.
+- Add Choi 2024 CD123 NK cell engager (CD123-NKCE) translational synapse-driven PK/PD, three models ([doi:10.1111/cts.13689](https://doi.org/10.1111/cts.13689)) -- MOLM-13 cells in vitro, healthy monkeys, and a projection to patients with acute myeloid leukemia.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
