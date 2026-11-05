@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cha 2024 zolpidem ([doi:10.3390/pharmaceutics16050689](https://doi.org/10.3390/pharmaceutics16050689)) -- healthy Korean adults given a single 10 mg oral dose, for simulating overdose concentrations.
+- Add Kim 2024 intramuscular niclosamide power-law and linear plasma-lung models ([doi:10.1111/cts.13833](https://doi.org/10.1111/cts.13833)) -- male Golden Syrian hamsters. Registers the `pow_lung` exponent.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
