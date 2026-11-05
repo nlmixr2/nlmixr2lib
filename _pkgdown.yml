@@ -3684,12 +3684,8 @@ navbar:
         href: articles/Cojutti_2021_isavuconazole.html
       - text: "Isavuconazole (Desai 2016)"
         href: articles/Desai_2016_isavuconazole.html
-      - text: "Isavuconazole anidulafungin (Caballero 2023)"
-        href: articles/Caballero_2023_isavuconazole_echinocandins.html
-      - text: "Isavuconazole caspofungin (Caballero 2023)"
-        href: articles/Caballero_2023_isavuconazole_echinocandins.html
-      - text: "Isavuconazole micafungin (Caballero 2023)"
-        href: articles/Caballero_2023_isavuconazole_echinocandins.html
+      - text: "Isavuconazole (MartinCerezuela 2024)"
+        href: articles/MartinCerezuela_2024_isavuconazole.html
       - text: "Isavuconazole secure (Desai 2016)"
         href: articles/Desai_2016_isavuconazole_secure.html
       - text: "Isb2001 qsp (ChandralayamAyyappaMenon 2026)"
@@ -9848,7 +9844,7 @@ articles:
   - articles/Marsot_2017_rifampicin
   - articles/Martial_2017_micafungin
   - articles/Martial_2021_tacrolimus
-  - articles/MartinezCasanova_2023_piperacillin
+  - articles/MartinCerezuela_2024_isavuconazole
   - articles/Martinez_2019_alirocumab
   - articles/Martson_2020_caspofungin
   - articles/Mascarenhas_2015_pentadecanoic_triheptadecanoic

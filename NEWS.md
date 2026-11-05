@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yamaguchi 2024 cefiderocol ([doi:10.1002/prp2.70001](https://doi.org/10.1002/prp2.70001)) -- pediatric prediction model from neonates (26 weeks gestational age onward) to adolescents, scaled from adults.
+- Add Martin-Cerezuela 2024 isavuconazole ([doi:10.3390/antibiotics13080706](https://doi.org/10.3390/antibiotics13080706)) -- critically ill adults in a medical ICU, including patients on CRRT and ECMO.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
