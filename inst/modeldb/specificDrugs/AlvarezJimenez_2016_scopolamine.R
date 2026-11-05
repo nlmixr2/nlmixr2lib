@@ -196,8 +196,8 @@ AlvarezJimenez_2016_scopolamine <- function() {
     lkin_nbRT   <- log(3.42)   ; label("kIN reference for 0-back RT (msec/min)")            # Table 2 kIN[lambda] = 3.42
     lkout_nbRT  <- log(0.00974); label("kOUT for 0-back RT (1/min)")                        # Table 2 kOUT = 0.00974
     cab_nbRT    <- 229         ; label("Age scale (CAB) on kIN for 0-back RT (years)")      # Table 2 CAB = 229
-    etalec50_nbRT ~ 0.632      ; label("IIV var on lec50_nbRT (~99.8% CV, shrinkage 33.2%)")# Table 2 IIV(EC50) = 99.8%
-    etalkin_nbRT  ~ 0.0106     ; label("IIV var on lkin_nbRT (~10.5% CV)")                  # Table 2 IIV(kIN) = 10.5%
+    etalec50_nbRT ~ 0.691      ; label("IIV var on lec50_nbRT (~99.8% CV, shrinkage 33.2%)")# Table 2 IIV(EC50) = 99.8%
+    etalkin_nbRT  ~ 0.0110     ; label("IIV var on lkin_nbRT (~10.5% CV)")                  # Table 2 IIV(kIN) = 10.5%
     propSd_nbRT   <- 0.09995   ; label("Proportional residual error for 0-back RT (fraction)") # Table 2 sigma^2 = 0.00999
 
     # ---------- Saccadic inaccuracy (%) ----------
@@ -213,7 +213,7 @@ AlvarezJimenez_2016_scopolamine <- function() {
     # Table 2 prints the OC as "-0.06 +/- 0.157"; text copies of the PDF drop
     # its minus sign.
     etalec50_sacInacc + etalemax_sacInacc ~ c(0.0186, -0.06, 0.2223)                         # Table 2 IIV 13.7% / 49.9%, OC (omega correlation) = -0.06
-    etalkin_sacInacc  ~ 0.0175     ; label("IIV var on lkin_sacInacc (~13.2% CV)")           # Table 2 IIV(kIN) = 13.2%
+    etalkin_sacInacc  ~ 0.0173     ; label("IIV var on lkin_sacInacc (~13.2% CV)")           # Table 2 IIV(kIN) = 13.2%
     propSd_sacInacc   <- 0.22204   ; label("Proportional residual error for saccadic inaccuracy") # Table 2 sigma^2 = 0.0493
 
     # ---------- Saccadic peak velocity (deg/sec) ----------
@@ -222,7 +222,7 @@ AlvarezJimenez_2016_scopolamine <- function() {
     lkin_sacPV   <- log(1280)  ; label("kIN for saccadic peak velocity (deg/sec/min)")       # Table 2 kIN = 1280
     lkout_sacPV  <- log(2.73)  ; label("kOUT for saccadic peak velocity (1/min)")            # Table 2 kOUT = 2.73
     cae_sacPV    <- 34.0       ; label("Age scale (CAE) on EC50 for saccadic peak velocity (years)") # Table 2 CAE = 34.0
-    etalec50_sacPV ~ 1.322     ; label("IIV var on lec50_sacPV (~277.0% CV)")                # Table 2 IIV(EC50) = 277.0%
+    etalec50_sacPV ~ 2.160     ; label("IIV var on lec50_sacPV (~277.0% CV)")                # Table 2 IIV(EC50) = 277.0%
     etalkin_sacPV  ~ 0.00975   ; label("IIV var on lkin_sacPV (~9.9% CV)")                   # Table 2 IIV(kIN) = 9.9%
     # Paper labels residual as (prop) with sigma^2 = 768.0 which is physically
     # implausible for a proportional error (2770% CV). Interpreted here as
@@ -236,7 +236,7 @@ AlvarezJimenez_2016_scopolamine <- function() {
     lkin_adTrack   <- log(0.636) ; label("kIN for adaptive tracker (%/min)")                 # Table 2 kIN = 0.636
     lkout_adTrack  <- log(0.0294); label("kOUT for adaptive tracker (1/min)")                # Table 2 kOUT = 0.0294
     # EMAX fixed to 1 per paper (see Model development section).
-    etalec50_adTrack ~ 0.556   ; label("IIV var on lec50_adTrack (~85.5% CV)")               # Table 2 IIV(EC50) = 85.5%
+    etalec50_adTrack ~ 0.549   ; label("IIV var on lec50_adTrack (~85.5% CV)")               # Table 2 IIV(EC50) = 85.5%
     etalkin_adTrack  ~ 0.0491  ; label("IIV var on lkin_adTrack (~22.4% CV)")                # Table 2 IIV(kIN) = 22.4%
     addSd_adTrack    <- 2.939  ; label("Additive residual error for adaptive tracker (%)")   # Table 2 sigma^2 = 8.64
 
@@ -245,9 +245,9 @@ AlvarezJimenez_2016_scopolamine <- function() {
     lemax_eegAfc <- log(0.232)    ; label("EMAX for EEG alpha Fz-Cz (fraction)")             # Table 2 EMAX = 0.232
     lkin_eegAfc  <- log(0.206)    ; label("kIN for EEG alpha Fz-Cz (uV/min)")                # Table 2 kIN = 0.206
     lkout_eegAfc <- log(0.0699)   ; label("kOUT for EEG alpha Fz-Cz (1/min)")                # Table 2 kOUT = 0.0699
-    etalec50_eegAfc ~ 2.882      ; label("IIV var on lec50_eegAfc (~1530.0% CV)")            # Table 2 IIV(EC50) = 1530.0%
-    etalemax_eegAfc ~ 0.652      ; label("IIV var on lemax_eegAfc (~95.4% CV)")              # Table 2 IIV(EMAX) = 95.4%
-    etalkin_eegAfc  ~ 0.190      ; label("IIV var on lkin_eegAfc (~46.6% CV)")               # Table 2 IIV(kIN) = 46.6%
+    etalec50_eegAfc ~ 5.460      ; label("IIV var on lec50_eegAfc (~1530.0% CV)")            # Table 2 IIV(EC50) = 1530.0%
+    etalemax_eegAfc ~ 0.647      ; label("IIV var on lemax_eegAfc (~95.4% CV)")              # Table 2 IIV(EMAX) = 95.4%
+    etalkin_eegAfc  ~ 0.197      ; label("IIV var on lkin_eegAfc (~46.6% CV)")               # Table 2 IIV(kIN) = 46.6%
     propSd_eegAfc   <- 0.160     ; label("Proportional residual error for EEG alpha Fz-Cz")  # Table 2 sigma^2 = 0.0256
 
     # ---------- EEG alpha Pz-Oz (uV) ----------
@@ -255,9 +255,9 @@ AlvarezJimenez_2016_scopolamine <- function() {
     lemax_eegApo <- log(0.443)    ; label("EMAX for EEG alpha Pz-Oz (fraction)")             # Table 2 EMAX = 0.443
     lkin_eegApo  <- log(3.05)     ; label("kIN for EEG alpha Pz-Oz (uV/min)")                # Table 2 kIN = 3.05
     lkout_eegApo <- log(0.553)    ; label("kOUT for EEG alpha Pz-Oz (1/min)")                # Table 2 kOUT = 0.553
-    etalec50_eegApo ~ 2.647      ; label("IIV var on lec50_eegApo (~1309.3% CV)")            # Table 2 IIV(EC50) = 1309.3%
-    etalemax_eegApo ~ 0.129      ; label("IIV var on lemax_eegApo (~37.6% CV)")              # Table 2 IIV(EMAX) = 37.6%
-    etalkin_eegApo  ~ 0.297      ; label("IIV var on lkin_eegApo (~57.9% CV)")               # Table 2 IIV(kIN) = 57.9%
+    etalec50_eegApo ~ 5.150      ; label("IIV var on lec50_eegApo (~1309.3% CV)")            # Table 2 IIV(EC50) = 1309.3%
+    etalemax_eegApo ~ 0.132      ; label("IIV var on lemax_eegApo (~37.6% CV)")              # Table 2 IIV(EMAX) = 37.6%
+    etalkin_eegApo  ~ 0.289      ; label("IIV var on lkin_eegApo (~57.9% CV)")               # Table 2 IIV(kIN) = 57.9%
     propSd_eegApo   <- 0.207     ; label("Proportional residual error for EEG alpha Pz-Oz")  # Table 2 sigma^2 = 0.0429
 
     # ---------- EEG delta Fz-Cz (uV) ----------
@@ -286,9 +286,9 @@ AlvarezJimenez_2016_scopolamine <- function() {
     lkin_eegDpo  <- log(0.726)    ; label("kIN reference (lambda) for EEG delta Pz-Oz (uV/min)") # Table 2 kIN = 0.726
     lkout_eegDpo <- log(0.348)    ; label("kOUT for EEG delta Pz-Oz (1/min)")                # Table 2 kOUT = 0.348
     cab_eegDpo   <- 210           ; label("Age scale (CAB) on kIN for EEG delta Pz-Oz (years)") # Table 2 CAB = 210
-    etalec50_eegDpo ~ 2.541      ; label("IIV var on lec50_eegDpo (~1166.2% CV)")            # Table 2 IIV(EC50) = 1166.2%
-    etalemax_eegDpo ~ 0.264      ; label("IIV var on lemax_eegDpo (~55.8% CV, shrinkage 48.0%)") # Table 2 IIV(EMAX) = 55.8%
-    etalkin_eegDpo  ~ 0.0862     ; label("IIV var on lkin_eegDpo (~30.3% CV)")               # Table 2 IIV(kIN) = 30.3%
+    etalec50_eegDpo ~ 4.920      ; label("IIV var on lec50_eegDpo (~1166.2% CV)")            # Table 2 IIV(EC50) = 1166.2%
+    etalemax_eegDpo ~ 0.271      ; label("IIV var on lemax_eegDpo (~55.8% CV, shrinkage 48.0%)") # Table 2 IIV(EMAX) = 55.8%
+    etalkin_eegDpo  ~ 0.0878     ; label("IIV var on lkin_eegDpo (~30.3% CV)")               # Table 2 IIV(kIN) = 30.3%
     propSd_eegDpo   <- 0.174     ; label("Proportional residual error for EEG delta Pz-Oz")  # Table 2 sigma^2 = 0.0304
 
     # ---------- EEG theta Fz-Cz (uV) ----------
@@ -297,8 +297,8 @@ AlvarezJimenez_2016_scopolamine <- function() {
     lkin_eegTfc  <- log(0.863)    ; label("kIN reference (lambda) for EEG theta Fz-Cz (uV/min)") # Table 2 kIN = 0.863
     lkout_eegTfc <- log(0.594)    ; label("kOUT for EEG theta Fz-Cz (1/min)")                # Table 2 kOUT = 0.594
     cab_eegTfc   <- 142           ; label("Age scale (CAB) on kIN for EEG theta Fz-Cz (years)") # Table 2 CAB = 142
-    etalec50_eegTfc ~ 3.166      ; label("IIV var on lec50_eegTfc (~2162.7% CV)")            # Table 2 IIV(EC50) = 2162.7%
-    etalkin_eegTfc  ~ 0.0798     ; label("IIV var on lkin_eegTfc (~28.4% CV)")               # Table 2 IIV(kIN) = 28.4%
+    etalec50_eegTfc ~ 6.150      ; label("IIV var on lec50_eegTfc (~2162.7% CV)")            # Table 2 IIV(EC50) = 2162.7%
+    etalkin_eegTfc  ~ 0.0776     ; label("IIV var on lkin_eegTfc (~28.4% CV)")               # Table 2 IIV(kIN) = 28.4%
     propSd_eegTfc   <- 0.172     ; label("Proportional residual error for EEG theta Fz-Cz")  # Table 2 sigma^2 = 0.0297
 
     # ---------- EEG theta Pz-Oz (uV) ----------
@@ -306,8 +306,8 @@ AlvarezJimenez_2016_scopolamine <- function() {
     lemax_eegTpo <- log(1.15)     ; label("EMAX for EEG theta Pz-Oz (fraction)")             # Table 2 EMAX = 1.15
     lkin_eegTpo  <- log(13)       ; label("kIN for EEG theta Pz-Oz (uV/min)")                # Table 2 kIN = 13
     lkout_eegTpo <- log(6.08)     ; label("kOUT for EEG theta Pz-Oz (1/min)")                # Table 2 kOUT = 6.08
-    etalec50_eegTpo ~ 2.987      ; label("IIV var on lec50_eegTpo (~1778.6% CV)")            # Table 2 IIV(EC50) = 1778.6%
-    etalkin_eegTpo  ~ 0.107      ; label("IIV var on lkin_eegTpo (~33.4% CV)")               # Table 2 IIV(kIN) = 33.4%
+    etalec50_eegTpo ~ 5.760      ; label("IIV var on lec50_eegTpo (~1778.6% CV)")            # Table 2 IIV(EC50) = 1778.6%
+    etalkin_eegTpo  ~ 0.106      ; label("IIV var on lkin_eegTpo (~33.4% CV)")               # Table 2 IIV(kIN) = 33.4%
     propSd_eegTpo   <- 0.195     ; label("Proportional residual error for EEG theta Pz-Oz")  # Table 2 sigma^2 = 0.0379
 
     # ---------- N-back 0 (% correct, log-odds observation) ----------
@@ -324,7 +324,7 @@ AlvarezJimenez_2016_scopolamine <- function() {
     # etalemax_nb0 (log-scale IIV on EMAX; EMAX fixed at 1 so IIV represents
     # subject-specific scale factor exp(eta) applied to 1) and etae0_nb0
     # (additive IIV on log-odds baseline).
-    etalemax_nb0 + etae0_nb0 ~ c(3.760, 0.40, 0.132)                                          # Table 2 IIV 631.3% / 37.8%, OC (omega correlation) = 0.40
+    etalemax_nb0 + etae0_nb0 ~ c(3.710, 0.40, 0.134)                                          # Table 2 IIV 631.3% / 37.8%, OC (omega correlation) = 0.40
     addSd_nb0 <- 0.0624           ; label("Additive residual error for 0-back log-odds (log-odds units)") # Table 2 sigma^2 = 0.0039
 
     # ---------- N-back 1 (% correct, log-odds observation) ----------
@@ -334,7 +334,7 @@ AlvarezJimenez_2016_scopolamine <- function() {
     lkout_nb1 <- log(221)         ; label("kOUT for 1-back ratio (1/min)")                    # Table 2 kOUT = 221
     e0_nb1    <- 3.33             ; label("Baseline log-odds of 1-back correct answers")      # Table 2 E0 = 3.33 (expit(3.33) = 96.5%)
     etalkin_nb1  ~ 3.535         ; label("IIV var on lkin_nb1 (~578.5% CV)")                 # Table 2 IIV(kIN) = 578.5%
-    etalemax_nb1 ~ 0.898         ; label("IIV var on lemax_nb1 (~121.6% CV)")                # Table 2 IIV(EMAX) = 121.6%
+    etalemax_nb1 ~ 0.908         ; label("IIV var on lemax_nb1 (~121.6% CV)")                # Table 2 IIV(EMAX) = 121.6%
     addSd_nb1 <- 0.0768           ; label("Additive residual error for 1-back log-odds (log-odds units)") # Table 2 sigma^2 = 0.0059
 
     # ---------- N-back 2 (% correct, log-odds observation) ----------
@@ -344,7 +344,7 @@ AlvarezJimenez_2016_scopolamine <- function() {
     lkout_nb2 <- log(0.317)       ; label("kOUT for 2-back ratio (1/min)")                    # Table 2 kOUT = 0.317
     e0_nb2    <- 2.84             ; label("Baseline log-odds of 2-back correct answers")      # Table 2 E0 = 2.84 (expit(2.84) = 94.5%)
     # Omega block: EMAX and E0 (OC = 0.23 interpreted as covariance).
-    etalemax_nb2 + etae0_nb2 ~ c(0.868, 0.23, 0.115)                                          # Table 2 IIV 109.8% / 35.9%, OC (omega correlation) = 0.23
+    etalemax_nb2 + etae0_nb2 ~ c(0.791, 0.23, 0.121)                                          # Table 2 IIV 109.8% / 35.9%, OC (omega correlation) = 0.23
     addSd_nb2 <- 0.0922           ; label("Additive residual error for 2-back log-odds (log-odds units)") # Table 2 sigma^2 = 0.0085
   })
 
