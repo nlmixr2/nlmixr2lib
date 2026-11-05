@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yoon 2024 bepotastine ([doi:10.3390/pharmaceutics16030334](https://doi.org/10.3390/pharmaceutics16030334)) -- healthy Korean adults and Korean children aged 2-6 years with allergic rhinitis or urticaria.
+- Add Huber 2024 Mayneord-like tumour growth inhibition for the HCC1954 and KPL-4 xenografts ([doi:10.1007/s10928-023-09891-7](https://doi.org/10.1007/s10928-023-09891-7)) -- mice bearing human breast-cancer cell-line xenografts treated with PI3K-pathway inhibitors.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
