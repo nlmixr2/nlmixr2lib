@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Xu 2024 polymyxin B ([doi:10.2147/IDR.S486169](https://doi.org/10.2147/IDR.S486169)) -- critically ill adults on venoarterial or venovenous ECMO.
+- Add Kong 2025 pooled piperacillin/tazobactam ([doi:10.1007/s40262-024-01460-6](https://doi.org/10.1007/s40262-024-01460-6)) -- premature neonates to very elderly adults pooled from 13 studies, including critically ill, obese and haematological-malignancy patients.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
