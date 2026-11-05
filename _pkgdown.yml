@@ -5916,6 +5916,8 @@ navbar:
         href: articles/Cai_2022_polymyxinB.html
       - text: "PolymyxinB (Li 2021)"
         href: articles/Li_2021_polymyxinB.html
+      - text: "PolymyxinB (Li 2025)"
+        href: articles/Li_2025_polymyxinB.html
       - text: "PolymyxinB (Liang 2023)"
         href: articles/Liang_2023_polymyxinB.html
       - text: "PolymyxinB (Tang 2023)"
@@ -9909,7 +9911,7 @@ articles:
   - articles/Li_2025_epcoritamab
   - articles/Li_2025_lacosamide
   - articles/Li_2025_modakafuspAlfa
-  - articles/Li_2025_tetrahydrocannabinol
+  - articles/Li_2025_polymyxinB
   - articles/Li_2026_alvespimycin
   - articles/Li_2026_epcoritamab
   - articles/Li_2026_etranacogene

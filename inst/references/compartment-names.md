@@ -3650,7 +3650,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Role:** Bare lung organ compartment in full-body PBPK extractions. Also used for the *uninvolved* (non-lesion) lung tissue in site-of-action models that resolve a diseased `lesion` compartment separately -- see `lesion`.
 - **Source aliases:**
   - `CUlung` -- uninvolved-lung state in `Mehta_2023_bedaquiline_mpbpk.R` (Mehta 2023 ESM S2).
-- **Example models:** `Zhang_2011_nutlin3a.R`, `Mehta_2023_bedaquiline_mpbpk.R`.
+- **Example models:** `Zhang_2011_nutlin3a.R`, `Mehta_2023_bedaquiline_mpbpk.R`, `Li_2025_polymyxinB.R` (the ELF peripheral compartment of a classical coupled plasma + ELF model, exchanging with `elf` through `q_elf_lung`).
 
 ### lesion (**canonical site-of-action disease-lesion compartment**)
 - **Type:** compartment
