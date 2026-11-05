@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nakamura 2024 linagliptin DPP-4 TMDD-PBPK, human and rat whole-body models ([doi:10.1111/cts.70047](https://doi.org/10.1111/cts.70047)) -- healthy adults (intravenous and oral) and wild-type / Dpp-4-deficient rats; whole-body distribution and DPP-4-complex-mediated renal reabsorption.
+- Add Kim 2024 islatravir oral and implant PrEP PK-PD with HIV-1 viral dynamics ([doi:10.1002/psp4.13212](https://doi.org/10.1002/psp4.13212)) -- adults with and without HIV-1 given single oral doses or subdermal implants. Registers the `DOSE_ISLATRAVIR_MG` covariate.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
