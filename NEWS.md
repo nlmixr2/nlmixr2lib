@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Otani 2025 mirikizumab ([doi:10.1002/psp4.13286](https://doi.org/10.1002/psp4.13286)) -- children and adolescents (2 to <18 years) with moderately to severely active ulcerative colitis (SHINE-1).
+- Add Thakre 2025 venetoclax + azacitidine semi-mechanistic hematopoiesis PK/PD ([doi:10.1002/psp4.13284](https://doi.org/10.1002/psp4.13284)) -- adults with treatment-naive higher-risk myelodysplastic syndromes.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
