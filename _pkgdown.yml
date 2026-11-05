@@ -410,6 +410,8 @@ navbar:
         href: articles/Cirincione_2018_apixaban.html
       - text: "Apixaban (Gaspar 2023)"
         href: articles/Gaspar_2023_apixaban.html
+      - text: "Apixaban (Jarugula 2025)"
+        href: articles/Jarugula_2025_apixaban.html
       - text: "Apixaban (Kolowrat 2025)"
         href: articles/Kolowrat_2025_apixaban.html
       - text: "Apixaban (Morath 2025)"
@@ -8922,6 +8924,7 @@ articles:
   - articles/Janssen_2017_cabazitaxel_phenotyping
   - articles/Janssen_2023_pregnancy_cytotoxics
   - articles/Jansson_2008_eflornithine
+  - articles/Jarugula_2025_apixaban
   - articles/Jaworowicz_2006_levalbuterol
   - articles/Jayachandran_2021_tenofovir
   - articles/Jayanti_2026_pyrazinamide
