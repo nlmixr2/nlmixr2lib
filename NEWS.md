@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gall 2023 drug-induced intestinal epithelium toxicity ([doi:10.1002/psp4.13029](https://doi.org/10.1002/psp4.13029)) -- a QSP model in four files (mouse and human x 5-fluorouracil and doxorubicin) coupling crypt-villus cell dynamics, plasma citrulline, diarrhea risk and p53-pathway gene transcription. Registers the `CP_5FU_NGML` and `CP_DOXORUBICIN_NGML` covariates.
+- Add Fayette 2023 empagliflozin PK/FPG/HbA1c model ([doi:10.1002/psp4.13035](https://doi.org/10.1002/psp4.13035)) -- adults with type 2 diabetes in five phase II trials.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
