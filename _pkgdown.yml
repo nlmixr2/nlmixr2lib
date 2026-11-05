@@ -718,6 +718,8 @@ navbar:
         href: articles/Bihorel_2021_BMS986166.html
       - text: "Balcinrenone (Parkinson 2025)"
         href: articles/Parkinson_2025_balcinrenone.html
+      - text: "Balcinrenone QTcF (Sundell 2025)"
+        href: articles/Sundell_2025_balcinrenone.html
       - text: "Balovaptan (SchaedeliStark 2024)"
         href: articles/SchaedeliStark_2024_balovaptan.html
       - text: "Baloxavir (Koshimichi 2020)"
@@ -10677,6 +10679,7 @@ articles:
   - articles/Sun_2025_paclitaxel
   - articles/Sun_2025_teicoplanin
   - articles/Sun_2026_tilmicosin
+  - articles/Sundell_2025_balcinrenone
   - articles/Sunnaker_2026_mitiperstat
   - articles/Suri_2018_brentuximab
   - articles/Suri_2019_brentuximab
