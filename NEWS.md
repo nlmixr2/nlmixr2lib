@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tan 2025 adomeglivant (LY2409021) PK and ADOPT / FFH / FHH / IGRH HbA1c models ([doi:10.1002/psp4.70058](https://doi.org/10.1002/psp4.70058)) -- adults with type 2 diabetes.
+- Add Harwood 2025 tobramycin ([doi:10.1128/aac.00278-25](https://doi.org/10.1128/aac.00278-25)) -- children and adolescents with cystic fibrosis receiving IV tobramycin.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 

@@ -7594,6 +7594,8 @@ navbar:
         href: articles/Conil_2010_tobramycin.html
       - text: "Tobramycin (Downes 2022)"
         href: articles/Downes_2022_tobramycin.html
+      - text: "Tobramycin (Harwood 2025)"
+        href: articles/Harwood_2025_tobramycin.html
       - text: "Tobramycin (Hennig 2008)"
         href: articles/Hennig_2008_tobramycin.html
       - text: "Tobramycin (Livio 2014)"
@@ -9514,6 +9516,7 @@ articles:
   - articles/Hartman_2022_cefotaxime
   - articles/Hartmann_2026_nintedanib
   - articles/Harun_2019_cysticFibrosis
+  - articles/Harwood_2025_tobramycin
   - articles/Hashimoto_1994_zonisamide
   - articles/Hassouneh_2024_dasatinib
   - articles/Hawwa_2008_mercaptopurine
