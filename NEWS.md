@@ -2,7 +2,7 @@
 
 # development version
 
-- Add El-Khateeb 2023 tacrolimus middle-out (PBPK-informed) trough models: base, eGFR and CKD-stage covariate fits ([doi:10.1097/FTD.0000000000001108](https://doi.org/10.1097/FTD.0000000000001108)) -- adult renal transplant recipients with chronic kidney disease of the graft.
+- Add Sanchez 2023 FAP-4-1BBL (RO7122290) + cibisatamab trimeric-complex QSP models ([doi:10.1002/psp4.13065](https://doi.org/10.1002/psp4.13065)) -- in vitro tumor-cell / PBMC / fibroblast co-culture and virtual colorectal carcinoma patients. Registers the `CONC_CIBISATAMAB_NM` covariate.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
