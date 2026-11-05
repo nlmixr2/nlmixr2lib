@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Al Hroot 2025 fosfomycin intrapulmonary minimal PBPK model ([doi:10.1128/aac.01869-24](https://doi.org/10.1128/aac.01869-24)) -- healthy adults with plasma, epithelial lining fluid and alveolar macrophage sampling.
+- Add Fouad 2025 cefepime and taniborbactam ([doi:10.1128/aac.00061-25](https://doi.org/10.1128/aac.00061-25)) -- simulated adults with and without continuous renal replacement therapy (ex vivo CRRT transmembrane clearance on effluent flow).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
