@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Huber 2024 Mayneord-like tumour growth inhibition for the HCC1954 and KPL-4 xenografts ([doi:10.1007/s10928-023-09891-7](https://doi.org/10.1007/s10928-023-09891-7)) -- mice bearing human breast-cancer cell-line xenografts treated with PI3K-pathway inhibitors.
+- Add Szederkenyi 2024 transdermal caffeine, dexamethasone, piroxicam, indomethacin and diclofenac skin-on-a-chip models ([doi:10.1371/journal.pone.0299501](https://doi.org/10.1371/journal.pone.0299501)) -- ex vivo rat skin and healthy, psoriatic and allergic mouse skin (13 per-experiment fits).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
