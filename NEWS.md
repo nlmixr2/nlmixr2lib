@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Le 2025 meropenem ([doi:10.1007/s40262-025-01495-3](https://doi.org/10.1007/s40262-025-01495-3)) -- critically ill children with and without sepsis.
+- Add Jiang 2025 fanastomig ([doi:10.1002/psp4.70011](https://doi.org/10.1002/psp4.70011)) -- adults with advanced solid tumours (first-in-human phase 1).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
