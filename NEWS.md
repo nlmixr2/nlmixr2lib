@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yamada 2025 oncolytic vaccinia virus (hIL-7/hIL-12-VV) + pembrolizumab QSP models ([doi:10.1002/psp4.13297](https://doi.org/10.1002/psp4.13297)) -- CT26.WT-bearing mice and a virtual cohort of patients with injectable solid tumours.
+- Add Glazar 2025 tumor volume and progression-free survival model ([doi:10.1002/psp4.13290](https://doi.org/10.1002/psp4.13290)) -- adults with recurrent high-grade glioma treated with stereotactic re-irradiation, bevacizumab and immune checkpoint inhibitors.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
