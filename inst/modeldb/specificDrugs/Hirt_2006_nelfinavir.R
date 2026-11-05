@@ -141,7 +141,7 @@ Hirt_2006_nelfinavir <- function() {
     #   ISV CL_T  = 39.1%  -> omega^2 = log(1 + 0.391^2)  = 0.1423
     #   ISV K_M0  = 49.2%  -> omega^2 = log(1 + 0.492^2)  = 0.2168
     #   r(CL, KM0) = 0.45  -> cov = 0.45 * sqrt(0.1423) * sqrt(0.2168)
-    #                            = 0.45 * 0.3772 * 0.4657
+    #                            = 0.45 * 0.3772 * 0.4656
     #                            = 0.0790
     # IIV on V/F is independent; IIVs on CL/F and KM0 are correlated
     # (Hirt 2006 Results, '(iii) Nelfinavir-M8 pharmacokinetic model
@@ -149,7 +149,7 @@ Hirt_2006_nelfinavir <- function() {
     # elimination rate produced a 11-U OFV decrease).
     etalvc ~ log(1 + 1.09^2)  # Hirt 2006 Table 2: ISV V 109% (RSE 53%)
     etalcl + etalkel_m8 ~ c(0.1423,
-                            0.0790, log(1 + 0.492^2))  # Hirt 2006 Table 2: ISV CL_T 39.1% (RSE 22%), K_M0 49.2% (RSE 26%), r(CL,KM0) = 0.45 (RSE 36%)
+                            0.45 * sqrt(log(1 + 0.492^2) * 0.1423), log(1 + 0.492^2))  # Hirt 2006 Table 2: ISV CL_T 39.1% (RSE 22%), K_M0 49.2% (RSE 26%), r(CL,KM0) = 0.45 (RSE 36%)
 
     # Residual error: additive on each analyte concentration. Hirt 2006
     # Results, 'Nelfinavir pharmacokinetic model building': "intersubject

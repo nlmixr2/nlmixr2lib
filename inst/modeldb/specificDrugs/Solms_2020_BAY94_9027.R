@@ -110,7 +110,7 @@ Solms_2020_BAY94_9027 <- function() {
     #   CV(CL) = 24.0% -> omega^2 = log(1 + 0.240^2) = 0.0560022
     #   CV(Vc) = 12.8% -> omega^2 = log(1 + 0.128^2) = 0.0162512
     # The reported correlation is 0.449; corresponding covariance is
-    #   cov = 0.449 * sqrt(0.0560022 * 0.0162512) = 0.0135465.
+    #   cov = 0.449 * sqrt(0.0560022 * 0.0162512) = 0.0135454.
     # Inter-occasion variability (IOV) was estimated during model development
     # (IOV variance 0.0195 for CL and 0.00475 for Vc; base model section) but
     # was not retained in the final model because it had no effect on the

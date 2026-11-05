@@ -175,8 +175,8 @@ Suyagh_2012_canrenone <- function() {
     # The paper reports IIV in CV% on the log-normal P_i = P_pop * exp(eta_i)
     # scale (Methods p. 866). Only diagonal omegas were retained (Results
     # p. 868: full covariance gave negligible MOFV improvement).
-    etalcl ~ 0.15581
-    label("IIV variance on log CL/F (paper omega_CL/F 41.06% CV per Table 3)")  # log(1 + 0.4106^2) = 0.15581
+    etalcl ~ log(1 + 0.4106^2)
+    label("IIV variance on log CL/F (paper omega_CL/F 41.06% CV per Table 3)")  # log(1 + 0.4106^2) = 0.15580
 
     etalvc ~ log(1 + 0.4576^2)
     label("IIV variance on log V/F (paper omega_V/F 45.76% CV per Table 3)")    # log(1 + 0.4576^2) = 0.19012

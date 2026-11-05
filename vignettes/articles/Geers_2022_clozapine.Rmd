@@ -425,7 +425,7 @@ the paper). The true AUC is `F * Dose / CL`. The twice-daily interval uses
 percentage statistics do not depend on dose.
 
 ```{r lss}
-om <- c(ka = 0.220230, kel = 0.280840, vd = 0.430216)
+om <- c(ka = 0.220230, kel = 0.280841, vd = 0.430216)
 
 neg_log_post <- function(eta, obs, times, dose, tau, wt) {
   pred <- css_closed(times, dose, tau, th[["ka"]], th[["kel"]] * exp(eta[1]), th[["vd"]] * exp(eta[2]) * wt)

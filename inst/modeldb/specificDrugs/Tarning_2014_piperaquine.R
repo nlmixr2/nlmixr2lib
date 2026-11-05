@@ -250,8 +250,8 @@ Tarning_2014_piperaquine <- function() {
     #   CL   IIV 24.4%   -> omega^2 = log(0.244^2 + 1) = 0.057831
     #   Vc   IIV 51.6%   -> omega^2 = log(0.516^2 + 1) = 0.236065
     #   Vp1  IIV 45.6%   -> omega^2 = log(0.456^2 + 1) = 0.188913
-    #   Q2   IIV 25.8%   -> omega^2 = log(0.258^2 + 1) = 0.064375
-    #   MTT  IIV 24.1%   -> omega^2 = log(0.241^2 + 1) = 0.056498  (BSV)
+    #   Q2   IIV 25.8%   -> omega^2 = log(0.258^2 + 1) = 0.064442
+    #   MTT  IIV 24.1%   -> omega^2 = log(0.241^2 + 1) = 0.056457  (BSV)
     #   F    IOV 48.8%   -> omega^2 = log(0.488^2 + 1) = 0.213613  (IOV treated as forward-simulation IIV; see lfdepot comment)
     #
     # No IIV on Q1 or Vp2 (Table 2 reports no IIV value for either).
@@ -267,10 +267,10 @@ Tarning_2014_piperaquine <- function() {
     etalvp     ~ log(1 + 0.456^2)
     # Tarning 2014 Table 2: IIV on Vp1/F = 45.6% CV (RSE 48.8%; 95% CI 18.8-68.4)
 
-    etalq2     ~ 0.064375
+    etalq2     ~ log(1 + 0.258^2)
     # Tarning 2014 Table 2: IIV on Q2/F = 25.8% CV (RSE 48.2%; 95% CI 6.67-37.9)
 
-    etalmtt    ~ 0.056498
+    etalmtt    ~ log(1 + 0.241^2)
     # Tarning 2014 Table 2: BSV on MTT = 24.1% CV (RSE 52.7%; 95% CI 8.77-35.6); separate IOV 39.4% CV not encoded
 
     etalfdepot ~ log(1 + 0.488^2)

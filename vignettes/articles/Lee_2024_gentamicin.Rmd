@@ -523,7 +523,7 @@ cl_interdialytic <- sim |>
   dplyr::mutate(cl_ref = cl / (CRCL / (0.53 / 0.06)))
 
 stopifnot(
-  abs(sd(log(cl_interdialytic$cl_ref)) - sqrt(0.23129)) < 0.1,
+  abs(sd(log(cl_interdialytic$cl_ref)) - sqrt(0.23119)) < 0.1,
   abs(median(cl_interdialytic$cl_ref) / 0.453 - 1) < 0.15
 )
 ```

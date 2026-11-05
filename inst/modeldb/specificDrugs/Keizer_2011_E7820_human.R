@@ -106,7 +106,7 @@ Keizer_2011_E7820_human <- function() {
     #   PK BSV from Keizer 2011 Table II (CV%, with CL~V correlation):
     #     CL  CV 51%  -> var = log(1 + 0.51^2) = 0.23119
     #     V   CV 48%  -> var = log(1 + 0.48^2) = 0.20734
-    #     rho CL~V = 62%  -> cov = 0.62 * sqrt(var_CL * var_V) = 0.13580
+    #     rho CL~V = 62%  -> cov = 0.62 * sqrt(var_CL * var_V) = 0.13574
     #   PD BSV from Keizer 2011 Table III (CV%):
     #     I_base CV 40%   -> var = log(1 + 0.40^2) = 0.14842
     #     IC50   CV 110%  -> var = log(1 + 1.10^2) = 0.79299
@@ -116,7 +116,7 @@ Keizer_2011_E7820_human <- function() {
     # *not* re-estimated in this paper; if a downstream re-fit is done,
     # treat these as starting values for the block.
     # ------------------------------------------------------------------
-    etalcl + etalvc ~ c(log(1 + 0.51^2), 0.13580, log(1 + 0.48^2))  # Keizer 2011 Table II clinical omega_CL = 51%, omega_V = 48%, rho CL~V = 62%
+    etalcl + etalvc ~ c(log(1 + 0.51^2), 0.62 * sqrt(log(1 + 0.48^2) * log(1 + 0.51^2)), log(1 + 0.48^2))  # Keizer 2011 Table II clinical omega_CL = 51%, omega_V = 48%, rho CL~V = 62%
     etalrbase ~ 0.14842  # Keizer 2011 Table III clinical omega_I_base = 40% (RSE 19%)
     etalic50  ~ 0.79299  # Keizer 2011 Table III clinical omega_eff = 110% (RSE 32%)
 

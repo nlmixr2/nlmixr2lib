@@ -75,7 +75,7 @@ Schutte_2018_desmopressin <- function() {
     #   var_base = log(1 + 0.37^2) = log(1.1369) = 0.128305
     #   var_vc   = log(1 + 0.43^2) = log(1.1849) = 0.169658
     #   var_cl   = log(1 + 0.50^2) = log(1.25)   = 0.223144
-    #   cov_base_vc = -0.87 * sqrt(0.128306 * 0.169666) = -0.128363
+    #   cov_base_vc = -0.87 * sqrt(0.128305 * 0.169658) = -0.128360
     # IOV (intraindividual variability) of 38% on baseline FVIII and 38% on V1
     # (also reported in Table 2, final-model column) is NOT implemented; see vignette
     # deviations.

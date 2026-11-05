@@ -203,13 +203,13 @@ derived <- tibble::tribble(
   "Elimination half-life ln(2) Vd / CL (h)", log(2) * vc / cl, "not reported",
   "Typical bioavailable meal dose F1 x 180 (mg)", fdepot * dose_nominal, "293 +/- 62.0 (individual estimates, n = 6)",
   "Mean bioavailable meal dose, lognormal F1 IIV (mg)",
-  fdepot * dose_nominal * exp(0.058755 / 2), "293 +/- 62.0 (individual estimates, n = 6)"
+  fdepot * dose_nominal * exp(0.058756 / 2), "293 +/- 62.0 (individual estimates, n = 6)"
 )
 stopifnot(abs(100 * vc / 73 - 73.8) < 0.1)
 knitr::kable(derived, digits = 2, caption = "Model-implied quantities against the letter's values.")
 ```
 
-The model-implied mean bioavailable dose (`r round(fdepot * dose_nominal * exp(0.058755 / 2))`
+The model-implied mean bioavailable dose (`r round(fdepot * dose_nominal * exp(0.058756 / 2))`
 mg) agrees with the mean of the six individual estimates the authors report
 (293 mg).
 

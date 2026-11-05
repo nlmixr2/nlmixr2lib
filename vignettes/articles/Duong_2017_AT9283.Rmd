@@ -106,7 +106,7 @@ IIV variance derivation. Duong 2017 Table 3 reports IIV as %CV. For
 lognormal etas, `omega^2 = log(CV^2 + 1)`:
 
 * CL:  `log(0.429^2 + 1) = log(1.184041) = 0.168933`
-* Vc:  `log(0.298^2 + 1) = log(1.088804) = 0.085098` (rounded to 0.08510)
+* Vc:  `log(0.298^2 + 1) = log(1.088804) = 0.085080`
 * Q :  `log(0.770^2 + 1) = log(1.592900) = 0.465556`
 * Vp:  `log(0.389^2 + 1) = log(1.151321) = 0.140910`
 

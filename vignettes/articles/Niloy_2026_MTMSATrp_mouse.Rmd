@@ -362,7 +362,7 @@ reflect the high IIV / shrinkage on CL acknowledged in Niloy 2026
 - **IIV variance encoding.** Niloy 2026 Table 1 reports IIV as %CV
   (5.8% on CL, 25% on V). These were converted to NONMEM-style omega^2
   via the Monolix log-normal convention `omega^2 = log(1 + CV^2)`,
-  giving 0.003359 (CL) and 0.060625 (V). The bootstrap median column
+  giving 0.003358 (CL) and 0.060625 (V). The bootstrap median column
   reports slightly different point estimates (0.061 and 0.21 for
   CL / V respectively, on the omega-SD scale); the model uses the
   Estimate column (the final MLE), not the bootstrap median.

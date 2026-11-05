@@ -79,17 +79,17 @@ Kuester_2008_matuzumab <- function() {
     # Variances:
     #   CLL  CV 24.0% -> omega^2 = log(1 + 0.240^2) = 0.05600, omega = 0.2366
     #   V1   CV 21.9% -> omega^2 = log(1 + 0.219^2) = 0.04685, omega = 0.2164
-    #   V2   CV 61.6% -> omega^2 = log(1 + 0.616^2) = 0.32169, omega = 0.5670
-    #   Vmax CV 53.8% -> omega^2 = log(1 + 0.538^2) = 0.25421, omega = 0.5041
+    #   V2   CV 61.6% -> omega^2 = log(1 + 0.616^2) = 0.32169, omega = 0.5672
+    #   Vmax CV 53.8% -> omega^2 = log(1 + 0.538^2) = 0.25421, omega = 0.5042
     #
     # Off-diagonal covariances cov_ij = r_ij * omega_i * omega_j:
-    #   cov(V1, V2)   = 0.777 * 0.2164 * 0.5670 = 0.0954
-    #   cov(V1, Vmax) = 0.875 * 0.2164 * 0.5041 = 0.0955
-    #   cov(V2, Vmax) = 0.875 * 0.5670 * 0.5041 = 0.2501
+    #   cov(V1, V2)   = 0.777 * 0.2164 * 0.5672 = 0.0954
+    #   cov(V1, Vmax) = 0.875 * 0.2164 * 0.5042 = 0.0955
+    #   cov(V2, Vmax) = 0.875 * 0.5672 * 0.5042 = 0.2502
     etalcl ~ log(1 + 0.240^2)  # Kuester 2008 Table 3 IIV CLL = 24.0% CV (RSE 20.5%)
     etalvc + etalvp + etalvmax ~ c(0.04685,
-                                   0.0954, log(1 + 0.616^2),
-                                   0.0955, 0.2501, log(1 + 0.538^2))                                           # Kuester 2008 Table 3 IIV V1/V2/Vmax + correlations (V1-V2 = 0.777, V1-Vmax = 0.875, V2-Vmax = 0.875)
+                                   0.777 * sqrt(log(1 + 0.616^2) * 0.04685), log(1 + 0.616^2),
+                                   0.875 * sqrt(log(1 + 0.538^2) * 0.04685), 0.875 * sqrt(log(1 + 0.538^2) * log(1 + 0.616^2)), log(1 + 0.538^2))                                           # Kuester 2008 Table 3 IIV V1/V2/Vmax + correlations (V1-V2 = 0.777, V1-Vmax = 0.875, V2-Vmax = 0.875)
 
     # Residual error - Kuester 2008 Table 3 ("Random effects" section, p902). Combined
     # proportional + additive: Cobs = Cpred * (1 + eps_prop) + eps_add. The additive

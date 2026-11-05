@@ -142,7 +142,7 @@ Schoemaker_1996_dalteparin <- function() {
     # eta_lt12E independent of eta_lcl), the implied joint distribution is:
     #   Var(eta_lcl) = log(1 + 0.141^2) = 0.01969
     #   Var(eta_lvc) = Var(eta_lcl) + Var(eta_lt12E)
-    #                = 0.01970 + log(1 + 0.083^2) = 0.00687
+    #                = 0.019686 + log(1 + 0.083^2) = 0.026551
     #   Cov(eta_lcl, eta_lvc) = Var(eta_lcl) = 0.01969
     # (Correlation = 0.861). This block-diagonal encoding preserves the paper's
     # reported IIV on CL (14.1%) and t1/2E (8.3%) exactly: when sampled, the

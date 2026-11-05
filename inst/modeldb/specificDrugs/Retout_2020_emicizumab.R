@@ -123,7 +123,7 @@ Retout_2020_emicizumab <- function() {
     etalcl + etalvc + etalka ~ c(
       0.079152,
       0.015556, 0.064927,
-      -0.062352, 0, log(1 + 0.725^2)
+      -0.341 * sqrt(log(1 + 0.725^2) * 0.079152), 0, log(1 + 0.725^2)
     ) # Retout 2020 Table 4: BPV CL/F 28.7%, V/F 25.9%, KA 72.5% CV; correlations CL/F-V/F 0.217, CL/F-KA -0.341
 
     # Residual error - Retout 2020 Table 4 (combined additive + proportional).

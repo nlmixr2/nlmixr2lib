@@ -187,10 +187,10 @@ Johnson_2025_osimertinib <- function() {
     # variation)", so each tabulated percentage is a coefficient of
     # variation, not a log-scale SD. ini() takes log-scale variances, so
     # each entry below is omega^2 = log(1 + CV^2):
-    #   CLparent/F      44.9% -> log(1 + 0.449^2) = 0.183655  (omega 0.4286)
+    #   CLparent/F      44.9% -> log(1 + 0.449^2) = 0.183655  (omega 0.4285)
     #   CLmetabolite/F  49.7% -> log(1 + 0.497^2) = 0.220748  (omega 0.4698)
-    #   Vparent/F       90.9% -> log(1 + 0.909^2) = 0.602282  (omega 0.7762)
-    #   Vmetabolite/F   78.2% -> log(1 + 0.782^2) = 0.477180  (omega 0.6909)
+    #   Vparent/F       90.9% -> log(1 + 0.909^2) = 0.602282  (omega 0.7761)
+    #   Vmetabolite/F   78.2% -> log(1 + 0.782^2) = 0.477180  (omega 0.6908)
     #   ka             109%   -> log(1 + 1.09^2)  = 0.783034  (omega 0.8849)
     # The CV reading (rather than reading the tabulated percentages
     # directly as log-scale SDs) is confirmed by the 90% prediction
@@ -200,8 +200,8 @@ Johnson_2025_osimertinib <- function() {
     # (log-SD reading). See the validation vignette for the full check.
     #
     # The off-diagonal covariance is rho * omega_CLparent *
-    # omega_CLmetabolite = 0.885 * 0.428551 * 0.469831 = 0.178195.
-    etalcl + etalcl_az5104 ~ c(log(1 + 0.449^2), 0.178195, log(1 + 0.497^2))  # Johnson 2025 Table 2: Omega(CLparent/F) 44.9% CV, Omega(CLmetabolite/F) 49.7% CV, Correlation(CLparent/F, CLmetabolite/F) 0.885
+    # omega_CLmetabolite = 0.885 * 0.428550 * 0.469838 = 0.178194.
+    etalcl + etalcl_az5104 ~ c(log(1 + 0.449^2), 0.885 * sqrt(log(1 + 0.497^2) * log(1 + 0.449^2)), log(1 + 0.497^2))  # Johnson 2025 Table 2: Omega(CLparent/F) 44.9% CV, Omega(CLmetabolite/F) 49.7% CV, Correlation(CLparent/F, CLmetabolite/F) 0.885
     etalvc        ~ log(1 + 0.909^2)  # Johnson 2025 Table 2: Omega(Vparent/F) = 90.9% CV
     etalvc_az5104 ~ log(1 + 0.782^2)  # Johnson 2025 Table 2: Omega(Vmetabolite/F) = 78.2% CV
     etalka        ~ log(1 + 1.09^2)  # Johnson 2025 Table 2: Omega(ka) = 109% CV

@@ -121,12 +121,12 @@ Suleiman_2019_risankizumab <- function() {
     # so we back-transform: omega^2 = log(CV^2 + 1).
     #   CL   24%  -> omega^2 = log(1 + 0.24^2) = 0.05600
     #   Vc   34%  -> omega^2 = log(1 + 0.34^2) = 0.10939
-    #   ka   63%  -> omega^2 = log(1 + 0.63^2) = 0.33416
+    #   ka   63%  -> omega^2 = log(1 + 0.63^2) = 0.33426
     # The correlation between IIV CL and IIV Vc is 39% (Suleiman 2019 Table 3);
     # covariance = 0.39 * sqrt(0.05600 * 0.10939) = 0.03052.
     etalcl + etalvc ~ c(0.05600,
                         0.39 * sqrt(0.05600 * log(1 + 0.34^2)), log(1 + 0.34^2))                                     # Suleiman 2019 Table 3 (IIV CL 24%, IIV Vc 34%, correlation 39%)
-    etalka ~ 0.33416                                                          # Suleiman 2019 Table 3 (IIV ka 63%)
+    etalka ~ log(1 + 0.63^2)  # Suleiman 2019 Table 3 (IIV ka 63%)
 
     # IIV on F: additive in logit domain with variance 0.492 (Suleiman 2019
     # Table 3 footnote f, "additive error model in logit domain").

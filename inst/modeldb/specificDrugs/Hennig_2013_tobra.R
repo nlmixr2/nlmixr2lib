@@ -103,7 +103,7 @@ Hennig_2013_tobra <- function() {
     #   CL : log(0.259^2 + 1) = 0.06493
     #   V1 : log(0.152^2 + 1) = 0.02284
     #   Q  : log(0.418^2 + 1) = 0.16103
-    #   V2 : log(0.585^2 + 1) = 0.29443
+    #   V2 : log(0.585^2 + 1) = 0.29433
     # Covariances: cov(X,Y) = r(X,Y) * sqrt(var(X) * var(Y))
     #   cov(CL,V1) = 0.658 * sqrt(0.06493 * 0.02284) = 0.02534
     #   cov(CL,Q ) = 0.711 * sqrt(0.06493 * 0.16103) = 0.07270
@@ -113,7 +113,7 @@ Hennig_2013_tobra <- function() {
       0.658 * sqrt(log(1 + 0.259^2) * log(1 + 0.152^2)), log(1 + 0.152^2),
       0.711 * sqrt(log(1 + 0.259^2) * log(1 + 0.418^2)), 0.475 * sqrt(log(1 + 0.152^2) * log(1 + 0.418^2)), log(1 + 0.418^2)
     )                                                                                            # Hennig 2013 Table 2: BSV CV% and correlations on CL, V1, Q2
-    etalvp ~ 0.29443                                                                             # Hennig 2013 Table 2: BSV CV% on V2 (independent)
+    etalvp ~ log(1 + 0.585^2)  # Hennig 2013 Table 2: BSV CV% on V2 (independent)
 
     # Residual error: total proportional 20.4 % (Hennig 2013 Table 2 "Final
     # model"). The 8.4 % "within-sample" component is an L2 (duplicate-sample)

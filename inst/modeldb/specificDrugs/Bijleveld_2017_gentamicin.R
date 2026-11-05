@@ -108,7 +108,7 @@ Bijleveld_2017_gentamicin <- function() {
     # CL and Vc are correlated (r = 0.08, Results "Pharmacokinetic model"
     # paragraph); the lower-triangular covariance is
     #   cov(CL, Vc) = r * omega_CL * omega_Vc
-    #              = 0.08 * sqrt(0.10396) * sqrt(0.05784) = 0.006204.
+    #              = 0.08 * sqrt(0.10396) * sqrt(0.05783) = 0.006203.
     etalcl + etalvc ~ c(0.10396,
                         0.08 * sqrt(0.10396 * log(1 + 0.244^2)), log(1 + 0.244^2))  # Bijleveld 2017 Table 3: IIV CL 33.1%, IIV Vc 24.4%, corr 0.08
     # Q and Vp had no IIV in the final model (Bijleveld 2017 Results

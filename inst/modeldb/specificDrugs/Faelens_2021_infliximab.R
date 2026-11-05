@@ -93,7 +93,7 @@ Faelens_2021_infliximab <- function() {
     # Inter-individual variability. Source has independent ETAs on KE and V
     # (no $OMEGA BLOCK between ETA(1) and ETA(2) in the NONMEM control stream).
     # Reparameterised to (CL, Vc) using log(CL) = log(KE) + log(V):
-    #   var(etalcl)         = var(ETA_KE) + var(ETA_V)        = 0.10577 + 0.05420 = 0.15996
+    #   var(etalcl)         = var(ETA_KE) + var(ETA_V)        = 0.10577 + 0.05420 = 0.15997
     #   var(etalvc)         = var(ETA_V)                       = 0.05420
     #   cov(etalcl, etalvc) = var(ETA_V)                       = 0.05420
     # Source CV% values from supplement Table S1 (Adapted Model column):

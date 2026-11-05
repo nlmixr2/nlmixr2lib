@@ -86,7 +86,7 @@ Table 2 final-model column.
 | `etalcl ~ 0.118064`                                        | log(0.354^2 + 1)       | Table 2 row "omega CL" = 35.4% CV |
 | `etalvc ~ 0.165325`                                        | log(0.424^2 + 1)       | Table 2 row "omega V1" = 42.4% CV |
 | cov(etalcl, etalvc) = 0.060634                             | 0.434 * sqrt(omega^2_CL * omega^2_V1) | Table 2 row "rho CL-V1" = 0.434 |
-| `etalq  ~ 0.596277`                                        | log(0.903^2 + 1)       | Table 2 row "omega Q"  = 90.3% CV |
+| `etalq  ~ 0.596311`                                        | log(0.903^2 + 1)       | Table 2 row "omega Q"  = 90.3% CV |
 | `propSd <- 0.185`                                          | 0.185                  | Table 2 row "sigma proportional" = 18.5% |
 | `addSd  <- 0.359`                                          | 0.359 mg/L             | Table 2 row "sigma additive" = 0.359 mg/L |
 | `cl <- (exp(lcl) * (CRCL / 132) + e_dai_cl * DAY_AFTER_INJURY) * exp(etalcl)` | n/a | Results section: "CL = theta1 * (CLCR / 132) + DAI * theta5" |

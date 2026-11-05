@@ -269,7 +269,7 @@ Riggs_2012_albinterferon <- function() {
     # CL/F 21% (95% CI 20-22%), V/F 34% (23-39%), ka 24% (1-60%). Those
     # are converted here with the exact log-normal identity
     #   omega^2 = log(CV^2 + 1)
-    # giving 0.0431534, 0.1093834, and 0.0559616 respectively.
+    # giving 0.0431534, 0.1093834, and 0.0560022 respectively.
     #
     # The source states that a COVARIANCE term between the CL/F (ETA1)
     # and V/F (ETA2) random effects was estimated, but reports it only

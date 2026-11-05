@@ -108,17 +108,17 @@ Wang_2011_raltegravir <- function() {
     # The paper reports IIV as %CV on the log-normal scale; the
     # internal omega^2 on log scale is recovered as
     # omega^2 = log(CV^2 + 1).
-    #   CV(MAT)   = 66.2%  -> omega^2 = log(1 + 0.662^2) = 0.36347
+    #   CV(MAT)   = 66.2%  -> omega^2 = log(1 + 0.662^2) = 0.36342
     #   CV(CL/F)  = 56.4%  -> omega^2 = log(1 + 0.564^2) = 0.27619
     #   CV(V/F)   = 56.7%  -> omega^2 = log(1 + 0.567^2) = 0.27876
-    #   CV(ACR)   = 104%   -> omega^2 = log(1 + 1.04^2)  = 0.73315
+    #   CV(ACR)   = 104%   -> omega^2 = log(1 + 1.04^2)  = 0.73314
     # Correlation between CL/F and V/F is reported as 0.559 (Table 1),
     # so the covariance entered into the lower-triangular block is
     #   cov(lcl, lvc) = 0.559 * sqrt(0.27619 * 0.27876) = 0.15511.
     etalcl + etalvc ~ c(log(1 + 0.564^2),
                         0.559 * sqrt(log(1 + 0.564^2) * log(1 + 0.567^2)), log(1 + 0.567^2))                                                       # Wang 2011 Table 1: IIV(CL/F)=56.4%, IIV(V/F)=56.7%, correlation = 0.559
-    etalmat        ~ 0.36347                                                                    # Wang 2011 Table 1: IIV(MAT) = 66.2%
-    etalfrac       ~ 0.73315                                                                    # Wang 2011 Table 1: IIV(accumulation ratio) = 104%
+    etalmat        ~ log(1 + 0.662^2)  # Wang 2011 Table 1: IIV(MAT) = 66.2%
+    etalfrac       ~ log(1 + 1.04^2)  # Wang 2011 Table 1: IIV(accumulation ratio) = 104%
 
     # ---- Residual error -- exponential (log-additive) ----
     # The paper Methods state interindividual and residual unexplained

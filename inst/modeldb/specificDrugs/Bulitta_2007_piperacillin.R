@@ -119,7 +119,7 @@ Bulitta_2007_piperacillin <- function() {
     #   = -0.068061. Block specified as c(var_V1, cov_V1V2, var_V2).
     etalcl ~ 0.010758                                                                     # Bulitta 2007 Table 3: BSV CL = 10.4% CV
     etalvc + etalvp ~ c(log(1 + 0.260^2),
-                       -0.068061, log(1 + 0.342^2))                                               # Bulitta 2007 Table 3: BSV V1 = 26.0% CV, BSV V2 = 34.2% CV, r(V1,V2) = -0.80
+                       -0.80 * sqrt(log(1 + 0.342^2) * log(1 + 0.260^2)), log(1 + 0.342^2))                                               # Bulitta 2007 Table 3: BSV V1 = 26.0% CV, BSV V2 = 34.2% CV, r(V1,V2) = -0.80
 
     # ===== Residual error (Bulitta 2007 Table 3: combined proportional + additive) =====
     propSd <- 0.132; label("Proportional residual error (fraction)")                      # Bulitta 2007 Table 3: CVC = 13.2%

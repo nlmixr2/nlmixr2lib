@@ -71,7 +71,7 @@ IIV variance derivation. Moore 2016 reports apparent %CV for ISV as
 `sqrt(exp(omega^2) - 1) * 100%` (Methods, ISV paragraph). Inverting
 for `omega^2 = log(CV^2 + 1)` gives:
 
-* CL: `log(0.77^2 + 1) = log(1.5929) = 0.4655`
+* CL: `log(0.77^2 + 1) = log(1.5929) = 0.4656`
 * V1: `log(0.34^2 + 1) = log(1.1156) = 0.1094`
 
 The reported proportional residual variance in Table 2 is `r^2 = 0.0067`;

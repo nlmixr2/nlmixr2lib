@@ -66,7 +66,7 @@ predictive performance than the S-ADAPT estimates.
 | cov(`etalcl_renal_nonren`, `etalvc_vp_vp2`)      | 0.010835   | Table 3 footnote ++ (r = 0.84)   |
 | `etalvmax` (V_max eta, 50.4% CV)                 | 0.226351   | Table 3 V_max row; omega^2 = log(0.504^2 + 1)    |
 | `etalkm` (K_m eta, 150% CV)                      | 1.178655   | Table 3 K_m row; omega^2 = log(1.50^2 + 1)       |
-| cov(`etalvmax`, `etalkm`)                        | 0.511422   | Table 3 footnote SS (r = 0.99)   |
+| cov(`etalvmax`, `etalkm`)                        | 0.511352   | Table 3 footnote SS (r = 0.99)   |
 | `propSd`        (CV_C 12.5%)                     | 0.125      | Table 3 column NONMEM            |
 | `addSd`         (SD_C 0.447 mg/L)                | 0.447      | Table 3 column NONMEM            |
 | `propSd_Aurine` (CV_AU 24.6%)                    | 0.246      | Table 3 column NONMEM            |

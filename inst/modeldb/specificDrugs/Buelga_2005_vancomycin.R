@@ -67,7 +67,7 @@ Buelga_2005_vancomycin <- function() {
     # 'omega CL/V = 23.12%', which is interpreted here as the correlation coefficient
     # between etalcl and etalvc (rho = 0.2312); the off-diagonal covariance is
     #   cov = rho * sqrt(omega^2_lcl * omega^2_lvc)
-    #       = 0.2312 * sqrt(0.07631 * 0.12928) = 0.2312 * 0.09933 = 0.02296
+    #       = 0.2312 * sqrt(0.07631 * 0.12928) = 0.2312 * 0.09933 = 0.02297
     # See vignette Assumptions and deviations for the discussion of this convention.
     # Block matrix order is var(etalcl), cov(etalcl, etalvc), var(etalvc).
     # Buelga 2005 Table 4: omega_CL = 28.16% CV; omega_V = 37.15% CV; omega_CL/V = 23.12% (correlation).

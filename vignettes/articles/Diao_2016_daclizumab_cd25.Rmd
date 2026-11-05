@@ -102,7 +102,7 @@ collects them for review.
 | `ltlag` (Tlag SC)             | 2.0 h (= 0.0833 day) | Othman 2014 Table 2 |
 | `e_wt_cl_q`, `e_wt_vc_vp`     | 0.54 / 0.64 | Othman 2014 Table 2 |
 | `e_dose_50mg_f`               | -0.32143 (= 0.57/0.84 - 1) | Othman 2014 Table 2 |
-| PK IIV `etalka`, `etalcl` (block, corr -0.72) | omega^2 0.28998 / 0.07037, cov -0.10290 | Othman 2014 Table 2 |
+| PK IIV `etalka`, `etalcl` (block, corr -0.72) | omega^2 0.28998 / 0.07037, cov -0.10285 | Othman 2014 Table 2 |
 | PK IIV `etalvc`               | omega^2 0.09175 (CV 31%) | Othman 2014 Table 2 |
 | `propSd`, `addSd`             | 0.22 / 0.33 ug/mL | Othman 2014 Table 2 |
 | `cd25E0` (baseline unoccupied CD25)                     | 56% of CD4+ T cells | Diao 2016 Table 3 (Baseline E0 = 56) |

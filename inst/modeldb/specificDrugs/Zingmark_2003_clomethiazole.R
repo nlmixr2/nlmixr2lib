@@ -246,14 +246,14 @@ Zingmark_2003_clomethiazole <- function() {
     #   var_Q  = log(1 + 0.36^2) = 0.122
     #   var_V2 = log(1 + 0.49^2) = 0.215
     # Off-diagonal (constant since the paper reports a single
-    # 22% correlation): rho * sqrt(var_CL * var_V1) = 0.22 *
-    # sqrt(0.169 * 0.207) = 0.0412.
+    # 22% correlation): rho * sqrt(var_CL * var_V1) =
+    # 0.22 * sqrt(0.16966 * 0.207) = 0.0412.
     # ------------------------------------------------------------
     etalcl + etalvc + etalq + etalvp ~ c(
       log(1 + 0.43^2),
-      0.0412, 0.207,
-      0.0412, 0.0412, 0.122,
-      0.0412, 0.0412, 0.0412, 0.215
+      0.22 * sqrt(log(1 + 0.43^2) * 0.207), 0.207,
+      0.22 * sqrt(log(1 + 0.43^2) * 0.207), 0.22 * sqrt(log(1 + 0.43^2) * 0.207), 0.122,
+      0.22 * sqrt(log(1 + 0.43^2) * 0.207), 0.22 * sqrt(log(1 + 0.43^2) * 0.207), 0.22 * sqrt(log(1 + 0.43^2) * 0.207), 0.215
     )                                                                                                                  # Table 3: marginal CVs 43%/48%/36%/49%, pairwise correlation 22% via shared eta
 
     # ------------------------------------------------------------

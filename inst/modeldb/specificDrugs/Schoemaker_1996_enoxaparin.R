@@ -110,7 +110,7 @@ Schoemaker_1996_enoxaparin <- function() {
     # eta_lt12 independent of eta_lcl), the implied joint distribution is:
     #   Var(eta_lcl) = log(1 + 0.151^2) = 0.02254
     #   Var(eta_lvc) = Var(eta_lcl) + Var(eta_lt12)
-    #                = 0.02256 + log(1 + 0.086^2) = 0.00737
+    #                = 0.022545 + log(1 + 0.086^2) = 0.029914
     #   Cov(eta_lcl, eta_lvc) = Var(eta_lcl) = 0.02254
     # (Correlation = 0.868). This block-diagonal encoding preserves the paper's
     # reported IIV on CL (15.1%) and t1/2 (8.6%) exactly: when sampled, the

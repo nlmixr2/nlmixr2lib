@@ -188,7 +188,7 @@ chk <- solve_cohort(regimen(1000, 0, "IV", 68.8, 12), n = 2000L, seed = 11L) |>
 tibble::tibble(
   quantity = c("median V (L)", "median CL (L/h)", "sd(log V)", "sd(log CL)"),
   simulated = c(median(chk$vc), median(chk$cl), sd(log(chk$vc)), sd(log(chk$cl))),
-  expected  = c(34.3, 0.38, sqrt(0.50799), sqrt(0.157914 + 0.127331))
+  expected  = c(34.3, 0.38, sqrt(0.50799), sqrt(0.157914 + 0.127330))
 ) |>
   mutate(pct_diff = 100 * (simulated - expected) / expected) |>
   knitr::kable(digits = 4, caption =

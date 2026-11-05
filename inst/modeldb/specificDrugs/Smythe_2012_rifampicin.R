@@ -120,10 +120,10 @@ Smythe_2012_rifampicin <- function() {
     # var_CL = log(1 + 0.30^2)  = 0.08618
     # var_VC = log(1 + 0.192^2) = 0.03620
     # cov(CL,VC) = 0.911 * sqrt(var_CL * var_VC)
-    #            = 0.911 * sqrt(0.08618 * 0.03625)
-    #            = 0.911 * sqrt(0.003124) = 0.911 * 0.05589 = 0.05091
+    #            = 0.911 * sqrt(0.08618 * 0.03620)
+    #            = 0.911 * sqrt(0.003120) = 0.911 * 0.05585 = 0.05088
     etalcl + etalvc ~ c(0.08618,
-                        0.05091, log(1 + 0.192^2))   # Smythe 2012 Table 3: IIV CL/F = 30.0% CV (RSE 12.3%), IIV V/F = 19.2% CV (RSE 14.8%), CL-V correlation = 91.1% (RSE 20.7%)
+                        0.911 * sqrt(log(1 + 0.192^2) * 0.08618), log(1 + 0.192^2))   # Smythe 2012 Table 3: IIV CL/F = 30.0% CV (RSE 12.3%), IIV V/F = 19.2% CV (RSE 14.8%), CL-V correlation = 91.1% (RSE 20.7%)
 
     # var_EC50 = log(1 + 4.93^2) = log(25.305) = 3.231
     etalec50 ~ 3.231                       # Smythe 2012 Table 3: IIV EC50 = 493% CV (RSE 19%)

@@ -160,7 +160,7 @@ Moffett_2017_antithrombin <- function() {
     # Inter-individual variability (exponential IIV, "modelled exponentially" per
     # Methods "Model building"). Table 4 reports CV% for each eta; the underlying
     # variance is omega^2 = log(CV^2 + 1).
-    #   omega^2(CL) = log(0.475^2 + 1) = log(1.2256) = 0.20345
+    #   omega^2(CL) = log(0.475^2 + 1) = log(1.2256) = 0.20343
     #   omega^2(VD) = log(0.282^2 + 1) = log(1.07952) = 0.07652
     # Off-diagonal correlation not reported; treat as independent block.
     etalcl ~ log(1 + 0.475^2)  # Moffett 2017 Table 4: omega1 = 47.5% CV (RSE 26.5%)

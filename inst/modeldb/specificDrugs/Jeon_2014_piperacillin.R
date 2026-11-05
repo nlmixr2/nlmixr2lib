@@ -77,10 +77,10 @@ Jeon_2014_piperacillin <- function() {
     # var_CL  = log(0.354^2 + 1) = 0.118064
     # var_V1  = log(0.424^2 + 1) = 0.165325
     # cov     = 0.434 * sqrt(0.118064 * 0.165325) = 0.060634
-    # var_Q   = log(0.903^2 + 1) = 0.596277
+    # var_Q   = log(0.903^2 + 1) = 0.596311
     etalcl + etalvc ~ c(log(1 + 0.354^2),
                         0.434 * sqrt(log(1 + 0.354^2) * log(1 + 0.424^2)), log(1 + 0.424^2))  # Jeon 2014 Table 2: 35.4 CV CL, 42.4 CV V1, rho 0.434
-    etalq           ~ 0.596277               # Jeon 2014 Table 2: 90.3 CV Q
+    etalq           ~ log(1 + 0.903^2)  # Jeon 2014 Table 2: 90.3 CV Q
 
     # Combined residual error (Jeon 2014 Table 2 final-model row).
     propSd <- 0.185; label("Proportional residual error (fraction)")                       # Jeon 2014 Table 2 sigma proportional = 18.5%

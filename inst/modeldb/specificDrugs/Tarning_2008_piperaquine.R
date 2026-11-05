@@ -168,23 +168,23 @@ Tarning_2008_piperaquine <- function() {
     # log-scale variance omega^2 = log(CV^2 + 1).
     #
     #   CL/F  IIV 42%   -> omega^2 = log(0.42^2 + 1) = 0.162459
-    #   Vc/F  IIV 101%  -> omega^2 = log(1.01^2 + 1) = 0.703107
-    #   Q/F   IIV 85%   -> omega^2 = log(0.85^2 + 1) = 0.543763
+    #   Vc/F  IIV 101%  -> omega^2 = log(1.01^2 + 1) = 0.703147
+    #   Q/F   IIV 85%   -> omega^2 = log(0.85^2 + 1) = 0.543777
     #   Vp/F  IIV 50%   -> omega^2 = log(0.50^2 + 1) = 0.223144
-    #   ka    IIV 168%  -> omega^2 = log(1.68^2 + 1) = 1.340808
+    #   ka    IIV 168%  -> omega^2 = log(1.68^2 + 1) = 1.340878
     etalcl ~ log(1 + 0.42^2)
     # Tarning 2008 Table 2: IIV on CL/F = 42% CV (% RSE 44)
 
-    etalvc ~ 0.703107
+    etalvc ~ log(1 + 1.01^2)
     # Tarning 2008 Table 2: IIV on Vc/F = 101% CV (% RSE 17)
 
-    etalq ~ 0.543763
+    etalq ~ log(1 + 0.85^2)
     # Tarning 2008 Table 2: IIV on Q/F = 85% CV (% RSE 18)
 
     etalvp ~ 0.223144
     # Tarning 2008 Table 2: IIV on Vp/F = 50% CV (% RSE 76)
 
-    etalka ~ 1.340808
+    etalka ~ log(1 + 1.68^2)
     # Tarning 2008 Table 2: IIV on ka = 168% CV (% RSE 38)
 
     # Residual error. Methods (page 1054): piperaquine plasma

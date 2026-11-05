@@ -91,7 +91,7 @@ Suleiman_2018_risankizumab <- function() {
     # = 0.07182. See vignette Assumptions and deviations for the provenance
     # rationale; the maintainers authorised this substitution.
     etalcl + etalvc ~ c(log(1 + 0.37^2),
-                        0.07182, log(1 + 0.55^2))                                              # Suleiman 2018 Table 3 (IIV CL 37%, IIV Vc 55%); CL-Vc covariance carried from Suleiman 2019
+                        0.39 * sqrt(log(1 + 0.55^2) * log(1 + 0.37^2)), log(1 + 0.55^2))                                              # Suleiman 2018 Table 3 (IIV CL 37%, IIV Vc 55%); CL-Vc covariance carried from Suleiman 2019
     etalvp ~ 0.11556                                                                    # Suleiman 2018 Table 3 (IIV Vp 35%)
     etalka ~ 0.49470                                                                    # Suleiman 2018 Table 3 (IIV Ka 80%)
 

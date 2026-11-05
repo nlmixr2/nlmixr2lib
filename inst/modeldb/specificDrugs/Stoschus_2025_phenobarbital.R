@@ -270,7 +270,7 @@ Stoschus_2025_phenobarbital <- function() {
     # significant figures whereas the SD column is rounded to two, so the
     # variances below are back-solved from the CV; each reproduces the printed
     # SD to its stated precision (sqrt(0.50799) = 0.713 vs printed .71,
-    # sqrt(0.157914) = 0.397 vs printed .4, sqrt(0.127331) = 0.357 vs
+    # sqrt(0.157914) = 0.397 vs printed .4, sqrt(0.127330) = 0.357 vs
     # printed .36).
     # =========================================================================
     etalvc ~ 0.50799

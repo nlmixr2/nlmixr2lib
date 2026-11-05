@@ -64,10 +64,10 @@ Abbasi_2023_gentamicin <- function() {
     # scale via omega^2 = log(CV^2 + 1). The reported variability reflects
     # combined between-study and between-patient effects (not a
     # NONMEM-fitted OMEGA); see vignette Assumptions and deviations.
-    #   CL : SD/mean = 2.89/4.70 = 0.6149 -> omega^2 = log(0.6149^2 + 1) = 0.32070
-    #   Vd : SD/mean = 0.20/0.33 = 0.6061 -> omega^2 = log(0.6061^2 + 1) = 0.31288
+    #   CL : SD/mean = 2.89/4.70 = 0.6149 -> omega^2 = log((2.89/4.70)^2 + 1) = 0.32070
+    #   Vd : SD/mean = 0.20/0.33 = 0.6061 -> omega^2 = log((0.20/0.33)^2 + 1) = 0.31284
     etalcl ~ log(1 + (2.89 / 4.70)^2)  # Abbasi 2023 Results, pooled CL 4.70 +/- 2.89 L/h (CV 61.5%)
-    etalvc ~ log(1 + 0.6061^2)  # Abbasi 2023 Results, pooled Vd SD 0.20 L/kg (CV 60.6%)
+    etalvc ~ log(1 + (0.20 / 0.33)^2)  # Abbasi 2023 Results, pooled Vd SD 0.20 L/kg (CV 60.6%)
 
     # Residual error: not reported. Abbasi 2023 does not fit an OMEGA/SIGMA
     # to observed concentrations; the Monte Carlo Simulation is

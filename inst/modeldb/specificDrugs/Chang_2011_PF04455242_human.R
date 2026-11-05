@@ -66,11 +66,11 @@ Chang_2011_PF04455242_human <- function() {
     # correlation = 0.485. The log-scale covariance is then
     #   0.485 * sqrt(var_lcl * var_lvc)
     # = 0.485 * sqrt(log(0.537^2+1) * log(0.485^2+1))
-    # = 0.485 * sqrt(0.2533 * 0.2113)
+    # = 0.485 * sqrt(0.2534 * 0.2113)
     # = 0.485 * 0.2314
     # = 0.1122
     # See vignette Errata for the alternative interpretations considered.
-    etalcl + etalvc ~ c(log(1 + 0.537^2), 0.1122, 0.2113)
+    etalcl + etalvc ~ c(log(1 + 0.537^2), 0.485 * sqrt(0.2113 * log(1 + 0.537^2)), 0.2113)
     # Table III: omega-CL = 53.7%CV -> log(0.537^2+1) = 0.2534
     #            omega-Vc = 48.5%CV -> log(0.485^2+1) = 0.2113
     #            cov(omega-CL, omega-Vc) interpreted as r = 0.485 (see comment above)

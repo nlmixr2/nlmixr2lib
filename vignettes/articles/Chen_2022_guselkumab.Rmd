@@ -64,7 +64,7 @@ file; the table below collects them in one place.
 | BWT on V/F | (BWT/84)^0.861 | Table 1 footnote g |
 | IIV CL/F | 38.9% CV -> omega^2 = log(1+0.389^2) = 0.14091 | Table 1 |
 | IIV V/F | 33.3% CV -> omega^2 = log(1+0.333^2) = 0.10516 | Table 1 |
-| IIV Ka | 93.4% CV -> omega^2 = log(1+0.934^2) = 0.62725 | Table 1 (shrinkage 61.7%) |
+| IIV Ka | 93.4% CV -> omega^2 = log(1+0.934^2) = 0.62720 | Table 1 (shrinkage 61.7%) |
 | IIV correlation CL/F:V/F | r = 0.101 -> covariance = 0.012295 | Table 1 |
 | Proportional residual error | 19.1% CV -> propSd = 0.191 | Table 1 |
 | Additive residual error | 0.00289 ug/mL | Table 1 |

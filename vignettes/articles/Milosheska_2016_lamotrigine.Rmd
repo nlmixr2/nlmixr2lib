@@ -524,7 +524,7 @@ knitr::kable(
   to the internal log-normal variance via omega^2 = log(1 + CV^2)
   so the simulated between-subject geometric CV reproduces the
   reported values. The corresponding numeric omega^2 values
-  (0.4090 / 0.1040 / 0.0867 / 0.1603) fall inside the bootstrap
+  (0.4091 / 0.1040 / 0.0867 / 0.1603) fall inside the bootstrap
   95% CIs the paper reports on the omega^2 scale (Table 4 columns
   '95% CI' for the IIV rows).
 - **Cockcroft-Gault CLcr, not BSA-normalised eGFR.**

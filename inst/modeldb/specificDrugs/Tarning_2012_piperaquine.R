@@ -195,14 +195,14 @@ Tarning_2012_piperaquine <- function() {
     # pregabalin precedents): occasion-1 carries the estimated variance
     # and occasions 2/3 fix the same value.
     #   MTT CV 45.8% -> log(0.458^2 + 1) = 0.19043
-    #   F   CV 56.3% -> log(0.563^2 + 1) = 0.27536
+    #   F   CV 56.3% -> log(0.563^2 + 1) = 0.27533
     etaiov_mtt_1 ~ log(1 + 0.458^2)  # Tarning 2012 Table 2: BOV on MTT = 45.8% CV (RSE 24.5%; 95% CI 35.4-56.1)
     etaiov_mtt_2 ~ fix(log(1 + 0.458^2))  # NONMEM $OMEGA BLOCK(1) SAME (occasion 2 shares occasion-1 variance)
     etaiov_mtt_3 ~ fix(log(1 + 0.458^2))  # NONMEM $OMEGA BLOCK(1) SAME (occasion 3 shares occasion-1 variance)
 
-    etaiov_fdepot_1 ~ 0.27536        # Tarning 2012 Table 2: BOV on F = 56.3% CV (RSE 25.6%; 95% CI 41.8-72.2)
-    etaiov_fdepot_2 ~ fix(0.27536)   # NONMEM $OMEGA BLOCK(1) SAME (occasion 2 shares occasion-1 variance)
-    etaiov_fdepot_3 ~ fix(0.27536)   # NONMEM $OMEGA BLOCK(1) SAME (occasion 3 shares occasion-1 variance)
+    etaiov_fdepot_1 ~ log(1 + 0.563^2)  # Tarning 2012 Table 2: BOV on F = 56.3% CV (RSE 25.6%; 95% CI 41.8-72.2)
+    etaiov_fdepot_2 ~ fix(log(1 + 0.563^2))  # NONMEM $OMEGA BLOCK(1) SAME (occasion 2 shares occasion-1 variance)
+    etaiov_fdepot_3 ~ fix(log(1 + 0.563^2))  # NONMEM $OMEGA BLOCK(1) SAME (occasion 3 shares occasion-1 variance)
 
     # Residual error. Tarning 2012 Methods 'Pharmacokinetic analysis':
     # 'The residual random variability was assumed to be additive since

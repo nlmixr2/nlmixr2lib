@@ -89,7 +89,7 @@ collects the audit trail in one place.
 | `lkel_pla`           | log(0.000473) FIX (1/h) | Table I, kel = 0.000473 1/h FIX (literature placebo model, ref 34) |
 | `lbeta_pla`          | log(1.42) (\|beta\| = 1.42; sign applied in model()) | Table I, beta = -1.42 FIX (literature placebo model, ref 34) |
 | `ldp_rate`           | log(6 / 8766) FIX (points/hour) | Disease Progression and Placebo Effect Model section: 6 ADAS-Cog points/year FIX from ref 26 |
-| Block `(etalcl_nonmet, etalvc)` | omega^2 (0.1639, cov 0.0863, 0.0878), rho = 0.72 | Table I: 42.2% CV on CL_non-met, 30.3% CV on V2, "Corr CL non-met /F_V2/F" = 0.72 |
+| Block `(etalcl_nonmet, etalvc)` | omega^2 (0.1639, cov 0.0864, 0.0878), rho = 0.72 | Table I: 42.2% CV on CL_non-met, 30.3% CV on V2, "Corr CL non-met /F_V2/F" = 0.72 |
 | `etalcl_m1`          | omega^2 = 0.0444 (21.3% CV) | Table I |
 | `etalvc_m1`          | omega^2 = 0.1660 (42.5% CV) | Table I |
 | `etalemax`           | omega^2 = 0.6701 (97.7% CV) | Table I |
