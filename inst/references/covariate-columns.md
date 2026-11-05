@@ -3356,8 +3356,9 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Type:** binary
 - **Scope:** specific
 - **Reference category:** 0 (low).
-- **Source aliases:** none.
-- **Example models:** `Almquist_2022_anifrolumab.R` (binary high-IFN indicator on CL).
+- **Source aliases:**
+  - `GRNUM` -- used in `Volkova_2025_SLE_ifn_qsp.R` (Volkova 2025 Monolix code; INVERTED, 1 = IFNGS-low, so `BGENE21_HIGH = 1 - GRNUM`).
+- **Example models:** `Almquist_2022_anifrolumab.R` (binary high-IFN indicator on CL); `Volkova_2025_SLE_ifn_qsp.R` (cut-off 2.75 on baseline 21-gene IFNGS from the bimodal MUSE distribution; the IFNGS synthesis rate constant is multiplied by `exp(-1.57 * (1 - BGENE21_HIGH))`, i.e. 4.8-fold lower in IFNGS-low patients).
 - **Notes:** Pair with continuous `BGENE21` when the paper reports both. The high/low cut-off is paper-specific (commonly the population median) and must be documented in `covariateData[[BGENE21_HIGH]]$notes` for every model that uses this covariate. The maintainers chose `BGENE21_HIGH` (not `IFNGS_HIGH`) so the link to the existing `BGENE21` register entry is explicit while the binary nature stays visible in the column name.
 
 ## MicroRNA / gene-expression biomarkers
