@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bukkems 2023 lonoctocog alfa (rFVIII-SingleChain) PopPK and bleeding repeated time-to-event models ([doi:10.1002/psp4.12938](https://doi.org/10.1002/psp4.12938)) -- children, adolescents and adults with severe hemophilia A on prophylaxis.
+- Add Carral 2023 amoxicillin, levofloxacin and moxifloxacin non-adherence simulation models ([doi:10.3390/antibiotics12050838](https://doi.org/10.3390/antibiotics12050838)) -- virtual adult male outpatients with community-acquired pneumonia.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
