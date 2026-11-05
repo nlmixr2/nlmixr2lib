@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Fratoni 2023 funobactam ([doi:10.1093/jac/dkad242](https://doi.org/10.1093/jac/dkad242)) -- mouse (ICR, neutropenic thigh infection model with uranyl-nitrate renal impairment).
+- Add Swierczek 2023 dexamethasone PK/PD on TNF-alpha, IL-6 and CRP ([doi:10.1111/cts.13577](https://doi.org/10.1111/cts.13577)) -- hospitalized adults with COVID-19.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
