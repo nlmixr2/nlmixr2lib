@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Alli 2023 cefazolin ([doi:10.1371/journal.pone.0291425](https://doi.org/10.1371/journal.pone.0291425)) -- adults given cefazolin prophylaxis for elective cardiac valve replacement on cardiopulmonary bypass; joint total and unbound concentrations.
+- Add Chua 2023 mirikizumab, phase II AMAC and phase III LUCENT 1+2 models ([doi:10.1007/s40262-023-01281-z](https://doi.org/10.1007/s40262-023-01281-z)) -- adults with moderately to severely active ulcerative colitis.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
