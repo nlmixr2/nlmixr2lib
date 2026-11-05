@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Staudt 2023 voriconazole ([doi:10.3390/pharmaceutics15071781](https://doi.org/10.3390/pharmaceutics15071781)) -- male Wistar and Sprague-Dawley rats, healthy or with Cryptococcus neoformans meningoencephalitis, with plasma, brain microdialysis and CSF.
+- Add Mead 2023 colistin ([doi:10.1038/s41598-023-39727-w](https://doi.org/10.1038/s41598-023-39727-w)) -- small-intestine luminal content of Ross 308 broiler chickens dosed via drinking water or oral gavage.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
