@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Burmeister Getz 2025 iptacopan two-site factor B / plasma-protein equilibrium binding models ([doi:10.1002/cpt.3559](https://doi.org/10.1002/cpt.3559)) -- adults with normal hepatic function or mild, moderate or severe hepatic impairment (one model per group). Registers the `CP_IPTACOPAN_NGML` covariate.
+- Add Yoshikado 2025 grazoprevir PBPK with saturable OATP1B, CYP3A and P-gp ([doi:10.1002/psp4.13314](https://doi.org/10.1002/psp4.13314)) -- HCV-infected adults, single oral doses of 50-800 mg.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
