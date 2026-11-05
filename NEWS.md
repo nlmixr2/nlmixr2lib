@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hui 2024 linezolid continuous and intermittent infusion ([doi:10.3390/antibiotics13100961](https://doi.org/10.3390/antibiotics13100961)) -- critically ill adults in an intensive care unit (typical-value models from individual two-compartment fits).
+- Add Tsirizani 2024 darunavir, final model and the supplementary AAG-binding model ([doi:10.1093/jac/dkae319](https://doi.org/10.1093/jac/dkae319)) -- African children with HIV on once-daily darunavir/ritonavir second-line ART (CHAPAS-4).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
