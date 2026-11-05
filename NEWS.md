@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2023 RC88 ([doi:10.1111/cts.13526](https://doi.org/10.1111/cts.13526)) -- eleven models: mouse PK, cynomolgus monkey TMDD PK and its human projection, and Simeoni, Jumbe and Hybrid tumor-growth-inhibition fits in OVCAR3-MSLN-3# and H292-MSLN-9C8 xenograft mice.
+- Add van der Meijden 2023 polymyxin B murine PK/PD ([doi:10.1093/jac/dkad022](https://doi.org/10.1093/jac/dkad022)) -- neutropenic-mouse thigh/lung infection models: a population PK model plus ten fAUC/MIC inhibitory-sigmoid-Emax PK/PD models for four E. coli and five K. pneumoniae isolates.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
