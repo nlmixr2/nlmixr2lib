@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Maciel 2024 quinine whole-blood PK (rat) and parasitemia PK/PD (mouse) for free and nanoencapsulated quinine ([doi:10.3390/pharmaceutics16111369](https://doi.org/10.3390/pharmaceutics16111369)) -- Plasmodium berghei-infected rats and mice.
+- Add Johnson 2024 osimertinib exposure-response, 4 logistic regressions for ILD and LVEF-decrease events ([doi:10.1111/bcp.16199](https://doi.org/10.1111/bcp.16199)) -- adults with EGFR-mutated non-small cell lung cancer.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
