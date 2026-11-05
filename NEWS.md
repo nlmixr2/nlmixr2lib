@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chiriac 2024 dalbavancin ([doi:10.3390/antibiotics13111103](https://doi.org/10.3390/antibiotics13111103)) -- adult men with a ventricular assist device driveline infection on long-term suppressive outpatient therapy.
+- Add Maciel 2024 quinine whole-blood PK (rat) and parasitemia PK/PD (mouse) for free and nanoencapsulated quinine ([doi:10.3390/pharmaceutics16111369](https://doi.org/10.3390/pharmaceutics16111369)) -- Plasmodium berghei-infected rats and mice.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
