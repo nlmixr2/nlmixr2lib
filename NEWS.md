@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hunt 2024 renal transporter ontogeny profiles for OAT1, OAT3, OCT2, P-gp, URAT1, BCRP, MATE1, MATE-2K, MRP2 and MRP4 ([doi:10.1002/psp4.13102](https://doi.org/10.1002/psp4.13102)) -- human kidney cortex from preterm neonates (25 weeks postmenstrual age) to adults.
+- Add Chang 2024 tofacitinib ([doi:10.1002/psp4.13104](https://doi.org/10.1002/psp4.13104)) -- children and adolescents aged 2-17 years with juvenile idiopathic arthritis.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
