@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yarur 2025 ustekinumab HMSA popPK and clearance/trough exposure-response models ([doi:10.3390/pharmaceutics17020187](https://doi.org/10.3390/pharmaceutics17020187)) -- patients with inflammatory bowel disease on maintenance therapy.
+- Add Menon 2025 tofacitinib exposure-response: ACR20/50/70, hemoglobin and hemoglobin decrease > 2 g/dL ([doi:10.1002/jcph.6147](https://doi.org/10.1002/jcph.6147)) -- adults with active psoriatic arthritis.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
