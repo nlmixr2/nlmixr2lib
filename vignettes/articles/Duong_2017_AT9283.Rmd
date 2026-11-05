@@ -91,8 +91,8 @@ review.
 | `crcl_ref_cl` (CRCL normalisation)    | 100 mL/min     | Results, "normalized to a standard of 6 l h^-1 (100 ml min^-1)" |
 | `etalcl` (IIV CL = 42.9% CV)          | 0.16882        | Table 3 final model, "Interindividual variability (%): CL"   |
 | `etalvc` (IIV Vc = 29.8% CV)          | 0.08510        | Table 3 final model, "Interindividual variability (%): V_C"  |
-| `etalq`  (IIV Q  = 77.0% CV)          | 0.46038        | Table 3 final model, "Interindividual variability (%): Q"    |
-| `etalvp` (IIV Vp = 38.9% CV)          | 0.14148        | Table 3 final model, "Interindividual variability (%): V_P"  |
+| `etalq`  (IIV Q  = 77.0% CV)          | 0.46556        | Table 3 final model, "Interindividual variability (%): Q"    |
+| `etalvp` (IIV Vp = 38.9% CV)          | 0.14091        | Table 3 final model, "Interindividual variability (%): V_P"  |
 | `addSdAdult` (Adults additive)        | 0.166 ng/mL    | Table 3 final model, "Residual errors: Adults: Additive"     |
 | `propSdAdult` (Adults proportional)   | 0.499 (49.9%)  | Table 3 final model, "Residual errors: Adults: Proportional" |
 | `addSdChild` (Children additive)      | 0.359 ng/mL    | Table 3 final model, "Residual errors: Children: Additive"   |
@@ -107,9 +107,8 @@ lognormal etas, `omega^2 = log(CV^2 + 1)`:
 
 * CL:  `log(0.429^2 + 1) = log(1.184041) = 0.168821` (rounded to 0.16882)
 * Vc:  `log(0.298^2 + 1) = log(1.088804) = 0.085098` (rounded to 0.08510)
-* Q :  `log(0.770^2 + 1) = log(1.592900) = 0.465485` (rounded to 0.46038; minor difference from
-  the recomputed value reflects rounding of the published 77% CV)
-* Vp:  `log(0.389^2 + 1) = log(1.151321) = 0.140952` (rounded to 0.14148)
+* Q :  `log(0.770^2 + 1) = log(1.592900) = 0.465556`
+* Vp:  `log(0.389^2 + 1) = log(1.151321) = 0.140910`
 
 Duong 2017 Results state that the IIV was estimated with a full covariance
 matrix (correlations between all four etas) but the off-diagonal covariances

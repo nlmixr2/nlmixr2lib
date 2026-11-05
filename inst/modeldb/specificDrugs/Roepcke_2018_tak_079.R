@@ -190,7 +190,7 @@ Roepcke_2018_tak_079 <- function() {
     lrbase_b   <- log(1279);    label("B-cell typical baseline count (cells / uL)")                # Section 3.3: B median 1279 cells/uL (IQR 860.8-1890)
 
     etalmtt_b     ~ 1.03775    # Table 3: B MTT BSV 135% CV (%SE 17.6) -> log(1 + 1.35^2) = 1.03775
-    etalrbase_b   ~ 0.05617    # Table 3: B baseline BSV 24.03% CV (%SE 10.7) -> log(1 + 0.2403^2) = 0.05617
+    etalrbase_b   ~ log(1 + 0.2403^2)  # Table 3: B baseline BSV 24.03% CV (%SE 10.7)
 
     propSd_bcell  <- sqrt(0.136);   label("B-cell proportional residual SD on cell count (fraction)")   # Table 3: B residual var = 0.136 (%SE 2.26); SD = 0.3688 fraction
 
@@ -206,7 +206,7 @@ Roepcke_2018_tak_079 <- function() {
     lrbase_t   <- log(3732);    label("T-cell typical baseline count (cells / uL)")                # Section 3.3: T median 3732 cells/uL (IQR 2881-5176)
 
     etalemax_t    ~ 0.39366    # Table 3: T EMAX BSV 69.46% CV (%SE 29.50) -> log(1 + 0.6946^2) = 0.39366
-    etalrbase_t   ~ 0.08122    # Table 3: T baseline BSV 29.08% CV (%SE 15.50) -> log(1 + 0.2908^2) = 0.08122
+    etalrbase_t   ~ log(1 + 0.2908^2)  # Table 3: T baseline BSV 29.08% CV (%SE 15.50)
 
     propSd_tcell  <- sqrt(0.1343);  label("T-cell proportional residual SD on cell count (fraction)")   # Table 3: T residual var = 0.1343 (%SE 2.406); SD = 0.3665 fraction
   })

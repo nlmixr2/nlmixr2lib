@@ -116,7 +116,7 @@ Svensson_2018_bedaquiline <- function() {
     etalvc_m2   ~ 0.06677   # Svensson 2018 Table 2 IIV V_M2 = 26.3% CV; omega^2 = log(1 + 0.263^2) = 0.06677
     etalvp_m2   ~ 0.04863   # Svensson 2018 Table 2 IIV VP_M2 = 22.3% CV; omega^2 = log(1 + 0.223^2) = 0.04863
     etalfdepot  ~ 0.04983   # Svensson 2018 Table 2 IIV F = 22.6% CV; omega^2 = log(1 + 0.226^2) = 0.04983 (IOV F = 9.1% CV is dropped; see vignette Assumptions and deviations)
-    etalmat     ~ 0.36764   # Svensson 2018 Table 2 IOV MAT = 66.3% CV folded in as BSV-MAT equivalent (no separate BSV on MAT reported); omega^2 = log(1 + 0.663^2) = 0.36764
+    etalmat     ~ log(1 + 0.663^2)  # Svensson 2018 Table 2 IOV MAT = 66.3% CV folded in as BSV-MAT equivalent (no separate BSV on MAT reported)
 
     # Residual error.  The paper reports proportional residual errors on
     # both bedaquiline and M2 concentrations and a correlation between the

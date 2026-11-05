@@ -147,7 +147,7 @@ Stringer_2013_sipoglitazar <- function() {
 
     # IIV, log-normal (equation 1). omega^2 = log(CV^2 + 1) from the CV%
     # reported in the Table 2 "IIV (%, CV%)" column.
-    etalcl ~ 0.150086  # Table 2: IIV on CL = 40.25% CV (RSE 7.72%);  log(1 + 0.4025^2)
+    etalcl ~ log(1 + 0.4025^2)  # Table 2: IIV on CL = 40.25% CV (RSE 7.72%)
     etalvc ~ 0.110665  # Table 2: IIV on V  = 34.21% CV (RSE 13.0%);  log(1 + 0.3421^2)
     etald1 ~ 0.478053  # Table 2: IIV on D1 = 78.29% CV (RSE 14.8%);  log(1 + 0.7829^2)
 

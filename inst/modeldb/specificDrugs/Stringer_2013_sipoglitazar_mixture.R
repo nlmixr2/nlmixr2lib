@@ -145,7 +145,7 @@ Stringer_2013_sipoglitazar_mixture <- function() {
 
     propSdPhase1 <- 0.234243; label("Proportional residual SD, phase I healthy volunteers (fraction)") # Suppl. Table A1: sigma^2 phase I = 0.05487 (RSE 9.23%); sqrt(0.05487)
     propSdPhase2 <- 0.408656; label("Proportional residual SD, phase II patients (fraction)")          # Suppl. Table A1: sigma^2 phase II = 0.167 (RSE 10.2%); sqrt(0.167)
-    etapropSdPhase2 ~ 0.419432 # Suppl. Table A1: IIV on the phase II residual = 72.18% CV (RSE 15.6%); log(1 + 0.7218^2)
+    etapropSdPhase2 ~ log(1 + 0.7218^2)  # Suppl. Table A1: IIV on the phase II residual = 72.18% CV (RSE 15.6%)
   })
 
   model({

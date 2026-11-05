@@ -138,10 +138,10 @@ Abuhelwa_2015_itraconazole <- function() {
     # uses variances on the log scale, converted via
     #     omega^2 = log(1 + CV^2)
     # ========================================================================
-    etalcl     ~ 0.04681  # Abuhelwa 2015 Table 3 BSV CL/F = 22.1%; omega^2 = log(1 + 0.221^2) = 0.04681
-    etalvc     ~ 0.09011  # Abuhelwa 2015 Table 3 BSV V2/F = 30.8%; omega^2 = log(1 + 0.308^2) = 0.09011
-    etalktr    ~ 0.18120  # Abuhelwa 2015 Table 3 BSV KTR  = 44.8%; omega^2 = log(1 + 0.448^2) = 0.18120
-    etafvar    ~ 0.27259  # Abuhelwa 2015 Table 3 FVAR     = 56.4% (common random effect on bioavailability); omega^2 = log(1 + 0.564^2) = 0.27259
+    etalcl     ~ log(1 + 0.221^2)  # Abuhelwa 2015 Table 3 BSV CL/F = 22.1%
+    etalvc     ~ log(1 + 0.308^2)  # Abuhelwa 2015 Table 3 BSV V2/F = 30.8%
+    etalktr    ~ log(1 + 0.448^2)  # Abuhelwa 2015 Table 3 BSV KTR  = 44.8%
+    etafvar    ~ log(1 + 0.564^2)  # Abuhelwa 2015 Table 3 FVAR     = 56.4% (common random effect on bioavailability)
     etalcl_ohi ~ 0.07497  # Abuhelwa 2015 Table 4 BSV CL_m/F_m = 27.9%; omega^2 = log(1 + 0.279^2) = 0.07497
 
     # ========================================================================

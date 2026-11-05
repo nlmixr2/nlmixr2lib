@@ -111,10 +111,10 @@ AitOudhia_2012_canakinumab <- function() {
     etalq      ~ 0.017298  # log(1 + 0.132^2); Ait-Oudhia 2012 Table 1 Q   CV 13.2%
     etalkd     ~ 0.109419  # log(1 + 0.34^2);  Ait-Oudhia 2012 Table 1 Kd  CV 34%
     etalfdepot ~ 0.001353  # log(1 + 0.0368^2); Ait-Oudhia 2012 Table 1 F  CV 3.68%
-    etalcrp0   ~ 0.388700  # log(1 + 0.669^2); Ait-Oudhia 2012 Table 2 CRP0  CV 66.9%
+    etalcrp0   ~ log(1 + 0.669^2)  # Ait-Oudhia 2012 Table 2 CRP0  CV 66.9%
     etalkout   ~ 0.099887  # log(1 + 0.324^2); Ait-Oudhia 2012 Table 2 kout  CV 32.4%
-    etalbeta   ~ 0.435942  # log(1 + 0.753^2); Ait-Oudhia 2012 Table 2 beta  CV 75.3%
-    etalgamma  ~ 0.330999  # log(1 + 0.636^2); Ait-Oudhia 2012 Table 2 gamma CV 63.6%
+    etalbeta   ~ log(1 + 0.753^2)  # Ait-Oudhia 2012 Table 2 beta  CV 75.3%
+    etalgamma  ~ log(1 + 0.636^2)  # Ait-Oudhia 2012 Table 2 gamma CV 63.6%
     etaacrshift ~ 0.258806  # log(1 + 0.543^2); Ait-Oudhia 2012 Table 2 ACR BSV CV 54.3% (added on the logit scale of the ACRx probability)
 
     # ------------------------------------------------------------------

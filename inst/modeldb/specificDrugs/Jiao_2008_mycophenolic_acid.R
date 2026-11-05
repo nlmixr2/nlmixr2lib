@@ -222,8 +222,8 @@ Jiao_2008_mycophenolic_acid <- function() {
     # Variance on the log scale via omega^2 = log(1 + CV^2).
     # Note: no separate eta on lcl_mpag is declared; the IIV on CL_MPAG/F
     # is conveyed via psi_q_cl_mpag * etalq (see model() body).
-    etaltlag    ~ 0.281     # Table 3 IIV t_lag    = 57.3% CV -> log(1 + 0.573^2) = 0.281
-    etalka      ~ 0.308     # Table 3 IIV k_12     = 60.3% CV -> log(1 + 0.603^2) = 0.308
+    etaltlag    ~ log(1 + 0.573^2)  # Table 3 IIV t_lag    = 57.3% CV
+    etalka      ~ log(1 + 0.603^2)  # Table 3 IIV k_12     = 60.3% CV
     etalq       ~ 0.0186    # Table 3 IIV Q/F      = 13.7% CV -> log(1 + 0.137^2) = 0.0186
     etalcl      ~ 0.0351    # Table 3 IIV CL_MPA/F = 18.9% CV -> log(1 + 0.189^2) = 0.0351
     etalvc      ~ 0.1125    # Table 3 IIV V_2/F    = 34.5% CV -> log(1 + 0.345^2) = 0.1125

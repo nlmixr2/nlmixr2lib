@@ -261,9 +261,9 @@ Zhang_2012_lopinavir_ritonavir_pedi <- function() {
     # folded in as BSV-equivalent following the Bienczak 2016 nevirapine
     # precedent (no separate BSV reported on the same parameters).
     # =====================================================================
-    etalvc      ~ 0.27406   # Zhang 2012 Table 2 IIV V LPV = 56.6%; omega^2 = log(1 + 0.566^2) = 0.27406
-    etalka      ~ 0.45078   # Zhang 2012 Table 2 IOV ka LPV = 76.2% folded in as BSV-equivalent; omega^2 = log(1 + 0.762^2) = 0.45078 (no separate BSV on LPV ka reported)
-    etalfdepot  ~ 0.23475   # Zhang 2012 Table 2 IOV F LPV  = 51.8% folded in as BSV-equivalent; omega^2 = log(1 + 0.518^2) = 0.23475 (no separate BSV on LPV F reported)
+    etalvc      ~ log(1 + 0.566^2)  # Zhang 2012 Table 2 IIV V LPV = 56.6%
+    etalka      ~ log(1 + 0.762^2)  # Zhang 2012 Table 2 IOV ka LPV = 76.2% folded in as BSV-equivalent (no separate BSV on LPV ka reported)
+    etalfdepot  ~ log(1 + 0.518^2)  # Zhang 2012 Table 2 IOV F LPV  = 51.8% folded in as BSV-equivalent (no separate BSV on LPV F reported)
 
     # =====================================================================
     # RTV: paper Results 'Model description' paragraph 1 reports 'A similar
@@ -287,8 +287,8 @@ Zhang_2012_lopinavir_ritonavir_pedi <- function() {
       0.99 * sqrt(0.41888 * 0.16758),
       0.16758
     )
-    etalmtt_rtv ~ 0.09128   # Zhang 2012 Table 2 IOV MTT RTV = 31.1% folded in as BSV-equivalent; omega^2 = log(1 + 0.311^2) = 0.09128 (no separate BSV on RTV MTT reported)
-    etalka_rtv  ~ 0.65979   # Zhang 2012 Table 2 IOV ka  RTV = 98.1% folded in as BSV-equivalent; omega^2 = log(1 + 0.981^2) = 0.65979 (no separate BSV on RTV ka reported)
+    etalmtt_rtv ~ log(1 + 0.311^2)  # Zhang 2012 Table 2 IOV MTT RTV = 31.1% folded in as BSV-equivalent (no separate BSV on RTV MTT reported)
+    etalka_rtv  ~ log(1 + 0.981^2)  # Zhang 2012 Table 2 IOV ka  RTV = 98.1% folded in as BSV-equivalent (no separate BSV on RTV ka reported)
 
     # =====================================================================
     # Residual error. Zhang 2012 Methods 'Population pharmacokinetic

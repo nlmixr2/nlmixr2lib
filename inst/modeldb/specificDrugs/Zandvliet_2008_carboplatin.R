@@ -86,7 +86,7 @@ Zandvliet_2008_carboplatin <- function() {
     # CL eta is applied multiplicatively to the sum (renal + non-renal),
     # i.e. on log(CL_total) rather than on log(theta1) or log(theta2).
     etalcl ~ 0.01679 # log(0.13^2 + 1); IIV CL = 13% CV (Zandvliet 2008 Table 2 row 1 IIV)
-    etalvc ~ 0.26236 # log(0.54^2 + 1); IIV V1 = 54% CV (Zandvliet 2008 Table 2 row 2 IIV)
+    etalvc ~ log(1 + 0.54^2)  # IIV V1 = 54% CV (Zandvliet 2008 Table 2 row 2 IIV)
     etalq  ~ 0.19121 # log(0.46^2 + 1); IIV Q  = 46% CV (Zandvliet 2008 Table 2 row 3 IIV)
     etalvp ~ 0.09159 # log(0.31^2 + 1); IIV V2 = 31% CV (Zandvliet 2008 Table 2 row 4 IIV)
 

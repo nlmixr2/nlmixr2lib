@@ -96,8 +96,8 @@ collects them in one place for review.
 | `etalmtt_pre` (BSV MTT_Pre, CV = 34.7%; "CV, 34.7%" in Discussion) | 0.11375 | Table 2; Discussion |
 | `etalmtt_pl` (BSV MTT_PL, CV = 20.3%; "20.3%" in Discussion) | 0.04039 | Table 2; Discussion |
 | `etalgamma` (BSV gamma, CV = 15.0% fixed) | 0.02226 fixed | Table 2 |
-| `etalfini_pre` (BSV F_Ini_Pre, CV = 21.5%) | 0.04569 | Table 2; Results |
-| `etalfini_pl` (BSV F_Ini_PL, CV = 23.6%) | 0.05455 | Table 2; Results |
+| `etalfini_pre` (BSV F_Ini_Pre, CV = 21.5%) | 0.04519 | Table 2; Results |
+| `etalfini_pl` (BSV F_Ini_PL, CV = 23.6%) | 0.05420 | Table 2; Results |
 | `addSd` / `propSd` (linezolid Cc; SD_in / SD_sl) | 0.309 mg/L / 0.225 | Table 2 |
 | `addSd_plt` / `propSd_plt` (platelets; PD_in / PD_sl) | 15.1 x 10^9/L / 0.0755 | Table 2 |
 

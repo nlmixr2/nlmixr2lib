@@ -72,7 +72,7 @@ BilbaoMeseguer_2021_levetiracetam <- function() {
     # diagonal (Section 3.3, 'no correlation was detected'). omega^2 =
     # log(CV^2 + 1) from the Table 3 IIV percentages.
     etalcl ~ 0.10155 # Table 3: IIV_CL = 32.7% (RSE 21%); log(0.327^2 + 1)
-    etalvc ~ 0.27293 # Table 3: IIV_V1 = 56.1% (RSE 29%); log(0.561^2 + 1)
+    etalvc ~ log(1 + 0.561^2)  # Table 3: IIV_V1 = 56.1% (RSE 29%)
 
     # Proportional residual error: Table 3 'RE_proportional' = 22.3% (RSE 15%).
     propSd <- 0.223; label("Proportional residual error (fraction)") # Table 3: RE_proportional = 22.3%

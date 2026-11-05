@@ -159,7 +159,7 @@ Suri_2018_brentuximab <- function() {
     etalvc   ~ 0.02197        # Suri 2018 Table S1: ADC V1  14.9% CV; omega^2 = log(0.149^2 + 1) = 0.02197
 
     etalcl_mmae  ~ 0.1664     # Suri 2018 Table S3: MMAE CL 42.5% CV; omega^2 = log(0.425^2 + 1) = 0.1664
-    etalvc_mmae  ~ 0.3725     # Suri 2018 Table S3: MMAE V1 66.7% CV; omega^2 = log(0.667^2 + 1) = 0.3725
+    etalvc_mmae  ~ log(1 + 0.667^2)  # Suri 2018 Table S3: MMAE V1 66.7% CV
 
     # Residual variability. Suri 2018 supplement 1 specifies the LTBS (log
     # transform both sides) residual model — a homoscedastic additive error

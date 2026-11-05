@@ -193,7 +193,7 @@ PerezRuixo_2008_epoetinAlfa <- function() {
     # variance is approximated here as log(CV^2 + 1) and the
     # approximation is documented in the vignette Errata.
     # =================================================================
-    etalka     ~ 0.1206  # log(0.36^2 + 1) = 0.1206; Table I prior CV(ka)    = 36%
+    etalka     ~ log(1 + 0.36^2)  # Table I prior CV(ka)    = 36%
     etalcl     ~ 0.1029  # log(0.33^2 + 1) = 0.1029; Table I prior CV(CLI)   = 33%
     etalvc     ~ 0.0913  # log(0.31^2 + 1) = 0.0913; Table I prior CV(V2)    = 31%
     etalvmax   ~ 0.0808  # log(0.29^2 + 1) = 0.0808; Table I prior CV(Vmax)  = 29%
@@ -232,7 +232,7 @@ PerezRuixo_2008_epoetinAlfa <- function() {
     # well as equations for P1, ..., PNp.').
     # =================================================================
     etalret0 ~ 0.0386  # log(0.198^2 + 1) = 0.0386; Table II Model D, IIV(RET0) = 19.8%
-    etaltr   ~ 0.1224  # log(0.362^2 + 1) = 0.1224; Table II Model D, IIV(TR)   = 36.2%
+    etaltr   ~ log(1 + 0.362^2)  # Table II Model D, IIV(TR)   = 36.2%
     etaltp   ~ 0.0723  # log(0.274^2 + 1) = 0.0723; Table II Model D, IIV(Tp)   = 27.4%
     etalsc50 ~ 0.7634  # log(1.07^2 + 1)  = 0.7634; Table II Model D, IIV(SC50) = 107%
 

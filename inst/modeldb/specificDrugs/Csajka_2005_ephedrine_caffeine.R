@@ -145,7 +145,7 @@ Csajka_2005_ephedrine_caffeine <- function() {
     etalcl_caf  ~ 0.1346       # Table 3 caffeine CL_C %CV = 38; omega^2 = log(0.38^2 + 1) = 0.1346
     etalvc_caf  ~ 0.03922      # Table 3 caffeine V_C  %CV = 20; omega^2 = log(0.20^2 + 1) = 0.03922
 
-    etalka      ~ 0.3266       # Table 3 ephedrine ka_E %CV = 63; omega^2 = log(0.63^2 + 1) = 0.3266
+    etalka      ~ log(1 + 0.63^2)  # Table 3 ephedrine ka_E %CV = 63
     etalcl_renal ~ 0.01203     # Table 3 ephedrine CL_RE %CV = 11; omega^2 = log(0.11^2 + 1) = 0.01203
     etalvc      ~ 0.03568      # Table 3 ephedrine V_E  %CV = 19; omega^2 = log(0.19^2 + 1) = 0.03568
     etaltlag    ~ 0.1983       # Table 3 ephedrine lag %CV = 47; omega^2 = log(0.47^2 + 1) = 0.1983

@@ -209,7 +209,7 @@ PerezRuixo_2020_esketamine <- function() {
     # to cperezru@its.jnj.com or a future erratum). See the vignette
     # Errata section for the full discussion.
     etalogitFRn ~ 0.501             # Table 3 omega(FRn) = 70.8 (additive on logit); SD_logit ~ 0.708 -> variance 0.501
-    etalka_n    ~ 0.319             # Table 3 omega(ka_n) = 61.5 CV%; omega^2 = log(1 + 0.615^2) = 0.319
+    etalka_n    ~ log(1 + 0.615^2)  # Table 3 omega(ka_n) = 61.5 CV%
     etalka_sw   ~ 1.009             # Table 3 omega(ka_sw) = 132 CV%; omega^2 = log(1 + 1.32^2) = 1.009
     etalka_po   ~ 1.009             # Table 3 omega(ka_po) = 132 CV%; same value as ka_sw (Table 3 row gives identical 132 CV%, 9.80 RSE)
     etalvc      ~ 0.0730            # Table 3 omega(Vc) = 27.5 CV%; omega^2 = log(1 + 0.275^2) = 0.0730

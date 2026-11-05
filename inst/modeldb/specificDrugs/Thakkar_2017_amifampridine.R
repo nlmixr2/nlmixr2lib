@@ -127,12 +127,12 @@ Thakkar_2017_amifampridine <- function() {
     # Table 2 Final: CV(CL/F) = 48.1% -> var = log(1 + 0.481^2) = 0.2082;
     # CV(Vc/F) = 182.4% -> var = log(1 + 1.824^2) = 1.4649;
     # correlation 0.53 (footnote d) -> cov = 0.53 * sqrt(0.2082 * 1.4649) = 0.2926.
-    etalka       ~ 0.1239
-    # Table 2 Final: CV(Ka) = 36.2% -> var = log(1 + 0.362^2) = 0.1239
-    etalq        ~ 0.2122
-    # Table 2 Final: CV(Q/F) = 48.7% -> var = log(1 + 0.487^2) = 0.2122
-    etalvp       ~ 0.6989
-    # Table 2 Final: CV(Vp/F) = 89.8% -> var = log(1 + 0.898^2) = 0.6989
+    etalka       ~ log(1 + 0.362^2)
+    # Table 2 Final: CV(Ka) = 36.2%
+    etalq        ~ log(1 + 0.487^2)
+    # Table 2 Final: CV(Q/F) = 48.7%
+    etalvp       ~ log(1 + 0.898^2)
+    # Table 2 Final: CV(Vp/F) = 89.8%
     etalcl_acdap ~ 0.1389
     # Table 2 Final: CV(CLm/F3ACDAP) = 38.6% -> var = log(1 + 0.386^2) = 0.1389
 

@@ -71,7 +71,7 @@ Wang_2017_benralizumab <- function() {
     etalvc ~ 0.0524   # 23.1% CV
     etalq  ~ 0.0791   # 28.5% CV
     etalvp ~ 0.1029   # 32.7% CV
-    etalka ~ 0.2444   # 52.7% CV (omega^2 = log(1 + 0.527^2))
+    etalka ~ log(1 + 0.527^2)  # 52.7% CV
     etalfdepot ~ 0.1013   # 32.4% CV
 
     # Residual error (combined, separate for SC and IV routes)

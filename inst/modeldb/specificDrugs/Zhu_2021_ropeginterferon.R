@@ -154,7 +154,7 @@ Zhu_2021_ropeginterferon <- function() {
     # ----- Between-subject variability -----
     # Table 2 reports BSV as CV% for exponential etas (Equation 9);
     # omega^2 = log(CV^2 + 1). No covariances are reported.
-    etalka ~ 0.334133  # Zhu 2021 Table 2: BSV ka 63.5% CV (shrinkage 12%); log(0.635^2 + 1)
+    etalka ~ log(1 + 0.635^2)  # Zhu 2021 Table 2: BSV ka 63.5% CV (shrinkage 12%)
     etalcl ~ 0.120128  # Zhu 2021 Table 2: BSV CL/F 35.7% CV (shrinkage 15%); log(0.357^2 + 1)
     etalvc ~ 0.601330  # Zhu 2021 Table 2: BSV V/F 90.8% CV (shrinkage 5%); log(0.908^2 + 1)
 

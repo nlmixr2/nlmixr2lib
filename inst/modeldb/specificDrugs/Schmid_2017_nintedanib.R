@@ -263,8 +263,8 @@ Schmid_2017_nintedanib <- function() {
     # the model uses log-normal parameterisation.
     etalfdepot       ~ 0.21500   # Schmid 2017 Table 3: IIV in F1 = 49.1% CV; log(1 + 0.491^2) = 0.21500
     etalka           ~ 0.09989   # Schmid 2017 Table 3: IIV in ka (phase II) = 32.4% CV; log(1 + 0.324^2) = 0.09989. Phase III value (53.8% CV) is NOT used; the authors state that the phase II estimate is the proper characterization (Schmid 2017 Table 3 footnote d).
-    etalvc           ~ 0.86340   # Schmid 2017 Table 3: IIV in V2/F = 119% CV; log(1 + 1.19^2) = 0.86340
-    etalfdepot_bibf  ~ 0.28045   # Schmid 2017 Online Resource Table S5: IIV in F2 = 56.7% CV; log(1 + 0.567^2) = 0.28045
+    etalvc           ~ log(1 + 1.19^2)  # Schmid 2017 Table 3: IIV in V2/F = 119% CV
+    etalfdepot_bibf  ~ log(1 + 0.567^2)  # Schmid 2017 Online Resource Table S5: IIV in F2 = 56.7% CV
 
     # ----- Residual unexplained variability (Schmid 2017 Table 3 and Online Resource Table S5) -----
     # Schmid 2017 reports residual error as additive on the

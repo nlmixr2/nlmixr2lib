@@ -242,8 +242,8 @@ Boak_2014_linezolid <- function() {
     etalmtt_pre    ~ 0.11375   # MTT_Pre      CV = 0.347 -> omega^2 = log(1.120409)
     etalmtt_pl     ~ 0.04039   # MTT_PL       CV = 0.203 -> omega^2 = log(1.041209)
     etalgamma      ~ fixed(0.02226) # gamma CV = 0.15 -> omega^2 = log(1.0225)
-    etalfini_pre   ~ 0.04569   # F_Ini_Pre    CV = 0.215 -> omega^2 = log(1.046225)
-    etalfini_pl    ~ 0.05455   # F_Ini_PL     CV = 0.236 -> omega^2 = log(1.055696)
+    etalfini_pre   ~ log(1 + 0.215^2)  # F_Ini_Pre    CV = 0.215
+    etalfini_pl    ~ log(1 + 0.236^2)  # F_Ini_PL     CV = 0.236
 
     # ---- Residual error (additive + proportional per Boak 2014 Table 2) ----
     addSd       <- 0.309   ; label("Additive residual SD for linezolid Cc (mg/L)")                        # Boak 2014 Table 2 (SD_in)

@@ -86,7 +86,7 @@ Huh_2021_sorafenib <- function() {
     # Inter-individual variability. Table 2 reports %CV; the Results text gives
     # the corresponding variances for V and CL as 4.5% and 6.6% (0.045, 0.066),
     # which match omega^2 = log(1 + CV^2) for 21.5% and 26.1%.
-    etalka ~ 0.5636 # Table 2: IIV ka = 87.3 %CV; omega^2 = log(1 + 0.873^2)
+    etalka ~ log(1 + 0.873^2)  # Table 2: IIV ka = 87.3 %CV
     etalcl ~ 0.06589 # Table 2: IIV CL = 26.1 %CV; omega^2 = log(1 + 0.261^2) (text: 6.6%)
     etalvc ~ 0.04517 # Table 2: IIV V = 21.5 %CV; omega^2 = log(1 + 0.215^2) (text: 4.5%)
 

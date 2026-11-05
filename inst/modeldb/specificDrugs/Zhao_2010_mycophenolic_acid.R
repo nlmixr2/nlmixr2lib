@@ -111,9 +111,9 @@ Zhao_2010_mycophenolic_acid <- function() {
     # variability (between-occasion) was deliberately not modeled per
     # Results 'Intraindividual variability was not included in the model
     # because of imprecision in the estimates of variance'.
-    etaltlag ~ 0.257                                                                                                  # Table 3 IIV lag time = 54.0% CV -> log(1 + 0.540^2)
-    etalvc   ~ 0.472                                                                                                  # Table 3 IIV V1/F     = 79.9% CV -> log(1 + 0.799^2)
-    etalq    ~ 0.285                                                                                                  # Table 3 IIV Q/F      = 57.6% CV -> log(1 + 0.576^2)
+    etaltlag ~ log(1 + 0.54^2)  # Table 3 IIV lag time = 54.0% CV
+    etalvc   ~ log(1 + 0.799^2)  # Table 3 IIV V1/F     = 79.9% CV
+    etalq    ~ log(1 + 0.576^2)  # Table 3 IIV Q/F      = 57.6% CV
     etalcl   ~ 0.0474                                                                                                 # Table 3 IIV CL/F     = 22.0% CV -> log(1 + 0.220^2)
 
     # Residual variability. Source paper text 'A proportional model was

@@ -218,7 +218,7 @@ Wurthwein_2025_pegasparaginase_r2ea <- function() {
     # ---- Inter-individual variability --------------------------------------
     # Exponential IIV; the printed percentage is the log-normal CV, so
     # omega^2 = log(1 + CV^2). No IIV on V or Qtr.
-    etalcl ~ 0.045955  # ESM Table S9 (IIV CLinitial 21.6%, RSE 3.4%, shrinkage 18.2%; bootstrap 21.5%, 95% CI 20.1-23.0) converted as log(1 + 0.216^2)
+    etalcl ~ log(1 + 0.216^2)  # ESM Table S9 (IIV CLinitial 21.6%, RSE 3.4%, shrinkage 18.2%; bootstrap 21.5%, 95% CI 20.1-23.0)
 
     # ---- Inter-occasion variability ----------------------------------------
     # On BOTH V and CLinitial, one occasion per administration (twelve here).
