@@ -1074,6 +1074,8 @@ navbar:
         href: articles/Nava_2018_busulfan.html
       - text: "Busulfan (Neroutsos 2022)"
         href: articles/Neroutsos_2022_busulfan.html
+      - text: "Busulfan (Protzenko 2025)"
+        href: articles/Protzenko_2025_busulfan.html
       - text: "Busulfan (Schreib 2024)"
         href: articles/Schreib_2024_busulfan.html
       - text: "Busulfan (Xu 2023)"
@@ -10380,6 +10382,7 @@ articles:
   - articles/Pressiat_2022_amikacin
   - articles/Proctor_2026_durvalumab_cachexia
   - articles/Prohn_2021_letermovir
+  - articles/Protzenko_2025_busulfan
   - articles/Prytula_2016_tacrolimus
   - articles/Przybylowski_2015_propofol
   - articles/Pu_2021_evinacumab

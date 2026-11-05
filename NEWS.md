@@ -2,7 +2,7 @@
 
 # development version
 
-- Add van der Veer 2025 amikacin ([doi:10.1128/aac.01118-24](https://doi.org/10.1128/aac.01118-24)) -- preterm and term neonates in the NICU.
+- Add Protzenko 2025 busulfan ([doi:10.1111/bcp.16343](https://doi.org/10.1111/bcp.16343)) -- adults receiving high-dose once-daily busulfan conditioning before haematopoietic cell transplantation.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
