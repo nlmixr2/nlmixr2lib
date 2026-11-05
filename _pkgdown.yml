@@ -3822,6 +3822,8 @@ navbar:
         href: articles/Favie_2020_lidocaine.html
       - text: "Lidocaine (He 2025)"
         href: articles/He_2025_lidocaine.html
+      - text: "Lidocaine (Osborne 2025)"
+        href: articles/Osborne_2025_lidocaine.html
       - text: "Ligelizumab (Bienczak 2025)"
         href: articles/Bienczak_2025_ligelizumab.html
       - text: "Linagliptin (Retlich 2015)"
@@ -9637,6 +9639,7 @@ articles:
   - articles/Oosten_2017_morphine
   - articles/OrtizZacarias_2018_fosfomycin
   - articles/Osawa_2018_daclatasvir_asunaprevir
+  - articles/Osborne_2025_lidocaine
   - articles/Othman_2007_carvedilol
   - articles/Othman_2013_ABT_102
   - articles/Othman_2014_daclizumab

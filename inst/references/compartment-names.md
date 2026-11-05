@@ -4209,6 +4209,14 @@ Population body-composition / disease-risk PD output states from the Oniki 2018 
 - **Example models:** `Jensen_2023_lngIus52mg.R`.
 - **Notes:** SHBG has generalisable scope beyond a single paper (any drug modulating sex-hormone binding — contraceptives, HRT, androgens — may reuse this canonical).
 
+### aag (**canonical alpha-1-acid glycoprotein turnover state**)
+- **Type:** compartment
+- **Role:** Plasma alpha-1-acid glycoprotein (AAG; orosomucoid) concentration modelled as a turnover state, typically umol/L. In Osborne 2025 lidocaine the state has a zero-order production rate stimulated after surgery by a mono-exponentially decaying stimulus (`kin_aag * (1 + slope_stim * exp(-log(2) / thalf_stim * t))`) and first-order loss by `cl_aag / vc_aag`, starting from the steady state `kin_aag / cl_aag`. The state sets the lidocaine fraction unbound, `fu = 1 / (1 + aag / kaag)`, which turns the modelled unbound concentration into the total concentration. The state is observed directly.
+- **Source aliases:**
+  - `PLASMA_AAG` / `A(4)` -- Osborne 2025 supplementary NM-TRAN code 1 (`$MODEL` compartment 4, an amount; the concentration is `A(4)/VC`).
+- **Example models:** `Osborne_2025_lidocaine.R` (founding example).
+- **Notes:** Family-conforming member of the lowercase binding-protein / biomarker turnover states (`shbg`, `crp`, `il6`). Distinct namespace from the `AAG` covariate column, which supplies a *measured* AAG concentration (g/L) as model input; the lowercase `aag` state is the *modelled* AAG time course. A model that converts between the two must state the molecular weight it uses.
+
 ---
 
 ## Plasma-protein and receptor binding states in whole-body PBPK
