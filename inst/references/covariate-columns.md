@@ -7488,6 +7488,17 @@ readable.
 - **Example models:** `Brussee_2016_arginine.R` (multiplicative factor `f = 1.9` on L-arginine CL: `CL_i = CL * (WT/60)^k1 * f^RACE_PAPUAN` -- Papuan patients have ~1.9x higher arginine clearance than the non-Papuan reference).
 - **Notes:** Distinct from all existing `RACE_<GROUP>` indicators. Papuans are an indigenous Melanesian / Oceanic population genetically and culturally distinct from `RACE_ASIAN` (mainland-Indonesian transmigrants are typically Austronesian Asian by international population-genetics classification). The Brussee 2016 cohort was enrolled exclusively at the Mitra Masyarakat Hospital in Timika, Papua, so a paired `REGION_INDONESIA` indicator is not needed for that model -- future models that mix Papuan and non-Papuan Indonesian sites may need such a region indicator separately.
 
+### RACE_PACIFIC (**canonical for Pacific peoples ethnicity indicator**)
+- **Description:** 1 = Pacific peoples, the New Zealand / Australian census ethnicity grouping that covers Samoan, Tongan, Cook Islands Maori, Niuean, Fijian, Tokelauan and other Pacific Island heritage; 0 = otherwise. Used when a cohort reports Pacific peoples as a distinct ethnicity stratum whose PK differs from the European / other reference.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (non-Pacific; document the paper-specific reference composition per model -- in Hishe 2023 the reference explicitly pools European / NZ European, Maori, Chinese, Indian and Other).
+- **Source aliases:**
+  - `ETHNICITY` (coded 3 = Pacific Island) -- Hishe 2023 Appendix S2 `$PK`, `IF(ETHNICITY.EQ.3) THEN FRACE=THETA(15) ; PACIFIC ISLAND ETHNICITY`.
+- **Example models:** `Hishe_2023_oxypurinol.R` (multiplicative factor `1.25^RACE_PACIFIC` on apparent oxypurinol clearance -- Pacific peoples have ~25% higher CL/F than the European / Maori / other reference; Hishe 2023 Table 2 `theta_e` = 1.25).
+- **Notes:** Distinct from an indigenous-New-Zealand (Maori) indicator: in the founding Hishe 2023 model Maori subjects sit in the reference group, not in `RACE_PACIFIC`. Distinct from `RACE_PAPUAN` (indigenous Melanesian New Guinea) and from the geographic `REGION_ASIAPACIFIC` study-site indicator, which is a trial-operations region rather than an ethnicity. The canonical uses the short census term `PACIFIC`; a US-style "Native Hawaiian or Other Pacific Islander" stratum from a US cohort would map here too when it is retained as an effect (several existing models carry it only as an unretained `covariateData` race level).
+
 ### RACE_IND_CHI_TWN (**canonical for Indian/Chinese/Taiwanese composite race indicator (Schmid 2017 nintedanib)**)
 - **Description:** 1 = subject self-identifies as Indian (South Asian), Chinese, or Taiwanese; 0 = otherwise (Caucasian, Black, Korean, or other Asian). Paper-specific composite developed by Schmid 2017 in pooling South Asian Indian and East Asian Chinese/Taiwanese subgroups together as a single nintedanib-bioavailability (F1) effect category against a Caucasian/Black/other-Asian reference. The grouping reflects the empirical clustering of the F1 covariate analysis (Schmid 2017 Table 3 ethnic-origin row); it does not imply biological homogeneity across the three constituent populations.
 - **Units:** (binary)
@@ -24521,3 +24532,47 @@ is the experimental condition itself, held constant for the whole solve.
   - `Damkier et al. (1999)` -- Asaumi 2022 Table S2B column header.
 - **Example models:** `Asaumi_2022_quinidine_rifampicin_pbpk.R` (switches the common Kp scaling factor 6.1 -> 6.2 and fB*CLint,all 0.35 -> 0.14 L/h/kg).
 - **Notes:** Auto-approved member of the `STUDY_<id>` family. Sibling of `STUDY_TWUM1981_IV`, `STUDY_TWUM1981_PO` and `STUDY_TUBIC2006` in the same paper.
+
+### STUDY_STAMP2011 (**canonical for the Stamp 2011 allopurinol dose-escalation study indicator (Hishe 2023 Study 1)**)
+- **Description:** 1 = subject from Study 1 of the Hishe 2023 oxypurinol five-study pooled analysis (Stamp 2011 Arthritis Rheum, ANZCTR 012606000276550), 0 = another of the five pooled studies. Subject-level (time-fixed). Study 5 (Stamp 2017) is the all-zeros reference for the `STUDY_*` indicator set.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (another of the five Hishe 2023 studies; the Study-5 / Stamp 2017 cohort is the all-zeros reference).
+- **Source aliases:**
+  - `STUDY` -- Hishe 2023 Appendix S2 `$ERROR` block, `IF(STUDY.EQ.1)` selecting the Study-1 residual error.
+- **Example models:** `Hishe_2023_oxypurinol.R` (selects the Study-1 combined residual error: additive fixed at 0.0001 umol/L, proportional 43.5% CV; acts on no structural parameter).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. Sibling of `STUDY_STAMP2012`, `STUDY_STAMP2013` and `STUDY_WRIGHT2016` in the same paper. These four indicators plus the implicit Study-5 reference partition the pooled cohort, so a model needs at most four of the five.
+
+### STUDY_STAMP2012 (**canonical for the Stamp 2012 furosemide-interaction study indicator (Hishe 2023 Study 2)**)
+- **Description:** 1 = subject from Study 2 of the Hishe 2023 oxypurinol five-study pooled analysis (Stamp 2012 Rheumatology furosemide-interaction study, ANZCTR 12609000529246), 0 = another of the five pooled studies. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (another of the five Hishe 2023 studies; the Study-5 / Stamp 2017 cohort is the all-zeros reference).
+- **Source aliases:**
+  - `STUDY` -- Hishe 2023 Appendix S2 `$ERROR` block, `IF(STUDY.EQ.2)` selecting the Study-2 residual error.
+- **Example models:** `Hishe_2023_oxypurinol.R` (selects the Study-2 combined residual error: additive 10.0 umol/L, proportional fixed at 0.0001; acts on no structural parameter).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. Sibling of `STUDY_STAMP2011`, `STUDY_STAMP2013` and `STUDY_WRIGHT2016` in the same paper.
+
+### STUDY_STAMP2013 (**canonical for the Stamp 2013 vitamin-C study indicator (Hishe 2023 Study 3)**)
+- **Description:** 1 = subject from Study 3 of the Hishe 2023 oxypurinol five-study pooled analysis (Stamp 2013 Arthritis Rheum vitamin-C study, ANZCTR 12610000545066), 0 = another of the five pooled studies. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (another of the five Hishe 2023 studies; the Study-5 / Stamp 2017 cohort is the all-zeros reference).
+- **Source aliases:**
+  - `STUDY` -- Hishe 2023 Appendix S2 `$ERROR` block, `IF(STUDY.EQ.3)` selecting the Study-3 residual error.
+- **Example models:** `Hishe_2023_oxypurinol.R` (selects the Study-3 combined residual error: additive fixed at 0.0001 umol/L, proportional 42.2% CV; acts on no structural parameter).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. Sibling of `STUDY_STAMP2011`, `STUDY_STAMP2012` and `STUDY_WRIGHT2016` in the same paper.
+
+### STUDY_WRIGHT2016 (**canonical for the Wright 2016/2018 low-dose study indicator (Hishe 2023 Study 4)**)
+- **Description:** 1 = subject from Study 4 of the Hishe 2023 oxypurinol five-study pooled analysis (the low-dose data reported in Wright 2016 / Wright 2018 Br J Clin Pharmacol), 0 = another of the five pooled studies. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (another of the five Hishe 2023 studies; the Study-5 / Stamp 2017 cohort is the all-zeros reference).
+- **Source aliases:**
+  - `STUDY` -- Hishe 2023 Appendix S2 `$ERROR` block, `IF(STUDY.EQ.4)` selecting the Study-4 residual error.
+- **Example models:** `Hishe_2023_oxypurinol.R` (selects the Study-4 combined residual error: additive 0.93 umol/L, proportional 34.8% CV; acts on no structural parameter).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. Sibling of `STUDY_STAMP2011`, `STUDY_STAMP2012` and `STUDY_STAMP2013` in the same paper. The Hishe 2023 NONMEM code labels this study `STUDY.EQ.4`; the NONMEM `STUDY.EQ.7` used for the Study-5 residual is the all-zeros reference here.
