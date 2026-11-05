@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Saporta 2024 afabicin in vitro and mouse thigh time-kill models ([doi:10.1093/jac/dkae334](https://doi.org/10.1093/jac/dkae334)) -- *Staphylococcus aureus* in static time-kill experiments and in neutropenic mouse thigh infection. Registers the `CP_AFABICIN_DESPHOSPHONO_MGL` covariate.
+- Add Sanz-Codina 2024 cefiderocol ([doi:10.1093/jac/dkae359](https://doi.org/10.1093/jac/dkae359)) -- healthy adult men, with unbound plasma, subcutaneous adipose and skeletal muscle concentrations.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
