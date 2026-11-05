@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Maskawa 2025 oral vancomycin fecal transit models, zero-order and first-order gastric emptying ([doi:10.1038/s41598-025-10293-7](https://doi.org/10.1038/s41598-025-10293-7)) -- male C57BL/6N mice (preclinical). Registers `lv_cecum`.
+
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
 - Add Byun 2024 TMDD approximations for HL2351 and efineptakin alfa ([doi:10.1371/journal.pcbi.1012066](https://doi.org/10.1371/journal.pcbi.1012066)) -- eight models (full TMDD, mTMDD, qTMDD and the new first-order pTMDD for each drug) in healthy adults. Registers the `endosome` and `complex_fcrn` compartments and the `BL_IL7` covariate.

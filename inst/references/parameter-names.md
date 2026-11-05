@@ -728,7 +728,7 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:**
   - `Kst` -- used in `Ai_2024_ractopamine_goat_pbpk.R`; also Sun 2026 Table 2 ("gastric emptying rate constant", 0.8 /h) and the Supporting Information Berkeley Madonna listing (`RAST = RDOSEoral - Kst * AST`).
   - `kst`, `k_st`, `KST` -- generic acslX / Berkeley-Madonna spellings.
-- **Example models:** `Ai_2024_ractopamine_goat_pbpk.R` (`Kst` = 0.0910 1/h, gastric contents into gut lumen in goats; founding example), `Yang_2025_matrine_pig_pbpk.R` (`kst` = 0.8545 1/h, reconstructed gastric depot into the sampled intestinal lumen in pigs), `Sun_2026_tilmicosin_pbpk.R` (`Kst` = 0.8 1/h in swine).
+- **Example models:** `Ai_2024_ractopamine_goat_pbpk.R` (`Kst` = 0.0910 1/h, gastric contents into gut lumen in goats; founding example), `Yang_2025_matrine_pig_pbpk.R` (`kst` = 0.8545 1/h, reconstructed gastric depot into the sampled intestinal lumen in pigs), `Sun_2026_tilmicosin_pbpk.R` (`Kst` = 0.8 1/h in swine), `Maskawa_2025_vancomycin_mouse_firstorder.R` (`k_a` = 0.32 1/h, mouse stomach into `cecum`).
 - **Notes:** Distinct from `lka`, which moves drug from a depot into the *systemic* circulation; `lkst` moves drug between two luminal compartments and is not an absorption term. Precedent existed in the repository before ratification -- `Ai_2024_ractopamine_goat_pbpk.R` already carried `lkst` in `ini()`, and `Luo_2024_*_pbpk.R`, `Back_2018_fenofibrate.R` and `Guiastrennec_2016_gastric_emptying.R` carried the same concept as `model()` literals named `kt_sto` / `kg`. Register the constant in `ini()` rather than burying it as a `model()` literal whenever the source paper optimised it, so that half of one optimisation is not hidden from the reader.
 
 ### lkt_duodenum (**canonical log-transformed duodenal transit rate constant**)
@@ -787,7 +787,7 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:**
   - `ke` -- used in `Yang_2025_matrine_pig_pbpk.R`.
   - `Kgut`, `kgut`, `kint`, `kF`, `k_e` -- generic spellings; note that `Kgut` / `kint` name the compartment or the interval, not the process.
-- **Example models:** `Yang_2025_matrine_pig_pbpk.R` (`ke` = 0.007358 1/h, unabsorbed matrine leaving the pig intestinal lumen; founding example).
+- **Example models:** `Yang_2025_matrine_pig_pbpk.R` (`ke` = 0.007358 1/h, unabsorbed matrine leaving the pig intestinal lumen; founding example), `Maskawa_2025_vancomycin_mouse.R` (`k_e` = 0.41 1/h, non-absorbed vancomycin leaving the mouse cecum, which no absorption route competes with).
 - **Notes:** `lkfec` was chosen over the alternative `lkgut` because it names the **process** -- excretion out of the gut lumen to faeces -- rather than the compartment; `lkgut` would read to a later user as a general gut-transit rate and could be misapplied to the absorption or the emptying step. `lkgut` remains in `Yang_2023_diclazuril_chicken_pbpk.R` and `Ai_2024_ractopamine_goat_pbpk.R` as an unregistered legacy spelling that predates this entry; use `lkfec` in new models. Do **not** mint a gut-specific absorption name for the competing route out of the same compartment -- that remains the ordinary canonical `lka`.
 
 ### lkbile (**canonical log-transformed biliary excretion rate constant**)
@@ -2693,6 +2693,13 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Source aliases:** `Ve` (vascular space), `VT` (precursor pool) -- Yoshii 2016 Table I and eqs. (3), (4).
 - **Example models:** `Yoshii_2016_acotiamide_rat_pbpk.R` (`Ve = 0.441 mL` fixed; `VT = 0.133 mL` fitted).
 - **Notes:** The deep-pool volume in that model is deliberately NOT an `ini()` parameter: source paper eq. (6) derives it as `VT * kass / kdis`, the volume that makes the association / dissociation pair an equilibrium partition, and Table I correspondingly has no row for it. Derive such a volume in `model()` rather than adding a register entry for it.
+
+### lv_cecum, v_cecum (**canonical log-transformed cecal content mass**)
+- **Type:** log-transformed-pk
+- **Role:** Apparent distribution space of the `cecum` luminal compartment, converting the cecal drug amount to a concentration in the cecal / fecal contents (`Ccecum <- cecum / v_cecum`). Usually reported as a mass of contents (g) rather than a volume, so the concentration is per gram of wet contents. A member of the `lv_<compartment>` family (`lv_elf`, `lv_lung`, `lv_kidney`, ...); the bare form `v_cecum` is used inside `model()`.
+- **Source aliases:** `A` -- Maskawa 2025 Table 2 / Table S1 ("mass of the cecal contents", g) and Methods Eq. 5.
+- **Example models:** `Maskawa_2025_vancomycin_mouse.R` (`A` = 0.31 g, mean of six per-mouse fits; founding example), `Maskawa_2025_vancomycin_mouse_firstorder.R` (`A` = 0.40 g).
+- **Notes:** A fitted apparent quantity, not a weighed organ: in the founding example it is identifiable only because the drug is not absorbed, so the fecal AUC equals `dose / (v_cecum * kfec)`. Its plausibility check is the measured cecal content mass (about 100-450 mg in C57BL/6 mice, Maskawa 2025 Discussion).
 
 ### lgfr, gfr (**canonical glomerular filtration rate**)
 - **Type:** log-transformed-pk

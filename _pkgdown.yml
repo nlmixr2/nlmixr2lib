@@ -7434,6 +7434,10 @@ navbar:
         href: articles/Tong_2026_vancomycin.html
       - text: "Vancomycin invitro (Olivo 2025)"
         href: articles/Olivo_2025_vancomycin.html
+      - text: "Vancomycin mouse (Maskawa 2025)"
+        href: articles/Maskawa_2025_vancomycin_mouse.html
+      - text: "Vancomycin mouse firstorder (Maskawa 2025)"
+        href: articles/Maskawa_2025_vancomycin_mouse.html
       - text: "Vancomycin nonparametric (Hughes 2024)"
         href: articles/Hughes_2024_vancomycin.html
       - text: "Vancomycin normal (Li 2021)"
@@ -9423,6 +9427,7 @@ articles:
   - articles/Martson_2020_caspofungin
   - articles/Mascarenhas_2015_pentadecanoic_triheptadecanoic
   - articles/Maseda_2018_micafungin
+  - articles/Maskawa_2025_vancomycin_mouse
   - articles/Masters_2022_avelumab
   - articles/Matcha_2025_amikacin
   - articles/Mathis_2022_berotralstat
