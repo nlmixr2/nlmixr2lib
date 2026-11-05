@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Pokorna 2024 meropenem ([doi:10.3390/antibiotics13050419](https://doi.org/10.3390/antibiotics13050419)) -- critically ill neonates and children aged 0-5 years on ECMO and/or CRRT.
+- Add Cha 2024 zolpidem ([doi:10.3390/pharmaceutics16050689](https://doi.org/10.3390/pharmaceutics16050689)) -- healthy Korean adults given a single 10 mg oral dose, for simulating overdose concentrations.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
