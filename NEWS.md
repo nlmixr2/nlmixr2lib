@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tosca 2023 MEN1611 + trastuzumab ([doi:10.1002/psp4.12910](https://doi.org/10.1002/psp4.12910)) -- mice: MEN1611 and trastuzumab PK, and seven HER2-positive, trastuzumab-resistant breast-cancer xenografts (2D tumor growth inhibition, nine models).
+- Add Sten 2023 GalNAc-siRNA plasma PK models: inclisiran, givosiran, lumasiran, vutrisiran and olpasiran compartmental fits plus the corrected Ayyar 2021 fitusiran mPBPK-PD model ([doi:10.1007/s40262-023-01314-7](https://doi.org/10.1007/s40262-023-01314-7)) -- naive-pooled literature means (humans); mPBPK-PD in mouse, rat, monkey and human.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
