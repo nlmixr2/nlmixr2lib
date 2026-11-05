@@ -5660,6 +5660,8 @@ navbar:
         href: articles/Levitt_2005_propofol_pbpk.html
       - text: "Propofol rat (Knibbe 2005)"
         href: articles/Knibbe_2005_propofol.html
+      - text: "Propofol remifentanil (Ynineb 2025)"
+        href: articles/Ynineb_2025_propofol_remifentanil.html
       - text: "Propofol sheep (Ngamprasertwong 2016)"
         href: articles/Ngamprasertwong_2016_propofol_sheep.html
       - text: "Propranolol (DelFrari 2018)"
@@ -10548,6 +10550,7 @@ articles:
   - articles/Yin_2024_soticlestat
   - articles/Yin_2026_ceftazidime
   - articles/Yip_2021_carbamazepine
+  - articles/Ynineb_2025_propofol_remifentanil
   - articles/Yoneyama_2017_emicizumab
   - articles/Yoo_2009_cilostazol
   - articles/Yoo_2025_benzylpenicillin

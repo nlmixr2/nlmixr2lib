@@ -7252,6 +7252,13 @@ Favie 2020 (doi:10.1002/cpt.1917) fits seven drugs and five metabolites from the
 - **Source aliases:** none.
 - **Example models:** `Favie_2020_neonatalHypothermia.R`.
 
+### remifentanil (**canonical remifentanil sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Remifentanil as a co-administered, non-parent drug in a multi-drug model: its plasma and peripheral states (`central_remifentanil`, `peripheral1_remifentanil`, `peripheral2_remifentanil`), its effect compartment (`effect_remifentanil`), its concentration (`Cc_remifentanil`) and its parameters (`lcl_remifentanil`, `lvc_remifentanil`, `lke0_remifentanil`, `lec50_remifentanil`). Standalone remifentanil models keep the bare canonical names.
+- **Source aliases:** subscript `r` / `R` and `D2` -- Ynineb 2025 Table 7 (`C50r`) and Eq. 27 (`x_e,D2`, `C50,D2`).
+- **Example models:** `Ynineb_2025_propofol_remifentanil.R` (Minto three-compartment remifentanil PK feeding an effect compartment whose concentration enters a propofol-remifentanil Greco response surface on the Bispectral Index).
+- **Notes:** Full INN, following the `midazolam` / `lidocaine` precedent: `remi` would be ambiguous between remifentanil and remimazolam, which are co-administered in sedation studies.
+
 ## Transporter-DDI perpetrator drug suffixes
 
 Perpetrator (inhibitor) drug suffixes used when an endogenous-biomarker or
@@ -7654,8 +7661,9 @@ PBPK organ sub-compartment suffixes used by Ayyar 2024 givosiran whole-organ ext
 ### deep (**canonical deep-bound pool suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Deep-bound / sequestered pool inside the named organ.
-- **Source aliases:** none.
-- **Example models:** `Ayyar_2024_givosiran.R`, `Pan_2019_fentanyl_pbpk.R` (`gut_deep`, `liver_deep`, `spleen_deep`).
+- **Source aliases:** `x_t` ('trap' compartment) -- Ynineb 2025 Eq. 7d, where it is attached to `peripheral2`.
+- **Example models:** `Ayyar_2024_givosiran.R`, `Pan_2019_fentanyl_pbpk.R` (`gut_deep`, `liver_deep`, `spleen_deep`), `Ynineb_2025_propofol_remifentanil.R` (`peripheral2_deep`).
+- **Notes:** Also attaches to a compartmental-model peripheral state when the source sub-divides that peripheral compartment into a catenary sequestered pool that exchanges ONLY with it, never with `central`: `Ynineb_2025_propofol_remifentanil.R` uses `peripheral2_deep` for the drug trapped inside the fat compartment (`peripheral2`) of a three-compartment model. A deep pool that exchanges with `central` is an ordinary extra peripheral compartment (`peripheral3`), not `_deep`.
 
 ### deep2 (**canonical second deep pool suffix**)
 - **Type:** metabolite-suffix
