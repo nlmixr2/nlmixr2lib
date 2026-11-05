@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Pandey 2023 hydroxyurea ([doi:10.1002/psp4.12945](https://doi.org/10.1002/psp4.12945)) -- children with sickle cell disease (HUSTLE trial).
+- Add Caballero 2023 isavuconazole + anidulafungin, caspofungin and micafungin in vitro time-kill models ([doi:10.1002/psp4.12949](https://doi.org/10.1002/psp4.12949)) -- six Candida auris blood isolates in vitro.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
