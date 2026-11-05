@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ueshima 2025 remimazolam ([doi:10.1038/s41598-025-10015-z](https://doi.org/10.1038/s41598-025-10015-z)) -- older Japanese adults during remimazolam-only induction of general anesthesia.
+- Add Volkova 2025 type I interferon QSP model for anifrolumab, sifalimumab, daxdilimab and litifilimab ([doi:10.1002/psp4.70043](https://doi.org/10.1002/psp4.70043)) -- adults with systemic lupus erythematosus.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
