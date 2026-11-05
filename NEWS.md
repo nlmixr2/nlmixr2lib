@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Deroche 2023 ceftolozane/tazobactam and imipenem adaptive-resistance time-kill PK/PD ([doi:10.1128/aac.00480-23](https://doi.org/10.1128/aac.00480-23)) -- 11 strain-by-drug models of *Pseudomonas aeruginosa* PAO1, ampC/ampD mutants and an isogenic clinical pair in vitro.
+- Add Augustin 2023 warfarin coagulation-network clinical-trial QSP model ([doi:10.3389/fphar.2023.1270443](https://doi.org/10.3389/fphar.2023.1270443)) -- virtual adults starting warfarin, with CYP2C9, VKORC1 and age effects.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
