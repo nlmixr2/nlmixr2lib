@@ -7098,6 +7098,10 @@ navbar:
         href: articles/Gao_2026_trastuzumabRezetecan.html
       - text: "Trastuzumabemtansine (Lu 2014)"
         href: articles/Lu_2014_trastuzumabemtansine.html
+      - text: "Trazodone gabapentin mouse (Oggianu 2023)"
+        href: articles/Oggianu_2023_trazodone_gabapentin.html
+      - text: "Trazodone human (Oggianu 2023)"
+        href: articles/Oggianu_2023_trazodone_gabapentin.html
       - text: "Tremelimumab (Hwang 2022)"
         href: articles/Hwang_2022_tremelimumab.html
       - text: "Treosulfan (Danielak 2017)"
@@ -9632,6 +9636,7 @@ articles:
   - articles/Offman_2023_XTMAB16
   - articles/Ogasawara_2019_fedratinib
   - articles/Ogasawara_2020_durvalumab
+  - articles/Oggianu_2023_trazodone_gabapentin
   - articles/Ogungbenro_2009_penciclovir
   - articles/Ogungbenro_2019_simvastatin
   - articles/Ogusu_2014_valproic_acid

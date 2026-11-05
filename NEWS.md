@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Offman 2023 XTMAB-16 ([doi:10.3389/fphar.2023.1066454](https://doi.org/10.3389/fphar.2023.1066454)) -- healthy adults given a single intravenous infusion in the first-in-human study.
+- Add Oggianu 2023 trazodone + gabapentin writhing PK/PD ([doi:10.1111/cts.13472](https://doi.org/10.1111/cts.13472)) -- male CD-1 mice in the acetic-acid writhing test, plus human trazodone PK in healthy adults with the authors' translated writhing effect. Registers the `gabapentin` sibling-drug suffix.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
