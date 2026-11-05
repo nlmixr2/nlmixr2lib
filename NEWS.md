@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Jeong 2024 levocetirizine PK with wheal and flare indirect-response PD ([doi:10.3390/pharmaceutics16010146](https://doi.org/10.3390/pharmaceutics16010146)) -- healthy Korean adults of both sexes.
+- Add Park 2023 bevacizumab overall- and progression-free-survival exposure-response models ([doi:10.3389/fphar.2023.1288308](https://doi.org/10.3389/fphar.2023.1288308)) -- adults with metastatic or recurrent non-squamous NSCLC on SB8 or reference bevacizumab.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
