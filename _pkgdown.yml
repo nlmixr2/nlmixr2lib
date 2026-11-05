@@ -774,6 +774,10 @@ navbar:
         href: articles/Svensson_2018_bedaquiline.html
       - text: "Bedaquiline (Zou 2022)"
         href: articles/Zou_2022_bedaquiline.html
+      - text: "Bedaquiline QTcF (Koele 2025)"
+        href: articles/Koele_2025_bedaquiline_QTc.html
+      - text: "Bedaquiline QTcTBT (Koele 2025)"
+        href: articles/Koele_2025_bedaquiline_QTc.html
       - text: "Bedaquiline dog pbpk (Karakitsios 2025)"
         href: articles/Karakitsios_2025_bedaquiline_lung_pbpk.html
       - text: "Bedaquiline human pbpk (Karakitsios 2025)"
@@ -9856,7 +9860,7 @@ articles:
   - articles/Knights_2015_aripiprazole
   - articles/Kobuchi_2021_oxaliplatin_rat
   - articles/Kobuchi_2025_dapagliflozin
-  - articles/Koele_2024_tb_bacterialload
+  - articles/Koele_2025_bedaquiline_QTc
   - articles/Koele_2025_btz043
   - articles/Koenig_2025_cefiderocol
   - articles/Koh_2025_aspirin

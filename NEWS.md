@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Rascher 2025 empagliflozin popPK and HbA1c exposure-response models ([doi:10.1002/bcp.70096](https://doi.org/10.1002/bcp.70096)) -- paediatric patients aged 10-17 years with type 2 diabetes (DINAMO). Registers the `CONMED_INSULIN` covariate.
+- Add Koele 2025 QTcTBT and QTcF models for bedaquiline, delamanid and moxifloxacin regimens ([doi:10.1093/jac/dkaf210](https://doi.org/10.1093/jac/dkaf210)) -- adults with drug-susceptible pulmonary tuberculosis.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
