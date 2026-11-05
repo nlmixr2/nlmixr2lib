@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mead 2023 colistin ([doi:10.1038/s41598-023-39727-w](https://doi.org/10.1038/s41598-023-39727-w)) -- small-intestine luminal content of Ross 308 broiler chickens dosed via drinking water or oral gavage.
+- Add Toffoletto 2023 dexamethasone contact-lens ocular PK ([doi:10.1007/s11095-023-03560-7](https://doi.org/10.1007/s11095-023-03560-7)) -- rabbit eye wearing a dexamethasone-eluting soft contact lens (physiology-based model compared with the Ross 2019 tissue data).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
