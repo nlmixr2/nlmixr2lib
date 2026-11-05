@@ -176,6 +176,8 @@ navbar:
         href: articles/Saporta_2024_afabicin.html
       - text: "Afatinib (Nakao 2019)"
         href: articles/Nakao_2019_afatinib.html
+      - text: "Afatinib mouse (Yang 2025)"
+        href: articles/Yang_2025_afatinib_mouse.html
       - text: "Aficamten (Xu 2025)"
         href: articles/Xu_2025_aficamten.html
       - text: "Aflibercept (Bihorel 2026)"
@@ -11217,6 +11219,7 @@ articles:
   - articles/Yang_2024_meropenem_pbpk
   - articles/Yang_2024_naloxone_opioid_reversal
   - articles/Yang_2024_zastaprazan
+  - articles/Yang_2025_afatinib_mouse
   - articles/Yang_2025_imatinib_external_evaluation
   - articles/Yang_2025_iruplinalkib
   - articles/Yang_2025_matrine_pig_pbpk

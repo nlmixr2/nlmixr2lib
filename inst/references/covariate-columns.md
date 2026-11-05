@@ -13231,6 +13231,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `Kim_2017_tegafur_rat.R` (selects between separately estimated control and SDT-pretreated values of the tegafur absorption rate constant Ka, the pre-systemic 5-FU-precursor formation rate constant Ka,Met, and the apparent 5-FU clearance CL5FU/F; Kim 2017 Table 2, doi:10.3390/molecules22091488).
 - **Notes:** Member of the `CONMED_<agent>` family; like [[CONMED_WUZHI]] the token is the preparation name rather than an INN, because a multi-constituent herbal decoction has no single INN. Distinct from [[CONMED_WUZHI]] in mechanism as well as composition: Wuzhi capsule is a deliberate CYP3A/P-gp-inhibiting exposure booster, whereas SDT's demonstrated effect is reduced absorption of a co-administered agent. Where a model carries the vehicle itself as a covariate, note that the founding paper found the control vehicle (carboxymethylcellulose) was not inert for gimeracil across single- versus multiple-dose control groups, so an SDT indicator does not absorb vehicle effects.
 
+### CONMED_HADB1 (**canonical for concomitant HangAmDan-B1 (HAD-B1) herbal-mixture coadministration indicator**)
+- **Description:** 1 = subject receives HangAmDan-B1 (HAD-B1) alongside the modeled drug; 0 = no HAD-B1 (monotherapy or vehicle control). HAD-B1 is a Korean blended herbal extract of *Panax notoginseng* Radix, *Cordyceps militaris*, *Panax ginseng* C. A. Mey and *Boswellia carteri* Birdwood (major constituents cordycepin, ginsenosides R1 / Rg1 / Rb1 and alpha- / beta-boswellic acid), developed as an adjunct to EGFR tyrosine-kinase inhibitors in non-small-cell lung cancer; it down-regulates MET signalling, a mechanism of acquired EGFR-TKI resistance.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no HAD-B1).
+- **Source aliases:**
+  - `HAD-B1i` -- Yang 2025 Equation (1): "HAD-B1i was set to 0 for AFT monotherapy and 1 for the combination therapy group".
+- **Example models:** `Yang_2025_afatinib_mouse.R` (pharmacodynamic synergy on the Simeoni linear-kill potency: `drugSlope * (1 + e_conmed_hadb1_drugSlope * CONMED_HADB1)` with `e_conmed_hadb1_drugSlope = 0.45`, i.e. a 1.45-fold afatinib potency with HAD-B1 400 mg/kg/day; Yang 2025 Table 3 and Equations 10-11, doi:10.3390/ph18050748).
+- **Notes:** Member of the `CONMED_<agent>` family; like [[CONMED_WUZHI]] and [[CONMED_SDT]] the token is the preparation name rather than an INN, because a multi-constituent herbal extract has no single INN. Unlike those two (pharmacokinetic perpetrators), HAD-B1's founding effect is pharmacodynamic: afatinib exposure was unchanged with HAD-B1 in mice, and HAD-B1 constituents were not detectable in serum, so the indicator stands in for an unmeasured exposure. It was estimated at one HAD-B1 dose (400 mg/kg/day orally in mice), so it carries no dose dimension; a paper that varies the HAD-B1 dose should register a `DOSE_HADB1_<units>` column instead.
+
 ### CONMED_LCM (**canonical for lacosamide (monotherapy or coadministration) indicator**)
 - **Description:** 1 = subject is on lacosamide (LCM) at the observation, 0 = not on lacosamide. In an active-controlled monotherapy trial (SP0993) the indicator identifies the LCM arm (the CBZ-CR arm gets 0). In adjunctive-treatment cohorts the same canonical would flag concomitant lacosamide use. Time-varying is permitted when a study spans on / off transitions; time-fixed in monotherapy parallel-group trials.
 - **Units:** (binary)

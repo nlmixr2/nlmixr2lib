@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mielke 2025 fluorouracil whole-body PBPK ([doi:10.3390/ph18050653](https://doi.org/10.3390/ph18050653)) -- 73 kg reference adult receiving intravenous 5-FU infusions (simulation model; no fitted population).
+- Add Yang 2025 afatinib + HangAmDan-B1 tumor growth inhibition ([doi:10.3390/ph18050748](https://doi.org/10.3390/ph18050748)) -- BALB/c nude mice bearing gefitinib-resistant HCC827 non-small-cell lung cancer xenografts. Registers the `CONMED_HADB1` covariate.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
