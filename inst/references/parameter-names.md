@@ -220,8 +220,17 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:**
   - `Alpha` -- Zhang 2025 Supplementary Table S2.
   - `lambda1` / `l1` -- Paioni 2021 Section 2.3 and Table 3 ("apparent rate constant of distribution").
-- **Example models:** `Zhang_2025_cefiderocol.R` (alpha = 0.845 1/h, with the terminal sibling `lbeta` = log(0.271 1/h)), `Paioni_2021_gentamicin.R` (lambda1 = exp(3.644) 1/d = 1.59 1/h, paired with `lvparea`).
+- **Example models:** `Zhang_2025_cefiderocol.R` (alpha = 0.845 1/h, with the terminal sibling `lbeta` = log(0.271 1/h)), `Paioni_2021_gentamicin.R` (lambda1 = exp(3.644) 1/d = 1.59 1/h, paired with `lvparea`), `Kinsale_2024_islatravir_rat.R` (alpha = 1.21 1/h, paired with `lbeta`, `lvc` and `lk21`).
 - **Notes:** Ratified 2026-09-29 with the Paioni 2021 extraction (PMC8541459); `Zhang_2025_cefiderocol.R` shipped the same name and meaning earlier without an entry. The terminal-phase sibling is `lbeta` (Zhang 2025), which is distinct from the registered `lbeta_cl` (exponential-nonlinear-clearance slope). Distinct from `lkdist` (Braem 2026), which is numerically the same fast exponent but decays an additive distribution-phase flux in a model with no peripheral state.
+
+### lbeta (**canonical log-transformed terminal-phase hybrid disposition rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the slow (terminal-phase) hybrid rate constant `beta` / `lambda2` of a two-compartment disposition, i.e. the smaller eigenvalue satisfying `alpha + beta = kel + k12 + k21` and `alpha * beta = kel * k21` (1 / time). Bare form inside `model()` is `beta`. The terminal-phase sibling of `lalpha`, used with it when a source reports the model on its macro (biexponential) scale.
+- **Source aliases:**
+  - `Beta` -- Zhang 2025 Supplementary Table S2.
+  - `beta`, `alpha2` -- Kinsale 2024 Supplementary Table S1 / Figure 2 inset, and Section 3.2 (unit impulse response).
+- **Example models:** `Zhang_2025_cefiderocol.R` (beta = 0.271 1/h), `Kinsale_2024_islatravir_rat.R` (beta = 0.103 1/h).
+- **Notes:** Distinct from `lbeta_cl` (exponential-nonlinear-clearance slope) and from the Weibull shape terms `lbeta1` / `lbeta2` of `Bonner_2015_gastric_emptying.R`. When a source reports the macro coefficients A and B rather than a volume, the canonical encoding derives `lvc` (Dref / (A + B) for coefficients at a reference dose Dref) and `lk21` ((A beta + B alpha) / (A + B)) in `ini()`, as in `Kinsale_2024_islatravir_rat.R`, rather than introducing coefficient parameters.
 
 ### lq (**canonical log-transformed first inter-compartmental clearance**)
 - **Type:** log-transformed-pk

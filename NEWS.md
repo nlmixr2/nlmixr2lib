@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Clegg 2024 sodium zirconium cyclosilicate potassium-homeostasis QSP model ([doi:10.1002/psp4.13084](https://doi.org/10.1002/psp4.13084)) -- adults with hyperkalaemia (phase III trials ZS-003 and ZS-004), with an optional hemodialysis extension.
+- Add Kinsale 2024 islatravir ([doi:10.3390/pharmaceutics16020201](https://doi.org/10.3390/pharmaceutics16020201)) -- adult female Wistar rats after a single subcutaneous bolus (preclinical).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
