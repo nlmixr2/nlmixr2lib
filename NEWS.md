@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liu 2023 inflammation (IL-6) effects on CYP3A4 and GFR clearance ([doi:10.1007/s13318-023-00852-6](https://doi.org/10.1007/s13318-023-00852-6)) -- hypothetical drugs in a reference adult with acute inflammation.
+- Add El-Khateeb 2023 tacrolimus middle-out (PBPK-informed) trough models: base, eGFR and CKD-stage covariate fits ([doi:10.1097/FTD.0000000000001108](https://doi.org/10.1097/FTD.0000000000001108)) -- adult renal transplant recipients with chronic kidney disease of the graft.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
