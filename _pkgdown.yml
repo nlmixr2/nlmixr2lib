@@ -3710,6 +3710,14 @@ navbar:
         href: articles/Hu_2024_nivolumab_ipilimumab_pediatric.html
       - text: "Ipilimumab (Sanghavi 2020)"
         href: articles/Sanghavi_2020_ipilimumab.html
+      - text: "Iptacopan healthy (BurmeisterGetz 2025)"
+        href: articles/BurmeisterGetz_2025_iptacopan.html
+      - text: "Iptacopan mild hepatic (BurmeisterGetz 2025)"
+        href: articles/BurmeisterGetz_2025_iptacopan.html
+      - text: "Iptacopan moderate hepatic (BurmeisterGetz 2025)"
+        href: articles/BurmeisterGetz_2025_iptacopan.html
+      - text: "Iptacopan severe hepatic (BurmeisterGetz 2025)"
+        href: articles/BurmeisterGetz_2025_iptacopan.html
       - text: "Irinotecan (Rietveld 2024)"
         href: articles/Rietveld_2024_irinotecan.html
       - text: "Irinotecan (Zhu 2023)"
@@ -8713,6 +8721,7 @@ articles:
   - articles/Bulitta_2011_cefpirome
   - articles/Bulitta_2019_pefloxacin
   - articles/Bulitta_2024_contezolid
+  - articles/BurmeisterGetz_2025_iptacopan
   - articles/Burns_2015_tenofovir
   - articles/Bursi_2017_lidocaine
   - articles/Bustinduy_2016_praziquantel
