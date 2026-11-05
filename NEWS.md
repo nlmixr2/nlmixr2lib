@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lim 2024 7,8-dihydroxyflavone plasma and brain-hemisphere PK ([doi:10.3389/fphar.2024.1508696](https://doi.org/10.3389/fphar.2024.1508696)) -- postnatal day 9 mice with hypoxia-ischemia brain injury or sham surgery.
+- Add Abouelhassan 2025 sulbactam and durlobactam during continuous renal replacement therapy ([doi:10.1128/aac.01674-23](https://doi.org/10.1128/aac.01674-23)) -- simulated adults with HABP/VABP, with or without CRRT (effluent 1-5 L/h).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 

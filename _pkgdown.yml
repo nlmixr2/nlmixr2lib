@@ -2286,6 +2286,8 @@ navbar:
         href: articles/Zhang_2025_dupilumab_fev1.html
       - text: "Dupilumab qsp (Kapitanov 2025)"
         href: articles/Kapitanov_2025_dupilumab.html
+      - text: "Durlobactam (Abouelhassan 2025)"
+        href: articles/Abouelhassan_2025_sulbactam_durlobactam_crrt.html
       - text: "Durvalumab (Abegesah 2025)"
         href: articles/Abegesah_2025_durvalumab.html
       - text: "Durvalumab (Ogasawara 2020)"
@@ -6882,6 +6884,8 @@ navbar:
         href: articles/Kleijn_2011_sugammadex_rocuronium.html
       - text: "Sugemalimab (Wang 2024)"
         href: articles/Wang_2024_sugemalimab.html
+      - text: "Sulbactam (Abouelhassan 2025)"
+        href: articles/Abouelhassan_2025_sulbactam_durlobactam_crrt.html
       - text: "Sulbactam (Onita 2025)"
         href: articles/Onita_2025_sulbactam.html
       - text: "Sulbactam (Setiawan 2023)"
@@ -8355,6 +8359,7 @@ articles:
   - articles/Abegesah_2025_durvalumab
   - articles/AbouAuda_2024_gentamicin
   - articles/Abouelhassan_2024_sulbactam_elf_pneumonia
+  - articles/Abouelhassan_2025_sulbactam_durlobactam_crrt
   - articles/Abouellil_2023_remdesivir
   - articles/Abrams_2022_sar442257_qsp
   - articles/Abrantes_2017_moroctocog
