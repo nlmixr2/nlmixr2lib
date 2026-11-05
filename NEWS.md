@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zyryanov 2023 meropenem ([doi:10.3389/fphar.2023.1079680](https://doi.org/10.3389/fphar.2023.1079680)) -- preterm newborns in intensive care (therapeutic drug monitoring data).
+- Add Stachanow 2023 hydrocortisone / 17-OHP dried-blood-spot PK/PD ([doi:10.3390/ph16030464](https://doi.org/10.3390/ph16030464)) -- young children and infants with congenital adrenal hyperplasia.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
