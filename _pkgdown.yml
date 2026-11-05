@@ -172,6 +172,14 @@ navbar:
         href: articles/Mi_2024_aditoprim.html
       - text: "Aditoprim pbpkpd (Mi 2024)"
         href: articles/Mi_2024_aditoprim.html
+      - text: "Adomeglivant adopt (Tan 2025)"
+        href: articles/Tan_2025_adomeglivant_hba1c.html
+      - text: "Adomeglivant ffh (Tan 2025)"
+        href: articles/Tan_2025_adomeglivant_hba1c.html
+      - text: "Adomeglivant fhh (Tan 2025)"
+        href: articles/Tan_2025_adomeglivant_hba1c.html
+      - text: "Adomeglivant igrh (Tan 2025)"
+        href: articles/Tan_2025_adomeglivant_hba1c.html
       - text: "Aducanumab (KandadiMuralidharan 2022)"
         href: articles/KandadiMuralidharan_2022_aducanumab.html
       - text: "Aducanumab qsp (Lin 2022)"
@@ -10956,6 +10964,7 @@ articles:
   - articles/Tan_2021_cefadroxil_pbpk
   - articles/Tan_2023_luvometinib
   - articles/Tan_2024_cabozantinib
+  - articles/Tan_2025_adomeglivant_hba1c
   - articles/Tan_2025_cabotegravir_rilpivirine
   - articles/Tan_2025_piperacillin
   - articles/Tanaka_2012_phenytoin

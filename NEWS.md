@@ -2,7 +2,7 @@
 
 # development version
 
-- Add May 2025 potravitug semi-mechanistic PK/PD (BK polyomavirus VP1 binding) QSP model ([doi:10.1111/cts.70316](https://doi.org/10.1111/cts.70316)) -- healthy adults (first-in-human SAD/MAD).
+- Add Tan 2025 adomeglivant (LY2409021) PK and ADOPT / FFH / FHH / IGRH HbA1c models ([doi:10.1002/psp4.70058](https://doi.org/10.1002/psp4.70058)) -- adults with type 2 diabetes.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
