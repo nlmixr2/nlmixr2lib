@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2024 vancomycin ([doi:10.1007/s40262-023-01324-5](https://doi.org/10.1007/s40262-023-01324-5)) -- overweight and obese adult ward and ICU patients with varying renal function, pooled with morbidly obese bariatric-surgery subjects.
+- Add Lindemalm 2005 cladribine ([doi:10.1186/1471-2210-5-4](https://doi.org/10.1186/1471-2210-5-4)) -- adults with hairy cell leukaemia, chronic lymphocytic leukaemia and other lymphoid malignancies given intravenous, oral or subcutaneous cladribine.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
