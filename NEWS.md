@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Prasanchaimontri 2024 favipiravir ([doi:10.1002/prp2.1233](https://doi.org/10.1002/prp2.1233)) -- Thai adults with mild COVID-19 without pneumonia.
+- Add Ippolito 2024b pacmilimab QSP-IO ([doi:10.1007/s10928-024-09928-5](https://doi.org/10.1007/s10928-024-09928-5)) -- in silico virtual patients with non-small cell lung cancer.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
