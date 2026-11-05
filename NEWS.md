@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Jang 2025 lacosamide plasma and saliva model ([doi:10.1038/s41598-025-04044-x](https://doi.org/10.1038/s41598-025-04044-x)) -- Korean adults with epilepsy.
+- Add Sato 2025 midazolam in rats on ECMO ([doi:10.1038/s41598-025-03949-x](https://doi.org/10.1038/s41598-025-03949-x)) -- anaesthetised male Sprague-Dawley rats with or without extracorporeal membrane oxygenation.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 

@@ -4828,6 +4828,8 @@ navbar:
         href: articles/Kim_2026_midazolam.html
       - text: "Midazolam qsp (CherkaouiRbati 2017)"
         href: articles/CherkaouiRbati_2017_midazolam_qsp.html
+      - text: "Midazolam rat (Sato 2025)"
+        href: articles/Sato_2025_midazolam_rat.html
       - text: "Midazolam rat pbpk (Yau 2023)"
         href: articles/Yau_2023_middle_out_pbpk_translation.html
       - text: "Midazolam rugt1a4 (Hyland 2009)"
@@ -10568,6 +10570,7 @@ articles:
   - articles/Sathe_2024_sacituzumab
   - articles/Sathe_2025_sacituzumab
   - articles/Sato_2024_sglt2_hba1c_mbma
+  - articles/Sato_2025_midazolam_rat
   - articles/Savelieva_2015_panobinostat
   - articles/Savic_2010_warfarin
   - articles/Savic_2017_cladribine
