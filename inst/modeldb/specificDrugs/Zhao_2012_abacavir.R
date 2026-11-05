@@ -73,9 +73,9 @@ Zhao_2012_abacavir <- function() {
     # P_i = TV(P) * exp(eta_i), CV% summarized in Table 3. omega^2 = log(1 + CV^2)
     # for a log-normal random effect. No off-diagonal covariances are reported in
     # Table 3, so the IIV omegas are diagonal here.
-    etalcl ~ 0.03884  # Table 3 IIV CL/F = 19.9% CV; omega^2 = log(1 + 0.199^2) = 0.038835
+    etalcl ~ log(1 + 0.199^2)  # Table 3 IIV CL/F = 19.9% CV
     etalvp ~ log(1 + 0.402^2)  # Table 3 IIV V2/F = 40.2% CV
-    etalq  ~ 0.09120  # Table 3 IIV Q/F  = 30.9% CV; omega^2 = log(1 + 0.309^2) = 0.091197
+    etalq  ~ log(1 + 0.309^2)  # Table 3 IIV Q/F  = 30.9% CV
 
     # Inter-occasion variability (IOV) on log-CL across the BID and QD crossover
     # phases (Zhao 2012 Methods: "Interoccasion variability on CL/F was coupled to

@@ -118,9 +118,9 @@ Lommerse_2019_raltegravir <- function() {
     # fully-matured typical values); the corresponding maturation kernel
     # remains a shared population-level function of PNA.
     # =====================================================================
-    etalcl_max        ~ 0.10336  # log(1 + 0.33^2);  Table 2 IIV on CL = 0.33  (paper text 33% CV)
+    etalcl_max        ~ log(1 + 0.33^2)  # Table 2 IIV on CL = 0.33  (paper text 33% CV)
     etalka_max        ~ log(1 + 0.196^2)  # Table 2 IIV on KA = 0.196 (paper text 20% CV)
-    etalfdepot_mother ~ 0.09239  # log(1 + 0.311^2); Table 2 IIV on F  = 0.311 (maternal-F)
+    etalfdepot_mother ~ log(1 + 0.311^2)  # Table 2 IIV on F  = 0.311 (maternal-F)
 
     # =====================================================================
     # RESIDUAL ERROR -- combined additive (nM) + proportional (fraction).

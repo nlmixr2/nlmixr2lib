@@ -155,7 +155,7 @@ Wu_2012_modafinil <- function() {
     etalcl     ~ log(1 + 0.232^2)  # CL1/F1 23.2 % CV
     etalvc     ~ log(1 + 0.513^2)  # V1/F1 51.3 % CV
     etalq      ~ log(1 + 0.221^2)  # CL2/F1 22.1 % CV
-    etalvp     ~ 0.034733   # V2/F1 18.8 % CV; log(1 + 0.188^2) = 0.034733
+    etalvp     ~ log(1 + 0.188^2)  # V2/F1 18.8 % CV
     etalcl_mfa ~ log(1 + 0.185^2)  # CL3/(F1*F2) 18.5 % CV
     etalvc_mfa ~ log(1 + 0.782^2)  # V3/(F1*F2) 78.2 % CV
     # Note: Wu 2012 reports no IIV on ka (the Table 2 IIV block lists only CL1, V1, CL2, V2, CL3, V3).

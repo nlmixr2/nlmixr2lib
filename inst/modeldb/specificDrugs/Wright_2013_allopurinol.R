@@ -101,15 +101,15 @@ Wright_2013_allopurinol <- function() {
     #     log-normal omega variance via omega^2 = log(CV^2 + 1) with CV as a
     #     fraction (standard log-normal moment-match).
     etalcl_allo  ~ fix(log(1 + 0.329^2))  # BSV_CL_allo = 32.9% CV (from Wright 2013 step 2).
-    etalvp_allo  ~ fix(0.0800)  # BSV_V2_allo = 28.9% CV . omega^2 = log(0.289^2 + 1) = 0.0800
+    etalvp_allo  ~ fix(log(1 + 0.289^2))  # BSV_V2_allo = 28.9% CV .
     # Oxypurinol IIV block: correlated CL_oxy - V_oxy with Corr(CL,V) = 0.148
     # (Wright 2013 Table 2 final). Diagonal entries are omega^2:
-    #   CL_oxy: 28.2% CV -> omega^2 = log(0.282^2 + 1) = 0.07648
-    #   V_oxy:  14.9% CV -> omega^2 = log(0.149^2 + 1) = 0.02195
-    # Off-diagonal: corr x sqrt(omega1^2 x omega2^2) = 0.148 x sqrt(0.07648 x 0.02195) = 0.006064
+    #   CL_oxy: 28.2% CV -> omega^2 = log(0.282^2 + 1) = 0.07652
+    #   V_oxy:  14.9% CV -> omega^2 = log(0.149^2 + 1) = 0.02196
+    # Off-diagonal: corr x sqrt(omega1^2 x omega2^2) = 0.148 x sqrt(0.07652 x 0.02196) = 0.006067
     etacl_oxy + etalv_oxy ~ c(
-      0.07648,
-      0.006064, 0.02195
+      log(1 + 0.282^2),
+      0.148 * sqrt(log(1 + 0.282^2) * log(1 + 0.149^2)), log(1 + 0.149^2)
     )
 
     # --- Residual error (combined additive + proportional per analyte).

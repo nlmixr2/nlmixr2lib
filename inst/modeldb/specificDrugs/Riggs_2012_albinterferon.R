@@ -290,9 +290,9 @@ Riggs_2012_albinterferon <- function() {
     #     qualitatively as minimal, with no numeric value published anywhere
     etalcl + etalvc ~ c(0.0431534,
                         0.0000000, 0.1093834)
-    # etalka variance 0.0559616 = log(0.24^2 + 1); Results p. 480, ka
+    # etalka variance 0.0560022 = log(0.24^2 + 1); Results p. 480, ka
     #   interindividual CV 24% (95% CI 1%, 60%)
-    etalka ~ 0.0559616
+    etalka ~ log(1 + 0.24^2)
 
     # ------------------------------------------------------------------
     # Residual error: combined proportional plus additive (Results p. 479

@@ -162,7 +162,7 @@ LohyDas_2018_artesunate <- function() {
     # uses the variance values derived from the published %CVs.
     etalfdepot ~ 0.0929   # Lohy Das 2018 Table 2: BSV F = 31.2% (%RSE 29.4); variance = log(1 + 0.312^2) = 0.0929
     etalmtt    ~ log(1 + 0.853^2)  # Lohy Das 2018 Table 2: BSV MTT = 85.3% (%RSE 24.9)
-    etalcl     ~ 0.0693   # Lohy Das 2018 Table 2: BSV CL_ARS = 26.8% (%RSE 44.3); variance = log(1 + 0.268^2) = 0.0693
+    etalcl     ~ log(1 + 0.268^2)  # Lohy Das 2018 Table 2: BSV CL_ARS = 26.8% (%RSE 44.3)
     etalvc     ~ 0.4434   # Lohy Das 2018 Table 2: BSV V_ARS = 74.7% (%RSE 27.3); variance = log(1 + 0.747^2) = 0.4434
     etalcl_dihydroart ~ 0.0444   # Lohy Das 2018 Table 2: BSV CL_DHA = 21.3% (%RSE 30.3); variance = log(1 + 0.213^2) = 0.0444
     etalvc_dihydroart ~ log(1 + 0.316^2)  # Lohy Das 2018 Table 2: BSV V_DHA = 31.6% (%RSE 40.5)

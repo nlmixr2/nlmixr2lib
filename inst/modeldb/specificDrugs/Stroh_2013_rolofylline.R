@@ -116,7 +116,7 @@ Stroh_2013_rolofylline <- function() {
     # Random effects fixed to zero in the source: CL2 (parent distributional),
     # CL4 (M1-trans distributional), V5 (M1-cis central) - omitted here.
     etalvc         ~ 0.015016   # 12.3% CV; log(0.123^2 + 1); Stroh 2013 Table II BSV(V1) = 12.3%, RSE 29.8%
-    etalcl         ~ 0.044780   # 21.4% CV; log(0.214^2 + 1); Stroh 2013 Table II BSV(CL1) = 21.4%, RSE 22.7%
+    etalcl         ~ log(1 + 0.214^2)  # 21.4% CV; Stroh 2013 Table II BSV(CL1) = 21.4%, RSE 22.7%
     etalvp         ~ log(1 + 0.22^2)  # 22.0% CV; Stroh 2013 Table II BSV(V2) = 22.0%, RSE 51.0%
     etalvc_m1trans ~ log(1 + 0.539^2)  # 53.9% CV; Stroh 2013 Table II BSV(V3) = 53.9%, RSE 24.1%
     etalcl_m1trans ~ log(1 + 0.423^2)  # 42.3% CV; Stroh 2013 Table II BSV(CL3) = 42.3%, RSE 21.1%

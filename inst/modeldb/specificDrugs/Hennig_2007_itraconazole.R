@@ -140,7 +140,7 @@ Hennig_2007_itraconazole <- function() {
     # off-diagonal final estimate is not reported in the paper text or
     # Table 3, so the two etas are modelled here as independent (see the
     # validation vignette's Assumptions and deviations section).
-    etalcl     ~ 0.04770   # log(1 + 0.221^2); Hennig 2007 Table 3 BSV Cl_p = 22.1 % CV
+    etalcl     ~ log(1 + 0.221^2)  # Hennig 2007 Table 3 BSV Cl_p = 22.1 % CV
     etalvc     ~ log(1 + 0.773^2)  # Hennig 2007 Table 3 BSV V_c = 77.3 % CV
     etalka_cap ~ log(1 + 0.919^2)  # Hennig 2007 Table 3 BSV k_a cap = 91.9 % CV
     etalka_sol ~ log(1 + 1.063^2)  # Hennig 2007 Table 3 BSV k_a sol = 106.3 % CV

@@ -81,12 +81,12 @@ Overgaard_2019_semaglutide <- function() {
     # Correlated block on (CL, Vc) with shared etas: eta_CL also drives Q, eta_V also drives Vp
     # (Methods page 653, "Inter-individual variability ... using a log normal distribution in a model
     # that included covariates with clear effects"). Covariance reported in Table 4 footnote.
-    #   IIV CL  = 15.2% -> omega^2 = log(1 + 0.152^2) = 0.022840
-    #   IIV Vc  = 15.4% -> omega^2 = log(1 + 0.154^2) = 0.023438
+    #   IIV CL  = 15.2% -> omega^2 = log(1 + 0.152^2) = 0.022841
+    #   IIV Vc  = 15.4% -> omega^2 = log(1 + 0.154^2) = 0.023439
     #   cov(CL, Vc) = 0.0172 (Overgaard 2019 Table 4 footnote)
     #   IIV ka  = 37.9% -> omega^2 = log(1 + 0.379^2) = 0.134217
-    etalcl + etalvc ~ c(0.022840,
-                        0.0172, 0.023438)                                                             # Overgaard 2019 Table 4 (IIV CL 15.2%, IIV Vc 15.4%, cov 0.0172)
+    etalcl + etalvc ~ c(log(1 + 0.152^2),
+                        0.0172, log(1 + 0.154^2))                                                             # Overgaard 2019 Table 4 (IIV CL 15.2%, IIV Vc 15.4%, cov 0.0172)
     etalka ~ log(1 + 0.379^2)  # Overgaard 2019 Table 4 (IIV ka 37.9%)
 
     # Residual error: additive on log-transformed observations (Overgaard 2019 Methods page 652

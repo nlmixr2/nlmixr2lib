@@ -149,7 +149,7 @@ Stringer_2013_sipoglitazar <- function() {
     # reported in the Table 2 "IIV (%, CV%)" column.
     etalcl ~ log(1 + 0.4025^2)  # Table 2: IIV on CL = 40.25% CV (RSE 7.72%)
     etalvc ~ log(1 + 0.3421^2)  # Table 2: IIV on V  = 34.21% CV (RSE 13.0%)
-    etald1 ~ 0.478053  # Table 2: IIV on D1 = 78.29% CV (RSE 14.8%);  log(1 + 0.7829^2)
+    etald1 ~ log(1 + 0.7829^2)  # Table 2: IIV on D1 = 78.29% CV (RSE 14.8%)
 
     # Residual error: proportional, with a separate magnitude for the phase I
     # healthy-volunteer study and the phase II patient studies (equations 2

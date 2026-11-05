@@ -218,7 +218,7 @@ Jiang_2008_gemcitabine <- function() {
     # nlmixr2 has no native occasion-level random-effect slot for a
     # static model definition, so BOV is documented as a deviation in
     # the validation vignette and only BSV is encoded here.
-    etalcl       ~ 0.09175  # log(1 + 0.31^2); Jiang 2008 Table 3 BSV CL_gem = 31% CV
+    etalcl       ~ log(1 + 0.31^2)  # Jiang 2008 Table 3 BSV CL_gem = 31% CV
     etalvc       ~ log(1 + 0.39^2)  # Jiang 2008 Table 3 BSV V_C,gem = 39% CV
     etalq        ~ log(1 + 0.44^2)  # Jiang 2008 Table 3 BSV Q_gem = 44% CV
     etalvp       ~ log(1 + 0.64^2)  # Jiang 2008 Table 3 BSV V_P,gem = 64% CV

@@ -62,7 +62,7 @@ below collects the references for review.
 | kM (Michaelis constant)     | 0.35 ug/mL (= 0.35 mg/L)   | Table 2 |
 | V3* = V_prostate / fu_prostate | 0.05 L | Table 2 |
 | Inter-individual variance omega^2(V1)   | 21.0 %CV -> log(1 + 0.210^2) = 0.04316 | Table 2 |
-| omega^2(CL)                  | 36.7 %CV -> 0.12640 | Table 2 |
+| omega^2(CL)                  | 36.7 %CV -> 0.12636 | Table 2 |
 | omega^2(Vmax)                | 41.6 %CV -> 0.15961 | Table 2 |
 | omega^2(kM)                  | 76.0 %CV -> 0.45590 | Table 2 |
 | Plasma residual: proportional | 10.2 %CV -> propSd  = 0.102  | Table 2 |

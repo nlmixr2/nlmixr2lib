@@ -77,7 +77,7 @@ Guo_2022_PF_06939999 <- function() {
     # values (eta on lcl, etc.).
     etalcl     ~ 0.141   # CV 38.9% -> log(1 + 0.389^2) = 0.141; Table 1 PK CL/F IIV
     etalvc     ~ 0.317   # CV 61.1% -> log(1 + 0.611^2) = 0.317; Table 1 PK V1/F IIV
-    etalblsdma ~ 0.0812  # CV 29.1% -> log(1 + 0.291^2) = 0.0812; Table 1 SDMA Baseline IIV
+    etalblsdma ~ log(1 + 0.291^2)  # CV 29.1%; Table 1 SDMA Baseline IIV
     etalslope  ~ 0.241   # CV 52.2% -> log(1 + 0.522^2) = 0.241; Table 1 Platelet Slope IIV
     etalgamma  ~ 0.199   # CV 46.9% -> log(1 + 0.469^2) = 0.199; Table 1 Platelet gamma IIV
     etalblplt  ~ log(1 + 0.283^2)  # CV 28.3%; Table 1 Platelet Baseline IIV

@@ -102,14 +102,14 @@ collects them for review.
 | `ltlag` (Tlag SC)             | 2.0 h (= 0.0833 day) | Othman 2014 Table 2 |
 | `e_wt_cl_q`, `e_wt_vc_vp`     | 0.54 / 0.64 | Othman 2014 Table 2 |
 | `e_dose_50mg_f`               | -0.32143 (= 0.57/0.84 - 1) | Othman 2014 Table 2 |
-| PK IIV `etalka`, `etalcl` (block, corr -0.72) | omega^2 0.29003 / 0.07038, cov -0.10290 | Othman 2014 Table 2 |
+| PK IIV `etalka`, `etalcl` (block, corr -0.72) | omega^2 0.28998 / 0.07037, cov -0.10290 | Othman 2014 Table 2 |
 | PK IIV `etalvc`               | omega^2 0.09175 (CV 31%) | Othman 2014 Table 2 |
 | `propSd`, `addSd`             | 0.22 / 0.33 ug/mL | Othman 2014 Table 2 |
 | `cd25E0` (baseline unoccupied CD25)                     | 56% of CD4+ T cells | Diao 2016 Table 3 (Baseline E0 = 56) |
 | `etacd25E0` (additive IIV, %-points)                    | SD = 11; variance = 121 | Diao 2016 Table 3 (E0 IIV "(additive) 11") |
 | `lkon` (kinetic binding association rate, fixed)        | 24 L/(mg*day) | Calibration (kon high; targets Fig 1A ~7 h saturation onset) -- Assumptions and deviations |
 | `lkoff` (kinetic binding dissociation rate, fixed)      | 0.033 /day (t1/2 = 21 d) | Calibration (koff low; targets Fig 1B ~24-week baseline return) -- Assumptions and deviations |
-| `etalkoff` (koff IIV)                                   | omega^2 0.19770 (CV 47%) | Diao 2016 Table 3 (Desaturation IC50 IIV 47% CV, remapped to koff) |
+| `etalkoff` (koff IIV)                                   | omega^2 0.19959 (CV 47%) | Diao 2016 Table 3 (Desaturation IC50 IIV 47% CV, remapped to koff) |
 | `addSd_cd25` (additive residual error)                  | 4.02 %-points | Diao 2016 Table 3 |
 | ODE: `d(occ_cd25)/dt = kon*Cc*(1 - occ_cd25) - koff*occ_cd25` | n/a | Reparameterisation of Diao 2016 Equation (1); see Assumptions and deviations |
 | Observation: `cd25 = E0 * (1 - occ_cd25)`               | n/a | Reparameterisation of Diao 2016 Equation (1) |

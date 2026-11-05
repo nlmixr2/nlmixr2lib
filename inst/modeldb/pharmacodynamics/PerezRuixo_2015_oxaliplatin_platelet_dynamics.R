@@ -270,7 +270,7 @@ PerezRuixo_2015_oxaliplatin_platelet_dynamics <- function() {
     # No between-eta correlations reported (diagonal Omega).
     # ------------------------------------------------------------------
 
-    etalplt0  ~ 0.1027     # PLT0 CV 32.9%: omega2 = log(0.329^2 + 1)
+    etalplt0  ~ log(1 + 0.329^2)  # PLT0 CV 32.9%
     etalktr   ~ log(1 + 0.471^2)  # ktr CV 47.1%
     etalks    ~ 0.4947     # ks CV 80.0%: omega2 = log(0.80^2 + 1)
     etalkp    ~ 0.5497     # kp CV 85.6%: omega2 = log(0.856^2 + 1)

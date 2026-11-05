@@ -70,7 +70,7 @@ in the packaged model -- see "Haemodialysis extension" below.
 | `WLO` linear effect on V1 | 7.22 %/kg of intra-dialysis weight loss | Table 4 (RSE 23.4%); not enabled in model file |
 | Additive residual error | 1.40 ug/mL | Table 4 (RSE 20.1%) |
 | Proportional residual error | 7.85 %CV | Table 4 (RSE 1.4%) |
-| BSV Vmax | 17.5 %CV -> omega^2 = log(1 + 0.175^2) = 0.03016 | Table 4 (RSE 18.2%) |
+| BSV Vmax | 17.5 %CV -> omega^2 = log(1 + 0.175^2) = 0.03017 | Table 4 (RSE 18.2%) |
 | BSV V1 | 16.8 %CV -> omega^2 = log(1 + 0.168^2) = 0.02783 | Table 4 (RSE 16.5%) |
 | BSV V2 | 52.7 %CV -> omega^2 = log(1 + 0.527^2) = 0.24508 | Table 4 (RSE 33.2%) |
 | Structural ODEs | dA1/dt = -(Q/V1)*A1 + (Q/V2)*A2 - Vmax*C1/(Km+C1); C1 = A1/V1; dA2/dt = (Q/V1)*A1 - (Q/V2)*A2 | Equations 3-4 |

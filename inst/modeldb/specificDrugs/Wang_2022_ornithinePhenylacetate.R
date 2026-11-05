@@ -113,7 +113,7 @@ Wang_2022_ornithinePhenylacetate <- function() {
     # the blocks are encoded diagonally.
     etalvmax ~ log(1 + 0.48^2)  # Table 2: BSV Vmax 48%
     etalkm ~ log(1 + 0.92^2)  # Table 2: BSV Km 92%
-    etalvc ~ 0.1553 # Table 2: BSV VPAA 41%; log(1 + 0.41^2)
+    etalvc ~ log(1 + 0.41^2)  # Table 2: BSV VPAA 41%
     # PAGN: the control stream carries ETA(1) on VPAGN and ETA(2) on CLPAGN,
     # but no variance is reported anywhere in the paper or ESM.
     etalcl_pagn ~ fixed(0) # not reported; see vignette

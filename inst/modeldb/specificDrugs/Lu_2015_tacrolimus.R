@@ -84,7 +84,7 @@ Lu_2015_tacrolimus <- function() {
     etalcl ~ 0.1965  # Lu 2015 Table 2 final: CL-IIV = 46.6% CV  -> log(0.466^2 + 1) = 0.1965
     etalvc ~ log(1 + 0.573^2)  # Lu 2015 Table 2 final: V2-IIV = 57.3% CV
     etalq  ~ 0.1919  # Lu 2015 Table 2 final: Q-IIV  = 46.0% CV  -> log(0.460^2 + 1) = 0.1919
-    etalvp ~ 0.6280  # Lu 2015 Table 2 final: V3-IIV = 93.5% CV  -> log(0.935^2 + 1) = 0.6280
+    etalvp ~ log(1 + 0.935^2)  # Lu 2015 Table 2 final: V3-IIV = 93.5% CV
     # No eta on ka (Lu 2015 Table 2 final: ka-IIV = 0%*, fixed at zero) and no eta on ALAG1 (Eq. 15 has no random term).
 
     # Residual unexplained variability (Lu 2015 final residual model: pure proportional, no additive component).

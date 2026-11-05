@@ -88,7 +88,7 @@ Knibbe_2005_propofol_rat <- function() {
     etalcl ~ log(1 + 0.34^2)  # Knibbe 2005 Table 3 rat: IIV CL 34%
     etalvc ~ log(1 + 0.15^2)  # Knibbe 2005 Table 3 rat: IIV V1 15%
     etalq  ~ 0.06541   # Knibbe 2005 Table 3 rat: IIV Q  26%, omega^2 = log(0.26^2 + 1)
-    etalvp ~ 0.05154   # Knibbe 2005 Table 3 rat: IIV V2 23%, omega^2 = log(0.23^2 + 1)
+    etalvp ~ log(1 + 0.23^2)  # Knibbe 2005 Table 3 rat: IIV V2 23%
 
     # Intra-individual residual error. Constant-CV proportional model
     # (Knibbe 2005 Eq. 4): c_ij = c_pred,ij * (1 + eps), with eps ~

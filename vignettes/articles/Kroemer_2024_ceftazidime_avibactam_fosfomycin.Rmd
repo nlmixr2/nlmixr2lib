@@ -114,7 +114,7 @@ entry in both model files. The tables below collect them in one place.
 | `lint_avi_caz_r`, `lec50int_avi_caz_r`, `hillint_avi_caz_r` | -13.50, -5.23, 1 FIXED | Table S3, AVI affecting CAZ on (R); footnote 3 fixes the Hill factor |
 | `lint_caz_fof_r`, `lec50int_caz_fof_r`, `hillint_caz_fof_r` | -7.85, -12.40, 0.239 | Table S3, CAZ affecting FOF on (R) |
 | `etalog10inoc_r` | 0.108784 | Table S3, 33.9 %CV; footnote 4 gives omega^2 = log(CV^2 + 1) |
-| `etakgr` | 0.049810 | Table S3, 22.6 %CV; footnote 4 |
+| `etakgr` | 0.049814 | Table S3, 22.6 %CV; footnote 4 |
 | `addSd` | 1.30 | Table S3, additive residual variability sigma |
 | Growth / kill ODEs | n/a | Text S3 Eqs 1-2 |
 | Sigmoidal Emax and power effect forms | n/a | Text S3 Eqs 3-4 |

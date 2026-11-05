@@ -204,10 +204,10 @@ AlfoseaCuadrado_2024_reserpine_rat <- function() {
     # -- Inter-animal variability (Table 2, 'Inter-Animal Variability') -------
     # Reported as CV%; converted with omega^2 = log(1 + CV^2).
     etalka          ~ log(1 + 2.26^2)  # Table 2: ka1 IAV 226%
-    etald1          ~ 0.09750   # Table 2: ka2 IAV 32%  -> log(1 + 0.32^2)
+    etald1          ~ log(1 + 0.32^2)  # Table 2: ka2 IAV 32%
     etalogitfdepot  ~ log(1 + 1.79^2)  # Table 2: F1 IAV 179%
     etalvc          ~ log(1 + 0.59^2)  # Table 2: V IAV 59%
-    etalcl          ~ 0.12830   # Table 2: CL IAV 37%   -> log(1 + 0.37^2)
+    etalcl          ~ log(1 + 0.37^2)  # Table 2: CL IAV 37%
     etalkpin        ~ log(1 + 0.97^2)  # Table 2: kin IAV 97%; shared by all three regions
     etalkin         ~ 0.08075   # Table 2: kp IAV 29%   -> log(1 + 0.29^2)
     etalkout        ~ 0.04727   # Table 2: kout IAV 22% -> log(1 + 0.22^2)

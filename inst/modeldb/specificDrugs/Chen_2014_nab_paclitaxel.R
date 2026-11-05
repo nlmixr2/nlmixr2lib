@@ -93,14 +93,14 @@ Chen_2014_nab_paclitaxel <- function() {
     # Paper reports CV%; converted to log-normal eta variance via omega^2 = log(1 + CV^2).
     # No correlation structure is reported in Table 2 -- treat as diagonal.
     #   V1   46.7% -> log(1 + 0.467^2) = 0.1973
-    #   V2   25.5% -> log(1 + 0.255^2) = 0.0628
-    #   VMTR 26.7% -> log(1 + 0.267^2) = 0.0688
-    #   VMEL 22.3% -> log(1 + 0.223^2) = 0.0486
+    #   V2   25.5% -> log(1 + 0.255^2) = 0.0630
+    #   VMTR 26.7% -> log(1 + 0.267^2) = 0.0689
+    #   VMEL 22.3% -> log(1 + 0.223^2) = 0.0485
     # The 16.7% IIV on the WB / plasma ratio is not encoded here -- see population$notes.
     etalvc   ~ log(1 + 0.467^2)
-    etalvp   ~ 0.0628
-    etalvmtr ~ 0.0688
-    etalvmax ~ 0.0486
+    etalvp   ~ log(1 + 0.255^2)
+    etalvmtr ~ log(1 + 0.267^2)
+    etalvmax ~ log(1 + 0.223^2)
 
     # ---- PK residual error (Chen 2014 Table 2 'Residual variability' block) ----
     # Source model used a two-subpopulation mixture (NONMEM MIXEST) with proportional CVs of
@@ -136,11 +136,11 @@ Chen_2014_nab_paclitaxel <- function() {
 
     # ---- PD inter-individual variability (Chen 2014 Table 2 'Interindividual variability' PD block) ----
     # Paper reports CV%; converted to log-normal eta variance via omega^2 = log(1 + CV^2).
-    #   MTT          19.0% -> log(1 + 0.190^2) = 0.0353
-    #   Slope        42.9% -> log(1 + 0.429^2) = 0.1697
+    #   MTT          19.0% -> log(1 + 0.190^2) = 0.0355
+    #   Slope        42.9% -> log(1 + 0.429^2) = 0.1689
     #   Baseline ANC 35.1% -> log(1 + 0.351^2) = 0.1162
-    etalmtt   ~ 0.0353
-    etalslope ~ 0.1697
+    etalmtt   ~ log(1 + 0.190^2)
+    etalslope ~ log(1 + 0.429^2)
     etalrbase  ~ 0.1162
 
     # ---- PD residual error (Chen 2014 Table 2 'Residual variability' PD row) ----

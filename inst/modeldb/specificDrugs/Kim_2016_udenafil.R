@@ -119,7 +119,7 @@ Kim_2016_udenafil <- function() {
     etalvc       ~ log(1 + 0.756^2)  # Kim 2016 Table 2: omega Vp/F = 75.6% CV
     etalvp       ~ log(1 + 0.238^2)  # Kim 2016 Table 2: omega Vp2/F = 23.8% CV
     etalq        ~ log(1 + 0.513^2)  # Kim 2016 Table 2: omega Qp/F = 51.3% CV
-    etaltlag     ~ 0.04195   # Kim 2016 Table 2: omega ALAG = 20.7% CV; log(1 + 0.207^2)
+    etaltlag     ~ log(1 + 0.207^2)  # Kim 2016 Table 2: omega ALAG = 20.7% CV
 
     # Residual error: proportional on both udenafil and DA-8164. Kim 2016
     # Results paragraph: "A proportional error model was shown to be

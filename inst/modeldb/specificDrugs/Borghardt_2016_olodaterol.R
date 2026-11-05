@@ -188,11 +188,11 @@ Borghardt_2016_olodaterol <- function() {
     # deviations section.
     # ============================================================
     etalvc          ~ log(1 + 0.262^2)  # Borghardt 2016 Table 2 (BSV VC      26.2% CV)
-    etalq           ~ 0.0639   # Borghardt 2016 Table 2 (BSV Q2      25.7% CV -> log(1 + 0.257^2) = 0.0639)
+    etalq           ~ log(1 + 0.257^2)  # Borghardt 2016 Table 2 (BSV Q2      25.7% CV)
     etalq2          ~ log(1 + 0.168^2)  # Borghardt 2016 Table 2 (BSV Q3      16.8% CV)
-    etalcl_nonren   ~ 0.0693   # Borghardt 2016 Table 2 (BSV CL_NR   26.8% CV -> log(1 + 0.268^2) = 0.0693)
+    etalcl_nonren   ~ log(1 + 0.268^2)  # Borghardt 2016 Table 2 (BSV CL_NR   26.8% CV)
     etalogitff1     ~ 0.0129   # Borghardt 2016 Table 2 (BSV FF1     11.4% CV -> log(1 + 0.114^2)  = 0.0129; applied on the logit scale)
-    etalogitff2     ~ 0.00866  # Borghardt 2016 Table 2 (BSV FF2      9.33% CV -> log(1 + 0.0933^2) = 0.00866; applied on the logit scale)
+    etalogitff2     ~ log(1 + 0.0933^2)  # Borghardt 2016 Table 2 (BSV FF2      9.33% CV; applied on the logit scale)
     etalogitpbio    ~ 0.0987   # Borghardt 2016 Table 2 (BOV PBIO    32.2% CV -> log(1 + 0.322^2)  = 0.0987; encoded as IIV here; see Errata)
 
     # ============================================================

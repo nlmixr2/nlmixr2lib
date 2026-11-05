@@ -91,13 +91,13 @@ Wang_2015_rucaparib <- function() {
     # was not available when this model was built). IIV on the additional PK parameters
     # is therefore omitted -- see vignette Assumptions and deviations.
     etalcl ~ log(1 + 0.512^2)  # Wang 2015 Table 1: IIV CL = 51.2 %CV
-    etalvc ~ 0.2840  # log(1 + 0.573^2); Wang 2015 Table 1: IIV V1 = 57.3 %CV
+    etalvc ~ log(1 + 0.573^2)  # Wang 2015 Table 1: IIV V1 = 57.3 %CV
 
     # IIV on PD parameters -- Wang 2015 Table 2; assumed diagonal (paper text
     # states covariance was estimated only when strong correlation was observed
     # on diagnostic plots, and Table 2 reports no covariance terms).
     etale0   ~ log(1 + 1.16^2)  # Wang 2015 Table 2: IIV E0   = 116  %CV
-    etalemin ~ 0.1990  # log(1 + 0.469^2); Wang 2015 Table 2: IIV Emin = 46.9 %CV
+    etalemin ~ log(1 + 0.469^2)  # Wang 2015 Table 2: IIV Emin = 46.9 %CV
     etalic50 ~ log(1 + 0.617^2)  # Wang 2015 Table 2: IIV IC50 = 61.7 %CV
 
     # Residual error -- Wang 2015 Methods: "residual error for the

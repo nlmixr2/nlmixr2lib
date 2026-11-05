@@ -125,12 +125,12 @@ Hurtado_2014_levofloxacin_rat <- function() {
     # k12, k21, k13, k31, V3*, Q, Vp was estimated as negligible and
     # dropped. Convert %CV to variance via omega^2 = log(1 + CV^2):
     #   V1   21.0 %CV -> omega^2 = log(1 + 0.210^2) = 0.04316
-    #   CL   36.7 %CV -> omega^2 = log(1 + 0.367^2) = 0.12640
+    #   CL   36.7 %CV -> omega^2 = log(1 + 0.367^2) = 0.12636
     #   Vmax 41.6 %CV -> omega^2 = log(1 + 0.416^2) = 0.15961
     #   kM   76.0 %CV -> omega^2 = log(1 + 0.760^2) = 0.45590
     # --------------------------------------------------------------------
     etalvc   ~ 0.04316                                                          # Hurtado 2014 Table 2: omega^2(V1)   = 21.0 %CV -> log(1 + 0.210^2)
-    etalcl   ~ 0.12640                                                          # Hurtado 2014 Table 2: omega^2(CL)   = 36.7 %CV -> log(1 + 0.367^2)
+    etalcl   ~ log(1 + 0.367^2)  # Hurtado 2014 Table 2: omega^2(CL)   = 36.7 %CV
     etalvmax ~ log(1 + 0.416^2)  # Hurtado 2014 Table 2: omega^2(Vmax) = 41.6 %CV
     etalkm   ~ log(1 + 0.76^2)  # Hurtado 2014 Table 2: omega^2(kM)   = 76.0 %CV
 

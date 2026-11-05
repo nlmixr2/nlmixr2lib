@@ -81,7 +81,7 @@ them for review.
 | reference `medIBW` | 68.8 kg | Table 1, row "Ideal body weight, kg" (cohort median) |
 | `etalvc` | 0.50799 | Table 2 IIV row `V`: SD 0.71, CV 81.36%; `omega^2 = log(1 + 0.8136^2)` |
 | `etalcl` | 0.157914 | Table 2 IIV row `CL`: SD 0.4, CV 41.36%; `omega^2 = log(1 + 0.4136^2)` |
-| `etaiov_cl_1..8` | 0.127331 | Table 2 IOV row `CL`: SD 0.36, CV 36.85%; `omega^2 = log(1 + 0.3685^2)` |
+| `etaiov_cl_1..8` | 0.127330 | Table 2 IOV row `CL`: SD 0.36, CV 36.85%; `omega^2 = log(1 + 0.3685^2)` |
 | `propSd` | 0.082 | Table 2, row `Proportional` (RSE 7.76%; 95% CI 0.071-0.096) |
 | one-compartment, first-order absorption and elimination | n/a | Methods 2.2; Results 3.2 |
 | IIV on V and CL, IOV on CL, proportional RUV | n/a | Results 3.2, first paragraph |

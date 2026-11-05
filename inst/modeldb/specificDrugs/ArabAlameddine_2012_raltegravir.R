@@ -104,7 +104,7 @@ ArabAlameddine_2012_raltegravir <- function() {
     # F and did not remain statistically relevant).
     etalvc      ~ 0.5675  # log(1 + 0.874^2); Table 2: omega_V1/F = 87.4% CV, RSE 93.4%
     etalka      ~ log(1 + 0.942^2)  # Table 2: omega_ka = 94.2% CV, RSE 52.7% (shared between HIV+ and HIV-)
-    etalfdepot  ~ 0.5605  # log(1 + 0.867^2); Table 2: omega_F = 86.7% CV, RSE 40.0% (shared between HIV+ and HIV-)
+    etalfdepot  ~ log(1 + 0.867^2)  # Table 2: omega_F = 86.7% CV, RSE 40.0% (shared between HIV+ and HIV-)
 
     # Residual error: HIV-status-conditional proportional model (Table 2 'sigma' block).
     propSd_neg <- 0.833; label("Proportional residual error in healthy volunteers (fraction)") # Table 2: sigma HIV- = 83.3% CV, RSE 40.9%

@@ -161,7 +161,7 @@ Back_2018_fenofibrate <- function() {
     # both rate constants).
     # ============================================================
     etalkg ~ 0.09575                                              # Table 3 IIV kg (shared with kg'): 31.7% CV  -> omega^2 = log(1 + 0.317^2)
-    etalkel ~ 0.55660                                             # Table 3 IIV kel:  86.3% CV -> omega^2 = log(1 + 0.863^2)
+    etalkel ~ log(1 + 0.863^2)  # Table 3 IIV kel:  86.3% CV
     etalvc  ~ log(1 + 0.93^2)  # Table 3 IIV Vc/F: 93.0% CV
 
     # ============================================================

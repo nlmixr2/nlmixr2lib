@@ -44,7 +44,7 @@ Per-parameter origin is recorded as in-file comments alongside each `ini()` entr
 | `lq2`                | log(12.5)   | Table 2 theta_Q3 = 12.5 L/h (SE 1.22) |
 | `lvp2`               | log(225)    | Table 2 theta_V3 = 225 L (SE 46.2) |
 | `etalcl`             | 0.1477      | Table 2 omega_CL  = 39.9% CV; log(1 + 0.399^2) |
-| `etalvc`             | 0.0673      | Table 2 omega_V1  = 26.4% CV; log(1 + 0.264^2) |
+| `etalvc`             | 0.0674      | Table 2 omega_V1  = 26.4% CV; log(1 + 0.264^2) |
 | `propSd`             | 0.268       | Table 2 sigma     = 26.8% CV; "proportional model" (Methods) |
 | `lmtt`               | log(113)    | Table 3 theta_MTT    = 113 h (SE 4.62) |
 | `lslope`             | log(17.9)   | Table 3 theta_SLOPE  = 17.9 1/(mg/L) (SE 1.75) |

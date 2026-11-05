@@ -88,7 +88,7 @@ Kim 2016 Table 2 "Estimate" column.
 | `etalvc` variance               | log(1 + 0.756^2) = 0.45205         | Table 2: omega Vp/F 75.6% CV |
 | `etalvp` variance               | log(1 + 0.238^2) = 0.05510         | Table 2: omega Vp2/F 23.8% CV |
 | `etalq` variance                | log(1 + 0.513^2) = 0.23362         | Table 2: omega Qp/F 51.3% CV |
-| `etaltlag` variance             | log(1 + 0.207^2) = 0.04195         | Table 2: omega ALAG 20.7% CV |
+| `etaltlag` variance             | log(1 + 0.207^2) = 0.04196         | Table 2: omega ALAG 20.7% CV |
 | `propSd` (parent)               | 0.216 (21.6%)                      | Table 2 sigma_prop,p |
 | `propSd_da8164` (metabolite)    | 0.231 (23.1%)                      | Table 2 sigma_prop,m |
 | `rpm` (MW(DA-8164)/MW(udenafil))| 405.4 / 516.66 = 0.7847            | Methods, Population PK model development paragraph |

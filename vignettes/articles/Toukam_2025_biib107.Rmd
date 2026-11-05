@@ -59,7 +59,7 @@ The same population information is available programmatically via `readModelDb("
 | F = 73.8% | `lfdepot` | Toukam 2025 Table 3 |
 | Allometric exponent on CL = 1.07 (estimated) | `e_wt_cl` | Toukam 2025 Table 3 |
 | Allometric exponents on V2, V3, Q (1, 1, 0.75; FIXED) | `e_wt_vc`, `e_wt_vp`, `e_wt_q` (FIXED) | Toukam 2025 Table 3 footnote |
-| IIV CL 16% CV | `etalcl` (omega^2 = 0.02527) | Toukam 2025 Table 3 |
+| IIV CL 16% CV | `etalcl` (omega^2 = 0.02528) | Toukam 2025 Table 3 |
 | IIV V2 35% CV | `etalvc` (omega^2 = 0.11556) | Toukam 2025 Table 3 |
 | IIV Ka 41% CV | `etalka` (omega^2 = 0.15538) | Toukam 2025 Table 3 |
 | Additive PK residual error 8.67 (SC) | `addSd` | Toukam 2025 Table 3 |

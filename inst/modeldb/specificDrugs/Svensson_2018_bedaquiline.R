@@ -110,7 +110,7 @@ Svensson_2018_bedaquiline <- function() {
     # for between-occasion variability separate from BSV, and the BOV-MAT
     # term is folded in as the BSV-MAT-equivalent below (paper reports no
     # separate BSV on MAT). See vignette's Assumptions and deviations.
-    etalcl + etalcl_m2 ~ c(0.02891, 0.002935, 0.04122)  # Svensson 2018 Table 2 IIV CL_BDQ = 17.1% CV, IIV CL_M2 = 20.5% CV, correlation 8.5%; omega^2_cl = log(1+0.171^2) = 0.02891, omega^2_clm2 = log(1+0.205^2) = 0.04122, cov = 0.085 * sqrt(0.02891 * 0.04122) = 0.002935
+    etalcl + etalcl_m2 ~ c(log(1 + 0.171^2), 0.085 * sqrt(log(1 + 0.171^2) * log(1 + 0.205^2)), log(1 + 0.205^2))  # Svensson 2018 Table 2 IIV CL_BDQ = 17.1% CV, IIV CL_M2 = 20.5% CV, correlation 8.5%; omega^2_cl = log(1+0.171^2) = 0.02882, omega^2_clm2 = log(1+0.205^2) = 0.04117, cov = 0.085 * sqrt(0.02882 * 0.04117) = 0.002928
     etalvc      ~ log(1 + 0.283^2)  # Svensson 2018 Table 2 IIV V_BDQ = 28.3% CV
     etalq       ~ log(1 + 0.173^2)  # Svensson 2018 Table 2 IIV Q_BDQ,1 = 17.3% CV
     etalvc_m2   ~ log(1 + 0.263^2)  # Svensson 2018 Table 2 IIV V_M2 = 26.3% CV

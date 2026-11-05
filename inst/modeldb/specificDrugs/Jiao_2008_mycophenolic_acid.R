@@ -229,7 +229,7 @@ Jiao_2008_mycophenolic_acid <- function() {
     etalvc      ~ 0.1125    # Table 3 IIV V_2/F    = 34.5% CV -> log(1 + 0.345^2) = 0.1125
     etalvp      ~ 0.0502    # Table 3 IIV V_3/F    = 22.7% CV -> log(1 + 0.227^2) = 0.0502
     etalvc_mpag ~ 0.0520    # Table 3 IIV V_4/F    = 23.1% CV -> log(1 + 0.231^2) = 0.0520
-    etalehcp    ~ 0.0807    # Table 3 IIV EHCP     = 29.0% CV -> log(1 + 0.290^2) = 0.0807
+    etalehcp    ~ log(1 + 0.290^2)  # Table 3 IIV EHCP     = 29.0% CV
 
     # ---- Residual error (exponential / log-normal per Methods Eq 3) ----
     # Y = IPRED * exp(epsilon) with epsilon ~ N(0, expSd^2); the paper-

@@ -77,7 +77,7 @@ collects them in one place for review.
 | `ltlag` (tlag) | log(0.440) h | Table 3, RSD 5.5% |
 | `etalcl` variance | log(1 + 0.222^2) = 0.04811 | Table 3 IIV CL 22.2% CV (RSD 55%) |
 | `etalvc` variance | log(1 + 0.269^2) = 0.06986 | Table 3 IIV V1 26.9% CV (RSD 53%) |
-| `etalq` variance | log(1 + 0.282^2) = 0.07650 | Table 3 IIV Q 28.2% CV (RSD 73%) |
+| `etalq` variance | log(1 + 0.282^2) = 0.07652 | Table 3 IIV Q 28.2% CV (RSD 73%) |
 | `etalvp` variance | log(1 + 0.306^2) = 0.08951 | Table 3 IIV V2 30.6% CV (RSD 62%) |
 | `etalka` variance | log(1 + 0.438^2) = 0.17550 | Table 3 IIV ka 43.8% CV (RSD 66%) |
 | `etalfdepot` variance | log(1 + 0.250^2) = 0.06062 | Table 3 IIV F 25.0% CV (RSD 64%) |

@@ -117,13 +117,13 @@ Retout_2020_emicizumab <- function() {
     # correlation is not reported in Table 4 and is set to 0.
     #   CL/F: CV 28.7%  -> omega^2 = log(1 + 0.287^2) = 0.079152
     #   V/F:  CV 25.9%  -> omega^2 = log(1 + 0.259^2) = 0.064927
-    #   KA:   CV 72.5%  -> omega^2 = log(1 + 0.725^2) = 0.422400
+    #   KA:   CV 72.5%  -> omega^2 = log(1 + 0.725^2) = 0.422404
     #   r(CL/F, V/F) =  0.217  -> cov =  0.015556
     #   r(CL/F, KA)  = -0.341  -> cov = -0.062352
     etalcl + etalvc + etalka ~ c(
       0.079152,
       0.015556, 0.064927,
-      -0.062352, 0, 0.422400
+      -0.062352, 0, log(1 + 0.725^2)
     ) # Retout 2020 Table 4: BPV CL/F 28.7%, V/F 25.9%, KA 72.5% CV; correlations CL/F-V/F 0.217, CL/F-KA -0.341
 
     # Residual error - Retout 2020 Table 4 (combined additive + proportional).

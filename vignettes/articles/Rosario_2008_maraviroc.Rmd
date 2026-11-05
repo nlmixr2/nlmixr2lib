@@ -134,11 +134,11 @@ maps to the following locations in the source paper.
 | E0 (background occupancy at baseline)                   | Table 2, theta_19 row              | 24.9 %                           |
 | Equation 1 (Occ = E0 + Emax C / (KD + C))               | Methods sec."Model development"       | Eq. 1                            |
 | IIV ALAG1 ( > 100% CV approximated as 100%)             | Table 2, IIV column for ALAG1      | omega^2 = log(2) = 0.6931        |
-| IIV Ka (89% CV)                                         | Table 2, IIV column for Ka         | omega^2 = log(1+0.89^2) = 0.5831 |
-| IIV V2 (31% CV)                                         | Table 2, IIV column for V2         | omega^2 = log(1+0.31^2) = 0.0917 |
+| IIV Ka (89% CV)                                         | Table 2, IIV column for Ka         | omega^2 = log(1+0.89^2) = 0.5834 |
+| IIV V2 (31% CV)                                         | Table 2, IIV column for V2         | omega^2 = log(1+0.31^2) = 0.0918 |
 | IIV K23 (24% CV)                                        | Table 2, IIV column for K23        | omega^2 = log(1+0.24^2) = 0.0560 |
-| IIV KD (21% CV)                                         | Table 2, IIV column for KD         | omega^2 = log(1+0.21^2) = 0.0431 |
-| IIV E0 (28% CV)                                         | Table 2, IIV column for E0         | omega^2 = log(1+0.28^2) = 0.0754 |
+| IIV KD (21% CV)                                         | Table 2, IIV column for KD         | omega^2 = log(1+0.21^2) = 0.0432 |
+| IIV E0 (28% CV)                                         | Table 2, IIV column for E0         | omega^2 = log(1+0.28^2) = 0.0755 |
 | Proportional residual error on maraviroc plasma (38% CV)| Table 2, EPS1 row                  | propSd = 0.38                    |
 | Additive residual error on receptor occupancy (11%)     | Table 2, EPS2 row                  | addSd_Occ = 11 %                 |
 

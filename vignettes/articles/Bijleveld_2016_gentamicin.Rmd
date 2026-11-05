@@ -81,10 +81,10 @@ below collects them in one place for review.
 | `e_wt_vc_vp` (allometric exp on Vc, Vp) | 1.00 (fixed)       | Bijleveld 2016 Methods 'Structural model'                                  |
 | `e_ga_cl` (power exp of GA/40 on CL)    | 3.00 (theta_CLGA)  | Bijleveld 2016 Table 2 Final Model footer                                  |
 | `e_sd5_cl` (CL multiplier for PNA > 96 h) | 1.29 (theta_SD5)  | Bijleveld 2016 Table 2 Final Model footer; Results "Pharmacokinetic model building" |
-| IIV CL (omega^2 = log(1 + 0.266^2))     | 0.06837 (26.6% CV) | Bijleveld 2016 Table 2 Final Model column                                  |
-| IIV Vc (omega^2 = log(1 + 0.408^2))     | 0.15399 (40.8% CV) | Bijleveld 2016 Table 2 Final Model column                                  |
+| IIV CL (omega^2 = log(1 + 0.266^2))     | 0.06836 (26.6% CV) | Bijleveld 2016 Table 2 Final Model column                                  |
+| IIV Vc (omega^2 = log(1 + 0.408^2))     | 0.15398 (40.8% CV) | Bijleveld 2016 Table 2 Final Model column                                  |
 | IIV Vp (omega^2 = log(1 + 0.533^2))     | 0.25022 (53.3% CV) | Bijleveld 2016 Table 2 Final Model column                                  |
-| Cor(IIV CL, IIV Vc) -> covariance       | 0.81 * sqrt(0.06837 * 0.15399) = 0.08316 | Bijleveld 2016 Results "Pharmacokinetic model building" |
+| Cor(IIV CL, IIV Vc) -> covariance       | 0.81 * sqrt(0.06836 * 0.15398) = 0.08310 | Bijleveld 2016 Results "Pharmacokinetic model building" |
 | `expSd` (lognormal residual SD)         | 0.15               | Bijleveld 2016 Table 2 Final Model column (additive on log-transformed data) |
 | Two-compartment IV PK ODE structure     | n/a                | Bijleveld 2016 Results "Pharmacokinetic model building" (allometric 2-compartment) |
 | Reference body weight 70 kg             | n/a                | Bijleveld 2016 Methods 'Structural model' (BW/70 normalisation)            |

@@ -84,7 +84,7 @@ Sanchez_2011_efavirenz <- function() {
     # Sanchez 2011 Results 'final model adopted for CL/F' paragraph and Table 4:
     #   CV CL/F = 28.40% (RSE 18.29%); CV V/F = 86.91% (RSE 20.59%).
     # CV-to-variance conversion: omega^2 = log(CV^2 + 1)
-    etalcl ~ 0.07758  # log(0.284^2 + 1) = 0.07758
+    etalcl ~ log(1 + 0.284^2)
     etalvc ~ log(1 + 0.8691^2)
 
     # ---- Residual error (proportional; additive structure did not improve fit, Methods para 2) ----

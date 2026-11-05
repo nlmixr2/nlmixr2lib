@@ -64,7 +64,7 @@ Aregbe_2012_alvespimycin <- function() {
     etalcl  ~ log(1 + 0.538^2)  # Aregbe 2012 Table 2: IIV CL  53.8% (%SE 22.9)
     etalvc  ~ 0.1034  # Aregbe 2012 Table 2: IIV V1  33.0% (%SE 111.9), variance = log(0.330^2 + 1)
     etalvp  ~ 0.2288  # Aregbe 2012 Table 2: IIV V2  50.7% (%SE 23.7), variance = log(0.507^2 + 1)
-    etalq2  ~ 0.4539  # Aregbe 2012 Table 2: IIV Q3  75.8% (%SE 32.0), variance = log(0.758^2 + 1)
+    etalq2  ~ log(1 + 0.758^2)  # Aregbe 2012 Table 2: IIV Q3  75.8% (%SE 32.0)
     etalvp2 ~ log(1 + 0.675^2)  # Aregbe 2012 Table 2: IIV V3  67.5% (%SE 37.3)
 
     # Between-occasion variability (BOV) on Q2 (NONMEM `$OMEGA BLOCK(1)` reused

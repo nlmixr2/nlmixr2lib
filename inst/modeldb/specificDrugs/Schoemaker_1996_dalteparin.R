@@ -140,15 +140,15 @@ Schoemaker_1996_dalteparin <- function() {
     # (CL, t1/2E) parameterisation. Re-expressed in the (CL, Vc) parameterisation
     # used here (Vc = CL * t1/2E / ln(2), so eta_lvc = eta_lcl + eta_lt12E with
     # eta_lt12E independent of eta_lcl), the implied joint distribution is:
-    #   Var(eta_lcl) = log(1 + 0.141^2) = 0.01970
+    #   Var(eta_lcl) = log(1 + 0.141^2) = 0.01969
     #   Var(eta_lvc) = Var(eta_lcl) + Var(eta_lt12E)
-    #                = 0.01970 + log(1 + 0.083^2) = 0.02657
-    #   Cov(eta_lcl, eta_lvc) = Var(eta_lcl) = 0.01970
+    #                = 0.01970 + log(1 + 0.083^2) = 0.00687
+    #   Cov(eta_lcl, eta_lvc) = Var(eta_lcl) = 0.01969
     # (Correlation = 0.861). This block-diagonal encoding preserves the paper's
     # reported IIV on CL (14.1%) and t1/2E (8.3%) exactly: when sampled, the
     # implied IIV on t1/2E = sqrt(Var(eta_lvc - eta_lcl)) = sqrt(0.00687) ~ 8.3%
-    # and IIV on CL = sqrt(0.01970) ~ 14.1%, matching Table 4.
-    etalcl + etalvc ~ c(0.01970, 0.01970, 0.02657)
+    # and IIV on CL = sqrt(0.01969) ~ 14.1%, matching Table 4.
+    etalcl + etalvc ~ c(log(1 + 0.141^2), log(1 + 0.141^2), log(1 + 0.141^2) + log(1 + 0.083^2))
     # Schoemaker 1996 Table 4: CV(CL) = 14.1%, CV(t1/2E) = 8.3%
 
     # Absorption-rate IIV: Schoemaker 1996 Table 4 reports CV(t1/2A) = 0.0%
@@ -161,8 +161,8 @@ Schoemaker_1996_dalteparin <- function() {
 
     etalfdepot     ~ 0.1143
     # Schoemaker 1996 Table 4: CV(F) = 34.8% -> log(1 + 0.348^2) = 0.1143
-    etalrbase      ~ 0.02719
-    # Schoemaker 1996 Table 4: CV(Base) = 16.6% -> log(1 + 0.166^2) = 0.02719
+    etalrbase      ~ log(1 + 0.166^2)
+    # Schoemaker 1996 Table 4: CV(Base) = 16.6% -> log(1 + 0.166^2) = 0.02718
     etalrbase_APTT ~ 0.01117
     # Schoemaker 1996 Table 4: CV(APTT0) = 10.6% -> log(1 + 0.106^2) = 0.01117
     etalI10        ~ 0.03770

@@ -96,9 +96,9 @@ kDa (Aguiar 2021 Methods section 2.3).
 | Drug ODEs            | n/a, see model file | Figure 1 + Table 2 footnotes |
 | Target ODEs          | n/a, see model file | Figure 1 |
 | Indirect-response PD | dFC/dt = (FC0 * Kout / stim_baseline) * stim_fc - Kout * FC | Table 3 footnote a |
-| IIV CL               | omega^2 = log(0.18^2 + 1) = 0.03188 | Table 2 (18.0% CV) |
+| IIV CL               | omega^2 = log(0.18^2 + 1) = 0.03189 | Table 2 (18.0% CV) |
 | IIV Vc               | omega^2 = log(0.0979^2 + 1) = 0.00954 | Table 2 (9.79% CV) |
-| IIV Vp               | omega^2 = log(0.241^2 + 1) = 0.05645 | Table 2 (24.1% CV) |
+| IIV Vp               | omega^2 = log(0.241^2 + 1) = 0.05646 | Table 2 (24.1% CV) |
 | IIV logit(F)         | omega^2 = 0.173^2 = 0.02993 | Table 2 (SD = 0.173 on logit scale) |
 | IIV Ksyn             | omega^2 = log(0.992^2 + 1) = 0.68515 | Table 2 (99.2% CV) |
 | IIV FC0              | omega^2 = log(0.99^2 + 1) = 0.68315 | Table 3 (99.0% CV) |

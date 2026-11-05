@@ -58,7 +58,7 @@ review.
 | `lcl` (CL/CLCR ratio)           | 1.08              | Table 4, row "theta_1" (%est. err. 2.12%); abstract                |
 | `lvc` (V/TBW ratio)             | 0.98 L/kg         | Table 4, row "theta_2" (%est. err. 7.43%); abstract                |
 | `etalcl` (28.16% CV on CL)      | 0.07631 (var)     | Table 4, row "omega_CL"                                            |
-| `etalvc` (37.15% CV on V)       | 0.12930 (var)     | Table 4, row "omega_V"                                             |
+| `etalvc` (37.15% CV on V)       | 0.12928 (var)     | Table 4, row "omega_V"                                             |
 | Off-diagonal cov(etalcl,etalvc) | 0.02296           | Table 4, row "omega_CL/V" = 23.12% (interpreted as correlation rho) |
 | `addSd` (additive residual)     | 3.52 mg/L         | Table 4, row "sigma" (%est. err. 15.12%)                           |
 | 1-cmt IV structural             | n/a               | Results paragraph 2; Methods (ADVAN1-TRANS2)                       |
@@ -79,7 +79,7 @@ internal log scale is `omega^2 = log(CV^2 + 1)`:
 The CL-V correlation is reported in Table 4 as `omega_CL/V = 23.12%`. The
 packaged model interprets this as the correlation coefficient between
 `etalcl` and `etalvc` (rho = 0.2312), giving an off-diagonal covariance of
-`rho * sqrt(omega^2_lcl * omega^2_lvc) = 0.2312 * sqrt(0.07631 * 0.12930) =
+`rho * sqrt(omega^2_lcl * omega^2_lvc) = 0.2312 * sqrt(0.07631 * 0.12928) =
 0.02296`. The alternative reading (23.12% as the square root of the
 covariance, which would give rho ~ 0.54) is the less common reporting
 convention in popPK and produces a noticeably stronger between-eta linkage;

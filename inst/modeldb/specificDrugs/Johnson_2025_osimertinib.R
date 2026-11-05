@@ -187,11 +187,11 @@ Johnson_2025_osimertinib <- function() {
     # variation)", so each tabulated percentage is a coefficient of
     # variation, not a log-scale SD. ini() takes log-scale variances, so
     # each entry below is omega^2 = log(1 + CV^2):
-    #   CLparent/F      44.9% -> log(1 + 0.449^2) = 0.183656  (omega 0.4286)
-    #   CLmetabolite/F  49.7% -> log(1 + 0.497^2) = 0.220741  (omega 0.4698)
-    #   Vparent/F       90.9% -> log(1 + 0.909^2) = 0.602425  (omega 0.7762)
-    #   Vmetabolite/F   78.2% -> log(1 + 0.782^2) = 0.477281  (omega 0.6909)
-    #   ka             109%   -> log(1 + 1.09^2)  = 0.783073  (omega 0.8849)
+    #   CLparent/F      44.9% -> log(1 + 0.449^2) = 0.183655  (omega 0.4286)
+    #   CLmetabolite/F  49.7% -> log(1 + 0.497^2) = 0.220748  (omega 0.4698)
+    #   Vparent/F       90.9% -> log(1 + 0.909^2) = 0.602282  (omega 0.7762)
+    #   Vmetabolite/F   78.2% -> log(1 + 0.782^2) = 0.477180  (omega 0.6909)
+    #   ka             109%   -> log(1 + 1.09^2)  = 0.783034  (omega 0.8849)
     # The CV reading (rather than reading the tabulated percentages
     # directly as log-scale SDs) is confirmed by the 90% prediction
     # intervals plotted in Johnson 2025 Figure 2: the typical-patient AUCss
@@ -201,10 +201,10 @@ Johnson_2025_osimertinib <- function() {
     #
     # The off-diagonal covariance is rho * omega_CLparent *
     # omega_CLmetabolite = 0.885 * 0.428551 * 0.469831 = 0.178195.
-    etalcl + etalcl_az5104 ~ c(0.183656, 0.178195, 0.220741)  # Johnson 2025 Table 2: Omega(CLparent/F) 44.9% CV, Omega(CLmetabolite/F) 49.7% CV, Correlation(CLparent/F, CLmetabolite/F) 0.885
-    etalvc        ~ 0.602425                                  # Johnson 2025 Table 2: Omega(Vparent/F) = 90.9% CV
-    etalvc_az5104 ~ 0.477281                                  # Johnson 2025 Table 2: Omega(Vmetabolite/F) = 78.2% CV
-    etalka        ~ 0.783073                                  # Johnson 2025 Table 2: Omega(ka) = 109% CV
+    etalcl + etalcl_az5104 ~ c(log(1 + 0.449^2), 0.178195, log(1 + 0.497^2))  # Johnson 2025 Table 2: Omega(CLparent/F) 44.9% CV, Omega(CLmetabolite/F) 49.7% CV, Correlation(CLparent/F, CLmetabolite/F) 0.885
+    etalvc        ~ log(1 + 0.909^2)  # Johnson 2025 Table 2: Omega(Vparent/F) = 90.9% CV
+    etalvc_az5104 ~ log(1 + 0.782^2)  # Johnson 2025 Table 2: Omega(Vmetabolite/F) = 78.2% CV
+    etalka        ~ log(1 + 1.09^2)  # Johnson 2025 Table 2: Omega(ka) = 109% CV
 
     # Residual error. Johnson 2025 Table 2 reports a separate combined
     # proportional-plus-additive error model for each analyte, with the

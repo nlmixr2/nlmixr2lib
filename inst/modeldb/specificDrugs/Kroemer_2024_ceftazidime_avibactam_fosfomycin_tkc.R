@@ -120,7 +120,7 @@ Kroemer_2024_ceftazidime_avibactam_fosfomycin_tkc <- function() {
     # --- Variability model (Table S3, "Variability model") ---
     # Table S3 footnote 4: %CV = sqrt(exp(omega^2) - 1) * 100%, i.e. omega^2 = log(CV^2 + 1).
     etalog10inoc_r ~ log(1 + 0.339^2)  # Table S3: inter-experimental variability on the inoculum of (R) = 33.9 %CV [27.8-38.9]
-    etakgr         ~ 0.049810   # Table S3: inter-experimental variability on the growth rate of (R) = 22.6 %CV [19.9-25.8]; log(0.226^2 + 1) = 0.049810
+    etakgr         ~ log(1 + 0.226^2)  # Table S3: inter-experimental variability on the growth rate of (R) = 22.6 %CV [19.9-25.8]
 
     addSd <- 1.30; label("Additive residual SD on the log10 bacterial count (log10 CFU/mL)") # Table S3: additive residual variability sigma = 1.30 [1.20-1.38]
   })

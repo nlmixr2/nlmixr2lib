@@ -241,7 +241,7 @@ Zingmark_2003_clomethiazole <- function() {
     # The block form is preferred here because nlmixr2's mu-
     # referencing parser rejects (lcl + etalcl_indiv + eta_shared)
     # ("theta + 2 etas") on a single line. Diagonal entries:
-    #   var_CL = log(1 + 0.43^2) = 0.169
+    #   var_CL = log(1 + 0.43^2) = 0.170
     #   var_V1 = log(1 + 0.48^2) = 0.207
     #   var_Q  = log(1 + 0.36^2) = 0.122
     #   var_V2 = log(1 + 0.49^2) = 0.215
@@ -250,7 +250,7 @@ Zingmark_2003_clomethiazole <- function() {
     # sqrt(0.169 * 0.207) = 0.0412.
     # ------------------------------------------------------------
     etalcl + etalvc + etalq + etalvp ~ c(
-      0.169,
+      log(1 + 0.43^2),
       0.0412, 0.207,
       0.0412, 0.0412, 0.122,
       0.0412, 0.0412, 0.0412, 0.215

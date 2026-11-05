@@ -86,7 +86,7 @@ Ozawa_2007_docetaxel <- function() {
 
     # PK IIV (Table 2). Reported as CV%; converted to log-eta variance via log(1 + CV^2).
     etalcl ~ log(1 + 0.399^2)  # Table 2 omega_CL = 39.9% CV
-    etalvc ~ 0.0673   # log(1 + 0.264^2) = 0.0673; Table 2 omega_V1 = 26.4% CV
+    etalvc ~ log(1 + 0.264^2)  # Table 2 omega_V1 = 26.4% CV
 
     # PK proportional residual error (Table 2 sigma = 26.8% CV; Methods text: "proportional model").
     propSd <- 0.268; label("Proportional residual SD on docetaxel concentration (fraction)")          # Table 2: sigma     = 26.8% CV

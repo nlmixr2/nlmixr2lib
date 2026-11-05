@@ -127,10 +127,10 @@ vanRongen_2016_acetaminophen <- function() {
     # volumes (Vc_sulf, Vp_sulf, Vc_cysmer); CL_unchanged is held fixed
     # and carries no IIV.
     etalvc         ~ log(1 + 0.144^2)  # -- Table 2 final IIV V_acetaminophen = 14.4% (RSE 32.1%)
-    etalcl_gluc    ~ 0.04642  # log(1 + 0.218^2) -- Table 2 final IIV CL_gluc = 21.8% (RSE 32.5%)
+    etalcl_gluc    ~ log(1 + 0.218^2)  # -- Table 2 final IIV CL_gluc = 21.8% (RSE 32.5%)
     etalcl_sulf    ~ log(1 + 0.243^2)  # -- Table 2 final IIV CL_sulph = 24.3% (RSE 30.1%)
-    etalcl_cysmer  ~ 0.05286  # log(1 + 0.233^2) -- Table 2 final IIV CL_CYP2E1 = 23.3% (RSE 37.4%)
-    etalvc_gluc    ~ 0.04938  # log(1 + 0.225^2) -- Table 2 final IIV V_glucuronide = 22.5% (RSE 29.5%)
+    etalcl_cysmer  ~ log(1 + 0.233^2)  # -- Table 2 final IIV CL_CYP2E1 = 23.3% (RSE 37.4%)
+    etalvc_gluc    ~ log(1 + 0.225^2)  # -- Table 2 final IIV V_glucuronide = 22.5% (RSE 29.5%)
     etalcle_gluc   ~ log(1 + 0.303^2)  # -- Table 2 final IIV CLE_gluc = 30.3% (RSE 23.9%)
     etalcle_cysmer ~ log(1 + 0.349^2)  # -- Table 2 final IIV CLE_cys&mercap = 34.9% (RSE 33.4%)
 

@@ -86,7 +86,7 @@ Janssen_2023_paclitaxel <- function() {
     # omega^2 = log(CV^2 + 1)
     etalvp2 ~ fixed(0.123141)      # Table 1: V3    IIV 36.2% CV -> log(0.362^2 + 1)
     etalvmax_el ~ fixed(log(1 + 0.27^2))  # Table 1: VM_EL IIV 27.0% CV
-    etalvmax_tr ~ fixed(0.068860)  # Table 1: VM_TR IIV 26.7% CV -> log(0.267^2 + 1)
+    etalvmax_tr ~ fixed(log(1 + 0.267^2))  # Table 1: VM_TR IIV 26.7% CV
     etalkm_tr ~ fixed(log(1 + 0.66^2))  # Table 1: KM_TR IIV 66.0% CV
     etalq2 ~ fixed(log(1 + 0.495^2))  # Table 1: Q2    IIV 49.5% CV
 

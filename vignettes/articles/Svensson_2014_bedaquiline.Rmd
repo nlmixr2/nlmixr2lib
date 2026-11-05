@@ -75,11 +75,11 @@ collects them in one place for review.
 | `e_wt_vc_vp`         | fixed(1)    | same Methods sentence |
 | `e_rif_cl`           | 4.78  | Table 2 "Factor change BDQ/M2 CL with RIF = 4.78" (RSE 9.1%) |
 | `e_rpt_cl`           | 3.96  | Table 2 "Factor change BDQ/M2 CL with RPT = 3.96" (RSE 5.0%) |
-| Block IIV CL, CL_M2  | var 0.07654, 0.09236; cor 0.538 | Table 2 BSV CL = 28.2% CV, BSV CLM2 = 31.1% CV, corr 53.8% |
+| Block IIV CL, CL_M2  | var 0.07652, 0.09232; cor 0.538 | Table 2 BSV CL = 28.2% CV, BSV CLM2 = 31.1% CV, corr 53.8% |
 | `etalvc` (BSV V)     | 0.16821 | Table 2 BSV V = 42.8% CV (RSE 14.6%) |
 | `etalq` (BSV Q1)     | 0.04356 | Table 2 BSV Q1 = 21.1% CV (RSE 13.2%) |
 | `etalvc_m2` (BSV VM2)| 0.12442 | Table 2 BSV VM2 = 36.4% CV (RSE 12.3%) |
-| `etalvp_m2` (BSV VP1M2) | 0.04330 | Table 2 BSV VP1M2 = 21.0% CV (RSE 22.4%) |
+| `etalvp_m2` (BSV VP1M2) | 0.04316 | Table 2 BSV VP1M2 = 21.0% CV (RSE 22.4%) |
 | `propSd` (BDQ residual) | 0.157 | Table 2 "Prop err BDQ = 15.7% CV" (RSE 4.4%) |
 | `propSd_m2` (M2 residual) | 0.122 | Table 2 "Prop err M2 = 12.2% CV" (RSE 5.0%) |
 | Transit-absorption chain via Savic 2007 input feeding depot at rate (NN+1)/MTT, then first-order ka into central | n/a | Methods "absorption through a dynamic transit compartment model" + structural inheritance from the previously developed bedaquiline + M2 model (Svensson 2014 reference 19) |

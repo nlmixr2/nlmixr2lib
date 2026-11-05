@@ -223,7 +223,7 @@ Hirt_2007_nelfinavir <- function() {
     etalcl          ~ 0.2476   # CV 53%  on CL_Nm_No/F    -> log(1 + 0.53^2)
     etalk_m8m_out   ~ log(1 + 0.74^2)  # CV 74%  on k_M8m_M8o
     etalcl_nc       ~ 0.1094   # CV 34%  on CL_Nm_Nc/F    -> log(1 + 0.34^2)
-    etalk_m8m_m8c   ~ 0.4560   # CV 76%  on k_M8m_M8c     -> log(1 + 0.76^2)
+    etalk_m8m_m8c   ~ log(1 + 0.76^2)  # CV 76%  on k_M8m_M8c
 
     # === Residual error (paper: additive model in linear concentration space) ===
     # Per Hirt 2007 Table 5 labels: 'FETUS' = amniotic-fluid (matrix surrounding the

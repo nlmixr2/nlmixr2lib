@@ -70,7 +70,7 @@ file; the table below collects them in one place.
 | IIV CL | 24% CV → ω² = log(1+0.24²) = 0.0560 | Table 3 (footnote e conversion) |
 | IIV Vc | 34% CV → ω² = log(1+0.34²) = 0.1094 | Table 3 |
 | IIV ka | 63% CV → ω² = log(1+0.63²) = 0.3342 | Table 3 |
-| IIV–IIV correlation CL:Vc | 39% → cov = 0.03053 | Table 3 |
+| IIV–IIV correlation CL:Vc | 39% → cov = 0.03052 | Table 3 |
 | IIV F (additive on logit) | variance 0.492 | Table 3 footnote f |
 | Residual error | proportional, 19% CV (σ² = 0.036) | Table 3 |
 | Dosing regimen (clinical) | 150 mg SC weeks 0, 4, then q12w | Sect. 2.3.1 and Fig. 2 caption |

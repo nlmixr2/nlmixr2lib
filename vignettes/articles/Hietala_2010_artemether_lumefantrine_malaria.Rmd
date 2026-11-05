@@ -77,7 +77,7 @@ Per-parameter source locations are recorded inline in each `inst/modeldb/specifi
 | `lcl <- log(0.077)` (CL/F, L/h/kg = 77 mL/h/kg)                  | 77 mL/h/kg | Table 2 (95% CI 52-105 mL/h/kg) |
 | `lvc <- log(8.9)` (V/F, L/kg)                                    | 8.9  | Table 2 (95% CI 6.8-11.7) |
 | `etalka ~ log(1 + 1.56^2)` (ka IIV)                                     | CV 156% | Table 2 (95% CI 126-190) -> omega^2 = log(1.56^2 + 1) |
-| `etalvc ~ 0.515660` (V/F IIV)                                    | CV 82% | Table 2 (95% CI 66-102) -> omega^2 = log(0.82^2 + 1) |
+| `etalvc ~ 0.514260` (V/F IIV)                                    | CV 82% | Table 2 (95% CI 66-102) -> omega^2 = log(0.82^2 + 1) |
 | `propSd <- 0.46`, `addSd <- 43` (LUM residual)                   | 46% prop, 43 nM add | Table 2 |
 | 1-cmt with absorption lag                                        | -- | Results 'PK of LUM was best described by a one-compartment model with a combined proportional and additive residual error. The introduction of an absorption lag time significantly improved the model (delta-OFV = -96).' |
 | Milk intake covariate not retained                               | -- | Results 'The inclusion of milk intake as a covariate ... did not result in an improvement of the model.' |

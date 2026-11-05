@@ -152,7 +152,7 @@ Csajka_2005_ephedrine_caffeine <- function() {
 
     etalvmax_neph ~ 0.01203    # Table 3 norephedrine Vmax/V_NE %CV = 11; omega^2 = log(0.11^2 + 1) = 0.01203
     etalkm        ~ log(1 + 0.43^2)  # Table 3 norephedrine Km %CV = 43
-    etalkel_neph  ~ 0.1840     # Table 3 norephedrine ke_NE %CV = 45; omega^2 = log(0.45^2 + 1) = 0.1840
+    etalkel_neph  ~ log(1 + 0.45^2)  # Table 3 norephedrine ke_NE %CV = 45
 
     # =========================================================
     # Residual error. Csajka 2005 Table 3 reports proportional

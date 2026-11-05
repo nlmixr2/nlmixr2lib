@@ -106,7 +106,7 @@ equation forms below were recovered verbatim with `pdftotext -layout`.
 | `e_cyp2d6_pmim_cl` (K_CL/F-CYP2D6) | -1.01 | Table IV |
 | `e_cyp2c9_rh_cl` (K_CL/F-CYP2C9) | -0.163 | Table IV (printed "-00.163"; see Errata) |
 | `e_wt_vc` (K_Vc/F-WT) | 0.831 | Table IV |
-| `etalvc`, `etalvp`, `etalq`, `etalcl`, `etalka`, `etaltlag` | 0.127, 0.234, 0.229, 0.125, 0.052, 0.002 | Table IV, `omega^2` rows |
+| `etalvc`, `etalvp`, `etalq`, `etalcl`, `etalka`, `etaltlag` | 0.127, 0.234, 0.229, 0.139, 0.052, 0.002 | Table IV, `omega^2` rows |
 | `propSd` | `sqrt(0.069)` = 0.2627 | Table IV, `sigma^2` row |
 | Indicator definitions (Dhi, Sex, CYPD, CYPC, PM) | n/a | Paragraph following equation 8, p. 542 |
 | Simulation demographics (Japanese vs Western) | n/a | Table I |

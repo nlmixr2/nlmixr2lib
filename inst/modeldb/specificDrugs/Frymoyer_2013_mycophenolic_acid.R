@@ -130,7 +130,7 @@ Frymoyer_2013_mycophenolic_acid <- function() {
     etalvc     ~ log(1 + 0.375^2)  # Table 3 IIV V_central      = 37.5 % CV
     etalq      ~ log(1 + 0.756^2)  # Table 3 IIV Q              = 75.6 % CV
     etalvp     ~ 0.8920 # Table 3 IIV V_peripheral   = 120  % CV -> log(1 + 1.20^2)
-    etalfdepot ~ 0.1820 # Table 3 IIV F              = 44.7 % CV -> log(1 + 0.447^2)
+    etalfdepot ~ log(1 + 0.447^2)  # Table 3 IIV F              = 44.7 % CV
 
     # Residual error -- proportional only (Methods: "Residual variability
     # was assumed to follow a proportional error model").

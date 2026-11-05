@@ -168,20 +168,20 @@ Ahlstrom_2010_nicotinicAcid_rat <- function() {
     # Only the parameters Tables 1/2 reported IIV for are encoded;
     # all others are population-typical (no eta).
     #   NiAc PK (Table 1):
-    #     Vmax2:  CV 98.2% -> log(1 + 0.982^2) = 0.6754
+    #     Vmax2:  CV 98.2% -> log(1 + 0.982^2) = 0.6751
     #     Cld:    CV 54.5% -> log(1 + 0.545^2) = 0.2601
-    #     Synt:   CV 15.8% -> log(1 + 0.158^2) = 0.02472
+    #     Synt:   CV 15.8% -> log(1 + 0.158^2) = 0.02466
     #   NEFA PD (Table 2):
     #     R0:     CV 29.0% -> log(1 + 0.290^2) = 0.08075
     #     kout:   CV 48.2% -> log(1 + 0.482^2) = 0.2089
-    #     IC50:   CV 101%  -> log(1 + 1.01^2)  = 0.7039
+    #     IC50:   CV 101%  -> log(1 + 1.01^2)  = 0.7031
     # --------------------------------------------------------------
-    etalvmax_lo ~ 0.6754   # Table 1 IIV Vmax2 CV 98.2% (RSE 24.8)
+    etalvmax_lo ~ log(1 + 0.982^2)  # Table 1 IIV Vmax2 CV 98.2% (RSE 24.8)
     etalq       ~ log(1 + 0.545^2)  # Table 1 IIV Cld   CV 54.5% (RSE 88.6)
-    etalsynt    ~ 0.02472  # Table 1 IIV Synt  CV 15.8% (RSE 62.5)
+    etalsynt    ~ log(1 + 0.158^2)  # Table 1 IIV Synt  CV 15.8% (RSE 62.5)
     etalrbase      ~ log(1 + 0.29^2)  # Table 2 IIV R0    CV 29.0% (RSE 43.1)
     etalkout    ~ 0.2089   # Table 2 IIV kout  CV 48.2% (RSE 35.6)
-    etalic50    ~ 0.7039   # Table 2 IIV IC50  CV 101%  (RSE 46.1)
+    etalic50    ~ log(1 + 1.01^2)  # Table 2 IIV IC50  CV 101%  (RSE 46.1)
 
     # --------------------------------------------------------------
     # Residual error.

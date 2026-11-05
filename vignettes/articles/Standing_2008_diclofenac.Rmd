@@ -71,7 +71,7 @@ below for review:
 | `lcl` (CL/F per 70 kg)                         | log(53.98) = 3.989  | Table 2: CL/F = 53.98 L/h/70 kg (RSE 4.8%) |
 | `e_wt_cl` (allometric exponent on CL)          | 0.75 (fixed)        | Methods page 848: CL = thetaCL * (W/70)^0.75 |
 | `e_wt_vc` (allometric exponent on Vc)          | 1.00 (fixed)        | Methods page 848: V  = thetaV  * (W/70)^1 |
-| `etalmtt1` (IIV MTT1, variance)                | 0.5142              | Table 2 IIV(MTT1)   = 82%  CV; log(1 + 0.82^2) |
+| `etalmtt1` (IIV MTT1, variance)                | 0.5143              | Table 2 IIV(MTT1)   = 82%  CV; log(1 + 0.82^2) |
 | `etaln1` (IIV N1, variance)                    | 0.7131              | Table 2 IIV(N1)     = 102% CV; log(1 + 1.02^2) |
 | `etalfdepot` (IIV F1, variance)                | 0.0560              | Table 2 IIV(F1)     = 24%  CV; log(1 + 0.24^2) |
 | `etalka1` (IIV t1/2A1, variance)               | 0.0917              | Table 2 IIV(t1/2A1) = 31%  CV; log(1 + 0.31^2) (equivalent on log(ka1)) |

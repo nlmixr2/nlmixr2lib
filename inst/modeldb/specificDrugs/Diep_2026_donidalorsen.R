@@ -128,11 +128,11 @@ Diep_2026_donidalorsen <- function() {
     #   cov(i,j) = rho_ij * sigma_i * sigma_j
     # BSV%CV values from Table 1: CL = 19.6%, Vc = 59.0%, Q = 10.2%, Vp = 42.9%, ka = 42.8%.
     # Variances (omega^2):
-    #   etalcl: log(1 + 0.196^2) = 0.037708
-    #   etalvc: log(1 + 0.590^2) = 0.298499
+    #   etalcl: log(1 + 0.196^2) = 0.037696
+    #   etalvc: log(1 + 0.590^2) = 0.298696
     #   etalq:  log(1 + 0.102^2) = 0.010350
-    #   etalvp: log(1 + 0.429^2) = 0.168994
-    #   etalka: log(1 + 0.428^2) = 0.168258
+    #   etalvp: log(1 + 0.429^2) = 0.168933
+    #   etalka: log(1 + 0.428^2) = 0.168209
     # Standard deviations (sigma):
     #   sd_cl = 0.194186, sd_vc = 0.546351, sd_q = 0.101737, sd_vp = 0.411089, sd_ka = 0.410193
     # Correlations from Table 1 and resulting covariances:
@@ -149,15 +149,15 @@ Diep_2026_donidalorsen <- function() {
     # Block c(...) is the lower-triangle, row-major, of the 5x5 omega matrix
     # in the eta order (etalcl, etalvc, etalq, etalvp, etalka).
     etalcl + etalvc + etalq + etalvp + etalka ~ c(
-      0.037708,
-      0.079891, 0.298499,
+      log(1 + 0.196^2),
+      0.079891, log(1 + 0.590^2),
       0.013474, 0.041189, 0.010350,
-      0.034966, 0.126676, 0.038514, 0.168994,
-      0.030266, 0.161589, 0.018320, 0.051098, 0.168258
+      0.034966, 0.126676, 0.038514, log(1 + 0.429^2),
+      0.030266, 0.161589, 0.018320, 0.051098, log(1 + 0.428^2)
     )
 
     # PD: independent etas (Table 2; no off-diagonal omega block reported).
-    etalrbase   ~ 0.064920  # Diep 2026 Table 2 BSV%CV BL  = 25.9% -> log(0.259^2 + 1)
+    etalrbase   ~ log(1 + 0.259^2)  # Diep 2026 Table 2 BSV%CV BL  = 25.9%
     etalkout ~ log(1 + 0.366^2)  # Diep 2026 Table 2 BSV%CV kout = 36.6%
     etalic50 ~ log(1 + 0.831^2)  # Diep 2026 Table 2 BSV%CV IC50 = 83.1%
 

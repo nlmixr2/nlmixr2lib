@@ -61,7 +61,7 @@ each `ini()` entry of
 | Reference WT (12 kg) | n/a        | Zhao 2012 Results (cohort median used as the WT reference for the power model) |
 | `etalcl`             | 0.03884    | Zhao 2012 Table 3 (IIV CL/F = 19.9% CV; omega^2 = log(1 + 0.199^2)) |
 | `etalvp`             | 0.14980    | Zhao 2012 Table 3 (IIV V2/F = 40.2% CV; omega^2 = log(1 + 0.402^2)) |
-| `etalq`              | 0.09120    | Zhao 2012 Table 3 (IIV Q/F = 30.9% CV; omega^2 = log(1 + 0.309^2)) |
+| `etalq`              | 0.09119    | Zhao 2012 Table 3 (IIV Q/F = 30.9% CV; omega^2 = log(1 + 0.309^2)) |
 | `etaiov_cl_1`        | 0.04560    | Zhao 2012 Table 3 (IOV CL/F = 21.6% CV; omega^2 = log(1 + 0.216^2)); occasion-1 estimate |
 | `etaiov_cl_2`        | fix(0.04560) | Zhao 2012 Table 3 (IOV CL/F shared variance across occasions; NONMEM `$OMEGA BLOCK(1) SAME` translation) |
 | `propSd`             | 0.141      | Zhao 2012 Table 3 (residual proportional = 14.1%) |

@@ -54,7 +54,7 @@ Equations from Mazzocco 2015 page 731 (the boxed ODE block) and Figure 2 schemat
 | `etalq0`                       | `0.2711` (CV 55.8%)  | Table 2 CV column                                                              |
 | `etallambdap`                  | `0.3352` (CV 63.1%)  | Table 2 CV column                                                              |
 | `etalkpq`                      | `0.5045` (CV 81%)    | Table 2 CV column                                                              |
-| `etalkqpp`                     | `1.2876` (CV 162%)   | Table 2 CV column                                                              |
+| `etalkqpp`                     | `1.2877` (CV 162%)   | Table 2 CV column                                                              |
 | `etaldqp`                      | `0.5556` (CV 86.2%)  | Table 2 CV column                                                              |
 | `etalgamma`                    | `0.3857` (CV 68.6%)  | Table 2 CV column                                                              |
 | `etalres`                      | `0.4996` (CV 80.5%)  | Table 2 CV column                                                              |

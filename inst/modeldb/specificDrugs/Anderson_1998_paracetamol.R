@@ -134,7 +134,7 @@ Anderson_1998_paracetamol <- function() {
     etalcl  ~ 0.1996  # CV(CL)  = 47 %  -> omega^2 = log(1 + 0.47^2) = 0.1996 (Table 3)
     etalvc  ~ 0.2900  # CV(V)   = 58 %  -> omega^2 = log(1 + 0.58^2) = 0.2900 (Table 3)
     etalkeq ~ log(1 + 1.17^2)  # CV(teq) = 117 % (Table 3); same %CV applies to keq = ln(2)/teq because the transform is multiplicative
-    etalpc  ~ 0.006379 # CV(PC) = 8 %   -> omega^2 = log(1 + 0.08^2) = 0.006379 (Table 3)
+    etalpc  ~ log(1 + 0.08^2)  # CV(PC) = 8 % (Table 3)
 
     # Residual error. Anderson 1998 Methods (NONMEM paragraph) states:
     # "An additive term characterized the residual error." Table 3 reports

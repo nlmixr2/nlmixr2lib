@@ -129,7 +129,7 @@ Zou_2022_bedaquiline <- function() {
     # IIV -- Table 3 'Interindividual variability (%)', exponential model
     # (Methods Eq. 3). The table does not say whether the percentages are CVs
     # or 100 * sqrt(omega^2); read as CVs, omega^2 = log(1 + CV^2).
-    etalcl ~ 0.1395 # Table 3: eta CL/F = 38.7% -> log(1 + 0.387^2) = 0.1395
+    etalcl ~ log(1 + 0.387^2)  # Table 3: eta CL/F = 38.7%
     etalvc ~ 0.5290 # Table 3: eta Vc/F = 83.5% -> log(1 + 0.835^2) = 0.5290
 
     # Residual error -- Table 3 'Residual variability (%)', proportional model

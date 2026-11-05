@@ -92,10 +92,10 @@ Diao_2016_daclizumab_cd56bright <- function() {
 
     e_dose_50mg_f <- -0.32143; label("Relative change in F for 50 mg SC vs 100-300 mg SC (fraction)") # Othman 2014 Table 2
 
-    # Othman 2014 Table 2 (ka 58% CV, cl 27% CV, corr -0.72): ka -> omega^2 = log(1 + 0.58^2) = 0.29003;
-    # cl -> omega^2 = log(1 + 0.27^2) = 0.07038; cov = -0.72 * sqrt(0.29003 * 0.07038) = -0.10290.
-    etalka + etalcl ~ c(0.29003,
-                        -0.10290, 0.07038)
+    # Othman 2014 Table 2 (ka 58% CV, cl 27% CV, corr -0.72): ka -> omega^2 = log(1 + 0.58^2) = 0.28998;
+    # cl -> omega^2 = log(1 + 0.27^2) = 0.07037; cov = -0.72 * sqrt(0.28998 * 0.07037) = -0.10285.
+    etalka + etalcl ~ c(log(1 + 0.58^2),
+                        -0.72 * sqrt(log(1 + 0.58^2) * log(1 + 0.27^2)), log(1 + 0.27^2))
     etalvc ~ 0.09175  # Othman 2014 Table 2 (Vc 31% CV)
 
     propSd <- 0.22; label("Proportional residual error on daclizumab HYP serum concentration (fraction)") # Othman 2014 Table 2
@@ -119,9 +119,9 @@ Diao_2016_daclizumab_cd56bright <- function() {
 
     # IIV (Diao 2016 Table 4): Kin 97% CV, Smax 67% CV. EC50 has no IIV reported.
     # omega^2 = log(1 + CV^2)
-    # Kin  CV 97% -> omega^2 = log(1 + 0.97^2) = 0.66022
+    # Kin  CV 97% -> omega^2 = log(1 + 0.97^2) = 0.66315
     # Smax CV 67% -> omega^2 = log(1 + 0.67^2) = 0.37080
-    etalcd56Kin  ~ 0.66022    # Diao 2016 Table 4 (Kin IIV 97% CV)
+    etalcd56Kin  ~ log(1 + 0.97^2)  # Diao 2016 Table 4 (Kin IIV 97% CV)
     etalcd56Smax ~ log(1 + 0.67^2)  # Diao 2016 Table 4 (Smax IIV 67% CV)
 
     # Residual error: proportional on CD56 bright NK %, 29.1%.

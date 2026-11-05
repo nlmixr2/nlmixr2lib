@@ -134,7 +134,7 @@ Duong_2017_AT9283 <- function() {
     # IIV; the missing off-diagonals are documented in the vignette's
     # Assumptions and deviations section.
     etalcl ~ log(1 + 0.429^2)  # Duong 2017 Table 3 final model: IIV CL = 42.9% (RSE 9%; bootstrap median 43.1, 95% CI 36.2-49.6)
-    etalvc ~ 0.08510   # Duong 2017 Table 3 final model: IIV Vc = 29.8% (RSE 17%; bootstrap median 30.5, 95% CI 22.0-40.8); log(1 + 0.298^2) = 0.08510
+    etalvc ~ log(1 + 0.298^2)  # Duong 2017 Table 3 final model: IIV Vc = 29.8% (RSE 17%; bootstrap median 30.5, 95% CI 22.0-40.8)
     etalq  ~ log(1 + 0.77^2)  # Duong 2017 Table 3 final model: IIV Q  = 77.0% (RSE 18%; bootstrap median 74.1, 95% CI 44.5-98.7)
     etalvp ~ log(1 + 0.389^2)  # Duong 2017 Table 3 final model: IIV Vp = 38.9% (RSE 13%; bootstrap median 38.6, 95% CI 30.4-47.7)
 

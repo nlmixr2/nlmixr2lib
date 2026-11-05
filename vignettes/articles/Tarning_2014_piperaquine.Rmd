@@ -53,7 +53,7 @@ Every parameter and equation traces back to the Tarning 2014 publication; the fu
 | `e_wt_vc = fixed(1.00)` (allometric on V)                | 1.00 (fixed) | Methods page 2053: 'and 1 for volume parameters' |
 | `e_age_vp  = 0.0410`  (Age effect on Vp1, /year)         | 4.10%/y  | Table 2 'Age effect on Vp1 (%)' = 4.10 (RSE 18.1%; 95% CI 2.38-5.32) |
 | `e_doseocc_f = 0.253` (Dose-occasion effect on F)        | 25.3%/dose | Table 2 'Dose effect on F (%)' = 25.3 (RSE 34.4%; 95% CI 9.82-53.2) |
-| `etalcl     ~ 0.057846` (var, log-scale)                 | CV 24.4% (IIV) | Table 2 IIV CL (RSE 26.0%); variance = log(0.244^2 + 1) |
+| `etalcl     ~ 0.057831` (var, log-scale)                 | CV 24.4% (IIV) | Table 2 IIV CL (RSE 26.0%); variance = log(0.244^2 + 1) |
 | `etalvc     ~ log(1 + 0.516^2)` (var, log-scale)                 | CV 51.6% (IIV) | Table 2 IIV Vc (RSE 32.3%); variance = log(0.516^2 + 1) |
 | `etalvp     ~ log(1 + 0.456^2)` (var, log-scale)                 | CV 45.6% (IIV) | Table 2 IIV Vp1 (RSE 48.8%); variance = log(0.456^2 + 1) |
 | `etalq2     ~ 0.064375` (var, log-scale)                 | CV 25.8% (IIV) | Table 2 IIV Q2 (RSE 48.2%); variance = log(0.258^2 + 1) |

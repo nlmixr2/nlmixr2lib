@@ -59,7 +59,7 @@ Smuszkiewicz_2017_dexmedetomidine <- function() {
     etalvc ~ 0.9312  # Table 2 omega^2_VC = 124 %CV -> log(1 + 1.24^2)  = 0.9312
     etalcl ~ 0.3361  # Table 2 omega^2_CL = 63.2 %CV -> log(1 + 0.632^2) = 0.3361
     etalvp ~ log(1 + 0.89^2)  # Table 2 omega^2_VT = 89.0 %CV
-    etalq  ~ 0.5034  # Table 2 omega^2_Q  = 80.9 %CV -> log(1 + 0.809^2) = 0.5034
+    etalq  ~ log(1 + 0.809^2)  # Table 2 omega^2_Q  = 80.9 %CV
 
     # Residual error: proportional only. Methods: "the additive or combined
     # additive and proportional error models did not lead to model

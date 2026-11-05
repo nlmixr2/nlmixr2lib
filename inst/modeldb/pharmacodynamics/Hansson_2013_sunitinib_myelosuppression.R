@@ -156,16 +156,16 @@ Hansson_2013_sunitinib_myelosuppression <- function() {
     # ------------------------------------------------------------------
     # Inter-individual variability. Table 2 reports IIV as CV%; conversion
     # to log-normal omega^2 = log((CV/100)^2 + 1).
-    # ANC0 IIV = 42%  -> omega2 = log(0.42^2 + 1) = 0.1633
+    # ANC0 IIV = 42%  -> omega2 = log(0.42^2 + 1) = 0.1625
     # MTT  IIV = 17%  -> omega2 = log(0.17^2 + 1) = 0.02852
-    # Emax IIV = 13%  -> omega2 = log(0.13^2 + 1) = 0.01678
+    # Emax IIV = 13%  -> omega2 = log(0.13^2 + 1) = 0.01676
     # EC50 IIV = 46%  -> omega2 = log(0.46^2 + 1) = 0.1929
     # ANC0 and Emax are reported as correlated 90% (Results section).
     # cov(ANC0, Emax) = corr * sqrt(var_ANC0 * var_Emax)
-    #                 = 0.90 * sqrt(0.1633 * 0.01678) = 0.04707
+    #                 = 0.90 * sqrt(0.1633 * 0.01678) = 0.04711
     # ------------------------------------------------------------------
-    etalanc0 + etalanc_emax ~ c(0.1633,
-                                0.04707, 0.01678) # Table 2 ANC0 CV=42%, ANC Emax CV=13%, corr=0.90
+    etalanc0 + etalanc_emax ~ c(log(1 + 0.42^2),
+                                0.90 * sqrt(log(1 + 0.42^2) * log(1 + 0.13^2)), log(1 + 0.13^2)) # Table 2 ANC0 CV=42%, ANC Emax CV=13%, corr=0.90
     etalmtt       ~ 0.02852  # Table 2 MTT CV=17%
     etalanc_ec50  ~ 0.1929   # Table 2 ANC EC50 CV=46%
 

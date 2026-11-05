@@ -55,7 +55,7 @@ Dickinson_2009_atazanavir <- function() {
     # Inter-individual variability (exponential model on CL/F, V/F, ka).
     # Paper reports IIV (%) as CV; convert to log-normal variance via omega^2 = log(1 + CV^2).
     # Lag-time IIV was not significant (delta-OFV -0.8) and was not included in the final model.
-    etalcl ~ 0.0807  # log(1 + 0.29^2) = 0.0807; CV = 29% per Table 2 final (RSE 59%)
+    etalcl ~ log(1 + 0.29^2)  # CV = 29% per Table 2 final (RSE 59%)
     etalvc ~ log(1 + 0.48^2)  # CV = 48% per Table 2 final (RSE 37%)
     etalka ~ log(1 + 1.54^2)  # CV = 154% per Table 2 final (RSE 51%)
 

@@ -155,7 +155,7 @@ Blesch_2003_capecitabine <- function() {
     etaltlag     ~ 12.41    # Blesch 2003 Table 1: ISV TLAG 49,498% CV -> log(1 + 494.98^2); effectively unidentified
     etalvc_dfur  ~ fixed(0.08618)  # Blesch 2003 Table 1: ISV V1 30% CV -> log(1 + 0.30^2)
     etalcl_dfur  ~ log(1 + 0.24^2)  # Blesch 2003 Table 1: ISV CL1 24% CV
-    etalcl_5fu   ~ 0.10336  # Blesch 2003 Table 1: ISV CL2 33% CV -> log(1 + 0.33^2)
+    etalcl_5fu   ~ log(1 + 0.33^2)  # Blesch 2003 Table 1: ISV CL2 33% CV
     etalvc_fbal  ~ log(1 + 0.26^2)  # Blesch 2003 Table 1: ISV V3 26% CV
     etalcl_fbal  ~ log(1 + 0.32^2)  # Blesch 2003 Table 1: ISV CL3 32% CV
 

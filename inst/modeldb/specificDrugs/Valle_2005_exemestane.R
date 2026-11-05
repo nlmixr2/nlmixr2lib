@@ -107,7 +107,7 @@ Valle_2005_exemestane <- function() {
     etalkel   ~ 0.01203  # log(1 + 0.11^2); Valle 2005 Results: k CV 11%
     etalrbase ~ log(1 + 0.56^2)  # Valle 2005 Table 4: Baseline CV 56% (RSE 19%)
     etalkout  ~ log(1 + 0.41^2)  # Valle 2005 Table 4: ko CV 41% (RSE 47%)
-    etalic50  ~ 0.19960  # log(1 + 0.47^2); Valle 2005 Table 4: C50 CV 47% (RSE 32%)
+    etalic50  ~ log(1 + 0.47^2)  # Valle 2005 Table 4: C50 CV 47% (RSE 32%)
 
     # ------------------ Residual error -------------------------------------------
     # Exemestane: combined error model with proportional 4% estimated and

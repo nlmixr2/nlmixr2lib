@@ -76,7 +76,7 @@ Panjasawatwong_2020_ethambutol <- function() {
     etalfdepot ~ log(1 + 0.201^2)  # Table 5 IIV F = 20.1% CV
     etalvc ~ 0.232001 # Table 5 IIV Vc/F = 51.1% CV; log(1 + 0.511^2) = 0.232001
     etalmtt ~ 0.033296 # Table 5 IIV MTT = 18.4% CV; log(1 + 0.184^2) = 0.033296
-    etalvp ~ 0.656160 # Table 5 IIV Vp/F = 96.3% CV; log(1 + 0.963^2) = 0.656160
+    etalvp ~ log(1 + 0.963^2)  # Table 5 IIV Vp/F = 96.3% CV
 
     # Residual error: additive on log-transformed concentrations. Table 5
     # footnote a gives sigma as the VARIANCE; SD = sqrt(variance).

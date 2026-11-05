@@ -208,12 +208,12 @@ Bienczak_2016_efavirenz <- function() {
     #   - MTT:   only BOV 78.0% reported -> folded as BSV-equivalent
     #   - ka:    only BOV 57.7% reported -> folded as BSV-equivalent
     # =========================================================================
-    etalcl     ~ 0.12779
-    # Bienczak 2016 Table 2 BSV CL/F = 36.9%; omega^2 = log(1 + 0.369^2) = 0.12779
-    etalfdepot ~ 0.16415
-    # Bienczak 2016 Table 2 BSV BIO = 42.2%; omega^2 = log(1 + 0.422^2) = 0.16415
-    etalmtt    ~ 0.47521
-    # Bienczak 2016 Table 2 BOV MTT = 78.0% folded as BSV-equivalent; omega^2 = log(1 + 0.780^2) = 0.47521
+    etalcl     ~ log(1 + 0.369^2)
+    # Bienczak 2016 Table 2 BSV CL/F = 36.9%; omega^2 = log(1 + 0.369^2) = 0.12766
+    etalfdepot ~ log(1 + 0.422^2)
+    # Bienczak 2016 Table 2 BSV BIO = 42.2%; omega^2 = log(1 + 0.422^2) = 0.16389
+    etalmtt    ~ log(1 + 0.780^2)
+    # Bienczak 2016 Table 2 BOV MTT = 78.0% folded as BSV-equivalent; omega^2 = log(1 + 0.780^2) = 0.47524
     etalka     ~ 0.28738
     # Bienczak 2016 Table 2 BOV Ka = 57.7% folded as BSV-equivalent; omega^2 = log(1 + 0.577^2) = 0.28738
 

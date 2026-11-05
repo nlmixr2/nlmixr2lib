@@ -104,7 +104,7 @@ collects them for review.
 | `etalcl + etalvc` BLOCK(2)                                                                  | var_CL = 0.0809, cov = 0.0342, var_Vc = 0.0387 | c(0.0809, 0.0342, 0.0387) | Table 1 + Text S1 |
 | `etalbase`                                                                                  | omega^2 = 0.197            | 0.197                           | Table 1 |
 | `etalkdeg`                                                                                  | omega^2 = 0.103            | 0.103                           | Table 1 |
-| `etalclint`                                                                                 | omega^2 = 0.135            | 0.135                           | Table 1 |
+| `etalclint`                                                                                 | omega^2 = 0.136            | 0.136                           | Table 1 |
 | `propSd` (proportional residual on serum MTPS9579A)                                         | 0.103                      | 0.103                           | Table 1 |
 | `addSd` (additive residual on serum MTPS9579A; thetarized with SIGMA = 1)                    | 2.72 nM (NONMEM units)     | 2.72 * 155 / 1000 = 0.4216 ug/mL | Table 1 (unit-converted) |
 | `propSd_TotalSerumTryptase`                                                                 | 0.245                      | 0.245                           | Table 1 |

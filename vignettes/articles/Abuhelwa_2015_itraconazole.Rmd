@@ -77,7 +77,7 @@ collects them in one place for review.
 | Michaelis-Menten K_m | 1.64 ng/mL | Table 4 row 'K_m (ng/ml) = 1.64' |
 | BSV CL/F (22.1 %CV) | omega^2 = 0.04769 | Table 3 BSV row |
 | BSV V2/F (30.8 %CV) | omega^2 = 0.09063 | Table 3 BSV row |
-| BSV KTR (44.8 %CV) | omega^2 = 0.18120 | Table 3 BSV row |
+| BSV KTR (44.8 %CV) | omega^2 = 0.18291 | Table 3 BSV row |
 | FVAR (56.4 %CV; common variability on F) | omega^2 = 0.27619 | Table 3 row 'FVAR' |
 | BSV CL_m / F_m (27.9 %CV) | omega^2 = 0.07496 | Table 4 BSV row |
 | Parent residual error (single-dose fasted) | propSd = 0.293, addSd = 0.168 ng/mL | Table 3 rows 'Proportional/Additive error-fasted' |

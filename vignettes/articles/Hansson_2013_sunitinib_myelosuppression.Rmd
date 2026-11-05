@@ -76,7 +76,7 @@ Hansson 2013a / DDMODEL00000197 indirect-response covariates
 | `lanc_emax = log(0.520)` | Hansson 2013 Table 2 row 'ANC Emax' = 0.520 (RSE 9.1%) |
 | `lanc_ec50 = log(0.552)` | Hansson 2013 Table 2 row 'ANC EC50' = 0.552 (RSE 17%) |
 | `gamma = 0.362` | Hansson 2013 Table 2 row 'gamma' = 0.362 (RSE 7.4%) |
-| `etalanc0 + etalanc_emax ~ c(0.1633, 0.04707, 0.01678)` | Hansson 2013 Table 2 IIV CV% (ANC0 = 42%, ANC Emax = 13%), Results section: 'a correlation between ANC0 and Emax of 90%' |
+| `etalanc0 + etalanc_emax ~ c(0.1625, 0.04696, 0.01676)` | Hansson 2013 Table 2 IIV CV% (ANC0 = 42%, ANC Emax = 13%), Results section: 'a correlation between ANC0 and Emax of 90%' |
 | `etalmtt ~ 0.02852` | Hansson 2013 Table 2 IIV CV% MTT = 17% |
 | `etalanc_ec50 ~ 0.1929` | Hansson 2013 Table 2 IIV CV% ANC EC50 = 46% |
 | `addSd_anc = 0.406` | Hansson 2013 Table 2 'Residual error' = 0.406 on the Box-Cox-transformed scale |

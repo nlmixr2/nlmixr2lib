@@ -197,7 +197,7 @@ Wu_2024_gfr_maturation <- function() {
     # ---- Inter-individual variability (Wu 2024 Table II) ----
     # CV% to omega^2 conversion: omega^2 = log(1 + CV^2).
     etalgfrbirth ~ log(1 + 0.311^2)  # CV 31.1 % (Wu 2024 Table II, RSE 16 %, shrinkage 57 %)
-    etalgfrmax   ~ 0.02850  # CV 17.0 % -> omega^2 = log(1 + 0.17^2)  = 0.02850 (Wu 2024 Table II, RSE 10 %, shrinkage 47 %)
+    etalgfrmax   ~ log(1 + 0.17^2)  # CV 17.0 % (Wu 2024 Table II, RSE 10 %, shrinkage 47 %)
     etalpna50    ~ log(1 + 0.559^2)  # CV 55.9 % (Wu 2024 Table II, RSE 43 %, shrinkage 57 %)
     etalhill     ~ log(1 + 0.355^2)  # CV 35.5 % (Wu 2024 Table II, RSE 20 %, shrinkage 55 %)
 

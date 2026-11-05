@@ -173,7 +173,7 @@ Zhou_2025_brentuximab <- function() {
     # stream estimates a 3x3 OMEGA BLOCK on ADC CL/Q2/V3 but only the
     # diagonal CV% is reported in Table S1 — see the vignette's Assumptions
     # and deviations section).
-    etalcl  ~ 0.21        # Zhou 2025 Table S1: CL 48.4% CV; omega^2 = log(0.484^2 + 1) = 0.211
+    etalcl  ~ log(1 + 0.484^2)  # Zhou 2025 Table S1: CL 48.4% CV
     etalq   ~ log(1 + 0.65^2)  # Zhou 2025 Table S1: Q2 65.0% CV
     etalvp2 ~ 0.31        # Zhou 2025 Table S1: V3 60.3% CV; omega^2 = log(0.603^2 + 1) = 0.310
 

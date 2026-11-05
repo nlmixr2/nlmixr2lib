@@ -84,8 +84,8 @@ place for review.
 | `t1/2` | 130 min | `lvc = log(6.170 L)` (derived from `CL` and `t1/2`) | Table 3 |
 | `CL` | 32.9 mL/min | `lcl = log(1.974 L/h)` | Table 3 |
 | `Base` | 0.0254 IU/mL | `lrbase = log(0.0254)` | Table 3 |
-| CV(t1/2) | 8.6% | `etalvc` block: 0.02992 (paired with `etalcl`) | Table 3 |
-| CV(CL) | 15.1% | `etalcl` block: 0.02256 | Table 3 |
+| CV(t1/2) | 8.6% | `etalvc` block: 0.02991 (paired with `etalcl`) | Table 3 |
+| CV(CL) | 15.1% | `etalcl` block: 0.02254 | Table 3 |
 | CV(Base) | 37.7% | `etalrbase ~ 0.1329` | Table 3 |
 | s.d. residual error | 0.0274 IU/mL | `addSd = 0.0274` | Table 3 footnote |
 
@@ -102,11 +102,11 @@ place for review.
 | `Base` | 0.0192 IU/mL | `lrbase = log(0.0192)` | Table 4 |
 | `APTT0` | 30.2 s | `lrbase_APTT = log(30.2)` | Table 4 |
 | `I10` | 0.0665 IU/mL | `lI10 = log(0.0665)` | Table 4 |
-| CV(t1/2E) | 8.3% | `etalvc` block: 0.02657 (paired with `etalcl`) | Table 4 |
+| CV(t1/2E) | 8.3% | `etalvc` block: 0.02655 (paired with `etalcl`) | Table 4 |
 | CV(t1/2A) | 0.0% | `ka` typical-value only (no `etalka`) | Table 4 |
-| CV(CL) | 14.1% | `etalcl` block: 0.01970 | Table 4 |
+| CV(CL) | 14.1% | `etalcl` block: 0.01969 | Table 4 |
 | CV(F) | 34.8% | `etalfdepot ~ 0.1143` | Table 4 |
-| CV(Base) | 16.6% | `etalrbase ~ 0.02719` | Table 4 |
+| CV(Base) | 16.6% | `etalrbase ~ log(1 + 0.166^2)` | Table 4 |
 | CV(APTT0) | 10.6% | `etalrbase_APTT ~ 0.01117` | Table 4 |
 | CV(I10) | 19.6% | `etalI10 ~ 0.03770` | Table 4 |
 | s.d. residual anti-Xa | 0.0207 IU/mL | `addSd = 0.0207` | Table 4 footnote |

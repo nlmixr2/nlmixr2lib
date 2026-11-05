@@ -70,8 +70,8 @@ The table below collects them in one place for review.
 | `lec50` (EC50)                          | log(29.8)        | Table 3 Final, EC50 = 29.8 ng/mL (273 nM) |
 | `le0` (baseline 3TUG)                   | log(18.2)        | Table 3 Final, E0 = 18.2 sec |
 | `etalogitemax` (logit-scale variance)   | 2.93             | Table 3 IIV, Fractional Emax variance = 2.93 |
-| `etalec50`                              | log(1 + 0.883^2) = 0.5760 | Table 3 IIV, EC50 = 88.3% CV |
-| `etale0`                                | log(1 + 0.713^2) = 0.4109 | Table 3 IIV, E0 = 71.3% CV |
+| `etalec50`                              | log(1 + 0.883^2) = 0.5764 | Table 3 IIV, EC50 = 88.3% CV |
+| `etale0`                                | log(1 + 0.713^2) = 0.4110 | Table 3 IIV, E0 = 71.3% CV |
 | `propSd_tug3` (3TUG proportional)       | 0.214            | Table 3 residual error, 21.4% |
 | Equation: 2-cmt parent + 1-cmt metabolite, Fm fixed to 1 | n/a | Methods, "Fm was fixed to 1 to obtain an identifiable model"; Figure 1 schematic |
 | Equation: WT allometric scaling          | n/a | Methods Eqs 3 and 4 with reference WT 82 kg |

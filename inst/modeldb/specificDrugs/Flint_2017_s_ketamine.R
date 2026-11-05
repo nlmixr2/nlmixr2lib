@@ -97,8 +97,8 @@ Flint_2017_s_ketamine <- function() {
     # Clsnk 104%, correlation r = 0.506. The log-scale variances follow the
     # log-normal-from-CV relationship omega^2 = log(CV^2 + 1). The
     # cross-covariance entry is r * sd_lcl * sd_lcl_snk where sd_X = sqrt(omega^2_X).
-    #   omega^2_lcl     = log(0.402^2 + 1) = 0.14965
-    #   omega^2_lcl_snk = log(1.04^2  + 1) = 0.73326
+    #   omega^2_lcl     = log(0.402^2 + 1) = 0.14980
+    #   omega^2_lcl_snk = log(1.04^2  + 1) = 0.73314
     #   sd_lcl          = sqrt(0.14965)    = 0.38685
     #   sd_lcl_snk      = sqrt(0.73326)    = 0.85631
     #   cov             = 0.506 * 0.38685 * 0.85631 = 0.16762
@@ -106,7 +106,7 @@ Flint_2017_s_ketamine <- function() {
     # IIV retained in the final model (Results Section 3.1: "the data did not
     # contain enough information to estimate interpatient variability for the
     # other parameters").
-    etalcl + etalcl_snk ~ c(0.14965, 0.16762, 0.73326)  # Flint 2017 Table 3: CV(Clsk) = 40.2%, CV(Clsnk) = 104%, r = 0.506
+    etalcl + etalcl_snk ~ c(log(1 + 0.402^2), 0.16762, log(1 + 1.04^2))  # Flint 2017 Table 3: CV(Clsk) = 40.2%, CV(Clsnk) = 104%, r = 0.506
 
     # ---------------- Residual error (proportional, by output) ----------------
     # Flint 2017 Section 3.1 reports a proportional error model for both

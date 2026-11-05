@@ -51,7 +51,7 @@ Every parameter and equation traces back to the Hoglund 2012 publication; the fu
 | `lfdepot = fixed(log(1))` (F)                  | 1 (fixed) | Table 2 'F (%) = 100 fix' |
 | `e_wt_cl = fixed(0.75)` (allometric on CL/Q)   | 0.75 (fixed) | Methods page 4: 'allometric function on all clearance (power of 0.75)' |
 | `e_wt_vc = fixed(1.00)` (allometric on V)      | 1.00 (fixed) | Methods page 4: 'and volume parameters (power of 1)' |
-| `etalcl     ~ 0.049389` (var, log-scale)       | CV 22.5% (BSV) | Table 2 BSV CL (RSE 31.5%); variance = log(0.225^2 + 1) |
+| `etalcl     ~ 0.049385` (var, log-scale)       | CV 22.5% (BSV) | Table 2 BSV CL (RSE 31.5%); variance = log(0.225^2 + 1) |
 | `etalmtt    ~ 0.313762` (var, log-scale)       | CV 60.7% (BOV, treated as forward-sim IIV) | Table 2 BOV MTT (RSE 22.8%); variance = log(0.607^2 + 1) |
 | `etalfdepot ~ 0.113707` (var, log-scale)       | CV 34.7% (BSV) | Table 2 BSV F (RSE 59.2%); variance = log(0.347^2 + 1) |
 | `propSd = sqrt(0.0973)` ~= 0.312               | RUV = 0.0973 (variance, log-scale) | Table 2 RUV (RSE 5.90%; 95% CI 0.0753-0.120) |

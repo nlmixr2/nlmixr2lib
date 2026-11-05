@@ -215,16 +215,16 @@ Bijleveld_2016_gentamicin <- function() {
     # Inter-individual variability (Bijleveld 2016 Table 2 Final Model
     # column). Reported as %CV; for log-normal eta the variance on the
     # log scale is omega^2 = log(1 + CV^2).
-    #   IIV CL : 26.6% CV  -> log(1 + 0.266^2) = 0.06837
-    #   IIV Vc : 40.8% CV  -> log(1 + 0.408^2) = 0.15399
+    #   IIV CL : 26.6% CV  -> log(1 + 0.266^2) = 0.06836
+    #   IIV Vc : 40.8% CV  -> log(1 + 0.408^2) = 0.15398
     #   IIV Vp : 53.3% CV  -> log(1 + 0.533^2) = 0.25022
     # CL and Vc are correlated (r = 0.81, paper Results 'Pharmacokinetic
     # model building': 'Variability between CL and Vc was correlated
     # (r = 0.81)'); the lower-triangular covariance is
     #   cov(CL, Vc) = r * omega_CL * omega_Vc
-    #              = 0.81 * sqrt(0.06837) * sqrt(0.15399) = 0.08316.
-    etalcl + etalvc ~ c(0.06837,
-                        0.08316, 0.15399)  # Bijleveld 2016 Table 2 Final: IIV CL 26.6%, IIV Vc 40.8%, corr 0.81
+    #              = 0.81 * sqrt(0.06837) * sqrt(0.15399) = 0.08311.
+    etalcl + etalvc ~ c(log(1 + 0.266^2),
+                        0.81 * sqrt(log(1 + 0.266^2) * log(1 + 0.408^2)), log(1 + 0.408^2))  # Bijleveld 2016 Table 2 Final: IIV CL 26.6%, IIV Vc 40.8%, corr 0.81
     etalvp ~ 0.25022                       # Bijleveld 2016 Table 2 Final: IIV Vp 53.3%
 
     # Residual error. The paper log-transformed the observations and

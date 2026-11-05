@@ -61,7 +61,7 @@ Ahmed_2016_lorenzosOil <- function() {
       # omega^2_EC50 = log(1.713^2 + 1)                                        # Ahmed 2016 Table 2 BSV_EC50 171.3%
       1.36998
     )
-    etalemax ~ 0.003836         # omega^2_Emax = log(0.062^2 + 1)                                        # Ahmed 2016 Table 2 BSV_Emax 6.2%
+    etalemax ~ log(1 + 0.062^2)  # omega^2_Emax =                                         # Ahmed 2016 Table 2 BSV_Emax 6.2%
 
     # Residual error: proportional only (Results: "A proportional error model best described
     # the residual errors for these data. The combined error model did not provide any

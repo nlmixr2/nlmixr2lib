@@ -70,7 +70,7 @@ table collects them in one place for review.
 | `lcl` (log CL) | log(4.70 L/h) | Results (paragraph 1): pooled acute-phase CL = 4.70 +/- 2.89 L/h across 21 studies. |
 | `lvc` (log Vd per kg) | log(0.33 L/kg) | Results (paragraph 1): pooled acute-phase Vd = 0.33 +/- 0.20 L/kg across 21 studies. |
 | `etalcl` (IIV on CL, log-scale variance) | log((2.89/4.70)^2 + 1) = 0.32070 | Results (paragraph 1): pooled CL SD 2.89 L/h; log-normal omega^2 = log(CV^2 + 1) conversion for nlmixr2 encoding. |
-| `etalvc` (IIV on Vd, log-scale variance) | log((0.20/0.33)^2 + 1) = 0.31278 | Results (paragraph 1): pooled Vd SD 0.20 L/kg; log-normal omega^2 = log(CV^2 + 1) conversion. |
+| `etalvc` (IIV on Vd, log-scale variance) | log((0.20/0.33)^2 + 1) = 0.31288 | Results (paragraph 1): pooled Vd SD 0.20 L/kg; log-normal omega^2 = log(CV^2 + 1) conversion. |
 | `propSd` (proportional residual error) | fixed at 0 | Methods (no RUV; MCS is deterministic given sampled PK parameters). |
 | TBW distribution | Mean 70.8 kg, SD 19.9 kg, truncated at 40 kg | Methods (Monte Carlo Simulations): "total body weight (kg) was set at the range 40 to infinity in MCS analysis"; Results: "Total body weight (70.8 +/- 19.9 kg) was used as dosing weight". |
 | Dose range 5-10 mg/kg once daily | n/a | Methods (Monte Carlo Simulations): "various doses regimen ranging from 5-10 mg/kg once-daily gentamicin". |

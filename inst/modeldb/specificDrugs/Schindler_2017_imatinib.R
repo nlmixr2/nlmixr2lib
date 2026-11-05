@@ -307,9 +307,9 @@ Schindler_2017_imatinib <- function() {
 
     # --- MTD ---
     etalS0_mtd_pop1 ~ 0.1996         # Table 2 MTD S0 IIV pop1 = 47 % CV -> log(1 + 0.47^2)
-    etalS0_mtd_pop2 ~ 0.0807         # Table 2 MTD S0 IIV pop2 = 29 % CV -> log(1 + 0.29^2)
+    etalS0_mtd_pop2 ~ log(1 + 0.29^2)  # Table 2 MTD S0 IIV pop2 = 29 % CV
     etalKG_mtd      ~ log(1 + 1.7^2)  # Table 2 MTD KG IIV       = 170 % CV
-    etalKdrug_mtd   ~ 0.4655         # Table 2 MTD Kdrug,S IIV  = 77 % CV  -> log(1 + 0.77^2)
+    etalKdrug_mtd   ~ log(1 + 0.77^2)  # Table 2 MTD Kdrug,S IIV  = 77 % CV
 
     # --- Vactual ---
     etalS0_vact_pop1 ~ 1.0852        # Table 2 Vactual S0 IIV pop1 = 140 % CV -> log(1 + 1.40^2)

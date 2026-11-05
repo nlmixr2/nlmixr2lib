@@ -212,7 +212,7 @@ PerezRuixo_2020_esketamine <- function() {
     etalka_n    ~ log(1 + 0.615^2)  # Table 3 omega(ka_n) = 61.5 CV%
     etalka_sw   ~ 1.009             # Table 3 omega(ka_sw) = 132 CV%; omega^2 = log(1 + 1.32^2) = 1.009
     etalka_po   ~ 1.009             # Table 3 omega(ka_po) = 132 CV%; same value as ka_sw (Table 3 row gives identical 132 CV%, 9.80 RSE)
-    etalvc      ~ 0.0730            # Table 3 omega(Vc) = 27.5 CV%; omega^2 = log(1 + 0.275^2) = 0.0730
+    etalvc      ~ log(1 + 0.275^2)  # Table 3 omega(Vc) = 27.5 CV%
     etalvp      ~ 0.218             # Table 3 omega(Vp1) = 49.3 CV%; omega^2 = log(1 + 0.493^2) = 0.218
     etalqh      ~ 0.0524            # Table 3 omega(Qh) = 23.2 CV%; omega^2 = log(1 + 0.232^2) = 0.0524
     etalvh      ~ 0.113             # Table 3 omega(Vh) = 34.6 CV%; omega^2 = log(1 + 0.346^2) = 0.113

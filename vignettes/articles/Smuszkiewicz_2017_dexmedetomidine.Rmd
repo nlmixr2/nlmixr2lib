@@ -58,7 +58,7 @@ table below collects them in one place for review.
 | `etalvc`             | 0.9312         | Table 2 (omega^2_VC = 124 %CV; log(1 + 1.24^2))                |
 | `etalcl`             | 0.3361         | Table 2 (omega^2_CL = 63.2 %CV; log(1 + 0.632^2))              |
 | `etalvp`             | 0.5834         | Table 2 (omega^2_VT = 89.0 %CV; log(1 + 0.89^2))               |
-| `etalq`              | 0.5034         | Table 2 (omega^2_Q  = 80.9 %CV; log(1 + 0.809^2))              |
+| `etalq`              | 0.5035         | Table 2 (omega^2_Q  = 80.9 %CV; log(1 + 0.809^2))              |
 | `propSd`             | 0.24           | Table 2 (sigma^2 = 24 %CV)                                     |
 | Two-compartment ODE  | n/a            | PK model equations (Methods / PK model section)                |
 | IIV diagonal         | n/a            | Results: "no clear correlations between the eta estimates"     |

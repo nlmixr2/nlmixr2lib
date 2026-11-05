@@ -69,8 +69,8 @@ Hennig_2008_tobramycin <- function() {
     # Inter-individual variability (full block on CL, Vc, Vper).
     # Conversion of CV% to log-scale variance: omega^2 = log(1 + CV^2).
     #   BSV CL  : 11.70% CV -> log(1 + 0.117^2)  = 0.013596
-    #   BSV Vc  : 11.66% CV -> log(1 + 0.1166^2) = 0.013505
-    #   BSV Vper: 41.95% CV -> log(1 + 0.4195^2) = 0.162130
+    #   BSV Vc  : 11.66% CV -> log(1 + 0.1166^2) = 0.013504
+    #   BSV Vper: 41.95% CV -> log(1 + 0.4195^2) = 0.162102
     # Covariances from reported correlations (R) and the omega standard
     # deviations omega_i = sqrt(omega_i^2):
     #   omega_CL = 0.11660, omega_Vc = 0.11621, omega_Vper = 0.40265
@@ -82,8 +82,8 @@ Hennig_2008_tobramycin <- function() {
     #   cov(CL, Vc),  var_Vc,
     #   cov(CL, Vper), cov(Vc, Vper), var_Vper
     etalcl + etalvc + etalvp ~ c(0.013596,
-                                 0.009891, 0.013505,
-                                 0.023000, 0.012632, 0.162130)  # Hennig 2008 Table 2 (BSV CL/Vc/Vper, Covariate model + correlations)
+                                 0.009891, log(1 + 0.1166^2),
+                                 0.023000, 0.012632, log(1 + 0.4195^2))  # Hennig 2008 Table 2 (BSV CL/Vc/Vper, Covariate model + correlations)
 
     # Residual error -- exponential model in NONMEM (additive on log-scale)
     # maps to proportional in nlmixr2 linear space; CV = 19.0%.

@@ -78,9 +78,9 @@ Barnett_2018_rifampicin <- function() {
     etaiov_ka_1  ~ log(1 + 0.492^2)  # Table 1, RIF IOV ka  = 49.2% CV
     etaiov_ka_2  ~ fix(log(1 + 0.492^2))  # same IOV variance across occasions
     etaiov_ka_3  ~ fix(log(1 + 0.492^2))
-    etaiov_vc_1  ~ 0.00434          # Table 1, RIF IOV V   = 6.6%  CV; log(1 + 0.066^2) = 0.00434
-    etaiov_vc_2  ~ fix(0.00434)
-    etaiov_vc_3  ~ fix(0.00434)
+    etaiov_vc_1  ~ log(1 + 0.066^2)  # Table 1, RIF IOV V   = 6.6%  CV
+    etaiov_vc_2  ~ fix(log(1 + 0.066^2))
+    etaiov_vc_3  ~ fix(log(1 + 0.066^2))
     etaiov_mtt_1 ~ log(1 + 0.476^2)  # Table 1, RIF IOV MTT = 47.6% CV
     etaiov_mtt_2 ~ fix(log(1 + 0.476^2))
     etaiov_mtt_3 ~ fix(log(1 + 0.476^2))

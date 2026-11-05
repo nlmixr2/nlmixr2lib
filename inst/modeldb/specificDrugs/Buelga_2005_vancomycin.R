@@ -62,17 +62,17 @@ Buelga_2005_vancomycin <- function() {
     # first-order method approximates the exponential error model as a proportional
     # error model. For log-normal eta with CV%, omega^2 = log(CV^2 + 1):
     #   etalcl: 28.16% CV -> omega^2 = log(0.2816^2 + 1) = log(1.07930) = 0.07631
-    #   etalvc: 37.15% CV -> omega^2 = log(0.3715^2 + 1) = log(1.13800) = 0.12930
+    #   etalvc: 37.15% CV -> omega^2 = log(0.3715^2 + 1) = log(1.13801) = 0.12928
     # Buelga 2005 Table 4 also reports the CL-V random-effect correlation as
     # 'omega CL/V = 23.12%', which is interpreted here as the correlation coefficient
     # between etalcl and etalvc (rho = 0.2312); the off-diagonal covariance is
     #   cov = rho * sqrt(omega^2_lcl * omega^2_lvc)
-    #       = 0.2312 * sqrt(0.07631 * 0.12930) = 0.2312 * 0.09931 = 0.02296
+    #       = 0.2312 * sqrt(0.07631 * 0.12928) = 0.2312 * 0.09933 = 0.02296
     # See vignette Assumptions and deviations for the discussion of this convention.
     # Block matrix order is var(etalcl), cov(etalcl, etalvc), var(etalvc).
     # Buelga 2005 Table 4: omega_CL = 28.16% CV; omega_V = 37.15% CV; omega_CL/V = 23.12% (correlation).
     etalcl + etalvc ~ c(0.07631,
-                        0.02296, 0.12930)
+                        0.2312 * sqrt(0.07631 * log(1 + 0.3715^2)), log(1 + 0.3715^2))
 
     # Additive residual error (Buelga 2005 Methods: 'C_ij = C'_ij + epsilon' with
     # zero-mean variance sigma^2; Table 4: sigma = 3.52 mg/L, %est. err. 15.12%).

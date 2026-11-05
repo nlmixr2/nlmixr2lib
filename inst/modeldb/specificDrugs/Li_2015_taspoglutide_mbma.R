@@ -204,17 +204,17 @@ Li_2015_taspoglutide_mbma <- function() {
     # ----- Between-trial variability (ITV); diagonal -----
     # FPG endpoint
     eta_study_pmax_f   ~ fixed(0.012244)  # Li 2015 Table 2; additive (0.298 * 0.371)^2; with structural
-    eta_study_lkp_f    ~ fixed(0.133593)  # Li 2015 Table 2; exponential, log(0.378^2 + 1); with structural
+    eta_study_lkp_f    ~ fixed(log(1 + 0.378^2))  # Li 2015 Table 2; exponential; with structural
     eta_study_dmax_f   ~ 0.351272         # Li 2015 Table 2; additive, (0.248 * 2.39)^2
     eta_study_ic50_f   ~ 1.887524         # Li 2015 Table 2; additive, (0.0543 * 25.3)^2
     eta_study_lkdrug_f ~ 0.015504         # Li 2015 Table 2; exponential, log(0.125^2 + 1)
 
     # HbA1c endpoint
     eta_study_pmax_hb   ~ fixed(0.001479)  # Li 2015 Table 3; additive (0.152 * 0.253)^2; with structural
-    eta_study_lkp_hb    ~ fixed(0.021365)  # Li 2015 Table 3; exponential, log(0.147^2 + 1); with structural
+    eta_study_lkp_hb    ~ fixed(log(1 + 0.147^2))  # Li 2015 Table 3; exponential; with structural
     eta_study_dmax_hb   ~ 0.022652         # Li 2015 Table 3; additive, (0.0865 * 1.74)^2
     eta_study_ic50_hb   ~ 0.235303         # Li 2015 Table 3; additive, (0.268 * 1.81)^2
-    eta_study_lkdrug_hb ~ 0.038841         # Li 2015 Table 3; exponential, log(0.199^2 + 1)
+    eta_study_lkdrug_hb ~ log(1 + 0.199^2)  # Li 2015 Table 3; exponential
 
     # ----- Residual error (Eq. 5 and 6; Tables 2 and 3) -----
     # Paper Eq. 5 (FPG): Y = F + b * F * eps, but Table 2 reports both b and

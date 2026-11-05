@@ -213,8 +213,8 @@ Valenzuela_2011_oxaliplatin <- function() {
     # parameterisation change. omega_Q2 is reported as '-' in Table II (no
     # IIV estimated on Q2).
     # ------------------------------------------------------------------
-    etalka + etalvd ~ c(0.14091, -0.030857, 0.030857)
-                                                                                              # omega_Qa=34.1% -> var(lqa)=log(1+0.341^2)=0.11005; omega_Va=17.7% -> var(lva)=log(1+0.177^2)=0.030857
+    etalka + etalvd ~ c(log(1 + 0.341^2) + log(1 + 0.177^2), -log(1 + 0.177^2), log(1 + 0.177^2))
+                                                                                              # omega_Qa=34.1% -> var(lqa)=log(1+0.341^2)=0.11000; omega_Va=17.7% -> var(lva)=log(1+0.177^2)=0.030848
     etalcl    ~ log(1 + 0.856^2)  # omega_Cl/F = 85.6 %
     etalvc    ~ log(1 + 0.579^2)  # omega_Vc/F = 57.9 %
     etalvp    ~ log(1 + 0.235^2)  # omega_Vp/F = 23.5 %

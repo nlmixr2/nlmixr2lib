@@ -233,7 +233,7 @@ PerezRuixo_2008_epoetinAlfa <- function() {
     # =================================================================
     etalret0 ~ log(1 + 0.198^2)  # Table II Model D, IIV(RET0) = 19.8%
     etaltr   ~ log(1 + 0.362^2)  # Table II Model D, IIV(TR)   = 36.2%
-    etaltp   ~ 0.0723  # log(0.274^2 + 1) = 0.0723; Table II Model D, IIV(Tp)   = 27.4%
+    etaltp   ~ log(1 + 0.274^2)  # Table II Model D, IIV(Tp)   = 27.4%
     etalsc50 ~ log(1 + 1.07^2)  # Table II Model D, IIV(SC50) = 107%
 
     # =================================================================

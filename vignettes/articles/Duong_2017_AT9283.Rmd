@@ -90,7 +90,7 @@ review.
 | `e_crcl_cl` (GFR power exponent on CL) | 0.453          | Table 3 final model, "GFR exponent"; Equation 6              |
 | `crcl_ref_cl` (CRCL normalisation)    | 100 mL/min     | Results, "normalized to a standard of 6 l h^-1 (100 ml min^-1)" |
 | `etalcl` (IIV CL = 42.9% CV)          | 0.16893        | Table 3 final model, "Interindividual variability (%): CL"   |
-| `etalvc` (IIV Vc = 29.8% CV)          | 0.08510        | Table 3 final model, "Interindividual variability (%): V_C"  |
+| `etalvc` (IIV Vc = 29.8% CV)          | 0.08508        | Table 3 final model, "Interindividual variability (%): V_C"  |
 | `etalq`  (IIV Q  = 77.0% CV)          | 0.46556        | Table 3 final model, "Interindividual variability (%): Q"    |
 | `etalvp` (IIV Vp = 38.9% CV)          | 0.14091        | Table 3 final model, "Interindividual variability (%): V_P"  |
 | `addSdAdult` (Adults additive)        | 0.166 ng/mL    | Table 3 final model, "Residual errors: Adults: Additive"     |

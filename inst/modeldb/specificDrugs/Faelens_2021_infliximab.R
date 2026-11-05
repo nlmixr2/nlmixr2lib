@@ -93,16 +93,16 @@ Faelens_2021_infliximab <- function() {
     # Inter-individual variability. Source has independent ETAs on KE and V
     # (no $OMEGA BLOCK between ETA(1) and ETA(2) in the NONMEM control stream).
     # Reparameterised to (CL, Vc) using log(CL) = log(KE) + log(V):
-    #   var(etalcl)         = var(ETA_KE) + var(ETA_V)        = 0.10577 + 0.05417 = 0.15994
-    #   var(etalvc)         = var(ETA_V)                       = 0.05417
-    #   cov(etalcl, etalvc) = var(ETA_V)                       = 0.05417
+    #   var(etalcl)         = var(ETA_KE) + var(ETA_V)        = 0.10577 + 0.05420 = 0.15996
+    #   var(etalvc)         = var(ETA_V)                       = 0.05420
+    #   cov(etalcl, etalvc) = var(ETA_V)                       = 0.05420
     # Source CV% values from supplement Table S1 (Adapted Model column):
-    #   KE: 33.4% CV -> omega^2 = log(0.334^2 + 1) = 0.10577
-    #   V : 23.6% CV -> omega^2 = log(0.236^2 + 1) = 0.05417
+    #   KE: 33.4% CV -> omega^2 = log(0.334^2 + 1) = 0.10576
+    #   V : 23.6% CV -> omega^2 = log(0.236^2 + 1) = 0.05420
     # The induced correlation between log(CL) and log(Vc) is
-    #   rho = cov / sqrt(var_cl * var_vc) = 0.05417 / sqrt(0.15994 * 0.05417) = 0.582.
-    etalcl + etalvc ~ c(0.15994,
-                        0.05417, 0.05417)   # Faelens 2021 supplement Table S1 IIV (33.4% CV on KE, 23.6% CV on V; reparameterized to CL, Vc)
+    #   rho = cov / sqrt(var_cl * var_vc) = 0.05420 / sqrt(0.15996 * 0.05420) = 0.582.
+    etalcl + etalvc ~ c(log(1 + 0.334^2) + log(1 + 0.236^2),
+                        log(1 + 0.236^2), log(1 + 0.236^2))   # Faelens 2021 supplement Table S1 IIV (33.4% CV on KE, 23.6% CV on V; reparameterized to CL, Vc)
 
     # Residual error (combined additive + proportional). The NONMEM $ERROR
     # block is Y = IPRED * (1 + ERR(1)) + ERR(2), which in nlmixr2 maps to

@@ -327,7 +327,7 @@ knitr::kable(
   already reported on the same parameter (CL/F: BOV 26.6% dropped; F:
   BOV 50.5% dropped) and folded in as a BSV-equivalent where only BOV
   is reported (MTT: BOV 78.0% -> BSV-equivalent omega^2 = log(1 + 0.780^2)
-  = 0.47521; ka: BOV 57.7% -> BSV-equivalent omega^2 = log(1 + 0.577^2)
+  = 0.47524; ka: BOV 57.7% -> BSV-equivalent omega^2 = log(1 + 0.577^2)
   = 0.28738).
 
 - **Sparse-data residual-error scaling dropped.** Bienczak 2016 retained

@@ -161,10 +161,10 @@ Thakkar_2017_amifampridine <- function() {
     # =====================================================================
     etalogitemax ~ 2.93
     # Table 3 Final: logit-scale variance for fractional Emax = 2.93 (RSE 71%; bootstrap 0.35 - 12.85)
-    etalec50     ~ 0.5760
-    # Table 3 Final: CV(EC50) = 88.3% -> var = log(1 + 0.883^2) = 0.5760
-    etale0       ~ 0.4109
-    # Table 3 Final: CV(E0) = 71.3% -> var = log(1 + 0.713^2) = 0.4109
+    etalec50     ~ log(1 + 0.883^2)
+    # Table 3 Final: CV(EC50) = 88.3% -> var = log(1 + 0.883^2) = 0.5764
+    etale0       ~ log(1 + 0.713^2)
+    # Table 3 Final: CV(E0) = 71.3% -> var = log(1 + 0.713^2) = 0.4110
 
     # =====================================================================
     # PD residual error - proportional on observed 3TUG (sec).

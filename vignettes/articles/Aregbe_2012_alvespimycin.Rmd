@@ -89,7 +89,7 @@ Per-parameter origin (recorded as in-file comments next to each
 | `etalcl`  (IIV CL)  | 0.2542 | Table 2: IIV CL = 53.8% (%SE 22.9); variance = log(0.538^2 + 1) |
 | `etalvc`  (IIV V1)  | 0.1034 | Table 2: IIV V1 = 33.0% (%SE 111.9); variance = log(0.330^2 + 1) |
 | `etalvp`  (IIV V2)  | 0.2288 | Table 2: IIV V2 = 50.7% (%SE 23.7); variance = log(0.507^2 + 1) |
-| `etalq2`  (IIV Q3)  | 0.4539 | Table 2: IIV Q3 = 75.8% (%SE 32.0); variance = log(0.758^2 + 1) |
+| `etalq2`  (IIV Q3)  | 0.4540 | Table 2: IIV Q3 = 75.8% (%SE 32.0); variance = log(0.758^2 + 1) |
 | `etalvp2` (IIV V3)  | 0.3754 | Table 2: IIV V3 = 67.5% (%SE 37.3); variance = log(0.675^2 + 1) |
 | `etaiov_q_1..5`   (BOV Q2) | 0.1010 | Table 2: BOV Q2 = 32.6% (%SE 37.2); variance = log(0.326^2 + 1); occasions 2-5 fixed equal per `$OMEGA BLOCK(1) SAME` |
 | `etaiov_vc_1..5`  (BOV V1) | 0.3048 | Table 2: BOV V1 = 59.7% (%SE 31.2); variance = log(0.597^2 + 1); occasions 2-5 fixed equal per `$OMEGA BLOCK(1) SAME` |

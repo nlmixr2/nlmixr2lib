@@ -58,8 +58,8 @@ table below consolidates them.
 | `e_age_le12` (SL,bp)      | 0.032 per yr      | Long-Boyle 2015 Table 3 (RSE 32 percent)                       |
 | `e_age_gt12` (SL>bp)      | -0.0138 per yr    | Long-Boyle 2015 Table 3 (RSE 46 percent)                       |
 | Breakpoint                | 12 yrs (fixed)    | Long-Boyle 2015 Table 3, p. 240 ("BP ... 12 (fixed)")          |
-| `etalcl` variance         | 0.047251          | Long-Boyle 2015 Table 3 (IIV CLin 22% CV; log(0.22^2+1))       |
-| `etalvc` variance         | 0.080744          | Long-Boyle 2015 Table 3 (IIV Vc 29% CV;   log(0.29^2+1))       |
+| `etalcl` variance         | 0.047265          | Long-Boyle 2015 Table 3 (IIV CLin 22% CV; log(0.22^2+1))       |
+| `etalvc` variance         | 0.080750          | Long-Boyle 2015 Table 3 (IIV Vc 29% CV;   log(0.29^2+1))       |
 | Cov(etalcl, etalvc)       | 0.025952          | Long-Boyle 2015 Table 3 (corr 0.42; r * sqrt(var1 * var2))     |
 | `propSd`                  | 0.148             | Long-Boyle 2015 Table 3 (proportional 14.8 percent)            |
 | `addSd`                   | 0.047 mg/L        | Long-Boyle 2015 Table 3 (additive 47 ng/mL)                    |

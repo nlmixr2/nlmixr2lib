@@ -125,7 +125,7 @@ Jin_2020_amikacin <- function() {
     # (CL 27.9%, V1 18%), converted to log-scale variances as omega^2 =
     # log(CV^2 + 1); the covariance is taken as printed, -0.0135 (bootstrap
     # median -0.012). Implied correlation -0.0135 / sqrt(0.07494 x 0.03189) = -0.276.
-    etalcl + etalvc ~ c(0.07494, -0.0135, 0.03189) # Table 2 final model: IIV CL 27.9% -> log(0.279^2 + 1) = 0.07494; covariance -0.0135; IIV V1 18% -> log(0.18^2 + 1) = 0.03189
+    etalcl + etalvc ~ c(log(1 + 0.279^2), -0.0135, 0.03189) # Table 2 final model: IIV CL 27.9% -> log(0.279^2 + 1) = 0.07496; covariance -0.0135; IIV V1 18% -> log(0.18^2 + 1) = 0.03189
 
     # Residual error: 'additive' on log-transformed concentrations (Methods 4.2),
     # i.e. exponential/log-normal on the linear scale. Table 2 prints 0.299 without

@@ -85,12 +85,12 @@ LongBoyle_2015_busulfan <- function() {
     # CLin, 29 percent on Vc) and correlation coefficient 0.42 between CLin
     # and Vc (Long-Boyle 2015 Table 3). Converted to the log-normal internal
     # variance scale via omega^2 = log(CV^2 + 1):
-    #   var_lcl = log(0.22^2 + 1) = 0.047251
-    #   var_lvc = log(0.29^2 + 1) = 0.080744
+    #   var_lcl = log(0.22^2 + 1) = 0.047265
+    #   var_lvc = log(0.29^2 + 1) = 0.080750
     # Covariance from the reported correlation:
     #   cov = 0.42 * sqrt(var_lcl * var_lvc) = 0.42 * sqrt(0.003816) = 0.025952
-    etalcl + etalvc ~ c(0.047251,
-                        0.025952, 0.080744)  # Long-Boyle 2015 Table 3 (IIV CLin 22 percent, IIV Vc 29 percent, corr 0.42)
+    etalcl + etalvc ~ c(log(1 + 0.22^2),
+                        0.025952, log(1 + 0.29^2))  # Long-Boyle 2015 Table 3 (IIV CLin 22 percent, IIV Vc 29 percent, corr 0.42)
 
     # Combined proportional + additive residual error. Paper reports
     # proportional 14.8 percent and additive 47 ng/mL (Long-Boyle 2015 Table 3).

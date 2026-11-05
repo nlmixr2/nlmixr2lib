@@ -47,10 +47,10 @@ Per-parameter origins are recorded next to each `ini()` entry in `inst/modeldb/s
 | `lkenz` (kENZ)      | log(0.00369 /h)  | Smythe 2012 Table 3: kENZ = 0.00369/h (RSE 5.6%); half-life 7.83 days |
 | `lfdepot` (F)       | fixed(log(1))    | Implicit anchor: CL/F and V/F are apparent F-relative (Smythe 2012 Methods "Stochastic model" paragraph 1) |
 | IIV CL/F            | omega^2 = 0.08618 | Smythe 2012 Table 3: IIV CL/F = 30.0% CV (RSE 12.3%); log(1 + 0.30^2) |
-| IIV V/F             | omega^2 = 0.03625 | Smythe 2012 Table 3: IIV V/F = 19.2% CV (RSE 14.8%); log(1 + 0.192^2) |
+| IIV V/F             | omega^2 = 0.03620 | Smythe 2012 Table 3: IIV V/F = 19.2% CV (RSE 14.8%); log(1 + 0.192^2) |
 | cov(CL/F, V/F)      | 0.911 * sqrt(var_CL * var_V) = 0.05091 | Smythe 2012 Table 3: CL-V correlation = 91.1% (RSE 20.7%) |
 | IIV EC50            | omega^2 = 3.231   | Smythe 2012 Table 3: IIV EC50 = 493% CV (RSE 19%); log(1 + 4.93^2) |
-| IOV MTT             | omega^2 = 0.38014 | Smythe 2012 Table 3: IOV MTT = 68% CV (RSE 7%); log(1 + 0.68^2); BLOCK SAME across two occasions |
+| IOV MTT             | omega^2 = 0.38008 | Smythe 2012 Table 3: IOV MTT = 68% CV (RSE 7%); log(1 + 0.68^2); BLOCK SAME across two occasions |
 | IOV F               | omega^2 = 0.02591 | Smythe 2012 Table 3: IOV F = 16.2% CV (RSE 11.2%); log(1 + 0.162^2); BLOCK SAME across two occasions |
 | Additive error      | 0.965 mg/L     | Smythe 2012 Table 3: Additive error = 0.965 mg/L (RSE 2.8%) |
 | Proportional error  | 0.099 (fraction) | Smythe 2012 Table 3: Proportional error = 9.9% (RSE 4.7%) |

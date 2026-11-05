@@ -221,11 +221,11 @@ Cendros_2025_enflicoxib <- function() {
     # the omega matrix is encoded as diagonal.
     # ------------------------------------------------------------------
     etalfdepot     ~ log(1 + 0.39^2)  # Table 1 enflicoxib F      IIV  39%
-    etaltlag       ~ 0.3800   # Table 1 enflicoxib Tlag   IIV  68% -> log(1 + 0.68^2)  = 0.3800
+    etaltlag       ~ log(1 + 0.68^2)  # Table 1 enflicoxib Tlag   IIV  68%
     etalka         ~ log(1 + 1.01^2)  # Table 1 enflicoxib ka     IIV 101%
-    etalvc         ~ 0.6331   # Table 1 enflicoxib V/F    IIV  94% -> log(1 + 0.94^2)  = 0.6331
+    etalvc         ~ log(1 + 0.94^2)  # Table 1 enflicoxib V/F    IIV  94%
     etalcl_met     ~ log(1 + 0.49^2)  # Table 1 enflicoxib CL2/F  IIV  49%
-    etalcl_pyrazol ~ 0.0917   # Table 1 metabolite CLM/F  IIV  31% -> log(1 + 0.31^2)  = 0.0917
+    etalcl_pyrazol ~ log(1 + 0.31^2)  # Table 1 metabolite CLM/F  IIV  31%
 
     # ------------------------------------------------------------------
     # Residual error. Cendros 2025 Methods gives the residual model as

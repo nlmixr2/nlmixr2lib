@@ -78,10 +78,10 @@ Kim_2015_paroxetine <- function() {
 
     # IIV on CL/F only - the published model reports CV% on the linear scale,
     # converted to log-normal variance via omega^2 = log(CV^2 + 1):
-    #   CL/F BSV 40.2% -> omega^2 = log(0.402^2 + 1) = 0.1497839
+    #   CL/F BSV 40.2% -> omega^2 = log(0.402^2 + 1) = 0.1498018
     # No IIV on Ka or Vd (both fixed; the paper notes inclusion of further
     # IIVs did not improve fit).
-    etalcl ~ 0.1497839                                                       # Kim 2015 Table 2, CV 40.2%, RSE 13.4%
+    etalcl ~ log(1 + 0.402^2)  # Kim 2015 Table 2, CV 40.2%, RSE 13.4%
 
     # Residual error - Kim 2015 Methods states an "additive error model with
     # log-transformed data" with sigma = 0.642 in log(ug/L). The NONMEM

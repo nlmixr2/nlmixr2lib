@@ -73,7 +73,7 @@ Per-parameter origin (also recorded as in-file comments next to each
 | `e_cyp2b6_6het_cl`   |  0.602    | Sanchez 2011 Table 4 theta_4 = 0.602 (RSE 7.83%); multiplicative factor for CYP2B6\*6 heterozygotes (rs3745274 count = 1) |
 | `e_cyp2b6_6hom_cl`   |  0.354    | Sanchez 2011 Table 4 theta_5 = 0.354 (RSE 15.61%); multiplicative factor for CYP2B6\*6 homozygotes (rs3745274 count = 2) |
 | `e_abcc4_1497ct_cl`  |  0.793    | Sanchez 2011 Table 4 theta_6 = 0.793 (RSE 12.52%); multiplicative factor for ABCC4 1497C>T carriers |
-| `etalcl`             | 0.07758   | Sanchez 2011 Table 4: CV CL/F = 28.40% (RSE 18.29%); omega^2 = log(1 + 0.284^2) = 0.07758 |
+| `etalcl`             | 0.07757   | Sanchez 2011 Table 4: CV CL/F = 28.40% (RSE 18.29%); omega^2 = log(1 + 0.284^2) = 0.07757 |
 | `etalvc`             | 0.56266   | Sanchez 2011 Table 4: CV V/F = 86.91% (RSE 20.59%); omega^2 = log(1 + 0.8691^2) = 0.56266 |
 | `propSd`             | 0.1682    | Sanchez 2011 Table 4 sigma = 16.82% (RSE 7.86%); proportional residual error model |
 | `tvcl = (exp(lcl) + e_ggt_cl * GGT) * e_cyp2b6_6het_cl^I(*6 het) * e_cyp2b6_6hom_cl^I(*6 hom) * e_abcc4_1497ct_cl^I(ABCC4 carrier)` | n/a | Sanchez 2011 final-model equation (Results 'In conclusion, the final model adopted for CL/F was as follows' paragraph and Table 4 footnote): CL/F = (theta_1 + theta_3 * GGT) * theta_4^CYP2B6\*6 [G/T] * theta_5^CYP2B6\*6 [T/T] * theta_6^MRP4 1497C>T |

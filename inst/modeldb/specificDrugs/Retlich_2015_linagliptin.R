@@ -184,8 +184,8 @@ Retlich_2015_linagliptin <- function() {
     e_sex_bmaxc    <- 0.457;    label("Additive shift in Bmax_C for SEXF = 1 (nmol/L, female - male)")  # Table 4 row Sex_Bmax,C
 
     # ---- PK inter-individual variability (Retlich 2015 Table 4; CV % converted to log-normal variance via omega^2 = log(1 + CV^2)) ----
-    etalfdepot + etalcl ~ c(0.20271,
-                            -0.09300, 0.07291)  # omega^2_F = log(1 + 0.474^2) = 0.20271 (CV 47.4%); omega^2_CL = log(1 + 0.275^2) = 0.07291 (CV 27.5%); rho(F,CL) = -0.765, cov = -0.765 * sqrt(0.20271 * 0.07291) = -0.09300
+    etalfdepot + etalcl ~ c(log(1 + 0.474^2),
+                            -0.765 * sqrt(log(1 + 0.474^2) * log(1 + 0.275^2)), log(1 + 0.275^2))  # omega^2_F = log(1 + 0.474^2) = 0.20268 (CV 47.4%); omega^2_CL = log(1 + 0.275^2) = 0.07290 (CV 27.5%); rho(F,CL) = -0.765, cov = -0.765 * sqrt(0.20268 * 0.07290) = -0.09299
     etalka    ~ log(1 + 0.764^2)  # (CV 76.4%)   Table 4 row xKa
     etalvc    ~ log(1 + 0.244^2)  # (CV 24.4%)   Table 4 row xVC
     etalbmaxc ~ log(1 + 0.15^2)  # (CV 15.0%)   Table 4 row xBmax,C

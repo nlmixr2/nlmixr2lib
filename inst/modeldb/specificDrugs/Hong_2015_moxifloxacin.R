@@ -70,7 +70,7 @@ Hong_2015_moxifloxacin <- function() {
     #   var_vc = log(1 + 0.174^2) = 0.02983
     #   cov    = 0.92 * sqrt(0.07037 * 0.02983) = 0.04215
     etalcl + etalvc ~ c(0.07037, 0.04215, 0.02983)  # Hong 2015 Table 3 omega_CL = 27.0%, omega_V2 = 17.4%, rho_CL-V2 = 0.92
-    etalka          ~ 0.6521                          # Hong 2015 Table 3 omega_Ka = 95.9% CV; log(1 + 0.959^2) = 0.6521
+    etalka          ~ log(1 + 0.959^2)  # Hong 2015 Table 3 omega_Ka = 95.9% CV
 
     propSd <- 0.140; label("Proportional residual error on plasma moxifloxacin concentration (fraction)")  # Hong 2015 Table 3 sigma_prop = 14.0% (%RSE 11.1)
 
@@ -131,7 +131,7 @@ Hong_2015_moxifloxacin <- function() {
     # because nlmixr2lib has no idiomatic encoding for IOV in distributed
     # models; see vignette Assumptions and deviations.
     # =========================================================================
-    etalqtcm  ~ 0.001459       # 3.82% CV;  log(1 + 0.0382^2) = 0.001459
+    etalqtcm  ~ log(1 + 0.0382^2)  # 3.82% CV
     etala     ~ log(1 + 0.196^2)  # 19.6% CV
     etalam24  ~ log(1 + 0.93^2)  # 93.0% CV
     etaac24   ~ 5.231836       # 206% (additive on hours); var = (2.06 * 1.11)^2 = 5.231836

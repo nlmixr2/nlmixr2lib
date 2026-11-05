@@ -154,15 +154,15 @@ Lee_2016_raltegravir <- function() {
     # corresponding covariance is cov = 0.567 * SD_lcl * SD_lvc where
     # SD_lcl = sqrt(omega^2_lcl) and SD_lvc = sqrt(omega^2_lvc).
     #
-    #   CV CL_RAL/F = 30.5%  -> omega^2 = log(0.305^2 + 1) = 0.0890
-    #   CV V_RAL/F  = 81.4%  -> omega^2 = log(0.814^2 + 1) = 0.5085
-    #   cov(lcl, lvc)        = 0.567 * sqrt(0.0890 * 0.5085) = 0.1206
+    #   CV CL_RAL/F = 30.5%  -> omega^2 = log(0.305^2 + 1) = 0.0889
+    #   CV V_RAL/F  = 81.4%  -> omega^2 = log(0.814^2 + 1) = 0.5084
+    #   cov(lcl, lvc)        = 0.567 * sqrt(0.0889 * 0.5084) = 0.1205
     #   CV MTT      = 107.2% -> omega^2 = log(1.072^2 + 1) = 0.7651
     #   CV F        = 123.7% -> omega^2 = log(1.237^2 + 1) = 0.9283
     #   CV FMET     = 37.7%  -> omega^2 = log(0.377^2 + 1) = 0.1329
     #   CV CL_GLU   = 13.6%  -> omega^2 = log(0.136^2 + 1) = 0.0183
-    etalcl + etalvc ~ c(0.0890,
-                        0.1206, 0.5085)                                                          # Table 2: omega(CL_RAL/F)=30.5%CV, omega(V_RAL/F)=81.4%CV, correlation = 0.567
+    etalcl + etalvc ~ c(log(1 + 0.305^2),
+                        0.567 * sqrt(log(1 + 0.305^2) * log(1 + 0.814^2)), log(1 + 0.814^2))                                                          # Table 2: omega(CL_RAL/F)=30.5%CV, omega(V_RAL/F)=81.4%CV, correlation = 0.567
     etalmtt        ~ 0.7651                                                                       # Table 2: omega(MTT)    = 107.2 %CV
     etalfdepot     ~ 0.9283                                                                       # Table 2: omega(F)      = 123.7 %CV
     etalkmet_gluc  ~ 0.1329                                                                       # Table 2: omega(FMET)   = 37.7 %CV

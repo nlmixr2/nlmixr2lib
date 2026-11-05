@@ -154,7 +154,7 @@ Sukeishi_2022_remdesivir <- function() {
     # and model evaluation'). Table 2 reports it as CV%; converted to the
     # log-scale variance with omega^2 = log(CV^2 + 1).
     etalcl ~ log(1 + 0.26^2)  # Sukeishi 2022 Table 2: IIV for CL = 26.0 CV% (RSE 9.6%, shrinkage 4.22%)
-    etalvc ~ 0.112457   # Sukeishi 2022 Table 2: IIV for Vd = 34.5 CV% (RSE 12.8%, shrinkage 24.1%) -> log(0.345^2 + 1)
+    etalvc ~ log(1 + 0.345^2)  # Sukeishi 2022 Table 2: IIV for Vd = 34.5 CV% (RSE 12.8%, shrinkage 24.1%)
 
     # Residual variability: proportional (Results 'PopPK model and model
     # evaluation'), reported as CV% in Table 2.

@@ -154,16 +154,16 @@ Svensson_2013_bedaquiline <- function() {
     # for the full list of dropped random effects with the original paper
     # values.
     #
-    # BLOCK(3) on (CL, CL_M2, CL_M3): var_CL = log(1 + 0.237^2) = 0.054646;
-    # var_CL_M2 = log(1 + 0.188^2) = 0.034733; var_CL_M3 = log(1 + 0.30^2) =
+    # BLOCK(3) on (CL, CL_M2, CL_M3): var_CL = log(1 + 0.237^2) = 0.054648;
+    # var_CL_M2 = log(1 + 0.188^2) = 0.034734; var_CL_M3 = log(1 + 0.30^2) =
     # 0.086178. Off-diagonals from Svensson 2013 Table 3 correlations:
-    # corr(CL, CL_M2)    = +0.296  -> cov = 0.296 * sqrt(0.054646*0.034733) = +0.012897
-    # corr(CL, CL_M3)    = -0.129  -> cov = -0.129 * sqrt(0.054646*0.086178) = -0.008854
-    # corr(CL_M2, CL_M3) = +0.713  -> cov = 0.713 * sqrt(0.034733*0.086178) = +0.039008
+    # corr(CL, CL_M2)    = +0.296  -> cov = 0.296 * sqrt(0.054648*0.034734) = +0.012896
+    # corr(CL, CL_M3)    = -0.129  -> cov = -0.129 * sqrt(0.054648*0.086178) = -0.008853
+    # corr(CL_M2, CL_M3) = +0.713  -> cov = 0.713 * sqrt(0.034734*0.086178) = +0.039009
     # Lower-triangular order (NONMEM BLOCK): row 1; row 2; row 3.
-    etalcl + etalcl_m2 + etalcl_m3 ~ c(0.054646,
-                                       0.012897, 0.034733,
-                                      -0.008854, 0.039008, 0.086178)  # Svensson 2013 Table 3 BSV CL = 23.7%, BSV CL_M2 = 18.8% (corr with CL = +29.6%), BSV CL_M3 = 30.0% (corr with CL = -12.9%, corr with CL_M2 = +71.3%)
+    etalcl + etalcl_m2 + etalcl_m3 ~ c(log(1 + 0.237^2),
+                                       0.296 * sqrt(log(1 + 0.237^2) * log(1 + 0.188^2)), log(1 + 0.188^2),
+                                      -0.129 * sqrt(log(1 + 0.237^2) * 0.086178), 0.713 * sqrt(log(1 + 0.188^2) * 0.086178), 0.086178)  # Svensson 2013 Table 3 BSV CL = 23.7%, BSV CL_M2 = 18.8% (corr with CL = +29.6%), BSV CL_M3 = 30.0% (corr with CL = -12.9%, corr with CL_M2 = +71.3%)
     etalvc      ~ log(1 + 0.346^2)  # Svensson 2013 Table 3 BSV V = 34.6% CV (RSE 32%)
     etalq       ~ log(1 + 0.187^2)  # Svensson 2013 Table 3 BSV Q1 = 18.7% CV (RSE 15%)
     etalvc_m2   ~ log(1 + 0.289^2)  # Svensson 2013 Table 3 BSV V M2 = 28.9% CV (RSE 19%)

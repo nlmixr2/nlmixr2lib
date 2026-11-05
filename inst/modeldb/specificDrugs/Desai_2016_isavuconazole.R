@@ -103,12 +103,12 @@ Desai_2016_isavuconazole <- function() {
     # log(1 + (CV/100)^2). The shared eta on CL applies to all three hepatic-
     # impairment strata (paper's exp(eta_jCL) form); same for Q.
     etalcl    ~ log(1 + 0.4347^2)  # 43.47% CV. Desai 2016 Table 4 Variability section
-    etalvc    ~ 0.04408  # 21.23% CV; omega^2 = log(1 + 0.2123^2). Desai 2016 Table 4 Variability section
+    etalvc    ~ log(1 + 0.2123^2)  # 21.23% CV. Desai 2016 Table 4 Variability section
     etalra    ~ 0.10070  # 32.55% CV; omega^2 = log(1 + 0.3255^2). Desai 2016 Table 4 Variability section
-    etalkamax ~ 0.09621  # 31.78% CV; omega^2 = log(1 + 0.3178^2). Desai 2016 Table 4 Variability section
-    etalgam1  ~ 0.13534  # 38.07% CV; omega^2 = log(1 + 0.3807^2). Desai 2016 Table 4 Variability section
-    etalvp    ~ 0.07061  # 27.05% CV; omega^2 = log(1 + 0.2705^2). Desai 2016 Table 4 Variability section
-    etalq     ~ 0.12480  # 36.46% CV; omega^2 = log(1 + 0.3646^2). Desai 2016 Table 4 Variability section
+    etalkamax ~ log(1 + 0.3178^2)  # 31.78% CV. Desai 2016 Table 4 Variability section
+    etalgam1  ~ log(1 + 0.3807^2)  # 38.07% CV. Desai 2016 Table 4 Variability section
+    etalvp    ~ log(1 + 0.2705^2)  # 27.05% CV. Desai 2016 Table 4 Variability section
+    etalq     ~ log(1 + 0.3646^2)  # 36.46% CV. Desai 2016 Table 4 Variability section
 
     # Residual error. Desai 2016 Methods 'Structural pharmacokinetic model'
     # states that ln-ln transformations of both the model and the data were

@@ -109,7 +109,7 @@ Han_2016_bevacizumab <- function() {
     # the reported diagonal variances; deviation documented in the vignette Errata section.
     etalcl ~ log(1 + 0.292^2)  # IIV CL  29.2%
     etalvc ~ log(1 + 0.183^2)  # IIV V1  18.3%
-    etalvp ~ 0.15819  # IIV V2  41.4% -> omega^2 = log(1 + 0.414^2)
+    etalvp ~ log(1 + 0.414^2)  # IIV V2  41.4%
 
     # ---- Residual error (combined proportional + additive on linear scale) ----
     propSd <- 0.218;   label("Proportional residual error (fraction)")              # Table 3 row 'Prop. error (%)' = 21.8

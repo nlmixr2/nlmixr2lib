@@ -140,12 +140,12 @@ Hietala_2010_artemether <- function() {
     # Inter-individual variability (IIV). Table 1 reports IIV as %CV per the
     # NONMEM log-normal convention; the corresponding internal variance is
     #   omega^2 = log((CV/100)^2 + 1)
-    #     CL/F_ARM CV 41% -> log(0.41^2 + 1) = 0.155649
-    #     CL/F_DHA CV 47% -> log(0.47^2 + 1) = 0.198101
+    #     CL/F_ARM CV 41% -> log(0.41^2 + 1) = 0.155378
+    #     CL/F_DHA CV 47% -> log(0.47^2 + 1) = 0.199588
     # IIV on the other parameters (ka, Vc, Q, Vp, V_DHA) was not estimated
     # (Table 1 "NE" entries) and is therefore omitted here.
-    etalcl     ~ 0.155649    # Hietala 2010 Table 1: IIV on CL/F_ARM = 41% CV (95% CI 37-50)
-    etalcl_dihydroart ~ 0.198101    # Hietala 2010 Table 1: IIV on CL/F_DHA = 47% CV (95% CI 35-57)
+    etalcl     ~ log(1 + 0.41^2)  # Hietala 2010 Table 1: IIV on CL/F_ARM = 41% CV (95% CI 37-50)
+    etalcl_dihydroart ~ log(1 + 0.47^2)  # Hietala 2010 Table 1: IIV on CL/F_DHA = 47% CV (95% CI 35-57)
 
     # Residual error. The paper reports separate proportional and additive
     # residual errors for ARM and DHA (Table 1). nlmixr2's combined error

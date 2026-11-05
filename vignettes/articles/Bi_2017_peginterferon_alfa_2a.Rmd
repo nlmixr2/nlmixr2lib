@@ -54,7 +54,7 @@ table below collects them for review.
 | `e_bmi_vc`           | `1.81`                      | Bi 2017 Table 2 (BMI-V  coefficient); Equation 5 |
 | `etalcl` IIV         | `0.08344` (CV 29.5%)        | Bi 2017 Table 2 (CL IIV CV%) -> `omega^2 = log(0.295^2 + 1)` |
 | `etalvc` IIV         | `0.70315` (CV 101%)         | Bi 2017 Table 2 (V  IIV CV%) -> `omega^2 = log(1.010^2 + 1)` |
-| `etalka` IIV         | `0.34340` (CV 64.0%)        | Bi 2017 Table 2 (Ka IIV CV%) -> `omega^2 = log(0.640^2 + 1)` |
+| `etalka` IIV         | `0.34331` (CV 64.0%)        | Bi 2017 Table 2 (Ka IIV CV%) -> `omega^2 = log(0.640^2 + 1)` |
 | `propSd`             | `0.194` (fraction)          | Bi 2017 Table 2 (residual proportional CV = 19.4%) |
 | `addSd`              | `0.32` ng/L                 | Bi 2017 Table 2 (residual additive SD) |
 | CL covariate form    | `CL = 0.094 * (CCR/91.39)^0.31 * exp(eta_CL)` | Bi 2017 Equation 4 |

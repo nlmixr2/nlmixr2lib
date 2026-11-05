@@ -128,7 +128,7 @@ Olafuyi_2025_propyleneGlycol_adult <- function() {
     # no eta. omega^2 = log(1 + CV^2).
     # ---------------------------------------------------------------------
     etalvmax     ~ fixed(log(1 + 0.45^2))  # Table 3: predicted adult hepatic CL %CV = 45
-    etalcl_renal ~ fixed(0.051540)  # Table 3: predicted adult renal   CL %CV = 23; log(1 + 0.23^2)
+    etalcl_renal ~ fixed(log(1 + 0.23^2))  # Table 3: predicted adult renal   CL %CV = 23
 
     # Residual error is not reported: the source is a simulation study and no
     # residual-error model was fitted to observed concentrations.

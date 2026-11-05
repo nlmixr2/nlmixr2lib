@@ -167,12 +167,12 @@ Tarning_2008_piperaquine <- function() {
     # log-normal convention CV = sqrt(exp(omega^2) - 1), the internal
     # log-scale variance omega^2 = log(CV^2 + 1).
     #
-    #   CL/F  IIV 42%   -> omega^2 = log(0.42^2 + 1) = 0.162519
+    #   CL/F  IIV 42%   -> omega^2 = log(0.42^2 + 1) = 0.162459
     #   Vc/F  IIV 101%  -> omega^2 = log(1.01^2 + 1) = 0.703107
     #   Q/F   IIV 85%   -> omega^2 = log(0.85^2 + 1) = 0.543763
     #   Vp/F  IIV 50%   -> omega^2 = log(0.50^2 + 1) = 0.223144
     #   ka    IIV 168%  -> omega^2 = log(1.68^2 + 1) = 1.340808
-    etalcl ~ 0.162519
+    etalcl ~ log(1 + 0.42^2)
     # Tarning 2008 Table 2: IIV on CL/F = 42% CV (% RSE 44)
 
     etalvc ~ 0.703107

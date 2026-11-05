@@ -125,9 +125,9 @@ Frey_2010_tocilizumab <- function() {
     # off-diagonal correlation coefficients r between the four etas (CL, V1, V2, Vm).
     # Convert each CV% to NONMEM-style log-normal variance via omega^2 = log(1 + CV^2):
     #   CL  CV 39% -> omega^2 = log(1 + 0.39^2) = 0.1416, omega = 0.3762
-    #   V1  CV 37% -> omega^2 = log(1 + 0.37^2) = 0.1284, omega = 0.3583
-    #   V2  CV 66% -> omega^2 = log(1 + 0.66^2) = 0.3614, omega = 0.6012
-    #   Vm  CV 54% -> omega^2 = log(1 + 0.54^2) = 0.2562, omega = 0.5062
+    #   V1  CV 37% -> omega^2 = log(1 + 0.37^2) = 0.1283, omega = 0.3583
+    #   V2  CV 66% -> omega^2 = log(1 + 0.66^2) = 0.3616, omega = 0.6012
+    #   Vm  CV 54% -> omega^2 = log(1 + 0.54^2) = 0.2559, omega = 0.5062
     # Off-diagonal covariances cov_ij = r_ij * omega_i * omega_j with the six r values
     # reported in Table II ("Interindividual variability" section):
     #   r(CL,V1)= 0.6 -> cov =  0.6 * 0.3762 * 0.3583 =  0.0809
@@ -137,9 +137,9 @@ Frey_2010_tocilizumab <- function() {
     #   r(V1,Vm)= 0.2 -> cov =  0.2 * 0.3583 * 0.5062 =  0.0363
     #   r(V2,Vm)= 0.2 -> cov =  0.2 * 0.6012 * 0.5062 =  0.0609
     etalcl + etalvc + etalvp + etalvmax ~ c(0.1416,
-                                            0.0809,  0.1284,
-                                           -0.0226,  0.1077, 0.3614,
-                                           -0.0952,  0.0363, 0.0609, 0.2562)
+                                            0.0809,  log(1 + 0.37^2),
+                                           -0.0226,  0.1077, log(1 + 0.66^2),
+                                           -0.0952,  0.0363, 0.0609, log(1 + 0.54^2))
 
     # Residual error - Frey 2010 Table II ("Residual error" section, p759). Combined
     # additive + proportional model: Cobs = Cpred * (1 + eps_prop) + eps_add.

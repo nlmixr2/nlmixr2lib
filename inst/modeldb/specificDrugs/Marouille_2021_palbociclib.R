@@ -126,7 +126,7 @@ Marouille_2021_palbociclib <- function() {
     etalcl ~ log(1 + 0.326^2)  # Table 3: Cl/F IIV = 32.6%
     etalcirc0 ~ log(1 + 0.296^2)  # Table 4: Base IIV = 29.6%
     etalslope ~ log(1 + 0.288^2)  # Table 4: Slope IIV = 28.8%
-    etalmtt ~ 0.03153 # Table 4: MTT IIV = 17.9% -> log(0.179^2 + 1) = 0.03153
+    etalmtt ~ log(1 + 0.179^2)  # Table 4: MTT IIV = 17.9%
 
     # ---- Residual error ----
     addSd <- 13.84; label("Additive residual error on palbociclib Cc (ug/L)") # Table 3: Additive error = 13.84 ug/L (RSE 20.5%)

@@ -75,7 +75,7 @@ below collects them in one place for review.
 | `etalvc` (IIV V_central) | log(1 + 0.375^2) = 0.1316 | Table 3 IIV V_central = 37.5 % CV (RSE 68.4 %) |
 | `etalq` (IIV Q) | log(1 + 0.756^2) = 0.4521 | Table 3 IIV Q = 75.6 % CV (RSE 29.2 %) |
 | `etalvp` (IIV V_peripheral) | log(1 + 1.20^2) = 0.8920 | Table 3 IIV V_peripheral = 120 % CV (RSE 30.4 %) |
-| `etalfdepot` (IIV F) | log(1 + 0.447^2) = 0.1820 | Table 3 IIV F = 44.7 % CV (RSE 37.5 %) |
+| `etalfdepot` (IIV F) | log(1 + 0.447^2) = 0.1822 | Table 3 IIV F = 44.7 % CV (RSE 37.5 %) |
 | `propSd` (proportional residual SD) | 0.423 | Table 3 Residual intra-individual variability = 42.3 % CV (RSE 6.9 %) |
 | MMF -> MPA-equivalent conversion (oral): F_MW = 0.739 | structural | Methods "Population PK analysis" paragraph 1 |
 | MMF -> MPA-equivalent conversion (IV): F_MW = 0.682 | structural | Methods "Population PK analysis" paragraph 1 |

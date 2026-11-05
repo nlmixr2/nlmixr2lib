@@ -105,7 +105,7 @@ Wilhelm_2012_ciclosporin <- function() {
     # IIVs only (see vignette Assumptions and deviations).
     etalcl     ~ log(1 + 0.222^2)  # Table 3: IIV CL   = 22.2% CV
     etalvc     ~ log(1 + 0.269^2)  # Table 3: IIV V1   = 26.9% CV
-    etalq      ~ 0.07650  # Table 3: IIV Q    = 28.2% CV -> log(1 + 0.282^2)
+    etalq      ~ log(1 + 0.282^2)  # Table 3: IIV Q    = 28.2% CV
     etalvp     ~ log(1 + 0.306^2)  # Table 3: IIV V2   = 30.6% CV
     etalka     ~ log(1 + 0.438^2)  # Table 3: IIV ka   = 43.8% CV
     etalfdepot ~ 0.06062  # Table 3: IIV F    = 25.0% CV -> log(1 + 0.250^2)
