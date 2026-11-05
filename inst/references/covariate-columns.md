@@ -24907,26 +24907,13 @@ is the experimental condition itself, held constant for the whole solve.
 - **Example models:** `Asaumi_2022_quinidine_rifampicin_pbpk.R` (switches the common Kp scaling factor 6.1 -> 6.2 and fB*CLint,all 0.35 -> 0.14 L/h/kg).
 - **Notes:** Auto-approved member of the `STUDY_<id>` family. Sibling of `STUDY_TWUM1981_IV`, `STUDY_TWUM1981_PO` and `STUDY_TUBIC2006` in the same paper.
 
-### STUDY_SIME2014 (**canonical for the Sime 2014 febrile-neutropenia haematological-malignancy piperacillin study indicator**)
-- **Description:** 1 = the subject belongs to the Sime 2014 study of piperacillin in febrile neutropenic patients with haematological malignancy (Antimicrob Agents Chemother 2014;58:3533-3537); 0 = any other study of the pooled analysis. Subject-level (time-fixed).
+### STUDY_MPKF (**canonical for the MPKF midomafetamine food-effect study indicator**)
+- **Description:** 1 = record from MPKF, the open-label randomised-sequence two-period crossover phase I study of 120 mg MDMA HCl given fasted and after a high-fat/high-calorie meal to healthy volunteers; 0 = record from the NIDA study (single 1.0 and 1.6 mg/kg MDMA HCl doses after a light meal) pooled with it. Per-record (study-fixed) binary indicator.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (all other pooled studies).
+- **Reference category:** 0 (NIDA study).
 - **Source aliases:**
-  - `SID = 4` -- Kong 2025 ESM3 control stream study identifier.
-  - `Sime et al. [7]` -- Kong 2025 Table 1 and Eqs. 21-22.
-- **Example models:** `Kong_2025b_piperacillin_tazobactam.R` (multiplies piperacillin elimination clearance by 1.73 and piperacillin peripheral volume by 0.512; tazobactam unaffected).
-- **Notes:** Auto-approved member of the `STUDY_<id>` family. Kong 2025 interprets the effect as a property of the haematological-malignancy population of that study (an additional clearance increase beyond the serum-creatinine effect), but implements it as a study indicator, so it is registered as one rather than as a disease covariate. The shipped `Sime_2019_tazobactam.R` is a different Sime study. Sibling of `STUDY_SUKARNJANASET2019` in the same model.
-
-### STUDY_SUKARNJANASET2019 (**canonical for the Sukarnjanaset 2019 early-sepsis piperacillin study indicator**)
-- **Description:** 1 = the subject belongs to the Sukarnjanaset 2019 study of piperacillin in critically ill patients in the early phase of sepsis (J Pharmacokinet Pharmacodyn 2019;46:251-261); 0 = any other study of the pooled analysis. Subject-level (time-fixed).
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (all other pooled studies).
-- **Source aliases:**
-  - `SID = 8` -- Kong 2025 ESM3 control stream study identifier.
-  - `Sukarnjanaset et al. [11]` -- Kong 2025 Table 1 and Eq. 23.
-- **Example models:** `Kong_2025b_piperacillin_tazobactam.R` (sets the piperacillin unbound fraction to 1, held constant, instead of 0.645, so measured unbound equals total concentration in that study).
-- **Notes:** Auto-approved member of the `STUDY_<id>` family. Kong 2025 treats the study as an outlier in protein binding (Discussion, limitations). Sibling of `STUDY_SIME2014` in the same model.
+  - `study` -- Huestis 2025 Table 2 rows 'Study effect on CL/F', 'Study effect on V2/F' and the study-specific 'Add. Error NIDA' / 'Add. Error MPKF' rows.
+- **Example models:** `Huestis_2025_midomafetamine.R` (founding example; proportional effects on MDMA CL/F, `(1 - 0.36 * STUDY_MPKF)`, and V2/F, `(1 - 0.263 * STUDY_MPKF)`, plus selection of the study-specific MDMA additive residual error, 8.11 ng/mL for NIDA and 2.5 ng/mL fixed for MPKF).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. The paper treats the effect as an idiosyncrasy of the pooled dataset rather than a patient-relevant covariate, so simulations for the intended population use `STUDY_MPKF = 0`.

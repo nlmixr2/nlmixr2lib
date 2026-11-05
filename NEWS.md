@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Fratoni 2025 meropenem, cefiderocol and tobramycin plasma and ELF models, 6 one-compartment fits ([doi:10.1093/jac/dkae432](https://doi.org/10.1093/jac/dkae432)) -- neutropenic mice in the COMBINE pneumonia model.
+- Add Huestis 2025 midomafetamine (MDMA) and its metabolite MDA ([doi:10.1002/psp4.13282](https://doi.org/10.1002/psp4.13282)) -- healthy adult volunteers. Registers the `tenamfetamine` metabolite suffix and the `STUDY_MPKF` covariate.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 

@@ -4792,6 +4792,8 @@ navbar:
         href: articles/Yau_2023_middle_out_pbpk_translation.html
       - text: "Midazolam rugt1a4 (Hyland 2009)"
         href: articles/Hyland_2009_midazolam_glucuronidation.html
+      - text: "Midomafetamine (Huestis 2025)"
+        href: articles/Huestis_2025_midomafetamine.html
       - text: "Mig1 exp1 (Almquist 2015)"
         href: articles/Almquist_2015_Mig1.html
       - text: "Mig1 exp2 (Almquist 2015)"
@@ -9385,7 +9387,7 @@ articles:
   - articles/Huang_2025_colistinSulfate
   - articles/Huang_2025_dexmedetomidine
   - articles/Huang_2026_tiapride
-  - articles/Huber_2024_ivivc_tumor_stasis
+  - articles/Huestis_2025_midomafetamine
   - articles/Hughes_2022_brepocitinib
   - articles/Hughes_2023_chemotherapy_gcsf_anc
   - articles/Hughes_2024_vancomycin
