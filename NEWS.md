@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Dari 2023 Ad26.COV2.S COVID-19 vaccine binding (S-ELISA) and neutralizing (wtVNA) antibody mechanistic models ([doi:10.1002/cpt.2796](https://doi.org/10.1002/cpt.2796)) -- SARS-CoV-2-seronegative adults after a single 5 x 10^10 vp dose.
+- Add Tang 2023 polymyxin B ([doi:10.1186/s13054-023-04448-z](https://doi.org/10.1186/s13054-023-04448-z)) -- critically ill Chinese adults with carbapenem-resistant organism nosocomial pneumonia.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
