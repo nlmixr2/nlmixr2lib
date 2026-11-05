@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yoshikado 2025 grazoprevir PBPK with saturable OATP1B, CYP3A and P-gp ([doi:10.1002/psp4.13314](https://doi.org/10.1002/psp4.13314)) -- HCV-infected adults, single oral doses of 50-800 mg.
+- Add Chun 2025 tramadol enantiomers, O-/N-desmethyltramadol and pain score ([doi:10.1002/psp4.13315](https://doi.org/10.1002/psp4.13315)) -- adults with chronic neuropathic pain from diabetic neuropathy or nerve compression. Registers the `DIS_DIAB_TYPE2` covariate.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
