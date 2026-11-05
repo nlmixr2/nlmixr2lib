@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Thorsted 2023 neutrophil-mediated phagocytosis and digestion of bacteria, in vitro and mouse models ([doi:10.1002/psp4.13046](https://doi.org/10.1002/psp4.13046)) -- digitized in vitro neutrophil-bacteria assays and *Acinetobacter baumannii* pneumonia in immune-competent and cyclophosphamide-treated mice.
+- Add Beredaki 2024 micafungin in vitro PK/PD, four exposure-response curves ([doi:10.1093/jac/dkad360](https://doi.org/10.1093/jac/dkad360)) -- *Candida parapsilosis* clinical isolates in a dialysis/diffusion model, with and without 10% human serum, at 10^4 and 10^3 CFU/mL.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
