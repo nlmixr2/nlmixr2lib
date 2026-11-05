@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Fayette 2023 empagliflozin PK/FPG/HbA1c model ([doi:10.1002/psp4.13035](https://doi.org/10.1002/psp4.13035)) -- adults with type 2 diabetes in five phase II trials.
+- Add Zhang 2023 SARS-CoV-2 viral dynamics (TCLE with immune-enhanced viral clearance) ([doi:10.1002/psp4.13022](https://doi.org/10.1002/psp4.13022)) -- untreated household and non-household contacts in a UK community cohort; antiviral timing and efficacy simulations.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
