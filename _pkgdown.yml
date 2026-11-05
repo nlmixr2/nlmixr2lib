@@ -2602,6 +2602,8 @@ navbar:
         href: articles/Eyler_2014_ertapenem.html
       - text: "Ertapenem (Lakota 2018)"
         href: articles/Lakota_2018_ertapenem.html
+      - text: "Ertapenem (Muangkasem 2025)"
+        href: articles/Muangkasem_2025_ertapenem.html
       - text: "Ertapenem qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Ertugliflozin (Fediuk 2021)"
@@ -10194,6 +10196,7 @@ articles:
   - articles/Mouksassi_2015_thrombomodulinAlfa
   - articles/Mould_2007_alemtuzumab
   - articles/Mouton_2025_cefuroxime
+  - articles/Muangkasem_2025_ertapenem
   - articles/MuellerSchoell_2021_axicabtageneCiloleucel_qsp
   - articles/Muhamad_2025_cholecalciferol_pbpk
   - articles/Mukai_2019_mogamulizumab
