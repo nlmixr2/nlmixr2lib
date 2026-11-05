@@ -219,13 +219,13 @@ Jiang_2008_gemcitabine <- function() {
     # static model definition, so BOV is documented as a deviation in
     # the validation vignette and only BSV is encoded here.
     etalcl       ~ 0.09175  # log(1 + 0.31^2); Jiang 2008 Table 3 BSV CL_gem = 31% CV
-    etalvc       ~ 0.14165  # log(1 + 0.39^2); Jiang 2008 Table 3 BSV V_C,gem = 39% CV
-    etalq        ~ 0.17699  # log(1 + 0.44^2); Jiang 2008 Table 3 BSV Q_gem = 44% CV
-    etalvp       ~ 0.34336  # log(1 + 0.64^2); Jiang 2008 Table 3 BSV V_P,gem = 64% CV
-    etalcl_dfdu  ~ 0.11553  # log(1 + 0.35^2); Jiang 2008 Table 3 BSV CL_dFdU/F = 35% CV
-    etalvc_dfdu  ~ 0.02226  # log(1 + 0.15^2); Jiang 2008 Table 3 BSV V_C,dFdU/F = 15% CV (post-covariate residual; pre-oxaliplatin BSV was 20% per page 329)
+    etalvc       ~ log(1 + 0.39^2)  # Jiang 2008 Table 3 BSV V_C,gem = 39% CV
+    etalq        ~ log(1 + 0.44^2)  # Jiang 2008 Table 3 BSV Q_gem = 44% CV
+    etalvp       ~ log(1 + 0.64^2)  # Jiang 2008 Table 3 BSV V_P,gem = 64% CV
+    etalcl_dfdu  ~ log(1 + 0.35^2)  # Jiang 2008 Table 3 BSV CL_dFdU/F = 35% CV
+    etalvc_dfdu  ~ log(1 + 0.15^2)  # Jiang 2008 Table 3 BSV V_C,dFdU/F = 15% CV (post-covariate residual; pre-oxaliplatin BSV was 20% per page 329)
     etalq_dfdu   ~ 0.08075  # log(1 + 0.29^2); Jiang 2008 Table 3 BSV Q_dFdU/F = 29% CV
-    etalvp_dfdu  ~ 0.13489  # log(1 + 0.38^2); Jiang 2008 Table 3 BSV V_P,dFdU/F = 38% CV
+    etalvp_dfdu  ~ log(1 + 0.38^2)  # Jiang 2008 Table 3 BSV V_P,dFdU/F = 38% CV
 
     # Residual error: proportional for both gemcitabine and dFdU
     # (Jiang 2008 Methods: "Proportional statistical models were

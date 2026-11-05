@@ -92,8 +92,8 @@ Knibbe_2005_propofol_human <- function() {
     # "intra- and interindividual variabilities estimated in the rat
     # were used"). Reported as %CV; internal log-normal variance is
     # omega^2 = log(CV^2 + 1).
-    etalcl ~ 0.10937   # Knibbe 2005 Table 3 rat: IIV CL 34%, omega^2 = log(0.34^2 + 1)
-    etalvc ~ 0.02226   # Knibbe 2005 Table 3 rat: IIV V1 15%, omega^2 = log(0.15^2 + 1)
+    etalcl ~ log(1 + 0.34^2)  # Knibbe 2005 Table 3 rat: IIV CL 34%
+    etalvc ~ log(1 + 0.15^2)  # Knibbe 2005 Table 3 rat: IIV V1 15%
     etalq  ~ 0.06541   # Knibbe 2005 Table 3 rat: IIV Q  26%, omega^2 = log(0.26^2 + 1)
     etalvp ~ 0.05154   # Knibbe 2005 Table 3 rat: IIV V2 23%, omega^2 = log(0.23^2 + 1)
 

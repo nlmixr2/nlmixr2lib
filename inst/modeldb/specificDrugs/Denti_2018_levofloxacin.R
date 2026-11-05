@@ -193,8 +193,8 @@ Denti_2018_levofloxacin <- function() {
     # omega^2 = log(1 + CV^2).
     etalcl     ~ 0.02284  # BSV CL  = 15.2% CV  -> log(1 + 0.152^2) (Table 2; eta shrinkage 24%)
     etaltlag   ~ 0.98954  # BOV Tlag = 130% CV  -> log(1 + 1.30^2)  (Table 2; eta shrinkage 76%, folded as BSV-equivalent)
-    etalka     ~ 0.35068  # BOV ka   = 64.8% CV -> log(1 + 0.648^2) (Table 2; eta shrinkage 43%, folded as BSV-equivalent)
-    etalfdepot ~ 0.04641  # BOV F    = 21.8% CV -> log(1 + 0.218^2) (Table 2; eta shrinkage 10%, folded as BSV-equivalent)
+    etalka     ~ log(1 + 0.648^2)  # BOV ka   = 64.8% CV (Table 2; eta shrinkage 43%, folded as BSV-equivalent)
+    etalfdepot ~ log(1 + 0.218^2)  # BOV F    = 21.8% CV (Table 2; eta shrinkage 10%, folded as BSV-equivalent)
 
     # Residual error: combined proportional + additive (additive fixed at 20% of LLOQ).
     propSd <- 0.116;           label("Proportional residual error (fraction)")  # Table 2 row "Proportional error (%)"

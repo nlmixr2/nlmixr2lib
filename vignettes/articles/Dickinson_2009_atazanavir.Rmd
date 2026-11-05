@@ -82,8 +82,8 @@ below collects them in one place for review.
 | `ltlag`        | log(0.96) | Table 2 final-model column: Lag-time = 0.96 h (RSE 1%)         |
 | `e_aucrtv_cl`  | -0.8      | Table 2 final-model column / Table 3 row 1: factor on RTVAUC0-24 power form (RSE 13%) |
 | `etalcl`       | 0.0807    | Table 2 IIV CL/F = 29% (RSE 59%); omega^2 = log(1 + 0.29^2)    |
-| `etalvc`       | 0.2074    | Table 2 IIV V/F = 48% (RSE 37%); omega^2 = log(1 + 0.48^2)     |
-| `etalka`       | 1.2155    | Table 2 IIV ka = 154% (RSE 51%); omega^2 = log(1 + 1.54^2)     |
+| `etalvc`       | 0.2073    | Table 2 IIV V/F = 48% (RSE 37%); omega^2 = log(1 + 0.48^2)     |
+| `etalka`       | 1.2154    | Table 2 IIV ka = 154% (RSE 51%); omega^2 = log(1 + 1.54^2)     |
 | `propSd`       | 0.23      | Table 2 final-model column: proportional residual error 23% (RSE 27%) |
 | `addSd`        | 0.08      | Table 2 final-model column: additive residual error 0.08 mg/L (RSE 38%) |
 

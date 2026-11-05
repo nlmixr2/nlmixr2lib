@@ -95,11 +95,11 @@ collects them in one place for review.
 | `lcl_dihydroart` -> CL_DHA/F = 76.7 L/h at WT = 50 kg | 76.7 | Table 2 (CL_DHA/F, %RSE 6.99, 95% CI 69.9-87.8) |
 | `lvc_dihydroart` -> V_DHA/F = 102 L at WT = 50 kg | 102 | Table 2 (V_DHA/F, %RSE 8.95, 95% CI 89.5-119.0) |
 | IIV `var(etalfdepot)` (from BSV F = 31.2%) | 0.0929 | Table 2 (%CV 31.2, %RSE 29.4); derived as log(1 + 0.312^2) per Table 2 footnote |
-| IIV `var(etalmtt)`     (from BSV MTT = 85.3%) | 0.5468 | Table 2 (%CV 85.3, %RSE 24.9) |
+| IIV `var(etalmtt)`     (from BSV MTT = 85.3%) | 0.5467 | Table 2 (%CV 85.3, %RSE 24.9) |
 | IIV `var(etalcl)`      (from BSV CL_ARS = 26.8%) | 0.0693 | Table 2 (%CV 26.8, %RSE 44.3) |
 | IIV `var(etalvc)`      (from BSV V_ARS = 74.7%) | 0.4434 | Table 2 (%CV 74.7, %RSE 27.3) |
 | IIV `var(etalcl_dihydroart)`  (from BSV CL_DHA = 21.3%) | 0.0444 | Table 2 (%CV 21.3, %RSE 30.3) |
-| IIV `var(etalvc_dihydroart)`  (from BSV V_DHA = 31.6%) | 0.0953 | Table 2 (%CV 31.6, %RSE 40.5) |
+| IIV `var(etalvc_dihydroart)`  (from BSV V_DHA = 31.6%) | 0.0952 | Table 2 (%CV 31.6, %RSE 40.5) |
 | Residual `propSd` (ARS)    (from RUV ARS = 73.2%) | 0.732 | Table 2 (%RSE 3.95) |
 | Residual `propSd_dihydroart`      (from RUV DHA = 58.5%) | 0.585 | Table 2 (%RSE 3.34) |
 

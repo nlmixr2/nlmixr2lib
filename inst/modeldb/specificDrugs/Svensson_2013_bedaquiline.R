@@ -164,10 +164,10 @@ Svensson_2013_bedaquiline <- function() {
     etalcl + etalcl_m2 + etalcl_m3 ~ c(0.054646,
                                        0.012897, 0.034733,
                                       -0.008854, 0.039008, 0.086178)  # Svensson 2013 Table 3 BSV CL = 23.7%, BSV CL_M2 = 18.8% (corr with CL = +29.6%), BSV CL_M3 = 30.0% (corr with CL = -12.9%, corr with CL_M2 = +71.3%)
-    etalvc      ~ 0.113081  # var = log(1 + 0.346^2) = 0.113081 ; Svensson 2013 Table 3 BSV V = 34.6% CV (RSE 32%)
-    etalq       ~ 0.034372  # var = log(1 + 0.187^2) = 0.034372 ; Svensson 2013 Table 3 BSV Q1 = 18.7% CV (RSE 15%)
-    etalvc_m2   ~ 0.080214  # var = log(1 + 0.289^2) = 0.080214 ; Svensson 2013 Table 3 BSV V M2 = 28.9% CV (RSE 19%)
-    etalvp_m2   ~ 0.064902  # var = log(1 + 0.259^2) = 0.064902 ; Svensson 2013 Table 3 BSV VP 1M2 = 25.9% CV (RSE 39%)
+    etalvc      ~ log(1 + 0.346^2)  # Svensson 2013 Table 3 BSV V = 34.6% CV (RSE 32%)
+    etalq       ~ log(1 + 0.187^2)  # Svensson 2013 Table 3 BSV Q1 = 18.7% CV (RSE 15%)
+    etalvc_m2   ~ log(1 + 0.289^2)  # Svensson 2013 Table 3 BSV V M2 = 28.9% CV (RSE 19%)
+    etalvp_m2   ~ log(1 + 0.259^2)  # Svensson 2013 Table 3 BSV VP 1M2 = 25.9% CV (RSE 39%)
 
     # Residual error. The paper reports proportional residual errors on BDQ
     # (23.9% CV), M2 (17.7% CV), and M3 (15.0% CV) plus correlations across

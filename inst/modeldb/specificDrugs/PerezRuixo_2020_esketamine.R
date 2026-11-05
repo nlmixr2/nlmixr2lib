@@ -218,7 +218,7 @@ PerezRuixo_2020_esketamine <- function() {
     etalvh      ~ 0.113             # Table 3 omega(Vh) = 34.6 CV%; omega^2 = log(1 + 0.346^2) = 0.113
     etalkel     ~ 0.892             # Table 3 omega(kel) = 120 CV%; omega^2 = log(1 + 1.2^2) = 0.892
     etalkmet    ~ 0.0862            # Table 3 omega(kmet) reported (Section 2.4) but Estimate column blank; placeholder CV = 30% used (omega^2 = log(1 + 0.30^2) = 0.0862) - see vignette Errata
-    etalvcn     ~ 0.0955            # Table 3 omega(Vcn/F) = 31.6 CV%; omega^2 = log(1 + 0.316^2) = 0.0955
+    etalvcn     ~ log(1 + 0.316^2)  # Table 3 omega(Vcn/F) = 31.6 CV%
     etalcln     ~ 0.0625            # Table 3 omega(CLn/F) = 25.4 CV%; omega^2 = log(1 + 0.254^2) = 0.0625
 
     # ------------------- Residual error -------------------------------------

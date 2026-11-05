@@ -64,26 +64,26 @@ Barnett_2018_rifampicin <- function() {
 
     # IIV -- log-normal variances computed from Table 1 IIV CV% column
     # via the standard omega^2 = log(1 + CV^2) conversion.
-    etalka  ~ 0.19199   # Table 1, RIF IIV ka  = 46.0% CV; log(1 + 0.46^2)  = 0.19199
-    etalcl  ~ 0.08991   # Table 1, RIF IIV CL  = 30.7% CV; log(1 + 0.307^2) = 0.08991
-    etalvc  ~ 0.03734   # Table 1, RIF IIV V   = 19.5% CV; log(1 + 0.195^2) = 0.03734
-    etalmtt ~ 0.39017   # Table 1, RIF IIV MTT = 69.1% CV; log(1 + 0.691^2) = 0.39017
-    etalnn  ~ 0.05731   # Table 1, RIF IIV n   = 24.3% CV; log(1 + 0.243^2) = 0.05731
+    etalka  ~ log(1 + 0.46^2)  # Table 1, RIF IIV ka  = 46.0% CV
+    etalcl  ~ log(1 + 0.307^2)  # Table 1, RIF IIV CL  = 30.7% CV
+    etalvc  ~ log(1 + 0.195^2)  # Table 1, RIF IIV V   = 19.5% CV
+    etalmtt ~ log(1 + 0.691^2)  # Table 1, RIF IIV MTT = 69.1% CV
+    etalnn  ~ log(1 + 0.243^2)  # Table 1, RIF IIV n   = 24.3% CV
 
     # IOV -- Barnett 2018 reports a single shared IOV variance per
     # parameter (ka, V, MTT) across study occasions. Encoded with the
     # first occasion's eta estimated and the others fixed to the same
     # value (matching the Wilkins_2008_rifampicin OMEGA BLOCK(1) SAME
     # idiom; nlmixr2 has no SAME shortcut).
-    etaiov_ka_1  ~ 0.21674          # Table 1, RIF IOV ka  = 49.2% CV; log(1 + 0.492^2) = 0.21674
-    etaiov_ka_2  ~ fix(0.21674)     # same IOV variance across occasions
-    etaiov_ka_3  ~ fix(0.21674)
+    etaiov_ka_1  ~ log(1 + 0.492^2)  # Table 1, RIF IOV ka  = 49.2% CV
+    etaiov_ka_2  ~ fix(log(1 + 0.492^2))  # same IOV variance across occasions
+    etaiov_ka_3  ~ fix(log(1 + 0.492^2))
     etaiov_vc_1  ~ 0.00434          # Table 1, RIF IOV V   = 6.6%  CV; log(1 + 0.066^2) = 0.00434
     etaiov_vc_2  ~ fix(0.00434)
     etaiov_vc_3  ~ fix(0.00434)
-    etaiov_mtt_1 ~ 0.20428          # Table 1, RIF IOV MTT = 47.6% CV; log(1 + 0.476^2) = 0.20428
-    etaiov_mtt_2 ~ fix(0.20428)
-    etaiov_mtt_3 ~ fix(0.20428)
+    etaiov_mtt_1 ~ log(1 + 0.476^2)  # Table 1, RIF IOV MTT = 47.6% CV
+    etaiov_mtt_2 ~ fix(log(1 + 0.476^2))
+    etaiov_mtt_3 ~ fix(log(1 + 0.476^2))
 
     # Residual error -- combined additive + proportional. The additive
     # component is paper-reported in umol/L and fixed at estimation.

@@ -70,9 +70,9 @@ table below collects them in one place for review.
 | `e_preg_k_m8m_out`           | theta_PREG = 0.67     | Table 5 row `k_M8m_M8o, theta_PREG` |
 | `e_wt_k_m8m_out`             | theta_BW = 1.41       | Table 5 row `k_M8m_M8o, theta_BW` |
 | `e_conmed_nnrti_k_m8m_out`   | theta_NNRTI = 1.48    | Table 5 row `k_M8m_M8o, theta_NNRTI` |
-| `etalvc` variance            | CV 132%, omega^2 = log(1+1.32^2) = 1.0089 | Table 5 row w(V) |
+| `etalvc` variance            | CV 132%, omega^2 = log(1+1.32^2) = 1.0088 | Table 5 row w(V) |
 | `etalcl` variance            | CV 53%, omega^2 = 0.2476  | Table 5 row w(CL_Nm_No/F) |
-| `etalk_m8m_out` variance     | CV 74%, omega^2 = 0.4368  | Table 5 row w(k_M8m_M8o/F) |
+| `etalk_m8m_out` variance     | CV 74%, omega^2 = 0.4367  | Table 5 row w(k_M8m_M8o/F) |
 | `etalcl_nc` variance         | CV 34%, omega^2 = 0.1094  | Table 5 row w(CL_Nm_Nc) |
 | `etalk_m8m_m8c` variance     | CV 76%, omega^2 = 0.4560  | Table 5 row w(k_M8m_M8c) |
 | `addSd` (mother nelfinavir)  | 1.07 mg/L             | Table 5 row s_NELFI_MOTHER |

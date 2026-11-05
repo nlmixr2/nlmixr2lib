@@ -103,7 +103,7 @@ Standing_2008_diclofenac <- function() {
     etalmtt2   ~ 0.8624   # Table 2 IIV(MTT2)   = 117% CV; log(1 + 1.17^2) = log(2.3689) = 0.8624
     etaln2     ~ 1.1509   # Table 2 IIV(N2)     = 147% CV; log(1 + 1.47^2) = log(3.1609) = 1.1509
     etalka2    ~ 0.2152   # Table 2 IIV(t1/2A2) = 49%  CV; equivalent on log(ka2) scale
-    etalvc     ~ 0.2562   # Table 2 IIV(Vd/F)   = 54%  CV; log(1 + 0.54^2) = log(1.2916) = 0.2562
+    etalvc     ~ log(1 + 0.54^2)  # Table 2 IIV(Vd/F)   = 54%  CV
     etalcl     ~ 0.0654   # Table 2 IIV(CL/F)   = 26%  CV; log(1 + 0.26^2) = log(1.0676) = 0.0654
 
     # Residual proportional error stratified by cohort (Methods page 848:

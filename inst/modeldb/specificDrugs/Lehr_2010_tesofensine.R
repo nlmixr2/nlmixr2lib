@@ -91,9 +91,9 @@ Lehr_2010_tesofensine <- function() {
     #            = 0.72 * 0.1200 = 0.0863
     etalcl_nonmet + etalvc ~ c(0.1640, 0.0863, 0.0878)   # CL_non-met CV%=42.2 -> omega^2=log(1+0.422^2)=0.1640; V2 CV%=30.3 -> 0.0878; rho=0.72 -> cov=0.0863
     etalcl_m1 ~ 0.0444                                    # CL_M1 CV%=21.3 -> omega^2=log(1+0.213^2)=0.0444
-    etalvc_m1 ~ 0.1664                                    # V3 CV%=42.5 -> omega^2=log(1+0.425^2)=0.1664
+    etalvc_m1 ~ log(1 + 0.425^2)  # V3 CV%=42.5
     etalemax  ~ 0.6700                                    # Emax CV%=97.7 -> omega^2=log(1+0.977^2)=0.6700; multiplicative IIV on |Emax|, sign preserved by the lognormal form
-    etalbeta_pla ~ fixed(0.9698)                          # beta CV%=128 FIX -> omega^2=log(1+1.28^2)=0.9698; carried from the literature placebo model (Lehr 2010 ref 34)
+    etalbeta_pla ~ fixed(log(1 + 1.28^2))  # beta CV%=128 FIX; carried from the literature placebo model (Lehr 2010 ref 34)
 
     # Residual error
     propSd          <- 0.149  ; label("Proportional residual error on tesofensine plasma concentration (fraction)") # Lehr 2010 Table I: prop err tesofensine = 14.9%, RSE 23.5%

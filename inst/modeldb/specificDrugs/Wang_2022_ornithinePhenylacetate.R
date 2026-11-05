@@ -111,8 +111,8 @@ Wang_2022_ornithinePhenylacetate <- function() {
     # omega^2 = log(1 + CV^2). The control streams estimate OMEGA BLOCK(3)
     # for PAA and BLOCK(2) for ORN CL-V, but no covariance is reported, so
     # the blocks are encoded diagonally.
-    etalvmax ~ 0.2074 # Table 2: BSV Vmax 48%; log(1 + 0.48^2)
-    etalkm ~ 0.6133 # Table 2: BSV Km 92%; log(1 + 0.92^2)
+    etalvmax ~ log(1 + 0.48^2)  # Table 2: BSV Vmax 48%
+    etalkm ~ log(1 + 0.92^2)  # Table 2: BSV Km 92%
     etalvc ~ 0.1553 # Table 2: BSV VPAA 41%; log(1 + 0.41^2)
     # PAGN: the control stream carries ETA(1) on VPAGN and ETA(2) on CLPAGN,
     # but no variance is reported anywhere in the paper or ESM.

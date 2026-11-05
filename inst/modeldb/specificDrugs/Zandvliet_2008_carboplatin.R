@@ -85,10 +85,10 @@ Zandvliet_2008_carboplatin <- function() {
     # omega^2 = log(CV^2 + 1) for the log-normal etas. Per Equation 2 the
     # CL eta is applied multiplicatively to the sum (renal + non-renal),
     # i.e. on log(CL_total) rather than on log(theta1) or log(theta2).
-    etalcl ~ 0.01679 # log(0.13^2 + 1); IIV CL = 13% CV (Zandvliet 2008 Table 2 row 1 IIV)
+    etalcl ~ log(1 + 0.13^2)  # IIV CL = 13% CV (Zandvliet 2008 Table 2 row 1 IIV)
     etalvc ~ log(1 + 0.54^2)  # IIV V1 = 54% CV (Zandvliet 2008 Table 2 row 2 IIV)
-    etalq  ~ 0.19121 # log(0.46^2 + 1); IIV Q  = 46% CV (Zandvliet 2008 Table 2 row 3 IIV)
-    etalvp ~ 0.09159 # log(0.31^2 + 1); IIV V2 = 31% CV (Zandvliet 2008 Table 2 row 4 IIV)
+    etalq  ~ log(1 + 0.46^2)  # IIV Q  = 46% CV (Zandvliet 2008 Table 2 row 3 IIV)
+    etalvp ~ log(1 + 0.31^2)  # IIV V2 = 31% CV (Zandvliet 2008 Table 2 row 4 IIV)
 
     # Residual error. NONMEM was run with FOCE-INTER on log-transformed data,
     # ln(OBS) = ln(PRED) + eps, which is equivalent to a proportional error

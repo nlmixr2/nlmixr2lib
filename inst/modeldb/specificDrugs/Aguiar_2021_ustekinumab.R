@@ -169,8 +169,8 @@ Aguiar_2021_ustekinumab <- function() {
     etalvc         ~ 0.00954   # 9.79% CV (Aguiar 2021 Table 2)  -> log(0.0979^2 + 1) = 0.00954
     etalvp         ~ 0.05645   # 24.1% CV (Aguiar 2021 Table 2)  -> log(0.241^2 + 1) = 0.05645
     etalogitfdepot ~ 0.02993   # SD = 0.173 on logit scale (Aguiar 2021 Table 2; reported as %, SD)
-    etalksyn       ~ 0.68522   # 99.2% CV (Aguiar 2021 Table 2)  -> log(0.992^2 + 1) = 0.68522
-    etalfc0        ~ 0.68309   # 99.0% CV (Aguiar 2021 Table 3)  -> log(0.99^2 + 1) = 0.68309
+    etalksyn       ~ log(1 + 0.992^2)  # 99.2% CV (Aguiar 2021 Table 2)
+    etalfc0        ~ log(1 + 0.99^2)  # 99.0% CV (Aguiar 2021 Table 3)
 
     # ----- Residual error -----
     # Combined additive + proportional on free ustekinumab in central (Cc, nmol/L).

@@ -158,7 +158,7 @@ Courlet_2022_palbociclib_anc <- function() {
     etalka ~ 0.94098 # Table 2: omega ka = 125% CV -> log(1.25^2 + 1) = 0.94098
     etalcl ~ 0.080750 # Table 2: omega CL = 29% CV -> log(0.29^2 + 1) = 0.080750
     etalvc ~ 0.097490 # Table 2: omega Vc = 32% CV -> log(0.32^2 + 1) = 0.097490
-    etalcirc0 ~ 0.115567 # Table 2: omega base = 35% CV -> log(0.35^2 + 1) = 0.115567
+    etalcirc0 ~ log(1 + 0.35^2)  # Table 2: omega base = 35% CV
     etalmtt ~ 0.014297 # Table 2: omega MTT = 12% CV -> log(0.12^2 + 1) = 0.014297
     etalemax ~ 0.022250 # Table 2: omega Emax = 15% CV -> log(0.15^2 + 1) = 0.022250
     etalec50 ~ 0.623207 # Table 2: omega EC50 = 93% CV -> log(0.93^2 + 1) = 0.623207

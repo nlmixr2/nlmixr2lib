@@ -112,12 +112,12 @@ Jin_2014_simvastatin <- function() {
                                 0.2613,  0.3664,
                                -0.0939, -0.1825, 0.6293)                            # Jin 2014 Table III: IIV %CV V_central 79.0 / CL 66.5 / Q 93.6; CORR V_central-CL 0.62, V_central-Q -0.17, CL-Q -0.38
     etalka1   ~ 0.2003                                                              # Jin 2014 Table III: IIV Ka1 = 47.1 % CV -> log(1 + 0.471^2)
-    etalka2   ~ 0.1763                                                              # Jin 2014 Table III: IIV Ka2 = 43.9 % CV -> log(1 + 0.439^2)
+    etalka2   ~ log(1 + 0.439^2)  # Jin 2014 Table III: IIV Ka2 = 43.9 % CV
     etalka3   ~ 0.2231                                                              # Jin 2014 Table III: IIV Ka3 = 50.0 % CV -> log(1 + 0.500^2)
-    etalba1   ~ 0.2043                                                              # Jin 2014 Table III: IIV BA1 = 47.6 % CV -> log(1 + 0.476^2)
+    etalba1   ~ log(1 + 0.476^2)  # Jin 2014 Table III: IIV BA1 = 47.6 % CV
     etalba2   ~ 0.1874                                                              # Jin 2014 Table III: IIV BA2 = 45.4 % CV -> log(1 + 0.454^2)
     etallag2  ~ 0.1949                                                              # Jin 2014 Table III: IIV ALAG2 = 46.4 % CV -> log(1 + 0.464^2)
-    etallag3d ~ 0.1858                                                              # Jin 2014 Table III: IIV ALAG3-ALAG2 = 45.2 % CV -> log(1 + 0.452^2)
+    etallag3d ~ log(1 + 0.452^2)  # Jin 2014 Table III: IIV ALAG3-ALAG2 = 45.2 % CV
     etaldur1  ~ 0.2003                                                              # Jin 2014 Table III: IIV D1 = 47.1 % CV -> log(1 + 0.471^2)
     etaldur2  ~ 0.1942                                                              # Jin 2014 Table III: IIV D2 = 46.3 % CV -> log(1 + 0.463^2)
     etaldur3  ~ 0.1927                                                              # Jin 2014 Table III: IIV D3 = 46.1 % CV -> log(1 + 0.461^2)

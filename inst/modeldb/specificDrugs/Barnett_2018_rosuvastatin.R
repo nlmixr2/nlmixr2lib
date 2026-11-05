@@ -92,11 +92,11 @@ Barnett_2018_rosuvastatin <- function() {
     # via the standard omega^2 = log(1 + CV^2) conversion. V2,RSV had
     # no IIV estimated in the source (Table 1 shows '-').
     etalka  ~ 0.02344  # Table 1, RSV IIV ka  = 15.4% CV (RSE 57%);   log(1 + 0.154^2) = 0.02344
-    etalclr ~ 0.13427  # Table 1, RSV IIV CLr = 37.9% CV (RSE 28.8%); log(1 + 0.379^2) = 0.13427
-    etalclb ~ 0.11187  # Table 1, RSV IIV CLb = 34.4% CV (RSE 22%);   log(1 + 0.344^2) = 0.11187
+    etalclr ~ log(1 + 0.379^2)  # Table 1, RSV IIV CLr = 37.9% CV (RSE 28.8%)
+    etalclb ~ log(1 + 0.344^2)  # Table 1, RSV IIV CLb = 34.4% CV (RSE 22%)
     etalvc  ~ 0.04643  # Table 1, RSV IIV V1  = 21.8% CV (RSE 48.4%); log(1 + 0.218^2) = 0.04643
-    etalq   ~ 0.18581  # Table 1, RSV IIV Q   = 45.2% CV (RSE 34.4%); log(1 + 0.452^2) = 0.18581
-    etalki  ~ 0.10577  # Table 1, RSV IIV Ki  = 33.4% CV (RSE 34.5%); log(1 + 0.334^2) = 0.10577
+    etalq   ~ log(1 + 0.452^2)  # Table 1, RSV IIV Q   = 45.2% CV (RSE 34.4%)
+    etalki  ~ log(1 + 0.334^2)  # Table 1, RSV IIV Ki  = 33.4% CV (RSE 34.5%)
 
     # IOV on log-Ka across the two RSV occasions (OCC2 and OCC3 in the
     # source data; we keep three eta slots for OCC1..OCC3 to match the

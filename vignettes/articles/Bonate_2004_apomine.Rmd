@@ -83,7 +83,7 @@ by `readModelDb()` and then inspect `$population`).
 | `ld50` (D50) | 128 mg | Table 3 |
 | `e_food_f` (theta_food) | -0.360 | Table 3 |
 | `etalcl` (BSV CL; omega^2 = log(CV^2 + 1)) | log(0.68^2 + 1) = 0.3801 | Table 3 BSV CL = 68% |
-| `etalvc` (BSV Vc) | log(0.30^2 + 1) = 0.08619 | Table 3 BSV TVV2 = 30% |
+| `etalvc` (BSV Vc) | log(0.30^2 + 1) = 0.08618 | Table 3 BSV TVV2 = 30% |
 | `etalvp` (BSV Vp) | log(1.41^2 + 1) = 1.0946 | Table 3 BSV V3 = 141% |
 | `etalcl_t50` (BSV t50) | log(0.88^2 + 1) = 0.5735 | Table 3 BSV t50 = 88% |
 | `etalka` (BSV ka, common to both groups) | log(1.45^2 + 1) = 1.1322 | Table 3 BSV ka = 145% |

@@ -62,11 +62,11 @@ Per-parameter origins are recorded as inline comments next to each `ini()` entry
 | `lfdepot` | fixed(log(1)) | derived; F = 1 anchor for the F-relative CL and V parameterisation |
 | `e_susp_mat` (formulation effect) | 0.23 | Table 2 "Effect of suspending on MAT (%) = 23" (RSE 43.0%; 95% CI 2.1-48%, P = 0.03) |
 | Block IIV CL_BDQ / CL_M2 (var 0.02891, 0.04122; cor 0.085) | | Table 2 IIV CL_BDQ = 17.1%, IIV CL_M2 = 20.5%, cor 8.5% |
-| Diagonal IIV V_BDQ (var 0.07682) | | Table 2 IIV V_BDQ = 28.3% CV |
-| Diagonal IIV Q1_BDQ (var 0.02957) | | Table 2 IIV Q_BDQ,1 = 17.3% CV |
-| Diagonal IIV V_M2 (var 0.06677) | | Table 2 IIV V_M2 = 26.3% CV |
-| Diagonal IIV VP_M2 (var 0.04863) | | Table 2 IIV VP_M2 = 22.3% CV |
-| Diagonal IIV F (var 0.04983) | | Table 2 IIV F = 22.6% CV (IOV F 9.1% dropped) |
+| Diagonal IIV V_BDQ (var 0.07704) | | Table 2 IIV V_BDQ = 28.3% CV |
+| Diagonal IIV Q1_BDQ (var 0.02949) | | Table 2 IIV Q_BDQ,1 = 17.3% CV |
+| Diagonal IIV V_M2 (var 0.06688) | | Table 2 IIV V_M2 = 26.3% CV |
+| Diagonal IIV VP_M2 (var 0.04853) | | Table 2 IIV VP_M2 = 22.3% CV |
+| Diagonal IIV F (var 0.04981) | | Table 2 IIV F = 22.6% CV (IOV F 9.1% dropped) |
 | Diagonal IIV MAT (var 0.36434) | | Table 2 IOV MAT = 66.3% CV folded as BSV-MAT |
 | `propSd` (BDQ residual) | 0.231 | Table 2 "Proportional error BDQ = 23.1% CV" |
 | `propSd_m2` (M2 residual) | 0.114 | Table 2 "Proportional error M2 = 11.4% CV" |

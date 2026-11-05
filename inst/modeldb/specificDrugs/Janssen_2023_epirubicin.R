@@ -81,7 +81,7 @@ Janssen_2023_epirubicin <- function() {
 
     # --- IIV (Table 1 reports CV% for CL only) ------------------------------
     # omega^2 = log(CV^2 + 1)
-    etalcl ~ fixed(0.022252)   # Table 1: CL IIV 15% CV -> log(0.15^2 + 1)
+    etalcl ~ fixed(log(1 + 0.15^2))  # Table 1: CL IIV 15% CV
 
     # --- Residual error -----------------------------------------------------
     propSd <- fixed(0); label("Proportional residual error (fraction; not reported)")  # Janssen 2023 reports predictions, never a residual-error model

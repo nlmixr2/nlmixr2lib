@@ -66,7 +66,7 @@ Rode_2018_turoctocogAlfaPegol_mouse <- function() {
     lka <- log(0.094); label("First-order SC absorption rate constant (1/h)") # Table S1 'Ka' = 0.094 1/h [95% CI 0.072, 0.12]
     lfdepot <- log(0.24); label("SC bioavailability (fraction)") # Table S1 'F' = 24% [95% CI 21, 27]
 
-    etalvc ~ 0.047268 # Table S1 IIV on V/Bw 22% CV -> log(1 + 0.22^2)
+    etalvc ~ log(1 + 0.22^2)  # Table S1 IIV on V/Bw 22% CV
 
     propSd <- 0.32; label("Proportional residual error (fraction)") # Table S1 proportional error = 32% [95% CI 26, 38]
   })

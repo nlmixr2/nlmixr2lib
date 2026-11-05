@@ -71,9 +71,9 @@ below collects them in one place for review.
 | `ltlag` (lag time for Group 2 / P2) | 1.96 h | Table 3 ALAG_P2 (RSE 1.4 %) |
 | Lag time for Group 1 / P1 | 0 (fixed) | Table 3 "ALAG_P1, lag time for population without delayed absorption (h) -- 0, fixed" |
 | `etalka` (IIV ka; omega^2 = log(1 + CV^2)) | log(1 + 0.730^2) = 0.4272 | Table 3 IIV ka = 73.0 % CV (RSE 24.8 %) |
-| `etalcl` (IIV CL) | log(1 + 0.374^2) = 0.1311 | Table 3 IIV CL = 37.4 % CV (RSE 23.0 %) |
-| `etalvc` (IIV V_central) | log(1 + 0.375^2) = 0.1318 | Table 3 IIV V_central = 37.5 % CV (RSE 68.4 %) |
-| `etalq` (IIV Q) | log(1 + 0.756^2) = 0.4524 | Table 3 IIV Q = 75.6 % CV (RSE 29.2 %) |
+| `etalcl` (IIV CL) | log(1 + 0.374^2) = 0.1309 | Table 3 IIV CL = 37.4 % CV (RSE 23.0 %) |
+| `etalvc` (IIV V_central) | log(1 + 0.375^2) = 0.1316 | Table 3 IIV V_central = 37.5 % CV (RSE 68.4 %) |
+| `etalq` (IIV Q) | log(1 + 0.756^2) = 0.4521 | Table 3 IIV Q = 75.6 % CV (RSE 29.2 %) |
 | `etalvp` (IIV V_peripheral) | log(1 + 1.20^2) = 0.8920 | Table 3 IIV V_peripheral = 120 % CV (RSE 30.4 %) |
 | `etalfdepot` (IIV F) | log(1 + 0.447^2) = 0.1820 | Table 3 IIV F = 44.7 % CV (RSE 37.5 %) |
 | `propSd` (proportional residual SD) | 0.423 | Table 3 Residual intra-individual variability = 42.3 % CV (RSE 6.9 %) |

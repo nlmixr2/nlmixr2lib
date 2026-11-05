@@ -113,7 +113,7 @@ Gupta_2006_peginterferon_alfa_2b <- function() {
     # The Methods text explicitly enumerates only eta_CL0 and eta_T50, but Table 3 also
     # reports omega(CV) = 59% for V, so the final model carries IIV on V as well.
     etalcl  ~ 0.1156               # Gupta 2006 Table 3: omega(CV) CL0 = 35%  -> omega^2 = log(0.35^2 + 1) = 0.1156
-    etalcl_t50 ~ 0.7833               # Gupta 2006 Table 3: omega(CV) T50 = 109% -> omega^2 = log(1.09^2 + 1) = 0.7833
+    etalcl_t50 ~ log(1 + 1.09^2)  # Gupta 2006 Table 3: omega(CV) T50 = 109%
     etalvc  ~ 0.2986               # Gupta 2006 Table 3: omega(CV) V   = 59%  -> omega^2 = log(0.59^2 + 1) = 0.2986
 
     # Residual error: Gupta 2006 Table 3 reports sigma_epsilon = 41.4 +/- 84.2% with a

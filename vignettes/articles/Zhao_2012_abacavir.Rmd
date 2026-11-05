@@ -60,10 +60,10 @@ each `ini()` entry of
 | `e_wt_cl`            | 1.14       | Zhao 2012 Table 3 (theta_5 = 1.14; estimated PWR exponent on WT for CL/F) |
 | Reference WT (12 kg) | n/a        | Zhao 2012 Results (cohort median used as the WT reference for the power model) |
 | `etalcl`             | 0.03884    | Zhao 2012 Table 3 (IIV CL/F = 19.9% CV; omega^2 = log(1 + 0.199^2)) |
-| `etalvp`             | 0.14977    | Zhao 2012 Table 3 (IIV V2/F = 40.2% CV; omega^2 = log(1 + 0.402^2)) |
+| `etalvp`             | 0.14980    | Zhao 2012 Table 3 (IIV V2/F = 40.2% CV; omega^2 = log(1 + 0.402^2)) |
 | `etalq`              | 0.09120    | Zhao 2012 Table 3 (IIV Q/F = 30.9% CV; omega^2 = log(1 + 0.309^2)) |
-| `etaiov_cl_1`        | 0.04559    | Zhao 2012 Table 3 (IOV CL/F = 21.6% CV; omega^2 = log(1 + 0.216^2)); occasion-1 estimate |
-| `etaiov_cl_2`        | fix(0.04559) | Zhao 2012 Table 3 (IOV CL/F shared variance across occasions; NONMEM `$OMEGA BLOCK(1) SAME` translation) |
+| `etaiov_cl_1`        | 0.04560    | Zhao 2012 Table 3 (IOV CL/F = 21.6% CV; omega^2 = log(1 + 0.216^2)); occasion-1 estimate |
+| `etaiov_cl_2`        | fix(0.04560) | Zhao 2012 Table 3 (IOV CL/F shared variance across occasions; NONMEM `$OMEGA BLOCK(1) SAME` translation) |
 | `propSd`             | 0.141      | Zhao 2012 Table 3 (residual proportional = 14.1%) |
 | `d/dt(depot)`, `d/dt(central)`, `d/dt(peripheral1)` | n/a | Zhao 2012 Methods (two-compartment with first-order oral absorption and first-order elimination) |
 | `Cc <- central / vc` | n/a        | Standard linear-CL parameterisation; dose mg, volume L -> mg/L = ug/mL |
@@ -407,7 +407,7 @@ knitr::kable(
   explicitly via two per-occasion log-CL etas (`etaiov_cl_1`,
   `etaiov_cl_2`) multiplexed by the binary `oc1 / oc2`
   decomposition of the canonical `OCC` covariate; the second eta
-  is `fix(0.04559)` at the same variance as the first per the
+  is `fix(0.04560)` at the same variance as the first per the
   source's NONMEM `$OMEGA BLOCK(1) SAME` pattern. This matches
   the Jonsson 2011 ethambutol 4-occasion analogue and lets
   downstream users simulate either occasion by setting the `OCC`

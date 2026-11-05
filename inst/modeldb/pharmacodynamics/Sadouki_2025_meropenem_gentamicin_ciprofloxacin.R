@@ -179,16 +179,16 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
     # Sadouki 2025 Table 1 BSV column. For log-normal parameters BSV is %CV;
     # internal variance is omega^2 = log(1 + (CV/100)^2). For BETA the table
     # footnote says values are additive eta variance estimates (linear scale).
-    etalknet     ~ 0.01649  # 12.9% CV: log(1 + 0.129^2) = 0.01649; Sadouki 2025 Table 1 (Growth knet BSV)
+    etalknet     ~ log(1 + 0.129^2)  # 12.9% CV; Sadouki 2025 Table 1 (Growth knet BSV)
     etalemax_mer ~ 0.00294  # 5.43% CV: log(1 + 0.0543^2) = 0.00294; Sadouki 2025 Table 1
     etalic50_mer ~ log(1 + 0.723^2)  # 72.3% CV; Sadouki 2025 Table 1
-    etalhill_mer ~ 0.06738  # 26.4% CV: log(1 + 0.264^2) = 0.06738; Sadouki 2025 Table 1
+    etalhill_mer ~ log(1 + 0.264^2)  # 26.4% CV; Sadouki 2025 Table 1
     etabeta_mer  ~ 1.58     # additive eta variance on BETA_Mer (linear scale); Sadouki 2025 Table 1, footnote
     etalemax_gen ~ log(1 + 0.255^2)  # 25.5% CV; Sadouki 2025 Table 1 (Gen Emax BSV)
-    etalhill_gen ~ 0.01624  # 12.8% CV: log(1 + 0.128^2) = 0.01624; Sadouki 2025 Table 1
+    etalhill_gen ~ log(1 + 0.128^2)  # 12.8% CV; Sadouki 2025 Table 1
     etalemax_cip ~ log(1 + 0.376^2)  # 37.6% CV; Sadouki 2025 Table 1
     etalic50_cip ~ 0.00733  # 8.58% CV: log(1 + 0.0858^2) = 0.00733; Sadouki 2025 Table 1
-    etalhill_cip ~ 0.01451  # 12.1% CV: log(1 + 0.121^2) = 0.01451; Sadouki 2025 Table 1
+    etalhill_cip ~ log(1 + 0.121^2)  # 12.1% CV; Sadouki 2025 Table 1
 
     # ---- Residual error ----
     # 'Additive on logarithmic data' per Sadouki 2025 Table 1. Implemented as

@@ -113,15 +113,15 @@ Jeon_2013_interferonAlfa2a <- function() {
     # is omega^2 = log(CV^2 + 1).
     #
     # PK IIV: CL, V, D2, RF, Ka (no IIV reported on ALAG).
-    #   omega^2_CL  = log(0.261^2 + 1) = 0.06598
-    #   omega^2_V   = log(0.238^2 + 1) = 0.05504
-    #   omega^2_D2  = log(0.357^2 + 1) = 0.12001
-    #   omega^2_RF  = log(0.347^2 + 1) = 0.11373
+    #   omega^2_CL  = log(0.261^2 + 1) = 0.06590
+    #   omega^2_V   = log(0.238^2 + 1) = 0.05510
+    #   omega^2_D2  = log(0.357^2 + 1) = 0.11996
+    #   omega^2_RF  = log(0.347^2 + 1) = 0.11369
     #   omega^2_Ka  = log(0.770^2 + 1) = 0.46556
-    etalcl ~ 0.06598                                                                                                    # Jeon 2013 Table 4: omega_CL = 26.1% -> omega^2 = log(0.261^2 + 1)
-    etalvc ~ 0.05504                                                                                                    # Jeon 2013 Table 4: omega_V = 23.8% -> omega^2 = log(0.238^2 + 1)
-    etald2 ~ 0.12001                                                                                                    # Jeon 2013 Table 4: omega_D2 = 35.7% -> omega^2 = log(0.357^2 + 1)
-    etalrf ~ 0.11373                                                                                                    # Jeon 2013 Table 4: omega_RF = 34.7% -> omega^2 = log(0.347^2 + 1)
+    etalcl ~ log(1 + 0.261^2)  # Jeon 2013 Table 4: omega_CL = 26.1%
+    etalvc ~ log(1 + 0.238^2)  # Jeon 2013 Table 4: omega_V = 23.8%
+    etald2 ~ log(1 + 0.357^2)  # Jeon 2013 Table 4: omega_D2 = 35.7%
+    etalrf ~ log(1 + 0.347^2)  # Jeon 2013 Table 4: omega_RF = 34.7%
     etalka ~ log(1 + 0.77^2)  # Jeon 2013 Table 4: omega_Ka = 77.0%
 
     # PD IIV: BASE, CB, GA, ECB, MTT (no IIV reported on Kout, EMAX, CA).

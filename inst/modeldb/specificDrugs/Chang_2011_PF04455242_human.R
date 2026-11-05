@@ -74,9 +74,9 @@ Chang_2011_PF04455242_human <- function() {
     # Table III: omega-CL = 53.7%CV -> log(0.537^2+1) = 0.2533
     #            omega-Vc = 48.5%CV -> log(0.485^2+1) = 0.2113
     #            cov(omega-CL, omega-Vc) interpreted as r = 0.485 (see comment above)
-    etald1   ~ 0.0896  # Table III, omega-D1   = 30.6%CV -> log(0.306^2+1) = 0.0896
-    etalvp   ~ 0.0721  # Table III, omega-Vp   = 27.3%CV -> log(0.273^2+1) = 0.0721
-    etalq    ~ 0.0721  # Table III, omega-Q    = 27.3%CV -> log(0.273^2+1) = 0.0721
+    etald1   ~ log(1 + 0.306^2)  # Table III, omega-D1   = 30.6%CV
+    etalvp   ~ log(1 + 0.273^2)  # Table III, omega-Vp   = 27.3%CV
+    etalq    ~ log(1 + 0.273^2)  # Table III, omega-Q    = 27.3%CV
     etaltlag ~ log(1 + 0.266^2)  # Table III, omega-ALAG1 = 26.6%CV
 
     expSd <- 0.326; label("PF-04455242 log-scale residual SD (unitless, lnorm; LTBS)")  # Table III, 32.6% under the LTBS specification Eq. 14

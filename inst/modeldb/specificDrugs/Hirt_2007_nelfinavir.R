@@ -219,9 +219,9 @@ Hirt_2007_nelfinavir <- function() {
     e_conmed_nnrti_k_m8m_out <- 1.48 ; label("Concomitant NNRTI additive multiplier on k_M8m_M8o")   # Table 5 row 'k_M8m_M8o, theta_NNRTI'
 
     # === IIV (exponential; omega^2 = log(CV^2 + 1) from Hirt 2007 Table 5 % CV) ===
-    etalvc          ~ 1.0089   # CV 132% on V/F           -> log(1 + 1.32^2)
+    etalvc          ~ log(1 + 1.32^2)  # CV 132% on V/F
     etalcl          ~ 0.2476   # CV 53%  on CL_Nm_No/F    -> log(1 + 0.53^2)
-    etalk_m8m_out   ~ 0.4368   # CV 74%  on k_M8m_M8o     -> log(1 + 0.74^2)
+    etalk_m8m_out   ~ log(1 + 0.74^2)  # CV 74%  on k_M8m_M8o
     etalcl_nc       ~ 0.1094   # CV 34%  on CL_Nm_Nc/F    -> log(1 + 0.34^2)
     etalk_m8m_m8c   ~ 0.4560   # CV 76%  on k_M8m_M8c     -> log(1 + 0.76^2)
 

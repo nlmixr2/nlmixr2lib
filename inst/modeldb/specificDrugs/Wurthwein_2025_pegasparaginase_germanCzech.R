@@ -203,7 +203,7 @@ Wurthwein_2025_pegasparaginase_germanCzech <- function() {
     # There is NO IIV on V or Qtr -- the control stream fixes both to 0 and the
     # 2021 ESM Section 2 states 'inter-individual variability (IIV) on Qtr or V
     # could be neglected'.
-    etalcl ~ 0.056918  # ESM Table S13 German/Czech (IIV CLinitial 24.2%, RSE 3.4%; bootstrap 24.2%, 95% CI 22.4-25.8) converted as log(1 + 0.242^2)
+    etalcl ~ log(1 + 0.242^2)  # ESM Table S13 German/Czech (IIV CLinitial 24.2%, RSE 3.4%; bootstrap 24.2%, 95% CI 22.4-25.8)
 
     # ---- Inter-occasion variability ----------------------------------------
     # On BOTH V and CLinitial, one occasion per administration. nlmixr2 has no
@@ -213,9 +213,9 @@ Wurthwein_2025_pegasparaginase_germanCzech <- function() {
     etaiov_vc_1 ~ 0.020524        # ESM Table S13 German/Czech (IOV V 14.4%, RSE 7.8%; bootstrap 14.2%, 95% CI 11.2-16.8) converted as log(1 + 0.144^2)
     etaiov_vc_2 ~ fixed(0.020524) # SAME-equivalent: equal to the occasion-1 IOV variance
     etaiov_vc_3 ~ fixed(0.020524) # SAME-equivalent: equal to the occasion-1 IOV variance
-    etaiov_cl_1 ~ 0.049805        # ESM Table S13 German/Czech (IOV CLinitial 22.6%, RSE 3.5%; bootstrap 22.6%, 95% CI 20.8-24.3) converted as log(1 + 0.226^2)
-    etaiov_cl_2 ~ fixed(0.049805) # SAME-equivalent: equal to the occasion-1 IOV variance
-    etaiov_cl_3 ~ fixed(0.049805) # SAME-equivalent: equal to the occasion-1 IOV variance
+    etaiov_cl_1 ~ log(1 + 0.226^2)  # ESM Table S13 German/Czech (IOV CLinitial 22.6%, RSE 3.5%; bootstrap 22.6%, 95% CI 20.8-24.3)
+    etaiov_cl_2 ~ fixed(log(1 + 0.226^2))  # SAME-equivalent: equal to the occasion-1 IOV variance
+    etaiov_cl_3 ~ fixed(log(1 + 0.226^2))  # SAME-equivalent: equal to the occasion-1 IOV variance
 
     # ---- Residual error ----------------------------------------------------
     # Wurthwein 2021 ESM Section 4 $ERROR block:

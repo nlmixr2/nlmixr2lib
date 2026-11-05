@@ -132,7 +132,7 @@ Choy_2016_T2DM_WHIG <- function() {
     etalefbmax   ~ log(1 + 0.499^2)  # Choy 2016 Table 1; log-normal, CV 49.9%
     etalefb50    ~ log(1 + 0.349^2)  # Choy 2016 Table 1; log-normal, CV 34.9%
     etarb        ~ 0.04410   # Choy 2016 Table 1; normal SD 0.21 on the logit-rate scale (footnote b)
-    etalppg      ~ 0.02358   # Choy 2016 Table 1; log-normal, CV 15.4% -> log(1 + 0.154^2)
+    etalppg      ~ log(1 + 0.154^2)  # Choy 2016 Table 1; log-normal, CV 15.4%
     etaefde      ~ 0.12674   # Choy 2016 Table 1; normal SD 0.356 percent-points (footnote b; column/100)
     etaefp       ~ 0.16160   # Choy 2016 Table 1; normal SD 0.402 percent-points (footnote b)
     etaefup      ~ 0.55354   # Choy 2016 Table 1; normal SD 0.744 percent-points (footnote b)

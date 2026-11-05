@@ -186,9 +186,9 @@ Retlich_2015_linagliptin <- function() {
     # ---- PK inter-individual variability (Retlich 2015 Table 4; CV % converted to log-normal variance via omega^2 = log(1 + CV^2)) ----
     etalfdepot + etalcl ~ c(0.20271,
                             -0.09300, 0.07291)  # omega^2_F = log(1 + 0.474^2) = 0.20271 (CV 47.4%); omega^2_CL = log(1 + 0.275^2) = 0.07291 (CV 27.5%); rho(F,CL) = -0.765, cov = -0.765 * sqrt(0.20271 * 0.07291) = -0.09300
-    etalka    ~ 0.46019  # omega^2 = log(1 + 0.764^2) = 0.46019 (CV 76.4%)   Table 4 row xKa
-    etalvc    ~ 0.05772  # omega^2 = log(1 + 0.244^2) = 0.05772 (CV 24.4%)   Table 4 row xVC
-    etalbmaxc ~ 0.02227  # omega^2 = log(1 + 0.150^2) = 0.02227 (CV 15.0%)   Table 4 row xBmax,C
+    etalka    ~ log(1 + 0.764^2)  # (CV 76.4%)   Table 4 row xKa
+    etalvc    ~ log(1 + 0.244^2)  # (CV 24.4%)   Table 4 row xVC
+    etalbmaxc ~ log(1 + 0.15^2)  # (CV 15.0%)   Table 4 row xBmax,C
 
     # ---- PK residual error (Retlich 2015 Table 4 row r_prop,phase 2a; footnote h: coded as additive on log-transformed data) ----
     # For SD = 0.136 the additive-on-log error is approximately equivalent to a proportional CV of 13.6 % in linear space.
@@ -214,8 +214,8 @@ Retlich_2015_linagliptin <- function() {
     e_trig_ec50   <- -0.000153; label("Fractional change in EC50 per mg/dL TRIG deviation from 160 mg/dL (= -0.0153 % per mg/dL)") # Table 5 row TRIG_EC50
 
     # ---- PD inter-individual variability (Retlich 2015 Table 5) ----
-    etalbsl   ~ 0.02808  # omega^2 = log(1 + 0.169^2) = 0.02808 (CV 16.9%)  Table 5 row xBSL
-    etalec50  ~ 0.02341  # omega^2 = log(1 + 0.154^2) = 0.02341 (CV 15.4%)  Table 5 row xEC50
+    etalbsl   ~ log(1 + 0.169^2)  # (CV 16.9%)  Table 5 row xBSL
+    etalec50  ~ log(1 + 0.154^2)  # (CV 15.4%)  Table 5 row xEC50
 
     # ---- PD residual error (Retlich 2015 Table 5) ----
     propSd_Dpp4Act <- 0.148;  label("Proportional residual error for plasma DPP-4 activity (fraction)")  # Table 5 row r_prop

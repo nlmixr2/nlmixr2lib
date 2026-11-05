@@ -305,8 +305,8 @@ Bhagunde_2026_lecanemab_gfap <- function() {
     etalvp          ~ fixed(0.639175)                # Majid 2024 Table 1: IIV V2 94.6 %CV
 
     # Plasma GFAP interindividual variability (estimated here)
-    etalrbase          ~ 0.136213   # Bhagunde 2026 Table 1: IIV baseline GFAP 38.2 %CV -> omega^2 = log(1 + 0.382^2)
-    etalkin            ~ 1.018451   # Bhagunde 2026 Table 1: IIV KinG 133 %CV -> omega^2 = log(1 + 1.33^2)
+    etalrbase          ~ log(1 + 0.382^2)  # Bhagunde 2026 Table 1: IIV baseline GFAP 38.2 %CV
+    etalkin            ~ log(1 + 1.33^2)  # Bhagunde 2026 Table 1: IIV KinG 133 %CV
     etalogitslope_gfap ~ 0.866761   # Bhagunde 2026 Table 1: SLP additive on logit, SD 0.931 -> variance 0.931^2
 
     propSd <- 0.193; label("Proportional residual error on plasma GFAP (fraction)")  # Bhagunde 2026 Table 1: Proportional error 0.193 (RSE 1.56%), reported under a percent-CV heading but the value is the SD, i.e. 19.3 percent -- see the vignette Errata

@@ -85,7 +85,7 @@ Ozawa_2007_docetaxel <- function() {
     lvp2 <- log(225);  label("V3: peripheral2 volume of distribution (L)")                               # Table 2: theta_V3  = 225   (SE 46.2)
 
     # PK IIV (Table 2). Reported as CV%; converted to log-eta variance via log(1 + CV^2).
-    etalcl ~ 0.1478   # log(1 + 0.399^2) = 0.1478; Table 2 omega_CL = 39.9% CV
+    etalcl ~ log(1 + 0.399^2)  # Table 2 omega_CL = 39.9% CV
     etalvc ~ 0.0673   # log(1 + 0.264^2) = 0.0673; Table 2 omega_V1 = 26.4% CV
 
     # PK proportional residual error (Table 2 sigma = 26.8% CV; Methods text: "proportional model").
@@ -106,7 +106,7 @@ Ozawa_2007_docetaxel <- function() {
     # PD IIV (Table 3). Reported as CV%; converted to log-eta variance via log(1 + CV^2).
     # Appendix I $OMEGA fixes ETA(3) on gamma1 and ETA(4) on MIT to 0, so no IIV on those.
     etalmtt   ~ 0.01225  # log(1 + 0.111^2) = 0.01225; Table 3 omega_MTT   = 11.1% CV
-    etalslope ~ 0.3818   # log(1 + 0.682^2) = 0.3818;  Table 3 omega_SLOPE = 68.2% CV
+    etalslope ~ log(1 + 0.682^2)  # Table 3 omega_SLOPE = 68.2% CV
     etalip0   ~ 0.7930   # log(1 + 1.10^2)  = 0.7930;  Table 3 omega_IP0   = 110% CV
 
     # PD residual error: Appendix I $ERROR Y = F * EXP(ERR(1)) -- log-normal residual.

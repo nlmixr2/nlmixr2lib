@@ -194,14 +194,14 @@ PerezRuixo_2008_epoetinAlfa <- function() {
     # approximation is documented in the vignette Errata.
     # =================================================================
     etalka     ~ log(1 + 0.36^2)  # Table I prior CV(ka)    = 36%
-    etalcl     ~ 0.1029  # log(0.33^2 + 1) = 0.1029; Table I prior CV(CLI)   = 33%
-    etalvc     ~ 0.0913  # log(0.31^2 + 1) = 0.0913; Table I prior CV(V2)    = 31%
+    etalcl     ~ log(1 + 0.33^2)  # Table I prior CV(CLI)   = 33%
+    etalvc     ~ log(1 + 0.31^2)  # Table I prior CV(V2)    = 31%
     etalvmax   ~ 0.0808  # log(0.29^2 + 1) = 0.0808; Table I prior CV(Vmax)  = 29%
-    etald1     ~ 0.9398  # log(1.25^2 + 1) = 0.9398; Table I prior CV(D1)    = 125%
-    etaltlag2  ~ 0.2487  # log(0.53^2 + 1) = 0.2487; Table I prior CV(tlag2) = 53%
-    etalfdepot ~ 0.1147  # log(0.35^2 + 1) = 0.1147; Table I prior CV(F0)    = 35%
+    etald1     ~ log(1 + 1.25^2)  # Table I prior CV(D1)    = 125%
+    etaltlag2  ~ log(1 + 0.53^2)  # Table I prior CV(tlag2) = 53%
+    etalfdepot ~ log(1 + 0.35^2)  # Table I prior CV(F0)    = 35%
     etalrbase  ~ 0.0862  # log(0.30^2 + 1) = 0.0862; Table I prior CV(BSL)   = 30%
-    etalogitffo ~ 0.1854  # log(0.45^2 + 1) = 0.1854; Table I prior CV(fr)    = 45% (logit-domain approximation)
+    etalogitffo ~ log(1 + 0.45^2)  # Table I prior CV(fr)    = 45% (logit-domain approximation)
 
     # =================================================================
     # PD STRUCTURAL PARAMETERS (Perez-Ruixo 2008 Table II Model D,
@@ -231,10 +231,10 @@ PerezRuixo_2008_epoetinAlfa <- function() {
     # Methods 'The stimulation of kin was described as in model A as
     # well as equations for P1, ..., PNp.').
     # =================================================================
-    etalret0 ~ 0.0386  # log(0.198^2 + 1) = 0.0386; Table II Model D, IIV(RET0) = 19.8%
+    etalret0 ~ log(1 + 0.198^2)  # Table II Model D, IIV(RET0) = 19.8%
     etaltr   ~ log(1 + 0.362^2)  # Table II Model D, IIV(TR)   = 36.2%
     etaltp   ~ 0.0723  # log(0.274^2 + 1) = 0.0723; Table II Model D, IIV(Tp)   = 27.4%
-    etalsc50 ~ 0.7634  # log(1.07^2 + 1)  = 0.7634; Table II Model D, IIV(SC50) = 107%
+    etalsc50 ~ log(1 + 1.07^2)  # Table II Model D, IIV(SC50) = 107%
 
     # =================================================================
     # RESIDUAL ERROR

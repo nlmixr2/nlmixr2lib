@@ -86,7 +86,7 @@ Jang_2021_oxcarbazepine <- function() {
     # and ETA(3) on KA, so the second estimated IIV in Table 2 (labelled
     # 'IIV V2/F') is the ka variability; see the vignette for the check against
     # the Figure 1 VPC.
-    etalcl ~ 0.08183 # Jang 2021 Table 2 'IIV CL/F' 29.2 %CV: log(1 + 0.292^2)
+    etalcl ~ log(1 + 0.292^2)  # Jang 2021 Table 2 'IIV CL/F' 29.2 %CV
     etalka ~ log(1 + 0.415^2)  # Jang 2021 Table 2 second IIV row 41.5 %CV (ETA(3) on KA in the supplementary code)
 
     # Supplementary code: W = SQRT(THETA(6)**2 + THETA(7)**2 * IPRED**2) with

@@ -78,7 +78,7 @@ below for review:
 | `etalmtt2` (IIV MTT2, variance)                | 0.8624              | Table 2 IIV(MTT2)   = 117% CV; log(1 + 1.17^2) |
 | `etaln2` (IIV N2, variance)                    | 1.1509              | Table 2 IIV(N2)     = 147% CV; log(1 + 1.47^2) |
 | `etalka2` (IIV t1/2A2, variance)               | 0.2152              | Table 2 IIV(t1/2A2) = 49%  CV; log(1 + 0.49^2) (equivalent on log(ka2)) |
-| `etalvc` (IIV Vd/F, variance)                  | 0.2562              | Table 2 IIV(Vd/F)   = 54%  CV; log(1 + 0.54^2) |
+| `etalvc` (IIV Vd/F, variance)                  | 0.2559              | Table 2 IIV(Vd/F)   = 54%  CV; log(1 + 0.54^2) |
 | `etalcl` (IIV CL/F, variance)                  | 0.0654              | Table 2 IIV(CL/F)   = 26%  CV; log(1 + 0.26^2) |
 | `propSdAdult` (adult proportional residual SD) | 0.29                | Table 2: adult proportional residual variability = 29% (RSE 5.9%) |
 | `propSdPaed` (paediatric proportional residual SD) | 0.18            | Table 2: paediatric proportional residual variability = 18% (RSE 19.9%) |

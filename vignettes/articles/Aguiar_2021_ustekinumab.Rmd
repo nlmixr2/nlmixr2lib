@@ -100,8 +100,8 @@ kDa (Aguiar 2021 Methods section 2.3).
 | IIV Vc               | omega^2 = log(0.0979^2 + 1) = 0.00954 | Table 2 (9.79% CV) |
 | IIV Vp               | omega^2 = log(0.241^2 + 1) = 0.05645 | Table 2 (24.1% CV) |
 | IIV logit(F)         | omega^2 = 0.173^2 = 0.02993 | Table 2 (SD = 0.173 on logit scale) |
-| IIV Ksyn             | omega^2 = log(0.992^2 + 1) = 0.68522 | Table 2 (99.2% CV) |
-| IIV FC0              | omega^2 = log(0.99^2 + 1) = 0.68309 | Table 3 (99.0% CV) |
+| IIV Ksyn             | omega^2 = log(0.992^2 + 1) = 0.68515 | Table 2 (99.2% CV) |
+| IIV FC0              | omega^2 = log(0.99^2 + 1) = 0.68315 | Table 3 (99.0% CV) |
 | Residual on Cc       | additive 4.55 nmol/L + proportional 7.77% | Table 2 |
 | Residual on FC       | proportional 57.3% | Table 3 |
 

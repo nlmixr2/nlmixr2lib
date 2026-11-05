@@ -132,12 +132,12 @@ Hong_2015_moxifloxacin <- function() {
     # models; see vignette Assumptions and deviations.
     # =========================================================================
     etalqtcm  ~ 0.001459       # 3.82% CV;  log(1 + 0.0382^2) = 0.001459
-    etala     ~ 0.037808       # 19.6% CV;  log(1 + 0.196^2)  = 0.037808
-    etalam24  ~ 0.622848       # 93.0% CV;  log(1 + 0.930^2)  = 0.622848
+    etala     ~ log(1 + 0.196^2)  # 19.6% CV
+    etalam24  ~ log(1 + 0.93^2)  # 93.0% CV
     etaac24   ~ 5.231836       # 206% (additive on hours); var = (2.06 * 1.11)^2 = 5.231836
     etape     ~ 26.453569      # 96.9% (additive on ms);  var = (0.969 * 5.31)^2 = 26.45357
-    etalkpl   ~ 0.872446       # 118% CV;   log(1 + 1.18^2)   = 0.872446
-    etalemax  ~ 0.102829       # 32.9% CV;  log(1 + 0.329^2)  = 0.102829
+    etalkpl   ~ log(1 + 1.18^2)  # 118% CV
+    etalemax  ~ log(1 + 0.329^2)  # 32.9% CV
 
     propSd_QTc <- 0.0152; label("Proportional residual error on QTc (fraction)")  # Hong 2015 Table 5 drug-effect block sigma_prop = 1.52% (%RSE 39.4); the most-encompassing of the three reported residuals (baseline 1.35%, placebo 1.32%, drug 1.52%)
   })

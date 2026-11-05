@@ -80,7 +80,7 @@ Ferron_2013_cabazitaxel <- function() {
     etalvc  ~ log(1 + 0.934^2)  # Ferron 2013 Table 4: IIV V1 93.4% CV
     etalk12 ~ log(1 + 0.84^2)  # Ferron 2013 Table 4: IIV K12 84.0% CV
     etalk13 ~ log(1 + 0.642^2)  # Ferron 2013 Table 4: IIV K13 64.2% CV
-    etalk31 ~ 0.07647 # Ferron 2013 Table 4: IIV K31 28.2% CV -> log(1 + 0.282^2)
+    etalk31 ~ log(1 + 0.282^2)  # Ferron 2013 Table 4: IIV K31 28.2% CV
 
     # Proportional residual error 27.8% CV (Ferron 2013 Table 4 Eq. 2: Cobs = Cpred * (1 + eps))
     propSd <- 0.278; label("Proportional residual error (fraction)") # Ferron 2013 Table 4

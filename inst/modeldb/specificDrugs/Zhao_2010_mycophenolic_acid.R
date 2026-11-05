@@ -114,7 +114,7 @@ Zhao_2010_mycophenolic_acid <- function() {
     etaltlag ~ log(1 + 0.54^2)  # Table 3 IIV lag time = 54.0% CV
     etalvc   ~ log(1 + 0.799^2)  # Table 3 IIV V1/F     = 79.9% CV
     etalq    ~ log(1 + 0.576^2)  # Table 3 IIV Q/F      = 57.6% CV
-    etalcl   ~ 0.0474                                                                                                 # Table 3 IIV CL/F     = 22.0% CV -> log(1 + 0.220^2)
+    etalcl   ~ log(1 + 0.22^2)  # Table 3 IIV CL/F     = 22.0% CV
 
     # Residual variability. Source paper text 'A proportional model was
     # used for the residual random effects'; Table 3 reports 44.6% as the

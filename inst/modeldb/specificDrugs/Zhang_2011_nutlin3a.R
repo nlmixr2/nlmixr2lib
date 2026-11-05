@@ -107,7 +107,7 @@ Zhang_2011_nutlin3a <- function() {
 
     # IIV -- Table 2 reports CV% values. omega^2 on the log scale is
     # log(CV^2 + 1) for log-normal random effects.
-    etalka   ~ 0.0926   # log(0.312^2 + 1); Table 2 (IIV ka = 31.2%)
+    etalka   ~ log(1 + 0.312^2)  # Table 2 (IIV ka = 31.2%)
     etalkel   ~ 0.00408  # log(0.064^2 + 1); Table 2 (IIV kel =  6.4%)
     etalvmax ~ 0.153    # log(0.406^2 + 1); Table 2 (IIV Vmax = 40.6%)
 

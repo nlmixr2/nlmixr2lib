@@ -308,7 +308,7 @@ Schindler_2017_imatinib <- function() {
     # --- MTD ---
     etalS0_mtd_pop1 ~ 0.1996         # Table 2 MTD S0 IIV pop1 = 47 % CV -> log(1 + 0.47^2)
     etalS0_mtd_pop2 ~ 0.0807         # Table 2 MTD S0 IIV pop2 = 29 % CV -> log(1 + 0.29^2)
-    etalKG_mtd      ~ 1.3581         # Table 2 MTD KG IIV       = 170 % CV -> log(1 + 1.70^2)
+    etalKG_mtd      ~ log(1 + 1.7^2)  # Table 2 MTD KG IIV       = 170 % CV
     etalKdrug_mtd   ~ 0.4655         # Table 2 MTD Kdrug,S IIV  = 77 % CV  -> log(1 + 0.77^2)
 
     # --- Vactual ---
@@ -319,7 +319,7 @@ Schindler_2017_imatinib <- function() {
 
     # --- Vellipsoid ---
     etalS0_vell_pop1 ~ 1.0852        # Table 2 Vellipsoid S0 IIV pop1 = 140 % CV -> log(1 + 1.40^2)
-    etalS0_vell_pop2 ~ 0.4753        # Table 2 Vellipsoid S0 IIV pop2 = 78 % CV  -> log(1 + 0.78^2)
+    etalS0_vell_pop2 ~ log(1 + 0.78^2)  # Table 2 Vellipsoid S0 IIV pop2 = 78 % CV
     etalKG_vell      ~ 1.0852        # Table 2 Vellipsoid KG IIV      = 140 % CV -> log(1 + 1.40^2)
     etalKdrug_vell   ~ 0.1625        # Table 2 Vellipsoid Kdrug,S IIV = 42 % CV  -> log(1 + 0.42^2)
 
@@ -336,8 +336,8 @@ Schindler_2017_imatinib <- function() {
     # from the same variance; no cross-lesion covariance.
     etalD0_les1      ~ fixed(0.03189)  # Table 3 D0 ILV       = 18 % CV  -> log(1 + 0.18^2)
     etalD0_les2      ~ fixed(0.03189)  # Table 3 D0 ILV (lesion 2, shared variance)
-    etalKdrug_dens_les1 ~ fixed(0.2474) # Table 3 Kdrug,D ILV  = 53 % CV  -> log(1 + 0.53^2)
-    etalKdrug_dens_les2 ~ fixed(0.2474) # Table 3 Kdrug,D ILV (lesion 2, shared variance)
+    etalKdrug_dens_les1 ~ fixed(log(1 + 0.53^2))  # Table 3 Kdrug,D ILV  = 53 % CV
+    etalKdrug_dens_les2 ~ fixed(log(1 + 0.53^2))  # Table 3 Kdrug,D ILV (lesion 2, shared variance)
   })
 
   model({

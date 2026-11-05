@@ -74,7 +74,7 @@ Zhao_2012_abacavir <- function() {
     # for a log-normal random effect. No off-diagonal covariances are reported in
     # Table 3, so the IIV omegas are diagonal here.
     etalcl ~ 0.03884  # Table 3 IIV CL/F = 19.9% CV; omega^2 = log(1 + 0.199^2) = 0.038835
-    etalvp ~ 0.14977  # Table 3 IIV V2/F = 40.2% CV; omega^2 = log(1 + 0.402^2) = 0.149770
+    etalvp ~ log(1 + 0.402^2)  # Table 3 IIV V2/F = 40.2% CV
     etalq  ~ 0.09120  # Table 3 IIV Q/F  = 30.9% CV; omega^2 = log(1 + 0.309^2) = 0.091197
 
     # Inter-occasion variability (IOV) on log-CL across the BID and QD crossover
@@ -83,8 +83,8 @@ Zhao_2012_abacavir <- function() {
     # same variance per Table 3 (NONMEM `$OMEGA BLOCK(1)` + `SAME` translation);
     # nlmixr2 has no `SAME` shortcut so each occasion gets its own eta, with the
     # second fixed equal to the first (matching the Jonsson 2011 ethambutol pattern).
-    etaiov_cl_1 ~ 0.04559         # Table 3 IOV CL/F = 21.6% CV; omega^2 = log(1 + 0.216^2) = 0.045591
-    etaiov_cl_2 ~ fix(0.04559)    # equal to occasion-1 variance per Table 3 (`SAME` translation)
+    etaiov_cl_1 ~ log(1 + 0.216^2)  # Table 3 IOV CL/F = 21.6% CV
+    etaiov_cl_2 ~ fix(log(1 + 0.216^2))  # equal to occasion-1 variance per Table 3 (`SAME` translation)
 
     # Residual error: paper Methods state "Residual variability was best described
     # by a proportional model"; Table 3 reports 14.1% (the residual proportional SD

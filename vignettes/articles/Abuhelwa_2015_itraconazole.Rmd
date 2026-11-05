@@ -79,7 +79,7 @@ collects them in one place for review.
 | BSV V2/F (30.8 %CV) | omega^2 = 0.09063 | Table 3 BSV row |
 | BSV KTR (44.8 %CV) | omega^2 = 0.18120 | Table 3 BSV row |
 | FVAR (56.4 %CV; common variability on F) | omega^2 = 0.27619 | Table 3 row 'FVAR' |
-| BSV CL_m / F_m (27.9 %CV) | omega^2 = 0.07497 | Table 4 BSV row |
+| BSV CL_m / F_m (27.9 %CV) | omega^2 = 0.07496 | Table 4 BSV row |
 | Parent residual error (single-dose fasted) | propSd = 0.293, addSd = 0.168 ng/mL | Table 3 rows 'Proportional/Additive error-fasted' |
 | Metabolite residual error (single-dose) | propSd_ohi = 0.387, addSd_ohi = 0.329 ng/mL | Table 4 rows 'Single-dose / Proportional / Additive error' |
 | Combined residual error model on log scale (LTBS) | -- | Methods Eq. 2; supplement Appendix S1 W = sqrt(prop^2 + add^2 / exp(IPRE)^2) ; Y = IPRE + W * EPS(1) |

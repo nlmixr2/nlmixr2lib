@@ -56,8 +56,8 @@ Dickinson_2009_atazanavir <- function() {
     # Paper reports IIV (%) as CV; convert to log-normal variance via omega^2 = log(1 + CV^2).
     # Lag-time IIV was not significant (delta-OFV -0.8) and was not included in the final model.
     etalcl ~ 0.0807  # log(1 + 0.29^2) = 0.0807; CV = 29% per Table 2 final (RSE 59%)
-    etalvc ~ 0.2074  # log(1 + 0.48^2) = 0.2074; CV = 48% per Table 2 final (RSE 37%)
-    etalka ~ 1.2155  # log(1 + 1.54^2) = 1.2155; CV = 154% per Table 2 final (RSE 51%)
+    etalvc ~ log(1 + 0.48^2)  # CV = 48% per Table 2 final (RSE 37%)
+    etalka ~ log(1 + 1.54^2)  # CV = 154% per Table 2 final (RSE 51%)
 
     # Residual error: combined proportional + additive (paper Results page 1236).
     propSd <- 0.23; label("Proportional residual error, reported as a CV (fraction)")  # Table 2 final: 23% (RSE 27%)

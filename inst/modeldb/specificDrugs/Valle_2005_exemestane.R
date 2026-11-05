@@ -102,11 +102,11 @@ Valle_2005_exemestane <- function() {
     # ("No significant interindividual variability in the other parameters
     # describing the plasma disposition of the drug was supported by the
     # data") and Table 4 N.E. for g.
-    etalka    ~ 0.61308  # log(1 + 0.92^2); Valle 2005 Results: ka CV 92%
+    etalka    ~ log(1 + 0.92^2)  # Valle 2005 Results: ka CV 92%
     etalvc    ~ 0.04727  # log(1 + 0.22^2); Valle 2005 Results: V/F CV 22%
     etalkel   ~ 0.01203  # log(1 + 0.11^2); Valle 2005 Results: k CV 11%
-    etalrbase ~ 0.27290  # log(1 + 0.56^2); Valle 2005 Table 4: Baseline CV 56% (RSE 19%)
-    etalkout  ~ 0.15533  # log(1 + 0.41^2); Valle 2005 Table 4: ko CV 41% (RSE 47%)
+    etalrbase ~ log(1 + 0.56^2)  # Valle 2005 Table 4: Baseline CV 56% (RSE 19%)
+    etalkout  ~ log(1 + 0.41^2)  # Valle 2005 Table 4: ko CV 41% (RSE 47%)
     etalic50  ~ 0.19960  # log(1 + 0.47^2); Valle 2005 Table 4: C50 CV 47% (RSE 32%)
 
     # ------------------ Residual error -------------------------------------------

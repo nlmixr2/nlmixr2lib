@@ -156,9 +156,9 @@ Suri_2018_brentuximab <- function() {
     # omega^2 = log(CV^2 + 1). Only CL and V1 of each model carry IIV per
     # Tables S1 / S3 (other parameters: "-" indicates not estimated / no IIV).
     etalcl   ~ 0.1484         # Suri 2018 Table S1: ADC CL  40.0% CV; omega^2 = log(0.40^2 + 1)  = 0.1484
-    etalvc   ~ 0.02197        # Suri 2018 Table S1: ADC V1  14.9% CV; omega^2 = log(0.149^2 + 1) = 0.02197
+    etalvc   ~ log(1 + 0.149^2)  # Suri 2018 Table S1: ADC V1  14.9% CV
 
-    etalcl_mmae  ~ 0.1664     # Suri 2018 Table S3: MMAE CL 42.5% CV; omega^2 = log(0.425^2 + 1) = 0.1664
+    etalcl_mmae  ~ log(1 + 0.425^2)  # Suri 2018 Table S3: MMAE CL 42.5% CV
     etalvc_mmae  ~ log(1 + 0.667^2)  # Suri 2018 Table S3: MMAE V1 66.7% CV
 
     # Residual variability. Suri 2018 supplement 1 specifies the LTBS (log

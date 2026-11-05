@@ -119,7 +119,7 @@ Lommerse_2019_raltegravir <- function() {
     # remains a shared population-level function of PNA.
     # =====================================================================
     etalcl_max        ~ 0.10336  # log(1 + 0.33^2);  Table 2 IIV on CL = 0.33  (paper text 33% CV)
-    etalka_max        ~ 0.03772  # log(1 + 0.196^2); Table 2 IIV on KA = 0.196 (paper text 20% CV)
+    etalka_max        ~ log(1 + 0.196^2)  # Table 2 IIV on KA = 0.196 (paper text 20% CV)
     etalfdepot_mother ~ 0.09239  # log(1 + 0.311^2); Table 2 IIV on F  = 0.311 (maternal-F)
 
     # =====================================================================

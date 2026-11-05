@@ -139,7 +139,7 @@ Papathanasiou_2021_somatropin <- function() {
     # the adult and child typical values (Table 3 prints the same 33.1% CV
     # and 13.3% shrinkage on both rows). EC50 has no IIV.
     # ---------------------------------------------------------------------
-    etalka ~ 0.5904   # Table 2 Ka IIV CV 89.7%: log(0.897^2 + 1)
+    etalka ~ log(1 + 0.897^2)  # Table 2 Ka IIV CV 89.7%
     etalvc ~ 0.4704   # Table 2 V/F IIV CV 77.5%: log(0.775^2 + 1)
     etalcl ~ 0.1045   # Table 2 CL/F IIV CV 33.2%: log(0.332^2 + 1)
     etalc0 ~ 1.4190   # Table 2 GH Base IIV CV 177%: log(1.77^2 + 1)

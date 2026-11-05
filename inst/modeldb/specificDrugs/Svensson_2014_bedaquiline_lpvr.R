@@ -148,7 +148,7 @@ Svensson_2014_bedaquiline_lpvr <- function() {
       log(1 + 0.405^2)
     )  # Svensson 2014 Supplementary Table S1a BSV CL = 39.2% (RSE 18.3%), BSV CLM2 = 40.5% (RSE 20.5%), correlation BSV CL ~ BSV CLM2 = 77.4% (RSE 23.6%)
     etalvc     ~ log(1 + 0.475^2)  # Svensson 2014 Supplementary Table S1a BSV V = 47.5% (RSE 18.9%)
-    etalq      ~ 0.019408  # var = log(1 + 0.140^2) = 0.019408 ; Svensson 2014 Supplementary Table S1a BSV Q1 = 14.0% (RSE 30.7%)
+    etalq      ~ log(1 + 0.14^2)  # Svensson 2014 Supplementary Table S1a BSV Q1 = 14.0% (RSE 30.7%)
     etalvc_m2  ~ log(1 + 0.520^2)  # Svensson 2014 Supplementary Table S1a BSV VM2 = 52.0% (RSE 20.6%)
     etalvp_m2  ~ log(1 + 0.385^2)  # Svensson 2014 Supplementary Table S1a BSV VP1M2 = 38.5% (RSE 40.5%)
 

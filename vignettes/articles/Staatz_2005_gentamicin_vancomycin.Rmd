@@ -87,7 +87,7 @@ table below collects them for review.
 | Vancomycin `e_crcl_cl` (linear effect per mL/min) | 0.0205 | Table 4 'All data', theta2 |
 | Vancomycin `lvc` (log V, L/kg) | log(1.24) | Table 4 'All data', V |
 | Vancomycin IIV CL | 27% CV -> omega^2 = log(1 + 0.27^2) = 0.07037 | Table 4 'All data', etaCL |
-| Vancomycin IIV V | 36% CV -> omega^2 = log(1 + 0.36^2) = 0.12188 | Table 4 'All data', etaV |
+| Vancomycin IIV V | 36% CV -> omega^2 = log(1 + 0.36^2) = 0.12186 | Table 4 'All data', etaV |
 | Vancomycin `addSd` (mg/L) | 1.6 | Table 4 'All data', Add |
 | Vancomycin `propSd` (fraction) | 0.15 | Table 4 'All data', Prop |
 | Gentamicin BCOV_median centring | 63 mL/min | Table 2 final-row footnote: '(BCOV-63)' |

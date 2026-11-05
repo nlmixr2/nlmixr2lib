@@ -61,11 +61,11 @@ Aregbe_2012_alvespimycin <- function() {
     # CV%; the internal variance is omega^2 = log(CV^2 + 1). IIV was retained
     # on CL, Q3, V1, V2, V3 in the final model (Aregbe 2012 Table 2, IIV
     # column); no IIV on Q2 (reported as `-`).
-    etalcl  ~ 0.2543  # Aregbe 2012 Table 2: IIV CL  53.8% (%SE 22.9), variance = log(0.538^2 + 1)
+    etalcl  ~ log(1 + 0.538^2)  # Aregbe 2012 Table 2: IIV CL  53.8% (%SE 22.9)
     etalvc  ~ 0.1034  # Aregbe 2012 Table 2: IIV V1  33.0% (%SE 111.9), variance = log(0.330^2 + 1)
     etalvp  ~ 0.2288  # Aregbe 2012 Table 2: IIV V2  50.7% (%SE 23.7), variance = log(0.507^2 + 1)
     etalq2  ~ 0.4539  # Aregbe 2012 Table 2: IIV Q3  75.8% (%SE 32.0), variance = log(0.758^2 + 1)
-    etalvp2 ~ 0.3756  # Aregbe 2012 Table 2: IIV V3  67.5% (%SE 37.3), variance = log(0.675^2 + 1)
+    etalvp2 ~ log(1 + 0.675^2)  # Aregbe 2012 Table 2: IIV V3  67.5% (%SE 37.3)
 
     # Between-occasion variability (BOV) on Q2 (NONMEM `$OMEGA BLOCK(1)` reused
     # across occasions per the paper's `BOV on Q2`). Each occasion-1..5 gets an
@@ -82,11 +82,11 @@ Aregbe_2012_alvespimycin <- function() {
     # across occasions per the paper's `BOV on V1`). Same `SAME` translation
     # pattern as the Q2 block above. V1 carries both IIV (etalvc above) and
     # BOV (etaiov_vc_1..5) in the final model.
-    etaiov_vc_1 ~ 0.3049       # Aregbe 2012 Table 2: BOV V1 59.7% (%SE 31.2), variance = log(0.597^2 + 1)
-    etaiov_vc_2 ~ fix(0.3049)  # NONMEM $OMEGA BLOCK(1) SAME (occasion 2 shares occasion-1 variance)
-    etaiov_vc_3 ~ fix(0.3049)  # NONMEM $OMEGA BLOCK(1) SAME (occasion 3 shares occasion-1 variance)
-    etaiov_vc_4 ~ fix(0.3049)  # NONMEM $OMEGA BLOCK(1) SAME (occasion 4 shares occasion-1 variance)
-    etaiov_vc_5 ~ fix(0.3049)  # NONMEM $OMEGA BLOCK(1) SAME (occasion 5 shares occasion-1 variance)
+    etaiov_vc_1 ~ log(1 + 0.597^2)  # Aregbe 2012 Table 2: BOV V1 59.7% (%SE 31.2)
+    etaiov_vc_2 ~ fix(log(1 + 0.597^2))  # NONMEM $OMEGA BLOCK(1) SAME (occasion 2 shares occasion-1 variance)
+    etaiov_vc_3 ~ fix(log(1 + 0.597^2))  # NONMEM $OMEGA BLOCK(1) SAME (occasion 3 shares occasion-1 variance)
+    etaiov_vc_4 ~ fix(log(1 + 0.597^2))  # NONMEM $OMEGA BLOCK(1) SAME (occasion 4 shares occasion-1 variance)
+    etaiov_vc_5 ~ fix(log(1 + 0.597^2))  # NONMEM $OMEGA BLOCK(1) SAME (occasion 5 shares occasion-1 variance)
 
     # Proportional residual error model best described the data per the paper;
     # additive and combined-error structures were tested but not retained.

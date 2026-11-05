@@ -117,12 +117,12 @@ Stroh_2013_rolofylline <- function() {
     # CL4 (M1-trans distributional), V5 (M1-cis central) - omitted here.
     etalvc         ~ 0.015016   # 12.3% CV; log(0.123^2 + 1); Stroh 2013 Table II BSV(V1) = 12.3%, RSE 29.8%
     etalcl         ~ 0.044780   # 21.4% CV; log(0.214^2 + 1); Stroh 2013 Table II BSV(CL1) = 21.4%, RSE 22.7%
-    etalvp         ~ 0.047268   # 22.0% CV; log(0.220^2 + 1); Stroh 2013 Table II BSV(V2) = 22.0%, RSE 51.0%
-    etalvc_m1trans ~ 0.255027   # 53.9% CV; log(0.539^2 + 1); Stroh 2013 Table II BSV(V3) = 53.9%, RSE 24.1%
-    etalcl_m1trans ~ 0.164633   # 42.3% CV; log(0.423^2 + 1); Stroh 2013 Table II BSV(CL3) = 42.3%, RSE 21.1%
-    etalvp_m1trans ~ 0.102786   # 32.9% CV; log(0.329^2 + 1); Stroh 2013 Table II BSV(V4) = 32.9%, RSE 30.7%
-    etalcl_m1cis   ~ 0.142239   # 39.1% CV; log(0.391^2 + 1); Stroh 2013 Table II BSV(CL5) = 39.1%, RSE 27.8%
-    etalfm         ~ 0.156055   # 41.1% CV; log(0.411^2 + 1); Stroh 2013 Table II BSV(FM) = 41.1%, RSE 33.4%
+    etalvp         ~ log(1 + 0.22^2)  # 22.0% CV; Stroh 2013 Table II BSV(V2) = 22.0%, RSE 51.0%
+    etalvc_m1trans ~ log(1 + 0.539^2)  # 53.9% CV; Stroh 2013 Table II BSV(V3) = 53.9%, RSE 24.1%
+    etalcl_m1trans ~ log(1 + 0.423^2)  # 42.3% CV; Stroh 2013 Table II BSV(CL3) = 42.3%, RSE 21.1%
+    etalvp_m1trans ~ log(1 + 0.329^2)  # 32.9% CV; Stroh 2013 Table II BSV(V4) = 32.9%, RSE 30.7%
+    etalcl_m1cis   ~ log(1 + 0.391^2)  # 39.1% CV; Stroh 2013 Table II BSV(CL5) = 39.1%, RSE 27.8%
+    etalfm         ~ log(1 + 0.411^2)  # 41.1% CV; Stroh 2013 Table II BSV(FM) = 41.1%, RSE 33.4%
 
     # ---------------- Residual error (per output) -----------------------------
     # Parent: proportional only (additive omitted in Stroh 2013 Table II).

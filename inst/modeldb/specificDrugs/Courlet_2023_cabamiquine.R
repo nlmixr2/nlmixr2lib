@@ -233,13 +233,13 @@ Courlet_2023_cabamiquine <- function() {
     # The PK IIVs are Supplementary Material 1 values, carried forward with
     # the PK layer.
     # =========================================================================
-    etalcl     ~ 0.07059  # Suppl. Material 1 'IIV on CL/F = 27%'  -> omega^2 = log(1 + 0.27^2) = 0.07059
+    etalcl     ~ log(1 + 0.27^2)  # Suppl. Material 1 'IIV on CL/F = 27%'
     etalvc     ~ 0.06062  # Suppl. Material 1 'IIV on V2/F = 25%'  -> omega^2 = log(1 + 0.25^2) = 0.06062
     etalka     ~ log(1 + 3.4^2)  # Suppl. Material 1 'IIV on ka = 340%'
-    etalkbm    ~ 0.50974  # Suppl. Material 1 'IIV on k2g = 82%'   -> omega^2 = log(1 + 0.82^2) = 0.50974
+    etalkbm    ~ log(1 + 0.82^2)  # Suppl. Material 1 'IIV on k2g = 82%'
     etalktr    ~ 0.06062  # Suppl. Material 1 'IIV on ktr = 25%'   -> omega^2 = log(1 + 0.25^2) = 0.06062
-    etalmtt    ~ 0.79470  # Suppl. Material 1 'IIV on MTT = 110%'  -> omega^2 = log(1 + 1.10^2) = 0.79470
-    etalfdepot ~ 0.05161  # Suppl. Material 1 'IIV on F = 23%'     -> omega^2 = log(1 + 0.23^2) = 0.05161
+    etalmtt    ~ log(1 + 1.1^2)  # Suppl. Material 1 'IIV on MTT = 110%'
+    etalfdepot ~ log(1 + 0.23^2)  # Suppl. Material 1 'IIV on F = 23%'
 
     etalp0     ~ fixed(1.5853296)  # Table 1 'IIV on P0 a = 197'            -> omega^2 = log(1 + 1.97^2) = 1.5853296 (footnote a)
     etalemax   ~ fixed(0.0354637)  # Table 1 'IIV on kki a = 19'            -> omega^2 = log(1 + 0.19^2) = 0.0354637 (footnote a)

@@ -100,7 +100,7 @@ Wright_2013_allopurinol <- function() {
     #     2013 reports BSV as approximate CV percent; converted here to the
     #     log-normal omega variance via omega^2 = log(CV^2 + 1) with CV as a
     #     fraction (standard log-normal moment-match).
-    etalcl_allo  ~ fix(0.1029)  # BSV_CL_allo = 32.9% CV (from Wright 2013 step 2). omega^2 = log(0.329^2 + 1) = 0.1029
+    etalcl_allo  ~ fix(log(1 + 0.329^2))  # BSV_CL_allo = 32.9% CV (from Wright 2013 step 2).
     etalvp_allo  ~ fix(0.0800)  # BSV_V2_allo = 28.9% CV . omega^2 = log(0.289^2 + 1) = 0.0800
     # Oxypurinol IIV block: correlated CL_oxy - V_oxy with Corr(CL,V) = 0.148
     # (Wright 2013 Table 2 final). Diagonal entries are omega^2:

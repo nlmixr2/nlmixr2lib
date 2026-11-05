@@ -94,7 +94,7 @@ collects the origin of every published value used in the model file.
 | `theta2` (ET50 shift for rHRIG)  | -3.8 days    | Zhang 2022 Table 3 (theta2; RSE 19.1%) |
 | `gamma`                          | 7.66         | Zhang 2022 Table 3 (Gamma; RSE 22.6%) |
 | `E0`                             | -3.19        | Zhang 2022 Table 3 (E0; RSE 16.9%) |
-| IIV `omega(Emax)` 9.0%           | omega^2 = 0.008068 | Zhang 2022 Table 3 (omega(Emax) %; RSE 16.8%); converted via omega^2 = log(CV^2 + 1) |
+| IIV `omega(Emax)` 9.0%           | omega^2 = 0.008067 | Zhang 2022 Table 3 (omega(Emax) %; RSE 16.8%); converted via omega^2 = log(CV^2 + 1) |
 | IIV `omega(gamma)` 56.1%         | omega^2 = 0.273690 | Zhang 2022 Table 3 (omega(Gamma) %; RSE 22.7%); converted via omega^2 = log(CV^2 + 1) |
 | Residual error `addSd` (additive)        | 0.245 IU/mL  | Zhang 2022 Table 3 (sigma(additive); RSE 3.8%) |
 | Residual error `propSd` (proportional)   | 0.094 (fraction) | Zhang 2022 Table 3 (sigma(proportional) %; RSE 53.9%) |

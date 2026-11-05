@@ -168,9 +168,9 @@ Lodise_2018_iclaprim <- function() {
     # etas across V1, CL, V2) but does NOT tabulate off-diagonal covariances;
     # the diagonal-only implementation here is documented in the vignette
     # Assumptions and deviations section.
-    etalcl ~ 0.15543  # log(0.41^2 + 1) = 0.15543; CV% 41% on CL (Lodise 2018 Table 1; 95% CI 38-44)
-    etalvc ~ 0.23107  # log(0.51^2 + 1) = 0.23107; CV% 51% on V1 (Lodise 2018 Table 1; 95% CI 45-56)
-    etalvp ~ 0.55362  # log(0.86^2 + 1) = 0.55362; CV% 86% on V2 (Lodise 2018 Table 1; 95% CI 65-104)
+    etalcl ~ log(1 + 0.41^2)  # CV% 41% on CL (Lodise 2018 Table 1; 95% CI 38-44)
+    etalvc ~ log(1 + 0.51^2)  # CV% 51% on V1 (Lodise 2018 Table 1; 95% CI 45-56)
+    etalvp ~ log(1 + 0.86^2)  # CV% 86% on V2 (Lodise 2018 Table 1; 95% CI 65-104)
 
     # Residual error (combined proportional + additive; Lodise 2018 Table 1).
     # Concentrations measured in ng/mL, so the additive component is in ng/mL.

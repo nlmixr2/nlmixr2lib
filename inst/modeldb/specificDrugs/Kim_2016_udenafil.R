@@ -113,12 +113,12 @@ Kim_2016_udenafil <- function() {
     # via omega^2 = log(1 + CV^2). All IIVs are diagonal (no block
     # correlations reported); IIV is NOT estimated for CLp/F or
     # Qm/(F * fm) per Table 2.
-    etalclpm     ~ 0.11622   # Kim 2016 Table 2: omega CLpm/F = 35.1% CV; log(1 + 0.351^2)
-    etalcl_da8164 ~ 0.25929  # Kim 2016 Table 2: omega CLm/(F*fm) = 54.4% CV; log(1 + 0.544^2)
-    etalka       ~ 0.34416   # Kim 2016 Table 2: omega ka = 64.1% CV; log(1 + 0.641^2)
-    etalvc       ~ 0.45227   # Kim 2016 Table 2: omega Vp/F = 75.6% CV; log(1 + 0.756^2)
-    etalvp       ~ 0.05512   # Kim 2016 Table 2: omega Vp2/F = 23.8% CV; log(1 + 0.238^2)
-    etalq        ~ 0.23354   # Kim 2016 Table 2: omega Qp/F = 51.3% CV; log(1 + 0.513^2)
+    etalclpm     ~ log(1 + 0.351^2)  # Kim 2016 Table 2: omega CLpm/F = 35.1% CV
+    etalcl_da8164 ~ log(1 + 0.544^2)  # Kim 2016 Table 2: omega CLm/(F*fm) = 54.4% CV
+    etalka       ~ log(1 + 0.641^2)  # Kim 2016 Table 2: omega ka = 64.1% CV
+    etalvc       ~ log(1 + 0.756^2)  # Kim 2016 Table 2: omega Vp/F = 75.6% CV
+    etalvp       ~ log(1 + 0.238^2)  # Kim 2016 Table 2: omega Vp2/F = 23.8% CV
+    etalq        ~ log(1 + 0.513^2)  # Kim 2016 Table 2: omega Qp/F = 51.3% CV
     etaltlag     ~ 0.04195   # Kim 2016 Table 2: omega ALAG = 20.7% CV; log(1 + 0.207^2)
 
     # Residual error: proportional on both udenafil and DA-8164. Kim 2016

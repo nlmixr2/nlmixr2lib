@@ -142,16 +142,16 @@ Csajka_2005_ephedrine_caffeine <- function() {
     # included.
     # =========================================================
     etalka_caf  ~ 0.2231       # Table 3 caffeine ka_C %CV = 50; omega^2 = log(0.50^2 + 1) = 0.2231
-    etalcl_caf  ~ 0.1346       # Table 3 caffeine CL_C %CV = 38; omega^2 = log(0.38^2 + 1) = 0.1346
+    etalcl_caf  ~ log(1 + 0.38^2)  # Table 3 caffeine CL_C %CV = 38
     etalvc_caf  ~ 0.03922      # Table 3 caffeine V_C  %CV = 20; omega^2 = log(0.20^2 + 1) = 0.03922
 
     etalka      ~ log(1 + 0.63^2)  # Table 3 ephedrine ka_E %CV = 63
     etalcl_renal ~ 0.01203     # Table 3 ephedrine CL_RE %CV = 11; omega^2 = log(0.11^2 + 1) = 0.01203
-    etalvc      ~ 0.03568      # Table 3 ephedrine V_E  %CV = 19; omega^2 = log(0.19^2 + 1) = 0.03568
-    etaltlag    ~ 0.1983       # Table 3 ephedrine lag %CV = 47; omega^2 = log(0.47^2 + 1) = 0.1983
+    etalvc      ~ log(1 + 0.19^2)  # Table 3 ephedrine V_E  %CV = 19
+    etaltlag    ~ log(1 + 0.47^2)  # Table 3 ephedrine lag %CV = 47
 
     etalvmax_neph ~ 0.01203    # Table 3 norephedrine Vmax/V_NE %CV = 11; omega^2 = log(0.11^2 + 1) = 0.01203
-    etalkm        ~ 0.1689     # Table 3 norephedrine Km %CV = 43; omega^2 = log(0.43^2 + 1) = 0.1689
+    etalkm        ~ log(1 + 0.43^2)  # Table 3 norephedrine Km %CV = 43
     etalkel_neph  ~ 0.1840     # Table 3 norephedrine ke_NE %CV = 45; omega^2 = log(0.45^2 + 1) = 0.1840
 
     # =========================================================

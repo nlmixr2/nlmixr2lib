@@ -139,9 +139,9 @@ Stringer_2013_sipoglitazar_mixture <- function() {
 
     # IIV, log-normal. omega^2 = log(CV^2 + 1) from the Table A1
     # "IIV (%, CV%)" column.
-    etalcl ~ 0.136258  # Suppl. Table A1: IIV on CL = 38.21% CV (RSE 10.7%); log(1 + 0.3821^2)
-    etalvc ~ 0.112447  # Suppl. Table A1: IIV on V  = 34.50% CV (RSE 13.4%); log(1 + 0.3450^2)
-    etald1 ~ 0.467514  # Suppl. Table A1: IIV on D1 = 77.20% CV (RSE 16.9%); log(1 + 0.7720^2)
+    etalcl ~ log(1 + 0.3821^2)  # Suppl. Table A1: IIV on CL = 38.21% CV (RSE 10.7%)
+    etalvc ~ log(1 + 0.345^2)  # Suppl. Table A1: IIV on V  = 34.50% CV (RSE 13.4%)
+    etald1 ~ log(1 + 0.772^2)  # Suppl. Table A1: IIV on D1 = 77.20% CV (RSE 16.9%)
 
     propSdPhase1 <- 0.234243; label("Proportional residual SD, phase I healthy volunteers (fraction)") # Suppl. Table A1: sigma^2 phase I = 0.05487 (RSE 9.23%); sqrt(0.05487)
     propSdPhase2 <- 0.408656; label("Proportional residual SD, phase II patients (fraction)")          # Suppl. Table A1: sigma^2 phase II = 0.167 (RSE 10.2%); sqrt(0.167)

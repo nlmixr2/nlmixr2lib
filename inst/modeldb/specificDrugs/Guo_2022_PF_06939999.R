@@ -80,7 +80,7 @@ Guo_2022_PF_06939999 <- function() {
     etalblsdma ~ 0.0812  # CV 29.1% -> log(1 + 0.291^2) = 0.0812; Table 1 SDMA Baseline IIV
     etalslope  ~ 0.241   # CV 52.2% -> log(1 + 0.522^2) = 0.241; Table 1 Platelet Slope IIV
     etalgamma  ~ 0.199   # CV 46.9% -> log(1 + 0.469^2) = 0.199; Table 1 Platelet gamma IIV
-    etalblplt  ~ 0.0771  # CV 28.3% -> log(1 + 0.283^2) = 0.0771; Table 1 Platelet Baseline IIV
+    etalblplt  ~ log(1 + 0.283^2)  # CV 28.3%; Table 1 Platelet Baseline IIV
 
     # Residual error - Table 1 residual error rows. PK and platelet models use
     # an exponential residual error (Methods, Analysis Plan), which maps

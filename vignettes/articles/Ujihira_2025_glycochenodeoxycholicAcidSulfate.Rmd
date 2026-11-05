@@ -501,7 +501,7 @@ baseline_by_subject <- cohort |>
 baseline_by_subject
 
 # Analytic log-normal mean of the baseline: median * exp(omega^2 / 2).
-c(analytic_mean_nM = css_analytic * 1000 * exp(0.3163576 / 2),
+c(analytic_mean_nM = css_analytic * 1000 * exp(log(1 + 0.61^2) / 2),
   reported_mean_nM = 80)
 ```
 

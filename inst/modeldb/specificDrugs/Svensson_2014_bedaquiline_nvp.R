@@ -136,7 +136,7 @@ Svensson_2014_bedaquiline_nvp <- function() {
     etalcl     ~ log(1 + 0.204^2)  # Svensson 2014 Supplementary Table S1b BSV CL = 20.4% (RSE 18.0%)
     etalcl_m2  ~ log(1 + 0.226^2)  # Svensson 2014 Supplementary Table S1b BSV CLM2 = 22.6% (RSE 19.2%)
     etalvc     ~ log(1 + 0.980^2)  # Svensson 2014 Supplementary Table S1b BSV V = 98.0% (RSE 35.8%)
-    etalq      ~ 0.030745  # var = log(1 + 0.177^2) = 0.030745 ; Svensson 2014 Supplementary Table S1b BSV Q1 = 17.7% (RSE 20.9%)
+    etalq      ~ log(1 + 0.177^2)  # Svensson 2014 Supplementary Table S1b BSV Q1 = 17.7% (RSE 20.9%)
     etalvc_m2  ~ log(1 + 0.0943^2)  # Svensson 2014 Supplementary Table S1b BSV VM2 = 9.43% (RSE 152%)
     etalvp_m2  ~ log(1 + 0.099^2)  # Svensson 2014 Supplementary Table S1b BSV VP1M2 = 9.90% (RSE 75.8%)
 

@@ -91,7 +91,7 @@ Plock_2014_ferumoxytol <- function() {
     # Internal log-normal variance: omega^2 = log(1 + CV^2)
     etalvmax ~ 0.03016    # Table 4: BSV Vmax = 17.5 %CV  -> log(1 + 0.175^2)
     etalvc   ~ 0.02783    # Table 4: BSV V1   = 16.8 %CV  -> log(1 + 0.168^2)
-    etalvp   ~ 0.24509    # Table 4: BSV V2   = 52.7 %CV  -> log(1 + 0.527^2)
+    etalvp   ~ log(1 + 0.527^2)  # Table 4: BSV V2   = 52.7 %CV
 
     # Residual error (combined; Plock 2014 Table 4)
     propSd <- 0.0785;      label("Proportional residual error (fraction)")                           # Table 4: 7.85 %CV

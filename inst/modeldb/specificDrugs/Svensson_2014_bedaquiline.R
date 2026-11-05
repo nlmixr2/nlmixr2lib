@@ -147,9 +147,9 @@ Svensson_2014_bedaquiline <- function() {
     # dropped random effects with the original paper values.
     etalcl + etalcl_m2 ~ c(0.07654, 0.04523, 0.09236)  # Svensson 2014 Table 2 BSV CL = 28.2% CV, BSV CLM2 = 31.1% CV, correlation 53.8%; var_cl = log(1 + 0.282^2) = 0.07654, cov = 0.538 * sqrt(0.07654 * 0.09236) = 0.04523, var_clm2 = log(1 + 0.311^2) = 0.09236
     etalvc      ~ log(1 + 0.428^2)  # Svensson 2014 Table 2 BSV V = 42.8% CV
-    etalq       ~ 0.04372       # var = log(1 + 0.211^2) = 0.04372 ; Svensson 2014 Table 2 BSV Q1 = 21.1% CV
+    etalq       ~ log(1 + 0.211^2)  # Svensson 2014 Table 2 BSV Q1 = 21.1% CV
     etalvc_m2   ~ log(1 + 0.364^2)  # Svensson 2014 Table 2 BSV VM2 = 36.4% CV
-    etalvp_m2   ~ 0.04330       # var = log(1 + 0.210^2) = 0.04330 ; Svensson 2014 Table 2 BSV VP1M2 = 21.0% CV
+    etalvp_m2   ~ log(1 + 0.21^2)  # Svensson 2014 Table 2 BSV VP1M2 = 21.0% CV
 
     # Residual error. The paper reports proportional residual errors on both
     # bedaquiline (15.7% CV) and M2 (12.2% CV) plus a 55% correlation between

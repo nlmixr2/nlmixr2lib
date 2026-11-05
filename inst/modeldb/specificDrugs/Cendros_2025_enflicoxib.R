@@ -220,11 +220,11 @@ Cendros_2025_enflicoxib <- function() {
     # No covariance / correlation between random effects is reported, so
     # the omega matrix is encoded as diagonal.
     # ------------------------------------------------------------------
-    etalfdepot     ~ 0.1417   # Table 1 enflicoxib F      IIV  39% -> log(1 + 0.39^2)  = 0.1417
+    etalfdepot     ~ log(1 + 0.39^2)  # Table 1 enflicoxib F      IIV  39%
     etaltlag       ~ 0.3800   # Table 1 enflicoxib Tlag   IIV  68% -> log(1 + 0.68^2)  = 0.3800
-    etalka         ~ 0.7034   # Table 1 enflicoxib ka     IIV 101% -> log(1 + 1.01^2)  = 0.7034
+    etalka         ~ log(1 + 1.01^2)  # Table 1 enflicoxib ka     IIV 101%
     etalvc         ~ 0.6331   # Table 1 enflicoxib V/F    IIV  94% -> log(1 + 0.94^2)  = 0.6331
-    etalcl_met     ~ 0.2153   # Table 1 enflicoxib CL2/F  IIV  49% -> log(1 + 0.49^2)  = 0.2153
+    etalcl_met     ~ log(1 + 0.49^2)  # Table 1 enflicoxib CL2/F  IIV  49%
     etalcl_pyrazol ~ 0.0917   # Table 1 metabolite CLM/F  IIV  31% -> log(1 + 0.31^2)  = 0.0917
 
     # ------------------------------------------------------------------

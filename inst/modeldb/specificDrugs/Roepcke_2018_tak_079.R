@@ -143,11 +143,11 @@ Roepcke_2018_tak_079 <- function() {
     # converted to omega^2 via log(1 + CV^2) so that the on-run %CV back-
     # reconstructs to the reported value: %CV = 100 * sqrt(exp(omega^2) - 1).
     # =========================================================================
-    etalka    ~ 0.16332  # Table 2: Ka BSV 42.1% CV (%SE 53.8) -> log(1 + 0.421^2) = 0.16332
-    etalcl    ~ 0.16909  # Table 2: CL BSV 42.9% CV (%SE 20.1) -> log(1 + 0.429^2) = 0.16909
-    etalvc    ~ 0.03849  # Table 2: Vc BSV 19.8% CV (%SE 22.5) -> log(1 + 0.198^2) = 0.03849
-    etalvp    ~ 0.14435  # Table 2: Vp BSV 39.4% CV (%SE 20.8) -> log(1 + 0.394^2) = 0.14435
-    etalkint  ~ 0.21785  # Table 2: KINT BSV 49.3% CV (%SE 36.7; typical value FIXED; BSV estimated) -> log(1 + 0.493^2) = 0.21785
+    etalka    ~ log(1 + 0.421^2)  # Table 2: Ka BSV 42.1% CV (%SE 53.8)
+    etalcl    ~ log(1 + 0.429^2)  # Table 2: CL BSV 42.9% CV (%SE 20.1)
+    etalvc    ~ log(1 + 0.198^2)  # Table 2: Vc BSV 19.8% CV (%SE 22.5)
+    etalvp    ~ log(1 + 0.394^2)  # Table 2: Vp BSV 39.4% CV (%SE 20.8)
+    etalkint  ~ log(1 + 0.493^2)  # Table 2: KINT BSV 49.3% CV (%SE 36.7; typical value FIXED; BSV estimated)
 
     # =========================================================================
     # PK residual error (Table 2). Combined additive + proportional. Paper
@@ -170,9 +170,9 @@ Roepcke_2018_tak_079 <- function() {
     lemax_nk   <- log(414.6);   label("NK-cell maximal drug-driven depletion rate EMAX (1/day)")     # Table 3: EMAX=414.6 (%SE 10.4)
     lrbase_nk  <- log(685);     label("NK-cell typical baseline count (cells / uL)")                 # Section 3.3: NK median 685 cells/uL (IQR 482.8-970.1)
 
-    etalkin_nk    ~ 0.80333    # Table 3: NK KIN BSV 111% CV (%SE 21.0) -> log(1 + 1.11^2) = 0.80333
-    etalec50_nk   ~ 1.14164    # Table 3: NK C50 BSV 146% CV (%SE 24.5) -> log(1 + 1.46^2) = 1.14164
-    etalrbase_nk  ~ 0.07866    # Table 3: NK baseline BSV 28.6% CV (%SE 20.6) -> log(1 + 0.286^2) = 0.07866
+    etalkin_nk    ~ log(1 + 1.11^2)  # Table 3: NK KIN BSV 111% CV (%SE 21.0)
+    etalec50_nk   ~ log(1 + 1.46^2)  # Table 3: NK C50 BSV 146% CV (%SE 24.5)
+    etalrbase_nk  ~ log(1 + 0.286^2)  # Table 3: NK baseline BSV 28.6% CV (%SE 20.6)
 
     propSd_nkcell <- sqrt(0.2905);  label("NK-cell proportional residual SD on cell count (fraction)")  # Table 3: NK residual var = 0.2905 (%SE 2.49); SD = 0.5390 fraction
 
@@ -189,7 +189,7 @@ Roepcke_2018_tak_079 <- function() {
     lemax_b    <- log(2.43);    label("B-cell maximal drug-driven depletion rate EMAX (1/day)")     # Table 3: EMAX=2.43 (%SE 4.96)
     lrbase_b   <- log(1279);    label("B-cell typical baseline count (cells / uL)")                # Section 3.3: B median 1279 cells/uL (IQR 860.8-1890)
 
-    etalmtt_b     ~ 1.03775    # Table 3: B MTT BSV 135% CV (%SE 17.6) -> log(1 + 1.35^2) = 1.03775
+    etalmtt_b     ~ log(1 + 1.35^2)  # Table 3: B MTT BSV 135% CV (%SE 17.6)
     etalrbase_b   ~ log(1 + 0.2403^2)  # Table 3: B baseline BSV 24.03% CV (%SE 10.7)
 
     propSd_bcell  <- sqrt(0.136);   label("B-cell proportional residual SD on cell count (fraction)")   # Table 3: B residual var = 0.136 (%SE 2.26); SD = 0.3688 fraction
@@ -205,7 +205,7 @@ Roepcke_2018_tak_079 <- function() {
     lemax_t    <- log(0.4656);  label("T-cell maximal fractional depletion EMAX (dimensionless, <=1)")  # Table 3: EMAX=0.4656 (%SE 6.578)
     lrbase_t   <- log(3732);    label("T-cell typical baseline count (cells / uL)")                # Section 3.3: T median 3732 cells/uL (IQR 2881-5176)
 
-    etalemax_t    ~ 0.39366    # Table 3: T EMAX BSV 69.46% CV (%SE 29.50) -> log(1 + 0.6946^2) = 0.39366
+    etalemax_t    ~ log(1 + 0.6946^2)  # Table 3: T EMAX BSV 69.46% CV (%SE 29.50)
     etalrbase_t   ~ log(1 + 0.2908^2)  # Table 3: T baseline BSV 29.08% CV (%SE 15.50)
 
     propSd_tcell  <- sqrt(0.1343);  label("T-cell proportional residual SD on cell count (fraction)")   # Table 3: T residual var = 0.1343 (%SE 2.406); SD = 0.3665 fraction

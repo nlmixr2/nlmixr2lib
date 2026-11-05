@@ -91,9 +91,9 @@ collects the audit trail in one place.
 | `ldp_rate`           | log(6 / 8766) FIX (points/hour) | Disease Progression and Placebo Effect Model section: 6 ADAS-Cog points/year FIX from ref 26 |
 | Block `(etalcl_nonmet, etalvc)` | omega^2 (0.1640, cov 0.0863, 0.0878), rho = 0.72 | Table I: 42.2% CV on CL_non-met, 30.3% CV on V2, "Corr CL non-met /F_V2/F" = 0.72 |
 | `etalcl_m1`          | omega^2 = 0.0444 (21.3% CV) | Table I |
-| `etalvc_m1`          | omega^2 = 0.1664 (42.5% CV) | Table I |
+| `etalvc_m1`          | omega^2 = 0.1660 (42.5% CV) | Table I |
 | `etalemax`           | omega^2 = 0.6700 (97.7% CV) | Table I |
-| `etalbeta_pla`       | omega^2 = 0.9698 FIX (128% CV FIX) | Table I, ref 34 |
+| `etalbeta_pla`       | omega^2 = 0.9702 FIX (128% CV FIX) | Table I, ref 34 |
 | `propSd` (Cc)        | 0.149 (proportional)  | Table I, prop err tesofensine = 14.9% (RSE 23.5%) |
 | `propSd_m1` (Cc_m1)  | 0.173 (proportional)  | Table I, prop err M1 = 17.3% (RSE 36.9%) |
 | `addSd_ADAS_cog`     | 2.3 (additive, ADAS-Cog points) | Table I, add err ADAS-Cog = +/-2.3 (RSE 19.5%) |

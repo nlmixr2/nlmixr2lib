@@ -158,8 +158,8 @@ Diep_2026_donidalorsen <- function() {
 
     # PD: independent etas (Table 2; no off-diagonal omega block reported).
     etalrbase   ~ 0.064920  # Diep 2026 Table 2 BSV%CV BL  = 25.9% -> log(0.259^2 + 1)
-    etalkout ~ 0.125749  # Diep 2026 Table 2 BSV%CV kout = 36.6% -> log(0.366^2 + 1)
-    etalic50 ~ 0.525122  # Diep 2026 Table 2 BSV%CV IC50 = 83.1% -> log(0.831^2 + 1)
+    etalkout ~ log(1 + 0.366^2)  # Diep 2026 Table 2 BSV%CV kout = 36.6%
+    etalic50 ~ log(1 + 0.831^2)  # Diep 2026 Table 2 BSV%CV IC50 = 83.1%
 
     # ---- Residual error ----
     # PK: Diep 2026 Table 1 reports sigma_logadd = 0.296 as the additive

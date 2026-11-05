@@ -50,7 +50,7 @@ one place for review.
 |-----------------------------|--------------------|---------------------------------------------------------------------------------|
 | `lcl` (CL coefficient)      | 3.56               | Table 4, row "Clearance (l/h)" final-model column: CL = 3.56 * WT / CREAT (SE 3.8%) |
 | `lvc` (V per kg)            | 0.669 L/kg         | Table 4, row "Volume (l)" final-model column: V = 0.669 * WT (SE 4.7%)              |
-| `etalcl` (22% CV)           | 0.04729            | Table 4, row "Interpatient variability on clearance" final-model column (SE 28%)    |
+| `etalcl` (22% CV)           | 0.04727            | Table 4, row "Interpatient variability on clearance" final-model column (SE 28%)    |
 | `etalvc` (18% CV)           | 0.03188            | Table 4, row "Interpatient variability on volume" final-model column (SE 46%)       |
 | `addSd`                     | 4.53 mg/L          | Table 4, row "Residual error on concentration (mg/l)" final-model column (SE 13%)   |
 | 1-cmt IV-infusion structure | n/a                | Results paragraph "When the basic structural models were compared"; Methods         |

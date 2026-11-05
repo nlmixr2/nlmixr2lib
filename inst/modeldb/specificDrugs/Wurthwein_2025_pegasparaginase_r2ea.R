@@ -224,30 +224,30 @@ Wurthwein_2025_pegasparaginase_r2ea <- function() {
     # On BOTH V and CLinitial, one occasion per administration (twelve here).
     # Occasions 2-12 carry their own etas with the variance fixed equal to the
     # occasion-1 estimate, encoding NONMEM's `$OMEGA BLOCK(1) SAME`.
-    etaiov_vc_1  ~ 0.014085        # ESM Table S9 (IOV V 11.9%, RSE 7.9%; bootstrap 11.7%, 95% CI 9.5-13.7) converted as log(1 + 0.119^2)
-    etaiov_vc_2  ~ fixed(0.014085) # SAME-equivalent: equal to the occasion-1 IOV variance
-    etaiov_vc_3  ~ fixed(0.014085) # SAME-equivalent
-    etaiov_vc_4  ~ fixed(0.014085) # SAME-equivalent
-    etaiov_vc_5  ~ fixed(0.014085) # SAME-equivalent
-    etaiov_vc_6  ~ fixed(0.014085) # SAME-equivalent
-    etaiov_vc_7  ~ fixed(0.014085) # SAME-equivalent
-    etaiov_vc_8  ~ fixed(0.014085) # SAME-equivalent
-    etaiov_vc_9  ~ fixed(0.014085) # SAME-equivalent
-    etaiov_vc_10 ~ fixed(0.014085) # SAME-equivalent
-    etaiov_vc_11 ~ fixed(0.014085) # SAME-equivalent
-    etaiov_vc_12 ~ fixed(0.014085) # SAME-equivalent
-    etaiov_cl_1  ~ 0.040558        # ESM Table S9 (IOV CLinitial 20.3%, RSE 3.2%; bootstrap 20.3%, 95% CI 19.0-21.8) converted as log(1 + 0.203^2)
-    etaiov_cl_2  ~ fixed(0.040558) # SAME-equivalent: equal to the occasion-1 IOV variance
-    etaiov_cl_3  ~ fixed(0.040558) # SAME-equivalent
-    etaiov_cl_4  ~ fixed(0.040558) # SAME-equivalent
-    etaiov_cl_5  ~ fixed(0.040558) # SAME-equivalent
-    etaiov_cl_6  ~ fixed(0.040558) # SAME-equivalent
-    etaiov_cl_7  ~ fixed(0.040558) # SAME-equivalent
-    etaiov_cl_8  ~ fixed(0.040558) # SAME-equivalent
-    etaiov_cl_9  ~ fixed(0.040558) # SAME-equivalent
-    etaiov_cl_10 ~ fixed(0.040558) # SAME-equivalent
-    etaiov_cl_11 ~ fixed(0.040558) # SAME-equivalent
-    etaiov_cl_12 ~ fixed(0.040558) # SAME-equivalent
+    etaiov_vc_1  ~ log(1 + 0.119^2)  # ESM Table S9 (IOV V 11.9%, RSE 7.9%; bootstrap 11.7%, 95% CI 9.5-13.7)
+    etaiov_vc_2  ~ fixed(log(1 + 0.119^2))  # SAME-equivalent: equal to the occasion-1 IOV variance
+    etaiov_vc_3  ~ fixed(log(1 + 0.119^2))  # SAME-equivalent
+    etaiov_vc_4  ~ fixed(log(1 + 0.119^2))  # SAME-equivalent
+    etaiov_vc_5  ~ fixed(log(1 + 0.119^2))  # SAME-equivalent
+    etaiov_vc_6  ~ fixed(log(1 + 0.119^2))  # SAME-equivalent
+    etaiov_vc_7  ~ fixed(log(1 + 0.119^2))  # SAME-equivalent
+    etaiov_vc_8  ~ fixed(log(1 + 0.119^2))  # SAME-equivalent
+    etaiov_vc_9  ~ fixed(log(1 + 0.119^2))  # SAME-equivalent
+    etaiov_vc_10 ~ fixed(log(1 + 0.119^2))  # SAME-equivalent
+    etaiov_vc_11 ~ fixed(log(1 + 0.119^2))  # SAME-equivalent
+    etaiov_vc_12 ~ fixed(log(1 + 0.119^2))  # SAME-equivalent
+    etaiov_cl_1  ~ log(1 + 0.203^2)  # ESM Table S9 (IOV CLinitial 20.3%, RSE 3.2%; bootstrap 20.3%, 95% CI 19.0-21.8)
+    etaiov_cl_2  ~ fixed(log(1 + 0.203^2))  # SAME-equivalent: equal to the occasion-1 IOV variance
+    etaiov_cl_3  ~ fixed(log(1 + 0.203^2))  # SAME-equivalent
+    etaiov_cl_4  ~ fixed(log(1 + 0.203^2))  # SAME-equivalent
+    etaiov_cl_5  ~ fixed(log(1 + 0.203^2))  # SAME-equivalent
+    etaiov_cl_6  ~ fixed(log(1 + 0.203^2))  # SAME-equivalent
+    etaiov_cl_7  ~ fixed(log(1 + 0.203^2))  # SAME-equivalent
+    etaiov_cl_8  ~ fixed(log(1 + 0.203^2))  # SAME-equivalent
+    etaiov_cl_9  ~ fixed(log(1 + 0.203^2))  # SAME-equivalent
+    etaiov_cl_10 ~ fixed(log(1 + 0.203^2))  # SAME-equivalent
+    etaiov_cl_11 ~ fixed(log(1 + 0.203^2))  # SAME-equivalent
+    etaiov_cl_12 ~ fixed(log(1 + 0.203^2))  # SAME-equivalent
 
     # ---- Residual error ----------------------------------------------------
     # Combined proportional + additive SD, per the Wurthwein 2021 ESM

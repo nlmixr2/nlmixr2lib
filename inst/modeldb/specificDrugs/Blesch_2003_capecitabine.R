@@ -154,10 +154,10 @@ Blesch_2003_capecitabine <- function() {
     etalka       ~ 0.39878  # Blesch 2003 Table 1: ISV KA 70% CV -> log(1 + 0.70^2)
     etaltlag     ~ 12.41    # Blesch 2003 Table 1: ISV TLAG 49,498% CV -> log(1 + 494.98^2); effectively unidentified
     etalvc_dfur  ~ fixed(0.08618)  # Blesch 2003 Table 1: ISV V1 30% CV -> log(1 + 0.30^2)
-    etalcl_dfur  ~ 0.05598  # Blesch 2003 Table 1: ISV CL1 24% CV -> log(1 + 0.24^2)
+    etalcl_dfur  ~ log(1 + 0.24^2)  # Blesch 2003 Table 1: ISV CL1 24% CV
     etalcl_5fu   ~ 0.10336  # Blesch 2003 Table 1: ISV CL2 33% CV -> log(1 + 0.33^2)
-    etalvc_fbal  ~ 0.06537  # Blesch 2003 Table 1: ISV V3 26% CV -> log(1 + 0.26^2)
-    etalcl_fbal  ~ 0.09751  # Blesch 2003 Table 1: ISV CL3 32% CV -> log(1 + 0.32^2)
+    etalvc_fbal  ~ log(1 + 0.26^2)  # Blesch 2003 Table 1: ISV V3 26% CV
+    etalcl_fbal  ~ log(1 + 0.32^2)  # Blesch 2003 Table 1: ISV CL3 32% CV
 
     # ----------------------------------------------------------------------
     # Residual error. Source reports proportional (%CV) residual variances

@@ -107,8 +107,8 @@ Han_2016_bevacizumab <- function() {
     # the Methods (page 344) but Table 3 reports only the diagonal CVs; the off-diagonals
     # are unreported in the article and supplement. Encoded here as independent etas with
     # the reported diagonal variances; deviation documented in the vignette Errata section.
-    etalcl ~ 0.08184  # IIV CL  29.2% -> omega^2 = log(1 + 0.292^2)
-    etalvc ~ 0.03293  # IIV V1  18.3% -> omega^2 = log(1 + 0.183^2)
+    etalcl ~ log(1 + 0.292^2)  # IIV CL  29.2%
+    etalvc ~ log(1 + 0.183^2)  # IIV V1  18.3%
     etalvp ~ 0.15819  # IIV V2  41.4% -> omega^2 = log(1 + 0.414^2)
 
     # ---- Residual error (combined proportional + additive on linear scale) ----

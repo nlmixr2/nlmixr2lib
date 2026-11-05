@@ -204,7 +204,7 @@ Wu_2025_paracetamol <- function() {
     # Inter-individual variability (Table 3 reports IIV as omega% (CV%) +
     # shrinkage; omega^2 = log(1 + CV^2) for the lognormal parameterisation).
     # =====================================================================
-    etalvp           ~ 0.07227   # IIV(V_P)            = 27.38%  -> log(1 + 0.2738^2) = 0.07227 (shrinkage 19.7%)
+    etalvp           ~ log(1 + 0.2738^2)  # IIV(V_P)            = 27.38% (shrinkage 19.7%)
     etalka           ~ log(1 + 0.6443^2)  # IIV(Ka, rectal)     = 64.43% (shrinkage 64.6%)
     etalcl_gluc      ~ log(1 + 0.5599^2)  # IIV(CL_form,GLU)    = 55.99% (shrinkage 24.1%)
     etalcl_sulf      ~ log(1 + 0.361^2)  # IIV(CL_form,SULF)   = 36.10% (shrinkage 18.8%)

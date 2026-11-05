@@ -103,11 +103,11 @@ Wilhelm_2012_ciclosporin <- function() {
     # matrix, but Table 3 reports only the diagonal CVs; off-diagonal
     # elements are not published, so the packaged model uses diagonal
     # IIVs only (see vignette Assumptions and deviations).
-    etalcl     ~ 0.04812  # Table 3: IIV CL   = 22.2% CV -> log(1 + 0.222^2)
-    etalvc     ~ 0.06988  # Table 3: IIV V1   = 26.9% CV -> log(1 + 0.269^2)
+    etalcl     ~ log(1 + 0.222^2)  # Table 3: IIV CL   = 22.2% CV
+    etalvc     ~ log(1 + 0.269^2)  # Table 3: IIV V1   = 26.9% CV
     etalq      ~ 0.07650  # Table 3: IIV Q    = 28.2% CV -> log(1 + 0.282^2)
-    etalvp     ~ 0.08947  # Table 3: IIV V2   = 30.6% CV -> log(1 + 0.306^2)
-    etalka     ~ 0.17559  # Table 3: IIV ka   = 43.8% CV -> log(1 + 0.438^2)
+    etalvp     ~ log(1 + 0.306^2)  # Table 3: IIV V2   = 30.6% CV
+    etalka     ~ log(1 + 0.438^2)  # Table 3: IIV ka   = 43.8% CV
     etalfdepot ~ 0.06062  # Table 3: IIV F    = 25.0% CV -> log(1 + 0.250^2)
     etaltlag   ~ 0.03224  # Table 3: IIV tlag = 18.1% CV -> log(1 + 0.181^2)
 

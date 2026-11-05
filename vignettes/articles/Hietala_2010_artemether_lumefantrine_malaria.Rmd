@@ -61,8 +61,8 @@ Per-parameter source locations are recorded inline in each `inst/modeldb/specifi
 | `lvp <- log(41.4)` (Vp/F_ARM, L/kg)                             | 41.4  | Table 1 (95% CI 29.0-58.1) |
 | `lcl_dihydroart <- log(6.8)` (CL/F_DHA, L/h/kg; F_DHA fixed to 1)      | 6.8   | Table 1 (95% CI 5.8-8.0) |
 | `lvc_dihydroart <- log(3.7)` (V/F_DHA, L/kg)                           | 3.7   | Table 1 (95% CI 2.3-8.7) |
-| `etalcl ~ 0.155649` (CL/F_ARM IIV)                              | CV 41% | Table 1 (95% CI 37-50) -> omega^2 = log(0.41^2 + 1) |
-| `etalcl_dihydroart ~ 0.198101` (CL/F_DHA IIV)                          | CV 47% | Table 1 (95% CI 35-57) -> omega^2 = log(0.47^2 + 1) |
+| `etalcl ~ 0.155378` (CL/F_ARM IIV)                              | CV 41% | Table 1 (95% CI 37-50) -> omega^2 = log(0.41^2 + 1) |
+| `etalcl_dihydroart ~ 0.199588` (CL/F_DHA IIV)                          | CV 47% | Table 1 (95% CI 35-57) -> omega^2 = log(0.47^2 + 1) |
 | `propSd <- 0.61`, `addSd <- fixed(2)` (ARM residual)            | 61% prop, 2 nM add (fixed) | Table 1 |
 | `propSd_dihydroart <- 0.82`, `addSd_dihydroart <- fixed(3)` (DHA residual)    | 82% prop, 3 nM add (fixed) | Table 1 |
 | 2-cmt ARM with first-order absorption; 1-cmt DHA via complete 1:1 molar conversion | -- | Results 'Pharmacokinetics of artemether, dihydroartemisinin, and lumefantrine'; mass factor MW_DHA / MW_ARM = 284.3 / 298.4 |

@@ -142,7 +142,7 @@ Abuhelwa_2015_itraconazole <- function() {
     etalvc     ~ log(1 + 0.308^2)  # Abuhelwa 2015 Table 3 BSV V2/F = 30.8%
     etalktr    ~ log(1 + 0.448^2)  # Abuhelwa 2015 Table 3 BSV KTR  = 44.8%
     etafvar    ~ log(1 + 0.564^2)  # Abuhelwa 2015 Table 3 FVAR     = 56.4% (common random effect on bioavailability)
-    etalcl_ohi ~ 0.07497  # Abuhelwa 2015 Table 4 BSV CL_m/F_m = 27.9%; omega^2 = log(1 + 0.279^2) = 0.07497
+    etalcl_ohi ~ log(1 + 0.279^2)  # Abuhelwa 2015 Table 4 BSV CL_m/F_m = 27.9%
 
     # ========================================================================
     # Residual error: the source uses a log-transform-both-sides (LTBS)

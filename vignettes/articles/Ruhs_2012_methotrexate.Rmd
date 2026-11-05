@@ -82,7 +82,7 @@ Ruhs 2012 Table 2 unless otherwise noted.
 | `etalvc` IIV variance | 0.03199 | Table 2 V1 IIV 18.03% CV |
 | `etalq`  IIV variance | 0.12578 | Table 2 Q IIV 36.61% CV |
 | `etalhcybl` IIV variance | 0.03528 | Table 2 HCYBL IIV 18.95% CV |
-| `etalkout`  IIV variance | 0.10472 | Table 2 kout IIV 33.23% CV |
+| `etalkout`  IIV variance | 0.10474 | Table 2 kout IIV 33.23% CV |
 | `etalec50`  IIV variance | 0.25279 | Table 2 EC50 IIV 53.63% CV |
 | `propSd` -- MTX prop. residual SD | 0.235 | Table 2 PK exponential error (small-sigma equivalent) |
 | `addSd_HCY` -- HCY add. residual SD | 0.911 uM | Table 2 PD additive error |

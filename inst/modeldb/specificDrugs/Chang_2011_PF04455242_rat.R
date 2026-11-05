@@ -91,7 +91,7 @@ Chang_2011_PF04455242_rat <- function() {
     lcl_spiradoline <- log(6.06);  label("Spiradoline apparent oral clearance CL/F per kg (L/h/kg)")   # Table I
     lvc_spiradoline <- log(7.15);  label("Spiradoline apparent central volume Vc/F per kg (L/kg)")     # Table I
 
-    etalka_spiradoline ~ 0.2992  # Table I, omega-Ka = 59.1%CV -> log(0.591^2+1) = 0.2992
+    etalka_spiradoline ~ log(1 + 0.591^2)  # Table I, omega-Ka = 59.1%CV
     etalcl_spiradoline ~ 0.0319  # Table I, omega-CL = 18.0%CV -> log(0.180^2+1) = 0.0319
     etalvc_spiradoline ~ 0.1957  # Table I, omega-Vc = 46.5%CV -> log(0.465^2+1) = 0.1957
 
