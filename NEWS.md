@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Huygens 2024 anti-SARS-CoV-2 IgG after convalescent plasma or hyperimmune globulin ([doi:10.1007/s40262-024-01351-w](https://doi.org/10.1007/s40262-024-01351-w)) -- seronegative immunocompromised adults. Registers the `FORM_SARSCOV2IGG_HYPERIMMUNE` covariate.
+- Add Penland 2024 sodium zirconium cyclosilicate serum potassium K-PD model ([doi:10.1007/s40262-024-01360-9](https://doi.org/10.1007/s40262-024-01360-9)) -- adults with hyperkalemia.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
