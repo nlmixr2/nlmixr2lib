@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wijk 2024 rifampicin, isoniazid, pyrazinamide and ethambutol ([doi:10.1093/jac/dkae206](https://doi.org/10.1093/jac/dkae206)) -- South African adults without HIV on first-line treatment for drug-susceptible pulmonary tuberculosis, with high alcohol and methaqualone use. Registers the `CONMED_METHAQUALONE` covariate.
+- Add Bilal 2024 rifampicin, fat-free-mass and sex + body weight covariate models ([doi:10.1007/s00228-024-03697-3](https://doi.org/10.1007/s00228-024-03697-3)) -- healthy Caucasian adults, single 600 mg oral dose.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
