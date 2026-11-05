@@ -858,9 +858,14 @@ and separate progressively below it, as quantified above.
   as the log-scale variances (`etalcl ~ 0.0757`, `etalvc ~ 0.0870`,
   `etalka ~ 4.57`), not `log(1 + omega^2)`. For CL and V the two readings
   differ by about 4%; for ka the printed 4.57 is 2.7 times `log(1 + 4.57)` =
-  1.72. The Table 5 reproduction above samples the Crystal Ball
-  (arithmetic-CV) reading, which is what Rodjun 2023 simulated, and does not
-  read the model file.
+  1.72. Recomputing Table 5's 108 cells both ways (each centred on the
+  arithmetic mean, as above), the `log(1 + omega^2)` reading reproduces the
+  published PTA slightly more closely than the printed `omega^2` (mean
+  absolute difference 0.13 vs 0.22 percentage points, maximum 0.94 vs 1.20).
+  So the paper's own simulation appears to have used the arithmetic-CV
+  reading, while the model keeps the variances as the Methods define them.
+  The Table 5 reproduction above therefore samples the arithmetic-CV reading
+  and does not read the model file.
 
 # Session information
 
