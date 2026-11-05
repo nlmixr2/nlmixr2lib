@@ -2,8 +2,7 @@
 
 # development version
 
-- Add Yang 2024 ganciclovir ([doi:10.1128/aac.00525-24](https://doi.org/10.1128/aac.00525-24)) -- immunocompromised children receiving IV ganciclovir or enteral valganciclovir.
-
+- Add Fouad 2024 cefiderocol ([doi:10.1093/ofid/ofae451](https://doi.org/10.1093/ofid/ofae451)) -- critically ill adults on continuous venovenous haemodiafiltration.
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
 - `checkModelConventions()` no longer reports `DV` as a covariate. A custom likelihood `ll(<endpoint>) ~ ...` has to read the observed value, and `DV` is a dataset column, not a covariate.
