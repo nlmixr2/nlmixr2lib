@@ -209,10 +209,10 @@ AlvarezJimenez_2016_scopolamine <- function() {
     # interpreted as covariance, like the rest of Table 2's OC column; the
     # paper does not settle whether this one value is a correlation instead,
     # see the vignette Errata;
-    # var_ec50 = log(1+0.137^2) = 0.0186, var_emax = log(1+0.499^2) = 0.2216).
+    # var_ec50 = log(1+0.137^2) = 0.0186, var_emax = log(1+0.499^2) = 0.2223).
     # Table 2 prints the OC as "-0.06 +/- 0.157"; text copies of the PDF drop
     # its minus sign.
-    etalec50_sacInacc + etalemax_sacInacc ~ c(0.0186, -0.06, 0.2216)                         # Table 2 IIV 13.7% / 49.9%, OC (omega correlation) = -0.06
+    etalec50_sacInacc + etalemax_sacInacc ~ c(0.0186, -0.06, 0.2223)                         # Table 2 IIV 13.7% / 49.9%, OC (omega correlation) = -0.06
     etalkin_sacInacc  ~ 0.0175     ; label("IIV var on lkin_sacInacc (~13.2% CV)")           # Table 2 IIV(kIN) = 13.2%
     propSd_sacInacc   <- 0.22204   ; label("Proportional residual error for saccadic inaccuracy") # Table 2 sigma^2 = 0.0493
 
@@ -272,10 +272,12 @@ AlvarezJimenez_2016_scopolamine <- function() {
     # 3-parameter block; the EC50-vs-kIN off-diagonal (not reported) is set
     # to zero via fixed(). Table 2 prints the EMAX-vs-kIN OC as
     # "-0.153 +/- 0.0494"; text copies of the PDF drop its minus sign.
+    # Variances: log(1+1.545^2) = 1.220, log(1+3.254^2) = 2.450,
+    # log(1+0.289^2) = 0.0802.
     etalec50_eegDfc + etalemax_eegDfc + etalkin_eegDfc ~
-      c(1.209,
-        1.410, 2.418,
-        fixed(0), -0.153, 0.0800)                                                            # Table 2 IIV 154.5%/325.4%/28.9%, OC (omega correlation) = 1.410 (EC50 vs EMAX), -0.153 (EMAX vs kIN)
+      c(1.220,
+        1.410, 2.450,
+        fixed(0), -0.153, 0.0802)                                                            # Table 2 IIV 154.5%/325.4%/28.9%, OC (omega correlation) = 1.410 (EC50 vs EMAX), -0.153 (EMAX vs kIN)
     propSd_eegDfc   <- 0.184     ; label("Proportional residual error for EEG delta Fz-Cz")  # Table 2 sigma^2 = 0.0338
 
     # ---------- EEG delta Pz-Oz (uV) ----------
