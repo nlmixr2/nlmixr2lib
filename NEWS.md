@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liric Rajlic 2024 mRNA-6231 kinetic-pharmacodynamic model ([doi:10.1002/psp4.13142](https://doi.org/10.1002/psp4.13142)) -- cynomolgus monkeys, HSA-IL2m protein expression and regulatory T cell expansion after subcutaneous mRNA dosing.
+- Add Wang 2024 docetaxel, IV and oral with encequidar, total and unbound ([doi:10.1007/s10928-024-09913-y](https://doi.org/10.1007/s10928-024-09913-y)) -- men with metastatic prostate cancer.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
