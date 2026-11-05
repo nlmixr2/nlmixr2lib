@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yu 2025 paliperidone palmitate long-acting injectable ([doi:10.3389/fphar.2025.1507828](https://doi.org/10.3389/fphar.2025.1507828)) -- particle-size-binned intramuscular dissolution model in beagle dogs and its human extrapolation, for Invega Sustenna and two test suspensions. Registers the `FORM_PALIPERIDONE_T1` / `FORM_PALIPERIDONE_T2` covariates.
+- Add Yu 2025 paliperidone palmitate long-acting injectable ([doi:10.3389/fphar.2025.1507828](https://doi.org/10.3389/fphar.2025.1507828)) -- healthy beagle dogs and a human extrapolation.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
