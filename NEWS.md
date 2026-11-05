@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lee 2024 nebulized colistin, separate ELF and plasma models ([doi:10.3390/antibiotics13030258](https://doi.org/10.3390/antibiotics13030258)) -- ventilated adults with carbapenem-resistant Acinetobacter baumannii pneumonia receiving low-dose nebulized colistimethate sodium.
+- Add Liu 2024 cetirizine ([doi:10.3389/fphar.2024.1322788](https://doi.org/10.3389/fphar.2024.1322788)) -- Chinese children aged 0.5-12 years with allergic diseases.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
