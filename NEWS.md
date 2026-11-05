@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Morcos 2023b copanlisib pediatric BSA-scaled adaptation ([doi:10.1111/cts.13523](https://doi.org/10.1111/cts.13523)) -- children and adolescents aged 4-21 years with relapsed/refractory solid tumors.
+- Add Li 2023 RC88 ([doi:10.1111/cts.13526](https://doi.org/10.1111/cts.13526)) -- eleven models: mouse PK, cynomolgus monkey TMDD PK and its human projection, and Simeoni, Jumbe and Hybrid tumor-growth-inhibition fits in OVCAR3-MSLN-3# and H292-MSLN-9C8 xenograft mice.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
