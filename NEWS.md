@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Pereira 2024 M6495 anti-ADAMTS-5 nanobody PK/PD with the ARGS biomarker ([doi:10.1007/s10928-024-09958-z](https://doi.org/10.1007/s10928-024-09958-z)) -- cynomolgus monkeys, plus the allometrically scaled human projection used to design the first-in-human study.
+- Add Garraza-Obaldia 2024 propofol and remifentanil haemodynamic (MAP and HR) turnover model ([doi:10.3390/pharmaceutics16121615](https://doi.org/10.3390/pharmaceutics16121615)) -- ASA I-II women under TCI general anaesthesia for gynaecological surgery. Registers the `CP_PROPOFOL_UGML`, `CP_REMIFENTANIL_NGML` and `T_SURG_START` covariates.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
