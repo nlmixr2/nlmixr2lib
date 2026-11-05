@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gupta 2025 erenumab immune-tolerance PK/ADA model ([doi:10.3390/pharmaceutics17070845](https://doi.org/10.3390/pharmaceutics17070845)) -- Sprague-Dawley rats given weekly erenumab with or without methotrexate or tacrolimus/sirolimus.
+- Add Zhang 2025 PBPK renal clearance of hypothetical drugs in obesity ([doi:10.1007/s11095-025-03885-5](https://doi.org/10.1007/s11095-025-03885-5)) -- typical adults with normal weight, overweight or obesity (BMI 20 to 60 kg/m^2).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
