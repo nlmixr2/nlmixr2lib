@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Abouelhassan 2025 sulbactam and durlobactam during continuous renal replacement therapy ([doi:10.1128/aac.01674-23](https://doi.org/10.1128/aac.01674-23)) -- simulated adults with HABP/VABP, with or without CRRT (effluent 1-5 L/h).
+- Add Minichmayr 2025 NAFLD liver-histology item response theory model ([doi:10.1007/s11095-024-03791-2](https://doi.org/10.1007/s11095-024-03791-2)) -- adults with nonalcoholic fatty liver disease in the NASH CRN observational NAFLD Database.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
