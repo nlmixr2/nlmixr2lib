@@ -1264,12 +1264,10 @@ navbar:
         href: articles/Liu_2018_pneumocystis_qsp.html
       - text: "Caspofungin optimalDesign (Xu 2026)"
         href: articles/Xu_2026_caspofungin.html
-      - text: "Cd123nkce human (Choi 2024)"
-        href: articles/Choi_2024_cd123nkce.html
-      - text: "Cd123nkce invitro (Choi 2024)"
-        href: articles/Choi_2024_cd123nkce.html
-      - text: "Cd123nkce nhp (Choi 2024)"
-        href: articles/Choi_2024_cd123nkce.html
+      - text: "Cd19cd22cart ALL (Su 2025)"
+        href: articles/Su_2025_dual_targeted_cart.html
+      - text: "Cd19cd22cart invitro (Su 2025)"
+        href: articles/Su_2025_dual_targeted_cart.html
       - text: "Cebranopadol (Kleideiter 2017)"
         href: articles/Kleideiter_2017_cebranopadol.html
       - text: "Cebranopadol (Kleideiter 2018)"
@@ -3304,6 +3302,10 @@ navbar:
         href: articles/Sadaf_2024_glutamine.html
       - text: "Glycopyrronium (Bartels 2021)"
         href: articles/Bartels_2021_indacaterol_glycopyrronium_mometasone.html
+      - text: "Gprc5dbcmacart 41BB invitro (Su 2025)"
+        href: articles/Su_2025_dual_targeted_cart.html
+      - text: "Gprc5dbcmacart CD28 invitro (Su 2025)"
+        href: articles/Su_2025_dual_targeted_cart.html
       - text: "Granisetron (Li 2023)"
         href: articles/Li_2023_granisetron.html
       - text: "Guanfacine (Li 2018)"
@@ -10675,6 +10677,7 @@ articles:
   - articles/Struemper_2025_tumorsize_OS_nsclc
   - articles/Su_2016_dexmedetomidine
   - articles/Su_2024_tigecycline
+  - articles/Su_2025_dual_targeted_cart
   - articles/Subrtova_2026_daptomycin
   - articles/Suda_2008_theophylline
   - articles/Suetsugu_2021_voriconazole

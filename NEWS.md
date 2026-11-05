@@ -2,7 +2,7 @@
 
 # development version
 
-- Add DeBonis 2025 interleukin-12 PK-desensitization QSP models ([doi:10.1002/psp4.13258](https://doi.org/10.1002/psp4.13258)) -- reduced-bioavailability (preferred) and accelerated-clearance subcutaneous models in adults with advanced renal cell carcinoma, plus intraperitoneal injection and local-production variants.
+- Add Su 2025 dual-targeted bicistronic CAR-T-cell therapy ([doi:10.1002/psp4.13259](https://doi.org/10.1002/psp4.13259)) -- four multiscale CK-PD / in-vitro killing models: the clinical CD19/CD22 (AUTO3) model in pediatric and young-adult B-cell ALL, plus in-vitro cell-level killing models for CD19/CD22 (B-ALL) and the two GPRC5D/BCMA co-stimulatory-domain constructs (multiple myeloma).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
