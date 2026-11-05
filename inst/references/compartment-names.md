@@ -1286,7 +1286,7 @@ These four outputs are the component scores of the NASH Clinical Research Networ
 - **Role:** Cecum compartment in GI-segment absorption models. Canonical large-intestine subsegment immediately downstream of the ileum, completing the `stomach` -> `duodenum` -> `jejunum` -> `ileum` -> `cecum` -> `colon` luminal transit chain.
 - **Source aliases:**
   - `A4` -- fourth intestinal-lumen transit state in `Han_2025_midazolam_pbpk.R` and its fentanyl / alfentanil / sufentanil siblings (Han 2025 Supplementary Eq S3 and the deposited Supplementary File S2 rxode2 script).
-- **Example models:** `Han_2025_midazolam_pbpk.R`, `Han_2025_fentanyl_pbpk.R`, `Han_2025_alfentanil_pbpk.R`, `Han_2025_sufentanil_pbpk.R`.
+- **Example models:** `Han_2025_midazolam_pbpk.R`, `Han_2025_fentanyl_pbpk.R`, `Han_2025_alfentanil_pbpk.R`, `Han_2025_sufentanil_pbpk.R`; `Maskawa_2025_vancomycin_mouse.R` and `Maskawa_2025_vancomycin_mouse_firstorder.R` (a two-state stomach -> cecum fecal-transit model with no absorption, where the cecum is the terminal mixing pool and `Ccecum <- cecum / v_cecum` is the fecal concentration).
 - **Notes:** Routine extension of the registered `duodenum` / `jejunum` / `ileum` small-intestine family to the two large-intestine segments that whole-gut PBPK absorption cascades resolve. Drug absorption is conventionally set to zero in this segment (Han 2025 Section 2.2: "For oral administration, drug absorption only occurs in duodenum, jejunum and ileum"), so the state normally carries transit only. The perfused *wall* of this segment is a separate state; models that resolve it use the `wall_<segment>` paper-specific form set by `Luo_2024_remimazolam_pbpk.R`.
 
 ### colon (**canonical colon compartment**)

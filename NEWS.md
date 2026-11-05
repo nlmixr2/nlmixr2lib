@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Osborne 2025 lidocaine, unbound and total with AAG binding and pain score ([doi:10.1007/s13318-025-00948-1](https://doi.org/10.1007/s13318-025-00948-1)) -- adults given intraperitoneal or intravenous lidocaine after laparoscopic colon resection. Registers the `aag` compartment.
+- Add Maskawa 2025 oral vancomycin fecal transit models, zero-order and first-order gastric emptying ([doi:10.1038/s41598-025-10293-7](https://doi.org/10.1038/s41598-025-10293-7)) -- male C57BL/6N mice (preclinical). Registers `lv_cecum`.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
