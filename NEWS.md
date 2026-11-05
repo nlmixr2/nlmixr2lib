@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Su 2025 dual-targeted bicistronic CAR-T-cell therapy ([doi:10.1002/psp4.13259](https://doi.org/10.1002/psp4.13259)) -- four multiscale CK-PD / in-vitro killing models: the clinical CD19/CD22 (AUTO3) model in pediatric and young-adult B-cell ALL, plus in-vitro cell-level killing models for CD19/CD22 (B-ALL) and the two GPRC5D/BCMA co-stimulatory-domain constructs (multiple myeloma).
+- Add Sun 2024 tacrolimus ([doi:10.3389/fphar.2024.1502097](https://doi.org/10.3389/fphar.2024.1502097)) -- adult renal transplant recipients at least one year post-transplant on concomitant voriconazole.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
