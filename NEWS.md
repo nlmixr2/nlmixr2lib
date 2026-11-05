@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Toffoletto 2023 dexamethasone contact-lens ocular PK ([doi:10.1007/s11095-023-03560-7](https://doi.org/10.1007/s11095-023-03560-7)) -- rabbit eye wearing a dexamethasone-eluting soft contact lens (physiology-based model compared with the Ross 2019 tissue data).
+- Add Weiss 2023 nebulized and intravenous niclosamide ([doi:10.1007/s11095-023-03559-0](https://doi.org/10.1007/s11095-023-03559-0)) -- healthy sheep (preclinical).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
