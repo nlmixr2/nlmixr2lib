@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2025 polymyxin B nebulized and intravenous, plasma + ELF ([doi:10.1128/aac.00044-25](https://doi.org/10.1128/aac.00044-25)) -- critically ill adults with multidrug-resistant Gram-negative pneumonia.
+- Add Zavrelova 2025 tacrolimus ([doi:10.3389/fphar.2025.1517083](https://doi.org/10.3389/fphar.2025.1517083)) -- adults on intravenous tacrolimus after allogeneic stem cell transplantation.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
