@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kengo 2024 isoniazid, linezolid and levofloxacin with clofazimine ([doi:10.1128/aac.01583-23](https://doi.org/10.1128/aac.01583-23)) -- South African adults with drug-resistant tuberculosis, before and after clofazimine was added to the regimen.
+- Add van der Veer 2024 gentamicin, refit of the Bijleveld 2016 model to the merged external-validation data ([doi:10.1097/FTD.0000000000001166](https://doi.org/10.1097/FTD.0000000000001166)) -- term neonates with perinatal asphyxia undergoing therapeutic hypothermia.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
