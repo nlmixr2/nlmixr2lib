@@ -116,7 +116,12 @@ Gupta_2025_erenumab_rat <- function() {
     ND = list(analyte = "naive dendritic cells", units = "cells/uL", specimen = "blood cell", verified = TRUE),
     MD = list(analyte = "mature dendritic cells", units = "cells/uL", specimen = "blood cell", verified = TRUE),
     NThlp = list(analyte = "naive CD4+ T-helper cells", units = "cells/uL", specimen = "blood cell", verified = TRUE),
-    AThlp = list(analyte = "activated CD4+ T-helper cells", units = "cells/uL", specimen = "blood cell", verified = TRUE),
+    AThlp = list(
+      analyte = "activated CD4+ T-helper cells",
+      units = "cells/uL",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
     NTreg = list(analyte = "naive T-regulatory cells", units = "cells/uL", specimen = "blood cell", verified = TRUE),
     ATreg = list(analyte = "activated T-regulatory cells", units = "cells/uL", specimen = "blood cell", verified = TRUE)
   )
