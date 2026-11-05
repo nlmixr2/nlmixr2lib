@@ -3680,6 +3680,28 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Thiel_2018_diclofenac_painrelief.R` and `Thiel_2018_celecoxib_painrelief.R` (umol/L; placebo-adjusted mean pain relief score `= emax * pge2_decr^hill / (ec50^hill + pge2_decr^hill)` with `pge2_decr = -PGE2_DELTA`; diclofenac `emax` 2.8, `hill` 4.4, `ec50` 37.2 umol/L; celecoxib `emax` 2.0, `hill` 5.7, `ec50` 43.4 umol/L).
 - **Notes:** The suffix and sign convention follow `LDLC_DELTA` (signed change, negative = lowering) so the biomarker-change family reads one way. In the founding models the value is **model-predicted, not measured**: PGE2 is an output of the Yang 2007 arachidonic-acid network model of human polymorphonuclear leukocytes, driven by PK-Sim whole-body PBPK predictions of the unbound drug concentration in venous blood cells, so the umol/L scale is that network's internal concentration scale and is not interchangeable with a plasma or exudate PGE2 immunoassay in pg/mL. Record per model which source produced the value. The leukotriene companion for a 5-LOX inhibitor arm is reserved by name as `LTB4_DELTA` (omega-hydroxy-LTB4 drug-treated minus drug-free concentration, the second mediator in Thiel 2018's drug efficacy score), with the same sign convention and the same derived decrement `ltb4_decr <- -LTB4_DELTA`; register it as its own entry when a model first consumes it. Distinct from a PGE2 concentration itself, which would be a separate unsigned canonical.
 
+### DOSE_FOLFOX_MGM2 (**canonical for total FOLFOX dose per treatment cycle per body-surface area**)
+- **Description:** The FOLFOX chemotherapy dose per 14-day treatment cycle, expressed as the SUM of the oxaliplatin, leucovorin (folinic acid) and fluorouracil amounts in mg/m^2; 0 for a subject or arm not receiving FOLFOX. Time-fixed per subject in its founding use (the protocol schedule is assumed for every patient).
+- **Units:** mg/m^2
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters linearly as the dose term of a dose-driven tumor kill rate, `kkill_folfox = kdrug_folfox * DOSE_FOLFOX_MGM2 * exp(-lambda * t)` (Baaz 2023, `aFOLFOX = 2.0e-4 m^2/(mg*month)`).
+- **Source aliases:**
+  - `D_FOLFOX` -- Baaz 2023 notation; the Monolix project in Data S1 declares the regressor as `Dose1`.
+- **Example models:** `Baaz_2023_panitumumab_folfox.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family, with a regimen name in the drug slot because the source combines the three FOLFOX drugs into one dose ('In the case of FOLFOX, we combine the three individual drugs' total doses'). Check how a model sums the components before supplying a value: Baaz 2023 does not print its number, and the value that reproduces its SLD VPC is 1285 mg/m^2 (85 + 200 + 400 + 600, each listed FOLFOX4 amount once), not the two-day cycle total of 2485 mg/m^2. Not interchangeable with per-component columns such as an oxaliplatin-only dose.
+
+### DOSE_PANITUMUMAB_MGKG (**canonical for panitumumab dose per treatment cycle per kilogram of body weight**)
+- **Description:** The panitumumab dose per treatment cycle in mg/kg; 0 for a subject or arm not receiving panitumumab. Time-fixed per subject in its founding use.
+- **Units:** mg/kg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters linearly as the dose term of a dose-driven tumor growth-rate reduction, `kdrug_panitumumab * DOSE_PANITUMUMAB_MGKG * exp(-lambda * t)` (Baaz 2023, `aPani = 7.3e-3 kg/(mg*month)`). PRIME dose: 6 mg/kg every 2 weeks.
+- **Source aliases:**
+  - `D_Pani` -- Baaz 2023 notation; the Monolix project in Data S1 uses a 0/1 regressor `Dose2` and a per-month rate, equal to `aPani * 6`.
+- **Example models:** `Baaz_2023_panitumumab_folfox.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family. A dose-per-cycle exposure surrogate used in place of a PK model; it is not an `amt` and should not be used to dose a PK compartment.
+
 ## Cardiometabolic / target biomarkers
 
 ### HDLC (**canonical for high-density lipoprotein cholesterol**)
@@ -7392,6 +7414,49 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
   - `AUCss` (AZ5104) -- Johnson 2024 Methods and Tables S7 / S11.
 - **Example models:** `Johnson_2024_osimertinib_ild_az5104.R`, `Johnson_2024_osimertinib_lvef_az5104.R`.
 - **Notes:** Member of the `AUC_<DRUG>` family; the development code is used because AZ5104 has no INN. The fm = 0.25 conversion fraction is an identifiability anchor of the PK model, so an AZ5104 AUC is only meaningful together with the PK model that produced it.
+
+### CP_AFABICIN_DESPHOSPHONO_MGL (**canonical for instantaneous total afabicin desphosphono plasma concentration as a time-varying antibacterial PD driver**)
+- **Description:** Instantaneous total plasma concentration of afabicin desphosphono, the active moiety of the FabI-inhibitor prodrug afabicin, supplied as a time-varying covariate column rather than computed from a coupled PK model. Drives the in vivo arm of a bacterial time-kill PD model after conversion to the unbound concentration inside the model.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- multiplied by the in-file unbound fraction (`fu = 0.02` in mouse plasma) to give the unbound concentration `C` that enters the sigmoid Emax kill `Emax(t) * C^hill / (EC50^hill + C^hill)` and the adaptation onset `kon * C` (Saporta 2024 Eqs 3-5). Set to 0 for growth-control animals and outside the exposure window.
+- **Source aliases:** none -- Saporta 2024 writes `C` for the unbound concentration and does not name the total-concentration input.
+- **Example models:** `Saporta_2024_afabicin_invitro_mouse.R` (thigh arm of the joint in vitro / neutropenic mouse thigh fit; EC50 = beta_vivo * MIC^gamma with beta_vivo = 0.707 and gamma = 0.204).
+- **Notes:** Specific scope; afabicin-desphosphono-specific. Follows the `CP_<drug>_<units>` precedent, and like `CP_PROPRANOLOL_NGML` the upstream PK model is unpublished: Saporta 2024 derived the profiles from the mouse PK model of Bader 2017 (ASM Microbe abstract 2176), whose structure is printed in Saporta 2026 (doi:10.1128/aac.00959-25) Supplementary text 2 -- IP depot, absorption transit, two-compartment afabicin desphosphono with an afabicin-to-desphosphono conversion factor -- but whose parameter values appear in no published source. Total, not unbound: the unbound fraction is a model parameter so a user can pair the column with any total-concentration PK model. Carries the active moiety, not the prodrug: Saporta 2024 assumed no killing effect of afabicin itself.
+
+### CP_PROPOFOL_UGML (**canonical for instantaneous predicted plasma propofol concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of propofol, supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only anaesthesia models fitted against the plasma concentration that a target-controlled-infusion (TCI) controller predicted from its embedded PK model (typically Schnider 1998), when propofol was never assayed.
+- **Units:** ug/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as the concentration argument of an Emax expression. Set to 0 before induction and after washout. Reference values observed: effect-site TCI targets of about 0.8-5.1 ug/mL in Garraza-Obaldia 2024 (Table S1), against a fitted C50 of 8.79 ug/mL for inhibition of MAP production.
+- **Source aliases:**
+  - `CPropo` -- Garraza-Obaldia 2024 Equation (3); the Schnider-predicted plasma concentration.
+- **Example models:** `GarrazaObaldia_2024_propofol_remifentanil.R` (Emax inhibition of MAP production, `1 - emax_propofol * CP_PROPOFOL_UGML / (CP_PROPOFOL_UGML + ec50_propofol)`; the paper rejected effect-site propofol as the driver).
+- **Notes:** Specific scope; follows the `CP_<drug>_<units>` precedent. Distinct from `CEFFECT` (an effect-site concentration, which Garraza-Obaldia 2024 tested and rejected) and from `CONMED_PROPOFOL_CC` (a *measured* propofol concentration acting as the perpetrator on another drug's clearance). The column is a model prediction, not an assay, so it inherits the bias of whichever PK model the TCI pump ran; record that PK model in `covariateData[[CP_PROPOFOL_UGML]]$notes`.
+
+### CP_REMIFENTANIL_NGML (**canonical for instantaneous predicted plasma remifentanil concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of remifentanil, supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only anaesthesia models fitted against the plasma concentration that a target-controlled-infusion (TCI) controller predicted from its embedded PK model (typically Minto 1997), when remifentanil was never assayed.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as the concentration argument of a sigmoid Emax expression. Set to 0 before the infusion and after washout. Reference values observed: effect-site TCI targets of about 0.5-4 ng/mL in Garraza-Obaldia 2024 (Table S1), against a fitted C50 of 4.57 ng/mL for inhibition of HR production.
+- **Source aliases:**
+  - `CRemi` -- Garraza-Obaldia 2024 Equation (4); the Minto-predicted plasma concentration.
+- **Example models:** `GarrazaObaldia_2024_propofol_remifentanil.R` (sigmoid Emax inhibition of HR production, Hill coefficient 1.20; the paper found no direct remifentanil effect on MAP).
+- **Notes:** Specific scope; follows the `CP_<drug>_<units>` precedent. Distinct from `CEFFECT`. The column is a model prediction, not an assay; record the TCI PK model in `covariateData[[CP_REMIFENTANIL_NGML]]$notes`. Distinct from `CP_REM_NGML`, which is remikiren, not remifentanil.
+
+### CP_OMEPRAZOLE_NGML (**canonical for instantaneous omeprazole plasma concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of omeprazole (racemic, total parent drug) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Drives the irreversible inactivation of the gastric H+/K+-ATPase in mechanism-based intragastric-pH models of proton-pump inhibitors.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as the second-order inactivation term `kinact * pump * CP_OMEPRAZOLE_NGML` of the relative pump-activity equation (Soliman 2025 supplementary Equation S6, `kd = 0.00388 1/h per ng/mL` from Katashima 1998). Set to 0 for drug-free records. Reference values observed: simulated day-8 median Cmax about 250 ng/mL after 20 mg once daily in adults and about 700-1140 ng/mL after 0.7 mg/kg once daily in children aged 4 months to 6 years (Soliman 2025 supplementary Table S6).
+- **Source aliases:**
+  - `Cp` (Soliman 2025 supplementary Equation S6; values in ng/mL).
+- **Example models:** `Soliman_2025_omeprazole.R` (irreversible H+/K+-ATPase inactivation with a 0.396 h effect lag applied inside the model, so the column holds the undelayed plasma concentration).
+- **Notes:** Specific scope; omeprazole-specific. Follows the established `CP_<drug>_<units>` precedent, with the INN spelled out. Not the same quantity as `DOSE_OMEPRAZOLE_MGD` / `CONMED_OMEPRAZOLE`, which describe omeprazole as a co-medication of another modelled drug. In the founding paper the concentration came from a GastroPlus whole-body PBPK model that the paper does not specify fully enough to reproduce, so users supply it from their own omeprazole PK model or from observed concentrations. The metabolites (hydroxy-omeprazole, omeprazole sulphone) do not inhibit acid secretion and must not be added in.
 
 ## Count / Markov-feedback PD covariates
 
@@ -22122,6 +22187,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Tomita_2022_imeglimin.R` (fractional effects on lag time, +0.719, and, shared with the capsule, on ka, +0.298).
 - **Notes:** Member of the `FORM_<drug>_<formulation>` family. Mutually exclusive with `FORM_CAPSULE` in the Tomita 2022 dataset.
 
+### FORM_MEZIGDOMIDE_B (**canonical for the mezigdomide formulation B indicator**)
+- **Description:** 1 = mezigdomide dosed as formulation B, 0 = dosed as formulation A, the formulation used in the first-in-human trials. Per-dose-occasion indicator: in the Study II randomized crossover each subject received both formulations.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (formulation A; the typical-value bioavailability reference).
+- **Source aliases:**
+  - `FORMU` -- used in `Wu_2023_mezigdomide.R` (Wu 2023 Methods, 'FORMU = 0 if mezigdomide is dosed in formulation A and FORMU = 1 if in formulation B'; Text S2 codes the raw column as A = 1 / B = 2).
+- **Example models:** `Wu_2023_mezigdomide.R` (on log F: `-0.236 * FORM_MEZIGDOMIDE_B`, relative bioavailability of formulation B 0.79 times formulation A; the formulation also selects which PPI effect applies to log ka, `-0.592` for A and `-1.99` for B).
+- **Notes:** Follows the auto-approved `FORM_<drug>_<formulation>` canonical family. Wu 2023 does not describe the composition of either formulation, and it labels formulation A the reference in its Methods but the test formulation in its Figure 1 caption; the indicator is defined by the letter, which the paper uses consistently in its equations and figures, not by the test/reference label.
+
 ## Occasion / period (IOV)
 
 ### OCC (**canonical for the integer-valued occasion / period column**)
@@ -25061,3 +25137,82 @@ is the experimental condition itself, held constant for the whole solve.
   - `study` -- Huestis 2025 Table 2 rows 'Study effect on CL/F', 'Study effect on V2/F' and the study-specific 'Add. Error NIDA' / 'Add. Error MPKF' rows.
 - **Example models:** `Huestis_2025_midomafetamine.R` (founding example; proportional effects on MDMA CL/F, `(1 - 0.36 * STUDY_MPKF)`, and V2/F, `(1 - 0.263 * STUDY_MPKF)`, plus selection of the study-specific MDMA additive residual error, 8.11 ng/mL for NIDA and 2.5 ng/mL fixed for MPKF).
 - **Notes:** Auto-approved member of the `STUDY_<id>` family. The paper treats the effect as an idiosyncrasy of the pooled dataset rather than a patient-relevant covariate, so simulations for the intended population use `STUDY_MPKF = 0`.
+
+### STUDY_STAMP2011 (**canonical for the Stamp 2011 allopurinol dose-escalation study indicator (Hishe 2023 Study 1)**)
+- **Description:** 1 = subject from Study 1 of the Hishe 2023 oxypurinol five-study pooled analysis (Stamp 2011 Arthritis Rheum, ANZCTR 012606000276550), 0 = another of the five pooled studies. Subject-level (time-fixed). Study 5 (Stamp 2017) is the all-zeros reference for the `STUDY_*` indicator set.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (another of the five Hishe 2023 studies; the Study-5 / Stamp 2017 cohort is the all-zeros reference).
+- **Source aliases:**
+  - `STUDY` -- Hishe 2023 Appendix S2 `$ERROR` block, `IF(STUDY.EQ.1)` selecting the Study-1 residual error.
+- **Example models:** `Hishe_2023_oxypurinol.R` (selects the Study-1 combined residual error: additive fixed at 0.0001 umol/L, proportional 43.5% CV; acts on no structural parameter).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. Sibling of `STUDY_STAMP2012`, `STUDY_STAMP2013` and `STUDY_WRIGHT2016` in the same paper. These four indicators plus the implicit Study-5 reference partition the pooled cohort, so a model needs at most four of the five.
+
+### STUDY_STAMP2012 (**canonical for the Stamp 2012 furosemide-interaction study indicator (Hishe 2023 Study 2)**)
+- **Description:** 1 = subject from Study 2 of the Hishe 2023 oxypurinol five-study pooled analysis (Stamp 2012 Rheumatology furosemide-interaction study, ANZCTR 12609000529246), 0 = another of the five pooled studies. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (another of the five Hishe 2023 studies; the Study-5 / Stamp 2017 cohort is the all-zeros reference).
+- **Source aliases:**
+  - `STUDY` -- Hishe 2023 Appendix S2 `$ERROR` block, `IF(STUDY.EQ.2)` selecting the Study-2 residual error.
+- **Example models:** `Hishe_2023_oxypurinol.R` (selects the Study-2 combined residual error: additive 10.0 umol/L, proportional fixed at 0.0001; acts on no structural parameter).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. Sibling of `STUDY_STAMP2011`, `STUDY_STAMP2013` and `STUDY_WRIGHT2016` in the same paper.
+
+### STUDY_STAMP2013 (**canonical for the Stamp 2013 vitamin-C study indicator (Hishe 2023 Study 3)**)
+- **Description:** 1 = subject from Study 3 of the Hishe 2023 oxypurinol five-study pooled analysis (Stamp 2013 Arthritis Rheum vitamin-C study, ANZCTR 12610000545066), 0 = another of the five pooled studies. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (another of the five Hishe 2023 studies; the Study-5 / Stamp 2017 cohort is the all-zeros reference).
+- **Source aliases:**
+  - `STUDY` -- Hishe 2023 Appendix S2 `$ERROR` block, `IF(STUDY.EQ.3)` selecting the Study-3 residual error.
+- **Example models:** `Hishe_2023_oxypurinol.R` (selects the Study-3 combined residual error: additive fixed at 0.0001 umol/L, proportional 42.2% CV; acts on no structural parameter).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. Sibling of `STUDY_STAMP2011`, `STUDY_STAMP2012` and `STUDY_WRIGHT2016` in the same paper.
+
+### STUDY_WRIGHT2016 (**canonical for the Wright 2016/2018 low-dose study indicator (Hishe 2023 Study 4)**)
+- **Description:** 1 = subject from Study 4 of the Hishe 2023 oxypurinol five-study pooled analysis (the low-dose data reported in Wright 2016 / Wright 2018 Br J Clin Pharmacol), 0 = another of the five pooled studies. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (another of the five Hishe 2023 studies; the Study-5 / Stamp 2017 cohort is the all-zeros reference).
+- **Source aliases:**
+  - `STUDY` -- Hishe 2023 Appendix S2 `$ERROR` block, `IF(STUDY.EQ.4)` selecting the Study-4 residual error.
+- **Example models:** `Hishe_2023_oxypurinol.R` (selects the Study-4 combined residual error: additive 0.93 umol/L, proportional 34.8% CV; acts on no structural parameter).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. Sibling of `STUDY_STAMP2011`, `STUDY_STAMP2012` and `STUDY_STAMP2013` in the same paper. The Hishe 2023 NONMEM code labels this study `STUDY.EQ.4`; the NONMEM `STUDY.EQ.7` used for the Study-5 residual is the all-zeros reference here.
+
+### STUDY_MYK461014 (**canonical for the mavacamten MYK-461-014 food-effect / relative-bioavailability study indicator**)
+- **Description:** 1 = record from study MYK-461-014 (single 15 mg doses of an initial capsule fasted, the commercial capsule fasted and the commercial capsule fed, 24 healthy adults); 0 = any of the other 11 studies pooled in Chang 2024. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other 11 studies).
+- **Source aliases:**
+  - `EP14` -- Chang 2024 Table S5 residual-error row 'exponential residual error for study MYK-461-014'.
+- **Example models:** `Chang_2024_mavacamten.R` (selects the separately estimated exponential residual error, variance 0.478 instead of 0.0292; no PK parameter depends on it).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. Only the residual error depends on it, so simulations of new subjects set it to 0.
+
+### STUDY_SIME2014 (**canonical for the Sime 2014 febrile-neutropenia haematological-malignancy piperacillin study indicator**)
+- **Description:** 1 = the subject belongs to the Sime 2014 study of piperacillin in febrile neutropenic patients with haematological malignancy (Antimicrob Agents Chemother 2014;58:3533-3537); 0 = any other study of the pooled analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (all other pooled studies).
+- **Source aliases:**
+  - `SID = 4` -- Kong 2025 ESM3 control stream study identifier.
+  - `Sime et al. [7]` -- Kong 2025 Table 1 and Eqs. 21-22.
+- **Example models:** `Kong_2025b_piperacillin_tazobactam.R` (multiplies piperacillin elimination clearance by 1.73 and piperacillin peripheral volume by 0.512; tazobactam unaffected).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. Kong 2025 interprets the effect as a property of the haematological-malignancy population of that study (an additional clearance increase beyond the serum-creatinine effect), but implements it as a study indicator, so it is registered as one rather than as a disease covariate. The shipped `Sime_2019_tazobactam.R` is a different Sime study. Sibling of `STUDY_SUKARNJANASET2019` in the same model.
+
+### STUDY_SUKARNJANASET2019 (**canonical for the Sukarnjanaset 2019 early-sepsis piperacillin study indicator**)
+- **Description:** 1 = the subject belongs to the Sukarnjanaset 2019 study of piperacillin in critically ill patients in the early phase of sepsis (J Pharmacokinet Pharmacodyn 2019;46:251-261); 0 = any other study of the pooled analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (all other pooled studies).
+- **Source aliases:**
+  - `SID = 8` -- Kong 2025 ESM3 control stream study identifier.
+  - `Sukarnjanaset et al. [11]` -- Kong 2025 Table 1 and Eq. 23.
+- **Example models:** `Kong_2025b_piperacillin_tazobactam.R` (sets the piperacillin unbound fraction to 1, held constant, instead of 0.645, so measured unbound equals total concentration in that study).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. Kong 2025 treats the study as an outlier in protein binding (Discussion, limitations). Sibling of `STUDY_SIME2014` in the same model.
