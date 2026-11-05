@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Weiss 2023 nebulized and intravenous niclosamide ([doi:10.1007/s11095-023-03559-0](https://doi.org/10.1007/s11095-023-03559-0)) -- healthy sheep (preclinical).
+- Add Campbell 2023 chloroprene PBPK with glutathione depletion ([doi:10.3389/fphar.2023.1223808](https://doi.org/10.3389/fphar.2023.1223808)) -- whole-body inhalation PBPK for female mice, with a 1-CEO metabolite submodel, a reactive-product pool and lung/liver GSH depletion.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
