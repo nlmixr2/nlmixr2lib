@@ -5852,6 +5852,8 @@ navbar:
         href: articles/Chen_2025_remimazolam.html
       - text: "Remimazolam (Liang 2026)"
         href: articles/Liang_2026_remimazolam.html
+      - text: "Remimazolam (Ueshima 2025)"
+        href: articles/Ueshima_2025_remimazolam.html
       - text: "Remimazolam (Zhou 2018)"
         href: articles/Zhou_2018_remimazolam.html
       - text: "Remimazolam (Zhou 2021)"
@@ -10236,6 +10238,7 @@ articles:
   - articles/Tylutki_2018_amitriptyline
   - articles/Ueshima_2018_apixaban
   - articles/Ueshima_2025_edoxaban
+  - articles/Ueshima_2025_remimazolam
   - articles/Ugolkov_2026_bcell_mouse_qsp
   - articles/Ujihira_2025_glycochenodeoxycholicAcidSulfate
   - articles/Ulldemolins_2015_meropenem
