@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Heerma van Voss 2024 docetaxel millidose and therapeutic-dose models ([doi:10.1007/s00280-024-04684-2](https://doi.org/10.1007/s00280-024-04684-2)) -- men with prostate cancer.
+- Add Chamzas 2024 tacrolimus ([doi:10.3389/fphar.2024.1443988](https://doi.org/10.3389/fphar.2024.1443988)) -- Hispanic adult renal transplant recipients in the first 30 days post-transplant.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
