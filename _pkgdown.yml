@@ -1220,6 +1220,10 @@ navbar:
         href: articles/Periclou_2021_cariprazine.html
       - text: "Cariprazine initial (Periclou 2021)"
         href: articles/Periclou_2021_cariprazine.html
+      - text: "Carmrna invitro qsp (Kim 2024)"
+        href: articles/Kim_2024_car_mrna_nanoparticle.html
+      - text: "Carmrna mouse qsp (Kim 2024)"
+        href: articles/Kim_2024_car_mrna_nanoparticle.html
       - text: "Carprofen moxidectinCorrected (Munn 2024)"
         href: articles/Munn_2024_carprofen_moxidectin_internal_standard.html
       - text: "Carprofen raw (Munn 2024)"
@@ -9565,7 +9569,7 @@ articles:
   - articles/Kim_2023_camostat
   - articles/Kim_2023_levonorgestrel_implantRelease
   - articles/Kim_2023_pyrazinamide
-  - articles/Kim_2024_islatravir
+  - articles/Kim_2024_car_mrna_nanoparticle
   - articles/Kim_2024_meropenem
   - articles/Kim_2024_niclosamide_hamster
   - articles/Kim_2024_teicoplanin

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Michalon 2025 cliramitug (NI006, ALXN2220) rat PK and human cardiac ATTR-depletion QSP models ([doi:10.1002/cpt.3455](https://doi.org/10.1002/cpt.3455)) -- rats, and a typical 70 kg adult with transthyretin amyloid cardiomyopathy (first-in-human projection).
+- Add Kim 2024 in vivo CAR-T CAR mRNA nanoparticle cell-level PK-PD ([doi:10.1111/cts.70101](https://doi.org/10.1111/cts.70101)) -- QSP, in vitro human CD8+ T cells and in vivo NSG mice.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
