@@ -2,7 +2,7 @@
 
 # development version
 
-- Add van der Meijden 2023 polymyxin B murine PK/PD ([doi:10.1093/jac/dkad022](https://doi.org/10.1093/jac/dkad022)) -- neutropenic-mouse thigh/lung infection models: a population PK model plus ten fAUC/MIC inhibitory-sigmoid-Emax PK/PD models for four E. coli and five K. pneumoniae isolates.
+- Add Staudt 2023 voriconazole ([doi:10.3390/pharmaceutics15071781](https://doi.org/10.3390/pharmaceutics15071781)) -- male Wistar and Sprague-Dawley rats, healthy or with Cryptococcus neoformans meningoencephalitis, with plasma, brain microdialysis and CSF.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
