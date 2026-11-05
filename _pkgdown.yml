@@ -5088,6 +5088,8 @@ navbar:
         href: articles/Boucher_2018_naproxen_mbma.html
       - text: "Naproxen rat (Li 2017)"
         href: articles/Li_2017_naproxen_rat.html
+      - text: "Natalizumab (vandenBerg 2025)"
+        href: articles/vandenBerg_2025_natalizumab.html
       - text: "Nb457trimer human (Fan 2025)"
         href: articles/Fan_2025_antiCD4_nanobody_HIV.html
       - text: "Nb457trimer mouse (Fan 2025)"
@@ -11487,6 +11489,7 @@ articles:
   - articles/vandenBerg_2021_finerenone
   - articles/vandenBerg_2021_uprifosbuvir
   - articles/vandenBerg_2025_genericMab
+  - articles/vandenBerg_2025_natalizumab
   - articles/vandenMaagdenberg_2025_a2ar_tme_qsp
   - articles/vanderGaag_2025_osimertinib_pbpk
   - articles/vanderHeijden_2023_alectinib
