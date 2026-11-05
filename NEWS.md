@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kaikousidis 2023 donepezil oral and intranasal blood + brain PK (five models) ([doi:10.3390/pharmaceutics15051409](https://doi.org/10.3390/pharmaceutics15051409)) -- C57BL/6J mice given an oral solution or a nasal film
+- Add Edwina 2023 fosfomycin ([doi:10.1007/s00228-023-03477-5](https://doi.org/10.1007/s00228-023-03477-5)) -- healthy adult men (plasma and urine).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
