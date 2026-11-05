@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Baaz 2023 FOLFOX + panitumumab joint tumor-growth / progression-free-survival and dropout models ([doi:10.1002/psp4.13003](https://doi.org/10.1002/psp4.13003)) -- adults with RAS exon 2 wild-type metastatic colorectal cancer (PRIME).
+- Add Alli 2023 cefazolin ([doi:10.1371/journal.pone.0291425](https://doi.org/10.1371/journal.pone.0291425)) -- adults given cefazolin prophylaxis for elective cardiac valve replacement on cardiopulmonary bypass; joint total and unbound concentrations.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
