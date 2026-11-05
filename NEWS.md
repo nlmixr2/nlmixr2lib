@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Maskawa 2025 oral vancomycin fecal transit models, zero-order and first-order gastric emptying ([doi:10.1038/s41598-025-10293-7](https://doi.org/10.1038/s41598-025-10293-7)) -- male C57BL/6N mice (preclinical). Registers `lv_cecum`.
+- Add Ueshima 2025 remimazolam ([doi:10.1038/s41598-025-10015-z](https://doi.org/10.1038/s41598-025-10015-z)) -- older Japanese adults during remimazolam-only induction of general anesthesia.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
