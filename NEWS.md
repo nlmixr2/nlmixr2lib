@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sten 2023 GalNAc-siRNA plasma PK models: inclisiran, givosiran, lumasiran, vutrisiran and olpasiran compartmental fits plus the corrected Ayyar 2021 fitusiran mPBPK-PD model ([doi:10.1007/s40262-023-01314-7](https://doi.org/10.1007/s40262-023-01314-7)) -- naive-pooled literature means (humans); mPBPK-PD in mouse, rat, monkey and human.
+- Add van der Heijden 2023 alectinib ([doi:10.1111/cts.13647](https://doi.org/10.1111/cts.13647)) -- adults with ALK-positive non-small cell lung cancer (EMA assessment-report popPK model with the paper's microtracer food effect on bioavailability).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
