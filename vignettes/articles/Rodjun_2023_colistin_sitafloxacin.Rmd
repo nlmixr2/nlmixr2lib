@@ -524,7 +524,9 @@ Carlo is noisiest.
 Both papers' `%IIV` / `omega^2` columns are read as **arithmetic** CVs, per the
 Table 1 and Table 2 footnotes ("SD were calculated from %IVV x mean"; "SD were
 calculated from the square root of omega^2 x 100% x estimate"), which is how
-Crystal Ball parameterises a log-normal.
+Crystal Ball parameterises a log-normal. This reading is used here only to
+reproduce Rodjun's own Monte Carlo; the sitafloxacin model file carries the
+printed Table 2 `omega^2` as the log-scale variance (see Errata).
 
 ## Sitafloxacin (Table 5)
 
@@ -805,14 +807,17 @@ and separate progressively below it, as quantified above.
   this vignette.
 - **Variability scale.** Both source tables report variability on the arithmetic
   scale (Table 1: "SD were calculated from %IVV x mean"; Table 2: "SD were
-  calculated from the square root of omega^2 x 100% x estimate"). The model
-  files convert to log-scale variances via `omega^2 = log(CV^2 + 1)`, which is
-  the log-normal Crystal Ball would have sampled.
+  calculated from the square root of omega^2 x 100% x estimate"). The colistin
+  model converts its `%IIV` to log-scale variances via
+  `omega^2 = log(CV^2 + 1)`, which is the log-normal Crystal Ball would have
+  sampled. The sitafloxacin model carries the printed Table 2 `omega^2`
+  directly as the log-scale variance (see Errata).
 - **Sitafloxacin absorption variability.** Table 2 reports `omega^2 = 4.57` for
   `ka`, i.e. a 214% arithmetic CV. This is implausibly large for an absorption
   rate constant and is likely a misprint (0.457 would be unremarkable), but it is
-  encoded exactly as printed. It does not affect any result in this vignette
-  because every PK/PD target is AUC-driven and AUC is independent of `ka`.
+  encoded exactly as printed: `etalka ~ 4.57`, a log-scale SD of 2.14. It does
+  not affect any result in this vignette because every PK/PD target is
+  AUC-driven and AUC is independent of `ka`.
 - **No residual error model.** Neither source reports one; the Monte Carlo
   simulation is deterministic once the PK parameters are drawn. All residual SDs
   are `fixed(0)`. A user fitting observed data must re-estimate them.
@@ -846,6 +851,16 @@ and separate progressively below it, as quantified above.
 - **Rodjun 2023 Table 1 `%SE` gaps.** No standard error is reported for CMS
   `V1`, CMS `V2` or colistin `CLT C`, and no `%IIV` is reported for colistin
   `CLR C` or `CLNR C`. These gaps are reproduced faithfully rather than filled.
+- **Rodjun 2023 Table 2 prints the sitafloxacin variances.** The Methods
+  (Pharmacokinetic model, Sitafloxacin) define the printed column as "omega^2,
+  the variance of the estimated value (SD were calculated from the square root
+  of omega^2 x 100% x estimate)". The model uses the printed values directly
+  as the log-scale variances (`etalcl ~ 0.0757`, `etalvc ~ 0.0870`,
+  `etalka ~ 4.57`), not `log(1 + omega^2)`. For CL and V the two readings
+  differ by about 4%; for ka the printed 4.57 is 2.7 times `log(1 + 4.57)` =
+  1.72. The Table 5 reproduction above samples the Crystal Ball
+  (arithmetic-CV) reading, which is what Rodjun 2023 simulated, and does not
+  read the model file.
 
 # Session information
 

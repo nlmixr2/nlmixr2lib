@@ -298,11 +298,14 @@ Bhagunde_2026_lecanemab_gfap <- function() {
     e_mmse_rbase         <- -0.63; label("Power exponent for baseline MMSE on baseline GFAP, (SCORE_MMSE/26)^e (unitless)")   # Bhagunde 2026 Table 1: Baseline MMSE on baseline GFAP (power) = -0.63 (RSE 25.8%)
     e_study_lec201_rbase <- 0.388; label("Log-linear effect of Study 201 enrolment on baseline GFAP, exp(e * STUDY_LEC201) (unitless)")  # Bhagunde 2026 Table 1: Study 201 on baseline GFAP = 0.388 (RSE 9.01%), assay batch effect per Section 3.2.3
 
-    # Lecanemab PK interindividual variability, fixed from Majid 2024
-    # (omega^2 = log(CV^2 + 1)).
-    etalcl + etalvc ~ fixed(c(0.114936,
-                              0.005934, 0.014774))   # Majid 2024 Table 1: IIV CL 34.9 %CV, IIV V1 12.2 %CV, correlation CL ~ V1 R = 0.144
-    etalvp          ~ fixed(0.639175)                # Majid 2024 Table 1: IIV V2 94.6 %CV
+    # Lecanemab PK interindividual variability, fixed from Majid 2024. Majid
+    # 2024 Table 1 defines "CV%, square root of variance x 100", so each PK
+    # variance is the square of the printed CV and the CL-V1 covariance is
+    # R * CV_CL * CV_V1. Only these PK etas follow Majid's definition; the
+    # biomarker etas below are Bhagunde 2026's own.
+    etalcl + etalvc ~ fixed(c(0.349^2,
+                              0.144 * 0.349 * 0.122, 0.122^2))   # Majid 2024 Table 1: IIV CL 34.9 %CV, IIV V1 12.2 %CV, correlation CL ~ V1 R = 0.144
+    etalvp          ~ fixed(0.946^2)                # Majid 2024 Table 1: IIV V2 94.6 %CV
 
     # Plasma GFAP interindividual variability (estimated here)
     etalrbase          ~ log(1 + 0.382^2)  # Bhagunde 2026 Table 1: IIV baseline GFAP 38.2 %CV

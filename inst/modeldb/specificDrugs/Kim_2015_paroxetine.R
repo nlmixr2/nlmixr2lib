@@ -76,12 +76,13 @@ Kim_2015_paroxetine <- function() {
     e_age_cl  <- -0.702
     label("Power exponent of age on CL/F (unitless, reference 71 years)")          # Kim 2015 Table 2, RSE 30.1% (negative -> lower CL in elderly)
 
-    # IIV on CL/F only - the published model reports CV% on the linear scale,
-    # converted to log-normal variance via omega^2 = log(CV^2 + 1):
-    #   CL/F BSV 40.2% -> omega^2 = log(0.402^2 + 1) = 0.1498018
+    # IIV on CL/F only. Kim 2015 Table 2 footnote b: "expressed as coefficient
+    # of variation approximated by the square root of the variance estimate
+    # (%)", so the variance is the square of the printed CV:
+    #   CL/F BSV 40.2% -> omega^2 = 0.402^2
     # No IIV on Ka or Vd (both fixed; the paper notes inclusion of further
     # IIVs did not improve fit).
-    etalcl ~ log(1 + 0.402^2)  # Kim 2015 Table 2, CV 40.2%, RSE 13.4%
+    etalcl ~ 0.402^2  # Kim 2015 Table 2, CV 40.2%, RSE 13.4%
 
     # Residual error - Kim 2015 Methods states an "additive error model with
     # log-transformed data" with sigma = 0.642 in log(ug/L). The NONMEM

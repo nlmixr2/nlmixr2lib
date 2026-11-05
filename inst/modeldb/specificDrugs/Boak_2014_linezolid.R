@@ -228,22 +228,24 @@ Boak_2014_linezolid <- function() {
     # 0.347 / 0.203 in Table 2 map to the 34.7% / 20.3% CVs, and by the
     # Results 'A linezolid concentration of 8.06 mg/liter (101%
     # between-patient variability)' where 1.01 in Table 2 maps to 101% CV).
-    # Convert CV to log-normal omega^2 = log(CV^2 + 1) for entry into
-    # nlmixr2's ~ notation. A single eta on the composite CL follows the
+    # Table 2 footnote a: "Between-subject variability (BSV) is expressed as
+    # the apparent coefficient of variation (i.e., the square root of the
+    # estimated variance)." Each variance is therefore the square of the
+    # printed CV. A single eta on the composite CL follows the
     # Tsuji_2017_linezolid convention for the same additive-renal-plus-nonrenal
     # structure; the eta is named after lcl_nonren for convention-check
     # compliance but is applied multiplicatively on (CL_NR + CL_R * RF).
-    etaltlag       ~ 0.30748   # T_lag        CV = 0.600 -> omega^2 = log(1.36)
-    etaltabs       ~ 0.02139   # T_abs1/2     CV = 0.147 -> omega^2 = log(1.021609)
-    etalcl_nonren  ~ 0.21451   # CL composite CV = 0.489 -> omega^2 = log(1.239121); single eta on composite CL
-    etalvc         ~ 0.001296  # V            CV = 0.036 -> omega^2 = log(1.001296)
-    etalrbase      ~ 0.35325   # Base_PL      CV = 0.651 -> omega^2 = log(1.423801)
-    etalec50       ~ 0.70307   # IC50         CV = 1.01  -> omega^2 = log(2.02010)
-    etalmtt_pre    ~ 0.11375   # MTT_Pre      CV = 0.347 -> omega^2 = log(1.120409)
-    etalmtt_pl     ~ 0.04039   # MTT_PL       CV = 0.203 -> omega^2 = log(1.041209)
-    etalgamma      ~ fixed(0.02226) # gamma CV = 0.15 -> omega^2 = log(1.0225)
-    etalfini_pre   ~ log(1 + 0.215^2)  # F_Ini_Pre    CV = 0.215
-    etalfini_pl    ~ log(1 + 0.236^2)  # F_Ini_PL     CV = 0.236
+    etaltlag       ~ 0.600^2  # T_lag        CV = 0.600
+    etaltabs       ~ 0.147^2  # T_abs1/2     CV = 0.147
+    etalcl_nonren  ~ 0.489^2  # CL composite CV = 0.489; single eta on composite CL
+    etalvc         ~ 0.036^2  # V            CV = 0.036
+    etalrbase      ~ 0.651^2  # Base_PL      CV = 0.651
+    etalec50       ~ 1.01^2  # IC50         CV = 1.01
+    etalmtt_pre    ~ 0.347^2  # MTT_Pre      CV = 0.347
+    etalmtt_pl     ~ 0.203^2  # MTT_PL       CV = 0.203
+    etalgamma      ~ fixed(0.15^2)  # gamma CV = 0.15
+    etalfini_pre   ~ 0.215^2  # F_Ini_Pre    CV = 0.215
+    etalfini_pl    ~ 0.236^2  # F_Ini_PL     CV = 0.236
 
     # ---- Residual error (additive + proportional per Boak 2014 Table 2) ----
     addSd       <- 0.309   ; label("Additive residual SD for linezolid Cc (mg/L)")                        # Boak 2014 Table 2 (SD_in)

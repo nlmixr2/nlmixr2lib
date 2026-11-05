@@ -134,21 +134,24 @@ Schoemaker_1996_dalteparin <- function() {
     # Schoemaker 1996 Table 4: I10 = 0.0665 IU/mL (s.e. 0.00439; CV 19.6%)
 
     # IIV. Schoemaker 1996 used the constant-coefficient-of-variation log-normal
-    # IIV model (their equation 6): theta_i = theta * exp(eta_i). The variance
-    # of each eta on the log-scale equals log(1 + CV^2). The paper reports IIV
-    # on CL (14.1%) and elimination t1/2E (8.3%) as independent etas in the
-    # (CL, t1/2E) parameterisation. Re-expressed in the (CL, Vc) parameterisation
-    # used here (Vc = CL * t1/2E / ln(2), so eta_lvc = eta_lcl + eta_lt12E with
-    # eta_lt12E independent of eta_lcl), the implied joint distribution is:
-    #   Var(eta_lcl) = log(1 + 0.141^2) = 0.01969
-    #   Var(eta_lvc) = Var(eta_lcl) + Var(eta_lt12E)
-    #                = 0.019686 + log(1 + 0.083^2) = 0.026551
-    #   Cov(eta_lcl, eta_lvc) = Var(eta_lcl) = 0.01969
-    # (Correlation = 0.861). This block-diagonal encoding preserves the paper's
+    # IIV model (their equation 6): theta_i = theta * exp(eta_i). Methods
+    # (pp. 284-285): linearisation of that model "results in a statistical
+    # model for which the square root of the estimated variances of the etas
+    # provides coefficients of variation (CVs) for inter-individual
+    # variability", so each variance is the square of the printed CV.
+    # The paper reports IIV on CL (14.1%) and t1/2E (8.3%) as independent
+    # etas in the (CL, t1/2E) parameterisation. Re-expressed in the (CL, Vc)
+    # parameterisation used here (Vc = CL * t1/2E / ln(2), so eta_lvc =
+    # eta_lcl + eta_lt12E with eta_lt12E independent of eta_lcl), the implied joint
+    # distribution is:
+    #   Var(eta_lcl) = 0.141^2 = 0.019881
+    #   Var(eta_lvc) = Var(eta_lcl) + Var(eta_lt12E) = 0.141^2 + 0.083^2 = 0.026770
+    #   Cov(eta_lcl, eta_lvc) = Var(eta_lcl) = 0.019881
+    # (Correlation = 0.862). This block encoding preserves the paper's
     # reported IIV on CL (14.1%) and t1/2E (8.3%) exactly: when sampled, the
-    # implied IIV on t1/2E = sqrt(Var(eta_lvc - eta_lcl)) = sqrt(0.00687) ~ 8.3%
-    # and IIV on CL = sqrt(0.01969) ~ 14.1%, matching Table 4.
-    etalcl + etalvc ~ c(log(1 + 0.141^2), log(1 + 0.141^2), log(1 + 0.141^2) + log(1 + 0.083^2))
+    # implied IIV on t1/2E = sqrt(Var(eta_lvc - eta_lcl)) = sqrt(0.006889) = 8.3%
+    # and IIV on CL = sqrt(0.019881) = 14.1%, matching Table 4.
+    etalcl + etalvc ~ c(0.141^2, 0.141^2, 0.141^2 + 0.083^2)
     # Schoemaker 1996 Table 4: CV(CL) = 14.1%, CV(t1/2E) = 8.3%
 
     # Absorption-rate IIV: Schoemaker 1996 Table 4 reports CV(t1/2A) = 0.0%
@@ -159,14 +162,14 @@ Schoemaker_1996_dalteparin <- function() {
     # No etalka entry is declared so the simulated population has a single
     # shared absorption-rate trajectory matching the paper's fixed-ka fit.
 
-    etalfdepot     ~ 0.1143
-    # Schoemaker 1996 Table 4: CV(F) = 34.8% -> log(1 + 0.348^2) = 0.1143
-    etalrbase      ~ log(1 + 0.166^2)
-    # Schoemaker 1996 Table 4: CV(Base) = 16.6% -> log(1 + 0.166^2) = 0.02718
-    etalrbase_APTT ~ 0.01117
-    # Schoemaker 1996 Table 4: CV(APTT0) = 10.6% -> log(1 + 0.106^2) = 0.01117
-    etalI10        ~ 0.03770
-    # Schoemaker 1996 Table 4: CV(I10) = 19.6% -> log(1 + 0.196^2) = 0.03770
+    etalfdepot     ~ 0.348^2
+    # Schoemaker 1996 Table 4: CV(F) = 34.8%
+    etalrbase      ~ 0.166^2
+    # Schoemaker 1996 Table 4: CV(Base) = 16.6%
+    etalrbase_APTT ~ 0.106^2
+    # Schoemaker 1996 Table 4: CV(APTT0) = 10.6%
+    etalI10        ~ 0.196^2
+    # Schoemaker 1996 Table 4: CV(I10) = 19.6%
 
     # Residual error. Schoemaker 1996 Table 4 reports two independent additive
     # (constant-variance, not constant-CV) residuals: one on anti-Xa activity

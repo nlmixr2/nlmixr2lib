@@ -58,7 +58,7 @@ The table below collects them for review.
 | Structural model     | one-compartment open model with IV linear elimination | el Desoky 1997 Methods page 15: "The calculation of the pharmacokinetic parameters (e.g., CL, Vd, t1/2) are based on the open one compartment model." |
 | `lcl` (CL at WT = 19.7 kg) | `log(1.30)` L/hr | Table 2 SC column page 16: mean CL = 1.10 +/- 0.20 mL/min/kg = 0.066 L/hr/kg; at reference 19.7 kg, CL = 0.066 * 19.7 = 1.30 L/hr. SC = Standard pharmacokinetic Calculations (independent of population prior). |
 | `lvc` (Vc at WT = 19.7 kg) | `log(9.85)` L | Table 2 SC column page 16: mean Vd = 0.50 +/- 0.08 L/kg; at reference 19.7 kg, Vc = 0.50 * 19.7 = 9.85 L. |
-| `etalcl` IIV         | `log(1 + 0.18^2)` = 0.0325 | Table 2 SC column page 16: SD/mean = 0.20/1.10 = 18.2 percent CV; descriptive variance of the 15 individual fits, not a formal popPK omega. |
+| `etalcl` IIV         | `log(1 + 0.1818^2)` = 0.0325 | Table 2 SC column page 16: SD/mean = 0.20/1.10 = 18.2 percent CV; descriptive variance of the 15 individual fits, not a formal popPK omega. |
 | `etalvc` IIV         | `log(1 + 0.16^2)` = 0.0253 | Table 2 SC column page 16: SD/mean = 0.08/0.50 = 16.0 percent CV; descriptive variance of the 15 individual fits. |
 | `propSd`             | 0.10 (10 percent) | Not reported in paper. Conservative simulation-only default. EMIT assay precision 4.1-5.8 percent CV (Methods page 14) supports < 10 percent measurement CV. |
 | `(WT / 19.7)^1` scaling | n/a | el Desoky 1997 Table 2 reports CL and Vd in mL/min/kg and L/kg (per body weight). Reference WT = 19.7 kg (Table 1 cohort mean). The per-kg parameterization is reproduced by linear (exponent = 1) WT scaling. |
