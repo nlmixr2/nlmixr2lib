@@ -263,11 +263,11 @@ Bonate_2004_apomine <- function() {
     # Inter-individual variability (omega^2 = log(CV^2 + 1) on the log
     # scale; CV% from Table 3 BSV column)
     # -------------------------------------------------------------------
-    etalcl  ~ 0.4267                                                                                                            # Bonate 2004 Table 3: BSV CL = 68% -> omega^2 = log(0.68^2 + 1) = 0.4267 (common to healthy + cancer)
-    etalvc  ~ 0.08619                                                                                                           # Bonate 2004 Table 3: BSV Vc = 30% -> omega^2 = log(0.30^2 + 1) = 0.08619 (common to healthy + cancer)
-    etalvp  ~ 0.7945                                                                                                            # Bonate 2004 Table 3: BSV Vp = 141% -> omega^2 = log(1.41^2 + 1) = 0.7945
-    etalcl_t50 ~ 0.5594                                                                                                            # Bonate 2004 Table 3: BSV cl_t50 = 88% -> omega^2 = log(0.88^2 + 1) = 0.5594
-    etalka  ~ 0.8126                                                                                                            # Bonate 2004 Table 3: BSV ka = 145% -> omega^2 = log(1.45^2 + 1) = 0.8126 (common to Group 1 and Group 2)
+    etalcl  ~ log(1 + 0.68^2)  # Bonate 2004 Table 3: BSV CL = 68% (common to healthy + cancer)
+    etalvc  ~ log(1 + 0.3^2)  # Bonate 2004 Table 3: BSV Vc = 30% (common to healthy + cancer)
+    etalvp  ~ log(1 + 1.41^2)  # Bonate 2004 Table 3: BSV Vp = 141%
+    etalcl_t50 ~ log(1 + 0.88^2)  # Bonate 2004 Table 3: BSV cl_t50 = 88%
+    etalka  ~ log(1 + 1.45^2)  # Bonate 2004 Table 3: BSV ka = 145% (common to Group 1 and Group 2)
 
     # -------------------------------------------------------------------
     # Residual error (paper form: Cobs = Cpred * exp(eps1) + eps2, an

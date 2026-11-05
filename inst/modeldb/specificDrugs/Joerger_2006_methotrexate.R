@@ -176,19 +176,19 @@ Joerger_2006_methotrexate <- function() {
     # V_CENTRAL_MTX, V_PERIPHERAL-1_MTX, and Q2 (final paragraph,
     # Results page 75: 'did not improve the fit').
     # CL_MTX:                  log(1 + 0.196^2) = 0.03770
-    # V_CENTRAL_7-OH-MTX:      log(1 + 0.0822^2) = 0.006735
-    # V_PERIPHERAL-2_MTX:      log(1 + 0.310^2) = 0.09175
-    # Q1:                      log(1 + 0.320^2) = 0.09748
-    # CL_7-OH-MTX:             log(1 + 0.310^2) = 0.09175
-    # V_PERIPHERAL_7-OH-MTX:   log(1 + 0.414^2) = 0.15824
-    # Q3:                      log(1 + 0.271^2) = 0.07086
+    # V_CENTRAL_7-OH-MTX:      log(1 + 0.0822^2) = 0.006734
+    # V_PERIPHERAL-2_MTX:      log(1 + 0.310^2) = 0.09176
+    # Q1:                      log(1 + 0.320^2) = 0.09749
+    # CL_7-OH-MTX:             log(1 + 0.310^2) = 0.09176
+    # V_PERIPHERAL_7-OH-MTX:   log(1 + 0.414^2) = 0.15820
+    # Q3:                      log(1 + 0.271^2) = 0.07087
     etalcl        ~ 0.03770   # Joerger 2006 Table 2: 19.6 percent CV on CL_MTX
-    etalvp2       ~ 0.09175   # Joerger 2006 Table 2: 31.0 percent CV on V_PERIPHERAL-2_MTX
-    etalq         ~ 0.09748   # Joerger 2006 Table 2: 32.0 percent CV on Q1
-    etalcl_7ohmtx ~ 0.09175   # Joerger 2006 Table 2: 31.0 percent CV on CL_7-OH-MTX
-    etalvc_7ohmtx ~ 0.006735  # Joerger 2006 Table 2: 8.22 percent CV on V_CENTRAL_7-OH-MTX
-    etalvp_7ohmtx ~ 0.15824   # Joerger 2006 Table 2: 41.4 percent CV on V_PERIPHERAL_7-OH-MTX
-    etalq_7ohmtx  ~ 0.07086   # Joerger 2006 Table 2: 27.1 percent CV on Q3
+    etalvp2       ~ log(1 + 0.310^2)  # Joerger 2006 Table 2: 31.0 percent CV on V_PERIPHERAL-2_MTX
+    etalq         ~ log(1 + 0.320^2)  # Joerger 2006 Table 2: 32.0 percent CV on Q1
+    etalcl_7ohmtx ~ log(1 + 0.310^2)  # Joerger 2006 Table 2: 31.0 percent CV on CL_7-OH-MTX
+    etalvc_7ohmtx ~ log(1 + 0.0822^2)  # Joerger 2006 Table 2: 8.22 percent CV on V_CENTRAL_7-OH-MTX
+    etalvp_7ohmtx ~ log(1 + 0.414^2)  # Joerger 2006 Table 2: 41.4 percent CV on V_PERIPHERAL_7-OH-MTX
+    etalq_7ohmtx  ~ log(1 + 0.271^2)  # Joerger 2006 Table 2: 27.1 percent CV on Q3
 
     # Residual error. Joerger 2006 Methods page 73 specifies an additive
     # error model on the log-scale: log(C_ij) = log(C_ij_pred) + eps_ij.

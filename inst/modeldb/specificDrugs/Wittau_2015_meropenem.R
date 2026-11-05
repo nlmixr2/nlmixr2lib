@@ -135,11 +135,11 @@ Wittau_2015_meropenem <- function() {
     # the log-normal distribution; we convert via omega^2 = log(CV^2 + 1).
     # =========================================================================
     etalcl  ~ 0.001489    # CV  3.86% -> log(0.0386^2 + 1) = 0.001489 - Table 2 'Total clearance' BSV
-    etalq   ~ 1.43607     # CV   179% -> log(1.79^2   + 1) = 1.43607  - Table 2 'Distribution clearance' BSV
+    etalq   ~ log(1 + 1.79^2)  # CV   179%  - Table 2 'Distribution clearance' BSV
     etalvc  ~ 0.010758    # CV  10.4% -> log(0.104^2  + 1) = 0.010758 - Table 2 'Volume of distribution of central compartment' BSV
     etalvp  ~ 0.001779    # CV  4.22% -> log(0.0422^2 + 1) = 0.001779 - Table 2 'Volume of distribution of peripheral compartment' BSV
-    etalfsc ~ 0.81277     # CV   112% -> log(1.12^2   + 1) = 0.81277  - Table 2 'Ratio of AUC values in subcutaneous tissue and plasma' BSV
-    etalfpf ~ 0.09229     # CV  31.1% -> log(0.311^2  + 1) = 0.09229  - Table 2 'Ratio of AUC values in peritoneal fluid and plasma' BSV
+    etalfsc ~ log(1 + 1.12^2)  # CV   112%  - Table 2 'Ratio of AUC values in subcutaneous tissue and plasma' BSV
+    etalfpf ~ log(1 + 0.311^2)  # CV  31.1%  - Table 2 'Ratio of AUC values in peritoneal fluid and plasma' BSV
 
     # =========================================================================
     # Residual error - combined additive + proportional per observation site

@@ -82,11 +82,11 @@ Choe_2012_busulfan <- function() {
 
     # Inter-individual variability. Reported as CV% in Table 2: 16% on CL and
     # 9% on Vd. Converted to the internal log-normal variance scale via
-    # omega^2 = log(CV^2 + 1): log(0.16^2 + 1) = 0.025277, log(0.09^2 + 1) =
+    # omega^2 = log(CV^2 + 1): log(0.16^2 + 1) = 0.025278, log(0.09^2 + 1) =
     # 0.008068. Shrinkage was 1% on etalcl and 9% on etalvc (Choe 2012
     # Results, p. 277). IIV reported as diagonal (no correlation given).
-    etalcl ~ 0.025277  # Choe 2012 Table 2 (IIV CL 16%)
-    etalvc ~ 0.008068  # Choe 2012 Table 2 (IIV Vd 9%)
+    etalcl ~ log(1 + 0.16^2)  # Choe 2012 Table 2 (IIV CL 16%)
+    etalvc ~ log(1 + 0.09^2)  # Choe 2012 Table 2 (IIV Vd 9%)
 
     # Proportional residual error. Table 2 reports residual variability 6.3%
     # for the proportional error model Y = F * (1 + epsilon); propSd is the

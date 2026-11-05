@@ -84,14 +84,14 @@ Nath_2010_melphalan_total <- function() {
     # The exponential random effect applies to the typical-value PK parameter
     # (Methods p. 486: theta_i = theta * exp(eta_i)). For CL, the eta multiplies
     # the total typical CL (CL_NR + CL_R), as Table 5 reports a single omega_CL.
-    # CL: CV 26.7% -> omega^2 = log(1 + 0.267^2) = 0.06888
+    # CL: CV 26.7% -> omega^2 = log(1 + 0.267^2) = 0.06886
     # V1: CV 57.9% -> omega^2 = log(1 + 0.579^2) = 0.28911
-    # Q : CV 41.1% -> omega^2 = log(1 + 0.411^2) = 0.15610
-    # V2: CV 34.5% -> omega^2 = log(1 + 0.345^2) = 0.11250
-    etalcl ~ 0.06888  # Table 5: omega_CL CV 26.7%
+    # Q : CV 41.1% -> omega^2 = log(1 + 0.411^2) = 0.15608
+    # V2: CV 34.5% -> omega^2 = log(1 + 0.345^2) = 0.11246
+    etalcl ~ log(1 + 0.267^2)  # Table 5: omega_CL CV 26.7%
     etalvc ~ 0.28911  # Table 5: omega_V1 CV 57.9%
-    etalq  ~ 0.15610  # Table 5: omega_Q  CV 41.1%
-    etalvp ~ 0.11250  # Table 5: omega_V2 CV 34.5%
+    etalq  ~ log(1 + 0.411^2)  # Table 5: omega_Q  CV 41.1%
+    etalvp ~ log(1 + 0.345^2)  # Table 5: omega_V2 CV 34.5%
 
     # Residual error: combined proportional + additive (Methods p. 486:
     # Y = Yhat * (1 + epsilon1) + epsilon2). SDs in Table 5.

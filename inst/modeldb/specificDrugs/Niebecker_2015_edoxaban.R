@@ -155,12 +155,12 @@ Niebecker_2015_edoxaban <- function() {
     # etalvp is shared between Vp/F (full magnitude) and Q/F (scaled by
     # theta_scale_vp_q = 1.00 fixed). Correlation 42.7% between etalcl and etalvp.
     #   IIV CL/F = 14.9% CV -> omega^2 = log(1 + 0.149^2) = 0.02196
-    #   IIV Vp/F = 52.7% CV -> omega^2 = log(1 + 0.527^2) = 0.24505
-    #   cov(etalcl, etalvp) = 0.427 * sqrt(0.02196 * 0.24505) = 0.03133
-    #   IIV tlag  = 58.5% CV -> omega^2 = log(1 + 0.585^2) = 0.29442
+    #   IIV Vp/F = 52.7% CV -> omega^2 = log(1 + 0.527^2) = 0.24508
+    #   cov(etalcl, etalvp) = 0.427 * sqrt(0.02196 * 0.24508) = 0.03133
+    #   IIV tlag  = 58.5% CV -> omega^2 = log(1 + 0.585^2) = 0.29433
     etalcl + etalvp ~ c(0.02196,
-                        0.03133, 0.24505)                                                              # Table 3 final model: IIV CL/F 14.9% CV (RSE 7.10%); IIV Vp/F 52.7% CV (RSE 8.57%); correlation 42.7% (RSE 13.7%)
-    etaltlag ~ 0.29442                                                                                 # Table 3 final model: IIV tlag 58.5% CV (RSE 7.83%)
+                        0.427 * sqrt(0.02196 * log(1 + 0.527^2)), log(1 + 0.527^2))                                                              # Table 3 final model: IIV CL/F 14.9% CV (RSE 7.10%); IIV Vp/F 52.7% CV (RSE 8.57%); correlation 42.7% (RSE 13.7%)
+    etaltlag ~ log(1 + 0.585^2)  # Table 3 final model: IIV tlag 58.5% CV (RSE 7.83%)
 
     # IIV on the proportional residual SD itself: each individual has their own
     # residual-error magnitude, sampled log-normally with 33.3% CV. Encoded with

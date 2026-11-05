@@ -328,7 +328,7 @@ Gidal_2018_eslicarbazepine <- function() {
     # Table S-2 reports IIV as %CV; the variance on the log scale is
     # omega^2 = log(CV^2 + 1). Values below are that conversion.
     etalka ~ 0.9555   # Table S-2, k_a IIV 126.49 %CV, 18.4% SEM: log(1.2649^2 + 1) = 0.9555
-    etalcl ~ 0.070573 # Table S-2, CL/F IIV 27.04 %CV, 10.5% SEM: log(0.2704^2 + 1) = 0.070573
+    etalcl ~ log(1 + 0.2704^2)  # Table S-2, CL/F IIV 27.04 %CV, 10.5% SEM
     etalvc ~ 0.030814 # Table S-2, V/F IIV 17.69 %CV, 15.6% SEM: log(0.1769^2 + 1) = 0.030814
 
     # ----- Residual variability, stratified by development phase -----

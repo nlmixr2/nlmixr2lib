@@ -97,8 +97,8 @@ Panjasawatwong_2020_pyrazinamide <- function() {
 
     # IIV: Table 4 reports %CV; omega^2 = log(1 + CV^2)
     etalcl ~ 0.039221 # Table 4 IIV CL/F = 20.0% CV; log(1 + 0.200^2) = 0.039221
-    etalvc ~ 0.032942 # Table 4 IIV Vc/F = 18.3% CV; log(1 + 0.183^2) = 0.032942
-    etalmtt ~ 0.347846 # Table 4 IIV MTT = 64.5% CV; log(1 + 0.645^2) = 0.347846
+    etalvc ~ log(1 + 0.183^2)  # Table 4 IIV Vc/F = 18.3% CV
+    etalmtt ~ log(1 + 0.645^2)  # Table 4 IIV MTT = 64.5% CV
 
     # IOV on F across the four sampling occasions, one shared variance
     # (nlmixr2 has no SAME keyword, so occasions 2-4 repeat it with fix())

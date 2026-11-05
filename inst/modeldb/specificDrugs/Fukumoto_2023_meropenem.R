@@ -250,7 +250,7 @@ Fukumoto_2023_meropenem <- function() {
     # model", i.e. theta_i = theta_TV * exp(eta_i). Table 2 reports the IIV
     # rows in units of "%", read here as %CV; for a log-normal eta the exact
     # variance is omega^2 = log(CV^2 + 1).
-    etalvc ~ 0.051538  # log(0.230^2 + 1); Table 2 IIV V1 = 23.0% CV (RSE 127%); bootstrap median 21.5%, 95% CI 0.0003-56.7%. eta-shrinkage 41.4%.
+    etalvc ~ log(1 + 0.23^2)  # Table 2 IIV V1 = 23.0% CV (RSE 127%); bootstrap median 21.5%, 95% CI 0.0003-56.7%. eta-shrinkage 41.4%.
     etalcl ~ 0.047686  # log(0.221^2 + 1); Table 2 IIV CL = 22.1% CV (RSE 32.4%); bootstrap median 21.1%, 95% CI 12.7-27.7%. eta-shrinkage 7.75%.
 
     # IIV on Q and V2 was estimated but did not improve the fit and was held

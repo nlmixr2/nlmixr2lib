@@ -122,12 +122,12 @@ Jager_2020_flucloxacillin <- function() {
     # ----------------------------------------------------------------
     # Between-patient variability (Table 2 'BPV', %CV; exponential per
     # Supplementary Appendix 2). Converted as omega^2 = log(CV^2 + 1):
-    #   Bmax 30.4% -> log(1 + 0.304^2) = 0.088384
-    #   CL   71.6% -> log(1 + 0.716^2) = 0.413876
+    #   Bmax 30.4% -> log(1 + 0.304^2) = 0.088392
+    #   CL   71.6% -> log(1 + 0.716^2) = 0.413867
     # BPV on Kd and V1 was tested and not supported (Appendix 2).
     # ----------------------------------------------------------------
-    etalbmax_pb ~ 0.088384 # Table 2 final model BPV Bmax = 30.4 %CV [19.2%]
-    etalcl      ~ 0.413876 # Table 2 final model BPV CL = 71.6 %CV [15.8%]
+    etalbmax_pb ~ log(1 + 0.304^2)  # Table 2 final model BPV Bmax = 30.4 %CV [19.2%]
+    etalcl      ~ log(1 + 0.716^2)  # Table 2 final model BPV CL = 71.6 %CV [15.8%]
 
     # ----------------------------------------------------------------
     # Residual error. Supplementary Appendix 2: 'additive error model for

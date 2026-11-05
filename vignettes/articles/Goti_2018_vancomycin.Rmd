@@ -53,9 +53,9 @@ place for review.
 | `e_crcl_cl`          | 0.8            | Table 2, row "CrCL on CL"    |
 | `e_hemodial_cl`      | 0.7            | Table 2, row "DIAL on CL"    |
 | `e_hemodial_vc`      | 0.5            | Table 2, row "DIAL on Vc"    |
-| `etalcl` (39.8% CV)  | 0.14705        | Table 2, row "BSV on CL"     |
-| `etalvc` (81.6% CV)  | 0.51019        | Table 2, row "BSV on Vc"     |
-| `etalvp` (57.1% CV)  | 0.28232        | Table 2, row "BSV on Vp"     |
+| `etalcl` (39.8% CV)  | 0.14704        | Table 2, row "BSV on CL"     |
+| `etalvc` (81.6% CV)  | 0.51034        | Table 2, row "BSV on Vc"     |
+| `etalvp` (57.1% CV)  | 0.28220        | Table 2, row "BSV on Vp"     |
 | `addSd`              | 3.4 mg/L       | Table 2, "Additive Error SD" |
 | `propSd`             | 0.227 (22.7%)  | Table 2, "Proportional error"|
 | TVCL covariate eq    | n/a            | Table 2 footer formula       |

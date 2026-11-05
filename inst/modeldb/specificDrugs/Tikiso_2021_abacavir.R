@@ -130,7 +130,7 @@ Tikiso_2021_abacavir <- function() {
 
     # Inter-individual variability (between-subject; omega^2 = log(1 + CV^2) for log-normal)
     etalcl ~ 0.02081  # Tikiso 2021 Table 4 BSV CL = 14.5% CV; omega^2 = log(1 + 0.145^2) = 0.02081
-    etalvp ~ 0.18137  # Tikiso 2021 Table 4 BSV Vp = 44.6% CV; omega^2 = log(1 + 0.446^2) = 0.18137
+    etalvp ~ log(1 + 0.446^2)  # Tikiso 2021 Table 4 BSV Vp = 44.6% CV
 
     # Residual error (combined additive + proportional on linear ug/mL scale).
     # Tikiso 2021 dataset concentrations are in ug/mL (LLOQ 0.0238-0.0243 ug/mL);

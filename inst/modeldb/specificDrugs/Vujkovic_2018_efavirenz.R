@@ -167,7 +167,7 @@ Vujkovic_2018_efavirenz <- function() {
     # 40.5% coefficient variation'. The stated UNIT (% coefficient of
     # variation) is taken over the omega-squared SYMBOL, so 40.5% is read as
     # a CV and converted to the log-scale variance nlmixr2 expects:
-    # omega^2 = log(1 + CV^2) = log(1 + 0.405^2) = 0.15189.
+    # omega^2 = log(1 + CV^2) = log(1 + 0.405^2) = 0.15188.
     # Vujkovic 2018 Methods 'Population PK Model Development' paragraph 1:
     # 'We used an exponential variance model to describe the unexplained
     # random variability of parameters across individuals.'
@@ -183,8 +183,8 @@ Vujkovic_2018_efavirenz <- function() {
     # the same parameter. See the vignette Assumptions and deviations
     # section.
     # =========================================================================
-    etalcl ~ 0.15189
-    # Vujkovic 2018 Results 'Population Pharmacokinetics' paragraph 1, IIV on CL 40.5% CV; log(1 + 0.405^2) = 0.15189
+    etalcl ~ log(1 + 0.405^2)
+    # Vujkovic 2018 Results 'Population Pharmacokinetics' paragraph 1, IIV on CL 40.5% CV; log(1 + 0.405^2) = 0.15188
 
     # =========================================================================
     # Residual unexplained variability. Vujkovic 2018 Results 'Population

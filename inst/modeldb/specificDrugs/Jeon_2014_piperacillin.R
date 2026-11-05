@@ -74,13 +74,13 @@ Jeon_2014_piperacillin <- function() {
     # variance via omega^2 = log(CV^2 + 1). IIV on CL and V1 are correlated
     # (rho = 0.434) per Jeon 2014 Table 2; encoded as a 2x2 block. No IIV on
     # V2 (Jeon 2014 Results: omega V2 not estimated, fixed at 0).
-    # var_CL  = log(0.354^2 + 1) = 0.118092
-    # var_V1  = log(0.424^2 + 1) = 0.165390
-    # cov     = 0.434 * sqrt(0.118092 * 0.165390) = 0.060651
-    # var_Q   = log(0.903^2 + 1) = 0.596277
-    etalcl + etalvc ~ c(0.118092,
-                        0.060651, 0.165390)  # Jeon 2014 Table 2: 35.4 CV CL, 42.4 CV V1, rho 0.434
-    etalq           ~ 0.596277               # Jeon 2014 Table 2: 90.3 CV Q
+    # var_CL  = log(0.354^2 + 1) = 0.118064
+    # var_V1  = log(0.424^2 + 1) = 0.165325
+    # cov     = 0.434 * sqrt(0.118064 * 0.165325) = 0.060634
+    # var_Q   = log(0.903^2 + 1) = 0.596311
+    etalcl + etalvc ~ c(log(1 + 0.354^2),
+                        0.434 * sqrt(log(1 + 0.354^2) * log(1 + 0.424^2)), log(1 + 0.424^2))  # Jeon 2014 Table 2: 35.4 CV CL, 42.4 CV V1, rho 0.434
+    etalq           ~ log(1 + 0.903^2)  # Jeon 2014 Table 2: 90.3 CV Q
 
     # Combined residual error (Jeon 2014 Table 2 final-model row).
     propSd <- 0.185; label("Proportional residual error (fraction)")                       # Jeon 2014 Table 2 sigma proportional = 18.5%

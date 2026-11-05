@@ -253,12 +253,12 @@ Bihorel_2023_molnupiravir <- function() {
     # variance is recovered as omega^2 = log(1 + CV^2) for a log-normal eta.
     # Q/F, Vp/F, ka, MTT and NN are all marked "NE" (not estimated) in that
     # column and therefore carry no IIV.
-    etalcl ~ 0.172573
-    # Table 2 CL/F variability = 43.4 %CV (RSE 8.99%); log(1 + 0.434^2) = 0.172573.
+    etalcl ~ log(1 + 0.434^2)
+    # Table 2 CL/F variability = 43.4 %CV (RSE 8.99%); log(1 + 0.434^2) = 0.172571.
     # Shrinkage 9.3% (Table 2 note).
 
-    etalvc ~ 0.333371
-    # Table 2 V C /F variability = 62.9 %CV (RSE 24.1%); log(1 + 0.629^2) = 0.333371.
+    etalvc ~ log(1 + 0.629^2)
+    # Table 2 V C /F variability = 62.9 %CV (RSE 24.1%); log(1 + 0.629^2) = 0.333354.
     # Shrinkage 27.9% (Table 2 note).
 
     # ---- Inter-occasion variability on MTT (Bihorel 2023 Table 2) --------
@@ -267,10 +267,10 @@ Bihorel_2023_molnupiravir <- function() {
     # occasions per the Table 2 note. The second variance is fixed equal to the
     # first, encoding the NONMEM $OMEGA BLOCK(1) SAME that a single reported
     # IOV magnitude implies.
-    etaiov_mtt_1 ~ 0.147049
-    # Table 2 row 'IOV in MTT' = 39.8 %CV (RSE 17.6%); log(1 + 0.398^2) = 0.147049.
+    etaiov_mtt_1 ~ log(1 + 0.398^2)
+    # Table 2 row 'IOV in MTT' = 39.8 %CV (RSE 17.6%); log(1 + 0.398^2) = 0.147043.
     # Shrinkage 27.6% (occasion 1) and 7.8% (occasion 2) per the Table 2 note.
-    etaiov_mtt_2 ~ fixed(0.147049)
+    etaiov_mtt_2 ~ fixed(log(1 + 0.398^2))
 
     # ---- Residual variability (Bihorel 2023 Table 2) ---------------------
     # Table 2 prints the variance in the "Final estimate" column and its square

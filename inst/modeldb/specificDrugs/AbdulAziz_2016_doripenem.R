@@ -128,8 +128,8 @@ AbdulAziz_2016_doripenem <- function() {
     # reported on the same parameter. The dropped BOV is documented in the
     # vignette's Assumptions and deviations section.
     etalcl ~ 0.01076  # Abdul-Aziz 2016 Table 2 final model: BSV CL = 10.4%; log(1 + 0.104^2) = 0.01076
-    etalvc ~ 0.30491  # Abdul-Aziz 2016 Table 2 final model: BSV V1 = 59.7%; log(1 + 0.597^2) = 0.30491
-    etalvp ~ 0.43503  # Abdul-Aziz 2016 Table 2 final model: BSV V2 = 73.8%; log(1 + 0.738^2) = 0.43503
+    etalvc ~ log(1 + 0.597^2)  # Abdul-Aziz 2016 Table 2 final model: BSV V1 = 59.7%
+    etalvp ~ log(1 + 0.738^2)  # Abdul-Aziz 2016 Table 2 final model: BSV V2 = 73.8%
 
     # ===== Residual error (Abdul-Aziz 2016 Table 2 final model) =====
     # Combined additive + proportional residual error model.

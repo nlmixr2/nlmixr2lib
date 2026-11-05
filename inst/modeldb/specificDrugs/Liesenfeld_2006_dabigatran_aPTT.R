@@ -146,14 +146,14 @@ Liesenfeld_2006_dabigatran_aPTT <- function() {
     # factor applied multiplicatively afterwards is equivalent because
     # the time-decay factor is shared across subjects. Variances on the
     # internal log scale: omega^2 = log(1 + CV^2).
-    #   E0   CV  8.7% -> omega^2 = log(1 + 0.087^2) = 0.007541
+    #   E0   CV  8.7% -> omega^2 = log(1 + 0.087^2) = 0.007540
     #   Emax CV 19.9% -> omega^2 = log(1 + 0.199^2) = 0.03884
-    #   EC50 CV 38.5% -> omega^2 = log(1 + 0.385^2) = 0.13821
+    #   EC50 CV 38.5% -> omega^2 = log(1 + 0.385^2) = 0.13822
     #   SLOP CV 15.2% -> omega^2 = log(1 + 0.152^2) = 0.02284
     # =================================================================
-    etalrbase ~ 0.007541   # Liesenfeld 2006 Table 2 (IIV on E0, CV 8.7%)
+    etalrbase ~ log(1 + 0.087^2)  # Liesenfeld 2006 Table 2 (IIV on E0, CV 8.7%)
     etalemax  ~ 0.03884    # Liesenfeld 2006 Table 2 (IIV on Emax, CV 19.9%)
-    etalec50  ~ 0.13821    # Liesenfeld 2006 Table 2 (IIV on EC50, CV 38.5%)
+    etalec50  ~ log(1 + 0.385^2)  # Liesenfeld 2006 Table 2 (IIV on EC50, CV 38.5%)
     etalslope ~ 0.02284    # Liesenfeld 2006 Table 2 (IIV on SLOP, CV 15.2%)
 
     # =================================================================

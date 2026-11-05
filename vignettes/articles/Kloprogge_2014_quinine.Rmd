@@ -52,10 +52,10 @@ Every parameter and equation traces back to the Kloprogge 2014 publication; the 
 | `allo_vc = fixed(1)`            | 1 fixed   | Methods 'allometrically scaled on clearance ... and volume (a power exponent of 1) parameters' |
 | `e_bodytemp_cl = -0.243` per degC | -0.243 | Table 2 'Temperature on CL/F' (RSE 21.1%; 95% CI -0.427 to -0.180); exponential form, centered at 37.2 degC |
 | `e_para_f      = +0.389` per log10 | +0.389 | Table 2 'Parasitaemia (log10) on F (%) 38.9' (RSE 9.33%; 95% CI 32.4-47.2); linear form with log10 transform applied inside model() |
-| `etalka     ~ 0.296221` (var)   | CV 58.7% | Table 2 IIV ka (RSE 32.7%; 95% CI 40.5-107%); variance = log(0.587^2 + 1) |
-| `etalcl     ~ 0.005893`         | CV  7.69%| Table 2 IIV CL (RSE 65.4%; 95% CI 1.16-47.4%) |
-| `etalvp     ~ 0.406119`         | CV 70.8% | Table 2 IIV Vp (RSE 65.3%; 95% CI 8.00-128%) |
-| `etalfdepot ~ 0.015015`         | CV 12.3% | Table 2 IIV F (RSE 77.0%; 95% CI 0.170-48.8%); IOV component (CV 21.4%) omitted -- see Errata |
+| `etalka     ~ 0.296074` (var)   | CV 58.7% | Table 2 IIV ka (RSE 32.7%; 95% CI 40.5-107%); variance = log(0.587^2 + 1) |
+| `etalcl     ~ 0.005896`         | CV  7.69%| Table 2 IIV CL (RSE 65.4%; 95% CI 1.16-47.4%) |
+| `etalvp     ~ 0.406307`         | CV 70.8% | Table 2 IIV Vp (RSE 65.3%; 95% CI 8.00-128%) |
+| `etalfdepot ~ 0.015016`         | CV 12.3% | Table 2 IIV F (RSE 77.0%; 95% CI 0.170-48.8%); IOV component (CV 21.4%) omitted -- see Errata |
 | `propSd = sqrt(0.0158)` ~= 0.126| sigma = 0.0158 (variance, log-scale) | Table 2 'Additive residual error 0.0158' (RSE 41.6%; 95% CI 0.0129-0.156) + footnote 'additive error variance will essentially be exponential on normal scale data' |
 | First-order absorption (no lag, no transit) | -- | Results para 1: 'A first-order absorption model ... accurately described the quinine data' |
 | Two-compartment disposition (`central`, `peripheral1`) | -- | Results para 1: 'first-order absorption model followed by a two-compartment disposition model' |

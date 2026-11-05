@@ -151,30 +151,31 @@ Soto_2014_ampicillin_sulbactam <- function() {
 
     # =====================================================================
     # Inter-individual variability (Soto 2014 Table 2, combined final-model
-    # column). The paper reports IIV in CV%; log-normal variance is
-    # omega^2 = log(1 + CV^2).
+    # column). Table 2 footnote: "The CV and its RSE were calculated based
+    # on Tailor approximation of square root of omega^2 with SE of omega^2",
+    # so each variance is the square of the printed CV.
     #
     # Cross-drug correlation between eta_CL (ampicillin) and eta_CL
     # (sulbactam) is rho = 0.858 (Table 2; Results, paragraph 5). This
     # appears as the cov off-diagonal of the 2x2 block on lcl + lcl_sbt:
-    #   cov(eta_CL_amp, eta_CL_sbt) = rho * sqrt(var_amp * var_sbt).
+    #   cov(eta_CL_amp, eta_CL_sbt) = rho * CV_amp * CV_sbt.
     # The correlation between eta_V2 of ampicillin and sulbactam was NOT
     # statistically significant (delta OFV = -0.673; Results, paragraph 4)
     # so the two V2 etas are declared independently below.
     # =====================================================================
     etalcl + etalcl_sbt ~ c(
-      log(1 + 0.148^2),
-      0.858 * sqrt(log(1 + 0.148^2) * log(1 + 0.152^2)),
-      log(1 + 0.152^2)
+      0.148^2,
+      0.858 * 0.148 * 0.152,
+      0.152^2
     )
-    # Table 2 ampicillin: CV[eta_CL,i(1)] = 14.8% (RSE 15.5%) -> omega^2 = log(1 + 0.148^2);
-    # Table 2 sulbactam: CV[eta_CL,i(2)] = 15.2% (RSE 15.2%) -> omega^2 = log(1 + 0.152^2);
+    # Table 2 ampicillin: CV[eta_CL,i(1)] = 14.8% (RSE 15.5%);
+    # Table 2 sulbactam: CV[eta_CL,i(2)] = 15.2% (RSE 15.2%);
     # Table 2: rho[eta_CL,i(1), eta_CL,i(2)] = 0.858 (RSE 34.8%)
 
-    etalvp     ~ log(1 + 0.152^2)
-    # Table 2 ampicillin: CV[eta_V2,i(1)] = 15.2% (RSE 36.2%) -> omega^2 = log(1 + 0.152^2)
-    etalvp_sbt ~ log(1 + 0.148^2)
-    # Table 2 sulbactam: CV[eta_V2,i(2)] = 14.8% (RSE 28.3%) -> omega^2 = log(1 + 0.148^2)
+    etalvp     ~ 0.152^2
+    # Table 2 ampicillin: CV[eta_V2,i(1)] = 15.2% (RSE 36.2%)
+    etalvp_sbt ~ 0.148^2
+    # Table 2 sulbactam: CV[eta_V2,i(2)] = 14.8% (RSE 28.3%)
 
     # =====================================================================
     # Residual error (Soto 2014 Table 2, combined final-model column).

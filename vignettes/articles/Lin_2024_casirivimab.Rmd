@@ -83,9 +83,9 @@ seronegative, no supplemental oxygen at baseline.
 | `e_alb_vc` (albumin on Vc)               | -0.4167             | Lin 2024 Table 2 (θ30) |
 | Equation 1 (CL covariate function)       | n/a                 | Lin 2024 page 1939 |
 | Equation 3 (Vc covariate function)       | n/a                 | Lin 2024 page 1939 |
-| `etalcl` (IIV CL, % CV)                  | 30.04 → ω² 0.08642  | Lin 2024 Table 2 (IIV in CL) |
-| `etalvc` (IIV Vc, % CV)                  | 34.58 → ω² 0.11297  | Lin 2024 Table 2 (IIV in Vc) |
-| `etalka` (IIV KA, % CV)                  | 78.28 → ω² 0.47791  | Lin 2024 Table 2 (95% CI midpoint) + Results narrative ("Estimates of IIV…for…KA…were…78.3%"). The Table 2 point-estimate cell prints "72.28", which lies outside its own 95% CI (78.05, 78.51); we treat it as a typesetting typo and use 78.28 (see *Errata / paper-internal inconsistencies* below). |
+| `etalcl` (IIV CL, % CV)                  | 30.04 → ω² 0.08640  | Lin 2024 Table 2 (IIV in CL) |
+| `etalvc` (IIV Vc, % CV)                  | 34.58 → ω² 0.11295  | Lin 2024 Table 2 (IIV in Vc) |
+| `etalka` (IIV KA, % CV)                  | 78.28 → ω² 0.47796  | Lin 2024 Table 2 (95% CI midpoint) + Results narrative ("Estimates of IIV…for…KA…were…78.3%"). The Table 2 point-estimate cell prints "72.28", which lies outside its own 95% CI (78.05, 78.51); we treat it as a typesetting typo and use 78.28 (see *Errata / paper-internal inconsistencies* below). |
 | Residual variability (`propSd`)          | 0.2352              | Lin 2024 Table 2 (residual variability 23.52, additive on log-transformed data; equivalent to proportional in linear space) |
 
 # Errata / paper-internal inconsistencies
