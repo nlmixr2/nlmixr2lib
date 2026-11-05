@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Volkova 2025 type I interferon QSP model for anifrolumab, sifalimumab, daxdilimab and litifilimab ([doi:10.1002/psp4.70043](https://doi.org/10.1002/psp4.70043)) -- adults with systemic lupus erythematosus.
+- Add Ma 2025 lenalidomide ([doi:10.1002/psp4.70040](https://doi.org/10.1002/psp4.70040)) -- Chinese adults with multiple myeloma or B-cell non-Hodgkin lymphoma across renal function.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 

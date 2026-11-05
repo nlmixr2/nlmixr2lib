@@ -4004,6 +4004,8 @@ navbar:
         href: articles/Kim_2026_lenalidomide.html
       - text: "Lenalidomide (Liang 2024)"
         href: articles/Liang_2024_lenalidomide.html
+      - text: "Lenalidomide (Ma 2025)"
+        href: articles/Ma_2025_lenalidomide.html
       - text: "Lenvatinib (Gupta 2016)"
         href: articles/Gupta_2016_lenvatinib.html
       - text: "Lenvatinib (Majid 2024)"
@@ -10063,6 +10065,7 @@ articles:
   - articles/Ma_2022_fluorouracil_qsp
   - articles/Ma_2023_difloxacin_crucianCarp
   - articles/Ma_2024_vancomycin
+  - articles/Ma_2025_lenalidomide
   - articles/Ma_2026_colistinSulfate
   - articles/Machavaram_2013_interleukin6_cyp3a_pbpk
   - articles/Maciel_2024_quinine
