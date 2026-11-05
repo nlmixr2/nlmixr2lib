@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Carral 2023 amoxicillin, levofloxacin and moxifloxacin non-adherence simulation models ([doi:10.3390/antibiotics12050838](https://doi.org/10.3390/antibiotics12050838)) -- virtual adult male outpatients with community-acquired pneumonia.
+- Add Kim 2023 levonorgestrel implant in vivo release, first-order and biexponential ([doi:10.3390/pharmaceutics15051393](https://doi.org/10.3390/pharmaceutics15051393)) -- healthy women using the 150 mg two-rod Jadelle implant.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
