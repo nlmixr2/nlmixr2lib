@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kim 2024 islatravir oral and implant PrEP PK-PD with HIV-1 viral dynamics ([doi:10.1002/psp4.13212](https://doi.org/10.1002/psp4.13212)) -- adults with and without HIV-1 given single oral doses or subdermal implants. Registers the `DOSE_ISLATRAVIR_MG` covariate.
+- Add Shahraz 2024 falbikitug (AZD0171, anti-LIF) mechanistic PK/PD model ([doi:10.1002/psp4.13204](https://doi.org/10.1002/psp4.13204)) -- adults with advanced solid tumors and metastatic pancreatic ductal adenocarcinoma.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
