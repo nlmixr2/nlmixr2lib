@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Merali 2023 apixaban ([doi:10.1002/psp4.12935](https://doi.org/10.1002/psp4.12935)) -- children from birth to <18 years at risk of thrombosis, pooled with healthy adults.
+- Add Dari 2023 Ad26.COV2.S COVID-19 vaccine binding (S-ELISA) and neutralizing (wtVNA) antibody mechanistic models ([doi:10.1002/cpt.2796](https://doi.org/10.1002/cpt.2796)) -- SARS-CoV-2-seronegative adults after a single 5 x 10^10 vp dose.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
