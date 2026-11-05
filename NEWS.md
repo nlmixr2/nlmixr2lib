@@ -2,9 +2,7 @@
 
 # development version
 
-- Add Tsamandouras 2024 brepocitinib PASI exposure-response ([doi:10.1007/s10928-024-09901-2](https://doi.org/10.1007/s10928-024-09901-2)) -- adults with moderate-to-severe plaque psoriasis.
-
-- `checkModelConventions()` no longer reports `DV` as a covariate. A custom likelihood `ll(<endpoint>) ~ ...` has to read the observed value, and `DV` is a dataset column, not a covariate.
+- Add Liric Rajlic 2024 mRNA-6231 kinetic-pharmacodynamic model ([doi:10.1002/psp4.13142](https://doi.org/10.1002/psp4.13142)) -- cynomolgus monkeys, HSA-IL2m protein expression and regulatory T cell expansion after subcutaneous mRNA dosing.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
