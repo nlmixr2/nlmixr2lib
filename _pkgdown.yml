@@ -5850,6 +5850,8 @@ navbar:
         href: articles/Chen_2024_remimazolam.html
       - text: "Remimazolam (Chen 2025)"
         href: articles/Chen_2025_remimazolam.html
+      - text: "Remimazolam (Colin 2025)"
+        href: articles/Colin_2025_remimazolam.html
       - text: "Remimazolam (Liang 2026)"
         href: articles/Liang_2026_remimazolam.html
       - text: "Remimazolam (Zhou 2018)"
@@ -5862,6 +5864,8 @@ navbar:
         href: articles/Zhou_2018_remimazolam.html
       - text: "Remimazolam pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
+      - text: "Remimazolam umss (Colin 2025)"
+        href: articles/Colin_2025_remimazolam.html
       - text: "Remlifanserin (Darwish 2026)"
         href: articles/Darwish_2026_remlifanserin.html
       - text: "Remoxipride rat pbpk (Yamamoto 2017)"
@@ -8360,6 +8364,7 @@ articles:
   - articles/Cojutti_2024_dalbavancin
   - articles/Cojutti_2026_fosfomycin
   - articles/Colin_2014_moxifloxacin
+  - articles/Colin_2025_remimazolam
   - articles/Collins_2023_belantamab_mprotein
   - articles/Collins_2025_midazolam
   - articles/Colombo_2006_atazanavir

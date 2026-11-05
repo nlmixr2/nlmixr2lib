@@ -4941,6 +4941,13 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Zhou_2018_remimazolam_moaas.R` (founding example; five baseline cumulative logits B1-B5 from Zhou 2018 Table 2 plus a common sigmoid Emax increment in remimazolam effect-site concentration, with `prob_moaas_le1` as the observed endpoint).
 - **Notes:** Probability outputs in `[0, 1]`. Members of the `prob_<endpoint>` family and validated by `probOutputRegex` rather than by enumeration, but documented here because the two suffix conventions are load-bearing and cannot be read off the name alone. **`_le<k>` is cumulative and `<k>` bare is exact**; the bare form is obtained by differencing adjacent cumulative forms, and the two must never be mixed in one comparison. **The scale is inverted relative to intuition**: a HIGHER MOAA/S score means a MORE alert subject, so `prob_moaas_le1` -- the standard clinical definition of loss of consciousness, "MOAA/S < 2" -- INCREASES with drug exposure. A six-level scale has only five free cutpoints because the top cumulative probability `P(MOAA/S <= 5)` is identically 1 and is therefore not registered; a source reporting five baseline values is reporting cutpoints for scores 0 through 4, which their required monotone ordering confirms. Unlike most of the `prob_<endpoint>` family these are **time-varying**: the driver is an effect-site concentration evolving under an ODE, not a scalar landmark exposure metric, which puts them alongside `prob_scc` rather than alongside `prob_orr_central`. Distinct from the continuous processed-EEG sedation index `BIS`, which the same papers often model in parallel from the same effect compartment but with its own equilibration rate constant; MOAA/S is an observer-scored ordinal judgement and BIS is an instrument reading, and the two do not share cutpoints.
 
+### prob_umss0, prob_umss1, prob_umss2, prob_umss3, prob_umss_ge1, prob_umss_ge2, prob_umss_ge3 (**canonical University of Michigan Sedation Scale category and cumulative probability outputs**)
+- **Type:** compartment
+- **Role:** Probabilities (0..1) attached to the University of Michigan Sedation Scale (UMSS), a five-level observer-scored paediatric sedation scale: 0 awake and alert, 1 minimally sedated, 2 moderately sedated (easily aroused by light touch or a simple verbal command), 3 deeply sedated (arousable only with significant physical stimulation), 4 unarousable. `prob_umss<k>` is the probability of scoring exactly `k`; `prob_umss_ge<k>` is the cumulative probability of scoring `k` or higher. Output by an ordered-categorical (proportional-odds) PD model driven by effect-site concentrations.
+- **Source aliases:** `PGE1` ... `PGE3` and `P0` ... `P3` -- Colin 2025 Supplemental Digital Content 1 UMSS control stream (`Pr[Y>=k]` and `Pr[Y=k]`).
+- **Example models:** `Colin_2025_remimazolam_umss.R` (founding example; remimazolam and fentanyl effect-site concentrations, each normalised by a category-specific EC50, summed under a simplified Minto response surface; UMSS 4 was not observed, so `prob_umss3` is P(UMSS >= 3) and no `prob_umss4` / `prob_umss_ge4` is produced; the ordinal observation `umss ~ c(prob_umss0, prob_umss1, prob_umss2)` simulates category `k` as score `k - 1`).
+- **Notes:** Members of the `prob_<endpoint>` family, validated by `probOutputRegex`; documented here because the suffix direction is load-bearing. **`_ge<k>` is cumulative upwards and `<k>` bare is exact.** The UMSS runs in the clinically intuitive direction -- a HIGHER score is DEEPER sedation, so `prob_umss_ge<k>` rises with exposure -- which is the opposite of MOAA/S, whose cumulative outputs are `prob_moaas_le<k>`. The two scales do not share cutpoints and must not be mapped onto each other. Time-varying, like `prob_moaas*`.
+
 ---
 
 ### prob_sbm_responder (**canonical spontaneous-bowel-movement responder probability output**)
@@ -7227,6 +7234,13 @@ Favie 2020 (doi:10.1002/cpt.1917) fits seven drugs and five metabolites from the
 - **Role:** Lidocaine as a non-parent analyte in a multi-drug model (`central_lidocaine`, `Cc_lidocaine`). Its metabolite MEGX keeps the registered `megx` suffix.
 - **Source aliases:** none.
 - **Example models:** `Favie_2020_neonatalHypothermia.R`.
+
+### fentanyl (**canonical fentanyl sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Fentanyl as a co-administered, non-parent drug in a multi-drug model: its plasma and peripheral states (`central_fentanyl`, `peripheral1_fentanyl`), its effect compartment (`effect_fentanyl`), its concentration (`Cc_fentanyl`) and its parameters (`lcl_fentanyl`, `lvc_fentanyl`, `lke0_fentanyl`, `lec50_fentanyl`). Standalone fentanyl models keep the bare canonical names.
+- **Source aliases:** `FENT` -- Colin 2025 Supplemental Digital Content 1 (`FENT_C`, `FENT_P`, `EFFECT_FENT`, `CL_FENT`, `CE_FENT`).
+- **Example models:** `Colin_2025_remimazolam_umss.R` (founding example; Ginsberg 1996 paediatric fentanyl PK feeding an effect compartment whose concentration enters a remimazolam-fentanyl Minto interaction on the University of Michigan Sedation Scale).
+- **Notes:** Full INN, following the `midazolam` / `lidocaine` precedent, because no short form was registered and `fent` is not an established abbreviation.
 
 ### phenobarbital (**canonical phenobarbital sibling-drug suffix**)
 - **Type:** metabolite-suffix
