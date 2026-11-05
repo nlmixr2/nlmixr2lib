@@ -43,12 +43,12 @@ Jarugula_2025_apixaban <- function() {
       notes = "Drives the dose-dependent relative bioavailability: F1 = 1 for doses <= 2.5 mg and 1 - expit(-0.461) * ((DOSE - 2.5) / 47.5)^0.889 above it (Table 2 equations; control stream 'IF(DOSA.LE.2.5) THEN F1=1 ELSE ... F1=(1-IMF*((DOSA-2.5)/47.5)**GAM)'). Every pediatric weight-tier dose (0.1 to 2.5 mg) sits at or below the 2.5-mg anchor, so F1 is 1 for them. Must agree with the event-table amt on the dose records.",
       source_name = "DOSA"
     ),
-    FORM_APIXABAN_SPRINKLE = list(
-      description = "Apixaban sprinkle-capsule (new neonatal) formulation indicator",
+    FORM_CAPSULE = list(
+      description = "Sprinkle-capsule (new neonatal) formulation indicator",
       units = "(binary)",
       type = "binary",
-      reference_category = "0 (tablet or oral solution)",
-      notes = "Multiplies relative bioavailability by the fixed literature value 1.1 (Table 2 theta14 '1.1 FIXED'; control stream 'FFORM = 1; IF(GROUPNUM.EQ.10) FFORM=THETA(14)').",
+      reference_category = "0 (tablet or oral solution, relative bioavailability 1)",
+      notes = "1 = the apixaban sprinkle capsule developed for neonates and infants. Multiplies relative bioavailability by the fixed literature value 1.1 (Table 2 theta14 '1.1 FIXED'; control stream 'FFORM = 1; IF(GROUPNUM.EQ.10) FFORM=THETA(14)'). The capsule is the arm carrying the non-unit relative bioavailability; tablet and oral solution are the reference.",
       source_name = "GROUPNUM"
     )
   )
@@ -94,7 +94,7 @@ Jarugula_2025_apixaban <- function() {
     label("Shape factor for the reduction in F1 at doses above 2.5 mg (theta6, unitless)") # Table 2 theta6 = 0.889
     logitifdepot50 <- -0.461
     label("Logit of the maximum reduction in F1 (reached at a 50-mg dose) (theta7, unitless)") # Table 2 theta7 = -0.461
-    e_form_apixaban_sprinkle_fdepot <- fixed(1.1)
+    e_form_capsule_fdepot <- fixed(1.1)
     label("Relative bioavailability of the sprinkle-capsule formulation (theta14, ratio)") # Table 2 theta14 = 1.1 FIXED
 
     # Covariate effects: Table 2.
@@ -169,7 +169,7 @@ Jarugula_2025_apixaban <- function() {
     ifdepot50 <- expit(logitifdepot50)
     doseExcess <- (DOSE_APIXABAN_MG > 2.5) * (DOSE_APIXABAN_MG - 2.5)
     frel <- 1 - ifdepot50 * (doseExcess / 47.5)^gamma
-    fform <- 1 + (e_form_apixaban_sprinkle_fdepot - 1) * FORM_APIXABAN_SPRINKLE
+    fform <- 1 + (e_form_capsule_fdepot - 1) * FORM_CAPSULE
     f(depot) <- frel * fform
 
     # Dose in mg and volume in L give mg/L; x1000 reports ng/mL (control

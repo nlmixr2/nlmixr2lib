@@ -70,7 +70,7 @@ under Table 2 and from the final NONMEM control stream in Data S1.
 | `e_ped9m_ka` | 1.53 | Table 2, theta11 |
 | `lhill` (ontogeny shape) | log(0.83), fixed | Table 2, theta12 |
 | `lpna50` (ontogeny AGE50) | log(0.244) years, fixed | Table 2, theta13 |
-| `e_form_apixaban_sprinkle_fdepot` | 1.1, fixed | Table 2, theta14 |
+| `e_form_capsule_fdepot` | 1.1, fixed | Table 2, theta14 |
 | `fbirth_cl` | 0.05, fixed | Table 2, theta15 |
 | `e_dis_all_ka` | -1.67 | Table 2, theta16 |
 | `e_dis_all_vc` | -0.564 | Table 2, theta17 |
@@ -113,7 +113,7 @@ typ_cov <- tibble::tibble(
   AGE = c(25, 10, 10),
   DIS_ALL = c(0, 0, 1),
   DOSE_APIXABAN_MG = 2.5,
-  FORM_APIXABAN_SPRINKLE = 0
+  FORM_CAPSULE = 0
 )
 typ_ev <- dplyr::bind_rows(
   typ_cov |> dplyr::mutate(time = 0, amt = 2.5, evid = 1L, cmt = "depot", dvid = NA_integer_),
@@ -200,7 +200,7 @@ make_tier <- function(tier, wt_lo, wt_hi, dose, age_min, age_max, id_offset) {
     WT = wt,
     AGE = age,
     DIS_ALL = 1,
-    FORM_APIXABAN_SPRINKLE = 0,
+    FORM_CAPSULE = 0,
     DOSE_APIXABAN_MG = dose
   )
 }
@@ -584,7 +584,8 @@ therefore descriptive and not gated.
 - **PED9M** is derived inside the model from `AGE` (1 for 9 months <= age <18
   years). The source dataset carried it as a precomputed column (`PED4`).
 - **Formulation.** The sprinkle-capsule relative bioavailability (1.1, fixed) is
-  carried by `FORM_APIXABAN_SPRINKLE`; the reference is tablet or oral solution.
+  carried by the general capsule indicator `FORM_CAPSULE` (1 = sprinkle
+  capsule); the reference is tablet or oral solution.
 - **Dose-dependent bioavailability** reads the dose from the
   `DOSE_APIXABAN_MG` column, which must equal the event-table `amt` on the dose
   records.
