@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Khera 2024 DYP688 PK, tumour growth inhibition and Krogh cylinder QSP models ([doi:10.1007/s10928-024-09956-1](https://doi.org/10.1007/s10928-024-09956-1)) -- uveal melanoma xenograft mice and cynomolgus monkeys, with an allometric human projection.
+- Add Michalon 2025 cliramitug (NI006, ALXN2220) rat PK and human cardiac ATTR-depletion QSP models ([doi:10.1002/cpt.3455](https://doi.org/10.1002/cpt.3455)) -- rats, and a typical 70 kg adult with transthyretin amyloid cardiomyopathy (first-in-human projection).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
