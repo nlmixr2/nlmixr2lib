@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tsirizani 2024 darunavir, final model and the supplementary AAG-binding model ([doi:10.1093/jac/dkae319](https://doi.org/10.1093/jac/dkae319)) -- African children with HIV on once-daily darunavir/ritonavir second-line ART (CHAPAS-4).
+- Add Chang 2024 mavacamten ([doi:10.1002/psp4.13197](https://doi.org/10.1002/psp4.13197)) -- healthy adults and adults with obstructive or nonobstructive hypertrophic cardiomyopathy. Registers the `CYP2C19_RM`, `CONMED_ESOMEPRAZOLE`, `DOSE_MAVACAMTEN_MG` and `STUDY_MYK461014` covariates.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
