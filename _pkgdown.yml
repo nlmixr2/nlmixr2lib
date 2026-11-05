@@ -2632,6 +2632,8 @@ navbar:
         href: articles/Kloprogge_2020_tuberculosis.html
       - text: "Ethambutol (Maranchick 2026)"
         href: articles/Maranchick_2026_pyrazinamide_ethambutol.html
+      - text: "Ethambutol (Ndzamba 2025)"
+        href: articles/Ndzamba_2025_ethambutol.html
       - text: "Ethambutol (Panjasawatwong 2020)"
         href: articles/Panjasawatwong_2020_antituberculosis_tbm.html
       - text: "Ethambutol (Rao 2021)"
@@ -10137,7 +10139,7 @@ articles:
   - articles/Nava_2018_busulfan
   - articles/Navid_2016_theophylline_pbpk
   - articles/Nayak_2021_rivipansel
-  - articles/Neant_2023_covid19_news2
+  - articles/Ndzamba_2025_ethambutol
   - articles/Nemitz_2026_dapagliflozin_pbpk
   - articles/Nemoto_2017_ethanol
   - articles/Neroutsos_2022_busulfan
