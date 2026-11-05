@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2023 amisulpride ([doi:10.3389/fphar.2023.1215065](https://doi.org/10.3389/fphar.2023.1215065)) -- Chinese adults with schizophrenia.
+- Add Baaz 2023 FOLFOX + panitumumab joint tumor-growth / progression-free-survival and dropout models ([doi:10.1002/psp4.13003](https://doi.org/10.1002/psp4.13003)) -- adults with RAS exon 2 wild-type metastatic colorectal cancer (PRIME).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
