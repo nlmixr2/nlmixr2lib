@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Stemkens 2024 clofazimine ([doi:10.1093/jac/dkae309](https://doi.org/10.1093/jac/dkae309)) -- adults with nontuberculous mycobacterial disease receiving a 300 mg loading dose or 100 mg once daily.
+- Add le Noble 2024 lormetazepam ([doi:10.1007/s40262-024-01455-3](https://doi.org/10.1007/s40262-024-01455-3)) -- mechanically ventilated ICU adults with COVID-19-associated ARDS receiving enteral lormetazepam.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
