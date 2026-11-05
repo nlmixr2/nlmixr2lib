@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Reeder 2025 piperacillin and tazobactam ([doi:10.1002/jcph.6161](https://doi.org/10.1002/jcph.6161)) -- critically ill adults in the ICU, including patients on continuous renal replacement therapy.
+- Add Soliman 2025 omeprazole intragastric-pH PD model ([doi:10.3390/pharmaceutics17030373](https://doi.org/10.3390/pharmaceutics17030373)) -- simulated adults and children aged 4 months to 6 years; the plasma concentration is a covariate.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 

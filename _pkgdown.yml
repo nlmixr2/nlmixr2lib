@@ -5300,6 +5300,8 @@ navbar:
         href: articles/Wang_2024_omega3PUFA.html
       - text: "Omeprazole (Solana 2014)"
         href: articles/Solana_2014_omeprazole.html
+      - text: "Omeprazole (Soliman 2025)"
+        href: articles/Soliman_2025_omeprazole.html
       - text: "Omeprazole (Zhao 2018)"
         href: articles/Zhao_2018_omeprazole.html
       - text: "OncolyticVirus human qsp (Yamada 2025)"
@@ -10658,6 +10660,7 @@ articles:
   - articles/Sokolov_2020_sglt_qsp
   - articles/Sokolov_2023_dapagliflozin
   - articles/Solana_2014_omeprazole
+  - articles/Soliman_2025_omeprazole
   - articles/Solms_2020_BAY94_9027
   - articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide
   - articles/Song_2017_vancomycin

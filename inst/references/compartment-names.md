@@ -4377,6 +4377,15 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
   - `HDL` -- Krishna 2011 Eqs. 1, 2 and 8 output variable; casing only.
 - **Example models:** `Krishna_2011_anacetrapib_hdlc.R` (algebraic proportional-Emax output driven by the anacetrapib steady-state trough concentration; no ODE state).
 
+### gastric_ph (**canonical intragastric pH PD output**)
+- **Type:** compartment
+- **Role:** Intragastric pH, the acid-suppression endpoint of proton-pump-inhibitor and other antisecretory PD models, in pH units. Names the measured quantity regardless of how it is produced: an algebraic Emax function of plasma concentration, or `-log10` of a mechanistic intragastric H+ state.
+- **Source aliases:**
+  - `pH` -- Jeong 2023 Table 6 PD endpoint.
+  - `pH` from `Hobs` -- Soliman 2025 supplementary Equation S8 (`pH = -log10(Hobs)`, Hobs in mol/L).
+- **Example models:** `Jeong_2023_rabeprazole.R` (direct sigmoid Emax on plasma rabeprazole, alongside the `Cc` output), `Soliman_2025_omeprazole.R` (single output; `-log10` of the meal-diluted H+ of an irreversible H+/K+-ATPase inhibition model, capped at pH 7.4).
+- **Notes:** Use `gastric_ph` for a time course of pH. Summary endpoints such as the percentage of a day with pH above 4 are derived quantities and are not this output.
+
 ### hc24 (**canonical 24S-hydroxycholesterol PD output**)
 - **Type:** compartment
 - **Role:** 24S-hydroxycholesterol (24HC, cerebrosterol) biomarker PD output; the turnover pool of the brain-specific cholesterol 24-hydroxylase (CH24H / CYP46A1) reaction product, measured in plasma.
