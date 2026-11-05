@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bilal 2024 rifampicin, fat-free-mass and sex + body weight covariate models ([doi:10.1007/s00228-024-03697-3](https://doi.org/10.1007/s00228-024-03697-3)) -- healthy Caucasian adults, single 600 mg oral dose.
+- Add Yamaguchi 2024 cefiderocol ([doi:10.1002/prp2.70001](https://doi.org/10.1002/prp2.70001)) -- pediatric prediction model from neonates (26 weeks gestational age onward) to adolescents, scaled from adults.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
