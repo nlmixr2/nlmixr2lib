@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Olsson 2024 polymyxin B + minocycline ([doi:10.1093/jac/dkad394](https://doi.org/10.1093/jac/dkad394)) -- in vitro semi-mechanistic time-kill PK/PD against KPC-3- (ARU705) and OXA-48-producing (ARU613) carbapenem-resistant Klebsiella pneumoniae.
+- Add Campagne 2024 methotrexate and 7-hydroxymethotrexate ([doi:10.1016/j.ejps.2023.106669](https://doi.org/10.1016/j.ejps.2023.106669)) -- infants and young children with brain tumors (two models: BSA/eGFR, and BSA/eGFR/SNP pharmacogenetic).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
