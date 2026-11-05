@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ma 2025 lenalidomide ([doi:10.1002/psp4.70040](https://doi.org/10.1002/psp4.70040)) -- Chinese adults with multiple myeloma or B-cell non-Hodgkin lymphoma across renal function.
+- Add Jarugula 2025 apixaban ([doi:10.1002/cpt.3616](https://doi.org/10.1002/cpt.3616)) -- adults and children, including children with acute lymphoblastic leukemia or lymphoblastic lymphoma receiving asparaginase (PREVAPIX); with the linear anti-factor Xa activity relationship.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
