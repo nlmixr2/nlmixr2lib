@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hishe 2023 oxypurinol ([doi:10.1111/cts.13460](https://doi.org/10.1111/cts.13460)) -- adults with gout (five-study New Zealand pooled popPK; urate-transporter genetics screened but not retained).
+- Add Martinez-Casanova 2023 piperacillin ([doi:10.3390/antibiotics12030531](https://doi.org/10.3390/antibiotics12030531)) -- critically ill adults with preserved renal function on continuous infusion.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
