@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Connarn 2023 idecabtagene vicleucel exposure-response, 4 logistic regressions ([doi:10.1002/psp4.12922](https://doi.org/10.1002/psp4.12922)) -- adults with relapsed and refractory multiple myeloma (KarMMa); overall and complete response and CRS requiring tocilizumab or corticosteroids.
+- Add Hughes 2023 chemotherapy-induced neutropenia with G-CSF, the PKPD layer of a hybrid PKPD/ML model ([doi:10.1002/psp4.13019](https://doi.org/10.1002/psp4.13019)) -- adults on chemotherapy for metastatic breast or thoracic cancer or lymphoma.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
