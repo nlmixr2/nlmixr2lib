@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kawata 2024 propofol plasma and brain models, extended Marsh and new two-compartment ([doi:10.1038/s41598-024-56863-z](https://doi.org/10.1038/s41598-024-56863-z)) -- Japanese patients undergoing awake craniotomy.
+- Add Lee 2024 nebulized colistin, separate ELF and plasma models ([doi:10.3390/antibiotics13030258](https://doi.org/10.3390/antibiotics13030258)) -- ventilated adults with carbapenem-resistant Acinetobacter baumannii pneumonia receiving low-dose nebulized colistimethate sodium.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
