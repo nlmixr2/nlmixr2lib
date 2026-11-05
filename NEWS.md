@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tan 2025 piperacillin, total and unbound ([doi:10.1128/aac.01227-24](https://doi.org/10.1128/aac.01227-24)) -- critically ill children receiving perioperative piperacillin-tazobactam prophylaxis.
+- Add Yang 2025 rifampicin ([doi:10.3389/fphar.2025.1521068](https://doi.org/10.3389/fphar.2025.1521068)) -- intravenous disposition layer of a GastroPlus CYP3A4-induction PBPK-DDI model, healthy adults.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 

@@ -6380,8 +6380,8 @@ navbar:
         href: articles/Vinnard_2017_rifampicin.html
       - text: "Rifampicin (Wicha 2018)"
         href: articles/Wicha_2018_rifampicin.html
-      - text: "Rifampicin ffm (Bilal 2024)"
-        href: articles/Bilal_2024_rifampicin.html
+      - text: "Rifampicin (Yang 2025)"
+        href: articles/Yang_2025_rifampicin.html
       - text: "Rifampicin invitro (Almond 2016)"
         href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Rifampicin invivo (Almond 2016)"
@@ -11164,6 +11164,7 @@ articles:
   - articles/Yang_2025_matrine_pig_pbpk
   - articles/Yang_2025_osimertinib
   - articles/Yang_2025_polymyxinB
+  - articles/Yang_2025_rifampicin
   - articles/Yang_2025_venetoclax
   - articles/Yang_2026_APTM
   - articles/Yang_2026_copd_fev1
