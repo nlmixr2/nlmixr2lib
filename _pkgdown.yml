@@ -6050,6 +6050,8 @@ navbar:
         href: articles/AbdullahKoolmees_2024_voriconazole_flucloxacillin_ddi.html
       - text: "Posdinemab (PerezRuixo 2025)"
         href: articles/PerezRuixo_2025_posdinemab.html
+      - text: "Potravitug (May 2025)"
+        href: articles/May_2025_potravitug.html
       - text: "Pozelimab (Lin 2024)"
         href: articles/Lin_2024_pozelimab.html
       - text: "Pramlintide (Fang 2013)"
@@ -10203,6 +10205,7 @@ articles:
   - articles/Matsumoto_2005_TF_505
   - articles/Mauro_2025_nilotinib
   - articles/Maximova_2022_acyclovir
+  - articles/May_2025_potravitug
   - articles/Mazzocco_2015_temozolomide
   - articles/McBride_2025_radamts13_qsp
   - articles/McCann_2025_midazolam
