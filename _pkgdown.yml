@@ -3886,6 +3886,8 @@ navbar:
         href: articles/Granda_2024_kidney_pbpk.html
       - text: "LY2510924 (Bihorel 2017)"
         href: articles/Bihorel_2017_LY2510924.html
+      - text: "Lacosamide (Jang 2025)"
+        href: articles/Jang_2025_lacosamide.html
       - text: "Lacosamide (Li 2025)"
         href: articles/Li_2025_lacosamide.html
       - text: "Lacosamide (Yu 2026)"
@@ -9536,6 +9538,7 @@ articles:
   - articles/Jang_2019_cefprozil
   - articles/Jang_2021_oxcarbazepine
   - articles/Jang_2023_zaltoprofen
+  - articles/Jang_2025_lacosamide
   - articles/Jansen_2023_itraconazole
   - articles/Janssen_2017_cabazitaxel_phenotyping
   - articles/Janssen_2023_pregnancy_cytotoxics
