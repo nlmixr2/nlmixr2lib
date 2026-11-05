@@ -20933,6 +20933,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Papathanasiou_2021_somatropin.R` (selects the Trial 2 IGF-I proportional residual error, 8.7%, over Trial 1's 14.6% among children).
 - **Notes:** Member of the `STUDY_<id>` auto-approve family, named by the ClinicalTrials.gov identifier because the paper gives the trials no protocol code. The per-trial IGF-I residual errors reflect the different IGF-I assays (Siemens IMMULITE in Trial 2; IDS-iSYS in Trials 1 and 3). Trial 3 is the only adult trial, so the model selects the Trial 3 residual error with `CHILD = 0` and needs this single indicator to separate the two pediatric trials.
 
+### STUDY_NCT03493269 (**canonical for the zabedosertib multiple-ascending-dose phase 1 study (NCT03493269) indicator**)
+- **Description:** 1 = healthy volunteer from the zabedosertib multiple-ascending-dose study (ClinicalTrials.gov NCT03493269; 45 or 120 mg QD and 60, 120 or 200 mg BID for 10 days plus a single-dose period); 0 = participant from the single-ascending-dose study NCT03054402. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (SAD study NCT03054402).
+- **Source aliases:**
+  - `add,SAD` / `add,MAD` subscripts on the additive residual variances in Feldmuller 2025 Supplementary Table S4 -- `STUDY_NCT03493269 = 1` for the MAD row.
+- **Example models:** `Feldmuller_2025_zabedosertib.R` (selects the fixed MAD-study additive residual variance, 2.5, over the SAD value, 0.25; acts on no structural parameter).
+- **Notes:** Member of the `STUDY_<id>` auto-approve family, named by the ClinicalTrials.gov identifier because the paper gives the studies no protocol code (cf. `STUDY_NCT00936403`). The two studies used bioanalytical methods with different lower limits of quantitation (1.0 and 10.0 ug/L, Feldmuller 2025 Supplementary Table S2), which is the likely reason for the study-specific additive error.
+
 ### STUDY_016 (**canonical for Loprete 2016 safinamide phase 3 Study 016 cohort indicator**)
 - **Description:** 1 = subject enrolled in safinamide phase 3 Study 016 (Borgohain 2014; Parkinson disease with motor fluctuations on stable levodopa, dosed with tablets containing safinamide **free base** at 50 or 100 mg/day). 0 = safinamide phase 3 Study 015 (Stocchi 2012; early Parkinson disease on a single dopamine agonist, dosed with gelatin capsules containing safinamide **methanesulfonate** titrated to 100 or 200 mg/day). Time-fixed per subject.
 - **Units:** (binary)
