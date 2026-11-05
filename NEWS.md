@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ippolito 2024b pacmilimab QSP-IO ([doi:10.1007/s10928-024-09928-5](https://doi.org/10.1007/s10928-024-09928-5)) -- in silico virtual patients with non-small cell lung cancer.
+- Add Chiriac 2024 dalbavancin ([doi:10.3390/antibiotics13111103](https://doi.org/10.3390/antibiotics13111103)) -- adult men with a ventricular assist device driveline infection on long-term suppressive outpatient therapy.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
