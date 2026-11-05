@@ -2992,8 +2992,8 @@ navbar:
         href: articles/Ma_2022_fluorouracil_qsp.html
       - text: "Fluorouracil ls174t sensitive mouse qsp (Ma 2022)"
         href: articles/Ma_2022_fluorouracil_qsp.html
-      - text: "Fluorouracil mouse (Gall 2023)"
-        href: articles/Gall_2023_intestinal_epithelium_toxicity.html
+      - text: "Fluorouracil pbpk (Mielke 2025)"
+        href: articles/Mielke_2025_fluorouracil_pbpk.html
       - text: "Fluorouracil sw620 biw mouse qsp (Ma 2022)"
         href: articles/Ma_2022_fluorouracil_qsp.html
       - text: "Fluorouracil sw620 daily mouse qsp (Ma 2022)"
@@ -10109,6 +10109,7 @@ articles:
   - articles/Michalickova_2020_riociguat
   - articles/Michalon_2025_cliramitug
   - articles/Michelet_2025_BI754111_mpbpk
+  - articles/Mielke_2025_fluorouracil_pbpk
   - articles/Milakovic_2024_linezolid
   - articles/Mileva_2021_doxycycline_rabbit
   - articles/Milosheska_2016_lamotrigine
