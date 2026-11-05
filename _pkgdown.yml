@@ -6254,10 +6254,76 @@ navbar:
         href: articles/AlvarezJimenez_2016_scopolamine.html
       - text: "Scopolamine (LiemMoolenaar 2011)"
         href: articles/LiemMoolenaar_2011_scopolamine.html
+      - text: "Secukinumab (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab as w16 asas20 (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab as w16 asas40 (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab as w16 asas56 (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab as w16 asaspr (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab as w16 asdasid (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab as w16 asdasmi (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab as w16 basdai50 (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab as w52 asas20 (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab as w52 asas40 (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab as w52 asas56 (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab as w52 asaspr (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab as w52 asdasid (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab as w52 asdasmi (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab as w52 basdai50 (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
       - text: "Secukinumab mbma (Ayyar 2022)"
         href: articles/Ayyar_2022_il17a_target_engagement.html
       - text: "Secukinumab mpbpk (Ayyar 2022)"
         href: articles/Ayyar_2022_il17a_target_engagement.html
+      - text: "Secukinumab psa w16 acr20 (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w16 acr50 (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w16 acr70 (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w16 dactylitis (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w16 enthesitis (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w16 haqdi (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w16 mda (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w16 pasdaslda (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w16 pasi90 (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w52 acr20 (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w52 acr50 (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w52 acr70 (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w52 dactylitis (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w52 enthesitis (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w52 haqdi (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w52 mda (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w52 pasdaslda (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
+      - text: "Secukinumab psa w52 pasi90 (Dumortier 2025)"
+        href: articles/Dumortier_2025_secukinumab.html
       - text: "Selexipag (Krause 2017)"
         href: articles/Krause_2017_selexipag.html
       - text: "Selexipag adult (Axelsen 2024)"
@@ -8481,6 +8547,7 @@ articles:
   - articles/Duflot_2022_morphine
   - articles/Duke_2024_cefazolin
   - articles/Dumond_2017_unbound_antiretrovirals
+  - articles/Dumortier_2025_secukinumab
   - articles/Dunlap_2025_tacrolimus
   - articles/Dunn_2025_tranexamicAcid
   - articles/Duong_2016_WHIG_T2DM
