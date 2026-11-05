@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Valenzuela 2025 loperamide and N-desmethyl loperamide (M1) concentration-QTc models ([doi:10.1111/cts.70114](https://doi.org/10.1111/cts.70114)) -- healthy adults in a thorough-QT crossover study of single 8 mg and 48 mg doses.
+- Add Lim 2024 7,8-dihydroxyflavone plasma and brain-hemisphere PK ([doi:10.3389/fphar.2024.1508696](https://doi.org/10.3389/fphar.2024.1508696)) -- postnatal day 9 mice with hypoxia-ischemia brain injury or sham surgery.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
