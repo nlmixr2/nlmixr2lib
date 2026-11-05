@@ -1,0 +1,724 @@
+---
+title: "Neutrophil-mediated bacterial killing in vitro and in mice (Thorsted 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Neutrophil-mediated bacterial killing in vitro and in mice (Thorsted 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Thorsted 2023 fitted one model simultaneously to digitized in vitro and in
+vivo data. The library carries it as two files, one per experimental system,
+because no experiment spans both systems and the two arms differ in their
+states, inputs and several parameter values:
+
+```{r model-load}
+ui_vitro <- rxode2::rxode(readModelDb("Thorsted_2023_neutrophil_invitro"))
+ui_mouse <- rxode2::rxode(readModelDb("Thorsted_2023_neutrophil_mouse"))
+```
+
+* Citation: `r ui_vitro$reference`
+* Article: <https://doi.org/10.1002/psp4.13046>
+* Open-access full text: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10725272/>
+* Supplements: Data S2 (the final NONMEM control stream) and Table S1 (the
+  digitized NONMEM data file), linked from the article landing page.
+
+* In vitro arm: `r ui_vitro$description`
+* Mouse arm: `r ui_mouse$description`
+
+# Population
+
+The model was built on published data, digitized from figures. Seven in vitro
+studies (Table 1, In vitro-1 to In vitro-7) incubated human neutrophils at a
+fixed concentration of 0 to 1 x 10^7 cells/mL with *Staphylococcus
+epidermidis*, *S. aureus*, *Escherichia coli*, *Streptococcus pyogenes* or
+*Corynebacterium* at inocula of 10^3 to 10^10 CFU/mL. The incubations ran for
+1 to 3 h at 37 C in at least 5% human serum, in suspension or in fibrin gel.
+The studies measured total viable, extracellular or intracellular CFU. One
+study (In vitro-7) was held back for external evaluation. Together they give
+115 experiments with 403 CFU observations.
+
+Five mouse studies (Table 1, Mice-1 to Mice-5) supplied the in vivo data.
+Four described *Acinetobacter baumannii* pneumonia in C57BL/6 or
+Swiss-Webster mice. Mice-2 pretreated the animals with intraperitoneal
+cyclophosphamide 96 and 24 h before inoculation (50/50, 100/50 or
+200/150 mg/kg, or vehicle). The fifth study measured steady-state blood and
+lung neutrophils in uninfected mice. Together they give 21 experiments with
+56 CFU, 5 blood-neutrophil and 16 lung-neutrophil observations. Lung counts
+were converted to per-gram units with a lung weight of 0.175 g.
+
+No between-experiment variability was estimated (`$OMEGA 0 FIX` in Data S2),
+so both models are deterministic and every simulation below is a typical-value
+simulation.
+
+```{r population}
+str(ui_vitro$population, max.level = 1)
+str(ui_mouse$population, max.level = 1)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. The
+table collects them. All estimates are from the "Final model" column of
+Table 2.
+
+| Parameter | In vitro | Mouse | Source |
+|---|---|---|---|
+| `kgrowth` (1/h) | 1.84 | 0.502 | Table 2, bacterial growth, in vitro and in vivo rows |
+| `kdeath` (1/h) | 0.179 fixed | 0.179 fixed | Table 2 (from Nielsen 2007) |
+| `klag` (1/h) | 0.290 | -- | Table 2; bacteria start in the growing state in vivo |
+| `Bmax` (CFU/mL or CFU/g) | 2.5 x 10^9 fixed | 2.5 x 10^9 fixed | Table 2; Data S2 shares `BMAX` |
+| `kN,max` (1/h) | 8.85 | 0.820 | Table 2; shared by phagocytosis and digestion |
+| `kN,loss` (1/h) | 0.779 | 0 fixed | Table 2 |
+| `N50,dig` (cells/mL) | 6.55 x 10^6 | 6.55 x 10^6 | Table 2 |
+| `N50,phag` (cells/mL) | 1.19 x 10^6 | 1.19 x 10^6 | Table 2 |
+| `P/N50` (CFU/cell) | 3.41 | 3.41 | Table 2; shared by phagocytosis and digestion |
+| `kM,kill` (1/h) | -- | 0.287 | Table 2 |
+| `kM,loss` (1/h) | -- | 0.0111 | Table 2 |
+| `ka`, `CL`, `V` (cyclophosphamide) | -- | 20.9 1/h, 0.311 mL/h, 0.153 mL | Table 2 ("Scaled"); Data S2 `$PK` scaling expressions |
+| `MTT` (h) | -- | 37.7 | Table 2 ("Scaled"); Data S2 `52.8 * (0.025/0.295)**0.136` |
+| `gamma` | -- | 0.149 fixed | Table 2 |
+| `DSLP` (mL/mg) | -- | 1.26 | Table 2 |
+| `Ncirc,T0` (cells/mL) | -- | 1.69 x 10^6 | Table 2 |
+| `NAMP`, `NT0`, `NSW` | -- | 44.2, 50.5 h, 28.2 h | Table 2 |
+| Lung weight (g) | -- | 0.175 fixed | Data S2 `THETA(15)`; Materials and Methods |
+| Residual SD, CFU (log10) | 0.279 | 0.600 | Table 2 (SD scale) |
+| Residual SD, neutrophils (log10) | -- | 0.161 | Table 2 (SD scale) |
+
+| Equation | Implementation | Source |
+|---|---|---|
+| Bacterial lag / growing / resting states | `bact_lag`, `bact_susceptible`, `bact_resting` | Equations 1-3; `kSR` defined in the text above Equation 1 |
+| Phagocytosis and digestion rates | `kn_phag`, `kn_dig` | Equations 4-5 |
+| Phagocytosed bacteria | `bact_phagocytosed` | Equation 6 |
+| Cyclophosphamide PK | `depot`, `central` | Equations 7-8 |
+| Myelosuppression chain | `prol`, `transit1`-`transit3`, `circ` | Equations 9-13 |
+| Lung neutrophil influx and surge | `neut_lung` | Equation 14 |
+| Additional in vivo phagocytic capacity | `bact_phagocytosed_mac` | Results; Data S2 `$DES` (`KPGM`, `KDGM`, `MACRF`) |
+| Observations | `log_cfu`, `log_cfu_extracellular`, `log_cfu_intracellular`, `log_anc`, `log_neut_lung` | Data S2 `$ERROR` |
+
+# Reproducing the published fit on the deposited data
+
+Table S1 is the NONMEM data file the authors fitted. The chunk below embeds the
+dose and observation records of In vitro-2 and of all five mouse studies,
+copied from Table S1. Baseline observations (`T0DATA = 1`) are dropped, as the
+authors' `IGNORE` did, and so are the macrophage records (`LOCA` 6 and 8).
+`CMT` and `LOCA` keep their Data S2 meanings: doses to compartment 1
+(neutrophils), 2 (bacteria, lag state), 3 (bacteria, growing state) and 12
+(cyclophosphamide). The observations are 1 (intracellular CFU),
+2 (extracellular CFU), 3 and 4 (total CFU), 5 (blood neutrophils) and
+7 (lung neutrophils).
+
+Neither model has random effects. The residual SD that maximises the
+likelihood at the published fixed effects is then the root-mean-square residual
+of the typical-value predictions. So a correct implementation should give
+root-mean-square residuals close to the Table 2 SDs.
+
+```{r s1-data}
+s1_dose <- data.frame(
+  ID = c(38, 39, 39, 40, 40, 41, 41, 42, 42, 43, 44, 45, 46, 47, 48, 48, 49, 49, 50,
+    50, 51, 51, 52, 52, 53, 53, 54, 54, 55, 55, 56, 56, 57, 57, 58, 58, 59,
+    59, 60, 60, 61, 61, 62, 62, 63, 63, 64, 64, 65, 65, 66, 66, 67, 67, 68,
+    68, 69, 69, 70, 70, 71, 71, 72, 72, 1001, 1002, 1003, 1004, 1005, 1301,
+    1302, 1302, 1302, 1303, 1303, 1303, 1304, 1304, 1304, 2001, 2002, 2003,
+    2004, 2005, 2301, 2302, 2303, 2304, 2305, 2306, 2307, 2308, 2309),
+  TIME = c(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 96, 0, 72,
+    96, 0, 72, 96, 0, 72, 96, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+  AMT = c(131491, 2e+05, 117540, 2e+06, 127975, 4e+06, 138767, 1e+07, 128319,
+    1.52e+08, 19900000, 1490000, 227000, 2370, 4e+05, 1.53e+08, 4e+05,
+    20300000, 4e+05, 1480000, 4e+05, 230000, 4e+05, 2390, 1e+06, 1.51e+08,
+    1e+06, 20400000, 1e+06, 1510000, 1e+06, 235000, 1e+06, 2430, 2e+06,
+    1.51e+08, 2e+06, 20400000, 2e+06, 1490000, 2e+06, 229000, 2e+06, 2420,
+    4e+06, 1.53e+08, 4e+06, 20300000, 4e+06, 1480000, 4e+06, 232000, 4e+06,
+    2380, 1e+07, 1.55e+08, 1e+07, 20700000, 1e+07, 1520000, 1e+07, 230000,
+    1e+07, 2430, 57142900, 5714290, 57142900, 57142900, 57142900, 15667500,
+    1.25, 1.25, 15667500, 2.5, 1.25, 15667500, 5, 3.75, 15667500, 5714290,
+    57142900, 571429000, 57142900, 57142900, 171429000, 171429000,
+    171429000, 171429000, 188571000, 154286000, 171429000, 188571000,
+    154286000),
+  CMT = c(2, 1, 2, 1, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1,
+    2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1,
+    2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 3, 3, 3, 3, 12, 12,
+    3, 12, 12, 3, 12, 12, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3)
+)
+s1_obs <- data.frame(
+  ID = c(38, 38, 38, 38, 39, 39, 39, 39, 40, 40, 40, 40, 41, 41, 41, 41, 42, 42, 42,
+    42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+    60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 1001, 1001, 1001,
+    1001, 1001, 1002, 1002, 1002, 1002, 1002, 1003, 1003, 1004, 1004, 1005,
+    1005, 1005, 1301, 1301, 1301, 1301, 1301, 1301, 1302, 1302, 1302, 1302,
+    1302, 1302, 1303, 1303, 1303, 1303, 1303, 1303, 1304, 1304, 1304, 1304,
+    1304, 1304, 2001, 2001, 2002, 2002, 2002, 2003, 2003, 2003, 2003, 2004,
+    2004, 2004, 2201, 2201, 2301, 2302, 2302, 2302, 2302, 2302, 2303, 2304,
+    2305, 2305, 2305, 2305, 2305, 2306, 2306, 2306, 2306, 2306),
+  STUD = c(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+    2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+    2, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
+    100, 100, 100, 100, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130,
+    130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130, 130,
+    200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 220, 220,
+    230, 230, 230, 230, 230, 230, 230, 230, 230, 230, 230, 230, 230, 230,
+    230, 230, 230, 230),
+  TIME = c(0.25, 0.5, 1, 1.5, 0.25, 0.5, 1, 1.5, 0.25, 0.5, 1, 1.5, 0.25, 0.5, 1, 1.5,
+    0.25, 0.5, 1, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5,
+    1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5,
+    1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1, 4, 24, 48, 72, 1, 4, 24, 48, 72, 4,
+    24, 4, 24, 4, 24, 44, 96, 100, 104, 108, 116, 120, 96, 100, 104, 108,
+    116, 120, 96, 100, 104, 108, 116, 120, 96, 100, 104, 108, 116, 120, 4,
+    24, 4, 24, 48, 4, 24, 48, 96, 4, 24, 72, 0, 0, 24, 0, 24, 72, 120, 168,
+    24, 24, 0, 24, 72, 120, 168, 0, 24, 72, 120, 168),
+  LOCA = c(3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4,
+    5, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+    4, 4, 4, 4, 4, 4, 5, 7, 4, 7, 7, 7, 7, 7, 4, 4, 7, 7, 7, 7, 7, 7, 7, 7,
+    7, 7),
+  DV = c(5.126, 5.15, 5.253, 5.362, 5.07, 5.108, 5.199, 5.234, 4.984, 4.846, 4.817,
+    4.48, 4.852, 4.472, 4.366, 4.093, 4.644, 4.134, 3.858, 3.594, 8.616,
+    7.878, 6.696, 5.899, 3.81, 8.561, 7.755, 6.542, 5.7, 3.691, 8.531,
+    7.703, 6.34, 5.458, 3.501, 8.481, 7.48, 5.736, 5.248, 3, 8.204, 6.152,
+    4.67, 4.394, 2.09, 7.589, 5.665, 4.072, 3.334, 1.572, 7.56, 8.247,
+    5.254, 3.486, 2.09, 6.895, 7.615, 4.223, 2.655, 1.918, 8.208, 5.907,
+    8.645, 6.545, 8.942, 7.96, 4.466, 6.388, 7.88, 7.563, 6.976, 6.554,
+    6.125, 6.276, 7.791, 7.788, 7.872, 7.258, 6.731, 5.881, 7.641, 7.899,
+    7.495, 7.902, 7.875, 5.333, 7.986, 8.589, 8.582, 8.905, 8.772, 7.192,
+    3.399, 8.274, 5.581, 4.11, 9.241, 9.271, 8.324, 3.928, 7.325, 5.964,
+    2.884, 6.108, 5.527, 6.256, 5.387, 6.323, 7.111, 5.706, 5.319, 6.479,
+    5.684, 5.433, 6.796, 7.133, 6.138, 5.699, 5.453, 6.584, 7.177, 5.6,
+    5.299)
+)
+```
+
+```{r s1-solve}
+cmt_vitro <- c(`1` = "neut_tube", `2` = "bact_lag", `3` = "bact_susceptible", `5` = "bact_phagocytosed")
+cmt_mouse <- c(`3` = "bact_susceptible", `12` = "depot")
+out_name <- c(`1` = "log_cfu_intracellular", `2` = "log_cfu_extracellular",
+              `3` = "log_cfu", `4` = "log_cfu", `5` = "log_anc", `7` = "log_neut_lung")
+
+# Typical-value predictions for every observation record of the given IDs.
+predict_s1 <- function(ui, ids, cmt_map) {
+  dose <- s1_dose[s1_dose$ID %in% ids, ]
+  obs <- s1_obs[s1_obs$ID %in% ids, ]
+  ev <- bind_rows(
+    data.frame(id = dose$ID, time = dose$TIME, amt = dose$AMT, evid = 1L,
+               cmt = unname(cmt_map[as.character(dose$CMT)]), dvid = NA_integer_),
+    distinct(obs, id = ID, time = TIME) |>
+      mutate(amt = 0, evid = 0L, cmt = NA_character_, dvid = 1L)
+  ) |>
+    arrange(id, time, desc(evid))
+  stopifnot(!anyNA(ev$cmt[ev$evid == 1L]))
+  # Single-threaded throughout this article: with several threads, rxode2
+  # 5.1.8 intermittently carried a cyclophosphamide effect into an untreated
+  # subject of this event table.
+  sim <- as.data.frame(rxode2::rxSolve(ui, ev, returnType = "data.frame", cores = 1L,
+                                       omega = NA, sigma = NA, atol = 1e-10, rtol = 1e-10))
+  obs |>
+    rowwise() |>
+    mutate(PRED = sim[[out_name[[as.character(LOCA)]]]][sim$id == ID & sim$time == TIME][1]) |>
+    ungroup()
+}
+
+pred <- bind_rows(
+  predict_s1(ui_vitro, unique(s1_obs$ID[s1_obs$STUD < 99]), cmt_vitro),
+  predict_s1(ui_mouse, unique(s1_obs$ID[s1_obs$STUD > 99]), cmt_mouse)
+) |>
+  mutate(
+    endpoint = case_when(
+      STUD < 99 ~ "In vitro-2 total CFU",
+      LOCA == 4 & STUD == 230 ~ "Mice-4 lung CFU",
+      LOCA == 4 ~ "Mice-1, -2, -3 lung CFU",
+      TRUE ~ "Blood and lung neutrophils"
+    ),
+    res = DV - PRED
+  )
+stopifnot(!anyNA(pred$PRED))
+
+rmse <- pred |>
+  group_by(endpoint) |>
+  summarise(n = n(), rmse = sqrt(mean(res^2)), mean_residual = mean(res), .groups = "drop") |>
+  mutate(table2_sd = c(`Blood and lung neutrophils` = 0.161, `In vitro-2 total CFU` = 0.279,
+                       `Mice-1, -2, -3 lung CFU` = 0.600, `Mice-4 lung CFU` = 0.600)[endpoint])
+rmse |>
+  dplyr::rename(
+    "Endpoint" = endpoint, "Records" = n, "RMS residual (log10)" = rmse,
+    "Mean residual (log10)" = mean_residual, "Table 2 SD (log10)" = table2_sd
+  ) |>
+  knitr::kable(digits = 3)
+```
+
+The neutrophil endpoints (`r round(rmse$rmse[rmse$endpoint == "Blood and lung neutrophils"], 3)`
+against 0.161) and the lung CFU of Mice-1 to Mice-3
+(`r round(rmse$rmse[rmse$endpoint == "Mice-1, -2, -3 lung CFU"], 3)` against 0.600)
+reproduce the published residual SDs. The in vitro residual SD (0.279) pools six
+studies. In vitro-2, the one study embedded here, sits a little below it.
+Over all six in vitro studies, the maintainers' check of the full Table S1
+gave a root-mean-square residual of 0.279.
+
+Mice-4 is the exception. Data S2 gives that study its own in vivo
+growth-rate multiplier (`IF(STUD==230) KGR = THETA(1) * THETA(25)`), but
+Table 2 reports no value for it. This model applies the common in vivo
+`kgrowth` to every study, so the three Mice-4 CFU records are over-predicted by
+about 2 log10 units. The Mice-4 lung-neutrophil records do not depend on
+`kgrowth` and are fitted well.
+
+```{r s1-check}
+stopifnot(
+  # Exact structural agreement: no random effects, so the RMS residual equals
+  # the ML residual SD at the published fixed effects.
+  abs(rmse$rmse[rmse$endpoint == "Blood and lung neutrophils"] / 0.161 - 1) < 0.05,
+  abs(rmse$rmse[rmse$endpoint == "Mice-1, -2, -3 lung CFU"] / 0.600 - 1) < 0.05,
+  rmse$rmse[rmse$endpoint == "In vitro-2 total CFU"] < 0.279,
+  # Mice-4 carries an unreported study-specific growth multiplier.
+  rmse$mean_residual[rmse$endpoint == "Mice-4 lung CFU"] < -1
+)
+```
+
+```{r s1-plot, fig.height = 5}
+ggplot(pred, aes(PRED, DV, colour = endpoint)) +
+  geom_abline(slope = 1, intercept = 0, linetype = 2) +
+  geom_point() +
+  labs(x = "Typical-value prediction (log10)", y = "Digitized observation (log10)",
+       colour = NULL,
+       title = "Observations from Table S1 against predictions from the packaged models") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# In vitro behaviour
+
+## Growth controls and killing at fixed neutrophil concentrations
+
+This chunk follows the In vitro-1 design (Table 1): inocula of 10^5 and
+10^7 CFU/mL with 0 to 4 x 10^6 neutrophils/mL, followed for 1.5 h. Bacteria are
+dosed into `bact_lag` and neutrophils into `neut_tube`, both at time 0 and in
+concentration units.
+
+```{r invitro-design}
+# One row per experiment: inoculum (CFU/mL) and neutrophil concentration (cells/mL).
+invitro_events <- function(design, times) {
+  design$id <- seq_len(nrow(design))
+  bind_rows(
+    data.frame(id = design$id, time = 0, amt = design$inoc, evid = 1L,
+               cmt = "bact_lag", dvid = NA_integer_),
+    data.frame(id = design$id[design$neut > 0], time = 0,
+               amt = design$neut[design$neut > 0], evid = 1L,
+               cmt = "neut_tube", dvid = NA_integer_),
+    tidyr::expand_grid(id = design$id, time = times) |>
+      mutate(amt = 0, evid = 0L, cmt = NA_character_, dvid = 1L)
+  ) |>
+    arrange(id, time, desc(evid))
+}
+
+design1 <- tidyr::expand_grid(inoc = c(1e5, 1e7), neut = c(0, 4e5, 1e6, 4e6))
+sim1 <- rxode2::rxSolve(ui_vitro, invitro_events(design1, seq(0, 1.5, by = 0.05)),
+                        returnType = "data.frame", cores = 1L, omega = NA, sigma = NA) |>
+  left_join(mutate(design1, id = row_number()), by = "id")
+```
+
+```{r invitro-plot}
+ggplot(sim1, aes(time, log_cfu, colour = factor(neut))) +
+  geom_line() +
+  facet_wrap(~ paste("Inoculum", format(inoc, scientific = TRUE), "CFU/mL")) +
+  labs(x = "Time (h)", y = "Total viable bacteria (log10 CFU/mL)",
+       colour = "Neutrophils\n(cells/mL)",
+       title = "In vitro total viable CFU (design of In vitro-1)",
+       caption = "Compare with the In vitro-1 panels of Figure 2a of Thorsted 2023.") +
+  theme_bw()
+```
+
+## Digestion of phagocytosed bacteria
+
+The two digestion studies started from bacteria that were already inside
+neutrophils, and in Table S1 their inoculum is dosed straight into the
+phagocytosed compartment. This chunk does the same: 8.91 x 10^5 CFU/mL into
+`bact_phagocytosed` with 5 x 10^6 neutrophils/mL, which is experiment 114 of
+Table S1. It reads the intracellular output.
+
+```{r digestion}
+ev_dig <- bind_rows(
+  data.frame(id = 1L, time = 0, amt = c(5e6, 8.91e5), evid = 1L,
+             cmt = c("neut_tube", "bact_phagocytosed"), dvid = NA_integer_),
+  data.frame(id = 1L, time = seq(0, 2, by = 0.05), amt = 0, evid = 0L,
+             cmt = NA_character_, dvid = 1L)
+)
+sim_dig <- rxode2::rxSolve(ui_vitro, ev_dig, returnType = "data.frame", cores = 1L, omega = NA, sigma = NA)
+ggplot(sim_dig, aes(time, log_cfu_intracellular)) +
+  geom_line() +
+  labs(x = "Time (h)", y = "Intracellular bacteria (log10 CFU/mL)",
+       title = "Digestion of phagocytosed bacteria at 5 x 10^6 neutrophils/mL",
+       caption = "Compare with the digestion panels of Figure 2a of Thorsted 2023.") +
+  theme_bw()
+```
+
+## Bistable relation between neutrophils and bacterial burden
+
+Figure 3b of the paper maps the change in bacterial burden after 1.5 h across
+inocula and neutrophil concentrations. It shows that a neutrophil concentration
+that clears a low inoculum fails against a high one. The grid below
+reproduces that map.
+
+```{r biphasic}
+design3 <- tidyr::expand_grid(inoc = 10^(3:9), neut = 10^seq(5, 7.5, by = 0.25))
+sim3 <- rxode2::rxSolve(ui_vitro, invitro_events(design3, c(0, 1.5)),
+                        returnType = "data.frame", cores = 1L, omega = NA, sigma = NA) |>
+  left_join(mutate(design3, id = row_number()), by = "id") |>
+  group_by(id, inoc, neut) |>
+  summarise(change = log_cfu[time == 1.5] - log_cfu[time == 0], .groups = "drop")
+
+ggplot(sim3, aes(log10(neut), log10(inoc), fill = change)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "darkgreen", mid = "black", high = "red", midpoint = 0) +
+  labs(x = "Neutrophils (log10 cells/mL)", y = "Inoculum (log10 CFU/mL)",
+       fill = "Change in\nlog10 CFU\nat 1.5 h",
+       title = "Change in total viable CFU after 1.5 h",
+       caption = "Replicates the layout of Figure 3b of Thorsted 2023.") +
+  theme_bw()
+
+change_at <- function(n, b) sim3$change[abs(log10(sim3$neut) - n) < 1e-9 & abs(log10(sim3$inoc) - b) < 1e-9]
+# Below Bmax, a higher inoculum fares no better at a fixed neutrophil
+# concentration (the falling P/N term). At 10^9 CFU/mL the carrying capacity
+# itself slows growth, so the comparison stops at 10^8.
+chk3 <- sim3 |>
+  dplyr::filter(inoc <= 1e8) |>
+  group_by(neut) |>
+  summarise(monotone = all(diff(change[order(inoc)]) >= -1e-6), .groups = "drop")
+stopifnot(
+  all(chk3$monotone),
+  # 10^6 neutrophils/mL clear inocula up to 10^6 CFU/mL but not 10^8 CFU/mL ...
+  all(sapply(3:6, function(b) change_at(6, b)) < 0),
+  change_at(6, 8) > 0,
+  # ... which needs about ten times more neutrophils.
+  change_at(7, 8) < 0
+)
+```
+
+At a fixed neutrophil concentration the 1.5 h change rises with the inoculum,
+because a growing ratio of phagocytosed bacteria to neutrophils slows both
+phagocytosis and digestion. That matches the Discussion's reading of the
+external data: about 0.5-1 x 10^6 neutrophils/mL contain inocula up to
+10^6 CFU/mL, and larger inocula need progressively more neutrophils. The top
+row (10^9 CFU/mL) changes less in every column because the burden is already
+close to `Bmax`, which also slows growth in the controls.
+
+## Closed-form checks from the Results and Discussion
+
+At time zero no bacterium has been phagocytosed yet (`P/N = 0`) and the time
+term is 1. The net first-order rate of the extracellular bacteria is then
+`kgrowth - kdeath - kN,max * N / (N50,phag + N)`. In vivo the additional
+capacity `kM,kill` is subtracted as well. The Discussion quotes the half-lives
+this rate implies at the "critical neutrophil concentration" range of 0.3 and
+0.5 x 10^6 cells/mL.
+
+```{r closed-form}
+p_v <- with(as.list(ui_vitro$theta), list(
+  kgrowth = exp(lkgrowth), kdeath = exp(lkdeath), knmax = exp(lkn_max),
+  n50 = exp(ln50_phag), pn50 = exp(lpn50), klag = exp(lklag)))
+p_m <- with(as.list(ui_mouse$theta), list(
+  kgrowth = exp(lkgrowth), kdeath = exp(lkdeath), knmax = exp(lkn_max),
+  n50 = exp(ln50_phag), kmkill = exp(lkm_kill), kmloss = exp(lkm_loss)))
+net_vitro <- function(n) p_v$kgrowth - p_v$kdeath - p_v$knmax * n / (p_v$n50 + n)
+net_mouse <- function(n) p_m$kgrowth - p_m$kdeath - p_m$knmax * n / (p_m$n50 + n) - p_m$kmkill
+
+cf <- tibble::tribble(
+  ~quantity, ~published, ~model,
+  "In vitro doubling time (h)", 0.377, log(2) / p_v$kgrowth,
+  "klag half-life (h)", 2.39, log(2) / p_v$klag,
+  "In vitro initial bacterial half-life at 0.3 x 10^6 N/mL (h)", 5.73, -log(2) / net_vitro(0.3e6),
+  "In vitro initial bacterial half-life at 0.5 x 10^6 N/mL (h)", 0.724, -log(2) / net_vitro(0.5e6),
+  "In vivo initial bacterial half-life at 0.3 x 10^6 N/mL (h)", 5.72, -log(2) / net_mouse(0.3e6),
+  "In vivo initial bacterial half-life at 0.5 x 10^6 N/mL (h)", 3.49, -log(2) / net_mouse(0.5e6),
+  "In vivo doubling time (h)", 1.38, log(2) / p_m$kgrowth,
+  "kN,max half-life in vivo (h)", 0.845, log(2) / p_m$knmax,
+  "kM,kill half-life, immune-competent (h)", 2.42, log(2) / p_m$kmkill,
+  "kM,loss half-life (h)", 62, log(2) / p_m$kmloss,
+  "Rate reduction at 50 CFU per neutrophil (%)", 94, 100 * 50 / (50 + p_v$pn50)
+) |>
+  mutate(pct_diff = 100 * (model - published) / published)
+cf |>
+  dplyr::rename("Quantity" = quantity, "Published" = published, "Model" = model,
+                "Difference (%)" = pct_diff) |>
+  knitr::kable(digits = 3)
+
+stopifnot(
+  # Quantities that depend only on in vitro estimates reproduce to rounding.
+  all(abs(cf$pct_diff[c(1:4, 7:11)]) < 1.5),
+  # The two in vivo initial half-lives are a small difference of large rates,
+  # so the 0.502 1/h rounding of kgrowth moves them by several percent.
+  all(abs(cf$pct_diff[5:6]) < 10)
+)
+```
+
+The in vitro quantities match the paper to its printed precision. The two in
+vivo initial half-lives come out 4-6% shorter than the Discussion quotes. Both
+quoted values imply the same net growth rate, which is what an in vivo
+`kgrowth` of about 0.510 1/h would give against the 0.502 1/h in Table 2. A
+net rate close to zero amplifies that 1.6% difference in `kgrowth`.
+
+# Mouse behaviour
+
+## Cyclophosphamide pharmacokinetics (PKNCA)
+
+The cyclophosphamide layer is a one-compartment model with first-order
+absorption, scaled from rats and fixed. PKNCA on a single 50 mg/kg dose
+(1.25 mg in a 25 g mouse) should recover `AUC = dose / CL` and the terminal
+half-life `log(2) / (CL / V)`, because absorption (`ka` = 20.9 1/h) is ten
+times faster than elimination.
+
+```{r cp-pk}
+ev_cp <- bind_rows(
+  data.frame(id = 1L, time = 0, amt = 1.25, evid = 1L, cmt = "depot", dvid = NA_integer_),
+  data.frame(id = 1L, time = c(0, seq(0.02, 0.5, by = 0.02), seq(0.6, 6, by = 0.1)),
+             amt = 0, evid = 0L, cmt = NA_character_, dvid = 1L)
+)
+sim_cp <- rxode2::rxSolve(ui_mouse, ev_cp, returnType = "data.frame", cores = 1L, omega = NA, sigma = NA) |>
+  mutate(id = 1L, treatment = "50 mg/kg IP")
+
+conc_obj <- PKNCA::PKNCAconc(dplyr::filter(sim_cp, !is.na(Cc)), Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(data.frame(id = 1L, treatment = "50 mg/kg IP", time = 0, amt = 1.25),
+                             amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tbl <- as.data.frame(nca$result)
+
+cl_cp <- exp(ui_mouse$theta[["lcl"]])
+v_cp <- exp(ui_mouse$theta[["lvc"]])
+ref_cp <- data.frame(
+  treatment = "50 mg/kg IP",
+  aucinf.obs = 1.25 / cl_cp,
+  half.life = log(2) / (cl_cp / v_cp)
+)
+nlmixr2lib::ncaComparisonTable(
+  simulated = nca_tbl,
+  reference = ref_cp,
+  by = "treatment",
+  params = c("aucinf.obs", "half.life"),
+  units = c(aucinf.obs = "mg*h/mL", half.life = "h")
+) |>
+  knitr::kable()
+
+chk_cp <- nca_tbl |> dplyr::filter(PPTESTCD %in% c("aucinf.obs", "half.life"))
+stopifnot(
+  abs(chk_cp$PPORRES[chk_cp$PPTESTCD == "aucinf.obs"] / ref_cp$aucinf.obs - 1) < 0.02,
+  abs(chk_cp$PPORRES[chk_cp$PPTESTCD == "half.life"] / ref_cp$half.life - 1) < 0.02
+)
+```
+
+The reference column is the closed form from the fixed `CL` and `V`. The paper
+reports no NCA for cyclophosphamide.
+
+## Steady state without drug or bacteria
+
+With neither cyclophosphamide nor bacteria, every neutrophil pool should stay
+at `Ncirc,T0`. Lung neutrophils per lung then equal `0.175 x Ncirc,T0`.
+
+```{r steady-state}
+ev_ss <- data.frame(id = 1L, time = c(0, 24, 168, 500), amt = 0, evid = 0L,
+                    cmt = NA_character_, dvid = 1L)
+sim_ss <- rxode2::rxSolve(ui_mouse, ev_ss, returnType = "data.frame", cores = 1L, omega = NA, sigma = NA)
+circ0 <- exp(ui_mouse$theta[["lcirc0"]])
+stopifnot(
+  all(abs(sim_ss$circ / circ0 - 1) < 1e-6),
+  all(abs(sim_ss$neut_lung / circ0 - 1) < 1e-6),
+  all(abs(sim_ss$log_neut_lung - log10(0.175 * circ0)) < 1e-6)
+)
+sim_ss[, c("time", "circ", "neut_lung", "log_anc", "log_neut_lung")]
+```
+
+## Mice-2: cyclophosphamide pretreatment and infection
+
+Mice-2 gave cyclophosphamide 96 and 24 h before inoculation, at model times 0
+and 72 h, and inoculated 1.57 x 10^7 CFU/g lung at 96 h. Doses are in mg for a
+25 g mouse. The surge in lung neutrophil influx and the decay of the
+additional phagocytic capacity both run from the first bacterial dose into
+`bact_susceptible`.
+
+```{r mice2}
+regimens <- data.frame(
+  regimen = factor(c("Vehicle", "50/50 mg/kg", "100/50 mg/kg", "200/150 mg/kg"),
+                   levels = c("Vehicle", "50/50 mg/kg", "100/50 mg/kg", "200/150 mg/kg")),
+  d1 = c(0, 50, 100, 200), d2 = c(0, 50, 50, 150)
+) |>
+  mutate(id = row_number())
+ev_m2 <- bind_rows(
+  regimens |>
+    dplyr::filter(d1 > 0) |>
+    tidyr::pivot_longer(c(d1, d2), names_to = "dose", values_to = "mgkg") |>
+    transmute(id, time = ifelse(dose == "d1", 0, 72), amt = mgkg * 0.025, evid = 1L,
+              cmt = "depot", dvid = NA_integer_),
+  data.frame(id = regimens$id, time = 96, amt = 1.567e7, evid = 1L,
+             cmt = "bact_susceptible", dvid = NA_integer_),
+  tidyr::expand_grid(id = regimens$id, time = seq(0, 168, by = 1)) |>
+    mutate(amt = 0, evid = 0L, cmt = NA_character_, dvid = 1L)
+) |>
+  arrange(id, time, desc(evid))
+sim_m2 <- rxode2::rxSolve(ui_mouse, ev_m2, returnType = "data.frame", cores = 1L, omega = NA, sigma = NA) |>
+  left_join(regimens[, c("id", "regimen")], by = "id")
+
+obs_m2 <- s1_obs |>
+  dplyr::filter(STUD == 130) |>
+  mutate(regimen = regimens$regimen[ID - 1300],
+         panel = ifelse(LOCA == 5, "Blood neutrophils (log10 cells/mL)", "Lung CFU (log10 CFU/g)"))
+
+sim_m2_long <- sim_m2 |>
+  dplyr::select(time, regimen, log_anc, log_cfu) |>
+  tidyr::pivot_longer(c(log_anc, log_cfu), names_to = "out", values_to = "value") |>
+  mutate(panel = ifelse(out == "log_anc", "Blood neutrophils (log10 cells/mL)", "Lung CFU (log10 CFU/g)")) |>
+  dplyr::filter(out == "log_anc" | time >= 96)
+
+ggplot(sim_m2_long, aes(time, value, colour = regimen)) +
+  geom_line() +
+  geom_point(data = obs_m2, aes(TIME, DV, colour = regimen)) +
+  facet_wrap(~ panel, scales = "free_y") +
+  labs(x = "Time since first cyclophosphamide dose (h)", y = NULL, colour = NULL,
+       title = "Mice-2: cyclophosphamide pretreatment, inoculation at 96 h",
+       caption = "Lines: packaged model. Points: Table S1. Compare with Figure 2b-c of Thorsted 2023.") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+# Deeper pretreatment leaves fewer neutrophils at inoculation and more bacteria
+# 24 h later.
+at96 <- sim_m2 |> dplyr::filter(time == 96) |> arrange(regimen)
+at120 <- sim_m2 |> dplyr::filter(time == 120) |> arrange(regimen)
+stopifnot(
+  all(diff(at96$log_anc) < 0),
+  all(diff(at120$log_cfu) > 0)
+)
+```
+
+## Immune-competent mice: lung neutrophil surge and clearance
+
+The three inocula of Mice-3 (5.71 x 10^6 to 5.71 x 10^8 CFU/g lung) in mice
+without cyclophosphamide.
+
+```{r competent}
+inocs <- c(5.71e6, 5.71e7, 5.71e8)
+ev_ic <- bind_rows(
+  data.frame(id = seq_along(inocs), time = 0, amt = inocs, evid = 1L,
+             cmt = "bact_susceptible", dvid = NA_integer_),
+  tidyr::expand_grid(id = seq_along(inocs), time = seq(0, 168, by = 1)) |>
+    mutate(amt = 0, evid = 0L, cmt = NA_character_, dvid = 1L)
+) |>
+  arrange(id, time, desc(evid))
+sim_ic <- rxode2::rxSolve(ui_mouse, ev_ic, returnType = "data.frame", cores = 1L, omega = NA, sigma = NA) |>
+  mutate(inoculum = factor(format(inocs[id], scientific = TRUE)))
+
+ggplot(sim_ic, aes(time, log_cfu, colour = inoculum)) +
+  geom_line() +
+  geom_point(data = dplyr::filter(s1_obs, STUD %in% c(100, 200), LOCA == 4),
+             aes(TIME, DV), inherit.aes = FALSE, colour = "grey30") +
+  labs(x = "Time after inoculation (h)", y = "Lung bacteria (log10 CFU/g)",
+       colour = "Inoculum (CFU/g)",
+       title = "Immune-competent mice",
+       caption = "Points: Mice-1 and Mice-3 records from Table S1. Compare with Figure 2c of Thorsted 2023.") +
+  theme_bw()
+
+ggplot(dplyr::filter(sim_ic, id == 1), aes(time, log_neut_lung)) +
+  geom_line() +
+  geom_point(data = dplyr::filter(s1_obs, STUD == 230, LOCA == 7), aes(TIME, DV),
+             inherit.aes = FALSE) +
+  labs(x = "Time after inoculation (h)", y = "Lung neutrophils (log10 cells/lung)",
+       title = "Post-inoculation neutrophil influx into the lung",
+       caption = "Points: Mice-4 records from Table S1. Compare with Figure 2b of Thorsted 2023.") +
+  theme_bw()
+
+peak <- sim_ic |> dplyr::filter(id == 1) |> slice_max(neut_lung, n = 1)
+peak[, c("time", "neut_lung")]
+stopifnot(
+  # Discussion: the lung neutrophil concentration exceeded 6.31 x 10^7 cells/g,
+  # more than 30 times the circulating concentration, about 2 days after
+  # inoculation.
+  peak$neut_lung > 6.31e7,
+  peak$neut_lung / circ0 > 30,
+  peak$time > 48, peak$time < 72,
+  # All immune-competent mice clear even the highest inoculum.
+  all(sim_ic$log_cfu[sim_ic$time == 168] < log10(inocs) - 4)
+)
+```
+
+# Simulations not reproduced
+
+Figures 4 and 5 project neutrophil and bacterial time courses in 1000 patients
+of 70 kg on three cyclophosphamide regimens, with bacteria deposited on day 35.
+They use a published population PK model of cyclophosphamide in cancer
+patients (Sandstrom 2006, reference 42) with between-subject variability on
+`Ncirc,T0`, `MTT`, `CL`, `V` and the drug effect. The paper prints neither the
+human cyclophosphamide PK parameters nor the human values of the neutrophil
+system parameters. The mouse model therefore cannot reproduce those figures,
+and they are not attempted here.
+
+# Assumptions and deviations
+
+* **Two files for one simultaneous fit.** The authors estimated the in vitro
+  and in vivo parameters together. The library splits them by experimental
+  system. The parameters shared across systems (`kdeath`, `Bmax`, `N50,dig`,
+  `N50,phag`, `P/N50`) carry the same Table 2 value in both files. The
+  system-specific values (`kgrowth`, `kN,max`, `kN,loss`) are the Table 2 in
+  vitro and in vivo rows. Data S2 writes the in vivo `kgrowth` and `kN,max` as
+  in vitro estimate times multiplier, and Table 2 reports the products.
+* **Mice-4 growth multiplier omitted.** Data S2 estimates a separate in vivo
+  growth multiplier for Mice-4 alone (`THETA(25)`), but no value for it
+  appears in Table 2 or the text. The mouse model applies the common in vivo
+  `kgrowth` (0.502 1/h) to every infection. Its Mice-4 CFU predictions are
+  therefore too high (see the deposited-data check above).
+* **Macrophage compartment omitted.** Data S2 also carries a lung macrophage
+  turnover compartment (`MLUNG`, `THETA(16)` to `THETA(20)`, all fixed). It
+  feeds no other equation. The additional phagocytic capacity scales with
+  circulating neutrophils (`MACRF = CIRC / 10**NEU0`), not with this
+  compartment. The paper reports that no link to the macrophage time course
+  could be established and counts no macrophage observations in its data
+  summary. Leaving the compartment out changes none of the fitted outputs.
+* **Time since inoculation.** Data S2 shifts time by `EXTRT` (96 h for Mice-2,
+  0 otherwise) in the surge centre `NT0` and in the `kM,loss` decay. It
+  switches the surge off for experiments without an inoculum (`INOC = 0`). The
+  mouse model measures both from the first bacterial dose into
+  `bact_susceptible` (`tafd()`) and keeps the surge off until that dose.
+  The two forms agree whenever bacteria are inoculated at time 0, which
+  covers every study except Mice-2. Data S2's surge is a bell curve in time, so
+  for Mice-2 it already starts to rise about a day before the 96 h inoculation
+  and reaches 1.3 at the inoculation itself. Re-solving Mice-2 (vehicle arm)
+  with the Data S2 form gives 1.65-fold more lung neutrophils at inoculation
+  (2.78 vs 1.69 x 10^6 cells/g) and 0.18 log10 fewer CFU/g at 120 h (4.98 vs
+  5.16). The library form needs no inoculation-time covariate and does not
+  raise lung neutrophils before infection.
+* **A merged line in Data S2.** In the supplement as published, the statement
+  `IF(STUD > 99) MKNA = THETA(6) * THETA(24)` sits on the same line as the
+  comment of the preceding `MKNK` statement. Read literally, that would comment
+  it out. Table 2 nevertheless reports an estimated `kM,loss` of 0.0111 1/h
+  (RSE 45%), which the Discussion converts to a 62 h half-life. The model
+  therefore treats it as a separate statement, with `kM,loss` taken directly
+  from Table 2.
+* **Allometric exponent for MTT.** The Methods text says MTT was scaled with
+  an exponent of 0.25. Data S2 uses 0.136 (`MTT = 52.8 * (0.025/0.295)**0.136`),
+  and only 0.136 reproduces the 37.7 h in Table 2. The model follows Data S2.
+* **Study labels.** The `STUD` comments in Data S2 attach Leijh 1980 to study 3
+  and Leijh 1979 to study 4, whereas Table 1 cites them the other way round.
+  The data themselves are consistent with the model: the experiments whose
+  inoculum is dosed into the phagocytosed compartment report intracellular CFU.
+* **Shared residual SDs.** Data S2 uses one residual SD for every in vitro CFU
+  measurement type and one for blood and lung neutrophils. nlmixr2 needs one
+  residual parameter per endpoint, so each shared estimate appears under
+  several names with the same value.
+* **Single-threaded solves.** Every `rxSolve()` call here passes
+  `cores = 1L`. With the default thread count, rxode2 5.1.8 sometimes
+  returned a falling neutrophil count for an untreated mouse (Mice-3, highest
+  inoculum) when that mouse was solved in the same event table as the
+  cyclophosphamide-treated Mice-2 animals. Single-threaded solves were
+  identical on every repeat. Multi-subject simulations of the mouse model
+  should use `cores = 1L` until that behaviour is resolved.
+* **log10 floor.** Data S2 sets non-positive extracellular and total CFU to 1
+  before the log10. The models do the same, and apply the same floor to the
+  intracellular output, which Data S2 left unguarded.

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Neant 2023 SARS-CoV-2 viral kinetics and NEWS-2 clinical score, with remdesivir effect ([doi:10.1002/psp4.13051](https://doi.org/10.1002/psp4.13051)) -- adults hospitalised with COVID-19 in the DisCoVeRy trial.
+- Add Thorsted 2023 neutrophil-mediated phagocytosis and digestion of bacteria, in vitro and mouse models ([doi:10.1002/psp4.13046](https://doi.org/10.1002/psp4.13046)) -- digitized in vitro neutrophil-bacteria assays and *Acinetobacter baumannii* pneumonia in immune-competent and cyclophosphamide-treated mice.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
