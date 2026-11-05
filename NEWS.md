@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Edwina 2023 fosfomycin ([doi:10.1007/s00228-023-03477-5](https://doi.org/10.1007/s00228-023-03477-5)) -- healthy adult men (plasma and urine).
+- Add Pandey 2023 hydroxyurea ([doi:10.1002/psp4.12945](https://doi.org/10.1002/psp4.12945)) -- children with sickle cell disease (HUSTLE trial).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
