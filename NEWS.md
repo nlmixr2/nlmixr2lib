@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sanz-Codina 2024 cefiderocol ([doi:10.1093/jac/dkae359](https://doi.org/10.1093/jac/dkae359)) -- healthy adult men, with unbound plasma, subcutaneous adipose and skeletal muscle concentrations.
+- Add Stemkens 2024 clofazimine ([doi:10.1093/jac/dkae309](https://doi.org/10.1093/jac/dkae309)) -- adults with nontuberculous mycobacterial disease receiving a 300 mg loading dose or 100 mg once daily.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
