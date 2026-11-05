@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kinsale 2024 islatravir ([doi:10.3390/pharmaceutics16020201](https://doi.org/10.3390/pharmaceutics16020201)) -- adult female Wistar rats after a single subcutaneous bolus (preclinical).
+- Add Koele 2024 rifampicin CFU + TTP bacterial-load model and four hypothetical-drug exposure-response simulation models ([doi:10.1002/psp4.13089](https://doi.org/10.1002/psp4.13089)) -- adults with sputum-smear-positive pulmonary tuberculosis (HIGHRIF1) and virtual phase IIa trial patients.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
