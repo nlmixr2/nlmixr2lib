@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Szederkenyi 2024 transdermal caffeine, dexamethasone, piroxicam, indomethacin and diclofenac skin-on-a-chip models ([doi:10.1371/journal.pone.0299501](https://doi.org/10.1371/journal.pone.0299501)) -- ex vivo rat skin and healthy, psoriatic and allergic mouse skin (13 per-experiment fits).
+- Add Hunt 2024 renal transporter ontogeny profiles for OAT1, OAT3, OCT2, P-gp, URAT1, BCRP, MATE1, MATE-2K, MRP2 and MRP4 ([doi:10.1002/psp4.13102](https://doi.org/10.1002/psp4.13102)) -- human kidney cortex from preterm neonates (25 weeks postmenstrual age) to adults.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
