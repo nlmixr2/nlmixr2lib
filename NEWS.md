@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Fernandez-Alarcon 2024 tacrolimus, once-daily extended release ([doi:10.3389/fphar.2024.1456565](https://doi.org/10.3389/fphar.2024.1456565)) -- de novo adult kidney transplant recipients in the first 15 days after transplantation.
+- Add Yang 2024 ganciclovir ([doi:10.1128/aac.00525-24](https://doi.org/10.1128/aac.00525-24)) -- immunocompromised children receiving IV ganciclovir or enteral valganciclovir.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
