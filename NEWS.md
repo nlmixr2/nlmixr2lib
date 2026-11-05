@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Muangkasem 2025 ertapenem ([doi:10.1111/cts.70274](https://doi.org/10.1111/cts.70274)) -- critically ill adults across renal function and serum albumin (two-compartment PK with albumin-dependent saturable binding).
+- Add Osborne 2025 lidocaine, unbound and total with AAG binding and pain score ([doi:10.1007/s13318-025-00948-1](https://doi.org/10.1007/s13318-025-00948-1)) -- adults given intraperitoneal or intravenous lidocaine after laparoscopic colon resection. Registers the `aag` compartment.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
