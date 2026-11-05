@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Beredaki 2024 micafungin in vitro PK/PD, four exposure-response curves ([doi:10.1093/jac/dkad360](https://doi.org/10.1093/jac/dkad360)) -- *Candida parapsilosis* clinical isolates in a dialysis/diffusion model, with and without 10% human serum, at 10^4 and 10^3 CFU/mL.
+- Add Park 2023 pregabalin ([doi:10.12793/tcp.2023.31.e20](https://doi.org/10.12793/tcp.2023.31.e20)) -- Korean adults with near-normal renal function or moderate renal impairment receiving a once-daily sustained-release tablet.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
