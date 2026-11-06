@@ -78,8 +78,8 @@ below collects them in one place for review.
 | `pma_tm50` | 26.3 weeks | Table 3 row "TMA 50 (weeks)" = 26.3, RSE 7% |
 | `pma_hill` | 4.42 | Table 3 row "Hill coefficient for clearance" = 4.42, RSE 19% |
 | `e_creat_cl` | 0.48 | Table 3 row "Exponent of Scr on Cl" = 0.48, RSE 19%; the Results Cl equation prints it on the reciprocal ratio `(0.6 / Scr)` |
-| `etalcl` | 0.075474 | Table 3 row "IIV Cl" = 28%, RSE 11%; `log(1 + 0.28^2)` |
-| `etalvc` | 0.056011 | Table 3 row "IIV V" = 24%, RSE 26%; `log(1 + 0.24^2)` |
+| `etalcl` | 0.075478 | Table 3 row "IIV Cl" = 28%, RSE 11%; `log(1 + 0.28^2)` |
+| `etalvc` | 0.056002 | Table 3 row "IIV V" = 24%, RSE 26%; `log(1 + 0.24^2)` |
 | `propSd` | 0.3 | Table 3 row "Residual variability b" = 0.3, RSE 9.9%; footnote b defines b as the proportional error |
 | Maturation form `PMA^hill / (PMA^hill + TMA50^hill)` | n/a | Methods "Covariates", sigmoidal function equation |
 | Covariate power form `(X / Xref)^b` | n/a | Methods "Covariates", power function equation |

@@ -79,9 +79,9 @@ deCastroSuarez_2020_nimotuzumab <- function() {
 
     # Inter-individual variability - statistically significant only on Rtotp and Kout. Exponential
     # (log-normal) IIV. omega^2 = log(CV^2 + 1):
-    #   135% CV -> omega^2 = log(1.35^2 + 1) = 1.0379
+    #   135% CV -> omega^2 = log(1.35^2 + 1) = 1.0376
     #   197% CV -> omega^2 = log(1.97^2 + 1) = 1.5853
-    etalrtotp ~ 1.0379  # Castro-Suarez 2020 Table 2: Rtotp IIV 135% CV (eta-shrinkage 14%)
+    etalrtotp ~ log(1 + 1.35^2)  # Castro-Suarez 2020 Table 2: Rtotp IIV 135% CV (eta-shrinkage 14%)
     etalkout  ~ 1.5853  # Castro-Suarez 2020 Table 2: Kout  IIV 197% CV (eta-shrinkage 21%)
 
     # Residual error - paper reports an additive RUV on the log-transformed observations of 48% (4),

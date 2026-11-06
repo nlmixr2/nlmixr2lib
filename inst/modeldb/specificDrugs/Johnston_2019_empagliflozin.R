@@ -179,8 +179,8 @@ Johnston_2019_empagliflozin <- function() {
     #      'Inter-individual variance (CV%) for baseline HbA1c and Emax
     #      were 7.2 % and 38 %, respectively'.
     #      log-normal convention: omega^2 = log(1 + CV^2). ----
-    etalhba1c0 ~ 0.005177  # omega^2 = log(1 + 0.072^2) = 0.005177 (CV 7.2 % on baseline HbA1c)
-    etalemax   ~ 0.135108  # omega^2 = log(1 + 0.38^2)  = 0.135108 (CV 38 % on Emax)
+    etalhba1c0 ~ log(1 + 0.072^2)  # (CV 7.2 % on baseline HbA1c)
+    etalemax   ~ log(1 + 0.38^2)  # (CV 38 % on Emax)
 
     # ---- Residual error (Johnston 2019 narrative under 'Model development':
     #      'the proportional and additive residual variability estimates

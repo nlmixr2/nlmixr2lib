@@ -76,12 +76,12 @@ Hood_2021_medi7836 <- function() {
     # neither the paper nor the supplement publishes the off-diagonals -- so this
     # implementation uses a diagonal IIV matrix and notes the deviation in the
     # vignette's "Assumptions and deviations" section.
-    etalcl   ~ 0.250303   # Hood 2021 Table 2: IIV CL/F = 53.3% -> log(1 + 0.533^2) = 0.250303
-    etalvc   ~ 0.424439   # Hood 2021 Table 2: IIV V2/F = 72.7% -> log(1 + 0.727^2) = 0.424439
-    etalvp   ~ 0.193389   # Hood 2021 Table 2: IIV V3/F = 46.2% -> log(1 + 0.462^2) = 0.193389
-    etalq    ~ 0.395029   # Hood 2021 Table 2: IIV Q/F  = 69.6% -> log(1 + 0.696^2) = 0.395029
-    etalkout ~ 0.282271   # Hood 2021 Table 2: IIV Kout = 57.1% -> log(1 + 0.571^2) = 0.282271
-    etalcxfr ~ 1.215281   # Hood 2021 Table 2: IIV Cx Fraction = 154% -> log(1 + 1.54^2) = 1.215281
+    etalcl   ~ log(1 + 0.533^2)  # Hood 2021 Table 2: IIV CL/F = 53.3%
+    etalvc   ~ log(1 + 0.727^2)  # Hood 2021 Table 2: IIV V2/F = 72.7%
+    etalvp   ~ log(1 + 0.462^2)  # Hood 2021 Table 2: IIV V3/F = 46.2%
+    etalq    ~ log(1 + 0.696^2)  # Hood 2021 Table 2: IIV Q/F  = 69.6%
+    etalkout ~ log(1 + 0.571^2)  # Hood 2021 Table 2: IIV Kout = 57.1%
+    etalcxfr ~ log(1 + 1.54^2)  # Hood 2021 Table 2: IIV Cx Fraction = 154%
 
     # Residual error.
     # PK is a combined model (Hood Eq. 2: y = pred * (1 + eps_prop) + eps_add) on

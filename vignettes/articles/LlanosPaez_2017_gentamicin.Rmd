@@ -74,12 +74,24 @@ in some citations).
 | `f_gfrmax` | `0.41` | AAPS Table I, GFR_max = 41% of GFR_obs (citing ref 10) |
 | `propSd` | `0.275` | AAC Table 2, proportional residual error 27.5% |
 | `addSd` (mg/L) | `0.04` | AAC Table 2, additive residual error 0.04 mg/L |
-| `etalcl + etalvc` block (corr 0.692) | `c(0.02528, 0.02339, 0.04519)` | AAC Table 2, BSV CL 16.0% CV, BSV V1 21.5% CV, corr(CL,V1) 69.2% |
-| `etalq` | `0.03119` | AAC Table 2, BSV Q 17.8% CV |
-| `etalvp` | `0.32885` | AAC Table 2, BSV V2 62.4% CV |
+| `etalcl + etalvc` block (corr 0.692) | `c(0.02560, 0.02380, 0.04623)` | AAC Table 2, BSV CL 16.0% CV, BSV V1 21.5% CV, corr(CL,V1) 69.2% |
+| `etalq` | `0.03168` | AAC Table 2, BSV Q 17.8% CV |
+| `etalvp` | `0.38938` | AAC Table 2, BSV V2 62.4% CV |
 | Eq. 10 (renal cortex ODE) | n/a | AAPS Eq. 10 (Methods) |
 | Eq. 11 (E_RF) | n/a | AAPS Eq. 11 (Methods) |
 | Eqs. 12-14 (rDeltaRF, simplified to f_gfrmax * E_RF^delta / (E_RF50^delta + E_RF^delta)) | n/a | AAPS Eqs. 12-14 (Methods); see "Assumptions and deviations" for the simplification |
+
+# Errata
+
+- **The published CVs are first-order approximations.** The AAC
+  paper's Methods (after Eq. 1) give each parameter "a variance of omega^2
+  BSV_P, where the square root of the variance represents the reported
+  BSV". Each printed BSV is therefore the standard deviation of the
+  corresponding random effect, and the model's variances are the squares of
+  the printed CVs (for example `etalvp ~ 0.624^2` for the 62.4% BSV on V2),
+  not the exact log-normal conversion `log(1 + CV^2)`; the CL-V1 covariance
+  is `0.692 * 0.160 * 0.215` on the same scale. The difference is largest
+  for V2: 0.624^2 = 0.389, against 0.329 from the log-normal conversion.
 
 # Virtual cohort
 

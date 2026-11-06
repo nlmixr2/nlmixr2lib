@@ -136,11 +136,11 @@ Urien_2005_capecitabine <- function() {
     # CV^2). ISV on Ka was deleted in favour of IOV; ISV on CL12 was
     # fixed to 0 -- no eta on lka or lcl_dfcr.
     etaltlag         ~ 0.79299  # Urien 2005 Table II: ISV TLAG 110% -> log(1 + 1.10^2) = 0.79299
-    etalvc          ~ 1.04706  # Urien 2005 Table II: ISV V1 136% -> log(1 + 1.36^2) = 1.04706
-    etalcl          ~ 0.03187  # Urien 2005 Table II: ISV CL10 18% -> log(1 + 0.18^2) = 0.03187
+    etalvc          ~ log(1 + 1.36^2)  # Urien 2005 Table II: ISV V1 136%
+    etalcl          ~ log(1 + 0.18^2)  # Urien 2005 Table II: ISV CL10 18%
     etalk_dfur_form ~ 0.22314  # Urien 2005 Table II: ISV K23 50% -> log(1 + 0.50^2) = 0.22314
     etalk_5fu_form  ~ 0.06062  # Urien 2005 Table II: ISV K34 25% -> log(1 + 0.25^2) = 0.06062
-    etalkel_5fu     ~ 0.10947  # Urien 2005 Table II: ISV K40 34% -> log(1 + 0.34^2) = 0.10947
+    etalkel_5fu     ~ log(1 + 0.34^2)  # Urien 2005 Table II: ISV K40 34%
 
     # Residual error. Source reports residual variability in umol/L
     # (Table II "Res. variability" rows); the values are additive SDs

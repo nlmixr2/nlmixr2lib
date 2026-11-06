@@ -60,10 +60,10 @@ The same information is available programmatically via
 | `lq` (CL2, inter-compartmental) | 12.1 L/h | Table 3, row `CL2, L/h` (SE 5.9%; bootstrap 12.2, 10.5-14.2) |
 | `e_bsa_vc` | 47.7 L per m^2 | Table 3, row `Theta of the BSA on V1`; Results 3.5 and 3.6, `V1 = 51.4 + (BSA-1.675) x 47.7` |
 | `e_crcl_q` | 1.31 | Table 3, row `Theta of CCRG on CL 2`; Results 3.5, `CL2 values of 12.10 L/h and 15.85 L/h` |
-| `etalvc` | 0.234455 | Table 3, IIV row `V 1 , %` = 51.4; `log(1 + 0.514^2)` |
-| `etalvp` | 0.298684 | Table 3, IIV row `V 2 , %` = 59.0; `log(1 + 0.590^2)` |
-| `etalcl` | 0.480067 | Table 3, IIV row `CL 1 , %` = 78.5; `log(1 + 0.785^2)` |
-| `etalq` | 0.144306 | Table 3, IIV row `CL 2 , %` = 39.4; `log(1 + 0.394^2)` |
+| `etalvc` | 0.234436 | Table 3, IIV row `V 1 , %` = 51.4; `log(1 + 0.514^2)` |
+| `etalvp` | 0.298696 | Table 3, IIV row `V 2 , %` = 59.0; `log(1 + 0.590^2)` |
+| `etalcl` | 0.480093 | Table 3, IIV row `CL 1 , %` = 78.5; `log(1 + 0.785^2)` |
+| `etalq` | 0.144305 | Table 3, IIV row `CL 2 , %` = 39.4; `log(1 + 0.394^2)` |
 | `propSd` | `sqrt(0.0321)` | Table 3, row `Proportional error, %` = 3.21, read as `sigma^2 x 100` |
 | IIV form `Pi = PTV x exp(eta_i)` | n/a | Methods 2.6.2 and Results 3.6, `Inter-individual variability` |
 | Residual form `Cobs = Cpred x (1 + eps)` | n/a | Results 3.6, `Intra-individual variability` |

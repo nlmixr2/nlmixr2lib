@@ -229,10 +229,10 @@ Fournier_2018_amoxicillin <- function() {
     # Inter-individual variability on CL only. Fournier 2018 Table 3 row
     # "Random effect omega CL (% CV)" reports omega_CL = 37.3% CV under
     # an exponential (lognormal) eta model (Methods 'Population PK model
-    # building'). omega^2 = log(CV^2 + 1) = log(0.373^2 + 1) = 0.13028.
+    # building'). omega^2 = log(CV^2 + 1) = log(0.373^2 + 1) = 0.13026.
     # IIV was not retained on V1, V2, or Q (Results paragraph 3: "the
     # others had fixed, estimated values").
-    etalcl ~ 0.13028   # Table 3 row omega CL (37.3% CV converted to log-normal variance)
+    etalcl ~ log(1 + 0.373^2)  # Table 3 row omega CL (37.3% CV converted to log-normal variance)
 
     # Residual error: combined additive + proportional model (Results
     # paragraph 3, "best described by a combined additive and proportional

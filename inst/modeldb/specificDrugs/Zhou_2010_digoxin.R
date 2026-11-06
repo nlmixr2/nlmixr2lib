@@ -78,8 +78,8 @@ Zhou_2010_digoxin <- function() {
     # Ka IIV was held fixed at 0 (Zhou 2010 Results: "Ka and inter-individual variation
     # were fixed to 1.63 h-1 and 0, respectively, in the next calculation"); etalka is
     # therefore omitted from the IIV block.
-    etalcl ~ 0.21528                                                                      # log(0.490^2 + 1) = 0.21528 (Table 7: 49.0% CV on Cl/F)
-    etalvc ~ 0.63595                                                                      # log(0.943^2 + 1) = 0.63595 (Table 7: 94.3% CV on Vd/F)
+    etalcl ~ log(1 + 0.49^2)  # (Table 7: 49.0% CV on Cl/F)
+    etalvc ~ log(1 + 0.943^2)  # (Table 7: 94.3% CV on Vd/F)
 
     # Residual error: additive only in the final model (Zhou 2010 Table 7: proportional
     # CV reported as "-", indicating the proportional term was dropped during covariate

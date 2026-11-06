@@ -96,15 +96,15 @@ Benkali_2010_tacrolimus <- function() {
     # variability was described using exponential models"), so the reported
     # %CVs translate to log-scale variance via omega^2 = log(1 + CV^2):
     #   ktr   CV 52% -> log(1 + 0.52^2) = 0.2393
-    #   V1/F  CV 53% -> log(1 + 0.53^2) = 0.2475
+    #   V1/F  CV 53% -> log(1 + 0.53^2) = 0.2476
     #   CL/F  CV 35% -> log(1 + 0.35^2) = 0.1156
-    #   k56   CV 54% -> log(1 + 0.54^2) = 0.2560
+    #   k56   CV 54% -> log(1 + 0.54^2) = 0.2559
     # Table II does not report an IIV estimate for k65 (peripheral ->
     # central), so no eta is carried on lkpc.
     etalktr ~ 0.2393                                                                                            # Table II whole-dataset IIV ktr = 52% CV
-    etalvc  ~ 0.2475                                                                                            # Table II whole-dataset IIV V1/F = 53% CV
+    etalvc  ~ log(1 + 0.53^2)  # Table II whole-dataset IIV V1/F = 53% CV
     etalcl  ~ 0.1156                                                                                            # Table II whole-dataset IIV CL/F = 35% CV
-    etalkcp ~ 0.2560                                                                                            # Table II whole-dataset IIV k56 = 54% CV
+    etalkcp ~ log(1 + 0.54^2)  # Table II whole-dataset IIV k56 = 54% CV
 
     # Combined additive + proportional residual error (Table II foot of
     # column "Final model obtained with the whole dataset"; corroborated in

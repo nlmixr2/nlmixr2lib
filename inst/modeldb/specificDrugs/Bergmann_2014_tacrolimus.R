@@ -108,18 +108,18 @@ Bergmann_2014_tacrolimus <- function() {
     #   CL/F  CV 29.5% -> log(0.295^2 + 1) = 0.0834
     #   V1/F  CV 46.8% -> log(0.468^2 + 1) = 0.1981
     #   V2/F  CV 89.4% -> log(0.894^2 + 1) = 0.5874
-    #   ka    CV 47.6% -> log(0.476^2 + 1) = 0.2043
+    #   ka    CV 47.6% -> log(0.476^2 + 1) = 0.2042
     # CL/F is independent. V1/F, ka, and V2/F form a correlated block; the
     # paper's Table 2 final-model correlations are r(V1/F, ka) = 0.677,
     # r(V1/F, V2/F) = -0.049, r(ka, V2/F) = -0.013. Off-diagonal covariances
     # = r * sqrt(omega^2_i) * sqrt(omega^2_j):
-    #   cov(V1/F, ka)   =  0.677  * sqrt(0.1981) * sqrt(0.2043) =  0.1362
+    #   cov(V1/F, ka)   =  0.677  * sqrt(0.1981) * sqrt(0.2042) =  0.1362
     #   cov(V1/F, V2/F) = -0.049  * sqrt(0.1981) * sqrt(0.5874) = -0.01672
-    #   cov(ka,   V2/F) = -0.013  * sqrt(0.2043) * sqrt(0.5874) = -0.00451
+    #   cov(ka,   V2/F) = -0.013  * sqrt(0.2042) * sqrt(0.5874) = -0.00450
     etalcl ~ 0.0834                                               # Bergmann 2014 Table 2 IIV CL/F = 29.5%
     etalvc + etalka + etalvp ~ c(0.1981,
-                                  0.1362,   0.2043,
-                                 -0.01672, -0.00451, 0.5874)      # Bergmann 2014 Table 2 IIV/correlations on V1/F, ka, V2/F
+                                  0.677 * sqrt(0.1981 * log(1 + 0.476^2)),   log(1 + 0.476^2),
+                                 -0.01672, -0.013 * sqrt(log(1 + 0.476^2) * 0.5874), 0.5874)      # Bergmann 2014 Table 2 IIV/correlations on V1/F, ka, V2/F
 
     # Residual unexplained variability -- Bergmann 2014 Table 2 reports a
     # proportional error model on the linear concentration scale.

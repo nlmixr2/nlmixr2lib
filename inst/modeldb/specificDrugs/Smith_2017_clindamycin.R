@@ -80,11 +80,11 @@ Smith_2017_clindamycin <- function() {
     e_aag_vc <- -0.25; label("Power exponent of AAG on V (unitless)")  # Smith 2017 Table 2 (Alpha-1 acid glycoprotein on V exponent = -0.25, RSE 44.0%)
 
     # IIV (correlated CL and V); CV% from Table 2 converted via omega^2 = log(1 + CV^2)
-    # IIV(CL) = 58.5% -> log(1 + 0.585^2) = 0.29449
+    # IIV(CL) = 58.5% -> log(1 + 0.585^2) = 0.29433
     # IIV(V)  = 11.6% -> log(1 + 0.116^2) = 0.01337
-    # Correlation 0.8 -> cov = 0.8 * sqrt(0.29449 * 0.01337) = 0.05020
-    etalcl + etalvc ~ c(0.29449,
-                        0.05020, 0.01337)  # Smith 2017 Table 2 (IIV CL 58.5%, rho_CL-V 0.8, IIV V 11.6%)
+    # Correlation 0.8 -> cov = 0.8 * sqrt(0.29433 * 0.01337) = 0.05018
+    etalcl + etalvc ~ c(log(1 + 0.585^2),
+                        0.8 * sqrt(log(1 + 0.585^2) * 0.01337), 0.01337)  # Smith 2017 Table 2 (IIV CL 58.5%, rho_CL-V 0.8, IIV V 11.6%)
 
     # Residual error (single representative proportional error; see Assumptions and deviations in the vignette)
     propSd <- 0.336; label("Proportional residual error (fraction)")  # Smith 2017 Table 2 (Prop. PTN POPS = 33.6%; representative value -- see vignette)
