@@ -3360,6 +3360,8 @@ navbar:
         href: articles/Rambiritch_2016_glibenclamide_glucose_response.html
       - text: "Glibenclamide rifampicin pbpk (Asaumi 2019)"
         href: articles/Asaumi_2019_rifampicin_ddi_pbpk.html
+      - text: "Glimepiride pbpk (Elias 2025)"
+        href: articles/Elias_2025_glimepiride_pbpk.html
       - text: "Glp1ra bodyweight (Bosch 2024)"
         href: articles/Bosch_2024_glp1ra_bodyweight.html
       - text: "Glp1ra hba1c (Bosch 2025)"
@@ -9295,6 +9297,7 @@ articles:
   - articles/ElassaissSchaap_2017_pembrolizumab
   - articles/Elhefnawy_2023_recurrent_ischemic_stroke
   - articles/Elhefnawy_2023_recurrent_ischemic_stroke_diabetes
+  - articles/Elias_2025_glimepiride_pbpk
   - articles/Elishmereni_2011_il21
   - articles/Elkomy_2015_morphine
   - articles/Elmokadem_2023_mavoglurant_pbpk
