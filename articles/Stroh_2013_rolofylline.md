@@ -66,7 +66,7 @@ The table below collects them in one place for review.
 | `etalvc_m1trans` = 0.2550 | CV 53.9% | Stroh 2013 Table II BSV(V3), RSE 24.1% |
 | `etalcl_m1trans` = 0.1646 | CV 42.3% | Stroh 2013 Table II BSV(CL3), RSE 21.1% |
 | `etalvp_m1trans` = 0.1028 | CV 32.9% | Stroh 2013 Table II BSV(V4), RSE 30.7% |
-| `etalcl_m1cis` = 0.1422 | CV 39.1% | Stroh 2013 Table II BSV(CL5), RSE 27.8% |
+| `etalcl_m1cis` = 0.1423 | CV 39.1% | Stroh 2013 Table II BSV(CL5), RSE 27.8% |
 | `etalfm` = 0.1560 | CV 41.1% | Stroh 2013 Table II BSV(FM), RSE 33.4% |
 | Random effects fixed to zero | n/a | Stroh 2013 Results: “Random effects were not estimable for the distributional clearance for both rolofylline and M1-trans and the volume term associated with M1-cis, and were accordingly fixed to zero” – omitted for CL2, CL4, V5 |
 | `propSd` = 0.261 | 26.1% (parent proportional) | Stroh 2013 Table II, RSE 10.6% |

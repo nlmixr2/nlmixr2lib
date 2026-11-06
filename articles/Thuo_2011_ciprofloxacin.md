@@ -59,9 +59,9 @@ collects them in one place.
 | `e_sod_cl` | 0.0368 /(mmol/L) | Table 2 theta2 |
 | `e_sod_vc` | 0.0291 /(mmol/L) | Table 2 theta5 |
 | `e_mortrisk_high_cl` | -0.283 (fractional) | Table 2 theta3 |
-| `etalcl` | 0.13554 (var) | Table 2 BSV CL = 38.1% CV; log(1 + 0.381^2) |
+| `etalcl` | 0.13555 (var) | Table 2 BSV CL = 38.1% CV; log(1 + 0.381^2) |
 | `etalvc` | 0.16966 (var) | Table 2 BSV V = 43.0% CV; log(1 + 0.430^2) |
-| `etalka` | 0.71304 (var) | Table 2 BSV ka = 102% CV; log(1 + 1.02^2) |
+| `etalka` | 0.71315 (var) | Table 2 BSV ka = 102% CV; log(1 + 1.02^2) |
 | `propSd` | 0.186 | Table 2 proportional residual error 18.6 %CV |
 | `addSd` | 0.0273 mg/L | Table 2 additive residual error 0.0273 (SD) |
 

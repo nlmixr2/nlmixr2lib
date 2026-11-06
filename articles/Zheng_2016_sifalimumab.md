@@ -85,7 +85,7 @@ holds the `population` list literal).
 | WT exponent on V1 | Zheng 2016 Table 2, theta8 | 0.36 (reference 64.3 kg) |
 | DOSE exponent on V1 | Zheng 2016 Table 2, theta9 | 0.06 (reference 600 mg) |
 | CONMED_STEROID fractional effect on V1 | Zheng 2016 Table 2, theta10 | -0.09 (so V1 x (1 - 0.09 \* CONMED_STEROID)) |
-| BSV on CL (log-normal) | Zheng 2016 Table 2, BSV (CV %) | 24% CV (omega^2 = log(CV^2 + 1) = 0.056016) |
+| BSV on CL (log-normal) | Zheng 2016 Table 2, BSV (CV %) | 24% CV (omega^2 = log(CV^2 + 1) = 0.056002) |
 | BSV on V1 (log-normal) | Zheng 2016 Table 2, BSV (CV %) | 16% CV (omega^2 = 0.025278) |
 | IOV on V1 (per-occasion) | Zheng 2016 Table 2 / IOV paragraph | 26% CV, seven infusions; **not implemented** (see below) |
 | BSV correlations | Zheng 2016 Results | None significant; IIV treated as diagonal |
@@ -331,15 +331,15 @@ knitr::kable(sim_nca,
 
 | treatment | PPTESTCD |    mean |      sd |     med |     min |      max |
 |:----------|:---------|--------:|--------:|--------:|--------:|---------:|
-| 200 mg    | auclast  | 1040.56 |  269.32 | 1034.91 |  575.75 |  2238.11 |
-| 200 mg    | cmax     |   96.95 |   16.16 |   96.43 |   59.88 |   133.46 |
-| 200 mg    | cmin     |   17.65 |    7.90 |   17.32 |    5.95 |    56.96 |
-| 600 mg    | auclast  | 3006.11 |  756.39 | 2907.81 | 1554.86 |  4988.55 |
+| 200 mg    | auclast  | 1040.56 |  269.30 | 1034.91 |  575.77 |  2237.96 |
+| 200 mg    | cmax     |   96.95 |   16.16 |   96.43 |   59.88 |   133.45 |
+| 200 mg    | cmin     |   17.65 |    7.89 |   17.32 |    5.95 |    56.95 |
+| 600 mg    | auclast  | 3006.10 |  756.32 | 2907.84 | 1554.96 |  4988.27 |
 | 600 mg    | cmax     |  272.28 |   41.85 |  267.97 |  190.94 |   375.11 |
-| 600 mg    | cmin     |   51.36 |   22.54 |   47.76 |   12.37 |   113.99 |
-| 1200 mg   | auclast  | 6232.31 | 1747.09 | 5970.99 | 3146.19 | 10554.97 |
-| 1200 mg   | cmax     |  536.99 |   93.52 |  537.22 |  342.05 |   834.14 |
-| 1200 mg   | cmin     |  111.24 |   51.42 |  105.02 |   33.12 |   245.36 |
+| 600 mg    | cmin     |   51.36 |   22.54 |   47.76 |   12.37 |   113.98 |
+| 1200 mg   | auclast  | 6232.27 | 1746.93 | 5970.95 | 3146.40 | 10554.58 |
+| 1200 mg   | cmax     |  536.99 |   93.52 |  537.22 |  342.06 |   834.14 |
+| 1200 mg   | cmin     |  111.24 |   51.41 |  105.02 |   33.12 |   245.34 |
 
 Steady-state NCA summary (between 13th and 14th doses) from the
 simulated 298-subject virtual cohort: Cmax and Cmin in ug/mL, AUC(tau=28

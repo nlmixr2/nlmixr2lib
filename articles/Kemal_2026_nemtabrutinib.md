@@ -111,8 +111,8 @@ composition come from the NONMEM control stream in the supplement.
 | PPI effect on F | 0.00232 | Table 2 |
 | H2 antagonist effect on F | 0.0264 | Table 2 |
 | Antacid effect on F | -0.0360 | Table 2 |
-| CL IIV | 39.8% CV -\> omega^2 = 0.14710 | Table 2 (log(1 + 0.398^2)) |
-| Vc IIV | 17.1% CV -\> omega^2 = 0.02884 | Table 2 (log(1 + 0.171^2)) |
+| CL IIV | 39.8% CV -\> omega^2 = 0.14704 | Table 2 (log(1 + 0.398^2)) |
+| Vc IIV | 17.1% CV -\> omega^2 = 0.02882 | Table 2 (log(1 + 0.171^2)) |
 | Proportional residual SD | 0.222 | Table 2 |
 | Additive residual SD | 3.19 ng/mL | Table 2 |
 | S2 = V2/1000 -\> Cc = 1000 \* central / vc | – | NONMEM `$PK S2 = V2 / 1000` (dose in mg, Vc in L, Cc in ng/mL) |
@@ -410,9 +410,9 @@ knitr::kable(
 
 | Treatment | Simulated AUC0-24 (ng\*h/mL) | Simulated Cmax (ng/mL) | Simulated Tmax (h) | Simulated t1/2 (h, terminal) | Paper Tmax (h, observed median) | Paper t1/2 (h, derived) |
 |:---|---:|---:|---:|---:|:---|:---|
-| 45 mg qd | 5950.79 | 360.36 | 2 | 84.69 | ~ 2 (Introduction) | 85 (Section 3.2) |
-| 65 mg qd | 8959.41 | 513.16 | 2 | 88.92 | ~ 2 (Introduction) | 85 (Section 3.2) |
-| 80 mg qd | 10888.23 | 626.23 | 2 | 84.22 | ~ 2 (Introduction) | 85 (Section 3.2) |
+| 45 mg qd | 5950.98 | 360.36 | 2 | 84.69 | ~ 2 (Introduction) | 85 (Section 3.2) |
+| 65 mg qd | 8959.37 | 513.16 | 2 | 88.91 | ~ 2 (Introduction) | 85 (Section 3.2) |
+| 80 mg qd | 10888.15 | 626.23 | 2 | 84.22 | ~ 2 (Introduction) | 85 (Section 3.2) |
 
 Simulated day-1 Cmax / Tmax / AUC0-24 and terminal-phase half-life per
 dose arm alongside the paper’s reported values. Simulated Tmax should

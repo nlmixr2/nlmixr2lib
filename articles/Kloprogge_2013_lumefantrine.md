@@ -56,10 +56,10 @@ Per-parameter source locations are also recorded inline in
 | `lfdepot = fixed(log(1))` (F) | 1 (fixed) | Table 2 ‘F One fixed’ |
 | `e_preg_q = -0.365` | -0.365 | Table 2 ‘Pregnancy on Q’ (RSE 14.3%; 95% CI -0.455 to -0.259) |
 | `e_bodytemp_mtt = +0.165` | +0.165 per degC | Table 2 ‘Temperature on MTT’ (RSE 44.1%; 95% CI 0.0328-0.329) |
-| `etalcl ~ 0.030164` (var, log-scale) | CV 17.5% | Table 2 IIV CL (RSE 20.6%); variance = log(0.175^2 + 1) |
-| `etalvp ~ 0.045183` | CV 21.5% | Table 2 IIV Vp (RSE 65.2%) |
-| `etalmtt ~ 0.125731` | CV 36.6% | Table 2 IIV MTT (RSE 32.0%) |
-| `etalfdepot ~ 0.182910` | CV 44.8% | Table 2 IIV F (RSE 31.2%) |
+| `etalcl ~ 0.030165` (var, log-scale) | CV 17.5% | Table 2 IIV CL (RSE 20.6%); variance = log(0.175^2 + 1) |
+| `etalvp ~ 0.045188` | CV 21.5% | Table 2 IIV Vp (RSE 65.2%) |
+| `etalmtt ~ 0.125712` | CV 36.6% | Table 2 IIV MTT (RSE 32.0%) |
+| `etalfdepot ~ 0.182908` | CV 44.8% | Table 2 IIV F (RSE 31.2%) |
 | `propSd = sqrt(0.0595)` ~= 0.244 | sigma_venous = 0.0595 (variance, log-scale) | Table 2 ‘sigma venous’ (RSE 15.3%; 95% CI 0.0382-0.0914) |
 | 5 transit compartments fixed; `ktr = 6 / MTT` | – | Methods ‘transit absorption (five transit compartments)’; Savic 2007 convention |
 | Two-compartment disposition (`central`, `peripheral1`) | – | Methods ‘two-compartment distribution’, Figure 1 |
@@ -310,9 +310,9 @@ knitr::kable(nca_summary,
 
 | PPTESTCD | median_Non-pregnant | median_Pregnant | p05_Non-pregnant | p05_Pregnant | p95_Non-pregnant | p95_Pregnant |
 |:---|---:|---:|---:|---:|---:|---:|
-| auclast | 508.435 | 501.107 | 286.148 | 297.511 | 983.178 | 1028.503 |
-| cmax | 6.985 | 6.774 | 3.727 | 3.819 | 12.524 | 13.999 |
-| half.life | 63.339 | 85.817 | 47.250 | 61.851 | 90.006 | 106.265 |
+| auclast | 508.432 | 501.110 | 286.148 | 297.512 | 983.178 | 1028.500 |
+| cmax | 6.985 | 6.774 | 3.727 | 3.819 | 12.524 | 13.998 |
+| half.life | 63.339 | 85.817 | 47.249 | 61.850 | 90.008 | 106.267 |
 | tmax | 66.000 | 66.500 | 64.000 | 63.450 | 69.000 | 69.550 |
 
 Simulated NCA over 0-240 h, six-dose Coartem regimen, by pregnancy

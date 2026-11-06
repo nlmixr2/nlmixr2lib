@@ -74,8 +74,8 @@ The table below collects them in one place for review.
 | `lmtt` (MTT) | log(124) h | Table 3 (MTT) |
 | `lslope` (Slope) | log(0.425) (ng/mL)^-1 | Table 3 (Slope) |
 | `gamma` | 0.170 (fixed) | Table 3 (gamma, no IIV in source) |
-| IIV Circ0 | omega^2 = 0.1957 | Table 3 (IIV Circ0 = 46.5% CV) |
-| IIV Slope | omega^2 = 0.1213 | Table 3 (IIV Slope = 35.9% CV) |
+| IIV Circ0 | omega^2 = 0.1958 | Table 3 (IIV Circ0 = 46.5% CV) |
+| IIV Slope | omega^2 = 0.1212 | Table 3 (IIV Slope = 35.9% CV) |
 | `expSd_ANC` | 0.424 (log SD) | Table 3 (Residual additive on log-transformed ANC 42.4% CV) |
 | 4-compartment ODE | n/a | Schmitt 2018 Methods p.1607 (“linear four-compartment model”) |
 | Friberg PD ODE | n/a | Schmitt 2018 Methods p.1607 (five-compartment Friberg structure) |

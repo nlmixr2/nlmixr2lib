@@ -69,12 +69,12 @@ Per-parameter source locations are recorded inline in
 | `e_wt_vc = fixed(1.00)` (allometric on V) | 1.00 (fixed) | Methods page 2053: ‘and 1 for volume parameters’ |
 | `e_age_vp = 0.0410` (Age effect on Vp1, /year) | 4.10%/y | Table 2 ‘Age effect on Vp1 (%)’ = 4.10 (RSE 18.1%; 95% CI 2.38-5.32) |
 | `e_doseocc_f = 0.253` (Dose-occasion effect on F) | 25.3%/dose | Table 2 ‘Dose effect on F (%)’ = 25.3 (RSE 34.4%; 95% CI 9.82-53.2) |
-| `etalcl ~ 0.057846` (var, log-scale) | CV 24.4% (IIV) | Table 2 IIV CL (RSE 26.0%); variance = log(0.244^2 + 1) |
-| `etalvc ~ 0.234710` (var, log-scale) | CV 51.6% (IIV) | Table 2 IIV Vc (RSE 32.3%); variance = log(0.516^2 + 1) |
-| `etalvp ~ 0.188103` (var, log-scale) | CV 45.6% (IIV) | Table 2 IIV Vp1 (RSE 48.8%); variance = log(0.456^2 + 1) |
-| `etalq2 ~ 0.064375` (var, log-scale) | CV 25.8% (IIV) | Table 2 IIV Q2 (RSE 48.2%); variance = log(0.258^2 + 1) |
-| `etalmtt ~ 0.056498` (var, log-scale) | CV 24.1% (BSV; 39.4% IOV not encoded) | Table 2 IIV MTT (RSE 52.7%); variance = log(0.241^2 + 1) |
-| `etalfdepot ~ 0.212074` (var, log-scale) | CV 48.8% (IOV as forward-sim IIV) | Table 2 IIV F (RSE 16.6%); variance = log(0.488^2 + 1) |
+| `etalcl ~ 0.057831` (var, log-scale) | CV 24.4% (IIV) | Table 2 IIV CL (RSE 26.0%); variance = log(0.244^2 + 1) |
+| `etalvc ~ log(1 + 0.516^2)` (var, log-scale) | CV 51.6% (IIV) | Table 2 IIV Vc (RSE 32.3%); variance = log(0.516^2 + 1) |
+| `etalvp ~ log(1 + 0.456^2)` (var, log-scale) | CV 45.6% (IIV) | Table 2 IIV Vp1 (RSE 48.8%); variance = log(0.456^2 + 1) |
+| `etalq2 ~ 0.064442` (var, log-scale) | CV 25.8% (IIV) | Table 2 IIV Q2 (RSE 48.2%); variance = log(0.258^2 + 1) |
+| `etalmtt ~ 0.056457` (var, log-scale) | CV 24.1% (BSV; 39.4% IOV not encoded) | Table 2 IIV MTT (RSE 52.7%); variance = log(0.241^2 + 1) |
+| `etalfdepot ~ log(1 + 0.488^2)` (var, log-scale) | CV 48.8% (IOV as forward-sim IIV) | Table 2 IIV F (RSE 16.6%); variance = log(0.488^2 + 1) |
 | `propSd = 0.307` (SD, log-scale) | sigma 30.7% | Table 2 ‘sigma (% CV)’ = 30.7 (RSE 4.42%; 95% CI 27.8-33.5) |
 | 3 transit compartments fixed; `ktr = 4 / MTT` | – | Methods + Results page 2054: ‘A transit compartment (n = 3) absorption model’ and ‘absorption rate from the last transit compartment could be set as identical to the rate constant between transit compartments’; Savic 2007 convention |
 | Three-compartment disposition (`central`, `peripheral1`, `peripheral2`) | – | Results page 2054: ‘Piperaquine population pharmacokinetics were well described by a 3-compartment distribution model’; Figure 1 schematic |
@@ -461,8 +461,8 @@ knitr::kable(nca_summary,
 | PPTESTCD  | median_Fasting | median_Fed | p25_Fasting | p25_Fed | p75_Fasting | p75_Fed |
 |:----------|---------------:|-----------:|------------:|--------:|------------:|--------:|
 | auclast   |             NA |         NA |          NA |      NA |          NA |      NA |
-| cmax      |        358.510 |    315.379 |     198.786 | 203.286 |     479.227 | 438.061 |
-| half.life |        431.372 |    436.975 |     379.982 | 386.715 |     502.780 | 508.260 |
+| cmax      |        358.754 |    315.344 |     198.566 | 203.030 |     480.286 | 438.444 |
+| half.life |        431.406 |    436.971 |     380.063 | 386.721 |     502.827 | 508.245 |
 | tmax      |         51.500 |     51.000 |      51.000 |  51.000 |      52.000 |  52.000 |
 
 Simulated NCA over 0-126 days, three-day piperaquine-DHA regimen, by
@@ -637,7 +637,7 @@ Compare with Tarning 2014 Table 3 AUC_inf median 26.8 h x ug/mL (Fasting
 - **MTT IOV is omitted; only the published BSV is encoded.** Tarning
   2014 Table 2 also reports a 39.4% CV IOV on MTT in addition to the
   24.1% CV BSV. The package model retains only the BSV term
-  (`etalmtt ~ 0.056498`); the IOV component is documented here as a
+  (`etalmtt ~ 0.056457`); the IOV component is documented here as a
   deliberate omission for the same reason as the F IOV above.
 
 - **Linear dose-occasion form for F.** Tarning 2014 Results page 2054

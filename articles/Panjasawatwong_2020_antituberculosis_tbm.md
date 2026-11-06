@@ -777,7 +777,7 @@ knitr::kable(cmp)
 | NCA parameter | group | Reference | Simulated | % diff |
 |:---|:---|:---|:---|:---|
 | Cmax | Isoniazid \| Plasma \| Fast and intermediate | 2.12 | 1.97 | -7.1% |
-| Cmax | Isoniazid \| CSF \| Fast and intermediate | 3.14 | 2.92 | -7.0% |
+| Cmax | Isoniazid \| CSF \| Fast and intermediate | 3.14 | 2.92 | -6.9% |
 | Cmax | Isoniazid \| Plasma \| Slow acetylators | 2.41 | 2.44 | +1.2% |
 | Cmax | Isoniazid \| CSF \| Slow acetylators | 3.58 | 3.62 | +1.2% |
 | Cmax | Rifampicin \| Plasma \| All | 4.94 | 5.01 | +1.4% |

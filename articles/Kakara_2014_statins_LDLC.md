@@ -118,7 +118,7 @@ table below collects the joint-model parameter values in one place.
 The IIV CV% values are translated to log-scale variances via the
 log-normal identity `omega^2 = log(1 + CV^2)`. The ID50 IIV is one
 shared variance across all three statins in the joint fit; each
-per-statin model file therefore carries the same `0.26611` on
+per-statin model file therefore carries the same `log(1 + 0.554^2)` on
 `etalid50`.
 
 ## Steady-state hold (no-drug baseline)
@@ -323,18 +323,18 @@ knitr::kable(table3,
 
 | drug | dose_mg | Max LDL-C reduction (%) median | Max LDL-C reduction (%) 2.5% | Max LDL-C reduction (%) 97.5% | Time to max (weeks) median | Time to max (weeks) 2.5% | Time to max (weeks) 97.5% |
 |:---|---:|---:|---:|---:|---:|---:|---:|
-| atorvastatin | 5.0 | 42.1 | 17.4 | 92.0 | 12 | 12 | 12 |
-| atorvastatin | 10.0 | 41.6 | 20.6 | 100.3 | 12 | 12 | 12 |
-| atorvastatin | 15.0 | 48.0 | 21.6 | 104.2 | 12 | 12 | 12 |
-| atorvastatin | 20.0 | 50.1 | 22.7 | 126.9 | 12 | 12 | 12 |
-| pitavastatin | 1.0 | 29.3 | 10.6 | 70.7 | 12 | 12 | 12 |
-| pitavastatin | 2.0 | 40.0 | 13.6 | 83.0 | 12 | 12 | 12 |
-| pitavastatin | 3.0 | 42.1 | 19.8 | 85.4 | 12 | 12 | 12 |
-| pitavastatin | 4.0 | 40.2 | 21.5 | 97.4 | 12 | 12 | 12 |
-| rosuvastatin | 2.5 | 38.1 | 17.3 | 77.9 | 12 | 12 | 12 |
-| rosuvastatin | 5.0 | 46.3 | 16.9 | 94.8 | 12 | 12 | 12 |
-| rosuvastatin | 7.5 | 44.0 | 22.4 | 113.8 | 12 | 12 | 12 |
-| rosuvastatin | 10.0 | 50.4 | 21.6 | 101.3 | 12 | 12 | 12 |
+| atorvastatin | 5.0 | 42.1 | 17.3 | 92.3 | 12 | 12 | 12 |
+| atorvastatin | 10.0 | 41.6 | 20.6 | 100.5 | 12 | 12 | 12 |
+| atorvastatin | 15.0 | 48.0 | 21.5 | 104.4 | 12 | 12 | 12 |
+| atorvastatin | 20.0 | 50.1 | 22.7 | 127.3 | 12 | 12 | 12 |
+| pitavastatin | 1.0 | 29.3 | 10.6 | 70.9 | 12 | 12 | 12 |
+| pitavastatin | 2.0 | 40.0 | 13.6 | 83.2 | 12 | 12 | 12 |
+| pitavastatin | 3.0 | 42.1 | 19.7 | 85.6 | 12 | 12 | 12 |
+| pitavastatin | 4.0 | 40.2 | 21.4 | 97.6 | 12 | 12 | 12 |
+| rosuvastatin | 2.5 | 38.0 | 17.2 | 78.0 | 12 | 12 | 12 |
+| rosuvastatin | 5.0 | 46.3 | 16.9 | 95.1 | 12 | 12 | 12 |
+| rosuvastatin | 7.5 | 44.0 | 22.3 | 114.1 | 12 | 12 | 12 |
+| rosuvastatin | 10.0 | 50.4 | 21.5 | 101.5 | 12 | 12 | 12 |
 
 Simulated maximum LDL-C reduction and time to maximum effect (n=5000 per
 dose level, 12-week observation window). Compare with Kakara 2014 Table
@@ -393,7 +393,7 @@ cmp |>
 | pitavastatin | 2.0 | 40.0 | 12 | 38.8 | 4.3 | 1.2 | 7.7 |
 | pitavastatin | 3.0 | 42.1 | 12 | 43.1 | 4.3 | -1.0 | 7.7 |
 | pitavastatin | 4.0 | 40.2 | 12 | 45.6 | 4.4 | -5.4 | 7.6 |
-| rosuvastatin | 2.5 | 38.1 | 12 | 38.9 | 4.3 | -0.8 | 7.7 |
+| rosuvastatin | 2.5 | 38.0 | 12 | 38.9 | 4.3 | -0.9 | 7.7 |
 | rosuvastatin | 5.0 | 46.3 | 12 | 46.0 | 4.4 | 0.3 | 7.6 |
 | rosuvastatin | 7.5 | 44.0 | 12 | 49.0 | 4.4 | -5.0 | 7.6 |
 | rosuvastatin | 10.0 | 50.4 | 12 | 50.6 | 4.4 | -0.2 | 7.6 |

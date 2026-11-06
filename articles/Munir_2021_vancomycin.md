@@ -48,7 +48,7 @@ The table below collects them in one place for review.
 | `e_crcl_cl` (linear CRCL slope on CL) | `0.0046` per mL/min | Table 2, row `CL-CRCL` (RSE 13%); Eq. 2 |
 | `e_wt_cl` (linear WT slope on CL) | `-0.011` per kg | Table 2, row `CL-WT` = 0.011 (RSE 10%); sign from Eq. 3 |
 | `etalcl` (IIV variance on CL) | `log(1 + 0.113^2)` = 0.012688 | Table 2, row `BSV-CL (%)` = 11.3, footnote e (percent CV) |
-| `etalvc` (IIV variance on V) | `log(1 + 0.228^2)` = 0.050668 | Table 2, row `BSV-Vd (%)` = 22.8, footnote e (percent CV) |
+| `etalvc` (IIV variance on V) | `log(1 + 0.228^2)` = 0.050678 | Table 2, row `BSV-Vd (%)` = 22.8, footnote e (percent CV) |
 | `addSd` (additive residual SD) | `3.07` mg/L | Table 2, row `Additive error`; Results, Population PK modeling |
 | CL model | `cl <- exp(lcl + etalcl) * (1 + e_crcl_cl*(CRCL - 101.15)) * (1 + e_wt_cl*(WT - 75))` | Eqs. 1-3 |
 | Structure (one compartment, first-order elimination) | n/a | Results, Population PK modeling: “one-compartment model with first-order elimination (ADVAN1 TRANS2)” |

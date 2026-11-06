@@ -98,10 +98,10 @@ of Clinical Pharmacology* 2008;48(3):267-278
 | Coefficient theta2 (IBW on V_(max)) | Table 3-2 (p. 53) | 0.0108 per kg |
 | Coefficient theta3 (WBC on V_(max)) | Table 3-2 (p. 53) | 0.0216 per 10⁹ /L |
 | Coefficient theta6 (WT on V₁) | Table 3-2 (p. 53) | 0.0083 per kg |
-| IIV on V_(max) | Table 3-2 | 15.4 percent CV (90 percent CI 12.0-19.1) |
-| IIV on V₁ | Table 3-2 | 18.6 percent CV (90 percent CI 12.5-22.2) |
-| IIV on V₂ | Table 3-2 | 56.4 percent CV (90 percent CI 18.0-72.8) |
-| IIV on Q | Table 3-2 | 97.2 percent CV (90 percent CI 40.2-133) |
+| IIV on V_(max) | Table 3-2; Appendix A OMEGA | variance 0.0236 (15.4 percent CV = sqrt(variance), 90 percent CI 12.0-19.1) |
+| IIV on V₁ | Table 3-2; Appendix A OMEGA | variance 0.0346 (18.6 percent CV = sqrt(variance), 90 percent CI 12.5-22.2) |
+| IIV on V₂ | Table 3-2; Appendix A OMEGA | variance 0.318 (56.4 percent CV = sqrt(variance), 90 percent CI 18.0-72.8) |
+| IIV on Q | Table 3-2; Appendix A OMEGA | variance 0.944 (97.2 percent CV = sqrt(variance), 90 percent CI 40.2-133) |
 | IIV on K_(m) | Table 3-2 / p. 50 Structural Model | Not estimated (Km treated as fixed across subjects) |
 | Omega structure | Appendix A NM-TRAN (p. 149) | diagonal (no covariance) |
 | Residual error (Study A) | Table 3-2 | 14.6 percent CV (90 percent CI 12.3-16.8) |
@@ -578,8 +578,8 @@ nca_summary
 #>   <chr>     <dbl> <dbl> <dbl>
 #> 1 auclast    NA    NA     NA 
 #> 2 cav        NA    NA     NA 
-#> 3 cmax      183.  130.   245.
-#> 4 cmin       52.8  16.5  105.
+#> 3 cmax      181.  129.   246.
+#> 4 cmin       52.7  15.3  105.
 #> 5 tmax        2     2      2
 ```
 
@@ -599,8 +599,8 @@ comparison
 #> # A tibble: 2 × 4
 #>   metric                  published simulated units
 #>   <chr>                       <dbl>     <dbl> <chr>
-#> 1 Week-4 peak (typical)         200     183.  ug/mL
-#> 2 Week-4 trough (typical)        55      52.8 ug/mL
+#> 1 Week-4 peak (typical)         200     181.  ug/mL
+#> 2 Week-4 trough (typical)        55      52.7 ug/mL
 ```
 
 Interpretation: Dirks 2008 Figures 3-2 to 3-4 present cetuximab peak

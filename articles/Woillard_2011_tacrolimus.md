@@ -59,10 +59,10 @@ comment. The table below collects the entries in one place.
 | `lvc` (Vc/F for Advagraf reference, theta6) | 486 L | Table 4 whole-dataset column, Vc/F theta6 row |
 | `e_form_tac_ir_vc` (formulation multiplier on Vc/F, theta7) | 0.29 | Table 4 whole-dataset column, Vc/F theta7 row |
 | `lvp` (Vp/F apparent peripheral volume) | 271 L | Table 4 whole-dataset column, Vp/F row |
-| IIV Ktr (omega^2 = log(1 + 0.24^2) = 0.05605) | 24 % CV | Table 4 whole-dataset IPV column, Ktr row |
-| IIV CL/F (omega^2 = log(1 + 0.28^2) = 0.07546) | 28 % CV | Table 4 whole-dataset IPV column, CL/F row |
-| IIV Vc/F (omega^2 = log(1 + 0.31^2) = 0.09161) | 31 % CV | Table 4 whole-dataset IPV column, Vc/F row |
-| IIV Q/F (omega^2 = log(1 + 0.54^2) = 0.25593) | 54 % CV | Table 4 whole-dataset IPV column, Q/F row |
+| IIV Ktr (omega^2 = log(1 + 0.24^2) = 0.05600) | 24 % CV | Table 4 whole-dataset IPV column, Ktr row |
+| IIV CL/F (omega^2 = log(1 + 0.28^2) = 0.07548) | 28 % CV | Table 4 whole-dataset IPV column, CL/F row |
+| IIV Vc/F (omega^2 = log(1 + 0.31^2) = 0.09176) | 31 % CV | Table 4 whole-dataset IPV column, Vc/F row |
+| IIV Q/F (omega^2 = log(1 + 0.54^2) = 0.25588) | 54 % CV | Table 4 whole-dataset IPV column, Q/F row |
 | IIV Vp/F (omega^2 = log(1 + 0.60^2) = 0.30748) | 60 % CV | Table 4 whole-dataset IPV column, Vp/F row |
 | Proportional residual error | 11.3 % | Table 4 whole-dataset column, proportional-error footer |
 | Additive residual error | 0.71 ng/mL | Table 4 whole-dataset column, additive-error footer |

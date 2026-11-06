@@ -362,7 +362,7 @@ knitr::kable(baseline, caption = "DAS28cfb baseline anchoring at t = 0.")
 
 | das28cfb_max_abs | conc_at_t0 |
 |-----------------:|-----------:|
-|         1.618826 |        250 |
+|         1.618833 |        250 |
 
 DAS28cfb baseline anchoring at t = 0. {.table}
 

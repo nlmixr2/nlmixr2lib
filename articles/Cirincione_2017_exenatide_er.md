@@ -72,9 +72,9 @@ below collects them in one place for review.
 | `lkm` (Km) | `fixed(log(0.567))` ng/mL | Table II combined right (567 pg/mL; NE, fixed from IR) |
 | `e_crcl_cl` (CL_eGFR) | `fixed(0.838)` | Table II combined right (NE, fixed from IR) |
 | `e_wt_vc` (Vc_wtkg) | `fixed(2.67)` | Table II combined right (NE, fixed from IR) |
-| `etalka` IIV | `0.2551` (CV 53.9%) | Table II combined right; omega^2 = log(1 + 0.539^2) |
+| `etalka` IIV | `0.2550` (CV 53.9%) | Table II combined right; omega^2 = log(1 + 0.539^2) |
 | `etalktr2` IIV | `0.0292` (CV 17.2%) | Table II combined right; omega^2 = log(1 + 0.172^2) |
-| `etalf1` IIV | `0.3677` (CV 66.7%) | Table II combined right; omega^2 = log(1 + 0.667^2) |
+| `etalf1` IIV | `0.3680` (CV 66.7%) | Table II combined right; omega^2 = log(1 + 0.667^2) |
 | `etalfrelSD` IIV | `0.1755` (CV 43.8%) | Table II combined right; omega^2 = log(1 + 0.438^2) |
 | `expSdSD` | `0.684` (log SD) | Table II combined right (RSE 4.58%) |
 | `expSdMD` | `0.376` (log SD) | Table II combined right (RSE 4.57%) |
@@ -622,7 +622,7 @@ summary(nca_res)
 #>  start end dose_label  N auclast        cmax                tmax
 #>      0  80      10 mg 80      NC  180 [64.5] 0.300 [0.100, 46.0]
 #>      0  80     2.5 mg 80      NC 42.5 [66.2] 0.350 [0.100, 46.0]
-#>      0  80       5 mg 80      NC  105 [71.3]  3.15 [0.100, 46.0]
+#>      0  80       5 mg 80      NC  105 [71.4]  6.00 [0.100, 46.0]
 #>      0  80       7 mg 80      NC  136 [78.9] 0.200 [0.100, 46.0]
 #> 
 #> Caption: auclast, cmax: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects

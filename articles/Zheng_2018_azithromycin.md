@@ -56,9 +56,9 @@ The table below collects them in one place for review.
 | `e_wt_vc_vp` (allometric exponent on V1 and V2) | fixed 1.0 | Zheng 2018 Methods ‘Covariate analysis’ |
 | Reference weight (kg) | 21.5 | Zheng 2018 Table 1 median; Table 3 footnote |
 | ALT binarization threshold (IU/L) | 40 | Zheng 2018 Table 3 (`F_liver = 1` if ALT \> 40) |
-| `etalcl` (IIV variance) | log(0.321^2 + 1) = 0.09805 | Zheng 2018 Table 3, 32.1% CV |
-| `etalvc` (IIV variance) | log(0.849^2 + 1) = 0.54299 | Zheng 2018 Table 3, 84.9% CV |
-| `etalq` (IIV variance) | log(0.516^2 + 1) = 0.23624 | Zheng 2018 Table 3, 51.6% CV |
+| `etalcl` (IIV variance) | log(0.321^2 + 1) = 0.09807 | Zheng 2018 Table 3, 32.1% CV |
+| `etalvc` (IIV variance) | log(0.849^2 + 1) = 0.54279 | Zheng 2018 Table 3, 84.9% CV |
+| `etalq` (IIV variance) | log(0.516^2 + 1) = 0.23606 | Zheng 2018 Table 3, 51.6% CV |
 | `expSd` (residual error) | 0.057 | Zheng 2018 Table 3, 5.7% CV exponential |
 | 2-compartment ODE structure | n/a | Zheng 2018 Methods ‘Model building’ (ADVAN3 TRANS4) |
 | 60-min IV infusion dosing | n/a | Zheng 2018 Methods ‘Dosing regimen’ |

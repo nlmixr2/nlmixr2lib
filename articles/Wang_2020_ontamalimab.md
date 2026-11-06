@@ -63,8 +63,8 @@ baseline albumin 39 g/L, and baseline CRP 0.837 mg/dL.
 | `e_wt_vmax` (WT/70 exponent on Vmax/F) | 1.89 | 1.89 | Table 2, Vmax/F covariate equation |
 | `e_alb_cl` (ALB/39 exponent on CL/F) | -0.889 | -0.889 | Table 2, CL/F covariate equation |
 | `e_crp_cl` (CRP/0.837 exponent on CL/F) | 0.147 | 0.147 | Table 2, CL/F covariate equation |
-| `var(etalka)` | `log(0.618^2 + 1) = 0.3232` | same | Table 2: Ka BSV 61.8% CV |
-| `var(etalcl)` | `log(0.546^2 + 1) = 0.2611` | same | Table 2: CL/F BSV 54.6% CV |
+| `var(etalka)` | `log(0.618^2 + 1) = 0.3235` | same | Table 2: Ka BSV 61.8% CV |
+| `var(etalcl)` | `log(0.546^2 + 1) = 0.2609` | same | Table 2: CL/F BSV 54.6% CV |
 | `var(etalvc)` | `log(0.410^2 + 1) = 0.1554` | same | Table 2: Vc/F BSV 41.0% CV |
 | `addSd` | 166 ng/mL | 0.166 mg/L | Table 2: additive residual |
 | `propSd` | 19.6% | 0.196 | Table 2: proportional residual |
@@ -271,13 +271,13 @@ intervals <- data.frame(
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 summary(nca_res)
 #>  start end  treatment   N       auclast         cmax          cmin
-#>      0  28  150mg_Q4W 200 432000 [50.7] 23500 [35.8]    5880 [197]
+#>      0  28  150mg_Q4W 200 432000 [50.6] 23500 [35.8]    5880 [197]
 #>      0  28  225mg_Q4W 200 688000 [53.3] 37200 [39.1]    9330 [249]
-#>      0  28 22p5mg_Q4W 200  55600 [52.8]  3220 [36.8]    325 [4710]
-#>      0  28   75mg_Q4W 200 206000 [48.7] 11400 [37.0]    2310 [527]
-#>      0  28  7p5mg_Q4W 200  11600 [58.2]   836 [46.7] 3.56 [982000]
+#>      0  28 22p5mg_Q4W 200  55600 [52.8]  3220 [36.8]    326 [4700]
+#>      0  28   75mg_Q4W 200 206000 [48.7] 11400 [37.0]    2310 [526]
+#>      0  28  7p5mg_Q4W 200  11600 [58.2]   836 [46.7] 3.56 [981000]
 #>               tmax          cav
-#>  5.00 [2.00, 12.0] 15400 [50.7]
+#>  5.00 [2.00, 12.0] 15400 [50.6]
 #>  5.00 [2.00, 14.0] 24600 [53.3]
 #>  5.00 [2.00, 11.0]  1980 [52.8]
 #>  5.00 [2.00, 11.0]  7360 [48.7]
@@ -358,10 +358,10 @@ knitr::kable(comparison, digits = c(0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1),
 | treatment | Dose | Cave_pub | Cave_sim | Cave_pct_diff | Cmax_pub | Cmax_sim | Cmax_pct_diff | Cmin_pub | Cmin_sim | Cmin_pct_diff |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 7p5mg_Q4W | 7.5 | 461 | 415 | -10.0 | 986 | 836 | -15.2 | 2.1 | 3.8 | 76.8 |
-| 22p5mg_Q4W | 22.5 | 1930 | 1985 | 2.9 | 3300 | 3224 | -2.3 | 304.0 | 353.6 | 16.3 |
-| 75mg_Q4W | 75.0 | 8160 | 7360 | -9.8 | 12000 | 11394 | -5.0 | 3670.0 | 2484.8 | -32.3 |
-| 150mg_Q4W | 150.0 | 11500 | 15446 | 34.3 | 17400 | 23547 | 35.3 | 5190.0 | 6375.6 | 22.8 |
-| 225mg_Q4W | 225.0 | 27700 | 24567 | -11.3 | 38100 | 37183 | -2.4 | 14600.0 | 10107.2 | -30.8 |
+| 22p5mg_Q4W | 22.5 | 1930 | 1985 | 2.9 | 3300 | 3224 | -2.3 | 304.0 | 353.8 | 16.4 |
+| 75mg_Q4W | 75.0 | 8160 | 7361 | -9.8 | 12000 | 11394 | -5.0 | 3670.0 | 2485.4 | -32.3 |
+| 150mg_Q4W | 150.0 | 11500 | 15446 | 34.3 | 17400 | 23547 | 35.3 | 5190.0 | 6377.3 | 22.9 |
+| 225mg_Q4W | 225.0 | 27700 | 24568 | -11.3 | 38100 | 37182 | -2.4 | 14600.0 | 10108.9 | -30.8 |
 
 Geometric-mean exposures at week 12 (dose-3 cycle, ng/mL) vs. Wang 2020
 Table 3. Arms differing from the published value by more than 20%: Cave

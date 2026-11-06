@@ -66,7 +66,7 @@ str(rxode2::rxode(readModelDb("Ohk_2022_sumatriptan"))$population)
 | `lntr` (number of transit compartments) | log(6.7) | Table 4 NN = 6.7 (RSE 48%) |
 | `ltlag` (lag time of the first-order arm) | log(0.239) | Table 4 ALAG1 = 0.239 h (RSE 1%) |
 | `lfr` (fraction through the transit arm) | log(0.558) | Table 4 f = 0.558 (RSE 7%) |
-| `etalcl` | 0.03016 | Table 4 BSV CL/F = 17.5 CV%; log(1 + 0.175^2) |
+| `etalcl` | 0.03017 | Table 4 BSV CL/F = 17.5 CV%; log(1 + 0.175^2) |
 | `etalvc` | 0.69215 | Table 4 BSV V3/F = 99.9 CV%; log(1 + 0.999^2) |
 | `etalka2` | 0.05172 | Table 4 BSV ka2 = 23.04 CV%; log(1 + 0.2304^2) |
 | `etalmtt` | 0.16554 | Table 4 BSV MTT = 42.43 CV%; log(1 + 0.4243^2) |

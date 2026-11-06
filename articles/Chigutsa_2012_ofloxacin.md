@@ -292,18 +292,18 @@ knitr::kable(
 
 | site            |  id | start | end | PPTESTCD            |    PPORRES | exclude | PPORRESU |
 |:----------------|----:|------:|----:|:--------------------|-----------:|:--------|:---------|
-| Cape Town (fed) | 201 |     0 |  24 | cmax                |  7.7806534 | NA      | mg/L     |
+| Cape Town (fed) | 201 |     0 |  24 | cmax                |  7.7807357 | NA      | mg/L     |
 | Cape Town (fed) | 201 |     0 |  24 | tmax                |  3.7500000 | NA      | h        |
 | Cape Town (fed) | 201 |     0 |  24 | tlast               | 24.0000000 | NA      | h        |
-| Cape Town (fed) | 201 |     0 |  24 | lambda.z            |  0.1095885 | NA      | 1/h      |
+| Cape Town (fed) | 201 |     0 |  24 | lambda.z            |  0.1095887 | NA      | 1/h      |
 | Cape Town (fed) | 201 |     0 |  24 | r.squared           |  0.9999759 | NA      | unitless |
 | Cape Town (fed) | 201 |     0 |  24 | adj.r.squared       |  0.9999756 | NA      | unitless |
 | Cape Town (fed) | 201 |     0 |  24 | lambda.z.time.first |  4.0000000 | NA      | h        |
 | Cape Town (fed) | 201 |     0 |  24 | lambda.z.time.last  | 24.0000000 | NA      | h        |
 | Cape Town (fed) | 201 |     0 |  24 | lambda.z.n.points   | 81.0000000 | NA      | count    |
-| Cape Town (fed) | 201 |     0 |  24 | clast.pred          |  0.8838320 | NA      | mg/L     |
-| Cape Town (fed) | 201 |     0 |  24 | half.life           |  6.3249976 | NA      | h        |
-| Cape Town (fed) | 201 |     0 |  24 | span.ratio          |  3.1620565 | NA      | fraction |
+| Cape Town (fed) | 201 |     0 |  24 | clast.pred          |  0.8838186 | NA      | mg/L     |
+| Cape Town (fed) | 201 |     0 |  24 | half.life           |  6.3249880 | NA      | h        |
+| Cape Town (fed) | 201 |     0 |  24 | span.ratio          |  3.1620613 | NA      | fraction |
 
 First 12 rows of the per-subject PKNCA result table. {.table
 style="width:100%;"}

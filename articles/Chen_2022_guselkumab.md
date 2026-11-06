@@ -62,9 +62,9 @@ file; the table below collects them in one place.
 | BWT on CL/F | (BWT/84)^0.926 | Table 1 footnote f |
 | Diabetes on CL/F | 1.15^DIS_DIAB | Table 1 footnote f (multiplier 1.15 for DIS_DIAB = 1) |
 | BWT on V/F | (BWT/84)^0.861 | Table 1 footnote g |
-| IIV CL/F | 38.9% CV -\> omega^2 = log(1+0.389^2) = 0.14092 | Table 1 |
-| IIV V/F | 33.3% CV -\> omega^2 = log(1+0.333^2) = 0.10515 | Table 1 |
-| IIV Ka | 93.4% CV -\> omega^2 = log(1+0.934^2) = 0.62725 | Table 1 (shrinkage 61.7%) |
+| IIV CL/F | 38.9% CV -\> omega^2 = log(1+0.389^2) = 0.14091 | Table 1 |
+| IIV V/F | 33.3% CV -\> omega^2 = log(1+0.333^2) = 0.10516 | Table 1 |
+| IIV Ka | 93.4% CV -\> omega^2 = log(1+0.934^2) = 0.62720 | Table 1 (shrinkage 61.7%) |
 | IIV correlation CL/F:V/F | r = 0.101 -\> covariance = 0.012295 | Table 1 |
 | Proportional residual error | 19.1% CV -\> propSd = 0.191 | Table 1 |
 | Additive residual error | 0.00289 ug/mL | Table 1 |
@@ -263,7 +263,7 @@ knitr::kable(
 
 | regimen | window      | Cmax_median | Ctrough_median | AUCtau_median |
 |:--------|:------------|------------:|---------------:|--------------:|
-| q4w     | weeks 48-52 |       8.215 |          3.941 |       166.587 |
+| q4w     | weeks 48-52 |       8.215 |          3.941 |       166.586 |
 | q8w     | weeks 44-52 |       6.218 |          1.044 |       170.987 |
 
 Simulated steady-state per-interval exposures (Cmax / Ctrough in ug/mL;

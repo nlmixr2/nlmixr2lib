@@ -58,11 +58,11 @@ entry.
 | `(57 + 3.8 * WT) / 114` (V/F WT scaling) | structural | Methods, eq. for V/F: theta2 = 57 L, theta6 = 3.8 L/kg; centered at WT = 15 kg |
 | `(WT / 15)` (CL/F WT scaling) | structural | Methods, eq. for CL/F: theta5 = 0.53 L/h/kg (theta1 fixed at 0); centered at WT = 15 kg |
 | `fu = 0.15 + bfu * (min(t, 72) - 36)` | structural | Methods, eq. 1: fu = b \* (t - 36) + 0.15; “fu was assumed to increase linearly with time (t) from 0 to 72 h” |
-| `etalcl ~ 0.103376` (var) | CV 33% | Table 2 ‘Interindividual CV (%) CL/F 33’; variance = log(0.33^2 + 1) |
-| `etalvc ~ 0.097488` | CV 32% | Table 2 ‘Interindividual CV (%) V/F 32’ |
-| `corr(etalcl, etalvc) = 0.64` | – | Table 2 footnote b: “The correlation coefficient between CL/F and V/F was 0.64” -\> cov = 0.64 \* sqrt(0.103376 \* 0.097488) = 0.064249 |
-| `etalka ~ 0.822873` | CV 113% | Table 2 ‘Interindividual CV (%) Ka 113’ |
-| `etalbfu ~ 0.128335` | CV 37% | Table 2 ‘Interindividual CV (%) b 37’ (typical b is fixed; only IIV estimated) |
+| `etalcl ~ 0.103369` (var) | CV 33% | Table 2 ‘Interindividual CV (%) CL/F 33’; variance = log(0.33^2 + 1) |
+| `etalvc ~ 0.097490` | CV 32% | Table 2 ‘Interindividual CV (%) V/F 32’ |
+| `corr(etalcl, etalvc) = 0.64` | – | Table 2 footnote b: “The correlation coefficient between CL/F and V/F was 0.64” -\> cov = 0.64 \* sqrt(0.103369 \* 0.097490) = 0.064247 |
+| `etalka ~ 0.822815` | CV 113% | Table 2 ‘Interindividual CV (%) Ka 113’ |
+| `etalbfu ~ 0.128305` | CV 37% | Table 2 ‘Interindividual CV (%) b 37’ (typical b is fixed; only IIV estimated) |
 | `propSd = sqrt(0.048) ~= 0.219` | var(epsilon) = 0.048 | Table 2 ‘Variance(epsilon) 0.048 (0.011)’; Methods residual model C_obs = C_pred \* exp(epsilon); “CV of the residual error was 22%” (Results paragraph 1) |
 | One-compartment, first-order absorption + first-order elimination | – | Methods, Pharmacokinetic analysis: “The basic model was a one-compartment open model with first-order absorption and elimination rates” |
 
@@ -372,7 +372,7 @@ knitr::kable(nca_summary,
 | treatment     | start | end | PPTESTCD | median |   p05 |    p95 |
 |:--------------|------:|----:|:---------|-------:|------:|-------:|
 | le_jouan_2005 |     0 |   8 | auclast  |     NA |    NA |     NA |
-| le_jouan_2005 |     0 |   8 | cmax     |  7.524 | 4.415 | 13.445 |
+| le_jouan_2005 |     0 |   8 | cmax     |  7.524 | 4.415 | 13.444 |
 | le_jouan_2005 |     0 |   8 | tmax     |  3.625 | 1.112 |  7.000 |
 | le_jouan_2005 |     0 |  72 | auclast  |     NA |    NA |     NA |
 | le_jouan_2005 |     0 |  72 | cmax     | 15.219 | 9.601 | 22.578 |
@@ -478,7 +478,7 @@ cat(sprintf("Simulated cohort C_av range: %.2f - %.2f mg/L (paper reported 5.9 -
   parameter for fu, could not be estimated and was fixed to 0.001/h to
   be consistent with the available data (but interindividual variability
   of b was allowed).” The package model encodes this as
-  `lbfu <- fixed(log(0.001))` with estimated IIV `etalbfu ~ 0.128335`
+  `lbfu <- fixed(log(0.001))` with estimated IIV `etalbfu ~ 0.128305`
   (CV 37%, Table 2). The reference fu(t = 36 h) = 0.15 is the literature
   value cited in Methods (paper ref 4 = Babalola 1989).
 - **Log-multiplicative residual encoded as proportional.** Le Jouan 2005

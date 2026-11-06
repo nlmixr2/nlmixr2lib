@@ -67,8 +67,8 @@ The table below collects them in one place for review.
 | `e_cysc_vmax` (power exponent of CYSC on Vmax) | -0.509 | Dong 2016 Table 2, theta2 row (RSE 20%) |
 | `etalvmax` variance, log scale | 0.020807 | Dong 2016 Table 2 ‘omega(Vmax) = 14.5 %CV’; omega^2 = log(1 + 0.145^2) |
 | `etalvc` variance, log scale | 0.018061 | Dong 2016 Table 2 ‘omega(V/F) = 13.5 %CV’ |
-| `etalka` variance, log scale | 0.764975 | Dong 2016 Table 2 ‘omega(Ka) = 107.2 %CV’ |
-| `etalmtt` variance, log scale | 0.528000 | Dong 2016 Table 2 ‘omega(MTT) = 83.4 %CV’ |
+| `etalka` variance, log scale | 0.765088 | Dong 2016 Table 2 ‘omega(Ka) = 107.2 %CV’ |
+| `etalmtt` variance, log scale | 0.528011 | Dong 2016 Table 2 ‘omega(MTT) = 83.4 %CV’ |
 | `addSd` (additive residual SD) | 0.117 mg/L | Dong 2016 Table 2 ‘sigma_add = 0.117 (RSE 5.4%)’ |
 | `propSd` (proportional residual SD as fraction) | 0.397 | Dong 2016 Table 2 ‘sigma_prop = 39.7 %CV (RSE 5.7%)’ |
 | Equation: `d/dt(depot) = transit(nn, mtt, fdepot) - ka * depot` | n/a | Dong 2016 Results paragraph 3 (‘a transit absorption model’); Savic 2007 form |

@@ -65,8 +65,8 @@ comment. The table below collects the entries in one place.
 | `e_wt_cl` (weight power exponent on CL/F) | 0.352 | Table 2, final-model column, Weight CL/F x (WT/42)^theta row (RSE 23.9%) |
 | `e_sexf_cl` (Male fold-effect on CL/F) | 1.41 | Table 2, final-model column, Male CL/F x theta row (RSE 6.33%) |
 | IIV CL/F (omega^2 = log(1 + 0.40^2) = 0.14842) | 40.0% CV | Table 2, final-model column, IIV CL/F row (RSE 8.09%) |
-| IIV Vc/F (omega^2 = log(1 + 1.05^2) = 0.74295) | 105% CV | Table 2, final-model column, IIV Vc/F row (RSE 15.5%) |
-| IIV Q/F (omega^2 = log(1 + 0.648^2) = 0.35067) | 64.8% CV | Table 2, final-model column, IIV Q/F row (RSE 13.3%) |
+| IIV Vc/F (omega^2 = log(1 + 1.05^2) = 0.74313) | 105% CV | Table 2, final-model column, IIV Vc/F row (RSE 15.5%) |
+| IIV Q/F (omega^2 = log(1 + 0.648^2) = 0.35059) | 64.8% CV | Table 2, final-model column, IIV Q/F row (RSE 13.3%) |
 | `propSdSparse` (sparse residual error) | 59.5% CV | Table 2, final-model column, Residual error sparse sampling row (RSE 4.40%) |
 | `propSdIntensive` (intensive residual error) | 39.4% CV | Table 2, final-model column, Residual error intensive sampling row (RSE 7.89%) |
 | Structural model: 2-cpt + first-order oral absorption + first-order elimination | – | Results, “Base model” / Figure (Supplemental Fig. 1) |
@@ -299,9 +299,9 @@ knitr::kable(auc_by_dose,
 
 | treatment | dose_mg | median_auc |       q05 |      q95 | auc_per_mg |
 |:----------|--------:|-----------:|----------:|---------:|-----------:|
-| 10 mg     |      10 |   50.70489 |  25.98403 | 103.0506 |   5.070489 |
-| 40 mg     |      40 |  220.17752 | 105.22929 | 390.3965 |   5.504438 |
-| 80 mg     |      80 |  444.81679 | 219.63401 | 926.3404 |   5.560210 |
+| 10 mg     |      10 |   50.70487 |  25.98407 | 103.0507 |   5.070487 |
+| 40 mg     |      40 |  220.17758 | 105.22930 | 390.3956 |   5.504440 |
+| 80 mg     |      80 |  444.81710 | 219.63370 | 926.3411 |   5.560214 |
 
 Median simulated AUCinf by dose, with the dose-normalised AUCinf/mg
 column verifying dose linearity. {.table}

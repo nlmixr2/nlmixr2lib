@@ -100,8 +100,8 @@ below collects them in one place for review.
 | `e_insdt_csii_emax` | `0.880` | Johnston 2019 Table 2 “INSDT - Emax (CSII)” row (95% CI 0.737, 1.04). |
 | `e_sexf_kplacebo` | `0.727` | Johnston 2019 Table 2 “Sex - placebo (female)” row (95% CI 0.534, 0.971). |
 | `e_insdt_csii_kplacebo` | `1.47` | Johnston 2019 Table 2 “INSDT - placebo (CSII)” row (95% CI 1.10, 1.99). |
-| `etalhba1c0` (variance) | `0.005177` | Johnston 2019 narrative (“Model development”): IIV CV 7.2 % on baseline HbA1c; converted as omega^2 = log(1 + 0.072^2). |
-| `etalemax` (variance) | `0.135108` | Johnston 2019 narrative (“Model development”): IIV CV 38 % on Emax; converted as omega^2 = log(1 + 0.38^2). |
+| `etalhba1c0` (variance) | `0.005171` | Johnston 2019 narrative (“Model development”): IIV CV 7.2 % on baseline HbA1c; converted as omega^2 = log(1 + 0.072^2). |
+| `etalemax` (variance) | `0.134880` | Johnston 2019 narrative (“Model development”): IIV CV 38 % on Emax; converted as omega^2 = log(1 + 0.38^2). |
 | `propSd` | `0.046` | Johnston 2019 narrative (“Model development”): proportional residual CV 4.6 %. |
 | `addSd` | `0.11` | Johnston 2019 narrative (“Model development”): additive residual SD 0.11 %. |
 

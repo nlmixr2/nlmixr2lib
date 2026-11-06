@@ -60,11 +60,11 @@ collects them in one place for review.
 | `e_ffm_cl_q` (shared allometric exp on CL and CLd) | fixed(0.75) | Methods ‘Parameter variability model and covariate effects’; Discussion paragraph 4 |
 | `e_ffm_vc_vp` (shared allometric exp on V1 and V2) | fixed(1.00) | Methods ‘Parameter variability model and covariate effects’ |
 | `etalcl` (IIV variance on lcl) | log(0.0386^2 + 1) = 0.001489 | Table 2 BSV column (apparent CV per footnote c) |
-| `etalq` (IIV variance on lq) | log(1.79^2 + 1) = 1.43607 | Table 2 BSV column |
+| `etalq` (IIV variance on lq) | log(1.79^2 + 1) = 1.43606 | Table 2 BSV column |
 | `etalvc` (IIV variance on lvc) | log(0.104^2 + 1) = 0.010758 | Table 2 BSV column |
 | `etalvp` (IIV variance on lvp) | log(0.0422^2 + 1) = 0.001779 | Table 2 BSV column |
-| `etalfsc` (IIV variance on lfsc) | log(1.12^2 + 1) = 0.81277 | Table 2 BSV column |
-| `etalfpf` (IIV variance on lfpf) | log(0.311^2 + 1) = 0.09229 | Table 2 BSV column |
+| `etalfsc` (IIV variance on lfsc) | log(1.12^2 + 1) = 0.81288 | Table 2 BSV column |
+| `etalfpf` (IIV variance on lfpf) | log(0.311^2 + 1) = 0.09232 | Table 2 BSV column |
 | `propSd` (plasma) | 0.216 | Table 2 footnote a |
 | `addSd` (plasma) | 0.0235 mg/L | Table 2 footnote a |
 | `propSd_Csc` (SC tissue) | 0.0958 | Table 2 footnote a |
@@ -338,7 +338,7 @@ knitr::kable(
 
 | Site                | Parameter        | Median |   Q25 |   Q75 |
 |:--------------------|:-----------------|-------:|------:|------:|
-| Peritoneal fluid    | Cmax (mg/L)      |  27.52 | 21.29 | 39.10 |
+| Peritoneal fluid    | Cmax (mg/L)      |  27.52 | 21.29 | 39.11 |
 | Peritoneal fluid    | AUC0-8 (mg\*h/L) |  41.93 | 33.04 | 54.24 |
 | Peritoneal fluid    | t1/2 (h)         |   1.15 |  1.06 |  1.25 |
 | Plasma              | Cmax (mg/L)      |  30.19 | 25.45 | 34.95 |

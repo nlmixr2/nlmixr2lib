@@ -383,9 +383,9 @@ knitr::kable(hl_compare,
 
 | cohort | half_life_pub_h | median_h | q05_h | q95_h | pct_diff |
 |:---|---:|---:|---:|---:|---:|
-| S1 PM 100 ug single | 2.9 | 2.992702 | 1.808051 | 4.911349 | 3.2 |
-| S1 PM 250 ug single | 2.9 | 2.902665 | 1.692402 | 6.094209 | 0.1 |
-| Synthetic IVFET 250 ug single | 4.4 | 4.554220 | 2.087160 | 8.448966 | 3.5 |
+| S1 PM 100 ug single | 2.9 | 2.992814 | 1.808182 | 4.911143 | 3.2 |
+| S1 PM 250 ug single | 2.9 | 2.902583 | 1.692536 | 6.093964 | 0.1 |
+| Synthetic IVFET 250 ug single | 4.4 | 4.554266 | 2.087437 | 8.448229 | 3.5 |
 
 Goggin 2004 reported t1/2 vs simulated single-dose t1/2 (median, 5-95%).
 {.table}

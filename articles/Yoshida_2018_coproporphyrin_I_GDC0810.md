@@ -65,8 +65,8 @@ The same context is available programmatically via
 | `lkdeg` | log(1.25) | Yoshida 2018 Table 2, GDC-0810-CPI column ‘kdeg (1/h)’ = 1.25 (RSE 5.88%) |
 | `logitfnh` | fixed(qlogis(0.129)) | Yoshida 2018 Table 2, GDC-0810-CPI column ‘fNH’ = 12.9 % FIXED |
 | `lkiu` | log(0.00174) | Yoshida 2018 Table 2, GDC-0810-CPI column ‘Ki,u (uM)’ = 0.00174 (RSE 27.3%) |
-| `etalrbase` | 0.03244 | Yoshida 2018 Table 2, GDC-0810-CPI column ‘IIV on Baseline’ = 18.2 %CV; log(1 + 0.182^2) |
-| `etalkiu` | 0.08660 | Yoshida 2018 Table 2, GDC-0810-CPI column ‘IIV on Ki,u’ = 30.1 %CV; log(1 + 0.301^2) |
+| `etalrbase` | 0.03259 | Yoshida 2018 Table 2, GDC-0810-CPI column ‘IIV on Baseline’ = 18.2 %CV; log(1 + 0.182^2) |
+| `etalkiu` | 0.08673 | Yoshida 2018 Table 2, GDC-0810-CPI column ‘IIV on Ki,u’ = 30.1 %CV; log(1 + 0.301^2) |
 | `propSd` | 0.119 | Yoshida 2018 Table 2, GDC-0810-CPI column ‘Proportional residual error’ = 11.9 %CV |
 | ODE form | n/a | Yoshida 2018 Methods (Model-based analysis with inhibitor kinetics) and Figure S1b |
 | Steady-state baseline (analytic) | `Ksyn / kdeg = Baseline` | Derived from `d(Cc)/dt = 0` with no inhibitor: `Cc_ss = Baseline = 0.873 nmol/L` |
@@ -268,7 +268,7 @@ cv_obs <- 100 * sd(css_per_id) / mean(css_per_id)
 cat("Stochastic Baseline simulation (n = 200, CP_GDC_UM = 0):\n")
 #> Stochastic Baseline simulation (n = 200, CP_GDC_UM = 0):
 cat("  Mean Css :", round(mean(css_per_id), 4), "nmol/L (target", 0.873, ")\n")
-#>   Mean Css : 0.8892 nmol/L (target 0.873 )
+#>   Mean Css : 0.8893 nmol/L (target 0.873 )
 cat("  CV%      :", round(cv_obs, 1), "%  (target 18.2 %)\n")
 #>   CV%      : 18.7 %  (target 18.2 %)
 ```

@@ -52,7 +52,7 @@ place for review.
 | `e_crcl_cl` (CLCRCL) | 0.0154 L/h per mL/min | Table 2, row “CLCRCL” (RSE 21.3%) |
 | `e_wt_vc` (V1WT) | 0.00638 L per kg | Table 2, row “V1WT” (RSE 98%) |
 | `e_wt_vp` (V2WT) | 0.0169 L per kg | Table 2, row “V2WT” (RSE 14.6%) |
-| `etalcl` (77% CV on CL) | 0.4655 | Table 2, “Intersubject variability” column on CL |
+| `etalcl` (77% CV on CL) | 0.4656 | Table 2, “Intersubject variability” column on CL |
 | `etalvc` (34% CV on V1) | 0.1094 | Table 2, “Intersubject variability” column on V1 |
 | `propSd` (proportional error) | 0.08185 | Table 2, row “Proportional error (r^2) = 0.0067” |
 | CRCL centering (84 mL/min) | 84 | Figure 4 caption (“median … creatinine clearance (84 ml/min)”) |
@@ -65,7 +65,7 @@ IIV variance derivation. Moore 2016 reports apparent %CV for ISV as
 `sqrt(exp(omega^2) - 1) * 100%` (Methods, ISV paragraph). Inverting for
 `omega^2 = log(CV^2 + 1)` gives:
 
-- CL: `log(0.77^2 + 1) = log(1.5929) = 0.4655`
+- CL: `log(0.77^2 + 1) = log(1.5929) = 0.4656`
 - V1: `log(0.34^2 + 1) = log(1.1156) = 0.1094`
 
 The reported proportional residual variance in Table 2 is

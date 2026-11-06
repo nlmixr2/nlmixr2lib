@@ -70,8 +70,8 @@ collects them.
 | `lvc` (V1) | 16.2 L (RSE 14%) | Table 3, final model |
 | `lq` (Q) | 71.7 L/h (RSE 14%) | Table 3, final model |
 | `lvp` (V2) | 29.0 L (RSE 7%) | Table 3, final model |
-| `etalcl` | 61.5% -\> omega^2 = log(0.615^2 + 1) = 0.3205 | Table 3, final model |
-| `etalvc` | 65.9% -\> omega^2 = log(0.659^2 + 1) = 0.3606 | Table 3, final model |
+| `etalcl` | 61.5% -\> omega^2 = log(0.615^2 + 1) = 0.3208 | Table 3, final model |
+| `etalvc` | 65.9% -\> omega^2 = log(0.659^2 + 1) = 0.3607 | Table 3, final model |
 | No CL-V1 covariance | n/a | Results 3.1.1 |
 | `addSd` | 0.266 mg/L (RSE 24%) | Table 3, final model |
 | `propSd` | 0.159 (RSE 19%) | Table 3, final model |
@@ -163,7 +163,6 @@ sim <- rxode2::rxSolve(
   rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12
 ) |>
   as.data.frame()
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ### Steady-state profiles (compare Figure 2)
@@ -249,7 +248,7 @@ nca_res |>
 | Arm     | AUC0-12 (mg\*h/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) |
 |:--------|------------------:|------------:|------------:|---------:|
 | CRRT    |              99.9 |        22.6 |        3.86 |      0.5 |
-| No CRRT |              58.9 |        18.8 |        1.13 |      0.5 |
+| No CRRT |              59.0 |        18.8 |        1.13 |      0.5 |
 
 Median steady-state NCA parameters by arm (simulated). {.table}
 
@@ -266,7 +265,7 @@ auc_chk <- nca_res |>
 
 summary(auc_chk$pct_diff)
 #>       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-#> -0.0166031 -0.0011837 -0.0005040 -0.0011011 -0.0001663  0.0001138
+#> -0.0166170 -0.0011838 -0.0005039 -0.0011014 -0.0001662  0.0001138
 
 # Same drawn parameters on both sides: pure numerical error, so all() is right.
 # Dropping the renal or the CRRT arm from the solved clearance would move the
@@ -298,7 +297,7 @@ deterministic and therefore able to hold on every machine.
 
 ``` r
 
-omega_cl <- 0.320546 # log(0.615^2 + 1)
+omega_cl <- 0.320796 # log(0.615^2 + 1)
 CRCL_GRID <- c(40, 80, 120, 160, 200, 240)
 tv_cl <- 2.62 + 4.35 * CRCL_GRID / 44 # Table 3 footnote b, QEFF = 0
 
@@ -335,8 +334,8 @@ fig3 |>
 | Statistic         | This model (mg/L) | Figure 3 inset (mg/L) | Difference (%) |
 |:------------------|------------------:|----------------------:|---------------:|
 | median            |              3.27 |                  3.30 |           -0.8 |
-| 2.5th percentile  |              0.85 |                  0.85 |            0.0 |
-| 97.5th percentile |             14.77 |                 14.73 |            0.3 |
+| 2.5th percentile  |              0.85 |                  0.85 |           -0.1 |
+| 97.5th percentile |             14.78 |                 14.73 |            0.3 |
 
 Pooled simulated Css at 50 mg/h. Replicates the Figure 3 inset of
 Soraluce 2020. {.table}

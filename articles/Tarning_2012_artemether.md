@@ -60,11 +60,11 @@ Per-parameter source locations are also recorded inline in
 | `lmtt = log(0.274)` (MTT, h) | 0.274 | Table 2 (RSE 19.4%; 95% CI 0.174-0.378) |
 | `ldur = log(0.687)` (DUR, h) | 0.687 | Table 2 (RSE 25.5%; 95% CI 0.380-1.14) |
 | `lfdepot = fixed(log(1))` (F) | 1 (fixed) | Table 2 ‘F 1 (fixed)’ |
-| `etalcl ~ 0.07549` (var, log-scale) | CV 28.0% | Table 2 IIV CL_ARM (RSE 47.6%); variance = log(0.28^2 + 1) |
-| `etalcl_dihydroart ~ 0.59716` | CV 90.4% | Table 2 IIV CL_DHA (RSE 39.0%) |
-| `etalmtt ~ 0.44819` | CV 75.2% | Table 2 IIV MTT (RSE 39.6%) |
-| `etaldur ~ 1.18800` | CV 151% | Table 2 IIV DUR (RSE 24.1%) |
-| `etalfdepot ~ 0.54864` | CV 85.5% | Table 2 IIV F (RSE 24.8%) |
+| `etalcl ~ 0.07548` (var, log-scale) | CV 28.0% | Table 2 IIV CL_ARM (RSE 47.6%); variance = log(0.28^2 + 1) |
+| `etalcl_dihydroart ~ 0.59731` | CV 90.4% | Table 2 IIV CL_DHA (RSE 39.0%) |
+| `etalmtt ~ 0.44821` | CV 75.2% | Table 2 IIV MTT (RSE 39.6%) |
+| `etaldur ~ 1.18787` | CV 151% | Table 2 IIV DUR (RSE 24.1%) |
+| `etalfdepot ~ 0.54871` | CV 85.5% | Table 2 IIV F (RSE 24.8%) |
 | `propSd = sqrt(0.166)` ~= 0.407 (shared) | sigma = 0.166 (variance, log-scale) | Table 2 ‘sigma’ (RSE 6.87%; 95% CI 0.130-0.221); combined additive-on-log residual |
 | Zero-order dissolution into depot of duration DUR | – | Methods / Results: ‘zero-order absorption followed by transit compartment absorption’ |
 | 6 transit compartments fixed; `ktr = 7 / MTT` | – | Results ‘Six transit compartments were sufficient’; ka = ktr by Results final-model paragraph |
@@ -509,11 +509,11 @@ knitr::kable(nca_summary,
 | species            | PPTESTCD  | median |   p05 |     p95 |
 |:-------------------|:----------|-------:|------:|--------:|
 | Artemether         | auclast   |     NA |    NA |      NA |
-| Artemether         | cmax      | 36.814 | 6.677 |  98.598 |
+| Artemether         | cmax      | 36.814 | 6.676 |  98.605 |
 | Artemether         | half.life |  1.586 | 0.863 |   2.456 |
 | Artemether         | tmax      |  1.000 | 0.800 |   1.750 |
 | Dihydroartemisinin | auclast   |     NA |    NA |      NA |
-| Dihydroartemisinin | cmax      | 66.775 | 9.135 | 286.519 |
+| Dihydroartemisinin | cmax      | 66.781 | 9.134 | 286.575 |
 | Dihydroartemisinin | half.life |  1.587 | 0.863 |   2.459 |
 | Dihydroartemisinin | tmax      |  1.200 | 0.947 |   1.952 |
 

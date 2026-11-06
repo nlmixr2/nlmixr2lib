@@ -85,10 +85,10 @@ in one place.
 | `e_ecog_fdepot_bibf` (ECOG \>= 1 on F2) | 1.16 | Online Resource Table S5, theta_ECOG = 1.16 |
 | `e_studyphii_ka_bibf` (NSCLC PhII + IPF PhII on ka2) | 0.756 | Online Resource Table S5, theta_Trial (ka2) = 0.756 |
 | `e_nonaden_ka_bibf` (non-adenocarcinoma NSCLC on ka2) | 1.36 | Online Resource Table S5, theta_NSCLC_histology = 1.36 |
-| `etalfdepot` (IIV F1) | 0.2150 (omega^2; CV 49.1%) | Table 3, IIV in F1 = 49.1% CV; log(1 + 0.491^2) |
-| `etalka` (IIV ka, Phase II only) | 0.0999 (omega^2; CV 32.4%) | Table 3, IIV in ka Phase II = 32.4% CV; log(1 + 0.324^2). See Errata. |
-| `etalvc` (IIV V2) | 0.8634 (omega^2; CV 119%) | Table 3, IIV in V2/F = 119% CV; log(1 + 1.19^2) |
-| `etalfdepot_bibf` (IIV F2) | 0.2805 (omega^2; CV 56.7%) | Online Resource Table S5, IIV in F2 = 56.7% CV; log(1 + 0.567^2) |
+| `etalfdepot` (IIV F1) | 0.2160 (omega^2; CV 49.1%) | Table 3, IIV in F1 = 49.1% CV; log(1 + 0.491^2) |
+| `etalka` (IIV ka, Phase II only) | 0.0998 (omega^2; CV 32.4%) | Table 3, IIV in ka Phase II = 32.4% CV; log(1 + 0.324^2). See Errata. |
+| `etalvc` (IIV V2) | 0.8822 (omega^2; CV 119%) | Table 3, IIV in V2/F = 119% CV; log(1 + 1.19^2) |
+| `etalfdepot_bibf` (IIV F2) | 0.2788 (omega^2; CV 56.7%) | Online Resource Table S5, IIV in F2 = 56.7% CV; log(1 + 0.567^2) |
 | `expSd` (nintedanib residual) | 0.526 (SD on log scale) | Table 3, additive SD on log scale = 0.526 |
 | `expSd_bibf` (BIBF 1202 residual) | 0.546 (SD on log scale) | Online Resource Table S5, additive SD on log scale = 0.546 |
 | Equation: `d/dt(depot) = -ka * depot` | n/a | Schmid 2017 Methods, Table 3 footer (one-compartment first-order absorption with lag) |
@@ -402,7 +402,7 @@ knitr::kable(
 
 | treatment | auclast_sim | cmax | half.life | tmax | auclast_pub | pct_diff_auc |
 |:---|---:|---:|---:|---:|---:|---:|
-| 200 mg BID, LUME-Lung reference | 395.412 | 38.243 | 19.44 | 2 | 413.155 | -4.295 |
+| 200 mg BID, LUME-Lung reference | 395.373 | 38.236 | 19.44 | 2 | 413.155 | -4.304 |
 
 Cohort median NCA at steady state vs the typical-patient reference
 back-calculated from Schmid 2017 Table 3 (Cmax/Tmax/half-life not

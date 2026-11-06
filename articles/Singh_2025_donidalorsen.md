@@ -436,7 +436,7 @@ ss_compare |>
 | Regimen | Sim mean (attacks/4W) | Sim % reduction (mean) | Sim median (attacks/4W) | Sim % reduction (median) | Pub mean (attacks/4W) | Pub % reduction (mean) | Pub median (attacks/4W) | Pub % reduction (median) |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|
 | Q4W | 0.24 | 91.95 | 0.10 | 96.75 | 0.39 | 84.1 | 0.11 | 95.6 |
-| Q8W | 0.69 | 77.04 | 0.49 | 83.71 | 0.69 | 72.6 | 0.47 | 81.1 |
+| Q8W | 0.69 | 77.04 | 0.49 | 83.72 | 0.69 | 72.6 | 0.47 | 81.1 |
 
 Steady-state (week 24) simulated attack rate vs published values (Singh
 2025 Section 3.3, typical patient BLRATE=3.0). {.table}

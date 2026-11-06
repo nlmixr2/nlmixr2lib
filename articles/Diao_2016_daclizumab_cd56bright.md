@@ -71,9 +71,9 @@ fitting the model to data can override `cd56baseline` in
 |----|----|----|
 | PK backbone (`lka`, `lcl`, `lvc`, `lvp`, `lq`, `lfdepot`, `lalag`, `e_wt_cl_q`, `e_wt_vc_vp`, `e_dose_50mg_f`, PK IIV, `propSd`, `addSd`) | Othman 2014 Table 2 values | inherited from `Othman_2014_daclizumab.R` |
 | `lcd56Kin` (Kin) | 4.12e-04 %/h (= 0.009888 %/day) | Diao 2016 Table 4 |
-| `etalcd56Kin` (Kin IIV) | omega^2 0.66022 (CV 97%) | Diao 2016 Table 4 |
+| `etalcd56Kin` (Kin IIV) | omega^2 0.66315 (CV 97%) | Diao 2016 Table 4 |
 | `lcd56Smax` (Smax) | 7.89 (unitless) | Diao 2016 Table 4 |
-| `etalcd56Smax` (Smax IIV) | omega^2 0.36398 (CV 67%) | Diao 2016 Table 4 |
+| `etalcd56Smax` (Smax IIV) | omega^2 0.37080 (CV 67%) | Diao 2016 Table 4 |
 | `lcd56EC50` (EC50) | 18.0 mg/L | Diao 2016 Table 4 |
 | `cd56baseline` (median NK pct, fixed) | 0.6 % of total lymphocytes | Diao 2016 Results (NK section) |
 | `propSd_cd56bright` (proportional residual error) | 0.291 (CV 29.1%) | Diao 2016 Table 4 |

@@ -94,9 +94,9 @@ collects them in one place for review.
 | `r_hct78_vc` (theta_Cohort_Vc, HLA 7/8) | Supplemental Table 4 | Ratio 0.99 |
 | `r_hct88_vc` (theta_Cohort_Vc, HLA 8/8) | Supplemental Table 4 | Ratio 1.32 |
 | RA/JIA reference | Supplemental Table 4 ‘Effect of RA status’ rows | Ratio 1 (fixed) on both CL and Vc |
-| `etalcl` IIV on CL | Supplemental Table 4 | 26.5% CV; `omega^2 = log(0.265^2 + 1) = 0.067858` |
-| `etalvc` IIV on Vc | Supplemental Table 4 | 19.4% CV; `omega^2 = log(0.194^2 + 1) = 0.036946` |
-| `etalvp` IIV on Vp | Supplemental Table 4 | 42.7% CV; `omega^2 = log(0.427^2 + 1) = 0.167530` |
+| `etalcl` IIV on CL | Supplemental Table 4 | 26.5% CV; `omega^2 = log(0.265^2 + 1) = 0.067869` |
+| `etalvc` IIV on Vc | Supplemental Table 4 | 19.4% CV; `omega^2 = log(0.194^2 + 1) = 0.036945` |
+| `etalvp` IIV on Vp | Supplemental Table 4 | 42.7% CV; `omega^2 = log(0.427^2 + 1) = 0.167486` |
 | IIV on Q | Supplemental Table 4 | not reported (Q has no IIV in the final model) |
 | Off-diagonal omega | Supplemental Table 4 | not reported; IIV treated as diagonal |
 | `addSd` additive residual | Supplemental Table 4 | 0.049 ug/mL (linear-space SD) |
@@ -432,11 +432,11 @@ knitr::kable(sim_nca, digits = 3,
 | cohort       | PPTESTCD  |    mean |     sd |
 |:-------------|:----------|--------:|-------:|
 | ABA2 HLA 7/8 | auclast   |     NaN |     NA |
-| ABA2 HLA 7/8 | cmax      | 236.065 | 47.232 |
+| ABA2 HLA 7/8 | cmax      | 236.064 | 47.231 |
 | ABA2 HLA 7/8 | half.life |   5.373 |  1.196 |
 | ABA2 HLA 7/8 | tmax      |   0.042 |  0.000 |
 | ABA2 HLA 8/8 | auclast   |     NaN |     NA |
-| ABA2 HLA 8/8 | cmax      | 167.277 | 30.260 |
+| ABA2 HLA 8/8 | cmax      | 167.277 | 30.259 |
 | ABA2 HLA 8/8 | half.life |   5.754 |  1.760 |
 | ABA2 HLA 8/8 | tmax      |   0.042 |  0.000 |
 | RA/JIA       | auclast   |     NaN |     NA |

@@ -68,7 +68,7 @@ below collects them in one place for review.
 | `e_wt_cl` (linear WT exponent on CL, unitless) | `fixed(1.0)` | Population PK model building paragraph: WT exponent fixed at 1; free body-size and 3/4-power scaling explored and rejected |
 | `e_wt_vc` (linear WT exponent on V, unitless) | `fixed(1.0)` | Population PK model building paragraph: WT exponent fixed at 1 |
 | `e_page_cl` (power exponent on (PMA / 33 wk) for CL) | `1.76` | Table 3: PMA covariate 1.76 (RSE 33.6%) |
-| `etalcl` (omega_CL on internal scale) | `0.12839` (37% CV) | Table 3: CL interindividual variability 37% CV (RSE 27.5%); omega^2 = log(1 + CV^2) |
+| `etalcl` (omega_CL on internal scale) | `0.12831` (37% CV) | Table 3: CL interindividual variability 37% CV (RSE 27.5%); omega^2 = log(1 + CV^2) |
 | (no `etalvc`) | n/a | Population PK model building paragraph: between-subject variability on V fixed to 0 (boundary value) |
 | `propSd` (proportional residual error) | `0.33` | Table 3: proportional residual error 33% CV (RSE 9.9%) |
 | `addSd` (additive residual error, mg/L) | `6.90` | Table 3: plasma additive residual error 6.90 mg/L (RSE 42.6%) |
@@ -86,7 +86,7 @@ below collects them in one place for review.
 | `e_page_cl` (power exponent on (PMA / 33 wk) for CL) | `1.35` | Table 4: PMA covariate 1.35 (RSE 27.3%) |
 | `e_creat_cl` (power exponent on (CREAT / 0.5 mg/dL) for CL) | `-0.35` | Table 4: SCR covariate -0.35 (RSE 37.0%) |
 | `e_conmed_gen_cl` (multiplicative factor on CL for GENT = 1) | `1.52` | Table 4: GENT covariate 1.52 (RSE 10.1%) |
-| `etalcl` (omega_CL on internal scale) | `0.05154` (23% CV) | Table 4: CL interindividual variability 23% CV (RSE 34.0%); omega^2 = log(1 + CV^2) |
+| `etalcl` (omega_CL on internal scale) | `0.05155` (23% CV) | Table 4: CL interindividual variability 23% CV (RSE 34.0%); omega^2 = log(1 + CV^2) |
 | (no `etalvc`) | n/a | Population PK model building paragraph: between-subject variability on V fixed to 0 (boundary value) |
 | `propSd` (proportional residual error) | `0.24` | Table 4: proportional residual error 24% CV (RSE 19.8%) |
 | `addSd` (additive residual error, mg/L) | `1.43` | Table 4: plasma additive residual error 1.43 mg/L (RSE 51.2%) |
@@ -408,8 +408,8 @@ knitr::kable(summary(nca_pip),
 
 | Interval Start | Interval End | cohort | N | AUClast (hr\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (hr) | Cav (mg/L) | Ctrough (mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|
-| 32 | 40 | cohort 1 | 50 | 1340 \[33.7\] | 275 \[17.9\] | 88.7 \[61.0\] | 0.500 \[0.500, 0.500\] | 167 \[33.7\] | NC |
-| 32 | 40 | cohort 2 | 50 | 991 \[40.5\] | 237 \[18.1\] | 50.0 \[95.3\] | 0.500 \[0.500, 0.500\] | 124 \[40.5\] | NC |
+| 32 | 40 | cohort 1 | 50 | 1340 \[33.7\] | 275 \[17.9\] | 88.7 \[60.9\] | 0.500 \[0.500, 0.500\] | 167 \[33.7\] | NC |
+| 32 | 40 | cohort 2 | 50 | 991 \[40.5\] | 237 \[18.1\] | 50.0 \[95.2\] | 0.500 \[0.500, 0.500\] | 124 \[40.5\] | NC |
 | 32 | 40 | cohort 3 | 50 | 775 \[45.2\] | 214 \[17.5\] | 28.4 \[150\] | 0.500 \[0.500, 0.500\] | 96.8 \[45.2\] | NC |
 | 32 | 40 | cohort 4 | 50 | 789 \[34.6\] | 247 \[12.6\] | 22.9 \[99.7\] | 0.500 \[0.500, 0.500\] | 98.6 \[34.6\] | NC |
 
@@ -451,7 +451,7 @@ knitr::kable(summary(nca_taz),
 | 32 | 40 | cohort 1 | 50 | 161 \[20.8\] | 29.3 \[13.1\] | 12.6 \[30.2\] | 0.500 \[0.500, 0.500\] | 20.1 \[20.8\] | NC |
 | 32 | 40 | cohort 2 | 50 | 85.3 \[24.6\] | 20.9 \[11.1\] | 4.26 \[51.6\] | 0.500 \[0.500, 0.500\] | 10.7 \[24.6\] | NC |
 | 32 | 40 | cohort 3 | 50 | 103 \[22.9\] | 22.7 \[11.5\] | 6.10 \[42.6\] | 0.500 \[0.500, 0.500\] | 12.8 \[22.9\] | NC |
-| 32 | 40 | cohort 4 | 50 | 101 \[22.3\] | 25.4 \[9.47\] | 4.78 \[49.1\] | 0.500 \[0.500, 0.500\] | 12.6 \[22.3\] | NC |
+| 32 | 40 | cohort 4 | 50 | 101 \[22.3\] | 25.4 \[9.48\] | 4.78 \[49.1\] | 0.500 \[0.500, 0.500\] | 12.6 \[22.3\] | NC |
 
 Simulated steady-state tazobactam NCA by cohort. {.table}
 

@@ -354,8 +354,8 @@ nca_summary |>
 | Dose (free base) | aucinf.obs | auclast | cmax | half.life | tmax |
 |:---|:---|:---|:---|:---|:---|
 | 119.6 mg | 6.66e+03 (4.35e+03 - 1e+04) | 6.56e+03 (4.29e+03 - 9.75e+03) | 404 (195 - 673) | 342 (302 - 391) | 1 (0.5 - 3) |
-| 318.8 mg | 1.66e+04 (1.16e+04 - 3.32e+04) | 1.63e+04 (1.14e+04 - 3.21e+04) | 1.64e+03 (623 - 2.64e+03) | 340 (289 - 422) | 1 (0.5 - 2.05) |
-| 637.6 mg | 4.08e+04 (2e+04 - 6.02e+04) | 3.97e+04 (1.98e+04 - 5.89e+04) | 4.72e+03 (1.98e+03 - 7.11e+03) | 348 (303 - 409) | 0.75 (0.5 - 1.5) |
+| 318.8 mg | 1.66e+04 (1.16e+04 - 3.31e+04) | 1.63e+04 (1.14e+04 - 3.21e+04) | 1.64e+03 (620 - 2.64e+03) | 340 (289 - 422) | 1 (0.5 - 2.05) |
+| 637.6 mg | 4.08e+04 (2e+04 - 6.01e+04) | 3.97e+04 (1.98e+04 - 5.89e+04) | 4.72e+03 (1.98e+03 - 7.11e+03) | 348 (303 - 409) | 0.75 (0.5 - 1.5) |
 
 Simulated NCA (median and 5th-95th percentile across 60 virtual subjects
 per arm). Cmax in ng/mL, tmax and half-life in h, AUC in ng/mL\*h.
@@ -621,9 +621,9 @@ obs_ibsm <- data.frame(
 
 ibsm_pred <- dplyr::bind_rows(lapply(seq_along(ibsm_base), function(i)
   ibsm_success(ibsm_base[i], seed = 100 + i)))
-#> [lsoda -- internal t + h = t (h too small for machine precision)]: 52391 warning(s) for subject(s): 12, 15, 29, 37, 41, ... (8 more)
-#> [lsoda -- internal t + h = t (h too small for machine precision)]: 52546 warning(s) for subject(s): 4, 6, 7, 19, 20, ... (24 more)
-#> [lsoda -- internal t + h = t (h too small for machine precision)]: 102004 warning(s) for subject(s): 1, 2, 4, 5, 6, ... (27 more)
+#> [lsoda -- internal t + h = t (h too small for machine precision)]: 52421 warning(s) for subject(s): 12, 21, 22, 32, 41, ... (3 more)
+#> [lsoda -- internal t + h = t (h too small for machine precision)]: 52517 warning(s) for subject(s): 2, 5, 6, 20, 24, ... (19 more)
+#> [lsoda -- internal t + h = t (h too small for machine precision)]: 52556 warning(s) for subject(s): 4, 6, 9, 10, 14, ... (32 more)
 
 ci <- Map(function(x, n) stats::binom.test(x, n)$conf.int * 100,
           obs_ibsm$n - obs_ibsm$recrudesced, obs_ibsm$n)

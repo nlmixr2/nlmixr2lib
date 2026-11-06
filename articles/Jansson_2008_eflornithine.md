@@ -53,8 +53,8 @@ below collects them.
 | `lfdepot_d` | log(0.623) | F_D (750-2000 mg/kg) = 62.3% | Table 3 |
 | `e_dose_high_efl_fdepot_l` | 0.1463 | F_L (3000) = 47% (+14.6% vs reference) | Table 3 + Results |
 | `e_dose_high_efl_fdepot_d` | 0.3275 | F_D (3000) = 82.7% (+32.8% vs reference) | Table 3 + Results |
-| `etalcl_l` | 0.02197 | IIV CL_L = 14.9% CV | Table 2 |
-| `etalcl_d` | 0.03263 | IIV CL_D = 18.2% CV | Table 2 |
+| `etalcl_l` | 0.02196 | IIV CL_L = 14.9% CV | Table 2 |
+| `etalcl_d` | 0.03259 | IIV CL_D = 18.2% CV | Table 2 |
 | `etalmtt` | 0.1349 | IIV MTT = 38% CV (shared) | Table 3 |
 | `etalfdepot` | 0.00995 | IIV F = 10% CV (shared) | Table 3 |
 | `propSd_l/d/rac` | 0.277 | Oral residual sigma = 27.7% CV (proportional) | Table 3 + Methods |

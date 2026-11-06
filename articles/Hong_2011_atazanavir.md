@@ -62,9 +62,9 @@ The table below collects them in one place for review.
 | `e_form_powder_frel` | -0.355 | Table 4 |
 | `e_rtv_frel` | 1.32 | Table 4 |
 | `etalka` variance (IIV CV 173% on ka) | 1.3845 | Table 4 (IIV column); omega^2 = log(1 + 1.73^2) |
-| `etalcl` variance (combined ke + V/F IIV translated to CL) | 0.1872 | Table 4 (IIV K_e = 14.6% + IIV V/F = 42.5%, sum of log-CV^2 components) |
-| `etalvc` variance (CV 42.5%) | 0.1661 | Table 4 (IIV V/F = 42.5%); omega^2 = log(1 + 0.425^2) |
-| `cov(etalcl, etalvc)` | 0.1661 | Translation invariant from CL = ke \* V (paper IIV on V is shared) |
+| `etalcl` variance (combined ke + V/F IIV translated to CL) | 0.1871 | Table 4 (IIV K_e = 14.6% + IIV V/F = 42.5%, sum of log-CV^2 components) |
+| `etalvc` variance (CV 42.5%) | 0.1660 | Table 4 (IIV V/F = 42.5%); omega^2 = log(1 + 0.425^2) |
+| `cov(etalcl, etalvc)` | 0.1660 | Translation invariant from CL = ke \* V (paper IIV on V is shared) |
 | `propSd` (residual CV 35.3% for ATV + RTV) | 0.353 | Table 4 (Residual error %CV, ATV + RTV stratum) |
 
 ## Virtual cohort
@@ -241,7 +241,7 @@ figure4_summary |>
 | Treatment  | GM Cmax (ng/mL) | GM Cmin (ng/mL) | GM AUC0-24 (ng\*h/mL) |
 |:-----------|----------------:|----------------:|----------------------:|
 | 15-\<20 kg |            3778 |             536 |                 42084 |
-| 20-\<40 kg |            3473 |             594 |                 41931 |
+| 20-\<40 kg |            3473 |             594 |                 41930 |
 | \>=40 kg   |            2924 |             612 |                 38329 |
 | Adult      |            2567 |             646 |                 36686 |
 
@@ -428,7 +428,7 @@ the 10,000-subject scale Hong 2011 used.
   the canonical `lcl` + `lvc` pair as a correlated bivariate block whose
   marginals match the paper’s reported `ke` (14.6%) and `V/F` (42.5%)
   CV%s via CL = ke x V (variance addition + shared V component). See the
-  source trace table for the exact `(0.1872, 0.1661, 0.1661)` block and
+  source trace table for the exact `(0.1871, 0.1660, 0.1660)` block and
   the in-file comment in `ini()`.
 - **`linCmt()` vs explicit ODEs**. The packaged model uses explicit
   `d/dt(depot)`, `d/dt(central)` ODEs rather than `linCmt()` to make the

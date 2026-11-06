@@ -1155,7 +1155,7 @@ the exact log-normal `omega^2 = log(CV^2 + 1)`. The control-stream
 values are used verbatim, because they are the implemented model. This
 is the main numerical difference from the sibling `Goti_2018_vancomycin`
 extraction, which was made from the Goti 2018 publication and applied
-the exact log-normal conversion (0.14705 versus 0.1584 for clearance).
+the exact log-normal conversion (0.14704 versus 0.1584 for clearance).
 
 **Differences from the existing `Goti_2018_vancomycin` model file.** The
 two are deliberately not merged, because they are different models from

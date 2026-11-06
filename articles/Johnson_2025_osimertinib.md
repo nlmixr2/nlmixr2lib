@@ -101,11 +101,11 @@ collects the same provenance for review.
 | `e_race_chinese_cl_az5104` | 0.076 | Johnson 2025 Table 2 |
 | `e_race_japanese_cl_az5104` | 0.184 | Johnson 2025 Table 2 |
 | `e_race_other_cl_az5104` | 0.090 | Johnson 2025 Table 2 |
-| IIV CLparent/F | 44.9 percent CV (variance 0.183656) | Johnson 2025 Table 2 |
-| IIV CLmetabolite/F | 49.7 percent CV (variance 0.220741) | Johnson 2025 Table 2 |
-| IIV Vparent/F | 90.9 percent CV (variance 0.602425) | Johnson 2025 Table 2 |
-| IIV Vmetabolite/F | 78.2 percent CV (variance 0.477281) | Johnson 2025 Table 2 |
-| IIV ka | 109 percent CV (variance 0.783073) | Johnson 2025 Table 2 |
+| IIV CLparent/F | 44.9 percent CV (variance 0.183655) | Johnson 2025 Table 2 |
+| IIV CLmetabolite/F | 49.7 percent CV (variance 0.220748) | Johnson 2025 Table 2 |
+| IIV Vparent/F | 90.9 percent CV (variance 0.602282) | Johnson 2025 Table 2 |
+| IIV Vmetabolite/F | 78.2 percent CV (variance 0.477180) | Johnson 2025 Table 2 |
+| IIV ka | 109 percent CV (variance 0.783034) | Johnson 2025 Table 2 |
 | Correlation (CLparent/F, CLmetabolite/F) | 0.885 | Johnson 2025 Table 2 |
 | Proportional residual error, osimertinib | 0.205 | Johnson 2025 Table 2 |
 | Additive residual error, osimertinib | 30.1 nmol/L -\> 0.0150386 mg/L | Johnson 2025 Table 2 |

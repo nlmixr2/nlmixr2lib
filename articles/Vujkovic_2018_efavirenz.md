@@ -85,7 +85,7 @@ in-file comment naming its origin. They are collected here for review.
 | `lvc` (Vd/F) | `fixed(log(150))` L | Methods *Population PK Model Development* para. 1: “holding the parameters of volume of distribution (Vd) and absorption rate constant (Ka) constant at 150 L and 0.18 h-1 respectively \[13\]” |
 | `lka` | `fixed(log(0.18))` 1/h | Methods *Population PK Model Development* para. 1, same sentence |
 | `e_wt_cl` | `fixed(0.75)` | Methods *Population PK Model Development* para. 2: “Weight was included in an allometric model and fixed at 0.75 CL/F and normalized to a reference weight of 70 kg” |
-| `etalcl` | `0.15189` = `log(1 + 0.405^2)` | Results *Population Pharmacokinetics* para. 1: “inter-individual variability (omega2 CL) of 40.5% coefficient variation” |
+| `etalcl` | `0.15188` = `log(1 + 0.405^2)` | Results *Population Pharmacokinetics* para. 1: “inter-individual variability (omega2 CL) of 40.5% coefficient variation” |
 | `propSd` | `0.0831` | Results *Population Pharmacokinetics* para. 1: “proportional residual variability of 0.0831” |
 | `addSd` | `0.0699` mg/L | Results *Population Pharmacokinetics* para. 1: “residual additive variability of 0.0699 SD” |
 | `d/dt(depot)`, `d/dt(central)` | n/a | Methods *Population PK Model Development* para. 1: “The ADVAN2 subroutine (one compartment linear model with first order absorption) was selected” |
@@ -536,7 +536,7 @@ knitr::kable(obs_tab, digits = 3,
 |:---|---:|---:|---:|---:|---:|
 | Vujkovic 2018 Table 1 (observed, month 1) | NA | 1.620 | 2.170 | 3.880 | NA |
 | Simulated, pooled over the dosing interval | 1.741 | 2.430 | 3.337 | 4.597 | 6.404 |
-| Simulated, 24 h after the dose | 1.063 | 1.543 | 2.331 | 3.292 | 5.197 |
+| Simulated, 24 h after the dose | 1.063 | 1.543 | 2.331 | 3.291 | 5.196 |
 
 Observed vs simulated steady-state concentrations (mg/L = ug/mL).
 {.table}
@@ -611,7 +611,7 @@ fitted (see *Assumptions and deviations*).
   coefficient variation, and residual additive variability of 0.0699
   SD”. The stated *unit* is taken over the omega-squared *symbol*
   throughout: 40.5% is read as a CV and converted to the log-scale
-  variance `log(1 + 0.405^2) = 0.15189`, 0.0831 as a proportional SD
+  variance `log(1 + 0.405^2) = 0.15188`, 0.0831 as a proportional SD
   (8.31% CV), and 0.0699 as an additive SD in mg/L. Reading 0.0831 as a
   variance instead would give a proportional SD of 0.288 (28.8%); the
   paper’s own wording (“SD” for the additive term, “coefficient

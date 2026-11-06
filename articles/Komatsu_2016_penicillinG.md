@@ -297,7 +297,7 @@ sim <- as.data.frame(rxode2::rxSolve(
   mod_pk, events, keep = c("regimen"), returnType = "data.frame"
 ))
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:08
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:09
 
 exposure <- sim |>
   filter(!is.na(Cc)) |>
@@ -1009,7 +1009,7 @@ sessionInfo()
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
 #> [28] pkgdown_2.2.1       crayon_1.5.3        jquerylib_0.1.4    
-#> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
+#> [31] whisker_0.4.1       openssl_2.5.0       cachem_1.1.0       
 #> [34] nlme_3.1-171        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
 #> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.2         

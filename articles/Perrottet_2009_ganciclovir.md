@@ -362,7 +362,7 @@ CRCL values in the virtual population.
   CL accounting for three operationally defined post-transplant
   occasions (up to month 1, up to month 2, up to month 6 or more). This
   nlmixr2lib model exposes the interpatient component
-  (`etalcl ~ 0.06544` = 26% CV per Table 3) but does not carry the IOV
+  (`etalcl ~ 0.06541` = 26% CV per Table 3) but does not carry the IOV
   decomposition because IOV requires a per-event occasion index that is
   dataset-specific. A user wanting the full Perrottet 2009
   within-subject variability can add a second `etalcl_iov ~ 0.01441` (=

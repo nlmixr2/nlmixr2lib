@@ -52,13 +52,13 @@ table below collects them in one place for review.
 | `lvp2` (V_3, L) | log(2.69) | Table 2 Model 3 |
 | `lq` (CLic_shallow, L/h) | log(15.2) | Table 2 Model 3 |
 | `lq2` (CLic_deep, L/h) | log(1.65) | Table 2 Model 3 |
-| `etalcl_renal` (47% CV) | 0.199533 | Table 2 Model 3, omega^2 = log(CV^2 + 1) |
-| `etalvmax` (84% CV) | 0.534007 | Table 2 Model 3 |
-| `etalkm` (112% CV) | 0.812973 | Table 2 Model 3 |
-| `etalcl_nonren` (18% CV) | 0.031881 | Table 2 Model 3 |
-| `etalvc` (18% CV) | 0.031881 | Table 2 Model 3 |
-| `etalvp` (48% CV) | 0.207302 | Table 2 Model 3 |
-| `etalvp2` (15% CV) | 0.022254 | Table 2 Model 3 |
+| `etalcl_renal` (47% CV) | 0.199588 | Table 2 Model 3, omega^2 = log(CV^2 + 1) |
+| `etalvmax` (84% CV) | 0.533917 | Table 2 Model 3 |
+| `etalkm` (112% CV) | 0.812884 | Table 2 Model 3 |
+| `etalcl_nonren` (18% CV) | 0.031886 | Table 2 Model 3 |
+| `etalvc` (18% CV) | 0.031886 | Table 2 Model 3 |
+| `etalvp` (48% CV) | 0.207339 | Table 2 Model 3 |
+| `etalvp2` (15% CV) | 0.022251 | Table 2 Model 3 |
 | `propSd` (CV_C 12.8%) | 0.128 | Table 2 Model 3 |
 | `addSd` (SD_C 0.26 mg/L) | 0.26 | Table 2 Model 3 |
 | `propSd_Aurine` (CV_AU 24.7%) | 0.247 | Table 2 Model 3 |
@@ -491,9 +491,9 @@ higher dose, the hallmark of saturable renal elimination.
   S-ADAPT analysis in Table 3 fixed both BSV CVs at 15% (Table 3
   footnote c). The packaged model carries the NONMEM convention (no IIV
   on `lq` or `lq2`); users preferring the S-ADAPT convention can append
-  `etalq ~ 0.022254` and `etalq2 ~ 0.022254` to `ini()` (omega^2 =
-  log(0.15^2 + 1) = 0.022254) and multiply `q` / `q2` by `exp(etalq)` /
-  `exp(etalq2)`.
+  `etalq ~ log(1 + 0.15^2)` and `etalq2 ~ log(1 + 0.15^2)` to `ini()`
+  (omega^2 = log(0.15^2 + 1) = 0.022251) and multiply `q` / `q2` by
+  `exp(etalq)` / `exp(etalq2)`.
 
 - **No covariate effects.** The Landersdorfer 2012 study cohort
   consisted of healthy Caucasian adults with normal renal function

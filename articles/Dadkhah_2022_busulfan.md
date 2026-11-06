@@ -98,10 +98,10 @@ as an in-file comment. The table below collects them.
 | `lcl_sulfolane` (CLSu, non-carrier) | 1.61 L/h | Table 2 (RSE 37%) |
 | `lvc_sulfolane` (VSu) | 48.8 L | Table 2 (RSE 35.2%) |
 | `e_gsta1_cl_sulfolane` | 1.43 | Table 2 ’COV_CL Su \_GSTA1’; equation (2) `CLSu = CLSu-typ * e^1.43` for GSTA1 |
-| `etalcl` | 0.045171 | Table 2 ‘IIV CL Bu’ 21.5% CV; `log(1 + CV^2)` per the Table 2 footnote |
+| `etalcl` | 0.045188 | Table 2 ‘IIV CL Bu’ 21.5% CV; `log(1 + CV^2)` per the Table 2 footnote |
 | `etalvc` | 0.009950 | Table 2 ‘IIV V Bu’ 10% CV |
-| `etalcl_sulfolane` | 0.820843 | Table 2 ‘IIV CL Su’ 112.8% CV |
-| `etalvc_sulfolane` | 0.471361 | Table 2 ‘IIV V Su’ 77.6% CV |
+| `etalcl_sulfolane` | 0.820830 | Table 2 ‘IIV CL Su’ 112.8% CV |
+| `etalvc_sulfolane` | 0.471363 | Table 2 ‘IIV V Su’ 77.6% CV |
 | `etaiov_cl_1..3` | 0.005759 each | Table 2 ‘IOV CL Bu’ 7.6% CV; occasions defined in Section 3.2 |
 | `propSd` | 0.071 | Table 2 ‘Prop. sigma Bu’ 7.1% |
 | `propSd_sulfolane` | 0.362 | Table 2 ‘Prop. sigma Su’ 36.2% |
@@ -463,7 +463,7 @@ q24h_adj <- auc1_q24h |>
   )
 summary(q24h_adj$dose23_mgkg)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>  0.7019  2.8260  3.8746  4.1624  5.1460 11.3281
+#>  0.7017  2.8260  3.8746  4.1624  5.1461 11.3290
 ```
 
 The adjusted Q24H doses (median 3.87 mg/kg) sit a little above the 3.2

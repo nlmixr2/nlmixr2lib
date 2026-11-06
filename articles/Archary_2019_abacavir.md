@@ -56,7 +56,7 @@ Per-parameter origin (also recorded as in-file comments next to each
 | `e_wt_vc_vp` | 1 | Archary 2019 Methods 2.3 (“… and 1 for apparent volume of distribution”) |
 | `e_day14_cl` | 0.760 | Archary 2019 Table 3 (day-14 CL/F 5.86 vs day-1 CL/F 3.33; 5.86 / 3.33 - 1 = 0.760) |
 | `e_earlyart_f` | 0.31 | Archary 2019 Table 3 (“Increase of relative bioavailability (F) for early ART treatment arm 31.0%”) |
-| `etalcl` | 0.0820 | Archary 2019 Table 3 (delayed-arm IIV CL/F 29.2%; omega^2 = log(1 + 0.292^2)) |
+| `etalcl` | 0.0818 | Archary 2019 Table 3 (delayed-arm IIV CL/F 29.2%; omega^2 = log(1 + 0.292^2)) |
 | `etalfdepot` | 0.0448 | Archary 2019 Table 3 (early-arm IIV F 21.4%; omega^2 = log(1 + 0.214^2)) |
 | `propSd` | 0.362 | Archary 2019 Table 3 (Proportional RUV 36.2%) |
 | `d/dt(depot)`, `d/dt(central)`, `d/dt(peripheral1)` | n/a | Archary 2019 Section 3.2 (2-compartment with first-order oral absorption) |
@@ -367,17 +367,17 @@ knitr::kable(
 
 | NCA parameter | treatment                   |    median |       p05 |       p95 |
 |:--------------|:----------------------------|----------:|----------:|----------:|
-| AUClast       | delayed ART, day 1 (60 mg)  | 17.970352 | 10.466941 | 31.635434 |
-| Cmax          | delayed ART, day 1 (60 mg)  |  5.433701 |  3.446441 |  7.433760 |
+| AUClast       | delayed ART, day 1 (60 mg)  | 17.971822 | 10.469012 | 31.628500 |
+| Cmax          | delayed ART, day 1 (60 mg)  |  5.433269 |  3.446679 |  7.432426 |
 | Tmax          | delayed ART, day 1 (60 mg)  |  1.000000 |  1.000000 |  1.500000 |
-| AUClast       | delayed ART, day 14 (60 mg) |  9.335070 |  4.925630 | 15.616123 |
-| Cmax          | delayed ART, day 14 (60 mg) |  3.738890 |  2.311386 |  5.245073 |
+| AUClast       | delayed ART, day 14 (60 mg) |  9.335997 |  4.929075 | 15.609818 |
+| Cmax          | delayed ART, day 14 (60 mg) |  3.739191 |  2.311777 |  5.244076 |
 | Tmax          | delayed ART, day 14 (60 mg) |  0.750000 |  0.750000 |  1.000000 |
-| AUClast       | early ART, day 1 (60 mg)    | 23.472877 | 14.433157 | 37.255814 |
-| Cmax          | early ART, day 1 (60 mg)    |  6.919526 |  4.735552 |  9.592965 |
+| AUClast       | early ART, day 1 (60 mg)    | 23.472890 | 14.436236 | 37.248137 |
+| Cmax          | early ART, day 1 (60 mg)    |  6.919610 |  4.735953 |  9.592724 |
 | Tmax          | early ART, day 1 (60 mg)    |  1.000000 |  1.000000 |  1.500000 |
-| AUClast       | early ART, day 14 (60 mg)   | 12.081072 |  6.704068 | 27.628669 |
-| Cmax          | early ART, day 14 (60 mg)   |  4.785562 |  3.123182 |  9.031254 |
+| AUClast       | early ART, day 14 (60 mg)   | 12.080310 |  6.706281 | 27.614124 |
+| Cmax          | early ART, day 14 (60 mg)   |  4.785848 |  3.124106 |  9.030541 |
 | Tmax          | early ART, day 14 (60 mg)   |  0.750000 |  0.750000 |  1.000000 |
 
 Simulated abacavir NCA per cohort cell (60 mg, WT = 7 kg, n = 50 per
@@ -416,7 +416,7 @@ h\*mg/L range for the cohort-median 7 kg weight).
   CL/F: 29.2% in the delayed-ART arm and 62.5% in the early-ART arm.
   nlmixr2 does not natively express per-stratum omega scaling on a
   single eta without complex constructs; the model file uses the
-  delayed-arm IIV (29.2% -\> omega^2 = 0.0820) as the typical- value
+  delayed-arm IIV (29.2% -\> omega^2 = 0.0818) as the typical- value
   omega, and notes the early-arm inflation here. Consumers who need the
   early-arm-specific IIV magnitude can override `etalcl` by setting it
   to `log(1 + 0.625^2) = 0.350` for early-arm-only simulations.

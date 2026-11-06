@@ -58,8 +58,8 @@ below collects them in one place for review.
 | `e_wt_cl` (allometric exp on CL/F) | 0.75 (fixed) | Rose 2016 Section 3 (“with the power exponent fixed to allometric values”) |
 | `e_wt_vc` (allometric exp on V/F) | 1.00 (fixed) | Rose 2016 Section 3 (“with the power exponent fixed to allometric values”) |
 | `etalcl` (IIV on CL/F) | 0.07652 (28.2% CV) | Rose 2016 Table 2 row “CL/F” IIV CV% column |
-| `etalvc` (IIV on V/F) | 0.17917 (44.3% CV) | Rose 2016 Table 2 row “V/F” IIV CV% column |
-| `etalka` (IIV on ka) | 0.05286 (23.3% CV) | Rose 2016 Table 2 row “ka” IIV CV% column |
+| `etalvc` (IIV on V/F) | 0.17919 (44.3% CV) | Rose 2016 Table 2 row “V/F” IIV CV% column |
+| `etalka` (IIV on ka) | 0.05287 (23.3% CV) | Rose 2016 Table 2 row “ka” IIV CV% column |
 | `addSd` (additive residual) | 0.038 ug/L | Rose 2016 Table 2 row “Additive error” |
 | `propSd` (proportional residual) | 0.033 fraction | Rose 2016 Table 2 row “Proportional error” |
 | Equation `d/dt(depot)` | n/a | Rose 2016 Equation (2), Section 3 |
@@ -410,9 +410,9 @@ knitr::kable(
 
 | treatment        | aucinf.obs |  cmax | half.life | tmax |
 |:-----------------|-----------:|------:|----------:|-----:|
-| 37.5 IU (2.2 ug) |         NA | 0.057 |    43.461 | 18.0 |
+| 37.5 IU (2.2 ug) |         NA | 0.057 |    43.460 | 18.0 |
 | 75 IU (4.4 ug)   |         NA | 0.114 |    42.658 | 18.0 |
-| 150 IU (8.8 ug)  |         NA | 0.230 |    42.453 | 18.0 |
+| 150 IU (8.8 ug)  |         NA | 0.230 |    42.452 | 18.0 |
 | 225 IU (13.1 ug) |         NA | 0.334 |    45.592 | 18.5 |
 | 450 IU (26.3 ug) |         NA | 0.705 |    44.212 | 18.0 |
 

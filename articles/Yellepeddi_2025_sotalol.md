@@ -114,9 +114,9 @@ records carry two significant figures).
 | `e_wt_vc` | 1.2 | S1 `$THETA (0, 1.2) ; WT on V` and T3; T2 prints 1.1 |
 | CL covariate form `CL * (CRCL/92.4)^theta` | n/a | T2 row label; S1 `CRCLCOV = (CRCL/92.4)**THETA(8)` |
 | Vc covariate form `Vc * (WT/104)^theta` | n/a | T2 row label; S1 `WTCOVVOL = (WTKG/104)**THETA(7)` |
-| `etalka` | 0.227149 | T2 `IIV - Ka (%) = 50.5`; `log(1 + 0.505^2)`; S1 `$OMEGA 0.23` |
-| `etalcl` | 0.068366 | T2 `IIV - CL(%) = 26.6`; `log(1 + 0.266^2)`; S1 `$OMEGA 0.068` |
-| `etalvc` | 0.208106 | T2 `IIV - Vc (%) = 48.1`; `log(1 + 0.481^2)`; S1 `$OMEGA 0.21` |
+| `etalka` | 0.227155 | T2 `IIV - Ka (%) = 50.5`; `log(1 + 0.505^2)`; S1 `$OMEGA 0.23` |
+| `etalcl` | 0.068365 | T2 `IIV - CL(%) = 26.6`; `log(1 + 0.266^2)`; S1 `$OMEGA 0.068` |
+| `etalvc` | 0.208120 | T2 `IIV - Vc (%) = 48.1`; `log(1 + 0.481^2)`; S1 `$OMEGA 0.21` |
 | `propSd` | 0.151987 | T2 `RUV (sigma^2) = 0.0231`; `sqrt(0.0231)`; S1 `$SIGMA 0.023`, `Y = F + F*EPS(1)` |
 | Concentration scaling to ng/mL | n/a | S1 `S2 = V2/1000` with doses in mg and volumes in L |
 | `e0_qtc` / `e_sotalol_qtc` | 440 ms / 0.015 ms per ng/mL | Results 3.3 (R^2 = 0.1, p = 0.0011) |
@@ -652,7 +652,7 @@ knitr::kable(
 | t½ (h)        | 75 mg IV + 80 mg PO, normal     |        12 |      10.3 | -13.8% |
 | t½ (h)        | 82.5 mg IV + 80 mg PO, CrCl\<90 |        12 |      12.2 |  +1.4% |
 | t½ (h)        | 90 mg IV + 120 mg PO, normal    |        12 |      10.6 | -11.9% |
-| t½ (h)        | 125 mg IV + 120 mg PO, CrCl\<90 |        12 |      12.4 |  +3.1% |
+| t½ (h)        | 125 mg IV + 120 mg PO, CrCl\<90 |        12 |      12.4 |  +3.2% |
 
 Simulated terminal half-life vs the ~12 h literature value quoted in the
 Introduction of Yellepeddi 2025. \* differs from reference by \>20%.

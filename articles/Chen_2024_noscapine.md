@@ -436,7 +436,7 @@ cat(sprintf("simulated %d observation rows; %.1f%% of dv at or above the 0.100 u
 carryover <- sim |> filter(period == 2, tad == 0) |> pull(dv)
 cat(sprintf("max period-2 pre-dose carryover = %.3g ug/L (%.4f%% of the LLOQ)\n",
             max(carryover), 100 * max(carryover) / 0.100))
-#> max period-2 pre-dose carryover = 0.000388 ug/L (0.3879% of the LLOQ)
+#> max period-2 pre-dose carryover = 0.000388 ug/L (0.3876% of the LLOQ)
 ```
 
 ## Replicate published figures

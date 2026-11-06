@@ -59,8 +59,8 @@ All values are from the final-model column of Smit 2020 Table 2.
 | `lq2` (Q V1-V3) | log(5.21) L/h | Table 2 |
 | `lvp2` (V3) | log(19.5) L | Table 2 |
 | `etalcl` (nonobese) | fixed(0.002784) | Table 2, IIV CL nonobese 5.28% FIX; footnote b |
-| `etalcl_obese` | 0.05920 | Table 2, IIV CL obese 24.7%; footnote b |
-| `etalvc` | 0.18664 | Table 2, IIV V1 45.3%; footnote b |
+| `etalcl_obese` | 0.05922 | Table 2, IIV CL obese 24.7%; footnote b |
+| `etalvc` | 0.18665 | Table 2, IIV V1 45.3%; footnote b |
 | `propSd` | 0.0392 | Table 2, proportional error; footnote c (‘shown as sigma’) |
 | `addSd` | 1.07 mg/L | Table 2, additive error |
 | `cl = CL70kg * (WT/70)^theta1` | n/a | Table 2 row header |
@@ -305,7 +305,7 @@ sim_typ <- rxode2::rxSolve(mod_typical, events = ev_typ, keep = "WT") |> as.data
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalcl_obese', 'etalvc'
 #> Warning: multi-subject simulation without without 'omega'
 
-omega_cl <- sqrt(0.05920) # etalcl_obese
+omega_cl <- sqrt(0.05922) # etalcl_obese
 fig3 <- sim_typ |>
   group_by(id, WT) |>
   summarise(auc_d3 = auc_window(time, Cc, 48, 72), cl = first(cl), .groups = "drop") |>
@@ -340,7 +340,7 @@ fig3 |>
 | 155 | 5425 | 620 | 99.9 | 0.964 | 0.308 | 0.938 |
 | 160 | 5500 | 618 | 99.9 | 0.963 | 0.303 | 0.939 |
 | 170 | 5500 | 598 | 99.9 | 0.951 | 0.258 | 0.954 |
-| 180 | 5500 | 580 | 100.0 | 0.937 | 0.219 | 0.965 |
+| 180 | 5500 | 580 | 100.0 | 0.936 | 0.220 | 0.965 |
 | 190 | 5500 | 563 | 100.0 | 0.920 | 0.186 | 0.973 |
 | 200 | 5500 | 548 | 100.0 | 0.902 | 0.157 | 0.979 |
 | 210 | 5500 | 534 | 100.0 | 0.882 | 0.133 | 0.984 |
@@ -419,11 +419,11 @@ mc |>
 
 | Weight band | Mean AUC24h | 2.5th pct | 97.5th pct |  PTA | PTOX |
 |:------------|------------:|----------:|-----------:|-----:|-----:|
-| 85-115 kg   |      513.68 |    297.82 |     820.56 | 0.81 | 0.07 |
-| 115-145 kg  |      583.16 |    376.79 |     910.45 | 0.94 | 0.20 |
-| 145-175 kg  |      618.05 |    367.64 |     944.71 | 0.96 | 0.28 |
-| 175-205 kg  |      572.90 |    340.43 |     869.81 | 0.92 | 0.18 |
-| 205-235 kg  |      535.37 |    320.11 |     827.83 | 0.88 | 0.09 |
+| 85-115 kg   |      513.69 |    297.80 |     820.63 | 0.81 | 0.07 |
+| 115-145 kg  |      583.16 |    376.77 |     910.53 | 0.94 | 0.20 |
+| 145-175 kg  |      618.05 |    367.60 |     944.78 | 0.96 | 0.28 |
+| 175-205 kg  |      572.90 |    340.40 |     869.87 | 0.92 | 0.18 |
+| 205-235 kg  |      535.37 |    320.09 |     827.89 | 0.88 | 0.09 |
 
 Stochastic replicate of Figure 3C (n = 200 per band). {.table}
 
@@ -534,7 +534,7 @@ ggplot(bid, aes(trough, auc_d3)) +
 
 
 summary(lm(auc_d3 ~ trough, data = bid))$r.squared
-#> [1] 0.9370401
+#> [1] 0.9370559
 ```
 
 The 2.5th-97.5th percentiles of the trough among simulated subjects in

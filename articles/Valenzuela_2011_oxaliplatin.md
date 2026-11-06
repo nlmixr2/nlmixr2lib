@@ -244,6 +244,8 @@ ggplot(pk_long, aes(hours, Q50)) +
 #> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
 #> Warning: Removed 102 rows containing missing values or values outside the scale range
 #> (`geom_ribbon()`).
+#> Warning: Removed 2 rows containing missing values or values outside the scale range
+#> (`geom_line()`).
 ```
 
 ![](Valenzuela_2011_oxaliplatin_files/figure-html/figure-3-pk-1.png)
@@ -609,21 +611,7 @@ nca_plasma <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_plasma, dose_obj,
 #> Requesting an AUC range starting (0) before the first measurement (0.0677966) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0677966) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0677966) is not allowed
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning: Requesting an AUC range starting (0) before the first measurement (0.0677966) is not allowed
+#> Requesting an AUC range starting (0) before the first measurement (0.0677966) is not allowed
 #> Requesting an AUC range starting (0) before the first measurement (0.0677966) is not allowed
 #> Warning in assert_conc(conc = conc): Negative concentrations found
 #> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
@@ -647,7 +635,7 @@ knitr::kable(summary(nca_plasma),
 
 | Interval Start | Interval End | treatment | N | Cmax (mg/L) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | HIO_360mgm2 | 200 | 5.28 \[23.6\] | 8.00 \[1.97, 28.0\] | 63.3 \[60.0\] | NC |
+| 0 | Inf | HIO_360mgm2 | 200 | 5.28 \[23.6\] | 8.00 \[1.97, 28.0\] | 63.3 \[59.9\] | NC |
 
 Simulated plasma NCA (n = 200 virtual subjects, single 360 mg/m^2 HIO).
 {.table}
@@ -1079,7 +1067,7 @@ sessionInfo()
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
 #> [28] pkgdown_2.2.1       crayon_1.5.3        jquerylib_0.1.4    
-#> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
+#> [31] whisker_0.4.1       openssl_2.5.0       cachem_1.1.0       
 #> [34] nlme_3.1-171        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
 #> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.2         

@@ -56,27 +56,27 @@ mod_pda
 #>   0.1880000   0.0010000 
 #> 
 #> Omega ($omega): 
-#>                etalksyn etalcl_renal etalvc_prob etalcl_prob etaiov_ksyn_1
-#> etalksyn      0.0974856     0.000000     0.00000    0.000000     0.0000000
-#> etalcl_renal  0.0000000     0.070319     0.00000    0.000000     0.0000000
-#> etalvc_prob   0.0000000     0.000000     0.14842    0.000000     0.0000000
-#> etalcl_prob   0.0000000     0.000000     0.00000    0.051546     0.0000000
-#> etaiov_ksyn_1 0.0000000     0.000000     0.00000    0.000000     0.0472723
-#> etaiov_ksyn_2 0.0000000     0.000000     0.00000    0.000000     0.0000000
+#>                 etalksyn etalcl_renal etalvc_prob etalcl_prob etaiov_ksyn_1
+#> etalksyn      0.09748962   0.00000000     0.00000  0.00000000    0.00000000
+#> etalcl_renal  0.00000000   0.07036526     0.00000  0.00000000    0.00000000
+#> etalvc_prob   0.00000000   0.00000000     0.14842  0.00000000    0.00000000
+#> etalcl_prob   0.00000000   0.00000000     0.00000  0.05154826    0.00000000
+#> etaiov_ksyn_1 0.00000000   0.00000000     0.00000  0.00000000    0.04726519
+#> etaiov_ksyn_2 0.00000000   0.00000000     0.00000  0.00000000    0.00000000
 #>               etaiov_ksyn_2
-#> etalksyn          0.0000000
-#> etalcl_renal      0.0000000
-#> etalvc_prob       0.0000000
-#> etalcl_prob       0.0000000
-#> etaiov_ksyn_1     0.0000000
-#> etaiov_ksyn_2     0.0472723
+#> etalksyn         0.00000000
+#> etalcl_renal     0.00000000
+#> etalvc_prob      0.00000000
+#> etalcl_prob      0.00000000
+#> etaiov_ksyn_1    0.00000000
+#> etaiov_ksyn_2    0.04726519
 #> attr(,"lotriLabels")
-#> [1] "Table 1, PDA IIV ksyn = 32% (SE 34%); log(1 + 0.32^2)"     
-#> [2] "Table 1, PDA IIV CLr = 27% (SE 15%); log(1 + 0.27^2)"      
-#> [3] "Table 1, Probenecid IIV V = 40% (SE 29%); log(1 + 0.40^2)" 
-#> [4] "Table 1, Probenecid IIV CL = 23% (SE 23%); log(1 + 0.23^2)"
-#> [5] "Table 1, PDA IOV ksyn = 22% (SE 57%); log(1 + 0.22^2)"     
-#> [6] "Table 1, PDA IOV ksyn = 22%; shared variance, occasion 2"  
+#> [1] "Table 1, PDA IIV ksyn = 32% (SE 34%)"                     
+#> [2] "Table 1, PDA IIV CLr = 27% (SE 15%)"                      
+#> [3] "Table 1, Probenecid IIV V = 40% (SE 29%); log(1 + 0.40^2)"
+#> [4] "Table 1, Probenecid IIV CL = 23% (SE 23%)"                
+#> [5] "Table 1, PDA IOV ksyn = 22% (SE 57%)"                     
+#> [6] "Table 1, PDA IOV ksyn = 22%; shared variance, occasion 2" 
 #> attr(,"lotriFix")
 #>               etalksyn etalcl_renal etalvc_prob etalcl_prob etaiov_ksyn_1
 #> etalksyn         FALSE        FALSE       FALSE       FALSE         FALSE
@@ -166,17 +166,17 @@ mod_pda
 #>         label("Proportional residual error, probenecid plasma (fraction)")
 #>         addSd_prob <- fix(0, 0.001)
 #>         label("Additive residual error, probenecid plasma (umol/L)")
-#>         etalksyn ~ 0.0974856
-#>         label("Table 1, PDA IIV ksyn = 32% (SE 34%); log(1 + 0.32^2)")
-#>         etalcl_renal ~ 0.070319
-#>         label("Table 1, PDA IIV CLr = 27% (SE 15%); log(1 + 0.27^2)")
+#>         etalksyn ~ 0.0974896212772571
+#>         label("Table 1, PDA IIV ksyn = 32% (SE 34%)")
+#>         etalcl_renal ~ 0.0703652626605634
+#>         label("Table 1, PDA IIV CLr = 27% (SE 15%)")
 #>         etalvc_prob ~ 0.14842
 #>         label("Table 1, Probenecid IIV V = 40% (SE 29%); log(1 + 0.40^2)")
-#>         etalcl_prob ~ 0.051546
-#>         label("Table 1, Probenecid IIV CL = 23% (SE 23%); log(1 + 0.23^2)")
-#>         etaiov_ksyn_1 ~ 0.0472723
-#>         label("Table 1, PDA IOV ksyn = 22% (SE 57%); log(1 + 0.22^2)")
-#>         etaiov_ksyn_2 ~ fix(0.0472723)
+#>         etalcl_prob ~ 0.0515482618805766
+#>         label("Table 1, Probenecid IIV CL = 23% (SE 23%)")
+#>         etaiov_ksyn_1 ~ 0.0472651924671142
+#>         label("Table 1, PDA IOV ksyn = 22% (SE 57%)")
+#>         etaiov_ksyn_2 ~ fix(0.0472651924671142)
 #>         label("Table 1, PDA IOV ksyn = 22%; shared variance, occasion 2")
 #>     })
 #>     model({
@@ -598,7 +598,7 @@ nca_summary |>
 | Biomarker | Typical AUC0-168 ratio | Simulated median ratio | Simulated 5-95% ratio | Observed individual ratios | Simulated median fT | Observed individual fT |
 |:---|---:|---:|:---|:---|---:|:---|
 | HVA | 2.90 | 2.87 | 2.32-3.58 | 2.1-3.7 | 0.65 | 0.53-0.73 |
-| PDA | 3.43 | 3.41 | 1.84-6.01 | 2.5-5.1 | 0.71 | 0.59-0.81 |
+| PDA | 3.43 | 3.40 | 1.84-5.91 | 2.5-5.1 | 0.71 | 0.59-0.81 |
 
 ``` r
 

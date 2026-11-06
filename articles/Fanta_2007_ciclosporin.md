@@ -64,7 +64,7 @@ The table below collects them in one place for review.
 | `e_route_iv_cl` (log-shift IV vs oral CL) | log(1/0.77) ~= 0.2614 | Fanta 2007 Results “Structural and stochastic models” paragraph 4 |
 | Shared eta block for `etalvc`, `etalq2`, `etalvp2` | omega^2 = log(CV^2 + 1) with CVs 12% / 39% / 25%; off-diagonals under full positive correlation | Fanta 2007 Table 2 (IIV V2, Q4, V4) + Results paragraph 1 (“V2, V4, Q4 shared the same eta”) |
 | `etalcl` | log(1 + 0.17^2) = 0.0285 | Fanta 2007 Table 2 (IIV CL CV = 17%) |
-| `etalq` | log(1 + 0.31^2) = 0.0917 | Fanta 2007 Table 2 (IIV Q3 CV = 31%) |
+| `etalq` | log(1 + 0.31^2) = 0.0918 | Fanta 2007 Table 2 (IIV Q3 CV = 31%) |
 | `etalvp` | log(1 + 0.42^2) = 0.1625 | Fanta 2007 Table 2 (IIV V3 CV = 42%) |
 | `etalka` | log(1 + 0.33^2) = 0.1034 | Fanta 2007 Table 2 (IIV Ka CV = 33%) |
 | `etalfdepot` | log(1 + 0.11^2) = 0.0120 | Fanta 2007 Table 2 (IIV F CV = 11%) |

@@ -111,10 +111,10 @@ values come from Ruhs 2012 Table 2 unless otherwise noted.
 | `e_age_hcybl` – linear age effect on HCY baseline | 0.116 uM/year | Table 2 theta_BL,AGE = 0.116 |
 | `etalcl` IIV variance | 0.02089 | Table 2 CL IIV 14.53% CV; omega^2 = log(1 + CV^2) |
 | `etalvc` IIV variance | 0.03199 | Table 2 V1 IIV 18.03% CV |
-| `etalq` IIV variance | 0.12584 | Table 2 Q IIV 36.61% CV |
+| `etalq` IIV variance | 0.12578 | Table 2 Q IIV 36.61% CV |
 | `etalhcybl` IIV variance | 0.03528 | Table 2 HCYBL IIV 18.95% CV |
-| `etalkout` IIV variance | 0.10472 | Table 2 kout IIV 33.23% CV |
-| `etalec50` IIV variance | 0.25285 | Table 2 EC50 IIV 53.63% CV |
+| `etalkout` IIV variance | 0.10474 | Table 2 kout IIV 33.23% CV |
+| `etalec50` IIV variance | 0.25279 | Table 2 EC50 IIV 53.63% CV |
 | `propSd` – MTX prop. residual SD | 0.235 | Table 2 PK exponential error (small-sigma equivalent) |
 | `addSd_HCY` – HCY add. residual SD | 0.911 uM | Table 2 PD additive error |
 | `propSd_HCY` – HCY prop. residual SD | 0.165 | Table 2 PD exponential error (small-sigma equivalent) |
@@ -347,8 +347,8 @@ knitr::kable(hcy_summary, caption = "Simulated HCY Cmax (uM, total concentration
 
 | treatment | median_HCY_max | p05_HCY_max | p95_HCY_max | median_HCY_AUC | p05_HCY_AUC | p95_HCY_AUC |
 |:---|---:|---:|---:|---:|---:|---:|
-| LR (target Cpss 33 uM) | 10.76256 | 7.129635 | 17.15573 | 301.7009 | 169.5669 | 524.7031 |
-| SHR (target Cpss 65 uM) | 10.87453 | 7.490848 | 16.46455 | 333.5324 | 202.6401 | 571.0168 |
+| LR (target Cpss 33 uM) | 10.76248 | 7.129601 | 17.15633 | 301.7009 | 169.5600 | 524.7000 |
+| SHR (target Cpss 65 uM) | 10.87462 | 7.490741 | 16.46477 | 333.5365 | 202.6376 | 571.0219 |
 
 Simulated HCY Cmax (uM, total concentration) and AUC over baseline
 (uM\*h) by HDMTX dose group; 90% prediction interval (5th / 95th

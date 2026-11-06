@@ -780,8 +780,8 @@ distribution phase visible in Figure 6’s later samples.
   in \[-1, 1\]) is that 48.5 is the correlation coefficient as a
   percentage. Variance- or SD-unit interpretations give correlation \>
   1, which is impossible. The log-scale covariance is then 0.485 \*
-  sqrt(0.2533 \* 0.2113) = 0.1122 and is encoded in the block
-  `etalcl + etalvc ~ c(0.2533, 0.1122, 0.2113)`.
+  sqrt(0.2534 \* 0.2113) = 0.1122 and is encoded in the block
+  `etalcl + etalvc ~ c(0.2534, 0.1122, 0.2113)`.
 
 - **Human gamma = 1.5 (Table IV) used; the inline Results-text mention
   of “1.66” is treated as a typo.** Table IV reports gamma = 1.5 (CV
@@ -796,7 +796,7 @@ distribution phase visible in Figure 6’s later samples.
   units `(ng/mL)` (not `(%)`), indicating additive IIV on the
   linear-scale baseline. The model approximates this as a multiplicative
   log-normal IIV with equivalent CV = 3.1 / 9.53 = 32.5%
-  (`log(0.325^2 + 1) = 0.1003`). The approximation is accurate to within
+  (`log(0.325^2 + 1) = 0.1004`). The approximation is accurate to within
   \< 5 % of the additive IIV for prolactin baselines within +-2 SD of
   the typical value, and avoids the paper-specific-eta escape hatch
   needed to encode true additive IIV alongside a canonical `lrbase`

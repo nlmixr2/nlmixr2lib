@@ -73,8 +73,8 @@ The tables below collect them in one place for review.
 | `lvp <- log(41.4)` (Vp/F_ARM, L/kg) | 41.4 | Table 1 (95% CI 29.0-58.1) |
 | `lcl_dihydroart <- log(6.8)` (CL/F_DHA, L/h/kg; F_DHA fixed to 1) | 6.8 | Table 1 (95% CI 5.8-8.0) |
 | `lvc_dihydroart <- log(3.7)` (V/F_DHA, L/kg) | 3.7 | Table 1 (95% CI 2.3-8.7) |
-| `etalcl ~ 0.155649` (CL/F_ARM IIV) | CV 41% | Table 1 (95% CI 37-50) -\> omega^2 = log(0.41^2 + 1) |
-| `etalcl_dihydroart ~ 0.198101` (CL/F_DHA IIV) | CV 47% | Table 1 (95% CI 35-57) -\> omega^2 = log(0.47^2 + 1) |
+| `etalcl ~ 0.155378` (CL/F_ARM IIV) | CV 41% | Table 1 (95% CI 37-50) -\> omega^2 = log(0.41^2 + 1) |
+| `etalcl_dihydroart ~ 0.199588` (CL/F_DHA IIV) | CV 47% | Table 1 (95% CI 35-57) -\> omega^2 = log(0.47^2 + 1) |
 | `propSd <- 0.61`, `addSd <- fixed(2)` (ARM residual) | 61% prop, 2 nM add (fixed) | Table 1 |
 | `propSd_dihydroart <- 0.82`, `addSd_dihydroart <- fixed(3)` (DHA residual) | 82% prop, 3 nM add (fixed) | Table 1 |
 | 2-cmt ARM with first-order absorption; 1-cmt DHA via complete 1:1 molar conversion | – | Results ‘Pharmacokinetics of artemether, dihydroartemisinin, and lumefantrine’; mass factor MW_DHA / MW_ARM = 284.3 / 298.4 |
@@ -88,8 +88,8 @@ The tables below collect them in one place for review.
 | `lka <- log(0.82)` (ka, 1/h) | 0.82 | Table 2 (95% CI 0.45-1.61) |
 | `lcl <- log(0.077)` (CL/F, L/h/kg = 77 mL/h/kg) | 77 mL/h/kg | Table 2 (95% CI 52-105 mL/h/kg) |
 | `lvc <- log(8.9)` (V/F, L/kg) | 8.9 | Table 2 (95% CI 6.8-11.7) |
-| `etalka ~ 1.241237` (ka IIV) | CV 156% | Table 2 (95% CI 126-190) -\> omega^2 = log(1.56^2 + 1) |
-| `etalvc ~ 0.515660` (V/F IIV) | CV 82% | Table 2 (95% CI 66-102) -\> omega^2 = log(0.82^2 + 1) |
+| `etalka ~ log(1 + 1.56^2)` (ka IIV) | CV 156% | Table 2 (95% CI 126-190) -\> omega^2 = log(1.56^2 + 1) |
+| `etalvc ~ 0.514260` (V/F IIV) | CV 82% | Table 2 (95% CI 66-102) -\> omega^2 = log(0.82^2 + 1) |
 | `propSd <- 0.46`, `addSd <- 43` (LUM residual) | 46% prop, 43 nM add | Table 2 |
 | 1-cmt with absorption lag | – | Results ‘PK of LUM was best described by a one-compartment model with a combined proportional and additive residual error. The introduction of an absorption lag time significantly improved the model (delta-OFV = -96).’ |
 | Milk intake covariate not retained | – | Results ‘The inclusion of milk intake as a covariate … did not result in an improvement of the model.’ |
@@ -99,7 +99,7 @@ The tables below collect them in one place for review.
 | Equation / parameter | Value | Source location |
 |----|----|----|
 | `p_init <- fixed(1)` (initial parasitemia, parasites/microL) | 1 (fixed) | Table 3 |
-| `etap_init ~ 1.005` (P_init IIV) | CV 119.2% | Table 3 (95% CI 98-161) -\> omega^2 = log(1.192^2 + 1) |
+| `etap_init ~ log(1 + 1.192^2)` (P_init IIV) | CV 119.2% | Table 3 (95% CI 98-161) -\> omega^2 = log(1.192^2 + 1) |
 | `lvpt <- log(15.5)` (VPT, h; visible-stage mean transit time) | 15.5 | Table 3 (95% CI 9.7-21.5) |
 | `lmtt <- log(48.5)` (MTT, h; intraerythrocytic cycle time) | 48.5 | Table 3 (95% CI 48.0-49.1) |
 | `repl <- 4` (REPL_p) | 4 | Table 3 (95% CI 3.6-4.4); ‘~12-fold per cycle’ Discussion |
@@ -517,7 +517,7 @@ knitr::kable(summary(nca_dha_res), caption = "DHA first-interval NCA (interval 0
 
 | start | end | treatment         | N   | auclast      | cmax         | tmax                |
 |------:|----:|:------------------|:----|:-------------|:-------------|:--------------------|
-|     0 |   8 | Coartem (6 doses) | 40  | 595 \[51.1\] | 164 \[51.5\] | 2.00 \[1.00, 2.00\] |
+|     0 |   8 | Coartem (6 doses) | 40  | 595 \[51.2\] | 164 \[51.6\] | 2.00 \[1.00, 2.00\] |
 
 DHA first-interval NCA (interval 0-8 h). {.table}
 
@@ -543,7 +543,7 @@ knitr::kable(summary(nca_lum_res), caption = "LUM cumulative-regimen NCA (interv
 
 | start | end | treatment | N | auclast | cmax | tmax |
 |---:|---:|:---|:---|:---|:---|:---|
-| 0 | 72 | Coartem (6 doses) | 40 | 486000 \[59.6\] | 11500 \[54.6\] | 65.2 \[63.0, 72.0\] |
+| 0 | 72 | Coartem (6 doses) | 40 | 486000 \[59.5\] | 11500 \[54.5\] | 65.2 \[63.0, 72.0\] |
 
 LUM cumulative-regimen NCA (interval 0-72 h, including the six-dose
 pulse train). {.table style="width:100%;"}

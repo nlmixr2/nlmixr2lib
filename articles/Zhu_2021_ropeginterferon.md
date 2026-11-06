@@ -352,13 +352,13 @@ clf_med
 #> # A tibble: 9 × 3
 #>   population   amt    clf
 #>   <chr>      <dbl>  <dbl>
-#> 1 Caucasian     24 0.0845
+#> 1 Caucasian     24 0.0844
 #> 2 Caucasian     48 0.0784
-#> 3 Caucasian     90 0.0683
+#> 3 Caucasian     90 0.0682
 #> 4 Caucasian    180 0.0561
 #> 5 Caucasian    225 0.0585
 #> 6 Caucasian    270 0.0496
-#> 7 Chinese       90 0.0671
+#> 7 Chinese       90 0.0672
 #> 8 Chinese      180 0.0563
 #> 9 Chinese      270 0.0445
 stopifnot(
@@ -411,14 +411,14 @@ knitr::kable(cmp, caption = "Simulated vs. published mean NCA. * differs from th
 
 | NCA parameter           | treatment        | Reference | Simulated | % diff   |
 |:------------------------|:-----------------|:----------|:----------|:---------|
-| Cmax (ng/mL)            | Caucasian 24 ug  | 1.82      | 1.54      | -15.4%   |
-| Cmax (ng/mL)            | Caucasian 48 ug  | 2.42      | 3.09      | +27.6%\* |
-| Cmax (ng/mL)            | Caucasian 90 ug  | 5.27      | 7.23      | +37.3%\* |
+| Cmax (ng/mL)            | Caucasian 24 ug  | 1.82      | 1.54      | -15.3%   |
+| Cmax (ng/mL)            | Caucasian 48 ug  | 2.42      | 3.09      | +27.7%\* |
+| Cmax (ng/mL)            | Caucasian 90 ug  | 5.27      | 7.24      | +37.4%\* |
 | Cmax (ng/mL)            | Caucasian 180 ug | 20.7      | 13.8      | -33.5%\* |
-| Cmax (ng/mL)            | Caucasian 225 ug | 21.3      | 16.3      | -23.3%\* |
+| Cmax (ng/mL)            | Caucasian 225 ug | 21.3      | 16.3      | -23.2%\* |
 | Cmax (ng/mL)            | Caucasian 270 ug | 25.2      | 22.5      | -10.7%   |
-| Cmax (ng/mL)            | Chinese 90 ug    | 4.63      | 6.73      | +45.3%\* |
-| Cmax (ng/mL)            | Chinese 180 ug   | 14.6      | 15.5      | +5.9%    |
+| Cmax (ng/mL)            | Chinese 90 ug    | 4.63      | 6.73      | +45.5%\* |
+| Cmax (ng/mL)            | Chinese 180 ug   | 14.6      | 15.5      | +6.0%    |
 | Cmax (ng/mL)            | Chinese 270 ug   | 24.1      | 24.7      | +2.5%    |
 | AUC0-∞ (obs) (ng\*h/mL) | Caucasian 24 ug  | 374       | 321       | -14.2%   |
 | AUC0-∞ (obs) (ng\*h/mL) | Caucasian 48 ug  | 621       | 689       | +11.1%   |
@@ -427,17 +427,17 @@ knitr::kable(cmp, caption = "Simulated vs. published mean NCA. * differs from th
 | AUC0-∞ (obs) (ng\*h/mL) | Caucasian 225 ug | 4350      | 4030      | -7.4%    |
 | AUC0-∞ (obs) (ng\*h/mL) | Caucasian 270 ug | 6180      | 5730      | -7.3%    |
 | AUC0-∞ (obs) (ng\*h/mL) | Chinese 90 ug    | 1280      | 1440      | +12.2%   |
-| AUC0-∞ (obs) (ng\*h/mL) | Chinese 180 ug   | 3520      | 3610      | +2.8%    |
-| AUC0-∞ (obs) (ng\*h/mL) | Chinese 270 ug   | 8000      | 6680      | -16.5%   |
+| AUC0-∞ (obs) (ng\*h/mL) | Chinese 180 ug   | 3520      | 3610      | +2.7%    |
+| AUC0-∞ (obs) (ng\*h/mL) | Chinese 270 ug   | 8000      | 6670      | -16.5%   |
 | AUClast (ng\*h/mL)      | Caucasian 24 ug  | 298       | 302       | +1.2%    |
-| AUClast (ng\*h/mL)      | Caucasian 48 ug  | 392       | 655       | +67.3%\* |
-| AUClast (ng\*h/mL)      | Caucasian 90 ug  | 1150      | 1430      | +25.0%\* |
-| AUClast (ng\*h/mL)      | Caucasian 180 ug | 3720      | 3270      | -12.0%   |
+| AUClast (ng\*h/mL)      | Caucasian 48 ug  | 392       | 655       | +67.2%\* |
+| AUClast (ng\*h/mL)      | Caucasian 90 ug  | 1150      | 1430      | +24.9%\* |
+| AUClast (ng\*h/mL)      | Caucasian 180 ug | 3720      | 3270      | -12.1%   |
 | AUClast (ng\*h/mL)      | Caucasian 225 ug | 4210      | 3900      | -7.3%    |
-| AUClast (ng\*h/mL)      | Caucasian 270 ug | 6000      | 5510      | -8.1%    |
+| AUClast (ng\*h/mL)      | Caucasian 270 ug | 6000      | 5510      | -8.2%    |
 | AUClast (ng\*h/mL)      | Chinese 90 ug    | 1060      | 1390      | +31.4%\* |
 | AUClast (ng\*h/mL)      | Chinese 180 ug   | 3420      | 3510      | +2.5%    |
-| AUClast (ng\*h/mL)      | Chinese 270 ug   | 6980      | 6450      | -7.7%    |
+| AUClast (ng\*h/mL)      | Chinese 270 ug   | 6980      | 6440      | -7.7%    |
 
 Simulated vs. published mean NCA. \* differs from the reference by
 \>20%. {.table}
@@ -559,10 +559,10 @@ fig6 |>
 
 | Regimen | Population | Simulated P10 | Simulated median | Simulated P90 | Published P10 | Published P90 |
 |:---|:---|---:|---:|---:|---:|---:|
-| 100 ug Q2W | Caucasian | 858 | 1815 | 3078 | 1867 | 11595 |
-| 100 ug Q2W | Chinese | 682 | 1806 | 3415 | 2231 | 13403 |
-| 200 ug Q2W | Caucasian | 2310 | 4289 | 7035 | 3776 | 14890 |
-| 200 ug Q2W | Chinese | 2651 | 4707 | 8186 | 4384 | 16922 |
+| 100 ug Q2W | Caucasian | 858 | 1816 | 3078 | 1867 | 11595 |
+| 100 ug Q2W | Chinese | 683 | 1807 | 3415 | 2231 | 13403 |
+| 200 ug Q2W | Caucasian | 2310 | 4288 | 7032 | 3776 | 14890 |
+| 200 ug Q2W | Chinese | 2651 | 4708 | 8184 | 4384 | 16922 |
 
 AUCss 80% intervals (ng\*h/mL): simulation vs. Zhu 2021 Results / Figure
 6. {.table}

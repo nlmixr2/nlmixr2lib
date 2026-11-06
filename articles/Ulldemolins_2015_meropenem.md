@@ -302,17 +302,17 @@ knitr::kable(
 
 | cohort                 | PPTESTCD  | median |   q05 |    q95 |
 |:-----------------------|:----------|-------:|------:|-------:|
-| Anuria (50 mL/24h)     | auclast   | 134.02 | 71.45 | 219.31 |
+| Anuria (50 mL/24h)     | auclast   | 134.02 | 71.45 | 219.30 |
 | Anuria (50 mL/24h)     | cmax      |  26.94 | 16.99 |  41.88 |
 | Anuria (50 mL/24h)     | cmin      |  10.09 |  2.40 |  19.85 |
-| Anuria (50 mL/24h)     | half.life |   5.46 |  2.07 |  14.28 |
+| Anuria (50 mL/24h)     | half.life |   5.46 |  2.07 |  14.27 |
 | Anuria (50 mL/24h)     | tmax      |   0.50 |  0.50 |   0.50 |
-| Oliguria (300 mL/24h)  | auclast   | 120.19 | 68.73 | 199.52 |
+| Oliguria (300 mL/24h)  | auclast   | 120.18 | 68.73 | 199.51 |
 | Oliguria (300 mL/24h)  | cmax      |  24.85 | 15.26 |  36.17 |
 | Oliguria (300 mL/24h)  | cmin      |   8.50 |  2.04 |  18.31 |
 | Oliguria (300 mL/24h)  | half.life |   5.06 |  2.22 |  13.31 |
 | Oliguria (300 mL/24h)  | tmax      |   0.50 |  0.50 |   0.50 |
-| Preserved (700 mL/24h) | auclast   |  90.86 | 57.51 | 177.30 |
+| Preserved (700 mL/24h) | auclast   |  90.86 | 57.52 | 177.29 |
 | Preserved (700 mL/24h) | cmax      |  22.01 | 14.85 |  36.54 |
 | Preserved (700 mL/24h) | cmin      |   5.28 |  1.02 |  15.56 |
 | Preserved (700 mL/24h) | half.life |   3.91 |  1.74 |   9.31 |

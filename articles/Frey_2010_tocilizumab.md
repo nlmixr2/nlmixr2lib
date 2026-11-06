@@ -65,9 +65,9 @@ non-smoker.
 | `e_crcl_vmax` (CRCL/106 exponent on Vmax) | `0.2` | Table II “Creatinine CL on VM” / Table III |
 | `e_smk_vmax` (smoker fractional change on Vmax) | `0.11` | Table II “Smoking on VM” = +11% |
 | `var(etalcl)` | `log(1 + 0.39^2) = 0.1416` | Table II IIV section: CL CV 39% |
-| `var(etalvc)` | `log(1 + 0.37^2) = 0.1284` | Table II: V1 CV 37% |
-| `var(etalvp)` | `log(1 + 0.66^2) = 0.3614` | Table II: V2 CV 66% |
-| `var(etalvmax)` | `log(1 + 0.54^2) = 0.2562` | Table II: Vm CV 54% |
+| `var(etalvc)` | `log(1 + 0.37^2) = 0.1283` | Table II: V1 CV 37% |
+| `var(etalvp)` | `log(1 + 0.66^2) = 0.3616` | Table II: V2 CV 66% |
+| `var(etalvmax)` | `log(1 + 0.54^2) = 0.2559` | Table II: Vm CV 54% |
 | `cor(etalcl, etalvc)` | `0.6` | Table II “COV(eta_CL : eta_V1), r” |
 | `cor(etalcl, etalvp)` | `-0.1` | Table II “COV(eta_CL : eta_V2), r” |
 | `cor(etalcl, etalvmax)` | `-0.5` | Table II “COV(eta_CL : eta_VM), r” |
@@ -397,8 +397,8 @@ knitr::kable(comparison, digits = 2,
 
 | treatment | AUC_pub_mean | AUC_sim_mean | AUC_pct_diff | Cmax_pub_mean | Cmax_sim_mean | Cmax_pct_diff | Cmin_pub_mean | Cmin_sim_mean | Cmin_pct_diff |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 4 mg/kg Q4W | 13 | 12.57 | -3.28 | 88 | 88.82 | 0.93 | 1.5 | 1.24 | -17.46 |
-| 8 mg/kg Q4W | 35 | 35.06 | 0.18 | 183 | 190.10 | 3.88 | 9.7 | 10.04 | 3.55 |
+| 4 mg/kg Q4W | 13 | 12.57 | -3.28 | 88 | 88.82 | 0.93 | 1.5 | 1.24 | -17.49 |
+| 8 mg/kg Q4W | 35 | 35.06 | 0.18 | 183 | 190.09 | 3.88 | 9.7 | 10.04 | 3.53 |
 
 Simulated vs. Frey 2010 Table IV mean steady-state AUC (10^3 h\*ug/mL),
 Cmax (ug/mL), and Cmin (ug/mL). Published values: 4 mg/kg AUC 13 (5.8),

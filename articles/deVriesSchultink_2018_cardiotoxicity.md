@@ -219,7 +219,7 @@ trp_peaks <- sim_trp |>
 
 summary(trp_peaks$TROPONIN_T_MAX)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>   5.122  13.056  19.490  22.267  27.751  79.893
+#>    5.16   13.07   19.34   22.18   27.55   78.97
 ```
 
 The paper reports a cohort-median TROPONIN_T_MAX of 18 ng/L (used as the

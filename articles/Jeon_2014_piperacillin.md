@@ -86,10 +86,10 @@ Table 2 final-model column.
 | `lq` (Q) | log(0.636) | Table 2 row “Q”; final model |
 | `e_dai_cl` (theta5; linear DAI effect on CL) | -0.0874 | Table 2 row “theta5”; final model (L/h per day) |
 | `e_sepsis_vc` (theta6; additive sepsis effect on V1) | 14.8 | Table 2 row “theta6”; final model (L) |
-| `etalcl ~ 0.118092` | log(0.354^2 + 1) | Table 2 row “omega CL” = 35.4% CV |
-| `etalvc ~ 0.165390` | log(0.424^2 + 1) | Table 2 row “omega V1” = 42.4% CV |
-| cov(etalcl, etalvc) = 0.060651 | 0.434 \* sqrt(omega^2_CL \* omega^2_V1) | Table 2 row “rho CL-V1” = 0.434 |
-| `etalq ~ 0.596277` | log(0.903^2 + 1) | Table 2 row “omega Q” = 90.3% CV |
+| `etalcl ~ 0.118064` | log(0.354^2 + 1) | Table 2 row “omega CL” = 35.4% CV |
+| `etalvc ~ 0.165325` | log(0.424^2 + 1) | Table 2 row “omega V1” = 42.4% CV |
+| cov(etalcl, etalvc) = 0.060634 | 0.434 \* sqrt(omega^2_CL \* omega^2_V1) | Table 2 row “rho CL-V1” = 0.434 |
+| `etalq ~ 0.596311` | log(0.903^2 + 1) | Table 2 row “omega Q” = 90.3% CV |
 | `propSd <- 0.185` | 0.185 | Table 2 row “sigma proportional” = 18.5% |
 | `addSd <- 0.359` | 0.359 mg/L | Table 2 row “sigma additive” = 0.359 mg/L |
 | `cl <- (exp(lcl) * (CRCL / 132) + e_dai_cl * DAY_AFTER_INJURY) * exp(etalcl)` | n/a | Results section: “CL = theta1 \* (CLCR / 132) + DAI \* theta5” |
@@ -489,8 +489,8 @@ knitr::kable(
 | Interval Start | Interval End | crcl_band | N | AUClast (hr\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (hr) | Half-life (hr) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
 | 40 | 48 | CRCL \< 100 | 12 | 608 \[64.5\] | 151 \[45.8\] | 38.4 \[129\] | 1.50 \[1.50, 1.50\] | 5.18 \[4.69\] |
-| 40 | 48 | 100 \<= CRCL \< 160 | 17 | 152 \[63.0\] | 60.8 \[41.6\] | 2.41 \[242\] | 1.50 \[1.50, 1.50\] | 1.68 \[0.893\] |
-| 40 | 48 | CRCL \>= 160 | 21 | 78.1 \[88.8\] | 40.2 \[65.7\] | 0.704 \[285\] | 1.50 \[1.50, 1.50\] | 1.51 \[1.32\] |
+| 40 | 48 | 100 \<= CRCL \< 160 | 17 | 152 \[63.0\] | 60.8 \[41.6\] | 2.41 \[242\] | 1.50 \[1.50, 1.50\] | 1.68 \[0.892\] |
+| 40 | 48 | CRCL \>= 160 | 21 | 78.1 \[88.8\] | 40.3 \[65.7\] | 0.704 \[285\] | 1.50 \[1.50, 1.50\] | 1.51 \[1.32\] |
 
 Simulated steady-state NCA parameters by CRCL band (PKNCA, 6th dosing
 interval at steady state). {.table}

@@ -66,8 +66,8 @@ file; the table below collects them in one place.
 | WT on CL and Q (shared exponent) | (WT/70)^0.93 | Table 3; Eq. 3 |
 | WT on Vc and Vp (shared exponent) | (WT/70)^0.99 | Table 3 |
 | ALB on CL | (ALB/40)^-1.54 | Table 3; Eq. 4; ALB reference = overall Table 2 median 40 g/L |
-| IIV CL | 37% CV -\> omega^2 = log(1 + 0.37^2) = 0.12832 | Table 3 (footnote b conversion) |
-| IIV Vc | 55% CV -\> omega^2 = log(1 + 0.55^2) = 0.26432 | Table 3 |
+| IIV CL | 37% CV -\> omega^2 = log(1 + 0.37^2) = 0.12831 | Table 3 (footnote b conversion) |
+| IIV Vc | 55% CV -\> omega^2 = log(1 + 0.55^2) = 0.26429 | Table 3 |
 | IIV Vp | 35% CV -\> omega^2 = log(1 + 0.35^2) = 0.11556 | Table 3 |
 | IIV ka | 80% CV -\> omega^2 = log(1 + 0.80^2) = 0.49470 | Table 3 |
 | IIV CL-Vc covariance | 0.07182 (correlation 39%) | Sibling Suleiman 2019 Table 3 (non-paper provenance; see Assumptions) |
@@ -380,7 +380,7 @@ which shows heavier subjects (\>100 kg) exposed to ~25% lower AUC.
   expected to be in the unavailable ESM. The packaged correlation (39%)
   is carried from `Suleiman_2019_risankizumab` Table 3 under the same
   sibling-substitution reasoning above; covariance = 0.39 \*
-  sqrt(0.12832 \* 0.26432) = 0.07182 given the 2018 IIV variances.
+  sqrt(0.12831 \* 0.26429) = 0.07182 given the 2018 IIV variances.
 
 - **Virtual population approximates the pooled Table 2 demographics.**
   Suleiman 2018 does not publish individual-level data. Body weight is

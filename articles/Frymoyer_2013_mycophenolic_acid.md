@@ -61,11 +61,11 @@ table below collects them in one place for review.
 | `ltlag` (lag time for Group 2 / P2) | 1.96 h | Table 3 ALAG_P2 (RSE 1.4 %) |
 | Lag time for Group 1 / P1 | 0 (fixed) | Table 3 “ALAG_P1, lag time for population without delayed absorption (h) – 0, fixed” |
 | `etalka` (IIV ka; omega^2 = log(1 + CV^2)) | log(1 + 0.730^2) = 0.4272 | Table 3 IIV ka = 73.0 % CV (RSE 24.8 %) |
-| `etalcl` (IIV CL) | log(1 + 0.374^2) = 0.1311 | Table 3 IIV CL = 37.4 % CV (RSE 23.0 %) |
-| `etalvc` (IIV V_central) | log(1 + 0.375^2) = 0.1318 | Table 3 IIV V_central = 37.5 % CV (RSE 68.4 %) |
-| `etalq` (IIV Q) | log(1 + 0.756^2) = 0.4524 | Table 3 IIV Q = 75.6 % CV (RSE 29.2 %) |
+| `etalcl` (IIV CL) | log(1 + 0.374^2) = 0.1309 | Table 3 IIV CL = 37.4 % CV (RSE 23.0 %) |
+| `etalvc` (IIV V_central) | log(1 + 0.375^2) = 0.1316 | Table 3 IIV V_central = 37.5 % CV (RSE 68.4 %) |
+| `etalq` (IIV Q) | log(1 + 0.756^2) = 0.4521 | Table 3 IIV Q = 75.6 % CV (RSE 29.2 %) |
 | `etalvp` (IIV V_peripheral) | log(1 + 1.20^2) = 0.8920 | Table 3 IIV V_peripheral = 120 % CV (RSE 30.4 %) |
-| `etalfdepot` (IIV F) | log(1 + 0.447^2) = 0.1820 | Table 3 IIV F = 44.7 % CV (RSE 37.5 %) |
+| `etalfdepot` (IIV F) | log(1 + 0.447^2) = 0.1822 | Table 3 IIV F = 44.7 % CV (RSE 37.5 %) |
 | `propSd` (proportional residual SD) | 0.423 | Table 3 Residual intra-individual variability = 42.3 % CV (RSE 6.9 %) |
 | MMF -\> MPA-equivalent conversion (oral): F_MW = 0.739 | structural | Methods “Population PK analysis” paragraph 1 |
 | MMF -\> MPA-equivalent conversion (IV): F_MW = 0.682 | structural | Methods “Population PK analysis” paragraph 1 |
@@ -388,8 +388,8 @@ cmp_tbl |>
 
 | Cohort | Reference AUC(0,24h) | Simulated AUC(0,24h) | % diff vs ref | Flag | Simulated Cmax | Simulated Tmax |
 |:---|---:|---:|---:|:---|---:|---:|
-| IV MMF 1 g q12h | 822 | 797.70 | -2.96 |  | 156.57 | 14 |
-| ORAL MMF 1 g q12h | 517 | 462.87 | -10.47 |  | 49.08 | 13 |
+| IV MMF 1 g q12h | 822 | 797.73 | -2.95 |  | 156.58 | 14 |
+| ORAL MMF 1 g q12h | 517 | 462.60 | -10.52 |  | 49.09 | 13 |
 
 Simulated vs. published 24-h AUC at steady state for the two 1 g MMF
 q12h cohorts. AUC unit ng*h/mL; Cmax unit ng/mL; Tmax unit h.* differs

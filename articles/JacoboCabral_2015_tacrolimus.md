@@ -66,7 +66,7 @@ comment. The table below collects the entries in one place.
 | `e_form_unk_fdepot` (theta12, unknown F_FOR) | -0.53 | Table 2, theta12 (RSE 16%) |
 | `e_dose_fdepot` (theta10) | -0.30 1/mg | Table 2, theta10 (RSE 19%) |
 | IIV Ka (omega^2 = log(1+0.37^2) = 0.1283) | 37% CV | Table 2, IPV Ka |
-| IIV V/F (omega^2 = log(1+0.66^2) = 0.3613) | 66% CV | Table 2, IPV V/F |
+| IIV V/F (omega^2 = log(1+0.66^2) = 0.3616) | 66% CV | Table 2, IPV V/F |
 | IIV F (omega^2 = log(1+0.38^2) = 0.1349) | 38% CV | Table 2, IPV F |
 | Residual error SD (additive on ln scale) | 0.12 | Table 2, residual error row (RSE 8%) |
 | Bioavailability F (reference subject) | 1 (anchor) | Methods + Table 2 footnote (’F = 100\*, was not estimated’) |

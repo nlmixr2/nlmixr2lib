@@ -98,14 +98,14 @@ medians per the Ma 2020 narrative (CRP 15.7 mg/L, BLPHYVAS 66, BLHAQ
 | `e_crp_lemax` | `0.333` | Ma 2020 Table 3, CRP on Log(Emax) |
 | `e_pricort_kout` (Kout multiplier for PRICORT = 1) | `1.26` | Ma 2020 Table 3, PRICORT on Kout; 0.0264 \* 1.26 = 0.0333 matches paper narrative |
 | `var(etalvmax)` | `log(0.324^2 + 1) = 0.0998` | Xu 2019 Table 3: Vm IIV 32.4% CV |
-| `var(etalcl)` | `log(0.553^2 + 1) = 0.2669` | Xu 2019 Table 3: CLO/F IIV 55.3% CV |
-| `cov(etalvmax, etalcl)` | `-0.566 * sqrt(0.0998 * 0.2669) = -0.0924` | Xu 2019 Table 3: Vm-CLO/F correlation -0.566 |
-| `var(etalvc)` | `log(0.373^2 + 1) = 0.1302` | Xu 2019 Table 3: Vc/F IIV 37.3% CV |
+| `var(etalcl)` | `log(0.553^2 + 1) = 0.2668` | Xu 2019 Table 3: CLO/F IIV 55.3% CV |
+| `cov(etalvmax, etalcl)` | `-0.566 * sqrt(0.0998 * 0.2668) = -0.0924` | Xu 2019 Table 3: Vm-CLO/F correlation -0.566 |
+| `var(etalvc)` | `log(0.373^2 + 1) = 0.1303` | Xu 2019 Table 3: Vc/F IIV 37.3% CV |
 | `var(etalka)` | `log(0.321^2 + 1) = 0.0981` | Xu 2019 Table 3: Ka IIV 32.1% CV |
 | `var(etalBase)` | `log(0.0805^2 + 1) = 0.00646` | Ma 2020 Table 3: BASE IIV 8.05% CV |
-| `var(etalEmax)` | `log(0.712^2 + 1) = 0.4105` | Ma 2020 Table 3: Log(Emax) IIV 71.2% CV |
+| `var(etalEmax)` | `log(0.712^2 + 1) = 0.4101` | Ma 2020 Table 3: Log(Emax) IIV 71.2% CV |
 | `var(etalIC50)` | `log(1.58^2 + 1) = 1.252` | Ma 2020 Table 3: IC50 IIV 158% CV |
-| `var(etalKout)` | `log(0.842^2 + 1) = 0.5360` | Ma 2020 Table 3: Kout IIV 84.2% CV |
+| `var(etalKout)` | `log(0.842^2 + 1) = 0.5359` | Ma 2020 Table 3: Kout IIV 84.2% CV |
 | `var(etalPLB)` | `log(1.05^2 + 1) = 0.7431` | Ma 2020 Table 3: PLB IIV 105% CV |
 | `propSd` (sarilumab proportional RE) | `sqrt(0.395) = 0.6285` | Xu 2019 Table 3: log-additive residual sigma^2 = 0.395 |
 | `addSd_das28` (DAS28-CRP additive RE) | `0.647` | Ma 2020 Table 3, additive residual row |

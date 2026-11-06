@@ -91,7 +91,7 @@ below collects them in one place for review.
 | `e_wt_vc = 0.763` (theta_WT-V) | 0.763 | Table 1, “theta_WT-V”; RSE 8 percent, bootstrap 0.645-0.876 |
 | `pma50_cl = 25.6` (TM50, weeks) | 25.6 | Table 1, “TM50 (weeks)”; RSE 2 percent, bootstrap 24.4-26.5 |
 | `hill_cl = 15.7` (Hill) | 15.7 | Table 1, “Hill”, **as corrected by the 2025 erratum** (<doi:10.1128/aac.00972-25>); Table 1 as printed in 2024 reads 7. RSE 37 percent, bootstrap 8.4-41.0 |
-| `etalcl` variance 0.11933 | omega^2 = log(1 + 0.356^2) | Table 1, “Interindividual variability (%CV) CL = 35.6”; RSE 21 percent, eta shrinkage 8 percent |
+| `etalcl` variance 0.11932 | omega^2 = log(1 + 0.356^2) | Table 1, “Interindividual variability (%CV) CL = 35.6”; RSE 21 percent, eta shrinkage 8 percent |
 | `etalvc` variance 0.06252 | omega^2 = log(1 + 0.254^2) | Table 1, “Interindividual variability (%CV) V = 25.4”; RSE 31 percent, eta shrinkage 29 percent |
 | `propSd = 0.191` | 19.1 percent | Table 1, “Residual error, Proportional error (%)”; RSE 13 percent, epsilon shrinkage 17 percent |
 | `pma_wk = PAGE * 4.35` | n/a | Unit conversion only: the canonical `PAGE` covariate is in months and the paper’s TM50 is in weeks |
@@ -656,12 +656,12 @@ knitr::kable(ss_summary, digits = 2,
 | PMA 23 to \<34 wk (q12h)           | Cmax (mg/L)        |  27.08 |  15.94 |  61.17 |
 | PMA 23 to \<34 wk (q12h)           | Cmin (mg/L)        |  18.57 |   6.89 |  50.24 |
 | PMA 23 to \<34 wk (q12h)           | Cavg (mg/L)        |  22.90 |  10.81 |  56.31 |
-| PMA 23 to \<34 wk (q12h)           | AUC(tau) (mg\*h/L) | 274.76 | 129.69 | 675.71 |
+| PMA 23 to \<34 wk (q12h)           | AUC(tau) (mg\*h/L) | 274.76 | 129.70 | 675.71 |
 | PMA 23 to \<34 wk (q12h)           | Half-life (h)      |  19.98 |   8.95 |  77.90 |
 | PMA 34-40 wk (q8h)                 | Cmax (mg/L)        |  31.01 |  19.08 |  51.39 |
 | PMA 34-40 wk (q8h)                 | Cmin (mg/L)        |  21.14 |   9.05 |  41.25 |
 | PMA 34-40 wk (q8h)                 | Cavg (mg/L)        |  25.71 |  13.25 |  45.73 |
-| PMA 34-40 wk (q8h)                 | AUC(tau) (mg\*h/L) | 205.67 | 105.99 | 365.84 |
+| PMA 34-40 wk (q8h)                 | AUC(tau) (mg\*h/L) | 205.67 | 106.00 | 365.83 |
 | PMA 34-40 wk (q8h)                 | Half-life (h)      |  13.61 |   6.47 |  26.63 |
 | PMA \>40 wk (q12h, counterfactual) | Cmax (mg/L)        |  23.72 |  15.25 |  36.69 |
 | PMA \>40 wk (q12h, counterfactual) | Cmin (mg/L)        |  12.31 |   5.15 |  24.90 |
@@ -769,7 +769,7 @@ exposure_by_arm |>
 | Arm | Median Cavg (mg/L) | Median Cmin (mg/L) | Subjects with Cmin \> 8 mg/L (%) |
 |:---|---:|---:|---:|
 | PMA 23 to \<34 wk (q12h) | 22.9 | 18.6 | 91.3 |
-| PMA 34-40 wk (q8h) | 25.7 | 21.1 | 96.7 |
+| PMA 34-40 wk (q8h) | 25.7 | 21.1 | 97.3 |
 | PMA \>40 wk (q6h) | 33.4 | 28.8 | 99.3 |
 | PMA \>40 wk (q12h, counterfactual) | 17.1 | 12.3 | 82.7 |
 
@@ -812,7 +812,7 @@ is the quantitative content of the paper’s recommendation to use a
   the published analysis actually used.
 - **Interindividual variability scale.** Table 1 reports IIV as %CV. The
   variances in `ini()` use the log-normal relation
-  `omega^2 = log(CV^2 + 1)` (0.11933 for CL, 0.06252 for V). If the
+  `omega^2 = log(CV^2 + 1)` (0.11932 for CL, 0.06252 for V). If the
   authors instead reported `sqrt(omega^2) * 100`, the variances would be
   0.12674 and 0.06452 - a 6 and 3 percent difference in variance,
   respectively, which does not change any conclusion in this vignette.

@@ -75,7 +75,7 @@ str(rxode2::rxode(readModelDb("Kloosterboer_2020_pipamperone"))$population)
 | `lvc` (V/F) | 416 L per 70 kg | Table 2 ‘V/F (L/70 kg)’ |
 | `e_wt_cl` | 0.75, fixed | Table 2 footnote b; Section 3.1.2 ‘fixed exponents’ |
 | `e_wt_vc` | 1, fixed | Table 2 footnote b |
-| `etalcl` | 0.041153 (20.5% CV) | Table 2 ‘IPV CL’ = 20.5%; `log(1 + 0.205^2)` |
+| `etalcl` | 0.041166 (20.5% CV) | Table 2 ‘IPV CL’ = 20.5%; `log(1 + 0.205^2)` |
 | `addSd` | 0.21 ug/L | Table 2 ‘Additional error’ |
 | `propSd` | 0.39 | Table 2 ‘Proportional error’ |
 | `addSd_hplc` | 26.6 ug/L | Table 2 ‘Additional error HPLC-UV’; Section 3.1.3 |
@@ -330,7 +330,7 @@ knitr::kable(iiv_trough, digits = 1)
 |:---------------------|-------:|-----:|------:|
 | 0.6 mg/kg BID, 25 kg |   81.3 | 44.2 | 137.5 |
 | 0.6 mg/kg BID, 50 kg |  103.6 | 54.9 | 153.9 |
-| 0.6 mg/kg BID, 75 kg |  116.0 | 64.9 | 181.6 |
+| 0.6 mg/kg BID, 75 kg |  116.0 | 64.9 | 181.7 |
 
 ``` r
 

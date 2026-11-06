@@ -103,10 +103,10 @@ Final-model column of Gupta 2015 Table 3.
 | `lvp2` (log V4 periph2) | log(83.4) | Gupta 2015 Table 3: V4 = 83.4 L (RSE 17.7%); reference at BSA = 1.90 m^2 |
 | `lfdepot` (log F) | log(0.6) | Gupta 2015 Table 3: F = 0.6 (RSE 6.0%) |
 | `e_bsa_vp2` (BSA-on-V4 exp.) | 2.3 | Gupta 2015 Table 3 BSA-on-V4 row: 2.3 (RSE 18.9%); Appendix 1 THETA(9) |
-| `etalcl` (IIV log CL) | 0.1647 | Table 3 %BSV CL 42.3% -\> omega^2 = log(1 + 0.423^2) = 0.1647 |
+| `etalcl` (IIV log CL) | 0.1646 | Table 3 %BSV CL 42.3% -\> omega^2 = log(1 + 0.423^2) = 0.1646 |
 | `etalvc` (IIV log V2) | 0.6981 | Table 3 %BSV V2 100.5% -\> omega^2 = log(1 + 1.005^2) = 0.6981 |
-| `etalvp2` (IIV log V4) | 0.1858 | Table 3 %BSV V4 45.2% -\> omega^2 = log(1 + 0.452^2) = 0.1858 |
-| `etalka` (IIV log Ka) | 0.2912 | Table 3 %BSV Ka 58.1% -\> omega^2 = log(1 + 0.581^2) = 0.2912 |
+| `etalvp2` (IIV log V4) | 0.1859 | Table 3 %BSV V4 45.2% -\> omega^2 = log(1 + 0.452^2) = 0.1859 |
+| `etalka` (IIV log Ka) | 0.2908 | Table 3 %BSV Ka 58.1% -\> omega^2 = log(1 + 0.581^2) = 0.2908 |
 | `etalfdepot` (IIV log F) | 0.1660 | Table 3 %BSV F 42.5% -\> omega^2 = log(1 + 0.425^2) = 0.1660 |
 | `propSd` (residual SD) | sqrt(0.3) | Table 3 Additive variance = 0.3 (RSE 6.1%) -\> SD = sqrt(0.3) ~ 0.5477 |
 | `d/dt(depot, central, peripheral1, peripheral2)` | n/a | Gupta 2015 Appendix 1 NONMEM ADVAN12;TRANS4 (3-compartment + first-order absorption) |
@@ -256,8 +256,8 @@ knitr::kable(
 
 | treatment             | median | q05 |  q95 |   n |
 |:----------------------|-------:|----:|-----:|----:|
-| BSA-based 2.23 mg/m^2 |   1170 | 536 | 3804 | 100 |
-| fixed 4 mg            |   1285 | 436 | 2496 | 100 |
+| BSA-based 2.23 mg/m^2 |   1170 | 536 | 3803 | 100 |
+| fixed 4 mg            |   1285 | 437 | 2495 | 100 |
 
 Simulated AUC0-inf (ng\*h/mL) after BSA-based (2.23 mg/m^2) and fixed (4
 mg) single oral ixazomib dosing (n = 1000 virtual subjects each);
@@ -399,13 +399,13 @@ knitr::kable(
 
 | treatment             | PPTESTCD   |   median |     q05 |      q95 |   n |
 |:----------------------|:-----------|---------:|--------:|---------:|----:|
-| BSA-based 2.23 mg/m^2 | aucinf.obs | 1168.980 | 534.390 | 3794.080 | 100 |
-| BSA-based 2.23 mg/m^2 | cmax       |   21.957 |   8.753 |   63.408 | 100 |
-| BSA-based 2.23 mg/m^2 | half.life  |  215.747 | 121.898 |  390.465 | 100 |
+| BSA-based 2.23 mg/m^2 | aucinf.obs | 1168.965 | 534.428 | 3793.782 | 100 |
+| BSA-based 2.23 mg/m^2 | cmax       |   21.956 |   8.754 |   63.371 | 100 |
+| BSA-based 2.23 mg/m^2 | half.life  |  215.743 | 121.913 |  390.409 | 100 |
 | BSA-based 2.23 mg/m^2 | tmax       |    1.000 |   0.488 |    3.012 | 100 |
-| fixed 4 mg            | aucinf.obs | 1283.066 | 436.287 | 2492.448 | 100 |
-| fixed 4 mg            | cmax       |   24.610 |   9.812 |   70.579 | 100 |
-| fixed 4 mg            | half.life  |  195.565 | 105.126 |  365.486 | 100 |
+| fixed 4 mg            | aucinf.obs | 1283.043 | 436.332 | 2491.885 | 100 |
+| fixed 4 mg            | cmax       |   24.612 |   9.816 |   70.546 | 100 |
+| fixed 4 mg            | half.life  |  195.567 | 105.141 |  365.423 | 100 |
 | fixed 4 mg            | tmax       |    1.000 |   0.488 |    3.250 | 100 |
 
 Simulated NCA across the two dosing arms (n = 1000 each). Cmax in ng/mL;
@@ -420,7 +420,7 @@ Tmax in h; AUC0-inf in ng\*h/mL; half-life in h. {.table}
 | AUC0-inf typical | F \* Dose / CL = 0.6 \* 4 / 2.0 = 1200 ng\*h/mL | (see fixed 4 mg row above) | Derived directly from Table 3 final estimates. |
 | Tmax | Not tabulated; reported as ~1.5-2 h post-dose (Fig 1 / abstract Ka = 0.5/h) | 1 h | Source-paper text only. |
 | Cmax (fixed 4 mg) | Not tabulated as a labelled value | 24.61 ng/mL | Shown for completeness; the paper does not report Cmax as a labelled point estimate. |
-| Terminal t1/2 | Not tabulated; “tri-exponential disposition” stated qualitatively in Methods / Discussion | 195.56 h | Tri-exponential structure means the simulated PKNCA terminal t1/2 reflects the slowest disposition phase (peripheral2). |
+| Terminal t1/2 | Not tabulated; “tri-exponential disposition” stated qualitatively in Methods / Discussion | 195.57 h | Tri-exponential structure means the simulated PKNCA terminal t1/2 reflects the slowest disposition phase (peripheral2). |
 
 ## Assumptions and deviations
 

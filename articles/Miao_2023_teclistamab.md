@@ -128,7 +128,7 @@ line.
 | `e_nigg_cl_exp_component` | 0.295 | Table 2 footnote b, RSE 21.6% |
 | `e_wt_vc` | 0.358 | Table 2 footnote c, RSE 60.9% |
 | `e_wt_vp` | 1.40 | Table 2 footnote d, RSE 25.5% |
-| `etalcl_exp_inf` | 0.2526 = log(0.536^2 + 1) | Table 2 IIV column, CV 53.6% |
+| `etalcl_exp_inf` | 0.2525 = log(0.536^2 + 1) | Table 2 IIV column, CV 53.6% |
 | `etalcl_exp_component` | 0.7631 = log(1.07^2 + 1) | Table 2 IIV column, CV 107% |
 | `etalvc` | 0.2136 = log(0.488^2 + 1) | Table 2 IIV column, CV 48.8% |
 | `etalka` | 0.1859 = log(0.452^2 + 1) | Table 2 IIV column, CV 45.2% |

@@ -106,8 +106,8 @@ the source location. The table below collects the key ones for review.
 | Tumor growth | `lsltg` (SLtg) | 2.575E-6 /day | Lindauer 2017 Table S3 medium/allometric SLtg |
 | Tumor growth | `lgamma` | 2.28 | Lindauer 2017 Table S2 mouse PK/PD gamma (kept for human) |
 | Tumor growth | `psi` | 20 | Simeoni 2004 standard PSI = 20 (cited by Lindauer 2017) |
-| IIV | `etall0` | omega^2 = 0.30237 | Lindauer 2017 Table S2 IIV L0 = 59.4% CV (mouse fit) |
-| IIV | `etalrbase` | omega^2 = 0.13164 | Lindauer 2017 Table S2 IIV W0 = 37.5% CV (mouse fit) |
+| IIV | `etall0` | omega^2 = 0.30220 | Lindauer 2017 Table S2 IIV L0 = 59.4% CV (mouse fit) |
+| IIV | `etalrbase` | omega^2 = 0.13158 | Lindauer 2017 Table S2 IIV W0 = 37.5% CV (mouse fit) |
 | Residual error | `propSd`, `addSd` | 0.197 fraction; 0.0658 ug/mL | Lindauer 2017 Table S2 mouse PK residuals (placeholders for human) |
 | Residual error | `expSd_R0_blood`, `expSd_R0_tumor` | 0.627, 0.508 CV | Lindauer 2017 Table S2 mouse RO residuals (placeholders for human) |
 | Equation | central compartment | n/a | Lindauer 2017 supplement section “Central compartment” |
@@ -150,9 +150,9 @@ mod
 #>     2.000000e-01     6.270000e-01     5.080000e-01 
 #> 
 #> Omega ($omega): 
-#>            etall0 etalrbase
-#> etall0    0.30237   0.00000
-#> etalrbase 0.00000   0.13164
+#>              etall0 etalrbase
+#> etall0    0.3022031 0.0000000
+#> etalrbase 0.0000000 0.1315764
 #> attr(,"lotriLabels")
 #> [1] "Lindauer 2017 Table S2 IIV L0 = 59.4% CV"
 #> [2] "Lindauer 2017 Table S2 IIV W0 = 37.5% CV"
@@ -299,9 +299,9 @@ mod
 #>         label("Exponential residual error on blood receptor occupancy (CV; mouse-fit placeholder)")
 #>         expSd_R0_tumor <- fix(0, 0.508)
 #>         label("Exponential residual error on tumor receptor occupancy (CV; mouse-fit placeholder)")
-#>         etall0 ~ 0.30237
+#>         etall0 ~ 0.302203129720656
 #>         label("Lindauer 2017 Table S2 IIV L0 = 59.4% CV")
-#>         etalrbase ~ 0.13164
+#>         etalrbase ~ 0.131576357788719
 #>         label("Lindauer 2017 Table S2 IIV W0 = 37.5% CV")
 #>     })
 #>     model({

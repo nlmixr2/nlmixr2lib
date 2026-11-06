@@ -108,7 +108,7 @@ section (prose only, no separate table).
 | `e_wt_vc` | +0.0181 per kg | Table 4 row ‘Body weight’ on V: +0.0181 per 1 kg deviation from 70 |
 | `e_wt_cl_gluc` (power) | 1.01 | Results LTG-glu paragraph 1: power exponent 1.01 on weight |
 | `e_crcl_cl_gluc` | +0.00759 per mL/min | Results LTG-glu paragraph 1: -0.759% per 1 mL/min decrease in CLcr |
-| `etalka` (omega^2) | log(1 + 0.711^2) = 0.4090 | Table 4 row ‘IIV Ka (%)’: 71.1 |
+| `etalka` (omega^2) | log(1 + 0.711^2) = 0.4091 | Table 4 row ‘IIV Ka (%)’: 71.1 |
 | `etalcl` (omega^2) | log(1 + 0.331^2) = 0.1040 | Table 4 row ‘IIV CL (%)’: 33.1 |
 | `etalvc` (omega^2) | log(1 + 0.301^2) = 0.0867 | Table 4 row ‘IIV V (%)’: 30.1 |
 | `etalcl_gluc` (omega^2) | log(1 + 0.417^2) = 0.1603 | Results LTG-glu paragraph 1: ‘Unexplained IIV on CL_LTG-glu was 41.7%’ |
@@ -577,7 +577,7 @@ indicate a covariate-encoding or event-table bug. {.table}
   packaged `ini()` translates these to the internal log-normal variance
   via omega^2 = log(1 + CV^2) so the simulated between-subject geometric
   CV reproduces the reported values. The corresponding numeric omega^2
-  values (0.4090 / 0.1040 / 0.0867 / 0.1603) fall inside the bootstrap
+  values (0.4091 / 0.1040 / 0.0867 / 0.1603) fall inside the bootstrap
   95% CIs the paper reports on the omega^2 scale (Table 4 columns ‘95%
   CI’ for the IIV rows).
 - **Cockcroft-Gault CLcr, not BSA-normalised eGFR.** Milosheska 2016

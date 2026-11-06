@@ -107,12 +107,12 @@ weight of 149 kDa (Aguiar 2021 Methods section 2.3).
 | Drug ODEs | n/a, see model file | Figure 1 + Table 2 footnotes |
 | Target ODEs | n/a, see model file | Figure 1 |
 | Indirect-response PD | dFC/dt = (FC0 \* Kout / stim_baseline) \* stim_fc - Kout \* FC | Table 3 footnote a |
-| IIV CL | omega^2 = log(0.18^2 + 1) = 0.03188 | Table 2 (18.0% CV) |
+| IIV CL | omega^2 = log(0.18^2 + 1) = 0.03189 | Table 2 (18.0% CV) |
 | IIV Vc | omega^2 = log(0.0979^2 + 1) = 0.00954 | Table 2 (9.79% CV) |
-| IIV Vp | omega^2 = log(0.241^2 + 1) = 0.05645 | Table 2 (24.1% CV) |
+| IIV Vp | omega^2 = log(0.241^2 + 1) = 0.05646 | Table 2 (24.1% CV) |
 | IIV logit(F) | omega^2 = 0.173^2 = 0.02993 | Table 2 (SD = 0.173 on logit scale) |
-| IIV Ksyn | omega^2 = log(0.992^2 + 1) = 0.68522 | Table 2 (99.2% CV) |
-| IIV FC0 | omega^2 = log(0.99^2 + 1) = 0.68309 | Table 3 (99.0% CV) |
+| IIV Ksyn | omega^2 = log(0.992^2 + 1) = 0.68515 | Table 2 (99.2% CV) |
+| IIV FC0 | omega^2 = log(0.99^2 + 1) = 0.68315 | Table 3 (99.0% CV) |
 | Residual on Cc | additive 4.55 nmol/L + proportional 7.77% | Table 2 |
 | Residual on FC | proportional 57.3% | Table 3 |
 
@@ -426,7 +426,7 @@ knitr::kable(
 
 | start | end | treatment | N | auclast | cmax | cmin | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 56 | IV_induction | 200 | 8500 \[25.7\] | 770 \[16.7\] | 35.4 \[78.7\] | 0.000 \[0.000, 0.000\] | 17.9 \[5.24\] |
+| 0 | 56 | IV_induction | 200 | 8500 \[25.7\] | 770 \[16.7\] | 35.4 \[78.8\] | 0.000 \[0.000, 0.000\] | 17.9 \[5.24\] |
 | 0 | 56 | SC_90mg_Q8W_ss | 200 | 1710 \[33.5\] | 60.7 \[21.8\] | 10.3 \[60.5\] | 3.50 \[3.50, 7.00\] | 21.9 \[4.57\] |
 
 Simulated NCA: IV induction (0-8 weeks) and SC steady-state interval

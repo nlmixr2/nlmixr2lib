@@ -259,12 +259,8 @@ a sensible range.
 
 sim_vpc <- rxSolve(mod, ev_one, nSub = n_subj, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [intdy -- t = 1.7154e-319 illegal]: 10 warning(s) for subject(s): 1 (sim 21)
-#> [intdy -- t = 4.64275e-310 illegal]: 6 warning(s) for subject(s): 1 (sim 68)
-#> [intdy -- t = 5.74658e-319 illegal]: 97 warning(s) for subject(s): 1 (sim 68)
-#> [intdy -- t = 6.43273e-319 illegal]: 97 warning(s) for subject(s): 1 (sim 76)
-#> [intdy -- t = 6.94967e-310 illegal]: 8 warning(s) for subject(s): 1 (sim 2), 1 (sim 21), 1 (sim 76)
-#> [intdy -- t = 8.57698e-321 illegal]: 10 warning(s) for subject(s): 1 (sim 2)
+#> [intdy -- t = 0 illegal]: 14 warning(s) for subject(s): 1 (sim 2), 1 (sim 21), 1 (sim 68), 1 (sim 76)
+#> [intdy -- t = 4.63915e-310 illegal]: 214 warning(s) for subject(s): 1 (sim 2), 1 (sim 21), 1 (sim 68), 1 (sim 76)
 #> [lsoda -- internal t + h = t (h too small for machine precision)]: 14 warning(s) for subject(s): 1 (sim 2), 1 (sim 21), 1 (sim 68), 1 (sim 76)
 # rxSolve duplicates rows when multiple cmts are observed at the same time;
 # dedup by (sim.id, time).
@@ -480,5 +476,5 @@ sessionInfo()
 #> [55] farver_2.1.2        dparser_1.3.1-14    htmltools_0.5.9    
 #> [58] labeling_0.4.3      rmarkdown_2.32      compiler_4.6.2     
 #> [61] S7_0.2.2            downlit_0.4.5       askpass_1.2.1      
-#> [64] openssl_2.4.2
+#> [64] openssl_2.5.0
 ```

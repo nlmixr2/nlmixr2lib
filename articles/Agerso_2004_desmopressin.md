@@ -273,10 +273,10 @@ knitr::kable(nca_summary, digits = 3,
 
 | group              | aucinf.obs |    cmax | half.life |  tmax |
 |:-------------------|-----------:|--------:|----------:|------:|
-| Group 1 (normal)   |         NA | 113.072 |     3.732 | 0.083 |
-| Group 2 (mild)     |         NA | 118.891 |     4.540 | 0.083 |
-| Group 3 (moderate) |         NA | 120.719 |     6.869 | 0.083 |
-| Group 4 (severe)   |         NA | 115.354 |     9.750 | 0.083 |
+| Group 1 (normal)   |         NA | 113.074 |     3.732 | 0.083 |
+| Group 2 (mild)     |         NA | 118.889 |     4.540 | 0.083 |
+| Group 3 (moderate) |         NA | 120.717 |     6.869 | 0.083 |
+| Group 4 (severe)   |         NA | 115.350 |     9.750 | 0.083 |
 
 Median simulated NCA parameters by renal-function group. {.table}
 

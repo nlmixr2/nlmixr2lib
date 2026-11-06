@@ -177,8 +177,8 @@ knitr::kable(nca_summary, digits = 2,
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 28 | High-titer ADA | 21 | 9.63 \[49.1\] | 0.982 \[56.5\] | 3.50 \[3.50, 3.50\] | 5.53 \[1.80\] |
-| 0 | 28 | Negative/Low-titer ADA | 479 | 43.3 \[44.9\] | 2.29 \[42.3\] | 3.50 \[3.50, 10.5\] | 16.1 \[5.36\] |
+| 0 | 28 | High-titer ADA | 21 | 9.62 \[48.8\] | 0.981 \[56.3\] | 3.50 \[3.50, 3.50\] | 5.53 \[1.79\] |
+| 0 | 28 | Negative/Low-titer ADA | 479 | 43.3 \[44.6\] | 2.29 \[42.0\] | 3.50 \[3.50, 10.5\] | 16.1 \[5.34\] |
 
 NCA summary (2nd dosing interval, weeks 4-8) {.table}
 

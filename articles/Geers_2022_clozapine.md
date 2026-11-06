@@ -103,7 +103,7 @@ Samples were taken pre-dose and 2, 4, 6 and 8 h after the morning dose:
 | `lvd` | `log(5.21)` L/kg | Table 3, Vd/F 5.21 +/- 3.82 |
 | `lfdepot` | `fixed(log(1))` | Methods, ‘F of clozapine was fixed at 1’; Table 3 footnote |
 | `etalka` | `fixed(0.220230)` | Table 3, SD 0.68 / mean 1.37 = CV 49.6 %, `log(1 + CV^2)` |
-| `etalkel` | 0.280840 | Table 3, SD 0.0365 / mean 0.0641 = CV 56.9 %, `log(1 + CV^2)` |
+| `etalkel` | 0.280841 | Table 3, SD 0.0365 / mean 0.0641 = CV 56.9 %, `log(1 + CV^2)` |
 | `etalvd` | 0.430216 | Table 3, SD 3.82 / mean 5.21 = CV 73.3 %, `log(1 + CV^2)` |
 | `addSd` | `fixed(10)` ug/L | Methods, assay error ‘SD = 10 + 0.1 x C’ |
 | `propSd` | `fixed(0.1)` | Methods, assay error ‘SD = 10 + 0.1 x C’ |
@@ -126,7 +126,7 @@ knitr::kable(
 | addSd | 10.000000 | TRUE | Additive residual SD (ug/L; assay SD intercept, not estimated) |
 | propSd | 0.100000 | TRUE | Proportional residual SD (fraction; assay SD slope, not estimated) |
 | etalka | 0.220230 | TRUE | Table 3, Ka 1.37 +/- 0.68, held at the literature prior -\> 49.6 % CV |
-| etalkel | 0.280840 | FALSE | Table 3, Kelm 0.0641 +/- 0.0365 -\> 56.9 % CV; shrinkage 0.079 |
+| etalkel | 0.280841 | FALSE | Table 3, Kelm 0.0641 +/- 0.0365 -\> 56.9 % CV; shrinkage 0.079 |
 | etalvd | 0.430216 | FALSE | Table 3, Vd/F 5.21 +/- 3.82 -\> 73.3 % CV; shrinkage 0.054 |
 
 ## Structural verification
@@ -509,7 +509,7 @@ statistics do not depend on dose.
 
 ``` r
 
-om <- c(ka = 0.220230, kel = 0.280840, vd = 0.430216)
+om <- c(ka = 0.220230, kel = 0.280841, vd = 0.430216)
 
 neg_log_post <- function(eta, obs, times, dose, tau, wt) {
   pred <- css_closed(times, dose, tau, th[["ka"]], th[["kel"]] * exp(eta[1]), th[["vd"]] * exp(eta[2]) * wt)
@@ -714,7 +714,7 @@ sessionInfo()
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
 #> [28] pkgdown_2.2.1       crayon_1.5.3        jquerylib_0.1.4    
-#> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
+#> [31] whisker_0.4.1       openssl_2.5.0       cachem_1.1.0       
 #> [34] nlme_3.1-171        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
 #> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.2         

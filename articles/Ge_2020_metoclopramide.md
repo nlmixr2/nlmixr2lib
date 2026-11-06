@@ -65,7 +65,7 @@ The table below collects them in one place.
 | `lfdepot` | log(0.97) | Table 2 (F); Eq. 10 |
 | `e_wt_cl_q` | 0.75 (fixed) | Methods “Covariate selection”; Results; Eqs. 6 and 8 |
 | `e_wt_vc_vp` | 1 (fixed) | Methods “Covariate selection”; Results; Eqs. 7 and 9 |
-| `etalcl` | 0.16501 = log(1 + 0.424^2) | Table 2 (IIV CL 42.4 %CV); Eq. 1 |
+| `etalcl` | 0.16532 = log(1 + 0.424^2) | Table 2 (IIV CL 42.4 %CV); Eq. 1 |
 | `propSd` | 0.333 | Table 2 (proportional error 33.3%) |
 | Two-compartment, first-order absorption, no lag | n/a | Results “PopPK model development and evaluation” |
 | One Ka and one F for all enteral routes | n/a | Results (route-specific Ka / F did not improve the fit) |
@@ -358,14 +358,14 @@ nca_wide |>
 
 | Regimen \| age group | Median Cmax,ss (ng/mL) | Median Tmax,ss (h) | Median AUCss,0-6h (ng\*h/mL) |
 |:---|---:|---:|---:|
-| 0.1 mg/kg q6h \| 1 month to \< 2 years | 40.3 | 1.2 | 203.1 |
+| 0.1 mg/kg q6h \| 1 month to \< 2 years | 40.3 | 1.2 | 203.2 |
 | 0.1 mg/kg q6h \| 12 to \< 18 years | 60.6 | 1.2 | 313.6 |
 | 0.1 mg/kg q6h \| 2 to \< 12 years | 54.0 | 1.2 | 279.0 |
 | 0.1 mg/kg q6h \| \< 1 month | 32.8 | 1.2 | 162.1 |
 | 0.15 mg/kg q6h \| 1 month to \< 2 years | 57.6 | 1.2 | 286.5 |
 | 0.15 mg/kg q6h \| 12 to \< 18 years | 95.4 | 1.2 | 496.7 |
 | 0.15 mg/kg q6h \| 2 to \< 12 years | 76.5 | 1.2 | 391.3 |
-| 0.15 mg/kg q6h \| \< 1 month | 50.2 | 1.2 | 248.1 |
+| 0.15 mg/kg q6h \| \< 1 month | 50.1 | 1.2 | 248.1 |
 
 PKNCA steady-state summary by regimen and age group. {.table}
 
@@ -417,11 +417,11 @@ comparison |>
 | Quantity | Ge 2020 | This simulation |
 |:---|---:|---:|
 | 0.1 mg/kg, all ages: Css,max in 26-94 ng/mL (%) | 84.3 | 85.6 |
-| 0.1 mg/kg, all ages: AUCss,0-6h in 115-374 ng\*h/mL (%) | 75.5 | 77.0 |
+| 0.1 mg/kg, all ages: AUCss,0-6h in 115-374 ng\*h/mL (%) | 75.5 | 76.9 |
 | 0.1 mg/kg, 1 month to \< 2 years: Css,max in range (%) | 87.8 | 89.0 |
 | 0.1 mg/kg, 1 month to \< 2 years: AUCss,0-6h in range (%) | 82.6 | 85.5 |
 | 0.15 mg/kg, \< 1 month: Css,max in range (%) | 94.2 | 94.5 |
-| 0.15 mg/kg, \< 1 month: AUCss,0-6h in range (%) | 81.8 | 89.0 |
+| 0.15 mg/kg, \< 1 month: AUCss,0-6h in range (%) | 81.8 | 88.5 |
 | 0.1 mg/kg, 12 to \< 18 years: Css,max \> 143 ng/mL (%) | 1.0 | 1.5 |
 
 Percentage of virtual patients within the exposure ranges. {.table}
@@ -449,7 +449,7 @@ med_by_group
 #>   <fct>                <dbl> <dbl>
 #> 1 < 1 month             32.5  163.
 #> 2 1 month to < 2 years  40.1  204.
-#> 3 2 to < 12 years       53.7  279.
+#> 3 2 to < 12 years       53.7  280.
 #> 4 12 to < 18 years      60.3  314.
 # Realised medians (identical at 2 and 16 solver threads): Css,max 32.5 / 40.1 / 53.7 / 60.3
 # ng/mL and AUCss 163 / 204 / 279 / 314 ng*h/mL from youngest to oldest. The
@@ -495,7 +495,7 @@ stopifnot(
   record.
 - **IIV.** Only clearance carries interindividual variability. The
   reported 42.4 %CV was converted to a log-normal variance with omega^2
-  = log(CV^2 + 1) = 0.16501.
+  = log(CV^2 + 1) = 0.16532.
 - **Screened covariates.** Serum creatinine was significant after
   backward elimination but was excluded by the authors (model
   instability, failed covariance step, and loss of significance after

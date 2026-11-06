@@ -73,7 +73,7 @@ modeling”):
 
 CL/F has a single log-normal inter-individual variability term applied
 uniformly across all CYP2B6\*18 groups: 70.3 % CV (Dhoro 2015 Table 3,
-RSE 7 %; omega^2 = log(1 + 0.703^2) = 0.40114). Residual error is
+RSE 7 %; omega^2 = log(1 + 0.703^2) = 0.40160). Residual error is
 proportional only; the source paper reports PROP_ERR = 0.12 in NONMEM VI
 \$SIGMA variance form, giving a proportional SD of sqrt(0.12) = 0.3464
 (~34.6 % CV) on the linear concentration scale.
@@ -95,7 +95,7 @@ The table below collects them in one place for review.
 | `e_6tt_cl` (CYP2B6\*6 TT vs GT) | -0.634 | Dhoro 2015 Table 3 |
 | `e_wt_cl` (per +10 kg from 60 kg) | +0.211 | Dhoro 2015 Table 3 / Results |
 | `e_sexf_cl` (female vs male) | +0.222 | Dhoro 2015 Table 3 |
-| `etalcl` IIV (CV 70.3 %) | omega^2 = 0.40114 | Dhoro 2015 Table 3 |
+| `etalcl` IIV (CV 70.3 %) | omega^2 = 0.40160 | Dhoro 2015 Table 3 |
 | `propSd` (proportional residual SD) | sqrt(0.12) = 0.3464 | Dhoro 2015 Table 3 |
 | Equation: 1-compartment, first-order oral absorption | n/a | Dhoro 2015 Methods, “Pharmacokinetic parameter estimation” |
 | Equation: CL/F multiplicative covariate model | n/a | Dhoro 2015 Methods, “Population pharmacokinetic modeling” |
@@ -174,19 +174,19 @@ sim <- rxode2::rxSolve(
   as.data.frame()
 head(sim)
 #>   id time is_18_TC is_18_CC is_6_GG is_6_TT    ltvcl       cl  vc   ka
-#> 1  1  480        0        0       0       0 1.947338 15.60809 150 0.18
-#> 2  1  481        0        0       0       0 1.947338 15.60809 150 0.18
-#> 3  1  482        0        0       0       0 1.947338 15.60809 150 0.18
-#> 4  1  483        0        0       0       0 1.947338 15.60809 150 0.18
-#> 5  1  484        0        0       0       0 1.947338 15.60809 150 0.18
-#> 6  1  485        0        0       0       0 1.947338 15.60809 150 0.18
+#> 1  1  480        0        0       0       0 1.947338 15.61248 150 0.18
+#> 2  1  481        0        0       0       0 1.947338 15.61248 150 0.18
+#> 3  1  482        0        0       0       0 1.947338 15.61248 150 0.18
+#> 4  1  483        0        0       0       0 1.947338 15.61248 150 0.18
+#> 5  1  484        0        0       0       0 1.947338 15.61248 150 0.18
+#> 6  1  485        0        0       0       0 1.947338 15.61248 150 0.18
 #>         kel        Cc  ipredSim       sim    depot  central SEXF   WT
-#> 1 0.1040539 0.7225059 0.7225059 0.4947856 608.0875 108.3759    1 65.3
-#> 2 0.1040539 1.2843474 1.2843474 1.0283422 507.9174 192.6521    1 65.3
-#> 3 0.1040539 1.6863531 1.6863531 2.1977805 424.2483 252.9530    1 65.3
-#> 4 0.1040539 1.9615018 1.9615018 2.4442527 354.3619 294.2253    1 65.3
-#> 5 0.1040539 2.1366791 2.1366791 1.6107618 295.9880 320.5019    1 65.3
-#> 6 0.1040539 2.2337574 2.2337574 2.6745460 247.2300 335.0636    1 65.3
+#> 1 0.1040832 0.7221336 0.7221336 0.4945306 608.0875 108.3200    1 65.3
+#> 2 0.1040832 1.2839834 1.2839834 1.0280508 507.9174 192.5975    1 65.3
+#> 3 0.1040832 1.6859834 1.6859834 2.1972987 424.2483 252.8975    1 65.3
+#> 4 0.1040832 1.9611176 1.9611176 2.4437740 354.3619 294.1676    1 65.3
+#> 5 0.1040832 2.1362757 2.1362757 1.6104576 295.9880 320.4413    1 65.3
+#> 6 0.1040832 2.2333329 2.2333329 2.6740378 247.2300 334.9999    1 65.3
 #>   SNP_CYP2B6_RS3745274_T_COUNT SNP_CYP2B6_RS28399499_C_COUNT
 #> 1                            1                             0
 #> 2                            1                             0
@@ -324,7 +324,7 @@ knitr::kable(
 
 | start | end | cyp2b6_18 | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | CC | 8 | 879 \[66.8\] | 37.3 \[65.1\] | 9.50 \[8.00, 14.0\] | 439 \[438\] |
+| 0 | 24 | CC | 8 | 879 \[66.9\] | 37.3 \[65.1\] | 9.50 \[8.00, 14.0\] | 439 \[438\] |
 | 0 | 24 | TC | 47 | 246 \[105\] | 11.2 \[93.8\] | 8.00 \[6.00, 10.0\] | 72.6 \[70.0\] |
 | 0 | 24 | TT | 145 | 92.9 \[119\] | 4.78 \[92.1\] | 7.00 \[4.00, 10.0\] | 28.3 \[32.7\] |
 

@@ -83,7 +83,7 @@ Table 2 final-model column.
 | `allo_cl` (allometric exponent on CL) | fixed(0.75) | Covariate analysis section (“allometric coefficients of 0.75 for CL… \[fixed\]”) |
 | `allo_vc` (allometric exponent on V) | fixed(1.0) | Covariate analysis section (“\[allometric coefficients of\] 1 for V \[fixed\]”) |
 | `e_crcl_cl` (CRCL exponent on CL) | 0.82 | Table 2 row “F_CRCL = (CRCL/124)^theta_3” theta_3 = 0.82 |
-| `etalcl ~ 0.02851` | log(0.170^2 + 1) | Table 2 row “CL (CV)” final model = 17.0% |
+| `etalcl ~ 0.02849` | log(0.170^2 + 1) | Table 2 row “CL (CV)” final model = 17.0% |
 | `etalvc ~ 0.01575` | log(0.126^2 + 1) | Table 2 row “V (CV)” final model = 12.6% |
 | `propSd <- 0.382` | 0.382 | Table 2 row “ERR(1)” = 38.2% (proportional) |
 | `addSd <- 16.0` | 16.0 mg/L | Table 2 row “ERR(2)” = 16.0 (additive; units interpreted as mg/L – see Assumptions) |
@@ -434,7 +434,7 @@ knitr::kable(
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
 | 156 | 168 | low CRCL | 17 | 368 \[20.0\] | 114 \[14.3\] | 2.28 \[180\] | 0.500 \[0.500, 0.500\] | 30.7 \[20.0\] |
 | 156 | 168 | median CRCL | 17 | 308 \[20.7\] | 114 \[12.1\] | 1.00 \[134\] | 0.500 \[0.500, 0.500\] | 25.7 \[20.7\] |
-| 156 | 168 | high CRCL | 17 | 226 \[20.5\] | 111 \[11.7\] | 0.157 \[281\] | 0.500 \[0.500, 0.500\] | 18.9 \[20.5\] |
+| 156 | 168 | high CRCL | 17 | 226 \[20.5\] | 111 \[11.7\] | 0.157 \[280\] | 0.500 \[0.500, 0.500\] | 18.9 \[20.5\] |
 
 Simulated steady-state NCA parameters by CRCL band (PKNCA). {.table
 style="width:100%;"}

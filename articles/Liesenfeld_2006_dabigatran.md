@@ -70,9 +70,9 @@ place for review.
 | `let50` (ET50, h) | 1.62 days | `log(1.62 * 24)` | Table 2 (RSE 15.99%) |
 | `emba` (EM_BA) | 0.102 | `0.102` | Table 2 (RSE 14.41%) |
 | `emmx` (EM_MX) | 0.463 | `0.463` | Table 2 (RSE 12.68%) |
-| IIV E0 (CV 8.7%) | omega^2 = log(1 + 0.087^2) = 0.007541 | `etalrbase ~ 0.007541` | Table 2 |
+| IIV E0 (CV 8.7%) | omega^2 = log(1 + 0.087^2) = 0.007540 | `etalrbase ~ 0.007540` | Table 2 |
 | IIV Emax (CV 19.9%) | omega^2 = log(1 + 0.199^2) = 0.03884 | `etalemax ~ 0.03884` | Table 2 |
-| IIV EC50 (CV 38.5%) | omega^2 = log(1 + 0.385^2) = 0.13821 | `etalec50 ~ 0.13821` | Table 2 |
+| IIV EC50 (CV 38.5%) | omega^2 = log(1 + 0.385^2) = 0.13822 | `etalec50 ~ 0.13822` | Table 2 |
 | IIV SLOP (CV 15.2%) | omega^2 = log(1 + 0.152^2) = 0.02284 | `etalslope ~ 0.02284` | Table 2 |
 | Residual error (proportional CV 7.55%) | 0.0755 | `propSd <- 0.0755` | Table 2 (RSE 3.53%) |
 | Combined linear + Emax model | – | `aPTT <- rbase_t + emax_t * Cc / (ec50 + Cc) + slope * Cc` | Equation 1 |
@@ -89,8 +89,8 @@ place for review.
 | `lkm` (KM, 1/h) | 0.617 / 24 | `log(0.617 / 24)` | Table 3 (KM = 0.617 day-1; table unit “h-1” is a transcription error – see Assumptions and deviations; RSE 13.55%) |
 | `let50` (ET50, h) | 2.86 days | `log(2.86 * 24)` | Table 3 (RSE 13.50%) |
 | `emba` (EM_BA) | 0.175 | `0.175` | Table 3 (RSE 6.46%) |
-| IIV E0 (CV 8.2%) | omega^2 = log(1 + 0.082^2) = 0.006700 | `etalrbase ~ 0.006700` | Table 3 |
-| IIV SLOP (CV 13.7%) | omega^2 = log(1 + 0.137^2) = 0.01859 | `etalslope0 ~ 0.01859` | Table 3 |
+| IIV E0 (CV 8.2%) | omega^2 = log(1 + 0.082^2) = 0.006701 | `etalrbase ~ 0.006701` | Table 3 |
+| IIV SLOP (CV 13.7%) | omega^2 = log(1 + 0.137^2) = 0.01860 | `etalslope0 ~ 0.01860` | Table 3 |
 | Residual error (proportional CV 6.63%) | 0.0663 | `propSd <- 0.0663` | Table 3 (RSE 6.83%) |
 | Linear model with time-varying slope | – | `ECT <- rbase_t + slope_t * Cc` | Equation 2 |
 | Proportional inhibitory decay of baseline | – | `rbase_t <- rbase * (1 - emba * t / (et50 + t))` | Equation 3 |

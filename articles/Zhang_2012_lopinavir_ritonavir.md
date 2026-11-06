@@ -112,6 +112,17 @@ and every covariate / interaction effect in one place for review.
 | Dynamic LPV CL/F inhibition equation | `CL_LPV(t) = CL0_LPV * (1 - Imax * C_RTV / (IC50 + C_RTV))` | Methods ‘Population pharmacokinetic analysis’ equation |
 | Savic transit-chain input rate (RTV) | `rate = bio * dose * (ktr*t)^NN * exp(-ktr*t) / Gamma(NN+1)` with `ktr = (NN+1)/MTT` | Methods ‘Population pharmacokinetic analysis’ paragraph 2 (citing Savic et al.) |
 
+## Errata
+
+- **The published CVs are first-order approximations.** The Methods
+  state: “Since variability in such a model can be approximately
+  interpreted as a deviation proportional to the typical value, it will
+  be reported as % coefficient of variation (CV).” Each printed CV is
+  therefore the standard deviation of the corresponding random effect,
+  and the model’s variances are the squares of the printed CVs (for
+  example `etalka ~ 0.942^2` for the 94.2% IOV on lopinavir ka), not the
+  exact log-normal conversion `log(1 + CV^2)`.
+
 ## Virtual cohort
 
 Original observed data are not publicly available. The simulations below
@@ -413,14 +424,14 @@ knitr::kable(
 
 | regimen            | trough_type   | median_mgL | pct_above_target |
 |:-------------------|:--------------|-----------:|-----------------:|
-| PK1: 400/100 noRIF | C0 (morning)  |      12.24 |              100 |
-| PK1: 400/100 noRIF | C12 (evening) |       8.20 |               99 |
-| PK2: 400/100 +RIF  | C0 (morning)  |       2.93 |               93 |
-| PK2: 400/100 +RIF  | C12 (evening) |       0.70 |               36 |
-| PK3: 600/150 +RIF  | C0 (morning)  |       6.58 |              100 |
-| PK3: 600/150 +RIF  | C12 (evening) |       2.69 |               77 |
-| PK4: 800/200 +RIF  | C0 (morning)  |      13.65 |              100 |
-| PK4: 800/200 +RIF  | C12 (evening) |       7.22 |               94 |
+| PK1: 400/100 noRIF | C0 (morning)  |      12.30 |              100 |
+| PK1: 400/100 noRIF | C12 (evening) |       8.26 |               99 |
+| PK2: 400/100 +RIF  | C0 (morning)  |       2.96 |               93 |
+| PK2: 400/100 +RIF  | C12 (evening) |       0.69 |               37 |
+| PK3: 600/150 +RIF  | C0 (morning)  |       6.59 |              100 |
+| PK3: 600/150 +RIF  | C12 (evening) |       2.76 |               78 |
+| PK4: 800/200 +RIF  | C0 (morning)  |      13.81 |              100 |
+| PK4: 800/200 +RIF  | C12 (evening) |       7.34 |               95 |
 
 Simulated lopinavir morning (C0) and evening (C12) trough summary at
 steady state by regimen. Target = 1 mg/L. Zhang 2012 reports 99.5% above
@@ -487,10 +498,10 @@ knitr::kable(nca_summary_lpv,
 
 | Interval Start | Interval End | regimen | N | AUClast (h\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 152 | 164 | PK1: 400/100 noRIF | 100 | 160 \[40.0\] | 17.0 \[33.4\] | 7.21 \[85.6\] | 2.00 \[0.500, 4.00\] |
-| 152 | 164 | PK2: 400/100 +RIF | 100 | 42.9 \[47.7\] | 6.26 \[36.1\] | 0.440 \[408\] | 2.00 \[0.500, 4.00\] |
-| 152 | 164 | PK3: 600/150 +RIF | 100 | 97.3 \[47.7\] | 12.3 \[40.1\] | 2.07 \[207\] | 2.00 \[0.500, 4.00\] |
-| 152 | 164 | PK4: 800/200 +RIF | 100 | 179 \[40.8\] | 20.6 \[35.5\] | 5.84 \[146\] | 2.00 \[0.500, 4.00\] |
+| 152 | 164 | PK1: 400/100 noRIF | 100 | 160 \[40.5\] | 17.0 \[34.0\] | 7.22 \[86.6\] | 2.00 \[0.500, 4.00\] |
+| 152 | 164 | PK2: 400/100 +RIF | 100 | 42.8 \[48.4\] | 6.23 \[36.9\] | 0.452 \[405\] | 2.00 \[0.500, 4.00\] |
+| 152 | 164 | PK3: 600/150 +RIF | 100 | 97.0 \[48.3\] | 12.3 \[41.1\] | 2.10 \[203\] | 2.00 \[0.500, 4.00\] |
+| 152 | 164 | PK4: 800/200 +RIF | 100 | 179 \[41.3\] | 20.5 \[36.4\] | 5.89 \[146\] | 2.00 \[0.500, 4.00\] |
 
 Simulated steady-state NCA – lopinavir, morning dose interval (12 h), by
 regimen. {.table}
@@ -531,10 +542,10 @@ knitr::kable(nca_summary_rtv,
 
 | Interval Start | Interval End | regimen | N | AUClast (h\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 152 | 164 | PK1: 400/100 noRIF | 100 | 7.34 \[44.0\] | 1.44 \[37.1\] | 0.180 \[78.6\] | 2.00 \[1.00, 3.00\] |
-| 152 | 164 | PK2: 400/100 +RIF | 100 | 2.74 \[47.5\] | 0.616 \[46.6\] | 0.0486 \[94.6\] | 2.00 \[1.00, 4.00\] |
-| 152 | 164 | PK3: 600/150 +RIF | 100 | 5.62 \[45.5\] | 1.30 \[39.3\] | 0.0999 \[101\] | 2.00 \[1.00, 3.00\] |
-| 152 | 164 | PK4: 800/200 +RIF | 100 | 10.3 \[46.5\] | 2.32 \[44.2\] | 0.185 \[97.4\] | 2.00 \[1.00, 3.00\] |
+| 152 | 164 | PK1: 400/100 noRIF | 100 | 7.34 \[44.8\] | 1.45 \[38.0\] | 0.180 \[79.6\] | 2.00 \[1.00, 3.00\] |
+| 152 | 164 | PK2: 400/100 +RIF | 100 | 2.73 \[48.4\] | 0.615 \[47.7\] | 0.0486 \[95.7\] | 2.00 \[1.00, 4.00\] |
+| 152 | 164 | PK3: 600/150 +RIF | 100 | 5.62 \[46.4\] | 1.30 \[40.1\] | 0.0997 \[102\] | 2.00 \[1.00, 3.00\] |
+| 152 | 164 | PK4: 800/200 +RIF | 100 | 10.3 \[47.4\] | 2.32 \[45.3\] | 0.185 \[98.5\] | 2.00 \[1.00, 3.00\] |
 
 Simulated steady-state NCA – ritonavir, morning dose interval (12 h), by
 regimen. {.table}
@@ -575,7 +586,7 @@ knitr::kable(
 | trough_type   | simulated_pct_above_1mgL | paper_pct_above_1mgL |
 |:--------------|-------------------------:|---------------------:|
 | C0 (morning)  |                      100 |                 99.5 |
-| C12 (evening) |                       94 |                 77.9 |
+| C12 (evening) |                       95 |                 77.9 |
 
 Lopinavir target achievement at PK4 (800/200 mg + RIF). Paper Results
 ‘Model evaluation and simulation’ paragraph 3. {.table}

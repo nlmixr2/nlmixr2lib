@@ -65,7 +65,7 @@ table below collects them in one place for review.
 | `lcl` (theta_CLbody) | 2.89 L/h (RSE 10.4%) | Table 2, final-model column |
 | `e_crcl_cl` (theta_CLCR) | 0.0183 per mL/min (RSE 19.1%) | Table 2, final-model column |
 | `lvc` (theta_V) | 26.0 L (RSE 12.7%) | Table 2, final-model column |
-| `etalcl` | 42.1 %CV -\> omega^2 = 0.163214 | Table 2, final-model column; %CV formula in the Table 2 footnote |
+| `etalcl` | 42.1 %CV -\> omega^2 = 0.163174 | Table 2, final-model column; %CV formula in the Table 2 footnote |
 | eta on `vc` | fixed to zero (omitted) | Results p. 1109: “the variability of this population parameter was fixed at zero” |
 | `propSd` | 0.286 (28.6 %CV) | Table 2, final-model column |
 | `addSd` | 0.128 mg/L | Table 2, final-model column |
@@ -188,7 +188,6 @@ sim <- rxode2::rxSolve(
   as.data.frame() |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(time = round(time, 6))
-#> ℹ parameter labels from comments will be replaced by 'label()'
 ```
 
 ### The ODE solve reproduces the closed-form steady-state solution
@@ -222,7 +221,7 @@ trough_chk <- sim |>
   )
 
 max(trough_chk$rel_err)
-#> [1] 1.211771e-10
+#> [1] 1.210619e-10
 
 # Solver-versus-analytic agreement on identical parameters: a tight bound is
 # correct here. It also proves that QEFF actually reaches the ODE -- dropping
@@ -288,7 +287,7 @@ deterministically, which is what the assertions below gate on.
 
 ``` r
 
-OMEGA_SD <- sqrt(0.163214)   # log(0.421^2 + 1); Table 2 IIV on CLbody
+OMEGA_SD <- sqrt(0.163174)   # log(0.421^2 + 1); Table 2 IIV on CLbody
 VC_TV    <- 26.0             # Table 2
 CLBODY   <- function(crcl) 2.89 * exp(0.0183 * (crcl - 13.6))   # Equation 1
 
@@ -333,8 +332,8 @@ cmp_sim <- pta_sim |>
   )
 
 summary(cmp_sim$diff)
-#>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#> -2.096657 -0.274068  0.000436  0.046190  0.205469  4.184579
+#>       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+#> -2.1715764 -0.2287780  0.0004349  0.0547177  0.2052413  4.1820347
 stopifnot(max(abs(cmp_sim$diff)) < 12)
 ```
 
@@ -448,7 +447,7 @@ tox |>
 | 2 g q6h | 10 | 83.60 | 85.31 | -1.71 |
 | 2 g q6h | 25 | 61.74 | 64.66 | -2.92 |
 | 2 g q6h | 50 | 20.22 | 22.45 | -2.23 |
-| 2 g q8h | 10 | 42.00 | 45.19 | -3.19 |
+| 2 g q8h | 10 | 41.99 | 45.19 | -3.20 |
 | 2 g q8h | 25 | 18.90 | 21.11 | -2.21 |
 | 2 g q8h | 50 | 2.20 | 2.62 | -0.42 |
 | 2 g q12h | 10 | 1.58 | 2.00 | -0.42 |
@@ -465,7 +464,7 @@ rmse    <- sqrt(mean(tox$diff^2))
 max_dev <- max(abs(tox$diff))
 c(rmse_pp = round(rmse, 3), max_abs_pp = round(max_dev, 3))
 #>    rmse_pp max_abs_pp 
-#>      1.249      3.194
+#>      1.250      3.195
 ```
 
 The reproduction is uniformly a little low - every non-zero cell sits
@@ -596,7 +595,7 @@ tibble::tibble(
 
 | NCA parameter | PKNCA on simulation | Closed-form reference | Difference (%) |
 |:---|---:|---:|---:|
-| AUC0-8,ss (mg\*h/L) | 208.4136 | 208.4171 | -0.0017 |
+| AUC0-8,ss (mg\*h/L) | 208.4137 | 208.4172 | -0.0017 |
 | Cmax,ss (mg/L) | 38.2817 | 38.2817 | 0.0000 |
 | Tmax,ss (h) | 3.0000 | 3.0000 | 0.0000 |
 | Ctrough,ss (mg/L) | 15.2148 | 15.2148 | 0.0000 |
@@ -617,7 +616,7 @@ c(max_auc_pct  = max(abs(chk$auc_pct)),
   max_hl_pct   = max(abs(chk$hl_pct)),
   max_cmax_pct = max(abs(chk$cmax_pct)))
 #>  max_auc_pct   max_hl_pct max_cmax_pct 
-#> 8.059394e-03 6.731316e-10 4.223613e-09
+#> 8.057859e-03 6.727474e-10 4.171238e-09
 
 stopifnot(
   all(nca_wide$tmax == INF_DUR),

@@ -68,9 +68,9 @@ collects them in one place for review.
 | `e_sex_cl` (additive male shift on CL, L/h; applied as `(1 - SEXF)`) | `2.78` | Lodise 2018 Table 1: theta7 = 2.78 (SE 1.06; 95% CI 0.66-4.90) |
 | `e_occ_cl` (additive day-4 shift on CL, L/h) | `3.97` | Lodise 2018 Table 1: theta9 = 3.97 (SE 0.694; 95% CI 2.58-5.36) |
 | `e_infect_csssi_sev_q` (additive severe-cSSSI shift on Q, L/h) | `13.5` | Lodise 2018 Table 1: theta8 = 13.5 (SE 2.29; 95% CI 8.92-18.08) |
-| `etalcl` (omega_CL, log-normal variance) | `0.15543` (41% CV) | Lodise 2018 Table 1: CV% 41 on CL (95% CI 38-44); omega^2 = log(1 + CV^2) |
-| `etalvc` (omega_V1, log-normal variance) | `0.23107` (51% CV) | Lodise 2018 Table 1: CV% 51 on V1 (95% CI 45-56); omega^2 = log(1 + CV^2) |
-| `etalvp` (omega_V2, log-normal variance) | `0.55362` (86% CV) | Lodise 2018 Table 1: CV% 86 on V2 (95% CI 65-104); omega^2 = log(1 + CV^2) |
+| `etalcl` (omega_CL, log-normal variance) | `0.15538` (41% CV) | Lodise 2018 Table 1: CV% 41 on CL (95% CI 38-44); omega^2 = log(1 + CV^2) |
+| `etalvc` (omega_V1, log-normal variance) | `0.23119` (51% CV) | Lodise 2018 Table 1: CV% 51 on V1 (95% CI 45-56); omega^2 = log(1 + CV^2) |
+| `etalvp` (omega_V2, log-normal variance) | `0.55366` (86% CV) | Lodise 2018 Table 1: CV% 86 on V2 (95% CI 65-104); omega^2 = log(1 + CV^2) |
 | `propSd` (proportional residual error, fraction) | `0.365` | Lodise 2018 Table 1: residual error CV% = 36.5 |
 | `addSd` (additive residual error, ng/mL) | `5.19` | Lodise 2018 Table 1: additive residual error = 5.19 ng/mL (SE 0.87) |
 | CL typical-value equation (`CL = theta2 + theta5 * AGE + theta7 * SEX + theta9 * OCC`) | n/a | Lodise 2018 Results, Population PK model paragraph |
@@ -344,10 +344,10 @@ knitr::kable(
 
 | regimen | median_auclast | median_cmax | median_tmax | p25_auclast | p25_cmax | p25_tmax | p75_auclast | p75_cmax | p75_tmax |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 0.8 mg/kg over 0.5 h | 2250.7 | 815.5 | 0.5 | 1653.7 | 614.0 | 0.5 | 3026.3 | 964.8 | 0.5 |
-| 64 mg over 2 h | 2345.4 | 571.1 | 2.0 | 1830.7 | 461.7 | 2.0 | 3189.0 | 731.9 | 2.0 |
-| 72 mg over 2 h | 2533.1 | 636.6 | 2.0 | 1882.7 | 509.1 | 2.0 | 3510.5 | 822.6 | 2.0 |
-| 80 mg over 2 h | 3218.4 | 761.5 | 2.0 | 2228.4 | 585.4 | 2.0 | 4141.8 | 950.5 | 2.0 |
+| 0.8 mg/kg over 0.5 h | 2250.8 | 815.5 | 0.5 | 1653.7 | 614.0 | 0.5 | 3026.2 | 964.8 | 0.5 |
+| 64 mg over 2 h | 2345.4 | 571.1 | 2.0 | 1830.8 | 461.7 | 2.0 | 3188.8 | 731.9 | 2.0 |
+| 72 mg over 2 h | 2533.1 | 636.5 | 2.0 | 1882.8 | 509.1 | 2.0 | 3510.3 | 822.7 | 2.0 |
+| 80 mg over 2 h | 3218.3 | 761.5 | 2.0 | 2228.5 | 585.4 | 2.0 | 4141.6 | 950.6 | 2.0 |
 
 Simulated steady-state NCA parameters (median and IQR) by regimen.
 Cmaxss in ng/mL, auclast in ng*h/mL over the 12-h interval; AUC0-24ss =

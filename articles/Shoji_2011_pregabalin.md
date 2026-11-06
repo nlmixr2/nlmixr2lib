@@ -99,9 +99,9 @@ from Shoji 2011 Table 3 final-model column unless otherwise noted.
 | `e_food_ka` (food effect on ka) | -0.930 | Table 3 q_Food on ka final model |
 | `ltlag` (tlag at FED = 0) | `log(0.243)` | Table 3 q_t_lag final model |
 | `e_food_tlag` (food effect on tlag) | 0.811 | Table 3 q_Food on tlag final model |
-| `etalcl ~ 0.02168` | `log(1 + 0.148^2)` | Table 3 CV%(CL/F) final model 14.8% |
+| `etalcl ~ 0.02167` | `log(1 + 0.148^2)` | Table 3 CV%(CL/F) final model 14.8% |
 | `etalvc ~ 0.00727` | `log(1 + 0.0854^2)` | Table 3 CV%(V/F) final model 8.54% |
-| `etalka ~ 0.62526` | `log(1 + 0.932^2)` | Table 3 CV%(ka) final model 93.2% |
+| `etalka ~ 0.62520` | `log(1 + 0.932^2)` | Table 3 CV%(ka) final model 93.2% |
 | `propSdHealthy <- 0.220` | 0.220 | Table 3 CV%(healthy) final model 22.0% |
 | `addSdHealthy <- 0.0239` | 0.0239 ug/mL | Table 3 SD(healthy) final model |
 | `propSdPatient <- 0.285` | 0.285 | Table 3 CV%(patient) final model 28.5% |
@@ -458,7 +458,7 @@ knitr::kable(
 | Cmax (ug/mL)       | 300 mg BID, CrCl\>=60     |         — |        11 |      — |
 | Cmax (ug/mL)       | 150 mg BID, CrCl\>=60     |         — |      5.48 |      — |
 | Cmax (ug/mL)       | 150 mg BID, 30\<=CrCl\<60 |         — |      8.19 |      — |
-| AUClast (ug\*h/mL) | 300 mg BID, CrCl\>=60     |      75.5 |      67.9 | -10.0% |
+| AUClast (ug\*h/mL) | 300 mg BID, CrCl\>=60     |      75.5 |        68 | -10.0% |
 | AUClast (ug\*h/mL) | 150 mg BID, CrCl\>=60     |      37.5 |      34.2 |  -8.9% |
 | AUClast (ug\*h/mL) | 150 mg BID, 30\<=CrCl\<60 |      80.3 |      68.8 | -14.4% |
 

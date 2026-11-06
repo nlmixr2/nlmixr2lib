@@ -53,7 +53,7 @@ Per-parameter origins are recorded inline in
 | `lcl` (theta1, CL at CRCL = 0) | 0.27 L/h | Table 2, Mean column (SD 0.13, median 0.20) |
 | `e_crcl_cl` (theta2, slope on CRCL) | 0.12 L/h per mL/min/1.73 m^2 | Table 2, Mean column (SD 0.03, median 0.13) |
 | `lvc` (V) | 21.88 L | Table 2, Mean column (SD 5.85, median 20.00) |
-| `etalcl` | log(0.4853^2 + 1) = 0.2114 | Table 2, theta1 CV 48.53% |
+| `etalcl` | log(0.4853^2 + 1) = 0.2115 | Table 2, theta1 CV 48.53% |
 | `etae_crcl_cl` | log(0.2744^2 + 1) = 0.0726 | Table 2, theta2 CV 27.44% |
 | `etalvc` | log(0.2671^2 + 1) = 0.0689 | Table 2, V CV 26.71% |
 | `addSd` | 5 x 0.224 = 1.12 mg/L | Methods 2.2, assay C0 = 0.224 times gamma G = 5 |
@@ -195,7 +195,7 @@ css <- sim |>
 closed_chk <- css |> dplyr::filter(!grepl("Study", treatment))
 summary(closed_chk$rel)
 #>       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-#> -4.000e-15  0.000e+00  1.200e-14  1.401e-09  4.907e-11  7.119e-08
+#> -4.000e-15  0.000e+00  1.200e-14  1.400e-09  4.909e-11  7.117e-08
 stopifnot(max(abs(closed_chk$rel)) < 1e-4)
 ```
 
@@ -363,9 +363,9 @@ intervals <- data.frame(start = 0, end = tau, cav = TRUE, cmax = TRUE, cmin = TR
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 summary(nca_res)
 #>  start end                          treatment   N     auclast        cmax
-#>      0   8 Study cohort (1 g LD + 1 g q8h CI) 200 76.6 [35.7] 9.55 [35.8]
+#>      0   8 Study cohort (1 g LD + 1 g q8h CI) 200 76.5 [35.8] 9.55 [35.8]
 #>         cmin         cav
-#>  9.55 [35.8] 9.57 [35.7]
+#>  9.55 [35.8] 9.56 [35.8]
 #> 
 #> Caption: auclast, cmax, cmin, cav: geometric mean and geometric coefficient of variation; N: number of subjects
 ```

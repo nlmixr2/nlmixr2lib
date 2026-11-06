@@ -77,7 +77,7 @@ The same information is available programmatically via
 | `e_crcl_cl` (L/h per CrCL/66.47) | 0.525 | Table 3 `CrCL on CL (theta 1)` 0.525 (RSE 22%); Eq. 1 |
 | CrCL divisor | 66.47 mL/min | Eq. 1 and Table 4 only; not tabulated as a cohort statistic |
 | `lvc` (V, L) | 20.7 | Table 3 `TVV (L)` 20.7 (RSE 10%); Eq. 2 |
-| `etalcl` | omega^2 = 0.08835 | Table 3 `BSV_CL [%CV]` 30.40% (RSE 15%, shrinkage 9%); `log(0.304^2 + 1)` |
+| `etalcl` | omega^2 = 0.08839 | Table 3 `BSV_CL [%CV]` 30.40% (RSE 15%, shrinkage 9%); `log(0.304^2 + 1)` |
 | `propSd` | 0.251 | Table 3 `Proportional error [%CV]` 25.10% (RSE 16%, shrinkage 14%) |
 | `cl <- (exp(lcl) + e_crcl_cl * CRCL / 66.47) * exp(etalcl)` | n/a | Eq. 1; Methods “exponential function” for BSV |
 | `vc <- exp(lvc)` | n/a | Eq. 2 (no covariate, no IIV in the final model) |
@@ -212,7 +212,7 @@ knitr::kable(scores, digits = 2, caption = paste(
 | Steady-state daily dose / CL | best fit | 46.27 | 4.52 |
 | First-24-h doses incl. loading / CL | 30,000 IU/mg (base activity) | 33.33 | 2.49 |
 | First-24-h doses incl. loading / CL | 22,300 IU/mg (consensus) | 44.84 | 25.48 |
-| First-24-h doses incl. loading / CL | 17,000 IU/mg (as printed) | 58.82 | 40.66 |
+| First-24-h doses incl. loading / CL | 17,000 IU/mg (as printed) | 58.82 | 40.65 |
 
 Figure 3 of Yu 2022 reproduced from the packaged model (typical CL from
 Eq. 1, omega from Table 3) under each candidate AUC definition and dose
@@ -525,7 +525,7 @@ knitr::kable(tibble::tibble(
 
 | Check                    | Median % difference | Max abs % difference |
 |:-------------------------|--------------------:|---------------------:|
-| AUC0-tau,ss vs dose / CL |              -0.003 |                0.073 |
+| AUC0-tau,ss vs dose / CL |              -0.003 |                0.074 |
 
 ``` r
 
@@ -659,7 +659,7 @@ virtual-patient creatinine clearance distribution is not described.
   published figure by the maintainers, to roughly +/- 2 percentage
   points.
 - **IIV scale.** Table 3 gives BSV on CL as 30.40 %CV; it is converted
-  with `omega^2 = log(CV^2 + 1) = 0.08835`. Reading it as
+  with `omega^2 = log(CV^2 + 1) = 0.08839`. Reading it as
   `omega = 0.304` instead (`omega^2 = 0.0924`) changes Figure 3 by under
   0.2 percentage points RMSE, so the figure cannot separate the two
   readings.

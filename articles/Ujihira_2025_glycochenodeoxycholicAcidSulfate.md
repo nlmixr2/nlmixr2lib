@@ -58,32 +58,32 @@ mod
 #> 
 #> Omega ($omega): 
 #>               etalksyn etalcl_renal etaltlag_rif etald1_rif etalcl_rif
-#> etalksyn     0.3163576    0.0000000    0.0000000  0.0000000  0.0000000
-#> etalcl_renal 0.0000000    0.0560025    0.0000000  0.0000000  0.0000000
-#> etaltlag_rif 0.0000000    0.0000000    0.1919877  0.0000000  0.0000000
-#> etald1_rif   0.0000000    0.0000000    0.0000000  0.4656585  0.0000000
-#> etalcl_rif   0.0000000    0.0000000    0.0000000  0.0000000  0.0318856
-#> etalvc_prob  0.0000000    0.0000000    0.0000000  0.0000000  0.0000000
-#> etalcl_prob  0.0000000    0.0000000    0.0000000  0.0000000  0.0000000
-#> etalkiu_oat3 0.0000000    0.0000000    0.0000000  0.0000000  0.0000000
+#> etalksyn     0.3163424   0.00000000    0.0000000  0.0000000 0.00000000
+#> etalcl_renal 0.0000000   0.05600219    0.0000000  0.0000000 0.00000000
+#> etaltlag_rif 0.0000000   0.00000000    0.1919418  0.0000000 0.00000000
+#> etald1_rif   0.0000000   0.00000000    0.0000000  0.4655563 0.00000000
+#> etalcl_rif   0.0000000   0.00000000    0.0000000  0.0000000 0.03188619
+#> etalvc_prob  0.0000000   0.00000000    0.0000000  0.0000000 0.00000000
+#> etalcl_prob  0.0000000   0.00000000    0.0000000  0.0000000 0.00000000
+#> etalkiu_oat3 0.0000000   0.00000000    0.0000000  0.0000000 0.00000000
 #>              etalvc_prob etalcl_prob etalkiu_oat3
-#> etalksyn       0.0000000   0.0000000    0.0000000
-#> etalcl_renal   0.0000000   0.0000000    0.0000000
-#> etaltlag_rif   0.0000000   0.0000000    0.0000000
-#> etald1_rif     0.0000000   0.0000000    0.0000000
-#> etalcl_rif     0.0000000   0.0000000    0.0000000
-#> etalvc_prob    0.0917476   0.0000000    0.0000000
-#> etalcl_prob    0.0000000   0.0703679    0.0000000
-#> etalkiu_oat3   0.0000000   0.0000000    0.0974856
+#> etalksyn      0.00000000  0.00000000   0.00000000
+#> etalcl_renal  0.00000000  0.00000000   0.00000000
+#> etaltlag_rif  0.00000000  0.00000000   0.00000000
+#> etald1_rif    0.00000000  0.00000000   0.00000000
+#> etalcl_rif    0.00000000  0.00000000   0.00000000
+#> etalvc_prob   0.09175843  0.00000000   0.00000000
+#> etalcl_prob   0.00000000  0.07036526   0.00000000
+#> etalkiu_oat3  0.00000000  0.00000000   0.09748962
 #> attr(,"lotriLabels")
-#> [1] "Table 2, GCDCA-S IIV ksyn = 61% (RSE 15%); log(1 + 0.61^2)"  
-#> [2] "Table 2, GCDCA-S IIV CLR  = 24% (RSE 25%); log(1 + 0.24^2)"  
-#> [3] "Table 2, RIF IIV Tlag     = 46% (RSE 32%); log(1 + 0.46^2)"  
-#> [4] "Table 2, RIF IIV Tk0      = 77% (RSE 37%); log(1 + 0.77^2)"  
-#> [5] "Table 2, RIF IIV CL       = 18% (RSE 35%); log(1 + 0.18^2)"  
-#> [6] "Table 2, PROB IIV V       = 31% (RSE 28%); log(1 + 0.31^2)"  
-#> [7] "Table 2, PROB IIV CL      = 27% (RSE 20%); log(1 + 0.27^2)"  
-#> [8] "Table 2, PROB IIV Ki,u,OAT3 = 32% (RSE 27%); log(1 + 0.32^2)"
+#> [1] "Table 2, GCDCA-S IIV ksyn = 61% (RSE 15%)"  
+#> [2] "Table 2, GCDCA-S IIV CLR  = 24% (RSE 25%)"  
+#> [3] "Table 2, RIF IIV Tlag     = 46% (RSE 32%)"  
+#> [4] "Table 2, RIF IIV Tk0      = 77% (RSE 37%)"  
+#> [5] "Table 2, RIF IIV CL       = 18% (RSE 35%)"  
+#> [6] "Table 2, PROB IIV V       = 31% (RSE 28%)"  
+#> [7] "Table 2, PROB IIV CL      = 27% (RSE 20%)"  
+#> [8] "Table 2, PROB IIV Ki,u,OAT3 = 32% (RSE 27%)"
 #> attr(,"lotriFix")
 #>              etalksyn etalcl_renal etaltlag_rif etald1_rif etalcl_rif
 #> etalksyn        FALSE        FALSE        FALSE      FALSE      FALSE
@@ -203,22 +203,22 @@ mod
 #>         label("Proportional residual error, probenecid plasma (fraction)")
 #>         addSd_prob <- fix(0, 0.001)
 #>         label("Additive residual error, probenecid plasma (umol/L)")
-#>         etalksyn ~ 0.3163576
-#>         label("Table 2, GCDCA-S IIV ksyn = 61% (RSE 15%); log(1 + 0.61^2)")
-#>         etalcl_renal ~ 0.0560025
-#>         label("Table 2, GCDCA-S IIV CLR  = 24% (RSE 25%); log(1 + 0.24^2)")
-#>         etaltlag_rif ~ 0.1919877
-#>         label("Table 2, RIF IIV Tlag     = 46% (RSE 32%); log(1 + 0.46^2)")
-#>         etald1_rif ~ 0.4656585
-#>         label("Table 2, RIF IIV Tk0      = 77% (RSE 37%); log(1 + 0.77^2)")
-#>         etalcl_rif ~ 0.0318856
-#>         label("Table 2, RIF IIV CL       = 18% (RSE 35%); log(1 + 0.18^2)")
-#>         etalvc_prob ~ 0.0917476
-#>         label("Table 2, PROB IIV V       = 31% (RSE 28%); log(1 + 0.31^2)")
-#>         etalcl_prob ~ 0.0703679
-#>         label("Table 2, PROB IIV CL      = 27% (RSE 20%); log(1 + 0.27^2)")
-#>         etalkiu_oat3 ~ 0.0974856
-#>         label("Table 2, PROB IIV Ki,u,OAT3 = 32% (RSE 27%); log(1 + 0.32^2)")
+#>         etalksyn ~ 0.316342412944993
+#>         label("Table 2, GCDCA-S IIV ksyn = 61% (RSE 15%)")
+#>         etalcl_renal ~ 0.0560021901152849
+#>         label("Table 2, GCDCA-S IIV CLR  = 24% (RSE 25%)")
+#>         etaltlag_rif ~ 0.191941800170945
+#>         label("Table 2, RIF IIV Tlag     = 46% (RSE 32%)")
+#>         etald1_rif ~ 0.465556254318456
+#>         label("Table 2, RIF IIV Tk0      = 77% (RSE 37%)")
+#>         etalcl_rif ~ 0.0318861888623217
+#>         label("Table 2, RIF IIV CL       = 18% (RSE 35%)")
+#>         etalvc_prob ~ 0.0917584252395407
+#>         label("Table 2, PROB IIV V       = 31% (RSE 28%)")
+#>         etalcl_prob ~ 0.0703652626605634
+#>         label("Table 2, PROB IIV CL      = 27% (RSE 20%)")
+#>         etalkiu_oat3 ~ 0.0974896212772571
+#>         label("Table 2, PROB IIV Ki,u,OAT3 = 32% (RSE 27%)")
 #>     })
 #>     model({
 #>         ksyn <- exp(lksyn + etalksyn)
@@ -349,12 +349,12 @@ the source.
 | `lcl_prob` = log(0.95) L/h | 0.95 (RSE 7%) | Table 2, PROB `CL PROB` |
 | `lkiu_oat3` = log(2.7) umol/L | 2.7 (RSE 12%) | Table 2, PROB `K i,unbound,OAT3` |
 | `e_prob_clh` = -0.4118 | `X` = 1.7 (RSE 5%), encoded as 1/X - 1 | Table 2, PROB `X`; Eq. 2 |
-| `etalksyn` = 0.3164 | IIV 61% (RSE 15%), log(1 + 0.61^2) | Table 2, GCDCA-S IIV |
+| `etalksyn` = 0.3163 | IIV 61% (RSE 15%), log(1 + 0.61^2) | Table 2, GCDCA-S IIV |
 | `etalcl_renal` = 0.0560 | IIV 24% (RSE 25%) | Table 2, GCDCA-S IIV |
-| `etaltlag_rif` = 0.1920 | IIV 46% (RSE 32%) | Table 2, RIF IIV |
-| `etald1_rif` = 0.4657 | IIV 77% (RSE 37%) | Table 2, RIF IIV |
+| `etaltlag_rif` = 0.1919 | IIV 46% (RSE 32%) | Table 2, RIF IIV |
+| `etald1_rif` = 0.4656 | IIV 77% (RSE 37%) | Table 2, RIF IIV |
 | `etalcl_rif` = 0.0319 | IIV 18% (RSE 35%) | Table 2, RIF IIV |
-| `etalvc_prob` = 0.0917 | IIV 31% (RSE 28%) | Table 2, PROB IIV |
+| `etalvc_prob` = 0.0918 | IIV 31% (RSE 28%) | Table 2, PROB IIV |
 | `etalcl_prob` = 0.0704 | IIV 27% (RSE 20%) | Table 2, PROB IIV |
 | `etalkiu_oat3` = 0.0975 | IIV 32% (RSE 27%) | Table 2, PROB IIV |
 | `propSd` = 0.45 | 45% (RSE 3%) | Table 2, `sigma prop - GCDCA-S plasma` |
@@ -829,14 +829,14 @@ baseline_by_subject <- cohort |>
     cv_pct    = 100 * sd(Cc) / mean(Cc)
   )
 baseline_by_subject
-#>   median_nM  mean_nM cv_pct
-#> 1  69.49396 77.68741 57.494
+#>   median_nM  mean_nM  cv_pct
+#> 1  69.49385 77.68681 57.4925
 
 # Analytic log-normal mean of the baseline: median * exp(omega^2 / 2).
-c(analytic_mean_nM = css_analytic * 1000 * exp(0.3163576 / 2),
+c(analytic_mean_nM = css_analytic * 1000 * exp(log(1 + 0.61^2) / 2),
   reported_mean_nM = 80)
 #> analytic_mean_nM reported_mean_nM 
-#>         76.51049         80.00000
+#>         76.50991         80.00000
 ```
 
 The simulated cohort mean baseline lands close to the reported ~80

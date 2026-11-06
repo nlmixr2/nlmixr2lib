@@ -399,7 +399,7 @@ ug. The 50 kg / 90 kg AUC ratio is 2.02, i.e., 102% higher exposure at
   inconsistent; an alternative reading where the cell value represents
   omega^2 = 0.29 gives a CV of approximately 58% which would be
   consistent with the printed CI. The model file uses the face-value 29%
-  CV (`omega^2 = log(0.29^2 + 1) = 0.08074`) on the KeFSH eta. The IIV
+  CV (`omega^2 = log(0.29^2 + 1) = 0.08075`) on the KeFSH eta. The IIV
   on KeFSH affects only the endogenous-FSH submodel decay rate and does
   not appear in the typical-value Cmax / AUC / half-life comparison
   above. If a future maintainer recovers the original NONMEM `.lst` file

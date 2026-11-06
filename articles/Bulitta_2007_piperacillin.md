@@ -283,15 +283,15 @@ knitr::kable(nca_summary,
 |:--------|:-----------|--------:|--------:|---------:|
 | CF      | aucinf.obs |      NA |      NA |       NA |
 | CF      | cl.obs     |      NA |      NA |       NA |
-| CF      | cmax       | 773.649 | 549.762 | 1020.724 |
-| CF      | half.life  |   0.633 |   0.529 |    0.756 |
+| CF      | cmax       | 773.656 | 549.747 | 1020.683 |
+| CF      | half.life  |   0.638 |   0.530 |    0.756 |
 | CF      | mrt.last   |      NA |      NA |       NA |
 | CF      | tmax       |   0.083 |   0.083 |    0.083 |
 | CF      | vss.obs    |      NA |      NA |       NA |
 | Healthy | aucinf.obs |      NA |      NA |       NA |
 | Healthy | cl.obs     |      NA |      NA |       NA |
-| Healthy | cmax       | 456.374 | 333.109 |  642.968 |
-| Healthy | half.life  |   0.763 |   0.635 |    0.898 |
+| Healthy | cmax       | 456.361 | 333.092 |  642.976 |
+| Healthy | half.life  |   0.763 |   0.630 |    0.898 |
 | Healthy | mrt.last   |      NA |      NA |       NA |
 | Healthy | tmax       |   0.083 |   0.083 |    0.083 |
 | Healthy | vss.obs    |      NA |      NA |       NA |

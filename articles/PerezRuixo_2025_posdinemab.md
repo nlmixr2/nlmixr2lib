@@ -121,16 +121,16 @@ below collects the equation and parameter provenance in one place.
 | ISF affinity ratio (`kd`_(CSF)/`kd`_(ISF)) | 20 (fixed) | 20 | Methods “Mechanism-based popPK-PD model” |
 | ISF baseline ratio (`RISF`(0)/`R`(0)) | 10 (fixed) | 10 | Methods “Mechanism-based popPK-PD model”; Supplement Eq. 10 |
 | Posdinemab MW | 148 kDa | 148000 (Da) | Discussion (“13,805 pmol of posdinemab (148 kDa)”) |
-| IIV CL (CV %) | 23.4 % | ω² = log(1 + 0.234²) = 0.05181 | Table 2 IIV column |
+| IIV CL (CV %) | 23.4 % | ω² = log(1 + 0.234²) = 0.05331 | Table 2 IIV column |
 | IIV V1 (CV %) | 17.5 % | ω² = 0.03012 | Table 2 |
-| IIV Q (CV %) | 44.9 % | ω² = 0.18525 | Table 2 |
+| IIV Q (CV %) | 44.9 % | ω² = 0.18365 | Table 2 |
 | IIV V2 (CV %) | 22.1 % | ω² = 0.04764 | Table 2 |
 | IIV QCSF (CV %) | 29.4 % | ω² = 0.08300 | Table 2 |
-| IIV VCSF (CV %) | 25.5 % | ω² = 0.06244 | Table 2 |
-| IIV VISF (CV %) | 91.0 % | ω² = 0.60466 | Table 2 |
-| IIV R0 (CV %) | 67.7 % | ω² = 0.37113 | Table 2 |
+| IIV VCSF (CV %) | 25.5 % | ω² = 0.06300 | Table 2 |
+| IIV VISF (CV %) | 91.0 % | ω² = 0.60328 | Table 2 |
+| IIV R0 (CV %) | 67.7 % | ω² = 0.37729 | Table 2 |
 | IIV kc (CV %) | 54.7 % | ω² = 0.26156 | Table 2 |
-| IIV kint (CV %) | 38.2 % | ω² = 0.13510 | Table 2 |
+| IIV kint (CV %) | 38.2 % | ω² = 0.13621 | Table 2 |
 | Residual error: serum posdinemab | σ₁ = 8.73 | propSd 0.0873 | Table 2 RUV |
 | Residual error: CSF posdinemab | σ₂ = 16.4 | propSd 0.164 | Table 2 RUV |
 | Residual error: total p217+tau | σ₃ = 11.2 | propSd 0.112 | Table 2 RUV |

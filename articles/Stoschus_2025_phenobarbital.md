@@ -100,7 +100,7 @@ collects them for review.
 | reference `medIBW` | 68.8 kg | Table 1, row “Ideal body weight, kg” (cohort median) |
 | `etalvc` | 0.50799 | Table 2 IIV row `V`: SD 0.71, CV 81.36%; `omega^2 = log(1 + 0.8136^2)` |
 | `etalcl` | 0.157914 | Table 2 IIV row `CL`: SD 0.4, CV 41.36%; `omega^2 = log(1 + 0.4136^2)` |
-| `etaiov_cl_1..8` | 0.127331 | Table 2 IOV row `CL`: SD 0.36, CV 36.85%; `omega^2 = log(1 + 0.3685^2)` |
+| `etaiov_cl_1..8` | 0.127330 | Table 2 IOV row `CL`: SD 0.36, CV 36.85%; `omega^2 = log(1 + 0.3685^2)` |
 | `propSd` | 0.082 | Table 2, row `Proportional` (RSE 7.76%; 95% CI 0.071-0.096) |
 | one-compartment, first-order absorption and elimination | n/a | Methods 2.2; Results 3.2 |
 | IIV on V and CL, IOV on CL, proportional RUV | n/a | Results 3.2, first paragraph |
@@ -228,7 +228,7 @@ chk <- solve_cohort(regimen(1000, 0, "IV", 68.8, 12), n = 2000L, seed = 11L) |>
 tibble::tibble(
   quantity = c("median V (L)", "median CL (L/h)", "sd(log V)", "sd(log CL)"),
   simulated = c(median(chk$vc), median(chk$cl), sd(log(chk$vc)), sd(log(chk$cl))),
-  expected  = c(34.3, 0.38, sqrt(0.50799), sqrt(0.157914 + 0.127331))
+  expected  = c(34.3, 0.38, sqrt(0.50799), sqrt(0.157914 + 0.127330))
 ) |>
   mutate(pct_diff = 100 * (simulated - expected) / expected) |>
   knitr::kable(digits = 4, caption =
@@ -238,9 +238,9 @@ tibble::tibble(
 | quantity        | simulated | expected | pct_diff |
 |:----------------|----------:|---------:|---------:|
 | median V (L)    |   34.4200 |  34.3000 |   0.3498 |
-| median CL (L/h) |    0.3840 |   0.3800 |   1.0446 |
+| median CL (L/h) |    0.3840 |   0.3800 |   1.0447 |
 | sd(log V)       |    0.7012 |   0.7127 |  -1.6155 |
-| sd(log CL)      |    0.5349 |   0.5341 |   0.1457 |
+| sd(log CL)      |    0.5349 |   0.5341 |   0.1458 |
 
 Simulated cohort reproduces the published typical values and the IIV (V)
 and IIV+IOV (CL) log-scale spreads. {.table}
@@ -434,7 +434,7 @@ u <- solve_cohort(regimen(1, 0, "IV", 70, 12), n = 200L, seed = 505L) |> filter(
 m <- solve_cohort(regimen(1100, 0, "IV", 70, 12), n = 200L, seed = 505L) |> filter(time == 12)
 c(max_relative_error = max(abs(1100 * u$Cc - m$Cc) / m$Cc))
 #> max_relative_error 
-#>       7.300765e-07
+#>        7.30069e-07
 ```
 
 Dose-proportionality holds to machine precision, so the scaling is exact

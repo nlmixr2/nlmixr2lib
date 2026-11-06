@@ -321,9 +321,9 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*nmol/L) | Cmax (nmol/L) | Cmin (nmol/L) | Tmax (h) | Cav (nmol/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 144 | 156 | PMA\<=37, 1 mg/kg q12h | 200 | 14700 \[66.5\] | 1470 \[61.5\] | 939 \[74.3\] | 3.50 \[1.75, 6.00\] | 1220 \[66.5\] |
-| 144 | 156 | PMA\>37, 2 mg/kg q12h | 200 | 14200 \[63.3\] | 1350 \[62.4\] | 999 \[65.3\] | 3.00 \[1.25, 6.25\] | 1190 \[63.3\] |
-| 144 | 156 | PMA\>37, 3 mg/kg q12h | 200 | 22500 \[68.2\] | 2140 \[66.5\] | 1570 \[70.6\] | 3.00 \[1.25, 5.50\] | 1870 \[68.2\] |
+| 144 | 156 | PMA\<=37, 1 mg/kg q12h | 200 | 14700 \[66.4\] | 1470 \[61.5\] | 939 \[74.2\] | 3.50 \[1.75, 6.00\] | 1220 \[66.4\] |
+| 144 | 156 | PMA\>37, 2 mg/kg q12h | 200 | 14200 \[63.3\] | 1350 \[62.3\] | 999 \[65.3\] | 3.00 \[1.25, 6.25\] | 1190 \[63.3\] |
+| 144 | 156 | PMA\>37, 3 mg/kg q12h | 200 | 22500 \[68.1\] | 2140 \[66.5\] | 1570 \[70.6\] | 3.00 \[1.25, 5.50\] | 1870 \[68.1\] |
 
 Simulated steady-state NCA parameters (day 7 dosing interval) for
 oseltamivir carboxylate. {.table}
@@ -376,8 +376,8 @@ knitr::kable(compare,
 
 | treatment | published_AUC_d1 | published_AUC_d7 | simulated_AUC_d1 | simulated_AUC_d7 | pct_diff_d1 | pct_diff_d7 |
 |:---|---:|---:|---:|---:|---:|---:|
-| PMA\<=37, 1 mg/kg q12h | 6935 | 13110 | 8865 | 13598 | 27.8 | 3.7 |
-| PMA\>37, 3 mg/kg q12h | 12999 | 23562 | 11483 | 22089 | -11.7 | -6.2 |
+| PMA\<=37, 1 mg/kg q12h | 6935 | 13110 | 8864 | 13599 | 27.8 | 3.7 |
+| PMA\>37, 3 mg/kg q12h | 12999 | 23562 | 11483 | 22090 | -11.7 | -6.2 |
 | PMA\>37, 2 mg/kg q12h | 8814 | 15854 | 7596 | 14469 | -13.8 | -8.7 |
 
 Median simulated oseltamivir carboxylate AUC0-12 (nmol*h/L) vs Standing

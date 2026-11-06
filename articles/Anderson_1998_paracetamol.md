@@ -58,11 +58,11 @@ below collects them in one place.
 | `allo_cl` (fixed) | 0.75 | Anderson 1998 Methods, allometric paragraph |
 | `allo_vc` (fixed) | 1 | Anderson 1998 Methods, allometric paragraph |
 | `allo_keq` (fixed) | -0.25 | Anderson 1998 Methods (teq exponent 0.25 -\> keq exponent -0.25) |
-| IIV ka (CV 49%) | omega^2 = 0.2153 | Anderson 1998 Table 3 %CV row |
+| IIV ka (CV 49%) | omega^2 = 0.2152 | Anderson 1998 Table 3 %CV row |
 | IIV CL (CV 47%) | omega^2 = 0.1996 | Anderson 1998 Table 3 %CV row |
 | IIV V (CV 58%) | omega^2 = 0.2900 | Anderson 1998 Table 3 %CV row |
-| IIV keq (CV 117%) | omega^2 = 0.8623 | Anderson 1998 Table 3 %CV row (reported on teq; CV is identical for keq) |
-| IIV PC (CV 8%) | omega^2 = 0.006379 | Anderson 1998 Table 3 %CV row |
+| IIV keq (CV 117%) | omega^2 = 0.8624 | Anderson 1998 Table 3 %CV row (reported on teq; CV is identical for keq) |
+| IIV PC (CV 8%) | omega^2 = 0.006380 | Anderson 1998 Table 3 %CV row |
 | addSd plasma (placeholder) | 1.5 mg/L | see Assumptions and deviations |
 | addSd_Ccsf (placeholder) | 1.5 mg/L | see Assumptions and deviations |
 | ODE system | n/a | Anderson 1998 equation 1 |

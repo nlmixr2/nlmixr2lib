@@ -69,8 +69,8 @@ in-file source-location comment. The table below collects them.
 | `lq` (Q) | log(83.7 L/h) | Table 3 |
 | `lvp` (V2) | log(178 L) | Table 3 |
 | `cl_time_slope` (fractional increase in CL per hour) | 0.00213 1/h | Table 3 ‘Increase CL per hour 0.213’, stated as percent per hour in the Discussion |
-| `etalcl` (IIV CL) | 33.3% CV -\> 0.105189 | Table 3 |
-| `etalvc` (IIV V1) | 66.8% CV -\> 0.369689 | Table 3 |
+| `etalcl` (IIV CL) | 33.3% CV -\> 0.105161 | Table 3 |
+| `etalvc` (IIV V1) | 66.8% CV -\> 0.368956 | Table 3 |
 | `propSd` | 0.141 (fraction) | Table 3 |
 | `addSd` | 0.0532 ug/L | Table 3 |
 
@@ -446,12 +446,12 @@ nca_summary |>
 
 | Arm               | AUC0-96 (h\*ug/L) | Cmax (ug/L) | Washout t1/2 (h) |
 |:------------------|------------------:|------------:|-----------------:|
-| 25 ug/h           |            106.88 |        1.30 |            11.42 |
+| 25 ug/h           |            106.87 |        1.30 |            11.42 |
 | 25 ug/h + loading |            113.79 |        1.34 |            11.28 |
-| 50 ug/h           |            220.84 |        2.81 |            12.23 |
-| 50 ug/h + loading |            230.50 |        2.65 |            11.29 |
-| 75 ug/h           |            300.83 |        3.72 |            11.09 |
-| 75 ug/h + loading |            355.77 |        4.10 |            11.21 |
+| 50 ug/h           |            220.87 |        2.81 |            12.23 |
+| 50 ug/h + loading |            230.51 |        2.65 |            11.29 |
+| 75 ug/h           |            300.84 |        3.72 |            11.09 |
+| 75 ug/h + loading |            355.83 |        4.10 |            11.21 |
 
 Median simulated NCA parameters per study arm (individual predictions).
 {.table}

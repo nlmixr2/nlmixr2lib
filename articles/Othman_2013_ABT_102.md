@@ -134,9 +134,9 @@ place.
 | `e_form_solution_tlag = log(0.3/0.6)` -\> solution lag = 0.3 h | 0.3 | Othman 2013 PK/PD-model Results paragraph 1 (“solution lag 0.3 (0.2, 0.4) h”); upstream Othman 2012 |
 | `lfdepot = fixed(log(1))` (solid-dispersion F reference) | 1 | Othman 2013 PK/PD-model Results paragraph 1 (solid-dispersion is the bioavailability anchor); upstream Othman 2012 |
 | `e_form_solution_fdepot = log(0.40)` -\> solution Frel = 40% | 0.40 | Othman 2013 PK/PD-model Results paragraph 1 (“solution Frel 40 (35, 45) %”); upstream Othman 2012 |
-| `etalcl ~ 0.1033` -\> CV ~ 33% for CL | 33% CV | Othman 2013 PK/PD-model Results paragraph 1 (“33% for clearance”); upstream Othman 2012 |
+| `etalcl ~ 0.1034` -\> CV ~ 33% for CL | 33% CV | Othman 2013 PK/PD-model Results paragraph 1 (“33% for clearance”); upstream Othman 2012 |
 | `etalvc ~ 0.0560` -\> CV ~ 24% for V | 24% CV | Othman 2013 PK/PD-model Results paragraph 1 (“24% for volume of distribution”); upstream Othman 2012 |
-| `etalktr ~ 0.1769` -\> CV ~ 44% for ktr | 44% CV | Othman 2013 PK/PD-model Results paragraph 1 (“44% for absorption transit rate”); upstream Othman 2012 |
+| `etalktr ~ 0.1770` -\> CV ~ 44% for ktr | 44% CV | Othman 2013 PK/PD-model Results paragraph 1 (“44% for absorption transit rate”); upstream Othman 2012 |
 | `etaltlag ~ 0.2152` -\> CV ~ 49% for lag | 49% CV | Othman 2013 PK/PD-model Results paragraph 1 (“49% for the lag time”); upstream Othman 2012 |
 | `bl_oral = 36.3` degC | 36.3 | Othman 2013 Table 2 (Baseline Oral; bootstrap 95% CI 36.3-36.4) |
 | `bl_core = 37.0` degC | 37.0 | Othman 2013 Results paragraph 4 + Abstract (Baseline Core 37.0, bootstrap 95% CI 37.0-37.1); estimated jointly with `bl_oral` |
@@ -323,6 +323,8 @@ sim_nca <- dplyr::bind_rows(
 
 conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
                              concu = "ng/mL", timeu = "h")
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
 
 dose_df <- events_study1 |>
   dplyr::filter(evid == 1) |>
@@ -340,6 +342,16 @@ intervals <- data.frame(
 )
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
 ```
 
 ``` r
@@ -364,23 +376,23 @@ knitr::kable(nca_summary, digits = 2,
 
 | treatment | PPTESTCD   |  median |    q05 |     q95 |
 |:----------|:-----------|--------:|-------:|--------:|
-| 18 mg     | aucinf.obs |  441.90 | 242.41 |  772.36 |
+| 18 mg     | aucinf.obs |  442.46 | 261.92 |  773.05 |
 | 18 mg     | cmax       |   26.22 |  20.81 |   32.20 |
-| 18 mg     | half.life  |   10.32 |   4.10 |   14.54 |
+| 18 mg     | half.life  |   10.32 |   4.10 |   14.55 |
 | 18 mg     | tmax       |    4.00 |   1.75 |    5.25 |
-| 2 mg      | aucinf.obs |   53.57 |  36.96 |   89.55 |
+| 2 mg      | aucinf.obs |   53.57 |  36.95 |   89.56 |
 | 2 mg      | cmax       |    2.97 |   2.26 |    4.37 |
 | 2 mg      | half.life  |    9.05 |   6.03 |   19.16 |
 | 2 mg      | tmax       |    4.00 |   2.50 |    6.14 |
-| 30 mg     | aucinf.obs |  608.41 | 414.70 | 1195.04 |
-| 30 mg     | cmax       |   43.43 |  31.56 |   61.96 |
+| 30 mg     | aucinf.obs |  608.37 | 414.62 | 1195.22 |
+| 30 mg     | cmax       |   43.43 |  31.55 |   61.96 |
 | 30 mg     | half.life  |    7.67 |   4.09 |   14.41 |
 | 30 mg     | tmax       |    3.50 |   2.50 |    5.41 |
-| 40 mg     | aucinf.obs | 1025.95 | 675.58 | 1515.54 |
+| 40 mg     | aucinf.obs | 1025.96 | 675.49 | 1515.75 |
 | 40 mg     | cmax       |   61.34 |  40.18 |   86.14 |
-| 40 mg     | half.life  |    8.60 |   5.30 |   16.12 |
+| 40 mg     | half.life  |    8.60 |   5.30 |   16.13 |
 | 40 mg     | tmax       |    3.50 |   2.50 |    6.32 |
-| 6 mg      | aucinf.obs |  138.22 |  79.88 |  221.28 |
+| 6 mg      | aucinf.obs |  138.21 |  79.86 |  221.31 |
 | 6 mg      | cmax       |    8.54 |   6.82 |   12.35 |
 | 6 mg      | half.life  |    9.79 |   5.03 |   13.85 |
 | 6 mg      | tmax       |    3.75 |   2.11 |    5.41 |

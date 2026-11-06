@@ -107,8 +107,8 @@ knitr::kable(
 
 | Term      | Packaged variance | Table 2 CV (%) | sqrt(exp(v) - 1) x 100 |
 |:----------|------------------:|---------------:|-----------------------:|
-| IIV on CL |           0.27446 |           56.2 |                 56.198 |
-| IIV on V  |           0.19959 |           47.0 |                 47.000 |
+| IIV on CL |           0.27448 |           56.2 |                   56.2 |
+| IIV on V  |           0.19959 |           47.0 |                   47.0 |
 
 Packaged variances back-transformed to the Table 2 CV scale. {.table}
 
@@ -211,7 +211,7 @@ cf <- rxode2::rxSolve(ui, ev_cf, returnType = "data.frame",
                 rel_err = abs(Cc / Cc_closed - 1))
 
 cat(sprintf("max relative error vs closed form: %.3g\n", max(cf$rel_err)))
-#> max relative error vs closed form: 6.29e-10
+#> max relative error vs closed form: 6.23e-10
 stopifnot(max(cf$rel_err) < 1e-5)
 ```
 

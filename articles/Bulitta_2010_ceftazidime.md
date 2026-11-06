@@ -60,7 +60,7 @@ place for review.
 | `e_ffm_vc` | 1.00 (fixed) | Methods, “Body size model”: volume exponent fixed to 1.0 |
 | `e_healthy_cl` | log(1/1.17) | Table 4 row 5: FCYFCL = 1.17 for FFM allometric |
 | `e_healthy_vc / vp / vp2` | log(1/1.01) | Table 4 row 5: FCYFVSS = 1.01 for FFM allometric |
-| `etalcl` (28% CV on CL) | 0.07555 | Table 3, NONMEM CV(CL) -\> log(0.28^2 + 1) |
+| `etalcl` (28% CV on CL) | 0.07548 | Table 3, NONMEM CV(CL) -\> log(0.28^2 + 1) |
 | `etalvc` (45% CV on V1) | 0.18438 | Table 3, NONMEM CV(V1) -\> log(0.45^2 + 1) |
 | `etalvp` (25% CV on V2) | 0.06062 | Table 3, NONMEM CV(V2) -\> log(0.25^2 + 1) |
 | `etalvp2` (29% CV on V3) | 0.08075 | Table 3, NONMEM CV(V3) -\> log(0.29^2 + 1) |
@@ -365,8 +365,8 @@ knitr::kable(
 |:-----------|----------:|----------:|---------:|---------:|---------:|---------:|
 | aucinf.obs |        NA |        NA |      Inf |      Inf |     -Inf |     -Inf |
 | cl.obs     |        NA |        NA |      Inf |      Inf |     -Inf |     -Inf |
-| cmax       |    389.04 |    272.35 |    99.93 |   119.99 |  1332.58 |   562.60 |
-| half.life  |      1.38 |      1.81 |     0.83 |     0.77 |     3.17 |     3.97 |
+| cmax       |    389.03 |    272.36 |    99.93 |   119.99 |  1332.62 |   562.59 |
+| half.life  |      1.38 |      1.81 |     0.83 |     0.77 |     3.17 |     3.96 |
 | mrt.iv.obs |        NA |        NA |      Inf |      Inf |     -Inf |     -Inf |
 | vss.iv.obs |        NA |        NA |      Inf |      Inf |     -Inf |     -Inf |
 
@@ -417,7 +417,7 @@ knitr::kable(
 |:---|---:|---:|---:|---:|---:|---:|
 | Total clearance (L/h) | 5.37 | NA | 6.59 | NA | NA | NA |
 | Vss (L) | 9.14 | NA | 14.30 | NA | NA | NA |
-| Peak concentration (mg/L) | 445.00 | 389.04 | 210.00 | 272.35 | -12.6 | 29.7 |
+| Peak concentration (mg/L) | 445.00 | 389.03 | 210.00 | 272.36 | -12.6 | 29.7 |
 | Terminal half-life (h) | 1.48 | 1.38 | 1.94 | 1.81 | -6.5 | -6.8 |
 | Mean residence time (h) | 1.54 | NA | 2.10 | NA | NA | NA |
 

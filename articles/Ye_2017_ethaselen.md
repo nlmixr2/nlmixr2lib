@@ -61,7 +61,7 @@ the time-varying covariate `DOSE` (mg/kg/day).
 | `lec50` | `log(0.0676)` | Table 1: EC50 = 0.0676 (RSE 23.1%) |
 | `etalkin` | `0.01526` | Table 1: CV = 12.4% on Kin (omega^2 = log(0.124^2+1)) |
 | `etalrbase` | `0.00917` | Table 1: CV = 9.6% on Base |
-| `etallambda1` | `0.10160` | Table 1: CV = 32.7% on lambda1 |
+| `etallambda1` | `0.10159` | Table 1: CV = 32.7% on lambda1 |
 | `etalrbase_tumor` | `0.01996` | Table 1: CV = 14.2% on W |
 | `etalec50` | `0.03657` | Table 1: CV = 19.3% on EC50 |
 | `propSd_tumor_volume` | `0.2022` | Table 1: Err_pro = 20.22% (RSE 13.6%) |
@@ -206,7 +206,7 @@ sim_iiv <- rxode2::rxSolve(
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [lsoda -- internal t + h = t (h too small for machine precision)]: 669064 warning(s) for subject(s): 73, 74, 76, 77, 81, ... (18 more)
+#> [lsoda -- internal t + h = t (h too small for machine precision)]: 668618 warning(s) for subject(s): 73, 74, 76, 77, 81, ... (18 more)
 #> Warning: some ID(s) could not solve the ODEs correctly; These values are
 #> replaced with 'NA'
 

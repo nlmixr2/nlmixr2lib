@@ -84,11 +84,11 @@ below collects them in one place for review.
 | `e_wt_vc_vp` | fixed(1) | same Results sentence |
 | `e_efv_cl` | 2.07 | Table 3 “EFV EFF BDQ and M2 = 2.07” (RSE 3.6%) |
 | `e_efv_cl_m3` | 1.12 | Table 3 “EFV EFF M3 = 1.12” (RSE 3.6%) |
-| Block IIV (CL, CL_M2, CL_M3) | var 0.054646, 0.034733, 0.086178; corr +0.296, -0.129, +0.713 | Table 3 BSV CL = 23.7% CV, BSV CL_M2 = 18.8% CV (corr with CL = +29.6%), BSV CL_M3 = 30.0% CV (corr with CL = -12.9%, corr with CL_M2 = +71.3%) |
-| `etalvc` (BSV V) | 0.113081 | Table 3 BSV V = 34.6% CV (RSE 32%) |
-| `etalq` (BSV Q1) | 0.034372 | Table 3 BSV Q1 = 18.7% CV (RSE 15%) |
-| `etalvc_m2` (BSV V_M2) | 0.080214 | Table 3 BSV V M2 = 28.9% CV (RSE 19%) |
-| `etalvp_m2` (BSV VP_M2) | 0.064902 | Table 3 BSV VP 1M2 = 25.9% CV (RSE 39%) |
+| Block IIV (CL, CL_M2, CL_M3) | var 0.054648, 0.034734, 0.086178; corr +0.296, -0.129, +0.713 | Table 3 BSV CL = 23.7% CV, BSV CL_M2 = 18.8% CV (corr with CL = +29.6%), BSV CL_M3 = 30.0% CV (corr with CL = -12.9%, corr with CL_M2 = +71.3%) |
+| `etalvc` (BSV V) | 0.113075 | Table 3 BSV V = 34.6% CV (RSE 32%) |
+| `etalq` (BSV Q1) | 0.034371 | Table 3 BSV Q1 = 18.7% CV (RSE 15%) |
+| `etalvc_m2` (BSV V_M2) | 0.080216 | Table 3 BSV V M2 = 28.9% CV (RSE 19%) |
+| `etalvp_m2` (BSV VP_M2) | 0.064927 | Table 3 BSV VP 1M2 = 25.9% CV (RSE 39%) |
 | `propSd` (BDQ residual) | 0.239 | Table 3 “Prop error BDQ = 23.9% CV” (RSE 5.3%) |
 | `propSd_m2` (M2 residual) | 0.177 | Table 3 “Prop error M2 = 17.7% CV” (RSE 4.8%) |
 | `propSd_m3` (M3 residual) | 0.150 | Table 3 “Prop error M3 = 15.0% CV” (RSE 10.2%) |
@@ -450,7 +450,7 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Tmax (h) | Half-life (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 336 | BDQ + EFV | 50 | 3.39 \[27.7\] | 0.0135 \[24.3\] | 15.5 \[10.0, 192\] | 238 \[98.4\] |
+| 0 | 336 | BDQ + EFV | 50 | 3.39 \[27.7\] | 0.0135 \[24.3\] | 15.5 \[10.0, 192\] | 238 \[98.5\] |
 | 0 | 336 | BDQ alone | 50 | 1.91 \[40.4\] | 0.00651 \[41.8\] | 192 \[13.0, 336\] | 828 \[628\], n=46 |
 
 Simulated NCA parameters for M3 metabolite by treatment arm. {.table

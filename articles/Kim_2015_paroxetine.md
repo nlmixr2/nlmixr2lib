@@ -52,11 +52,20 @@ comment. The table below collects them in one place.
 | `lcl` (CL/F at DOSE=25, AGE=71) | log(13.1 L/h) | Kim 2015 Table 2, estimate (RSE 5.9%) |
 | `e_dose_cl` (dose exponent on CL) | -0.363 | Kim 2015 Table 2 (RSE 34.4%) |
 | `e_age_cl` (age exponent on CL) | -0.702 | Kim 2015 Table 2 (RSE 30.1%) |
-| IIV CL/F (CV%) | 40.2% (omega^2 = 0.1498) | Kim 2015 Table 2 (RSE 13.4%) |
+| IIV CL/F (CV%) | 40.2% (omega^2 = 0.1616) | Kim 2015 Table 2 (RSE 13.4%) |
 | Residual error (log-additive) | sigma = 0.642 | Kim 2015 Table 2 (RSE 7.6%) |
 | 1-compartment, first-order absorption | n/a | Kim 2015 Methods, “Population pharmacokinetic model” |
 | `CL = CL_pop * (DOSE/25)^e_dose_cl * (AGE/71)^e_age_cl` | n/a | Kim 2015 Methods, power covariate form |
 | `Cc = 1000 * central / vc` (mg/L -\> ug/L) | n/a | Kim 2015 Table 1 footnote (concentration unit ug/L) |
+
+## Errata
+
+- **The published CVs are first-order approximations.** Table 2 footnote
+  b reads “expressed as coefficient of variation approximated by the
+  square root of the variance estimate (%)”. The printed 40.2% is
+  therefore the standard deviation of `etalcl`, and its variance is
+  `0.402^2` = 0.162, not the exact log-normal conversion `log(1 + CV^2)`
+  (0.150).
 
 ## Virtual cohort
 
@@ -241,10 +250,10 @@ knitr::kable(
 
 | start | end | cohort | N | auclast | cmax | cmin | tmax | cav | ctrough |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | 10 mg/day | 60 | 548 \[46.8\] | 26.9 \[39.2\] | 18.2 \[58.9\] | 3.25 \[3.00, 3.25\] | 22.8 \[46.8\] | 18.2 \[59.0\] |
-| 0 | 24 | 20 mg/day | 60 | 1370 \[46.9\] | 65.2 \[41.0\] | 47.9 \[55.6\] | 3.25 \[3.00, 3.50\] | 57.2 \[46.9\] | 47.9 \[55.7\] |
-| 0 | 24 | 25 mg/day | 60 | 1750 \[45.9\] | 83.0 \[39.7\] | 61.3 \[55.3\] | 3.25 \[3.00, 3.50\] | 73.0 \[45.9\] | 61.4 \[55.3\] |
-| 0 | 24 | 40 mg/day | 60 | 3520 \[41.6\] | 162 \[36.9\] | 128 \[48.4\] | 3.25 \[3.00, 3.50\] | 147 \[41.6\] | 128 \[48.5\] |
+| 0 | 24 | 10 mg/day | 60 | 548 \[48.7\] | 26.9 \[40.7\] | 18.2 \[61.5\] | 3.25 \[3.00, 3.25\] | 22.8 \[48.7\] | 18.2 \[61.6\] |
+| 0 | 24 | 20 mg/day | 60 | 1370 \[48.6\] | 65.1 \[42.5\] | 47.8 \[57.8\] | 3.25 \[3.00, 3.50\] | 57.1 \[48.6\] | 47.8 \[57.9\] |
+| 0 | 24 | 25 mg/day | 60 | 1750 \[47.5\] | 83.0 \[41.0\] | 61.2 \[57.4\] | 3.25 \[3.00, 3.50\] | 73.0 \[47.5\] | 61.2 \[57.5\] |
+| 0 | 24 | 40 mg/day | 60 | 3520 \[43.1\] | 162 \[38.2\] | 128 \[50.3\] | 3.25 \[3.00, 3.50\] | 147 \[43.1\] | 128 \[50.4\] |
 
 Day-28 steady-state NCA on the simulated cohort by daily dose group.
 {.table}
@@ -288,10 +297,10 @@ knitr::kable(
 
 | cohort    | median_AUC | q10_AUC | q90_AUC |
 |:----------|-----------:|--------:|--------:|
-| 10 mg/day |      528.2 |   312.1 |  1019.8 |
-| 20 mg/day |     1318.7 |   799.2 |  2512.8 |
-| 25 mg/day |     1783.0 |   959.9 |  2955.3 |
-| 40 mg/day |     3571.2 |  2094.0 |  5668.6 |
+| 10 mg/day |      528.3 |   305.5 |  1041.2 |
+| 20 mg/day |     1311.3 |   780.6 |  2557.5 |
+| 25 mg/day |     1780.1 |   943.8 |  3014.5 |
+| 40 mg/day |     3589.0 |  2060.4 |  5759.3 |
 
 Simulated steady-state AUC0-24 (h.ug/L) by daily-dose group (median,
 10-90 percentile). {.table}

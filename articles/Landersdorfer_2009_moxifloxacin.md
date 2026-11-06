@@ -56,8 +56,8 @@ table below collects them in one place.
 | `lq` (apparent CL_ic/F) | log(18.9) | Table 1 MAP-Bayesian median 18.9 L/h (range 15.3-23.2) |
 | `lfcortical` (cortical bone:serum ratio) | log(0.803) | Table 1 MAP-Bayesian median 0.803 (35% CV, range 0.185-1.71) |
 | `lfcancellous` (cancellous bone:serum ratio) | log(0.775) | Table 1 MAP-Bayesian median 0.775 (48% CV, range 0.278-1.56) |
-| `etalfcortical` (IIV variance) | 0.115573 | log(1 + 0.35^2); 35% CV per Table 1 |
-| `etalfcancellous` (IIV variance) | 0.207436 | log(1 + 0.48^2); 48% CV per Table 1 |
+| `etalfcortical` (IIV variance) | 0.115558 | log(1 + 0.35^2); 35% CV per Table 1 |
+| `etalfcancellous` (IIV variance) | 0.207339 | log(1 + 0.48^2); 48% CV per Table 1 |
 | `k_cb_in` (k24 = k25, central -\> bone) | 0.022 1/h | Materials and Methods ‘PK modeling approach’ paragraph 3 (paired with V_bone = 0.5 L) |
 | `k_cb_out` (k42 = k52, bone -\> central) | ln(2)/0.25 1/h | Materials and Methods ‘PK modeling approach’ paragraph 2; 15 min equilibration half-life |
 | `vbone` (cortical and cancellous bone volume) | 0.5 L (fixed) | Materials and Methods ‘PK modeling approach’ paragraph 3 |

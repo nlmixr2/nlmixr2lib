@@ -52,7 +52,7 @@ origins in one place for reviewer convenience.
 | `Emax` (`lemax`) | 19.8 (% effect) | Chae 2012 Table 2 (RSE 3.17%) |
 | `EC50` (`lec50`) | 3.68 ug/mL | Chae 2012 Table 2 (RSE 3.89%) |
 | Hill `r` (`lhill`) | 0.55 | Chae 2012 Table 2 (RSE 9.05%) |
-| IIV CL 29.7% CV (`etalcl ~ 0.08457`) | omega^2 = log(0.297^2 + 1) | Chae 2012 Table 2 (IIV CV% column) |
+| IIV CL 29.7% CV (`etalcl ~ 0.08453`) | omega^2 = log(0.297^2 + 1) | Chae 2012 Table 2 (IIV CV% column) |
 | IIV V 22.1% CV (`etalvc ~ 0.04769`) | omega^2 = log(0.221^2 + 1) | Chae 2012 Table 2 (IIV CV% column) |
 | IIV r 4.05% CV (`etalhill ~ 0.001639`) | omega^2 = log(0.0405^2 + 1) | Chae 2012 Table 2 (IIV CV% column) |
 | PK residual (additive, ng/mL -\> ug/mL) | `addSd = 0.023` | Chae 2012 Table 2 (23 ng/mL, RSE 11.7%) |
@@ -263,7 +263,7 @@ knitr::kable(
 | NCA parameter       | Median |    P05 |    P95 |
 |:--------------------|-------:|-------:|-------:|
 | adj.r.squared       |  0.999 |  0.999 |  1.000 |
-| AUC0-∞ (obs)        |  9.597 |  5.891 | 14.772 |
+| AUC0-∞ (obs)        |  9.597 |  5.891 | 14.771 |
 | Clast               |  0.117 |  0.035 |  0.353 |
 | clast.pred          |  0.117 |  0.035 |  0.356 |
 | Cmax                |  1.496 |  1.088 |  2.030 |

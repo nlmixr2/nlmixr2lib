@@ -58,7 +58,7 @@ table below collects them in one place for review.
 | `e_wt_cl = fixed(1)` | 1 | Table 3 final-model row: linear `(wt/1.5)` scaling; estimated body-size exponent excluded for lack of fit improvement (Results) |
 | `e_wt_vc = fixed(1)` | 1 | Table 3 final-model row: linear `(wt/1.5)` scaling on V |
 | `e_page_cl = 2.49` (theta_CL-PMA) | 2.49 | Table 4, “CL,PMA” (RSE 29.8 percent) |
-| `etalcl` variance 0.16608 | omega^2 = log(1 + 0.425^2) | Table 4, “Interindividual variance CL (CV%) = 42.5” (RSE 28.5 percent) |
+| `etalcl` variance 0.16604 | omega^2 = log(1 + 0.425^2) | Table 4, “Interindividual variance CL (CV%) = 42.5” (RSE 28.5 percent) |
 | `propSd = 0.135` | 13.5 CV percent | Table 4, “Residual variance (CV%) Blood draws sigma_1^2 = 13.5” (RSE 24.5 percent) |
 | `d/dt(central) = -kel * central` | n/a | Results, “Population PK model building”: 1-compartment model |
 | Concentration `Cc = central / vc` | n/a | 1-compartment IV; observation is plasma metronidazole concentration |
@@ -410,16 +410,16 @@ knitr::kable(ss_nca, digits = 2,
 
 | treatment           | PPTESTCD | median |    q05 |    q95 |
 |:--------------------|:---------|-------:|-------:|-------:|
-| PMA 34-40 wk (q8h)  | auclast  | 194.69 |  82.77 | 368.78 |
+| PMA 34-40 wk (q8h)  | auclast  | 194.69 |  82.78 | 368.76 |
 | PMA 34-40 wk (q8h)  | cav      |  24.34 |  10.35 |  46.10 |
 | PMA 34-40 wk (q8h)  | cmax     |  29.97 |  16.48 |  51.52 |
 | PMA 34-40 wk (q8h)  | cmin     |  19.46 |   5.97 |  41.07 |
-| PMA \< 34 wk (q12h) | auclast  | 342.84 | 164.32 | 694.98 |
-| PMA \< 34 wk (q12h) | cav      |  28.57 |  13.69 |  57.92 |
+| PMA \< 34 wk (q12h) | auclast  | 342.85 | 164.33 | 694.96 |
+| PMA \< 34 wk (q12h) | cav      |  28.57 |  13.69 |  57.91 |
 | PMA \< 34 wk (q12h) | cmax     |  34.13 |  19.62 |  62.89 |
 | PMA \< 34 wk (q12h) | cmin     |  23.65 |   9.10 |  53.21 |
-| PMA \> 40 wk (q6h)  | auclast  | 134.60 |  83.04 | 260.01 |
-| PMA \> 40 wk (q6h)  | cav      |  22.43 |  13.84 |  43.34 |
+| PMA \> 40 wk (q6h)  | auclast  | 134.60 |  83.05 | 260.00 |
+| PMA \> 40 wk (q6h)  | cav      |  22.43 |  13.84 |  43.33 |
 | PMA \> 40 wk (q6h)  | cmax     |  28.10 |  19.76 |  48.80 |
 | PMA \> 40 wk (q6h)  | cmin     |  17.58 |   9.24 |  38.29 |
 

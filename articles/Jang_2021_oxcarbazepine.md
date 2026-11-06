@@ -94,8 +94,8 @@ and are not used as values.
 | `lvc` (V/F at 66 kg) | 59.0 L (4.5% RSE) | Table 2 theta3 (unit printed as L/h, a typo for L); bootstrap 59.2 (54.2-64.8) |
 | `e_wt_vc` | 0.96 (18.1% RSE) | Table 2 theta4; bootstrap 0.95 (0.59-1.3) |
 | `lka` | 0.34 1/h (9.7% RSE) | Table 2 ka; bootstrap 0.34 (0.28-0.41) |
-| `etalcl` | 29.2 %CV -\> `omega^2 = log(1 + 0.292^2) = 0.08183` | Table 2 ‘IIV CL/F’ |
-| `etalka` | 41.5 %CV -\> `omega^2 = log(1 + 0.415^2) = 0.15952` | Table 2 second IIV row (labelled ‘IIV V2/F’); assigned to ka per the control stream, see below |
+| `etalcl` | 29.2 %CV -\> `omega^2 = log(1 + 0.292^2) = 0.08182` | Table 2 ‘IIV CL/F’ |
+| `etalka` | 41.5 %CV -\> `omega^2 = log(1 + 0.415^2) = 0.15890` | Table 2 second IIV row (labelled ‘IIV V2/F’); assigned to ka per the control stream, see below |
 | `propSd` | 0.13 | Table 2 ‘Proportional error (SD)’; supplementary code `W = SQRT(THETA(6)**2 + THETA(7)**2*IPRED**2)` with `$SIGMA 1 FIX` |
 | Additive error `THETA(6)` | 0.0001 ng/mL, fixed | supplementary code; omitted (see Assumptions) |
 
@@ -415,10 +415,10 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
                                           intervals = intervals))
 summary(nca_res)
 #>  Interval Start Interval End                 treatment   N AUClast (h*mg/L)
-#>               0           24      30 mg/kg single dose 200       515 [9.19]
+#>               0           24      30 mg/kg single dose 200       515 [9.18]
 #>               0           24 Twice daily, steady state 200       559 [52.2]
 #>  Cmax (mg/L) Cmin (mg/L)          Tmax (h)
-#>  26.4 [7.58]          NC 8.00 [4.00, 20.0]
+#>  26.4 [7.57]          NC 8.00 [4.00, 20.0]
 #>  24.7 [51.1] 21.0 [54.6] 16.0 [4.00, 17.0]
 #> 
 #> Caption: AUClast, Cmax, Cmin: geometric mean and geometric coefficient of variation; Tmax: median and range; N: number of subjects
@@ -449,7 +449,7 @@ stopifnot(
 )
 summary(auc_chk$pct_diff)
 #>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#> -0.088344 -0.031451 -0.021383 -0.025394 -0.015728 -0.004436
+#> -0.088286 -0.031423 -0.021393 -0.025384 -0.015738 -0.004444
 ```
 
 ### Comparison with Jang 2021 Table 1

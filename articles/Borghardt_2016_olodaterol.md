@@ -181,7 +181,7 @@ sim <- rxode2::rxSolve(
 
 cat("Cc range across cohort:", round(range(sim$Cc, na.rm = TRUE), 4),
     "pg/mL\n")
-#> Cc range across cohort: 0 128.3874 pg/mL
+#> Cc range across cohort: 0 128.3984 pg/mL
 ```
 
 For deterministic typical-value replication (no BSV / BOV), zero out the

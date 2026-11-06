@@ -104,14 +104,14 @@ children (373 concentrations) were used only for external evaluation.
 | `e_conmed_fluconazole_cl` | 0.823 | Table 2 theta3 |
 | `e_crcl_cl` | 0.258 | Table 2 theta4 |
 | `e_sexf_cl` | 1.23 | Table 2 theta5 |
-| `etalcl` | 27.1 CV% -\> 0.07085 | Table 2 ‘IIV for CL’ |
+| `etalcl` | 27.1 CV% -\> 0.07087 | Table 2 ‘IIV for CL’ |
 | `propSd`, `addSd` | 18.9%, 0.495 ng/mL | Table 2 residual variability |
 | Reference values 57 kg, 1.0 mg/day, 55.2 mL/min/1.73 m^2 | – | Table 2 equations; Table 1 medians |
 | eGFR equation (Japanese) | 194 x Scr^-1.094 x Age^-0.287 (x 0.739 female) | Methods ‘Patients and data collection’ |
 | **Prior-tacrolimus model** `lcl`, `lvc` | 7.04 L/h, 323 L | Results, equations after Figure 4 |
 | `e_dose_everolimus_cl`, `e_conmed_fluconazole_cl`, `e_crcl_cl`, `e_sexf_cl` | 0.338, 0.803, 0.293, 1.23 | same |
 | `e_tac_dose_trough_ratio_bl_cl` (reference 0.44) | 0.230 | same |
-| `etalcl` | 23.4 CV% -\> 0.05325 | Results text |
+| `etalcl` | 23.4 CV% -\> 0.05331 | Results text |
 | `propSd`, `addSd` | 18.2%, 0.510 ng/mL | Results text |
 
 ## Virtual cohort
@@ -430,7 +430,7 @@ auc_chk <- as.data.frame(nca$result) |>
   mutate(expected = 1000 * 0.5 / cl, pct_diff = 100 * (PPORRES / expected - 1))
 summary(auc_chk$pct_diff)
 #>     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-#> -0.16949 -0.09012 -0.07154 -0.07530 -0.05458 -0.02808
+#> -0.16951 -0.09012 -0.07154 -0.07530 -0.05458 -0.02808
 # Both sides use the same drawn parameters, so the only gap is the trapezoidal
 # error of a 0.25-h grid over the ka = 6.07 /h absorption peak.
 stopifnot(
@@ -446,7 +446,7 @@ stopifnot(
   truncated to the Table 1 ranges; the paper reports only medians and
   ranges.
 - **IIV scale.** Table 2 reports IIV as CV%; it is converted with
-  omega^2 = log(CV^2 + 1) (0.271 -\> 0.07085; 0.234 -\> 0.05325).
+  omega^2 = log(CV^2 + 1) (0.271 -\> 0.07087; 0.234 -\> 0.05331).
 - **Residual error.** The combined error model is encoded as
   `add(addSd) + prop(propSd)` with the Table 2 values, the proportional
   term reported as a CV and the additive as an SD in ng/mL.

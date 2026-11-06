@@ -71,11 +71,11 @@ below collects them in one place for review.
 | `e_wt_vc_vp` | fixed(1) | same Methods sentence |
 | `e_rif_cl` | 4.78 | Table 2 “Factor change BDQ/M2 CL with RIF = 4.78” (RSE 9.1%) |
 | `e_rpt_cl` | 3.96 | Table 2 “Factor change BDQ/M2 CL with RPT = 3.96” (RSE 5.0%) |
-| Block IIV CL, CL_M2 | var 0.07654, 0.09236; cor 0.538 | Table 2 BSV CL = 28.2% CV, BSV CLM2 = 31.1% CV, corr 53.8% |
-| `etalvc` (BSV V) | 0.16769 | Table 2 BSV V = 42.8% CV (RSE 14.6%) |
-| `etalq` (BSV Q1) | 0.04372 | Table 2 BSV Q1 = 21.1% CV (RSE 13.2%) |
-| `etalvc_m2` (BSV VM2) | 0.12379 | Table 2 BSV VM2 = 36.4% CV (RSE 12.3%) |
-| `etalvp_m2` (BSV VP1M2) | 0.04330 | Table 2 BSV VP1M2 = 21.0% CV (RSE 22.4%) |
+| Block IIV CL, CL_M2 | var 0.07652, 0.09232; cor 0.538 | Table 2 BSV CL = 28.2% CV, BSV CLM2 = 31.1% CV, corr 53.8% |
+| `etalvc` (BSV V) | 0.16821 | Table 2 BSV V = 42.8% CV (RSE 14.6%) |
+| `etalq` (BSV Q1) | 0.04356 | Table 2 BSV Q1 = 21.1% CV (RSE 13.2%) |
+| `etalvc_m2` (BSV VM2) | 0.12442 | Table 2 BSV VM2 = 36.4% CV (RSE 12.3%) |
+| `etalvp_m2` (BSV VP1M2) | 0.04316 | Table 2 BSV VP1M2 = 21.0% CV (RSE 22.4%) |
 | `propSd` (BDQ residual) | 0.157 | Table 2 “Prop err BDQ = 15.7% CV” (RSE 4.4%) |
 | `propSd_m2` (M2 residual) | 0.122 | Table 2 “Prop err M2 = 12.2% CV” (RSE 5.0%) |
 | Transit-absorption chain via Savic 2007 input feeding depot at rate (NN+1)/MTT, then first-order ka into central | n/a | Methods “absorption through a dynamic transit compartment model” + structural inheritance from the previously developed bedaquiline + M2 model (Svensson 2014 reference 19) |
@@ -346,7 +346,7 @@ knitr::kable(
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
 | 0 | 336 | BDQ + rifampicin | 32 | 20.2 \[26.5\] | 1.48 \[19.1\] | 3.00 \[2.50, 4.00\] | 382 \[18.5\] | 23.0 \[30.2\] |
 | 0 | 336 | BDQ + rifapentine | 32 | 22.1 \[28.4\] | 1.53 \[24.6\] | 3.00 \[2.00, 5.00\] | 380 \[35.7\] | 25.4 \[31.1\] |
-| 0 | 336 | BDQ alone | 32 | 54.4 \[22.3\] | 2.48 \[18.6\] | 4.50 \[2.50, 6.50\] | 565 \[114\] | 85.2 \[29.1\] |
+| 0 | 336 | BDQ alone | 32 | 54.4 \[22.2\] | 2.48 \[18.6\] | 4.50 \[2.50, 6.50\] | 565 \[114\] | 85.2 \[29.1\] |
 
 Simulated NCA parameters for bedaquiline by treatment arm. {.table}
 
@@ -378,9 +378,9 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 336 | BDQ + rifampicin | 32 | 4.80 \[31.9\] | 0.0764 \[22.1\] | 9.00 \[6.50, 13.0\] | 124 \[27.9\] | 5.36 \[37.7\] |
+| 0 | 336 | BDQ + rifampicin | 32 | 4.80 \[31.9\] | 0.0764 \[22.2\] | 9.00 \[6.50, 13.0\] | 124 \[27.9\] | 5.36 \[37.7\] |
 | 0 | 336 | BDQ + rifapentine | 32 | 5.20 \[32.9\] | 0.0717 \[25.2\] | 10.0 \[7.50, 15.0\] | 132 \[19.2\] | 5.97 \[35.4\] |
-| 0 | 336 | BDQ alone | 32 | 6.91 \[25.8\] | 0.0375 \[33.3\] | 14.0 \[8.50, 18.0\] | 641 \[342\] | 20.7 \[43.1\] |
+| 0 | 336 | BDQ alone | 32 | 6.91 \[25.8\] | 0.0375 \[33.4\] | 14.0 \[8.50, 18.0\] | 641 \[342\] | 20.7 \[43.1\] |
 
 Simulated NCA parameters for M2 metabolite by treatment arm. {.table
 style="width:100%;"}
@@ -402,7 +402,7 @@ print(bdq_auc)
 #>           treatment AUClast (h*mg/L)
 #> 1  BDQ + rifampicin      20.2 [26.5]
 #> 2 BDQ + rifapentine      22.1 [28.4]
-#> 3         BDQ alone      54.4 [22.3]
+#> 3         BDQ alone      54.4 [22.2]
 print(m2_auc)
 #>           treatment AUClast (h*mg/L)
 #> 1  BDQ + rifampicin      4.80 [31.9]

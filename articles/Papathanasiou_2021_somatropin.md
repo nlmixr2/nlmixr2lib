@@ -559,10 +559,10 @@ nca_tab |>
 | Adults with GHD   | cmax     |   1.44 |  0.66 |   3.33 |
 | Adults with GHD   | cmin     |   0.37 |  0.08 |   1.27 |
 | Adults with GHD   | tmax     |   2.00 |  1.00 |   5.00 |
-| Children with GHD | auclast  | 106.37 | 61.47 | 209.79 |
+| Children with GHD | auclast  | 106.37 | 61.46 | 209.83 |
 | Children with GHD | cav      |   4.43 |  2.56 |   8.74 |
 | Children with GHD | cmax     |  10.04 |  4.89 |  23.62 |
-| Children with GHD | cmin     |   1.24 |  0.21 |   5.34 |
+| Children with GHD | cmin     |   1.24 |  0.21 |   5.35 |
 | Children with GHD | tmax     |   3.00 |  1.00 |   6.05 |
 
 Steady-state NCA of total GH (endogenous + exogenous). {.table}

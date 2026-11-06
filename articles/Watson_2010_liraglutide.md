@@ -69,8 +69,8 @@ The table below collects them in one place for review.
 | `lt0` = log(6.0) h (HV zero-order duration) | 6.0 | Table II, All Studies HV column, row “T0, h” (rSE 0.1%) |
 | `e_dis_diab_lt0` = log(8.0/6.0) | 0.2877 | Derived from Table II, All Studies T2D column “T0 = 8.0 h” (rSE 0.2%); reference HV value 6.0 h |
 | `e_dis_diab_lka` = log(0.154/0.104) | 0.3927 | Derived from Table II, All Studies T2D column “kA = 0.154 /h” (rSE 34%); reference HV value 0.104 /h |
-| IIV CL/F = 37% CV -\> omega^2 = log(1 + 0.37^2) = 0.12833 | 0.12833 | Table II, All Studies row “BSV CL/F, %” (rSE 16%) |
-| IIV V/F = 47% CV -\> omega^2 = log(1 + 0.47^2) = 0.19960 | 0.19960 | Table II, All Studies row “BSV V/F, %” (rSE 33%) |
+| IIV CL/F = 37% CV -\> omega^2 = log(1 + 0.37^2) = 0.12831 | 0.12831 | Table II, All Studies row “BSV CL/F, %” (rSE 16%) |
+| IIV V/F = 47% CV -\> omega^2 = log(1 + 0.47^2) = 0.19959 | 0.19959 | Table II, All Studies row “BSV V/F, %” (rSE 33%) |
 | `propSd` = 0.154 (proportional residual) | 0.154 | Table II, All Studies row “Proportional residual error, %” (15.4%, rSE 5%) |
 | `addSd` = 0.042 nmol/L (additive residual) | 0.042 | Table II, All Studies row “Additive residual error, nM” (rSE 4%) |
 | Body-weight scaling: `cl = (per-kg CL/F) * WT`; `vc = (per-kg V/F) * WT` | n/a | Per-kg parameterisation implied by Table II units (L/h/kg, L/kg) |

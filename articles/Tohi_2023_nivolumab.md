@@ -44,12 +44,12 @@ ui
 #>     0.4110000    -0.2850000     7.3198649     0.7030975     0.1600000 
 #> 
 #> Omega ($omega): 
-#>         etalcl  etalvc
-#> etalcl 0.03695 0.00000
-#> etalvc 0.00000 0.19425
+#>         etalcl    etalvc
+#> etalcl 0.03695 0.0000000
+#> etalvc 0.00000 0.1942246
 #> attr(,"lotriLabels")
 #> [1] "Table 2: IIV for CL = 19.4 CV%; log(1 + 0.194^2) = 0.03695"
-#> [2] "Table 2: IIV for V1 = 46.3 CV%; log(1 + 0.463^2) = 0.19425"
+#> [2] "Table 2: IIV for V1 = 46.3 CV%"                            
 #> attr(,"lotriFix")
 #>        etalcl etalvc
 #> etalcl  FALSE  FALSE
@@ -127,8 +127,8 @@ ui
 #>         label("Proportional residual error (fraction)")
 #>         etalcl ~ 0.03695
 #>         label("Table 2: IIV for CL = 19.4 CV%; log(1 + 0.194^2) = 0.03695")
-#>         etalvc ~ 0.19425
-#>         label("Table 2: IIV for V1 = 46.3 CV%; log(1 + 0.463^2) = 0.19425")
+#>         etalvc ~ 0.194224600324186
+#>         label("Table 2: IIV for V1 = 46.3 CV%")
 #>     })
 #>     model({
 #>         alb_gdL <- ALB * 0.1
@@ -196,7 +196,7 @@ covariates; their baseline and last-dose summaries are in Table S3.
 | `lcl_time_hill` | log(2.02) (held constant) | Table 2, theta for HILL; Methods |
 | Time-varying CL form `exp(Emax t^g/(T50^g + t^g))` | – | Methods sigmoid Emax equation; Results final CL equation |
 | `etalcl` | log(1 + 0.194$`^2`$) = 0.03695 | Table 2, IIV for CL 19.4 CV% |
-| `etalvc` | log(1 + 0.463$`^2`$) = 0.19425 | Table 2, IIV for V1 46.3 CV% |
+| `etalvc` | log(1 + 0.463$`^2`$) = 0.19422 | Table 2, IIV for V1 46.3 CV% |
 | No IIV on Q, V2 | – | Results, ‘Base Model’ |
 | `propSd` | 0.160 | Table 2, proportional error 16.0 CV% |
 
@@ -537,10 +537,10 @@ nca_tab |>
 | Treatment | Window | AUC (ug\*h/mL) | Cavg (ug/mL) | Cmax (ug/mL) | Cmin (ug/mL) |
 |:---|:---|---:|---:|---:|---:|
 | 240 mg, ALB 3.5, eGFR 60 | Dose 1 | 16253.0 | 48.4 | 105.2 | 0.0 |
-| 240 mg, ALB 3.5, eGFR 60 | Dose 12 | 47205.1 | 140.5 | 218.5 | 108.2 |
+| 240 mg, ALB 3.5, eGFR 60 | Dose 12 | 47205.2 | 140.5 | 218.5 | 108.2 |
 | 240 mg, ALB 3.5, eGFR 60 | Dose 26 | 50848.2 | 151.3 | 229.1 | 118.0 |
-| 3 mg/kg, ALB 3.5, eGFR 60 | Dose 1 | 11521.1 | 34.3 | 77.6 | 0.0 |
-| 3 mg/kg, ALB 3.5, eGFR 60 | Dose 12 | 33867.8 | 100.8 | 157.2 | 75.7 |
+| 3 mg/kg, ALB 3.5, eGFR 60 | Dose 1 | 11521.0 | 34.3 | 77.6 | 0.0 |
+| 3 mg/kg, ALB 3.5, eGFR 60 | Dose 12 | 33867.9 | 100.8 | 157.2 | 75.7 |
 | 3 mg/kg, ALB 3.5, eGFR 60 | Dose 26 | 36738.8 | 109.3 | 165.2 | 82.7 |
 
 Median PKNCA results for the albumin 3.5 g/dL, eGFR 60 cells. {.table}
@@ -780,7 +780,7 @@ sessionInfo()
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
 #> [28] pkgdown_2.2.1       crayon_1.5.3        jquerylib_0.1.4    
-#> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
+#> [31] whisker_0.4.1       openssl_2.5.0       cachem_1.1.0       
 #> [34] nlme_3.1-171        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
 #> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.2         

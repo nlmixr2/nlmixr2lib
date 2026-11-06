@@ -106,7 +106,7 @@ The table below collects them in one place for review.
 | `lkmet_gluc` (FMET) | log(0.0324) | Table 2: FMET = 0.0324 (RSE 10.4%) |
 | `lcl_gluc` (CL_GLU) | log(0.715) | Table 2: CL_GLU = 0.715 L/h (RSE 10.2%) |
 | `lvc_gluc` (V_GLU) | fixed(log(1)) | Table 2: V_GLU = 1 L FIXED |
-| `etalcl + etalvc` block | c(0.0890, 0.1206, 0.5085) | Table 2: CV(CL_RAL/F) = 30.5%, CV(V_RAL/F) = 81.4%, correlation = 0.567 |
+| `etalcl + etalvc` block | c(0.0889, 0.1206, 0.5084) | Table 2: CV(CL_RAL/F) = 30.5%, CV(V_RAL/F) = 81.4%, correlation = 0.567 |
 | `etalmtt` | 0.7651 | Table 2: CV(MTT) = 107.2% |
 | `etalfdepot` | 0.9283 | Table 2: CV(F) = 123.7% |
 | `etalkmet_gluc` | 0.1329 | Table 2: CV(FMET) = 37.7% |
@@ -307,7 +307,7 @@ knitr::kable(nca_summary,
 
 | start | end | treatment | N | auclast | cmax | tmax | half.life | aucinf.obs | cl.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | raltegravir_400mg_po | 24 | 10.8 \[113\] | 2.23 \[89.4\] | 1.50 \[0.500, 4.00\] | 2.69 \[2.00\] | 10.9 \[117\] | 36.5 \[117\] |
+| 0 | 24 | raltegravir_400mg_po | 24 | 10.8 \[113\] | 2.23 \[89.4\] | 1.50 \[0.500, 4.00\] | 2.68 \[2.00\] | 10.9 \[117\] | 36.5 \[117\] |
 
 Simulated NCA parameters for raltegravir parent after a single 400 mg
 oral dose. {.table style="width:100%;"}

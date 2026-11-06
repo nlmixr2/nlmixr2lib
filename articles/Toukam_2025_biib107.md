@@ -66,9 +66,9 @@ The same population information is available programmatically via
 | F = 73.8% | `lfdepot` | Toukam 2025 Table 3 |
 | Allometric exponent on CL = 1.07 (estimated) | `e_wt_cl` | Toukam 2025 Table 3 |
 | Allometric exponents on V2, V3, Q (1, 1, 0.75; FIXED) | `e_wt_vc`, `e_wt_vp`, `e_wt_q` (FIXED) | Toukam 2025 Table 3 footnote |
-| IIV CL 16% CV | `etalcl` (omega^2 = 0.02527) | Toukam 2025 Table 3 |
+| IIV CL 16% CV | `etalcl` (omega^2 = 0.02528) | Toukam 2025 Table 3 |
 | IIV V2 35% CV | `etalvc` (omega^2 = 0.11556) | Toukam 2025 Table 3 |
-| IIV Ka 41% CV | `etalka` (omega^2 = 0.15536) | Toukam 2025 Table 3 |
+| IIV Ka 41% CV | `etalka` (omega^2 = 0.15538) | Toukam 2025 Table 3 |
 | Additive PK residual error 8.67 (SC) | `addSd` | Toukam 2025 Table 3 |
 | E0 = 17.7% baseline alpha-4 saturation | `a4satE0` | Toukam 2025 Table 4 |
 | Emax = 77.5% above baseline | `a4satEmax` | Toukam 2025 Table 4 |
@@ -339,10 +339,10 @@ knitr::kable(nca_tbl,
 | regimen      | PPTESTCD            | median_value |      q05 |      q95 |
 |:-------------|:--------------------|-------------:|---------:|---------:|
 | 180 mg SC SD | adj.r.squared       |        1.000 |    1.000 |    1.000 |
-| 180 mg SC SD | auclast             |      332.489 |  248.245 |  466.829 |
+| 180 mg SC SD | auclast             |      332.487 |  248.243 |  466.840 |
 | 180 mg SC SD | clast.pred          |        0.000 |    0.000 |    0.000 |
-| 180 mg SC SD | cmax                |       18.389 |   11.904 |   29.712 |
-| 180 mg SC SD | half.life           |        2.787 |    2.617 |    3.281 |
+| 180 mg SC SD | cmax                |       18.389 |   11.904 |   29.713 |
+| 180 mg SC SD | half.life           |        2.787 |    2.616 |    3.281 |
 | 180 mg SC SD | lambda.z            |        0.249 |    0.211 |    0.265 |
 | 180 mg SC SD | lambda.z.n.points   |       14.000 |    4.950 |   20.100 |
 | 180 mg SC SD | lambda.z.time.first |       43.000 |   36.900 |   52.050 |
@@ -352,7 +352,7 @@ knitr::kable(nca_tbl,
 | 180 mg SC SD | tlast               |       56.000 |   56.000 |   56.000 |
 | 180 mg SC SD | tmax                |        6.000 |    3.000 |    9.000 |
 | 360 mg IV SD | adj.r.squared       |        0.999 |    0.797 |    1.000 |
-| 360 mg IV SD | auclast             |     1383.676 |  896.662 | 2119.438 |
+| 360 mg IV SD | auclast             |     1383.684 |  896.643 | 2119.518 |
 | 360 mg IV SD | clast.pred          |        0.640 |    0.000 |    5.323 |
 | 360 mg IV SD | cmax                |      106.783 |   61.867 |  191.855 |
 | 360 mg IV SD | half.life           |        2.732 |    0.359 |    8.618 |
@@ -360,15 +360,15 @@ knitr::kable(nca_tbl,
 | 360 mg IV SD | lambda.z.n.points   |        3.000 |    3.000 |   11.050 |
 | 360 mg IV SD | lambda.z.time.first |       54.000 |   45.950 |   54.000 |
 | 360 mg IV SD | lambda.z.time.last  |       56.000 |   56.000 |   56.000 |
-| 360 mg IV SD | r.squared           |        0.999 |    0.865 |    1.000 |
+| 360 mg IV SD | r.squared           |        0.999 |    0.864 |    1.000 |
 | 360 mg IV SD | span.ratio          |        0.888 |    0.249 |   10.709 |
 | 360 mg IV SD | tlast               |       56.000 |   56.000 |   56.000 |
 | 360 mg IV SD | tmax                |        0.000 |    0.000 |    0.000 |
 | 360 mg SC SD | adj.r.squared       |        1.000 |    0.796 |    1.000 |
-| 360 mg SC SD | auclast             |      919.804 |  651.032 | 1215.545 |
+| 360 mg SC SD | auclast             |      919.810 |  651.005 | 1215.557 |
 | 360 mg SC SD | clast.pred          |        0.001 |    0.000 |    3.149 |
-| 360 mg SC SD | cmax                |       41.056 |   23.144 |   59.079 |
-| 360 mg SC SD | half.life           |        2.566 |    0.231 |    7.213 |
+| 360 mg SC SD | cmax                |       41.056 |   23.144 |   59.078 |
+| 360 mg SC SD | half.life           |        2.566 |    0.231 |    7.214 |
 | 360 mg SC SD | lambda.z            |        0.270 |    0.096 |    3.001 |
 | 360 mg SC SD | lambda.z.n.points   |        3.000 |    3.000 |    9.050 |
 | 360 mg SC SD | lambda.z.time.first |       54.000 |   47.950 |   54.000 |
@@ -377,30 +377,30 @@ knitr::kable(nca_tbl,
 | 360 mg SC SD | span.ratio          |        1.156 |    0.277 |    8.701 |
 | 360 mg SC SD | tlast               |       56.000 |   56.000 |   56.000 |
 | 360 mg SC SD | tmax                |        6.000 |    4.000 |    9.050 |
-| 600 mg SC SD | adj.r.squared       |        0.999 |    0.945 |    1.000 |
-| 600 mg SC SD | auclast             |     1638.532 | 1317.438 | 2359.075 |
-| 600 mg SC SD | clast.pred          |        3.404 |    0.000 |   10.157 |
-| 600 mg SC SD | cmax                |       67.835 |   47.426 |  107.818 |
-| 600 mg SC SD | half.life           |        5.465 |    1.380 |   14.128 |
+| 600 mg SC SD | adj.r.squared       |        0.999 |    0.946 |    1.000 |
+| 600 mg SC SD | auclast             |     1638.509 | 1317.429 | 2359.088 |
+| 600 mg SC SD | clast.pred          |        3.403 |    0.000 |   10.159 |
+| 600 mg SC SD | cmax                |       67.835 |   47.426 |  107.819 |
+| 600 mg SC SD | half.life           |        5.464 |    1.381 |   14.128 |
 | 600 mg SC SD | lambda.z            |        0.127 |    0.049 |    0.510 |
 | 600 mg SC SD | lambda.z.n.points   |        3.000 |    3.000 |    4.050 |
 | 600 mg SC SD | lambda.z.time.first |       54.000 |   52.950 |   54.000 |
 | 600 mg SC SD | lambda.z.time.last  |       56.000 |   56.000 |   56.000 |
-| 600 mg SC SD | r.squared           |        1.000 |    0.972 |    1.000 |
-| 600 mg SC SD | span.ratio          |        0.366 |    0.177 |    2.518 |
+| 600 mg SC SD | r.squared           |        1.000 |    0.973 |    1.000 |
+| 600 mg SC SD | span.ratio          |        0.366 |    0.177 |    2.519 |
 | 600 mg SC SD | tlast               |       56.000 |   56.000 |   56.000 |
 | 600 mg SC SD | tmax                |        6.000 |    4.000 |   10.050 |
 | 72 mg SC SD  | adj.r.squared       |        1.000 |    1.000 |    1.000 |
-| 72 mg SC SD  | auclast             |       70.843 |   45.402 |  100.538 |
+| 72 mg SC SD  | auclast             |       70.842 |   45.401 |  100.539 |
 | 72 mg SC SD  | clast.pred          |        0.000 |    0.000 |    0.000 |
 | 72 mg SC SD  | cmax                |        6.241 |    3.309 |   10.387 |
-| 72 mg SC SD  | half.life           |        2.817 |    2.646 |    4.371 |
+| 72 mg SC SD  | half.life           |        2.818 |    2.646 |    4.371 |
 | 72 mg SC SD  | lambda.z            |        0.246 |    0.159 |    0.262 |
 | 72 mg SC SD  | lambda.z.n.points   |       33.000 |   14.000 |   35.000 |
 | 72 mg SC SD  | lambda.z.time.first |       24.000 |   22.000 |   43.000 |
 | 72 mg SC SD  | lambda.z.time.last  |       56.000 |   56.000 |   56.000 |
 | 72 mg SC SD  | r.squared           |        1.000 |    1.000 |    1.000 |
-| 72 mg SC SD  | span.ratio          |       11.371 |    3.012 |   12.739 |
+| 72 mg SC SD  | span.ratio          |       11.371 |    3.012 |   12.741 |
 | 72 mg SC SD  | tlast               |       56.000 |   56.000 |   56.000 |
 | 72 mg SC SD  | tmax                |        5.000 |    3.950 |    7.000 |
 
@@ -430,15 +430,15 @@ nca_tbl |>
 
 | regimen      | PPTESTCD  | median_value |   q05 |    q95 |
 |:-------------|:----------|-------------:|------:|-------:|
-| 180 mg SC SD | half.life |        2.787 | 2.617 |  3.281 |
+| 180 mg SC SD | half.life |        2.787 | 2.616 |  3.281 |
 | 180 mg SC SD | tmax      |        6.000 | 3.000 |  9.000 |
 | 360 mg IV SD | half.life |        2.732 | 0.359 |  8.618 |
 | 360 mg IV SD | tmax      |        0.000 | 0.000 |  0.000 |
-| 360 mg SC SD | half.life |        2.566 | 0.231 |  7.213 |
+| 360 mg SC SD | half.life |        2.566 | 0.231 |  7.214 |
 | 360 mg SC SD | tmax      |        6.000 | 4.000 |  9.050 |
-| 600 mg SC SD | half.life |        5.465 | 1.380 | 14.128 |
+| 600 mg SC SD | half.life |        5.464 | 1.381 | 14.128 |
 | 600 mg SC SD | tmax      |        6.000 | 4.000 | 10.050 |
-| 72 mg SC SD  | half.life |        2.817 | 2.646 |  4.371 |
+| 72 mg SC SD  | half.life |        2.818 | 2.646 |  4.371 |
 | 72 mg SC SD  | tmax      |        5.000 | 3.950 |  7.000 |
 
 Simulated Tmax and observed terminal half-life by regimen. {.table}

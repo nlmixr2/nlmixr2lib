@@ -65,7 +65,7 @@ The same metadata are available programmatically via
 | `lk23 = log(0.084)` (K23, 1/h) | 0.084 | Table 3 (bootstrap 0.088, 95% CI 0.05-0.16) |
 | `lcl_dihydroart = log(71)` (CL_met/F, L/h) | 71 | Table 3 ‘CL_met’ (RSE 46%; bootstrap 69, 95% CI 38-136) |
 | `vc_dihydroart = vc` (V_M = Vc, fixed) | n/a | Table 3 ‘V_M Fixed to Vc’; Methods ‘volume of distributions of DLF and DHA … assumed to be equal to those of LF and AM’ |
-| `etalcl ~ 0.68273` (var, log-scale) | CV 99% | Table 3 BSV on CL (RSE 65%; bootstrap 93%, 95% CI 66-120); variance = log(0.99^2 + 1) |
+| `etalcl ~ 0.68315` (var, log-scale) | CV 99% | Table 3 BSV on CL (RSE 65%; bootstrap 93%, 95% CI 66-120); variance = log(0.99^2 + 1) |
 | `propSd = 0.72` (AM proportional) | CV 72% | Table 3 sigma_prop,AM (RSE 26%; bootstrap 69%, 95% CI 49-87) |
 | `addSd = 38.792` (AM additive, ng/mL) | 0.13 umol/L \* 298.4 g/mol | Table 3 sigma_add,AM (RSE 7%; bootstrap 0.13 umol/L, 95% CI 0.03-0.20) |
 | `propSd_dihydroart = 0.53` (DHA proportional) | CV 53% | Table 3 sigma_prop,DHA (RSE 14%; bootstrap 51%, 95% CI 44-59) |
@@ -81,7 +81,7 @@ The same metadata are available programmatically via
 | `lka = fixed(log(0.54))` (ka, 1/h) | 0.54 (fixed) | Table 3 ‘Ka fixed at 0.54’; Methods |
 | `lfdepot = fixed(log(1))` (F1) | 1 (fixed) | Table 3 ‘F1 Fixed at 1’ |
 | `e_preg_f = -0.33` (PREG effect on F) | -0.33 | Table 3 theta_PregF1 (RSE 37%; bootstrap -0.31, 95% CI -0.52 to -0.05) |
-| `etalfdepot ~ 0.35272` (var, log-scale) | CV 65% | Table 3 BSV on F1 (RSE 50%; bootstrap 61%, 95% CI 43-77); variance = log(0.65^2 + 1) |
+| `etalfdepot ~ 0.35242` (var, log-scale) | CV 65% | Table 3 BSV on F1 (RSE 50%; bootstrap 61%, 95% CI 43-77); variance = log(0.65^2 + 1) |
 | `propSd = 0.51` (proportional) | CV 51% | Table 3 sigma_prop,LF (RSE 32%; bootstrap 51%, 95% CI 45-56) |
 | One-compartment LF disposition with first-order absorption | – | Results ‘A one-compartment model with first-order absorption and elimination was retained to depict LF data’ |
 | No body-weight, BMI, age, or gestational-age covariates retained | – | Results ‘None of the remaining covariates influenced LF and DLF pharmacokinetics’ |
@@ -374,8 +374,8 @@ knitr::kable(day7_summary,
 
 | group        |   n | median_Cc | p025_Cc | p975_Cc | pct_lt_175 | pct_lt_280 | pct_lt_600 |
 |:-------------|----:|----------:|--------:|--------:|-----------:|-----------:|-----------:|
-| Non-pregnant |  80 |      1426 |     363 |    6120 |          0 |        0.0 |        6.2 |
-| Pregnant     | 120 |       855 |     324 |    2378 |          0 |        1.7 |       25.8 |
+| Non-pregnant |  80 |      1426 |     363 |    6116 |          0 |        0.0 |        6.2 |
+| Pregnant     | 120 |       855 |     324 |    2377 |          0 |        1.7 |       25.8 |
 
 Day-7 lumefantrine: simulated median (with 95% PI) and proportion below
 the proposed therapeutic thresholds. {.table}
@@ -908,8 +908,8 @@ knitr::kable(
 
 | group | Simulated median day-7 LF (ng/mL) | Simulated 2.5th percentile | Simulated 97.5th percentile | Published median day-7 LF (ng/mL) | Published 95% PI lower | Published 95% PI upper |
 |:---|---:|---:|---:|---:|---:|---:|
-| Non-pregnant | 1426 | 363 | 6120 | 1382 | 386 | 5135 |
-| Pregnant | 855 | 324 | 2378 | 908 | 217 | 3256 |
+| Non-pregnant | 1426 | 363 | 6116 | 1382 | 386 | 5135 |
+| Pregnant | 855 | 324 | 2377 | 908 | 217 | 3256 |
 
 Day-7 lumefantrine median and 95% prediction interval: simulated
 vs. published (Mosha 2014 Results, Concentration-time simulation).

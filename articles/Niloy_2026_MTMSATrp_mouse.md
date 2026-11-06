@@ -57,7 +57,7 @@ below collects them in one place for review.
 | `lcl <- log(CL)` | CL = 39.18 mL/h/kg at 3 mg/kg | Niloy 2026 Table 1 (CL, RSE 4.97%) |
 | `lvc <- log(V)` | V = 53.06 mL/kg | Niloy 2026 Table 1 (V, RSE 7.55%) |
 | `e_cohdose_cl` (beta) | -0.30 | Niloy 2026 Table 1 (beta, RSE 10.9%) |
-| `etalcl` (omega^2) | log(1 + 0.058^2) = 0.003359 | Niloy 2026 Table 1 (IIV on CL = 5.8% CV) |
+| `etalcl` (omega^2) | log(1 + 0.058^2) = 0.003358 | Niloy 2026 Table 1 (IIV on CL = 5.8% CV) |
 | `etalvc` (omega^2) | log(1 + 0.25^2) = 0.060625 | Niloy 2026 Table 1 (IIV on V = 25% CV) |
 | `propSd` | 0.51 (51% proportional CV) | Niloy 2026 Table 1 (b, RSE 8.13%) |
 | Reference dose | 3 mg/kg | Niloy 2026 Methods, “Model development”, Eq. 2 |
@@ -5771,7 +5771,7 @@ reflect the high IIV / shrinkage on CL acknowledged in Niloy 2026
 - **IIV variance encoding.** Niloy 2026 Table 1 reports IIV as %CV (5.8%
   on CL, 25% on V). These were converted to NONMEM-style omega^2 via the
   Monolix log-normal convention `omega^2 = log(1 + CV^2)`, giving
-  0.003359 (CL) and 0.060625 (V). The bootstrap median column reports
+  0.003358 (CL) and 0.060625 (V). The bootstrap median column reports
   slightly different point estimates (0.061 and 0.21 for CL / V
   respectively, on the omega-SD scale); the model uses the Estimate
   column (the final MLE), not the bootstrap median.

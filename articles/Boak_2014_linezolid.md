@@ -75,19 +75,31 @@ table below collects them in one place for review.
 | Base_Pre = Base_PL \* kout / ktr (steady-state precursor pool) | derived | Methods “Mechanism-based population pharmacokinetic/toxicodynamic model” |
 | kin = kout \* Base_PL (zero-order precursor synthesis rate) | derived | Methods “Mechanism-based population pharmacokinetic/toxicodynamic model” |
 | Observed PL = mean of the 15 circulating platelet compartments (Eq for output) | derived | Methods “Mechanism-based population pharmacokinetic/toxicodynamic model” |
-| `etaltlag` (BSV T_lag, CV = 60.0%; omega^2 = log(1.36)) | 0.30748 | Table 2 |
-| `etaltabs` (BSV T_abs1/2, CV = 14.7%) | 0.02139 | Table 2 |
-| `etalcl_nonren` (BSV composite CL, CV = 48.9%; single eta on the composite) | 0.21451 | Table 2 |
+| `etaltlag` (BSV T_lag, CV = 60.0%; omega^2 = 0.600^2) | 0.36000 | Table 2 |
+| `etaltabs` (BSV T_abs1/2, CV = 14.7%) | 0.02161 | Table 2 |
+| `etalcl_nonren` (BSV composite CL, CV = 48.9%; single eta on the composite) | 0.23912 | Table 2 |
 | `etalvc` (BSV V, CV = 3.6%) | 0.001296 | Table 2 |
-| `etalrbase` (BSV Base_PL, CV = 65.1%) | 0.35325 | Table 2 |
-| `etalec50` (BSV IC50, CV = 101%; “101% between-patient variability” in Results) | 0.70307 | Table 2; Results |
-| `etalmtt_pre` (BSV MTT_Pre, CV = 34.7%; “CV, 34.7%” in Discussion) | 0.11375 | Table 2; Discussion |
-| `etalmtt_pl` (BSV MTT_PL, CV = 20.3%; “20.3%” in Discussion) | 0.04039 | Table 2; Discussion |
-| `etalgamma` (BSV gamma, CV = 15.0% fixed) | 0.02226 fixed | Table 2 |
-| `etalfini_pre` (BSV F_Ini_Pre, CV = 21.5%) | 0.04569 | Table 2; Results |
-| `etalfini_pl` (BSV F_Ini_PL, CV = 23.6%) | 0.05455 | Table 2; Results |
+| `etalrbase` (BSV Base_PL, CV = 65.1%) | 0.42380 | Table 2 |
+| `etalec50` (BSV IC50, CV = 101%; “101% between-patient variability” in Results) | 1.02010 | Table 2; Results |
+| `etalmtt_pre` (BSV MTT_Pre, CV = 34.7%; “CV, 34.7%” in Discussion) | 0.12041 | Table 2; Discussion |
+| `etalmtt_pl` (BSV MTT_PL, CV = 20.3%; “20.3%” in Discussion) | 0.04121 | Table 2; Discussion |
+| `etalgamma` (BSV gamma, CV = 15.0% fixed) | 0.02250 fixed | Table 2 |
+| `etalfini_pre` (BSV F_Ini_Pre, CV = 21.5%) | 0.04623 | Table 2; Results |
+| `etalfini_pl` (BSV F_Ini_PL, CV = 23.6%) | 0.05570 | Table 2; Results |
 | `addSd` / `propSd` (linezolid Cc; SD_in / SD_sl) | 0.309 mg/L / 0.225 | Table 2 |
 | `addSd_plt` / `propSd_plt` (platelets; PD_in / PD_sl) | 15.1 x 10^9/L / 0.0755 | Table 2 |
+
+## Errata
+
+- **The published CVs are first-order approximations.** Table 2 footnote
+  a reads “Between-subject variability (BSV) is expressed as the
+  apparent coefficient of variation (i.e., the square root of the
+  estimated variance).” Each printed CV is therefore the standard
+  deviation of the corresponding random effect, and the model’s
+  variances are the squares of the printed CVs (for example
+  `etalec50 ~ 1.01^2` for the 101% BSV on IC50), not the exact
+  log-normal conversion `log(1 + CV^2)`. The difference is largest for
+  IC50: 1.01^2 = 1.020, against 0.703 from the log-normal conversion.
 
 ## Virtual cohort
 
@@ -456,7 +468,7 @@ knitr::kable(comparison, digits = 2,
 
 | Arm | Cmax mean (mg/L) | Cmax CV (%) | Ctrough mean (mg/L) | Tmax median (h) | AUCtau (0-12h) mean (mg\*h/L) | AUCtau CV (%) | Predicted AUC24 mean (mg\*h/L) | Predicted AUC24 CV (%) | Paper reference |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|:---|
-| 14-day | 10.93 | 61.47 | 5.91 | 6 | 99.08 | 76.36 | 198.15 | 76.36 | Mean AUC24 = 223 mg\*h/L (CV 52%; median 198, range 65.2-551) - Boak 2014 Results |
+| 14-day | 11.08 | 65.16 | 6.11 | 6 | 101.21 | 80.62 | 202.43 | 80.62 | Mean AUC24 = 223 mg\*h/L (CV 52%; median 198, range 65.2-551) - Boak 2014 Results |
 
 Simulated vs published NCA at steady state (day 7 dosing interval).
 Predicted AUC24 = 2 x AUCtau(12h). Paper reports mean 223 mg\*h/L (CV
@@ -547,7 +559,7 @@ Base_Pre = Base_PL \* kout / ktr is exact.
   IBW separately.
 - **Feedback-exponent BSV fixed at CV = 15%.** Boak 2014 Table 2 flags
   the BSV on gamma as “0.15 (fixed)”; the vignette carries this forward
-  as `etalgamma ~ fixed(0.02226)` (omega^2 = log(1 + 0.15^2)).
+  as `etalgamma ~ fixed(0.15^2)` (omega^2 = 0.0225).
 - **Baseline platelet count as a mixed effect.** Boak 2014’s Monte Carlo
   simulations set the *mean* baseline (150 / 250 / 400 x 10^9/L) then
   draw each subject’s Base_PL log-normally around it with CV = 65.1%.

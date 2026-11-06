@@ -61,9 +61,9 @@ below collects the mapping in one place for reviewer audit.
 | Q (typical) | Candelaria 2018 Table 2 | 18.6 mL/h = 0.4464 L/day |
 | V2 (typical) | Candelaria 2018 Table 2 | 4154 mL = 4.154 L |
 | BSA on V1 | Candelaria 2018 Table 2 (row ‘V1-BSA’) | Power: `(BSA/1.72)^1.11` |
-| IIV CL | Candelaria 2018 Table 2 | 24.7% CV -\> `omega^2 = log(1 + 0.247^2) = 0.05923` |
+| IIV CL | Candelaria 2018 Table 2 | 24.7% CV -\> `omega^2 = log(1 + 0.247^2) = 0.05922` |
 | IIV V1 | Candelaria 2018 Table 2 | 14.2% CV -\> 0.01996 |
-| IIV Q | Candelaria 2018 Table 2 | 28.0% CV -\> 0.07549 |
+| IIV Q | Candelaria 2018 Table 2 | 28.0% CV -\> 0.07548 |
 | IIV V2 | Candelaria 2018 Table 2 | 27.0% CV -\> 0.07037 |
 | IOV CL (not encoded) | Candelaria 2018 Table 2 | 35.9% CV; see Assumptions and deviations |
 | IOV V1 (not encoded) | Candelaria 2018 Table 2 | 16.8% CV; see Assumptions and deviations |

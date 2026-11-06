@@ -371,7 +371,7 @@ knitr::kable(comparison, digits = 1,
 
 | treatment | cAUC_pub_mean | cAUC_sim_mean | cAUC_pct_diff | Cmax_pub_mean | Cmax_sim_mean | Cmax_pct_diff | Cmin_pub_mean | Cmin_sim_mean | Cmin_pct_diff |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 4 mg/kg | 103.9 | 105.5 | 1.5 | 72.9 | 72.9 | 0.0 | 3.4 | 3.7 | 8.1 |
+| 4 mg/kg | 103.9 | 105.4 | 1.5 | 72.9 | 72.9 | 0.0 | 3.4 | 3.7 | 8.1 |
 | 6 mg/kg | 176.9 | 178.9 | 1.1 | 113.6 | 117.8 | 3.7 | 9.3 | 8.5 | -8.5 |
 | 8 mg/kg | 253.8 | 255.1 | 0.5 | 155.6 | 154.5 | -0.7 | 16.6 | 16.8 | 1.3 |
 | 280 mg | 87.8 | 87.6 | -0.3 | 63.2 | 63.0 | -0.3 | 2.4 | 2.3 | -5.6 |

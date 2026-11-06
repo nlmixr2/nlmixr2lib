@@ -61,10 +61,10 @@ The table below collects them in one place.
 | `lvc_m8` | log(1 L) FIXED | Appendix: “K_M0 = CLm0/Vm with Vm = 1” |
 | `e_age_cl_vc` | -0.29 | Table 2 row “CL_T and V, theta_AGE” (mean -0.29) |
 | `e_conmed_nnrti_ind_kel_m8` | +0.91 | Table 2 row “K_M0, theta_INN” (mean 0.91) |
-| `etalvc` | omega^2 = 0.7831 | Table 2 row “omega(V)” 109% -\> log(1 + 1.09^2) |
+| `etalvc` | omega^2 = 0.7830 | Table 2 row “omega(V)” 109% -\> log(1 + 1.09^2) |
 | `etalcl` | omega^2 = 0.1423 | Table 2 row “omega(CL_T)” 39.1% -\> log(1 + 0.391^2) |
-| `etalkel_m8` | omega^2 = 0.2169 | Table 2 row “omega(K_M0)” 49.2% -\> log(1 + 0.492^2) |
-| `cov(etalcl, etalkel_m8)` | 0.0790 | Table 2 row “r(CL_T, K_M0) = 0.45” -\> 0.45 \* sqrt(0.1423 \* 0.2169) |
+| `etalkel_m8` | omega^2 = 0.2168 | Table 2 row “omega(K_M0)” 49.2% -\> log(1 + 0.492^2) |
+| `cov(etalcl, etalkel_m8)` | 0.0790 | Table 2 row “r(CL_T, K_M0) = 0.45” -\> 0.45 \* sqrt(0.1423 \* 0.2168) |
 | `addSd` | 1.65 mg/L | Table 2 row “sigma_NELFI” (mean 1.65 ug/mL) |
 | `addSd_m8` | 0.63 mg/L | Table 2 row “sigma_M8” (mean 0.63 ug/mL) |
 | `d/dt(depot)` | -ka \* depot | rxode2 explicit form of the Ka \* G input (Appendix) |
@@ -450,16 +450,16 @@ knitr::kable(
 
 | cohort    | PPTESTCD | median |   q05 |    q95 |
 |:----------|:---------|-------:|------:|-------:|
-| 2 mo-2 yr | auclast  |  4.930 | 2.409 |  9.957 |
-| 2 mo-2 yr | cav      |  0.616 | 0.301 |  1.245 |
+| 2 mo-2 yr | auclast  |  4.929 | 2.410 |  9.954 |
+| 2 mo-2 yr | cav      |  0.616 | 0.301 |  1.244 |
 | 2 mo-2 yr | cmax     |  0.759 | 0.365 |  1.526 |
 | 2 mo-2 yr | cmin     |  0.506 | 0.155 |  1.044 |
-| 2-13 yr   | auclast  |  7.264 | 3.288 | 21.218 |
-| 2-13 yr   | cav      |  0.908 | 0.411 |  2.652 |
-| 2-13 yr   | cmax     |  1.168 | 0.497 |  3.793 |
-| 2-13 yr   | cmin     |  0.625 | 0.171 |  1.981 |
-| \<2 mo    | auclast  |  2.258 | 1.127 |  5.054 |
-| \<2 mo    | cav      |  0.282 | 0.141 |  0.632 |
+| 2-13 yr   | auclast  |  7.263 | 3.289 | 21.211 |
+| 2-13 yr   | cav      |  0.908 | 0.411 |  2.651 |
+| 2-13 yr   | cmax     |  1.168 | 0.497 |  3.792 |
+| 2-13 yr   | cmin     |  0.625 | 0.171 |  1.982 |
+| \<2 mo    | auclast  |  2.258 | 1.128 |  5.052 |
+| \<2 mo    | cav      |  0.282 | 0.141 |  0.631 |
 | \<2 mo    | cmax     |  0.372 | 0.186 |  0.826 |
 | \<2 mo    | cmin     |  0.210 | 0.050 |  0.556 |
 

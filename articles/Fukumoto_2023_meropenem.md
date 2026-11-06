@@ -81,7 +81,7 @@ share a source location.
 | `e_crcl_cl` (theta5, power exponent) | 0.66 (11.9) | 0.67 \[0.52, 0.84\] | Table 2, p. 395 |
 | `V2 = theta3`, `lvp` -\> exp(lvp) = 13.2 L | 13.2 (21.2) | 13.4 \[9.51, 20.0\] | Table 2, p. 395 |
 | `Q = theta4`, `lq` -\> exp(lq) = 9.80 L/h | 9.80 (43.0) | 9.59 \[2.29, 20.3\] | Table 2, p. 395 |
-| `etalvc` = log(0.230^2 + 1) = 0.051538 | IIV V1 23.0% CV (127) | 21.5% \[0.0003, 56.7\] | Table 2, p. 395 |
+| `etalvc` = log(0.230^2 + 1) = 0.051548 | IIV V1 23.0% CV (127) | 21.5% \[0.0003, 56.7\] | Table 2, p. 395 |
 | `etalcl` = log(0.221^2 + 1) = 0.047686 | IIV CL 22.1% CV (32.4) | 21.1% \[12.7, 27.7\] | Table 2, p. 395 |
 | `etalq ~ fixed(0)`, `etalvp ~ fixed(0)` | fixed at zero | n/a | Results “PPK Model”, p. 395 |
 | `propSd` = 0.194 | Proportional 19.4% (13.1) | 18.4% \[13.0, 23.4\] | Table 2, p. 395 |

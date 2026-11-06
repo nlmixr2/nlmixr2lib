@@ -77,9 +77,9 @@ The same information is available programmatically via
 | CL/F (73.6 kg reference) | Kielbasa 2020 Table 3 | 0.00785 L/h (= 0.1884 L/day) |
 | V/F | Kielbasa 2020 Table 3 | 7.33 L |
 | Body-weight effect on CL/F | Kielbasa 2020 Table 3, equation 2 | Power model; exponent 0.601; MED = 73.6 kg |
-| IIV on ka | Kielbasa 2020 Table 3 | 92% CV (omega^2 = log(CV^2 + 1) = 0.61309) |
-| IIV on CL/F | Kielbasa 2020 Table 3 | 34% CV (omega^2 = 0.10942) |
-| IIV on V/F | Kielbasa 2020 Table 3 | 34% CV (omega^2 = 0.10942) |
+| IIV on ka | Kielbasa 2020 Table 3 | 92% CV (omega^2 = log(CV^2 + 1) = 0.61324) |
+| IIV on CL/F | Kielbasa 2020 Table 3 | 34% CV (omega^2 = 0.10939) |
+| IIV on V/F | Kielbasa 2020 Table 3 | 34% CV (omega^2 = 0.10939) |
 | Covariance (ka, CL/F) | Kielbasa 2020 Table 3 | 0.0694 (omega scale) |
 | Covariance (CL/F, V/F) | Kielbasa 2020 Table 3 | 0.0716 (omega scale) |
 | Covariance (ka, V/F) | Kielbasa 2020 Table 3 | Not estimated; treated as 0 in packaged OMEGA block |
@@ -393,8 +393,8 @@ knitr::kable(cmin_table,
 
 | metric | published_ngmL | simulated_ugmL | simulated_ngmL | ratio_sim_pub |
 |:---|---:|---:|---:|---:|
-| Cmin after 240 mg LD (end of month 1) | 15900 | 16.64 | 16643.29 | 1.05 |
-| Cmin,ss during 120 mg QM (end of month 11) | 15400 | 16.89 | 16890.95 | 1.10 |
+| Cmin after 240 mg LD (end of month 1) | 15900 | 16.64 | 16642.47 | 1.05 |
+| Cmin,ss during 120 mg QM (end of month 11) | 15400 | 16.89 | 16892.19 | 1.10 |
 
 Cmin comparison: simulated medians vs. Kielbasa 2020 reported values.
 {.table}

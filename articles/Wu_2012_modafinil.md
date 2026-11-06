@@ -130,12 +130,12 @@ table below collects them in one place for review.
 | Ethnicity multiplier theta_COV-CL3 for Korean | 1.25 | Wu 2012 Table 2 ‘Final model’ theta_COV-CL3 Korean (RSE 9.59 %) |
 | Ethnicity multiplier theta_COV-CL3 for Uygur or Hui composite | 1.15 | Wu 2012 Table 2 ‘Final model’ theta_COV-CL3 ‘Uygur or Hui’ (RSE 12.3 %) |
 | Apparent modafinil acid central volume V3/(F1\*F2) (L) | 2.73 | Wu 2012 Table 2 ‘Final model’ V3/(F1\*F2) (RSE 10.5 %) |
-| Inter-individual variability, CL1/F1 (% CV) | 23.2 | Wu 2012 Table 2 ‘Final model – Inter-individual variability’; omega^2 = log(1 + 0.232^2) = 0.05242 |
+| Inter-individual variability, CL1/F1 (% CV) | 23.2 | Wu 2012 Table 2 ‘Final model – Inter-individual variability’; omega^2 = log(1 + 0.232^2) = 0.05243 |
 | Inter-individual variability, V1/F1 (% CV) | 51.3 | Wu 2012 Table 2 ‘Final model – Inter-individual variability’; omega^2 = 0.23362 |
-| Inter-individual variability, CL2/F1 (% CV) | 22.1 | Wu 2012 Table 2 ‘Final model – Inter-individual variability’; omega^2 = 0.04768 |
+| Inter-individual variability, CL2/F1 (% CV) | 22.1 | Wu 2012 Table 2 ‘Final model – Inter-individual variability’; omega^2 = 0.04769 |
 | Inter-individual variability, V2/F1 (% CV) | 18.8 | Wu 2012 Table 2 ‘Final model – Inter-individual variability’; omega^2 = 0.03473 |
 | Inter-individual variability, CL3/(F1\*F2) (% CV) | 18.5 | Wu 2012 Table 2 ‘Final model – Inter-individual variability’; omega^2 = 0.03365 |
-| Inter-individual variability, V3/(F1\*F2) (% CV) | 78.2 | Wu 2012 Table 2 ‘Final model – Inter-individual variability’; omega^2 = 0.47727 |
+| Inter-individual variability, V3/(F1\*F2) (% CV) | 78.2 | Wu 2012 Table 2 ‘Final model – Inter-individual variability’; omega^2 = 0.47718 |
 | Residual error, modafinil proportional (fraction) | 0.134 | Wu 2012 Table 2 ‘Final model – Intra-individual variability’ epsilon1 (Modafinil proportional = 13.4 %) |
 | Residual error, modafinil additive (umol/L) | 0.001 | Wu 2012 Table 2 ‘Final model – Intra-individual variability’ epsilon2 (Modafinil additive) |
 | Residual error, modafinil acid proportional (fraction) | 0.0894 | Wu 2012 Table 2 ‘Final model – Intra-individual variability’ epsilon3 (Modafinil acid proportional = 8.94 %) |

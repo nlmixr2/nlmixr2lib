@@ -831,7 +831,7 @@ reproduces while individual Kpu values do not.
   (e.g. “IIV CLb 33.1%”) for an exponential random-effect model. They
   are converted with the log-normal relation `omega^2 = log(1 + CV^2)`.
   Using `omega^2 = CV^2` instead would change the human lumped variance
-  from 0.1043 to 0.1096, which is immaterial for simulation.
+  from 0.1040 to 0.1096, which is immaterial for simulation.
 
 - **Only clearance carries variability.** No IIV was estimated on the
   Kpu or scalar parameters – deliberately, so the variants stayed

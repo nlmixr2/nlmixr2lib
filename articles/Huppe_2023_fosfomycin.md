@@ -89,7 +89,7 @@ they are collected here for review.
 | `lkoa` (K0A) | 0.0288 (RSE 9%) | Table 2; units resolved below |
 | `e_crcl_cl_renal`, **fixed** | 0.0723 per (mL/min) | Table 2, Covariates (footnote c) |
 | `e_tsfd_vc` | 0.0008 per min (RSE 24%) | Table 2, Covariates |
-| `etalvc` (IIV V_C) | 62.10 %CV -\> omega^2 = log(0.621^2 + 1) = 0.326287 | Table 2, Random effects |
+| `etalvc` (IIV V_C) | 62.10 %CV -\> omega^2 = log(0.621^2 + 1) = 0.326163 | Table 2, Random effects |
 | `addSd` | 30.58 ug/mL | Table 2, Random effects (additive SD) |
 | Renal arm `CL_Renal * (1 + theta_CLCR * CLCR)` | n/a | Table 2 footnote a |
 | Preserved-diuresis gate on the renal arm | n/a | Methods, Population pharmacokinetic modeling; confirmed by Fig. 3b |
@@ -104,16 +104,16 @@ mod <- readModelDb("Huppe_2023_fosfomycin")
 ui <- rxode2::rxode(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 print(ui$iniDf[, c("name", "est", "fix", "label")])
-#>              name       est   fix
-#> 1       lcl_renal -1.335601 FALSE
-#> 2             lvc  2.901422 FALSE
-#> 3             lvp  3.034953 FALSE
-#> 4              lq  1.625311  TRUE
-#> 5            lkoa -3.547380 FALSE
-#> 6 e_crcl_cl_renal  0.072300  TRUE
-#> 7       e_tsfd_vc  0.000800 FALSE
-#> 8           addSd 30.580000 FALSE
-#> 9          etalvc  0.326287 FALSE
+#>              name        est   fix
+#> 1       lcl_renal -1.3356012 FALSE
+#> 2             lvc  2.9014216 FALSE
+#> 3             lvp  3.0349530 FALSE
+#> 4              lq  1.6253113  TRUE
+#> 5            lkoa -3.5473799 FALSE
+#> 6 e_crcl_cl_renal  0.0723000  TRUE
+#> 7       e_tsfd_vc  0.0008000 FALSE
+#> 8           addSd 30.5800000 FALSE
+#> 9          etalvc  0.3261628 FALSE
 #>                                                                                            label
 #> 1                 Renal fosfomycin clearance intercept in patients with preserved diuresis (L/h)
 #> 2                                    Central compartment volume at time since first dose = 0 (L)
@@ -667,7 +667,7 @@ n_anur <- 40  # 40% anuric, matching 6 of 15 patients
 # Table 1 mean 20.7 and SD 44.9 mL/min; quantiles, not random draws.
 crcl <- c(rep(0, n_anur),
           qlnorm((seq_len(n_arm - n_anur) - 0.5) / (n_arm - n_anur), 2.926, 1.109))
-eta  <- qnorm((seq_len(n_arm) - 0.5) / n_arm, 0, sqrt(0.326287))
+eta  <- qnorm((seq_len(n_arm) - 0.5) / n_arm, 0, sqrt(log(1 + 0.621^2)))
 c(mean = mean(crcl), sd = sd(crcl), pct_anuric = 100 * mean(crcl == 0))
 #>       mean         sd pct_anuric 
 #>   20.12986   37.86721   40.00000
@@ -800,9 +800,9 @@ bracket <- sens |>
   dplyr::filter(!is.na(published))
 print(as.data.frame(bracket))
 #>    PPTESTCD        lo       hi published brackets
-#> 1   auclast 17.971453 48.97115      28.7     TRUE
-#> 2      cmax  9.137115 46.86622      17.3     TRUE
-#> 3 half.life 33.921090 56.81270      51.0     TRUE
+#> 1   auclast 17.970624 48.96978      28.7     TRUE
+#> 2      cmax  9.136368 46.86508      17.3     TRUE
+#> 3 half.life 33.921129 56.81295      51.0     TRUE
 # Guard that the filter did not empty the check out: all three published
 # reductions must be present AND inside the modelled range.
 stopifnot(nrow(bracket) == length(published_reduction), all(bracket$brackets))
@@ -924,7 +924,7 @@ Parameters were not tuned to close this gap.
 - **IIV back-transformation.** Table 2 reports IIV on `V_C` as 62.10
   %CV. The Methods state that interindividual variability used
   exponential random-effect models, so
-  `omega^2 = log(CV^2 + 1) = 0.326287`. This matches the convention
+  `omega^2 = log(CV^2 + 1) = 0.326163`. This matches the convention
   already used for the same senior author’s `Liesenfeld_2013_dabigatran`
   model.
 - **`CL_CR` is measured, not estimated.** The retained covariate is a

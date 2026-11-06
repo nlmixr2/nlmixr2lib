@@ -216,9 +216,7 @@ pk_sim <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod_mp), pk_ev,
   atol = 1e-6, rtol = 1e-6, returnType = "data.frame"
 ))
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:00 
-#> 
-#> ] 0:00:01
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:00
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalfdepot', 'etalvp2', 'etalkr', 'etalyss', 'etalkl'
 # A one-subject solve returns no id column.
 pk_sim$id <- 1L

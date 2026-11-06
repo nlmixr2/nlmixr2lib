@@ -88,9 +88,9 @@ parameters have been converted from h^-1 (as published) to day^-1
 | ALB linear effect on CL | 1 + (ALB - 44.57) × (-0.0200) | Table 2 footnote c |
 | CRP power effect on CL | (CRP / 7.41)^0.0853 | Table 2 footnote c |
 | BMI linear-on-logit effect on F | slope -0.0354, centered at 24.75 kg/m^2 | Table 2 footnote e |
-| IIV CL | omega^2 = log(0.323^2 + 1) = 0.09927 | Table 2 VIVID-1 (32.3% CV) |
+| IIV CL | omega^2 = log(0.323^2 + 1) = 0.09924 | Table 2 VIVID-1 (32.3% CV) |
 | IIV Vc | omega^2 = log(0.171^2 + 1) = 0.02882 | Table 2 VIVID-1 (17.1% CV) |
-| IIV Vp | omega^2 = log(0.236^2 + 1) = 0.05421 | Table 2 VIVID-1 (23.6% CV) |
+| IIV Vp | omega^2 = log(0.236^2 + 1) = 0.05420 | Table 2 VIVID-1 (23.6% CV) |
 | IIV logit(F) | OMEGA_F = 0.517^2 = 0.26729 | Table 2 footnote b (51.7% IIV on logit scale) |
 | Residual error | propSd = 0.20, addSd = 0.10 ug/mL | **Assumed** (not published; see Assumptions) |
 

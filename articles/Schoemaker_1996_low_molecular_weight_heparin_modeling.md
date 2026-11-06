@@ -70,9 +70,9 @@ place for review.
 | `t1/2` | 130 min | `lvc = log(6.170 L)` (derived from `CL` and `t1/2`) | Table 3 |
 | `CL` | 32.9 mL/min | `lcl = log(1.974 L/h)` | Table 3 |
 | `Base` | 0.0254 IU/mL | `lrbase = log(0.0254)` | Table 3 |
-| CV(t1/2) | 8.6% | `etalvc` block: 0.02992 (paired with `etalcl`) | Table 3 |
-| CV(CL) | 15.1% | `etalcl` block: 0.02256 | Table 3 |
-| CV(Base) | 37.7% | `etalrbase ~ 0.1329` | Table 3 |
+| CV(t1/2) | 8.6% | `etalvc` block: 0.03020 (paired with `etalcl`) | Table 3 |
+| CV(CL) | 15.1% | `etalcl` block: 0.02280 | Table 3 |
+| CV(Base) | 37.7% | `etalrbase ~ 0.1421` | Table 3 |
 | s.d. residual error | 0.0274 IU/mL | `addSd = 0.0274` | Table 3 footnote |
 
 ### Dalteparine (Example 3 / Table 4)
@@ -88,15 +88,30 @@ place for review.
 | `Base` | 0.0192 IU/mL | `lrbase = log(0.0192)` | Table 4 |
 | `APTT0` | 30.2 s | `lrbase_APTT = log(30.2)` | Table 4 |
 | `I10` | 0.0665 IU/mL | `lI10 = log(0.0665)` | Table 4 |
-| CV(t1/2E) | 8.3% | `etalvc` block: 0.02657 (paired with `etalcl`) | Table 4 |
+| CV(t1/2E) | 8.3% | `etalvc` block: 0.02677 (paired with `etalcl`) | Table 4 |
 | CV(t1/2A) | 0.0% | `ka` typical-value only (no `etalka`) | Table 4 |
-| CV(CL) | 14.1% | `etalcl` block: 0.01970 | Table 4 |
-| CV(F) | 34.8% | `etalfdepot ~ 0.1143` | Table 4 |
-| CV(Base) | 16.6% | `etalrbase ~ 0.02719` | Table 4 |
-| CV(APTT0) | 10.6% | `etalrbase_APTT ~ 0.01117` | Table 4 |
-| CV(I10) | 19.6% | `etalI10 ~ 0.03770` | Table 4 |
+| CV(CL) | 14.1% | `etalcl` block: 0.01988 | Table 4 |
+| CV(F) | 34.8% | `etalfdepot ~ 0.1211` | Table 4 |
+| CV(Base) | 16.6% | `etalrbase ~ 0.166^2` | Table 4 |
+| CV(APTT0) | 10.6% | `etalrbase_APTT ~ 0.01124` | Table 4 |
+| CV(I10) | 19.6% | `etalI10 ~ 0.03842` | Table 4 |
 | s.d. residual anti-Xa | 0.0207 IU/mL | `addSd = 0.0207` | Table 4 footnote |
 | s.d. residual APTT | 1.70 s | `addSd_APTT = 1.70` | Table 4 footnote |
+
+## Errata
+
+- **The published CVs are first-order approximations.** The Methods
+  (pp. 284-285) state that linearisation of the IIV model “results in a
+  statistical model for which the square root of the estimated variances
+  of the etas provides coefficients of variation (CVs) for
+  inter-individual variability”. Each printed CV in Tables 3 and 4 is
+  therefore the standard deviation of the corresponding random effect,
+  and both models’ variances are the squares of the printed CVs (for
+  example `etalrbase ~ 0.377^2` for the 37.7% IIV on enoxaparine Base),
+  not the exact log-normal conversion `log(1 + CV^2)`. The CL-Vc blocks
+  are built the same way, e.g. `c(0.151^2, 0.151^2, 0.151^2 + 0.086^2)`
+  for enoxaparine. The difference is largest for enoxaparine Base:
+  0.377^2 = 0.142, against 0.133 from the log-normal conversion.
 
 ## Example 2 – Enoxaparine (Clexane)
 
@@ -247,7 +262,7 @@ knitr::kable(as.data.frame(summary(nca_enox)),
 
 | Interval Start | Interval End | treatment | N | Cmax (IU/mL) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*IU/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | iv_5000IU | 12 | 0.749 \[23.0\] | 0.250 \[0.250, 0.250\] | 1.25e9 \[1.41e9\] | NC |
+| 0 | Inf | iv_5000IU | 12 | 0.749 \[23.2\] | 0.250 \[0.250, 0.250\] | 1.26e9 \[1.43e9\] | NC |
 
 Schoemaker 1996 enoxaparine: simulated single-dose NCA after 5000
 anti-Xa IU IV bolus (12 subjects). {.table}
@@ -505,8 +520,8 @@ knitr::kable(as.data.frame(summary(nca_dalt)),
 
 | Interval Start | Interval End | treatment | N | Cmax (IU/mL) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*IU/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | IV | 12 | 0.361 \[15.2\] | 0.250 \[0.250, 0.250\] | 8.39e7 \[1.02e8\] | NC |
-| 0 | Inf | SC | 12 | 0.134 \[36.5\] | 2.00 \[1.75, 2.25\] | 5.82e7 \[8.58e7\] | NC |
+| 0 | Inf | IV | 12 | 0.361 \[15.3\] | 0.250 \[0.250, 0.250\] | 8.40e7 \[1.03e8\] | NC |
+| 0 | Inf | SC | 12 | 0.134 \[37.4\] | 2.00 \[1.75, 2.25\] | 5.82e7 \[8.56e7\] | NC |
 
 Schoemaker 1996 dalteparine: simulated single-dose NCA after 2500
 anti-Xa IU IV vs SC (12 subjects per route). {.table}

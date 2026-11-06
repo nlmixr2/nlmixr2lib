@@ -59,13 +59,13 @@ comment. The table below collects the entries in one place for review.
 | `e_2b6_11_cl` (multiplicative shift in CL/F for homozygous CYP2B6\*11) | -0.199 | Table 3, Effect of CYP2B6\*11 row (95% CI -0.329, -0.0691) |
 | `e_rs3842_fdepot` (multiplicative shift in Frel for ABCB1 rs3842 carriers) | 0.257 | Table 3, Effect of ABCB1 (rs 3842) row (95% CI 0.0873, 0.427) |
 | `e_sexf_vp` (multiplier on Vp/F for female vs male) | 2.08 | Table 3, Effect of sex row (95% CI 1.64, 2.52) |
-| IIV CL/F (omega^2 = log(1 + 0.140^2) = 0.019408) | 14.0% CV | Table 3, omega(CL) row (95% CI 2.8, 25.2) |
-| IIV Vc/F (omega^2 = log(1 + 0.995^2) = 0.688200) | 99.5% CV | Table 3, omega(Vc) row (95% CI 49.4, 132) |
-| IIV Vp/F (omega^2 = log(1 + 0.279^2) = 0.074979) | 27.9% CV | Table 3, omega(Vp) row (95% CI 14.8, 36.7) |
-| IIV Q/F (omega^2 = log(1 + 0.321^2) = 0.098055) | 32.1% CV | Table 3, omega(Q) row (95% CI 20.5, 40.5) |
-| IIV ka (omega^2 = log(1 + 0.197^2) = 0.038077) | 19.7% CV | Table 3, omega(ka) row (95% CI 8.6, 30.8) |
-| IIV D (omega^2 = log(1 + 0.697^2) = 0.395940) | 69.7% CV | Table 3, omega(D1) row (95% CI 15.3, 97.4) |
-| IIV Frel (omega^2 = log(1 + 0.188^2) = 0.034729) | 18.8% CV | Table 3, omega(Frel) row (95% CI 11.9, 23.9) |
+| IIV CL/F (omega^2 = log(1 + 0.140^2) = 0.019410) | 14.0% CV | Table 3, omega(CL) row (95% CI 2.8, 25.2) |
+| IIV Vc/F (omega^2 = log(1 + 0.995^2) = 0.688147) | 99.5% CV | Table 3, omega(Vc) row (95% CI 49.4, 132) |
+| IIV Vp/F (omega^2 = log(1 + 0.279^2) = 0.074960) | 27.9% CV | Table 3, omega(Vp) row (95% CI 14.8, 36.7) |
+| IIV Q/F (omega^2 = log(1 + 0.321^2) = 0.098071) | 32.1% CV | Table 3, omega(Q) row (95% CI 20.5, 40.5) |
+| IIV ka (omega^2 = log(1 + 0.197^2) = 0.038075) | 19.7% CV | Table 3, omega(ka) row (95% CI 8.6, 30.8) |
+| IIV D (omega^2 = log(1 + 0.697^2) = 0.395959) | 69.7% CV | Table 3, omega(D1) row (95% CI 15.3, 97.4) |
+| IIV Frel (omega^2 = log(1 + 0.188^2) = 0.034734) | 18.8% CV | Table 3, omega(Frel) row (95% CI 11.9, 23.9) |
 | Proportional residual error propSd | 13.9% CV | Table 3, sigma_prop row (95% CI 9.62, 17.1); additive part insignificantly small in final fit |
 
 ## Virtual cohort

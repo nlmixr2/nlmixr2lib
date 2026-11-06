@@ -72,7 +72,7 @@ covariate-equation form is dictated by the explicit equation in Taubert
 | `e_lact_cl` | `-0.21` | Suppl Table S3: ‘Lactate on CL’ -0.21 (95 % CI -0.30 to -0.11) |
 | `e_dis_ards_cl` | `log(1.82)` | Suppl Table S3: ‘ARDS on CL’ 1.82 (95 % CI 1.26-2.62) |
 | `e_dis_perit_vc` | `log(1.53)` | Suppl Table S3: ‘Peritonitis on Vc’ 1.53 (95 % CI 1.16-2.11) |
-| `etalcl ~ 0.2901` | log(1 + 0.58^2) | Paper page 5256 (‘CL … 58 %’); Suppl Table S3 omega^2_CL (%) = 58 (95 % CI 46-73) |
+| `etalcl ~ 0.2900` | log(1 + 0.58^2) | Paper page 5256 (‘CL … 58 %’); Suppl Table S3 omega^2_CL (%) = 58 (95 % CI 46-73) |
 | `etalvc ~ 0.1283` | log(1 + 0.37^2) | Paper page 5256 (‘Vc … 37 %’); Suppl Table S3 omega^2_Vc (%) = 37 (95 % CI 23-61) |
 | `propSd` | `sqrt(0.115)` = `0.339` | Suppl Table S3: sigma^2_proportional = 0.115 (95 % CI 0.073-0.182) |
 | `addSd` | `sqrt(0.005)` = `0.0707` | Suppl Table S3: sigma^2_additive = 0.005 (95 % CI 0.001-0.008) in (mg/L)^2 |

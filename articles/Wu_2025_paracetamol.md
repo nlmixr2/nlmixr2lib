@@ -412,7 +412,7 @@ knitr::kable(summary(nca_pcm), digits = 2,
 
 | start | end | cohort | N | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | Adult 2 g IV | 50 | 32.1 \[35.2\] | 0.0500 \[0.0500, 0.0500\] | 3.67 \[1.73\] | 155 \[31.6\] |
+| 0 | 24 | Adult 2 g IV | 50 | 32.1 \[35.2\] | 0.0500 \[0.0500, 0.0500\] | 3.67 \[1.73\] | 155 \[31.7\] |
 
 PCM (parent) PKNCA summary, single 2 g IV dose, n = 50 virtual adults.
 {.table}
@@ -445,21 +445,21 @@ for (suffix in c("gluc", "sulf", "cysmer")) {
 #> 
 #> | start| end|cohort       |N  |cmax        |tmax              |half.life   |aucinf.obs |
 #> |-----:|---:|:------------|:--|:-----------|:-----------------|:-----------|:----------|
-#> |     0|  24|Adult 2 g IV |50 |9.51 [65.1] |3.50 [1.25, 11.8] |4.53 [2.89] |103 [75.0] |
+#> |     0|  24|Adult 2 g IV |50 |9.50 [65.2] |3.50 [1.25, 11.8] |4.53 [2.89] |103 [75.1] |
 #> 
 #> 
 #> Table: Metabolite PKNCA summary (Cc_sulf), single 2 g IV PCM, n = 50 virtual adults.
 #> 
 #> | start| end|cohort       |N  |cmax        |tmax              |half.life   |aucinf.obs  |
 #> |-----:|---:|:------------|:--|:-----------|:-----------------|:-----------|:-----------|
-#> |     0|  24|Adult 2 g IV |50 |8.01 [53.6] |2.75 [1.25, 5.75] |3.72 [1.77] |65.9 [30.7] |
+#> |     0|  24|Adult 2 g IV |50 |8.01 [53.7] |2.75 [1.25, 5.75] |3.72 [1.77] |65.9 [30.8] |
 #> 
 #> 
 #> Table: Metabolite PKNCA summary (Cc_cysmer), single 2 g IV PCM, n = 50 virtual adults.
 #> 
 #> | start| end|cohort       |N  |cmax        |tmax              |half.life   |aucinf.obs  |
 #> |-----:|---:|:------------|:--|:-----------|:-----------------|:-----------|:-----------|
-#> |     0|  24|Adult 2 g IV |50 |1.49 [73.6] |5.50 [2.75, 15.8] |7.70 [6.34] |24.9 [93.0] |
+#> |     0|  24|Adult 2 g IV |50 |1.49 [74.2] |5.50 [2.75, 15.8] |7.70 [6.36] |24.9 [93.7] |
 ```
 
 ## Assumptions and deviations

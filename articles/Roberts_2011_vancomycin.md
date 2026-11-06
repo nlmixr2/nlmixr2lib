@@ -85,8 +85,8 @@ The table below collects them in one place; values come from Roberts
 |----|----|----|
 | `lcl` (CL at CRCL = 100 mL/min/1.73 m^2) | log(4.58) | Table 2 row “Clearance”; Eq. 4 |
 | `lvc` (V per kg TBW) | log(1.53) | Table 2 row “Volume of distribution”; Eq. 3 |
-| `etalcl ~ 0.140924` | log(0.389^2 + 1) | Table 2 row “Clearance” CV = 38.9% |
-| `etalvc ~ 0.130918` | log(0.374^2 + 1) | Table 2 row “Volume of distribution” CV = 37.4% |
+| `etalcl ~ 0.140910` | log(0.389^2 + 1) | Table 2 row “Clearance” CV = 38.9% |
+| `etalvc ~ 0.130919` | log(0.374^2 + 1) | Table 2 row “Volume of distribution” CV = 37.4% |
 | `propSd <- 0.199` | 0.199 | Table 2 row “Residual unexplained variability” CV = 19.9% |
 | `addSd <- 2.4` | 2.4 mg/L | Table 2 row “SD” = 2.4 mg/L |
 | `cl <- exp(lcl + etalcl) * CRCL / 100` | n/a | Eq. 4: TVCL = theta2 \* CrCl/100 |

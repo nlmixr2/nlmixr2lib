@@ -82,10 +82,10 @@ collects them in one place.
 | `etalka` | omega^2 = 0.39878 | Table 1 row “KA ISV %” (70% -\> log(1+0.70^2)) |
 | `etaltlag` | omega^2 = 12.41 | Table 1 row “TLAG ISV %” (49,498% -\> log(1+494.98^2)) |
 | `etalvc_dfur` FIXED | omega^2 = 0.08618 | Table 1 row “V1 ISV %” (30% FIXED -\> log(1+0.30^2)) |
-| `etalcl_dfur` | omega^2 = 0.05598 | Table 1 row “CL1 ISV %” (24% -\> log(1+0.24^2)) |
-| `etalcl_5fu` | omega^2 = 0.10336 | Table 1 row “CL2 ISV %” (33% -\> log(1+0.33^2)) |
-| `etalvc_fbal` | omega^2 = 0.06537 | Table 1 row “V3 ISV %” (26% -\> log(1+0.26^2)) |
-| `etalcl_fbal` | omega^2 = 0.09751 | Table 1 row “CL3 ISV %” (32% -\> log(1+0.32^2)) |
+| `etalcl_dfur` | omega^2 = 0.05600 | Table 1 row “CL1 ISV %” (24% -\> log(1+0.24^2)) |
+| `etalcl_5fu` | omega^2 = 0.10337 | Table 1 row “CL2 ISV %” (33% -\> log(1+0.33^2)) |
+| `etalvc_fbal` | omega^2 = 0.06541 | Table 1 row “V3 ISV %” (26% -\> log(1+0.26^2)) |
+| `etalcl_fbal` | omega^2 = 0.09749 | Table 1 row “CL3 ISV %” (32% -\> log(1+0.32^2)) |
 | `propSd_dfur` | 0.39 | Table 1 row “Res. Error 5’-DFUR” (39% extensive) |
 | `propSd_5fu` | 0.58 | Table 1 row “Res. Error 5-FU” (58% extensive) |
 | `propSd_fbal` | 0.34 | Table 1 row “Res. Error FBAL” (34% extensive) |
@@ -447,13 +447,43 @@ nca_5fu <- PKNCA::pk.nca(PKNCA::PKNCAdata(
 #> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
 #> concentrations found
 #> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
 knitr::kable(summary(nca_5fu),
              caption = "5-FU simulated NCA.")
 ```
 
 | Interval Start | Interval End | treatment | N | Cmax (ug/mL) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*ug/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 5-FU | 50 | 0.693 \[56.4\] | 1.05 \[0.300, 2.55\] | 1.04 \[0.504\] | 1.94 \[30.0\], n=49 |
+| 0 | Inf | 5-FU | 50 | 0.693 \[56.4\] | 1.05 \[0.300, 2.55\] | 1.05 \[0.504\], n=49 | 1.93 \[30.2\], n=47 |
 
 5-FU simulated NCA. {.table}
 

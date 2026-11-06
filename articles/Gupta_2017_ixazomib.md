@@ -96,9 +96,9 @@ entry of `inst/modeldb/specificDrugs/Gupta_2017_ixazomib.R`):
 | `ltlag` (log TLAG) | log(13/60) | Gupta 2017 Table 3: log TLAG = -1.52 (RSE 0%); TLAG = 13 min = 0.2167 h |
 | `e_bsa_vp2` (BSA exponent on V4) | 2.06 | Gupta 2017 Table 3 V4\[BSA\] = 2.06 (RSE 18%); reference BSA 1.87 m^2; -37% / +46% effect at the 5th / 95th percentile (1.5 / 2.25 m^2) |
 | `etalcl` (IIV log CL) | 0.17697 | Table 3 IIV CL = 44% (RSE 11%); variance = log(1 + 0.44^2) = 0.17697 |
-| `etalfdepot` (IIV log F) | 0.42726 | Table 3 IIV F = 73% (RSE 8%); variance = log(1 + 0.73^2) = 0.42726 |
-| `cov(etalcl, etalfdepot)` | 0.22550 | Table 3 correlation log CL \<-\> log F = 82% (RSE 11%); cov = 0.82 \* sqrt(0.17697 \* 0.42726) = 0.22550 |
-| `etalvp2` (IIV log V4) | 0.48492 | Table 3 IIV V4 = 79% (RSE 12%); variance = log(1 + 0.79^2) = 0.48492 |
+| `etalfdepot` (IIV log F) | 0.42716 | Table 3 IIV F = 73% (RSE 8%); variance = log(1 + 0.73^2) = 0.42716 |
+| `cov(etalcl, etalfdepot)` | 0.22545 | Table 3 correlation log CL \<-\> log F = 82% (RSE 11%); cov = 0.82 \* sqrt(0.17697 \* 0.42716) = 0.22545 |
+| `etalvp2` (IIV log V4) | 0.48495 | Table 3 IIV V4 = 79% (RSE 12%); variance = log(1 + 0.79^2) = 0.48495 |
 | `sd0` (steady-state residual SD on log Cc) | 0.46 | Table 3 SD0 = 0.46 (RSE 3%) |
 | `sd1` (initial residual SD on log Cc, t = 0 post-dose) | 1.90 | Table 3 SD1 = 1.90 (RSE 11%) |
 | `ksd` (rate constant for residual-SD decline) | 0.84 | Table 3 KSD = 0.84/h (RSE 22%); residual-SD half-life log(2)/0.84 = 0.825 h ~ 50 min |
@@ -382,9 +382,9 @@ knitr::kable(
 
 | PPTESTCD   |   median |     q05 |      q95 | n_subj |
 |:-----------|---------:|--------:|---------:|-------:|
-| aucinf.obs | 1321.074 | 745.768 | 2387.053 |    100 |
-| cmax       |   19.593 |   7.296 |   60.260 |    100 |
-| half.life  |  226.282 | 135.155 |  558.130 |    100 |
+| aucinf.obs | 1321.219 | 745.799 | 2387.119 |    100 |
+| cmax       |   19.593 |   7.298 |   60.252 |    100 |
+| half.life  |  226.282 | 135.157 |  558.151 |    100 |
 | tmax       |    1.250 |   1.250 |    2.262 |    100 |
 
 Simulated NCA from a single 4 mg oral dose (n = 100 virtual subjects).

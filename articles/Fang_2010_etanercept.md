@@ -77,7 +77,7 @@ collects them in one place for review.
 | `e_multi_dose_pt_f` (multi-dose-vs-single-dose F ratio, applied as ratio^MULTI_DOSE_PT) | 0.674 | Fang 2010 Table 3 (theta_M for F) |
 | `etalka` IIV (omega^2, log-scale) | log(0.556^2 + 1) = 0.269 | Fang 2010 Table 3 (Ka IIV = 55.6% CV) |
 | `etalcl` IIV (omega^2, log-scale) | log(0.333^2 + 1) = 0.105 | Fang 2010 Table 3 (CL/F IIV = 33.3% CV) |
-| `etalvc` IIV (omega^2, log-scale) | log(0.427^2 + 1) = 0.168 | Fang 2010 Table 3 (V/F IIV = 42.7% CV) |
+| `etalvc` IIV (omega^2, log-scale) | log(0.427^2 + 1) = 0.167 | Fang 2010 Table 3 (V/F IIV = 42.7% CV) |
 | `etaltlag` IIV (omega^2, log-scale) | log(0.818^2 + 1) = 0.512 | Fang 2010 Table 3 (Tlag IIV = 81.8% CV) |
 | Proportional residual error | 0.203 (20.3% CV) | Fang 2010 Table 3 |
 | Additive residual error | 12.6 ng/mL (= 12.6 ug/L) | Fang 2010 Table 3 |
@@ -379,12 +379,12 @@ knitr::kable(
 |---:|---:|:---|:---|:---|:---|:---|:---|
 | 0 | 480 | 12.5 mg (F) | 4 | NC | 554 \[46.2\] | 30.0 \[12.0, 48.0\] | 39.2 \[13.6\] |
 | 0 | 480 | 12.5 mg (M) | 4 | NC | 467 \[37.8\] | 48.0 \[36.0, 60.0\] | 123 \[71.1\] |
-| 0 | 480 | 25.0 mg (F) | 4 | NC | 1010 \[45.7\] | 24.0 \[24.0, 36.0\] | 93.3 \[79.8\] |
-| 0 | 480 | 25.0 mg (M) | 4 | NC | 1170 \[50.0\] | 36.0 \[36.0, 72.0\] | 83.3 \[31.5\] |
-| 0 | 480 | 37.5 mg (F) | 4 | NC | 1460 \[38.0\] | 48.0 \[24.0, 60.0\] | 83.9 \[48.5\] |
+| 0 | 480 | 25.0 mg (F) | 4 | NC | 1010 \[45.7\] | 24.0 \[24.0, 36.0\] | 93.3 \[79.7\] |
+| 0 | 480 | 25.0 mg (M) | 4 | NC | 1170 \[49.9\] | 36.0 \[36.0, 72.0\] | 83.3 \[31.5\] |
+| 0 | 480 | 37.5 mg (F) | 4 | NC | 1460 \[38.0\] | 48.0 \[24.0, 60.0\] | 83.9 \[48.4\] |
 | 0 | 480 | 37.5 mg (M) | 4 | NC | 1580 \[24.2\] | 48.0 \[36.0, 60.0\] | 126 \[79.1\] |
 | 0 | 480 | 50.0 mg (F) | 4 | NC | 2230 \[16.5\] | 48.0 \[24.0, 48.0\] | 63.6 \[30.5\] |
-| 0 | 480 | 50.0 mg (M) | 4 | NC | 1800 \[26.3\] | 42.0 \[24.0, 48.0\] | 211 \[184\] |
+| 0 | 480 | 50.0 mg (M) | 4 | NC | 1800 \[26.3\] | 42.0 \[24.0, 48.0\] | 210 \[184\] |
 
 PKNCA single-dose Cmax / Tmax / AUClast / half-life by dose level x sex
 (n = 4 subjects per treatment cell). {.table}

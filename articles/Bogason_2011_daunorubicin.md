@@ -473,7 +473,7 @@ knitr::kable(
 |:--------------------------------|-------:|------:|-------:|
 | AUC0-inf (mg\*h/L)              |  0.861 | 0.332 |  1.963 |
 | Cmax (mg/L)                     |  0.204 | 0.042 |  0.351 |
-| Apparent terminal half-life (h) | 12.147 | 7.126 | 21.498 |
+| Apparent terminal half-life (h) | 12.148 | 7.126 | 21.498 |
 | Tmax (h)                        |  1.000 | 1.000 |  1.000 |
 
 PKNCA-derived NCA parameters across the simulated cohort (median,

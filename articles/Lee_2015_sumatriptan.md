@@ -68,8 +68,8 @@ for review:
 | `lalag1` (first-order absorption lag) | log(0.24) = -1.427 | Table 3 ALAG1 = 0.24 h (RSE 1.32%) |
 | `lfr` (fraction routed via transit chain) | log(0.56) = -0.580 | Table 3 f = 0.56 (RSE 6.18%); the remaining 1 - f = 0.44 is routed via the first-order arm |
 | `etalcl` (BSV CL, variance) | 0.0337 | Table 3 BSV(CL/F) = 18.5% CV (omega^2 = log(1 + 0.185^2)) |
-| `etalvc` (BSV V, variance) | 0.4072 | Table 3 BSV(V/F) = 70.9% CV (omega^2 = log(1 + 0.709^2)) |
-| `etalka2` (BSV ka2, variance) | 0.0587 | Table 3 BSV(ka2) = 24.6% CV (omega^2 = log(1 + 0.246^2)) |
+| `etalvc` (BSV V, variance) | 0.4073 | Table 3 BSV(V/F) = 70.9% CV (omega^2 = log(1 + 0.709^2)) |
+| `etalka2` (BSV ka2, variance) | 0.0588 | Table 3 BSV(ka2) = 24.6% CV (omega^2 = log(1 + 0.246^2)) |
 | `etalmtt` (BSV MTT, variance) | 0.1193 | Table 3 BSV(MTT) = 35.6% CV (omega^2 = log(1 + 0.356^2)) |
 | `etalfr` (BSV f, variance) | 0.0205 | Table 3 BSV(f) = 14.4% CV (omega^2 = log(1 + 0.144^2)) |
 | `propSd` (proportional residual SD) | 0.21 | Table 3 proportional error = 0.21 (RSE 7.3%) |
@@ -339,7 +339,7 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | cohort | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 50 mg oral, single dose | 26 | NC | 25.9 \[24.2\] | 0.750 \[0.500, 4.00\] | 2.44 \[0.558\] | NC |
+| 0 | Inf | 50 mg oral, single dose | 26 | NC | 25.9 \[24.2\] | 0.750 \[0.500, 4.00\] | 2.44 \[0.559\] | NC |
 
 Simulated NCA parameters, 50 mg oral sumatriptan (n = 26 virtual
 subjects). {.table}

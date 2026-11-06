@@ -47,8 +47,8 @@ mod
 #>        0.6400000        0.3860000        0.5210000        0.2757000 
 #> 
 #> Omega ($omega): 
-#>         etalcl
-#> etalcl 0.06938
+#>            etalcl
+#> etalcl 0.06936187
 #> attr(,"lotriLabels")
 #> [1] "Table 2 row 'IIV_CL/F (%)' = 26.8 (RSE 5.50%, shrinkage 19.0%); bootstrap median 26.6"
 #> attr(,"lotriFix")
@@ -137,7 +137,7 @@ mod
 #>         label("Fractional increase in CL/F with concomitant carbamazepine (unitless)")
 #>         expSd <- c(0, 0.2757)
 #>         label("Residual SD on the log scale (log-transform-both-sides)")
-#>         etalcl ~ 0.06938
+#>         etalcl ~ 0.0693618700652682
 #>         label("Table 2 row 'IIV_CL/F (%)' = 26.8 (RSE 5.50%, shrinkage 19.0%); bootstrap median 26.6")
 #>     })
 #>     model({
@@ -207,7 +207,7 @@ received more than one of the three.
 | Phenytoin on CL/F | x (1 + 0.640) = 1.640 | Table 2 (RSE 24.2%); Equation (1) |
 | Phenobarbital on CL/F | x (1 + 0.386) = 1.386 | Table 2 (RSE 23.2%); Equation (1) |
 | Carbamazepine on CL/F | x (1 + 0.521) = 1.521 | Equation (1); Discussion ‘about 52%’ (Table 2 prints 0.512) |
-| IIV on CL/F | 26.8% CV -\> omega^2 = log(0.268^2 + 1) = 0.06938 | Table 2 (RSE 5.50%, shrinkage 19.0%) |
+| IIV on CL/F | 26.8% CV -\> omega^2 = log(0.268^2 + 1) = 0.06936 | Table 2 (RSE 5.50%, shrinkage 19.0%) |
 | IIV on V/F | fixed to 0 (omitted) | Supplementary Table S2 (‘\$OMEGA … 0 FIX’) |
 | Residual error | additive on log scale (LTBS), 28.1% -\> expSd = 0.2757 | Methods 2.3; Supplementary Table S2; Table 2 bootstrap median (see below) |
 
@@ -617,14 +617,14 @@ events <- as.data.frame(ev_ss) |>
 sim <- rxode2::rxSolve(mod, events, returnType = "data.frame", keep = "arm")
 
 # The cohort must carry between-subject variability: dividing out the
-# covariate model leaves etalcl, whose SD must recover sqrt(0.06938) = 0.263.
+# covariate model leaves etalcl, whose SD must recover sqrt(0.06936) = 0.263.
 eta_rec <- sim |>
   distinct(id, cl) |>
   inner_join(cohort, by = "id") |>
   mutate(eta = log(cl / eq1(AGE, WT, CONMED_PHT, CONMED_PB, CONMED_CBZ)))
 stopifnot(
   nrow(eta_rec) == 4 * n_per_arm,
-  abs(sd(eta_rec$eta) - sqrt(0.06938)) < 0.05,
+  abs(sd(eta_rec$eta) - sqrt(0.06936)) < 0.05,
   abs(mean(eta_rec$eta)) < 0.05
 )
 ```
@@ -679,10 +679,10 @@ as.data.frame(nca_res$result) |>
 
 | Arm         | AUClast |  Cavg |  Cmax |  Cmin | Tmax |
 |:------------|--------:|------:|------:|------:|-----:|
-| Monotherapy |  779.21 | 64.93 | 75.04 | 50.03 | 2.75 |
+| Monotherapy |  779.23 | 64.94 | 75.04 | 50.03 | 2.75 |
 | With CBZ    |  502.57 | 41.88 | 51.69 | 29.32 | 2.50 |
 | With PB     |  589.87 | 49.16 | 60.46 | 35.84 | 2.75 |
-| With PHT    |  481.05 | 40.09 | 50.68 | 27.32 | 2.50 |
+| With PHT    |  481.06 | 40.09 | 50.68 | 27.32 | 2.50 |
 
 Median steady-state NCA over one 12 h interval by arm. {.table}
 
@@ -701,7 +701,7 @@ cav_chk <- as.data.frame(nca_res$result) |>
 stopifnot(all(abs(cav_chk$pct) < 1))
 summary(cav_chk$pct)
 #>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#> -0.058542 -0.032824 -0.026739 -0.027640 -0.021186 -0.009198
+#> -0.058537 -0.032823 -0.026739 -0.027640 -0.021187 -0.009199
 ```
 
 The paper publishes no NCA table, because its data are trough-only TDM

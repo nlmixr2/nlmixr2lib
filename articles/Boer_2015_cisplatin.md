@@ -66,8 +66,8 @@ collects them in one place for review.
 | `V2` (vp) | 8.05 L (95% CI 6.55-10.17) | Suppl Table S1 |
 | `F1` (fdepot) | 0.000158 (95% CI 0.000137-0.000188) | Suppl Table S1 |
 | IIV CL = 13% | omega^2 = 0.01676 | Suppl Table S1 |
-| IIV V2 = 22% | omega^2 = 0.04728 | Suppl Table S1 |
-| IIV F1 = 17% | omega^2 = 0.02847 | Suppl Table S1 |
+| IIV V2 = 22% | omega^2 = 0.04727 | Suppl Table S1 |
+| IIV F1 = 17% | omega^2 = 0.02849 | Suppl Table S1 |
 | Proportional residual error | 34% | Boer 2015 Results, “population PK model” section (page 2307) |
 | Mean terminal T1/2 = 3.7 yr (range 2.5-5.2) | derived | Boer 2015 Results, “population PK model” section |
 | Median Pt at 1, 3, 5, 10 yr | 2876 / 391 / 197 / 74 ng/L | Suppl Table S2 |
@@ -261,9 +261,9 @@ knitr::kable(comparison_pt,
 
 | Time (years) | Published median (ng/L) | Simulated median (ng/L) | Published range (ng/L) | Simulated range (ng/L) |
 |---:|---:|---:|:---|:---|
-| 1 | 2876 | 2970 | 1723 – 5519 | 1333 – 6424 |
+| 1 | 2876 | 2969 | 1723 – 5519 | 1333 – 6424 |
 | 3 | 391 | 389 | 225 – 939 | 118 – 954 |
-| 5 | 197 | 198 | 113 – 453 | 67 – 455 |
+| 5 | 197 | 198 | 113 – 453 | 67 – 456 |
 | 10 | 74 | 76 | 30 – 165 | 25 – 170 |
 
 Concentration comparison vs Boer 2015 Suppl Table S2 (median, range

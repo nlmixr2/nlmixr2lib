@@ -241,13 +241,13 @@ knitr::kable(nca_caf_tbl, caption = "Simulated caffeine NCA (per cohort).", digi
 
 | cohort | PPTESTCD | median | q05 | q95 |
 |:---|:---|---:|---:|---:|
-| Study 2 pharmaceutical (no OC) | aucinf.obs | 2461784.34 | 1334984.00 | 5189510.48 |
-| Study 2 pharmaceutical (no OC) | cmax | 4666.71 | 3409.00 | 6005.30 |
-| Study 2 pharmaceutical (no OC) | half.life | 348.98 | 166.65 | 746.42 |
+| Study 2 pharmaceutical (no OC) | aucinf.obs | 2461846.41 | 1334168.36 | 5193666.43 |
+| Study 2 pharmaceutical (no OC) | cmax | 4666.63 | 3408.99 | 6005.52 |
+| Study 2 pharmaceutical (no OC) | half.life | 348.99 | 166.57 | 747.04 |
 | Study 2 pharmaceutical (no OC) | tmax | 60.00 | 44.25 | 120.00 |
-| Study 2 pharmaceutical (with OC) | aucinf.obs | 5729865.73 | 3097906.72 | 11064482.70 |
-| Study 2 pharmaceutical (with OC) | cmax | 5145.44 | 3803.88 | 5844.68 |
-| Study 2 pharmaceutical (with OC) | half.life | 704.08 | 355.13 | 1506.85 |
+| Study 2 pharmaceutical (with OC) | aucinf.obs | 5730408.76 | 3096215.21 | 11073128.87 |
+| Study 2 pharmaceutical (with OC) | cmax | 5145.59 | 3803.78 | 5844.52 |
+| Study 2 pharmaceutical (with OC) | half.life | 704.17 | 354.95 | 1508.18 |
 | Study 2 pharmaceutical (with OC) | tmax | 67.50 | 45.00 | 121.50 |
 
 Simulated caffeine NCA (per cohort). {.table style="width:100%;"}
@@ -282,9 +282,9 @@ knitr::kable(nca_eph_tbl, caption = "Simulated ephedrine NCA (no-OC cohort).", d
 
 | PPTESTCD   |   median |      q05 |      q95 |
 |:-----------|---------:|---------:|---------:|
-| aucinf.obs | 43446.79 | 38198.10 | 49823.70 |
-| cmax       |    65.32 |    47.99 |    87.91 |
-| half.life  |   377.24 |   258.74 |   517.66 |
+| aucinf.obs | 43447.27 | 38198.21 | 49825.09 |
+| cmax       |    65.32 |    47.96 |    87.86 |
+| half.life  |   377.26 |   259.04 |   517.24 |
 | tmax       |   150.00 |    75.00 |   210.00 |
 
 Simulated ephedrine NCA (no-OC cohort). {.table}
@@ -316,9 +316,9 @@ knitr::kable(nca_neph_tbl, caption = "Simulated norephedrine NCA (no-OC cohort).
 
 | PPTESTCD  |  median |     q05 |     q95 |
 |:----------|--------:|--------:|--------:|
-| auclast   | 4890.96 | 1587.31 | 8915.80 |
-| cmax      |    4.88 |    1.68 |    8.78 |
-| half.life |  601.30 |  335.96 | 1284.42 |
+| auclast   | 4889.88 | 1585.11 | 8925.04 |
+| cmax      |    4.88 |    1.68 |    8.79 |
+| half.life |  601.91 |  336.43 | 1283.09 |
 | tmax      |  210.00 |  120.00 |  300.00 |
 
 Simulated norephedrine NCA (no-OC cohort). {.table}

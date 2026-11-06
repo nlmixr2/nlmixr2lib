@@ -75,11 +75,11 @@ review.
 | `lcl_5oh` (CLM1/F of 5-OH-OMZ) | log(0.846) L/h | Table 2 row “CL_M1/F”: 0.846 L/h, RSE 18.4% |
 | `lcl_sfn` (CLM2/F of OMZ-sulfone) | log(0.130) L/h | Table 2 row “CL_M2/F”: 0.130 L/h, RSE 27.3% |
 | `etalka` | log(1 + 1.30^2) = 0.98954 | Table 2 row “IIV Ka”: 130.0% CV, RSE 29.4% |
-| `etalvc` | log(1 + 0.99^2) = 0.68318 | Table 2 row “IIV V1/F”: 99.0% CV, RSE 37.0% |
-| `etalkmet_5oh` | log(1 + 0.526^2) = 0.24432 | Table 2 row “IIV CL_OMZ-M1”: 52.6% CV, RSE 25.3% |
-| `etalkmet_sfn` | log(1 + 0.359^2) = 0.12127 | Table 2 row “IIV CL_OMZ-M2”: 35.9% CV, RSE 47.3% |
-| `etalcl_5oh` | log(1 + 0.559^2) = 0.27182 | Table 2 row “IIV CL_M1/F”: 55.9% CV, RSE 30.8% |
-| `etalcl_sfn` | log(1 + 0.688^2) = 0.38735 | Table 2 row “IIV CL_M2/F”: 68.8% CV, RSE 103.4% |
+| `etalvc` | log(1 + 0.99^2) = 0.68315 | Table 2 row “IIV V1/F”: 99.0% CV, RSE 37.0% |
+| `etalkmet_5oh` | log(1 + 0.526^2) = 0.24426 | Table 2 row “IIV CL_OMZ-M1”: 52.6% CV, RSE 25.3% |
+| `etalkmet_sfn` | log(1 + 0.359^2) = 0.12123 | Table 2 row “IIV CL_OMZ-M2”: 35.9% CV, RSE 47.3% |
+| `etalcl_5oh` | log(1 + 0.559^2) = 0.27192 | Table 2 row “IIV CL_M1/F”: 55.9% CV, RSE 30.8% |
+| `etalcl_sfn` | log(1 + 0.688^2) = 0.38753 | Table 2 row “IIV CL_M2/F”: 68.8% CV, RSE 103.4% |
 | `addSd` / `addSd_5oh` / `addSd_sfn` | 0.0556 mg/L (= 55.6 ng/mL) | Table 2 row “Residual additive”: 55.6 ng/mL, RSE 50.2% (single value applied to all 3 outputs in the source NONMEM fit) |
 | Linear omeprazole elimination CLOMZ/F | excluded (\< 0.0001 L/h) | Zhao 2018 Results paragraph 2: “The estimation of CL_OMZ/F by the final model gave a negligible value (\< 0.0001 l h-1)”; not in Table 2 |
 

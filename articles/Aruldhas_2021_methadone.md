@@ -358,7 +358,7 @@ knitr::kable(nca_R,
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Cmin (ng/mL) | Tmax (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 72 | 84 | R-methadone | 100 | 112 \[47.5\] | 10.6 \[41.4\] | 7.47 \[56.8\] | 3.00 \[1.00, 6.00\] |
+| 72 | 84 | R-methadone | 100 | 112 \[47.0\] | 10.6 \[41.0\] | 7.47 \[56.1\] | 3.00 \[1.00, 6.00\] |
 
 R-methadone NCA over the sixth oral dosing interval (t = 72-84 h) across
 the virtual cohort {.table style="width:100%;"}
@@ -371,7 +371,7 @@ knitr::kable(nca_S,
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Cmin (ng/mL) | Tmax (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 72 | 84 | S-methadone | 100 | 134 \[37.7\] | 13.0 \[32.9\] | 8.53 \[50.3\] | 3.00 \[1.00, 4.00\] |
+| 72 | 84 | S-methadone | 100 | 134 \[37.9\] | 13.0 \[33.1\] | 8.48 \[50.7\] | 3.00 \[1.00, 4.00\] |
 
 S-methadone NCA over the sixth oral dosing interval (t = 72-84 h) across
 the virtual cohort {.table style="width:100%;"}

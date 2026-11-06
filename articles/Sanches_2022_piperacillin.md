@@ -56,7 +56,7 @@ The same information is available programmatically via
 | `lvc` (V) | log(10.69) L | Table 2, V mean (SD 4.50; median 9.03; CV 42%) |
 | `lk12` (KCP) | log(1.15) 1/h | Table 2, KCP mean (SD 0.15; median 1.21; CV 13%) |
 | `lk21` (KPC) | log(0.08) 1/h | Table 2, KPC mean (SD 0.09; median 0.03; CV 120%) |
-| `etalcl`, `etalvc`, `etalk12`, `etalk21` | log(1 + CV^2) = 0.1284, 0.1625, 0.0168, 0.8920 | Table 2, %CV column |
+| `etalcl`, `etalvc`, `etalk12`, `etalk21` | log(1 + CV^2) = 0.1283, 0.1625, 0.0168, 0.8920 | Table 2, %CV column |
 | `addSd`, `propSd` (assay SD polynomial C0, C1) | 1 mg/L, 0.1 | Section 2: ’gamma \* (1 + 0.1\*concentration)’; section 4.3 step (ii) |
 | `gammaSd` | 5 | Section 2: ‘value = 5’ |
 | Residual: `SD = gamma * (C0 + C1 * C)` | n/a | Section 4.3 step (ii): ‘error = SD.gamma’ |

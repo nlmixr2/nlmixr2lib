@@ -105,7 +105,7 @@ The per-parameter origin is recorded as an in-file comment next to each
 | `lfdepot` | fixed(log(1)) | Section 2.5, ‘the F-value was set to 1’ |
 | `e_conmed_letermovir_vmax` | 1.72 | Table 2, ‘Effect of LMV on Vmax’ |
 | `e_conmed_methylprednisolone_vmax` | 1.30 | Table 2, ‘Effect of mPSL on Vmax’ |
-| `etalvmax` | 0.05421 = log(1 + 0.236^2) | Table 2, IIV Vmax 23.6 CV%; exponential model (Section 2.5) |
+| `etalvmax` | 0.05420 = log(1 + 0.236^2) | Table 2, IIV Vmax 23.6 CV%; exponential model (Section 2.5) |
 | `addSd` | 0.77 mg/L | Table 2, ‘Additive error (ug/mL)’ 0.77 |
 
 ## Typical-value check against the closed form
@@ -503,7 +503,7 @@ the paper’s own simulation (Figure 4).
   filter that reproduces the paper.
 - **IIV scale.** Table 2 reports the IIV of Vmax as 23.6 CV% for an
   exponential model. It is converted with omega^2 = log(1 + CV^2) =
-  0.05421; the alternative omega^2 = CV^2 = 0.0557 differs by 3% and
+  0.05420; the alternative omega^2 = CV^2 = 0.0557 differs by 3% and
   cannot be told apart from Figure 4.
 - **Additive residual error.** Table 2 gives the additive error in ug/mL
   (0.77), i.e. a standard deviation in concentration units, used as

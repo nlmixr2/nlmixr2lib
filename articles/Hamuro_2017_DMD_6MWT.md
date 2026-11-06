@@ -86,7 +86,7 @@ $`\mathrm{AGE}_{\max,i} = (\mathrm{Intercept} -
 
 Exponential IIV variances are encoded as
 $`\omega^{2} = \log(1 + \mathrm{CV}^{2})`$: 22%CV maps to 0.04727 and
-23%CV maps to 0.05153.
+23%CV maps to 0.05155.
 
 ## Errata
 
@@ -533,7 +533,7 @@ multiplicative `exp(eta)` IIV.
   gives the slightly more precise 21.9% and 23.3% derived from the same
   fit. The packaged model uses the Table 2 (rounded) values for
   source-trace fidelity, encoded as variances
-  `log(1 + 0.22^2) = 0.04727` and `log(1 + 0.23^2) = 0.05153`.
+  `log(1 + 0.22^2) = 0.04727` and `log(1 + 0.23^2) = 0.05155`.
 
 - **Intercept variability.** Table 2 reports BSV %CV as “N/A” for the
   two intercepts and for the residual SD, consistent with the paper’s

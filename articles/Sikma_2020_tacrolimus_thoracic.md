@@ -70,7 +70,7 @@ table collects them in one place.
 | `lvp` (V2/F) | 521 L (95% CI 441-634) | Table 2, V2/F row |
 | `lka` (ka) | 0.579 1/h (95% CI 0.456-0.778) | Table 2, ka row |
 | `lfdepot` (F) | 1 (FIXED) | Table 2, F row “Fixed at 1”; Methods 2.8 |
-| IIV CL/F (omega^2 = log(1 + 0.346^2) = 0.11307) | 34.6% CV (95% CI 24.2-48.6) | Table 2, IIV CL/F column |
+| IIV CL/F (omega^2 = log(1 + 0.346^2) = 0.11308) | 34.6% CV (95% CI 24.2-48.6) | Table 2, IIV CL/F column |
 | IIV V1/F | n.e. (not estimated) | Table 2, IIV V1/F column |
 | IIV ka | n.e. (not estimated) | Table 2, IIV ka column |
 | IIV Q/F | n.e. (not estimated) | Table 2, IIV Q/F column |
@@ -348,15 +348,15 @@ knitr::kable(simulated,
 
 | cohort | PPTESTCD  |     median |        q05 |       q95 |
 |:-------|:----------|-----------:|-----------:|----------:|
-| heart  | auclast   | 101.208989 |  56.195985 | 148.01445 |
-| heart  | cmax      |  10.361766 |   6.624412 |  14.20236 |
-| heart  | cmin      |   6.526051 |   3.022207 |  10.23225 |
-| heart  | half.life |  23.148707 |  14.082652 |  34.22154 |
+| heart  | auclast   | 101.209053 |  56.195251 | 148.01567 |
+| heart  | cmax      |  10.361772 |   6.624351 |  14.20246 |
+| heart  | cmin      |   6.526056 |   3.022152 |  10.23234 |
+| heart  | half.life |  23.148721 |  14.082513 |  34.22186 |
 | heart  | tmax      |   2.250000 |   2.000000 |   2.25000 |
-| lung   | auclast   | 355.347000 | 200.579581 | 640.60075 |
-| lung   | cmax      |  36.892338 |  22.640250 |  63.37191 |
-| lung   | cmin      |  22.604827 |  11.497741 |  43.13693 |
-| lung   | half.life |  23.005184 |  14.614945 |  35.77026 |
+| lung   | auclast   | 355.347931 | 200.577825 | 640.60266 |
+| lung   | cmax      |  36.892371 |  22.640065 |  63.37233 |
+| lung   | cmin      |  22.604754 |  11.497602 |  43.13728 |
+| lung   | half.life |  23.005195 |  14.614811 |  35.77064 |
 | lung   | tmax      |   2.250000 |   2.000000 |   2.25000 |
 
 Simulated NCA medians (5-95 percentiles) by cohort. {.table}

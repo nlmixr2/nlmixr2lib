@@ -55,7 +55,7 @@ table below collects them in one place for review.
 | `lka` -\> exp = 0.172 /h (Ka) | 0.172 | Table 2 row ‘Ka’, p. 1009 (95% CI 0.141-0.203; 9.2% RSE) |
 | `ltlag` -\> exp = 0.178 h (A_lag) | 0.178 | Table 2 row ‘A_lag’, p. 1009 (95% CI 0.136-0.220; 11.7% RSE) |
 | `etalcl_exp_inf` IIV (CV 22.8%; omega^2 = log(1+0.228^2) = 0.0507) | 0.0507 | Table 2 row ‘IIV for CL_induced/F’, p. 1009 |
-| `etalvc` IIV (CV 84.4%; omega^2 = log(1+0.844^2) = 0.5380) | 0.5380 | Table 2 row ‘IIV for Vd/F’, p. 1009 |
+| `etalvc` IIV (CV 84.4%; omega^2 = log(1+0.844^2) = 0.5379) | 0.5379 | Table 2 row ‘IIV for Vd/F’, p. 1009 |
 | `etalka` IIV (CV 35.4%; omega^2 = log(1+0.354^2) = 0.1181) | 0.1181 | Table 2 row ‘IIV for Ka’, p. 1009 |
 | `etaltlag` IIV (CV 137.1%; omega^2 = log(1+1.371^2) = 1.0577) | 1.0577 | Table 2 row ‘IIV for A_lag’, p. 1009 |
 | IIV on delta_CL/F (cl_time) fixed at 0 | n/a | Results ‘Model development’, p. 1008 ‘the IIV value associated with delta CL/F was fixed to zero due to extremely small estimate and failure of convergence’ |
@@ -362,11 +362,11 @@ nca_summary |>
 
 | Window                  | Parameter |  Median |     P05 |      P95 | Unit   |
 |:------------------------|:----------|--------:|--------:|---------:|:-------|
-| Day 1 (pre-induction)   | auclast   |   39.03 |   22.00 |    91.43 | mg.h/L |
-| Day 1 (pre-induction)   | cmax      | 4054.73 | 1941.79 | 11299.83 | ng/mL  |
+| Day 1 (pre-induction)   | auclast   |   39.03 |   22.00 |    91.44 | mg.h/L |
+| Day 1 (pre-induction)   | cmax      | 4054.80 | 1941.78 | 11299.46 | ng/mL  |
 | Day 1 (pre-induction)   | tmax      |    3.00 |    2.00 |     8.00 | h      |
 | Day 14 (post-induction) | auclast   |   22.64 |   15.82 |    32.91 | mg.h/L |
-| Day 14 (post-induction) | cmax      | 2555.43 | 1490.57 |  5217.15 | ng/mL  |
+| Day 14 (post-induction) | cmax      | 2555.56 | 1490.59 |  5217.08 | ng/mL  |
 | Day 14 (post-induction) | tmax      |    2.00 |    1.00 |     6.00 | h      |
 
 Simulated NCA parameters by dosing-interval window. Compare

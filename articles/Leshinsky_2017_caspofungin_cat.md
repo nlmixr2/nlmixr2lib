@@ -248,8 +248,8 @@ knitr::kable(summary_first,
 
 | PPTESTCD |    mean |  median |     sd |
 |:---------|--------:|--------:|-------:|
-| auclast  | 155.726 | 156.027 | 19.646 |
-| cmax     |  14.076 |  14.057 |  1.826 |
+| auclast  | 155.727 | 156.029 | 19.630 |
+| cmax     |  14.076 |  14.057 |  1.824 |
 | tmax     |   1.000 |   1.000 |  0.000 |
 
 Simulated NCA after first dose (window 0-24 h). {.table}
@@ -285,10 +285,10 @@ knitr::kable(summary_ss,
 
 | PPTESTCD |    mean |  median |     sd |
 |:---------|--------:|--------:|-------:|
-| auclast  | 231.090 | 231.061 | 36.301 |
-| cav      |   9.629 |   9.628 |  1.513 |
-| cmax     |  19.062 |  19.046 |  2.796 |
-| cmin     |   5.224 |   5.186 |  1.019 |
+| auclast  | 231.090 | 231.065 | 36.271 |
+| cav      |   9.629 |   9.628 |  1.511 |
+| cmax     |  19.062 |  19.046 |  2.794 |
+| cmin     |   5.224 |   5.186 |  1.018 |
 | tmax     |   1.000 |   1.000 |  0.000 |
 
 Simulated NCA over the final-dose interval (t = 144-168 h). {.table}
@@ -322,8 +322,8 @@ knitr::kable(summary_thalf,
 
 | PPTESTCD   |    mean |  median |     sd |
 |:-----------|--------:|--------:|-------:|
-| aucinf.obs | 343.148 | 340.445 | 65.053 |
-| half.life  |  14.658 |  14.621 |  0.917 |
+| aucinf.obs | 343.145 | 340.449 | 64.998 |
+| half.life  |  14.658 |  14.621 |  0.916 |
 | lambda.z   |   0.047 |   0.047 |  0.003 |
 
 Simulated terminal-phase NCA after the final dose. {.table}

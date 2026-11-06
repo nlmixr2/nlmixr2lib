@@ -88,11 +88,11 @@ collects them for review.
 | `e_ige_p_ige` (IgE0 exponent on P_E) | 0.657 | 0.657 | Table 3 |
 | `alpha` (concentration dependence on Kd) | 0.157 | 0.157 | Table 3 |
 | `etalka` | CV 39.9% | ω² = 0.14773 | Table 3 |
-| `etalcl` | CV 20.3% | ω² = 0.04042 | Table 3 |
-| `etaldcl_complex` | CV 34.9% | ω² = 0.11488 | Table 3 |
-| `etalvc` (shared by V_X and V_E) | CV 13.0% | ω² = 0.01679 | Table 3 |
+| `etalcl` | CV 20.3% | ω² = 0.04038 | Table 3 |
+| `etaldcl_complex` | CV 34.9% | ω² = 0.11494 | Table 3 |
+| `etalvc` (shared by V_X and V_E) | CV 13.0% | ω² = 0.01676 | Table 3 |
 | `etalvc_complex` | CV 25.0% | ω² = 0.06062 | Table 3 |
-| `etalcl_ige + etalp_ige` (block; r = 0.968) | CV 25.3% / 23.1% | ω² = 0.06205, cov 0.05496, ω² = 0.05197 | Table 3 |
+| `etalcl_ige + etalp_ige` (block; r = 0.968) | CV 25.3% / 23.1% | ω² = 0.06204, cov 0.05498, ω² = 0.05199 | Table 3 |
 | `propSd` / `propSd_totalIgE` / `propSd_freeIgE` (Y = F·exp(ε)) | σ ≈ 16.7% / 21.1% / 21.8% | 0.167 / 0.211 / 0.218 | Table 3 |
 | Eq. dX_SC/dt = −ka·X_SC + f·D·δ(t−tD) | n/a | n/a | Methods, page 552 |
 | Eq. dX_TX/dt = ka·X_SC − CL_X·C_fX − CL_C·C_C | n/a | n/a | Methods, page 552 |
@@ -298,8 +298,8 @@ knitr::kable(nca_summary, caption = "Simulated NCA parameters by single-dose gro
 | start | end | dose_label | N | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|
 | 0 | Inf | 75 mg | 12 | 10.7 \[13.0\] | 7.00 \[4.00, 10.0\] | 11.8 \[5.12\] | 332 \[25.1\] |
-| 0 | Inf | 150 mg | 12 | 20.8 \[16.1\] | 7.00 \[4.00, 10.0\] | 14.8 \[5.58\] | 745 \[18.4\] |
-| 0 | Inf | 300 mg | 12 | 44.6 \[14.0\] | 7.00 \[4.00, 7.00\] | 17.9 \[4.42\] | 1650 \[13.8\] |
+| 0 | Inf | 150 mg | 12 | 20.8 \[16.1\] | 7.00 \[4.00, 10.0\] | 14.8 \[5.57\] | 745 \[18.4\] |
+| 0 | Inf | 300 mg | 12 | 44.6 \[13.9\] | 7.00 \[4.00, 7.00\] | 17.9 \[4.42\] | 1650 \[13.8\] |
 | 0 | Inf | 375 mg | 12 | 49.9 \[14.4\] | 7.00 \[4.00, 10.0\] | 18.1 \[4.87\] | 1810 \[22.4\] |
 
 Simulated NCA parameters by single-dose group (study 1101). {.table}
@@ -443,7 +443,7 @@ sessionInfo()
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
 #> [28] pkgdown_2.2.1       crayon_1.5.3        jquerylib_0.1.4    
-#> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
+#> [31] whisker_0.4.1       openssl_2.5.0       cachem_1.1.0       
 #> [34] nlme_3.1-171        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
 #> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.2         

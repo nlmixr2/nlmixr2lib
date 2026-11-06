@@ -129,13 +129,13 @@ one place.
 | `e_wt_q` | 0.477 | Table S3: Q ~ Wght (RSE 57.5 %) |
 | IIV `etalcl` ω = 47.5 % | 0.2035 | log(0.475² + 1) |
 | IIV `etacl_time_max` ω = 97.2 % (normal) | 0.4164 | (0.664 × 0.972)² |
-| IIV `etalcl_t50` ω = 115 % | 0.8427 | log(1.15² + 1) |
+| IIV `etalcl_t50` ω = 115 % | 0.8426 | log(1.15² + 1) |
 | IIV `etalcl_time_hill` ω = 118 % | 0.8723 | log(1.18² + 1) |
 | IIV `etalvc` ω = 25.7 % | 0.0640 | log(0.257² + 1) |
-| IIV `etalq` ω = 85.8 % | 0.5519 | log(0.858² + 1) |
+| IIV `etalq` ω = 85.8 % | 0.5517 | log(0.858² + 1) |
 | IIV `etalvp` ω = 45.6 % | 0.1889 | log(0.456² + 1) |
-| IIV `etalvmax` ω = 61.5 % | 0.3206 | log(0.615² + 1) |
-| IIV `etalkm` ω = 88.9 % | 0.5823 | log(0.889² + 1) |
+| IIV `etalvmax` ω = 61.5 % | 0.3208 | log(0.615² + 1) |
+| IIV `etalkm` ω = 88.9 % | 0.5824 | log(0.889² + 1) |
 | `propSd` | 0.225 | Table S3: σprop 22.5 % |
 | `addSd` (mg/L) | 0.00196 | Table S3: σadd |
 
@@ -408,7 +408,7 @@ knitr::kable(summary(nca_res),
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) | Cav (mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 5040 | 5376 | IgG MM | 80 | 44600 \[75.0\] | 203 \[50.6\] | 64.1 \[496\] | 48.0 \[48.0, 48.0\] | 133 \[75.0\] |
+| 5040 | 5376 | IgG MM | 80 | 44600 \[75.0\] | 203 \[50.6\] | 64.1 \[497\] | 48.0 \[48.0, 48.0\] | 133 \[75.0\] |
 | 5040 | 5376 | Non-IgG MM | 80 | 95400 \[77.4\] | 352 \[57.0\] | 190 \[319\] | 48.0 \[48.0, 48.0\] | 284 \[77.4\] |
 
 Simulated steady-state NCA (final Q2W interval, weeks 30-32) by myeloma
@@ -447,8 +447,8 @@ knitr::kable(
 
 | Quantity                                 | Value    |
 |:-----------------------------------------|:---------|
-| AUC0-tau (mg·h/L), IgG-MM                | 46034.9  |
-| AUC0-tau (mg·h/L), non-IgG-MM            | 112090.6 |
+| AUC0-tau (mg·h/L), IgG-MM                | 46036    |
+| AUC0-tau (mg·h/L), non-IgG-MM            | 112091.9 |
 | Ratio non-IgG / IgG (Q2W steady state)   | 2.43     |
 | Source (Table 3, SS AUC, Not IgG vs IgG) | × 2.12   |
 

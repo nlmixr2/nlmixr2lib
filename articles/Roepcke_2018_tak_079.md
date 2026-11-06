@@ -452,7 +452,7 @@ directly comparable to the IV Vz reported in the paper.
   paper.
 - **KINT typical value vs BSV.** Table 2 reports KINT typical = 0.1/day
   as FIXED but the BSV on KINT is 49.3% CV (%SE 36.7). We encode this as
-  `lkint <- fixed(log(0.1))` with `etalkint ~ 0.21785` estimated –
+  `lkint <- fixed(log(0.1))` with `etalkint ~ 0.21757` estimated –
   typical value fixed, IIV estimated.
 - **Residual variance vs SD.** Both Table 2 and Table 3 report the
   “Magnitude” column for residual variability as variances; we take the

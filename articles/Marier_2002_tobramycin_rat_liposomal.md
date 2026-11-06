@@ -467,8 +467,8 @@ knitr::kable(nca_medians, digits = 3,
 | PPTESTCD   |  median | cv_pct |
 |:-----------|--------:|-------:|
 | aucinf.obs |      NA |     NA |
-| cmax       | 493.734 | 20.686 |
-| half.life  |  18.289 | 61.062 |
+| cmax       | 493.728 | 20.684 |
+| half.life  |  18.288 | 61.064 |
 | tmax       |   0.500 | 45.633 |
 
 Simulated NCA medians (across 200 virtual rats). {.table}

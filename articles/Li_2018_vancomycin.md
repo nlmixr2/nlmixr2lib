@@ -47,7 +47,7 @@ for review.
 | `e_wt_cl` (theta2) | 1.55 (unitless) | Table 3, row “theta_2” |
 | `e_creat_cl` (theta3) | 0.337 (unitless) | Table 3, row “theta_3” |
 | `e_wt_vc` (theta5) | 1.05 (unitless) | Table 3, row “theta_5” |
-| `etalcl` (37.9% CV) | 0.1343 | Table 3, row “CL %CV” (Inter-individual variability) |
+| `etalcl` (37.9% CV) | 0.1342 | Table 3, row “CL %CV” (Inter-individual variability) |
 | `propSd` | 0.375 (37.5%) | Table 3, row “Proportional %CV” |
 | WT reference (2.9) | 2.9 kg | Table 3 final-model footnote |
 | CREAT reference (23.3) | 23.3 umol/L | Table 3 final-model footnote |
@@ -2703,7 +2703,7 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | cohort | N | AUClast (hr\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (hr) | Cav (mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 132 | 144 | WT_1.25_PMA_29 | 50 | 210 \[31.2\], n=100 | 25.0 \[20.8\], n=100 | 11.3 \[48.2\], n=100 | 2.00 \[2.00, 2.00\], n=100 | 17.5 \[31.2\], n=100 |
+| 132 | 144 | WT_1.25_PMA_29 | 50 | 210 \[31.2\], n=100 | 25.0 \[20.8\], n=100 | 11.4 \[48.2\], n=100 | 2.00 \[2.00, 2.00\], n=100 | 17.5 \[31.2\], n=100 |
 | 132 | 144 | WT_2.0_PMA_32.5 | 50 | 210 \[35.4\], n=100 | 27.0 \[22.3\], n=100 | 10.0 \[58.8\], n=100 | 2.00 \[2.00, 2.00\], n=100 | 17.5 \[35.4\], n=100 |
 | 88 | 96 | WT_3.0_PMA_36.5 | 50 | 125 \[35.4\] | 21.9 \[24.8\] | 10.2 \[53.3\] | 2.00 \[2.00, 2.00\] | 15.6 \[35.4\] |
 | 66 | 72 | WT_4.0_PMA_40.5 | 50 | 92.1 \[39.6\], n=100 | 19.8 \[29.9\], n=100 | 11.2 \[55.9\], n=100 | 2.00 \[2.00, 2.00\], n=100 | 15.3 \[39.6\], n=100 |

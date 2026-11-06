@@ -179,7 +179,7 @@ tables.
 | `e_pblike_vc` | 12.0 L (30.3% SEM) | Table S-2, Eq. E-2 |
 | `e_wt_vc` | 0.617 (15.0% SEM) | Table S-2, Eq. E-2 |
 | `etalka` | 0.9555 (from 126.49 %CV) | Table S-2 |
-| `etalcl` | 0.070573 (from 27.04 %CV) | Table S-2 |
+| `etalcl` | 0.070567 (from 27.04 %CV) | Table S-2 |
 | `etalvc` | 0.030814 (from 17.69 %CV) | Table S-2 |
 | `propSdPhase1` / `addSdPhase1` | 0.111355 / 503.2 ng/mL | Table S-2 RV block + footnote b (back-solved, see below) |
 | `propSdPhase3` / `addSdPhase3` | 0.145410 / 2300.0 ng/mL | Table S-2 RV block + footnote c (back-solved, see below) |
@@ -709,9 +709,9 @@ exposure |>
 
 | Treatment      | AUC0-24 median | Cmax median | Cav-ss median |
 |:---------------|---------------:|------------:|--------------:|
-| ESL 1200 mg QD |         409205 |       26951 |         17050 |
+| ESL 1200 mg QD |         409204 |       26951 |         17050 |
 | ESL 400 mg QD  |         128062 |        8961 |          5336 |
-| ESL 800 mg QD  |         258845 |       17522 |         10785 |
+| ESL 800 mg QD  |         258846 |       17522 |         10785 |
 
 Simulated per-subject exposure metrics (ng\*h/mL and ng/mL). {.table}
 

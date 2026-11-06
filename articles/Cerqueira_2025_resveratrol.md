@@ -154,20 +154,20 @@ dplyr::bind_rows(
 | i.v. | lk12 | 0.182322 | Rate constant central -\> peripheral1 k12 (log 1/h) |
 | i.v. | lk21 | -1.347074 | Rate constant peripheral1 -\> central k21 (log 1/h) |
 | i.v. | propSd | 0.220000 | Proportional residual error (fraction) |
-| i.v. | etalvc | 0.070086 | Table 1, BSV i.v.: V = 0.97 (RSE 29.4%) |
-| i.v. | etalkel | 0.156619 | Table 1, BSV i.v.: k10 = 0.07 (RSE 19.1%) |
-| i.v. | etalk12 | 0.056761 | Table 1, BSV i.v.: k12 = 0.29 (RSE 24.6%) |
-| i.v. | etalk21 | 0.164662 | Table 1, BSV i.v.: k21 = 0.11 (RSE 20.5%) |
+| i.v. | etalvc | 0.070064 | Table 1, BSV i.v.: V = 0.97 (RSE 29.4%) |
+| i.v. | etalkel | 0.156644 | Table 1, BSV i.v.: k10 = 0.07 (RSE 19.1%) |
+| i.v. | etalk12 | 0.056776 | Table 1, BSV i.v.: k12 = 0.29 (RSE 24.6%) |
+| i.v. | etalk21 | 0.164678 | Table 1, BSV i.v.: k21 = 0.11 (RSE 20.5%) |
 | oral | lka | 0.631272 | First-order absorption rate constant ka (log 1/h) |
 | oral | lvc | 3.100092 | Apparent central volume of distribution V/F (log L/kg) |
 | oral | lkel | -0.843970 | Elimination rate constant from central k10 (log 1/h) |
 | oral | lk12 | 1.408545 | Rate constant central -\> peripheral1 k12 (log 1/h) |
 | oral | lk21 | -0.820981 | Rate constant peripheral1 -\> central k21 (log 1/h) |
 | oral | propSd | 0.410000 | Proportional residual error (fraction) |
-| oral | etalka | 0.065724 | Table 1, BSV Oral: ka = 0.49 (RSE 33%) |
-| oral | etalvc | 0.061689 | Table 1, BSV Oral: V = 5.60 (RSE 13.6%) |
-| oral | etalkel | 0.042875 | Table 1, BSV Oral: k10 = 0.09 (RSE 26.5%) |
-| oral | etalk12 | 0.012033 | Table 1, BSV Oral: k12 = 0.45 (RSE 22%) |
+| oral | etalka | 0.065706 | Table 1, BSV Oral: ka = 0.49 (RSE 33%) |
+| oral | etalvc | 0.061711 | Table 1, BSV Oral: V = 5.60 (RSE 13.6%) |
+| oral | etalkel | 0.042874 | Table 1, BSV Oral: k10 = 0.09 (RSE 26.5%) |
+| oral | etalk12 | 0.012027 | Table 1, BSV Oral: k12 = 0.45 (RSE 22%) |
 | oral | etalk21 | 0.446287 | Table 1, BSV Oral: k21 = 0.33 (RSE 29.3%) |
 
 Packaged ini() values for both arms. {.table}

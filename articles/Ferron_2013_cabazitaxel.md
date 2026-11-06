@@ -373,8 +373,8 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (hr\*ng/mL) | Cmax (ng/mL) | Tmax (hr) | Half-life (hr) | AUCinf,obs (hr\*ng/mL) | CL (based on AUCinf,obs) (mg/(hr\*ng/mL)) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 504 | breast cancer | 26 | 1680 \[35.8\] | 243 \[78.7\] | 1.00 \[1.00, 1.00\] | 212 \[202\] | 2050 \[40.4\] | 0.0219 \[46.2\] |
-| 0 | 504 | non-breast cancer | 94 | 886 \[39.2\] | 173 \[80.6\] | 1.00 \[1.00, 1.00\] | 168 \[129\] | 1020 \[40.3\] | 0.0448 \[43.0\] |
+| 0 | 504 | breast cancer | 26 | 1680 \[35.9\] | 243 \[78.9\] | 1.00 \[1.00, 1.00\] | 212 \[203\] | 2050 \[40.5\] | 0.0219 \[46.3\] |
+| 0 | 504 | non-breast cancer | 94 | 885 \[39.3\] | 173 \[80.9\] | 1.00 \[1.00, 1.00\] | 168 \[129\] | 1020 \[40.3\] | 0.0448 \[43.0\] |
 
 Cycle 1 NCA summary (0-504 h), stratified by tumor type. {.table}
 

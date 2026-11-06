@@ -68,6 +68,17 @@ collects the load-bearing references in one place.
 | Proportional residual error | 6.72% | Bienczak 2016 Table 2 row `Proportional error (%)` |
 | Structural ODE: 2-cmt + Savic transit + ka | n/a | Bienczak 2016 Methods ‘Population pharmacokinetic analysis’ paragraph 1 (Savic et al. 2007, ref 39); Results ‘Population pharmacokinetics’ paragraph 1 |
 
+## Errata
+
+- **The published CVs are first-order approximations.** The Table 2
+  footnote reads “Expressed as approximate %CV on SD scale
+  sqrt(ETA)\*100”. Each printed CV is therefore the standard deviation
+  of the corresponding random effect, and the model’s variances are the
+  squares of the printed CVs (for example `etalcl ~ 0.369^2` for the
+  36.9% BSV on CL/F), not the exact log-normal conversion
+  `log(1 + CV^2)`. The difference is largest for the 78.0% BOV on MTT:
+  0.780^2 = 0.608, against 0.475 from the log-normal conversion.
+
 ## Virtual cohort
 
 The original CHAPAS-3 / ARROW data are not publicly available. The
@@ -308,12 +319,12 @@ knitr::kable(
 
 | genotype | Published median C12h (mg/L) | Simulated median C12h (mg/L) | C12h diff (%) | Published median AUC (mg\*h/L) | Simulated median AUC (mg\*h/L) | AUC diff (%) |
 |:---|:---|:---|:---|:---|:---|:---|
-| 516GG\|983TT | 1.55 | 1.53 | -1% | 37.5 | 38.9 | +4% |
-| 516GG\|983TC | 2.03 | 2.71\* | +34% | 46.3 | 65.1\* | +41% |
-| 516GG\|983CC | 18.22 | 17.34 | -5% | 438.9 | 416.7 | -5% |
-| 516GT\|983TT | 2.20 | 2.22 | +1% | 56.0 | 51.7 | -8% |
+| 516GG\|983TT | 1.55 | 1.54 | -1% | 37.5 | 38.8 | +3% |
+| 516GG\|983TC | 2.03 | 2.76\* | +36% | 46.3 | 65.3\* | +41% |
+| 516GG\|983CC | 18.22 | 17.47 | -4% | 438.9 | 419.9 | -4% |
+| 516GT\|983TT | 2.20 | 2.24 | +2% | 56.0 | 51.4 | -8% |
 | 516GT\|983TC | 7.79 | 8.19 | +5% | 258.4 | 198.4\* | -23% |
-| 516TT\|983TT | 7.55 | 6.76 | -10% | 176.0 | 164.6 | -6% |
+| 516TT\|983TT | 7.55 | 6.78 | -10% | 176.0 | 164.9 | -6% |
 
 Simulated vs. Bienczak 2016 Table 3 median steady-state mid-dose
 efavirenz concentration and AUC0-tau, by CYP2B6 516G\>T\|983T\>C
@@ -344,9 +355,9 @@ investigate). {.table style="width:100%;"}
   `Svensson_2018_bedaquiline.R`, BOV is dropped where a BSV term is
   already reported on the same parameter (CL/F: BOV 26.6% dropped; F:
   BOV 50.5% dropped) and folded in as a BSV-equivalent where only BOV is
-  reported (MTT: BOV 78.0% -\> BSV-equivalent omega^2 = log(1 + 0.780^2)
-  = 0.47521; ka: BOV 57.7% -\> BSV-equivalent omega^2 = log(1 + 0.577^2)
-  = 0.28738).
+  reported (MTT: BOV 78.0% -\> BSV-equivalent omega^2 = 0.780^2 =
+  0.60840; ka: BOV 57.7% -\> BSV-equivalent omega^2 = 0.577^2 =
+  0.33293).
 
 - **Sparse-data residual-error scaling dropped.** Bienczak 2016 retained
   a 2-fold larger residual error for sparse PK samples (Table 2 row

@@ -84,14 +84,14 @@ below for review:
 | `lcl` (CL/F per 70 kg) | log(53.98) = 3.989 | Table 2: CL/F = 53.98 L/h/70 kg (RSE 4.8%) |
 | `e_wt_cl` (allometric exponent on CL) | 0.75 (fixed) | Methods page 848: CL = thetaCL \* (W/70)^0.75 |
 | `e_wt_vc` (allometric exponent on Vc) | 1.00 (fixed) | Methods page 848: V = thetaV \* (W/70)^1 |
-| `etalmtt1` (IIV MTT1, variance) | 0.5142 | Table 2 IIV(MTT1) = 82% CV; log(1 + 0.82^2) |
+| `etalmtt1` (IIV MTT1, variance) | 0.5143 | Table 2 IIV(MTT1) = 82% CV; log(1 + 0.82^2) |
 | `etaln1` (IIV N1, variance) | 0.7131 | Table 2 IIV(N1) = 102% CV; log(1 + 1.02^2) |
 | `etalfdepot` (IIV F1, variance) | 0.0560 | Table 2 IIV(F1) = 24% CV; log(1 + 0.24^2) |
 | `etalka1` (IIV t1/2A1, variance) | 0.0917 | Table 2 IIV(t1/2A1) = 31% CV; log(1 + 0.31^2) (equivalent on log(ka1)) |
 | `etalmtt2` (IIV MTT2, variance) | 0.8624 | Table 2 IIV(MTT2) = 117% CV; log(1 + 1.17^2) |
 | `etaln2` (IIV N2, variance) | 1.1509 | Table 2 IIV(N2) = 147% CV; log(1 + 1.47^2) |
 | `etalka2` (IIV t1/2A2, variance) | 0.2152 | Table 2 IIV(t1/2A2) = 49% CV; log(1 + 0.49^2) (equivalent on log(ka2)) |
-| `etalvc` (IIV Vd/F, variance) | 0.2562 | Table 2 IIV(Vd/F) = 54% CV; log(1 + 0.54^2) |
+| `etalvc` (IIV Vd/F, variance) | 0.2559 | Table 2 IIV(Vd/F) = 54% CV; log(1 + 0.54^2) |
 | `etalcl` (IIV CL/F, variance) | 0.0654 | Table 2 IIV(CL/F) = 26% CV; log(1 + 0.26^2) |
 | `propSdAdult` (adult proportional residual SD) | 0.29 | Table 2: adult proportional residual variability = 29% (RSE 5.9%) |
 | `propSdPaed` (paediatric proportional residual SD) | 0.18 | Table 2: paediatric proportional residual variability = 18% (RSE 19.9%) |
@@ -301,7 +301,7 @@ knitr::kable(nca_summary,
 |---:|---:|:---|:---|:---|:---|:---|
 | 0 | 12 | Adult 50 mg | 100 | 2910 \[30.3\] | 1870 \[66.4\] | 0.650 \[0.250, 3.40\] |
 | 0 | 12 | Child 1-3 years | 100 | 2590 \[29.1\] | 2100 \[63.3\] | 0.600 \[0.150, 4.10\] |
-| 0 | 12 | Child 4-6 years | 100 | 2890 \[27.2\] | 2080 \[59.2\] | 0.700 \[0.200, 2.30\] |
+| 0 | 12 | Child 4-6 years | 100 | 2890 \[27.2\] | 2080 \[59.3\] | 0.700 \[0.200, 2.30\] |
 | 0 | 12 | Child 7-12 years | 100 | 3360 \[24.3\] | 2580 \[73.6\] | 0.550 \[0.250, 5.45\] |
 
 Simulated NCA over 0-12 h by cohort (median across virtual subjects).

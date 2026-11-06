@@ -62,7 +62,7 @@ below collects them in one place for review.
 | `bw_ref` (reference body weight, kg) | `1.76` | Boer-Perez 2026 Table 1 cohort median; Table 2 covariate equation denominator |
 | `creat_ref` (reference SCr, mg/dL) | `0.4` | Boer-Perez 2026 Table 1 cohort median; Table 2 covariate equation denominator |
 | `etalcl` (omega_CL) | `0.13688` (38.3% CV) | Boer-Perez 2026 Table 2: omega_CL 38.3% CV; omega^2 = log(1 + CV^2) |
-| `etalvc` (omega_V) | `0.13288` (37.7% CV) | Boer-Perez 2026 Table 2: omega_V 37.7% CV; omega^2 = log(1 + CV^2) |
+| `etalvc` (omega_V) | `0.13289` (37.7% CV) | Boer-Perez 2026 Table 2: omega_V 37.7% CV; omega^2 = log(1 + CV^2) |
 | `propSd` (proportional residual error) | `0.114` | Boer-Perez 2026 Table 2: sigma_proportional 11.4% CV |
 | Eq. 3 (BW allometric scaling) | n/a | Boer-Perez 2026 Methods, Eq. 3 |
 | Eq. 4 (PMA Hill maturation factor F_PMA) | n/a | Boer-Perez 2026 Methods, Eq. 4 |
@@ -300,9 +300,9 @@ knitr::kable(
 
 | stratum | median_adj.r.squared | median_auclast | median_clast.pred | median_cmax | median_half.life | median_lambda.z | median_lambda.z.n.points | median_lambda.z.time.first | median_lambda.z.time.last | median_r.squared | median_span.ratio | median_tlast | median_tmax | p05_adj.r.squared | p05_auclast | p05_clast.pred | p05_cmax | p05_half.life | p05_lambda.z | p05_lambda.z.n.points | p05_lambda.z.time.first | p05_lambda.z.time.last | p05_r.squared | p05_span.ratio | p05_tlast | p05_tmax | p95_adj.r.squared | p95_auclast | p95_clast.pred | p95_cmax | p95_half.life | p95_lambda.z | p95_lambda.z.n.points | p95_lambda.z.time.first | p95_lambda.z.time.last | p95_r.squared | p95_span.ratio | p95_tlast | p95_tmax |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| PMA 30-36 wk | 1 | 898.492 | 23.581 | 188.207 | 3.811 | 0.182 | 46 | 0.75 | 12 | 1 | 2.952 | 12 | 0.5 | 1 | 533.275 | 2.046 | 103.367 | 1.662 | 0.079 | 46 | 0.75 | 12 | 1 | 1.275 | 12 | 0.5 | 1 | 1438.382 | 60.470 | 311.224 | 8.822 | 0.417 | 46 | 0.75 | 12 | 1 | 6.770 | 12 | 0.5 |
-| PMA 37-44 wk | 1 | 750.626 | 10.162 | 204.177 | 2.675 | 0.259 | 46 | 0.75 | 12 | 1 | 4.205 | 12 | 0.5 | 1 | 426.042 | 0.245 | 108.257 | 1.132 | 0.117 | 46 | 0.75 | 12 | 1 | 1.898 | 12 | 0.5 | 1 | 1271.595 | 38.581 | 320.047 | 5.928 | 0.613 | 46 | 0.75 | 12 | 1 | 9.944 | 12 | 0.5 |
-| PMA \<=29 wk | 1 | 1122.335 | 38.845 | 200.509 | 5.088 | 0.136 | 46 | 0.75 | 12 | 1 | 2.211 | 12 | 0.5 | 1 | 704.560 | 8.054 | 113.554 | 2.207 | 0.063 | 46 | 0.75 | 12 | 1 | 1.028 | 12 | 0.5 | 1 | 1767.960 | 81.375 | 353.289 | 10.948 | 0.314 | 46 | 0.75 | 12 | 1 | 5.098 | 12 | 0.5 |
+| PMA 30-36 wk | 1 | 898.491 | 23.582 | 188.207 | 3.811 | 0.182 | 46 | 0.75 | 12 | 1 | 2.952 | 12 | 0.5 | 1 | 533.273 | 2.046 | 103.364 | 1.662 | 0.079 | 46 | 0.75 | 12 | 1 | 1.275 | 12 | 0.5 | 1 | 1438.390 | 60.470 | 311.232 | 8.823 | 0.417 | 46 | 0.75 | 12 | 1 | 6.770 | 12 | 0.5 |
+| PMA 37-44 wk | 1 | 750.627 | 10.162 | 204.178 | 2.675 | 0.259 | 46 | 0.75 | 12 | 1 | 4.205 | 12 | 0.5 | 1 | 426.042 | 0.245 | 108.254 | 1.132 | 0.117 | 46 | 0.75 | 12 | 1 | 1.898 | 12 | 0.5 | 1 | 1271.600 | 38.581 | 320.056 | 5.928 | 0.613 | 46 | 0.75 | 12 | 1 | 9.944 | 12 | 0.5 |
+| PMA \<=29 wk | 1 | 1122.329 | 38.845 | 200.509 | 5.088 | 0.136 | 46 | 0.75 | 12 | 1 | 2.211 | 12 | 0.5 | 1 | 704.552 | 8.053 | 113.551 | 2.207 | 0.063 | 46 | 0.75 | 12 | 1 | 1.028 | 12 | 0.5 | 1 | 1767.971 | 81.375 | 353.300 | 10.948 | 0.314 | 46 | 0.75 | 12 | 1 | 5.098 | 12 | 0.5 |
 
 Simulated single-dose NCA parameters (median and 5th-95th percentiles)
 by PMA stratum. {.table}

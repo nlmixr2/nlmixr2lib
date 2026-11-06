@@ -127,9 +127,9 @@ review.
 | `ltshed_high` | log(1.9) | Table 1, “Tshed(high) (AUC \> 14 180 ng.h/mL) = 1.9 (0.51) days” |
 | `f_auchigh` | 0.326 (75 mg BID); 0.795 (150 mg BID) | Table 1, “FAUChigh (75 mg BID) = 0.326 (0.048)” and “FAUChigh (150 mg BID) = 0.795 (0.095)”; Results, Pharmacology module |
 | `f_uptake` | 0 / 0.25 / 0.50 / 0.80 | Methods, Epidemiology module (“percent drug uptake … 25%, 50%, and 80%”) |
-| `etaltshed0` | 0.160085 | Table 1 SD 2.5 on mean 6 -\> CV 41.67% -\> log(1 + CV^2) |
-| `etaltshed_low` | 0.036696 | Table 1 SD 0.58 on mean 3 -\> CV 19.33% -\> log(1 + CV^2) |
-| `etaltshed_high` | 0.069573 | Table 1 SD 0.51 on mean 1.9 -\> CV 26.84% -\> log(1 + CV^2) |
+| `etaltshed0` | 0.160109 | Table 1 SD 2.5 on mean 6 -\> CV 41.67% -\> log(1 + CV^2) |
+| `etaltshed_low` | 0.036684 | Table 1 SD 0.58 on mean 3 -\> CV 19.33% -\> log(1 + CV^2) |
+| `etaltshed_high` | 0.069562 | Table 1 SD 0.51 on mean 1.9 -\> CV 26.84% -\> log(1 + CV^2) |
 | `etaf_auchigh` | 0.002304 (75 mg); 0.009025 (150 mg) | Table 1 SD 0.048 and 0.095 on the natural scale -\> SD^2 |
 | `gamma = 1 / Tshed` | n/a | Methods, Epidemiology module |
 | `R0 = beta / gamma = beta * Tshed` | n/a | Methods, Epidemiology module |
@@ -566,20 +566,20 @@ tab3 |>
 
 | Transmissibility | Arm | Model R0 | Published (Table 3) | Typical-value | Monte Carlo median | Monte Carlo IQR | % diff (typical) |
 |:---|:---|---:|---:|---:|---:|---:|---:|
-| Moderate | No treatment | 1.26 | 37 068 | 37 404 | 39 202 | 26 - 64 007 | +1 |
-| High | No treatment | 2.46 | 67 512 | 88 727 | 90 366 | 74 889 - 95 961 | +31 |
+| Moderate | No treatment | 1.26 | 37 068 | 37 404 | 39 202 | 26 - 64 008 | +1 |
+| High | No treatment | 2.46 | 67 512 | 88 727 | 90 366 | 74 887 - 95 961 | +31 |
 | Moderate | 75 mg BID, 25% uptake | 0.94 | 7 846 | 16 | 10 | 4 - 402 | -100 |
-| High | 75 mg BID, 25% uptake | 1.83 | 60 397 | 74 346 | 74 076 | 59 768 - 82 463 | +23 |
+| High | 75 mg BID, 25% uptake | 1.83 | 60 397 | 74 346 | 74 076 | 59 766 - 82 463 | +23 |
 | Moderate | 150 mg BID, 25% uptake | 0.85 | 5 311 | 7 | 7 | 4 - 60 | -100 |
-| High | 150 mg BID, 25% uptake | 1.66 | 53 032 | 67 355 | 65 182 | 50 435 - 76 797 | +27 |
+| High | 150 mg BID, 25% uptake | 1.66 | 53 032 | 67 355 | 65 180 | 50 438 - 76 796 | +27 |
 | Moderate | 75 mg BID, 50% uptake | 0.75 | 2 252 | 4 | 4 | 3 - 5 | -100 |
-| High | 75 mg BID, 50% uptake | 1.46 | 41 331 | 55 349 | 49 832 | 38 281 - 61 994 | +34 |
+| High | 75 mg BID, 50% uptake | 1.46 | 41 331 | 55 349 | 49 833 | 38 282 - 61 993 | +34 |
 | Moderate | 150 mg BID, 50% uptake | 0.64 | 1 357 | 3 | 3 | 2 - 3 | -100 |
-| High | 150 mg BID, 50% uptake | 1.25 | 31 700 | 37 676 | 41 181 | 21 890 - 56 987 | +19 |
+| High | 150 mg BID, 50% uptake | 1.25 | 31 700 | 37 676 | 41 181 | 21 893 - 56 987 | +19 |
 | Moderate | 75 mg BID, 80% uptake | 0.60 | 1 349 | 2 | 2 | 2 - 3 | -100 |
-| High | 75 mg BID, 80% uptake | 1.17 | 20 941 | 27 604 | 27 061 | 473 - 36 793 | +32 |
+| High | 75 mg BID, 80% uptake | 1.17 | 20 941 | 27 604 | 27 060 | 474 - 36 792 | +32 |
 | Moderate | 150 mg BID, 80% uptake | 0.50 | 741 | 2 | 2 | 2 - 2 | -100 |
-| High | 150 mg BID, 80% uptake | 0.97 | 12 881 | 32 | 46 | 6 - 18 353 | -100 |
+| High | 150 mg BID, 80% uptake | 0.97 | 12 881 | 32 | 46 | 6 - 18 354 | -100 |
 
 Number of infected individuals per 100 000 at day 365. Published values
 are Kamal 2017 Table 3. {.table style="width:100%;"}

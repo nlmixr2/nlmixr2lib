@@ -470,7 +470,7 @@ summarise_pta <- function(sim, regs) {
 
 rxode2::rxSetSeed(1045895)
 pta_sim <- rxode2::rxSolve(mod, pta_ev, returnType = "data.frame")
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:01
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:00
 pta_res <- summarise_pta(pta_sim, pta_regs)
 
 pta_res |>
@@ -634,7 +634,7 @@ mod_cv <- mod |> rxode2::ini(etalcl = log(1 + 0.386^2), etalvc = log(1 + 0.537^2
 #> ℹ change initial estimate of `etalvc` to `0.253377077334772`
 rxode2::rxSetSeed(1045895)
 pta_res_cv <- summarise_pta(rxode2::rxSolve(mod_cv, pta_ev, returnType = "data.frame"), pta_regs)
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:01
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:00
 d_cv <- c(pta_res_cv$sim_ld - pta_res_cv$pta_ld, pta_res_cv$sim_md - pta_res_cv$pta_md)
 knitr::kable(
   data.frame(
@@ -678,7 +678,7 @@ rxode2::rxSetSeed(3)
 fig3_sim <- rxode2::rxSolve(mod, fig3_ev, returnType = "data.frame") |>
   dplyr::mutate(arm = (id - 1) %/% n_arm + 1) |>
   dplyr::left_join(fig3_regs |> dplyr::select(arm, egfr, alb, ld), by = "arm")
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:02
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:01
 fig3 <- fig3_sim |>
   dplyr::group_by(egfr, alb, ld) |>
   dplyr::summarise(`0.75 mg/L` = 100 * mean(Cc >= 0.75), `1.13 mg/L` = 100 * mean(Cc >= 1.13),

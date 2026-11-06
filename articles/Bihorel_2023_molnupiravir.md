@@ -92,9 +92,9 @@ Every value below is also recorded as an in-file comment beside its
 | `e_sexf_vc` | -0.330 | Table 2, row “Proportional shift in female participants” (RSE 11.8%) |
 | `lq` | 2.99 L/h | Table 2, row “Q/F / Apparent distribution clearance, L/h” (RSE 5.70%) |
 | `lvp` | 68.3 L | Table 2, row “V P /F / Apparent peripheral volume, L” (RSE 14.6%) |
-| `etalcl` | 0.172573 | Table 2, CL/F variability 43.4 %CV; `log(1 + 0.434^2)` |
-| `etalvc` | 0.333371 | Table 2, V C /F variability 62.9 %CV; `log(1 + 0.629^2)` |
-| `etaiov_mtt_1`, `etaiov_mtt_2` | 0.147049 | Table 2, row “IOV in MTT” 39.8 %CV; `log(1 + 0.398^2)`; two occasions per the Table 2 note |
+| `etalcl` | 0.172571 | Table 2, CL/F variability 43.4 %CV; `log(1 + 0.434^2)` |
+| `etalvc` | 0.333354 | Table 2, V C /F variability 62.9 %CV; `log(1 + 0.629^2)` |
+| `etaiov_mtt_1`, `etaiov_mtt_2` | 0.147043 | Table 2, row “IOV in MTT” 39.8 %CV; `log(1 + 0.398^2)`; two occasions per the Table 2 note |
 | `propSdPhase1` | `sqrt(0.0652)` = 0.255 | Table 2, “Residual variability / Phase I trials” = 0.0652, 25.5 %CV |
 | `propSdPhase23` | `sqrt(0.247)` = 0.497 | Table 2, “Residual variability / Phase II/III trials” = 0.247, 49.7 %CV |
 | Absorption structure (transit chain into depot, first-order `ka` into central) | n/a | Figure 1a (stages 1 and 3); Results, “Base model refinement using phase III data” |
@@ -440,7 +440,7 @@ summary_tbl |>
 | Quantity                         | Value |
 |:---------------------------------|------:|
 | Median AUC(0-12) (nmol\*h/L)     | 33022 |
-| 5th percentile AUC(0-12)         | 17689 |
+| 5th percentile AUC(0-12)         | 17690 |
 | 95th percentile AUC(0-12)        | 70666 |
 | Median CL/F implied by AUC (L/h) |    74 |
 

@@ -95,10 +95,10 @@ point to the source row; the table below collects them.
 | `e_wt_cl_q` (BWT → CL, Q) | 0.54 | Table 2 |
 | `e_wt_vc_vp` (BWT → Vc, Vp) | 0.64 | Table 2 |
 | `e_dose_50mg_f` (F shift on 50 mg SC) | −0.32143 (0.57/0.84 − 1) | Table 2 (F_50mg = 0.57, F_100-300mg = 0.84) |
-| IIV `etalka` (ka, SC) | CV 58% → ω² = 0.29003 | Table 2 |
-| IIV `etalcl` (CL, SC) | CV 27% → ω² = 0.07038 | Table 2 |
-| Correlation `etalka`–`etalcl` | −0.72 → cov = −0.10290 | Table 2 |
-| IIV `etalvc` (Vc, SC) | CV 31% → ω² = 0.09175 | Table 2 |
+| IIV `etalka` (ka, SC) | CV 58% → ω² = 0.28998 | Table 2 |
+| IIV `etalcl` (CL, SC) | CV 27% → ω² = 0.07037 | Table 2 |
+| Correlation `etalka`–`etalcl` | −0.72 → cov = −0.10285 | Table 2 |
+| IIV `etalvc` (Vc, SC) | CV 31% → ω² = 0.09176 | Table 2 |
 | `propSd` (RUV, proportional) | 0.22 | Table 2 (r_prop = 0.22) |
 | `addSd` (RUV, additive) | 0.33 µg/mL | Table 2 (r_add = 0.33) |
 | 2-cmt model with first-order SC absorption | n/a | Methods §2.5.1, ADVAN4 TRANS4 |

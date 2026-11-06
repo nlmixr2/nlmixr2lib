@@ -93,8 +93,8 @@ model” subsection of Results.
 | `lq` (Q) | log(6.881) | Conil 2007 Results p. 31 final-model eqn `Q = 6.881 L/h`; Table 3 reports 6.9 in all four strata |
 | `etalcl ~ 0.02528` | log(0.16^2 + 1) | Conil 2007 Results p. 31: “Interindividual variability in the clearance was decreased to 16%” |
 | `etalvc ~ 0.01676` | log(0.13^2 + 1) | Conil 2007 Results p. 31: “and that of the central volume of distribution to 13%” |
-| `etalq ~ 2.6520` | log(3.63^2 + 1) | Conil 2007 Table 2 basic-model row “Inter-compartmental clearance” CV 363% (final model silent; carried forward per standing maintainer instruction) |
-| `etalvp ~ 1.5280` | log(1.90^2 + 1) | Conil 2007 Table 2 basic-model row “Distribution volume of the peripheral compartment” CV 190% (final model silent; carried forward) |
+| `etalq ~ 2.6516` | log(3.63^2 + 1) | Conil 2007 Table 2 basic-model row “Inter-compartmental clearance” CV 363% (final model silent; carried forward per standing maintainer instruction) |
+| `etalvp ~ 1.5282` | log(1.90^2 + 1) | Conil 2007 Table 2 basic-model row “Distribution volume of the peripheral compartment” CV 190% (final model silent; carried forward) |
 | `propSd <- 0.38` | 0.38 | Conil 2007 Results p. 30 basic-model proportional CV 38% (final model silent; carried forward) |
 | `d/dt(central)` / `d/dt(peripheral1)` | n/a | Conil 2007 Results p. 30 (“A two-compartment model… ADVAN3 TRANS4”); standard 2-cmt linear ODE form |
 | `Cc ~ prop(propSd)` | n/a | Conil 2007 Results p. 30 (“a proportional error model best fitted the data”) |
@@ -436,7 +436,7 @@ knitr::kable(
 | AUC0-∞ (obs) (mg\*h/L) | Females, ventilated     |       351 |       342 |     -2.5% |
 | t½ (h)                 | Males, not ventilated   |      1.81 |       2.5 |  +38.0%\* |
 | t½ (h)                 | Females, not ventilated |      1.98 |       3.5 |  +76.6%\* |
-| t½ (h)                 | Males, ventilated       |      2.15 |      4.29 |  +99.7%\* |
+| t½ (h)                 | Males, ventilated       |      2.15 |      4.29 |  +99.6%\* |
 | t½ (h)                 | Females, ventilated     |      2.27 |      6.99 | +208.0%\* |
 
 Simulated NCA vs Conil 2007 Table 3 reference values. AUC0-Inf reference

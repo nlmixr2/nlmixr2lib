@@ -61,9 +61,9 @@ from Methods Eqs. 1-6 (p54-55) and the residual-error equation from Eq.
 | `lvmax` (Vmax) | `log(0.00591)` mg/h | Table 1, “Vmax” row: 5.91 ug/h (see “Errata” below) |
 | `lkm` (Km) | `log(0.957)` ng/mL | Table 1, “Km” row |
 | `var(etalka)` | `log(1 + 0.70^2) = 0.3988` | Table 1, “ka” intersubject CV 70% |
-| `var(etaltlag)` | `log(1 + 0.38^2) = 0.1350` | Table 1, “tlag” intersubject CV 38% |
-| `var(etalcl)` | `log(1 + 0.69^2) = 0.3884` | Table 1, “CL_l” intersubject CV 69% |
-| `var(etalvmax)` | `log(1 + 0.43^2) = 0.1693` | Table 1, “Vmax” intersubject CV 43% |
+| `var(etaltlag)` | `log(1 + 0.38^2) = 0.1349` | Table 1, “tlag” intersubject CV 38% |
+| `var(etalcl)` | `log(1 + 0.69^2) = 0.3894` | Table 1, “CL_l” intersubject CV 69% |
+| `var(etalvmax)` | `log(1 + 0.43^2) = 0.1697` | Table 1, “Vmax” intersubject CV 43% |
 | `var(etalq)` | `log(1 + 0.62^2) = 0.3253` | Table 1, “Q” intersubject CV 62% |
 | `var(etalvc)` | `log(1 + 0.32^2) = 0.0975` | Table 1, “Vc” intersubject CV 32% |
 | `var(etalvp)` | `log(1 + 0.41^2) = 0.1554` | Table 1, “Vp” intersubject CV 41% |
@@ -457,31 +457,31 @@ knitr::kable(nca_summary,
 | 0.1 mg    | Cmax (ng/mL)       |   0.444 |   0.332 |   0.708 |
 | 0.1 mg    | Tmax (h)           |   1.500 |   1.000 |   2.850 |
 | 0.1 mg    | AUC_inf (ng\*h/mL) |      NA |      NA |      NA |
-| 0.1 mg    | Half-life (h)      |  72.795 |  59.292 | 109.752 |
+| 0.1 mg    | Half-life (h)      |  72.802 |  59.299 | 109.797 |
 | 1 mg      | Cmax (ng/mL)       |   3.930 |   2.947 |   7.557 |
 | 1 mg      | Tmax (h)           |   1.500 |   1.000 |   2.000 |
 | 1 mg      | AUC_inf (ng\*h/mL) |      NA |      NA |      NA |
-| 1 mg      | Half-life (h)      |  74.225 |  57.095 |  94.156 |
+| 1 mg      | Half-life (h)      |  74.232 |  57.091 |  94.177 |
 | 2.5 mg    | Cmax (ng/mL)       |  10.844 |   7.122 |  15.996 |
 | 2.5 mg    | Tmax (h)           |   2.500 |   2.000 |   3.000 |
 | 2.5 mg    | AUC_inf (ng\*h/mL) |      NA |      NA |      NA |
-| 2.5 mg    | Half-life (h)      |  56.815 |  32.140 |  69.804 |
+| 2.5 mg    | Half-life (h)      |  56.800 |  32.123 |  69.769 |
 | 5 mg      | Cmax (ng/mL)       |  18.828 |  16.635 |  34.014 |
 | 5 mg      | Tmax (h)           |   1.500 |   1.000 |   2.850 |
 | 5 mg      | AUC_inf (ng\*h/mL) |      NA |      NA |      NA |
-| 5 mg      | Half-life (h)      |  96.544 |  52.694 | 277.659 |
+| 5 mg      | Half-life (h)      |  96.510 |  52.650 | 277.789 |
 | 10 mg     | Cmax (ng/mL)       |  53.362 |  34.572 |  64.868 |
 | 10 mg     | Tmax (h)           |   1.500 |   1.000 |   2.000 |
 | 10 mg     | AUC_inf (ng\*h/mL) |      NA |      NA |      NA |
-| 10 mg     | Half-life (h)      | 278.960 | 248.497 | 298.554 |
-| 20 mg     | Cmax (ng/mL)       | 114.710 |  69.740 | 129.854 |
+| 10 mg     | Half-life (h)      | 278.950 | 248.359 | 298.419 |
+| 20 mg     | Cmax (ng/mL)       | 114.709 |  69.740 | 129.853 |
 | 20 mg     | Tmax (h)           |   2.000 |   1.150 |   2.000 |
 | 20 mg     | AUC_inf (ng\*h/mL) |      NA |      NA |      NA |
-| 20 mg     | Half-life (h)      | 358.014 | 236.233 | 711.840 |
-| 40 mg     | Cmax (ng/mL)       | 194.187 | 157.106 | 201.599 |
+| 20 mg     | Half-life (h)      | 357.734 | 236.074 | 712.184 |
+| 40 mg     | Cmax (ng/mL)       | 194.187 | 157.103 | 201.600 |
 | 40 mg     | Tmax (h)           |   1.500 |   1.000 |   2.000 |
 | 40 mg     | AUC_inf (ng\*h/mL) |      NA |      NA |      NA |
-| 40 mg     | Half-life (h)      | 404.517 | 373.320 | 573.581 |
+| 40 mg     | Half-life (h)      | 404.461 | 373.087 | 573.706 |
 
 Simulated NCA parameters by single dose level (median across 4 virtual
 subjects per group; 5th-95th percentiles shown). {.table}
@@ -508,13 +508,13 @@ knitr::kable(dose_check,
 
 | treatment | sim_Cmax_median | dose_mg | sim_Cmax_per_mg |
 |:----------|----------------:|--------:|----------------:|
-| 0.1 mg    |       0.4441909 |     0.1 |        4.441909 |
-| 1 mg      |       3.9300633 |     1.0 |        3.930063 |
-| 2.5 mg    |      10.8441754 |     2.5 |        4.337670 |
-| 5 mg      |      18.8277877 |     5.0 |        3.765557 |
-| 10 mg     |      53.3617239 |    10.0 |        5.336172 |
-| 20 mg     |     114.7095409 |    20.0 |        5.735477 |
-| 40 mg     |     194.1870274 |    40.0 |        4.854676 |
+| 0.1 mg    |       0.4441881 |     0.1 |        4.441881 |
+| 1 mg      |       3.9300828 |     1.0 |        3.930083 |
+| 2.5 mg    |      10.8440651 |     2.5 |        4.337626 |
+| 5 mg      |      18.8277100 |     5.0 |        3.765542 |
+| 10 mg     |      53.3617225 |    10.0 |        5.336172 |
+| 20 mg     |     114.7092002 |    20.0 |        5.735460 |
+| 40 mg     |     194.1866623 |    40.0 |        4.854667 |
 
 Cmax-per-mg-dose: roughly constant confirms the paper’s ‘Cmax appears
 proportional to dose’ (Methods p54). Modest super-proportionality at
@@ -535,13 +535,13 @@ knitr::kable(t_half_check,
 
 | treatment | half_life_hr | half_life_days |
 |:----------|-------------:|---------------:|
-| 0.1 mg    |        72.79 |           3.03 |
+| 0.1 mg    |        72.80 |           3.03 |
 | 1 mg      |        74.23 |           3.09 |
-| 2.5 mg    |        56.81 |           2.37 |
-| 5 mg      |        96.54 |           4.02 |
-| 10 mg     |       278.96 |          11.62 |
-| 20 mg     |       358.01 |          14.92 |
-| 40 mg     |       404.52 |          16.85 |
+| 2.5 mg    |        56.80 |           2.37 |
+| 5 mg      |        96.51 |           4.02 |
+| 10 mg     |       278.95 |          11.62 |
+| 20 mg     |       357.73 |          14.91 |
+| 40 mg     |       404.46 |          16.85 |
 
 Terminal half-life (single-dose NCA fit). Paper text (Results p57):
 about 3 days at low concentrations (where the MM pathway dominates); up

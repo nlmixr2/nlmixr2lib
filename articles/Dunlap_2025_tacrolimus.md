@@ -65,9 +65,9 @@ comment. The table below collects the entries in one place.
 | `e_wt_vc_vp` (allometric exponent on V1/F and V2/F) | 1 (FIX) | Table 2, RCM column, TVV1/F~TBW and TVV2/F~TBW rows |
 | `e_cyp3a5_expr_cl` (CYP3A5 IM or NM factor on CL/F) | 2.14 \[1.67, 2.74\] | Table 2, RCM column, TVCL/F~CYP3A5 IM or NM row |
 | `e_hct_cond_ric_cl` (RIC factor on CL/F) | 0.63 \[0.51, 0.77\] | Table 2, RCM column, TVCL/F~RIC row |
-| IIV V1/F (omega^2 = log(0.95^2 + 1) = 0.65823) | 95% CV | Table 2, RCM column, IIV V1/F row |
-| IIV CL/F (omega^2 = log(0.55^2 + 1) = 0.26282) | 55% CV | Table 2, RCM column, IIV CL/F row |
-| IIV V2/F (omega^2 = log(0.66^2 + 1) = 0.36185) | 66% CV | Table 2, RCM column, IIV V2/F row |
+| IIV V1/F (omega^2 = log(0.95^2 + 1) = 0.64317) | 95% CV | Table 2, RCM column, IIV V1/F row |
+| IIV CL/F (omega^2 = log(0.55^2 + 1) = 0.26429) | 55% CV | Table 2, RCM column, IIV CL/F row |
+| IIV V2/F (omega^2 = log(0.66^2 + 1) = 0.36158) | 66% CV | Table 2, RCM column, IIV V2/F row |
 | Additive residual error | 2.51 ng/mL | Table 2, RCM column, Additive RUV row (Eq. 9; Methods 2.3) |
 | Bioavailability F | 1 (fixed) | Methods 2.3 (allometry fixed-to-theory paragraph) |
 | Reference subject | 70 kg, CYP3A5 PM, MAC | Section 3.2 (“a 70 kg CYP3A5 PM subject receiving MAC”) |
@@ -365,10 +365,10 @@ knitr::kable(nca_summary,
 
 | start | end | subgroup | N | auclast | cmax | cmin | tmax | ctrough |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | IM or NM, MAC | 100 | 41.2 \[52.5\] | 6.33 \[39.9\] | 1.56 \[94.1\] | 2.00 \[0.500, 3.00\] | 1.60 \[94.8\] |
-| 0 | 12 | IM or NM, RIC | 100 | 61.0 \[44.4\] | 8.18 \[36.5\] | 2.78 \[70.3\] | 2.00 \[0.500, 4.00\] | 2.89 \[71.1\] |
-| 0 | 12 | PM, MAC | 100 | 75.6 \[42.4\] | 9.56 \[36.0\] | 3.77 \[62.0\] | 2.00 \[1.00, 3.00\] | 3.94 \[62.5\] |
-| 0 | 12 | PM, RIC | 100 | 99.8 \[42.4\] | 11.7 \[37.2\] | 5.44 \[61.1\] | 2.00 \[0.500, 4.00\] | 5.75 \[61.0\] |
+| 0 | 12 | IM or NM, MAC | 100 | 41.2 \[52.7\] | 6.33 \[39.8\] | 1.56 \[94.4\] | 2.00 \[0.500, 3.00\] | 1.60 \[95.1\] |
+| 0 | 12 | IM or NM, RIC | 100 | 61.0 \[44.5\] | 8.18 \[36.5\] | 2.78 \[70.5\] | 2.00 \[0.500, 4.00\] | 2.89 \[71.3\] |
+| 0 | 12 | PM, MAC | 100 | 75.7 \[42.5\] | 9.56 \[35.9\] | 3.77 \[62.2\] | 2.00 \[1.00, 3.00\] | 3.93 \[62.7\] |
+| 0 | 12 | PM, RIC | 100 | 99.8 \[42.5\] | 11.7 \[37.1\] | 5.44 \[61.2\] | 2.00 \[0.500, 4.00\] | 5.75 \[61.2\] |
 
 D0 dosing-interval NCA on the simulated cohort under the UNCMC
 institutional protocol (12 h interval). {.table}
@@ -407,10 +407,10 @@ cmax_summary |>
 
 | Sub-group | Simulated D0 Cmax median (ng/mL) | Simulated D0 Cmax 95th percentile (ng/mL) |
 |:---|---:|---:|
-| IM or NM, MAC | 6.40 | 11.82 |
-| IM or NM, RIC | 8.08 | 14.86 |
-| PM, MAC | 9.84 | 15.63 |
-| PM, RIC | 11.70 | 20.46 |
+| IM or NM, MAC | 6.40 | 11.79 |
+| IM or NM, RIC | 8.09 | 14.84 |
+| PM, MAC | 9.83 | 15.60 |
+| PM, RIC | 11.71 | 20.46 |
 
 Per-sub-group D0 Cmax distribution under the UNCMC protocol; compare
 against the Dunlap 2025 Methods 2.6 safety constraint of 24.2 ng/mL.

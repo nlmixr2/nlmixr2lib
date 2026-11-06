@@ -111,9 +111,9 @@ collects them in one place.
 | `e_assay_osa_f` | -0.390 | Abrantes 2017 Table 2: Activity bias = -39.0% if OSA |
 | `e_assay_osa_local_f` | -0.146 | Abrantes 2017 Table 2: Activity bias = -14.6% if OSA local |
 | `e_assay_osa_propsd` | 0.403 | Abrantes 2017 Table 2: Assay on residual error = +40.3% if OSA |
-| `etalcl` (IIV CL, omega^2) | log(1 + 0.305^2) = 0.08894 | Abrantes 2017 Table 2: IIV CL = 30.5% CV |
+| `etalcl` (IIV CL, omega^2) | log(1 + 0.305^2) = 0.08895 | Abrantes 2017 Table 2: IIV CL = 30.5% CV |
 | `etalfdepot` (IIV F, omega^2) | log(1 + 0.130^2) = 0.01676 | Abrantes 2017 Table 2: IIV F = 13.0% CV |
-| `etalrbase` (IIV endogenous, omega^2) | log(1 + 0.0719^2) = 0.005154 | Abrantes 2017 Table 2: IIV endogenous FVIII = 7.19% CV |
+| `etalrbase` (IIV endogenous, omega^2) | log(1 + 0.0719^2) = 0.005156 | Abrantes 2017 Table 2: IIV endogenous FVIII = 7.19% CV |
 | `propSd` (proportional, CSA reference) | 0.192 | Abrantes 2017 Table 2: Proportional residual error = 19.2% CV |
 | Reference WT | 70 kg | Abrantes 2017 Table 2 footnotes b-e |
 | Reference AGE | 20 years | Abrantes 2017 Table 2 footnote b |
@@ -414,10 +414,10 @@ knitr::kable(
 
 | Interval Start | Interval End | cohort | N | Cmax (IU/dL) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*IU/dL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | Black race | 100 | 145 \[17.9\] | 0.000 \[0.000, 0.000\] | 10.6 \[3.23\] | 1230 \[33.7\] |
-| 0 | Inf | High age (57 y) | 100 | 140 \[15.7\] | 0.000 \[0.000, 0.000\] | 11.7 \[3.25\] | 1660 \[33.0\] |
-| 0 | Inf | Inhibitor positive | 100 | 144 \[16.9\] | 0.000 \[0.000, 0.000\] | 5.20 \[3.07\] | 487 \[33.8\] |
-| 0 | Inf | Reference (20y, 70kg, INH-, non-Black) | 100 | 143 \[16.3\] | 0.000 \[0.000, 0.000\] | 9.39 \[2.92\] | 1330 \[34.1\] |
+| 0 | Inf | Black race | 100 | 145 \[17.9\] | 0.000 \[0.000, 0.000\] | 10.6 \[3.20\] | 1230 \[33.7\] |
+| 0 | Inf | High age (57 y) | 100 | 140 \[15.7\] | 0.000 \[0.000, 0.000\] | 11.7 \[3.24\] | 1660 \[33.0\] |
+| 0 | Inf | Inhibitor positive | 100 | 144 \[16.9\] | 0.000 \[0.000, 0.000\] | 4.64 \[1.83\], n=99 | 486 \[33.9\], n=99 |
+| 0 | Inf | Reference (20y, 70kg, INH-, non-Black) | 100 | 143 \[16.3\] | 0.000 \[0.000, 0.000\] | 9.30 \[3.01\] | 1330 \[34.1\] |
 
 Simulated single-dose NCA parameters by covariate cohort, drug-derived
 FVIII activity (Cc - rbase). {.table}

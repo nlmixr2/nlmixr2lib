@@ -74,8 +74,8 @@ This vignette table collects them in one place for review.
 | Dose = mg/kg \* TBW | n/a | Methods (Pharmacokinetic Model Development): “The gentamicin dosage was calculated based on total body weight”. |
 | `lcl` (log CL) | log(4.70 L/h) | Results (paragraph 1): pooled acute-phase CL = 4.70 +/- 2.89 L/h across 21 studies. |
 | `lvc` (log Vd per kg) | log(0.33 L/kg) | Results (paragraph 1): pooled acute-phase Vd = 0.33 +/- 0.20 L/kg across 21 studies. |
-| `etalcl` (IIV on CL, log-scale variance) | log((2.89/4.70)^2 + 1) = 0.31989 | Results (paragraph 1): pooled CL SD 2.89 L/h; log-normal omega^2 = log(CV^2 + 1) conversion for nlmixr2 encoding. |
-| `etalvc` (IIV on Vd, log-scale variance) | log((0.20/0.33)^2 + 1) = 0.31278 | Results (paragraph 1): pooled Vd SD 0.20 L/kg; log-normal omega^2 = log(CV^2 + 1) conversion. |
+| `etalcl` (IIV on CL, log-scale variance) | log((2.89/4.70)^2 + 1) = 0.32070 | Results (paragraph 1): pooled CL SD 2.89 L/h; log-normal omega^2 = log(CV^2 + 1) conversion for nlmixr2 encoding. |
+| `etalvc` (IIV on Vd, log-scale variance) | log((0.20/0.33)^2 + 1) = 0.31284 | Results (paragraph 1): pooled Vd SD 0.20 L/kg; log-normal omega^2 = log(CV^2 + 1) conversion. |
 | `propSd` (proportional residual error) | fixed at 0 | Methods (no RUV; MCS is deterministic given sampled PK parameters). |
 | TBW distribution | Mean 70.8 kg, SD 19.9 kg, truncated at 40 kg | Methods (Monte Carlo Simulations): “total body weight (kg) was set at the range 40 to infinity in MCS analysis”; Results: “Total body weight (70.8 +/- 19.9 kg) was used as dosing weight”. |
 | Dose range 5-10 mg/kg once daily | n/a | Methods (Monte Carlo Simulations): “various doses regimen ranging from 5-10 mg/kg once-daily gentamicin”. |
@@ -757,7 +757,7 @@ sessionInfo()
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
 #> [28] pkgdown_2.2.1       crayon_1.5.3        jquerylib_0.1.4    
-#> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
+#> [31] whisker_0.4.1       openssl_2.5.0       cachem_1.1.0       
 #> [34] nlme_3.1-171        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
 #> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.2         

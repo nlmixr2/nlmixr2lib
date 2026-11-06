@@ -58,8 +58,8 @@ The table below collects them in one place for review.
 | `e_wt_vc` (fixed at 1.00) | 1.00 | Methods “Model building” and Table 3 (theoretical allometric exponent, fixed) |
 | `e_ufh_cl` (linear-additive slope) | 0.129 | Table 3 & Table 4 UFH row: 0.129 dL/h per (UFH/173) unit (RSE 15.5%) |
 | `e_at_bl_vc` (power exponent on VD) | -0.389 | Table 3 & Table 4 BASE row: -0.389 (RSE 37.5%) |
-| `etalcl ~ 0.20353` (IIV variance) | 47.5% CV | Table 4 omega1: 47.5% CV (RSE 26.5%); variance = log(0.475^2 + 1) |
-| `etalvc ~ 0.07649` (IIV variance) | 28.2% CV | Table 4 omega2: 28.2% CV (RSE 31.2%); variance = log(0.282^2 + 1) |
+| `etalcl ~ 0.20345` (IIV variance) | 47.5% CV | Table 4 omega1: 47.5% CV (RSE 26.5%); variance = log(0.475^2 + 1) |
+| `etalvc ~ 0.07652` (IIV variance) | 28.2% CV | Table 4 omega2: 28.2% CV (RSE 31.2%); variance = log(0.282^2 + 1) |
 | `expSd <- 0.11056` (log-scale SD) | 11.1% CV | Table 4 exponential-error: 11.1% CV (RSE 26.9%); expSd = sqrt(log(0.111^2 + 1)) |
 | `tvcl = exp(lcl)*(WT/70)^0.75 + e_ufh_cl*(UFH/173)` | n/a | Table 3 final-model CL equation (additive weight + UFH structure) |
 | `tvvc = exp(lvc)*(WT/70)^1*(BASE/60)^-0.389` | n/a | Table 3 final-model VD equation (multiplicative weight \* BASE power) |

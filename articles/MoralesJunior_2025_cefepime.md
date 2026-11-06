@@ -92,7 +92,7 @@ below collects them in one place.
 | `vp <- exp(lvp) * (WT/70)` | n/a | Table 2, `V2 = V2_pop x (WT/70)` |
 | `lvp` | `log(8.91)` | Table 2, “V2 (L/70kg)” = 8.91 (RSE 21%; bootstrap 6.55-12.98) |
 | `etalcl ~ 0.1355452` | 38.1% CV | Table 2, “IIV CL” = 38.1% (shrinkage 4.2%); converted with the Table 2 footnote transform `omega^2 = log(1 + (CV/100)^2)` |
-| `etalvc ~ 0.0219582` | 14.9% CV | Table 2, “IIV V1” = 14.9% (shrinkage 74.5%); same transform |
+| `etalvc ~ 0.0219581` | 14.9% CV | Table 2, “IIV V1” = 14.9% (shrinkage 74.5%); same transform |
 | IIV on Q and V2 | absent | Sect. 3.2: “The data did not support the inclusion of random effects on intercompartmental clearance and peripheral volume of distribution” |
 | `propSd` | `0.319` | Table 2, “Error model parameter: proportional only”, row `b` = 31.9% (RSE 2%; bootstrap 27.4-35.7%) |
 | Two-compartment structure, first-order elimination | n/a | Sect. 3.2, first paragraph |
@@ -253,7 +253,7 @@ iiv |>
 | Parameter | Published CV (%) |   omega^2 | Model CV (%) |
 |:----------|-----------------:|----------:|-------------:|
 | CL        |             38.1 | 0.1355452 |         38.1 |
-| V1        |             14.9 | 0.0219582 |         14.9 |
+| V1        |             14.9 | 0.0219581 |         14.9 |
 
 IIV round-trip through the Morales Junior 2025 Table 2 footnote
 transform. {.table}

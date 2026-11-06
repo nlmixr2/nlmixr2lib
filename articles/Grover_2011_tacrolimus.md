@@ -53,11 +53,11 @@ comment. The table below collects the entries in one place.
 | `lvc` (V/F, central) | 73.3 L | Table 2, NONMEM Parameter Estimates row, V/F column |
 | `lq` (Q/F) | 27.1 L/h | Table 2, NONMEM Parameter Estimates row, Q/F column |
 | `lvp` (Vp/F, peripheral; fixed) | 388.7 L = 462 - 73.3 | Table 2, NONMEM Parameter Estimates row, Vss/F = 462 L minus V/F = 73.3 L (Vp/F derived) |
-| IIV ka (omega^2 = log(0.460^2 + 1) = 0.19196) | 46.0% CV | Table 2, Interindividual variability row, ka column |
-| IIV tlag (omega^2 = 0.01754) | 13.3% CV | Table 2, Interindividual variability row, tlag column |
-| IIV CL/F (omega^2 = 0.17326) | 43.5% CV | Table 2, Interindividual variability row, CL/F column |
-| IIV V/F (omega^2 = 0.12772) | 36.9% CV | Table 2, Interindividual variability row, V/F column |
-| IIV Q/F (omega^2 = 0.22641) | 50.4% CV | Table 2, Interindividual variability row, Q/F column |
+| IIV ka (omega^2 = log(0.460^2 + 1) = 0.19194) | 46.0% CV | Table 2, Interindividual variability row, ka column |
+| IIV tlag (omega^2 = 0.01753) | 13.3% CV | Table 2, Interindividual variability row, tlag column |
+| IIV CL/F (omega^2 = 0.17330) | 43.5% CV | Table 2, Interindividual variability row, CL/F column |
+| IIV V/F (omega^2 = 0.12766) | 36.9% CV | Table 2, Interindividual variability row, V/F column |
+| IIV Q/F (omega^2 = 0.22635) | 50.4% CV | Table 2, Interindividual variability row, Q/F column |
 | IIV Vss/F | n.e. (not estimable) | Table 2, Interindividual variability row, Vss/F column (“n.e.”) |
 | Proportional residual error | 1% (placeholder; FIXED) | Not reported in Grover 2011; see Assumptions and deviations |
 | Bioavailability F | 1 (folded into apparent CL/V/Q) | Apparent parameter convention; F was not separately estimated |

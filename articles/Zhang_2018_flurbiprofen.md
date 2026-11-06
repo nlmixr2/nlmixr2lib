@@ -121,7 +121,7 @@ The table below collects them for review.
 | `lkeo` (Ke / ke0) | `log(0.0015)` 1/h | Table 2 final model: theta_Ke = 0.0015 /h |
 | `e_wt_keo` | -0.0080 (1/kg) | Table 2 final model: theta_weight = -0.0080 |
 | `e_ht_keo` | -0.0162 (1/cm) | Table 2 final model: theta_height = -0.0162 |
-| `etalcl` IIV variance | 0.5217 | omega_CL = 82.75% (Table 2) -\> omega^2 = log(1 + 0.8275^2) |
+| `etalcl` IIV variance | 0.5216 | omega_CL = 82.75% (Table 2) -\> omega^2 = log(1 + 0.8275^2) |
 | `etalvc` IIV variance | 0.00789 | omega_Vd = 8.90% (Table 2) -\> omega^2 = log(1 + 0.089^2) |
 | `etalkeo` IIV variance | 0.000484 | omega_Ke = 2.20% (Table 2) -\> omega^2 = log(1 + 0.022^2) |
 | `addSd` (plasma residual) | 0.0023 mg/L | Table 2 final model: sigma = 0.0023 mg/L |
@@ -505,7 +505,7 @@ knitr::kable(
 | Quantity | Zhang 2018 / literature | Simulated median (5-95%) |
 |:---|:---|:---|
 | Plasma Cmax (mg/L) | ~8.5 (Zhang Table 1: 8.30 +/- 2.85 observed) | 8.46 (6.14-11.21) |
-| AUCinf (mg\*h/L) | ~34 (= 67.47 mg / 1.55 L/h \* 0.78 over 0-1 h is preliminary) | 43.11 (12.74-170.31) |
+| AUCinf (mg\*h/L) | ~34 (= 67.47 mg / 1.55 L/h \* 0.78 over 0-1 h is preliminary) | 43.11 (12.74-170.29) |
 | Plasma t1/2 (h) | 3.54 (= ln2 \* 7.91 / 1.55) | 3.53 (1.06-12.20) |
 | Derived CL (L/h) | 1.55 (Zhang); 1.52 Suri; 1.89 Qayyum; 1.47 Galasko | 1.53 (0.43-5.10) |
 | Derived Vd (L) | 7.91 (Zhang); 6.00 Suri; 12.07 Qayyum | 7.98 (6.97-9.07) |

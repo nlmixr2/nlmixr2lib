@@ -55,7 +55,7 @@ The table below collects them in one place for review.
 | `IC50` (`lic50 = log(0.5)`) | 0.5 ng/mL | Weber 1993 Results p. 552, paragraph 5 |
 | `hill` (`lhill = fixed(log(1))`) | 1 (fixed) | Weber 1993 Results p. 552 (‘Hill coefficient set to 1’) |
 | `etalimax ~ 0.005461` | omega^2 = log(1 + 0.074^2); IIV CV = 7.4% | Weber 1993 Results p. 552 |
-| `etalic50 ~ 0.802923` | omega^2 = log(1 + 1.110^2); IIV CV = 111% | Weber 1993 Results p. 552 |
+| `etalic50 ~ 0.802943` | omega^2 = log(1 + 1.110^2); IIV CV = 111% | Weber 1993 Results p. 552 |
 | `propSd = 0.30` | 30% proportional CV (placeholder) | Not reported in Weber 1993 – see Assumptions and deviations |
 | Hill equation `APR = Imax * Cp^hill / (IC50^hill + Cp^hill)` | n/a | Weber 1993 Methods, ‘Concentration-effect modelling’ (unnumbered equation between equations 1 and 2) |
 | APR (= net inhibition of PRA) definition | n/a | Weber 1993 Methods, ‘Concentration-effect modelling’ (unnumbered equation 1) |

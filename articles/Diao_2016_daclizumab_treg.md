@@ -65,12 +65,12 @@ The typical baseline Treg percentage among CD4+ T cells is 12.1% (Diao
 |----|----|----|
 | PK backbone (`lka`, `lcl`, `lvc`, `lvp`, `lq`, `lfdepot`, `lalag`, `e_wt_cl_q`, `e_wt_vc_vp`, `e_dose_50mg_f`, PK IIV, `propSd`, `addSd`) | Othman 2014 Table 2 values | inherited from `Othman_2014_daclizumab.R` |
 | `ltregE0` (typical baseline Treg) | 12.1 % of CD4+ T cells | Diao 2016 Table 5 |
-| `etaltregE0` (E0 IIV) | omega^2 0.16127 (CV 42%) | Diao 2016 Table 5 |
+| `etaltregE0` (E0 IIV) | omega^2 0.16246 (CV 42%) | Diao 2016 Table 5 |
 | `ltregIC50` (IC50) | 3.97 mg/L | Diao 2016 Table 5 |
-| `etaltregIC50` (IC50 IIV) | omega^2 0.34744 (CV 65%) | Diao 2016 Table 5 |
+| `etaltregIC50` (IC50 IIV) | omega^2 0.35242 (CV 65%) | Diao 2016 Table 5 |
 | `treggamma` (Hill coefficient, fixed structurally) | 2 (unitless) | Diao 2016 Table 5 (no SE / CI labelled) |
 | `ltregEmax` (max fractional reduction) | 0.610 | Diao 2016 Table 5 |
-| `etaltregEmax` (Emax IIV) | omega^2 0.01431 (CV 12%) | Diao 2016 Table 5 |
+| `etaltregEmax` (Emax IIV) | omega^2 0.01430 (CV 12%) | Diao 2016 Table 5 |
 | `propSd_treg` (proportional residual error) | 0.501 (CV 50.1%) | Diao 2016 Table 5 |
 | `addSd_treg` (additive residual error) | 0.416 percentage points | Diao 2016 Table 5 |
 | Equation 3: `Treg = E0 * (1 - Emax * Cc^gamma / (Cc^gamma + IC50^gamma))` | n/a | Diao 2016 Equation (3) |

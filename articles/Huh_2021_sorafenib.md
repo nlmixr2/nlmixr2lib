@@ -70,9 +70,9 @@ arm). The same information is available from
 | `ltgb2` (Tgb2) | 12.2 h | Table 2 |
 | `hill` | 40, fixed | Results 3.3, “The slope of the sigmoid function was set to 40” |
 | `e_form_syo1644_fdepot` | log(1.62) | Table 2, relative bioavailability (SYO-1644 to Nexavar) |
-| `etalka` | 0.5636 | Table 2, IIV ka 87.3 %CV, omega^2 = log(1 + CV^2) |
-| `etalcl` | 0.06589 | Table 2, IIV CL 26.1 %CV; Results 3.3 text gives the variance 6.6% |
-| `etalvc` | 0.04517 | Table 2, IIV V 21.5 %CV; Results 3.3 text gives the variance 4.5% |
+| `etalka` | 0.5665 | Table 2, IIV ka 87.3 %CV, omega^2 = log(1 + CV^2) |
+| `etalcl` | 0.06590 | Table 2, IIV CL 26.1 %CV; Results 3.3 text gives the variance 6.6% |
+| `etalvc` | 0.04519 | Table 2, IIV V 21.5 %CV; Results 3.3 text gives the variance 4.5% |
 | `etaiov_cl_1`, `etaiov_cl_2` | 0.008067 | Table 2, IOV CL 9.0 %CV (text: 8.9%); one occasion per study period |
 | `propSd` | 0.376 | Table 2, proportional residual error 37.6 %CV |
 | Transit input to the absorption compartment | Savic closed form | Results 3.3 and Figure 3 |
@@ -427,8 +427,8 @@ knitr::kable(cmp, caption = "Simulated vs. published NCA (Huh 2021 Table 1). * d
 | AUClast (h\*ng/mL) | SYO-1644 200 mg | 105000    | 118000    | +11.8%   |
 | AUClast (h\*ng/mL) | Nexavar 200 mg  | 73700     | 69500     | -5.8%    |
 | t½ (h)             | SYO-1644 100 mg | 20.9      | 25.7      | +22.8%\* |
-| t½ (h)             | SYO-1644 150 mg | 24.7      | 25.9      | +4.9%    |
-| t½ (h)             | SYO-1644 200 mg | 24.4      | 26.1      | +7.1%    |
+| t½ (h)             | SYO-1644 150 mg | 24.7      | 25.9      | +5.0%    |
+| t½ (h)             | SYO-1644 200 mg | 24.4      | 26.1      | +7.2%    |
 | t½ (h)             | Nexavar 200 mg  | 22.2      | 26.5      | +19.4%   |
 
 Simulated vs. published NCA (Huh 2021 Table 1). \* differs from the
@@ -573,7 +573,7 @@ cv_cmax <- mean(be$cv_intra[be$parameter == "cmax"])
 cv_auc <- mean(be$cv_intra[be$parameter == "auclast"])
 c(cmax = cv_cmax, auclast = cv_auc)
 #>     cmax  auclast 
-#> 21.68103 16.02065
+#> 21.67578 16.02012
 stopifnot(abs(cv_cmax - 22.0) < 8, abs(cv_auc - 15.7) < 7)
 ```
 

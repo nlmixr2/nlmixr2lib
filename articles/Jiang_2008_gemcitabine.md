@@ -68,8 +68,8 @@ The table below collects them in one place for review.
 | `etalcl` | omega^2 = 0.0918 | Table 3 BSV CL_gem 31% CV -\> log(1 + 0.31^2) |
 | `etalvc` | omega^2 = 0.1417 | Table 3 BSV V_C,gem 39% CV -\> log(1 + 0.39^2) |
 | `etalq` | omega^2 = 0.1770 | Table 3 BSV Q_gem 44% CV -\> log(1 + 0.44^2) |
-| `etalvp` | omega^2 = 0.3434 | Table 3 BSV V_P,gem 64% CV -\> log(1 + 0.64^2) |
-| `etalcl_dfdu` | omega^2 = 0.1155 | Table 3 BSV CL_dFdU/F 35% CV -\> log(1 + 0.35^2) |
+| `etalvp` | omega^2 = 0.3433 | Table 3 BSV V_P,gem 64% CV -\> log(1 + 0.64^2) |
+| `etalcl_dfdu` | omega^2 = 0.1156 | Table 3 BSV CL_dFdU/F 35% CV -\> log(1 + 0.35^2) |
 | `etalvc_dfdu` | omega^2 = 0.0223 | Table 3 BSV V_C,dFdU/F 15% CV -\> log(1 + 0.15^2) |
 | `etalq_dfdu` | omega^2 = 0.0808 | Table 3 BSV Q_dFdU/F 29% CV -\> log(1 + 0.29^2) |
 | `etalvp_dfdu` | omega^2 = 0.1349 | Table 3 BSV V_P,dFdU/F 38% CV -\> log(1 + 0.38^2) |
@@ -3890,21 +3890,6 @@ gem_nca <- PKNCA::pk.nca(
 #> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
 #> concentrations found
 #> Warning in log(conc.2/conc.1): NaNs produced
-#> Warning in assert_conc(conc = conc): Negative concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(data$conc): NaNs produced
-#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
-#> concentrations found
-#> Warning in log(conc.2/conc.1): NaNs produced
 ```
 
 ``` r
@@ -3969,9 +3954,9 @@ knitr::kable(
 
 | treatment   | median_CL_app |
 |:------------|--------------:|
-| gem alone   |      2.730152 |
-| gem-then-ox |      2.327538 |
-| ox-then-gem |      2.425502 |
+| gem alone   |      2.619467 |
+| gem-then-ox |      2.257036 |
+| ox-then-gem |      2.404152 |
 
 Apparent gemcitabine clearance (= dose / AUCinf.obs) by regimen.
 Expected: CL_gem ~ 2.7 L/min (Jiang 2008 Table 3). {.table}

@@ -79,9 +79,9 @@ The table below collects them in one place for review.
 | omega^2_CL | 0.0630 | Table 2, IIV CL/F 25.5 percent CV |
 | omega^2_V1 | 0.0507 | Table 2, IIV V1/F 22.8 percent CV |
 | omega^2_V2 | 0.1416 | Table 2, IIV V2/F 39.0 percent CV |
-| omega^2_V3 | 0.0879 | Table 2, IIV V3/F 30.3 percent CV |
-| omega^2_Ka | 0.2624 | Table 2, IIV Ka 54.8 percent CV |
-| omega^2_D1 | 0.4626 | Table 2, IIV D1 76.7 percent CV |
+| omega^2_V3 | 0.0878 | Table 2, IIV V3/F 30.3 percent CV |
+| omega^2_Ka | 0.2626 | Table 2, IIV Ka 54.8 percent CV |
+| omega^2_D1 | 0.4627 | Table 2, IIV D1 76.7 percent CV |
 | omega^2_F1 | 0.0873 | Table 2, IIV F1 30.2 percent CV |
 | propSd | 0.333 | Table 2, proportional residual error in patient studies |
 | addSd | 7.19 ng/mL | Table 2, additive residual error for TAD \< 2 h |
@@ -721,12 +721,12 @@ knitr::kable(nca_tbl, digits = 2,
 
 | treatment | AUCss (ng\*h/mL) | Cmax,ss (ng/mL) | Ctrough,ss (ng/mL) | Tmax,ss (h) |
 |:----------|-----------------:|----------------:|-------------------:|------------:|
-| 14 mg QD  |               NA |          242.27 |              27.52 |        1.50 |
+| 14 mg QD  |               NA |          242.26 |              27.52 |        1.50 |
 | 20 mg QD  |               NA |          344.48 |              43.36 |        1.47 |
 | 24 mg QD  |               NA |          432.51 |              58.62 |        1.53 |
-| 32 mg QD  |               NA |          542.62 |              68.56 |        1.51 |
+| 32 mg QD  |               NA |          542.61 |              68.56 |        1.51 |
 | 4 mg QD   |               NA |           66.83 |               8.93 |        1.50 |
-| 8 mg QD   |               NA |          135.58 |              16.73 |        1.48 |
+| 8 mg QD   |               NA |          135.57 |              16.73 |        1.48 |
 
 Simulated steady-state NCA, dose-ranging virtual cohort (75 kg tablet,
 normal labs). {.table}

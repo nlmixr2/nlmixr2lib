@@ -308,7 +308,7 @@ knitr::kable(
 
 | NCA parameter | cohort | Reference | Simulated | % diff |
 |:--------------|:-------|----------:|----------:|-------:|
-| t½ (h)        | AUC6   |       4.4 |       4.7 |  +6.8% |
+| t½ (h)        | AUC6   |       4.4 |       4.7 |  +6.7% |
 
 Simulated cohort NCA vs Zandvliet 2008 typical-patient terminal
 half-life. Stars mark any row where simulated and reference differ by \>

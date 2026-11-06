@@ -82,6 +82,19 @@ collects them in one place for review.
 | `propSd` (proportional residual error, fraction) | 0.275 | Table 2, “Proportional (%)” row, Final model |
 | `addSd` (additive residual error, mg/L) | 0.04 | Table 2, “Additive (mg/liter)” row, Final model |
 
+## Errata
+
+- **The published CVs are first-order approximations.** The Methods
+  (after Eq. 1) give each parameter “a variance of omega^2 BSV_P, where
+  the square root of the variance represents the reported BSV”. Each
+  printed BSV is therefore the standard deviation of the corresponding
+  random effect, and the model’s variances are the squares of the
+  printed CVs (for example `etalvp ~ 0.624^2` for the 62.4% BSV on V2),
+  not the exact log-normal conversion `log(1 + CV^2)`; the CL-V1
+  covariance is `0.692 * 0.160 * 0.215` on the same scale. The
+  difference is largest for V2: 0.624^2 = 0.389, against 0.329 from the
+  log-normal conversion.
+
 ## Virtual cohort
 
 The original individual-level data are not publicly available. The
@@ -338,9 +351,9 @@ knitr::kable(nca_summary,
 
 | cohort | median_auclast | median_cmax | median_half.life | median_tmax | P05_auclast | P05_cmax | P05_half.life | P05_tmax | P95_auclast | P95_cmax | P95_half.life | P95_tmax |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 0.2-2 y, 7.5 mg/kg | 57.39 | 23.81 | 7.86 | 0.5 | 37.89 | 15.56 | 3.63 | 0.5 | 94.94 | 34.59 | 16.87 | 0.5 |
-| 10-18.2 y, 6 mg/kg | 82.71 | 27.66 | 7.57 | 0.5 | 52.76 | 18.91 | 2.73 | 0.5 | 125.97 | 45.51 | 17.17 | 0.5 |
-| 2-10 y, 7.5 mg/kg | 66.88 | 26.62 | 9.37 | 0.5 | 44.27 | 17.60 | 3.12 | 0.5 | 101.34 | 39.29 | 18.84 | 0.5 |
+| 0.2-2 y, 7.5 mg/kg | 57.32 | 23.81 | 7.84 | 0.5 | 37.87 | 15.50 | 3.25 | 0.5 | 95.00 | 34.68 | 17.36 | 0.5 |
+| 10-18.2 y, 6 mg/kg | 82.72 | 27.62 | 7.29 | 0.5 | 52.67 | 18.87 | 2.66 | 0.5 | 126.13 | 45.63 | 17.65 | 0.5 |
+| 2-10 y, 7.5 mg/kg | 66.78 | 26.62 | 9.38 | 0.5 | 44.23 | 17.57 | 3.03 | 0.5 | 101.49 | 39.46 | 19.78 | 0.5 |
 
 Simulated NCA by age / dose stratum (median and 5/95th percentiles).
 {.table}

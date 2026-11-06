@@ -274,7 +274,7 @@ knitr::kable(nca_summary,
 
 | start | end | stratum | N | auclast | cmax | tmax | half.life | aucinf.obs |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | eoPE | 200 | 852 \[19.2\] | 80.4 \[36.1\] | 0.750 \[0.250, 2.50\] | . | . |
+| 0 | 24 | eoPE | 200 | 852 \[19.2\] | 80.4 \[36.0\] | 0.750 \[0.250, 2.50\] | . | . |
 | 0 | 48 | eoPE | 200 | 1890 \[18.3\] | 91.8 \[24.8\] | 25.0 \[0.250, 26.0\] | 13.0 \[6.15\] | 2300 \[20.2\] |
 | 0 | 24 | w/o eoPE | 200 | 625 \[17.6\] | 76.0 \[32.9\] | 0.750 \[0.250, 1.50\] | . | . |
 | 0 | 48 | w/o eoPE | 200 | 1300 \[18.8\] | 81.2 \[26.1\] | 25.0 \[0.250, 26.0\] | 8.22 \[2.63\] | 1420 \[21.8\] |
@@ -357,7 +357,7 @@ AUC0-inf vs (Dose / CL) ratio raises.
   conversion formula. The model file interprets these as approximate CV%
   on the natural (linear) parameter scale and converts to log-scale
   variance via the exact log-normal relation `omega^2 = log(1 + CV^2)`,
-  giving `etalcl ~ 0.0444` (= log(1 + 0.213^2)) and `etalvc ~ 0.5887` (=
+  giving `etalcl ~ 0.0444` (= log(1 + 0.213^2)) and `etalvc ~ 0.5884` (=
   log(1 + 0.895^2)). The alternative reading – treating the printed %
   values as `sqrt(omega^2) * 100` directly – would give
   `etalcl ~ 0.0454` and `etalvc ~ 0.801`. The difference is negligible

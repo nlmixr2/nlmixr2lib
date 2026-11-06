@@ -58,9 +58,9 @@ comment. The table below collects the entries in one place.
 | `e_wt_cl` (allometric exponent on CL/F) | 0.75 (fixed) | Methods, Covariate analysis paragraph 1 |
 | `e_wt_vc` (allometric exponent on V/F) | 1.0 (fixed) | Methods, Covariate analysis paragraph 1 |
 | `e_cyp3a5_expr_cl` (theta_3) | 1.60 | Table 2, theta_3 row of CL/F |
-| IIV ka (omega^2 = log(1 + 0.791^2) = 0.48581) | 79.1% CV | Table 2, IIV ka row |
-| IIV V/F (omega^2 = log(1 + 0.994^2) = 0.68714) | 99.4% CV | Table 2, IIV V/F row |
-| IIV CL/F (omega^2 = log(1 + 0.438^2) = 0.17555) | 43.8% CV | Table 2, IIV CL/F row |
+| IIV ka (omega^2 = log(1 + 0.791^2) = 0.48593) | 79.1% CV | Table 2, IIV ka row |
+| IIV V/F (omega^2 = log(1 + 0.994^2) = 0.68715) | 99.4% CV | Table 2, IIV V/F row |
+| IIV CL/F (omega^2 = log(1 + 0.438^2) = 0.17550) | 43.8% CV | Table 2, IIV CL/F row |
 | Proportional residual error | 25.9% | Table 2, Residual variability row |
 | Covariate equation for CL/F_i | – | Table 2 footnote (“CL/F = theta_2 \* (bodyweight/70)^0.75 \* F_CYP3A5”) |
 | Covariate equation for V/F_i | – | Table 2 footnote (“V/F = theta_1 \* (bodyweight/70)”) |
@@ -278,7 +278,7 @@ knitr::kable(nca_summary,
 
 | start | end | cohort | N | auclast | cmax | cmin | tmax | ctrough |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 12 | \*1 carrier | 200 | 61.3 \[45.1\] | 10.3 \[49.9\] | 1.29 \[819\] | 0.500 \[0.500, 2.00\] | 1.30 \[822\] |
+| 0 | 12 | \*1 carrier | 200 | 61.3 \[45.1\] | 10.3 \[49.9\] | 1.29 \[819\] | 0.500 \[0.500, 2.00\] | 1.30 \[821\] |
 | 0 | 12 | *3/*3 (nonexpresser) | 200 | 91.5 \[43.8\] | 13.3 \[44.1\] | 2.82 \[251\] | 0.500 \[0.500, 2.00\] | 2.84 \[253\] |
 
 Steady-state 12-hour NCA on the simulated cohort (0.05 mg/kg twice

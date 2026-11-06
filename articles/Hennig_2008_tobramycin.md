@@ -61,8 +61,8 @@ The table below collects them in one place for review.
 | `llag` (log infusion lag) | log(0.40) | Hennig 2008 Table 2, tlag, Covariate model column |
 | `ldur` (log infusion duration, fixed) | log(0.5) | Hennig 2008 Table 2, D2 (fixed); Methods page 503 |
 | BSV CL (full block element) | 11.70% CV -\> omega^2 = 0.013596 | Hennig 2008 Table 2, Random parameters |
-| BSV Vc (full block element) | 11.66% CV -\> omega^2 = 0.013505 | Hennig 2008 Table 2, Random parameters |
-| BSV Vper (full block element) | 41.95% CV -\> omega^2 = 0.162130 | Hennig 2008 Table 2, Random parameters |
+| BSV Vc (full block element) | 11.66% CV -\> omega^2 = 0.013504 | Hennig 2008 Table 2, Random parameters |
+| BSV Vper (full block element) | 41.95% CV -\> omega^2 = 0.162102 | Hennig 2008 Table 2, Random parameters |
 | Cor(CL, Vc) | 0.73 | Hennig 2008 Table 2, Correlations between BSVs |
 | Cor(CL, Vper) | 0.49 | Hennig 2008 Table 2, Correlations between BSVs |
 | Cor(Vc, Vper) | 0.27 | Hennig 2008 Table 2, Correlations between BSVs |

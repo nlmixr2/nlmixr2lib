@@ -61,9 +61,9 @@ below collects the references for review.
 | kM (Michaelis constant) | 0.35 ug/mL (= 0.35 mg/L) | Table 2 |
 | V3\* = V_prostate / fu_prostate | 0.05 L | Table 2 |
 | Inter-individual variance omega^2(V1) | 21.0 %CV -\> log(1 + 0.210^2) = 0.04316 | Table 2 |
-| omega^2(CL) | 36.7 %CV -\> 0.12640 | Table 2 |
-| omega^2(Vmax) | 41.6 %CV -\> 0.15967 | Table 2 |
-| omega^2(kM) | 76.0 %CV -\> 0.45593 | Table 2 |
+| omega^2(CL) | 36.7 %CV -\> 0.12636 | Table 2 |
+| omega^2(Vmax) | 41.6 %CV -\> 0.15961 | Table 2 |
+| omega^2(kM) | 76.0 %CV -\> 0.45590 | Table 2 |
 | Plasma residual: proportional | 10.2 %CV -\> propSd = 0.102 | Table 2 |
 | Plasma residual: additive | 0.085 ug/mL -\> addSd = 0.085 | Table 2 |
 | Tissue residual: proportional | 15.2 %CV -\> propSd_Cprostate = 0.152 | Table 2 |
@@ -515,12 +515,12 @@ knitr::kable(
 )
 ```
 
-| PPTESTCD   | median_value | sd_value |
-|:-----------|-------------:|---------:|
-| aucinf.obs |           NA |       NA |
-| cmax       |     4.197978 | 0.826301 |
-| half.life  |     3.749518 | 1.240957 |
-| tmax       |     0.083000 | 0.000000 |
+| PPTESTCD   | median_value |  sd_value |
+|:-----------|-------------:|----------:|
+| aucinf.obs |           NA |        NA |
+| cmax       |     4.197976 | 0.8262987 |
+| half.life  |     3.749496 | 1.2407185 |
+| tmax       |     0.083000 | 0.0000000 |
 
 Simulated plasma NCA (n = 200 rats, 7 mg/kg IV). Units: Cmax ug/mL, Tmax
 h, AUCinf.obs ug/mL\*h, t1/2 h. {.table}
@@ -759,8 +759,8 @@ knitr::kable(
 | PPTESTCD   | median_value |  sd_value |
 |:-----------|-------------:|----------:|
 | aucinf.obs |           NA |        NA |
-| cmax       |     3.159309 | 0.4085296 |
-| half.life  |     3.656800 | 1.2324743 |
+| cmax       |     3.159316 | 0.4085248 |
+| half.life  |     3.656778 | 1.2322390 |
 | tmax       |     0.250000 | 0.1250063 |
 
 Simulated free-prostate-ISF NCA (n = 200 rats, 7 mg/kg IV). Units: Cmax

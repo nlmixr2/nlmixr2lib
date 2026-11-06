@@ -381,8 +381,8 @@ knitr::kable(
 
 | regimen | Cmin_median | Cmin_p2.5 | Cmin_p97.5 | cmin_sim_median | cmin_sim_p2.5 | cmin_sim_p97.5 | pct_diff_median |
 |:---|---:|---:|---:|---:|---:|---:|---:|
-| 400 mg BID | 124 | 10 | 1380 | 151.92082 | 18.886561 | 1009.6394 | 22.5 |
-| 800 mg QD | 52 | 4 | 817 | 52.50452 | 8.240137 | 508.2625 | 1.0 |
+| 400 mg BID | 124 | 10 | 1380 | 151.91166 | 18.885755 | 1009.7592 | 22.5 |
+| 800 mg QD | 52 | 4 | 817 | 52.50414 | 8.239724 | 508.2481 | 1.0 |
 
 Simulated steady-state Cmin (ng/mL) vs published values (Arab-Alameddine
 2012 Results, ‘Simulations’ paragraph). {.table style="width:100%;"}

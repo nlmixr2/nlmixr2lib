@@ -90,7 +90,7 @@ The same information is available programmatically via
 | `e_hepimp_mod_vmax` | 0.63 | Table 2, Vmax ratio C-P B/C-P A |
 | `e_hepimp_sev_vmax` | 0.39 | Table 2, Vmax ratio C-P C/C-P A |
 | `e_hepimp_modsev_vc` | 1.89 | Table 2, VPAA ratio C-P BC/C-P A |
-| `etalvmax`, `etalkm`, `etalvc` | 0.2074, 0.6133, 0.1553 | Table 2, BSV 48%, 92%, 41%, as log(1 + CV^2) |
+| `etalvmax`, `etalkm`, `etalvc` | 0.2073, 0.6132, 0.1554 | Table 2, BSV 48%, 92%, 41%, as log(1 + CV^2) |
 | `propSd`, `addSd` | 0.35, 2.23 ug/mL | Table 2, PAA proportional (35%) and additive error |
 | `lcl_pagn` | log(14.9) L/h | Section 3.4 |
 | `lvc_pagn` | log(33.2) L | Section 3.4 |
@@ -506,7 +506,7 @@ nca_tab |>
 
 | Scenario                      | Cmax (ug/mL) | Cav (ug/mL) | AUC96-120 (h\*ug/mL) |
 |:------------------------------|-------------:|------------:|---------------------:|
-| Caucasian C-P B (20 gL_15 gM) |         93.3 |        91.5 |                 2200 |
+| Caucasian C-P B (20 gL_15 gM) |         93.4 |        91.5 |                 2200 |
 | Caucasian C-P C (20 gL_15 gM) |        199.0 |       190.0 |                 4570 |
 | Asian C-P B (20 gL_15 gM)     |        153.0 |       151.0 |                 3630 |
 | Asian C-P C (15 gL_10 gM)     |        143.0 |       139.0 |                 3340 |

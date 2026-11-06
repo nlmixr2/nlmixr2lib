@@ -294,7 +294,7 @@ knitr::kable(
 | NCA parameter      | treatment        | Reference | Simulated | % diff |
 |:-------------------|:-----------------|----------:|----------:|-------:|
 | AUClast (ng\*h/mL) | Cancer, solid    |      3820 |      3630 |  -4.9% |
-| AUClast (ng\*h/mL) | Healthy, solid   |         — |      2130 |      — |
+| AUClast (ng\*h/mL) | Healthy, solid   |         — |      2120 |      — |
 | AUClast (ng\*h/mL) | Cancer, solution |         — |      3740 |      — |
 
 Simulated vs. published NCA at steady state (300 mg b.d., last 12 h

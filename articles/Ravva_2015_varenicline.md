@@ -121,7 +121,7 @@ are collected here for review.
 | Placebo kinetic system, dummy unit dose at each dosing time | n/a | Ravva 2015 Methods, “Pharmacokinetic and Pharmacodynamic Analyses”; Figure 1 right-hand box |
 | `lkon_placebo` | `fixed(log(0.0112))` | Ravva 2015 Supplementary Table S1: k_on = 0.0112 /h (%RSE 142); fixed per Table S1 footnote a |
 | `lkoff_placebo` | `fixed(log(0.130))` | Ravva 2015 Supplementary Table S1: k_off = 0.130 /h (%RSE 65.4); fixed per Table S1 footnote a |
-| `etalkon_placebo`, `etalkoff_placebo` | `fixed(0.97987)`, `fixed(0.88216)` | Table S1 %CV = 129 and 119; omega^2 = log(1 + CV^2) |
+| `etalkon_placebo`, `etalkoff_placebo` | `fixed(0.97987)`, `fixed(0.88215)` | Table S1 %CV = 129 and 119; omega^2 = log(1 + CV^2) |
 | `EFFECT = E0 + PSLP * C_PBO + DSLP * C_DRUG` | n/a | Ravva 2015 Figure 1 equation box; Methods paragraph on the linear PD model |
 | `logite0` | 0.991 | Supplementary Table S1: E0 = 0.991 (%RSE 29.6), logit scale per footnote b |
 | `slope_placebo` (PSLP) | -3.32 | Supplementary Table S1: PSLP = -3.32 (%RSE 50.6) |

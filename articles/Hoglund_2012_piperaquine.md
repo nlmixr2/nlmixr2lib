@@ -64,9 +64,9 @@ Per-parameter source locations are recorded inline in
 | `lfdepot = fixed(log(1))` (F) | 1 (fixed) | Table 2 ‘F (%) = 100 fix’ |
 | `e_wt_cl = fixed(0.75)` (allometric on CL/Q) | 0.75 (fixed) | Methods page 4: ‘allometric function on all clearance (power of 0.75)’ |
 | `e_wt_vc = fixed(1.00)` (allometric on V) | 1.00 (fixed) | Methods page 4: ‘and volume parameters (power of 1)’ |
-| `etalcl ~ 0.049389` (var, log-scale) | CV 22.5% (BSV) | Table 2 BSV CL (RSE 31.5%); variance = log(0.225^2 + 1) |
-| `etalmtt ~ 0.313762` (var, log-scale) | CV 60.7% (BOV, treated as forward-sim IIV) | Table 2 BOV MTT (RSE 22.8%); variance = log(0.607^2 + 1) |
-| `etalfdepot ~ 0.113707` (var, log-scale) | CV 34.7% (BSV) | Table 2 BSV F (RSE 59.2%); variance = log(0.347^2 + 1) |
+| `etalcl ~ 0.049385` (var, log-scale) | CV 22.5% (BSV) | Table 2 BSV CL (RSE 31.5%); variance = log(0.225^2 + 1) |
+| `etalmtt ~ 0.313678` (var, log-scale) | CV 60.7% (BOV, treated as forward-sim IIV) | Table 2 BOV MTT (RSE 22.8%); variance = log(0.607^2 + 1) |
+| `etalfdepot ~ 0.113694` (var, log-scale) | CV 34.7% (BSV) | Table 2 BSV F (RSE 59.2%); variance = log(0.347^2 + 1) |
 | `propSd = sqrt(0.0973)` ~= 0.312 | RUV = 0.0973 (variance, log-scale) | Table 2 RUV (RSE 5.90%; 95% CI 0.0753-0.120) |
 | 3 transit compartments fixed; `ktr = 4 / MTT` | – | Methods + Results: ‘transit-compartment (n=3) absorption model’ and ‘ka and ktr were set equal’; Savic 2007 convention |
 | Three-compartment disposition (`central`, `peripheral1`, `peripheral2`) | – | Results: ‘A three-compartmental disposition model resulted in a significantly better model fit’; Figure 1 schematic |
@@ -313,9 +313,9 @@ knitr::kable(nca_summary,
 
 | PPTESTCD | median_Non-pregnant | median_Pregnant | p05_Non-pregnant | p05_Pregnant | p95_Non-pregnant | p95_Pregnant |
 |:---|---:|---:|---:|---:|---:|---:|
-| auclast | 42012.089 | 38566.005 | 24741.582 | 19109.376 | 62667.376 | 70789.908 |
-| cmax | 277.325 | 262.727 | 170.139 | 162.423 | 498.154 | 424.237 |
-| half.life | 578.257 | 605.851 | 443.245 | 464.205 | 715.951 | 808.757 |
+| auclast | 42011.763 | 38566.134 | 24741.977 | 19110.048 | 62665.693 | 70787.755 |
+| cmax | 277.326 | 262.729 | 170.150 | 162.428 | 498.124 | 424.232 |
+| half.life | 578.256 | 605.849 | 443.248 | 464.209 | 715.944 | 808.743 |
 | tmax | 51.000 | 51.000 | 50.000 | 49.000 | 54.000 | 54.000 |
 
 Simulated NCA over 0-90 days, three-day piperaquine-DHA regimen, by
@@ -430,10 +430,10 @@ landmarks (ng/mL). Compare with Hoglund 2012 Table 3 medians. {.table}
 
 - **BOV on bioavailability is omitted.** Hoglund 2012 Table 2 also
   reports a BOV on F of 64.8% CV (variance = log(0.648^2 + 1) =
-  0.350506). Encoding this as a third IIV term on `lfdepot` would
+  0.350589). Encoding this as a third IIV term on `lfdepot` would
   double-count the F variability when combined with the published BSV CV
   34.7%. The package model retains only the BSV term
-  (`etalfdepot ~ 0.113707`); the BOV component is documented here as a
+  (`etalfdepot ~ 0.113694`); the BOV component is documented here as a
   deliberate omission. For a stochastic simulation that more closely
   matches the published variability spread, a downstream user can extend
   the model to add an occasion-level eta on F.

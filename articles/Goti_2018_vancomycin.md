@@ -47,9 +47,9 @@ place for review.
 | `e_crcl_cl`          | 0.8           | Table 2, row “CrCL on CL”      |
 | `e_hemodial_cl`      | 0.7           | Table 2, row “DIAL on CL”      |
 | `e_hemodial_vc`      | 0.5           | Table 2, row “DIAL on Vc”      |
-| `etalcl` (39.8% CV)  | 0.14705       | Table 2, row “BSV on CL”       |
-| `etalvc` (81.6% CV)  | 0.51019       | Table 2, row “BSV on Vc”       |
-| `etalvp` (57.1% CV)  | 0.28232       | Table 2, row “BSV on Vp”       |
+| `etalcl` (39.8% CV)  | 0.14704       | Table 2, row “BSV on CL”       |
+| `etalvc` (81.6% CV)  | 0.51034       | Table 2, row “BSV on Vc”       |
+| `etalvp` (57.1% CV)  | 0.28220       | Table 2, row “BSV on Vp”       |
 | `addSd`              | 3.4 mg/L      | Table 2, “Additive Error SD”   |
 | `propSd`             | 0.227 (22.7%) | Table 2, “Proportional error”  |
 | TVCL covariate eq    | n/a           | Table 2 footer formula         |
@@ -230,7 +230,7 @@ knitr::kable(nca_summary, caption = "Simulated NCA parameters by covariate cohor
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|
 | 0 | Inf | hd_crcl12 | 200 | 30.0 \[72.7\] | 1.00 \[1.00, 1.00\] | 5.08 \[48.3\] | 124 \[85.1\] | 0.00668 \[65.5\] | 2020 \[38.5\] |
 | 0 | Inf | hd_crcl60 | 200 | 26.8 \[62.8\] | 1.00 \[1.00, 1.00\] | 0.469 \[404\] | 37.0 \[23.6\] | 0.0223 \[64.2\] | 543 \[39.8\] |
-| 0 | Inf | nondial_crcl120 | 200 | 16.4 \[76.5\] | 1.00 \[1.00, 1.00\] | 0.0378 \[6860\] | 22.2 \[13.9\] | 0.0369 \[63.8\] | 223 \[39.9\] |
+| 0 | Inf | nondial_crcl120 | 200 | 16.4 \[76.6\] | 1.00 \[1.00, 1.00\] | 0.0378 \[6860\] | 22.2 \[13.9\] | 0.0369 \[63.8\] | 223 \[39.9\] |
 | 0 | Inf | nondial_crcl60 | 200 | 14.4 \[73.2\] | 1.00 \[1.00, 1.00\] | 0.415 \[300\] | 39.7 \[27.0\] | 0.0207 \[62.7\] | 398 \[36.8\] |
 
 Simulated NCA parameters by covariate cohort (single 1000 mg IV infusion

@@ -29,12 +29,12 @@ ui
 #>       2.468100       5.945421       1.090000      -0.429000       0.152000 
 #> 
 #> Omega ($omega): 
-#>          etalcl   etalvc
-#> etalcl 0.065431 0.000000
-#> etalvc 0.000000 0.112457
+#>            etalcl    etalvc
+#> etalcl 0.06541314 0.0000000
+#> etalvc 0.00000000 0.1124578
 #> attr(,"lotriLabels")
-#> [1] "Sukeishi 2022 Table 2: IIV for CL = 26.0 CV% (RSE 9.6%, shrinkage 4.22%) -> log(0.260^2 + 1)" 
-#> [2] "Sukeishi 2022 Table 2: IIV for Vd = 34.5 CV% (RSE 12.8%, shrinkage 24.1%) -> log(0.345^2 + 1)"
+#> [1] "Sukeishi 2022 Table 2: IIV for CL = 26.0 CV% (RSE 9.6%, shrinkage 4.22%)" 
+#> [2] "Sukeishi 2022 Table 2: IIV for Vd = 34.5 CV% (RSE 12.8%, shrinkage 24.1%)"
 #> attr(,"lotriFix")
 #>        etalcl etalvc
 #> etalcl  FALSE  FALSE
@@ -105,10 +105,10 @@ ui
 #>         label("Fractional change in Vd for age >= 75 years (unitless)")
 #>         propSd <- c(0, 0.152)
 #>         label("Proportional residual error (fraction)")
-#>         etalcl ~ 0.065431
-#>         label("Sukeishi 2022 Table 2: IIV for CL = 26.0 CV% (RSE 9.6%, shrinkage 4.22%) -> log(0.260^2 + 1)")
-#>         etalvc ~ 0.112457
-#>         label("Sukeishi 2022 Table 2: IIV for Vd = 34.5 CV% (RSE 12.8%, shrinkage 24.1%) -> log(0.345^2 + 1)")
+#>         etalcl ~ 0.0654131385482321
+#>         label("Sukeishi 2022 Table 2: IIV for CL = 26.0 CV% (RSE 9.6%, shrinkage 4.22%)")
+#>         etalvc ~ 0.112457770456452
+#>         label("Sukeishi 2022 Table 2: IIV for Vd = 34.5 CV% (RSE 12.8%, shrinkage 24.1%)")
 #>     })
 #>     model({
 #>         egfr_abs <- CRCL/1.73 * BSA
@@ -622,12 +622,12 @@ nca_res |>
 | Regimen 1, eGFR 30 | 10366.6 | 380.7 | 490.5 |
 | Regimen 1, eGFR 60 | 5094.2 | 152.8 | 280.3 |
 | Regimen 1, eGFR 90 | 3311.6 | 83.8 | 209.5 |
-| Regimen 2, eGFR 15 | 18842.6 | 337.9 | 446.3 |
-| Regimen 2, eGFR 30 | 10798.7 | 170.2 | 297.9 |
+| Regimen 2, eGFR 15 | 18842.3 | 337.9 | 446.3 |
+| Regimen 2, eGFR 30 | 10798.8 | 170.2 | 297.9 |
 | Regimen 2, eGFR 60 | 5225.2 | 55.9 | 184.7 |
 | Regimen 2, eGFR 90 | 3339.9 | 26.1 | 151.1 |
 | Regimen 3, eGFR 15 | 23815.0 | 187.4 | 323.8 |
-| Regimen 3, eGFR 30 | 12078.1 | 67.9 | 217.8 |
+| Regimen 3, eGFR 30 | 12078.0 | 67.9 | 217.8 |
 | Regimen 3, eGFR 60 | 5274.4 | 13.9 | 147.1 |
 | Regimen 3, eGFR 90 | 3310.9 | 2.9 | 131.3 |
 
@@ -704,16 +704,16 @@ trough_q |>
 
 | Arm | Table 3 median (90% PI) | Simulated, no residual error | Simulated, with residual error |
 |:---|:---|:---|:---|
-| Regimen 1, eGFR 15 | 670.3 (423.1-1030.5) | 658.8 (457.7-924.1) | 654.7 (407.4-932.1) |
-| Regimen 1, eGFR 30 | 370.5 (211.9-591.9) | 380.7 (251.3-522.3) | 375.0 (225.6-543.9) |
+| Regimen 1, eGFR 15 | 670.3 (423.1-1030.5) | 658.8 (457.7-924.1) | 654.7 (407.4-932.0) |
+| Regimen 1, eGFR 30 | 370.5 (211.9-591.9) | 380.7 (251.3-522.2) | 375.0 (225.6-543.9) |
 | Regimen 1, eGFR 60 | 158.2 (74.2-284.6) | 152.8 (84.3-259.5) | 150.7 (76.0-260.7) |
 | Regimen 1, eGFR 90 | 85.3 (33.3-169.2) | 83.8 (34.8-161.3) | 86.6 (30.0-155.6) |
 | Regimen 2, eGFR 15 | 351.9 (219.2-542.7) | 337.9 (247.4-456.0) | 339.7 (220.4-478.8) |
-| Regimen 2, eGFR 30 | 168.3 (83.8-286.8) | 170.2 (93.7-252.0) | 167.2 (87.0-263.3) |
+| Regimen 2, eGFR 30 | 168.3 (83.8-286.8) | 170.2 (93.7-251.9) | 167.2 (87.0-263.3) |
 | Regimen 2, eGFR 60 | 56.0 (18.6-119.7) | 55.9 (20.9-111.7) | 57.0 (20.1-118.6) |
 | Regimen 2, eGFR 90 | 24.0 (4.8-63.0) | 26.1 (4.9-64.3) | 25.5 (4.9-68.6) |
 | Regimen 3, eGFR 15 | 184.4 (96.9-296.2) | 187.4 (112.9-267.1) | 189.4 (99.9-288.9) |
-| Regimen 3, eGFR 30 | 66.0 (21.8-136.9) | 67.9 (25.3-139.3) | 67.5 (25.3-142.8) |
+| Regimen 3, eGFR 30 | 66.0 (21.8-136.9) | 67.9 (25.3-139.2) | 67.5 (25.3-142.8) |
 | Regimen 3, eGFR 60 | 13.3 (1.6-44.4) | 13.9 (1.9-38.8) | 12.8 (1.7-41.5) |
 | Regimen 3, eGFR 90 | 3.4 (0.1-18.2) | 2.9 (0.1-16.3) | 2.9 (0.1-16.3) |
 
@@ -888,7 +888,7 @@ coh_trough <- coh_sim |>
 coh_med <- median(coh_trough$sim)
 c(simulated_median_trough = coh_med, published = 116.6)
 #> simulated_median_trough               published 
-#>                114.2913                116.6000
+#>                114.2953                116.6000
 
 # The cohort covariates are assumptions, so the band is wide (83-163 ng/mL).
 # Measured 114 / 93 / 118 ng/mL across three seeds. A lost MW ratio (about

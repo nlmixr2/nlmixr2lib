@@ -78,7 +78,7 @@ to its origin in Archary 2018.
 | `e_ffm_cl` | 0.75 | Methods page 4 (allometric exponent on CL/F fixed) |
 | `e_ffm_vc` | 1.00 | Methods page 4 (allometric exponent on Vd/F fixed) |
 | `e_tchol_cl` | 0.207 | Table 2 footnote: CL = 3.1 \* (FFM/5.6)^0.75 \* (1 + 0.207 \* (CHOL - 3)) |
-| `etalcl` | 0.395 | Table 2 row 4: IIV on F (logit) 69.5%; omega^2 = log(1 + 0.695^2) = 0.395 |
+| `etalcl` | 0.394 | Table 2 row 4: IIV on F (logit) 69.5%; omega^2 = log(1 + 0.695^2) = 0.394 |
 | `propSd` | 0.377 | Table 2 row 6: proportional RUV 37.7% for samples \< 5 h post-dose |
 
 Equations (Table 2 footnote):
@@ -335,8 +335,8 @@ knitr::kable(nca_summary, digits = 2,
 
 | PPTESTCD | median |   P05 |    P95 |
 |:---------|-------:|------:|-------:|
-| auclast  |  50.17 | 14.96 | 155.24 |
-| cmax     |   6.85 |  3.23 |  15.69 |
+| auclast  |  50.17 | 14.98 | 155.07 |
+| cmax     |   6.85 |  3.23 |  15.68 |
 | tmax     |   2.50 |  1.50 |   3.50 |
 
 Day-14 PKNCA summary across the virtual cohort {.table}
@@ -380,7 +380,7 @@ documented here so reviewers can reconcile the model with the source.
     and Vd/F estimates” (Results page 5). Because nlmixr2lib’s library
     models capture subject-level variability rather than
     occasion-specific contributions, this model encodes the F-IIV as IIV
-    on apparent CL/F (omega^2 = log(1 + 0.695^2) = 0.395 on the log
+    on apparent CL/F (omega^2 = log(1 + 0.695^2) = 0.394 on the log
     scale). IOV is omitted; users who need to reproduce
     occasion-specific shifts can add `etaIov_*` terms manually.
 3.  **Logit-transformed F replaced with log-normal CL.** Because

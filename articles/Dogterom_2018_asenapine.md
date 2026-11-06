@@ -70,11 +70,11 @@ comment. The table below collects the entries in one place.
 | `lq` (apparent intercompartmental clearance Q/F) | 120 L/h | Table 3, Q/F row (RSE 14.3%) |
 | `lvp` (apparent peripheral volume V3/F) | 2,490 L | Table 3, V3/F row (fixed from Phase I-only fit; footnote b) |
 | `lfdepot` (sublingual bioavailability F) | 1 (fixed anchor) | Structural convention: CL and V reported as apparent values |
-| IIV CL/F (omega^2 = log(1 + 0.662^2) = 0.36355) | 66.2% CV | Table 3, IIV (Cl/F) row (RSE 19.5%; shrinkage 27.3%) |
-| IIV V2/F (omega^2 = log(1 + 1.13^2) = 0.82309) | 113% CV | Table 3, IIV (V2/F) row (RSE 21.3%; shrinkage 30.5%) |
-| Correlation CL/F-V2/F (cov = 0.50388 on log scale) | 0.921 | Table 3, Correlation (Cl/F-V2/F) row (RSE 20.5%) |
-| IIV Ka (omega^2 = log(1 + 0.689^2) = 0.38824) | 68.9% CV | Table 3, IIV (Ka) row (no RSE; shrinkage 73.5%; treated as fixed alongside structural Ka fix) |
-| IIV F (omega^2 = log(1 + 0.540^2) = 0.25599) | 54.0% CV | Table 3, IIV (F) row (RSE 22.7%; shrinkage 38.0%) |
+| IIV CL/F (omega^2 = log(1 + 0.662^2) = 0.36342) | 66.2% CV | Table 3, IIV (Cl/F) row (RSE 19.5%; shrinkage 27.3%) |
+| IIV V2/F (omega^2 = log(1 + 1.13^2) = 0.82281) | 113% CV | Table 3, IIV (V2/F) row (RSE 21.3%; shrinkage 30.5%) |
+| Correlation CL/F-V2/F (cov = 0.50364 on log scale) | 0.921 | Table 3, Correlation (Cl/F-V2/F) row (RSE 20.5%) |
+| IIV Ka (omega^2 = log(1 + 0.689^2) = 0.38847) | 68.9% CV | Table 3, IIV (Ka) row (no RSE; shrinkage 73.5%; treated as fixed alongside structural Ka fix) |
+| IIV F (omega^2 = log(1 + 0.540^2) = 0.25588) | 54.0% CV | Table 3, IIV (F) row (RSE 22.7%; shrinkage 38.0%) |
 | IIV rV (omega^2 = log(1 + 0.192^2) = 0.03620) | 19.2% CV | Table 3, IIV (rV) row (RSE 29.8%; shrinkage 45.3%) |
 | `propSdPhaseI` (intensive Phase I residual error) | 27.8% CV | Table 3, Residual variability PK studies row (RSE 5.29%) |
 | `propSdPhaseIII` (sparse Phase III residual error) | 56.0% CV | Table 3, Residual variability Efficacy studies row (RSE 5.05%) |
@@ -255,7 +255,7 @@ knitr::kable(nca_summary,
 | 0 | 12 | 1 mg BID | 100 | 3.15 \[92.1\] | 0.440 \[108\] | 1.00 \[0.250, 3.00\] |
 | 0 | 12 | 3 mg BID | 100 | 10.0 \[91.8\] | 1.34 \[104\] | 1.00 \[0.250, 3.00\] |
 | 0 | 12 | 5 mg BID | 100 | 17.0 \[98.3\] | 2.29 \[113\] | 1.00 \[0.250, 2.00\] |
-| 0 | 12 | 10 mg BID | 100 | 30.1 \[95.4\] | 4.01 \[111\] | 1.00 \[0.500, 3.00\] |
+| 0 | 12 | 10 mg BID | 100 | 30.1 \[95.3\] | 4.01 \[111\] | 1.00 \[0.500, 3.00\] |
 
 Simulated steady-state NCA parameters by dose group (100 subjects per
 dose, Phase I-style intensive sampling). {.table}
@@ -310,20 +310,20 @@ knitr::kable(
 )
 ```
 
-| treatment | PPTESTCD |  sim_value |    sim_cv | paper_value | paper_cv |
-|:----------|:---------|-----------:|----------:|------------:|---------:|
-| 1 mg BID  | auclast  |  4.3047806 |  92.25553 |         6.6 |       61 |
-| 1 mg BID  | cmax     |  0.6562622 | 111.74362 |         1.0 |       50 |
-| 1 mg BID  | tmax     |  1.0000000 |  46.24645 |         0.7 |       NA |
-| 10 mg BID | auclast  | 40.3125116 |  79.67551 |        20.0 |       54 |
-| 10 mg BID | cmax     |  5.7527723 |  89.15225 |         2.8 |       82 |
-| 10 mg BID | tmax     |  1.0000000 |  42.47825 |         1.3 |       NA |
-| 3 mg BID  | auclast  | 13.3501988 |  81.80113 |        16.0 |       50 |
-| 3 mg BID  | cmax     |  1.9004719 |  93.37653 |         2.6 |       56 |
-| 3 mg BID  | tmax     |  1.0000000 |  48.33096 |         0.9 |       NA |
-| 5 mg BID  | auclast  | 23.4148779 |  83.42684 |        23.0 |       48 |
-| 5 mg BID  | cmax     |  3.4059689 |  99.34426 |         3.5 |       48 |
-| 5 mg BID  | tmax     |  1.0000000 |  47.52927 |         1.0 |       NA |
+| treatment | PPTESTCD | sim_value |    sim_cv | paper_value | paper_cv |
+|:----------|:---------|----------:|----------:|------------:|---------:|
+| 1 mg BID  | auclast  |  4.304332 |  92.23356 |         6.6 |       61 |
+| 1 mg BID  | cmax     |  0.656172 | 111.71408 |         1.0 |       50 |
+| 1 mg BID  | tmax     |  1.000000 |  46.24645 |         0.7 |       NA |
+| 10 mg BID | auclast  | 40.309100 |  79.65886 |        20.0 |       54 |
+| 10 mg BID | cmax     |  5.752080 |  89.12947 |         2.8 |       82 |
+| 10 mg BID | tmax     |  1.000000 |  42.47825 |         1.3 |       NA |
+| 3 mg BID  | auclast  | 13.348794 |  81.78309 |        16.0 |       50 |
+| 3 mg BID  | cmax     |  1.900205 |  93.35284 |         2.6 |       56 |
+| 3 mg BID  | tmax     |  1.000000 |  48.33096 |         0.9 |       NA |
+| 5 mg BID  | auclast  | 23.412108 |  83.41035 |        23.0 |       48 |
+| 5 mg BID  | cmax     |  3.405400 |  99.32409 |         3.5 |       48 |
+| 5 mg BID  | tmax     |  1.000000 |  47.52927 |         1.0 |       NA |
 
 Side-by-side comparison of simulated steady-state PK (arithmetic mean
 for Cmax and AUC, median for Tmax) against Dogterom 2018 Table 1 Study 1
@@ -368,10 +368,10 @@ knitr::kable(
 
 | treatment | PPTESTCD |  median_v |       q05 |       q95 | paper_median | paper_lo | paper_hi |
 |:----------|:---------|----------:|----------:|----------:|-------------:|---------:|---------:|
-| 10 mg BID | auclast  | 30.918141 | 8.0556027 | 101.49925 |        37.80 |     8.92 |    162.0 |
-| 10 mg BID | cmax     |  4.357006 | 0.8689336 |  15.25969 |         8.64 |     1.64 |     50.1 |
-| 5 mg BID  | auclast  | 16.462099 | 4.9732232 |  64.61089 |        19.30 |     4.48 |     82.6 |
-| 5 mg BID  | cmax     |  2.255057 | 0.5665826 |  10.32704 |         4.56 |     0.87 |     26.4 |
+| 10 mg BID | auclast  | 30.918585 | 8.0578001 | 101.48141 |        37.80 |     8.92 |    162.0 |
+| 10 mg BID | cmax     |  4.356886 | 0.8691180 |  15.25315 |         8.64 |     1.64 |     50.1 |
+| 5 mg BID  | auclast  | 16.462000 | 4.9744289 |  64.59400 |        19.30 |     4.48 |     82.6 |
+| 5 mg BID  | cmax     |  2.255144 | 0.5667053 |  10.32401 |         4.56 |     0.87 |     26.4 |
 
 Side-by-side comparison of simulated steady-state PK (median + empirical
 5th-95th percentiles) against Dogterom 2018 Table 4 pediatric simulated

@@ -101,8 +101,8 @@ below collects the mapping in one place for reviewer audit.
 | Treatment phase MR maintenance | Kloos 2021 Table 2, Final model | `0.81^TRTPH_MR_MAINT` (RSE 3.9%; bootstrap 95% CI 0.75-0.86) |
 | Treatment phase SR protocol IV | Kloos 2021 Table 2, Final model | `0.81^TRTPH_SR_IV` (RSE 6.5%; bootstrap 95% CI 0.73-0.90) |
 | CL-to-Vd shared eta scaling | Kloos 2021 Table 2 (“Fractional increase IIV-Vd”); Supplement equation for Vd | 1.26 (RSE 10.2%; bootstrap 1.28, 95% CI 0.98-1.51) |
-| IIV on CL | Kloos 2021 Table 2, Final model | 19.7% CV -\> `omega^2 = log(1 + 0.197^2) = 0.038077` |
-| IOV on CL | Kloos 2021 Table 2, Final model; Supplement, Supplemental Methods | 23.6% CV -\> `pi^2 = log(1 + 0.236^2) = 0.054197`; occasion = administration of a new dose |
+| IIV on CL | Kloos 2021 Table 2, Final model | 19.7% CV -\> `omega^2 = log(1 + 0.197^2) = 0.038075` |
+| IOV on CL | Kloos 2021 Table 2, Final model; Supplement, Supplemental Methods | 23.6% CV -\> `pi^2 = log(1 + 0.236^2) = 0.054200`; occasion = administration of a new dose |
 | Residual error | Kloos 2021 Table 2, Final model; Supplement, Supplemental Results | Combined: proportional 17.0% + additive 20.2 IU/L |
 | Published half-lives (structural model) | Kloos 2021 Results, Structural model | 8.5 days for the first 12.9 days; 4.1 days after 1 further day; 2.7 days after 2 |
 | Native-asparaginase convergence | Kloos 2021 Discussion | CL rises to a value comparable to native E. coli asparaginase (half-life 1.3 days) “after several days” |

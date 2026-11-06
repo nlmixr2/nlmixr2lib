@@ -54,7 +54,7 @@ comment. The table below collects the entries in one place.
 | `e_crcl_cl` (CRCL exponent on CL/F) | 0.492 | Table 2, Final estimate column, CL/CR exponent row |
 | `e_wt_cl_q` (allometric exponent on CL/F and Q/F) | 0.75 (FIXED) | Methods ‘Population pharmacokinetic analysis’ (allometric scaling values) |
 | `e_wt_vc_vp` (allometric exponent on V2/F and V3/F) | 1.0 (FIXED) | Methods ‘Population pharmacokinetic analysis’ (allometric scaling values) |
-| IIV CL/F (omega^2 = log(0.335^2 + 1) = 0.1063) | 33.5% CV | Table 2, Final estimate column, Variability of CL/F row |
+| IIV CL/F (omega^2 = log(0.335^2 + 1) = 0.1064) | 33.5% CV | Table 2, Final estimate column, Variability of CL/F row |
 | IIV on V2/F, Q/F, V3/F | not estimated | Results: ‘The data were not sufficient to support estimates of interindividual variability on V2/F, Q/F and V3/F’ |
 | Proportional residual error | 32.7% CV | Table 2, Final estimate column, Residual variability row |
 | Bioavailability F | implicit in CL/F (apparent) | Methods ‘Population pharmacokinetic analysis’ (parameterized as CL/F, V2/F, Q/F, V3/F throughout) |
@@ -293,8 +293,8 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | cohort | N | Cmax (ug/mL) | Tmax (h) | Clast (ug/mL) | Half-life (h) | AUCinf,obs (h\*ug/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | Adult 450 mg q24h | 200 | 4.11 \[19.8\] | 1.50 \[1.25, 1.75\] | 0.00124 \[478\] | 10.2 \[2.28\] | 30.6 \[41.5\] |
-| 0 | Inf | Adult 900 mg q24h | 200 | 8.08 \[20.0\] | 1.50 \[1.25, 1.50\] | 0.00284 \[300\] | 10.2 \[1.92\] | 61.7 \[36.5\] |
+| 0 | Inf | Adult 450 mg q24h | 200 | 4.11 \[19.8\] | 1.50 \[1.25, 1.75\] | 0.00124 \[479\] | 10.2 \[2.28\] | 30.6 \[41.5\] |
+| 0 | Inf | Adult 900 mg q24h | 200 | 8.08 \[20.0\] | 1.50 \[1.25, 1.50\] | 0.00284 \[301\] | 10.2 \[1.92\] | 61.7 \[36.5\] |
 | 0 | Inf | Paediatric q24h | 200 | 4.59 \[18.6\] | 1.50 \[1.00, 1.50\] | 0.000211 \[1460\] | 8.07 \[1.92\] | 27.2 \[44.3\] |
 
 Single-dose NCA on the simulated cohorts (Cmax in ug/mL, AUC in ug/mL \*
@@ -379,7 +379,7 @@ ratio acting on a typical 33 kg child).
   explicitly states (Results, ‘Ganciclovir population pharmacokinetics’)
   that ‘The data were not sufficient to support estimates of
   interindividual variability on V2/F, Q/F and V3/F.’ The model file
-  follows the publication and carries only `etalcl ~ 0.1063` (33.5% CV).
+  follows the publication and carries only `etalcl ~ 0.1064` (33.5% CV).
   Stochastic VPCs in the vignette therefore reflect IIV in CL/F +
   proportional residual error only; between-subject variability in
   volumes and inter-compartmental clearance is not represented.

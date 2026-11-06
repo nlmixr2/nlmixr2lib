@@ -101,8 +101,8 @@ Table 2 model 15 (the final model) unless otherwise noted.
 |----|----|----|
 | `lcl` (Clearance per kg body weight) | `log(0.00641)` L/h/kg | Table 2 model 15 CL = 6.41 mL/h/kg; abstract identical |
 | `lvc` (Volume of distribution per kg body weight) | `log(0.0654)` L/kg | Table 2 model 15 V = 65.4 mL/kg; abstract identical |
-| `etalcl` (IIV on CL) | 0.23133 | Table 2 model 15 omega_CL 51% CV; log(1 + 0.51^2) |
-| `etalvc` (IIV on V) | 0.07033 | Table 2 model 15 omega_V 27% CV; log(1 + 0.27^2) |
+| `etalcl` (IIV on CL) | 0.23119 | Table 2 model 15 omega_CL 51% CV; log(1 + 0.51^2) |
+| `etalvc` (IIV on V) | 0.07037 | Table 2 model 15 omega_V 27% CV; log(1 + 0.27^2) |
 | `propSd` (proportional residual error) | 0.22 | Table 2 model 15 residual error 22% |
 | `cl <- exp(lcl + etalcl) * WT` | n/a | Table 2 footnote \*\*\* (CL = q1 \* Weight; V = q2 \* Weight) |
 | `vc <- exp(lvc + etalvc) * WT` | n/a | Table 2 footnote \*\*\* (CL = q1 \* Weight; V = q2 \* Weight) |
@@ -388,7 +388,7 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | Cmax (ng/mL) | Tmax (hr) | Clast (ng/mL) | Half-life (hr) | AUCinf,obs (hr\*ng/mL) | AUCinf,pred (hr\*ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 60 mg/m^2 | 24 | 28000 \[44.2\] | 1.50 \[1.50, 1.50\] | 133 \[4670\] | 7.51 \[3.33\] | NC | NC |
+| 0 | Inf | 60 mg/m^2 | 24 | 28000 \[44.2\] | 1.50 \[1.50, 1.50\] | 133 \[4660\] | 7.51 \[3.33\] | NC | NC |
 
 Simulated NCA parameters (PKNCA) for a single 60 mg/m^2 Daunoxome IV
 infusion over 1.5 h in the 24-subject virtual cohort. {.table}

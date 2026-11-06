@@ -60,7 +60,7 @@ collects them in one place.
 | `lvc` (V/F) | 1820 L | Edstein 2001 Table 3 (theta_2) |
 | `etalcl` variance (CL/F) | 0.06204 (25.3 % CV) | Edstein 2001 Table 3 (omega_CL/F); omega^2 = log(0.253^2 + 1) |
 | `etalvc` variance (V/F) | 0.02167 (14.8 % CV) | Edstein 2001 Table 3 (omega_V/F); omega^2 = log(0.148^2 + 1) |
-| `etalka` variance (Ka) | 0.31791 (61.2 % CV) | Edstein 2001 Table 3 (omega_Ka); omega^2 = log(0.612^2 + 1) |
+| `etalka` variance (Ka) | 0.31812 (61.2 % CV) | Edstein 2001 Table 3 (omega_Ka); omega^2 = log(0.612^2 + 1) |
 | `cov(etalcl, etalvc)` | 0.0265 (rho ~ 0.71-0.72) | Edstein 2001 Table 3 (cov V/F, CL/F) via \$OMEGA BLOCK(2); paper Results report rho = 0.71 |
 | `propSd` (residual) | 0.179 (17.9 % CV) | Edstein 2001 Table 3 (sigma) – exponential error model per Methods |
 | `d/dt(depot)`, `d/dt(central)` | n/a | Methods ‘Population modelling’: one-compartment with first-order absorption and elimination |

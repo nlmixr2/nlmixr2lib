@@ -99,7 +99,7 @@ comment naming its source location. They are collected here for review.
 | `e_astalt_vc` | 0.213 | Table 5 `fV/F-AST/ALT` (RSE 15.87%); Equation 8 exponent |
 | AST/ALT normalizing median | 1.188 | Results, sentence following Equations 7 and 8 |
 | `etalcl` = 0.113322 | IIV CV 34.64% | Table 5 IIV(CV%) for CL/F; converted by `omega^2 = log(CV^2 + 1)` |
-| `etalvc` = 0.038490 | IIV CV 19.81% | Table 5 IIV(CV%) for V/F; converted by `omega^2 = log(CV^2 + 1)` |
+| `etalvc` = 0.038493 | IIV CV 19.81% | Table 5 IIV(CV%) for V/F; converted by `omega^2 = log(CV^2 + 1)` |
 | Diagonal OMEGA (no CL-V covariance) | n/a | Results: “the correlation between CL/F and V/F was found to be negligible … a diagonal OMEGA matrix was retained in the final model” |
 | `propSd` = 0.71 | sigma 0.71 | Table 5 residual error (RSE 9.61%, epsilon shrinkage 18.7%) |
 | `Cc = central / vc * 1000` | n/a | Unit bridge only: dose in mg / volume in L gives mg/L; x1000 gives ng/mL (= ug/L, the unit used in the goodness-of-fit narrative and in the 3-1600 ng/mL calibration range) |
@@ -111,14 +111,14 @@ The equations as printed in the paper are
 
 | Parameter | Estimate | Fixed | Label |
 |:---|---:|:---|:---|
-| lka | -0.482886 | TRUE | Absorption rate constant (ka, 1/h), taken from Kaneko 2013 |
-| lcl | 1.729880 | FALSE | Apparent clearance (L/h) |
-| lvc | 3.730500 | FALSE | Apparent volume of distribution (L) |
-| e_astalt_cl | -0.074000 | FALSE | AST/ALT ratio power exponent on CL/F (unitless) |
-| e_astalt_vc | 0.213000 | FALSE | AST/ALT ratio power exponent on V/F (unitless) |
-| propSd | 0.710000 | FALSE | Proportional residual error (fraction) |
-| etalcl | 0.113322 | FALSE | Table 5 IIV(CV%) on CL/F = 34.64 (eta shrinkage 15.8%) |
-| etalvc | 0.038490 | FALSE | Table 5 IIV(CV%) on V/F = 19.81 (eta shrinkage 22.4%) |
+| lka | -0.4828860 | TRUE | Absorption rate constant (ka, 1/h), taken from Kaneko 2013 |
+| lcl | 1.7298800 | FALSE | Apparent clearance (L/h) |
+| lvc | 3.7305000 | FALSE | Apparent volume of distribution (L) |
+| e_astalt_cl | -0.0740000 | FALSE | AST/ALT ratio power exponent on CL/F (unitless) |
+| e_astalt_vc | 0.2130000 | FALSE | AST/ALT ratio power exponent on V/F (unitless) |
+| propSd | 0.7100000 | FALSE | Proportional residual error (fraction) |
+| etalcl | 0.1133220 | FALSE | Table 5 IIV(CV%) on CL/F = 34.64 (eta shrinkage 15.8%) |
+| etalvc | 0.0384932 | FALSE | Table 5 IIV(CV%) on V/F = 19.81 (eta shrinkage 22.4%) |
 
 Parameters as encoded in the model file. {.table}
 

@@ -109,7 +109,7 @@ The table below collects the same information in one place for review.
 | `e_form_apnecut_cl` (multiplicative shift on CL/F for APC vs TA) | -0.282 (fixed) | Suda 2008 final model, page 638; Table 3 u_3 coefficient |
 | `lvc` (Vc/F, L; not from this paper) | 0.647 (fixed) | not estimated by Suda 2008; derived as CL/F_TA(1 kg) / kel with kel = ln(2)/22.3 h from the paper-cited Apnecut 10 mg package insert (Methods Section 5, page 637); required only for ODE-based simulation |
 | `lka` (ka, 1/h; not from this paper) | 1.5 (fixed) | not estimated by Suda 2008; literature-typical theophylline oral absorption rate; required only for ODE-based simulation |
-| `etalcl` (omega^2, IIV CL/F) | 0.02226 | Suda 2008 final model: 15.0 percent CV inter-individual (page 638); log-normal IIV per Methods Section 5 Eq. 1, so omega^2 = log(1 + 0.15^2) = 0.02226 |
+| `etalcl` (omega^2, IIV CL/F) | 0.02225 | Suda 2008 final model: 15.0 percent CV inter-individual (page 638); log-normal IIV per Methods Section 5 Eq. 1, so omega^2 = log(1 + 0.15^2) = 0.02225 |
 | `propSd` (proportional residual SD on Cc) | 0.153 | Suda 2008 final model: 15.3 percent CV intra-individual (page 638); proportional residual per Methods Section 5 Eq. 2 |
 | `cl = exp(lcl + etalcl) * (WT/1)^1.08 * (1 + e_form_apnecut_cl * FORM_THEO_APNECUT)` | n/a | Suda 2008 final model equation, page 638 |
 | ODE `d/dt(central) = ka * depot - kel * central`, `Cc = central / vc` | n/a | 1-compartment first-order absorption structure assumed (Methods Section 5, page 637) |
@@ -479,7 +479,7 @@ sim |>
   Methods Section 5 explicitly specifies a log-normal IIV model (Eq. 1:
   P_j = P_typ \* exp(eta_Pj)), under which the proper variance
   conversion is `omega^2 = log(1 + CV^2)`. The model file uses
-  `omega^2 = log(1 + 0.15^2) = 0.02226` for the 15.0 percent
+  `omega^2 = log(1 + 0.15^2) = 0.02225` for the 15.0 percent
   inter-individual CV reported on CL/F. The squared-CV approximation
   `omega^2 ~ CV^2 = 0.0225` used by some older NONMEM popPK conventions
   would give essentially the same value (within 0.6 percent) at this CV

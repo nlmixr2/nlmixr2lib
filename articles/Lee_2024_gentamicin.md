@@ -96,7 +96,7 @@ the Teigen group mean.
 | `lcl_hemodialysis` – total CL while dialysing | 4.69 L/h (SE 0.86%) | Methods: “4.69 (0.86) L/h” |
 | Hemodialysis enters as a regime **switch**, not an additive arm | – | Methods: “HD as a covariate for CL during HD (CLHD)”; confirmed numerically against Fig. 1B (see Errata) |
 | `lvc` – Vd | 23.5 L (SE 0.91%) | Methods: “23.5 (0.91) L” |
-| `etalcl` – IIV on CL_NHD | 51% CV -\> omega^2 = log(0.51^2 + 1) = 0.23129 | Discussion: “the interindividual variability (%CV) of CLNHD was 51%” |
+| `etalcl` – IIV on CL_NHD | 51% CV -\> omega^2 = log(0.51^2 + 1) = 0.23119 | Discussion: “the interindividual variability (%CV) of CLNHD was 51%” |
 | `etalvc` – IIV on Vd | exists, magnitude NOT published -\> `fixed(0)` | Methods: “log-normal between-subject variability for non-HD CL (CLNHD) and Vd” |
 | `propSd`, `addSd` | combined error model, magnitudes NOT published -\> `fixed(0)` | Methods: “a combined error model served as the a priori information” |
 | Dosing and hemodialysis schedule | 4 infusions, 11 sessions, 3 samples over 569 h | Table 1 |
@@ -663,7 +663,7 @@ cl_interdialytic <- sim |>
   dplyr::mutate(cl_ref = cl / (CRCL / (0.53 / 0.06)))
 
 stopifnot(
-  abs(sd(log(cl_interdialytic$cl_ref)) - sqrt(0.23129)) < 0.1,
+  abs(sd(log(cl_interdialytic$cl_ref)) - sqrt(0.23119)) < 0.1,
   abs(median(cl_interdialytic$cl_ref) / 0.453 - 1) < 0.15
 )
 ```
@@ -861,7 +861,7 @@ sessions rather than on a fixed interval.
   against real observations would be too narrow.
 
 - **The %CV convention for `etalcl` is not stated.** 51% CV is encoded
-  on the house convention `omega^2 = log(CV^2 + 1) = 0.23129`, which
+  on the house convention `omega^2 = log(CV^2 + 1) = 0.23119`, which
   realizes exactly 51.0% CV. Under the alternative NONMEM shorthand
   `omega^2 = CV^2` the variance would be 0.2601 and the realized CV
   54.6%. The paper’s own sanity check – “the 95% confidence

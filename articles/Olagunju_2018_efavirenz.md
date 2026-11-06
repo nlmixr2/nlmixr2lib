@@ -56,9 +56,9 @@ Per-parameter origin (also recorded as in-file comments next to each
 | `e_slow_cl` | `log(6.24/18.0) = -1.0593` | Olagunju 2018 Table 2 CL/F_Slow = 6.24 L/h (RSE 11%; 90% CI 4.8-7.5); log-ratio relative to fast-metaboliser reference |
 | `e_wt_cl` | `fixed(0.75)` | Olagunju 2018 Methods paragraph 3: allometric exponent on CL/F fixed to 0.75 with WTstd = 70 kg |
 | `e_wt_vc` | `fixed(1.0)` | Olagunju 2018 Methods paragraph 3: allometric exponent on V/F fixed to 1.0 with WTstd = 70 kg |
-| `etalka` | `0.56167` | Olagunju 2018 Table 2 IIV ka = 86.8% CV (RSE 21%, 90% CI 23-107); omega^2 = log(1 + 0.868^2) = 0.56167 |
-| `etalcl` | `0.15614` | Olagunju 2018 Table 2 IIV CL/F = 41.1% CV (RSE 16%, 90% CI 36-43); omega^2 = log(1 + 0.411^2) = 0.15614 |
-| `etalvc` | `0.067379` | Olagunju 2018 Table 2 IIV V/F = 26.4% CV (RSE 33%, 90% CI 10-40); omega^2 = log(1 + 0.264^2) = 0.06738 |
+| `etalka` | `0.56157` | Olagunju 2018 Table 2 IIV ka = 86.8% CV (RSE 21%, 90% CI 23-107); omega^2 = log(1 + 0.868^2) = 0.56157 |
+| `etalcl` | `0.15608` | Olagunju 2018 Table 2 IIV CL/F = 41.1% CV (RSE 16%, 90% CI 36-43); omega^2 = log(1 + 0.411^2) = 0.15608 |
+| `etalvc` | `0.067374` | Olagunju 2018 Table 2 IIV V/F = 26.4% CV (RSE 33%, 90% CI 10-40); omega^2 = log(1 + 0.264^2) = 0.06737 |
 | `propSd` | `sqrt(0.085) = 0.292` | Olagunju 2018 Table 2 proportional residual variance = 0.085 (RSE 21%; 90% CI 0.06-0.11); reported per NONMEM SIGMA-variance convention |
 | `ltvcl = lcl + e_intermed_cl * (n_variant == 1) + e_slow_cl * (n_variant >= 2)` | n/a | Olagunju 2018 Methods ‘Sample Collection …’ paragraph 1: composite metaboliser status defined by summed variant-allele count across rs3745274 + rs28399499 |
 | `(WT / 70)^0.75` and `(WT / 70)^1.0` | n/a | Olagunju 2018 Methods paragraph 3: structural allometric scaling on CL/F and V/F |
@@ -386,15 +386,15 @@ knitr::kable(
 
 | treatment | auclast_median | cmax_median | cmin_median | half.life_median | tmax_median | auclast_p05 | cmax_p05 | cmin_p05 | half.life_p05 | tmax_p05 | auclast_p95 | cmax_p95 | cmin_p95 | half.life_p95 | tmax_p95 |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 200 mg \| Fast | 12.52 | 0.85 | 0.23 | 9.84 | 4 | 6.57 | 0.51 | 0.04 | 4.63 | 1.00 | 22.42 | 1.34 | 0.64 | 20.34 | 6.05 |
-| 200 mg \| Intermediate | 14.28 | 0.90 | 0.31 | 11.36 | 4 | 7.07 | 0.54 | 0.07 | 5.49 | 1.95 | 26.96 | 1.43 | 0.88 | 26.24 | 7.00 |
-| 200 mg \| Slow | 38.97 | 1.92 | 1.35 | 32.59 | 4 | 20.30 | 1.16 | 0.52 | 14.59 | 2.00 | 79.32 | 3.63 | 2.98 | 69.65 | 8.00 |
-| 400 mg \| Fast | 23.05 | 1.60 | 0.43 | 9.99 | 4 | 12.32 | 1.04 | 0.10 | 4.94 | 1.95 | 42.15 | 2.50 | 1.18 | 20.75 | 7.00 |
+| 200 mg \| Fast | 12.52 | 0.85 | 0.23 | 9.84 | 4 | 6.58 | 0.51 | 0.04 | 4.63 | 1.00 | 22.42 | 1.34 | 0.64 | 20.34 | 6.05 |
+| 200 mg \| Intermediate | 14.28 | 0.90 | 0.31 | 11.36 | 4 | 7.07 | 0.54 | 0.07 | 5.49 | 1.95 | 26.95 | 1.43 | 0.88 | 26.24 | 7.00 |
+| 200 mg \| Slow | 38.97 | 1.92 | 1.35 | 32.59 | 4 | 20.30 | 1.16 | 0.52 | 14.59 | 2.00 | 79.31 | 3.63 | 2.98 | 69.64 | 8.00 |
+| 400 mg \| Fast | 23.05 | 1.60 | 0.43 | 9.99 | 4 | 12.32 | 1.04 | 0.10 | 4.94 | 1.95 | 42.14 | 2.50 | 1.18 | 20.75 | 7.00 |
 | 400 mg \| Intermediate | 29.23 | 1.80 | 0.72 | 12.60 | 4 | 15.94 | 1.26 | 0.13 | 5.78 | 2.00 | 50.28 | 2.63 | 1.56 | 23.43 | 7.00 |
-| 400 mg \| Slow | 78.93 | 3.89 | 2.52 | 31.12 | 4 | 38.64 | 2.20 | 1.08 | 16.15 | 2.00 | 135.94 | 6.43 | 4.74 | 65.05 | 9.00 |
-| 600 mg \| Fast | 39.61 | 2.54 | 0.86 | 12.24 | 4 | 23.36 | 1.50 | 0.23 | 5.18 | 2.00 | 66.34 | 3.42 | 1.85 | 24.13 | 7.00 |
-| 600 mg \| Intermediate | 44.94 | 2.75 | 1.03 | 12.75 | 3 | 23.43 | 1.87 | 0.27 | 5.79 | 1.00 | 79.24 | 4.43 | 2.28 | 28.63 | 6.05 |
-| 600 mg \| Slow | 105.03 | 5.19 | 3.42 | 31.01 | 4 | 66.04 | 3.45 | 1.87 | 15.55 | 2.00 | 194.59 | 9.66 | 6.91 | 61.08 | 7.05 |
+| 400 mg \| Slow | 78.93 | 3.89 | 2.52 | 31.12 | 4 | 38.64 | 2.20 | 1.08 | 16.15 | 2.00 | 135.92 | 6.43 | 4.74 | 65.05 | 9.00 |
+| 600 mg \| Fast | 39.61 | 2.54 | 0.86 | 12.24 | 4 | 23.37 | 1.50 | 0.23 | 5.18 | 2.00 | 66.33 | 3.42 | 1.85 | 24.13 | 7.00 |
+| 600 mg \| Intermediate | 44.93 | 2.75 | 1.03 | 12.75 | 3 | 23.44 | 1.87 | 0.27 | 5.79 | 1.00 | 79.23 | 4.43 | 2.28 | 28.63 | 6.05 |
+| 600 mg \| Slow | 105.04 | 5.19 | 3.42 | 31.01 | 4 | 66.05 | 3.45 | 1.87 | 15.55 | 2.00 | 194.57 | 9.66 | 6.91 | 61.07 | 7.05 |
 
 Simulated steady-state NCA parameters (median; 5-95% PI) per dose x
 metaboliser cell. Cmax / Cmin in mg/L, Tmax / half.life in h, AUClast in

@@ -62,7 +62,7 @@ them.
 | `e_wt_cl`, `e_wt_vc` | `fixed(0.75)`, `fixed(1)` | Methods, “Model development” |
 | CL/F shift equation `CL = TVCL * exp(eta_CL) * (WT/70)^0.75 * (1 + shift * exp(eta_shift))` | – | Table 2 footnote a |
 | `e_conmed_entacapone_cl` (shift) | -0.365 | Table 2 |
-| `etalcl` | 0.07497 (27.9% CV) | Table 2 |
+| `etalcl` | 0.07496 (27.9% CV) | Table 2 |
 | `etae_conmed_entacapone_cl` | 0.01291 (11.4% CV) | Table 2 |
 | `etalvc` | 0.1118 (34.4% CV) | Table 2 |
 | `propSd` | 0.110 | Table 2 |

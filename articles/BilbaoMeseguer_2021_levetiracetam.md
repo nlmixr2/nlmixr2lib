@@ -398,7 +398,7 @@ knitr::kable(
 | Variant | RMSE (points) | Median \|diff\| | 90th pct \|diff\| | Max \|diff\| |
 |:---|---:|---:|---:|---:|
 | Power form, individual predictions | 1.55 | 1.00 | 2.51 | 4.47 |
-| Power form, with residual error | 2.43 | 1.17 | 4.33 | 6.71 |
+| Power form, with residual error | 2.43 | 1.18 | 4.33 | 6.71 |
 | Linear reading, individual predictions | 13.99 | 6.00 | 26.44 | 35.47 |
 
 Over all 105 published PTA cells the packaged model reproduces Tables 4
@@ -483,7 +483,7 @@ knitr::kable(
 | q8h, 30-min infusion | 240 | 1000 | 61 | 57 | 15 | 12 | 0 | 0 |
 | q8h, 30-min infusion | 240 | 1500 | 80 | 80 | 38 | 37 | 0 | 0 |
 | q8h, 30-min infusion | 240 | 2000 | 89 | 90 | 59 | 57 | 1 | 0 |
-| q8h, 120-min infusion | 240 | 2000 | 94 | 94 | 67 | 65 | 1 | 0 |
+| q8h, 120-min infusion | 240 | 2000 | 94 | 93 | 67 | 65 | 1 | 0 |
 
 Replicates Tables 4 and 5 of Bilbao-Meseguer 2021 (PTA, %). {.table}
 
@@ -682,7 +682,7 @@ knitr::kable(
 | NCA parameter      | Group  | Reference | Simulated | % diff   |
 |:-------------------|:-------|:----------|:----------|:---------|
 | t½ (h)             | No ARC | 8.86      | 11.2      | +25.9%\* |
-| t½ (h)             | ARC    | 7.25      | 6.62      | -8.6%    |
+| t½ (h)             | ARC    | 7.25      | 6.63      | -8.6%    |
 | AUC12/D (h/L)      | No ARC | 0.267     | 0.266     | -0.2%    |
 | AUC12/D (h/L)      | ARC    | 0.182     | 0.157     | -13.9%   |
 | CL = D/AUC12 (L/h) | No ARC | 4.28      | 4.16      | -2.9%    |

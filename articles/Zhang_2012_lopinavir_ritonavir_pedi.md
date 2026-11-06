@@ -78,6 +78,18 @@ table below collects the values in one place for review.
 | Equation 3 (sigmoid Emax) | n/a | Methods Equation 3 |
 | Equation 4 (linear F shift) | n/a | Methods Equation 4 |
 
+## Errata
+
+- **The published CVs are first-order approximations.** The Methods
+  state: “Using a first-order approximation, the variability of the
+  lognormal distributions are reported as % coefficient of variation
+  (CV).” Each printed CV is therefore the standard deviation of the
+  corresponding random effect, and the model’s variances are the squares
+  of the printed CVs (for example `etalka ~ 0.762^2` for the 76.2% IOV
+  on ka), not the exact log-normal conversion `log(1 + CV^2)`. The
+  ritonavir CL/F-V/F covariance is `0.99 * 0.728 * 0.433` on the same
+  scale.
+
 ## Virtual cohort
 
 Three regimens are simulated: standard 4:1 LPV/r without rifampicin (the

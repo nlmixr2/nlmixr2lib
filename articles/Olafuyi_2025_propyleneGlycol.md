@@ -116,8 +116,8 @@ Per-parameter provenance is recorded as an in-file comment beside each
 | `beta_vmax` (ADH fraction at birth) | n/a | 0.18 | Equation (1), `Fbirth`; also Table 1, `F ADH activity, neonate` = 18% |
 | `t50_vmax` (age at half-maximal ADH) | n/a | 0.9 years | Equation (1), `Age50` |
 | `lhill` (ontogeny Hill exponent) | n/a | 1.4 | Equation (1), `n` |
-| `etalvmax` (IIV on vmax) | 0.184417 | 0.169646 | Table 3, hepatic CL %CV of 45 (adult) and 43 (neonate); `omega^2 = log(1 + CV^2)` |
-| `etalcl_renal` (IIV on renal CL) | 0.051540 | 0.989541 | Table 3, renal CL %CV of 23 (adult) and 130 (neonate) |
+| `etalvmax` (IIV on vmax) | 0.184403 | 0.169658 | Table 3, hepatic CL %CV of 45 (adult) and 43 (neonate); `omega^2 = log(1 + CV^2)` |
+| `etalcl_renal` (IIV on renal CL) | 0.051548 | 0.989541 | Table 3, renal CL %CV of 23 (adult) and 130 (neonate) |
 | `propSd` (residual error) | fixed 0 | fixed 0 | Not reported; the source is a simulation study with no fitted residual-error model |
 | ADH ontogeny equation | n/a | see below | Equation (1) |
 | Saturable elimination `- vmax * Cc / (km + Cc)` | applies | applies | Methods, “PG Model Development in Adults”; the Vmax/Km pair of Table 2 entered as Simcyp cytosolic ADH kinetics |
@@ -786,7 +786,7 @@ knitr::kable(p95_max,
 | Adults \| 100 mg/kg/day \| q6h | 69.7 | yes |
 | Adults \| 200 mg/kg/day \| q6h | 140.6 | yes |
 | Term neonates \| 25 mg/kg/day \| q6h | 100.3 | yes |
-| Term neonates \| 50 mg/kg/day \| q6h | 192.1 | yes |
+| Term neonates \| 50 mg/kg/day \| q6h | 192.2 | yes |
 
 Upper (95th percentile) peak concentration for each proposed regimen
 against the 580 mg/L PLAT. {.table}

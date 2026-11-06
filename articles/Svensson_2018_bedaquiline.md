@@ -101,13 +101,13 @@ below collects them in one place.
 | `lvp_m2` (Vp_M2/(F\*fm)) | log(3450) | Table 2 “VP_M2/F/fm = 3450 L” (RSE 11.7%) |
 | `lfdepot` | fixed(log(1)) | derived; F = 1 anchor for the F-relative CL and V parameterisation |
 | `e_susp_mat` (formulation effect) | 0.23 | Table 2 “Effect of suspending on MAT (%) = 23” (RSE 43.0%; 95% CI 2.1-48%, P = 0.03) |
-| Block IIV CL_BDQ / CL_M2 (var 0.02891, 0.04122; cor 0.085) |  | Table 2 IIV CL_BDQ = 17.1%, IIV CL_M2 = 20.5%, cor 8.5% |
-| Diagonal IIV V_BDQ (var 0.07682) |  | Table 2 IIV V_BDQ = 28.3% CV |
-| Diagonal IIV Q1_BDQ (var 0.02957) |  | Table 2 IIV Q_BDQ,1 = 17.3% CV |
-| Diagonal IIV V_M2 (var 0.06677) |  | Table 2 IIV V_M2 = 26.3% CV |
-| Diagonal IIV VP_M2 (var 0.04863) |  | Table 2 IIV VP_M2 = 22.3% CV |
-| Diagonal IIV F (var 0.04983) |  | Table 2 IIV F = 22.6% CV (IOV F 9.1% dropped) |
-| Diagonal IIV MAT (var 0.36764) |  | Table 2 IOV MAT = 66.3% CV folded as BSV-MAT |
+| Block IIV CL_BDQ / CL_M2 (var 0.02882, 0.04117; cor 0.085) |  | Table 2 IIV CL_BDQ = 17.1%, IIV CL_M2 = 20.5%, cor 8.5% |
+| Diagonal IIV V_BDQ (var 0.07704) |  | Table 2 IIV V_BDQ = 28.3% CV |
+| Diagonal IIV Q1_BDQ (var 0.02949) |  | Table 2 IIV Q_BDQ,1 = 17.3% CV |
+| Diagonal IIV V_M2 (var 0.06688) |  | Table 2 IIV V_M2 = 26.3% CV |
+| Diagonal IIV VP_M2 (var 0.04853) |  | Table 2 IIV VP_M2 = 22.3% CV |
+| Diagonal IIV F (var 0.04981) |  | Table 2 IIV F = 22.6% CV (IOV F 9.1% dropped) |
+| Diagonal IIV MAT (var 0.36434) |  | Table 2 IOV MAT = 66.3% CV folded as BSV-MAT |
 | `propSd` (BDQ residual) | 0.231 | Table 2 “Proportional error BDQ = 23.1% CV” |
 | `propSd_m2` (M2 residual) | 0.114 | Table 2 “Proportional error M2 = 11.4% CV” |
 | Four-transit chain at rate KTR = (NN+1)/MAT | n/a | Pharmacokinetic-analysis paragraph: KA = KTR; Savic-style chain with NN = 4 |
@@ -318,9 +318,9 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 nca_summary <- summary(nca_res)
 nca_summary
 #>  start end formulation  N     auclast        cmax              tmax
-#>      0  48   suspended 24 30.0 [23.8] 2.08 [31.2] 4.75 [2.50, 13.0]
+#>      0  48   suspended 24 30.0 [23.8] 2.08 [31.1] 4.75 [2.50, 13.0]
 #>      0 336   suspended 24 41.3 [23.1]           .                 .
-#>      0  48       whole 24 31.8 [19.8] 2.10 [36.2] 4.50 [2.00, 14.0]
+#>      0  48       whole 24 31.8 [19.8] 2.10 [36.2] 4.50 [2.00, 13.0]
 #>      0 336       whole 24 45.7 [20.0]           .                 .
 #> 
 #> Caption: auclast, cmax: geometric mean and geometric coefficient of variation; tmax: median and range; N: number of subjects
@@ -392,10 +392,10 @@ validates against.
   BSV-MAT.** The source paper reports IOV MAT = 66.3% CV with no
   separate IIV MAT. To preserve the magnitude of subject-occasion
   variability in MAT, the packaged model treats the IOV value as if it
-  were BSV (`etalmat ~ 0.36764`). Single-dose simulations are unaffected
-  by the BOV-vs-BSV distinction; multi-occasion simulations on a single
-  subject will underestimate occasion-to-occasion drift in absorption
-  time.
+  were BSV (`etalmat ~ log(1 + 0.663^2)`). Single-dose simulations are
+  unaffected by the BOV-vs-BSV distinction; multi-occasion simulations
+  on a single subject will underestimate occasion-to-occasion drift in
+  absorption time.
 - **Cross-output residual correlation (BDQ vs M2 residuals, cor = 53.1%)
   is dropped.** nlmixr2lib has no idiomatic encoding for cross-output
   residual correlation; the packaged residuals on `Cc` and `Cc_m2` are
@@ -429,10 +429,10 @@ validates against.
   maximum-MAT enforcement only mattered during NONMEM estimation to keep
   the search bounded; for forward simulation the typical-value
   `mat = 2.63 * mat_form` and the BSV-distributed individual values
-  rarely approach 6 h (variance 0.368 gives a 95% range of
-  `exp(log(2.63) +/- 1.96 * sqrt(0.368))` = (0.85, 8.18) h, so ~5% of
-  simulated individual MATs exceed 6 h). For users running large
-  simulations who want the ceiling, post-process the sampled `mat`
+  rarely approach 6 h (variance `log(1 + 0.663^2)` = 0.364 gives a 95%
+  range of `exp(log(2.63) +/- 1.96 * sqrt(0.364))` = (0.81, 8.59) h, so
+  about 9% of simulated individual MATs exceed 6 h). For users running
+  large simulations who want the ceiling, post-process the sampled `mat`
   values to `pmin(mat, 6)` externally.
 - **NN = 4 transit compartments is encoded as an integer (`fixed(4)`).**
   Svensson 2018 Table 2 reports NN = 4.00 with RSE 10.9%, indicating the

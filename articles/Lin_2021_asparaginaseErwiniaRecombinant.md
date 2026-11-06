@@ -90,7 +90,7 @@ for review.
 | `lka` (ka) | 0.0348 1/h | Lin 2021 Table 2 (95% CI 0.02942-0.04018, RSE 7.89%) |
 | `lr1` (zero-order input) | 4000 IU/h | Lin 2021 Table 2 (95% CI 1569-6431, RSE 31.01%) |
 | `etalcl` | 0.03502 (BSV 18.88%) | Lin 2021 Table 2 BSV% column, `log(1 + 0.1888^2)` |
-| `etalvc` | 0.09783 (BSV 32.06%) | Lin 2021 Table 2 BSV% column, `log(1 + 0.3206^2)` |
+| `etalvc` | 0.09784 (BSV 32.06%) | Lin 2021 Table 2 BSV% column, `log(1 + 0.3206^2)` |
 | `propSd` | 0.206 | Lin 2021 Table 2 “Error model proportional 20.6%” |
 | One compartment, linear elimination | n/a | Lin 2021 Results, Base model and final covariate model |
 | Sequential mixed-order IM absorption | n/a | Lin 2021 Results, Base model |
@@ -730,7 +730,7 @@ stopifnot(k_iu_per_mg > 450, k_iu_per_mg < 900)
 3.  **BSV% read as a coefficient of variation.** Table 2 prints `BSV%`
     of 18.88 (CL) and 32.06 (Vd) and states that BSV was exponential.
     These are converted with `omega^2 = log(1 + CV^2)` (0.03502 and
-    0.09783). Reading the column as `100 * omega` instead would give
+    0.09784). Reading the column as `100 * omega` instead would give
     0.03565 and 0.1028; at these magnitudes the two readings differ by
     under 5% in variance and cannot be separated by the published
     results. No CL-Vd covariance is reported, so the etas are

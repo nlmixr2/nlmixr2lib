@@ -93,9 +93,9 @@ table below collects them in one place; values come from Lee 2013 Table
 | `lka` (CMS-\>colistin turnover rate TR, non-edema) | log(0.796) | Table 2 row “TR = theta3 - edema\*theta5”: theta3 = 0.796 h^-1 |
 | `e_dis_edema_ka` (theta5; TR decrease with edema) | 0.425 | Table 2 row “theta5 = 0.425 h^-1” |
 | `e_crcl_cl_vc` (theta4; slope of RFM decrease per (CRCL/128)) | 0.213 | Table 2 row “RFM = 1 - theta4 \* (CL_CR/128)”: theta4 = 0.213 |
-| `etalcl ~ 0.131604` | log(0.375^2 + 1) | Table 2 row “omega_CLcol” CV = 37.5% |
-| `etalvc ~ 0.057380` | log(0.243^2 + 1) | Table 2 row “omega_Vcol” CV = 24.3% |
-| `etalka ~ 0.372681` | log(0.672^2 + 1) | Table 2 row “omega_TR” CV = 67.2% |
+| `etalcl ~ 0.131576` | log(0.375^2 + 1) | Table 2 row “omega_CLcol” CV = 37.5% |
+| `etalvc ~ 0.057371` | log(0.243^2 + 1) | Table 2 row “omega_Vcol” CV = 24.3% |
+| `etalka ~ 0.372655` | log(0.672^2 + 1) | Table 2 row “omega_TR” CV = 67.2% |
 | `addSd <- 0.0992` | 99.2 ng/mL = 0.0992 mg/L | Table 2 row “sigma_add” = 99.2 ng/mL |
 | `propSd <- 0.0672` | 0.0672 (= 6.72%) | Table 2 row “sigma_prop” = 6.72% |
 | `rfm <- 1 - e_crcl_cl_vc * (CRCL / 128)` | n/a | Methods, “Population PK model development” paragraph 4 |

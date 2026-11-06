@@ -70,9 +70,9 @@ All values are from Table 1 of the letter (final-model estimates).
 | `lfdepot` | log(1.57) | Table 1, F1 (dose correction factor) |
 | `lksyn` | log(67.9) mg/h | Table 1, CGR |
 | `ltlag` | log(0.344) h | Table 1, Lag time |
-| `etalka` | 0.26683 | Table 1, IIV Ka 55.3 CV%; log(1 + 0.553^2) |
-| `etalfdepot` | 0.058755 | Table 1, IIV F1 24.6 CV%; log(1 + 0.246^2) |
-| `etalksyn` | 0.0015199 | Table 1, IIV CGR 3.9 CV%; log(1 + 0.039^2) |
+| `etalka` | 0.26682 | Table 1, IIV Ka 55.3 CV%; log(1 + 0.553^2) |
+| `etalfdepot` | 0.058756 | Table 1, IIV F1 24.6 CV%; log(1 + 0.246^2) |
+| `etalksyn` | 0.0015198 | Table 1, IIV CGR 3.9 CV%; log(1 + 0.039^2) |
 | `propSd` | 0.039 | Table 1, proportional error (plasma) 3.9% |
 | `propSd_Aurine` | 0.155 | Table 1, proportional error (urine) 15.5% |
 | One compartment, first-order absorption with lag, zero-order generation, linear elimination | n/a | Results, paragraph 1 |
@@ -219,7 +219,7 @@ derived <- tibble::tribble(
   "Elimination half-life ln(2) Vd / CL (h)", log(2) * vc / cl, "not reported",
   "Typical bioavailable meal dose F1 x 180 (mg)", fdepot * dose_nominal, "293 +/- 62.0 (individual estimates, n = 6)",
   "Mean bioavailable meal dose, lognormal F1 IIV (mg)",
-  fdepot * dose_nominal * exp(0.058755 / 2), "293 +/- 62.0 (individual estimates, n = 6)"
+  fdepot * dose_nominal * exp(0.058756 / 2), "293 +/- 62.0 (individual estimates, n = 6)"
 )
 stopifnot(abs(100 * vc / 73 - 73.8) < 0.1)
 knitr::kable(derived, digits = 2, caption = "Model-implied quantities against the letter's values.")
@@ -433,7 +433,7 @@ res |>
 
 | Group | Excess AUC0-inf (mg\*h/L) | Excess Cmax (mg/L) | t1/2 (h) | Tmax (h) |
 |:---|---:|---:|---:|---:|
-| Beef meal, 180 mg nominal | 35.657 | 3.979 | 4.930 | 2.000 |
+| Beef meal, 180 mg nominal | 35.658 | 3.979 | 4.931 | 2.000 |
 | Typical value | 37.225 | 4.205 | 4.927 | 2.000 |
 | Closed form (typical) | 37.233 | 4.209 | 4.922 | 1.904 |
 

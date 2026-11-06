@@ -1627,14 +1627,14 @@ knitr::kable(nca_med, digits = 1,
 
 | regimen | PPTESTCD | median |   q05 |    q95 |
 |:--------|:---------|-------:|------:|-------:|
-| q3w     | auclast  | 1745.7 | 798.1 | 3825.2 |
-| q3w     | cav      |   83.1 |  38.0 |  182.2 |
+| q3w     | auclast  | 1745.8 | 798.2 | 3824.2 |
+| q3w     | cav      |   83.1 |  38.0 |  182.1 |
 | q3w     | cmax     |  145.0 |  42.4 |  296.8 |
-| q3w     | cmin     |   60.8 |  18.5 |  162.0 |
+| q3w     | cmin     |   60.8 |  18.5 |  161.9 |
 | qw      | auclast  |     NA |    NA |     NA |
 | qw      | cav      |     NA |    NA |     NA |
-| qw      | cmax     |   86.6 |  49.0 |  185.9 |
-| qw      | cmin     |   61.1 |  27.3 |  155.0 |
+| qw      | cmax     |   86.6 |  49.0 |  185.8 |
+| qw      | cmin     |   61.1 |  27.3 |  154.9 |
 
 Steady-state NCA by regimen: simulated median (5-95% prediction
 interval). {.table}
@@ -1663,7 +1663,7 @@ knitr::kable(trough_target,
 | regimen |   n | pct_above_20 | median_cmin | q05_cmin | q95_cmin |
 |:--------|----:|-------------:|------------:|---------:|---------:|
 | q3w     | 250 |         91.6 |        53.4 |     16.7 |    154.5 |
-| qw      | 250 |         98.4 |        61.1 |     27.3 |    153.8 |
+| qw      | 250 |         98.4 |        61.1 |     27.3 |    153.7 |
 
 Percentage of simulated subjects with steady-state trough Cc \>= 20
 ug/mL by regimen. Bruno 2005 Results report 91.9% (qw) and 80.2% (q3w).

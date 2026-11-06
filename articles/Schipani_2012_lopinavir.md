@@ -60,7 +60,7 @@ comment. The table below collects the entries in one place.
 | `e_wt_cl` (additive WT effect on CL, L/h per kg from 72 kg) | 0.0457 | Table 1, Final Model column, “Factor associated with BW on LPV CL/F” row |
 | `e_slco1b1_hap15_het_cl` (additive 521TC effect on CL) | -0.791 L/h | Table 1, Final Model column, “Factor associated with T/C on LPV CL/F” row |
 | `e_slco1b1_hap15_hom_cl` (additive 521CC effect on CL) | -2.09 L/h | Table 1, Final Model column, “Factor associated with C/C on LPV CL/F” row |
-| IIV CL/F (omega^2 = log(1 + 0.37^2) = 0.1284) | 37% CV | Table 1, Final Model column, “IIV CL/F%” row |
+| IIV CL/F (omega^2 = log(1 + 0.37^2) = 0.1283) | 37% CV | Table 1, Final Model column, “IIV CL/F%” row |
 | Proportional residual error | 33.1% | Table 1, Final Model column, “Proportional residual error” row |
 | Covariate equation: TVCL = CL0 + theta_BW \* (WT - WTmedian) + theta_HET \* HET + theta_HOM \* HOM | – | Methods p. 863 (Eq. 2 for continuous BW; Eq. for genotype HET / HOM, p. 863) |
 | Median weight WTmedian = 72 kg | – | Patients, p. 862 (“median weight was 72 Kg (range 45-117)”) |
@@ -337,7 +337,7 @@ knitr::kable(comparison,
 
 | cohort               | published       | simulated         |
 |:---------------------|:----------------|:------------------|
-| 521TT (wild-type)    | 5.0 (1.1-13.2)  | 4.74 (2.56-9.18)  |
+| 521TT (wild-type)    | 5.0 (1.1-13.2)  | 4.74 (2.57-9.18)  |
 | 521TC (heterozygote) | 5.11 (1.4-15.6) | 5.23 (2.98-12.72) |
 | 521CC (homozygote)   | 7.4 (2.0-22.1)  | 8.44 (3.38-18.39) |
 

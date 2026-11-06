@@ -81,8 +81,8 @@ equation immediately above Table 4.
 | `e_age_cl_nonren` (age exponent theta2) | `-0.24` | Table 4 row “CL, theta_2 AGE” |
 | `lvc` (V/kg at CrSe \<= 1 mg/dL, theta3) | `log(0.82)` | Table 4 row “V, theta_3” |
 | `e_creat_vc` (log multiplier theta4 for CrSe \> 1) | `log(2.49)` | Table 4 row “V, theta_4 Cr_Se” |
-| `etalcl ~ 0.08688` | `log(1 + 0.3013^2)` | Table 4 row “Intersubject CL” CV = 30.13% |
-| `etalvc ~ 0.05083` | `log(1 + 0.2283^2)` | Table 4 row “Intersubject V” CV = 22.83% |
+| `etalcl ~ 0.08689` | `log(1 + 0.3013^2)` | Table 4 row “Intersubject CL” CV = 30.13% |
+| `etalvc ~ 0.05081` | `log(1 + 0.2283^2)` | Table 4 row “Intersubject V” CV = 22.83% |
 | `addSd <- 4.23` | `4.23 mg/L` | Table 4 row “Residual (SD, mg/L)” |
 | `cl <- (cl_renal_per_kg + cl_nonren_per_kg) * WT * 0.06 * exp(etalcl)` | n/a | Structural equation (Results paragraph 2 above Table 4); 60/1000 converts mL/min to L/h |
 | `vc <- exp(lvc + e_creat_vc * (CREAT > 1) + etalvc) * WT` | n/a | Structural equation V = theta3 \* theta4^A (Results paragraph 2 above Table 4); A = 1 if CrSe \> 1 mg/dL |
@@ -471,8 +471,8 @@ knitr::kable(
 
 | subgroup | median |   q05 |    q95 | pct_ge_400 |
 |:---------|-------:|------:|-------:|-----------:|
-| A        |  685.4 | 420.1 | 1044.3 |       96.0 |
-| B        |  401.5 | 275.3 |  647.3 |       51.2 |
+| A        |  685.4 | 420.1 | 1044.4 |       96.0 |
+| B        |  401.5 | 275.3 |  647.4 |       51.2 |
 | C        |  671.2 | 427.9 |  972.5 |       98.0 |
 | D        |  406.5 | 257.4 |  617.0 |       52.4 |
 

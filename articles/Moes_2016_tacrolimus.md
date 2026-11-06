@@ -62,9 +62,9 @@ comment. The table below collects the entries in one place.
 | `e_cyp3a5_c2_cl` (C2 effect on CL) | +33% | Table 4, Final model column, Cyp3A5\*3 on CL C2 row |
 | `e_cyp3a5_c3_cl` (C3 effect on CL) | +33% | Table 4, Final model column, Cyp3A5\*3 on CL C3 row |
 | `e_cyp3a5_c4_cl` (C4 effect on CL) | +71% | Table 4, Final model column, Cyp3A5\*3 on CL C4 row |
-| IIV CL (omega^2 = log(0.428^2 + 1) = 0.16839) | 42.8% CV | Table 4, Final model column, IIV CL row |
-| IIV Vc (omega^2 = log(0.863^2 + 1) = 0.55657) | 86.3% CV | Table 4, Final model column, IIV Vc row |
-| IIV Ka (omega^2 = log(0.659^2 + 1) = 0.36067) | 65.9% CV | Table 4, Final model column, IIV Ka row |
+| IIV CL (omega^2 = log(0.428^2 + 1) = 0.16821) | 42.8% CV | Table 4, Final model column, IIV CL row |
+| IIV Vc (omega^2 = log(0.863^2 + 1) = 0.55662) | 86.3% CV | Table 4, Final model column, IIV Vc row |
+| IIV Ka (omega^2 = log(0.659^2 + 1) = 0.36066) | 65.9% CV | Table 4, Final model column, IIV Ka row |
 | Proportional residual error (sigma1) | 13% | Table 4, Final model column, sigma1 row |
 | Two-compartment + three-transit absorption | – | Results, Structural model development, and Figure 1 |
 | Covariate equation TV(CL) = THETA(CL) \* (1 + theta_cov) | – | Methods, Covariate analysis, second equation (categorical/genetic effects) |
@@ -324,10 +324,10 @@ knitr::kable(nca_summary,
 
 | start | end | cohort | N | auclast | cmax | cmin | tmax | ctrough |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | C1 (both nonexpressers) | 200 | 160 \[38.8\] | 11.4 \[38.0\] | 4.76 \[52.1\] | 2.00 \[0.500, 7.00\] | 4.84 \[53.3\] |
-| 0 | 24 | C2 (recipient *1, donor* 3/\*3) | 200 | 121 \[43.2\] | 9.34 \[41.2\] | 3.31 \[62.9\] | 2.00 \[0.500, 9.00\] | 3.34 \[63.9\] |
-| 0 | 24 | C3 (recipient *3/*3, donor \*1) | 200 | 124 \[40.2\] | 9.42 \[38.0\] | 3.45 \[59.3\] | 2.00 \[0.500, 5.50\] | 3.48 \[60.4\] |
-| 0 | 24 | C4 (both \*1 carriers) | 200 | 92.2 \[40.4\] | 8.02 \[45.6\] | 2.28 \[64.4\] | 2.00 \[0.500, 7.00\] | 2.30 \[65.0\] |
+| 0 | 24 | C1 (both nonexpressers) | 200 | 160 \[38.7\] | 11.4 \[38.0\] | 4.76 \[52.1\] | 2.00 \[0.500, 7.00\] | 4.84 \[53.2\] |
+| 0 | 24 | C2 (recipient *1, donor* 3/\*3) | 200 | 121 \[43.1\] | 9.34 \[41.1\] | 3.31 \[62.9\] | 2.00 \[0.500, 9.00\] | 3.34 \[63.8\] |
+| 0 | 24 | C3 (recipient *3/*3, donor \*1) | 200 | 124 \[40.2\] | 9.41 \[38.0\] | 3.45 \[59.2\] | 2.00 \[0.500, 5.50\] | 3.48 \[60.3\] |
+| 0 | 24 | C4 (both \*1 carriers) | 200 | 92.2 \[40.3\] | 8.01 \[45.6\] | 2.28 \[64.3\] | 2.00 \[0.500, 7.00\] | 2.30 \[65.0\] |
 
 Steady-state 24-hour NCA on the simulated cohort, by CYP3A5 combination
 (3 mg once daily). {.table style="width:100%;"}
@@ -388,7 +388,7 @@ knitr::kable(tbl, caption = "Simulated steady-state AUC0-24 vs Moes 2016 Table 1
 |:---|:---|
 | Moes 2016 Table 1, all-subject AUC24 mean +/- SD (ug\*h/L) | 170 +/- 55 |
 | Moes 2016 Table 1, all-subject AUC24 median (range) (ug\*h/L) | 162 (72-330) |
-| Simulated C1 median AUC24 (10-90 pct) at 3 mg/day (ug\*h/L) | 160 (98-258) |
+| Simulated C1 median AUC24 (10-90 pct) at 3 mg/day (ug\*h/L) | 160 (98-257) |
 | Simulated C2 median AUC24 (10-90 pct) at 3 mg/day (ug\*h/L) | 122 (70-199) |
 | Simulated C3 median AUC24 (10-90 pct) at 3 mg/day (ug\*h/L) | 128 (73-198) |
 | Simulated C4 median AUC24 (10-90 pct) at 3 mg/day (ug\*h/L) | 91 (56-152) |

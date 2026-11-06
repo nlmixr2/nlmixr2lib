@@ -63,9 +63,9 @@ The table below collects them in one place.
 | `e_creat_cl` (SCR power exponent on CL) | -0.41 | Table 3, theta_SCR |
 | `e_page_cl` (PMA power exponent on CL) | 2.05 | Table 3, theta_PMA |
 | Final CL equation | `CL = theta_CL * WT^0.75 * (SCR/0.8)^-0.41 * (PMA/28)^2.05` | Results paragraph 4 and Table 2 final row |
-| `etalcl` (omega^2, CL CV 23%) | 0.05153 | Table 3 omega^2_CL |
+| `etalcl` (omega^2, CL CV 23%) | 0.05155 | Table 3 omega^2_CL |
 | `etalvc` (omega^2, V CV 13%) | 0.01676 | Table 3 omega^2_V |
-| `etalfdepot` (omega^2, F1 CV 31%) | 0.09175 | Table 3 omega^2_F1 |
+| `etalfdepot` (omega^2, F1 CV 31%) | 0.09176 | Table 3 omega^2_F1 |
 | `propSd` (proportional residual, CV%) | 0.46 | Table 3 sigma proportional |
 | `addSd` (additive residual, ng/mL) | 505 | Table 3 sigma additive |
 | Structural model: 1-compartment first-order absorption | n/a | Methods: “1-compartment model (ADVAN2, TRANS2) and first-order conditional estimation (FOCE with interaction)” |
@@ -643,7 +643,7 @@ knitr::kable(nca_tbl, digits = 2,
 |:----------|:--------------------|--------:|--------:|---------:|------:|
 | IV        | adj.r.squared       |    1.00 |    1.00 |     1.00 |   200 |
 | IV        | auclast             |      NA |      NA |       NA |     0 |
-| IV        | clast.pred          | 1819.19 |  642.08 |  3346.91 |   200 |
+| IV        | clast.pred          | 1819.16 |  642.00 |  3346.99 |   200 |
 | IV        | cmax                | 5921.61 | 4935.14 |  7389.71 |   200 |
 | IV        | half.life           |   48.23 |   25.31 |    94.04 |   200 |
 | IV        | lambda.z            |    0.01 |    0.01 |     0.03 |   200 |
@@ -656,9 +656,9 @@ knitr::kable(nca_tbl, digits = 2,
 | IV        | tmax                |    0.50 |    0.50 |     0.50 |   200 |
 | PO        | adj.r.squared       |    1.00 |    1.00 |     1.00 |   200 |
 | PO        | auclast             |      NA |      NA |       NA |     0 |
-| PO        | clast.pred          | 1697.09 |  540.40 |  3528.79 |   200 |
-| PO        | cmax                | 5357.89 | 3371.07 | 10108.93 |   200 |
-| PO        | half.life           |   49.43 |   25.06 |    87.48 |   200 |
+| PO        | clast.pred          | 1697.06 |  540.41 |  3528.80 |   200 |
+| PO        | cmax                | 5357.90 | 3371.01 | 10109.18 |   200 |
+| PO        | half.life           |   49.43 |   25.05 |    87.48 |   200 |
 | PO        | lambda.z            |    0.01 |    0.01 |     0.03 |   200 |
 | PO        | lambda.z.n.points   |    8.00 |    8.00 |     8.00 |   200 |
 | PO        | lambda.z.time.first |    8.00 |    8.00 |     8.00 |   200 |

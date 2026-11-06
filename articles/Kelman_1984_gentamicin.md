@@ -667,17 +667,17 @@ knitr::kable(nca_summary,
 | regimen | PPTESTCD | median | p05 | p95 |
 |:---|:---|---:|---:|---:|
 | Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | auclast | NA | NA | NA |
-| Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | cmax | 4.7087173 | 3.8239015 | 6.188164e+00 |
-| Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | cmin | 0.8264226 | 0.2316143 | 2.035012e+00 |
-| Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | tmax | 0.8000000 | 0.8000000 | 8.000000e-01 |
+| Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | cmax | 4.708702 | 3.8238800 | 6.187642e+00 |
+| Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | cmin | 0.826543 | 0.2315992 | 2.034521e+00 |
+| Glasgow I 2.5 mg/1.2-kg q12h (Figure 3) | tmax | 0.800000 | 0.8000000 | 8.000000e-01 |
 | Manchester I 2.5 mg/kg q8h | auclast | NA | NA | NA |
-| Manchester I 2.5 mg/kg q8h | cmax | 5.9279032 | 3.5954260 | 8.990839e+00 |
-| Manchester I 2.5 mg/kg q8h | cmin | 1.0166826 | 0.1197493 | 4.128844e+00 |
-| Manchester I 2.5 mg/kg q8h | tmax | 1.0000000 | 1.0000000 | 1.000000e+00 |
+| Manchester I 2.5 mg/kg q8h | cmax | 5.927700 | 3.5959361 | 8.989727e+00 |
+| Manchester I 2.5 mg/kg q8h | cmin | 1.016553 | 0.1196521 | 4.128248e+00 |
+| Manchester I 2.5 mg/kg q8h | tmax | 1.000000 | 1.0000000 | 1.000000e+00 |
 | Manchester II 2.5 mg/kg q8h | auclast | NA | NA | NA |
-| Manchester II 2.5 mg/kg q8h | cmax | 5.8266729 | 2.7937539 | 3.502798e+13 |
-| Manchester II 2.5 mg/kg q8h | cmin | 0.1649464 | 0.0019258 | 9.341961e+12 |
-| Manchester II 2.5 mg/kg q8h | tmax | 1.0000000 | 1.0000000 | 8.000000e+00 |
+| Manchester II 2.5 mg/kg q8h | cmax | 5.826886 | 2.8020477 | 3.451237e+13 |
+| Manchester II 2.5 mg/kg q8h | cmin | 0.165166 | 0.0019750 | 9.210198e+12 |
+| Manchester II 2.5 mg/kg q8h | tmax | 1.000000 | 1.0000000 | 8.000000e+00 |
 
 Simulated steady-state NCA (median, 5th, 95th percentile) per cohort
 regimen. {.table}
@@ -714,11 +714,11 @@ generally \< 2 mg/L for therapeutic regimens).
   to `etalcl` and `etalvc` in each model file. The cohort-specific
   values are:
 
-  - Glasgow I: `etalcl ~ 0.0469`, `etalvc ~ 0.01` (VAR(theta4)
+  - Glasgow I: `etalcl ~ 0.0468`, `etalvc ~ 0.01` (VAR(theta4)
     indeterminate in the paper; placeholder used)
-  - Manchester I: `etalcl ~ 0.148`, `etalvc ~ 0.0902` (VAR(eta3)
+  - Manchester I: `etalcl ~ 0.148`, `etalvc ~ 0.0901` (VAR(eta3)
     indeterminate in the paper; contribution dropped)
-  - Manchester II:`etalcl ~ 0.296`, `etalvc ~ 0.0843` (VAR(eta2)
+  - Manchester II:`etalcl ~ 0.293`, `etalvc ~ 0.0840` (VAR(eta2)
     indeterminate in the paper; contribution dropped) For applications
     where the per-slope additive IIV structure is load-bearing (e.g.,
     reproducing the paper’s individual prediction errors against the

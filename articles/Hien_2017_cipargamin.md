@@ -367,6 +367,66 @@ nca_res  <- PKNCA::pk.nca(nca_data)
 #> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
 #> concentrations found
 #> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(conc.2/conc.1): NaNs produced
 ```
 
 ### Comparison against published NCA (Table 2)
@@ -415,20 +475,20 @@ knitr::kable(
 |:------------------------|:-------|:----------|:----------|:---------|
 | Cmax (ng/mL)            | 10 mg  | 247       | 204       | -17.3%   |
 | Cmax (ng/mL)            | 15 mg  | 442       | 297       | -32.7%\* |
-| Cmax (ng/mL)            | 20 mg  | 535       | 378       | -29.3%   |
+| Cmax (ng/mL)            | 20 mg  | 535       | 379       | -29.2%   |
 | Cmax (ng/mL)            | 30 mg  | 597       | 607       | +1.7%    |
 | Tmax (h)                | 10 mg  | 4.02      | 3         | -25.4%   |
 | Tmax (h)                | 15 mg  | 3         | 3         | +0.0%    |
 | Tmax (h)                | 20 mg  | 3         | 5         | +66.7%\* |
 | Tmax (h)                | 30 mg  | 3.51      | 3         | -14.5%   |
-| AUC0-∞ (obs) (ng\*h/mL) | 10 mg  | 6400      | 5510      | -14.0%   |
-| AUC0-∞ (obs) (ng\*h/mL) | 15 mg  | 11300     | 7890      | -30.2%\* |
+| AUC0-∞ (obs) (ng\*h/mL) | 10 mg  | 6400      | 5750      | -10.2%   |
+| AUC0-∞ (obs) (ng\*h/mL) | 15 mg  | 11300     | 7840      | -30.6%\* |
 | AUC0-∞ (obs) (ng\*h/mL) | 20 mg  | 10100     | 10300     | +2.4%    |
-| AUC0-∞ (obs) (ng\*h/mL) | 30 mg  | 16700     | 14500     | -13.2%   |
-| t½ (h)                  | 10 mg  | 17.3      | 18.3      | +5.8%    |
+| AUC0-∞ (obs) (ng\*h/mL) | 30 mg  | 16700     | 14500     | -13.3%   |
+| t½ (h)                  | 10 mg  | 17.3      | 17.3      | +0.1%    |
 | t½ (h)                  | 15 mg  | 14.9      | 16.6      | +11.4%   |
-| t½ (h)                  | 20 mg  | 15.4      | 17.2      | +11.9%   |
-| t½ (h)                  | 30 mg  | 16.7      | 15.6      | -6.3%    |
+| t½ (h)                  | 20 mg  | 15.4      | 17        | +10.6%   |
+| t½ (h)                  | 30 mg  | 16.7      | 15.7      | -6.3%    |
 
 Simulated (virtual-cohort median) vs. Hien 2017 Table 2 (published
 median). \* differs from reference by \>30%. The tolerance is loose

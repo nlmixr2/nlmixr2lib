@@ -92,8 +92,8 @@ below collects them in one place for review.
 | `lfdepot` (F, oral relative) | log(0.48) | Zeng 2010 Table 3 final model |
 | `e_wt_cl` (theta_7, WT slope) | 1.09 | Zeng 2010 Table 3 final model |
 | `e_csa_cl` (theta_8, CYTA effect) | -0.60 | Zeng 2010 Table 3 final model |
-| IIV CL (31.6% CV) | omega^2 = log(1 + 0.316^2) = 0.0953 | Zeng 2010 Table 3 final model |
-| IIV ka (59.1% CV) | omega^2 = log(1 + 0.591^2) = 0.2994 | Zeng 2010 Table 3 final model |
+| IIV CL (31.6% CV) | omega^2 = log(1 + 0.316^2) = 0.0952 | Zeng 2010 Table 3 final model |
+| IIV ka (59.1% CV) | omega^2 = log(1 + 0.591^2) = 0.2996 | Zeng 2010 Table 3 final model |
 | IIV F (34.6% CV) | omega^2 = log(1 + 0.346^2) = 0.1131 | Zeng 2010 Table 3 final model |
 | Residual exponential (sigma_1) | 0.48 (log-scale SD) | Zeng 2010 Table 3 final model |
 | Reference body weight | 27.9 kg (cohort median) | Zeng 2010 Table 2 footnote |

@@ -433,7 +433,7 @@ knitr::kable(
 
 | source | treatment | cmax | tmax | aucinf.obs | half.life | cl_mLh |
 |:---|:---|---:|---:|---:|---:|---:|
-| simulated (cohort median) | 10 mg/kg single dose | 225.2 | 0.5000 | 3290.8 | 19.9 | 9.44 |
+| simulated (cohort median) | 10 mg/kg single dose | 225.2 | 0.5000 | 3290.7 | 19.9 | 9.44 |
 | Han 2016 typical patient (Table 3) | 10 mg/kg single dose | 261.4 | 0.0625 | 3392.9 | 19.6 | 8.60 |
 
 Simulated cohort-median NCA vs published Han 2016 typical-patient

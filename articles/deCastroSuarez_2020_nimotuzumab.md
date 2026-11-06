@@ -409,7 +409,7 @@ nca_tbl
 #>  1 50 mg     aucinf.obs  2830.      2125.      4071.   
 #>  2 50 mg     clast.obs      0.0579     0.0173     0.769
 #>  3 50 mg     cmax          40.1       40.1       40.1  
-#>  4 50 mg     half.life    117.        81.4      282.   
+#>  4 50 mg     half.life    117.        81.4      281.   
 #>  5 50 mg     tmax           0.5        0.5        0.5  
 #>  6 100 mg    aucinf.obs  4712.      3960.      6236.   
 #>  7 100 mg    clast.obs      0.509      0.345      1.22 

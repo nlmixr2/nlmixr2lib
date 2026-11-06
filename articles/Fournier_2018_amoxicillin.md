@@ -86,7 +86,7 @@ below collects them in one place; values come from Fournier 2018 Table 3
 | `lvp` (V2) | log(17.6) | Table 3 row “V2 (liters)” |
 | `lq` (Q) | log(20.1) | Table 3 row “Q (liters/h)” |
 | `e_crcl_cl` (theta_CLCR_CL) | 0.57 | Table 3 row “theta_CLCR_CL” |
-| `etalcl ~ 0.13028` | log(0.373^2+1) | Table 3 row “omega CL (% CV)” = 37.3% |
+| `etalcl ~ 0.13026` | log(0.373^2+1) | Table 3 row “omega CL (% CV)” = 37.3% |
 | `propSd <- 0.37` | 0.37 | Table 3 row “Proportional error (%)” = 37 |
 | `addSd <- 0.08` | 0.08 mg/L | Table 3 row “Additive error (mg/liter)” = 0.08 |
 | `cl <- exp(lcl + etalcl) * (1 + e_crcl_cl * (CRCL/110 - 1))` | n/a | Table 3 footnote: `TV CL = CL * [1 + theta_CLCR_CL * (CL_CR - 110)]` (interpreted as divisively-centered; see Assumptions) |
@@ -486,7 +486,7 @@ paper’s PTA simulations make clear are not what was used.
   that IIV on V1, V2, and Q “either did not improve the model fit or
   poorly estimated the corresponding random effects” and were not
   retained. The packaged model has IIV only on CL.
-  `etalcl ~ log(0.373^2 + 1) = 0.13028` (omega_CL = 37.3% CV converted
+  `etalcl ~ log(0.373^2 + 1) = 0.13026` (omega_CL = 37.3% CV converted
   to log-normal variance).
 
 - **Combined additive + proportional residual error.** Methods

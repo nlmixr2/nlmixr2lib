@@ -80,14 +80,25 @@ the `population` list literal).
 | Allometric form | Xu 2011 Results, allometric scaling paragraph | TV = theta \* (WT/70)^exp; exponents fixed |
 | Allometric exponents CL, Q | Xu 2011 Results | 0.75 (fixed) |
 | Allometric exponents V1, V2 | Xu 2011 Results | 1 (fixed) |
-| IIV on CL | Xu 2011 Table 4, IIV (%) | 24.3% CV (omega^2 = log(CV^2 + 1) = 0.057371) |
-| IIV on V1 | Xu 2011 Table 4, IIV (%) | 19.3% CV (omega^2 = 0.036572) |
-| IIV on Q | Xu 2011 Table 4, IIV (%) | 53.4% CV (omega^2 = 0.250880) |
-| IIV on V2 | Xu 2011 Table 4, IIV (%) | 28.3% CV (omega^2 = 0.077043) |
+| IIV on CL | Xu 2011 Table 4, IIV (%) | 24.3% CV (omega^2 = CV^2 = 0.059049) |
+| IIV on V1 | Xu 2011 Table 4, IIV (%) | 19.3% CV (omega^2 = 0.037249) |
+| IIV on Q | Xu 2011 Table 4, IIV (%) | 53.4% CV (omega^2 = 0.285156) |
+| IIV on V2 | Xu 2011 Table 4, IIV (%) | 28.3% CV (omega^2 = 0.080089) |
 | Off-diagonal omega | Xu 2011 Table 4 | None reported; IIV treated as diagonal |
 | Proportional residual error | Xu 2011 Table 4, “Proportional error variability (%)” | 21.7 -\> propSd = 0.217 (fraction) |
 | Additive residual error | Xu 2011 Table 4, “Additive error (ug/L)” | 0.0228 ug/L = 2.28e-5 ug/mL |
 | Dose regimens | Xu 2011 Table 1 and Methods | 0.3, 1, 3, 6, 10 mg/kg IV over 10-15 min |
+
+### Errata
+
+- **The published CVs are first-order approximations.** The Table 4
+  footnote reads “IIV (%): inter-individual variability = 100
+  sqrt(estimate for omega^2)”. Each printed IIV is therefore the
+  standard deviation of the corresponding random effect, and the model’s
+  variances are the squares of the printed values (for example
+  `etalcl ~ 0.243^2` for the 24.3% IIV on CL), not the exact log-normal
+  conversion `log(1 + CV^2)`. The difference is largest for Q: 0.534^2 =
+  0.285, against 0.251 from the log-normal conversion.
 
 ### Virtual cohort
 
@@ -286,24 +297,24 @@ sim_nca
 #> # A tibble: 18 × 5
 #>    treatment        PPTESTCD      mean     sd     med
 #>    <chr>            <chr>        <dbl>  <dbl>   <dbl>
-#>  1 0.3 mg/kg        aucinf.obs   56.6   16.5    53.3 
-#>  2 0.3 mg/kg        cmax          6.51   1.22    6.75
-#>  3 0.3 mg/kg        half.life    21.0    6.95   18.3 
-#>  4 1 mg/kg          aucinf.obs  203.    29.7   209.  
-#>  5 1 mg/kg          cmax         22.1    3.06   21.3 
-#>  6 1 mg/kg          half.life    20.5    7.97   19.5 
-#>  7 10 mg/kg         aucinf.obs 2148.   495.   2185.  
-#>  8 10 mg/kg         cmax        214.    33.0   219.  
-#>  9 10 mg/kg         half.life    26.6    9.06   27.8 
-#> 10 3 mg/kg          aucinf.obs  699.   185.    692.  
-#> 11 3 mg/kg          cmax         76.2   11.4    80.6 
-#> 12 3 mg/kg          half.life    20.9    4.44   22.2 
-#> 13 6 mg/kg (female) aucinf.obs 1250.   384.   1172.  
-#> 14 6 mg/kg (female) cmax        127.    29.1   123.  
-#> 15 6 mg/kg (female) half.life    23.3    6.94   22.9 
-#> 16 6 mg/kg (male)   aucinf.obs 1343.   480.   1284.  
-#> 17 6 mg/kg (male)   cmax        137.    17.2   132.  
-#> 18 6 mg/kg (male)   half.life    25.6    5.80   25.5
+#>  1 0.3 mg/kg        aucinf.obs   56.7   16.8    53.3 
+#>  2 0.3 mg/kg        cmax          6.52   1.23    6.76
+#>  3 0.3 mg/kg        half.life    21.1    7.24   18.3 
+#>  4 1 mg/kg          aucinf.obs  203.    30.1   210.  
+#>  5 1 mg/kg          cmax         22.1    3.09   21.3 
+#>  6 1 mg/kg          half.life    20.7    8.21   19.6 
+#>  7 10 mg/kg         aucinf.obs 2153.   502.   2189.  
+#>  8 10 mg/kg         cmax        214.    33.3   219.  
+#>  9 10 mg/kg         half.life    26.8    9.26   28.0 
+#> 10 3 mg/kg          aucinf.obs  702.   188.    694.  
+#> 11 3 mg/kg          cmax         76.3   11.5    80.8 
+#> 12 3 mg/kg          half.life    21.0    4.50   22.2 
+#> 13 6 mg/kg (female) aucinf.obs 1252.   390.   1172.  
+#> 14 6 mg/kg (female) cmax        127.    29.4   123.  
+#> 15 6 mg/kg (female) half.life    23.5    7.18   22.9 
+#> 16 6 mg/kg (male)   aucinf.obs 1347.   489.   1287.  
+#> 17 6 mg/kg (male)   cmax        138.    17.4   132.  
+#> 18 6 mg/kg (male)   half.life    25.7    5.84   25.6
 ```
 
 ### Comparison against Xu 2011 Table 3
@@ -346,12 +357,12 @@ knitr::kable(compare,
 
 | treatment | cmax_pub_mean | cmax_pub_sd | auc_pub_mean | auc_pub_sd | thalf_pub_median | cmax_sim_mean | cmax_sim_sd | auc_sim_mean | auc_sim_sd | thalf_sim_median | cmax_pct_diff | auc_pct_diff |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 0.3 mg/kg | 7.9 | 1.4 | 82.1 | 20.4 | 20.9 | 6.51 | 1.22 | 56.65 | 16.47 | 18.34 | -17.55 | -31.00 |
-| 1 mg/kg | 19.2 | 1.8 | 167.3 | 23.6 | 19.9 | 22.12 | 3.06 | 202.55 | 29.69 | 19.51 | 15.23 | 21.07 |
-| 3 mg/kg | 60.1 | 14.0 | 540.2 | 175.2 | 18.5 | 76.20 | 11.37 | 699.47 | 185.47 | 22.16 | 26.79 | 29.48 |
-| 6 mg/kg (male) | 116.3 | 11.6 | 1225.0 | 378.2 | 29.6 | 137.49 | 17.20 | 1342.77 | 480.26 | 25.50 | 18.22 | 9.61 |
-| 6 mg/kg (female) | 118.6 | 19.2 | 1262.0 | 307.0 | 25.0 | 127.45 | 29.12 | 1249.81 | 384.14 | 22.88 | 7.46 | -0.97 |
-| 10 mg/kg | 248.8 | 61.7 | 2164.7 | 658.5 | 21.0 | 213.75 | 32.98 | 2148.39 | 495.32 | 27.84 | -14.09 | -0.75 |
+| 0.3 mg/kg | 7.9 | 1.4 | 82.1 | 20.4 | 20.9 | 6.52 | 1.23 | 56.67 | 16.76 | 18.33 | -17.51 | -30.98 |
+| 1 mg/kg | 19.2 | 1.8 | 167.3 | 23.6 | 19.9 | 22.14 | 3.09 | 202.72 | 30.12 | 19.57 | 15.29 | 21.17 |
+| 3 mg/kg | 60.1 | 14.0 | 540.2 | 175.2 | 18.5 | 76.34 | 11.48 | 701.53 | 188.43 | 22.19 | 27.02 | 29.86 |
+| 6 mg/kg (male) | 116.3 | 11.6 | 1225.0 | 378.2 | 29.6 | 137.58 | 17.37 | 1346.63 | 488.70 | 25.55 | 18.30 | 9.93 |
+| 6 mg/kg (female) | 118.6 | 19.2 | 1262.0 | 307.0 | 25.0 | 127.48 | 29.41 | 1251.57 | 389.93 | 22.93 | 7.49 | -0.83 |
+| 10 mg/kg | 248.8 | 61.7 | 2164.7 | 658.5 | 21.0 | 213.78 | 33.32 | 2152.55 | 502.30 | 27.98 | -14.08 | -0.56 |
 
 Simulated NCA vs. Xu 2011 Table 3: Cmax (ug/mL), AUC(0,inf)
 (ug\*day/mL), terminal t1/2 (days). {.table style="width:100%;"}

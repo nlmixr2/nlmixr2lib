@@ -313,7 +313,7 @@ knitr::kable(attainment, digits = 1,
 
 | pma_stratum |   n | auc_median | auc_q05 | auc_q95 | pct_at_target | pct_over_max |
 |:------------|----:|-----------:|--------:|--------:|--------------:|-------------:|
-| PMA\<34     |  94 |      120.8 |    47.8 |   221.6 |          90.4 |          1.1 |
+| PMA\<34     |  94 |      120.8 |    47.8 |   221.7 |          90.4 |          1.1 |
 | PMA\>=34    | 106 |       93.7 |    41.1 |   215.2 |          74.5 |          0.9 |
 
 Simulated steady-state AUC0-24 (mg*h/L) by PMA stratum at the Zhao 2014

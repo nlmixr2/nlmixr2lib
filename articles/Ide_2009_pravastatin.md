@@ -67,8 +67,8 @@ comment. The table below collects the entries in one place.
 | `e_slco1b1_hap15_het_fdepot` (Frel multiplier for \*15 het) | 1.50 | Table II, Final Model column, Frel SLCO1B1\\15 heterozygote row |
 | `e_slco1b1_hap15_hom_fdepot` (Frel multiplier for \*15 hom) | 1.95 | Table II, Final Model column, Frel SLCO1B1\\15 homozygote row |
 | IIV MTT (omega^2 = log(1 + 0.352^2) = 0.1168) | 35.2% CV | Table II, Final Model IIV column, MTT row |
-| IIV CL/F (omega^2 = log(1 + 0.279^2) = 0.0749) | 27.9% CV | Table II, Final Model IIV column, CL/F row |
-| IIV V1/F (omega^2 = log(1 + 0.344^2) = 0.1119) | 34.4% CV | Table II, Final Model IIV column, V1/F row |
+| IIV CL/F (omega^2 = log(1 + 0.279^2) = 0.0750) | 27.9% CV | Table II, Final Model IIV column, CL/F row |
+| IIV V1/F (omega^2 = log(1 + 0.344^2) = 0.1118) | 34.4% CV | Table II, Final Model IIV column, V1/F row |
 | IIV K12 (omega^2 = log(1 + 0.512^2) = 0.2328) | 51.2% CV | Table II, Final Model IIV column, K12 row |
 | Proportional residual error | 18.8% | Table II, Final Model column, “Proportional error” row |
 | Additive residual error | 0.176 ng/mL | Table II, Final Model column, “Additive error” row |
@@ -260,7 +260,7 @@ knitr::kable(nca_summary,
 |---:|---:|:---|:---|:---|:---|:---|:---|
 | 0 | 24 | \*15 heterozygote | 50 | 61.8 \[31.7\] | 20.5 \[30.1\] | 1.00 \[0.500, 2.00\] | 62.3 \[32.4\] |
 | 0 | 24 | \*15 homozygote | 50 | 71.7 \[27.9\] | 27.2 \[25.7\] | 1.00 \[0.500, 2.00\] | 72.0 \[28.5\] |
-| 0 | 24 | \*15 noncarrier | 50 | 36.5 \[27.0\] | 14.1 \[35.0\] | 1.00 \[0.500, 2.00\] | 36.7 \[27.2\] |
+| 0 | 24 | \*15 noncarrier | 50 | 36.5 \[27.0\] | 14.1 \[35.0\] | 1.00 \[0.500, 2.00\] | 36.7 \[27.3\] |
 
 Single-dose simulated NCA parameters by SLCO1B1\*15 genotype stratum (50
 subjects per stratum, 10 mg oral). {.table}
@@ -304,9 +304,9 @@ knitr::kable(weighted_table,
 
 | cohort            | mean_auc24 | sd_auc24 | table_i_count | table_i_weight |
 |:------------------|-----------:|---------:|--------------:|---------------:|
-| \*15 heterozygote |   64.73358 | 19.87542 |            23 |      0.4035088 |
-| \*15 homozygote   |   74.39571 | 21.26104 |             6 |      0.1052632 |
-| \*15 noncarrier   |   37.74073 | 10.13435 |            28 |      0.4912281 |
+| \*15 heterozygote |   64.73673 | 19.88427 |            23 |      0.4035088 |
+| \*15 homozygote   |   74.39538 | 21.26984 |             6 |      0.1052632 |
+| \*15 noncarrier   |   37.74034 | 10.13838 |            28 |      0.4912281 |
 
 Per-stratum simulated mean AUC0-24 vs. Table I weighting. {.table}
 

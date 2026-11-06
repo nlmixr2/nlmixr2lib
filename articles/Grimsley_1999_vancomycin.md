@@ -44,8 +44,8 @@ place for review.
 |----|----|----|
 | `lcl` (CL coefficient) | 3.56 | Table 4, row “Clearance (l/h)” final-model column: CL = 3.56 \* WT / CREAT (SE 3.8%) |
 | `lvc` (V per kg) | 0.669 L/kg | Table 4, row “Volume (l)” final-model column: V = 0.669 \* WT (SE 4.7%) |
-| `etalcl` (22% CV) | 0.04729 | Table 4, row “Interpatient variability on clearance” final-model column (SE 28%) |
-| `etalvc` (18% CV) | 0.03188 | Table 4, row “Interpatient variability on volume” final-model column (SE 46%) |
+| `etalcl` (22% CV) | 0.04727 | Table 4, row “Interpatient variability on clearance” final-model column (SE 28%) |
+| `etalvc` (18% CV) | 0.03189 | Table 4, row “Interpatient variability on volume” final-model column (SE 46%) |
 | `addSd` | 4.53 mg/L | Table 4, row “Residual error on concentration (mg/l)” final-model column (SE 13%) |
 | 1-cmt IV-infusion structure | n/a | Results paragraph “When the basic structural models were compared”; Methods |
 | Additive residual error | n/a | Results: “Residual error was best described by an additive structure” |
@@ -1745,7 +1745,7 @@ knitr::kable(nca_summary,
 | Interval Start | Interval End | cohort | N | AUClast (hr\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (hr) | Cav (mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
 | 264 | 288 | creat_120_q12 | 60 | 529 \[23.2\], n=120 | 34.8 \[15.5\], n=120 | 12.6 \[39.3\], n=120 | 1.00 \[1.00, 1.00\], n=120 | 22.0 \[23.2\], n=120 |
-| 132 | 144 | creat_20_q12 | 60 | 87.0 \[19.7\], n=120 | 21.2 \[15.2\], n=120 | 1.06 \[82.0\], n=120 | 1.00 \[1.00, 1.00\], n=120 | 7.25 \[19.7\], n=120 |
+| 132 | 144 | creat_20_q12 | 60 | 87.0 \[19.7\], n=120 | 21.2 \[15.2\], n=120 | 1.06 \[81.9\], n=120 | 1.00 \[1.00, 1.00\], n=120 | 7.25 \[19.7\], n=120 |
 | 132 | 144 | creat_45_q12 | 60 | 188 \[22.1\], n=120 | 28.4 \[15.2\], n=120 | 7.13 \[44.8\], n=120 | 1.00 \[1.00, 1.00\], n=120 | 15.7 \[22.1\], n=120 |
 | 264 | 288 | creat_80_q12 | 60 | 323 \[23.3\], n=120 | 27.3 \[16.4\], n=120 | 5.09 \[52.3\], n=120 | 1.00 \[1.00, 1.00\], n=120 | 13.5 \[23.3\], n=120 |
 

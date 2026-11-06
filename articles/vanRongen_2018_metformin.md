@@ -48,7 +48,7 @@ in `inst/modeldb/specificDrugs/vanRongen_2018_metformin.R`):
 | `e_wt_cl` | `0.0138` per kg | Table 2 final V (linear slope) = 0.0138 (RSE 44%) |
 | `etalcl` | `~ 0.0694` | Table 2 final IIV CL/F = 26.8% CV (omega^2 = log(1 + 0.268^2)) |
 | `etalvc` | `~ 0.1231` | Table 2 final IIV V/F = 36.2% CV (omega^2 = log(1 + 0.362^2)) |
-| `etalka` | `~ 0.4017` | Table 2 final IIV ka = 70.3% CV (omega^2 = log(1 + 0.703^2)) |
+| `etalka` | `~ 0.4016` | Table 2 final IIV ka = 70.3% CV (omega^2 = log(1 + 0.703^2)) |
 | `propSd` | `0.218` (fraction) | Table 2 final proportional residual error = 21.8% (RSE 25%) |
 | CL/F covariate equation | n/a | Section 3.3 / Table 2: CL/F = CL/F\_{75.8 kg} \* (1 + V \* (TBW - 75.8)) |
 | `d/dt(depot)` ODE | n/a | One-compartment first-order oral absorption (Section 3.3, Methods 2.6) |
@@ -663,7 +663,7 @@ knitr::kable(
 | 1000 mg single oral | aucinf.obs |      NA |       NA |      NA |
 | 1000 mg single oral | auclast    |      NA |       NA |      NA |
 | 1000 mg single oral | cmax       |   1.488 |   0.9398 |   2.577 |
-| 1000 mg single oral | half.life  | 294.700 | 139.7000 | 617.700 |
+| 1000 mg single oral | half.life  | 294.700 | 139.7000 | 617.900 |
 | 1000 mg single oral | tmax       | 100.000 |  50.0000 | 200.500 |
 
 PKNCA on simulated 1000 mg single oral metformin (n = 200 virtual

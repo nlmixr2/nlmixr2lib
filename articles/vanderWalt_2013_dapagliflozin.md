@@ -69,11 +69,11 @@ below collects them in one place.
 | `e_wt_vc`, `e_wt_vp`, `e_wt_vc_d3og` | 1.0 (FIXED) | Table 2: a priori allometric (BBWT/70)^1 on volumes |
 | IIV block (CLP_M15, V2M) | var=0.1270, cov=0.0855, var=0.1822 | Table 1, IIV row (CV 36.8% / 44.7%, r = 0.562) |
 | IIV.CLP_other | 0.0935 (log(1+0.313^2)) | Table 1, IIV row CV 31.3% |
-| IIV.CLP_renal | 0.3243 (log(1+0.619^2)) | Table 1, IIV row CV 61.9% |
+| IIV.CLP_renal | 0.3244 (log(1+0.619^2)) | Table 1, IIV row CV 61.9% |
 | IIV.V2P | 0.0542 | Table 1, IIV row CV 23.6% |
 | IIV.QP | 0.1423 | Table 1, IIV row CV 39.1% |
 | IIV.V3P | 0.1942 | Table 1, IIV row CV 46.3% |
-| IIV.MTT | 0.3100 | Table 1, IIV row CV 60.3% |
+| IIV.MTT | 0.3101 | Table 1, IIV row CV 60.3% |
 | IIV.NN | 1.520 | Table 1, IIV row CV 189% |
 | IIV.CLM | 0.0602 | Table 1, IIV row CV 24.9% |
 | IIV.BIO (logit scale) | 0.611 | Table 1, IIV row CV 11.1% back-transformed (footnote g) |

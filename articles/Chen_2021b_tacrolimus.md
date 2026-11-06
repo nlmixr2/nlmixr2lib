@@ -91,7 +91,7 @@ Every `ini()` value carries an in-file comment pointing to its source in
 | `e_wuzhi_eq45_cl` | 0.783 | Table 2 ‘WZ=45mg’ |
 | `e_wuzhi_gt45_cl` | 0.598 | Table 2 ‘WZ\>45mg’ (reference ‘WZ=0mg’ = 1) |
 | `etalcl` | 0.0625 | Table 2 BSV ‘CL/F(%)’ 25.4 %, as `log(0.254^2 + 1)` |
-| `etalvc` | 0.2354 | Table 2 BSV ‘V/F(%)’ 51.5 %, as `log(0.515^2 + 1)` |
+| `etalvc` | 0.2352 | Table 2 BSV ‘V/F(%)’ 51.5 %, as `log(0.515^2 + 1)` |
 | `expSd_changhai` | 0.2462 | Table 2 ‘CH exponential error’ 0.0606 (variance), `sqrt(0.0606)` |
 | `expSd_huashan` | 0.2978 | Table 2 ‘HS exponential error’ 0.0887 (variance), `sqrt(0.0887)` |
 | CL/F covariate equation | n/a | Results, ‘The final popPK model included the following parameter-covariate relations’ |
@@ -423,7 +423,7 @@ c0_sim |>
 - **IIV scale.** Table 2 prints between-subject variability as a
   percentage (CL/F 25.4 %, V/F 51.5 %) without stating the conversion.
   It is read as a log-normal CV and converted with
-  `omega^2 = log(CV^2 + 1)` (0.0625, 0.2354). Reading the percentage as
+  `omega^2 = log(CV^2 + 1)` (0.0625, 0.2352). Reading the percentage as
   `100 * omega` instead would give 0.0645 and 0.265; the CL/F value
   barely changes, the V/F value by 13 %.
 - **Residual error scale.** Table 2 prints the exponential residual

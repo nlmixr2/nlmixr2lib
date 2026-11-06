@@ -409,7 +409,7 @@ nadir_by_grade <- c(
 )
 nadir_by_grade
 #>    grade3    grade4 
-#> 0.7786639 0.4313569
+#> 0.7786775 0.4313593
 
 stopifnot(
   # Binomial SD at n = 200 is about 3.4 points at 36% and 1.5 points at 5%; a
@@ -492,7 +492,7 @@ deterministic.
 ``` r
 
 auc_grid <- c(1000, 1500, 2000, 2500, 2900, 3500, 4000)
-omega_pd <- c(etalcirc0 = 0.115567, etalmtt = 0.014297, etalemax = 0.022250, etalec50 = 0.623207)
+omega_pd <- c(etalcirc0 = 0.115558, etalmtt = 0.014297, etalemax = 0.022251, etalec50 = 0.623207)
 set.seed(20220621)
 fig5_pat <- expand.grid(k = seq_len(n_arm), auc = auc_grid) |>
   dplyr::mutate(

@@ -1,0 +1,377 @@
+# Procalcitonin after birth (Bokor 2025)
+
+## Model and source
+
+- Citation: Bokor AJ, Holford N, Hannam JA. Imputation of missing clock
+  times - application to procalcitonin concentration time course after
+  birth. J Pharmacokinet Pharmacodyn. 2025;52(2):20.
+  <doi:10.1007/s10928-025-09965-8>.
+- Description: One-compartment turnover model for serum procalcitonin
+  (PCT) in Japanese preterm and term neonates and infants after birth
+  (Bokor 2025). Birth is a nominal bolus of 1 unit into a first-order
+  birth-stimulus compartment, released after a lag time; the stimulus
+  increases PCT production linearly (SYNB = 1 + SLOPEB \* CB). PCT
+  clearance is allometrically scaled to 70 kg (exponent 3/4) and matures
+  with postmenstrual age (sigmoid Hill function); volume scales linearly
+  with weight. Typical values are the Scenario 3 (clinical-practice
+  clock-time imputation) estimates the authors selected as best; the
+  random-effect variances are those of the Scenario 0 control stream
+  (the only variances the paper reports).
+- Article: <https://doi.org/10.1007/s10928-025-09965-8> (open access;
+  the NM-TRAN control stream with the Scenario 0 final estimates and the
+  per-scenario parameter tables are in Supplementary Material 1)
+
+The paper is a methods study of how to impute missing within-day clock
+times of birth and of blood sampling. The same turnover model was fitted
+to the original data with all events at 00:00 of their date (Scenario 0)
+and to 100 replicate datasets for each of four imputation scenarios (1A,
+1B, 2, 3). Scenario 3, which follows the study hospital’s sampling
+practice (first sample of the day at 09:00, at least 8 h between
+samples), had the best objective function (average dOFV -62.6 vs
+Scenario 0, Table 1) and the best VPC, so its estimates are the model’s
+typical values here.
+
+## Population
+
+The data are 1275 serum procalcitonin (PCT) concentrations from 282
+Japanese neonates and infants born at 22 to 41 weeks gestational age,
+measured during routine care from birth up to 19 weeks postnatal age
+(Methods, first paragraph; dataset of Fukuzumi 2016, Sci Rep 6:1-6).
+Sex, weight and the number of preterm infants are not tabulated in the
+paper. The same information is available programmatically via
+`readModelDb("Bokor_2025_procalcitonin")()$population`.
+
+## Source trace
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `d/dt(central) <- kin * synb - cl * central / vc` | n/a | Eq. 1; Supplementary Text 1 `$DES` `DADT(2)` |
+| `synb <- 1 + slope_birth * birth` | n/a | Eq. 2; `$DES` `SYNB` (VB = 1) |
+| `central(0) <- kin / cl * vc` | n/a | Eq. 3; `$PK` `BASE`, `A_0(2)` |
+| `fmat <- 1 / (1 + (PAGE / tm50_cl)^(-hill_cl))` | n/a | Eq. 4; `$PK` `FMAT` |
+| `d/dt(birth) <- -kel_birth * birth`, `alag(birth) <- tlag` | n/a | Methods ‘Modelling methods’; `$PK` `ALAG1`, `$DES` `DADT(1)` |
+| `lkin` (RateInPCT) | 0.00466 ug/h | Table 2, Scenario 3 |
+| `lcl` (CLPCT) | 0.493 L/h/70 kg | Table 2, Scenario 3 |
+| `lvc` (VPCT) | 15 L/70 kg, fixed | Table 2; Methods (reference 17) |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1, fixed | Methods ‘Modelling methods’; `$PK` `PWRCL`, `VC` |
+| `ltm50_cl` (TM50PCT) | 24.7 weeks | Table 2, Scenario 3 |
+| `lhill_cl` (HillPCT) | 7.82 | Table 2, Scenario 3 |
+| `lthalf_birth` (TelB) | 5.67 h | Table 2, Scenario 3 |
+| `ltlag` (TLAG) | 12.0 h | Table 2, Scenario 3 |
+| `lslope_birth` (SLOPEB) | 75.4 | Table 2, Scenario 3 |
+| `etalkin` … `etaltm50_cl` | `$OMEGA BLOCK(5)` | Supplementary Text 1 (Scenario 0) |
+| `propSd` | 0.294 | Table 2, Scenario 3 |
+
+## Model structure and units
+
+The model runs in hours. Birth is a nominal bolus of 1 unit into the
+`birth` compartment at the time of birth (time 0); `alag(birth)` holds
+it back for the lag time, after which it decays with half-life TelB. PCT
+production is `kin * (1 + slope_birth * birth)`, so before the lag
+production equals baseline. PCT clearance and volume scale with weight
+to 70 kg and clearance matures with postmenstrual age (`PAGE`, weeks).
+
+``` r
+
+mod <- readModelDb("Bokor_2025_procalcitonin")
+mod_typ <- rxode2::zeroRe(mod)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+```
+
+## Typical-value time course (Figure 5 and Table 3)
+
+Figure 5 and Table 3 simulate a male neonate of 40 weeks postmenstrual
+age and 3.36 kg at birth for four days. The control stream uses birth
+weight for the first five days, so weight is held at 3.36 kg. Scenario 0
+uses the control stream’s final estimates (converted from days to
+hours); the other scenarios use the Table 2 averages over the 100
+imputed datasets.
+
+``` r
+
+scen <- tibble::tribble(
+  ~scenario, ~kin, ~cl, ~tm50, ~hill, ~telb, ~tlag, ~slope,
+  "0", 0.103 / 24, 10.5 / 24, 25.2, 11.7, 0.149 * 24, 0.826 * 24, 83.0,
+  "1A", 0.00471, 0.500, 24.7, 7.80, 5.63, 15.3, 77.3,
+  "1B", 0.00472, 0.502, 24.7, 7.85, 5.64, 15.6, 77.4,
+  "2", 0.00471, 0.498, 24.6, 7.87, 5.70, 15.5, 77.9,
+  "3", 0.00466, 0.493, 24.7, 7.82, 5.67, 12.0, 75.4
+)
+
+ev_ref <- rxode2::et(amt = 1, cmt = "birth", time = 0) |>
+  rxode2::et(seq(0, 96, by = 0.05), cmt = "central")
+
+solve_scenario <- function(row) {
+  p <- c(
+    lkin = log(row$kin), lcl = log(row$cl), ltm50_cl = log(row$tm50),
+    lhill_cl = log(row$hill), lthalf_birth = log(row$telb),
+    ltlag = log(row$tlag), lslope_birth = log(row$slope),
+    WT = 3.36, PAGE = 40
+  )
+  s <- rxode2::rxSolve(mod_typ, ev_ref, params = p, atol = 1e-10, rtol = 1e-10)
+  data.frame(scenario = row$scenario, time = s$time, Cc = s$Cc, birth = s$birth)
+}
+typ <- dplyr::bind_rows(lapply(seq_len(nrow(scen)), function(i) {
+  solve_scenario(scen[i, ])
+}))
+#> ℹ omega/sigma items treated as zero: 'etalkin', 'etalcl', 'etalslope_birth', 'etaltlag', 'etaltm50_cl'
+#> ℹ omega/sigma items treated as zero: 'etalkin', 'etalcl', 'etalslope_birth', 'etaltlag', 'etaltm50_cl'
+#> ℹ omega/sigma items treated as zero: 'etalkin', 'etalcl', 'etalslope_birth', 'etaltlag', 'etaltm50_cl'
+#> ℹ omega/sigma items treated as zero: 'etalkin', 'etalcl', 'etalslope_birth', 'etaltlag', 'etaltm50_cl'
+#> ℹ omega/sigma items treated as zero: 'etalkin', 'etalcl', 'etalslope_birth', 'etaltlag', 'etaltm50_cl'
+```
+
+``` r
+
+ggplot(typ, aes(time / 24, Cc, colour = scenario, linetype = scenario)) +
+  geom_line(linewidth = 0.8) +
+  labs(
+    x = "Time after birth (days)", y = "Procalcitonin (ug/L)",
+    colour = "Scenario", linetype = "Scenario"
+  ) +
+  theme_bw()
+```
+
+![Replicates Figure 5 of Bokor 2025: typical PCT after birth for a 3.36
+kg, 40-week PMA neonate under each scenario's
+estimates.](Bokor_2025_procalcitonin_files/figure-html/fig5-1.png)
+
+Replicates Figure 5 of Bokor 2025: typical PCT after birth for a 3.36
+kg, 40-week PMA neonate under each scenario’s estimates.
+
+The peak time and peak concentration are computed with PKNCA over 0 to
+96 h (the birth bolus is the nominal 1-unit dose).
+
+``` r
+
+conc_df <- typ |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(id = 1L)
+dose_df <- data.frame(id = 1L, scenario = scen$scenario, time = 0, amt = 1)
+o_conc <- PKNCA::PKNCAconc(conc_df, Cc ~ time | scenario + id)
+o_dose <- PKNCA::PKNCAdose(dose_df, amt ~ time | scenario + id)
+o_data <- PKNCA::PKNCAdata(
+  o_conc, o_dose,
+  intervals = data.frame(start = 0, end = 96, cmax = TRUE, tmax = TRUE)
+)
+nca <- PKNCA::pk.nca(o_data)
+
+table3 <- data.frame(
+  scenario = c("0", "1A", "1B", "2", "3"),
+  tmax = c(28.6, 26.9, 26.9, 23.5, 22.1),
+  cmax = c(1.62, 2.09, 2.09, 2.07, 2.19)
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  nca, table3,
+  by = "scenario",
+  units = c(cmax = "ug/L", tmax = "h")
+)
+knitr::kable(cmp, caption = "Simulated vs Table 3 of Bokor 2025.")
+```
+
+| NCA parameter | scenario | Reference | Simulated | % diff |
+|:--------------|:---------|:----------|:----------|:-------|
+| Cmax (ug/L)   | 0        | 1.62      | 1.59      | -1.9%  |
+| Cmax (ug/L)   | 1A       | 2.09      | 2.05      | -1.9%  |
+| Cmax (ug/L)   | 1B       | 2.09      | 2.06      | -1.7%  |
+| Cmax (ug/L)   | 2        | 2.07      | 2.08      | +0.6%  |
+| Cmax (ug/L)   | 3        | 2.19      | 2         | -8.6%  |
+| Tmax (h)      | 0        | 28.6      | 28.4      | -0.5%  |
+| Tmax (h)      | 1A       | 26.9      | 26        | -3.5%  |
+| Tmax (h)      | 1B       | 26.9      | 26.2      | -2.4%  |
+| Tmax (h)      | 2        | 23.5      | 26.2      | +11.7% |
+| Tmax (h)      | 3        | 22.1      | 22.8      | +2.9%  |
+
+Simulated vs Table 3 of Bokor 2025. {.table}
+
+Scenario 0 is the only scenario whose printed parameters are the ones
+behind the published curve, and it reproduces Table 3 to within about
+2%. For Scenarios 1A to 3, Table 3 and Figure 5 were drawn from the
+single replicate whose dOFV was closest to the median, whose estimates
+are not printed; the Table 2 averages used here are a different summary
+of the same 100 fits, so differences of several percent are expected.
+The largest is the Scenario 2 peak time (about 26 h here vs 23.5 h). Its
+lag-time estimates spread from 12.7 to 21.2 h across the replicates
+(Supplementary Table 4), and the Figure 5 curve for Scenario 2 starts
+rising at about 0.53 days (13 h), so the median-dOFV replicate had a lag
+well below the 15.5 h average. The visible onset of the rise in Figure 5
+(about 0.47 days, 11 h, for Scenario 3; 0.8 days for Scenario 0) is
+consistent with the lag times.
+
+``` r
+
+nca_res <- as.data.frame(nca$result)
+cell <- function(sc, code) {
+  v <- nca_res$PPORRES[nca_res$scenario == sc & nca_res$PPTESTCD == code]
+  if (length(v) != 1L) stop("no unique NCA row for scenario ", sc, " ", code)
+  v
+}
+stopifnot(
+  # Scenario 0: the printed control-stream estimates reproduce Table 3.
+  abs(cell("0", "cmax") / 1.62 - 1) < 0.05,
+  abs(cell("0", "tmax") - 28.6) < 1,
+  # Scenario 3 (the selected model): average estimates against the
+  # median-run Table 3 values.
+  abs(cell("3", "cmax") / 2.19 - 1) < 0.15,
+  abs(cell("3", "tmax") - 22.1) < 2,
+  # Ordering reported in the Results: Scenario 3 peaks earliest and
+  # Scenario 0 lowest.
+  cell("3", "tmax") < cell("0", "tmax"),
+  cell("0", "cmax") < min(sapply(c("1A", "1B", "2", "3"), cell, code = "cmax"))
+)
+```
+
+## Baseline and closed-form checks
+
+With weight and postmenstrual age held constant the model has an exact
+solution. Before the lag the state stays at the baseline `kin / CL` (Eq.
+3). After the lag, with `tau = t - tlag`, `k = CL / V` and
+`kb = log(2) / TelB`,
+
+`C(t) = base + kin * SLOPEB / V * (exp(-kb * tau) - exp(-k * tau)) / (k - kb)`.
+
+The solver and the closed form share the same parameters, so the
+difference is pure numerical error.
+
+``` r
+
+p3 <- scen[scen$scenario == "3", ]
+fsz <- 3.36 / 70
+fmat <- 1 / (1 + (40 / p3$tm50)^(-p3$hill))
+cl_i <- p3$cl * fsz^0.75 * fmat
+v_i <- 15 * fsz
+k <- cl_i / v_i
+kb <- log(2) / p3$telb
+base <- p3$kin / cl_i
+s3 <- typ[typ$scenario == "3", ]
+tau <- pmax(s3$time - p3$tlag, 0)
+cf <- base + p3$kin * p3$slope / v_i * (exp(-kb * tau) - exp(-k * tau)) / (k - kb)
+rel_err <- abs(s3$Cc - cf) / cf
+c(baseline_ug_L = base, max_rel_err = max(rel_err))
+#> baseline_ug_L   max_rel_err 
+#>  9.429907e-02  5.252652e-10
+stopifnot(
+  max(abs(s3$Cc[s3$time < p3$tlag] / base - 1)) < 1e-6,
+  max(rel_err) < 1e-4
+)
+```
+
+## Maturation of PCT clearance
+
+Equation 4 is a steep sigmoid in postmenstrual age. The Scenario 0 Hill
+exponent (11.7) is close to a step change, which the authors judged
+implausible; Scenario 3 gives a smoother curve (Hill 7.82).
+
+``` r
+
+pma <- seq(22, 60, by = 0.25)
+fm <- dplyr::bind_rows(
+  data.frame(scenario = "0", PMA = pma, fmat = 1 / (1 + (pma / 25.2)^(-11.7))),
+  data.frame(scenario = "3", PMA = pma, fmat = 1 / (1 + (pma / 24.7)^(-7.82)))
+)
+ggplot(fm, aes(PMA, fmat, colour = scenario)) +
+  geom_line(linewidth = 0.8) +
+  labs(x = "Postmenstrual age (weeks)", y = "Fmat (fraction of adult)") +
+  theme_bw()
+```
+
+![Fraction of adult PCT clearance by postmenstrual age (Eq. 4) for
+Scenarios 0 and
+3.](Bokor_2025_procalcitonin_files/figure-html/fmat-1.png)
+
+Fraction of adult PCT clearance by postmenstrual age (Eq. 4) for
+Scenarios 0 and 3.
+
+## Between-subject variability
+
+A virtual cohort of 200 reference neonates (3.36 kg, 40 weeks PMA) shows
+the spread the random effects imply over the first seven days. The
+variances are those of the Scenario 0 fit (see Assumptions); the paper’s
+Figure 4 VPCs pool all ages and weights and cannot be reproduced without
+the individual data.
+
+``` r
+
+rxode2::rxSetSeed(20251)
+n_sub <- 200L
+ev_pop <- dplyr::bind_rows(
+  data.frame(id = seq_len(n_sub), time = 0, amt = 1, evid = 1L, cmt = "birth"),
+  tidyr::expand_grid(id = seq_len(n_sub), time = seq(0, 168, by = 2)) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central")
+) |>
+  dplyr::mutate(WT = 3.36, PAGE = 40) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+sim <- rxode2::rxSolve(mod, ev_pop)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+sim_df <- as.data.frame(sim)
+pct <- sim_df |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    p05 = quantile(sim, 0.05), p50 = median(sim), p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+ggplot(pct, aes(time / 24)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.2) +
+  geom_line(aes(y = p50)) +
+  geom_line(aes(y = p05), linetype = "dashed") +
+  geom_line(aes(y = p95), linetype = "dashed") +
+  scale_y_log10() +
+  labs(x = "Postnatal day", y = "Procalcitonin (ug/L)") +
+  theme_bw()
+```
+
+![Simulated 5th, 50th and 95th percentiles of PCT (with residual error)
+for 200 reference neonates. Compare the shape with Figure 4 of Bokor
+2025.](Bokor_2025_procalcitonin_files/figure-html/vpc-1.png)
+
+Simulated 5th, 50th and 95th percentiles of PCT (with residual error)
+for 200 reference neonates. Compare the shape with Figure 4 of Bokor
+2025.
+
+``` r
+
+ind_peak <- sim_df |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(cmax = max(Cc), .groups = "drop")
+# The median individual peak sits near the typical-value peak; a
+# mis-transcribed production rate, slope or volume moves it by far more.
+c(median_cmax = median(ind_peak$cmax), typical_cmax = cell("3", "cmax"))
+#>  median_cmax typical_cmax 
+#>     2.260717     2.000824
+stopifnot(abs(median(ind_peak$cmax) / cell("3", "cmax") - 1) < 0.35)
+```
+
+## Assumptions and deviations
+
+- **Which estimates.** The typical values are the Scenario 3 averages
+  over the 100 imputed datasets (Table 2; Supplementary Table 5). The
+  paper does not print the estimates of the median-dOFV replicate used
+  for Figure 5 and Table 3.
+- **Random effects carried from Scenario 0.** The paper reports
+  variances only for Scenario 0 (the `$OMEGA BLOCK(5)` of the control
+  stream). It states that the random-effects model was the same in every
+  scenario, so those variances are used with the Scenario 3 typical
+  values. They were estimated without clock-time imputation and probably
+  overstate the spread, most clearly the SLOPEB variance (2.37). Use
+  [`rxode2::zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html)
+  for typical-value work. The variance on TelB was fixed to 0 in the
+  control stream and is omitted.
+- **Equation 1** is printed with `dC/dt` on the left and production and
+  elimination rates on the right. The control stream integrates the PCT
+  amount (`DADT(2) = RATEIN_PCT * SYNB - DCP * CL`), and that form is
+  used here.
+- **Weight.** The control stream uses birth weight for the first five
+  days and the current weight, or an estimate from Sumpter and Holford
+  2011, after that. `WT` in this model is whatever weight the user
+  supplies at each time; supply it on the same basis to reproduce the
+  fit. The production rate is not weight-scaled, as in the control
+  stream.
+- **Volume scaling.** The volume is 15 L/70 kg, fixed from the
+  calcitonin product label (paper reference 17), scaled linearly with
+  weight.
+- **Supplementary Table 4** (Scenario 2) lists SLOPEB as 75.4 with the
+  same confidence interval as Scenario 3; main-text Table 2 gives 77.9
+  for Scenario 2. The vignette’s Scenario 2 curve uses Table 2.
+- **Units.** The control stream works in days (RATEIN 0.103 ug/day, CL
+  10.5 L/day/70 kg, TELB 0.149 day, TLAG 0.826 day); Table 2 and this
+  model use hours.

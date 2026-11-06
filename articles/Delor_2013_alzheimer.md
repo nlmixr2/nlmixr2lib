@@ -86,8 +86,8 @@ The table below collects them in one place.
 | `e_faq_slow` | -0.341 | Table 2 final ‘COV SCORE_FAQ on \$MIX’ |
 | `e_rhpnm_slow` | 7.5 | Table 2 final ‘COV SCORE_RHPNM on \$MIX’ |
 | `etaldot` | omega^2 = 0.000225 | Table 2 final IIV(DOT) = 1.5% |
-| `etalalpha` | omega^2 = 0.3434 | Table 2 final IIV(alpha) = 64% |
-| `etalpl` | omega^2 = 0.5535 | Table 2 final IIV(PL) = 86% |
+| `etalalpha` | omega^2 = 0.3433 | Table 2 final IIV(alpha) = 64% |
+| `etalpl` | omega^2 = 0.5537 | Table 2 final IIV(PL) = 86% |
 | `addSd` | 0.377 | Table 2 final ‘RES Error (SD)’ = 0.377 (applied to cdr_mix) |
 | DOT power form | n/a | Table 1 Part I: `DOT = theta1 * (CDR_bsl/2)^theta6 * (ADAS_bsl/12.67)^theta10` |
 | alpha power form | n/a | Table 1 Part III: `alpha = theta3 * (MMSE_bsl/26)^theta14` |

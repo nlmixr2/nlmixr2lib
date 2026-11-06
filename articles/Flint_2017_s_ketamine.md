@@ -78,7 +78,7 @@ Section 3.2 (retained covariates after backward elimination).
 | `e_wt_cl`, `e_wt_q`, `e_wt_cl_snk` (allometric exp. on clearances; fixed) | 0.75 | Methods Section 2.4: “fixed at 0.75 for clearances” |
 | `e_wt_vc`, `e_wt_vp`, `e_wt_vc_snk` (allometric exp. on volumes; fixed) | 1.0 | Methods Section 2.4: “fixed at … 1 for volumes of distribution” |
 | `e_t_cl_snk` (time slope on Clsnk) | 0.00870 /h | Table 3: Clsnk %/h = 0.870, %SE 70 |
-| `etalcl` + `etalcl_snk` block (variances on log scale, with covariance) | c(0.14965, 0.16762, 0.73326) | Table 3: CV(Clsk) = 40.2%, CV(Clsnk) = 104%, r = 0.506; omega^2 = log(CV^2 + 1), cov = r \* sd1 \* sd2 |
+| `etalcl` + `etalcl_snk` block (variances on log scale, with covariance) | c(0.14980, 0.16769, 0.73314) | Table 3: CV(Clsk) = 40.2%, CV(Clsnk) = 104%, r = 0.506; omega^2 = log(CV^2 + 1), cov = r \* sd1 \* sd2 |
 | `propSd` (S-ketamine proportional) | 0.419 | Table 3: 41.9%, %SE 13 |
 | `propSd_snk` (S-norketamine proportional) | 0.475 | Table 3: 47.5%, %SE 11 |
 | ODE: `d/dt(central)` | `-kel*central - k12*central + k21*peripheral1` | Section 3.1 and Figure 1 (2-compartment S-ketamine) |
@@ -408,7 +408,7 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) | Cav (mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 96 | 120 | 2.4 mg/kg/h | 200 | 22.4 \[43.5\] | 0.931 \[43.8\] | 0.931 \[43.8\] | 24.0 \[0.000, 24.0\] | 0.933 \[43.5\] |
+| 96 | 120 | 2.4 mg/kg/h | 200 | 22.4 \[43.5\] | 0.931 \[43.8\] | 0.931 \[43.8\] | 24.0 \[0.000, 24.0\] | 0.932 \[43.5\] |
 
 S-ketamine steady-state NCA summary over the 96-120 h window (n = 200
 simulated subjects on 2.4 mg/kg/h). {.table}

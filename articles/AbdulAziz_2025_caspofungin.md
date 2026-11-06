@@ -78,7 +78,7 @@ below collects them in one place for review.
 | `lcl` (CL) | 0.55 L/h | Table 2, “CL (L/h)” = 0.55 (%RSE 11.9); bootstrap median 0.55 (95% CI 0.42-0.68); restated in the Abstract |
 | `lvc` (V at FFM = 58.9 kg) | 8.13 L | Table 2, “V (L)” = 8.13 (%RSE 7.15); bootstrap median 8.27 (95% CI 7.07-10.8); restated in the Abstract |
 | `e_ffm_vc` | 1.24 | Table 2, “LBW effect on V” = 1.24 (%RSE 23.3); bootstrap median 1.24 (95% CI 0.08-1.91) |
-| `etalcl` (BSV on CL) | 0.062996 = log(1 + 0.255^2) | Table 2, BSV “CL (%)” = 25.5 (%RSE 34.3) |
+| `etalcl` (BSV on CL) | 0.062998 = log(1 + 0.255^2) | Table 2, BSV “CL (%)” = 25.5 (%RSE 34.3) |
 | `etalvc` (BSV on V) | 0.0054758 = log(1 + 0.0741^2) | Table 2, BSV “V (%)” = 7.41 (%RSE 101) |
 | `addSd` | 1.20 mg/L | Table 2, Residual error “Additive (mg/L)” = 1.20 (%RSE 10.0) |
 | `vc <- exp(lvc + etalvc) * (FFM / 58.9)^e_ffm_vc` | n/a | Displayed equation in Results, “Covariate screening and model development”: `V = Vpop * (LBW / 58.9)^1.24`. The 58.9 kg divisor is the cohort median lean body weight (Table 1), per the Methods statement that continuous covariates were centred on their medians |
@@ -516,13 +516,13 @@ nca_tab |>
 
 | Regimen                 | NCA parameter |  Median | 5th percentile | 95th percentile |
 |:------------------------|:--------------|--------:|---------------:|----------------:|
-| LD 70 mg, MD 50 mg q24h | AUClast       |  94.323 |         60.860 |         130.008 |
+| LD 70 mg, MD 50 mg q24h | AUClast       |  94.323 |         60.859 |         130.009 |
 | LD 70 mg, MD 50 mg q24h | Cavg          |   3.930 |          2.536 |           5.417 |
 | LD 70 mg, MD 50 mg q24h | Cmax          |   7.594 |          5.596 |          10.566 |
 | LD 70 mg, MD 50 mg q24h | Cmin          |   1.672 |          0.403 |           2.843 |
 | LD 70 mg, MD 50 mg q24h | t½            |  10.977 |          5.247 |          19.873 |
 | LD 70 mg, MD 50 mg q24h | Tmax          |   1.000 |          1.000 |           1.000 |
-| LD 70 mg, MD 70 mg q24h | AUClast       | 116.372 |         85.860 |         151.415 |
+| LD 70 mg, MD 70 mg q24h | AUClast       | 116.372 |         85.859 |         151.416 |
 | LD 70 mg, MD 70 mg q24h | Cavg          |   4.849 |          3.577 |           6.309 |
 | LD 70 mg, MD 70 mg q24h | Cmax          |  10.113 |          7.077 |          14.303 |
 | LD 70 mg, MD 70 mg q24h | Cmin          |   1.332 |          0.761 |           2.496 |
@@ -566,7 +566,7 @@ c(max_rel_diff = max(auc_cmp$rel_diff),
   median_exact = median(auc_cmp$auc_exact),
   median_pknca = median(auc_cmp$auc_pknca))
 #> max_rel_diff median_exact median_pknca 
-#> 1.878593e-04 9.763069e+01 9.762829e+01
+#> 1.878631e-04 9.763081e+01 9.762841e+01
 
 # Trapezoidal error on the 0.25 h day-2 grid, per subject. Deterministic given
 # the cohort, so a tight bound is correct here.
@@ -977,7 +977,7 @@ recomputed from the available source and is not attempted here.
   variation – Monolix’s standard summary for a parameter declared
   log-normal, and consistent with the Methods’ explicit exponential /
   log-normal statement – they back-transform to
-  `omega^2 = log(1 + CV^2)`, giving 0.062996 and 0.0054758. The
+  `omega^2 = log(1 + CV^2)`, giving 0.062998 and 0.0054758. The
   alternative reading, that the printed percentages are raw omega SDs
   scaled by 100, gives `omega_CL` 0.255 vs 0.251 and `omega_V` 0.0741 vs
   0.0740: under 2% relative difference, which no validation gate here or

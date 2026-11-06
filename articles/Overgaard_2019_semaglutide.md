@@ -54,10 +54,10 @@ below collects them in one place.
 | `e_wt_vc_vp` (BW exponent on Vc and Vp) | 0.923 | Table 4, row “Body weight effect on Vc and Vp” |
 | `e_diab_cl` (T2D multiplier on CL) | 1.12 | Table 4, row “T2D effect on CL” |
 | `e_diab_ka` (T2D multiplier on ka) | 0.544 | Table 4, row “T2D effect on ka” |
-| IIV CL = 15.2% CV -\> omega^2 = log(1 + 0.152^2) = 0.022840 | 0.022840 | Table 4, IIV (% CV) column for CL |
-| IIV Vc = 15.4% CV -\> omega^2 = log(1 + 0.154^2) = 0.023438 | 0.023438 | Table 4, IIV (% CV) column for Vc |
+| IIV CL = 15.2% CV -\> omega^2 = log(1 + 0.152^2) = 0.022841 | 0.022841 | Table 4, IIV (% CV) column for CL |
+| IIV Vc = 15.4% CV -\> omega^2 = log(1 + 0.154^2) = 0.023439 | 0.023439 | Table 4, IIV (% CV) column for Vc |
 | Cov(eta_CL, eta_Vc) | 0.0172 | Table 4 footnote (“A covariance of 0.0172 was found between CL and Vc”) |
-| IIV ka = 37.9% CV -\> omega^2 = log(1 + 0.379^2) = 0.133844 | 0.133844 | Table 4, IIV (% CV) column for ka |
+| IIV ka = 37.9% CV -\> omega^2 = log(1 + 0.379^2) = 0.134217 | 0.134217 | Table 4, IIV (% CV) column for ka |
 | `propSd` (additive on log scale ~ proportional in linear) | 0.103 | Table 4, row “Residual error” + Methods page 654 (“residual error model was additive for log-transformed observations”) |
 
 Covariate-effect parameterization (Methods page 653, equations on page
@@ -308,9 +308,9 @@ knitr::kable(
 
 | PPTESTCD |  median |     p05 |     p95 |
 |:---------|--------:|--------:|--------:|
-| auclast  | 6253.04 | 4245.27 | 8848.21 |
+| auclast  | 6253.05 | 4245.27 | 8848.18 |
 | cav      |   37.22 |   25.27 |   52.67 |
-| cmax     |   41.79 |   28.27 |   60.10 |
+| cmax     |   41.79 |   28.27 |   60.11 |
 | cmin     |   29.45 |   20.20 |   42.74 |
 
 Steady-state per-interval NCA: 200 virtual subjects, 1 mg semaglutide SC

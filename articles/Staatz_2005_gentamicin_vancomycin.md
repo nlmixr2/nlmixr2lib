@@ -67,14 +67,14 @@ table below collects them for review.
 | Gentamicin `lvp` (log V2, L/kg) | log(0.156) | Table 4 ‘All data’, V2 |
 | Gentamicin `lq` (log Q, L/h) | log(1.45) | Table 4 ‘All data’, Q |
 | Gentamicin IIV CL | 27% CV -\> omega^2 = log(1 + 0.27^2) = 0.07037 | Table 4 ‘All data’, etaCL |
-| Gentamicin IIV V2 | 84% CV -\> omega^2 = log(1 + 0.84^2) = 0.45506 | Table 4 ‘All data’, etaV2 |
+| Gentamicin IIV V2 | 84% CV -\> omega^2 = log(1 + 0.84^2) = 0.53392 | Table 4 ‘All data’, etaV2 |
 | Gentamicin `addSd` (mg/L) | 0.13 | Table 4 ‘All data’, Add |
 | Gentamicin `propSd` (fraction) | 0.24 | Table 4 ‘All data’, Prop |
 | Vancomycin `lcl` (log CL at CRCL = 57 mL/min) | log(2.97) | Table 4 ‘All data’, theta1 |
 | Vancomycin `e_crcl_cl` (linear effect per mL/min) | 0.0205 | Table 4 ‘All data’, theta2 |
 | Vancomycin `lvc` (log V, L/kg) | log(1.24) | Table 4 ‘All data’, V |
 | Vancomycin IIV CL | 27% CV -\> omega^2 = log(1 + 0.27^2) = 0.07037 | Table 4 ‘All data’, etaCL |
-| Vancomycin IIV V | 36% CV -\> omega^2 = log(1 + 0.36^2) = 0.12188 | Table 4 ‘All data’, etaV |
+| Vancomycin IIV V | 36% CV -\> omega^2 = log(1 + 0.36^2) = 0.12186 | Table 4 ‘All data’, etaV |
 | Vancomycin `addSd` (mg/L) | 1.6 | Table 4 ‘All data’, Add |
 | Vancomycin `propSd` (fraction) | 0.15 | Table 4 ‘All data’, Prop |
 | Gentamicin BCOV_median centring | 63 mL/min | Table 2 final-row footnote: ‘(BCOV-63)’ |
@@ -452,7 +452,7 @@ knitr::kable(
 | Cmax (mg/L)            | vancomycin | 10.9      | 11        | +1.2%  |
 | AUC0-∞ (obs) (mg\*h/L) | gentamicin | 42.7      | 42.9      | +0.4%  |
 | AUC0-∞ (obs) (mg\*h/L) | vancomycin | 337       | 349       | +3.6%  |
-| t½ (h)                 | gentamicin | 10.3      | 10.6      | +2.6%  |
+| t½ (h)                 | gentamicin | 10.3      | 10.6      | +2.8%  |
 | t½ (h)                 | vancomycin | 21.4      | 21.8      | +2.0%  |
 | CL/F (L/h)             | gentamicin | 2.81      | 2.8       | -0.4%  |
 | CL/F (L/h)             | vancomycin | 2.97      | 2.87      | -3.5%  |

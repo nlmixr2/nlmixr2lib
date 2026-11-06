@@ -59,7 +59,7 @@ V2 = 14.2, \quad Q = 0.464
 | WT reference 51.1 kg | – | Results 2.2 (“population median body weight of 51.1 kg”); Table 2 footnote |
 | `lvp` (V2) | `log(14.2)` L | Table 2, final model (RSE 34%) |
 | `lq` (Q) | `log(0.464)` L/h | Table 2, final model (RSE 25%) |
-| `etalcl` variance | `log(0.279^2 + 1)` = 0.07494 | Table 2, IIV CL 27.9% |
+| `etalcl` variance | `log(0.279^2 + 1)` = 0.07496 | Table 2, IIV CL 27.9% |
 | `etalvc` variance | `log(0.18^2 + 1)` = 0.03189 | Table 2, IIV V1 18% |
 | `etalcl`-`etalvc` covariance | -0.0135 | Table 2, “Covariance between etas of CL and V1” (omega block, Results 2.2) |
 | `expSd` | 0.299 | Table 2, “Additive residual error”; additive on log-transformed data (Methods 4.2) |
@@ -703,7 +703,7 @@ nca_sum |>
 | Dose 5 55-70 kg         |       41.47 |        1 |            210.88 |        0.99 |
 | Dose 5 70-85 kg         |       44.89 |        1 |            246.35 |        1.25 |
 | Dose 5 85-100 kg        |       48.06 |        1 |            299.50 |        1.76 |
-| Dose 5 \<45 kg          |       31.89 |        1 |            120.74 |        0.44 |
+| Dose 5 \<45 kg          |       31.89 |        1 |            120.73 |        0.44 |
 
 Median NCA parameters by dosing interval and weight group. {.table}
 

@@ -66,8 +66,8 @@ below collects them in one place for review.
 | `e_wt_vc_vp` (allometric exp on Vc, Vp) | 1 (fixed) | Bijleveld 2017 Table 3 footnotes c, e |
 | `e_page_cl` (PMA/225 d power on CL) | 1.89 (theta_ClPMA) | Bijleveld 2017 Table 3, Final Model column |
 | IIV CL (omega^2 = log(1 + 0.331^2)) | 0.10396 (33.1% CV) | Bijleveld 2017 Table 3, IIV CL |
-| IIV Vc (omega^2 = log(1 + 0.244^2)) | 0.05784 (24.4% CV) | Bijleveld 2017 Table 3, IIV Vc |
-| Cor(IIV CL, IIV Vc) -\> covariance | 0.08 \* sqrt(0.10396 \* 0.05784) = 0.006204 | Bijleveld 2017 Results, “Pharmacokinetic model” paragraph |
+| IIV Vc (omega^2 = log(1 + 0.244^2)) | 0.05783 (24.4% CV) | Bijleveld 2017 Table 3, IIV Vc |
+| Cor(IIV CL, IIV Vc) -\> covariance | 0.08 \* sqrt(0.10396 \* 0.05783) = 0.006203 | Bijleveld 2017 Results, “Pharmacokinetic model” paragraph |
 | `expSd` (lognormal residual SD) | 0.43 | Bijleveld 2017 Table 3, Additive error (residual variability of log-transformed data) |
 | Two-compartment IV PK ODE structure | n/a | Bijleveld 2017 Results, “Pharmacokinetic model” (allometric 2-compartment) |
 | Log-additive (LTBS) -\> lnorm residual | n/a | Bijleveld 2017 Results, “Pharmacokinetic model”; residual variability described on log-transformed data |

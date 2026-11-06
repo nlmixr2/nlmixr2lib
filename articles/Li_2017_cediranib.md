@@ -57,8 +57,8 @@ comment. The table below collects the entries in one place.
 | `e_age_cl` (AGECL power exponent) | -0.409 | Table 2, Estimates column, Age effect on Cl/F (AGECL) row |
 | `e_wt_cl` (WTCL power exponent) | 0.517 | Table 2, Estimates column, WT effect on Cl/F (WTCL) row |
 | `e_wt_vc` (WTVc power exponent) | 0.65 | Table 2, Estimates column, WT effect on Vc/F (WTVc) row |
-| IIV CL/F (omega^2 = log(0.537^2 + 1) = 0.2532) | 53.7% CV | Table 2, Estimates column, IIV in Cl/F row |
-| IIV Vc/F (omega^2 = 0.3205) | 61.5% CV | Table 2, Estimates column, IIV in Vc/F row |
+| IIV CL/F (omega^2 = log(0.537^2 + 1) = 0.2534) | 53.7% CV | Table 2, Estimates column, IIV in Cl/F row |
+| IIV Vc/F (omega^2 = 0.3208) | 61.5% CV | Table 2, Estimates column, IIV in Vc/F row |
 | IIV Ka (omega^2 = 1.1879) | 151% CV | Table 2, Estimates column, IIV in Ka row |
 | Correlation between IIVs in CL/F and Vc/F | 0.839 | Table 2, Estimates column, “Correlation between IIVs in Cl/F and Vc/F” row |
 | Proportional residual error (rich profile) | 26.5% CV | Table 2, Estimates column, “Residual variability for rich profile” row |
@@ -352,9 +352,9 @@ knitr::kable(nca_summary,
 
 | Interval Start | Interval End | cohort | N | AUClast (h\*ng/mL) | Cmax (ng/mL) | Cmin (ng/mL) | Tmax (h) | Cav (ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 168 | 192 | 15 mg qd | 200 | 516 \[59.8\] | 37.6 \[58.4\] | 11.0 \[80.2\] | 1.00 \[0.500, 6.50\] | 21.5 \[59.8\] |
-| 168 | 192 | 20 mg qd | 200 | 690 \[66.2\] | 50.5 \[65.6\] | 14.7 \[88.2\] | 1.00 \[0.500, 8.50\] | 28.8 \[66.2\] |
-| 168 | 192 | 30 mg qd | 200 | 1070 \[58.8\] | 78.8 \[58.2\] | 22.9 \[74.5\] | 1.00 \[0.500, 5.50\] | 44.7 \[58.8\] |
+| 168 | 192 | 15 mg qd | 200 | 516 \[59.8\] | 37.6 \[58.5\] | 11.0 \[80.2\] | 1.00 \[0.500, 6.50\] | 21.5 \[59.8\] |
+| 168 | 192 | 20 mg qd | 200 | 690 \[66.2\] | 50.5 \[65.7\] | 14.7 \[88.3\] | 1.00 \[0.500, 8.50\] | 28.8 \[66.2\] |
+| 168 | 192 | 30 mg qd | 200 | 1070 \[58.8\] | 78.8 \[58.2\] | 22.9 \[74.6\] | 1.00 \[0.500, 5.50\] | 44.7 \[58.8\] |
 
 Simulated steady-state cediranib NCA parameters by dose group (eighth
 dose, 168-192 h). {.table}
@@ -388,9 +388,9 @@ knitr::kable(auc_check,
 
 | cohort   | median_auc | dose_mg | dose_normalised_auc |
 |:---------|-----------:|--------:|--------------------:|
-| 15 mg qd |   505.4853 |      15 |            33.69902 |
-| 20 mg qd |   683.2193 |      20 |            34.16097 |
-| 30 mg qd |  1097.2656 |      30 |            36.57552 |
+| 15 mg qd |   505.4633 |      15 |            33.69755 |
+| 20 mg qd |   683.2497 |      20 |            34.16248 |
+| 30 mg qd |  1097.3509 |      30 |            36.57836 |
 
 Dose-normalised median AUC0-24 should be approximately constant across
 dose groups (linear PK). {.table}

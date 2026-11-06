@@ -94,7 +94,7 @@ below collects them in one place for review.
 | Allometric exponent on CL, Q2, Q3 | 0.75 fixed | Langenhorst 2019 Section 3.2 / 3.3 (fixed; estimation attempted, no fit improvement) |
 | Allometric exponent on V1, V2, V3 | 1.0 fixed | Langenhorst 2019 Section 3.2 / 3.3 (fixed; estimation attempted, no fit improvement) |
 | `etalcl` variance (shared across CL, Q2, Q3) | 0.05155 | Langenhorst 2019 Table 2 IIV CL/Q2/Q3 = 23% CV (95% CI 15-31%); log(0.23^2 + 1) |
-| `etalvc` variance (shared across V1, V2, V3) | 0.20735 | Langenhorst 2019 Table 2 IIV V1/V2/V3 = 48% CV (95% CI 36-60%); log(0.48^2 + 1) |
+| `etalvc` variance (shared across V1, V2, V3) | 0.20734 | Langenhorst 2019 Table 2 IIV V1/V2/V3 = 48% CV (95% CI 36-60%); log(0.48^2 + 1) |
 | `propSd` proportional residual SD | 0.063 | Langenhorst 2019 Table 2 proportional residual error = 6.3% (95% CI 4.3-8.3%) |
 | CL structural equation | \- | Langenhorst 2019 Table 2 formula CL = (Cl_nonrenal + eGFR \* Slope_pop) \* (BW/70)^0.75 and Eq. 7 |
 | Three-compartment first-order kinetics | \- | Langenhorst 2019 Section 3.2 “A three-compartment model best described the data” |

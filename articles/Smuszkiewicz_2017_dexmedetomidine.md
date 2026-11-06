@@ -55,8 +55,8 @@ table below collects them in one place for review.
 | `lq` (Q) | log(46.4 L/h) | Table 2 (theta_Q) |
 | `etalvc` | 0.9312 | Table 2 (omega^2_VC = 124 %CV; log(1 + 1.24^2)) |
 | `etalcl` | 0.3361 | Table 2 (omega^2_CL = 63.2 %CV; log(1 + 0.632^2)) |
-| `etalvp` | 0.5832 | Table 2 (omega^2_VT = 89.0 %CV; log(1 + 0.89^2)) |
-| `etalq` | 0.5034 | Table 2 (omega^2_Q = 80.9 %CV; log(1 + 0.809^2)) |
+| `etalvp` | 0.5834 | Table 2 (omega^2_VT = 89.0 %CV; log(1 + 0.89^2)) |
+| `etalq` | 0.5035 | Table 2 (omega^2_Q = 80.9 %CV; log(1 + 0.809^2)) |
 | `propSd` | 0.24 | Table 2 (sigma^2 = 24 %CV) |
 | Two-compartment ODE | n/a | PK model equations (Methods / PK model section) |
 | IIV diagonal | n/a | Results: “no clear correlations between the eta estimates” |
@@ -249,13 +249,13 @@ knitr::kable(
 | group | PPTESTCD   | median |    p10 |    p90 |
 |:------|:-----------|-------:|-------:|-------:|
 | 24 h  | aucinf.obs |     NA |     NA |     NA |
-| 24 h  | cmax       |  1.253 |  0.396 |  2.730 |
-| 24 h  | half.life  |  5.172 |  1.127 |  8.849 |
+| 24 h  | cmax       |  1.253 |  0.396 |  2.729 |
+| 24 h  | half.life  |  5.172 |  1.127 |  8.851 |
 | 24 h  | tmax       | 24.000 | 24.000 | 24.000 |
 | 72 h  | aucinf.obs |     NA |     NA |     NA |
 | 72 h  | cmax       |  1.280 |  0.679 |  2.820 |
-| 72 h  | half.life  |  3.878 |  1.416 |  9.081 |
-| 72 h  | tmax       | 68.000 | 48.800 | 68.000 |
+| 72 h  | half.life  |  3.878 |  1.416 |  9.082 |
+| 72 h  | tmax       | 68.000 | 52.000 | 68.000 |
 
 Simulated NCA parameters by infusion-duration group (median, 10th and
 90th percentiles). {.table}

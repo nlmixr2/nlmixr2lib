@@ -761,7 +761,7 @@ adjusted to close that gap; it is recorded below.
     #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
     #> [25] sass_0.4.10         yaml_2.3.12         tidyr_1.3.2        
     #> [28] pillar_1.11.1       pkgdown_2.2.1       crayon_1.5.3       
-    #> [31] jquerylib_0.1.4     whisker_0.4.1       openssl_2.4.2      
+    #> [31] jquerylib_0.1.4     whisker_0.4.1       openssl_2.5.0      
     #> [34] cachem_1.1.0        nlme_3.1-171        tidyselect_1.2.1   
     #> [37] digest_0.6.39       lotri_1.0.5         purrr_1.2.2        
     #> [40] labeling_0.4.3      rxode2ll_2.0.18     fastmap_1.2.0      

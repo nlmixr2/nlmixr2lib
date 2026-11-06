@@ -83,7 +83,7 @@ The table below collates them for review.
 | `lalag` | log(0.46) | Table 3 alag = 0.46 h (%RSE 17.1) |
 | **PK random (Table 3)** |  |  |
 | `etalcl`+`etalvc` | block(0.07037, 0.04215, 0.02983) | Table 3: omega_CL = 27.0%, omega_V2 = 17.4%, rho_CL-V2 = 0.92 |
-| `etalka` | 0.6521 | Table 3 omega_Ka = 95.9% CV; log(1 + 0.959^2) |
+| `etalka` | 0.6522 | Table 3 omega_Ka = 95.9% CV; log(1 + 0.959^2) |
 | `propSd` | 0.140 | Table 3 prop residual = 14.0% (%RSE 11.1) |
 | **PD structural - baseline + circadian (Table 4)** |  |  |
 | `lqtcm` | log(406) | Table 4 QTcm = 406 ms (%RSE 0.69) |
@@ -99,13 +99,13 @@ The table below collates them for review.
 | `lemax` | log(34.7) | Table 5 Emax = 34.7 ms (%RSE 19.5) |
 | `lec50` | log(3920) | Table 5 EC50 = 3920 ng/mL (%RSE 29.3) |
 | **PD random (Tables 4 + 5)** |  |  |
-| `etalqtcm` | 0.001459 | Table 4 omega_QTcm = 3.82% CV |
-| `etala` | 0.037808 | Table 4 omega_a = 19.6% CV |
-| `etalam24` | 0.622848 | Table 4 omega_aM24 = 93.0% CV |
+| `etalqtcm` | 0.001458 | Table 4 omega_QTcm = 3.82% CV |
+| `etala` | 0.037696 | Table 4 omega_a = 19.6% CV |
+| `etalam24` | 0.623207 | Table 4 omega_aM24 = 93.0% CV |
 | `etaac24` | 5.231836 | Table 4 omega_AC24 = 206% (additive, hours); see Assumptions |
 | `etape` | 26.453569 | Table 5 omega_PE = 96.9% (additive, ms); see Assumptions |
-| `etalkpl` | 0.872446 | Table 5 omega_k = 118% CV |
-| `etalemax` | 0.102829 | Table 5 omega_Emax = 32.9% CV |
+| `etalkpl` | 0.872297 | Table 5 omega_k = 118% CV |
+| `etalemax` | 0.102774 | Table 5 omega_Emax = 32.9% CV |
 | `propSd_QTc` | 0.0152 | Table 5 drug-effect block: 1.52% prop residual |
 | **Equations** |  |  |
 | `d/dt(depot, central, peripheral1)` | n/a | Two-compartment first-order absorption (Hong 2015 Methods “PK model”) |
@@ -509,12 +509,12 @@ knitr::kable(
 |:----------|:-----------|--------:|--------:|--------:|
 | 400 mg    | aucinf.obs |      NA |      NA |      NA |
 | 400 mg    | auclast    |      NA |      NA |      NA |
-| 400 mg    | cmax       | 2173.90 | 1559.87 | 3044.99 |
+| 400 mg    | cmax       | 2173.90 | 1559.86 | 3044.99 |
 | 400 mg    | half.life  |   12.66 |   10.07 |   16.10 |
 | 400 mg    | tmax       |    0.75 |    0.75 |    1.25 |
 | 800 mg    | aucinf.obs |      NA |      NA |      NA |
 | 800 mg    | auclast    |      NA |      NA |      NA |
-| 800 mg    | cmax       | 3995.52 | 2723.56 | 5156.70 |
+| 800 mg    | cmax       | 3995.52 | 2723.54 | 5156.71 |
 | 800 mg    | half.life  |   12.65 |   10.34 |   15.73 |
 | 800 mg    | tmax       |    2.00 |    1.00 |    4.77 |
 

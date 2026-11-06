@@ -53,8 +53,8 @@ table below collects them in one place for review.
 | `lvp` (V2, L) | `log(3.9)` | Obrink-Hansen 2015 Table 2: V2 3.9 L (RSE 9.7%) |
 | `e_creat_cl` (beta_Pcrea on CL, (L/h)/(umol/L)) | `-0.011` | Obrink-Hansen 2015 Table 2: beta_Pcrea -0.011 (RSE 11.9%) |
 | `creat_ref` (cohort median CREAT, umol/L) | `170` | Obrink-Hansen 2015 Table 1 cohort median; Table 2 footnote |
-| `etalcl` (omega^2 on CL) | `0.41001` (71.2% CV) | Obrink-Hansen 2015 Table 2: IIV CL 71.2% CV; omega^2 = log(1 + CV^2) |
-| `etalvc` (omega^2 on V1) | `0.28818` (57.8% CV) | Obrink-Hansen 2015 Table 2: IIV V1 57.8% CV; omega^2 = log(1 + CV^2) |
+| `etalcl` (omega^2 on CL) | `0.41008` (71.2% CV) | Obrink-Hansen 2015 Table 2: IIV CL 71.2% CV; omega^2 = log(1 + CV^2) |
+| `etalvc` (omega^2 on V1) | `0.28824` (57.8% CV) | Obrink-Hansen 2015 Table 2: IIV V1 57.8% CV; omega^2 = log(1 + CV^2) |
 | `propSd` (proportional residual SD) | `0.147` | Obrink-Hansen 2015 Table 2: proportional error 14.7% (RSE 14.4%) |
 | Covariate model (additive linear): `CL_i = (TVCL + beta_Pcrea * (CREAT - 170)) * exp(eta_CL)` | n/a | Obrink-Hansen 2015 Table 2 footnote |
 | `d/dt(central)` and `d/dt(peripheral1)` (2-cmt IV, linear elimination) | n/a | Obrink-Hansen 2015 Results: “best described by a two-compartment model with linear elimination” |
@@ -342,9 +342,9 @@ knitr::kable(
 | PPTESTCD            |  median |    q25 |     q75 |
 |:--------------------|--------:|-------:|--------:|
 | adj.r.squared       |    1.00 |   1.00 |    1.00 |
-| auclast             | 1193.79 | 722.94 | 2056.94 |
-| clast.pred          |   41.80 |  10.11 |  116.69 |
-| cmax                |  572.83 | 411.36 |  764.89 |
+| auclast             | 1193.80 | 722.87 | 2057.05 |
+| clast.pred          |   41.81 |  10.11 |  116.70 |
+| cmax                |  572.83 | 411.35 |  764.93 |
 | cmin                |   41.02 |  10.15 |  109.23 |
 | half.life           |    2.64 |   1.63 |    4.39 |
 | lambda.z            |    0.26 |   0.16 |    0.42 |
@@ -413,9 +413,9 @@ knitr::kable(
 
 | Parameter | Published_median | Published_IQR_lower | Published_IQR_upper | Simulated_median | Simulated_IQR_lower | Simulated_IQR_upper |
 |:---|---:|---:|---:|---:|---:|---:|
-| Cmax (mg/L) | 546.00 | 363.00 | 668.00 | 572.83 | 411.36 | 764.89 |
+| Cmax (mg/L) | 546.00 | 363.00 | 668.00 | 572.83 | 411.35 | 764.93 |
 | Cmin (mg/L) | 51.70 | 10.70 | 159.40 | 41.02 | 10.15 | 109.23 |
-| AUC0-8 (mg\*h/L) | 1148.00 | 739.00 | 2492.00 | 1193.79 | 722.94 | 2056.94 |
+| AUC0-8 (mg\*h/L) | 1148.00 | 739.00 | 2492.00 | 1193.80 | 722.87 | 2057.05 |
 | t1/2 (h) | 3.49 | 1.62 | 4.47 | 2.64 | 1.63 | 4.39 |
 
 Side-by-side comparison of published NCA medians and IQRs (Obrink-Hansen

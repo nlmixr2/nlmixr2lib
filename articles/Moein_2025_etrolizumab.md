@@ -152,9 +152,9 @@ The tables below collect them for review.
 | `e_priortnf_cl` | `0.0586` | Table 1: Prior anti-TNF on CL (RSE 24.2%) |
 | `e_ucother_fdepot` | `-0.244` | Table 1: UC not left-sided colitis on F (RSE 33.8%); yields F = 0.693 |
 | `e_cd_fdepot` | `-0.314` | Table 1: CD indication on F (RSE 24.2%); yields F = 0.678 |
-| IIV CL / Maxred block | `log(1+0.232^2)`, `0.784^2`, cor `0.263` | Table 1 IIV rows + footnote h |
-| IIV Vtot (`etalvc`) | `log(1+0.132^2)` | Table 1 + footnote i (one shared eta on Vc and Vp) |
-| IIV ka | `log(1+0.336^2)` | Table 1: IIV ka CV = 0.336 |
+| IIV CL / Maxred block | `0.232^2`, `0.784^2`, cor `0.263` | Table 1 IIV rows + footnote h |
+| IIV Vtot (`etalvc`) | `0.132^2` | Table 1 + footnote i (one shared eta on Vc and Vp) |
+| IIV ka | `0.336^2` | Table 1: IIV ka CV = 0.336 |
 | IIV F | `0.681^2` | Table 1 + footnote h (SD on the logit scale) |
 | `propSd` | `0.201` | Table 1: proportional residual CV (RSE 2.79%) |
 | `addSd` | `0.426` | Table 1: additive residual SD, ug/mL (RSE 10.6%) |
@@ -263,6 +263,19 @@ onward it accumulates elapsed time. For a **single** dose `dosenum()`
 never reaches 2, so clearance stays constant – exactly what the paper’s
 single-dose exposure metric requires. The state is declared last so the
 `depot` / `central` / `peripheral1` ordering is untouched.
+
+### The CL, volume and ka CVs are first-order approximations
+
+The Results state that “Estimated inter-individual variability (IIV),
+expressed as approximate coefficient of variation (CV), was: 23.2% for
+CL, 13.2% for volumes of distribution, …”. Each of these CVs is
+therefore the standard deviation of its random effect, and the variances
+are the squares of the printed CVs (`etalcl ~ 0.232^2`,
+`etalvc ~ 0.132^2`, `etalka ~ 0.336^2`), not the exact log-normal
+conversion `log(1 + CV^2)`. The CL-Maxred covariance is
+`0.263 * 0.232 * 0.784` on the same scale. The F and Maxred terms are
+standard deviations on the logit scale (footnote h) and are squared as
+printed. At these CVs the two conversions differ by 1-6%.
 
 ## Validation gate 1: the Figure 1 forest plot
 
@@ -740,8 +753,8 @@ nca_tbl |>
 
 | Arm | AUC(0-28d) (ug\*day/mL) | C at 28 d (ug/mL) | Cmax (ug/mL) | Tmax (day) |
 |:---|---:|---:|---:|---:|
-| 105 mg Q4W | 172.957 | 3.251 | 9.399 | 6 |
-| 210 mg Q4W + wk2 load | 547.138 | 20.106 | 29.029 | 18 |
+| 105 mg Q4W | 172.895 | 3.251 | 9.400 | 6 |
+| 210 mg Q4W + wk2 load | 546.513 | 20.107 | 29.097 | 18 |
 
 Median NCA over the first dosing interval, by arm. Computed on Cc (the
 individual prediction), which carries no residual error. {.table}
@@ -801,8 +814,8 @@ knitr::kable(
 | Quantity | Simulated | Published (Table S6, induction set) |
 |:---|---:|:---|
 | Typical CD patient, 105 mg single dose (ug/mL) | 3.501 | median 3.23, mean 3.85 (0 to 16.6) |
-| Simulated cohort median, 105 mg single dose (ug/mL) | 3.213 | median 3.23 |
-| Simulated cohort mean, 105 mg single dose (ug/mL) | 3.439 | mean 3.85 |
+| Simulated cohort median, 105 mg single dose (ug/mL) | 3.219 | median 3.23 |
+| Simulated cohort mean, 105 mg single dose (ug/mL) | 3.441 | mean 3.85 |
 
 Week-4 trough after a single dose, against Table S6. The published
 distribution POOLS placebo, 105 mg and 210 mg subjects, so it is not a

@@ -354,7 +354,7 @@ tibble::tibble(
 
 | Check | Median % difference | 90th pct \|% difference\| | Max \|% difference\| |
 |:---|---:|---:|---:|
-| AUCinf vs Dose/CL (per subject) | -0.008 | 0.257 | 2.055 |
+| AUCinf vs Dose/CL (per subject) | -0.006 | 0.299 | 3.385 |
 
 Structural identity check on the inherited lecanemab PK layer. {.table}
 
@@ -1009,9 +1009,9 @@ knitr::kable(dir_chk, digits = 3,
 
 | Biomarker                     | Median month-18 / baseline | 10th pct | 90th pct |
 |:------------------------------|---------------------------:|---------:|---------:|
-| \(A\) Plasma Abeta42/40 ratio |                      1.105 |    1.036 |    1.271 |
-| \(C\) Plasma GFAP (pg/mL)     |                      0.851 |    0.634 |    0.986 |
-| \(B\) Plasma p-tau181 (pg/mL) |                      0.822 |    0.691 |    0.923 |
+| \(A\) Plasma Abeta42/40 ratio |                      1.105 |    1.036 |    1.270 |
+| \(C\) Plasma GFAP (pg/mL)     |                      0.851 |    0.635 |    0.987 |
+| \(B\) Plasma p-tau181 (pg/mL) |                      0.822 |    0.691 |    0.924 |
 
 Relative month-18 change on LEC10-BW across the simulated cohort.
 {.table}
@@ -1143,6 +1143,16 @@ is itself asserted above:
 - **Figure 4A 48.2 kg annotation.** The panel prints “0.7 \[0.73,
   0.84\]”, a point estimate outside its own confidence interval. The
   interval midpoint (0.78) is used as the reference value above.
+- **The lecanemab PK CVs are first-order approximations.** Majid 2024
+  Table 1 defines its IIV column as “CV%, square root of variance x
+  100”. Each printed PK CV is therefore the standard deviation of its
+  random effect, and the PK variances are the squares of the printed CVs
+  (`etalcl ~ 0.349^2`, `etalvc ~ 0.122^2`, `etalvp ~ 0.946^2`, CL-V1
+  covariance `0.144 * 0.349 * 0.122`, all fixed), not the exact
+  log-normal conversion `log(1 + CV^2)`. The difference is largest for
+  V2: 0.946^2 = 0.895, against 0.639 from the log-normal conversion. The
+  biomarker random effects are Bhagunde 2026’s own estimates and are
+  unaffected.
 
 ### Modelling choices
 

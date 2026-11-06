@@ -59,7 +59,7 @@ collects them in one place for review.
 | `e_bsa_vc` | 0.884 | Table 5, BSA on V1 = 0.884 (power exponent) |
 | `e_alb_vp` | -1.47 | Table 5, ALB on V2 = -1.47 (power exponent) |
 | `etalcl` | 0.227 (omega²) | Table 5, CL IIV SD = 50.5%; omega² = log(1 + 0.505²) = 0.227 |
-| `etalvc` | 0.0411 (omega²) | Table 5, V1 IIV SD = 20.5%; omega² = log(1 + 0.205²) = 0.0411 |
+| `etalvc` | 0.0412 (omega²) | Table 5, V1 IIV SD = 20.5%; omega² = log(1 + 0.205²) = 0.0412 |
 | `etalvp` | 0.424 (omega²) | Table 5, V2 IIV SD = 72.7%; omega² = log(1 + 0.727²) = 0.424 |
 | `propSd` | 0.261 | Table 5, Residual error = 0.261 (log-additive, equivalent to 26.1% proportional CV on back-transform) |
 | ALB reference | 4.0 g/dL | Table 6, Reference row |
@@ -436,7 +436,7 @@ sessionInfo()
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
 #> [28] pkgdown_2.2.1       crayon_1.5.3        jquerylib_0.1.4    
-#> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
+#> [31] whisker_0.4.1       openssl_2.5.0       cachem_1.1.0       
 #> [34] nlme_3.1-171        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         rxode2ll_2.0.18    
 #> [40] fastmap_1.2.0       grid_4.6.2          cli_3.6.6          

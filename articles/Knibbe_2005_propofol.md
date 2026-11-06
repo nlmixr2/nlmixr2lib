@@ -97,10 +97,10 @@ table collects them in one place.
 | `lvc` (log V1) | log(0.0811) L | log(20.6) L | Knibbe 2005 Table 3 (rat SE 0.00544; scaled with b = 1) |
 | `lq` (log Q) | log(0.0227) L/min | log(1.45) L/min | Knibbe 2005 Table 3 (rat SE 0.00325; scaled with b = 0.75) |
 | `lvp` (log V2) | log(0.291) L | log(71.9) L | Knibbe 2005 Table 3 (rat SE 0.0067; scaled with b = 1) |
-| `etalcl` (IIV CL) | 0.10937 (variance) | 0.10937 (inherited) | Knibbe 2005 Table 3 rat: IIV CL 34% CV |
-| `etalvc` (IIV V1) | 0.02226 | 0.02226 | Knibbe 2005 Table 3 rat: IIV V1 15% CV |
+| `etalcl` (IIV CL) | 0.10939 (variance) | 0.10939 (inherited) | Knibbe 2005 Table 3 rat: IIV CL 34% CV |
+| `etalvc` (IIV V1) | 0.02225 | 0.02225 | Knibbe 2005 Table 3 rat: IIV V1 15% CV |
 | `etalq` (IIV Q) | 0.06541 | 0.06541 | Knibbe 2005 Table 3 rat: IIV Q 26% CV |
-| `etalvp` (IIV V2) | 0.05154 | 0.05154 | Knibbe 2005 Table 3 rat: IIV V2 23% CV |
+| `etalvp` (IIV V2) | 0.05155 | 0.05155 | Knibbe 2005 Table 3 rat: IIV V2 23% CV |
 | `propSd` (residual) | 0.199 | 0.199 | Knibbe 2005 Table 3 rat: intra-individual variability 19.9% |
 | Allometric power model | n/a | `Y_human = Y_rat * (BW_human / BW_rat)^b`, b = 0.75 for CL/Q and b = 1 for V1/V2 | Knibbe 2005 Eq. 2 and Table 3 footnote |
 | Two-compartment IV ODEs | structural | structural | Knibbe 2005 Methods, “Animals and patients” (cited from reference 11) |
@@ -450,7 +450,7 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | Cmax (mg/L) | Tmax (min) | Half-life (min) | AUCinf,obs (min\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | rat_bolus | 22 | 31.6 \[14.0\] | 5.00 \[5.00, 5.00\] | 20.5 \[7.44\] | NC |
+| 0 | Inf | rat_bolus | 22 | 31.6 \[14.1\] | 5.00 \[5.00, 5.00\] | 20.5 \[7.44\] | NC |
 
 Simulated rat propofol NCA after a 30 mg/kg bolus over 5 min (n = 22).
 {.table}

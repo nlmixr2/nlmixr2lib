@@ -67,7 +67,7 @@ The table below collects them in one place for review.
 | Reference WT | 74 kg | Viberg 2006 Table 4 footnote |
 | IIV CL | 27% CV -\> omega^2 = log(1 + 0.27^2) = 0.07037 | Viberg 2006 Table 4 (IIV column, CL row) |
 | IIV V1 | 18% CV -\> omega^2 = log(1 + 0.18^2) = 0.03189 | Viberg 2006 Table 4 (IIV column, V1 row) |
-| IIV V2 | 48% CV -\> omega^2 = log(1 + 0.48^2) = 0.20724 | Viberg 2006 Table 4 (IIV column, V2 row) |
+| IIV V2 | 48% CV -\> omega^2 = log(1 + 0.48^2) = 0.20734 | Viberg 2006 Table 4 (IIV column, V2 row) |
 | `propSd` (proportional residual SD) | 0.155 | Viberg 2006 Table 4 (Proportional error 15.5%) |
 | Two-compartment IV ODE structure (ADVAN3 TRANS4) | n/a | Viberg 2006 Methods ‘Data analysis’ and Results paragraph 2 |
 | Reciprocal-cystatin C transform 1/CYSC | n/a | Viberg 2006 Results Table 3 (1/CYSC gave the largest OFV drop, -154.0) |

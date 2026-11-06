@@ -556,7 +556,7 @@ compare_drug(nca_3tc, published_3tc, "Lamivudine")
 | Clast (ug/mL)      | \>=10 to \<14 kg | 0.0118    | 0.000249  | -97.9%\* |
 | Clast (ug/mL)      | \>=14 to \<20 kg | 0.0114    | 0.000551  | -95.2%\* |
 | Clast (ug/mL)      | \>=20 to \<25 kg | 0.0112    | 0.000678  | -93.9%\* |
-| Clast (ug/mL)      | \>=25 to \<40 kg | 0.0115    | 0.000721  | -93.7%\* |
+| Clast (ug/mL)      | \>=25 to \<40 kg | 0.0115    | 0.00072   | -93.7%\* |
 | AUClast (ug\*h/mL) | \>=6 to \<10 kg  | 11.6      | 11.3      | -2.1%    |
 | AUClast (ug\*h/mL) | \>=10 to \<14 kg | 11.4      | 10.6      | -7.1%    |
 | AUClast (ug\*h/mL) | \>=14 to \<20 kg | 10.8      | 10.8      | -0.2%    |

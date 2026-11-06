@@ -76,10 +76,10 @@ refer to the model file for the full per-parameter comments.
 | `e_cyp2b6_im_cl` (log-additive CYP2B6 IM effect on CLint) | `-0.184` | Table 3 / Results ‘Population pharmacokinetics’ paragraph 3: IM 17% lower; `log(2.72/3.27) = -0.184` |
 | `e_cyp2b6_sm_cl` (log-additive CYP2B6 SM effect on CLint) | `-0.684` | Table 3 / Results ‘Population pharmacokinetics’ paragraph 3: SM 50% lower; `log(1.65/3.27) = -0.684` |
 | `e_cyp2b6_usm_cl` (log-additive CYP2B6 USM effect on CLint) | `-1.146` | Table 3 / Results ‘Population pharmacokinetics’ paragraph 3: USM 68% lower; `log(1.04/3.27) = -1.146` |
-| `etalcl_em` (BSV on CLint) | `var = 0.04473` | Table 3 BSV CLint = 21.40%; `log(1 + 0.214^2)` |
-| `etalfpreh_old` (BSV on FpreH) | `var = 0.03439` | Table 3 BSV FpreH = 18.72%; `log(1 + 0.1872^2)` (BOV FpreH = 17.02% dropped; see Assumptions and deviations) |
-| `etalmtt` (folded BOV on MTT as BSV-equivalent) | `var = 1.39135` | Table 3 BOV MTT = 199.73% folded in; no BSV reported |
-| `etalka` (folded BOV on Ka as BSV-equivalent) | `var = 0.18458` | Table 3 BOV Ka = 44.91% folded in; no BSV reported |
+| `etalcl_em` (BSV on CLint) | `var = 0.04478` | Table 3 BSV CLint = 21.40%; `log(1 + 0.214^2)` |
+| `etalfpreh_old` (BSV on FpreH) | `var = 0.03444` | Table 3 BSV FpreH = 18.72%; `log(1 + 0.1872^2)` (BOV FpreH = 17.02% dropped; see Assumptions and deviations) |
+| `etalmtt` (folded BOV on MTT as BSV-equivalent) | `var = 1.60728` | Table 3 BOV MTT = 199.73% folded in; no BSV reported |
+| `etalka` (folded BOV on Ka as BSV-equivalent) | `var = 0.18373` | Table 3 BOV Ka = 44.91% folded in; no BSV reported |
 | `addSd` (additive residual SD) | `0.32 mg/L` | Table 3 row `Additive error (mg/L) = 0.32 (0.21-0.38)` |
 | `propSd` (proportional residual SD) | `0.0526` | Table 3 row `Proportional error (%) = 5.26 (4.26-6.18)` |
 | Equation `FpreH(AGE) = 1 - (1 - 0.583) * exp(-ln(2)/1.54 * AGE)` | n/a | Results ‘Population pharmacokinetics’ paragraph 4 + Equation (7) of Appendix S1; Appendix S1 not available so the form is reconstructed from the narrative (matches the paper’s reported 90% at age 3.3 years) |
@@ -368,16 +368,16 @@ knitr::kable(
 
 | metabolizer | band        |   n | cmax_med | cmin_med | auc_med |
 |:------------|:------------|----:|---------:|---------:|--------:|
-| EM          | WB1_4-6kg   |  18 |     7.66 |     5.15 |   80.37 |
-| IM          | WB1_4-6kg   |  21 |     8.96 |     6.12 |   91.68 |
-| SM          | WB1_4-6kg   |  20 |    11.76 |     8.65 |  124.28 |
-| USM         | WB1_4-6kg   |   1 |    18.80 |    15.10 |  207.14 |
-| EM          | WB2_6-10kg  |  21 |     8.16 |     5.14 |   82.42 |
-| IM          | WB2_6-10kg  |  27 |     9.15 |     6.49 |   94.07 |
-| SM          | WB2_6-10kg  |  12 |    14.03 |    10.99 |  149.23 |
-| EM          | WB3_10-14kg |  20 |     8.38 |     5.82 |   87.52 |
-| IM          | WB3_10-14kg |  32 |     8.79 |     6.49 |   94.21 |
-| SM          | WB3_10-14kg |   8 |    11.81 |     9.42 |  129.51 |
+| EM          | WB1_4-6kg   |  18 |     7.66 |     5.14 |   80.37 |
+| IM          | WB1_4-6kg   |  21 |     8.96 |     6.16 |   91.67 |
+| SM          | WB1_4-6kg   |  20 |    11.76 |     8.65 |  124.27 |
+| USM         | WB1_4-6kg   |   1 |    18.80 |    15.10 |  207.16 |
+| EM          | WB2_6-10kg  |  21 |     8.16 |     5.14 |   82.40 |
+| IM          | WB2_6-10kg  |  27 |     9.15 |     6.49 |   94.05 |
+| SM          | WB2_6-10kg  |  12 |    14.03 |    11.02 |  149.16 |
+| EM          | WB3_10-14kg |  20 |     8.37 |     5.86 |   87.52 |
+| IM          | WB3_10-14kg |  32 |     8.79 |     6.48 |   94.20 |
+| SM          | WB3_10-14kg |   8 |    11.79 |     9.43 |  129.49 |
 
 Simulated steady-state day-6 12-hour-interval Cmax, Cmin, and AUC by
 weight-band and CYP2B6 metabolizer status (median per group). {.table}
@@ -424,10 +424,10 @@ knitr::kable(
 
 | metabolizer | cmin_paper | auc_paper |   n | cmin_sim | auc_sim | cmin_pct_dev | auc_pct_dev |
 |:------------|-----------:|----------:|----:|---------:|--------:|-------------:|------------:|
-| EM          |       5.01 |     68.51 |  59 |     5.47 |   83.89 |          9.1 |        22.4 |
-| IM          |       6.55 |     88.93 |  80 |     6.34 |   94.01 |         -3.2 |         5.7 |
-| SM          |      11.59 |    152.07 |  40 |    10.12 |  144.21 |        -12.6 |        -5.2 |
-| USM         |      12.32 |    170.81 |   1 |    15.10 |  207.14 |         22.6 |        21.3 |
+| EM          |       5.01 |     68.51 |  59 |     5.49 |   83.81 |          9.5 |        22.3 |
+| IM          |       6.55 |     88.93 |  80 |     6.34 |   94.00 |         -3.2 |         5.7 |
+| SM          |      11.59 |    152.07 |  40 |    10.12 |  144.20 |        -12.7 |        -5.2 |
+| USM         |      12.32 |    170.81 |   1 |    15.10 |  207.16 |         22.6 |        21.3 |
 
 Simulated steady-state medians vs Bienczak 2016 Table 2 published
 medians (Cmin in mg/L, AUC in mg.h/L). Differences larger than 20% are

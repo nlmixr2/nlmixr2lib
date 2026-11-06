@@ -295,9 +295,9 @@ knitr::kable(nca_dha_tab,
 | cohort       | PPTESTCD            |  median |    q25 |     q75 |
 |:-------------|:--------------------|--------:|-------:|--------:|
 | Non-pregnant | adj.r.squared       |    1.00 |   1.00 |    1.00 |
-| Non-pregnant | auclast             | 1219.00 | 950.22 | 1581.90 |
+| Non-pregnant | auclast             | 1218.98 | 950.25 | 1581.89 |
 | Non-pregnant | clast.pred          |    0.08 |   0.04 |    0.18 |
-| Non-pregnant | cmax                |  481.65 | 327.69 |  647.56 |
+| Non-pregnant | cmax                |  481.74 | 327.70 |  647.64 |
 | Non-pregnant | half.life           |    1.14 |   1.04 |    1.24 |
 | Non-pregnant | lambda.z            |    0.61 |   0.56 |    0.67 |
 | Non-pregnant | lambda.z.n.points   |    4.00 |   3.00 |    5.00 |
@@ -308,9 +308,9 @@ knitr::kable(nca_dha_tab,
 | Non-pregnant | tlast               |   16.00 |  16.00 |   16.00 |
 | Non-pregnant | tmax                |    1.50 |   1.00 |    2.00 |
 | Pregnant     | adj.r.squared       |    1.00 |   1.00 |    1.00 |
-| Pregnant     | auclast             |  818.28 | 562.49 |  981.32 |
+| Pregnant     | auclast             |  818.26 | 562.49 |  981.36 |
 | Pregnant     | clast.pred          |    0.06 |   0.02 |    0.13 |
-| Pregnant     | cmax                |  313.34 | 209.10 |  400.40 |
+| Pregnant     | cmax                |  313.35 | 209.12 |  400.42 |
 | Pregnant     | half.life           |    1.16 |   1.06 |    1.26 |
 | Pregnant     | lambda.z            |    0.60 |   0.55 |    0.65 |
 | Pregnant     | lambda.z.n.points   |    4.00 |   3.00 |    5.00 |
@@ -360,10 +360,10 @@ knitr::kable(nca_pip_tab, digits = 2,
 | cohort       | PPTESTCD            |   median |      q25 |      q75 |
 |:-------------|:--------------------|---------:|---------:|---------:|
 | Non-pregnant | adj.r.squared       |     1.00 |     1.00 |     1.00 |
-| Non-pregnant | auclast             | 21140.83 | 16381.32 | 29312.52 |
+| Non-pregnant | auclast             | 21140.54 | 16381.85 | 29312.32 |
 | Non-pregnant | clast.pred          |     1.92 |     1.39 |     2.90 |
-| Non-pregnant | cmax                |   145.98 |   112.74 |   215.03 |
-| Non-pregnant | half.life           |   573.13 |   512.37 |   640.18 |
+| Non-pregnant | cmax                |   145.99 |   112.74 |   215.02 |
+| Non-pregnant | half.life           |   573.13 |   512.36 |   640.19 |
 | Non-pregnant | lambda.z            |     0.00 |     0.00 |     0.00 |
 | Non-pregnant | lambda.z.n.points   |    10.00 |    10.00 |    10.00 |
 | Non-pregnant | lambda.z.time.first |   336.00 |   336.00 |   336.00 |
@@ -373,9 +373,9 @@ knitr::kable(nca_pip_tab, digits = 2,
 | Non-pregnant | tlast               |  2016.00 |  2016.00 |  2016.00 |
 | Non-pregnant | tmax                |    50.00 |    28.00 |    51.00 |
 | Pregnant     | adj.r.squared       |     1.00 |     1.00 |     1.00 |
-| Pregnant     | auclast             | 27064.15 | 19520.77 | 37510.72 |
+| Pregnant     | auclast             | 27063.85 | 19520.74 | 37511.26 |
 | Pregnant     | clast.pred          |     1.22 |     0.78 |     2.03 |
-| Pregnant     | cmax                |   261.79 |   186.45 |   356.58 |
+| Pregnant     | cmax                |   261.79 |   186.45 |   356.57 |
 | Pregnant     | half.life           |   431.23 |   388.73 |   477.01 |
 | Pregnant     | lambda.z            |     0.00 |     0.00 |     0.00 |
 | Pregnant     | lambda.z.n.points   |    10.00 |    10.00 |    10.00 |
@@ -429,8 +429,8 @@ knitr::kable(pip_tab, digits = 2,
 
 | cohort       | Day7_median | Day7_q25 | Day7_q75 | Day28_median | Day28_q25 | Day28_q75 |
 |:-------------|------------:|---------:|---------:|-------------:|----------:|----------:|
-| Non-pregnant |       20.92 |    16.10 |    28.18 |         9.73 |      7.58 |     13.80 |
-| Pregnant     |       28.30 |    20.69 |    38.62 |        11.09 |      7.86 |     15.97 |
+| Non-pregnant |       20.92 |     16.1 |    28.18 |         9.73 |      7.58 |     13.80 |
+| Pregnant     |       28.30 |     20.7 |    38.62 |        11.09 |      7.86 |     15.97 |
 
 Simulated piperaquine Day-7 and Day-28 plasma concentrations (ng/mL).
 {.table style="width:100%;"}

@@ -97,7 +97,7 @@ collects them in one place for review.
 | `etalvc` (CV%) | `0.1416` (39% CV) | Table 2 parametric Vct 39% CV |
 | `etalvp` (CV%) | `0.0253` (16% CV) | Table 2 parametric Vpt 16% CV |
 | `etalkm_gluc` (CV%) | `0.1283` (37% CV) | Table 2 parametric Km 37% CV |
-| `etalcl_nonren_gluc` (CV%) | `0.2561` (54% CV) | Table 2 parametric CLnrm 54% CV |
+| `etalcl_nonren_gluc` (CV%) | `0.2559` (54% CV) | Table 2 parametric CLnrm 54% CV |
 | `propSd` (plasma tesaglitazar) | `0.097` (9.7%) | Table 2 tesaglitazar plasma 9.7% (RSE 7.9%) |
 | `propSd_urineTesa` | `0.37` (37%) | Table 2 tesaglitazar urine 37% (RSE 6.1%) |
 | `propSd_gluc` (plasma metabolite) | `0.18` (18%) | Table 2 metabolite plasma 18% (RSE 5.9%) |
@@ -528,7 +528,7 @@ knitr::kable(
 | cohort_label | cmax_median | cmin_median | tmax_median | auclast_median | cav_median |
 |:---|---:|---:|---:|---:|---:|
 | Healthy controls | 0.981 | 0.669 | 6 | 18.997 | 0.792 |
-| Renal insufficiency | 1.925 | 1.600 | 6 | 41.934 | 1.747 |
+| Renal insufficiency | 1.925 | 1.600 | 6 | 41.935 | 1.747 |
 
 PKNCA-derived steady-state (day 42) tesaglitazar plasma NCA parameters
 per cohort; medians across 30 simulated subjects per cohort. Cmax / Cmin

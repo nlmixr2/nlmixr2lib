@@ -53,10 +53,10 @@ Per-parameter origin (also recorded as in-file comments next to each
 | `e_wt_cl` | 1.14 | Zhao 2012 Table 3 (theta_5 = 1.14; estimated PWR exponent on WT for CL/F) |
 | Reference WT (12 kg) | n/a | Zhao 2012 Results (cohort median used as the WT reference for the power model) |
 | `etalcl` | 0.03884 | Zhao 2012 Table 3 (IIV CL/F = 19.9% CV; omega^2 = log(1 + 0.199^2)) |
-| `etalvp` | 0.14977 | Zhao 2012 Table 3 (IIV V2/F = 40.2% CV; omega^2 = log(1 + 0.402^2)) |
-| `etalq` | 0.09120 | Zhao 2012 Table 3 (IIV Q/F = 30.9% CV; omega^2 = log(1 + 0.309^2)) |
-| `etaiov_cl_1` | 0.04559 | Zhao 2012 Table 3 (IOV CL/F = 21.6% CV; omega^2 = log(1 + 0.216^2)); occasion-1 estimate |
-| `etaiov_cl_2` | fix(0.04559) | Zhao 2012 Table 3 (IOV CL/F shared variance across occasions; NONMEM `$OMEGA BLOCK(1) SAME` translation) |
+| `etalvp` | 0.14980 | Zhao 2012 Table 3 (IIV V2/F = 40.2% CV; omega^2 = log(1 + 0.402^2)) |
+| `etalq` | 0.09119 | Zhao 2012 Table 3 (IIV Q/F = 30.9% CV; omega^2 = log(1 + 0.309^2)) |
+| `etaiov_cl_1` | 0.04560 | Zhao 2012 Table 3 (IOV CL/F = 21.6% CV; omega^2 = log(1 + 0.216^2)); occasion-1 estimate |
+| `etaiov_cl_2` | fix(0.04560) | Zhao 2012 Table 3 (IOV CL/F shared variance across occasions; NONMEM `$OMEGA BLOCK(1) SAME` translation) |
 | `propSd` | 0.141 | Zhao 2012 Table 3 (residual proportional = 14.1%) |
 | `d/dt(depot)`, `d/dt(central)`, `d/dt(peripheral1)` | n/a | Zhao 2012 Methods (two-compartment with first-order oral absorption and first-order elimination) |
 | `Cc <- central / vc` | n/a | Standard linear-CL parameterisation; dose mg, volume L -\> mg/L = ug/mL |
@@ -410,11 +410,11 @@ knitr::kable(
 
 | NCA parameter | treatment          |    median |      p05 |       p95 |
 |:--------------|:-------------------|----------:|---------:|----------:|
-| AUClast       | BID (8 mg/kg q12h) |  5.314691 | 3.405132 |  8.901297 |
-| Cmax          | BID (8 mg/kg q12h) |  2.610619 | 1.754336 |  3.836657 |
+| AUClast       | BID (8 mg/kg q12h) |  5.314678 | 3.405152 |  8.901278 |
+| Cmax          | BID (8 mg/kg q12h) |  2.610611 | 1.754345 |  3.836679 |
 | Tmax          | BID (8 mg/kg q12h) |  1.000000 | 1.000000 |  1.000000 |
-| AUClast       | QD (16 mg/kg q24h) | 11.767224 | 6.919091 | 18.813406 |
-| Cmax          | QD (16 mg/kg q24h) |  5.552471 | 3.576824 |  7.961253 |
+| AUClast       | QD (16 mg/kg q24h) | 11.767342 | 6.918764 | 18.813536 |
+| Cmax          | QD (16 mg/kg q24h) |  5.552408 | 3.576667 |  7.961342 |
 | Tmax          | QD (16 mg/kg q24h) |  1.000000 | 1.000000 |  1.000000 |
 
 Simulated abacavir steady-state NCA per crossover phase (WT = 12 kg, n =
@@ -437,7 +437,7 @@ Simulated abacavir steady-state NCA per crossover phase (WT = 12 kg, n =
   phases. The packaged model encodes IOV explicitly via two per-occasion
   log-CL etas (`etaiov_cl_1`, `etaiov_cl_2`) multiplexed by the binary
   `oc1 / oc2` decomposition of the canonical `OCC` covariate; the second
-  eta is `fix(0.04559)` at the same variance as the first per the
+  eta is `fix(0.04560)` at the same variance as the first per the
   source’s NONMEM `$OMEGA BLOCK(1) SAME` pattern. This matches the
   Jonsson 2011 ethambutol 4-occasion analogue and lets downstream users
   simulate either occasion by setting the `OCC` column to 1 or 2 in the

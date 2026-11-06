@@ -50,8 +50,8 @@ The table below collects them in one place for review.
 | `lq` (Q) | log(0.363) (0.363 L/h) | Table 3 (Q) |
 | `e_lbw_cl` | fixed(1) | Table 3 unit convention “L h^-1 70 kg^-1 (LBW)” implies a linear ratio (exponent = 1) |
 | `e_wt_vc` | fixed(1) | Table 3 unit convention “L 70 kg^-1 (WT)” implies a linear ratio (exponent = 1) |
-| `etalcl` (wCL = 35.6% CV) | 0.11933 (= log(1 + 0.356^2)) | Table 3 (wCL, “CV%”) |
-| `etalvc` (wV2 = 58.0% CV) | 0.28991 (= log(1 + 0.58^2)) | Table 3 (wV2, “CV%”) |
+| `etalcl` (wCL = 35.6% CV) | 0.11932 (= log(1 + 0.356^2)) | Table 3 (wCL, “CV%”) |
+| `etalvc` (wV2 = 58.0% CV) | 0.28998 (= log(1 + 0.58^2)) | Table 3 (wV2, “CV%”) |
 | `addSd` (residual) | 80.19 IU/L (= sqrt(6430)) | Table 3 (sigma^2 = 6430 (IU/L)^2; “additive residual variance” per Results, popPK paragraph) |
 | `d/dt(depot)` | first-order absorption | Methods + Results: “two-compartment first order input model” |
 | `d/dt(central)` | central compartment with Ka in, kel + k12 out, k21 in | Methods + Results, two-compartment structural model |
@@ -354,11 +354,11 @@ knitr::kable(
 
 | cohort            | PPTESTCD |  median |     q05 |     q95 |
 |:------------------|:---------|--------:|--------:|--------:|
-| 100 IU/kg LBW q8h | auclast  | 4598.55 | 3103.42 | 7331.45 |
-| 100 IU/kg LBW q8h | cmax     |  603.34 |  424.56 |  936.13 |
+| 100 IU/kg LBW q8h | auclast  | 4598.55 | 3103.36 | 7331.58 |
+| 100 IU/kg LBW q8h | cmax     |  603.33 |  424.53 |  936.15 |
 | 100 IU/kg LBW q8h | tmax     |   11.25 |   10.00 |   12.00 |
-| 100 IU/kg WT q12h | auclast  | 4923.48 | 3150.29 | 7970.66 |
-| 100 IU/kg WT q12h | cmax     |  539.06 |  339.14 |  906.49 |
+| 100 IU/kg WT q12h | auclast  | 4923.39 | 3150.20 | 7970.73 |
+| 100 IU/kg WT q12h | cmax     |  539.06 |  339.11 |  906.52 |
 | 100 IU/kg WT q12h | tmax     |    4.25 |    2.50 |    7.25 |
 
 First-dose NCA over the initial 12 h dosing interval, by regimen. Units:

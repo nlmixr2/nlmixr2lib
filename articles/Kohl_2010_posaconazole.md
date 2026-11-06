@@ -290,8 +290,8 @@ knitr::kable(nca_tbl, digits = 2,
 
 | treatment   | auclast |    cav |   cmax |   cmin | tmax |
 |:------------|--------:|-------:|-------:|-------:|-----:|
-| diarrhea    | 1799.40 | 224.92 | 232.54 | 206.60 |    3 |
-| no diarrhea | 2881.16 | 360.14 | 374.15 | 338.79 |    3 |
+| diarrhea    | 1799.40 | 224.93 | 232.54 | 206.60 |    3 |
+| no diarrhea | 2881.15 | 360.14 | 374.15 | 338.79 |    3 |
 
 Simulated steady-state NCA by diarrhea status (medians across N = 200).
 {.table}

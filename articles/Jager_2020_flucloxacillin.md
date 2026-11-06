@@ -92,8 +92,8 @@ verified below.
 | `lkd_pb` (Kd) | 0.0441 mmol/L | Table 2, final model |
 | `e_alb_bmax_pb` | 1.51 | Table 2 covariates, albumin; Equation 4 |
 | `e_crcl_cl` | 0.809 | Table 2 covariates, eGFR; Equation 5 |
-| `etalbmax_pb` | 30.4 %CV -\> 0.088384 | Table 2 BPV, final model |
-| `etalcl` | 71.6 %CV -\> 0.413876 | Table 2 BPV, final model |
+| `etalbmax_pb` | 30.4 %CV -\> 0.088392 | Table 2 BPV, final model |
+| `etalcl` | 71.6 %CV -\> 0.413867 | Table 2 BPV, final model |
 | `expSd` (total) | 0.160 | Table 2 residual variability; Supplementary Appendix 2 (log-additive) |
 | `expSd_Cu` (unbound) | 0.222 | Table 2 residual variability; Supplementary Appendix 2 (log-additive) |
 

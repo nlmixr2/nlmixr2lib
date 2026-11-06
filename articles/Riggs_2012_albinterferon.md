@@ -533,7 +533,7 @@ ratio_dev <- max(abs(wide$`cav_1200 ug q2wk` / wide$`cav_900 ug q2wk` - 1200 / 9
 cat(sprintf("max |CL(1200)/CL(900) - 1|      = %.3g\n", cl_dev))
 #> max |CL(1200)/CL(900) - 1|      = 0
 cat(sprintf("max |Cavg ratio - 1200/900|     = %.3g\n", ratio_dev))
-#> max |Cavg ratio - 1200/900|     = 8.13e-12
+#> max |Cavg ratio - 1200/900|     = 8.14e-12
 
 stopifnot(nrow(wide) == n_sub, cl_dev < 1e-12, ratio_dev < 1e-10)
 ```

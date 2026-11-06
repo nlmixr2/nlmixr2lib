@@ -86,7 +86,7 @@ collects them.
 | `e_wt_vc` | 1.00 | Table 4, ‘Effect of BW on V/F’ |
 | `e_race_black_vc` | -0.215 | Table 4, ‘Effect of Black on V/F’ |
 | `e_age_fdepot` | 0.00651 | Table 4, ‘Effect of AGE\>30 years on F’; sign from the Section 3.1 F equation |
-| `etalcl`, `etalvc`, `etalka` | 0.079152, 0.064927, 0.422400 | Table 4, BPV 28.7%, 25.9%, 72.5% CV; `omega^2 = log(1 + CV^2)` |
+| `etalcl`, `etalvc`, `etalka` | 0.079152, 0.064927, 0.422404 | Table 4, BPV 28.7%, 25.9%, 72.5% CV; `omega^2 = log(1 + CV^2)` |
 | cov(`etalcl`, `etalvc`) | 0.015556 | Table 4, correlation CL/F-V/F 0.217 |
 | cov(`etalcl`, `etalka`) | -0.062352 | Table 4, correlation CL/F-KA -0.341 |
 | cov(`etalvc`, `etalka`) | 0 | Not reported in Table 4 |
@@ -559,9 +559,9 @@ pct <- with(med_t5, 100 * cbind(
 ))
 pct
 #>          cmax     cmin  auclast      cav
-#> [1,] 4.316745 3.366008 3.658116 3.629802
-#> [2,] 3.888458 3.845006 3.516656 3.629758
-#> [3,] 3.320808 3.405995 3.587283 3.629725
+#> [1,] 4.316739 3.366035 3.658061 3.629747
+#> [2,] 3.888442 3.845096 3.516601 3.629703
+#> [3,] 3.320783 3.405833 3.587228 3.629670
 
 # Structural gate on the cohort median. Measured +3.3% to +4.3% on every
 # metric. The cohort only approximates the 381 analysis subjects, so the
@@ -581,7 +581,7 @@ cav_check <- res_t5 |>
   dplyr::mutate(cav_closed = typ_f(AGE) * mgkg * WT / (cl * tau))
 cav_err <- max(abs(cav_check$cav / cav_check$cav_closed - 1))
 cav_err
-#> [1] 0.0004094736
+#> [1] 0.0004094751
 stopifnot(nrow(cav_check) == 3L * nrow(cohort_t5), cav_err < 5e-3)
 ```
 

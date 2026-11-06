@@ -1011,7 +1011,7 @@ published figures.**
     #> [22] htmltools_0.5.9     sys_3.4.3           sass_0.4.10        
     #> [25] yaml_2.3.12         pillar_1.11.1       pkgdown_2.2.1      
     #> [28] crayon_1.5.3        jquerylib_0.1.4     whisker_0.4.1      
-    #> [31] openssl_2.4.2       cachem_1.1.0        tidyselect_1.2.1   
+    #> [31] openssl_2.5.0       cachem_1.1.0        tidyselect_1.2.1   
     #> [34] digest_0.6.39       lotri_1.0.5         purrr_1.2.2        
     #> [37] labeling_0.4.3      rxode2ll_2.0.18     fastmap_1.2.0      
     #> [40] grid_4.6.2          cli_3.6.6           dparser_1.3.1-14   

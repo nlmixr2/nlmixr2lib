@@ -867,7 +867,7 @@ knitr::kable(
 
 | Regimen | Target (mg\*h/L) | Median AUC (mg\*h/L) | Median % diff | 10th pct % diff | 90th pct % diff |
 |:---|---:|---:|---:|---:|---:|
-| Bu24 (q24h, 3-h infusion) | 73.89 | 72.97 | -1.2 | -17.3 | 19.8 |
+| Bu24 (q24h, 3-h infusion) | 73.89 | 72.96 | -1.2 | -17.3 | 19.8 |
 | Bu6 (q6h, 2-h infusion) | 73.89 | 72.75 | -1.5 | -16.8 | 19.3 |
 
 Simulated cumulative four-day AUC relative to the model-based dosing

@@ -456,17 +456,17 @@ col_res <- PKNCA::pk.nca(
 
 | Drug | Regimen | auclast | cav | cmax | cmin | half.life | tmax |
 |:---|:---|---:|---:|---:|---:|---:|---:|
-| Sitafloxacin (total Cc) | CrCL 10: 325 mg q48h | 205.925 | 4.290 | 5.842 | 2.998 | 45.685 | 2.200 |
-| Sitafloxacin (total Cc) | CrCL 30: 500 mg q24h | 108.028 | 4.501 | 6.901 | 2.769 | 15.818 | 1.900 |
-| Sitafloxacin (total Cc) | CrCL 50: 425 mg q12h | 53.840 | 4.487 | 6.184 | 2.997 | 9.533 | 1.625 |
-| Sitafloxacin (total Cc) | CrCL 90: 750 mg q12h | 53.663 | 4.472 | 7.226 | 2.179 | 5.520 | 1.800 |
-| Colistin (unbound Ccu_col) | CrCL 10: 160 mg q24h | 20.513 | 0.855 | 0.996 | 0.641 | NA | 7.200 |
-| Colistin (unbound Ccu_col) | CrCL 30: 97.5 mg q12h | 9.379 | 0.782 | 0.848 | 0.698 | NA | 4.100 |
-| Colistin (unbound Ccu_col) | CrCL 50: 122.5 mg q12h | 8.994 | 0.750 | 0.796 | 0.636 | NA | 3.800 |
-| Colistin (unbound Ccu_col) | CrCL 90: 180 mg q12h | 11.058 | 0.922 | 1.045 | 0.706 | NA | 3.350 |
+| Sitafloxacin (total Cc) | CrCL 10: 325 mg q48h | 205.850 | 4.289 | 5.865 | 3.011 | 45.741 | 2.20 |
+| Sitafloxacin (total Cc) | CrCL 30: 500 mg q24h | 108.035 | 4.501 | 6.821 | 2.782 | 17.010 | 1.85 |
+| Sitafloxacin (total Cc) | CrCL 50: 425 mg q12h | 53.818 | 4.485 | 6.063 | 3.068 | 10.182 | 1.65 |
+| Sitafloxacin (total Cc) | CrCL 90: 750 mg q12h | 53.654 | 4.471 | 7.114 | 2.459 | 6.357 | 2.05 |
+| Colistin (unbound Ccu_col) | CrCL 10: 160 mg q24h | 20.513 | 0.855 | 0.996 | 0.641 | NA | 7.20 |
+| Colistin (unbound Ccu_col) | CrCL 30: 97.5 mg q12h | 9.379 | 0.782 | 0.848 | 0.698 | NA | 4.10 |
+| Colistin (unbound Ccu_col) | CrCL 50: 122.5 mg q12h | 8.994 | 0.749 | 0.796 | 0.636 | NA | 3.80 |
+| Colistin (unbound Ccu_col) | CrCL 90: 180 mg q12h | 11.058 | 0.921 | 1.045 | 0.706 | NA | 3.35 |
 
 Median steady-state NCA parameters over one dosing interval across the
-virtual cohort. {.table style="width:100%;"}
+virtual cohort. {.table}
 
 ### Comparison against the published reference values
 
@@ -586,7 +586,10 @@ tails, where a finite Monte Carlo is noisiest.
 Both papers’ `%IIV` / `omega^2` columns are read as **arithmetic** CVs,
 per the Table 1 and Table 2 footnotes (“SD were calculated from %IVV x
 mean”; “SD were calculated from the square root of omega^2 x 100% x
-estimate”), which is how Crystal Ball parameterises a log-normal.
+estimate”), which is how Crystal Ball parameterises a log-normal. This
+reading is used here only to reproduce Rodjun’s own Monte Carlo; the
+sitafloxacin model file carries the printed Table 2 `omega^2` as the
+log-scale variance (see Errata).
 
 ### Sitafloxacin (Table 5)
 
@@ -893,15 +896,18 @@ above.
 - **Variability scale.** Both source tables report variability on the
   arithmetic scale (Table 1: “SD were calculated from %IVV x mean”;
   Table 2: “SD were calculated from the square root of omega^2 x 100% x
-  estimate”). The model files convert to log-scale variances via
-  `omega^2 = log(CV^2 + 1)`, which is the log-normal Crystal Ball would
-  have sampled.
+  estimate”). The colistin model converts its `%IIV` to log-scale
+  variances via `omega^2 = log(CV^2 + 1)`, which is the log-normal
+  Crystal Ball would have sampled. The sitafloxacin model carries the
+  printed Table 2 `omega^2` directly as the log-scale variance (see
+  Errata).
 - **Sitafloxacin absorption variability.** Table 2 reports
   `omega^2 = 4.57` for `ka`, i.e. a 214% arithmetic CV. This is
   implausibly large for an absorption rate constant and is likely a
   misprint (0.457 would be unremarkable), but it is encoded exactly as
-  printed. It does not affect any result in this vignette because every
-  PK/PD target is AUC-driven and AUC is independent of `ka`.
+  printed: `etalka ~ 4.57`, a log-scale SD of 2.14. It does not affect
+  any result in this vignette because every PK/PD target is AUC-driven
+  and AUC is independent of `ka`.
 - **No residual error model.** Neither source reports one; the Monte
   Carlo simulation is deterministic once the PK parameters are drawn.
   All residual SDs are `fixed(0)`. A user fitting observed data must
@@ -940,6 +946,22 @@ above.
   CMS `V1`, CMS `V2` or colistin `CLT C`, and no `%IIV` is reported for
   colistin `CLR C` or `CLNR C`. These gaps are reproduced faithfully
   rather than filled.
+- **Rodjun 2023 Table 2 prints the sitafloxacin variances.** The Methods
+  (Pharmacokinetic model, Sitafloxacin) define the printed column as
+  “omega^2, the variance of the estimated value (SD were calculated from
+  the square root of omega^2 x 100% x estimate)”. The model uses the
+  printed values directly as the log-scale variances (`etalcl ~ 0.0757`,
+  `etalvc ~ 0.0870`, `etalka ~ 4.57`), not `log(1 + omega^2)`. For CL
+  and V the two readings differ by about 4%; for ka the printed 4.57 is
+  2.7 times `log(1 + 4.57)` = 1.72. Recomputing Table 5’s 108 cells both
+  ways (each centred on the arithmetic mean, as above), the
+  `log(1 + omega^2)` reading reproduces the published PTA slightly more
+  closely than the printed `omega^2` (mean absolute difference 0.13 vs
+  0.22 percentage points, maximum 0.94 vs 1.20). So the paper’s own
+  simulation appears to have used the arithmetic-CV reading, while the
+  model keeps the variances as the Methods define them. The Table 5
+  reproduction above therefore samples the arithmetic-CV reading and
+  does not read the model file.
 
 ## Session information
 
@@ -981,7 +1003,7 @@ sessionInfo()
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
 #> [28] pkgdown_2.2.1       crayon_1.5.3        jquerylib_0.1.4    
-#> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
+#> [31] whisker_0.4.1       openssl_2.5.0       cachem_1.1.0       
 #> [34] nlme_3.1-171        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
 #> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.2         

@@ -63,9 +63,9 @@ albumin/ULN ratio of 0.78 (i.e. 38 g/L over a typical ULN of 48.7 g/L),
 | `e_dp2_cl` (DP2 multiplier on CLO/F) | `1.30` | Table 3, theta16 / DP2 effect on CLO/F |
 | `e_sexf_cl` (SEX multiplier on CLO/F) | `0.846` | Table 3, theta17; SEX=1=female (maintainer-confirmed) |
 | `var(etalvmax)` | `log(0.324^2 + 1) = 0.0998` | Table 3: Vm IIV 32.4% CV |
-| `var(etalcl)` | `log(0.553^2 + 1) = 0.2669` | Table 3: CLO/F IIV 55.3% CV |
-| `cov(etalvmax, etalcl)` | `-0.566 * sqrt(0.0998 * 0.2669) = -0.0924` | Table 3: Vm-CLO/F correlation -0.566 |
-| `var(etalvc)` | `log(0.373^2 + 1) = 0.1302` | Table 3: Vc/F IIV 37.3% CV |
+| `var(etalcl)` | `log(0.553^2 + 1) = 0.2668` | Table 3: CLO/F IIV 55.3% CV |
+| `cov(etalvmax, etalcl)` | `-0.566 * sqrt(0.0998 * 0.2668) = -0.0924` | Table 3: Vm-CLO/F correlation -0.566 |
+| `var(etalvc)` | `log(0.373^2 + 1) = 0.1303` | Table 3: Vc/F IIV 37.3% CV |
 | `var(etalka)` | `log(0.321^2 + 1) = 0.0981` | Table 3: Ka IIV 32.1% CV |
 | `propSd` | `sqrt(0.395) = 0.6285` | Table 3: log-additive residual sigma^2 = 0.395 |
 | Structure (2-cmt + first-order SC absorption + linear + MM elimination) | n/a | Methods p. 1457, Figure 2 / final-model equations |

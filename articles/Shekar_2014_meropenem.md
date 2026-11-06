@@ -92,9 +92,9 @@ Table 2 final covariate-model column (the “Model Mean” column).
 | `lvc` (Vc) | log(18.7) | Table 2 row “Vc (L)”, Model Mean = 18.7 |
 | `lvp` (Vp) | log(13.2) | Table 2 row “Vp (L)”, Model Mean = 13.2 |
 | `lq` (Q) | log(21.0) | Table 2 row “Q (L/h)”, Model Mean = 21.0 |
-| `etalcl ~ 0.23560` | log(0.516^2 + 1) | Table 2 row “CL (L/h) BSV (% CV)” = 51.6 |
-| `etalvc ~ 0.19073` | log(0.458^2 + 1) | Table 2 row “Vc (L) BSV (% CV)” = 45.8 |
-| `etalvp ~ 0.07916` | log(0.287^2 + 1) | Table 2 row “Vp (L) BSV (% CV)” = 28.7 |
+| `etalcl ~ 0.23606` | log(0.516^2 + 1) | Table 2 row “CL (L/h) BSV (% CV)” = 51.6 |
+| `etalvc ~ 0.19043` | log(0.458^2 + 1) | Table 2 row “Vc (L) BSV (% CV)” = 45.8 |
+| `etalvp ~ 0.07915` | log(0.287^2 + 1) | Table 2 row “Vp (L) BSV (% CV)” = 28.7 |
 | `propSd <- 0.137` | 0.137 | Table 2 row “RUV (% CV)” = 13.7 |
 | `addSd <- 2.3` | 2.3 mg/L | Table 2 row “RUV (SD, mg/L)” = 2.3 |
 | `tvcl <- exp(lcl)*RRT_CRRT_STATUS + e_crcl_cl*crcl_Lh*(1-RRT_CRRT_STATUS)` | n/a | Methods page 5 covariate equation (maintainer-resolved interpretation; see Assumptions) |
@@ -466,11 +466,11 @@ knitr::kable(
 
 | Interval Start | Interval End | cohort | N | AUClast (hr\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (hr) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 160 | 168 | CrCL 120 / 1000 mg q8h | 100 | 74.6 \[49.7\] | 39.9 \[27.3\] | 1.12 \[299\] | 0.500 \[0.500, 0.500\] |
-| 160 | 168 | CrCL 180 / 1000 mg q8h | 100 | 45.4 \[49.2\] | 32.8 \[28.8\] | 0.210 \[1310\] | 0.500 \[0.500, 0.500\] |
-| 160 | 168 | CrCL 20 / 1000 mg q8h | 100 | 420 \[52.9\] | 82.2 \[35.6\] | 36.9 \[79.3\] | 0.500 \[0.500, 0.500\] |
-| 160 | 168 | CrCL 50 / 1000 mg q8h | 100 | 181 \[53.1\] | 51.0 \[32.0\] | 10.1 \[129\] | 0.500 \[0.500, 0.500\] |
-| 160 | 168 | CrCL 80 / 1000 mg q8h | 100 | 117 \[57.2\] | 45.4 \[26.8\] | 3.61 \[237\] | 0.500 \[0.500, 0.500\] |
+| 160 | 168 | CrCL 120 / 1000 mg q8h | 100 | 74.6 \[49.8\] | 39.9 \[27.3\] | 1.12 \[299\] | 0.500 \[0.500, 0.500\] |
+| 160 | 168 | CrCL 180 / 1000 mg q8h | 100 | 45.3 \[49.3\] | 32.8 \[28.8\] | 0.210 \[1310\] | 0.500 \[0.500, 0.500\] |
+| 160 | 168 | CrCL 20 / 1000 mg q8h | 100 | 420 \[53.0\] | 82.2 \[35.6\] | 36.9 \[79.4\] | 0.500 \[0.500, 0.500\] |
+| 160 | 168 | CrCL 50 / 1000 mg q8h | 100 | 181 \[53.1\] | 51.0 \[32.1\] | 10.1 \[129\] | 0.500 \[0.500, 0.500\] |
+| 160 | 168 | CrCL 80 / 1000 mg q8h | 100 | 117 \[57.2\] | 45.4 \[26.8\] | 3.61 \[238\] | 0.500 \[0.500, 0.500\] |
 
 Simulated steady-state NCA parameters at 1 g q8h across CrCL = 20, 50,
 80, 120, 180 mL/min (non-RRT). {.table}

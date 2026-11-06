@@ -81,9 +81,9 @@ The table collects the entries in one place.
 | IIV V2 (omega^2 = 0.00995, fixed) | 10% Fixed | Table 3 IIV V2 row |
 | IIV Ka (omega^2 = 0.00995, fixed) | 10% Fixed | Table 3 IIV Ka row |
 | IIV F (omega^2 = 0.00995, fixed) | 10% Fixed | Table 3 IIV F row |
-| IIV Bmax (omega^2 = log(1 + 0.27^2) = 0.07034) | 27% (95% CI 19-36) | Table 3 IIV Bmax row |
-| IIV Kd (omega^2 = log(1 + 0.03^2) = 0.000899, fixed) | 3% Fixed | Table 3 IIV Kd row |
-| IIV Nplasma (omega^2 = log(1 + 0.29^2) = 0.08076) | 29% (95% CI 22-41) | Table 3 IIV Nplasma row |
+| IIV Bmax (omega^2 = log(1 + 0.27^2) = 0.07037) | 27% (95% CI 19-36) | Table 3 IIV Bmax row |
+| IIV Kd (omega^2 = log(1 + 0.03^2) = 0.000900, fixed) | 3% Fixed | Table 3 IIV Kd row |
+| IIV Nplasma (omega^2 = log(1 + 0.29^2) = 0.08075) | 29% (95% CI 22-41) | Table 3 IIV Nplasma row |
 | Proportional residual SD on Cc (WBC) | 16.7% (95% CI 15.8-17.6) | Table 3 RUV WBC row |
 | Proportional residual SD on Cupc (UPC) | 36.3% (95% CI 33.9-40.4) | Table 3 RUV UPC row |
 | Proportional residual SD on Ctpc (TPC) | 31.6% (95% CI 28.6-34.2) | Table 3 RUV TPC row |

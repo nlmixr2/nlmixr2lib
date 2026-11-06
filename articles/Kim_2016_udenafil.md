@@ -85,13 +85,13 @@ are from Kim 2016 Table 2 “Estimate” column.
 | `lvc` (Vp/F, shared) | log(44.1) -\> 44.1 L | Table 2, RSE 29.0% |
 | `lvp` (Vp2/F, shared) | log(588) -\> 588 L | Table 2, RSE 7.21% |
 | `e_inr_base_clpm` (theta10) | -1.65 | Table 2 + prose: “decrease in CLpm/F with increase in PT”; bootstrap -1.66 (-3.43, -0.729) |
-| `etalclpm` variance | log(1 + 0.351^2) = 0.11622 | Table 2: omega CLpm/F 35.1% CV |
-| `etalcl_da8164` variance | log(1 + 0.544^2) = 0.25929 | Table 2: omega CLm/(F\*fm) 54.4% CV |
-| `etalka` variance | log(1 + 0.641^2) = 0.34416 | Table 2: omega ka 64.1% CV |
-| `etalvc` variance | log(1 + 0.756^2) = 0.45227 | Table 2: omega Vp/F 75.6% CV |
-| `etalvp` variance | log(1 + 0.238^2) = 0.05512 | Table 2: omega Vp2/F 23.8% CV |
-| `etalq` variance | log(1 + 0.513^2) = 0.23354 | Table 2: omega Qp/F 51.3% CV |
-| `etaltlag` variance | log(1 + 0.207^2) = 0.04195 | Table 2: omega ALAG 20.7% CV |
+| `etalclpm` variance | log(1 + 0.351^2) = 0.11618 | Table 2: omega CLpm/F 35.1% CV |
+| `etalcl_da8164` variance | log(1 + 0.544^2) = 0.25923 | Table 2: omega CLm/(F\*fm) 54.4% CV |
+| `etalka` variance | log(1 + 0.641^2) = 0.34421 | Table 2: omega ka 64.1% CV |
+| `etalvc` variance | log(1 + 0.756^2) = 0.45205 | Table 2: omega Vp/F 75.6% CV |
+| `etalvp` variance | log(1 + 0.238^2) = 0.05510 | Table 2: omega Vp2/F 23.8% CV |
+| `etalq` variance | log(1 + 0.513^2) = 0.23362 | Table 2: omega Qp/F 51.3% CV |
+| `etaltlag` variance | log(1 + 0.207^2) = 0.04196 | Table 2: omega ALAG 20.7% CV |
 | `propSd` (parent) | 0.216 (21.6%) | Table 2 sigma_prop,p |
 | `propSd_da8164` (metabolite) | 0.231 (23.1%) | Table 2 sigma_prop,m |
 | `rpm` (MW(DA-8164)/MW(udenafil)) | 405.4 / 516.66 = 0.7847 | Methods, Population PK model development paragraph |

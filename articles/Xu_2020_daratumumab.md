@@ -359,12 +359,12 @@ knitr::kable(
 )
 ```
 
-| PPTESTCD |    median |       Q05 |       Q95 |
-|:---------|----------:|----------:|----------:|
-| auclast  | 24968.569 | 15342.458 | 35637.369 |
-| cmax     |   260.337 |   177.223 |   403.709 |
-| cmin     |     0.000 |     0.000 |     0.000 |
-| tmax     |    12.000 |     6.000 |    12.000 |
+| PPTESTCD |    median |       Q05 |      Q95 |
+|:---------|----------:|----------:|---------:|
+| auclast  | 24968.516 | 15342.521 | 35637.65 |
+| cmax     |   260.337 |   177.223 |   403.71 |
+| cmin     |     0.000 |     0.000 |     0.00 |
+| tmax     |    12.000 |     6.000 |    12.00 |
 
 Simulated NCA parameters on the first 7-day dose interval (Single first
 dose regimen, 16 mg/kg). {.table}
@@ -424,11 +424,11 @@ knitr::kable(
 | C1D1 postinfusion | 7.0 | Split first dose | 156.7 | 82.5 | 345.0 | 131.3 | 70.8 | 174.1 | -16.2 |
 | C1D2 postinfusion | 28.3 | Split first dose | 256.8 | 125.8 | 435.5 | 200.3 | 113.4 | 274.7 | -22.0 |
 | C2D1 postinfusion | 675.4 | Single first dose | 726.6 | 523.1 | 911.6 | 520.0 | 313.5 | 829.5 | -28.4 |
-| C2D1 postinfusion | 675.4 | Split first dose | 688.9 | 0.0 | 1202.4 | 467.0 | 306.7 | 770.1 | -32.2 |
-| C3D1 preinfusion | 1343.9 | Single first dose | 463.2 | 355.9 | 792.9 | 574.4 | 278.0 | 1061.7 | 24.0 |
+| C2D1 postinfusion | 675.4 | Split first dose | 688.9 | 0.0 | 1202.4 | 467.0 | 306.6 | 770.1 | -32.2 |
+| C3D1 preinfusion | 1343.9 | Single first dose | 463.2 | 355.9 | 792.9 | 574.4 | 277.9 | 1061.9 | 24.0 |
 | C3D1 preinfusion | 1343.9 | Split first dose | 639.2 | 57.7 | 1110.7 | 588.5 | 365.9 | 994.0 | -7.9 |
-| C4D1 preinfusion | 2015.9 | Single first dose | 509.1 | 291.2 | 743.5 | 521.4 | 162.8 | 982.0 | 2.4 |
-| C4D1 preinfusion | 2015.9 | Split first dose | 523.0 | 92.3 | 1019.3 | 482.6 | 249.5 | 987.8 | -7.7 |
+| C4D1 preinfusion | 2015.9 | Single first dose | 509.1 | 291.2 | 743.5 | 521.5 | 162.8 | 982.3 | 2.4 |
+| C4D1 preinfusion | 2015.9 | Split first dose | 523.0 | 92.3 | 1019.3 | 482.6 | 249.5 | 987.9 | -7.7 |
 
 Published (Xu 2020 Table 2) vs simulated median daratumumab
 concentrations at key MMY1001 sampling time points. The simulation uses

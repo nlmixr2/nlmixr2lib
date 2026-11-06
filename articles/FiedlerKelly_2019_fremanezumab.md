@@ -85,7 +85,7 @@ attribute of the function body rather than a live list).
 | Vp (FIXED) | Fiedler-Kelly 2019 Table 2 | 1.72 L (no allometric weight effect) |
 | F1 (FIXED) | Fiedler-Kelly 2019 Table 2 | 0.658 (SC bioavailability) |
 | ALAG1 (FIXED) | Fiedler-Kelly 2019 Table 2 | 0.0803 day (SC absorption lag time) |
-| IIV on CL | Fiedler-Kelly 2019 Table 2 | 23.4% CV (omega^2 = log(CV^2 + 1) = 0.05334) |
+| IIV on CL | Fiedler-Kelly 2019 Table 2 | 23.4% CV (omega^2 = log(CV^2 + 1) = 0.05331) |
 | IIV on Vc | Fiedler-Kelly 2019 Table 2 | 35.1% CV (omega^2 = 0.11618; SC fit, applied to Vc,SC in the packaged model) |
 | IIV on ka | Fiedler-Kelly 2019 Table 2 | 59.0% CV (omega^2 = 0.29870) |
 | Off-diagonal omega | Fiedler-Kelly 2019 Results | None estimated (diagonal matrix) |
@@ -406,7 +406,7 @@ knitr::kable(acc_table,
 
 | regimen | AR_AUC simulated | AR_AUC published (median) | AR_Cmax simulated | AR_Cmax published (median) |
 |:---|---:|---:|---:|---:|
-| 225 mg SC Q4W | NA | 2.43 | 2.20 | 2.38 |
+| 225 mg SC Q4W | NA | 2.43 | 2.19 | 2.38 |
 | 675 mg SC Q12W | NA | 1.21 | 1.17 | 1.22 |
 
 Accumulation ratios: simulated medians vs. Fiedler-Kelly 2019 Table 3.

@@ -111,10 +111,10 @@ rather than the final estimates).
 | `lfdepot = log(0.817)` (relative bioavailability of capsule) | 0.817 | Hennig 2007 Table 3, F_rel (RSE 23.5%) |
 | `llag = log(19.3 / 60)` (h, lag time) | 19.3 min -\> 0.3217 h | Hennig 2007 Table 3, t_lag (RSE 1.68%) |
 | `etalcl ~ log(1 + 0.221^2) = 0.0477` | 22.1 % CV | Hennig 2007 Table 3, BSV Cl_p (RSE 75.2%) |
-| `etalvc ~ log(1 + 0.773^2) = 0.4684` | 77.3 % CV | Hennig 2007 Table 3, BSV V_c (RSE 48.5%) |
+| `etalvc ~ log(1 + 0.773^2) = 0.4685` | 77.3 % CV | Hennig 2007 Table 3, BSV V_c (RSE 48.5%) |
 | `etalka_cap ~ log(1 + 0.919^2) = 0.6122` | 91.9 % CV | Hennig 2007 Table 3, BSV k_a cap (RSE 33.5%) |
 | `etalka_sol ~ log(1 + 1.063^2) = 0.7561` | 106.3 % CV | Hennig 2007 Table 3, BSV k_a sol (RSE 31.4%) |
-| `etalfdepot ~ log(1 + 0.623^2) = 0.3279` | 62.3 % CV | Hennig 2007 Table 3, BSV F_rel (RSE 24.7%) |
+| `etalfdepot ~ log(1 + 0.623^2) = 0.3280` | 62.3 % CV | Hennig 2007 Table 3, BSV F_rel (RSE 24.7%) |
 | `propSd = 0.408` (proportional residual error, itraconazole) | 40.8 % CV | Hennig 2007 Table 3, residual itraconazole (RSE 16.6%) |
 | `propSd_ohi = 0.479` (proportional residual error, OH-itraconazole) | 47.9 % CV | Hennig 2007 Table 3, residual hydroxy-itraconazole (RSE 12.7%) |
 | 2-cmt parent + 1-cmt metabolite topology | – | Hennig 2007 Figure 1 (“Final Model”); page 443 |
@@ -383,10 +383,10 @@ knitr::kable(
 
 | PPTESTCD | median_Capsule | median_Oral solution | p05_Capsule | p05_Oral solution | p95_Capsule | p95_Oral solution |
 |:---|---:|---:|---:|---:|---:|---:|
-| aucinf.obs | 4.952 | 6.243 | 2.386 | 4.823 | 10.019 | 10.551 |
-| auclast | 2.365 | 3.910 | 0.850 | 3.087 | 5.656 | 5.227 |
+| aucinf.obs | 4.952 | 6.243 | 2.386 | 4.823 | 10.020 | 10.550 |
+| auclast | 2.365 | 3.911 | 0.850 | 3.087 | 5.656 | 5.227 |
 | cmax | 0.048 | 0.208 | 0.013 | 0.052 | 0.156 | 0.745 |
-| half.life | 61.203 | 62.964 | 46.735 | 50.518 | 147.298 | 111.725 |
+| half.life | 61.204 | 62.964 | 46.736 | 50.519 | 147.302 | 111.724 |
 | tmax | 3.000 | 1.750 | 1.225 | 0.863 | 66.600 | 7.100 |
 
 Simulated NCA – itraconazole (Cc), single oral 200 mg dose, by
@@ -418,10 +418,10 @@ knitr::kable(
 
 | PPTESTCD | median_Capsule | median_Oral solution | p05_Capsule | p05_Oral solution | p95_Capsule | p95_Oral solution |
 |:---|---:|---:|---:|---:|---:|---:|
-| aucinf.obs | 8.514 | 10.900 | 4.542 | 10.099 | 18.166 | 12.581 |
-| auclast | 3.803 | 6.743 | 1.372 | 4.585 | 9.747 | 7.787 |
+| aucinf.obs | 8.514 | 10.900 | 4.541 | 10.099 | 18.168 | 12.582 |
+| auclast | 3.802 | 6.743 | 1.371 | 4.585 | 9.748 | 7.787 |
 | cmax | 0.079 | 0.347 | 0.021 | 0.074 | 0.274 | 1.156 |
-| half.life | 61.112 | 62.921 | 46.671 | 50.448 | 147.661 | 111.798 |
+| half.life | 61.112 | 62.922 | 46.672 | 50.448 | 147.666 | 111.797 |
 | tmax | 3.500 | 2.000 | 1.500 | 1.000 | 66.600 | 9.300 |
 
 Simulated NCA – hydroxy-itraconazole (Cc_ohi), single oral 200 mg parent

@@ -61,10 +61,10 @@ mg/L).
 | `lkm` (Km) | `log(4.0)` ug/mL | Table 3 Km = 4.0 mg/L = 4.0 ug/mL (RSE 29.8%) |
 | `e_wt_vc` (linear coef on V1) | `0.0044` per kg | Table 3 V1_WT = +0.44% per kg (RSE 35.2%) |
 | `e_wt_cl` (linear coef on CLL) | `0.0087` per kg | Table 3 CLL_WT = +0.87% per kg (RSE 28.2%) |
-| `var(etalcl)` | `log(1 + 0.240^2) = 0.05598` | Table 3 IIV CLL = 24.0% CV (RSE 20.5%) |
+| `var(etalcl)` | `log(1 + 0.240^2) = 0.05600` | Table 3 IIV CLL = 24.0% CV (RSE 20.5%) |
 | `var(etalvc)` | `log(1 + 0.219^2) = 0.04685` | Table 3 IIV V1 = 21.9% CV (RSE 20.3%) |
-| `var(etalvp)` | `log(1 + 0.616^2) = 0.32149` | Table 3 IIV V2 = 61.6% CV (RSE 27.6%) |
-| `var(etalvmax)` | `log(1 + 0.538^2) = 0.25416` | Table 3 IIV Vmax = 53.8% CV (RSE 38.1%) |
+| `var(etalvp)` | `log(1 + 0.616^2) = 0.32169` | Table 3 IIV V2 = 61.6% CV (RSE 27.6%) |
+| `var(etalvmax)` | `log(1 + 0.538^2) = 0.25421` | Table 3 IIV Vmax = 53.8% CV (RSE 38.1%) |
 | `cor(etalvc, etalvp)` | `0.777` | Table 3 Correlation V1_V2 (RSE 29.8%) |
 | `cor(etalvc, etalvmax)` | `0.875` | Table 3 Correlation V1_Vmax (RSE 28.4%) |
 | `cor(etalvp, etalvmax)` | `0.875` | Table 3 Correlation V2_Vmax (RSE 31.6%) |
@@ -462,10 +462,10 @@ knitr::kable(dose_summary, digits = 2,
 
 | treatment | Cmax_mean | Cmax_sd | Tmax_mean | AUC0_tau_mean | AUC0_tau_sd | HalfLife_mean |
 |:---|---:|---:|---:|---:|---:|---:|
-| 1200 mg q1w | 324.91 | 69.78 | 1 | 26923.94 | 5882.23 | 176.47 |
-| 1600 mg q1w | 445.42 | 101.33 | 1 | 37211.96 | 8628.76 | 183.34 |
-| 400 mg q1w | 109.19 | 23.96 | 1 | 8478.38 | 2066.48 | 128.08 |
-| 800 mg q1w | 223.49 | 54.24 | 1 | 18060.76 | 4498.11 | 158.48 |
+| 1200 mg q1w | 324.91 | 69.78 | 1 | 26923.72 | 5882.33 | 176.46 |
+| 1600 mg q1w | 445.42 | 101.33 | 1 | 37211.80 | 8629.12 | 183.33 |
+| 400 mg q1w | 109.19 | 23.96 | 1 | 8478.29 | 2066.55 | 128.07 |
+| 800 mg q1w | 223.49 | 54.24 | 1 | 18060.53 | 4498.06 | 158.47 |
 
 Simulated single-dose NCA parameters by dose group (0-168 h after the
 first weekly infusion). Cmax (ug/mL), AUC0-tau (ug/mL \* h), Tmax /

@@ -209,9 +209,9 @@ mod
 #>     # ---- Between-subject variability ------------------------------------
 #>     # Supplemental Table 3 reports BSV on only two parameters, as %CV from
 #>     # Phoenix NLME. Converted to log-scale variance by omega^2 = log(CV^2 + 1):
-#>     #   Ka  195%  -> log(1.95^2 + 1)  = 1.5692
+#>     #   Ka  195%  -> log(1.95^2 + 1)  = 1.5691
 #>     #   f22  78.1% -> log(0.781^2 + 1) = 0.4762
-#>     etalka    ~ 1.5692  # Suppl Table 3, BSV 195% CV on Ka
+#>     etalka    ~ log(1 + 1.95^2)  # Suppl Table 3, BSV 195% CV on Ka
 #>     etalf_bd_gb ~ 0.4762 # Suppl Table 3, BSV 78.1% CV on flow from bile duct to gallbladder
 #> 
 #>     # ---- Residual error ---------------------------------------------------
@@ -386,7 +386,7 @@ mod
 #>     Cc_toca ~ add(addSd_Cc_toca) + prop(propSd_Cc_toca)
 #>   })
 #> }
-#> <environment: 0x558418585488>
+#> <environment: 0x556625e1d308>
 ```
 
 ## Population
@@ -438,7 +438,7 @@ distributed with the article (`CTS-9-328-s004.docx` and
 | Conjugation | b15 / b16 | 1.44 / 0.312 /h | Suppl Table 3 |
 | Deconjugation | b36 / b37 | 0.0431 / 0.0200 /h | Suppl Table 3 |
 | Oral absorption | Ka | 5.32 /h | Suppl Table 3 |
-| BSV Ka | \- | 195% CV -\> omega^2 = 1.5692 | Suppl Table 3 |
+| BSV Ka | \- | 195% CV -\> omega^2 = 1.5691 | Suppl Table 3 |
 | BSV f22 | \- | 78.1% CV -\> omega^2 = 0.4762 | Suppl Table 3 |
 | Residual error (healthy) | \- | prop 88.0 / 62.6 / 71.6%; add 0.546 / 0.675 / 0.469 nM | Suppl Table 3 |
 | Hepatic uptake effect | \- | -0.132 / -1.86 / -2.37 | Suppl Table 4 |
@@ -1099,7 +1099,7 @@ sessionInfo()
 #> [22] fontawesome_0.5.3   htmltools_0.5.9     sys_3.4.3          
 #> [25] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
 #> [28] pkgdown_2.2.1       crayon_1.5.3        jquerylib_0.1.4    
-#> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
+#> [31] whisker_0.4.1       openssl_2.5.0       cachem_1.1.0       
 #> [34] nlme_3.1-171        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.5         purrr_1.2.2         labeling_0.4.3     
 #> [40] rxode2ll_2.0.18     fastmap_1.2.0       grid_4.6.2         

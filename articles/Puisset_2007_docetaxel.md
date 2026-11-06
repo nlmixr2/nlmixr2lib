@@ -98,7 +98,7 @@ The table below collects the full source trace in one place.
 | `e_aag_slope` | -0.72 | Table 3 final model: theta2 = -0.72 (+/- 0.18) – AAG power exponent |
 | `e_prior_chemo_lines_ge2_slope` | 1.69 | Table 3 final model: theta3 = 1.69 (+/- 0.32) – PTT2 multiplier |
 | `e_study_toulouse_slope` | 1.82 | Table 3 final model: theta4 = 1.82 (+/- 0.46) – CEN multiplier |
-| `etalcirc0` | 0.2169 | Table 2 ‘Present study’: IIV Circ0 = 49.2% CV (RSE 18.3%); log(1 + 0.492^2) |
+| `etalcirc0` | 0.2168 | Table 2 ‘Present study’: IIV Circ0 = 49.2% CV (RSE 18.3%); log(1 + 0.492^2) |
 | `etalmtt` | 0.0630 | Table 2 ‘Present study’: IIV MTT = 25.5% CV (RSE 40.2%); log(1 + 0.255^2) |
 | `etalslope` | 0.1770 | Table 3 final model: IIV Slope = 44% CV (reduced from 96.5% by covariate effects); log(1 + 0.44^2) |
 | `propSd` | 0.356 | Table 2 ‘Present study’: proportional residual error = 35.6% CV (RSE 21.3%) |
@@ -496,13 +496,13 @@ knitr::kable(mech_summary, caption = "Virtual-cohort mechanistic summary (n = 20
 | Quantity                                 | Value         |
 |:-----------------------------------------|:--------------|
 | Baseline ANC (median, 10^9/L)            | 4.42          |
-| Baseline 5-95th pct (10^9/L)             | 2.09 - 8.90   |
+| Baseline 5-95th pct (10^9/L)             | 2.09 - 8.98   |
 | Nadir ANC (median, 10^9/L)               | 0.001         |
-| Nadir 5-95th pct (10^9/L)                | 0.000 - 0.032 |
+| Nadir 5-95th pct (10^9/L)                | 0.000 - 0.031 |
 | Median time to nadir (days)              | 16.0          |
 | Median % of baseline at nadir            | 0.0           |
-| % recovered to baseline by 28 d          | 76.5          |
-| Subjects with finite trajectory (of 200) | 183           |
+| % recovered to baseline by 28 d          | 76.8          |
+| Subjects with finite trajectory (of 200) | 185           |
 
 Virtual-cohort mechanistic summary (n = 200, single 150 mg IV docetaxel
 infusion). {.table}

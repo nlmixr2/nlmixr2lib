@@ -127,8 +127,8 @@ rxode2::rxode(mod)$population
 | `keq` (equilibrium rate constant free \<-\> bound, 1/h) | 0.334 (RSE 43.4%) | Table 3 |
 | `F1` (bioavailability) | 1 (FIXED) | Table 3 |
 | `propSd` (proportional residual SD, fraction) | 0.451 | Table 3 (residual proportional error 45.1%, RSE 10.2%) |
-| IIV on `kabs` (CV%) | 61.1% (RSE 33.5%) | Table 3; encoded as `omega^2 = log(1 + 0.611^2) = 0.31712` |
-| IIV on `k23` translated to Q (CV%) | 31.3% (RSE 66.5%) | Table 3; encoded as IIV on Q (`omega^2 = log(1 + 0.313^2) = 0.09349`); see Assumptions |
+| IIV on `kabs` (CV%) | 61.1% (RSE 33.5%) | Table 3; encoded as `omega^2 = log(1 + 0.611^2) = 0.31723` |
+| IIV on `k23` translated to Q (CV%) | 31.3% (RSE 66.5%) | Table 3; encoded as IIV on Q (`omega^2 = log(1 + 0.313^2) = 0.09346`); see Assumptions |
 | IIV on `F1` (CV%) | 55.0% (RSE 22.5%) | Table 3; encoded as `omega^2 = log(1 + 0.550^2) = 0.26429` |
 | IOV on `CL` (CV%) | 31.8% (RSE 38.3%) | Table 3; collapsed to between-subject IIV on CL (`omega^2 = log(1 + 0.318^2) = 0.09633`); see Assumptions |
 | ODE: free GI-tract paclitaxel | – | Methods + Results; Figure 2 |
@@ -607,15 +607,15 @@ knitr::kable(
 |:----------|:----------|-------:|-------:|-------:|
 | 100 mg    | auclast   |     NA |     NA |     NA |
 | 100 mg    | cmax      |  0.082 |  0.033 |  0.193 |
-| 100 mg    | half.life | 13.304 | 10.867 | 20.247 |
+| 100 mg    | half.life | 13.304 | 10.867 | 20.246 |
 | 100 mg    | tmax      |  1.750 |  1.000 |  3.500 |
 | 200 mg    | auclast   |     NA |     NA |     NA |
 | 200 mg    | cmax      |  0.131 |  0.049 |  0.379 |
-| 200 mg    | half.life | 14.067 |  9.856 | 18.091 |
+| 200 mg    | half.life | 14.067 |  9.856 | 18.090 |
 | 200 mg    | tmax      |  2.000 |  1.000 |  3.762 |
 | 360 mg    | auclast   |     NA |     NA |     NA |
 | 360 mg    | cmax      |  0.272 |  0.103 |  0.760 |
-| 360 mg    | half.life | 14.239 | 10.186 | 21.514 |
+| 360 mg    | half.life | 14.239 | 10.186 | 21.513 |
 | 360 mg    | tmax      |  2.000 |  1.000 |  3.750 |
 | 60 mg     | auclast   |     NA |     NA |     NA |
 | 60 mg     | cmax      |  0.042 |  0.016 |  0.155 |

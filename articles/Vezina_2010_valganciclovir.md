@@ -51,7 +51,7 @@ comment. The table below collects the entries in one place.
 | `lka` (Ka) | 0.85 1/h | Table 2, Estimate column, Ka row |
 | IIV CL/F (omega^2 = log(0.363^2 + 1) = 0.1238) | 36.3% CV | Table 2, Estimate column, Variability in CL/F row |
 | IIV V/F (omega^2 = log(0.414^2 + 1) = 0.1582) | 41.4% CV | Table 2, Estimate column, Variability in V/F row |
-| IIV Ka (omega^2 = log(0.743^2 + 1) = 0.4397) | 74.3% CV | Table 2, Estimate column, Variability in Ka row |
+| IIV Ka (omega^2 = log(0.743^2 + 1) = 0.4396) | 74.3% CV | Table 2, Estimate column, Variability in Ka row |
 | Proportional residual error | 33.5% CV | Table 2, Estimate column, RUV row |
 | Bioavailability F | implicit in CL/F and V/F (apparent) | Methods ‘Pharmacokinetic analysis’ (parameterized as CL/F and V/F throughout) |
 | 1-cmt structure with first-order absorption | – | Methods ‘Pharmacokinetic analysis’ (NONMEM ADVAN2/TRANS2; one-compartment chosen because the regression for the two-compartment model did not converge) |
@@ -236,7 +236,7 @@ knitr::kable(nca_summary,
 | Interval Start | Interval End | cohort | N | Cmax (ug/mL) | Tmax (h) | Clast (ug/mL) | Half-life (h) | AUCinf,obs (h\*ug/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
 | 0 | Inf | q12h (11.1 mg/kg) | 200 | 2.69 \[45.8\] | 2.12 \[0.750, 7.25\] | 0.0000667 \[1.79e9\] | 3.84 \[2.12\] | 20.9 \[40.5\] |
-| 0 | Inf | q24h (7.4 mg/kg) | 200 | 1.80 \[38.9\] | 2.25 \[0.500, 6.50\] | 0.000128 \[3.75e7\] | 4.20 \[2.42\] | 15.0 \[41.5\] |
+| 0 | Inf | q24h (7.4 mg/kg) | 200 | 1.80 \[38.9\] | 2.25 \[0.500, 6.50\] | 0.000128 \[3.77e7\] | 4.20 \[2.42\] | 15.0 \[41.5\] |
 
 Single-dose NCA on the simulated cohorts (Cmax in ug/mL, AUC in ug/mL \*
 h, half-life in h). {.table}

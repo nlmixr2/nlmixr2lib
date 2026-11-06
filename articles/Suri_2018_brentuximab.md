@@ -736,7 +736,7 @@ knitr::kable(summary(nca_res_mmae),
 | start | end | regimen       | N   | auclast | cmax           | tmax                |
 |------:|----:|:--------------|:----|:--------|:---------------|:--------------------|
 |     0 | 504 | 1.2 mg/kg Q3W | 80  | NC      | 0.181 \[49.7\] | 40.0 \[4.00, 160\]  |
-|     0 | 504 | 1.8 mg/kg Q3W | 80  | NC      | 0.236 \[44.6\] | 40.0 \[4.00, 88.0\] |
+|     0 | 504 | 1.8 mg/kg Q3W | 80  | NC      | 0.236 \[44.5\] | 40.0 \[4.00, 88.0\] |
 
 Simulated cycle-4 MMAE NCA parameters by regimen. {.table}
 

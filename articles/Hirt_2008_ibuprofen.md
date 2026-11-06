@@ -59,7 +59,7 @@ place.
 | `lcl` (typical CL at PNA = 96.3 h) | log(0.00949 L/h) = log(9.49 mL/h) | Table 2 Final column: 9.49 mL/h (RSE 10%) |
 | `lvc` (typical V) | log(0.375 L) = log(375 mL) | Table 2 Final column: 375 mL (RSE 10%) |
 | `e_pna_cl` (PNA power exponent on CL) | 1.49 | Table 2 Final column: CL, qAGE = 1.49 (RSE 17%) |
-| `etalcl` (omega^2 for log-normal IIV on CL) | log(1 + 0.62^2) = 0.32506 | Table 2 Final column: w(CL) = 62% CV (RSE 28%) |
+| `etalcl` (omega^2 for log-normal IIV on CL) | log(1 + 0.62^2) = 0.32527 | Table 2 Final column: w(CL) = 62% CV (RSE 28%) |
 | `etalvc` (omega^2 for log-normal IIV on V) | log(1 + 0.75^2) = 0.44629 | Table 2 Final column: w(V) = 75% CV (RSE 44%) |
 | `propSd` (proportional residual SD) | 0.18 | Table 2 Final column: sigma = 18% CV (RSE 27%) |
 | Half-life prediction `t12 = ln(2) * V / CL(PNA)` | 42.2 h at PNA 3 d, 19.7 h at 5 d, 9.8 h at 8 d | Hirt 2008 Results “Population pharmacokinetics” paragraph 4 |

@@ -75,10 +75,10 @@ below collects them in one place for review.
 | `e_wt_vc_vp` (allometric exp on Vc, Vp) | 1.00 (fixed) | Bijleveld 2016 Methods ‘Structural model’ |
 | `e_ga_cl` (power exp of GA/40 on CL) | 3.00 (theta_CLGA) | Bijleveld 2016 Table 2 Final Model footer |
 | `e_sd5_cl` (CL multiplier for PNA \> 96 h) | 1.29 (theta_SD5) | Bijleveld 2016 Table 2 Final Model footer; Results “Pharmacokinetic model building” |
-| IIV CL (omega^2 = log(1 + 0.266^2)) | 0.06837 (26.6% CV) | Bijleveld 2016 Table 2 Final Model column |
-| IIV Vc (omega^2 = log(1 + 0.408^2)) | 0.15399 (40.8% CV) | Bijleveld 2016 Table 2 Final Model column |
-| IIV Vp (omega^2 = log(1 + 0.533^2)) | 0.25022 (53.3% CV) | Bijleveld 2016 Table 2 Final Model column |
-| Cor(IIV CL, IIV Vc) -\> covariance | 0.81 \* sqrt(0.06837 \* 0.15399) = 0.08316 | Bijleveld 2016 Results “Pharmacokinetic model building” |
+| IIV CL (omega^2 = log(1 + 0.266^2)) | 0.06836 (26.6% CV) | Bijleveld 2016 Table 2 Final Model column |
+| IIV Vc (omega^2 = log(1 + 0.408^2)) | 0.15398 (40.8% CV) | Bijleveld 2016 Table 2 Final Model column |
+| IIV Vp (omega^2 = log(1 + 0.533^2)) | 0.25005 (53.3% CV) | Bijleveld 2016 Table 2 Final Model column |
+| Cor(IIV CL, IIV Vc) -\> covariance | 0.81 \* sqrt(0.06836 \* 0.15398) = 0.08310 | Bijleveld 2016 Results “Pharmacokinetic model building” |
 | `expSd` (lognormal residual SD) | 0.15 | Bijleveld 2016 Table 2 Final Model column (additive on log-transformed data) |
 | Two-compartment IV PK ODE structure | n/a | Bijleveld 2016 Results “Pharmacokinetic model building” (allometric 2-compartment) |
 | Reference body weight 70 kg | n/a | Bijleveld 2016 Methods ‘Structural model’ (BW/70 normalisation) |
@@ -444,7 +444,7 @@ knitr::kable(
 |:---|---:|---:|:---|:---|---:|---:|:---|:---|
 | GA 36 wk, 4 mg/kg q24h | 1.4 | 1.44 | 1.1-1.8 | 1.13-1.85 | 2.7 | 8.80 | 2.1-3.5 | 7.06-10.57 |
 | GA 36 wk, 5 mg/kg q36h | 0.7 | 0.94 | 0.5-1.0 | 0.67-1.24 | 9.5 | 10.25 | 7.5-11.9 | 7.69-13.08 |
-| GA 40 wk, 4 mg/kg q24h | 0.8 | 0.85 | 0.6-1.1 | 0.61-1.10 | 7.9 | 8.12 | 6.2-9.8 | 6.61-10.09 |
+| GA 40 wk, 4 mg/kg q24h | 0.8 | 0.85 | 0.6-1.1 | 0.61-1.10 | 7.9 | 8.12 | 6.2-9.8 | 6.62-10.09 |
 | GA 40 wk, 5 mg/kg q24h | 1.0 | 0.94 | 0.7-1.4 | 0.68-1.26 | 9.8 | 9.43 | 7.8-12.2 | 7.48-11.91 |
 | GA 40 wk, 5 mg/kg q36h | 0.4 | 0.43 | 0.2-0.6 | 0.29-0.63 | 9.2 | 8.77 | 7.3-11.6 | 7.03-11.43 |
 | GA 42 wk, 5 mg/kg q24h | 0.7 | 0.76 | 0.5-1.1 | 0.55-1.04 | 9.4 | 8.96 | 7.5-11.7 | 7.04-11.63 |
@@ -470,27 +470,27 @@ knitr::kable(
 | start | end | regimen                | PPTESTCD | PPORRES |
 |------:|----:|:-----------------------|:---------|--------:|
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  | 100.154 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |  12.232 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.879 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |  12.230 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.880 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  50.124 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   5.774 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   5.775 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   0.796 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  80.594 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   8.354 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  80.598 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   8.352 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.874 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  73.108 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   9.387 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  73.107 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   9.388 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   0.833 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  71.689 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  71.690 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   8.481 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.101 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | auclast  |  62.699 |
-|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   8.392 |
+|     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmax     |   8.393 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | cmin     |   1.113 |
 |     0 |  36 | GA 36 wk, 4 mg/kg q24h | tmax     |   1.000 |
 

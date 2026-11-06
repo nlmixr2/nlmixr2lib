@@ -64,11 +64,11 @@ the upstream Ribba 2012 LGG model and provenance-cited via the Ribba
 | `lK` | `fixed(log(100))` | Ribba 2014 review Table 1 footnote: K = 10 cm = 100 mm (upstream Ribba 2012) |
 | `e_p53_gamma` | `log(0.143/0.254) = -0.5743` | Table 2: gamma p53 mutated = 0.143; gamma p53 wild = 0.254 |
 | `e_codel_kqpp` | `log(0.00807/0.00947) = -0.1601` | Table 2: kQpP 1p/19q codeleted = 0.00807; non-codeleted = 0.00947 |
-| `etalp0` | `1.1136` (CV 143%) | Table 2 CV column; omega^2 = log((CV/100)^2 + 1) |
-| `etalq0` | `0.2712` (CV 55.8%) | Table 2 CV column |
+| `etalp0` | `1.1135` (CV 143%) | Table 2 CV column; omega^2 = log((CV/100)^2 + 1) |
+| `etalq0` | `0.2711` (CV 55.8%) | Table 2 CV column |
 | `etallambdap` | `0.3352` (CV 63.1%) | Table 2 CV column |
 | `etalkpq` | `0.5045` (CV 81%) | Table 2 CV column |
-| `etalkqpp` | `1.2876` (CV 162%) | Table 2 CV column |
+| `etalkqpp` | `1.2877` (CV 162%) | Table 2 CV column |
 | `etaldqp` | `0.5556` (CV 86.2%) | Table 2 CV column |
 | `etalgamma` | `0.3857` (CV 68.6%) | Table 2 CV column |
 | `etalres` | `0.4996` (CV 80.5%) | Table 2 CV column |

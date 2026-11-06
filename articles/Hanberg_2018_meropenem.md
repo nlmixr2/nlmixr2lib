@@ -100,9 +100,9 @@ The table below collects them in one place; values come from Hanberg
 | `lq` (Q) | log(8.52) | Table 2 final-model row “Q (liters/h)” = 8.52 (%RSE 31) |
 | `lvp` (Vp) | log(6.99) | Table 2 final-model row “Vp (liters)” = 6.99 (%RSE 15) |
 | `logitfu_sct` (fraction unbound in SCT) | logit(0.790) | Table 2 final-model row “f_u” = 0.790 (%RSE 4.6) |
-| `etalcl ~ 0.03511` | log(0.189^2 + 1) | Table 2 final-model row “CL %CV” = 18.9 (SHR 0%) |
-| `etalvc ~ 0.06112` | log(0.251^2 + 1) | Table 2 final-model row “Vc %CV” = 25.1 (SHR 7%) |
-| `etalq ~ 0.34853` | log(0.646^2 + 1) | Table 2 final-model row “Q %CV” = 64.6 (SHR 6%) |
+| `etalcl ~ 0.03510` | log(0.189^2 + 1) | Table 2 final-model row “CL %CV” = 18.9 (SHR 0%) |
+| `etalvc ~ 0.06110` | log(0.251^2 + 1) | Table 2 final-model row “Vc %CV” = 25.1 (SHR 7%) |
+| `etalq ~ 0.34876` | log(0.646^2 + 1) | Table 2 final-model row “Q %CV” = 64.6 (SHR 6%) |
 | `propSd <- 0.199 ; propSd_Csct <- 0.199` | 0.199 | Table 2 final-model row “ERR %CV” = 19.9 (SHR 4%); replicated into two per-endpoint parameters from a single source ERR (see Assumptions) |
 | `cl = exp(lcl + etalcl) * (CRCL / 59.5)` | n/a | Results “covariate analysis”: `CL_i = CLfrac * eCLCr_i`; re-expressed equivalently as typical-CL-times-ratio for convention compliance |
 | `Cc = central / vc` | n/a | Results: total meropenem in central compartment = Ac/Vc |

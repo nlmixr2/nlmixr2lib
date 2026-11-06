@@ -214,13 +214,13 @@ pta |>
 
 | Scenario | Published (%) | Model, exact (%) | Model, 200 simulated (%) | Exact - published (points) |
 |:---|---:|---:|---:|---:|
-| GBS-DS 0-2 | 74 | 78.2 | 74.5 | 4.2 |
+| GBS-DS 0-2 | 74 | 78.1 | 74.5 | 4.1 |
 | GBS-DS 3-4 | 63 | 63.9 | 60.0 | 0.9 |
-| GBS-DS 5 | 33 | 30.6 | 33.5 | -2.4 |
+| GBS-DS 5 | 33 | 30.7 | 33.5 | -2.3 |
 | GBS-DS 4 + methylpred. | 43 | 41.4 | 33.5 | -1.6 |
 | 0.4 g/kg/day x 6 days | 74 | 77.2 | 76.5 | 3.2 |
-| 0.4 g/kg/day x 3 days | 12 | 18.4 | 17.5 | 6.4 |
-| 1 g/kg/day x 2 days | 54 | 54.3 | 55.5 | 0.3 |
+| 0.4 g/kg/day x 3 days | 12 | 18.4 | 18.0 | 6.4 |
+| 1 g/kg/day x 2 days | 54 | 54.2 | 55.5 | 0.2 |
 
 Probability of delta IgG \> 7.3 g/L at day 14 (Fokkink 2022 Results 3.2
 and Figure 4). {.table}

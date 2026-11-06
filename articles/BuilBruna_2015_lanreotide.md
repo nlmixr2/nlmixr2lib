@@ -98,10 +98,10 @@ below collects them in one place for review.
 | Zero-order duration D0 | Table 2 | 2.96 day |
 | Body-weight effect on CL/F | Table 2; Eq. 2 | linear: CL/F = theta_CL \* \[1 + 9.77e-3 \* (BW - 74)\] |
 | Median BW reference | Sect. 3.3.3 | 74 kg |
-| IPV CL/F | Table 2 | 27% CV (variance log(1 + 0.27^2) = 0.07031) |
+| IPV CL/F | Table 2 | 27% CV (variance log(1 + 0.27^2) = 0.07037) |
 | IPV Vd/F | Table 2 | 150% CV (variance log(1 + 1.50^2) = 1.17865) |
-| IPV ka | Table 2 | 61% CV (variance log(1 + 0.61^2) = 0.31641) |
-| IPV F1 | Table 2 | 1.05% CV (variance log(1 + 0.0105^2) = 0.0001103) |
+| IPV ka | Table 2 | 61% CV (variance log(1 + 0.61^2) = 0.31634) |
+| IPV F1 | Table 2 | 1.05% CV (variance log(1 + 0.0105^2) = 0.0001102) |
 | Residual error (LTBS) | Table 2; Methods Sect. 2.4 | sigma_log = 0.275 in log(ng/mL); maps to proportional in linear-space nlmixr2 |
 | Bioavailability F (absolute) | Fig. 2 caption | Not identifiable; structurally anchored at 1 (F1 + F2 = 1) |
 
@@ -402,8 +402,8 @@ knitr::kable(whole_tbl, digits = 2, caption = "Simulated whole-population SS NCA
 
 | PPTESTCD |  gmean |  pmin |   pmax |
 |:---------|-------:|------:|-------:|
-| auclast  | 220.42 | 53.77 | 457.06 |
-| cav      |   7.87 |  1.92 |  16.32 |
+| auclast  | 220.42 | 53.77 | 457.17 |
+| cav      |   7.87 |  1.92 |  16.33 |
 | cmax     |  11.31 |  2.97 |  25.53 |
 | cmin     |   5.86 |  1.29 |  12.76 |
 
@@ -417,11 +417,11 @@ knitr::kable(sex_tbl,   digits = 2, caption = "Simulated SS NCA by sex (compare 
 
 | sex_group | PPTESTCD |  gmean |  pmin |   pmax |
 |:----------|:---------|-------:|------:|-------:|
-| Female    | auclast  | 230.32 | 92.93 | 457.06 |
-| Female    | cav      |   8.23 |  3.32 |  16.32 |
+| Female    | auclast  | 230.32 | 92.91 | 457.17 |
+| Female    | cav      |   8.23 |  3.32 |  16.33 |
 | Female    | cmax     |  10.98 |  3.64 |  25.53 |
 | Female    | cmin     |   6.20 |  2.66 |  12.72 |
-| Male      | auclast  | 212.43 | 53.77 | 451.63 |
+| Male      | auclast  | 212.42 | 53.77 | 451.73 |
 | Male      | cav      |   7.59 |  1.92 |  16.13 |
 | Male      | cmax     |  11.60 |  2.97 |  24.21 |
 | Male      | cmin     |   5.59 |  1.29 |  12.76 |
@@ -436,17 +436,17 @@ knitr::kable(bw_tbl,    digits = 2, caption = "Simulated SS NCA by BW band (comp
 
 | bw_group          | PPTESTCD |  gmean |   pmin |   pmax |
 |:------------------|:---------|-------:|-------:|-------:|
-| BW 70-77 kg (mid) | auclast  | 223.33 | 125.45 | 457.06 |
-| BW 70-77 kg (mid) | cav      |   7.98 |   4.48 |  16.32 |
-| BW 70-77 kg (mid) | cmax     |  11.58 |   5.49 |  25.53 |
+| BW 70-77 kg (mid) | auclast  | 223.33 | 125.44 | 457.17 |
+| BW 70-77 kg (mid) | cav      |   7.98 |   4.48 |  16.33 |
+| BW 70-77 kg (mid) | cmax     |  11.58 |   5.48 |  25.53 |
 | BW 70-77 kg (mid) | cmin     |   5.84 |   1.29 |  12.76 |
-| BW \<= 62 kg      | auclast  | 268.40 | 142.84 | 428.01 |
+| BW \<= 62 kg      | auclast  | 268.40 | 142.81 | 428.07 |
 | BW \<= 62 kg      | cav      |   9.59 |   5.10 |  15.29 |
-| BW \<= 62 kg      | cmax     |  13.69 |   5.54 |  23.96 |
+| BW \<= 62 kg      | cmax     |  13.69 |   5.53 |  23.97 |
 | BW \<= 62 kg      | cmin     |   7.18 |   3.75 |  12.72 |
-| BW \>= 89 kg      | auclast  | 163.13 |  53.77 | 330.00 |
+| BW \>= 89 kg      | auclast  | 163.13 |  53.77 | 330.07 |
 | BW \>= 89 kg      | cav      |   5.83 |   1.92 |  11.79 |
-| BW \>= 89 kg      | cmax     |   8.14 |   2.97 |  18.00 |
+| BW \>= 89 kg      | cmax     |   8.14 |   2.97 |  18.01 |
 | BW \>= 89 kg      | cmin     |   4.57 |   1.66 |   8.17 |
 
 Simulated SS NCA by BW band (compare against Table 3 BW columns).

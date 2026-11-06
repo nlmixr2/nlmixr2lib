@@ -58,8 +58,8 @@ table below collects them for review.
 | `lka` (fixed) | `log(1.9)` 1/day | Gupta 2006 Table 3 (Ka, FIXED at Phase I CHC mean per refs 9-10) |
 | `e_crcl_cl` | `0.21` | Gupta 2006 Table 3 (theta_CLcr) |
 | `etalcl` IIV | `0.1156` (CV 35%) | Gupta 2006 Table 3 (omega(CV) CL0) -\> `omega^2 = log(0.35^2 + 1)` |
-| `etalcl_t50` IIV | `0.7833` (CV 109%) | Gupta 2006 Table 3 (omega(CV) T50) -\> `omega^2 = log(1.09^2 + 1)` |
-| `etalvc` IIV | `0.2986` (CV 59%) | Gupta 2006 Table 3 (omega(CV) V) -\> `omega^2 = log(0.59^2 + 1)` |
+| `etalcl_t50` IIV | `0.7830` (CV 109%) | Gupta 2006 Table 3 (omega(CV) T50) -\> `omega^2 = log(1.09^2 + 1)` |
+| `etalvc` IIV | `0.2987` (CV 59%) | Gupta 2006 Table 3 (omega(CV) V) -\> `omega^2 = log(0.59^2 + 1)` |
 | `propSd` | `0.414` (proportional CV 41.4%) | Gupta 2006 Table 3 (sigma_epsilon = 41.4; see Errata) |
 | CL covariate form | `CL0 = 44.1 * (CRCL / 120)^0.21 * exp(eta_CL0)` | Gupta 2006 Methods covariate equation |
 | Time-varying CL | `CL(t) = CL0 / (1 + (t / T50)^beta)`, beta = 1 fixed | Gupta 2006 Methods Emax-type decline; final model |
@@ -356,13 +356,13 @@ knitr::kable(nca_summary,
 
 | treatment              | PPTESTCD | median |    q05 |    q95 |
 |:-----------------------|:---------|-------:|-------:|-------:|
-| Week 4 (6 ug/kg/week)  | auclast  | 10.935 |  4.725 | 23.494 |
+| Week 4 (6 ug/kg/week)  | auclast  | 10.935 |  4.725 | 23.493 |
 | Week 4 (6 ug/kg/week)  | cl.last  | 40.394 | 22.612 | 71.383 |
 | Week 4 (6 ug/kg/week)  | cmax     |  2.691 |  1.330 |  5.352 |
 | Week 4 (6 ug/kg/week)  | tmax     |  1.000 |  1.000 |  1.500 |
-| Week 48 (6 ug/kg/week) | auclast  | 18.077 |  7.058 | 40.919 |
-| Week 48 (6 ug/kg/week) | cl.last  | 25.431 | 11.350 | 49.718 |
-| Week 48 (6 ug/kg/week) | cmax     |  3.717 |  1.685 |  7.666 |
+| Week 48 (6 ug/kg/week) | auclast  | 18.077 |  7.058 | 40.920 |
+| Week 48 (6 ug/kg/week) | cl.last  | 25.432 | 11.351 | 49.718 |
+| Week 48 (6 ug/kg/week) | cmax     |  3.717 |  1.685 |  7.665 |
 | Week 48 (6 ug/kg/week) | tmax     |  1.000 |  1.000 |  1.500 |
 
 Simulated single-interval NCA at weeks 4 and 48 (6 ug/kg/week SC).

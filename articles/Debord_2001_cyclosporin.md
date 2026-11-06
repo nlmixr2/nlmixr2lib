@@ -50,7 +50,7 @@ collects them in one place.
 | `lq` (Q/F) | log(50.69) L/h | Derived from Table I means: k12 \* Vc/F |
 | `lvp` (Vp/F) | log(61.29) L | Derived from Table I means: Q/F / k21 |
 | `lfdepot` (F, fixed) | log(1) | Methods, page 378 (“assuming F = 1”) |
-| `etalcl`, `etalvc`, `etalq` IIV variances | log(1 + 0.65^2) = 0.353 | page 380 (“intravenous parameters A, B and alpha, with CVs ranging from 55 to 75 %”) |
+| `etalcl`, `etalvc`, `etalq` IIV variances | log(1 + 0.65^2) = 0.352 | page 380 (“intravenous parameters A, B and alpha, with CVs ranging from 55 to 75 %”) |
 | `etalvp`, `etalntr`, `etalmtt` IIV variances | log(1 + 0.40^2) = 0.148 | page 380 (“a and b, as well as beta, displayed slightly lower variabilities (CVs 35 to 46 %)”) |
 | `addSd` (mg/L) | 0.025 | Eq. 13 (low-Ck plateau); assay LOQ 10 ug/L |
 | `propSd` (fraction) | 0.08 | Eq. 13 (sk/Ck ~ 8 % at typical peak Ck) |
@@ -745,11 +745,11 @@ knitr::kable(
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*mg/L) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|
-| 0 | 24 | 100 mg PO | 55 | NC | 0.728 \[41.2\] | 1.00 \[0.750, 2.25\] | 2.75 \[2.46\] | NC |
-| 0 | 24 | 125 mg PO | 59 | NC | 1.00 \[46.9\] | 1.00 \[0.500, 2.25\] | 2.23 \[1.20\] | NC |
-| 0 | 24 | 150 mg PO | 37 | NC | 1.04 \[47.0\] | 1.00 \[0.750, 2.50\] | 2.64 \[1.41\] | NC |
-| 0 | 24 | 175 mg PO | 24 | NC | 1.34 \[32.0\] | 1.00 \[0.500, 1.50\] | 3.23 \[2.13\] | NC |
-| 0 | 24 | 75 mg PO | 25 | NC | 0.541 \[39.8\] | 1.25 \[0.500, 2.00\] | 2.76 \[1.64\] | NC |
+| 0 | 24 | 100 mg PO | 55 | NC | 0.728 \[41.2\] | 1.00 \[0.750, 2.25\] | 2.75 \[2.45\] | NC |
+| 0 | 24 | 125 mg PO | 59 | NC | 1.00 \[46.8\] | 1.00 \[0.500, 2.25\] | 2.23 \[1.20\] | NC |
+| 0 | 24 | 150 mg PO | 37 | NC | 1.04 \[46.9\] | 1.00 \[0.750, 2.50\] | 2.63 \[1.40\] | NC |
+| 0 | 24 | 175 mg PO | 24 | NC | 1.34 \[32.0\] | 1.00 \[0.500, 1.50\] | 3.23 \[2.12\] | NC |
+| 0 | 24 | 75 mg PO | 25 | NC | 0.541 \[39.7\] | 1.25 \[0.500, 2.00\] | 2.76 \[1.64\] | NC |
 
 Simulated NCA parameters by dose group for a single oral dose of
 cyclosporin microemulsion. {.table style="width:100%;"}

@@ -58,7 +58,7 @@ The table below collects them in one place for review.
 | `lcl_col` = log(CL/fm) | log(4.99) L/h | Karaiskos 2015 Table 2 colistin column (25% RSE) |
 | `lvc_col` = log(V/fm) | log(80.4) L | Karaiskos 2015 Table 2 colistin column (11% RSE) |
 | `etalcl_nonren` (IIV CMS CL) | 0.02528 (16% CV) | Karaiskos 2015 Table 2 IIV column (37% RSE) |
-| `etalcl_col` (IIV col CL) | 0.40546 (71% CV) | Karaiskos 2015 Table 2 footnote b: derived as 4.52 \* eta_CMS scaling factor |
+| `etalcl_col` (IIV col CL) | 0.40819 (71% CV) | Karaiskos 2015 Table 2 footnote b: derived as 4.52 \* eta_CMS scaling factor |
 | `propSd` (CMS prop SD) | 0.157 | Karaiskos 2015 Table 2 CMS (6.7% RSE) |
 | `addSd` (CMS add SD) | 0.159 umol/L | Karaiskos 2015 Table 2 CMS (10% RSE) |
 | `propSd_col` (col prop SD) | 0.0884 | Karaiskos 2015 Table 2 colistin (13% RSE) |
@@ -369,7 +369,7 @@ nca_summary
 #>  Interval Start Interval End                   treatment  N AUClast (h*mg/L)
 #>               0           24 9MU_loading_then_4.5MU_q12h 30               NC
 #>  Cmax (mg/L)          Tmax (h) Half-life (h)
-#>  2.54 [13.2] 6.62 [4.00, 9.50]   11.6 [5.37]
+#>  2.54 [13.3] 6.62 [4.00, 9.50]   11.6 [5.39]
 #> 
 #> Caption: AUClast, Cmax: geometric mean and geometric coefficient of variation; Tmax: median and range; Half-life: arithmetic mean and standard deviation; N: number of subjects
 ```

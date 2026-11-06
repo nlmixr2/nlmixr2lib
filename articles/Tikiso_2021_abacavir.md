@@ -67,7 +67,7 @@ collects them in one place.
 | Malnutrition decay function | n/a | Equation 2 |
 | Two-compartment + transit-chain ODEs | n/a | Section 3.2 (paragraph 1) |
 | `etalcl` | 0.02081 (var) | Table 4 BSV CL = 14.5% CV; log(1 + 0.145^2) |
-| `etalvp` | 0.18137 (var) | Table 4 BSV Vp = 44.6% CV; log(1 + 0.446^2) |
+| `etalvp` | 0.18142 (var) | Table 4 BSV Vp = 44.6% CV; log(1 + 0.446^2) |
 | `propSd` | 0.238 | Table 4 proportional residual error 23.8% |
 | `addSd` | 0.00201 ug/mL | Table 4 additive residual error 2.01 ug/L = 0.00201 ug/mL |
 

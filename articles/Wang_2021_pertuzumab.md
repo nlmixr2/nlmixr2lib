@@ -332,13 +332,13 @@ knitr::kable(
 
 | arm       | PPTESTCD | median_value |    p05 |    p95 |
 |:----------|:---------|-------------:|-------:|-------:|
-| P + H IV  | auclast  |       2504.7 | 1615.9 | 3683.0 |
+| P + H IV  | auclast  |       2504.7 | 1615.7 | 3683.2 |
 | P + H IV  | cav      |        119.3 |   76.9 |  175.4 |
-| P + H IV  | cmax     |        238.1 |  166.3 |  361.1 |
+| P + H IV  | cmax     |        238.1 |  166.3 |  361.0 |
 | P + H IV  | cmin     |         78.8 |   41.5 |  138.5 |
-| PH FDC SC | auclast  |       2474.0 | 1521.4 | 4176.0 |
+| PH FDC SC | auclast  |       2474.0 | 1521.3 | 4176.6 |
 | PH FDC SC | cav      |        117.8 |   72.4 |  198.9 |
-| PH FDC SC | cmax     |        149.8 |   94.9 |  237.9 |
+| PH FDC SC | cmax     |        149.8 |   94.9 |  238.0 |
 | PH FDC SC | cmin     |         86.1 |   47.7 |  157.6 |
 
 Cycle 7 (steady-state) NCA by arm: median (5th-95th). {.table}
@@ -392,7 +392,7 @@ knitr::kable(
 | Q1 \<42.0    |          106.6 | 52.6 | 172.8 |             100 |      6.6 |
 | Q2 42.0-45.1 |           94.7 | 56.9 | 132.1 |              87 |      8.9 |
 | Q3 45.1-48.8 |           82.8 | 43.2 | 132.6 |              78 |      6.1 |
-| Q4 \>48.8    |           73.8 | 45.2 | 118.0 |              70 |      5.4 |
+| Q4 \>48.8    |           73.8 | 45.2 | 118.1 |              70 |      5.4 |
 
 Cycle 7 Ctrough (ug/mL) by LBW quartile, simulated typical-population vs
 Wang 2021 Fig 2A reported medians. {.table}

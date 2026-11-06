@@ -79,13 +79,13 @@ entry of `inst/modeldb/specificDrugs/Aregbe_2012_alvespimycin.R`):
 | `lvp` (log V2) | log(66.4) | Aregbe 2012 Table 2: V2 = 66.4 L, %SE 10.1 |
 | `lq2` (log Q3) | log(11.6) | Aregbe 2012 Table 2: Q3 = 11.6 L/h, %SE 13.1 |
 | `lvp2` (log V3) | log(142) | Aregbe 2012 Table 2: V3 = 142 L, %SE 13.5 |
-| `etalcl` (IIV CL) | 0.2543 | Table 2: IIV CL = 53.8% (%SE 22.9); variance = log(0.538^2 + 1) |
+| `etalcl` (IIV CL) | 0.2542 | Table 2: IIV CL = 53.8% (%SE 22.9); variance = log(0.538^2 + 1) |
 | `etalvc` (IIV V1) | 0.1034 | Table 2: IIV V1 = 33.0% (%SE 111.9); variance = log(0.330^2 + 1) |
 | `etalvp` (IIV V2) | 0.2288 | Table 2: IIV V2 = 50.7% (%SE 23.7); variance = log(0.507^2 + 1) |
-| `etalq2` (IIV Q3) | 0.4539 | Table 2: IIV Q3 = 75.8% (%SE 32.0); variance = log(0.758^2 + 1) |
-| `etalvp2` (IIV V3) | 0.3756 | Table 2: IIV V3 = 67.5% (%SE 37.3); variance = log(0.675^2 + 1) |
+| `etalq2` (IIV Q3) | 0.4540 | Table 2: IIV Q3 = 75.8% (%SE 32.0); variance = log(0.758^2 + 1) |
+| `etalvp2` (IIV V3) | 0.3754 | Table 2: IIV V3 = 67.5% (%SE 37.3); variance = log(0.675^2 + 1) |
 | `etaiov_q_1..5` (BOV Q2) | 0.1010 | Table 2: BOV Q2 = 32.6% (%SE 37.2); variance = log(0.326^2 + 1); occasions 2-5 fixed equal per `$OMEGA BLOCK(1) SAME` |
-| `etaiov_vc_1..5` (BOV V1) | 0.3049 | Table 2: BOV V1 = 59.7% (%SE 31.2); variance = log(0.597^2 + 1); occasions 2-5 fixed equal per `$OMEGA BLOCK(1) SAME` |
+| `etaiov_vc_1..5` (BOV V1) | 0.3048 | Table 2: BOV V1 = 59.7% (%SE 31.2); variance = log(0.597^2 + 1); occasions 2-5 fixed equal per `$OMEGA BLOCK(1) SAME` |
 | `propSd` | 0.161 | Table 2: proportional residual error = 16.1% (%SE 2.7) |
 | `d/dt(central, peripheral1, peripheral2)` | n/a | Methods “Base model structure” describes ADVAN11 / TRANS4 with first-order elimination; the explicit ODEs reproduce the standard mass-balance form |
 | `Cc = central / vc` | n/a | Plasma concentration in the central compartment; dose units mg, V in L -\> Cc in mg/L (Aregbe 2012 reports the LC/MS assay output in ug/mL = mg/L) |
@@ -334,7 +334,7 @@ knitr::kable(
 
 | PPTESTCD |   p05 | median |   p95 |
 |:---------|------:|-------:|------:|
-| auclast  | 2.644 |  4.815 | 7.101 |
+| auclast  | 2.645 |  4.815 | 7.101 |
 | cmax     | 0.597 |  0.861 | 1.236 |
 | tmax     | 1.000 |  1.000 | 1.000 |
 

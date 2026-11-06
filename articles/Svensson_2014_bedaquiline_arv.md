@@ -411,9 +411,9 @@ dplyr::bind_rows(ratio_lpvr, ratio_nvp) |>
 | M2      | auclast         | C110 (LPV/r) |          3.8300 |  6.5200 | 0.588 |
 | M2      | cmax            | C110 (LPV/r) |          0.0194 |  0.0458 | 0.423 |
 | BDQ     | auclast         | C117 (NVP)   |         66.2000 | 62.3000 | 1.060 |
-| BDQ     | cmax            | C117 (NVP)   |          2.7100 |  2.5900 | 1.040 |
+| BDQ     | cmax            | C117 (NVP)   |          2.7000 |  2.5900 | 1.040 |
 | M2      | auclast         | C117 (NVP)   |          8.0200 |  8.5000 | 0.943 |
-| M2      | cmax            | C117 (NVP)   |          0.0408 |  0.0433 | 0.942 |
+| M2      | cmax            | C117 (NVP)   |          0.0407 |  0.0432 | 0.942 |
 
 Single-dose AUC0-336h and Cmax ratios with vs. without ART
 co-administration. Paper reports a BDQ AUC0-336h ratio of approximately

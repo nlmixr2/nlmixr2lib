@@ -103,7 +103,7 @@ str(mod$population)
 | `e_cyp2c19nonem_cl` | -0.45 | Table 2 ‘f CYP2C19-CL’ (RSE 22.46%; 95% CI -0.66 to -0.25) |
 | `e_sexm_vc` | 0.78 | Table 2 ‘f GNDR-V’ (RSE 20.98%; 95% CI 0.45 to 1.10) |
 | `etalcl` | 0.18186 | Table 2 IIV CL 44.66 CV%, variance = log(1 + 0.4466^2) |
-| `etalvc` | 0.091814 | Table 2 IIV V 31.01 CV%, variance = log(1 + 0.3101^2) |
+| `etalvc` | 0.091815 | Table 2 IIV V 31.01 CV%, variance = log(1 + 0.3101^2) |
 | `propSd` | 0.1175 | Table 2 ‘Proportional error 11.75’ |
 | Albumin reference 38.7 g/L | – | Table 1 albumin median; equations 3-4 |
 | Covariate coding (CYP2C19 1 = `*1/*1`, 2 = variant; GNDR 0 = female, 1 = male) | – | Figure 4 legend |

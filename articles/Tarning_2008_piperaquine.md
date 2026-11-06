@@ -46,11 +46,11 @@ collects them in one place for review.
 | `lka` (absorption rate) | 0.717 1/h | Table 2 (%RSE 25) |
 | `e_wt_cl` (linear WT effect on CL/F) | 0.0262 per kg from 48 kg | Table 2 (%RSE 2.9) |
 | `e_wt_vc` (linear WT effect on Vc/F) | 0.0273 per kg from 48 kg | Table 2 (%RSE 11) |
-| `etalcl` (IIV on CL/F) | 42% CV -\> omega^2 = 0.162519 | Table 2 (%RSE 44) |
-| `etalvc` (IIV on Vc/F) | 101% CV -\> omega^2 = 0.703107 | Table 2 (%RSE 17) |
-| `etalq` (IIV on Q/F) | 85% CV -\> omega^2 = 0.543763 | Table 2 (%RSE 18) |
+| `etalcl` (IIV on CL/F) | 42% CV -\> omega^2 = 0.162459 | Table 2 (%RSE 44) |
+| `etalvc` (IIV on Vc/F) | 101% CV -\> omega^2 = 0.703147 | Table 2 (%RSE 17) |
+| `etalq` (IIV on Q/F) | 85% CV -\> omega^2 = 0.543777 | Table 2 (%RSE 18) |
 | `etalvp` (IIV on Vp/F) | 50% CV -\> omega^2 = 0.223144 | Table 2 (%RSE 76) |
-| `etalka` (IIV on ka) | 168% CV -\> omega^2 = 1.340808 | Table 2 (%RSE 38) |
+| `etalka` (IIV on ka) | 168% CV -\> omega^2 = 1.340878 | Table 2 (%RSE 38) |
 | `propSd` (residual error) | 31.4% CV (proportional in linear space) | Table 2 (%RSE 29); Discussion p.1055 |
 | Two-compartment ODE structure with first-order absorption | n/a | Methods p.1054 (“two-compartment pharmacokinetic models with elimination from the central compartment and with first-order absorption”) |
 | Linear (1 + theta \* (WT - 48)) covariate form | n/a | Methods p.1054 (“centered on the median value”) and Results p.1054 (“A linear relationship between body weight and clearance and body weight and central volume of distribution gave the best fit”) |
@@ -372,9 +372,9 @@ knitr::kable(
 |:----|:--------------------|---------:|---------:|---------:|
 | DP3 | adj.r.squared       |    1.000 |    1.000 |    1.000 |
 | DP3 | auclast             |       NA |       NA |       NA |
-| DP3 | clast.pred          |    2.431 |    0.184 |    8.020 |
-| DP3 | cmax                |   94.533 |   34.951 |  199.264 |
-| DP3 | half.life           |  491.833 |  181.544 | 1541.670 |
+| DP3 | clast.pred          |    2.431 |    0.184 |    8.019 |
+| DP3 | cmax                |   94.535 |   34.950 |  199.265 |
+| DP3 | half.life           |  491.839 |  181.547 | 1541.658 |
 | DP3 | lambda.z            |    0.001 |    0.000 |    0.004 |
 | DP3 | lambda.z.n.points   |  225.000 |  112.800 |  242.250 |
 | DP3 | lambda.z.time.first |  163.000 |   72.500 |  836.200 |
@@ -385,9 +385,9 @@ knitr::kable(
 | DP3 | tmax                |   53.000 |   49.000 |   60.300 |
 | DP4 | adj.r.squared       |    1.000 |    1.000 |    1.000 |
 | DP4 | auclast             |       NA |       NA |       NA |
-| DP4 | clast.pred          |    2.933 |    0.122 |   10.155 |
-| DP4 | cmax                |   83.700 |   31.360 |  208.381 |
-| DP4 | half.life           |  576.969 |  185.105 | 2036.229 |
+| DP4 | clast.pred          |    2.932 |    0.123 |   10.155 |
+| DP4 | cmax                |   83.701 |   31.359 |  208.383 |
+| DP4 | half.life           |  576.955 |  185.117 | 2036.088 |
 | DP4 | lambda.z            |    0.001 |    0.000 |    0.004 |
 | DP4 | lambda.z.n.points   |  222.000 |   36.800 |  241.550 |
 | DP4 | lambda.z.time.first |  181.000 |   71.450 | 1292.200 |

@@ -73,9 +73,9 @@ comments. The table below collects each parameter’s source location.
 | Allometric `(WT/70)^(3/4)` on Vp/F (paper-as-printed) | 0.75 | Table 3 footnote paragraph mark mark |
 | Allometric `(WT/70)^1` on Q/F (paper-as-printed) | 1.00 | Table 3 footnote paragraph mark mark |
 | IIV CL/F (omega^2 for etalcl) | 0.02196 | Table 3 final-model column (“CL/F (eta1)” = 14.9% CV; omega^2 = log(1 + 0.149^2)) |
-| IIV Vp/F (omega^2 for etalvp) | 0.24505 | Table 3 final-model column (“Vp/F (eta2)” = 52.7% CV; omega^2 = log(1 + 0.527^2)) |
-| cov(etalcl, etalvp) | 0.03133 | Table 3 final-model column (“Correlation eta1 and eta2” = 42.7%; cov = 0.427 \* sqrt(0.02196 \* 0.24505)) |
-| IIV tlag (omega^2 for etaltlag) | 0.29442 | Table 3 final-model column (58.5% CV) |
+| IIV Vp/F (omega^2 for etalvp) | 0.24508 | Table 3 final-model column (“Vp/F (eta2)” = 52.7% CV; omega^2 = log(1 + 0.527^2)) |
+| cov(etalcl, etalvp) | 0.03133 | Table 3 final-model column (“Correlation eta1 and eta2” = 42.7%; cov = 0.427 \* sqrt(0.02196 \* 0.24508)) |
+| IIV tlag (omega^2 for etaltlag) | 0.29433 | Table 3 final-model column (58.5% CV) |
 | IIV on RUV (omega^2 for etalrv; anchored by fixed `lrv = log(1)`) | 0.10516 | Table 3 final-model column (“IIV on Residual unexplained variability” = 33.3% CV) |
 | `propSdPhase1` | 0.142 | Table 3 final-model column (“Proportional residual error phase 1” = 14.2% CV) |
 | `propSdPhase3Inc` | 0.544 | Table 3 final-model column (“Incremental proportional residual error phase 3” = 54.4% CV) |

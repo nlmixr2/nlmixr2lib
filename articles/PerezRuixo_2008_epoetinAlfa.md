@@ -405,7 +405,7 @@ cat("relative reticulocyte residence-time inflation: ", 1 / (sig0 / 1.0), "x\n",
 - **fr IIV approximation in the logit domain.** Perez-Ruixo 2008 Methods
   state that IIV on `fr` was modelled with a normal distribution in the
   logit domain. Table I reports `fr = 60 % (45 %)` – a back-transformed
-  105. The model encodes `etalogitfr ~ log(0.45^2 + 1) = 0.1854` as a
+  105. The model encodes `etalogitfr ~ log(0.45^2 + 1) = 0.1844` as a
        log-normal-style approximation on the logit-scale eta; this
        slightly overestimates the back-transformed CV for large logit
        shifts but is the standard approximation used across the

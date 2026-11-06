@@ -88,9 +88,9 @@ extension” below.
 | `WLO` linear effect on V1 | 7.22 %/kg of intra-dialysis weight loss | Table 4 (RSE 23.4%); not enabled in model file |
 | Additive residual error | 1.40 ug/mL | Table 4 (RSE 20.1%) |
 | Proportional residual error | 7.85 %CV | Table 4 (RSE 1.4%) |
-| BSV Vmax | 17.5 %CV -\> omega^2 = log(1 + 0.175^2) = 0.03016 | Table 4 (RSE 18.2%) |
+| BSV Vmax | 17.5 %CV -\> omega^2 = log(1 + 0.175^2) = 0.03017 | Table 4 (RSE 18.2%) |
 | BSV V1 | 16.8 %CV -\> omega^2 = log(1 + 0.168^2) = 0.02783 | Table 4 (RSE 16.5%) |
-| BSV V2 | 52.7 %CV -\> omega^2 = log(1 + 0.527^2) = 0.24509 | Table 4 (RSE 33.2%) |
+| BSV V2 | 52.7 %CV -\> omega^2 = log(1 + 0.527^2) = 0.24508 | Table 4 (RSE 33.2%) |
 | Structural ODEs | dA1/dt = -(Q/V1)*A1 + (Q/V2)*A2 - Vmax*C1/(Km+C1); C1 = A1/V1; dA2/dt = (Q/V1)*A1 - (Q/V2)\*A2 | Equations 3-4 |
 | Time-varying V1 (HD only) | dA3/dt = slope; slope = VSLOPE during HD, slope = -VSLOPEUP during 3-h recovery; A3(0) = V1 | Equation 5; VSLOPEUP constrained so V1 returns to baseline in 3 h after HD ends |
 
@@ -273,11 +273,11 @@ knitr::kable(
 | cohort     | PPTESTCD            |  median |     p05 |     p95 |
 |:-----------|:--------------------|--------:|--------:|--------:|
 | CKD-non-HD | adj.r.squared       |    1.00 |    1.00 |    1.00 |
-| CKD-non-HD | aucinf.obs          | 5838.46 | 4277.37 | 8488.88 |
+| CKD-non-HD | aucinf.obs          | 5838.45 | 4277.29 | 8489.16 |
 | CKD-non-HD | clast.obs           |    0.20 |    0.01 |    2.10 |
 | CKD-non-HD | clast.pred          |    0.20 |    0.01 |    2.09 |
 | CKD-non-HD | cmax                |  206.03 |  139.86 |  271.50 |
-| CKD-non-HD | half.life           |   16.00 |    9.96 |   30.73 |
+| CKD-non-HD | half.life           |   16.00 |    9.96 |   30.72 |
 | CKD-non-HD | lambda.z            |    0.04 |    0.02 |    0.07 |
 | CKD-non-HD | lambda.z.n.points   |    4.00 |    3.00 |    7.00 |
 | CKD-non-HD | lambda.z.time.first |   96.00 |   36.00 |  120.00 |
@@ -287,7 +287,7 @@ knitr::kable(
 | CKD-non-HD | tlast               |  168.00 |  168.00 |  168.00 |
 | CKD-non-HD | tmax                |    0.00 |    0.00 |    0.00 |
 | HV         | adj.r.squared       |    1.00 |    1.00 |    1.00 |
-| HV         | aucinf.obs          | 5770.15 | 4081.05 | 7794.36 |
+| HV         | aucinf.obs          | 5770.13 | 4080.96 | 7794.52 |
 | HV         | clast.obs           |    0.15 |    0.01 |    1.29 |
 | HV         | clast.pred          |    0.15 |    0.01 |    1.29 |
 | HV         | cmax                |  196.80 |  135.68 |  273.61 |

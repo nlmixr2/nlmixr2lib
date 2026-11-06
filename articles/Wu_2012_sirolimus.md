@@ -80,8 +80,8 @@ table below collects the same information in one place for review.
 | `lvmax` (Vm, mg/h) | 4.56 | Table 1 NONMEM Vm (37.7 percent RSE); units inferred from mass-balance of d/dt(A1) = -Vm\*A1/(Km+A1) – paper prints “ug/L.h” but the equation requires mass/time given A1, Km in mg |
 | `lkm` (Km, mg) | 13.8 | Table 1 NONMEM Km (50.3 percent RSE) |
 | `e_hct_cl` (power exponent on (35.1/HCT) for CL) | 0.14 | Table 1 NONMEM theta2 (55.4 percent RSE); reference HCT = 35.1 percent per Table 1 footnote |
-| `etalcl` (omega^2 for IIV on CL1/F) | 0.2425 | Table 1 NONMEM IIV CL1/F = 52.4 percent CV; omega^2 = log(1 + 0.524^2) |
-| `etalvc` (omega^2 for IIV on V1/F) | 0.2425 | Table 1 NONMEM IIV V1/F = 52.4 percent CV; omega^2 = log(1 + 0.524^2) |
+| `etalcl` (omega^2 for IIV on CL1/F) | 0.2426 | Table 1 NONMEM IIV CL1/F = 52.4 percent CV; omega^2 = log(1 + 0.524^2) |
+| `etalvc` (omega^2 for IIV on V1/F) | 0.2426 | Table 1 NONMEM IIV V1/F = 52.4 percent CV; omega^2 = log(1 + 0.524^2) |
 | `etalq` (omega^2 for IIV on CL2/F) | 0.4035 | Table 1 NONMEM IIV CL2/F = 70.5 percent CV; omega^2 = log(1 + 0.705^2) |
 | `etalvp` (omega^2 for IIV on V2/F) | 0.0366 | Table 1 NONMEM IIV V2/F = 19.3 percent CV; omega^2 = log(1 + 0.193^2) |
 | `propSd` (proportional residual SD, fraction) | 0.0217 | Table 1 NONMEM proportional = 2.17 percent (97.0 percent RSE) |
@@ -375,7 +375,7 @@ knitr::kable(
 | dose_group | PPTESTCD            |  median |     q05 |     q95 |
 |:-----------|:--------------------|--------:|--------:|--------:|
 | 1 mg       | adj.r.squared       |    1.00 |    1.00 |    1.00 |
-| 1 mg       | auclast             |   74.96 |   34.00 |  140.29 |
+| 1 mg       | auclast             |   74.96 |   34.00 |  140.31 |
 | 1 mg       | clast.pred          |    0.09 |    0.01 |    0.37 |
 | 1 mg       | cmax                |    3.91 |    2.26 |    6.47 |
 | 1 mg       | half.life           |   59.02 |   26.61 |  108.12 |
@@ -388,7 +388,7 @@ knitr::kable(
 | 1 mg       | tlast               |  168.00 |  168.00 |  168.00 |
 | 1 mg       | tmax                |    2.00 |    1.00 |    4.00 |
 | 4 mg       | adj.r.squared       |    1.00 |    1.00 |    1.00 |
-| 4 mg       | auclast             |  277.48 |  124.79 |  542.63 |
+| 4 mg       | auclast             |  277.48 |  124.77 |  542.69 |
 | 4 mg       | clast.pred          |    0.26 |    0.02 |    1.44 |
 | 4 mg       | cmax                |   13.80 |    7.96 |   23.93 |
 | 4 mg       | half.life           |   49.99 |   23.87 |  120.34 |
@@ -401,7 +401,7 @@ knitr::kable(
 | 4 mg       | tlast               |  168.00 |  168.00 |  168.00 |
 | 4 mg       | tmax                |    2.00 |    1.00 |    4.00 |
 | 10 mg      | adj.r.squared       |    1.00 |    1.00 |    1.00 |
-| 10 mg      | auclast             |  710.68 |  342.17 | 1345.70 |
+| 10 mg      | auclast             |  710.68 |  342.11 | 1345.84 |
 | 10 mg      | clast.pred          |    0.80 |    0.06 |    3.80 |
 | 10 mg      | cmax                |   29.51 |   18.01 |   51.00 |
 | 10 mg      | half.life           |   51.93 |   23.78 |   96.95 |
@@ -414,10 +414,10 @@ knitr::kable(
 | 10 mg      | tlast               |  168.00 |  168.00 |  168.00 |
 | 10 mg      | tmax                |    2.00 |    2.00 |    4.00 |
 | 30 mg      | adj.r.squared       |    1.00 |    1.00 |    1.00 |
-| 30 mg      | auclast             | 2050.04 | 1051.32 | 3609.67 |
-| 30 mg      | clast.pred          |    2.13 |    0.25 |    8.54 |
-| 30 mg      | cmax                |   66.68 |   36.14 |  106.37 |
-| 30 mg      | half.life           |   51.16 |   26.18 |  114.02 |
+| 30 mg      | auclast             | 2050.01 | 1051.12 | 3610.04 |
+| 30 mg      | clast.pred          |    2.13 |    0.25 |    8.55 |
+| 30 mg      | cmax                |   66.67 |   36.14 |  106.38 |
+| 30 mg      | half.life           |   51.16 |   26.18 |  114.04 |
 | 30 mg      | lambda.z            |    0.01 |    0.01 |    0.03 |
 | 30 mg      | lambda.z.n.points   |    6.00 |    5.00 |    7.00 |
 | 30 mg      | lambda.z.time.first |   36.00 |   24.00 |   48.00 |
@@ -427,10 +427,10 @@ knitr::kable(
 | 30 mg      | tlast               |  168.00 |  168.00 |  168.00 |
 | 30 mg      | tmax                |    4.00 |    2.00 |    8.00 |
 | 60 mg      | adj.r.squared       |    1.00 |    1.00 |    1.00 |
-| 60 mg      | auclast             | 4337.12 | 1688.91 | 7478.79 |
+| 60 mg      | auclast             | 4337.15 | 1688.50 | 7479.65 |
 | 60 mg      | clast.pred          |    5.22 |    0.37 |   19.34 |
 | 60 mg      | cmax                |   90.04 |   57.43 |  142.91 |
-| 60 mg      | half.life           |   52.96 |   24.70 |   98.99 |
+| 60 mg      | half.life           |   52.96 |   24.70 |   99.00 |
 | 60 mg      | lambda.z            |    0.01 |    0.01 |    0.03 |
 | 60 mg      | lambda.z.n.points   |    6.00 |    5.00 |    6.00 |
 | 60 mg      | lambda.z.time.first |   36.00 |   36.00 |   48.00 |

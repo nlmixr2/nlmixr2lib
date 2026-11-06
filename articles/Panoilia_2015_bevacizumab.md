@@ -65,7 +65,7 @@ The same metadata is available programmatically via
 | `e_wt_vc_vp` (allometric exponent) | 1 (fixed) | Panoilia 2015 Methods Eq 3 (“1 for volume parameters … fixed”) |
 | `etalcl` variance (CV 20%) | 0.03922 | Panoilia 2015 Table 3, IIV CL CV% |
 | `etalvc` variance (CV 22%) | 0.04727 | Panoilia 2015 Table 3, IIV V1 CV% |
-| `etalbm0` variance (CV 24%) | 0.05599 | Panoilia 2015 Table 3, IIV BM0 CV% |
+| `etalbm0` variance (CV 24%) | 0.05600 | Panoilia 2015 Table 3, IIV BM0 CV% |
 | `propSd` (bevacizumab) | 0.28 | Panoilia 2015 Table 3, row Prop. error_bev |
 | `propSd_freeVegf` (VEGF165) | 0.32 | Panoilia 2015 Table 3, row Prop. error_VEGF165 |
 

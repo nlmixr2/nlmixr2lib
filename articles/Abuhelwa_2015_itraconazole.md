@@ -109,11 +109,11 @@ below collects them in one place for review.
 | Metabolite V_1m / F_m | 5.28 L | Table 4 row ‘V_1m/F_m (liters) = 5.28’ |
 | Michaelis-Menten V_max | 403 ug/h | Table 4 row ‘V_max (liters/h) = 403’ – unit label corrected to ug/h per Appendix S1 ‘;UNITS ARE UG, L (NG/ML) AND H’ (see Assumptions and deviations) |
 | Michaelis-Menten K_m | 1.64 ng/mL | Table 4 row ‘K_m (ng/ml) = 1.64’ |
-| BSV CL/F (22.1 %CV) | omega^2 = 0.04681 | Table 3 BSV row |
-| BSV V2/F (30.8 %CV) | omega^2 = 0.09011 | Table 3 BSV row |
-| BSV KTR (44.8 %CV) | omega^2 = 0.18120 | Table 3 BSV row |
-| FVAR (56.4 %CV; common variability on F) | omega^2 = 0.27259 | Table 3 row ‘FVAR’ |
-| BSV CL_m / F_m (27.9 %CV) | omega^2 = 0.07497 | Table 4 BSV row |
+| BSV CL/F (22.1 %CV) | omega^2 = 0.04769 | Table 3 BSV row |
+| BSV V2/F (30.8 %CV) | omega^2 = 0.09063 | Table 3 BSV row |
+| BSV KTR (44.8 %CV) | omega^2 = 0.18291 | Table 3 BSV row |
+| FVAR (56.4 %CV; common variability on F) | omega^2 = 0.27619 | Table 3 row ‘FVAR’ |
+| BSV CL_m / F_m (27.9 %CV) | omega^2 = 0.07496 | Table 4 BSV row |
 | Parent residual error (single-dose fasted) | propSd = 0.293, addSd = 0.168 ng/mL | Table 3 rows ‘Proportional/Additive error-fasted’ |
 | Metabolite residual error (single-dose) | propSd_ohi = 0.387, addSd_ohi = 0.329 ng/mL | Table 4 rows ‘Single-dose / Proportional / Additive error’ |
 | Combined residual error model on log scale (LTBS) | – | Methods Eq. 2; supplement Appendix S1 W = sqrt(prop^2 + add^2 / exp(IPRE)^2) ; Y = IPRE + W \* EPS(1) |
@@ -749,10 +749,10 @@ knitr::kable(summary_tbl,
 
 | treatment | Cmax_geomean | Tmax_median | AUCinf_geomean | halflife_median | n_subjects |
 |:---|---:|---:|---:|---:|---:|
-| SUBA-itraconazole - Fasted | 61.98 | 3.3 | NA | 25.59 | 100 |
-| SUBA-itraconazole - Fed | 29.29 | 7.5 | NA | 26.13 | 100 |
-| Sporanox - Fasted | 56.45 | 3.5 | NA | 25.92 | 100 |
-| Sporanox - Fed | 27.79 | 7.3 | NA | 25.76 | 100 |
+| SUBA-itraconazole - Fasted | 61.97 | 3.3 | NA | 25.58 | 100 |
+| SUBA-itraconazole - Fed | 29.27 | 7.5 | NA | 26.13 | 100 |
+| Sporanox - Fasted | 56.40 | 3.5 | NA | 25.92 | 100 |
+| Sporanox - Fed | 27.77 | 7.3 | NA | 25.76 | 100 |
 
 Simulated itraconazole NCA parameters by treatment arm (geometric means
 / medians). {.table}
@@ -794,10 +794,10 @@ knitr::kable(comparison,
 
 | treatment | Cmax_geomean | Tmax_median | AUCinf_geomean | Cmax_pub | Tmax_pub | AUCinf_pub | Cmax_pct | Tmax_pct | AUCinf_pct |
 |:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| SUBA-itraconazole - Fasted | 61.98 | 3.3 | NA | 81.18 | 3.87 | 833.52 | -23.6 | -14.7 | NA |
-| SUBA-itraconazole - Fed | 29.29 | 7.5 | NA | 50.23 | 6.83 | 653.60 | -41.7 | 9.8 | NA |
-| Sporanox - Fasted | 56.45 | 3.5 | NA | 78.31 | 3.86 | 831.52 | -27.9 | -9.3 | NA |
-| Sporanox - Fed | 27.79 | 7.3 | NA | 51.37 | 6.83 | 675.39 | -45.9 | 6.9 | NA |
+| SUBA-itraconazole - Fasted | 61.97 | 3.3 | NA | 81.18 | 3.87 | 833.52 | -23.7 | -14.7 | NA |
+| SUBA-itraconazole - Fed | 29.27 | 7.5 | NA | 50.23 | 6.83 | 653.60 | -41.7 | 9.8 | NA |
+| Sporanox - Fasted | 56.40 | 3.5 | NA | 78.31 | 3.86 | 831.52 | -28.0 | -9.3 | NA |
+| Sporanox - Fed | 27.77 | 7.3 | NA | 51.37 | 6.83 | 675.39 | -45.9 | 6.9 | NA |
 
 Simulated geometric means vs Abuhelwa 2015 Table 5 (signed % difference
 relative to the published value). {.table style="width:100%;"}

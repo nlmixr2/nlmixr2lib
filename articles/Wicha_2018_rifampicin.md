@@ -118,10 +118,10 @@ The table below collects them in one place.
 | SD_EC50 | 13.4 mg/L | Table 1 SD_EC50 FIX (Clewe 2016) |
 | ND_k | 0.24 L/(mg\*day) | Table 1 ND_k FIX (Clewe 2016) |
 | IIV Vmax (CV%) | 30.0% -\> omega^2 = 0.08618 | Table 1 IIV Vmax |
-| IIV km (CV%) | 35.8% -\> omega^2 = 0.12054 | Table 1 IIV km |
+| IIV km (CV%) | 35.8% -\> omega^2 = 0.12059 | Table 1 IIV km |
 | IIV Vd (CV%) | 7.86% -\> omega^2 = 0.00616 | Table 1 IIV Vd |
-| IIV ka (CV%) | 33.8% -\> omega^2 = 0.10822 | Table 1 IIV ka |
-| IIV MTT (CV%) | 38.2% -\> omega^2 = 0.13624 | Table 1 IIV MTT |
+| IIV ka (CV%) | 33.8% -\> omega^2 = 0.10818 | Table 1 IIV ka |
+| IIV MTT (CV%) | 38.2% -\> omega^2 = 0.13621 | Table 1 IIV MTT |
 | IIV NN (CV%) | 77.9% -\> omega^2 = 0.47427 | Table 1 IIV NN |
 | Vmax-km correlation | 38.9% | Table 1 “Correlation Vmax-km” |
 | MTP ODE (F) | d/dt(fast) = kG*F*log(Bmax/Btot)*(1-FG_k*Cpae) - kFS(t)*F + kSF*S - kFN*F - FD*F | Eq. 1; ELF + PAE drives drug effects |
@@ -387,6 +387,18 @@ intervals <- data.frame(
 )
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
                                           intervals = intervals))
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
 #> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
 #> concentrations found
 #> Warning in assert_conc(conc = conc): Negative concentrations found
@@ -832,6 +844,42 @@ nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
 #> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
 #> concentrations found
 #> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc = conc): Negative concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative
+#> concentrations found
+#> Warning in log(data$conc): NaNs produced
 nca_summary <- summary(nca_res)
 knitr::kable(nca_summary,
              caption = paste("Simulated day-1 (post-preincubation)",
@@ -841,7 +889,7 @@ knitr::kable(nca_summary,
 | start | end | mgkg_label | N | auclast | cmax | tmax | half.life |
 |---:|---:|:---|:---|:---|:---|:---|:---|
 | 0 | 24 | 10 mg/kg | 20 | 53.1 \[31.2\] | 7.02 \[18.2\] | 2.40 \[1.20, 3.00\] | 3.78 \[1.34\] |
-| 0 | 24 | 25 mg/kg | 20 | 172 \[29.4\], n=19 | 1.34 \[3.89e33\] | 2.40 \[1.20, 10.8\] | 4.48 \[2.22\] |
+| 0 | 24 | 25 mg/kg | 20 | 172 \[29.4\], n=19 | 1.34 \[3.65e33\] | 2.40 \[1.20, 10.8\] | 4.50 \[2.27\] |
 | 0 | 24 | 35 mg/kg | 20 | 319 \[26.1\] | 30.8 \[14.6\] | 2.40 \[1.80, 3.60\] | 5.29 \[2.07\] |
 | 0 | 24 | 50 mg/kg | 20 | 460 \[30.6\] | 43.7 \[14.7\] | 2.40 \[1.80, 3.60\] | 5.28 \[2.80\] |
 

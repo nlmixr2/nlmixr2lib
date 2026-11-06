@@ -68,7 +68,7 @@ comment. The table below collects the entries in one place.
 | `e_wt_vc` (allometric exponent on V/F, FIXED) | 1.0 | Results p. 300: “modelled as a power function with the exponent fixed to 1” |
 | IIV CL/F (omega^2 = log(1 + 0.180^2) = 0.0319) | 18.0% CV | Table 3, IIV CL/F row |
 | IIV V/F (omega^2 = log(1 + 0.687^2) = 0.3866) | 68.7% CV | Table 3, IIV V/F row |
-| IIV ka (omega^2 = log(1 + 0.619^2) = 0.3240) | 61.9% CV | Table 3, IIV ka row (same variance applies on the log MAT scale) |
+| IIV ka (omega^2 = log(1 + 0.619^2) = 0.3244) | 61.9% CV | Table 3, IIV ka row (same variance applies on the log MAT scale) |
 | Correlation CL/F \<-\> V/F (cov = 0.0864) | 0.778 | Table 3, “Correlation CL/F-V/F” row |
 | Proportional residual error | 51.4% CV | Table 3, “Proportional residual error” row (CI 45.6-56%) |
 | Additive residual error | 1.0003e-3 mg/L | Table 3, “Additive residual error” row |

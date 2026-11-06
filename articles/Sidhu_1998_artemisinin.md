@@ -88,10 +88,10 @@ The table below collects them in one place for review.
 | `e_child_cl = log(14.4 / 432)` – CHILD shift on log CL/F | -3.402 | Sidhu 1998 Table 2 (CL/F children = 14.4 L/h/kg; rel. s.e. 24%) |
 | `e_child_vc = log(37.9 / 1600)` – CHILD shift on log V/F | -3.741 | Sidhu 1998 Table 2 (V/F children = 37.9 L/kg; rel. s.e. 33%) |
 | `e_occ2_fdepot = log(1 / 6.9)` – Day-5 shift on log F | -1.932 | Sidhu 1998 Table 2 (delta_F_Day1-\>Day5 = 6.9; rel. s.e. 20%) |
-| `etalcl + etalvc ~ c(0.1843, 0.3493, 0.7334)` – IIV with near-unity correlation | 45% / 104% CV, cor = 0.95 | Sidhu 1998 Table 2 (omega CL/F = 45%, omega V/F = 104%) + Results p. 350 (‘correlation between eta V/F and eta CL/F was found to be near unity’) |
+| `etalcl + etalvc ~ c(0.1844, 0.3493, 0.7331)` – IIV with near-unity correlation | 45% / 104% CV, cor = 0.95 | Sidhu 1998 Table 2 (omega CL/F = 45%, omega V/F = 104%) + Results p. 350 (‘correlation between eta V/F and eta CL/F was found to be near unity’) |
 | `etalka ~ 3.5316` – IIV ka | 576% CV | Sidhu 1998 Table 2 (omega ka = 576%; rel. s.e. 21%); retained per Results (estimating its variance was preferred to fixing) |
-| `etaiov_cl_1 = etaiov_cl_2 ~ 0.2475` – IOV on log CL/F | 53% CV (shared) | Sidhu 1998 Table 2 (pi CL/F = 53%; rel. s.e. 32%) |
-| `etaiov_vc_1 = etaiov_vc_2 ~ 0.5536` – IOV on log V/F | 86% CV (shared) | Sidhu 1998 Table 2 (pi V/F = 86%; rel. s.e. 36%) |
+| `etaiov_cl_1 = etaiov_cl_2 ~ 0.2476` – IOV on log CL/F | 53% CV (shared) | Sidhu 1998 Table 2 (pi CL/F = 53%; rel. s.e. 32%) |
+| `etaiov_vc_1 = etaiov_vc_2 ~ 0.5537` – IOV on log V/F | 86% CV (shared) | Sidhu 1998 Table 2 (pi V/F = 86%; rel. s.e. 36%) |
 | `propSd = 0.47` – proportional residual error (fraction) | 47% CV | Sidhu 1998 Table 2 (sigma = 47%; rel. s.e. 41%) |
 | Age-group switch `ln_cl_typ = lcl + CHILD * (e_child_cl + log(WT))` | – | Sidhu 1998 Table 2 (separate CL/F and V/F for adults and children) + footnote b (children’s units adjusted for total body weight) |
 | Time-dependent F: `f(depot) = exp(lfdepot + e_occ2_fdepot * oc2)` | – | Sidhu 1998 Methods ‘time-variance modelled both as systematic and random variability’ + Table 2 (delta_F_Day1-\>Day5 = 6.9) |
@@ -615,25 +615,25 @@ knitr::kable(nca_summary,
 
 | cohort          | PPTESTCD   |  median |    p05 |     p95 |
 |:----------------|:-----------|--------:|-------:|--------:|
-| Adults, Day 1   | aucinf.obs | 1093.35 | 408.60 | 3070.15 |
-| Adults, Day 1   | auclast    | 1000.94 | 350.25 | 2866.48 |
-| Adults, Day 1   | cmax       |  224.84 |  24.75 | 1137.94 |
+| Adults, Day 1   | aucinf.obs | 1093.24 | 408.48 | 3070.69 |
+| Adults, Day 1   | auclast    | 1000.93 | 350.21 | 2867.01 |
+| Adults, Day 1   | cmax       |  224.78 |  24.76 | 1138.05 |
 | Adults, Day 1   | half.life  |    2.63 |   0.61 |   17.74 |
 | Adults, Day 1   | tmax       |    1.00 |   0.25 |    6.20 |
-| Adults, Day 5   | aucinf.obs |  165.47 |  61.16 |  429.04 |
-| Adults, Day 5   | auclast    |  148.82 |  60.29 |  419.03 |
-| Adults, Day 5   | cmax       |   21.29 |   4.55 |   75.67 |
-| Adults, Day 5   | half.life  |    3.35 |   1.03 |   28.61 |
+| Adults, Day 5   | aucinf.obs |  165.47 |  61.14 |  429.09 |
+| Adults, Day 5   | auclast    |  148.83 |  60.28 |  419.11 |
+| Adults, Day 5   | cmax       |   21.29 |   4.55 |   75.66 |
+| Adults, Day 5   | half.life  |    3.35 |   1.03 |   28.60 |
 | Adults, Day 5   | tmax       |    1.00 |   0.25 |    6.10 |
-| Children, Day 1 | aucinf.obs |  668.63 | 266.83 | 1812.12 |
-| Children, Day 1 | auclast    |  607.79 | 205.25 | 1542.91 |
-| Children, Day 1 | cmax       |  141.80 |  15.03 |  754.40 |
-| Children, Day 1 | half.life  |    2.57 |   0.51 |   14.22 |
+| Children, Day 1 | aucinf.obs |  668.66 | 266.78 | 1812.45 |
+| Children, Day 1 | auclast    |  607.80 | 205.27 | 1543.16 |
+| Children, Day 1 | cmax       |  141.80 |  15.03 |  754.29 |
+| Children, Day 1 | half.life  |    2.57 |   0.56 |   14.22 |
 | Children, Day 1 | tmax       |    1.00 |   0.25 |    6.00 |
-| Children, Day 5 | aucinf.obs |  100.25 |  34.57 |  300.19 |
-| Children, Day 5 | auclast    |   90.12 |  27.60 |  249.90 |
-| Children, Day 5 | cmax       |   16.37 |   1.85 |  109.40 |
-| Children, Day 5 | half.life  |    2.21 |   0.65 |   11.01 |
+| Children, Day 5 | aucinf.obs |  100.25 |  34.56 |  300.26 |
+| Children, Day 5 | auclast    |   90.12 |  27.60 |  249.91 |
+| Children, Day 5 | cmax       |   16.37 |   1.85 |  109.37 |
+| Children, Day 5 | half.life  |    2.21 |   0.55 |   11.01 |
 | Children, Day 5 | tmax       |    1.00 |   0.25 |    5.05 |
 
 Stochastic NCA per cohort (median \[5%-95%\]). {.table}

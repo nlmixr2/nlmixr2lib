@@ -173,7 +173,7 @@ sim_full <- as.data.frame(
 cf_full <- me_solution(K, ic_full, times_runfile)
 rel_err <- abs(sim_full$arterial[-1] / cf_full[2, -1] - 1)
 max(rel_err)
-#> [1] 2.064671e-10
+#> [1] 2.064855e-10
 # ODE vs closed form on identical parameters; measured ~1e-10 at these
 # tolerances.
 stopifnot(max(rel_err) < 1e-7)

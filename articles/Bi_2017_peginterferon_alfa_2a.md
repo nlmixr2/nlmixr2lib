@@ -47,8 +47,8 @@ below collects them for review.
 | `e_crcl_cl` | `0.31` | Bi 2017 Table 2 (CCR-CL coefficient); Equation 4 |
 | `e_bmi_vc` | `1.81` | Bi 2017 Table 2 (BMI-V coefficient); Equation 5 |
 | `etalcl` IIV | `0.08344` (CV 29.5%) | Bi 2017 Table 2 (CL IIV CV%) -\> `omega^2 = log(0.295^2 + 1)` |
-| `etalvc` IIV | `0.70321` (CV 101%) | Bi 2017 Table 2 (V IIV CV%) -\> `omega^2 = log(1.010^2 + 1)` |
-| `etalka` IIV | `0.34340` (CV 64.0%) | Bi 2017 Table 2 (Ka IIV CV%) -\> `omega^2 = log(0.640^2 + 1)` |
+| `etalvc` IIV | `0.70315` (CV 101%) | Bi 2017 Table 2 (V IIV CV%) -\> `omega^2 = log(1.010^2 + 1)` |
+| `etalka` IIV | `0.34331` (CV 64.0%) | Bi 2017 Table 2 (Ka IIV CV%) -\> `omega^2 = log(0.640^2 + 1)` |
 | `propSd` | `0.194` (fraction) | Bi 2017 Table 2 (residual proportional CV = 19.4%) |
 | `addSd` | `0.32` ng/L | Bi 2017 Table 2 (residual additive SD) |
 | CL covariate form | `CL = 0.094 * (CCR/91.39)^0.31 * exp(eta_CL)` | Bi 2017 Equation 4 |
@@ -306,9 +306,9 @@ knitr::kable(nca_tbl,
 
 | PPTESTCD   |     median |        q05 |        q95 |
 |:-----------|-----------:|-----------:|-----------:|
-| aucinf.obs | 1940619.20 | 1146685.98 | 3105318.80 |
-| cmax       |    7758.77 |    2368.66 |   19986.38 |
-| half.life  |     111.71 |      30.78 |     516.99 |
+| aucinf.obs | 1940619.19 | 1146685.92 | 3105319.07 |
+| cmax       |    7759.10 |    2368.79 |   19985.83 |
+| half.life  |     111.71 |      30.78 |     516.96 |
 | tmax       |      64.00 |      31.80 |     138.30 |
 
 Simulated single-dose NCA for 180 ug SC peginterferon alfa-2a; median

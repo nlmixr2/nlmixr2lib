@@ -112,7 +112,7 @@ table below collects the same information in one place for review.
 | `e_dose_cl` (power exponent of (DOSE/2) on CL/F) | 0.479 | Table 2 theta6 = 0.479 (16.6% RSE) |
 | `e_cp_csa_ngml_vc` (linear-deviation effect of CsA C0 on V/F, L per ng/mL) | -7.27 | Table 2 theta8 = 7.27 (14.9% RSE); minus sign per Eq. 10 |
 | `etalcl` (omega^2 on log CL/F) | 0.0551 | Table 2 omega_CL/F = 23.8% (26.7% RSE); omega^2 = log(1 + 0.238^2) |
-| `etalvc` (omega^2 on log V/F) | 0.2789 | Table 2 omega_V/F = 56.7% (24.8% RSE); omega^2 = log(1 + 0.567^2) |
+| `etalvc` (omega^2 on log V/F) | 0.2788 | Table 2 omega_V/F = 56.7% (24.8% RSE); omega^2 = log(1 + 0.567^2) |
 | `expSd` (log-normal residual SD) | 0.299 | Table 2 sigma = 29.9% (8.0% RSE); exponential error model per Methods Eq. 3 |
 | Final equation: `CL/F = [theta1 - theta2*(TC - 5.66) - theta3*(C0 - 104)] * theta4^SLM * theta5^GLZ * (DDS/2)^theta6` | n/a | Eq. 9 (page 52); also reproduced in Table 2 footer |
 | Final equation: `V/F = theta7 - theta8*(C0 - 104)` | n/a | Eq. 10 (page 52); also reproduced in Table 2 footer |
@@ -376,7 +376,7 @@ knitr::kable(
 | Silymarin co-therapy               |  59 |  11.48 | 8.03 | 16.49 |
 | Glycyrrhizin co-therapy            |  30 |   8.80 | 5.96 | 11.87 |
 | Glycyrrhizin co-therapy            |  59 |  10.62 | 7.82 | 14.30 |
-| High dose (DDS 4 mg/day)           |  30 |  10.14 | 7.30 | 15.49 |
+| High dose (DDS 4 mg/day)           |  30 |  10.15 | 7.30 | 15.49 |
 | High dose (DDS 4 mg/day)           |  59 |  11.67 | 7.58 | 17.33 |
 
 Simulated trough Cc (ng/mL) at day 30 and day 59 across the four

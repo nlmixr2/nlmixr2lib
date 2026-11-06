@@ -73,7 +73,7 @@ intraperitoneal bioavailability F) and per kg body weight.
 | `lkp_brain_ebdm` (BBB2 = CLin/CLout, EBDM) | log(0.317) | Table 1 |
 | `lv_brain_extravascular_ebdm` (V5/F) | fixed log(6.56e-3) L/kg | Table 1 |
 | `e_sex_cl` (COV CL-MALE) | -0.146 | Table 1 and footnote a |
-| `etalka` | 0.38941 (69% CV) | Table 1, footnote b |
+| `etalka` | 0.38940 (69% CV) | Table 1, footnote b |
 | `etalcl` | 0.00995 (10% CV) | Table 1, footnote b |
 | `propSd`, `propSd_ebdm` | fixed 0.15 | Table 1; Methods “Population pharmacokinetic analysis” |
 | `propSd_Cbrain`, `propSd_Cbrain_ebdm` | fixed 0.20 | Table 1; Methods |
