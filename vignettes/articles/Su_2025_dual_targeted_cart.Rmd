@@ -117,9 +117,11 @@ eff_frac <- 0.13
 solve_dose <- function(d, tmax = 28, dt = 0.25, age = 10) {
   ev <- rxode2::et(amt = d * mem_frac, cmt = "cartm_pb")
   ev <- rxode2::et(ev, amt = d * eff_frac, cmt = "carte_pb")
-  # Observe the `cells` endpoint; rxode2 returns both the `cells` and
-  # `transgene` outputs as columns from a multi-endpoint model.
-  ev <- rxode2::et(ev, seq(0, tmax, by = dt), cmt = "cells")
+  # Observation rows sit on the blood effector state with dvid = 1 (the
+  # `cells` endpoint); rxode2 returns both the `cells` and `transgene` outputs
+  # as columns from a multi-endpoint model.
+  ev <- rxode2::et(ev, seq(0, tmax, by = dt), cmt = "carte_pb") |> as.data.frame()
+  ev$dvid <- ifelse(ev$evid == 0, 1L, NA_integer_)
   s <- as.data.frame(rxode2::rxSolve(mod_tv, ev, params = c(AGE = age), method = "lsoda", atol = 1e-9, rtol = 1e-9))
   s$dose <- d
   s
@@ -271,7 +273,8 @@ n_arm <- 100
 pop_dose <- function(d, id_offset) {
   ev <- rxode2::et(amt = d * mem_frac, cmt = "cartm_pb")
   ev <- rxode2::et(ev, amt = d * eff_frac, cmt = "carte_pb")
-  ev <- rxode2::et(ev, seq(0, 28, by = 0.5), cmt = "cells")
+  ev <- rxode2::et(ev, seq(0, 28, by = 0.5), cmt = "carte_pb") |> as.data.frame()
+  ev$dvid <- ifelse(ev$evid == 0, 1L, NA_integer_)
   s <- as.data.frame(rxode2::rxSolve(mod_clin, ev, params = c(AGE = 10),
     nSub = n_arm, method = "lsoda", atol = 1e-8, rtol = 1e-8
   ))

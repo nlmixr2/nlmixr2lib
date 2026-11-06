@@ -86,9 +86,9 @@ reference body weight, reproducing the Study 1 multiple-dose design (doses on
 Days 1, 15 and 29). Between-subject variability comes from the four model IIV
 terms (on IL2kp, CLIL2, kin-Treg and Emax).
 
-Because this is a two-endpoint model (HSA-IL2m `Cc` and `treg`), observation
-rows name the observable (`cmt = "Cc"` / `cmt = "treg"`) rather than the backing
-ODE state, as rxode2 requires for multi-endpoint models.
+This is a two-endpoint model (HSA-IL2m `Cc` and `treg`). `treg` is both an ODE
+state and an endpoint, so the observation rows use `cmt = "treg"`, and rxode2
+returns `Cc` and `treg` together at every observation row.
 
 ```{r cohort}
 set.seed(6231)
@@ -112,11 +112,9 @@ make_cohort <- function(dl, dmgk, id_offset) {
   amt_ug <- dmgk * wt_ref
   dose_rows <- tidyr::expand_grid(id = ids, time = dose_days * 24) |>
     dplyr::mutate(evid = 1L, amt = amt_ug, cmt = "depot")
-  pk_rows <- tidyr::expand_grid(id = ids, time = obs_h) |>
-    dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "Cc")
-  pd_rows <- tidyr::expand_grid(id = ids, time = obs_h) |>
+  obs_rows <- tidyr::expand_grid(id = ids, time = obs_h) |>
     dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "treg")
-  dplyr::bind_rows(dose_rows, pk_rows, pd_rows) |>
+  dplyr::bind_rows(dose_rows, obs_rows) |>
     dplyr::mutate(WT = wt_ref, dose_lbl = dl) |>
     dplyr::select(id, time, evid, amt, cmt, WT, dose_lbl) |>
     dplyr::arrange(id, time, dplyr::desc(evid))

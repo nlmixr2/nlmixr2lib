@@ -170,9 +170,9 @@ distribution equilibrium in the peripheral compartment, and `keR = ksyn / R0`.
 Without drug, free PCSK9 must therefore stay at `R0` for any covariates.
 
 ```{r steady-state}
-ev_nodrug <- rxode2::et(seq(0, 168, by = 7), cmt = "Cc") |>
+ev_nodrug <- rxode2::et(seq(0, 168, by = 7), cmt = "central") |>
   as.data.frame() |>
-  dplyr::mutate(WT = 50, CONMED_STATIN_HI = 1)
+  dplyr::mutate(dvid = 1L, WT = 50, CONMED_STATIN_HI = 1)
 ss_ped <- rxode2::rxSolve(rxode2::zeroRe(mod_ped), ev_nodrug, returnType = "data.frame")
 r0_ped <- exp(ui_ped$theta[["lr0"]])
 stopifnot(max(abs(ss_ped$Ctarget / r0_ped - 1)) < 1e-4, max(abs(ss_ped$Cc)) < 1e-8)
@@ -226,10 +226,10 @@ make_arm <- function(i, id_offset) {
   dose_times <- seq(0, 168 - a$ii, by = a$ii)
   doses <- tidyr::expand_grid(subj, time = dose_times) |>
     dplyr::mutate(evid = 1L, amt = a$amt, cmt = "depot")
-  # Two declared endpoints (Cc, Ctarget): observation rows name the endpoint,
-  # and every row returns both observables.
+  # Two declared endpoints (Cc, Ctarget): observation rows carry dvid = 1 on
+  # the central compartment, and every row returns both observables.
   obs <- tidyr::expand_grid(subj, time = obs_times) |>
-    dplyr::mutate(evid = 0L, amt = 0, cmt = "Cc")
+    dplyr::mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L)
   dplyr::bind_rows(doses, obs)
 }
 
@@ -322,9 +322,9 @@ weight in each band (40 kg and 65 kg, no HDS) and the trough at week 24:
 typical_trough <- function(wt, amt, ii) {
   n_dose <- 168 / ii
   ev <- rxode2::et(amt = amt, cmt = "depot", ii = ii, addl = n_dose - 1) |>
-    rxode2::et(c(0, 168), cmt = "Cc") |>
+    rxode2::et(c(0, 168), cmt = "central") |>
     as.data.frame() |>
-    dplyr::mutate(WT = wt, CONMED_STATIN_HI = 0)
+    dplyr::mutate(dvid = ifelse(evid == 0, 1L, NA_integer_), WT = wt, CONMED_STATIN_HI = 0)
   s <- rxode2::rxSolve(rxode2::zeroRe(mod_ped), ev, returnType = "data.frame")
   100 * (1 - s$Ctarget[s$time == 168] / s$Ctarget[s$time == 0])
 }
@@ -424,7 +424,7 @@ make_adult <- function(i, n, id_offset) {
   subj <- tibble::tibble(id = id_offset + seq_len(n), WT = 75, arm = a$arm)
   dose <- subj |> dplyr::mutate(time = 0, evid = 1L, amt = a$amt, cmt = a$cmt, dur = a$dur)
   obs <- tidyr::expand_grid(subj, time = adult_times) |>
-    dplyr::mutate(evid = 0L, amt = 0, cmt = "Cc", dur = 0)
+    dplyr::mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L, dur = 0)
   dplyr::bind_rows(dose, obs)
 }
 events_adult <- dplyr::bind_rows(lapply(seq_len(nrow(adult_arms)), function(i) make_adult(i, 50L, (i - 1L) * 50L))) |>

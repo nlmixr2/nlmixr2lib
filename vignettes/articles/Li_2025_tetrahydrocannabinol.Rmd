@@ -110,8 +110,9 @@ fig2_doses <- c(10, 20, 45, 50)
 fig2_grid <- sort(unique(c(seq(0, 12, by = 0.1), seq(12.5, 54, by = 0.5))))
 ev_fig2 <- lapply(seq_along(fig2_doses), function(i) {
   rxode2::et(amt = fig2_doses[i], cmt = "depot", id = i) |>
-    rxode2::et(fig2_grid, cmt = "Cc", id = i) |>
-    as.data.frame()
+    rxode2::et(fig2_grid, cmt = "central", id = i) |>
+    as.data.frame() |>
+    mutate(dvid = ifelse(evid == 0, 1L, NA_integer_))
 }) |>
   bind_rows()
 sim_fig2 <- rxode2::rxSolve(mod_typ, ev_fig2, returnType = "data.frame") |>
@@ -156,7 +157,7 @@ ev_fig4 <- lapply(seq_len(nrow(goodwin)), function(i) {
   if (goodwin$dose[i] == 2.5) tt <- setdiff(tt, 16)
   bind_rows(
     data.frame(id = i, time = tt, amt = goodwin$dose[i], evid = 1, cmt = "depot"),
-    data.frame(id = i, time = fig4_grid, amt = 0, evid = 0, cmt = "Cc")
+    data.frame(id = i, time = fig4_grid, amt = 0, evid = 0, cmt = "central", dvid = 1L)
   )
 }) |>
   bind_rows() |>
@@ -201,12 +202,16 @@ n_sub <- 200
 win_grid <- seq(0, 24, by = 0.25)
 
 ev_occ <- rxode2::et(amt = 1, cmt = "depot") |>
-  rxode2::et(win_grid, cmt = "Cc") |>
-  rxode2::et(id = seq_len(n_sub))
+  rxode2::et(win_grid, cmt = "central") |>
+  rxode2::et(id = seq_len(n_sub)) |>
+  as.data.frame() |>
+  mutate(dvid = ifelse(evid == 0, 1L, NA_integer_))
 last_dose <- 13 * 24 + 12
 ev_freq <- rxode2::et(amt = 1, cmt = "depot", ii = 12, addl = 27) |>
-  rxode2::et(last_dose + win_grid, cmt = "Cc") |>
-  rxode2::et(id = seq_len(n_sub))
+  rxode2::et(last_dose + win_grid, cmt = "central") |>
+  rxode2::et(id = seq_len(n_sub)) |>
+  as.data.frame() |>
+  mutate(dvid = ifelse(evid == 0, 1L, NA_integer_))
 
 sim_occ <- rxode2::rxSolve(mod_ui, ev_occ, returnType = "data.frame") |>
   mutate(user = "Occasional", tald = time)
@@ -214,7 +219,7 @@ sim_freq <- rxode2::rxSolve(mod_ui, ev_freq, returnType = "data.frame") |>
   mutate(user = "Frequent", tald = time - last_dose)
 
 # rxode2 returns the per-endpoint simulated observation (residual error
-# included) in `sim`; with observation rows on cmt = "Cc" that is THC.
+# included) in `sim`; with dvid = 1 on the observation rows that is THC (`Cc`).
 sim_perse <- bind_rows(sim_occ, sim_freq) |>
   select(id, user, tald, ipred = Cc, obs = sim)
 stopifnot(nrow(sim_perse) == 2 * n_sub * length(win_grid))
@@ -372,8 +377,9 @@ nca_arms <- tibble::tibble(
 )
 ev_nca <- lapply(seq_len(nrow(nca_arms)), function(i) {
   rxode2::et(amt = nca_arms$dose[i], cmt = nca_arms$cmt[i], id = i) |>
-    rxode2::et(nca_grid, cmt = "Cc", id = i) |>
-    as.data.frame()
+    rxode2::et(nca_grid, cmt = "central", id = i) |>
+    as.data.frame() |>
+    mutate(dvid = ifelse(evid == 0, 1L, NA_integer_))
 }) |>
   bind_rows()
 sim_nca <- rxode2::rxSolve(

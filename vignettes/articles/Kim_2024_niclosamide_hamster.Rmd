@@ -101,7 +101,7 @@ make_cohort <- function(n, dose_mgkg, id_offset = 0L) {
   doses <- tidyr::expand_grid(id = ids, cmt = c("depot", "depot2")) |>
     mutate(time = 0, evid = 1L, amt = amt)
   obs <- tidyr::expand_grid(id = ids, time = obs_times) |>
-    mutate(cmt = "Cc", evid = 0L, amt = 0)
+    mutate(cmt = "central", dvid = 1L, evid = 0L, amt = 0)
   bind_rows(doses, obs) |>
     mutate(dose_group = paste(dose_mgkg, "mg/kg")) |>
     arrange(id, time, desc(evid))
@@ -116,9 +116,9 @@ events$dose_group <- factor(events$dose_group, levels = paste(dose_levels, "mg/k
 stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
 ```
 
-Observation rows name the endpoint `Cc`: both models declare two endpoints
-(`Cc` and `Clung`), and the lung concentration is returned as a column on every
-row.
+Both models declare two endpoints (`Cc` and `Clung`), so observation rows
+carry `dvid = 1` on the `central` compartment. The lung concentration is
+returned as a column on every row.
 
 # Simulation
 
@@ -375,7 +375,7 @@ opt_events <- bind_rows(lapply(seq_along(opt_doses), function(i) {
     tidyr::expand_grid(id = ids, cmt = c("depot", "depot2")) |>
       mutate(time = 0, evid = 1L, amt = amt),
     tidyr::expand_grid(id = ids, time = opt_times) |>
-      mutate(cmt = "Cc", evid = 0L, amt = 0)
+      mutate(cmt = "central", dvid = 1L, evid = 0L, amt = 0)
   ) |>
     mutate(dose = opt_doses[i])
 })) |>

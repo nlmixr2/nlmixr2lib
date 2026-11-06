@@ -130,16 +130,18 @@ make_cohort <- function(n, id_offset = 0L, mthfr = 0L, abcc2 = 0L, slc19a1 = 0L)
 
   load_rows <- tibble(
     id = ids, time = 0, evid = 1L,
-    amt = 0.10 * dose_mgm2, rate = 0.10 * dose_mgm2 / 1, cmt = "central"
+    amt = 0.10 * dose_mgm2, rate = 0.10 * dose_mgm2 / 1, cmt = "central",
+    dvid = NA_integer_
   )
   maint_rows <- tibble(
     id = ids, time = 1, evid = 1L,
-    amt = 0.90 * dose_mgm2, rate = 0.90 * dose_mgm2 / 23, cmt = "central"
+    amt = 0.90 * dose_mgm2, rate = 0.90 * dose_mgm2 / 23, cmt = "central",
+    dvid = NA_integer_
   )
   obs_rows <- tibble(
     id = rep(ids, each = length(obs_times)),
     time = rep(obs_times, times = n),
-    evid = 0L, amt = NA_real_, rate = NA_real_, cmt = "Cc"
+    evid = 0L, amt = NA_real_, rate = NA_real_, cmt = "central", dvid = 1L
   )
 
   per_id <- tibble(
@@ -155,12 +157,9 @@ make_cohort <- function(n, id_offset = 0L, mthfr = 0L, abcc2 = 0L, slc19a1 = 0L)
 }
 ```
 
-Observations are routed to the `Cc` endpoint of this two-endpoint model;
-`rxSolve` returns both `Cc` (MTX) and `Cc_7ohmtx` (7OHMTX) columns at those
-rows. (The vignette pre-lint flags `cmt = "Cc"`; for an already-defined
-multi-endpoint model the observation record must name the endpoint, so this is
-correct here -- see the Joerger 2006 methotrexate vignette for the same
-pattern.)
+The model has two endpoints, so each observation row carries `dvid = 1`
+(the `Cc` endpoint) on the `central` compartment. `rxSolve` returns both `Cc`
+(MTX) and `Cc_7ohmtx` (7OHMTX) at every observation row.
 
 # Simulation (BSA/eGFR model)
 
