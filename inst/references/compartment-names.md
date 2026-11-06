@@ -819,6 +819,13 @@ The three canonicals below describe the drug-target-effector-cell mass-action bi
 - **Example models:** `Rambiritch_2016_glibenclamide_dose_meanglucose.R` (founding example; inhibitory Emax on the daily glibenclamide dose, Rambiritch 2016 Model 3), `Rambiritch_2016_glibenclamide_cpss_meanglucose.R` (the same endpoint driven by the average steady-state concentration, Model 4).
 - **Notes:** Ratified by the maintainers on 2026-09-21 with the Rambiritch 2016 glibenclamide PK/PD extraction.
 
+### glucose_2h (**canonical 2-h post-load OGTT plasma glucose output**)
+- **Type:** compartment
+- **Role:** Plasma glucose measured 2 h (120 min) after the standard oral glucose load of an oral glucose tolerance test (OGTT), as a longitudinal PD or disease-progression output. One value per OGTT visit. Distinct from `fpg` (the fasting 0-min measurement), `glucose` (the instantaneous plasma glucose, whether a turnover state or an algebraic profile) and `glucose_mean` (a time-averaged value): the 2-h value is a single timed sample after a defined challenge and a diagnostic criterion for diabetes in its own right. The `_2h` suffix is a role suffix on the analyte, read like `glucose_mean`. Units are documented per model (mg/dL in the founding example).
+- **Source aliases:** `GLU120` -- used in `Morales_2023_type1Diabetes.R` (Morales 2023 Eq. 1).
+- **Example models:** `Morales_2023_type1Diabetes.R` (founding example; sigmoid Emax rise in time since the derived baseline in individuals with >= 2 islet autoantibodies, also driving a Weibull hazard for type 1 diabetes diagnosis).
+- **Notes:** Ratified by the maintainers on 2026-11-06 with the Morales 2023 extraction. The baseline 2-h / fasting ratio used as a covariate is the covariate-register entry `OGTT_GLU_RATIO_BL`.
+
 ### insulin (**canonical plasma insulin compartment**)
 - **Type:** compartment
 - **Role:** Endogenous plasma insulin used by integrated glucose-insulin homeostasis models (Silber 2007 framework, Jauslin 2007 OGTT framework, Hong 2013 HGC / MTT models). State holds insulin amount (mU) or concentration (mU/L or pmol/L) consistent with the paper's mass-balance parameterisation; the per-model `units` field documents which. Distinct from the existing `INS` (time-varying plasma-insulin regressor covariate) and `INS_BL` (baseline plasma-insulin covariate) -- those are exogenous inputs that drive other models; `insulin` is the dynamic state when insulin is itself a modelled quantity with its own ODE (production / secretion plus elimination).

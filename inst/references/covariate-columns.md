@@ -3865,8 +3865,42 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Reference category:** n/a -- used with a power form `(HBA1C / ref)^exponent` or linear-deviation form. Reference value observed: 5.88% (Oniki 2018 NAFLD-risk dataset baseline mean).
 - **Source aliases:**
   - `HbA1c` -- used in `Oniki_2018_nafld_risk.R` (dataset column for glycated hemoglobin in %).
-- **Example models:** `Oniki_2018_nafld_risk.R` (%, reference 5.88; power exponent -3.34 for `(HBA1C / 5.88)` on the (BMI50 - 17) half-saturation offset of the sigmoidal logit-of-NAFLD function, Oniki 2018 Eq. 4 / Figure 2c).
+  - `BSCORE_HbA1c` -- used in `Morales_2023_type1Diabetes.R` (Monolix dataset column; HbA1c at the derived baseline).
+- **Example models:** `Oniki_2018_nafld_risk.R` (%, reference 5.88; power exponent -3.34 for `(HBA1C / 5.88)` on the (BMI50 - 17) half-saturation offset of the sigmoidal logit-of-NAFLD function, Oniki 2018 Eq. 4 / Figure 2c), `Morales_2023_type1Diabetes.R` (%, baseline value, reference 5.10576; power exponent 8.92 for `(HBA1C / 5.10576)` on the maximum rise DPmax of the 2-h OGTT glucose time course).
 - **Notes:** General scope because HbA1c is a routine, paper-independent glycemic-control laboratory measurement. Companion glycemic covariate to `FPG` (baseline fasting plasma glucose), which is routinely reported alongside HbA1c in T2DM / metabolic-syndrome populations. Distinct from `GLU` (time-varying within-subject glucose regressor).
+
+### GADA_POS (**canonical for baseline glutamic acid decarboxylase autoantibody positive indicator**)
+- **Description:** 1 = glutamic acid decarboxylase 65 autoantibody (GADA) positive at baseline, 0 = GADA negative. GADA is one of the four islet autoantibodies (with IA-2A, IAA and ZnT8A) used to stage presymptomatic type 1 diabetes; the number and type of autoantibodies present stratify the risk of progression to clinical diagnosis. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (GADA negative).
+- **Source aliases:**
+  - `BSCORE_GADA` -- used in `Morales_2023_type1Diabetes.R` (Monolix dataset column 'GADA AAb presence at baseline'; 0 = no, 1 = yes, same orientation as the canonical).
+- **Example models:** `Morales_2023_type1Diabetes.R` (log-scale shift -0.73 on the maximum rise DPmax of the 2-h OGTT glucose time course: GADA-positive subjects progress more slowly within a cohort that already carries >= 2 autoantibodies).
+- **Notes:** Follows the `<MARKER>_POS` serologic-indicator pattern of `ANTICCP_POS` and `HBEAG_POS`. Sibling islet-autoantibody indicators are reserved here for future models and should be registered under these exact names when first used: `IAA_POS` (insulin autoantibody) and `ZNT8_POS` (zinc transporter-8 autoantibody); see also `IA2A_POS`. An autoantibody titre would need its own continuous canonical rather than this indicator.
+
+### IA2A_POS (**canonical for baseline islet antigen-2 autoantibody positive indicator**)
+- **Description:** 1 = islet antigen-2 (insulinoma-associated protein 2) autoantibody (IA-2A) positive at baseline, 0 = IA-2A negative. One of the four islet autoantibodies used to stage presymptomatic type 1 diabetes; IA-2A positivity tends to mark later stages of beta-cell autoimmunity. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (IA-2A negative).
+- **Source aliases:**
+  - `BSCORE_IA2A` -- used in `Morales_2023_type1Diabetes.R` (Monolix dataset column 'IA2A AAb presence at baseline'; 0 = no, 1 = yes, same orientation as the canonical).
+- **Example models:** `Morales_2023_type1Diabetes.R` (log-scale shift -0.71 on DP50, the time to half of the maximum rise in 2-h OGTT glucose: IA-2A-positive subjects progress sooner).
+- **Notes:** Companion of `GADA_POS`; the Notes of that entry reserve the remaining islet-autoantibody indicator names.
+
+### OGTT_GLU_RATIO_BL (**canonical for baseline ratio of 2-h to fasting OGTT plasma glucose**)
+- **Description:** Ratio of the 2-h (120-min) to the fasting (0-min) plasma glucose of a standard oral glucose tolerance test (OGTT) at baseline, GLU120 / GLU0. A unitless index of post-load glucose excursion. Time-fixed per subject.
+- **Units:** (unitless)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with a power form `(OGTT_GLU_RATIO_BL / ref)^exponent`. Reference value observed: 1.25818 (Morales 2023 weighted mean, Supplementary S2).
+- **Source aliases:**
+  - `BSCORE_GLURATIO` / `GLUratio` -- used in `Morales_2023_type1Diabetes.R` (Monolix dataset column and in-text name).
+- **Example models:** `Morales_2023_type1Diabetes.R` (power exponent 0.79 on the baseline DP0 of the 2-h OGTT glucose time course, alongside `FPG`).
+- **Notes:** The fasting component on its own is `FPG`; a model using both carries the 2-h value implicitly as `FPG * OGTT_GLU_RATIO_BL`. The longitudinal 2-h glucose output is the compartment-register entry `glucose_2h`, not a covariate. A difference-form index (GLU120 - GLU0) would need a separate canonical.
 
 ## Bone biomarkers
 
@@ -6008,8 +6042,9 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Type:** continuous
 - **Scope:** general
 - **Reference category:** n/a -- used with linear-deviation form `1 + theta * (FPG - ref)`. Reference values observed: 8.90 mmol/L (Retlich 2015 popPK/PD linagliptin median fasting glucose at baseline).
-- **Source aliases:** none known.
-- **Example models:** `Retlich_2015_linagliptin.R` (mmol/L, reference 8.90; linear-deviation effect on baseline DPP-4 activity BSL with coefficient 1.46 % per mmol/L deviation).
+- **Source aliases:**
+  - `BSCORE_GLU0` -- used in `Morales_2023_type1Diabetes.R` (Monolix dataset column; 0-min OGTT glucose at the derived baseline, mg/dL).
+- **Example models:** `Retlich_2015_linagliptin.R` (mmol/L, reference 8.90; linear-deviation effect on baseline DPP-4 activity BSL with coefficient 1.46 % per mmol/L deviation), `Morales_2023_type1Diabetes.R` (mg/dL, reference 88.0112; power exponent 0.88 for `(FPG / 88.0112)` on the baseline DP0 of the 2-h OGTT glucose time course).
 - **Notes:** Glycemic-control covariate (baseline FPG); routinely reported alongside HbA1c in T2DM populations. Distinct from `GLU` which is a time-varying within-subject glucose regressor for mechanistic glucose-kinetics models (Bizzotto 2016).
 
 ### DPP4_BL_RFU (**canonical for baseline plasma dipeptidyl peptidase-4 activity in relative fluorescence units**)
