@@ -6447,6 +6447,17 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Sanchez_2023_ro7122290_invitro.R` (MKN-45 + PBMC + FAP-expressing fibroblast co-culture; 0, 0.2, 2, 20, 200 and 2000 nM in Experiment 1, 2 nM in Experiment 2, 0.2 nM in Experiment 3).
 - **Notes:** Specific scope because the value is bound to cibisatamab and to the in-vitro co-culture design. Member of the in-vitro applied-drug-concentration `CONC_<drug>_<units>` family (nM sibling `CONC_FOY251_NM`). The co-administered FAP-4-1BBL is not a covariate in the founding model: it is dosed into the well's free-drug state because it binds and is depleted.
 
+### CONC_TRASTUZUMAB_NM (**canonical for static in-vitro trastuzumab concentration applied to a cardiomyocyte culture**)
+- **Description:** Applied trastuzumab concentration in the medium of an in-vitro cardiomyocyte culture (AC16 cells in the founding model), supplied as an exogenous covariate. In the caspase / cell-viability model it is held constant over the whole experiment; in the BNP-release model it is read once, as the t = 0 initial condition of a decaying hypothetical TmAb-stimulus compartment. Applied experimental concentration in the in-vitro matrix; distinct from the `CP_<drug>` plasma / tissue PD-driver family, including `CP_TRASTUZUMAB_NM`.
+- **Units:** nM
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the caspase-9 upstream stimulus `1 + sc2 * CONC_TRASTUZUMAB_NM^c2` and the BNP-stimulus initial condition `bnp_tmab(0) = CONC_TRASTUZUMAB_NM`; 0 for control and doxorubicin-only wells. Founding values: 12,500 and 25,000 nM (caspase experiment), 13,330 / 23,000 / 28,380 nM (viability experiment), 23,000 nM (BNP experiment).
+- **Source aliases:**
+  - `CTmab` / `CTmabI` -- the regressor names in the deposited Yu 2025 Monolix code (Supplement, "In vitro protein dynamics", "In vitro cardiomyocyte-death" and "In vitro BNP" models).
+- **Example models:** `Yu_2025_doxorubicin_trastuzumab_ac16.R`, `Yu_2025_doxorubicin_trastuzumab_bnp_ac16.R`.
+- **Notes:** Specific scope because the value is bound to trastuzumab and to the in-vitro culture design. Member of the in-vitro applied-drug-concentration `CONC_<drug>_<units>` family (nM siblings `CONC_FOY251_NM`, `CONC_CIBISATAMAB_NM`). The paper reports the levels in uM (25 uM, 12.5 uM, 13.3 / 23 / 28.4 uM); multiply by 1000 for this column.
+
 ### CONC_IPM_MGL (**canonical for in-vitro imipenem concentration driving an antibacterial PD or receptor-binding model**)
 - **Description:** Unbound imipenem concentration applied to an in-vitro bacterial system, supplied externally as an exogenous covariate. Applied experimental concentration in the in-vitro matrix; distinct from `Cc` and the `CP_<DRUG>` plasma-PD-driver family. Used both time-varying (hollow-fiber infection model growth medium, driving the bacterial-kill PD effect) and static (60-min whole-cell penicillin-binding-protein binding assay, scaling the rate of net influx and PBP access).
 - **Units:** mg/L
@@ -6698,8 +6709,19 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Reference category:** n/a -- drives a linear cytotoxic effect on proliferative crypt cells through the unbound concentration, `arrest = k_inhib * fu * CP_DOXORUBICIN_NGML`, in the Gall 2023 human epithelial model. Set to 0 outside the drug-exposure window. Reference values observed: the Gall 2023 Simcyp profile for 75 mg/m2 intravenous doxorubicin peaks near 2100 ng/mL and falls below the limit over about 12 days before the next cycle.
 - **Source aliases:**
   - `Doxongml` -- Gall 2023 supplement (deposited Simcyp human plasma doxorubicin profile, `Pk_Doxo_Hu.mat`).
-- **Example models:** `Gall_2023_doxorubicin_human.R` (QSP translational intestinal-toxicity model; CP_DOXORUBICIN_NGML multiplied by the human unbound fraction fu = 0.28 drives the linear cytotoxic effect).
+- **Example models:** `Gall_2023_doxorubicin_human.R` (QSP translational intestinal-toxicity model; CP_DOXORUBICIN_NGML multiplied by the human unbound fraction fu = 0.28 drives the linear cytotoxic effect), `Yu_2025_doxorubicin_trastuzumab_bnp_human.R` (clinical BNP model; converted inside `model()` to nM with the doxorubicin molar mass 543.52 g/mol because the slope `Sbnp1` is in 1/nM; the source never names the matrix of its human `Cdox` regressor and held it at 0 in every published fit, all of whose patients received trastuzumab alone).
 - **Notes:** Specific scope; doxorubicin-specific. The drug-specific naming follows the established `CP_<drug>_<units>` precedent. **Total, not unbound**: the consuming model applies the unbound fraction itself, matching the companion mouse model (`Gall_2023_doxorubicin_mouse.R`), where the doxorubicin plasma concentration is an internal ODE state and the effect uses `fu * central`. Distinct from `CU_ASP8232` / `CU_DABIGATRAN_UM` (which store the already-unbound concentration); keeping the total here lets one column serve both the mouse-parallel structure and any future model that applies a different protein-binding assumption. No doxorubicin population PK model producing this trajectory is in the nlmixr2lib registry; users supply the deposited or their own simulated profile.
+
+### CP_TRASTUZUMAB_NM (**canonical for instantaneous trastuzumab cardiac interstitial-fluid concentration as a time-varying PD driver**)
+- **Description:** Instantaneous trastuzumab concentration in cardiac interstitial fluid, supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in cardiotoxicity-biomarker models whose drug effect acts on cardiomyocytes, where the relevant exposure is the tissue interstitial concentration, not plasma.
+- **Units:** nM
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the additive BNP-production stimulus `1 + fsct * sbnp2 * CP_TRASTUZUMAB_NM + ...` of the Yu 2025 clinical BNP model; 0 before the first infusion.
+- **Source aliases:**
+  - `CTmab` -- the regressor name in the deposited Yu 2025 Monolix "Human BNP model" code.
+- **Example models:** `Yu_2025_doxorubicin_trastuzumab_bnp_human.R`.
+- **Notes:** Specific scope; trastuzumab-specific. Follows the `CP_<drug>_<units>` family. **Cardiac interstitial fluid, not plasma**: the founding paper simulated it with the Glassman and Balthasar 2016 human mAb PBPK model (J Pharmacokinet Pharmacodyn 43:427-446), and IgG interstitial concentrations sit well below plasma, so a plasma concentration overstates the driver. Neither that PBPK model nor the simulated cardiac profile is published with the founding paper, and no trastuzumab model in the registry produces a cardiac interstitial concentration; users supply their own trajectory. The registry's trastuzumab popPK models (e.g. `Bruno_2005_trastuzumab.R`) report serum concentrations in ug/mL; trastuzumab is about 148 kDa (Herceptin label), so 1 ug/mL is about 6.8 nM. Distinct from the in-vitro applied-concentration sibling `CONC_TRASTUZUMAB_NM`.
 
 ### CP_RACSOTALOL_UGML (**canonical for instantaneous rac-sotalol plasma concentration as a time-varying PD driver**)
 - **Description:** Instantaneous plasma concentration of rac-sotalol (racemic 4-[1-hydroxy-2-(propan-2-ylamino)ethyl]-N-methyl-benzene-sulfonamide; class III antiarrhythmic with non-selective beta-adrenoceptor blocking activity) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only linear exposure-response models that take rac-sotalol exposure as an external input to a concentration-DeltaQTc equation.
