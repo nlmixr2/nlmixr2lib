@@ -2940,6 +2940,14 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
   - `k f,off` -- Lee 2018 Table 4 and Equation (15), the offset rate constant of the testosterone feedback pool (`kout_moderator1`).
 - **Example models:** indirect-response PD models; `Lee_2018_leuprolide_iv_rat.R` and siblings (`kin_moderator1` / `kout_moderator1`, the moderator-pool form); `Lindauer_2017_pembrolizumab.R`, `Siebinga_2023_lu177psma617.R` (tissue-exchange form), `Nguyen_2026_linezolid.R` (`kin_saliva` / `kout_saliva`, the central-to-saliva secretion and saliva-to-central reabsorption legs of a saliva-TDM model).
 
+### lkout_bcell_periph_ratio, kout_bcell_periph_ratio (**canonical log-transformed ratio of the peripheral B-cell pool turnover rate to the circulating removal rate**)
+- **Type:** paper-named-param
+- **Role:** Log of the factor by which the individual circulating B-cell removal rate `kout` is multiplied to give the turnover rate of the extra-circulatory `bcell_periph` pool, `kout_bcell_periph <- exp(lkout_bcell_periph_ratio) * kout` (unitless). Used when the source estimates the peripheral rate as a fraction of the circulating one rather than as a free rate, so the IIV and covariate effects on `kout` carry through to `kout_bcell_periph`. Same `<param>_ratio` construction as `lvp_ratio`.
+- **Source aliases:**
+  - `Ratio KP/KM`, `KP = theta x KM` -- Dimelow 2023 Table 2 and Results 'Parameter identifiability'.
+- **Example models:** `Dimelow_2023_belimumab.R` (`lkout_bcell_periph_ratio = log(0.0237)`, no IIV).
+- **Notes:** The derived `kout_bcell_periph` follows the `kout_<compartment>` family, read as the rate of leaving the suffixed pool. In the founding model this flux is not mass-balanced into `bcell`: the circulating input is `kout * rbase * stim * bcell_periph`. Use a free `lkout_bcell_periph` instead whenever the source estimates the peripheral rate as its own parameter. Ratified 2026-11-06 with the Dimelow 2023 extraction.
+
 ### lkin_te, kin_te, lkin_te_ss, kin_te_ss (**canonical endogenous testosterone production rates: baseline and steady-state**)
 - **Type:** paper-named-param
 - **Role:** Zero-order endogenous testosterone input into the central compartment (amount / time). `kin_te` is the basal (predose, or drug-independent) rate and `kin_te_ss` the steady-state rate that production returns to during chronic exogenous testosterone. `lkin_te` / `lkin_te_ss` are the log-transformed `ini()` primaries.
