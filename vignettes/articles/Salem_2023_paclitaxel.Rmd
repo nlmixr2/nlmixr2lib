@@ -510,6 +510,11 @@ bind_rows(summarise_nca(nca_ptx, "paclitaxel (umol/L, umol*h/L)"),
   carboplatin concentrations, multiply SLOPEC by 371.25 / 1000 (that is,
   give doses in umol) to recover it. Paclitaxel is in umol and umol/L in both
   Table S1 and Figure S2B, and its fixed PK parameters are stated in umol.
+  The source of the carboplatin PK, Joerger 2007
+  ([doi:10.1158/1078-0432.CCR-07-0064](https://doi.org/10.1158/1078-0432.CCR-07-0064)),
+  states the unit the carboplatin model was built in and would settle the
+  question; the maintainers kept mg/L (2026-11-06) and will re-check the unit
+  against that paper.
 - **Sign of the saturable transfer in the central-compartment equation.**
   Appendix S2 Eq. 1 prints the central -> first-peripheral Michaelis-Menten
   term with a plus sign; the Appendix S1 code, which is what was fitted,

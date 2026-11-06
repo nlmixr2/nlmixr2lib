@@ -7049,7 +7049,7 @@ Sibling-drug suffix for co-formulated levodopa products, where levodopa is the u
 - **Role:** Carboplatin sibling-drug suffix for combination-chemotherapy models in which carboplatin PK is carried as its own states alongside a partner drug that holds the bare canonical names. Drives the `central_carboplatin` / `peripheral1_carboplatin` states, the `Cc_carboplatin` concentration and the `lcl_carboplatin` / `lvc_carboplatin` / `lq_carboplatin` / `lvp_carboplatin` / `lslope_carboplatin` parameters (and `etalslope_carboplatin`).
 - **Source aliases:** `central_carb` / `Periph_carb` / `SLOPC` / `SLOPEC` -- Salem 2023 Appendix S1 and Table S1.
 - **Example models:** `Salem_2023_paclitaxel.R` (doi:10.1002/psp4.12963; fixed two-compartment carboplatin PK whose concentration inhibits neutrophil proliferation through a linear slope multiplied with the paclitaxel effect in a Friberg myelosuppression chain).
-- **Notes:** Spelled out rather than abbreviated (the source's `carb` would read as carbidopa or carbohydrate). A carboplatin-only model keeps the bare canonical names (`central`, `lcl`, `Cc`) as in `Ekhart_2008_carboplatin.R`; the suffix is only for a combination model in which another drug is the parent. Distinct from the `carbidopa` suffix above.
+- **Notes:** Spelled out rather than abbreviated (the source's `carb` would read as carbidopa or carbohydrate). A carboplatin-only model keeps the bare canonical names (`central`, `lcl`, `Cc`) as in `Ekhart_2008_carboplatin.R`; the suffix is only for a combination model in which another drug is the parent. Distinct from the `carbidopa` suffix above. Ratified by the maintainers 2026-11-06 with the Salem 2023 extraction.
 
 ---
 
