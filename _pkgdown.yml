@@ -6436,6 +6436,8 @@ navbar:
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Sudapyridine (Kong 2025)"
         href: articles/Kong_2025_sudapyridine.html
+      - text: "Sufentanil (Bienert 2025)"
+        href: articles/Bienert_2025_sufentanil.html
       - text: "Sufentanil (Hahn 2019)"
         href: articles/Hahn_2019_sufentanil.html
       - text: "Sufentanil (Khaowroongrueng 2024)"
@@ -8076,6 +8078,7 @@ articles:
   - articles/Bienczak_2016_efavirenz
   - articles/Bienczak_2016_nevirapine
   - articles/Bienczak_2025_ligelizumab
+  - articles/Bienert_2025_sufentanil
   - articles/Bihorel_2017_LY2510924
   - articles/Bihorel_2021_BMS986166
   - articles/Bihorel_2023_molnupiravir
