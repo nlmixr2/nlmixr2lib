@@ -226,7 +226,8 @@ checked.
   400 mg) imply an apparent bioavailability above 1 for the 200 mg arm
   against the 70 kg intravenous clearance, so the paper simulated each
   oral arm in its own study-matched virtual population. Those populations
-  and the ACAT gut physiology are not on disk.
+  and the ACAT gut physiology are not reported in the paper or its
+  supplement.
 * **No variability.** The paper reports GastroPlus population-simulation
   quantiles (Figure 2) but no between-subject variances; the model is a
   deterministic typical-value model.

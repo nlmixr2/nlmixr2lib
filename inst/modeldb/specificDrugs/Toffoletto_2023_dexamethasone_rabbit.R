@@ -57,8 +57,8 @@ Toffoletto_2023_dexamethasone_rabbit <- function() {
       "properties (Table III), and is compared against the published rabbit",
       "tissue concentrations of Ross 2019 (aqueous humour, choroid, sclera,",
       "retina and vitreous humour at 0.25, 1, 2, 5 and 7 days; 3-5 eyes per",
-      "time in Fig. 3). Ross 2019 is not on disk, so its strain, sex and",
-      "animal counts are not recorded here."
+      "time in Fig. 3). Toffoletto 2023 and its supplement do not report the",
+      "strain, sex or animal counts of Ross 2019, so they are not recorded here."
     )
   )
 

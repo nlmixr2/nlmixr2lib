@@ -303,7 +303,7 @@ metabolism and a poor cross-species dose metric.
   hand.
 - **Parent-CP oxidation kinetics (`vmaxc`, `km`, `vmaxclu`, `kmlu`).** These are
   inherited from Clewell et al. (2019) and taken from the female-mouse central
-  values in Supplementary Table S6, the only on-disk source that reports them.
+  values in Supplementary Table S6, the only source that reports them.
 - **`beta` (privileged-access fraction) = 0.33.** Table 1 reports 0.33 as the
   fraction of formed 1-CEO available for distribution/metabolism. The text
   describes the complementary 67% of butadiene-derived epoxybutene as further

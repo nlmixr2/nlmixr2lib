@@ -368,8 +368,8 @@ ar_on_24
 * **No residual error or between-experiment variability.** Olsson 2024 reports
   typical-value parameters only (Table 3); the original Zhao 2020 fit, which
   would carry the residual model and any between-experiment variability, is not
-  open access and has been queued for future acquisition. `addSd` is therefore
-  `fixed(0)` and the models are deterministic. The static VPC of Figure 1
+  open access. `addSd` is therefore `fixed(0)` and the models are
+  deterministic. The static VPC of Figure 1
   (grey shaded 95% interval) cannot be reproduced without that variance model;
   this vignette compares against the Figure 1 **medians** and the Figure 2
   prediction lines.

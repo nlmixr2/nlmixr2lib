@@ -131,7 +131,7 @@ Su_2025_gprc5dbcmacart_CD28_invitro <- function() {
     # No residual-error magnitude is reported (Table 1 carries no sigma row);
     # encoded as fixed(0). See the vignette Errata.
     addSd_viability <- fixed(0)
-    label("Additive residual error on tumour-cell viability (percent)") # not reported in any on-disk source
+    label("Additive residual error on tumour-cell viability (percent)") # not reported in the paper or its supplement
   })
 
   model({

@@ -14,8 +14,9 @@
 # Phenotypic Transformation (B-cell ALL)"). Parameter values: main-text Table 1,
 # "Parameters associated with clinical CK-pd model accounting for phenotypic
 # transformation (B-cell ALL)". The two residual-error magnitudes are not
-# tabulated anywhere on disk; they were recovered by the maintainers from the
-# Figure S2 goodness-of-fit panels (see the vignette Errata).
+# reported in the paper or its supplement; they were recovered by the
+# maintainers from the Figure S2 goodness-of-fit panels (see the vignette
+# Errata).
 #
 # STATE UNITS. The four CAR-T pools and the two tumour pools are carried as
 # concentrations (cells/L of blood or of bone marrow); complexes are numbers/L.
@@ -229,7 +230,7 @@ Su_2025_cd19cd22cart_ALL <- function() {
     etalkmax_kill ~ 0.0961 # Table 1 clinical: omega KMaxKill = 0.31 (22.0% RSE); 0.31^2
 
     # ---- Residual error (recovered from Figure S2 goodness-of-fit panels) ----
-    # Not tabulated in any on-disk source; the maintainers read the 90%
+    # Not reported in the paper or its supplement; the maintainers read the 90%
     # prediction-interval offsets off the Monolix observations-vs-predictions
     # panels (S2a/S2d for qPCR, S2b/S2f for flow). See the vignette Errata.
     propSd_transgene <- 0.726
