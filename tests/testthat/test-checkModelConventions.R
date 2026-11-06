@@ -214,7 +214,14 @@ test_that("DV read by an ll() likelihood is not treated as a covariate", {
   }
   res_wt <- suppressWarnings(checkModelConventions(with_wt, verbose = FALSE))
   expect_equal(nrow(res_wt[res_wt$name == "DV", ]), 0L)
-  expect_true(any(res_wt$category == "covariates" & res_wt$name == "WT" & res_wt$severity == "error"))
+  wt_rows <- res_wt[res_wt$name == "WT", ]
+  expect_equal(nrow(wt_rows), 1L)
+  expect_equal(wt_rows$category, "covariates")
+  expect_equal(wt_rows$severity, "error")
+  expect_equal(
+    wt_rows$message,
+    "Covariate 'WT' is used in model() but has no entry in covariateData."
+  )
 })
 
 test_that("a covariate alias without declared source_name produces a warning", {
