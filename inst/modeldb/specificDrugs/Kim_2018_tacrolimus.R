@@ -140,7 +140,7 @@ Kim_2018_tacrolimus <- function() {
 
     # --- Inter-individual variability (exponential / log-normal). Reported as
     #     %CV in Table 3 (integrated model); omega^2 = log(1 + CV^2).
-    etalka     ~ 0.6233       # Table 3 IIV Ka TAC   = 93%   CV -> log(1 + 0.93^2)
+    etalka     ~ log(1 + 0.93^2)  # Table 3 IIV Ka TAC   = 93%   CV
     etalcl     ~ 0.0674       # Table 3 IIV CL/F TAC = 26.4% CV -> log(1 + 0.264^2)
     etalvc     ~ 0.0906       # Table 3 IIV V2/F TAC = 30.8% CV -> log(1 + 0.308^2)
     etalka_mpa ~ 0.2779       # Table 3 IIV Ka MPA   = 56.6% CV -> log(1 + 0.566^2)

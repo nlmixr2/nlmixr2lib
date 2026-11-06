@@ -61,13 +61,13 @@ Kielbasa_2020_galcanezumab <- function() {
     # The source paper reports two covariances (ka/CL/F and CL/F/V/F); the ka-V/F
     # covariance was not estimated and is fixed to zero. Resulting matrix is PD.
     # omega^2 = log(CV^2 + 1) for log-normally distributed IIV:
-    #   ka  92% CV -> log(0.92^2 + 1) = 0.61309
-    #   CL  34% CV -> log(0.34^2 + 1) = 0.10942
-    #   V   34% CV -> log(0.34^2 + 1) = 0.10942
+    #   ka  92% CV -> log(0.92^2 + 1) = 0.61324
+    #   CL  34% CV -> log(0.34^2 + 1) = 0.10939
+    #   V   34% CV -> log(0.34^2 + 1) = 0.10939
     # Reported covariances on the omega scale: 0.0694 (ka,CL/F); 0.0716 (CL/F,V/F).
-    etalka + etalcl + etalvc ~ c(0.61309,
-                                 0.0694,  0.10942,
-                                 0,       0.0716,  0.10942)                                 # Kielbasa 2020 Table 3
+    etalka + etalcl + etalvc ~ c(log(1 + 0.92^2),
+                                 0.0694,  log(1 + 0.34^2),
+                                 0,       0.0716,  log(1 + 0.34^2))                                 # Kielbasa 2020 Table 3
 
     # Residual error - proportional only.
     propSd <- 0.22; label("Proportional residual error (fraction)")                         # Kielbasa 2020 Table 3

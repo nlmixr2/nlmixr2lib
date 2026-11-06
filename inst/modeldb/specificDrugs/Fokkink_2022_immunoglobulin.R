@@ -114,8 +114,8 @@ Fokkink_2022_immunoglobulin <- function() {
     # IIV reported as %CV (Table 2 legend lists CV); omega^2 = log(1 + CV^2).
     # The ESM control stream estimates an OMEGA BLOCK(2) whose covariance is
     # not reported, so the two etas are encoded as independent.
-    etalcl ~ 0.221429 # Table 2 IIV 'CL (%)' final = 49.9 -> log(1 + 0.499^2)
-    etalbl_igg ~ 0.052000 # Table 2 IIV 'CBAS (%)' final = 23.1 -> log(1 + 0.231^2)
+    etalcl ~ log(1 + 0.499^2)  # Table 2 IIV 'CL (%)' final = 49.9
+    etalbl_igg ~ log(1 + 0.231^2)  # Table 2 IIV 'CBAS (%)' final = 23.1
 
     # Residual error: proportional on total IgG (ESM $ERROR: Y = FTOT + FTOT * THETA(5) * EPS(1), SIGMA 1 FIX).
     propSd <- 0.12; label("Proportional residual error (fraction)") # Table 2 'Proportional' final = 0.12 (RSE 7%)

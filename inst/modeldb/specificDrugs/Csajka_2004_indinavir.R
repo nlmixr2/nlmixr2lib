@@ -106,10 +106,10 @@ Csajka_2004_indinavir <- function() {
     # interpatient variability only to CL/F and ka (Results: "no
     # interpatient variability was an asset to V or F values"; Table 3
     # final-model interindividual-variability columns).
-    # CL/F: CV = 39.0% -> omega^2 = log(1 + 0.39^2) = 0.14160
-    # ka:   CV = 67.0% -> omega^2 = log(1 + 0.67^2) = 0.37067
-    etalcl ~ 0.14160  # Csajka 2004 Table 3 final-model IIV CL/F = 39%
-    etalka ~ 0.37067  # Csajka 2004 Table 3 final-model IIV ka  = 67%
+    # CL/F: CV = 39.0% -> omega^2 = log(1 + 0.39^2) = 0.14159
+    # ka:   CV = 67.0% -> omega^2 = log(1 + 0.67^2) = 0.37080
+    etalcl ~ log(1 + 0.39^2)  # Csajka 2004 Table 3 final-model IIV CL/F = 39%
+    etalka ~ log(1 + 0.67^2)  # Csajka 2004 Table 3 final-model IIV ka  = 67%
 
     # Residual error: combined proportional + additive (Csajka 2004
     # Methods: "combined exponential and additive model was assigned to

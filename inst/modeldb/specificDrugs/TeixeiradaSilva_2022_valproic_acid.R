@@ -146,9 +146,9 @@ TeixeiradaSilva_2022_valproic_acid <- function() {
     # term is omitted rather than written as a fixed(0) eta (same
     # treatment as Zhang_2024_valproic_acid.R). Table 2 reports the CL/F
     # IIV as a CV%, converted as omega^2 = log(CV^2 + 1):
-    #   log(0.268^2 + 1) = 0.06938
+    #   log(0.268^2 + 1) = 0.06936
     # ----------------------------------------------------------------
-    etalcl ~ 0.06938 # Table 2 row 'IIV_CL/F (%)' = 26.8 (RSE 5.50%, shrinkage 19.0%); bootstrap median 26.6
+    etalcl ~ log(1 + 0.268^2)  # Table 2 row 'IIV_CL/F (%)' = 26.8 (RSE 5.50%, shrinkage 19.0%); bootstrap median 26.6
 
     # ----------------------------------------------------------------
     # Residual error. Log-transform-both-sides with an additive error on

@@ -143,15 +143,15 @@ LeJouan_2005_quinine <- function() {
     # Inter-individual variability. Le Jouan 2005 Table 2 reports CV%
     # ("Interindividual CV (%)" column). The internal log-normal
     # variances are recovered by omega^2 = log((CV/100)^2 + 1):
-    #   CL  CV 33%  -> log(0.33^2 + 1)  = 0.103376
-    #   V   CV 32%  -> log(0.32^2 + 1)  = 0.097488
-    #   ka  CV 113% -> log(1.13^2 + 1)  = 0.822873
-    #   b   CV 37%  -> log(0.37^2 + 1)  = 0.128335
+    #   CL  CV 33%  -> log(0.33^2 + 1)  = 0.103369
+    #   V   CV 32%  -> log(0.32^2 + 1)  = 0.097490
+    #   ka  CV 113% -> log(1.13^2 + 1)  = 0.822815
+    #   b   CV 37%  -> log(0.37^2 + 1)  = 0.128305
     # CL/F-V/F correlation = 0.64 (Table 2 footnote b):
-    #   cov(etalcl, etalvc) = 0.64 * sqrt(0.103376 * 0.097488) = 0.064249
-    etalcl + etalvc ~ c(0.103376, 0.064249, 0.097488)                                  # Le Jouan 2005 Table 2: CL/F CV 33%, V/F CV 32%, corr = 0.64
-    etalka          ~ 0.822873                                                          # Le Jouan 2005 Table 2: Ka CV 113%
-    etalbfu         ~ 0.128335                                                          # Le Jouan 2005 Table 2: b CV 37% (typical b fixed; only IIV estimated)
+    #   cov(etalcl, etalvc) = 0.64 * sqrt(0.103369 * 0.097490) = 0.064247
+    etalcl + etalvc ~ c(log(1 + 0.33^2), 0.64 * sqrt(log(1 + 0.33^2) * log(1 + 0.32^2)), log(1 + 0.32^2))                                  # Le Jouan 2005 Table 2: CL/F CV 33%, V/F CV 32%, corr = 0.64
+    etalka          ~ log(1 + 1.13^2)  # Le Jouan 2005 Table 2: Ka CV 113%
+    etalbfu         ~ log(1 + 0.37^2)  # Le Jouan 2005 Table 2: b CV 37% (typical b fixed; only IIV estimated)
 
     # Residual error. Le Jouan 2005 Methods describes the residual as
     # C_obs = C_pred * exp(epsilon) with var(epsilon) = 0.048 (Table 2:

@@ -58,7 +58,7 @@ below collects them in one place for review.
 | `fact_q_vp`          | 2.0 (fixed)          | Brooks 2021 Table 2 Fact = 2.0 (fixed) |
 | `e_wt_cl_q`          | 0.75 (fixed)         | Brooks 2021 Results: theoretic 0.75; estimate 0.73 then fixed at theoretic |
 | `e_wt_vc_vp`         | 1.0 (fixed)          | Brooks 2021 Results: theoretic 1.0; estimate 0.83 then fixed at theoretic |
-| `etalcl` IIV on CL   | 0.06591 (= log(1 + 0.261^2)) | Brooks 2021 Table 2 IIV CL = 26.1% CV |
+| `etalcl` IIV on CL   | 0.06590 (= log(1 + 0.261^2)) | Brooks 2021 Table 2 IIV CL = 26.1% CV |
 | `propSd`             | 0.179 (17.9%)        | Brooks 2021 Results: proportional residual error = 17.9% |
 | Reference weight     | 70 kg                | Brooks 2021 final-model equation block following Figure 4 |
 | `d/dt(central)`, `d/dt(peripheral1)` | 2-cmt | Brooks 2021 Population Pharmacokinetic Model: 2-compartment fit best (p < 0.001 vs 1-compartment) |

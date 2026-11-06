@@ -66,7 +66,7 @@ table below collects them in one place.
 | `e_wt_vc_vp` allometric exponent Vc,Vp | fixed 1.00 | Methods page 1340 ("... and 1 for Vc and Vp") |
 | `e_adolescent_cl` (CL decrease in adolescents) | -0.15 | Table 3, "CL decrease, % (adolescent)" 15% |
 | Equation: 2-compartment + dual SC absorption | n/a   | Figure 2 schematic; Methods "Model structure" |
-| IIV log-normal (CL, Vc, Vp, Q) and logit-normal (Fr) | omega^2 = log(1+CV^2) from Table 3 bootstrap 95% CI midpoints | Table 3 IIV columns |
+| IIV log-normal (CL, Vc, Vp, Q) and logit-normal (Fr) | omega^2 = log(1+CV^2) from the Table 3 point-estimate CVs (Fr: 0.232^2 on the logit scale) | Table 3 IIV columns |
 | IIV correlations (CL,Vc), (CL,Vp), (CL,Q), (Vc,Vp), (Vc,Q), (Vp,Q) | 0.5, 0.2, -0.3, -0.3, -0.6, 0.5 | Table 3, "Correlations of interindividual variability estimates" |
 | Residual error: additive 0.2 ug/mL + proportional 19.8% | -- | Table 3 last two rows; Equation 4 |
 
@@ -307,18 +307,16 @@ and Tmax values do not appear in the paper's text.
   which reproduces the table (204 * (1 - 0.15) = 173 mL/day) and matches the
   package convention used elsewhere (e.g. Clegg 2024 nirsevimab, Soehoel 2022
   tralokinumab).
-- **IIV CV%.** Baverel 2015 Table 3 reports a bootstrap 95% CI for each
-  between-subject CV% but not the point estimate; the model file uses the
-  midpoint of the 95% CI as the working point estimate (`(lower + upper) / 2`).
-  The Discussion narrative ("CV for CL and Vp was ~30%, although this was
-  slightly higher for Vc and Q (~65%)") agrees with the midpoint values
-  except for Q, where the bootstrap-CI midpoint (76.8%) is larger than the
-  narrative ~65%; the midpoint is preferred because it is what the table
-  actually reports.
+- **IIV CV%.** Baverel 2015 Table 3 reports each between-subject CV% as a
+  point estimate with its RSE and nonparametric 95% CI (CL 29.3%, Vc 64.8%,
+  Vp 27.7%, Q 63.5%); the model uses the point estimates, converted with
+  `omega^2 = log(1 + CV^2)`. They agree with the Discussion narrative ("CV
+  for CL and Vp was ~30%, although this was slightly higher for Vc and Q
+  (~65%)").
 - **Fr IIV scale.** Fr is logit-transformed in Equations 2-3 of the paper.
-  The Table 3 IIV row for Fr reports a bootstrap CV% of 8.6-32.8%; with no
-  explicit unit-rescaling rule given, the midpoint (20.7%) is interpreted as
-  the SD of the eta on the logit scale (`omega^2_logitfr = 0.207^2 = 0.04285`).
+  The Table 3 IIV row for Fr reports 23.2% (95% CI 8.6-32.8%) on the logit
+  scale; with no explicit unit-rescaling rule given, it is interpreted as the
+  SD of the eta on the logit scale (`omega^2_logitfr = 0.232^2 = 0.053824`).
 - **Parallel SC absorption via depot2.** The paper's Figure 2 absorption
   scheme is a single SC depot that splits the dose internally between a
   first-order pathway (Fr; rate Ka; lag Tlag) and a zero-order pathway

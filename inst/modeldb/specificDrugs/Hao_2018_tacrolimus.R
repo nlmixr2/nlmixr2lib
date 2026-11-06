@@ -80,14 +80,14 @@ Hao_2018_tacrolimus <- function() {
     # Diagonal inter-individual variability on ka, V/F, CL/F. Hao 2018 Table 2
     # reports IIV as %CV from an exponential (log-normal) model. Variances on
     # the internal log-scale are computed as omega^2 = log(1 + CV^2):
-    #   ka   CV 79.1% -> log(1 + 0.791^2) = log(1.62568) = 0.48581
-    #   V/F  CV 99.4% -> log(1 + 0.994^2) = log(1.98804) = 0.68714
-    #   CL/F CV 43.8% -> log(1 + 0.438^2) = log(1.19184) = 0.17555
+    #   ka   CV 79.1% -> log(1 + 0.791^2) = log(1.62568) = 0.48593
+    #   V/F  CV 99.4% -> log(1 + 0.994^2) = log(1.98804) = 0.68715
+    #   CL/F CV 43.8% -> log(1 + 0.438^2) = log(1.19184) = 0.17550
     # The paper does not report any inter-eta correlations; the IIV is
     # encoded as a diagonal block.
-    etalka ~ 0.48581   # Hao 2018 Table 2 IIV ka 79.1% CV (SE 52.8%)
-    etalvc ~ 0.68714   # Hao 2018 Table 2 IIV V/F 99.4% CV (SE 34.3%)
-    etalcl ~ 0.17555   # Hao 2018 Table 2 IIV CL/F 43.8% CV (SE 33.0%)
+    etalka ~ log(1 + 0.791^2)  # Hao 2018 Table 2 IIV ka 79.1% CV (SE 52.8%)
+    etalvc ~ log(1 + 0.994^2)  # Hao 2018 Table 2 IIV V/F 99.4% CV (SE 34.3%)
+    etalcl ~ log(1 + 0.438^2)  # Hao 2018 Table 2 IIV CL/F 43.8% CV (SE 33.0%)
 
     # Residual unexplained variability. Hao 2018 Methods 'Model building':
     # "The proportional model best described residual variability." Table 2

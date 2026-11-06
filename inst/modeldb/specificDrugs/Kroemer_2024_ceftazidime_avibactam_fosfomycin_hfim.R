@@ -134,8 +134,8 @@ Kroemer_2024_ceftazidime_avibactam_fosfomycin_hfim <- function() {
     # --- Variability model (Table S4, "Variability model") ---
     # Table S4 footnote 5: %CV = sqrt(exp(omega^2) - 1) * 100%, i.e. omega^2 = log(CV^2 + 1).
     # Text S5: the static-model IIV on the growth rate of (R) was not needed for the hollow fiber data.
-    etalog10inoc_r    ~ 0.208826  # Table S4: inter-experimental variability on the inoculum of (R) = 48.2 %CV [40.4-56.9]; log(0.482^2 + 1) = 0.208826
-    etalog10inoc_rcza ~ 0.204927  # Table S4: inter-experimental variability on the inoculum of the CZA less susceptible subpopulation = 47.7 %CV [28.6-65.9]; log(0.477^2 + 1) = 0.204927
+    etalog10inoc_r    ~ log(1 + 0.482^2)  # Table S4: inter-experimental variability on the inoculum of (R) = 48.2 %CV [40.4-56.9]
+    etalog10inoc_rcza ~ log(1 + 0.477^2)  # Table S4: inter-experimental variability on the inoculum of the CZA less susceptible subpopulation = 47.7 %CV [28.6-65.9]
 
     addSd          <- 3.28;  label("Additive residual SD on the log10 total bacterial count (log10 CFU/mL)")               # Table S4: additive residual variability on the total bacterial count sigma = 3.28 [2.98-3.67]
     addSd_CFUrcza  <- 0.906; label("Additive residual SD on the log10 CZA less susceptible count (log10 CFU/mL)")          # Table S4: additive residual variability on less susceptible sigma = 0.906 [0.837-1.00]; ONE shared parameter was estimated for both less susceptible subpopulations (Text S5), reproduced here as two identical entries because rxode2 requires one residual parameter per endpoint

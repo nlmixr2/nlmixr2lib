@@ -114,19 +114,19 @@ PerezRuixo_2006_tipifarnib <- function() {
     # Inter-individual variability (cancer-patient values; Perez-Ruixo 2006
     # Table 4 IIV column). Lognormal variances computed as
     # omega^2 = log(1 + CV^2):
-    #   CL  24.9 percent -> log(1 + 0.249^2) = 0.06037
-    #   V2  20.3 percent -> log(1 + 0.203^2) = 0.04031
-    #   Q3  74.0 percent -> log(1 + 0.74^2)  = 0.43669
-    #   D1  52.7 percent -> log(1 + 0.527^2) = 0.24527
-    #   Ka  86.1 percent -> log(1 + 0.861^2) = 0.55478
+    #   CL  24.9 percent -> log(1 + 0.249^2) = 0.06015
+    #   V2  20.3 percent -> log(1 + 0.203^2) = 0.04038
+    #   Q3  74.0 percent -> log(1 + 0.74^2)  = 0.43671
+    #   D1  52.7 percent -> log(1 + 0.527^2) = 0.24508
+    #   Ka  86.1 percent -> log(1 + 0.861^2) = 0.55464
     # The F (Fabs) IIV is reported as a logit-domain standard deviation of
     # 0.74 (Table 4 footnote g), so the stored variance is 0.74^2 = 0.5476
     # on the logit scale rather than on the log scale.
-    etalcl         ~ 0.06037   # Perez-Ruixo 2006 Table 4 IIV CL 24.9 percent CV
-    etalvc         ~ 0.04031   # Perez-Ruixo 2006 Table 4 IIV V2 20.3 percent CV
-    etalq          ~ 0.43669   # Perez-Ruixo 2006 Table 4 IIV Q3 74.0 percent CV
-    etald1         ~ 0.24527   # Perez-Ruixo 2006 Table 4 IIV D1 52.7 percent CV
-    etalka         ~ 0.55478   # Perez-Ruixo 2006 Table 4 IIV Ka 86.1 percent CV
+    etalcl         ~ log(1 + 0.249^2)  # Perez-Ruixo 2006 Table 4 IIV CL 24.9 percent CV
+    etalvc         ~ log(1 + 0.203^2)  # Perez-Ruixo 2006 Table 4 IIV V2 20.3 percent CV
+    etalq          ~ log(1 + 0.74^2)  # Perez-Ruixo 2006 Table 4 IIV Q3 74.0 percent CV
+    etald1         ~ log(1 + 0.527^2)  # Perez-Ruixo 2006 Table 4 IIV D1 52.7 percent CV
+    etalka         ~ log(1 + 0.861^2)  # Perez-Ruixo 2006 Table 4 IIV Ka 86.1 percent CV
     etalogitfdepot ~ 0.54760   # Perez-Ruixo 2006 Table 4 IIV Fabs SD = 0.74 (logit domain; variance = 0.74^2)
 
     # Residual error. Perez-Ruixo 2006 reports a stratified residual model:

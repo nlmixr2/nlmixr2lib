@@ -143,18 +143,18 @@ Almond_2016_phenobarbital_invitro <- function() {
     # vignette Errata. No correlations are reported; the block is diagonal.
     # =====================================================================
 
-    etalemax_activity ~ 0.283179
+    etalemax_activity ~ log(1 + 0.5721^2)
     # Table 2: S.D. 11.5 on Indmax 21.1 -> CV = 11.5 / 20.1 = 0.5721 on emax;
-    # omega^2 = log(1 + 0.5721^2) = 0.283179.
-    etalec50_activity ~ 0.237672
+    # omega^2 = log(1 + 0.5721^2) = 0.283146.
+    etalec50_activity ~ log(1 + 0.5180^2)
     # Table 2: S.D. 245 on IndC50 473 -> CV = 0.5180;
-    # omega^2 = log(1 + 0.5180^2) = 0.237672.
-    etalemax_mrna ~ 0.307076
+    # omega^2 = log(1 + 0.5180^2) = 0.237696.
+    etalemax_mrna ~ log(1 + 0.5995^2)
     # Table 2: S.D. 25.9 on Indmax 44.2 -> CV = 25.9 / 43.2 = 0.5995 on emax;
-    # omega^2 = log(1 + 0.5995^2) = 0.307076.
-    etalec50_mrna ~ 0.184050
+    # omega^2 = log(1 + 0.5995^2) = 0.307044.
+    etalec50_mrna ~ log(1 + 0.4495^2)
     # Table 2: S.D. 334 on IndC50 743 -> CV = 0.4495;
-    # omega^2 = log(1 + 0.4495^2) = 0.184050.
+    # omega^2 = log(1 + 0.4495^2) = 0.184029.
 
     # =====================================================================
     # Residual error is NOT reported: the source fitted each donor's curve

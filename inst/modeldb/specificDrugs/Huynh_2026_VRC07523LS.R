@@ -94,15 +94,15 @@ Huynh_2026_VRC07523LS <- function() {
     # Inter-individual variability (Huynh 2026 Table 2 BSV section).
     # Paper reports IIV as percent CV; convert to internal log-scale variance
     # via omega^2 = log(CV^2 + 1).
-    # IIV on Vc + Vp = 35.7% -> omega^2 = log(0.357^2 + 1) = 0.11991. The paper
+    # IIV on Vc + Vp = 35.7% -> omega^2 = log(0.357^2 + 1) = 0.11996. The paper
     # reports a single IIV applied jointly to Vc and Vp (i.e., a single eta in
     # the source NONMEM control stream assigned to both V2 and V3); a single
     # shared eta is added to both lvc and lvp inside model() so the volumes
     # vary proportionally and preserve the Vc:Vp ratio.
-    # IIV on CL = 29.3% -> omega^2 = log(0.293^2 + 1) = 0.08234.
+    # IIV on CL = 29.3% -> omega^2 = log(0.293^2 + 1) = 0.08236.
     # IIV on D1 = 10.0% -> omega^2 = log(0.100^2 + 1) = 0.00995.
-    etalvc  ~ 0.11991  # Huynh 2026 Table 2: IIV on Vc + Vp = 35.7% (CV%); shared between vc and vp
-    etalcl  ~ 0.08234  # Huynh 2026 Table 2: IIV on CL = 29.3% (CV%)
+    etalvc  ~ log(1 + 0.357^2)  # Huynh 2026 Table 2: IIV on Vc + Vp = 35.7% (CV%); shared between vc and vp
+    etalcl  ~ log(1 + 0.293^2)  # Huynh 2026 Table 2: IIV on CL = 29.3% (CV%)
     etaldur ~ 0.00995  # Huynh 2026 Table 2: IIV on D1 = 10.0% (CV%)
 
     # Combined additive + proportional residual error (Huynh 2026 Methods,

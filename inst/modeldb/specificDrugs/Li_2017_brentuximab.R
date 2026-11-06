@@ -140,10 +140,10 @@ Li_2017_brentuximab <- function() {
 
     # CLM-V4 block with correlation 0.634 on the log scale per Li 2017 Table 4.
     # omega_clm^2 = log(0.607^2 + 1) = 0.3137
-    # omega_v4^2  = log(0.782^2 + 1) = 0.4773
-    # cov         = 0.634 * sqrt(0.3137 * 0.4773) = 0.2454
+    # omega_v4^2  = log(0.782^2 + 1) = 0.4772
+    # cov         = 0.634 * sqrt(0.3137 * 0.4772) = 0.2453
     etalcl_mmae + etalvc_mmae ~ c(0.3137,
-                                  0.2454, 0.4773)     # Li 2017 Table 4: CLM 60.7%, V4 78.2%, Corr 0.634
+                                  0.634 * sqrt(0.3137 * log(1 + 0.782^2)), log(1 + 0.782^2))     # Li 2017 Table 4: CLM 60.7%, V4 78.2%, Corr 0.634
     etalbeta ~ 0.6741                         # Li 2017 Table 4: beta 98.1% CV; omega^2 = log(1.9624) = 0.6741
     etalfm   ~ 0.9895                         # Li 2017 Table 4: Fm 130% CV; omega^2 = log(2.69) = 0.9895
     # Q5 and V5 have BSV fixed to 0 in Li 2017 Table 4 -- no IIV terms.

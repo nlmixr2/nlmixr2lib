@@ -102,9 +102,9 @@ Ahmed_2015_topiramate <- function() {
     # estimated etas: lcl, lvc, lka, lrbase).
     # ------------------------------------------------------------------
     etalcl    ~ 0.036572  # CV = 19.3% -> log(1 + 0.193^2); Ahmed 2015 Table 2
-    etalvc    ~ 0.058291  # CV = 24.5% -> log(1 + 0.245^2); Ahmed 2015 Table 2
-    etalka    ~ 0.250197  # CV = 53.3% -> log(1 + 0.533^2); Ahmed 2015 Table 2
-    etalrbase ~ 0.028493  # CV = 17.0% -> log(1 + 0.170^2); Ahmed 2015 Table 3 IIV of BL
+    etalvc    ~ log(1 + 0.245^2)  # CV = 24.5%; Ahmed 2015 Table 2
+    etalka    ~ log(1 + 0.533^2)  # CV = 53.3%; Ahmed 2015 Table 2
+    etalrbase ~ log(1 + 0.17^2)  # CV = 17.0%; Ahmed 2015 Table 3 IIV of BL
 
     # ------------------------------------------------------------------
     # Residual error. Per-formulation proportional residual errors on

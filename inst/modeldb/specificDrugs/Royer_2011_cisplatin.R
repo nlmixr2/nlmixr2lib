@@ -173,12 +173,12 @@ Royer_2011_cisplatin <- function() {
     # be estimated (Royer 2011 Results 'Patient population and structural PK
     # model'). Correlation between V (lvc) and Vmax (lvmax) is r = -0.124 per
     # Table 2 row 'r V/Vmax'; covariance = -0.124 * sqrt(var_V * var_Vmax) =
-    # -0.124 * sqrt(0.06735 * 0.23361) = -0.01555.
-    etalipv  ~ 0.03808                                                                                                                     # log(1 + 0.197^2); Royer 2011 Table 2: IIV_IPV  = 19.7% CV (RSE 25.9%)
+    # -0.124 * sqrt(0.06737 * 0.23362) = -0.01556.
+    etalipv  ~ log(1 + 0.197^2)  # Royer 2011 Table 2: IIV_IPV  = 19.7% CV (RSE 25.9%)
     etalipcl ~ 0.04853                                                                                                                     # log(1 + 0.223^2); Royer 2011 Table 2: IIV_IPCL = 22.3% CV (RSE 19.0%)
-    etalcl   ~ 0.14444                                                                                                                     # log(1 + 0.394^2); Royer 2011 Table 2: IIV_CL   = 39.4% CV (RSE 28.2%)
-    etalvc + etalvmax ~ c(0.06735,
-                          -0.01555, 0.23361)                                                                                               # var_V = log(1+0.264^2) = 0.06735; cov = -0.01555; var_Vmax = log(1+0.513^2) = 0.23361; Table 2 rows IIV_V (26.4% CV), IIV_Bmax (51.3% CV), r_V/Vmax (-0.124)
+    etalcl   ~ log(1 + 0.394^2)  # Royer 2011 Table 2: IIV_CL   = 39.4% CV (RSE 28.2%)
+    etalvc + etalvmax ~ c(log(1 + 0.264^2),
+                          -0.124 * sqrt(log(1 + 0.264^2) * log(1 + 0.513^2)), log(1 + 0.513^2))                                                                                               # var_V = log(1+0.264^2) = 0.06737; cov = -0.01556; var_Vmax = log(1+0.513^2) = 0.23362; Table 2 rows IIV_V (26.4% CV), IIV_Bmax (51.3% CV), r_V/Vmax (-0.124)
 
     # Residual error. Royer 2011 Table 2: one shared proportional error (e1 =
     # 17.8% CV) applied to all three outputs (peritoneum, unbound plasma,

@@ -67,8 +67,8 @@ The per-parameter origin is recorded as an in-file comment next to each
 | `lvc` (V, L) | `log(6.58)` | Nichols 2016 Table 2: theta2 = 6.58 L (%SE 10.6) |
 | `e_wt_cl` (linear WT slope on CL, L/h/kg) | `0.0814` | Nichols 2016 Table 2: theta3 = 0.0814 (%SE 45.1) |
 | `bw_ref` (reference WT, kg) | `18` | Nichols 2016 Results final-model paragraph (CL = 3.51 + 0.0814 * (WT - 18)) |
-| `etalcl` (omega_CL) | `0.029497` (17.3% CV) | Nichols 2016 Table 2: omega_CL 17.3% CV; omega^2 = log(1 + CV^2) |
-| `etalvc` (omega_V) | `0.061539` (25.2% CV) | Nichols 2016 Table 2: omega_V 25.2% CV |
+| `etalcl` (omega_CL) | `0.029490` (17.3% CV) | Nichols 2016 Table 2: omega_CL 17.3% CV; omega^2 = log(1 + CV^2) |
+| `etalvc` (omega_V) | `0.061569` (25.2% CV) | Nichols 2016 Table 2: omega_V 25.2% CV |
 | `propSd` (proportional residual) | `0.253` | Nichols 2016 Table 2: sigma_proportional 25.3% CV |
 | Eq. CL (linear-additive WT) | n/a | Nichols 2016 Results: "CL (in liters per hour) = 3.51 + [0.0814 * (WT - 18)], and V was equal to 6.58 liters" |
 | Eq. d/dt(central) (1-cmt IV) | n/a | Nichols 2016 Population pharmacokinetic modeling subsection (Materials and Methods) |
@@ -78,7 +78,7 @@ The per-parameter origin is recorded as an in-file comment next to each
 | `e_sexf_cl` (female-sex factor on CL) | `-0.285` | Nichols 2016 Table 2: theta3 = -0.285 (%SE 20.9) |
 | `e_wt_cl` (linear WT slope on CL, L/h/kg) | `0.0676` | Nichols 2016 Table 2: theta4 = 0.0676 (%SE 38.6) |
 | `bw_ref` (reference WT, kg) | `18` | Nichols 2016 Results final-model paragraph |
-| `etalcl` (omega_CL) | `0.017028` (13.1% CV) | Nichols 2016 Table 2: omega_CL 13.1% CV |
+| `etalcl` (omega_CL) | `0.017015` (13.1% CV) | Nichols 2016 Table 2: omega_CL 13.1% CV |
 | `propSd` (proportional residual) | `0.272` | Nichols 2016 Table 2: sigma_proportional 27.2% CV |
 | `addSd` (additive residual, mg/L) | `0.76` | Nichols 2016 Table 2: sigma_additive 0.76 mg/L (%SE 47.8) |
 | Eq. CL (female + WT) | n/a | Nichols 2016 Results: "CL (in liters per hour) = {3.43 * [1 - (0.285 * sex)]} + [0.0676 * (WT - 18)], and V was equal to 5.54 liters" |

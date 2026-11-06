@@ -104,9 +104,9 @@ Mukai_2019_mogamulizumab <- function() {
 
     # Inter-individual variability (log-normal; omega^2 = log(CV^2 + 1))
     # Table 5 reports SD%: CL 50.5%, V1 20.5%, V2 72.7%
-    # omega^2: CL = log(1 + 0.505^2) = 0.227, V1 = log(1 + 0.205^2) = 0.0411, V2 = log(1 + 0.727^2) = 0.424
+    # omega^2: CL = log(1 + 0.505^2) = 0.227, V1 = log(1 + 0.205^2) = 0.0412, V2 = log(1 + 0.727^2) = 0.424
     etalcl ~ 0.227  # 50.5% CV
-    etalvc ~ 0.0411 # 20.5% CV
+    etalvc ~ log(1 + 0.205^2)  # 20.5% CV
     etalvp ~ 0.424  # 72.7% CV
 
     # Residual error (log-additive, equivalent to proportional on back-transform)

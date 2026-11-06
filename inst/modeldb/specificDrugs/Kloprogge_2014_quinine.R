@@ -213,15 +213,15 @@ Kloprogge_2014_quinine <- function() {
     # Inter-individual variability. Kloprogge 2014 Table 2 reports CV%
     # (footnote: 100 * sqrt(exp(omega^2) - 1)). The internal log-normal
     # variances are recovered by omega^2 = log((CV/100)^2 + 1):
-    #   ka  CV 58.7% -> log(0.587^2 + 1) = 0.296221
-    #   CL  CV  7.69% -> log(0.0769^2 + 1) = 0.005893
-    #   Vp  CV 70.8% -> log(0.708^2 + 1)  = 0.406119
-    #   F   CV 12.3% (IIV only) -> log(0.123^2 + 1) = 0.015015
+    #   ka  CV 58.7% -> log(0.587^2 + 1) = 0.296074
+    #   CL  CV  7.69% -> log(0.0769^2 + 1) = 0.005896
+    #   Vp  CV 70.8% -> log(0.708^2 + 1)  = 0.406307
+    #   F   CV 12.3% (IIV only) -> log(0.123^2 + 1) = 0.015016
     # Vc/F and Q/F carry no IIV in the source model (Table 2 dashes).
-    etalka     ~ 0.296221  # Kloprogge 2014 Table 2: BSV on ka  = 58.7% CV (RSE 32.7%; 95% CI 40.5-107%)
-    etalcl     ~ 0.005893  # Kloprogge 2014 Table 2: BSV on CL  =  7.69% CV (RSE 65.4%; 95% CI 1.16-47.4%)
-    etalvp     ~ 0.406119  # Kloprogge 2014 Table 2: BSV on Vp  = 70.8% CV (RSE 65.3%; 95% CI 8.00-128%)
-    etalfdepot ~ 0.015015  # Kloprogge 2014 Table 2: BSV on F   = 12.3% CV (RSE 77.0%; 95% CI 0.170-48.8%). IOV component (21.4% CV) omitted; see model description and vignette Errata.
+    etalka     ~ log(1 + 0.587^2)  # Kloprogge 2014 Table 2: BSV on ka  = 58.7% CV (RSE 32.7%; 95% CI 40.5-107%)
+    etalcl     ~ log(1 + 0.0769^2)  # Kloprogge 2014 Table 2: BSV on CL  =  7.69% CV (RSE 65.4%; 95% CI 1.16-47.4%)
+    etalvp     ~ log(1 + 0.708^2)  # Kloprogge 2014 Table 2: BSV on Vp  = 70.8% CV (RSE 65.3%; 95% CI 8.00-128%)
+    etalfdepot ~ log(1 + 0.123^2)  # Kloprogge 2014 Table 2: BSV on F   = 12.3% CV (RSE 77.0%; 95% CI 0.170-48.8%). IOV component (21.4% CV) omitted; see model description and vignette Errata.
 
     # Residual error. Kloprogge 2014 modelled the natural logarithm of
     # the quinine plasma concentration with an additive error on log
