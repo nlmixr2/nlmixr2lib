@@ -6670,6 +6670,8 @@ navbar:
         href: articles/Nguyen_2020_myostatin_activin_dmd_qsp.html
       - text: "Talinolol rifampicin pbpk (Asaumi 2022)"
         href: articles/Asaumi_2022_rifampicin_pgp_ddi_pbpk.html
+      - text: "Talquetamab (Gong 2025)"
+        href: articles/Gong_2025_talquetamab.html
       - text: "Tamibarotene pediatric (Azechi 2024)"
         href: articles/Azechi_2024_tamibarotene_pediatric.html
       - text: "Tamsulosin (Tsuda 2010)"
@@ -8675,6 +8677,7 @@ articles:
   - articles/Golubovic_2019_sirolimus
   - articles/Golzaryan_2025_lu177psmaIT_pbpk
   - articles/Gong_2023_pemigatinib
+  - articles/Gong_2025_talquetamab
   - articles/GonzalezSales_2015_testosterone
   - articles/GonzalezSales_2024_imetelstat
   - articles/Gosselin_2015_motesanib
