@@ -196,7 +196,8 @@ typ_obs <- tidyr::crossing(
 typ_ev <- bind_rows(typ_dose, typ_obs) |>
   left_join(typ, by = "id") |>
   arrange(id, time, desc(evid))
-typ_sim <- rxode2::rxSolve(rxode2::zeroRe(mod), events = typ_ev,
+# omega = NA, sigma = NA: typical values (all etas and residuals zero).
+typ_sim <- rxode2::rxSolve(mod, events = typ_ev, omega = NA, sigma = NA,
                            keep = "treatment") |>
   as.data.frame()
 
