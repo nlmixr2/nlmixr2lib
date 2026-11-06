@@ -185,14 +185,14 @@ Dunlap_2025_tacrolimus <- function() {
     # Dunlap 2025 Table 2 RCM IIV reported as %CV: V1/F 95%, CL/F 55%, V2/F 66%.
     # KA and Q/F do not carry IIV in the RCM (Eqs. 4 and 8 of Dunlap 2025).
     # Convert to log-scale variance via omega^2 = log(CV^2 + 1):
-    #   V1/F  CV 95% -> log(0.95^2 + 1) = 0.65823
-    #   CL/F  CV 55% -> log(0.55^2 + 1) = 0.26282
-    #   V2/F  CV 66% -> log(0.66^2 + 1) = 0.36185
+    #   V1/F  CV 95% -> log(0.95^2 + 1) = 0.64317
+    #   CL/F  CV 55% -> log(0.55^2 + 1) = 0.26429
+    #   V2/F  CV 66% -> log(0.66^2 + 1) = 0.36158
     # Diagonal block (Dunlap 2025 does not report off-diagonal correlations
     # between IIV terms in the RCM).
-    etalvc ~ 0.65823  # Dunlap 2025 Table 2 RCM IIV V1/F = 95% CV (shrinkage 65%)
-    etalcl ~ 0.26282  # Dunlap 2025 Table 2 RCM IIV CL/F = 55% CV (shrinkage 27%)
-    etalvp ~ 0.36185  # Dunlap 2025 Table 2 RCM IIV V2/F = 66% CV (shrinkage 51%)
+    etalvc ~ log(1 + 0.95^2)  # Dunlap 2025 Table 2 RCM IIV V1/F = 95% CV (shrinkage 65%)
+    etalcl ~ log(1 + 0.55^2)  # Dunlap 2025 Table 2 RCM IIV CL/F = 55% CV (shrinkage 27%)
+    etalvp ~ log(1 + 0.66^2)  # Dunlap 2025 Table 2 RCM IIV V2/F = 66% CV (shrinkage 51%)
 
     # ----- Residual unexplained variability -----
     # Dunlap 2025 Methods 2.3: "RUV was estimated in the normal domain";

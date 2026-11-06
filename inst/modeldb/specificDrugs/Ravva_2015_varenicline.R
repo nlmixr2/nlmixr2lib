@@ -279,7 +279,7 @@ Ravva_2015_varenicline <- function() {
     lkoff_placebo <- fixed(log(0.130));  label("Offset rate constant of the placebo 'kinetic' system (1/h)") # Ravva 2015 Supplementary Table S1: k_off = 0.130 /h (%RSE 65.4)
 
     etalkon_placebo  ~ fixed(0.97987)  # Table S1 k_on IIV %CV = 129 (%RSE 154);  omega^2 = log(1 + 1.29^2) = 0.97987
-    etalkoff_placebo ~ fixed(0.88216)  # Table S1 k_off IIV %CV = 119 (%RSE 154); omega^2 = log(1 + 1.19^2) = 0.88216
+    etalkoff_placebo ~ fixed(log(1 + 1.19^2))  # Table S1 k_off IIV %CV = 119 (%RSE 154)
 
     # ------------------------------------------------------------------
     # Linear logit-scale effect model.

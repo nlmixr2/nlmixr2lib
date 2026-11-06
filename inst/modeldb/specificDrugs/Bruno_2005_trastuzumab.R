@@ -99,8 +99,8 @@ Bruno_2005_trastuzumab <- function() {
     # deviations section; the retained CL and V1 IIVs dominate steady-state
     # exposure variability and are sufficient for the intended forward-
     # simulation use cases.
-    etalcl ~ 0.169823   # CL 43% CV -- Bruno 2005 Table 3; omega^2 = log(0.43^2 + 1)
-    etalvc ~ 0.080728   # V  29% CV -- Bruno 2005 Table 3; omega^2 = log(0.29^2 + 1)
+    etalcl ~ log(1 + 0.43^2)  # CL 43% CV -- Bruno 2005 Table 3
+    etalvc ~ log(1 + 0.29^2)  # V  29% CV -- Bruno 2005 Table 3
 
     # Residual error: proportional only (Bruno 2005 Methods: "Residual error
     # was modeled as proportional, i.e., assuming a constant coefficient of

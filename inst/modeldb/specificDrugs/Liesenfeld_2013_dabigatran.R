@@ -71,9 +71,9 @@ Liesenfeld_2013_dabigatran <- function() {
 
     # Inter-individual variability. Liesenfeld 2013 Table 2 reports CV%; the
     # exponential random-effect model implies omega^2 = log(CV^2 + 1).
-    #   CL/F   : 40.4% CV -> omega^2 = log(0.404^2 + 1) = 0.15113
+    #   CL/F   : 40.4% CV -> omega^2 = log(0.404^2 + 1) = 0.15119
     #   V2/F   : 14.3% CV -> omega^2 = log(0.143^2 + 1) = 0.02024
-    etalcl ~ 0.15113   # Liesenfeld 2013 Table 2 (IIV CL/F, 40.4% CV)
+    etalcl ~ log(1 + 0.404^2)  # Liesenfeld 2013 Table 2 (IIV CL/F, 40.4% CV)
     etalvc ~ 0.02024   # Liesenfeld 2013 Table 2 (IIV V2/F, 14.3% CV)
 
     # The source paper additionally reports inter-occasion variability (IOV) on
@@ -82,10 +82,10 @@ Liesenfeld_2013_dabigatran <- function() {
     # bioavailability so that simulated typical-population profiles carry the
     # same total stochastic spread; the "per-occasion" structure of the source
     # is not preserved. See vignette Assumptions and deviations.
-    #   ka : 64.0% CV -> omega^2 = log(0.64^2 + 1) = 0.34336
-    #   F  : 48.0% CV -> omega^2 = log(0.48^2 + 1) = 0.20733
-    etalka      ~ 0.34336   # Liesenfeld 2013 Table 2 (IOV ka, 64.0% CV; recast as IIV)
-    etalfdepot  ~ 0.20733   # Liesenfeld 2013 Table 2 (IOV F, 48.0% CV; recast as IIV)
+    #   ka : 64.0% CV -> omega^2 = log(0.64^2 + 1) = 0.34331
+    #   F  : 48.0% CV -> omega^2 = log(0.48^2 + 1) = 0.20734
+    etalka      ~ log(1 + 0.64^2)  # Liesenfeld 2013 Table 2 (IOV ka, 64.0% CV; recast as IIV)
+    etalfdepot  ~ log(1 + 0.48^2)  # Liesenfeld 2013 Table 2 (IOV F, 48.0% CV; recast as IIV)
 
     # Residual error: proportional (Liesenfeld 2013 Table 2, PRV 8.5% CV).
     propSd <- 0.085; label("Proportional residual error (fraction)")  # Liesenfeld 2013 Table 2 (PRV)

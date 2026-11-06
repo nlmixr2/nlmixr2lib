@@ -138,27 +138,27 @@ Ma_2020_sarilumab_das28crp <- function() {
     # --------------------------------------------------------------------------
     # IIV - PK (Xu 2019 Table 3, CV% converted to omega^2 = log(CV^2 + 1))
     #   Vm   CV 32.4% -> omega^2 = log(0.324^2 + 1) = 0.0998
-    #   CLO/F CV 55.3% -> omega^2 = log(0.553^2 + 1) = 0.2669
-    #   Vc/F CV 37.3% -> omega^2 = log(0.373^2 + 1) = 0.1302
+    #   CLO/F CV 55.3% -> omega^2 = log(0.553^2 + 1) = 0.2668
+    #   Vc/F CV 37.3% -> omega^2 = log(0.373^2 + 1) = 0.1303
     #   Ka   CV 32.1% -> omega^2 = log(0.321^2 + 1) = 0.0981
-    #   Vm-CLO/F correlation -0.566 -> cov = -0.566 * sqrt(0.0998 * 0.2669) = -0.0924
+    #   Vm-CLO/F correlation -0.566 -> cov = -0.566 * sqrt(0.0998 * 0.2668) = -0.0924
     # --------------------------------------------------------------------------
-    etalvmax + etalcl ~ c(0.0998, -0.0924, 0.2669)  # Xu 2019 Table 3: Vm IIV 32.4% CV, CLO/F IIV 55.3% CV, Vm-CLO/F correlation -0.566
-    etalvc ~ 0.1302                                # Xu 2019 Table 3: Vc/F IIV 37.3% CV
+    etalvmax + etalcl ~ c(0.0998, -0.566 * sqrt(0.0998 * log(1 + 0.553^2)), log(1 + 0.553^2))  # Xu 2019 Table 3: Vm IIV 32.4% CV, CLO/F IIV 55.3% CV, Vm-CLO/F correlation -0.566
+    etalvc ~ log(1 + 0.373^2)  # Xu 2019 Table 3: Vc/F IIV 37.3% CV
     etalka ~ 0.0981                                # Xu 2019 Table 3: Ka IIV 32.1% CV
 
     # --------------------------------------------------------------------------
     # IIV - DAS28-CRP PD (Ma 2020 Table 3, CV% converted to omega^2 = log(CV^2 + 1))
     #   BASE     CV  8.05% -> omega^2 = log(0.0805^2 + 1) = 0.00646
-    #   lemax    CV 71.2%  -> omega^2 = log(0.712^2 + 1) = 0.4105
+    #   lemax    CV 71.2%  -> omega^2 = log(0.712^2 + 1) = 0.4101
     #   ic50     CV 158%   -> omega^2 = log(1.58^2  + 1) = 1.252
-    #   kout     CV 84.2%  -> omega^2 = log(0.842^2 + 1) = 0.5360
+    #   kout     CV 84.2%  -> omega^2 = log(0.842^2 + 1) = 0.5359
     #   PLB      CV 105%   -> omega^2 = log(1.05^2  + 1) = 0.7431
     # --------------------------------------------------------------------------
     etalrbase ~ 0.00646   # Ma 2020 Table 3: BASE IIV 8.05% CV
-    etalemax ~ 0.4105    # Ma 2020 Table 3: Log(emax) IIV 71.2% CV
+    etalemax ~ log(1 + 0.712^2)  # Ma 2020 Table 3: Log(emax) IIV 71.2% CV
     etalic50 ~ 1.252     # Ma 2020 Table 3: ic50 IIV 158% CV
-    etalkout ~ 0.5360    # Ma 2020 Table 3: kout IIV 84.2% CV
+    etalkout ~ log(1 + 0.842^2)  # Ma 2020 Table 3: kout IIV 84.2% CV
     etalPLB  ~ 0.7431    # Ma 2020 Table 3: PLB IIV 105% CV
 
     # --------------------------------------------------------------------------

@@ -128,7 +128,7 @@ Ge_2020_metoclopramide <- function() {
 
     # IIV on CL only (IIV on Ka, Vc, Vp, F and Q gave eta shrinkage > 90% and
     # was dropped; Results). Reported as %CV; omega^2 = log(CV^2 + 1).
-    etalcl ~ 0.16501 # 42.4 %CV -> log(1 + 0.424^2) = 0.16501; Ge 2020 Table 2 'IIV, CL, %CV' = 42.4 (RSE 13.8%; bootstrap 25.7-57.4); eta shrinkage 12.4%
+    etalcl ~ log(1 + 0.424^2)  # 42.4 %CV; Ge 2020 Table 2 'IIV, CL, %CV' = 42.4 (RSE 13.8%; bootstrap 25.7-57.4); eta shrinkage 12.4%
 
     # Residual error: proportional only (Results).
     propSd <- 0.333; label("Proportional residual error (fraction)") # Ge 2020 Table 2: proportional error = 33.3% (RSE 21.8%; bootstrap 23.6-39.7); epsilon shrinkage 19.2%

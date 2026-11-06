@@ -107,7 +107,7 @@ Kotani_2022_astegolimab <- function() {
     # Inter-individual variability (reported on the CV scale for log-normal ka and CL;
     # omega^2 = log(CV^2 + 1)). IIV on Frel is reported as the SD of the pre-Box-Cox eta;
     # variance is eta SD^2 (the Box-Cox transformation is applied in model()).
-    etalka ~ 0.20507  # CV 0.477 -> log(1 + 0.477^2)                                                  # Table 2 (IIV_Ka CV = 0.477)
+    etalka ~ log(1 + 0.477^2)  # CV 0.477                                                  # Table 2 (IIV_Ka CV = 0.477)
     etalcl ~ 0.04896  # CV 0.224 -> log(1 + 0.224^2)                                                  # Table 2 (IIV_CL CV = 0.224)
     etafrel ~ 0.05905 # SD 0.243 (pre-Box-Cox eta); omega^2 = 0.243^2                                 # Table 2 (IIV_Frel SD = 0.243)
 

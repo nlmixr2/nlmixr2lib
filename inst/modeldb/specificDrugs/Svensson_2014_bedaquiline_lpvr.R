@@ -140,15 +140,17 @@ Svensson_2014_bedaquiline_lpvr <- function() {
     # See the vignette Assumptions and deviations section for the full
     # list of dropped random effects with the original paper values.
     #
-    # BLOCK(2) on (CL, CL_M2): var_CL = log(1 + 0.392^2) = 0.142111,
-    # var_CL_M2 = log(1 + 0.405^2) = 0.150661,
-    # cov = 0.774 * sqrt(0.142111 * 0.150661) = +0.113304
-    etalcl + etalcl_m2 ~ c(0.142111,
-                            0.113304, 0.150661)  # Svensson 2014 Supplementary Table S1a BSV CL = 39.2% (RSE 18.3%), BSV CLM2 = 40.5% (RSE 20.5%), correlation BSV CL ~ BSV CLM2 = 77.4% (RSE 23.6%)
-    etalvc     ~ 0.201115  # var = log(1 + 0.475^2) = 0.201115 ; Svensson 2014 Supplementary Table S1a BSV V = 47.5% (RSE 18.9%)
-    etalq      ~ 0.019408  # var = log(1 + 0.140^2) = 0.019408 ; Svensson 2014 Supplementary Table S1a BSV Q1 = 14.0% (RSE 30.7%)
-    etalvc_m2  ~ 0.235566  # var = log(1 + 0.520^2) = 0.235566 ; Svensson 2014 Supplementary Table S1a BSV VM2 = 52.0% (RSE 20.6%)
-    etalvp_m2  ~ 0.137692  # var = log(1 + 0.385^2) = 0.137692 ; Svensson 2014 Supplementary Table S1a BSV VP1M2 = 38.5% (RSE 40.5%)
+    # BLOCK(2) on (CL, CL_M2): var = log(1 + CV^2) for each, and
+    # cov = 0.774 * sqrt(var_CL * var_CL_M2) from the printed correlation.
+    etalcl + etalcl_m2 ~ c(
+      log(1 + 0.392^2),
+      0.774 * sqrt(log(1 + 0.392^2) * log(1 + 0.405^2)),
+      log(1 + 0.405^2)
+    )  # Svensson 2014 Supplementary Table S1a BSV CL = 39.2% (RSE 18.3%), BSV CLM2 = 40.5% (RSE 20.5%), correlation BSV CL ~ BSV CLM2 = 77.4% (RSE 23.6%)
+    etalvc     ~ log(1 + 0.475^2)  # Svensson 2014 Supplementary Table S1a BSV V = 47.5% (RSE 18.9%)
+    etalq      ~ log(1 + 0.14^2)  # Svensson 2014 Supplementary Table S1a BSV Q1 = 14.0% (RSE 30.7%)
+    etalvc_m2  ~ log(1 + 0.520^2)  # Svensson 2014 Supplementary Table S1a BSV VM2 = 52.0% (RSE 20.6%)
+    etalvp_m2  ~ log(1 + 0.385^2)  # Svensson 2014 Supplementary Table S1a BSV VP1M2 = 38.5% (RSE 40.5%)
 
     # Residual error. The paper reports proportional residual errors on
     # bedaquiline (17.1% CV) and M2 (14.5% CV) plus a 54.3% cross-output

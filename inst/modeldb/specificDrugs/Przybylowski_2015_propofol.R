@@ -80,12 +80,12 @@ Przybylowski_2015_propofol <- function() {
     # CL, and the deep Q. Internal omega^2 = log(CV^2 + 1).
     # IIV on Vt1, Q1, Vt2 was fixed to 0 in the source (Table 2 footnote a
     # "0 FIX"; shrinkage 100%); those etas are omitted entirely.
-    etalvc  ~ 0.429667    # Przybylowski 2015 Table 2: IIV VP   73.3% CV; omega^2 = log(0.733^2 + 1)
-    etalcl  ~ 0.046035    # Przybylowski 2015 Table 2: IIV CL   21.7% CV; omega^2 = log(0.217^2 + 1)
-    etalq2  ~ 0.301430    # Przybylowski 2015 Table 2: IIV Q2   59.3% CV; omega^2 = log(0.593^2 + 1)
-    etalce50 ~ 0.063454   # Przybylowski 2015 Table 3: IIV Ce50 25.6% CV; omega^2 = log(0.256^2 + 1)
-    etalhill ~ 0.147685   # Przybylowski 2015 Table 3: IIV gamma 39.9% CV; omega^2 = log(0.399^2 + 1)
-    etalke0  ~ 0.172587   # Przybylowski 2015 Table 3: IIV ke0  43.4% CV; omega^2 = log(0.434^2 + 1)
+    etalvc  ~ log(1 + 0.733^2)  # Przybylowski 2015 Table 2: IIV VP   73.3% CV
+    etalcl  ~ log(1 + 0.217^2)  # Przybylowski 2015 Table 2: IIV CL   21.7% CV
+    etalq2  ~ log(1 + 0.593^2)  # Przybylowski 2015 Table 2: IIV Q2   59.3% CV
+    etalce50 ~ log(1 + 0.256^2)  # Przybylowski 2015 Table 3: IIV Ce50 25.6% CV
+    etalhill ~ log(1 + 0.399^2)  # Przybylowski 2015 Table 3: IIV gamma 39.9% CV
+    etalke0  ~ log(1 + 0.434^2)  # Przybylowski 2015 Table 3: IIV ke0  43.4% CV
 
     # Residual error. The paper reports a proportional error model on plasma
     # (Cp,obs = Cp * (1 + eps_prop)) and a combined additive + proportional

@@ -128,38 +128,38 @@ Diep_2026_donidalorsen <- function() {
     #   cov(i,j) = rho_ij * sigma_i * sigma_j
     # BSV%CV values from Table 1: CL = 19.6%, Vc = 59.0%, Q = 10.2%, Vp = 42.9%, ka = 42.8%.
     # Variances (omega^2):
-    #   etalcl: log(1 + 0.196^2) = 0.037708
-    #   etalvc: log(1 + 0.590^2) = 0.298499
+    #   etalcl: log(1 + 0.196^2) = 0.037696
+    #   etalvc: log(1 + 0.590^2) = 0.298696
     #   etalq:  log(1 + 0.102^2) = 0.010350
-    #   etalvp: log(1 + 0.429^2) = 0.168994
-    #   etalka: log(1 + 0.428^2) = 0.168258
+    #   etalvp: log(1 + 0.429^2) = 0.168933
+    #   etalka: log(1 + 0.428^2) = 0.168209
     # Standard deviations (sigma):
-    #   sd_cl = 0.194186, sd_vc = 0.546351, sd_q = 0.101737, sd_vp = 0.411089, sd_ka = 0.410193
+    #   sd_cl = 0.194156, sd_vc = 0.546531, sd_q = 0.101736, sd_vp = 0.411015, sd_ka = 0.410133
     # Correlations from Table 1 and resulting covariances:
-    #   rho(CL,Vc) = 0.753  -> cov = 0.753 * 0.194186 * 0.546351 = 0.079891
-    #   rho(CL,Q)  = 0.682  -> cov = 0.682 * 0.194186 * 0.101737 = 0.013474
-    #   rho(CL,Vp) = 0.438  -> cov = 0.438 * 0.194186 * 0.411089 = 0.034966
-    #   rho(CL,ka) = 0.380  -> cov = 0.380 * 0.194186 * 0.410193 = 0.030266
-    #   rho(Vc,Q)  = 0.741  -> cov = 0.741 * 0.546351 * 0.101737 = 0.041189
-    #   rho(Vc,Vp) = 0.564  -> cov = 0.564 * 0.546351 * 0.411089 = 0.126676
-    #   rho(Vc,ka) = 0.721  -> cov = 0.721 * 0.546351 * 0.410193 = 0.161589
-    #   rho(Q,Vp)  = 0.921  -> cov = 0.921 * 0.101737 * 0.411089 = 0.038514
-    #   rho(Q,ka)  = 0.439  -> cov = 0.439 * 0.101737 * 0.410193 = 0.018320
-    #   rho(Vp,ka) = 0.303  -> cov = 0.303 * 0.411089 * 0.410193 = 0.051098
+    #   rho(CL,Vc) = 0.753  -> cov = 0.753 * 0.194156 * 0.546531 = 0.079903
+    #   rho(CL,Q)  = 0.682  -> cov = 0.682 * 0.194156 * 0.101736 = 0.013471
+    #   rho(CL,Vp) = 0.438  -> cov = 0.438 * 0.194156 * 0.411015 = 0.034953
+    #   rho(CL,ka) = 0.380  -> cov = 0.380 * 0.194156 * 0.410133 = 0.030259
+    #   rho(Vc,Q)  = 0.741  -> cov = 0.741 * 0.546531 * 0.101736 = 0.041201
+    #   rho(Vc,Vp) = 0.564  -> cov = 0.564 * 0.546531 * 0.411015 = 0.126693
+    #   rho(Vc,ka) = 0.721  -> cov = 0.721 * 0.546531 * 0.410133 = 0.161612
+    #   rho(Q,Vp)  = 0.921  -> cov = 0.921 * 0.101736 * 0.411015 = 0.038512
+    #   rho(Q,ka)  = 0.439  -> cov = 0.439 * 0.101736 * 0.410133 = 0.018317
+    #   rho(Vp,ka) = 0.303  -> cov = 0.303 * 0.411015 * 0.410133 = 0.051077
     # Block c(...) is the lower-triangle, row-major, of the 5x5 omega matrix
     # in the eta order (etalcl, etalvc, etalq, etalvp, etalka).
     etalcl + etalvc + etalq + etalvp + etalka ~ c(
-      0.037708,
-      0.079891, 0.298499,
-      0.013474, 0.041189, 0.010350,
-      0.034966, 0.126676, 0.038514, 0.168994,
-      0.030266, 0.161589, 0.018320, 0.051098, 0.168258
+      log(1 + 0.196^2),
+      0.753 * sqrt(log(1 + 0.590^2) * log(1 + 0.196^2)), log(1 + 0.590^2),
+      0.682 * sqrt(0.010350 * log(1 + 0.196^2)), 0.741 * sqrt(0.010350 * log(1 + 0.590^2)), 0.010350,
+      0.438 * sqrt(log(1 + 0.429^2) * log(1 + 0.196^2)), 0.564 * sqrt(log(1 + 0.429^2) * log(1 + 0.590^2)), 0.921 * sqrt(log(1 + 0.429^2) * 0.010350), log(1 + 0.429^2),
+      0.380 * sqrt(log(1 + 0.428^2) * log(1 + 0.196^2)), 0.721 * sqrt(log(1 + 0.428^2) * log(1 + 0.590^2)), 0.439 * sqrt(log(1 + 0.428^2) * 0.010350), 0.303 * sqrt(log(1 + 0.428^2) * log(1 + 0.429^2)), log(1 + 0.428^2)
     )
 
     # PD: independent etas (Table 2; no off-diagonal omega block reported).
-    etalrbase   ~ 0.064920  # Diep 2026 Table 2 BSV%CV BL  = 25.9% -> log(0.259^2 + 1)
-    etalkout ~ 0.125749  # Diep 2026 Table 2 BSV%CV kout = 36.6% -> log(0.366^2 + 1)
-    etalic50 ~ 0.525122  # Diep 2026 Table 2 BSV%CV IC50 = 83.1% -> log(0.831^2 + 1)
+    etalrbase   ~ log(1 + 0.259^2)  # Diep 2026 Table 2 BSV%CV BL  = 25.9%
+    etalkout ~ log(1 + 0.366^2)  # Diep 2026 Table 2 BSV%CV kout = 36.6%
+    etalic50 ~ log(1 + 0.831^2)  # Diep 2026 Table 2 BSV%CV IC50 = 83.1%
 
     # ---- Residual error ----
     # PK: Diep 2026 Table 1 reports sigma_logadd = 0.296 as the additive

@@ -72,13 +72,13 @@ Garmann_2017_BAY81_8973 <- function() {
     # Inter-individual variability. Garmann 2017 reports BSV as %CV with the
     # log-normal model P_j = P_pop * exp(eta_j); for log-normal, the variance on
     # the eta scale is omega^2 = log((CV/100)^2 + 1).
-    #   CV(CL) = 37.0% -> omega^2 = log(1 + 0.370^2) = 0.12826
+    #   CV(CL) = 37.0% -> omega^2 = log(1 + 0.370^2) = 0.12831
     #   CV(Vc) = 11.2% -> omega^2 = log(1 + 0.112^2) = 0.01247
     # Garmann 2017 tested a CL:Vc covariance during model development
     # ("Covariate analysis and final model") but did not retain it
     # (deltaOBJ = 4.8, below the 7.9 retention threshold), so etalcl and etalvc
     # are independent. No IIV was reported on CLp (Q) or Vp.
-    etalcl ~ 0.12826 # Garmann 2017 Table 2: BSV CL = 37.0% CV
+    etalcl ~ log(1 + 0.370^2)  # Garmann 2017 Table 2: BSV CL = 37.0% CV
     etalvc ~ 0.01247 # Garmann 2017 Table 2: BSV Vc = 11.2% CV
 
     # Combined proportional + additive residual unexplained variability

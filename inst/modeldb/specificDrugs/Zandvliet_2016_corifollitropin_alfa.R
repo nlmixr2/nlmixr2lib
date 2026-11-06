@@ -299,22 +299,22 @@ Zandvliet_2016_corifollitropin_alfa <- function() {
     # IIV is reported as CV% in Table 3 with the conversion
     # omega^2 = log(CV^2 + 1) (Table 3 footnote section sign).
     # Source CV% values:
-    #   Ka          29.2%   -> omega^2 = log(0.292^2 + 1) = 0.08191
+    #   Ka          29.2%   -> omega^2 = log(0.292^2 + 1) = 0.08182
     #   V/F         29.3%   -> omega^2 = log(0.293^2 + 1) = 0.08243
     #   CL/F        22.1%   -> omega^2 = log(0.221^2 + 1) = 0.04764
     #   cov(CL,V)   0.056             (Table 3 footnote *)
-    #   KeFSH       29%     -> omega^2 = log(0.29^2 + 1) = 0.08074
+    #   KeFSH       29%     -> omega^2 = log(0.29^2 + 1) = 0.08075
     #                          (see vignette Assumptions and deviations:
     #                          the published Table 3 IIV cell prints
     #                          "29%" with a 95% CI of 51.4-69.7% that
     #                          does not bracket the point estimate;
     #                          taken at face value here)
-    #   FSHbaseline 26.7%   -> omega^2 = log(0.267^2 + 1) = 0.06877
+    #   FSHbaseline 26.7%   -> omega^2 = log(0.267^2 + 1) = 0.06886
 
     etalcl + etalvc ~ c(0.04764, 0.056, 0.08243)
-    etalka          ~ 0.08191
-    etalkout        ~ 0.08074
-    etalrbase       ~ 0.06877
+    etalka          ~ log(1 + 0.292^2)
+    etalkout        ~ log(1 + 0.29^2)
+    etalrbase       ~ log(1 + 0.267^2)
 
     # ------------------------------------------------------------------
     # RESIDUAL ERROR

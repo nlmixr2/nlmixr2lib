@@ -452,7 +452,7 @@ evaluations) in the source contributes to a noisier published value.
   dose). The gap is consistent with Jensen's inequality applied to the
   cohort: AUC_indiv = Dose / CL_indiv with log-normal CL_indiv has
   arithmetic mean approximately (Dose / CL_typ) * exp(omega^2 / 2)
-  where omega^2 = log(1 + 0.342^2) = 0.110, giving a 5.7% upward
+  where omega^2 = log(1 + 0.342^2) = 0.111, giving a 5.7% upward
   correction. The remaining ~10-15% gap reflects the combination of
   individual-vs-typical CL/F variation across the cohort plus rounding
   in the paper's per-record parameter reporting. PKNCA at the typical

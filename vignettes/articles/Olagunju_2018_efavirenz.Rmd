@@ -66,9 +66,9 @@ Per-parameter origin (also recorded as in-file comments next to each
 | `e_slow_cl`          | `log(6.24/18.0) = -1.0593` | Olagunju 2018 Table 2 CL/F_Slow = 6.24 L/h (RSE 11%; 90% CI 4.8-7.5); log-ratio relative to fast-metaboliser reference |
 | `e_wt_cl`            | `fixed(0.75)` | Olagunju 2018 Methods paragraph 3: allometric exponent on CL/F fixed to 0.75 with WTstd = 70 kg |
 | `e_wt_vc`            | `fixed(1.0)`  | Olagunju 2018 Methods paragraph 3: allometric exponent on V/F fixed to 1.0 with WTstd = 70 kg |
-| `etalka`             | `0.56167` | Olagunju 2018 Table 2 IIV ka = 86.8% CV (RSE 21%, 90% CI 23-107); omega^2 = log(1 + 0.868^2) = 0.56167 |
-| `etalcl`             | `0.15614` | Olagunju 2018 Table 2 IIV CL/F = 41.1% CV (RSE 16%, 90% CI 36-43); omega^2 = log(1 + 0.411^2) = 0.15614 |
-| `etalvc`             | `0.067379` | Olagunju 2018 Table 2 IIV V/F = 26.4% CV (RSE 33%, 90% CI 10-40); omega^2 = log(1 + 0.264^2) = 0.06738 |
+| `etalka`             | `0.56157` | Olagunju 2018 Table 2 IIV ka = 86.8% CV (RSE 21%, 90% CI 23-107); omega^2 = log(1 + 0.868^2) = 0.56157 |
+| `etalcl`             | `0.15608` | Olagunju 2018 Table 2 IIV CL/F = 41.1% CV (RSE 16%, 90% CI 36-43); omega^2 = log(1 + 0.411^2) = 0.15608 |
+| `etalvc`             | `0.067374` | Olagunju 2018 Table 2 IIV V/F = 26.4% CV (RSE 33%, 90% CI 10-40); omega^2 = log(1 + 0.264^2) = 0.06737 |
 | `propSd`             | `sqrt(0.085) = 0.292` | Olagunju 2018 Table 2 proportional residual variance = 0.085 (RSE 21%; 90% CI 0.06-0.11); reported per NONMEM SIGMA-variance convention |
 | `ltvcl = lcl + e_intermed_cl * (n_variant == 1) + e_slow_cl * (n_variant >= 2)` | n/a | Olagunju 2018 Methods 'Sample Collection ...' paragraph 1: composite metaboliser status defined by summed variant-allele count across rs3745274 + rs28399499 |
 | `(WT / 70)^0.75` and `(WT / 70)^1.0` | n/a | Olagunju 2018 Methods paragraph 3: structural allometric scaling on CL/F and V/F |
