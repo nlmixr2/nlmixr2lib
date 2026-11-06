@@ -9913,8 +9913,9 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Reference category:** 0 (seronegative; "Other" / unknown serostatus is typically pooled into the reference per the source paper's analysis plan).
 - **Source aliases:**
   - `SERPOS` -- used in `Lin_2024_casirivimab.R`.
-- **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL).
-- **Notes:** SARS-CoV-2-specific. The exact assay (anti-spike vs anti-nucleocapsid; vendor) varies by study; document per-model in `covariateData[[SARS_SEROPOS]]$notes`.
+  - `isConvalesced` / `C` (convalesced = history of COVID-19 infection before the first vaccine dose) -- de Pillis 2025 data column and Eqs. 4 and 8.
+- **Example models:** `Lin_2024_casirivimab.R` (multiplicative fractional change on CL), `dePillis_2025_covid19Vaccine.R` (additive logit-scale shifts on the four NAb rate constants and on the initial NAb level), `dePillis_2025_covid19Vaccine_lme.R` (intercept and quadratic-term shifts of logit NAb decay).
+- **Notes:** SARS-CoV-2-specific. The exact assay (anti-spike vs anti-nucleocapsid; vendor) varies by study; document per-model in `covariateData[[SARS_SEROPOS]]$notes`. In de Pillis 2025 the indicator is convalesced status from the subject's COVID-19 history rather than an assay result; because all subjects were vaccine-naive at baseline and nucleocapsid-seropositive subjects without a known infection were excluded, 1 there means seropositive from prior infection and 0 means nucleocapsid-seronegative.
 
 ### OXYSUP_LOW (**canonical for low-flow supplemental oxygen indicator**)
 - **Description:** 1 = subject is receiving low-flow supplemental oxygen at baseline (e.g., nasal cannula, simple face mask), 0 = no supplemental oxygen at baseline.
@@ -19160,6 +19161,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `Treatment with E` / `Treatment with ephedrine` -- Dings 2026 Tables A1, A3 and A4 row labels.
 - **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (raises the maximum attainable heart rate by a fraction of 0.15 and lowers all three EC50 values by a fraction of 0.711, both via the paper's `1 + COV * theta` categorical form), `Dings_2026_neonatal_acidosis.R` (+2.64 mmol/L base excess and +5.46 mg/dL lactate relative to untreated).
 - **Notes:** Specific scope (a per-drug arm indicator). The `TRT_` prefix distinguishes a patient-level randomised / assigned treatment indicator from the bare-INN MBMA arm indicators (`NAPROXEN`, `TRAMADOL`, `TAPENTADOL`) and from the `CONMED_<INN>` concomitant-medication family; use `TRT_<INN>` when the drug is the study treatment under investigation. Pairs with `TRT_CAFEDRINE_THEODRENALINE`; the two are mutually exclusive per subject.
+
+### TRT_TOZINAMERAN (**canonical for BNT162b2 (tozinameran) vaccine-product indicator**)
+- **Description:** Binary vaccine-product indicator: 1 = the subject's mRNA COVID-19 primary series was BNT162b2 (tozinameran, Pfizer-BioNTech Comirnaty), 0 = it was another vaccine. A per-subject property of the vaccine received.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. **The reference differs by model and must be documented per model**; in `dePillis_2025_covid19Vaccine.R` every subject received one of two mRNA vaccines, so 0 means mRNA-1273 (elasomeran, Moderna).
+- **Source aliases:**
+  - `dose1Type` (`Pfizer` vs `Moderna`) / `D` -- de Pillis 2025 data column and Eq. 8.
+- **Example models:** `dePillis_2025_covid19Vaccine.R` (additive logit-scale shifts on the NAb initiation, boost and logistic growth rate constants r1, r2 and r3).
+- **Notes:** Specific scope. Well-formed member of the `TRT_<INN>` family (`TRT_EPHEDRINE`, `TRT_RIFAMPICIN`), named with the INN of the vaccine's active substance. Register `TRT_ELASOMERAN` as the sibling when a model takes mRNA-1273 as the non-reference product.
 
 ### TRT_RIFAMPICIN (**canonical for rifampicin treatment-group indicator**)
 - **Description:** Binary treatment-group indicator: 1 = the animal was in a rifampicin-treated group, 0 = the untreated (natural-growth) group. A per-subject property of the experimental assignment.
