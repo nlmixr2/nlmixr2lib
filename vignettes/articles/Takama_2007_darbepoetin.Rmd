@@ -64,10 +64,10 @@ collects them in one place for review.
 | `e_wt_cl` (linear-deviation coefficient of (WT - 54) on CL)        | 0.0195 (1/kg)                      | Table 4 row "theta_CL_WT" (SE 0.00246; 95% CI 0.0147-0.0243) |
 | `e_wt_vc` (linear-deviation coefficient of (WT - 54) on V1)        | 0.0163 (1/kg)                      | Table 4 row "theta_V1_WT" (SE 0.00214; 95% CI 0.0121-0.0205) |
 | `e_perit_dial_vc` (additive PD-modality fractional increment on V1) | 0.170                            | Table 4 row "theta_V1_DIA" (SE 0.0501; 95% CI 0.0718-0.268) |
-| `etalcl`  variance                                                | 0.04153 = log(0.206^2 + 1)         | Table 4 row "omega_CL"  = 20.6 percent CV |
-| `etalq`   variance                                                | 0.56449 = log(0.871^2 + 1)         | Table 4 row "omega_Q"   = 87.1 percent CV |
-| `etalvc`  variance                                                | 0.04644 = log(0.218^2 + 1)         | Table 4 row "omega_V1"  = 21.8 percent CV |
-| `etalvp`  variance                                                | 0.21205 = log(0.486^2 + 1)         | Table 4 row "omega_V2"  = 48.6 percent CV |
+| `etalcl`  variance                                                | 0.04156 = log(0.206^2 + 1)         | Table 4 row "omega_CL"  = 20.6 percent CV |
+| `etalq`   variance                                                | 0.56454 = log(0.871^2 + 1)         | Table 4 row "omega_Q"   = 87.1 percent CV |
+| `etalvc`  variance                                                | 0.04643 = log(0.218^2 + 1)         | Table 4 row "omega_V1"  = 21.8 percent CV |
+| `etalvp`  variance                                                | 0.21204 = log(0.486^2 + 1)         | Table 4 row "omega_V2"  = 48.6 percent CV |
 | `etalrbase` variance                                              | 0.18741 = log(0.454^2 + 1)         | Table 4 row "omega_k0"  = 45.4 percent CV |
 | `addSd`                                                           | 0.0634 ng/mL                       | Table 4 row "sigma_2" (additive) |
 | `propSd`                                                          | 0.0653 (= 6.53 percent)            | Table 4 row "sigma_1" (CCV / proportional) |

@@ -102,12 +102,12 @@ Ahmad_2021_pyridoxicAcid <- function() {
     # random effect; read as CV% and converted with
     # omega^2 = log(1 + CV^2).
     # ---------------------------------------------------------------
-    etalksyn ~ 0.0974856 # Table 1, PDA IIV ksyn = 32% (SE 34%); log(1 + 0.32^2)
-    etalcl_renal ~ 0.0703190 # Table 1, PDA IIV CLr = 27% (SE 15%); log(1 + 0.27^2)
+    etalksyn ~ log(1 + 0.32^2)  # Table 1, PDA IIV ksyn = 32% (SE 34%)
+    etalcl_renal ~ log(1 + 0.27^2)  # Table 1, PDA IIV CLr = 27% (SE 15%)
     etalvc_prob ~ 0.1484200 # Table 1, Probenecid IIV V = 40% (SE 29%); log(1 + 0.40^2)
-    etalcl_prob ~ 0.0515460 # Table 1, Probenecid IIV CL = 23% (SE 23%); log(1 + 0.23^2)
-    etaiov_ksyn_1 ~ 0.0472723 # Table 1, PDA IOV ksyn = 22% (SE 57%); log(1 + 0.22^2)
-    etaiov_ksyn_2 ~ fixed(0.0472723) # Table 1, PDA IOV ksyn = 22%; shared variance, occasion 2
+    etalcl_prob ~ log(1 + 0.23^2)  # Table 1, Probenecid IIV CL = 23% (SE 23%)
+    etaiov_ksyn_1 ~ log(1 + 0.22^2)  # Table 1, PDA IOV ksyn = 22% (SE 57%)
+    etaiov_ksyn_2 ~ fixed(log(1 + 0.22^2))  # Table 1, PDA IOV ksyn = 22%; shared variance, occasion 2
 
     # ---------------------------------------------------------------
     # Residual error -- Table 1. Combined proportional + additive on

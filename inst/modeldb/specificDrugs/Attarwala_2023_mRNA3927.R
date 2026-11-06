@@ -75,8 +75,8 @@ Attarwala_2023_mRNA3927 <- function() {
     e_wt_clb <- 1.10;              label("Allometric exponent on CL23 and CL20 (unitless)")     # Table 1, RSE 7.55%
 
     # IIV: only CL32 has IIV in the published PK model (Table 1).
-    # omega^2 = log(1 + CV^2) ; CV% = 52.7 -> log(1 + 0.527^2) = 0.24510.
-    etalcl32 ~ 0.24510   # Table 1, IIV on CL32 = 52.7 percent CV
+    # omega^2 = log(1 + CV^2) ; CV% = 52.7 -> log(1 + 0.527^2) = 0.24508.
+    etalcl32 ~ log(1 + 0.527^2)  # Table 1, IIV on CL32 = 52.7 percent CV
 
     # Proportional residual error on plasma mRNA (Table 1, "Proportional residual error (%)" 37.5, RSE 11.0%).
     propSd <- 0.375;             label("Proportional residual SD on plasma mRNA (fraction)")          # Table 1
@@ -119,7 +119,7 @@ Attarwala_2023_mRNA3927 <- function() {
     propSd_MC2  <- 0.234;       label("Proportional residual SD on 2-MC (fraction)")                # Table 1, RSE 3.84%
     # IIV (Table 1, "IIV (%)" column for the 2-MC block: 30.0 on E0, 45.4 on base).
     etale0_mc2   ~ 0.08618   # log(1 + 0.300^2)
-    etalbase_mc2 ~ 0.18743   # log(1 + 0.454^2)
+    etalbase_mc2 ~ log(1 + 0.454^2)
 
     # ---- 3-hydroxypropionate (3-HP) ----
     le0_hp3    <- log(0.0987); label("E0 for 3-HP (umol/L)")                                       # Table 1, RSE 6.74%
@@ -127,8 +127,8 @@ Attarwala_2023_mRNA3927 <- function() {
     lic50_hp3  <- log(37.5);   label("IC50 of PCC for 3-HP suppression (PCC mass per liver tissue)") # Table 1, RSE 12.2%
     propSd_HP3  <- 0.348;       label("Proportional residual SD on 3-HP (fraction)")                # Table 1, RSE 5.56%
     # IIV (Table 1, "IIV (%)" column for the 3-HP block: 51.1 on E0, 73.8 on base).
-    etale0_hp3   ~ 0.23199   # log(1 + 0.511^2)
-    etalbase_hp3 ~ 0.43485   # log(1 + 0.738^2)
+    etale0_hp3   ~ log(1 + 0.511^2)
+    etalbase_hp3 ~ log(1 + 0.738^2)
 
     # ---- C3/C2 carnitine ratio ----
     le0_c3c2   <- log(0.347);  label("E0 for C3/C2 carnitine ratio (umol/L)")                      # Table 1, RSE 6.4%
@@ -137,7 +137,7 @@ Attarwala_2023_mRNA3927 <- function() {
     propSd_C3C2 <- 0.360;       label("Proportional residual SD on C3/C2 ratio (fraction)")         # Table 1, RSE 4.79%
     # IIV (Table 1, "IIV (%)" column for the C3/C2 block: 51.9 on E0, 56.4 on base).
     etale0_c3c2   ~ 0.23851  # log(1 + 0.519^2)
-    etalbase_c3c2 ~ 0.27618  # log(1 + 0.564^2)
+    etalbase_c3c2 ~ log(1 + 0.564^2)
   })
 
   model({

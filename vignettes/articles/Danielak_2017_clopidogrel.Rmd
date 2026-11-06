@@ -82,7 +82,7 @@ below collects them in one place for review.
 | `etalvc` IIV (variance, log scale)         | 0.3407          | Table 2 final-model row `IIV for V2/F` = 63.7% CV; omega^2 = log(1 + 0.637^2) |
 | `cov(etalka, etalvc)`                      | -0.087          | Table 2 final-model row `Covariance between k12 and V2/F` = -0.087 (OMEGA matrix off-diagonal in the raw NONMEM scale) |
 | `etalcl` IIV (variance, log scale)         | 0.2215          | Table 2 final-model row `IIV for CL/F` = 49.8% CV; omega^2 = log(1 + 0.498^2) |
-| `etalfm` IIV (variance, log scale)         | 0.4121          | Table 2 final-model row `IIV for FM` = 71.4% CV; omega^2 = log(1 + 0.714^2) |
+| `etalfm` IIV (variance, log scale)         | 0.4120          | Table 2 final-model row `IIV for FM` = 71.4% CV; omega^2 = log(1 + 0.714^2) |
 | `propSd` (clopidogrel proportional SD)     | 0.45            | Table 2 final-model row `Proportional residual error for CLP` = -0.45 in source (sign-artifact NONMEM parameterisation; magnitude is the proportional residual SD) |
 | `propSd_h4` (H4 proportional SD)           | 0.66            | Table 2 final-model row `Proportional residual error for H4` = -0.66 (same sign-artifact interpretation) |
 | `d/dt(depot) = -ka * depot`                | n/a             | Figure 1 ('Final structural model') and Results 'PK model' page 1626 |

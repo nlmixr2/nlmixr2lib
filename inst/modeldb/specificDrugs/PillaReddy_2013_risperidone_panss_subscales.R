@@ -218,7 +218,7 @@ PillaReddy_2013_risperidone_panss_subscales <- function() {
 
     etaec50_pos ~ fixed(0.2231)  # Part II Table 2 footnote: IIV EC50 positive and general 50% CV
     etaec50_gen ~ fixed(0.2231)
-    etaec50_neg ~ 2.367          # Part II Table 2 risperidone: IIV EC50 negative = 311% CV; omega^2 = log(1 + 3.11^2) = 2.367
+    etaec50_neg ~ log(1 + 3.11^2)  # Part II Table 2 risperidone: IIV EC50 negative = 311% CV
 
     # =============== Residual error on PANSS subscales =======================
     # Per-drug RUV from Part II Table 2 (joint PKPD model); Part II Table 1

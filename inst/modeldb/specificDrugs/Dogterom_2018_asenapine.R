@@ -74,17 +74,17 @@ Dogterom_2018_asenapine <- function() {
 
     # Inter-individual variability (exponential model). Paper reports %CV;
     # the log-scale variance is omega^2 = log(1 + CV^2):
-    #   IIV CL/F = 66.2%  -> omega^2 = log(1 + 0.662^2) = 0.36355
-    #   IIV V2/F = 113%   -> omega^2 = log(1 + 1.13^2)  = 0.82309
-    #   corr(CL/F, V2/F) = 0.921 -> cov = 0.921 * sqrt(0.36355 * 0.82309) = 0.50388
-    #   IIV Ka   = 68.9%  -> omega^2 = log(1 + 0.689^2) = 0.38824 (fixed; no RSE
+    #   IIV CL/F = 66.2%  -> omega^2 = log(1 + 0.662^2) = 0.36342
+    #   IIV V2/F = 113%   -> omega^2 = log(1 + 1.13^2)  = 0.82281
+    #   corr(CL/F, V2/F) = 0.921 -> cov = 0.921 * sqrt(0.36342 * 0.82281) = 0.50363
+    #   IIV Ka   = 68.9%  -> omega^2 = log(1 + 0.689^2) = 0.38847 (fixed; no RSE
     #     reported in Table 3, consistent with Ka having been fixed structurally)
-    #   IIV F    = 54.0%  -> omega^2 = log(1 + 0.540^2) = 0.25599
+    #   IIV F    = 54.0%  -> omega^2 = log(1 + 0.540^2) = 0.25588
     #   IIV rV   = 19.2%  -> omega^2 = log(1 + 0.192^2) = 0.03620
     # Table 3 footnote also defines the correlation as cov / sqrt(var_cl * var_v2).
-    etalcl + etalvc ~ c(0.36355, 0.50388, 0.82309)                                                    # Table 3: IIV CL/F = 66.2% (RSE 19.5%); IIV V2/F = 113% (RSE 21.3%); corr 0.921 (RSE 20.5%)
-    etalka          ~ fixed(0.38824)                                                                  # Table 3: IIV Ka = 68.9% (no RSE; shrinkage 73.5%; treated as alongside the structural Ka fix)
-    etalfdepot      ~ 0.25599                                                                         # Table 3: IIV F = 54.0% (RSE 22.7%)
+    etalcl + etalvc ~ c(log(1 + 0.662^2), 0.921 * sqrt(log(1 + 0.662^2) * log(1 + 1.13^2)), log(1 + 1.13^2))                                                    # Table 3: IIV CL/F = 66.2% (RSE 19.5%); IIV V2/F = 113% (RSE 21.3%); corr 0.921 (RSE 20.5%)
+    etalka          ~ fixed(log(1 + 0.689^2))  # Table 3: IIV Ka = 68.9% (no RSE; shrinkage 73.5%; treated as alongside the structural Ka fix)
+    etalfdepot      ~ log(1 + 0.540^2)  # Table 3: IIV F = 54.0% (RSE 22.7%)
     etalrv          ~ 0.03620                                                                         # Table 3: IIV rV = 19.2% (RSE 29.8%) -- between-subject scaling of residual SD
 
     # Residual error. The paper used a 'log-additive error model'; following

@@ -65,9 +65,9 @@ Candelaria_2018_rituximab <- function() {
     # parameters (CV, %)"). The paper's footnote (b) explicitly gives the
     # log-normal mapping: CV(%) = 100 * sqrt(exp(omega^2) - 1), so the
     # stored variance is omega^2 = log(1 + (CV/100)^2).
-    etalcl ~ 0.05923   # 24.7% CV -> log(1 + 0.247^2) = 0.05923; Candelaria 2018 Table 2 IIV CL
+    etalcl ~ log(1 + 0.247^2)  # 24.7% CV; Candelaria 2018 Table 2 IIV CL
     etalvc ~ 0.01996   # 14.2% CV -> log(1 + 0.142^2) = 0.01996; Candelaria 2018 Table 2 IIV V1
-    etalq  ~ 0.07549   # 28.0% CV -> log(1 + 0.280^2) = 0.07549; Candelaria 2018 Table 2 IIV Q
+    etalq  ~ log(1 + 0.28^2)  # 28.0% CV; Candelaria 2018 Table 2 IIV Q
     etalvp ~ 0.07037   # 27.0% CV -> log(1 + 0.270^2) = 0.07037; Candelaria 2018 Table 2 IIV V2
 
     # Inter-occasion variability (IOV) on CL (35.9% CV) and V1 (16.8% CV) was

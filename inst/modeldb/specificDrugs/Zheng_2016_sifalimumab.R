@@ -89,13 +89,13 @@ Zheng_2016_sifalimumab <- function() {
 
     # IIV - log-normal / exponential BSV assumed on CL and V1 (Zheng 2016 Table 2).
     # Converting CV% to log-scale variance via omega^2 = log(CV^2 + 1):
-    #   CL BSV 24% -> omega^2 = log(0.24^2 + 1) = 0.056016
+    #   CL BSV 24% -> omega^2 = log(0.24^2 + 1) = 0.056002
     #   V1 BSV 16% -> omega^2 = log(0.16^2 + 1) = 0.025278
     # No BSV estimated on Q or V2. The published final model also included inter-occasion
     # variability (IOV) on V1 of 26% CV for the first seven infusions; IOV is not carried in
     # this library implementation because occasion-specific randomness is outside the scope of
     # a typical single-eta subject-level model. See the vignette Assumptions section.
-    etalcl ~ 0.056016  # Zheng 2016 Table 2, BSV CL = 24% CV
+    etalcl ~ log(1 + 0.24^2)  # Zheng 2016 Table 2, BSV CL = 24% CV
     etalvc ~ 0.025278  # Zheng 2016 Table 2, BSV V1 = 16% CV
 
     # Residual error - combined additive + proportional (Zheng 2016 Table 2).

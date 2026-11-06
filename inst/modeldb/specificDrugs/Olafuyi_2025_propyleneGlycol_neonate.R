@@ -160,7 +160,7 @@ Olafuyi_2025_propyleneGlycol_neonate <- function() {
     # they are fixed. No %CV is reported for the volume of distribution, so vc
     # carries no eta. omega^2 = log(1 + CV^2).
     # ---------------------------------------------------------------------
-    etalvmax     ~ fixed(0.169646)  # Table 3: predicted neonatal hepatic CL %CV = 43;  log(1 + 0.43^2)
+    etalvmax     ~ fixed(log(1 + 0.43^2))  # Table 3: predicted neonatal hepatic CL %CV = 43
     etalcl_renal ~ fixed(0.989541)  # Table 3: predicted neonatal renal   CL %CV = 130; log(1 + 1.30^2)
 
     # Residual error is not reported: the source is a simulation study and no

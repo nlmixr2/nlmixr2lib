@@ -285,10 +285,10 @@ Kloprogge_2018_lumefantrine <- function() {
     # recovered by omega^2 = log((CV/100)^2 + 1). Only Vc/F and F carry
     # IIV in the source model; the other structural parameters (ka, CL,
     # Q, Vp) have dashes in the IIV columns of Table 2.
-    #   Vc CV 144%  -> log(1.44^2 + 1)  = 1.12286
-    #   F  CV 70.3% -> log(0.703^2 + 1) = 0.40158
-    etalvc     ~ 1.12286  # Kloprogge 2018 Table 2: BSV on Vc/F = 144% CV (RSE 10.8%; 95% CI 115-165)
-    etalfdepot ~ 0.40158  # Kloprogge 2018 Table 2: BSV on F   = 70.3% CV (RSE 5.95%; 95% CI 65.3-75.3). Box-Cox shape parameter -0.343 NOT applied here -- see model description and vignette Errata.
+    #   Vc CV 144%  -> log(1.44^2 + 1)  = 1.12285
+    #   F  CV 70.3% -> log(0.703^2 + 1) = 0.40160
+    etalvc     ~ log(1 + 1.44^2)  # Kloprogge 2018 Table 2: BSV on Vc/F = 144% CV (RSE 10.8%; 95% CI 115-165)
+    etalfdepot ~ log(1 + 0.703^2)  # Kloprogge 2018 Table 2: BSV on F   = 70.3% CV (RSE 5.95%; 95% CI 65.3-75.3). Box-Cox shape parameter -0.343 NOT applied here -- see model description and vignette Errata.
 
     # Residual error. Kloprogge 2018 modelled the natural logarithm of
     # the lumefantrine plasma concentration with an additive error on

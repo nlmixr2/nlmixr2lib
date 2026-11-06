@@ -112,10 +112,10 @@ Cella_2012_midazolam_infants_adults <- function() {
     e_wt_cl <- fixed(0.75);  label("Allometric exponent of WT on CL (unitless)")                   # Cella 2012 Methods + Mahmood 1996 ref [46] (fixed at classic 0.75)
 
     # Inter-individual variability (Table 2 reports CV%; omega^2 = log(CV^2 + 1))
-    #   CL : 39.9% CV -> log(0.399^2 + 1) = 0.14776
-    #   Vp : 58.5% CV -> log(0.585^2 + 1) = 0.29446
-    etalcl ~ 0.14776                                                                                # Cella 2012 Table 2 (IIV CL 39.9% CV)
-    etalvp ~ 0.29446                                                                                # Cella 2012 Table 2 (IIV Vp 58.5% CV)
+    #   CL : 39.9% CV -> log(0.399^2 + 1) = 0.14773
+    #   Vp : 58.5% CV -> log(0.585^2 + 1) = 0.29433
+    etalcl ~ log(1 + 0.399^2)  # Cella 2012 Table 2 (IIV CL 39.9% CV)
+    etalvp ~ log(1 + 0.585^2)  # Cella 2012 Table 2 (IIV Vp 58.5% CV)
 
     # Residual error (40.0% CV proportional, linear-scale SD = 0.40)
     propSd <- 0.40;          label("Proportional residual error (fraction)")                   # Cella 2012 Table 2 (residual 40.0% CV, proportional model)

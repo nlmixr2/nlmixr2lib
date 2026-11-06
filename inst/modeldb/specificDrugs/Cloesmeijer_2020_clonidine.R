@@ -109,10 +109,10 @@ Cloesmeijer_2020_clonidine <- function() {
     cl_time_slope <- 0.00213; label("Fractional linear increase in CL per hour after the start of infusion (1/h)") # Table 3 'Increase CL per hour 0.213 (19)' as percent per hour (Discussion)
 
     # IIV -- Table 3 reports %CV; omega^2 = log(CV^2 + 1).
-    #   log(0.333^2 + 1) = 0.105189
-    #   log(0.668^2 + 1) = 0.369689
-    etalcl ~ 0.105189 # Table 3 IIV CL 33.3 percent CV
-    etalvc ~ 0.369689 # Table 3 IIV V1 66.8 percent CV
+    #   log(0.333^2 + 1) = 0.105161
+    #   log(0.668^2 + 1) = 0.368956
+    etalcl ~ log(1 + 0.333^2)  # Table 3 IIV CL 33.3 percent CV
+    etalvc ~ log(1 + 0.668^2)  # Table 3 IIV V1 66.8 percent CV
 
     # Residual error -- combined additive + proportional (Results 3.1.1;
     # Methods Eqs 2-3). Table 3 values taken as standard deviations.

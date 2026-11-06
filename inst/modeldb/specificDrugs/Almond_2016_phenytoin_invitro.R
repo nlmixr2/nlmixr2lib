@@ -139,19 +139,19 @@ Almond_2016_phenytoin_invitro <- function() {
     # vignette Errata. No correlations are reported; the block is diagonal.
     # =====================================================================
 
-    etalemax_activity ~ 0.082714
+    etalemax_activity ~ log(1 + 0.2937^2)
     # Table 2: S.D. 3.7 on Indmax 13.6 -> CV = 3.7 / 12.6 = 0.2937 on emax;
-    # omega^2 = log(1 + 0.2937^2) = 0.082714. This is the TIGHTEST efficacy
+    # omega^2 = log(1 + 0.2937^2) = 0.082740. This is the TIGHTEST efficacy
     # variance in the study.
     etalec50_activity ~ 0.284008
     # Table 2: S.D. 29.4 on IndC50 51.3 -> CV = 0.5731;
     # omega^2 = log(1 + 0.5731^2) = 0.284008.
-    etalemax_mrna ~ 0.099475
+    etalemax_mrna ~ log(1 + 0.3234^2)
     # Table 2: S.D. 7.6 on Indmax 24.5 -> CV = 7.6 / 23.5 = 0.3234 on emax;
-    # omega^2 = log(1 + 0.3234^2) = 0.099475.
-    etalec50_mrna ~ 0.668759
+    # omega^2 = log(1 + 0.3234^2) = 0.099472.
+    etalec50_mrna ~ log(1 + 0.9756^2)
     # Table 2: S.D. 120 on IndC50 123 -> CV = 0.9756;
-    # omega^2 = log(1 + 0.9756^2) = 0.668759. This is the LARGEST variance in
+    # omega^2 = log(1 + 0.9756^2) = 0.668750. This is the LARGEST variance in
     # the study: the between-donor S.D. is nearly equal to the mean.
 
     # =====================================================================

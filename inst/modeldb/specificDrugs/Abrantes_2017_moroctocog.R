@@ -163,15 +163,15 @@ Abrantes_2017_moroctocog <- function() {
 
     # IIV (log-normal). omega^2 = log(1 + CV^2) for each estimated component
     # (Abrantes 2017 Table 2 IIV %CV values).
-    #   CL    IIV 30.5%  CV  -> log(1 + 0.305^2)  = 0.08894
+    #   CL    IIV 30.5%  CV  -> log(1 + 0.305^2)  = 0.08895
     #   F     IIV 13.0%  CV  -> log(1 + 0.130^2)  = 0.01676
-    #   rbase IIV 7.19%  CV  -> log(1 + 0.0719^2) = 0.005154
+    #   rbase IIV 7.19%  CV  -> log(1 + 0.0719^2) = 0.005156
     # Inter-occasion variability of 34.7% on CL and 41.0% on V2 (Table 2) and
     # IIV on the residual-activity component are NOT encoded structurally
     # here; see vignette deviations.
-    etalcl     ~ 0.08894    # Abrantes 2017 Table 2: IIV CL = 30.5% CV
+    etalcl     ~ log(1 + 0.305^2)  # Abrantes 2017 Table 2: IIV CL = 30.5% CV
     etalfdepot ~ 0.01676    # Abrantes 2017 Table 2: IIV F = 13.0% CV
-    etalrbase  ~ 0.005154   # Abrantes 2017 Table 2: IIV endogenous FVIII activity = 7.19% CV
+    etalrbase  ~ log(1 + 0.0719^2)  # Abrantes 2017 Table 2: IIV endogenous FVIII activity = 7.19% CV
 
     # Proportional residual error (CSA reference value; OSA magnitude switched
     # in the model() body via the per-observation ASSAY_OSA indicator).

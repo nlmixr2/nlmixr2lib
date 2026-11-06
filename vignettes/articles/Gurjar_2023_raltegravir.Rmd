@@ -58,7 +58,7 @@ The same information is available programmatically via
 | `lq` (Q/F)           | log(13.0 L/h) | Table 2 (RSE 4.0%) |
 | `lvp` (Vp/F)         | log(117 L) | Table 2 (RSE 0.6%) |
 | `lka` (ka)           | log(1.12 1/h) | Table 2 (RSE 13.0%) |
-| `etalcl`             | 0.33156 = log(1 + 0.627^2) | Table 2, IIV CL/F 62.7% (RSE 12.1%) |
+| `etalcl`             | 0.33155 = log(1 + 0.627^2) | Table 2, IIV CL/F 62.7% (RSE 12.1%) |
 | `propSd`             | 0.699 | Table 2, proportional residual error 69.9% (RSE 7.0%) |
 | Structure: `d/dt(depot)`, `d/dt(central)`, `d/dt(peripheral1)` | n/a | Results "Population pharmacokinetic modelling"; control stream `$SUBROUTINE ADVAN4 TRANS4` |
 | `cl <- exp(lcl + etalcl)`, no IIV on other parameters | n/a | Control stream `CL=TVCL*EXP(ETA(1))`; `$OMEGA 0 FIX` for ETA(2)-ETA(5) |

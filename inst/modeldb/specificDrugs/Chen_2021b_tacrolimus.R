@@ -252,7 +252,7 @@ Chen_2021b_tacrolimus <- function() {
     # (CL/F 25.4 %, V/F 51.5 %); converted with omega^2 = log(CV^2 + 1).
     # The alternative reading omega = CV/100 would give 0.0645 and 0.265.
     etalcl ~ 0.0625 # Table 2 BSV 'CL/F(%)' final = 25.4 (RSE 15%) [shrinkage 12%]; log(0.254^2 + 1) = 0.0625
-    etalvc ~ 0.2354 # Table 2 BSV 'V/F(%)' final = 51.5 (RSE 35%) [shrinkage 25%]; log(0.515^2 + 1) = 0.2354
+    etalvc ~ log(1 + 0.515^2)  # Table 2 BSV 'V/F(%)' final = 51.5 (RSE 35%) [shrinkage 25%]
 
     # ---- Residual error (Chen 2021 Table 2) ------------------------------
     # 'The residual error model was selected using an exponential method',
