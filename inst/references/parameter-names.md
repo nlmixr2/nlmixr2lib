@@ -1283,6 +1283,26 @@ source studied; unlike `cl_time_max` it has no plateau. Distinct from the additi
 `lcl_ss` / `lcl_time` decomposition, whose `cl_time` is a clearance arm with clearance
 units rather than a dimensionless-per-time rate.
 
+### cl_time_fday (**canonical fractional clearance increase compounded per dosing day**)
+- **Type:** paper-named-param
+- **Role:** Fraction by which clearance grows once per 24-h dosing day, compounded, in the
+form `cl <- cl_day1 * (1 + cl_time_fday)^floor(t / 24)`, where `cl_day1` is the clearance
+on the first dosing day and `t = 0` is the first dose. Dimensionless (fraction per dosing
+day); a source that reports a percentage per day is divided by 100. Carried on the linear
+scale in `ini()`, with no `l` form, because it is a signed rate (the same reason as
+`cl_time_slope`).
+- **Source aliases:**
+  - `Ind_Factor` / `Ind_factor` -- Chang 2023, 'factor for percent cumulative increase in CL/F per dosing day', printed as 1.1 percent (rifapentine) and 0.9 percent (rifabutin) in Table 5.
+- **Example models:** `Chang_2023_rifapentine_mouse.R`, `Chang_2023_rifabutin_mouse.R` (rifamycin autoinduction in mice dosed twice daily for 8 weeks: CL/F about 1.7-fold higher on day 52 than on day 1).
+- **Notes:** The geometric, per-day-stepped member of the time-varying clearance family,
+alongside the sigmoidal `cl_time_max` / `cl_t50` / `cl_time_hill`, the exponential
+`cl_exp_*`, the linear `cl_time_slope` and the step `ltclchange` / `lcl_late`. It differs
+from `cl_time_slope` in compounding (`(1 + f)^n`, not `1 + f * t`) and in stepping once
+per day rather than changing continuously. The day index `floor(t / 24)` equals the
+number of elapsed dosing days only when dosing is daily from `t = 0`; a schedule with
+dosing-free days needs the index rebuilt. Like `cl_time_slope` the form is unbounded, so
+it is valid only over the time span the source studied.
+
 ### cl_pna0 (**canonical value of a maturing parameter at postnatal age zero**)
 - **Type:** bare-pk
 - **Role:** Intercept of an Anderson-Holford postnatal-age maturation curve: the value the maturing parameter takes at PNA 0, in that parameter's own units. Log form `lcl_pna0`. Used in the additive maturation form `cl <- cl_pna0 + cl_matspan * PNA^hill / (pna50^hill + PNA^hill)`. It is the INTERCEPT, not the plateau; the plateau is `cl_pna0 + cl_matspan`.
