@@ -814,6 +814,8 @@ navbar:
         href: articles/Assmus_2025_benznidazole.html
       - text: "Benzylpenicillin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
+      - text: "Benzylpenicillin (Obura 2025)"
+        href: articles/Obura_2025_benzylpenicillin.html
       - text: "Benzylpenicillin (Shah 2023)"
         href: articles/Shah_2023_benzylpenicillin.html
       - text: "Benzylpenicillin (Yoo 2025)"
@@ -9606,6 +9608,7 @@ articles:
   - articles/Nyangwa_2026_pretomanid
   - articles/OBrien_2017_ramucirumab
   - articles/ObrinkHansen_2015_piperacillin
+  - articles/Obura_2025_benzylpenicillin
   - articles/Odongo_2015_sulfadoxinePyrimethamine
   - articles/Ogasawara_2019_fedratinib
   - articles/Ogasawara_2020_durvalumab
