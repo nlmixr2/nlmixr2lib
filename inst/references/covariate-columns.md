@@ -3659,6 +3659,28 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Zhang_2023_brazikumab_il22.R` (baseline serum IL-22 as the per-subject predictive-biomarker driver of the brazikumab drug effect on the CDAI input rate: `idrug = imax * IL22^hill / (ec50^hill + IL22^hill)` with `imax = 0.297`, `ec50` (the paper's IB50) `= 22.8 pg/mL`, `hill` (the paper's gamma) fixed at 20; the effect is gated by `ON_TREATMENT` because the drug term is zero in the placebo arm).
 - **Notes:** Sibling of `IL6`, but a biologically distinct cytokine and NOT an alias of it: IL-22 sits downstream of IL-23 whereas IL-6 is an independent pro-inflammatory mediator, and the two are measured on separate assays. Anti-IL-23 antibodies (brazikumab, risankizumab, guselkumab, mirikizumab) block IL-23 signalling and thereby suppress downstream IL-22 production, so for those drugs a post-dose IL-22 column is pharmacodynamically driven rather than a stable baseline covariate -- record the assay (Zhang 2023 used the R&D Systems Quantikine ELISA, quantifiable range 10-800 pg/mL in 100% serum) and the baseline-vs-time-varying status in each consuming model's `covariateData[[IL22]]$notes`. Distinct from `CRP`, which Zhang 2023 fits as a parallel alternative predictive biomarker in a separate model file.
 
+### IL15 (**canonical for serum interleukin-15 concentration**)
+- **Description:** Serum (or plasma) interleukin-15 (IL-15) concentration. Homeostatic common-gamma-chain cytokine that drives T-cell and NK-cell proliferation and survival; it rises sharply after lymphodepleting chemotherapy (fludarabine / cyclophosphamide) and is a recognised driver of CAR T-cell expansion. Both baseline and time-varying usages are covered; document per-model in `covariateData[[IL15]]$notes` whether the column is baseline-only or time-varying and when it was sampled relative to lymphodepletion and infusion.
+- **Units:** pg/mL (= ng/L).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used log-transformed and centred on a reference value. Reference values observed: 43 pg/mL (Wu 2025 KarMMa-3 median, day of ide-cel infusion; natural log).
+- **Source aliases:**
+  - `IL-15`, `IL_15`, `BIL15` -- punctuation / baseline-prefix variants.
+- **Example models:** `Wu_2025_idecabtageneVicleucel_auc.R` (natural log of baseline IL-15 centred on 43 pg/mL; slope 0.5157 on log AUC0-28D of the ide-cel transgene level).
+- **Notes:** Sibling of `IL6` / `IL22` with the same short analyte form; a distinct cytokine, not an alias. For cell therapies the baseline value is taken AFTER lymphodepletion (Wu 2025 sampled on the day of infusion), so it partly reflects the conditioning regimen rather than the patient's untreated state.
+
+### TNFA (**canonical for serum tumour necrosis factor alpha concentration**)
+- **Description:** Serum (or plasma) tumour necrosis factor alpha (TNF-alpha) concentration. Pro-inflammatory cytokine; used as a baseline inflammatory-tone covariate. Both baseline and time-varying usages are covered; document per-model in `covariateData[[TNFA]]$notes`.
+- **Units:** pg/mL (= ng/L).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used log2-transformed and centred on a reference value. Reference values observed: 27 pg/mL (Wu 2025 KarMMa-3 median, day of ide-cel infusion).
+- **Source aliases:**
+  - `TNF-alpha`, `TNF-a`, `TNFa`, `TNFalpha` -- printed forms.
+- **Example models:** `Wu_2025_idecabtageneVicleucel_pfs.R` (log2 baseline TNF-alpha centred on 27 pg/mL; log hazard ratio 0.33 per doubling for progression-free survival), `Wu_2025_idecabtageneVicleucel_dose_pfs.R` (0.406 per doubling).
+- **Notes:** Sibling of `IL6`; the `TNFA` token matches the existing `STIM_TNFA_NORM` network-input name. Distinct from `PRIOR_TNF` (prior anti-TNF biologic exposure), which is a treatment-history flag, not a concentration.
+
 ### IFNG (**canonical for total serum interferon-gamma concentration**)
 - **Description:** Total (free plus therapeutic-antibody-bound) serum or plasma interferon-gamma (IFN-gamma) concentration. Type II interferon produced by activated T cells and NK cells; the driver cytokine of the hyperinflammatory feedback loop in haemophagocytic lymphohistiocytosis (HLH) and macrophage activation syndrome (MAS), and the pharmacological target of anti-IFN-gamma antibodies. Both baseline and time-varying usages are covered; document per-model in `covariateData[[IFNG]]$notes` which applies, and whether the assay measures free or total (drug-bound plus free) IFN-gamma.
 - **Units:** pg/mL (= ng/L; the two labels are numerically equivalent).
@@ -3842,8 +3864,19 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Reference category:** n/a -- used with power scaling `(SBCMA / ref)^exponent`. Reference value observed: 50 ng/mL (Papathanasiou 2025 typical-patient definition).
 - **Source aliases:**
   - `SBCMABL` (baseline soluble BCMA) -- used in `Papathanasiou_2025_belantamab.R`.
-- **Example models:** `Papathanasiou_2025_belantamab.R` (ng/mL, reference 50; power exponents on initial CL +0.113, on ADC Vc +0.0401, on Imax +0.160), `Collins_2023_belantamab_mprotein.R` (ng/mL, reference 100; power exponent -0.414 on the effect-compartment rate constant KEO of the serum M-protein tumour-growth-inhibition model), `Rathi_2021_belantamab.R` (ng/mL, reference 100; power exponents +0.126 on ADC CL and +0.131 on the cys-mcMMAF central volume; source column `BSBCMA`).
+- **Example models:** `Papathanasiou_2025_belantamab.R` (ng/mL, reference 50; power exponents on initial CL +0.113, on ADC Vc +0.0401, on Imax +0.160), `Collins_2023_belantamab_mprotein.R` (ng/mL, reference 100; power exponent -0.414 on the effect-compartment rate constant KEO of the serum M-protein tumour-growth-inhibition model), `Rathi_2021_belantamab.R` (ng/mL, reference 100; power exponents +0.126 on ADC CL and +0.131 on the cys-mcMMAF central volume; source column `BSBCMA`)., `Wu_2025_idecabtageneVicleucel_auc.R` (ng/mL, natural log centred on 144.5; slope 0.1615 on log AUC0-28D of the ide-cel transgene level), `Wu_2025_idecabtageneVicleucel_pfs.R` (log2 centred on 144.5; log hazard ratio 0.28 per doubling), `Wu_2025_idecabtageneVicleucel_dose_orr.R`, `Wu_2025_idecabtageneVicleucel_dose_pfs.R`, `Wu_2025_idecabtageneVicleucel_dose_crs_anti_il6.R`, `Wu_2025_idecabtageneVicleucel_dose_crs_corticosteroid.R` (BCMA CAR-T idecabtagene vicleucel)
 - **Notes:** Specific scope because the column is meaningful only for drugs whose mechanism involves the BCMA receptor (and thus a circulating soluble-target pool). Reusing the name for another anti-BCMA agent is acceptable (extend the example-models list). For other oncology TMDD targets register a new canonical (e.g., `HER2_ECD` already exists for HER2; an analogous `SCD20`, `SCD38` would follow the same pattern). Multiple myeloma populations show sBCMA spanning roughly 2 to 2,000 ng/mL, so the (SBCMA/50)^exponent form should be evaluated with care over the full clinical range.
+
+### SCD137 (**canonical for soluble CD137 (4-1BB) concentration**)
+- **Description:** Baseline serum (or plasma) concentration of soluble CD137 (s4-1BB), the shed / alternatively spliced form of the TNF-receptor-superfamily co-stimulatory receptor CD137 (TNFRSF9) expressed on activated T and NK cells. An immune-activation marker; relevant to CAR T-cell products whose co-stimulatory domain is 4-1BB.
+- **Units:** ng/mL. Document per-model via `covariateData[[SCD137]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used log2-transformed and centred on a reference value. Reference values observed: 0.105 ng/mL (Wu 2025 KarMMa-3 median, day of ide-cel infusion).
+- **Source aliases:**
+  - `sCD137`, `s4-1BB`, `Baseline Soluble CD137` -- printed forms (Wu 2025 Tables S3, S7).
+- **Example models:** `Wu_2025_idecabtageneVicleucel_pfs.R` (log2 baseline sCD137 centred on 0.105 ng/mL; log hazard ratio 0.1 per doubling; in the published full model, removed by backward elimination from the final model).
+- **Notes:** Follows the soluble-receptor `S<target>` pattern of `SBCMA` (whose Notes anticipate `SCD20` / `SCD38`). Specific scope until a second paper uses it.
 
 ### SBLYS (**canonical for soluble B lymphocyte stimulator concentration**)
 - **Description:** Baseline serum (or plasma) concentration of soluble B lymphocyte stimulator (BLyS), also called B-cell activating factor (BAFF) or TNFSF13B. A soluble TNF-superfamily ligand that drives B-cell survival and maturation, is elevated in systemic lupus erythematosus and other autoimmune disease, and is the target of BLyS-directed and BLyS/APRIL dual-directed therapeutics (atacicept, belimumab, telitacicept, ianalumab, tabalumab). As a circulating soluble target it sequesters drug and so contributes to target-mediated drug disposition; in TMDD models it typically scales the baseline total-target pool rather than a clearance term.
@@ -4361,6 +4394,17 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
   - `dose` -- Savic 2022 Table 2 row label 'Nominal dose on Rbp, (dose/900)^TH'.
 - **Example models:** `Savic_2022_voxelotor.R` (nominal doses 500-1500 mg once daily in sickle cell disease; Figure 2c).
 - **Notes:** Member of the auto-approved `DOSE_<DRUG>_<UNITS>` family. A dedicated column rather than `podo()` because the source uses the NOMINAL dose of the regimen, not the amount of the most recent dose record. Savic 2022 does not say how its 500 mg twice-daily arm was coded (per administration or per day); every other arm was once daily, so the two readings coincide for them.
+
+### DOSE_IDECEL_MCELLS (**canonical for the actual infused idecabtagene vicleucel dose in millions of CAR+ T cells**)
+- **Description:** Actual infused dose of the BCMA-directed CAR T-cell product idecabtagene vicleucel (ide-cel), as the number of viable CAR+ T cells in millions (10^6). Time-fixed per subject (single infusion). Supplied as a covariate column to static dose-exposure and dose-response regressions; it is NOT an `amt`.
+- **Units:** 10^6 CAR+ T cells.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters linearly. Uncentred in the Wu 2025 linear and logistic regressions (the intercept is the zero-dose value); referenced to 450 x 10^6 in the packaged Cox relative-hazard model.
+- **Source aliases:**
+  - `Actual dose (x10^6 cells)` -- Wu 2025 Tables S4, S12-S15.
+- **Example models:** `Wu_2025_idecabtageneVicleucel_auc.R` (slope 0.0022 on log AUC0-28D), `Wu_2025_idecabtageneVicleucel_dose_orr.R`, `Wu_2025_idecabtageneVicleucel_dose_pfs.R`, `Wu_2025_idecabtageneVicleucel_dose_crs_anti_il6.R`, `Wu_2025_idecabtageneVicleucel_dose_crs_corticosteroid.R`.
+- **Notes:** Member of the auto-approved `DOSE_<drug>_<units>` family; `MCELLS` = millions of cells. KarMMa-3 target range 150-450 x 10^6 (up to 540 permitted); the approved range is 300-510 x 10^6.
 
 ### DOSE_TAF_MG (**canonical for total tenofovir alafenamide dose delivered in vivo by a subdermal implant**)
 - **Description:** Total mass of tenofovir alafenamide actually released in vivo by the subdermal implant(s) over the whole insertion period, in mg, estimated from the residual drug assayed in the used implants after removal. A per-subject constant describing the entire implant course, referenced to 17.3 mg.
@@ -9080,7 +9124,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:**
   - `MEDFL` -- used in `Collins_2023_belantamab_mprotein.R`; the same column name appears in the related GSK belantamab mafodotin exposure-response analyses.
   - `EMD`, `EMD_BL`, `EXTRAMED` -- plausible alternative NONMEM `$INPUT` forms.
-- **Example models:** `Collins_2023_belantamab_mprotein.R` (multiplicative factor 0.108 on the effect-compartment rate constant KEO of the serum M-protein tumour-growth-inhibition model when `DIS_EMD = 1`, per Collins 2023 Table 1; 95% CI 0.0617-0.187).
+- **Example models:** `Collins_2023_belantamab_mprotein.R` (multiplicative factor 0.108 on the effect-compartment rate constant KEO of the serum M-protein tumour-growth-inhibition model when `DIS_EMD = 1`, per Collins 2023 Table 1; 95% CI 0.0617-0.187)., `Wu_2025_idecabtageneVicleucel_auc.R` (extramedullary plasmacytoma; shift -0.5036 on log AUC0-28D of the ide-cel transgene level), `Wu_2025_idecabtageneVicleucel_orr.R` (shift -1.343 on the overall-response logit), `Wu_2025_idecabtageneVicleucel_pfs.R`, `Wu_2025_idecabtageneVicleucel_dose_orr.R`, `Wu_2025_idecabtageneVicleucel_dose_pfs.R`
 - **Notes:** Distinct from `DIS_MM` (active vs smoldering multiple-myeloma disease status) and `DIS_SMM` (smoldering multiple myeloma), and complementary to both: a patient with active multiple myeloma may or may not have extramedullary disease. Also distinct from the ulcerative-colitis disease-extent canonicals `DISEXT_EP` / `DISEXT_OTHER`, which describe the anatomical extent of inflammatory bowel disease rather than a plasma-cell malignancy outside the marrow. Covariate-effect parameters drop the `DIS_` prefix per the `DIS_CANCER` -> `e_cancer_*` convention; use `e_emd_<param>`. Scope: specific because the concept is mechanistically bound to plasma-cell malignancies.
 
 ### DIS_PNH (**canonical for paroxysmal nocturnal hemoglobinuria indicator**)
@@ -11704,6 +11748,39 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `Inoue_2025_valemetostat_orr_bicr.R`, `Inoue_2025_valemetostat_anemia.R`, `Inoue_2025_valemetostat_neutropenia.R`, `Inoue_2025_valemetostat_thrombocytopenia.R`, `Inoue_2025_valemetostat_teae_grade3.R`, `Inoue_2025_valemetostat_dose_reduction.R`, `Inoue_2025_valemetostat_dose_interruption.R` (all seven carry it as a main effect on the logit and an interaction on the exposure slope).
 - **Notes:** See `LINE_3L` for the full off-by-one warning, the `N prior regimens -> line N + 1` mapping rule and the 2026-09-11 naming ratification; the same caveats apply here. This indicator is open-ended on the right, so it pools 4L, 5L and beyond -- if a future source estimates separate effects for those, register a further parallel canonical (`LINE_5L_PLUS`, or explicit `LINE_4L` / `LINE_5L`) rather than redefining this one, following the precedent `LINE_1L` set.
 
+### LINE_4L (**canonical for fourth-line-therapy indicator**)
+- **Description:** 1 = the analyzed treatment is the subject's fourth line of therapy (4L), i.e. the subject received exactly **three** prior anticancer regimens; 0 = otherwise. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. Paired with `LINE_5L` to decompose a three-level prior-regimen covariate (2 / 3 / 4 prior regimens) whose reference level is two prior regimens (third line, both indicators 0) in `Wu_2025_idecabtageneVicleucel_*`.
+- **Source aliases:**
+  - `No. of prior MM regimens (3 vs 2)` -- Wu 2025 Tables S4, S7, S8, S10-S15. **Off-by-one applies**: three prior regimens means fourth line.
+- **Example models:** `Wu_2025_idecabtageneVicleucel_auc.R`, `Wu_2025_idecabtageneVicleucel_pfs.R`, `Wu_2025_idecabtageneVicleucel_orr.R`, `Wu_2025_idecabtageneVicleucel_crs_anti_il6.R`, `Wu_2025_idecabtageneVicleucel_crs_corticosteroid.R`, `Wu_2025_idecabtageneVicleucel_dose_orr.R`, `Wu_2025_idecabtageneVicleucel_dose_pfs.R`, `Wu_2025_idecabtageneVicleucel_dose_crs_anti_il6.R`, `Wu_2025_idecabtageneVicleucel_dose_crs_corticosteroid.R`.
+- **Notes:** The exact-line sibling anticipated in the `LINE_4L_PLUS` Notes; use it instead of `LINE_4L_PLUS` when a source estimates separate effects for four and five or more lines. See `LINE_3L` for the `N prior regimens -> line N + 1` mapping rule.
+
+### LINE_5L (**canonical for fifth-line-therapy indicator**)
+- **Description:** 1 = the analyzed treatment is the subject's fifth line of therapy (5L), i.e. the subject received exactly **four** prior anticancer regimens; 0 = otherwise. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. Paired with `LINE_4L`; see there.
+- **Source aliases:**
+  - `No. of prior MM regimens (4 vs 2)` -- Wu 2025 Tables S4, S7, S8, S10-S15. **Off-by-one applies**: four prior regimens means fifth line. KarMMa-3 capped enrolment at four prior regimens, so in Wu 2025 this level is also the top level.
+- **Example models:** `Wu_2025_idecabtageneVicleucel_auc.R`, `Wu_2025_idecabtageneVicleucel_pfs.R`, `Wu_2025_idecabtageneVicleucel_orr.R`, `Wu_2025_idecabtageneVicleucel_crs_anti_il6.R`, `Wu_2025_idecabtageneVicleucel_crs_corticosteroid.R`, `Wu_2025_idecabtageneVicleucel_dose_orr.R`, `Wu_2025_idecabtageneVicleucel_dose_pfs.R`, `Wu_2025_idecabtageneVicleucel_dose_crs_anti_il6.R`, `Wu_2025_idecabtageneVicleucel_dose_crs_corticosteroid.R`.
+- **Notes:** A source whose top level is open-ended (five or more) takes a `LINE_5L_PLUS` sibling instead.
+
+### REFRACTORY_TRIPLE_CLASS (**canonical for triple-class-refractory multiple-myeloma indicator**)
+- **Description:** 1 = the subject's multiple myeloma is refractory to all three major drug classes -- an immunomodulatory agent, a proteasome inhibitor and an anti-CD38 monoclonal antibody; 0 = not triple-class refractory. Time-fixed per subject (at baseline).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not triple-class refractory).
+- **Source aliases:**
+  - `Prior Triple Refractory (Yes vs No)`, `PRTRIR` -- Wu 2025 Tables S3, S7, S13 and Figure S4.
+- **Example models:** `Wu_2025_idecabtageneVicleucel_pfs.R` (log hazard ratio 0.61 for progression-free survival), `Wu_2025_idecabtageneVicleucel_dose_pfs.R` (0.414).
+- **Notes:** Distinct from triple-class EXPOSURE, which was an entry criterion of KarMMa-3 (every subject had received all three classes); this flag marks refractoriness (progression on or within 60 days of the therapy). Drug-specific refractoriness flags take `REFRACTORY_<drug>` siblings.
+
 ### NIVO_1Q3W (**canonical for nivolumab 1 mg/kg every 3 weeks co-administration indicator**)
 - **Description:** 1 = ipilimumab co-administered with nivolumab 1 mg/kg every 3 weeks; 0 = otherwise (monotherapy or any other nivolumab regimen).
 - **Units:** (binary)
@@ -14099,6 +14176,28 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Source aliases:** none.
 - **Example models:** `Ma_2020_sarilumab_das28crp.R` (multiplicative on DAS28-CRP Kout: `Kout * theta^PRICORT`), `Ma_2020_sarilumab_anc.R` (power-form on Emax: `Emax * 0.819^PRICORT`).
 - **Notes:** Ma 2020 applies it as a multiplicative effect of the form `param * theta^PRICORT` in both DAS28-CRP and ANC PD models. Generally applicable clinical-history indicator.
+
+### LAST_PRIOR_CORTICOSTEROID (**canonical for a corticosteroid in the last prior regimen indicator**)
+- **Description:** 1 = the subject's last prior anticancer regimen before the study treatment included a systemic corticosteroid; 0 = it did not. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0.
+- **Source aliases:**
+  - `Last Prior Med: Steroids (Yes vs No)`, `LSTSTR` -- Wu 2025 Tables S3, S7, S13 and Figure S4.
+- **Example models:** `Wu_2025_idecabtageneVicleucel_pfs.R` (log hazard ratio 1.16 for progression-free survival), `Wu_2025_idecabtageneVicleucel_dose_pfs.R` (0.385).
+- **Notes:** Distinct from `PRICORT` (ANY prior corticosteroid use) and from `CONMED_STEROID` (concomitant corticosteroid during the study): this flag describes only the most recent regimen before the study treatment. In multiple myeloma nearly every regimen carries dexamethasone (93.6% in Wu 2025), so estimates are made from very unbalanced groups. Member of the `LAST_PRIOR_<class>` pattern with `LAST_PRIOR_ANTICD38`.
+
+### LAST_PRIOR_ANTICD38 (**canonical for an anti-CD38 antibody in the last prior regimen indicator**)
+- **Description:** 1 = the subject's last prior anticancer regimen before the study treatment included an anti-CD38 monoclonal antibody (daratumumab or isatuximab); 0 = it did not. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0.
+- **Source aliases:**
+  - `Last Prior Med: Anti-CD38 Antibodies (Yes vs No)` -- Wu 2025 Tables S3, S7.
+- **Example models:** `Wu_2025_idecabtageneVicleucel_pfs.R` (log hazard ratio -0.32 for progression-free survival; in the published full model, removed by backward elimination from the final model).
+- **Notes:** See `LAST_PRIOR_CORTICOSTEROID`.
 
 ### PRIOR_ANTHRACYCLINE_DOSE (**canonical for prior cumulative anthracycline dose**)
 - **Description:** Cumulative dose of anthracycline chemotherapy received by the subject prior to the first dose analysed in the current popPK / popPK-PD model, expressed in doxorubicin-equivalent body-surface-area-normalised mg/m^2. Time-fixed per subject for the analysis window (the running cumulative anthracycline dose at the first observed dose).
@@ -18679,6 +18778,18 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** none -- the canonical name matches the source-paper column.
 - **Example models:** `Li_2019_abatacept.R` (additive shift on the logit-scale bioavailability: `logit_F = logit_F_TV + FORM_ABA_PHASE2 * (-1.16)`; Li 2019 Table 2 reports the Phase-2 formulation effect as -1.16 logit-scale units, mapping to an absolute F of ~0.56 vs the Phase-3 reference ~0.81).
 - **Notes:** Scoped specific because the Phase-2 vs Phase-3 formulation contrast is tied to the abatacept clinical-development timeline and does not generalise to other drugs. Future Phase-2-vs-commercial bioavailability comparisons for unrelated drug programmes should register their own `FORM_<drug>_PHASE2` canonical rather than reuse this entry. Distinct from the generic `FORM_TABLET` / `FORM_CAPSULE` / `FORM_SUSPENSION` family (oral solid-dosage manipulations) because the contrast here is two SC injectable formulations with different excipient pH.
+
+### FORM_IDECEL_B (**canonical for the idecabtagene vicleucel Formulation B product indicator**)
+- **Description:** 1 = the infused idecabtagene vicleucel (ide-cel) product was manufactured as Formulation B; 0 = Formulation A. Time-fixed per subject (single infusion).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Formulation A).
+- **Source aliases:**
+  - `Product Attributes (Formulation B vs A)`, `FORMULAT` -- Wu 2025 Tables S4, S7, S8, S10, S12-S15.
+  - `Formulation (sLVV vs aLVV)` -- Wu 2025 Table S11, the only table that names the formulations by their lentiviral-vector process; read as the same B-vs-A contrast.
+- **Example models:** `Wu_2025_idecabtageneVicleucel_auc.R` (shift -0.3939 on log AUC0-28D), `Wu_2025_idecabtageneVicleucel_pfs.R`, `Wu_2025_idecabtageneVicleucel_orr.R`, `Wu_2025_idecabtageneVicleucel_crs_anti_il6.R`, `Wu_2025_idecabtageneVicleucel_crs_corticosteroid.R`, `Wu_2025_idecabtageneVicleucel_dose_orr.R`, `Wu_2025_idecabtageneVicleucel_dose_pfs.R`, `Wu_2025_idecabtageneVicleucel_dose_crs_anti_il6.R`, `Wu_2025_idecabtageneVicleucel_dose_crs_corticosteroid.R`.
+- **Notes:** Member of the auto-approved `FORM_<drug>_<formulation>` family. Wu 2025 states only that the two formulations differ in the transduction media; 26% of the KarMMa-3 analysis set received Formulation B.
 
 ### FORM_PANO_CSF (**canonical for the panobinostat clinical service formulation indicator**)
 - **Description:** 1 = subject received the panobinostat clinical service formulation (CSF), the early-development oral formulation used in studies B2101, B2102 and B1101; 0 = subject received the final market image (FMI), the formulation intended for commercialization and used in every other oral study of the pooled analysis. Per-subject (study-fixed) indicator. In Savelieva 2015, 106 of the 494 orally dosed patients received the CSF and 388 the FMI. The indicator is irrelevant to intravenously dosed subjects, who bypass the depot entirely; the source control stream handles them with a separate `IF (IV.EQ.1)` branch that zeroes the absorption rate constant and the lag.
@@ -24244,8 +24355,19 @@ sibling such as `AUC_BAST_FW`.
 - **Reference category:** n/a -- the founding models take the natural log, `log(AUC_IDECEL)`, either linearly on the logit or as the argument of a sigmoid Emax on the logit. Reference values observed (Connarn 2023 Figure 3, digitised): per-target-dose medians (90% ranges) of log(AUC0-28) 14.06 (13.71-15.76) at 150, 14.65 (12.12-16.35) at 300 and 15.32 (13.47-16.47) at 450 x 10^6 CAR+ T cells; the whole KarMMa ER population spans roughly 11-18 on the log scale.
 - **Source aliases:**
   - `AUC0-28` / `log(AUC0-28)` -- printed forms in Connarn 2023 (Methods; Figure 3 x-axis).
-- **Example models:** `Connarn_2023_idecabtageneVicleucel_orr.R` (sigmoid Emax on the logit of the overall response rate, half-maximal at log(AUC0-28) = exp(2.64) = 14.0), `Connarn_2023_idecabtageneVicleucel_cr.R` (linear logit slope 0.67 per log unit for complete response), `Connarn_2023_idecabtageneVicleucel_crs_tocilizumab.R` (sigmoid Emax on the logit of CRS requiring tocilizumab, half-maximal at exp(2.61) = 13.6), `Connarn_2023_idecabtageneVicleucel_crs_corticosteroid.R` (linear logit slope 0.61 per log unit for CRS requiring corticosteroids).
+- **Example models:** `Connarn_2023_idecabtageneVicleucel_orr.R` (sigmoid Emax on the logit of the overall response rate, half-maximal at log(AUC0-28) = exp(2.64) = 14.0), `Connarn_2023_idecabtageneVicleucel_cr.R` (linear logit slope 0.67 per log unit for complete response), `Connarn_2023_idecabtageneVicleucel_crs_tocilizumab.R` (sigmoid Emax on the logit of CRS requiring tocilizumab, half-maximal at exp(2.61) = 13.6), `Connarn_2023_idecabtageneVicleucel_crs_corticosteroid.R` (linear logit slope 0.61 per log unit for CRS requiring corticosteroids)., `Wu_2025_idecabtageneVicleucel_orr.R` (KarMMa-3, droplet digital PCR; sigmoid Emax on the overall-response logit with E0 fixed at -5, increment 7.654, half-maximal at log(AUC0-28D) = 11.551, Hill 34), `Wu_2025_idecabtageneVicleucel_pfs.R` (log2(AUC0-28D / 1.3e6); log hazard ratio -0.43 per doubling for progression-free survival)
 - **Notes:** Specific scope because the column is tied to ide-cel and to the qPCR transgene assay. Member of the `AUC_<DRUG>` family (see `AUC_ANDRO`, `AUC_EMPA`): another CAR T-cell product, another window (AUC0-90, AUC0-inf) or another metric (Cmax of the transgene level, which correlated at r = 0.93 with AUC0-28 in KarMMa) takes a sibling canonical rather than this name. Connarn 2023 NCA conventions: Phoenix WinNonlin; values below the limit of quantification set to zero; the day-28 value log-interpolated when inside the data, or extrapolated with lambda-z when day 28 fell after the last numeric observation. Not interchangeable with the cells/L blood concentrations of the mechanistic `Singh_2021_idecabtageneVicleucel_human.R` model.
+
+### EXPANSION_RATE_IDECEL (**canonical for idecabtagene vicleucel early expansion rate Cmax/Tmax**)
+- **Description:** Per-subject early expansion rate of the BCMA-directed CAR T-cell product idecabtagene vicleucel (ide-cel): the peak peripheral-blood transgene level divided by the time to that peak (Cmax/Tmax), from noncompartmental analysis of CAR transgene copies per microgram of genomic DNA. Time-fixed per subject; supplied as data to static exposure-safety models as an EARLY exposure measure (CRS starts within days of infusion, before most of the AUC0-28 accrues).
+- **Units:** `copies/ug/day`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- the founding models take the natural log, uncentred, linearly on the logit. KarMMa-3 quartiles (Wu 2025 Figures S8-S9): 0-0.4, 0.4-1.3, 1.4-3.2, 3.4-11.6 x 10^4 copies/ug/day.
+- **Source aliases:**
+  - `Cmax/Tmax`, `Log(Cmax/Tmax)`, `expansion rate` -- printed forms in Wu 2025.
+- **Example models:** `Wu_2025_idecabtageneVicleucel_crs_anti_il6.R` (logit slope 0.6551 per log unit for CRS requiring tocilizumab or siltuximab), `Wu_2025_idecabtageneVicleucel_crs_corticosteroid.R` (logit slope 0.506 per log unit for CRS requiring corticosteroids).
+- **Notes:** Sibling of `AUC_IDECEL` (same product, same NCA, a different metric): per the `AUC_IDECEL` Notes another metric takes its own canonical. Wu 2025 measured transgene levels by droplet digital PCR in KarMMa-3 and states the values are not directly comparable with the KarMMa assay. Another CAR-T product's Cmax/Tmax takes a sibling `EXPANSION_RATE_<DRUG>`.
 
 ### DOSE_APIXABAN_MG (**canonical for the administered apixaban dose amount**)
 - **Description:** Apixaban dose amount administered on this dose record, in milligrams of apixaban free base. Carried as a model covariate (not merely as the event-table `amt`) because the source analysis makes relative bioavailability an explicit function of the dose level, so the dose amount has to be readable inside `model()`.
