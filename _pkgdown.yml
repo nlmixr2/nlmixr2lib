@@ -6724,6 +6724,8 @@ navbar:
         href: articles/Panjasawatwong_2020_antituberculosis_tbm.html
       - text: "Tcdd pbpk (Liu 2022)"
         href: articles/Liu_2022_dioxin_mixture_pbpk.html
+      - text: "Tce perc mc pbpk (Dobrev 2002)"
+        href: articles/Dobrev_2002_tce_perc_mc.html
       - text: "Tcell mouse (Khot 2019)"
         href: articles/Khot_2019_tcell_mouse.html
       - text: "Tebipenem (Ebihara 2025)"
@@ -8450,6 +8452,7 @@ articles:
   - articles/Djebli_2017_FV60165_rabbit
   - articles/Djebli_2017_alirocumab
   - articles/Djerada_2014_nefopam
+  - articles/Dobrev_2002_tce_perc_mc
   - articles/Dodds_2005_rfxiii_cyno
   - articles/Dodds_2013_psoriasis_biologics_mbma
   - articles/Dodds_2021_covid19_viralkinetic

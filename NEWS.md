@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Dobrev 2002 trichloroethylene / tetrachloroethylene / 1,1,1-trichloroethane mixture PBPK ([doi:10.1289/ehp.021101031](https://doi.org/10.1289/ehp.021101031)) -- occupational inhalation co-exposure in a 70 kg reference adult, with competitive inhibition of hepatic TCE oxidation.
+
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
 - Add Byun 2024 TMDD approximations for HL2351 and efineptakin alfa ([doi:10.1371/journal.pcbi.1012066](https://doi.org/10.1371/journal.pcbi.1012066)) -- eight models (full TMDD, mTMDD, qTMDD and the new first-order pTMDD for each drug) in healthy adults. Registers the `endosome` and `complex_fcrn` compartments and the `BL_IL7` covariate.
