@@ -2445,6 +2445,20 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Chen_2021_luspatercept.R` (exponential effects `exp(-0.0118 * (TRANSF_BURDEN_BL - 14))` on CL/F and `exp(-0.0141 * (TRANSF_BURDEN_BL - 14))` on V1/F; higher transfusion burden, lower CL/F and V1/F).
 - **Notes:** Distinct from any time-varying transfusion EVENT (an RBC transfusion given during the study, which is a dosing-like input to a hemoglobin model, not a baseline covariate) and from a binary transfusion-dependence indicator; a model that uses only "transfusion-dependent yes/no" should register a separate binary canonical. Promote to `general` if a second drug's model uses the same count covariate.
 
+
+### TRANSF_IRON_MGKGD (**canonical for daily transfusional iron loading per kg body weight**)
+- **Description:** Average daily iron delivered by red-blood-cell transfusions, in mg of iron per kg body weight per day. An iron-input rate for iron-overload models of transfusion-dependent anaemias (beta-thalassaemia, sickle-cell disease, myelodysplastic syndromes), computed from the transfusion regimen (units per interval) and the iron content per unit. Time-fixed per subject, or per period when the regimen changes.
+- **Units:** mg/kg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 for untransfused subjects. Reference values observed: Sakares 2025 Table S1, 0.31-0.62 mg/kg/day across transfusion-dependent thalassaemia datasets; Table S6 maps 1 unit every 4 weeks to 0.16, 1 unit/3 wk to 0.22, 2 units/4 wk to 0.32, 2 units/3 wk to 0.45 and 3 units/3 wk to 0.67 mg/kg/day.
+- **Source aliases:**
+  - `k_blood` -- Sakares 2025 Table 1 (as a rate in umol/L/h, values "Various").
+  - `Iron loading from blood transfusion (mg/kg/day)` -- Sakares 2025 Table S1.
+  - `Daily transfusional iron loading (mg/kg)` -- Sakares 2025 Table S6.
+- **Example models:** `Sakares_2025_deferasirox.R` (converted to a zero-order input into the chelatable-iron pool, `TRANSF_IRON_MGKGD * WT / 55.845 * 1000 / 24 / vol_cfe` umol/L/h).
+- **Notes:** Distinct from `TRANSF_BURDEN_BL` (a count of RBC units over a look-back window used as a severity covariate on PK) and from a transfusion event record. Conversion to an absolute iron input needs body weight; convert units-per-interval with the paper's iron content per unit (commonly about 200 mg per unit of packed red cells).
+
 ### WBC (**canonical for white blood cell count**)
 - **Description:** Total white blood cell count (baseline or time-varying). In chronic lymphocytic leukaemia (CLL) populations the value is elevated because circulating leukaemic B-cells make up the majority of the count, so WBC can serve as a biomarker of target-cell burden rather than general hematology.
 - **Units:** 10^9 cells/L (equivalent to 10^3 cells/uL). Document per-model via `covariateData[[WBC]]$units`.
@@ -2531,6 +2545,19 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
   - `Fe baseline`, `Febaseline` -- Zhang 2022 M2 / M3: serum total iron at 0 h before administration (CKD-5HD patients). Same orientation, no value transformation.
 - **Example models:** `Zhang_2022_ferricPyrophosphateCitrate_iv.R` (linear effect on Vd: `vc *= 1 + 0.000771 * (IRON_BL - 1110)`; Table 2 footnote a), `Zhang_2022_ferricPyrophosphateCitrate_dialysate.R` (linear effect on CL/F: `cl *= 1 - 0.000728 * (IRON_BL - 642)`; footnote b), `Zhang_2022_ferricPyrophosphateCitrate_predialyzer.R` (linear effect on CL/F: `cl *= 1 - 0.000702 * (IRON_BL - 660.8)`; footnote c).
 - **Notes:** Distinct from `FERRITIN_BL` (the iron-storage protein, ug/L) and from transferrin saturation; serum iron is the circulating transport pool. For iron-replacement products whose model output is the drug-derived increment above the endogenous baseline, `IRON_BL` is the baseline that must be added back to predict total serum iron. The covariate-effect parameter form is `e_iron_bl_<param>`.
+
+
+### LIVER_IRON_BL (**canonical for baseline liver iron concentration**)
+- **Description:** Per-subject pre-treatment liver iron concentration (LIC), the standard measure of body iron burden in transfusional iron overload, measured by MRI R2/R2* or by biopsy. Time-fixed per subject; typically sets the initial condition of a liver (storage) iron state.
+- **Units:** mg/g (mg iron per g liver dry weight)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- subject-level baseline. Reference values observed: healthy adults 0.98 mg/g (Sakares 2025 Table S1 footnote, from Obrzut 2020); transfusion-dependent thalassaemia 2.5-31.44 mg/g (Sakares 2025 Table S1).
+- **Source aliases:**
+  - `Baseline LIC (mg/g)` -- Sakares 2025 Table S1 and Table S6.
+  - `Initial storage iron concentration` -- Sakares 2025 Table 1, in umol/L (= LIC * 2886.2).
+- **Example models:** `Sakares_2025_deferasirox.R` (`sfe(0) = LIVER_IRON_BL * 2886.2` umol/L).
+- **Notes:** Spelled out rather than the clinical abbreviation `LIC`. A value reported per g of WET liver weight must be converted to dry weight before use. Distinct from `IRON_BL` (serum total iron), `FERRITIN_BL` (serum ferritin) and `ORGVOL_LIVER` (liver volume).
 
 ### RBC (**canonical for red blood cell (erythrocyte) count**)
 - **Description:** Red blood cell (erythrocyte) count (baseline or time-varying).
@@ -5690,6 +5717,18 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Tylutki_2018_amitriptyline_RR.R` (drives the sigmoid Emax shortening of the R-R interval, `rr = e0 + (rmax - e0) * CP_AMITRIPTYLINE_UM^hill / (ec50^hill + CP_AMITRIPTYLINE_UM^hill)` with e0 = 995.3 ms, rmax = 500.8 ms, ec50 = 0.4 umol/L and hill = 1.5).
 - **Notes:** Specific scope; amitriptyline-specific. The drug-specific naming follows the established `CP_<drug>_<units>` precedent (`CP_RIF_UM`, `CP_CARBAMAZEPINE_UM`, `CP_PHENOBARBITAL_UM`, `CP_OXY_NGML`), as `CP_MGL`'s own Notes prescribe for a new drug. **The column carries TOTAL plasma drug and must not be fed a free cardiac-tissue concentration**: Tylutki 2018 Eq. 5 converts between them as `Cfree,cardiac = Ctotal,plasma * Kp_ht * fu_ht` with `Kp_ht = 11.77` and `fu_ht = 0.0012` for amitriptyline (and `Kp_ht = 35.63`, `fu_ht = 0.001` for its active metabolite nortriptyline), a factor of about 1/71, and the same paper uses the free cardiac concentration for its QT endpoint while using total plasma for the R-R endpoint. A concentration reported in ng/mL must be divided by 277.4 before being supplied here. The natural input source is the full-PBPK amitriptyline model of Tylutki 2018 J Pharm Sci 107:1167-1177 (`doi:10.1016/j.xphs.2017.11.012`), which the founding paper imports unchanged and does not restate; no amitriptyline popPK model is in the nlmixr2lib registry, so users must supply their own trajectory. A future extraction driving a nortriptyline PD endpoint should register the sibling `CP_NORTRIPTYLINE_UM` (nortriptyline MW = 263.384 g/mol) rather than overloading this column, since the two analytes circulate together after amitriptyline dosing and are not interchangeable.
 
+
+### CP_DEFERASIROX_UM (**canonical for instantaneous total deferasirox plasma concentration as a time-varying iron-chelation driver**)
+- **Description:** Instantaneous TOTAL (bound + unbound) plasma concentration of the oral iron chelator deferasirox, supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Drives deferasirox-iron complex formation in iron-homeostasis PD models; the founding model multiplies it by the unbound fraction inside a second-order binding term (two deferasirox molecules per iron).
+- **Units:** umol/L (= uM; deferasirox MW = 373.4 g/mol, so 1 umol/L = 373.4 ng/mL).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for untreated periods, at which complex formation stops. Reference values observed: Sakares 2025 Table S4 simulated Cmax 41-155 umol/L across 10-35 mg/kg oral doses in transfusion-dependent thalassaemia.
+- **Source aliases:**
+  - `[DFXsys]` -- Sakares 2025 Eq. 3, 5 and 6, "the systemic DFX concentration after the iron interaction".
+- **Example models:** `Sakares_2025_deferasirox.R` (drives `kon * cfe * (CP_DEFERASIROX_UM * fu)^2` with fu = 0.004).
+- **Notes:** Specific scope; deferasirox-specific. Follows the `CP_<drug>_<units>` family (`CP_RIF_UM`, `CP_AMITRIPTYLINE_UM`), as `CP_MGL`'s Notes prescribe for a new drug. TOTAL, not unbound: the founding model applies fu itself, so supplying an unbound concentration understates the driver by about 250-fold. The founding source generated the profile with a Simcyp V22 whole-body PBPK model that is not reproducible from the publication. Distinct from `CSS_DFO` (deferoxamine steady-state average, ug/mL) and from the `Cc` output of the deferiprone PK models.
+
 ### CP_CARBAMAZEPINE_UM (**canonical for instantaneous carbamazepine concentration as a time-varying CYP-perpetrator covariate**)
 - **Description:** Instantaneous concentration of carbamazepine supplied directly as a time-varying covariate column rather than computed from a coupled PK model, used as the perpetrator-drug input to a CYP3A4 induction Emax term. Founding use is an in-vitro hepatocyte culture-medium concentration; the column is defined generally so that a plasma or unbound site-of-interaction concentration can use the same name, with the per-model `covariateData` entry stating which sense is required.
 - **Units:** umol/L (= uM; carbamazepine MW = 236.3 g/mol so 1 umol/L = 0.2363 mg/L).
@@ -8805,6 +8844,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `PNH`, `DPNH`); Lee 2024 calls the column "subject group (healthy subjects versus PNH patients)".
 - **Example models:** `Lin_2024_pozelimab.R` (additive-fractional +34.07% effect on Vc; no CL or Vp effect; reference category pools healthy volunteers and CHAPLE patients), `Lee_2024_eculizumab.R` (separately estimated typical values per subject group on Vc, on the terminal-complement-activity baseline E0 and on Imax, encoded as log-scale shifts `e_pnh_vc`, `e_pnh_rbase_tca`, `e_pnh_imax_tca`; reference category is the healthy phase I cohort), `Crass_2024_pegcetacoplan.R` (fractional linear effect on clearance, `cl * (1 + 0.257 * DIS_PNH)`, i.e. patients with PNH clear pegcetacoplan about 26% faster than the pooled non-PNH reference of healthy and renal-impairment participants; Crass 2024 ESM Table 3 theta 9. The indicator additionally selects which of three log-scale residual-error strata applies, jointly with `STUDY_PEGCET_PHASE3`), `Crass_2024_pegcetacoplan_hemoglobin.R`, `Crass_2024_pegcetacoplan_ldh.R` (the same clearance effect carried forward as a `fixed()` parameter into the two biomarker PK/PD variants; every subject in their PK/PD analysis set has DIS_PNH = 1, so the term is inert there and is retained only to keep the PK layer identical to the parent popPK model).
 - **Notes:** Paroxysmal nocturnal hemoglobinuria is a rare hematological disease characterized by uncontrolled complement activation on red blood cells; treated with C5-targeted complement inhibitors (eculizumab, ravulizumab, pozelimab). Scope: specific because the disease-pooling reference category is paper-defined.
+
+
+### DIS_THALASSEMIA_TD (**canonical for transfusion-dependent thalassaemia indicator**)
+- **Description:** 1 = transfusion-dependent thalassaemia (TDT; beta-thalassaemia major or other thalassaemia needing regular transfusions), 0 = healthy subject. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (healthy adult).
+- **Source aliases:**
+  - `TDT` / `Healthy` population columns -- Sakares 2025 Table 1 (PD parameters).
+- **Example models:** `Sakares_2025_deferasirox.R` (selects the iron absorption rate into the chelatable pool, 0.28 umol/L/h healthy versus 0.07 umol/L/h TDT).
+- **Notes:** Distinct from `TRANSF_BURDEN_BL` and `TRANSF_IRON_MGKGD`, which carry how much is transfused rather than the disease state. A model that separates non-transfusion-dependent thalassaemia should register a sibling indicator rather than set this one to 0.
 
 ### DIS_PH1 (**canonical for primary hyperoxaluria type 1 disease-state indicator**)
 - **Description:** 1 = patient with primary hyperoxaluria type 1 (PH1, autosomal-recessive `AGXT` mutation causing alanine-glyoxylate aminotransferase deficiency and hepatic oxalate overproduction), 0 = subject without PH1 pooled in the source analysis (primary hyperoxaluria type 2 or type 3 patient, or healthy volunteer). Time-fixed per subject.

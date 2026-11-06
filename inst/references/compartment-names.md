@@ -4487,6 +4487,15 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Example models:** `Angeli_2016_iron_hepcidin.R`.
 - **Notes:** The short `hep` form was chosen to mirror the paper's `He` notation and to follow the existing biomarker-state precedent of short lowercase names (`phe`, `pth`, `thb`, `psa`).
 
+
+### liver_iron (**canonical liver iron concentration PD output**)
+- **Type:** compartment
+- **Role:** Liver iron concentration (LIC, mg iron per g liver dry weight) as the PD output of iron-overload and iron-chelation models. Algebraic output of a storage-iron state, not a serum biomarker.
+- **Source aliases:**
+  - `LIC` -- Sakares 2025 (computed there as `[sFe] / 2886.2`, sFe in umol/L).
+- **Example models:** `Sakares_2025_deferasirox.R`.
+- **Notes:** Distinct from `iron` (serum iron) and from a liver drug-concentration compartment (`liver`). Baseline value enters through the covariate `LIVER_IRON_BL`.
+
 ### psa (**canonical prostate-specific antigen (lowercase form)**)
 - **Type:** compartment
 - **Role:** Prostate-specific antigen PD output (lowercase form alongside the canonical capitalised `PSA`).

@@ -1822,6 +1822,8 @@ navbar:
         href: articles/Hempel_2003_daunorubicin_liposomal.html
       - text: "Decitabine (Han 2015)"
         href: articles/Han_2015_decitabine.html
+      - text: "Deferasirox (Sakares 2025)"
+        href: articles/Sakares_2025_deferasirox.html
       - text: "Deferiprone (Bellanti 2014)"
         href: articles/Bellanti_2014_deferiprone.html
       - text: "Deferiprone (Bellanti 2017)"
@@ -9861,6 +9863,7 @@ articles:
   - articles/Sahota_2015_miridesap
   - articles/Said_2025_imatinib
   - articles/Sakamoto_2021_fluconazole
+  - articles/Sakares_2025_deferasirox
   - articles/Sakurai_2007_lansoprazole
   - articles/Saleh_2023_leicns_pk30_mouse_brain
   - articles/Salehi_2025_nicotine_pbpk
