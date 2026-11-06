@@ -844,6 +844,8 @@ navbar:
         href: articles/Wu_2012_bevacizumab_mouse.html
       - text: "Bevacizumab nsclc pbpk (Salgado 2022)"
         href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
+      - text: "Bevacizumab nsclc tgi (Schneider 2025)"
+        href: articles/Schneider_2025_bevacizumab_nsclc_tgi.html
       - text: "Bevacizumab pk (Papachristos 2020)"
         href: articles/Papachristos_2020_bevacizumab_pk.html
       - text: "Bevacizumab pkpd (Papachristos 2020)"
@@ -9915,6 +9917,7 @@ articles:
   - articles/Schmidt_2009_oxazolidinones
   - articles/Schmidt_2020_camptothecin
   - articles/Schmitt_2018_vinflunine
+  - articles/Schneider_2025_bevacizumab_nsclc_tgi
   - articles/Schoemaker_1996_low_molecular_weight_heparin_modeling
   - articles/Schoemaker_2017_brivaracetam
   - articles/Schoemaker_2018_levetiracetam
