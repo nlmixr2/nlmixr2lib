@@ -3764,6 +3764,8 @@ navbar:
         href: articles/BilbaoMeseguer_2021_levetiracetam.html
       - text: "Levetiracetam (Damnjanovic 2023)"
         href: articles/Damnjanovic_2023_pediatric_antiepileptics.html
+      - text: "Levetiracetam (Johnson 2025)"
+        href: articles/Johnson_2025_levetiracetam.html
       - text: "Levetiracetam (Shin 2017)"
         href: articles/Shin_2017_levetiracetam.html
       - text: "Levetiracetam (Wang 2012)"
@@ -8966,6 +8968,7 @@ articles:
   - articles/Jin_2026_colistinSulfate
   - articles/Joerger_2006_methotrexate
   - articles/Johnson_2011_olanzapine_rat
+  - articles/Johnson_2025_levetiracetam
   - articles/Johnson_2025_osimertinib
   - articles/Johnston_2019_empagliflozin
   - articles/Johnston_2021_empagliflozin
