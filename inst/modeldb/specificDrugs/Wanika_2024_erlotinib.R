@@ -1,5 +1,5 @@
 Wanika_2024_erlotinib <- function() {
-  description <- "In vitro (NSCLC cell lines; PC9, H4006, HCC827, A549, H1975, H1993). Mechanistic in vitro PK/PD model of erlotinib uptake into non-small cell lung cancer cells and inhibition of tumour cell viability over a 72-h exposure (Wanika 2024 Eqs 1-5, Table 2 erlotinib rows). The drug is applied to the culture medium at t = 0 (dose = medium concentration in uM) and exchanges first-order with the pooled intracellular space; the medium-to-cell and cell-to-medium terms are scaled by the medium:cell volume ratio, and the cell volume shrinks in proportion to viability (Eq 3), which concentrates the drug in the remaining cells. Viability follows an indirect-response model with zero-order production kin, inhibited by an Imax function of the intracellular concentration, and first-order loss kout. The per-curve Imax and IC50 are KNOWN inputs (digitised from each source study) supplied as covariates; the initial cell volume cancels out of the equations. Fitted in Monolix to 61 digitised concentration-viability curves; lognormal IIV on all five structural parameters, additive residual error. Sibling models: Wanika_2024_alectinib, Wanika_2024_crizotinib, Wanika_2024_gefitinib (same structure, fitted separately)."
+  description <- "In vitro (NSCLC cell lines; PC9, H4006, HCC827, A549, H1975, H1993). Mechanistic in vitro PK/PD model of erlotinib uptake into non-small cell lung cancer cells and inhibition of tumour cell viability over a 72-h exposure (Wanika 2024 Eqs 1-5, Table 2 erlotinib rows). The drug is applied to the culture medium at t = 0 (dose = medium concentration in uM) and exchanges first-order with the pooled intracellular space; the medium-to-cell and cell-to-medium terms are scaled by the medium:cell volume ratio, and the cell volume shrinks in proportion to viability (Eq 3), so a given uptake flux raises the intracellular concentration more and the drug held in lost cells leaves the system. Viability follows an indirect-response model with zero-order production kin, inhibited by an Imax function of the intracellular concentration, and first-order loss kout. The per-curve Imax and IC50 are KNOWN inputs (digitised from each source study) supplied as covariates; the initial cell volume cancels out of the equations. Fitted in Monolix to 61 digitised concentration-viability curves; lognormal IIV on all five structural parameters, additive residual error. Sibling models: Wanika_2024_alectinib, Wanika_2024_crizotinib, Wanika_2024_gefitinib (same structure, fitted separately)."
   reference <- paste(
     "Wanika L, Evans ND, Johnson M, Tomkinson H, Chappell MJ (2024).",
     "In vitro PK/PD modeling of tyrosine kinase inhibitors in non-small cell",
@@ -99,7 +99,10 @@ Wanika_2024_erlotinib <- function() {
     vcRel <- viability / rbase
 
     # Eqs 1-2: concentration states; each transfer term is scaled by the
-    # volume ratio so that drug amount is conserved between the two spaces.
+    # volume ratio, so the exchange itself conserves drug amount. Eq 2 has no
+    # dilution term, so drug in the cells lost as viability falls leaves the
+    # system: d/dt(vr * medium + vcRel * intracellular) =
+    # intracellular * d/dt(vcRel).
     d/dt(medium) <- -k_medium_intracellular * medium +
       k_intracellular_medium * (vcRel / vr) * intracellular
     d/dt(intracellular) <- k_medium_intracellular * (vr / vcRel) * medium -
