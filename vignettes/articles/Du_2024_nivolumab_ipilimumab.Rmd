@@ -83,9 +83,9 @@ PDL15M + PSM + SEXM + RACEM + LIBLDHR + strata(TRTP)`.
 ```{r source-trace, echo = FALSE}
 tibble::tribble(
   ~`Parameter / equation`, ~Value, ~`Source location`,
-  "e_cav_nivo_haz (CAV_NIVO, ug/mL)", "-0.0004655", "Table 1, 'Nivolumab daily C avg'",
-  "e_cav_ipi_haz (CAV_IPI, ug/mL)", "0.007693", "Table 1, 'Ipilimumab daily C avg'",
-  "e_cav_nivo_ipi_haz (CAV_NIVO x CAV_IPI)", "-0.000549", "Table 1, 'C avg nivolumab:C avg ipilimumab'",
+  "e_cav_nivo_haz (CAV_NIVOLUMAB, ug/mL)", "-0.0004655", "Table 1, 'Nivolumab daily C avg'",
+  "e_cav_ipi_haz (CAV_IPILIMUMAB, ug/mL)", "0.007693", "Table 1, 'Ipilimumab daily C avg'",
+  "e_cav_nivo_ipi_haz (CAV_NIVOLUMAB x CAV_IPILIMUMAB)", "-0.000549", "Table 1, 'C avg nivolumab:C avg ipilimumab'",
   "e_age_haz (per year, centred at 60)", "0.00414", "Table 1, 'Age'; centring from Figure 1 caption",
   "e_wt_haz (per kg, centred at 75)", "0.006033", "Table 1, 'Body weight'; centring from Figure 1 caption",
   "e_line_2l_haz (1 - LINE_1L)", "-0.2079", "Table 1, 'Line of therapy [>=2L:1L]'",
@@ -112,7 +112,7 @@ table with one observation row per scenario; `time` is only an index.
 
 ```{r helper}
 ref_patient <- data.frame(
-  CAV_NIVO = 0, CAV_IPI = 0, AGE = 60, WT = 75, LINE_1L = 1,
+  CAV_NIVOLUMAB = 0, CAV_IPILIMUMAB = 0, AGE = 60, WT = 75, LINE_1L = 1,
   TUMTP_MEL_ADJUVANT = 0, TUMTP_OTHER = 0, PDL1_TUM_POS = 0,
   PDL1_TUM_MISSING = 0, ECOG_GE1 = 0, SEXF = 0, RACE_ASIAN = 0,
   RACE_BLACK = 0, RACE_OTHER = 0, LDHR = 1
@@ -399,33 +399,33 @@ profiles <- bind_rows(
   tibble(
     regimen = "Adult, nivolumab 240 mg q2w",
     AGE = 60, WT = 75, day = seq_len(n_days) - 1L,
-    CAV_NIVO = solve_cavg(nivo_pk, pk_events(seq(0, n_days - 1, by = 14), 240,
+    CAV_NIVOLUMAB = solve_cavg(nivo_pk, pk_events(seq(0, n_days - 1, by = 14), 240,
                                              nivo_cov(60, 75, 55, 0))),
-    CAV_IPI = 0
+    CAV_IPILIMUMAB = 0
   ),
   tibble(
     regimen = "Adult, N1I3 then nivolumab 240 mg q2w",
     AGE = 60, WT = 75, day = seq_len(n_days) - 1L,
-    CAV_NIVO = solve_cavg(nivo_pk, pk_events(c(induction, maint_q2w),
+    CAV_NIVOLUMAB = solve_cavg(nivo_pk, pk_events(c(induction, maint_q2w),
                                              c(rep(75, 4), rep(240, length(maint_q2w))),
                                              nivo_cov(60, 75, 55, 1))),
-    CAV_IPI = solve_cavg(ipi_pk, pk_events(induction, 225, ipi_cov(60, 55)))
+    CAV_IPILIMUMAB = solve_cavg(ipi_pk, pk_events(induction, 225, ipi_cov(60, 55)))
   ),
   tibble(
     regimen = "Adolescent 40 kg, N1I3 then nivolumab 240 mg q2w",
     AGE = 15, WT = 40, day = seq_len(n_days) - 1L,
-    CAV_NIVO = solve_cavg(nivo_pk, pk_events(c(induction, maint_q2w),
+    CAV_NIVOLUMAB = solve_cavg(nivo_pk, pk_events(c(induction, maint_q2w),
                                              c(rep(40, 4), rep(240, length(maint_q2w))),
                                              nivo_cov(15, 40, 32, 1))),
-    CAV_IPI = solve_cavg(ipi_pk, pk_events(induction, 120, ipi_cov(15, 32)))
+    CAV_IPILIMUMAB = solve_cavg(ipi_pk, pk_events(induction, 120, ipi_cov(15, 32)))
   )
 )
-stopifnot(nrow(profiles) == 3 * n_days, all(is.finite(profiles$CAV_NIVO)))
+stopifnot(nrow(profiles) == 3 * n_days, all(is.finite(profiles$CAV_NIVOLUMAB)))
 ```
 
 ```{r exposure-plot, fig.cap = "Typical daily Cavg of nivolumab and ipilimumab from the Hu 2024 population PK models, used as the time-varying exposure inputs of the Du 2024 hazard model."}
 profiles |>
-  pivot_longer(c(CAV_NIVO, CAV_IPI), names_to = "analyte", values_to = "cavg") |>
+  pivot_longer(c(CAV_NIVOLUMAB, CAV_IPILIMUMAB), names_to = "analyte", values_to = "cavg") |>
   ggplot(aes(day / 7, cavg, colour = regimen)) +
   geom_line() +
   facet_wrap(~analyte, scales = "free_y") +
@@ -442,13 +442,13 @@ hr_cov <- profiles |>
   mutate(.row = row_number())
 exposure_only <- hr_eval(
   bind_rows(lapply(seq_len(nrow(hr_cov)), function(i) {
-    scenario(CAV_NIVO = hr_cov$CAV_NIVO[i], CAV_IPI = hr_cov$CAV_IPI[i])
+    scenario(CAV_NIVOLUMAB = hr_cov$CAV_NIVOLUMAB[i], CAV_IPILIMUMAB = hr_cov$CAV_IPILIMUMAB[i])
   }))
 )
 total <- hr_eval(
   bind_rows(lapply(seq_len(nrow(hr_cov)), function(i) {
     scenario(
-      CAV_NIVO = hr_cov$CAV_NIVO[i], CAV_IPI = hr_cov$CAV_IPI[i],
+      CAV_NIVOLUMAB = hr_cov$CAV_NIVOLUMAB[i], CAV_IPILIMUMAB = hr_cov$CAV_IPILIMUMAB[i],
       AGE = hr_cov$AGE[i], WT = hr_cov$WT[i]
     )
   }))
@@ -521,7 +521,7 @@ Figure 3).
 * **PD-L1.** `PDL1_TUM_POS` marks PD-L1 at or above the paper's 5% threshold;
   the model switches it off when `PDL1_TUM_MISSING = 1`, so the two indicators
   cannot both act.
-* **Exposure inputs.** `CAV_NIVO` and `CAV_IPI` are daily averages (AUC over
+* **Exposure inputs.** `CAV_NIVOLUMAB` and `CAV_IPILIMUMAB` are daily averages (AUC over
   each calendar day divided by one day) in ug/mL, 0 when the antibody is not
   given. The illustration above takes them from the typical-value Hu 2024
   models with 30-minute infusions and starts nivolumab maintenance three

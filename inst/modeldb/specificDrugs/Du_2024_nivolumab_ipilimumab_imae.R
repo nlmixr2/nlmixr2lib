@@ -44,12 +44,12 @@ Du_2024_nivolumab_ipilimumab_imae <- function() {
   vignette <- "Du_2024_nivolumab_ipilimumab"
   units <- list(
     time = "n/a (semiparametric stratified Cox regression; the baseline hazards and hence the time scale are left unspecified by the method)",
-    dosing = "n/a (no dose events; exposure enters as the time-varying CAV_NIVO and CAV_IPI data columns)",
+    dosing = "n/a (no dose events; exposure enters as the time-varying CAV_NIVOLUMAB and CAV_IPILIMUMAB data columns)",
     concentration = "hr (relative hazard of a first gr2+ IMAE, unitless; also lhr, the linear predictor)"
   )
 
   covariateData <- list(
-    CAV_NIVO = list(
+    CAV_NIVOLUMAB = list(
       description = "Time-varying daily average serum nivolumab concentration (daily Cavg)",
       units = "ug/mL",
       type = "continuous",
@@ -67,7 +67,7 @@ Du_2024_nivolumab_ipilimumab_imae <- function() {
       ),
       source_name = "CAVGN"
     ),
-    CAV_IPI = list(
+    CAV_IPILIMUMAB = list(
       description = "Time-varying daily average serum ipilimumab concentration (daily Cavg)",
       units = "ug/mL",
       type = "continuous",
@@ -75,7 +75,7 @@ Du_2024_nivolumab_ipilimumab_imae <- function() {
       notes = paste(
         "Enters LINEARLY, uncentred; 0 for patients and days with no",
         "ipilimumab (nivolumab monotherapy, as in the Figure 2b",
-        "simulation). Same daily-average construction as CAV_NIVO.",
+        "simulation). Same daily-average construction as CAV_NIVOLUMAB.",
         "Ipilimumab is the significant exposure driver (HR 1.008 per",
         "ug/mL, 95% CI 1.001-1.014). Appendix S1 Table S4 source column",
         "CAVGI."
@@ -266,9 +266,9 @@ Du_2024_nivolumab_ipilimumab_imae <- function() {
     # switches the >= 5% term off so that the two PD-L1 levels stay
     # mutually exclusive.
     # ------------------------------------------------------------------
-    lhr_exposure <- e_cav_nivo_haz * CAV_NIVO +
-      e_cav_ipi_haz * CAV_IPI +
-      e_cav_nivo_ipi_haz * CAV_NIVO * CAV_IPI
+    lhr_exposure <- e_cav_nivo_haz * CAV_NIVOLUMAB +
+      e_cav_ipi_haz * CAV_IPILIMUMAB +
+      e_cav_nivo_ipi_haz * CAV_NIVOLUMAB * CAV_IPILIMUMAB
 
     lhr_baseline <- e_age_haz * (AGE - 60) +
       e_wt_haz * (WT - 75) +
