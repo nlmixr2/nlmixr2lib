@@ -3623,6 +3623,22 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Example models:** `Kudryashova_2024_nsclc_survival_mbma.R` (founding example; NSCLC stage I 0.87, II 0.87, IIIa 0.77, IIIb/IV 0.57).
 - **Notes:** Ratified by the maintainers 2026-09-11 at SPECIFIC scope: it may later consolidate into a broader health-economics family, so do not treat it as a settled general canonical. Named for the multiplier, not for its product; `QALY_<stage>` was rejected because the values are dimensionless weights that multiply life-years to give QALYs.
 
+### gomp_alpha_<bm>, gomp_beta_<bm>, gomp_gamma_<bm> (**canonical SReFT log-Gompertz biomarker shape parameters**)
+- **Type:** paper-named-param
+- **Role:** Shape parameters of the log-Gompertz curve that SReFT (Statistical Restoration of Fragmented Time course) fits to each biomarker on its log-standardized scale: `Y = gomp_alpha + gomp_beta / gomp_gamma * (exp(gomp_gamma * ftdis * t) - 1)`, with the linear limit `gomp_alpha + gomp_beta * ftdis * t` at `gomp_gamma = 0`. `gomp_alpha` is the level at disease time 0 (log-standardized, unitless), `gomp_beta` the initial slope (1/time) and `gomp_gamma` the curvature rate (1/time; positive accelerates, negative decelerates). `<bm>` is a short lower-case biomarker token (`updrs`, `scopaaut`, `datscan`, `asyn`). Random effects are additive (`etagomp_alpha_<bm>` etc.), declared in `paper_specific_etas` because the parameters are signed and not log-transformed.
+- **Source aliases:**
+  - `alpha`, `beta`, `gamma` (per biomarker j: `alpha_ij`, `beta_ij`, `gamma_ij`) -- Jin 2024 Methods Equation 1 and Table 2; `a(bm)`, `b(bm)`, `c(bm)` in the authors' Data S1 Fortran PRED.
+- **Example models:** `Jin_2024_parkinson_progression.R` (founding example; four Parkinson's disease biomarkers).
+- **Notes:** Ratified by the maintainers 2026-11-06. The `gomp_` prefix keeps the bare Greek names clear of `lalpha` / `alpha` (distribution-phase rate constants) and of `beta_<x>` effect names. The same group's SReFT analyses of Alzheimer's disease and COPD use the same three-parameter curve, so later SReFT models reuse this family with their own biomarker tokens.
+
+### ftdis (**canonical SReFT disease-time progression factor**)
+- **Type:** paper-named-param
+- **Role:** Per-subject multiplier on disease time in a SReFT disease-progression model, `ftdis = 1 + sum_k e_<cov_k>_ftdis * COV_k`, so every biomarker is evaluated at `ftdis * t`. `ftdis < 1` is slower progression through all biomarkers at once (a covariate effect of -0.2 is 20% slower). Derived in `model()` from the covariate-effect parameters `e_<cov>_ftdis`; not itself an `ini()` parameter.
+- **Source aliases:**
+  - `dT` (`dT,i`, `dT,covariate`) -- Jin 2024 Methods Equation 1 and Table 2 'Effect on progression (dT)'; `covt` in the authors' Data S1 Fortran PRED.
+- **Example models:** `Jin_2024_parkinson_progression.R` (founding example; effects of female sex, LRRK2 G2019S and LRRK2 rs76904798).
+- **Notes:** Ratified by the maintainers 2026-11-06. Distinct from a disease-time offset: SReFT also aligns each subject on the disease-time axis by an offset that it solves by an inverse-Gompertz average rather than estimating as a random effect, so the library's SReFT models take disease time as the model time and do not carry the offset.
+
 ## Nested (multi-level) random effects
 
 model in this library to carry a second hierarchical level of random effects.
