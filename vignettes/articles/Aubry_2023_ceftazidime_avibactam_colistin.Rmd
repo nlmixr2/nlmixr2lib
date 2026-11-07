@@ -178,11 +178,21 @@ grid_events <- function(panels, times) {
   ev$cmt <- "cfu"
   dplyr::arrange(ev, id, time)
 }
+# The models have no between-tube variability, and each `id` is a
+# drug-concentration scenario, not a subject. rxode2 warns about a
+# multi-subject solve without omega; only that message is muffled.
+muffle_no_omega <- function(w) {
+  if (grepl("multi-subject simulation without", conditionMessage(w), fixed = TRUE)) {
+    invokeRestart("muffleWarning")
+  }
+}
 solve_typical <- function(mod, panels, times = seq(0, 30, by = 0.25)) {
   ev <- grid_events(panels, times)
-  sim <- rxode2::rxSolve(rxode2::zeroRe(mod), ev, keep = c("caz", "col"),
-                         returnType = "data.frame")
-  sim
+  withCallingHandlers(
+    rxode2::rxSolve(rxode2::zeroRe(mod, "sigma"), ev, omega = NA,
+                    keep = c("caz", "col"), returnType = "data.frame"),
+    warning = muffle_no_omega
+  )
 }
 ```
 
