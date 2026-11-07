@@ -2546,7 +2546,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** 6-minute walk-test distance PD output (Hamuro 2017 DMD).
 - **Source aliases:** none.
-- **Example models:** `Hamuro_2017_DMD_6MWT.R`.
+- **Example models:** `Hamuro_2017_DMD_6MWT.R`, `Kim_2023_DMD_6MWD_FFVL.R`, `Kim_2023_DMD_6MWD_FFSOL.R`.
 
 ### nsaa (**canonical North Star Ambulatory Assessment total-score output compartment**)
 - **Type:** compartment
@@ -2554,6 +2554,20 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** `NSAA` -- Hibma 2023 Equation 1.
 - **Example models:** `Hibma_2023_DMD_NSAA.R` (founding example; modified indirect response integrated over age from birth, `d/dt(nsaa) <- kin - kout * t * nsaa` with `nsaa(0) = 0`, joined to a log-normal loss-of-ambulation hazard).
 - **Notes:** Follows the lowercase run-together instrument convention of `pasi` / `ipss` / `das28`. The founding model lets the predicted score exceed 34 (the scale's ceiling is a test limit, not a limit on motor function); the authors capped simulated scores at 34 only in post-processing. Distinct from `walk_dist` (6-minute walk distance, a different DMD ambulatory endpoint).
+
+### ff_vl (**canonical vastus lateralis muscle fat fraction output**)
+- **Type:** compartment
+- **Role:** Fat fraction of the vastus lateralis muscle measured by single-voxel MR spectroscopy, fat / (fat + water) peak area, as a fraction from 0 to 1. A disease-progression output for muscular dystrophies, where fat replaces muscle as the disease advances.
+- **Source aliases:** `FFVL` -- Kim 2023.
+- **Example models:** `Kim_2023_DMD_6MWD_FFVL.R` (founding example; sigmoid Emax function of age fitted jointly with `walk_dist`).
+- **Notes:** A fraction, not a percentage. Further muscles extend the pattern as `ff_<muscle>` (`ff_sol`); the matching baseline covariate is `FF_<MUSCLE>_BL`. Distinct from `steatosis`, a hepatic histology grade.
+
+### ff_sol (**canonical soleus muscle fat fraction output**)
+- **Type:** compartment
+- **Role:** Fat fraction of the soleus muscle measured by single-voxel MR spectroscopy, fat / (fat + water) peak area, as a fraction from 0 to 1.
+- **Source aliases:** `FFSOL` -- Kim 2023.
+- **Example models:** `Kim_2023_DMD_6MWD_FFSOL.R` (founding example; sigmoid Emax function of age fitted jointly with `walk_dist`).
+- **Notes:** A fraction, not a percentage. Sibling of `ff_vl`.
 
 ### fev1pp (**canonical FEV1 percent predicted**)
 - **Type:** compartment

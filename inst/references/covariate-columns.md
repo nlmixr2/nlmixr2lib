@@ -406,6 +406,17 @@ notes: <free text>
 - **Example models:** `Wahlby_2004_gentamicin.R` (replaces time-varying BSA in the final-model V1 equation V1 = 8.63 * BSA_BASE * (ALB/34)^-0.41 because BBSA was the better predictor than time-varying BSA, RSE 2.5% vs 110% on delta-BSA), `Garrett_2019_inotuzumab.R` (power exponents 1.54 on `cl_exp_inf` and 1.64 on `cl_exp_component`, both centered on the 1.84 m^2 population median, plus a LINEAR effect on `vc` in the centered deviation, `1 + 0.774 * (BSA_BASE - 1.84)`; baseline BSA displaced body weight in that paper's covariate screen and, because InO is dosed per m^2, the retained effect supports BSA-based dosing).
 - **Notes:** Specific scope because the BCOV/DCOV split is a paper-defined modelling choice (Wahlby 2004 demonstrated that BBSA was the relevant predictor for gentamicin V1 because delta-BSA was uninformative). Garrett 2019 ratifies the same baseline-BSA column with consistent semantics in a second, unrelated therapeutic area (oncology ADC popPK), and is a reminder that the functional form attached to this covariate is not always a power model -- read the source equation rather than assuming `(BSA_BASE / ref)^theta`. Promote to `general` if a third paper ratifies it.
 
+### AGE_BASE (**canonical for per-subject baseline age (time-fixed, paired with a time-varying age)**)
+- **Description:** The subject's age at the baseline (first or derived-baseline) visit, in years, held constant over the subject's records. Needed when a model's time axis is the subject's current age -- natural-history disease-progression models fitted against age at assessment -- so that a covariate effect of age at entry cannot be confused with the time-varying age that drives the trajectory itself. The `<X>_BASE` suffix marks a time-fixed baseline paired with a time-varying column of the same quantity (here the current age, `AGE` or the model time), as for `WT_BASE` and `CRCL_BASE`.
+- **Units:** years
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used as a continuous power term `(AGE_BASE / ref)^beta`, or thresholded inside `model()` to a baseline-age group. Thresholds observed: young if `AGE_BASE < 7` years (Kim 2023, splitting every baseline-score covariate effect by baseline-age group; the paper does not say which side of the cut-off exactly 7.0 years falls on).
+- **Source aliases:**
+  - `BAGE` (baseline age; `BAGECAT` = 1 young / 2 old is the derived group) -- Kim 2023 Supplement 2 Monolix data columns; used in `Kim_2023_DMD_6MWD_FFVL.R` and `Kim_2023_DMD_6MWD_FFSOL.R`.
+- **Example models:** `Kim_2023_DMD_6MWD_FFVL.R`, `Kim_2023_DMD_6MWD_FFSOL.R` (founding examples; model time = age at assessment, `AGE_BASE < 7` selects the young-group exponent and centring value of each baseline-score power covariate).
+- **Notes:** Use `AGE_BASE`, never `AGE`, when the age at entry acts as a covariate in a model whose time axis is the current age: a user who supplies the time-varying visit age in `AGE` would make the baseline effect drift with time. Distinct from `AGE`, the subject's age at each record. Group thresholds belong in the model, not in a pre-thresholded indicator column, so the boundary choice is visible in `model()`.
+
 ### BSA_AFFECTED_PCT (**canonical for baseline percentage of body surface area affected by a skin disease**)
 - **Description:** Per-subject baseline percentage of total body surface area affected by a skin disease (psoriatic plaque, atopic-dermatitis lesion, vitiligo, burn). Time-fixed baseline value from the screening / baseline skin assessment. An extent-of-disease measure, not a body-size measure.
 - **Units:** %
@@ -3193,6 +3204,39 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
   - `PBI` -- the NONMEM `$INPUT` name and dataset-excerpt column label in the Karlsson 2010 Barthel Index control stream.
 - **Example models:** `Karlsson_2010_acute_stroke_bi.R` (enters the improvement probability, `e_score_bi_prev_p_improve = 0.0113` per point; the not-maximum-score probability, `e_score_bi_prev_p_notmax = -0.0984` per point; the logit-scale relative-improvement magnitude, `e_score_bi_prev_impr = 0.0156` per point; and BOTH reconstruction rules `bi_improve = SCORE_BI_PREV + imz * (100 - SCORE_BI_PREV)` and `bi_decline = (1 - dez) * (SCORE_BI_PREV + 1)`; founding example).
 - **Notes:** Registered in the previous-occasion form only, because the founding paper had no admission Barthel Index to register as a baseline: assessment at admission was not possible "for practical and ethical reasons", and the authors tested imputed baselines between 0 and 20 (static and randomly drawn) and rejected them for insufficient predictive power, modelling the BI from day 7 onward instead (Karlsson 2010 Data Preparation). A future paper that does report a baseline Barthel Index should register a sibling `SCORE_BI` in the `SCORE_<INSTRUMENT>` family rather than overload this name. Orientation is the opposite of `SCORE_NIHSS` (higher is better here, worse there), which is why covariate signs on the previous score are mirrored between the two Karlsson 2010 models -- see the Table II footnote a quoted in the `SCORE_NIHSS` entry. The coarse five-point granularity is load-bearing rather than cosmetic: the authors attribute the BI model's weaker parameter precision to the scale offering only 20 attainable values against the NIHSS's 42. Ratified canonically alongside the Karlsson 2010 acute-stroke disease-progression extraction.
+
+### WALK_DIST_BL (**canonical for the subject's own baseline 6-minute walk distance supplied as a covariate to a model whose output is 6MWD**)
+- **Description:** The subject's own 6-minute walk distance (metres) at the baseline visit, supplied as a time-fixed covariate column to a model whose output state is also the 6-minute walk distance (`walk_dist` in `inst/references/compartment-names.md`). A member of the `<MEASURE>_BL` family (`FEV1_BL`, `QTC_BL`, `MAP_BL`, `HGB_BL`): the baseline of a measurement that the same model predicts, named after the output canonical uppercased.
+- **Units:** m
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- entered as a power term `(WALK_DIST_BL / ref)^beta` centred on a cohort median. Reference values observed: 363 m (Kim 2023, boys younger than 7 years at baseline), 367 m and 364 m (Kim 2023, older boys, in the FFVL and FFSOL data sets respectively).
+- **Source aliases:**
+  - `BSSMWT`, `BSSMWTYOUNG`, `BSSMWTOLD`, `BS6MWD` -- Kim 2023 Supplement 2 Monolix columns and Figure 2 label (the YOUNG / OLD columns are the same value split by baseline-age group; derive the group from `AGE_BASE`).
+- **Example models:** `Kim_2023_DMD_6MWD_FFVL.R`, `Kim_2023_DMD_6MWD_FFSOL.R` (founding examples; baseline 6MWD drives the 6MWD intercept with exponents 0.63-0.9 and modifies the fat-fraction trajectory parameters, separately for boys younger and older than 7 years at baseline).
+- **Notes:** Record which visit counts as baseline in `covariateData[[WALK_DIST_BL]]$notes`; Kim 2023 used a derived baseline, the first visit at which all modelled endpoints were available. Scope specific until a second model ratifies the semantics.
+
+### FF_VL_BL (**canonical for the subject's own baseline vastus lateralis fat fraction supplied as a covariate to a model whose output is that fat fraction**)
+- **Description:** The subject's own vastus lateralis muscle fat fraction at the baseline visit, measured by MR spectroscopy as fat / (fat + water) peak area, supplied as a time-fixed covariate column to a model whose output state is the same fat fraction (`ff_vl`). A member of the `<MEASURE>_BL` family named after the output canonical uppercased.
+- **Units:** fraction (0-1)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- entered as a power term `(FF_VL_BL / ref)^beta`. Reference values observed: 0.04 (Kim 2023, boys younger than 7 years at baseline) and 0.17 (older boys).
+- **Source aliases:**
+  - `BSFFVL`, `BSFFVLYOUNG`, `BSFFVLOLD` -- Kim 2023 Supplement 2 Monolix columns (split by baseline-age group; derive the group from `AGE_BASE`).
+- **Example models:** `Kim_2023_DMD_6MWD_FFVL.R` (founding example; baseline FFVL shortens the ages at half-maximal 6MWD decrease and FFVL increase, with exponents -0.05 to -0.17).
+- **Notes:** A fraction, not a percentage: a source reporting percent fat must be divided by 100. MR spectroscopy (single-voxel) and imaging-based (Dixon) fat fractions of the same muscle are not interchangeable; record the method per model. Distinct from `FF_SOL_BL` (soleus).
+
+### FF_SOL_BL (**canonical for the subject's own baseline soleus fat fraction supplied as a covariate to a model whose output is that fat fraction**)
+- **Description:** The subject's own soleus muscle fat fraction at the baseline visit, measured by MR spectroscopy as fat / (fat + water) peak area, supplied as a time-fixed covariate column to a model whose output state is the same fat fraction (`ff_sol`). A member of the `<MEASURE>_BL` family named after the output canonical uppercased.
+- **Units:** fraction (0-1)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- entered as a power term `(FF_SOL_BL / ref)^beta`. Reference values observed: 0.06 (Kim 2023, boys younger than 7 years at baseline) and 0.09 (older boys).
+- **Source aliases:**
+  - `BSFFSOL`, `BSFFSOLYOUNG`, `BSFFSOLOLD` -- Kim 2023 Supplement 2 Monolix columns (split by baseline-age group; derive the group from `AGE_BASE`).
+- **Example models:** `Kim_2023_DMD_6MWD_FFSOL.R` (founding example; baseline FFSOL sets the FFSOL intercept with exponents near 1 and shortens the ages at half-maximal 6MWD decrease and FFSOL increase).
+- **Notes:** A fraction, not a percentage. Distinct from `FF_VL_BL` (vastus lateralis); further muscles extend the pattern as `FF_<MUSCLE>_BL`, paired with an `ff_<muscle>` output.
 
 ## Critical-illness severity
 
