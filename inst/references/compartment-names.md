@@ -2596,6 +2596,20 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Vaskeikina_2026_systemicSclerosis_mbma.R` (founding example; arm-mean change from baseline in an MBMA of targeted therapies, `Emax * t / (ET50 + t)` with a comparator Emax of -5.29 points and additive per-drug shifts; jointly fitted with `fvcppcfb` and sharing its ET50).
 - **Notes:** Named under the library-wide `<state>cfb` change-from-baseline convention (maintainers' ruling of 2026-09-11, PMC11997835; see `bcvacfb`), matching its sibling output `fvcppcfb`. No absolute-score `mrss` state is registered; a model of the absolute score should register `mrss`. The founding model does not enforce the 0-51 bound, and a simulated arm mean can fall below minus its baseline at long times for the largest drug effects.
 
+### lncacvolcfb (**canonical change-from-baseline natural-log coronary artery calcium volume score**)
+- **Type:** compartment
+- **Role:** Change from baseline in the natural logarithm of the coronary artery calcium (CAC) volume score measured by non-contrast multi-detector computed tomography, used as the modelled endpoint of vascular-calcification progression models. A unitless log fold-change: `100 * (exp(lncacvolcfb) - 1)` is the percent change in CAC volume, and a positive value is calcification progression.
+- **Source aliases:** `change from baseline of log CAC volume`, `CFB CAC volume` (on the log scale), `% CFB CAC volume` (the back-transformed form) -- translate to `lncacvolcfb` on the natural-log scale.
+- **Example models:** `Perello_2024_hexasodiumFytate_cac.R` (founding example; simple Emax model in the average end-of-infusion hexasodium fytate concentration `CMAX`, with Emax constrained to -E0 so progression vanishes at saturating exposure, week-52 landmark in hemodialysis patients).
+- **Notes:** Named under the library-wide `<state>cfb` change-from-baseline convention (maintainers' ruling of 2026-09-11, PMC11997835; see `bcvacfb`), with the `ln` prefix of `lnalt` marking the natural-log scale. No absolute CAC-volume state is registered; a model of the absolute score should register `cacvol`, and one of the Agatston score a separate name, since volume (mm^3) and Agatston (density-weighted, unitless) scores are not interchangeable.
+
+### hydroxyapatite_inhibition (**canonical ex vivo hydroxyapatite-crystallization inhibition PD output**)
+- **Type:** compartment
+- **Role:** Percent (nominally 0-100) inhibition of calcium-phosphate (hydroxyapatite) crystallization measured ex vivo in a plasma sample by a spectrophotometric crystallization assay, used as the PD output of crystallization-inhibitor exposure-response models. The assay has background noise below about 20%, and placebo samples can read negative.
+- **Source aliases:** `% PD inhibition`, `PD effect`, `inhibition of hydroxyapatite crystallization` -- translate to `hydroxyapatite_inhibition`.
+- **Example models:** `Perello_2024_hexasodiumFytate_hydroxyapatite.R` (founding example; simple Emax model in the average end-of-infusion hexasodium fytate concentration `CMAX`, hemodialysis patients).
+- **Notes:** Spelled out rather than abbreviated, per the 2026-10-08 maintainer ruling on output names (cf. `serum_phosphorus`). Distinct from any in vivo calcification endpoint such as `lncacvolcfb`: this is a plasma-sample assay readout of the drug's crystallization-inhibiting capacity, not a measure of tissue calcification.
+
 ### fvcz (**canonical FVC Z-score**)
 - **Type:** compartment
 - **Role:** Forced vital capacity standardised for age, sex, height and ethnicity as a Z-score (GLI reference equations) -- the growth-robust form of the FVC endpoint, preferred over percent predicted in pediatric populations where a child's reference value changes as they grow.

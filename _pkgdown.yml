@@ -3428,6 +3428,10 @@ navbar:
         href: articles/Chen_2025_hemoporfin.html
       - text: "Heparin (Edrich 2015)"
         href: articles/Edrich_2015_heparin.html
+      - text: "HexasodiumFytate cac (Perello 2024)"
+        href: articles/Perello_2024_hexasodiumFytate.html
+      - text: "HexasodiumFytate hydroxyapatite (Perello 2024)"
+        href: articles/Perello_2024_hexasodiumFytate.html
       - text: "Higenamine (Feng 2012)"
         href: articles/Feng_2012_higenamine.html
       - text: "Hosu53 dog (Na 2025)"
@@ -10589,6 +10593,7 @@ articles:
   - articles/Penland_2024_sodiumZirconiumCyclosilicate
   - articles/Penney_2025_tce_tmdd
   - articles/Pereira_2024_M6495
+  - articles/Perello_2024_hexasodiumFytate
   - articles/PerezBlanco_2016_doxorubicin
   - articles/PerezGuille_2018_dexmedetomidine
   - articles/PerezRuixo_2006_tipifarnib
