@@ -8472,6 +8472,61 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Andrews_2017_tacrolimus.R` (multiplicative effect on apparent oral clearance: living-donor recipients have CL/F 26% lower than deceased-donor recipients of the same body weight, CYP3A5 genotype, eGFR, and hematocrit; Andrews 2017 Table 2 final-model coefficient: `theta_donor_living = 0.74` for the living-donor cohort relative to the deceased-donor reference, equivalent to deceased-donor recipients having ~35% higher CL/F than living-donor recipients as reported in Section 3.4).
 - **Notes:** General scope because donor source is a universally applicable solid-organ-transplant cohort attribute, captured in transplant-registry data for kidney, liver, heart, lung, and pancreas recipients. The reference category is `0 = living donor` (not `0 = deceased donor`) to match the "1 = the perturbed / index condition" convention used elsewhere in the register (e.g., `RRT_HEMODIAL_STATUS`, `POSTTX_DAY1`, `TX_LIVER`); the index condition is "received a deceased-donor graft" because it carries the more variable graft quality and is the condition that perturbs clearance upward in published kidney-tacrolimus models. Source papers that encode the column as "1 = living donor" (e.g., Andrews 2017 itself parameterises the equation with a multiplier on living-donor recipients) should still record the column under the canonical orientation: set `DONOR_DECEASED = 1 - source_living_indicator` and document the value inversion in `covariateData[[DONOR_DECEASED]]$notes`. Distinct from the donor-genotype canonical `CYP3A5_EXPR_DONOR`: donor-source (deceased vs living) is a logistic / graft-procurement covariate, while donor-genotype is a pharmacogenetic covariate; both can coexist in the same dataset when the source paper genotypes both recipients and donors.
 
+### COLD_ISCHEMIA_TIME (**canonical for graft cold ischemia time**)
+- **Description:** Cold ischemia time of the transplanted organ: the time from cold perfusion / cold storage of the procured graft to its reperfusion in the recipient, in hours. Time-fixed per recipient (one value per transplant). Long cold ischemia injures the graft and is a leading predictor of delayed graft function.
+- **Units:** h
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** N/A (continuous; centre per model -- Kosinski 2023 centres on 10 h, the cohort median).
+- **Source aliases:**
+  - `CIT` -- Kosinski 2023 Table 2 and Table S2.
+- **Example models:** `Kosinski_2023_kidneyTransplant_egfr.R` (proportional effect on the graft-recovery rate: `k_recovery * (1 - 0.012 * (COLD_ISCHEMIA_TIME - 10))`, about 1.2% slower recovery per extra hour).
+- **Notes:** Spelled out rather than the clinical abbreviation `CIT`, which is ambiguous in the register's wider vocabulary. Distinct from `DONOR_DECEASED`: the two are strongly correlated (Kosinski 2023 Table S1: median 19.5 h for deceased-donor and 0.95 h for living-donor kidneys) but a model may carry both, as the founding example does. Warm ischemia time, if a future model needs it, is a separate canonical.
+
+### AGE_DONOR (**canonical for organ-donor age**)
+- **Description:** Age of the organ donor at donation, in years. Time-fixed per recipient. Sibling of the recipient-age canonical `AGE`, following the `_DONOR` suffix of `CYP3A5_EXPR_DONOR`.
+- **Units:** years
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** N/A (continuous; centre per model -- Kosinski 2023 centres on 44 years).
+- **Source aliases:**
+  - `Donor age`, `Age_donor` -- Kosinski 2023 Table 2 and Table S2.
+- **Example models:** `Kosinski_2023_kidneyTransplant_egfr.R` (proportional effects on the long-term eGFR decline rate (+0.020 per year), the decline amplitude (-0.011 per year) and the plateau (+0.0091 per year), each centred on 44 years).
+- **Notes:** Never substitute the recipient's `AGE`: the two are different people and both can enter one model (the founding example uses both). For a donor-age effect that a paper categorises (e.g. an expanded-criteria donor flag), register a separate indicator rather than thresholding this column.
+
+### SEXF_DONOR (**canonical for organ-donor sex**)
+- **Description:** Sex of the organ donor: 1 = female donor, 0 = male donor. Time-fixed per recipient. Sibling of the recipient-sex canonical `SEXF`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (male donor).
+- **Source aliases:**
+  - `Female donors`, `Donor sex` -- Kosinski 2023 Table 2 and Table S1.
+- **Example models:** `Kosinski_2023_kidneyTransplant_egfr.R` (proportional effect on the eGFR decline amplitude: `amp * (1 + 0.091 * SEXF_DONOR)`).
+- **Notes:** Never substitute the recipient's `SEXF`; donor-recipient sex mismatch, if a model needs it, is derived from the two columns.
+
+### TX_KIDNEY_PRIOR (**canonical for previous kidney transplant indicator**)
+- **Description:** 1 = the recipient had at least one kidney transplant before the index (modelled) kidney transplant, 0 = the index transplant is the recipient's first kidney transplant. Time-fixed per recipient.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (first kidney transplant).
+- **Source aliases:**
+  - `Previous kidney transplant` -- Kosinski 2023 Table 2 and Table S1.
+- **Example models:** `Kosinski_2023_kidneyTransplant_egfr.R` (proportional effect on the graft-recovery rate: `k_recovery * (1 + 0.24 * TX_KIDNEY_PRIOR)`).
+- **Notes:** Member of the `TX_` organ family, with the `_PRIOR` qualifier of `HCT_PRIOR`. Distinct from `HCT_PRIOR` (prior haematopoietic cell transplant) and from the organ-type indicators `TX_LIVER` / `TX_HEART` / `TX_LUNG`, which say which organ the index graft is, not whether there was an earlier one. A model that fits the NUMBER of previous kidney transplants should register a count canonical rather than overloading this binary.
+
+### INDUCTION_ATG, INDUCTION_ALEMTUZUMAB, INDUCTION_OTHER, INDUCTION_NONE (**canonical for the solid-organ-transplant induction-agent set**)
+- **Description:** Mutually exclusive binary indicators for the induction immunosuppression given at solid-organ transplantation. `INDUCTION_ATG` = 1 for anti-thymocyte globulin, `INDUCTION_ALEMTUZUMAB` = 1 for alemtuzumab, `INDUCTION_OTHER` = 1 for any other induction agent, `INDUCTION_NONE` = 1 for no induction. All four are 0 for the reference, an interleukin-2-receptor antagonist (basiliximab or daclizumab). Time-fixed per recipient.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 for all four indicators = basiliximab or daclizumab induction (39.4% of the founding cohort).
+- **Source aliases:**
+  - `Induction therapy` with levels `Basiliximab or daclizumab` (baseline), `Anti-thymocyte globulin`, `Alemtuzumab`, `Other`, `None` -- Kosinski 2023 Table 2 and Table S4.
+- **Example models:** `Kosinski_2023_kidneyTransplant_egfr.R` (additive fractional effects inside one factor on the graft-recovery rate: ATG `+0.084`, alemtuzumab `+0.5`, other `+0.21`, none `-0.015`; only alemtuzumab and other are significant).
+- **Notes:** Kidney-transplant induction is the founding use, but the set fits any solid-organ transplant; a paper whose reference level is not an IL-2-receptor antagonist should say so in `covariateData[[...]]$notes` or register its own set. Distinct from the `HCT_TCD_*` set (graft T-cell-depletion modality in haematopoietic cell transplantation), from `CONMED_ANTILYMPHOCYTE` (antilymphocyte drug exposure at any time) and from `TRTPH_INDUCTION` (an induction treatment PHASE of a drug regimen). Missing induction information (41% in Kosinski 2023, handled there as a zero covariate term) is not registered as a level: such a subject sits at the reference.
+
 ### PRIOR_GAST (**canonical for prior gastrectomy**)
 - **Description:** Prior (partial or total) gastrectomy indicator, 1 = prior gastrectomy, 0 = no prior gastrectomy. Time-fixed per subject.
 - **Units:** (binary)
@@ -12552,6 +12607,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - `CsA` -- used in de Winter 2009 (binary indicator on the MPAG-to-gallbladder transport rate constant k57 to encode cyclosporine inhibition of MRP2-mediated biliary efflux); the canonical column is `CONMED_CSA` with the same value semantics.
 - **Example models:** `deWinter_2009_mycophenolic_acid.R` (multiplicative power-form effect on the fMPAG-to-gallbladder rate constant k57: `k57 <- exp(lk57) * e_csa_k57^CONMED_CSA` with `e_csa_k57 = 0.002`, so cyclosporine cotreatment reduces k57 from 0.0796 1/h to 0.000159 1/h, suppressing EHC by ~99.8% relative to the tacrolimus reference; Table 2 / Eq. 9 of de Winter 2009).
 - **Notes:** Distinct from a generic concomitant-immunosuppressant indicator: this canonical is specifically cyclosporine vs another CNI / no CNI. In renal-transplant popPK studies that randomise patients between cyclosporine and tacrolimus immunosuppression (the de Winter 2009 design), `CONMED_CSA = 1` and `CONMED_TAC` (if registered later for tacrolimus-as-perpetrator effects) would be mutually exclusive at the patient level. Cyclosporine and tacrolimus differ in their effect on MPA pharmacokinetics: cyclosporine inhibits MRP2 (decreasing EHC of MPAG -> MPA) while tacrolimus does not, so co-administered MPA exposure is typically lower under cyclosporine than under tacrolimus for the same MMF dose. Data assemblers can derive `CONMED_CSA = as.integer(cni_drug == "cyclosporine")` from a raw `CNI_DRUG` text column.
+
+### CONMED_CNI (**canonical for calcineurin-inhibitor-based immunosuppression indicator**)
+- **Description:** 1 = the subject's immunosuppressive regimen contains a calcineurin inhibitor (tacrolimus or cyclosporine), 0 = CNI-free regimen (e.g. an mTOR inhibitor or belatacept). Class-level indicator, like `CONMED_STEROID`. Time-fixed when the source records the baseline regimen (as in the founding example).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** model-specific; Kosinski 2023 takes CNI use (81.8% of recipients) as the reference and fits a 'CNI not used' effect, applied as `(1 - CONMED_CNI)`.
+- **Source aliases:**
+  - `CNI not used`, `CNI use` -- Kosinski 2023 Table 2 and Table S1 (the source column is 1 = CNI not used; set `CONMED_CNI = 1 - source`).
+- **Example models:** `Kosinski_2023_kidneyTransplant_egfr.R` (proportional effect on the long-term eGFR decline rate: `k_decline * (1 - 0.91 * (1 - CONMED_CNI))`, i.e. CNI-free regimens decline about 11 times more slowly).
+- **Notes:** Use the drug-specific `CONMED_CSA` (cyclosporine) or a tacrolimus indicator when a model distinguishes the two CNIs; this column pools them. In the founding cohort most CNI-free patients came from the belatacept trials BENEFIT / BENEFIT-EXT (804 of 872, Table S3), so the effect is close to a belatacept-versus-CNI contrast; the paper's sensitivity analysis with a trial-versus-observational covariate left it unchanged.
 
 ### CONMED_CSA_DOSE (**canonical for total daily dose of co-administered ciclosporin (cyclosporine A)**)
 - **Description:** Total daily dose of concomitant ciclosporin (cyclosporine A) at the current observation time. The continuous-dose companion to the binary `CONMED_CSA`: use `CONMED_CSA` when the source paper models cyclosporine cotreatment as a yes/no contrast (typically against a tacrolimus comparator arm) and `CONMED_CSA_DOSE` when it models a graded dose-response. In mycophenolic acid (MPA) popPK, ciclosporin inhibits the MRP2 (ABCC2) biliary efflux transporter, reducing biliary excretion of MPAG into the gut lumen and therefore suppressing enterohepatic recirculation of MPA; a higher ciclosporin dose consequently raises apparent MPA clearance.
