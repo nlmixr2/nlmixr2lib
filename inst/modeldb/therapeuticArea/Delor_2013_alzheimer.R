@@ -191,8 +191,8 @@ Delor_2013_alzheimer <- function() {
     # when implementing IIV on parameter DOT'). For alpha and PL the CVs are
     # 64% and 86% respectively.
     etaldot   ~ 0.000225  # omega^2 = log(1 + 0.015^2) ~ 0.000225; Table 2 final IIV(DOT) = 1.5%.
-    etalalpha ~ 0.3434    # omega^2 = log(1 + 0.64^2) ~ 0.3434;   Table 2 final IIV(alpha) = 64%.
-    etalpl    ~ 0.5535    # omega^2 = log(1 + 0.86^2) ~ 0.5535;   Table 2 final IIV(PL) = 86%.
+    etalalpha ~ log(1 + 0.64^2)  # Table 2 final IIV(alpha) = 64%.
+    etalpl    ~ log(1 + 0.86^2)  # Table 2 final IIV(PL) = 86%.
 
     # Residual error. The source paper performs the fit in the logit domain
     # with additive error on A(1) (paper Structural base model development:

@@ -116,8 +116,8 @@ composition come from the NONMEM control stream in the supplement.
 | PPI effect on F | 0.00232 | Table 2 |
 | H2 antagonist effect on F | 0.0264 | Table 2 |
 | Antacid effect on F | -0.0360 | Table 2 |
-| CL IIV | 39.8% CV -> omega^2 = 0.14710 | Table 2 (log(1 + 0.398^2)) |
-| Vc IIV | 17.1% CV -> omega^2 = 0.02884 | Table 2 (log(1 + 0.171^2)) |
+| CL IIV | 39.8% CV -> omega^2 = 0.14704 | Table 2 (log(1 + 0.398^2)) |
+| Vc IIV | 17.1% CV -> omega^2 = 0.02882 | Table 2 (log(1 + 0.171^2)) |
 | Proportional residual SD | 0.222 | Table 2 |
 | Additive residual SD | 3.19 ng/mL | Table 2 |
 | S2 = V2/1000 -> Cc = 1000 * central / vc | -- | NONMEM `$PK S2 = V2 / 1000` (dose in mg, Vc in L, Cc in ng/mL) |

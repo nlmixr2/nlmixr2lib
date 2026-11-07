@@ -95,7 +95,7 @@ Chandasana_2024b_lamivudine <- function() {
     # are encoded as uncorrelated.
     etalcl ~ 0.07862  # Chandasana 2024 Table 3: IIV CL/F = 28.6% CV; log(1 + 0.286^2) = 0.07862
     etalvc ~ 0.10159  # Chandasana 2024 Table 3: IIV V/F  = 32.7% CV; log(1 + 0.327^2) = 0.10159
-    etalka ~ 0.46074  # Chandasana 2024 Table 3: IIV KA   = 76.5% CV; log(1 + 0.765^2) = 0.46074
+    etalka ~ log(1 + 0.765^2)  # Chandasana 2024 Table 3: IIV KA   = 76.5% CV
 
     # IOV on CL, V and Ka - a single shared magnitude across occasions (NONMEM
     # $OMEGA BLOCK(1) SAME); occasions after the first are fixed to the first
@@ -104,8 +104,8 @@ Chandasana_2024b_lamivudine <- function() {
     etaiov_lcl_2 ~ fix(0.06015)   # Chandasana 2024 Table 3: same IOV-CL/F magnitude on every occasion
     etaiov_lvc_1 ~ 0.30748        # Chandasana 2024 Table 3: IOV-V/F   = 60.0% CV; log(1 + 0.600^2) = 0.30748
     etaiov_lvc_2 ~ fix(0.30748)   # Chandasana 2024 Table 3: same IOV-V/F magnitude on every occasion
-    etaiov_lka_1 ~ 0.03808        # Chandasana 2024 Table 3: IOV-KA    = 19.7% CV; log(1 + 0.197^2) = 0.03808
-    etaiov_lka_2 ~ fix(0.03808)   # Chandasana 2024 Table 3: same IOV-KA magnitude on every occasion
+    etaiov_lka_1 ~ log(1 + 0.197^2)  # Chandasana 2024 Table 3: IOV-KA    = 19.7% CV
+    etaiov_lka_2 ~ fix(log(1 + 0.197^2))  # Chandasana 2024 Table 3: same IOV-KA magnitude on every occasion
 
     # Residual error. Chandasana 2024 Table 3 reports a single additive residual
     # error of 0.003 mg/L (= 0.003 ug/mL) together with a "Weighing factor for

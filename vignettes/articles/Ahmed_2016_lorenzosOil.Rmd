@@ -75,7 +75,7 @@ CV%-to-variance conversion (`omega^2 = log(CV^2 + 1)`):
 | Parameter | CV%   | omega^2  |
 |-----------|-------|----------|
 | E0        | 31.5  | 0.09464  |
-| Emax      | 6.2   | 0.003836 |
+| Emax      | 6.2   | 0.003837 |
 | EC50      | 171.3 | 1.36998  |
 
 Covariance entry in the (etale0, etalec50) block:

@@ -314,8 +314,8 @@ Nava_2018_busulfan <- function() {
     # model with log-normally distributed individual parameters (Methods,
     # "Population pharmacokinetic analysis"), i.e. as %CV. Converted to the
     # internal log-scale variance with omega^2 = log(CV^2 + 1):
-    #   BSV CL 13.30% -> log(0.1330^2 + 1) = 0.0175561
-    #   BSV V   7.00% -> log(0.0700^2 + 1) = 0.0048879
+    #   BSV CL 13.30% -> log(0.1330^2 + 1) = 0.0175344
+    #   BSV V   7.00% -> log(0.0700^2 + 1) = 0.0048880
     # Both final-model values are independently confirmed in the Discussion:
     # "as much as 13% and 7% of the variability between subjects (BSV) on CL
     # and V, respectively, remained unexplained", and "the incorporation of
@@ -323,25 +323,25 @@ Nava_2018_busulfan <- function() {
     # 18.3% to 13.3%)". The Table 2 bootstrap column reports 18.80% for BSV CL,
     # which matches the BASE model (18.30%) rather than the final one; the
     # prose settles it in favour of 13.30%.
-    etalcl ~ 0.0175561  # Nava 2018 Table 2 final model BSV CL 13.30% (RSE 8.80%, shrinkage 6.00%); confirmed in Discussion p. 1500
-    etalvc ~ 0.0048879  # Nava 2018 Table 2 final model BSV V 7.00% (RSE 19.20%, shrinkage 24.60%); confirmed in Discussion p. 1500
+    etalcl ~ log(1 + 0.1330^2)  # Nava 2018 Table 2 final model BSV CL 13.30% (RSE 8.80%, shrinkage 6.00%); confirmed in Discussion p. 1500
+    etalvc ~ log(1 + 0.0700^2)  # Nava 2018 Table 2 final model BSV V 7.00% (RSE 19.20%, shrinkage 24.60%); confirmed in Discussion p. 1500
 
     # ---- Between-occasion variability on the four busulfan dosing days ----
     # Table 2 "Between-occasion variability (BOV)": BOV CL 7.30%, BOV V 9.60%.
     # Same %CV -> log-scale variance conversion as the BSV terms:
-    #   BOV CL 7.30% -> log(0.0730^2 + 1) = 0.0053246
-    #   BOV V  9.60% -> log(0.0960^2 + 1) = 0.0091775
+    #   BOV CL 7.30% -> log(0.0730^2 + 1) = 0.0053149
+    #   BOV V  9.60% -> log(0.0960^2 + 1) = 0.0091738
     # One shared magnitude per parameter across occasions, so occasions 2-4
     # are fixed to the occasion-1 variance (the nlmixr2 spelling of NONMEM's
     # $OMEGA BLOCK(1) SAME).
-    etaiov_cl_1 ~ 0.0053246          # Nava 2018 Table 2 final model BOV CL 7.30% (RSE 8.10%, shrinkage 46.60%)
-    etaiov_cl_2 ~ fixed(0.0053246)   # same magnitude, occasion 2
-    etaiov_cl_3 ~ fixed(0.0053246)   # same magnitude, occasion 3
-    etaiov_cl_4 ~ fixed(0.0053246)   # same magnitude, occasion 4
-    etaiov_vc_1 ~ 0.0091775          # Nava 2018 Table 2 final model BOV V 9.60% (RSE 16.40%, shrinkage 9.30%)
-    etaiov_vc_2 ~ fixed(0.0091775)   # same magnitude, occasion 2
-    etaiov_vc_3 ~ fixed(0.0091775)   # same magnitude, occasion 3
-    etaiov_vc_4 ~ fixed(0.0091775)   # same magnitude, occasion 4
+    etaiov_cl_1 ~ log(1 + 0.0730^2)  # Nava 2018 Table 2 final model BOV CL 7.30% (RSE 8.10%, shrinkage 46.60%)
+    etaiov_cl_2 ~ fixed(log(1 + 0.0730^2))  # same magnitude, occasion 2
+    etaiov_cl_3 ~ fixed(log(1 + 0.0730^2))  # same magnitude, occasion 3
+    etaiov_cl_4 ~ fixed(log(1 + 0.0730^2))  # same magnitude, occasion 4
+    etaiov_vc_1 ~ log(1 + 0.0960^2)  # Nava 2018 Table 2 final model BOV V 9.60% (RSE 16.40%, shrinkage 9.30%)
+    etaiov_vc_2 ~ fixed(log(1 + 0.0960^2))  # same magnitude, occasion 2
+    etaiov_vc_3 ~ fixed(log(1 + 0.0960^2))  # same magnitude, occasion 3
+    etaiov_vc_4 ~ fixed(log(1 + 0.0960^2))  # same magnitude, occasion 4
 
     # ---- Residual error ----------------------------------------------------
     # Table 2 "Random residual variability -- sigma [Proportional error (%)]":

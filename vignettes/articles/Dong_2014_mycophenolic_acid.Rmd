@@ -67,8 +67,8 @@ collects them in one place.
 | `etalcl` | log(1 + 0.259^2) = 0.0649 | Table 2 omega(CL/F) = 25.9% CV |
 | `etalka` | log(1 + 2.996^2) = 2.300 | Table 2 omega(Ka) = 299.6% CV |
 | `etalmtt` | log(1 + 1.448^2) = 1.130 | Table 2 omega(MTT) = 144.8% CV |
-| `etalrbase` | log(1 + 0.396^2) = 0.1459 | Table 3 omega(E0) = 39.6% CV |
-| `etalec50` | log(1 + 0.725^2) = 0.4226 | Table 3 omega(EC50) = 72.5% CV |
+| `etalrbase` | log(1 + 0.396^2) = 0.1457 | Table 3 omega(E0) = 39.6% CV |
+| `etalec50` | log(1 + 0.725^2) = 0.4224 | Table 3 omega(EC50) = 72.5% CV |
 | `expSd` (PK residual SD, log scale) | 0.51 | Table 2 footnote c: %CV = 51.0; sigma = 0.51^2 = 0.2601 |
 | `propSd_impdh` (PD proportional SD) | 0.422 | Table 3 footnote c: %CV = 42.2; sigma = 0.422^2 = 0.1781 |
 | Transit chain ODE | n/a | Equation 6 (Savic & Karlsson 2007 with Stirling approximation) |

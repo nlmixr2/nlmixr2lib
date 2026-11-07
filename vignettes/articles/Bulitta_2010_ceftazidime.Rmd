@@ -69,7 +69,7 @@ place for review.
 | `e_ffm_vc`                       | 1.00 (fixed)    | Methods, "Body size model": volume exponent fixed to 1.0       |
 | `e_healthy_cl`                   | log(1/1.17)     | Table 4 row 5: FCYFCL = 1.17 for FFM allometric                |
 | `e_healthy_vc / vp / vp2`        | log(1/1.01)     | Table 4 row 5: FCYFVSS = 1.01 for FFM allometric               |
-| `etalcl`  (28% CV on CL)         | 0.07555         | Table 3, NONMEM CV(CL) -> log(0.28^2 + 1)                      |
+| `etalcl`  (28% CV on CL)         | 0.07548         | Table 3, NONMEM CV(CL) -> log(0.28^2 + 1)                      |
 | `etalvc`  (45% CV on V1)         | 0.18438         | Table 3, NONMEM CV(V1) -> log(0.45^2 + 1)                      |
 | `etalvp`  (25% CV on V2)         | 0.06062         | Table 3, NONMEM CV(V2) -> log(0.25^2 + 1)                      |
 | `etalvp2` (29% CV on V3)         | 0.08075         | Table 3, NONMEM CV(V3) -> log(0.29^2 + 1)                      |

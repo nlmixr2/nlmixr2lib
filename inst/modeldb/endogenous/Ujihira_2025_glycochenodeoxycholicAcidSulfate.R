@@ -207,14 +207,14 @@ Ujihira_2025_glycochenodeoxycholicAcidSulfate <- function() {
     # IIV cell is '-' were not given a random effect by the paper and
     # deliberately carry none here.
     # ---------------------------------------------------------------
-    etalksyn      ~ 0.3163576   # Table 2, GCDCA-S IIV ksyn = 61% (RSE 15%); log(1 + 0.61^2)
-    etalcl_renal  ~ 0.0560025   # Table 2, GCDCA-S IIV CLR  = 24% (RSE 25%); log(1 + 0.24^2)
-    etaltlag_rif  ~ 0.1919877   # Table 2, RIF IIV Tlag     = 46% (RSE 32%); log(1 + 0.46^2)
-    etald1_rif    ~ 0.4656585   # Table 2, RIF IIV Tk0      = 77% (RSE 37%); log(1 + 0.77^2)
-    etalcl_rif    ~ 0.0318856   # Table 2, RIF IIV CL       = 18% (RSE 35%); log(1 + 0.18^2)
-    etalvc_prob   ~ 0.0917476   # Table 2, PROB IIV V       = 31% (RSE 28%); log(1 + 0.31^2)
-    etalcl_prob   ~ 0.0703679   # Table 2, PROB IIV CL      = 27% (RSE 20%); log(1 + 0.27^2)
-    etalkiu_oat3  ~ 0.0974856   # Table 2, PROB IIV Ki,u,OAT3 = 32% (RSE 27%); log(1 + 0.32^2)
+    etalksyn      ~ log(1 + 0.61^2)  # Table 2, GCDCA-S IIV ksyn = 61% (RSE 15%)
+    etalcl_renal  ~ log(1 + 0.24^2)  # Table 2, GCDCA-S IIV CLR  = 24% (RSE 25%)
+    etaltlag_rif  ~ log(1 + 0.46^2)  # Table 2, RIF IIV Tlag     = 46% (RSE 32%)
+    etald1_rif    ~ log(1 + 0.77^2)  # Table 2, RIF IIV Tk0      = 77% (RSE 37%)
+    etalcl_rif    ~ log(1 + 0.18^2)  # Table 2, RIF IIV CL       = 18% (RSE 35%)
+    etalvc_prob   ~ log(1 + 0.31^2)  # Table 2, PROB IIV V       = 31% (RSE 28%)
+    etalcl_prob   ~ log(1 + 0.27^2)  # Table 2, PROB IIV CL      = 27% (RSE 20%)
+    etalkiu_oat3  ~ log(1 + 0.32^2)  # Table 2, PROB IIV Ki,u,OAT3 = 32% (RSE 27%)
 
     # ---------------------------------------------------------------
     # Residual unexplained variability -- Table 2, 'Residual

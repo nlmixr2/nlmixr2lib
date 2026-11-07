@@ -148,11 +148,11 @@ Liesenfeld_2006_dabigatran_ECT <- function() {
     # the initial-value parameters BAS0 / SLO0; encoding eta on the
     # typical-value lrbase / lslope0 is equivalent because the
     # time-decay factor is shared across subjects.
-    #   E0   CV  8.2% -> omega^2 = log(1 + 0.082^2) = 0.006700
-    #   SLOP CV 13.7% -> omega^2 = log(1 + 0.137^2) = 0.01859
+    #   E0   CV  8.2% -> omega^2 = log(1 + 0.082^2) = 0.006701
+    #   SLOP CV 13.7% -> omega^2 = log(1 + 0.137^2) = 0.01860
     # =================================================================
-    etalrbase  ~ 0.006700   # Liesenfeld 2006 Table 3 (IIV on E0, CV 8.2%)
-    etalslope0 ~ 0.01859    # Liesenfeld 2006 Table 3 (IIV on SLOP, CV 13.7%)
+    etalrbase  ~ log(1 + 0.082^2)  # Liesenfeld 2006 Table 3 (IIV on E0, CV 8.2%)
+    etalslope0 ~ log(1 + 0.137^2)  # Liesenfeld 2006 Table 3 (IIV on SLOP, CV 13.7%)
 
     # =================================================================
     # Residual error. Liesenfeld 2006 Table 3 reports a proportional

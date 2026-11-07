@@ -69,21 +69,21 @@ Hennig_2008_tobramycin <- function() {
     # Inter-individual variability (full block on CL, Vc, Vper).
     # Conversion of CV% to log-scale variance: omega^2 = log(1 + CV^2).
     #   BSV CL  : 11.70% CV -> log(1 + 0.117^2)  = 0.013596
-    #   BSV Vc  : 11.66% CV -> log(1 + 0.1166^2) = 0.013505
-    #   BSV Vper: 41.95% CV -> log(1 + 0.4195^2) = 0.162130
+    #   BSV Vc  : 11.66% CV -> log(1 + 0.1166^2) = 0.013504
+    #   BSV Vper: 41.95% CV -> log(1 + 0.4195^2) = 0.162102
     # Covariances from reported correlations (R) and the omega standard
     # deviations omega_i = sqrt(omega_i^2):
     #   omega_CL = 0.11660, omega_Vc = 0.11621, omega_Vper = 0.40265
     #   cov(CL, Vc)   = 0.73 * 0.11660 * 0.11621 = 0.009891
-    #   cov(CL, Vper) = 0.49 * 0.11660 * 0.40265 = 0.023000
-    #   cov(Vc, Vper) = 0.27 * 0.11621 * 0.40265 = 0.012632
+    #   cov(CL, Vper) = 0.49 * 0.11660 * 0.40262 = 0.023003
+    #   cov(Vc, Vper) = 0.27 * 0.11621 * 0.40262 = 0.012633
     # nlmixr2 expects the lower triangle in row-major order:
     #   var_CL,
     #   cov(CL, Vc),  var_Vc,
     #   cov(CL, Vper), cov(Vc, Vper), var_Vper
     etalcl + etalvc + etalvp ~ c(0.013596,
-                                 0.009891, 0.013505,
-                                 0.023000, 0.012632, 0.162130)  # Hennig 2008 Table 2 (BSV CL/Vc/Vper, Covariate model + correlations)
+                                 0.73 * sqrt(log(1 + 0.1166^2) * 0.013596), log(1 + 0.1166^2),
+                                 0.49 * sqrt(log(1 + 0.4195^2) * 0.013596), 0.27 * sqrt(log(1 + 0.4195^2) * log(1 + 0.1166^2)), log(1 + 0.4195^2))  # Hennig 2008 Table 2 (BSV CL/Vc/Vper, Covariate model + correlations)
 
     # Residual error -- exponential model in NONMEM (additive on log-scale)
     # maps to proportional in nlmixr2 linear space; CV = 19.0%.

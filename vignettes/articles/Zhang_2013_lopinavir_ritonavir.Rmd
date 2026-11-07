@@ -120,15 +120,26 @@ the paper's footnote *.
 | Sigmoidal-Emax DDI Hill | 2.8 | Table 2 col 3 |
 | LPV CL formula | CL_LPV * (1 - Emax * Crtv^Hill / (EC50^Hill + Crtv^Hill)) | Zhang 2013 Methods (sigmoidal equation) |
 | F formula | F = BIO + SLP * (DoseRTV - DoseRTV_STD) (additive in absolute F) | Zhang 2013 Methods (paper formula); ADDITIVE form verified against Table 3 (see Assumptions and deviations) |
-| IIV LPV CL | omega^2 = log(1 + 0.22^2) = 0.0473 | Table 2 'IIV CL (%CV)' LPV = 22% |
-| IIV LPV V | omega^2 = log(1 + 0.22^2) = 0.0473 | Table 2 'IIV V (%CV)' LPV = 22% |
-| IIV RTV CL | omega^2 = log(1 + 0.26^2) = 0.0654 | Table 2 'IIV CL (%CV)' RTV = 26% |
-| IIV LPV F | omega^2 = log(1 + 0.26^2) = 0.0654 | Table 2 'IIV F (%CV)' LPV = 26% |
-| IIV RTV F | omega^2 = log(1 + 0.65^2) = 0.3524 | Table 2 'IIV F (%CV)' RTV = 65% |
+| IIV LPV CL | omega^2 = 0.22^2 = 0.0484 | Table 2 'IIV CL (%CV)' LPV = 22% |
+| IIV LPV V | omega^2 = 0.22^2 = 0.0484 | Table 2 'IIV V (%CV)' LPV = 22% |
+| IIV RTV CL | omega^2 = 0.26^2 = 0.0676 | Table 2 'IIV CL (%CV)' RTV = 26% |
+| IIV LPV F | omega^2 = 0.26^2 = 0.0676 | Table 2 'IIV F (%CV)' LPV = 26% |
+| IIV RTV F | omega^2 = 0.65^2 = 0.4225 | Table 2 'IIV F (%CV)' RTV = 65% |
 | IIV F LPV-RTV correlation | rho = 0.82 | Table 2 'Correlation between LPV and RTV IIV F' = 82% |
 | Additive residual (LPV) | 0.054 mg/L | Table 2 'Additive error (mg/L)' = 0.054 |
 | Proportional residual LPV | 13% | Table 2 'Proportional error (%)' LPV = 13% |
 | Proportional residual RTV | 21% | Table 2 'Proportional error (%)' RTV = 21% |
+
+# Errata
+
+- **The published CVs are first-order approximations.** The Methods state
+  that "the variability can be approximately interpreted as a deviation
+  proportional to the typical value, and it is reported as %CV." Each
+  printed CV is therefore the standard deviation of the corresponding
+  random effect, and the model's variances are the squares of the printed
+  CVs (for example `etalcl ~ 0.22^2` for the 22% IIV on lopinavir CL/F), not
+  the exact log-normal conversion `log(1 + CV^2)`. The LPV-RTV F covariance
+  is `0.82 * 0.26 * 0.65` on the same scale.
 
 # Virtual cohort
 

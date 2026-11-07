@@ -250,22 +250,22 @@ Kloprogge_2015_lumefantrine <- function() {
     # internal log-normal variance is recovered by
     # omega^2 = log((CV/100)^2 + 1).
     #
-    #   F      CV 51.2% -> log(0.512^2 + 1) = 0.23289
-    #   CL_LF  CV 11.2% -> log(0.112^2 + 1) = 0.01246
-    #   VC_LF  CV 119%  -> log(1.19^2  + 1) = 0.88213
-    #   Q_LF   CV 23.9% -> log(0.239^2 + 1) = 0.05553
-    #   CL_DLF CV 23.2% -> log(0.232^2 + 1) = 0.05241
-    #   VC_DLF CV 90.5% -> log(0.905^2 + 1) = 0.59835
+    #   F      CV 51.2% -> log(0.512^2 + 1) = 0.23281
+    #   CL_LF  CV 11.2% -> log(0.112^2 + 1) = 0.01247
+    #   VC_LF  CV 119%  -> log(1.19^2  + 1) = 0.88215
+    #   Q_LF   CV 23.9% -> log(0.239^2 + 1) = 0.05555
+    #   CL_DLF CV 23.2% -> log(0.232^2 + 1) = 0.05243
+    #   VC_DLF CV 90.5% -> log(0.905^2 + 1) = 0.59830
     #
     # The other structural parameters (ka, lag, Q_DLF, VP_LF, VP_DLF)
     # have dashes in the IIV columns of Table 2 -- no IIV is encoded
     # for them. -----
-    etalfdepot ~ 0.23289   # Table 2: BSV on F      = 51.2% CV (RSE 14.3%; 95% CI 42.7-58.3) -- Box-Cox shape -0.394 NOT applied; see model description + Errata
-    etalcl     ~ 0.01246   # Table 2: BSV on CL_LF  = 11.2% CV (RSE 49.5%; 95% CI 3.20-15.7)
-    etalvc     ~ 0.88213   # Table 2: BSV on VC_LF  = 119%  CV (RSE 29.4%; 95% CI 78.1-178)
-    etalq      ~ 0.05553   # Table 2: BSV on Q_LF   = 23.9% CV (RSE 45.2%; 95% CI 9.14-33.7)
-    etalcl_dlf ~ 0.05241   # Table 2: BSV on CL_DLF = 23.2% CV (RSE 59.1%; 95% CI 6.93-36.5)
-    etalvc_dlf ~ 0.59835   # Table 2: BSV on VC_DLF = 90.5% CV (RSE 93.9%; 95% CI 44.8-181)
+    etalfdepot ~ log(1 + 0.512^2)  # Table 2: BSV on F      = 51.2% CV (RSE 14.3%; 95% CI 42.7-58.3) -- Box-Cox shape -0.394 NOT applied; see model description + Errata
+    etalcl     ~ log(1 + 0.112^2)  # Table 2: BSV on CL_LF  = 11.2% CV (RSE 49.5%; 95% CI 3.20-15.7)
+    etalvc     ~ log(1 + 1.19^2)  # Table 2: BSV on VC_LF  = 119%  CV (RSE 29.4%; 95% CI 78.1-178)
+    etalq      ~ log(1 + 0.239^2)  # Table 2: BSV on Q_LF   = 23.9% CV (RSE 45.2%; 95% CI 9.14-33.7)
+    etalcl_dlf ~ log(1 + 0.232^2)  # Table 2: BSV on CL_DLF = 23.2% CV (RSE 59.1%; 95% CI 6.93-36.5)
+    etalvc_dlf ~ log(1 + 0.905^2)  # Table 2: BSV on VC_DLF = 90.5% CV (RSE 93.9%; 95% CI 44.8-181)
 
     # ----- Residual error (Kloprogge 2015 Table 2 last 4 rows).
     # Table 2 footnote (a) declares sigma as the VARIANCE of the

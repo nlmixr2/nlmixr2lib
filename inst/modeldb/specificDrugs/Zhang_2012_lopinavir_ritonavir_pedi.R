@@ -254,16 +254,18 @@ Zhang_2012_lopinavir_ritonavir_pedi <- function() {
 
     # =====================================================================
     # Inter-individual variability (Zhang 2012 Table 2 BSV/IOV rows).
-    # IIV reported on the SD scale as approximate %CV; nlmixr2lib uses
-    # variances on the log scale via omega^2 = log(1 + CV^2).
+    # Methods: 'Using a first-order approximation, the variability of the
+    # lognormal distributions are reported as % coefficient of variation
+    # (CV).' The printed CV is therefore the SD of the eta (CV ~ omega), so
+    # each variance is the square of the printed CV, not log(1 + CV^2).
     #
     # LPV: only BSV on V (56.6%); IOV ka (76.2%) and IOV F (51.8%) are
     # folded in as BSV-equivalent following the Bienczak 2016 nevirapine
     # precedent (no separate BSV reported on the same parameters).
     # =====================================================================
-    etalvc      ~ 0.27406   # Zhang 2012 Table 2 IIV V LPV = 56.6%; omega^2 = log(1 + 0.566^2) = 0.27406
-    etalka      ~ 0.45078   # Zhang 2012 Table 2 IOV ka LPV = 76.2% folded in as BSV-equivalent; omega^2 = log(1 + 0.762^2) = 0.45078 (no separate BSV on LPV ka reported)
-    etalfdepot  ~ 0.23475   # Zhang 2012 Table 2 IOV F LPV  = 51.8% folded in as BSV-equivalent; omega^2 = log(1 + 0.518^2) = 0.23475 (no separate BSV on LPV F reported)
+    etalvc      ~ 0.566^2  # Zhang 2012 Table 2 IIV V LPV = 56.6%
+    etalka      ~ 0.762^2  # Zhang 2012 Table 2 IOV ka LPV = 76.2% folded in as BSV-equivalent (no separate BSV on LPV ka reported)
+    etalfdepot  ~ 0.518^2  # Zhang 2012 Table 2 IOV F LPV  = 51.8% folded in as BSV-equivalent (no separate BSV on LPV F reported)
 
     # =====================================================================
     # RTV: paper Results 'Model description' paragraph 1 reports 'A similar
@@ -277,18 +279,18 @@ Zhang_2012_lopinavir_ritonavir_pedi <- function() {
     # RTV folded in as BSV-equivalent.
     # =====================================================================
     # Block entries below come from Zhang 2012 Table 2:
-    #   var_cl_rtv = log(1 + 0.728^2) = 0.41888 (IIV CL RTV = 72.8%)
-    #   var_vc_rtv = log(1 + 0.433^2) = 0.16758 (IIV V  RTV = 43.3%)
-    #   cov_cl_vc  = rho * sqrt(var_cl_rtv * var_vc_rtv) with rho = 0.99
+    #   var_cl_rtv = 0.728^2 (IIV CL RTV = 72.8%)
+    #   var_vc_rtv = 0.433^2 (IIV V  RTV = 43.3%)
+    #   cov_cl_vc  = rho * 0.728 * 0.433 with rho = 0.99
     #   approximating the paper's 'proportional' description of IIV CL_RTV
     #   and V_RTV (Results 'Model description' paragraph 1).
     etalcl_rtv + etalvc_rtv ~ c(
-      0.41888,
-      0.99 * sqrt(0.41888 * 0.16758),
-      0.16758
+      0.728^2,
+      0.99 * 0.728 * 0.433,
+      0.433^2
     )
-    etalmtt_rtv ~ 0.09128   # Zhang 2012 Table 2 IOV MTT RTV = 31.1% folded in as BSV-equivalent; omega^2 = log(1 + 0.311^2) = 0.09128 (no separate BSV on RTV MTT reported)
-    etalka_rtv  ~ 0.65979   # Zhang 2012 Table 2 IOV ka  RTV = 98.1% folded in as BSV-equivalent; omega^2 = log(1 + 0.981^2) = 0.65979 (no separate BSV on RTV ka reported)
+    etalmtt_rtv ~ 0.311^2  # Zhang 2012 Table 2 IOV MTT RTV = 31.1% folded in as BSV-equivalent (no separate BSV on RTV MTT reported)
+    etalka_rtv  ~ 0.981^2  # Zhang 2012 Table 2 IOV ka  RTV = 98.1% folded in as BSV-equivalent (no separate BSV on RTV ka reported)
 
     # =====================================================================
     # Residual error. Zhang 2012 Methods 'Population pharmacokinetic

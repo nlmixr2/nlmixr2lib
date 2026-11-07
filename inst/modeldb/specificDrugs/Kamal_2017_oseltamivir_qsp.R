@@ -222,9 +222,9 @@ Kamal_2017_oseltamivir_qsp <- function() {
     # encoding treats the tabulated value as the median (see the
     # vignette's Assumptions and deviations section).
     # ---------------------------------------------------------------
-    etaltshed0     ~ fixed(0.160085)  # Table 1: Tshed(0) 6 (2.5) days -> CV 41.67% -> omega^2 = log(1 + 0.4167^2)
-    etaltshed_low  ~ fixed(0.036696)  # Table 1: Tshed(low) 3 (0.58) days -> CV 19.33% -> omega^2 = log(1 + 0.1933^2)
-    etaltshed_high ~ fixed(0.069573)  # Table 1: Tshed(high) 1.9 (0.51) days -> CV 26.84% -> omega^2 = log(1 + 0.2684^2)
+    etaltshed0     ~ fixed(log(1 + 0.4167^2))  # Table 1: Tshed(0) 6 (2.5) days -> CV 41.67%
+    etaltshed_low  ~ fixed(log(1 + 0.1933^2))  # Table 1: Tshed(low) 3 (0.58) days -> CV 19.33%
+    etaltshed_high ~ fixed(log(1 + 0.2684^2))  # Table 1: Tshed(high) 1.9 (0.51) days -> CV 26.84%
 
     # Additive (not log-normal) because f_auchigh is a bounded population
     # fraction reported as mean (SD) on its natural scale. Set to

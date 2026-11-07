@@ -139,7 +139,7 @@ Jain_2011_sorafenib <- function() {
     #
     #   CL/F IIV 18.0% -> log(1 + 0.180^2)  = 0.0319
     #   V/F  IIV 68.7% -> log(1 + 0.687^2)  = 0.3866
-    #   ka   IIV 61.9% -> log(1 + 0.619^2)  = 0.3240
+    #   ka   IIV 61.9% -> log(1 + 0.619^2)  = 0.3244
     #   cov(CL,V) = r * sqrt(omega^2_CL) * sqrt(omega^2_V)
     #             = 0.778 * sqrt(0.0319) * sqrt(0.3866) = 0.0864
     #
@@ -148,7 +148,7 @@ Jain_2011_sorafenib <- function() {
     # so the same variance applies whether the model parameterises MAT or ka.
     etalcl + etalvc ~ c(0.0319,
                         0.0864, 0.3866)                                                          # Table 3 IIV CL/F = 18.0%, IIV V/F = 68.7%, correlation 0.778
-    etalmtt ~ 0.3240                                                                              # Table 3 IIV ka = 61.9% (variance equal on the log MAT scale)
+    etalmtt ~ log(1 + 0.619^2)  # Table 3 IIV ka = 61.9% (variance equal on the log MAT scale)
 
     # Residual error - combined additive + proportional, as reported in
     # equation (1) on p. 297. The paper's log-scale form

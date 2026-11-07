@@ -130,11 +130,11 @@ VegaVilla_2013_sodium_nitrite_qsp <- function() {
     # and deviations.
     etalkpt_no2  ~ 0.00807   # 9% CV (Table 1, on kPT_NO2 / supplement TVQ)
     etalktp_no2  ~ 1.0851    # 140% CV (Table 1, on kTP_NO2 / supplement TVV4)
-    etalkno2_rdt ~ 1.4513    # 180% CV (Table 1, on kNO2_RDT / supplement KNO2RDT)
+    etalkno2_rdt ~ log(1 + 1.8^2)  # 180% CV (Table 1, on kNO2_RDT / supplement KNO2RDT)
     etalvno2_p   ~ 0.5139    # 82% CV (Table 1, on VNO2_P / supplement V1)
     etalcl0_no3  ~ 1.1787    # 150% CV (Table 1, on CL(0)_NO3 / supplement CLR3)
     etalkpr_no2  ~ 0.7932    # 110% CV (Table 1, on kPR_NO2 / supplement KPRNO2)
-    etalkrp_no3  ~ 0.6310    # 96% CV (Table 1, on kRP_NO3 / supplement KRPNO3)
+    etalkrp_no3  ~ log(1 + 0.96^2)  # 96% CV (Table 1, on kRP_NO3 / supplement KRPNO3)
     etalkno3_r   ~ 0.1907    # 46% CV (Table 1, on kNO3_R / supplement KNO3R)
     etalsmethb   ~ 1.0851    # 140% CV (Table 1, on SMetHb / supplement STIM)
     etalvr_no2   ~ 0.1284    # 37% CV (Table 1, on VR_NO2 / supplement VRBC_NO2)
