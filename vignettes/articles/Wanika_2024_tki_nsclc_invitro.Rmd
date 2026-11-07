@@ -556,12 +556,24 @@ make_events <- function(d, times) {
     arrange(id, time, desc(evid)) |>
     as.data.frame()
 }
+
+# Typical-value solves of a zeroRe() model over many curves: rxode2 warns that
+# the multi-subject simulation has no omega, which is intended here. Muffle
+# only that message so any other warning still surfaces.
+solve_typ <- function(mod, ev) {
+  withCallingHandlers(
+    rxode2::rxSolve(mod, ev, returnType = "data.frame"),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) invokeRestart("muffleWarning")
+    }
+  )
+}
 ```
 
 ```{r fig3-sim}
 pred72 <- bind_rows(lapply(drugs, function(dr) {
   d <- filter(curves, drug == dr)
-  sim <- rxode2::rxSolve(mods_typ[[dr]], make_events(d, 72), returnType = "data.frame")
+  sim <- solve_typ(mods_typ[[dr]], make_events(d, 72))
   sim |>
     select(ID = id, pred = viability) |>
     mutate(drug = dr) |>
@@ -636,7 +648,7 @@ s1 <- bind_rows(lapply(drugs, function(dr) {
   g <- studies |>
     tidyr::crossing(conc = grid_conc) |>
     mutate(ID = row_number())
-  sim <- rxode2::rxSolve(mods_typ[[dr]], make_events(g, 72), returnType = "data.frame")
+  sim <- solve_typ(mods_typ[[dr]], make_events(g, 72))
   sim |>
     select(ID = id, pred = viability) |>
     left_join(g, by = "ID") |>
@@ -725,10 +737,7 @@ from 100% over the 72 h; the published estimates imply this for every fit.
 
 ```{r time-course}
 one <- curves |> filter(drug == "alectinib", ID == 6)
-tc <- rxode2::rxSolve(
-  mods_typ$alectinib, make_events(one, seq(0, 72, by = 0.02)),
-  returnType = "data.frame"
-)
+tc <- solve_typ(mods_typ$alectinib, make_events(one, seq(0, 72, by = 0.02)))
 vr_typ <- exp(mods$alectinib$theta[["lvr"]])
 tc <- tc |>
   mutate(
