@@ -163,7 +163,11 @@ ev_sol_young <- data.frame(
   WALK_DIST_BL = c(150, 300, 363, 500), FF_SOL_BL = 0.06,
   AGE_BASE = 6, CONMED_STEROID = 0
 )
-typ_sol_young <- rxode2::rxSolve(rxode2::zeroRe(mod_sol), ev_sol_young) |>
+# zeroRe() removes every omega, so rxSolve() warns that a multi-subject
+# solve has none; each row here is a typical subject by design.
+typ_sol_young <- suppressWarnings(
+  rxode2::rxSolve(rxode2::zeroRe(mod_sol), ev_sol_young)
+) |>
   as.data.frame()
 p_sol <- mod_sol$theta
 emax_cf <- 2 * plogis(
@@ -359,7 +363,8 @@ ev_age <- data.frame(
   id = 1:2, time = 5, WALK_DIST_BL = 300, FF_VL_BL = 0.17,
   AGE_BASE = c(6, 8), CONMED_STEROID = 1
 )
-rxode2::rxSolve(rxode2::zeroRe(mod_vl), ev_age) |>
+# Two typical subjects; see the note on the zeroRe() warning above.
+suppressWarnings(rxode2::rxSolve(rxode2::zeroRe(mod_vl), ev_age)) |>
   as.data.frame() |>
   dplyr::mutate(group = ifelse(AGE_BASE < 7, "young", "old")) |>
   dplyr::select(group, walk_dist, ff_vl)
