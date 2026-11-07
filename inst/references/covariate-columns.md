@@ -8891,10 +8891,10 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (non-ALL; the complement group is paper-defined -- for Schreib 2024 the reference is every other hematopoietic-stem-cell-transplantation indication in the cohort, i.e. AML, chronic granulomatous disease, HLH/XLP, hemoglobinopathies, primary immunodeficiencies, metabolic diseases, neuroblastoma, and others).
+- **Reference category:** 0 (non-ALL; the complement group is paper-defined -- for Schreib 2024 the reference is every other hematopoietic-stem-cell-transplantation indication in the cohort, i.e. AML, chronic granulomatous disease, HLH/XLP, hemoglobinopathies, primary immunodeficiencies, metabolic diseases, neuroblastoma, and others; for Salem 2023 Liso-cel it is diffuse large B-cell lymphoma).
 - **Source aliases:**
   - `ALL` -- used in `Schreib_2024_busulfan.R` (Table 3 covariate `theta_k5`, effect of ALL on `ln(k)`; the source dataset carries a nine-level `diagnosis group` factor and the canonical column is `as.integer(DiaGroup == "ALL")`).
-- **Example models:** `Schreib_2024_busulfan.R` (exponential effect on the elimination rate constant: `exp(-0.210 * DIS_ALL)`, about a 19% lower `k` and `CL`; 13 of 124 patients, 10%).
+- **Example models:** `Schreib_2024_busulfan.R` (exponential effect on the elimination rate constant: `exp(-0.210 * DIS_ALL)`, about a 19% lower `k` and `CL`; 13 of 124 patients, 10%), `Salem_2023_lisocabtageneMaraleucel_qsp.R` (switches the disease-specific CD19 density, tumour doubling time and initial blood / bone-marrow tumour burden of the CAR T-cell CK-PD model between adult ALL and the DLBCL reference; Salem 2023 supplied them as per-dataset regressors).
 - **Notes:** Lineage-agnostic ALL indicator. Distinct from `DIS_BCPALL`, which is specifically B-cell *precursor* ALL against a paper-defined reference of B-cell non-Hodgkin lymphoma or other non-BCP-ALL indication; `DIS_BCPALL` additionally conflates disease type with a bioanalytical-assay difference in its founding model and is not interchangeable with `DIS_ALL`. Use `DIS_ALL` when the source pools all ALL lineages against a general non-ALL reference. Scope: specific because the complement reference category is paper-defined.
 
 ### DIS_TALL (**canonical for T-cell acute lymphoblastic leukemia disease-subtype indicator**)
