@@ -165,23 +165,23 @@ Brill_2014_midazolam <- function() {
     # IIV (final model). Brill 2014 Table 2 reports the IIVs as CV%.
     # Conversion to omega^2 on the log-eta scale: omega^2 = log(CV^2 + 1).
     #   CL  : 18.1% -> log(0.181^2 + 1) = 0.03224
-    #   F   : 26.4% -> log(0.264^2 + 1) = 0.06738
-    #   Ka  : 41.4% -> log(0.414^2 + 1) = 0.15833
-    #   Vc  : 55.2% -> log(0.552^2 + 1) = 0.26601
-    #   Vp  : 34.4% -> log(0.344^2 + 1) = 0.11189
+    #   F   : 26.4% -> log(0.264^2 + 1) = 0.06737
+    #   Ka  : 41.4% -> log(0.414^2 + 1) = 0.15820
+    #   Vc  : 55.2% -> log(0.552^2 + 1) = 0.26598
+    #   Vp  : 34.4% -> log(0.344^2 + 1) = 0.11184
     # The off-diagonal "Correlation between eta Vcentral and Vperipheral"
     # 0.12 is the correlation coefficient rho; the .docx ESM 4 implements
     # this via $OMEGA BLOCK(2). The block-covariance in linear units is
-    # rho * sqrt(omega^2_Vc * omega^2_Vp) = 0.12 * sqrt(0.26601 * 0.11189) = 0.02070.
+    # rho * sqrt(omega^2_Vc * omega^2_Vp) = 0.12 * sqrt(0.26598 * 0.11184) = 0.02070.
     # Per the .docx ESM 4, IIV on Q was held fixed at 0 (the $OMEGA line
     # `0 FIX ;Q` re-uses the ETA(3) slot in $PK as a structural placeholder
     # for the Q row); reproduced here as a fixed-zero eta to preserve
     # provenance.
     etalcl     ~ 0.03224                                                  # Brill 2014 Table 2 (CL IIV 18.1% CV)
-    etalfdepot ~ 0.06738                                                  # Brill 2014 Table 2 (F IIV 26.4% CV)
+    etalfdepot ~ log(1 + 0.264^2)  # Brill 2014 Table 2 (F IIV 26.4% CV)
     etalq      ~ fixed(0)                                                 # Brill 2014 .docx ESM 4 $OMEGA `0 FIX ;Q`
-    etalka     ~ 0.15833                                                  # Brill 2014 Table 2 (Ka IIV 41.4% CV)
-    etalvc + etalvp ~ c(0.26601, 0.02070, 0.11189)                        # Brill 2014 Table 2 ($OMEGA BLOCK(2); rho = 0.12)
+    etalka     ~ log(1 + 0.414^2)  # Brill 2014 Table 2 (Ka IIV 41.4% CV)
+    etalvc + etalvp ~ c(log(1 + 0.552^2), 0.12 * sqrt(log(1 + 0.552^2) * log(1 + 0.344^2)), log(1 + 0.344^2))                        # Brill 2014 Table 2 ($OMEGA BLOCK(2); rho = 0.12)
 
     # Residual error. The .docx ESM 4 $ERROR block defines two distinct
     # proportional errors via OBES indicator: Y1 = IPRED*(1+ERR(1)) for

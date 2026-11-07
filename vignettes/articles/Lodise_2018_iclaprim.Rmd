@@ -65,9 +65,9 @@ them in one place for review.
 | `e_sex_cl` (additive male shift on CL, L/h; applied as `(1 - SEXF)`) | `2.78` | Lodise 2018 Table 1: theta7 = 2.78 (SE 1.06; 95% CI 0.66-4.90) |
 | `e_occ_cl` (additive day-4 shift on CL, L/h) | `3.97` | Lodise 2018 Table 1: theta9 = 3.97 (SE 0.694; 95% CI 2.58-5.36) |
 | `e_infect_csssi_sev_q` (additive severe-cSSSI shift on Q, L/h) | `13.5` | Lodise 2018 Table 1: theta8 = 13.5 (SE 2.29; 95% CI 8.92-18.08) |
-| `etalcl` (omega_CL, log-normal variance) | `0.15543` (41% CV) | Lodise 2018 Table 1: CV% 41 on CL (95% CI 38-44); omega^2 = log(1 + CV^2) |
-| `etalvc` (omega_V1, log-normal variance) | `0.23107` (51% CV) | Lodise 2018 Table 1: CV% 51 on V1 (95% CI 45-56); omega^2 = log(1 + CV^2) |
-| `etalvp` (omega_V2, log-normal variance) | `0.55362` (86% CV) | Lodise 2018 Table 1: CV% 86 on V2 (95% CI 65-104); omega^2 = log(1 + CV^2) |
+| `etalcl` (omega_CL, log-normal variance) | `0.15538` (41% CV) | Lodise 2018 Table 1: CV% 41 on CL (95% CI 38-44); omega^2 = log(1 + CV^2) |
+| `etalvc` (omega_V1, log-normal variance) | `0.23119` (51% CV) | Lodise 2018 Table 1: CV% 51 on V1 (95% CI 45-56); omega^2 = log(1 + CV^2) |
+| `etalvp` (omega_V2, log-normal variance) | `0.55366` (86% CV) | Lodise 2018 Table 1: CV% 86 on V2 (95% CI 65-104); omega^2 = log(1 + CV^2) |
 | `propSd` (proportional residual error, fraction) | `0.365` | Lodise 2018 Table 1: residual error CV% = 36.5 |
 | `addSd` (additive residual error, ng/mL) | `5.19` | Lodise 2018 Table 1: additive residual error = 5.19 ng/mL (SE 0.87) |
 | CL typical-value equation (`CL = theta2 + theta5 * AGE + theta7 * SEX + theta9 * OCC`) | n/a | Lodise 2018 Results, Population PK model paragraph |

@@ -60,8 +60,8 @@ collects them in one place for review.
 | `lvp` (V2, L) | `log(3.9)` | Obrink-Hansen 2015 Table 2: V2 3.9 L (RSE 9.7%) |
 | `e_creat_cl` (beta_Pcrea on CL, (L/h)/(umol/L)) | `-0.011` | Obrink-Hansen 2015 Table 2: beta_Pcrea -0.011 (RSE 11.9%) |
 | `creat_ref` (cohort median CREAT, umol/L) | `170` | Obrink-Hansen 2015 Table 1 cohort median; Table 2 footnote |
-| `etalcl` (omega^2 on CL) | `0.41001` (71.2% CV) | Obrink-Hansen 2015 Table 2: IIV CL 71.2% CV; omega^2 = log(1 + CV^2) |
-| `etalvc` (omega^2 on V1) | `0.28818` (57.8% CV) | Obrink-Hansen 2015 Table 2: IIV V1 57.8% CV; omega^2 = log(1 + CV^2) |
+| `etalcl` (omega^2 on CL) | `0.41008` (71.2% CV) | Obrink-Hansen 2015 Table 2: IIV CL 71.2% CV; omega^2 = log(1 + CV^2) |
+| `etalvc` (omega^2 on V1) | `0.28824` (57.8% CV) | Obrink-Hansen 2015 Table 2: IIV V1 57.8% CV; omega^2 = log(1 + CV^2) |
 | `propSd` (proportional residual SD) | `0.147` | Obrink-Hansen 2015 Table 2: proportional error 14.7% (RSE 14.4%) |
 | Covariate model (additive linear): `CL_i = (TVCL + beta_Pcrea * (CREAT - 170)) * exp(eta_CL)` | n/a | Obrink-Hansen 2015 Table 2 footnote |
 | `d/dt(central)` and `d/dt(peripheral1)` (2-cmt IV, linear elimination) | n/a | Obrink-Hansen 2015 Results: "best described by a two-compartment model with linear elimination" |

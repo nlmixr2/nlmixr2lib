@@ -135,8 +135,8 @@ Yu_2026_tenofovir_pregnancy_taf <- function() {
     # the exponential model P = TVP * exp(eta); omega^2 = log(CV^2 + 1).
     # ------------------------------------------------------------------
     etalka ~ 0.0220   # CV 14.9%: log(0.149^2 + 1)   (ESM Table S2, BSV on Ka, RSE 26%)
-    etalcl ~ 0.3023   # CV 59.4%: log(0.594^2 + 1)   (ESM Table S2, BSV on CL, RSE 10%)
-    etalvc ~ 0.6842   # CV 99.1%: log(0.991^2 + 1)   (ESM Table S2, BSV on V2, RSE 13%)
+    etalcl ~ log(1 + 0.594^2)  # CV 59.4%   (ESM Table S2, BSV on CL, RSE 10%)
+    etalvc ~ log(1 + 0.991^2)  # CV 99.1%   (ESM Table S2, BSV on V2, RSE 13%)
 
     # Residual error, plasma TAF. Table S2 reports a proportional term
     # only; unlike the semi-mechanistic model (Table 2) it carries no

@@ -66,8 +66,8 @@ Plachouras_2009_colistin <- function() {
     # IIV on V1, Q, V2 (CMS) and on the colistin V/fm was not reported in
     # Table 2 (only CL CMS, CL/fm colistin, and colistin residual error
     # had IIV).
-    etalcl     ~ 0.1289; label("IIV variance on log CMS CL (37% CV per Table 2)")        # log(1 + 0.37^2) = 0.1289
-    etalcl_col ~ 0.2964; label("IIV variance on log apparent colistin CL/fm (59% CV per Table 2)") # log(1 + 0.59^2) = 0.2964
+    etalcl     ~ log(1 + 0.37^2); label("IIV variance on log CMS CL (37% CV per Table 2)")
+    etalcl_col ~ log(1 + 0.59^2); label("IIV variance on log apparent colistin CL/fm (59% CV per Table 2)")
 
     # ---- Residual error ----
     # Combined additive + proportional error model on log-transformed

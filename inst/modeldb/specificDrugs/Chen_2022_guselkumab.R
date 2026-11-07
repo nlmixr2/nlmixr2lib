@@ -65,14 +65,14 @@ Chen_2022_guselkumab <- function() {
 
     # IIV. Table 1 reports IIV as %CV (linear scale) for log-normal IIV
     # entries; convert with omega^2 = log(CV^2 + 1).
-    #   CL/F 38.9% -> omega^2 = log(1 + 0.389^2) = 0.14092
-    #   V/F  33.3% -> omega^2 = log(1 + 0.333^2) = 0.10515
-    #   Ka   93.4% -> omega^2 = log(1 + 0.934^2) = 0.62725
+    #   CL/F 38.9% -> omega^2 = log(1 + 0.389^2) = 0.14091
+    #   V/F  33.3% -> omega^2 = log(1 + 0.333^2) = 0.10516
+    #   Ka   93.4% -> omega^2 = log(1 + 0.934^2) = 0.62720
     # Correlation between IIV of CL/F and V/F is 0.101 (Chen 2022 Table 1):
-    #   covariance = 0.101 * sqrt(0.14092 * 0.10515) = 0.012295
-    etalcl + etalvc ~ c(0.14092,
-                        0.012295, 0.10515)                                               # Chen 2022 Table 1 (IIV CL/F 38.9%, IIV V/F 33.3%, correlation 0.101)
-    etalka ~ 0.62725                                                                     # Chen 2022 Table 1 (IIV Ka 93.4%; shrinkage 61.7%)
+    #   covariance = 0.101 * sqrt(0.14091 * 0.10516) = 0.012295
+    etalcl + etalvc ~ c(log(1 + 0.389^2),
+                        0.101 * sqrt(log(1 + 0.389^2) * log(1 + 0.333^2)), log(1 + 0.333^2))                                               # Chen 2022 Table 1 (IIV CL/F 38.9%, IIV V/F 33.3%, correlation 0.101)
+    etalka ~ log(1 + 0.934^2)  # Chen 2022 Table 1 (IIV Ka 93.4%; shrinkage 61.7%)
 
     # Residual error: combined additive and proportional (Chen 2022 Methods, Base
     # model section, and Table 1).

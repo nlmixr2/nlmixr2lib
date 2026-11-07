@@ -118,7 +118,7 @@ Baker_2020_eptinezumab <- function() {
     # its covariance is not printed in any source and is set to 0 here.
     etalcl ~ 0.08075 # Baker 2020 Results 3.2 BSV CL 29%; FDA review Table 12 = 29.0% -> log(0.290^2 + 1)
     etalvc ~ 0.09176 # Baker 2020 Results 3.2 BSV Vc 31%; FDA review Table 12 = 31.0% -> log(0.310^2 + 1)
-    etalq ~ 0.80594 # FDA review Table 12 BSV CLp = 111.3% -> log(1.113^2 + 1)
+    etalq ~ log(1 + 1.113^2)  # FDA review Table 12 BSV CLp = 111.3%
     etalvp ~ 0.11431 # FDA review Table 12 BSV Vd = 34.8% -> log(0.348^2 + 1)
 
     # Residual error: C = f * (1 + eps_p) + eps_a (Baker 2020 section 2.2.1 equation)

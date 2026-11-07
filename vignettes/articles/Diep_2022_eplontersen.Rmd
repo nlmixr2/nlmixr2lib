@@ -85,14 +85,14 @@ concentrations are in mg/dL; time is in hours.
 | `IC50`               | 0.0283 ng/mL | Diep 2022 Table 3 IC50 |
 | `kin = BL * kout`    | derived    | Diep 2022 Figure 1 inset (BL = kin / kout) |
 | Indirect-response PD | d/dt(ttr) = kin * (1 - Cp * Imax / (IC50 + Cp)) - kout * ttr | Diep 2022 Figure 1 |
-| IIV%CL  = 21.1% CV   | omega^2 = log(0.211^2 + 1) = 0.04357 | Diep 2022 Table 2 |
-| IIV%Vc  = 52.1% CV   | omega^2 = log(0.521^2 + 1) = 0.24017 | Diep 2022 Table 2 |
-| IIV%Q   = 36.9% CV   | omega^2 = log(0.369^2 + 1) = 0.12777 | Diep 2022 Table 2 |
-| IIV%Vp  = 44.6% CV   | omega^2 = log(0.446^2 + 1) = 0.18147 | Diep 2022 Table 2 |
-| IIV%ka  = 39.3% CV   | omega^2 = log(0.393^2 + 1) = 0.14378 | Diep 2022 Table 2 |
+| IIV%CL  = 21.1% CV   | omega^2 = log(0.211^2 + 1) = 0.04356 | Diep 2022 Table 2 |
+| IIV%Vc  = 52.1% CV   | omega^2 = log(0.521^2 + 1) = 0.24015 | Diep 2022 Table 2 |
+| IIV%Q   = 36.9% CV   | omega^2 = log(0.369^2 + 1) = 0.12766 | Diep 2022 Table 2 |
+| IIV%Vp  = 44.6% CV   | omega^2 = log(0.446^2 + 1) = 0.18142 | Diep 2022 Table 2 |
+| IIV%ka  = 39.3% CV   | omega^2 = log(0.393^2 + 1) = 0.14362 | Diep 2022 Table 2 |
 | IIV%BL  = 31.8% CV   | omega^2 = log(0.318^2 + 1) = 0.09633 | Diep 2022 Table 3 |
-| IIV%kout = 46.2% CV  | omega^2 = log(0.462^2 + 1) = 0.19349 | Diep 2022 Table 3 |
-| IIV%IC50 = 82.9% CV  | omega^2 = log(0.829^2 + 1) = 0.52295 | Diep 2022 Table 3 |
+| IIV%kout = 46.2% CV  | omega^2 = log(0.462^2 + 1) = 0.19346 | Diep 2022 Table 3 |
+| IIV%IC50 = 82.9% CV  | omega^2 = log(0.829^2 + 1) = 0.52309 | Diep 2022 Table 3 |
 | Residual on Cc       | proportional, sqrt(0.0851) = 0.2917 (sigma^2_add on log-transformed PK = 0.0851) | Diep 2022 Table 2 |
 | Residual on ttr      | proportional, sqrt(0.0368) = 0.1918 (sigma^2_prop on linear TTR = 0.0368)         | Diep 2022 Table 3 |
 

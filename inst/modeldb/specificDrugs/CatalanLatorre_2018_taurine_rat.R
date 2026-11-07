@@ -143,20 +143,20 @@ CatalanLatorre_2018_taurine_rat <- function() {
     # ----------------------------------------------------------
     # IIV (BSV in paper) -- omega^2 = log(CV^2 + 1) conversion.
     # Table 3 reports BSV as CV% on the natural-scale parameter.
-    #   Q0:  CV  25.7% -> log(1 + 0.257^2)  = 0.06397
-    #   Vc:  CV  50.6% -> log(1 + 0.506^2)  = 0.22810
-    #   K12: CV 120.4% -> log(1 + 1.204^2)  = 0.89571
-    #   K21: CV  93.4% -> log(1 + 0.934^2)  = 0.62727
+    #   Q0:  CV  25.7% -> log(1 + 0.257^2)  = 0.06396
+    #   Vc:  CV  50.6% -> log(1 + 0.506^2)  = 0.22796
+    #   K12: CV 120.4% -> log(1 + 1.204^2)  = 0.89593
+    #   K21: CV  93.4% -> log(1 + 0.934^2)  = 0.62720
     #   Vms: CV  17.1% -> log(1 + 0.171^2)  = 0.02882
-    #   ka:  CV  69.6% -> log(1 + 0.696^2)  = 0.39503
+    #   ka:  CV  69.6% -> log(1 + 0.696^2)  = 0.39502
     # No IIV was estimated for Kms, Kmr, Vmr, or FVms_DN.
     # ----------------------------------------------------------
-    etalq0  ~ 0.06397   # Table 3 BSV Q0  = 25.7%  CV (CV 104)
-    etalvc  ~ 0.22810   # Table 3 BSV Vc  = 50.6%  CV (CV 52.7)
-    etalk12 ~ 0.89571   # Table 3 BSV K12 = 120.4% CV (CV 38.7)
-    etalk21 ~ 0.62727   # Table 3 BSV K21 = 93.4%  CV (CV 293)
+    etalq0  ~ log(1 + 0.257^2)  # Table 3 BSV Q0  = 25.7%  CV (CV 104)
+    etalvc  ~ log(1 + 0.506^2)  # Table 3 BSV Vc  = 50.6%  CV (CV 52.7)
+    etalk12 ~ log(1 + 1.204^2)  # Table 3 BSV K12 = 120.4% CV (CV 38.7)
+    etalk21 ~ log(1 + 0.934^2)  # Table 3 BSV K21 = 93.4%  CV (CV 293)
     etalvms ~ 0.02882   # Table 3 BSV Vms = 17.1%  CV (CV 285)
-    etalka  ~ 0.39503   # Table 3 BSV ka  = 69.6%  CV (CV 42.3)
+    etalka  ~ log(1 + 0.696^2)  # Table 3 BSV ka  = 69.6%  CV (CV 42.3)
 
     # ----------------------------------------------------------
     # Residual error -- proportional (CV 22.4%).

@@ -93,7 +93,7 @@ collects them in one place for review.
 | `e_lbw_cl` (LBW power on CL)   | 0.610          | Garmann 2017 Table 2: effect of LBW on CL = 0.610 (95% CI 0.45-0.75)  |
 | `e_lbw_vc` (LBW power on Vc)   | 0.950          | Garmann 2017 Table 2: effect of LBW on Vc = 0.950 (95% CI 0.89-1.02)  |
 | Reference LBW                  | 51.1 kg        | Garmann 2017 Table 2 footnote: parameterised as `theta * (LBW/51.1)^theta_xx` |
-| `etalcl` (omega^2)             | 0.12826        | Garmann 2017 Table 2: BSV CL = 37.0% CV; log-normal omega^2 = log(1 + 0.370^2) |
+| `etalcl` (omega^2)             | 0.12831        | Garmann 2017 Table 2: BSV CL = 37.0% CV; log-normal omega^2 = log(1 + 0.370^2) |
 | `etalvc` (omega^2)             | 0.01247        | Garmann 2017 Table 2: BSV Vc = 11.2% CV; log-normal omega^2 = log(1 + 0.112^2) |
 | `propSd`                       | 0.267          | Garmann 2017 Table 2: proportional RUV = 26.7% CV                     |
 | `addSd`                        | 1.10 IU/dL     | Garmann 2017 Table 2: additive RUV = 1.10 IU/dL                       |

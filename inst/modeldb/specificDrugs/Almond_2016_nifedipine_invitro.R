@@ -144,19 +144,19 @@ Almond_2016_nifedipine_invitro <- function() {
     # vignette Errata. No correlations are reported; the block is diagonal.
     # =====================================================================
 
-    etalemax_activity ~ 0.469399
+    etalemax_activity ~ log(1 + 0.7740^2)
     # Table 2: S.D. 11.3 on Indmax 15.6 -> CV = 11.3 / 14.6 = 0.7740 on emax;
-    # omega^2 = log(1 + 0.7740^2) = 0.469399. Largest efficacy variance in
+    # omega^2 = log(1 + 0.7740^2) = 0.469426. Largest efficacy variance in
     # the study on the activity endpoint.
     etalec50_activity ~ 0.203451
     # Table 2: S.D. 1.9 on IndC50 4.0 -> CV = 0.4750;
     # omega^2 = log(1 + 0.4750^2) = 0.203451.
-    etalemax_mrna ~ 0.454576
+    etalemax_mrna ~ log(1 + 0.7586^2)
     # Table 2: S.D. 22.0 on Indmax 30.0 -> CV = 22.0 / 29.0 = 0.7586 on emax;
-    # omega^2 = log(1 + 0.7586^2) = 0.454576.
-    etalec50_mrna ~ 0.427894
+    # omega^2 = log(1 + 0.7586^2) = 0.454556.
+    etalec50_mrna ~ log(1 + 0.7308^2)
     # Table 2: S.D. 9.5 on IndC50 13.0 -> CV = 0.7308;
-    # omega^2 = log(1 + 0.7308^2) = 0.427894.
+    # omega^2 = log(1 + 0.7308^2) = 0.427923.
 
     # =====================================================================
     # Residual error is NOT reported: the source fitted each donor's curve

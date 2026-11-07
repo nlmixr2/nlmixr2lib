@@ -1,0 +1,598 @@
+---
+title: "Isoniazid, linezolid and levofloxacin with clofazimine (Kengo 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Isoniazid, linezolid and levofloxacin with clofazimine (Kengo 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Kengo 2024 asked whether adding clofazimine to a drug-resistant tuberculosis
+regimen changes the pharmacokinetics of four co-administered drugs. Clofazimine
+was withheld for the first two weeks of treatment, and pharmacokinetic sampling
+was done on day 14 (visit 1, no clofazimine) and again 21 days after clofazimine
+was started (visit 2). The paper developed three new population PK models,
+each packaged here as its own model file:
+
+* `Kengo_2024_isoniazid` -- two-compartment model with well-stirred hepatic
+  first-pass extraction and NAT2-phenotype-dependent intrinsic clearance; no
+  clofazimine effect.
+* `Kengo_2024_linezolid` -- one-compartment model with transit absorption; no
+  clofazimine effect.
+* `Kengo_2024_levofloxacin` -- one-compartment model with transit absorption,
+  a creatinine-clearance effect on clearance and a 14.8% lower clearance with
+  clofazimine.
+
+The other two drugs were described with previously published models and are
+not packaged from this paper. Clofazimine concentrations were predicted by the
+three-compartment model of Abdelwahab et al. 2020
+([doi:10.1093/jac/dkaa310](https://doi.org/10.1093/jac/dkaa310)) without
+re-estimating any parameter. Cycloserine (dosed as terizidone, six
+participants) used the model of Chirehwa et al. 2020
+([doi:10.1128/AAC.01381-20](https://doi.org/10.1128/AAC.01381-20)); the paper
+re-estimated its total clearance, but the change was not significant
+(dOFV -2.16) and the re-estimated value is not reported, so the cycloserine
+model is Chirehwa's unchanged.
+
+```{r citations}
+mod_inh <- readModelDb("Kengo_2024_isoniazid")
+mod_lzd <- readModelDb("Kengo_2024_linezolid")
+mod_lfx <- readModelDb("Kengo_2024_levofloxacin")
+ui_inh <- rxode2::rxode2(mod_inh)
+ui_lzd <- rxode2::rxode2(mod_lzd)
+ui_lfx <- rxode2::rxode2(mod_lfx)
+```
+
+* Citation: `r ui_lfx$reference`
+* Article: <https://doi.org/10.1128/aac.01583-23>
+* Description (isoniazid): `r ui_inh$description`
+* Description (linezolid): `r ui_lzd$description`
+* Description (levofloxacin): `r ui_lfx$description`
+
+# Population
+
+The cohort was 27 newly diagnosed adults with pulmonary drug-resistant
+tuberculosis at Klerksdorp/Tshepong Hospital, North-West Province, South Africa
+(Kengo 2024 Table 1). 19 (70%) were men and 23 (85%) were living with HIV;
+median age was 39 years and median weight 52 kg. All 27 contributed isoniazid
+data (high-dose isoniazid 450 or 600 mg daily, median 10.0 mg/kg; 5 slow, 13
+intermediate and 9 rapid NAT2 acetylators), and 21 contributed linezolid (600 mg
+daily) and levofloxacin (750 or 1000 mg daily) data. In the linezolid /
+levofloxacin subset, median fat-free mass was 41.5 kg (range 26.0-51.6) and
+median Cockcroft-Gault creatinine clearance 81.8 mL/min (range 50.5-136).
+Treatment was given under direct observation with a meal. Samples were drawn
+pre-dose and 2, 4, 6, 8 and 10 h after the observed dose at each visit.
+
+The same information is available programmatically via each model's
+`population` metadata, for example `readModelDb("Kengo_2024_levofloxacin")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to Kengo 2024 Table 2.
+The tables below collect them. All typical values refer to a participant with
+fat-free mass (FFM) 42 kg (Table 2 footnote a). Table 2 footnote g defines the
+reported variability as %CV = sqrt(omega^2) * 100, so each variance is
+(%CV / 100)^2.
+
+## Isoniazid
+
+| Parameter | Value | Source location |
+|---|---|---|
+| `lclint_slow`, `lclint_int`, `lclint_rapid` | `log(12.2)`, `log(24.9)`, `log(46.7)` L/h | Table 2 intrinsic clearance by acetylator status; Results paragraph 3 |
+| `lvc` | `log(57.0)` L | Table 2 central volume |
+| `lq` | `log(1.70)` L/h | Table 2 inter-compartmental clearance |
+| `lvp` | `log(42.4)` L | Table 2 peripheral volume |
+| `lka`, `lmtt`, `lntr` | `fixed(log(3.28))` 1/h, `fixed(log(0.122))` h, `fixed(log(2.32))` | Table 2, fixed to literature values (footnote e) |
+| `lfdepot` | `fixed(log(1))` | Table 2, pre-hepatic bioavailability fixed (footnotes b, d) |
+| `lqh` | `fixed(log(72.4))` L/h | Table 2 hepatic flow at FFM 42 kg (footnote f) |
+| `fu` | `fixed(0.95)` | Table 2 unbound fraction 95% (footnote f) |
+| `e_ffm_cl`, `e_ffm_vc` | `fixed(0.75)`, `fixed(1)` | Methods, "Pharmacokinetic modeling" |
+| `etalclint` | 0.026244 | Table 2 BSV in clearance 16.2% |
+| `etabvv_clint_1/_2` | 0.033856 | Table 2 BVV in clearance 18.4% |
+| `etaiov_ka_1.._4` | 0.889249 | Table 2 BOV in ka 94.3% |
+| `etaiov_mtt_1.._4` | 1.6641 | Table 2 BOV in MTT 129% |
+| `etaiov_fdepot_1.._4` | 0.225625 | Table 2 BOV in F 47.5% |
+| `propSd` | 0.244 | Table 2 proportional error 24.4% |
+| `addSd` | `fixed(0.021)` mg/L | Table 2, 20% of the 0.105 mg/L LLOQ (fixed) |
+| Well-stirred liver: `eh = fu*clint/(fu*clint + qh)`, `fh = 1 - eh`, systemic CL = `qh*eh` | -- | Results paragraph 3; Methods (well-stirred liver model, Pang and Rowland 1977) |
+| Savic transit chain, `ktr = (ntr + 1)/mtt` | -- | Methods (Savic 2007 transit model) |
+
+## Linezolid
+
+| Parameter | Value | Source location |
+|---|---|---|
+| `lcl` | `log(3.04)` L/h | Table 2 clearance; Results paragraph 4 |
+| `lvc` | `log(38.7)` L | Table 2 volume |
+| `lka`, `lmtt`, `lntr` | `log(1.14)` 1/h, `log(0.928)` h, `log(12.6)` | Table 2 |
+| `lfdepot` | `fixed(log(1))` | Table 2 (footnote b) |
+| `etalcl` | 0.099856 | Table 2 BSV in clearance 31.6% |
+| `etabvv_cl_1/_2` | 0.110889 | Table 2 BVV in clearance 33.3% |
+| `etaiov_ka_2/_4`, `etaiov_mtt_2/_4`, `etaiov_fdepot_2/_4` | 1.0816, 0.544644, 0.015376 | Table 2 BOV in ka 104%, MTT 73.8%, F 12.4% |
+| `etaiov_*_1/_3` | the above times 1.60^2 | Table 2 scaling factor on BOV for unobserved dose 1.60 (footnote h) |
+| `propSd`, `addSd` | 0.0731, 0.284 mg/L | Table 2 |
+
+## Levofloxacin
+
+| Parameter | Value | Source location |
+|---|---|---|
+| `lcl` | `log(6.81)` L/h | Table 2 clearance; Results paragraph 5 |
+| `lvc` | `log(98.5)` L | Table 2 volume |
+| `lka`, `lmtt`, `lntr` | `log(2.05)` 1/h, `log(1.32)` h, `log(15.7)` | Table 2 |
+| `lfdepot` | `fixed(log(1))` | Table 2 (footnote b) |
+| `e_crcl_cl` | 0.00470 per mL/min | Table 2 effect of CLCR, +4.70% per +10 mL/min; Results paragraph 5 ("from the median") |
+| `e_conmed_clofazimine_cl` | -0.148 | Table 2 effect of clofazimine on clearance, -14.8% |
+| `etalcl` | 0.033489 | Table 2 BSV in clearance 18.3% |
+| `etabvv_cl_1/_2` | 0.0289 | Table 2 BVV in clearance 17.0% |
+| `etaiov_ka_2/_4`, `etaiov_mtt_2/_4`, `etaiov_fdepot_2/_4` | 1.3924, 0.197136, 0.046225 | Table 2 BOV in ka 118%, MTT 44.4%, F 21.5% |
+| `etaiov_*_1/_3` | the above times 1.99^2 | Table 2 scaling factor on BOV for unobserved dose 1.99 (footnote h) |
+| `propSd`, `addSd` | 0.0497, 0.238 mg/L | Table 2 |
+
+```{r variance-check}
+# Each estimated variance reproduces its Table 2 %CV as sqrt(omega^2) * 100.
+omega_tab <- function(ui) {
+  d <- ui$iniDf
+  d <- d[!is.na(d$neta1) & d$neta1 == d$neta2 & !d$fix, ]
+  setNames(sqrt(d$est) * 100, d$name)
+}
+printed <- list(
+  inh = c(etalclint = 16.2, etabvv_clint_1 = 18.4, etaiov_ka_1 = 94.3, etaiov_mtt_1 = 129, etaiov_fdepot_1 = 47.5),
+  lzd = c(etalcl = 31.6, etabvv_cl_1 = 33.3, etaiov_ka_2 = 104, etaiov_mtt_2 = 73.8, etaiov_fdepot_2 = 12.4),
+  lfx = c(etalcl = 18.3, etabvv_cl_1 = 17.0, etaiov_ka_2 = 118, etaiov_mtt_2 = 44.4, etaiov_fdepot_2 = 21.5)
+)
+got <- list(inh = omega_tab(ui_inh), lzd = omega_tab(ui_lzd), lfx = omega_tab(ui_lfx))
+for (d in names(printed)) {
+  stopifnot(setequal(names(got[[d]]), names(printed[[d]])))
+  stopifnot(all(abs(got[[d]][names(printed[[d]])] - printed[[d]]) < 1e-6))
+}
+
+# The inflated (unobserved-dose) slots are the estimated variance times the
+# squared Table 2 scaling factor.
+infl <- function(ui, factor) {
+  d <- ui$iniDf
+  v <- setNames(d$est, d$name)
+  c(
+    ka = v[["etaiov_ka_1"]] / v[["etaiov_ka_2"]],
+    mtt = v[["etaiov_mtt_1"]] / v[["etaiov_mtt_2"]],
+    f = v[["etaiov_fdepot_1"]] / v[["etaiov_fdepot_2"]]
+  ) / factor^2
+}
+# Tolerance 1e-4: the inflated variances are stored to 6-7 significant figures.
+stopifnot(all(abs(infl(ui_lzd, 1.60) - 1) < 1e-4), all(abs(infl(ui_lfx, 1.99) - 1) < 1e-4))
+```
+
+# Structural checks
+
+These checks use typical values only (`omega = NA`), so they are deterministic
+and are asserted tightly.
+
+```{r single-dose-mass-balance}
+# One dose on an observed occasion (OCC = 2) for a typical 42 kg-FFM
+# participant, followed long enough for the terminal phase to vanish.
+sd_events <- function(dose, tend, extra = list()) {
+  tt <- sort(unique(c(seq(0, 24, by = 0.01), seq(24, tend, by = 0.5))))
+  ev <- data.frame(
+    id = 1L, time = c(0, tt), amt = c(dose, rep(0, length(tt))),
+    evid = c(1L, rep(0L, length(tt))), cmt = "depot",
+    FFM = 42, OCC = 2L
+  )
+  for (nm in names(extra)) ev[[nm]] <- extra[[nm]]
+  ev
+}
+trap_auc <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+
+solve_det <- function(mod, ev) {
+  rxode2::rxSolve(mod, ev, omega = NA, returnType = "data.frame",
+                  rtol = 1e-10, atol = 1e-12, maxsteps = 1e6)
+}
+
+sd_lzd <- solve_det(mod_lzd, sd_events(600, 400))
+sd_lfx <- solve_det(mod_lfx, sd_events(1000, 600, list(CRCL = 81.8, CONMED_CLOFAZIMINE = 0)))
+nat2 <- data.frame(phenotype = c("slow", "intermediate", "rapid"),
+                   NAT2_SLOW = c(1, 0, 0), NAT2_RAPID = c(0, 0, 1),
+                   clint = c(12.2, 24.9, 46.7))
+sd_inh <- lapply(seq_len(nrow(nat2)), function(i) {
+  solve_det(mod_inh, sd_events(600, 1200, list(NAT2_SLOW = nat2$NAT2_SLOW[i], NAT2_RAPID = nat2$NAT2_RAPID[i])))
+})
+
+# AUC(0-inf) * CL equals the bioavailable dose. For isoniazid the systemic
+# clearance is qh * eh and the bioavailable dose is fh * dose; their ratio
+# collapses to the oral-clearance identity AUC = dose / (fu * CLint).
+mb <- data.frame(
+  model = c("linezolid", "levofloxacin", paste("isoniazid,", nat2$phenotype)),
+  auc = c(trap_auc(sd_lzd$time, sd_lzd$Cc), trap_auc(sd_lfx$time, sd_lfx$Cc),
+          vapply(sd_inh, function(s) trap_auc(s$time, s$Cc), numeric(1))),
+  expected = c(600 / 3.04, 1000 / 6.81, 600 / (0.95 * nat2$clint))
+)
+mb$pct_diff <- 100 * (mb$auc / mb$expected - 1)
+knitr::kable(mb, digits = 3, caption = "Single-dose AUC(0-inf) against the closed-form value.")
+stopifnot(all(abs(mb$pct_diff) < 0.1))
+```
+
+The isoniazid identity confirms that the liver extracts the oral dose once on
+its way in (fraction `fh` survives) and clears systemic drug at `qh * eh`. The
+apparent oral clearances implied for a 42 kg-FFM participant are
+`r paste(sprintf("%.1f", 0.95 * nat2$clint), collapse = ", ")` L/h for slow,
+intermediate and rapid acetylators, against a hepatic plasma flow of 72.4 L/h
+(first-pass extraction `r paste(sprintf("%.0f%%", 100 * 0.95 * nat2$clint / (0.95 * nat2$clint + 72.4)), collapse = ", ")`).
+
+```{r covariate-ratios}
+# Levofloxacin covariate effects recovered from steady-state exposure. At
+# steady state AUC(0-24) = F * dose / CL, so an AUC ratio is the inverse
+# clearance ratio.
+ss_events <- function(dose, extra) {
+  doses <- data.frame(id = 1L, time = seq(0, 24 * 13, by = 24), amt = dose, evid = 1L, cmt = "depot")
+  obs <- data.frame(id = 1L, time = 24 * 13 + seq(0, 24, by = 0.01), amt = 0, evid = 0L, cmt = "depot")
+  ev <- rbind(doses, obs)
+  ev$FFM <- 42
+  ev$OCC <- 2L
+  for (nm in names(extra)) ev[[nm]] <- extra[[nm]]
+  ev[order(ev$time, -ev$evid), ]
+}
+auc_last_day <- function(extra) {
+  s <- solve_det(mod_lfx, ss_events(1000, extra))
+  trap_auc(s$time, s$Cc)
+}
+auc_ref <- auc_last_day(list(CRCL = 81.8, CONMED_CLOFAZIMINE = 0))
+auc_cfz <- auc_last_day(list(CRCL = 81.8, CONMED_CLOFAZIMINE = 1))
+auc_crcl <- auc_last_day(list(CRCL = 91.8, CONMED_CLOFAZIMINE = 0))
+ratios <- data.frame(
+  contrast = c("clofazimine vs none", "CLCR 91.8 vs 81.8 mL/min"),
+  auc_ratio = c(auc_cfz / auc_ref, auc_crcl / auc_ref),
+  expected = c(1 / (1 - 0.148), 1 / 1.047)
+)
+ratios$pct_diff <- 100 * (ratios$auc_ratio / ratios$expected - 1)
+knitr::kable(ratios, digits = 4, caption = "Levofloxacin steady-state AUC ratios against the Table 2 effects.")
+stopifnot(all(abs(ratios$pct_diff) < 0.1))
+```
+
+A 14.8% lower clearance raises the steady-state AUC by
+`r sprintf("%.1f%%", 100 * (ratios$auc_ratio[1] - 1))`, the "19% increase" in
+levofloxacin AUC the paper reports (median 140 to 166 mg*h/L, a ratio of
+`r sprintf("%.3f", 166 / 140)`).
+
+# Virtual cohort
+
+Covariates are drawn to match Table 1: sex (70% male in the isoniazid cohort,
+62% in the linezolid / levofloxacin cohort), height, and weight log-normal
+around the cohort median and truncated to the observed range. Fat-free mass
+follows from sex, weight and height by the Janmahasatian equation. Creatinine
+clearance is log-normal around the 81.8 mL/min median, truncated to 50.5-136
+mL/min. Doses follow the weight-band assumptions in the Assumptions section.
+
+```{r cohort}
+ffm_janmahasatian <- function(wt, ht, female) {
+  ifelse(female == 1,
+         37.99 * ht^2 * wt / (35.98 * ht^2 + wt),
+         42.92 * ht^2 * wt / (30.93 * ht^2 + wt))
+}
+rtrunc_lnorm <- function(n, median, sdlog, lo, hi) {
+  x <- rlnorm(n, log(median), sdlog)
+  bad <- x < lo | x > hi
+  while (any(bad)) {
+    x[bad] <- rlnorm(sum(bad), log(median), sdlog)
+    bad <- x < lo | x > hi
+  }
+  x
+}
+make_cohort <- function(n, male_frac, wt_median, wt_lo, wt_hi) {
+  female <- rbinom(n, 1, 1 - male_frac)
+  ht <- ifelse(female == 1, rnorm(n, 1.60, 0.06), rnorm(n, 1.70, 0.06))
+  wt <- rtrunc_lnorm(n, wt_median, 0.15, wt_lo, wt_hi)
+  data.frame(id = seq_len(n), female = female, HT = ht, WT = wt,
+             FFM = ffm_janmahasatian(wt, ht, female))
+}
+
+set.seed(20240410)
+n_per_arm <- 150
+cohort_inh <- make_cohort(3 * n_per_arm, 0.70, 53, 37, 66)
+cohort_inh$phenotype <- factor(rep(c("slow", "intermediate", "rapid"), each = n_per_arm),
+                               levels = c("slow", "intermediate", "rapid"))
+cohort_inh$NAT2_SLOW <- as.integer(cohort_inh$phenotype == "slow")
+cohort_inh$NAT2_RAPID <- as.integer(cohort_inh$phenotype == "rapid")
+cohort_inh$dose <- ifelse(cohort_inh$WT < 50, 450, 600)
+
+cohort_lfx <- make_cohort(200, 0.62, 52, 37, 74)
+cohort_lfx$CRCL <- rtrunc_lnorm(nrow(cohort_lfx), 81.8, 0.25, 50.5, 136)
+cohort_lfx$dose <- ifelse(cohort_lfx$WT < 46, 750, 1000)
+cohort_lzd <- cohort_lfx
+cohort_lzd$dose <- 600
+
+cohort_summary <- rbind(
+  data.frame(cohort = "isoniazid", WT = median(cohort_inh$WT), FFM = median(cohort_inh$FFM),
+             mg_per_kg = median(cohort_inh$dose / cohort_inh$WT)),
+  data.frame(cohort = "linezolid", WT = median(cohort_lzd$WT), FFM = median(cohort_lzd$FFM),
+             mg_per_kg = median(cohort_lzd$dose / cohort_lzd$WT)),
+  data.frame(cohort = "levofloxacin", WT = median(cohort_lfx$WT), FFM = median(cohort_lfx$FFM),
+             mg_per_kg = median(cohort_lfx$dose / cohort_lfx$WT))
+)
+knitr::kable(cohort_summary, digits = 1,
+             caption = "Simulated cohort medians (Table 1: FFM 44.2 / 41.5 / 41.5 kg; 10.0 / 11.5 / 19.1 mg/kg).")
+stopifnot(
+  abs(median(cohort_inh$FFM) / 44.2 - 1) < 0.1,
+  abs(median(cohort_lfx$FFM) / 41.5 - 1) < 0.1
+)
+```
+
+# Simulation
+
+Each virtual participant takes the drug once daily for 14 days. Days 1-7 are
+visit 1 (no clofazimine) and days 8-14 visit 2 (clofazimine from day 8), so
+both visits reach steady state. As in the study, every dose before the
+sampling day is an unobserved occasion and the sampling-day dose is an observed
+occasion: OCC = 1 for days 1-6, 2 for day 7, 3 for days 8-13 and 4 for day 14.
+The pre-dose sample of each visit therefore belongs to the unobserved occasion
+and carries the inflated absorption BOV of linezolid and levofloxacin.
+
+```{r simulate}
+obs_grid <- c(seq(0.25, 2, by = 0.25), seq(2.5, 12, by = 0.5), seq(13, 24, by = 1))
+dose_v1 <- 24 * 6
+dose_v2 <- 24 * 13
+occ_at <- function(t) ifelse(t < dose_v1, 1L, ifelse(t < 24 * 7, 2L, ifelse(t < dose_v2, 3L, 4L)))
+
+build_events <- function(cohort) {
+  per_id <- lapply(seq_len(nrow(cohort)), function(i) {
+    doses <- data.frame(time = seq(0, dose_v2, by = 24), amt = cohort$dose[i], evid = 1L)
+    obs <- data.frame(
+      time = c(dose_v1 - 1e-3, dose_v1 + obs_grid, dose_v2 - 1e-3, dose_v2 + obs_grid),
+      amt = 0, evid = 0L
+    )
+    ev <- rbind(doses, obs)
+    ev$id <- cohort$id[i]
+    ev
+  })
+  ev <- dplyr::bind_rows(per_id)
+  ev$cmt <- "depot"
+  ev$OCC <- occ_at(ev$time)
+  ev$CONMED_CLOFAZIMINE <- as.integer(ev$time >= 24 * 7)
+  covs <- intersect(c("FFM", "CRCL", "NAT2_SLOW", "NAT2_RAPID"), names(cohort))
+  ev <- dplyr::left_join(ev, cohort[, c("id", covs)], by = "id")
+  ev[order(ev$id, ev$time, -ev$evid), ]
+}
+
+# A small hmax keeps the solver from stepping over the narrow absorption pulse
+# that a short mean transit time with a long transit chain produces.
+sim_cohort <- function(mod, cohort, seed) {
+  rxode2::rxSetSeed(seed)
+  s <- rxode2::rxSolve(mod, build_events(cohort), returnType = "data.frame",
+                       hmax = 0.05, maxsteps = 1e6)
+  # Visit 1 runs to the end of its 24 h sampling interval at t = 168 h; the
+  # visit-1 profile is followed to 24 h only for the NCA.
+  in_v1 <- s$time <= dose_v1 + 24
+  s$visit <- factor(ifelse(in_v1, "Visit 1: no clofazimine", "Visit 2: with clofazimine"),
+                    levels = c("Visit 1: no clofazimine", "Visit 2: with clofazimine"))
+  s$tad <- ifelse(in_v1, s$time - dose_v1, s$time - dose_v2)
+  s$tad[s$tad < 0] <- 0
+  s
+}
+
+sim_inh <- sim_cohort(mod_inh, cohort_inh, 20240411)
+sim_lzd <- sim_cohort(mod_lzd, cohort_lzd, 20240412)
+sim_lfx <- sim_cohort(mod_lfx, cohort_lfx, 20240413)
+sim_inh <- dplyr::left_join(sim_inh, cohort_inh[, c("id", "phenotype")], by = "id")
+
+stopifnot(
+  !anyNA(sim_inh$Cc), !anyNA(sim_lzd$Cc), !anyNA(sim_lfx$Cc),
+  all(sim_inh$Cc >= -1e-6 * max(sim_inh$Cc)),
+  all(sim_lzd$Cc >= -1e-6 * max(sim_lzd$Cc)),
+  all(sim_lfx$Cc >= -1e-6 * max(sim_lfx$Cc))
+)
+```
+
+# Replicating the published VPCs
+
+The paper's VPCs show 0-10 h after the observed dose, stratified by visit.
+The ribbons below are the simulated 5th-95th percentiles and the lines the
+simulated median, with the residual error included (`sim`), as in a VPC.
+
+```{r vpc-helper}
+vpc_summary <- function(sim, ...) {
+  sim |>
+    dplyr::filter(tad <= 10) |>
+    dplyr::group_by(..., visit, tad) |>
+    dplyr::summarise(
+      p05 = quantile(sim, 0.05), p50 = median(sim), p95 = quantile(sim, 0.95),
+      .groups = "drop"
+    )
+}
+vpc_plot <- function(d, ylab) {
+  ggplot(d, aes(tad)) +
+    geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25, fill = "steelblue") +
+    geom_line(aes(y = p50), colour = "firebrick") +
+    labs(x = "Time after dose (h)", y = ylab) +
+    theme_bw()
+}
+```
+
+```{r fig2-isoniazid, fig.width = 9, fig.height = 4, fig.cap = "Replicates Figure 2 of Kengo 2024: isoniazid by NAT2 phenotype and study visit (simulated 5th, 50th and 95th percentiles)."}
+vpc_inh <- vpc_summary(sim_inh, phenotype)
+vpc_plot(vpc_inh, "Isoniazid (mg/L)") + facet_grid(visit ~ phenotype)
+```
+
+```{r fig3-linezolid-levofloxacin, fig.width = 8, fig.height = 6, fig.cap = "Replicates Figure 3 of Kengo 2024: linezolid (top) and levofloxacin (bottom) by study visit (simulated 5th, 50th and 95th percentiles)."}
+vpc_both <- dplyr::bind_rows(
+  dplyr::mutate(vpc_summary(sim_lzd), drug = "Linezolid"),
+  dplyr::mutate(vpc_summary(sim_lfx), drug = "Levofloxacin")
+)
+vpc_both$drug <- factor(vpc_both$drug, levels = c("Linezolid", "Levofloxacin"))
+vpc_plot(vpc_both, "Concentration (mg/L)") + facet_grid(drug ~ visit, scales = "free_y")
+```
+
+Read off the published figures, the observed medians peak at about 13-15 mg/L
+for linezolid and 10-12 mg/L for levofloxacin, 2-4 h after the dose, and the
+isoniazid medians peak at about 5, 3.5 and 2.5 mg/L at 2 h for slow,
+intermediate and rapid acetylators. The study drew no sample before 2 h, so the
+isoniazid comparison is with the simulated median at 2 h (`median_2h`); the
+simulated isoniazid peak itself falls at about 1 h.
+
+```{r vpc-peaks}
+peaks <- dplyr::bind_rows(
+  vpc_both |> dplyr::group_by(drug, visit) |> dplyr::summarise(peak_median = max(p50), t_peak = tad[which.max(p50)], median_2h = p50[tad == 2], .groups = "drop"),
+  vpc_inh |> dplyr::group_by(drug = paste("Isoniazid,", phenotype), visit) |>
+    dplyr::summarise(peak_median = max(p50), t_peak = tad[which.max(p50)], median_2h = p50[tad == 2], .groups = "drop")
+)
+knitr::kable(peaks, digits = 2, caption = "Peak of the simulated median profile.")
+
+pk <- function(drug, visit) {
+  v <- peaks$peak_median[peaks$drug == drug & grepl(visit, peaks$visit)]
+  if (length(v) != 1L) stop("no unique peak for ", drug, " / ", visit)
+  v
+}
+# Bounds are the figure read-offs widened for digitisation error; a wrong
+# volume, dose or unit moves the peak by tens of percent.
+stopifnot(
+  pk("Linezolid", "Visit 1") > 10, pk("Linezolid", "Visit 1") < 18,
+  pk("Levofloxacin", "Visit 1") > 8, pk("Levofloxacin", "Visit 1") < 14,
+  pk("Isoniazid, slow", "Visit 1") > 3.5, pk("Isoniazid, slow", "Visit 1") < 7,
+  pk("Isoniazid, rapid", "Visit 1") > 1.5, pk("Isoniazid, rapid", "Visit 1") < 4
+)
+```
+
+# PKNCA validation
+
+NCA over the 24 h dosing interval after the observed dose at each visit. The
+pre-dose sample is the time-zero record.
+
+```{r pknca}
+run_nca <- function(sim, group_cols) {
+  conc <- sim |>
+    dplyr::filter(!is.na(Cc)) |>
+    dplyr::mutate(Cc = pmax(Cc, 0)) |>
+    dplyr::select(dplyr::all_of(c("id", group_cols, "tad", "Cc")))
+  doses <- conc |>
+    dplyr::filter(tad == 0) |>
+    dplyr::distinct(dplyr::across(dplyr::all_of(c("id", group_cols)))) |>
+    dplyr::mutate(tad = 0, amt = 1)
+  f_conc <- stats::as.formula(paste("Cc ~ tad |", paste(c(group_cols, "id"), collapse = " + ")))
+  f_dose <- stats::as.formula(paste("amt ~ tad |", paste(c(group_cols, "id"), collapse = " + ")))
+  intervals <- data.frame(start = 0, end = 24, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, f_conc),
+    PKNCA::PKNCAdose(doses, f_dose),
+    intervals = intervals
+  ))
+  as.data.frame(res$result)
+}
+
+nca_lfx <- run_nca(sim_lfx, "visit")
+nca_lzd <- run_nca(sim_lzd, "visit")
+nca_inh <- run_nca(sim_inh, c("phenotype", "visit"))
+
+nca_summary <- function(nca, group_cols) {
+  nca |>
+    dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast")) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(c(group_cols, "PPTESTCD")))) |>
+    dplyr::summarise(median = median(PPORRES), .groups = "drop") |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+    dplyr::rename("Cmax (mg/L)" = cmax, "Tmax (h)" = tmax, "AUC0-24 (mg*h/L)" = auclast)
+}
+knitr::kable(nca_summary(nca_inh, c("phenotype", "visit")), digits = 2,
+             caption = "Isoniazid: simulated median NCA by NAT2 phenotype and visit.")
+knitr::kable(nca_summary(nca_lzd, "visit"), digits = 2,
+             caption = "Linezolid: simulated median NCA by visit.")
+```
+
+## Comparison against the published levofloxacin AUC
+
+The paper reports one exposure summary: the median levofloxacin AUC rose from
+140 mg*h/L at visit 1 to 166 mg*h/L at visit 2 (Results paragraph 5,
+Figure S3).
+
+```{r nca-compare}
+reference <- data.frame(
+  visit = c("Visit 1: no clofazimine", "Visit 2: with clofazimine"),
+  auclast = c(140, 166)
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_lfx |> dplyr::select(visit, PPTESTCD, PPORRES),
+  reference = reference,
+  by = "visit",
+  params = "auclast",
+  units = c(auclast = "mg*h/L")
+)
+knitr::kable(cmp, caption = "Levofloxacin AUC0-24: simulated median versus Kengo 2024.")
+attr(cmp, "footnote")
+
+auc_med <- nca_lfx |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::group_by(visit) |>
+  dplyr::summarise(auc = median(PPORRES), .groups = "drop")
+ratio_med <- auc_med$auc[2] / auc_med$auc[1]
+stopifnot(
+  all(abs(auc_med$auc / reference$auclast - 1) < 0.2),
+  # Typical-value ratio is 1 / 0.852 = 1.174; the per-subject between-visit
+  # variability (17% CV) spreads the ratio of cohort medians by about 0.02.
+  abs(ratio_med - 1 / 0.852) < 0.08
+)
+```
+
+The simulated median visit-2 / visit-1 AUC ratio is
+`r sprintf("%.3f", ratio_med)`, against the published `r sprintf("%.3f", 166 / 140)`.
+
+# Assumptions and deviations
+
+* **Liver compartment without a volume.** The paper describes isoniazid
+  first-pass "through a liver compartment" but reports no liver volume (nor does
+  the cited Gausi 2021 model). The model treats the liver as instantly
+  equilibrating: the absorbed dose is multiplied by `fh = 1 - eh` and systemic
+  drug is cleared at `qh * eh`, with `eh = fu*CLint/(fu*CLint + QH)`. This is the
+  form the same group's isoniazid control streams use (see
+  `Calderin_2025_isoniazid`), and the single-dose check above confirms it gives
+  the well-stirred oral-clearance identity `AUC = dose / (fu * CLint)`. With a
+  hepatic flow of 72 L/h a liver of about 1 L would equilibrate within about a
+  minute, so the profile difference from an explicit compartment is negligible.
+* **Hepatic flow parameterisation.** Table 2 gives QH = 72.4 L/h for a 42 kg-FFM
+  participant; it is encoded at that reference and scaled by (FFM/42)^0.75.
+  This equals the conventional 90 L/h at 56.1 kg FFM used in the group's other
+  models, 90 * (42/56.1)^0.75 = 72.4 L/h.
+* **Isoniazid absorption values.** Table 2 footnote e says the absorption
+  parameters were fixed to those of Gausi et al. 2021, but the values Kengo 2024
+  prints (ka 3.28 1/h, MTT 0.122 h, NN 2.32) are not the isoniazid values in
+  Gausi 2021 Table 2 (ka 2.69 1/h, MTT 0.342 h, NN 48.4). The values printed in
+  Kengo 2024 are used, as the ones this model was fitted with.
+* **Allometric scaling of Q.** Table 2 marks the isoniazid inter-compartmental
+  clearance without footnote a, but the text says FFM scaling was applied to
+  "all disposition parameters", so Q is scaled with exponent 0.75.
+* **Occasion structure.** The paper treats each dose as an occasion and inflates
+  the absorption BOV for pre-dose samples after an unobserved dose. The model
+  encodes this as four occasions (unobserved and observed dose at each of the two
+  visits), with the visit for the between-visit variability derived from the
+  occasion. The scaling factor is applied to the BOV of ka, MTT and F (the
+  "absorption parameters" of footnote h) and multiplies the random deviate, so
+  each inflated variance is the estimated variance times the squared factor.
+* **Creatinine-clearance effect.** The paper states a 4.70% increase in
+  levofloxacin clearance per 10 mL/min above the median, without printing the
+  equation. It is encoded as linear, `1 + 0.0047 * (CRCL - 81.8)`, centred on
+  the 81.8 mL/min median of the levofloxacin cohort (Table 1). CRCL is the raw
+  Cockcroft-Gault value in mL/min, not BSA-normalised.
+* **Clofazimine effect.** Encoded as a time-varying indicator
+  (`CONMED_CLOFAZIMINE`), 0 at visit 1 and 1 at visit 2. The study was not a
+  cross-over, so the paper cannot exclude that part of the visit-2 change in
+  levofloxacin clearance reflects other factors such as clinical improvement.
+* **Residual error.** Additive errors are taken as printed. For isoniazid the
+  additive error sat at its lower bound, 20% of the LLOQ, and was fixed there.
+  The Beal M6 inflation of the additive error for imputed BLQ records applies to
+  no simulated observation and is omitted.
+* **Virtual cohort.** Weight and creatinine clearance distributions, the
+  sex-specific height distributions, and the dose bands (isoniazid 450 mg below
+  50 kg and 600 mg otherwise; levofloxacin 750 mg below 46 kg and 1000 mg
+  otherwise) are assumptions chosen to reproduce the Table 1 medians; the paper
+  does not report its dose bands.
+* **Convention-check warnings.** `checkModelConventions()` reports that the
+  isoniazid between-visit etas `etabvv_clint_1` / `etabvv_clint_2` have no
+  `lclint` parameter to pair with. They act on intrinsic clearance, whose typical
+  value is split by NAT2 phenotype into `lclint_slow`, `lclint_int` and
+  `lclint_rapid`; the between-subject eta `etalclint` pairs with the same split.
+* **Not packaged.** The clofazimine and cycloserine models used in the paper
+  are earlier published models (see "Model and source").

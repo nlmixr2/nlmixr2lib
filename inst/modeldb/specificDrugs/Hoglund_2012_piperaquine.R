@@ -164,20 +164,20 @@ Hoglund_2012_piperaquine <- function() {
     # CV = sqrt(exp(omega^2) - 1), so the internal log-scale variance is
     # recovered as omega^2 = log(CV^2 + 1)).
     #
-    #   CL  BSV 22.5%  -> omega^2 = log(0.225^2 + 1) = 0.049389
-    #   MTT BOV 60.7%  -> omega^2 = log(0.607^2 + 1) = 0.313762  (BOV, treated as forward-simulation IIV)
-    #   F   BSV 34.7%  -> omega^2 = log(0.347^2 + 1) = 0.113707  (BSV only; BOV 64.8% omitted, see vignette Errata)
-    etalcl     ~ 0.049389
+    #   CL  BSV 22.5%  -> omega^2 = log(0.225^2 + 1) = 0.049385
+    #   MTT BOV 60.7%  -> omega^2 = log(0.607^2 + 1) = 0.313678  (BOV, treated as forward-simulation IIV)
+    #   F   BSV 34.7%  -> omega^2 = log(0.347^2 + 1) = 0.113694  (BSV only; BOV 64.8% omitted, see vignette Errata)
+    etalcl     ~ log(1 + 0.225^2)
     # Hoglund 2012 Table 2: BSV on CL/F = 22.5% CV (RSE 31.5%; 95% CI 14.6-29.0)
 
-    etalmtt    ~ 0.313762
+    etalmtt    ~ log(1 + 0.607^2)
     # Hoglund 2012 Table 2: BOV on MTT = 60.7% CV (RSE 22.8%; 95% CI 44.5-76.7).
     # The published variability is between-occasion (per-dose); nlmixr2lib does
     # not natively model BOV, so the value is encoded here as a forward-
     # simulation IIV term on MTT (same approximation used in
     # Kloprogge_2013_lumefantrine.R). See vignette Errata.
 
-    etalfdepot ~ 0.113707
+    etalfdepot ~ log(1 + 0.347^2)
     # Hoglund 2012 Table 2: BSV on F = 34.7% CV (RSE 59.2%; 95% CI 9.52-54.9).
     # The published F additionally carries a BOV of 64.8% CV (omega^2 =
     # log(0.648^2 + 1) = 0.350506), not encoded here. See vignette Errata.

@@ -180,7 +180,7 @@ PillaReddy_2013_olanzapine_panss_subscales <- function() {
 
     etaec50_pos ~ fixed(0.2231)  # Part II Table 2 footnote: IIV EC50 positive and general 50% CV
     etaec50_gen ~ fixed(0.2231)
-    etaec50_neg ~ 1.0948         # Part II Table 2 olanzapine: IIV EC50 negative = 141% CV; omega^2 = log(1 + 1.41^2) = 1.0948
+    etaec50_neg ~ log(1 + 1.41^2)  # Part II Table 2 olanzapine: IIV EC50 negative = 141% CV
 
     # =============== Residual error on PANSS subscales =======================
     # Per-drug RUV from Part II Table 2 (joint PKPD model); Part II Table 1

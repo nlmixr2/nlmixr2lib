@@ -85,13 +85,13 @@ Othman_2014_daclizumab <- function() {
     # inflated CL ISV (scaling factor 1.82 over SC baseline, Table 2); that
     # inflation is specific to the low dose and is not carried into the
     # simulation-oriented typical variance here.
-    # ka (58% CV)  <-> omega^2 = log(1 + 0.58^2) = 0.29003
-    # cl SC (27%)  <-> omega^2 = log(1 + 0.27^2) = 0.07038
-    # corr(ka,cl SC) = -0.72 -> cov = -0.72 * sqrt(0.29003 * 0.07038) = -0.10290
-    etalka + etalcl ~ c(0.29003,
-                        -0.10290, 0.07038)
-    # Vc SC (31%) <-> omega^2 = log(1 + 0.31^2) = 0.09175
-    etalvc ~ 0.09175
+    # ka (58% CV)  <-> omega^2 = log(1 + 0.58^2) = 0.28998
+    # cl SC (27%)  <-> omega^2 = log(1 + 0.27^2) = 0.07037
+    # corr(ka,cl SC) = -0.72 -> cov = -0.72 * sqrt(0.28998 * 0.07037) = -0.10285
+    etalka + etalcl ~ c(log(1 + 0.58^2),
+                        -0.72 * sqrt(log(1 + 0.58^2) * log(1 + 0.27^2)), log(1 + 0.27^2))
+    # Vc SC (31%) <-> omega^2 = log(1 + 0.31^2) = 0.09176
+    etalvc ~ log(1 + 0.31^2)
 
     # Residual error. Paper reports a combined proportional + additive error
     # with the proportional component as exp(eps1) (log-normal multiplicative)

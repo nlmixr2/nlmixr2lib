@@ -72,15 +72,15 @@ Schutte_2018_desmopressin <- function() {
     # IIV as CV% (37% baseline FVIII, 43% V1, 50% CL) with a negative correlation
     # -0.87 between IIV(baseline FVIII) and IIV(V1). Variances are encoded via the
     # log-normal identity omega^2 = log(1 + CV^2):
-    #   var_base = log(1 + 0.37^2) = log(1.1369) = 0.128306
-    #   var_vc   = log(1 + 0.43^2) = log(1.1849) = 0.169666
+    #   var_base = log(1 + 0.37^2) = log(1.1369) = 0.128305
+    #   var_vc   = log(1 + 0.43^2) = log(1.1849) = 0.169658
     #   var_cl   = log(1 + 0.50^2) = log(1.25)   = 0.223144
-    #   cov_base_vc = -0.87 * sqrt(0.128306 * 0.169666) = -0.128368
+    #   cov_base_vc = -0.87 * sqrt(0.128305 * 0.169658) = -0.128360
     # IOV (intraindividual variability) of 38% on baseline FVIII and 38% on V1
     # (also reported in Table 2, final-model column) is NOT implemented; see vignette
     # deviations.
-    etalbase_fviii + etalvc ~ c(0.128306,
-                                -0.128368, 0.169666)   # Schutte 2018 Table 2: IIV baseline 37% CV, IIV V1 43% CV, correlation -0.87
+    etalbase_fviii + etalvc ~ c(log(1 + 0.37^2),
+                                -0.87 * sqrt(log(1 + 0.37^2) * log(1 + 0.43^2)), log(1 + 0.43^2))   # Schutte 2018 Table 2: IIV baseline 37% CV, IIV V1 43% CV, correlation -0.87
     etalcl                  ~ 0.223144                 # Schutte 2018 Table 2: IIV CL 50% CV
 
     # Residual error (final model with covariates, applied to the observed

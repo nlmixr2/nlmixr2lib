@@ -81,12 +81,12 @@ Padari_2018_penicillin_G <- function() {
     # Inter-individual variability. Padari 2018 Table 3 reports CV (%)
     # without an OMEGA covariance block, so the IIVs are encoded as
     # independent log-normal variances using omega^2 = log(CV^2 + 1):
-    #   CL: CV 39% -> omega^2 = log(1 + 0.39^2) = 0.14164
-    #   V1: CV 23% -> omega^2 = log(1 + 0.23^2) = 0.05154
+    #   CL: CV 39% -> omega^2 = log(1 + 0.39^2) = 0.14159
+    #   V1: CV 23% -> omega^2 = log(1 + 0.23^2) = 0.05155
     #   V2: CV 35% -> omega^2 = log(1 + 0.35^2) = 0.11556
     # Q has no CV / shrinkage entry in Table 3 and therefore no IIV.
-    etalcl ~ 0.14164  # Padari 2018 Table 3: CV 39%; eta shrinkage 2.00%
-    etalvc ~ 0.05154  # Padari 2018 Table 3: CV 23%; eta shrinkage 55.1% (V1)
+    etalcl ~ log(1 + 0.39^2)  # Padari 2018 Table 3: CV 39%; eta shrinkage 2.00%
+    etalvc ~ log(1 + 0.23^2)  # Padari 2018 Table 3: CV 23%; eta shrinkage 55.1% (V1)
     etalvp ~ 0.11556  # Padari 2018 Table 3: CV 35%; eta shrinkage 23.8% (V2)
 
     # Residual error. Padari 2018 Table 3 footnote reports a combined

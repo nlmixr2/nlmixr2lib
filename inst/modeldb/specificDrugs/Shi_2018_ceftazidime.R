@@ -71,7 +71,7 @@ Shi_2018_ceftazidime <- function() {
 
     # Inter-individual variability (Shi 2018 Table 2 final-model CV%);
     # omega^2 = log(CV^2 + 1) for log-normal etas.
-    etalcl ~ 0.02851 # log(0.170^2 + 1); 17.0% CV on CL (Shi 2018 Table 2)
+    etalcl ~ log(1 + 0.17^2)  # 17.0% CV on CL (Shi 2018 Table 2)
     etalvc ~ 0.01575 # log(0.126^2 + 1); 12.6% CV on V  (Shi 2018 Table 2)
 
     # Combined residual error (Shi 2018 Table 2 final-model rows ERR(1) and ERR(2)).

@@ -109,7 +109,7 @@ Ohk_2022_sumatriptan <- function() {
     # exponential (log-normal) eta (Section 2.4), converted here with
     # omega^2 = log(1 + CV^2). No BSV on ka1, NN, ALAG1 or f ('-' in Table 4);
     # no correlation reported, so the etas are independent.
-    etalcl ~ 0.03016 # log(1 + 0.175^2); Table 4 BSV CL/F = 17.5 CV% (RSE 25%, shrinkage 7%)
+    etalcl ~ log(1 + 0.175^2)  # Table 4 BSV CL/F = 17.5 CV% (RSE 25%, shrinkage 7%)
     etalvc ~ 0.69215 # log(1 + 0.999^2); Table 4 BSV V3/F = 99.9 CV% (RSE 30%, shrinkage 2%)
     etalka2 ~ 0.05172 # log(1 + 0.2304^2); Table 4 BSV ka2 = 23.04 CV% (RSE 31%, shrinkage 17%)
     etalmtt ~ 0.16554 # log(1 + 0.4243^2); Table 4 BSV MTT = 42.43 CV% (RSE 32%, shrinkage 12%)

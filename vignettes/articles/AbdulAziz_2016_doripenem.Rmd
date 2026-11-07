@@ -71,8 +71,8 @@ one place for review.
 | `e_crcl_cl` (CLCR effect on CL) | 0.014           | Table 2, final model, "theta_CLCR"; Equation 1               |
 | `crcl_ref_cl` (CLCR centering)  | 82.5 mL/min     | Results, "normalized to the population mean value of 82.5"   |
 | `etalcl` (BSV CL = 10.4% CV)    | 0.01076         | Table 2, final model, "BSV: CL (%)"                          |
-| `etalvc` (BSV V1 = 59.7% CV)    | 0.30491         | Table 2, final model, "BSV: V1 (%)"                          |
-| `etalvp` (BSV V2 = 73.8% CV)    | 0.43503         | Table 2, final model, "BSV: V2 (%)"                          |
+| `etalvc` (BSV V1 = 59.7% CV)    | 0.30484         | Table 2, final model, "BSV: V1 (%)"                          |
+| `etalvp` (BSV V2 = 73.8% CV)    | 0.43479         | Table 2, final model, "BSV: V2 (%)"                          |
 | `propSd` (9.0% CV proportional) | 0.090           | Table 2, final model, "Random error: Proportional (% CV)"    |
 | `addSd` (1.25 mg/L additive)    | 1.25            | Table 2, final model, "Random error: Additive (SD) (mg/L)"   |
 | 2-cmt IV with combined error    | n/a             | Results, paragraph "Pharmacokinetic model-building"          |
@@ -82,8 +82,8 @@ IIV variance derivation. Abdul-Aziz 2016 reports IIV as %CV in Table 2.
 For lognormal etas, `omega^2 = log(CV^2 + 1)`:
 
 * CL: `log(0.104^2 + 1) = log(1.010816) = 0.010758` (rounded to 0.01076)
-* V1: `log(0.597^2 + 1) = log(1.356409) = 0.304907` (rounded to 0.30491)
-* V2: `log(0.738^2 + 1) = log(1.544644) = 0.435033` (rounded to 0.43503)
+* V1: `log(0.597^2 + 1) = log(1.356409) = 0.304841`
+* V2: `log(0.738^2 + 1) = log(1.544644) = 0.434793`
 
 The paper additionally reports a between-occasion variability (BOV) on
 CL of 22.2% (delta-OFV -26.9 on introduction). nlmixr2lib has no
