@@ -1706,6 +1706,8 @@ navbar:
         href: articles/Nijstad_2021_clofarabine.html
       - text: "Clofazimine (Stemkens 2024)"
         href: articles/Stemkens_2024_clofazimine.html
+      - text: "Clofazimine (Zhang 2024)"
+        href: articles/Zhang_2024_clofazimine.html
       - text: "Clomethiazole (Zingmark 2003)"
         href: articles/Zingmark_2003_clomethiazole.html
       - text: "Clonazepam (Kruizinga 2022)"
@@ -11555,6 +11557,7 @@ articles:
   - articles/Zhang_2023_valproic_acid_protein_binding
   - articles/Zhang_2024_XZP5610
   - articles/Zhang_2024_aripiprazole
+  - articles/Zhang_2024_clofazimine
   - articles/Zhang_2024_f53b_pbpk
   - articles/Zhang_2024_nedosiran
   - articles/Zhang_2024_nirmatrelvir

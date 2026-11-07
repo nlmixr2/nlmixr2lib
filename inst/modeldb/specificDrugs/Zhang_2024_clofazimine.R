@@ -44,19 +44,21 @@ Zhang_2024_clofazimine <- function() {
   )
 
   covariatesDataExcluded <- list(
-    HIV_VL = list(
-      description = "HIV viral load at screening",
+    HIV_VLOAD = list(
+      description = "Plasma HIV-1 RNA (viral load) at screening",
       units = "copies/mL",
       type = "continuous",
       reference_category = NULL,
-      notes = "Significant on Q/F and F in the first forward-addition round (Table 1, models 2-3) but no longer significant once overall maximum diarrhea grade was on F (Results, Covariate model). No coefficient reported."
+      notes = "Significant on Q/F and F in the first forward-addition round (Table 1, models 2-3) but no longer significant once overall maximum diarrhea grade was on F (Results, Covariate model). No coefficient reported.",
+      source_name = "HIV viral load"
     ),
-    CD4 = list(
-      description = "CD4+ T-cell count at screening",
+    CD4_ABS = list(
+      description = "Absolute CD4+ T-cell count at screening",
       units = "cells/uL",
       type = "continuous",
       reference_category = NULL,
-      notes = "Significant on F in the first round (Table 1, model 17); not retained (Results, Covariate model). No coefficient reported."
+      notes = "Significant on F in the first round (Table 1, model 17); not retained (Results, Covariate model). No coefficient reported.",
+      source_name = "CD4 count"
     ),
     AGE = list(
       description = "Age",
@@ -121,18 +123,18 @@ Zhang_2024_clofazimine <- function() {
 
     # Inter-individual variability. Table 3 reports %CV; variances are
     # omega^2 = log(CV^2 + 1).
-    etalka ~ 1.169412 # Table 3 final 'IIV on ka (%)' = 149
-    etalvc ~ 0.001196444 # Table 3 final 'IIV on V/F (%)' = 3.46
-    etalq ~ 0.1844027 # Table 3 final 'IIV on Q/F (%)' = 45.0
-    etalfdepot ~ 0.1315764 # Table 3 final 'IIV on F (%)' = 37.5
+    etalka ~ log(1 + 1.49^2) # Table 3 final 'IIV on ka (%)' = 149
+    etalvc ~ log(1 + 0.0346^2) # Table 3 final 'IIV on V/F (%)' = 3.46
+    etalq ~ log(1 + 0.450^2) # Table 3 final 'IIV on Q/F (%)' = 45.0
+    etalfdepot ~ log(1 + 0.375^2) # Table 3 final 'IIV on F (%)' = 37.5
 
     # Inter-occasion variability on F, one eta per dosing day with a shared
     # variance (occasions 2-5 fixed to the occasion-1 value).
-    etaiov_fdepot_1 ~ 0.1270061 # Table 3 final 'Interoccasion variability on F (%)' = 36.8
-    etaiov_fdepot_2 ~ fixed(0.1270061) # same variance as occasion 1
-    etaiov_fdepot_3 ~ fixed(0.1270061) # same variance as occasion 1
-    etaiov_fdepot_4 ~ fixed(0.1270061) # same variance as occasion 1
-    etaiov_fdepot_5 ~ fixed(0.1270061) # same variance as occasion 1
+    etaiov_fdepot_1 ~ log(1 + 0.368^2) # Table 3 final 'Interoccasion variability on F (%)' = 36.8
+    etaiov_fdepot_2 ~ fixed(log(1 + 0.368^2)) # same variance as occasion 1
+    etaiov_fdepot_3 ~ fixed(log(1 + 0.368^2)) # same variance as occasion 1
+    etaiov_fdepot_4 ~ fixed(log(1 + 0.368^2)) # same variance as occasion 1
+    etaiov_fdepot_5 ~ fixed(log(1 + 0.368^2)) # same variance as occasion 1
 
     # Residual error: combined proportional and additive (Equation 1). Table 3
     # prints a single sigma; in a Phoenix additive + multiplicative model that
