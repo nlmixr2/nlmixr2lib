@@ -4266,6 +4266,8 @@ navbar:
         href: articles/Bosch_2022_liraglutide_qsp.html
       - text: "Lisinopril (Thomson 1989)"
         href: articles/Thomson_1989_lisinopril.html
+      - text: "LisocabtageneMaraleucel qsp (Salem 2023)"
+        href: articles/Salem_2023_CART_subsets_immunophenotypes.html
       - text: "Lithium (Jin 2022)"
         href: articles/Jin_2022_lithium.html
       - text: "Lithium (Yuan 2021)"
@@ -10754,6 +10756,7 @@ articles:
   - articles/Salehi_2025_nicotine_pbpk
   - articles/Salem_2013_cyp_ontogeny
   - articles/Salem_2014_efavirenz
+  - articles/Salem_2023_CART_subsets_immunophenotypes
   - articles/Salgado_2022_antibody_tumor_lymph_node_pbpk
   - articles/Salinger_2013_magnesiumSulfate
   - articles/Salinger_2019_pretomanid

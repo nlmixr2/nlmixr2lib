@@ -402,10 +402,27 @@ sim_cat19_tv <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(cat19), cat19_event
 ))
 
 rxode2::rxSetSeed(20231009)
-sim_cat19 <- as.data.frame(rxode2::rxSolve(cat19, cat19_events(200, tt_cat19),
+# A few sampled non-responders (a very low Rm or K12 with a high K21) leave the
+# tumour uncontrolled; it then regrows exponentially without bound (the model
+# has no carrying capacity), past 1e19 cells/L in blood within the year, and
+# the solver cannot follow the CAR-CD19 binding at that scale. rxode2 returns
+# such a subject as all-NA; drop and count them rather than let them vanish
+# silently from the percentile band.
+sim_cat19 <- suppressWarnings(as.data.frame(rxode2::rxSolve(cat19, cat19_events(200, tt_cat19),
   atol = 1e-10, rtol = 1e-8
-))
+)))
+failed_ids <- unique(sim_cat19$id[is.na(sim_cat19$cart_pb)])
+n_failed <- length(failed_ids)
+sim_cat19 <- sim_cat19[!sim_cat19$id %in% failed_ids, ]
+n_failed
+# Robust bound, not an exact count: which subjects draw the extreme etas
+# depends on the rxode2 build.
+stopifnot(n_failed <= 20)
 ```
+
+`r n_failed` of the 200 virtual children (`r round(100 * n_failed / 200, 1)`%)
+could not be solved to day 365 and are left out of the band below; each is a
+non-responder whose tumour has regrown far beyond any physiological burden.
 
 ```{r figure-4}
 # Replicates the structure of Figure 4 of Salem 2023 (blood and bone marrow,
@@ -654,6 +671,12 @@ Assumptions and deviations).
   therefore stops the CAT19 simulations at 365 days (step 2) and 540 days
   (step 3). The behaviour belongs to the published equations, which have no
   floor on the tumour states, and the models are left unchanged.
+- **Uncontrolled tumour growth.** The tumour model has no carrying capacity
+  either. A virtual child whose sampled random effects leave the tumour
+  uncontrolled (the large omegas on Rm, K12 and K21 allow this) sees blood
+  tumour grow to around 1E19 cells/L within a year, and at that scale the
+  solver cannot follow the CAR-CD19 binding. These few subjects return as NA
+  and the Figure 4 cohort drops them, reporting how many.
 - **Random effects.** Monolix omegas are standard deviations of log-normal
   random effects; the models encode their squares as variances. In the
   Liso-cel model the fixed 50% random effect on KKillMax represents the
