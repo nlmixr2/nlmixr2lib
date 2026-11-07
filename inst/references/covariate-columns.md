@@ -2534,6 +2534,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Waterhouse_2024_vedolizumab.R` (time-varying absolute lymphocyte count on CL: `cl *= (LYMPH_ABS / 100)^-0.0180`; reference 100 cells/uL = 0.1 K/uL per paper Table 2; zeros replaced with 10 cells/uL to avoid `log(0)`).
 - **Notes:** Distinct from `CD4_ABS` (a subset -- CD4+ T-lymphocytes only), `CD19_ABS` (a subset -- CD19+ B-lymphocytes only), and `NLR` (a ratio, neutrophil-to-lymphocyte). `LYMPH_ABS` is the total pooled lymphocyte count and is the correct canonical for papers that measure "absolute lymphocyte count" without further flow-cytometry subsetting. Distinct from `WBC` (total white blood cell count, of which lymphocytes are one differential fraction). Zero-value handling: allo-HSCT / lymphocyte-depleting-therapy cohorts routinely have observed lymphocyte counts of exactly 0 K/uL at some time points; source papers commonly substitute a small floor (e.g., Waterhouse 2024 uses 0.01 K/uL) before evaluating a power-form covariate effect, per Waterhouse 2024 Supplement Equation S2. Document any per-paper zero-floor convention in `covariateData[[LYMPH_ABS]]$notes`.
 
+### LYMPH_PCT (**canonical for lymphocytes as a percentage of total leukocytes**)
+- **Description:** Peripheral-blood lymphocyte count expressed as a percentage of the total leukocyte (white blood cell) count -- the lymphocyte fraction of the differential. Baseline or time-varying; document per model.
+- **Units:** percent (0-100)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous; typically a power term `(LYMPH_PCT / ref)^exponent`. Reference values observed: 20 percent (Milenkovic-Grisic 2024, a maintainers' assumption because the paper prints none).
+- **Source aliases:**
+  - "Lymphocytes/Leukocytes (%)", "lymphocyte as percentage of total leukocytes" -- Milenkovic-Grisic 2024 supplementary covariate list and Table 2 row label.
+- **Example models:** `MilenkovicGrisic_2024_bintrafuspAlfa_nsclc.R` (power effect `(LYMPH_PCT / 20)^-0.623` on the linear tumour-growth rate in first-line NSCLC: a lower lymphocyte fraction gives faster tumour growth).
+- **Notes:** Distinct from `LYMPH_ABS` (absolute count in cells/uL) and `NLR` (neutrophil-to-lymphocyte ratio); the three are related through the total leukocyte count but are not interconvertible without it.
+
 ### NEUT (**canonical for absolute neutrophil count**)
 - **Description:** Absolute neutrophil count, typically as a baseline covariate (entered via centred-deviation `(NEUT - ref)` or power scaling `(NEUT / ref)^exponent`) or, in semi-mechanistic myelosuppression models, as a per-subject initial-condition value for the proliferation, transit, and circulating compartments.
 - **Units:** cells/mm^3 (equivalent to cells/uL; i.e., the same value reported in 10^9/L x 1000). Document per-model via `covariateData[[NEUT]]$units` if the source paper uses a different unit (e.g., `10^9 cells/L` for `Ozawa_2007_docetaxel.R` per the paper's Table-3 reporting unit).
@@ -7170,6 +7181,17 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Chatterjee_2016_pembrolizumab.R` (power effect `(AUC_PEMBRO / 7079)^0.196` on the tumor kill rate kdeath of a bi-exponential tumor-size model in advanced NSCLC; the exponent's 95% CI overlaps zero, and the paper's conclusion is that response is flat over 2-10 mg/kg), `Chatterjee_2017_pembrolizumab_consolidated.R` (the same power form and the same 7079 mg*day/L normalisation on kdeath in advanced melanoma, but with SEPARATE exponents per prior-ipilimumab stratum -- 0.131 IPI-naive, 0.100 IPI-experienced -- because dose assignment was confounded with prior-ipilimumab status in the pooled dataset; neither is significant, P = 0.20 and P = 0.25), `Chatterjee_2017_pembrolizumab_mixture.R` (the same paper's earlier four-class mixture model, where exposure was NOT retained on the kill rate and instead enters the second-stage multinomial regression on the class logits as an additive term centered at 6000 mg*day/L, coefficient 5.61e-5 per mg*day/L).
 - **Notes:** Member of the `AUC_<drug>` exposure-metric family (`AUC_ADU`, `AUC_DON`, `AUC_GAN`, `AUC_LEC`, `AUC_CARBO`,...). Not a model output: the founding analysis has no PK sub-model and obtains the value as `dose / CL` using post-hoc individual clearances from a separate pembrolizumab population-PK analysis, published as Ahamadi 2017 and packaged in this library as `Ahamadi_2017_pembrolizumab.R`. To reproduce the metric, compute `AUC_PEMBRO = (total mg administered over 6 weeks) / CL` with `CL` in L/day. Because the window is fixed at six weeks rather than at one dosing interval, a Q2W regimen at the same mg/kg dose yields 1.5x the AUC of the Q3W regimen; do not confuse this column with a per-dosing-interval AUC.
 
+### AUC_BINTRAFUSP_REL (**canonical for bintrafusp alfa dynamic AUC relative to the analysis-population median**)
+- **Description:** Individual bintrafusp alfa dynamic AUC -- the area under the serum concentration-time curve predicted by the bintrafusp alfa population PK model from each patient's actual dosing history, including treatment interruptions -- divided by the median of the analysis population. Dimensionless; 1 = the median exposure. May be time-varying when the dynamic AUC is updated with the dosing history.
+- **Units:** (ratio)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- the column is already normalised, so the reference is 1 (the median).
+- **Source aliases:**
+  - "AUC", "dynamic area under the concentration-time curve" -- Milenkovic-Grisic 2024 Methods and Table 1 ('AUC effect').
+- **Example models:** `MilenkovicGrisic_2024_bintrafuspAlfa_btc.R` (linear effect on the tumour-shrinkage rate constant, `kse * (1 + 0.339 * (AUC_BINTRAFUSP_REL - 1))`, in second-line biliary tract cancer).
+- **Notes:** A relative member of the `AUC_<DRUG>` family. Carried as a ratio because the founding paper prints neither the units, the time window nor a reference value for the dynamic AUC, and its dimensionless coefficient is only interpretable against a normalised exposure. The upstream PK model is Vugmeyster 2022 (Cancer Chemother Pharmacol 90:369-379); a future model that carries the absolute bintrafusp alfa AUC should register `AUC_BINTRAFUSP` with explicit units rather than reuse this column.
+
 ### AUC_BV_ADC (**canonical for time-averaged brentuximab vedotin antibody-drug conjugate AUC up to an event**)
 - **Description:** Per-subject time-averaged AUC of the brentuximab vedotin antibody-drug conjugate (ADC), computed from post hoc popPK predictions over actual doses received and averaged over the time to the first occurrence of the worst-grade event (safety endpoints), to progression or censoring (efficacy), or over the treatment duration when no event occurred. A metric of exposure INTENSITY that absorbs dose reductions and delays, expressed per 14-day dosing interval (Suri 2019 Figure 4 axis values of about 20-110 ug*day/mL match the per-interval AUC of a 1.2 mg/kg every-2-weeks regimen).
 - **Units:** `ug*day/mL`
@@ -10760,6 +10782,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `Hibma_2026_elranatamab_crs.R` (coefficient `1.14`, OR 3.11 -- high baseline tumour burden roughly triples the odds of any-grade cytokine release syndrome after the first elranatamab step-up dose, in a landmark binomial logistic model alongside `log(CTROUGH)`).
 - **Notes:** The threshold definition is disease-specific and must be recorded in each model's `covariateData[[TUM_BURDEN_HIGH]]$notes`. Founding definition (Hibma 2026 Table 1 footnote, relapsed/refractory multiple myeloma): high = bone-marrow plasma-cell infiltrate `>= 80%` OR serum M-spike `>= 5 g/dL` OR serum free light chain `>= 5000 mg/L`; low = infiltrate `< 50%` AND M-spike `< 3 g/dL` AND free light chain `< 3000 mg/L`; subjects meeting neither are intermediate. General scope because high baseline tumour burden is a recurring cytokine-release / neurotoxicity covariate for T-cell-engaging therapies across tumour types; a downstream user applying this column to another cohort must check that the definition matches. The source's three-level stratification is collapsed to a binary with low and intermediate pooled, so no `TUM_BURDEN_LOW` sibling is needed; a future paper fitting the levels separately should register the decomposed set rather than overloading this name. Distinct from `TUMTP_MYELO` (tumour TYPE) and `MM_NIGG` (myeloma immunoglobulin type), and from the continuous burden measures `TUM_SLD`, `TUM_VOL`, `TUM_CELLS0` and `CTDNA`.
 
+### TMB_BLOOD_HIGH (**canonical for high blood tumour-mutational-burden indicator**)
+- **Description:** 1 = the subject's blood (plasma ctDNA) tumour mutational burden is at or above the threshold defined by the source analysis, 0 = below it. Time-fixed baseline value. A categorical counterpart to a continuous blood-TMB measurement, for analyses that dichotomise TMB at a cohort percentile or clinical cut-off.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general (oncology)
+- **Reference category:** 0 (blood TMB below the threshold).
+- **Source aliases:**
+  - "Blood tumor mutational burden" / "blood TMB >= 50th percentile" -- Milenkovic-Grisic 2024 Table 1 row label and Figure 3 caption.
+- **Example models:** `MilenkovicGrisic_2024_bintrafuspAlfa_btc.R` (fractional-change effect on the linear tumour-growth rate, `p * (1 + 0.629 * TMB_BLOOD_HIGH)`, threshold = the 50th percentile of the second-line biliary-tract-cancer analysis population; the numeric threshold in mutations/Mb is not reported).
+- **Notes:** The threshold is analysis-specific and must be recorded in each model's `covariateData[[TMB_BLOOD_HIGH]]$notes`. Distinct from tissue TMB (measured on a tumour biopsy), which should take a separate `TMB_TISSUE_*` entry, and from `TUM_BURDEN_HIGH`, which is a clinical tumour-burden (disease-extent) indicator, not a mutation count.
+
 ### ORGVOL_KIDNEY (**canonical for measured total kidney volume**)
 - **Description:** Measured total volume of the kidneys (both kidneys combined unless the model states otherwise), typically delineated on CT or the CT component of a SPECT/CT or PET/CT acquisition.
 - **Units:** mL
@@ -10804,6 +10837,18 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - `ctDNA0` (Ribba 2022 Eq. 2 symbol for the same quantity in the joint ctDNA / SLD model).
 - **Example models:** `Ribba_2022_ctdna.R` (Stein bi-exponential on log10 ctDNA; `growth_ctdna(0) <- log10(CTDNA)`), `Ribba_2022_ctdna_sld_joint.R` (joint ctDNA / SLD model; same initial-condition use alongside `TUM_SLD`).
 - **Notes:** Deliberately NOT pooled with variant-allele-frequency (VAF) or ctDNA-tumor-fraction (cTF) readouts: MMPM is an absolute concentration of mutant molecules whereas VAF and cTF are dimensionless ratios of mutant to wild-type (or aneuploidy-derived) signal, so the two are not interconvertible without the wild-type denominator. A future VAF / cTF canonical should be registered separately (e.g. `CTDNA_VAF`) rather than aliased onto `CTDNA`. The assay platform matters for cross-study pooling -- Ribba 2022 used the Roche AVENIO panel for the MMPM cohorts (Weber 2021 and OAK) and the FMI panel for the cTF cohort (IMspire170) -- so record the panel in the per-model `covariateData[[CTDNA]]$notes`.
+
+### CTDNA_VAF (**canonical for variant allele frequency of somatic variants in circulating tumor DNA**)
+- **Description:** Variant (minor) allele frequency, in per cent, of the somatic variant(s) detected in a liquid-biopsy (plasma ctDNA) sequencing panel: the fraction of sequenced alleles at the locus carrying the variant. Baseline (time-fixed) unless a model states otherwise. Which variant(s) the value summarises -- a single driver mutation, or all detected somatic variants -- differs between papers and must be recorded in each model's `covariateData[[CTDNA_VAF]]$description` / `notes`.
+- **Units:** percent (0-100). A source reporting the 0-1 fraction needs the column multiplied by 100 or the coefficient rescaled.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous. Reference values observed: 1 percent (Milenkovic-Grisic 2024, a maintainers' assumption because the paper prints none).
+- **Source aliases:**
+  - "Minor allele frequency" / `MAF` -- Milenkovic-Grisic 2024 notation ('minor allele frequency for all detected somatic variants in the sample').
+  - `VAF`, `baseVAF` -- common spellings.
+- **Example models:** `MilenkovicGrisic_2024_bintrafuspAlfa_btc.R` (power effects `(CTDNA_VAF / 1)^0.106` on baseline tumour size and `(CTDNA_VAF / 1)^0.262` on the linear growth rate of an exponential-shrinkage plus linear-growth tumour-size model; the value summarises all detected somatic variants, and the paper does not state whether the sample was plasma or tissue).
+- **Notes:** The name reserved by the `CTDNA` entry's Notes for a VAF readout. Distinct from `CTDNA` (an absolute concentration of mutant molecules per mL, not a ratio) and from `TUM_JAK2_V617F_VAF` (a single named variant in a haematological clone). A power form needs `CTDNA_VAF > 0`; record any floor applied to undetected (0 percent) values.
 
 ### TUMTP_HODGKIN_CLASSICAL (**canonical for classical Hodgkin lymphoma tumor-type indicator**)
 <!-- AUDIT 2026-06-19: renamed from `TUMTP_CHL` to `TUMTP_HODGKIN_CLASSICAL`. The prior name `TUMTP_CHL` is preserved as a source_alias for one release cycle so existing covariate-data CSVs continue to load. -->
@@ -11995,6 +12040,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - "BRAF mutation status" / "B-type Raf (BRAF) mutation status" -- Chatterjee 2017 main-article Methods and supplementary Table 5A row label.
 - **Example models:** `Chatterjee_2017_pembrolizumab_consolidated.R` (fractional-deviation effect on the tumour growth rate of a bi-exponential tumour-size model: `kgrowth * (1 + 0.702 * TUM_BRAF_MUT)`, i.e. the resistant fraction of a BRAF-mutant melanoma grows about 70% faster than wild type; supplementary Table 4C `BRAF_1 on kgrowth`, |RSE| 37.9%).
 - **Notes:** A source paper that carries a separate "unknown" BRAF level must be read carefully before assuming it needs a companion missingness column. Chatterjee 2017 maps unknown status to the wild-type reference multiplier inside `$PRED` (`IF(BRAFMN.EQ.-99) KGROWBRAFMN = 1`), so the unknown stratum is pooled into the reference and `TUM_BRAF_MUT = 0` reproduces the source exactly; only 11 of 1366 subjects (0.81%) were affected. Register a `TUM_BRAF_MUT_MISSING` companion (following `TUM_EGFR_MUT_MISSING`) only for a source that estimates a distinct coefficient for the unknown stratum. General scope because BRAF genotype is a standard stratification factor in melanoma, thyroid and colorectal oncology analyses. Do not conflate this tumour-genotype column with a BRAF-inhibitor co-medication indicator (`CONMED_<INN>`), which records what the patient received rather than what the tumour carries.
+
+### TUM_IDH1_MUT (**canonical for tumour IDH1 mutation indicator**)
+- **Description:** Binary indicator of tumour-cell IDH1 (isocitrate dehydrogenase 1) somatic mutational status as assessed in the source paper. 1 = IDH1-mutant tumour, 0 = IDH1 wild type. Time-fixed per subject. Member of the `TUM_<GENE>_MUT` somatic-genotype family alongside `TUM_EGFR_MUT`, `TUM_ALK_MUT`, `TUM_TP53_MUT` and `TUM_BRAF_MUT`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general (oncology)
+- **Reference category:** 0 (IDH1 wild type; Milenkovic-Grisic 2024 Figure 3 caption 'no IDH1 mutation').
+- **Source aliases:**
+  - "IDH1 mutation" -- Milenkovic-Grisic 2024 Table 1 row labels ('IDH1 mutation on ks', 'IDH1 mutation on kg').
+- **Example models:** `MilenkovicGrisic_2024_bintrafuspAlfa_btc.R` (fractional-change effects on both rate constants of an exponential-shrinkage plus linear-growth tumour-size model in second-line biliary tract cancer: `kse * (1 + 2.13 * TUM_IDH1_MUT)` and `p * (1 + 1.17 * TUM_IDH1_MUT)`; the form reproduces the paper's Figure 3f).
+- **Notes:** IDH1 mutations are a recurrent, targetable driver in intrahepatic cholangiocarcinoma, glioma and acute myeloid leukaemia, hence general (oncology) scope. Distinct from an IDH2 mutation, which would take its own `TUM_IDH2_MUT` entry; do not pool the two unless a source does.
 
 ### TUM_1P19Q_CODEL (**canonical for tumour 1p/19q chromosomal codeletion indicator**)
 - **Description:** Binary indicator of tumour-cell 1p/19q chromosomal codeletion status. 1 = tumour carries the combined loss of the short arm of chromosome 1 (1p) and the long arm of chromosome 19 (19q); 0 = non-codeleted tumour (intact 1p and/or 19q). Time-fixed per subject (a somatic tumour-genotype call made at diagnosis, typically by fluorescence in-situ hybridisation, comparative genomic hybridisation, or loss-of-heterozygosity assay).

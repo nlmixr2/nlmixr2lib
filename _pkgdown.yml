@@ -930,10 +930,14 @@ navbar:
         href: articles/Togawa_2016_bilastine.html
       - text: "BintrafuspAlfa (Liu 2023)"
         href: articles/Liu_2023_bintrafuspAlfa.html
+      - text: "BintrafuspAlfa btc (MilenkovicGrisic 2024)"
+        href: articles/MilenkovicGrisic_2024_tumor_dynamics.html
       - text: "BintrafuspAlfa multistate (Liu 2023)"
         href: articles/Liu_2023_bintrafuspAlfa.html
       - text: "BintrafuspAlfa multistate dose (Liu 2023)"
         href: articles/Liu_2023_bintrafuspAlfa.html
+      - text: "BintrafuspAlfa nsclc (MilenkovicGrisic 2024)"
+        href: articles/MilenkovicGrisic_2024_tumor_dynamics.html
       - text: "BintrafuspAlfa tgi (Liu 2023)"
         href: articles/Liu_2023_bintrafuspAlfa.html
       - text: "BisphenolA pbpk (Karrer 2018)"
@@ -5762,6 +5766,8 @@ navbar:
         href: articles/Chatterjee_2017_pembrolizumab_melanoma.html
       - text: "Pembrolizumab mixture (Chatterjee 2017)"
         href: articles/Chatterjee_2017_pembrolizumab_melanoma.html
+      - text: "Pembrolizumab nsclc (MilenkovicGrisic 2024)"
+        href: articles/MilenkovicGrisic_2024_tumor_dynamics.html
       - text: "Pembrolizumab qol mbma (Zou 2026)"
         href: articles/Zou_2026_pembrolizumab_qol.html
       - text: "Pemetrexed (Cao 2022)"
@@ -10324,6 +10330,7 @@ articles:
   - articles/Michelet_2025_BI754111_mpbpk
   - articles/Mielke_2025_fluorouracil_pbpk
   - articles/Milakovic_2024_linezolid
+  - articles/MilenkovicGrisic_2024_tumor_dynamics
   - articles/Mileva_2021_doxycycline_rabbit
   - articles/Milosheska_2016_lamotrigine
   - articles/Mimram_2022_clindamycin
