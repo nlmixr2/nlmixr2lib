@@ -105,10 +105,10 @@ Wang_2021_pertuzumab <- function() {
     # individual F can exceed 1 when etalfdepot > log(1/0.712) ~= 0.34 sd, but
     # this is faithful to the published parameterization. Shrinkage on F (50.2%)
     # and Vp (49.7%) is high per Wang 2021 Table 1.
-    etalcl     ~ 0.053723   # CL CV% 23.5% -> log(1 + 0.235^2); Wang 2021 Table 1
-    etalvc     ~ 0.114349   # Vc CV% 34.8% -> log(1 + 0.348^2); Wang 2021 Table 1
-    etalvp     ~ 0.063491   # Vp CV% 25.6% -> log(1 + 0.256^2); Wang 2021 Table 1
-    etalfdepot ~ 0.031194   # F  CV% 17.8% -> log(1 + 0.178^2); Wang 2021 Table 1
+    etalcl     ~ log(1 + 0.235^2)  # CL CV% 23.5%; Wang 2021 Table 1
+    etalvc     ~ log(1 + 0.348^2)  # Vc CV% 34.8%; Wang 2021 Table 1
+    etalvp     ~ log(1 + 0.256^2)  # Vp CV% 25.6%; Wang 2021 Table 1
+    etalfdepot ~ log(1 + 0.178^2)  # F  CV% 17.8%; Wang 2021 Table 1
 
     # Proportional residual error. Wang 2021 Table 1 reports separate SDs for
     # the SC cohort (theta7 = 0.155) and the IV cohort (theta8 = 0.175);

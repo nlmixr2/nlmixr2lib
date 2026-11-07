@@ -117,12 +117,12 @@ Xu_2019_sarilumab <- function() {
     # Inter-individual variability: Xu 2019 Table 3 reports CV% on the linear-parameter scale.
     # Convert to NONMEM-style log-normal variance as omega^2 = log(CV^2 + 1):
     #   Vm   CV 32.4% -> omega^2 = log(0.324^2 + 1) = 0.0998
-    #   CLO/F CV 55.3% -> omega^2 = log(0.553^2 + 1) = 0.2669
-    #   Vc/F CV 37.3% -> omega^2 = log(0.373^2 + 1) = 0.1302
+    #   CLO/F CV 55.3% -> omega^2 = log(0.553^2 + 1) = 0.2668
+    #   Vc/F CV 37.3% -> omega^2 = log(0.373^2 + 1) = 0.1303
     #   Ka   CV 32.1% -> omega^2 = log(0.321^2 + 1) = 0.0981
-    # Vm-CLO/F correlation -0.566 -> cov = -0.566 * sqrt(0.0998 * 0.2669) = -0.0924
-    etalvmax + etalcl ~ c(0.0998, -0.0924, 0.2669)  # Xu 2019 Table 3: Vm IIV 32.4% CV, CLO/F IIV 55.3% CV, Vm-CLO/F correlation -0.566
-    etalvc ~ 0.1302                                # Xu 2019 Table 3: Vc/F IIV 37.3% CV (shrinkage 64.2%)
+    # Vm-CLO/F correlation -0.566 -> cov = -0.566 * sqrt(0.0998 * 0.2668) = -0.0924
+    etalvmax + etalcl ~ c(0.0998, -0.566 * sqrt(0.0998 * log(1 + 0.553^2)), log(1 + 0.553^2))  # Xu 2019 Table 3: Vm IIV 32.4% CV, CLO/F IIV 55.3% CV, Vm-CLO/F correlation -0.566
+    etalvc ~ log(1 + 0.373^2)  # Xu 2019 Table 3: Vc/F IIV 37.3% CV (shrinkage 64.2%)
     etalka ~ 0.0981                                # Xu 2019 Table 3: Ka IIV 32.1% CV (shrinkage 49.6%)
 
     # Residual error: Xu 2019 fitted log-transformed concentrations with an additive residual

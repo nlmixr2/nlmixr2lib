@@ -280,9 +280,9 @@ Riggs_2014_empagliflozin <- function() {
     # PK IIV, back-transformed from the CV% Riggs 2014 reports in Results
     # via omega^2 = log(1 + CV^2). No IIV was reported on V2/F or Q/F, and
     # Riggs 2014 reports no correlations among the PK etas.
-    etalcl ~ 0.0698695   # CV 26.9% -> log(1 + 0.269^2)
-    etalvp ~ 0.0906272   # CV 30.8% -> log(1 + 0.308^2)
-    etalka ~ 0.0228412   # CV 15.2% -> log(1 + 0.152^2)
+    etalcl ~ log(1 + 0.269^2)  # CV 26.9%
+    etalvp ~ log(1 + 0.308^2)  # CV 30.8%
+    etalka ~ log(1 + 0.152^2)  # CV 15.2%
 
     # ================================================================
     # UGE model (Equation 1). Study A is the reference; studies B and C

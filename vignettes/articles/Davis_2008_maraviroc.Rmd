@@ -68,7 +68,7 @@ collects them in one place for review.
 | `lbrr` (theta4, unitless, log scale) | `log(0.324)` | Table 3 "QT correction factor" = 0.324 (95% CI 0.309-0.338). Compare Fridericia's b_s = 0.333. |
 | `slpqt` (theta3, ms per (ng/mL)) | `0.000970` | Table 3 "Slope (concentration, us mL/ng)" = 0.970 (95% CI -0.571 to 2.48). Paper unit us mL/ng converted by /1000. |
 | `etalqtb` (omega^2) | `0.001122` | Table 3 "IIV (intercept)" variance = 178 ms^2, CV 3.35%; log-normal equivalent log(1 + 0.0335^2) = 0.001122 |
-| `etalbrr` (omega^2) | `0.026979` | Table 3 "IIV (correction factor)" variance = 0.00287, CV 16.5%; log-normal equivalent log(1 + 0.165^2) = 0.026979 |
+| `etalbrr` (omega^2) | `0.026861` | Table 3 "IIV (correction factor)" variance = 0.00287, CV 16.5%; log-normal equivalent log(1 + 0.165^2) = 0.026861 |
 | `etaslpqt` (omega^2) | `5.41e-6` | Table 3 "IIV (slope)" linear-scale variance 5.41 (us mL/ng)^2 = 5.41e-6 (ms/(ng/mL))^2 after the /1000 conversion |
 | `addSd` (sigma) | `sqrt(73.6)` | Table 3 "Residual intrasubject variability" variance = 73.6 ms^2, CV 2.16%; SD = sqrt(73.6) = 8.580 ms |
 | IOV on intercept (variance = 13.4 ms^2) | not encoded | Table 3 "Interoccasion variability (intercept)"; skipped per Hong_2015_moxifloxacin precedent that nlmixr2lib has no idiomatic IOV encoding for distributed models |

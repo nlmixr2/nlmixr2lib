@@ -84,10 +84,10 @@ Willmann_2018b_rivaroxaban <- function() {
     # IIV - Willmann 2018 reports CV% (Table 1 footer "b"; exponential IIV
     # model per Methods "exponential inter-individual variability (IIV)").
     # Convert CV% to log-normal variance via omega^2 = log(1 + CV^2):
-    #   ka: log(1 + 0.397^2) = log(1.15761) = 0.14640
-    #   CL: log(1 + 0.262^2) = log(1.06864) = 0.06637
-    etalka ~ 0.14640                                                        # Willmann 2018 Table 1: CV 39.7% on ka, RSE 63.9%
-    etalcl ~ 0.06637                                                        # Willmann 2018 Table 1: CV 26.2% on CL, RSE 39.2%
+    #   ka: log(1 + 0.397^2) = log(1.15761) = 0.14636
+    #   CL: log(1 + 0.262^2) = log(1.06864) = 0.06639
+    etalka ~ log(1 + 0.397^2)  # Willmann 2018 Table 1: CV 39.7% on ka, RSE 63.9%
+    etalcl ~ log(1 + 0.262^2)  # Willmann 2018 Table 1: CV 26.2% on CL, RSE 39.2%
 
     # Residual error - proportional (Willmann 2018 Results paragraph: "The
     # residual error was described by a proportional error model").

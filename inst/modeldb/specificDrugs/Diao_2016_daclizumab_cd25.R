@@ -96,11 +96,11 @@ Diao_2016_daclizumab_cd25 <- function() {
     e_dose_50mg_f <- -0.32143; label("Relative change in F for 50 mg SC vs 100-300 mg SC (fraction)") # Othman 2014 Table 2
 
     # PK IIV (Othman 2014 Table 2 SC-cohort values).
-    # ka  CV 58% -> omega^2 = log(1 + 0.58^2) = 0.29003
-    # cl  CV 27% -> omega^2 = log(1 + 0.27^2) = 0.07038
-    # corr(ka, cl) SC = -0.72 -> cov = -0.72 * sqrt(0.29003 * 0.07038) = -0.10290
-    etalka + etalcl ~ c(0.29003,
-                        -0.10290, 0.07038)                                                       # Othman 2014 Table 2
+    # ka  CV 58% -> omega^2 = log(1 + 0.58^2) = 0.28998
+    # cl  CV 27% -> omega^2 = log(1 + 0.27^2) = 0.07037
+    # corr(ka, cl) SC = -0.72 -> cov = -0.72 * sqrt(0.28998 * 0.07037) = -0.10285
+    etalka + etalcl ~ c(log(1 + 0.58^2),
+                        -0.72 * sqrt(log(1 + 0.58^2) * log(1 + 0.27^2)), log(1 + 0.27^2))                                                       # Othman 2014 Table 2
     etalvc ~ 0.09175                                                                              # Othman 2014 Table 2 (Vc CV 31%)
 
     # PK residual error (Othman 2014 Table 2): proportional 22% + additive 0.33 ug/mL.
@@ -153,13 +153,13 @@ Diao_2016_daclizumab_cd25 <- function() {
     # cd25E0 IIV is Diao 2016 Table 3 as "(additive) 11" (i.e., additive on
     # the linear percentage scale), not CV%. Encoded as an additive eta on
     # cd25E0 in linear (percentage-point) space; variance = 11^2 = 121.
-    # koff IIV = 47% CV -> omega^2 = log(1 + 0.47^2) = 0.19770. This is
+    # koff IIV = 47% CV -> omega^2 = log(1 + 0.47^2) = 0.19959. This is
     # inherited from the paper's desaturation-IC50 IIV row: with kon fixed,
     # IIV on koff is equivalent to IIV on the effective equilibrium IC50
     # (which equals koff/kon), preserving the between-subject variability
     # the paper reported.
     etacd25E0 ~ 121                                                                              # Diao 2016 Table 3 (Baseline E0 IIV additive SD = 11 percentage points; variance = 11^2)
-    etalkoff  ~ 0.19770                                                                          # Diao 2016 Table 3 (Desaturation IC50 IIV 47% CV, remapped to kinetic binding koff)
+    etalkoff  ~ log(1 + 0.47^2)  # Diao 2016 Table 3 (Desaturation IC50 IIV 47% CV, remapped to kinetic binding koff)
 
     # Residual error on the CD25 occupancy observation.
     # Diao 2016 Table 3 reports "Residual error (additive) = 4.02" (units:

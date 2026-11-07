@@ -123,20 +123,20 @@ Woillard_2011_tacrolimus <- function() {
 
     # Inter-patient variability (IPV) reported as %CV. Conversion to
     # log-scale variance via omega^2 = log(1 + CV^2):
-    #   Ktr   CV 24 % -> log(1 + 0.24^2) = 0.05605
-    #   CL/F  CV 28 % -> log(1 + 0.28^2) = 0.07546
-    #   Vc/F  CV 31 % -> log(1 + 0.31^2) = 0.09161
-    #   Q/F   CV 54 % -> log(1 + 0.54^2) = 0.25593
+    #   Ktr   CV 24 % -> log(1 + 0.24^2) = 0.05600
+    #   CL/F  CV 28 % -> log(1 + 0.28^2) = 0.07548
+    #   Vc/F  CV 31 % -> log(1 + 0.31^2) = 0.09176
+    #   Q/F   CV 54 % -> log(1 + 0.54^2) = 0.25588
     #   Vp/F  CV 60 % -> log(1 + 0.60^2) = 0.30748
     # The source paper also reported inter-occasion variability (IOV) for
     # Ktr, Vc/F, and CL/F in the Prograf cohort (which had multiple
     # occasions per patient). nlmixr2lib popPK conventions encode only IPV;
     # IOV is documented in the vignette's Assumptions and deviations
     # section and is not carried in this `ini()`.
-    etalktr ~ 0.05605                                                                                                   # Table 4 whole-dataset IPV Ktr = 24 % CV
-    etalcl  ~ 0.07546                                                                                                   # Table 4 whole-dataset IPV CL/F = 28 % CV
-    etalvc  ~ 0.09161                                                                                                   # Table 4 whole-dataset IPV Vc/F = 31 % CV
-    etalq   ~ 0.25593                                                                                                   # Table 4 whole-dataset IPV Q/F = 54 % CV
+    etalktr ~ log(1 + 0.24^2)  # Table 4 whole-dataset IPV Ktr = 24 % CV
+    etalcl  ~ log(1 + 0.28^2)  # Table 4 whole-dataset IPV CL/F = 28 % CV
+    etalvc  ~ log(1 + 0.31^2)  # Table 4 whole-dataset IPV Vc/F = 31 % CV
+    etalq   ~ log(1 + 0.54^2)  # Table 4 whole-dataset IPV Q/F = 54 % CV
     etalvp  ~ 0.30748                                                                                                   # Table 4 whole-dataset IPV Vp/F = 60 % CV
 
     # Combined additive + proportional residual error (Table 4 footer,

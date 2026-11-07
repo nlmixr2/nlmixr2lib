@@ -90,7 +90,7 @@ The table below collects them in one place for review.
 | `e_multi_dose_pt_f` (multi-dose-vs-single-dose F ratio, applied as ratio^MULTI_DOSE_PT) | 0.674 | Fang 2010 Table 3 (theta_M for F) |
 | `etalka` IIV (omega^2, log-scale) | log(0.556^2 + 1) = 0.269 | Fang 2010 Table 3 (Ka IIV = 55.6% CV) |
 | `etalcl` IIV (omega^2, log-scale) | log(0.333^2 + 1) = 0.105 | Fang 2010 Table 3 (CL/F IIV = 33.3% CV) |
-| `etalvc` IIV (omega^2, log-scale) | log(0.427^2 + 1) = 0.168 | Fang 2010 Table 3 (V/F IIV = 42.7% CV) |
+| `etalvc` IIV (omega^2, log-scale) | log(0.427^2 + 1) = 0.167 | Fang 2010 Table 3 (V/F IIV = 42.7% CV) |
 | `etaltlag` IIV (omega^2, log-scale) | log(0.818^2 + 1) = 0.512 | Fang 2010 Table 3 (Tlag IIV = 81.8% CV) |
 | Proportional residual error | 0.203 (20.3% CV) | Fang 2010 Table 3 |
 | Additive residual error | 12.6 ng/mL (= 12.6 ug/L) | Fang 2010 Table 3 |

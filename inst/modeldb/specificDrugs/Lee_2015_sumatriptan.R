@@ -99,8 +99,8 @@ Lee_2015_sumatriptan <- function() {
     # No $OMEGA BLOCK is declared in the supplement's NONMEM code (page
     # 74), so the etas are independent (diagonal omega).
     etalcl ~ 0.0337   # log(1 + 0.185^2) = log(1.0342) -- Table 3 BSV(CL/F) = 18.5% CV (RSE 25.9%, shrinkage 6.41%)
-    etalvc ~ 0.4072   # log(1 + 0.709^2) = log(1.5027) -- Table 3 BSV(V/F) = 70.9% CV (RSE 28.9%, shrinkage 2.16%)
-    etalka2 ~ 0.0587  # log(1 + 0.246^2) = log(1.0605) -- Table 3 BSV(ka2) = 24.6% CV (RSE 39.3%, shrinkage 14.2%)
+    etalvc ~ log(1 + 0.709^2)  # -- Table 3 BSV(V/F) = 70.9% CV (RSE 28.9%, shrinkage 2.16%)
+    etalka2 ~ log(1 + 0.246^2)  # -- Table 3 BSV(ka2) = 24.6% CV (RSE 39.3%, shrinkage 14.2%)
     etalmtt ~ 0.1193  # log(1 + 0.356^2) = log(1.1267) -- Table 3 BSV(MTT) = 35.6% CV (RSE 29.6%, shrinkage 7.1%)
     etalfr  ~ 0.0205  # log(1 + 0.144^2) = log(1.0207) -- Table 3 BSV(f)  = 14.4% CV (RSE 40.7%, shrinkage 18.6%)
 

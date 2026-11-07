@@ -276,21 +276,24 @@ Zhang_2013_lopinavir_ritonavir <- function() {
     # table (IOV CL / ka / F / MTT) are NOT carried in this ini() block; the
     # vignette documents this simplification.
     #
-    # CV% -> omega^2 conversion: omega^2 = log(1 + CV^2).
+    # Methods: 'the variability can be approximately interpreted as a
+    # deviation proportional to the typical value, and it is reported as
+    # %CV.' The printed CV is therefore the SD of the eta (CV ~ omega), so
+    # each variance is the square of the printed CV, not log(1 + CV^2).
     # =========================================================================
-    etalcl     ~ log(1 + 0.22^2)
+    etalcl     ~ 0.22^2
     # Table 2 col 2 'IIV CL (%CV)' LPV = 22% (20%, 24%)
-    etalvc     ~ log(1 + 0.22^2)
+    etalvc     ~ 0.22^2
     # Table 2 col 2 'IIV V (%CV)' LPV = 22% (19%, 25%)
-    etalcl_rtv ~ log(1 + 0.26^2)
+    etalcl_rtv ~ 0.26^2
     # Table 2 col 4 'IIV CL (%CV)' RTV = 26% (24%, 28%)
 
     # Correlated IIV block on LPV F and RTV F. Covariance is
-    # rho * sqrt(var_F_lpv * var_F_rtv).
+    # rho * sqrt(var_F_lpv * var_F_rtv) = 0.82 * 0.26 * 0.65.
     etalfdepot + etalfdepot_rtv ~ c(
-      log(1 + 0.26^2),
-      0.82 * sqrt(log(1 + 0.26^2) * log(1 + 0.65^2)),
-      log(1 + 0.65^2)
+      0.26^2,
+      0.82 * 0.26 * 0.65,
+      0.65^2
     )
     # Table 2 col 2 'IIV F (%CV)' LPV = 26% (24%, 28%); col 4 'IIV F (%CV)' RTV = 65% (62%, 68%);
     # 'Correlation between lopinavir and ritonavir IIV F' = 82% (76%, 88%)

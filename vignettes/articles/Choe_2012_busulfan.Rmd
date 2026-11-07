@@ -72,8 +72,8 @@ collects them in one place for review.
 | `e_wt_cl` allometric exp on CL      | 0.5 fixed  | Choe 2012 Results, p. 276 ("power terms fixed at 0.5") |
 | `e_wt_vc` allometric exp on Vd      | 0.5 fixed  | Choe 2012 Results, p. 276 ("power terms fixed at 0.5") |
 | `e_sexf_vc` sex effect on Vd        | 0.105      | Choe 2012 Table 3 (theta3 = 0.105) |
-| `etalcl` variance                   | 0.025277   | Choe 2012 Table 2 (IIV CL 16%; omega^2 = log(0.16^2 + 1)) |
-| `etalvc` variance                   | 0.008068   | Choe 2012 Table 2 (IIV Vd 9%; omega^2 = log(0.09^2 + 1)) |
+| `etalcl` variance                   | 0.025278   | Choe 2012 Table 2 (IIV CL 16%; omega^2 = log(0.16^2 + 1)) |
+| `etalvc` variance                   | 0.008067   | Choe 2012 Table 2 (IIV Vd 9%; omega^2 = log(0.09^2 + 1)) |
 | `propSd` proportional residual SD   | 0.063      | Choe 2012 Table 2 (residual variability 6.3%) |
 | Structural model (1-cmt IV)         | -          | Choe 2012 Results, p. 276 ("one-compartment model ... NONMEM ADVAN1 TRANS2") |
 | Reference weight                    | 65 kg      | Choe 2012 Table 2 footnote ("in a typical patient weighing 65 kg") |

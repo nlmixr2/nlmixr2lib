@@ -108,9 +108,9 @@ Perrottet_2009_ganciclovir <- function() {
     lfdepot          <- fixed(log(0.6));    label("Oral ganciclovir-equivalent bioavailability from valganciclovir (fraction)")  # Methods (Structural model): fixed at 0.6 per refs 6, 10, 19, 24
 
     # Inter-patient variability (omega^2 = log(CV^2 + 1))
-    # CL: 26% CV  -> omega^2 = log(0.26^2 + 1) = 0.06544
+    # CL: 26% CV  -> omega^2 = log(0.26^2 + 1) = 0.06541
     # V1: 20% CV  -> omega^2 = log(0.20^2 + 1) = 0.03922
-    etalcl ~ 0.06544          # Table 3, 26% CV interpatient on CL
+    etalcl ~ log(1 + 0.26^2)  # Table 3, 26% CV interpatient on CL
     etalvc ~ 0.03922          # Table 3, 20% CV interpatient on V1
 
     # Residual error: proportional only after IOV inclusion

@@ -104,8 +104,8 @@ Xu_2023_busulfan <- function() {
     # Table 3 reports IIV as a percentage; converted to the log-scale variance via
     # omega^2 = log(CV^2 + 1). No IIV is carried on the saliva scale factor: the
     # authors report 100% shrinkage on it and dropped it (Xu 2023 Discussion).
-    etalcl ~ 0.0472764  # log(0.2200^2 + 1) = 0.0472764; Table 3 final model IIV_CL = 22.00% (RSE 8%, shrinkage 4%)
-    etalvc ~ 0.0183272  # log(0.1360^2 + 1) = 0.0183272; Table 3 final model IIV_Vd = 13.60% (RSE 18%, shrinkage 14%)
+    etalcl ~ log(1 + 0.22^2)  # Table 3 final model IIV_CL = 22.00% (RSE 8%, shrinkage 4%)
+    etalvc ~ log(1 + 0.136^2)  # Table 3 final model IIV_Vd = 13.60% (RSE 18%, shrinkage 14%)
 
     # Residual error - separate proportional models for the two matrices
     propSd <- 0.1292; label("Proportional residual SD for plasma Cc (fraction)")             # Table 3 final model: epsilon_plasma = 12.92% (RSE 17%, shrinkage 10%)

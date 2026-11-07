@@ -134,7 +134,7 @@ Saeheng_2024_atractylodesLancea_group1day1 <- function() {
     # Errata.
     # ==================================================================
     etald1 ~ 0.260100  # Table 1 Omega_Tk0 = 0.51 (RSE 27.2%) -> variance 0.51^2; implied CV sqrt(exp(0.51^2)-1) = 54.5%, printed 54.88%
-    etalvc ~ 0.090736  # Table 1 Omega_V printed on the linear scale (13.2 L); recovered from the printed %CV 30.82% as log(1 + 0.3082^2) (omega 0.3012)
+    etalvc ~ log(1 + 0.3082^2)  # Table 1 Omega_V printed on the linear scale (13.2 L); recovered from the printed %CV 30.82% as  (omega 0.3012)
     etalcl ~ 0.291600  # Table 1 Omega_Cl = 0.54 (RSE 21.8%) -> variance 0.54^2; implied CV sqrt(exp(0.54^2)-1) = 58.2%, printed 57.91%
 
     # ==================================================================

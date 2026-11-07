@@ -81,8 +81,8 @@ The table below collects them for review.
 | `lhill` = `log(1.03)` (gamma, Hill coefficient on PNA) | 1.03 | Table II row 6 |
 | `etalgfrbirth` ~ 0.0923 | 31.1% CV | Table II IIV column row 1 (omega^2 = log(1 + 0.311^2)) |
 | `etalgfrmax` ~ 0.0285 | 17.0% CV | Table II IIV column row 2 (omega^2 = log(1 + 0.17^2)) |
-| `etalpna50` ~ 0.2718 | 55.9% CV | Table II IIV column row 4 (omega^2 = log(1 + 0.559^2)) |
-| `etalhill` ~ 0.1186 | 35.5% CV | Table II IIV column row 6 (omega^2 = log(1 + 0.355^2)) |
+| `etalpna50` ~ 0.2719 | 55.9% CV | Table II IIV column row 4 (omega^2 = log(1 + 0.559^2)) |
+| `etalhill` ~ 0.1187 | 35.5% CV | Table II IIV column row 6 (omega^2 = log(1 + 0.355^2)) |
 | `expSd_Cinulin` = sqrt(0.033) | 0.033 (variance, log scale) | Table II 'sigma^2 Inulin CL-log additive' row |
 | `addSd_Scr` = sqrt(0.00187) | 0.00187 (variance, mg^2/dL^2) | Table II 'sigma^2 Scr-additive' row |
 | `propSd_Scr` = sqrt(0.0198) | 0.0198 (variance, fraction^2) | Table II 'sigma^2 Scr-proportional' row |

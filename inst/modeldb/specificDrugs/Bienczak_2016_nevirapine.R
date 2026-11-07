@@ -201,10 +201,10 @@ Bienczak_2016_nevirapine <- function() {
     #   - MTT: only BOV 199.7% reported -> folded in as BSV-equivalent
     #   - Ka: only BOV 44.9% reported -> folded in as BSV-equivalent
     # =========================================================================
-    etalcl_em ~ 0.04473  # Bienczak 2016 Table 3 BSV CLint = 21.40%; omega^2 = log(1 + 0.214^2) = 0.04473
-    etalfpreh_old ~ 0.03439  # Bienczak 2016 Table 3 BSV FpreH = 18.72%; omega^2 = log(1 + 0.1872^2) = 0.03439 (BOV FpreH = 17.02% dropped per ini() comment above)
-    etalmtt   ~ 1.39135  # Bienczak 2016 Table 3 BOV MTT  = 199.73% folded in as BSV-equivalent; omega^2 = log(1 + 1.9973^2) = 1.39135 (no separate BSV on MTT reported)
-    etalka    ~ 0.18458  # Bienczak 2016 Table 3 BOV Ka   = 44.91% folded in as BSV-equivalent; omega^2 = log(1 + 0.4491^2) = 0.18458 (no separate BSV on Ka reported)
+    etalcl_em ~ log(1 + 0.214^2)  # Bienczak 2016 Table 3 BSV CLint = 21.40%
+    etalfpreh_old ~ log(1 + 0.1872^2)  # Bienczak 2016 Table 3 BSV FpreH = 18.72% (BOV FpreH = 17.02% dropped per ini comment above)
+    etalmtt   ~ log(1 + 1.9973^2)  # Bienczak 2016 Table 3 BOV MTT  = 199.73% folded in as BSV-equivalent (no separate BSV on MTT reported)
+    etalka    ~ log(1 + 0.4491^2)  # Bienczak 2016 Table 3 BOV Ka   = 44.91% folded in as BSV-equivalent (no separate BSV on Ka reported)
 
     # =========================================================================
     # Residual error (Bienczak 2016 Table 3 rows 'Additive error (mg/L)' and

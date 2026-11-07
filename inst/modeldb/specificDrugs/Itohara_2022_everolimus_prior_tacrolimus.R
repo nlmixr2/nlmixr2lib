@@ -132,7 +132,7 @@ Itohara_2022_everolimus_prior_tacrolimus <- function() {
     e_tac_dose_trough_ratio_bl_cl <- 0.230; label("Power exponent of (TAC_DOSE_TROUGH_RATIO_BL / 0.44) on CL/F (unitless)") # Results equation: (D/C Tac/0.44)^0.230
     e_sexf_cl <- 1.23; label("Multiplicative factor on CL/F for female sex (unitless)") # Results equation: 1.23^Female
 
-    etalcl ~ 0.05325 # Results: IIV for CL/F decreased to 23.4%; omega^2 = log(0.234^2 + 1) = 0.05325
+    etalcl ~ log(1 + 0.234^2)  # Results: IIV for CL/F decreased to 23.4%
 
     propSd <- 0.182; label("Proportional residual error (fraction)") # Results: proportional error 18.2%
     addSd <- 0.510; label("Additive residual error (ng/mL)") # Results: additive error 0.510 ng/mL

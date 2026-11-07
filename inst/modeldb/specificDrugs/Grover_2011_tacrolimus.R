@@ -56,18 +56,18 @@ Grover_2011_tacrolimus <- function() {
 
     # Inter-individual variability. Grover 2011 Table 2 reports IIV as %CV;
     # convert to log-scale variance via omega^2 = log(CV^2 + 1):
-    #   CL/F  CV 43.5% -> log(0.435^2 + 1) = 0.17326
-    #   V/F   CV 36.9% -> log(0.369^2 + 1) = 0.12772
-    #   Q/F   CV 50.4% -> log(0.504^2 + 1) = 0.22641
-    #   ka    CV 46.0% -> log(0.460^2 + 1) = 0.19196
-    #   tlag  CV 13.3% -> log(0.133^2 + 1) = 0.01754
+    #   CL/F  CV 43.5% -> log(0.435^2 + 1) = 0.17330
+    #   V/F   CV 36.9% -> log(0.369^2 + 1) = 0.12766
+    #   Q/F   CV 50.4% -> log(0.504^2 + 1) = 0.22635
+    #   ka    CV 46.0% -> log(0.460^2 + 1) = 0.19194
+    #   tlag  CV 13.3% -> log(0.133^2 + 1) = 0.01753
     # Vss/F IIV was not estimable in NONMEM with the 24-subject dataset
     # (Table 2: 'n.e.'); no eta is carried on lvp.
-    etalka   ~ 0.19196   # Table 2 NONMEM Parameter Estimates: IIV ka = 46.0% CV
-    etaltlag ~ 0.01754   # Table 2 NONMEM Parameter Estimates: IIV tlag = 13.3% CV
-    etalcl   ~ 0.17326   # Table 2 NONMEM Parameter Estimates: IIV CL/F = 43.5% CV
-    etalvc   ~ 0.12772   # Table 2 NONMEM Parameter Estimates: IIV V/F = 36.9% CV
-    etalq    ~ 0.22641   # Table 2 NONMEM Parameter Estimates: IIV Q/F = 50.4% CV
+    etalka   ~ log(1 + 0.460^2)  # Table 2 NONMEM Parameter Estimates: IIV ka = 46.0% CV
+    etaltlag ~ log(1 + 0.133^2)  # Table 2 NONMEM Parameter Estimates: IIV tlag = 13.3% CV
+    etalcl   ~ log(1 + 0.435^2)  # Table 2 NONMEM Parameter Estimates: IIV CL/F = 43.5% CV
+    etalvc   ~ log(1 + 0.369^2)  # Table 2 NONMEM Parameter Estimates: IIV V/F = 36.9% CV
+    etalq    ~ log(1 + 0.504^2)  # Table 2 NONMEM Parameter Estimates: IIV Q/F = 50.4% CV
 
     # Residual error: NOT reported by Grover 2011. The Materials and Methods
     # section states "Pharmacokinetic parameters were estimated using NONMEM

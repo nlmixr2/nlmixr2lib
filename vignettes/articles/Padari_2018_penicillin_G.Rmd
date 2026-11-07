@@ -90,8 +90,8 @@ Table 3 final-model column unless noted otherwise.
 | `e_wt_vc_vp` (allometric on Vc and Vp)        | fixed(1.00)          | Materials and Methods "PK analyses" (Germovsek 2017 recommended)|
 | `tmat50` (PMA at 50% renal maturation)        | fixed(47.7)          | Materials and Methods reference 48 (Rhodin et al. 2009)        |
 | `hill_mat` (Hill coefficient for renal mat.)  | fixed(3.4)           | Materials and Methods reference 48 (Rhodin et al. 2009)        |
-| `etalcl` (IIV on CL)                          | 0.14164              | Table 3 CL CV = 39% -> omega^2 = log(1 + 0.39^2)               |
-| `etalvc` (IIV on Vc)                          | 0.05154              | Table 3 V1 CV = 23% -> omega^2 = log(1 + 0.23^2)               |
+| `etalcl` (IIV on CL)                          | 0.14159              | Table 3 CL CV = 39% -> omega^2 = log(1 + 0.39^2)               |
+| `etalvc` (IIV on Vc)                          | 0.05155              | Table 3 V1 CV = 23% -> omega^2 = log(1 + 0.23^2)               |
 | `etalvp` (IIV on Vp)                          | 0.11556              | Table 3 V2 CV = 35% -> omega^2 = log(1 + 0.35^2)               |
 | Q has no IIV                                  | n/a                  | Table 3 Q row CV column empty (no eta shrinkage either)        |
 | `propSd` (proportional residual SD)           | 0.13                 | Table 3 footnote: "proportional residual error was 13%"        |

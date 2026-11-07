@@ -200,20 +200,20 @@ vanRongen_2017_midazolam <- function() {
     # Inter-individual variability. Van Rongen 2017 Table 2 reports IIVs as
     # CV%; internal variance on the log-eta scale is omega^2 = log(CV^2 + 1).
     #   CL   :  21.0% -> log(0.210^2 + 1) = 0.04316
-    #   F    :  39.2% -> log(0.392^2 + 1) = 0.14296
-    #   Ka   :  49.5% -> log(0.495^2 + 1) = 0.21915
-    #   Vc   :  58.5% -> log(0.585^2 + 1) = 0.29440
-    #   Vp   :  42.2% -> log(0.422^2 + 1) = 0.16395
-    #   Q    :  42.4% -> log(0.424^2 + 1) = 0.16539
+    #   F    :  39.2% -> log(0.392^2 + 1) = 0.14294
+    #   Ka   :  49.5% -> log(0.495^2 + 1) = 0.21916
+    #   Vc   :  58.5% -> log(0.585^2 + 1) = 0.29433
+    #   Vp   :  42.2% -> log(0.422^2 + 1) = 0.16389
+    #   Q    :  42.4% -> log(0.424^2 + 1) = 0.16532
     # No off-diagonal correlations are reported in Table 2; etas are
     # treated as independent log-normal variates as in the source NONMEM
     # implementation (the paper's text references only a diagonal OMEGA).
     etalcl_adol     ~ 0.04316    # Table 2 final IIV CL 21% (RSE 26%); applied to both adolescent and adult typical CL via a shared eta
-    etalfdepot      ~ 0.14296    # Table 2 final IIV F 39.2% (RSE 21%)
-    etalka          ~ 0.21915    # Table 2 final IIV K_a = K_tr 49.5% (RSE 17%)
-    etalvc          ~ 0.29440    # Table 2 final IIV V_central 58.5% (RSE 11%)
-    etalvp          ~ 0.16395    # Table 2 final IIV V_peripheral 42.2% (RSE 22%)
-    etalq           ~ 0.16539    # Table 2 final IIV Q 42.4% (RSE 25%)
+    etalfdepot      ~ log(1 + 0.392^2)  # Table 2 final IIV F 39.2% (RSE 21%)
+    etalka          ~ log(1 + 0.495^2)  # Table 2 final IIV K_a = K_tr 49.5% (RSE 17%)
+    etalvc          ~ log(1 + 0.585^2)  # Table 2 final IIV V_central 58.5% (RSE 11%)
+    etalvp          ~ log(1 + 0.422^2)  # Table 2 final IIV V_peripheral 42.2% (RSE 22%)
+    etalq           ~ log(1 + 0.424^2)  # Table 2 final IIV Q 42.4% (RSE 25%)
 
     # Proportional residual error (Final model; van Rongen 2017 Methods 2.4
     # "Residual variability was tested using proportional, additive, or

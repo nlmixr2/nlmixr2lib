@@ -75,10 +75,10 @@ Kelman_1984_gentamicin_glasgow <- function() {
     #                   = 4 * 2.5e-5 + 1 * (6.6e-7 * 30.4375^2) + 3600 * 1.1e-8
     #                   = 1.0e-4 + 6.12e-4 + 3.96e-5 = 7.51e-4
     #   SD(CL) approx 0.0274 L/h, CV(CL) approx 21.9%
-    #   omega^2(lcl) = log(1 + 0.219^2) = 0.0469
+    #   omega^2(lcl) = log(1 + 0.219^2) = 0.0468
     # Paper VAR(theta4) is reported as indeterminate ("-") in Glasgow I; use a small
     # placeholder for V IIV so the model is simulable.
-    etalcl ~ 0.0469  # log-normal CV approx 22% on CL at typical Glasgow I covariates (paper Table 2 VAR(eta_i) collapsed)
+    etalcl ~ log(1 + 0.219^2)  # log-normal CV approx 22% on CL at typical Glasgow I covariates (paper Table 2 VAR(eta_i) collapsed)
     etalvc ~ 0.01    # placeholder; paper Table 2 VAR(theta4) indeterminate in Glasgow I
 
     # Additive residual error (paper Equation 7; Table 2 reports VAR(eps) = 0.88 (mg/L)^2)

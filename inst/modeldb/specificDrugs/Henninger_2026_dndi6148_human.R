@@ -125,7 +125,7 @@ Henninger_2026_dndi6148_human <- function() {
     # Table 1 / Table 2 footnotes.
     # =================================================================
     etalcl              ~ fixed(0.086178)  # Methods 2.2.6, an inflated 30% CV on CL; log(0.30^2 + 1)
-    etalkp_skin         ~ fixed(0.128309)  # Methods 2.2.6, 37% CV on R_skin-plasma; log(0.37^2 + 1)
+    etalkp_skin         ~ fixed(log(1 + 0.37^2))  # Methods 2.2.6, 37% CV on R_skin-plasma
     etalrbase_parasites ~ fixed(0.307485)  # Methods 2.2.6, 60% CV on parasite load at baseline; log(0.60^2 + 1)
 
     # Methods 2.2.6: "Residual variability was excluded." No residual-error

@@ -84,8 +84,8 @@ Martial_2017_micafungin <- function() {
     # Mould_2007_alemtuzumab, Chakraborty_2012_canakinumab,
     # Wang_2020_ontamalimab), the IIV is encoded as diagonal here and the
     # missing correlation is documented in the vignette Errata.
-    etalcl ~ 0.14906   # Martial 2017 Table 2: IIV CL  40.1% CV (shrinkage 1.2%); omega^2 = log(1 + 0.401^2)
-    etalvc ~ 0.42891   # Martial 2017 Table 2: IIV V1  73.2% CV (shrinkage 41%);   omega^2 = log(1 + 0.732^2)
+    etalcl ~ log(1 + 0.401^2)  # Martial 2017 Table 2: IIV CL  40.1% CV (shrinkage 1.2%)
+    etalvc ~ log(1 + 0.732^2)  # Martial 2017 Table 2: IIV V1  73.2% CV (shrinkage 41%)
 
     # Inter-occasion variability (IOV) on V1 was reported at 37.0% CV
     # (Martial 2017 Section 3.2 and Table 2 -- the Table 2 row label reads
