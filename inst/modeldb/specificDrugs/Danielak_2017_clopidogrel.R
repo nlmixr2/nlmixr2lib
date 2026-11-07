@@ -140,7 +140,7 @@ Danielak_2017_clopidogrel <- function() {
     #   ka  (k12) CV 25.3% -> log(1 + 0.253^2) = 0.0620
     #   V/F (V2/F) CV 63.7% -> log(1 + 0.637^2) = 0.3407
     #   CL/F      CV 49.8% -> log(1 + 0.498^2) = 0.2215
-    #   FM        CV 71.4% -> log(1 + 0.714^2) = 0.4121
+    #   FM        CV 71.4% -> log(1 + 0.714^2) = 0.4120
     # The off-diagonal covariance between k12 and V2/F is reported
     # directly as the OMEGA matrix element (not as a correlation):
     #   cov(eta_k12, eta_V2/F) = -0.087.
@@ -150,7 +150,7 @@ Danielak_2017_clopidogrel <- function() {
     etalka + etalvc ~ c(0.0620,
                         -0.087, 0.3407)                                          # Danielak 2017 Table 2 final-model: IIV(k12) = 25.3% CV -> omega^2 = 0.0620; cov(k12, V2/F) = -0.087; IIV(V2/F) = 63.7% CV -> omega^2 = 0.3407
     etalcl ~ 0.2215                                                              # Danielak 2017 Table 2 final-model: IIV(CL/F) = 49.8% CV -> omega^2 = 0.2215
-    etalfm ~ 0.4121                                                              # Danielak 2017 Table 2 final-model: IIV(FM) = 71.4% CV -> omega^2 = 0.4121
+    etalfm ~ log(1 + 0.714^2)  # Danielak 2017 Table 2 final-model: IIV(FM) = 71.4% CV -> omega^2 = 0.4120
 
     # ------------------------------------------------------------------
     # RESIDUAL ERROR

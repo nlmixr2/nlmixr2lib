@@ -69,7 +69,7 @@ Ryu_2021_hyaluronicAcid_neuramisVolume_mouse <- function() {
     lkdeg <- log(2.2); label("Degradation rate constant Kdeg (1/day)") # Table 1 Neuramis 'Kdeg' = 2.2 (RSE 8.8%); Text S1 $THETA(2) init 2.2
     kdeg_eta_scale <- 1.06; label("Slope scaling the Kswell random effect onto Kdeg (unitless)") # Table 1 Neuramis 'Slope' = 1.06 (RSE 11.1%); Equation 2 / Text S1 KDEG = THETA(2)*EXP(THETA(3)*ETA(1))
 
-    etalka ~ 0.048533 # Table 1 Neuramis IIV 22.3% (RSE 13.5%); omega^2 = log(1 + 0.223^2)
+    etalka ~ log(1 + 0.223^2)  # Table 1 Neuramis IIV 22.3% (RSE 13.5%)
 
     propSd <- 0.149; label("Proportional residual error (fraction)") # Table 1 Neuramis 'Proportional residual variability CV%' = 14.9% (RSE 14%)
   })

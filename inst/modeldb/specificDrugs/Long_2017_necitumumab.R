@@ -66,11 +66,11 @@ Long_2017_necitumumab <- function() {
     # terms for V1 (21.1% CV) and V2 (55.4% CV) are separate. Correlation
     # between the CLtot and V1 etas is 0.609; V2 is uncorrelated.
     #   omega^2 = log(CV^2 + 1)
-    #   CLtot CV 28.8% -> omega^2 = log(0.288^2 + 1) = 0.07969
+    #   CLtot CV 28.8% -> omega^2 = log(0.288^2 + 1) = 0.07968
     #   V1    CV 21.1% -> omega^2 = log(0.211^2 + 1) = 0.04356
     #   V2    CV 55.4% -> omega^2 = log(0.554^2 + 1) = 0.26767
-    #   cov(CLtot, V1) = 0.609 * sqrt(0.07969 * 0.04356) = 0.03588
-    etalcl + etalvc ~ c(0.07969, 0.03588, 0.04356)  # Long 2017 Table 4: CLtot IIV 28.8% CV, V1 IIV 21.1% CV, correlation 0.609 (final model)
+    #   cov(CLtot, V1) = 0.609 * sqrt(0.07968 * 0.04356) = 0.03588
+    etalcl + etalvc ~ c(log(1 + 0.288^2), 0.609 * sqrt(log(1 + 0.288^2) * 0.04356), 0.04356)  # Long 2017 Table 4: CLtot IIV 28.8% CV, V1 IIV 21.1% CV, correlation 0.609 (final model)
     etalvp ~ 0.26767                                 # Long 2017 Table 4: V2 IIV 55.4% CV (final model)
 
     # Combined additive + proportional residual error (Long 2017 Table 4).

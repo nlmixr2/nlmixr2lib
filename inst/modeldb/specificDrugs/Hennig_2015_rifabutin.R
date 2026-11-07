@@ -135,10 +135,10 @@ Hennig_2015_rifabutin <- function() {
     # internal-scale variance is omega^2 = log(1 + CV^2).
     # ============================================================
     etalcl  ~ 0.01430                                                          # BSV 12.0 percent on Cl/F (Hennig 2015 Table 2 Final-model BSV column); omega^2 = log(1 + 0.12^2) = 0.01430
-    etalvc  ~ 0.21528                                                          # BSV 49.0 percent on V/F (Hennig 2015 Table 2); omega^2 = log(1 + 0.49^2) = 0.21528
-    etalka  ~ 0.05557                                                          # BSV 23.9 percent on ka (Hennig 2015 Table 2); omega^2 = log(1 + 0.239^2) = 0.05557
-    etaltlag ~ 0.05923                                                         # BSV 24.7 percent on Lag time (Hennig 2015 Table 2); omega^2 = log(1 + 0.247^2) = 0.05923
-    etalfdepot ~ 0.10336                                                       # BSV 33.0 percent on bioavailability F (Hennig 2015 Table 2 'F (Fixed)' BSV column); omega^2 = log(1 + 0.33^2) = 0.10336
+    etalvc  ~ log(1 + 0.49^2)  # BSV 49.0 percent on V/F (Hennig 2015 Table 2)
+    etalka  ~ log(1 + 0.239^2)  # BSV 23.9 percent on ka (Hennig 2015 Table 2)
+    etaltlag ~ log(1 + 0.247^2)  # BSV 24.7 percent on Lag time (Hennig 2015 Table 2)
+    etalfdepot ~ log(1 + 0.33^2)  # BSV 33.0 percent on bioavailability F (Hennig 2015 Table 2 'F (Fixed)' BSV column)
     etalcl_desacetylrbn ~ 0.08618                                                    # BSV 30.0 percent on des-rifabutin Clm/F (Hennig 2015 Table 2 des-Rifabutin BSV); omega^2 = log(1 + 0.30^2) = 0.08618
 
     # ============================================================

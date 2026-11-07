@@ -101,13 +101,13 @@ Wang_2020_ontamalimab <- function() {
 
     # Inter-individual variability - Wang 2020 Table 2 reports BSV as CV%.
     # Convert log-normal variance via omega^2 = log(CV^2 + 1):
-    #   Ka   CV 61.8% -> log(0.618^2 + 1) = 0.3232
-    #   CL/F CV 54.6% -> log(0.546^2 + 1) = 0.2611
+    #   Ka   CV 61.8% -> log(0.618^2 + 1) = 0.3235
+    #   CL/F CV 54.6% -> log(0.546^2 + 1) = 0.2609
     #   Vc/F CV 41.0% -> log(0.410^2 + 1) = 0.1554
     # The paper does not report off-diagonal correlations, so IIVs are taken
     # as independent.
-    etalka ~ 0.3232; label("IIV variance on log Ka (Wang 2020 Table 2: 61.8% CV)")
-    etalcl ~ 0.2611; label("IIV variance on log CL/F (Wang 2020 Table 2: 54.6% CV)")
+    etalka ~ log(1 + 0.618^2); label("IIV variance on log Ka (Wang 2020 Table 2: 61.8% CV)")
+    etalcl ~ log(1 + 0.546^2); label("IIV variance on log CL/F (Wang 2020 Table 2: 54.6% CV)")
     etalvc ~ 0.1554; label("IIV variance on log Vc/F (Wang 2020 Table 2: 41.0% CV)")
 
     # Residual error - Wang 2020 Table 2 combined additive (166 ng/mL) and

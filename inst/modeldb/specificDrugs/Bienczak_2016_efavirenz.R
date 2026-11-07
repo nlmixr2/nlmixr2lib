@@ -195,8 +195,8 @@ Bienczak_2016_efavirenz <- function() {
     # Inter-individual variability (Bienczak 2016 Table 2 'Random Effects
     # (ETA)' column). Source reports approximate %CV on the SD scale
     # (footnote: 'Expressed as approximate %CV on SD scale sqrt(ETA) * 100');
-    # nlmixr2lib uses variances on the log scale, converted via
-    # omega^2 = log(1 + CV^2). The source distinguishes BSV (between-
+    # the printed CV is therefore the SD of the eta, so each variance is
+    # the square of the printed CV (omega^2 = CV^2). The source distinguishes BSV (between-
     # subject) from BOV (between-occasion). nlmixr2lib has no idiomatic
     # encoding for BOV separate from BSV; per the convention used in
     # Bienczak_2016_nevirapine.R and Svensson_2018_bedaquiline.R, BOV is
@@ -208,14 +208,14 @@ Bienczak_2016_efavirenz <- function() {
     #   - MTT:   only BOV 78.0% reported -> folded as BSV-equivalent
     #   - ka:    only BOV 57.7% reported -> folded as BSV-equivalent
     # =========================================================================
-    etalcl     ~ 0.12779
-    # Bienczak 2016 Table 2 BSV CL/F = 36.9%; omega^2 = log(1 + 0.369^2) = 0.12779
-    etalfdepot ~ 0.16415
-    # Bienczak 2016 Table 2 BSV BIO = 42.2%; omega^2 = log(1 + 0.422^2) = 0.16415
-    etalmtt    ~ 0.47521
-    # Bienczak 2016 Table 2 BOV MTT = 78.0% folded as BSV-equivalent; omega^2 = log(1 + 0.780^2) = 0.47521
-    etalka     ~ 0.28738
-    # Bienczak 2016 Table 2 BOV Ka = 57.7% folded as BSV-equivalent; omega^2 = log(1 + 0.577^2) = 0.28738
+    etalcl     ~ 0.369^2
+    # Bienczak 2016 Table 2 BSV CL/F = 36.9% (approximate %CV on the SD scale)
+    etalfdepot ~ 0.422^2
+    # Bienczak 2016 Table 2 BSV BIO = 42.2% (approximate %CV on the SD scale)
+    etalmtt    ~ 0.780^2
+    # Bienczak 2016 Table 2 BOV MTT = 78.0% folded as BSV-equivalent (approximate %CV on the SD scale)
+    etalka     ~ 0.577^2
+    # Bienczak 2016 Table 2 BOV Ka = 57.7% folded as BSV-equivalent (approximate %CV on the SD scale)
 
     # =========================================================================
     # Residual error (Bienczak 2016 Table 2 'Error model (SIGMA)' rows).

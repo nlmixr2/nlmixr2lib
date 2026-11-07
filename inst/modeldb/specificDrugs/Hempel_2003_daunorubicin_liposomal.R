@@ -93,10 +93,10 @@ Hempel_2003_daunorubicin_liposomal <- function() {
     lvc <- log(0.0654)   ; label("Volume of distribution per kg body weight (L/kg)")    # Table 2 model 15: V  = 65.4 mL/kg  = 0.0654  L/kg; abstract value identical
 
     # Inter-individual variability (lognormal; omega^2 = log(1 + CV^2)).
-    # IIV on CL = 51% CV -> log(1 + 0.51^2) = 0.23133
-    # IIV on V  = 27% CV -> log(1 + 0.27^2) = 0.07033
-    etalcl ~ 0.23133   # Table 2 model 15: omega_CL 51 percent CV; abstract +/- 0.5 51 percent
-    etalvc ~ 0.07033   # Table 2 model 15: omega_V  27 percent CV; abstract +/- 0.5 27 percent
+    # IIV on CL = 51% CV -> log(1 + 0.51^2) = 0.23119
+    # IIV on V  = 27% CV -> log(1 + 0.27^2) = 0.07037
+    etalcl ~ log(1 + 0.51^2)  # Table 2 model 15: omega_CL 51 percent CV; abstract +/- 0.5 51 percent
+    etalvc ~ log(1 + 0.27^2)  # Table 2 model 15: omega_V  27 percent CV; abstract +/- 0.5 27 percent
 
     # Inter-occasion variability (IOV) on CL was estimated at 16.7% CV in
     # the final model (Table 2 model 15; Results paragraph "The

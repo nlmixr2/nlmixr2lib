@@ -163,11 +163,11 @@ Kakara_2014_rosuvastatin <- function() {
     # log-normal identity omega^2 = log(1 + CV^2). The ID50 IIV is
     # a single shared variance across all three statins in the joint
     # fit; the per-statin model files therefore each carry the same
-    # 0.26611 value on etalid50.
+    # log(1 + 0.554^2) on etalid50.
     # ---------------------------------------------------------------
     etalbase ~ 0.02225  # log(1 + 0.150^2);  Kakara 2014 Table 2 Baseline IIV  CV 15.0%
-    etalimax ~ 0.15716  # log(1 + 0.414^2);  Kakara 2014 Table 2 Imax     IIV  CV 41.4%
-    etalid50 ~ 0.26611  # log(1 + 0.554^2);  Kakara 2014 Table 2 ID50     IIV  CV 55.4% (shared across atorvastatin, pitavastatin, rosuvastatin)
+    etalimax ~ log(1 + 0.414^2)  # Kakara 2014 Table 2 Imax     IIV  CV 41.4%
+    etalid50 ~ log(1 + 0.554^2)  # Kakara 2014 Table 2 ID50     IIV  CV 55.4% (shared across atorvastatin, pitavastatin, rosuvastatin)
 
     # ---------------------------------------------------------------
     # Residual error -- proportional (Kakara 2014 Discussion: "...

@@ -87,13 +87,13 @@ Yoshida_2018_coproporphyrin_I_GDC0810 <- function() {
     # IIV -- Table 2 reports IIV on Baseline and on Ki,u for the
     # GDC-0810-CPI fit; the rifampin-CPI fit has no IIV. Variances
     # computed via omega^2 = log(1 + CV^2).
-    etalrbase ~ 0.03244
+    etalrbase ~ log(1 + 0.182^2)
     # Table 2, GDC-0810-CPI: IIV on Baseline = 18.2 %CV (RSE 23.2%);
-    # log(1 + 0.182^2) = 0.03244.
+    # log(1 + 0.182^2) = 0.03259.
 
-    etalkiu   ~ 0.08660
+    etalkiu   ~ log(1 + 0.301^2)
     # Table 2, GDC-0810-CPI: IIV on Ki,u = 30.1 %CV (RSE 54.3%);
-    # log(1 + 0.301^2) = 0.08660. Per Yoshida 2018 Discussion this
+    # log(1 + 0.301^2) = 0.08673. Per Yoshida 2018 Discussion this
     # likely includes per-subject variability in GDC-0810 portal-vein
     # exposure (about 20 %CV) in addition to true Ki,u variability.
 

@@ -153,17 +153,17 @@ Kado_2020_benzathine_benzylpenicillin_g <- function() {
     # unambiguously stated in the paper text and is not captured here.
     # Simulations that require the between-parameter correlation should
     # override the omega block; see vignette Errata.
-    etalvc                  ~ 0.01432   # Table 1: IIV on V/F = 12 CV%; omega^2 = log(1 + 0.12^2) = 0.01432
+    etalvc                  ~ log(1 + 0.12^2)  # Table 1: IIV on V/F = 12 CV%
 
-    etalthalf_abs1_im       ~ 0.12876   # Table 1: IIV on t1/2,abs-1,IM = 37 CV%; omega^2 = log(1 + 0.37^2) = 0.12876
-    etalthalf_abs2_im       ~ 0.05188   # Table 1: IIV on t1/2,abs-2,IM = 23 CV%; omega^2 = log(1 + 0.23^2) = 0.05188
-    etalrat_transit_im      ~ 0.05610   # Table 1: IIV on RAT-IM      = 24 CV%; omega^2 = log(1 + 0.24^2) = 0.05610
-    etalrat_slowfast_im     ~ 0.10917   # Table 1: IIV on RAT2-IM     = 34 CV%; omega^2 = log(1 + 0.34^2) = 0.10917
+    etalthalf_abs1_im       ~ log(1 + 0.37^2)  # Table 1: IIV on t1/2,abs-1,IM = 37 CV%
+    etalthalf_abs2_im       ~ log(1 + 0.23^2)  # Table 1: IIV on t1/2,abs-2,IM = 23 CV%
+    etalrat_transit_im      ~ log(1 + 0.24^2)  # Table 1: IIV on RAT-IM      = 24 CV%
+    etalrat_slowfast_im     ~ log(1 + 0.34^2)  # Table 1: IIV on RAT2-IM     = 34 CV%
 
-    etalthalf_abs1_screl    ~ 0.23044   # Table 1: IIV on t1/2,abs-1,SC = 51 CV%; omega^2 = log(1 + 0.51^2) = 0.23044 (attached to the log SC-relative multiplier; log-space variance is identical to the variance on log(SC absolute))
-    etalthalf_abs2_screl    ~ 0.23044   # Table 1: IIV on t1/2,abs-2,SC = 51 CV%; omega^2 = log(1 + 0.51^2) = 0.23044
-    etalrat_transit_screl   ~ 0.25489   # Table 1: IIV on RAT-SC       = 54 CV%; omega^2 = log(1 + 0.54^2) = 0.25489
-    etalrat_slowfast_screl  ~ 0.25489   # Table 1: IIV on RAT2-SC      = 54 CV%; omega^2 = log(1 + 0.54^2) = 0.25489
+    etalthalf_abs1_screl    ~ log(1 + 0.51^2)  # Table 1: IIV on t1/2,abs-1,SC = 51 CV% (attached to the log SC-relative multiplier; log-space variance is identical to the variance on log(SC absolute))
+    etalthalf_abs2_screl    ~ log(1 + 0.51^2)  # Table 1: IIV on t1/2,abs-2,SC = 51 CV%
+    etalrat_transit_screl   ~ log(1 + 0.54^2)  # Table 1: IIV on RAT-SC       = 54 CV%
+    etalrat_slowfast_screl  ~ log(1 + 0.54^2)  # Table 1: IIV on RAT2-SC      = 54 CV%
 
     # ==========================================================================
     # Residual variability

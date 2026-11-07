@@ -128,11 +128,11 @@ Mazzocco_2015_temozolomide <- function() {
     # Inter-individual variability (IIV). Mazzocco 2015 Table 2 reports
     # CV(%) for each random effect; for log-normal random effects the
     # corresponding NONMEM-style variance is omega^2 = log((CV/100)^2 + 1).
-    etalp0       ~ 1.1136   # CV 143% -> omega^2 = log(1.43^2 + 1) per Mazzocco 2015 Table 2
-    etalq0       ~ 0.2712   # CV 55.8% -> omega^2 = log(0.558^2 + 1) per Mazzocco 2015 Table 2
+    etalp0       ~ log(1 + 1.43^2)  # CV 143% per Mazzocco 2015 Table 2
+    etalq0       ~ log(1 + 0.558^2)  # CV 55.8% per Mazzocco 2015 Table 2
     etallambdap  ~ 0.3352   # CV 63.1% -> omega^2 = log(0.631^2 + 1) per Mazzocco 2015 Table 2
     etalkpq      ~ 0.5045   # CV 81% -> omega^2 = log(0.81^2 + 1) per Mazzocco 2015 Table 2
-    etalkqpp     ~ 1.2876   # CV 162% -> omega^2 = log(1.62^2 + 1) per Mazzocco 2015 Table 2
+    etalkqpp     ~ log(1 + 1.62^2)  # CV 162% per Mazzocco 2015 Table 2
     etaldqp      ~ 0.5556   # CV 86.2% -> omega^2 = log(0.862^2 + 1) per Mazzocco 2015 Table 2
     etalgamma    ~ 0.3857   # CV 68.6% -> omega^2 = log(0.686^2 + 1) per Mazzocco 2015 Table 2
     etalres      ~ 0.4996   # CV 80.5% -> omega^2 = log(0.805^2 + 1) per Mazzocco 2015 Table 2

@@ -70,7 +70,7 @@ table below collects them in one place for review.
 | `e_wt_vc` (allometric V exponent)  | fixed(1.0)  | Ni 2013 Methods 'Covariate analysis'; Table 2 equation |
 | `e_creat_cl` (slope on CREAT/44 in RF)  | 0.0821 | Ni 2013 Table 2 theta3 |
 | `e_conmed_stanozolol_cl` (F_comedication ratio) | 0.83 | Ni 2013 Table 2 'F comedication' |
-| IIV Ka (58.5% CV)     | omega^2 = log(0.585^2 + 1) = 0.29423 | Ni 2013 Table 2 IIV Ka |
+| IIV Ka (58.5% CV)     | omega^2 = log(0.585^2 + 1) = 0.29433 | Ni 2013 Table 2 IIV Ka |
 | IIV CL/F (12.8% CV)   | omega^2 = log(0.128^2 + 1) = 0.01625 | Ni 2013 Table 2 IIV CL/F |
 | Residual proportional | 22.4% (propSd = 0.224)               | Ni 2013 Table 2 |
 | Residual additive     | 34.1 ng/mL (addSd = 34.1)            | Ni 2013 Table 2 |

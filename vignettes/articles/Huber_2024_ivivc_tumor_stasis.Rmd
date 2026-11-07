@@ -1,0 +1,522 @@
+---
+title: "In-vitro to in-vivo tumour stasis in mouse xenografts (Huber 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{In-vitro to in-vivo tumour stasis in mouse xenografts (Huber 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.2
+)
+```
+
+```{r setup}
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(PKNCA)
+```
+
+# Mayneord-like tumour growth inhibition and IC50 coverage for stasis
+
+Huber and Mistry (2024) link the empirical in-vitro to in-vivo correlation
+(IVIVC) used in oncology drug discovery -- tumour growth inhibition (TGI)
+plotted against the ratio of the unbound average plasma concentration to the
+unbound in-vitro IC50 -- to a semi-mechanistic tumour growth model. The tumour
+radius `R` grows linearly at a xenograft-specific rate `g` (a Mayneord-like
+model of a proliferating rim around a necrotic core) and is reduced at a
+xenograft-specific maximal rate `d` scaled by the compound's in-vitro Hill
+function of the unbound plasma concentration `C(t)`:
+
+```
+dR/dt = g - d * C(t)^hill / (C(t)^hill + IC50^hill)       (Eq. 8, 19, 30)
+V     = 4/3 * pi * R^3                                      (Eq. 1)
+```
+
+The paper derives closed-form stasis conditions for a steady-state
+mono-exponential PK profile, summarised by the *model efficacy factor*
+`MEF(PTR, g/d, hill)` -- the IC50 coverage of the unbound average
+concentration that just halts tumour growth (Eq. 28 and 33) -- and shows that
+for `hill = 1` the coverage depends far more on the xenograft's `g/d` ratio
+than on the compound's peak-trough ratio (PTR).
+
+The only parameter values fitted to data come from Appendix A, where the
+authors re-analysed the published PI3K-pathway inhibitor xenograft studies of
+Diegmiller et al. (2022) and obtained `g` and `d` for two breast-cancer
+cell-line xenografts. Each xenograft is a separate model file:
+
+| Model file | Xenograft | g (mm/day) | d (mm/day) | g/d | Default IC50 (taselisib, umol/L) |
+|---|---|---|---|---|---|
+| `Huber_2024_tgi_hcc1954_mouse` | HCC1954 | 0.09 | 0.16 | 0.56 | 0.106 |
+| `Huber_2024_tgi_kpl4_mouse`    | KPL-4   | 0.20 | 0.30 | 0.67 | 0.0622 |
+
+The models are PD-only: the unbound plasma concentration is supplied as the
+time-varying covariate `CEFFECT`, in the same unit as `IC50`. The IC50 is a
+property of the compound in the cell line; override `lic50` to simulate
+another compound.
+
+## Population
+
+The models describe mouse xenografts of the human breast-cancer cell lines
+HCC1954 and KPL-4. The data are the dose-group summaries tabulated in the
+paper's Appendix A supplementary CSV: 36 HCC1954 dose groups (GDC-0032
+taselisib, GDC-0068 ipatasertib, GDC-0077 inavolisib, GDC-0941 pictilisib;
+0.39-150 mg/kg; 11 Diegmiller study IDs) and 29 KPL-4 dose groups (alpelisib,
+GDC-0032, GDC-0077, GDC-0941; 0.2-150 mg/kg; 9 study IDs). The number of
+animals is not reported. The main-text IVIVC (Figure 1) uses Boehringer
+Ingelheim's internal MAPK-inhibitor xenograft data (86 experiments, 6
+xenografts, 12 compounds), for which no xenograft-level `g` or `d` values are
+published, so it contributes no model file.
+
+## Source trace
+
+```{r source-trace, echo = FALSE}
+tribble(
+  ~Item, ~Value, ~Source,
+  "dR/dt = g - d * f(C); R = R0 + g*t - d * integral f(C) dt", "structure", "Eq. 8 (Methods 2.2); Eq. 19-20 (hill = 1); Eq. 30 (general hill)",
+  "f(C) = C^hill / (C^hill + IC50^hill)", "structure", "Eq. 7",
+  "Spherical tumour V = 4/3 pi R^3", "structure", "Eq. 1; text after Eq. 20",
+  "TGI = 100 * (1 - dV_treated / dV_control)", "output", "Eq. 9",
+  "HCC1954 g = 0.09 mm/day, d = 0.16 mm/day (g/d 0.56)", "0.09 / 0.16", "Appendix A text; supplementary CSV",
+  "KPL-4 g = 0.20 mm/day, d = 0.30 mm/day (g/d 0.67)", "0.20 / 0.30", "Appendix A text; supplementary CSV",
+  "IC50 (GI50) per compound and cell line", "see table below", "Appendix A supplementary CSV, column 'GI50'",
+  "hill = 1 in the Appendix A re-analysis", "1 (fixed)", "Eq. 20; reproduced exactly by the CSV predicted net rates",
+  "Initial radius R0", "3 mm (fixed)", "Supplement 1 (PDF) section 1, 'R0 ~ 3 cm' (see Assumptions)",
+  "Steady-state PK C(t) = cmax exp(-k t), k = ln(PTR)/tau", "stasis analysis", "Eq. 22",
+  "c_average = (cmax - ctrough) / ln(PTR)", "stasis analysis", "Appendix B Eq. 15-16",
+  "ctrough, cmax, c_average at stasis", "known-answer target", "Eq. 26",
+  "MEF(PTR, g/d) for hill = 1", "known-answer target", "Eq. 28; supplementary XLSX sheet 'Sheet2'",
+  "MEF(PTR, g/d, hill)", "known-answer target", "Eq. 33",
+  "Empirical IVIVC fit: PDinflex 0.25, hillexp 0.89, TGImax 125, TGImin 0", "empirical", "Results 3.1; Eq. 10, 13-16"
+) |>
+  knitr::kable()
+```
+
+## Load the models
+
+```{r load-models}
+mod_hcc <- readModelDb("Huber_2024_tgi_hcc1954_mouse")
+mod_kpl <- readModelDb("Huber_2024_tgi_kpl4_mouse")
+mod_hcc
+```
+
+## Appendix A: re-analysis of the Diegmiller 2022 xenografts
+
+Huber and Mistry converted each dose group's initial and final tumour volume
+to a spherical radius and divided the change by the study duration, giving an
+observed net radial growth rate. With the unbound average concentration
+`Cavg` of each dose group held constant, the model predicts a constant net
+rate `g - d * Cavg / (Cavg + IC50)`. The 65 dose groups below are the
+paper's supplementary CSV (Cavg and GI50 in umol/L, rates in mm/day).
+
+```{r appendix-a-data}
+csv <- tribble(
+  ~study, ~drug, ~cell, ~dose, ~cavg, ~gi50, ~obs_net, ~pub_pred_net,
+  8, "GDC-0032", "HCC1954", 0.39, 0.002, 0.106018862, 0.087064564, 0.087037554,
+  8, "GDC-0032", "HCC1954", 0.78, 0.003, 0.106018862, 0.086046762, 0.085597092,
+  9, "GDC-0032", "HCC1954", 1, 0.007, 0.106018862, 0.080271296, 0.08009015,
+  8, "GDC-0032", "HCC1954", 1.56, 0.013, 0.106018862, 0.064493083, 0.072523778,
+  4, "GDC-0032", "HCC1954", 2.5, 0.025, 0.106018862, 0.054214272, 0.059470045,
+  9, "GDC-0032", "HCC1954", 2.5, 0.025, 0.106018862, 0.061618218, 0.059470045,
+  8, "GDC-0032", "HCC1954", 3.125, 0.038, 0.106018862, 0.033762188, 0.047783308,
+  4, "GDC-0032", "HCC1954", 5, 0.05, 0.106018862, -0.019485837, 0.038724149,
+  9, "GDC-0032", "HCC1954", 5, 0.05, 0.106018862, 0.047836322, 0.038724149,
+  8, "GDC-0032", "HCC1954", 6.25, 0.076, 0.106018862, 0.012838492, 0.023193737,
+  4, "GDC-0032", "HCC1954", 10, 0.1, 0.106018862, -0.104608859, 0.012337208,
+  9, "GDC-0032", "HCC1954", 10, 0.1, 0.106018862, -0.002280828, 0.012337208,
+  8, "GDC-0032", "HCC1954", 12.5, 0.15, 0.106018862, -0.016276887, -0.003743093,
+  4, "GDC-0032", "HCC1954", 15, 0.22, 0.106018862, -0.167756007, -0.017969213,
+  5, "GDC-0032", "HCC1954", 15, 0.22, 0.106018862, -0.018625307, -0.017969213,
+  9, "GDC-0032", "HCC1954", 15, 0.22, 0.106018862, -0.025187783, -0.017969213,
+  10, "GDC-0032", "HCC1954", 15, 0.22, 0.106018862, 0.012303528, -0.017969213,
+  26, "GDC-0068", "HCC1954", 3.125, 0.05, 0.585735157, 0.08730521, 0.077416143,
+  26, "GDC-0068", "HCC1954", 6.25, 0.1, 0.585735157, 0.066195117, 0.066667377,
+  26, "GDC-0068", "HCC1954", 12.5, 0.2, 0.585735157, 0.056161153, 0.049273809,
+  26, "GDC-0068", "HCC1954", 25, 0.4, 0.585735157, 0.04547114, 0.025073838,
+  26, "GDC-0068", "HCC1954", 50, 0.8, 0.585735157, 0.033820153, -0.002369743,
+  26, "GDC-0068", "HCC1954", 75, 1.2, 0.585735157, 0.008381178, -0.017518743,
+  26, "GDC-0068", "HCC1954", 100, 1.6, 0.585735157, -0.030140631, -0.027123065,
+  35, "GDC-0077", "HCC1954", 0.5, 0.005, 0.072404382, 0.090618454, 0.079664668,
+  35, "GDC-0077", "HCC1954", 1, 0.01, 0.072404382, 0.071045901, 0.070583557,
+  35, "GDC-0077", "HCC1954", 2.5, 0.02, 0.072404382, 0.056643916, 0.055369608,
+  35, "GDC-0077", "HCC1954", 5, 0.04, 0.072404382, 0.028400607, 0.033062718,
+  34, "GDC-0077", "HCC1954", 25, 0.2, 0.072404382, -0.035120348, -0.027472413,
+  35, "GDC-0077", "HCC1954", 25, 0.2, 0.072404382, -0.058206039, -0.027472413,
+  35, "GDC-0077", "HCC1954", 50, 0.4, 0.072404382, -0.073280802, -0.045477151,
+  37, "GDC-0077", "HCC1954", 50, 0.4, 0.072404382, -0.067511071, -0.045477151,
+  51, "GDC-0941", "HCC1954", 25, 0.0325, 0.252025239, 0.086875109, 0.071723941,
+  51, "GDC-0941", "HCC1954", 100, 0.13, 0.252025239, 0.086873334, 0.035553336,
+  42, "GDC-0941", "HCC1954", 150, 0.2, 0.252025239, 0.019658147, 0.019207493,
+  51, "GDC-0941", "HCC1954", 150, 0.2, 0.252025239, 0.083764012, 0.019207493,
+  1, "Alpelisib", "KPL-4", 3.125, 0.01, 0.921081556, 0.213093066, 0.196777941,
+  1, "Alpelisib", "KPL-4", 6.25, 0.02, 0.921081556, 0.187873318, 0.193624357,
+  1, "Alpelisib", "KPL-4", 12.5, 0.04, 0.921081556, 0.14305349, 0.187514067,
+  1, "Alpelisib", "KPL-4", 25, 0.08, 0.921081556, 0.111245042, 0.176025929,
+  2, "Alpelisib", "KPL-4", 40, 0.13, 0.921081556, -0.07610442, 0.162895363,
+  1, "Alpelisib", "KPL-4", 50, 0.16, 0.921081556, 0.03530575, 0.15560002,
+  11, "GDC-0032", "KPL-4", 0.2, 0.001, 0.062188168, 0.152631881, 0.195252276,
+  11, "GDC-0032", "KPL-4", 0.39, 0.002, 0.062188168, 0.135934208, 0.190652483,
+  11, "GDC-0032", "KPL-4", 0.78, 0.003, 0.062188168, 0.138093813, 0.186193814,
+  11, "GDC-0032", "KPL-4", 1.56, 0.013, 0.062188168, 0.122923508, 0.148130137,
+  11, "GDC-0032", "KPL-4", 6.25, 0.076, 0.062188168, 0.037203233, 0.035007582,
+  12, "GDC-0032", "KPL-4", 12.5, 0.15, 0.062188168, -0.014892503, -0.012075915,
+  6, "GDC-0032", "KPL-4", 20, 0.25, 0.062188168, 0.030014336, -0.040239726,
+  11, "GDC-0032", "KPL-4", 25, 0.3, 0.062188168, -0.129022314, -0.048489619,
+  36, "GDC-0077", "KPL-4", 1, 0.01, 0.037580179, 0.150935314, 0.136948535,
+  36, "GDC-0077", "KPL-4", 2.5, 0.02, 0.037580179, 0.081924533, 0.095797476,
+  36, "GDC-0077", "KPL-4", 5, 0.04, 0.037580179, 0.042883773, 0.045321316,
+  36, "GDC-0077", "KPL-4", 15, 0.12, 0.037580179, -0.037134591, -0.028455128,
+  33, "GDC-0077", "KPL-4", 25, 0.2, 0.037580179, -0.062313995, -0.05254632,
+  36, "GDC-0077", "KPL-4", 25, 0.2, 0.037580179, -0.065347249, -0.05254632,
+  36, "GDC-0077", "KPL-4", 50, 0.4, 0.037580179, -0.18937624, -0.074235456,
+  52, "GDC-0941", "KPL-4", 12.5, 0.16, 0.216294289, 0.20392006, 0.072440264,
+  52, "GDC-0941", "KPL-4", 25, 0.0325, 0.216294289, 0.163717027, 0.160810997,
+  43, "GDC-0941", "KPL-4", 50, 0.065, 0.216294289, 0.015640551, 0.130677583,
+  52, "GDC-0941", "KPL-4", 50, 0.065, 0.216294289, 0.111347037, 0.130677583,
+  52, "GDC-0941", "KPL-4", 75, 0.098, 0.216294289, 0.039940328, 0.106457097,
+  52, "GDC-0941", "KPL-4", 100, 0.13, 0.216294289, 0.013851113, 0.087379026,
+  43, "GDC-0941", "KPL-4", 150, 0.2, 0.216294289, 0.054610001, 0.055871191,
+  52, "GDC-0941", "KPL-4", 150, 0.2, 0.216294289, -0.147560574, 0.055871191
+) |>
+  mutate(id = row_number())
+
+csv |>
+  distinct(cell, drug, gi50) |>
+  rename("Cell line" = cell, "Compound" = drug, "IC50 (GI50, umol/L)" = gi50) |>
+  knitr::kable(digits = 4, caption = "In-vitro IC50 per compound and cell line (Appendix A supplementary CSV).")
+```
+
+Each dose group is simulated for 21 days with `CEFFECT` held at its `Cavg`
+and `lic50` set to the compound's GI50; the model's net radial rate is the
+change in radius divided by the duration.
+
+```{r appendix-a-sim}
+models <- list(HCC1954 = mod_hcc, "KPL-4" = mod_kpl)
+t_end <- 21
+
+simulate_group <- function(cell_line, compound) {
+  rows <- filter(csv, cell == cell_line, drug == compound)
+  ev <- rows |>
+    select(id, cavg) |>
+    crossing(time = c(0, t_end)) |>
+    mutate(evid = 0L, cmt = "tumor_size", CEFFECT = cavg) |>
+    select(id, time, evid, cmt, CEFFECT) |>
+    arrange(id, time)
+  rxSolve(
+    models[[cell_line]], ev,
+    params = c(lic50 = log(rows$gi50[1])),
+    returnType = "data.frame"
+  ) |>
+    group_by(id) |>
+    summarise(sim_net = (last(tumor_size) - first(tumor_size)) / t_end, .groups = "drop")
+}
+
+net <- csv |>
+  distinct(cell, drug) |>
+  rowwise() |>
+  reframe(simulate_group(cell, drug)) |>
+  select(id, sim_net) |>
+  right_join(csv, by = "id")
+
+# Known-answer check: the model reproduces the authors' predicted net rate of
+# every dose group (same equation, deterministic; differences are rounding of
+# the CSV to nine significant figures).
+stopifnot(max(abs(net$sim_net - net$pub_pred_net)) < 1e-6)
+max(abs(net$sim_net - net$pub_pred_net))
+```
+
+```{r fig8, fig.cap = "Replicates Figure 8 of Huber 2024: model-predicted versus observed net radial growth rates for the Diegmiller 2022 xenograft studies. Line of identity shown."}
+ggplot(net, aes(obs_net, sim_net, shape = drug, colour = factor(dose))) +
+  geom_abline(slope = 1, intercept = 0) +
+  geom_point(size = 2) +
+  facet_wrap(~cell) +
+  labs(
+    x = "Observed net rate (mm/day)", y = "Predicted net rate (mm/day)",
+    shape = "Compound", colour = "Dose (mg/kg)"
+  ) +
+  theme_bw()
+```
+
+The fit is markedly better in HCC1954 than in KPL-4, where alpelisib and
+GDC-0941 dose groups scatter widely -- as in the published figure.
+
+```{r fit-summary}
+net |>
+  group_by(cell) |>
+  summarise(
+    n = n(),
+    `Median |obs - pred| (mm/day)` = median(abs(obs_net - sim_net)),
+    `Correlation obs vs pred` = cor(obs_net, sim_net)
+  ) |>
+  rename("Cell line" = cell) |>
+  knitr::kable(digits = 3)
+```
+
+## Tumour volume time course and TGI
+
+A 21-day simulation of taselisib in HCC1954 at three of the published dose
+groups' average unbound concentrations, with a vehicle control. TGI follows
+Eq. 9 from the volume change over the treatment period.
+
+```{r tumour-course}
+tas <- csv |>
+  filter(cell == "HCC1954", drug == "GDC-0032", study == 8, dose %in% c(1.56, 6.25, 12.5)) |>
+  select(dose, cavg) |>
+  bind_rows(tibble(dose = 0, cavg = 0)) |>
+  mutate(id = row_number())
+
+ev_tc <- tas |>
+  crossing(time = seq(0, t_end, by = 0.5)) |>
+  mutate(evid = 0L, cmt = "tumor_size", CEFFECT = cavg) |>
+  select(id, time, evid, cmt, CEFFECT)
+
+tc <- rxSolve(mod_hcc, ev_tc, returnType = "data.frame") |>
+  left_join(select(tas, id, dose), by = "id")
+
+ggplot(tc, aes(time, tumor_vol, colour = factor(dose))) +
+  geom_line(linewidth = 1) +
+  labs(x = "Time (day)", y = "Tumour volume (mm^3)", colour = "Taselisib (mg/kg)") +
+  theme_bw()
+
+dv <- tc |>
+  group_by(dose) |>
+  summarise(dV = last(tumor_vol) - first(tumor_vol), .groups = "drop")
+tgi <- dv |>
+  mutate(TGI = 100 * (1 - dV / dV[dose == 0])) |>
+  filter(dose > 0)
+knitr::kable(tgi |> rename("Dose (mg/kg)" = dose, "Volume change (mm^3)" = dV, "TGI (%)" = TGI), digits = c(2, 1, 1))
+
+# TGI rises with dose and exceeds 100% (regression) once d * f(Cavg) > g.
+stopifnot(all(diff(tgi$TGI) > 0), tail(tgi$TGI, 1) > 100)
+```
+
+## Stasis analysis with a steady-state PK profile
+
+Sections 3.3-3.5 assume a steady-state, mono-exponential unbound profile
+falling from `cmax` to `ctrough` over each dosing interval `tau` (Eq. 22).
+Tumour stasis over the interval requires the IC50 coverage of the average
+concentration to equal the model efficacy factor (Eq. 28 and 33):
+
+```
+MEF(PTR, g/d, hill) = (PTR - 1)/ln(PTR) * [(PTR^(hill*g/d) - 1) / (PTR^hill - PTR^(hill*g/d))]^(1/hill)
+```
+
+```{r mef-functions}
+mef <- function(ptr, gd, hill = 1) {
+  (ptr - 1) / log(ptr) * ((ptr^(hill * gd) - 1) / (ptr^hill - ptr^(hill * gd)))^(1 / hill)
+}
+ctrough_cov <- function(ptr, gd) (ptr^gd - 1) / (ptr - ptr^gd) # Eq. 26
+cmax_cov <- function(ptr, gd) ptr * ctrough_cov(ptr, gd) # Eq. 26
+```
+
+The closed form is first checked against the authors' own spreadsheet
+(supplementary XLSX, sheet 'Sheet2', which tabulates MEF for `hill = 1`):
+
+```{r mef-xlsx}
+xlsx <- tribble(
+  ~gd, ~ptr, ~mef_pub,
+  0.3, 3, 0.4415322386239014, 0.3, 30, 0.55563010705857541, 0.3, 100, 0.66742900838381913, 0.3, 1000, 1.0121779420104093,
+  0.5, 3, 1.0510537250399223, 0.5, 30, 1.5567021831085632, 0.5, 100, 2.149757685421096, 0.5, 1000, 4.5732879277299885,
+  0.7, 3, 2.5020006157722401, 0.7, 30, 4.3613937691815803, 0.7, 100, 6.9242691701667871, 0.7, 1000, 20.663325687950774
+) |>
+  mutate(mef_eq28 = mef(ptr, gd))
+stopifnot(max(abs(xlsx$mef_eq28 / xlsx$mef_pub - 1)) < 1e-10)
+knitr::kable(xlsx |> rename("g/d" = gd, "PTR" = ptr, "MEF (XLSX)" = mef_pub, "MEF (Eq. 28)" = mef_eq28), digits = 4)
+```
+
+The ODE is then driven by the steady-state profile at exactly the stasis
+average concentration `Cavg = MEF * IC50`. If Eq. 28 / 33 are the correct
+integrals of the model, the radius returns to its starting value at the end of
+every dosing interval. The profile is supplied on a dense grid with linear
+interpolation; `g/d` is varied through `lemax` (`d = g / (g/d)`).
+
+```{r stasis-ode}
+tau <- 1 # day
+grid <- seq(0, 2 * tau, by = tau / 2000)
+theta_hcc <- rxode2::rxode2(mod_hcc)$theta
+g_hcc <- exp(theta_hcc[["lp"]])
+ic50_hcc <- exp(theta_hcc[["lic50"]])
+
+stasis_cases <- crossing(gd = c(0.3, 0.4, 0.5, 0.6, 0.7), ptr = c(3, 10, 30, 100, 300, 1000), hill = c(1, 2)) |>
+  mutate(
+    cavg = mef(ptr, gd, hill) * ic50_hcc,
+    # c_average = (cmax - ctrough) / ln(PTR) with ctrough = cmax / PTR
+    cmax = cavg * log(ptr) / (1 - 1 / ptr)
+  )
+
+solve_stasis <- function(gd, hill, cases) {
+  ev <- cases |>
+    mutate(id = row_number()) |>
+    crossing(time = grid) |>
+    mutate(
+      evid = 0L, cmt = "tumor_size",
+      CEFFECT = cmax * exp(-log(ptr) / tau * (time %% tau))
+    ) |>
+    select(id, time, evid, cmt, CEFFECT)
+  rxSolve(
+    mod_hcc, ev,
+    params = c(lemax = log(g_hcc / gd), hill = hill),
+    covsInterpolation = "linear", atol = 1e-10, rtol = 1e-10,
+    returnType = "data.frame"
+  ) |>
+    group_by(id) |>
+    summarise(dR = last(tumor_size) - first(tumor_size), .groups = "drop") |>
+    mutate(ptr = cases$ptr[id])
+}
+
+stasis <- stasis_cases |>
+  group_by(gd, hill) |>
+  group_modify(~ solve_stasis(.y$gd, .y$hill, .x)) |>
+  ungroup() |>
+  # Radius change over two intervals relative to untreated growth g * 2 * tau
+  mutate(rel_dR = dR / (g_hcc * 2 * tau))
+
+# Residual is the linear interpolation across the sawtooth's dose-time jump,
+# well under 1% of untreated growth.
+stopifnot(max(abs(stasis$rel_dR)) < 0.01)
+stasis |>
+  group_by(hill) |>
+  summarise(`max |dR| / (g * T)` = max(abs(rel_dR))) |>
+  knitr::kable(digits = 5)
+```
+
+Driving the model at half and at twice the stasis concentration confirms the
+condition is a threshold: the tumour grows below it and regresses above it.
+
+```{r stasis-threshold}
+thr <- crossing(gd = 0.5, ptr = 100, hill = 1, scale = c(0.5, 1, 2)) |>
+  mutate(cavg = scale * mef(ptr, gd, hill) * ic50_hcc, cmax = cavg * log(ptr) / (1 - 1 / ptr))
+thr_res <- solve_stasis(0.5, 1, thr) |> mutate(scale = thr$scale)
+stopifnot(thr_res$dR[1] > 0.01, thr_res$dR[3] < -0.01)
+knitr::kable(thr_res |> select("Multiple of stasis Cavg" = scale, "Radius change over 2 days (mm)" = dR), digits = 4)
+```
+
+### Figure 3: coverage required for stasis by cmax, c_average and ctrough
+
+```{r fig3, fig.cap = "Replicates Figure 3 of Huber 2024 (hill = 1). Lines: Eq. 26; points: steady-state ODE solutions at the stasis c_average. Drawn at g/d = 0.5, the ratio that reproduces the published curves (see Assumptions)."}
+fig3 <- tibble(ptr = seq(1.05, 100, length.out = 300)) |>
+  mutate(
+    c_max = cmax_cov(ptr, 0.5),
+    c_average = mef(ptr, 0.5),
+    c_trough = ctrough_cov(ptr, 0.5)
+  ) |>
+  pivot_longer(-ptr, names_to = "metric", values_to = "coverage")
+fig3_ode <- stasis |>
+  filter(gd == 0.5, hill == 1, ptr <= 100) |>
+  mutate(coverage = mef(ptr, gd))
+ggplot(fig3, aes(ptr, coverage, linetype = metric)) +
+  geom_line() +
+  geom_point(data = fig3_ode, aes(ptr, coverage), inherit.aes = FALSE) +
+  labs(x = "Peak-trough ratio", y = "In-vitro IC50 coverage for stasis", linetype = NULL) +
+  theme_bw()
+```
+
+### Figure 4: MEF versus the xenograft g/d ratio
+
+```{r fig4, fig.cap = "Replicates Figure 4 of Huber 2024 (hill = 1). Dashed line: MEF = 2."}
+fig4 <- crossing(gd = seq(0.01, 0.9, by = 0.01), ptr = c(3, 10, 30, 50, 100, 300, 500)) |>
+  mutate(MEF = mef(ptr, gd))
+ggplot(fig4, aes(gd, MEF, colour = factor(ptr))) +
+  geom_line() +
+  geom_hline(yintercept = 2, linetype = "dashed") +
+  scale_y_log10() +
+  labs(x = "growth / decay (g/d) ratio of xenograft", colour = "PTR") +
+  theme_bw()
+```
+
+The paper states that for `g/d` between 0.3 and 0.7 and PTR between 40 and
+150, the coverage ranges from about half to about ten-fold IC50:
+
+```{r fig4-range}
+range(mef(c(40, 150), c(0.3, 0.7)))
+```
+
+### Figure 5: MEF versus PTR for Hill coefficients above 1
+
+```{r fig5, fig.cap = "Replicates Figure 5 of Huber 2024 (Eq. 33, g/d = 0.5). Points: steady-state ODE solutions for hill = 2 at g/d = 0.5."}
+fig5 <- crossing(ptr = seq(1.05, 100, length.out = 300), hill = seq(1, 1.9, by = 0.1)) |>
+  mutate(MEF = mef(ptr, 0.5, hill))
+fig5_ode <- stasis |>
+  filter(gd == 0.5, hill == 2, ptr <= 100) |>
+  mutate(MEF = mef(ptr, gd, hill))
+ggplot(fig5, aes(ptr, MEF, group = hill, colour = hill)) +
+  geom_line() +
+  geom_point(data = fig5_ode, aes(ptr, MEF), inherit.aes = FALSE) +
+  labs(x = "Peak-trough ratio", y = "MEF (g/d, PTR, hill)", colour = "Hill") +
+  theme_bw()
+```
+
+## Empirical IVIVC and the stasis dose
+
+The empirical logistic fit of the internal data set (Eq. 10; PDinflex = 0.25,
+hillexp = 0.89, TGImax = 125, TGImin = 0) gives the coverage of the unbound
+average concentration needed for TGI = 100% (Eq. 13 and 16):
+
+```{r ivivc}
+pd_inflex <- 0.25
+hill_exp <- 0.89
+tgi_max <- 125
+tgi_min <- 0
+coverage_stasis <- pd_inflex * ((tgi_max - tgi_min) / 100 - 1)^(-1 / hill_exp)
+c(coverage_cavg = coverage_stasis, coverage_auc_tau24h = 24 * coverage_stasis)
+```
+
+The paper prints 1.24 and 29.8 (Eq. 15-16); the rounded fit parameters give
+1.19 and 28.5, a 4% difference consistent with rounding of `hillexp` (a
+value of 0.86 reproduces 1.25).
+
+## PKNCA
+
+PKNCA is not applicable: the models carry no pharmacokinetics (the unbound
+concentration is an input covariate) and the output is a tumour radius.
+Validation instead rests on the known-answer checks above -- the Appendix A
+net rates, the closed-form stasis conditions and the authors' MEF spreadsheet.
+
+# Assumptions and deviations
+
+- **Concentration driver.** The unbound plasma concentration enters as
+  `CEFFECT`. The paper assumes the free-plasma-drug hypothesis with no delay
+  between unbound plasma and the tumour, so the unbound plasma concentration
+  is the effect-site concentration.
+- **Units.** The Appendix A supplementary CSV does not label the
+  concentration unit of `Cavg` and `GI50`. The models declare umol/L, the
+  unit in which Diegmiller et al. (2022) report these in-vitro potencies
+  (median taselisib IC50 0.089 uM across PIK3CA-mutant lines, against 0.106
+  for HCC1954 here). Only the ratio `CEFFECT / IC50` enters the model, so any
+  unit works as long as both use it.
+- **Initial radius.** No initial radius is reported for the Diegmiller
+  xenografts. Supplement 1 (section 1) states 'R0 ~ 3 cm' for the authors'
+  own studies alongside g ~ 0.01 mm/h; a 3 cm radius would be a 113 cm^3
+  tumour, so the maintainers read it as 3 mm (113 mm^3, a typical xenograft
+  starting volume) and fixed `lrbase` at log(3). R0 does not affect the
+  radial growth or decay rates; override it for a given experiment.
+- **Hill coefficient.** Fixed at 1, as in the Appendix A re-analysis (the
+  CSV's predicted net rates are reproduced exactly with hill = 1). The
+  general form (Eq. 7, 30) is retained so `hill` can be overridden.
+- **Constant Cavg in Appendix A.** The authors drove the re-analysis with
+  each dose group's average concentration rather than a time-varying
+  profile. Because the Hill function is concave, a constant concentration
+  has more effect than a fluctuating profile with the same average (the
+  stasis analysis above quantifies this through the MEF), so `d` estimated
+  this way is specific to the constant-input approximation. The replicate
+  uses the constant input because the published predictions do.
+- **Figure 3 and 5 g/d.** The Figure 3 caption and Section 3.4 give
+  g/d = 0.4, but the published curves (c_average coverage of about 2.15 and
+  c_max coverage of 10 at PTR = 100) are reproduced only at g/d = 0.5, which
+  is what the replicates use.
+- **No variability.** The paper reports no between-animal variability or
+  residual error, so the models are deterministic.
+- **Internal MAPK-inhibitor data.** The Boehringer Ingelheim IVIVC data set
+  (Figure 1, 6) reports only a typical g/d of about 0.4 (range 0.3-0.7) and
+  no xenograft-level parameter values, so it is not encoded as a model; its
+  empirical logistic fit is evaluated above.
+- **Errata.** No correction notice for Huber and Mistry (2024) was found on
+  Europe PMC as of 2026-10-29.

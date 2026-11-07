@@ -173,7 +173,7 @@ PillaReddy_2013_ziprasidone_panss_subscales <- function() {
 
     etaec50_pos ~ fixed(0.2231)  # Part II Table 2 footnote: IIV EC50 positive and general 50% CV
     etaec50_gen ~ fixed(0.2231)
-    etaec50_neg ~ 1.5449         # Part II Table 2 ziprasidone: IIV EC50 negative = 192% CV; omega^2 = log(1 + 1.92^2) = 1.5449
+    etaec50_neg ~ log(1 + 1.92^2)  # Part II Table 2 ziprasidone: IIV EC50 negative = 192% CV
 
     # =============== Residual error on PANSS subscales =======================
     # Per-drug RUV from Part II Table 2 (joint PKPD model); Part II Table 1

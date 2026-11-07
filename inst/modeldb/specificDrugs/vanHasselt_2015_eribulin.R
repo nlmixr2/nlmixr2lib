@@ -82,15 +82,15 @@ vanHasselt_2015_eribulin <- function() {
     # Inter-individual variability -- van Hasselt 2015 Table 2
     # 'Interindividual variability variances'. Paper reports CV%; converted
     # to log-normal variances via omega^2 = log(1 + CV^2).
-    #   xKD0  = 127.3 % -> log(1 + 1.273^2)  = 0.96334
-    #   xk    =  88.3 % -> log(1 + 0.883^2)  = 0.57665
-    #   xKG   =  53.7 % -> log(1 + 0.537^2)  = 0.25342
-    #   xPSA0 = 130.4 % -> log(1 + 1.304^2)  = 0.99340
+    #   xKD0  = 127.3 % -> log(1 + 1.273^2)  = 0.96338
+    #   xk    =  88.3 % -> log(1 + 0.883^2)  = 0.57644
+    #   xKG   =  53.7 % -> log(1 + 0.537^2)  = 0.25338
+    #   xPSA0 = 130.4 % -> log(1 + 1.304^2)  = 0.99341
     # Off-diagonal covariances from Table 2 footnote correlations:
-    #   xk *xKD0  =  0.802  -> cov = 0.802 * sqrt(0.96334 * 0.57665) = 0.59776
-    #   xKG*xKD0  = -0.293  -> cov = -0.14474
-    #   xKG*xk    = -0.111  -> cov = -0.04243
-    #   xPSA0*xk  = -0.094  -> cov = -0.07116
+    #   xk *xKD0  =  0.802  -> cov = 0.802 * sqrt(0.96338 * 0.57644) = 0.59765
+    #   xKG*xKD0  = -0.293  -> cov = -0.14476
+    #   xKG*xk    = -0.111  -> cov = -0.04242
+    #   xPSA0*xk  = -0.094  -> cov = -0.07113
     #   xPSA0*xKG = -0.032  -> cov = -0.01605
     # The xPSA0 x xKD0 covariance is fixed at 0 per the paper Results
     # ('Statistical model' paragraph): 'Covariances between IIV random
@@ -98,10 +98,10 @@ vanHasselt_2015_eribulin <- function() {
     # correlation between the drug effect parameter KD and PSA0, which
     # approached zero in the final obtained estimate.'
     etalkd0 + etalkres + etalkg + etalpsa0 ~ c(
-      0.96334,
-      0.59776,    0.57665,
-      -0.14474,  -0.04243,   0.25342,
-      fixed(0),  -0.07116,  -0.01605,   0.99340
+      log(1 + 1.273^2),
+      0.802 * sqrt(log(1 + 1.273^2) * log(1 + 0.883^2)),    log(1 + 0.883^2),
+      -0.293 * sqrt(log(1 + 0.537^2) * log(1 + 1.273^2)),  -0.111 * sqrt(log(1 + 0.537^2) * log(1 + 0.883^2)),   log(1 + 0.537^2),
+      fixed(0),  -0.094 * sqrt(log(1 + 1.304^2) * log(1 + 0.883^2)),  -0.032 * sqrt(log(1 + 1.304^2) * log(1 + 0.537^2)),   log(1 + 1.304^2)
     )
 
     # Residual unexplained variability -- van Hasselt 2015 Table 2

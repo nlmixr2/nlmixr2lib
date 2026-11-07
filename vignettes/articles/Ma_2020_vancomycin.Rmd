@@ -57,7 +57,7 @@ The same information is stored in the model's `population` metadata.
 | `e_wt_vc` | 0.934 | Table 2, theta_3 (WT on V) |
 | CL equation | `2.08 * (WT/59.95)^1.07 * (GFR/36.67)^0.698` | Results, "Assessment of Covariates and Evaluation of Models" |
 | V equation | `63.2 * (WT/59.95)^0.934` | Results, same section |
-| `etalcl` | log(0.215^2 + 1) = 0.04517 | Table 2, omega_1 = 21.5% (CV reading; see below) |
+| `etalcl` | log(0.215^2 + 1) = 0.04519 | Table 2, omega_1 = 21.5% (CV reading; see below) |
 | IIV on V | none | Table 2 prints no omega for V |
 | `propSd` | 0.242 | Table 2, sigma_1 = 24.2%; Results: proportional model selected |
 | Validation target | 15 weight/GFR daily-dose regimens, each >90% AUC0-24 >= 400 | Table 3; Methods, "Model Application" |

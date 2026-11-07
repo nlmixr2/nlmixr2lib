@@ -138,14 +138,14 @@ Andrews_2017_tacrolimus <- function() {
     # documented (no correlation matrix or off-diagonal entries reported in
     # the source). Variances on the internal log-scale are computed as
     # omega^2 = log(1 + CV^2):
-    #   ka   CV 188% -> log(1 + 1.88^2) = log(4.5344) = 1.51178
+    #   ka   CV 188% -> log(1 + 1.88^2) = log(4.5344) = 1.51169
     #   CL/F CV  25% -> log(1 + 0.25^2) = log(1.0625) = 0.06062
-    #   V1/F CV  69% -> log(1 + 0.69^2) = log(1.4761) = 0.38944
-    #   V2/F CV  62% -> log(1 + 0.62^2) = log(1.3844) = 0.32509
-    etalka ~ 1.51178   # Andrews 2017 Table 2 IIV ka 188% CV
+    #   V1/F CV  69% -> log(1 + 0.69^2) = log(1.4761) = 0.38940
+    #   V2/F CV  62% -> log(1 + 0.62^2) = log(1.3844) = 0.32527
+    etalka ~ log(1 + 1.88^2)  # Andrews 2017 Table 2 IIV ka 188% CV
     etalcl ~ 0.06062   # Andrews 2017 Table 2 IIV CL/F 25% CV
-    etalvc ~ 0.38944   # Andrews 2017 Table 2 IIV V1/F 69% CV
-    etalvp ~ 0.32509   # Andrews 2017 Table 2 IIV V2/F 62% CV
+    etalvc ~ log(1 + 0.69^2)  # Andrews 2017 Table 2 IIV V1/F 69% CV
+    etalvp ~ log(1 + 0.62^2)  # Andrews 2017 Table 2 IIV V2/F 62% CV
 
     # Combined additive + proportional residual error with separate magnitudes
     # for the immunoassay (9% of model-building samples; LLOQ 1.5 ng/mL) and

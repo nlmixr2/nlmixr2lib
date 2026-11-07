@@ -194,15 +194,15 @@ vanHasselt_2013_eribulin <- function() {
     # were not computationally feasible per the paper ("Estimation of inter-
     # occasion variability (IOV) and off-diagonal covariances in IIV were not
     # computationally feasible"), so all IIVs are diagonal.
-    #   ANC0:  CV% = 37.3 -> omega^2 = log(1 + 0.373^2) = 0.13025
+    #   ANC0:  CV% = 37.3 -> omega^2 = log(1 + 0.373^2) = 0.13026
     #   MTT:   CV% = 13.9 -> omega^2 = log(1 + 0.139^2) = 0.01914
     #   Gamma: CV% = 12.2 -> omega^2 = log(1 + 0.122^2) = 0.01477
-    #   SLOPE: CV% = 54.0 -> omega^2 = log(1 + 0.540^2) = 0.25610
+    #   SLOPE: CV% = 54.0 -> omega^2 = log(1 + 0.540^2) = 0.25588
     # -------------------------------------------------------------------------
-    etalcirc0 ~ 0.13025  # van Hasselt 2013 Table 3 final: ANC0 CV% = 37.3
+    etalcirc0 ~ log(1 + 0.373^2)  # van Hasselt 2013 Table 3 final: ANC0 CV% = 37.3
     etalmtt   ~ 0.01914  # van Hasselt 2013 Table 3 final: MTT CV% = 13.9
     etalgamma ~ 0.01477  # van Hasselt 2013 Table 3 final: gamma CV% = 12.2
-    etalslope ~ 0.25610  # van Hasselt 2013 Table 3 final: SLOPE CV% = 54.0
+    etalslope ~ log(1 + 0.540^2)  # van Hasselt 2013 Table 3 final: SLOPE CV% = 54.0
 
     # -------------------------------------------------------------------------
     # Residual unexplained variability -- van Hasselt 2013 Methods "Statistical

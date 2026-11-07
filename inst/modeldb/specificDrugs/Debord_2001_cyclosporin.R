@@ -113,9 +113,9 @@ Debord_2001_cyclosporin <- function() {
     # cross-patient CVs of the 21 per-subject fits (descriptive statistics,
     # NOT formal mixed-effects omegas). Conversion omega^2 = log(1 + CV^2).
     # See implementation-notes block above for the CV-to-parameter mapping.
-    etalcl  ~ 0.353  # Debord 2001 page 380 (intravenous parameters A, B, alpha CVs 55-75%); CV ~ 65%; log(1 + 0.65^2) = 0.353
-    etalvc  ~ 0.353  # Debord 2001 page 380 (intravenous parameters A, B, alpha CVs 55-75%); CV ~ 65%; log(1 + 0.65^2) = 0.353
-    etalq   ~ 0.353  # Debord 2001 page 380 (intravenous parameters A, B, alpha CVs 55-75%); CV ~ 65%; log(1 + 0.65^2) = 0.353
+    etalcl  ~ log(1 + 0.65^2)  # Debord 2001 page 380 (intravenous parameters A, B, alpha CVs 55-75%); CV ~ 65%
+    etalvc  ~ log(1 + 0.65^2)  # Debord 2001 page 380 (intravenous parameters A, B, alpha CVs 55-75%); CV ~ 65%
+    etalq   ~ log(1 + 0.65^2)  # Debord 2001 page 380 (intravenous parameters A, B, alpha CVs 55-75%); CV ~ 65%
     etalvp  ~ 0.148  # Debord 2001 page 380 (a, b, beta CVs 35-46%); CV ~ 40% mapped onto Vp from beta; log(1 + 0.40^2) = 0.148
     etalntr ~ 0.148  # Debord 2001 page 380 (a CV in 35-46% range); CV ~ 40%; log(1 + 0.40^2) = 0.148
     etalmtt ~ 0.148  # Debord 2001 page 380 (b CV in 35-46% range; mtt = a/b so propagates similarly); CV ~ 40%; log(1 + 0.40^2) = 0.148

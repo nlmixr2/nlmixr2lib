@@ -83,14 +83,14 @@ Charles_2007_tafenoquine <- function() {
     # IIV. omega^2 = log(CV^2 + 1):
     #   18% CV -> log(1 + 0.18^2) = 0.03189
     #   22% CV -> log(1 + 0.22^2) = 0.04727
-    #   76% CV -> log(1 + 0.76^2) = 0.45603
+    #   76% CV -> log(1 + 0.76^2) = 0.45590
     # The paper estimated a covariance between eta_CL/F and eta_V/F (Results
     # paragraph 4: OFV dropped 22,265 -> 22,248 vs the diagonal-only model)
     # but did not report the numeric value, so independent diagonals are used
     # here; see vignette Assumptions and deviations.
     etalcl ~ 0.03189   # Charles 2007 Table 2 (IIV CL/F = 18% CV)
     etalvc ~ 0.04727   # Charles 2007 Table 2 (IIV V/F = 22% CV)
-    etalka ~ 0.45603   # Charles 2007 Table 2 (IIV Ka = 76% CV)
+    etalka ~ log(1 + 0.76^2)  # Charles 2007 Table 2 (IIV Ka = 76% CV)
 
     # Residual error: combined proportional + additive (Charles 2007 Methods
     # "Population pharmacokinetic modeling" paragraph 4; values in Table 2).

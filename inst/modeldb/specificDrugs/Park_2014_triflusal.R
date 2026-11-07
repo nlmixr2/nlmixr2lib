@@ -150,16 +150,16 @@ Park_2014_triflusal <- function() {
     # -----------------------------------------------------------------
     # BSV (between-subject variability) -- Park 2014 Table 2 % CV.
     # Log-normal etas, omega^2 = log(CV^2 + 1) with CV as a fraction:
-    #   CL/F  CV 14.9% -> omega^2 = log(1 + 0.149^2) = 0.021960
-    #   V/F   CV  9.5% -> omega^2 = log(1 + 0.095^2) = 0.008984
-    #   k_f   CV 88.0% -> omega^2 = log(1 + 0.880^2) = 0.573537
-    #   EC50  CV 21.8% -> omega^2 = log(1 + 0.218^2) = 0.046430
+    #   CL/F  CV 14.9% -> omega^2 = log(1 + 0.149^2) = 0.021958
+    #   V/F   CV  9.5% -> omega^2 = log(1 + 0.095^2) = 0.008985
+    #   k_f   CV 88.0% -> omega^2 = log(1 + 0.880^2) = 0.573462
+    #   EC50  CV 21.8% -> omega^2 = log(1 + 0.218^2) = 0.046429
     #   gamma 0 (Fixed -- no IIV on gamma; not declared below)
     # -----------------------------------------------------------------
-    etalcl   ~ 0.021960 # Park 2014 Table 2 omega_1^2 BSV CL/F 14.9% CV (RSE 21.0%; shrinkage 0.6%)
-    etalvc   ~ 0.008984 # Park 2014 Table 2 omega_2^2 BSV V/F  9.5% CV (RSE 57.8%; shrinkage 40.2%)
-    etalka   ~ 0.573537 # Park 2014 Table 2 omega_3^2 BSV k_f 88.0% CV (RSE 26.5%; shrinkage 10.5%)
-    etalec50 ~ 0.046430 # Park 2014 Table 2 omega_4^2 BSV EC50 21.8% CV (RSE 28.4%; shrinkage 8.3%)
+    etalcl   ~ log(1 + 0.149^2)  # Park 2014 Table 2 omega_1^2 BSV CL/F 14.9% CV (RSE 21.0%; shrinkage 0.6%)
+    etalvc   ~ log(1 + 0.095^2)  # Park 2014 Table 2 omega_2^2 BSV V/F  9.5% CV (RSE 57.8%; shrinkage 40.2%)
+    etalka   ~ log(1 + 0.880^2)  # Park 2014 Table 2 omega_3^2 BSV k_f 88.0% CV (RSE 26.5%; shrinkage 10.5%)
+    etalec50 ~ log(1 + 0.218^2)  # Park 2014 Table 2 omega_4^2 BSV EC50 21.8% CV (RSE 28.4%; shrinkage 8.3%)
 
     # -----------------------------------------------------------------
     # Residual error -- Park 2014 Table 2 sigma^2 = 0.098 (proportional
