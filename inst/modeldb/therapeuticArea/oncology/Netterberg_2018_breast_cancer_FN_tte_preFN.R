@@ -90,13 +90,13 @@ Netterberg_2018_breast_cancer_FN_tte_preFN <- function() {
     beta3  <- -1.07;         label("Hazard log-linear coefficient on (NEUT - 3.53) (L per 10^9 cells)")  # Netterberg 2018 Table 2 prior-to-FN beta3 = -1.07 (RSE 33%)
 
     # ----- Biomarker IIV / IOV (mirror the biomarker model) -----
-    etalbl_il6     ~ 0.3858  # IIV(IL-60) = 68.0% CV
-    etalbl_crp     ~ 0.4862  # IIV(CRP0) = 80.5% CV
+    etalbl_il6     ~ log(1 + 0.68^2)  # IIV(IL-60) = 68.0% CV
+    etalbl_crp     ~ log(1 + 0.805^2)  # IIV(CRP0) = 80.5% CV
     etalkout_il6   ~ 0.9883  # IIV(kout,IL-6) = 130% CV
     etalsa_crp     ~ 0.3198  # IOV(SA_CRP) = 61.4% CV
-    etalsw_crp     ~ 0.5219  # IOV(SW_CRP) = 83.8% CV
-    etalpt_il6     ~ 0.3036  # IOV(PT_IL-6) = 59.7% CV
-    etalpt_crp_plus ~ 0.4920 # IOV(PT_CRP+) = 81.3% CV
+    etalsw_crp     ~ log(1 + 0.838^2)  # IOV(SW_CRP) = 83.8% CV
+    etalpt_il6     ~ log(1 + 0.597^2)  # IOV(PT_IL-6) = 59.7% CV
+    etalpt_crp_plus ~ log(1 + 0.813^2)  # IOV(PT_CRP+) = 81.3% CV
 
     # ----- Biomarker residual errors (kept so the embedded biomarker layer is observable in simulation) -----
     propSd_Cc_il6 <- 0.547; label("Proportional residual error on IL-6 (fraction)")  # Netterberg 2018 Table 2

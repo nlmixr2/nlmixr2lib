@@ -119,15 +119,15 @@ Prytula_2016_tacrolimus <- function() {
     # rho_{ka.V1}, rho_{CL.V1}). Convert %CV to log-scale variance via
     # omega^2 = log(1 + CV^2):
     #   ka   CV 58%  -> log(1 + 0.58^2)  = 0.28998
-    #   CL   CV 45%  -> log(1 + 0.45^2)  = 0.18439
+    #   CL   CV 45%  -> log(1 + 0.45^2)  = 0.18440
     #   V1   CV 170% -> log(1 + 1.70^2)  = 1.35841
     # Off-diagonals = r * sqrt(omega^2_i) * sqrt(omega^2_j):
-    #   cov(ka, CL) = 0.11 * sqrt(0.28998) * sqrt(0.18439) = 0.02543
+    #   cov(ka, CL) = 0.11 * sqrt(0.28998) * sqrt(0.18440) = 0.02544
     #   cov(ka, V1) = 0.19 * sqrt(0.28998) * sqrt(1.35841) = 0.11925
-    #   cov(CL, V1) = 0.38 * sqrt(0.18439) * sqrt(1.35841) = 0.19019
+    #   cov(CL, V1) = 0.38 * sqrt(0.18440) * sqrt(1.35841) = 0.19019
     etalka + etalcl + etalvc ~ c(0.28998,
-                                  0.02543, 0.18439,
-                                  0.11925, 0.19019, 1.35841)                                                                       # Table 2 IIV (ka, CL/F, V1/F) %CV + footnote correlations
+                                  0.11 * sqrt(0.28998 * log(1 + 0.45^2)), log(1 + 0.45^2),
+                                  0.11925, 0.38 * sqrt(log(1 + 0.45^2) * 1.35841), 1.35841)                                                                       # Table 2 IIV (ka, CL/F, V1/F) %CV + footnote correlations
 
     # Proportional residual error on the linear concentration scale (Prytula
     # 2016 Section 3.2.1: "The residual error was described with a

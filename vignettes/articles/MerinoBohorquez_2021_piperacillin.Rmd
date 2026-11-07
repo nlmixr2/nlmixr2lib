@@ -61,9 +61,9 @@ table below collects them in one place.
 | `lcl_nonren` (Intercept) | `log(4.556)` L/h | Table 2, mean (SD 5.035, median 3.503) |
 | `lcl_renal` (Slope) | `log(1.353)` | Table 2, mean (SD 1.032, median 1.39) |
 | `lvc` (Vc) | `log(30.68)` L | Table 2, mean (SD 23.349, median 20.039) |
-| `etalcl_nonren` | 0.798104 | Table 2, `log((5.035/4.556)^2 + 1)` |
-| `etalcl_renal` | 0.458555 | Table 2, `log((1.032/1.353)^2 + 1)` |
-| `etalvc` | 0.456916 | Table 2, `log((23.349/30.68)^2 + 1)` |
+| `etalcl_nonren` | 0.798108 | Table 2, `log((5.035/4.556)^2 + 1)` |
+| `etalcl_renal` | 0.458556 | Table 2, `log((1.032/1.353)^2 + 1)` |
+| `etalvc` | 0.456917 | Table 2, `log((23.349/30.68)^2 + 1)` |
 | `addSd` (assay C0) | `fixed(0.4388)` mg/L | Methods 4.4, `SD = gamma x (0.4388 + 0.027 x C)` |
 | `propSd` (assay C1) | `fixed(0.027)` | Methods 4.4 (same polynomial) |
 | CrCl conversion `CRCL * 60 / 1000` | mL/min to L/h | Table 1 unit (mL/min) and Table 2 unit (L/h) |

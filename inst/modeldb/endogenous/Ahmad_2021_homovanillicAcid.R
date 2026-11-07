@@ -102,10 +102,10 @@ Ahmad_2021_homovanillicAcid <- function() {
     # random effect; read as CV% and converted with
     # omega^2 = log(1 + CV^2).
     # ---------------------------------------------------------------
-    etalksyn ~ 0.0703190 # Table 1, HVA IIV ksyn = 27% (SE 19%); log(1 + 0.27^2)
-    etalcl_renal ~ 0.0515460 # Table 1, HVA IIV CLr = 23% (SE 26%); log(1 + 0.23^2)
+    etalksyn ~ log(1 + 0.27^2)  # Table 1, HVA IIV ksyn = 27% (SE 19%)
+    etalcl_renal ~ log(1 + 0.23^2)  # Table 1, HVA IIV CLr = 23% (SE 26%)
     etalvc_prob ~ 0.1484200 # Table 1, Probenecid IIV V = 40% (SE 29%); log(1 + 0.40^2)
-    etalcl_prob ~ 0.0515460 # Table 1, Probenecid IIV CL = 23% (SE 23%); log(1 + 0.23^2)
+    etalcl_prob ~ log(1 + 0.23^2)  # Table 1, Probenecid IIV CL = 23% (SE 23%)
     etaiov_cl_renal_1 ~ 0.0024969 # Table 1, HVA IOV CLr = 5% (SE 48%); log(1 + 0.05^2)
     etaiov_cl_renal_2 ~ fixed(0.0024969) # Table 1, HVA IOV CLr = 5%; shared variance, occasion 2
 

@@ -132,13 +132,13 @@ collects the final-model values from Fau 2020 Table S3 in one place.
 | `e_wt_q`                        |  0.477                      | Table S3: Q  ~ Wght (RSE 57.5 %) |
 | IIV `etalcl` ω = 47.5 %         | 0.2035                      | log(0.475² + 1)               |
 | IIV `etacl_time_max`    ω = 97.2 % (normal) | 0.4164                  | (0.664 × 0.972)²              |
-| IIV `etalcl_t50`   ω = 115 %       | 0.8427                      | log(1.15² + 1)                |
+| IIV `etalcl_t50`   ω = 115 %       | 0.8426                      | log(1.15² + 1)                |
 | IIV `etalcl_time_hill`   ω = 118 %       | 0.8723                      | log(1.18² + 1)                |
 | IIV `etalvc`    ω = 25.7 %      | 0.0640                      | log(0.257² + 1)               |
-| IIV `etalq`     ω = 85.8 %      | 0.5519                      | log(0.858² + 1)               |
+| IIV `etalq`     ω = 85.8 %      | 0.5517                      | log(0.858² + 1)               |
 | IIV `etalvp`    ω = 45.6 %      | 0.1889                      | log(0.456² + 1)               |
-| IIV `etalvmax`  ω = 61.5 %      | 0.3206                      | log(0.615² + 1)               |
-| IIV `etalkm`    ω = 88.9 %      | 0.5823                      | log(0.889² + 1)               |
+| IIV `etalvmax`  ω = 61.5 %      | 0.3208                      | log(0.615² + 1)               |
+| IIV `etalkm`    ω = 88.9 %      | 0.5824                      | log(0.889² + 1)               |
 | `propSd`                        | 0.225                       | Table S3: σprop 22.5 %        |
 | `addSd` (mg/L)                  | 0.00196                     | Table S3: σadd                |
 

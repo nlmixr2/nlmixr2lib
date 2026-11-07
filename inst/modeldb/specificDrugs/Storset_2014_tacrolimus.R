@@ -122,19 +122,19 @@ Storset_2014_tacrolimus <- function() {
     # Correlations from Table 2: corr(CL, V1) = 0.43, corr(CL, Q) = 0.62. The
     # V1-Q correlation is not reported and is treated as 0 (partial omega
     # block: V1-Q covariance fixed at 0).
-    #   omega^2: CL = log(1+0.40^2) = 0.14842; V1 = log(1+0.54^2) = 0.25612;
-    #             Q = log(1+0.63^2) = 0.33429; Fday1 = log(1+0.57^2) = 0.28150.
+    #   omega^2: CL = log(1+0.40^2) = 0.14842; V1 = log(1+0.54^2) = 0.25588;
+    #             Q = log(1+0.63^2) = 0.33426; Fday1 = log(1+0.57^2) = 0.28134.
     #   covariances:
-    #     cov(CL, V1) = 0.43 * sqrt(0.14842 * 0.25612) = 0.08385
-    #     cov(CL, Q)  = 0.62 * sqrt(0.14842 * 0.33429) = 0.13809
+    #     cov(CL, V1) = 0.43 * sqrt(0.14842 * 0.25588) = 0.08380
+    #     cov(CL, Q)  = 0.62 * sqrt(0.14842 * 0.33426) = 0.13810
     #     cov(V1, Q)  = 0 (not reported; treated as 0)
     etalcl + etalvc + etalq ~ c(0.14842,
-                                0.08385, 0.25612,
-                                0.13809, 0,       0.33429)
+                                0.43 * sqrt(0.14842 * log(1 + 0.54^2)), log(1 + 0.54^2),
+                                0.62 * sqrt(0.14842 * log(1 + 0.63^2)), 0,       log(1 + 0.63^2))
     # IIV on the day-1 bioavailability multiplier; subject's eta only
     # contributes when POSTTX_DAY1 = 1 (model() block applies it as
     # exp((lfday1 + etalfday1) * POSTTX_DAY1)).
-    etalfday1 ~ 0.28150  # 57% CV (Storset 2014 Table 2 BSV on the day-1 F multiplier)
+    etalfday1 ~ log(1 + 0.57^2)  # 57% CV (Storset 2014 Table 2 BSV on the day-1 F multiplier)
 
     # ----- Residual error -----
     # Proportional on whole-blood Cc (Storset 2014 Table 2 final-model

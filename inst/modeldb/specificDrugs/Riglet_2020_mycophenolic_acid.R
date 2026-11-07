@@ -127,7 +127,7 @@ Riglet_2020_mycophenolic_acid <- function() {
     # Inter-individual variability. Table 3 prints IIV as CV%; converted to
     # log-normal variances with omega^2 = log(CV^2 + 1). Vcu/F, Qu/F, CLin/F
     # and Vcell/F carry no IIV.
-    etald1 ~ 0.17698 # Table 3 Tk0 IIV 44%: log(0.44^2 + 1)
+    etald1 ~ log(1 + 0.44^2)  # Table 3 Tk0 IIV 44%
     etalcl ~ 0.086178 # Table 3 CLu/F IIV 30%: log(0.30^2 + 1)
     etalvp ~ 0.39878 # Table 3 Vpu/F IIV 70%: log(0.70^2 + 1)
     etalkns ~ 0.025278 # Table 3 theta_pb IIV 16%: log(0.16^2 + 1)

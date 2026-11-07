@@ -184,7 +184,7 @@ Hietala_2010_artemether_parasitemia <- function() {
     # P_init: per-individual initial parasitemia introduced into the tiny-ring
     # (PTR) compartment at simulation start. The point value is fixed at 1
     # parasite/microL with log-normal IIV CV = 119.2% (omega^2 = log(1.192^2
-    # + 1) = 1.005). The infection is assumed to have started 4 cycles (4 *
+    # + 1) = 0.884). The infection is assumed to have started 4 cycles (4 *
     # MTT = 194 h) before the first sample in symptomatic patients (Results,
     # 'Pharmacodynamic model'), so a typical simulation starts at -194 h
     # with parasite_tinyrings(0) = p_init and runs forward; over 4 cycles
@@ -225,12 +225,12 @@ Hietala_2010_artemether_parasitemia <- function() {
     s_armdha <- 0.073            ; label("Slope of shared ARM / DHA log-concentration kill rate (1/h per log(nM))") # Hietala 2010 Table 3: S_ARMDHA = 0.073 (95% CI 0.049-0.423)
 
     # === PK IIV (Hietala 2010 Table 1) ===
-    etalcl     ~ 0.155649    # Hietala 2010 Table 1: IIV on CL/F_ARM = 41% CV; omega^2 = log(0.41^2 + 1)
-    etalcl_dihydroart ~ 0.198101    # Hietala 2010 Table 1: IIV on CL/F_DHA = 47% CV; omega^2 = log(0.47^2 + 1)
+    etalcl     ~ log(1 + 0.41^2)  # Hietala 2010 Table 1: IIV on CL/F_ARM = 41% CV
+    etalcl_dihydroart ~ log(1 + 0.47^2)  # Hietala 2010 Table 1: IIV on CL/F_DHA = 47% CV
 
     # === PD IIV (Hietala 2010 Table 3) ===
     # P_init carries the only PD-side IIV; CV = 119.2% -> omega^2 = log(1.192^2 + 1).
-    etap_init ~ 1.005        # Hietala 2010 Table 3: IIV on P_init = 119.2% CV (95% CI 98-161)
+    etap_init ~ log(1 + 1.192^2)  # Hietala 2010 Table 3: IIV on P_init = 119.2% CV (95% CI 98-161)
 
     # === Residual error (Hietala 2010 Tables 1 and 3) ===
     # ARM / DHA plasma concentrations: combined additive + proportional, with

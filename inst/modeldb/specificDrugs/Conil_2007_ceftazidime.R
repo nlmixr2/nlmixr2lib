@@ -86,8 +86,8 @@ Conil_2007_ceftazidime <- function() {
     # unchanged. omega^2 = log(CV^2 + 1) for log-normal etas.
     etalcl ~ 0.02528 # log(0.16^2 + 1); 16% CV on CL (Conil 2007 Results p. 31, final-model value)
     etalvc ~ 0.01676 # log(0.13^2 + 1); 13% CV on V1 (Conil 2007 Results p. 31, final-model value)
-    etalq  ~ 2.6520  # log(3.63^2 + 1); 363% CV on Q (Conil 2007 Results p. 31 basic-model value carried forward; final model silent on Q IIV)
-    etalvp ~ 1.5280  # log(1.90^2 + 1); 190% CV on V2 (Conil 2007 Results p. 31 basic-model value carried forward; final model silent on V2 IIV)
+    etalq  ~ log(1 + 3.63^2)  # 363% CV on Q (Conil 2007 Results p. 31 basic-model value carried forward; final model silent on Q IIV)
+    etalvp ~ log(1 + 1.90^2)  # 190% CV on V2 (Conil 2007 Results p. 31 basic-model value carried forward; final model silent on V2 IIV)
 
     # Proportional residual error (Conil 2007 Results p. 31 basic-model
     # value 38%, carried forward to the final model; the final-model

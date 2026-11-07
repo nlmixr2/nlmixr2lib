@@ -130,11 +130,11 @@ Anderson_1998_paracetamol <- function() {
     # incorporated into the structural model"; the off-diagonal covariance
     # terms are not reported in the paper, so this model uses a
     # diagonal-only IIV (see vignette Errata).
-    etalka  ~ 0.2153  # CV(ka)  = 49 %  -> omega^2 = log(1 + 0.49^2) = 0.2153 (Table 3)
+    etalka  ~ log(1 + 0.49^2)  # CV(ka)  = 49 % (Table 3)
     etalcl  ~ 0.1996  # CV(CL)  = 47 %  -> omega^2 = log(1 + 0.47^2) = 0.1996 (Table 3)
     etalvc  ~ 0.2900  # CV(V)   = 58 %  -> omega^2 = log(1 + 0.58^2) = 0.2900 (Table 3)
-    etalkeq ~ 0.8623  # CV(teq) = 117 % -> omega^2 = log(1 + 1.17^2) = 0.8623 (Table 3); same %CV applies to keq = ln(2)/teq because the transform is multiplicative
-    etalpc  ~ 0.006379 # CV(PC) = 8 %   -> omega^2 = log(1 + 0.08^2) = 0.006379 (Table 3)
+    etalkeq ~ log(1 + 1.17^2)  # CV(teq) = 117 % (Table 3); same %CV applies to keq = ln(2)/teq because the transform is multiplicative
+    etalpc  ~ log(1 + 0.08^2)  # CV(PC) = 8 % (Table 3)
 
     # Residual error. Anderson 1998 Methods (NONMEM paragraph) states:
     # "An additive term characterized the residual error." Table 3 reports

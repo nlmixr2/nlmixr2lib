@@ -81,8 +81,8 @@ Venisse_2008_caspofungin <- function() {
     # omega^2 = log(CV^2 + 1) = log(2.25^2 + 1) = log(6.0625) = 1.802.
     etalnmax ~ 1.802
     # Paper Table 2 reports eta(Emax) = 65% CV exponential model.
-    # omega^2 = log(0.65^2 + 1) = log(1.4225) = 0.353.
-    etalemax ~ 0.353
+    # omega^2 = log(0.65^2 + 1) = log(1.4225) = 0.352.
+    etalemax ~ log(1 + 0.65^2)
     # Venisse 2008 Table 2: eta(Nmax) = 225% CV, eta(Emax) = 65% CV;
     # converted via log(CV^2 + 1). The paper estimated these IIVs simultaneously
     # in the single Nonmem run across all 6 experiments; the Emax IIV applies

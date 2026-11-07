@@ -107,16 +107,16 @@ Solms_2020_BAY94_9027 <- function() {
     # author group in Garmann_2017_BAY81_8973 (log-normal BSV model
     # P_j = P_pop * exp(eta_j), so the eta-scale variance is the exact
     # log-normal map omega^2 = log((CV%/100)^2 + 1)):
-    #   CV(CL) = 24.0% -> omega^2 = log(1 + 0.240^2) = 0.0560090
-    #   CV(Vc) = 12.8% -> omega^2 = log(1 + 0.128^2) = 0.0162519
+    #   CV(CL) = 24.0% -> omega^2 = log(1 + 0.240^2) = 0.0560022
+    #   CV(Vc) = 12.8% -> omega^2 = log(1 + 0.128^2) = 0.0162512
     # The reported correlation is 0.449; corresponding covariance is
-    #   cov = 0.449 * sqrt(0.0560090 * 0.0162519) = 0.0134738.
+    #   cov = 0.449 * sqrt(0.0560022 * 0.0162512) = 0.0135454.
     # Inter-occasion variability (IOV) was estimated during model development
     # (IOV variance 0.0195 for CL and 0.00475 for Vc; base model section) but
     # was not retained in the final model because it had no effect on the
     # population estimates of CL or Vc; see vignette deviations.
-    etalcl + etalvc ~ c(0.0560090,
-                        0.0134738,  0.0162519)  # Solms 2020 Table 2: BSV CL = 24.0% CV (16.4% RSE; 95% CI 19.7-27.8); BSV Vc = 12.8% CV (17.5% RSE; 95% CI 10.4-14.9); Correlation(BSV CL, BSV Vc) = 0.449 (19.2% RSE; 95% CI 0.28-0.618)
+    etalcl + etalvc ~ c(log(1 + 0.240^2),
+                        0.449 * sqrt(log(1 + 0.240^2) * log(1 + 0.128^2)),  log(1 + 0.128^2))  # Solms 2020 Table 2: BSV CL = 24.0% CV (16.4% RSE; 95% CI 19.7-27.8); BSV Vc = 12.8% CV (17.5% RSE; 95% CI 10.4-14.9); Correlation(BSV CL, BSV Vc) = 0.449 (19.2% RSE; 95% CI 0.28-0.618)
 
     # Combined proportional + additive residual unexplained variability
     # (Solms 2020 Methods 2.2; Table 2). Both components are reported as the

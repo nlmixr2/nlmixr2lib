@@ -93,7 +93,7 @@ Munir_2021_vancomycin <- function() {
     # log-normal variance as omega^2 = log(1 + CV^2). The CV reading is
     # confirmed by Table 3's simulated trough SDs (see the vignette).
     etalcl ~ 0.012688 # Munir 2021 Table 2: BSV-CL = 11.3% CV (RSE 38%); log(1 + 0.113^2)
-    etalvc ~ 0.050668 # Munir 2021 Table 2: BSV-Vd = 22.8% CV (RSE 51%); log(1 + 0.228^2)
+    etalvc ~ log(1 + 0.228^2)  # Munir 2021 Table 2: BSV-Vd = 22.8% CV (RSE 51%)
 
     # Residual error. Table 2 row 'Additive error' = 3.07 and Results 'the
     # additive error was 3.07'; the same Results paragraph also calls the

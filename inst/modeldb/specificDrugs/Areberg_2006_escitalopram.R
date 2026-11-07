@@ -70,8 +70,8 @@ Areberg_2006_escitalopram <- function() {
     # (Methods 'A diagonal covariance matrix was used; that is, covariances
     # between the structural model parameters were assumed to be negligible.').
     etalvc ~ 0.02849   # log(0.17^2 + 1)
-    etalcl ~ 0.10940   # log(0.34^2 + 1)
-    etalka ~ 1.16025   # log(1.48^2 + 1); 31% RSE on the omega per Table 3 -- the typical-value Ka is fixed at 3.6 1/h but eta on Ka is estimated, per Discussion 'k_a values between subjects were allowed to vary because of interindividual variability'.
+    etalcl ~ log(1 + 0.34^2)
+    etalka ~ log(1 + 1.48^2)  # 31% RSE on the omega per Table 3 -- the typical-value Ka is fixed at 3.6 1/h but eta on Ka is estimated, per Discussion 'k_a values between subjects were allowed to vary because of interindividual variability'.
 
     # Residual error (proportional).
     propSd <- 0.096; label("Proportional residual error (fraction)")  # Areberg 2006 Table 3 (epsilon_1, 9.6%, RSE 23%) / Results 'A proportional model was used for the residual error.'

@@ -117,7 +117,7 @@ Han_2013_fluconazole <- function() {
     # etalcl_rrt is declared in paper_specific_etas at the top of the model
     # function because the conditional-IIV split-by-CRRT structure does not
     # follow the 1-to-1 eta<->lparam pairing rule.
-    etalcl           ~ 0.12000  # log(0.357^2 + 1); Han 2013 Table 3: omega1^2 BSV of CL non-CRRT = 35.7 %CV (RSE 19.8%; bootstrap mean 32.4, 95% CI 24.8-40.4)
+    etalcl           ~ log(1 + 0.357^2)  # Han 2013 Table 3: omega1^2 BSV of CL non-CRRT = 35.7 %CV (RSE 19.8%; bootstrap mean 32.4, 95% CI 24.8-40.4)
     etalvc           ~ 0.02983  # log(0.174^2 + 1); Han 2013 Table 3: omega2^2 BSV of V         = 17.4 %CV (RSE 36.5%; bootstrap mean 15.9, 95% CI 8.91-22.2)
     etalcl_rrt       ~ 0.02559  # log(0.161^2 + 1); Han 2013 Table 3: omega3^2 BSV of CL CRRT    = 16.1 %CV (RSE 30.5%; bootstrap mean 15.0, 95% CI 9.84-20.6)
 

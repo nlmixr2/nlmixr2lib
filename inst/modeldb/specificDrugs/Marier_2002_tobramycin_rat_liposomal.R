@@ -115,15 +115,15 @@ Marier_2002_tobramycin_rat_liposomal <- function() {
     # between-parameter correlations are given, so all etas are
     # uncorrelated.
     #   ka:    CV 30.8% -> log(1 + 0.308^2)  = 0.09063
-    #   F_L:   CV 12.2% -> log(1 + 0.122^2)  = 0.01478
-    #   k_23:  CV 38.5% -> log(1 + 0.385^2)  = 0.13824
-    #   k_32:  CV 40.2% -> log(1 + 0.402^2)  = 0.14978
+    #   F_L:   CV 12.2% -> log(1 + 0.122^2)  = 0.01477
+    #   k_23:  CV 38.5% -> log(1 + 0.385^2)  = 0.13822
+    #   k_32:  CV 40.2% -> log(1 + 0.402^2)  = 0.14980
     #   k_20:  CV 30.2% -> log(1 + 0.302^2)  = 0.08728
     # ------------------------------------------------------------------
     etalka     ~ 0.09063  # Marier 2002 Table 1: CV(k_a)   = 30.8%
-    etalfdepot ~ 0.01478  # Marier 2002 Table 1: CV(F_L)   = 12.2%
-    etalk12    ~ 0.13824  # Marier 2002 Table 1: CV(k_23)  = 38.5%
-    etalk21    ~ 0.14978  # Marier 2002 Table 1: CV(k_32)  = 40.2%
+    etalfdepot ~ log(1 + 0.122^2)  # Marier 2002 Table 1: CV(F_L)   = 12.2%
+    etalk12    ~ log(1 + 0.385^2)  # Marier 2002 Table 1: CV(k_23)  = 38.5%
+    etalk21    ~ log(1 + 0.402^2)  # Marier 2002 Table 1: CV(k_32)  = 40.2%
     etalkel    ~ 0.08728  # Marier 2002 Table 1: CV(k_20)  = 30.2%
 
     # ------------------------------------------------------------------

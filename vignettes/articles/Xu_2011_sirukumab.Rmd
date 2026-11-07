@@ -68,14 +68,25 @@ the `population` list literal).
 | Allometric form                 | Xu 2011 Results, allometric scaling paragraph   | TV = theta * (WT/70)^exp; exponents fixed           |
 | Allometric exponents CL, Q      | Xu 2011 Results                                 | 0.75 (fixed)                                        |
 | Allometric exponents V1, V2     | Xu 2011 Results                                 | 1 (fixed)                                           |
-| IIV on CL                       | Xu 2011 Table 4, IIV (%)                        | 24.3% CV (omega^2 = log(CV^2 + 1) = 0.057371)       |
-| IIV on V1                       | Xu 2011 Table 4, IIV (%)                        | 19.3% CV (omega^2 = 0.036572)                       |
-| IIV on Q                        | Xu 2011 Table 4, IIV (%)                        | 53.4% CV (omega^2 = 0.250880)                       |
-| IIV on V2                       | Xu 2011 Table 4, IIV (%)                        | 28.3% CV (omega^2 = 0.077043)                       |
+| IIV on CL                       | Xu 2011 Table 4, IIV (%)                        | 24.3% CV (omega^2 = CV^2 = 0.059049)       |
+| IIV on V1                       | Xu 2011 Table 4, IIV (%)                        | 19.3% CV (omega^2 = 0.037249)                       |
+| IIV on Q                        | Xu 2011 Table 4, IIV (%)                        | 53.4% CV (omega^2 = 0.285156)                       |
+| IIV on V2                       | Xu 2011 Table 4, IIV (%)                        | 28.3% CV (omega^2 = 0.080089)                       |
 | Off-diagonal omega              | Xu 2011 Table 4                                 | None reported; IIV treated as diagonal              |
 | Proportional residual error     | Xu 2011 Table 4, "Proportional error variability (%)" | 21.7 -> propSd = 0.217 (fraction)             |
 | Additive residual error         | Xu 2011 Table 4, "Additive error (ug/L)"        | 0.0228 ug/L = 2.28e-5 ug/mL                         |
 | Dose regimens                   | Xu 2011 Table 1 and Methods                     | 0.3, 1, 3, 6, 10 mg/kg IV over 10-15 min            |
+
+## Errata
+
+- **The published CVs are first-order approximations.** The Table 4
+  footnote reads "IIV (%): inter-individual variability = 100 sqrt(estimate
+  for omega^2)". Each printed IIV is therefore the standard deviation of the
+  corresponding random effect, and the model's variances are the squares of
+  the printed values (for example `etalcl ~ 0.243^2` for the 24.3% IIV on
+  CL), not the exact log-normal conversion `log(1 + CV^2)`. The difference
+  is largest for Q: 0.534^2 = 0.285, against 0.251 from the log-normal
+  conversion.
 
 ## Virtual cohort
 

@@ -107,7 +107,7 @@ Zhang_2018_flurbiprofen <- function() {
     # IIV - exponential (log-normal) per Zhang 2018 Methods Eq. 1: P_i = theta * exp(eta_i).
     # Paper reports omega values as CV (fraction) under the Estimate column in Table 2; the row labels include "(%)".
     # Convert to internal log-scale variance via omega^2 = log(1 + CV^2).
-    etalcl  ~ 0.5217   # CV(CL) = 82.75% (Zhang 2018 Table 2 final omega_CL = 0.8275)        -> omega^2 = log(1 + 0.8275^2) = 0.5217
+    etalcl  ~ log(1 + 0.8275^2)  # CV(CL) = 82.75% (Zhang 2018 Table 2 final omega_CL = 0.8275)
     etalvc  ~ 0.00789  # CV(Vd) =  8.90% (Zhang 2018 Table 2 final omega_Vd = 0.0890)        -> omega^2 = log(1 + 0.0890^2) = 0.00789
     etalkeo ~ 0.000484 # CV(Ke) =  2.20% (Zhang 2018 Table 2 final omega_Ke = 0.0220)        -> omega^2 = log(1 + 0.0220^2) = 0.000484
 
