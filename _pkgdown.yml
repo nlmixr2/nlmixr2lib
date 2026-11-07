@@ -7344,6 +7344,8 @@ navbar:
         href: articles/Edstein_2001_tafenoquine.html
       - text: "Tafenoquine (Thakkar 2018)"
         href: articles/Thakkar_2018_tafenoquine.html
+      - text: "Tafolecimab (Yan 2023)"
+        href: articles/Yan_2023_tafolecimab.html
       - text: "Tak 071 (Jia 2025)"
         href: articles/Jia_2025_tak_071.html
       - text: "Tak 079 (Roepcke 2018)"
@@ -11423,6 +11425,7 @@ articles:
   - articles/Yamazaki_2008_crizotinib_mouse
   - articles/Yan_2019_benralizumab
   - articles/Yan_2022_inebilizumab
+  - articles/Yan_2023_tafolecimab
   - articles/Yan_2024_amisulpride
   - articles/Yang_2010_rosuvastatin_mbma
   - articles/Yang_2013_losmapimod

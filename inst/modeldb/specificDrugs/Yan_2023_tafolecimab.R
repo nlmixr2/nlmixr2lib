@@ -76,14 +76,54 @@ Yan_2023_tafolecimab <- function() {
   # Covariates screened (Covariate screening section, Table S1) but not
   # retained in the final model.
   covariatesDataExcluded <- list(
-    AGE = list(description = "Age", units = "years", type = "continuous", notes = "Screened; not retained. Median 57 (18-76) years (Table S1)."),
-    ALB = list(description = "Serum albumin", units = "g/L", type = "continuous", notes = "Screened; not retained. Median 45.91 g/L (Table S1)."),
-    AST = list(description = "Aspartate aminotransferase", units = "U/L", type = "continuous", notes = "Screened; not retained. Median 22 U/L (Table S1)."),
-    BILI = list(description = "Total bilirubin", units = "umol/L", type = "continuous", notes = "Screened as TBIL; not retained. Median 13 umol/L (Table S1)."),
-    CRCL = list(description = "Creatinine clearance", units = "mL/min", type = "continuous", notes = "Screened as CLCR; not retained. Median 101.84 mL/min (Table S1)."),
-    ADA_POS = list(description = "Treatment-induced anti-drug antibody positive", units = "(binary)", type = "binary", notes = "Screened as ADA; not retained. 118/1153 (10.2%) positive (Table S1)."),
-    CONMED_STATIN = list(description = "Concomitant statin", units = "(binary)", type = "binary", notes = "Screened as STATIN (0 none, 2 moderate, 3 high intensity); not retained because almost all patients received a statin and BPCSK9 absorbs the statin-induced PCSK9 up-regulation (Discussion)."),
-    CONMED_EZE = list(description = "Concomitant ezetimibe", units = "(binary)", type = "binary", notes = "Screened as EZETIMIBE; not retained. 142/1153 (12.3%) (Table S1).")
+    AGE = list(
+      description = "Age",
+      units = "years",
+      type = "continuous",
+      notes = "Screened; not retained. Median 57 (18-76) years (Table S1)."
+    ),
+    ALB = list(
+      description = "Serum albumin",
+      units = "g/L",
+      type = "continuous",
+      notes = "Screened; not retained. Median 45.91 g/L (Table S1)."
+    ),
+    AST = list(
+      description = "Aspartate aminotransferase",
+      units = "U/L",
+      type = "continuous",
+      notes = "Screened; not retained. Median 22 U/L (Table S1)."
+    ),
+    BILI = list(
+      description = "Total bilirubin",
+      units = "umol/L",
+      type = "continuous",
+      notes = "Screened as TBIL; not retained. Median 13 umol/L (Table S1)."
+    ),
+    CRCL = list(
+      description = "Creatinine clearance",
+      units = "mL/min",
+      type = "continuous",
+      notes = "Screened as CLCR; not retained. Median 101.84 mL/min (Table S1)."
+    ),
+    ADA_POS = list(
+      description = "Treatment-induced anti-drug antibody positive",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as ADA; not retained. 118/1153 (10.2%) positive (Table S1)."
+    ),
+    CONMED_STATIN = list(
+      description = "Concomitant statin",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as STATIN (0 none, 2 moderate, 3 high intensity); not retained because almost all patients received a statin and BPCSK9 absorbs the statin-induced PCSK9 up-regulation (Discussion)."
+    ),
+    CONMED_EZE = list(
+      description = "Concomitant ezetimibe",
+      units = "(binary)",
+      type = "binary",
+      notes = "Screened as EZETIMIBE; not retained. 142/1153 (12.3%) (Table S1)."
+    )
   )
 
   population <- list(
