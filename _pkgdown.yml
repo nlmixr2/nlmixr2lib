@@ -2636,8 +2636,14 @@ navbar:
         href: articles/vanHasselt_2013_eribulin.html
       - text: "Eribulin (vanHasselt 2015)"
         href: articles/vanHasselt_2015_eribulin.html
+      - text: "Erlotinib (Yin 2024)"
+        href: articles/Yin_2024_erlotinib.html
       - text: "Erlotinib mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
+      - text: "Erlotinib tumor (Yin 2024)"
+        href: articles/Yin_2024_erlotinib.html
+      - text: "Erlotinib tumor ctdna (Yin 2024)"
+        href: articles/Yin_2024_erlotinib.html
       - text: "Ertapenem (Eyler 2014)"
         href: articles/Eyler_2014_ertapenem.html
       - text: "Ertapenem (Lakota 2018)"
@@ -11475,6 +11481,7 @@ articles:
   - articles/Yin_2021_pexidartinib
   - articles/Yin_2021_trastuzumabDeruxtecan
   - articles/Yin_2023_soticlestat
+  - articles/Yin_2024_erlotinib
   - articles/Yin_2024_soticlestat
   - articles/Yin_2026_ceftazidime
   - articles/Yip_2021_carbamazepine
