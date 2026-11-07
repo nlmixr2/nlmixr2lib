@@ -3826,6 +3826,8 @@ navbar:
         href: articles/Brillac_2025_isatuximab.html
       - text: "Isatuximab (Fau 2020)"
         href: articles/Fau_2020_isatuximab.html
+      - text: "Isatuximab (Thai 2023)"
+        href: articles/Thai_2023_isatuximab.html
       - text: "Isavuconazole (Arrieta 2021)"
         href: articles/Arrieta_2021_isavuconazole.html
       - text: "Isavuconazole (Cojutti 2021)"
@@ -11075,6 +11077,7 @@ articles:
   - articles/Tetschke_2018_erythropoiesis
   - articles/Teuscher_2015_methylphenidate
   - articles/Thai_2011_aflibercept
+  - articles/Thai_2023_isatuximab
   - articles/Thakkar_2017_amifampridine
   - articles/Thakkar_2018_tafenoquine
   - articles/Thakre_2022_risankizumab
