@@ -22004,8 +22004,32 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Reference category:** 0 (no anti-PD-L1 antibody in the regimen).
 - **Source aliases:**
   - `Factor_PD-L1` / `FactorPDL1` -- Zhang 2022 Methods ('set to 1 if a PD-L1 inhibitor was given as monotherapy or in combination with a CTLA-4 inhibitor, and to 0 when not given'), Equations 2-5 and the supplementary dataset.
-- **Example models:** `Zhang_2022_ici_irae_mbma.R` (study-arm level; -0.3484 on the any-grade irAE logit relative to the anti-PD-1 reference), `Zhang_2022_ici_irae_grade3_mbma.R` (-0.6271 on the grade >= 3 irAE logit, plus 1.3525 through its product with anti-CTLA-4 presence for the anti-CTLA-4 + anti-PD-L1 combination).
+  - `IO1` -- Hodson 2023 NONMEM Code S1 flag for anti-mouse-PD-L1, derived from the treatment-cohort code (`TRT` 5.5, 6, 7 -> 1).
+- **Example models:** `Zhang_2022_ici_irae_mbma.R` (study-arm level; -0.3484 on the any-grade irAE logit relative to the anti-PD-1 reference), `Zhang_2022_ici_irae_grade3_mbma.R` (-0.6271 on the grade >= 3 irAE logit, plus 1.3525 through its product with anti-CTLA-4 presence for the anti-CTLA-4 + anti-PD-L1 combination), `Hodson_2023_radiotherapy_antipdl1_olaparib_azd0156_mouse.R` (mouse-level cohort indicator for an anti-mouse-PD-L1 research antibody; adds gamma_ICI = 11.9 to the divisor of the CD8 T-cell exhaustion rate).
 - **Notes:** Anti-PD-L1 sibling of `TRT_ANTIPD1`, with the same class-level pooling and the same reading: it is 1 for anti-PD-L1 MONOTHERAPY as well, so it is not an add-on flag like `COMBO_DURVA`. The anti-CTLA-4 + anti-PD-L1 combination is identified by `TRT_ANTIPDL1 = 1` together with a positive anti-CTLA-4 exposure (`CAV > 0`). Register a drug-specific `TRT_<INN>` instead when a source distinguishes the individual anti-PD-L1 antibodies; Zhang 2022 screened the drug within a target class and found no difference.
+
+### TRT_RADIOTHERAPY (**canonical for radiotherapy treatment-arm indicator**)
+- **Description:** Binary treatment-arm indicator: 1 = the subject's regimen includes external-beam radiotherapy, given on the schedule fixed by the source study design; 0 = no radiotherapy. Time-fixed per subject. The radiation dose and fractionation are not carried by this column -- a model that uses it encodes the schedule itself (dose per fraction, treatment window) as fixed design parameters, so a different schedule is simulated by overriding those parameters, not this indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no radiotherapy; in `Hodson_2023_radiotherapy_antipdl1_olaparib_azd0156_mouse.R` the untreated control cohort).
+- **Source aliases:**
+  - `RT1` -- Hodson 2023 NONMEM Code S1 flag, derived from the treatment-cohort code (`TRT > 1` -> 1; every fitted cohort other than the control received radiotherapy).
+- **Example models:** `Hodson_2023_radiotherapy_antipdl1_olaparib_azd0156_mouse.R` (gates the Heaviside radiotherapy input `rt_dose * (t < rt_end)`, 2 Gy per day, that recruits antigen-presenting cells in proportion to the proliferating tumour rim).
+- **Notes:** Specific scope. A non-drug member of the `TRT_` treatment-arm family, alongside `TRT_PBT` and `TRT_WATCHFUL_WAITING`: radiotherapy has no INN, so the modality is spelled out. Distinct from `PRIOR_RADIATION`, which flags radiotherapy received *before* the analysed treatment as a baseline characteristic; here radiotherapy is part of the modelled treatment.
+
+### TRT_OLAPARIB, TRT_AZD0156 (**canonical for DNA-damage-response-inhibitor treatment-arm indicators**)
+- **Description:** Binary treatment-arm indicators: `TRT_OLAPARIB` = 1 when the regimen includes the PARP inhibitor olaparib; `TRT_AZD0156` = 1 when it includes the ATM inhibitor AZD0156; 0 otherwise. Time-fixed per subject, at the dose and schedule of the source study.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (regimen without that inhibitor). In the founding model the two are mutually exclusive: olaparib and AZD0156 were studied in separate experiments.
+- **Source aliases:**
+  - `PARP` -- Hodson 2023 NONMEM Code S1 flag for olaparib 100 mg/kg PO daily for 21 days (`TRT` 3, 6 -> 1).
+  - `ATM1` -- Hodson 2023 NONMEM Code S1 flag for AZD0156 2.5 mg/kg PO daily for 21 days (`TRT` 4.5, 7 -> 1).
+- **Example models:** `Hodson_2023_radiotherapy_antipdl1_olaparib_azd0156_mouse.R` (each adds its potency, gamma_PARPi = 2.03 or gamma_ATMi = 4.34, to the divisor of the CD8 T-cell exhaustion rate).
+- **Notes:** Specific scope. Members of the `TRT_<INN>` family; AZD0156 has no INN, so its development code is used. Distinct from `CONMED_<INN>` (a co-medication alongside some other modelled drug) and from `DOSE_AZD7648_MGKGD` (a dose-amount covariate): here the inhibitor is part of the modelled regimen and enters only as present or absent, because every source study used one dose level.
 
 ### TRT_CORTICOSTEROID, TRT_IMMUNOSUPPRESSANT, TRT_RAS_BLOCKER, TRT_ANTIPLATELET, TRT_OMEGA3_FA, TRT_OTHER_IGAN (**canonical for IgA-nephropathy drug-class treatment-arm indicators**)
 - **Description:** Binary study-arm drug-class indicators for IgA-nephropathy treatment: 1 = the arm received a drug of that class, 0 otherwise. `TRT_CORTICOSTEROID` = systemic corticosteroid; `TRT_IMMUNOSUPPRESSANT` = non-steroid immunosuppressant (e.g. mycophenolate mofetil, cyclophosphamide, azathioprine, calcineurin inhibitors); `TRT_RAS_BLOCKER` = renin-angiotensin system blocker (ACE inhibitor or angiotensin receptor blocker); `TRT_ANTIPLATELET` = antiplatelet agent; `TRT_OMEGA3_FA` = N-3 (omega-3) polyunsaturated fatty acids (fish oil); `TRT_OTHER_IGAN` = any agent outside those five classes, or a combination of drugs from different classes. Exactly one indicator is 1 on a drug arm and all six are 0 on a placebo arm.
