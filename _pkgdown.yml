@@ -5648,6 +5648,8 @@ navbar:
         href: articles/Wattanakul_2016_paracetamol.html
       - text: "Paracetamol (Wattanakul 2026)"
         href: articles/Wattanakul_2026_paracetamol.html
+      - text: "Paracetamol (Wu 2023)"
+        href: articles/Wu_2023_paracetamol.html
       - text: "Paracetamol (Wu 2025)"
         href: articles/Wu_2025_paracetamol.html
       - text: "Paracetamol (Zhao 2025)"
@@ -11376,6 +11378,7 @@ articles:
   - articles/Wu_2022_treprostinil
   - articles/Wu_2023_SPI_62
   - articles/Wu_2023_mezigdomide
+  - articles/Wu_2023_paracetamol
   - articles/Wu_2024_daptomycin
   - articles/Wu_2024_gfr_maturation
   - articles/Wu_2024_inotuzumab

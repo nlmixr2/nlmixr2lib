@@ -229,13 +229,13 @@ Wu_2023_paracetamol <- function() {
     # IIV. Table II prints CV% = sqrt(exp(omega^2) - 1) * 100 (footnote),
     # so omega^2 = log(1 + CV^2).
     # ---------------------------------------------------------------------
-    etalcl ~ 0.09118 # Table II IIV CLT 30.9% -> log(1 + 0.309^2)
-    etalvc ~ 0.07704 # Table II IIV VP 28.3% -> log(1 + 0.283^2)
-    etalcle ~ 0.13207 # Table II IIV CLrG = CLrS = CLrO 37.6% (one shared eta) -> log(1 + 0.376^2)
-    etalclrat_gluc ~ 0.29092 # Table II IIV TVR_FG 58.1% -> log(1 + 0.581^2)
-    etalclrat_sulf ~ 0.18069 # Table II IIV TVR_FS 44.5% -> log(1 + 0.445^2)
-    etalclrat_cysmer ~ 0.33137 # Table II IIV R_FO 62.7% -> log(1 + 0.627^2)
-    etalcorr_urine_vol ~ 1.07003 # Table II inter-sample variability of the urine correction factor 138.4% -> log(1 + 1.384^2)
+    etalcl ~ log(1 + 0.309^2) # Table II IIV CLT 30.9%
+    etalvc ~ log(1 + 0.283^2) # Table II IIV VP 28.3%
+    etalcle ~ log(1 + 0.376^2) # Table II IIV CLrG = CLrS = CLrO 37.6% (one shared eta)
+    etalclrat_gluc ~ log(1 + 0.581^2) # Table II IIV TVR_FG 58.1%
+    etalclrat_sulf ~ log(1 + 0.445^2) # Table II IIV TVR_FS 44.5%
+    etalclrat_cysmer ~ log(1 + 0.627^2) # Table II IIV R_FO 62.7%
+    etalcorr_urine_vol ~ log(1 + 1.384^2) # Table II inter-sample variability of the urine correction factor 138.4%
 
     # ---------------------------------------------------------------------
     # Residual error on log-transformed concentrations (Methods Eq. 7;
