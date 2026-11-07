@@ -7254,6 +7254,8 @@ navbar:
         href: articles/Kim_2018_tacrolimus.html
       - text: "Tacrolimus (Kirubakaran 2022)"
         href: articles/Kirubakaran_2022_tacrolimus.html
+      - text: "Tacrolimus (Koomen 2023)"
+        href: articles/Koomen_2023_tacrolimus.html
       - text: "Tacrolimus (Liu 2022)"
         href: articles/Liu_2022_tacrolimus.html
       - text: "Tacrolimus (Lu 2015)"
@@ -9956,6 +9958,7 @@ articles:
   - articles/Kong_2025b_piperacillin_tazobactam
   - articles/Koo_2012_propofol
   - articles/Koolen_2010_docetaxel
+  - articles/Koomen_2023_tacrolimus
   - articles/Koopman_2023_factorix
   - articles/Koshimichi_2020_baloxavir
   - articles/Kosinsky_2022_camostat
