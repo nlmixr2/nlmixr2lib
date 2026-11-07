@@ -2540,6 +2540,8 @@ navbar:
         href: articles/Mondick_2018_empagliflozin.html
       - text: "Empagliflozin t2dm (Mondick 2018)"
         href: articles/Mondick_2018_empagliflozin.html
+      - text: "Emtricitabine (Leung 2023)"
+        href: articles/Leung_2023_tenofovir_emtricitabine.html
       - text: "Emtricitabine (Valade 2014)"
         href: articles/Valade_2014_emtricitabine.html
       - text: "Emtricitabine (Valade 2015)"
@@ -7518,6 +7520,8 @@ navbar:
         href: articles/Jayachandran_2021_tenofovir.html
       - text: "Tenofovir (Kawuma 2023)"
         href: articles/Kawuma_2023_tenofovir.html
+      - text: "Tenofovir (Leung 2023)"
+        href: articles/Leung_2023_tenofovir_emtricitabine.html
       - text: "Tenofovir (Yu 2026)"
         href: articles/Yu_2026_tenofovir.html
       - text: "Tenofovir alafenamide (Thoueille 2023)"
@@ -10077,6 +10081,7 @@ articles:
   - articles/Leroux_2018_fluconazole_micafungin
   - articles/Leshinsky_2017_caspofungin_cat
   - articles/Lestini_2015_tgfbinhibitor
+  - articles/Leung_2023_tenofovir_emtricitabine
   - articles/LeuppiTaegtmeyer_2019_colistin
   - articles/Leven_2020_roscovitine
   - articles/Levitt_2005_propofol_pbpk

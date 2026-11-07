@@ -212,6 +212,30 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
   - `kid` -- deprecated.
 - **Example models:** `Ayyar_2024_givosiran.R`, `Gilkey_2015_DiRnanoparticle.R`.
 
+### vagina (**canonical vaginal mucosal-tissue compartment**)
+- **Type:** compartment
+- **Role:** Vaginal mucosal tissue as a sampled drug-distribution compartment (biopsy homogenate), used by HIV pre-exposure-prophylaxis tissue PK models. Holds parent drug; the intracellular anabolite in the same tissue is the metabolite-suffixed state `vagina_<metab>` (`vagina_tfvdp`, `vagina_ftctp`). The observation is `Cvagina` (`Cvagina_<metab>`), with residual `propSd_Cvagina`.
+- **Source aliases:**
+  - `Vv` (parent) / `Vvtp` (metabolite) -- Leung 2023 Figure 1 and control-stream compartments 4 and 7.
+- **Example models:** `Leung_2023_tenofovir.R`, `Leung_2023_emtricitabine.R` (founding examples).
+- **Notes:** Ratified by the maintainers 2026-11-06 with the Leung 2023 extraction (PMC10725258), together with `cervix` and `rectum`. A tissue, not a lumen or a dosing site: a vaginally applied dose would go into a `depot_<site>` state. Its `compartmentData` specimen is `tissue`.
+
+### cervix (**canonical cervical mucosal-tissue compartment**)
+- **Type:** compartment
+- **Role:** Cervical (ectocervical) mucosal tissue as a sampled drug-distribution compartment (biopsy homogenate). Holds parent drug; the anabolite in the same tissue is `cervix_<metab>`. The observation is `Ccervix` (`Ccervix_<metab>`).
+- **Source aliases:**
+  - `Ve` (parent) / `Vetp` (metabolite) -- Leung 2023 Figure 1 and control-stream compartments 5 and 8.
+- **Example models:** `Leung_2023_tenofovir.R`, `Leung_2023_emtricitabine.R` (founding examples).
+- **Notes:** See `vagina`.
+
+### rectum (**canonical rectal mucosal-tissue compartment**)
+- **Type:** compartment
+- **Role:** Rectal mucosal tissue as a sampled drug-distribution compartment (biopsy homogenate). Holds parent drug; the anabolite in the same tissue is `rectum_<metab>`. The observation is `Crectum` (`Crectum_<metab>`). In the founding example it receives drug both from plasma and, through `ka_rectum`, from the end of a gut-transit chain of unabsorbed drug.
+- **Source aliases:**
+  - `Vr` (parent) / `Vrtp` (metabolite) -- Leung 2023 Figure 1 and control-stream compartments 6 and 9.
+- **Example models:** `Leung_2023_tenofovir.R`, `Leung_2023_emtricitabine.R` (founding examples).
+- **Notes:** See `vagina`. The mucosa, not the large-intestine lumen: the luminal GI segments are `cecum` / `colon` and the transit stages `transit<n>`.
+
 ### cumhaz (**canonical cumulative-hazard state, single-hazard models**)
 - **Type:** compartment
 - **Role:** Cumulative-hazard state for time-to-event / dropout sub-models. Integrates instantaneous hazard so that `survival = exp(-cumhaz)`. Use the bare `cumhaz` name when a model has only one hazard; reserve `cumhaz_<type>` (e.g., `cumhaz_os`, `cumhaz_drop`) for multi-hazard models that need to disambiguate.
@@ -7200,7 +7224,7 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Role:** Tenofovir diphosphate active intracellular metabolite suffix.
 - **Source aliases:**
   - `TFV-DP` -- the standard antiretroviral-literature abbreviation.
-- **Example models:** `Chen_2016_tenofovir_emtricitabine.R` (bare `tfvdp` state, declared through that file's `paper_specific_compartments` escape hatch); `Yu_2026_tenofovir.R` (`pbmc_tfvdp` and `rbc_tfvdp`, one per assayed cell type); `Burns_2015_tenofovir.R` (`pbmc_tfvdp`, with `kmet_tfvdp` / `kel_tfvdp` naming the formation and elimination rate constants).
+- **Example models:** `Chen_2016_tenofovir_emtricitabine.R` (bare `tfvdp` state, declared through that file's `paper_specific_compartments` escape hatch); `Yu_2026_tenofovir.R` (`pbmc_tfvdp` and `rbc_tfvdp`, one per assayed cell type); `Burns_2015_tenofovir.R` (`pbmc_tfvdp`, with `kmet_tfvdp` / `kel_tfvdp` naming the formation and elimination rate constants); `Leung_2023_tenofovir.R` (`vagina_tfvdp`, `cervix_tfvdp`, `rectum_tfvdp`, one per mucosal tissue).
 - **Notes:** Prefer the matrix-qualified `pbmc_tfvdp` / `rbc_tfvdp` form over the bare `tfvdp`: tenofovir diphosphate is assayed in more than one cell type, the two compartments have materially different kinetics, and `pbmc` / `rbc_<analyte>` are themselves canonical so the qualified name validates natively without a per-model escape hatch. The paired rate-constant names take a SINGLE suffix (`kmet_tfvdp`, `kel_tfvdp`) rather than repeating the matrix, because `.isPkParam()` strips only one suffix and a two-layer `kel_pbmc_tfvdp` would pass compartment validation but fail parameter validation.
 
 ### faraatp (**canonical fludarabine triphosphate suffix**)
@@ -7215,7 +7239,7 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Type:** metabolite-suffix
 - **Role:** Emtricitabine triphosphate active intracellular metabolite suffix.
 - **Source aliases:** none.
-- **Example models:** `Chen_2016_tenofovir_emtricitabine.R`.
+- **Example models:** `Chen_2016_tenofovir_emtricitabine.R`, `Leung_2023_emtricitabine.R` (`vagina_ftctp`, `cervix_ftctp`, `rectum_ftctp`, one per mucosal tissue).
 
 ### snk (**canonical S-norketamine suffix**)
 - **Type:** metabolite-suffix

@@ -137,11 +137,22 @@ fm_m3g, fm_m6g                    # routes named by the metabolite formed
   parent clearance reaching that metabolite). Use it only for that case.
 - Papers that parameterise a nested split **positionally** keep the
   paper's own `fm1` / `fm2` names; those are not `fm_<pathway>` members.
+- When the same anabolite forms in several **tissues**, the tissue is the
+  route: `fm_vagina`, `fm_cervix`, `fm_rectum` (`Leung_2023_tenofovir.R`).
 
 Adding a new pathway that follows these rules needs **no sidecar** — add
 it to the `### fm_...` heading in `inst/references/parameter-names.md`.
 Anything else is a build error: `buildModelDb()` fails on an `fm_`-prefixed
 name bound in `ini()` or `model()` that is not in that heading.
+
+### Mucosal-tissue compartments (`vagina`, `cervix`, `rectum`)
+
+Per-state volumes `lv_<tissue>` / `lv_<tissue>_<metab>`; clearance out of the
+tissue `lcl_<tissue>` (parent, total) / `lcl_<tissue>_<metab>` (anabolite);
+fraction of total plasma clearance routed into the tissue `lfcl_<tissue>`;
+gut-lumen-to-rectal-tissue transfer `lka_rectum` and loss from the end of the
+transit chain `lkel_gut`. Founding examples: `Leung_2023_tenofovir.R`,
+`Leung_2023_emtricitabine.R`.
 
 ### DAR-explicit mechanistic ADCs
 
