@@ -2572,7 +2572,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Forced vital capacity expressed as a percentage of a reference-equation predicted value -- the primary efficacy endpoint of the fibrosing interstitial-lung-disease trials (INPULSIS-1/2, SENSCIS, INBUILD, InPedILD) and the basis of nintedanib's approved labelling in adults and children.
 - **Source aliases:** `FVC%pred`, `FVCpp`, `FVC (% predicted)`.
-- **Example models:** `Hartmann_2026_nintedanib_fvcpp.R` (single `fvcpp` output; linear annual decline with a concentration-driven slope effect; FVC percent predicted is dimensionless).
+- **Example models:** `Hartmann_2026_nintedanib_fvcpp.R` (single `fvcpp` output; linear annual decline with a concentration-driven slope effect; FVC percent predicted is dimensionless), `Walker_2023_efzofitimod_fvcpp.R` (static landmark linear regression of the ABSOLUTE Week-24 ppFVC on time-averaged efzofitimod AUC and baseline `FVC_PCTPRED` in pulmonary sarcoidosis; the source labels the equation a percent change from baseline, but its values are the absolute score).
 - **Notes:** The direct FVC sibling of `fev1pp` -- same percent-of-predicted construct, different spirometric volume (vital capacity rather than one-second expiratory volume). Dimensionless, and **not** interconvertible with an absolute FVC volume without the reference equation, for the same reason `fev1pp` is not interconvertible with `FEV1`. Registered lowercase to match `fev1pp` rather than the uppercase `FEV1` form, because the percent-predicted endpoints are written lowercase throughout the register. Distinct from `fvcz`, which standardises the same measurement for age, sex and height as a Z-score.
 
 ### uprocfb (**canonical change-from-baseline daily urinary protein excretion**)
@@ -2602,6 +2602,20 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** `FVC Z-score`, `zFVC`, `FVC SDS`.
 - **Example models:** `Hartmann_2026_nintedanib_fvcz.R` (single `fvcz` output; linear annual decline with a concentration-driven slope effect).
 - **Notes:** A standardised score, so it is dimensionless and **signed** -- values are typically negative in fibrosing-ILD populations and a treatment benefit is a less-negative slope, which means sign-sensitive validation assertions on this state must not assume positivity. Registered alongside `fvcpp` because the two are reported as co-primary forms of the same measurement (Hartmann 2026 models both), but they are separate states: converting between them requires the GLI reference equation and the subject's age, sex and height, so never treat one as a rescaling of the other. This is the register's first Z-score-standardised endpoint; a further standardised endpoint (e.g. a height or weight Z-score) should follow the `<endpoint>z` form established here.
+
+### ksqlung (**canonical absolute King's Sarcoidosis Questionnaire-Lung score output**)
+- **Type:** compartment
+- **Role:** The King's Sarcoidosis Questionnaire-Lung (KSQ-Lung) module score, 0-100 points, HIGHER = BETTER pulmonary health status (cough, dyspnoea, chest pain). Algebraic output in the founding model (no ODE state).
+- **Source aliases:** `KSQ-Lung score`, `KSQL` -- Walker 2023.
+- **Example models:** `Walker_2023_efzofitimod_ksqlung.R` (founding example; static landmark linear regression of the Week-24 score on time-averaged efzofitimod AUC; the source labels the equation a percent change from baseline, but its values are the absolute score).
+- **Notes:** Lowercase run-together, following `pasi` / `ipss` / `madrs`. A change-from-baseline endpoint should register `ksqlungcfb` under the `<state>cfb` convention (see `bcvacfb`) rather than overload this name. The baseline reading is the covariate `KSQ_LUNG_BL`, and the 4-point responder probability is `prob_ksqlung_mcid`.
+
+### ocsdosecfb (**canonical percent change from baseline in daily oral corticosteroid dose output**)
+- **Type:** compartment
+- **Role:** Percent change from baseline in the mean daily oral corticosteroid dose (prednisone-equivalent), `100 * (dose - dose_0) / dose_0`, used as the steroid-sparing efficacy endpoint. **Sign convention: NEGATIVE for improvement** (less steroid needed). Algebraic output in the founding model (no ODE state).
+- **Source aliases:** `Mean Daily OCS Dose Post-Taper Period - Percent Change from Baseline`, `drug-adjusted AUC percent change from baseline` -- Walker 2023 Supplementary Equation A.1 and Figure 4.
+- **Example models:** `Walker_2023_efzofitimod_ocs.R` (founding example; static landmark linear regression on the post-taper time-averaged efzofitimod AUC in pulmonary sarcoidosis; the mean daily dose is the cumulative dose over Day 51 to Week 24 divided by the number of days recorded).
+- **Notes:** Formed by the `<state>cfb` change-from-baseline convention (see `bcvacfb`); like `crcfb` it is a PERCENT change, so a model of the absolute change in mg/day should register a sibling rather than overload this name. The averaging window is model-specific and goes in each model's description. The base state `ocsdose` is not registered.
 
 ### ms_headache_days (**canonical monthly headache-day count**)
 - **Type:** compartment
@@ -5322,6 +5336,20 @@ The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for
 - **Source aliases:** none.
 - **Example models:** `Johnson_2024_osimertinib_lvef_osimertinib.R` (penalized logistic regression on the natural log of the osimertinib AUCss in nM*h plus baseline LVEF in percent), `Johnson_2024_osimertinib_lvef_az5104.R` (the same model driven by the AZ5104 metabolite AUCss).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape (the `_decrease` suffix as in `prob_anc_decrease` / `prob_plt_decrease`). The event is a threshold crossing defined from serial echocardiography or MUGA LVEF values, not a heart-failure diagnosis. Distinct from the `lvef` PD output, which carries the LVEF value itself through time; this is the probability of crossing the 10-point / below-50% threshold, with no time dimension.
+
+### prob_fvcpp_incr2p5 (**canonical probability of a ppFVC increase of at least 2.5% output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient's percent-predicted FVC rises by at least 2.5% from baseline at the landmark visit, in a static landmark exposure-response logistic model. Walker 2023 calls it the ppFVC minimal clinically important difference, a threshold borrowed from systemic-sclerosis-associated ILD because no validated ppFVC MCID exists for sarcoidosis.
+- **Source aliases:** `ppFVC Increase>2.5%`, `ppFVC MCID` -- Walker 2023 Figure 9 and Results 3.3.
+- **Example models:** `Walker_2023_efzofitimod_fvcpp_mcid.R` (founding example; logistic regression on the time-averaged efzofitimod AUC from Day 1 to Week 24 and baseline `FVC_PCTPRED`, Week-24 landmark).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the threshold is spelled into the name (`incr2p5`) because ppFVC responder thresholds vary between indications (2.5%, 5% and 10% are all in use), so a model using another threshold registers its own sibling rather than reusing this one. The source does not say whether the 2.5% is a relative change or 2.5 percentage points; record the reading in each model.
+
+### prob_ksqlung_mcid (**canonical probability of a KSQ-Lung improvement of at least 4 points output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient's King's Sarcoidosis Questionnaire-Lung score improves by at least 4 points from baseline (the validated sarcoidosis MCID, Baughman 2021) at the landmark visit, in a static landmark exposure-response logistic model.
+- **Source aliases:** `MCIDs in KSQ-Lung` -- Walker 2023 Figure 9.
+- **Example models:** `Walker_2023_efzofitimod_ksqlung_mcid.R` (founding example; logistic regression on the time-averaged efzofitimod AUC from Day 1 to Week 24 and `KSQ_LUNG_BL`, Week-24 landmark).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. `mcid` here means the validated 4-point KSQ-Lung threshold; the absolute score is the `ksqlung` output and the baseline is the covariate `KSQ_LUNG_BL`.
 
 ### fpg_placebo (**canonical fasting plasma glucose placebo arm**)
 - **Type:** compartment
