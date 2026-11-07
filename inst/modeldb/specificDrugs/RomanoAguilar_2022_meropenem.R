@@ -91,7 +91,7 @@ RomanoAguilar_2022_meropenem <- function() {
     # Interindividual variability. Table 2 reports both terms as CV% under
     # an omega^2 symbol and does not give the conversion; the log-normal
     # form omega^2 = log(1 + CV^2) is used (see vignette Assumptions).
-    etalcl ~ 0.27446  # Table 2 'Interindividual variability on CL (CV%)' = 56.2 (RSE 8%, shrinkage 7%); log(1 + 0.562^2)
+    etalcl ~ log(1 + 0.562^2)  # Table 2 'Interindividual variability on CL (CV%)' = 56.2 (RSE 8%, shrinkage 7%)
     etalvc ~ 0.19959  # Table 2 'Interindividual variability on V (CV%)' = 47 (RSE 18%, shrinkage 31%); log(1 + 0.47^2)
 
     # Residual error. Table 2 'Residual variability (ug/mL)' sigma = 3.53

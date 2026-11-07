@@ -52,10 +52,10 @@ elDesoky_1997_theophylline_pediatric_asthma <- function() {
     # individual fits (Table 2 SC column, last row); these are descriptive variances of the
     # individual-fit estimates, not formal popPK omega estimates from a NONMEM-style fit. The
     # caveat is documented in the vignette Assumptions and deviations section.
-    # CV(CL) = 0.20 / 1.10 = 0.1818;  omega^2 = log(1 + 0.1818^2) = 0.03257
-    # CV(Vd) = 0.08 / 0.50 = 0.1600;  omega^2 = log(1 + 0.1600^2) = 0.02529
-    etalcl ~ 0.03257  # elDesoky 1997 Table 2 SC column SD/mean: CV(CL) ~ 18 percent
-    etalvc ~ 0.02529  # elDesoky 1997 Table 2 SC column SD/mean: CV(Vd) ~ 16 percent
+    # CV(CL) = 0.20 / 1.10 = 0.1818;  omega^2 = log(1 + 0.1818^2) = 0.03252
+    # CV(Vd) = 0.08 / 0.50 = 0.1600;  omega^2 = log(1 + 0.1600^2) = 0.02528
+    etalcl ~ log(1 + 0.1818^2)  # elDesoky 1997 Table 2 SC column SD/mean: CV(CL) ~ 18 percent
+    etalvc ~ log(1 + 0.1600^2)  # elDesoky 1997 Table 2 SC column SD/mean: CV(Vd) ~ 16 percent
 
     # Residual error not reported by the source paper. The EMIT theophylline assay has
     # within-run CV 4.1-5.8 percent and between-run CV 5.3 percent (Methods, page 14);

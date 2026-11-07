@@ -60,9 +60,9 @@ The table below collects them in one place for review.
 | `e_wt_cl_acdap` (allometric exponent on CLm) | 0.75 (fixed) | Methods Eq 3 |
 | `e_creat_cl_acdap` (SCR power exponent on CLm) | 0.7    | Table 2 Final column (RSE 31.8%) |
 | `etalcl + etalvc` (correlated block, omega^2) | (0.2082, 0.2926, 1.4649) | Table 2 CV(CL)=48.1%, CV(Vc)=182.4%, corr=0.53 (footnote d) |
-| `etalka`        | log(1 + 0.362^2) = 0.1239 | Table 2 IIV, KA = 36.2% CV |
-| `etalq`         | log(1 + 0.487^2) = 0.2122 | Table 2 IIV, Q/F = 48.7% CV |
-| `etalvp`        | log(1 + 0.898^2) = 0.6989 | Table 2 IIV, Vp/F = 89.8% CV |
+| `etalka`        | log(1 + 0.362^2) = 0.1231 | Table 2 IIV, KA = 36.2% CV |
+| `etalq`         | log(1 + 0.487^2) = 0.2128 | Table 2 IIV, Q/F = 48.7% CV |
+| `etalvp`        | log(1 + 0.898^2) = 0.5913 | Table 2 IIV, Vp/F = 89.8% CV |
 | `etalcl_acdap`  | log(1 + 0.386^2) = 0.1389 | Table 2 IIV, CLm/F3ACDAP = 38.6% CV |
 | `propSd` (3,4-DAP proportional) | 0.348 | Table 2 residual error, 3,4-DAP 34.8% |
 | `propSd_acdap` (3-Ac DAP proportional) | 0.201 | Table 2 residual error, 3-Ac DAP 20.1% |
@@ -70,8 +70,8 @@ The table below collects them in one place for review.
 | `lec50` (EC50)                          | log(29.8)        | Table 3 Final, EC50 = 29.8 ng/mL (273 nM) |
 | `le0` (baseline 3TUG)                   | log(18.2)        | Table 3 Final, E0 = 18.2 sec |
 | `etalogitemax` (logit-scale variance)   | 2.93             | Table 3 IIV, Fractional Emax variance = 2.93 |
-| `etalec50`                              | log(1 + 0.883^2) = 0.5760 | Table 3 IIV, EC50 = 88.3% CV |
-| `etale0`                                | log(1 + 0.713^2) = 0.4109 | Table 3 IIV, E0 = 71.3% CV |
+| `etalec50`                              | log(1 + 0.883^2) = 0.5764 | Table 3 IIV, EC50 = 88.3% CV |
+| `etale0`                                | log(1 + 0.713^2) = 0.4110 | Table 3 IIV, E0 = 71.3% CV |
 | `propSd_tug3` (3TUG proportional)       | 0.214            | Table 3 residual error, 21.4% |
 | Equation: 2-cmt parent + 1-cmt metabolite, Fm fixed to 1 | n/a | Methods, "Fm was fixed to 1 to obtain an identifiable model"; Figure 1 schematic |
 | Equation: WT allometric scaling          | n/a | Methods Eqs 3 and 4 with reference WT 82 kg |

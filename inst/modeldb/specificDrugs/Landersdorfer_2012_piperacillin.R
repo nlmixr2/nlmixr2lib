@@ -67,13 +67,13 @@ Landersdorfer_2012_piperacillin <- function() {
     # CV%s are encoded here; see vignette Assumptions and deviations.
     # omega^2 = log(CV^2 + 1) converts each reported CV% to the internal
     # log-scale variance.
-    etalcl_renal  ~ 0.199533  # CL_R   47% CV -- Table 2 Model 3; log(0.47^2 + 1)
-    etalvmax      ~ 0.534007  # V_maxR 84% CV -- Table 2 Model 3; log(0.84^2 + 1)
-    etalkm        ~ 0.812973  # Km_R  112% CV -- Table 2 Model 3; log(1.12^2 + 1)
-    etalcl_nonren ~ 0.031881  # CL_NR  18% CV -- Table 2 Model 3; log(0.18^2 + 1)
-    etalvc        ~ 0.031881  # V_1    18% CV -- Table 2 Model 3; log(0.18^2 + 1)
-    etalvp        ~ 0.207302  # V_2    48% CV -- Table 2 Model 3; log(0.48^2 + 1)
-    etalvp2       ~ 0.022254  # V_3    15% CV -- Table 2 Model 3; log(0.15^2 + 1)
+    etalcl_renal  ~ log(1 + 0.47^2)  # CL_R   47% CV -- Table 2 Model 3
+    etalvmax      ~ log(1 + 0.84^2)  # V_maxR 84% CV -- Table 2 Model 3
+    etalkm        ~ log(1 + 1.12^2)  # Km_R  112% CV -- Table 2 Model 3
+    etalcl_nonren ~ log(1 + 0.18^2)  # CL_NR  18% CV -- Table 2 Model 3
+    etalvc        ~ log(1 + 0.18^2)  # V_1    18% CV -- Table 2 Model 3
+    etalvp        ~ log(1 + 0.48^2)  # V_2    48% CV -- Table 2 Model 3
+    etalvp2       ~ log(1 + 0.15^2)  # V_3    15% CV -- Table 2 Model 3
     # No BSV reported (NONMEM, Table 2) on lq (CLic_shallow) and lq2 (CLic_deep).
 
     # Residual error: combined additive + proportional on plasma drug

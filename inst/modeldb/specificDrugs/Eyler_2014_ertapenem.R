@@ -87,17 +87,17 @@ Eyler_2014_ertapenem <- function() {
     # Interindividual variability (Eyler 2014 Table 2 'Interindividual
     # variability (%)' column; exponential random-effect model, %CV on the
     # natural scale; variance omega^2 = log(CV^2 + 1)).
-    #   CLS     : 23% CV -> omega^2 = log(0.23^2 + 1) = 0.05163
-    #   VC      : 33% CV -> omega^2 = log(0.33^2 + 1) = 0.10324
+    #   CLS     : 23% CV -> omega^2 = log(0.23^2 + 1) = 0.05155
+    #   VC      : 33% CV -> omega^2 = log(0.33^2 + 1) = 0.10337
     #   VP      : 20% CV -> omega^2 = log(0.20^2 + 1) = 0.03922
-    #   CLdial  : 32% CV -> omega^2 = log(0.32^2 + 1) = 0.09752
-    #   Bmax    : 17% CV -> omega^2 = log(0.17^2 + 1) = 0.02842
+    #   CLdial  : 32% CV -> omega^2 = log(0.32^2 + 1) = 0.09749
+    #   Bmax    : 17% CV -> omega^2 = log(0.17^2 + 1) = 0.02849
     # CLD and KD: IIV reported as 'NA' (not estimated).
-    etalcl          ~ 0.05163  # Eyler 2014 Table 2 (IIV CLS,    23% CV)
-    etalvc          ~ 0.10324  # Eyler 2014 Table 2 (IIV VC,     33% CV)
+    etalcl          ~ log(1 + 0.23^2)  # Eyler 2014 Table 2 (IIV CLS,    23% CV)
+    etalvc          ~ log(1 + 0.33^2)  # Eyler 2014 Table 2 (IIV VC,     33% CV)
     etalvp          ~ 0.03922  # Eyler 2014 Table 2 (IIV VP,     20% CV)
-    etalcl_dialysis ~ 0.09752  # Eyler 2014 Table 2 (IIV CLdial, 32% CV)
-    etalbmax        ~ 0.02842  # Eyler 2014 Table 2 (IIV Bmax,   17% CV)
+    etalcl_dialysis ~ log(1 + 0.32^2)  # Eyler 2014 Table 2 (IIV CLdial, 32% CV)
+    etalbmax        ~ log(1 + 0.17^2)  # Eyler 2014 Table 2 (IIV Bmax,   17% CV)
 
     # Residual error: proportional on both unbound and total outputs
     # (Eyler 2014 Methods, Pharmacokinetic analysis: 'Residual unexplained

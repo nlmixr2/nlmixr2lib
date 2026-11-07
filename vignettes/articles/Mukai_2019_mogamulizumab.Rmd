@@ -48,7 +48,7 @@ The per-parameter origin is recorded as an in-file comment next to each `ini()` 
 | `e_bsa_vc` | 0.884 | Table 5, BSA on V1 = 0.884 (power exponent) |
 | `e_alb_vp` | -1.47 | Table 5, ALB on V2 = -1.47 (power exponent) |
 | `etalcl` | 0.227 (omega²) | Table 5, CL IIV SD = 50.5%; omega² = log(1 + 0.505²) = 0.227 |
-| `etalvc` | 0.0411 (omega²) | Table 5, V1 IIV SD = 20.5%; omega² = log(1 + 0.205²) = 0.0411 |
+| `etalvc` | 0.0412 (omega²) | Table 5, V1 IIV SD = 20.5%; omega² = log(1 + 0.205²) = 0.0412 |
 | `etalvp` | 0.424 (omega²) | Table 5, V2 IIV SD = 72.7%; omega² = log(1 + 0.727²) = 0.424 |
 | `propSd` | 0.261 | Table 5, Residual error = 0.261 (log-additive, equivalent to 26.1% proportional CV on back-transform) |
 | ALB reference | 4.0 g/dL | Table 6, Reference row |

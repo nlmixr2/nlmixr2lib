@@ -248,8 +248,8 @@ Ravix_2024_trametinib <- function() {
     # Supported on clearance only: adding IIV to the other PK parameters gave
     # estimates close to zero and no significant fit improvement (dOFV > -3.4,
     # p > 0.05; Results 3.2). Reported as a CV of 23%, so on the exponential-eta
-    # scale omega^2 = log(1 + CV^2) = log(1 + 0.23^2) = 0.0515459.
-    etalcl ~ 0.0515459  # Table 2 'IIV_CL (%) 23 (14)'; bootstrap median 22% (95% PI 13, 28). Down from 45% in the covariate-free base model (Results 3.2).
+    # scale omega^2 = log(1 + CV^2) = log(1 + 0.23^2) = 0.0515483.
+    etalcl ~ log(1 + 0.23^2)  # Table 2 'IIV_CL (%) 23 (14)'; bootstrap median 22% (95% PI 13, 28). Down from 45% in the covariate-free base model (Results 3.2).
 
     # ---- Residual error (Ravix 2024 Table 2) ----
     propSd <- 0.20; label("Proportional residual error (fraction)")  # Table 2 'sigma_prop (%) 20 (10)', expressed as CV (%); bootstrap median 20% (95% PI 16, 24). A proportional model was retained over additive and combined alternatives (Methods 2.2.1, Results 3.2).

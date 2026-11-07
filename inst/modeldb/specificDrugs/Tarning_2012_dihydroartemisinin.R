@@ -254,20 +254,20 @@ Tarning_2012_dihydroartemisinin <- function() {
     # SQRT of [exp(estimated variance) - 1]'). The internal log-normal
     # variances are recovered by omega^2 = log((CV/100)^2 + 1):
     #   V CV 12.8% -> log(0.128^2 + 1) = 0.01625
-    #   F CV 30.3% -> log(0.303^2 + 1) = 0.08786
+    #   F CV 30.3% -> log(0.303^2 + 1) = 0.08784
     # Only V/F and F carry IIV in the source model; CL/F has a dash in
     # the IIV column of Table 4.
     etalvc     ~ 0.01625  # Tarning 2012 Table 4: IIV on V/F = 12.8% CV (RSE 27.7%; 95% CI 8.70-16.0)
-    etalfdepot ~ 0.08786  # Tarning 2012 Table 4: IIV on F   = 30.3% CV (RSE 24.8%; 95% CI 20.9-35.7)
+    etalfdepot ~ log(1 + 0.303^2)  # Tarning 2012 Table 4: IIV on F   = 30.3% CV (RSE 24.8%; 95% CI 20.9-35.7)
 
     # Between-occasion variability (BOV) on MTT across 3 dose
     # occasions, multiplexed by the OCC indicator. NONMEM $OMEGA
     # BLOCK(1) SAME pattern: occasion-1 carries the estimated variance
     # and occasions 2/3 fix the same value.
-    #   MTT CV 50.9% -> log(0.509^2 + 1) = 0.23069
-    etaiov_mtt_1 ~ 0.23069        # Tarning 2012 Table 4: BOV on MTT = 50.9% CV (RSE 15.7%; 95% CI 41.8-59.6)
-    etaiov_mtt_2 ~ fix(0.23069)   # NONMEM $OMEGA BLOCK(1) SAME (occasion 2 shares occasion-1 variance)
-    etaiov_mtt_3 ~ fix(0.23069)   # NONMEM $OMEGA BLOCK(1) SAME (occasion 3 shares occasion-1 variance)
+    #   MTT CV 50.9% -> log(0.509^2 + 1) = 0.23038
+    etaiov_mtt_1 ~ log(1 + 0.509^2)  # Tarning 2012 Table 4: BOV on MTT = 50.9% CV (RSE 15.7%; 95% CI 41.8-59.6)
+    etaiov_mtt_2 ~ fix(log(1 + 0.509^2))  # NONMEM $OMEGA BLOCK(1) SAME (occasion 2 shares occasion-1 variance)
+    etaiov_mtt_3 ~ fix(log(1 + 0.509^2))  # NONMEM $OMEGA BLOCK(1) SAME (occasion 3 shares occasion-1 variance)
 
     # Residual error. Tarning 2012 Methods 'Pharmacokinetic analysis':
     # 'The residual random variability was assumed to be additive since

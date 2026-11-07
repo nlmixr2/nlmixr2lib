@@ -216,8 +216,8 @@ Samb_2022_gentamicin <- function() {
     e_page_kin_saliva <- -8.8; label("Power exponent of (PMA/244.2 days) on kin_saliva (unitless)") # Table 2 final model theta_PMA_K13 = -8.8 (RSE 16%; bootstrap median -8.7, 95% CI -11.7 to -5.7)
     e_page_kel_saliva <- -5.1; label("Power exponent of (PMA/244.2 days) on kel_saliva (unitless)") # Table 2 final model theta_PMA_K30 = -5.1 (RSE 28%; bootstrap median -4.9, 95% CI -8.1 to -2.0)
 
-    # IIV k30 38% read as a CV: omega^2 = log(1 + 0.38^2) = 0.134886
-    etalkel_saliva ~ 0.134886 # Table 2 final model IIV k30 = 38.0 pct (RSE 17%; bootstrap median 37.3, 95% CI 30.5-43.8)
+    # IIV k30 38% read as a CV: omega^2 = log(1 + 0.38^2) = 0.134880
+    etalkel_saliva ~ log(1 + 0.38^2)  # Table 2 final model IIV k30 = 38.0 pct (RSE 17%; bootstrap median 37.3, 95% CI 30.5-43.8)
 
     # 'Logarithmic proportional error model' on log-transformed saliva data
     # (Results 3.4): an additive error on log(Csaliva), i.e. lnorm().

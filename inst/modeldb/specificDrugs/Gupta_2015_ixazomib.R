@@ -150,10 +150,10 @@ Gupta_2015_ixazomib <- function() {
     # on the linear scale; the corresponding internal log-scale
     # variance is omega^2 = log(1 + CV^2).
     # ------------------------------------------------------------------
-    etalcl     ~ 0.1647    # Gupta 2015 Table 3 %BSV CL 42.3% -> omega^2 = log(1 + 0.423^2) = 0.1647
+    etalcl     ~ log(1 + 0.423^2)  # Gupta 2015 Table 3 %BSV CL 42.3%
     etalvc     ~ 0.6981    # Gupta 2015 Table 3 %BSV V2 100.5% -> omega^2 = log(1 + 1.005^2) = 0.6981
-    etalvp2    ~ 0.1858    # Gupta 2015 Table 3 %BSV V4 45.2% -> omega^2 = log(1 + 0.452^2) = 0.1858
-    etalka     ~ 0.2912    # Gupta 2015 Table 3 %BSV Ka 58.1% -> omega^2 = log(1 + 0.581^2) = 0.2912
+    etalvp2    ~ log(1 + 0.452^2)  # Gupta 2015 Table 3 %BSV V4 45.2%
+    etalka     ~ log(1 + 0.581^2)  # Gupta 2015 Table 3 %BSV Ka 58.1%
     etalfdepot ~ 0.1660    # Gupta 2015 Table 3 %BSV F 42.5% -> omega^2 = log(1 + 0.425^2) = 0.1660
 
     # ------------------------------------------------------------------

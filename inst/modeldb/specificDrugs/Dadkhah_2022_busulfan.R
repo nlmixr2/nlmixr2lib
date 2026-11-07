@@ -172,10 +172,10 @@ Dadkhah_2022_busulfan <- function() {
 
     # IIV. Table 2 reports %CV with the footnote '%CV = sqrt(exp(OMEGA)-1) *
     # 100', so omega^2 = log(1 + CV^2).
-    etalcl ~ 0.045171 # Table 2 row 'IIV CL Bu [CV%]' = 21.5; log(1 + 0.215^2) = 0.045171
+    etalcl ~ log(1 + 0.215^2)  # Table 2 row 'IIV CL Bu [CV%]' = 21.5
     etalvc ~ 0.009950 # Table 2 row 'IIVV Bu [CV%]' = 10; log(1 + 0.10^2) = 0.009950
-    etalcl_sulfolane ~ 0.820843 # Table 2 row 'IIV CL Su [CV%]' = 112.8; log(1 + 1.128^2) = 0.820843
-    etalvc_sulfolane ~ 0.471361 # Table 2 row 'IIVV Su [CV%]' = 77.6; log(1 + 0.776^2) = 0.471361
+    etalcl_sulfolane ~ log(1 + 1.128^2)  # Table 2 row 'IIV CL Su [CV%]' = 112.8
+    etalvc_sulfolane ~ log(1 + 0.776^2)  # Table 2 row 'IIVV Su [CV%]' = 77.6
 
     # IOV on log busulfan clearance, one shared variance across the (up to)
     # three sampled occasions.

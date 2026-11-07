@@ -63,7 +63,7 @@ collects them in one place for review.
 | `bw_ref` (reference body weight, kg) | `1.76` | Boer-Perez 2026 Table 1 cohort median; Table 2 covariate equation denominator |
 | `creat_ref` (reference SCr, mg/dL) | `0.4` | Boer-Perez 2026 Table 1 cohort median; Table 2 covariate equation denominator |
 | `etalcl` (omega_CL) | `0.13688` (38.3% CV) | Boer-Perez 2026 Table 2: omega_CL 38.3% CV; omega^2 = log(1 + CV^2) |
-| `etalvc` (omega_V) | `0.13288` (37.7% CV) | Boer-Perez 2026 Table 2: omega_V 37.7% CV; omega^2 = log(1 + CV^2) |
+| `etalvc` (omega_V) | `0.13289` (37.7% CV) | Boer-Perez 2026 Table 2: omega_V 37.7% CV; omega^2 = log(1 + CV^2) |
 | `propSd` (proportional residual error) | `0.114` | Boer-Perez 2026 Table 2: sigma_proportional 11.4% CV |
 | Eq. 3 (BW allometric scaling) | n/a | Boer-Perez 2026 Methods, Eq. 3 |
 | Eq. 4 (PMA Hill maturation factor F_PMA) | n/a | Boer-Perez 2026 Methods, Eq. 4 |

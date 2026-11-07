@@ -122,12 +122,12 @@ Ma_2020_vancomycin <- function() {
     # Inter-individual variability, exponential (Methods: P_ij = TV(P_j) *
     # exp(eta_ij)), on CL only -- Table 2 carries no omega for V. Table 2
     # prints omega_1 = 21.5% under the heading 'Intersubject variance of CL';
-    # it is read as a CV% and converted to log(0.215^2 + 1) = 0.04517. The
+    # it is read as a CV% and converted to log(0.215^2 + 1) = 0.04519. The
     # variance reading (omega^2 = 0.215) is falsified by Table 3: under it
     # every one of the 15 recommended weight/GFR regimens gives only 80-88%
     # attainment of AUC0-24 >= 400, whereas the paper reports >90% for all.
     # The CV reading gives 97-99.5%. See the vignette.
-    etalcl ~ 0.04517 # Ma 2020 Table 2 final model, omega_1 = 21.5% CV (RSE 33.7%) -> log(0.215^2 + 1)
+    etalcl ~ log(1 + 0.215^2)  # Ma 2020 Table 2 final model, omega_1 = 21.5% CV (RSE 33.7%)
 
     # Proportional residual error (Methods residual equation with the additive
     # term dropped; Results: the proportional model had the lowest OFV).

@@ -64,9 +64,9 @@ Solana_2014_omeprazole <- function() {
     # The reported 75.5% is the CV% of the log-normal CL distribution; conversion
     # to the log-scale variance for nlmixr2's `eta ~ var` syntax follows the
     # standard log-normal identity omega^2 = log(1 + CV^2):
-    #   omega^2 = log(1 + 0.755^2) = log(1 + 0.570025) = log(1.570025) = 0.45106.
+    #   omega^2 = log(1 + 0.755^2) = log(1 + 0.570025) = log(1.570025) = 0.45109.
     # No IIV is reported on Q, Vc, or Vp in the abstract.
-    etalcl ~ 0.45106  # Solana 2014 abstract: IIV(CL) = 75.5% CV -> log(1 + 0.755^2) = 0.45106
+    etalcl ~ log(1 + 0.755^2)  # Solana 2014 abstract: IIV(CL) = 75.5% CV
 
     # Residual variability -- Solana 2014 abstract Results paragraph:
     # "residual variability [130.0% (5.26%)] were still found in the final

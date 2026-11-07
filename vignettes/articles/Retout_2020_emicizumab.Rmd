@@ -86,7 +86,7 @@ table below collects them.
 | `e_wt_vc` | 1.00 | Table 4, 'Effect of BW on V/F' |
 | `e_race_black_vc` | -0.215 | Table 4, 'Effect of Black on V/F' |
 | `e_age_fdepot` | 0.00651 | Table 4, 'Effect of AGE>30 years on F'; sign from the Section 3.1 F equation |
-| `etalcl`, `etalvc`, `etalka` | 0.079152, 0.064927, 0.422400 | Table 4, BPV 28.7%, 25.9%, 72.5% CV; `omega^2 = log(1 + CV^2)` |
+| `etalcl`, `etalvc`, `etalka` | 0.079152, 0.064927, 0.422404 | Table 4, BPV 28.7%, 25.9%, 72.5% CV; `omega^2 = log(1 + CV^2)` |
 | cov(`etalcl`, `etalvc`) | 0.015556 | Table 4, correlation CL/F-V/F 0.217 |
 | cov(`etalcl`, `etalka`) | -0.062352 | Table 4, correlation CL/F-KA -0.341 |
 | cov(`etalvc`, `etalka`) | 0 | Not reported in Table 4 |

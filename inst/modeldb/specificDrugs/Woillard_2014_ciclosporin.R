@@ -126,13 +126,13 @@ Woillard_2014_ciclosporin <- function() {
     # Inter-patient variability (Table 2 IPV column). Conversion from
     # reported %CV to log-scale variance via omega^2 = log(1 + CV^2):
     #   Ktr   CV 50 % -> log(1 + 0.50^2) = 0.22314
-    #   Q/F   CV 72 % -> log(1 + 0.72^2) = 0.41759
-    #   Vc/F  CV 57 % -> log(1 + 0.57^2) = 0.28140
+    #   Q/F   CV 72 % -> log(1 + 0.72^2) = 0.41766
+    #   Vc/F  CV 57 % -> log(1 + 0.57^2) = 0.28134
     #   CL/F  CV 40 % -> log(1 + 0.40^2) = 0.14842
     # No IIV is reported on Vp/F (Vp/F was fixed; IPV is "NA" in Table 2).
     etalktr ~ 0.22314                                                                         # Table 2, IPV Ktr = 50 % CV
-    etalq   ~ 0.41759                                                                         # Table 2, IPV Q/F = 72 % CV
-    etalvc  ~ 0.28140                                                                         # Table 2, IPV Vc/F = 57 % CV
+    etalq   ~ log(1 + 0.72^2)  # Table 2, IPV Q/F = 72 % CV
+    etalvc  ~ log(1 + 0.57^2)  # Table 2, IPV Vc/F = 57 % CV
     etalcl  ~ 0.14842                                                                         # Table 2, IPV CL/F = 40 % CV
 
     # Combined additive + proportional residual error. The paper's Table 2

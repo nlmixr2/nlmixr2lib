@@ -51,9 +51,9 @@ Every parameter and equation traces back to the Hoglund 2012 publication; the fu
 | `lfdepot = fixed(log(1))` (F)                  | 1 (fixed) | Table 2 'F (%) = 100 fix' |
 | `e_wt_cl = fixed(0.75)` (allometric on CL/Q)   | 0.75 (fixed) | Methods page 4: 'allometric function on all clearance (power of 0.75)' |
 | `e_wt_vc = fixed(1.00)` (allometric on V)      | 1.00 (fixed) | Methods page 4: 'and volume parameters (power of 1)' |
-| `etalcl     ~ 0.049389` (var, log-scale)       | CV 22.5% (BSV) | Table 2 BSV CL (RSE 31.5%); variance = log(0.225^2 + 1) |
-| `etalmtt    ~ 0.313762` (var, log-scale)       | CV 60.7% (BOV, treated as forward-sim IIV) | Table 2 BOV MTT (RSE 22.8%); variance = log(0.607^2 + 1) |
-| `etalfdepot ~ 0.113707` (var, log-scale)       | CV 34.7% (BSV) | Table 2 BSV F (RSE 59.2%); variance = log(0.347^2 + 1) |
+| `etalcl     ~ 0.049385` (var, log-scale)       | CV 22.5% (BSV) | Table 2 BSV CL (RSE 31.5%); variance = log(0.225^2 + 1) |
+| `etalmtt    ~ 0.313678` (var, log-scale)       | CV 60.7% (BOV, treated as forward-sim IIV) | Table 2 BOV MTT (RSE 22.8%); variance = log(0.607^2 + 1) |
+| `etalfdepot ~ 0.113694` (var, log-scale)       | CV 34.7% (BSV) | Table 2 BSV F (RSE 59.2%); variance = log(0.347^2 + 1) |
 | `propSd = sqrt(0.0973)` ~= 0.312               | RUV = 0.0973 (variance, log-scale) | Table 2 RUV (RSE 5.90%; 95% CI 0.0753-0.120) |
 | 3 transit compartments fixed; `ktr = 4 / MTT`  | -- | Methods + Results: 'transit-compartment (n=3) absorption model' and 'ka and ktr were set equal'; Savic 2007 convention |
 | Three-compartment disposition (`central`, `peripheral1`, `peripheral2`) | -- | Results: 'A three-compartmental disposition model resulted in a significantly better model fit'; Figure 1 schematic |
@@ -311,7 +311,7 @@ knitr::kable(landmark_typical,
 
 - **MTT between-occasion variability treated as forward-simulation IIV.** Hoglund 2012 Table 2 reports the MTT variability as a 60.7% CV between-occasion variability (BOV) rather than between-subject variability (BSV); the paper estimated BOV on MTT and F (per the 'BSV/BOV+ [RSE %]' column footnote indicating + denotes BOV). nlmixr2lib does not natively encode BOV separately from BSV in `ini()`; the BOV variance is therefore carried as `etalmtt` (a forward-simulation IIV term) so the absorption-phase variability is not lost. The same approximation is used by `Kloprogge_2013_lumefantrine`.
 
-- **BOV on bioavailability is omitted.** Hoglund 2012 Table 2 also reports a BOV on F of 64.8% CV (variance = log(0.648^2 + 1) = 0.350506). Encoding this as a third IIV term on `lfdepot` would double-count the F variability when combined with the published BSV CV 34.7%. The package model retains only the BSV term (`etalfdepot ~ 0.113707`); the BOV component is documented here as a deliberate omission. For a stochastic simulation that more closely matches the published variability spread, a downstream user can extend the model to add an occasion-level eta on F.
+- **BOV on bioavailability is omitted.** Hoglund 2012 Table 2 also reports a BOV on F of 64.8% CV (variance = log(0.648^2 + 1) = 0.350589). Encoding this as a third IIV term on `lfdepot` would double-count the F variability when combined with the published BSV CV 34.7%. The package model retains only the BSV term (`etalfdepot ~ 0.113694`); the BOV component is documented here as a deliberate omission. For a stochastic simulation that more closely matches the published variability spread, a downstream user can extend the model to add an occasion-level eta on F.
 
 - **Pregnancy is not a model covariate.** The final Hoglund 2012 model does not retain pregnancy as a covariate on any PK parameter; the paper's pregnancy discussion (full covariate approach, Figures 3 and 4) is exploratory rather than a structural model change. The package model therefore does not include `PREG` in `covariateData`. The vignette uses pregnancy only as a cohort label for stratifying the virtual population and the comparison against Table 3.
 

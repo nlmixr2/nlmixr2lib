@@ -85,9 +85,9 @@ Takahashi_2023_abatacept <- function() {
     # IIV as CV(%); converted to log-normal omega^2 = log(CV^2 + 1). No IIV on Q
     # in the final model. IIVs are independent (no block correlation reported in
     # Supplemental Table 4).
-    etalcl ~ 0.067858; label("IIV variance on log-CL (Takahashi 2023 Suppl. Tab. 4: 26.5%% CV; log(0.265^2 + 1))")
-    etalvc ~ 0.036946; label("IIV variance on log-Vc (Takahashi 2023 Suppl. Tab. 4: 19.4%% CV; log(0.194^2 + 1))")
-    etalvp ~ 0.167530; label("IIV variance on log-Vp (Takahashi 2023 Suppl. Tab. 4: 42.7%% CV; log(0.427^2 + 1))")
+    etalcl ~ log(1 + 0.265^2); label("IIV variance on log-CL (Takahashi 2023 Suppl. Tab. 4: 26.5%% CV; log(0.265^2 + 1))")
+    etalvc ~ log(1 + 0.194^2); label("IIV variance on log-Vc (Takahashi 2023 Suppl. Tab. 4: 19.4%% CV; log(0.194^2 + 1))")
+    etalvp ~ log(1 + 0.427^2); label("IIV variance on log-Vp (Takahashi 2023 Suppl. Tab. 4: 42.7%% CV; log(0.427^2 + 1))")
 
     # Residual error - Takahashi 2023 Supplemental Table 4 'Residual variability'
     # block: combined additive (0.049 ug/mL) + proportional (25.0% CV).

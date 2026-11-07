@@ -139,11 +139,11 @@ Kamal_2013_oseltamivir <- function() {
 
     etalcl + etalcl_oselcarb ~ c(0.16317,
                            0.09870, 0.13688)                                            # Kamal 2013 Table 2: omega^2(CLp/F) = log(0.421^2+1) = 0.16317; omega(CLp,CLm) = 0.0987; omega^2(CLm/F) = log(0.383^2+1) = 0.13688
-    etalvp + etalvc_oselcarb ~ c(0.34064,
-                           0.21800, 0.35515)                                            # Kamal 2013 Table 2: omega^2(Vp/F) = log(0.637^2+1) = 0.34064; omega(Vp,Vcm) = 0.218; omega^2(Vcm/F) = log(0.653^2+1) = 0.35515
-    etalka ~ 0.08999                                                                     # Kamal 2013 Table 2: omega^2(ka) = log(0.307^2+1) = 0.08999 (30.7% CV)
-    etalvc ~ 0.39231                                                                     # Kamal 2013 Table 2: omega^2(Vcp/F) = log(0.693^2+1) = 0.39231 (69.3% CV)
-    etalq  ~ 0.32607                                                                     # Kamal 2013 Table 2: omega^2(CLd/F) = log(0.621^2+1) = 0.32607 (62.1% CV)
+    etalvp + etalvc_oselcarb ~ c(log(1 + 0.637^2),
+                           0.21800, log(1 + 0.653^2))                                            # Kamal 2013 Table 2: omega^2(Vp/F) = log(0.637^2+1) = 0.34058; omega(Vp,Vcm) = 0.218; omega^2(Vcm/F) = log(0.653^2+1) = 0.35516
+    etalka ~ log(1 + 0.307^2)  # Kamal 2013 Table 2: omega(ka) = 30.7% CV
+    etalvc ~ log(1 + 0.693^2)  # Kamal 2013 Table 2: omega(Vcp/F) = 69.3% CV
+    etalq  ~ log(1 + 0.621^2)  # Kamal 2013 Table 2: omega(CLd/F) = 62.1% CV
 
     # Residual error.
     # OP: reduced CCV (proportional-only), sigma_CCV = 40.5% CV.

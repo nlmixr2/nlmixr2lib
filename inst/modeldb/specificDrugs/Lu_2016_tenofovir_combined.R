@@ -67,11 +67,11 @@ Lu_2016_tenofovir_combined <- function() {
     # Diagonal IIV. Lu 2016 Table 2 Combined final-model row:
     #   IIV on CL  = 16% CV -> log(1 + 0.16^2) = log(1.0256) = 0.02528
     #   IIV on V1  = 25% CV -> log(1 + 0.25^2) = log(1.0625) = 0.06062
-    #   IIV on Ka  = 61% CV -> log(1 + 0.61^2) = log(1.3721) = 0.31636
+    #   IIV on Ka  = 61% CV -> log(1 + 0.61^2) = log(1.3721) = 0.31634
     # No inter-eta correlations reported in the source.
     etalcl ~ 0.02528  # Lu 2016 Table 2 Combined final IIV on CL = 16% CV
     etalvc ~ 0.06062  # Lu 2016 Table 2 Combined final IIV on V1 = 25% CV
-    etalka ~ 0.31636  # Lu 2016 Table 2 Combined final IIV on Ka = 61% CV
+    etalka ~ log(1 + 0.61^2)  # Lu 2016 Table 2 Combined final IIV on Ka = 61% CV
 
     # Combined additive + proportional residual error (Lu 2016 Table 2
     # Combined final-model row). Concentrations are in ng/mL; additive SD is
