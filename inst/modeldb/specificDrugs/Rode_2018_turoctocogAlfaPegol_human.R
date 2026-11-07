@@ -85,8 +85,8 @@ Rode_2018_turoctocogAlfaPegol_human <- function() {
     # 'Cl-V covariance' 24% read as the CL-V correlation coefficient 0.24:
     # cov = 0.24 * sqrt(0.14842 * 0.060625) = 0.022780.
     etalcl + etalvc ~ c(0.14842, 0.022780, 0.060625)
-    etalka ~ 0.14177 # Table S2 IIV ka 39% -> log(1 + 0.39^2)
-    etalfdepot ~ 0.019414 # Table S2 IIV F 14% -> log(1 + 0.14^2)
+    etalka ~ log(1 + 0.39^2)  # Table S2 IIV ka 39%
+    etalfdepot ~ log(1 + 0.14^2)  # Table S2 IIV F 14%
 
     propSd <- 0.117; label("Proportional residual error (fraction)") # Table S3 proportional error = 11.7%
   })

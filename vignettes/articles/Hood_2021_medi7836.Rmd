@@ -92,12 +92,12 @@ collects them in one place.
 | Kon (fixed) | Hood 2021 Section 2.5 | 138.24 1/(nM·day), Biacore in-vitro |
 | Koff (fixed) | Hood 2021 Section 2.5 | 0.69 1/day, Biacore in-vitro |
 | ADA on CL | Hood 2021 Table 2 (Eq. 5) | `(1 + 0.717 * ADA_POS)`, ADA-positive post-baseline |
-| IIV CL/F | Hood 2021 Table 2 | CV 53.3% → ω² = log(1 + 0.533²) = 0.250303 |
-| IIV V2/F | Hood 2021 Table 2 | CV 72.7% → ω² = 0.424439 |
-| IIV V3/F | Hood 2021 Table 2 | CV 46.2% → ω² = 0.193389 |
-| IIV Q/F  | Hood 2021 Table 2 | CV 69.6% → ω² = 0.395029 |
-| IIV Kout | Hood 2021 Table 2 | CV 57.1% → ω² = 0.282271 |
-| IIV Cx fraction | Hood 2021 Table 2 | CV 154% → ω² = 1.215281 |
+| IIV CL/F | Hood 2021 Table 2 | CV 53.3% → ω² = log(1 + 0.533²) = 0.250050 |
+| IIV V2/F | Hood 2021 Table 2 | CV 72.7% → ω² = 0.424306 |
+| IIV V3/F | Hood 2021 Table 2 | CV 46.2% → ω² = 0.193463 |
+| IIV Q/F  | Hood 2021 Table 2 | CV 69.6% → ω² = 0.395021 |
+| IIV Kout | Hood 2021 Table 2 | CV 57.1% → ω² = 0.282198 |
+| IIV Cx fraction | Hood 2021 Table 2 | CV 154% → ω² = 1.215387 |
 | PK residual additive (ε1) | Hood 2021 Table 2 | 0.0546 ng/mL = 0.0546 µg/L |
 | PK residual proportional (ε2) | Hood 2021 Table 2 | 13.0% |
 | PD residual (ε3, on log scale) | Hood 2021 Table 2 | 6.9% |

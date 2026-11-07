@@ -67,7 +67,7 @@ collects them in one place for review.
 | `lcl` (CL at CrCl = 33.8 mL/min) | `log(1.30)` L/h | Table 2, row "Cl (L/h)" = 1.30 (RSE 7.2%; bootstrap 1.30, 95% CI 1.18-1.60) |
 | `e_crcl_cl` (CrCl effect on CL) | `0.023` per mL/min | Table 2, row "theta CrCl" = 0.023 (RSE 24.2%; bootstrap 0.023, 95% CI 0.011-0.033) |
 | `lvc` (V per kg TBW) | `log(1.23)` L/kg | Table 2, row "Vd (L/kg)" = 1.23 (RSE 4.9%; bootstrap 1.23, 95% CI 1.12-1.37) |
-| `etalcl` (IIV on CL) | `0.25925` | Table 2, row "eta Cl (%)" = 54.4 (RSE 10.2%, shrinkage 12%); converted as omega^2 = log(0.544^2 + 1) |
+| `etalcl` (IIV on CL) | `0.25923` | Table 2, row "eta Cl (%)" = 54.4 (RSE 10.2%, shrinkage 12%); converted as omega^2 = log(0.544^2 + 1) |
 | `etalvc` (IIV on V) | `0.04939` | Table 2, row "eta Vd (%)" = 22.5 (RSE 17.1%, shrinkage 26%); converted as omega^2 = log(0.225^2 + 1) |
 | `addSd` | `2.46` mg/L | Table 2, row "Additive error (mg/L)" = 2.46 (RSE 12.3%; bootstrap 2.44, 95% CI 1.85-2.98) |
 | `propSd` | `0.0316228` | Table 2, row "Proportional error (sigma^2)" = 0.001; sigma = sqrt(0.001) |

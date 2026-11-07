@@ -115,7 +115,7 @@ Goggin_2004_emfilermin <- function() {
     # internal log-scale variance follows omega^2 = log(CV^2 + 1).
     # -------------------------------------------------------------------
     etalcl ~ 0.02849  # Goggin 2004 Table 4: ISV(CL/F) = 17% CV  -> omega^2 = log(0.17^2 + 1) = 0.02849
-    etalvc ~ 0.07551  # Goggin 2004 Table 4: ISV(V/F)  = 28% CV  -> omega^2 = log(0.28^2 + 1) = 0.07551
+    etalvc ~ log(1 + 0.28^2)  # Goggin 2004 Table 4: ISV(V/F)  = 28% CV
 
     # -------------------------------------------------------------------
     # Inter-occasion variability on V/F. Three protocol-defined occasions

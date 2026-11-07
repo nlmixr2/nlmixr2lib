@@ -90,7 +90,7 @@ Panjasawatwong_2020_isoniazid <- function() {
     e_wt_vc <- fixed(1); label("Allometric exponent of body weight on Vc/F and Vp/F (unitless)") # Methods: 'exponent fixed to 1'
 
     # IIV: Table 2 reports %CV; omega^2 = log(1 + CV^2)
-    etalcl ~ 0.12715 # Table 2 IIV CL/F = 36.8% CV; log(1 + 0.368^2) = 0.12715
+    etalcl ~ log(1 + 0.368^2)  # Table 2 IIV CL/F = 36.8% CV
     etalq ~ 0.70315 # Table 2 IIV Q/F = 101% CV; log(1 + 1.01^2) = 0.70315
 
     # Residual error: additive on log-transformed concentrations. Table 2

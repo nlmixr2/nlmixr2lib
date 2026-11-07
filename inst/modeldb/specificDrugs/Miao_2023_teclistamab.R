@@ -200,7 +200,7 @@ Miao_2023_teclistamab <- function() {
     # three carry no eta. Variances are the log-normal back-transform
     # omega^2 = log(CV^2 + 1):
     #
-    #     CL1 53.6% -> log(0.536^2 + 1) = 0.2526
+    #     CL1 53.6% -> log(0.536^2 + 1) = 0.2525
     #     CL2 107%  -> log(1.07^2  + 1) = 0.7631
     #     V1  48.8% -> log(0.488^2 + 1) = 0.2136
     #     Ka  45.2% -> log(0.452^2 + 1) = 0.1859
@@ -210,7 +210,7 @@ Miao_2023_teclistamab <- function() {
     # Assumptions section. No off-diagonal covariances are reported, so the
     # four etas are encoded as independent.
     # ------------------------------------------------------------------
-    etalcl_exp_inf       ~ 0.2526  # Table 2: IIV on CL1, CV 53.6%, RSE 14.3%, shrinkage 14.4%
+    etalcl_exp_inf       ~ log(1 + 0.536^2)  # Table 2: IIV on CL1, CV 53.6%, RSE 14.3%, shrinkage 14.4%
     etalcl_exp_component ~ 0.7631  # Table 2: IIV on CL2, CV 107%,  RSE 20.5%, shrinkage 33.8%
     etalvc               ~ 0.2136  # Table 2: IIV on V1,  CV 48.8%, RSE 50.6%, shrinkage 29.5%
     etalka               ~ 0.1859  # Table 2: IIV on Ka,  CV 45.2%, RSE 32.1%, shrinkage 44.3%

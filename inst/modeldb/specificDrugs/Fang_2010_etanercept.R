@@ -70,15 +70,15 @@ Fang_2010_etanercept <- function() {
     # Inter-individual variability - Fang 2010 Table 3 reports IIV as %CV.
     # Translate to log-normal variance: omega^2 = log(CV^2 + 1).
     #   CL/F  33.3% CV -> log(0.333^2 + 1) = 0.1052
-    #   V/F   42.7% CV -> log(0.427^2 + 1) = 0.1676
+    #   V/F   42.7% CV -> log(0.427^2 + 1) = 0.1675
     #   Ka    55.6% CV -> log(0.556^2 + 1) = 0.2694
-    #   Tlag  81.8% CV -> log(0.818^2 + 1) = 0.5121
+    #   Tlag  81.8% CV -> log(0.818^2 + 1) = 0.5123
     # No block correlations are reported in Fang 2010 Table 3.
     # ----------------------------------------------------------------------
     etalka  ~ 0.2694   # Fang 2010 Table 3: IIV Ka 55.6% CV
     etalcl  ~ 0.1052   # Fang 2010 Table 3: IIV CL/F 33.3% CV
-    etalvc  ~ 0.1676   # Fang 2010 Table 3: IIV V/F 42.7% CV
-    etaltlag ~ 0.5121  # Fang 2010 Table 3: IIV Tlag 81.8% CV (SE 74.4% per Table 3)
+    etalvc  ~ log(1 + 0.427^2)  # Fang 2010 Table 3: IIV V/F 42.7% CV
+    etaltlag ~ log(1 + 0.818^2)  # Fang 2010 Table 3: IIV Tlag 81.8% CV (SE 74.4% per Table 3)
 
     # ----------------------------------------------------------------------
     # Residual error - Fang 2010 Table 3 combined proportional + additive.

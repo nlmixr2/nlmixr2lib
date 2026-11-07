@@ -143,9 +143,9 @@ Shoji_2011_pregabalin <- function() {
     # with independent correlation structure" -- diagonal omega matrix.
     # Final-model CV% values: 14.8% (CL/F), 8.54% (V/F), 93.2% (ka).
     # omega^2 = log(CV^2 + 1) for log-normal variance.
-    etalcl ~ 0.02168   # Table 3, CV% (CL/F) final model 14.8%; log(1 + 0.148^2) = 0.02168
+    etalcl ~ log(1 + 0.148^2)  # Table 3, CV% (CL/F) final model 14.8%
     etalvc ~ 0.00727   # Table 3, CV% (V/F)  final model  8.54%; log(1 + 0.0854^2) = 0.00727
-    etalka ~ 0.62526   # Table 3, CV% (ka)   final model 93.2%; log(1 + 0.932^2)  = 0.62526
+    etalka ~ log(1 + 0.932^2)  # Table 3, CV% (ka)   final model 93.2%
 
     # ---------------------------------------------------------------
     # Residual variability: combined proportional + additive error model,

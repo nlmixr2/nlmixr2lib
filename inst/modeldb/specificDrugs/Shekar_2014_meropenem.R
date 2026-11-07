@@ -67,9 +67,9 @@ Shekar_2014_meropenem <- function() {
 
     # Between-subject variability from Shekar 2014 Table 2 (Random effects BSV % CV column).
     # omega^2 = log(CV^2 + 1) for log-normal etas. No IIV reported on Q.
-    etalcl ~ 0.23560 # log(0.516^2 + 1); Shekar 2014 Table 2: BSV on CL = 51.6 %CV
-    etalvc ~ 0.19073 # log(0.458^2 + 1); Shekar 2014 Table 2: BSV on Vc = 45.8 %CV
-    etalvp ~ 0.07916 # log(0.287^2 + 1); Shekar 2014 Table 2: BSV on Vp = 28.7 %CV
+    etalcl ~ log(1 + 0.516^2)  # Shekar 2014 Table 2: BSV on CL = 51.6 %CV
+    etalvc ~ log(1 + 0.458^2)  # Shekar 2014 Table 2: BSV on Vc = 45.8 %CV
+    etalvp ~ log(1 + 0.287^2)  # Shekar 2014 Table 2: BSV on Vp = 28.7 %CV
 
     # Combined residual error (Shekar 2014 Methods: "combined exponential and additive random error model";
     # Table 2 final-model row).

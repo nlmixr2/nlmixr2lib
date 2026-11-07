@@ -110,11 +110,11 @@ Mosha_2014_artemether <- function() {
 
     # IIV. Mosha 2014 reports IIV as %CV (Table 3 column "IIV (%)").
     # The internal variances are recovered by omega^2 = log((CV/100)^2 + 1):
-    #   CL_AM CV 99% -> log(0.99^2 + 1) = 0.68273
+    #   CL_AM CV 99% -> log(0.99^2 + 1) = 0.68315
     # The paper retained IIV only on AM CL ("Inclusion of interpatient
     # variability of Vc, CL_met, K23, or F1 in addition to AM CL did not
     # improve description of the data") so a single eta is carried.
-    etalcl  ~ 0.68273  # Mosha 2014 Table 3: BSV on AM CL/F = 99% CV (RSE 65%; bootstrap 93%, 95% CI 66-120)
+    etalcl  ~ log(1 + 0.99^2)  # Mosha 2014 Table 3: BSV on AM CL/F = 99% CV (RSE 65%; bootstrap 93%, 95% CI 66-120)
 
     # Residual error. AM observation has a combined proportional + additive
     # error model on the linear-concentration scale (Results: "A mixed-error

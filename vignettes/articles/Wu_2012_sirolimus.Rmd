@@ -73,8 +73,8 @@ below collects the same information in one place for review.
 | `lvmax` (Vm, mg/h) | 4.56 | Table 1 NONMEM Vm (37.7 percent RSE); units inferred from mass-balance of d/dt(A1) = -Vm*A1/(Km+A1) -- paper prints "ug/L.h" but the equation requires mass/time given A1, Km in mg |
 | `lkm` (Km, mg) | 13.8 | Table 1 NONMEM Km (50.3 percent RSE) |
 | `e_hct_cl` (power exponent on (35.1/HCT) for CL) | 0.14 | Table 1 NONMEM theta2 (55.4 percent RSE); reference HCT = 35.1 percent per Table 1 footnote |
-| `etalcl` (omega^2 for IIV on CL1/F) | 0.2425 | Table 1 NONMEM IIV CL1/F = 52.4 percent CV; omega^2 = log(1 + 0.524^2) |
-| `etalvc` (omega^2 for IIV on V1/F) | 0.2425 | Table 1 NONMEM IIV V1/F = 52.4 percent CV; omega^2 = log(1 + 0.524^2) |
+| `etalcl` (omega^2 for IIV on CL1/F) | 0.2426 | Table 1 NONMEM IIV CL1/F = 52.4 percent CV; omega^2 = log(1 + 0.524^2) |
+| `etalvc` (omega^2 for IIV on V1/F) | 0.2426 | Table 1 NONMEM IIV V1/F = 52.4 percent CV; omega^2 = log(1 + 0.524^2) |
 | `etalq` (omega^2 for IIV on CL2/F) | 0.4035 | Table 1 NONMEM IIV CL2/F = 70.5 percent CV; omega^2 = log(1 + 0.705^2) |
 | `etalvp` (omega^2 for IIV on V2/F) | 0.0366 | Table 1 NONMEM IIV V2/F = 19.3 percent CV; omega^2 = log(1 + 0.193^2) |
 | `propSd` (proportional residual SD, fraction) | 0.0217 | Table 1 NONMEM proportional = 2.17 percent (97.0 percent RSE) |

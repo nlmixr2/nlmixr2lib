@@ -53,9 +53,9 @@ Park_2001_ketoprofen <- function() {
     # 12 WinNONLIN individual fits; keo CV is the reported NONMEM CV(keo) = 24.5%
     # from Table 3, originally fit with a proportional (1+eta) error model in Park
     # 2001 Eq. 2 and converted here to the equivalent log-normal variance.
-    etalka  ~ 0.5562   # CV(ka)  = 0.69/0.80 = 86.3 percent -> omega^2 = log(1 + 0.8625^2) = 0.5562 (Park 2001 Table 2)
-    etalcl  ~ 0.3525   # CV(CL)  = 0.13/0.20 = 65.0 percent -> omega^2 = log(1 + 0.65^2)   = 0.3525 (Park 2001 Table 2)
-    etalvc  ~ 0.3443   # CV(Vc)  = 0.25/0.39 = 64.1 percent -> omega^2 = log(1 + 0.641^2)  = 0.3443 (Park 2001 Table 2)
+    etalka  ~ log(1 + 0.8625^2)  # CV(ka)  = 0.69/0.80 = 86.3 percent (Park 2001 Table 2)
+    etalcl  ~ log(1 + 0.65^2)  # CV(CL)  = 0.13/0.20 = 65.0 percent (Park 2001 Table 2)
+    etalvc  ~ log(1 + 0.641^2)  # CV(Vc)  = 0.25/0.39 = 64.1 percent (Park 2001 Table 2)
     etalkeo ~ 0.0583   # CV(keo) = 24.5 percent             -> omega^2 = log(1 + 0.245^2) = 0.0583 (Park 2001 Table 3; paper used (1+eta) proportional eta model)
 
     # Residual error

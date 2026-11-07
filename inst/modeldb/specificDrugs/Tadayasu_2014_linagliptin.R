@@ -64,9 +64,9 @@ Tadayasu_2014_linagliptin <- function() {
     # ---- IIV (Tadayasu 2014 Table 3; CV % converted to log-normal variance via omega^2 = log(1 + CV^2)) ----
     # Final model uses diagonal OMEGA (the BMAX-CL block correlation R = 0.837 mentioned in Results was tested
     # but not implemented because it overestimated the variability).
-    etalfdepot ~ 0.19727  # omega^2 = log(1 + 0.467^2) = 0.19727 (CV 46.7 %)  Table 3 row IIV in F1
+    etalfdepot ~ log(1 + 0.467^2)  # (CV 46.7 %)  Table 3 row IIV in F1
     etalka     ~ 0.43288  # omega^2 = log(1 + 0.736^2) = 0.43288 (CV 73.6 %)  Table 3 row IIV in KA
-    etalcl     ~ 0.38754  # omega^2 = log(1 + 0.688^2) = 0.38754 (CV 68.8 %)  Table 3 row IIV in CL
+    etalcl     ~ log(1 + 0.688^2)  # (CV 68.8 %)  Table 3 row IIV in CL
     etalbmax   ~ 0.01996  # omega^2 = log(1 + 0.142^2) = 0.01996 (CV 14.2 %)  Table 3 row IIV in BMAX
 
     # ---- Residual error (Tadayasu 2014 Table 3) ----

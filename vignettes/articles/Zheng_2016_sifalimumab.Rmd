@@ -78,7 +78,7 @@ body holds the `population` list literal).
 | WT exponent on V1                              | Zheng 2016 Table 2, theta8                    | 0.36 (reference 64.3 kg)                                  |
 | DOSE exponent on V1                            | Zheng 2016 Table 2, theta9                    | 0.06 (reference 600 mg)                                   |
 | CONMED_STEROID fractional effect on V1             | Zheng 2016 Table 2, theta10                   | -0.09 (so V1 x (1 - 0.09 * CONMED_STEROID))                   |
-| BSV on CL (log-normal)                         | Zheng 2016 Table 2, BSV (CV %)                | 24% CV (omega^2 = log(CV^2 + 1) = 0.056016)               |
+| BSV on CL (log-normal)                         | Zheng 2016 Table 2, BSV (CV %)                | 24% CV (omega^2 = log(CV^2 + 1) = 0.056002)               |
 | BSV on V1 (log-normal)                         | Zheng 2016 Table 2, BSV (CV %)                | 16% CV (omega^2 = 0.025278)                               |
 | IOV on V1 (per-occasion)                       | Zheng 2016 Table 2 / IOV paragraph            | 26% CV, seven infusions; **not implemented** (see below)  |
 | BSV correlations                               | Zheng 2016 Results                            | None significant; IIV treated as diagonal                 |

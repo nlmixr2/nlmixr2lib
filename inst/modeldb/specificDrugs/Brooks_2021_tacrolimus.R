@@ -172,13 +172,13 @@ Brooks_2021_tacrolimus <- function() {
 
     # ----- Inter-individual variability (Brooks 2021 Table 2) -----
     # IIV on CL only. Reported as 26.1% CV; omega^2 = log(CV^2 + 1)
-    # = log(0.261^2 + 1) = log(1.06812) = 0.06591.
+    # = log(0.261^2 + 1) = log(1.06812) = 0.06590.
     # The paper's Results narrative also says BSV on V was evaluated and
     # included in the final model, but Table 2 reports no IIV magnitude for
     # V (column entry "-"); the in-file model therefore follows Table 2 and
     # carries an IIV term on CL alone. See vignette's Assumptions and
     # deviations section for this point.
-    etalcl ~ 0.06591  # Brooks 2021 Table 2 IIV CL = 26.1% CV -> log(1 + 0.261^2) = 0.06591
+    etalcl ~ log(1 + 0.261^2)  # Brooks 2021 Table 2 IIV CL = 26.1% CV
 
     # Inter-occasion variability (IOV) on CL was reported in Brooks 2021
     # Table 2 (28.7% CV) but is NOT encoded structurally here: nlmixr2lib
