@@ -87,7 +87,7 @@ Edstein_2001_tafenoquine <- function() {
     # the internal log-scale variance via omega^2 = log(CV^2 + 1):
     #   CL/F : log(0.253^2 + 1) = 0.06204
     #   V/F  : log(0.148^2 + 1) = 0.02167
-    #   Ka   : log(0.612^2 + 1) = 0.31791
+    #   Ka   : log(0.612^2 + 1) = 0.31812
     # A further run estimated the off-diagonal element via $OMEGA BLOCK(2)
     # (paper Results: OFV -4556 -> -4601); cov(CL/F, V/F) = 0.0265 reported
     # directly on the omega scale. Back-computed correlation from the values
@@ -96,7 +96,7 @@ Edstein_2001_tafenoquine <- function() {
     # in Table 3).
     etalcl + etalvc ~ c(0.06204,
                         0.0265, 0.02167)                                              # Table 3: 25.3 % CV CL/F (RSE 14.0); 14.8 % CV V/F (RSE 21.1); cov(CL/F,V/F) = 0.0265 (RSE 21.5) via $OMEGA BLOCK(2)
-    etalka          ~ 0.31791                                                         # Table 3: 61.2 % CV Ka (RSE 167)
+    etalka          ~ log(1 + 0.612^2)  # Table 3: 61.2 % CV Ka (RSE 167)
 
     # Residual variability. The paper Methods 'Population modelling' specifies
     # an exponential error model C_obs_ij = C_pred_ij * exp(eps_ij) with

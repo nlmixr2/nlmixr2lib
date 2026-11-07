@@ -237,13 +237,13 @@ Seng_2015_isoniazid <- function() {
     # 'the interindividual variability in CL/F cannot be estimated
     # separately for the fast, intermediate, and slow eliminator
     # subgroups').
-    etalka         ~ 0.01651  # log(1 + 0.129^2) -- Table 2 final IIV ka = 12.9%
-    etalcl         ~ 0.02053  # log(1 + 0.144^2) -- Table 2 final IIV CL/F = 14.4% (post-NAT2 covariate)
-    etalvp         ~ 0.11183  # log(1 + 0.344^2) -- Table 2 final IIV V_5/F = 34.4%
+    etalka         ~ log(1 + 0.129^2)  # -- Table 2 final IIV ka = 12.9%
+    etalcl         ~ log(1 + 0.144^2)  # -- Table 2 final IIV CL/F = 14.4% (post-NAT2 covariate)
+    etalvp         ~ log(1 + 0.344^2)  # -- Table 2 final IIV V_5/F = 34.4%
     etalfdepot     ~ 0.09518  # log(1 + 0.316^2) -- Table 2 final IIV F_INH = 31.6%
     etalcl_acinh   ~ 0.01055  # log(1 + 0.103^2) -- Table 2 final IIV CL_A = 10.3% (post-CRCL covariate)
     etalvp_acinh   ~ 0.04077  # log(1 + 0.204^2) -- Table 2 final IIV V_6 = 20.4%
-    etalcl_ina     ~ 0.03402  # log(1 + 0.186^2) -- Table 2 final IIV CL_I = 18.6%
+    etalcl_ina     ~ log(1 + 0.186^2)  # -- Table 2 final IIV CL_I = 18.6%
 
     # ---- Residual variability --------------------------------------
     # The source paper used 'additive error model in log scale' for

@@ -93,7 +93,7 @@ Bulitta_2010_ceftazidime <- function() {
     # r(V2,V3) = -0.59. CL is independent. Table 3 footnote c states that
     # one joint variance was estimated across CF and HV cohorts per
     # parameter (small sample size).
-    etalcl                          ~ 0.07555                                                                          # Bulitta 2010 Table 3: CV 28% on CL -> log(0.28^2 + 1)
+    etalcl                          ~ log(1 + 0.28^2)  # Bulitta 2010 Table 3: CV 28% on CL
     etalvc + etalvp + etalvp2       ~ c(0.18438,
                                         -0.07084, 0.06062,
                                          0.06834, -0.04128, 0.08075)                                                   # Bulitta 2010 Table 3 and footnote e: CV 45/25/29% on V1/V2/V3 with paired correlations

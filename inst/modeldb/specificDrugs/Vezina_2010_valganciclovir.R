@@ -53,14 +53,14 @@ Vezina_2010_valganciclovir <- function() {
     # P_pop * exp(eta)), so the log-scale variance is omega^2 = log(CV^2 + 1):
     #   CL/F  CV 36.3% -> log(0.363^2 + 1) = 0.1238
     #   V/F   CV 41.4% -> log(0.414^2 + 1) = 0.1582
-    #   Ka    CV 74.3% -> log(0.743^2 + 1) = 0.4397
+    #   Ka    CV 74.3% -> log(0.743^2 + 1) = 0.4396
     # The Methods section ("Between-subject variabilities on CL/F, V/F, and
     # Ka were modeled using a proportional error model. This imposed a log
     # normal distribution on the parameters with results expressed as a
     # CV%.") confirms the lognormal IIV form.
     etalcl ~ 0.1238  # Vezina 2010 Table 2 IIV CL/F = 36.3%
     etalvc ~ 0.1582  # Vezina 2010 Table 2 IIV V/F = 41.4%
-    etalka ~ 0.4397  # Vezina 2010 Table 2 IIV Ka  = 74.3%
+    etalka ~ log(1 + 0.743^2)  # Vezina 2010 Table 2 IIV Ka  = 74.3%
 
     # Residual unexplained variability -- Vezina 2010 Methods ("Residual
     # unexplained variability was assumed to have a log normal distribution

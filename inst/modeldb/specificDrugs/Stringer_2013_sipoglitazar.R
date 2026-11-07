@@ -147,16 +147,16 @@ Stringer_2013_sipoglitazar <- function() {
 
     # IIV, log-normal (equation 1). omega^2 = log(CV^2 + 1) from the CV%
     # reported in the Table 2 "IIV (%, CV%)" column.
-    etalcl ~ 0.150086  # Table 2: IIV on CL = 40.25% CV (RSE 7.72%);  log(1 + 0.4025^2)
-    etalvc ~ 0.110665  # Table 2: IIV on V  = 34.21% CV (RSE 13.0%);  log(1 + 0.3421^2)
-    etald1 ~ 0.478053  # Table 2: IIV on D1 = 78.29% CV (RSE 14.8%);  log(1 + 0.7829^2)
+    etalcl ~ log(1 + 0.4025^2)  # Table 2: IIV on CL = 40.25% CV (RSE 7.72%)
+    etalvc ~ log(1 + 0.3421^2)  # Table 2: IIV on V  = 34.21% CV (RSE 13.0%)
+    etald1 ~ log(1 + 0.7829^2)  # Table 2: IIV on D1 = 78.29% CV (RSE 14.8%)
 
     # Residual error: proportional, with a separate magnitude for the phase I
     # healthy-volunteer study and the phase II patient studies (equations 2
     # and 3). The phase II residual additionally carries IIV.
     propSdPhase1 <- 0.234947; label("Proportional residual SD, phase I healthy volunteers (fraction)") # Table 2: sigma^2 phase I = 0.0552 (RSE 8.8%); sqrt(0.0552)
     propSdPhase2 <- 0.408656; label("Proportional residual SD, phase II patients (fraction)")          # Table 2: sigma^2 phase II = 0.167 (RSE 10.2%); sqrt(0.167)
-    etapropSdPhase2 ~ 0.464430 # Table 2: IIV on the phase II residual = 76.88% CV (RSE 14.9%); log(1 + 0.7688^2)
+    etapropSdPhase2 ~ log(1 + 0.7688^2)  # Table 2: IIV on the phase II residual = 76.88% CV (RSE 14.9%)
   })
 
   model({

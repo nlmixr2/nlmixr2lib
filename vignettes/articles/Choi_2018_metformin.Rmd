@@ -73,7 +73,7 @@ The table below collects them in one place for review.
 | `e_form_fdc_f` (F shift for FDC) | 0.940 | Choi 2018 Table 3 (Influence of formulation on F) |
 | `etalcl` (omega^2) | log(1 + 0.198^2) = 0.03845 | Choi 2018 Table 3: CV% CL/F = 19.8 |
 | `etalvc` (omega^2) | log(1 + 0.328^2) = 0.10215 | Choi 2018 Table 3: CV% Vc/F = 32.8 |
-| `etalka` (omega^2) | log(1 + 0.636^2) = 0.33967 | Choi 2018 Table 3: CV% Ka = 63.6 |
+| `etalka` (omega^2) | log(1 + 0.636^2) = 0.33968 | Choi 2018 Table 3: CV% Ka = 63.6 |
 | `cov(etalcl, etalvc)` | 0.225 * sqrt(0.03845 * 0.10215) = 0.01411 | Choi 2018 Table 3: rho(CL/F, Vc/F) = 0.225 |
 | `propSd` (proportional residual SD) | 0.259 | Choi 2018 Table 3 (sigma_prop) |
 | Parallel mixed absorption (1st-order via depot + zero-order direct to central with lag) | n/a | Choi 2018 Figure 2 / Methods "Population Pharmacokinetic Analysis" |

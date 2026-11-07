@@ -145,7 +145,7 @@ Hirt_2008_ibuprofen <- function() {
     # Inter-individual variability (exponential model on CL and V).
     # Hirt 2008 Table 2 Final reports w(CL) = 62% CV and w(V) = 75% CV;
     # converted to log-normal variance via omega^2 = log(1 + CV^2).
-    etalcl ~ 0.32506   # log(1 + 0.62^2) = 0.32506; Hirt 2008 Table 2 Final: w(CL) = 62% CV (RSE 28%)
+    etalcl ~ log(1 + 0.62^2)  # Hirt 2008 Table 2 Final: w(CL) = 62% CV (RSE 28%)
     etalvc ~ 0.44629   # log(1 + 0.75^2) = 0.44629; Hirt 2008 Table 2 Final: w(V) = 75% CV (RSE 44%)
 
     # Residual error. Hirt 2008 Methods 'Population pharmacokinetic modelling'

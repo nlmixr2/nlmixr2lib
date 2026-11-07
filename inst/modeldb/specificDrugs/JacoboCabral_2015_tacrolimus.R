@@ -233,7 +233,7 @@ JacoboCabral_2015_tacrolimus <- function() {
     # Inter-patient variability (IPV) -- Jacobo-Cabral 2015 Table 2 reports
     # IPV as %CV. Convert to log-scale variance via omega^2 = log(1 + CV^2):
     #   Ka  CV 37% -> log(1 + 0.37^2) = log(1.1369) = 0.1283
-    #   V/F CV 66% -> log(1 + 0.66^2) = log(1.4356) = 0.3613
+    #   V/F CV 66% -> log(1 + 0.66^2) = log(1.4356) = 0.3616
     #   F   CV 38% -> log(1 + 0.38^2) = log(1.1444) = 0.1349
     # IPV on CL/F was reduced to negligible by the CYP3A5 covariate effect
     # (Jacobo-Cabral 2015 Results: 'The inclusion of the effect of CYP3A5
@@ -242,7 +242,7 @@ JacoboCabral_2015_tacrolimus <- function() {
     # off-diagonal elements of the Omega matrix were tested and were not
     # significant (Jacobo-Cabral 2015 Methods, Base population model).
     etalka     ~ 0.1283  # Jacobo-Cabral 2015 Table 2 IPV Ka = 37% CV
-    etalvc     ~ 0.3613  # Jacobo-Cabral 2015 Table 2 IPV V/F = 66% CV
+    etalvc     ~ log(1 + 0.66^2)  # Jacobo-Cabral 2015 Table 2 IPV V/F = 66% CV
     etalfdepot ~ 0.1349  # Jacobo-Cabral 2015 Table 2 IPV F = 38% CV
 
     # Residual error -- Jacobo-Cabral 2015 Table 2 reports a residual SD of

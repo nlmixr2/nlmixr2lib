@@ -119,7 +119,7 @@ Vucicevic_2025_efavirenz <- function() {
     # "IIV in CL/F was best described by an exponential model, and the
     # estimated value was 13.1% (35% RSE)".
     # CV-to-variance conversion: omega^2 = log(CV^2 + 1) = log(0.131^2 + 1).
-    etalcl ~ 0.01702  # log(0.131^2 + 1) = 0.017016; bootstrap median CV 13.4%, 95% CI 3.24-20.9%
+    etalcl ~ log(1 + 0.131^2)  # bootstrap median CV 13.4%, 95% CI 3.24-20.9%
 
     # ---- Residual error (proportional) ----
     propSd <- 0.25 ; label("Proportional residual error (fraction)")  # Vucicevic 2025 Table 2 "Proportional error 0.25 (11)"; Results para 2: "residual variability was explained by a standard deviation of 0.25 (11%)"; bootstrap median 0.244, 95% CI 0.182-0.299

@@ -155,14 +155,14 @@ Kloprogge_2013_lumefantrine <- function() {
     # IIV. Kloprogge 2013 Table 2 reports CV% (footnote: 100 *
     # sqrt(exp(omega^2) - 1)). The internal variances are recovered by
     # omega^2 = log((CV/100)^2 + 1):
-    #   CL  CV 17.5% -> log(0.175^2 + 1) = 0.030164
-    #   Vp  CV 21.5% -> log(0.215^2 + 1) = 0.045183
-    #   MTT CV 36.6% -> log(0.366^2 + 1) = 0.125731
-    #   F   CV 44.8% -> log(0.448^2 + 1) = 0.182910
-    etalcl     ~ 0.030164  # Kloprogge 2013 Table 2: BSV on CL/F  = 17.5% CV (RSE 20.6%)
-    etalvp     ~ 0.045183  # Kloprogge 2013 Table 2: BSV on Vp/F  = 21.5% CV (RSE 65.2%)
-    etalmtt    ~ 0.125731  # Kloprogge 2013 Table 2: BSV on MTT   = 36.6% CV (RSE 32.0%)
-    etalfdepot ~ 0.182910  # Kloprogge 2013 Table 2: BSV on F     = 44.8% CV (RSE 31.2%)
+    #   CL  CV 17.5% -> log(0.175^2 + 1) = 0.030165
+    #   Vp  CV 21.5% -> log(0.215^2 + 1) = 0.045188
+    #   MTT CV 36.6% -> log(0.366^2 + 1) = 0.125712
+    #   F   CV 44.8% -> log(0.448^2 + 1) = 0.182908
+    etalcl     ~ log(1 + 0.175^2)  # Kloprogge 2013 Table 2: BSV on CL/F  = 17.5% CV (RSE 20.6%)
+    etalvp     ~ log(1 + 0.215^2)  # Kloprogge 2013 Table 2: BSV on Vp/F  = 21.5% CV (RSE 65.2%)
+    etalmtt    ~ log(1 + 0.366^2)  # Kloprogge 2013 Table 2: BSV on MTT   = 36.6% CV (RSE 32.0%)
+    etalfdepot ~ log(1 + 0.448^2)  # Kloprogge 2013 Table 2: BSV on F     = 44.8% CV (RSE 31.2%)
 
     # Residual error. Kloprogge 2013 modelled the natural logarithm of
     # the lumefantrine plasma concentration with an additive error on

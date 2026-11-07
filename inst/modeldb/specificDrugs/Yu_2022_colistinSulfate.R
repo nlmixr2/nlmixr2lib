@@ -152,9 +152,9 @@ Yu_2022_colistinSulfate <- function() {
 
     # IIV. Methods: 'Between-subject variability (BSV) was assessed using an
     # exponential function.' Table 3 reports BSV on CL only, as a %CV, so
-    # omega^2 = log(CV^2 + 1) = log(0.304^2 + 1) = 0.08835. (BSV on V was
+    # omega^2 = log(CV^2 + 1) = log(0.304^2 + 1) = 0.08839. (BSV on V was
     # estimated in the base model but is not in the final-model table.)
-    etalcl ~ 0.08835 # Table 3 'BSV_CL [%CV]' 30.40% (RSE 15%, shrinkage 9%); omega^2 = log(0.304^2 + 1)
+    etalcl ~ log(1 + 0.304^2)  # Table 3 'BSV_CL [%CV]' 30.40% (RSE 15%, shrinkage 9%)
 
     # Residual error. Results: 'The proportional error model was selected to
     # evaluate the residual variability.'

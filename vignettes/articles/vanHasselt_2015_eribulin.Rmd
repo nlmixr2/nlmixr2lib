@@ -46,10 +46,10 @@ Equations from van Hasselt 2015 Methods Eq. 1 (K-PD depot decay), Eq. 2 (PSA tur
 | `lpsa0` | `log(23.2)` | Table 2: hPSA0 = 23.2 ng/mL (RSE 16.5%) |
 | `e_prior_taxane_psa0` | `3.23` | Table 2: hPSA0-PTAX = 3.23 (RSE 27.6%) |
 | `e_prior_taxane_days_kd0` | `-4.00` | Table 2: hKD0-NTRT = -4.00 (RSE 52.5%) |
-| `var(etalkd0)` | `0.96334` = log(1 + 1.273^2) | Table 2: xKD0 = 127.3 CV% (RSE 14%, shrinkage 26%) |
-| `var(etalkres)` | `0.57665` = log(1 + 0.883^2) | Table 2: xk = 88.3 CV% (RSE 37.5%, shrinkage 40%) |
-| `var(etalkg)` | `0.25342` = log(1 + 0.537^2) | Table 2: xKG = 53.7 CV% (RSE 13.5%, shrinkage 18%) |
-| `var(etalpsa0)` | `0.99340` = log(1 + 1.304^2) | Table 2: xPSA0 = 130.4 CV% (RSE 8.8%, shrinkage 1.0%) |
+| `var(etalkd0)` | `0.96338` = log(1 + 1.273^2) | Table 2: xKD0 = 127.3 CV% (RSE 14%, shrinkage 26%) |
+| `var(etalkres)` | `0.57644` = log(1 + 0.883^2) | Table 2: xk = 88.3 CV% (RSE 37.5%, shrinkage 40%) |
+| `var(etalkg)` | `0.25338` = log(1 + 0.537^2) | Table 2: xKG = 53.7 CV% (RSE 13.5%, shrinkage 18%) |
+| `var(etalpsa0)` | `0.99341` = log(1 + 1.304^2) | Table 2: xPSA0 = 130.4 CV% (RSE 8.8%, shrinkage 1.0%) |
 | Correlation `xk *xKD0`  | `0.802`  | Table 2 footnote a |
 | Correlation `xKG*xKD0`  | `-0.293` | Table 2 footnote b |
 | Correlation `xKG*xk`    | `-0.111` | Table 2 footnote b |

@@ -109,9 +109,9 @@ Othman_2013_ABT_102 <- function() {
     e_form_solution_fdepot <- log(0.40)    ; label("Log relative bioavailability of solution vs solid-dispersion") # Othman 2013 PK/PD-model Results paragraph 1 (solution Frel 40%, 95% CI 35-45%); upstream Othman 2012 popPK
 
     # PK IIV (additive on log-scale; CV% converted via omega^2 = log(CV^2 + 1)).
-    etalcl   ~ 0.1033      # CV = 33% (Othman 2013 PK/PD-model Results paragraph 1); omega^2 = log(0.33^2 + 1) = 0.1033. Upstream Othman 2012 popPK
+    etalcl   ~ log(1 + 0.33^2)  # CV = 33% (Othman 2013 PK/PD-model Results paragraph 1). Upstream Othman 2012 popPK
     etalvc   ~ 0.0560      # CV = 24% (Othman 2013 PK/PD-model Results paragraph 1); omega^2 = log(0.24^2 + 1) = 0.0560. Upstream Othman 2012 popPK
-    etalktr  ~ 0.1769      # CV = 44% (Othman 2013 PK/PD-model Results paragraph 1); omega^2 = log(0.44^2 + 1) = 0.1769. Upstream Othman 2012 popPK
+    etalktr  ~ log(1 + 0.44^2)  # CV = 44% (Othman 2013 PK/PD-model Results paragraph 1). Upstream Othman 2012 popPK
     etaltlag ~ 0.2152      # CV = 49% (Othman 2013 PK/PD-model Results paragraph 1); omega^2 = log(0.49^2 + 1) = 0.2152. Upstream Othman 2012 popPK
 
     # =====================================================================

@@ -95,10 +95,10 @@ Cella_2012_midazolam_children_adolescents <- function() {
     lvp <- log(7.14);   label("Peripheral volume of distribution at AGE = 74 months reference (L)") # Cella 2012 Table 2 (Vp = 7.14 with linear age scaling)
 
     # Inter-individual variability (Table 2 reports CV%; omega^2 = log(CV^2 + 1))
-    #   CL : 32.7% CV -> log(0.327^2 + 1) = 0.10157
-    #   Vc : 31.5% CV -> log(0.315^2 + 1) = 0.09456
-    etalcl ~ 0.10157                                                                                # Cella 2012 Table 2 (IIV CL 32.7% CV)
-    etalvc ~ 0.09456                                                                                # Cella 2012 Table 2 (IIV Vc 31.5% CV)
+    #   CL : 32.7% CV -> log(0.327^2 + 1) = 0.10159
+    #   Vc : 31.5% CV -> log(0.315^2 + 1) = 0.09461
+    etalcl ~ log(1 + 0.327^2)  # Cella 2012 Table 2 (IIV CL 32.7% CV)
+    etalvc ~ log(1 + 0.315^2)  # Cella 2012 Table 2 (IIV Vc 31.5% CV)
 
     # Residual error (39.0% CV proportional, linear-scale SD = 0.39)
     propSd <- 0.39;     label("Proportional residual error (fraction)")                         # Cella 2012 Table 2 (residual 39.0% CV, proportional model)

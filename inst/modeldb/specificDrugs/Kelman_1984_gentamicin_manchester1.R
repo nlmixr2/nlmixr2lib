@@ -75,9 +75,9 @@ Kelman_1984_gentamicin_manchester1 <- function() {
     #                   = 3.84e-4 + 0.02224 = 0.02263
     #   SD(CL) approx 0.150 L/h, CV(CL) approx 40%, omega^2(lcl) = log(1+0.40^2) = 0.148
     # V IIV: VAR(theta4) = 1.6e-2 (paper Table 3), so CV(theta4) = sqrt(1.6e-2)/0.41 = 30.7%,
-    #        omega^2(lvc) = log(1+0.307^2) = 0.0902.
+    #        omega^2(lvc) = log(1+0.307^2) = 0.0901.
     etalcl ~ 0.148   # log-normal CV approx 40% on CL at typical Manchester I covariates (paper Table 3 VAR(eta_i) collapsed; VAR(eta3) indeterminate)
-    etalvc ~ 0.0902  # log-normal CV approx 31% on V (paper Table 3 VAR(theta4) = 1.6e-2 converted)
+    etalvc ~ log(1 + 0.307^2)  # log-normal CV approx 31% on V (paper Table 3 VAR(theta4) = 1.6e-2 converted)
 
     # Additive residual error (paper Equation 7; Table 3 reports VAR(eps) = 0.53 (mg/L)^2)
     addSd <- sqrt(0.53);     label("Additive residual SD (mg/L)")                       # Kelman 1984 Table 3 Model 1 (Manchester I): VAR(eps)

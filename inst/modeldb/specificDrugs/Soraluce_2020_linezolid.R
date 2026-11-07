@@ -119,9 +119,9 @@ Soraluce_2020_linezolid <- function() {
     # Figure 3 inset (simulated Css median 3.30, 2.5th-97.5th 0.85-14.73 mg/L)
     # is reproduced on this scale and not on omega = CV^2; see the vignette.
     # Table 3 row IIV_CL: 61.5% (RSE 9%; shrinkage 1%)
-    etalcl ~ 0.320546 # log(0.615^2 + 1)
+    etalcl ~ log(1 + 0.615^2)
     # Table 3 row IIV_V1: 65.9% (RSE 17%; shrinkage 18%)
-    etalvc ~ 0.360602 # log(0.659^2 + 1)
+    etalvc ~ log(1 + 0.659^2)
 
     # Combined residual error (Results 3.1.1). NONMEM fitted log-transformed
     # concentrations; encoded as additive + proportional on the linear scale.

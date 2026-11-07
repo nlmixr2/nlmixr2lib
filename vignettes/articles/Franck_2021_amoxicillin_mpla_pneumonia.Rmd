@@ -78,7 +78,7 @@ below collects them.
 | `lcl` | log(124) mL/h | Table S1; Table 1 * |
 | `e_dose_mpla_cl` | -0.145 mL/h/ug | Table S1 `FC_AMX+MPLA`; Supplementary Eq. 1 `P = theta1 + theta2 * DOSE` |
 | `lfdepot` | log(1), fixed | Tables 1 and S1 abbreviations: F fixed to 1 |
-| `etalcl`, `etalq` | 0.05331, 0.06392 | Table S1: 23.4 and 25.7 %CV, `log(CV^2 + 1)` (PK submodel only) |
+| `etalcl`, `etalq` | 0.05331, 0.06396 | Table S1: 23.4 and 25.7 %CV, `log(CV^2 + 1)` (PK submodel only) |
 | `propSd` | 0.282 | Table S1: proportional RUV 28.2 %CV (PK submodel only) |
 | `lke0_lung`, `lke0_spleen` | log(0.125), log(0.0435) 1/h | Table 1; Supplementary Eq. 4 |
 | `bl_log_cfu_lung` | 6.12 log10 CFU, fixed | Table 1 (N at -12 h, i.e. at infection) |

@@ -84,7 +84,7 @@ Thomson_2003_gentamicin <- function() {
     # covariance-model results). The source reports IIV as a percentage
     # coefficient of variation under a log-normal model; the equivalent
     # log-scale variance is omega^2 = log(1 + CV^2).
-    #   IIV CL : 42% CV -> log(1 + 0.42^2) = 0.16127
+    #   IIV CL : 42% CV -> log(1 + 0.42^2) = 0.16246
     #   IIV V  : 40% CV -> log(1 + 0.40^2) = 0.14842
     # The paper's text notes that the basic model "required a term for
     # covariance between CL and V" but the off-diagonal covariance value
@@ -92,7 +92,7 @@ Thomson_2003_gentamicin <- function() {
     # diagonal IIVs are tabulated. The model file therefore encodes
     # independent etas and documents this gap in the vignette
     # Assumptions and deviations section.
-    etalcl ~ 0.16127  # Thomson 2003 Table 4: IIV CL = 42% CV (RSE 12%)
+    etalcl ~ log(1 + 0.42^2)  # Thomson 2003 Table 4: IIV CL = 42% CV (RSE 12%)
     etalvc ~ 0.14842  # Thomson 2003 Table 4: IIV V  = 40% CV (RSE 15%)
 
     # Residual error. Thomson 2003 fixed the additive residual SD to a

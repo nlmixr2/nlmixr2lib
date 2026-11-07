@@ -168,12 +168,12 @@ Taubert_2016_linezolid <- function() {
     # "Interindividual variability terms were kept for Vc (37%) and CL
     # (58%) (coefficients of variation)." The variance entered into the
     # log-normal eta is omega^2 = log(1 + CV^2), so:
-    #   omega^2_etalcl = log(1 + 0.58^2) = log(1.3364) = 0.2901
+    #   omega^2_etalcl = log(1 + 0.58^2) = log(1.3364) = 0.2900
     #   omega^2_etalvc = log(1 + 0.37^2) = log(1.1369) = 0.1283
     # The supplement reports the same values (Suppl Table S3 omega^2_CL = 58%
     # [95 % CI 46-73] and omega^2_Vc = 37% [95 % CI 23-61]) and explicitly
     # labels the column as CV %.
-    etalcl ~ 0.2901  # Suppl Table S3 (omega^2_CL reported as 58 % CV; log-normal variance = log(1 + 0.58^2))
+    etalcl ~ log(1 + 0.58^2)  # Suppl Table S3 (omega^2_CL reported as 58 % CV; log-normal)
     etalvc ~ 0.1283  # Suppl Table S3 (omega^2_Vc reported as 37 % CV; log-normal variance = log(1 + 0.37^2))
 
     # Residual error. Taubert 2016 Suppl Table S3 reports the combined

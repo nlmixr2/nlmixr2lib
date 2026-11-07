@@ -116,11 +116,11 @@ Rodjun_2023_colistin <- function() {
     # log-normal draw. The equivalent log-scale variance is
     # omega^2 = log(CV^2 + 1).
     # ------------------------------------------------------------------
-    etalvc        ~ 0.15118  # log(0.404^2 + 1); Rodjun 2023 Table 1 CMS V1 %IIV = 40.4
+    etalvc        ~ log(1 + 0.404^2)  # Rodjun 2023 Table 1 CMS V1 %IIV = 40.4
     etalvp        ~ 0.40725  # log(0.709^2 + 1); Rodjun 2023 Table 1 CMS V2 %IIV = 70.9
     etalq         ~ 0.49567  # log(0.801^2 + 1); Rodjun 2023 Table 1 CMS CLD1 %IIV = 80.1
-    etalcl_renal  ~ 0.44802  # log(0.752^2 + 1); Rodjun 2023 Table 1 CMS CLR %IIV = 75.2
-    etalcl_nonren ~ 0.14703  # log(0.398^2 + 1); Rodjun 2023 Table 1 CMS CLNR CMS %IIV = 39.8
+    etalcl_renal  ~ log(1 + 0.752^2)  # Rodjun 2023 Table 1 CMS CLR %IIV = 75.2
+    etalcl_nonren ~ log(1 + 0.398^2)  # Rodjun 2023 Table 1 CMS CLNR CMS %IIV = 39.8
     etalvc_col    ~ 0.17330  # log(0.435^2 + 1); Rodjun 2023 Table 1 Colistin V3 %IIV = 43.5
 
     # Colistin clearance IIV. Table 1 reports a single 37.9% IIV on the
@@ -131,7 +131,7 @@ Rodjun_2023_colistin <- function() {
     # tabulated 37.9% IIV on the reconstructed total. It is named for the
     # non-renal arm to satisfy the eta / fixed-effect pairing convention;
     # the same shared-eta device is used in Karaiskos_2015_colistin.R.
-    etalcl_nonren_col ~ 0.13421  # log(0.379^2 + 1); Rodjun 2023 Table 1 Colistin CLT C %IIV = 37.9 (shared across both colistin clearance arms)
+    etalcl_nonren_col ~ log(1 + 0.379^2)  # Rodjun 2023 Table 1 Colistin CLT C %IIV = 37.9 (shared across both colistin clearance arms)
 
     # ------------------------------------------------------------------
     # Residual error. Rodjun 2023 reports none: the Monte Carlo

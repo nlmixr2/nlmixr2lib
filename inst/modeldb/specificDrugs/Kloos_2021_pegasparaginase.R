@@ -191,18 +191,18 @@ Kloos_2021_pegasparaginase <- function() {
 
     # ---- Inter-individual variability ------------------------------------
     # Table 2 reports IIV on CL as 19.7% CV. Exponential IIV, so
-    # omega^2 = log(1 + CV^2) = log(1 + 0.197^2) = 0.038077.
-    etalcl ~ 0.038077  # Kloos 2021 Table 2 final model (IIV CL 19.7% CV, RSE 13.2%; bootstrap 19.5%, 95% CI 14.6-24.0) converted as log(1 + 0.197^2)
+    # omega^2 = log(1 + CV^2) = log(1 + 0.197^2) = 0.038075.
+    etalcl ~ log(1 + 0.197^2)  # Kloos 2021 Table 2 final model (IIV CL 19.7% CV, RSE 13.2%; bootstrap 19.5%, 95% CI 14.6-24.0)
 
     # ---- Inter-occasion variability --------------------------------------
-    # Table 2 reports IOV on CL as 23.6% CV; pi^2 = log(1 + 0.236^2) = 0.054197.
+    # Table 2 reports IOV on CL as 23.6% CV; pi^2 = log(1 + 0.236^2) = 0.054200.
     # The supplement defines an occasion as the administration of a new dose.
     # nlmixr2 has no NONMEM `$OMEGA BLOCK(1) SAME` shortcut, so occasions 2 and
     # 3 get their own etas with the variance fixed equal to the occasion-1
     # estimate (Jonsson_2011_ethambutol.R / Chen_2023_nemonoxacin.R precedent).
-    etaiov_cl_1 ~ 0.054197       # Kloos 2021 Table 2 final model (IOV CL 23.6% CV, RSE 10.3%; bootstrap 23.1%, 95% CI 18.5-27.5) converted as log(1 + 0.236^2)
-    etaiov_cl_2 ~ fix(0.054197)  # SAME-equivalent: equal to the occasion-1 IOV variance
-    etaiov_cl_3 ~ fix(0.054197)  # SAME-equivalent: equal to the occasion-1 IOV variance
+    etaiov_cl_1 ~ log(1 + 0.236^2)  # Kloos 2021 Table 2 final model (IOV CL 23.6% CV, RSE 10.3%; bootstrap 23.1%, 95% CI 18.5-27.5)
+    etaiov_cl_2 ~ fix(log(1 + 0.236^2))  # SAME-equivalent: equal to the occasion-1 IOV variance
+    etaiov_cl_3 ~ fix(log(1 + 0.236^2))  # SAME-equivalent: equal to the occasion-1 IOV variance
 
     # ---- Residual error ---------------------------------------------------
     # Kloos 2021 Online Supplementary Appendix, Supplemental Results, PK
