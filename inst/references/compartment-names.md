@@ -1061,6 +1061,52 @@ The MTP framework partitions the bacterial population into three states. The ori
 
 ---
 
+## Atopic dermatitis scores (EASI, IGA)
+
+### easi (**canonical absolute EASI score output**)
+- **Type:** compartment
+- **Role:** Eczema Area and Severity Index (EASI) score on its 0-72 clinical scale, as a model output. In the founding model it is an algebraic output, the back-transform `max(easi_tukey, 1)^(1 / 0.4) - 1` of the fitted transformed score, floored at 0.
+- **Source aliases:** `EASI` -- Briggs 2023 notation.
+- **Example models:** `Briggs_2023_dupilumab_easi.R`.
+- **Notes:** The atopic-dermatitis sibling of `pasi`, spelled the same lowercase way. **Distinct from the covariate `SCORE_EASI`**, which is a baseline EASI value supplied as an input column, and from `prob_easi75`, a responder probability. A model that fits the change from baseline should register a companion `easicfb`, as `das28` and `das28cfb` are separated.
+
+### easi_tukey (**canonical Tukey-transformed EASI observation**)
+- **Type:** compartment
+- **Role:** The EASI score on the Tukey power-transformed scale `(EASI + 1)^lambda` that a model is fitted on, so the DV of an observation record is the transformed score, not the raw one. In the founding model lambda = 0.4 and the residual error is additive on this scale.
+- **Source aliases:** `(EASI + 1)^lambda` -- Briggs 2023 Online Resource.
+- **Example models:** `Briggs_2023_dupilumab_easi.R` (observed endpoint; the back-transformed score is the `easi` output).
+- **Notes:** The DV must be transformed before fitting, `DV = (EASI + 1)^0.4`. Kept separate from `easi` because the two differ by a nonlinear transform and a residual on one scale is not a residual on the other. A model with a different exponent still uses this name and records lambda in `model()`.
+
+### iga (**canonical Investigator's Global Assessment ordinal output**)
+- **Type:** compartment
+- **Role:** Investigator's Global Assessment (IGA) of atopic dermatitis, a 5-point ordinal score (0 clear, 1 almost clear, 2 mild, 3 moderate, 4 severe), as an ordinal endpoint `iga ~ c(p0, p1, p2, p3)`. rxode2 numbers the categories 1-5, so simulated category k is IGA k - 1.
+- **Source aliases:** `IGA` -- Briggs 2023 notation.
+- **Example models:** `Briggs_2023_dupilumab_iga.R` (cumulative-probit latent-variable model).
+- **Notes:** The atopic-dermatitis instrument; distinct from the psoriasis static Physician Global Assessment (`prob_spga01`). The baseline IGA used as a covariate is `IGA_MOD` (per subject) or `IGA_MOD_PCT` (per trial arm), not this output.
+
+### prob_iga01 (**canonical IGA 0/1 responder-probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that an atopic-dermatitis patient has an IGA score of 0 (clear) or 1 (almost clear), the usual IGA responder definition, i.e. the cumulative probability P(IGA <= 1).
+- **Source aliases:** `IGA 0/1`, `IGA 0/1 responders`.
+- **Example models:** `Briggs_2023_dupilumab_iga.R` (algebraic output alongside the ordinal `iga` endpoint).
+- **Notes:** The `01` suffix records the responder threshold, as in `prob_spga01`. Trial definitions that also require a >= 2-point reduction from baseline are a different endpoint and take their own name. A probability output, not a score.
+
+### latent_easi (**canonical latent drug-effect variable driving the EASI score**)
+- **Type:** compartment
+- **Role:** Dimensionless latent variable of a type I indirect-response model whose loss drives the drug effect on the EASI score: `d/dt(latent_easi) <- kout * (1 - inh) - kout * latent_easi` with `latent_easi(0) <- 1`, `inh = imax * C / (ic50 + C)`, and the drug effect entering as `rbase_t * (latent_easi - 1)` on the transformed EASI scale. No physical units or matrix (`specimen = "not applicable"`).
+- **Source aliases:** `R` -- Briggs 2023 Online Resource, where R starts at BASE; the state here is R / BASE.
+- **Example models:** `Briggs_2023_dupilumab_easi.R`.
+- **Notes:** Member of the `latent_<endpoint>` family (`latent_pasi`, `latent_pppasi`).
+
+### latent_iga (**canonical latent drug-effect variable driving the IGA score**)
+- **Type:** compartment
+- **Role:** Dimensionless latent variable of a type I indirect-response model whose loss drives the drug effect on the probit of the cumulative IGA probabilities: `d/dt(latent_iga) <- kout * (1 - C / (ic50 + C)) - kout * latent_iga` with `latent_iga(0) <- 1`, and the drug effect entering as `slope * (latent_iga - 1)`. No physical units or matrix (`specimen = "not applicable"`).
+- **Source aliases:** `R` -- Briggs 2023 Online Resource, where R starts at 0; the state here is R + 1.
+- **Example models:** `Briggs_2023_dupilumab_iga.R`.
+- **Notes:** Member of the `latent_<endpoint>` family (`latent_pasi`, `latent_pppasi`, `latent_easi`).
+
+---
+
 ## IPSS urological symptom score
 
 ### ipss (**canonical International Prostate Symptom Score output compartment**)
