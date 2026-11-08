@@ -1528,10 +1528,13 @@ test_that("no model in the database still uses a pre-#481 time-varying clearance
       offenders <- c(offenders, basename(f))
     }
   }
-  # The four deliberate exclusions are a different structure (diurnal cosine,
-  # circadian clock offset, a lag state, ADA-gated logistic onset).
+  # The deliberate exclusions are a different structure (diurnal cosine,
+  # circadian clock offset, a lag state, ADA-gated logistic onset). The two
+  # lag-state files share `clag_p_b_co2 <- lagState(t, ...)`, the delayed
+  # brain-CO2 lookup of the Mann 2022 central chemoreflex.
   allowed <- c(
     "Bienczak_2016_nevirapine.R",
+    "Chakravartula_2024_fentanyl_pediatric.R",
     "Hayashi_1998_epoetinBeta.R",
     "Mann_2022_respiratory_physiology.R",
     "Yoshida_2024_fazpilodemab.R"

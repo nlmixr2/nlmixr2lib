@@ -2912,6 +2912,10 @@ navbar:
         href: articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk.html
       - text: "Fentanyl pbpk (Pan 2019)"
         href: articles/Pan_2019_fentanyl_lumping.html
+      - text: "Fentanyl pediatric (Chakravartula 2024)"
+        href: articles/Chakravartula_2024_fentanyl_pediatric_respiratory_depression.html
+      - text: "Fentanyl pk pediatric (Chakravartula 2024)"
+        href: articles/Chakravartula_2024_fentanyl_pediatric_respiratory_depression.html
       - text: "Fepixnebart (James 2025)"
         href: articles/James_2025_fepixnebart.html
       - text: "FerricCarboxymaltose rat (Cao 2025)"
@@ -8993,6 +8997,7 @@ articles:
   - articles/Chae_2026_teicoplanin
   - articles/Chairat_2016_oseltamivir
   - articles/Chakraborty_2012_canakinumab
+  - articles/Chakravartula_2024_fentanyl_pediatric_respiratory_depression
   - articles/Chala_2023_efavirenz
   - articles/Chamzas_2024_tacrolimus
   - articles/Chan_2008_maraviroc

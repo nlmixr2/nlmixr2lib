@@ -4104,6 +4104,12 @@ Physiological state variables of the Magosso / Ursino respiratory and cerebrovas
 - **Source aliases:** none.
 - **Example models:** `Mann_2022_respiratory_physiology.R`.
 
+### y_child_o2 (**canonical child-specific brain O2 cerebral-blood-flow response**)
+- **Type:** compartment
+- **Role:** First-order-filtered brain-specific cerebral-blood-flow (CBF) response to arterial O2 (dimensionless), with the child time-constant tau_child_o2 and amplitude c1_child (Chakravartula 2024 Supplement eqs 3-4). The sibling of `yo2`, split out because the pediatric model gives the brain its own O2 response parameters while the peripheral tissue keeps the adult `yo2`; brain blood flow is then modulated by `yco2 + y_child_o2`. At adult parameter values it collapses onto `yo2` and the model reduces to `Mann_2022_respiratory_physiology`.
+- **Source aliases:** `y_child,O2` (paper notation).
+- **Example models:** `Chakravartula_2024_fentanyl_pediatric.R`.
+
 ### dp_state (**canonical peripheral chemoreflex ventilatory drive**)
 - **Type:** compartment
 - **Role:** Peripheral-chemoreflex ventilatory drive state (L/min); opioid-attenuated (factor 1 - CAR^P1) and filtered with time-constant tau_Dp.
