@@ -877,6 +877,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Ferl_2018_mosunetuzumab_cyno.R` (founding example; `lvmax_exp_kdes = log(0.144)`, a 4.8-day half-life of the saturable elimination of an anti-CD20/CD3 T-cell-dependent bispecific antibody in cynomolgus monkeys, alongside a separate `cl_exp_kdes = 10.1 1/day` on the decaying linear clearance), `Ferl_2018_mosunetuzumab_cyno_covariates.R`, `Ferl_2018_mosunetuzumab_human.R`.
 - **Notes:** Third member of the `_exp_kdes` role-token family after `cl_exp_kdes` and `kel_exp_kdes`, ratified by the maintainers 2026-09-22. Distinct from `kel_exp_kdes`, which relaxes a rate *constant* toward a non-zero asymptote; here a maximum *rate* (amount / time) falls to zero, so the model needs no `_inf` / `_component` split and keeps the bare `vmax` as the value at t = 0. A model can carry `cl_exp_kdes` and `vmax_exp_kdes` together, as the founding example does, which is why the two decay constants must not share a name.
 
+### lvc_pna_kdes (**canonical log-transformed postnatal-age decay-rate constant of a birth excess in volume**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale first-order rate constant, per unit of POSTNATAL AGE, at which a fractional excess of the central volume present at birth decays toward the mature value: `vc(PNA) = vc * (1 + vc_pna_famp * exp(-vc_pna_kdes * PNA))` (1 / day of postnatal age in the founding model). `log(2) / vc_pna_kdes` is the half-time of the birth effect.
+- **Source aliases:**
+  - `TVOL` -- O'Hanlon 2024 Eq. 5 and 14 and Table 2 ('TVOL', days PNA; control stream `POP_TVOL_PNA`), printed as a half-time, so `lvc_pna_kdes = log(log(2) / TVOL)`.
+- **Example models:** `OHanlon_2024_milrinone.R` (founding example; `lvc_pna_kdes = log(log(2) / 0.969)`, a 0.969-day half-time of the excess milrinone volume in neonates, with PNA converted from the canonical months to days inside `model()`).
+- **Notes:** Ratified by the maintainers 2026-11-06. The `_pna_` anchor marks that the clock is the subject's postnatal age (as in `pna50`), not time on treatment, which is what the `_exp_kdes` family measures; the `_kdes` role token is reused so both families are found by the same stem. Distinct from the additive sigmoidal maturation family (`cl_pna0`, `cl_matspan`, `pna50`), which describes a RISE toward maturity rather than the decay of a birth excess, and from `age50_<param>`, a hyperbolic function of chronological age in years. Swap the parameter stem for another parameter (`l<param>_pna_kdes`); the same empirical form has been used for paracetamol volume (Anderson 2002). The paired amplitude is [[vc_pna_famp]].
+
 ### lkel_renal (**canonical log-transformed renal elimination rate constant arm**)
 - **Type:** log-transformed-pk
 - **Role:** Renal component of an additive renal + non-renal decomposition of the first-order elimination RATE CONSTANT, `kel = kel_nonren + kel_renal * (CRCL / ref)` (1 / time). The rate-constant-scale analogue of `lcl_renal`, for papers that estimate `ke` arms and an explicit volume rather than clearance arms. When the renal arm is scaled by a renal-function covariate, the estimate is the arm's value AT that covariate's reference.
@@ -1673,6 +1681,14 @@ units rather than a dimensionless-per-time rate.
 - **Example models:** `Ferl_2018_mosunetuzumab_cyno.R` (`vmax_exp_kdes = exp(lvmax_exp_kdes) = 0.144 1/day`).
 - **Notes:** Bare counterpart of `lvmax_exp_kdes`; see that entry for the functional form.
 
+### vc_pna_kdes (**canonical bare postnatal-age decay-rate constant of a birth excess in volume**)
+- **Type:** bare-pk
+- **Role:** Bare (natural-scale) form of `lvc_pna_kdes`: the first-order rate constant per unit of postnatal age at which the birth excess in central volume decays, `vc(PNA) = vc * (1 + vc_pna_famp * exp(-vc_pna_kdes * PNA))`.
+- **Source aliases:**
+  - `ln(2) / TVOL` -- O'Hanlon 2024 Eq. 14.
+- **Example models:** `OHanlon_2024_milrinone.R` (`vc_pna_kdes = exp(lvc_pna_kdes) = 0.715 1/day`).
+- **Notes:** Bare counterpart of `lvc_pna_kdes`; see that entry for the functional form.
+
 ## Paper-named mechanistic parameters
 
 Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across published models. Each entry is treated as a canonical bare name; the log-transformed form (`l<name>`) is acceptable wherever the parameter is strictly positive and the source paper reports an exponential typical-value form. Add to this list rather than introducing a new ad-hoc pattern.
@@ -1852,6 +1868,22 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `TAFOCLDELTA` -- Wojciechowski 2022 Online Resource 2 (`COVTAFOCL = 1+TAFOCLDELTA*(1-EXP(-1*(LOG(2)/TAFOCLHL)*TAFO))`); Table 2 'Maximum change in CL with respect to time (TAFO)' = -0.186, already signed, with the rate given as a half-life `TAFOCLHL` = 21.6 h, so `lcl_exp_kdes = log(log(2) / 21.6)`.
 - **Example models:** `Yang_2021_unecritinib.R` (founding example; `cl_exp_famp = -0.41`, a 41% fall in the apparent clearance of the active metabolite crizotinib from its first-dose value, with `KTDPK = 0.0363 1/h` as `lcl_exp_kdes`), `Wojciechowski_2022_abrocitinib.R` (`cl_exp_famp = -0.186`, an 18.6% fall in abrocitinib clearance over a treatment period, with a 21.6 h half-life).
 - **Notes:** The clearance counterpart of [[kel_exp_famp]]; same sign convention (negative = decline) and same reason for existing: the `cl_exp_` family otherwise parameterises by an absolute decaying component (`cl_exp_inf` + `cl_exp_component`), and a source that estimates a fraction of the baseline should keep that parameterisation so its estimate and RSE map one-to-one onto an `ini()` value. Linear (never log-transformed) because it is signed. In the founding model it acts on the metabolite clearance `cl_crizotinib`; the bare name is kept because the model carries only one such amplitude.
+
+### cl_exp_fdef (**canonical fractional deficit of a time-varying clearance below its asymptote**)
+- **Type:** paper-named-param
+- **Role:** Dimensionless fraction by which a clearance falls short of its asymptotic value at the start of therapy, the deficit decaying exponentially over time on treatment: `cl(t) = cl * (1 - cl_exp_fdef * exp(-cl_exp_kdes * t))`, so `cl(0) = cl * (1 - cl_exp_fdef)` and `cl(inf) = cl`. Here the bare `cl` (and every covariate on it) is the ASYMPTOTIC clearance, unlike [[cl_exp_famp]], where `cl` is the value at t = 0. The decay rate is the registered `cl_exp_kdes` (log scale `lcl_exp_kdes`).
+- **Source aliases:**
+  - `FCL` -- O'Hanlon 2024 Eq. 9 and 13 and Table 2 ('FCL', 'fraction of population clearance at the start of dose initiation'; control stream `POP_CONCL`), with the half-time `TCL` giving `lcl_exp_kdes = log(log(2) / TCL)`.
+- **Example models:** `OHanlon_2024_milrinone.R` (founding example; `cl_exp_fdef = 0.363`, milrinone clearance starting at 63.7% of its asymptote after cardiopulmonary bypass and recovering with an 11.9 h half-time).
+- **Notes:** Ratified by the maintainers 2026-11-06 in preference to reparameterising onto `cl_exp_famp` (`cl_exp_famp = fdef / (1 - fdef)` with `cl` rescaled to the t = 0 value), which would describe the same curve but leave neither `ini()` value equal to a printed estimate. Linear and not log-transformed: positive for a clearance that rises toward its asymptote, and a negative value would describe one that falls. Use `cl_exp_famp` when the source's typical clearance is the value at the first dose, and this name when it is the asymptote.
+
+### vc_pna_famp (**canonical fractional excess of central volume at birth, decaying over postnatal age**)
+- **Type:** paper-named-param
+- **Role:** Dimensionless fractional excess of the central volume over its mature value at birth (PNA = 0), decaying with postnatal age: `vc(PNA) = vc * (1 + vc_pna_famp * exp(-vc_pna_kdes * PNA))`, so `vc(0) = vc * (1 + vc_pna_famp)` and the excess vanishes within a few half-times. The decay rate is [[lvc_pna_kdes]].
+- **Source aliases:**
+  - `FV` -- O'Hanlon 2024 Eq. 5 and 14 and Table 2 ('FV', 'fractional difference in V at time = 0'; control stream `POP_CONV_PNA`).
+- **Example models:** `OHanlon_2024_milrinone.R` (founding example; `vc_pna_famp = 1.06`, a size-standardised milrinone volume 2.06 times its mature value at birth).
+- **Notes:** Ratified by the maintainers 2026-11-06. Mirrors the `_famp` fractional-amplitude role token of the `_exp_famp` family, with the `_pna_` anchor marking postnatal age as the clock. Linear because it is signed (a negative value would describe a volume deficit at birth). For another parameter swap the stem (`<param>_pna_famp`).
 
 ### emax_exp_famp (**canonical fractional amplitude of a time-varying maximal drug effect**)
 - **Type:** paper-named-param
