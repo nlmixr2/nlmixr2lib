@@ -107,12 +107,12 @@ Cojutti_2020_meropenem <- function() {
     # its own random effect. Each CV% is carried into a log-normal random
     # effect with omega^2 = log(CV^2 + 1); correlations of the joint density
     # are not reported, so the etas are independent.
-    #   theta1 : 48.53% CV -> log(0.4853^2 + 1) = 0.211397
-    #   theta2 : 27.44% CV -> log(0.2744^2 + 1) = 0.072604
-    #   V      : 26.71% CV -> log(0.2671^2 + 1) = 0.068940
-    etalcl ~ 0.211397 # Table 2 theta1, CV 48.53%
-    etae_crcl_cl ~ 0.072604 # Table 2 theta2, CV 27.44%
-    etalvc ~ 0.068940 # Table 2 V, CV 26.71%
+    #   theta1 : 48.53% CV -> log(0.4853^2 + 1) = 0.211489
+    #   theta2 : 27.44% CV -> log(0.2744^2 + 1) = 0.072595
+    #   V      : 26.71% CV -> log(0.2671^2 + 1) = 0.068912
+    etalcl ~ log(1 + 0.4853^2)  # Table 2 theta1, CV 48.53%
+    etae_crcl_cl ~ log(1 + 0.2744^2)  # Table 2 theta2, CV 27.44%
+    etalvc ~ log(1 + 0.2671^2)  # Table 2 V, CV 26.71%
 
     # Residual error. Methods 2.2: 'A first-order polynomial relationship
     # between drug concentrations and the standard deviation of the

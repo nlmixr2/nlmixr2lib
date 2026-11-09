@@ -128,16 +128,16 @@ Zhao_2018_omeprazole <- function() {
     # block is reported in the paper (independent etas).
     # Ka: log(1 + 1.30^2) = 0.98954
     etalka         ~ 0.98954
-    # V1/F: log(1 + 0.99^2) = 0.68318
-    etalvc         ~ 0.68318
-    # CLOMZ-M1: log(1 + 0.526^2) = 0.24432
-    etalkmet_5oh   ~ 0.24432
-    # CLOMZ-M2: log(1 + 0.359^2) = 0.12127
-    etalkmet_sfn   ~ 0.12127
-    # CLM1/F: log(1 + 0.559^2) = 0.27182
-    etalcl_5oh     ~ 0.27182
-    # CLM2/F: log(1 + 0.688^2) = 0.38735
-    etalcl_sfn     ~ 0.38735
+    # V1/F: log(1 + 0.99^2) = 0.68315
+    etalvc         ~ log(1 + 0.99^2)
+    # CLOMZ-M1: log(1 + 0.526^2) = 0.24426
+    etalkmet_5oh   ~ log(1 + 0.526^2)
+    # CLOMZ-M2: log(1 + 0.359^2) = 0.12123
+    etalkmet_sfn   ~ log(1 + 0.359^2)
+    # CLM1/F: log(1 + 0.559^2) = 0.27192
+    etalcl_5oh     ~ log(1 + 0.559^2)
+    # CLM2/F: log(1 + 0.688^2) = 0.38753
+    etalcl_sfn     ~ log(1 + 0.688^2)
 
     # Residual error. Zhao 2018 Table 2 reports a single additive
     # residual SD of 55.6 ng/mL applied to all three outputs (combined

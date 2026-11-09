@@ -109,9 +109,9 @@ Su_2024_tigecycline <- function() {
     # omega^2 = log(CV^2 + 1). The paper states that IIV on V2 could not be
     # estimated ("it was not possible to estimate the interindividual
     # variability for V2"), so V2 carries no eta.
-    etalcl ~ 0.070366 # log(0.270^2 + 1); Su 2024 Table 2 omega_CL = 27.0%
-    etalvc ~ 0.422375 # log(0.725^2 + 1); Su 2024 Table 2 omega_V1 = 72.5%
-    etalq  ~ 0.034735 # log(0.188^2 + 1); Su 2024 Table 2 omega_Q  = 18.8%
+    etalcl ~ log(1 + 0.27^2)  # Su 2024 Table 2 omega_CL = 27.0%
+    etalvc ~ log(1 + 0.725^2)  # Su 2024 Table 2 omega_V1 = 72.5%
+    etalq  ~ log(1 + 0.188^2)  # Su 2024 Table 2 omega_Q  = 18.8%
 
     # Residual error: proportional (Methods, "a proportional model [was] used
     # to describe ... residual variability"). Table 2 prints "sigma (%) 2.02".

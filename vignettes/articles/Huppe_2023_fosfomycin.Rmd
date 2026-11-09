@@ -86,7 +86,7 @@ for review.
 | `lkoa` (K0A) | 0.0288 (RSE 9%) | Table 2; units resolved below |
 | `e_crcl_cl_renal`, **fixed** | 0.0723 per (mL/min) | Table 2, Covariates (footnote c) |
 | `e_tsfd_vc` | 0.0008 per min (RSE 24%) | Table 2, Covariates |
-| `etalvc` (IIV V_C) | 62.10 %CV -> omega^2 = log(0.621^2 + 1) = 0.326287 | Table 2, Random effects |
+| `etalvc` (IIV V_C) | 62.10 %CV -> omega^2 = log(0.621^2 + 1) = 0.326163 | Table 2, Random effects |
 | `addSd` | 30.58 ug/mL | Table 2, Random effects (additive SD) |
 | Renal arm `CL_Renal * (1 + theta_CLCR * CLCR)` | n/a | Table 2 footnote a |
 | Preserved-diuresis gate on the renal arm | n/a | Methods, Population pharmacokinetic modeling; confirmed by Fig. 3b |
@@ -542,7 +542,7 @@ n_anur <- 40  # 40% anuric, matching 6 of 15 patients
 # Table 1 mean 20.7 and SD 44.9 mL/min; quantiles, not random draws.
 crcl <- c(rep(0, n_anur),
           qlnorm((seq_len(n_arm - n_anur) - 0.5) / (n_arm - n_anur), 2.926, 1.109))
-eta  <- qnorm((seq_len(n_arm) - 0.5) / n_arm, 0, sqrt(0.326287))
+eta  <- qnorm((seq_len(n_arm) - 0.5) / n_arm, 0, sqrt(log(1 + 0.621^2)))
 c(mean = mean(crcl), sd = sd(crcl), pct_anuric = 100 * mean(crcl == 0))
 
 samp <- c(0, 15, 30, 60, 90, 180, 240, 300, 360) / 60  # h, relative to dose start
@@ -735,7 +735,7 @@ gap.
   place the first dose at `time = 0`** or the volume trajectory will be wrong.
 * **IIV back-transformation.** Table 2 reports IIV on `V_C` as 62.10 %CV. The
   Methods state that interindividual variability used exponential random-effect
-  models, so `omega^2 = log(CV^2 + 1) = 0.326287`. This matches the convention
+  models, so `omega^2 = log(CV^2 + 1) = 0.326163`. This matches the convention
   already used for the same senior author's `Liesenfeld_2013_dabigatran` model.
 * **`CL_CR` is measured, not estimated.** The retained covariate is a urinary
   creatinine clearance measured from 12-h urine collection (Methods Eq. 2), in

@@ -200,14 +200,14 @@ Sherwin_2012_mycophenolic_acid <- function() {
 
     # ---- Inter-individual variability (Eq. 1; CV% per Table 3) ----
     # omega^2 = log(1 + CV^2):
-    #   CV = 48.6% -> 0.21201    CV = 59.2% -> 0.30048
-    #   CV = 42.9% -> 0.16895    CV = 60.0% -> 0.30748
-    #   CV = 55.9% -> 0.27193
-    etalcl       ~ 0.21201    # Table 3 IIV CL1 MPA  = 48.6% CV -> log(1 + 0.486^2)
-    etalvc       ~ 0.30048    # Table 3 IIV V3 MPA   = 59.2% CV -> log(1 + 0.592^2)
-    etalq        ~ 0.16895    # Table 3 IIV CL2 MPA  = 42.9% CV -> log(1 + 0.429^2)
+    #   CV = 48.6% -> 0.21204    CV = 59.2% -> 0.30045
+    #   CV = 42.9% -> 0.16893    CV = 60.0% -> 0.30748
+    #   CV = 55.9% -> 0.27192
+    etalcl       ~ log(1 + 0.486^2)  # Table 3 IIV CL1 MPA  = 48.6% CV
+    etalvc       ~ log(1 + 0.592^2)  # Table 3 IIV V3 MPA   = 59.2% CV
+    etalq        ~ log(1 + 0.429^2)  # Table 3 IIV CL2 MPA  = 42.9% CV
     etalvp       ~ 0.30748    # Table 3 IIV V4 MPA   = 60.0% CV -> log(1 + 0.600^2)
-    etalcl_mpag  ~ 0.27193    # Table 3 IIV CLM MPAG = 55.9% CV -> log(1 + 0.559^2)
+    etalcl_mpag  ~ log(1 + 0.559^2)  # Table 3 IIV CLM MPAG = 55.9% CV
 
     # ---- Residual error (Eq. 2; Table 3 reports a single CV% per analyte) ----
     # The Methods state a combined additive + proportional model but

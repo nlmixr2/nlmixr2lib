@@ -395,8 +395,8 @@ Moein_2025_etrolizumab <- function() {
     # Between-subject variability. Table 1 reports each term on the
     # scale of the transform its parameter carries, and the note block
     # under Table 1 is explicit about which scale that is:
-    #   - CL, Vtot, ka  -> approximate CV of a log-normal parameter, so
-    #     the variance on the estimation (log) scale is log(1 + CV^2).
+    #   - CL, Vtot, ka  -> "expressed as approximate coefficient of variation
+    #     (CV)" (Results), i.e. the SD of the eta, so the variance is CV^2.
     #   - F, Maxred     -> SD on the LOGIT scale (footnote h), so the
     #     variance is the reported SD squared, with no back-transform.
     #
@@ -410,10 +410,10 @@ Moein_2025_etrolizumab <- function() {
     # CL and Maxred are correlated (Table 1: cor(CL,Maxred) = 0.263), so
     # they share a 2x2 block. The off-diagonal is the covariance implied
     # by that correlation and the two SDs:
-    #   0.263 * sqrt(log(1 + 0.232^2)) * 0.784
+    #   0.263 * 0.232 * 0.784
     etalcl + etalogitmaxred ~ c(
-      log(1 + 0.232^2),
-      0.263 * sqrt(log(1 + 0.232^2)) * 0.784, 0.784^2
+      0.232^2,
+      0.263 * 0.232 * 0.784, 0.784^2
     )
 
     # A SINGLE eta on total volume. Table 1 footnote i: "IIV for Vtot,
@@ -422,9 +422,9 @@ Moein_2025_etrolizumab <- function() {
     # random effect, so `etalvc` is deliberately reused on both volumes
     # in model() rather than declaring a second, perfectly-correlated
     # eta (which would be singular and would fail Cholesky).
-    etalvc ~ log(1 + 0.132^2)                # Table 1: IIV Vtot CV = 0.132 (RSE 13.3%, shrinkage 71.2%)
+    etalvc ~ 0.132^2                # Table 1: IIV Vtot CV = 0.132 (RSE 13.3%, shrinkage 71.2%)
 
-    etalka ~ log(1 + 0.336^2)                # Table 1: IIV ka CV = 0.336 (RSE 14.4%, shrinkage 65.7%)
+    etalka ~ 0.336^2                # Table 1: IIV ka CV = 0.336 (RSE 14.4%, shrinkage 65.7%)
 
     etalogitfdepot ~ 0.681^2                 # Table 1: IIV F = 0.681, an SD on the logit scale per footnote h
 

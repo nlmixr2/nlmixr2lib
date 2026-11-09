@@ -149,7 +149,7 @@ Frey_2013_tocilizumab <- function() {
     #     ec50   CV 170%  -> omega^2 = log(1.70^2 + 1) = log(3.89)   = 1.358
     #     emax   CV  11%  -> omega^2 = log(0.11^2 + 1) = log(1.0121) = 0.01203
     #     kout   CV  60%  -> omega^2 = log(0.60^2 + 1) = log(1.36)   = 0.3075
-    #     BASE   CV   9.4% -> omega^2 = log(0.094^2 + 1) = log(1.00884) = 0.008805
+    #     BASE   CV   9.4% -> omega^2 = log(0.094^2 + 1) = log(1.008836) = 0.008797
     #     DMARD  CV 193%  -> omega^2 = log(1.93^2 + 1) = log(4.7249) = 1.553
     # Correlation ec50-emax = 0.44 (Table 1, "Correlation ec50-emax" row)
     #   cov(ec50, emax) = 0.44 * sqrt(1.358) * sqrt(0.01203)
@@ -158,7 +158,7 @@ Frey_2013_tocilizumab <- function() {
     etalec50 + etalemax ~ c(1.358,
                             0.05626, 0.01203)   # Frey 2013 Table 1: ec50 IIV 170% CV, emax IIV 11% CV, ec50-emax correlation 0.44
     etalkout  ~ 0.3075     # Frey 2013 Table 1: kout IIV 60% CV
-    etalrbase  ~ 0.008805   # Frey 2013 Table 1: Baseline IIV 9.4% CV
+    etalrbase  ~ log(1 + 0.094^2)  # Frey 2013 Table 1: Baseline IIV 9.4% CV
     etalDMARD ~ 1.553      # Frey 2013 Table 1: DMARD effect IIV 193% CV
 
     # ------------------------------------------------------------------

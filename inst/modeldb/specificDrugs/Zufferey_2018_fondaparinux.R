@@ -107,8 +107,8 @@ Zufferey_2018_fondaparinux <- function() {
 
     # Inter-individual variability on log-CL (page 5: "log normal between
     # subject variability of 34 (CV%)"). On the log-normal scale,
-    # omega^2 = log(1 + CV^2) = log(1 + 0.34^2) = log(1.1156) = 0.10936.
-    etalcl ~ 0.10936  # page 5 CL equation: CV% = 34 -> omega^2 = log(1 + 0.34^2) = 0.10936
+    # omega^2 = log(1 + CV^2) = log(1 + 0.34^2) = log(1.1156) = 0.10939.
+    etalcl ~ log(1 + 0.34^2)  # page 5 CL equation: CV% = 34
 
     # No IIV on the hazard parameters. The source paper does not report
     # any random effect on theta1, theta2, theta3, beta1, beta2, beta3

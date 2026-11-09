@@ -64,8 +64,8 @@ Zhao_2014_vancomycin <- function() {
     # Inter-individual variability (Zhao 2014 Table 3 "Interindividual variability
     # (%)" rows, exponential model theta_i = theta_TV * exp(eta_i)); for
     # log-normal etas omega^2 = log(CV^2 + 1).
-    etalvc ~ 0.46586  # log(0.770^2 + 1); 77.0% CV on V  (RSE 35.9%)
-    etalcl ~ 0.11437  # log(0.348^2 + 1); 34.8% CV on CL (RSE 22.9%)
+    etalvc ~ log(1 + 0.77^2)  # 77.0% CV on V  (RSE 35.9%)
+    etalcl ~ log(1 + 0.348^2)  # 34.8% CV on CL (RSE 22.9%)
 
     # Combined proportional + additive residual error (Zhao 2014 Table 3).
     propSd <- 0.053; label("Proportional residual error (fraction)")                                    # Zhao 2014 Table 3: proportional = 5.3% (RSE 79.2%)

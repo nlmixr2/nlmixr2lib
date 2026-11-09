@@ -87,7 +87,7 @@ below collects them in one place for review.
 | `e_wt_vc = 0.763` (theta_WT-V) | 0.763 | Table 1, "theta_WT-V"; RSE 8 percent, bootstrap 0.645-0.876 |
 | `pma50_cl = 25.6` (TM50, weeks) | 25.6 | Table 1, "TM50 (weeks)"; RSE 2 percent, bootstrap 24.4-26.5 |
 | `hill_cl = 15.7` (Hill) | 15.7 | Table 1, "Hill", **as corrected by the 2025 erratum** (doi:10.1128/aac.00972-25); Table 1 as printed in 2024 reads 7. RSE 37 percent, bootstrap 8.4-41.0 |
-| `etalcl` variance 0.11933 | omega^2 = log(1 + 0.356^2) | Table 1, "Interindividual variability (%CV) CL = 35.6"; RSE 21 percent, eta shrinkage 8 percent |
+| `etalcl` variance 0.11932 | omega^2 = log(1 + 0.356^2) | Table 1, "Interindividual variability (%CV) CL = 35.6"; RSE 21 percent, eta shrinkage 8 percent |
 | `etalvc` variance 0.06252 | omega^2 = log(1 + 0.254^2) | Table 1, "Interindividual variability (%CV) V = 25.4"; RSE 31 percent, eta shrinkage 29 percent |
 | `propSd = 0.191` | 19.1 percent | Table 1, "Residual error, Proportional error (%)"; RSE 13 percent, epsilon shrinkage 17 percent |
 | `pma_wk = PAGE * 4.35` | n/a | Unit conversion only: the canonical `PAGE` covariate is in months and the paper's TM50 is in weeks |
@@ -690,7 +690,7 @@ the paper's recommendation to use a 6-hour interval above 40 weeks PMA.
   actually used.
 - **Interindividual variability scale.** Table 1 reports IIV as %CV. The
   variances in `ini()` use the log-normal relation `omega^2 = log(CV^2 + 1)`
-  (0.11933 for CL, 0.06252 for V). If the authors instead reported
+  (0.11932 for CL, 0.06252 for V). If the authors instead reported
   `sqrt(omega^2) * 100`, the variances would be 0.12674 and 0.06452 - a 6 and 3
   percent difference in variance, respectively, which does not change any
   conclusion in this vignette. The paper does not report `omega^2` on the raw

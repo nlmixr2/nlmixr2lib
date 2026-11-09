@@ -120,8 +120,8 @@ Sikma_2020_tacrolimus_thoracic <- function() {
     # likely due to the fact that variability was dominated by the
     # corresponding IOV" (Sikma 2020 Section 3.4). Following the source
     # paper's final model, only the etalcl term is included here.
-    #   CL/F  CV 34.6% -> log(1 + 0.346^2) = 0.11307
-    etalcl ~ 0.11307                                                                    # Sikma 2020 Table 2 IIV CL/F = 34.6% (95% CI 24.2-48.6)
+    #   CL/F  CV 34.6% -> log(1 + 0.346^2) = 0.11308
+    etalcl ~ log(1 + 0.346^2)  # Sikma 2020 Table 2 IIV CL/F = 34.6% (95% CI 24.2-48.6)
 
     # Inter-occasion (dose-to-dose) variability was reported in Sikma 2020
     # Table 2 and dominates the variance structure (CL/F 29.5%, V1/F 35.1%,

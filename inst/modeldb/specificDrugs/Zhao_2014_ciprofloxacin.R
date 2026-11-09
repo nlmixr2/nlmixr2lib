@@ -110,12 +110,12 @@ Zhao_2014_ciprofloxacin <- function() {
     # IIV (exponential model). Source paper reports %CV in Table 4;
     # log-normal variance via omega^2 = log(1 + CV^2). No correlation
     # block is reported in the paper (independent etas).
-    # V1: log(1 + 0.481^2) = 0.20814
-    etalvc ~ 0.20814
-    # V2: log(1 + 0.493^2) = 0.21752
-    etalvp ~ 0.21752
-    # CL: log(1 + 0.332^2) = 0.10448
-    etalcl ~ 0.10448
+    # V1: log(1 + 0.481^2) = 0.20812
+    etalvc ~ log(1 + 0.481^2)
+    # V2: log(1 + 0.493^2) = 0.21757
+    etalvp ~ log(1 + 0.493^2)
+    # CL: log(1 + 0.332^2) = 0.10456
+    etalcl ~ log(1 + 0.332^2)
 
     # Residual error -- proportional only (Zhao 2014 Results "Model
     # building" paragraph 2: "A proportional model best described

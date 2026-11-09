@@ -81,13 +81,13 @@ nlmixr2lib units convention (time = h, concentration = mg/L).
 | theta_7 (KAMAX)      | `exp(lkamax)`       | 0.86 1/h              | Table 4         |
 | theta_12 (BMI on V3) | `e_bmi_vp`          | 0.058 per kg/m^2      | Table 4 and best-covariate model equation on p. 3028 |
 | F1                   | `exp(lfdepot)` (fixed) | 1.00 fraction       | Table 4 ('F1 = 1.00 (fixed)') |
-| omega^2 (CL)         | `etalcl`            | 43.47% CV -> 0.17315  | Table 4 Variability section |
-| omega^2 (V2)         | `etalvc`            | 21.23% CV -> 0.04408  | Table 4 Variability section |
+| omega^2 (CL)         | `etalcl`            | 43.47% CV -> 0.17308  | Table 4 Variability section |
+| omega^2 (V2)         | `etalvc`            | 21.23% CV -> 0.04409  | Table 4 Variability section |
 | omega^2 (RA)         | `etalra`            | 32.55% CV -> 0.10070  | Table 4 Variability section |
-| omega^2 (KAMAX)      | `etalkamax`         | 31.78% CV -> 0.09621  | Table 4 Variability section |
-| omega^2 (GAM1)       | `etalgam1`          | 38.07% CV -> 0.13534  | Table 4 Variability section |
-| omega^2 (V3)         | `etalvp`            | 27.05% CV -> 0.07061  | Table 4 Variability section |
-| omega^2 (Q)          | `etalq`             | 36.46% CV -> 0.12480  | Table 4 Variability section |
+| omega^2 (KAMAX)      | `etalkamax`         | 31.78% CV -> 0.09622  | Table 4 Variability section |
+| omega^2 (GAM1)       | `etalgam1`          | 38.07% CV -> 0.13535  | Table 4 Variability section |
+| omega^2 (V3)         | `etalvp`            | 27.05% CV -> 0.07062  | Table 4 Variability section |
+| omega^2 (Q)          | `etalq`             | 36.46% CV -> 0.12481  | Table 4 Variability section |
 | sigma (residual)     | `propSd`            | 17.88% CV / 0.1788    | Table 4 'Residual error sigma^2 = 17.88' |
 | Best covariate model | `cl`, `q` log-additive shifts, `vp` linear-deviation BMI | (see equation) | Best-covariate model equation on p. 3028 |
 | Weibull ka(t) form   | `ka <- kamax * (1 - exp(-(ra * tad)^gam1))` | Piotrovskij saturating-ka | Maintainer-approved interpretation; paper text names the three parameters but does not write the equation |

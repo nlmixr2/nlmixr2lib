@@ -97,7 +97,7 @@ Table 3 "Final covariate model" column (page 178) unless otherwise noted.
 | `wt50` (WT cap for piecewise CL) | 100 kg | Table 3 row "WT50" footnote c |
 | `e_cyp3a4_ind_cl` (Inducer +CL fraction) | 0.399 | Table 3 row "Inducer effect on CL" |
 | `propSd` (proportional residual SD) | 0.44 | Table 3 row "Residual error" (44% CV, log-additive in paper, proportional in linear space) |
-| Block-omega 4x4 with constant off-diagonal | diag (0.169, 0.207, 0.122, 0.215); off-diag 0.0412 | Table 3 rows for marginal CV_X and the 22% pairwise PK correlation |
+| Block-omega 4x4 with constant off-diagonal | diag (0.170, 0.207, 0.122, 0.215); off-diag 0.0412 | Table 3 rows for marginal CV_X and the 22% pairwise PK correlation |
 | `f_wt = WT^50 / (WT^50 + wt50^50)` smooth-step | n/a | Methods "Pharmacokinetics" paragraph defining the function F (Equation 13 in the published text) |
 | `cl = exp(lcl + etalcl) * (1 + 0.399 * IND) * (1 + slope * (wt_eff - 75))` | n/a | Methods "Pharmacokinetics" paragraph parameterising clearance |
 | 2-cmt IV ODE (`d/dt(central)`, `d/dt(peripheral1)`) | n/a | Methods "Pharmacokinetics" (two-compartment model parameterised in CL/V1/Q/V2) |

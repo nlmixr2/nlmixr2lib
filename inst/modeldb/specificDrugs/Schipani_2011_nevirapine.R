@@ -81,8 +81,8 @@ Schipani_2011_nevirapine <- function() {
 
     # ---- IIV (only CL/F has IIV in the final model; absorption and V/F do not) ----
     # Schipani 2011 Table 2: IIV CL/F = 31% CV in the final model (RSE 10.8%)
-    # omega^2 = log(CV^2 + 1) = log(0.31^2 + 1) = 0.09171
-    etalcl ~ 0.09171
+    # omega^2 = log(CV^2 + 1) = log(0.31^2 + 1) = 0.09176
+    etalcl ~ log(1 + 0.31^2)
 
     # ---- Residual error (proportional only; additive did not improve the fit) ----
     propSd <- 0.092 ; label("Proportional residual error (fraction)")                       # Schipani 2011 Table 2: proportional residual error = 9.2% CV (RSE 10.8%); sqrt(0.0085) reported in Results

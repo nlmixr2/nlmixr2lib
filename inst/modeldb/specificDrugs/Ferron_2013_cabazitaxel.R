@@ -76,11 +76,11 @@ Ferron_2013_cabazitaxel <- function() {
 
     # IIV (log-normal) on CL, V1, K12, K13, K31 (no IIV on K21).
     # Convert CV% from Table 4 to log-scale variance via omega^2 = log(1 + CV^2).
-    etalcl  ~ 0.13987 # Ferron 2013 Table 4: IIV CL 38.8% CV -> log(1 + 0.388^2)
-    etalvc  ~ 0.62427 # Ferron 2013 Table 4: IIV V1 93.4% CV -> log(1 + 0.934^2)
-    etalk12 ~ 0.53063 # Ferron 2013 Table 4: IIV K12 84.0% CV -> log(1 + 0.840^2)
-    etalk13 ~ 0.34203 # Ferron 2013 Table 4: IIV K13 64.2% CV -> log(1 + 0.642^2)
-    etalk31 ~ 0.07647 # Ferron 2013 Table 4: IIV K31 28.2% CV -> log(1 + 0.282^2)
+    etalcl  ~ log(1 + 0.388^2)  # Ferron 2013 Table 4: IIV CL 38.8% CV
+    etalvc  ~ log(1 + 0.934^2)  # Ferron 2013 Table 4: IIV V1 93.4% CV
+    etalk12 ~ log(1 + 0.84^2)  # Ferron 2013 Table 4: IIV K12 84.0% CV
+    etalk13 ~ log(1 + 0.642^2)  # Ferron 2013 Table 4: IIV K13 64.2% CV
+    etalk31 ~ log(1 + 0.282^2)  # Ferron 2013 Table 4: IIV K31 28.2% CV
 
     # Proportional residual error 27.8% CV (Ferron 2013 Table 4 Eq. 2: Cobs = Cpred * (1 + eps))
     propSd <- 0.278; label("Proportional residual error (fraction)") # Ferron 2013 Table 4

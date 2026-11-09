@@ -99,8 +99,8 @@ deVriesSchultink_2018_anthracycline_troponinT <- function() {
     # log-normal IIV on SLOPE (57.7% CV, shrinkage 31.0%) and TRP0
     # (39.2% CV, shrinkage 12.6%). No off-diagonal covariance reported.
     # omega^2 = log(CV^2 + 1) under the log-normal convention.
-    etalslope ~ 0.298017                                                                          # Table 2: omega_SLOPE = 57.7% CV -> omega^2 = log(0.577^2 + 1)
-    etaltrp0  ~ 0.142567                                                                          # Table 2: omega_TRP0  = 39.2% CV -> omega^2 = log(0.392^2 + 1)
+    etalslope ~ log(1 + 0.577^2)  # Table 2: omega_SLOPE = 57.7% CV
+    etaltrp0  ~ log(1 + 0.392^2)  # Table 2: omega_TRP0  = 39.2% CV
 
     # Residual error: proportional 30.1% on troponin T (Table 2,
     # shrinkage 11.2%). Single-output model -> use the bare-suffix

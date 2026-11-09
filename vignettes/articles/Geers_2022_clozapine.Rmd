@@ -86,7 +86,7 @@ concentrations in total (Table 2).
 | `lvd` | `log(5.21)` L/kg | Table 3, Vd/F 5.21 +/- 3.82 |
 | `lfdepot` | `fixed(log(1))` | Methods, 'F of clozapine was fixed at 1'; Table 3 footnote |
 | `etalka` | `fixed(0.220230)` | Table 3, SD 0.68 / mean 1.37 = CV 49.6 %, `log(1 + CV^2)` |
-| `etalkel` | 0.280840 | Table 3, SD 0.0365 / mean 0.0641 = CV 56.9 %, `log(1 + CV^2)` |
+| `etalkel` | 0.280841 | Table 3, SD 0.0365 / mean 0.0641 = CV 56.9 %, `log(1 + CV^2)` |
 | `etalvd` | 0.430216 | Table 3, SD 3.82 / mean 5.21 = CV 73.3 %, `log(1 + CV^2)` |
 | `addSd` | `fixed(10)` ug/L | Methods, assay error 'SD = 10 + 0.1 x C' |
 | `propSd` | `fixed(0.1)` | Methods, assay error 'SD = 10 + 0.1 x C' |
@@ -425,7 +425,7 @@ the paper). The true AUC is `F * Dose / CL`. The twice-daily interval uses
 percentage statistics do not depend on dose.
 
 ```{r lss}
-om <- c(ka = 0.220230, kel = 0.280840, vd = 0.430216)
+om <- c(ka = 0.220230, kel = 0.280841, vd = 0.430216)
 
 neg_log_post <- function(eta, obs, times, dose, tau, wt) {
   pred <- css_closed(times, dose, tau, th[["ka"]], th[["kel"]] * exp(eta[1]), th[["vd"]] * exp(eta[2]) * wt)

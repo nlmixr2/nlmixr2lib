@@ -143,16 +143,16 @@ Holford_1992_tacrine <- function() {
     # the correlation of S0 with the ADAS-cog progression rate (alpha) was 0.37, while the
     # correlation of beta_a with alpha was 0.52").
     # Variances on the log scale via omega^2 = log(1 + CV^2):
-    #   S0     CV 37.7%  -> omega^2 = log(1 + 0.377^2) = 0.1331
-    #   alpha  CV 208%   -> omega^2 = log(1 + 2.08^2)  = 1.6730
-    #   beta_a CV 126%   -> omega^2 = log(1 + 1.26^2)  = 0.9508
+    #   S0     CV 37.7%  -> omega^2 = log(1 + 0.377^2) = 0.1329
+    #   alpha  CV 208%   -> omega^2 = log(1 + 2.08^2)  = 1.6727
+    #   beta_a CV 126%   -> omega^2 = log(1 + 1.26^2)  = 0.9507
     # Covariances cov(x, y) = corr(x, y) * sqrt(var(x) * var(y)):
-    #   cov(S0,alpha)   = 0.37 * sqrt(0.1331 * 1.6730) = 0.1746
-    #   cov(S0,beta_a)  = 0.31 * sqrt(0.1331 * 0.9508) = 0.1102
-    #   cov(alpha,beta_a) = 0.52 * sqrt(1.6730 * 0.9508) = 0.6562
-    etalS0 + etalalpha + etalbeta_a ~ c(0.1331,
-                                        0.1746, 1.6730,
-                                        0.1102, 0.6562, 0.9508)
+    #   cov(S0,alpha)   = 0.37 * sqrt(0.1329 * 1.6727) = 0.1745
+    #   cov(S0,beta_a)  = 0.31 * sqrt(0.1329 * 0.9507) = 0.1102
+    #   cov(alpha,beta_a) = 0.52 * sqrt(1.6727 * 0.9507) = 0.6557
+    etalS0 + etalalpha + etalbeta_a ~ c(log(1 + 0.377^2),
+                                        0.37 * sqrt(log(1 + 0.377^2) * log(1 + 2.08^2)), log(1 + 2.08^2),
+                                        0.31 * sqrt(log(1 + 0.377^2) * log(1 + 1.26^2)), 0.52 * sqrt(log(1 + 2.08^2) * log(1 + 1.26^2)), log(1 + 1.26^2))
 
     # Diagonal IIV on placebo potency
     #   beta_p CV 128%   -> omega^2 = log(1 + 1.28^2)  = 0.9702

@@ -141,18 +141,18 @@ Almond_2016_carbamazepine_invitro <- function() {
     # vignette Errata. No correlations are reported; the block is diagonal.
     # =====================================================================
 
-    etalemax_activity ~ 0.142281
+    etalemax_activity ~ log(1 + 0.3910^2)
     # Table 2: S.D. 6.1 on Indmax 16.6 -> CV = 6.1 / 15.6 = 0.3910 on emax;
-    # omega^2 = log(1 + 0.3910^2) = 0.142281.
-    etalec50_activity ~ 0.335278
+    # omega^2 = log(1 + 0.3910^2) = 0.142264.
+    etalec50_activity ~ log(1 + 0.6311^2)
     # Table 2: S.D. 37.3 on IndC50 59.1 -> CV = 0.6311;
-    # omega^2 = log(1 + 0.6311^2) = 0.335278.
-    etalemax_mrna ~ 0.301590
+    # omega^2 = log(1 + 0.6311^2) = 0.335248.
+    etalemax_mrna ~ log(1 + 0.5933^2)
     # Table 2: S.D. 12.4 on Indmax 21.9 -> CV = 12.4 / 20.9 = 0.5933 on emax;
-    # omega^2 = log(1 + 0.5933^2) = 0.301590.
-    etalec50_mrna ~ 0.089869
+    # omega^2 = log(1 + 0.5933^2) = 0.301589.
+    etalec50_mrna ~ log(1 + 0.3066^2)
     # Table 2: S.D. 18.0 on IndC50 58.7 -> CV = 0.3066;
-    # omega^2 = log(1 + 0.3066^2) = 0.089869.
+    # omega^2 = log(1 + 0.3066^2) = 0.089844.
 
     # =====================================================================
     # Residual error is NOT reported: the source fitted each donor's curve

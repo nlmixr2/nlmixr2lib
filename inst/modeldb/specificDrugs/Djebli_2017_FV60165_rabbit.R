@@ -52,16 +52,16 @@ Djebli_2017_FV60165_rabbit <- function() {
     # P = TV * (1 + eta); the printed 95% CIs reproduce as
     # CV * sqrt(1 +/- 1.96 * RSE) with the RSE on the variance, which fixes
     # that scale. Translated to log-normal at equal CV: omega^2 = log(CV^2 + 1).
-    etalfdepot ~ 0.31189 # Table 1 IIV 'F1' CV 60.5%; log(1 + 0.605^2)
+    etalfdepot ~ log(1 + 0.605^2)  # Table 1 IIV 'F1' CV 60.5%
     etalk_tear_nasolacrimal_duct ~ 0.49470 # Table 1 IIV 'k12' CV 80.0%, shared by both formulations; log(1 + 0.800^2)
-    etalk_tear_cornea ~ 0.18669 # Table 1 IIV 'k13' CV 45.3%; log(1 + 0.453^2)
-    etalq_cornea_aqueous_humour ~ 1.37597 # Table 1 IIV 'Q' CV 172%; log(1 + 1.72^2)
-    etalcl_nasolacrimal_duct ~ 0.59832 # Table 1 IIV 'Clnl' CV 90.5%; log(1 + 0.905^2)
-    etalcl_aqueous_humour ~ 0.61316 # Table 1 IIV 'Clah' CV 92.0%; log(1 + 0.920^2)
-    etalv_tear ~ 1.20599 # Table 1 IIV 'V1' CV 153%; log(1 + 1.53^2)
-    etalv_nasolacrimal_duct ~ 3.00093 # Table 1 IIV 'V2' CV 437%; log(1 + 4.37^2)
-    etalv_cornea ~ 0.23201 # Table 1 IIV 'V3' CV 51.1%; log(1 + 0.511^2)
-    etalv_aqueous_humour ~ 2.08164 # Table 1 IIV 'V4' CV 265%; log(1 + 2.65^2)
+    etalk_tear_cornea ~ log(1 + 0.453^2)  # Table 1 IIV 'k13' CV 45.3%
+    etalq_cornea_aqueous_humour ~ log(1 + 1.72^2)  # Table 1 IIV 'Q' CV 172%
+    etalcl_nasolacrimal_duct ~ log(1 + 0.905^2)  # Table 1 IIV 'Clnl' CV 90.5%
+    etalcl_aqueous_humour ~ log(1 + 0.92^2)  # Table 1 IIV 'Clah' CV 92.0%
+    etalv_tear ~ log(1 + 1.53^2)  # Table 1 IIV 'V1' CV 153%
+    etalv_nasolacrimal_duct ~ log(1 + 4.37^2)  # Table 1 IIV 'V2' CV 437%
+    etalv_cornea ~ log(1 + 0.511^2)  # Table 1 IIV 'V3' CV 51.1%
+    etalv_aqueous_humour ~ log(1 + 2.65^2)  # Table 1 IIV 'V4' CV 265%
 
     # The paper estimated ONE proportional sigma for all four matrices; nlmixr2
     # needs one parameter per endpoint, so the same value is carried four times.

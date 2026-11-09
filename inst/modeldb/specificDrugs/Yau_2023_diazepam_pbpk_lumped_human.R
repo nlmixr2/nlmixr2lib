@@ -93,7 +93,7 @@ Yau_2023_diazepam_pbpk_lumped_human <- function() {
     # exponential model was used to account for interindividual
     # variability"). Reported as 33.1% CV; back-transformed with the
     # log-normal relation omega^2 = log(1 + CV^2) = log(1 + 0.331^2).
-    etalcl ~ 0.104259; label("IIV on total blood clearance")                                                 # Yau 2023 Table 2, IIV CLb = 33.1% (CV 17%)
+    etalcl ~ log(1 + 0.331^2); label("IIV on total blood clearance")  # Yau 2023 Table 2, IIV CLb = 33.1% (CV 17%)
 
     # Proportional residual error (supplement $ERROR: W = IPRED*RUV2).
     propSd <- 0.393; label("Proportional residual error (fraction)")                                          # Yau 2023 Table 2, residual error 39.3% (CV 8%)
