@@ -112,7 +112,8 @@ solve_static <- function(model_name, covs) {
   ev <- data.frame(id = 1L, time = seq_len(n), amt = 0, evid = 0L)
   for (nm in names(covs)) ev[[nm]] <- rep_len(covs[[nm]], n)
   s <- as.data.frame(rxode2::rxSolve(
-    rxode2::zeroRe(rxode2::rxode(readModelDb(model_name))),
+    # The models carry no etas, so only the placeholder residual is zeroed.
+    rxode2::zeroRe(rxode2::rxode(readModelDb(model_name)), which = "sigma"),
     events = ev, returnType = "data.frame"
   ))
   stopifnot(nrow(s) == n)
@@ -253,9 +254,9 @@ auc_ranges <- exposure |>
 
 ggplot(eff_curves, aes(auc, p)) +
   geom_line(colour = "darkorange", linewidth = 1) +
-  geom_errorbarh(data = tidyr::crossing(auc_ranges, endpoint = unique(eff_curves$endpoint)),
-                 aes(y = y, xmin = lo, xmax = hi, colour = treatment), height = 0.02,
-                 inherit.aes = FALSE) +
+  geom_errorbar(data = tidyr::crossing(auc_ranges, endpoint = unique(eff_curves$endpoint)),
+                aes(y = y, xmin = lo, xmax = hi, colour = treatment), width = 0.02,
+                orientation = "y", inherit.aes = FALSE) +
   geom_point(data = tidyr::crossing(auc_ranges, endpoint = unique(eff_curves$endpoint)),
              aes(x = med, y = y, colour = treatment), inherit.aes = FALSE) +
   facet_wrap(~endpoint) +
