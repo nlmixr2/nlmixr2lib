@@ -419,9 +419,9 @@ Meid_2024_spironolactone_qsp <- function() {
     # ===================================================================
     etalkin  ~ 0.49469624    # Meid 2024 Section 2: Kin CV = 131%, capped to 80% in the application -> log(1 + 0.80^2) = 0.49469624
     etalnain ~ 0.00270035    # Meid 2024 Section 2: Nain CV = 5.2% -> log(1 + 0.052^2) = 0.00270035
-    etalv_ecf ~ 0.03188566   # Meid 2024 Section 2: V_ecf CV = 18% -> log(1 + 0.18^2) = 0.03188566
+    etalv_ecf ~ log(1 + 0.18^2)  # Meid 2024 Section 2: V_ecf CV = 18%
     etalmr   ~ 0.49469624    # Meid 2024 Section 2: MR CV = 131%, capped to 80% in the application -> log(1 + 0.80^2) = 0.49469624
-    etahyperaldo ~ 0.12183267 # Meid 2024 Section 2: hyperaldo_effect CV = 36% -> log(1 + 0.36^2) = 0.12183267; inert while the typical value is 0 (see the hyperaldo note above)
+    etahyperaldo ~ log(1 + 0.36^2)  # Meid 2024 Section 2: hyperaldo_effect CV = 36%; inert while the typical value is 0 (see the hyperaldo note above)
 
     # ===================================================================
     # RESIDUAL ERROR

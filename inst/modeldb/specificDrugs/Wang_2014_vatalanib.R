@@ -145,7 +145,7 @@ Wang_2014_vatalanib <- function() {
     # No IIV on K_induct: Wang 2014 fixed K_induct itself and does not
     # report a between-subject random effect on it.
     etalcl_exp_inf ~ 0.0507  # Wang 2014 Table 2: %CV(CL_induced/F) = 22.8% (36.7% RSE); omega^2 = log(1 + 0.228^2) = 0.0507
-    etalvc    ~ 0.5380  # Wang 2014 Table 2: %CV(Vd/F)        = 84.4% (20.3% RSE); omega^2 = log(1 + 0.844^2) = 0.5380
+    etalvc    ~ log(1 + 0.844^2)  # Wang 2014 Table 2: %CV(Vd/F)        = 84.4% (20.3% RSE)
     etalka    ~ 0.1181  # Wang 2014 Table 2: %CV(Ka)          = 35.4% (24.1% RSE); omega^2 = log(1 + 0.354^2) = 0.1181
     etaltlag  ~ 1.0577  # Wang 2014 Table 2: %CV(A_lag)       = 137.1% (76.1% RSE); omega^2 = log(1 + 1.371^2) = 1.0577
 

@@ -165,9 +165,9 @@ Hanberg_2018_meropenem <- function() {
     # Between-subject variability from Hanberg 2018 Table 2 (final-model
     # column, %CV with shrinkage in parentheses). omega^2 = log(CV^2 + 1)
     # for log-normal etas. No IIV on Vp or fu_sct per Table 2.
-    etalcl ~ 0.03511 # log(0.189^2 + 1); Hanberg 2018 Table 2: BSV on CL = 18.9 %CV (SHR 0%)
-    etalvc ~ 0.06112 # log(0.251^2 + 1); Hanberg 2018 Table 2: BSV on Vc = 25.1 %CV (SHR 7%)
-    etalq  ~ 0.34853 # log(0.646^2 + 1); Hanberg 2018 Table 2: BSV on Q  = 64.6 %CV (SHR 6%)
+    etalcl ~ log(1 + 0.189^2)  # Hanberg 2018 Table 2: BSV on CL = 18.9 %CV (SHR 0%)
+    etalvc ~ log(1 + 0.251^2)  # Hanberg 2018 Table 2: BSV on Vc = 25.1 %CV (SHR 7%)
+    etalq  ~ log(1 + 0.646^2)  # Hanberg 2018 Table 2: BSV on Q  = 64.6 %CV (SHR 6%)
 
     # Proportional residual error. Hanberg 2018 Table 2 reports a single
     # ERR row (19.9 %CV) applied to both plasma (Cc) and SCT (Csct)

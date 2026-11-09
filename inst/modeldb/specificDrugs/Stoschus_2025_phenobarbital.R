@@ -270,7 +270,7 @@ Stoschus_2025_phenobarbital <- function() {
     # significant figures whereas the SD column is rounded to two, so the
     # variances below are back-solved from the CV; each reproduces the printed
     # SD to its stated precision (sqrt(0.50799) = 0.713 vs printed .71,
-    # sqrt(0.157914) = 0.397 vs printed .4, sqrt(0.127331) = 0.357 vs
+    # sqrt(0.157914) = 0.397 vs printed .4, sqrt(0.127330) = 0.357 vs
     # printed .36).
     # =========================================================================
     etalvc ~ 0.50799
@@ -290,16 +290,16 @@ Stoschus_2025_phenobarbital <- function() {
     # is covered. Occasions 2-8 share occasion 1's variance because a single
     # value was estimated.
     # =========================================================================
-    etaiov_cl_1 ~ 0.127331
+    etaiov_cl_1 ~ log(1 + 0.3685^2)
     # Table 2 IOV row 'CL, L/h: SD .36 (6.64; .31-.41), CV% 36.85';
-    # omega^2 = log(1 + 0.3685^2) = 0.127331
-    etaiov_cl_2 ~ fixed(0.127331)
-    etaiov_cl_3 ~ fixed(0.127331)
-    etaiov_cl_4 ~ fixed(0.127331)
-    etaiov_cl_5 ~ fixed(0.127331)
-    etaiov_cl_6 ~ fixed(0.127331)
-    etaiov_cl_7 ~ fixed(0.127331)
-    etaiov_cl_8 ~ fixed(0.127331)
+    # omega^2 = log(1 + 0.3685^2) = 0.127330
+    etaiov_cl_2 ~ fixed(log(1 + 0.3685^2))
+    etaiov_cl_3 ~ fixed(log(1 + 0.3685^2))
+    etaiov_cl_4 ~ fixed(log(1 + 0.3685^2))
+    etaiov_cl_5 ~ fixed(log(1 + 0.3685^2))
+    etaiov_cl_6 ~ fixed(log(1 + 0.3685^2))
+    etaiov_cl_7 ~ fixed(log(1 + 0.3685^2))
+    etaiov_cl_8 ~ fixed(log(1 + 0.3685^2))
 
     # =========================================================================
     # Residual unexplained variability (Stoschus 2025 Table 2, 'RUV

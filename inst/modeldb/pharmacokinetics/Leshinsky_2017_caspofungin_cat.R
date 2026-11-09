@@ -62,7 +62,7 @@ Leshinsky_2017_caspofungin_cat <- function() {
     #   ETA_CL = ETA(1);  ETA_V1 = scale_etalvc * ETA(1)
     # Convert 18% CV on CL via omega^2 = log(CV^2 + 1) = log(1 + 0.18^2)
     #         = 0.03194.
-    etalcl ~ 0.03194    # Leshinsky 2017 Table 1 (BSV on CL = 18% CV, 0% shrinkage, %RSE 21)
+    etalcl ~ log(1 + 0.18^2)  # Leshinsky 2017 Table 1 (BSV on CL = 18% CV, 0% shrinkage, %RSE 21)
     scale_etalvc <- 1.05; label("Scale factor: V1 BSV = scale_etalvc * CL random effect (unitless)") # Leshinsky 2017 Table 1 (V/F BSV scale factor = 1.05, %RSE 8.4)
 
     # Residual error: combined proportional + additive (Leshinsky 2017 Methods

@@ -83,8 +83,8 @@ Every parameter has a trailing in-file comment in `inst/modeldb/specificDrugs/Li
 | Tumor growth     | `lsltg` (SLtg)       | 2.575E-6 /day          | Lindauer 2017 Table S3 medium/allometric SLtg                    |
 | Tumor growth     | `lgamma`             | 2.28                   | Lindauer 2017 Table S2 mouse PK/PD gamma (kept for human)        |
 | Tumor growth     | `psi`                | 20                     | Simeoni 2004 standard PSI = 20 (cited by Lindauer 2017)          |
-| IIV              | `etall0`             | omega^2 = 0.30237      | Lindauer 2017 Table S2 IIV L0 = 59.4% CV (mouse fit)            |
-| IIV              | `etalrbase`          | omega^2 = 0.13164      | Lindauer 2017 Table S2 IIV W0 = 37.5% CV (mouse fit)            |
+| IIV              | `etall0`             | omega^2 = 0.30220      | Lindauer 2017 Table S2 IIV L0 = 59.4% CV (mouse fit)            |
+| IIV              | `etalrbase`          | omega^2 = 0.13158      | Lindauer 2017 Table S2 IIV W0 = 37.5% CV (mouse fit)            |
 | Residual error   | `propSd`, `addSd`    | 0.197 fraction; 0.0658 ug/mL | Lindauer 2017 Table S2 mouse PK residuals (placeholders for human) |
 | Residual error   | `expSd_R0_blood`, `expSd_R0_tumor` | 0.627, 0.508 CV | Lindauer 2017 Table S2 mouse RO residuals (placeholders for human) |
 | Equation         | central compartment   | n/a                    | Lindauer 2017 supplement section "Central compartment"          |

@@ -217,16 +217,16 @@ Li_2012_clozapine <- function() {
     # as a CV%. For log-normal IIV the relationship between CV and the
     # NONMEM OMEGA variance is omega^2 = log(CV^2 + 1); the values below
     # use that conversion.
-    #   CL/F:  CV = 42.9% -> omega^2 = log(0.429^2 + 1) = 0.16898
-    #   V/F:   CV = 65.7% -> omega^2 = log(0.657^2 + 1) = 0.35892
-    #   CLM:   CV = 42.1% -> omega^2 = log(0.421^2 + 1) = 0.16325
-    #   VM:    CV = 75.6% -> omega^2 = log(0.756^2 + 1) = 0.45235
+    #   CL/F:  CV = 42.9% -> omega^2 = log(0.429^2 + 1) = 0.16893
+    #   V/F:   CV = 65.7% -> omega^2 = log(0.657^2 + 1) = 0.35883
+    #   CLM:   CV = 42.1% -> omega^2 = log(0.421^2 + 1) = 0.16317
+    #   VM:    CV = 75.6% -> omega^2 = log(0.756^2 + 1) = 0.45205
     # IIV is reported only on CL/F, V/F, CLM, and VM (no IIV on Ka,
     # which is fixed, and no IIV on KF, which is also fixed).
-    etalcl         ~ 0.16898  # Li 2012 Table 2: CL/F  IIV CV% = 42.9 -> omega^2 = log(0.429^2 + 1)
-    etalvc         ~ 0.35892  # Li 2012 Table 2: V/F   IIV CV% = 65.7 -> omega^2 = log(0.657^2 + 1)
-    etalcl_norcloz ~ 0.16325  # Li 2012 Table 2: CLM   IIV CV% = 42.1 -> omega^2 = log(0.421^2 + 1)
-    etalvc_norcloz ~ 0.45235  # Li 2012 Table 2: VM    IIV CV% = 75.6 -> omega^2 = log(0.756^2 + 1)
+    etalcl         ~ log(1 + 0.429^2)  # Li 2012 Table 2: CL/F  IIV CV% = 42.9
+    etalvc         ~ log(1 + 0.657^2)  # Li 2012 Table 2: V/F   IIV CV% = 65.7
+    etalcl_norcloz ~ log(1 + 0.421^2)  # Li 2012 Table 2: CLM   IIV CV% = 42.1
+    etalvc_norcloz ~ log(1 + 0.756^2)  # Li 2012 Table 2: VM    IIV CV% = 75.6
 
     # ---- Residual error (Li 2012 Table 2 Residual Variability) ----
     # Combined additive + proportional error model fitted separately for

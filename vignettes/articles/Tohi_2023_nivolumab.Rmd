@@ -86,7 +86,7 @@ baseline and last-dose summaries are in Table S3.
 | `lcl_time_hill` | log(2.02) (held constant) | Table 2, theta for HILL; Methods |
 | Time-varying CL form `exp(Emax t^g/(T50^g + t^g))` | -- | Methods sigmoid Emax equation; Results final CL equation |
 | `etalcl` | log(1 + 0.194$^2$) = 0.03695 | Table 2, IIV for CL 19.4 CV% |
-| `etalvc` | log(1 + 0.463$^2$) = 0.19425 | Table 2, IIV for V1 46.3 CV% |
+| `etalvc` | log(1 + 0.463$^2$) = 0.19422 | Table 2, IIV for V1 46.3 CV% |
 | No IIV on Q, V2 | -- | Results, 'Base Model' |
 | `propSd` | 0.160 | Table 2, proportional error 16.0 CV% |
 

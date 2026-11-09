@@ -112,8 +112,8 @@ Smit_2020_vancomycin <- function() {
     # IIV (Table 2 footnote b: CV% = sqrt(exp(omega^2) - 1), so omega^2 = log(1 + CV^2)).
     # Separate CL variances per cohort; multiplexed by DIS_OBESE_MORBID in model().
     etalcl ~ fixed(0.002784) # Table 2: IIV CL nonobese = 5.28% FIX; log(1 + 0.0528^2) = 0.002784
-    etalcl_obese ~ 0.05920 # Table 2: IIV CL obese = 24.7% (RSE 19%); log(1 + 0.247^2) = 0.05920
-    etalvc ~ 0.18664 # Table 2: IIV V1 = 45.3% (RSE 24%); log(1 + 0.453^2) = 0.18664
+    etalcl_obese ~ log(1 + 0.247^2)  # Table 2: IIV CL obese = 24.7% (RSE 19%)
+    etalvc ~ log(1 + 0.453^2)  # Table 2: IIV V1 = 45.3% (RSE 24%)
 
     # Residual error: Table 2 footnote c, proportional error shown as sigma (SD).
     propSd <- 0.0392; label("Proportional residual error (fraction)") # Table 2: proportional error = 0.0392 (RSE 21%)

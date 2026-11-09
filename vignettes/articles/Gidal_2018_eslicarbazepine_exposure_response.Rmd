@@ -162,7 +162,7 @@ Appendix S1 of Gidal 2018; the main article contains no parameter tables.
 | `e_pblike_vc` | 12.0 L (30.3% SEM) | Table S-2, Eq. E-2 |
 | `e_wt_vc` | 0.617 (15.0% SEM) | Table S-2, Eq. E-2 |
 | `etalka` | 0.9555 (from 126.49 %CV) | Table S-2 |
-| `etalcl` | 0.070573 (from 27.04 %CV) | Table S-2 |
+| `etalcl` | 0.070567 (from 27.04 %CV) | Table S-2 |
 | `etalvc` | 0.030814 (from 17.69 %CV) | Table S-2 |
 | `propSdPhase1` / `addSdPhase1` | 0.111355 / 503.2 ng/mL | Table S-2 RV block + footnote b (back-solved, see below) |
 | `propSdPhase3` / `addSdPhase3` | 0.145410 / 2300.0 ng/mL | Table S-2 RV block + footnote c (back-solved, see below) |

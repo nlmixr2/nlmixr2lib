@@ -102,17 +102,17 @@ Marier_2002_tobramycin_rat_conventional <- function() {
     # ------------------------------------------------------------------
     # IIV (BSV in paper) -- omega^2 = log(CV^2 + 1) conversion of the
     # Marier 2002 Table 1 CV%. Table 1 reports diagonal CV% only.
-    #   ka:    CV 38.7% -> log(1 + 0.387^2)  = 0.13958
+    #   ka:    CV 38.7% -> log(1 + 0.387^2)  = 0.13956
     #   F_L:   CV 17.2% -> log(1 + 0.172^2)  = 0.02915
-    #   k_23:  CV 43.9% -> log(1 + 0.439^2)  = 0.17626
-    #   k_32:  CV 37.8% -> log(1 + 0.378^2)  = 0.13357
-    #   k_20:  CV 19.8% -> log(1 + 0.198^2)  = 0.03845
+    #   k_23:  CV 43.9% -> log(1 + 0.439^2)  = 0.17624
+    #   k_32:  CV 37.8% -> log(1 + 0.378^2)  = 0.13355
+    #   k_20:  CV 19.8% -> log(1 + 0.198^2)  = 0.03846
     # ------------------------------------------------------------------
-    etalka     ~ 0.13958  # Marier 2002 Table 1: CV(k_a)   = 38.7%
+    etalka     ~ log(1 + 0.387^2)  # Marier 2002 Table 1: CV(k_a)   = 38.7%
     etalfdepot ~ 0.02915  # Marier 2002 Table 1: CV(F_L)   = 17.2%
-    etalk12    ~ 0.17626  # Marier 2002 Table 1: CV(k_23)  = 43.9%
-    etalk21    ~ 0.13357  # Marier 2002 Table 1: CV(k_32)  = 37.8%
-    etalkel    ~ 0.03845  # Marier 2002 Table 1: CV(k_20)  = 19.8%
+    etalk12    ~ log(1 + 0.439^2)  # Marier 2002 Table 1: CV(k_23)  = 43.9%
+    etalk21    ~ log(1 + 0.378^2)  # Marier 2002 Table 1: CV(k_32)  = 37.8%
+    etalkel    ~ log(1 + 0.198^2)  # Marier 2002 Table 1: CV(k_20)  = 19.8%
 
     # ------------------------------------------------------------------
     # Residual error. Methods declare a combined proportional +

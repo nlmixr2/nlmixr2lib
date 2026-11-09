@@ -78,13 +78,16 @@ Llanos_2017_gentamicin <- function() {
     gfr_max     <- 112;  label("Asymptotic mature glomerular filtration rate (mL/min, 70 kg adult)")   # Llanos 2017 Methods Eq. 3 (Rhodin 2009)
     gfr_ref     <- 100;  label("GFRmat reference value used to normalize CL covariate effect (mL/min)")# Llanos 2017 Table 2 footer
 
-    # Inter-individual variability (omega^2 = log(CV^2 + 1) for log-normal).
+    # Inter-individual variability. Llanos 2017 Methods (after Eq. 1): each
+    # parameter has "a variance of omega^2 BSV_P, where the square root of the
+    # variance represents the reported BSV", so each variance is the square
+    # of the printed CV.
     # Llanos 2017 Table 2 final-model BSV: CL 16.0% CV, V1 21.5% CV, V2 62.4% CV.
     # CL and V1 are correlated (correlation 69.2%); V2 is independent.
-    # cov(CL, V1) = 0.692 * sqrt(0.02527 * 0.04518) = 0.02338.
-    etalcl + etalvc ~ c(0.02527,
-                        0.02338, 0.04518) # Llanos 2017 Table 2 (BSV CL, cov CL:V1, BSV V1)
-    etalvp ~ 0.32870                      # Llanos 2017 Table 2 (BSV V2, CV 62.4%)
+    # cov(CL, V1) = 0.692 * 0.160 * 0.215.
+    etalcl + etalvc ~ c(0.160^2,
+                        0.692 * 0.160 * 0.215, 0.215^2) # Llanos 2017 Table 2 (BSV CL, cov CL:V1, BSV V1)
+    etalvp ~ 0.624^2                      # Llanos 2017 Table 2 (BSV V2, CV 62.4%)
 
     # Residual error (Llanos 2017 Table 2 final model).
     propSd <- 0.275; label("Proportional residual error (fraction)")                                # Llanos 2017 Table 2

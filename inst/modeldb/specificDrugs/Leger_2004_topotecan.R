@@ -96,11 +96,11 @@ Leger_2004_topotecan <- function() {
     # out (it would require an OCC column in the event dataset). The
     # interindividual values below pin the published CV% values directly.
     etalcl     ~ 0.08075 # log(0.29^2 + 1); 29% CV on CL (Leger 2004 Table 3)
-    etalvc     ~ 0.14157 # log(0.39^2 + 1); 39% CV on V1
-    etalvp     ~ 0.19193 # log(0.46^2 + 1); 46% CV on V2
+    etalvc     ~ log(1 + 0.39^2)  # 39% CV on V1
+    etalvp     ~ log(1 + 0.46^2)  # 46% CV on V2
     etalq      ~ 0.49470 # log(0.80^2 + 1); 80% CV on Q
     etalfdepot ~ 0.04727 # log(0.22^2 + 1); 22% CV on F (oral only)
-    etalka     ~ 0.34335 # log(0.64^2 + 1); 64% CV on Ka (oral only)
+    etalka     ~ log(1 + 0.64^2)  # 64% CV on Ka (oral only)
     etaltlag   ~ 0.01676 # log(0.13^2 + 1); 13% CV on Tlag (oral only)
 
     # Combined (additive + proportional) residual error. Leger 2004 Results

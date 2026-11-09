@@ -83,20 +83,20 @@ Hayashi_2007_omalizumab <- function() {
 
     # IIV - log-normal; omega^2 = log(CV^2 + 1) for log-normal parameters.
     # ka     CV 39.9% -> log(1 + 0.399^2) = 0.14773
-    # CL_X   CV 20.3% -> log(1 + 0.203^2) = 0.04042
-    # dCL_C  CV 34.9% -> log(1 + 0.349^2) = 0.11488
-    # V_X    CV 13.0% -> log(1 + 0.130^2) = 0.01679
+    # CL_X   CV 20.3% -> log(1 + 0.203^2) = 0.04038
+    # dCL_C  CV 34.9% -> log(1 + 0.349^2) = 0.11494
+    # V_X    CV 13.0% -> log(1 + 0.130^2) = 0.01676
     # V_C    CV 25.0% -> log(1 + 0.250^2) = 0.06062
-    # CL_E   CV 25.3% -> log(1 + 0.253^2) = 0.06205
-    # P_E    CV 23.1% -> log(1 + 0.231^2) = 0.05197
-    # corr(CL_E, P_E) = 0.968 -> cov = 0.968 * sqrt(0.06205 * 0.05197) = 0.05496
+    # CL_E   CV 25.3% -> log(1 + 0.253^2) = 0.06204
+    # P_E    CV 23.1% -> log(1 + 0.231^2) = 0.05199
+    # corr(CL_E, P_E) = 0.968 -> cov = 0.968 * sqrt(0.06204 * 0.05199) = 0.05498
     etalka          ~ 0.14773                                                                            # Hayashi 2007 Table 3 (ka CV 39.9%)
-    etalcl          ~ 0.04042                                                                            # Hayashi 2007 Table 3 (CL_X CV 20.3%)
-    etaldcl_complex ~ 0.11488                                                                            # Hayashi 2007 Table 3 (Delta_CL_C CV 34.9%)
-    etalvc          ~ 0.01679                                                                            # Hayashi 2007 Table 3 (V_X CV 13.0%; V_E/f = V_X/f shares this eta)
+    etalcl          ~ log(1 + 0.203^2)  # Hayashi 2007 Table 3 (CL_X CV 20.3%)
+    etaldcl_complex ~ log(1 + 0.349^2)  # Hayashi 2007 Table 3 (Delta_CL_C CV 34.9%)
+    etalvc          ~ log(1 + 0.130^2)  # Hayashi 2007 Table 3 (V_X CV 13.0%; V_E/f = V_X/f shares this eta)
     etalvc_complex  ~ 0.06062                                                                            # Hayashi 2007 Table 3 (V_C CV 25.0%)
-    etalcl_ige + etalp_ige ~ c(0.06205,
-                          0.05496, 0.05197)                                                              # Hayashi 2007 Table 3 (CL_E CV 25.3%, P_E CV 23.1%, correlation 0.968)
+    etalcl_ige + etalp_ige ~ c(log(1 + 0.253^2),
+                          0.968 * sqrt(log(1 + 0.253^2) * log(1 + 0.231^2)), log(1 + 0.231^2))                                                              # Hayashi 2007 Table 3 (CL_E CV 25.3%, P_E CV 23.1%, correlation 0.968)
 
     # Residual error - paper uses Y = F * exp(eps), eps ~ N(0, sigma^2) (Hayashi 2007 page 553).
     # For small sigma this is well approximated by a proportional model

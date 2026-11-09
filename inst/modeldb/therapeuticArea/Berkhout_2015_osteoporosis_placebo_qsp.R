@@ -293,11 +293,11 @@ Berkhout_2015_osteoporosis_placebo_qsp <- function() {
     # 2x2 block on (NTX_0, BSAP_0). Table 2 EPIC 2: IIV NTX_0 = 40%,
     # IIV BSAP_0 = 32%, correlation = 0.50. Variances:
     #   var(eta_NTX0)   = log(1 + 0.40^2) = log(1.16)   = 0.14842
-    #   var(eta_BSAP0)  = log(1 + 0.32^2) = log(1.1024) = 0.09748
-    #   cov             = 0.50 * sqrt(0.14842 * 0.09748) = 0.06015
+    #   var(eta_BSAP0)  = log(1 + 0.32^2) = log(1.1024) = 0.09749
+    #   cov             = 0.50 * sqrt(0.14842 * 0.09749) = 0.06014
     etaNTX_0 + etaBSAP_0 ~ c(
       0.14842,
-      0.06015, 0.09748
+      0.50 * sqrt(0.14842 * log(1 + 0.32^2)), log(1 + 0.32^2)
     )
     # Table 2, EPIC 2: IIV NTX_0 = 40% (%CV 3.5); IIV BSAP_0 = 32% (%CV 5.6); IIV corr = 0.50 (%CV 12.1).
 
