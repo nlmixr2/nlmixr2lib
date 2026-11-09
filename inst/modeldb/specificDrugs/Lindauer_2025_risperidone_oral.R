@@ -113,23 +113,24 @@ Lindauer_2025_risperidone_oral <- function() {
     emax <- fixed(100); label("Maximal dopamine D2 receptor occupancy (%)") # Methods 'Simulations of D2 Receptor Occupancy': Emax fixed to 100%
     lec50 <- fixed(log(8.2)); label("Active-moiety concentration giving 50% D2 receptor occupancy (ng/mL)") # Methods 'Simulations of D2 Receptor Occupancy': EC50 = 8.2 ng/mL
 
-    # IIV, all fixed; variance = log(1 + CV^2) for log-normal parameters
-    etaltlag ~ fixed(0.155293) # Appendix S2 'ALAG1' IIV 41% CV
-    etald1 ~ fixed(0.820200) # Appendix S2 'D1' IIV 113% CV
-    etalka ~ fixed(1.167396) # Appendix S2 'KA' IIV 149% CV
-    etalogitfm_9oh ~ fixed(1.3689) # Appendix S2 'FP' IIV 117 (footnote a: %SD in the logit domain), shared by the three phenotypes
-    etalcl ~ fixed(1.478213) # Appendix S2 'CLP' IIV 184% CV
-    etalvc ~ fixed(0.086178) # Appendix S2 'V2=V4' IIV 30% CV
-    etalvp ~ fixed(0.255878) # Appendix S2 'V3' IIV 54% CV
-    etalq ~ fixed(1.726784) # Appendix S2 'QP' IIV 215% CV
-    etalcl_form_9oh ~ fixed(0.103369) # Appendix S2 'CLPM' IIV 33% CV, shared by the three phenotypes
-    etalcl_9oh ~ fixed(0.039221) # Appendix S2 'CLM' IIV 20% CV
-    etalvp_9oh ~ fixed(0.504440) # Appendix S2 'V5' IIV 81% CV
+    # IIV, all fixed; variance = log(1 + CV^2) for log-normal parameters and
+    # SD^2 for the logit-domain FP
+    etaltlag ~ fixed(log(1 + 0.41^2)) # Appendix S2 'ALAG1' IIV 41% CV
+    etald1 ~ fixed(log(1 + 1.13^2)) # Appendix S2 'D1' IIV 113% CV
+    etalka ~ fixed(log(1 + 1.49^2)) # Appendix S2 'KA' IIV 149% CV
+    etalogitfm_9oh ~ fixed(1.17^2) # Appendix S2 'FP' IIV 117 (footnote a: %SD in the logit domain), shared by the three phenotypes
+    etalcl ~ fixed(log(1 + 1.84^2)) # Appendix S2 'CLP' IIV 184% CV
+    etalvc ~ fixed(log(1 + 0.30^2)) # Appendix S2 'V2=V4' IIV 30% CV
+    etalvp ~ fixed(log(1 + 0.54^2)) # Appendix S2 'V3' IIV 54% CV
+    etalq ~ fixed(log(1 + 2.15^2)) # Appendix S2 'QP' IIV 215% CV
+    etalcl_form_9oh ~ fixed(log(1 + 0.33^2)) # Appendix S2 'CLPM' IIV 33% CV, shared by the three phenotypes
+    etalcl_9oh ~ fixed(log(1 + 0.20^2)) # Appendix S2 'CLM' IIV 20% CV
+    etalvp_9oh ~ fixed(log(1 + 0.81^2)) # Appendix S2 'V5' IIV 81% CV
 
     # IOV, all fixed; a new draw for every value of the OCC column
-    etaiov_fdepot ~ fixed(0.196649) | OCC # Appendix S2 'F1' IOV 46.5% CV
-    etaiov_d1 ~ fixed(1.255018) | OCC # Appendix S2 'D1' IOV 158% CV
-    etaiov_ka ~ fixed(0.773716) | OCC # Appendix S2 'KA' IOV 108% CV
+    etaiov_fdepot ~ fixed(log(1 + 0.465^2)) | OCC # Appendix S2 'F1' IOV 46.5% CV
+    etaiov_d1 ~ fixed(log(1 + 1.58^2)) | OCC # Appendix S2 'D1' IOV 158% CV
+    etaiov_ka ~ fixed(log(1 + 1.08^2)) | OCC # Appendix S2 'KA' IOV 108% CV
 
     # Residual error is not reported (the source simulations exclude it)
     propSd <- fixed(0); label("Proportional residual error on risperidone (fraction; not reported)") # not reported in Appendix S2

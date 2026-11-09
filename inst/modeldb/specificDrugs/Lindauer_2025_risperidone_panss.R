@@ -168,15 +168,15 @@ Lindauer_2025_risperidone_panss <- function() {
 
     # IIV: exponential on TD, BL and KTHL (variance = log(1 + CV^2));
     # additive on PMAX, EMAX and DRIFT (variance = SD^2). Covariances are
-    # r_ij * sqrt(var_i * var_j) from the Table 2 correlation coefficients.
+    # r * sqrt(var_i * var_j) from the Table 2 correlation coefficients.
     # Order TD, BL, PMAX, EMAX, DRIFT, KTHL as in the control stream BLOCK(6).
     etaltd + etalbl + etapmax + etaemax + etadrift + etalkthl ~ c(
-      0.292587,
-      -0.00928652, 0.00422905,
-      -0.0190834, 0.00113935, 0.0144,
-      0.0457071, -0.001132, -0.00563784, 0.028561,
-      -0.0073932, -0.00109799, 0.000850632, 0.00878665, 0.017956,
-      -0.413039, 0.000630476, 0.0503031, -0.0959665, -0.0102569, 0.852541
+      log(1 + 0.583^2),
+      -0.264 * sqrt(log(1 + 0.583^2) * log(1 + 0.0651^2)), log(1 + 0.0651^2),
+      -0.294 * sqrt(log(1 + 0.583^2) * 0.12^2), 0.146 * sqrt(log(1 + 0.0651^2) * 0.12^2), 0.12^2,
+      0.5 * sqrt(log(1 + 0.583^2) * 0.169^2), -0.103 * sqrt(log(1 + 0.0651^2) * 0.169^2), -0.278 * sqrt(0.12^2 * 0.169^2), 0.169^2,
+      -0.102 * sqrt(log(1 + 0.583^2) * 0.134^2), -0.126 * sqrt(log(1 + 0.0651^2) * 0.134^2), 0.0529 * sqrt(0.12^2 * 0.134^2), 0.388 * sqrt(0.169^2 * 0.134^2), 0.134^2,
+      -0.827 * sqrt(log(1 + 0.583^2) * log(1 + 1.16^2)), 0.0105 * sqrt(log(1 + 0.0651^2) * log(1 + 1.16^2)), 0.454 * sqrt(0.12^2 * log(1 + 1.16^2)), -0.615 * sqrt(0.169^2 * log(1 + 1.16^2)), -0.0829 * sqrt(0.134^2 * log(1 + 1.16^2)), log(1 + 1.16^2)
     ) # Table 2: IIV_TD 58.3% CV, IIV_BL 6.51% CV, IIV_PMAX SD 0.12, IIV_EMAX SD 0.169, IIV_DRIFT SD 0.134, IIV_KTHL 116% CV, and the 15 COR_ rows
 
     addSd <- 4.78; label("Additive residual error on PANSS total score (PANSS points)") # Table 2 'addRUV' = 4.78
