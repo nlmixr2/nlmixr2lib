@@ -25,7 +25,7 @@ Simeoni_2024_belimumab <- function() {
       units = "kg",
       type = "continuous",
       reference_category = NULL,
-      notes = "Time-fixed at baseline (FFMBL in Simeoni 2024 Online Resource 7). Power effects (FFM / 38.4)^0.624 on CL and Q and (FFM / 38.4)^0.723 on V1 and V2; 38.4 kg is the BLISS-LN median (Simeoni 2024 Table 1). Derived from body weight, BMI and sex with the Janmahasatian et al. (Clin Pharmacokinet 2005;44:1051-1065) formula (Dimelow 2024 Methods, ref. 25).",
+      notes = "Time-fixed at baseline (FFMBL in Simeoni 2024 Online Resource 7). Power effects (FFM / 38.4)^0.624 on CL and Q and (FFM / 38.4)^0.723 on V1 and V2; 38.4 kg is the BLISS-LN median over both arms (Simeoni 2024 Table 1, 'Overall' column; 38.1 kg in the belimumab arm). Derived from body weight, BMI and sex with the Janmahasatian et al. (Clin Pharmacokinet 2005;44:1051-1065) formula (Dimelow 2024 Methods, ref. 25).",
       source_name = "FFMBL"
     ),
     ALB = list(

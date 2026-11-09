@@ -80,7 +80,7 @@ str(rxode2::rxode(readModelDb("Simeoni_2024_belimumab"))$population)
 | CL = CL_pop (FFM/38.4)^0.624 (ALB/42)^(theta1/(1 + theta2 uPCR)) (1 + theta uPCR) | n/a | Online Resource 7; Dimelow 2024 ESM Section S5 |
 | V1, V2 ~ (FFM/38.4)^0.723; Q ~ (FFM/38.4)^0.624 | n/a | Online Resource 7; Dimelow 2024 ESM Section S5 |
 | Two-compartment model, first-order distribution and elimination | n/a | Simeoni 2024 Online Resource 1; Dimelow 2024 Methods |
-| Reference FFM 38.4 kg = BLISS-LN median | n/a | Simeoni 2024 Table 1 |
+| Reference FFM 38.4 kg = BLISS-LN median over both arms (N = 448) | n/a | Simeoni 2024 Table 1, 'Overall' column |
 
 # Virtual cohort
 
@@ -200,7 +200,8 @@ events <- bind_rows(doses, obs) |>
   arrange(id, time, desc(evid)) |>
   select(id, time, evid, amt, rate, cmt, cohort, WT, FFM, ALB, UPCR)
 
-stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+# One dose row and one observation row at most per subject and time.
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
 ```
 
 The simulated cohorts against the published body-size and disease summaries:

@@ -814,6 +814,8 @@ navbar:
         href: articles/Shen_2013_belatacept.html
       - text: "Belimumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
+      - text: "Belimumab (Simeoni 2024)"
+        href: articles/Dimelow_2024_belimumab.html
       - text: "Belimumab (Struemper 2017)"
         href: articles/Struemper_2017_belimumab.html
       - text: "Belimumab (Zhou 2021)"
@@ -9229,6 +9231,7 @@ articles:
   - articles/Diep_2026_donidalorsen
   - articles/Diepstraten_2013_propofol
   - articles/Dimelow_2018_ceftazidime_avibactam_elf
+  - articles/Dimelow_2024_belimumab
   - articles/Ding_2020_amodiaquine
   - articles/Ding_2024_antimalarials_pregnancy
   - articles/Ding_2026_artemether_lumefantrine_amodiaquine
