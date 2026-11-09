@@ -804,6 +804,18 @@ navbar:
         href: articles/Svensson_2014_bedaquiline_arv.html
       - text: "Bedaquiline rat pbpk (Karakitsios 2025)"
         href: articles/Karakitsios_2025_bedaquiline_lung_pbpk.html
+      - text: "BeeVenomPLA2 dog (Chae 2025)"
+        href: articles/Chae_2025_beeVenomPLA2.html
+      - text: "BeeVenomPLA2 human brw (Chae 2025)"
+        href: articles/Chae_2025_beeVenomPLA2.html
+      - text: "BeeVenomPLA2 human mlp (Chae 2025)"
+        href: articles/Chae_2025_beeVenomPLA2.html
+      - text: "BeeVenomPLA2 human simple (Chae 2025)"
+        href: articles/Chae_2025_beeVenomPLA2.html
+      - text: "BeeVenomPLA2 mouse (Chae 2025)"
+        href: articles/Chae_2025_beeVenomPLA2.html
+      - text: "BeeVenomPLA2 rat (Chae 2025)"
+        href: articles/Chae_2025_beeVenomPLA2.html
       - text: "Belantamab (Papathanasiou 2025)"
         href: articles/Papathanasiou_2025_belantamab.html
       - text: "Belantamab (Rathi 2021)"
@@ -8990,6 +9002,7 @@ articles:
   - articles/Cerqueira_2025_resveratrol
   - articles/Cha_2024_zolpidem
   - articles/Chae_2012_metformin
+  - articles/Chae_2025_beeVenomPLA2
   - articles/Chae_2026_teicoplanin
   - articles/Chairat_2016_oseltamivir
   - articles/Chakraborty_2012_canakinumab
