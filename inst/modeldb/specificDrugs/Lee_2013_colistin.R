@@ -84,9 +84,9 @@ Lee_2013_colistin <- function() {
     # Inter-individual variability (Lee 2013 Table 2 final-model CV%);
     # omega^2 = log(CV^2 + 1) for log-normal etas (Pij = theta_j * exp(eta_ij)
     # per Lee 2013 Methods, "Population PK model development" paragraph 3).
-    etalcl ~ 0.131604  # log(0.375^2 + 1); 37.5% CV on CL/fm*
-    etalvc ~ 0.057380  # log(0.243^2 + 1); 24.3% CV on Vc/fm*
-    etalka ~ 0.372681  # log(0.672^2 + 1); 67.2% CV on TR
+    etalcl ~ log(1 + 0.375^2)  # 37.5% CV on CL/fm*
+    etalvc ~ log(1 + 0.243^2)  # 24.3% CV on Vc/fm*
+    etalka ~ log(1 + 0.672^2)  # 67.2% CV on TR
 
     # Combined residual error (Lee 2013 Table 2).
     # The paper reports sigma_add = 99.2 ng/mL; converted to mg/L for unit

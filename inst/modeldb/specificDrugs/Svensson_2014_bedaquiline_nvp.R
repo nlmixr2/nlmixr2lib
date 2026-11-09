@@ -133,12 +133,12 @@ Svensson_2014_bedaquiline_nvp <- function() {
     # CV (between-occasion variabilities and between-subject
     # variability on bioavailability have no idiomatic encoding in
     # nlmixr2lib). See vignette Assumptions and deviations.
-    etalcl     ~ 0.040039  # var = log(1 + 0.204^2) = 0.040039 ; Svensson 2014 Supplementary Table S1b BSV CL = 20.4% (RSE 18.0%)
-    etalcl_m2  ~ 0.048966  # var = log(1 + 0.226^2) = 0.048966 ; Svensson 2014 Supplementary Table S1b BSV CLM2 = 22.6% (RSE 19.2%)
-    etalvc     ~ 0.625537  # var = log(1 + 0.980^2) = 0.625537 ; Svensson 2014 Supplementary Table S1b BSV V = 98.0% (RSE 35.8%)
-    etalq      ~ 0.030745  # var = log(1 + 0.177^2) = 0.030745 ; Svensson 2014 Supplementary Table S1b BSV Q1 = 17.7% (RSE 20.9%)
-    etalvc_m2  ~ 0.008820  # var = log(1 + 0.0943^2) = 0.008820 ; Svensson 2014 Supplementary Table S1b BSV VM2 = 9.43% (RSE 152%)
-    etalvp_m2  ~ 0.009704  # var = log(1 + 0.0990^2) = 0.009704 ; Svensson 2014 Supplementary Table S1b BSV VP1M2 = 9.90% (RSE 75.8%)
+    etalcl     ~ log(1 + 0.204^2)  # Svensson 2014 Supplementary Table S1b BSV CL = 20.4% (RSE 18.0%)
+    etalcl_m2  ~ log(1 + 0.226^2)  # Svensson 2014 Supplementary Table S1b BSV CLM2 = 22.6% (RSE 19.2%)
+    etalvc     ~ log(1 + 0.980^2)  # Svensson 2014 Supplementary Table S1b BSV V = 98.0% (RSE 35.8%)
+    etalq      ~ log(1 + 0.177^2)  # Svensson 2014 Supplementary Table S1b BSV Q1 = 17.7% (RSE 20.9%)
+    etalvc_m2  ~ log(1 + 0.0943^2)  # Svensson 2014 Supplementary Table S1b BSV VM2 = 9.43% (RSE 152%)
+    etalvp_m2  ~ log(1 + 0.099^2)  # Svensson 2014 Supplementary Table S1b BSV VP1M2 = 9.90% (RSE 75.8%)
 
     # Residual error. The paper reports proportional residual errors on
     # bedaquiline (22.7% CV) and M2 (16.2% CV) plus a 54.2% cross-output

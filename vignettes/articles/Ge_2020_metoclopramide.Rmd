@@ -64,7 +64,7 @@ collects them in one place.
 | `lfdepot` | log(0.97) | Table 2 (F); Eq. 10 |
 | `e_wt_cl_q` | 0.75 (fixed) | Methods "Covariate selection"; Results; Eqs. 6 and 8 |
 | `e_wt_vc_vp` | 1 (fixed) | Methods "Covariate selection"; Results; Eqs. 7 and 9 |
-| `etalcl` | 0.16501 = log(1 + 0.424^2) | Table 2 (IIV CL 42.4 %CV); Eq. 1 |
+| `etalcl` | 0.16532 = log(1 + 0.424^2) | Table 2 (IIV CL 42.4 %CV); Eq. 1 |
 | `propSd` | 0.333 | Table 2 (proportional error 33.3%) |
 | Two-compartment, first-order absorption, no lag | n/a | Results "PopPK model development and evaluation" |
 | One Ka and one F for all enteral routes | n/a | Results (route-specific Ka / F did not improve the fit) |
@@ -422,7 +422,7 @@ stopifnot(
   are supported by a rate on a `central` dose record.
 - **IIV.** Only clearance carries interindividual variability. The reported
   42.4 %CV was converted to a log-normal variance with omega^2 = log(CV^2 + 1)
-  = 0.16501.
+  = 0.16532.
 - **Screened covariates.** Serum creatinine was significant after backward
   elimination but was excluded by the authors (model instability, failed
   covariance step, and loss of significance after removing one subject), and a

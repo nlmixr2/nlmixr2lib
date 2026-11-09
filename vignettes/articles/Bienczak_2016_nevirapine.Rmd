@@ -55,10 +55,10 @@ Every `ini()` parameter in `inst/modeldb/specificDrugs/Bienczak_2016_nevirapine.
 | `e_cyp2b6_im_cl` (log-additive CYP2B6 IM effect on CLint) | `-0.184` | Table 3 / Results 'Population pharmacokinetics' paragraph 3: IM 17% lower; `log(2.72/3.27) = -0.184` |
 | `e_cyp2b6_sm_cl` (log-additive CYP2B6 SM effect on CLint) | `-0.684` | Table 3 / Results 'Population pharmacokinetics' paragraph 3: SM 50% lower; `log(1.65/3.27) = -0.684` |
 | `e_cyp2b6_usm_cl` (log-additive CYP2B6 USM effect on CLint) | `-1.146` | Table 3 / Results 'Population pharmacokinetics' paragraph 3: USM 68% lower; `log(1.04/3.27) = -1.146` |
-| `etalcl_em` (BSV on CLint) | `var = 0.04473` | Table 3 BSV CLint = 21.40%; `log(1 + 0.214^2)` |
-| `etalfpreh_old` (BSV on FpreH) | `var = 0.03439` | Table 3 BSV FpreH = 18.72%; `log(1 + 0.1872^2)` (BOV FpreH = 17.02% dropped; see Assumptions and deviations) |
-| `etalmtt` (folded BOV on MTT as BSV-equivalent) | `var = 1.39135` | Table 3 BOV MTT = 199.73% folded in; no BSV reported |
-| `etalka` (folded BOV on Ka as BSV-equivalent) | `var = 0.18458` | Table 3 BOV Ka = 44.91% folded in; no BSV reported |
+| `etalcl_em` (BSV on CLint) | `var = 0.04478` | Table 3 BSV CLint = 21.40%; `log(1 + 0.214^2)` |
+| `etalfpreh_old` (BSV on FpreH) | `var = 0.03444` | Table 3 BSV FpreH = 18.72%; `log(1 + 0.1872^2)` (BOV FpreH = 17.02% dropped; see Assumptions and deviations) |
+| `etalmtt` (folded BOV on MTT as BSV-equivalent) | `var = 1.60728` | Table 3 BOV MTT = 199.73% folded in; no BSV reported |
+| `etalka` (folded BOV on Ka as BSV-equivalent) | `var = 0.18373` | Table 3 BOV Ka = 44.91% folded in; no BSV reported |
 | `addSd` (additive residual SD) | `0.32 mg/L` | Table 3 row `Additive error (mg/L) = 0.32 (0.21-0.38)` |
 | `propSd` (proportional residual SD) | `0.0526` | Table 3 row `Proportional error (%) = 5.26 (4.26-6.18)` |
 | Equation `FpreH(AGE) = 1 - (1 - 0.583) * exp(-ln(2)/1.54 * AGE)` | n/a | Results 'Population pharmacokinetics' paragraph 4 + Equation (7) of Appendix S1; Appendix S1 not available so the form is reconstructed from the narrative (matches the paper's reported 90% at age 3.3 years) |

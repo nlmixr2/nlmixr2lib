@@ -85,12 +85,12 @@ Birgersson_2016_artemisinin <- function() {
     # into a library intended for clinical-trial simulation. Variances on the
     # log scale are computed as omega^2 = log(CV^2 + 1) per the paper's own
     # Table 2 footnote ('CV % = 100 * sqrt(exp(variance) - 1)').
-    #   CL/F : omega^2 = log(0.171^2 + 1) = 0.02883
-    #   MTT  : omega^2 = log(0.539^2 + 1) = 0.25530
-    #   F    : omega^2 = log(0.343^2 + 1) = 0.11122
-    etalcl     ~ 0.02883                                                                                      # Birgersson 2016 Table 2: 17.1 % IOV* on CL/F (RSE 34.3 %); encoded as IIV for single-occasion simulation
-    etalmtt    ~ 0.25530                                                                                      # Birgersson 2016 Table 2: 53.9 % IOV* on MTT  (RSE 20.3 %); encoded as IIV for single-occasion simulation
-    etalfdepot ~ 0.11122                                                                                      # Birgersson 2016 Table 2: 34.3 % IIV on F/F (RSE 52.3 %)
+    #   CL/F : omega^2 = log(0.171^2 + 1) = 0.02882
+    #   MTT  : omega^2 = log(0.539^2 + 1) = 0.25505
+    #   F    : omega^2 = log(0.343^2 + 1) = 0.11123
+    etalcl     ~ log(1 + 0.171^2)  # Birgersson 2016 Table 2: 17.1 % IOV* on CL/F (RSE 34.3 %); encoded as IIV for single-occasion simulation
+    etalmtt    ~ log(1 + 0.539^2)  # Birgersson 2016 Table 2: 53.9 % IOV* on MTT  (RSE 20.3 %); encoded as IIV for single-occasion simulation
+    etalfdepot ~ log(1 + 0.343^2)  # Birgersson 2016 Table 2: 34.3 % IIV on F/F (RSE 52.3 %)
 
     # Residual variability. The paper modeled the residual as 'an additive
     # error model on the log-transformed drug concentrations, being

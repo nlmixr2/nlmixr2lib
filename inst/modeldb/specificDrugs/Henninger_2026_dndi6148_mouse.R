@@ -168,11 +168,11 @@ Henninger_2026_dndi6148_mouse <- function() {
     # defines CV = sqrt(exp(OMEGA) - 1), so OMEGA = log(CV^2 + 1).
     # =================================================================
     etalkm              ~ 0.004216  # Table 1: BSV on Km = 6.5% CV [3.7-8.6];   log(0.065^2 + 1)
-    etalkp_skin         ~ 0.128309  # Table 1: BSV on R_skin-plasma = 37% CV [23-47];   log(0.37^2 + 1)
+    etalkp_skin         ~ log(1 + 0.37^2)  # Table 1: BSV on R_skin-plasma = 37% CV [23-47]
     etalkp_liver        ~ 0.086178  # Table 1: BSV on R_liver-plasma = 30% CV [21-42];  log(0.30^2 + 1)
-    etalkp_spleen       ~ 0.176977  # Table 1: BSV on R_spleen-plasma = 44% CV [34-67]; log(0.44^2 + 1)
+    etalkp_spleen       ~ log(1 + 0.44^2)  # Table 1: BSV on R_spleen-plasma = 44% CV [34-67]
     etalrbase_parasites ~ 0.307485  # Table 2: BSV on Parasite_base = 60% CV [45-94];   log(0.60^2 + 1)
-    etalrbase_lesion    ~ 0.110620  # Table 2: BSV on Lesion_base = 35% CV [26-43]; Results 3.2.3 gives 34.2%; log(0.342^2 + 1)
+    etalrbase_lesion    ~ log(1 + 0.342^2)  # Table 2: BSV on Lesion_base = 35% CV [26-43]; Results 3.2.3 gives 34.2%
 
     # =================================================================
     # Residual unexplained variability.

@@ -63,7 +63,7 @@ The table below collects the entries in one place.
 | `e_crcl_cl` (CRCL exponent on CL/F) | 0.492 | Table 2, Final estimate column, CL/CR exponent row |
 | `e_wt_cl_q` (allometric exponent on CL/F and Q/F) | 0.75 (FIXED) | Methods 'Population pharmacokinetic analysis' (allometric scaling values) |
 | `e_wt_vc_vp` (allometric exponent on V2/F and V3/F) | 1.0 (FIXED) | Methods 'Population pharmacokinetic analysis' (allometric scaling values) |
-| IIV CL/F (omega^2 = log(0.335^2 + 1) = 0.1063) | 33.5% CV | Table 2, Final estimate column, Variability of CL/F row |
+| IIV CL/F (omega^2 = log(0.335^2 + 1) = 0.1064) | 33.5% CV | Table 2, Final estimate column, Variability of CL/F row |
 | IIV on V2/F, Q/F, V3/F | not estimated | Results: 'The data were not sufficient to support estimates of interindividual variability on V2/F, Q/F and V3/F' |
 | Proportional residual error | 32.7% CV | Table 2, Final estimate column, Residual variability row |
 | Bioavailability F | implicit in CL/F (apparent) | Methods 'Population pharmacokinetic analysis' (parameterized as CL/F, V2/F, Q/F, V3/F throughout) |
@@ -334,7 +334,7 @@ typical 33 kg child).
   states (Results, 'Ganciclovir population pharmacokinetics') that 'The data
   were not sufficient to support estimates of interindividual variability on
   V2/F, Q/F and V3/F.' The model file follows the publication and carries
-  only `etalcl ~ 0.1063` (33.5% CV). Stochastic VPCs in the vignette
+  only `etalcl ~ 0.1064` (33.5% CV). Stochastic VPCs in the vignette
   therefore reflect IIV in CL/F + proportional residual error only;
   between-subject variability in volumes and inter-compartmental clearance
   is not represented.

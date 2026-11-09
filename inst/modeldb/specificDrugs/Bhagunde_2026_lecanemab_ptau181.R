@@ -238,11 +238,14 @@ Bhagunde_2026_lecanemab_ptau181 <- function() {
     e_mmse_rbase          <- -0.468; label("Power exponent for baseline MMSE on baseline p-tau181, (SCORE_MMSE/26)^e (unitless)") # Bhagunde 2026 Table 1: Baseline MMSE on baseline (exponent) = -0.468 (RSE 21.8%)
     e_apoe4_carrier_rbase <- 1.07;   label("Ratio of baseline p-tau181 in APOE4 carriers to non-carriers, applied as e^APOE4_CARRIER (unitless)")  # Bhagunde 2026 Table 1: APOE4 carrier status (vs noncarrier) on baseline (ratio) = 1.07 (RSE 1.81%)
 
-    # Lecanemab PK interindividual variability, fixed from Majid 2024
-    # (omega^2 = log(CV^2 + 1)).
-    etalcl + etalvc ~ fixed(c(0.114936,
-                              0.005934, 0.014774))   # Majid 2024 Table 1: IIV CL 34.9 %CV, IIV V1 12.2 %CV, correlation CL ~ V1 R = 0.144
-    etalvp          ~ fixed(0.639175)                # Majid 2024 Table 1: IIV V2 94.6 %CV
+    # Lecanemab PK interindividual variability, fixed from Majid 2024. Majid
+    # 2024 Table 1 defines "CV%, square root of variance x 100", so each PK
+    # variance is the square of the printed CV and the CL-V1 covariance is
+    # R * CV_CL * CV_V1. Only these PK etas follow Majid's definition; the
+    # biomarker etas below are Bhagunde 2026's own.
+    etalcl + etalvc ~ fixed(c(0.349^2,
+                              0.144 * 0.349 * 0.122, 0.122^2))   # Majid 2024 Table 1: IIV CL 34.9 %CV, IIV V1 12.2 %CV, correlation CL ~ V1 R = 0.144
+    etalvp          ~ fixed(0.946^2)                # Majid 2024 Table 1: IIV V2 94.6 %CV
 
     # Plasma p-tau181 interindividual variability (estimated here)
     etalrbase + etalemax ~ c(0.146357,

@@ -55,12 +55,12 @@ Bogason_2011_daunorubicin <- function() {
     # Inter-individual variability on CL and Vc (final model only - paper did not
     # retain IIV on Q or Vp). Paper reports IIV as %CV on linear scale, log-normal
     # variance model. omega^2 = log(CV^2 + 1):
-    #   omega^2(CL) = log(0.51^2 + 1) = 0.23116
+    #   omega^2(CL) = log(0.51^2 + 1) = 0.23119
     #   omega^2(Vc) = log(1.20^2 + 1) = 0.89200
     # Correlation between CL and Vc random effects on log scale = 0.65
-    # (Bogason 2011 Table 2). Covariance = 0.65 * sqrt(0.23116) * sqrt(0.89200) = 0.29508.
-    etalcl + etalvc ~ c(0.23116,
-                        0.29508, 0.89200)  # Bogason 2011 Table 2 (51% CV CL, 120% CV Vc, 65% correlation)
+    # (Bogason 2011 Table 2). Covariance = 0.65 * sqrt(0.23119) * sqrt(0.89200) = 0.29518.
+    etalcl + etalvc ~ c(log(1 + 0.51^2),
+                        0.65 * sqrt(log(1 + 0.51^2) * 0.89200), 0.89200)  # Bogason 2011 Table 2 (51% CV CL, 120% CV Vc, 65% correlation)
 
     # Residual error - proportional only, applied on log-transformed concentrations
     # (Methods: "plasma concentrations were log-transformed ... proportional error model").

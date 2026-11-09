@@ -78,9 +78,9 @@ The per-parameter origin is also recorded as an in-file comment in
 | `Eq. 10`: `CL/F = theta1 * theta7^SubPop * Exp(ALT/40 * theta8)^SubPop * eta` | re-expressed with SubPop = 1 - DIS_HEALTHY | Paper p.284 Eq. 10 (final-model regression) |
 | `Eq. 11 - 15`: `V2/F`, `Q/F`, `V3/F`, `Ka`, `ALAG1` with multiplicative eta | identity-mapped to `exp(l<param> + etal<param>)` | Paper p.284 Eqs. 11 - 15 |
 | `CL-IIV = 46.6% CV` | `etalcl ~ 0.1965` (= log(0.466^2 + 1)) | Table 2 final-model column (Methods: IIV expressed exponentially) |
-| `V2-IIV = 57.3% CV` | `etalvc ~ 0.2841` | Table 2 final-model column |
+| `V2-IIV = 57.3% CV` | `etalvc ~ 0.2839` | Table 2 final-model column |
 | `Q-IIV = 46.0% CV` | `etalq  ~ 0.1919` | Table 2 final-model column |
-| `V3-IIV = 93.5% CV` | `etalvp ~ 0.6280` | Table 2 final-model column |
+| `V3-IIV = 93.5% CV` | `etalvp ~ 0.6282` | Table 2 final-model column |
 | `Ka-IIV = 0% (fixed)` | no eta on ka | Table 2 final-model column (asterisk = fixed) |
 | `Proportional residual = 39.8%` | `propSd <- 0.398` | Table 2 final-model column (Methods: residual expressed proportionally) |
 

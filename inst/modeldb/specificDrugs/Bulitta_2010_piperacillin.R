@@ -92,14 +92,14 @@ Bulitta_2010_piperacillin <- function() {
 
     # Shared CL eta (multiplies both CL_NR and CL_R) and shared V_ss eta
     # (multiplies V_1, V_2, V_3) with their cross-correlation. Variances:
-    # log(0.0962^2 + 1) = 0.009211; log(0.135^2 + 1) = 0.018061; covariance
-    # = 0.84 * sqrt(0.009211 * 0.018061) = 0.010835.
-    etalcl_renal_nonren + etalvc_vp_vp2 ~ c(0.009211, 0.010835, 0.018061) # Table 3 (9.62 pct PPV for CL combined, 13.5 pct PPV for V_ss; r = 0.84 footnote ++)
+    # log(0.0962^2 + 1) = 0.009212; log(0.135^2 + 1) = 0.018061; covariance
+    # = 0.84 * sqrt(0.009212 * 0.018061) = 0.010835.
+    etalcl_renal_nonren + etalvc_vp_vp2 ~ c(log(1 + 0.0962^2), 0.84 * sqrt(log(1 + 0.0962^2) * 0.018061), 0.018061) # Table 3 (9.62 pct PPV for CL combined, 13.5 pct PPV for V_ss; r = 0.84 footnote ++)
 
-    # Correlated V_max / K_m etas. Variances: log(0.504^2 + 1) = 0.226374;
-    # log(1.50^2 + 1) = 1.178655; covariance = 0.99 * sqrt(0.226374 *
+    # Correlated V_max / K_m etas. Variances: log(0.504^2 + 1) = 0.226351;
+    # log(1.50^2 + 1) = 1.178655; covariance = 0.99 * sqrt(0.226351 *
     # 1.178655) = 0.511422.
-    etalvmax + etalkm ~ c(0.226374, 0.511422, 1.178655)  # Table 3 (50.4 pct PPV for V_max, 150 pct PPV for K_m; r = 0.99 footnote SS)
+    etalvmax + etalkm ~ c(log(1 + 0.504^2), 0.99 * sqrt(1.178655 * log(1 + 0.504^2)), 1.178655)  # Table 3 (50.4 pct PPV for V_max, 150 pct PPV for K_m; r = 0.99 footnote SS)
 
     # Combined additive plus proportional residual error on plasma drug
     # concentrations and on cumulative amounts excreted unchanged in urine

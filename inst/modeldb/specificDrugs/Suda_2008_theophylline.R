@@ -81,7 +81,7 @@ Suda_2008_theophylline <- function() {
     # (page 638 and Table 3 final-model row). The paper specifies a log-normal IIV model
     # (Methods Section 5, page 637, Eq. 1: P_j = P_typ * exp(eta_Pj)), so the natural
     # variance conversion is omega^2 = log(1 + CV^2).
-    etalcl ~ 0.02226  # Suda 2008 final model: CV 15.0 percent; omega^2 = log(1 + 0.15^2) = 0.02226
+    etalcl ~ log(1 + 0.15^2)  # Suda 2008 final model: CV 15.0 percent
 
     # Residual (intra-individual) error - Suda 2008 final model reports an intra-individual
     # CV of 15.3 percent (page 638, Table 3 final-model row). The paper specifies a

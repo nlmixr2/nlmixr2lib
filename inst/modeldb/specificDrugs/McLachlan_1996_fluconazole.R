@@ -97,7 +97,7 @@ McLachlan_1996_fluconazole <- function() {
     # log-normal form is the rxode2 / nlmixr2 idiom for positive-constrained
     # structural parameters and is documented as a deviation in the vignette.
 
-    etalcl ~ 0.15532
+    etalcl ~ log(1 + 0.41^2)
     # log(0.41^2 + 1); 41% CV from McLachlan 1996 Table 2 base (no-covariate)
     # NONMEM CL IIV. The paper does not report a separate residual CL IIV
     # after covariate adjustment, so the base-model value is carried forward
@@ -107,7 +107,7 @@ McLachlan_1996_fluconazole <- function() {
     etalvc ~ 0.006380
     # log(0.08^2 + 1); 8% CV from McLachlan 1996 Table 2 NONMEM V IIV.
 
-    etalka ~ 1.86783
+    etalka ~ log(1 + 2.34^2)
     # log(2.34^2 + 1); 234% CV from McLachlan 1996 Table 2 NONMEM ka IIV. The
     # paper Discussion p.295 explicitly states 'NONMEM had difficulty
     # estimating the intersubject variability for the absorption rate constant
