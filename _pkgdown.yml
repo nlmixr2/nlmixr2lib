@@ -1792,6 +1792,8 @@ navbar:
         href: articles/Morcos_2023b_copanlisib.html
       - text: "Corifollitropin alfa (Zandvliet 2016)"
         href: articles/Zandvliet_2016_corifollitropin_alfa.html
+      - text: "Cotadutide (Yu 2024)"
+        href: articles/Yu_2024_cotadutide.html
       - text: "Cotadutide qsp (Bosch 2024)"
         href: articles/Bosch_2024_cotadutide_qsp.html
       - text: "Covid19Vaccine calibrated mbma (Kandala 2022)"
@@ -11501,6 +11503,7 @@ articles:
   - articles/Yu_2022_igaNephropathy_mbma
   - articles/Yu_2022_ofatumumab
   - articles/Yu_2023_vancomycin
+  - articles/Yu_2024_cotadutide
   - articles/Yu_2024_ilaprazole
   - articles/Yu_2025_methotrexate
   - articles/Yu_2025_paliperidone
