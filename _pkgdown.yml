@@ -6558,6 +6558,8 @@ navbar:
         href: articles/Feng_2008_risperidone.html
       - text: "Risperidone (Sherwin 2012)"
         href: articles/Sherwin_2012_risperidone.html
+      - text: "Risperidone (Storset 2024)"
+        href: articles/Storset_2024_risperidone.html
       - text: "Risperidone consta (Wang 2024)"
         href: articles/Wang_2024_risperidone_lai_switching.html
       - text: "Risperidone dog (Chen 2019)"
@@ -10965,6 +10967,7 @@ articles:
   - articles/Stodtmann_2021_veliparib
   - articles/Storgaard_2026_tetrahydrocannabinol
   - articles/Storset_2014_tacrolimus
+  - articles/Storset_2024_risperidone
   - articles/Stoschus_2025_phenobarbital
   - articles/Stott_2018_amphotericinB_deoxycholate
   - articles/Stott_2018_fluconazole

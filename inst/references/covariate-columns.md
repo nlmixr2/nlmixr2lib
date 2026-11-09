@@ -14746,8 +14746,9 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Scope:** general
 - **Reference category:** 0 (C/C wild-type at rs1065852, when paired with `CYP2D6_STAR10_HOM = 0`). The reference group is the C/C wild-type stratum; `CYP2D6_STAR10_HOM` flags the T/T homozygous-mutant stratum.
 - **Source aliases:**
+  - `*10` (one copy) -- used in `Storset_2024_risperidone.R` (Storset 2024 Table 1; *10 is the routine-panel star-allele call, in which *4 -- which also carries the rs1065852 T allele -- is called separately as a deficient allele, so the indicator counts *10 copies rather than raw rs1065852 genotype).
   - `CYP2D6*10 C/T` -- used in `Pei_2016_iloperidone.R` (Pei 2016 Results 'Population pharmacokinetic (PPK) models' encodes CYP2D6*10 C/C, C/T, T/T as integers 1, 2, 3; the C/T = 2 stratum maps to `CYP2D6_STAR10_HET = 1`).
-- **Example models:** `Pei_2016_iloperidone.R` (multiplicative effect on the iloperidone -> M2 (P-95) formation rate constant K24: K24_CT = 0.693 * K24_typical relative to the C/C wild-type reference; Pei 2016 Table 3 and Results 'Population pharmacokinetic (PPK) models' equation `(K24)_i = theta * 0.00649 * exp(eta_i)` with theta = 0.693 for C/T).
+- **Example models:** `Pei_2016_iloperidone.R` (multiplicative effect on the iloperidone -> M2 (P-95) formation rate constant K24: K24_CT = 0.693 * K24_typical relative to the C/C wild-type reference; Pei 2016 Table 3 and Results 'Population pharmacokinetic (PPK) models' equation `(K24)_i = theta * 0.00649 * exp(eta_i)` with theta = 0.693 for C/T), `Storset_2024_risperidone.R` (additive per-allele partial clearance: each *10 copy, counted as `CYP2D6_STAR10_HET + 2 * CYP2D6_STAR10_HOM`, adds 0.32 x the CYP2D6*1 partial clearance to risperidone CL/F; Storset 2024 Table 2).
 - **Notes:** Follows the `CYP3A5_STAR1_HET` / `CYP3A5_STAR1_HOM` and `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` precedents (paired binary indicators for a three-level germline genotype with an implicit wild-type reference). The `_STAR10_` token names the variant-allele orientation (the *10 allele is the reduced-function variant of CYP2D6 that causes lower CYP2D6 metabolic activity); the C/C wild-type stratum is the implicit reference because the source-paper coefficient signs are reported relative to that reference. Pei 2016 pooled C/C and C/T as the reference for the K23 (M1 formation) effect (only T/T was distinguished on K23), so a model using these two canonicals will route the K23 effect through `CYP2D6_STAR10_HOM` alone while routing the K24 effect through both `CYP2D6_STAR10_HET` and `CYP2D6_STAR10_HOM` -- this asymmetric per-parameter use is normal and is what the paired-indicator pattern is designed to express.
 
 ### CYP2D6_STAR10_HOM (**canonical for CYP2D6*10 (rs1065852) homozygous-mutant indicator**)
@@ -14757,9 +14758,153 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Scope:** general
 - **Reference category:** 0 (C/C wild-type at rs1065852, when paired with `CYP2D6_STAR10_HET = 0`). The reference group is the C/C wild-type stratum; `CYP2D6_STAR10_HET` flags the C/T heterozygous stratum.
 - **Source aliases:**
+  - `*10/*10` -- used in `Storset_2024_risperidone.R` (Storset 2024 Supplementary Table S1; *10 is the star-allele call, see `CYP2D6_STAR10_HET`).
   - `CYP2D6*10 T/T` -- used in `Pei_2016_iloperidone.R` (Pei 2016 Results 'Population pharmacokinetic (PPK) models' encodes CYP2D6*10 C/C, C/T, T/T as integers 1, 2, 3; the T/T = 3 stratum maps to `CYP2D6_STAR10_HOM = 1`).
-- **Example models:** `Pei_2016_iloperidone.R` (multiplicative effects on two iloperidone metabolite-formation rate constants: K23 (M1 formation) is multiplied by 1.34 in T/T subjects relative to the C/C + C/T pooled reference, and K24 (M2 formation) is multiplied by 0.492 in T/T subjects relative to the C/C wild-type reference; Pei 2016 Table 3 and Results 'Population pharmacokinetic (PPK) models' equations `(K23)_i = theta * 0.00451 * exp(eta_i)` with theta = 1.34 for T/T and `(K24)_i = theta * 0.00649 * exp(eta_i)` with theta = 0.492 for T/T).
+- **Example models:** `Pei_2016_iloperidone.R` (multiplicative effects on two iloperidone metabolite-formation rate constants: K23 (M1 formation) is multiplied by 1.34 in T/T subjects relative to the C/C + C/T pooled reference, and K24 (M2 formation) is multiplied by 0.492 in T/T subjects relative to the C/C wild-type reference; Pei 2016 Table 3 and Results 'Population pharmacokinetic (PPK) models' equations `(K23)_i = theta * 0.00451 * exp(eta_i)` with theta = 1.34 for T/T and `(K24)_i = theta * 0.00649 * exp(eta_i)` with theta = 0.492 for T/T), `Storset_2024_risperidone.R` (additive per-allele partial clearance: each *10 copy, counted as `CYP2D6_STAR10_HET + 2 * CYP2D6_STAR10_HOM`, adds 0.32 x the CYP2D6*1 partial clearance to risperidone CL/F; Storset 2024 Table 2).
 - **Notes:** Paired with `CYP2D6_STAR10_HET` (see that entry's Notes for the three-level decomposition rationale, the variant-orientation convention, and the asymmetric K23-vs-K24 use the paired indicators support in the Pei 2016 model). Allele frequencies for the CYP2D6*10 (rs1065852) variant in Chinese populations are 48-70% per the source paper's Introduction; the Pei 2016 cohort (n = 70 Chinese schizophrenia patients) observed C/C 15.7%, C/T 60.0%, T/T 24.3%.
+
+### CYP2D6_STAR1_HET (**canonical for CYP2D6*1 heterozygote indicator**)
+- **Description:** Binary germline diplotype indicator. 1 = subject carries exactly one CYP2D6*1 allele; 0 = otherwise (the paired indicator `CYP2D6_STAR1_HOM` flags the homozygous group). Time-fixed per subject. CYP2D6*1: the normal-function reference allele; in Storset 2024 it also absorbs the three *1-rs5758550G alleles the authors merged with *1-rs5758550A. Copies of the allele = `CYP2D6_STAR1_HET + 2 * CYP2D6_STAR1_HOM`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no copy of CYP2D6*1, when paired with `CYP2D6_STAR1_HOM = 0`).
+- **Source aliases:**
+  - `*1` -- used in `Storset_2024_risperidone.R` (Storset 2024 Table 1 and Supplementary Table S1 diplotypes).
+- **Example models:** `Storset_2024_risperidone.R` (additive per-allele partial clearance: each copy adds 1.0 (the reference partial clearance itself, 23.2 L/h per copy) x the CYP2D6*1 partial clearance to risperidone CL/F; Storset 2024 Table 2 'CYP2D6 allele (fraction of CYP2D6*1)').
+- **Notes:** Member of the `CYP2D6_STAR<allele>_HET` / `_HOM` family (precedent `CYP2D6_STAR10_HET` / `_HOM`, `CYP3A5_STAR1_HET` / `_HOM`). A model that sums per-allele contributions reconstructs copy counts as `HET + 2 * HOM` inside `model()` rather than taking an integer count column. One pair per allele category: a subject with two different non-reference alleles (e.g. *2-G/*41) has the `_HET` indicator of each set. Deficient alleles (*3, *4, *5, *6) carry no column in a model where they contribute zero. Gene duplications (xN) cannot be expressed by the pair.
+
+### CYP2D6_STAR1_HOM (**canonical for CYP2D6*1 homozygote indicator**)
+- **Description:** Binary germline diplotype indicator. 1 = subject carries two CYP2D6*1 alleles; 0 = otherwise (the paired indicator `CYP2D6_STAR1_HET` flags the heterozygous group). Time-fixed per subject. CYP2D6*1: the normal-function reference allele; in Storset 2024 it also absorbs the three *1-rs5758550G alleles the authors merged with *1-rs5758550A. Copies of the allele = `CYP2D6_STAR1_HET + 2 * CYP2D6_STAR1_HOM`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no copy of CYP2D6*1, when paired with `CYP2D6_STAR1_HET = 0`).
+- **Source aliases:**
+  - `*1` -- used in `Storset_2024_risperidone.R` (Storset 2024 Table 1 and Supplementary Table S1 diplotypes).
+- **Example models:** `Storset_2024_risperidone.R` (additive per-allele partial clearance: each copy adds 1.0 (the reference partial clearance itself, 23.2 L/h per copy) x the CYP2D6*1 partial clearance to risperidone CL/F; Storset 2024 Table 2 'CYP2D6 allele (fraction of CYP2D6*1)').
+- **Notes:** Member of the `CYP2D6_STAR<allele>_HET` / `_HOM` family (precedent `CYP2D6_STAR10_HET` / `_HOM`, `CYP3A5_STAR1_HET` / `_HOM`). A model that sums per-allele contributions reconstructs copy counts as `HET + 2 * HOM` inside `model()` rather than taking an integer count column. One pair per allele category: a subject with two different non-reference alleles (e.g. *2-G/*41) has the `_HET` indicator of each set. Deficient alleles (*3, *4, *5, *6) carry no column in a model where they contribute zero. Gene duplications (xN) cannot be expressed by the pair.
+
+### CYP2D6_STAR2_RS5758550G_HET (**canonical for CYP2D6*2-rs5758550G haplotype heterozygote indicator**)
+- **Description:** Binary germline diplotype indicator. 1 = subject carries exactly one CYP2D6*2-rs5758550G haplotype allele; 0 = otherwise (the paired indicator `CYP2D6_STAR2_RS5758550G_HOM` flags the homozygous group). Time-fixed per subject. CYP2D6*2-rs5758550G haplotype: CYP2D6*2 (rs16947) on the haplotype carrying the rs5758550 G allele and the 24 downstream SNPs in high linkage disequilibrium with it; the common *2 haplotype in Europeans (18.4 %). Copies of the allele = `CYP2D6_STAR2_RS5758550G_HET + 2 * CYP2D6_STAR2_RS5758550G_HOM`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no copy of CYP2D6*2-rs5758550G haplotype, when paired with `CYP2D6_STAR2_RS5758550G_HOM = 0`).
+- **Source aliases:**
+  - `*2-rs5758550G (*2-G)` -- used in `Storset_2024_risperidone.R` (Storset 2024 Table 1 and Supplementary Table S1 diplotypes).
+- **Example models:** `Storset_2024_risperidone.R` (additive per-allele partial clearance: each copy adds 0.66 x the CYP2D6*1 partial clearance to risperidone CL/F; Storset 2024 Table 2 'CYP2D6 allele (fraction of CYP2D6*1)').
+- **Notes:** Member of the `CYP2D6_STAR<allele>_HET` / `_HOM` family (precedent `CYP2D6_STAR10_HET` / `_HOM`, `CYP3A5_STAR1_HET` / `_HOM`). A model that sums per-allele contributions reconstructs copy counts as `HET + 2 * HOM` inside `model()` rather than taking an integer count column. One pair per allele category: a subject with two different non-reference alleles (e.g. *2-G/*41) has the `_HET` indicator of each set. Deficient alleles (*3, *4, *5, *6) carry no column in a model where they contribute zero. Gene duplications (xN) cannot be expressed by the pair.
+
+### CYP2D6_STAR2_RS5758550G_HOM (**canonical for CYP2D6*2-rs5758550G haplotype homozygote indicator**)
+- **Description:** Binary germline diplotype indicator. 1 = subject carries two CYP2D6*2-rs5758550G haplotype alleles; 0 = otherwise (the paired indicator `CYP2D6_STAR2_RS5758550G_HET` flags the heterozygous group). Time-fixed per subject. CYP2D6*2-rs5758550G haplotype: CYP2D6*2 (rs16947) on the haplotype carrying the rs5758550 G allele and the 24 downstream SNPs in high linkage disequilibrium with it; the common *2 haplotype in Europeans (18.4 %). Copies of the allele = `CYP2D6_STAR2_RS5758550G_HET + 2 * CYP2D6_STAR2_RS5758550G_HOM`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no copy of CYP2D6*2-rs5758550G haplotype, when paired with `CYP2D6_STAR2_RS5758550G_HET = 0`).
+- **Source aliases:**
+  - `*2-rs5758550G (*2-G)` -- used in `Storset_2024_risperidone.R` (Storset 2024 Table 1 and Supplementary Table S1 diplotypes).
+- **Example models:** `Storset_2024_risperidone.R` (additive per-allele partial clearance: each copy adds 0.66 x the CYP2D6*1 partial clearance to risperidone CL/F; Storset 2024 Table 2 'CYP2D6 allele (fraction of CYP2D6*1)').
+- **Notes:** Member of the `CYP2D6_STAR<allele>_HET` / `_HOM` family (precedent `CYP2D6_STAR10_HET` / `_HOM`, `CYP3A5_STAR1_HET` / `_HOM`). A model that sums per-allele contributions reconstructs copy counts as `HET + 2 * HOM` inside `model()` rather than taking an integer count column. One pair per allele category: a subject with two different non-reference alleles (e.g. *2-G/*41) has the `_HET` indicator of each set. Deficient alleles (*3, *4, *5, *6) carry no column in a model where they contribute zero. Gene duplications (xN) cannot be expressed by the pair.
+
+### CYP2D6_STAR2_RS5758550A_HET (**canonical for CYP2D6*2-rs5758550A haplotype heterozygote indicator**)
+- **Description:** Binary germline diplotype indicator. 1 = subject carries exactly one CYP2D6*2-rs5758550A haplotype allele; 0 = otherwise (the paired indicator `CYP2D6_STAR2_RS5758550A_HOM` flags the homozygous group). Time-fixed per subject. CYP2D6*2-rs5758550A haplotype: CYP2D6*2 (rs16947) on the haplotype carrying the rs5758550 A allele; rare in Europeans (1.2 %), 3 % in East Asians. Copies of the allele = `CYP2D6_STAR2_RS5758550A_HET + 2 * CYP2D6_STAR2_RS5758550A_HOM`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no copy of CYP2D6*2-rs5758550A haplotype, when paired with `CYP2D6_STAR2_RS5758550A_HOM = 0`).
+- **Source aliases:**
+  - `*2-rs5758550A (*2-A)` -- used in `Storset_2024_risperidone.R` (Storset 2024 Table 1 and Supplementary Table S1 diplotypes).
+- **Example models:** `Storset_2024_risperidone.R` (additive per-allele partial clearance: each copy adds 0.30 x the CYP2D6*1 partial clearance to risperidone CL/F; Storset 2024 Table 2 'CYP2D6 allele (fraction of CYP2D6*1)').
+- **Notes:** Member of the `CYP2D6_STAR<allele>_HET` / `_HOM` family (precedent `CYP2D6_STAR10_HET` / `_HOM`, `CYP3A5_STAR1_HET` / `_HOM`). A model that sums per-allele contributions reconstructs copy counts as `HET + 2 * HOM` inside `model()` rather than taking an integer count column. One pair per allele category: a subject with two different non-reference alleles (e.g. *2-G/*41) has the `_HET` indicator of each set. Deficient alleles (*3, *4, *5, *6) carry no column in a model where they contribute zero. Gene duplications (xN) cannot be expressed by the pair.
+
+### CYP2D6_STAR2_RS5758550A_HOM (**canonical for CYP2D6*2-rs5758550A haplotype homozygote indicator**)
+- **Description:** Binary germline diplotype indicator. 1 = subject carries two CYP2D6*2-rs5758550A haplotype alleles; 0 = otherwise (the paired indicator `CYP2D6_STAR2_RS5758550A_HET` flags the heterozygous group). Time-fixed per subject. CYP2D6*2-rs5758550A haplotype: CYP2D6*2 (rs16947) on the haplotype carrying the rs5758550 A allele; rare in Europeans (1.2 %), 3 % in East Asians. Copies of the allele = `CYP2D6_STAR2_RS5758550A_HET + 2 * CYP2D6_STAR2_RS5758550A_HOM`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no copy of CYP2D6*2-rs5758550A haplotype, when paired with `CYP2D6_STAR2_RS5758550A_HET = 0`).
+- **Source aliases:**
+  - `*2-rs5758550A (*2-A)` -- used in `Storset_2024_risperidone.R` (Storset 2024 Table 1 and Supplementary Table S1 diplotypes).
+- **Example models:** `Storset_2024_risperidone.R` (additive per-allele partial clearance: each copy adds 0.30 x the CYP2D6*1 partial clearance to risperidone CL/F; Storset 2024 Table 2 'CYP2D6 allele (fraction of CYP2D6*1)').
+- **Notes:** Member of the `CYP2D6_STAR<allele>_HET` / `_HOM` family (precedent `CYP2D6_STAR10_HET` / `_HOM`, `CYP3A5_STAR1_HET` / `_HOM`). A model that sums per-allele contributions reconstructs copy counts as `HET + 2 * HOM` inside `model()` rather than taking an integer count column. One pair per allele category: a subject with two different non-reference alleles (e.g. *2-G/*41) has the `_HET` indicator of each set. Deficient alleles (*3, *4, *5, *6) carry no column in a model where they contribute zero. Gene duplications (xN) cannot be expressed by the pair.
+
+### CYP2D6_STAR35_HET (**canonical for CYP2D6*35 heterozygote indicator**)
+- **Description:** Binary germline diplotype indicator. 1 = subject carries exactly one CYP2D6*35 allele; 0 = otherwise (the paired indicator `CYP2D6_STAR35_HOM` flags the homozygous group). Time-fixed per subject. CYP2D6*35: defined by rs769258. Copies of the allele = `CYP2D6_STAR35_HET + 2 * CYP2D6_STAR35_HOM`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no copy of CYP2D6*35, when paired with `CYP2D6_STAR35_HOM = 0`).
+- **Source aliases:**
+  - `*35` -- used in `Storset_2024_risperidone.R` (Storset 2024 Table 1 and Supplementary Table S1 diplotypes).
+- **Example models:** `Storset_2024_risperidone.R` (additive per-allele partial clearance: each copy adds 0.57 x the CYP2D6*1 partial clearance to risperidone CL/F; Storset 2024 Table 2 'CYP2D6 allele (fraction of CYP2D6*1)').
+- **Notes:** Member of the `CYP2D6_STAR<allele>_HET` / `_HOM` family (precedent `CYP2D6_STAR10_HET` / `_HOM`, `CYP3A5_STAR1_HET` / `_HOM`). A model that sums per-allele contributions reconstructs copy counts as `HET + 2 * HOM` inside `model()` rather than taking an integer count column. One pair per allele category: a subject with two different non-reference alleles (e.g. *2-G/*41) has the `_HET` indicator of each set. Deficient alleles (*3, *4, *5, *6) carry no column in a model where they contribute zero. Gene duplications (xN) cannot be expressed by the pair.
+
+### CYP2D6_STAR35_HOM (**canonical for CYP2D6*35 homozygote indicator**)
+- **Description:** Binary germline diplotype indicator. 1 = subject carries two CYP2D6*35 alleles; 0 = otherwise (the paired indicator `CYP2D6_STAR35_HET` flags the heterozygous group). Time-fixed per subject. CYP2D6*35: defined by rs769258. Copies of the allele = `CYP2D6_STAR35_HET + 2 * CYP2D6_STAR35_HOM`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no copy of CYP2D6*35, when paired with `CYP2D6_STAR35_HET = 0`).
+- **Source aliases:**
+  - `*35` -- used in `Storset_2024_risperidone.R` (Storset 2024 Table 1 and Supplementary Table S1 diplotypes).
+- **Example models:** `Storset_2024_risperidone.R` (additive per-allele partial clearance: each copy adds 0.57 x the CYP2D6*1 partial clearance to risperidone CL/F; Storset 2024 Table 2 'CYP2D6 allele (fraction of CYP2D6*1)').
+- **Notes:** Member of the `CYP2D6_STAR<allele>_HET` / `_HOM` family (precedent `CYP2D6_STAR10_HET` / `_HOM`, `CYP3A5_STAR1_HET` / `_HOM`). A model that sums per-allele contributions reconstructs copy counts as `HET + 2 * HOM` inside `model()` rather than taking an integer count column. One pair per allele category: a subject with two different non-reference alleles (e.g. *2-G/*41) has the `_HET` indicator of each set. Deficient alleles (*3, *4, *5, *6) carry no column in a model where they contribute zero. Gene duplications (xN) cannot be expressed by the pair.
+
+### CYP2D6_STAR9_HET (**canonical for CYP2D6*9 heterozygote indicator**)
+- **Description:** Binary germline diplotype indicator. 1 = subject carries exactly one CYP2D6*9 allele; 0 = otherwise (the paired indicator `CYP2D6_STAR9_HOM` flags the homozygous group). Time-fixed per subject. CYP2D6*9: defined by rs5030656. Copies of the allele = `CYP2D6_STAR9_HET + 2 * CYP2D6_STAR9_HOM`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no copy of CYP2D6*9, when paired with `CYP2D6_STAR9_HOM = 0`).
+- **Source aliases:**
+  - `*9` -- used in `Storset_2024_risperidone.R` (Storset 2024 Table 1 and Supplementary Table S1 diplotypes).
+- **Example models:** `Storset_2024_risperidone.R` (additive per-allele partial clearance: each copy adds 0.39 x the CYP2D6*1 partial clearance to risperidone CL/F; Storset 2024 Table 2 'CYP2D6 allele (fraction of CYP2D6*1)').
+- **Notes:** Member of the `CYP2D6_STAR<allele>_HET` / `_HOM` family (precedent `CYP2D6_STAR10_HET` / `_HOM`, `CYP3A5_STAR1_HET` / `_HOM`). A model that sums per-allele contributions reconstructs copy counts as `HET + 2 * HOM` inside `model()` rather than taking an integer count column. One pair per allele category: a subject with two different non-reference alleles (e.g. *2-G/*41) has the `_HET` indicator of each set. Deficient alleles (*3, *4, *5, *6) carry no column in a model where they contribute zero. Gene duplications (xN) cannot be expressed by the pair.
+
+### CYP2D6_STAR9_HOM (**canonical for CYP2D6*9 homozygote indicator**)
+- **Description:** Binary germline diplotype indicator. 1 = subject carries two CYP2D6*9 alleles; 0 = otherwise (the paired indicator `CYP2D6_STAR9_HET` flags the heterozygous group). Time-fixed per subject. CYP2D6*9: defined by rs5030656. Copies of the allele = `CYP2D6_STAR9_HET + 2 * CYP2D6_STAR9_HOM`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no copy of CYP2D6*9, when paired with `CYP2D6_STAR9_HET = 0`).
+- **Source aliases:**
+  - `*9` -- used in `Storset_2024_risperidone.R` (Storset 2024 Table 1 and Supplementary Table S1 diplotypes).
+- **Example models:** `Storset_2024_risperidone.R` (additive per-allele partial clearance: each copy adds 0.39 x the CYP2D6*1 partial clearance to risperidone CL/F; Storset 2024 Table 2 'CYP2D6 allele (fraction of CYP2D6*1)').
+- **Notes:** Member of the `CYP2D6_STAR<allele>_HET` / `_HOM` family (precedent `CYP2D6_STAR10_HET` / `_HOM`, `CYP3A5_STAR1_HET` / `_HOM`). A model that sums per-allele contributions reconstructs copy counts as `HET + 2 * HOM` inside `model()` rather than taking an integer count column. One pair per allele category: a subject with two different non-reference alleles (e.g. *2-G/*41) has the `_HET` indicator of each set. Deficient alleles (*3, *4, *5, *6) carry no column in a model where they contribute zero. Gene duplications (xN) cannot be expressed by the pair.
+
+### CYP2D6_STAR41_HET (**canonical for CYP2D6*41 heterozygote indicator**)
+- **Description:** Binary germline diplotype indicator. 1 = subject carries exactly one CYP2D6*41 allele; 0 = otherwise (the paired indicator `CYP2D6_STAR41_HOM` flags the homozygous group). Time-fixed per subject. CYP2D6*41: defined by rs28371725. Copies of the allele = `CYP2D6_STAR41_HET + 2 * CYP2D6_STAR41_HOM`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no copy of CYP2D6*41, when paired with `CYP2D6_STAR41_HOM = 0`).
+- **Source aliases:**
+  - `*41` -- used in `Storset_2024_risperidone.R` (Storset 2024 Table 1 and Supplementary Table S1 diplotypes).
+- **Example models:** `Storset_2024_risperidone.R` (additive per-allele partial clearance: each copy adds 0.15 x the CYP2D6*1 partial clearance to risperidone CL/F; Storset 2024 Table 2 'CYP2D6 allele (fraction of CYP2D6*1)').
+- **Notes:** Member of the `CYP2D6_STAR<allele>_HET` / `_HOM` family (precedent `CYP2D6_STAR10_HET` / `_HOM`, `CYP3A5_STAR1_HET` / `_HOM`). A model that sums per-allele contributions reconstructs copy counts as `HET + 2 * HOM` inside `model()` rather than taking an integer count column. One pair per allele category: a subject with two different non-reference alleles (e.g. *2-G/*41) has the `_HET` indicator of each set. Deficient alleles (*3, *4, *5, *6) carry no column in a model where they contribute zero. Gene duplications (xN) cannot be expressed by the pair.
+
+### CYP2D6_STAR41_HOM (**canonical for CYP2D6*41 homozygote indicator**)
+- **Description:** Binary germline diplotype indicator. 1 = subject carries two CYP2D6*41 alleles; 0 = otherwise (the paired indicator `CYP2D6_STAR41_HET` flags the heterozygous group). Time-fixed per subject. CYP2D6*41: defined by rs28371725. Copies of the allele = `CYP2D6_STAR41_HET + 2 * CYP2D6_STAR41_HOM`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no copy of CYP2D6*41, when paired with `CYP2D6_STAR41_HET = 0`).
+- **Source aliases:**
+  - `*41` -- used in `Storset_2024_risperidone.R` (Storset 2024 Table 1 and Supplementary Table S1 diplotypes).
+- **Example models:** `Storset_2024_risperidone.R` (additive per-allele partial clearance: each copy adds 0.15 x the CYP2D6*1 partial clearance to risperidone CL/F; Storset 2024 Table 2 'CYP2D6 allele (fraction of CYP2D6*1)').
+- **Notes:** Member of the `CYP2D6_STAR<allele>_HET` / `_HOM` family (precedent `CYP2D6_STAR10_HET` / `_HOM`, `CYP3A5_STAR1_HET` / `_HOM`). A model that sums per-allele contributions reconstructs copy counts as `HET + 2 * HOM` inside `model()` rather than taking an integer count column. One pair per allele category: a subject with two different non-reference alleles (e.g. *2-G/*41) has the `_HET` indicator of each set. Deficient alleles (*3, *4, *5, *6) carry no column in a model where they contribute zero. Gene duplications (xN) cannot be expressed by the pair.
+
+### SNP_NFIB_RS28379954 (**canonical for NFIB rs28379954 (T>C) variant-carrier indicator**)
+- **Description:** Binary genotype indicator for the nuclear factor I B (*NFIB*) rs28379954 T>C variant, a transcriptional regulator of *CYP2D6* expression. 1 = the subject carries at least one C allele (CT or CC); 0 = TT. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (TT).
+- **Source aliases:**
+  - `NFIB-C` -- used in `Storset_2024_risperidone.R` (Storset 2024 Table 2 'NFIB allele (fraction of NFIB-T)'; heterozygous and homozygous carriers merged, Methods 'Covariate model').
+- **Example models:** `Storset_2024_risperidone.R` (multiplies the CYP2D6-mediated partial clearance of risperidone by 1.41 in carriers; the CYP2D6-independent base clearance is unaffected).
+- **Notes:** Member of the `SNP_<GENE>_RS<rsid>` family; dominant-model carrier indicator. Acts on the CYP2D6-mediated pathway only, so a model applies it to the summed CYP2D6 partial clearance rather than to total clearance. In Storset 2024, six of 1024 alleles had undetermined genotype and were coded 0 (no separate unknown category in the final model).
 
 ### CYP3A4 (**canonical for CYP3A4 / CYP3A4-and-CYP3A5 individual metabolic-activity score**)
 - **Description:** Continuous individual-level CYP3A4 (or combined CYP3A4 + CYP3A5) metabolic-activity score. Same intent and documentation policy as `CYP2D6` above. Some sources measure CYP3A4 alone via probe substrate; others (Ter Heine 2014) report a combined CYP3A4/5 activity because the chosen probe (dextromethorphan N-demethylation) cannot distinguish CYP3A4 from CYP3A5. The per-model `notes` field documents whether the value is CYP3A4-only or the CYP3A4 + CYP3A5 combined score.
