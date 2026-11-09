@@ -166,7 +166,7 @@ Kirubakaran_2022_tacrolimus <- function() {
     # because the source paper does not report a covariance between the two BSV
     # terms; all between-occasion variabilities (BOV) are fixed to zero in the
     # final model (Methods 2.5.1, Table 3 column 3).
-    etalcl       ~ 0.31633   # log(0.610^2 + 1) = 0.31633; 61.0% CV without azole; Kirubakaran 2022 Table 3 BSV CL/F (without azole) (RSE 16%; shrinkage 27%)
+    etalcl       ~ log(1 + 0.61^2)  # 61.0% CV without azole; Kirubakaran 2022 Table 3 BSV CL/F (without azole) (RSE 16%; shrinkage 27%)
     etalcl_azole ~ 0.58836   # log(0.895^2 + 1) = 0.58836; 89.5% CV with azole; Kirubakaran 2022 Table 3 BSV CL/F (with azole) (RSE 11%; shrinkage 3%)
 
     # ----- Residual error -----

@@ -86,9 +86,9 @@ Olagunju_2018_efavirenz <- function() {
     # ---- IIV (diagonal omega; exponential errors, log-normal per equation 1) ----
     # Olagunju 2018 Methods equation 1: theta_i = theta_1 * exp(eta_i)
     # CV-to-variance conversion: omega^2 = log(CV^2 + 1)
-    etalka ~ 0.56167   # 86.8% CV (Olagunju 2018 Table 2 RSE 21%, 90% CI 23-107); log(1 + 0.868^2) = 0.56167
-    etalcl ~ 0.15614   # 41.1% CV (Olagunju 2018 Table 2 RSE 16%, 90% CI 36-43);  log(1 + 0.411^2) = 0.15614
-    etalvc ~ 0.067379  # 26.4% CV (Olagunju 2018 Table 2 RSE 33%, 90% CI 10-40);  log(1 + 0.264^2) = 0.06738
+    etalka ~ log(1 + 0.868^2)  # 86.8% CV (Olagunju 2018 Table 2 RSE 21%, 90% CI 23-107)
+    etalcl ~ log(1 + 0.411^2)  # 41.1% CV (Olagunju 2018 Table 2 RSE 16%, 90% CI 36-43)
+    etalvc ~ log(1 + 0.264^2)  # 26.4% CV (Olagunju 2018 Table 2 RSE 33%, 90% CI 10-40)
 
     # ---- Residual error (proportional only; additive structure did not improve fit) ----
     # Olagunju 2018 Table 2: proportional residual variance = 0.085 (RSE 21%, 90% CI 0.06-0.11).

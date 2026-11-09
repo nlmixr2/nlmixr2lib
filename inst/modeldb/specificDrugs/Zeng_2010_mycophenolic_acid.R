@@ -93,8 +93,8 @@ Zeng_2010_mycophenolic_acid <- function() {
     # IIV was only identifiable on CL, ka, and F; the source paper attempted
     # but could not reliably estimate IIV on V1, V2, Q (Zeng 2010 Section
     # 'Base model building').
-    etalcl     ~ 0.0953     # 0.316^2; Zeng 2010 Table 3 final omega_CL  = 31.6% CV -> log(1 + 0.316^2)
-    etalka     ~ 0.2994     # 0.591^2; Zeng 2010 Table 3 final omega_ka  = 59.1% CV -> log(1 + 0.591^2)
+    etalcl     ~ log(1 + 0.316^2)  # Zeng 2010 Table 3 final omega_CL  = 31.6% CV
+    etalka     ~ log(1 + 0.591^2)  # Zeng 2010 Table 3 final omega_ka  = 59.1% CV
     etalfdepot ~ 0.1131     # 0.346^2; Zeng 2010 Table 3 final omega_F   = 34.6% CV -> log(1 + 0.346^2)
 
     # Residual variability. Zeng 2010 used an exponential (log-normal)

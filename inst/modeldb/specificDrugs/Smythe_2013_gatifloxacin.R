@@ -200,7 +200,7 @@ Smythe_2013_gatifloxacin <- function() {
     # here -- the paper notes 'Covariance between parameters was also
     # tested' (Methods) but the final model in Table 2 reports no
     # covariance between CL and V.
-    etalcl  ~ 0.10336       # Smythe 2013 Table 2: IIV CL/F = 33.0% CV (RSE 7.7%) -> log(0.33^2 + 1) = 0.10336
+    etalcl  ~ log(1 + 0.33^2)  # Smythe 2013 Table 2: IIV CL/F = 33.0% CV (RSE 7.7%)
     etalvc  ~ 0.04769       # Smythe 2013 Table 2: IIV V/F  = 22.1% CV (RSE 10.9%) -> log(0.221^2 + 1) = 0.04769
 
     # IOV. The source reports a single IOV variance per parameter
@@ -210,8 +210,8 @@ Smythe_2013_gatifloxacin <- function() {
     # matching the NONMEM '$OMEGA BLOCK(1) + SAME' idiom used in the
     # sister Wilkins 2008 rifampicin model (DDMODEL00000280). The OCC
     # column (1 or 2) is decomposed into binary indicators inside model().
-    etaiov_cl_1  ~ 0.10336              # Smythe 2013 Table 2: IOV CL/F = 33.0% CV (RSE 5.7%) -> log(0.33^2 + 1) = 0.10336 (occasion 1)
-    etaiov_cl_2  ~ fix(0.10336)         # IOV on log-CL, occasion 2; variance equal to occasion 1 per source's single-variance IOV reporting
+    etaiov_cl_1  ~ log(1 + 0.33^2)  # Smythe 2013 Table 2: IOV CL/F = 33.0% CV (RSE 5.7%) (occasion 1)
+    etaiov_cl_2  ~ fix(log(1 + 0.33^2))  # IOV on log-CL, occasion 2; variance equal to occasion 1 per source's single-variance IOV reporting
     etaiov_vc_1  ~ 0.01727              # Smythe 2013 Table 2: IOV V/F  = 13.2% CV (RSE 13.9%) -> log(0.132^2 + 1) = 0.01727 (occasion 1)
     etaiov_vc_2  ~ fix(0.01727)         # IOV on log-V, occasion 2; variance equal to occasion 1
     etaiov_mtt_1 ~ 0.18365              # Smythe 2013 Table 2: IOV MTT  = 44.9% CV (RSE 12.3%) -> log(0.449^2 + 1) = 0.18365 (occasion 1)

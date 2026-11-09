@@ -114,7 +114,7 @@ nlmixr2lib::readModelDb("ElassaissSchaap_2017_pembrolizumab")$population
 | `lbaseline` (IL-2 stim ratio) | log(2.09)  | Elassaiss-Schaap 2017 Table 2: Base = 2.09 |
 | `limax`                       | log(0.961) | Elassaiss-Schaap 2017 Table 2: Imax = 0.961 |
 | `lic50` (IC50, ug/mL)         | log(0.535) | Elassaiss-Schaap 2017 Table 2: IC50 = 0.535 ug/mL (paper text: 0.54 mg/L) |
-| `etalvmax`                    | 0.05024    | Table 2: Vmax BSV 22.7% CV; omega^2 = log(1 + 0.227^2) |
+| `etalvmax`                    | 0.05025    | Table 2: Vmax BSV 22.7% CV; omega^2 = log(1 + 0.227^2) |
 | `etalfdepot`                  | 0.13289    | Table 2: F IOV 37.7%; recast as IIV; omega^2 = log(1 + 0.377^2) |
 | `etalbaseline`                | 0.01430    | Table 2: Base BSV 12.0% CV; omega^2 = log(1 + 0.120^2) |
 | `propSd` (PK)                 | 0.296      | Table 2: RUV_PK = 29.6% |

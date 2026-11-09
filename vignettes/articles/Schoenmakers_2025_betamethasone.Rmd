@@ -320,7 +320,7 @@ AUC0-inf vs (Dose / CL) ratio raises.
   conversion formula. The model file interprets these as approximate CV%
   on the natural (linear) parameter scale and converts to log-scale
   variance via the exact log-normal relation `omega^2 = log(1 + CV^2)`,
-  giving `etalcl ~ 0.0444` (= log(1 + 0.213^2)) and `etalvc ~ 0.5887` (=
+  giving `etalcl ~ 0.0444` (= log(1 + 0.213^2)) and `etalvc ~ 0.5884` (=
   log(1 + 0.895^2)). The alternative reading -- treating the printed %
   values as `sqrt(omega^2) * 100` directly -- would give `etalcl ~
   0.0454` and `etalvc ~ 0.801`. The difference is negligible for IIV-CL

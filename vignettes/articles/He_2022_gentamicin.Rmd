@@ -56,7 +56,7 @@ below collects them in one place.
 | One-compartment, linear elimination | n/a | Results, "Population PK" |
 | `lcl` (CL_body) | 1.20 L/h (RSE 20.3%) | Table 2 |
 | `lvc` (V_d) | 27.60 L (RSE 5.8%) | Table 2 |
-| `etalcl` | 69.3 %CV -> omega^2 = log(0.693^2 + 1) = 0.392211 | Table 2 and its CV footnote |
+| `etalcl` | 69.3 %CV -> omega^2 = log(0.693^2 + 1) = 0.392210 | Table 2 and its CV footnote |
 | `etalvc` | 22.1 %CV -> omega^2 = log(0.221^2 + 1) = 0.047686 | Table 2 and its CV footnote |
 | `addSd` | 0.156 mg/L | Table 2; Results, "Population PK" |
 | `propSd` | 0.080 (8.0%) | Table 2; Results, "Population PK" |

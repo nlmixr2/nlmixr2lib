@@ -60,8 +60,8 @@ Every parameter and equation traces back to the Kloprogge 2018 publication; the 
 | `dose50 = 3.86` (mg/kg)                   | 3.86    | Table 2 'Dose50 (mg/kg) on F' (RSE 41.5%; 95% CI 1.25-8.04) |
 | `e_preg_ka = +0.352`                      | +0.352  | Table 2 'Pregnancy on ka' (RSE 21.2%; 95% CI 0.212-0.510); proportional form `ka = theta(n) * (1 + theta_pregnancy)` |
 | `e_lnpc_f = -0.643` per log10              | -0.643  | Table 2 'Parasitaemia on F' (RSE 13.0%; 95% CI -0.793 to -0.473); exponential form `F = theta(n) * exp(theta_par * (log10(PARA) - 4.2))` |
-| `etalvc     ~ 1.12286` (variance)          | CV 144% | Table 2 'IIV Vc/F 144%' (RSE 10.8%; 95% CI 115-165); variance = log(1.44^2 + 1) |
-| `etalfdepot ~ 0.40158`                     | CV 70.3% | Table 2 'IIV F 70.3%' (RSE 5.95%; 95% CI 65.3-75.3); variance = log(0.703^2 + 1); Box-Cox shape -0.343 NOT applied |
+| `etalvc     ~ 1.12285` (variance)          | CV 144% | Table 2 'IIV Vc/F 144%' (RSE 10.8%; 95% CI 115-165); variance = log(1.44^2 + 1) |
+| `etalfdepot ~ 0.40160`                     | CV 70.3% | Table 2 'IIV F 70.3%' (RSE 5.95%; 95% CI 65.3-75.3); variance = log(0.703^2 + 1); Box-Cox shape -0.343 NOT applied |
 | `propSd = 0.323`                           | sigma 0.323 (SD on log-scale) | Table 2 'sigma' (RSE 4.88%; 95% CI 0.293-0.357) |
 | First-order absorption from `depot` -> `central` | -- | Results 'Structural model': 'A first-order absorption model described the lumefantrine absorption characteristics adequately' |
 | Two-compartment disposition (`central`, `peripheral1`) | -- | Results 'Structural model': '2-compartment model ... superior to a 1-compartment model (Delta-2LL = -2,361)' |

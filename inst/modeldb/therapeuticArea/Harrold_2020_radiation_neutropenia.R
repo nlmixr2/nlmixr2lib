@@ -122,9 +122,9 @@ Harrold_2020_radiation_neutropenia <- function() {
     # their own diagonal and notes the omission in the vignette Errata.
     # ----------------------------------------------------------------------
     etalrbase   ~ 0.0520   ; label("IIV variance on lrbase (log-normal; CV 23.1%)")    # Table II: omega_ANCIC %CV = 23.1; log(1 + 0.231^2) = 0.05201
-    etalkel     ~ 0.01435  ; label("IIV variance on lkel (log-normal; CV 12.0%)")      # Table II: omega_kPD,e %CV = 12; log(1 + 0.12^2) = 0.01435
-    etalkdecay  ~ 0.02380  ; label("IIV variance on lkdecay (log-normal; CV 15.5%)")   # Table II: omega_kPD,kill %CV = 15.5; log(1 + 0.155^2) = 0.02380
-    etalkout    ~ 0.12715  ; label("IIV variance on lkout (log-normal; CV 36.8%)")     # Table II: omega_kc %CV = 36.8; log(1 + 0.368^2) = 0.12715
+    etalkel     ~ log(1 + 0.12^2)  ; label("IIV variance on lkel (log-normal; CV 12.0%)")  # Table II: omega_kPD,e %CV = 12
+    etalkdecay  ~ log(1 + 0.155^2)  ; label("IIV variance on lkdecay (log-normal; CV 15.5%)")  # Table II: omega_kPD,kill %CV = 15.5
+    etalkout    ~ log(1 + 0.368^2)  ; label("IIV variance on lkout (log-normal; CV 36.8%)")  # Table II: omega_kc %CV = 36.8
 
     # ----------------------------------------------------------------------
     # Residual error (Eq. 13). The paper reports an exponential error model

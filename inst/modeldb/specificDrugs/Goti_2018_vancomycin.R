@@ -75,9 +75,9 @@ Goti_2018_vancomycin <- function() {
 
     # Inter-individual variability (Goti 2018 Table 2 final-model %CV rows);
     # omega^2 = log(CV^2 + 1) for log-normal etas.
-    etalcl ~ 0.14705 # log(0.398^2 + 1); 39.8% CV on CL
-    etalvc ~ 0.51019 # log(0.816^2 + 1); 81.6% CV on Vc
-    etalvp ~ 0.28232 # log(0.571^2 + 1); 57.1% CV on Vp
+    etalcl ~ log(1 + 0.398^2)  # 39.8% CV on CL
+    etalvc ~ log(1 + 0.816^2)  # 81.6% CV on Vc
+    etalvp ~ log(1 + 0.571^2)  # 57.1% CV on Vp
 
     # Combined additive + proportional residual error (Goti 2018 Table 2).
     addSd  <- 3.4;   label("Additive residual error (mg/L)")               # Goti 2018 Table 2: additive error SD = 3.4 mg/L

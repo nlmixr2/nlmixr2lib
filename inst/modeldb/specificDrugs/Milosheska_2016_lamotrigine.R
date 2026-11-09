@@ -260,7 +260,7 @@ Milosheska_2016_lamotrigine <- function() {
     # ----- Interindividual variability -----
     # Milosheska 2016 Table 4 reports IIV as CV%; the internal
     # log-normal variance is omega^2 = log(1 + CV^2).
-    etalka       ~ 0.4090   # Table 4 row 'IIV Ka (%)': 71.1; log(1 + 0.711^2) = 0.4090
+    etalka       ~ log(1 + 0.711^2)  # Table 4 row 'IIV Ka (%)': 71.1
     etalcl       ~ 0.1040   # Table 4 row 'IIV CL (%)': 33.1; log(1 + 0.331^2) = 0.1040
     etalvc       ~ 0.0867   # Table 4 row 'IIV V (%)':  30.1; log(1 + 0.301^2) = 0.0867
     etalcl_gluc  ~ 0.1603   # Metabolite text: 'Unexplained IIV on CL_LTG-glu was 41.7%'; log(1 + 0.417^2) = 0.1603
