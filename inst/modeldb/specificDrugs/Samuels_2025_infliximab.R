@@ -41,12 +41,12 @@ Samuels_2025_infliximab <- function() {
       notes = "Canonical SI g/L; the model converts to the g/dL in which the coefficients were estimated (alb_gdl <- ALB * 0.1). Enter the PRE-TREATMENT value and hold it constant: the on-treatment albumin is predicted as ALB * exp(alb_dosenum_max * f(CYCLE)). Power effect on CL (ALB_pred/3.5 g/dL)^-1.07 (Xiong 2021 Table 2 'ALB for CL' -1.07; Data S1 THETA(5) = -1.07 and (ALB*E1)/3.5). Samuels 2025 Table 1 cohort mean 3.3 (SD 0.61) g/dL; Emax-fit E0 = 3.3 g/dL. A missing albumin (ALB = -99 in the Data S1 code) contributes E1^THETA(5), which is what imputing the 3.5 g/dL reference (35 g/L) reproduces.",
       source_name = "ALB"
     ),
-    ESR = list(
+    ERYTHROCYTE_SEDIMENTATION_RATE = list(
       description = "Erythrocyte sedimentation rate at the first infusion (pre-treatment baseline)",
       units = "mm/h",
       type = "continuous",
       reference_category = NULL,
-      notes = "Enter the PRE-TREATMENT value and hold it constant: the on-treatment ESR is predicted as ESR * exp(esr_dosenum_max * f(CYCLE)). Power effect on CL (ESR_pred/9)^0.101 (Xiong 2021 Table 2 'ESR for CL' 0.101; Data S1 THETA(8) and (ESR*E3)/9). Samuels 2025 Table 1 cohort mean 26 (SD 24) mm/h; Emax-fit E0 = 27.6 mm/h. A missing ESR in the Data S1 code contributes E3^THETA(8), reproduced by imputing the 9 mm/h reference. The power form is undefined at 0 mm/h; floor a reported 0 at the assay's lowest reportable value.",
+      notes = "Enter the PRE-TREATMENT value and hold it constant: the on-treatment ESR is predicted as ERYTHROCYTE_SEDIMENTATION_RATE * exp(erythrocyte_sedimentation_rate_dosenum_max * f(CYCLE)). Power effect on CL (ESR_pred/9)^0.101 (Xiong 2021 Table 2 'ESR for CL' 0.101; Data S1 THETA(8) and (ESR*E3)/9). Samuels 2025 Table 1 cohort mean 26 (SD 24) mm/h; Emax-fit E0 = 27.6 mm/h. A missing ESR in the Data S1 code contributes E3^THETA(8), reproduced by imputing the 9 mm/h reference. The power form is undefined at 0 mm/h; floor a reported 0 at the assay's lowest reportable value.",
       source_name = "ESR"
     ),
     NEUTROPHIL_CD64_RATIO = list(
@@ -105,7 +105,7 @@ Samuels_2025_infliximab <- function() {
     e_alb_cl <- fixed(-1.07); label("Power exponent of serum albumin on CL (unitless)")                     # Data S1 THETA(5) 'CLALB1' = -1.07; Xiong 2021 Table 2 'ALB for CL' -1.07 (RSE 9.6%)
     e_conc_ada_cl <- fixed(0.134); label("Power exponent of antibody-to-infliximab concentration above 22 ng/mL on CL (unitless)") # Data S1 THETA(6) 'CLATI1' = 0.134; Xiong 2021 Table 2 'ATI for CL' 0.134 (RSE 9.6%)
     e_neutrophil_cd64_ratio_cl <- fixed(0.168); label("Power exponent of neutrophil CD64 activity ratio on CL (unitless)") # Data S1 THETA(7) 'CLNCAR_n' = 0.168; Xiong 2021 Table 2 'nCD64 for CL' 0.168 (RSE 16%)
-    e_esr_cl <- fixed(0.101); label("Power exponent of erythrocyte sedimentation rate on CL (unitless)")     # Data S1 THETA(8) 'CLESR1' = 0.101; Xiong 2021 Table 2 'ESR for CL' 0.101 (RSE 27.7%)
+    e_erythrocyte_sedimentation_rate_cl <- fixed(0.101); label("Power exponent of erythrocyte sedimentation rate on CL (unitless)")     # Data S1 THETA(8) 'CLESR1' = 0.101; Xiong 2021 Table 2 'ESR for CL' 0.101 (RSE 27.7%)
     e_wt_vc <- fixed(0.55); label("Power exponent of body weight on V1 (unitless)")                         # Data S1 THETA(10) 'V1WT1' = 0.55; Xiong 2021 Table 2 'Weight for V1' 0.55 (RSE 20.2%)
     e_wt_q <- fixed(1); label("Power exponent of body weight on Q (unitless)")                              # Data S1 code Q=TVQ*EXP(ETA(3))*(WT/65); Xiong 2021 Table 2 'Weight for Q' 1, not estimated
     e_wt_vp <- fixed(0.586); label("Power exponent of body weight on V2 (unitless)")                        # Data S1 code V2=TVV2*EXP(ETA(4))*(WT/65)**0.586; Xiong 2021 Table 2 'Weight for V2' 0.586, not estimated
@@ -116,7 +116,7 @@ Samuels_2025_infliximab <- function() {
     # the asymptotic fractional change quoted in Results.
     wt_dosenum_max <- 0.046; label("Maximal log-scale change in body weight over successive infusions (unitless)")    # Table S1 WT Emax = 0.046 (bootstrap median 0.049, 95% CI 0.028-0.063); Data S1 E2 = EXP(0.046*INFUSION/(0.1+INFUSION))
     alb_dosenum_max <- 0.110; label("Maximal log-scale change in serum albumin over successive infusions (unitless)") # Table S1 ALB Emax = 0.110 (bootstrap median 0.110, 95% CI 0.094-0.127); Data S1 E1 = EXP(0.11*INFUSION/(0.1+INFUSION))
-    esr_dosenum_max <- -0.978; label("Maximal log-scale change in erythrocyte sedimentation rate over successive infusions (unitless)") # Table S1 ESR Emax = -0.978 (bootstrap median -0.979); Data S1 E3 = EXP((-0.978)*INFUSION/(0.1+INFUSION))
+    erythrocyte_sedimentation_rate_dosenum_max <- -0.978; label("Maximal log-scale change in erythrocyte sedimentation rate over successive infusions (unitless)") # Table S1 ESR Emax = -0.978 (bootstrap median -0.979); Data S1 E3 = EXP((-0.978)*INFUSION/(0.1+INFUSION))
     neutrophil_cd64_ratio_dosenum_max <- -0.362; label("Maximal log-scale change in neutrophil CD64 activity ratio over successive infusions (unitless)") # Table S1 nCD64 Emax = -0.362 (bootstrap median -0.404); Data S1 E4 = EXP((-0.362)*INFUSION/(0.1+INFUSION)); Figure 1d also prints -0.362
     dosenum50 <- fixed(1.1); label("Infusion number at half of the maximal biomarker change (count)")                 # Methods: 'D50 was fixed to 1.1'; Data S1 denominator 0.1 = D50 - 1
 
@@ -142,7 +142,7 @@ Samuels_2025_infliximab <- function() {
     ftraj <- ninf / ((dosenum50 - 1) + ninf)
     wt_pred <- WT * exp(wt_dosenum_max * ftraj)
     alb_pred <- ALB * 0.1 * exp(alb_dosenum_max * ftraj) # SI g/L -> g/dL, the scale of the Xiong 3.5 g/dL reference
-    esr_pred <- ESR * exp(esr_dosenum_max * ftraj)
+    esr_pred <- ERYTHROCYTE_SEDIMENTATION_RATE * exp(erythrocyte_sedimentation_rate_dosenum_max * ftraj)
     ncd64_pred <- NEUTROPHIL_CD64_RATIO * exp(neutrophil_cd64_ratio_dosenum_max * ftraj)
 
     # 2. Antibody-to-infliximab effect: none at or below the 22 ng/mL limit of
@@ -157,7 +157,7 @@ Samuels_2025_infliximab <- function() {
     cl <- exp(lcl + etalcl) *
       (wt_pred / 65)^e_wt_cl *
       (alb_pred / 3.5)^e_alb_cl *
-      (esr_pred / 9)^e_esr_cl *
+      (esr_pred / 9)^e_erythrocyte_sedimentation_rate_cl *
       (ncd64_pred / 4.6)^e_neutrophil_cd64_ratio_cl *
       cl_ada
     vc <- exp(lvc) * (wt_pred / 65)^e_wt_vc

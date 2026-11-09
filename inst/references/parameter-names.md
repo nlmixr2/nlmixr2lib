@@ -1262,9 +1262,9 @@ form. Log form `lcl_t50`. Units are the model's time unit.
 - **Notes:** This is the one member where `hill` is the correct role token -- it names the
 shape coefficient itself. See [[cl_time_max]] for the rename rationale.
 
-### wt_dosenum_max, alb_dosenum_max, esr_dosenum_max, neutrophil_cd64_ratio_dosenum_max (**canonical maximal log-scale change of a covariate over successive doses**)
+### wt_dosenum_max, alb_dosenum_max, erythrocyte_sedimentation_rate_dosenum_max, neutrophil_cd64_ratio_dosenum_max (**canonical maximal log-scale change of a covariate over successive doses**)
 - **Type:** paper-named-param
-- **Role:** Signed magnitude of the log-scale change in a covariate that the model PREDICTS from its pre-treatment value as a function of the dose number, in the hyperbolic form `cov_pred <- COV * exp(<cov>_dosenum_max * (CYCLE - 1) / (dosenum50 - 1 + CYCLE - 1))`. `exp(<cov>_dosenum_max) - 1` is the asymptotic fractional change. The stem is the lower-case canonical covariate name (`WT` -> `wt`, `NEUTROPHIL_CD64_RATIO` -> `neutrophil_cd64_ratio`).
+- **Role:** Signed magnitude of the log-scale change in a covariate that the model PREDICTS from its pre-treatment value as a function of the dose number, in the hyperbolic form `cov_pred <- COV * exp(<cov>_dosenum_max * (CYCLE - 1) / (dosenum50 - 1 + CYCLE - 1))`. `exp(<cov>_dosenum_max) - 1` is the asymptotic fractional change. The stem is the lower-case canonical covariate name (`WT` -> `wt`, `ERYTHROCYTE_SEDIMENTATION_RATE` -> `erythrocyte_sedimentation_rate`, `NEUTROPHIL_CD64_RATIO` -> `neutrophil_cd64_ratio`).
 - **Source aliases:**
   - `Emax` -- Samuels 2025 Methods equation and Table S1 (one per biomarker); used in `Samuels_2025_infliximab.R`.
 - **Example models:** `Samuels_2025_infliximab.R` (weight +0.046, albumin +0.110, ESR -0.978, nCD64 -0.362; the predicted biomarkers then enter infliximab clearance through the Xiong 2021 power covariate model).

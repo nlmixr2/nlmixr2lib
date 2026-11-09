@@ -104,7 +104,7 @@ e0 <- c(
 emax <- c(
   "Weight (kg)" = theta[["wt_dosenum_max"]],
   "Albumin (g/dL)" = theta[["alb_dosenum_max"]],
-  "ESR (mm/h)" = theta[["esr_dosenum_max"]],
+  "ESR (mm/h)" = theta[["erythrocyte_sedimentation_rate_dosenum_max"]],
   "nCD64 (ratio)" = theta[["neutrophil_cd64_ratio_dosenum_max"]]
 )
 d50 <- theta[["dosenum50"]]
@@ -194,7 +194,7 @@ make_events <- function(id, mgkg, scenario, wt = 47, alb_gdl = 3.3,
   }
   ev$WT <- wt
   ev$ALB <- alb_gdl * 10 # g/dL -> canonical g/L
-  ev$ESR <- esr
+  ev$ERYTHROCYTE_SEDIMENTATION_RATE <- esr
   ev$NEUTROPHIL_CD64_RATIO <- ncd64
   ev$CONC_ADA_NGML <- ada
   ev$treatment <- paste0(mgkg, " mg/kg")
@@ -321,7 +321,7 @@ trough_events <- function(row, scenario, id) {
   ev$CYCLE <- if (scenario == "b") findInterval(ev$time, dose_h) + 1L else 1L
   ev$WT <- row$wt
   ev$ALB <- row$alb * 10
-  ev$ESR <- row$esr
+  ev$ERYTHROCYTE_SEDIMENTATION_RATE <- row$esr
   ev$NEUTROPHIL_CD64_RATIO <- row$ncd64
   ev$CONC_ADA_NGML <- 0
   ev$scenario <- scenario
