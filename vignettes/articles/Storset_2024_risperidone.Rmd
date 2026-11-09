@@ -35,6 +35,20 @@ the rs5758550 haplotype (\*2-rs5758550G 66 %, \*2-rs5758550A 30 % of \*1).
 mod_fn <- readModelDb("Storset_2024_risperidone")
 mod <- rxode2::rxode2(mod_fn())
 mod_typ <- rxode2::zeroRe(mod)
+
+# Typical-value solves: rxode2 warns that a multi-subject solve has no
+# omega, which is the intent here, so that one warning is muffled.
+solve_typ <- function(events) {
+  withCallingHandlers(
+    rxode2::rxSolve(mod_typ, events, returnType = "data.frame",
+                    useLinCmt = FALSE),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
 ```
 
 # Population
@@ -144,7 +158,7 @@ typ_cl <- function(diplotype, age = 30, nfib = 0) {
     cmt = "central", dvid = 1L, AGE = age, SNP_NFIB_RS28379954 = nfib
   )
   ev <- cbind(ev, diplotype_covariates(diplotype))
-  s <- rxode2::rxSolve(mod_typ, ev, returnType = "data.frame", useLinCmt = FALSE)
+  s <- solve_typ(ev)
   s$cl
 }
 cl_chk <- data.frame(
@@ -232,8 +246,7 @@ cov_fig2 <- cbind(
   diplotype_covariates(fig2$diplotype)
 )
 ev_fig2 <- dplyr::left_join(ev_fig2, cov_fig2, by = "id")
-sim_fig2 <- rxode2::rxSolve(mod_typ, ev_fig2, returnType = "data.frame",
-                            useLinCmt = FALSE)
+sim_fig2 <- solve_typ(ev_fig2)
 fig2$simulated <- sim_fig2 |>
   dplyr::filter(time == t_obs) |>
   dplyr::arrange(id) |>
@@ -387,8 +400,7 @@ cl_age <- data.frame(id = seq_along(ages), time = 0, amt = 0, evid = 0L,
                      cmt = "central", dvid = 1L, AGE = ages,
                      SNP_NFIB_RS28379954 = 0)
 cl_age <- cbind(cl_age, diplotype_covariates(rep("*1/*1", length(ages))))
-s_age <- rxode2::rxSolve(mod_typ, cl_age, returnType = "data.frame",
-                         useLinCmt = FALSE)
+s_age <- solve_typ(cl_age)
 dose_rate <- 3 / 24
 moiety <- data.frame(
   age = ages,
