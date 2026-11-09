@@ -1950,6 +1950,26 @@ Ratified 2026-09-02 (PMC13274749).
 
 ---
 
+## Infusion-solution (in-container) states
+
+States and observables that describe the drug while it is still in the prepared infusion container (bottle, bag or syringe-driver reservoir), before it reaches the patient. Used when a model couples chemical instability of the infusion solution to systemic PK.
+
+### infusion_container (**canonical prepared-infusion container drug-amount state**)
+- **Type:** compartment
+- **Role:** ODE state holding the intact drug amount remaining in the prepared infusion container (bottle, bag or syringe-driver reservoir) during an infusion. It is dosed as a bolus when the container is hung and is depleted both by chemical degradation (`-kdeg * infusion_container`) and by delivery to `central` at the constant volume rate of the pump, so the delivery rate is `podo(infusion_container) * exp(-kdeg * tad(infusion_container)) / TINF` while `tad(infusion_container) < TINF`, and the container empties exactly at `TINF`.
+- **Source aliases:**
+  - `Depot` -- used in the Tien 2024 S4 File RxODE code (`d/dt(Depot) = -k * Depot`, delivered at `Depot / duration` and re-initialised for each bottle); `Tien_2024_meropenem.R`.
+- **Example models:** `Tien_2024_meropenem.R` (meropenem degradation at 25/30/37 degC, 1 or 2 g/48 mL, coupled to the Ehmann 2019 ICU two-compartment model).
+- **Notes:** Spelled generically so one name covers bottles, bags and syringes. Distinct from `depot` (an extravascular absorption site inside the body) and from the extracorporeal `circuit_*` / `reservoir_*` namespace (blood circulating outside the body). Because the delivery rate is computed from the most recent dose into the container, the infusion length `TINF` must not exceed the container-renewal interval.
+
+### infusion_fraction_remaining (**canonical algebraic in-container fraction-of-initial-concentration-remaining observable**)
+- **Type:** compartment
+- **Role:** Algebraic observation variable: the fraction (0-1) of the initial drug concentration of a prepared infusion solution that remains intact at time `tad(infusion_container)` after preparation, `C(t) / C0`. It is the dependent variable of an in-vitro stability model, observed with additive error on `log(C / C0)` (`lnorm(expSd_infusion_fraction_remaining)`); its log-scale intercept is the parameter `infusion_log_intercept`.
+- **Source aliases:**
+  - `Perc` (percent remaining) and `y = log(Perc / 100)` -- Tien 2024 S2 / S3 Files; `Tien_2024_meropenem.R`.
+- **Example models:** `Tien_2024_meropenem.R`.
+- **Notes:** A fraction, not a percent (multiply by 100 for the paper's 'remaining percentage' axis; the log-normal residual SD is scale-invariant). Not integrated as a state: it is computed from the container's time since preparation and degradation rate constant, and is undefined before the first dose into `infusion_container`. Distinct from `gastric_remaining` (percent of a meal remaining in the stomach).
+
 ## Whole-body blood / lymph compartments
 
 ### blood (**canonical whole-body blood compartment**)
