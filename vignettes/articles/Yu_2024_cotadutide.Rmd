@@ -197,7 +197,7 @@ matrix sums to one.
 
 ```{r typical}
 mod <- rxode2::rxode2(mod_fn)
-mod_typ <- rxode2::zeroRe(mod)
+mod_typ <- rxode2::zeroRe(mod, which = "omega")
 typ_ev <- data.frame(
   id = 1L, time = 24 * 0:2, evid = 0L, amt = 0, cmt = "central",
   DOSE_COTADUTIDE_MG = 0.6, T_DOSECHANGE = 24 * 0:2,
