@@ -6780,6 +6780,18 @@ navbar:
         href: articles/Sathe_2024_sacituzumab.html
       - text: "Sacituzumab (Sathe 2025)"
         href: articles/Sathe_2025_sacituzumab.html
+      - text: "Sacituzumab cr (Sathe 2025b)"
+        href: articles/Sathe_2025b_sacituzumab_exposure_response.html
+      - text: "Sacituzumab diarrhea (Sathe 2025b)"
+        href: articles/Sathe_2025b_sacituzumab_exposure_response.html
+      - text: "Sacituzumab neutropenia (Sathe 2025b)"
+        href: articles/Sathe_2025b_sacituzumab_exposure_response.html
+      - text: "Sacituzumab orr (Sathe 2025b)"
+        href: articles/Sathe_2025b_sacituzumab_exposure_response.html
+      - text: "Sacituzumab os (Sathe 2025b)"
+        href: articles/Sathe_2025b_sacituzumab_exposure_response.html
+      - text: "Sacituzumab pfs (Sathe 2025b)"
+        href: articles/Sathe_2025b_sacituzumab_exposure_response.html
       - text: "Saf189s (Liu 2024)"
         href: articles/Liu_2024_saf189s.html
       - text: "Saf189s dor (Liu 2024)"
@@ -10782,6 +10794,7 @@ articles:
   - articles/Sassen_2017_crisantaspase
   - articles/Sathe_2024_sacituzumab
   - articles/Sathe_2025_sacituzumab
+  - articles/Sathe_2025b_sacituzumab_exposure_response
   - articles/Sato_2024_sglt2_hba1c_mbma
   - articles/Sato_2025_midazolam_rat
   - articles/Savelieva_2015_panobinostat
