@@ -2722,7 +2722,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient achieves an overall response as adjudicated by the **treating investigator**, in a static landmark exposure-response logistic model. Sibling of `prob_orr_central`; kept distinct because investigator assessment is typically available on a larger analysis set and yields a systematically different response rate and exposure slope.
 - **Source aliases:** none.
-- **Example models:** `Fukae_2024_valemetostat_orr_investigator.R` (Bayesian logistic exposure-response for ORR by investigator assessment in relapsed/refractory ATLL, pooled across the J101 phase I and J201 phase II trials).
+- **Example models:** `Fukae_2024_valemetostat_orr_investigator.R` (Bayesian logistic exposure-response for ORR by investigator assessment in relapsed/refractory ATLL, pooled across the J101 phase I and J201 phase II trials), `Li_2025_mosunetuzumab_orr.R` (Emax logistic on the two-cycle mosunetuzumab AUC0-42 in relapsed/refractory follicular lymphoma; maximal response 81.4 percent, E50 3.12 day*ug/mL).
 - **Notes:** See `prob_orr_central` for the shared conventions. In the founding paper the investigator-assessed model was fit on 38 patients versus 25 for central assessment, and estimated a steeper exposure slope (odds ratio 1.22 vs 1.08 per 250 ng*h/mL); the authors attribute the difference to the smaller central-assessment sample rather than to a real biological difference.
 
 ### prob_anemia (**canonical severe-anemia probability output**)
@@ -5280,6 +5280,41 @@ The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for
 - **Source aliases:** none ("CRR", complete response rate, in the founding paper).
 - **Example models:** `Connarn_2023_idecabtageneVicleucel_cr.R` (linear logit in the natural log of the ide-cel transgene-level AUC0-28, slope 0.67, with a -1.68 shift for baseline serum M-protein above 10 g/L; KarMMa Independent Response Committee, IMWG criteria; 41 responders in 125 patients).
 - **Notes:** A probability output in `[0, 1]`; regex-validated, so this entry is documentation rather than a gate. Nested within `prob_orr_central` (every complete responder is an overall responder), so a consumer must not treat the two as competing outcomes; they were fitted as separate models in the founding paper and are not constrained to stay ordered at every exposure and covariate combination. Distinct from `prob_pet_cr` (an imaging-defined complete metabolic response) and `prob_chr` (a complete haematologic response). An investigator-assessed version would be `prob_cr_investigator`.
+
+### prob_cr_investigator (**canonical investigator-assessed complete-response probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient achieves a complete response as assessed by the study investigator, in a static landmark exposure-response logistic model. The investigator-assessed counterpart of `prob_cr_central`, and the complete-response counterpart of `prob_orr_investigator`.
+- **Source aliases:** none ("CRR", INV-assessed complete response rate, in the founding paper).
+- **Example models:** `Li_2025_mosunetuzumab_cr.R` (Emax logistic on the two-cycle mosunetuzumab AUC0-42, maximal response 68.6 percent, E50 9.18 day*ug/mL; relapsed/refractory follicular lymphoma, International Harmonization Project criteria), `Li_2025_mosunetuzumab_cr_cov.R` (its exploratory covariate version).
+- **Notes:** A probability output in `[0, 1]`; regex-validated, so this entry is documentation rather than a gate. Nested within `prob_orr_investigator` (every complete responder is an objective responder); fitted as separate models, so the pair is not constrained to stay ordered at every exposure. Not interchangeable with `prob_cr_central`: Li 2025 used investigator assessment because it covered more dose groups, while noting high concordance with the independent review facility.
+
+### prob_crs_grade2 (**canonical grade >= 2 cytokine-release-syndrome probability output over a multi-cycle window**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient has at least one cytokine release syndrome (CRS) event of grade 2 or higher over a stated multi-cycle window (in the founding paper the first two 21-day cycles), in a static landmark exposure-safety logistic model. The grading scale (ASTCT consensus or Lee 2014) is stated per model.
+- **Source aliases:** none ("Grade >= 2 CRS" in the founding paper).
+- **Example models:** `Li_2025_mosunetuzumab_crs_groupa_astct.R`, `Li_2025_mosunetuzumab_crs_groupa_lee.R`, `Li_2025_mosunetuzumab_crs_groupb_astct.R`, `Li_2025_mosunetuzumab_crs_groupb_lee.R` (linear logistic on the maximum CD20 receptor occupancy over days 0-42, `ROMAX`, fitted separately for fixed-dose Group A and step-up-dose Group B under each grading scale), `Li_2025_mosunetuzumab_crs_cov.R` (Group B, adding age > 64 years and 'other' histology).
+- **Notes:** A probability output in `[0, 1]`; regex-validated, so this entry is documentation rather than a gate. Scored over the whole window, not per dose event: the per-dose-event endpoints are `prob_crs_stepup1_grade2`, `prob_crs_stepup2_grade2` and `prob_crs_fulldose1_grade2` (and the any-grade `prob_crs_stepup1`), which must not be pooled with this one. ASTCT and Lee 2014 grades of the same patient can differ, so models fitted under different scales are different endpoints even though they share this output name; the model description names the scale.
+
+### prob_crs_stepup1_grade2 (**canonical grade >= 2 cytokine-release-syndrome-after-the-first-step-up-dose probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) of grade >= 2 CRS within the dosing window of the FIRST step-up dose of a T-cell-engaging bispecific regimen (for mosunetuzumab, the Cycle 1 Day 1 dose of 0.4-1 mg, up to the Day 8 dose), in a static per-dose-window exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Li_2025_mosunetuzumab_crs_stepup1.R` (linear logistic on the maximum CD20 receptor occupancy within the window, ASTCT grading; coefficients digitised from Li 2025 Figure 3a).
+- **Notes:** The grade >= 2 variant of `prob_crs_stepup1`, named on the `_grade2` pattern that entry anticipates. Sibling of `prob_crs_stepup2_grade2` and `prob_crs_fulldose1_grade2`; the three are per-dose-window endpoints whose exposure-response curves shift to the right with successive doses (CRS desensitisation), so they are not interchangeable.
+
+### prob_crs_stepup2_grade2 (**canonical grade >= 2 cytokine-release-syndrome-after-the-second-step-up-dose probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) of grade >= 2 CRS within the dosing window of the SECOND step-up dose (for mosunetuzumab, the Cycle 1 Day 8 dose of 1-2 mg, up to the Day 15 dose), in a static per-dose-window exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Li_2025_mosunetuzumab_crs_stepup2.R` (linear logistic on the maximum CD20 receptor occupancy within the window, ASTCT grading; the fitted slope is negative; coefficients digitised from Li 2025 Figure 3a).
+- **Notes:** See `prob_crs_stepup1_grade2`.
+
+### prob_crs_fulldose1_grade2 (**canonical grade >= 2 cytokine-release-syndrome-after-the-first-full-dose probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) of grade >= 2 CRS within the dosing window of the FIRST FULL (post-step-up) dose (for mosunetuzumab, the Cycle 1 Day 15 dose of 2.8-60 mg, up to the Cycle 2 Day 1 dose), in a static per-dose-window exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Li_2025_mosunetuzumab_crs_fulldose1.R` (linear logistic on the maximum CD20 receptor occupancy within the window, ASTCT grading; coefficients digitised from Li 2025 Figure 3a).
+- **Notes:** Named on the `fulldose1` pattern anticipated in the `prob_crs_stepup1` entry. See `prob_crs_stepup1_grade2`.
 
 ### prob_hb_increase_1g (**canonical probability of a >= 1 g/dL hemoglobin increase output**)
 - **Type:** compartment
