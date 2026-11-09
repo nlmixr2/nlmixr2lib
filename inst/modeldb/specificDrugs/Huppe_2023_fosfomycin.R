@@ -240,11 +240,11 @@ Huppe_2023_fosfomycin <- function() {
     # IIV. Table 2 reports "IIV V_C (%CV) = 62.10" for an exponential random
     # effect (Methods: "Interindividual variability was implemented using
     # exponential random effect models"), so omega^2 = log(CV^2 + 1)
-    #   = log(0.6210^2 + 1) = 0.326287.
+    #   = log(0.6210^2 + 1) = 0.326163.
     # IIV was also tested on CL_Renal but dropped from the final model: including
     # CRCL on CL_Renal "completely characterized the IIV on CL_Renal" and the IIV
     # then "provided no longer a benefit of statistical significance".
-    etalvc ~ 0.326287  # Huppe 2023 Table 2 (IIV V_C, 62.10 %CV)
+    etalvc ~ log(1 + 0.621^2)  # Huppe 2023 Table 2 (IIV V_C, 62.10 %CV)
 
     # Residual error: additive only (Results: "An additive error model was used to
     # explain residual variability"), reported directly as an SD in ug/mL.

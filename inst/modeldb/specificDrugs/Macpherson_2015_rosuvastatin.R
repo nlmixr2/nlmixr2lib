@@ -91,13 +91,13 @@ Macpherson_2015_rosuvastatin <- function() {
     # Inter-individual variability (log-normal). The paper reports CV%; the
     # log-scale variance is omega^2 = log(1 + CV^2):
     #   IIV (%) CL/F = 40.0 -> omega^2 = log(1 + 0.40^2)  = 0.14842
-    #   IIV (%) Vc/F = 105  -> omega^2 = log(1 + 1.05^2)  = 0.74295
-    #   IIV (%) Q/F  = 64.8 -> omega^2 = log(1 + 0.648^2) = 0.35067
+    #   IIV (%) Vc/F = 105  -> omega^2 = log(1 + 1.05^2)  = 0.74313
+    #   IIV (%) Q/F  = 64.8 -> omega^2 = log(1 + 0.648^2) = 0.35059
     # The paper estimated IIV on CL/F, Vc/F, and Q/F only; no IIV was reported
     # on Ka or Vp/F.
     etalcl ~ 0.14842                                                                                # Table 2 final model: IIV CL/F = 40.0% CV (RSE 8.09%)
-    etalvc ~ 0.74295                                                                                # Table 2 final model: IIV Vc/F = 105% CV (RSE 15.5%)
-    etalq  ~ 0.35067                                                                                # Table 2 final model: IIV Q/F  = 64.8% CV (RSE 13.3%)
+    etalvc ~ log(1 + 1.05^2)  # Table 2 final model: IIV Vc/F = 105% CV (RSE 15.5%)
+    etalq  ~ log(1 + 0.648^2)  # Table 2 final model: IIV Q/F  = 64.8% CV (RSE 13.3%)
 
     # Residual error -- proportional in linear space (the source paper used
     # "proportional in nature (additive on the log scale)"; the log-additive

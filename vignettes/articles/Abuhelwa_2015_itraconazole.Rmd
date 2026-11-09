@@ -75,11 +75,11 @@ collects them in one place for review.
 | Metabolite V_1m / F_m | 5.28 L | Table 4 row 'V_1m/F_m (liters) = 5.28' |
 | Michaelis-Menten V_max | 403 ug/h | Table 4 row 'V_max (liters/h) = 403' -- unit label corrected to ug/h per Appendix S1 ';UNITS ARE UG, L (NG/ML) AND H' (see Assumptions and deviations) |
 | Michaelis-Menten K_m | 1.64 ng/mL | Table 4 row 'K_m (ng/ml) = 1.64' |
-| BSV CL/F (22.1 %CV) | omega^2 = 0.04681 | Table 3 BSV row |
-| BSV V2/F (30.8 %CV) | omega^2 = 0.09011 | Table 3 BSV row |
-| BSV KTR (44.8 %CV) | omega^2 = 0.18120 | Table 3 BSV row |
-| FVAR (56.4 %CV; common variability on F) | omega^2 = 0.27259 | Table 3 row 'FVAR' |
-| BSV CL_m / F_m (27.9 %CV) | omega^2 = 0.07497 | Table 4 BSV row |
+| BSV CL/F (22.1 %CV) | omega^2 = 0.04769 | Table 3 BSV row |
+| BSV V2/F (30.8 %CV) | omega^2 = 0.09063 | Table 3 BSV row |
+| BSV KTR (44.8 %CV) | omega^2 = 0.18291 | Table 3 BSV row |
+| FVAR (56.4 %CV; common variability on F) | omega^2 = 0.27619 | Table 3 row 'FVAR' |
+| BSV CL_m / F_m (27.9 %CV) | omega^2 = 0.07496 | Table 4 BSV row |
 | Parent residual error (single-dose fasted) | propSd = 0.293, addSd = 0.168 ng/mL | Table 3 rows 'Proportional/Additive error-fasted' |
 | Metabolite residual error (single-dose) | propSd_ohi = 0.387, addSd_ohi = 0.329 ng/mL | Table 4 rows 'Single-dose / Proportional / Additive error' |
 | Combined residual error model on log scale (LTBS) | -- | Methods Eq. 2; supplement Appendix S1 W = sqrt(prop^2 + add^2 / exp(IPRE)^2) ; Y = IPRE + W * EPS(1) |

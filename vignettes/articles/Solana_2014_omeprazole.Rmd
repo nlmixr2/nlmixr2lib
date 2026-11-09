@@ -81,7 +81,7 @@ figure, or equation was available for transcription.
 | `e_wt_q`                       | fixed(0.75)                 | Abstract Results; standard Anderson-Holford clearance exponent held fixed |
 | `e_wt_vc`                      | fixed(1.00)                 | Abstract Results; standard Anderson-Holford volume exponent held fixed |
 | `e_wt_vp`                      | fixed(1.00)                 | Abstract Results; standard Anderson-Holford volume exponent held fixed |
-| `etalcl` variance              | log(1 + 0.755^2) = 0.45106  | Abstract Results: IIV(CL) = 75.50% CV (RSE 2.60%); log-normal CV -> log-scale variance |
+| `etalcl` variance              | log(1 + 0.755^2) = 0.45109  | Abstract Results: IIV(CL) = 75.50% CV (RSE 2.60%); log-normal CV -> log-scale variance |
 | `propSd`                       | 1.30                        | Abstract Results: residual variability = 130.0% CV (RSE 5.26%); treated as proportional |
 | Allometric model               | `(WT / 70)^e_wt_*`          | Abstract Results paragraph; standard Anderson-Holford allometric form |
 | ODE `d/dt(central)`            | `-kel * central - k12 * central + k21 * peripheral1` | Standard linear two-compartment IV structure |
@@ -373,7 +373,7 @@ knitr::kable(
   unwrapped from `fixed()` and assigned the published estimates.
 - **IIV reported as %CV.** The abstract reports IIV(CL) as 75.50% CV. The
   packaged model converts this to a log-scale variance via the rigorous
-  log-normal identity `omega^2 = log(1 + CV^2) = log(1 + 0.755^2) = 0.45106`.
+  log-normal identity `omega^2 = log(1 + CV^2) = log(1 + 0.755^2) = 0.45109`.
   This convention matches the closest in-library omeprazole precedent
   (`Zhao_2018_omeprazole.R`, which converts a 130% Ka CV identically).
   An alternative convention some authors use treats the reported "%CV"

@@ -77,8 +77,8 @@ the full provenance for review.
 | IIV `etalkrel_iron` (55% CV) | 0.2643 var      | Table III variability column |
 | IIV `etalkloss`    (95% CV)  | 0.6432 var      | Table III variability column |
 | IIV `etalksyn_hep` (24% CV)  | 0.0560 var      | Table III variability column |
-| IIV `etalkout_hep` (57% CV)  | 0.2814 var      | Table III variability column |
-| IIV `etalkrel_hep` (103% CV) | 0.7232 var      | Table III variability column |
+| IIV `etalkout_hep` (57% CV)  | 0.2813 var      | Table III variability column |
+| IIV `etalkrel_hep` (103% CV) | 0.7231 var      | Table III variability column |
 | IIV `etalalpha`    (87% CV)  | 0.5636 var      | Table III variability column |
 | `propSd_Iron` (b_Iron)       | 0.29 (fraction) | Table III; final model proportional-only iron error (Table IV model 32, Methods p. 497) |
 | `addSd_Hep`   (a_Hep)        | 0.17 nmol/L     | Table III; kept for numerical stability (Methods p. 498) |

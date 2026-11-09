@@ -72,9 +72,9 @@ vanRongen_2018_metformin <- function() {
     # log-normal scale; the internal variance is omega^2 = log(1 + CV^2).
     # Shrinkage in square brackets is reproduced from Table 2 for the
     # reader's reference. No IIV is reported on the residual error.
-    etalcl ~ 0.06937  # log(1 + 0.268^2) -- Table 2 final IIV CL/F = 26.8% (RSE 31%) [shrinkage 6%]
-    etalvc ~ 0.12305  # log(1 + 0.362^2) -- Table 2 final IIV V/F  = 36.2% (RSE 16%) [shrinkage 14%]
-    etalka ~ 0.40169  # log(1 + 0.703^2) -- Table 2 final IIV ka   = 70.3% (RSE 22%) [shrinkage 32%]
+    etalcl ~ log(1 + 0.268^2)  # -- Table 2 final IIV CL/F = 26.8% (RSE 31%) [shrinkage 6%]
+    etalvc ~ log(1 + 0.362^2)  # -- Table 2 final IIV V/F  = 36.2% (RSE 16%) [shrinkage 14%]
+    etalka ~ log(1 + 0.703^2)  # -- Table 2 final IIV ka   = 70.3% (RSE 22%) [shrinkage 32%]
 
     # Residual error - proportional only. Table 2 final proportional
     # error = 21.8% CV (RSE 25%) [shrinkage 18%].

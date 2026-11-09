@@ -273,8 +273,8 @@ Subrtova_2026_daptomycin <- function() {
     # reproduces every other Table S1 row exactly (base 1-cmt p = 5: AIC
     # 1211.98, BIC 1219.15; 2-cmt and split renal/non-renal CL both p = 9),
     # which confirms the AIC/BIC convention being solved against.
-    etale_crcl_cl ~ 0.1416
-    # Table 2: BSV beta_CL_eGFR = 39.0% (R.S.E. 29.8%); omega^2 = log(1 + 0.39^2) = 0.14157
+    etale_crcl_cl ~ log(1 + 0.39^2)
+    # Table 2: BSV beta_CL_eGFR = 39.0% (R.S.E. 29.8%); omega^2 = log(1 + 0.39^2) = 0.14159
 
     # ---- Residual variability ----
     # Monolix proportional error model y = f * (1 + b * eps), b = 0.28, which

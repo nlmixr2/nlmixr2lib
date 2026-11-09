@@ -87,8 +87,8 @@ Revilla_2010_vancomycin <- function() {
     # Inter-individual variability per Revilla 2010 Methods (Eq. for the
     # exponential IIV model) and Table 4 final-model column.
     # omega^2 = log(1 + CV^2) for log-normal etas.
-    etalcl ~ 0.08688 # Revilla 2010 Table 4: omega_CL = 30.13% CV (RSE 16.4%; 95% CI 34.64, 24.82); log(1 + 0.3013^2)
-    etalvc ~ 0.05083 # Revilla 2010 Table 4: omega_V  = 22.83% CV (RSE 38.8%; 95% CI 30.28, 11.18); log(1 + 0.2283^2)
+    etalcl ~ log(1 + 0.3013^2)  # Revilla 2010 Table 4: omega_CL = 30.13% CV (RSE 16.4%; 95% CI 34.64, 24.82)
+    etalvc ~ log(1 + 0.2283^2)  # Revilla 2010 Table 4: omega_V  = 22.83% CV (RSE 38.8%; 95% CI 30.28, 11.18)
 
     # Additive residual error (Revilla 2010 Methods residual error model and
     # Table 4 final-model column).

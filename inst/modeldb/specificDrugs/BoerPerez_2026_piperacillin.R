@@ -120,9 +120,9 @@ BoerPerez_2026_piperacillin <- function() {
     # ===== IIV (Boer-Perez 2026 Table 2 final model) =====
     # Exponential (log-normal) IIV; CV%-to-variance: omega^2 = log(1 + CV^2)
     # 38.3% -> log(1 + 0.383^2) = 0.13688
-    # 37.7% -> log(1 + 0.377^2) = 0.13288
+    # 37.7% -> log(1 + 0.377^2) = 0.13289
     etalcl ~ 0.13688  # Table 2: omega_CL 38.3% CV (shrinkage 2%)
-    etalvc ~ 0.13288  # Table 2: omega_V  37.7% CV (shrinkage 6%)
+    etalvc ~ log(1 + 0.377^2)  # Table 2: omega_V  37.7% CV (shrinkage 6%)
 
     # ===== Residual error (Boer-Perez 2026 Table 2: 11.4% CV proportional) =====
     propSd <- 0.114; label("Proportional residual error (fraction)")  # Table 2: sigma_proportional 11.4% CV

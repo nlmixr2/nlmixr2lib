@@ -297,28 +297,28 @@ deKock_2017_sulfadoxinePyrimethamine <- function() {
     label("Pyrimethamine observation-scaling effect, Zambia (fraction)")       # Table 2 pyra: site effect on observations, Zambia = -5.40%
 
     # ============================================================
-    # IIV - log-normal; omega^2 = log(1 + CV^2). Reported CV% from
-    # Table 2 Final column. The paper distinguishes between-subject
+    # IIV - log-normal. Table 2 footnote c: "BSV and BOV were assumed as
+    # log-normally distributed and are reported here as approximate CV%", so
+    # each variance is the square of the printed CV (Final column). The paper distinguishes between-subject
     # variability (BSV) and between-occasion variability (BOV); for
     # nlmixr2lib forward-simulation use each is carried as a
     # subject-level eta and the BOV provenance is documented inline.
     # ============================================================
-    etalcl       ~ log(1 + 0.313^2)
-    # Table 2 sulfa: BSV in CL = 31.3% CV  ->  omega^2 = log(1 + 0.313^2)
-    etalka       ~ log(1 + 0.564^2)
-    # Table 2 sulfa: BOV in ka = 56.4% CV  ->  omega^2 = log(1 + 0.564^2); the paper's BOV is carried here as a subject-level eta
-    etalcl_pyra  ~ log(1 + 0.123^2)
-    # Table 2 pyra: BSV in CL = 12.3% CV  ->  omega^2 = log(1 + 0.123^2)
+    etalcl       ~ 0.313^2
+    # Table 2 sulfa: BSV in CL = 31.3% CV
+    etalka       ~ 0.564^2
+    # Table 2 sulfa: BOV in ka = 56.4% CV; the paper's BOV is carried here as a subject-level eta
+    etalcl_pyra  ~ 0.123^2
+    # Table 2 pyra: BSV in CL = 12.3% CV
 
     # Correlated BOV on F across the two drugs.
     # Table 2 reports BOV(F_sulfa) = 20.7% CV, BOV(F_pyra) = 17.6%
     # CV, and corr(F_sulfa, F_pyra) = 0.677. Encoded as a 2x2 block
-    # using the log-normal variances and the corresponding
-    # covariance: cov = rho * sqrt(var_sulfa * var_pyra).
+    # with variances CV^2 and covariance rho * CV_sulfa * CV_pyra.
     etalfdepot + etalfdepot_pyra ~ c(
-      log(1 + 0.207^2),
-      0.677 * sqrt(log(1 + 0.207^2) * log(1 + 0.176^2)),
-      log(1 + 0.176^2)
+      0.207^2,
+      0.677 * 0.207 * 0.176,
+      0.176^2
     )
     # Table 2: BOV in F sulfa = 20.7% CV, BOV in F pyra = 17.6% CV; correlation in bioavailability across the two drugs = 67.9% (Table 2)
 

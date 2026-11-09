@@ -86,9 +86,9 @@ Philippe_2015_cyclosporine <- function() {
     # Inter-individual variability (Monolix exponential model, Eq. 1).
     # The reported IIV% CV is converted to log-normal variance via
     # omega^2 = log(1 + CV^2).
-    etalcl ~ 0.09405  # Table II: Cl IIV = 31.4 %CV; log(1 + 0.314^2) = 0.09405
+    etalcl ~ log(1 + 0.314^2)  # Table II: Cl IIV = 31.4 %CV
     etalvc ~ 0.08618  # Table II: V1 IIV = 30   %CV; log(1 + 0.30^2)  = 0.08618
-    etalq  ~ 0.36363  # Table II: Q  IIV = 66.2 %CV; log(1 + 0.662^2) = 0.36363
+    etalq  ~ log(1 + 0.662^2)  # Table II: Q  IIV = 66.2 %CV
     etalvp ~ 0.08618  # Table II: V2 IIV = 30   %CV; log(1 + 0.30^2)  = 0.08618
 
     # Residual error: combined additive + proportional model per Methods

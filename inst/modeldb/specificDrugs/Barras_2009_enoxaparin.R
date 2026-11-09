@@ -196,18 +196,18 @@ Barras_2009_enoxaparin <- function() {
     # Inter-individual variability. Barras 2009 Table 4 reports
     # IIV as %CV from a log-normal (exponential) parameterisation
     # on each PK parameter; omega^2 = log(CV^2 + 1).
-    #   CL: 37.8% CV -> log(0.378^2 + 1) = 0.13342
-    #   Vc: 35.6% CV -> log(0.356^2 + 1) = 0.11907
-    #   Ka: 30.3% CV -> log(0.303^2 + 1) = 0.08763
+    #   CL: 37.8% CV -> log(0.378^2 + 1) = 0.13355
+    #   Vc: 35.6% CV -> log(0.356^2 + 1) = 0.11932
+    #   Ka: 30.3% CV -> log(0.303^2 + 1) = 0.08784
     # The Results 'PK analysis -- Model building' paragraph states
     # 'Vc and CL allowed to co-vary' but the covariance value is
     # not reported in Table 4 (only the diagonal CV%s). This
     # implementation uses diagonal IIVs; see the vignette
     # Assumptions and deviations section.
     # ------------------------------------------------------------
-    etalcl ~ 0.13342 # log(0.378^2 + 1); 37.8% CV on CL/F (95% CI 22.3, 48.0), Barras 2009 Table 4
-    etalvc ~ 0.11907 # log(0.356^2 + 1); 35.6% CV on Vc/F (95% CI 7, 51.0),    Barras 2009 Table 4
-    etalka ~ 0.08763 # log(0.303^2 + 1); 30.3% CV on Ka   (95% CI 5.3, 42.5),  Barras 2009 Table 4
+    etalcl ~ log(1 + 0.378^2)  # 37.8% CV on CL/F (95% CI 22.3, 48.0), Barras 2009 Table 4
+    etalvc ~ log(1 + 0.356^2)  # 35.6% CV on Vc/F (95% CI 7, 51.0),    Barras 2009 Table 4
+    etalka ~ log(1 + 0.303^2)  # 30.3% CV on Ka   (95% CI 5.3, 42.5),  Barras 2009 Table 4
 
     # ------------------------------------------------------------
     # Residual error (Barras 2009 Table 4: additive error model,

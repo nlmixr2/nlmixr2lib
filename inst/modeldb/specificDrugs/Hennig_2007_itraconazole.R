@@ -140,11 +140,11 @@ Hennig_2007_itraconazole <- function() {
     # off-diagonal final estimate is not reported in the paper text or
     # Table 3, so the two etas are modelled here as independent (see the
     # validation vignette's Assumptions and deviations section).
-    etalcl     ~ 0.04770   # log(1 + 0.221^2); Hennig 2007 Table 3 BSV Cl_p = 22.1 % CV
-    etalvc     ~ 0.46838   # log(1 + 0.773^2); Hennig 2007 Table 3 BSV V_c = 77.3 % CV
-    etalka_cap ~ 0.61222   # log(1 + 0.919^2); Hennig 2007 Table 3 BSV k_a cap = 91.9 % CV
-    etalka_sol ~ 0.75607   # log(1 + 1.063^2); Hennig 2007 Table 3 BSV k_a sol = 106.3 % CV
-    etalfdepot ~ 0.32787   # log(1 + 0.623^2); Hennig 2007 Table 3 BSV F_rel = 62.3 % CV
+    etalcl     ~ log(1 + 0.221^2)  # Hennig 2007 Table 3 BSV Cl_p = 22.1 % CV
+    etalvc     ~ log(1 + 0.773^2)  # Hennig 2007 Table 3 BSV V_c = 77.3 % CV
+    etalka_cap ~ log(1 + 0.919^2)  # Hennig 2007 Table 3 BSV k_a cap = 91.9 % CV
+    etalka_sol ~ log(1 + 1.063^2)  # Hennig 2007 Table 3 BSV k_a sol = 106.3 % CV
+    etalfdepot ~ log(1 + 0.623^2)  # Hennig 2007 Table 3 BSV F_rel = 62.3 % CV
 
     # Residual error: proportional for both itraconazole and hydroxy-
     # itraconazole (Hennig 2007 Methods: 'A proportional error model was

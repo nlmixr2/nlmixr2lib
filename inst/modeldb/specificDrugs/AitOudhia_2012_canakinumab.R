@@ -104,18 +104,18 @@ AitOudhia_2012_canakinumab <- function() {
     # omega^2 = log(1 + CV^2).
     # ------------------------------------------------------------------
     etalka     ~ 0.002497  # log(1 + 0.05^2);  Ait-Oudhia 2012 Table 1 ka  CV 5%
-    etalvc     ~ 0.128356  # log(1 + 0.37^2);  Ait-Oudhia 2012 Table 1 Vc  CV 37%
-    etalvp     ~ 0.147654  # log(1 + 0.399^2); Ait-Oudhia 2012 Table 1 Vp  CV 39.9%
-    etalcl     ~ 0.013832  # log(1 + 0.118^2); Ait-Oudhia 2012 Table 1 CL  CV 11.8%
-    etalcl_ligand    ~ 0.099887  # log(1 + 0.324^2); Ait-Oudhia 2012 Table 1 CLL CV 32.4%
-    etalq      ~ 0.017298  # log(1 + 0.132^2); Ait-Oudhia 2012 Table 1 Q   CV 13.2%
-    etalkd     ~ 0.109419  # log(1 + 0.34^2);  Ait-Oudhia 2012 Table 1 Kd  CV 34%
+    etalvc     ~ log(1 + 0.37^2)  # Ait-Oudhia 2012 Table 1 Vc  CV 37%
+    etalvp     ~ log(1 + 0.399^2)  # Ait-Oudhia 2012 Table 1 Vp  CV 39.9%
+    etalcl     ~ log(1 + 0.118^2)  # Ait-Oudhia 2012 Table 1 CL  CV 11.8%
+    etalcl_ligand    ~ log(1 + 0.324^2)  # Ait-Oudhia 2012 Table 1 CLL CV 32.4%
+    etalq      ~ log(1 + 0.132^2)  # Ait-Oudhia 2012 Table 1 Q   CV 13.2%
+    etalkd     ~ log(1 + 0.34^2)  # Ait-Oudhia 2012 Table 1 Kd  CV 34%
     etalfdepot ~ 0.001353  # log(1 + 0.0368^2); Ait-Oudhia 2012 Table 1 F  CV 3.68%
-    etalcrp0   ~ 0.388700  # log(1 + 0.669^2); Ait-Oudhia 2012 Table 2 CRP0  CV 66.9%
-    etalkout   ~ 0.099887  # log(1 + 0.324^2); Ait-Oudhia 2012 Table 2 kout  CV 32.4%
-    etalbeta   ~ 0.435942  # log(1 + 0.753^2); Ait-Oudhia 2012 Table 2 beta  CV 75.3%
-    etalgamma  ~ 0.330999  # log(1 + 0.636^2); Ait-Oudhia 2012 Table 2 gamma CV 63.6%
-    etaacrshift ~ 0.258806  # log(1 + 0.543^2); Ait-Oudhia 2012 Table 2 ACR BSV CV 54.3% (added on the logit scale of the ACRx probability)
+    etalcrp0   ~ log(1 + 0.669^2)  # Ait-Oudhia 2012 Table 2 CRP0  CV 66.9%
+    etalkout   ~ log(1 + 0.324^2)  # Ait-Oudhia 2012 Table 2 kout  CV 32.4%
+    etalbeta   ~ log(1 + 0.753^2)  # Ait-Oudhia 2012 Table 2 beta  CV 75.3%
+    etalgamma  ~ log(1 + 0.636^2)  # Ait-Oudhia 2012 Table 2 gamma CV 63.6%
+    etaacrshift ~ log(1 + 0.543^2)  # Ait-Oudhia 2012 Table 2 ACR BSV CV 54.3% (added on the logit scale of the ACRx probability)
 
     # ------------------------------------------------------------------
     # Residual error -- combined additive + proportional for total

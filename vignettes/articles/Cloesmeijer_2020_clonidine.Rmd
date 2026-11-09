@@ -71,8 +71,8 @@ carries an in-file source-location comment. The table below collects them.
 | `lq` (Q) | log(83.7 L/h) | Table 3 |
 | `lvp` (V2) | log(178 L) | Table 3 |
 | `cl_time_slope` (fractional increase in CL per hour) | 0.00213 1/h | Table 3 'Increase CL per hour 0.213', stated as percent per hour in the Discussion |
-| `etalcl` (IIV CL) | 33.3% CV -> 0.105189 | Table 3 |
-| `etalvc` (IIV V1) | 66.8% CV -> 0.369689 | Table 3 |
+| `etalcl` (IIV CL) | 33.3% CV -> 0.105161 | Table 3 |
+| `etalvc` (IIV V1) | 66.8% CV -> 0.368956 | Table 3 |
 | `propSd` | 0.141 (fraction) | Table 3 |
 | `addSd` | 0.0532 ug/L | Table 3 |
 

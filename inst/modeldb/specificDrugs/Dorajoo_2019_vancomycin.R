@@ -143,11 +143,11 @@ Dorajoo_2019_vancomycin <- function() {
     # (IIV) in the model was determined by exponential random effects.' Table 2
     # reports the etas as percentages, read here as coefficients of variation;
     # for a log-normal eta, omega^2 = log(CV^2 + 1):
-    #   etalcl: 54.4% CV -> omega^2 = log(0.544^2 + 1) = log(1.295936) = 0.25925
+    #   etalcl: 54.4% CV -> omega^2 = log(0.544^2 + 1) = log(1.295936) = 0.25923
     #   etalvc: 22.5% CV -> omega^2 = log(0.225^2 + 1) = log(1.050625) = 0.04939
     # Single-quoted source-table text below: rxode2 promotes an unlabelled
     # trailing ini() comment into label(), and a double quote would break it.
-    etalcl ~ 0.25925 # Dorajoo 2019 Table 2, row 'eta Cl (%)' = 54.4 (RSE 10.2%, shrinkage 12%, bootstrap 53.8, 95% CI 41.2-65.5)
+    etalcl ~ log(1 + 0.544^2)  # Dorajoo 2019 Table 2, row 'eta Cl (%)' = 54.4 (RSE 10.2%, shrinkage 12%, bootstrap 53.8, 95% CI 41.2-65.5)
     etalvc ~ 0.04939 # Dorajoo 2019 Table 2, row 'eta Vd (%)' = 22.5 (RSE 17.1%, shrinkage 26%, bootstrap 21.9, 95% CI 12.6-29.3)
 
     # Residual error. Methods: 'the residual variability was modelled as a

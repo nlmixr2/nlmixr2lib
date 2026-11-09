@@ -486,9 +486,9 @@ Zhou_2025_fruquintinib_poppk <- function() {
     #                                              (%RSE 3.5, 95% CI 24.3-28.0)
     #   var V/F   = log(1 + 0.163^2) = 0.02622217  'BSV V/F %CV = 16.3'
     #                                              (%RSE 4.9, 95% CI 14.6-17.8)
-    #   var CLM/f = log(1 + 0.493^2) = 0.21756720  'BSV CLM/f %CV = 49.3'
+    #   var CLM/f = log(1 + 0.493^2) = 0.21756723  'BSV CLM/f %CV = 49.3'
     #                                              (%RSE 3.5, 95% CI 45.5-53.0)
-    #   var VM/f  = log(1 + 0.753^2) = 0.44916870  'BSV VM/f %CV = 75.3'
+    #   var VM/f  = log(1 + 0.753^2) = 0.44916871  'BSV VM/f %CV = 75.3'
     #                                              (%RSE 3.7, 95% CI 68.4-82.0)
     #
     # Off-diagonals = correlation * omega_i * omega_j, with the correlations
@@ -496,22 +496,22 @@ Zhou_2025_fruquintinib_poppk <- function() {
     #   cov(CL/F, V/F)    = 0.295 * 0.257664 * 0.161933 = 0.01230862  (%RSE 10.9)
     #   cov(CL/F, CLM/f)  = 0.563 * 0.257664 * 0.466441 = 0.06766410  (%RSE  4.9)
     #   cov(V/F,  CLM/f)  = 0.167 * 0.161933 * 0.466441 = 0.01261385  (%RSE 19.7)
-    #   cov(CL/F, VM/f)   = 0.413 * 0.257664 * 0.670200 = 0.07131944  (%RSE  6.8)
-    #   cov(V/F,  VM/f)   = 0.495 * 0.161933 * 0.670200 = 0.05372103  (%RSE  6.4)
-    #   cov(CLM/f, VM/f)  = 0.708 * 0.466441 * 0.670200 = 0.22132720  (%RSE  4.4)
+    #   cov(CL/F, VM/f)   = 0.413 * 0.257664 * 0.670200 = 0.07131949  (%RSE  6.8)
+    #   cov(V/F,  VM/f)   = 0.495 * 0.161933 * 0.670200 = 0.05372111  (%RSE  6.4)
+    #   cov(CLM/f, VM/f)  = 0.708 * 0.466441 * 0.670200 = 0.22132700  (%RSE  4.4)
     #
     # Written lower-triangle row-major in the order CL/F, V/F, CLM/f, VM/f.
     # -----------------------------------------------------------------------
     etalcl + etalvc + etalcl_m11 + etalvc_m11 ~ c(
       0.06639056,
       0.01230862, 0.02622217,
-      0.06766410, 0.01261385, 0.21756720,
-      0.07131944, 0.05372103, 0.22132720, 0.44916870
+      0.563 * sqrt(log(1 + 0.493^2) * 0.06639056), 0.167 * sqrt(log(1 + 0.493^2) * 0.02622217), log(1 + 0.493^2),
+      0.413 * sqrt(log(1 + 0.753^2) * 0.06639056), 0.495 * sqrt(log(1 + 0.753^2) * 0.02622217), 0.708 * sqrt(log(1 + 0.753^2) * log(1 + 0.493^2)), log(1 + 0.753^2)
     )
     # var Ka = log(1 + 2.47^2) ; Zhou 2025 Table 2 'BSV Ka %CV = 247'
     # (%RSE 4.4, 95% CI 201-299; shrinkage 21.0%). Uncorrelated with the four
     # disposition etas per Results, 'Final Model'.
-    etalka ~ 1.96022200
+    etalka ~ log(1 + 2.47^2)
 
     # -----------------------------------------------------------------------
     # Residual unexplained variability. Methods: a combined proportional plus

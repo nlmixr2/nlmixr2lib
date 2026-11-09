@@ -850,6 +850,16 @@ above:
 * **Figure 4A 48.2 kg annotation.** The panel prints "0.7 [0.73, 0.84]", a point
   estimate outside its own confidence interval. The interval midpoint (0.78) is
   used as the reference value above.
+* **The lecanemab PK CVs are first-order approximations.** Majid 2024
+  Table 1 defines its IIV column as "CV%, square root of variance x 100".
+  Each printed PK CV is therefore the standard deviation of its random
+  effect, and the PK variances are the squares of the printed CVs
+  (`etalcl ~ 0.349^2`, `etalvc ~ 0.122^2`, `etalvp ~ 0.946^2`, CL-V1
+  covariance `0.144 * 0.349 * 0.122`, all fixed), not the exact log-normal
+  conversion `log(1 + CV^2)`. The difference is largest for V2:
+  0.946^2 = 0.895, against 0.639 from the log-normal conversion. The
+  biomarker random effects are Bhagunde 2026's own estimates and are
+  unaffected.
 
 ## Modelling choices
 

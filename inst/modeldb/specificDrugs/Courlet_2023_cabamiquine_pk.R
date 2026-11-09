@@ -188,13 +188,13 @@ Courlet_2023_cabamiquine_pk <- function() {
     # inter-individual variability, reported as coefficient of variation
     # (%)'), converted to log-normal variance via omega^2 = log(1 + CV^2).
     # =========================================================================
-    etalcl     ~ 0.07059  # Suppl. Material 1 'IIV on CL/F = 27%'  -> omega^2 = log(1 + 0.27^2) = 0.07059
+    etalcl     ~ log(1 + 0.27^2)  # Suppl. Material 1 'IIV on CL/F = 27%'
     etalvc     ~ 0.06062  # Suppl. Material 1 'IIV on V2/F = 25%'  -> omega^2 = log(1 + 0.25^2) = 0.06062
-    etalka     ~ 2.51231  # Suppl. Material 1 'IIV on ka = 340%'   -> omega^2 = log(1 + 3.40^2) = 2.51231
-    etalkbm    ~ 0.50974  # Suppl. Material 1 'IIV on k2g = 82%'   -> omega^2 = log(1 + 0.82^2) = 0.50974
+    etalka     ~ log(1 + 3.4^2)  # Suppl. Material 1 'IIV on ka = 340%'
+    etalkbm    ~ log(1 + 0.82^2)  # Suppl. Material 1 'IIV on k2g = 82%'
     etalktr    ~ 0.06062  # Suppl. Material 1 'IIV on ktr = 25%'   -> omega^2 = log(1 + 0.25^2) = 0.06062
-    etalmtt    ~ 0.79470  # Suppl. Material 1 'IIV on MTT = 110%'  -> omega^2 = log(1 + 1.10^2) = 0.79470
-    etalfdepot ~ 0.05161  # Suppl. Material 1 'IIV on F = 23%'     -> omega^2 = log(1 + 0.23^2) = 0.05161
+    etalmtt    ~ log(1 + 1.1^2)  # Suppl. Material 1 'IIV on MTT = 110%'
+    etalfdepot ~ log(1 + 0.23^2)  # Suppl. Material 1 'IIV on F = 23%'
 
     # =========================================================================
     # Residual error. Supplementary Material 1 reports a single 'Residual
