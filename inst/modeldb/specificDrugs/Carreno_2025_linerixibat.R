@@ -15,9 +15,6 @@ Carreno_2025_linerixibat <- function() {
     outcome = "GSRS Question 11 diarrhea-bother score (ordinal, 1-7)"
   )
 
-  # C4 is an endogenous serum biomarker pool specific to this paper.
-  paper_specific_compartments <- c("c4")
-
   covariateData <- list()
 
   covariatesDataExcluded <- list(
@@ -133,10 +130,10 @@ Carreno_2025_linerixibat <- function() {
     # IIV. Table 2 footnote: %CV = sqrt(exp(omega^2) - 1) for exponential
     # random effects, so omega^2 = log(1 + CV^2); the logit random effect is
     # additive and the column reports its SD, so omega^2 = SD^2.
-    etalrbase ~ 0.58566 # Table 2: Baseline IIV 89.2% CV -> log(1 + 0.892^2)
-    etalemax ~ 0.26944 # Table 2: Emax IIV 55.8% CV -> log(1 + 0.558^2)
-    etaledk50 ~ 2.62594 # Table 2: EDK50 IIV 358% CV -> log(1 + 3.58^2)
-    etalogite0 ~ 29.5936 # Table 2: intercept m = 2 IIV SD 5.44 -> 5.44^2
+    etalrbase ~ log(1 + 0.892^2) # Table 2: Baseline IIV 89.2% CV
+    etalemax ~ log(1 + 0.558^2) # Table 2: Emax IIV 55.8% CV
+    etaledk50 ~ log(1 + 3.58^2) # Table 2: EDK50 IIV 358% CV
+    etalogite0 ~ 5.44^2 # Table 2: intercept m = 2 IIV SD 5.44
 
     # Residual error on C4 (Table 2), combined additive + proportional.
     addSd_c4 <- fixed(0.000492)

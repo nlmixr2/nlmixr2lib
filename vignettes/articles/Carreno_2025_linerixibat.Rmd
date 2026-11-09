@@ -75,10 +75,10 @@ virtual-compartment equations) and in Figure 1 of the article.
 | `logitstep1` to `logitstep5` | 1.26, 0.983, 1.15, 1.11, 1.53 | Table 2, intercepts m = 3 to 7 |
 | `lemax_gsrs_diarrhea` | 11.6 | Table 2, PO Emax |
 | `lec50_gsrs_diarrhea` | 42.9 ng/mL | Table 2, PO EC50 |
-| `etalrbase` | 0.58566 (89.2% CV) | Table 2 |
-| `etalemax` | 0.26944 (55.8% CV) | Table 2 |
-| `etaledk50` | 2.62594 (358% CV) | Table 2 |
-| `etalogite0` | 29.5936 (SD 5.44) | Table 2, IIV on the m = 2 intercept |
+| `etalrbase` | log(1 + 0.892^2) = 0.586 (89.2% CV) | Table 2 |
+| `etalemax` | log(1 + 0.558^2) = 0.269 (55.8% CV) | Table 2 |
+| `etaledk50` | log(1 + 3.58^2) = 2.63 (358% CV) | Table 2 |
+| `etalogite0` | 5.44^2 = 29.6 (SD 5.44) | Table 2, IIV on the m = 2 intercept |
 | `addSd_c4` | 0.000492 ng/mL, fixed | Table 2 |
 | `propSd_c4` | 0.448 | Table 2 |
 
@@ -356,8 +356,8 @@ label denotes the next score up.
 # Assumptions and deviations
 
 * **Effect of baseline C4 on the 8-h amplitude.** Table 2 reports an "effect
-  of baseline C4 on amplitude" of -0.0130 but no equation. It is encoded as a
-  linear change in the 8-h fractional amplitude per ng/mL of the individual
+  of baseline C4 on amplitude" of -0.0130 but no equation. The maintainers
+  chose to encode it as a linear change in the 8-h fractional amplitude per ng/mL of the individual
   baseline above the typical baseline of 11.9 ng/mL, so the typical
   amplitude is the tabulated 0.268. The uncentred linear form and a
   proportional centred form change the median morning trough C4 by less than

@@ -1879,6 +1879,30 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Chen_2025_iohexol_creatinine.R` (founding example; `cl_circ_famp_night = 0.0842088`, a -8.42% nocturnal trough).
 - **Notes:** The minus sign lives in the model equation, not in the stored value, matching the source: Chen 2025 Table 3 prints both amplitudes as positive percentages and the deposited control stream carries the polarity (`CIR = -SIN((TIME-14)/10*PI)*THETA(14)+1` for the night branch versus `CIR = SIN(...)*THETA(13)+1` for the day branch). Storing the magnitude keeps the extracted value identical to the printed table; a reader who wants the signed form reads it off the `model` block. The function is continuous at both window boundaries because `sin(0) = sin(pi) = 0`, so no solver discontinuity is introduced. See [[cl_circ_famp_day]] for the family rationale.
 
+### kin_circ_famp1, kin_circ_famp2 (**canonical fractional amplitudes of a multi-harmonic cosine rhythm on a synthesis rate**)
+- **Type:** paper-named-param
+- **Role:** Dimensionless signed fractional amplitudes of the harmonics of a cosine diurnal rhythm on the zero-order production rate `kin` of an indirect-response model: `d/dt(state) <- kin * (1 + kin_circ_famp1 * cos((t - tacro1) * 2 * pi / P1) + kin_circ_famp2 * cos((t - tacro2) * 2 * pi / P2)) * (...) - kout * state`. Harmonic `<n>` pairs with acrophase `tacro<n>`. The periods `P<n>` are structural constants chosen by the source paper, not estimated, and are stated in the model comments.
+- **Source aliases:**
+  - `AMP`, `AMP2` / `Amplitude1`, `Amplitude2` -- Carreno 2025 Supplementary Equation 1 and Table 2 (0.268 for the 8-h harmonic, 0.0227 for the 12-h harmonic).
+- **Example models:** `Carreno_2025_linerixibat.R` (founding example; 8-h and 12-h harmonics on serum C4 synthesis).
+- **Notes:** Extends the `<param>_circ_famp_<qualifier>` family of [[cl_circ_famp_day]] to a production rate and to a numbered multi-harmonic rhythm: the `_<n>` suffix numbers harmonics in the order the source lists them, not by period. Linear (never log-transformed) because the amplitudes are fractions estimated on the natural scale and may be signed. Distinct from `lamp` / `ltacro`, which carry an ABSOLUTE amplitude in the state's units on a single 24-h cosine. A single-harmonic rhythm on `kin` drops the number (`kin_circ_famp`, `tacro`).
+
+### tacro1, tacro2 (**canonical bare acrophases of a multi-harmonic cosine rhythm**)
+- **Type:** paper-named-param
+- **Role:** Acrophase (time units; the time at which harmonic `<n>` peaks, measured on the model's own time axis) of harmonic `<n>` of a multi-harmonic cosine rhythm, paired with the amplitude `<param>_circ_famp<n>`. Numbered members of the `tacro` family for a rhythm with more than one harmonic.
+- **Source aliases:**
+  - `Tpeak`, `Tpeak2` / `Acrophase1`, `Acrophase2` -- Carreno 2025 Supplementary Equation 1 and Table 2 (5.77 h and 21.7 h).
+- **Example models:** `Carreno_2025_linerixibat.R` (founding example).
+- **Notes:** Carried on the linear scale because the source estimates them untransformed; use `ltacro<n>` if a future paper estimates them on the log scale. An acrophase longer than its harmonic's period, such as Carreno 2025's 21.7 h on a 12-h harmonic, is equivalent to the acrophase modulo the period; keep the printed value so it matches the source table. The time origin is the model's time axis (for Carreno 2025, time after the first dose), not clock time, unless the model says otherwise.
+
+### e_rbase_kin_circ_famp1 (**canonical linear effect of the individual baseline on a circadian fractional amplitude**)
+- **Type:** paper-named-param
+- **Role:** Linear slope (reciprocal of the baseline units) of the first-harmonic fractional amplitude `kin_circ_famp1` on the subject's individual baseline `rbase`, centred on the typical baseline: `famp1 <- kin_circ_famp1 + e_rbase_kin_circ_famp1 * (rbase - exp(lrbase))`. The typical subject therefore has the tabulated amplitude.
+- **Source aliases:**
+  - `Effect of baseline C4 on amplitude` -- Carreno 2025 Table 2 (-0.0130 mL/ng, RSE 61.7%).
+- **Example models:** `Carreno_2025_linerixibat.R` (founding example).
+- **Notes:** Follows the `e_<driver>_<param>` covariate-effect grammar, but the driver is a model parameter (the eta-bearing individual baseline), not a dataset covariate column, so it is registered here rather than in `covariate-columns.md`. Carreno 2025 does not print the equation; the maintainers ratified the centred additive form, which leaves the reported trough C4 and GSRS endpoints within 3% and 0.5 percentage points of the uncentred and proportional alternatives. A negative value means subjects with a higher baseline have a smaller rhythm.
+
 ### kd (**canonical mechanistic dissociation / dissociation-like rate**)
 - **Type:** paper-named-param
 - **Role:** Dissociation rate constant or paper-mechanistic "kd" parameter (paper-specific meaning). Also covers the **equilibrium** dissociation constant of a drug for its receptor, which has concentration units rather than 1/time; the log-transformed `lkd` form carries the `ini()` typical value where the source reports an exponential IIV. The two senses share the symbol in the literature, so the `label()` must state the units.
@@ -3552,6 +3576,22 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Source aliases:**
   - `D50` -- Kastrissios 2006 notation.
 - **Example models:** `Kastrissios_2006_apricoxib.R`.
+
+### ledk50 (**canonical log-transformed K-PD dose rate giving half-maximal effect**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed dose RATE (amount / time) leaving the K-PD virtual compartment `depot_kpd` that produces half the maximal effect, i.e. the K-PD sibling of `lec50`: with `dr = kel * depot_kpd`, the effect is `emax * dr / (edk50 + dr)`. Carries amount-per-time units (mg/h, mg/week, ng/month), NOT concentration units. Inside `model()` the bare name is `edk50`.
+- **Source aliases:**
+  - `EDK50` -- the standard K-PD notation (Jacqmin et al. 2007); Carreno 2025 Table 2, Shoji 2017 Table 2.
+  - `lekd50` -- letter-transposed spelling of the same quantity carried by `Mori_2018_zoledronicAcid.R` and `Wang_2023_zoledronicAcid_mbma.R`.
+- **Example models:** `Carreno_2025_linerixibat.R` (founding example; `ledk50 <- log(3.03)` mg/h, the linerixibat dose rate giving half-maximal stimulation of C4 synthesis), `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R` (mg/week).
+- **Notes:** Use with `lkel` and the `depot_kpd` compartment, which define `dr`. Distinct from `led50`, a half-maximal administered DOSE (amount), and from `lec50`, a half-maximal concentration; a K-PD model has no measured concentration, so reusing `lec50` would misstate the units. A downstream user must read the rate units off `label()`, since the time base depends on the model.
+
+### edk50 (**canonical bare K-PD dose rate giving half-maximal effect**)
+- **Type:** paper-named-param
+- **Role:** Bare counterpart of `ledk50`; the half-maximal K-PD dose rate on the linear scale, for use inside `model()`.
+- **Source aliases:**
+  - `EDK50` -- standard K-PD notation.
+- **Example models:** `Carreno_2025_linerixibat.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`.
 
 
 ### lkadair1, kadair1, lkadair2, kadair2 (**canonical constants of the Adair biphasic effect function**)
