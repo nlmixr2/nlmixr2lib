@@ -2295,6 +2295,20 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Example models:** `Neant_2023_covid19_news2.R`, `Neant_2023_covid19_news2_highvl.R`, `Neant_2023_covid19_news2_lowvl.R`, `Neant_2023_covid19_news2_soc.R` (joint SARS-CoV-2 viral-kinetic / NEWS-2 models of hospitalised COVID-19 patients; observed alongside `log10_viral_load`).
 - **Notes:** Not an ODE state -- the score is algebraic in the founding models, so it needs no `compartmentData` entry. The common clinical cut points are 5 (urgent review) and 7 (emergency response); Neant 2023 uses NEWS-2 >= 7 at randomisation to define a high risk of clinical deterioration and NEWS-2 < 3 (low risk) or < 5 (high risk) to define clinical improvement. Distinct from the covariate register's `SCORE_*` family, which holds instrument scores supplied as model INPUTS, and from the generic pain `score`.
 
+### BIS (**canonical Bispectral Index processed-EEG sedation output**)
+- **Type:** compartment
+- **Role:** Bispectral Index, the dimensionless 0-100 processed-electroencephalogram index of hypnotic depth (about 95-100 awake, 40-60 the usual general-anaesthesia range, 0 an isoelectric EEG), modelled as a drug-driven decrease from an awake baseline -- an inhibitory (sigmoid) Emax or logistic function of an effect-site or plasma hypnotic concentration.
+- **Source aliases:** `BIS`, `Bispectral Index` -- the paper notation of every example model, so no translation is needed.
+- **Example models:** `Vellinga_2025_remimazolam_bis.R` (founding single-output registration; logistic model on the 0-100 scale combining remimazolam, competitive antagonism by the metabolite CNS 7054 and an additive remifentanil term, with a logit-domain residual `logitNorm(NA, 0, 100)`), `Zhou_2018_remimazolam_bis.R` (sigmoid Imax in a remimazolam effect compartment), `Chen_2024_remimazolam.R` and `Ueshima_2025_remimazolam.R` (multi-output remimazolam PK/PD), `BlussevanOudAlblas_2019_propofol_bis.R` (sigmoid Imax in a propofol effect compartment).
+- **Notes:** Upper-case because `BIS` is the instrument's registered name and the abbreviation every source prints; the residual-error names follow it (`addSd_BIS`, `propSd_BIS`, `expSd_BIS`). Holds an index reading, not a concentration, and is drug-agnostic: use it for any hypnotic. Distinct from the observer-scored ordinal sedation scale `moaas` (and its probability outputs `prob_moaas<k>`), which the same studies often model in parallel; BIS is a continuous instrument reading and does not share cutpoints with MOAA/S. A model of a BIS *change* from baseline needs its own entry rather than reusing this name.
+
+### moaas (**canonical MOAA/S ordinal sedation-score observation**)
+- **Type:** compartment
+- **Role:** The observed Modified Observer's Assessment of Alertness/Sedation (MOAA/S) score, a six-level ordinal scale from 5 (fully alert, responds readily to name spoken in a normal tone) down to 0 (no response to a painful trapezius squeeze), used as the ordinal (categorical) observation variable of a proportional-odds PD model, `moaas ~ c(prob_moaas0, ..., prob_moaas4)`.
+- **Source aliases:** `MOAAS`, `MOAA/S` -- Vellinga 2025 and Zhou 2018 notation.
+- **Example models:** `Vellinga_2025_remimazolam_moaas.R` (founding example; five cumulative logits with a remimazolam sigmoid Emax term, CNS 7054 competitive antagonism and a multiplicative remifentanil term, driven by arterial plasma concentrations).
+- **Notes:** Lower-case to match the `prob_moaas<k>` / `prob_moaas_le<k>` probability outputs it is observed through. **The rxode2 ordinal category index is the score plus one**: the `k`-th listed probability is category `k`, so category 1 is MOAA/S 0 (`prob_moaas0`) and the unlisted sixth category, MOAA/S 5, carries one minus the sum of the five listed probabilities. A dataset that codes the score itself (0-5) must add 1 before fitting. Holds an ordinal category, not a concentration; the per-category probabilities live in `prob_moaas<k>` (see the `prob_moaas0 ... prob_moaas5` entry), not here. Distinct from the continuous processed-EEG index `BIS`.
+
 ### log_car (**canonical log CAR-T cell-count PD output**)
 - **Type:** compartment
 - **Role:** Log-transformed CAR-T cell count per microlitre of blood, the observed output of a CAR-T cellular-kinetics model. The linear state is the total CAR-T cell pool; this is the log of its per-uL concentration, with an epsilon floor so the transform stays finite before expansion and after contraction.
@@ -2335,6 +2349,20 @@ Outputs of empirical steady-state dose-concentration models, in which the depend
 Each entry below is a paper-mechanistic PD endpoint registered as a canonical compartment / output-state name so single-output PD models that use them pass the relaxed `Cc` rule.
 
 One family in this section is validated by shape rather than by enumeration -- see `prob_<endpoint>` immediately below. Its per-endpoint entries are retained as documentation of what each endpoint means, but `checkModelConventions()` no longer requires an entry to exist before accepting the name.
+
+### tol (**canonical tolerance-to-laryngoscopy binary observation**)
+- **Type:** compartment
+- **Role:** Binary observation of tolerance to laryngoscopy -- 1 when the sedated subject shows no response to laryngoscopy, 0 when the subject responds (Vellinga 2025: a size 3 curved Macintosh blade aimed at full view of the vocal cords; verbal acknowledgment, eye opening, grimacing, coughing, withdrawal or any purposeful or nonpurposeful movement counts as a response) -- used as the categorical observation variable of a logistic PD model, `tol ~ c(p0_tol)`, whose probability of tolerance is `prob_tol`.
+- **Source aliases:** `TOL` -- Vellinga 2025 notation ('tolerance to laryngoscopy (TOL)').
+- **Example models:** `Vellinga_2025_remimazolam_tol.R` (founding example; zero-baseline Emax in arterial remimazolam concentration with the C50 lowered by remifentanil by the factor `1 - CR / (CR + EC50R)`).
+- **Notes:** **rxode2 category 1 is a response (DV 0) and category 2 is tolerance (DV 1)**, so the listed probability is `p0_tol = 1 - prob_tol`; a dataset coding tolerance as 1 must add 1 before fitting. Lower-case to match `prob_tol`. Distinct from `tots` (a tetanic electrical stimulus, fitted with its own C50) and from the sedation scales `moaas` and `BIS`, which score the unstimulated state.
+
+### tots (**canonical tolerance-to-tetanic-stimulation binary observation**)
+- **Type:** compartment
+- **Role:** Binary observation of tolerance to tetanic stimulation -- 1 when the sedated subject shows no response to a standardized tetanic electrical stimulus (Vellinga 2025: 100 Hz, 50 mA for at most 30 s on the ulnar side of the non-dominant arm), 0 when the subject responds -- used as the categorical observation variable of a logistic PD model, `tots ~ c(p0_tots)`, whose probability of tolerance is `prob_tots`.
+- **Source aliases:** `TOTS` -- Vellinga 2025 notation ('tolerance to tetanic stimulation (TOTS)').
+- **Example models:** `Vellinga_2025_remimazolam_tots.R` (founding example; same zero-baseline Emax form as `tol`, with its own remimazolam C50 and remifentanil EC50).
+- **Notes:** Category coding as for `tol`: category 1 is a response (DV 0), category 2 is tolerance (DV 1), and the listed probability is `p0_tots = 1 - prob_tots`. A source using a different stimulus current, frequency or duration describes a different endpoint and should say so in the model's description. Distinct from `tol` (laryngoscopy).
 
 ### ve (**canonical vaccine-efficacy PD output**)
 - **Type:** compartment
@@ -5112,8 +5140,22 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Type:** compartment
 - **Role:** Probabilities (0..1) attached to the Modified Observer's Assessment of Alertness/Sedation (MOAA/S) scale, a six-level ordinal sedation score running 5 (fully alert, responds readily to name spoken in a normal tone) down to 0 (does not respond to a painful trapezius squeeze). `prob_moaas<k>` is the probability of scoring exactly `k`; `prob_moaas_le<k>` is the cumulative probability of scoring `k` or lower, i.e. being at least that deeply sedated. Output by an ordered-categorical (proportional-odds) PD model in which a drug term raises every cumulative logit, so that deeper sedation becomes more likely as exposure rises.
 - **Source aliases:** `P0` ... `P5` and `P0_1` -- the trace labels of Zhou 2018 Figure 5, where `P0_1` is `P0 + P1` and equals `prob_moaas_le1`.
-- **Example models:** `Zhou_2018_remimazolam_moaas.R` (founding example; five baseline cumulative logits B1-B5 from Zhou 2018 Table 2 plus a common sigmoid Emax increment in remimazolam effect-site concentration, with `prob_moaas_le1` as the observed endpoint).
+- **Example models:** `Zhou_2018_remimazolam_moaas.R` (founding example; five baseline cumulative logits B1-B5 from Zhou 2018 Table 2 plus a common sigmoid Emax increment in remimazolam effect-site concentration, with `prob_moaas_le1` as the observed endpoint), `Vellinga_2025_remimazolam_moaas.R` (five cumulative logits driven by arterial remimazolam, CNS 7054 and remifentanil concentrations; the ordinal observation `moaas` is fitted through `prob_moaas0` ... `prob_moaas4`).
 - **Notes:** Probability outputs in `[0, 1]`. Members of the `prob_<endpoint>` family and validated by `probOutputRegex` rather than by enumeration, but documented here because the two suffix conventions are load-bearing and cannot be read off the name alone. **`_le<k>` is cumulative and `<k>` bare is exact**; the bare form is obtained by differencing adjacent cumulative forms, and the two must never be mixed in one comparison. **The scale is inverted relative to intuition**: a HIGHER MOAA/S score means a MORE alert subject, so `prob_moaas_le1` -- the standard clinical definition of loss of consciousness, "MOAA/S < 2" -- INCREASES with drug exposure. A six-level scale has only five free cutpoints because the top cumulative probability `P(MOAA/S <= 5)` is identically 1 and is therefore not registered; a source reporting five baseline values is reporting cutpoints for scores 0 through 4, which their required monotone ordering confirms. Unlike most of the `prob_<endpoint>` family these are **time-varying**: the driver is an effect-site concentration evolving under an ODE, not a scalar landmark exposure metric, which puts them alongside `prob_scc` rather than alongside `prob_orr_central`. Distinct from the continuous processed-EEG sedation index `BIS`, which the same papers often model in parallel from the same effect compartment but with its own equilibration rate constant; MOAA/S is an observer-scored ordinal judgement and BIS is an instrument reading, and the two do not share cutpoints.
+
+### prob_tol (**canonical probability of tolerance to laryngoscopy**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a sedated subject tolerates laryngoscopy without a response; the model-predicted probability behind the binary observation `tol`.
+- **Source aliases:** `P(Y = 1)` -- Vellinga 2025 main-text equation 3, 'probability of no response, P(Y = 1), to laryngoscopy'.
+- **Example models:** `Vellinga_2025_remimazolam_tol.R` (founding example; `prob_tol = Ca / (1 + Ca)` with `Ca` the remimazolam concentration over a remifentanil-shrunk C50, zero at zero drug).
+- **Notes:** Time-varying, like `prob_moaas<k>`: the driver is an arterial plasma concentration evolving under an ODE, not a landmark exposure metric. The observation is fitted through the complement `p0_tol = 1 - prob_tol` (rxode2 category 1, a response); `p0_tol` is an intermediate and is not registered. See `tol`.
+
+### prob_tots (**canonical probability of tolerance to tetanic stimulation**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a sedated subject tolerates a standardized tetanic electrical stimulus without a response; the model-predicted probability behind the binary observation `tots`.
+- **Source aliases:** `P(Y = 1)` -- Vellinga 2025 main-text equation 3, applied to tetanic stimulation.
+- **Example models:** `Vellinga_2025_remimazolam_tots.R` (founding example; same form as `prob_tol` with its own C50 and remifentanil EC50).
+- **Notes:** Time-varying, as for `prob_tol`. The observation is fitted through `p0_tots = 1 - prob_tots`. See `tots`.
 
 ---
 
