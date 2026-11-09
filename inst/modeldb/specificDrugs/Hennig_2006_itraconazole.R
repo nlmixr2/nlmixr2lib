@@ -92,15 +92,15 @@ Hennig_2006_itraconazole <- function() {
     # log-normal variance via omega^2 = log(1 + CV^2). Block on CL_itra and
     # Vd_itra has correlation rho = 0.69 (Random Effects Model paragraph,
     # page 1105); cov = rho * sqrt(omega2_CL) * sqrt(omega2_VC).
-    # CL_itra: log(1 + 0.688^2) = 0.38731
-    # Vd_itra: log(1 + 0.758^2) = 0.45404
-    # cov   : 0.69 * sqrt(0.38731) * sqrt(0.45404) = 0.28938
-    etalcl + etalvc ~ c(0.38731, 0.28938, 0.45404)                                                                # Hennig 2006 Table II + Random Effects Model paragraph (rho = 0.69)
-    # CLm   : log(1 + 0.734^2) = 0.43098
-    etalcl_ohi ~ 0.43098                                                                                          # Hennig 2006 Table II, final model: CV 73.4% on CLm
+    # CL_itra: log(1 + 0.688^2) = 0.38753
+    # Vd_itra: log(1 + 0.758^2) = 0.45398
+    # cov   : 0.69 * sqrt(0.38753) * sqrt(0.45398) = 0.28941
+    etalcl + etalvc ~ c(log(1 + 0.688^2), 0.69 * sqrt(log(1 + 0.688^2) * log(1 + 0.758^2)), log(1 + 0.758^2))                                                                # Hennig 2006 Table II + Random Effects Model paragraph (rho = 0.69)
+    # CLm   : log(1 + 0.734^2) = 0.43097
+    etalcl_ohi ~ log(1 + 0.734^2)  # Hennig 2006 Table II, final model: CV 73.4% on CLm
     # Frel (capsule arm only; gated by FORM_CAPSULE inside model()):
-    # log(1 + 0.611^2) = 0.31734
-    etalfdepot ~ 0.31734                                                                                          # Hennig 2006 Table II, final model: CV 61.1% on Frel
+    # log(1 + 0.611^2) = 0.31723
+    etalfdepot ~ log(1 + 0.611^2)  # Hennig 2006 Table II, final model: CV 61.1% on Frel
 
     # Residual error. Hennig 2006 Eq. 3 specifies an exponential residual
     # model Y = Cpred * exp(eps), which the paper also calls "proportional"

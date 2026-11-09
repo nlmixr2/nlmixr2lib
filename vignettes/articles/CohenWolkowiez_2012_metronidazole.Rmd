@@ -67,7 +67,7 @@ table below collects them in one place for review.
 | `e_wt_cl = fixed(1)` | 1 | Table 3 final-model row: linear `(wt/1.5)` scaling; estimated body-size exponent excluded for lack of fit improvement (Results) |
 | `e_wt_vc = fixed(1)` | 1 | Table 3 final-model row: linear `(wt/1.5)` scaling on V |
 | `e_page_cl = 2.49` (theta_CL-PMA) | 2.49 | Table 4, "CL,PMA" (RSE 29.8 percent) |
-| `etalcl` variance 0.16608 | omega^2 = log(1 + 0.425^2) | Table 4, "Interindividual variance CL (CV%) = 42.5" (RSE 28.5 percent) |
+| `etalcl` variance 0.16604 | omega^2 = log(1 + 0.425^2) | Table 4, "Interindividual variance CL (CV%) = 42.5" (RSE 28.5 percent) |
 | `propSd = 0.135` | 13.5 CV percent | Table 4, "Residual variance (CV%) Blood draws sigma_1^2 = 13.5" (RSE 24.5 percent) |
 | `d/dt(central) = -kel * central` | n/a | Results, "Population PK model building": 1-compartment model |
 | Concentration `Cc = central / vc` | n/a | 1-compartment IV; observation is plasma metronidazole concentration |

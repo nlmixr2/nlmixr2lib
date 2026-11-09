@@ -138,7 +138,7 @@ Xia_2024_warfarin <- function() {
 
     # ---- IIV: only EC50 has IIV in the final Xia 2024 model (Table 3) ----
     # omega^2 = log(CV^2 + 1) with CV(EC50) = 55.8% from Table 3
-    etalec50 ~ 0.2712                                                                            # log(1 + 0.558^2) ~= 0.2712; Xia 2024 Table 3 reports CV = 55.8% (RSE 8.2%)
+    etalec50 ~ log(1 + 0.558^2)  # ~= 0.2711; Xia 2024 Table 3 reports CV = 55.8% (RSE 8.2%)
 
     # ---- Residual error (proportional on INR) ----
     propSd_INR <- 0.365                  ; label("Proportional residual error on INR (fraction)")  # Xia 2024 Table 3 (estimated, RSE 4.1%); supplement Eq 4

@@ -181,10 +181,10 @@ Cheng_2019_lobaplatin <- function() {
     # Source-table text is quoted with SINGLE quotes: rxode2 promotes a
     # trailing comment on an eta line into label(), and a double quote there
     # breaks the re-parse.
-    etalvc ~ 0.234455 # Table 3 'Inter-individual variability / V 1 , %' = 51.4 (SE 9.5%); bootstrap 50.5 (41.2-60.1); log(1 + 0.514^2)
-    etalvp ~ 0.298684 # Table 3 'Inter-individual variability / V 2 , %' = 59.0 (SE 9.3%); bootstrap 58.4 (48.2-69.4); log(1 + 0.590^2)
-    etalcl ~ 0.480067 # Table 3 'Inter-individual variability / CL 1 , %' = 78.5 (SE 23.9%); bootstrap 76.1 (36.2-117.3); log(1 + 0.785^2)
-    etalq ~ 0.144306 # Table 3 'Inter-individual variability / CL 2 , %' = 39.4 (SE 14.3%); bootstrap 38.6 (27.5-48.3); log(1 + 0.394^2)
+    etalvc ~ log(1 + 0.514^2)  # Table 3 'Inter-individual variability / V 1 , %' = 51.4 (SE 9.5%); bootstrap 50.5 (41.2-60.1)
+    etalvp ~ log(1 + 0.590^2)  # Table 3 'Inter-individual variability / V 2 , %' = 59.0 (SE 9.3%); bootstrap 58.4 (48.2-69.4)
+    etalcl ~ log(1 + 0.785^2)  # Table 3 'Inter-individual variability / CL 1 , %' = 78.5 (SE 23.9%); bootstrap 76.1 (36.2-117.3)
+    etalq ~ log(1 + 0.394^2)  # Table 3 'Inter-individual variability / CL 2 , %' = 39.4 (SE 14.3%); bootstrap 38.6 (27.5-48.3)
 
     # Residual error. Results 3.6 prints the retained form as
     # 'Cobs,ij = Cpred,ij x (1 + eps_ij,1)', i.e. proportional only, and

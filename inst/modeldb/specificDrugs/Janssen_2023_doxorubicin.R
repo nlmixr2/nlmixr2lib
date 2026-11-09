@@ -79,9 +79,9 @@ Janssen_2023_doxorubicin <- function() {
 
     # --- IIV (Table 1 reports CV% for all four structural parameters) -------
     # omega^2 = log(CV^2 + 1)
-    etalcl ~ fixed(0.058753)   # Table 1: CL IIV 24.6% CV -> log(0.246^2 + 1)
+    etalcl ~ fixed(log(1 + 0.246^2))  # Table 1: CL IIV 24.6% CV
     etalvc ~ fixed(0.013828)   # Table 1: V1 IIV 11.8% CV -> log(0.118^2 + 1)
-    etalq ~ fixed(0.041955)    # Table 1: Q1 IIV 20.7% CV -> log(0.207^2 + 1)
+    etalq ~ fixed(log(1 + 0.207^2))  # Table 1: Q1 IIV 20.7% CV
     etalvp ~ fixed(0.060625)   # Table 1: V2 IIV 25.0% CV -> log(0.250^2 + 1)
 
     # --- Residual error -----------------------------------------------------

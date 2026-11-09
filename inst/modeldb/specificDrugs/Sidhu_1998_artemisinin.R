@@ -115,17 +115,17 @@ Sidhu_1998_artemisinin <- function() {
     # omega^2 = log(CV^2 + 1) (standard log-normal interpretation, matching
     # the convention used in the sibling artemisinin extraction
     # Birgersson_2016_artemisinin.R):
-    #   CL/F  : 45%  -> omega^2 = log(0.45^2  + 1) = 0.1843
-    #   V/F   : 104% -> omega^2 = log(1.04^2  + 1) = 0.7334
+    #   CL/F  : 45%  -> omega^2 = log(0.45^2  + 1) = 0.1844
+    #   V/F   : 104% -> omega^2 = log(1.04^2  + 1) = 0.7331
     #   ka    : 576% -> omega^2 = log(5.76^2  + 1) = 3.5316
     # The paper's text records 'the correlation between eta_V/F_i and
     # eta_CL/F_i was found to be near unity' (Results, p. 350) but does not
     # publish the numeric off-diagonal. The encoded correlation is set to
-    # 0.95 (cov = 0.95 * sqrt(0.1843 * 0.7334) = 0.3493) for numerical
+    # 0.95 (cov = 0.95 * sqrt(0.1844 * 0.7331) = 0.3493) for numerical
     # stability while preserving the qualitative finding; documented as a
     # deviation in the validation vignette.
-    etalcl + etalvc ~ c(0.1843,
-                        0.3493, 0.7334)                                                                    # Sidhu 1998 Table 2 + Results: IIV CL/F 45% (rel.s.e. 44%), IIV V/F 104% (rel.s.e. 36%), cor near unity
+    etalcl + etalvc ~ c(log(1 + 0.45^2),
+                        0.95 * sqrt(log(1 + 0.45^2) * log(1 + 1.04^2)), log(1 + 1.04^2))                                                                    # Sidhu 1998 Table 2 + Results: IIV CL/F 45% (rel.s.e. 44%), IIV V/F 104% (rel.s.e. 36%), cor near unity
     etalka          ~ 3.5316                                                                               # Sidhu 1998 Table 2: IIV ka 576% (rel.s.e. 21%); retained per paper's Results choice to estimate rather than fix
 
     # Inter-occasion variability (IOV) on log CL/F and log V/F. Two
@@ -136,12 +136,12 @@ Sidhu_1998_artemisinin <- function() {
     # has no SAME shortcut so occasion 1 carries the estimated variance and
     # occasion 2 is fix()-ed to the shared value, mirroring the
     # Aregbe_2012_alvespimycin and Jonsson_2011_ethambutol pattern.
-    #   pi_CL/F : 53% -> pi^2 = log(0.53^2 + 1) = 0.2475
-    #   pi_V/F  : 86% -> pi^2 = log(0.86^2 + 1) = 0.5536
-    etaiov_cl_1 ~ 0.2475                                                                                   # Sidhu 1998 Table 2: pi_CL/F = 53% (rel. s.e. 32%)
-    etaiov_cl_2 ~ fix(0.2475)                                                                              # NONMEM $OMEGA BLOCK(1) SAME (occasion 2 shares occasion-1 variance)
-    etaiov_vc_1 ~ 0.5536                                                                                   # Sidhu 1998 Table 2: pi_V/F  = 86% (rel. s.e. 36%)
-    etaiov_vc_2 ~ fix(0.5536)                                                                              # NONMEM $OMEGA BLOCK(1) SAME (occasion 2 shares occasion-1 variance)
+    #   pi_CL/F : 53% -> pi^2 = log(0.53^2 + 1) = 0.2476
+    #   pi_V/F  : 86% -> pi^2 = log(0.86^2 + 1) = 0.5537
+    etaiov_cl_1 ~ log(1 + 0.53^2)  # Sidhu 1998 Table 2: pi_CL/F = 53% (rel. s.e. 32%)
+    etaiov_cl_2 ~ fix(log(1 + 0.53^2))  # NONMEM $OMEGA BLOCK(1) SAME (occasion 2 shares occasion-1 variance)
+    etaiov_vc_1 ~ log(1 + 0.86^2)  # Sidhu 1998 Table 2: pi_V/F  = 86% (rel. s.e. 36%)
+    etaiov_vc_2 ~ fix(log(1 + 0.86^2))  # NONMEM $OMEGA BLOCK(1) SAME (occasion 2 shares occasion-1 variance)
 
     # Residual variability. The paper reports a 'essentially proportional'
     # residual error model with sigma = 47% (CV; rel. s.e. 41%), expressed

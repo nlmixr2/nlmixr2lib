@@ -198,7 +198,7 @@ Lee_2024_gentamicin_teigen <- function() {
     # and Vd", and the Discussion quotes ONE magnitude:
     #   "According to the a priori information, the interindividual variability
     #    (%CV) of CLNHD was 51%".
-    # omega^2 = log(CV^2 + 1) = log(0.51^2 + 1) = 0.23129, the house convention
+    # omega^2 = log(CV^2 + 1) = log(0.51^2 + 1) = 0.23119, the house convention
     # (cf. Veinstein_2013_gentamicin.R). Under the alternative NONMEM shorthand
     # omega^2 = CV^2 the variance would be 0.2601 and the realized CV 54.6%
     # instead of 51.0%; the two readings are discussed in the vignette Errata.
@@ -211,7 +211,7 @@ Lee_2024_gentamicin_teigen <- function() {
     # encoded as fixed(0) rather than invented -- simulations from this model
     # therefore carry between-subject variability on clearance only.
     # ------------------------------------------------------------------------
-    etalcl ~ fixed(0.23129)  # Lee 2024 Discussion: %CV of CLNHD = 51%
+    etalcl ~ fixed(log(1 + 0.51^2))  # Lee 2024 Discussion: %CV of CLNHD = 51%
     etalvc ~ fixed(0)        # Lee 2024 Methods: log-normal BSV on Vd exists; magnitude NOT published
 
     # ------------------------------------------------------------------------

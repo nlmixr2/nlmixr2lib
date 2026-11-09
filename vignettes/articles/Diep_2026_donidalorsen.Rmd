@@ -106,10 +106,10 @@ concentrations are in mg/L; time is in hours.
 | `kin = BL * kout`  | derived | Diep 2026 Section 3.2: BL = kin / kout |
 | Indirect-response PD | d/dt(effect) = kin * (1 - Cc * Imax / (IC50 + Cc)) - kout * effect | Diep 2026 Section 3.2 inset equation |
 | IIV%CL = 19.6% CV  | omega^2 = log(0.196^2 + 1) ~= 0.0377 | Diep 2026 Table 1 |
-| IIV%Vc = 59.0% CV  | omega^2 = log(0.590^2 + 1) ~= 0.2985 | Diep 2026 Table 1 |
+| IIV%Vc = 59.0% CV  | omega^2 = log(0.590^2 + 1) ~= 0.2987 | Diep 2026 Table 1 |
 | IIV%Q  = 10.2% CV  | omega^2 = log(0.102^2 + 1) ~= 0.0104 | Diep 2026 Table 1 |
-| IIV%Vp = 42.9% CV  | omega^2 = log(0.429^2 + 1) ~= 0.1690 | Diep 2026 Table 1 |
-| IIV%ka = 42.8% CV  | omega^2 = log(0.428^2 + 1) ~= 0.1683 | Diep 2026 Table 1 |
+| IIV%Vp = 42.9% CV  | omega^2 = log(0.429^2 + 1) ~= 0.1689 | Diep 2026 Table 1 |
+| IIV%ka = 42.8% CV  | omega^2 = log(0.428^2 + 1) ~= 0.1682 | Diep 2026 Table 1 |
 | Full 5x5 PK omega block | rho_ij from Table 1 correlation entries; covariance = rho * sd_i * sd_j | Diep 2026 Table 1 correlation rows |
 | IIV%BL  = 25.9% CV | omega^2 = log(0.259^2 + 1) ~= 0.0649 | Diep 2026 Table 2 |
 | IIV%kout = 36.6% CV | omega^2 = log(0.366^2 + 1) ~= 0.1257 | Diep 2026 Table 2 |

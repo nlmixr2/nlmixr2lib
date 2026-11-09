@@ -64,8 +64,8 @@ The table below collects the entries in one place.
 | `e_age_cl` (AGECL power exponent) | -0.409 | Table 2, Estimates column, Age effect on Cl/F (AGECL) row |
 | `e_wt_cl` (WTCL power exponent) | 0.517 | Table 2, Estimates column, WT effect on Cl/F (WTCL) row |
 | `e_wt_vc` (WTVc power exponent) | 0.65 | Table 2, Estimates column, WT effect on Vc/F (WTVc) row |
-| IIV CL/F (omega^2 = log(0.537^2 + 1) = 0.2532) | 53.7% CV | Table 2, Estimates column, IIV in Cl/F row |
-| IIV Vc/F (omega^2 = 0.3205) | 61.5% CV | Table 2, Estimates column, IIV in Vc/F row |
+| IIV CL/F (omega^2 = log(0.537^2 + 1) = 0.2534) | 53.7% CV | Table 2, Estimates column, IIV in Cl/F row |
+| IIV Vc/F (omega^2 = 0.3208) | 61.5% CV | Table 2, Estimates column, IIV in Vc/F row |
 | IIV Ka (omega^2 = 1.1879) | 151% CV | Table 2, Estimates column, IIV in Ka row |
 | Correlation between IIVs in CL/F and Vc/F | 0.839 | Table 2, Estimates column, "Correlation between IIVs in Cl/F and Vc/F" row |
 | Proportional residual error (rich profile) | 26.5% CV | Table 2, Estimates column, "Residual variability for rich profile" row |

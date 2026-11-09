@@ -87,7 +87,7 @@ Archary_2019_abacavir <- function() {
     # Source reports separate per-arm IIV CL/F (29.2% delayed, 62.5% early) and IOV CL/F = 52%;
     # the model file uses the delayed-arm IIV (29.2%) as a single typical-value omega and
     # documents the early-arm and IOV inflations in the vignette Errata.
-    etalcl     ~ 0.0820  # log(1 + 0.292^2); CV 29.2% delayed-arm IIV per Table 3
+    etalcl     ~ log(1 + 0.292^2)  # CV 29.2% delayed-arm IIV per Table 3
     # Source reports IIV F = 21.4% only in the early-ART arm; the model file applies it to
     # all subjects (small bias for delayed-arm subjects whose F = 1) and documents this
     # simplification in the vignette Errata.

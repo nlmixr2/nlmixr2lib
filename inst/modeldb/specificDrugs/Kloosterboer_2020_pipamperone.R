@@ -103,7 +103,7 @@ Kloosterboer_2020_pipamperone <- function() {
     e_wt_cl <- fixed(0.75); label("Allometric exponent of body weight on CL/F (unitless)") # Table 2 footnote b, 'exponent ... 0.75 for CL'; Section 3.1.2 'fixed exponents'
     e_wt_vc <- fixed(1); label("Allometric exponent of body weight on V/F (unitless)") # Table 2 footnote b, 'exponent 1 for V'
 
-    etalcl ~ 0.041153 # Table 2, 'IPV CL' = 20.5%; log(1 + 0.205^2) = 0.041153 (shrinkage 34%)
+    etalcl ~ log(1 + 0.205^2)  # Table 2, 'IPV CL' = 20.5% (shrinkage 34%)
 
     cal_slope_dbs <- 0.33; label("Slope a of the plasma-to-DBS conversion y = a*x + b (unitless)") # Table 2, 'DBS correction: y = ax + b', 'a' = 0.33 (RSE 8%)
     cal_int_dbs <- 3.90; label("Intercept b of the plasma-to-DBS conversion y = a*x + b (ug/L)") # Table 2, 'DBS correction: y = ax + b', 'b (ug/L)' = 3.90 (RSE 15%)

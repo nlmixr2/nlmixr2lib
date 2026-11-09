@@ -185,12 +185,12 @@ Zheng_2014_azithromycin <- function() {
     # Table 1) supports more meaningful IIV but the model file uses
     # the single-run point estimates that the paper reports.
     # ------------------------------------------------------------------
-    etaltlag      ~ 0.030559   # 17.6%  CV (Tlag);              log(0.176^2 + 1) = 0.030559
-    etalcl        ~ 0.082382   # 29.3%  CV (CL/F);              log(0.293^2 + 1) = 0.082382
-    etalvc        ~ 1.343243   # 168.3% CV (V_central/F);       log(1.683^2 + 1) = 1.343243
+    etaltlag      ~ log(1 + 0.176^2)  # 17.6%  CV (Tlag)
+    etalcl        ~ log(1 + 0.293^2)  # 29.3%  CV (CL/F)
+    etalvc        ~ log(1 + 1.683^2)  # 168.3% CV (V_central/F)
     etalkin       ~ 4.84e-06   # 0.22%  CV (kin);               log(0.0022^2 + 1) = 4.84e-06 (boundary)
-    etaldf_muscle ~ 0.069794   # 26.9%  CV (DF_muscle);         log(0.269^2 + 1) = 0.069794
-    etaldf_adipose ~ 0.094540  # 31.5%  CV (DF_subcutis);       log(0.315^2 + 1) = 0.094540
+    etaldf_muscle ~ log(1 + 0.269^2)  # 26.9%  CV (DF_muscle)
+    etaldf_adipose ~ log(1 + 0.315^2)  # 31.5%  CV (DF_subcutis)
     etaldf_pmn    ~ 4.84e-06   # 0.22%  CV (DF_PML(cytosol));   log(0.0022^2 + 1) = 4.84e-06 (boundary)
 
     # ------------------------------------------------------------------

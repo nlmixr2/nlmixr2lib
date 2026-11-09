@@ -118,8 +118,8 @@ Schalkwijk_2018_efavirenz <- function() {
 
     # IIV, reported as %CV; omega^2 = log(1 + CV^2). The CLint/MAT correlation
     # (6%) was not included (Results paragraph 1).
-    etalclint ~ 0.09752 # Table 2 row 'IIV CLint/F (%)' = 32; log(1 + 0.32^2) = 0.09752
-    etalmtt ~ 0.17700 # Table 2 row 'IIV MAT (%)' = 44; log(1 + 0.44^2) = 0.17700
+    etalclint ~ log(1 + 0.32^2)  # Table 2 row 'IIV CLint/F (%)' = 32
+    etalmtt ~ log(1 + 0.44^2)  # Table 2 row 'IIV MAT (%)' = 44
 
     # IOV on F, one slot per assessment visit (Methods 2.3: 1 to 6 visits)
     etaiov_lfdepot_1 ~ 0.05600 # Table 2 row 'IOV F (%)' = 24; log(1 + 0.24^2) = 0.05600

@@ -126,9 +126,9 @@ collects them in one place.
 | `e_assay_osa_f`                        | -0.390       | Abrantes 2017 Table 2: Activity bias = -39.0% if OSA |
 | `e_assay_osa_local_f`                  | -0.146       | Abrantes 2017 Table 2: Activity bias = -14.6% if OSA local |
 | `e_assay_osa_propsd`                   | 0.403        | Abrantes 2017 Table 2: Assay on residual error = +40.3% if OSA |
-| `etalcl` (IIV CL, omega^2)             | log(1 + 0.305^2) = 0.08894 | Abrantes 2017 Table 2: IIV CL = 30.5% CV |
+| `etalcl` (IIV CL, omega^2)             | log(1 + 0.305^2) = 0.08895 | Abrantes 2017 Table 2: IIV CL = 30.5% CV |
 | `etalfdepot` (IIV F, omega^2)          | log(1 + 0.130^2) = 0.01676 | Abrantes 2017 Table 2: IIV F = 13.0% CV |
-| `etalrbase` (IIV endogenous, omega^2)  | log(1 + 0.0719^2) = 0.005154 | Abrantes 2017 Table 2: IIV endogenous FVIII = 7.19% CV |
+| `etalrbase` (IIV endogenous, omega^2)  | log(1 + 0.0719^2) = 0.005156 | Abrantes 2017 Table 2: IIV endogenous FVIII = 7.19% CV |
 | `propSd` (proportional, CSA reference) | 0.192        | Abrantes 2017 Table 2: Proportional residual error = 19.2% CV |
 | Reference WT                           | 70 kg        | Abrantes 2017 Table 2 footnotes b-e |
 | Reference AGE                          | 20 years     | Abrantes 2017 Table 2 footnote b |

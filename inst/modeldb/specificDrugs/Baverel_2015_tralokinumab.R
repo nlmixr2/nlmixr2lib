@@ -90,36 +90,35 @@ Baverel_2015_tralokinumab <- function() {
     # 204 * (1 - 0.15) = 173.4 mL/day, vs Table 3 adolescent CL of 173 mL/day.
     e_adolescent_cl <- -0.15;  label("Fractional decrease in CL for adolescents vs adults (unitless)")  # Table 3 'CL decrease, % (adolescent)' 15%
 
-    # IIV. Baverel 2015 Table 3 reports bootstrap 95% CI for the between-subject
-    # CV%; point estimates of the CV are not tabulated separately, so the
-    # bootstrap-CI midpoints are used. The narrative on page 1340 confirms the
-    # approximate magnitudes ("CV for CL and Vp was ~30%, although this was
-    # slightly higher for Vc and Q (~65%)"). Log-normal IIV variance is
-    # omega^2 = log(1 + CV^2):
-    #   CL: CV = (27.0 + 31.2) / 2 = 29.1% -> omega^2 = log(1 + 0.291^2) = 0.08133
-    #   Vc: CV = (59.4 + 70.0) / 2 = 64.7% -> omega^2 = log(1 + 0.647^2) = 0.34956
-    #   Vp: CV = (20.2 + 33.3) / 2 = 26.75% -> omega^2 = log(1 + 0.2675^2) = 0.06915
-    #   Q:  CV = (54.3 + 99.3) / 2 = 76.8% -> omega^2 = log(1 + 0.768^2) = 0.46362
+    # IIV. Baverel 2015 Table 3 ("Interindividual variance in CV %") prints
+    # the point estimate ("Mean") of each between-subject CV% with its RSE
+    # and nonparametric 95% CI; the point estimates are used: CL 29.3%,
+    # Vc 64.8%, Vp 27.7%, Q 63.5%. The narrative on page 1340 agrees ("CV for
+    # CL and Vp was ~30%, although this was slightly higher for Vc and Q
+    # (~65%)"). Log-normal IIV variance is omega^2 = log(1 + CV^2).
     #
-    # Block correlations are taken directly from Table 3
-    # ("Correlations of interindividual variability estimates"; point estimates):
-    #   Corr(CL, Vc) =  0.5  -> cov =  0.5  * sqrt(0.08133 * 0.34956) = 0.08431
-    #   Corr(CL, Vp) =  0.2  -> cov =  0.2  * sqrt(0.08133 * 0.06915) = 0.01499
-    #   Corr(CL, Q)  = -0.3  -> cov = -0.3  * sqrt(0.08133 * 0.46362) = -0.05832
-    #   Corr(Vc, Vp) = -0.3  -> cov = -0.3  * sqrt(0.34956 * 0.06915) = -0.04663
-    #   Corr(Vc, Q)  = -0.6  -> cov = -0.6  * sqrt(0.34956 * 0.46362) = -0.24161
-    #   Corr(Vp, Q)  =  0.5  -> cov =  0.5  * sqrt(0.06915 * 0.46362) =  0.08964
+    # Block correlations are the Table 3 point estimates ("Correlations of
+    # interindividual variability estimates"): Corr(CL, Vc) = 0.5,
+    # Corr(CL, Vp) = 0.2, Corr(CL, Q) = -0.3, Corr(Vc, Vp) = -0.3,
+    # Corr(Vc, Q) = -0.6, Corr(Vp, Q) = 0.5; each covariance is
+    # r * sqrt(omega^2_i * omega^2_j).
     etalcl + etalvc + etalvp + etalq ~ c(
-       0.08133,
-       0.08431,  0.34956,
-       0.01499, -0.04663,  0.06915,
-      -0.05832, -0.24161,  0.08964,  0.46362
-    )                                                                                              # Table 3 IIV block on {CL, Vc, Vp, Q}
+      log(1 + 0.293^2),                                  # CL
+      0.5 * sqrt(log(1 + 0.293^2) * log(1 + 0.648^2)),   # CL-Vc
+      log(1 + 0.648^2),                                  # Vc
+      0.2 * sqrt(log(1 + 0.293^2) * log(1 + 0.277^2)),   # CL-Vp
+      -0.3 * sqrt(log(1 + 0.648^2) * log(1 + 0.277^2)),  # Vc-Vp
+      log(1 + 0.277^2),                                  # Vp
+      -0.3 * sqrt(log(1 + 0.293^2) * log(1 + 0.635^2)),  # CL-Q
+      -0.6 * sqrt(log(1 + 0.648^2) * log(1 + 0.635^2)),  # Vc-Q
+      0.5 * sqrt(log(1 + 0.277^2) * log(1 + 0.635^2)),   # Vp-Q
+      log(1 + 0.635^2)                                   # Q
+    ) # Table 3 IIV block on {CL, Vc, Vp, Q}
 
-    # Fr IIV on the logit-transformed scale (Equation 2-3, Table 3 row 'Fr'):
-    # bootstrap CV% midpoint (8.6 + 32.8) / 2 = 20.7%, interpreted as the SD of
-    # eta_logitfr on the logit scale -> omega^2 = 0.207^2 = 0.04285.
-    etalogitffo ~ 0.04285                                                                           # Table 3 IIV row 'Fr', 8.6-32.8% on logit scale
+    # Fr IIV on the logit-transformed scale (Equation 2-3, Table 3 row 'Fr',
+    # 23.2%, marked as logit-scale): read as the SD of eta_logitfr on the
+    # logit scale, so omega^2 = 0.232^2.
+    etalogitffo ~ 0.232^2  # Table 3 IIV row 'Fr', 23.2% (95% CI 8.6-32.8) on logit scale
 
     # Combined additive + proportional residual error (Baverel 2015 Equation 4,
     # Table 3 rows 'Additive residual error' and 'Proportional residual error').

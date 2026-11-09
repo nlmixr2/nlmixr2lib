@@ -60,9 +60,9 @@ The table below collects the entries in one place.
 | `lkcp` (k56 central -> peripheral rate constant) | 0.09 1/h | Table II, whole-dataset column, k56 row |
 | `lkpc` (k65 peripheral -> central rate constant) | 0.13 1/h | Table II, whole-dataset column, k65 row |
 | IIV ktr  (omega^2 = log(1 + 0.52^2) = 0.2393) | 52% CV | Table II, whole-dataset IIV column, ktr row |
-| IIV V1/F (omega^2 = log(1 + 0.53^2) = 0.2475) | 53% CV | Table II, whole-dataset IIV column, V1/F row |
+| IIV V1/F (omega^2 = log(1 + 0.53^2) = 0.2476) | 53% CV | Table II, whole-dataset IIV column, V1/F row |
 | IIV CL/F (omega^2 = log(1 + 0.35^2) = 0.1156) | 35% CV | Table II, whole-dataset IIV column, CL/F row |
-| IIV k56  (omega^2 = log(1 + 0.54^2) = 0.2560) | 54% CV | Table II, whole-dataset IIV column, k56 row |
+| IIV k56  (omega^2 = log(1 + 0.54^2) = 0.2559) | 54% CV | Table II, whole-dataset IIV column, k56 row |
 | Proportional residual error | 9% | Table II, whole-dataset column, "Proportional error" row |
 | Additive residual error | 0.7 ng/mL | Table II, whole-dataset column, "Additive error" row |
 | CL/F covariate equation: `theta1 * (1 + theta2)^cyp` | -- | Eq. 4, p. 689 |

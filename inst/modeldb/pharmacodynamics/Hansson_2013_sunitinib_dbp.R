@@ -93,15 +93,15 @@ Hansson_2013_sunitinib_dbp <- function() {
     # ------------------------------------------------------------------
     # Inter-individual variability. Table 2 reports IIV as CV%; conversion
     # to log-normal omega^2 = log((CV/100)^2 + 1).
-    # dBP0       IIV = 12% -> omega2 = log(0.12^2 + 1) = 0.01435
-    # MRT        IIV = 83% -> omega2 = log(0.83^2 + 1) = 0.5328
-    # dBP_slope  IIV = 65% -> omega2 = log(0.65^2 + 1) = 0.3578
-    # dBP0 and dBP_slope are reported as correlated 65% (Results section).
-    # cov(dBP0, dBP_slope) = 0.65 * sqrt(0.01435 * 0.3578) = 0.04657
+    # dBP0 and dBP_slope are reported as correlated 65% (Results section),
+    # so cov(dBP0, dBP_slope) = 0.65 * sqrt(omega2_dBP0 * omega2_dBP_slope).
     # ------------------------------------------------------------------
-    etaldbp0 + etaldbp_slope ~ c(0.01435,
-                                 0.04657, 0.3578) # Table 2 dBP0 CV=12%, dBP_slope CV=65%, corr=0.65
-    etalmrt ~ 0.5328  # Table 2 MRT CV=83%
+    etaldbp0 + etaldbp_slope ~ c(
+      log(1 + 0.12^2),
+      0.65 * sqrt(log(1 + 0.12^2) * log(1 + 0.65^2)),
+      log(1 + 0.65^2)
+    ) # Table 2 dBP0 CV=12%, dBP_slope CV=65%, corr=0.65
+    etalmrt ~ log(1 + 0.83^2)  # Table 2 MRT CV=83%
 
     # ------------------------------------------------------------------
     # Residual error from Hansson 2013 Table 2: combined additive

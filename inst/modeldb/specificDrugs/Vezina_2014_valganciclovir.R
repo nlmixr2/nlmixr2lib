@@ -90,11 +90,11 @@ Vezina_2014_valganciclovir <- function() {
 
     # Inter-individual variability -- Vezina 2014 Table 2 reports IIV on
     # CL/F as a CV%. Convert to log-scale variance via omega^2 = log(CV^2 + 1):
-    #   CL/F  CV 33.5% -> log(0.335^2 + 1) = 0.1063
+    #   CL/F  CV 33.5% -> log(0.335^2 + 1) = 0.1064
     # The paper's Methods section explicitly states: "The data were not
     # sufficient to support estimates of interindividual variability on V2/F,
     # Q/F and V3/F."
-    etalcl ~ 0.1063  # Vezina 2014 Table 2 IIV CL/F = 33.5%
+    etalcl ~ log(1 + 0.335^2)  # Vezina 2014 Table 2 IIV CL/F = 33.5%
 
     # Residual unexplained variability -- Vezina 2014 Table 2 reports a
     # proportional error model. RUV CV = 32.7% -> propSd = 0.327 on the

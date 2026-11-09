@@ -100,16 +100,16 @@ Moes_2016_tacrolimus <- function() {
     # Moes 2016 Table 4 reports BSV as percent CV on CL, Vc, and Ka in the
     # final model. Conversion to log-scale variance via
     # omega^2 = log(CV^2 + 1):
-    #   CL  CV 42.8% -> log(0.428^2 + 1) = 0.16839
-    #   Vc  CV 86.3% -> log(0.863^2 + 1) = 0.55657
-    #   Ka  CV 65.9% -> log(0.659^2 + 1) = 0.36067
+    #   CL  CV 42.8% -> log(0.428^2 + 1) = 0.16821
+    #   Vc  CV 86.3% -> log(0.863^2 + 1) = 0.55662
+    #   Ka  CV 65.9% -> log(0.659^2 + 1) = 0.36066
     # No off-diagonal correlations were retained in the final model
     # (Methods Base model: "Random effect parameters for interindividual
     # variability in clearance (CL), volume of central compartment (Vc),
     # and rate of absorption (Ka) were identified.").
-    etalcl ~ 0.16839  # Moes 2016 Table 4 Final model IIV CL = 42.8% CV (RSE 13%, shrinkage 0%)
-    etalvc ~ 0.55657  # Moes 2016 Table 4 Final model IIV Vc = 86.3% CV (RSE 14%, shrinkage 9%)
-    etalka ~ 0.36067  # Moes 2016 Table 4 Final model IIV Ka = 65.9% CV (RSE 14%, shrinkage 15%)
+    etalcl ~ log(1 + 0.428^2)  # Moes 2016 Table 4 Final model IIV CL = 42.8% CV (RSE 13%, shrinkage 0%)
+    etalvc ~ log(1 + 0.863^2)  # Moes 2016 Table 4 Final model IIV Vc = 86.3% CV (RSE 14%, shrinkage 9%)
+    etalka ~ log(1 + 0.659^2)  # Moes 2016 Table 4 Final model IIV Ka = 65.9% CV (RSE 14%, shrinkage 15%)
 
     # --- Residual unexplained variability ---
     # Moes 2016 Table 4 Final model sigma1 = "proportional error (%) = 13".

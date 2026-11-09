@@ -90,7 +90,7 @@ Staatz_2005_vancomycin <- function() {
     # ("no covariance between interindividual variabilities in CL and volume
     # of distribution (V)"). Log-normal IIV: omega^2 = log(CV^2 + 1).
     etalcl ~ 0.07037   # log(0.27^2 + 1); 27% CV on CL (Table 4 'All data': etaCL = 27%)
-    etalvc ~ 0.12188   # log(0.36^2 + 1); 36% CV on V (Table 4 'All data': etaV = 36%)
+    etalvc ~ log(1 + 0.36^2)  # 36% CV on V (Table 4 'All data': etaV = 36%)
     # Note: Table 4 'All data' reports eta_V = 36% (RSE 24%); the model-building
     # column reports 33% and the test column reports 33%. The combined-data
     # value 36% is used here to match the published all-data fit.

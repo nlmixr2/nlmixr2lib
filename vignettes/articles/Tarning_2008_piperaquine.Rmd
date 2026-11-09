@@ -56,11 +56,11 @@ collects them in one place for review.
 | `lka` (absorption rate) | 0.717 1/h | Table 2 (%RSE 25) |
 | `e_wt_cl` (linear WT effect on CL/F) | 0.0262 per kg from 48 kg | Table 2 (%RSE 2.9) |
 | `e_wt_vc` (linear WT effect on Vc/F) | 0.0273 per kg from 48 kg | Table 2 (%RSE 11) |
-| `etalcl` (IIV on CL/F) | 42% CV -> omega^2 = 0.162519 | Table 2 (%RSE 44) |
-| `etalvc` (IIV on Vc/F) | 101% CV -> omega^2 = 0.703107 | Table 2 (%RSE 17) |
-| `etalq` (IIV on Q/F) | 85% CV -> omega^2 = 0.543763 | Table 2 (%RSE 18) |
+| `etalcl` (IIV on CL/F) | 42% CV -> omega^2 = 0.162459 | Table 2 (%RSE 44) |
+| `etalvc` (IIV on Vc/F) | 101% CV -> omega^2 = 0.703147 | Table 2 (%RSE 17) |
+| `etalq` (IIV on Q/F) | 85% CV -> omega^2 = 0.543777 | Table 2 (%RSE 18) |
 | `etalvp` (IIV on Vp/F) | 50% CV -> omega^2 = 0.223144 | Table 2 (%RSE 76) |
-| `etalka` (IIV on ka) | 168% CV -> omega^2 = 1.340808 | Table 2 (%RSE 38) |
+| `etalka` (IIV on ka) | 168% CV -> omega^2 = 1.340878 | Table 2 (%RSE 38) |
 | `propSd` (residual error) | 31.4% CV (proportional in linear space) | Table 2 (%RSE 29); Discussion p.1055 |
 | Two-compartment ODE structure with first-order absorption | n/a | Methods p.1054 ("two-compartment pharmacokinetic models with elimination from the central compartment and with first-order absorption") |
 | Linear (1 + theta * (WT - 48)) covariate form | n/a | Methods p.1054 ("centered on the median value") and Results p.1054 ("A linear relationship between body weight and clearance and body weight and central volume of distribution gave the best fit") |
