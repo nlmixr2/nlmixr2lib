@@ -8006,7 +8006,8 @@ Permeability-limited whole-body PBPK subcompartment suffixes. Each tissue carrie
 - **Type:** metabolite-suffix
 - **Role:** Residual plasma within the named tissue (the paper's "tissue plasma", TP) -- the plasma fraction of the blood left in the tissue after bleeding. For a blood compartment it is that compartment's plasma space. Perfused at the compartment's plasma flow and exchanging with `<organ>_bc` and `<organ>_ew`.
 - **Source aliases:** `TP`, `tp`, `plasma_<organ>`.
-- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`.
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`, `Mukap_2025_amoxicillin.R` (output `Cc_plasma`: the venous plasma concentration derived from a central compartment fitted to dried-blood-spot whole-blood data, `Cc_plasma <- ratio_plasma_central * Cc`; residual `expSd_plasma`).
+- **Notes:** As an output suffix, `Cc_plasma` is the plasma space of a `central` compartment whose own matrix is whole blood, matching the blood-compartment reading in the Role above. It is not an analyte suffix: the analyte is the parent drug.
 
 ### bc (**canonical residual-blood-cell subcompartment suffix**)
 - **Type:** metabolite-suffix
