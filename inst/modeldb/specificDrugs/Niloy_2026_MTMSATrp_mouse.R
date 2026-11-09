@@ -103,10 +103,10 @@ Niloy_2026_MTMSATrp_mouse <- function() {
     # converted to NONMEM-style omega^2 via the Monolix log-normal
     # convention:
     #     omega^2 = log(1 + CV^2)
-    #   omega^2_CL = log(1 + 0.058^2) = 0.003359
+    #   omega^2_CL = log(1 + 0.058^2) = 0.003358
     #   omega^2_V  = log(1 + 0.25^2)  = 0.060625
     # ------------------------------------------------------------
-    etalcl ~ 0.003359  # Niloy 2026 Table 1: IIV on CL = 5.8% CV (RSE 42%); shrinkage 81%
+    etalcl ~ log(1 + 0.058^2)  # Niloy 2026 Table 1: IIV on CL = 5.8% CV (RSE 42%); shrinkage 81%
     etalvc ~ 0.060625  # Niloy 2026 Table 1: IIV on V  = 25%  CV (RSE 31%); shrinkage 39.1%
 
     # ------------------------------------------------------------

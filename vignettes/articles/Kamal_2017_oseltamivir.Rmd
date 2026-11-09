@@ -96,9 +96,9 @@ comment naming its source location. They are collected here for review.
 | `ltshed_high` | log(1.9) | Table 1, "Tshed(high) (AUC > 14 180 ng.h/mL) = 1.9 (0.51) days" |
 | `f_auchigh` | 0.326 (75 mg BID); 0.795 (150 mg BID) | Table 1, "FAUChigh (75 mg BID) = 0.326 (0.048)" and "FAUChigh (150 mg BID) = 0.795 (0.095)"; Results, Pharmacology module |
 | `f_uptake` | 0 / 0.25 / 0.50 / 0.80 | Methods, Epidemiology module ("percent drug uptake ... 25%, 50%, and 80%") |
-| `etaltshed0` | 0.160085 | Table 1 SD 2.5 on mean 6 -> CV 41.67% -> log(1 + CV^2) |
-| `etaltshed_low` | 0.036696 | Table 1 SD 0.58 on mean 3 -> CV 19.33% -> log(1 + CV^2) |
-| `etaltshed_high` | 0.069573 | Table 1 SD 0.51 on mean 1.9 -> CV 26.84% -> log(1 + CV^2) |
+| `etaltshed0` | 0.160109 | Table 1 SD 2.5 on mean 6 -> CV 41.67% -> log(1 + CV^2) |
+| `etaltshed_low` | 0.036684 | Table 1 SD 0.58 on mean 3 -> CV 19.33% -> log(1 + CV^2) |
+| `etaltshed_high` | 0.069562 | Table 1 SD 0.51 on mean 1.9 -> CV 26.84% -> log(1 + CV^2) |
 | `etaf_auchigh` | 0.002304 (75 mg); 0.009025 (150 mg) | Table 1 SD 0.048 and 0.095 on the natural scale -> SD^2 |
 | `gamma = 1 / Tshed` | n/a | Methods, Epidemiology module |
 | `R0 = beta / gamma = beta * Tshed` | n/a | Methods, Epidemiology module |

@@ -97,16 +97,16 @@ Rose_2016_follitropin_delta <- function() {
     # IIV. Rose 2016 Table 2 reports IIV as CV%; conversion to the
     # log-eta variance scale uses omega^2 = log(CV^2 + 1).
     #   CL/F: 28.2% CV -> log(0.282^2 + 1) = 0.07652
-    #   V/F : 44.3% CV -> log(0.443^2 + 1) = 0.17917
-    #   ka  : 23.3% CV -> log(0.233^2 + 1) = 0.05286
+    #   V/F : 44.3% CV -> log(0.443^2 + 1) = 0.17919
+    #   ka  : 23.3% CV -> log(0.233^2 + 1) = 0.05287
     # The paper notes (Section 3) a positive correlation between CL/F and
     # V/F was identified in the final model but the magnitude of the
     # covariance is not reported. To avoid fabricating a value, the
     # correlation is omitted here and IIVs are encoded as diagonal; see
     # the vignette's Assumptions and deviations section for context.
     etalcl ~ 0.07652  # Rose 2016 Table 2 (CL/F IIV 28.2% CV)
-    etalvc ~ 0.17917  # Rose 2016 Table 2 (V/F IIV 44.3% CV)
-    etalka ~ 0.05286  # Rose 2016 Table 2 (ka IIV 23.3% CV)
+    etalvc ~ log(1 + 0.443^2)  # Rose 2016 Table 2 (V/F IIV 44.3% CV)
+    etalka ~ log(1 + 0.233^2)  # Rose 2016 Table 2 (ka IIV 23.3% CV)
 
     # Combined additive-plus-proportional residual error. The proportional
     # term is unitless even though Table 2 prints the column header as

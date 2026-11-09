@@ -129,8 +129,8 @@ Grimsley_1999_vancomycin <- function() {
     # Inter-individual variability (Grimsley 1999 Table 4 final-model column,
     # reported as percent coefficient of variation; omega^2 = log(CV^2 + 1)
     # for log-normal etas).
-    etalcl ~ 0.04729 # log(0.22^2 + 1); 22% CV on CL (SE 28%)
-    etalvc ~ 0.03188 # log(0.18^2 + 1); 18% CV on V  (SE 46%)
+    etalcl ~ log(1 + 0.22^2)  # 22% CV on CL (SE 28%)
+    etalvc ~ log(1 + 0.18^2)  # 18% CV on V  (SE 46%)
 
     # Additive residual error (Grimsley 1999 Table 4 final-model column).
     # The paper notes the residual structure was best described by an

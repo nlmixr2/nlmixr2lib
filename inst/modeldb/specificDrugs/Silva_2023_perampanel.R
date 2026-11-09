@@ -81,9 +81,9 @@ Silva_2023_perampanel <- function() {
     # supported by the data (Silva 2023 Section 2.4.1). Reported as
     # %CV = 30.82 in Table 2 (final-model IPV_CL); converted to the
     # log-normal variance via omega^2 = log(1 + CV^2) = log(1 + 0.3082^2)
-    # = 0.09067.
+    # = 0.09074.
     # ------------------------------------------------------------------
-    etalcl ~ 0.09067  # CV = 30.82% -> log(1 + 0.3082^2); Silva 2023 Table 2 final-model IPV_CL
+    etalcl ~ log(1 + 0.3082^2)  # CV = 30.82%; Silva 2023 Table 2 final-model IPV_CL
 
     # ------------------------------------------------------------------
     # Residual error. Silva 2023 modelled the residual error as

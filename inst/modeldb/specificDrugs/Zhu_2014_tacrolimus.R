@@ -79,19 +79,19 @@ Zhu_2014_tacrolimus <- function() {
     # a log-normal model (Eq. 1: theta_ij = theta * exp(eta_ij)). Convert to
     # log-scale variance via omega^2 = log(CV^2 + 1):
     #   CL/F  CV  16.2% -> log(0.162^2 + 1) = 0.02591
-    #   V2/F  CV 163%   -> log(1.63^2 + 1)  = 1.29657
-    #   Q/F   CV  19.7% -> log(0.197^2 + 1) = 0.03808
-    #   V3/F  CV 199%   -> log(1.99^2 + 1)  = 1.60139
-    #   ka    CV  74.3% -> log(0.743^2 + 1) = 0.43972
+    #   V2/F  CV 163%   -> log(1.63^2 + 1)  = 1.29662
+    #   Q/F   CV  19.7% -> log(0.197^2 + 1) = 0.03807
+    #   V3/F  CV 199%   -> log(1.99^2 + 1)  = 1.60143
+    #   ka    CV  74.3% -> log(0.743^2 + 1) = 0.43958
     # The paper reports diagonal IIV only (no correlation block); each eta is
     # therefore independent. The V2/F and V3/F IIVs (163% and 199% CV) are very
     # large with poor RSE (164% and 231%) -- see vignette Assumptions and
     # deviations for the identifiability caveat.
     etalcl ~ 0.02591  # Zhu 2014 Table 4 omega CL/F = 16.2%
-    etalvc ~ 1.29657  # Zhu 2014 Table 4 omega V2/F = 163%
-    etalq  ~ 0.03808  # Zhu 2014 Table 4 omega Q/F = 19.7%
-    etalvp ~ 1.60139  # Zhu 2014 Table 4 omega V3/F = 199%
-    etalka ~ 0.43972  # Zhu 2014 Table 4 omega ka = 74.3%
+    etalvc ~ log(1 + 1.63^2)  # Zhu 2014 Table 4 omega V2/F = 163%
+    etalq  ~ log(1 + 0.197^2)  # Zhu 2014 Table 4 omega Q/F = 19.7%
+    etalvp ~ log(1 + 1.99^2)  # Zhu 2014 Table 4 omega V3/F = 199%
+    etalka ~ log(1 + 0.743^2)  # Zhu 2014 Table 4 omega ka = 74.3%
 
     # Residual unexplained variability -- Zhu 2014 Eq. 2:
     # Y = IPRED * (1 + epsilon) -- proportional error model on the linear

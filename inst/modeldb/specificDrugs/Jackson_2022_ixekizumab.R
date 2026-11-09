@@ -81,7 +81,7 @@ Jackson_2022_ixekizumab <- function() {
     e_ada_cl <- 0.0292;        label("ADA-titre effect on CL, log-linear (unitless slope on log_e titre)")        # Table 2: ADA titre on CL = 0.0292
 
     # IIV on CL only (omega^2 = log(CV^2 + 1); paper reports 28.4% using %IIV = 100*sqrt(e^OMEGA - 1))
-    etalcl ~ 0.07759           # Table 2: IIV on CL = 28.4%; log(1 + 0.284^2) = 0.07759
+    etalcl ~ log(1 + 0.284^2)  # Table 2: IIV on CL = 28.4%
 
     # Residual error (proportional) -- Table 2: 27.7%
     propSd  <- 0.277;          label("Proportional residual error (fraction)")                                    # Table 2: residual error (proportional) = 27.7%

@@ -60,8 +60,8 @@ table below collects them for review.
 | `lka` (fixed)        | `log(1.9)` 1/day                     | Gupta 2006 Table 3 (Ka, FIXED at Phase I CHC mean per refs 9-10) |
 | `e_crcl_cl`          | `0.21`                               | Gupta 2006 Table 3 (theta_CLcr) |
 | `etalcl` IIV         | `0.1156` (CV 35%)                    | Gupta 2006 Table 3 (omega(CV) CL0) -> `omega^2 = log(0.35^2 + 1)` |
-| `etalcl_t50` IIV        | `0.7833` (CV 109%)                   | Gupta 2006 Table 3 (omega(CV) T50) -> `omega^2 = log(1.09^2 + 1)` |
-| `etalvc` IIV         | `0.2986` (CV 59%)                    | Gupta 2006 Table 3 (omega(CV) V)   -> `omega^2 = log(0.59^2 + 1)` |
+| `etalcl_t50` IIV        | `0.7830` (CV 109%)                   | Gupta 2006 Table 3 (omega(CV) T50) -> `omega^2 = log(1.09^2 + 1)` |
+| `etalvc` IIV         | `0.2987` (CV 59%)                    | Gupta 2006 Table 3 (omega(CV) V)   -> `omega^2 = log(0.59^2 + 1)` |
 | `propSd`             | `0.414` (proportional CV 41.4%)      | Gupta 2006 Table 3 (sigma_epsilon = 41.4; see Errata) |
 | CL covariate form    | `CL0 = 44.1 * (CRCL / 120)^0.21 * exp(eta_CL0)` | Gupta 2006 Methods covariate equation |
 | Time-varying CL      | `CL(t) = CL0 / (1 + (t / T50)^beta)`, beta = 1 fixed | Gupta 2006 Methods Emax-type decline; final model |

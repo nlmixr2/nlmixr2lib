@@ -57,8 +57,8 @@ place for review.
 | `e_wt_vc`            | 0.838                | Table 3, row "theta2"                                 |
 | `e_wt_cl`            | 0.677                | Table 3, row "theta4"                                 |
 | `e_crcl_cl`          | 1.03                 | Table 3, row "theta5" (RF factor)                     |
-| `etalvc` (77.0% CV)  | 0.46586              | Table 3, IIV row "V"                                  |
-| `etalcl` (34.8% CV)  | 0.11437              | Table 3, IIV row "CL"                                 |
+| `etalvc` (77.0% CV)  | 0.46556              | Table 3, IIV row "V"                                  |
+| `etalcl` (34.8% CV)  | 0.11431              | Table 3, IIV row "CL"                                 |
 | `propSd`             | 0.053 (5.3%)         | Table 3, row "Proportional"                           |
 | `addSd`              | 1.17 mg/L            | Table 3, row "Additive"                               |
 | V covariate eq       | n/a                  | Table 3 header `V = theta1 * (WT/20.2)^theta2`        |

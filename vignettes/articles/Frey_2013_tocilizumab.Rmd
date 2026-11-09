@@ -91,7 +91,7 @@ covariate-aware tocilizumab popPK, use the standalone
 | `var(etalEmax)`                                                                                       | `log(0.11^2 + 1) = 0.01203`   | Frey 2013 Table 1, Emax IIV 11% CV |
 | `cov(etalEC50, etalEmax)`                                                                             | `0.44 * sqrt(1.358 * 0.01203) = 0.05626` | Frey 2013 Table 1, EC50-Emax correlation 0.44 |
 | `var(etalKout)`                                                                                       | `log(0.60^2 + 1) = 0.3075`    | Frey 2013 Table 1, Kout IIV 60% CV |
-| `var(etalBase)`                                                                                       | `log(0.094^2 + 1) = 0.008805` | Frey 2013 Table 1, Baseline IIV 9.4% CV |
+| `var(etalBase)`                                                                                       | `log(0.094^2 + 1) = 0.008797` | Frey 2013 Table 1, Baseline IIV 9.4% CV |
 | `var(etalDMARD)`                                                                                      | `log(1.93^2 + 1) = 1.553`     | Frey 2013 Table 1, DMARD effect IIV 193% CV |
 | `addSd` (DAS28 additive RE)                                                                           | `0.68`            | Frey 2013 Table 1, additive residual |
 | Structure -- PK (2-cmt + parallel linear + MM elimination)                                            | n/a               | Frey 2010 Methods / Eq. |

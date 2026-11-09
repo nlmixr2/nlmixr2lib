@@ -71,11 +71,11 @@ The table below collects the entries in one place.
 | `lq`   (apparent intercompartmental clearance Q/F) | 120 L/h | Table 3, Q/F row (RSE 14.3%) |
 | `lvp`  (apparent peripheral volume V3/F) | 2,490 L | Table 3, V3/F row (fixed from Phase I-only fit; footnote b) |
 | `lfdepot` (sublingual bioavailability F) | 1 (fixed anchor) | Structural convention: CL and V reported as apparent values |
-| IIV CL/F (omega^2 = log(1 + 0.662^2) = 0.36355) | 66.2% CV | Table 3, IIV (Cl/F) row (RSE 19.5%; shrinkage 27.3%) |
-| IIV V2/F (omega^2 = log(1 + 1.13^2)  = 0.82309) | 113% CV  | Table 3, IIV (V2/F) row (RSE 21.3%; shrinkage 30.5%) |
-| Correlation CL/F-V2/F (cov = 0.50388 on log scale) | 0.921    | Table 3, Correlation (Cl/F-V2/F) row (RSE 20.5%) |
-| IIV Ka (omega^2 = log(1 + 0.689^2) = 0.38824) | 68.9% CV | Table 3, IIV (Ka) row (no RSE; shrinkage 73.5%; treated as fixed alongside structural Ka fix) |
-| IIV F (omega^2 = log(1 + 0.540^2) = 0.25599) | 54.0% CV | Table 3, IIV (F) row (RSE 22.7%; shrinkage 38.0%) |
+| IIV CL/F (omega^2 = log(1 + 0.662^2) = 0.36342) | 66.2% CV | Table 3, IIV (Cl/F) row (RSE 19.5%; shrinkage 27.3%) |
+| IIV V2/F (omega^2 = log(1 + 1.13^2)  = 0.82281) | 113% CV  | Table 3, IIV (V2/F) row (RSE 21.3%; shrinkage 30.5%) |
+| Correlation CL/F-V2/F (cov = 0.50364 on log scale) | 0.921    | Table 3, Correlation (Cl/F-V2/F) row (RSE 20.5%) |
+| IIV Ka (omega^2 = log(1 + 0.689^2) = 0.38847) | 68.9% CV | Table 3, IIV (Ka) row (no RSE; shrinkage 73.5%; treated as fixed alongside structural Ka fix) |
+| IIV F (omega^2 = log(1 + 0.540^2) = 0.25588) | 54.0% CV | Table 3, IIV (F) row (RSE 22.7%; shrinkage 38.0%) |
 | IIV rV (omega^2 = log(1 + 0.192^2) = 0.03620) | 19.2% CV | Table 3, IIV (rV) row (RSE 29.8%; shrinkage 45.3%) |
 | `propSdPhaseI`   (intensive Phase I residual error) | 27.8% CV | Table 3, Residual variability PK studies row (RSE 5.29%) |
 | `propSdPhaseIII` (sparse Phase III residual error)  | 56.0% CV | Table 3, Residual variability Efficacy studies row (RSE 5.05%) |

@@ -76,8 +76,8 @@ The table below collects them in one place for review.
 | Centering WT_ref            | 79 kg         | Pooled cohort mean from Table 1 (76.3, 83.9, 78.0 kg averaged across n = 8 per group ~= 79.4 kg).                       |
 | Centering CYP2C19_ref       | 0.769         | Pooled cohort mean S/R-mephenytoin ratio (Areberg 2006 Figure 3 underlying data; not tabulated in the article text).   |
 | IIV V/F (CV 17%)            | 0.02849       | Table 3 V/F IIV column 17% (final model); Results 'For the final model, the variabilities were 17%, 34%, and 148%'.    |
-| IIV CL/F (CV 34%)           | 0.10940       | Table 3 CL/F IIV column 34% (final model).                                                                             |
-| IIV ka (CV 148%)            | 1.16025       | Table 3 ka IIV 148%; Discussion 'k_a values between subjects were allowed to vary because of interindividual variability'. |
+| IIV CL/F (CV 34%)           | 0.10939       | Table 3 CL/F IIV column 34% (final model).                                                                             |
+| IIV ka (CV 148%)            | 1.16015       | Table 3 ka IIV 148%; Discussion 'k_a values between subjects were allowed to vary because of interindividual variability'. |
 | Diagonal omega              | n/a           | Methods 'A diagonal covariance matrix was used; ... covariances between the structural model parameters ... negligible'. |
 | Proportional residual error | 0.096         | Table 3 epsilon_1 (9.6%, RSE 23%); Results 'A proportional model was used for the residual error'.                     |
 | Covariate Eq. 1 (V/F)       | n/a           | Areberg 2006 Results: 'V/F = 8.0*10^2 + 12 * (WT - WT_mean)' (read from the typeset PDF page; the equation does not survive plain-text extraction). |

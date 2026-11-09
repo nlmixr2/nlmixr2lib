@@ -90,9 +90,9 @@ Langenhorst_2019_fludarabine <- function() {
     # (perfect correlation, matching the paper's coding). Log-normal
     # IIV: omega^2 = log(CV^2 + 1).
     #   CL/Q2/Q3 group: 23% CV -> omega^2 = log(0.23^2 + 1) = 0.05155
-    #   V1/V2/V3 group: 48% CV -> omega^2 = log(0.48^2 + 1) = 0.20735
+    #   V1/V2/V3 group: 48% CV -> omega^2 = log(0.48^2 + 1) = 0.20734
     etalcl ~ 0.05155  # Langenhorst 2019 Table 2 IIV CL/Q2/Q3 = 23% CV (95% CI 15-31%, shrinkage 7%); shared across CL, Q2, Q3
-    etalvc ~ 0.20735  # Langenhorst 2019 Table 2 IIV V1/V2/V3 = 48% CV (95% CI 36-60%, shrinkage 15%); shared across V1, V2, V3
+    etalvc ~ log(1 + 0.48^2)  # Langenhorst 2019 Table 2 IIV V1/V2/V3 = 48% CV (95% CI 36-60%, shrinkage 15%); shared across V1, V2, V3
 
     # Residual error. Proportional model on the linear concentration
     # scale (mg/L). Langenhorst 2019 Table 2: 6.3% CV.

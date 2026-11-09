@@ -303,9 +303,9 @@ Yellepeddi_2025_sotalol <- function() {
     # figures, not hand-chosen starting values. The falsifier is the
     # variance block, which S1 could not have matched by chance:
     #   $SIGMA 0.023          vs T2 RUV sigma^2 = 0.0231
-    #   $OMEGA 0.068 (CL)     vs log(1 + 0.266^2) = 0.06837
-    #   $OMEGA 0.21  (Vc)     vs log(1 + 0.481^2) = 0.20811
-    #   $OMEGA 0.23  (Ka)     vs log(1 + 0.505^2) = 0.22715
+    #   $OMEGA 0.068 (CL)     vs log(1 + 0.266^2) = 0.06836
+    #   $OMEGA 0.21  (Vc)     vs log(1 + 0.481^2) = 0.20812
+    #   $OMEGA 0.23  (Ka)     vs log(1 + 0.505^2) = 0.22716
     # All four agree to two significant figures under the log-normal CV
     # convention; none agrees under the alternative reading in which
     # T2's IIV percentages are log-scale standard deviations (which
@@ -400,20 +400,20 @@ Yellepeddi_2025_sotalol <- function() {
     # off-diagonal covariance, so the etas are independent.
     # ==================================================================
 
-    etalka ~ 0.227149
+    etalka ~ log(1 + 0.505^2)
     # Yellepeddi 2025 Table 2 'IIV - Ka (%)' = 50.5 (%RSE 64.6,
-    # shrinkage 24.9%); omega^2 = log(1 + 0.505^2) = 0.227149, matching
+    # shrinkage 24.9%); omega^2 = log(1 + 0.505^2) = 0.227155, matching
     # Datafile S1 $OMEGA 0.23 ; KA.
 
-    etalcl ~ 0.068366
+    etalcl ~ log(1 + 0.266^2)
     # Yellepeddi 2025 Table 2 'IIV - CL(%)' = 26.6 (%RSE 74.3,
-    # shrinkage 24.4%); omega^2 = log(1 + 0.266^2) = 0.068366, matching
+    # shrinkage 24.4%); omega^2 = log(1 + 0.266^2) = 0.068365, matching
     # Datafile S1 $OMEGA 0.068 ; CL. Table S2 shows this fell from 57.6%
     # in the base model once CrCl was added to CL.
 
-    etalvc ~ 0.208106
+    etalvc ~ log(1 + 0.481^2)
     # Yellepeddi 2025 Table 2 'IIV - Vc (%)' = 48.1 (%RSE 90.9,
-    # shrinkage 24.9%); omega^2 = log(1 + 0.481^2) = 0.208106, matching
+    # shrinkage 24.9%); omega^2 = log(1 + 0.481^2) = 0.208120, matching
     # Datafile S1 $OMEGA 0.21 ; V2.
 
     propSd <- 0.151987
