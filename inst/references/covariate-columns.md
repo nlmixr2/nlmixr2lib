@@ -14739,6 +14739,28 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `Mao_2012_vernakalant.R` (carried as a distinct column even though Mao 2012 POOLS ultrarapid with extensive metabolizers in its patient clearance stratum -- the covariate equation applies `theta6 = 0.156` to `(Patient & EM/URM)`, so `CYP2D6_UM` enters clearance only through the pooled term `(1 - DIS_HEALTHY) * (CYP2D6_EM + CYP2D6_UM)` and carries no coefficient of its own. It cannot be folded into `CYP2D6_EM` because that canonical is defined as 0 for ultrarapid metabolizers. All 4 URM subjects (1.3% of the 311 genotyped) were ACT IV patients; no healthy volunteer was a URM, so the paper's healthy-metabolizer coefficient `theta5` is defined for EM only).
 - **Notes:** Fourth member of the `CYP2D6_<phenotype>` paired-binary-indicator family (`CYP2D6_PM`, `CYP2D6_EM`, `CYP2D6_IM`). Registration was pre-authorized by the `CYP2D6_EM` entry, which states that "UM (ultrarapid metabolizer) -- when present in a source cohort -- must be handled by registering an additional paired `CYP2D6_UM` indicator on the same pattern; this is not yet needed for any existing model and is deferred until a UM-aware paper is extracted." Mao 2012 is that UM-aware paper. Which subset of the family a model carries depends on how the source stratifies: `CYP2D6_PM` alone for a binary PM-vs-non-PM dichotomy (Knights 2015), `CYP2D6_PM` + `CYP2D6_EM` with IM as the implicit reference (Sherwin 2012), `CYP2D6_PM` + `CYP2D6_IM` when EM + UM is the pooled reference (Nguyen 2025), and `CYP2D6_PM` + `CYP2D6_EM` + `CYP2D6_UM` when the source resolves the ultrarapid stratum separately or pools it with EM against a third reference group (Mao 2012). Adding `CYP2D6_UM` alongside `CYP2D6_EM` is what lets a model reproduce an EM+UM pooled effect without violating either canonical's definition. Distinct from the continuous `CYP2D6` activity-score canonical, which is the right choice when a source reports a probe-derived continuous activity number (an ultrarapid metabolizer typically maps to an activity score of 2 or above under the CPIC mapping) rather than a categorical phenotype.
 
+### CYP2D6_ASG2 (**canonical for CYP2D6 activity-score group 2 indicator, AS 1-1.5**)
+- **Description:** 1 = subject's CYP2D6 activity score is 1 or 1.5 (extensive metabolizers below an activity score of 2); 0 = otherwise. Time-fixed per subject (germline genotype). One of a pair with `CYP2D6_ASG3` encoding a three-level activity-score grouping: G1 = activity score 0-0.5 (poor plus intermediate metabolizers, the implicit reference with both indicators 0), G2 = activity score 1-1.5 (this indicator), G3 = activity score 2-3 (`CYP2D6_ASG3`).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 together with `CYP2D6_ASG3 = 0` (group G1, activity score 0-0.5).
+- **Source aliases:**
+  - `CYP` = 2 -- Healy 2025 control-stream dataset column `CYP` (values 1 / 2 / 3 for groups G1 / G2 / G3; Table 2 'Phenotypical grouping used as discrete covariates'). `CYP2D6_ASG2 = (CYP == 2)`.
+- **Example models:** `Healy_2025_tramadol.R` (selects the group-specific typical tramadol-to-M1 formation clearance CLPM, 11.4 L/h/70 kg in G2 versus 5.08 in G1 and 14.7 in G3, together with a group-specific IIV variance 0.0915; Healy 2025 Table 5).
+- **Notes:** The activity-score bins cut across the phenotype-class boundaries of the `CYP2D6_PM` / `CYP2D6_IM` / `CYP2D6_EM` / `CYP2D6_UM` family: G2 and G3 both contain extensive metabolizers (split at activity score 2), and G3 pools extensive (AS 2) with ultrarapid (AS > 2) metabolizers, so the phenotype indicators cannot express the grouping. Use this pair only when the source estimates a separate typical value per activity-score bin; a source that uses the activity score as a continuous functional form uses `CYP2D6`, and a phenotype-class grouping uses the `CYP2D6_<phenotype>` indicators. The G1 bin equals `CYP2D6_PM_IM`, but that canonical is not paired with this family because its 0-level pools G2 and G3. Encoded as two binary indicators with an implicit reference, following the Sherwin 2012 / Nguyen 2025 paired-indicator pattern for a three-level categorical. Healy 2025 groups the six observed genotypes following the CPIC codeine classification (ref. 25) because some genotypes had few patients.
+
+### CYP2D6_ASG3 (**canonical for CYP2D6 activity-score group 3 indicator, AS 2-3**)
+- **Description:** 1 = subject's CYP2D6 activity score is 2 or higher (2-3 in the founding source: extensive metabolizers with activity score 2 plus ultrarapid metabolizers); 0 = otherwise. Time-fixed per subject (germline genotype). Paired with `CYP2D6_ASG2`; both 0 is the G1 reference (activity score 0-0.5).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 together with `CYP2D6_ASG2 = 0` (group G1, activity score 0-0.5).
+- **Source aliases:**
+  - `CYP` = 3 -- Healy 2025 control-stream dataset column `CYP`. `CYP2D6_ASG3 = (CYP == 3)`.
+- **Example models:** `Healy_2025_tramadol.R` (group-specific CLPM 14.7 L/h/70 kg with IIV variance 0.00878; Healy 2025 Table 5).
+- **Notes:** See `CYP2D6_ASG2` for the grouping definition and how it differs from the phenotype-class indicators.
+
 ### CYP2D6_STAR10_HET (**canonical for CYP2D6*10 (rs1065852) heterozygote indicator**)
 - **Description:** Binary genotype indicator for the CYP2D6*10 heterozygote group at rs1065852 (the c.100C>T transition in exon 1, P34S substitution). 1 = subject carries exactly one CYP2D6*10 (T) allele (genotype C/T); 0 = otherwise (the union of C/C wild-type homozygotes and T/T homozygous *10 carriers; the paired indicator `CYP2D6_STAR10_HOM` flags the T/T homozygous-mutant group). Time-fixed per subject (germline genotype). Distinct from the broader `CYP2D6_PM` / `CYP2D6_EM` phenotype canonicals above: `CYP2D6_PM` / `CYP2D6_EM` summarise the overall metabolic phenotype across all assayed CYP2D6 alleles, while `CYP2D6_STAR10_HET` / `CYP2D6_STAR10_HOM` resolve just the rs1065852 SNP and are the right canonical when the source paper genotypes only the *10 variant.
 - **Units:** (binary)
@@ -16285,6 +16307,28 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
   - `SLC22A1 -1222AA` -- Wang 2019 Table 4 row `theta SLC22A1-1222 AA on CL/F` and the final-model `E_SLC22A1-1222AA` factor; same orientation as the canonical, no value transformation. Used in `Wang_2019_lamotrigine.R`.
 - **Example models:** `Wang_2019_lamotrigine.R` (fractional multiplicative factor on apparent oral clearance: `cl *= (1 + (-0.525) * SNP_SLC22A1_RS628031_HOM)`, i.e. AA homozygotes clear lamotrigine 52.5% more slowly than the pooled GG + GA reference; Wang 2019 Table 4, %CV 29.5, bootstrap 95% CI -0.79 to -0.19).
 - **Notes:** Auto-approved member of the `SNP_<GENE>_RS<rsid>` family. OCT1 mediates active uptake of lamotrigine into hepatocytes and human brain endothelial cells (Wang 2019 Discussion, citing Dickens 2012), so a loss-of-function variant reduces hepatic delivery and therefore apparent clearance -- the direction observed in the founding model and in Shen 2016. **Nomenclature trap:** Wang 2019's Discussion writes the variant as "1222A>G" while its own Tables 3 and 4 and Methods write "1222G>A"; the genotype frequencies settle it (GG 46.1%, GA 48.3%, AA 5.6% in 89 Han Chinese patients), so A is the minor/variant allele and AA is the rare homozygous-variant stratum. Distinct from the sibling SNP *SLC22A1* 1022C>T (rs2282143), which the same paper screened and rejected. Register a companion `SNP_SLC22A1_RS628031_HET` if a future source estimates a separate heterozygote effect, following the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` precedent.
+
+### OCT1_ASG1 (**canonical for OCT1 (SLC22A1) activity group 1 indicator, one active allele**)
+- **Description:** 1 = subject carries exactly one active (fully functional) *SLC22A1* (OCT1) allele; 0 = otherwise. Time-fixed per subject (germline genotype). One of a pair with `OCT1_ASG2` encoding a three-level grouping by number of active OCT1 alleles: G0 = no active allele (the implicit reference with both indicators 0), G1 = one active allele (this indicator), G2 = two active alleles (`OCT1_ASG2`).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 together with `OCT1_ASG2 = 0` (group G0, no active OCT1 allele).
+- **Source aliases:**
+  - `OCT` = 1 -- Healy 2025 control-stream dataset column `OCT` (values 0 / 1 / 2 for groups G0 / G1 / G2; Table 2 'OCT1 ... 0 active / 1 active / 2 active'). `OCT1_ASG1 = (OCT == 1)`.
+- **Example models:** `Healy_2025_tramadol.R` (selects the group-specific typical O-desmethyltramadol elimination clearance CLMO, 78.7 L/h/70 kg in G1 versus 57.7 in G0 and 62.2 in G2; Healy 2025 Table 5).
+- **Notes:** A composite OCT1 activity grouping (number of active alleles across the loss-of-function *SLC22A1* variants), distinct from the single-SNP `SNP_SLC22A1_RS628031_HOM`, `SNP_SLC22A1_RS683369` and `SNP_SLC22A1_RS2282143` indicators. Two independent indicators are required rather than an active-allele count because the founding source's effect is non-monotonic across the three groups (CLMO 57.7 / 78.7 / 62.2 for 0 / 1 / 2 active alleles). Encoded on the paired-indicator pattern of `CYP2D6_ASG2` / `CYP2D6_ASG3`.
+
+### OCT1_ASG2 (**canonical for OCT1 (SLC22A1) activity group 2 indicator, two active alleles**)
+- **Description:** 1 = subject carries two active (fully functional) *SLC22A1* (OCT1) alleles; 0 = otherwise. Time-fixed per subject (germline genotype). Paired with `OCT1_ASG1`; both 0 is the G0 reference (no active allele).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 together with `OCT1_ASG1 = 0` (group G0, no active OCT1 allele).
+- **Source aliases:**
+  - `OCT` = 2 -- Healy 2025 control-stream dataset column `OCT`. `OCT1_ASG2 = (OCT == 2)`.
+- **Example models:** `Healy_2025_tramadol.R` (group-specific CLMO 62.2 L/h/70 kg; Healy 2025 Table 5).
+- **Notes:** See `OCT1_ASG1` for the grouping definition.
 
 ### SNP_ABCG2_RS2231137_HOM (**canonical for ABCG2 (BCRP) 34G>A (rs2231137, V12M) homozygous-variant indicator**)
 - **Description:** Binary genotype indicator for the homozygous-variant stratum of the *ABCG2* rs2231137 single-nucleotide polymorphism (c.34G>A; exon 2; amino-acid V12M / p.Val12Met; encodes breast cancer resistance protein, BCRP). 1 = subject carries two variant alleles (genotype 34A/A); 0 = otherwise (the union of 34G/G wild-type homozygotes and 34G/A heterozygotes). Recessive-model encoding. Time-fixed per subject (germline genotype).
