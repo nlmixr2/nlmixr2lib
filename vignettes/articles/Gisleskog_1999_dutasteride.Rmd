@@ -66,9 +66,9 @@ Methods Eqs. 1-6 (p54-55) and the residual-error equation from Eq. 8 (p55).
 | `lvmax`  (Vmax)      | `log(0.00591)` mg/h     | Table 1, "Vmax" row: 5.91 ug/h (see "Errata" below) |
 | `lkm`    (Km)        | `log(0.957)` ng/mL      | Table 1, "Km" row |
 | `var(etalka)`        | `log(1 + 0.70^2) = 0.3988` | Table 1, "ka" intersubject CV 70% |
-| `var(etaltlag)`      | `log(1 + 0.38^2) = 0.1350` | Table 1, "tlag" intersubject CV 38% |
-| `var(etalcl)`        | `log(1 + 0.69^2) = 0.3884` | Table 1, "CL_l" intersubject CV 69% |
-| `var(etalvmax)`      | `log(1 + 0.43^2) = 0.1693` | Table 1, "Vmax" intersubject CV 43% |
+| `var(etaltlag)`      | `log(1 + 0.38^2) = 0.1349` | Table 1, "tlag" intersubject CV 38% |
+| `var(etalcl)`        | `log(1 + 0.69^2) = 0.3894` | Table 1, "CL_l" intersubject CV 69% |
+| `var(etalvmax)`      | `log(1 + 0.43^2) = 0.1697` | Table 1, "Vmax" intersubject CV 43% |
 | `var(etalq)`         | `log(1 + 0.62^2) = 0.3253` | Table 1, "Q" intersubject CV 62% |
 | `var(etalvc)`        | `log(1 + 0.32^2) = 0.0975` | Table 1, "Vc" intersubject CV 32% |
 | `var(etalvp)`        | `log(1 + 0.41^2) = 0.1554` | Table 1, "Vp" intersubject CV 41% |

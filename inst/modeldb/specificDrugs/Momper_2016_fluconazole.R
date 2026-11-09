@@ -76,14 +76,14 @@ Momper_2016_fluconazole <- function() {
 
     # IIV (log-normal). NONMEM CV% from Table 3 mapped via omega^2 = log(CV^2 + 1):
     #   V  CV 13% -> omega^2 = log(0.13^2 + 1) = 0.01676
-    #   CL CV 23% -> omega^2 = log(0.23^2 + 1) = 0.05153
-    #   F1 CV 31% -> omega^2 = log(0.31^2 + 1) = 0.09175
+    #   CL CV 23% -> omega^2 = log(0.23^2 + 1) = 0.05155
+    #   F1 CV 31% -> omega^2 = log(0.31^2 + 1) = 0.09176
     # ka has no BSV (Results: "Due to limited numbers of early samples after
     # oral administration in the data set, between-subject variability (BSV)
     # was not estimated for the absorption rate constant (ka).").
-    etalcl     ~ 0.05153                                                                                    # Table 3 omega^2 CL (CV 23%)
+    etalcl     ~ log(1 + 0.23^2)  # Table 3 omega^2 CL (CV 23%)
     etalvc     ~ 0.01676                                                                                    # Table 3 omega^2 V  (CV 13%)
-    etalfdepot ~ 0.09175                                                                                    # Table 3 omega^2 F1 (CV 31%)
+    etalfdepot ~ log(1 + 0.31^2)  # Table 3 omega^2 F1 (CV 31%)
 
     # Combined proportional + additive residual error (Methods:
     # "The initial model used a combined proportional error and additive

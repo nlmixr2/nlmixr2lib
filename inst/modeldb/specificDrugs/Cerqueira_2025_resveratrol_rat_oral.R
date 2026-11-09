@@ -109,16 +109,16 @@ Cerqueira_2025_resveratrol_rat_oral <- function() {
     # typical value, which is what a natural-scale SD does and an omega has
     # no reason to do. See the vignette "Assumptions and deviations"
     # section.
-    #   ka:   0.49 / 1.88  = 26.06% CV -> log(1 + 0.2606^2) = 0.06572437
-    #   V:    5.60 / 22.20 = 25.23% CV -> log(1 + 0.2523^2) = 0.06168871
-    #   k10:  0.09 / 0.43  = 20.93% CV -> log(1 + 0.2093^2) = 0.04287505
-    #   k12:  0.45 / 4.09  = 11.00% CV -> log(1 + 0.1100^2) = 0.01203270
+    #   ka:   0.49 / 1.88  = 26.06% CV -> log(1 + 0.2606^2) = 0.06570568
+    #   V:    5.60 / 22.20 = 25.23% CV -> log(1 + 0.2523^2) = 0.06171136
+    #   k10:  0.09 / 0.43  = 20.93% CV -> log(1 + 0.2093^2) = 0.04287412
+    #   k12:  0.45 / 4.09  = 11.00% CV -> log(1 + 0.1100^2) = 0.01202738
     #   k21:  0.33 / 0.44  = 75.00% CV -> log(1 + 0.7500^2) = 0.44628710
     # ------------------------------------------------------------------
-    etalka  ~ 0.06572437  # Table 1, BSV Oral: ka  = 0.49 (RSE 33%)
-    etalvc  ~ 0.06168871  # Table 1, BSV Oral: V   = 5.60 (RSE 13.6%)
-    etalkel ~ 0.04287505  # Table 1, BSV Oral: k10 = 0.09 (RSE 26.5%)
-    etalk12 ~ 0.01203270  # Table 1, BSV Oral: k12 = 0.45 (RSE 22%)
+    etalka  ~ log(1 + 0.2606^2)  # Table 1, BSV Oral: ka  = 0.49 (RSE 33%)
+    etalvc  ~ log(1 + 0.2523^2)  # Table 1, BSV Oral: V   = 5.60 (RSE 13.6%)
+    etalkel ~ log(1 + 0.2093^2)  # Table 1, BSV Oral: k10 = 0.09 (RSE 26.5%)
+    etalk12 ~ log(1 + 0.1100^2)  # Table 1, BSV Oral: k12 = 0.45 (RSE 22%)
     etalk21 ~ 0.44628710  # Table 1, BSV Oral: k21 = 0.33 (RSE 29.3%)
 
     # ------------------------------------------------------------------

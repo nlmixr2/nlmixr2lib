@@ -80,7 +80,7 @@ Danielak_2020_treosulfan_rat <- function() {
 
     # IIV -- Table 1 reports %CV = sqrt(exp(OMEGA) - 1) * 100 (footnote b);
     # OMEGA = log(1 + (CV/100)^2)
-    etalka ~ 0.38941 # Table 1: omega k12 = 69% CV (RSE 17%); log(1 + 0.69^2) = 0.38941
+    etalka ~ log(1 + 0.69^2)  # Table 1: omega k12 = 69% CV (RSE 17%)
     etalcl ~ 0.00995 # Table 1: omega CL = 10% CV (RSE 35%); log(1 + 0.10^2) = 0.00995
 
     # Residual error -- proportional, fixed to the assay error (Methods,

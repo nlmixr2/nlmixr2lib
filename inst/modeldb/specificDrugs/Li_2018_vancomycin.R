@@ -68,7 +68,7 @@ Li_2018_vancomycin <- function() {
     # IIV as %CV; for log-normal etas omega^2 = log(CV^2 + 1)). V IIV was not
     # estimated because the sparse peak/trough sampling design produced RSE
     # > 50% (Li 2018 Results "Model Building").
-    etalcl ~ 0.1343 # log(0.379^2 + 1); 37.9% CV on CL (RSE 26%)
+    etalcl ~ log(1 + 0.379^2)  # 37.9% CV on CL (RSE 26%)
 
     # Proportional residual error (Li 2018 Results "Model Building": "The
     # residual unexplained variability was described best by a proportional

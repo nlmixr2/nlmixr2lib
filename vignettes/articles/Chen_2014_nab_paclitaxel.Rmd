@@ -44,10 +44,10 @@ Per-parameter origin is recorded as in-file comments alongside each `ini()` entr
 | `lvmax`       | log(8070)    | Table 2: VMEL = 8070 ug/h (95% CI 6500-9836; RSE 10.1%) |
 | `lkmel`       | log(40.2)    | Table 2: KMEL = 40.2 ug/L (95% CI 24.9-58.9; RSE 20.0%) |
 | `e_alb_vmax`  | 0.554        | Table 2: Albumin on VMEL = 0.554 (95% CI 0.15-0.94; RSE 37.5%) |
-| `etalvc`      | 0.1958       | Table 2: V1 IIV = 46.7% CV; log(1 + 0.467^2) |
-| `etalvp`      | 0.0628       | Table 2: V2 IIV = 25.5% CV; log(1 + 0.255^2) |
-| `etalvmtr`    | 0.0688       | Table 2: VMTR IIV = 26.7% CV; log(1 + 0.267^2) |
-| `etalvmax`    | 0.0486       | Table 2: VMEL IIV = 22.3% CV; log(1 + 0.223^2) |
+| `etalvc`      | 0.1973       | Table 2: V1 IIV = 46.7% CV; log(1 + 0.467^2) |
+| `etalvp`      | 0.0630       | Table 2: V2 IIV = 25.5% CV; log(1 + 0.255^2) |
+| `etalvmtr`    | 0.0689       | Table 2: VMTR IIV = 26.7% CV; log(1 + 0.267^2) |
+| `etalvmax`    | 0.0485       | Table 2: VMEL IIV = 22.3% CV; log(1 + 0.223^2) |
 | `expSd`       | 0.265        | Table 2: variance-weighted collapse of subpop1 (38.0%, fraction 0.341) and subpop2 (17.9%, fraction 0.659) -- see Assumptions and deviations |
 | `lmtt`        | log(117)     | Table 2: MTT = 117 h (95% CI 109-125; RSE 3.4%) |
 | `lslope`      | log(0.00253) | Table 2: Slope = 0.00253 ng/mL^-1 (95% CI 0.00216-0.00290; RSE 7.47%) |
@@ -55,8 +55,8 @@ Per-parameter origin is recorded as in-file comments alongside each `ini()` entr
 | `lgamma`      | log(0.187)   | Table 2: Feedback parameter = 0.187 (95% CI 0.171-0.203; RSE 4.44%) |
 | `e_age_slope` | 0.501        | Table 2: Age on drug slope = 0.501 (95% CI 0.172-0.830; RSE 33.5%) |
 | `e_alb_base`  | -0.998       | Table 2: Albumin on baseline ANC = -0.998 (95% CI -1.5 to -0.494; RSE 25.8%) |
-| `etalmtt`     | 0.0353       | Table 2: MTT IIV = 19.0% CV; log(1 + 0.190^2) |
-| `etalslope`   | 0.1697       | Table 2: Slope IIV = 42.9% CV; log(1 + 0.429^2) |
+| `etalmtt`     | 0.0355       | Table 2: MTT IIV = 19.0% CV; log(1 + 0.190^2) |
+| `etalslope`   | 0.1689       | Table 2: Slope IIV = 42.9% CV; log(1 + 0.429^2) |
 | `etalbase`    | 0.1162       | Table 2: Baseline ANC IIV = 35.1% CV; log(1 + 0.351^2) |
 | `expSd_ANC`   | 0.291        | Table 2: PD residual variability = 29.1% CV |
 | Three-compartment PK ODE with MM distribution + MM elimination | n/a | Methods: 'Population PK Model Development and Covariate Analysis'; Figure 1 |

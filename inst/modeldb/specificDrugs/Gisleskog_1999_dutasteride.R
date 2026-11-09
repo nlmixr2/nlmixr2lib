@@ -53,16 +53,16 @@ Gisleskog_1999_dutasteride <- function() {
     # are not reported (diagonal OMEGA in NONMEM). Convert each CV% to a
     # log-normal variance via omega^2 = log(1 + CV^2):
     #   ka     CV 70% -> omega^2 = log(1 + 0.70^2) = 0.3988
-    #   tlag   CV 38% -> omega^2 = log(1 + 0.38^2) = 0.1350
-    #   CL_l   CV 69% -> omega^2 = log(1 + 0.69^2) = 0.3884
-    #   Vmax   CV 43% -> omega^2 = log(1 + 0.43^2) = 0.1693
+    #   tlag   CV 38% -> omega^2 = log(1 + 0.38^2) = 0.1349
+    #   CL_l   CV 69% -> omega^2 = log(1 + 0.69^2) = 0.3894
+    #   Vmax   CV 43% -> omega^2 = log(1 + 0.43^2) = 0.1697
     #   Q      CV 62% -> omega^2 = log(1 + 0.62^2) = 0.3253
     #   Vc     CV 32% -> omega^2 = log(1 + 0.32^2) = 0.0975
     #   Vp     CV 41% -> omega^2 = log(1 + 0.41^2) = 0.1554
     etalka    ~ 0.3988                                                                            # Table 1: ka IIV 70% CV (SE of variability 77%)
-    etaltlag  ~ 0.1350                                                                            # Table 1: tlag IIV 38% CV (SE of variability 53%)
-    etalcl    ~ 0.3884                                                                            # Table 1: CL_l IIV 69% CV (SE of variability 30%)
-    etalvmax  ~ 0.1693                                                                            # Table 1: Vmax IIV 43% CV (SE of variability 26%)
+    etaltlag  ~ log(1 + 0.38^2)  # Table 1: tlag IIV 38% CV (SE of variability 53%)
+    etalcl    ~ log(1 + 0.69^2)  # Table 1: CL_l IIV 69% CV (SE of variability 30%)
+    etalvmax  ~ log(1 + 0.43^2)  # Table 1: Vmax IIV 43% CV (SE of variability 26%)
     etalq     ~ 0.3253                                                                            # Table 1: Q IIV 62% CV (SE of variability 16%)
     etalvc    ~ 0.0975                                                                            # Table 1: Vc IIV 32% CV (SE of variability 19%)
     etalvp    ~ 0.1554                                                                            # Table 1: Vp IIV 41% CV (SE of variability 19%)

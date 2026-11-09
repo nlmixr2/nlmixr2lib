@@ -143,11 +143,11 @@ Watson_2010_liraglutide <- function() {
     # equals P_pop * exp(eta), where eta is normal with mean zero and
     # variance omega^2'; log-normal). Table II reports BSV as CV%; the
     # log-normal variance is omega^2 = log(1 + CV^2):
-    #   BSV CL/F = 37% -> omega^2 = log(1 + 0.37^2) = 0.12833
-    #   BSV V/F  = 47% -> omega^2 = log(1 + 0.47^2) = 0.19960
+    #   BSV CL/F = 37% -> omega^2 = log(1 + 0.37^2) = 0.12831
+    #   BSV V/F  = 47% -> omega^2 = log(1 + 0.47^2) = 0.19959
     # No IIV was reported on kA or T0 in the combined model.
-    etalcl ~ 0.12833  # Table II, All Studies: BSV CL/F = 37% (rSE 16%)
-    etalvc ~ 0.19960  # Table II, All Studies: BSV V/F = 47% (rSE 33%)
+    etalcl ~ log(1 + 0.37^2)  # Table II, All Studies: BSV CL/F = 37% (rSE 16%)
+    etalvc ~ log(1 + 0.47^2)  # Table II, All Studies: BSV V/F = 47% (rSE 33%)
 
     # Residual error (Watson 2010 Methods 'A proportional residual error
     # model as well as the combination of an additive and proportional

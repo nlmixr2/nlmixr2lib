@@ -104,13 +104,13 @@ Bijleveld_2017_gentamicin <- function() {
     # column). Reported as %CV; for log-normal eta the variance on the
     # log scale is omega^2 = log(1 + CV^2).
     #   IIV CL : 33.1% CV  -> log(1 + 0.331^2) = 0.10396
-    #   IIV Vc : 24.4% CV  -> log(1 + 0.244^2) = 0.05784
+    #   IIV Vc : 24.4% CV  -> log(1 + 0.244^2) = 0.05783
     # CL and Vc are correlated (r = 0.08, Results "Pharmacokinetic model"
     # paragraph); the lower-triangular covariance is
     #   cov(CL, Vc) = r * omega_CL * omega_Vc
-    #              = 0.08 * sqrt(0.10396) * sqrt(0.05784) = 0.006204.
+    #              = 0.08 * sqrt(0.10396) * sqrt(0.05783) = 0.006203.
     etalcl + etalvc ~ c(0.10396,
-                        0.006204, 0.05784)  # Bijleveld 2017 Table 3: IIV CL 33.1%, IIV Vc 24.4%, corr 0.08
+                        0.08 * sqrt(0.10396 * log(1 + 0.244^2)), log(1 + 0.244^2))  # Bijleveld 2017 Table 3: IIV CL 33.1%, IIV Vc 24.4%, corr 0.08
     # Q and Vp had no IIV in the final model (Bijleveld 2017 Results
     # "Pharmacokinetic model" paragraph: IIV could be estimated only for
     # CL and Vc).

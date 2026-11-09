@@ -68,8 +68,8 @@ Boer_2015_cisplatin <- function() {
     # and F1 (17%). IIV on V1 and Q was tested but did not improve OFV and
     # was not retained (Boer 2015 Results, "population PK model" section).
     etalcl     ~ 0.016759   # Boer 2015 Suppl Table S1: IIV CL = 13% -> log(1 + 0.13^2) = 0.016759
-    etalvp     ~ 0.047284   # Boer 2015 Suppl Table S1: IIV V2 = 22% -> log(1 + 0.22^2) = 0.047284
-    etalfdepot ~ 0.028471   # Boer 2015 Suppl Table S1: IIV F1 = 17% -> log(1 + 0.17^2) = 0.028471
+    etalvp     ~ log(1 + 0.22^2)  # Boer 2015 Suppl Table S1: IIV V2 = 22%
+    etalfdepot ~ log(1 + 0.17^2)  # Boer 2015 Suppl Table S1: IIV F1 = 17%
 
     # Residual error. Boer 2015 Results, "population PK model" section:
     # "Proportional residual error in the final model was 34%". Suppl Table

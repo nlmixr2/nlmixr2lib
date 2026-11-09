@@ -84,13 +84,13 @@ Li_2017_cediranib <- function() {
 
     # Inter-individual variability -- Li 2017 Table 2 reports IIV as %CV.
     # Convert to log-scale variance via omega^2 = log(CV^2 + 1):
-    #   CL/F : 53.7% CV  -> log(0.537^2 + 1) = 0.2532
-    #   Vc/F : 61.5% CV  -> log(0.615^2 + 1) = 0.3205
+    #   CL/F : 53.7% CV  -> log(0.537^2 + 1) = 0.2534
+    #   Vc/F : 61.5% CV  -> log(0.615^2 + 1) = 0.3208
     #   Ka   : 151%  CV  -> log(1.51^2  + 1) = 1.1879
     # CL/F and Vc/F are correlated (r = 0.839); Ka is independent. Off-diagonal
-    # covariance: cov(CL/F, Vc/F) = 0.839 * sqrt(0.2532) * sqrt(0.3205) = 0.2390.
-    etalcl + etalvc ~ c(0.2532,
-                        0.2390, 0.3205)                                                                        # Li 2017 Table 2 IIV CL/F 53.7%, IIV Vc/F 61.5%, correlation 0.839
+    # covariance: cov(CL/F, Vc/F) = 0.839 * sqrt(0.2534) * sqrt(0.3208) = 0.2392.
+    etalcl + etalvc ~ c(log(1 + 0.537^2),
+                        0.839 * sqrt(log(1 + 0.537^2) * log(1 + 0.615^2)), log(1 + 0.615^2))                                                                        # Li 2017 Table 2 IIV CL/F 53.7%, IIV Vc/F 61.5%, correlation 0.839
     etalka          ~ 1.1879                                                                                   # Li 2017 Table 2 IIV Ka 151%
 
     # Residual unexplained variability -- Li 2017 reports an additive error on

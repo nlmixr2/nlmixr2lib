@@ -130,8 +130,8 @@ Thoueille_2023_lopinavir <- function() {
     # (delta-OFV = 0, p > 0.05)" (Results). The reported percentage is
     # read as the coefficient of variation of a log-normal (exponential)
     # random effect and back-transformed with omega^2 = log(1 + CV^2):
-    #   omega^2 = log(1 + 0.285^2) = 0.078096
-    etalcl ~ 0.078096  # Thoueille 2023 Table 2: BSV on CL_LPV = 28.5%
+    #   omega^2 = log(1 + 0.285^2) = 0.078095
+    etalcl ~ log(1 + 0.285^2)  # Thoueille 2023 Table 2: BSV on CL_LPV = 28.5%
 
     # ---- Residual unexplained variability: combined proportional plus
     # additive ("A combined error model best described LPV residual

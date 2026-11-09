@@ -111,7 +111,7 @@ knitr::kable(
     "Conjugation", "b15 / b16", "1.44 / 0.312 /h", "Suppl Table 3",
     "Deconjugation", "b36 / b37", "0.0431 / 0.0200 /h", "Suppl Table 3",
     "Oral absorption", "Ka", "5.32 /h", "Suppl Table 3",
-    "BSV Ka", "-", "195% CV -> omega^2 = 1.5692", "Suppl Table 3",
+    "BSV Ka", "-", "195% CV -> omega^2 = 1.5691", "Suppl Table 3",
     "BSV f22", "-", "78.1% CV -> omega^2 = 0.4762", "Suppl Table 3",
     "Residual error (healthy)", "-", "prop 88.0 / 62.6 / 71.6%; add 0.546 / 0.675 / 0.469 nM", "Suppl Table 3",
     "Hepatic uptake effect", "-", "-0.132 / -1.86 / -2.37", "Suppl Table 4",

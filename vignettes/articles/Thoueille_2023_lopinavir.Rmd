@@ -73,7 +73,7 @@ collects them in one place for review.
 | `lcl` (`CL_LPV/F`) | 4.02 L/h (RSE 3%) | Table 2, row `CL_LPV (L/h)` |
 | `e_wt_cl` (`theta_BW`) | 0.447 (RSE 14%) | Table 2, row `theta_BW`; reference weight 70 kg per the Table 2 footnote |
 | `cl <- exp(lcl + etalcl) * (1 + e_wt_cl * (WT - 70) / 70)` | n/a | "Final model" equation printed immediately beneath Table 2: `TVCL_LPV = CL_LPV * [1 + theta_BW * (BW - 70) / 70]` |
-| `etalcl` (BSV on CL) | 28.5% CV, encoded as `omega^2 = log(1 + 0.285^2) = 0.078096` | Table 2, `BSV (%)` column on the `CL_LPV` row (RSE 14%) |
+| `etalcl` (BSV on CL) | 28.5% CV, encoded as `omega^2 = log(1 + 0.285^2) = 0.078095` | Table 2, `BSV (%)` column on the `CL_LPV` row (RSE 14%) |
 | No BSV on `V_LPV` or `ka` | n/a | Results: "The assignment of IIV on V_LPV and k_a did not improve data description (delta-OFV = 0, p > 0.05)" |
 | `propSd` | 33.3% (RSE 11%) | Table 2, row `sigma_prop (%)` |
 | `addSd` | 1560 ng/mL = 1.560 mg/L (RSE 1%) | Table 2, row `sigma_add (ng/mL)` |
@@ -575,7 +575,7 @@ in the Table S1 "In-house" row.
   `CL_LPV` as "28.5%" without stating whether the percentage is the standard
   deviation of the log-normal random effect or the coefficient of variation on
   the natural scale. It is read here as a natural-scale CV and back-transformed
-  with `omega^2 = log(1 + CV^2) = 0.078096`, matching the convention used
+  with `omega^2 = log(1 + CV^2) = 0.078095`, matching the convention used
   elsewhere in this registry and by the same Lausanne group in
   `Csajka_2004_indinavir`. The alternative reading (`omega = 0.285`, variance
   0.081225) differs by 2% on the standard-deviation scale and does not affect

@@ -85,9 +85,9 @@ covariate-model column (the "Model Mean" column).
 | `lvc` (Vc)                                        | log(18.7)         | Table 2 row "Vc (L)", Model Mean = 18.7 |
 | `lvp` (Vp)                                        | log(13.2)         | Table 2 row "Vp (L)", Model Mean = 13.2 |
 | `lq`  (Q)                                         | log(21.0)         | Table 2 row "Q (L/h)", Model Mean = 21.0 |
-| `etalcl ~ 0.23560`                                | log(0.516^2 + 1)  | Table 2 row "CL (L/h) BSV (% CV)" = 51.6 |
-| `etalvc ~ 0.19073`                                | log(0.458^2 + 1)  | Table 2 row "Vc (L) BSV (% CV)" = 45.8 |
-| `etalvp ~ 0.07916`                                | log(0.287^2 + 1)  | Table 2 row "Vp (L) BSV (% CV)" = 28.7 |
+| `etalcl ~ 0.23606`                                | log(0.516^2 + 1)  | Table 2 row "CL (L/h) BSV (% CV)" = 51.6 |
+| `etalvc ~ 0.19043`                                | log(0.458^2 + 1)  | Table 2 row "Vc (L) BSV (% CV)" = 45.8 |
+| `etalvp ~ 0.07915`                                | log(0.287^2 + 1)  | Table 2 row "Vp (L) BSV (% CV)" = 28.7 |
 | `propSd <- 0.137`                                 | 0.137             | Table 2 row "RUV (% CV)" = 13.7 |
 | `addSd  <- 2.3`                                   | 2.3 mg/L          | Table 2 row "RUV (SD, mg/L)" = 2.3 |
 | `tvcl <- exp(lcl)*RRT_CRRT_STATUS + e_crcl_cl*crcl_Lh*(1-RRT_CRRT_STATUS)` | n/a | Methods page 5 covariate equation (maintainer-resolved interpretation; see Assumptions) |

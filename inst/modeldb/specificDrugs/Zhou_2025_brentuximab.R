@@ -173,14 +173,14 @@ Zhou_2025_brentuximab <- function() {
     # stream estimates a 3x3 OMEGA BLOCK on ADC CL/Q2/V3 but only the
     # diagonal CV% is reported in Table S1 — see the vignette's Assumptions
     # and deviations section).
-    etalcl  ~ 0.21        # Zhou 2025 Table S1: CL 48.4% CV; omega^2 = log(0.484^2 + 1) = 0.211
-    etalq   ~ 0.353       # Zhou 2025 Table S1: Q2 65.0% CV; omega^2 = log(0.65^2 + 1)  = 0.353
+    etalcl  ~ log(1 + 0.484^2)  # Zhou 2025 Table S1: CL 48.4% CV
+    etalq   ~ log(1 + 0.65^2)  # Zhou 2025 Table S1: Q2 65.0% CV
     etalvp2 ~ 0.31        # Zhou 2025 Table S1: V3 60.3% CV; omega^2 = log(0.603^2 + 1) = 0.310
 
     etalcl_mmae   ~ 0.228      # Zhou 2025 Table S2: CLM 50.6% CV; omega^2 = log(0.506^2 + 1) = 0.228
     etalvc_mmae   ~ 0.494      # Zhou 2025 Table S2: VM 79.9% CV;  omega^2 = log(0.799^2 + 1) = 0.494
     etalkd_mmae   ~ 1.151      # Zhou 2025 Table S2: Kd 147% CV;   omega^2 = log(1.47^2 + 1)  = 1.151
-    etalalfm_mmae ~ 0.582      # Zhou 2025 Table S2: ALFM 88.8% CV; omega^2 = log(0.888^2 + 1) = 0.582
+    etalalfm_mmae ~ log(1 + 0.888^2)  # Zhou 2025 Table S2: ALFM 88.8% CV
 
     # Residual variability (LTBS in NONMEM = proportional in linear space for
     # nlmixr2; %CV from Tables S1 and S2 is the proportional SD on the linear

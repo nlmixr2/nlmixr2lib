@@ -1,0 +1,431 @@
+---
+title: "Polymyxin B murine PK/PD (van der Meijden 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Polymyxin B murine PK/PD (van der Meijden 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("vanderMeijden_2023_polymyxinB"))$reference`
+* Article: [J Antimicrob Chemother 2023;78(3):832-839](https://doi.org/10.1093/jac/dkad022)
+* Supplement (Table S1, Figures S1-S3): <https://doi.org/10.1093/jac/dkad022>
+
+van der Meijden and colleagues characterised the pharmacokinetics and
+pharmacodynamics of polymyxin B in neutropenic-mouse thigh and lung infection
+models for *Escherichia coli* and *Klebsiella pneumoniae*. The paper contributes
+two kinds of model to nlmixr2lib:
+
+1. A **population PK model** (`vanderMeijden_2023_polymyxinB`): a one-compartment,
+   first-order-absorption model for subcutaneous polymyxin B in which apparent
+   clearance and the absorption rate constant both decrease with the dose given
+   at each administration (non-linear PK).
+2. **Ten PK/PD models** that couple the typical PK to an inhibitory sigmoid
+   Emax model of the unbound-AUC-over-MIC index (fAUC0-24/MIC) describing the 24 h
+   change in thigh bacterial burden. Eight come from the dose-response study of
+   `r "Figure 3"` (four *E. coli* and four *K. pneumoniae* isolates); two come
+   from the dose-fractionation study of `r "Figure 2"` (*E. coli* ATCC 25922 and
+   *K. pneumoniae* 104).
+
+The eight dose-response files are suffixed by isolate
+(`vanderMeijden_2023_polymyxinB_EcoliATCC25922`, `..._Ecoli15`, `..._Ecoli51`,
+`..._Ecoli107`, `..._KpneumoniaeATCC43816`, `..._Kpneumoniae17`,
+`..._Kpneumoniae58`, `..._Kpneumoniae74`); the two dose-fractionation files carry
+a `_fractionation` suffix (`..._EcoliATCC25922_fractionation`,
+`..._Kpneumoniae104_fractionation`). The inhibitory sigmoid Emax coefficients
+differ per isolate, so each is a separate file (the same policy as the parallel
+CLSI / EUCAST fits of `Beredaki_2023_micafungin_*`).
+
+# Population
+
+The study used outbred female CD-1 mice (20-25 g, 7-8 weeks old) rendered
+neutropenic with cyclophosphamide and infected 2 h before dosing, either
+intramuscularly in each thigh or intranasally (lung). Polymyxin B was given as a
+single subcutaneous dose over 0.5-64 mg/kg for the PK experiments, and as q6h,
+q12h or q24h regimens (total daily dose 16-512 mg/kg) for the dose-fractionation
+PD study. Plasma was sampled at ten time points per dose level (two mice per time
+point) and assayed by LC-MS/MS (LLOQ 0.2 mg/L); samples below the LLOQ were
+omitted. The unbound fraction in mouse plasma, determined by ultrafiltration with
+correction for non-specific binding, was 20% and independent of concentration
+(Results, "Plasma protein binding"). Model parameters are expressed for a virtual
+1 kg mouse, so clearance and volume are per kg and doses are in mg/kg.
+
+The isolates and their polymyxin B MICs are in Table S1 and Table 2: four
+*E. coli* (ATCC 25922, 15, 51, 107; MIC 1 mg/L) and five *K. pneumoniae* (ATCC
+43816 MIC 0.5; 17 MIC 1; 58 and 74 MIC 2; 104 MIC 1 mg/L), carrying various
+ESBL / carbapenemase resistance mechanisms.
+
+The `population` metadata of each model records these facts programmatically, e.g.
+`readModelDb("vanderMeijden_2023_polymyxinB")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` (ka at 10 mg/kg) | 1.63 /h | Table 1 |
+| `lcl` (CL/F at 10 mg/kg) | 0.384 L/h/kg | Table 1 |
+| `lvc` (Vc/F) | 0.774 L/kg | Table 1 |
+| `e_dose_ka` (power of dose on ka) | -0.407 | Table 1 |
+| `e_dose_cl` (power of dose on CL) | -0.26 | Table 1 |
+| `etalka` (BSV ka) | 79% CV | Table 1 |
+| `etalcl` (BSV CL) | 45% CV | Table 1 |
+| `expSd` (residual) | variance 0.093 | Table 1 |
+| ka, CL dose dependence | `ka = 1.63*(DOSE/10)^-0.407`, `CL = 0.384*(DOSE/10)^-0.26` | Table 1 footnote |
+| `fu` (unbound fraction) | 0.20 | Results, "Plasma protein binding" |
+| MIC per isolate | 0.5-2 mg/L | Table 2, Table S1 |
+| inhibitory sigmoid Emax `e0`, `emax`, `ec50`, `hill` | digitised | Figure 2 (fractionation), Figure 3 (dose-response) |
+| stasis / 1-log / 2-log fAUC/MIC targets | per isolate | Table 2 |
+
+The inhibitory sigmoid Emax coefficients are not printed in the paper (only the
+per-panel R^2 is), so the maintainers recovered them from the fitted curves drawn
+in Figures 2 and 3. For Figure 3 the curves were read back from the PDF vector
+graphics (least-squares residual RMSE 0.002-0.004 log10 cfu over the drawn line);
+for Figure 2 the curves were digitised from the 1400-pixel raster. The recovered
+curves reproduce the paper's own Table 2 targets (see "Reproducing the Table 2
+targets" below), which is the independent check on the digitisation.
+
+# Virtual cohort and PK simulation
+
+```{r cohort}
+# rxode2's simulation RNG is partitioned per solver thread, so a stochastic
+# cohort is not reproducible across thread counts; the PK figures below use the
+# typical-value model (zeroRe) where exact reproducibility is wanted, and a
+# modest stochastic cohort only for the VPC.
+set.seed(20231)
+
+pk <- rxode2::rxode(readModelDb("vanderMeijden_2023_polymyxinB"))
+
+# Single subcutaneous dose over the eight studied dose levels, one subject
+# (one `id`) per dose so the dose levels do not collapse into a single subject
+# receiving all eight doses. DOSE (the dose per administration, a model
+# covariate) must appear on every record; the event columns come before DOSE so
+# rxode2 does not read DOSE as the amount.
+pk_doses <- c(0.5, 1, 2, 4, 8, 16, 32, 64)
+obs_times <- seq(0, 8, by = 0.1)
+make_pk <- function(D, id) {
+  dplyr::bind_rows(
+    tibble(id = id, time = 0, amt = D, evid = 1, cmt = "depot"),
+    tibble(id = id, time = obs_times, amt = NA_real_, evid = 0, cmt = "depot")
+  ) |>
+    dplyr::mutate(dose_mgkg = D, DOSE = D)
+}
+pk_events <- dplyr::bind_rows(
+  lapply(seq_along(pk_doses), function(i) make_pk(pk_doses[i], id = i))
+)
+stopifnot(!anyDuplicated(unique(pk_events[pk_events$evid == 1, c("id", "dose_mgkg")])))
+```
+
+```{r figure-1}
+# Replicates Figure 1 of van der Meijden 2023: typical plasma polymyxin B
+# concentration versus time by dose. Tmax <= 2 h and the peak scales
+# supra-proportionally because CL/F falls with dose.
+sim_pk <- rxode2::rxSolve(
+  rxode2::zeroRe(pk), events = pk_events, keep = "dose_mgkg"
+) |>
+  as.data.frame()
+
+sim_pk |>
+  dplyr::mutate(dose = factor(dose_mgkg, levels = pk_doses)) |>
+  ggplot(aes(time, Cc, colour = dose)) +
+  geom_line() +
+  geom_hline(yintercept = 0.2, linetype = "dashed") +
+  scale_y_log10(limits = c(0.1, 100)) +
+  labs(
+    x = "Time (h)", y = "Polymyxin B (mg/L)", colour = "Dose (mg/kg)",
+    title = "Figure 1 - typical plasma polymyxin B by dose",
+    caption = "Replicates Figure 1 of van der Meijden 2023; dashed line LLOQ 0.2 mg/L."
+  )
+```
+
+```{r figure-1-vpc}
+# A small stochastic cohort per dose for a VPC-style envelope (<= 200/arm).
+make_pop <- function(D, n = 60, id_offset = 0L) {
+  base <- tibble(id = id_offset + seq_len(n), dose_mgkg = D, DOSE = D)
+  ev <- base |>
+    group_by(id) |>
+    reframe(
+      time = c(0, seq(0, 8, by = 0.25)),
+      amt = c(D, rep(NA_real_, length(seq(0, 8, by = 0.25)))),
+      evid = c(1, rep(0, length(seq(0, 8, by = 0.25)))),
+      cmt = "depot",
+      dose_mgkg = dose_mgkg[1], DOSE = DOSE[1]
+    )
+  ev
+}
+pop_events <- dplyr::bind_rows(
+  lapply(seq_along(pk_doses), function(i) make_pop(pk_doses[i], id_offset = (i - 1L) * 60L))
+)
+stopifnot(!anyDuplicated(unique(pop_events[, c("id", "time", "evid")])))
+
+sim_pop <- rxode2::rxSolve(pk, events = pop_events, keep = "dose_mgkg") |>
+  as.data.frame()
+
+# VPC-style envelope (median and 5th-95th percentile) per dose, the summary
+# Figure 1 of van der Meijden 2023 plots as mean +- SD.
+sim_pop |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::group_by(dose_mgkg, time) |>
+  dplyr::summarise(
+    lo = quantile(Cc, 0.05), md = median(Cc), hi = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(dose = factor(dose_mgkg, levels = pk_doses)) |>
+  ggplot(aes(time, md)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = 0.2, linetype = "dashed") +
+  facet_wrap(~dose, ncol = 4) +
+  scale_y_log10(limits = c(0.01, 150)) +
+  labs(
+    x = "Time (h)", y = "Polymyxin B (mg/L)",
+    title = "Figure 1 - simulated exposure envelope by dose (5th-95th percentile)",
+    caption = "Compare Figure 1 of van der Meijden 2023; dashed line LLOQ 0.2 mg/L."
+  )
+```
+
+# NCA validation against the digitised Figure S1
+
+The paper's Figure S1 plots the observed Cmax and AUC for each of the eight
+studied doses. The maintainers digitised those points to provide a numeric check
+on the simulated typical-value PK. We compute Cmax and AUC of the typical-value
+profiles with PKNCA and compare.
+
+```{r pknca}
+# Only `!is.na(Cc)`; keep the time-zero row so AUC0-* anchors correctly.
+sim_nca <- sim_pk |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(treatment = factor(dose_mgkg, levels = pk_doses)) |>
+  dplyr::select(id = dose_mgkg, time, Cc, treatment)
+
+# Guarantee a time=0 row (extravascular pre-dose Cc = 0).
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+
+dose_df <- pk_events |>
+  dplyr::filter(!is.na(amt)) |>
+  dplyr::mutate(treatment = factor(dose_mgkg, levels = pk_doses)) |>
+  dplyr::select(id = dose_mgkg, time, amt, treatment)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+```{r nca_compare}
+# Figure S1 (digitised by the maintainers from the 1400-pixel raster). AUC is
+# total plasma AUC0-inf in mg*h/L; Cmax in mg/L.
+published <- tibble::tribble(
+  ~treatment, ~cmax,  ~aucinf.obs,
+  "0.5",      0.549,  1.24,
+  "1",        0.847,  1.68,
+  "2",        1.39,   2.66,
+  "4",        3.69,   6.97,
+  "8",        2.29,   4.31,
+  "16",       17.9,   51.2,
+  "32",       28.7,   106,
+  "64",       42.5,   252
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "mg/L", aucinf.obs = "mg*h/L"),
+  tolerance_pct = 30
+)
+
+cmp |>
+  dplyr::rename("Dose (mg/kg)" = treatment) |>
+  knitr::kable(
+    caption = paste(
+      "Simulated typical-value NCA versus the digitised Figure S1 observed",
+      "Cmax and AUC. * differs by more than 30%."
+    ),
+    digits = 3
+  )
+```
+
+Figure S1 plots the *observed* Cmax and AUC of individual mice (two per dose),
+whose scatter is real, whereas the simulated values are the typical-value model.
+Seven of the eight doses agree to within about a third. The outlier is the 8
+mg/kg group, whose observed Cmax (2.3 mg/L) sits *below* the 4 mg/kg group (3.7
+mg/L) and well under the dose trend: this below-trend 8 mg/kg thigh profile is
+visible in the main-text Figure 1 as well, so it is a feature of the sparse data
+(two mice per dose, and a between-subject CV of 79% on the absorption rate), not
+an extraction error. The typical-value model is monotonic in dose and therefore
+cannot reproduce that single low group; it reproduces the overall exposure scale
+and the supra-proportional rise with dose. The comparison uses a 30% tolerance
+and is a sanity check on the exposure scale, not a precision claim.
+
+# Reproducing the Table 2 targets
+
+Each PK/PD model couples the typical PK to the inhibitory sigmoid Emax model of
+fAUC0-24/MIC. The internal state `fauc_0_24` integrates the unbound concentration
+over the first 24 h of treatment; `fauc_mic` divides it by the isolate MIC;
+`log_cfu` is the 24 h bacterial burden (start-of-therapy burden plus the Emax
+change `dlog10cfu`). For the dose-response isolates the paper reports the
+fAUC0-24/MIC producing stasis, a 1-log kill and a 2-log kill (Table 2); feeding
+the recovered Emax curve those index values must return 0, -1 and -2 log10 cfu.
+
+```{r table2}
+targets <- tibble::tribble(
+  ~model,                                             ~stasis, ~kill1, ~kill2,
+  "vanderMeijden_2023_polymyxinB_EcoliATCC25922",     95.3,    NA,     NA,
+  "vanderMeijden_2023_polymyxinB_Ecoli15",            102.6,   NA,     NA,
+  "vanderMeijden_2023_polymyxinB_Ecoli51",            31.6,    46.8,   65.3,
+  "vanderMeijden_2023_polymyxinB_Ecoli107",           27.5,    54.5,   NA,
+  "vanderMeijden_2023_polymyxinB_KpneumoniaeATCC43816", 60.5,  NA,     NA,
+  "vanderMeijden_2023_polymyxinB_Kpneumoniae17",      5.9,     NA,     NA,
+  "vanderMeijden_2023_polymyxinB_Kpneumoniae58",      11.6,    25.2,   NA,
+  "vanderMeijden_2023_polymyxinB_Kpneumoniae74",      11.6,    NA,     NA
+)
+
+# Evaluate the Emax curve directly from each model's ini() so the check does
+# not depend on the ODE solve: dlog10cfu(index) = e0 - emax*I^h/(I^h+ec50^h).
+# Read each model's thetas ONCE (parsing a model is expensive) and cache them.
+emax_pars <- lapply(targets$model, function(mn) {
+  th <- rxode2::rxode(readModelDb(mn))$theta
+  list(e0 = exp(th[["le0"]]), emax = exp(th[["lemax"]]),
+       ec50 = exp(th[["lec50"]]), h = exp(th[["lhill"]]))
+})
+names(emax_pars) <- targets$model
+
+emax_change <- function(model_name, index) {
+  p <- emax_pars[[model_name]]
+  p$e0 - p$emax * index^p$h / (index^p$h + p$ec50^p$h)
+}
+
+check <- targets |>
+  rowwise() |>
+  mutate(
+    at_stasis = emax_change(model, stasis),
+    at_kill1 = if (is.na(kill1)) NA_real_ else emax_change(model, kill1),
+    at_kill2 = if (is.na(kill2)) NA_real_ else emax_change(model, kill2)
+  ) |>
+  ungroup()
+
+# Each attained change should match the nominal effect size (0, -1, -2) within
+# the digitisation error of the Figure 3 curves.
+stopifnot(
+  max(abs(check$at_stasis - 0), na.rm = TRUE) < 0.2,
+  max(abs(check$at_kill1 - (-1)), na.rm = TRUE) < 0.2,
+  max(abs(check$at_kill2 - (-2)), na.rm = TRUE) < 0.2
+)
+
+check |>
+  transmute(
+    Isolate = sub("vanderMeijden_2023_polymyxinB_", "", model),
+    `Stasis fAUC/MIC` = stasis, `dlog10cfu @ stasis` = round(at_stasis, 3),
+    `1-log fAUC/MIC` = kill1, `dlog10cfu @ 1-log` = round(at_kill1, 3),
+    `2-log fAUC/MIC` = kill2, `dlog10cfu @ 2-log` = round(at_kill2, 3)
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "The recovered inhibitory sigmoid Emax curve returns the nominal effect",
+      "size at each Table 2 fAUC/MIC target, confirming the digitisation."
+    )
+  )
+```
+
+# Replicating the exposure-response curves (Figures 2 and 3)
+
+```{r figure-3}
+# Replicates Figure 3: dlog10cfu versus fAUC/MIC for each dose-response isolate.
+dose_response_models <- check$model
+index_grid <- 10^seq(-1, 3, length.out = 200)
+
+curves <- dplyr::bind_rows(lapply(dose_response_models, function(mn) {
+  tibble(
+    isolate = sub("vanderMeijden_2023_polymyxinB_", "", mn),
+    fauc_mic = index_grid,
+    dlog10cfu = vapply(index_grid, function(i) emax_change(mn, i), numeric(1))
+  )
+}))
+
+ggplot(curves, aes(fauc_mic, dlog10cfu)) +
+  geom_line() +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  facet_wrap(~isolate, ncol = 4) +
+  scale_x_log10() +
+  labs(
+    x = "fAUC/MIC", y = expression(Delta ~ log[10] ~ cfu),
+    title = "Figure 3 - exposure-response by isolate",
+    caption = "Replicates Figure 3 of van der Meijden 2023 (recovered curves)."
+  )
+```
+
+# Running the full PK/PD model end to end
+
+The PK/PD files are driven by a dosing regimen: the PK layer produces the index
+`fauc_mic`, and `log_cfu` at `t = 24 h` is the predicted 24 h burden. For a
+single dose-response arm (q6h x 4 doses of `D` mg/kg), the attained fAUC/MIC and
+burden change are:
+
+```{r end-to-end}
+pd <- rxode2::rxode(readModelDb("vanderMeijden_2023_polymyxinB_Ecoli51"))
+run_regimen <- function(D) {
+  ev <- as.data.frame(
+    et(amt = D, cmt = "depot", time = seq(0, 18, by = 6)) |> et(24)
+  ) |>
+    dplyr::mutate(DOSE = D)
+  s <- rxode2::rxSolve(pd, ev, atol = 1e-10, rtol = 1e-10, returnType = "data.frame")
+  tail(s, 1)
+}
+end <- dplyr::bind_rows(lapply(c(1, 4, 16, 32), function(D) {
+  r <- run_regimen(D)
+  tibble(dose_q6h = D, fauc_mic_24h = round(r$fauc_mic, 2), dlog10cfu = round(r$log_cfu - 7.6, 3))
+}))
+knitr::kable(end, caption = "E. coli 51: fAUC/MIC and 24 h burden change by q6h dose.")
+```
+
+The 32 mg/kg q6h regimen gives fAUC/MIC near 86, past the isolate's 2-log-kill
+target of 65.3, so the predicted change approaches the -4 log10 cfu floor.
+
+# Assumptions and deviations
+
+- **Inhibitory sigmoid Emax coefficients are figure-derived.** The paper prints
+  only the per-panel R^2, so the maintainers recovered `e0`, `emax`, `ec50` and
+  `hill` from the fitted curves drawn in Figures 2 and 3 (Figure 3 from the PDF
+  vector paths, RMSE 0.002-0.004 log10 cfu; Figure 2 from the 1400-pixel raster).
+  The recovered curves reproduce the paper's Table 2 fAUC/MIC targets to within
+  0.7% (checked in "Reproducing the Table 2 targets").
+- **Lower plateau fixed at -4 for the E. coli dose-response curves.** The free
+  four-parameter read-back returned a bottom of -3.97 to -4.01 log10 cfu for all
+  four *E. coli* isolates, consistent with the GraphPad fit having constrained
+  the bottom to -4 (the paper does not state this). The *K. pneumoniae*
+  dose-response curves plateau above -4 and their bottoms were left free.
+- **Start-of-therapy burden.** `log_cfu` adds the digitised Emax change to the
+  Table 2 start-of-therapy burden for each dose-response isolate (6.8-7.6 log10
+  cfu/thigh); the two dose-fractionation models use the 7.18 log10 cfu/thigh
+  average burden reported in Results ("Dose fractionation study"). These anchor
+  the absolute burden but do not affect the change `dlog10cfu`.
+- **No between-subject variability on the PK/PD models.** The authors computed the
+  fAUC/MIC indices from the *typical* population PK, so the PK/PD files carry no
+  etas; only the standalone population PK model carries the Table 1 BSV on ka and
+  CL. Residual error on `log_cfu` is held at 0 because the paper reports only R^2.
+- **Infection-site covariate omitted.** The paper tested infection site (thigh
+  vs lung) on PK and found no effect (Results, "Pharmacokinetic modelling"), so it
+  is not a model covariate.
+- **PK/PD restricted to the thigh model.** The dose-response and
+  dose-fractionation PD studies were done only in the thigh model; polymyxin B ELF
+  penetration was too low to support a lung-model PD fit (Results, "PK").
+- **No correction notice** for this article was found on the journal landing page
+  or in PubMed/EuropePMC as of 2026-10-26.

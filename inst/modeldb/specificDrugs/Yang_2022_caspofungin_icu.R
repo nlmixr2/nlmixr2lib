@@ -107,7 +107,7 @@ Yang_2022_caspofungin_icu <- function() {
 
     # IIV: Table 3 'Inter-individual variability (%)' read as CV%, omega^2 = log(CV^2 + 1)
     etalcl ~ 0.018061 # Table 3, IIV CL 13.5 -> log(0.135^2 + 1)
-    etalvc ~ 0.037697 # Table 3, IIV V 19.6 -> log(0.196^2 + 1)
+    etalvc ~ log(1 + 0.196^2)  # Table 3, IIV V 19.6
 
     propSd <- 0.243; label("Proportional residual error (fraction)") # Table 3, residual variability 'Proportional (%)' = 24.3
   })

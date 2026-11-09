@@ -89,8 +89,8 @@ review:
 | `allo_cl = fixed(0.75)` | allometric exponent on CL | Methods page 5: "power values were not fixed, but included as additional thetas, did not result in any significant improvement in model fit" |
 | `allo_vc = fixed(1)` | allometric exponent on V | Methods page 5: ditto |
 | `e_dis_hf_or_cardsurg_cl = log(0.463)` | log-scale multiplicative effect of cardiac failure / surgery on CL | Table 2 FINAL: theta(HEART, CL) = 0.463 (RSE 23.5 %); OFV decrease 12.618 (P < 0.001) |
-| `etalcl ~ 0.30828` | IIV CL = 60.1 % CV -> log(1 + 0.601^2) | Table 2 FINAL: IIV CL = 60.1 % (RSE 33.0 %) |
-| `etalvc ~ 0.54382` | IIV V = 85.0 % CV -> log(1 + 0.850^2) | Table 2 FINAL: IIV V = 85.0 % (RSE 44.5 %) |
+| `etalcl ~ 0.30837` | IIV CL = 60.1 % CV -> log(1 + 0.601^2) | Table 2 FINAL: IIV CL = 60.1 % (RSE 33.0 %) |
+| `etalvc ~ 0.54378` | IIV V = 85.0 % CV -> log(1 + 0.850^2) | Table 2 FINAL: IIV V = 85.0 % (RSE 44.5 %) |
 | `propSd = 0.595` | proportional residual SD 59.5 % CV | Table 2 FINAL: residual CV 59.5 % (RSE 13.4 %) |
 | IIV on ka and F1 = 0 | n/a (removed during model building) | Methods page 4: "the IIVs on both bioavailability and absorption rate constant had to be removed for the model to minimize successfully" |
 | Additive residual = 0 | n/a (removed during model building) | Methods page 4: "Simplification of the residual error model was considered during model building by removing the residual variance component that has a value close to zero" |

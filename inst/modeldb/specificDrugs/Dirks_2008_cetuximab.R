@@ -74,22 +74,21 @@ Dirks_2008_cetuximab <- function() {
     e_wt_v1    <- 0.0083; label("Additive linear-deviation coefficient of (WT - 60) on V1 (per kg)")               # Dirks 2008 Table 3-2: theta6 = 0.0083, 90% CI 0.0057-0.0115
 
     # Inter-individual variability (Dirks 2008 Table 3-2, diagonal Omega).
-    # Paper reports BSV as %CV; convert to log-normal variance via
-    # omega^2 = log(CV^2 + 1).
-    # Vmax  15.4% -> log(0.154^2 + 1) = 0.02348
-    # V1    18.6% -> log(0.186^2 + 1) = 0.03410
-    # V2    56.4% -> log(0.564^2 + 1) = 0.27443
-    # Q     97.2% -> log(0.972^2 + 1) = 0.63959
+    # The paper reports BSV as an approximate %CV = sqrt(omega^2) x 100
+    # (Table 3-2 footnote; Table II footnote a of the journal article), so
+    # the variances are taken from the final NONMEM OMEGA matrix printed
+    # in the thesis Appendix A (ETA1 Vmax, ETA2 V1, ETA3 V2, ETA4 Q),
+    # not converted from the CV.
     # BSV on Km was intentionally not estimated in the final model
     # (Chapter 3 Structural Model, p. 50: "K_m parameter was treated as
     # a fixed value across all subjects, which resulted in an OFV increase
     # of only 0.3 points"). etalkm is held at fixed(0) to preserve the
     # published diagonal structure without a spurious Km random effect.
-    etalvmax ~ 0.02348    # Dirks 2008 Table 3-2: omega(Vmax) 15.4% CV, 90% CI 12.0-19.1
+    etalvmax ~ 0.0236     # Dirks 2008 Appendix A OMEGA(1,1) = 2.36E-02; Table 3-2: omega(Vmax) 15.4% CV, 90% CI 12.0-19.1
     etalkm   ~ fixed(0)   # Dirks 2008 Table 3-2: Km BSV not estimated (see p. 50 Structural Model)
-    etalvc   ~ 0.03410    # Dirks 2008 Table 3-2: omega(V1)   18.6% CV, 90% CI 12.5-22.2
-    etalvp   ~ 0.27443    # Dirks 2008 Table 3-2: omega(V2)   56.4% CV, 90% CI 18.0-72.8
-    etalq    ~ 0.63959    # Dirks 2008 Table 3-2: omega(Q)    97.2% CV, 90% CI 40.2-133
+    etalvc   ~ 0.0346     # Dirks 2008 Appendix A OMEGA(2,2) = 3.46E-02; Table 3-2: omega(V1)   18.6% CV, 90% CI 12.5-22.2
+    etalvp   ~ 0.318      # Dirks 2008 Appendix A OMEGA(3,3) = 3.18E-01; Table 3-2: omega(V2)   56.4% CV, 90% CI 18.0-72.8
+    etalq    ~ 0.944      # Dirks 2008 Appendix A OMEGA(4,4) = 9.44E-01; Table 3-2: omega(Q)    97.2% CV, 90% CI 40.2-133
 
     # Residual error. Dirks 2008 fit a log-additive residual (equivalent
     # to a proportional error in linear space) separately for each study

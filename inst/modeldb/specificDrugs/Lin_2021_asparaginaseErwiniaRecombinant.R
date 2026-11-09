@@ -110,13 +110,13 @@ Lin_2021_asparaginaseErwiniaRecombinant <- function() {
     # 'BSV was modeled as exponential'. The column is read as a CV and
     # converted with omega^2 = log(1 + CV^2):
     #   CL: log(1 + 0.1888^2) = 0.03502
-    #   Vd: log(1 + 0.3206^2) = 0.09783
+    #   Vd: log(1 + 0.3206^2) = 0.09784
     # (reading it as 100*omega instead gives 0.03565 and 0.1028; the two
     # readings differ by under 5% at these small magnitudes). No CL-Vd
     # covariance is reported, so the etas are uncorrelated.
     # -----------------------------------------------------------------
     etalcl ~ 0.03502         # Lin 2021 Table 2 (CL BSV 18.88%)
-    etalvc ~ 0.09783         # Lin 2021 Table 2 (Vd BSV 32.06%)
+    etalvc ~ log(1 + 0.3206^2)  # Lin 2021 Table 2 (Vd BSV 32.06%)
 
     # -----------------------------------------------------------------
     # Residual error -- Lin 2021 Table 2 'Error model proportional 20.6%'.
