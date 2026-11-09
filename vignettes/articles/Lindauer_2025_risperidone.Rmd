@@ -519,7 +519,9 @@ stopifnot(
 )
 ```
 
-The first-dose peaks and the rapid onset of D2RO match Figure S5. The
+The first-dose peak, pooled over both doses after dose normalisation, is
+within about 10% of Figure S5, and the median D2RO passes 65% within the
+first one to two hours, as in the figure. The
 troughs, and the accumulation over the week, are lower than in Figure S5: the
 median concentration falls by about a factor of three between the first-dose
 peak and 24 h in this implementation and by about a factor of two in the
