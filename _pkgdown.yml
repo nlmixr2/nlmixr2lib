@@ -6578,6 +6578,10 @@ navbar:
         href: articles/Purohit_2023_ritlecitinib.html
       - text: "Ritlecitinib base (Wojciechowski 2023)"
         href: articles/Wojciechowski_2023_ritlecitinib.html
+      - text: "Ritlecitinib eyebrow (Wang 2025)"
+        href: articles/Wang_2025_ritlecitinib_eyebrow_eyelash.html
+      - text: "Ritlecitinib eyelash (Wang 2025)"
+        href: articles/Wang_2025_ritlecitinib_eyebrow_eyelash.html
       - text: "Ritlecitinib final (Wojciechowski 2023)"
         href: articles/Wojciechowski_2023_ritlecitinib.html
       - text: "Ritlecitinib updated (Wojciechowski 2023)"
@@ -11283,6 +11287,7 @@ articles:
   - articles/Wang_2024_tacrolimus
   - articles/Wang_2024_valproic_acid
   - articles/Wang_2024_voriconazole
+  - articles/Wang_2025_ritlecitinib_eyebrow_eyelash
   - articles/Wang_2025_rivaroxaban
   - articles/Wang_2025_serplulimab
   - articles/Wang_2025_somatrogon

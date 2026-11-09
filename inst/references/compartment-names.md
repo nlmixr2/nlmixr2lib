@@ -1213,6 +1213,26 @@ These four outputs are the component scores of the NASH Clinical Research Networ
 
 ---
 
+## Alopecia areata hair-regrowth ordinal scores
+
+Clinician-rated ordinal scores of eyebrow and eyelash hair loss used in alopecia areata trials. Each is a four-level numeric rating scale, 0 = none, 1 = minimal, 2 = moderate, 3 = normal (Wang 2025 Section 2.2), so a model of one of them is an ordinal (cumulative-probit or proportional-odds) model whose observation is the rxode2 ordinal endpoint `<score> ~ c(p0, p1, p2)`: the simulated value is a category (category `k` is score `k - 1`) and the per-score probabilities `p0`-`p3` are the outputs to summarise. Higher is better, the opposite direction from a hair-loss severity score. The scalp counterpart, the continuous Severity of Alopecia Tool (SALT) score, is not an ordinal output and is not covered here.
+
+### eyebrow_assessment (**canonical eyebrow assessment (EBA) score output**)
+- **Type:** compartment
+- **Role:** Eyebrow assessment score 0-3: 0 no eyebrows, 1 minimal, 2 moderate, 3 normal eyebrows (Wang 2025 Section 2.2). Ordinal PD output.
+- **Source aliases:** `EBA` -- Wang 2025.
+- **Example models:** `Wang_2025_ritlecitinib_eyebrow.R`.
+- **Notes:** Spelled out rather than the clinical acronym `EBA`, following the spelled-out form for new output names.
+
+### eyelash_assessment (**canonical eyelash assessment (ELA) score output**)
+- **Type:** compartment
+- **Role:** Eyelash assessment score 0-3: 0 no eyelashes, 1 minimal, 2 moderate, 3 normal eyelashes (Wang 2025 Section 2.2). Ordinal PD output.
+- **Source aliases:** `ELA` -- Wang 2025.
+- **Example models:** `Wang_2025_ritlecitinib_eyelash.R`.
+- **Notes:** Spelled out rather than the clinical acronym `ELA`, following the spelled-out form for new output names.
+
+---
+
 ## Body-weight PD output
 
 ### bw (**canonical body-weight PD output**)
