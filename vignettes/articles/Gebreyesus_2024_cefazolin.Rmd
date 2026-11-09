@@ -76,7 +76,7 @@ The same information is available programmatically via
 | `vc`, `vp` `= TV (WT/10)` | n/a | Results equation; S3 `TVV`, `TVV2` |
 | `q = TVQ (WT/10)^0.75` (no BSV) | n/a | S3 `TVQ`, `Q = TVQ` |
 | circuit flow `336 (WT/70)^0.75 x 0.679` | n/a | Results; S3 `Q2 = TVQ2*THETA(8)` |
-| circuit volume `CPB_PRIME_VOL x 0.679` | n/a | S3 `V3 = VCPB0*THETA(8)` |
+| circuit volume `CIRCUIT_PRIME_VOL x 0.679` | n/a | S3 `V3 = VCPB0*THETA(8)` |
 | `d/dt(...)` with the circuit terms gated by the CPB switch | n/a | S3 `$DES` |
 | eGFR `0.413 x HT / SCr` | n/a | S1 Eq. 1; S3 `CRCL_SCHW` |
 | `Cc ~ add + prop, combined2` | n/a | S3 `W = SQRT(ADD**2+PROP**2)` |
@@ -96,7 +96,7 @@ mod_typical <- rxode2::zeroRe(mod)
 typical_params <- function(WT, CRCL) {
   ev <- data.frame(
     id = seq_along(WT), time = 0, evid = 0L, amt = 0, cmt = "central",
-    WT = WT, CRCL = CRCL, CPB_ON = 0L, CPB_REWARM = 0L, CPB_PRIME_VOL = 0.4
+    WT = WT, CRCL = CRCL, CPB_ON = 0L, CPB_REWARM = 0L, CIRCUIT_PRIME_VOL = 0.4
   )
   sim <- as.data.frame(rxode2::rxSolve(mod_typical, ev, returnType = "data.frame"))
   # rxSolve drops the id column when there is a single subject
@@ -201,7 +201,7 @@ make_events <- function(doses, WT, CRCL, prime, obs_times, id = 1L) {
   obs <- data.frame(time = obs_times, evid = 0L, amt = 0, rate = 0, cmt = "central")
   dplyr::bind_rows(doses, obs) |>
     dplyr::mutate(
-      id = id, WT = WT, CRCL = CRCL, CPB_PRIME_VOL = prime,
+      id = id, WT = WT, CRCL = CRCL, CIRCUIT_PRIME_VOL = prime,
       CPB_ON = cpb_switch(time), CPB_REWARM = 0L
     ) |>
     dplyr::arrange(time, dplyr::desc(evid))

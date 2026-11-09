@@ -94,14 +94,14 @@ Gebreyesus_2024_cefazolin <- function() {
       ),
       source_name = "SWITCH (CPB_ON in $PK)"
     ),
-    CPB_PRIME_VOL = list(
+    CIRCUIT_PRIME_VOL = list(
       description = "Cardiopulmonary bypass circuit priming volume",
       units = "L",
       type = "continuous",
       reference_category = NULL,
       notes = paste(
         "Per-subject priming fluid volume of the CPB circuit; the circuit",
-        "compartment volume is CPB_PRIME_VOL x 0.679 (control stream",
+        "compartment volume is CIRCUIT_PRIME_VOL x 0.679 (control stream",
         "V3 = VCPB0*THETA(8)). Median 0.40 (range 0.25-0.55) L in the study",
         "cohort (Table 2). The paper's simulations used the hospital's",
         "standard: 0.4 L for infants < 10 kg, 0.6 L for 10-20 kg and 0.8 L",
@@ -184,7 +184,7 @@ Gebreyesus_2024_cefazolin <- function() {
 
     # S3: Q2 = THETA(7) * (WTKG/70)**0.75 * THETA(8); V3 = VCPB0 * THETA(8)
     qcircuit <- qbfr * (WT / 70)^e_wt_cl_q * fcircuit
-    vcircuit <- CPB_PRIME_VOL * fcircuit
+    vcircuit <- CIRCUIT_PRIME_VOL * fcircuit
 
     kel <- cl / vc
     k12 <- q / vc
