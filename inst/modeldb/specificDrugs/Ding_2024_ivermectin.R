@@ -74,20 +74,20 @@ Ding_2024_ivermectin <- function() {
       notes = "Linear spline with a cut-off at 20 years on the death rate of virus-producing cells and on the baseline NS1 elimination rate; no effect above 20 years. The NONMEM $INPUT comment labels AGE as months, but the 20-year cut-off in the text and Tables 1-2 is in years.",
       source_name = "AGE"
     ),
-    DENV_SERO1 = list(
+    DENV_SEROTYPE1 = list(
       description = "Infecting dengue virus serotype 1 indicator (1 = DENV-1, 0 = other serotype)",
       units = "(binary)",
       type = "binary",
-      reference_category = "0 (serotype 2 or 4; DENV_SERO1 = DENV_SERO3 = 0)",
-      notes = "Derived from the source SERO column: DENV_SERO1 = (SERO == 1). Multiplies the log10 exponent of beta and p.",
+      reference_category = "0 (serotype 2 or 4; DENV_SEROTYPE1 = DENV_SEROTYPE3 = 0)",
+      notes = "Derived from the source SERO column: DENV_SEROTYPE1 = (SERO == 1). Multiplies the log10 exponent of beta and p.",
       source_name = "SERO"
     ),
-    DENV_SERO3 = list(
+    DENV_SEROTYPE3 = list(
       description = "Infecting dengue virus serotype 3 indicator (1 = DENV-3, 0 = other serotype)",
       units = "(binary)",
       type = "binary",
-      reference_category = "0 (serotype 2 or 4; DENV_SERO1 = DENV_SERO3 = 0)",
-      notes = "Derived from the source SERO column: DENV_SERO3 = (SERO == 3). Multiplies the log10 exponent of beta and p.",
+      reference_category = "0 (serotype 2 or 4; DENV_SEROTYPE1 = DENV_SEROTYPE3 = 0)",
+      notes = "Derived from the source SERO column: DENV_SEROTYPE3 = (SERO == 3). Multiplies the log10 exponent of beta and p.",
       source_name = "SERO"
     ),
     DENV_PRIMARY = list(
@@ -98,12 +98,12 @@ Ding_2024_ivermectin <- function() {
       notes = "Derived from the source TYPE column (1 = primary, 2 = secondary): DENV_PRIMARY = (TYPE == 1). Proportional effect on ET50 of NS1 secretion.",
       source_name = "TYPE"
     ),
-    NS1_IGG_LN = list(
-      description = "Natural logarithm of the NS1-specific IgG level measured on day 5 after fever onset",
-      units = "ln(relative units)",
+    ABNS1_IGG = list(
+      description = "NS1-specific IgG level measured on day 5 after fever onset",
+      units = "relative units (normalised to pooled convalescent sera)",
       type = "continuous",
       reference_category = NULL,
-      notes = "One measurement per patient (day 5 after fever onset), treated as time-fixed. Anti-NS1 IgG reported in relative units normalised to pooled convalescent sera. Enters the NS1 elimination rate only above the cut-off of 4.",
+      notes = "One measurement per patient (day 5 after fever onset), treated as time-fixed. The source dataset column IGGN carries the natural log; supply the linear level here (ABNS1_IGG = exp(IGGN)). Enters the NS1 elimination rate only above the cut-off ln(ABNS1_IGG) = 4, i.e. ABNS1_IGG = exp(4) = 54.6 relative units.",
       source_name = "IGGN"
     )
   )
@@ -118,22 +118,97 @@ Ding_2024_ivermectin <- function() {
     transit6 = list(analyte = "ivermectin", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "ivermectin", units = "mg", specimen = "plasma", verified = TRUE),
     peripheral1 = list(analyte = "ivermectin", units = "mg", specimen = "plasma", verified = TRUE),
-    target = list(analyte = "uninfected target cells (monocytes)", units = "cells/mL", specimen = "blood cell", verified = TRUE),
-    eclipse1 = list(analyte = "infected, not yet virus-producing cells", units = "cells/mL", specimen = "blood cell", verified = TRUE),
-    eclipse2 = list(analyte = "infected, not yet virus-producing cells", units = "cells/mL", specimen = "blood cell", verified = TRUE),
-    eclipse3 = list(analyte = "infected, not yet virus-producing cells", units = "cells/mL", specimen = "blood cell", verified = TRUE),
-    eclipse4 = list(analyte = "infected, not yet virus-producing cells", units = "cells/mL", specimen = "blood cell", verified = TRUE),
-    infected = list(analyte = "virus-producing infected cells", units = "cells/mL", specimen = "blood cell", verified = TRUE),
+    target = list(
+      analyte = "uninfected target cells (monocytes)",
+      units = "cells/mL",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    eclipse1 = list(
+      analyte = "infected, not yet virus-producing cells",
+      units = "cells/mL",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    eclipse2 = list(
+      analyte = "infected, not yet virus-producing cells",
+      units = "cells/mL",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    eclipse3 = list(
+      analyte = "infected, not yet virus-producing cells",
+      units = "cells/mL",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    eclipse4 = list(
+      analyte = "infected, not yet virus-producing cells",
+      units = "cells/mL",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
+    infected = list(
+      analyte = "virus-producing infected cells",
+      units = "cells/mL",
+      specimen = "blood cell",
+      verified = TRUE
+    ),
     virus = list(analyte = "dengue virus RNA", units = "copies/mL", specimen = "plasma", verified = TRUE),
-    ns1_transit1 = list(analyte = "NS1 secretion delay state", units = "cells*day/mL", specimen = "not applicable", verified = TRUE),
-    ns1_transit2 = list(analyte = "NS1 secretion delay state", units = "cells*day/mL", specimen = "not applicable", verified = TRUE),
-    ns1_transit3 = list(analyte = "NS1 secretion delay state", units = "cells*day/mL", specimen = "not applicable", verified = TRUE),
-    ns1_transit4 = list(analyte = "NS1 secretion delay state", units = "cells*day/mL", specimen = "not applicable", verified = TRUE),
-    ns1_transit5 = list(analyte = "NS1 secretion delay state", units = "cells*day/mL", specimen = "not applicable", verified = TRUE),
-    ns1_transit6 = list(analyte = "NS1 secretion delay state", units = "cells*day/mL", specimen = "not applicable", verified = TRUE),
-    ns1_transit7 = list(analyte = "NS1 secretion delay state", units = "cells*day/mL", specimen = "not applicable", verified = TRUE),
-    ns1_transit8 = list(analyte = "NS1 secretion delay state", units = "cells*day/mL", specimen = "not applicable", verified = TRUE),
-    ns1_transit9 = list(analyte = "NS1 secretion delay state", units = "cells*day/mL", specimen = "not applicable", verified = TRUE),
+    ns1_transit1 = list(
+      analyte = "NS1 secretion delay state",
+      units = "cells*day/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    ns1_transit2 = list(
+      analyte = "NS1 secretion delay state",
+      units = "cells*day/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    ns1_transit3 = list(
+      analyte = "NS1 secretion delay state",
+      units = "cells*day/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    ns1_transit4 = list(
+      analyte = "NS1 secretion delay state",
+      units = "cells*day/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    ns1_transit5 = list(
+      analyte = "NS1 secretion delay state",
+      units = "cells*day/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    ns1_transit6 = list(
+      analyte = "NS1 secretion delay state",
+      units = "cells*day/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    ns1_transit7 = list(
+      analyte = "NS1 secretion delay state",
+      units = "cells*day/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    ns1_transit8 = list(
+      analyte = "NS1 secretion delay state",
+      units = "cells*day/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
+    ns1_transit9 = list(
+      analyte = "NS1 secretion delay state",
+      units = "cells*day/mL",
+      specimen = "not applicable",
+      verified = TRUE
+    ),
     ns1 = list(analyte = "dengue non-structural protein 1 (NS1)", units = "ng/mL", specimen = "plasma", verified = TRUE)
   )
 
@@ -208,25 +283,26 @@ Ding_2024_ivermectin <- function() {
     lec50_ivm <- log(67.5); label("Ivermectin concentration giving half-maximal NS1 inhibition EC50 (ng/mL)") # Table 2 'EC50 of ivermectin concentration (ng/mL)' = 67.5
 
     # IIV: variances from the reported CV% as omega^2 = log(1 + CV^2)
-    etalcl ~ 0.05876 # Table S3 CL/F CV 24.6%
-    etalq ~ 0.18966 # Table S3 Q/F CV 45.7%
-    etalmtt ~ 0.09518 # Table S3 MTT CV 31.6%
-    etalfdepot ~ 0.21362 # Table S3 F CV 48.8%
-    etalbeta ~ 0.22710 # Table 1 beta CV 50.5% (NONMEM $OMEGA 0.227)
-    etaldelta ~ 0.11490 # Table 1 delta CV 34.9% (NONMEM $OMEGA 0.115)
-    etalemax_igm ~ 0.32708 # Table S4 IgM Emax CV 62.2%
-    etalet50_igm ~ 0.00789 # Table S4 IgM ET50 CV 8.9%
-    etalhill_igm ~ 0.04275 # Table S4 IgM Hill CV 20.9%
-    etalet50_igg ~ 0.05691 # Table S4 IgG ET50 CV 24.2%
-    etalhill_igg ~ 0.23119 # Table S4 IgG Hill CV 51.0%
-    etalktr_ns1 ~ 0.13422 # Table 2 KTR CV 37.9%
-    etalet50_ns1 ~ 0.01780 # Table 2 ET50,NS1 CV 13.4%
-    etalkbase_ns1 ~ 0.59629 # Table 2 k base CV 90.3%
+    # (Table S3 / S4 notes: CV = 100 x sqrt(exp(variance) - 1))
+    etalcl ~ log(1 + 0.246^2) # Table S3 CL/F CV 24.6%
+    etalq ~ log(1 + 0.457^2) # Table S3 Q/F CV 45.7%
+    etalmtt ~ log(1 + 0.316^2) # Table S3 MTT CV 31.6%
+    etalfdepot ~ log(1 + 0.488^2) # Table S3 F CV 48.8%
+    etalbeta ~ log(1 + 0.505^2) # Table 1 beta CV 50.5% (NONMEM $OMEGA 0.227)
+    etaldelta ~ log(1 + 0.349^2) # Table 1 delta CV 34.9% (NONMEM $OMEGA 0.115)
+    etalemax_igm ~ log(1 + 0.622^2) # Table S4 IgM Emax CV 62.2%
+    etalet50_igm ~ log(1 + 0.089^2) # Table S4 IgM ET50 CV 8.9%
+    etalhill_igm ~ log(1 + 0.209^2) # Table S4 IgM Hill CV 20.9%
+    etalet50_igg ~ log(1 + 0.242^2) # Table S4 IgG ET50 CV 24.2%
+    etalhill_igg ~ log(1 + 0.510^2) # Table S4 IgG Hill CV 51.0%
+    etalktr_ns1 ~ log(1 + 0.379^2) # Table 2 KTR CV 37.9%
+    etalet50_ns1 ~ log(1 + 0.134^2) # Table 2 ET50,NS1 CV 13.4%
+    etalkbase_ns1 ~ log(1 + 0.903^2) # Table 2 k base CV 90.3%
 
     # Residual error: additive on log-transformed observations
     expSd <- 0.251; label("Residual error on log ivermectin concentration (SD, log scale)") # Table S3 'Residual error (%)' = 25.1
-    expSd_viral_load <- 1.1446; label("Residual error on log viral load (SD, log scale)") # Table 1 'Residual error' = 1.31 = NONMEM $SIGMA (variance); SD = sqrt(1.31)
-    expSd_ns1 <- 1.0724; label("Residual error on log NS1 (SD, log scale)") # Table 2 'Residual error' = 1.15 = NONMEM $SIGMA (variance); SD = sqrt(1.15)
+    expSd_viral_load <- sqrt(1.31); label("Residual error on log viral load (SD, log scale)") # Table 1 'Residual error' = 1.31 = NONMEM $SIGMA (variance); SD = sqrt(1.31)
+    expSd_ns1 <- sqrt(1.15); label("Residual error on log NS1 (SD, log scale)") # Table 2 'Residual error' = 1.15 = NONMEM $SIGMA (variance); SD = sqrt(1.15)
     expSd_igm_denv <- 0.426; label("Residual error on log dengue-specific IgM (SD, log scale)") # Table S4 IgM 'RUV (%CV)' = 42.6
     expSd_igg_denv <- 0.273; label("Residual error on log dengue-specific IgG (SD, log scale)") # Table S4 IgG 'RUV (%CV)' = 27.3
   })
@@ -260,8 +336,8 @@ Ding_2024_ivermectin <- function() {
 
     # Viral kinetics; serotype effects multiply the log10 exponent of beta and
     # p, as in the NONMEM code (TVBETA = THETA(1) * CSERO1; BETA = 10**TVBETA)
-    beta <- exp(lbeta * (1 + e_sero1_beta * DENV_SERO1 + e_sero3_beta * DENV_SERO3) + etalbeta)
-    p <- exp(lp * (1 + e_sero1_p * DENV_SERO1 + e_sero3_p * DENV_SERO3))
+    beta <- exp(lbeta * (1 + e_sero1_beta * DENV_SEROTYPE1 + e_sero3_beta * DENV_SEROTYPE3) + etalbeta)
+    p <- exp(lp * (1 + e_sero1_p * DENV_SEROTYPE1 + e_sero3_p * DENV_SEROTYPE3))
     delta <- exp(ldelta + etaldelta) * (1 + e_age_delta * (min(AGE, 20) - 20))
     cvir <- exp(lcvir)
     kab <- exp(lkab)
@@ -277,7 +353,7 @@ Ding_2024_ivermectin <- function() {
     kp_ns1 <- emax_ns1 * t^gam_ns1 / (t^gam_ns1 + et50_ns1^gam_ns1)
     # Elimination rises linearly with time once ln(NS1-specific IgG) exceeds 4
     kb_ns1 <- (exp(lkbase_ns1) * (1 + e_age_kbase * (min(AGE, 20) - 20)) +
-      e_ns1igg_kb * t * max(NS1_IGG_LN - 4, 0)) * exp(etalkbase_ns1)
+      e_ns1igg_kb * t * max(log(ABNS1_IGG) - 4, 0)) * exp(etalkbase_ns1)
     ec50_ivm <- exp(lec50_ivm)
 
     d/dt(depot) <- -ktr * depot

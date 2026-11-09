@@ -3902,6 +3902,8 @@ navbar:
         href: articles/Vonk_2025_tezacaftor_ivacaftor.html
       - text: "Ivermectin (Alshehri 2023)"
         href: articles/Alshehri_2023_ivermectin.html
+      - text: "Ivermectin (Ding 2024)"
+        href: articles/Ding_2024_ivermectin.html
       - text: "Ivermectin (Fimbo 2023)"
         href: articles/Fimbo_2023_ivermectin.html
       - text: "Ivermectin (Gwee 2020)"
@@ -9231,6 +9233,7 @@ articles:
   - articles/Dimelow_2018_ceftazidime_avibactam_elf
   - articles/Ding_2020_amodiaquine
   - articles/Ding_2024_antimalarials_pregnancy
+  - articles/Ding_2024_ivermectin
   - articles/Ding_2026_artemether_lumefantrine_amodiaquine
   - articles/Ding_2026_vancomycin
   - articles/Dings_2026_cafedrine_theodrenaline_ephedrine
