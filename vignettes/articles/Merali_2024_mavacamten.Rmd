@@ -102,15 +102,16 @@ ref_lvef <- tidyr::expand_grid(
   STUDY_EXPLORERHCM = c(1, 0), CAV = cav_grid
 ) |>
   mutate(
-    id = as.integer(2 - STUDY_EXPLORERHCM), time = 0, evid = 0L,
+    id = 1L, evid = 0L,
     LVEF_BL = 74, DIS_HCM_NONOBSTRUCTIVE = 0, SEXF = 0
   ) |>
-  arrange(id, CAV) |>
+  arrange(desc(STUDY_EXPLORERHCM), CAV) |>
+  mutate(time = seq_len(n())) |>
   as.data.frame()
 
-# Time does not enter the LVEF model, so each grid point is a separate record
-# at one nominal time; ordering by id keeps rxode2's per-subject sort stable.
-ref_lvef$time <- ave(seq_len(nrow(ref_lvef)), ref_lvef$id, FUN = seq_along)
+# Time does not enter the LVEF model, so the whole grid is one typical patient
+# observed at successive nominal times; the efficacy grid sits at week 1000,
+# where the placebo effect has reached PBOMAX.
 ref_vlvotg$time <- 1000 + seq_len(nrow(ref_vlvotg)) * 1e-6
 
 sim_ref_v <- rxode2::rxSolve(rxode2::zeroRe(mod_vlvotg), ref_vlvotg, keep = "CAV") |>
@@ -277,7 +278,7 @@ pk_events <- bind_rows(dose_rows, obs_rows) |>
 
 ```{r pk-simulate}
 mod_pk <- readModelDb("Chang_2024_mavacamten")
-sim_pk <- rxode2::rxSolve(mod_pk, events = pk_events, keep = "id") |>
+sim_pk <- rxode2::rxSolve(mod_pk, events = pk_events) |>
   as.data.frame() |>
   left_join(cohort |> select(id, phenotype), by = "id")
 ```
