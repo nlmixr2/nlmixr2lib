@@ -62,7 +62,7 @@ Senek_2020_levodopa <- function() {
     e_wt_vc <- fixed(1); label("Allometric exponent of body weight on V/F (unitless)") # Methods 'Model development': allometric exponent 1 for V/F
     e_conmed_entacapone_cl <- -0.365; label("Fractional shift in CL/F during LECIG (entacapone) infusion (unitless)") # Table 2 'CL/F LECIG,Shift -0.365 (5.24)'
 
-    etalcl ~ 0.07497 # Table 2 'IIV CL/F,LCIG 27.9 (19.8)' CV%; log(0.279^2 + 1)
+    etalcl ~ log(1 + 0.279^2)  # Table 2 'IIV CL/F,LCIG 27.9 (19.8)' CV%
     etae_conmed_entacapone_cl ~ 0.01291 # Table 2 'IIV CL/F,LECIG,Shift 11.4 (23.5)' CV%; log(0.114^2 + 1); exponential on the shift, footnote a
     etalvc ~ 0.1118 # Table 2 'IIV VC 34.4 (17.0)' CV%; log(0.344^2 + 1)
 

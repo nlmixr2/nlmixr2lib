@@ -81,6 +81,18 @@ below collects them in one place for review.
 | `propSd` (proportional residual error, fraction) | 0.275 | Table 2, "Proportional (%)" row, Final model |
 | `addSd` (additive residual error, mg/L) | 0.04 | Table 2, "Additive (mg/liter)" row, Final model |
 
+# Errata
+
+- **The published CVs are first-order approximations.** The
+  Methods (after Eq. 1) give each parameter "a variance of omega^2 BSV_P,
+  where the square root of the variance represents the reported BSV". Each
+  printed BSV is therefore the standard deviation of the corresponding
+  random effect, and the model's variances are the squares of the printed
+  CVs (for example `etalvp ~ 0.624^2` for the 62.4% BSV on V2), not the
+  exact log-normal conversion `log(1 + CV^2)`; the CL-V1 covariance is
+  `0.692 * 0.160 * 0.215` on the same scale. The difference is largest for
+  V2: 0.624^2 = 0.389, against 0.329 from the log-normal conversion.
+
 # Virtual cohort
 
 The original individual-level data are not publicly available. The

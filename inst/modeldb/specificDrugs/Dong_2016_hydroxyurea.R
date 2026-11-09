@@ -298,8 +298,8 @@ Dong_2016_hydroxyurea <- function() {
     # =========================================================================
     etalvmax ~ 0.020807   # Dong 2016 Table 2 'omega(Vmax) = 14.5 (%CV)'; omega^2 = log(1 + 0.145^2) = 0.020807
     etalvc   ~ 0.018061   # Dong 2016 Table 2 'omega(V/F) = 13.5 (%CV)'; omega^2 = log(1 + 0.135^2) = 0.018061
-    etalka   ~ 0.764975   # Dong 2016 Table 2 'omega(Ka) = 107.2 (%CV)'; omega^2 = log(1 + 1.072^2) = 0.764975
-    etalmtt  ~ 0.528000   # Dong 2016 Table 2 'omega(MTT) = 83.4 (%CV)'; omega^2 = log(1 + 0.834^2) = 0.528000
+    etalka   ~ log(1 + 1.072^2)  # Dong 2016 Table 2 'omega(Ka) = 107.2 (%CV)'
+    etalmtt  ~ log(1 + 0.834^2)  # Dong 2016 Table 2 'omega(MTT) = 83.4 (%CV)'
 
     # =========================================================================
     # Residual error (Dong 2016 Table 2 'RV' column). Combined additive +

@@ -82,8 +82,8 @@ Jansson_2008_eflornithine_rat <- function() {
     # for mean transit time and bioavailability could not be estimated
     # separately for D- and L-eflornithine and were therefore assumed
     # to be identical"; Discussion paragraph + Table 3 footnote).
-    etalcl_l   ~ 0.02197  # Jansson 2008 Table 2: IIV CL_L = 14.9% CV; log(1 + 0.149^2) = 0.02197
-    etalcl_d   ~ 0.03263  # Jansson 2008 Table 2: IIV CL_D = 18.2% CV; log(1 + 0.182^2) = 0.03263
+    etalcl_l   ~ log(1 + 0.149^2)  # Jansson 2008 Table 2: IIV CL_L = 14.9% CV
+    etalcl_d   ~ log(1 + 0.182^2)  # Jansson 2008 Table 2: IIV CL_D = 18.2% CV
     etalmtt    ~ 0.1349   # Jansson 2008 Table 3: IIV MTT = 38% CV (shared L/D); log(1 + 0.38^2) = 0.1349
     etalfdepot ~ 0.00995  # Jansson 2008 Table 3: IIV F = 10% CV (shared L/D); log(1 + 0.10^2) = 0.00995
 

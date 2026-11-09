@@ -96,8 +96,8 @@ Gupta_2017_ixazomib <- function() {
     # Block lower-triangle order: var_lcl, cov(lcl, lfdepot), var_lfdepot.
     # cov = rho * sqrt(var_lcl * var_lfdepot).
     # ------------------------------------------------------------------
-    etalcl + etalfdepot ~ c(0.17697, 0.22550, 0.42726)                                  # Gupta 2017 Table 3: IIV CL 44% -> var = log(1 + 0.44^2) = 0.17697; IIV F 73% -> var = log(1 + 0.73^2) = 0.42726; rho(CL,F) = 0.82 -> cov = 0.82 * sqrt(0.17697 * 0.42726) = 0.22550
-    etalvp2 ~ 0.48492                                                                   # Gupta 2017 Table 3: IIV V4 79% -> var = log(1 + 0.79^2) = 0.48492
+    etalcl + etalfdepot ~ c(0.17697, 0.82 * sqrt(0.17697 * log(1 + 0.73^2)), log(1 + 0.73^2))                                  # Gupta 2017 Table 3: IIV CL 44% -> var = log(1 + 0.44^2) = 0.17697; IIV F 73% -> var = log(1 + 0.73^2) = 0.42716; rho(CL,F) = 0.82 -> cov = 0.82 * sqrt(0.17697 * 0.42716) = 0.22545
+    etalvp2 ~ log(1 + 0.79^2)  # Gupta 2017 Table 3: IIV V4 79%
 
     # ------------------------------------------------------------------
     # Residual error: additive on log-transformed concentration

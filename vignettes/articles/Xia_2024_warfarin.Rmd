@@ -87,7 +87,7 @@ collects them in one place.
 | `lec50_vkorc1_a`       | log(1.14) mg/L  | Xia 2024 Table 3, estimated for Han cohort (RSE 7.7%)            |
 | `e_wt_ec50`            | 1.34            | Xia 2024 Table 3, estimated (RSE 34.3%), ref 60 kg               |
 | `e_amio_ec50`          | -0.602          | Xia 2024 Table 3, estimated (RSE 46.7%); piecewise per Eq 9      |
-| `etalec50` (omega^2)   | 0.2712          | log(1 + 0.558^2); Xia 2024 Table 3 CV(EC50) = 55.8% (RSE 8.2%)   |
+| `etalec50` (omega^2)   | 0.2711          | log(1 + 0.558^2); Xia 2024 Table 3 CV(EC50) = 55.8% (RSE 8.2%)   |
 | `propSd_INR`           | 0.365           | Xia 2024 Table 3, estimated (RSE 4.1%); supplement Eq 4          |
 | Effect ODE             | n/a             | Xia 2024 supplement Eq 1 (sigmoid Emax)                          |
 | Two transit chains     | n/a             | Xia 2024 supplement Section 1.1 paragraph 3; Hamberg structure   |

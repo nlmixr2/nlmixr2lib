@@ -134,12 +134,12 @@ Wang_2025_rivaroxaban <- function() {
     # interindividual variability (IIV) of the PK parameters", Equation 1).
     # Table 5 reports IIV as CV%; mapped via omega^2 = log(CV^2 + 1):
     #   CL/F CV 34.64% -> omega^2 = log(0.3464^2 + 1) = 0.113322
-    #   V/F  CV 19.81% -> omega^2 = log(0.1981^2 + 1) = 0.038490
+    #   V/F  CV 19.81% -> omega^2 = log(0.1981^2 + 1) = 0.038493
     # A full OMEGA block was evaluated and rejected: "the correlation between
     # CL/F and V/F was found to be negligible ... Thus, a diagonal OMEGA matrix
     # was retained in the final model to maintain parsimony" (Results).
     etalcl ~ 0.113322  # Table 5 IIV(CV%) on CL/F = 34.64 (eta shrinkage 15.8%)
-    etalvc ~ 0.038490  # Table 5 IIV(CV%) on V/F  = 19.81 (eta shrinkage 22.4%)
+    etalvc ~ log(1 + 0.1981^2)  # Table 5 IIV(CV%) on V/F  = 19.81 (eta shrinkage 22.4%)
 
     # Residual error. Table 4 selected the one-compartment + proportional-error
     # combination (lowest OFV, 2661 before the covariate was added).

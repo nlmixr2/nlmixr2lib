@@ -76,7 +76,7 @@ the source paper's "fractional change from a typical value" formulation
 
 CL/F has a single log-normal inter-individual variability term applied
 uniformly across all CYP2B6\*18 groups: 70.3 % CV (Dhoro 2015 Table 3, RSE 7 %;
-omega^2 = log(1 + 0.703^2) = 0.40114). Residual error is proportional only;
+omega^2 = log(1 + 0.703^2) = 0.40160). Residual error is proportional only;
 the source paper reports PROP_ERR = 0.12 in NONMEM VI $SIGMA variance form,
 giving a proportional SD of sqrt(0.12) = 0.3464 (~34.6 % CV) on the linear
 concentration scale.
@@ -99,7 +99,7 @@ them in one place for review.
 | `e_6tt_cl` (CYP2B6\*6 TT vs GT) | -0.634 | Dhoro 2015 Table 3 |
 | `e_wt_cl` (per +10 kg from 60 kg) | +0.211 | Dhoro 2015 Table 3 / Results |
 | `e_sexf_cl` (female vs male) | +0.222 | Dhoro 2015 Table 3 |
-| `etalcl` IIV (CV 70.3 %) | omega^2 = 0.40114 | Dhoro 2015 Table 3 |
+| `etalcl` IIV (CV 70.3 %) | omega^2 = 0.40160 | Dhoro 2015 Table 3 |
 | `propSd` (proportional residual SD) | sqrt(0.12) = 0.3464 | Dhoro 2015 Table 3 |
 | Equation: 1-compartment, first-order oral absorption | n/a | Dhoro 2015 Methods, "Pharmacokinetic parameter estimation" |
 | Equation: CL/F multiplicative covariate model | n/a | Dhoro 2015 Methods, "Population pharmacokinetic modeling" |

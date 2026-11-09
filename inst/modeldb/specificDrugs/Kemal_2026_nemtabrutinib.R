@@ -252,13 +252,13 @@ Kemal_2026_nemtabrutinib <- function() {
     # =================================================================
     # Inter-individual variability (log-normal). Table 2 reports CV%;
     # converted to log-scale variance via omega^2 = log(1 + CV^2).
-    #   CL/F: 39.8% CV  -> omega^2 = log(1 + 0.398^2) = 0.14710
-    #   Vc/F: 17.1% CV  -> omega^2 = log(1 + 0.171^2) = 0.02884
+    #   CL/F: 39.8% CV  -> omega^2 = log(1 + 0.398^2) = 0.14704
+    #   Vc/F: 17.1% CV  -> omega^2 = log(1 + 0.171^2) = 0.02882
     # NONMEM $OMEGA in the supplement is diagonal (no covariance
     # estimated between ETA(CL) and ETA(Vc)).
     # =================================================================
-    etalcl ~ 0.14710   # Table 2, CL/F IIV 39.8% CV (95% CI 36.1-43.3; RSE 4.60%)
-    etalvc ~ 0.02884   # Table 2, Vc/F IIV 17.1% CV (95% CI 15.1-18.8; RSE 5.56%)
+    etalcl ~ log(1 + 0.398^2)  # Table 2, CL/F IIV 39.8% CV (95% CI 36.1-43.3; RSE 4.60%)
+    etalvc ~ log(1 + 0.171^2)  # Table 2, Vc/F IIV 17.1% CV (95% CI 15.1-18.8; RSE 5.56%)
 
     # =================================================================
     # Residual error. NONMEM code:

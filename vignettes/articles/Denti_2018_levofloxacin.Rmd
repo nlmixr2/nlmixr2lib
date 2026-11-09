@@ -46,15 +46,28 @@ Every `ini()` parameter in `inst/modeldb/specificDrugs/Denti_2018_levofloxacin.R
 | `gamma_mat` (maturation shape) | `3.39` | Table 2 row `gamma = 3.39 (1.42, 4.98)` |
 | `e_hiv_pos_cl` (HIV+ effect on CL) | `-0.159` | Table 2 row `HIV+ on CL (%) = -15.9 (-26.6, -5.93)` |
 | `e_route_ngt_tlag` (NGT effect on Tlag) | `-0.856` | Table 2 row `NGT on Tlag (%) = -85.6 (-99.3, -34.6)` |
-| `etalcl` (BSV CL) | `var = 0.02284` | Table 2 `BSV: 15.2 (10.6, 19.0) [eta shrinkage 24%]`; `log(1 + 0.152^2)` |
-| `etaltlag` (folded BOV on Tlag) | `var = 0.98954` | Table 2 `BOV: 130 (30.9, 303) [eta shrinkage 76%]`; folded as BSV-equivalent |
-| `etalka` (folded BOV on ka) | `var = 0.35068` | Table 2 `BOV: 64.8 (43.4, 80.9) [eta shrinkage 43%]`; folded as BSV-equivalent |
-| `etalfdepot` (folded BOV on F) | `var = 0.04641` | Table 2 `BOV: 21.8 (13.7, 28.4) [eta shrinkage 10%]`; folded as BSV-equivalent |
+| `etalcl` (BSV CL) | `var = 0.02310` | Table 2 `BSV: 15.2 (10.6, 19.0) [eta shrinkage 24%]`; `0.152^2` |
+| `etaltlag` (folded BOV on Tlag) | `var = 1.69000` | Table 2 `BOV: 130 (30.9, 303) [eta shrinkage 76%]`; folded as BSV-equivalent |
+| `etalka` (folded BOV on ka) | `var = 0.41990` | Table 2 `BOV: 64.8 (43.4, 80.9) [eta shrinkage 43%]`; folded as BSV-equivalent |
+| `etalfdepot` (folded BOV on F) | `var = 0.04752` | Table 2 `BOV: 21.8 (13.7, 28.4) [eta shrinkage 10%]`; folded as BSV-equivalent |
 | `propSd` (proportional residual SD) | `0.116` | Table 2 row `Proportional error (%) = 11.6 (10.0, 12.7) [eps shrinkage 29%]` |
 | `addSd` (additive residual SD, fixed at 20% of LLOQ) | `fixed(0.0160)` | Table 2 row `Additive error (mg/liter) = 0.0160, i.e., 20% of LLOQ (fixed)` |
 | Equation `maturation(PMAGE) = PMAGE^gamma / (PMAGE_50^gamma + PMAGE^gamma)` | n/a | Methods 'Population pharmacokinetic model development' final paragraph + Figure 1 |
 | Equation `CL = CL_ref * (WT/12)^0.75 * mat(PMAGE)/mat(33 mo) * (1 + e_hiv_pos_cl * HIV_POS)` | n/a | Table 2 footnote a (typical values refer to a 12-kg child aged 2 years, maturation 97.9% complete) |
 | Equation `Tlag = Tlag_oral * (1 + e_route_ngt_tlag * ROUTE_NGT)` | n/a | Table 2 NGT-on-Tlag row + paper Results 'Pharmacokinetic model' paragraph 2 |
+
+# Errata
+
+- **The published CVs are first-order approximations.** The Table 2
+  footnote reads "The PK parameter variability was included either as
+  between-subject variability or between-occasion variability, assuming a
+  lognormal distribution. It is reported here as the approximate
+  coefficient of variation (in percent)." Each printed CV is therefore the
+  standard deviation of the corresponding random effect, and the model's
+  variances are the squares of the printed CVs (for example
+  `etalcl ~ 0.152^2` for the 15.2% BSV on CL), not the exact log-normal
+  conversion `log(1 + CV^2)`. The difference is largest for the 130% BOV on
+  Tlag: 1.30^2 = 1.69, against 0.990 from the log-normal conversion.
 
 # Virtual cohort
 

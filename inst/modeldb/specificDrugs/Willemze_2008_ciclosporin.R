@@ -71,12 +71,12 @@ Willemze_2008_ciclosporin <- function() {
     lfdepot <- log(0.386); label("Oral bioavailability F (fraction)")                        # Table 2: F = 0.386 (SEM 0.0787); IIV 28 %CV
 
     # IIV: omega^2 = log(1 + CV^2). Variance values shown to 5 decimal places.
-    etalka      ~ 0.13491  # Ka IIV 38 %CV; log(1 + 0.38^2) = 0.13491
-    etalcl      ~ 0.12182  # CL IIV 36 %CV (alternative parameterization); log(1 + 0.36^2) = 0.12182
-    etalq       ~ 0.23931  # Q  IIV 52 %CV (alternative parameterization); log(1 + 0.52^2) = 0.23931
-    etalvp      ~ 0.03551  # Vp IIV 19 %CV (alternative parameterization); log(1 + 0.19^2) = 0.03551
-    etaltlag    ~ 0.12833  # t_lag IIV 37 %CV; log(1 + 0.37^2) = 0.12833
-    etalfdepot  ~ 0.07549  # F     IIV 28 %CV; log(1 + 0.28^2) = 0.07549
+    etalka      ~ log(1 + 0.38^2)  # Ka IIV 38 %CV
+    etalcl      ~ log(1 + 0.36^2)  # CL IIV 36 %CV (alternative parameterization)
+    etalq       ~ log(1 + 0.52^2)  # Q  IIV 52 %CV (alternative parameterization)
+    etalvp      ~ log(1 + 0.19^2)  # Vp IIV 19 %CV (alternative parameterization)
+    etaltlag    ~ log(1 + 0.37^2)  # t_lag IIV 37 %CV
+    etalfdepot  ~ log(1 + 0.28^2)  # F     IIV 28 %CV
     # IIV on Vc was fixed to 0 (Table 2 footnote 'IIV (%) 0% (fixed)'); no etalvc.
 
     # Proportional residual error (Methods 'Pharmacokinetics and statistical analysis').

@@ -93,8 +93,8 @@ Ulldemolins_2015_meropenem <- function() {
     # Inter-individual variability (Ulldemolins 2015 Table 3 "IIV_CL (% CV)"
     # and "IIV_V (% CV)" rows, log-normal model theta_i = theta_TV * exp(eta_i);
     # for log-normal etas omega^2 = log(CV^2 + 1)).
-    etalcl ~ 0.12834  # log(0.37^2 + 1); 37% CV on CL (RSE 27%)
-    etalvc ~ 0.18441  # log(0.45^2 + 1); 45% CV on V  (RSE 61%)
+    etalcl ~ log(1 + 0.37^2)  # 37% CV on CL (RSE 27%)
+    etalvc ~ log(1 + 0.45^2)  # 45% CV on V  (RSE 61%)
 
     # Combined additive + proportional residual error (Ulldemolins 2015 Table 3).
     # The published "Proportional residual error" entry is "-0.258 (10% RSE)";

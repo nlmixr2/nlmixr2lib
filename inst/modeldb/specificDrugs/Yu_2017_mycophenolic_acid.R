@@ -139,7 +139,7 @@ Yu_2017_mycophenolic_acid <- function() {
     #   omega^2 = log(1 + CV^2)
     # The four primary CL/F, V1/F, k12, k21 IIVs were transferred to
     # etalcl, etalvc, etalq, etalvp respectively (see header comment).
-    etalcl ~ 0.110                         # CL/F %CV = 34.2 -> log(1 + 0.342^2) = 0.110
+    etalcl ~ log(1 + 0.342^2)  # CL/F %CV = 34.2
     etalvc ~ 0.0444                        # V1/F %CV = 21.3 -> log(1 + 0.213^2) = 0.0444
     etalq  ~ 0.0929                        # k12  %CV = 31.2 -> log(1 + 0.312^2) = 0.0929 (transferred to etalq; see vignette Assumptions)
     etalvp ~ 1.066                         # k21  %CV = 138  -> log(1 + 1.38^2)  = 1.066  (transferred to etalvp; see vignette Assumptions)

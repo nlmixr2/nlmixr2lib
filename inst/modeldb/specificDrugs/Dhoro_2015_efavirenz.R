@@ -167,8 +167,8 @@ Dhoro_2015_efavirenz <- function() {
 
     # ---- IIV (only CL/F has IIV; ka and V/F are fixed structural parameters) ----
     # Dhoro 2015 Table 3: IIV CL/F = 70.3 % CV (RSE 7 %).
-    # omega^2 = log(CV^2 + 1) = log(0.703^2 + 1) = 0.40114
-    etalcl ~ 0.40114
+    # omega^2 = log(CV^2 + 1) = log(0.703^2 + 1) = 0.40160
+    etalcl ~ log(1 + 0.703^2)
 
     # ---- Residual error (proportional only) ----
     # Dhoro 2015 Table 3 reports PROP_ERR = 0.12 without explicit unit annotation. Per

@@ -86,7 +86,7 @@ Table 3 (Final parameter estimates and bootstrap results).
 | `e_dis_sepsis_cl` (CL shift if sepsis)                                                                | -0.369                         | Table 3 row `theta9` = -0.369 L/h     |
 | `e_dis_edema_vc` (V shift if edema)                                                                   | 13.6                           | Table 3 row `theta6` = 13.6 L         |
 | `e_dis_burn_recent_vc` (V shift if within 30 postburn days)                                           | 9.61                           | Table 3 row `theta8` = 9.61 L         |
-| `etalcl ~ 0.12000`                                                                                    | `log(0.357^2 + 1)`             | Table 3 row `omega1^2` BSV CL non-CRRT = 35.7 %CV |
+| `etalcl ~ 0.11996`                                                                                    | `log(0.357^2 + 1)`             | Table 3 row `omega1^2` BSV CL non-CRRT = 35.7 %CV |
 | `etalvc ~ 0.02983`                                                                                    | `log(0.174^2 + 1)`             | Table 3 row `omega2^2` BSV V = 17.4 %CV |
 | `etalcl_rrt ~ 0.02559`                                                                                | `log(0.161^2 + 1)`             | Table 3 row `omega3^2` BSV CL CRRT = 16.1 %CV |
 | `propSd <- 0.3332`                                                                                    | `sqrt(0.111)`                  | Table 3 row `sigma1^2` = 0.111 (proportional variance) |
@@ -296,7 +296,7 @@ draw_cl <- function(n, profile, dose_mg) {
     eta <- rnorm(n, 0, sqrt(0.02559))
     cl_typ <- 1.85
   } else {
-    eta <- rnorm(n, 0, sqrt(0.12000))
+    eta <- rnorm(n, 0, sqrt(0.11996))
     cl_typ <- 0.693 +
               0.557 * (profile$CRCL / 120) +
               0.504 * profile$DIS_BURN_RECENT +

@@ -90,6 +90,19 @@ table below consolidates these for review.
 | Sulfa 2-cmt ODE                            | n/a                    | Methods, structural model                                        |
 | Pyra 3-cmt ODE                             | n/a                    | Methods, structural model                                        |
 
+# Errata
+
+- **The published CVs are first-order approximations.** Table 2
+  footnote c reads "BSV and BOV were assumed as log-normally distributed and
+  are reported here as approximate CV%". Each printed CV is therefore the
+  standard deviation of the corresponding random effect, and the model's
+  variances are the squares of the printed CVs (for example
+  `etalcl ~ 0.313^2` for the 31.3% BSV on sulfadoxine CL), not the exact
+  log-normal conversion `log(1 + CV^2)`; the sulfadoxine-pyrimethamine
+  covariance is `0.677 * 0.207 * 0.176` on the same scale. The difference
+  is largest for the 56.4% BOV on sulfadoxine ka: 0.564^2 = 0.318, against
+  0.276 from the log-normal conversion.
+
 # Virtual cohort
 
 Original observed data are not publicly available. The virtual population

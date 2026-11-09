@@ -84,9 +84,9 @@ Toukam_2025_biib107 <- function() {
     # reports CV%; converted via omega^2 = log(CV^2 + 1). IIV was retained
     # only on CL, V2, and Ka (Toukam 2025 Table 3); no correlations were
     # reported between PK etas.
-    etalcl ~ 0.02527  # Toukam 2025 Table 3 (IIV on CL 16% CV; omega^2 = log(1 + 0.16^2) = 0.02527)
+    etalcl ~ log(1 + 0.16^2)  # Toukam 2025 Table 3 (IIV on CL 16% CV)
     etalvc ~ 0.11556  # Toukam 2025 Table 3 (IIV on V2 35% CV; omega^2 = log(1 + 0.35^2) = 0.11556)
-    etalka ~ 0.15536  # Toukam 2025 Table 3 (IIV on Ka 41% CV; omega^2 = log(1 + 0.41^2) = 0.15536)
+    etalka ~ log(1 + 0.41^2)  # Toukam 2025 Table 3 (IIV on Ka 41% CV)
 
     # PK residual error. Toukam 2025 Table 3 reports separate additive
     # error terms for SC (8.67) and IV (7.32) administration. Units are

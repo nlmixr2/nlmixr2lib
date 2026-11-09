@@ -98,9 +98,9 @@ Cirincione_2017_exenatide_er <- function() {
 
     # Inter-individual variability (combined model). Paper reports CV% on log-normal IIV;
     # nlmixr2 variance = log(1 + CV^2).
-    etalka     ~ 0.2551  # ka IIV 53.9% (RSE 37.6%); log(1 + 0.539^2) = 0.2551 -- Table II combined right
+    etalka     ~ log(1 + 0.539^2)  # ka IIV 53.9% (RSE 37.6%) -- Table II combined right
     etalktr2   ~ 0.0292  # ktr2 IIV 17.2% (RSE 20.9%); log(1 + 0.172^2) = 0.0292 -- Table II combined right
-    etalf1     ~ 0.3677  # f1 IIV 66.7% (RSE 23.4%); log(1 + 0.667^2) = 0.3677 -- Table II combined right
+    etalf1     ~ log(1 + 0.667^2)  # f1 IIV 66.7% (RSE 23.4%) -- Table II combined right
     etalfrelSD ~ 0.1755  # f_rel(single-dose study) IIV 43.8% (RSE 20.1%); log(1 + 0.438^2) = 0.1755 -- Table II combined right
 
     # Residual error -- log-normal on the observation, study-specific magnitude (Table II combined right).

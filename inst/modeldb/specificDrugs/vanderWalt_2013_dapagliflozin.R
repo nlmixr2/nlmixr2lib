@@ -350,11 +350,11 @@ vanderWalt_2013_dapagliflozin <- function() {
     etalcl_form_d3og + etalvc_d3og ~ c(0.1270, 0.0855, 0.1822)  # Final model: IIV.CLP_M15 = 36.8% CV, IIV.V2M = 44.7% CV, correlation r = 0.562
 
     etalcl_nonren ~ 0.0935    # Final model: IIV.CLP_other = 31.3% CV -> omega^2 = log(1 + 0.313^2) = 0.0935
-    etalth_cl_renal ~ 0.3243  # Final model: IIV.CLP_renal = 61.9% CV -> omega^2 = log(1 + 0.619^2) = 0.3243
+    etalth_cl_renal ~ log(1 + 0.619^2)  # Final model: IIV.CLP_renal = 61.9% CV
     etalvc ~ 0.0542           # Final model: IIV.V2P = 23.6% CV -> omega^2 = log(1 + 0.236^2) = 0.0542
     etalq ~ 0.1423            # Final model: IIV.QP = 39.1% CV -> omega^2 = log(1 + 0.391^2) = 0.1423
     etalvp ~ 0.1942           # Final model: IIV.V3P = 46.3% CV -> omega^2 = log(1 + 0.463^2) = 0.1942
-    etalmtt ~ 0.3100          # Final model: IIV.MTT = 60.3% CV -> omega^2 = log(1 + 0.603^2) = 0.3100
+    etalmtt ~ log(1 + 0.603^2)  # Final model: IIV.MTT = 60.3% CV
     etalnn ~ 1.520            # Final model: IIV.NN = 189% CV -> omega^2 = log(1 + 1.89^2) = 1.520
     etalth_cl_d3og ~ 0.0602   # Final model: IIV.CLM = 24.9% CV -> omega^2 = log(1 + 0.249^2) = 0.0602
 

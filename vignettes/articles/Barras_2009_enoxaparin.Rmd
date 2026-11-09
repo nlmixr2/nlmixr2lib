@@ -81,9 +81,9 @@ collects them in one place.
 | `lq`  (Q/F)                     | log(0.31 L/h)                      | Barras 2009 Table 4, Q row |
 | `lcl_renal` (renal CL at CRCL=70)   | log(0.30 L/h)                  | Barras 2009 Table 4, "CL renal" row; Equation 2 page 705 |
 | `lcl_nonren` (non-renal CL at LBM=55) | log(0.42 L/h)                | Barras 2009 Table 4, "CL non-renal" row; Equation 2 page 705 |
-| `etalcl` (omega^2)              | log(0.378^2 + 1) = 0.13342         | Barras 2009 Table 4, omega_CL 37.8% CV row |
-| `etalvc` (omega^2)              | log(0.356^2 + 1) = 0.11907         | Barras 2009 Table 4, omega_Vc 35.6% CV row |
-| `etalka` (omega^2)              | log(0.303^2 + 1) = 0.08763         | Barras 2009 Table 4, omega_Ka 30.3% CV row |
+| `etalcl` (omega^2)              | log(0.378^2 + 1) = 0.13355         | Barras 2009 Table 4, omega_CL 37.8% CV row |
+| `etalvc` (omega^2)              | log(0.356^2 + 1) = 0.11932         | Barras 2009 Table 4, omega_Vc 35.6% CV row |
+| `etalka` (omega^2)              | log(0.303^2 + 1) = 0.08784         | Barras 2009 Table 4, omega_Ka 30.3% CV row |
 | `addSd`                         | 0.09 IU/mL (additive)              | Barras 2009 Table 4, epsilon row; Methods "Base heterogeneity and residual error model" |
 | Structural PK model             | 2-compartment SC first-order absorption | Barras 2009 Results "PK analysis -- Model building" |
 | Covariate selection (CL)        | composite renal + non-renal scaled by LBW-CrCl and LBW | Barras 2009 Results "PK analysis -- Model building"; Eq. 2 |
