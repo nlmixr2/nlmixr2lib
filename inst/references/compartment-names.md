@@ -3914,6 +3914,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
 - **Notes:** Use this for the FEMALE (or sex-unspecified lumped) gonadal / reproductive-tract compartment. The male gonad organ has its own canonical `testes`, which is a perfusion-limited whole-organ state; do not reuse `testes` for an ovary / uterus compartment or vice versa. The paper's lumped label is kept (rather than `uterus`) because the compartment explicitly includes the ovaries and stands for estradiol target tissue generally; record the membership in the model `description`. Like `testes`, it is not splanchnic: its venous outflow returns to `venous` blood.
 
+### tgfb_tumor (**canonical intratumoral active TGF-beta PD output**)
+- **Type:** compartment
+- **Role:** Intratumoral active (free, bioactive) TGF-beta concentration, normalised to total tumour protein (pg/mg protein), the observed output of a direct concentration-effect model in which an anti-TGF-beta agent lowers the tumour level from a baseline: `tgfb_tumor <- e0 - emax * C / (ec50 + C)`. Algebraic in the driving concentration; no ODE state.
+- **Source aliases:** none. Baranda 2024 writes it `TGFbeta` / 'tumoral active TGFbeta'.
+- **Example models:** `Baranda_2024_sar439459_mouse.R` (MC38 tumour-bearing mice; study-specific baseline, shared Emax and EC50, driven by `CP_SAR439459_MGL`).
+- **Notes:** The matrix is in the name so that a future circulating TGF-beta output (plasma or serum total / active TGF-beta1, the usual clinical biomarker) can take the bare `tgfb` or its own matrix suffix without colliding -- intratumoral protein-normalised levels and plasma concentrations differ in units, in assay and in what the drug does to them. Distinct from the inflammatory-mediator states (`tnf`, `il6`, `il10`, `ifng`, `ifna`), which are indirect-response turnover states rather than direct-effect algebraic outputs.
+
 ## Adaptive-resistance bacterial states
 
 ### aron (**canonical adaptive-resistance on state**)

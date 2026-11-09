@@ -6658,6 +6658,17 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Bartko_2018_sutimlimab.R` (PD-only sigmoidal Imax model of classical complement pathway knockdown in healthy volunteers; CP_SUTIMLIMAB_UGML is the observed or simulated serum concentration supplied per event row).
 - **Notes:** Specific scope; sutimlimab-specific. The drug-specific naming follows the established `CP_<drug>_<units>` precedent (`CP_OXY_NGML`, `CP_FBX_NGML`, `CP_LSN_NGML`, `CP_MORPH_NGML`, `CP_REM_NGML`, `CP_GLASDEGIB_NGML`, `CP_RITUXIMAB_UGML`); ug/mL matches the monoclonal-antibody sibling `CP_RITUXIMAB_UGML` and is the unit Bartko 2018 reports throughout. Bartko 2018 fit the PD model directly to observed serum concentrations because no structural population PK model was estimated -- the paper characterised sutimlimab PK with model-independent NCA only (Table 2) and explicitly reports nonlinear, apparently target-mediated elimination below about 100 ug/mL, which a linear compartmental model would not capture. No sutimlimab population PK model exists in the nlmixr2lib registry, so users wishing to drive this PD model from a simulated PK source must supply their own concentration trajectory.
 
+### CP_SAR439459_MGL (**canonical for instantaneous SAR439459 plasma concentration as a time-varying PD driver**)
+- **Description:** Instantaneous plasma concentration of SAR439459 (anti-TGF-beta human IgG4 monoclonal antibody neutralising all three TGF-beta isoforms; no INN) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only concentration-effect models that take the measured or simulated SAR439459 exposure as an external input.
+- **Units:** mg/L (= ug/mL; the source reports the concentration and the EC50 in ug/mL).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as the driving concentration of the direct Emax inhibition term `emax * CP_SAR439459_MGL / (ec50 + CP_SAR439459_MGL)` (Baranda 2024 supplement Eq. 1, EC50 = 29.4 ug/mL). Set to 0 for untreated control animals (the inhibition term then collapses to 0 and the output returns to its study baseline). Reference values: the source places the 50% and about 90% inhibition thresholds at 30 and 200 ug/mL, and the human 22.5 mg/kg Q3W regimen gives a simulated median cycle-1 Cmax near 440 ug/mL (Baranda 2024 Figure S5).
+- **Source aliases:**
+  - `C_SAR439459` / `CSAR439459` -- Baranda 2024 supplement Eq. 1 symbol for the plasma SAR439459 concentration paired with each tumour sample.
+- **Example models:** `Baranda_2024_sar439459_mouse.R` (direct Emax inhibition of intratumoral active TGF-beta in MC38 tumour-bearing mice; the source reports no mouse PK model, so the plasma concentration is supplied per record).
+- **Notes:** Specific scope; SAR439459-specific. Follows the `CP_<drug>_<units>` precedent (`CP_MGL` Notes: register a drug-specific canonical for a new drug rather than overloading the generic name). The drug token is the development code because SAR439459 has no INN. A user who wants a simulated rather than measured driver in humans can generate it from the human popPK model `Baranda_2024_sar439459.R`; the mouse model's EC50 is a mouse plasma concentration, so applying it to human exposure is the source authors' own translational assumption, not a fitted human relationship.
+
 ### CP_GLASDEGIB_NGML (**canonical for instantaneous glasdegib plasma concentration as a time-varying PD driver**)
 - **Description:** Instantaneous plasma concentration of glasdegib (PF-04449913; orally active Hedgehog pathway / Smoothened inhibitor) supplied directly as a time-varying covariate column rather than computed from a coupled PK model. Used in PD-only linear exposure-response models that take glasdegib exposure as an external input to a concentration-effect equation (e.g., concentration-QTc).
 - **Units:** ng/mL
@@ -17699,6 +17710,39 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `MAD` / `SAD` subscripts on F1 and F2 in Bihorel 2021 Table 1 (`F1 MAD`, `F2 MAD,LOW`, ...) -- `STUDY_IM018003 = 1` for the MAD rows.
 - **Example models:** `Bihorel_2021_BMS986166.R` (selects the study-specific relative bioavailability of BMS-986166, 1 FIXED vs 0.764, the fraction of the molar dose absorbed as BMS-986166-P, 0.0771 vs 0.0797, and the study-specific low-exposure fold shifts on both).
 - **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Bihorel 2021 Discussion warns that the F1 difference may compensate for time-dependent PK changes after repeated dosing rather than reflect a true bioavailability difference, which is why the model keys it on the study and not on a single- vs multiple-dose regimen flag.
+
+### STUDY_MC38_2 (**canonical for the Baranda 2024 MC38 mouse study 2 indicator**)
+- **Description:** 1 = animal from MC38 syngeneic-tumour study 2 of the four pooled SAR439459 mouse studies in Baranda 2024 (single dose of 10, 25 or 50 mg/kg); 0 = any other study of the four. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (study 1, or the other non-reference studies when their own indicator is set).
+- **Source aliases:**
+  - `study 2` -- Baranda 2024 supplement Table S3 row 'E0 study 2' and the Figure S3A legend.
+- **Example models:** `Baranda_2024_sar439459_mouse.R` (selects the study-2 baseline intratumoral active TGF-beta, E0 = 44.3 pg/mg protein; Emax and EC50 are shared across studies).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family; siblings `STUDY_MC38_2`, `STUDY_MC38_3` and `STUDY_MC38_4`, with study 1 the reference. The source gives the studies numbers only, so the id combines the tumour model and the study number. At most one of the three indicators may be 1 for an animal. Between-study baseline differences are nuisance offsets, so a simulation of a new study uses the study-1 baseline (all three indicators 0) or picks one study explicitly.
+
+### STUDY_MC38_3 (**canonical for the Baranda 2024 MC38 mouse study 3 indicator**)
+- **Description:** 1 = animal from MC38 syngeneic-tumour study 3 of the four pooled SAR439459 mouse studies in Baranda 2024 (three doses of 25 mg/kg); 0 = any other study of the four. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (study 1, or the other non-reference studies when their own indicator is set).
+- **Source aliases:**
+  - `study 3` -- Baranda 2024 supplement Table S3 row 'E0 study 3' and the Figure S3A legend.
+- **Example models:** `Baranda_2024_sar439459_mouse.R` (selects the study-3 baseline intratumoral active TGF-beta, E0 = 58.5 pg/mg protein; Emax and EC50 are shared across studies).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family; siblings `STUDY_MC38_2`, `STUDY_MC38_3` and `STUDY_MC38_4`, with study 1 the reference. The source gives the studies numbers only, so the id combines the tumour model and the study number. At most one of the three indicators may be 1 for an animal. Between-study baseline differences are nuisance offsets, so a simulation of a new study uses the study-1 baseline (all three indicators 0) or picks one study explicitly.
+
+### STUDY_MC38_4 (**canonical for the Baranda 2024 MC38 mouse study 4 indicator**)
+- **Description:** 1 = animal from MC38 syngeneic-tumour study 4 of the four pooled SAR439459 mouse studies in Baranda 2024 (single dose of 10, 25 or 50 mg/kg); 0 = any other study of the four. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (study 1, or the other non-reference studies when their own indicator is set).
+- **Source aliases:**
+  - `study 4` -- Baranda 2024 supplement Table S3 row 'E0 study 4' and the Figure S3A legend.
+- **Example models:** `Baranda_2024_sar439459_mouse.R` (selects the study-4 baseline intratumoral active TGF-beta, E0 = 61.4 pg/mg protein; Emax and EC50 are shared across studies).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family; siblings `STUDY_MC38_2`, `STUDY_MC38_3` and `STUDY_MC38_4`, with study 1 the reference. The source gives the studies numbers only, so the id combines the tumour model and the study number. At most one of the three indicators may be 1 for an animal. Between-study baseline differences are nuisance offsets, so a simulation of a new study uses the study-1 baseline (all three indicators 0) or picks one study explicitly.
 
 ### STUDY_IRIDIUM (**canonical for the IRIDIUM Phase III asthma study indicator**)
 - **Description:** 1 = subject enrolled in IRIDIUM (NCT02571777), the 52-week Phase III study of the indacaterol/glycopyrronium/mometasone furoate (IND/GLY/MF) and indacaterol/mometasone furoate (IND/MF) Breezhaler fixed-dose combinations in inadequately controlled asthma; 0 = subject enrolled in any other study of the pooled analysis (PALLADIUM, NCT02554786, or the E2201 device-bridging study, NCT01555151).
