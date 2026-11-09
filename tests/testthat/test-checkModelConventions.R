@@ -159,6 +159,44 @@ test_that("a covariate used but not in covariateData is an error", {
   expect_true(any(cov$severity == "error"))
 })
 
+test_that("an ini() random-effect nesting column counts as a used covariate", {
+  # `eta ~ var | OCC` reads OCC from the data without naming it in model(),
+  # so ui$covariates omits it; it must still satisfy covariateData.
+  iov <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    covariateData <- list(
+      OCC = list(description = "occasion", units = "(count)", type = "categorical")
+    )
+    ini({
+      lcl <- 1; label("a")
+      lvc <- 1; label("b")
+      etalcl ~ 0.1
+      etaiov_lcl ~ 0.05 | OCC
+      propSd <- 0.1; label("d")
+    })
+    model({
+      cl <- exp(lcl + etalcl + etaiov_lcl)
+      vc <- exp(lvc)
+      kel <- cl / vc
+      d/dt(central) <- -kel * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(iov, verbose = FALSE))
+  expect_equal(nrow(res[res$category == "covariates" & res$name == "OCC", ]), 0L)
+  # Residual rows carry the endpoint in `condition`; only eta rows are read.
+  expect_equal(.etaNestingColumns(rxode2::rxode2(iov)), "OCC")
+
+  # Without covariateData the nesting column is an undeclared covariate.
+  undeclared <- iov
+  body(undeclared)[[5]] <- NULL
+  res2 <- suppressWarnings(checkModelConventions(undeclared, verbose = FALSE))
+  expect_true(any(res2$category == "covariates" & res2$name == "OCC" & res2$severity == "error"))
+})
+
 test_that("DV read by an ll() likelihood is not treated as a covariate", {
   # A custom likelihood must read the observation, so rxode2 lists DV among
   # ui$covariates; it is a reserved data item, not a covariate.

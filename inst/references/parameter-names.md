@@ -3652,10 +3652,10 @@ Founding example: `Qi_2024_vosoritide.R` (`etalcl_study` and `etalvc_study`,
 nested on the `SIDN` study-identity column; Qi 2024 Sect. 2.4 eta6 / eta7).
 
 **The grouping column is a covariate register entry of its own** (see `SIDN` in
-`covariate-columns.md`), not a parameter. Because it is consumed by the `ini()`
-nesting syntax rather than by any `model()` expression,
-`checkModelConventions()` reports `covariateData[['<level>']] has an entry but
-is not referenced in model()`. That warning is structural for a nesting level.
+`covariate-columns.md`), not a parameter. It is consumed by the `ini()`
+nesting syntax rather than by any `model()` expression;
+`checkModelConventions()` counts it as a used covariate all the same, so it
+needs a `covariateData` entry like any other data column.
 
 **Distinct from inter-occasion variability.** IOV indexes occasions *within* a
 subject (`OCC`, decomposed `etalcl_oc1..N` sharing one variance -- see
@@ -3739,6 +3739,30 @@ between-subject variability, which an arm-level MBMA does not estimate.
   - `Kb`, `fu_plasma` -- used in `SchaedeliStark_2024_balovaptan.R` (Methods, p. 230); that paper prints the occupancy equation but reports neither constant anywhere.
 - **Example models:** `SchaedeliStark_2024_balovaptan.R` (`kd_fu` = 3.16 ng/mL, back-solved from the seven paired concentration / occupancy medians of Table 3; founding example).
 - **Notes:** A suffixed member of the `kd` family, following the same `<stem>_<suffix>` pattern as `lkd_direct` / `lkd_delay`; here the `_fu` suffix marks the normalisation rather than a driver. Prefer plain `kd` whenever the source reports the dissociation constant and the free fraction separately, and store `fu` in its own right; reach for `kd_fu` only when the ratio is all the source identifies.
+
+### f_ffm_vp (**canonical fraction of a volume that scales with fat-free mass in the LBW/FM approach**)
+- **Type:** paper-named-param
+- **Role:** Unitless fraction (0-1) of the peripheral volume that scales with fat-free (lean) body mass, the remainder `1 - f_ffm_vp` scaling with fat mass, in the LBW/FM body-composition approach of Huisinga et al. 2012: `vp <- exp(lvp + etalvp) * (f_ffm_vp * FFM / ref_ffm + (1 - f_ffm_vp) * FM / ref_fm)`. Both reference values are the cohort medians the typical `vp` is quoted at.
+- **Source aliases:**
+  - `R` -- Bindellini 2025 Table 2 ('scaling factor in the LBW/FM approach (fraction scaled with LBW)').
+- **Example models:** `Bindellini_2025_cefazolin.R` (founding example; `f_ffm_vp` = 0.764, so 23.6% of the cefazolin peripheral volume scales with fat mass; references FFM 64.3 kg and FM 41.5 kg).
+- **Notes:** Ratified by the maintainers 2026-11-06 (PMC11947583). The `f_<covariate>_<param>` shape names the covariate share and the parameter it splits; a model applying the same split to another parameter takes the matching suffix (`f_ffm_vc`, `f_ffm_cl`). Distinct from the normal-fat-mass `ffat` approach (`NFM = FFM + ffat * FM`), which adds a weighted fat mass to the full fat-free mass and then applies one power exponent; here the two body-composition terms are separately normalised and linearly weighted.
+
+### ratio_isf_peripheral1 (**canonical bare interstitial-fluid : peripheral-compartment concentration ratio**)
+- **Type:** paper-named-param
+- **Role:** Unitless ratio of the tissue interstitial-fluid concentration to the concentration in the model's `peripheral1` compartment, used to derive an observed interstitial-fluid concentration algebraically when the ISF has no ODE state of its own: `Cisf <- ratio_isf_peripheral1 * peripheral1 / vp`.
+- **Source aliases:**
+  - `TF` -- Bindellini 2025 Table 2 and Figure 1 ('tissue factor relating predicted concentrations in the peripheral compartment to ISF concentrations').
+- **Example models:** `Bindellini_2025_cefazolin.R` (founding example; 0.655 for subcutaneous adipose-tissue ISF, estimated jointly from microdialysis and plasma data, no IIV).
+- **Notes:** Ratified by the maintainers 2026-11-06 (PMC11947583). A bare member of the `lratio_<numerator>_<denominator>` family founded by `lratio_pbmc_central`: written bare because the source estimates it on the natural scale with no random effect; a paper reporting an exponential typical value uses `lratio_isf_peripheral1`. Distinct from `kp_<tissue>` (an equilibrium tissue:plasma partition coefficient whose denominator is plasma, not a model compartment) and from `f_alb_isf` (a ratio of the binding protein, not of the drug).
+
+### rr_md, lrr_md (**canonical microdialysis-probe relative recovery**)
+- **Type:** paper-named-param
+- **Role:** Fraction (0-1) of the interstitial-fluid concentration recovered in the microdialysate, `Cmd <- rr_md * Cisf`; also determines the retrodialysis loss, `C_RD / C_RP = 1 - rr_md`, so that one parameter links the microdialysis and retrodialysis observations. `lrr_md` is its log, used when the source reports an exponential typical value with log-normal variability (`etalrr_md`); a cohort-specific typical value takes a qualifier suffix (`lrr_md_obese`), and a per-catheter random effect is declared with the `MD_CATHETER` nesting column (`etaiov_lrr_md ~ var | MD_CATHETER`).
+- **Source aliases:**
+  - `RR` -- Bindellini 2025 Table 2 and Figure 1 (RRnonobese, RRobese).
+- **Example models:** `Bindellini_2025_cefazolin.R` (founding example; `lrr_md` = log(0.411) nonobese, `lrr_md_obese` = log(0.233) obese, IIV 43.3% CV, intercatheter variability 58.6% CV).
+- **Notes:** Ratified by the maintainers 2026-11-06 (PMC11947583). A probe property, not a drug property: it depends on the catheter, the membrane, the flow rate and the tissue, so a model that observes recovery-corrected tissue concentrations (most microdialysis models in this library) does not carry it. The `_md` suffix keeps it clear of other recovery or response-rate meanings of `rr`.
 
 ## Unit spellings
 

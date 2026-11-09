@@ -1336,6 +1336,8 @@ navbar:
         href: articles/Bausch_2024_cefazolin.html
       - text: "Cefazolin (Berthaud 2025)"
         href: articles/Berthaud_2025_cefazolin.html
+      - text: "Cefazolin (Bindellini 2025)"
+        href: articles/Bindellini_2025_cefazolin.html
       - text: "Cefazolin (Duke 2024)"
         href: articles/Duke_2024_cefazolin.html
       - text: "Cefazolin (Lanoiselee 2021)"
@@ -8850,6 +8852,7 @@ articles:
   - articles/BilbaoMeseguer_2021_levetiracetam
   - articles/Biliouris_2018_nusinersen
   - articles/Billard_1995_methoxsalen
+  - articles/Bindellini_2025_cefazolin
   - articles/Birgersson_2016_artemisinin
   - articles/Birgersson_2019_artesunate
   - articles/Bisaso_2014_albumin
