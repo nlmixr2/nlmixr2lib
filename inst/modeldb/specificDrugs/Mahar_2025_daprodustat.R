@@ -63,7 +63,7 @@ Mahar_2025_daprodustat <- function() {
       ),
       source_name = "WTBL"
     ),
-    CKD_STAGE = list(
+    CHRONIC_KIDNEY_DISEASE_STAGE = list(
       description = "Chronic kidney disease stage at baseline (1-5 by CKD-EPI eGFR for non-dialysis subjects; 6 for dialysis-dependent subjects)",
       units = "(stage)",
       type = "continuous",
@@ -72,7 +72,7 @@ Mahar_2025_daprodustat <- function() {
         "Mahar 2025 Table S2 defines stages 1-5 by CKD-EPI eGFR and adds",
         "stage 6 for dialysis-dependent subjects (HD or PD) so that stage-5",
         "non-dialysis and dialysis subjects can be told apart. Enters as a",
-        "power effect `(CKD_STAGE / 5)^e_ckd_stage_rbase` on both the",
+        "power effect `(CHRONIC_KIDNEY_DISEASE_STAGE / 5)^e_chronic_kidney_disease_stage_rbase` on both the",
         "apparent baseline of ESA non-users and the true baseline of ESA users",
         "(control stream `BLSTAG = (STAGE/medStage)**THETA(11)`, medStage =",
         "5)."
@@ -86,7 +86,7 @@ Mahar_2025_daprodustat <- function() {
       reference_category = NULL,
       notes = paste(
         "Time-fixed. Power effect `(HEPCIDIN_BL / 121.356)^e_hepcidin_bl_rbase`",
-        "on the same baselines as CKD_STAGE (control stream `BLHEP`, medBhep =",
+        "on the same baselines as CHRONIC_KIDNEY_DISEASE_STAGE (control stream `BLHEP`, medBhep =",
         "121.356 ng/mL; the median is imputed when missing)."
       ),
       source_name = "BHEP"
@@ -321,7 +321,7 @@ Mahar_2025_daprodustat <- function() {
     # Baseline covariate effects
     e_esad_rbase_true <- -0.00797; label("Prior ESA dose on true baseline, exp(theta/1000 * ESAD) (per IU/week)") # Table 2 final: -0.00797 (RSE 6.8%)
     e_esa_hyporesponder_rbase <- -0.0307; label("Relative effect of ESA hyporesponder on apparent baseline of ESA users (fraction)") # Table 2 final: -0.0307 (RSE 13.3%)
-    e_ckd_stage_rbase <- -0.107; label("Power exponent of (CKD stage / 5) on true and apparent baseline (unitless)") # Table 2 final: -0.107 (RSE 12.9%)
+    e_chronic_kidney_disease_stage_rbase <- -0.107; label("Power exponent of (CKD stage / 5) on true and apparent baseline (unitless)") # Table 2 final: -0.107 (RSE 12.9%)
     e_wt_rbase <- 0.0520; label("Power exponent of (WT / 73.3 kg) on true and apparent baseline (unitless)") # Table 2 final: 0.0520 (RSE 16.8%)
     e_hepcidin_bl_rbase <- -0.0170; label("Power exponent of (baseline hepcidin / 121.356 ng/mL) on true and apparent baseline (unitless)") # Table 2 final: -0.0170 (RSE 16.0%)
     e_race_asian_rbase_true <- -0.0467; label("Relative effect of Asian race on true baseline of ESA users (fraction)") # Table 2 final: -0.0467 (RSE 21.1%)
@@ -402,7 +402,7 @@ Mahar_2025_daprodustat <- function() {
 
     # Baseline covariate factors (control stream BLSTAG, BLWT, BLHEP, PEPL,
     # BLHYP, RACE_TBSL, RACE_BBSL)
-    bl_stage <- (CKD_STAGE / 5)^e_ckd_stage_rbase
+    bl_stage <- (CHRONIC_KIDNEY_DISEASE_STAGE / 5)^e_chronic_kidney_disease_stage_rbase
     bl_wt <- (WT / 73.3)^e_wt_rbase
     bl_hep <- (HEPCIDIN_BL / 121.356)^e_hepcidin_bl_rbase
     bl_esad <- exp(e_esad_rbase_true / 1000 * ESAD)

@@ -1924,16 +1924,16 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Ooi_2026_elafibranor_alptb.R` (power exponent 0.333 on the typical baseline total bilirubin of the joint ALP / total-bilirubin indirect-response model; Ooi 2026 Table 2).
 - **Notes:** A bare clinical-measurement abbreviation in the same group as `ALB`, `ALT`, `ALP`, `TBILI` and `CRCL`, and registered at general scope because liver stiffness is a standard hepatology measurement rather than a paper-defined construct. Distinct from the categorical fibrosis-stage and hepatic-impairment indicators (`HEPIMP`, `HEPIMP_MILD`, ...), which classify rather than measure. When a source imputes a missing LSM by setting the covariate factor to 1 (as Ooi 2026 does), supply the reference value instead so the power term evaluates to 1.
 
-### CKD_STAGE (**canonical for chronic-kidney-disease stage as an ordinal number**)
+### CHRONIC_KIDNEY_DISEASE_STAGE (**canonical for chronic-kidney-disease stage as an ordinal number**)
 - **Description:** Subject's chronic kidney disease stage at baseline, coded as an ordinal number and used as a continuous regressor. Stages 1-5 follow the KDIGO eGFR bands (CKD-EPI): >= 90, 60-89, 30-59, 15-29 and < 15 mL/min/1.73 m^2. Time-fixed.
 - **Units:** (stage)
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a -- used with a normalized power form `(CKD_STAGE / ref)^exponent`. Reference observed: 5 (Mahar 2025 control stream `medStage`).
+- **Reference category:** n/a -- used with a normalized power form `(CHRONIC_KIDNEY_DISEASE_STAGE / ref)^exponent`. Reference observed: 5 (Mahar 2025 control stream `medStage`).
 - **Source aliases:**
   - `STAGE` -- Mahar 2025 control stream (`BLSTAG = (STAGE/medStage)**THETA(11)`). Mahar 2025 Table S2 adds a stage 6 for dialysis-dependent subjects (eGFR < 15 mL/min/1.73 m^2 and on HD or PD) to separate them from stage-5 non-dialysis subjects.
 - **Example models:** `Mahar_2025_daprodustat.R` (founding example; doi:10.1002/cpt.3544. Power exponent -0.107 on the hemoglobin baselines).
-- **Notes:** Any extension of the 1-5 scale (such as Mahar 2025's stage 6) is paper-specific and must be recorded in each model's `covariateData[[CKD_STAGE]]$notes`. Distinct from the binary `RENALIMP_*` severity indicators and from the measured `CRCL` / eGFR covariates.
+- **Notes:** Any extension of the 1-5 scale (such as Mahar 2025's stage 6) is paper-specific and must be recorded in each model's `covariateData[[CHRONIC_KIDNEY_DISEASE_STAGE]]$notes`. Distinct from the binary `RENALIMP_*` severity indicators and from the measured `CRCL` / eGFR covariates. Name ratified 2026-11-06 in the spelled-out form (the abbreviation `CKD_STAGE` was declined under the standing preference for spelled-out new canonicals).
 
 ### RENALIMP (**canonical for renal-impairment indicator (any degree)**)
 - **Description:** 1 = renal impairment of any degree (mild, moderate, severe, or kidney failure / ESRD), 0 = normal renal function. Pooled parent of the `RENALIMP_*` severity family, for source papers that carry renal impairment as a single binary covariate rather than resolving the individual strata. The threshold separating "normal" from "impaired" is paper-specific and must be documented in per-model `covariateData[[RENALIMP]]$notes`; a common scheme (used by Zhang 2025 and mirrored in FDA / EMA renal-impairment labeling guidance) is eGFR < 90 mL/min/1.73 m^2 as impaired.
@@ -2577,7 +2577,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Source aliases:**
   - `BHEP` -- Mahar 2025 control stream (`BLHEP = (BHEP/medBhep)**THETA(13)`).
 - **Example models:** `Mahar_2025_daprodustat.R` (founding example; doi:10.1002/cpt.3544. Power exponent -0.0170 on the hemoglobin baselines).
-- **Notes:** Distinct from the `hep` hepcidin state of `Angeli_2016_iron_hepcidin.R`, which is a modelled time-varying output rather than a baseline covariate. The covariate-effect parameter form is `e_hepcidin_bl_<param>`.
+- **Notes:** Distinct from the `hep` hepcidin state of `Angeli_2016_iron_hepcidin.R`, which is a modelled time-varying output rather than a baseline covariate. The covariate-effect parameter form is `e_hepcidin_bl_<param>`. Name ratified 2026-11-06.
 
 ### IRON_BL (**canonical for baseline (pre-dose) serum total iron concentration**)
 - **Description:** Per-subject baseline serum total iron concentration (transferrin-bound plus any non-transferrin-bound iron), measured before drug administration. Static per-subject (or per-administration) covariate. The baseline definition varies by paper -- a single pre-dose value, or an average over a drug-free baseline sampling window when serum iron shows a marked diurnal fluctuation -- and MUST be recorded per model in `covariateData[[IRON_BL]]$notes`.
@@ -6189,7 +6189,7 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Source aliases:**
   - `HYPORESP` -- Mahar 2025 control stream (`IF(HYPORESP.EQ.1) BLHYP = (1+THETA(10))`; the code 222 = unknown/ESA non-user carries no effect and maps to 0 here).
 - **Example models:** `Mahar_2025_daprodustat.R` (founding example; doi:10.1002/cpt.3544. Lowers the apparent, ESA-elevated hemoglobin baseline of ESA users by `e_esa_hyporesponder_rbase = -0.0307`).
-- **Notes:** The classification is paper-defined; Mahar 2025 (Table S4 footnote c) uses an ESA resistance index >= 1.5 IU/kg/week per g/L of hemoglobin or a prior ESA dose >= 450 IU/kg/week. Record the definition in each model's `covariateData[[ESA_HYPORESPONDER]]$notes`. Companion of `ESAD` (prior ESA dose).
+- **Notes:** The classification is paper-defined; Mahar 2025 (Table S4 footnote c) uses an ESA resistance index >= 1.5 IU/kg/week per g/L of hemoglobin or a prior ESA dose >= 450 IU/kg/week. Record the definition in each model's `covariateData[[ESA_HYPORESPONDER]]$notes`. Companion of `ESAD` (prior ESA dose). Name ratified 2026-11-06.
 
 ### DOSE_IND (**canonical for per-arm once-daily inhaled indacaterol dose**)
 - **Description:** Per-study-arm once-daily inhaled indacaterol dose (ug/day; 0 for placebo arms). Study-arm-level (not individual-level) drug-exposure covariate used as the dose regressor in a model-based meta-analysis (MBMA) of bronchodilator dose-response.

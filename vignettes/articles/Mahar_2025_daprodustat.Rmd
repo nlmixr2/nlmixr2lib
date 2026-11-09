@@ -83,7 +83,7 @@ from the NONMEM control stream printed in the Supplementary Methods
 | `rbase_true_nd_esa`, `rbase_true_dial_esa` | 95.3, 94.9 g/L | Table 2; THETA(7)-THETA(8) |
 | `e_esad_rbase_true` | -0.00797 | Table 2; `PEPL = EXP((THETA(9)/1000) * PEPOD2)` |
 | `e_esa_hyporesponder_rbase` | -0.0307 | Table 2; `BLHYP = 1 + THETA(10)` |
-| `e_ckd_stage_rbase`, `e_wt_rbase`, `e_hepcidin_bl_rbase` | -0.107, 0.0520, -0.0170 | Table 2; BLSTAG, BLWT, BLHEP with medians 5, 73.3 kg, 121.356 ng/mL |
+| `e_chronic_kidney_disease_stage_rbase`, `e_wt_rbase`, `e_hepcidin_bl_rbase` | -0.107, 0.0520, -0.0170 | Table 2; BLSTAG, BLWT, BLHEP with medians 5, 73.3 kg, 121.356 ng/mL |
 | `e_race_asian_rbase_true`, `e_race_black_rbase` | -0.0467, -0.0376 | Table 2; RACE_TBSL, RACE_BBSL |
 | `lmtt`, `lmtt_rbc` | log(3.19), log(82.819), both fixed | Table 2 (Fixed); THETA(16), THETA(17) |
 | `e_esa_mtt_rbc`, `e_wt_mtt_rbc`, `e_hd_mtt_rbc`, `e_study_201410_mtt_rbc` | 0.100, 0.271, 0.138, 0.309 | Table 2; EPO_TRBC, WTBL_TRBC, POP_TRBC |
@@ -116,7 +116,7 @@ ESA dose of 5,275 IU/week.
 mod_typ <- rxode2::zeroRe(mod)
 
 groups <- tibble::tribble(
-  ~group,                                 ~RRT_HEMODIAL_STATUS, ~PERIT_DIAL, ~ESAD, ~CKD_STAGE, ~STUDY_201410, ~STUDY_200808,
+  ~group,                                 ~RRT_HEMODIAL_STATUS, ~PERIT_DIAL, ~ESAD, ~CHRONIC_KIDNEY_DISEASE_STAGE, ~STUDY_201410, ~STUDY_200808,
   "No dialysis, ESA non-user",            0,                    0,           0,     4,          0,             1,
   "No dialysis, ESA user",                0,                    0,           5275,  4,          0,             1,
   "HD, ESA user",                         1,                    0,           5275,  6,          0,             0,
@@ -306,7 +306,7 @@ cohort <- bind_rows(lapply(seq_along(arms), function(i) {
     arm = paste(arms[i], "mg QD"),
     DOSE_DAPRODUSTAT_MG = arms[i],
     WT = pmin(pmax(exp(rnorm(n_per_arm, log(73), 0.22)), 40), 160),
-    CKD_STAGE = sample(3:5, n_per_arm, replace = TRUE, prob = c(0.2, 0.5, 0.3)),
+    CHRONIC_KIDNEY_DISEASE_STAGE = sample(3:5, n_per_arm, replace = TRUE, prob = c(0.2, 0.5, 0.3)),
     HEPCIDIN_BL = exp(rnorm(n_per_arm, log(121), 0.6)),
     RACE_BLACK = rbinom(n_per_arm, 1, 0.13),
     RACE_ASIAN = 0
