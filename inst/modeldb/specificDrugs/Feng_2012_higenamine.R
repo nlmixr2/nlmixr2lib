@@ -98,7 +98,7 @@ Feng_2012_higenamine <- function() {
     # Table 4 (Vp, EC50) are encoded without an eta in the model() block.
     # All IIVs are small (<= 8.7 percent CV) reflecting the rich-sampling
     # 10-subject design with a highly restricted demographic window.
-    etalvc   ~ 0.007541    # Table 4: Vc IIV 8.7%   ; log(1 + 0.087^2) = 0.007541
+    etalvc   ~ log(1 + 0.087^2)  # Table 4: Vc IIV 8.7%
     etalkm   ~ 0.001680    # Table 4: Km IIV 4.1%   ; log(1 + 0.041^2) = 0.001680
     etalvmax ~ 0.000289    # Table 4: Vmax IIV 1.7% ; log(1 + 0.017^2) = 0.000289
     etalq    ~ 0.000100    # Table 4: CLd IIV 1.0%  ; log(1 + 0.010^2) = 0.000100

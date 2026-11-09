@@ -96,13 +96,13 @@ deVriesSchultink_2020_zenocutuzumab <- function() {
     # omega^2 = log(CV^2 + 1). CL and V1 share a correlated block with
     # correlation 0.55 (paper "Correlation omega_CL ~ omega_V1"); the
     # block covariance is cov = 0.55 * sqrt(omega^2_CL * omega^2_V1).
-    #   omega^2_CL    = log(0.379^2 + 1) = 0.134263
-    #   omega^2_V1    = log(0.210^2 + 1) = 0.043147
-    #   omega^2_Vmax  = log(0.631^2 + 1) = 0.335229
-    #   cov(CL,V1)    = 0.55 * sqrt(0.134263 * 0.043147) = 0.041863
-    etalcl + etalvc ~ c(0.134263,
-                        0.041863, 0.043147)   # CL 37.9% CV, V1 21.0% CV, corr 0.55 -- de Vries Schultink 2020 Table 2
-    etalvmax ~ 0.335229                       # Vmax 63.1% CV -- de Vries Schultink 2020 Table 2
+    #   omega^2_CL    = log(0.379^2 + 1) = 0.134217
+    #   omega^2_V1    = log(0.210^2 + 1) = 0.043155
+    #   omega^2_Vmax  = log(0.631^2 + 1) = 0.335158
+    #   cov(CL,V1)    = 0.55 * sqrt(0.134217 * 0.043155) = 0.041858
+    etalcl + etalvc ~ c(log(1 + 0.379^2),
+                        0.55 * sqrt(log(1 + 0.379^2) * log(1 + 0.210^2)), log(1 + 0.210^2))   # CL 37.9% CV, V1 21.0% CV, corr 0.55 -- de Vries Schultink 2020 Table 2
+    etalvmax ~ log(1 + 0.631^2)  # Vmax 63.1% CV -- de Vries Schultink 2020 Table 2
 
     # Residual error. de Vries Schultink 2020 Section 2.3.2 specifies a
     # combined proportional + additive error model with the additive term

@@ -76,15 +76,27 @@ collects them in one place for review. All values come from Soto 2014 Table 2,
 | `lvp_sbt` (sulbactam peripheral volume V2 at WT = 51.2 kg) | `log(4.04)` L | Table 2 sulbactam row V2(2) = 4.04 (RSE 12.1%) |
 | `e_crcl_cl` (shared CLcr power exponent on CL for both drugs) | `0.701` | Table 2 theta CLcr on CL (RSE 7.65%); shared in combined final model |
 | `e_wt_vp` (WT linear allometric exponent on V2 for both drugs, FIXED) | `fixed(1.0)` | Table 2 theta BWT on V2 = 1.00 Fix; combined final model |
-| `etalcl` + `etalcl_sbt` block (variances and rho = 0.858) | `c(log(1+0.148^2), 0.858*sqrt(...), log(1+0.152^2))` | Table 2 CV[eta_CL] 14.8% / 15.2%; rho = 0.858 (RSE 34.8%) |
-| `etalvp` (ampicillin V2 IIV) | `log(1 + 0.152^2)` | Table 2 CV[eta_V2,i(1)] = 15.2% (RSE 36.2%); no cross-drug correlation |
-| `etalvp_sbt` (sulbactam V2 IIV) | `log(1 + 0.148^2)` | Table 2 CV[eta_V2,i(2)] = 14.8% (RSE 28.3%); no cross-drug correlation |
+| `etalcl` + `etalcl_sbt` block (variances and rho = 0.858) | `c(0.148^2, 0.858 * 0.148 * 0.152, 0.152^2)` | Table 2 CV[eta_CL] 14.8% / 15.2%; rho = 0.858 (RSE 34.8%) |
+| `etalvp` (ampicillin V2 IIV) | `0.152^2` | Table 2 CV[eta_V2,i(1)] = 15.2% (RSE 36.2%); no cross-drug correlation |
+| `etalvp_sbt` (sulbactam V2 IIV) | `0.148^2` | Table 2 CV[eta_V2,i(2)] = 14.8% (RSE 28.3%); no cross-drug correlation |
 | `propSd` (ampicillin LTBS proportional SD) | `0.242` | Table 2 CV[eps_ij(1)] = 24.2% (RSE 13.5%) |
 | `propSd_sbt` (sulbactam LTBS proportional SD) | `0.233` | Table 2 CV[eps_ij(2)] = 23.3% (RSE 14.4%) |
 | `d/dt(central)`, `d/dt(peripheral1)` (ampicillin) | 2-compartment IV | Methods, Population pharmacokinetic analysis paragraph |
 | `d/dt(central_sbt)`, `d/dt(peripheral1_sbt)` (sulbactam) | 2-compartment IV | Methods, Population pharmacokinetic analysis paragraph |
 | Final-model CL covariate equation `CL_i(k) = theta_CL(k) * (CLcr/71)^theta_CLcr * exp(eta_CL_i(k))` | n/a | Results, Pharmacokinetic analyses paragraph 4; final-model equation block |
 | Final-model V2 covariate equation `V2_i(k) = theta_V2(k) * (BWT/51.2) * exp(eta_V2_i(k))` | n/a | Results, Pharmacokinetic analyses paragraph 4 (allometric scaling) |
+
+# Errata
+
+- **The published CVs are first-order approximations.** The Table 2
+  footnote reads "The CV and its RSE were calculated based on Tailor
+  approximation of square root of omega^2 with SE of omega^2." Each printed
+  CV is therefore the standard deviation of the corresponding random
+  effect, and the model's variances are the squares of the printed CVs
+  (for example `etalvp ~ 0.152^2` for the 15.2% IIV on ampicillin V2), not
+  the exact log-normal conversion `log(1 + CV^2)`; the ampicillin-sulbactam
+  CL covariance is `0.858 * 0.148 * 0.152` on the same scale. At CVs of
+  about 15% the two conversions differ by about 1%.
 
 # Virtual cohort
 

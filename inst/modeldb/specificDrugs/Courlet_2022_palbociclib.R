@@ -147,7 +147,7 @@ Courlet_2022_palbociclib <- function() {
     lvp <- log(717); label("Vp/F: apparent peripheral volume of distribution (L)") # Table S1: Vp = 717 L (RSE 10%)
 
     # IIV modelled exponentially (Section 2.3.1); CV% converted with omega^2 = log(CV^2 + 1).
-    etalka ~ 0.95072 # Table S1: omega ka = 126% CV -> log(1.26^2 + 1) = 0.95072
+    etalka ~ log(1 + 1.26^2)  # Table S1: omega ka = 126% CV
     etalcl ~ 0.086178 # Table S1: omega CL = 30% CV -> log(0.30^2 + 1) = 0.086178
     etalvc ~ 0.121864 # Table S1: omega Vc = 36% CV -> log(0.36^2 + 1) = 0.121864
 

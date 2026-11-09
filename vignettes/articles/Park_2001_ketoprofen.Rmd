@@ -58,9 +58,9 @@ collects them for review.
 | `lcl` (CL/F) | `log(12.44)` L/h | Table 2: CL/F = 0.20 +/- 0.13 L/kg/h * 62.2 kg = 12.44 L/h |
 | `lvc` (Vd/F) | `log(24.26)` L | Table 2: Vd/F = 0.39 +/- 0.25 L/kg * 62.2 kg = 24.26 L |
 | `lkeo` (keo) | `log(0.16)` 1/h | Table 3: keo = 0.16 1/h (95% CI 0.14-0.19) |
-| `etalka`  IIV variance | 0.5562 | CV(ka) = 86.3% from Table 2 SD/mean |
-| `etalcl`  IIV variance | 0.3525 | CV(CL) = 65.0% from Table 2 SD/mean |
-| `etalvc`  IIV variance | 0.3443 | CV(Vc) = 64.1% from Table 2 SD/mean |
+| `etalka`  IIV variance | 0.5561 | CV(ka) = 86.3% from Table 2 SD/mean |
+| `etalcl`  IIV variance | 0.3524 | CV(CL) = 65.0% from Table 2 SD/mean |
+| `etalvc`  IIV variance | 0.3442 | CV(Vc) = 64.1% from Table 2 SD/mean |
 | `etalkeo` IIV variance | 0.0583 | CV(keo) = 24.5% from Table 3 |
 | `propSd_Csf` (synovial residual) | 0.40 | Table 3: CV_sigma = 40% (proportional, Eq. 3) |
 | `propSd` (plasma residual) | 0.15 (assumed) | not reported in Park 2001 |

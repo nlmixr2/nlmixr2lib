@@ -135,8 +135,8 @@ Angeli_2016_iron_hepcidin <- function() {
     etalkrel_iron ~ 0.2643   # 55% CV: log(1 + 0.55^2)
     etalkloss     ~ 0.6432   # 95% CV: log(1 + 0.95^2)
     etalksyn_hep  ~ 0.0560   # 24% CV: log(1 + 0.24^2)
-    etalkout_hep  ~ 0.2814   # 57% CV: log(1 + 0.57^2)
-    etalkrel_hep  ~ 0.7232   # 103% CV: log(1 + 1.03^2)
+    etalkout_hep  ~ log(1 + 0.57^2)  # 57% CV
+    etalkrel_hep  ~ log(1 + 1.03^2)  # 103% CV
     etalalpha     ~ 0.5636   # 87% CV: log(1 + 0.87^2)
     # Note: koutI IIV was removed from the final model with covariates (0%, Table III);
     # drel had no IIV in any model. Both are intentionally omitted from this block.

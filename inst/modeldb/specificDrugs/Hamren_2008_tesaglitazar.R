@@ -146,7 +146,7 @@ Hamren_2008_tesaglitazar <- function() {
     etalvc             ~ 0.1416   # Table 2 parametric Vct    39% CV -> log(1 + 0.39^2) = 0.1416
     etalvp             ~ 0.0253   # Table 2 parametric Vpt    16% CV -> log(1 + 0.16^2) = 0.0253
     etalkm_gluc        ~ 0.1283   # Table 2 parametric Km     37% CV -> log(1 + 0.37^2) = 0.1283
-    etalcl_nonren_gluc ~ 0.2561   # Table 2 parametric CLnrm  54% CV -> log(1 + 0.54^2) = 0.2561
+    etalcl_nonren_gluc ~ log(1 + 0.54^2)  # Table 2 parametric CLnrm  54% CV
 
     # Residual error (Table 2 'Residual error estimates (proportional models)').
     # The source paper used untransformed plasma and urine data with

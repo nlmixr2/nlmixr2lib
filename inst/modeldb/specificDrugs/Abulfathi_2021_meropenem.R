@@ -143,8 +143,8 @@ Abulfathi_2021_meropenem <- function() {
     # so OMEGA = log(CV^2 + 1). No IIV on Q (Results: 'No significant
     # variability could be detected in Q'); no off-diagonal terms reported.
     etalcl ~ 0.039221 # log(0.20^2 + 1); Table 2 'IIV CL' 20 %CV
-    etalvc ~ 0.017016 # log(0.131^2 + 1); Table 2 'IIV V1' 13.1 %CV
-    etalvp ~ 0.753120 # log(1.06^2 + 1); Table 2 'IIV V2' 106 %CV
+    etalvc ~ log(1 + 0.131^2)  # Table 2 'IIV V1' 13.1 %CV
+    etalvp ~ log(1 + 1.06^2)  # Table 2 'IIV V2' 106 %CV
 
     # Combined additive + proportional residual error (Results; Table 2).
     propSd <- 0.178; label("Proportional residual error (fraction)") # Table 2: 'Proportional residual error (%)' = 0.178 (RSE 14.8%)

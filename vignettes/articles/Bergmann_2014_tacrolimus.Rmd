@@ -69,7 +69,7 @@ The table below collects the entries in one place.
 | IIV CL/F (omega^2 = log(0.295^2 + 1) = 0.0834) | 29.5% CV | Table 2, Final Model column, IIV_CL/F row |
 | IIV V1/F (omega^2 = 0.1981) | 46.8% CV | Table 2, Final Model column, IIV_V1/F row |
 | IIV V2/F (omega^2 = 0.5874) | 89.4% CV | Table 2, Final Model column, IIV_V2/F row |
-| IIV ka (omega^2 = 0.2043) | 47.6% CV | Table 2, Final Model column, IIV_ka row |
+| IIV ka (omega^2 = 0.2042) | 47.6% CV | Table 2, Final Model column, IIV_ka row |
 | Correlation V1/F-ka | 0.677 | Table 2, Correlation block, V1/F-ka row |
 | Correlation V1/F-V2/F | -0.049 | Table 2, Correlation block, V1/F-V2/F row |
 | Correlation ka-V2/F | -0.013 | Table 2, Correlation block, ka-V2/F row |

@@ -142,7 +142,7 @@ deAlwis_1998_ondansetron <- function() {
     # (multiplicative error). omega^2 = log(CV^2 + 1) with CV expressed
     # as a fraction.
     #   CL:   CV 29.6%  -> log(1 + 0.296^2) = log(1.0876) = 0.0840
-    #   V1:   CV 71.1%  -> log(1 + 0.711^2) = log(1.5055) = 0.4090
+    #   V1:   CV 71.1%  -> log(1 + 0.711^2) = log(1.5055) = 0.4091
     #   Vss:  CV 36.7%  -> log(1 + 0.367^2) = log(1.1347) = 0.1264
     #   CLd:  CV 37.0%  -> log(1 + 0.370^2) = log(1.1369) = 0.1283
     # All four etas (etalcl, etalvc, etalvss, etalq) are declared in
@@ -152,7 +152,7 @@ deAlwis_1998_ondansetron <- function() {
     # lcl / lvc / lq fixed-effect parameters in ini(). The etas are
     # still log-normal multiplicative on the resulting typical values.
     etalcl  ~ 0.0840   # Table 1, Final covariate model, All data, CL CV 29.6%
-    etalvc  ~ 0.4090   # Table 1, Final covariate model, All data, V1 CV 71.1% (V1 maps onto canonical vc)
+    etalvc  ~ log(1 + 0.711^2)  # Table 1, Final covariate model, All data, V1 CV 71.1% (V1 maps onto canonical vc)
     etalvss ~ 0.1264   # Table 1, Final covariate model, All data, Vss CV 36.7% (paper-specific eta on Vss; see paper_specific_etas above)
     etalq   ~ 0.1283   # Table 1, Final covariate model, All data, CLd CV 37.0% (CLd maps onto canonical q)
 

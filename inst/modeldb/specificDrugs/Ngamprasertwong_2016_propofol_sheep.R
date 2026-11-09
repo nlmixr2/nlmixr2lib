@@ -83,7 +83,7 @@ Ngamprasertwong_2016_propofol_sheep <- function() {
     # corresponding etas are omitted entirely (Przybylowski 2015
     # propofol convention).
     etalcl  ~ 0.046429    # Table 2: omega1^2 (CL) = 21.8 %CV; omega^2 = log(0.218^2 + 1) = 0.046429
-    etalqmf ~ 0.366170    # Table 2: omega5^2 (QM-F) = 66.5 %CV; omega^2 = log(0.665^2 + 1) = 0.366170
+    etalqmf ~ log(1 + 0.665^2)  # Table 2: omega5^2 (QM-F) = 66.5 %CV
 
     # Residual error. Ngamprasertwong 2016 Methods Eq (2) describes a
     # combined proportional + additive error model on linear-scale

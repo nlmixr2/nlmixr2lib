@@ -67,9 +67,9 @@ and 8 completers per arm). The same information is available from
 | `ltgb2` (Tgb2) | 12.2 h | Table 2 |
 | `hill` | 40, fixed | Results 3.3, "The slope of the sigmoid function was set to 40" |
 | `e_form_syo1644_fdepot` | log(1.62) | Table 2, relative bioavailability (SYO-1644 to Nexavar) |
-| `etalka` | 0.5636 | Table 2, IIV ka 87.3 %CV, omega^2 = log(1 + CV^2) |
-| `etalcl` | 0.06589 | Table 2, IIV CL 26.1 %CV; Results 3.3 text gives the variance 6.6% |
-| `etalvc` | 0.04517 | Table 2, IIV V 21.5 %CV; Results 3.3 text gives the variance 4.5% |
+| `etalka` | 0.5665 | Table 2, IIV ka 87.3 %CV, omega^2 = log(1 + CV^2) |
+| `etalcl` | 0.06590 | Table 2, IIV CL 26.1 %CV; Results 3.3 text gives the variance 6.6% |
+| `etalvc` | 0.04519 | Table 2, IIV V 21.5 %CV; Results 3.3 text gives the variance 4.5% |
 | `etaiov_cl_1`, `etaiov_cl_2` | 0.008067 | Table 2, IOV CL 9.0 %CV (text: 8.9%); one occasion per study period |
 | `propSd` | 0.376 | Table 2, proportional residual error 37.6 %CV |
 | Transit input to the absorption compartment | Savic closed form | Results 3.3 and Figure 3 |

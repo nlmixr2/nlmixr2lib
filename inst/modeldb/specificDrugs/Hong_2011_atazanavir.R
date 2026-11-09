@@ -107,14 +107,14 @@ Hong_2011_atazanavir <- function() {
     # the canonical nlmixr2lib parameterisation uses lcl and lvc instead of lke and lvc.
     # Translating via CL = ke * V (independent IIVs in the source) gives a correlated
     # bivariate block on (etalcl, etalvc):
-    #   var(etalvc)         = log(1 + 0.425^2) = 0.1661     (Table 4: IIV V/F = 42.5%)
+    #   var(etalvc)         = log(1 + 0.425^2) = 0.1660     (Table 4: IIV V/F = 42.5%)
     #   var(etalcl)         = log(1 + 0.146^2) + log(1 + 0.425^2)
-    #                        = 0.0211 + 0.1661 = 0.1872     (combined IIV ke + V/F on CL)
-    #   cov(etalcl, etalvc) = log(1 + 0.425^2) = 0.1661     (shared V/F component)
+    #                        = 0.0211 + 0.1660 = 0.1871     (combined IIV ke + V/F on CL)
+    #   cov(etalcl, etalvc) = log(1 + 0.425^2) = 0.1660     (shared V/F component)
     # This preserves the source paper's marginal CV%s on ke (14.6%), V/F (42.5%) and
     # the derived 45.4% CV on CL/F.
     etalka                ~ 1.3845                          # Table 4: IIV K_a = 173%; log(1 + 1.73^2) = 1.3845
-    etalcl + etalvc       ~ c(0.1872, 0.1661, 0.1661)       # Table 4: IIV K_e = 14.6% and IIV V/F = 42.5% translated via CL = ke * V
+    etalcl + etalvc       ~ c(log(1 + 0.146^2) + log(1 + 0.425^2), log(1 + 0.425^2), log(1 + 0.425^2))       # Table 4: IIV K_e = 14.6% and IIV V/F = 42.5% translated via CL = ke * V
 
     # Residual error. Hong 2011 reports two stratum-specific log-transform residual error
     # CV%s in Table 4 (ATV alone: 55.2%; ATV + RTV: 35.3%). nlmixr2 / rxode2 error models

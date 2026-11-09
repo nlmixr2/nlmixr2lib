@@ -258,25 +258,25 @@ Djerada_2014_nefopam <- function() {
     # variance via omega^2 = log(CV^2 + 1).
     # -----------------------------------------------------------------
 
-    etalcl           ~ 0.24762
+    etalcl           ~ log(1 + 0.53^2)
     # Djerada 2014 Results p 1031: BSV(CL_nef) = 53 +/- 9 %CV;
-    # omega^2 = log(0.53^2 + 1) = 0.24762.
+    # omega^2 = log(0.53^2 + 1) = 0.24756.
 
-    etalvc           ~ 0.90184
+    etalvc           ~ log(1 + 1.21^2)
     # Djerada 2014 Results p 1031: BSV(V1_nef) = 121 +/- 21 %CV;
-    # omega^2 = log(1.21^2 + 1) = 0.90184.
+    # omega^2 = log(1.21^2 + 1) = 0.90183.
 
-    etalq            ~ 0.48489
+    etalq            ~ log(1 + 0.79^2)
     # Djerada 2014 Results p 1031: BSV(Q_nef) = 79 +/- 17 %CV;
-    # omega^2 = log(0.79^2 + 1) = 0.48489.
+    # omega^2 = log(0.79^2 + 1) = 0.48495.
 
-    etalvp           ~ 0.34333
+    etalvp           ~ log(1 + 0.64^2)
     # Djerada 2014 Results p 1031: BSV(V2_nef) = 64 +/- 15 %CV;
-    # omega^2 = log(0.64^2 + 1) = 0.34333.
+    # omega^2 = log(0.64^2 + 1) = 0.34331.
 
-    etalcl_dnef      ~ 1.12250
+    etalcl_dnef      ~ log(1 + 1.44^2)
     # Djerada 2014 Results p 1031: BSV(CL_dnef) = 144 +/- 19 %CV;
-    # omega^2 = log(1.44^2 + 1) = 1.12250.
+    # omega^2 = log(1.44^2 + 1) = 1.12285.
 
     etalvc_dnef      ~ 0.00010
     # Djerada 2014 Results p 1031: BSV(V_dnef) = 1 +/- 0.9 %CV;

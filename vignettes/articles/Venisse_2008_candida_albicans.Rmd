@@ -80,7 +80,7 @@ The same information is available programmatically via each model's
 | `EC50` = 2.51e-4 ug/mL          | caspofungin EC50, SE 4.62e-5                                                  | Table 2                         |
 | `Emax` = 0.804 1/h              | caspofungin maximum killing rate, SE 0.0511                                   | Table 2                         |
 | `eta(Nmax)` = 225% CV exp.      | omega^2 = log(2.25^2 + 1) = 1.802 (natural-log scale)                         | Table 2                         |
-| `eta(Emax)` = 65% CV exp.       | omega^2 = log(0.65^2 + 1) = 0.353 (caspofungin only)                          | Table 2                         |
+| `eta(Emax)` = 65% CV exp.       | omega^2 = log(0.65^2 + 1) = 0.352 (caspofungin only)                          | Table 2                         |
 | `epsilon` flu = 197% CV exp.    | sigma_ln = sqrt(log(1.97^2 + 1)) = 1.259 (additive on log CFU/mL)             | Table 2                         |
 | `epsilon` casp = 96% CV exp.    | sigma_ln = sqrt(log(0.96^2 + 1)) = 0.808 (additive on log CFU/mL)             | Table 2                         |
 
@@ -273,7 +273,7 @@ tbl <- tibble::tribble(
   "EC50 caspofungin (ug/mL)","2.51e-4",     "2.51e-4",
   "Emax caspofungin (1/h)",  "0.804",       "0.804",
   "eta(Nmax) (CV%)",         "225",         "225 (omega^2 = 1.802)",
-  "eta(Emax) (CV%)",         "65",          "65 (omega^2 = 0.353)",
+  "eta(Emax) (CV%)",         "65",          "65 (omega^2 = 0.352)",
   "epsilon flu (CV%)",       "197",         "197 (addSd on log CFU/mL = 1.259)",
   "epsilon casp (CV%)",      "96",          "96 (addSd on log CFU/mL = 0.808)"
 )
