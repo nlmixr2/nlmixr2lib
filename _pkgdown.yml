@@ -1684,6 +1684,8 @@ navbar:
         href: articles/Zhang_2023_aztreonam_amoxicillin_clavulanate.html
       - text: "Clazakizumab (Muthukrishnan 2025)"
         href: articles/Muthukrishnan_2025_clazakizumab.html
+      - text: "Clesacostat (Hughes 2025)"
+        href: articles/Hughes_2025_ervogastat_clesacostat.html
       - text: "Clesrovimab (Hu 2026)"
         href: articles/Hu_2026_clesrovimab.html
       - text: "Clindamycin (Bouazza 2012)"
@@ -2652,6 +2654,10 @@ navbar:
         href: articles/Fediuk_2021b_ertugliflozin_ethnicity.html
       - text: "Ertugliflozin esea (Fediuk 2021b)"
         href: articles/Fediuk_2021b_ertugliflozin_ethnicity.html
+      - text: "Ervogastat (Hughes 2025)"
+        href: articles/Hughes_2025_ervogastat_clesacostat.html
+      - text: "Ervogastat clesacostat liverfat (Hughes 2025)"
+        href: articles/Hughes_2025_ervogastat_clesacostat.html
       - text: "Erythromycin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Escitalopram (Areberg 2006)"
@@ -9679,6 +9685,7 @@ articles:
   - articles/Hughes_2022_brepocitinib
   - articles/Hughes_2023_chemotherapy_gcsf_anc
   - articles/Hughes_2024_vancomycin
+  - articles/Hughes_2025_ervogastat_clesacostat
   - articles/Huh_2021_sorafenib
   - articles/Huh_2024_ritlecitinib
   - articles/Hui_2024_linezolid

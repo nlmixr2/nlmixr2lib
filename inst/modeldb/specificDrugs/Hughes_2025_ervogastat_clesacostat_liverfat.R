@@ -224,7 +224,7 @@ Hughes_2025_ervogastat_clesacostat_liverfat <- function() {
 
     # Random effects on the latent scale (Code S3 $OMEGA variances; Table 2
     # prints the SDs 1.00 FIX, 1.33, 0.959)
-    etabsl ~ fixed(1) # Code S3 $OMEGA PPVBSLN = 1 FIX; Table 2 'Shared baseline liver fat' SD 1.00 Fixed
+    etabsl ~ fixed(1) # Code S3 $OMEGA PPVBSLN = 1; Table 2 'Shared baseline liver fat' SD 1.00
     etabsl_hcap ~ 1.7795 # Code S3 $OMEGA PPVCAPBSLN = 1.7795; Table 2 'Unique baseline CAP' SD 1.33
     etapmax ~ 0.918996 # Code S3 $OMEGA PPVPMAX = 0.918996; Table 2 'Maximum placebo effect' SD 0.959
 
@@ -279,9 +279,10 @@ Hughes_2025_ervogastat_clesacostat_liverfat <- function() {
     eff_ervo <- etrt_ervogastat * on_ervo * (1 + imax_clesacostat * on_cles)
     drug_latent <- (eff_ervo + eff_cles) * drug_prof
 
-    # Placebo raises and drug lowers the latent variable; each is mapped to
-    # an endpoint through its scaling (Code S3 PMAX = LOAD * (...),
-    # EMAX = -LOAD * THETA)
+    # The placebo effect (whose sign depends on the study and PNPLA3
+    # covariates) adds to, and the drug effect subtracts from, the latent
+    # variable; each is mapped to an endpoint through its scaling (Code S3
+    # PMAX = LOAD * (...), EMAX = -LOAD * THETA)
     hpdff <- tbsl_pdff + s_pdff * (pmax_i * pbo_prof - drug_latent)
     hcap <- tbsl_cap + s_cap * (pmax_i * pbo_prof - drug_latent)
 
