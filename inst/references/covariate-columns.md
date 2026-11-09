@@ -19982,6 +19982,42 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Notes:** MBMA / trial-design covariate; family precedent `K_CTRL` and `LOGRR_TARGET` (Volkova 2023), which are likewise trial-design inputs rather than patient characteristics. Registered as an explicit column because a growing set of MBMA models needs the arm size INSIDE `model()`, not merely as a post-hoc scaling. Most of the library's earlier MBMA extractions (`Mercier_2014_tramadol_tapentadol_mbma`, `Chen_2025_methotrexate_acr20_mbma` / `_acr50_` / `_das28_`, `Asiimwe_2025_trastuzumab*_mbma`, `Hanan_2026_peginterferon_alfa_*_mbma`) store the residual SD UNWEIGHTED and state in `ini()` that downstream code must apply `1 / sqrt(N)`; that remains valid where the arm size touches only the residual. Use `N_ARM` instead when the arm size enters a structural or random-effect expression, where no downstream rescaling can reproduce it -- a per-arm random-effect SD cannot be varied across arms within a single `rxSolve()` without a data column. Scope `general` because arm size carries the same meaning in every MBMA, with no paper-specific semantics. Do NOT use for an individual-level covariate: a row carrying `N_ARM` is an aggregate, and a model consuming it is simulating arm means, not patients.
 
 
+### SE_ARM (**canonical for the standard error of a study-arm-level aggregate observation on the model's modelled scale**)
+- **Description:** Standard error of the aggregate (arm-mean or arm-proportion) value of one study arm, expressed on the scale the model works on -- for a logit-transformed healing or response rate, the SE of the logit of the arm's pooled rate. A **study-design / precision quantity** supplied per observation row, not a patient characteristic and not estimated. MBMA models that weight by precision rather than by arm size multiply their random-effect and residual SDs by it.
+- **Units:** (unitless, logit scale)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous. Must be strictly positive. The units entry above is the founding model's scale; a model whose outcome is modelled on a different scale states that scale in its `covariateData` units and notes.
+- **Source aliases:**
+  - `EEHR_SE` -- Howden 2025 NONMEM `$INPUT` column (SE of the arm's pooled erosive esophagitis healing rate on the logit scale, from a DerSimonian-Laird random-intercept logit meta-analysis of the arm's trials).
+  - `SE`, `SE_ARM`, `SEM` -- common MBMA dataset column variants; map directly after confirming the scale.
+- **Example models:** `Howden_2025_antisecretory_mbma.R` (multiplies BOTH the between-drug random effect and the between-treatment residual: `IPRED = MU + EEHR_SE*BDV_ + EEHR_SE*BTV_`; the paper's simulations use SE = 0.25, 0.5 and 1.0 for high-, average- (about 100 patients) and low-precision studies).
+- **Notes:** MBMA / trial-design covariate, general-scope sibling of `N_ARM`. Registered as an explicit column for the same reason as `N_ARM`: the SE scales a RANDOM-EFFECT term inside `model()`, which no post-hoc rescaling of a single `rxSolve()` output can reproduce. Use `N_ARM` instead when a source weights by the arm size and derives the SE from it; use `SE_ARM` when the source supplies the SE itself.
+
+### TRT_APPROVED (**canonical for the regimen-approval indicator of a study arm**)
+- **Description:** Binary study-arm indicator: 1 = the arm's drug and dose regimen is approved by a regulator for the modelled indication, 0 = not approved (an off-label dose, dosing frequency or agent). Which regulators count is stated per model (Howden 2025: the US or the European Union).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** stated per model; in `Howden_2025_antisecretory_mbma.R` the estimated effects attach to both levels (an EC50 effect when 0, a variability effect when 1).
+- **Source aliases:**
+  - `APPR` -- Howden 2025 NONMEM `$INPUT` column (1 = approved for erosive esophagitis in the US or EU); non-approved regimens are footnoted in Howden 2025 Table 1.
+- **Example models:** `Howden_2025_antisecretory_mbma.R` (multiplies the pH > 4 holding-time EC50 by 1 - 0.465 when 0, and the between-treatment SD by 1 + 2.05 when 1).
+- **Notes:** MBMA / trial-design covariate; a property of the regimen, not of the patient. General scope because regulatory status is meaningful in any MBMA that pools approved and off-label regimens. Distinct from the `TRT_<INN>` arm indicators, which name WHICH treatment an arm received; this column flags the regulatory status of whatever it received.
+
+### GASTRIC_PH4_TIME_PCT (**canonical for the percentage of a 24-hour period with intragastric pH above 4**)
+- **Description:** Mean percentage of a 24 h period during which intragastric pH exceeds 4 (the pH > 4 holding-time ratio, HTR), measured by continuous 24 h intragastric pH-metry at steady state of an antisecretory regimen. The pharmacodynamic exposure metric of acid suppression. Holding time in hours = `GASTRIC_PH4_TIME_PCT / 100 * 24`.
+- **Units:** %
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- continuous, 0-100.
+- **Source aliases:**
+  - `PH4` -- Howden 2025 NONMEM `$INPUT` column.
+  - `pH > 4 HTR`, `pH > 4 holding time ratio`, `% time pH > 4`, `HTR` -- Howden 2025 Table 1 and prose.
+  - `pH > 4 holding time (h)`, `HT` -- the same quantity in hours; divide by 24 and multiply by 100 to convert.
+- **Example models:** `Howden_2025_antisecretory_mbma.R` (regimen-level driver of a sigmoid Emax model on the logit erosive esophagitis healing rate; the value is the per-protocol-size-weighted mean of healthy-volunteer pH studies at days 5-8 of dosing, merged onto every healing-trial arm of the same drug and dose; range 10.2% for placebo to 96.6% for vonoprazan 40 mg once daily).
+- **Notes:** Spelled out (location, threshold, time, percent) rather than `PH4` or `HTR`, which are ambiguous between intragastric and intra-esophageal pH and between percent and hours. A pH-metry endpoint at a different threshold registers its own `GASTRIC_PH<n>_TIME_PCT` sibling; an intra-esophageal acid-exposure time is a different quantity and must not reuse this name. In Howden 2025 the value is regimen-level (measured in healthy volunteers, not in the trial patients), so it is identical for every arm of one drug and dose.
+
 ### YEAR_PUB (**canonical for the calendar year of a trial in a model-based meta-analysis -- publication or conduct year, stated per model**)
 - **Description:** Calendar year of a trial (a four-digit year), a study-level characteristic in a model-based meta-analysis used as a proxy for secular change in background care. Continuous; one value per trial. Sources use either the publication year or the year the trial was conducted; each model's `covariateData` notes state which one its value is.
 - **Units:** year
@@ -22017,6 +22053,18 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `Corticosteroids`, `Immunosuppressant`, `RAS blockers`, `Antiplatelet agents`, `N-3 fatty acids`, `Other drugs` -- Yu 2022 Tables 1-3 class labels, which follow the Japanese Society of Nephrology 2014 guideline classification.
 - **Example models:** `Yu_2022_igaNephropathy_mbma.R` (study-arm level; each indicator selects its class Emax on the change from baseline in urinary protein excretion, and any indicator being 1 switches the arm from the placebo Emax / ET50 to the drug Emax / shared drug ET50).
 - **Notes:** Specific scope. Class-level members of the `TRT_` family, following `TRT_ANTIPD1` and `TRT_ANTIPCSK9_SIRNA`: the source pools many agents under each class, so no `TRT_<INN>` or bare-INN arm indicator applies. `TRT_OTHER_IGAN` carries a disease suffix because "other" is defined by exclusion from the five named IgA-nephropathy classes and has no meaning outside that classification; a different disease's residual class should register its own name. Distinct from `CONMED_STEROID`, which flags background corticosteroid use in a model of some other drug; here the corticosteroid is the studied treatment of the arm.
+
+### TRT_H2RA, TRT_PCAB (**canonical for antisecretory drug-class treatment-arm indicators**)
+- **Description:** Binary study-arm drug-class indicators for gastric-acid suppression: `TRT_H2RA` = 1 when the arm received a histamine H2-receptor antagonist (famotidine, nizatidine, ranitidine, ...); `TRT_PCAB` = 1 when the arm received a potassium-competitive acid blocker (vonoprazan, tegoprazan, ...). Mutually exclusive; both 0 on a proton pump inhibitor or placebo arm.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (proton pump inhibitor or placebo arm).
+- **Source aliases:**
+  - `CLASS` -- Howden 2025 NONMEM `$INPUT` column: `CLASS = 3` -> `TRT_H2RA = 1`, `CLASS = 5` -> `TRT_PCAB = 1`; the other levels (PPI, placebo) map to both 0.
+  - `H2RA`, `P-CAB` -- Howden 2025 Table 1 drug-class labels.
+- **Example models:** `Howden_2025_antisecretory_mbma.R` (study-arm level; `TRT_H2RA` multiplies the pH > 4 holding-time EC50 by 1 + 0.413 and the between-treatment SD by 1 - 0.71, `TRT_PCAB` multiplies the EC50 by 1 - 0.308).
+- **Notes:** Specific scope. Class-level members of the `TRT_` family, following `TRT_ANTIPD1` and the IgA-nephropathy class indicators: the source pools several agents under each class, so no `TRT_<INN>` indicator applies. No PPI indicator is registered because PPI is the reference class in the founding model; a source that needs one should register `TRT_PPI` as a sibling here.
 
 ### TRT_CYCLOPHOSPHAMIDE_DOXORUBICIN, TRT_CARBOPLATIN_ETOPOSIDE, TRT_CARBOPLATIN_PACLITAXEL, TRT_CARBOPLATIN_PEMETREXED, TRT_CISPLATIN_PEMETREXED, TRT_CYCLOPHOSPHAMIDE_FLUOROURACIL_METHOTREXATE, TRT_DOCETAXEL, TRT_GEMCITABINE, TRT_PACLITAXEL (**canonical for cytotoxic-chemotherapy regimen-backbone indicators**)
 - **Description:** Mutually exclusive binary indicators of the cytotoxic backbone of the chemotherapy regimen given in the current cycle: doxorubicin + cyclophosphamide (AC), carboplatin + etoposide, carboplatin + paclitaxel, carboplatin + pemetrexed, cisplatin + pemetrexed, cyclophosphamide + methotrexate + fluorouracil (CMF), docetaxel, gemcitabine, paclitaxel. Each indicator is 1 whether or not monoclonal antibodies or immunotherapies (rituximab, obinutuzumab, trastuzumab, pertuzumab, bevacizumab, ramucirumab, cetuximab, necitumumab, atezolizumab, durvalumab, nivolumab, ipilimumab, pembrolizumab, avelumab) were given with the backbone; a single-agent name (`TRT_DOCETAXEL`, `TRT_GEMCITABINE`, `TRT_PACLITAXEL`) means no second cytotoxic agent. Patient-level and time-varying (the regimen of the cycle being modelled).

@@ -436,6 +436,8 @@ navbar:
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Antipyrine rat pbpk (Hirasawa 2022)"
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
+      - text: "Antisecretory mbma (Howden 2025)"
+        href: articles/Howden_2025_antisecretory_mbma.html
       - text: "Antithrombin (DeJongh 2014)"
         href: articles/DeJongh_2014_antithrombin.html
       - text: "Antithrombin (Moffett 2017)"
@@ -9658,6 +9660,7 @@ articles:
   - articles/Hornik_2025_furosemide
   - articles/Hosey_2022_t2dm_growth
   - articles/Hosseini_2024_flt3lfc
+  - articles/Howden_2025_antisecretory_mbma
   - articles/Hu_2014_bapineuzumab
   - articles/Hu_2017_peginterferon_beta_1a
   - articles/Hu_2023_voriconazole

@@ -2440,6 +2440,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Zou_2026_pembrolizumab_qol_mbma.R`.
 - **Notes:** Named for the transform-prefix output family (`log10_viral_load`, `log_car`, `log_cfu`) rather than for the instrument alone, because the logit and the 0-100 score are different quantities and a consumer that maps one onto the other misstates every value by the transform. Distinct from the covariate register's `SCORE_*` family, which holds instrument scores supplied as model INPUTS. In an MBMA the residual SD on this scale is divided by `sqrt(N_ARM)` (the arm sample size) rather than being a per-subject quantity -- the observation is an arm MEAN, so its standard error shrinks with arm size; see the `N_ARM` entry in `inst/references/covariate-columns.md`. A single-example canonical: a second QoL model that observes the 0-100 score directly (with a residual on that scale) should use a separate linear-scale name rather than reusing this one.
 
+### logit_ee_healing (**canonical logit-scale erosive esophagitis healing-rate output**)
+- **Type:** compartment
+- **Role:** Logit-of-fraction transform of a study arm's erosive esophagitis healing rate (the proportion of the arm with complete mucosal healing at the assessment week), the modelled observation of an arm-level healing MBMA. The residual is additive on the logit scale, which keeps a simulated rate inside 0-100%. The percentage-scale counterpart is derived in `model()` as `ee_healing <- 100 * expit(logit_ee_healing)`.
+- **Source aliases:** `DV` / `IPRED` (Howden 2025 NONMEM `$PRED`, logit of `EEHR`), `logit(HR)` (Howden 2025 Figure 2).
+- **Example models:** `Howden_2025_antisecretory_mbma.R`.
+- **Notes:** Follows the transform-prefix output precedent of `logit_qol_ghs` (Zou 2026): the logit and the 0-100% rate are different quantities, so they carry different names. In an MBMA the random-effect and residual SDs on this scale are scaled per arm by the arm's standard error (`SE_ARM` in `inst/references/covariate-columns.md`). Distinct from the `prob_<endpoint>` family, whose models observe a probability on the probability scale.
+
 ### vas_pred (**canonical visual-analog-scale prediction**)
 - **Type:** compartment
 - **Role:** Visual-analog-scale prediction PD output (Valitalo 2017 morphine).
