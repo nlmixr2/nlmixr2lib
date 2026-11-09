@@ -90,7 +90,7 @@ collects them in one place for review.
 | Moderate-to-severe asthma on F | Table 3 | Multiplicative fractional, `(1 + (-0.309) * DIS_SASTHMA)` |
 | IIV CL      | Table 3 | CV 31.6% (omega^2 = log(1 + 0.316^2) = 0.0952) |
 | IIV Vc, Vp (shared eta) | Table 3 | CV 26.5% (omega^2 = 0.0679) |
-| IIV Ka      | Table 3 | CV 54.0% (omega^2 = 0.2560) |
+| IIV Ka      | Table 3 | CV 54.0% (omega^2 = 0.2559) |
 | Corr(CL, V) | Table 3 | 0.727 |
 | Residual    | Table 3 | 23.5% proportional (additive on log-transformed data) |
 

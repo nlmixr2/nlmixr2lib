@@ -199,11 +199,11 @@ Han_2015_decitabine <- function() {
     # ---------------------------------------------------------------------
     etalcl        ~ 0.04478;  label("IIV variance on log-CL (Table 3: 21.4% CV)")            # log(0.214^2 + 1) = 0.04478
     etalslope_anc ~ 0.28565;  label("IIV variance on log-SLOPE_N (Table 3: 57.5% CV)")       # log(0.575^2 + 1) = 0.28565
-    etalbase_anc  ~ 0.17326;  label("IIV variance on log-BASE_N (Table 3: 43.5% CV)")        # log(0.435^2 + 1) = 0.17326
+    etalbase_anc  ~ log(1 + 0.435^2);  label("IIV variance on log-BASE_N (Table 3: 43.5% CV)")
     etalgamma_anc ~ 0.14430;  label("IIV variance on log-GAMMA_N (Table 3: 39.4% CV)")       # log(0.394^2 + 1) = 0.14430
     etalslope_plt ~ 0.06396;  label("IIV variance on log-SLOPE_P (Table 3: 25.7% CV)")       # log(0.257^2 + 1) = 0.06396
-    etalbase_plt  ~ 0.74320;  label("IIV variance on log-BASE_P (Table 3: 105% CV)")         # log(1.05^2 + 1)  = 0.74320
-    etalimp       ~ 0.47798;  label("IIV variance on log-IMP (Table 3: 78.3% CV)")           # log(0.783^2 + 1) = 0.47798
+    etalbase_plt  ~ log(1 + 1.05^2);  label("IIV variance on log-BASE_P (Table 3: 105% CV)")
+    etalimp       ~ log(1 + 0.783^2);  label("IIV variance on log-IMP (Table 3: 78.3% CV)")
 
     # ---------------------------------------------------------------------
     # Residual error - Han 2015 Table 3, "Residual error" block. Reported

@@ -87,13 +87,13 @@ Choi_2018_metformin <- function() {
     #   omega^2_lcl = log(1 + 0.198^2) ~= 0.03845
     #   omega^2_lvc = log(1 + 0.328^2) ~= 0.10215
     #   cov_lcl_lvc = 0.225 * sqrt(0.03845 * 0.10215) ~= 0.01411
-    #   omega^2_lka = log(1 + 0.636^2) ~= 0.33967
+    #   omega^2_lka = log(1 + 0.636^2) ~= 0.33968
     # No IIV is reported on F1, D2, ALAG2, or the formulation
     # coefficients (Choi 2018 Table 3 'Interindividual variability'
     # block lists only CL/F, Vc/F, and Ka).
     # ====================================================================
     etalcl + etalvc ~ c(0.03845, 0.01411, 0.10215)  # Choi 2018 Table 3: CV%(CL/F) = 19.8, CV%(Vc/F) = 32.8, rho = 0.225
-    etalka          ~ 0.33967                       # Choi 2018 Table 3: CV%(Ka) = 63.6
+    etalka          ~ log(1 + 0.636^2)  # Choi 2018 Table 3: CV%(Ka) = 63.6
 
     # Residual error -- proportional only (Choi 2018 Table 3 'Residual
     # error' block lists only sigma_prop; no additive component is

@@ -87,11 +87,11 @@ Table 3 (final-covariate-model, cycle 1) unless otherwise noted.
 | `lka` (first-order absorption rate, 1/h)          | log(1.7)          | Table 3, theta9 = 1.7 (95% CI 0.6) |
 | `ltlag` (oral absorption lag time, h)             | log(0.17)         | Table 3, theta10 = 0.17 (95% CI 0.03) |
 | `etalcl ~ 0.08075`                                | log(0.29^2 + 1)   | Table 3, CL %CV = 29 (interindividual) |
-| `etalvc ~ 0.14157`                                | log(0.39^2 + 1)   | Table 3, V1 %CV = 39 |
-| `etalvp ~ 0.19193`                                | log(0.46^2 + 1)   | Table 3, V2 %CV = 46 |
+| `etalvc ~ 0.14159`                                | log(0.39^2 + 1)   | Table 3, V1 %CV = 39 |
+| `etalvp ~ 0.19194`                                | log(0.46^2 + 1)   | Table 3, V2 %CV = 46 |
 | `etalq  ~ 0.49470`                                | log(0.80^2 + 1)   | Table 3, Q  %CV = 80 |
 | `etalfdepot ~ 0.04727`                            | log(0.22^2 + 1)   | Table 3, F  %CV = 22 |
-| `etalka ~ 0.34335`                                | log(0.64^2 + 1)   | Table 3, Ka %CV = 64 |
+| `etalka ~ 0.34331`                                | log(0.64^2 + 1)   | Table 3, Ka %CV = 64 |
 | `etaltlag ~ 0.01676`                              | log(0.13^2 + 1)   | Table 3, Lag %CV = 13 |
 | `propSd <- 0.17`                                  | 0.17              | Results, oral-route proportional residual = 17% |
 | `addSd  <- 0.09`                                  | 0.09 ug/L         | Results, oral-route additive residual = 0.09 ug/L |

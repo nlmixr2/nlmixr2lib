@@ -105,9 +105,9 @@ below collects them in one place for review.
 | ALB on CL | Methods | Power, `(ALB/4.1)^(-0.855)` |
 | IMM on CL | Methods | Power-of-coefficient, `0.863^IMM` (-13.7% when on immunomodulator) |
 | ATI on CL | Methods | Power-of-coefficient, `1.292^ADA_POS` (+29.2% when ADA-positive) |
-| IIV CL    | Methods | CV 30.7% (omega^2 = log(1 + 0.307^2) = 0.09010) |
+| IIV CL    | Methods | CV 30.7% (omega^2 = log(1 + 0.307^2) = 0.09007) |
 | IIV Vc    | Methods | CV 12.6% (omega^2 = log(1 + 0.126^2) = 0.01575) |
-| IIV Vp    | Methods | CV 55.3% (omega^2 = log(1 + 0.553^2) = 0.26687) |
+| IIV Vp    | Methods | CV 55.3% (omega^2 = log(1 + 0.553^2) = 0.26682) |
 | Residual proportional | Methods | 29.2% CV |
 | Residual additive     | Methods | SD 0.371 ug/mL |
 | ODE structure: 2-cmt IV | Methods, "Model Evaluation" | first-order elimination, no absorption (IV infusion to central) |

@@ -43,8 +43,8 @@ Per-parameter origin is recorded as in-file comments alongside each `ini()` entr
 | `lvp`                | log(7.39)   | Table 2 theta_V2 = 7.39 L (SE 1.08) |
 | `lq2`                | log(12.5)   | Table 2 theta_Q3 = 12.5 L/h (SE 1.22) |
 | `lvp2`               | log(225)    | Table 2 theta_V3 = 225 L (SE 46.2) |
-| `etalcl`             | 0.1478      | Table 2 omega_CL  = 39.9% CV; log(1 + 0.399^2) |
-| `etalvc`             | 0.0673      | Table 2 omega_V1  = 26.4% CV; log(1 + 0.264^2) |
+| `etalcl`             | 0.1477      | Table 2 omega_CL  = 39.9% CV; log(1 + 0.399^2) |
+| `etalvc`             | 0.0674      | Table 2 omega_V1  = 26.4% CV; log(1 + 0.264^2) |
 | `propSd`             | 0.268       | Table 2 sigma     = 26.8% CV; "proportional model" (Methods) |
 | `lmtt`               | log(113)    | Table 3 theta_MTT    = 113 h (SE 4.62) |
 | `lslope`             | log(17.9)   | Table 3 theta_SLOPE  = 17.9 1/(mg/L) (SE 1.75) |
@@ -53,7 +53,7 @@ Per-parameter origin is recorded as in-file comments alongside each `ini()` entr
 | `lip0`               | log(5.19)   | Table 3 theta_IP0    = 5.19 x 10^9 cells/L (SE 1.51) |
 | `e_aag_slope`        | -1.38       | Table 3 theta_gamma2 = -1.38 (SE 0.287) |
 | `etalmtt`            | 0.01225     | Table 3 omega_MTT    = 11.1% CV; log(1 + 0.111^2) |
-| `etalslope`          | 0.3818      | Table 3 omega_SLOPE  = 68.2% CV; log(1 + 0.682^2) |
+| `etalslope`          | 0.3819      | Table 3 omega_SLOPE  = 68.2% CV; log(1 + 0.682^2) |
 | `etalip0`            | 0.7930      | Table 3 omega_IP0    = 110% CV;  log(1 + 1.10^2) |
 | `addSd_ANC`          | 0.291       | Table 3 sigma        = 29.1% CV; Appendix I `Y = F * EXP(ERR(1))` (lognormal) |
 | AGP normalisation    | 0.94 g/L    | Appendix I `AGPm = 94` (mg/dL); Table 1 reports the cohort median as 90 mg/dL |

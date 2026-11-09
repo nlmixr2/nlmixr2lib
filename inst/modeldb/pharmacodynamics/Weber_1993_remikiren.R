@@ -92,12 +92,12 @@ Weber_1993_remikiren <- function() {
     # Translated to nlmixr2 log-normal omega^2 via the standard small-CV
     # approximation omega^2 = log(1 + CV^2):
     #   Imax IIV  7.4% -> omega^2 = log(1 + 0.074^2) = 0.005461
-    #   IC50 IIV 111%  -> omega^2 = log(1 + 1.110^2) = 0.802923
+    #   IC50 IIV 111%  -> omega^2 = log(1 + 1.110^2) = 0.802943
     etalimax ~ 0.005461
     # Weber 1993, Results p. 552: 'Its interindividual variability of 7.4%
     # was very small' (Imax).
 
-    etalic50 ~ 0.802923
+    etalic50 ~ log(1 + 1.110^2)
     # Weber 1993, Results p. 552: 'Its interindividual variability was 111%'
     # (IC50).
 

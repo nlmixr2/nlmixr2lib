@@ -161,14 +161,14 @@ Mosha_2014_lumefantrine <- function() {
 
     # IIV. Mosha 2014 Table 3 column "IIV (%)" reports the F1 IIV as
     # 65% CV. The internal variance for log-normal IIV is recovered by
-    # omega^2 = log((CV/100)^2 + 1) = log(0.65^2 + 1) = 0.35272 -- the
+    # omega^2 = log((CV/100)^2 + 1) = log(0.65^2 + 1) = 0.35242 -- the
     # same convention used by Kloprogge 2013 / 2018. The published model
     # parameterised individual F1 on a logit scale (logit(F1) = logit(
     # F1_typical) + eta) to constrain individuals to (0, 1); this
     # encoding uses log-normal IIV on F directly, matching the
     # established lumefantrine precedents in nlmixr2lib. See vignette
     # Assumptions and deviations.
-    etalfdepot ~ 0.35272  # Mosha 2014 Table 3: BSV on F1 = 65% CV (RSE 50%; bootstrap 61%, 95% CI 43-77)
+    etalfdepot ~ log(1 + 0.65^2)  # Mosha 2014 Table 3: BSV on F1 = 65% CV (RSE 50%; bootstrap 61%, 95% CI 43-77)
 
     # Residual error. Mosha 2014 retained a proportional residual error
     # model for LF on the linear-concentration scale (Results,

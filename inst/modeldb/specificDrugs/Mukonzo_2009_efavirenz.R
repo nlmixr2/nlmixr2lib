@@ -112,13 +112,13 @@ Mukonzo_2009_efavirenz <- function() {
     # ---- IIV (exponential / log-normal on each structural parameter) ----
     # Mukonzo 2009 Table 3 reports between-subject variability as CV%. The
     # log-normal variance is omega^2 = log(CV^2 + 1).
-    etalcl     ~ 0.019408   # Mukonzo 2009 Table 3: omega(CL) = 14.0% CV; omega^2 = log(0.140^2 + 1) = 0.019408
-    etalvc     ~ 0.688200   # Mukonzo 2009 Table 3: omega(Vc) = 99.5% CV; omega^2 = log(0.995^2 + 1) = 0.688200
-    etalvp     ~ 0.074979   # Mukonzo 2009 Table 3: omega(Vp) = 27.9% CV; omega^2 = log(0.279^2 + 1) = 0.074979
-    etalq      ~ 0.098055   # Mukonzo 2009 Table 3: omega(Q)  = 32.1% CV; omega^2 = log(0.321^2 + 1) = 0.098055
-    etalka     ~ 0.038077   # Mukonzo 2009 Table 3: omega(ka) = 19.7% CV; omega^2 = log(0.197^2 + 1) = 0.038077
-    etald      ~ 0.395940   # Mukonzo 2009 Table 3: omega(D1) = 69.7% CV; omega^2 = log(0.697^2 + 1) = 0.395940
-    etalfdepot ~ 0.034729   # Mukonzo 2009 Table 3: omega(Frel)= 18.8% CV; omega^2 = log(0.188^2 + 1) = 0.034729
+    etalcl     ~ log(1 + 0.14^2)  # Mukonzo 2009 Table 3: omega(CL) = 14.0% CV
+    etalvc     ~ log(1 + 0.995^2)  # Mukonzo 2009 Table 3: omega(Vc) = 99.5% CV
+    etalvp     ~ log(1 + 0.279^2)  # Mukonzo 2009 Table 3: omega(Vp) = 27.9% CV
+    etalq      ~ log(1 + 0.321^2)  # Mukonzo 2009 Table 3: omega(Q)  = 32.1% CV
+    etalka     ~ log(1 + 0.197^2)  # Mukonzo 2009 Table 3: omega(ka) = 19.7% CV
+    etald      ~ log(1 + 0.697^2)  # Mukonzo 2009 Table 3: omega(D1) = 69.7% CV
+    etalfdepot ~ log(1 + 0.188^2)  # Mukonzo 2009 Table 3: omega(Frel)= 18.8% CV
 
     # ---- Residual error ----
     # The Methods paragraph specifies an "intercept-slope" (combined additive +

@@ -110,14 +110,14 @@ LiemMoolenaar_2011_scopolamine <- function() {
     lke0_hr       <- log(log(2) / 16.8); label("HR ke0 (1/min); t1/2,keo = 16.8 min")                  # Table 3 HR t1/2,keo
     etalintercept_hr ~ 0.0002956   # CV 1.72%                                                          # Table 3 HR intercept IICV
     etaslope_hr      ~ 0.0207100   # CV 14.46%                                                         # Table 3 HR slope IICV
-    etalke0_hr       ~ 0.0260887   # CV 16.25%                                                         # Table 3 HR t1/2,keo IICV
+    etalke0_hr       ~ log(1 + 0.1625^2)  # CV 16.25%                                                         # Table 3 HR t1/2,keo IICV
     propSd_hr <- 0.103; label("Proportional residual error on HR (fraction; LTBS-style interpretation; see vignette)") # Table 3 HR residual error
 
     # ---- effect2: saccadic peak velocity (SPV), t1/2,keo 65.1 min ----
     lintercept_spv <- log(485);           label("SPV baseline intercept (deg/s)")                       # Table 3 SPV Intercept
     slope_spv      <- -0.0737;            label("SPV slope vs Ce (deg/s per pg/mL)")                    # Table 3 SPV Slope
     lke0_spv       <- log(log(2) / 65.1); label("SPV ke0 (1/min); t1/2,keo = 65.1 min")                  # Table 3 SPV t1/2,keo
-    etalintercept_spv ~ 0.265716   # CV 55.05%                                                         # Table 3 SPV intercept IICV
+    etalintercept_spv ~ log(1 + 0.5505^2)  # CV 55.05%                                                         # Table 3 SPV intercept IICV
     etaslope_spv      ~ 0.186753   # CV 45.3%                                                          # Table 3 SPV slope IICV
     # No IIV on SPV ke0 (Table 3 reports IICV 0.0%)
     addSd_spv <- 28.4; label("Additive residual error on SPV (deg/s)")                                  # Table 3 SPV residual error
@@ -136,8 +136,8 @@ LiemMoolenaar_2011_scopolamine <- function() {
     slope_vasext      <- 0.000633;            label("VAS external perception slope vs Ce (log mm per pg/mL)")          # Table 3 VAS external perception Slope
     lke0_vasext       <- log(log(2) / 161);   label("VAS external perception ke0 (1/min); t1/2,keo = 161 min")          # Table 3 VAS external perception t1/2,keo
     etalintercept_vasext ~ 0.078594   # CV 28.6%                                                                        # Table 3 VAS external perception intercept IICV
-    etaslope_vasext      ~ 0.844218   # CV 107%                                                                         # Table 3 VAS external perception slope IICV
-    etalke0_vasext       ~ 0.540045   # CV 86.5%                                                                        # Table 3 VAS external perception t1/2,keo IICV
+    etaslope_vasext      ~ log(1 + 1.07^2)  # CV 107%                                                                         # Table 3 VAS external perception slope IICV
+    etalke0_vasext       ~ log(1 + 0.865^2)  # CV 86.5%                                                                        # Table 3 VAS external perception t1/2,keo IICV
     addSd_vasext <- 0.0935; label("Additive residual error on VAS external perception (log mm)")                       # Table 3 VAS external perception residual error
 
     # ---- effect5: body sway (log mm), t1/2,keo 181 min ----
@@ -145,8 +145,8 @@ LiemMoolenaar_2011_scopolamine <- function() {
     slope_bodysway      <- 0.00147;            label("Body sway slope vs Ce (log mm per pg/mL)")                        # Table 3 body sway Slope
     lke0_bodysway       <- log(log(2) / 181);  label("Body sway ke0 (1/min); t1/2,keo = 181 min")                        # Table 3 body sway t1/2,keo
     etalintercept_bodysway ~ 0.006693   # CV 8.2%                                                                       # Table 3 body sway intercept IICV
-    etaslope_bodysway      ~ 0.099369   # CV 32.4%                                                                      # Table 3 body sway slope IICV
-    etalke0_bodysway       ~ 0.089164   # CV 30.6%                                                                      # Table 3 body sway t1/2,keo IICV
+    etaslope_bodysway      ~ log(1 + 0.324^2)  # CV 32.4%                                                                      # Table 3 body sway slope IICV
+    etalke0_bodysway       ~ log(1 + 0.306^2)  # CV 30.6%                                                                      # Table 3 body sway t1/2,keo IICV
     addSd_bodysway <- 0.102; label("Additive residual error on body sway (log mm)")                                     # Table 3 body sway residual error
 
     # ---- effect6: VAS alertness (mm), t1/2,keo 199 min ----
@@ -154,8 +154,8 @@ LiemMoolenaar_2011_scopolamine <- function() {
     slope_vasalert      <- -0.0622;            label("VAS alertness slope vs Ce (mm per pg/mL)")                        # Table 3 VAS alertness Slope
     lke0_vasalert       <- log(log(2) / 199);  label("VAS alertness ke0 (1/min); t1/2,keo = 199 min")                    # Table 3 VAS alertness t1/2,keo
     etalintercept_vasalert ~ 0.021727   # CV 14.8%                                                                      # Table 3 VAS alertness intercept IICV
-    etaslope_vasalert      ~ 0.329597   # CV 62.9%                                                                      # Table 3 VAS alertness slope IICV
-    etalke0_vasalert       ~ 0.253522   # CV 53.8%                                                                      # Table 3 VAS alertness t1/2,keo IICV
+    etaslope_vasalert      ~ log(1 + 0.629^2)  # CV 62.9%                                                                      # Table 3 VAS alertness slope IICV
+    etalke0_vasalert       ~ log(1 + 0.538^2)  # CV 53.8%                                                                      # Table 3 VAS alertness t1/2,keo IICV
     addSd_vasalert <- 4.05; label("Additive residual error on VAS alertness (mm)")                                     # Table 3 VAS alertness residual error
 
     # ---- effect7: VAS internal perception (log mm), t1/2,keo 200 min ----
@@ -163,7 +163,7 @@ LiemMoolenaar_2011_scopolamine <- function() {
     slope_vasint      <- 0.000331;            label("VAS internal perception slope vs Ce (log mm per pg/mL)")           # Table 3 VAS internal perception Slope
     lke0_vasint       <- log(log(2) / 200);   label("VAS internal perception ke0 (1/min); t1/2,keo = 200 min")           # Table 3 VAS internal perception t1/2,keo
     etalintercept_vasint ~ 0.075853   # CV 28.1%                                                                         # Table 3 VAS internal perception intercept IICV
-    etaslope_vasint      ~ 1.047319   # CV 130%                                                                          # Table 3 VAS internal perception slope IICV
+    etaslope_vasint      ~ log(1 + 1.3^2)  # CV 130%                                                                          # Table 3 VAS internal perception slope IICV
     etalke0_vasint       ~ 0.000256   # CV 1.6%                                                                          # Table 3 VAS internal perception t1/2,keo IICV
     addSd_vasint <- 0.083; label("Additive residual error on VAS internal perception (log mm)")                          # Table 3 VAS internal perception residual error
 
@@ -172,8 +172,8 @@ LiemMoolenaar_2011_scopolamine <- function() {
     slope_smoothpursuit      <- -0.0264;            label("Smooth pursuit slope vs Ce (% per pg/mL)")                   # Table 3 smooth pursuit Slope
     lke0_smoothpursuit       <- log(log(2) / 221);  label("Smooth pursuit ke0 (1/min); t1/2,keo = 221 min")              # Table 3 smooth pursuit t1/2,keo
     etalintercept_smoothpursuit ~ 0.014908   # CV 12.25%                                                                # Table 3 smooth pursuit intercept IICV
-    etaslope_smoothpursuit      ~ 0.179251   # CV 44.4%                                                                 # Table 3 smooth pursuit slope IICV
-    etalke0_smoothpursuit       ~ 0.655339   # CV 97.8%                                                                 # Table 3 smooth pursuit t1/2,keo IICV
+    etaslope_smoothpursuit      ~ log(1 + 0.444^2)  # CV 44.4%                                                                 # Table 3 smooth pursuit slope IICV
+    etalke0_smoothpursuit       ~ log(1 + 0.978^2)  # CV 97.8%                                                                 # Table 3 smooth pursuit t1/2,keo IICV
     addSd_smoothpursuit <- 6.28; label("Additive residual error on smooth pursuit (%)")                                  # Table 3 smooth pursuit residual error
 
     # ---- effect9: VAS feeling high (log mm), t1/2,keo 483 min ----
@@ -182,7 +182,7 @@ LiemMoolenaar_2011_scopolamine <- function() {
     lke0_vashigh       <- log(log(2) / 483);    label("VAS feeling high ke0 (1/min); t1/2,keo = 483 min")                # Table 3 VAS feeling high t1/2,keo
     etalintercept_vashigh ~ 0.042989   # CV 21.0%                                                                       # Table 3 VAS feeling high intercept IICV
     etaslope_vashigh      ~ 0.631968   # CV 93.9%                                                                       # Table 3 VAS feeling high slope IICV
-    etalke0_vashigh       ~ 1.652984   # CV 207%                                                                        # Table 3 VAS feeling high t1/2,keo IICV
+    etalke0_vashigh       ~ log(1 + 2.07^2)  # CV 207%                                                                        # Table 3 VAS feeling high t1/2,keo IICV
     addSd_vashigh <- 0.216; label("Additive residual error on VAS feeling high (log mm)")                                # Table 3 VAS feeling high residual error
 
     # ---- effect10: finger tapping (taps per 10 s), t1/2,keo 649 min ----
@@ -196,7 +196,7 @@ LiemMoolenaar_2011_scopolamine <- function() {
     time_slope_tapping <- 19.3;               label("Finger tapping time slope (taps per 10 s per day)")                 # Table 3 finger tapping footnote ** (time slope 19.3 number per day)
     etalintercept_tapping ~ 0.015729   # CV 12.6%                                                                        # Table 3 finger tapping intercept IICV
     etaslope_tapping      ~ 0.061810   # CV 25.3%                                                                        # Table 3 finger tapping slope IICV
-    etalke0_tapping       ~ 0.329597   # CV 62.9%                                                                        # Table 3 finger tapping t1/2,keo IICV
+    etalke0_tapping       ~ log(1 + 0.629^2)  # CV 62.9%                                                                        # Table 3 finger tapping t1/2,keo IICV
     addSd_tapping <- 3.09; label("Additive residual error on finger tapping (taps per 10 s)")                            # Table 3 finger tapping residual error
   })
 

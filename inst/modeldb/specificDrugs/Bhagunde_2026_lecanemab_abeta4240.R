@@ -243,13 +243,14 @@ Bhagunde_2026_lecanemab_abeta4240 <- function() {
     e_age_slope            <- 0.0193;   label("Log-linear coefficient for age on SLOPE, exp(e * (AGE - 72)) (per year)")                          # Bhagunde 2026 Table 1: Age on slope (exponential) = 0.0193 (RSE 19.4%)
     e_wt_slope             <- -0.00602; label("Log-linear coefficient for body weight on SLOPE, exp(e * (WT - 72)) (per kg)")                     # Bhagunde 2026 Table 1: Weight on slope (exponential) = -0.00602 (RSE 25.4%)
 
-    # Lecanemab PK interindividual variability, fixed from Majid 2024
-    # (omega^2 = log(CV^2 + 1). Majid 2024 Table 1 footnote gives
-    #  CV percent = square root of variance x 100 for the residual error and
-    #  the standard exponential-IIV %CV definition for the etas).
-    etalcl + etalvc ~ fixed(c(0.114936,
-                              0.005934, 0.014774))   # Majid 2024 Table 1: IIV CL 34.9 %CV, IIV V1 12.2 %CV, correlation CL ~ V1 R = 0.144
-    etalvp          ~ fixed(0.639175)                # Majid 2024 Table 1: IIV V2 94.6 %CV
+    # Lecanemab PK interindividual variability, fixed from Majid 2024. Majid
+    # 2024 Table 1 defines "CV%, square root of variance x 100", so each PK
+    # variance is the square of the printed CV and the CL-V1 covariance is
+    # R * CV_CL * CV_V1. Only these PK etas follow Majid's definition; the
+    # biomarker etas below are Bhagunde 2026's own.
+    etalcl + etalvc ~ fixed(c(0.349^2,
+                              0.144 * 0.349 * 0.122, 0.122^2))   # Majid 2024 Table 1: IIV CL 34.9 %CV, IIV V1 12.2 %CV, correlation CL ~ V1 R = 0.144
+    etalvp          ~ fixed(0.946^2)                # Majid 2024 Table 1: IIV V2 94.6 %CV
 
     # Plasma Abeta42/40 interindividual variability (estimated here)
     etalrbase + etalslope ~ c(0.005185,

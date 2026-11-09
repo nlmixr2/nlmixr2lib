@@ -65,9 +65,9 @@ The table below collects the entries in one place.
 | `e_cyp3a5_c2_cl` (C2 effect on CL)  | +33% | Table 4, Final model column, Cyp3A5*3 on CL C2 row |
 | `e_cyp3a5_c3_cl` (C3 effect on CL)  | +33% | Table 4, Final model column, Cyp3A5*3 on CL C3 row |
 | `e_cyp3a5_c4_cl` (C4 effect on CL)  | +71% | Table 4, Final model column, Cyp3A5*3 on CL C4 row |
-| IIV CL (omega^2 = log(0.428^2 + 1) = 0.16839) | 42.8% CV | Table 4, Final model column, IIV CL row |
-| IIV Vc (omega^2 = log(0.863^2 + 1) = 0.55657) | 86.3% CV | Table 4, Final model column, IIV Vc row |
-| IIV Ka (omega^2 = log(0.659^2 + 1) = 0.36067) | 65.9% CV | Table 4, Final model column, IIV Ka row |
+| IIV CL (omega^2 = log(0.428^2 + 1) = 0.16821) | 42.8% CV | Table 4, Final model column, IIV CL row |
+| IIV Vc (omega^2 = log(0.863^2 + 1) = 0.55662) | 86.3% CV | Table 4, Final model column, IIV Vc row |
+| IIV Ka (omega^2 = log(0.659^2 + 1) = 0.36066) | 65.9% CV | Table 4, Final model column, IIV Ka row |
 | Proportional residual error (sigma1)          | 13% | Table 4, Final model column, sigma1 row |
 | Two-compartment + three-transit absorption    | -- | Results, Structural model development, and Figure 1 |
 | Covariate equation TV(CL) = THETA(CL) * (1 + theta_cov) | -- | Methods, Covariate analysis, second equation (categorical/genetic effects) |

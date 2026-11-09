@@ -103,8 +103,8 @@ Nichols_2016_tazobactam <- function() {
 
     # ===== IIV (Nichols 2016 Table 2; IIV on V was not estimated) =====
     # Exponential (log-normal) IIV; CV%-to-variance: omega^2 = log(1 + CV^2)
-    # 13.1% -> log(1 + 0.131^2) = 0.017028
-    etalcl ~ 0.017028  # Nichols 2016 Table 2: omega_CL 13.1% CV (%SE 52.1, shrinkage 11.2%)
+    # 13.1% -> log(1 + 0.131^2) = 0.017015
+    etalcl ~ log(1 + 0.131^2)  # Nichols 2016 Table 2: omega_CL 13.1% CV (%SE 52.1, shrinkage 11.2%)
 
     # ===== Residual error (Nichols 2016 Table 2: combinational form) =====
     propSd <- 0.272; label("Proportional residual error (fraction)")  # Nichols 2016 Table 2: sigma_proportional 27.2% CV (%SE 35.2)

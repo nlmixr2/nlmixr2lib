@@ -143,15 +143,15 @@ Almond_2016_efavirenz_invitro <- function() {
     etalemax_activity ~ 0.106966
     # Table 2: S.D. 4.2 on Indmax 13.5 -> CV = 4.2 / 12.5 = 0.3360 on emax;
     # omega^2 = log(1 + 0.3360^2) = 0.106966.
-    etalec50_activity ~ 0.113656
+    etalec50_activity ~ log(1 + 0.3469^2)
     # Table 2: S.D. 1.7 on IndC50 4.9 -> CV = 0.3469;
-    # omega^2 = log(1 + 0.3469^2) = 0.113656.
-    etalemax_mrna ~ 0.095058
+    # omega^2 = log(1 + 0.3469^2) = 0.113632.
+    etalemax_mrna ~ log(1 + 0.3158^2)
     # Table 2: S.D. 5.4 on Indmax 18.1 -> CV = 5.4 / 17.1 = 0.3158 on emax;
-    # omega^2 = log(1 + 0.3158^2) = 0.095058.
-    etalec50_mrna ~ 0.313805
+    # omega^2 = log(1 + 0.3158^2) = 0.095064.
+    etalec50_mrna ~ log(1 + 0.6071^2)
     # Table 2: S.D. 5.1 on IndC50 8.4 -> CV = 0.6071;
-    # omega^2 = log(1 + 0.6071^2) = 0.313805.
+    # omega^2 = log(1 + 0.6071^2) = 0.313767.
 
     # =====================================================================
     # Residual error is NOT reported: the source fitted each donor's curve

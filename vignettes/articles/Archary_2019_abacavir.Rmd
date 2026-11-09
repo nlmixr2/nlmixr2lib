@@ -66,7 +66,7 @@ Per-parameter origin (also recorded as in-file comments next to each
 | `e_wt_vc_vp`         | 1          | Archary 2019 Methods 2.3 ("... and 1 for apparent volume of distribution") |
 | `e_day14_cl`         | 0.760      | Archary 2019 Table 3 (day-14 CL/F 5.86 vs day-1 CL/F 3.33; 5.86 / 3.33 - 1 = 0.760) |
 | `e_earlyart_f`       | 0.31       | Archary 2019 Table 3 ("Increase of relative bioavailability (F) for early ART treatment arm 31.0%") |
-| `etalcl`             | 0.0820     | Archary 2019 Table 3 (delayed-arm IIV CL/F 29.2%; omega^2 = log(1 + 0.292^2)) |
+| `etalcl`             | 0.0818     | Archary 2019 Table 3 (delayed-arm IIV CL/F 29.2%; omega^2 = log(1 + 0.292^2)) |
 | `etalfdepot`         | 0.0448     | Archary 2019 Table 3 (early-arm IIV F 21.4%; omega^2 = log(1 + 0.214^2)) |
 | `propSd`             | 0.362      | Archary 2019 Table 3 (Proportional RUV 36.2%) |
 | `d/dt(depot)`, `d/dt(central)`, `d/dt(peripheral1)` | n/a | Archary 2019 Section 3.2 (2-compartment with first-order oral absorption) |
@@ -381,7 +381,7 @@ h\*mg/L range for the cohort-median 7 kg weight).
   arm IIV CL/F: 29.2% in the delayed-ART arm and 62.5% in the
   early-ART arm. nlmixr2 does not natively express per-stratum omega
   scaling on a single eta without complex constructs; the model file
-  uses the delayed-arm IIV (29.2% -> omega^2 = 0.0820) as the typical-
+  uses the delayed-arm IIV (29.2% -> omega^2 = 0.0818) as the typical-
   value omega, and notes the early-arm inflation here. Consumers who
   need the early-arm-specific IIV magnitude can override `etalcl` by
   setting it to `log(1 + 0.625^2) = 0.350` for early-arm-only

@@ -64,9 +64,9 @@ Chen_2022_creatinine <- function() {
     # Exponential IIV; Table 1 prints CV% only, converted as omega^2 = log(1 + CV^2).
     # CL and Vd carry no IIV ('Incorporating variability on CL and Vd did not
     # significantly improve the model').
-    etalka ~ 0.26683 # Table 1 IIV 'Ka (CV%)' = 55.3 (shrinkage 1.6%); log(1 + 0.553^2) = 0.26683
-    etalfdepot ~ 0.058755 # Table 1 IIV 'F1 (CV%)' = 24.6 (shrinkage 0.1%); log(1 + 0.246^2) = 0.058755
-    etalksyn ~ 0.0015199 # Table 1 IIV 'CGR (CV%)' = 3.9 (shrinkage 0.1%); log(1 + 0.039^2) = 0.0015199
+    etalka ~ log(1 + 0.553^2)  # Table 1 IIV 'Ka (CV%)' = 55.3 (shrinkage 1.6%)
+    etalfdepot ~ log(1 + 0.246^2)  # Table 1 IIV 'F1 (CV%)' = 24.6 (shrinkage 0.1%)
+    etalksyn ~ log(1 + 0.039^2)  # Table 1 IIV 'CGR (CV%)' = 3.9 (shrinkage 0.1%)
 
     propSd <- 0.039; label("Proportional residual error, creatinine plasma concentration (fraction)") # Table 1 'Proportional error, % (plasma)' = 3.9 (shrinkage 7.0%)
     propSd_Aurine <- 0.155; label("Proportional residual error, creatinine amount excreted in urine (fraction)") # Table 1 'Proportional error, % (urine)' = 15.5 (shrinkage 0.2%)
