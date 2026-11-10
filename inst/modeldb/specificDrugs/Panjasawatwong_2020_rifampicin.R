@@ -96,10 +96,10 @@ Panjasawatwong_2020_rifampicin <- function() {
     e_wt_vc <- fixed(1); label("Allometric exponent of body weight on Vc/F (unitless)") # Methods: 'exponent fixed to 1'
 
     # IIV: Table 3 reports %CV; omega^2 = log(1 + CV^2)
-    etalcl ~ 0.036946 # Table 3 IIV CL/F = 19.4% CV; log(1 + 0.194^2) = 0.036946
-    etalvc ~ 0.051549 # Table 3 IIV Vc/F = 23.0% CV; log(1 + 0.230^2) = 0.051549
+    etalcl ~ log(1 + 0.194^2)  # Table 3 IIV CL/F = 19.4% CV
+    etalvc ~ log(1 + 0.23^2)  # Table 3 IIV Vc/F = 23.0% CV
     etalmtt ~ 0.543777 # Table 3 IIV MTT = 85.0% CV; log(1 + 0.850^2) = 0.543777
-    etalpc ~ 0.047266 # Table 3 IIV PC = 22.0% CV; log(1 + 0.220^2) = 0.047266
+    etalpc ~ log(1 + 0.22^2)  # Table 3 IIV PC = 22.0% CV
 
     # Residual error: additive on log-transformed concentrations. Table 3
     # footnote a gives sigma as the VARIANCE; SD = sqrt(variance).

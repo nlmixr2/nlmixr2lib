@@ -248,11 +248,11 @@ Williams_2016_rituximab_das28cfb <- function() {
     # Inter-individual variability on PMAX and Emax (correlated block).
     # Williams 2016 Supp Table S1 reports:
     #   Var(eta1 for PMAX)  transformed 32.5% CV -> omega^2 = log(1 + 0.325^2) = 0.1004
-    #   Var(eta2 for Emax)  transformed 31.4% CV -> omega^2 = log(1 + 0.314^2) = 0.0941
-    #   rho(eta1, eta2)     transformed -0.301   -> cov = -0.301 * sqrt(0.1004 * 0.0941) = -0.0292
+    #   Var(eta2 for Emax)  transformed 31.4% CV -> omega^2 = log(1 + 0.314^2) = 0.0940
+    #   rho(eta1, eta2)     transformed -0.301   -> cov = -0.301 * sqrt(0.1004 * 0.0940) = -0.0292
     # kp has no eta (paper equation: kp = log(2)/exp(lthalfrec + g_i(theta))).
     # --------------------------------------------------------------------------
-    etalpmax + etalemax ~ c(0.1004, -0.0292, 0.0941)
+    etalpmax + etalemax ~ c(0.1004, -0.301 * sqrt(0.1004 * log(1 + 0.314^2)), log(1 + 0.314^2))
 
     # --------------------------------------------------------------------------
     # Subject-level additive random effect on the outer 1 - exp() equation

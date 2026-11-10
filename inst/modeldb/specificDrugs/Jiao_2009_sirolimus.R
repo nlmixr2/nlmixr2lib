@@ -124,7 +124,7 @@ Jiao_2009_sirolimus <- function() {
     # omega^2 = log(1 + CV^2). ka has no IIV by paper design (Methods, paper
     # ref 43). Off-diagonal correlations are not reported.
     etalcl ~ 0.0551   # 23.8% CV; omega^2 = log(1 + 0.238^2) = 0.0551          (Table 2 omega_CL/F = 23.8%, 26.7% RSE)
-    etalvc ~ 0.2789   # 56.7% CV; omega^2 = log(1 + 0.567^2) = 0.2789          (Table 2 omega_V/F = 56.7%, 24.8% RSE)
+    etalvc ~ log(1 + 0.567^2)  # 56.7% CV          (Table 2 omega_V/F = 56.7%, 24.8% RSE)
 
     # Residual unexplained variability: exponential error model (Methods Eq. 3,
     # Y = IPRED * exp(eps)). Table 2 reports 29.9% (8.0% RSE); under the

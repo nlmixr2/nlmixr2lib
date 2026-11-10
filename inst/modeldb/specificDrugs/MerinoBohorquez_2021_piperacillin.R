@@ -175,13 +175,13 @@ MerinoBohorquez_2021_piperacillin <- function() {
     # the non-parametric NPAG density; the marginals are encoded as
     # independent because the joint (support-point) distribution is not
     # published.
-    #   Intercept: 5.035 / 4.556 = 1.10514 -> log(1.10514^2 + 1) = 0.798104
-    #   Slope:     1.032 / 1.353 = 0.76275 -> log(0.76275^2 + 1) = 0.458555
-    #   Vc:       23.349 / 30.68 = 0.76105 -> log(0.76105^2 + 1) = 0.456916
+    #   Intercept: 5.035 / 4.556 = 1.10514 -> log(1.10514^2 + 1) = 0.798108
+    #   Slope:     1.032 / 1.353 = 0.76275 -> log(0.76275^2 + 1) = 0.458556
+    #   Vc:       23.349 / 30.68 = 0.76105 -> log(0.76105^2 + 1) = 0.456917
     # =====================================================================
-    etalcl_nonren ~ 0.798104 # Table 2 Intercept: SD 5.035 / mean 4.556
-    etalcl_renal ~ 0.458555 # Table 2 Slope: SD 1.032 / mean 1.353
-    etalvc ~ 0.456916 # Table 2 Vc: SD 23.349 / mean 30.68
+    etalcl_nonren ~ log(1 + 1.10514^2)  # Table 2 Intercept: SD 5.035 / mean 4.556
+    etalcl_renal ~ log(1 + 0.76275^2)  # Table 2 Slope: SD 1.032 / mean 1.353
+    etalvc ~ log(1 + 0.76105^2)  # Table 2 Vc: SD 23.349 / mean 30.68
 
     # =====================================================================
     # RESIDUAL ERROR -- Methods 4.4: 'The data were weighted by the inverse

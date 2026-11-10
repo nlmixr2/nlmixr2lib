@@ -294,9 +294,9 @@ AbdulAziz_2025_caspofungin <- function() {
     # indicative.
     # -----------------------------------------------------------------------
 
-    etalcl ~ 0.062996
+    etalcl ~ log(1 + 0.255^2)
     # Table 2, BSV CL = 25.5% CV (%RSE 34.3); bootstrap median 21.3%
-    # (95% CI 2.86-34.9). log(1 + 0.255^2) = 0.062996, i.e. omega = 0.251.
+    # (95% CI 2.86-34.9). log(1 + 0.255^2) = 0.062998, i.e. omega = 0.251.
 
     etalvc ~ 0.0054758
     # Table 2, BSV V = 7.41% CV (%RSE 101 -- essentially unidentified);

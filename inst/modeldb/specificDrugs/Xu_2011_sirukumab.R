@@ -58,16 +58,13 @@ Xu_2011_sirukumab <- function() {
     e_wt_vp <- fixed(1);    label("Allometric exponent on V2 (unitless)")                         # Xu 2011 Results, allometric scaling
 
     # IIV - Xu 2011 Table 4 reports "IIV (%)" under an exponential (log-normal) model for the
-    # PK parameters. Converting CV% to the log-scale variance via omega^2 = log(CV^2 + 1):
-    #   CL  IIV 24.3% -> omega^2 = log(0.243^2 + 1) = 0.057371
-    #   V1  IIV 19.3% -> omega^2 = log(0.193^2 + 1) = 0.036572
-    #   Q   IIV 53.4% -> omega^2 = log(0.534^2 + 1) = 0.250880
-    #   V2  IIV 28.3% -> omega^2 = log(0.283^2 + 1) = 0.077043
+    # PK parameters, and its footnote defines it: "IIV (%): inter-individual variability =
+    # 100 sqrt(estimate for omega^2)". Each variance is therefore the square of the printed IIV.
     # The final-model table does not report IIV correlations, so IIV is treated as diagonal.
-    etalcl ~ 0.057371  # Xu 2011 Table 4, IIV(%) on CL = 24.3
-    etalvc ~ 0.036572  # Xu 2011 Table 4, IIV(%) on V1 = 19.3
-    etalq  ~ 0.250880  # Xu 2011 Table 4, IIV(%) on Q  = 53.4
-    etalvp ~ 0.077043  # Xu 2011 Table 4, IIV(%) on V2 = 28.3
+    etalcl ~ 0.243^2  # Xu 2011 Table 4, IIV(%) on CL = 24.3
+    etalvc ~ 0.193^2  # Xu 2011 Table 4, IIV(%) on V1 = 19.3
+    etalq  ~ 0.534^2  # Xu 2011 Table 4, IIV(%) on Q  = 53.4
+    etalvp ~ 0.283^2  # Xu 2011 Table 4, IIV(%) on V2 = 28.3
 
     # Residual error - Xu 2011 Table 4 reports a combined additive + proportional model.
     # Proportional error variability (%): 21.7 -> propSd = 0.217 (fraction).

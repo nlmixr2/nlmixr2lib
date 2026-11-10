@@ -63,8 +63,8 @@ for review.
 | `e_wt_cl` (fixed = 1)            | 1               | Methods/Results: structural per-kg parameterisation CL/WT        |
 | `e_wt_vc` (fixed = 1)            | 1               | Methods/Results: structural per-kg parameterisation V/WT         |
 | `e_crcl_cl`                      | 0.688           | Table 2: theta_2 = 0.688 (RSE 22.9%); CL = 0.109 * WT * (CLCR/57)^0.688 |
-| `etalcl` (55.0% CV on CL)        | 0.26433         | Table 2: omega_CL = 55.0% (RSE 14.4%)                            |
-| `etalvc` (47.3% CV on V)         | 0.20177         | Table 2: omega_V  = 47.3% (RSE 21.6%)                            |
+| `etalcl` (55.0% CV on CL)        | 0.26429         | Table 2: omega_CL = 55.0% (RSE 14.4%)                            |
+| `etalvc` (47.3% CV on V)         | 0.20190         | Table 2: omega_V  = 47.3% (RSE 21.6%)                            |
 | `propSd` (63.3% proportional)    | 0.633           | Table 2: sigma_Poisson = 0.633 (RSE 7.50%)                       |
 | CRCL centering (57 mL/min)       | 57              | Results paragraph 3: CL = 0.109 * WT * (CLCR/57)^0.688           |
 | WT centering (70 kg)             | 70              | Figure 1 caption: comparison done for a 70-kg patient            |
@@ -75,8 +75,8 @@ for review.
 IIV variance derivation. Lee 2017 reports IIV as %CV in Table 2.
 For lognormal etas, `omega^2 = log(CV^2 + 1)`:
 
-* CL: `log(0.550^2 + 1) = log(1.302500) = 0.264327`
-* V:  `log(0.473^2 + 1) = log(1.223729) = 0.201772`
+* CL: `log(0.550^2 + 1) = log(1.302500) = 0.264285`
+* V:  `log(0.473^2 + 1) = log(1.223729) = 0.201903`
 
 Residual-error mapping. Lee 2017 Methods defines the "Poisson" error
 model as `Y = Y_PRED + eps * Y_PRED` with `eps ~ N(0, sigma^2)`, which

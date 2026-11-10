@@ -106,7 +106,7 @@ table below collects the joint-model parameter values in one place.
 The IIV CV% values are translated to log-scale variances via the
 log-normal identity `omega^2 = log(1 + CV^2)`. The ID50 IIV is one shared
 variance across all three statins in the joint fit; each per-statin
-model file therefore carries the same `0.26611` on `etalid50`.
+model file therefore carries the same `log(1 + 0.554^2)` on `etalid50`.
 
 # Steady-state hold (no-drug baseline)
 

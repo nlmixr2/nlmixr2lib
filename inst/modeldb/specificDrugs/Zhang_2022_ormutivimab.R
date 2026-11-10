@@ -97,10 +97,10 @@ Zhang_2022_ormutivimab <- function() {
     # Inter-individual variability. Paper Eq. 1: P_i = P_TV * exp(eta_i),
     # so eta is on log(P) and the reported CV% maps to omega^2 via
     # omega^2 = log(CV^2 + 1).
-    #   omega(emax) 9.0%   -> log(0.09^2  + 1) = 0.008068
-    #   omega(hill) 56.1% -> log(0.561^2 + 1) = 0.273690
-    etalemax  ~ 0.008068  # Zhang 2022 Table 3: omega(emax)  =  9.0%; log(0.09^2 + 1)  = 0.008068
-    etalhill ~ 0.273690  # Zhang 2022 Table 3: omega(Gamma) = 56.1%; log(0.561^2 + 1) = 0.273690
+    #   omega(emax) 9.0%   -> log(0.09^2  + 1) = 0.008067
+    #   omega(hill) 56.1% -> log(0.561^2 + 1) = 0.273624
+    etalemax  ~ log(1 + 0.09^2)  # Zhang 2022 Table 3: omega(emax)  =  9.0%
+    etalhill ~ log(1 + 0.561^2)  # Zhang 2022 Table 3: omega(Gamma) = 56.1%
 
     # Residual error - combined proportional + additive (Zhang 2022 Table 3
     # row "Residual Error"; corresponds to Eq. 4: Y_obs = Y_pred * (1 + eps1)

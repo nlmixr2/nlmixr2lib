@@ -195,18 +195,18 @@ Wurthwein_2025_pegasparaginase_italian <- function() {
     # omega^2 = log(1 + CV^2). No IIV on V or Qtr (Wurthwein 2021 ESM
     # Section 2: 'inter-individual variability (IIV) on Qtr or V could be
     # neglected').
-    etalcl ~ 0.039631  # ESM Table S13 Italian (IIV CLinitial 20.1%, RSE 4.0%; bootstrap 20.0%, 95% CI 18.5-21.5) converted as log(1 + 0.201^2)
+    etalcl ~ log(1 + 0.201^2)  # ESM Table S13 Italian (IIV CLinitial 20.1%, RSE 4.0%; bootstrap 20.0%, 95% CI 18.5-21.5)
 
     # ---- Inter-occasion variability ----------------------------------------
     # On BOTH V and CLinitial, one occasion per administration. Occasions 2
     # and 3 carry their own etas with the variance fixed equal to the
     # occasion-1 estimate, encoding NONMEM's `$OMEGA BLOCK(1) SAME`.
-    etaiov_vc_1 ~ 0.018341        # ESM Table S13 Italian (IOV V 13.6%, RSE 7.5%; bootstrap 13.5%, 95% CI 11.4-15.3) converted as log(1 + 0.136^2)
-    etaiov_vc_2 ~ fixed(0.018341) # SAME-equivalent: equal to the occasion-1 IOV variance
-    etaiov_vc_3 ~ fixed(0.018341) # SAME-equivalent: equal to the occasion-1 IOV variance
-    etaiov_cl_1 ~ 0.045193        # ESM Table S13 Italian (IOV CLinitial 21.5%, RSE 3.7%; bootstrap 21.4%, 95% CI 19.7-23.1) converted as log(1 + 0.215^2)
-    etaiov_cl_2 ~ fixed(0.045193) # SAME-equivalent: equal to the occasion-1 IOV variance
-    etaiov_cl_3 ~ fixed(0.045193) # SAME-equivalent: equal to the occasion-1 IOV variance
+    etaiov_vc_1 ~ log(1 + 0.136^2)  # ESM Table S13 Italian (IOV V 13.6%, RSE 7.5%; bootstrap 13.5%, 95% CI 11.4-15.3)
+    etaiov_vc_2 ~ fixed(log(1 + 0.136^2))  # SAME-equivalent: equal to the occasion-1 IOV variance
+    etaiov_vc_3 ~ fixed(log(1 + 0.136^2))  # SAME-equivalent: equal to the occasion-1 IOV variance
+    etaiov_cl_1 ~ log(1 + 0.215^2)  # ESM Table S13 Italian (IOV CLinitial 21.5%, RSE 3.7%; bootstrap 21.4%, 95% CI 19.7-23.1)
+    etaiov_cl_2 ~ fixed(log(1 + 0.215^2))  # SAME-equivalent: equal to the occasion-1 IOV variance
+    etaiov_cl_3 ~ fixed(log(1 + 0.215^2))  # SAME-equivalent: equal to the occasion-1 IOV variance
 
     # ---- Residual error ----------------------------------------------------
     # Combined proportional + additive SD, per the Wurthwein 2021 ESM

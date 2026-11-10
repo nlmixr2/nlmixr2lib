@@ -75,9 +75,9 @@ Thuo_2011_ciprofloxacin <- function() {
 
     # IIV (between-subject variability) - log-normal; omega^2 = log(CV^2 + 1)
     # Diagonal block; the source paper investigated covariances but did not retain any.
-    etalcl  ~ 0.13554  # 38.1% CV -> log(1 + 0.381^2)
+    etalcl  ~ log(1 + 0.381^2)  # 38.1% CV
     etalvc  ~ 0.16966  # 43.0% CV -> log(1 + 0.430^2)
-    etalka  ~ 0.71304  # 102% CV  -> log(1 + 1.02^2)
+    etalka  ~ log(1 + 1.02^2)  # 102% CV
 
     # Residual error - combined additive + proportional in linear concentration space
     propSd <- 0.186;  label("Proportional residual error (fraction)")                                                          # Thuo 2011 Table 2 = 18.6 %CV

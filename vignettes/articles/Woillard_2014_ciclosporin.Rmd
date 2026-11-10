@@ -60,8 +60,8 @@ The table below collects them in one place for review.
 | `lvp`  (apparent peripheral volume, fixed) | 500 L | Table 2, Vp/F row (SE = NA, IPV = NA -- "arbitrarily fixed to 500 l"; Results, "Pharmacokinetic models") |
 | `lcl`  (apparent oral clearance) | 41.2 L/h | Table 2, CL/F row |
 | IIV Ktr  (omega^2 = log(1 + 0.50^2) = 0.22314) | 50 % CV | Table 2, IPV column, Ktr row |
-| IIV Q/F  (omega^2 = log(1 + 0.72^2) = 0.41759) | 72 % CV | Table 2, IPV column, Q/F row |
-| IIV Vc/F (omega^2 = log(1 + 0.57^2) = 0.28140) | 57 % CV | Table 2, IPV column, Vc/F row |
+| IIV Q/F  (omega^2 = log(1 + 0.72^2) = 0.41766) | 72 % CV | Table 2, IPV column, Q/F row |
+| IIV Vc/F (omega^2 = log(1 + 0.57^2) = 0.28134) | 57 % CV | Table 2, IPV column, Vc/F row |
 | IIV CL/F (omega^2 = log(1 + 0.40^2) = 0.14842) | 40 % CV | Table 2, IPV column, CL/F row |
 | Proportional residual error | 12.53 % | Table 2 footer, "Proportional error = 12.53 %" |
 | Additive residual error | 0.023 mg/L | Table 2 footer, "additive error = 0.023 mg ml-1" (paper unit string read as mg/L; see Assumptions and deviations) |

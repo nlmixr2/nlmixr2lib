@@ -99,7 +99,7 @@ Davis_2008_maraviroc <- function() {
     # (population 95% CI for the slope crosses zero, CV 240%).
     # =========================================================================
     etalqtb    ~ 0.001122      # Davis 2008 Table 3 'Intersubject variability (intercept)' linear-scale variance = 178 ms^2, CV 3.35%; log-normal equivalent omega^2 = log(1 + 0.0335^2) = 0.001122 (small CV makes this nearly equal to the linear-additive form)
-    etalbrr    ~ 0.026979      # Davis 2008 Table 3 'Intersubject variability (correction factor)' linear-scale variance = 0.00287, CV 16.5%; log-normal equivalent omega^2 = log(1 + 0.165^2) = 0.026979
+    etalbrr    ~ log(1 + 0.165^2)  # Davis 2008 Table 3 'Intersubject variability (correction factor)' linear-scale variance = 0.00287, CV 16.5%; log-normal equivalent
     etaslpqt   ~ 5.41e-6       # Davis 2008 Table 3 'Intersubject variability (slope)' linear-scale variance = 5.41 (us mL/ng)^2 = 5.41 * 1e-6 (ms/(ng/mL))^2 after the same /1000 conversion used on the slope; CV 240%; encoded additive-on-linear because individual slopes can be negative
 
     addSd      <- sqrt(73.6);  label("Additive residual SD on QT (ms)")                                      # Davis 2008 Table 3 'Residual intrasubject variability' variance = 73.6 ms^2, CV 2.16%; additive SD = sqrt(73.6) = 8.580 ms

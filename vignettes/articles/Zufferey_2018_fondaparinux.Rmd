@@ -67,7 +67,7 @@ below collects them in one place.
 | CL = 0.34 * (CrCl_LBW/60)^0.485 * exp(b)    | n/a       | Page 5 (clearance equation, simulation section)                                  |
 | `lcl`  (log typical CL, L/h)                | log(0.34) | Page 5 CL equation: TVCL = 0.34 L/h                                              |
 | `e_crcl_cl` (CRCL power exponent)           | 0.485     | Page 5 CL equation                                                               |
-| `etalcl` (CV% = 34 on CL)                   | 0.10936   | Page 5: "log normal between subject variability of 34 (CV%)"                     |
+| `etalcl` (CV% = 34 on CL)                   | 0.10939   | Page 5: "log normal between subject variability of 34 (CV%)"                     |
 | `base_haz1` (theta1, 1/h)                   | 0.00122   | Table 3, Full hazard model row theta1; bootstrap 95% CI 2e-5 to 2.4e-3           |
 | `base_haz2` (theta2, 1/h)                   | 0.0122    | Table 3, Full hazard model row theta2; bootstrap 95% CI 0.0086-0.0158            |
 | `t_lag` (theta3, h)                         | 17.6      | Table 3, Full hazard model row theta3; bootstrap 95% CI 9.23-25.9                |
@@ -353,7 +353,7 @@ Reported values for context (Table 1): POP-A-RIX 9.3 +/- 3.4, PROPICE 6.4
   therefore an approximation rather than a one-to-one replication of Table 4.
 - **PK IIV applied; hazard parameters have no IIV.** The clearance term
   carries the published CV% = 34 inter-individual variability as
-  `omega^2 = log(1 + 0.34^2) = 0.10936`. The hazard parameters (`theta1`,
+  `omega^2 = log(1 + 0.34^2) = 0.10939`. The hazard parameters (`theta1`,
   `theta2`, `theta3`, `beta1`, `beta2`, `beta3`) carry no random effects --
   Table 3 reports only point estimates and bootstrap 95% CIs, consistent with
   a typical-value hazard.
