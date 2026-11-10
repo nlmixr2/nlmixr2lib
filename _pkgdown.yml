@@ -1506,6 +1506,8 @@ navbar:
         href: articles/Cojutti_2023_ceftobiprole.html
       - text: "Ceftolozane (Chandorkar 2015)"
         href: articles/Chandorkar_2015_ceftolozane_tazobactam.html
+      - text: "Ceftolozane (Cojutti 2025)"
+        href: articles/Cojutti_2025_ceftolozane.html
       - text: "Ceftolozane (Sime 2019)"
         href: articles/Sime_2019_ceftolozane_tazobactam.html
       - text: "Ceftolozane (Sime 2019b)"
@@ -9140,6 +9142,7 @@ articles:
   - articles/Cojutti_2022_dalbavancin
   - articles/Cojutti_2023_ceftobiprole
   - articles/Cojutti_2024_dalbavancin
+  - articles/Cojutti_2025_ceftolozane
   - articles/Cojutti_2026_fosfomycin
   - articles/Colin_2014_moxifloxacin
   - articles/Collins_2023_belantamab_mprotein
