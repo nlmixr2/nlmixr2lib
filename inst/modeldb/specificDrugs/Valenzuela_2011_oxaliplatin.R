@@ -213,15 +213,15 @@ Valenzuela_2011_oxaliplatin <- function() {
     # parameterisation change. omega_Q2 is reported as '-' in Table II (no
     # IIV estimated on Q2).
     # ------------------------------------------------------------------
-    etalka + etalvd ~ c(0.14091, -0.030857, 0.030857)
-                                                                                              # omega_Qa=34.1% -> var(lqa)=log(1+0.341^2)=0.11005; omega_Va=17.7% -> var(lva)=log(1+0.177^2)=0.030857
-    etalcl    ~ 0.55015                                                                       # omega_Cl/F = 85.6 % -> log(1 + 0.856^2) = 0.55015
-    etalvc    ~ 0.28903                                                                       # omega_Vc/F = 57.9 % -> log(1 + 0.579^2) = 0.28903
-    etalvp    ~ 0.053744                                                                      # omega_Vp/F = 23.5 % -> log(1 + 0.235^2) = 0.053744
+    etalka + etalvd ~ c(log(1 + 0.341^2) + log(1 + 0.177^2), -log(1 + 0.177^2), log(1 + 0.177^2))
+                                                                                              # omega_Qa=34.1% -> var(lqa)=log(1+0.341^2)=0.11000; omega_Va=17.7% -> var(lva)=log(1+0.177^2)=0.030848
+    etalcl    ~ log(1 + 0.856^2)  # omega_Cl/F = 85.6 %
+    etalvc    ~ log(1 + 0.579^2)  # omega_Vc/F = 57.9 %
+    etalvp    ~ log(1 + 0.235^2)  # omega_Vp/F = 23.5 %
 
-    etalcirc0 ~ 0.16467                                                                       # omega_Circ0 = 42.3 % -> log(1 + 0.423^2) = 0.16467
-    etalmtt   ~ 0.10215                                                                       # omega_MTT   = 32.8 % -> log(1 + 0.328^2) = 0.10215 (typical fixed; IIV estimated)
-    etalalpha ~ 1.09504                                                                       # omega_alpha = 141  % -> log(1 + 1.41^2)  = 1.09504
+    etalcirc0 ~ log(1 + 0.423^2)  # omega_Circ0 = 42.3 %
+    etalmtt   ~ log(1 + 0.328^2)  # omega_MTT   = 32.8 % (typical fixed; IIV estimated)
+    etalalpha ~ log(1 + 1.41^2)  # omega_alpha = 141  %
 
     # ------------------------------------------------------------------
     # Residual error - Valenzuela 2011 Table II 'Residual variability

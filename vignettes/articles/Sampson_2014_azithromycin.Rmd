@@ -81,10 +81,10 @@ implement Figure 2 of the same paper.
 | `B` (PBMC mixing in blood)         | 0.0016          | Table 1 |
 | `C = B/1,000` (PMN mixing)         | 1.6e-06 (fixed) | Table 1 footnote |
 | eta_Ka  (CV 41%)                   | omega^2 = 0.1554 | Table 1; log(0.41^2 + 1) |
-| eta_V1/F (CV 122%)                 | omega^2 = 0.9117 | Table 1; log(1.22^2 + 1) |
-| eta_V2/F (CV 51%)                  | omega^2 = 0.2313 | Table 1; log(0.51^2 + 1) |
+| eta_V1/F (CV 122%)                 | omega^2 = 0.9116 | Table 1; log(1.22^2 + 1) |
+| eta_V2/F (CV 51%)                  | omega^2 = 0.2312 | Table 1; log(0.51^2 + 1) |
 | eta_V3/F (CV 53%)                  | omega^2 = 0.2476 | Table 1; log(0.53^2 + 1) |
-| eta_CL1/F (CV 114%)                | omega^2 = 0.8329 | Table 1; log(1.14^2 + 1) |
+| eta_CL1/F (CV 114%)                | omega^2 = 0.8327 | Table 1; log(1.14^2 + 1) |
 | eta_CL12-CL13/F shared (CV 75%)    | omega^2 = 0.4463 | Table 1; log(0.75^2 + 1) |
 | Blood proportional residual SD     | 0.47            | Table 1 (CV 47%) |
 | PBMC proportional residual SD      | 0.74            | Table 1 (CV 74%) |

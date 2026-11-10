@@ -90,9 +90,9 @@ below collects them in one place for review.
 | omega^2_CL                       | 0.0630          | Table 2, IIV CL/F 25.5 percent CV |
 | omega^2_V1                       | 0.0507          | Table 2, IIV V1/F 22.8 percent CV |
 | omega^2_V2                       | 0.1416          | Table 2, IIV V2/F 39.0 percent CV |
-| omega^2_V3                       | 0.0879          | Table 2, IIV V3/F 30.3 percent CV |
-| omega^2_Ka                       | 0.2624          | Table 2, IIV Ka 54.8 percent CV |
-| omega^2_D1                       | 0.4626          | Table 2, IIV D1 76.7 percent CV |
+| omega^2_V3                       | 0.0878          | Table 2, IIV V3/F 30.3 percent CV |
+| omega^2_Ka                       | 0.2626          | Table 2, IIV Ka 54.8 percent CV |
+| omega^2_D1                       | 0.4627          | Table 2, IIV D1 76.7 percent CV |
 | omega^2_F1                       | 0.0873          | Table 2, IIV F1 30.2 percent CV |
 | propSd                           | 0.333           | Table 2, proportional residual error in patient studies |
 | addSd                            | 7.19 ng/mL      | Table 2, additive residual error for TAD < 2 h |

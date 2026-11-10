@@ -213,10 +213,10 @@ Yoon_2023_vancomycin <- function() {
     # CV(%) scale despite the omega-squared row labels, so the log-scale
     # variance is omega^2 = log(1 + CV^2).
     # ------------------------------------------------------------------
-    etalcl    ~ 0.081277  # log(1 + 0.291^2); Yoon 2023 Table 3 omega2 CL  CV 29.1% (RSE 4.18%)
+    etalcl    ~ log(1 + 0.291^2)  # Yoon 2023 Table 3 omega2 CL  CV 29.1% (RSE 4.18%)
     etalvp    ~ 0.703147  # log(1 + 1.010^2); Yoon 2023 Table 3 omega2 V2  CV 101%  (RSE 8.04%)
-    etalkdis  ~ 1.156430  # log(1 + 1.476^2); Yoon 2023 Table 4 omega2 KD  CV 147.6% (RSE 19.5%)
-    etalrbase ~ 0.765089  # log(1 + 1.072^2); Yoon 2023 Table 4 omega2 CRP0 CV 107.2% (RSE 7.65%)
+    etalkdis  ~ log(1 + 1.476^2)  # Yoon 2023 Table 4 omega2 KD  CV 147.6% (RSE 19.5%)
+    etalrbase ~ log(1 + 1.072^2)  # Yoon 2023 Table 4 omega2 CRP0 CV 107.2% (RSE 7.65%)
 
     # ------------------------------------------------------------------
     # Residual error. Yoon 2023 Table 3 estimates a separate combined

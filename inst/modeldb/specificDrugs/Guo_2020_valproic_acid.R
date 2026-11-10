@@ -78,7 +78,7 @@ Guo_2020_valproic_acid <- function() {
     # IIV. Table 2 reports IIV as CV% of log-normal etas (P = P_TV * exp(eta),
     # equation 1); variance = log(CV^2 + 1).
     etalcl ~ 0.18186 # Table 2: IIV CL = 44.66 CV% -> log(1 + 0.4466^2)
-    etalvc ~ 0.091814 # Table 2: IIV V = 31.01 CV% -> log(1 + 0.3101^2)
+    etalvc ~ log(1 + 0.3101^2)  # Table 2: IIV V = 31.01 CV%
 
     # Residual error: Cobs = Cpred * (1 + eps) (equation 2).
     propSd <- 0.1175

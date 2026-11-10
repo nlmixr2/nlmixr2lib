@@ -77,8 +77,8 @@ Ni_2013_ciclosporin <- function() {
     label("Multiplicative CL/F factor when stanozolol is coadministered (F_comedication; ratio); Ni 2013 Table 2")  # Table 2 'F comedication'
 
     # Inter-individual variability (omega^2 = log(CV^2 + 1))
-    etalka ~ 0.29423
-    # 58.5% CV on Ka (Ni 2013 Table 2); log(0.585^2 + 1) = 0.29423
+    etalka ~ log(1 + 0.585^2)
+    # 58.5% CV on Ka (Ni 2013 Table 2); log(0.585^2 + 1) = 0.29433
     etalcl ~ 0.01625
     # 12.8% CV on CL/F (Ni 2013 Table 2); log(0.128^2 + 1) = 0.01625
 

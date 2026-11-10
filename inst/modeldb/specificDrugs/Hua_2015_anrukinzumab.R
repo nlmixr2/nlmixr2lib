@@ -89,10 +89,10 @@ Hua_2015_anrukinzumab <- function() {
     #   var_lcl = log(1 + 0.316^2) = 0.0952
     #   var_lvc = log(1 + 0.265^2) = 0.0679
     #   cov     = 0.727 * sqrt(0.0952 * 0.0679) = 0.0584
-    #   var_lka = log(1 + 0.540^2) = 0.2560
+    #   var_lka = log(1 + 0.540^2) = 0.2559
     etalcl + etalvc ~ c(0.0952,
                         0.0584, 0.0679)   # Hua 2015 Table 3: CV_CL=31.6%, CV_Vc,Vp=26.5%, corr=0.727
-    etalka ~ 0.2560                       # Hua 2015 Table 3: CV_Ka=54.0%
+    etalka ~ log(1 + 0.540^2)  # Hua 2015 Table 3: CV_Ka=54.0%
 
     # Residual error -- additive on log-transformed concentrations per Hua 2015
     # Methods, which corresponds to proportional error in nlmixr2 linear-space syntax.

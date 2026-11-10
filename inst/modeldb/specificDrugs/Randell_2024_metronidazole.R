@@ -124,7 +124,7 @@ Randell_2024_metronidazole <- function() {
 
     # Interindividual variability (Randell 2024 Table 1, reported as %CV).
     # omega^2 = log(CV^2 + 1) for a log-normal eta on a log-transformed parameter.
-    etalcl ~ 0.11933  # 35.6 %CV -> log(1 + 0.356^2) = 0.11933; Randell 2024 Table 1 (RSE 21%; bootstrap 28.4-43.4 %CV; eta shrinkage 8%)
+    etalcl ~ log(1 + 0.356^2)  # 35.6 %CV; Randell 2024 Table 1 (RSE 21%; bootstrap 28.4-43.4 %CV; eta shrinkage 8%)
     etalvc ~ 0.06252  # 25.4 %CV -> log(1 + 0.254^2) = 0.06252; Randell 2024 Table 1 (RSE 31%; bootstrap 16.5-31.6 %CV; eta shrinkage 29%)
 
     # Residual error.

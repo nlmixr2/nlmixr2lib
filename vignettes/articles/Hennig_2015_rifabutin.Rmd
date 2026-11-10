@@ -100,8 +100,8 @@ non-metabolic and `K24 = CLe/V` for metabolic-formation arms).
 | `e_sex_vc` (males +84% on V/F)  | 0.84           | Hennig 2015 Discussion ('1.84 times higher'); Table 2 covariate-effects block |
 | `e_snp_slco1b1_rs11045819_fdepot` (AC carriers +30.4% on F) | 0.304 | Hennig 2015 Table 2 covariate-effects block |
 | `etalcl ~ 0.0143`               | BSV 12.0%      | Hennig 2015 Table 2 BSV column; omega^2 = log(1 + 0.12^2)    |
-| `etalvc ~ 0.2153`               | BSV 49.0%      | Hennig 2015 Table 2 BSV column; omega^2 = log(1 + 0.49^2)    |
-| `etalka ~ 0.0556`               | BSV 23.9%      | Hennig 2015 Table 2 BSV column; omega^2 = log(1 + 0.239^2)   |
+| `etalvc ~ 0.2152`               | BSV 49.0%      | Hennig 2015 Table 2 BSV column; omega^2 = log(1 + 0.49^2)    |
+| `etalka ~ 0.0555`               | BSV 23.9%      | Hennig 2015 Table 2 BSV column; omega^2 = log(1 + 0.239^2)   |
 | `etaltlag ~ 0.0592`             | BSV 24.7%      | Hennig 2015 Table 2 BSV column; omega^2 = log(1 + 0.247^2)   |
 | `etalfdepot ~ 0.1034`           | BSV 33.0%      | Hennig 2015 Table 2 BSV column; omega^2 = log(1 + 0.33^2)    |
 | `etalcl_desacetylrbn ~ 0.0862`        | BSV 30.0%      | Hennig 2015 Table 2 BSV column; omega^2 = log(1 + 0.30^2)    |

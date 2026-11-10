@@ -65,7 +65,7 @@ Chae_2012_metformin <- function() {
 
     # IIV (Chae 2012 Table 2 'Interindividual variability (IIV) CV%' column).
     # Variance on the log scale: omega^2 = log(CV^2 + 1).
-    # CL: 29.7% CV -> omega^2 = log(0.297^2 + 1) = 0.08457
+    # CL: 29.7% CV -> omega^2 = log(0.297^2 + 1) = 0.08453
     # V : 22.1% CV -> omega^2 = log(0.221^2 + 1) = 0.04769
     # r : 4.05% CV -> omega^2 = log(0.0405^2 + 1) = 0.001639
     # Ka, tau, Emax, EC50 IIV reported as 'Not estimated' (Table 2 daggers) and
@@ -73,7 +73,7 @@ Chae_2012_metformin <- function() {
     # 'Ka = 0.41 * exp(eta1)' on p.819 is inconsistent with Table 2's daggered
     # Ka IIV; Table 2 (with paired bootstrap CIs) is treated as canonical here
     # and the discrepancy is flagged in the vignette Assumptions section.
-    etalcl  ~ 0.08457   # Chae 2012 Table 2 (CL IIV 29.7% CV)
+    etalcl  ~ log(1 + 0.297^2)  # Chae 2012 Table 2 (CL IIV 29.7% CV)
     etalvc  ~ 0.04769   # Chae 2012 Table 2 (V IIV 22.1% CV)
     etalhill ~ 0.001639 # Chae 2012 Table 2 (r IIV 4.05% CV)
 

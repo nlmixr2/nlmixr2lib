@@ -75,8 +75,8 @@ Suleiman_2018_risankizumab <- function() {
     # IIV. Table 3 reports %CV for the log-normal IIV entries with
     #   %CV = SQRT[exp(omega^2) - 1] * 100  (Table 3 footnote b),
     # so back-transform: omega^2 = log(CV^2 + 1).
-    #   CL  37%  -> omega^2 = log(1 + 0.37^2) = 0.12832
-    #   Vc  55%  -> omega^2 = log(1 + 0.55^2) = 0.26432
+    #   CL  37%  -> omega^2 = log(1 + 0.37^2) = 0.12831
+    #   Vc  55%  -> omega^2 = log(1 + 0.55^2) = 0.26429
     #   Vp  35%  -> omega^2 = log(1 + 0.35^2) = 0.11556
     #   Ka  80%  -> omega^2 = log(1 + 0.80^2) = 0.49470
     # Suleiman 2018 Sect. 3.2 states "introducing a correlation between CL and Vc
@@ -87,11 +87,11 @@ Suleiman_2018_risankizumab <- function() {
     # (Suleiman AA is lead author on both; the 2018 phase I-II cohort is a
     # strict subset of the 2019 integrated phase I-III cohort). The 2019 model
     # reports a CL-Vc correlation of 39%; propagating that same correlation
-    # onto the 2018 variances gives covariance = 0.39 * sqrt(0.12832 * 0.26432)
+    # onto the 2018 variances gives covariance = 0.39 * sqrt(0.12831 * 0.26429)
     # = 0.07182. See vignette Assumptions and deviations for the provenance
     # rationale; the maintainers authorised this substitution.
-    etalcl + etalvc ~ c(0.12832,
-                        0.07182, 0.26432)                                              # Suleiman 2018 Table 3 (IIV CL 37%, IIV Vc 55%); CL-Vc covariance carried from Suleiman 2019
+    etalcl + etalvc ~ c(log(1 + 0.37^2),
+                        0.39 * sqrt(log(1 + 0.55^2) * log(1 + 0.37^2)), log(1 + 0.55^2))                                              # Suleiman 2018 Table 3 (IIV CL 37%, IIV Vc 55%); CL-Vc covariance carried from Suleiman 2019
     etalvp ~ 0.11556                                                                    # Suleiman 2018 Table 3 (IIV Vp 35%)
     etalka ~ 0.49470                                                                    # Suleiman 2018 Table 3 (IIV Ka 80%)
 

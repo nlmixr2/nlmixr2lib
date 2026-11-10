@@ -104,14 +104,14 @@ Xu_2020_daratumumab <- function() {
 
     # Inter-individual variability. Xu 2020 Online Resource 6 reports IIV
     # as % CV; convert to log-normal variance via omega^2 = log(CV^2 + 1).
-    # CL    40.7%   -> log(0.407^2 + 1) = 0.1531
+    # CL    40.7%   -> log(0.407^2 + 1) = 0.1533
     # V1    21.8%   -> log(0.218^2 + 1) = 0.04643
-    # Vmax  71.3%   -> log(0.713^2 + 1) = 0.4111
+    # Vmax  71.3%   -> log(0.713^2 + 1) = 0.4110
     # KDES  43.4%   -> log(0.434^2 + 1) = 0.1726
     # No IIV reported for Q, V2, or KM (KM is fixed).
-    etalcl   ~ 0.1531  # Xu 2020 Online Resource 6: omega(CL)   40.7% CV, RSE 10.4%
+    etalcl   ~ log(1 + 0.407^2)  # Xu 2020 Online Resource 6: omega(CL)   40.7% CV, RSE 10.4%
     etalvc   ~ 0.04643 # Xu 2020 Online Resource 6: omega(V1)   21.8% CV, RSE 10.3%
-    etalvmax ~ 0.4111  # Xu 2020 Online Resource 6: omega(Vmax) 71.3% CV, RSE 23.8%
+    etalvmax ~ log(1 + 0.713^2)  # Xu 2020 Online Resource 6: omega(Vmax) 71.3% CV, RSE 23.8%
     etalkdes ~ 0.1726  # Xu 2020 Online Resource 6: omega(KDES) 43.4% CV, RSE 45.6%
 
     # Residual error. Xu 2020 reports "Additive error term on the

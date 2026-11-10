@@ -77,10 +77,10 @@ table below collects them in one place.
 | `lvc_m8`                        | log(1 L) FIXED                 | Appendix: "K_M0 = CLm0/Vm with Vm = 1"                           |
 | `e_age_cl_vc`                   | -0.29                          | Table 2 row "CL_T and V, theta_AGE" (mean -0.29)                 |
 | `e_conmed_nnrti_ind_kel_m8`     | +0.91                          | Table 2 row "K_M0, theta_INN" (mean 0.91)                        |
-| `etalvc`                        | omega^2 = 0.7831               | Table 2 row "omega(V)" 109% -> log(1 + 1.09^2)                   |
+| `etalvc`                        | omega^2 = 0.7830               | Table 2 row "omega(V)" 109% -> log(1 + 1.09^2)                   |
 | `etalcl`                        | omega^2 = 0.1423               | Table 2 row "omega(CL_T)" 39.1% -> log(1 + 0.391^2)              |
-| `etalkel_m8`                    | omega^2 = 0.2169               | Table 2 row "omega(K_M0)" 49.2% -> log(1 + 0.492^2)              |
-| `cov(etalcl, etalkel_m8)`       | 0.0790                         | Table 2 row "r(CL_T, K_M0) = 0.45" -> 0.45 * sqrt(0.1423 * 0.2169) |
+| `etalkel_m8`                    | omega^2 = 0.2168               | Table 2 row "omega(K_M0)" 49.2% -> log(1 + 0.492^2)              |
+| `cov(etalcl, etalkel_m8)`       | 0.0790                         | Table 2 row "r(CL_T, K_M0) = 0.45" -> 0.45 * sqrt(0.1423 * 0.2168) |
 | `addSd`                         | 1.65 mg/L                      | Table 2 row "sigma_NELFI" (mean 1.65 ug/mL)                      |
 | `addSd_m8`                      | 0.63 mg/L                      | Table 2 row "sigma_M8" (mean 0.63 ug/mL)                         |
 | `d/dt(depot)`                   | -ka * depot                    | rxode2 explicit form of the Ka * G input (Appendix)              |

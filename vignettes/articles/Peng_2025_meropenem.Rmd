@@ -64,7 +64,7 @@ collects them in one place for review.
 | `lcl` (theta_CLbody) | 2.89 L/h (RSE 10.4%) | Table 2, final-model column |
 | `e_crcl_cl` (theta_CLCR) | 0.0183 per mL/min (RSE 19.1%) | Table 2, final-model column |
 | `lvc` (theta_V) | 26.0 L (RSE 12.7%) | Table 2, final-model column |
-| `etalcl` | 42.1 %CV -> omega^2 = 0.163214 | Table 2, final-model column; %CV formula in the Table 2 footnote |
+| `etalcl` | 42.1 %CV -> omega^2 = 0.163174 | Table 2, final-model column; %CV formula in the Table 2 footnote |
 | eta on `vc` | fixed to zero (omitted) | Results p. 1109: "the variability of this population parameter was fixed at zero" |
 | `propSd` | 0.286 (28.6 %CV) | Table 2, final-model column |
 | `addSd` | 0.128 mg/L | Table 2, final-model column |
@@ -274,7 +274,7 @@ and lets the paper's own statements be checked deterministically, which is what
 the assertions below gate on.
 
 ```{r analytic-pta}
-OMEGA_SD <- sqrt(0.163214)   # log(0.421^2 + 1); Table 2 IIV on CLbody
+OMEGA_SD <- sqrt(0.163174)   # log(0.421^2 + 1); Table 2 IIV on CLbody
 VC_TV    <- 26.0             # Table 2
 CLBODY   <- function(crcl) 2.89 * exp(0.0183 * (crcl - 13.6))   # Equation 1
 
