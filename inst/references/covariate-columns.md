@@ -934,6 +934,17 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 - **Example models:** `Mohlmann_2026_prednisolone.R` (time-varying; capacity of the saturable arm of the total-prednisolone binding equation `Ctot = Cu + Cu * cbg_um / (Cu + KCBG) + Cu * alb_um / Kalb`, with KCBG = 0.0476 umol/L; the series is a per-individual circadian curve, two cosines with periods 24 h and 12 h, scaled to a once-per-occasion measured baseline; baseline median 1.04 umol/L, range 0.60-2.48). `Stachanow_2023_hydrocortisone.R` (baseline; capacity of the saturable CBG binding of cortisol, `Bmax (nmol/L) = TRANSCORTIN * 1000 / 52` with one binding site per CBG molecule and KCBG = 9.71 nmol/L; the authors used 22.4 mg/L when CBG was not measured).
 - **Notes:** Spelled out rather than abbreviated: `CBG` also commonly means capillary blood glucose. CBG has a circadian rhythm (about 23% peak-to-trough, maximum in the evening, minimum in the early morning), is raised by pregnancy and oestrogens and lowered in obesity, so a model fitted to once-measured values should say in its `covariateData` notes whether the column is the measured baseline or a reconstructed time-varying curve. Sibling in kind to `SEX_HORMONE_BINDING_GLOBULIN` (a steroid-binding globulin) and to `AAG` in its structural use (`Said_2025_imatinib.R`).
 
+### PREMENOPAUSAL (**canonical for pre- or peri-menopausal status indicator**)
+- **Description:** Binary menopausal-status indicator: 1 = pre- or peri-menopausal, 0 = postmenopausal. Time-fixed per subject (baseline status). Premenopausal patients in breast-cancer trials typically receive ovarian suppression with a GnRH analogue alongside study treatment.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (postmenopausal).
+- **Source aliases:**
+  - `MENOPAUSAL` (pre/peri vs post) -- Cerou 2024 Table 3 and Figure 3.
+- **Example models:** `Cerou_2024_amcenestrant.R` (additive effect on log baseline tumor size: `0.34 * PREMENOPAUSAL`; AMEERA-1 and AMEERA-2 enrolled postmenopausal women only, AMEERA-3 also premenopausal women on a GnRH analogue).
+- **Notes:** Set to 0 for men. A model that separates peri- from premenopausal status should register a sibling rather than recode this indicator.
+
 ## Vital signs
 
 ### HR (**canonical for heart rate**)
@@ -5475,7 +5486,7 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Scope:** specific
 - **Reference category:** n/a -- used directly inside `model` as `CL_INDIV` in place of an estimated `cl <- exp(lcl + etalcl)`.
 - **Source aliases:** `CLI` -- used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel CL).
-- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel CL EBE supplied as a covariate column following the Friberg 2002 convention; the Wahlby 2004 PD model layers BIL and DBIL covariate effects on top of the Friberg-Karlsson chain), `Yarur_2025_ustekinumab_clinbiorem_cl.R` and `Yarur_2025_ustekinumab_ehi50_cl.R` (L/day; per-dose-cycle empirical-Bayes ustekinumab clearance from `modellib('Yarur_2025_ustekinumab')` with every parameter fixed as the Bayesian prior; enters mixed-effects logistic regressions for clinical-and-biochemical remission and for an endoscopic healing index above 50 points LINEARLY and UNCENTRED, slopes `-13.5` and `+18.0` per L/day; Yarur 2025 Table S1).
+- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel CL EBE supplied as a covariate column following the Friberg 2002 convention; the Wahlby 2004 PD model layers BIL and DBIL covariate effects on top of the Friberg-Karlsson chain), `Yarur_2025_ustekinumab_clinbiorem_cl.R` and `Yarur_2025_ustekinumab_ehi50_cl.R` (L/day; per-dose-cycle empirical-Bayes ustekinumab clearance from `modellib('Yarur_2025_ustekinumab')` with every parameter fixed as the Bayesian prior; enters mixed-effects logistic regressions for clinical-and-biochemical remission and for an endoscopic healing index above 50 points LINEARLY and UNCENTRED, slopes `-13.5` and `+18.0` per L/day; Yarur 2025 Table S1), `Cerou_2024_amcenestrant.R` and `Cerou_2024_amcenestrant_ameera12.R` (L/day; per-subject apparent amcenestrant CL/F from the authors' unpublished population PK model, fed in as a Monolix regressor driving a joint tumor-size and PFS model).
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug -- there is no shared meaning across drugs. Each model's `covariateData[[CL_INDIV]]$notes` should state which upstream popPK source the EBE values come from (e.g., Henningsson 2001 paclitaxel popPK, fixed in the DDMORE encoding) and whether placebo periods are present. Companion volumes are registered as `VC_INDIV` and `VP_INDIV`.
 
 ### CMAX_M1 (**canonical for maximum drug plasma concentration during month 1**)
@@ -5519,7 +5530,7 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Scope:** specific
 - **Reference category:** n/a -- used directly inside `model` as `VC_INDIV` in place of an estimated `vc <- exp(lvc + etalvc)`.
 - **Source aliases:** `V1I` -- used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel V1).
-- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel V1 EBE following the Friberg 2002 convention).
+- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel V1 EBE following the Friberg 2002 convention), `Cerou_2024_amcenestrant.R` and `Cerou_2024_amcenestrant_ameera12.R` (per-subject apparent amcenestrant V1/F; see `CL_INDIV`).
 - **Notes:** See `CL_INDIV` notes for the broader convention.
 
 ### VP_INDIV (**canonical for per-subject empirical-Bayes peripheral volume of distribution**)
@@ -5529,8 +5540,28 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Scope:** specific
 - **Reference category:** n/a -- used directly inside `model` as `VP_INDIV` in place of an estimated `vp <- exp(lvp + etalvp)`.
 - **Source aliases:** `V2I` -- used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel V2).
-- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel V2 EBE following the Friberg 2002 convention).
+- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel V2 EBE following the Friberg 2002 convention), `Cerou_2024_amcenestrant.R` and `Cerou_2024_amcenestrant_ameera12.R` (per-subject apparent amcenestrant V2/F; see `CL_INDIV`).
 - **Notes:** See `CL_INDIV` notes for the broader convention. For models requiring a second peripheral compartment, register `VP2_INDIV` (and add a follow-on entry to this register) when a second model legitimately needs it.
+
+### KTR_INDIV (**canonical for per-subject empirical-Bayes transit / absorption rate constant**)
+- **Description:** Individual point estimate of the modelled drug's first-order transit (absorption-delay) rate constant, supplied per-subject as a fixed data column. Companion to `CL_INDIV`, `VC_INDIV`, `VP_INDIV` and `Q_INDIV` in sequential PK->PD encodings whose upstream PK model has a transit-compartment absorption chain.
+- **Units:** 1/day in the founding models (document per-model via `covariateData[[KTR_INDIV]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used directly inside `model` as the transit rate in place of an estimated `ktr <- exp(lktr + etalktr)`.
+- **Source aliases:** `KTR` -- Monolix regressor in Cerou 2024 Data S1 (`KTR={use=regressor}`).
+- **Example models:** `Cerou_2024_amcenestrant.R`, `Cerou_2024_amcenestrant_ameera12.R` (one rate shared by `depot` and `transit1..3` feeding a two-compartment model; the authors' amcenestrant population PK model is unpublished).
+- **Notes:** See `CL_INDIV` notes for the broader convention. Each model's notes should name the upstream PK source and say how to populate the column for new simulations.
+
+### Q_INDIV (**canonical for per-subject empirical-Bayes intercompartmental clearance**)
+- **Description:** Individual point estimate of the modelled drug's (apparent) intercompartmental clearance between the central and first peripheral compartments, supplied per-subject as a fixed data column. Companion to `CL_INDIV`, `VC_INDIV` and `VP_INDIV` in sequential PK->PD encodings.
+- **Units:** L/day in the founding models (document per-model via `covariateData[[Q_INDIV]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used directly inside `model` as `Q_INDIV` in place of an estimated `q <- exp(lq + etalq)`.
+- **Source aliases:** `Q` -- Monolix regressor in Cerou 2024 Data S1 (`Q={use=regressor}`).
+- **Example models:** `Cerou_2024_amcenestrant.R`, `Cerou_2024_amcenestrant_ameera12.R` (apparent amcenestrant Q/F; see `KTR_INDIV`).
+- **Notes:** See `CL_INDIV` notes for the broader convention.
 
 ### BAS_SVEGFR3 (**canonical for individual posthoc baseline soluble VEGFR-3 concentration from an upstream PD fit**)
 - **Description:** Subject-specific empirical-Bayes (posthoc) baseline plasma sVEGFR-3 (soluble vascular endothelial growth factor receptor 3) concentration from a separately published indirect-response biomarker model that the current downstream PD model treats as a fixed input. Used as a per-subject (time-fixed) covariate in fatigue / adverse-event PD models that consume the upstream biomarker dynamics as data covariates without instantiating the biomarker ODE.
@@ -10674,7 +10705,7 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** 0 (one or fewer metastatic sites at baseline).
 - **Source aliases:**
   - `Number of metastases` -- Bruno 2012 Table 1 covariate row label for the ">1 versus <=1 metastatic site" split. When a source paper supplies the raw integer count column, derive `MET_GE2 = as.integer(NMET >= 2)`.
-- **Example models:** `Bruno_2012_capecitabine_docetaxel_os.R` (log-normal accelerated-failure-time effect on log median overall survival; Bruno 2012 enters the covariate on a 1 / 2 code rather than 0 / 1, so the model body writes `e_metge2_tmed * (1 + MET_GE2)` with `e_metge2_tmed = -0.200`, reproducing the Table 1 footnote's "-0.2 x 2 = -0.4 for >1 metastases").
+- **Example models:** `Bruno_2012_capecitabine_docetaxel_os.R` (log-normal accelerated-failure-time effect on log median overall survival; Bruno 2012 enters the covariate on a 1 / 2 code rather than 0 / 1, so the model body writes `e_metge2_tmed * (1 + MET_GE2)` with `e_metge2_tmed = -0.200`, reproducing the Table 1 footnote's "-0.2 x 2 = -0.4 for >1 metastases"), `Cerou_2024_amcenestrant.R` (with `MET_GE3`, forms the paper's NMET = 1 indicator `1 - MET_GE2` and NMET = 2 indicator `MET_GE2 - MET_GE3`, reference three or more organs, on log TS0).
 - **Notes:** Sibling of `MET_GE3` (Terranova 2022) and `MET_GE4` (Bruno 2005), registered under the split explicitly anticipated by the `MET_GE3` entry's notes ("If a future paper uses a different split (e.g. >= 2 or >= 5), register a separate sibling (`MET_GE2`, `MET_GE5`)"). The >= 2 split is the ">1 versus <=1 metastatic site" dichotomisation Bruno 2012 used. A `MET_GE2 = 1` patient may also have `LMET = 1` or `PERIT_CARC = 1`; the columns are not mutually exclusive, and `MET_GE2 >= MET_GE3 >= MET_GE4` holds by construction for the same patient.
 
 ### PFS_EVENT (**canonical for progression-free-survival event indicator observed during follow-up**)
@@ -10957,8 +10988,19 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Scope:** general
 - **Reference category:** 0 (no liver metastases at baseline).
 - **Source aliases:** none; `LMET` is the common NONMEM / clinical-PK abbreviation used directly by the source papers.
-- **Example models:** `Quartino_2019_trastuzumab.R` (exponential effect on linear CL; +16.4% typical CL when LMET = 1, per Quartino 2019 Table 1 theta12 = 0.152).
+- **Example models:** `Quartino_2019_trastuzumab.R` (exponential effect on linear CL; +16.4% typical CL when LMET = 1, per Quartino 2019 Table 1 theta12 = 0.152), `Cerou_2024_amcenestrant.R` and `Cerou_2024_amcenestrant_ameera12.R` (paper `LIVMET`; additive on log TS0 in both models, and on logit RE and the log PFS hazard in the final model).
 - **Notes:** Liver metastases are associated with hepatic protein-synthesis impairment and altered IgG catabolism, making `LMET` a commonly tested covariate in oncology mAb population PK analyses. Scope: general so future oncology papers can reuse the canonical column. Time-fixed baseline indicator; if a source paper treats it as time-varying (progression during treatment), document in `covariateData[[LMET]]$notes`.
+
+### MET_LYMPHNODE (**canonical for baseline presence of lymph-node metastases**)
+- **Description:** Binary indicator of lymph-node metastases at baseline, 1 = present, 0 = absent. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no lymph-node metastases at baseline).
+- **Source aliases:**
+  - `LYMMET` -- Cerou 2024 Table S1 ('Presence of lymph node metastasis at baseline') and Table 3 (beta RE LYMMET yes).
+- **Example models:** `Cerou_2024_amcenestrant_ameera12.R` (additive effect on logit RE = Ks/Kg: `-0.90 * MET_LYMPHNODE`, i.e. faster tumor regrowth with lymph-node metastases).
+- **Notes:** Site-specific metastasis indicator, sibling of `LMET` (liver). The columns are not mutually exclusive, and both are independent of the metastatic-site count indicators `MET_GE1` ... `MET_GE4`. A future site indicator should take the same spelled-out `MET_<SITE>` form (e.g. `MET_BONE`).
 
 ### MET_GE4 (**canonical for baseline number of metastatic sites >= 4 indicator**)
 - **Description:** Binary indicator dichotomising the count of baseline metastatic sites at 4, 1 = patient has four or more documented metastatic sites at baseline, 0 = patient has zero to three metastatic sites at baseline. Time-fixed per subject. Treated as a surrogate for tumor burden in oncology mAb popPK analyses.
@@ -10979,7 +11021,7 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** 0 (fewer than three metastatic sites at baseline).
 - **Source aliases:**
   - `NumMet` (raw integer count 0-12; used in `Terranova_2022_TGD_OS_gastric.R`). When a source paper supplies the raw integer count column, derive `MET_GE3 = as.integer(NumMet >= 3)`.
-- **Example models:** `Terranova_2022_TGD_OS_gastric.R` (multiplicative-additive effect on Gompertzian baseline tumor size: `BASE = exp(ltvBase + etalBase) * exp(0.143 * MET_GE3)` -- single-step binarisation of the paper's continuous per-metastasis coefficient `exp(0.143 * (NumMet - 3))`; deviation from paper's continuous form documented in vignette Errata per the count-covariate policy).
+- **Example models:** `Terranova_2022_TGD_OS_gastric.R` (multiplicative-additive effect on Gompertzian baseline tumor size: `BASE = exp(ltvBase + etalBase) * exp(0.143 * MET_GE3)` -- single-step binarisation of the paper's continuous per-metastasis coefficient `exp(0.143 * (NumMet - 3))`; deviation from paper's continuous form documented in vignette Errata per the count-covariate policy), `Cerou_2024_amcenestrant.R` and `Cerou_2024_amcenestrant_ameera12.R` (the paper's NMET < 3 indicator is `1 - MET_GE3` in the development model; see `MET_GE2` for the final model).
 - **Notes:** Sibling of `MET_GE4` (Bruno 2005) and `NTARGET_GE3` (Struemper 2025). The >= 3 split matches Terranova 2022's centering value of 3 (avelumab-arm median NumMet). Auto-approved under the count-covariate-decomposed-to-binary policy on 2026-07-24. If a future paper uses a different split (e.g. >= 2 or >= 5), register a separate sibling (`MET_GE2`, `MET_GE5`) rather than overloading this entry. A `MET_GE3 = 1` patient may also have `LMET = 1` (liver metastasis) or `PERIT_CARC = 1` (peritoneal carcinomatosis); the three columns are not mutually exclusive.
 
 ### MET_GE1 (**canonical for presence of metastases at baseline (>= 1 metastatic site) indicator**)
@@ -12143,8 +12185,19 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Scope:** specific
 - **Reference category:** n/a -- used as a power term `(ALBR / <ref>)^exponent`. Reference 0.78 used in Xu 2019 (corresponds to a median serum albumin of 38 g/L at a typical ULN of ~48.7 g/L).
 - **Source aliases:** none.
-- **Example models:** `Xu_2019_sarilumab.R`.
+- **Example models:** `Xu_2019_sarilumab.R`, `Cerou_2024_amcenestrant_ameera12.R` (paper `ALBN`; enters logit RE as log(ALBR / 0.74), 0.74 being the per-study median in the authors' PAGE 2022 poster).
 - **Notes:** Xu 2019 normalizes to each site's ULN so that values across multiple labs with different reference ranges can be pooled. Scoped specific because the ULN-normalization convention is tied to the Xu 2019 analysis plan; future papers using the same ratio should either add themselves to the example_models list or promote this entry to general.
+
+### ALPR (**canonical for serum alkaline phosphatase normalized to the laboratory's upper limit of normal**)
+- **Description:** Baseline serum alkaline phosphatase activity divided by the reporting laboratory's upper limit of normal (`ALP_observed / ULN_ALP`). Dimensionless. Used when a multi-site analysis pools laboratories with different reference ranges.
+- **Units:** (unitless ratio)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters as `log(ALPR / <median>)`. Reference value observed: 0.89 (Cerou 2024 development model; the per-study medians in the authors' PAGE 2022 poster were 0.94, 0.89 and 0.59).
+- **Source aliases:**
+  - `ALKN` -- Cerou 2024 Table 3 ('alkaline phosphatase normalized to upper limit value').
+- **Example models:** `Cerou_2024_amcenestrant_ameera12.R` (log-linear effect on the PFS hazard: `exp(0.93 * log(ALPR / 0.89))`).
+- **Notes:** Member of the `<analyte>R` ULN-ratio family with `ALBR` and `LDHR`. Distinct from `ALP` (absolute activity in U/L); do not substitute one for the other. In Cerou 2024 the Japanese AMEERA-2 study had a raw median of 202.5 IU/L but a normalised median of 0.59, so raw ALP and ALPR are not proportional across sites.
 
 ## Inflammatory-bowel-disease disease-activity covariates
 
@@ -14145,6 +14198,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - `ALK-inhibitor-naive` / `crizotinib-pretreated` -- narrative subgroup labels for the same split.
 - **Example models:** `Liu_2024_saf189s.R` (multiplicative power-form effect on apparent central volume: `0.734^PRIOR_ALKI`, i.e. V/F 26.6% lower in ALK-inhibitor-pretreated ALK+ patients than in ALK-inhibitor-naive ALK+ patients; reference category is the ALKPOT = 1 group, n = 115 of 317).
 - **Notes:** Member of the `PRIOR_<class>` prior-therapy family (`PRIOR_TNF`, `PRIOR_IPI`, `PRIOR_VINCA`, `PRIOR_PLATIN`, `PRIOR_TAXANE`, `PRIOR_STATIN`, `PRIOR_BIO`, `PRIOR_OCTREOTIDE`). Narrower than `PRIOR_ANTICANCER`, which is prior anti-cancer therapy of ANY modality including chemotherapy and radiation; a patient may be `PRIOR_ANTICANCER = 1` and `PRIOR_ALKI = 0`. Where a source paper resolves the pretreatment history further (one prior ALK inhibitor vs two or more, or which generation), record the finer levels in `covariateData[[PRIOR_ALKI]]$notes` rather than inventing sub-columns, unless the paper estimates a separate coefficient per level -- in which case register the levels as their own indicators. The ROS1-inhibitor counterpart is a distinct concept and should be registered separately if a source paper estimates it.
+
+### PRIOR_CDK46I (**canonical for prior CDK4/6-inhibitor therapy indicator**)
+- **Description:** 1 = the subject received a cyclin-dependent kinase 4/6 inhibitor (palbociclib, ribociclib, abemaciclib or an equivalent) before enrolment in the current study; 0 = CDK4/6-inhibitor-naive. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (CDK4/6-inhibitor-naive).
+- **Source aliases:**
+  - `PRIORCDK4_6` / `PRIOR CDK4/6` -- Cerou 2024 Table S1 and Table 3. Table 3 reports the effect for 'PRIOR CDK4/6 = no', so the model applies the coefficient to `(1 - PRIOR_CDK46I)`.
+- **Example models:** `Cerou_2024_amcenestrant_ameera12.R` (additive effect on logit RE = Ks/Kg: `1.73 * (1 - PRIOR_CDK46I)`, i.e. CDK4/6-inhibitor-pretreated patients have faster tumor regrowth; 74.8% pretreated in the full Cerou 2024 dataset).
+- **Notes:** Member of the `PRIOR_<class>` prior-therapy family (`PRIOR_ALKI`, `PRIOR_TNF`, `PRIOR_IPI`, `PRIOR_TAXANE`, ...). Distinct from the CDK4/6-inhibitor concentration columns (`CP_ABE_NGML`, `CP_RIB_NGML`), which carry current exposure, not treatment history.
 
 ### PRIOR_RADIATION (**canonical for prior radiotherapy exposure indicator**)
 - **Description:** 1 = subject received any prior radiotherapy (external-beam, brachytherapy, or radionuclide-targeted) before the start of the analyzed treatment; 0 = radiotherapy-naive. Time-fixed per subject.

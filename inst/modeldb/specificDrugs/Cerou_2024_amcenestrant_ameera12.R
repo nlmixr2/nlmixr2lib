@@ -90,7 +90,7 @@ Cerou_2024_amcenestrant_ameera12 <- function() {
       notes = "Paper LIVMET (Table 3). In this model it acts on TS0 only.",
       source_name = "LIVMET"
     ),
-    LNMET = list(
+    MET_LYMPHNODE = list(
       description = "Lymph-node metastasis at baseline (1 = present)",
       units = "(binary)",
       type = "binary",
@@ -196,7 +196,7 @@ Cerou_2024_amcenestrant_ameera12 <- function() {
     lks <- fixed(log(0.09)); label("Tumor cell apoptosis rate Ks (1/day)") # Table 3: Ks = 0.09 (fixed)
     logitre <- logit(0.988); label("Logit of RE = Ks/Kg (unitless; RE in (0, 1])") # Table 3: RE = 0.988
     e_albr_re <- 5.77; label("Effect of log(ALBR/0.74) on logit RE (unitless)") # Table 3: beta RE logtALBN = 5.77
-    e_lnmet_re <- -0.90; label("Effect of lymph-node metastasis on logit RE (unitless)") # Table 3: beta RE LYMMET yes = -0.90
+    e_met_lymphnode_re <- -0.90; label("Effect of lymph-node metastasis on logit RE (unitless)") # Table 3: beta RE LYMMET yes = -0.90
     e_noprior_cdk46i_re <- 1.73; label("Effect of no prior CDK4/6 inhibitor on logit RE (unitless)") # Table 3: beta RE PRIOR CDK4/6=no = 1.73
     logitpr <- logit(0.714); label("Logit of baseline fraction of resistant cells pR (unitless)") # Table 3: pR = 71.4%
 
@@ -232,7 +232,7 @@ Cerou_2024_amcenestrant_ameera12 <- function() {
     ts0 <- exp(lrbase + e_nmetlt3_rbase * nmetlt3 + e_lmet_rbase * LMET + etalrbase)
     ks <- exp(lks)
     re <- expit(
-      logitre + e_albr_re * logt_albr + e_lnmet_re * LNMET +
+      logitre + e_albr_re * logt_albr + e_met_lymphnode_re * MET_LYMPHNODE +
         e_noprior_cdk46i_re * (1 - PRIOR_CDK46I) + etalogitre
     )
     pr <- expit(logitpr + etalogitpr)
