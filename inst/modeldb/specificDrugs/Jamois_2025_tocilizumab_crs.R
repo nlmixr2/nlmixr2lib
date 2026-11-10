@@ -9,7 +9,12 @@ Jamois_2025_tocilizumab_crs <- function() {
     depot = list(analyte = "tocilizumab", units = "mg", specimen = "administration site", verified = TRUE),
     central = list(analyte = "tocilizumab", units = "mg", specimen = "serum", verified = TRUE),
     peripheral1 = list(analyte = "tocilizumab", units = "mg", specimen = "tissue", verified = TRUE),
-    total_target = list(analyte = "total (unbound + tocilizumab-bound) soluble IL-6 receptor", units = "ng/mL", specimen = "serum", verified = TRUE)
+    total_target = list(
+      analyte = "total (unbound + tocilizumab-bound) soluble IL-6 receptor",
+      units = "ng/mL",
+      specimen = "serum",
+      verified = TRUE
+    )
   )
 
   covariateData <- list(
@@ -68,6 +73,14 @@ Jamois_2025_tocilizumab_crs <- function() {
       reference_category = "0 (all other studies, including every CRS study)",
       notes = "Table S6: ST2 = 1 if STUD = 25220 or 28117; multiplies ka by exp(theta16) = 0.807 (Table S1 'ka, NA25220'). Inherited fixed from the rheumatoid-arthritis model; always 0 in the CRS population (IV dosing).",
       source_name = "STUD"
+    ),
+    SC_INJ_GROUP3 = list(
+      description = "Indicator for subcutaneous-injection category SINJ = 3 of the rheumatoid-arthritis / JIA data set (coding not defined by the source)",
+      units = "(binary)",
+      type = "binary",
+      reference_category = "0 (any other SINJ category, and all IV dosing)",
+      notes = "Table S6: FF1 = 1; IF(SINJ.EQ.3) FF1 = THETA(17); LTPF1 = THETA(8)*AGE/(THETA(23)+AGE)*FF1. Multiplies the log SC bioavailability by theta17 = 0.692 (Table S1 'F SC,SJIT3'), i.e. raises F toward 1. Neither the paper nor the supplement defines SINJ or its level 3. Inherited fixed from the rheumatoid-arthritis model; it acts only on SC doses, so it is irrelevant for the all-IV CRS population (supply 0).",
+      source_name = "SINJ"
     )
   )
 
@@ -120,6 +133,7 @@ Jamois_2025_tocilizumab_crs <- function() {
     e_crcl_vmax <- fixed(0.356767267); label("Power exponent of CRCL/100 on VM (unitless)") # Table S6 THETA(14) FIX; Table S1 'VM,CRCLN' = 0.357
     e_age_ka <- fixed(-0.354390651); label("Power exponent of AGE/50 on ka (unitless)") # Table S6 THETA(15) FIX; Table S1 'ka,AGE' = -0.354
     e_study_25220_28117_ka <- fixed(-0.214487419); label("Log factor on ka for studies 25220/28117 (unitless)") # Table S6 THETA(16) FIX; Table S1 'ka, NA25220' = exp(theta16) = 0.807
+    e_sc_inj_group3_lfdepot <- fixed(0.691991210); label("Multiplicative factor on log SC bioavailability for SINJ = 3 (unitless)") # Table S6 THETA(17) FIX; Table S1 'F SC,SJIT3' = 0.692
     sdL <- fixed(0.998582423); label("Log-scale residual SD at low tocilizumab concentrations SDL (unitless)") # Table S6 THETA(18) FIX; Table S1 'sigma SDL' = 0.999
     sdH <- fixed(0.116924070); label("Log-scale residual SD at high tocilizumab concentrations SDH (unitless)") # Table S6 THETA(19) FIX; Table S1 'sigma SDH' = 0.117
     sd50 <- fixed(2.189973116); label("Tocilizumab concentration at which the residual SD is midway between SDL and SDH (ug/mL)") # Table S6 THETA(20) FIX; Table S1 'sigma SD50' = 2.19
@@ -173,7 +187,8 @@ Jamois_2025_tocilizumab_crs <- function() {
     vmax <- exp(lvmax + e_crcl_vmax * logcrcl)
     km <- exp(lkm)
     ka <- exp(lka + e_age_ka * logage + e_study_25220_28117_ka * STUDY_25220_28117 + etalka)
-    fdepot <- exp(lfdepot * AGE / (age50_fdepot + AGE) + etalfdepot)
+    ff_sc_inj <- 1 + (e_sc_inj_group3_lfdepot - 1) * SC_INJ_GROUP3
+    fdepot <- exp(lfdepot * AGE / (age50_fdepot + AGE) * ff_sc_inj + etalfdepot)
 
     kel <- cl / vc
     k12 <- q / vc
