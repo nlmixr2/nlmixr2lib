@@ -14179,6 +14179,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `Lu_2017_polatuzumab_neuropathy.R` (multiplicative effect on the grade >= 2 peripheral neuropathy hazard via `exp(theta_Platin * PRIOR_PLATIN)` with `theta_Platin = 0.159`, SE 0.345 -- not detectable given the large SE; the paper hypothesized prior platinum exposure could sensitize patients to subsequent antimicrotubule-induced PN given that platinum agents themselves cause sensory PN, but did not find a clinically meaningful effect).
 - **Notes:** Platinum agents are DNA-crosslinking cytotoxics with peripheral-neuropathy as a well-known adverse-event profile (especially for cisplatin and oxaliplatin); prior exposure is therefore a defensible pretreatment indicator in any subsequent-PN-risk analysis. Sibling of `PRIOR_ANTICANCER` (broader any-modality indicator), `PRIOR_RADIATION`, `PRIOR_VINCA`, and `PRIOR_TAXANE` (parallel chemotherapy-class siblings). Distinct from `AUC_CARBO` (the continuous per-cycle carboplatin-AUC drug-exposure covariate, which is time-varying and used as a direct drug-exposure driver in tumor-dynamics models, e.g. `Zecchin_2016_survival.R`).
 
+### PLATINUM_RESISTANT (**canonical for platinum-resistant vs platinum-sensitive relapse status**)
+- **Description:** 1 = platinum-resistant relapse (disease progression < 6 months after the last platinum dose); 0 = platinum-sensitive relapse (progression >= 6 months after the last platinum dose in any prior line). Time-fixed per subject, assessed at study entry.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (platinum-sensitive relapse), when the effect is coded as a resistant-vs-sensitive offset. A model that estimates a separate typical value in each stratum selects between them with this column and has no reference category.
+- **Source aliases:**
+  - `PRR` / `PSR`, `Cohort` (Carrot 2025 BOLD: 'Cohort = PRR' / 'Cohort = PSR' in Supplementary Material S1) -- used in `Carrot_2025_ovarianCancer_ca125.R` and `Carrot_2025_ovarianCancer_ca125_tgi.R`.
+- **Example models:** `Carrot_2025_ovarianCancer_ca125.R` and `Carrot_2025_ovarianCancer_ca125_tgi.R` (separate typical baseline CA-125 and CA-125 elimination rate KELIM per stratum, `lrbase_ca125_resistant` / `lrbase_ca125_sensitive` and `lkout_resistant` / `lkout_sensitive`, selected by `PLATINUM_RESISTANT`).
+- **Notes:** The standard GCIG platinum-sensitivity classification of recurrent ovarian cancer, with the 6-month platinum-free-interval cutoff. Distinct from `PRIOR_PLATIN` (any prior platinum exposure) and `CONMED_PLATIN` (concomitant platinum), which encode exposure rather than the progression-interval classification. A study that uses a finer split (platinum-refractory, partially platinum-sensitive 6-12 months) needs its own indicators rather than overloading this binary column.
+
 ### PRIOR_BIO (**canonical for prior biologic exposure**)
 - **Description:** 1 = subject previously treated with any biologic (broader than `PRIOR_TNF`: includes anti-TNF agents plus anti-integrin, anti-IL-12/23, anti-IL-17, anti-IL-23, anti-IL-6, etc.), 0 = biologic-naive.
 - **Units:** (binary)
