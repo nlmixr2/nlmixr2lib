@@ -17,6 +17,9 @@ on:
   # "ready to be merged" (pushes to a PR branch no longer start CI).
   pull_request_review:
     types: [submitted]
+  # Maintainers can also start PR checks by commenting "/ci" on the PR.
+  issue_comment:
+    types: [created]
   release:
     types: [published]
   workflow_dispatch:
@@ -35,8 +38,8 @@ permissions: read-all
 # gh-pages, and interrupting it half-way would publish a partial site. Those
 # runs queue behind each other instead.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ (github.event_name == 'pull_request' || github.event_name == 'pull_request_review') }}
+  group: ${{ github.workflow }}-${{ github.event.issue.number || github.ref }}${{ ((github.event_name == 'pull_request_review' && !(github.event.review.state == 'approved' && contains(github.event.review.body, 'ready to be merged'))) || (github.event_name == 'issue_comment' && !(github.event.issue.pull_request && startsWith(github.event.comment.body, '/ci') && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)))) && format('-noop-{0}', github.run_id) || '' }}
+  cancel-in-progress: ${{ (github.event_name == 'pull_request' || github.event_name == 'pull_request_review' || github.event_name == 'issue_comment') }}
 
 env:
   # Number of runner jobs the article render fans out over. Keep the matrix
@@ -45,7 +48,7 @@ env:
 
 jobs:
   render:
-    if: (github.event_name != 'pull_request_review' || (github.event.review.state == 'approved' && contains(github.event.review.body, 'ready to be merged')))
+    if: ((github.event_name != 'pull_request_review' && github.event_name != 'issue_comment') || (github.event_name == 'pull_request_review' && github.event.review.state == 'approved' && contains(github.event.review.body, 'ready to be merged')) || (github.event_name == 'issue_comment' && github.event.issue.pull_request && startsWith(github.event.comment.body, '/ci') && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)))
     runs-on: ubuntu-latest
     strategy:
       # Surface EVERY failing shard in one round. With fail-fast the first
@@ -66,6 +69,8 @@ jobs:
       PKGDOWN_SHARD: ${{ matrix.shard }}
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/merge', github.event.issue.number) || '' }}
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -121,7 +126,7 @@ jobs:
           if-no-files-found: error
 
   assemble:
-    if: (github.event_name != 'pull_request_review' || (github.event.review.state == 'approved' && contains(github.event.review.body, 'ready to be merged')))
+    if: ((github.event_name != 'pull_request_review' && github.event_name != 'issue_comment') || (github.event_name == 'pull_request_review' && github.event.review.state == 'approved' && contains(github.event.review.body, 'ready to be merged')) || (github.event_name == 'issue_comment' && github.event.issue.pull_request && startsWith(github.event.comment.body, '/ci') && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)))
     needs: render
     runs-on: ubuntu-latest
     env:
@@ -141,6 +146,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/merge', github.event.issue.number) || '' }}
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -208,7 +215,7 @@ jobs:
         run: Rscript .github/scripts/pkgdown-parallel-build.R
 
       - name: Deploy to GitHub pages 🚀
-        if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_review')
+        if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_review' && github.event_name != 'issue_comment')
         uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4.8.0
         with:
           clean: false
