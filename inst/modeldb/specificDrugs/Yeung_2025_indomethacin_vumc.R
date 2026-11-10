@@ -88,9 +88,9 @@ Yeung_2025_indomethacin_vumc <- function() {
     e_pna_cl_renal <- fixed(-0.192); label("Power exponent of PNA on renal clearance (unitless)") # Table S2, VUMC 'theta PNA-CLR' = NA (held fixed); value from the CMH re-estimate -0.192
     e_pna_cl_nonren <- 1.21; label("Power exponent of PNA on non-renal clearance (unitless)") # Table S2, VUMC 'theta PNA-CLH' = 1.21 (RSE 11.5%)
 
-    etalvc ~ 0.066882 # Table S2, VUMC 'IIV V (%)' = 26.3; log(1 + 0.263^2)
-    etalcl_renal ~ fixed(0.389403) # Table S2, VUMC 'IIV CLR (%)' = NA (not re-estimated); CMH re-estimate 69.0, log(1 + 0.690^2)
-    etalcl_nonren ~ 0.396898 # Table S2, VUMC 'IIV CLH (%)' = 69.8; log(1 + 0.698^2)
+    etalvc ~ log(1 + 0.263^2) # Table S2, VUMC 'IIV V (%)' = 26.3
+    etalcl_renal ~ fixed(log(1 + 0.690^2)) # Table S2, VUMC 'IIV CLR (%)' = NA (not re-estimated); CMH re-estimate 69.0
+    etalcl_nonren ~ log(1 + 0.698^2) # Table S2, VUMC 'IIV CLH (%)' = 69.8
 
     expSd <- fixed(0.312730); label("Log-scale residual SD, plasma concentrations (unitless)") # Table S2, VUMC 'epsilon2 plasma' = NA (no plasma data); CMH re-estimate sqrt(0.0978)
     expSdDbs <- 0.425441; label("Log-scale residual SD, dried blood spot concentrations (unitless)") # Table S2, VUMC 'epsilon2 log-normal DBS' = 0.181 (RSE 23.9%); sqrt(0.181)

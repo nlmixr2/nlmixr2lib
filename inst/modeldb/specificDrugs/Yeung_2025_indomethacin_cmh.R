@@ -93,9 +93,9 @@ Yeung_2025_indomethacin_cmh <- function() {
     e_pna_cl_renal <- -0.192; label("Power exponent of PNA on renal clearance (unitless)") # Table S2, CMH 'theta PNA-CLR' = -0.192
     e_pna_cl_nonren <- 0.901; label("Power exponent of PNA on non-renal clearance (unitless)") # Table S2, CMH 'theta PNA-CLH' = 0.901 (RSE 25.4%)
 
-    etalvc ~ 0.138217 # Table S2, CMH 'IIV V (%)' = 38.5; log(1 + 0.385^2)
-    etalcl_renal ~ 0.389403 # Table S2, CMH 'IIV CLR (%)' = 69.0; log(1 + 0.690^2)
-    etalcl_nonren ~ 1.729834 # Table S2, CMH 'IIV CLH (%)' = 215.4; log(1 + 2.154^2)
+    etalvc ~ log(1 + 0.385^2) # Table S2, CMH 'IIV V (%)' = 38.5
+    etalcl_renal ~ log(1 + 0.690^2) # Table S2, CMH 'IIV CLR (%)' = 69.0
+    etalcl_nonren ~ log(1 + 2.154^2) # Table S2, CMH 'IIV CLH (%)' = 215.4
 
     expSd <- 0.312730; label("Log-scale residual SD, plasma concentrations (unitless)") # Table S2, CMH 'epsilon2 log-normal plasma' = 0.0978; sqrt(0.0978)
     expSdDbs <- 0.521536; label("Log-scale residual SD, dried blood spot concentrations (unitless)") # Table S2, CMH 'epsilon2 log-normal DBS' = 0.272; sqrt(0.272)
