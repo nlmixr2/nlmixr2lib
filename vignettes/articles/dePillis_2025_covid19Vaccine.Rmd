@@ -143,7 +143,7 @@ typ <- solve_typical(nlme, ev_typ) |>
 ```
 
 ```{r nlme-typical-plot}
-ggplot(typ, aes(time, nab, colour = label)) +
+ggplot(typ, aes(time, nab_activity, colour = label)) +
   geom_line(linewidth = 0.8) +
   labs(
     x = "Days since first dose", y = "NAb activity (fraction neutralization)",
@@ -162,10 +162,10 @@ full neutralization and decays more slowly, the paper's main conclusion.
 typ_summary <- typ |>
   group_by(label) |>
   summarise(
-    nab_day0 = nab[time == 0],
-    peak = max(nab),
-    tpeak = time[which.max(nab)],
-    nab_day365 = nab[time == 365],
+    nab_day0 = nab_activity[time == 0],
+    peak = max(nab_activity),
+    tpeak = time[which.max(nab_activity)],
+    nab_day365 = nab_activity[time == 365],
     .groups = "drop"
   )
 knitr::kable(typ_summary, digits = 3)
@@ -307,12 +307,12 @@ above <- sim |>
   mutate(group = ifelse(SARS_SEROPOS == 1, "Convalesced", "Naive")) |>
   group_by(group) |>
   summarise(
-    pct_rows_above_M = 100 * mean(nab > 1.01970),
-    pct_subjects_ever_above_M = 100 * mean(tapply(nab > 1.01970, id, any)),
+    pct_rows_above_M = 100 * mean(nab_activity > 1.01970),
+    pct_subjects_ever_above_M = 100 * mean(tapply(nab_activity > 1.01970, id, any)),
     .groups = "drop"
   )
 knitr::kable(above, digits = 1)
-sim <- sim |> mutate(sim = ifelse(is.na(sim) & nab > 1.01970, 1, sim))
+sim <- sim |> mutate(sim = ifelse(is.na(sim) & nab_activity > 1.01970, 1, sim))
 stopifnot(!anyNA(sim$sim))
 ```
 
@@ -395,12 +395,12 @@ fig2_ref <- data.frame(
   fig2 = c(0.92, 0.07, 0.98, 0.74, 0.88)
 )
 fig2_cmp <- fig2_ref |>
-  left_join(lme_typ[, c("group", "time", "nab")], by = c("group", "time")) |>
-  mutate(diff = nab - fig2)
+  left_join(lme_typ[, c("group", "time", "nab_activity")], by = c("group", "time")) |>
+  mutate(diff = nab_activity - fig2)
 fig2_cmp |>
   dplyr::rename(
     "Group" = group, "Day" = time, "Figure 2(i)" = fig2,
-    "LME model" = nab, "Difference" = diff
+    "LME model" = nab_activity, "Difference" = diff
   ) |>
   knitr::kable(digits = 3)
 
@@ -424,7 +424,7 @@ ggplot() +
     data = lme_sim, aes(time, ymin = q10, ymax = q90, fill = group),
     alpha = 0.15
   ) +
-  geom_line(data = lme_typ, aes(time, nab, colour = group), linewidth = 0.9) +
+  geom_line(data = lme_typ, aes(time, nab_activity, colour = group), linewidth = 0.9) +
   geom_point(data = fig2_ref, aes(time, fig2, colour = group), shape = 4, size = 3) +
   scale_colour_manual(values = c(Convalesced = "red", Naive = "steelblue")) +
   scale_fill_manual(values = c(Convalesced = "red", Naive = "steelblue")) +
@@ -449,9 +449,9 @@ nlme_med <- sim |>
   filter(time >= 60) |>
   mutate(group = ifelse(SARS_SEROPOS == 1, "Convalesced", "Naive")) |>
   group_by(group, time) |>
-  summarise(nlme_median = median(nab), .groups = "drop") |>
-  left_join(lme_typ[, c("group", "time", "nab")], by = c("group", "time")) |>
-  dplyr::rename(lme_population = nab)
+  summarise(nlme_median = median(nab_activity), .groups = "drop") |>
+  left_join(lme_typ[, c("group", "time", "nab_activity")], by = c("group", "time")) |>
+  dplyr::rename(lme_population = nab_activity)
 knitr::kable(nlme_med, digits = 3)
 stopifnot(median(abs(nlme_med$nlme_median - nlme_med$lme_population)) < 0.15)
 ```
@@ -500,9 +500,10 @@ between the two models.
   vaccine type (Eq. 9, Figure 2(ii)-(iii)) and sex; their coefficients are not
   reported, so only the convalesced-status model (Eqs. 3-4, Table 2) is
   packaged.
-* **Observation variable.** Both models name the output `nab` (NAb activity as a
-  0-1 fraction), which is not a registered observation name, so
-  `checkModelConventions()` reports it as non-canonical.
+* **Observation variable.** Both models name the output `nab_activity` (NAb
+  activity as a 0-1 fraction). The maintainers registered it as a new
+  observation name rather than the bare `nab`, which is already the suffix for
+  an anti-drug neutralizing-antibody species in monoclonal-antibody models.
 * **Covariates.** The paper's convalesced indicator C is carried as
   `SARS_SEROPOS`. Subjects were vaccine-naive at baseline and naive subjects with
   nucleocapsid antibodies before vaccination were excluded, so within this

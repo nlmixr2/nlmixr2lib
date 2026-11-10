@@ -101,7 +101,7 @@ dePillis_2025_covid19Vaccine_lme <- function() {
     beta3 <- b30
 
     # Eq. 3: logit(y) = beta0 + beta1*tc + beta2*tc^2 + beta3*tc^3 + eps
-    nab <- expit(beta0 + beta1 * tc + beta2 * tc^2 + beta3 * tc^3)
-    nab ~ logitNorm(addSd, 0, 1)
+    nab_activity <- expit(beta0 + beta1 * tc + beta2 * tc^2 + beta3 * tc^3)
+    nab_activity ~ logitNorm(addSd, 0, 1)
   })
 }

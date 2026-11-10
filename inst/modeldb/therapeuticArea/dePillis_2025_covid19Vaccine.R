@@ -183,7 +183,7 @@ dePillis_2025_covid19Vaccine <- function() {
     # with Monolix's default bounds m = -0.00954434 and M = 1.01970 to both
     # the observation and the prediction, then a combined1 error a + b * f on
     # that transformed scale.
-    nab <- antibody
-    nab ~ add(addSd) + propT(propSd) + combined1() + logitNorm(NA, -0.00954434, 1.01970)
+    nab_activity <- antibody
+    nab_activity ~ add(addSd) + propT(propSd) + combined1() + logitNorm(NA, -0.00954434, 1.01970)
   })
 }
