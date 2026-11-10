@@ -133,13 +133,13 @@ Singh_2025_donidalorsen <- function() {
     # Singh 2025 Table 1 bPKK = 0.13 (RSE 14.3%); reference anchor PKK_BL/122 (page 3 equation)
 
     # ---- IIV (Singh 2025 Table 1; log-normal eta, omega^2 = log(CV^2 + 1)) ----
-    # etalemax variance = log(1 + 0.279^2) = 0.074975 -> CV 27.9%
-    # etalhill variance = log(1 + 1.31^2)  = 0.999412 -> CV 131%
-    etalemax ~ 0.074975
-    # Singh 2025 Table 1 IIV on Emax = 27.9% CV -> log(0.279^2 + 1) = 0.074975 (shrinkage 42.7%)
+    # etalemax variance = log(1 + 0.279^2) = 0.074960 -> CV 27.9%
+    # etalhill variance = log(1 + 1.31^2)  = 0.999197 -> CV 131%
+    etalemax ~ log(1 + 0.279^2)
+    # Singh 2025 Table 1 IIV on Emax = 27.9% CV -> log(0.279^2 + 1) = 0.074960 (shrinkage 42.7%)
 
-    etalhill ~ 0.999412
-    # Singh 2025 Table 1 IIV on Hill = 131% CV -> log(1.31^2 + 1) = 0.999412 (shrinkage 27.1%)
+    etalhill ~ log(1 + 1.31^2)
+    # Singh 2025 Table 1 IIV on Hill = 131% CV -> log(1.31^2 + 1) = 0.999197 (shrinkage 27.1%)
   })
 
   model({

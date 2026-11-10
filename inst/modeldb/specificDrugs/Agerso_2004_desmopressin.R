@@ -109,11 +109,11 @@ Agerso_2004_desmopressin <- function() {
     # CL_nr and a shared V1/V3 eta are jointly distributed with
     # correlation 0.86 (Table 1 footnote ).
     #   var(etalcl_nonren) = log(1 + 0.30^2) = 0.08618    # Table 1 CV 30% (RSE 43%)
-    #   var(etalvc_vp2)    = log(1 + 0.31^2) = 0.09175    # Table 1 CV 31% (RSE 45%, V1 and V3 rows)
-    #   cov                = 0.86 * sqrt(0.08618 * 0.09175) = 0.07648
+    #   var(etalvc_vp2)    = log(1 + 0.31^2) = 0.09176    # Table 1 CV 31% (RSE 45%, V1 and V3 rows)
+    #   cov                = 0.86 * sqrt(0.08618 * 0.09176) = 0.07648
     etalcl_renal                 ~ 0.05599                            # CV 24%
     etalcl_nonren + etalvc_vp2 ~ c(0.08618,
-                                     0.07648, 0.09175)                # CV 30%, r = 0.86, CV 31%
+                                     0.86 * sqrt(0.08618 * log(1 + 0.31^2)), log(1 + 0.31^2))                # CV 30%, r = 0.86, CV 31%
 
     # --- Residual error (combined additive + proportional), separate for
     # plasma concentrations and cumulative urinary amounts.

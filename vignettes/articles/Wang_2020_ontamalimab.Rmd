@@ -68,8 +68,8 @@ and baseline CRP 0.837 mg/dL.
 | `e_wt_vmax` (WT/70 exponent on Vmax/F)     | 1.89                          | 1.89                                        | Table 2, Vmax/F covariate equation |
 | `e_alb_cl` (ALB/39 exponent on CL/F)       | -0.889                        | -0.889                                      | Table 2, CL/F covariate equation |
 | `e_crp_cl` (CRP/0.837 exponent on CL/F)    | 0.147                         | 0.147                                       | Table 2, CL/F covariate equation |
-| `var(etalka)`                              | `log(0.618^2 + 1) = 0.3232`   | same                                        | Table 2: Ka BSV 61.8% CV |
-| `var(etalcl)`                              | `log(0.546^2 + 1) = 0.2611`   | same                                        | Table 2: CL/F BSV 54.6% CV |
+| `var(etalka)`                              | `log(0.618^2 + 1) = 0.3235`   | same                                        | Table 2: Ka BSV 61.8% CV |
+| `var(etalcl)`                              | `log(0.546^2 + 1) = 0.2609`   | same                                        | Table 2: CL/F BSV 54.6% CV |
 | `var(etalvc)`                              | `log(0.410^2 + 1) = 0.1554`   | same                                        | Table 2: Vc/F BSV 41.0% CV |
 | `addSd`                                    | 166 ng/mL                     | 0.166 mg/L                                  | Table 2: additive residual |
 | `propSd`                                   | 19.6%                         | 0.196                                       | Table 2: proportional residual |

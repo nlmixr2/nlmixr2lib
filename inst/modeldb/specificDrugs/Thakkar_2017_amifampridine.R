@@ -127,12 +127,12 @@ Thakkar_2017_amifampridine <- function() {
     # Table 2 Final: CV(CL/F) = 48.1% -> var = log(1 + 0.481^2) = 0.2082;
     # CV(Vc/F) = 182.4% -> var = log(1 + 1.824^2) = 1.4649;
     # correlation 0.53 (footnote d) -> cov = 0.53 * sqrt(0.2082 * 1.4649) = 0.2926.
-    etalka       ~ 0.1239
-    # Table 2 Final: CV(Ka) = 36.2% -> var = log(1 + 0.362^2) = 0.1239
-    etalq        ~ 0.2122
-    # Table 2 Final: CV(Q/F) = 48.7% -> var = log(1 + 0.487^2) = 0.2122
-    etalvp       ~ 0.6989
-    # Table 2 Final: CV(Vp/F) = 89.8% -> var = log(1 + 0.898^2) = 0.6989
+    etalka       ~ log(1 + 0.362^2)
+    # Table 2 Final: CV(Ka) = 36.2%
+    etalq        ~ log(1 + 0.487^2)
+    # Table 2 Final: CV(Q/F) = 48.7%
+    etalvp       ~ log(1 + 0.898^2)
+    # Table 2 Final: CV(Vp/F) = 89.8%
     etalcl_acdap ~ 0.1389
     # Table 2 Final: CV(CLm/F3ACDAP) = 38.6% -> var = log(1 + 0.386^2) = 0.1389
 
@@ -161,10 +161,10 @@ Thakkar_2017_amifampridine <- function() {
     # =====================================================================
     etalogitemax ~ 2.93
     # Table 3 Final: logit-scale variance for fractional Emax = 2.93 (RSE 71%; bootstrap 0.35 - 12.85)
-    etalec50     ~ 0.5760
-    # Table 3 Final: CV(EC50) = 88.3% -> var = log(1 + 0.883^2) = 0.5760
-    etale0       ~ 0.4109
-    # Table 3 Final: CV(E0) = 71.3% -> var = log(1 + 0.713^2) = 0.4109
+    etalec50     ~ log(1 + 0.883^2)
+    # Table 3 Final: CV(EC50) = 88.3% -> var = log(1 + 0.883^2) = 0.5764
+    etale0       ~ log(1 + 0.713^2)
+    # Table 3 Final: CV(E0) = 71.3% -> var = log(1 + 0.713^2) = 0.4110
 
     # =====================================================================
     # PD residual error - proportional on observed 3TUG (sec).

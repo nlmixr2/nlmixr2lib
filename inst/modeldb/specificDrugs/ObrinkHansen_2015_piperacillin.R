@@ -88,10 +88,10 @@ ObrinkHansen_2015_piperacillin <- function() {
 
     # ===== IIV (Obrink-Hansen 2015 Table 2) =====
     # Exponential (log-normal) IIV; CV%-to-variance: omega^2 = log(1 + CV^2).
-    # 71.2% -> log(1 + 0.712^2) = log(1.50694) = 0.41001
-    # 57.8% -> log(1 + 0.578^2) = log(1.33408) = 0.28818
-    etalcl ~ 0.41001  # Table 2: IIV on CL 71.2% CV
-    etalvc ~ 0.28818  # Table 2: IIV on V1 57.8% CV
+    # 71.2% -> log(1 + 0.712^2) = log(1.50694) = 0.41008
+    # 57.8% -> log(1 + 0.578^2) = log(1.33408) = 0.28824
+    etalcl ~ log(1 + 0.712^2)  # Table 2: IIV on CL 71.2% CV
+    etalvc ~ log(1 + 0.578^2)  # Table 2: IIV on V1 57.8% CV
     # Q and V2 had no IIV reported (paper: "interindividual variability (IIV)
     # adequately described as variance in clearance and central volume of
     # distribution").

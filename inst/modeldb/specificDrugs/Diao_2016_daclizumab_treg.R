@@ -84,10 +84,10 @@ Diao_2016_daclizumab_treg <- function() {
 
     e_dose_50mg_f <- -0.32143; label("Relative change in F for 50 mg SC vs 100-300 mg SC (fraction)") # Othman 2014 Table 2
 
-    # Othman 2014 Table 2 (ka 58% CV, cl 27% CV, corr -0.72): ka -> omega^2 = log(1 + 0.58^2) = 0.29003;
-    # cl -> omega^2 = log(1 + 0.27^2) = 0.07038; cov = -0.72 * sqrt(0.29003 * 0.07038) = -0.10290.
-    etalka + etalcl ~ c(0.29003,
-                        -0.10290, 0.07038)
+    # Othman 2014 Table 2 (ka 58% CV, cl 27% CV, corr -0.72): ka -> omega^2 = log(1 + 0.58^2) = 0.28998;
+    # cl -> omega^2 = log(1 + 0.27^2) = 0.07037; cov = -0.72 * sqrt(0.28998 * 0.07037) = -0.10285.
+    etalka + etalcl ~ c(log(1 + 0.58^2),
+                        -0.72 * sqrt(log(1 + 0.58^2) * log(1 + 0.27^2)), log(1 + 0.27^2))
     etalvc ~ 0.09175  # Othman 2014 Table 2 (Vc 31% CV)
 
     propSd <- 0.22; label("Proportional residual error on daclizumab HYP serum concentration (fraction)") # Othman 2014 Table 2
@@ -106,12 +106,12 @@ Diao_2016_daclizumab_treg <- function() {
 
     # IIV (Diao 2016 Table 5): E0 42% CV, IC50 65% CV, Emax 12% CV.
     # omega^2 = log(1 + CV^2)
-    # E0   CV 42% -> omega^2 = log(1 + 0.42^2) = 0.16127
-    # IC50 CV 65% -> omega^2 = log(1 + 0.65^2) = 0.34744
-    # Emax CV 12% -> omega^2 = log(1 + 0.12^2) = 0.01431
-    etaltregE0   ~ 0.16127  # Diao 2016 Table 5 (Baseline E0 IIV 42% CV)
-    etaltregIC50 ~ 0.34744  # Diao 2016 Table 5 (IC50 IIV 65% CV)
-    etaltregEmax ~ 0.01431  # Diao 2016 Table 5 (Emax IIV 12% CV)
+    # E0   CV 42% -> omega^2 = log(1 + 0.42^2) = 0.16246
+    # IC50 CV 65% -> omega^2 = log(1 + 0.65^2) = 0.35242
+    # Emax CV 12% -> omega^2 = log(1 + 0.12^2) = 0.01430
+    etaltregE0   ~ log(1 + 0.42^2)  # Diao 2016 Table 5 (Baseline E0 IIV 42% CV)
+    etaltregIC50 ~ log(1 + 0.65^2)  # Diao 2016 Table 5 (IC50 IIV 65% CV)
+    etaltregEmax ~ log(1 + 0.12^2)  # Diao 2016 Table 5 (Emax IIV 12% CV)
 
     # Residual error (Diao 2016 Table 5): proportional 50.1% + additive 0.416 (% units).
     propSd_treg <- 0.501; label("Proportional residual error on Treg (fraction)")                       # Diao 2016 Table 5

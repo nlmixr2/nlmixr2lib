@@ -167,9 +167,9 @@ Chen_2025_hemoporfin <- function() {
     # why Table 2 reports IIV for CL, Q2 and V1 only. Those three zero-
     # variance etas are omitted here rather than written as fixed(0): a
     # zero diagonal makes OMEGA singular and rxode2 then fails to simulate.
-    etalcl ~ 0.0167584  # Table 2, IIV CL  = 13.0 CV% (RSE 26.2%, shrinkage 17.0%; bootstrap median 12.6, 90% CI 8.72 to 15.3); log(0.130^2 + 1) = 0.0167584
+    etalcl ~ log(1 + 0.13^2)  # Table 2, IIV CL  = 13.0 CV% (RSE 26.2%, shrinkage 17.0%; bootstrap median 12.6, 90% CI 8.72 to 15.3)
     etalq  ~ 0.0392207  # Table 2, IIV Q2  = 20.0 CV% (RSE 35.5%, shrinkage 46.9%; bootstrap median 20.0, 90% CI 16.1 to 27.6); log(0.200^2 + 1) = 0.0392207
-    etalvc ~ 0.0460116  # Table 2, IIV V1  = 21.7 CV% (RSE 31.4%, shrinkage 38.3%; bootstrap median 20.8, 90% CI 14.7 to 26.8); log(0.217^2 + 1) = 0.0460116
+    etalvc ~ log(1 + 0.217^2)  # Table 2, IIV V1  = 21.7 CV% (RSE 31.4%, shrinkage 38.3%; bootstrap median 20.8, 90% CI 14.7 to 26.8)
 
     # ----- Residual unexplained variability -----
     # Control stream Data S2 $ERROR: SD = SQRT(PROP*PROP + ADD*ADD) with

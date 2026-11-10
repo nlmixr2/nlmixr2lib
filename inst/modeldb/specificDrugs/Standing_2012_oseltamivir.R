@@ -94,11 +94,11 @@ Standing_2012_oseltamivir <- function() {
     hill_renal  <- fixed(3.4);  label("Hill coefficient for renal maturation [Rhodin 2009]")                            # Rhodin et al. 2009 doi:10.1007/s00467-008-0997-5 Table 1
 
     # IIV. Standing 2012 Table 2 reports BSV as %CV (log-normal). Convert via
-    # omega^2 = log(1 + CV^2): 57.5% -> 0.2858, 59.4% -> 0.3023, 71.0% -> 0.4082.
+    # omega^2 = log(1 + CV^2): 57.5% -> 0.2856, 59.4% -> 0.3022, 71.0% -> 0.4082.
     # Standing's eta on CLU/CLM is shared across both clearances (single THETA,
     # single ETA) so the eta on lcl drives both parent and metabolite renal CL.
-    etalka  ~ 0.2858    # Standing 2012 Table 2: BSV(Ka) = 57.5% CV; omega^2 = log(1 + 0.575^2)
-    etalcl  ~ 0.3023    # Standing 2012 Table 2: BSV(CLU and CLM) = 59.4% CV (single eta shared); omega^2 = log(1 + 0.594^2)
+    etalka  ~ log(1 + 0.575^2)  # Standing 2012 Table 2: BSV(Ka) = 57.5% CV
+    etalcl  ~ log(1 + 0.594^2)  # Standing 2012 Table 2: BSV(CLU and CLM) = 59.4% CV (single eta shared)
     etalcli ~ 0.4082    # Standing 2012 Table 2: BSV(CLI) = 71.0% CV; omega^2 = log(1 + 0.710^2)
 
     # Residual error (proportional on each output). Standing 2012 Table 2.

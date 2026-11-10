@@ -56,7 +56,7 @@ Kloprogge_2020_pyrazinamide <- function() {
 
     # IIV: S1 Table footnote 'IIV was calculated as 100 x sqrt(e^eta - 1)',
     # so omega^2 = log(1 + CV^2). The ka IIV was estimated despite ka fixed.
-    etalcl ~ 0.07863  # S1 Table 'IIV on Cl (%CV)' = 28.60; log(1 + 0.2860^2) = 0.07863
+    etalcl ~ log(1 + 0.2860^2)  # S1 Table 'IIV on Cl (%CV)' = 28.60
     etalvc ~ 0.001559 # S1 Table 'IIV on Vc (%CV)' = 3.95; log(1 + 0.0395^2) = 0.001559
     etalka ~ 2.820    # S1 Table 'IIV on ka (%CV)' = 397.2 (CI 174.38-1005.27); log(1 + 3.972^2) = 2.820
 

@@ -93,12 +93,12 @@ ODEs implement the model schematic in Figure 1 and Equation 2.
 | `DF_muscle`                                  | 0.55                   | Table 1         |
 | `DF_subcutis`                                | 0.25                   | Table 1         |
 | `DF_PML(cytosol)`                            | 52                     | Table 1         |
-| eta_Tlag (CV 17.6%)                          | omega^2 = 0.0306       | Table 1; log(0.176^2 + 1) |
+| eta_Tlag (CV 17.6%)                          | omega^2 = 0.0305       | Table 1; log(0.176^2 + 1) |
 | eta_CL/F (CV 29.3%)                          | omega^2 = 0.0824       | Table 1; log(0.293^2 + 1) |
-| eta_V_central/F (CV 168.3%)                  | omega^2 = 1.343        | Table 1; log(1.683^2 + 1) |
+| eta_V_central/F (CV 168.3%)                  | omega^2 = 1.344        | Table 1; log(1.683^2 + 1) |
 | eta_kin (CV 0.22%)                           | omega^2 = 4.84e-6      | Table 1 (boundary value; bootstrap median 22.4%) |
-| eta_DF_muscle (CV 26.9%)                     | omega^2 = 0.0698       | Table 1; log(0.269^2 + 1) |
-| eta_DF_subcutis (CV 31.5%)                   | omega^2 = 0.0945       | Table 1; log(0.315^2 + 1) |
+| eta_DF_muscle (CV 26.9%)                     | omega^2 = 0.0699       | Table 1; log(0.269^2 + 1) |
+| eta_DF_subcutis (CV 31.5%)                   | omega^2 = 0.0946       | Table 1; log(0.315^2 + 1) |
 | eta_DF_PML(cytosol) (CV 0.22%)               | omega^2 = 4.84e-6      | Table 1 (boundary value; bootstrap median 9.0%) |
 | Plasma residual: prop 0.14 + add 35.2 ng/mL  | propSd 0.14; addSd 0.0352 mg/L | Table 1; additive converted ng/mL -> mg/L |
 | Muscle ISF residual: prop 0.14 + add 0.51 ng/mL | propSd_Cmuscle 0.14; addSd_Cmuscle 0.00051 mg/L | Table 1 |

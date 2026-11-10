@@ -130,13 +130,13 @@ HillMcManus_2017_febuxostat_lesinurad <- function() {
     # IIV
     #
     # PK between-subject variability (Table 2 CV%): omega^2 = log(1 + CV^2)
-    #   etalka_febx   CV 176%   -> log(1 + 1.76^2)  = 1.4117
-    #   etalcl_febx   CV 18.3%  -> log(1 + 0.183^2) = 0.03315
-    #   etalka_lesn   CV 121.7% -> log(1 + 1.217^2) = 0.91858
-    #   etalcl_lesn   CV 63.4%  -> log(1 + 0.634^2) = 0.33129
-    #   etalvc_lesn   CV 12.2%  -> log(1 + 0.122^2) = 0.01481
-    #   etalvp_lesn   CV 20.5%  -> log(1 + 0.205^2) = 0.04113
-    #   etaltlag_lesn CV 38.9%  -> log(1 + 0.389^2) = 0.14133
+    #   etalka_febx   CV 176%   -> log(1 + 1.76^2)  = 1.4104
+    #   etalcl_febx   CV 18.3%  -> log(1 + 0.183^2) = 0.03294
+    #   etalka_lesn   CV 121.7% -> log(1 + 1.217^2) = 0.90870
+    #   etalcl_lesn   CV 63.4%  -> log(1 + 0.634^2) = 0.33787
+    #   etalvc_lesn   CV 12.2%  -> log(1 + 0.122^2) = 0.01477
+    #   etalvp_lesn   CV 20.5%  -> log(1 + 0.205^2) = 0.04117
+    #   etaltlag_lesn CV 38.9%  -> log(1 + 0.389^2) = 0.14091
     #
     # PD random effects (Table 1 reports SD^2 directly; "Error model used: theta_i = theta_u exp(eta_i)"):
     #   etalic501_lic502  shared eta_3 on IC50_1 and IC50_2 (Methods p. 147: "IC50 parameters were
@@ -145,13 +145,13 @@ HillMcManus_2017_febuxostat_lesinurad <- function() {
     #                      because the same eta_3 acts on both. CV 20% -> log(1 + 0.20^2) = 0.0392.
     #   etale_dmax        eta_4 on E_Dmax (Table 1 theta_14 SD^2 = 0.346).
     # ============================================================
-    etalka_febx       ~ 1.4117
-    etalcl_febx       ~ 0.03315
-    etalka_lesn       ~ 0.91858
-    etalcl_lesn       ~ 0.33129
-    etalvc_lesn       ~ 0.01481
-    etalvp_lesn       ~ 0.04113
-    etaltlag_lesn     ~ 0.14133
+    etalka_febx       ~ log(1 + 1.76^2)
+    etalcl_febx       ~ log(1 + 0.183^2)
+    etalka_lesn       ~ log(1 + 1.217^2)
+    etalcl_lesn       ~ log(1 + 0.634^2)
+    etalvc_lesn       ~ log(1 + 0.122^2)
+    etalvp_lesn       ~ log(1 + 0.205^2)
+    etaltlag_lesn     ~ log(1 + 0.389^2)
     etalic501_lic502  ~ 0.0392
     etale_dmax        ~ 0.346
   })

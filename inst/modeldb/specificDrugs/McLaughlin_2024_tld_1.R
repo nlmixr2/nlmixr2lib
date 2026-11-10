@@ -288,8 +288,8 @@ McLaughlin_2024_tld_1 <- function() {
     # random effect drives both vd and krel.)
     # ---------------------------------------------------------------
     etalvd + etalkrel ~ c(0.07654, 0.04249, 0.02360)   # Table 2 rows IIV V1 (28.2% CV), IIV CL1 (45.1% CV), theta_shared = 0.643 (footnote a)
-    etalcl       ~ 0.1100                              # Table 2 row IIV CL2 = 34.2% CV -> log(1 + 0.342^2)
-    etalcl_doxol ~ 0.02263                             # Table 2 row IIV CL4 = 15.1% CV -> log(1 + 0.151^2)
+    etalcl       ~ log(1 + 0.342^2)  # Table 2 row IIV CL2 = 34.2% CV
+    etalcl_doxol ~ log(1 + 0.151^2)  # Table 2 row IIV CL4 = 15.1% CV
     # NOTE: Inter-occasion variability (IOV) on CL1 (14.4% CV), V1
     # (8.85% CV), CL2 (22.4% CV), and V2 (126% CV) is reported in
     # Table 2 but NOT encoded structurally here -- nlmixr2lib has no

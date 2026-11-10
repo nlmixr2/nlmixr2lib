@@ -140,11 +140,11 @@ Green_2003_enoxaparin <- function() {
     # Inter-individual variability. Green 2003 reports BSV as %CV with a
     # log-normal model (P_j = P_pop * exp(eta_j)); for log-normal, the variance
     # on the eta scale is omega^2 = log((CV/100)^2 + 1).
-    #   CV(CL) = 35.6% -> omega^2 = log(1 + 0.356^2) = 0.11933
-    #   CV(V2) = 58.0% -> omega^2 = log(1 + 0.58^2)  = 0.28991
+    #   CV(CL) = 35.6% -> omega^2 = log(1 + 0.356^2) = 0.11932
+    #   CV(V2) = 58.0% -> omega^2 = log(1 + 0.58^2)  = 0.28998
     # IIV was not reported on Ka, Q, or V3 in the final covariate model.
-    etalcl ~ 0.11933 # Green 2003 Table 3: wCL = 35.6% CV
-    etalvc ~ 0.28991 # Green 2003 Table 3: wV2 = 58.0% CV
+    etalcl ~ log(1 + 0.356^2)  # Green 2003 Table 3: wCL = 35.6% CV
+    etalvc ~ log(1 + 0.58^2)  # Green 2003 Table 3: wV2 = 58.0% CV
 
     # Additive residual unexplained variability on anti-Xa concentration.
     # Green 2003 reports sigma^2 = 6430 (IU/L)^2 -> sigma = sqrt(6430) = 80.19 IU/L.

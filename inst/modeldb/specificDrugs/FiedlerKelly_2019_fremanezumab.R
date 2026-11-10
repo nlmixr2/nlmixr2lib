@@ -87,7 +87,7 @@ FiedlerKelly_2019_fremanezumab <- function() {
     # %CV on log-normal parameters (paper Methods: 'BSV in parameters was
     # modelled using an exponential form'); convert to internal variance via
     # omega^2 = log(CV^2 + 1):
-    #   CL CV 23.4% -> log(1 + 0.234^2) = 0.05334
+    #   CL CV 23.4% -> log(1 + 0.234^2) = 0.05331
     #   Vc CV 35.1% -> log(1 + 0.351^2) = 0.11618
     #   ka CV 59.0% -> log(1 + 0.590^2) = 0.29870
     # No off-diagonal Omega elements were estimated (Results: 'scatterplots of
@@ -99,7 +99,7 @@ FiedlerKelly_2019_fremanezumab <- function() {
     # from intensive-sampling subjects. The same eta is applied here regardless
     # of route, which is the typical simulation-time interpretation; the
     # vignette flags this as a deviation from the source-paper fitting choice.
-    etalcl    ~ 0.05334
+    etalcl    ~ log(1 + 0.234^2)
     etalvc_sc ~ 0.11618
     etalka    ~ 0.29870
 

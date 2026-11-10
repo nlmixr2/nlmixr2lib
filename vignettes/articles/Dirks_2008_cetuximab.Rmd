@@ -97,10 +97,10 @@ with the NONMEM control stream in Appendix A (pp. 141-149).
 | Coefficient theta2 (IBW on V~max~)      | Table 3-2 (p. 53)                     | 0.0108 per kg                                     |
 | Coefficient theta3 (WBC on V~max~)      | Table 3-2 (p. 53)                     | 0.0216 per 10^9^ /L                               |
 | Coefficient theta6 (WT on V~1~)         | Table 3-2 (p. 53)                     | 0.0083 per kg                                     |
-| IIV on V~max~                           | Table 3-2                             | 15.4 percent CV (90 percent CI 12.0-19.1)         |
-| IIV on V~1~                             | Table 3-2                             | 18.6 percent CV (90 percent CI 12.5-22.2)         |
-| IIV on V~2~                             | Table 3-2                             | 56.4 percent CV (90 percent CI 18.0-72.8)         |
-| IIV on Q                                | Table 3-2                             | 97.2 percent CV (90 percent CI 40.2-133)          |
+| IIV on V~max~                           | Table 3-2; Appendix A OMEGA | variance 0.0236 (15.4 percent CV = sqrt(variance), 90 percent CI 12.0-19.1)         |
+| IIV on V~1~                             | Table 3-2; Appendix A OMEGA | variance 0.0346 (18.6 percent CV = sqrt(variance), 90 percent CI 12.5-22.2)         |
+| IIV on V~2~                             | Table 3-2; Appendix A OMEGA | variance 0.318 (56.4 percent CV = sqrt(variance), 90 percent CI 18.0-72.8)         |
+| IIV on Q                                | Table 3-2; Appendix A OMEGA | variance 0.944 (97.2 percent CV = sqrt(variance), 90 percent CI 40.2-133)          |
 | IIV on K~m~                             | Table 3-2 / p. 50 Structural Model    | Not estimated (Km treated as fixed across subjects) |
 | Omega structure                         | Appendix A NM-TRAN (p. 149)           | diagonal (no covariance)                          |
 | Residual error (Study A)                | Table 3-2                             | 14.6 percent CV (90 percent CI 12.3-16.8)         |

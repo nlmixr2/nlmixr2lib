@@ -110,13 +110,13 @@ Svensson_2018_bedaquiline <- function() {
     # for between-occasion variability separate from BSV, and the BOV-MAT
     # term is folded in as the BSV-MAT-equivalent below (paper reports no
     # separate BSV on MAT). See vignette's Assumptions and deviations.
-    etalcl + etalcl_m2 ~ c(0.02891, 0.002935, 0.04122)  # Svensson 2018 Table 2 IIV CL_BDQ = 17.1% CV, IIV CL_M2 = 20.5% CV, correlation 8.5%; omega^2_cl = log(1+0.171^2) = 0.02891, omega^2_clm2 = log(1+0.205^2) = 0.04122, cov = 0.085 * sqrt(0.02891 * 0.04122) = 0.002935
-    etalvc      ~ 0.07682   # Svensson 2018 Table 2 IIV V_BDQ = 28.3% CV; omega^2 = log(1 + 0.283^2) = 0.07682
-    etalq       ~ 0.02957   # Svensson 2018 Table 2 IIV Q_BDQ,1 = 17.3% CV; omega^2 = log(1 + 0.173^2) = 0.02957
-    etalvc_m2   ~ 0.06677   # Svensson 2018 Table 2 IIV V_M2 = 26.3% CV; omega^2 = log(1 + 0.263^2) = 0.06677
-    etalvp_m2   ~ 0.04863   # Svensson 2018 Table 2 IIV VP_M2 = 22.3% CV; omega^2 = log(1 + 0.223^2) = 0.04863
-    etalfdepot  ~ 0.04983   # Svensson 2018 Table 2 IIV F = 22.6% CV; omega^2 = log(1 + 0.226^2) = 0.04983 (IOV F = 9.1% CV is dropped; see vignette Assumptions and deviations)
-    etalmat     ~ 0.36764   # Svensson 2018 Table 2 IOV MAT = 66.3% CV folded in as BSV-MAT equivalent (no separate BSV on MAT reported); omega^2 = log(1 + 0.663^2) = 0.36764
+    etalcl + etalcl_m2 ~ c(log(1 + 0.171^2), 0.085 * sqrt(log(1 + 0.171^2) * log(1 + 0.205^2)), log(1 + 0.205^2))  # Svensson 2018 Table 2 IIV CL_BDQ = 17.1% CV, IIV CL_M2 = 20.5% CV, correlation 8.5%; omega^2_cl = log(1+0.171^2) = 0.02882, omega^2_clm2 = log(1+0.205^2) = 0.04117, cov = 0.085 * sqrt(0.02882 * 0.04117) = 0.002928
+    etalvc      ~ log(1 + 0.283^2)  # Svensson 2018 Table 2 IIV V_BDQ = 28.3% CV
+    etalq       ~ log(1 + 0.173^2)  # Svensson 2018 Table 2 IIV Q_BDQ,1 = 17.3% CV
+    etalvc_m2   ~ log(1 + 0.263^2)  # Svensson 2018 Table 2 IIV V_M2 = 26.3% CV
+    etalvp_m2   ~ log(1 + 0.223^2)  # Svensson 2018 Table 2 IIV VP_M2 = 22.3% CV
+    etalfdepot  ~ log(1 + 0.226^2)  # Svensson 2018 Table 2 IIV F = 22.6% CV (IOV F = 9.1% CV is dropped; see vignette Assumptions and deviations)
+    etalmat     ~ log(1 + 0.663^2)  # Svensson 2018 Table 2 IOV MAT = 66.3% CV folded in as BSV-MAT equivalent (no separate BSV on MAT reported)
 
     # Residual error.  The paper reports proportional residual errors on
     # both bedaquiline and M2 concentrations and a correlation between the

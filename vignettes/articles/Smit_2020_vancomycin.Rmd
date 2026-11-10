@@ -63,8 +63,8 @@ All values are from the final-model column of Smit 2020 Table 2.
 | `lq2` (Q V1-V3) | log(5.21) L/h | Table 2 |
 | `lvp2` (V3) | log(19.5) L | Table 2 |
 | `etalcl` (nonobese) | fixed(0.002784) | Table 2, IIV CL nonobese 5.28% FIX; footnote b |
-| `etalcl_obese` | 0.05920 | Table 2, IIV CL obese 24.7%; footnote b |
-| `etalvc` | 0.18664 | Table 2, IIV V1 45.3%; footnote b |
+| `etalcl_obese` | 0.05922 | Table 2, IIV CL obese 24.7%; footnote b |
+| `etalvc` | 0.18665 | Table 2, IIV V1 45.3%; footnote b |
 | `propSd` | 0.0392 | Table 2, proportional error; footnote c ('shown as sigma') |
 | `addSd` | 1.07 mg/L | Table 2, additive error |
 | `cl = CL70kg * (WT/70)^theta1` | n/a | Table 2 row header |
@@ -272,7 +272,7 @@ auc_window <- function(time, conc, from, to) {
 ev_typ <- bind_rows(lapply(seq_along(wt_grid), function(i) ci_events(wt_grid[i], i)))
 sim_typ <- rxode2::rxSolve(mod_typical, events = ev_typ, keep = "WT") |> as.data.frame()
 
-omega_cl <- sqrt(0.05920) # etalcl_obese
+omega_cl <- sqrt(0.05922) # etalcl_obese
 fig3 <- sim_typ |>
   group_by(id, WT) |>
   summarise(auc_d3 = auc_window(time, Cc, 48, 72), cl = first(cl), .groups = "drop") |>

@@ -192,8 +192,8 @@ Cristea_2021_oat13_renal_ontogeny_pbpk <- function() {
 
     # ---- Inter-individual variability (Results) ----
     # Printed as CV%. omega^2 = log(1 + CV^2).
-    etalfcorr_gfr ~ 0.05785 # Results: 'GF correction factor ... with an IIV of 24.4%'; log(1 + 0.244^2) = 0.05785
-    etalclint_oat13 ~ 0.47999 # Results: 'CLint ... with an IIV of 78.5%'; log(1 + 0.785^2) = 0.47999
+    etalfcorr_gfr ~ log(1 + 0.244^2)  # Results: 'GF correction factor ... with an IIV of 24.4%'
+    etalclint_oat13 ~ log(1 + 0.785^2)  # Results: 'CLint ... with an IIV of 78.5%'
   })
 
   model({

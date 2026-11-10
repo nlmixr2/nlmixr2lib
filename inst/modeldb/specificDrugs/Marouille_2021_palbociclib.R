@@ -123,10 +123,10 @@ Marouille_2021_palbociclib <- function() {
     # ---- Inter-individual variability ----
     # Log-normal IIV (Section 2.5); Tables 3 and 4 give CV% = sqrt(exp(omega^2) - 1),
     # so omega^2 = log(CV^2 + 1).
-    etalcl ~ 0.10101 # Table 3: Cl/F IIV = 32.6% -> log(0.326^2 + 1) = 0.10101
-    etalcirc0 ~ 0.08393 # Table 4: Base IIV = 29.6% -> log(0.296^2 + 1) = 0.08393
-    etalslope ~ 0.07965 # Table 4: Slope IIV = 28.8% -> log(0.288^2 + 1) = 0.07965
-    etalmtt ~ 0.03153 # Table 4: MTT IIV = 17.9% -> log(0.179^2 + 1) = 0.03153
+    etalcl ~ log(1 + 0.326^2)  # Table 3: Cl/F IIV = 32.6%
+    etalcirc0 ~ log(1 + 0.296^2)  # Table 4: Base IIV = 29.6%
+    etalslope ~ log(1 + 0.288^2)  # Table 4: Slope IIV = 28.8%
+    etalmtt ~ log(1 + 0.179^2)  # Table 4: MTT IIV = 17.9%
 
     # ---- Residual error ----
     addSd <- 13.84; label("Additive residual error on palbociclib Cc (ug/L)") # Table 3: Additive error = 13.84 ug/L (RSE 20.5%)

@@ -84,16 +84,16 @@ BuilBruna_2015_lanreotide <- function() {
     # Inter-patient variability (IPV). Table 2 reports IPV as CV%; convert to
     # log-normal variance via omega^2 = log(1 + CV^2). Paper Methods Sect. 2.4:
     # "IPV was modeled exponentially" (theta_i = theta * exp(eta_i)).
-    #   IPV CL/F = 27%  -> log(1 + 0.27^2)   = 0.07031
+    #   IPV CL/F = 27%  -> log(1 + 0.27^2)   = 0.07037
     #   IPV Vd/F = 150% -> log(1 + 1.50^2)   = 1.17865
-    #   IPV ka   = 61%  -> log(1 + 0.61^2)   = 0.31641
-    #   IPV F1   = 1.05%-> log(1 + 0.0105^2) = 0.0001103
+    #   IPV ka   = 61%  -> log(1 + 0.61^2)   = 0.31634
+    #   IPV F1   = 1.05%-> log(1 + 0.0105^2) = 0.0001102
     # The non-diagonal elements of OMEGA were tested and did not improve fit
     # significantly (Sect. 3.3.1), so IPVs are independent here.
-    etalcl     ~ 0.07031     # Buil-Bruna 2015 Table 2: IPV CL/F = 27%
+    etalcl     ~ log(1 + 0.27^2)  # Buil-Bruna 2015 Table 2: IPV CL/F = 27%
     etalvc     ~ 1.17865     # Buil-Bruna 2015 Table 2: IPV Vd/F = 150%
-    etalka     ~ 0.31641     # Buil-Bruna 2015 Table 2: IPV ka = 61%
-    etalfdepot ~ 0.0001103   # Buil-Bruna 2015 Table 2: IPV F1 = 1.05% (variability on log-F1; the paper's exponential parameterization can numerically produce F1 > 1 for a small fraction of subjects given F1 typical = 0.994; see vignette Assumptions and deviations)
+    etalka     ~ log(1 + 0.61^2)  # Buil-Bruna 2015 Table 2: IPV ka = 61%
+    etalfdepot ~ log(1 + 0.0105^2)  # Buil-Bruna 2015 Table 2: IPV F1 = 1.05% (variability on log-F1; the paper's exponential parameterization can numerically produce F1 > 1 for a small fraction of subjects given F1 typical = 0.994; see vignette Assumptions and deviations)
 
     # Residual error - Buil-Bruna 2015 Table 2: 0.275 [log(ng/mL)]. The paper
     # Methods Sect. 2.4 state: "Data were transformed logarithmically [...]

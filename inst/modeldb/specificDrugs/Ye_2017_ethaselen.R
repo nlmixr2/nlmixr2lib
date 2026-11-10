@@ -153,7 +153,7 @@ Ye_2017_ethaselen <- function() {
     # omega^2 = log(CV^2 + 1).
     etalkin         ~ 0.01526  # log(0.124^2 + 1); CV = 12.4% (Kin)
     etalrbase       ~ 0.00917  # log(0.096^2 + 1); CV = 9.6%  (Base)
-    etallambda1     ~ 0.10160  # log(0.327^2 + 1); CV = 32.7% (lambda1)
+    etallambda1     ~ log(1 + 0.327^2)  # CV = 32.7% (lambda1)
     etalrbase_tumor ~ 0.01996  # log(0.142^2 + 1); CV = 14.2% (W)
     etalec50        ~ 0.03657  # log(0.193^2 + 1); CV = 19.3% (EC50)
 

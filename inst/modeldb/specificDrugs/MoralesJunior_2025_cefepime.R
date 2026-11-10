@@ -293,7 +293,7 @@ MoralesJunior_2025_cefepime <- function() {
     # omega^2 = log(1 + (CV/100)^2), which is the log-normal variance
     # rxode2 wants:
     #   CL: log(1 + 0.381^2) = 0.1355452
-    #   V1: log(1 + 0.149^2) = 0.0219582
+    #   V1: log(1 + 0.149^2) = 0.0219581
     # Random effects on Q and V2 are ABSENT by design, not unreported:
     # Sect. 3.2 states "The data did not support the inclusion of random
     # effects on intercompartmental clearance and peripheral volume of
@@ -305,7 +305,7 @@ MoralesJunior_2025_cefepime <- function() {
     # Morales Junior 2025 Table 2, "IIV CL" = 38.1% CV (RSE 10%; eta
     # shrinkage 4.2%; bootstrap median 37.9%, 95% CI 29.6-45.3%).
 
-    etalvc ~ 0.0219582
+    etalvc ~ log(1 + 0.149^2)
     # Morales Junior 2025 Table 2, "IIV V1" = 14.9% CV (RSE 55%; eta
     # shrinkage 74.5%; bootstrap median 16.4%, 95% CI 3.9-28.8%). The
     # Discussion warns that the 74.5% shrinkage means the V1 individual
