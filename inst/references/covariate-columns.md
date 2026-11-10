@@ -19668,6 +19668,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Chen_2017_TB_MTP_rifampicin_mouse.R` (selects the initial fast-multiplying bacterial inoculum F0: 331000 CFU/lungs in rifampicin-treated mice vs 8340 CFU/lungs in untreated mice). The rifampicin drug effects themselves are concentration-driven in this model and need no indicator; the indicator only switches the baseline inoculum.
 - **Notes:** Specific scope. Well-formed member of the `TRT_<INN>` family established by `TRT_EPHEDRINE`: use `TRT_<INN>` when the drug is the study treatment under investigation, `CONMED_<INN>` when it is background co-medication, and a bare INN only for MBMA trial-arm indicators. Here the indicator is needed because the baseline inoculum (not a drug effect) differs between the treated and untreated groups.
 
+### TRT_DEXTROMETHORPHAN, TRT_DEXTRORPHAN (**canonical for dextromethorphan / dextrorphan crossover treatment-period indicators**)
+- **Description:** Binary treatment-period indicators of a three-period crossover: `TRT_DEXTROMETHORPHAN` = 1 in the period in which the subject received oral dextromethorphan hydrobromide; `TRT_DEXTRORPHAN` = 1 in the period in which the subject received oral dextrorphan (the dextromethorphan metabolite) on its own. Both are 0 in the placebo period; the two are mutually exclusive within a period.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 for both (placebo period).
+- **Source aliases:**
+  - `DEX`, `DOR`, `Placebo` -- the arm labels of Rezaee 2025 (doi:10.1002/jcph.70049) Tables 2 and 3, e.g. 'Proportional (DOR)', 'Additive(DEX)'.
+- **Example models:** `Rezaee_2025_dextromethorphan.R` (`TRT_DEXTRORPHAN` switches the dextrorphan disposition between the one-compartment formed-metabolite sub-model, which shares the parent's apparent volume, and the two-compartment sub-model fitted to dextrorphan given on its own, and selects the dextrorphan proportional residual error; both indicators select the period-specific additive residual SD of the cough count).
+- **Notes:** Specific scope. Well-formed members of the `TRT_<INN>` family established by `TRT_EPHEDRINE`. The cough-suppression drug effect is concentration-driven and switches itself off in the placebo period, so in the founding model the indicators carry no drug effect; they exist because the authors fitted period-specific disposition and residual-error terms. A metabolite given as a study treatment in its own right takes `TRT_<metabolite INN>`, as here.
+
 ### TRT_REMDESIVIR (**canonical for remdesivir on-treatment indicator**)
 - **Description:** Binary remdesivir treatment indicator: 1 = the subject is receiving remdesivir at this record, 0 = not (standard-of-care-only subjects, and remdesivir-arm subjects before their first infusion or after treatment has stopped). **Time-varying** in the founding models, whose time axis is days since infection, so a record before randomisation carries 0 even in the remdesivir arm.
 - **Units:** (binary)
