@@ -6,6 +6,8 @@
 - Fix the signs of two omega covariances in `AlvarezJimenez_2016_scopolamine` ([doi:10.1111/bcp.13031](https://doi.org/10.1111/bcp.13031)): Table 2 prints both as negative, -0.06 for saccadic inaccuracy (EC50 vs. EMAX) and -0.153 for EEG delta Fz-Cz (EMAX vs. kIN), and the model carried both as positive. The vignette also notes that the saccadic value may be a correlation rather than a covariance. Twenty-seven inter-individual variances now equal log(1 + CV^2) of the published CVs, the conversion the model documents; six EC50 variances (saccadic peak velocity and five EEG endpoints) had been 39-49% too small.
 - Add Pouzin 2023 tusamitamab ravtansine CYP3A4/1A2/2B6 downregulation IVIVE-PK ([doi:10.1002/cpt.3102](https://doi.org/10.1002/cpt.3102)) -- adults with advanced CEACAM5-expressing solid tumors (typical-value simulation from in vitro constants).
 
+- Add Li 2025 levamlodipine PK/PD ([doi:10.2147/DDDT.S501762](https://doi.org/10.2147/DDDT.S501762)) -- Chinese adults with essential hypertension (smokers and non-smokers).
+
 - Add Iwaki 2021 guselkumab PPPASI PK/PD ([doi:10.1002/jcph.1953](https://doi.org/10.1002/jcph.1953)) -- Japanese adults with palmoplantar pustulosis.
 
 - `checkModelConventions()` no longer reports `DV` as a covariate. A custom likelihood `ll(<endpoint>) ~ ...` has to read the observed value, and `DV` is a dataset column, not a covariate.
