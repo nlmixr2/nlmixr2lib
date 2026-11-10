@@ -135,7 +135,7 @@ below the median and the median BA exposure (`AUC_BINTRAFUSP_REL = 1`).
 ```{r typical}
 refCov <- data.frame(
   CTDNA_VAF = 1, T_DIAG_CANCER = 365, AST = 30, CRP = 10, RACE_ASIAN = 0,
-  TUM_IDH1_MUT = 0, TMB_BLOOD_HIGH = 0, AUC_BINTRAFUSP_REL = 1, LYMPH_PCT = 20
+  TUM_IDH1_MUT = 0, TUM_MUTATIONAL_BURDEN_BLOOD_HIGH = 0, AUC_BINTRAFUSP_REL = 1, LYMPH_PCT = 20
 )
 models <- c(
   "BA, 2L BTC" = "MilenkovicGrisic_2024_bintrafuspAlfa_btc",
@@ -210,7 +210,7 @@ panels <- list(
   "Reference (non-Asian, IDH1 wild type, TMB < median)" = refCov,
   "Asian race (Figure 3e)" = dplyr::mutate(refCov, RACE_ASIAN = 1),
   "IDH1 mutation (Figure 3f)" = dplyr::mutate(refCov, TUM_IDH1_MUT = 1),
-  "Blood TMB >= median (Figure 3g)" = dplyr::mutate(refCov, TMB_BLOOD_HIGH = 1)
+  "Blood TMB >= median (Figure 3g)" = dplyr::mutate(refCov, TUM_MUTATIONAL_BURDEN_BLOOD_HIGH = 1)
 )
 fig3 <- dplyr::bind_rows(lapply(names(panels), function(nm) {
   solveTypical(NULL, panels[[nm]], btcFig3) |> dplyr::mutate(Profile = nm)

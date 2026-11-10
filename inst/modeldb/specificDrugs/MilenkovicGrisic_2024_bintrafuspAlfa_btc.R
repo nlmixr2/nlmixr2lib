@@ -61,12 +61,12 @@ MilenkovicGrisic_2024_bintrafuspAlfa_btc <- function() {
       notes = "Fractional-change effects ks * (1 + 2.13 * TUM_IDH1_MUT) and kg * (1 + 1.17 * TUM_IDH1_MUT). The (1 + theta) form reproduces Figure 3f (mutant curve about 52 mm at week 20 and 91 mm at week 65 from a 68 mm start); an exp(theta) form does not.",
       source_name = "IDH1 mutation"
     ),
-    TMB_BLOOD_HIGH = list(
+    TUM_MUTATIONAL_BURDEN_BLOOD_HIGH = list(
       description = "Blood tumor mutational burden at or above the 50th percentile of the analysis population: 1 = at or above the median, 0 = below.",
       units = "(binary)",
       type = "binary",
       reference_category = "0 (blood TMB below the 50th percentile; Milenkovic-Grisic 2024 Figure 3 caption)",
-      notes = "Fractional-change effect kg * (1 + 0.629 * TMB_BLOOD_HIGH); the form reproduces Figure 3g. The numeric median blood TMB that defines the threshold is not reported.",
+      notes = "Fractional-change effect kg * (1 + 0.629 * TUM_MUTATIONAL_BURDEN_BLOOD_HIGH); the form reproduces Figure 3g. The numeric median blood TMB that defines the threshold is not reported.",
       source_name = "Blood tumor mutational burden"
     ),
     AUC_BINTRAFUSP_REL = list(
@@ -113,7 +113,7 @@ MilenkovicGrisic_2024_bintrafuspAlfa_btc <- function() {
     e_vaf_p        <-  0.262  ; label("Power exponent of minor allele frequency on kg (unitless)")          # Table 1: Minor allele frequency on kg = 0.262, RSE 33.2
     e_idh1_p       <-  1.17   ; label("Fractional change in kg for IDH1 mutation (unitless)")               # Table 1: IDH1 mutation on kg = 1.17, RSE 51.5
     e_crp_p        <-  0.152  ; label("Power exponent of CRP on kg (unitless)")                             # Table 1: CRP on kg = 0.152, RSE 55.1
-    e_tmbblood_p   <-  0.629  ; label("Fractional change in kg for blood TMB at or above the median (unitless)") # Table 1: Blood tumor mutational burden on kg = 0.629, RSE 70.1
+    e_mutburden_blood_p   <-  0.629  ; label("Fractional change in kg for blood TMB at or above the median (unitless)") # Table 1: Blood tumor mutational burden on kg = 0.629, RSE 70.1
 
     # IIV: Table 1 reports %CV; omega^2 = log(1 + CV^2). Off-diagonals are
     # corr * sqrt(omega_i^2 * omega_j^2) from the Table 1 correlations.
@@ -146,7 +146,7 @@ MilenkovicGrisic_2024_bintrafuspAlfa_btc <- function() {
     cov_p <- (CTDNA_VAF / 1)^e_vaf_p *
       (CRP / 10)^e_crp_p *
       (1 + e_idh1_p * TUM_IDH1_MUT) *
-      (1 + e_tmbblood_p * TMB_BLOOD_HIGH)
+      (1 + e_mutburden_blood_p * TUM_MUTATIONAL_BURDEN_BLOOD_HIGH)
 
     rbase <- exp(lrbase + etalrbase) * cov_rbase
     kse <- exp(lkse + etalkse) * cov_kse
