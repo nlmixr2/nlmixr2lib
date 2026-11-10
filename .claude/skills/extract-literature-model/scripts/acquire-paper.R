@@ -7,7 +7,8 @@
 # Usage:
 #   Rscript acquire-paper.R --doi <DOI> --out <path/to/lead.pdf>
 #                           [--title <expected-title-fragment>]
-#                           [--retries 1]
+#                           [--retries 1]   (accepted for compatibility,
+#                                            currently ignored)
 #                           [--email <mailto-for-unpaywall>]
 #                           [--log <path/to/acquire-log.json>]
 #
@@ -59,6 +60,12 @@ parseArgs <- function(argv) {
     } else if (key == "--title") {
       defaults$title <- val
     } else if (key == "--retries") {
+      if (!grepl("^[0-9]+$", val)) {
+        stop(
+          sprintf("--retries must be a non-negative integer, got '%s'", val),
+          call. = FALSE
+        )
+      }
       defaults$retries <- as.integer(val)
     } else if (key == "--email") {
       defaults$email <- val
@@ -83,8 +90,9 @@ isValidPdf <- function(path, minBytes = 10000L) {
   if (file.info(path)$size < minBytes) return(FALSE)
   con <- file(path, "rb")
   on.exit(close(con))
-  head <- readBin(con, "raw", 4L)
-  identical(rawToChar(head), "%PDF")
+  # Compared as raw bytes: rawToChar() errors on an embedded NUL, and a short
+  # read never equals the four magic bytes.
+  identical(readBin(con, "raw", 4L), charToRaw("%PDF"))
 }
 
 curlDownload <- function(url, dest, agent = NULL) {
@@ -134,6 +142,9 @@ titleMatches <- function(pdfPath, expectedFragment) {
 # moved onto `dest`, else NULL>).
 attemptAndRecord <- function(log, label, url, dest, agent, title) {
   part <- paste0(dest, ".part")
+  # A staging file left by an interrupted run must not be mistaken for this
+  # download when curl exits 0 without writing anything.
+  unlink(part)
   on.exit(unlink(part), add = TRUE)
   ok <- curlDownload(url, part, agent = agent)
   outcome <- list(source = label, url = url, downloaded = ok)
@@ -178,6 +189,8 @@ writeLog <- function(log, path) {
 
 exitOk <- function(log, logPath, out) {
   log$result <- "ok"
+  # The log is part of the contract: if it cannot be written, main()'s handler
+  # exits 1 although the PDF is already at --out.
   writeLog(log, logPath)
   message("OK: ", out)
   quit(status = 0L)

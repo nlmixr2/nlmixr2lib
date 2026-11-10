@@ -63,6 +63,17 @@ makeHtml <- function(path, padBytes = 0L) {
   path
 }
 
+# A file above the size floor whose first byte is NUL.
+makeNulBlob <- function(path) {
+  writeBin(c(as.raw(0L), rep(as.raw(65L), 12000L)), path)
+  path
+}
+
+makeEmpty <- function(path) {
+  stopifnot(file.create(path))
+  path
+}
+
 fileUrl <- function(path) paste0("file://", normalizePath(path))
 
 loadAcquirer <- function(scriptPath, candidates) {
@@ -417,7 +428,9 @@ scenarioArgumentErrors <- function(root, fx, scriptPath) {
     "missing --doi" = c("--out", out),
     "missing --out" = c("--doi", "10.0000/fixture"),
     "unknown option" = c("--doi", "10.0000/fixture", "--out", out, "--bogus", "1"),
-    "option without a value" = c("--out", out, "--doi")
+    "option without a value" = c("--out", out, "--doi"),
+    "non-numeric --retries" = c("--doi", "10.0000/fixture", "--out", out, "--retries", "abc"),
+    "fractional --retries" = c("--doi", "10.0000/fixture", "--out", out, "--retries", "2.5")
   )
   for (nm in names(cases)) {
     env <- loadAcquirer(scriptPath, fileUrl(fx$good))
@@ -439,6 +452,12 @@ scenarioArgumentErrors <- function(root, fx, scriptPath) {
     length(list.files(dir)) == 0L,
     "args: argument errors write neither a PDF nor a log"
   )
+
+  # --retries is accepted (and ignored) so existing callers keep working.
+  dirOk <- newWorkDir(root, "arg-retries-ok")
+  env2 <- loadAcquirer(scriptPath, fileUrl(fx$good))
+  res2 <- runMain(env2, c(argvFor(dirOk), "--retries", "2"))
+  check(identical(res2$status, 0L), "args: an integer --retries is accepted")
 }
 
 scenarioStaleStagingFile <- function(root, fx, scriptPath) {
@@ -469,6 +488,80 @@ scenarioStaleStagingFile <- function(root, fx, scriptPath) {
   )
 }
 
+scenarioBinaryBlob <- function(root, fx, scriptPath) {
+  # A source serving binary data that starts with NUL is one more rejected
+  # attempt, not a reason to stop trying sources.
+  dir <- newWorkDir(root, "nul-blob")
+  env <- loadAcquirer(scriptPath, c(fileUrl(fx$nulBlob), fileUrl(fx$good)))
+  res <- runMain(env, argvFor(dir))
+  out <- file.path(dir, "lead.pdf")
+  check(is.null(res$error), sprintf("blob: main raised: %s", res$error))
+  check(identical(res$status, 0L), "blob: exit status is 0 (ladder moved on)")
+  check(
+    file.exists(out) && md5(out) == md5(fx$good),
+    "blob: --out holds the PDF from the second source"
+  )
+  logPath <- file.path(dir, "acquire-log.json")
+  if (file.exists(logPath)) {
+    lg <- readLog(logPath)
+    check(length(lg$attempts) == 2L, "blob: both attempts are logged")
+    if (length(lg$attempts) == 2L) {
+      check(
+        grepl("not a valid PDF", lg$attempts[[1L]]$reason, fixed = TRUE),
+        "blob: the NUL-led file is rejected as not a valid PDF"
+      )
+      check(
+        grepl("title matched", lg$attempts[[2L]]$reason, fixed = TRUE),
+        "blob: the second source is accepted"
+      )
+    }
+  } else {
+    check(FALSE, "blob: log file written")
+  }
+}
+
+scenarioStaleValidStaging <- function(root, fx, scriptPath) {
+  # A staging file left by a killed run can itself be a valid, title-matching
+  # PDF. If the next download exits 0 without writing anything, that leftover
+  # must not be accepted as the download. Current curl truncates --output even
+  # for an empty body, so the second variant stubs the older behaviour (exit 0,
+  # nothing written).
+  variants <- list(
+    "empty body" = list(url = fileUrl(fx$empty), stub = NULL),
+    "curl writes nothing" = list(
+      url = "file:///unused",
+      stub = function(url, dest, agent = NULL) TRUE
+    )
+  )
+  for (nm in names(variants)) {
+    label <- sprintf("stale-valid (%s)", nm)
+    dir <- newWorkDir(root, paste0("stale-valid-part-", gsub(" ", "-", nm)))
+    file.copy(fx$good, file.path(dir, "lead.pdf.part"))
+    env <- loadAcquirer(scriptPath, variants[[nm]]$url)
+    if (!is.null(variants[[nm]]$stub)) {
+      env$curlDownload <- variants[[nm]]$stub
+    }
+    res <- runMain(env, argvFor(dir))
+    check(is.null(res$error), sprintf("%s: main raised: %s", label, res$error))
+    check(identical(res$status, 2L), sprintf("%s: the download is not accepted (exit 2)", label))
+    check(
+      identical(list.files(dir), "acquire-log.json"),
+      sprintf("%s: neither the stale file nor a staging file lands at --out", label)
+    )
+    logPath <- file.path(dir, "acquire-log.json")
+    if (file.exists(logPath)) {
+      lg <- readLog(logPath)
+      check(
+        length(lg$attempts) == 1L &&
+          grepl("not a valid PDF", lg$attempts[[1L]]$reason, fixed = TRUE),
+        sprintf("%s: the attempt is logged as not a valid PDF", label)
+      )
+    } else {
+      check(FALSE, sprintf("%s: log file written", label))
+    }
+  }
+}
+
 main <- function() {
   for (tool in c("curl", "pdftotext")) {
     if (!nzchar(Sys.which(tool))) {
@@ -493,7 +586,9 @@ main <- function() {
       "Gentamicin dosing in neonates"
     ),
     html = makeHtml(file.path(fixtures, "challenge.html")),
-    bigHtml = makeHtml(file.path(fixtures, "challenge-big.html"), 12000L)
+    bigHtml = makeHtml(file.path(fixtures, "challenge-big.html"), 12000L),
+    nulBlob = makeNulBlob(file.path(fixtures, "nul-blob.bin")),
+    empty = makeEmpty(file.path(fixtures, "empty.bin"))
   )
   stopifnot(file.info(fx$html)$size < 10000L, file.info(fx$bigHtml)$size >= 10000L)
 
@@ -520,6 +615,12 @@ main <- function() {
   })
   runScenario("stale staging file", function() {
     scenarioStaleStagingFile(root, fx, scriptPath)
+  })
+  runScenario("binary file starting with NUL", function() {
+    scenarioBinaryBlob(root, fx, scriptPath)
+  })
+  runScenario("stale valid staging file", function() {
+    scenarioStaleValidStaging(root, fx, scriptPath)
   })
 
   nFail <- length(results$failures)
