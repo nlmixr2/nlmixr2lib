@@ -90,10 +90,10 @@ Takama_2007_darbepoetin <- function() {
     # omega^2 = log(CV^2 + 1). The paper does not report a covariance matrix
     # between etas, so the IIVs are encoded as a diagonal block (independent
     # etas) matching the standard NONMEM diagonal $OMEGA convention.
-    etalcl    ~ 0.04153  # log(0.206^2 + 1) = 0.04153; Takama 2007 Table 4: omega_CL = 20.6%
-    etalq     ~ 0.56449  # log(0.871^2 + 1) = 0.56449; Takama 2007 Table 4: omega_Q  = 87.1%
-    etalvc    ~ 0.04644  # log(0.218^2 + 1) = 0.04644; Takama 2007 Table 4: omega_V1 = 21.8%
-    etalvp    ~ 0.21205  # log(0.486^2 + 1) = 0.21205; Takama 2007 Table 4: omega_V2 = 48.6%
+    etalcl    ~ log(1 + 0.206^2)  # Takama 2007 Table 4: omega_CL = 20.6%
+    etalq     ~ log(1 + 0.871^2)  # Takama 2007 Table 4: omega_Q  = 87.1%
+    etalvc    ~ log(1 + 0.218^2)  # Takama 2007 Table 4: omega_V1 = 21.8%
+    etalvp    ~ log(1 + 0.486^2)  # Takama 2007 Table 4: omega_V2 = 48.6%
     etalrbase ~ 0.18741  # log(0.454^2 + 1) = 0.18741; Takama 2007 Table 4: omega_k0 = 45.4%
 
     # Residual error: combination of additive and constant-coefficient-of-

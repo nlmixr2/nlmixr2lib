@@ -73,7 +73,7 @@ lapply(
 | mouse | `lkel` (Ke) | log(0.049 1/h) | Table S1 |
 | mouse | `lka` (Ka) | log(0.094 1/h) | Table S1 |
 | mouse | `lfdepot` (F) | log(0.24) | Table S1 (24%) |
-| mouse | `etalvc` | 0.047268 = log(1 + 0.22^2) | Table S1, IIV on V/Bw 22% |
+| mouse | `etalvc` | 0.047265 = log(1 + 0.22^2) | Table S1, IIV on V/Bw 22% |
 | mouse | `propSd` | 0.32 | Table S1 |
 | mouse | structure: 1 compartment, first-order SC absorption, IIV on V only | n/a | Methods, "PK modeling" |
 | cyno | `lvc` (V/Bw) | log(61 mL/kg) | Table S2 |
@@ -85,8 +85,8 @@ lapply(
 | cyno | `e_form_turoctocogpegol_soln5000_fdepot` | -0.32 | Table S2, "Relative effect of low SC dose volume on F" |
 | cyno | `e_dose_high_vc` | -0.49 | Table S2, "Relative effect of high IV dose on V" |
 | cyno | `e_dose_high_cl` | -0.29 | Table S2, "Relative effect of high IV dose on Cl" |
-| cyno | `etalka` | 0.14177 = log(1 + 0.39^2) | Table S2, IIV 39% |
-| cyno | `etalfdepot` | 0.019414 = log(1 + 0.14^2) | Table S2, IIV 14% |
+| cyno | `etalka` | 0.14159 = log(1 + 0.39^2) | Table S2, IIV 39% |
+| cyno | `etalfdepot` | 0.019410 = log(1 + 0.14^2) | Table S2, IIV 14% |
 | cyno | `propSd` | 0.39 | Table S2 |
 | cyno | structure: 2 compartments, first-order SC absorption, IV dose covariate on V and CL, SC dose-volume covariate on F | n/a | Methods, "PK modeling" |
 | human | `lcl` (Cl/Bw) | log(1.7 mL/h/kg) | Table S3 |

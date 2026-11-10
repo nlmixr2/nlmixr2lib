@@ -255,7 +255,7 @@ Lu_2019_tacrolimus_industry_meta <- function() {
     etalq      ~ 0.1436   # Lu 2019 Table 3 IPV-Q  = 39.3% CV -> log(1 + 0.393^2) = 0.1436
     etalvp     ~ 0.6831   # Lu 2019 Table 3 IPV-Vp = 99% CV   -> log(1 + 0.99^2)  = 0.6831
     etalka     ~ 0.1187   # Lu 2019 Table 3 IPV-Ka = 35.5% CV -> log(1 + 0.355^2) = 0.1187
-    etalfdepot ~ 0.0890   # Lu 2019 Table 3 IPV-F1 = 30.5% CV -> log(1 + 0.305^2) = 0.0890
+    etalfdepot ~ log(1 + 0.305^2)  # Lu 2019 Table 3 IPV-F1 = 30.5% CV
 
     # --- Residual unexplained variability (Lu 2019 Table 3 RV rows) ---
     # The paper used log-transformed-both-sides (LTBS): NONMEM error model

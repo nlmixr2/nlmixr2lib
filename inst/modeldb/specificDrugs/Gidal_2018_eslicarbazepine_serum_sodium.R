@@ -133,12 +133,12 @@ Gidal_2018_eslicarbazepine_serum_sodium <- function() {
 
     # ----- Interindividual variability on the slope -----
     # Table S-6 reports IIV as 134.54 %CV; the variance on the log scale
-    # is omega^2 = log(CV^2 + 1) = log(1.3454^2 + 1) = 1.0666. The IIV is
+    # is omega^2 = log(CV^2 + 1) = log(1.3454^2 + 1) = 1.0332. The IIV is
     # carried on the log of the slope MAGNITUDE so that the sign of the
     # effect is preserved for every simulated subject, which matches the
     # source's exponential-IIV parameterisation and keeps the direction
     # of the sodium change physiologically consistent.
-    etae_auc_esl_dsod ~ 1.0666  # Table S-6, slope IIV 134.54 %CV, 8.9% SEM: log(1.3454^2 + 1) = 1.0666. Very large, which is how the model accommodates the outlier patients described in the Results
+    etae_auc_esl_dsod ~ log(1 + 1.3454^2)  # Table S-6, slope IIV 134.54 %CV, 8.9% SEM. Very large, which is how the model accommodates the outlier patients described in the Results
 
     # ----- Residual error -----
     addSd_dsod <- 2.08 ; label("Additive residual SD on serum sodium (mmol/L)")  # Table S-6, 'Residual error (SD in mmol/L)' 2.08, 5.2% SEM

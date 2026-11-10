@@ -94,11 +94,11 @@ The table below collects them in one place for review.
 | `lkp = log(3.43e-3)` (1/h) | kp | Table I row "k p (x 10^-3 /h)" = 3.43 (RSE 44.9%) |
 | `lalpha = log(0.881)` (L/mg) | alpha | Table I row "alpha (L/mg)" = 0.881 (RSE 17.2%) |
 | `lbeta = log(2.63)` | beta | Table I row "beta" = 2.63 (RSE 17.4%) |
-| `etalplt0 ~ 0.1027` (CV 32.9%) | omega_PLT0 | Table I IIV row "omega PLT 0" = 32.9% |
-| `etalktr ~ 0.2005` (CV 47.1%) | omega_ktr | Table I IIV row "omega k tr" = 47.1% |
+| `etalplt0 ~ 0.1028` (CV 32.9%) | omega_PLT0 | Table I IIV row "omega PLT 0" = 32.9% |
+| `etalktr ~ 0.2004` (CV 47.1%) | omega_ktr | Table I IIV row "omega k tr" = 47.1% |
 | `etalks ~ 0.4947` (CV 80.0%) | omega_ks | Table I IIV row "omega k s" = 80.0% |
 | `etalkp ~ 0.5497` (CV 85.6%) | omega_kp | Table I IIV row "omega k p" = 85.6% |
-| `etalalpha ~ 0.2806` (CV 56.9%) | omega_alpha | Table I IIV row "omega alpha" = 56.9% |
+| `etalalpha ~ 0.2805` (CV 56.9%) | omega_alpha | Table I IIV row "omega alpha" = 56.9% |
 | `propSd = 0.255` (proportional, from "additive on log-scale" CV 25.5%) | epsilon | Table I row "epsilon" = 25.5% (RSE 9.98%) |
 | `eta_plt = 4000` (platelets released per maturing megakaryocyte; FIXED) | eta | Methods paragraph after Eq. 3 (cites Kaushansky reference 33) |
 | N_PLT = 5 transit compartments (FIXED) | N_PLT | Methods paragraph "N_PLT was arbitrarily set to 5" |

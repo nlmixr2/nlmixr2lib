@@ -86,7 +86,7 @@ Hamuro_2017_DMD_6MWT <- function() {
     # is log(1 + CV^2). Table 2 reports BSV %CV of 22 on the
     # developmental slope and 23 on the disease-induced slope.
     etalslope_dev  ~ 0.04727                                                                          # Hamuro 2017 Table 2 BSV %CV 22 -> log(1 + 0.22^2)
-    etalslope_decl ~ 0.05153                                                                          # Hamuro 2017 Table 2 BSV %CV 23 -> log(1 + 0.23^2)
+    etalslope_decl ~ log(1 + 0.23^2)  # Hamuro 2017 Table 2 BSV %CV 23
 
     # ---------------- Residual error ----------------
     addSd <- 56.9                   ; label("Additive residual SD on 6MWT (m)")                       # Hamuro 2017 Table 2 stdev (Estimate 56.9 m, 95% CI 52.2-61.6)

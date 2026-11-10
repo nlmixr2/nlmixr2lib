@@ -102,8 +102,8 @@ CohenWolkowiez_2014_piperacillin <- function() {
 
     # ===== IIV (Cohen-Wolkowiez 2014 Table 3 final piperacillin model) =====
     # Exponential (log-normal) IIV; CV%-to-variance: omega^2 = log(1 + CV^2)
-    # 37% CV -> log(1 + 0.37^2) = 0.12839
-    etalcl ~ 0.12839  # Table 3: CL interindividual variability 37% CV (RSE 27.5%)
+    # 37% CV -> log(1 + 0.37^2) = 0.12831
+    etalcl ~ log(1 + 0.37^2)  # Table 3: CL interindividual variability 37% CV (RSE 27.5%)
     # No etalvc: between-subject variability on V was fixed to 0 (boundary
     # value); see Population PK model building paragraph: "Inclusion of weight
     # as a covariate on V resulted in a between-subject variability of V

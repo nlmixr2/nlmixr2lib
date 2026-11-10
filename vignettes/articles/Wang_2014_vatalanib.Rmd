@@ -71,7 +71,7 @@ The table below collects them in one place for review.
 | `lka` -> exp = 0.172 /h (Ka) | 0.172 | Table 2 row 'Ka', p. 1009 (95% CI 0.141-0.203; 9.2% RSE) |
 | `ltlag` -> exp = 0.178 h (A_lag) | 0.178 | Table 2 row 'A_lag', p. 1009 (95% CI 0.136-0.220; 11.7% RSE) |
 | `etalcl_exp_inf` IIV (CV 22.8%; omega^2 = log(1+0.228^2) = 0.0507) | 0.0507 | Table 2 row 'IIV for CL_induced/F', p. 1009 |
-| `etalvc` IIV (CV 84.4%; omega^2 = log(1+0.844^2) = 0.5380) | 0.5380 | Table 2 row 'IIV for Vd/F', p. 1009 |
+| `etalvc` IIV (CV 84.4%; omega^2 = log(1+0.844^2) = 0.5379) | 0.5379 | Table 2 row 'IIV for Vd/F', p. 1009 |
 | `etalka` IIV (CV 35.4%; omega^2 = log(1+0.354^2) = 0.1181) | 0.1181 | Table 2 row 'IIV for Ka', p. 1009 |
 | `etaltlag` IIV (CV 137.1%; omega^2 = log(1+1.371^2) = 1.0577) | 1.0577 | Table 2 row 'IIV for A_lag', p. 1009 |
 | IIV on delta_CL/F (cl_time) fixed at 0 | n/a | Results 'Model development', p. 1008 'the IIV value associated with delta CL/F was fixed to zero due to extremely small estimate and failure of convergence' |

@@ -144,8 +144,8 @@ CohenWolkowiez_2014_tazobactam <- function() {
 
     # ===== IIV (Cohen-Wolkowiez 2014 Table 4 final tazobactam model) =====
     # Exponential (log-normal) IIV; CV%-to-variance: omega^2 = log(1 + CV^2)
-    # 23% CV -> log(1 + 0.23^2) = 0.05154
-    etalcl ~ 0.05154  # Table 4: CL interindividual variability 23% CV (RSE 34.0%)
+    # 23% CV -> log(1 + 0.23^2) = 0.05155
+    etalcl ~ log(1 + 0.23^2)  # Table 4: CL interindividual variability 23% CV (RSE 34.0%)
     # No etalvc: between-subject variability on V was fixed to 0 (boundary
     # value); see Population PK model building paragraph: "Inclusion of weight
     # as a covariate on V resulted in a between-subject variability of V

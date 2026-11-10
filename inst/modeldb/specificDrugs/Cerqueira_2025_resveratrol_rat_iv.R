@@ -103,15 +103,15 @@ Cerqueira_2025_resveratrol_rat_iv <- function() {
     # of its own typical value, which is what a natural-scale SD does and
     # an omega has no reason to do. See the vignette "Assumptions and
     # deviations" section.
-    #   V:    0.97 / 3.60 = 26.94% CV -> log(1 + 0.2694^2) = 0.07008590
-    #   k10:  0.07 / 0.17 = 41.18% CV -> log(1 + 0.4118^2) = 0.15661921
-    #   k12:  0.29 / 1.20 = 24.17% CV -> log(1 + 0.2417^2) = 0.05676096
-    #   k21:  0.11 / 0.26 = 42.31% CV -> log(1 + 0.4231^2) = 0.16466160
+    #   V:    0.97 / 3.60 = 26.94% CV -> log(1 + 0.2694^2) = 0.07006357
+    #   k10:  0.07 / 0.17 = 41.18% CV -> log(1 + 0.4118^2) = 0.15664406
+    #   k12:  0.29 / 1.20 = 24.17% CV -> log(1 + 0.2417^2) = 0.05677618
+    #   k21:  0.11 / 0.26 = 42.31% CV -> log(1 + 0.4231^2) = 0.16467817
     # ------------------------------------------------------------------
-    etalvc  ~ 0.07008590  # Table 1, BSV i.v.: V   = 0.97 (RSE 29.4%)
-    etalkel ~ 0.15661921  # Table 1, BSV i.v.: k10 = 0.07 (RSE 19.1%)
-    etalk12 ~ 0.05676096  # Table 1, BSV i.v.: k12 = 0.29 (RSE 24.6%)
-    etalk21 ~ 0.16466160  # Table 1, BSV i.v.: k21 = 0.11 (RSE 20.5%)
+    etalvc  ~ log(1 + 0.2694^2)  # Table 1, BSV i.v.: V   = 0.97 (RSE 29.4%)
+    etalkel ~ log(1 + 0.4118^2)  # Table 1, BSV i.v.: k10 = 0.07 (RSE 19.1%)
+    etalk12 ~ log(1 + 0.2417^2)  # Table 1, BSV i.v.: k12 = 0.29 (RSE 24.6%)
+    etalk21 ~ log(1 + 0.4231^2)  # Table 1, BSV i.v.: k21 = 0.11 (RSE 20.5%)
 
     # ------------------------------------------------------------------
     # Residual error -- Methods 2.5: "Residual variability was described

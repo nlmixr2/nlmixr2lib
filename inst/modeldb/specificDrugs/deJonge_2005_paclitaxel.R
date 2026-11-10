@@ -178,14 +178,14 @@ deJonge_2005_paclitaxel <- function() {
     # eta variance via omega^2 = log(1 + CV^2). Diagonal block; the paper does
     # not report any cross-parameter correlation.
 
-    # k_abs IIV 61.1% (RSE 33.5%) -> log(1 + 0.611^2) = 0.31712
-    etalka ~ 0.31712
+    # k_abs IIV 61.1% (RSE 33.5%) -> log(1 + 0.611^2) = 0.31723
+    etalka ~ log(1 + 0.611^2)
 
     # k_23 IIV 31.3% (RSE 66.5%) translated onto Q (canonical CL/Vc/Q/Vp form):
     # log(k_23) = log(Q) - log(Vc); with no IIV on Vc the IIV on log(k_23)
-    # equals the IIV on log(Q), so omega^2_Q = log(1 + 0.313^2) = 0.09349.
+    # equals the IIV on log(Q), so omega^2_Q = log(1 + 0.313^2) = 0.09346.
     # The reparameterisation moves the IIV onto Q without changing its variance.
-    etalq ~ 0.09349
+    etalq ~ log(1 + 0.313^2)
 
     # F1 IIV 55.0% (RSE 22.5%) -> log(1 + 0.550^2) = 0.26429.
     # F1 is FIXED at 1 (typical value) so this IIV is the between-subject spread

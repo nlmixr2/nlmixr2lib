@@ -161,8 +161,8 @@ Back_2018_fenofibrate <- function() {
     # both rate constants).
     # ============================================================
     etalkg ~ 0.09575                                              # Table 3 IIV kg (shared with kg'): 31.7% CV  -> omega^2 = log(1 + 0.317^2)
-    etalkel ~ 0.55660                                             # Table 3 IIV kel:  86.3% CV -> omega^2 = log(1 + 0.863^2)
-    etalvc  ~ 0.62317                                             # Table 3 IIV Vc/F: 93.0% CV -> omega^2 = log(1 + 0.93^2)
+    etalkel ~ log(1 + 0.863^2)  # Table 3 IIV kel:  86.3% CV
+    etalvc  ~ log(1 + 0.93^2)  # Table 3 IIV Vc/F: 93.0% CV
 
     # ============================================================
     # Inter-occasion variability on Vc/F and kel. Three occasions per
@@ -170,9 +170,9 @@ Back_2018_fenofibrate <- function() {
     # IOV variance per parameter, so occasions 2 and 3 are fixed
     # equal to occasion 1 (NONMEM $OMEGA BLOCK(1) SAME pattern).
     # ============================================================
-    etaiov_lvc_1 ~ 0.23036                                        # Table 3 IOV Vc/F: 50.9% CV -> omega^2 = log(1 + 0.509^2)
-    etaiov_lvc_2 ~ fixed(0.23036)                                 # SAME as occasion 1
-    etaiov_lvc_3 ~ fixed(0.23036)                                 # SAME as occasion 1
+    etaiov_lvc_1 ~ log(1 + 0.509^2)  # Table 3 IOV Vc/F: 50.9% CV
+    etaiov_lvc_2 ~ fixed(log(1 + 0.509^2))  # SAME as occasion 1
+    etaiov_lvc_3 ~ fixed(log(1 + 0.509^2))  # SAME as occasion 1
     etaiov_lkel_1 ~ 0.18365                                       # Table 3 IOV kel:  44.9% CV -> omega^2 = log(1 + 0.449^2)
     etaiov_lkel_2 ~ fixed(0.18365)                                # SAME as occasion 1
     etaiov_lkel_3 ~ fixed(0.18365)                                # SAME as occasion 1

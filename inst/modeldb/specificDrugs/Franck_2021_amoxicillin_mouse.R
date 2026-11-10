@@ -117,7 +117,7 @@ Franck_2021_amoxicillin_mouse <- function() {
 
     # Interindividual variability -- Table S1 reports %CV; omega^2 = log(CV^2 + 1)
     etalcl ~ 0.05331 # Table S1: IIV CL 23.4 %CV -> log(0.234^2 + 1) = 0.05331
-    etalq ~ 0.06392 # Table S1: IIV Q 25.7 %CV -> log(0.257^2 + 1) = 0.06392
+    etalq ~ log(1 + 0.257^2)  # Table S1: IIV Q 25.7 %CV
 
     # Residual error
     propSd <- 0.282

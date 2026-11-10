@@ -179,8 +179,8 @@ Dong_2014_mycophenolic_acid <- function() {
     lec50   <- log(1.73);  label("MPA concentration for 50% inhibition of IMPDH activity EC50 (mg/L)")        # Dong 2014 Table 3 row 'EC50 (mg/L) = 1.73'
 
     # IIV on PD parameters
-    etalrbase ~ 0.1459  # Dong 2014 Table 3 omega(E0)   = 39.6% CV; omega^2 = log(1 + 0.396^2) = 0.1459
-    etalec50  ~ 0.4226  # Dong 2014 Table 3 omega(EC50) = 72.5% CV; omega^2 = log(1 + 0.725^2) = 0.4226
+    etalrbase ~ log(1 + 0.396^2)  # Dong 2014 Table 3 omega(E0)   = 39.6% CV
+    etalec50  ~ log(1 + 0.725^2)  # Dong 2014 Table 3 omega(EC50) = 72.5% CV
 
     # ========================================================================
     # Residual error.

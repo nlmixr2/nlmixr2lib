@@ -118,20 +118,20 @@ Schmitt_2018_vinflunine <- function() {
 
     # IIV variances (omega^2 on log-eta scale) computed from CV% via the standard
     # log-normal mapping omega^2 = log(CV^2 + 1):
-    #   CL:  25.3% CV -> omega^2 = log(0.253^2 + 1) = 0.06205
+    #   CL:  25.3% CV -> omega^2 = log(0.253^2 + 1) = 0.06204
     #   V:   73.9% CV -> omega^2 = log(0.739^2 + 1) = 0.4358
     #   V2:  81.3% CV -> omega^2 = log(0.813^2 + 1) = 0.5076
     #   V3:  40.6% CV -> omega^2 = log(0.406^2 + 1) = 0.1526
     #   V4:  39.1% CV -> omega^2 = log(0.391^2 + 1) = 0.1423
     # Correlations from Table 2 are converted to covariances via
     # cov(eta_a, eta_b) = corr * sqrt(omega^2_a * omega^2_b):
-    #   corr(CL, V4) = 0.726 -> cov(etalcl, etalvp3) = 0.726 * sqrt(0.06205 * 0.1423) = 0.06823
+    #   corr(CL, V4) = 0.726 -> cov(etalcl, etalvp3) = 0.726 * sqrt(0.06204 * 0.1423) = 0.06821
     #   corr(V, V2)  = 0.644 -> cov(etalvc, etalvp)  = 0.644 * sqrt(0.4358 * 0.5076) = 0.30287
     # IIV on K21, K31, K41 was fixed to 0 in Schmitt 2018 (Table 2 footnote);
     # we do not declare etas on the Q parameters because they inherit the
     # underlying rate-constant IIV-fixed-at-zero assumption.
-    etalcl + etalvp3 ~ c(0.06205,
-                         0.06823, 0.1423)                                 # 2x2 block (Table 2 corr CL-V4 = 0.726)
+    etalcl + etalvp3 ~ c(log(1 + 0.253^2),
+                         0.726 * sqrt(log(1 + 0.253^2) * 0.1423), 0.1423)                                 # 2x2 block (Table 2 corr CL-V4 = 0.726)
     etalvc + etalvp  ~ c(0.4358,
                          0.30287, 0.5076)                                 # 2x2 block (Table 2 corr V-V2 = 0.644)
     etalvp2          ~ 0.1526                                             # Table 2 (IIV V3 = 40.6%)
@@ -149,14 +149,14 @@ Schmitt_2018_vinflunine <- function() {
     gamma  <- fixed(0.170); label("Feedback exponent gamma on (Circ0 / circ) (unitless)")  # Table 3 (no IIV in source)
 
     # PD IIV - omega^2 computed from CV% as above:
-    #   Circ0: 46.5% CV -> omega^2 = log(0.465^2 + 1) = 0.1957
-    #   Slope: 35.9% CV -> omega^2 = log(0.359^2 + 1) = 0.1213
+    #   Circ0: 46.5% CV -> omega^2 = log(0.465^2 + 1) = 0.1958
+    #   Slope: 35.9% CV -> omega^2 = log(0.359^2 + 1) = 0.1212
     # MTT IIV is fixed at 0 in Schmitt 2018 (Table 3); IOV on MTT (24%) and
     # Slope (23.8%) is not represented here (nlmixr2 does not natively model
     # interoccasion variability without an OCC data column; see vignette
     # Assumptions and deviations).
-    etalcirc0 ~ 0.1957                                                    # Table 3 (IIV Circ0 = 46.5%)
-    etalslope ~ 0.1213                                                    # Table 3 (IIV Slope = 35.9%)
+    etalcirc0 ~ log(1 + 0.465^2)  # Table 3 (IIV Circ0 = 46.5%)
+    etalslope ~ log(1 + 0.359^2)  # Table 3 (IIV Slope = 35.9%)
 
     # PD residual error: Schmitt 2018 Table 3 reports "additive model on
     # log-transformed ANC" with CV% = 42.4%. This is the NONMEM

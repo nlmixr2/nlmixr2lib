@@ -81,10 +81,10 @@ table below collects them in one place for review.
 | `e_donor_living_cl`   | 0.74 | Andrews 2017 Table 2 final model |
 | `e_egfr_cl` (eGFR exponent) | 0.19 | Andrews 2017 Table 2 final model |
 | `e_hct_cl` (HCT exponent, piecewise) | -0.44 | Andrews 2017 Table 2 final model |
-| IIV ka (188% CV)      | omega^2 = log(1 + 1.88^2) = 1.51178 | Andrews 2017 Table 2 final model |
+| IIV ka (188% CV)      | omega^2 = log(1 + 1.88^2) = 1.51169 | Andrews 2017 Table 2 final model |
 | IIV CL/F (25% CV)     | omega^2 = log(1 + 0.25^2) = 0.06062 | Andrews 2017 Table 2 final model |
-| IIV V1/F (69% CV)     | omega^2 = log(1 + 0.69^2) = 0.38944 | Andrews 2017 Table 2 final model |
-| IIV V2/F (62% CV)     | omega^2 = log(1 + 0.62^2) = 0.32509 | Andrews 2017 Table 2 final model |
+| IIV V1/F (69% CV)     | omega^2 = log(1 + 0.69^2) = 0.38940 | Andrews 2017 Table 2 final model |
+| IIV V2/F (62% CV)     | omega^2 = log(1 + 0.62^2) = 0.32527 | Andrews 2017 Table 2 final model |
 | `addSd_immuno` / `propSd_immuno` | 1.01 / 0.13 | Andrews 2017 Table 2 final model |
 | `addSd_lcms` / `propSd_lcms`     | 0.28 / 0.21 | Andrews 2017 Table 2 final model |
 | Reference HCT cutoff  | 0.3 L/L | Andrews 2017 Section 3.2 equation |

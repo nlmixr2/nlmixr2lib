@@ -133,10 +133,10 @@ Fanta_2007_ciclosporin <- function() {
       0.044939, 0.141562,
       0.029413, 0.092544, 0.060625
     )  # Fanta 2007 Table 2: IIV V2 (CV 12%), IIV Q4 (CV 39%), IIV V4 (CV 25%); off-diagonals = 0.999 * sqrt(var_i * var_j) for strict PD-ness while preserving the published complete-positive-correlation structure
-    etalcl     ~ 0.028501  # Fanta 2007 Table 2: IIV CL  CV 17% -> log(1 + 0.17^2)
-    etalq      ~ 0.091705  # Fanta 2007 Table 2: IIV Q3  CV 31% -> log(1 + 0.31^2)
-    etalvp     ~ 0.162519  # Fanta 2007 Table 2: IIV V3  CV 42% -> log(1 + 0.42^2)
-    etalka     ~ 0.103358  # Fanta 2007 Table 2: IIV Ka  CV 33% -> log(1 + 0.33^2)
+    etalcl     ~ log(1 + 0.17^2)  # Fanta 2007 Table 2: IIV CL  CV 17%
+    etalq      ~ log(1 + 0.31^2)  # Fanta 2007 Table 2: IIV Q3  CV 31%
+    etalvp     ~ log(1 + 0.42^2)  # Fanta 2007 Table 2: IIV V3  CV 42%
+    etalka     ~ log(1 + 0.33^2)  # Fanta 2007 Table 2: IIV Ka  CV 33%
     etalfdepot ~ 0.012027  # Fanta 2007 Table 2: IIV F   CV 11% -> log(1 + 0.11^2)
 
     # Residual error. Fanta 2007 Table 2: IV arm uses combined proportional
