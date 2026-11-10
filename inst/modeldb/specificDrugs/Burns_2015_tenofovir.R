@@ -236,7 +236,7 @@ Burns_2015_tenofovir <- function() {
     # 'theta_i = theta_typical * exp(eta_i)'), supported on KA, Vc, K20 and K24
     # (Results). Table 1 reports these as %CV, so the variance on the log scale
     # is omega^2 = log(1 + CV^2).
-    etalka ~ 1.2712043      # Table 1 final model 'BSV KA (%CV)' = 160.2; Results text gives 160.16 to one more digit; log(1 + 1.6016^2)
+    etalka ~ log(1 + 1.6016^2)  # Table 1 final model 'BSV KA (%CV)' = 160.2; Results text gives 160.16 to one more digit
     etalvc ~ 0.0365720      # Table 1 final model 'BSV Vc (%CV)' = 19.3; log(1 + 0.193^2)
     etalkel ~ 0.1232692     # Table 1 final model 'BSV K20 (%CV)' = 36.22; log(1 + 0.3622^2)
     etalkmet_tfvdp ~ 1.2651731  # Table 1 final model 'BSV K24 (%CV)' = 159.49; log(1 + 1.5949^2)

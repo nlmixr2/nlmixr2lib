@@ -124,20 +124,20 @@ Tarning_2012_artemether <- function() {
     # %CV with footnote a: "IIV is presented as 100 * sqrt(exp(omega^2) -
     # 1)". The internal variances are recovered by
     # omega^2 = log((CV/100)^2 + 1):
-    #   CL_ARM CV 28.0% -> log(0.280^2 + 1) = 0.07549
-    #   CL_DHA CV 90.4% -> log(0.904^2 + 1) = 0.59716
-    #   MTT    CV 75.2% -> log(0.752^2 + 1) = 0.44819
-    #   DUR    CV 151%  -> log(1.510^2 + 1) = 1.18800
-    #   F      CV 85.5% -> log(0.855^2 + 1) = 0.54864
+    #   CL_ARM CV 28.0% -> log(0.280^2 + 1) = 0.07548
+    #   CL_DHA CV 90.4% -> log(0.904^2 + 1) = 0.59731
+    #   MTT    CV 75.2% -> log(0.752^2 + 1) = 0.44821
+    #   DUR    CV 151%  -> log(1.510^2 + 1) = 1.18787
+    #   F      CV 85.5% -> log(0.855^2 + 1) = 0.54871
     # IIV on V_ARM and V_DHA was fixed to zero in the final model
     # ("IIV for the distribution volume of artemether and dihydroartemisinin
     # were fixed to zero because of poor precision (RSE > 50%)", Results,
     # p.8) so etalvc and etalvc_dihydroart are omitted.
-    etalcl     ~ 0.07549   # Tarning 2012 Table 2: BSV on CL_ARM/F = 28.0% CV (RSE 47.6%)
-    etalcl_dihydroart ~ 0.59716   # Tarning 2012 Table 2: BSV on CL_DHA/F = 90.4% CV (RSE 39.0%)
-    etalmtt    ~ 0.44819   # Tarning 2012 Table 2: BSV on MTT       = 75.2% CV (RSE 39.6%)
-    etaldur    ~ 1.18800   # Tarning 2012 Table 2: BSV on DUR       = 151%  CV (RSE 24.1%)
-    etalfdepot ~ 0.54864   # Tarning 2012 Table 2: BSV on F         = 85.5% CV (RSE 24.8%)
+    etalcl     ~ log(1 + 0.280^2)  # Tarning 2012 Table 2: BSV on CL_ARM/F = 28.0% CV (RSE 47.6%)
+    etalcl_dihydroart ~ log(1 + 0.904^2)  # Tarning 2012 Table 2: BSV on CL_DHA/F = 90.4% CV (RSE 39.0%)
+    etalmtt    ~ log(1 + 0.752^2)  # Tarning 2012 Table 2: BSV on MTT       = 75.2% CV (RSE 39.6%)
+    etaldur    ~ log(1 + 1.510^2)  # Tarning 2012 Table 2: BSV on DUR       = 151%  CV (RSE 24.1%)
+    etalfdepot ~ log(1 + 0.855^2)  # Tarning 2012 Table 2: BSV on F         = 85.5% CV (RSE 24.8%)
 
     # Residual error. The paper modelled the natural logarithm of the
     # molar plasma concentration with an additive error on the log scale

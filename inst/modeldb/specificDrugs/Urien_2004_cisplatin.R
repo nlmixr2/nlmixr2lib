@@ -142,10 +142,10 @@ Urien_2004_cisplatin <- function() {
     # "The data did not allow reliable estimations of intersubject variabilities
     # for Q and V2 and fixing these parameters to zero did not increase the
     # OFV"); no eta is declared for lq or lvp.
-    etalvc      ~ 0.05334  # log(1 + 0.234^2); ISV V1     = 23.4% CV (Urien 2004 Table 4)
-    etalcl      ~ 0.02199  # log(1 + 0.149^2); ISV CL     = 14.9% CV (Urien 2004 Table 4)
-    etalfmVm   ~ 0.04498  # log(1 + 0.214^2); ISV fm/Vm   = 21.4% CV (Urien 2004 Table 5)
-    etalclm0Vm ~ 0.09617  # log(1 + 0.318^2); ISV CLm/Vm = 31.8% CV (Urien 2004 Table 5)
+    etalvc      ~ log(1 + 0.234^2)  # ISV V1     = 23.4% CV (Urien 2004 Table 4)
+    etalcl      ~ log(1 + 0.149^2)  # ISV CL     = 14.9% CV (Urien 2004 Table 4)
+    etalfmVm   ~ log(1 + 0.214^2)  # ISV fm/Vm   = 21.4% CV (Urien 2004 Table 5)
+    etalclm0Vm ~ log(1 + 0.318^2)  # ISV CLm/Vm = 31.8% CV (Urien 2004 Table 5)
 
     # Residual error - additive on linear scale, separate values for unbound
     # and total plasma platinum observations. Urien 2004 reports residuals in

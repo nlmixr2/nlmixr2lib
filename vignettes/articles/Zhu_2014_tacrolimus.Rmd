@@ -66,10 +66,10 @@ The table below collects the entries in one place.
 | `e_dose_cl` (theta_DOSE) | 0.371 | Table 4, Parameter estimate column, theta_DOSE row |
 | `e_pod_cl` (theta_POD) | 0.127 | Table 4, Parameter estimate column, theta_POD row |
 | IIV CL/F (omega^2 = log(0.162^2 + 1) = 0.02591) | 16.2% CV | Table 4, Parameter estimate column, omega CL/F row |
-| IIV V2/F (omega^2 = log(1.63^2 + 1) = 1.29657) | 163% CV | Table 4, Parameter estimate column, omega V2/F row |
-| IIV Q/F (omega^2 = log(0.197^2 + 1) = 0.03808) | 19.7% CV | Table 4, Parameter estimate column, omega Q/F row |
-| IIV V3/F (omega^2 = log(1.99^2 + 1) = 1.60139) | 199% CV | Table 4, Parameter estimate column, omega V3/F row |
-| IIV ka (omega^2 = log(0.743^2 + 1) = 0.43972) | 74.3% CV | Table 4, Parameter estimate column, omega ka row |
+| IIV V2/F (omega^2 = log(1.63^2 + 1) = 1.29662) | 163% CV | Table 4, Parameter estimate column, omega V2/F row |
+| IIV Q/F (omega^2 = log(0.197^2 + 1) = 0.03807) | 19.7% CV | Table 4, Parameter estimate column, omega Q/F row |
+| IIV V3/F (omega^2 = log(1.99^2 + 1) = 1.60143) | 199% CV | Table 4, Parameter estimate column, omega V3/F row |
+| IIV ka (omega^2 = log(0.743^2 + 1) = 0.43958) | 74.3% CV | Table 4, Parameter estimate column, omega ka row |
 | Proportional residual error | 26.54% | Table 4, Parameter estimate column, sigma row |
 | Bioavailability F | not estimated | Methods Section 2.4 ("the bioavailability (F) and absorption with a lag time could not be determined") |
 | Covariate equation for CL/F | -- | Equation (3) on page 4: CL/F = theta_CL/F * DOSE^theta_DOSE * POD^theta_POD |

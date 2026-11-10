@@ -65,9 +65,9 @@ Zheng_2018_azithromycin <- function() {
     # IIV - Zheng 2018 Table 3 reports percent CV for an exponential IIV
     # model (Methods 'Model development'). Variances stored here use the
     # log-normal conversion omega^2 = log(CV^2 + 1).
-    etalcl ~ 0.09805  # Zheng 2018 Table 3: 32.1 percent CV -> log(0.321^2 + 1) = 0.09805
-    etalvc ~ 0.54299  # Zheng 2018 Table 3: 84.9 percent CV -> log(0.849^2 + 1) = 0.54299
-    etalq  ~ 0.23624  # Zheng 2018 Table 3: 51.6 percent CV -> log(0.516^2 + 1) = 0.23624
+    etalcl ~ log(1 + 0.321^2)  # Zheng 2018 Table 3: 32.1 percent CV
+    etalvc ~ log(1 + 0.849^2)  # Zheng 2018 Table 3: 84.9 percent CV
+    etalq  ~ log(1 + 0.516^2)  # Zheng 2018 Table 3: 51.6 percent CV
 
     # Residual error - Zheng 2018 Methods reports an exponential residual
     # model fitted to the data (Y = IPRED * exp(EPS)); Table 3 reports

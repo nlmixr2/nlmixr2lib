@@ -74,11 +74,11 @@ Soehoel_2022_tralokinumab <- function() {
 
     # Variance-covariance matrix for (etalvc, etalcl); Table 2 reports
     # IIV via CV% = sqrt(exp(omega^2) - 1) * 100%, so omega^2 = log(1 + CV^2).
-    # CV_V2 = 40.1% -> omega^2_V2 = log(1 + 0.401^2) = 0.148971
-    # CV_CL = 31.3% -> omega^2_CL = log(1 + 0.313^2) = 0.093459
-    # correlation 0.61 -> cov = 0.61 * sqrt(0.148971 * 0.093459) = 0.071977
-    etalvc + etalcl ~ c(0.148971,
-                        0.071977, 0.093459)
+    # CV_V2 = 40.1% -> omega^2_V2 = log(1 + 0.401^2) = 0.149110
+    # CV_CL = 31.3% -> omega^2_CL = log(1 + 0.313^2) = 0.093462
+    # correlation 0.61 -> cov = 0.61 * sqrt(0.149110 * 0.093462) = 0.072011
+    etalvc + etalcl ~ c(log(1 + 0.401^2),
+                        0.61 * sqrt(log(1 + 0.401^2) * log(1 + 0.313^2)), log(1 + 0.313^2))
   })
   model({
     fdepot <- exp(lfdepot)*(1 + e_dilution_fdepot*DILUTION)
@@ -100,9 +100,9 @@ Soehoel_2022_tralokinumab <- function() {
 # computed as sqrt(exp(omega^2) - 1), i.e. CV on the log-normal scale). In
 # ini(), the "etalvc + etalcl ~ c(...)" form stores the variance-covariance
 # matrix directly (variances on the diagonal, covariance off-diagonal):
-#   omega^2_V2  = log(1 + 0.401^2) = 0.148971
-#   omega^2_CL  = log(1 + 0.313^2) = 0.093459
-#   cov(V2, CL) = 0.61 * sqrt(0.148971 * 0.093459) = 0.071977
+#   omega^2_V2  = log(1 + 0.401^2) = 0.149110
+#   omega^2_CL  = log(1 + 0.313^2) = 0.093462
+#   cov(V2, CL) = 0.61 * sqrt(0.149110 * 0.093462) = 0.072011
 #
 # A prior revision of this file stored sqrt(.) values (SDs) in the
 # variance-covariance triple and used an off-diagonal of

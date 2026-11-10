@@ -145,11 +145,11 @@ Svensson_2014_bedaquiline <- function() {
     # has no idiomatic encoding in nlmixr2lib and is dropped here. See the
     # vignette's Assumptions and deviations section for the full list of
     # dropped random effects with the original paper values.
-    etalcl + etalcl_m2 ~ c(0.07654, 0.04523, 0.09236)  # Svensson 2014 Table 2 BSV CL = 28.2% CV, BSV CLM2 = 31.1% CV, correlation 53.8%; var_cl = log(1 + 0.282^2) = 0.07654, cov = 0.538 * sqrt(0.07654 * 0.09236) = 0.04523, var_clm2 = log(1 + 0.311^2) = 0.09236
-    etalvc      ~ 0.16769       # var = log(1 + 0.428^2) = 0.16769 ; Svensson 2014 Table 2 BSV V = 42.8% CV
-    etalq       ~ 0.04372       # var = log(1 + 0.211^2) = 0.04372 ; Svensson 2014 Table 2 BSV Q1 = 21.1% CV
-    etalvc_m2   ~ 0.12379       # var = log(1 + 0.364^2) = 0.12379 ; Svensson 2014 Table 2 BSV VM2 = 36.4% CV
-    etalvp_m2   ~ 0.04330       # var = log(1 + 0.210^2) = 0.04330 ; Svensson 2014 Table 2 BSV VP1M2 = 21.0% CV
+    etalcl + etalcl_m2 ~ c(log(1 + 0.282^2), 0.538 * sqrt(log(1 + 0.282^2) * log(1 + 0.311^2)), log(1 + 0.311^2))  # Svensson 2014 Table 2 BSV CL = 28.2% CV, BSV CLM2 = 31.1% CV, correlation 53.8%; var_cl = log(1 + 0.282^2) = 0.07652, cov = 0.538 * sqrt(0.07652 * 0.09232) = 0.04522, var_clm2 = log(1 + 0.311^2) = 0.09232
+    etalvc      ~ log(1 + 0.428^2)  # Svensson 2014 Table 2 BSV V = 42.8% CV
+    etalq       ~ log(1 + 0.211^2)  # Svensson 2014 Table 2 BSV Q1 = 21.1% CV
+    etalvc_m2   ~ log(1 + 0.364^2)  # Svensson 2014 Table 2 BSV VM2 = 36.4% CV
+    etalvp_m2   ~ log(1 + 0.21^2)  # Svensson 2014 Table 2 BSV VP1M2 = 21.0% CV
 
     # Residual error. The paper reports proportional residual errors on both
     # bedaquiline (15.7% CV) and M2 (12.2% CV) plus a 55% correlation between

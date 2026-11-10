@@ -88,7 +88,7 @@ Barnett_2018_coproporphyrin_I <- function() {
     etalksyn ~ 0.00084   # Table 1, CPI IIV ksyn   = 2.9%  CV (RSE 318.7%, very poorly estimated); log(1 + 0.029^2) = 0.000841
     etalclb  ~ 0.02024   # Table 1, CPI IIV CLb    = 14.3% CV (RSE 63.8%); log(1 + 0.143^2) = 0.02024
     etalclr  ~ 0.00898   # Table 1, CPI IIV CLr    =  9.5% CV (RSE 31.9%); log(1 + 0.095^2) = 0.00898
-    etalvc   ~ 0.11679   # Table 1, CPI IIV Vcpi   = 35.2% CV (RSE 24.7%); log(1 + 0.352^2) = 0.11679
+    etalvc   ~ log(1 + 0.352^2)  # Table 1, CPI IIV Vcpi   = 35.2% CV (RSE 24.7%)
     etalki   ~ 0.03473   # Table 1, CPI IIV KiCPI  = 18.8% CV (RSE 40.6%); log(1 + 0.188^2) = 0.03473
 
     # IOV -- Barnett 2018 reports a single shared IOV variance on ksyn

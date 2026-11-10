@@ -89,11 +89,11 @@ NMTRAN control stream
 | `lfdepot` (capsule Frel)     | log(0.55)                          | Table II final model: Frel 0.55 |
 | `allo_cl` (fixed)            | 0.75                               | Methods Eq. 5 + .ctl line 20 |
 | `allo_vc` (fixed)            | 1.0                                | Methods Eq. 5 + .ctl line 21 |
-| `etalcl` variance            | log(1 + 0.688^2) = 0.38731         | Table II + paper Random Effects Model paragraph |
-| `etalvc` variance            | log(1 + 0.758^2) = 0.45404         | Table II |
-| cov(`etalcl`, `etalvc`)      | 0.69 * sqrt(var_cl * var_vc) = 0.28938 | Random Effects Model paragraph |
-| `etalcl_ohi` variance        | log(1 + 0.734^2) = 0.43098         | Table II final model: CV 73.4% |
-| `etalfdepot` variance        | log(1 + 0.611^2) = 0.31734         | Table II final model: CV 61.1%; gated on `FORM_CAPSULE` |
+| `etalcl` variance            | log(1 + 0.688^2) = 0.38753         | Table II + paper Random Effects Model paragraph |
+| `etalvc` variance            | log(1 + 0.758^2) = 0.45398         | Table II |
+| cov(`etalcl`, `etalvc`)      | 0.69 * sqrt(var_cl * var_vc) = 0.28942 | Random Effects Model paragraph |
+| `etalcl_ohi` variance        | log(1 + 0.734^2) = 0.43097         | Table II final model: CV 73.4% |
+| `etalfdepot` variance        | log(1 + 0.611^2) = 0.31723         | Table II final model: CV 61.1%; gated on `FORM_CAPSULE` |
 | `propSd`                     | 0.499 (sigma 49.9%)                | Table II final model |
 | `propSd_ohi`                 | 0.470 (sigma 47.0%)                | Table II final model |
 | `mw_ratio` (722.64 / 705.64) | 1.02410                            | .ctl lines 32 and 35 |

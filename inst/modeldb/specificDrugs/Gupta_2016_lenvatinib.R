@@ -129,13 +129,13 @@ Gupta_2016_lenvatinib <- function() {
     # %CV ~ sqrt(variance) * 100). Variances stored here use the
     # log-normal conversion omega^2 = log(CV^2 + 1) so that the simulated
     # log-scale eta reproduces the linear-space CV when exponentiated.
-    etalcl       ~ 0.06296    # Gupta 2016 Table 2: 25.5 percent CV -> log(0.255^2 + 1) = 0.06296
-    etalvc       ~ 0.05074    # Gupta 2016 Table 2: 22.8 percent CV -> log(0.228^2 + 1) = 0.05074
-    etalvp       ~ 0.14164    # Gupta 2016 Table 2: 39.0 percent CV -> log(0.390^2 + 1) = 0.14164
-    etalvp2      ~ 0.08788    # Gupta 2016 Table 2: 30.3 percent CV -> log(0.303^2 + 1) = 0.08788
-    etalka       ~ 0.26236    # Gupta 2016 Table 2: 54.8 percent CV -> log(0.548^2 + 1) = 0.26236
-    etalduration ~ 0.46258    # Gupta 2016 Table 2: 76.7 percent CV -> log(0.767^2 + 1) = 0.46258
-    etalfcap     ~ 0.08732    # Gupta 2016 Table 2: 30.2 percent CV -> log(0.302^2 + 1) = 0.08732 (applies to the capsule arm only)
+    etalcl       ~ log(1 + 0.255^2)  # Gupta 2016 Table 2: 25.5 percent CV
+    etalvc       ~ log(1 + 0.228^2)  # Gupta 2016 Table 2: 22.8 percent CV
+    etalvp       ~ log(1 + 0.390^2)  # Gupta 2016 Table 2: 39.0 percent CV
+    etalvp2      ~ log(1 + 0.303^2)  # Gupta 2016 Table 2: 30.3 percent CV
+    etalka       ~ log(1 + 0.548^2)  # Gupta 2016 Table 2: 54.8 percent CV
+    etalduration ~ log(1 + 0.767^2)  # Gupta 2016 Table 2: 76.7 percent CV
+    etalfcap     ~ log(1 + 0.302^2)  # Gupta 2016 Table 2: 30.2 percent CV (applies to the capsule arm only)
 
     # Residual error - Gupta 2016 Table 2 reports a stratified
     # residual model (proportional 16.9 percent for clinical pharmacology

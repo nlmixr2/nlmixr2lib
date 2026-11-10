@@ -82,11 +82,11 @@ by `readModelDb()` and then inspect `$population`).
 | F1max (fixed) | 1 | Table 3 "F1max = 1 fixed" |
 | `ld50` (D50) | 128 mg | Table 3 |
 | `e_food_f` (theta_food) | -0.360 | Table 3 |
-| `etalcl` (BSV CL; omega^2 = log(CV^2 + 1)) | log(0.68^2 + 1) = 0.4267 | Table 3 BSV CL = 68% |
-| `etalvc` (BSV Vc) | log(0.30^2 + 1) = 0.08619 | Table 3 BSV TVV2 = 30% |
-| `etalvp` (BSV Vp) | log(1.41^2 + 1) = 0.7945 | Table 3 BSV V3 = 141% |
-| `etalcl_t50` (BSV t50) | log(0.88^2 + 1) = 0.5594 | Table 3 BSV t50 = 88% |
-| `etalka` (BSV ka, common to both groups) | log(1.45^2 + 1) = 0.8126 | Table 3 BSV ka = 145% |
+| `etalcl` (BSV CL; omega^2 = log(CV^2 + 1)) | log(0.68^2 + 1) = 0.3801 | Table 3 BSV CL = 68% |
+| `etalvc` (BSV Vc) | log(0.30^2 + 1) = 0.08618 | Table 3 BSV TVV2 = 30% |
+| `etalvp` (BSV Vp) | log(1.41^2 + 1) = 1.0946 | Table 3 BSV V3 = 141% |
+| `etalcl_t50` (BSV t50) | log(0.88^2 + 1) = 0.5735 | Table 3 BSV t50 = 88% |
+| `etalka` (BSV ka, common to both groups) | log(1.45^2 + 1) = 1.1322 | Table 3 BSV ka = 145% |
 | `propSd` (proportional residual SD) | 0.11 | Table 3 "Proportional error = 11" |
 | `addSd` (additive residual SD, ug/mL) | 0.168 | Table 3 "Additive error = 0.168" |
 

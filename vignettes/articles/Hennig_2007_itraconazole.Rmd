@@ -111,10 +111,10 @@ rather than the final estimates).
 | `lfdepot = log(0.817)` (relative bioavailability of capsule) | 0.817 | Hennig 2007 Table 3, F_rel (RSE 23.5%) |
 | `llag = log(19.3 / 60)` (h, lag time) | 19.3 min -> 0.3217 h | Hennig 2007 Table 3, t_lag (RSE 1.68%) |
 | `etalcl ~ log(1 + 0.221^2) = 0.0477` | 22.1 % CV | Hennig 2007 Table 3, BSV Cl_p (RSE 75.2%) |
-| `etalvc ~ log(1 + 0.773^2) = 0.4684` | 77.3 % CV | Hennig 2007 Table 3, BSV V_c (RSE 48.5%) |
+| `etalvc ~ log(1 + 0.773^2) = 0.4685` | 77.3 % CV | Hennig 2007 Table 3, BSV V_c (RSE 48.5%) |
 | `etalka_cap ~ log(1 + 0.919^2) = 0.6122` | 91.9 % CV | Hennig 2007 Table 3, BSV k_a cap (RSE 33.5%) |
 | `etalka_sol ~ log(1 + 1.063^2) = 0.7561` | 106.3 % CV | Hennig 2007 Table 3, BSV k_a sol (RSE 31.4%) |
-| `etalfdepot ~ log(1 + 0.623^2) = 0.3279` | 62.3 % CV | Hennig 2007 Table 3, BSV F_rel (RSE 24.7%) |
+| `etalfdepot ~ log(1 + 0.623^2) = 0.3280` | 62.3 % CV | Hennig 2007 Table 3, BSV F_rel (RSE 24.7%) |
 | `propSd = 0.408` (proportional residual error, itraconazole) | 40.8 % CV | Hennig 2007 Table 3, residual itraconazole (RSE 16.6%) |
 | `propSd_ohi = 0.479` (proportional residual error, OH-itraconazole) | 47.9 % CV | Hennig 2007 Table 3, residual hydroxy-itraconazole (RSE 12.7%) |
 | 2-cmt parent + 1-cmt metabolite topology | -- | Hennig 2007 Figure 1 ("Final Model"); page 443 |

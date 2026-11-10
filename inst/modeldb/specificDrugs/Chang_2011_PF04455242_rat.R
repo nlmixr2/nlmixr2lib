@@ -91,9 +91,9 @@ Chang_2011_PF04455242_rat <- function() {
     lcl_spiradoline <- log(6.06);  label("Spiradoline apparent oral clearance CL/F per kg (L/h/kg)")   # Table I
     lvc_spiradoline <- log(7.15);  label("Spiradoline apparent central volume Vc/F per kg (L/kg)")     # Table I
 
-    etalka_spiradoline ~ 0.2992  # Table I, omega-Ka = 59.1%CV -> log(0.591^2+1) = 0.2992
+    etalka_spiradoline ~ log(1 + 0.591^2)  # Table I, omega-Ka = 59.1%CV
     etalcl_spiradoline ~ 0.0319  # Table I, omega-CL = 18.0%CV -> log(0.180^2+1) = 0.0319
-    etalvc_spiradoline ~ 0.1957  # Table I, omega-Vc = 46.5%CV -> log(0.465^2+1) = 0.1957
+    etalvc_spiradoline ~ log(1 + 0.465^2)  # Table I, omega-Vc = 46.5%CV
 
     propSd_Cspir <- 0.4472; label("Spiradoline plasma proportional residual error (fraction)")  # Table I, 44.72%
 
@@ -110,7 +110,7 @@ Chang_2011_PF04455242_rat <- function() {
     lki    <- log(414);  label("PF-04455242 in vivo Ki at rat KOR (ng/mL)")                               # Table II
     lhill  <- log(4.15); label("Hill coefficient (paper gamma) on the spiradoline stimulation (unitless)") # Table II
 
-    etalrbase ~ 0.1422  # Table II, omega-BL = 39.1%CV -> log(0.391^2+1) = 0.1422
+    etalrbase ~ log(1 + 0.391^2)  # Table II, omega-BL = 39.1%CV
 
     propSd_PRL <- 1.31; label("Rat prolactin proportional residual error (fraction)")  # Table II, 131%
   })

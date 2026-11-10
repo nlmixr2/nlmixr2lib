@@ -80,10 +80,10 @@ Diepstraten_2013_propofol <- function() {
     # Diepstraten 2013 Table 3 final model reports IIV as CV%; the internal
     # variance is omega^2 = log(CV^2 + 1). IIV was retained on CL, V1, V3
     # and Q3 only; no IIV on V2 or Q2 (Table 3 entries blank for those).
-    etalcl  ~ 0.030171  # Diepstraten 2013 Table 3 final model: IIV CL 17.5% (CV% 13.9), variance = log(0.175^2 + 1)
-    etalvc  ~ 0.228065  # Diepstraten 2013 Table 3 final model: IIV V1 50.6% (CV% 41.3), variance = log(0.506^2 + 1)
-    etalvp2 ~ 0.123131  # Diepstraten 2013 Table 3 final model: IIV V3 36.2% (CV% 34.9), variance = log(0.362^2 + 1)
-    etalq2  ~ 0.151250  # Diepstraten 2013 Table 3 final model: IIV Q3 40.4% (CV% 37.5), variance = log(0.404^2 + 1)
+    etalcl  ~ log(1 + 0.175^2)  # Diepstraten 2013 Table 3 final model: IIV CL 17.5% (CV% 13.9)
+    etalvc  ~ log(1 + 0.506^2)  # Diepstraten 2013 Table 3 final model: IIV V1 50.6% (CV% 41.3)
+    etalvp2 ~ log(1 + 0.362^2)  # Diepstraten 2013 Table 3 final model: IIV V3 36.2% (CV% 34.9)
+    etalq2  ~ log(1 + 0.404^2)  # Diepstraten 2013 Table 3 final model: IIV Q3 40.4% (CV% 37.5)
 
     # Residual error. Diepstraten 2013 fit on log-transformed concentrations:
     # Yij = log(c_pred,ij) + eps_ij with eps ~ N(0, sigma^2) (Methods Eq. 3).

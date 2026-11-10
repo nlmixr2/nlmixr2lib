@@ -80,9 +80,9 @@ Janssen_2023_docetaxel <- function() {
 
     # --- IIV (Table 1 reports CV% for CL, V1 and Q2 only) -------------------
     # omega^2 = log(CV^2 + 1)
-    etalcl ~ fixed(0.082906)   # Table 1: CL  IIV 29.4% CV -> log(0.294^2 + 1)
-    etalvc ~ fixed(0.133560)   # Table 1: V1  IIV 37.8% CV -> log(0.378^2 + 1)
-    etalq2 ~ fixed(0.040381)   # Table 1: Q2  IIV 20.3% CV -> log(0.203^2 + 1)
+    etalcl ~ fixed(log(1 + 0.294^2))  # Table 1: CL  IIV 29.4% CV
+    etalvc ~ fixed(log(1 + 0.378^2))  # Table 1: V1  IIV 37.8% CV
+    etalq2 ~ fixed(log(1 + 0.203^2))  # Table 1: Q2  IIV 20.3% CV
 
     # --- Residual error -----------------------------------------------------
     propSd <- fixed(0); label("Proportional residual error (fraction; not reported)")  # Janssen 2023 reports predictions, never a residual-error model

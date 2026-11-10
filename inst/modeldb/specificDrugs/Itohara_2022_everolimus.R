@@ -195,7 +195,7 @@ Itohara_2022_everolimus <- function() {
     e_sexf_cl <- 1.23; label("Multiplicative factor on CL/F for female sex (unitless)") # Table 2 theta5 = 1.23 (RSE 6.24%)
 
     # IIV on CL/F only; IIV on Vd/F was dropped for 49% shrinkage (Results).
-    etalcl ~ 0.07085 # Table 2 'IIV for CL' 27.1 CV%; omega^2 = log(0.271^2 + 1) = 0.07085
+    etalcl ~ log(1 + 0.271^2)  # Table 2 'IIV for CL' 27.1 CV%
 
     propSd <- 0.189; label("Proportional residual error (fraction)") # Table 2 proportional error 18.9 CV%
     addSd <- 0.495; label("Additive residual error (ng/mL)") # Table 2 additive error 0.495 ng/mL

@@ -79,12 +79,12 @@ Bastida_2018_tocilizumab <- function() {
     # section) reports CV% on the linear-parameter scale for CL and V; no off-diagonal
     # correlation is reported. Convert each CV% to log-normal variance via
     # omega^2 = log(1 + CV^2):
-    #   CL CV 17.0% -> omega^2 = log(1 + 0.170^2) = 0.02850
-    #   V  CV 30.8% -> omega^2 = log(1 + 0.308^2) = 0.09065
+    #   CL CV 17.0% -> omega^2 = log(1 + 0.170^2) = 0.02849
+    #   V  CV 30.8% -> omega^2 = log(1 + 0.308^2) = 0.09063
     # Bastida 2018 Table 2 VAR(eta_CL) = 17.0% CV
-    etalcl ~ 0.02850
+    etalcl ~ log(1 + 0.170^2)
     # Bastida 2018 Table 2 VAR(eta_V) = 30.8% CV
-    etalvc ~ 0.09065
+    etalvc ~ log(1 + 0.308^2)
 
     # Residual error - Bastida 2018 Table 2 (Residual error section). Combined
     # additive + proportional model: Cobs = Cpred * (1 + eps_prop) + eps_add.

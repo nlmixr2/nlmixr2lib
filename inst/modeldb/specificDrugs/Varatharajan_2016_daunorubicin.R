@@ -87,13 +87,13 @@ Varatharajan_2016_daunorubicin <- function() {
     # IIV. Diagonal omega blocks (paper does not report off-diagonal
     # correlations). CV% from Table 2 converted to log-scale variance
     # via omega^2 = log(1 + CV^2).
-    etalcl       ~ 0.5341  # Dnr CL CV% = 84% -> log(1 + 0.84^2)
+    etalcl       ~ log(1 + 0.84^2)  # Dnr CL CV% = 84%
     etalvc       ~ 1.1135  # Dnr V  CV% = 143% -> log(1 + 1.43^2)
-    etalk12      ~ 0.3895  # Dnr K12 CV% = 69% -> log(1 + 0.69^2)
-    etalk21      ~ 0.4178  # Dnr K21 CV% = 72% -> log(1 + 0.72^2)
-    etalcl_dol   ~ 0.3434  # DOL CL CV% = 64% -> log(1 + 0.64^2)
-    etalvc_dol   ~ 0.3525  # DOL V  CV% = 65% -> log(1 + 0.65^2)
-    etalk12_dol  ~ 0.4273  # DOL K12 CV% = 73% -> log(1 + 0.73^2)
+    etalk12      ~ log(1 + 0.69^2)  # Dnr K12 CV% = 69%
+    etalk21      ~ log(1 + 0.72^2)  # Dnr K21 CV% = 72%
+    etalcl_dol   ~ log(1 + 0.64^2)  # DOL CL CV% = 64%
+    etalvc_dol   ~ log(1 + 0.65^2)  # DOL V  CV% = 65%
+    etalk12_dol  ~ log(1 + 0.73^2)  # DOL K12 CV% = 73%
     etalk21_dol  ~ 0.3801  # DOL K21 CV% = 68% -> log(1 + 0.68^2)
 
     # Residual error -- proportional only on each observed analyte

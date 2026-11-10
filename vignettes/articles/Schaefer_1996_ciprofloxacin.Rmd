@@ -65,9 +65,9 @@ below collects them in one place.
 | `lfdepot` = log(0.618) | 0.618 | Table 4 u7 (SE 5.2%) |
 | `e_wt_vc` = fixed(1) | 1 | Schaefer 1996 final model: V2 proportional to WT |
 | `e_wt_vp` = fixed(1) | 1 | Schaefer 1996 final model: V3 proportional to WT |
-| `etalcl` | 0.006061 (var) | Table 4 vCL = 7.8% CV; log(1 + 0.078^2) |
-| `etalvc` | 0.049837 (var) | Table 4 vV2 = 22.6% CV; log(1 + 0.226^2) |
-| `etalvp` | 0.021957 (var) | Table 4 vV3 = 14.9% CV; log(1 + 0.149^2) |
+| `etalcl` | 0.006066 (var) | Table 4 vCL = 7.8% CV; log(1 + 0.078^2) |
+| `etalvc` | 0.049814 (var) | Table 4 vV2 = 22.6% CV; log(1 + 0.226^2) |
+| `etalvp` | 0.021958 (var) | Table 4 vV3 = 14.9% CV; log(1 + 0.149^2) |
 | `propSd` | 0.319 | Table 4 d = 31.9% CV (SE 16.8%) |
 
 # Virtual cohort

@@ -73,16 +73,16 @@ Kelman_1984_gentamicin_manchester2 <- function() {
     #   TVCL = 0.19*20 + (-0.13)*5 + (-0.009)*60 = 2.61 L/h
     #   Var(CL|typical) = 400*5.5e-3 + 0 [VAR(eta2) indeterminate] + 3600*3.5e-5
     #                   = 2.2 + 0 + 0.126 = 2.326
-    #   SD(CL) approx 1.525 L/h, CV(CL) approx 58%, omega^2(lcl) = log(1+0.584^2) = 0.296
+    #   SD(CL) approx 1.525 L/h, CV(CL) approx 58%, omega^2(lcl) = log(1+0.584^2) = 0.293
     # V IIV: VAR(theta4) = 6.9e-3 (paper Table 4), so CV(theta4) = sqrt(6.9e-3)/0.28 = 29.6%,
-    #        omega^2(lvc) = log(1+0.296^2) = 0.0843.
+    #        omega^2(lvc) = log(1+0.296^2) = 0.0840.
     # Note: the implied CV on CL is substantial (~58%); this reflects the large
     # paper-reported VAR(theta1) for the older Manchester II cohort, which is converted
     # to log-normal at typical covariates here. Per-individual IIV magnitudes will scale
     # with WT under the paper's true additive structure (heteroscedastic); the log-normal
     # approximation collapses this to homoscedastic IIV. See vignette Errata.
-    etalcl ~ 0.296   # log-normal CV approx 58% on CL at typical Manchester II covariates (paper Table 4 VAR(eta_i) collapsed; VAR(eta2) indeterminate)
-    etalvc ~ 0.0843  # log-normal CV approx 30% on V (paper Table 4 VAR(theta4) = 6.9e-3 converted)
+    etalcl ~ log(1 + 0.584^2)  # log-normal CV approx 58% on CL at typical Manchester II covariates (paper Table 4 VAR(eta_i) collapsed; VAR(eta2) indeterminate)
+    etalvc ~ log(1 + 0.296^2)  # log-normal CV approx 30% on V (paper Table 4 VAR(theta4) = 6.9e-3 converted)
 
     # Additive residual error (paper Equation 7; Table 4 reports VAR(eps) = 0.31 (mg/L)^2)
     addSd <- sqrt(0.31);     label("Additive residual SD (mg/L)")                       # Kelman 1984 Table 4 Model 1 (Manchester II): VAR(eps)
