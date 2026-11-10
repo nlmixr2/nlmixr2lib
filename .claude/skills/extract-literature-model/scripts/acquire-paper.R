@@ -15,6 +15,11 @@
 #   0  success; PDF at --out
 #   2  all 5 sources tried, none produced a valid PDF (sidecar to operator)
 #   3  argument / environment error (missing curl, bad DOI, etc.)
+#
+# Downloads are staged in `<out>.part` and moved onto --out only once they
+# pass the PDF and title checks, so --out holds an accepted PDF only after
+# exit 0; a file already at --out is replaced by an accepted PDF and
+# otherwise left as it was.
 
 suppressPackageStartupMessages({
   library(jsonlite, warn.conflicts = FALSE)
@@ -111,38 +116,41 @@ titleMatches <- function(pdfPath, expectedFragment) {
   grepl(tolower(expectedFragment), body, fixed = TRUE)
 }
 
-attemptAndRecord <- function(label, url, dest, agent, log, title) {
-  ok <- curlDownload(url, dest, agent = agent)
+# Downloads `url` beside `dest` and moves it onto `dest` only when it is a
+# valid PDF whose first page matches `title`, so a rejected or partial
+# download is never visible at `dest` and an existing `dest` survives a
+# failed attempt. Returns list(log = <log with this attempt appended>,
+# ok = <accepted>).
+attemptAndRecord <- function(log, label, url, dest, agent, title) {
+  part <- paste0(dest, ".part")
+  on.exit(unlink(part), add = TRUE)
+  ok <- curlDownload(url, part, agent = agent)
   outcome <- list(source = label, url = url, downloaded = ok)
+  accepted <- FALSE
   if (!ok) {
     outcome$reason <- "curl failed (network / timeout / non-200)"
-    log$attempts <<- append(log$attempts, list(outcome))
-    return(FALSE)
-  }
-  if (!isValidPdf(dest)) {
+  } else if (!isValidPdf(part)) {
     outcome$reason <- sprintf(
       "not a valid PDF (size=%s, not '%%PDF' head)",
-      if (file.exists(dest)) file.info(dest)$size else "missing"
+      if (file.exists(part)) file.info(part)$size else "missing"
     )
-    log$attempts <<- append(log$attempts, list(outcome))
-    unlink(dest)
-    return(FALSE)
-  }
-  tcheck <- titleMatches(dest, title)
-  if (isTRUE(tcheck)) {
-    outcome$reason <- "valid PDF, title matched"
-    log$attempts <<- append(log$attempts, list(outcome))
-    TRUE
-  } else if (is.na(tcheck)) {
-    outcome$reason <- "valid PDF, title check skipped (pdftotext absent)"
-    log$attempts <<- append(log$attempts, list(outcome))
-    TRUE
   } else {
-    outcome$reason <- "valid PDF but title did not match --title expectation"
-    log$attempts <<- append(log$attempts, list(outcome))
-    unlink(dest)
-    FALSE
+    tcheck <- titleMatches(part, title)
+    if (isTRUE(tcheck)) {
+      outcome$reason <- "valid PDF, title matched"
+      accepted <- TRUE
+    } else if (is.na(tcheck)) {
+      outcome$reason <- "valid PDF, title check skipped (pdftotext absent)"
+      accepted <- TRUE
+    } else {
+      outcome$reason <- "valid PDF but title did not match --title expectation"
+    }
   }
+  if (accepted && !file.rename(part, dest)) {
+    stop(sprintf("could not move %s to %s", part, dest), call. = FALSE)
+  }
+  log$attempts <- append(log$attempts, list(outcome))
+  list(log = log, ok = accepted)
 }
 
 writeLog <- function(log, path) {
@@ -268,23 +276,23 @@ main <- function(argv) {
   }
 
   for (url in crossrefCandidates(doi, agent)) {
-    if (attemptAndRecord("crossref", url, out, agent, log, args$title)) {
-      exitOk(log, args$log, out)
-    }
+    step <- attemptAndRecord(log, "crossref", url, out, agent, args$title)
+    log <- step$log
+    if (step$ok) exitOk(log, args$log, out)
   }
 
   for (url in unpaywallCandidate(doi, args$email, agent)) {
-    if (attemptAndRecord("unpaywall", url, out, agent, log, args$title)) {
-      exitOk(log, args$log, out)
-    }
+    step <- attemptAndRecord(log, "unpaywall", url, out, agent, args$title)
+    log <- step$log
+    if (step$ok) exitOk(log, args$log, out)
   }
 
   pmcid <- europePmcId(doi, agent)
   if (!is.null(pmcid)) {
     url <- sprintf("https://europepmc.org/articles/%s?pdf=render", pmcid)
-    if (attemptAndRecord("europepmc", url, out, agent, log, args$title)) {
-      exitOk(log, args$log, out)
-    }
+    step <- attemptAndRecord(log, "europepmc", url, out, agent, args$title)
+    log <- step$log
+    if (step$ok) exitOk(log, args$log, out)
   }
 
   if (is.null(pmcid)) {
@@ -295,18 +303,17 @@ main <- function(argv) {
       "https://www.ncbi.nlm.nih.gov/pmc/articles/%s/pdf/",
       pmcid
     )
-    if (attemptAndRecord("ncbi-pmc", url, out, agent, log, args$title)) {
-      exitOk(log, args$log, out)
-    }
+    step <- attemptAndRecord(log, "ncbi-pmc", url, out, agent, args$title)
+    log <- step$log
+    if (step$ok) exitOk(log, args$log, out)
   }
 
   for (url in publisherCandidates(doi)) {
-    matched <- attemptAndRecord(
-      "publisher-pattern", url, out, agent, log, args$title
+    step <- attemptAndRecord(
+      log, "publisher-pattern", url, out, agent, args$title
     )
-    if (matched) {
-      exitOk(log, args$log, out)
-    }
+    log <- step$log
+    if (step$ok) exitOk(log, args$log, out)
   }
 
   log$result <- "all-sources-failed"
