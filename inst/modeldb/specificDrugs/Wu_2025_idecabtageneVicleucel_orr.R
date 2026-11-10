@@ -6,7 +6,7 @@ Wu_2025_idecabtageneVicleucel_orr <- function() {
     "CAR T-cell therapy idecabtagene vicleucel (ide-cel) in adults with ",
     "triple-class-exposed relapsed/refractory multiple myeloma (Wu 2025; ",
     "ide-cel arm of the phase 3 KarMMa-3 trial, N = 220). The exposure is ",
-    "the noncompartmental day-0-28 transgene-level AUC (AUC_IDECEL, ",
+    "the noncompartmental day-0-28 transgene-level AUC (AUC_IDECEL_DDPCR, ",
     "day*copies/ug, droplet digital PCR) on the natural log scale. The ",
     "baseline logit E0 is fixed at -5; Emax = 7.654 is the INCREMENT on the ",
     "logit, so the response probability plateaus at expit(2.654) = 93% for ",
@@ -31,12 +31,12 @@ Wu_2025_idecabtageneVicleucel_orr <- function() {
   vignette <- "Wu_2025_idecabtageneVicleucel"
   units <- list(
     time = "n/a (static landmark exposure-response regression; no time dimension)",
-    dosing = "n/a (no dose events; exposure enters as the AUC_IDECEL covariate column)",
+    dosing = "n/a (no dose events; exposure enters as the AUC_IDECEL_DDPCR covariate column)",
     concentration = "prob_orr_central (probability of overall response by independent review, 0-1; also logit_orr_central)"
   )
 
   covariateData <- list(
-    AUC_IDECEL = list(
+    AUC_IDECEL_DDPCR = list(
       description = "Individual ide-cel transgene-level AUC from the infusion to day 28 (AUC0-28D), by noncompartmental analysis of peripheral-blood CAR transgene copies per microgram of genomic DNA measured by droplet digital PCR.",
       units = "day*copies/ug",
       type = "continuous",
@@ -132,7 +132,7 @@ Wu_2025_idecabtageneVicleucel_orr <- function() {
     hill <- exp(lhill)
 
     # Exposure on the natural-log scale (AUC0-28D in day*copies/ug).
-    lnauc <- log(AUC_IDECEL)
+    lnauc <- log(AUC_IDECEL_DDPCR)
 
     # Hill fraction lnauc^hill / (ec50^hill + lnauc^hill), written as an
     # expit of hill * (log(lnauc) - lec50) so the large Hill coefficient

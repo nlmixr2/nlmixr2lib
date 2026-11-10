@@ -6,7 +6,7 @@ Wu_2025_idecabtageneVicleucel_pfs <- function() {
     "vicleucel (ide-cel) in adults with triple-class-exposed ",
     "relapsed/refractory multiple myeloma (Wu 2025; ide-cel arm of the ",
     "phase 3 KarMMa-3 trial, N = 220). The exposure is the noncompartmental ",
-    "day-0-28 transgene-level AUC (AUC_IDECEL, day*copies/ug, droplet ",
+    "day-0-28 transgene-level AUC (AUC_IDECEL_DDPCR, day*copies/ug, droplet ",
     "digital PCR) on the log2 scale: each doubling multiplies the hazard by ",
     "exp(-0.43) = 0.65. These are the Table S7 FULL-model coefficients ",
     "(13 covariate terms), the only PFS estimates the paper prints; the ",
@@ -34,17 +34,17 @@ Wu_2025_idecabtageneVicleucel_pfs <- function() {
   vignette <- "Wu_2025_idecabtageneVicleucel"
   units <- list(
     time = "n/a (semiparametric Cox relative hazard; the baseline hazard and therefore the time scale are unspecified by the fit)",
-    dosing = "n/a (no dose events; exposure enters as the AUC_IDECEL covariate column)",
+    dosing = "n/a (no dose events; exposure enters as the AUC_IDECEL_DDPCR covariate column)",
     concentration = "hr (relative hazard of progression or death vs the reference subject, unitless; also lhr, the log relative hazard)"
   )
 
   covariateData <- list(
-    AUC_IDECEL = list(
+    AUC_IDECEL_DDPCR = list(
       description = "Individual ide-cel transgene-level AUC from the infusion to day 28 (AUC0-28D), by noncompartmental analysis of peripheral-blood CAR transgene copies per microgram of genomic DNA measured by droplet digital PCR.",
       units = "day*copies/ug",
       type = "continuous",
       reference_category = NULL,
-      notes = "Enters as log2(AUC_IDECEL / 1.3e6). The paper centres continuous covariates on their medians without printing the AUC0-28D median; 1.3 x 10^6 is the boundary between the second and third quartiles printed in the Figure 2a legend (Q2 0.4-1.3, Q3 1.3-2.7 x 10^6). The centring only sets which subject has hr = 1; it does not change any hazard ratio. ddPCR assay (KarMMa-3); the paper did not compare these values with the KarMMa (phase 2) assay.",
+      notes = "Enters as log2(AUC_IDECEL_DDPCR / 1.3e6). The paper centres continuous covariates on their medians without printing the AUC0-28D median; 1.3 x 10^6 is the boundary between the second and third quartiles printed in the Figure 2a legend (Q2 0.4-1.3, Q3 1.3-2.7 x 10^6). The centring only sets which subject has hr = 1; it does not change any hazard ratio. ddPCR assay (KarMMa-3); the paper did not compare these values with the KarMMa (phase 2) assay.",
       source_name = "Log2(AUC0-28D) (days*copies/ug)"
     ),
     SEXF = list(
@@ -193,7 +193,7 @@ Wu_2025_idecabtageneVicleucel_pfs <- function() {
   })
 
   model({
-    lhr <- e_auc_idecel_haz * log2(AUC_IDECEL / 1.3e6) +
+    lhr <- e_auc_idecel_haz * log2(AUC_IDECEL_DDPCR / 1.3e6) +
       e_sexm_haz * (1 - SEXF) +
       e_emd_haz * DIS_EMD +
       e_ferritin_bl_haz * log2(FERRITIN_BL / 163) +
