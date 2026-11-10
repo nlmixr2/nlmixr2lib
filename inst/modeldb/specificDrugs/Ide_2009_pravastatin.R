@@ -145,15 +145,15 @@ Ide_2009_pravastatin <- function() {
     # variability, respectively."). Paper-reported %CV translates to log-scale
     # variance via omega^2 = log(1 + CV^2):
     #   MTT  CV 35.2% -> log(1 + 0.352^2) = 0.1168
-    #   CL/F CV 27.9% -> log(1 + 0.279^2) = 0.0749
-    #   V1/F CV 34.4% -> log(1 + 0.344^2) = 0.1119
+    #   CL/F CV 27.9% -> log(1 + 0.279^2) = 0.0750
+    #   V1/F CV 34.4% -> log(1 + 0.344^2) = 0.1118
     #   K12  CV 51.2% -> log(1 + 0.512^2) = 0.2328
     # Final Model retained IIV on MTT, CL/F, V1/F, K12; IIV on K21 and tg was
     # tested and not retained (Results p. 1312: "Introduction of the
     # interindividual variability in K21 and tg did not improve the model").
     etalmtt ~ 0.1168                                                                                  # Table II Final Model IIV MTT  = 35.2% CV
-    etalcl  ~ 0.0749                                                                                  # Table II Final Model IIV CL/F = 27.9% CV
-    etalvc  ~ 0.1119                                                                                  # Table II Final Model IIV V1/F = 34.4% CV
+    etalcl  ~ log(1 + 0.279^2)  # Table II Final Model IIV CL/F = 27.9% CV
+    etalvc  ~ log(1 + 0.344^2)  # Table II Final Model IIV V1/F = 34.4% CV
     etalk12 ~ 0.2328                                                                                  # Table II Final Model IIV K12  = 51.2% CV
 
     # Residual error (combined proportional + additive, Ide 2009 Table II).

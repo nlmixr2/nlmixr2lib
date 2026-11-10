@@ -67,10 +67,10 @@ Panoilia_2015_bevacizumab <- function() {
     # IIV (exponential, log-normal). omega^2 = log(CV^2 + 1) for CV reported as % in Table 3.
     # CL CV 20%   -> omega^2 = log(1 + 0.20^2) = 0.03922
     # V1 CV 22%   -> omega^2 = log(1 + 0.22^2) = 0.04727
-    # BM0 CV 24%  -> omega^2 = log(1 + 0.24^2) = 0.05599
+    # BM0 CV 24%  -> omega^2 = log(1 + 0.24^2) = 0.05600
     etalcl  ~ 0.03922
     etalvc  ~ 0.04727
-    etalbm0 ~ 0.05599
+    etalbm0 ~ log(1 + 0.24^2)
 
     # Residual error: paper Methods page 796 ("Modeling was performed on log-transformed data ...
     # an additive error model on log-transformed data"). NONMEM additive on log scale is

@@ -90,16 +90,14 @@ Rodjun_2023_sitafloxacin <- function() {
     fu <- fixed(0.388); label("Sitafloxacin plasma unbound fraction (unitless)")  # Rodjun 2023 Materials and methods, Pharmacokinetic model / Sitafloxacin: "An unbound fraction of sitafloxacin of 0.388 was used (Tanigawara et al., 2013)"
 
     # ------------------------------------------------------------------
-    # Inter-individual variability. Rodjun 2023 Table 2 reports omega^2
-    # and its footnote states "SD were calculated from the square root of
-    # omega^2 x 100% x estimate" - i.e. sqrt(omega^2) is an ARITHMETIC CV
-    # which Crystal Ball then used as the spread of a log-normal draw.
-    # The equivalent log-scale variance is omega^2_log = log(CV^2 + 1) =
-    # log(omega^2_reported + 1).
+    # Inter-individual variability. Rodjun 2023 Table 2 prints omega^2 for
+    # each parameter, and Methods (Sitafloxacin) defines it as "the variance
+    # of the estimated value (SD were calculated from the square root of
+    # omega^2 x 100% x estimate)". The printed omega^2 is used directly.
     # ------------------------------------------------------------------
-    etalcl ~ 0.072959  # log(0.0757 + 1); Rodjun 2023 Table 2 CL t/F omega^2 = 0.0757 (arithmetic CV 27.5%)
-    etalvc ~ 0.083410  # log(0.0870 + 1); Rodjun 2023 Table 2 V/F omega^2 = 0.0870 (arithmetic CV 29.5%)
-    etalka ~ 1.717400  # log(4.5700 + 1); Rodjun 2023 Table 2 ka omega^2 = 4.57 (arithmetic CV 214%) - see the validation vignette; this variance is implausibly large for an absorption rate constant but is encoded exactly as printed, and it does not affect the AUC-driven PK/PD target
+    etalcl ~ 0.0757  # Rodjun 2023 Table 2 CL t/F omega^2 = 0.0757
+    etalvc ~ 0.0870  # Rodjun 2023 Table 2 V/F omega^2 = 0.0870
+    etalka ~ 4.57  # Rodjun 2023 Table 2 ka omega^2 = 4.57 (printed; see the vignette Errata)
 
     # ------------------------------------------------------------------
     # Residual error. Rodjun 2023 reports none: the Monte Carlo

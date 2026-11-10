@@ -116,9 +116,9 @@ Gurjar_2023_raltegravir <- function() {
     lvp <- log(117); label("Apparent peripheral volume of distribution Vp/F (L)") # Table 2: Vp/F = 117 L (RSE 0.6%)
     lka <- log(1.12); label("First-order absorption rate constant ka (1/h)") # Table 2: ka = 1.12 1/h (RSE 13.0%)
 
-    # Table 2 'Random effects': IIV CL/F 62.7% (RSE 12.1%), read as a CV; log(1 + 0.627^2) = 0.33156.
+    # Table 2 'Random effects': IIV CL/F 62.7% (RSE 12.1%), read as a CV; log(1 + 0.627^2) = 0.33155.
     # The control stream fixes the IIV on Vc, Q, Vp and ka to 0, so they are omitted here.
-    etalcl ~ 0.33156
+    etalcl ~ log(1 + 0.627^2)
 
     # Table 2 'Residual error': proportional 69.9% (RSE 7.0%); Y = F*(1 + ERR(1)).
     propSd <- 0.699; label("Proportional residual error (fraction)") # Table 2: proportional = 69.9%

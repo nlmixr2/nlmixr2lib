@@ -61,10 +61,10 @@ Park_2014_SKL10406 <- function() {
 
     # IIV - log-normal CV% reported in Park 2014 Table 3.
     # omega^2 = log(CV^2 + 1).
-    # log(0.622^2 + 1) = 0.3270; log(0.416^2 + 1) = 0.1598; log(0.683^2 + 1) = 0.3826.
-    etalcl   ~ 0.3270  # Park 2014 Table 3 ME: IIV CL/F = 62.2% CV
-    etalvc   ~ 0.1598  # Park 2014 Table 3 ME: IIV V2/F = 41.6% CV
-    etalec50 ~ 0.3826  # Park 2014 Table 3 EME: IIV EC50 = 68.3% CV; effect-compartment scale.
+    # log(0.622^2 + 1) = 0.3271; log(0.416^2 + 1) = 0.1596; log(0.683^2 + 1) = 0.3829.
+    etalcl   ~ log(1 + 0.622^2)  # Park 2014 Table 3 ME: IIV CL/F = 62.2% CV
+    etalvc   ~ log(1 + 0.416^2)  # Park 2014 Table 3 ME: IIV V2/F = 41.6% CV
+    etalec50 ~ log(1 + 0.683^2)  # Park 2014 Table 3 EME: IIV EC50 = 68.3% CV; effect-compartment scale.
 
     # Residual error.
     # Park 2014 Methods states a "combined" (additive + proportional) residual error model

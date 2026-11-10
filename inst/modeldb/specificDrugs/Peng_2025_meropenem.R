@@ -158,7 +158,7 @@ Peng_2025_meropenem <- function() {
     #   CV(%) = sqrt(exp(omega^2) - 1) * 100
     # so omega^2 = log(CV^2 + 1). Final model eta_CLbody = 42.1 %CV
     # (RSE 37.4%, shrinkage 6.7%; bootstrap median 40.2, 95% CI 21.4-59.0).
-    etalcl ~ 0.163214  # log(0.421^2 + 1)
+    etalcl ~ log(1 + 0.421^2)
 
     # No eta on the central volume. Peng 2025 Results p. 1109: "Due to
     # limitations in our dataset, we were unable to precisely estimate IIV on

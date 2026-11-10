@@ -209,16 +209,16 @@ PerezRuixo_2020_esketamine <- function() {
     # to cperezru@its.jnj.com or a future erratum). See the vignette
     # Errata section for the full discussion.
     etalogitFRn ~ 0.501             # Table 3 omega(FRn) = 70.8 (additive on logit); SD_logit ~ 0.708 -> variance 0.501
-    etalka_n    ~ 0.319             # Table 3 omega(ka_n) = 61.5 CV%; omega^2 = log(1 + 0.615^2) = 0.319
+    etalka_n    ~ log(1 + 0.615^2)  # Table 3 omega(ka_n) = 61.5 CV%
     etalka_sw   ~ 1.009             # Table 3 omega(ka_sw) = 132 CV%; omega^2 = log(1 + 1.32^2) = 1.009
     etalka_po   ~ 1.009             # Table 3 omega(ka_po) = 132 CV%; same value as ka_sw (Table 3 row gives identical 132 CV%, 9.80 RSE)
-    etalvc      ~ 0.0730            # Table 3 omega(Vc) = 27.5 CV%; omega^2 = log(1 + 0.275^2) = 0.0730
+    etalvc      ~ log(1 + 0.275^2)  # Table 3 omega(Vc) = 27.5 CV%
     etalvp      ~ 0.218             # Table 3 omega(Vp1) = 49.3 CV%; omega^2 = log(1 + 0.493^2) = 0.218
     etalqh      ~ 0.0524            # Table 3 omega(Qh) = 23.2 CV%; omega^2 = log(1 + 0.232^2) = 0.0524
     etalvh      ~ 0.113             # Table 3 omega(Vh) = 34.6 CV%; omega^2 = log(1 + 0.346^2) = 0.113
     etalkel     ~ 0.892             # Table 3 omega(kel) = 120 CV%; omega^2 = log(1 + 1.2^2) = 0.892
     etalkmet    ~ 0.0862            # Table 3 omega(kmet) reported (Section 2.4) but Estimate column blank; placeholder CV = 30% used (omega^2 = log(1 + 0.30^2) = 0.0862) - see vignette Errata
-    etalvcn     ~ 0.0955            # Table 3 omega(Vcn/F) = 31.6 CV%; omega^2 = log(1 + 0.316^2) = 0.0955
+    etalvcn     ~ log(1 + 0.316^2)  # Table 3 omega(Vcn/F) = 31.6 CV%
     etalcln     ~ 0.0625            # Table 3 omega(CLn/F) = 25.4 CV%; omega^2 = log(1 + 0.254^2) = 0.0625
 
     # ------------------- Residual error -------------------------------------

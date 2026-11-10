@@ -101,7 +101,7 @@ Pastuszak_2021_testosteroneUndecanoate <- function() {
     e_wt_vc <- fixed(1); label("Power exponent of (WT / 101 kg) on V/F (unitless)") # Table 2, 'Weight, V/F (power)' 1.0 FIXED
 
     etalcl ~ 0.0392207 # Table 2, IIV CL/F 20.0 %CV; log(0.200^2 + 1)
-    etalka ~ 0.200361 # Table 2, IIV Ka 47.1 %CV; log(0.471^2 + 1)
+    etalka ~ log(1 + 0.471^2)  # Table 2, IIV Ka 47.1 %CV
 
     propSd <- 0.188; label("Proportional residual error (fraction)") # Table 2, proportional residual error 18.8%
     addSd <- 56.8; label("Additive residual error (ng/dL)") # Table 2, additive residual error SE 56.8 ng/dL

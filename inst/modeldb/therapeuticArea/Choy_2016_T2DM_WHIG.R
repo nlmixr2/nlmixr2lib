@@ -127,12 +127,12 @@ Choy_2016_T2DM_WHIG <- function() {
     # ----- IIV (diagonal OMEGA; S2 correlation matrix not available) -----
     etalblwt     ~ 0.02109   # Choy 2016 Table 1; log-normal, CV 14.6% -> log(1 + 0.146^2)
     etais0       ~ 0.09303   # Choy 2016 Table 1; normal SD 0.305 on the logit scale (footnote b)
-    etalscaleefs ~ 0.37570   # Choy 2016 Table 1; log-normal, CV 67% -> log(1 + 0.67^2)
+    etalscaleefs ~ log(1 + 0.67^2)  # Choy 2016 Table 1; log-normal, CV 67%
     etab0        ~ 1.96000   # Choy 2016 Table 1; normal SD 1.4 on the logit scale (footnote b)
-    etalefbmax   ~ 0.22158   # Choy 2016 Table 1; log-normal, CV 49.9% -> log(1 + 0.499^2)
-    etalefb50    ~ 0.11453   # Choy 2016 Table 1; log-normal, CV 34.9% -> log(1 + 0.349^2)
+    etalefbmax   ~ log(1 + 0.499^2)  # Choy 2016 Table 1; log-normal, CV 49.9%
+    etalefb50    ~ log(1 + 0.349^2)  # Choy 2016 Table 1; log-normal, CV 34.9%
     etarb        ~ 0.04410   # Choy 2016 Table 1; normal SD 0.21 on the logit-rate scale (footnote b)
-    etalppg      ~ 0.02358   # Choy 2016 Table 1; log-normal, CV 15.4% -> log(1 + 0.154^2)
+    etalppg      ~ log(1 + 0.154^2)  # Choy 2016 Table 1; log-normal, CV 15.4%
     etaefde      ~ 0.12674   # Choy 2016 Table 1; normal SD 0.356 percent-points (footnote b; column/100)
     etaefp       ~ 0.16160   # Choy 2016 Table 1; normal SD 0.402 percent-points (footnote b)
     etaefup      ~ 0.55354   # Choy 2016 Table 1; normal SD 0.744 percent-points (footnote b)

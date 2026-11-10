@@ -51,9 +51,9 @@ Per-parameter origin is recorded as an in-file comment next to each `ini()` entr
 | `e_creat_cl` (SCR power exponent on CL) | -0.41 | Table 3, theta_SCR |
 | `e_page_cl` (PMA power exponent on CL) |  2.05 | Table 3, theta_PMA |
 | Final CL equation | `CL = theta_CL * WT^0.75 * (SCR/0.8)^-0.41 * (PMA/28)^2.05` | Results paragraph 4 and Table 2 final row |
-| `etalcl` (omega^2, CL CV 23%) | 0.05153 | Table 3 omega^2_CL |
+| `etalcl` (omega^2, CL CV 23%) | 0.05155 | Table 3 omega^2_CL |
 | `etalvc` (omega^2, V CV 13%) | 0.01676 | Table 3 omega^2_V |
-| `etalfdepot` (omega^2, F1 CV 31%) | 0.09175 | Table 3 omega^2_F1 |
+| `etalfdepot` (omega^2, F1 CV 31%) | 0.09176 | Table 3 omega^2_F1 |
 | `propSd` (proportional residual, CV%) | 0.46 | Table 3 sigma proportional |
 | `addSd` (additive residual, ng/mL) | 505 | Table 3 sigma additive |
 | Structural model: 1-compartment first-order absorption | n/a | Methods: "1-compartment model (ADVAN2, TRANS2) and first-order conditional estimation (FOCE with interaction)" |

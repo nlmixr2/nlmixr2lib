@@ -140,8 +140,8 @@ Alsultan_2023_vancomycin <- function() {
     # 0.2367 / 0.2747, a difference of under 1.5% relative, so nothing downstream
     # turns on the choice. No CL-V correlation is reported, so the etas are
     # independent.
-    etalcl ~ 0.075474  # Alsultan 2023 Table 3 (IIV Cl = 28%, RSE 11%); log(1 + 0.28^2) = 0.075474
-    etalvc ~ 0.056011  # Alsultan 2023 Table 3 (IIV V  = 24%, RSE 26%); log(1 + 0.24^2) = 0.056011
+    etalcl ~ log(1 + 0.28^2)  # Alsultan 2023 Table 3 (IIV Cl = 28%, RSE 11%)
+    etalvc ~ log(1 + 0.24^2)  # Alsultan 2023 Table 3 (IIV V  = 24%, RSE 26%)
 
     # Residual error. Results: "best described using ... a proportional error
     # model"; Table 3 footnote b defines the reported 0.3 as the proportional

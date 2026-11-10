@@ -58,7 +58,7 @@ Kohl_2010_posaconazole <- function() {
 
     # Inter-individual variability on CL/F (exponential).
     # CV = 26.9% per Kohl 2010 Table 4; omega^2 = log(CV^2 + 1) = log(0.269^2 + 1) ~= 0.06985.
-    etalcl    ~ 0.06985                                                                                       # Kohl 2010 Table 4 final model: IIV CL/F = 26.9% CV
+    etalcl    ~ log(1 + 0.269^2)  # Kohl 2010 Table 4 final model: IIV CL/F = 26.9% CV
 
     # Residual error: proportional, CV = 42% per Kohl 2010 Table 4.
     propSd    <- 0.42;               label("Proportional residual error (fraction)")                          # Kohl 2010 Table 4 final model: residual variability CV 42.0%

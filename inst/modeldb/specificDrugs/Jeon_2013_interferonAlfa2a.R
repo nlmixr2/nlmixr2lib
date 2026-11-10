@@ -113,28 +113,28 @@ Jeon_2013_interferonAlfa2a <- function() {
     # is omega^2 = log(CV^2 + 1).
     #
     # PK IIV: CL, V, D2, RF, Ka (no IIV reported on ALAG).
-    #   omega^2_CL  = log(0.261^2 + 1) = 0.06598
-    #   omega^2_V   = log(0.238^2 + 1) = 0.05504
-    #   omega^2_D2  = log(0.357^2 + 1) = 0.12001
-    #   omega^2_RF  = log(0.347^2 + 1) = 0.11373
-    #   omega^2_Ka  = log(0.770^2 + 1) = 0.45203
-    etalcl ~ 0.06598                                                                                                    # Jeon 2013 Table 4: omega_CL = 26.1% -> omega^2 = log(0.261^2 + 1)
-    etalvc ~ 0.05504                                                                                                    # Jeon 2013 Table 4: omega_V = 23.8% -> omega^2 = log(0.238^2 + 1)
-    etald2 ~ 0.12001                                                                                                    # Jeon 2013 Table 4: omega_D2 = 35.7% -> omega^2 = log(0.357^2 + 1)
-    etalrf ~ 0.11373                                                                                                    # Jeon 2013 Table 4: omega_RF = 34.7% -> omega^2 = log(0.347^2 + 1)
-    etalka ~ 0.45203                                                                                                    # Jeon 2013 Table 4: omega_Ka = 77.0% -> omega^2 = log(0.770^2 + 1)
+    #   omega^2_CL  = log(0.261^2 + 1) = 0.06590
+    #   omega^2_V   = log(0.238^2 + 1) = 0.05510
+    #   omega^2_D2  = log(0.357^2 + 1) = 0.11996
+    #   omega^2_RF  = log(0.347^2 + 1) = 0.11369
+    #   omega^2_Ka  = log(0.770^2 + 1) = 0.46556
+    etalcl ~ log(1 + 0.261^2)  # Jeon 2013 Table 4: omega_CL = 26.1%
+    etalvc ~ log(1 + 0.238^2)  # Jeon 2013 Table 4: omega_V = 23.8%
+    etald2 ~ log(1 + 0.357^2)  # Jeon 2013 Table 4: omega_D2 = 35.7%
+    etalrf ~ log(1 + 0.347^2)  # Jeon 2013 Table 4: omega_RF = 34.7%
+    etalka ~ log(1 + 0.77^2)  # Jeon 2013 Table 4: omega_Ka = 77.0%
 
     # PD IIV: BASE, CB, GA, ECB, MTT (no IIV reported on Kout, EMAX, CA).
-    #   omega^2_BASE = log(0.1385^2 + 1) = 0.01906
-    #   omega^2_CB   = log(0.5731^2 + 1) = 0.28367
-    #   omega^2_GA   = log(0.1351^2 + 1) = 0.01814
-    #   omega^2_ECB  = log(0.2131^2 + 1) = 0.04445
-    #   omega^2_MTT  = log(0.1336^2 + 1) = 0.01773
-    etalrbase ~ 0.01906                                                                                                  # Jeon 2013 Table 4: omega_BASE = 13.85% -> omega^2 = log(0.1385^2 + 1)
-    etalcb   ~ 0.28367                                                                                                  # Jeon 2013 Table 4: omega_CB = 57.31% -> omega^2 = log(0.5731^2 + 1)
-    etalga   ~ 0.01814                                                                                                  # Jeon 2013 Table 4: omega_GA = 13.51% -> omega^2 = log(0.1351^2 + 1)
-    etalecb  ~ 0.04445                                                                                                  # Jeon 2013 Table 4: omega_ECB = 21.31% -> omega^2 = log(0.2131^2 + 1)
-    etalmtt  ~ 0.01773                                                                                                  # Jeon 2013 Table 4: omega_MTT = 13.36% -> omega^2 = log(0.1336^2 + 1)
+    #   omega^2_BASE = log(0.1385^2 + 1) = 0.01900
+    #   omega^2_CB   = log(0.5731^2 + 1) = 0.28401
+    #   omega^2_GA   = log(0.1351^2 + 1) = 0.01809
+    #   omega^2_ECB  = log(0.2131^2 + 1) = 0.04441
+    #   omega^2_MTT  = log(0.1336^2 + 1) = 0.01769
+    etalrbase ~ log(1 + 0.1385^2)  # Jeon 2013 Table 4: omega_BASE = 13.85%
+    etalcb   ~ log(1 + 0.5731^2)  # Jeon 2013 Table 4: omega_CB = 57.31%
+    etalga   ~ log(1 + 0.1351^2)  # Jeon 2013 Table 4: omega_GA = 13.51%
+    etalecb  ~ log(1 + 0.2131^2)  # Jeon 2013 Table 4: omega_ECB = 21.31%
+    etalmtt  ~ log(1 + 0.1336^2)  # Jeon 2013 Table 4: omega_MTT = 13.36%
 
     # ---------------------------------------------------------------
     # RESIDUAL ERROR

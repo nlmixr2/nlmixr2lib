@@ -115,11 +115,11 @@ table collects them for review.
 | `e_fm`  (FM, fixed)                           | 0.85               | `fixed(0.85)`                 | Table 3 (fixed at 85%)  |
 | `e_fmpag` (FMPAG, fixed)                      | 0.65               | `fixed(0.65)`                 | Table 3 (fixed at 65%)  |
 | `e_ehc` (EHC, fixed)                          | 0.35               | `fixed(0.35)`                 | Table 3 (fixed at 35%)  |
-| `etalcl`      IIV CL1 MPA                     | 48.6% CV           | `log(1+0.486^2)=0.21201`      | Table 3                 |
-| `etalvc`      IIV V3 MPA                      | 59.2% CV           | `log(1+0.592^2)=0.30048`      | Table 3                 |
-| `etalq`       IIV CL2 MPA                     | 42.9% CV           | `log(1+0.429^2)=0.16895`      | Table 3                 |
+| `etalcl`      IIV CL1 MPA                     | 48.6% CV           | `log(1+0.486^2)=0.21204`      | Table 3                 |
+| `etalvc`      IIV V3 MPA                      | 59.2% CV           | `log(1+0.592^2)=0.30045`      | Table 3                 |
+| `etalq`       IIV CL2 MPA                     | 42.9% CV           | `log(1+0.429^2)=0.16893`      | Table 3                 |
 | `etalvp`      IIV V4 MPA                      | 60.0% CV           | `log(1+0.600^2)=0.30748`      | Table 3                 |
-| `etalcl_mpag` IIV CLM MPAG                    | 55.9% CV           | `log(1+0.559^2)=0.27193`      | Table 3                 |
+| `etalcl_mpag` IIV CLM MPAG                    | 55.9% CV           | `log(1+0.559^2)=0.27192`      | Table 3                 |
 | `propSd`      Residual MPA                    | 41.2% CV           | `0.412`                       | Table 3                 |
 | `propSd_mpag` Residual MPAG                   | 45.4% CV           | `0.454`                       | Table 3                 |
 | Transit-compartment input            (Savic)  | n/a                | `transit(nn, mtt, 1.0)`       | Eq. for Ktr; Figure 3   |

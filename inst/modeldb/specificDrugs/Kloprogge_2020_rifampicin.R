@@ -71,7 +71,7 @@ Kloprogge_2020_rifampicin <- function() {
     # so omega^2 = log(1 + CV^2). The fixed MTT value back-transforms to the
     # Sloan 2017 variance 0.0706, confirming the convention.
     etalcl ~ 0.1490          # S1 Table 'IIV on Cl (%CV)' = 40.08; log(1 + 0.4008^2) = 0.1490
-    etalvc ~ 0.5389          # S1 Table 'IIV on Vc (%CV)' = 84.52; log(1 + 0.8452^2) = 0.5389
+    etalvc ~ log(1 + 0.8452^2)  # S1 Table 'IIV on Vc (%CV)' = 84.52
     etalmtt ~ fixed(0.0706)  # S1 Table 'IIV on MTT (%CV)' = 27.05 (held constant); log(1 + 0.2705^2) = 0.0706
 
     propSd <- 0.194; label("Proportional residual error (fraction)") # S1 Table 'Proportional residual variability (%)' rifampicin = 19.40

@@ -134,8 +134,8 @@ Yu_2026_tenofovir_pregnancy_tfv <- function() {
     # i.e. one shared eta on clearance rather than one per state.
     # ------------------------------------------------------------------
     etalcl ~ 0.0808   # CV 29%:    log(0.290^2 + 1)   (ESM Table S1, BSV on CL/F, RSE 8%)
-    etalka ~ 1.0433   # CV 135.6%: log(1.356^2 + 1)   (ESM Table S1, BSV on Ka, RSE 14%)
-    etalvc ~ 0.2088   # CV 48.2%:  log(0.482^2 + 1)   (ESM Table S1, BSV on V2/F, RSE 23%)
+    etalka ~ log(1 + 1.356^2)  # CV 135.6%   (ESM Table S1, BSV on Ka, RSE 14%)
+    etalvc ~ log(1 + 0.482^2)  # CV 48.2%   (ESM Table S1, BSV on V2/F, RSE 23%)
 
     # Residual error, plasma TFV.
     propSd <- 0.327;  label("Proportional residual error, plasma TFV (fraction)")                           # ESM Table S1 (PROP (TFV) = 32.7%, RSE 2%)

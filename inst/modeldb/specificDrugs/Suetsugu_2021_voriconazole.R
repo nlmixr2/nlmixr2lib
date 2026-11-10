@@ -179,8 +179,8 @@ Suetsugu_2021_voriconazole <- function() {
     e_conmed_methylprednisolone_vmax <- 1.30; label("Multiplicative factor on Vmax with concomitant methylprednisolone (unitless)") # Table 2: Effect of mPSL on Vmax = 1.30 (RSE 7.5%)
 
     # IIV on Vmax, exponential model (Section 2.5). Table 2 reports 23.6 CV%;
-    # omega^2 = log(1 + 0.236^2) = 0.05421.
-    etalvmax ~ 0.05421 # Table 2: IIV Vmax 23.6 CV% (RSE 13.9%, shrinkage 11.2%)
+    # omega^2 = log(1 + 0.236^2) = 0.05420.
+    etalvmax ~ log(1 + 0.236^2)  # Table 2: IIV Vmax 23.6 CV% (RSE 13.9%, shrinkage 11.2%)
 
     # Additive residual error (Section 2.5), in concentration units.
     addSd <- 0.77; label("Additive residual error SD (mg/L)") # Table 2: Additive error = 0.77 ug/mL (RSE 10.8%)

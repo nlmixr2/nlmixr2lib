@@ -112,14 +112,14 @@ Bulitta_2007_piperacillin <- function() {
     # The paper reports the apparent CV on a log scale; the variance is
     # related to CV via omega^2 = log(1 + CV^2):
     #   10.4% CV -> log(1 + 0.104^2) = 0.010758       (CL)
-    #   26.0% CV -> log(1 + 0.260^2) = 0.065396       (V1)
-    #   34.2% CV -> log(1 + 0.342^2) = 0.110667       (V2)
+    #   26.0% CV -> log(1 + 0.260^2) = 0.065413       (V1)
+    #   34.2% CV -> log(1 + 0.342^2) = 0.110614       (V2)
     # Off-diagonal: cov(V1, V2) = r * sd(V1) * sd(V2)
-    #   r = -0.80 (Table 3 footnote e); cov = -0.80 * sqrt(0.065396 * 0.110667)
+    #   r = -0.80 (Table 3 footnote e); cov = -0.80 * sqrt(0.065413 * 0.110614)
     #   = -0.068061. Block specified as c(var_V1, cov_V1V2, var_V2).
     etalcl ~ 0.010758                                                                     # Bulitta 2007 Table 3: BSV CL = 10.4% CV
-    etalvc + etalvp ~ c(0.065396,
-                       -0.068061, 0.110667)                                               # Bulitta 2007 Table 3: BSV V1 = 26.0% CV, BSV V2 = 34.2% CV, r(V1,V2) = -0.80
+    etalvc + etalvp ~ c(log(1 + 0.260^2),
+                       -0.80 * sqrt(log(1 + 0.342^2) * log(1 + 0.260^2)), log(1 + 0.342^2))                                               # Bulitta 2007 Table 3: BSV V1 = 26.0% CV, BSV V2 = 34.2% CV, r(V1,V2) = -0.80
 
     # ===== Residual error (Bulitta 2007 Table 3: combined proportional + additive) =====
     propSd <- 0.132; label("Proportional residual error (fraction)")                      # Bulitta 2007 Table 3: CVC = 13.2%

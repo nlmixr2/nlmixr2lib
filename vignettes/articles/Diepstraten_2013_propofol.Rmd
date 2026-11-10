@@ -66,10 +66,10 @@ This table collects them in one place.
 | `e_wt_cl` = 0.77     | TBW allometric exponent on CL (estimated, not fixed) | Diepstraten 2013 Table 3 final model |
 | `e_age_le41` = 0.0103 | Bilinear age slope on CL for AGE <= 41 y | Diepstraten 2013 Table 3 final model |
 | `e_age_gt41` = -0.00539 | Bilinear age slope on CL for AGE > 41 y | Diepstraten 2013 Table 3 final model |
-| `etalcl` = 0.030171  | IIV CL = 17.5 % CV (log-normal variance) | Diepstraten 2013 Table 3 final model |
-| `etalvc` = 0.228065  | IIV V1 = 50.6 % CV | Diepstraten 2013 Table 3 final model |
-| `etalvp2` = 0.123131 | IIV V3 = 36.2 % CV | Diepstraten 2013 Table 3 final model |
-| `etalq2` = 0.151250  | IIV Q3 = 40.4 % CV | Diepstraten 2013 Table 3 final model |
+| `etalcl` = 0.030165  | IIV CL = 17.5 % CV (log-normal variance) | Diepstraten 2013 Table 3 final model |
+| `etalvc` = 0.227961  | IIV V1 = 50.6 % CV | Diepstraten 2013 Table 3 final model |
+| `etalvp2` = 0.123141 | IIV V3 = 36.2 % CV | Diepstraten 2013 Table 3 final model |
+| `etalq2` = 0.151189  | IIV Q3 = 40.4 % CV | Diepstraten 2013 Table 3 final model |
 | `propSd` = 0.243     | Proportional intra-individual error 24.3 % | Diepstraten 2013 Table 3 final model |
 | CL covariate equation | `CL_i = CL_70,41 * (TBW/70)^0.77 * Fage` | Diepstraten 2013 Eq. 1 |
 | Q3 covariate equation | `Q3_i = Q3_70 * (TBW/70)` | Diepstraten 2013 Table 2 footnote c |

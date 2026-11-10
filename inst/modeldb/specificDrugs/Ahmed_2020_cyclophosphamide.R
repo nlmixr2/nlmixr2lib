@@ -92,7 +92,7 @@ Ahmed_2020_cyclophosphamide <- function() {
 
     # ---- Inter-individual variability (Ahmed 2020 Table 3, final model) ----
     # %CV = sqrt(exp(omega^2) - 1) (Methods), so omega^2 = log(CV^2 + 1).
-    etalcl ~ 0.19500 # Ahmed 2020 Table 3 final model BSV CL = 46.4%; log(0.464^2 + 1) = 0.19500
+    etalcl ~ log(1 + 0.464^2)  # Ahmed 2020 Table 3 final model BSV CL = 46.4%
     etalvc ~ 0.12123 # Ahmed 2020 Table 3 final model BSV VD = 35.9%; log(0.359^2 + 1) = 0.12123
 
     # ---- PK residual error (Ahmed 2020 Table 3) ----

@@ -76,8 +76,8 @@ pointing at its origin. They are collected here for review.
 | `e_bsa_cl` (theta_BSA-CL) | 0.99 | Table 3, final model (RSE 12%; bootstrap 0.76-1.27) |
 | `e_bsa_vc` (theta_BSA-Vd) | 1.03 | Table 3, final model (RSE 10%; bootstrap 0.77-1.22) |
 | `e_alp_vc` (theta_ALP-Vd) | -0.20 | Table 3, final model (RSE 26%; bootstrap -0.31 to -0.09) |
-| `etalcl` | 0.0472764 | Table 3 IIV_CL = 22.00%; omega^2 = log(0.22^2 + 1) |
-| `etalvc` | 0.0183272 | Table 3 IIV_Vd = 13.60%; omega^2 = log(0.136^2 + 1) |
+| `etalcl` | 0.0472652 | Table 3 IIV_CL = 22.00%; omega^2 = log(0.22^2 + 1) |
+| `etalvc` | 0.0183270 | Table 3 IIV_Vd = 13.60%; omega^2 = log(0.136^2 + 1) |
 | `propSd` | 0.1292 | Table 3 epsilon_plasma = 12.92% (RSE 17%) |
 | `propSd_Csaliva` | 0.2250 | Table 3 epsilon_saliva = 22.50% (RSE 22%) |
 | `CL = theta_CL * (BSA/1.69)^theta_BSA_CL * exp(eta)` | n/a | Table 3 footnote equation (first displayed equation below the footnote list) |

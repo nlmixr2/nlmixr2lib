@@ -142,12 +142,12 @@ Hawwa_2013_ranitidine <- function() {
     # absorption rate constant had to be removed for the model to
     # minimize successfully." Table 2 reports IIV as CV%; the variance
     # is omega^2 = log(1 + CV^2).
-    #   IIV CL  = 60.1% -> omega^2 = log(1 + 0.601^2) = 0.30828    # Table 2 FINAL IIV CL  = 60.1% (RSE 33.0%)
-    #   IIV V   = 85.0% -> omega^2 = log(1 + 0.850^2) = 0.54382    # Table 2 FINAL IIV V   = 85.0% (RSE 44.5%)
+    #   IIV CL  = 60.1% -> omega^2 = log(1 + 0.601^2) = 0.30837    # Table 2 FINAL IIV CL  = 60.1% (RSE 33.0%)
+    #   IIV V   = 85.0% -> omega^2 = log(1 + 0.850^2) = 0.54378    # Table 2 FINAL IIV V   = 85.0% (RSE 44.5%)
     # No correlation between etalcl and etalvc was reported in the
     # paper; off-diagonal covariance is implicit zero.
-    etalcl ~ 0.30828
-    etalvc ~ 0.54382
+    etalcl ~ log(1 + 0.601^2)
+    etalvc ~ log(1 + 0.850^2)
 
     # Residual error: proportional only. Paper Methods page 4
     # ("Simplification of the residual error model was considered

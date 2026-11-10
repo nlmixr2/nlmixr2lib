@@ -300,20 +300,20 @@ Wicha_2018_rifampicin <- function() {
     # corr * sqrt(omega^2(vmax) * omega^2(km)). IOV (also in Table 1) is
     # NOT carried -- see file-header description.
     # =========================================================================
-    etalvmax + etalkm ~ c(0.08618, 0.03964, 0.12054)
+    etalvmax + etalkm ~ c(0.08618, 0.389 * sqrt(0.08618 * log(1 + 0.358^2)), log(1 + 0.358^2))
     # log(1 + 0.30^2) = 0.08618 (Wicha 2018 Table 1 IIV Vmax = 30.0% CV);
-    # log(1 + 0.358^2) = 0.12054 (Wicha 2018 Table 1 IIV km = 35.8% CV);
-    # cov = 0.389 * sqrt(0.08618 * 0.12054) = 0.03964 (Wicha 2018 Table 1
+    # log(1 + 0.358^2) = 0.12059 (Wicha 2018 Table 1 IIV km = 35.8% CV);
+    # cov = 0.389 * sqrt(0.08618 * 0.12059) = 0.03966 (Wicha 2018 Table 1
     # 'Correlation Vmax-km [%]' = 38.9%; sign convention positive).
 
     etalvc  ~ 0.006159
     # log(1 + 0.0786^2) = 0.006159 (Wicha 2018 Table 1 IIV Vd = 7.86% CV).
 
-    etalka  ~ 0.10822
-    # log(1 + 0.338^2) = 0.10822 (Wicha 2018 Table 1 IIV ka = 33.8% CV).
+    etalka  ~ log(1 + 0.338^2)
+    # log(1 + 0.338^2) = 0.10818 (Wicha 2018 Table 1 IIV ka = 33.8% CV).
 
-    etalmtt ~ 0.13624
-    # log(1 + 0.382^2) = 0.13624 (Wicha 2018 Table 1 IIV MTT = 38.2% CV).
+    etalmtt ~ log(1 + 0.382^2)
+    # log(1 + 0.382^2) = 0.13621 (Wicha 2018 Table 1 IIV MTT = 38.2% CV).
 
     etalnn  ~ 0.47427
     # log(1 + 0.779^2) = 0.47427 (Wicha 2018 Table 1 IIV NN = 77.9% CV).

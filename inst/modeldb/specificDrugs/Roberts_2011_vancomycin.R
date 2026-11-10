@@ -60,8 +60,8 @@ Roberts_2011_vancomycin <- function() {
     # Inter-individual variability (Roberts 2011 Table 2 final-covariate-model
     # %CV rows; exponential variability model per Eq. 2). For log-normal etas,
     # omega^2 = log(CV^2 + 1).
-    etalcl ~ 0.140924 # log(0.389^2 + 1); 38.9% CV on CL (Roberts 2011 Table 2: 95% CI 28.3-55.6)
-    etalvc ~ 0.130918 # log(0.374^2 + 1); 37.4% CV on V  (Roberts 2011 Table 2: 95% CI 16.6-54.9)
+    etalcl ~ log(1 + 0.389^2)  # 38.9% CV on CL (Roberts 2011 Table 2: 95% CI 28.3-55.6)
+    etalvc ~ log(1 + 0.374^2)  # 37.4% CV on V  (Roberts 2011 Table 2: 95% CI 16.6-54.9)
 
     # Combined proportional + additive residual error (Roberts 2011 Table 2
     # Random error rows).

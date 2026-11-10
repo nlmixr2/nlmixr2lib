@@ -90,17 +90,17 @@ Lin_2024_pozelimab <- function() {
     # ---------------------------------------------------------------------------
     # Inter-individual variability (Lin 2024 Table 2; %CV)
     # Convert to log-normal variance via omega^2 = log(CV^2 + 1):
-    #   31.90 % -> log(0.319^2 + 1)  = 0.09732 (CL)
-    #   16.10 % -> log(0.161^2 + 1)  = 0.02568 (Vc)
-    #   80.37 % -> log(0.8037^2 + 1) = 0.48107 (Vp)
-    #   16.48 % -> log(0.1648^2 + 1) = 0.02683 (ksyn)
-    #   21.10 % -> log(0.211^2 + 1)  = 0.04362 (kint1)
+    #   31.90 % -> log(0.319^2 + 1)  = 0.09691 (CL)
+    #   16.10 % -> log(0.161^2 + 1)  = 0.02559 (Vc)
+    #   80.37 % -> log(0.8037^2 + 1) = 0.49831 (Vp)
+    #   16.48 % -> log(0.1648^2 + 1) = 0.02680 (ksyn)
+    #   21.10 % -> log(0.211^2 + 1)  = 0.04356 (kint1)
     # ---------------------------------------------------------------------------
-    etalcl    ~ 0.09732   # Lin 2024 Table 2: IIV on CL    = 31.90 %CV
-    etalvc    ~ 0.02568   # Lin 2024 Table 2: IIV on Vc    = 16.10 %CV
-    etalvp    ~ 0.48107   # Lin 2024 Table 2: IIV on Vp    = 80.37 %CV
-    etalksyn  ~ 0.02683   # Lin 2024 Table 2: IIV on ksyn  = 16.48 %CV
-    etalkint1 ~ 0.04362   # Lin 2024 Table 2: IIV on kint1 = 21.10 %CV
+    etalcl    ~ log(1 + 0.319^2)  # Lin 2024 Table 2: IIV on CL    = 31.90 %CV
+    etalvc    ~ log(1 + 0.161^2)  # Lin 2024 Table 2: IIV on Vc    = 16.10 %CV
+    etalvp    ~ log(1 + 0.8037^2)  # Lin 2024 Table 2: IIV on Vp    = 80.37 %CV
+    etalksyn  ~ log(1 + 0.1648^2)  # Lin 2024 Table 2: IIV on ksyn  = 16.48 %CV
+    etalkint1 ~ log(1 + 0.211^2)  # Lin 2024 Table 2: IIV on kint1 = 21.10 %CV
 
     # ---------------------------------------------------------------------------
     # Residual error (Lin 2024 Table 2). Pozelimab uses a log-transformed
