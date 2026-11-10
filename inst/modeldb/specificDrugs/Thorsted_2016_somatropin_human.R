@@ -148,7 +148,7 @@ Thorsted_2016_somatropin_human <- function() {
     etalcl + etalvp ~ c(0.01337,
                         -0.01199, 0.03330)                                                  # Table 2 IIV CL 11.6% CV, Vp 18.4% CV, correlation -0.568
     etalka2  ~ 0.008613                                                                     # Table 2 IIV ka2 9.3% CV (Table 3's 19.3% appears inconsistent - see Errata)
-    etalrbase   ~ 0.028504                                                                     # Table 2 IIV R0 17.0% CV: log(0.170^2 + 1)
+    etalrbase   ~ log(1 + 0.17^2)  # Table 2 IIV R0 17.0% CV
 
     # Residual error - Thorsted 2016 Methods (Prediction of human
     # PKPD): fixed values used in the simulation-based validation.

@@ -73,6 +73,17 @@ table below collects the load-bearing references in one place.
 | Proportional residual error | 6.72%           | Bienczak 2016 Table 2 row `Proportional error (%)` |
 | Structural ODE: 2-cmt + Savic transit + ka | n/a | Bienczak 2016 Methods 'Population pharmacokinetic analysis' paragraph 1 (Savic et al. 2007, ref 39); Results 'Population pharmacokinetics' paragraph 1 |
 
+# Errata
+
+- **The published CVs are first-order approximations.** The Table 2
+  footnote reads "Expressed as approximate %CV on SD scale
+  sqrt(ETA)*100". Each printed CV is therefore the standard deviation of
+  the corresponding random effect, and the model's variances are the
+  squares of the printed CVs (for example `etalcl ~ 0.369^2` for the 36.9%
+  BSV on CL/F), not the exact log-normal conversion `log(1 + CV^2)`. The
+  difference is largest for the 78.0% BOV on MTT: 0.780^2 = 0.608, against
+  0.475 from the log-normal conversion.
+
 # Virtual cohort
 
 The original CHAPAS-3 / ARROW data are not publicly available. The simulation
@@ -326,9 +337,9 @@ knitr::kable(
   `Svensson_2018_bedaquiline.R`, BOV is dropped where a BSV term is
   already reported on the same parameter (CL/F: BOV 26.6% dropped; F:
   BOV 50.5% dropped) and folded in as a BSV-equivalent where only BOV
-  is reported (MTT: BOV 78.0% -> BSV-equivalent omega^2 = log(1 + 0.780^2)
-  = 0.47521; ka: BOV 57.7% -> BSV-equivalent omega^2 = log(1 + 0.577^2)
-  = 0.28738).
+  is reported (MTT: BOV 78.0% -> BSV-equivalent omega^2 = 0.780^2
+  = 0.60840; ka: BOV 57.7% -> BSV-equivalent omega^2 = 0.577^2
+  = 0.33293).
 
 - **Sparse-data residual-error scaling dropped.** Bienczak 2016 retained
   a 2-fold larger residual error for sparse PK samples (Table 2 row

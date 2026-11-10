@@ -79,7 +79,7 @@ Onichimowski_2020_meropenem <- function() {
     # so omega^2 = log(CV^2 + 1). IIV on Q was fixed to 0 and is omitted.
     etalvc ~ 0.24839 # log(0.531^2 + 1); Table 2 omega2 V1 = 53.1 %CV
     etalcl ~ 0.17477 # log(0.437^2 + 1); Table 2 omega2 Cl = 43.7 %CV
-    etalvp ~ 0.54971 # log(0.856^2 + 1); Table 2 omega2 V2 = 85.6 %CV
+    etalvp ~ log(1 + 0.856^2)  # Table 2 omega2 V2 = 85.6 %CV
 
     # Residual error: Cobs = C1 + C1 * eps_prop + eps_add (Methods Eq. 4)
     addSd <- 0.881; label("Additive residual error (mg/L)") # Table 2: sigma add = 0.881 mg/L (RSE 28.4%)

@@ -93,15 +93,15 @@ Chua_2025_mirikizumab <- function() {
 
     # IIV. Table 2 reports IIV as %CV on the linear scale for log-normal
     # parameters: omega^2 = log(CV^2 + 1).
-    # CL: 32.3% -> omega^2 = log(0.323^2 + 1) = 0.09927
+    # CL: 32.3% -> omega^2 = log(0.323^2 + 1) = 0.09924
     # Vc: 17.1% -> omega^2 = log(0.171^2 + 1) = 0.02882
-    # Vp: 23.6% -> omega^2 = log(0.236^2 + 1) = 0.05421
+    # Vp: 23.6% -> omega^2 = log(0.236^2 + 1) = 0.05420
     # F:  additive in logit domain; per Table 2 footnote b,
     #   %IIV_F = 100 * sqrt(OMEGA_F), so OMEGA_F = (0.517)^2 = 0.26729.
     # Ka:  no IIV reported in VIVID-1 (dash in Table 2).
-    etalcl         ~ 0.09927   # Chua 2025 Table 2 VIVID-1 (32.3% CV)
+    etalcl         ~ log(1 + 0.323^2)  # Chua 2025 Table 2 VIVID-1 (32.3% CV)
     etalvc         ~ 0.02882   # Chua 2025 Table 2 VIVID-1 (17.1% CV)
-    etalvp         ~ 0.05421   # Chua 2025 Table 2 VIVID-1 (23.6% CV)
+    etalvp         ~ log(1 + 0.236^2)  # Chua 2025 Table 2 VIVID-1 (23.6% CV)
     etalogitfdepot ~ 0.26729   # Chua 2025 Table 2 VIVID-1 (OMEGA_F on logit scale; 51.7% IIV)
 
     # Residual error. Chua 2025 does not tabulate residual-error estimates

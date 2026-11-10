@@ -65,9 +65,9 @@ Per-parameter origin is recorded as in-file comments next to each `ini()` entry 
 | `e_form_solution_tlag = log(0.3/0.6)` -> solution lag = 0.3 h | 0.3 | Othman 2013 PK/PD-model Results paragraph 1 ("solution lag 0.3 (0.2, 0.4) h"); upstream Othman 2012 |
 | `lfdepot = fixed(log(1))` (solid-dispersion F reference) | 1 | Othman 2013 PK/PD-model Results paragraph 1 (solid-dispersion is the bioavailability anchor); upstream Othman 2012 |
 | `e_form_solution_fdepot = log(0.40)` -> solution Frel = 40% | 0.40 | Othman 2013 PK/PD-model Results paragraph 1 ("solution Frel 40 (35, 45) %"); upstream Othman 2012 |
-| `etalcl ~ 0.1033` -> CV ~ 33% for CL | 33% CV | Othman 2013 PK/PD-model Results paragraph 1 ("33% for clearance"); upstream Othman 2012 |
+| `etalcl ~ 0.1034` -> CV ~ 33% for CL | 33% CV | Othman 2013 PK/PD-model Results paragraph 1 ("33% for clearance"); upstream Othman 2012 |
 | `etalvc ~ 0.0560` -> CV ~ 24% for V | 24% CV | Othman 2013 PK/PD-model Results paragraph 1 ("24% for volume of distribution"); upstream Othman 2012 |
-| `etalktr ~ 0.1769` -> CV ~ 44% for ktr | 44% CV | Othman 2013 PK/PD-model Results paragraph 1 ("44% for absorption transit rate"); upstream Othman 2012 |
+| `etalktr ~ 0.1770` -> CV ~ 44% for ktr | 44% CV | Othman 2013 PK/PD-model Results paragraph 1 ("44% for absorption transit rate"); upstream Othman 2012 |
 | `etaltlag ~ 0.2152` -> CV ~ 49% for lag | 49% CV | Othman 2013 PK/PD-model Results paragraph 1 ("49% for the lag time"); upstream Othman 2012 |
 | `bl_oral = 36.3` degC | 36.3 | Othman 2013 Table 2 (Baseline Oral; bootstrap 95% CI 36.3-36.4) |
 | `bl_core = 37.0` degC | 37.0 | Othman 2013 Results paragraph 4 + Abstract (Baseline Core 37.0, bootstrap 95% CI 37.0-37.1); estimated jointly with `bl_oral` |

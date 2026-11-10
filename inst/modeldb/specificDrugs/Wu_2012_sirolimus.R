@@ -79,8 +79,8 @@ Wu_2012_sirolimus <- function() {
     # IIV on CL1/F and V1/F print identically at 52.4%; the table reports
     # diagonal entries only with no off-diagonal/correlation, so the etas are
     # encoded as independent (no $OMEGA BLOCK reported).
-    etalcl ~ 0.2425   # 52.4% CV; omega^2 = log(1 + 0.524^2) = 0.2425
-    etalvc ~ 0.2425   # 52.4% CV; omega^2 = log(1 + 0.524^2) = 0.2425
+    etalcl ~ log(1 + 0.524^2)  # 52.4% CV
+    etalvc ~ log(1 + 0.524^2)  # 52.4% CV
     etalq  ~ 0.4035   # 70.5% CV; omega^2 = log(1 + 0.705^2) = 0.4035
     etalvp ~ 0.0366   # 19.3% CV; omega^2 = log(1 + 0.193^2) = 0.0366
 

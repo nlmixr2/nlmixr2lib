@@ -111,14 +111,14 @@ Geers_2022_clozapine <- function() {
     label("Oral bioavailability (fraction; F = 1, so V is apparent V/F)") # Methods; Table 3 footnote 'F was fixed at 1'
 
     # IIV, log-scale variances from the Table 3 natural-scale SDs:
-    #   Kelm 0.0365 / 0.0641 -> CV 56.9 % -> log(1 + 0.569423^2) = 0.280840
+    #   Kelm 0.0365 / 0.0641 -> CV 56.9 % -> log(1 + 0.569423^2) = 0.280841
     #   Vd   3.82 / 5.21     -> CV 73.3 % -> log(1 + 0.733205^2) = 0.430216
     #   Ka   0.68 / 1.37     -> CV 49.6 % -> log(1 + 0.496350^2) = 0.220230
     # No covariance is reported, so the block is diagonal. The Ka SD is the
     # literature prior SD the paper kept with the fixed Ka; it is carried as
     # a fixed variance so the full MwPharm prior is preserved.
     etalka ~ fixed(0.220230) # Table 3, Ka 1.37 +/- 0.68, held at the literature prior -> 49.6 % CV
-    etalkel ~ 0.280840 # Table 3, Kelm 0.0641 +/- 0.0365 -> 56.9 % CV; shrinkage 0.079
+    etalkel ~ log(1 + 0.569423^2)  # Table 3, Kelm 0.0641 +/- 0.0365 -> 56.9 % CV; shrinkage 0.079
     etalvd ~ 0.430216 # Table 3, Vd/F 5.21 +/- 3.82 -> 73.3 % CV; shrinkage 0.054
 
     # Residual error. 'The assay error was concentration dependent and set to

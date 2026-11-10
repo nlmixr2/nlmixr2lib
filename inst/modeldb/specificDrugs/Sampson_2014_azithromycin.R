@@ -72,10 +72,10 @@ Sampson_2014_azithromycin <- function() {
     # Interindividual variability - Sampson 2014 Table 1 (CV%, exponential model)
     # Conversion: omega^2 = log(CV^2 + 1) for exponential (log-normal) IIV.
     etalka         ~ 0.1554   # CV 41%:  log(0.41^2 + 1)   (Table 1, eta_Ka)
-    etalvc         ~ 0.9117   # CV 122%: log(1.22^2 + 1)   (Table 1, eta_V1/F)
-    etalvpbmc      ~ 0.2313   # CV 51%:  log(0.51^2 + 1)   (Table 1, eta_V2/F)
+    etalvc         ~ log(1 + 1.22^2)  # CV 122%   (Table 1, eta_V1/F)
+    etalvpbmc      ~ log(1 + 0.51^2)  # CV 51%   (Table 1, eta_V2/F)
     etalvpmn       ~ 0.2476   # CV 53%:  log(0.53^2 + 1)   (Table 1, eta_V3/F)
-    etalcl         ~ 0.8329   # CV 114%: log(1.14^2 + 1)   (Table 1, eta_CL1/F)
+    etalcl         ~ log(1 + 1.14^2)  # CV 114%   (Table 1, eta_CL1/F)
     etalqpbmc_qpmn ~ 0.4463   # CV 75%:  log(0.75^2 + 1)   (Table 1, shared eta on CL12 and CL13)
 
     # Residual error - Sampson 2014 Table 1 (proportional, CV%)

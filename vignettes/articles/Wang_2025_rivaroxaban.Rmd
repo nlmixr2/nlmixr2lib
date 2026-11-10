@@ -98,7 +98,7 @@ comment naming its source location. They are collected here for review.
 | `e_astalt_vc` | 0.213 | Table 5 `fV/F-AST/ALT` (RSE 15.87%); Equation 8 exponent |
 | AST/ALT normalizing median | 1.188 | Results, sentence following Equations 7 and 8 |
 | `etalcl` = 0.113322 | IIV CV 34.64% | Table 5 IIV(CV%) for CL/F; converted by `omega^2 = log(CV^2 + 1)` |
-| `etalvc` = 0.038490 | IIV CV 19.81% | Table 5 IIV(CV%) for V/F; converted by `omega^2 = log(CV^2 + 1)` |
+| `etalvc` = 0.038493 | IIV CV 19.81% | Table 5 IIV(CV%) for V/F; converted by `omega^2 = log(CV^2 + 1)` |
 | Diagonal OMEGA (no CL-V covariance) | n/a | Results: "the correlation between CL/F and V/F was found to be negligible ... a diagonal OMEGA matrix was retained in the final model" |
 | `propSd` = 0.71 | sigma 0.71 | Table 5 residual error (RSE 9.61%, epsilon shrinkage 18.7%) |
 | `Cc = central / vc * 1000` | n/a | Unit bridge only: dose in mg / volume in L gives mg/L; x1000 gives ng/mL (= ug/L, the unit used in the goodness-of-fit narrative and in the 3-1600 ng/mL calibration range) |

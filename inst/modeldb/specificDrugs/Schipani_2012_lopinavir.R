@@ -107,8 +107,8 @@ Schipani_2012_lopinavir <- function() {
     # IIV on CL/F only (exponential, theta_i = theta * exp(eta)).
     # Paper reports IIV CL/F = 37% (Table 1 Final Model, RSE 44%).
     # For an exponential / log-normal random effect with CV = 37%:
-    #   omega^2 = log(1 + 0.37^2) = log(1.1369) = 0.1284
-    etalcl ~ 0.1284  # Table 1 Final Model IIV CL/F = 37% CV (= log(1 + 0.37^2) = 0.1284)
+    #   omega^2 = log(1 + 0.37^2) = log(1.1369) = 0.1283
+    etalcl ~ log(1 + 0.37^2)  # Table 1 Final Model IIV CL/F = 37% CV (=)
 
     # Residual variability: proportional only ("residual variability
     # was best described by a purely proportional structure").

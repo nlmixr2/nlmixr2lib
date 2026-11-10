@@ -81,7 +81,7 @@ comment naming its origin. They are collected here for review.
 | `lvc` (Vd/F) | `fixed(log(150))` L | Methods *Population PK Model Development* para. 1: "holding the parameters of volume of distribution (Vd) and absorption rate constant (Ka) constant at 150 L and 0.18 h-1 respectively [13]" |
 | `lka` | `fixed(log(0.18))` 1/h | Methods *Population PK Model Development* para. 1, same sentence |
 | `e_wt_cl` | `fixed(0.75)` | Methods *Population PK Model Development* para. 2: "Weight was included in an allometric model and fixed at 0.75 CL/F and normalized to a reference weight of 70 kg" |
-| `etalcl` | `0.15189` = `log(1 + 0.405^2)` | Results *Population Pharmacokinetics* para. 1: "inter-individual variability (omega2 CL) of 40.5% coefficient variation" |
+| `etalcl` | `0.15188` = `log(1 + 0.405^2)` | Results *Population Pharmacokinetics* para. 1: "inter-individual variability (omega2 CL) of 40.5% coefficient variation" |
 | `propSd` | `0.0831` | Results *Population Pharmacokinetics* para. 1: "proportional residual variability of 0.0831" |
 | `addSd` | `0.0699` mg/L | Results *Population Pharmacokinetics* para. 1: "residual additive variability of 0.0699 SD" |
 | `d/dt(depot)`, `d/dt(central)` | n/a | Methods *Population PK Model Development* para. 1: "The ADVAN2 subroutine (one compartment linear model with first order absorption) was selected" |
@@ -505,7 +505,7 @@ fixed rather than fitted (see *Assumptions and deviations*).
   variation, proportional residual variability of 0.0831% coefficient
   variation, and residual additive variability of 0.0699 SD". The stated *unit*
   is taken over the omega-squared *symbol* throughout: 40.5% is read as a CV and
-  converted to the log-scale variance `log(1 + 0.405^2) = 0.15189`, 0.0831 as a
+  converted to the log-scale variance `log(1 + 0.405^2) = 0.15188`, 0.0831 as a
   proportional SD (8.31% CV), and 0.0699 as an additive SD in mg/L. Reading
   0.0831 as a variance instead would give a proportional SD of 0.288 (28.8%);
   the paper's own wording ("SD" for the additive term, "coefficient variation"

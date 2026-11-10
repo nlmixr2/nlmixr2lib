@@ -99,16 +99,16 @@ PerezRuixo_2025_posdinemab <- function() {
     mw_da <- 148000; label("Posdinemab molecular weight (Da); used for dose mg-to-pmol conversion only")
 
     # ----- IIV (Table 2; CV% -> omega^2 = log(1 + CV^2)) ---------------------
-    etalcl   ~ 0.05181  # CL CV 23.4%
+    etalcl   ~ log(1 + 0.234^2)  # CL CV 23.4%
     etalvc   ~ 0.03012  # V1 CV 17.5%
-    etalq    ~ 0.18525  # Q  CV 44.9%
+    etalq    ~ log(1 + 0.449^2)  # Q  CV 44.9%
     etalvp   ~ 0.04764  # V2 CV 22.1%
     etalqcsf ~ 0.08300  # QCSF CV 29.4%
-    etalvcsf ~ 0.06244  # VCSF CV 25.5%
-    etalvisf ~ 0.60466  # VISF CV 91.0%
-    etalrbase   ~ 0.37113  # R0   CV 67.7%
+    etalvcsf ~ log(1 + 0.255^2)  # VCSF CV 25.5%
+    etalvisf ~ log(1 + 0.91^2)  # VISF CV 91.0%
+    etalrbase   ~ log(1 + 0.677^2)  # R0   CV 67.7%
     etalkc   ~ 0.26156  # kc   CV 54.7%
-    etalkint ~ 0.13510  # kint CV 38.2%
+    etalkint ~ log(1 + 0.382^2)  # kint CV 38.2%
 
     # ----- Residual unexplained variability (Table 2) ------------------------
     # Paper Methods: "an additive error model after natural logarithmic

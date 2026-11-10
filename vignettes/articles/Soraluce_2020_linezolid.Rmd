@@ -68,8 +68,8 @@ Every `ini()` value carries an in-file comment pointing to its source in
 | `lvc` (V1) | 16.2 L (RSE 14%) | Table 3, final model |
 | `lq` (Q) | 71.7 L/h (RSE 14%) | Table 3, final model |
 | `lvp` (V2) | 29.0 L (RSE 7%) | Table 3, final model |
-| `etalcl` | 61.5% -> omega^2 = log(0.615^2 + 1) = 0.3205 | Table 3, final model |
-| `etalvc` | 65.9% -> omega^2 = log(0.659^2 + 1) = 0.3606 | Table 3, final model |
+| `etalcl` | 61.5% -> omega^2 = log(0.615^2 + 1) = 0.3208 | Table 3, final model |
+| `etalvc` | 65.9% -> omega^2 = log(0.659^2 + 1) = 0.3607 | Table 3, final model |
 | No CL-V1 covariance | n/a | Results 3.1.1 |
 | `addSd` | 0.266 mg/L (RSE 24%) | Table 3, final model |
 | `propSd` | 0.159 (RSE 19%) | Table 3, final model |
@@ -267,7 +267,7 @@ quantiles can be computed exactly by root-finding. This makes the comparison
 deterministic and therefore able to hold on every machine.
 
 ```{r figure-3-analytic}
-omega_cl <- 0.320546 # log(0.615^2 + 1)
+omega_cl <- 0.320796 # log(0.615^2 + 1)
 CRCL_GRID <- c(40, 80, 120, 160, 200, 240)
 tv_cl <- 2.62 + 4.35 * CRCL_GRID / 44 # Table 3 footnote b, QEFF = 0
 

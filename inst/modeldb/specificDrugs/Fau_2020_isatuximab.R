@@ -136,24 +136,24 @@ Fau_2020_isatuximab <- function() {
     #   log-normal:  omega^2 = log(CV^2 + 1)   (CLinf, KCL, gamma, Vc, Q, Vp, Vm, Km)
     #   normal CLm:  var     = (CLm * CV)^2    (additive eta on the linear scale)
     # CLinf 47.5% -> log(0.475^2 + 1) = 0.2035
-    # KCL  115%   -> log(1.15^2 + 1)  = 0.8427
+    # KCL  115%   -> log(1.15^2 + 1)  = 0.8426
     # cl_time_hill  118%   -> log(1.18^2 + 1)  = 0.8723
     # Vc    25.7% -> log(0.257^2 + 1) = 0.0640
-    # Q     85.8% -> log(0.858^2 + 1) = 0.5519
+    # Q     85.8% -> log(0.858^2 + 1) = 0.5517
     # Vp    45.6% -> log(0.456^2 + 1) = 0.1889
-    # Vm    61.5% -> log(0.615^2 + 1) = 0.3206
-    # Km    88.9% -> log(0.889^2 + 1) = 0.5823
+    # Vm    61.5% -> log(0.615^2 + 1) = 0.3208
+    # Km    88.9% -> log(0.889^2 + 1) = 0.5824
     # CLm   97.2% -> (0.664 * 0.972)^2 = 0.4164
     # IIVs are reported independently (no off-block correlations in the source).
     etalcl ~ 0.2035  # Fau 2020 Table S3: ω(CLinf) 47.5%
     etacl_time_max    ~ 0.4164  # Fau 2020 Table S3: ω(CLm) 97.2% (additive normal eta)
-    etalcl_t50   ~ 0.8427  # Fau 2020 Table S3: ω(KCL) 115%
+    etalcl_t50   ~ log(1 + 1.15^2)  # Fau 2020 Table S3: ω(KCL) 115%
     etalcl_time_hill   ~ 0.8723  # Fau 2020 Table S3: ω(gamma) 118%
     etalvc    ~ 0.0640  # Fau 2020 Table S3: ω(Vc) 25.7%
-    etalq     ~ 0.5519  # Fau 2020 Table S3: ω(Q) 85.8%
+    etalq     ~ log(1 + 0.858^2)  # Fau 2020 Table S3: ω(Q) 85.8%
     etalvp    ~ 0.1889  # Fau 2020 Table S3: ω(Vp) 45.6%
-    etalvmax  ~ 0.3206  # Fau 2020 Table S3: ω(Vm) 61.5%
-    etalkm    ~ 0.5823  # Fau 2020 Table S3: ω(Km) 88.9%
+    etalvmax  ~ log(1 + 0.615^2)  # Fau 2020 Table S3: ω(Vm) 61.5%
+    etalkm    ~ log(1 + 0.889^2)  # Fau 2020 Table S3: ω(Km) 88.9%
 
     # Combined additive + proportional residual error (Fau 2020 Table S3).
     propSd <- 0.225;   label("Proportional residual error (fraction)") # Fau 2020 Table S3: σprop 22.5%

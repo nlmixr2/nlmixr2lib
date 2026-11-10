@@ -81,7 +81,7 @@ Archary_2018_lopinavir <- function() {
     # Vd/F = Vd_true/F, F-IIV propagates to apparent CL/F. This model represents the
     # paper's IIV as IIV on log(CL/F): omega^2 = log(1 + 0.695^2) per the standard
     # log-normal CV-to-variance conversion (vignette documents the simplification).
-    etalcl ~ 0.395  # log(1 + 0.695^2) = 0.3946; CV = 69.5% per Table 2
+    etalcl ~ log(1 + 0.695^2)  # CV = 69.5% per Table 2
 
     # Residual error. Archary 2018 reports a piecewise proportional RUV (Table 2 rows 6-7
     # / Results page 5-6): 37.7% within the first 5 h post-dose and 27.2% at 5+ h (with

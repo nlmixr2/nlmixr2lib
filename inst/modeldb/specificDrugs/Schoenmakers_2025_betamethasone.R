@@ -112,9 +112,9 @@ Schoenmakers_2025_betamethasone <- function() {
     # exp(eta) times the typical value. See vignette Assumptions and
     # deviations for the alternative sqrt(omega^2)*100 reading.
     # CV-CL = 21.3% -> omega^2 = log(1 + 0.213^2) = 0.0444
-    # CV-Vc = 89.5% -> omega^2 = log(1 + 0.895^2) = 0.5887
+    # CV-Vc = 89.5% -> omega^2 = log(1 + 0.895^2) = 0.5884
     etalcl ~ 0.0444  # Schoenmakers 2025 Table 2 final, IIV-CL = 21.30% (RSE 27%, shrinkage 24%); omega^2 = log(1 + 0.213^2).
-    etalvc ~ 0.5887  # Schoenmakers 2025 Table 2 final, IIV-Vc = 89.50% (RSE 30%, shrinkage 20%); omega^2 = log(1 + 0.895^2).
+    etalvc ~ log(1 + 0.895^2)  # Schoenmakers 2025 Table 2 final, IIV-Vc = 89.50% (RSE 30%, shrinkage 20%).
 
     # Proportional residual error. The source paper reports
     # 'Residual variability = 0.224' in Table 2 without a unit annotation

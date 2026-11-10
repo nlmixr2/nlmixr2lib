@@ -69,8 +69,8 @@ Lee_2017_doripenem <- function() {
 
     # Inter-individual variability (Lee 2017 Table 2 omega CV%);
     # omega^2 = log(CV^2 + 1) for log-normal etas.
-    etalcl ~ 0.26433 # log(0.550^2 + 1); 55.0% CV on CL (RSE 14.4%)
-    etalvc ~ 0.20177 # log(0.473^2 + 1); 47.3% CV on V  (RSE 21.6%)
+    etalcl ~ log(1 + 0.55^2)  # 55.0% CV on CL (RSE 14.4%)
+    etalvc ~ log(1 + 0.473^2)  # 47.3% CV on V  (RSE 21.6%)
 
     # Residual error: Lee 2017 Methods defines the "Poisson" error model as
     # Y = Ypred + eps * Ypred with eps ~ N(0, sigma^2), which is the standard

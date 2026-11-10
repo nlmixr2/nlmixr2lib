@@ -100,8 +100,8 @@ CohenWolkowiez_2012_metronidazole <- function() {
 
     # Inter-individual variability (Cohen-Wolkowiez 2012 Table 4).
     # omega^2 = log(CV^2 + 1) for log-normal eta on log-transformed CL.
-    # omega^2 on CL: log(1 + 0.425^2) = 0.16608 (42.5 CV%).
-    etalcl ~ 0.16608  # 42.5 CV%; Cohen-Wolkowiez 2012 Table 4 (RSE 28.5%)
+    # omega^2 on CL: log(1 + 0.425^2) = 0.16604 (42.5 CV%).
+    etalcl ~ log(1 + 0.425^2)  # 42.5 CV%; Cohen-Wolkowiez 2012 Table 4 (RSE 28.5%)
     # No IIV on V: paper Table 4 reports only IIV on CL; after WT was incorporated
     # the V-IIV nonparametric estimate was close to zero and the parameter was
     # excluded from the final model (Cohen-Wolkowiez 2012 Results).

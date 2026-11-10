@@ -161,14 +161,14 @@ Hajjar_2018_miglustat <- function() {
     # Between-subject variability (Hajjar 2018 Table 2 'BSV' column). Lognormal
     # variances computed as omega^2 = log(1 + CV^2):
     #   CL/F 17.50% -> log(1 + 0.175^2) = 0.03016541 (RSE of BSV 90.1%)
-    #   Q/F  43.40% -> log(1 + 0.434^2) = 0.17257080 (RSE of BSV 108%)
-    #   Ka   44.30% -> log(1 + 0.443^2) = 0.17919080 (RSE of BSV 70.8%)
+    #   Q/F  43.40% -> log(1 + 0.434^2) = 0.17257084 (RSE of BSV 108%)
+    #   Ka   44.30% -> log(1 + 0.443^2) = 0.17919083 (RSE of BSV 70.8%)
     # Vc/F, Vp/F, and D1 do not have a BSV reported (single-value cells), so
     # no eta is included for them. Single etas; no correlation block reported.
     # =========================================================================
     etalcl ~ 0.03016541  # Hajjar 2018 Table 2: BSV CL/F 17.50% (RSE 90.1%)
-    etalq  ~ 0.17257080  # Hajjar 2018 Table 2: BSV Q/F 43.40% (RSE 108%)
-    etalka ~ 0.17919080  # Hajjar 2018 Table 2: BSV Ka 44.30% (RSE 70.8%)
+    etalq  ~ log(1 + 0.434^2)  # Hajjar 2018 Table 2: BSV Q/F 43.40% (RSE 108%)
+    etalka ~ log(1 + 0.443^2)  # Hajjar 2018 Table 2: BSV Ka 44.30% (RSE 70.8%)
 
     # =========================================================================
     # Residual error. Table 2 reports 'Variance of residual error = 0.0408

@@ -182,9 +182,9 @@ Lin_2024_casirivimab <- function() {
     # random effects). The source paper (Lin 2024) shares the same eta values
     # for casirivimab and imdevimab on CL, Vc, and KA; this casirivimab-only
     # extraction carries the same variance estimates.
-    etalcl ~ 0.08642  # 30.04 percent CV, Lin 2024 Table 2 IIV in CL; omega^2 = log(0.3004^2 + 1)
-    etalvc ~ 0.11297  # 34.58 percent CV, Lin 2024 Table 2 IIV in Vc; omega^2 = log(0.3458^2 + 1)
-    etalka ~ 0.47791  # 78.28 percent CV, Lin 2024 Table 2 IIV in KA narrative plus 95 percent CI midpoint 78.05 to 78.51; the printed table point estimate 72.28 lies outside its own CI and is treated as a typesetting typo (omega^2 = log(0.7828^2 + 1))
+    etalcl ~ log(1 + 0.3004^2)  # 30.04 percent CV, Lin 2024 Table 2 IIV in CL
+    etalvc ~ log(1 + 0.3458^2)  # 34.58 percent CV, Lin 2024 Table 2 IIV in Vc
+    etalka ~ log(1 + 0.7828^2)  # 78.28 percent CV, Lin 2024 Table 2 IIV in KA narrative plus 95 percent CI midpoint 78.05 to 78.51; the printed table point estimate 72.28 lies outside its own CI and is treated as a typesetting typo
 
     # Residual variability. NONMEM "additive on log-transformed data" with
     # estimate 23.52 corresponds to a proportional error in linear space

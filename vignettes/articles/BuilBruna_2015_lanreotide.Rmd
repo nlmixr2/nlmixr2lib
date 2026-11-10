@@ -82,10 +82,10 @@ below collects them in one place for review.
 | Zero-order duration D0           | Table 2                                      | 2.96 day |
 | Body-weight effect on CL/F       | Table 2; Eq. 2                               | linear: CL/F = theta_CL * [1 + 9.77e-3 * (BW - 74)] |
 | Median BW reference              | Sect. 3.3.3                                  | 74 kg |
-| IPV CL/F                         | Table 2                                      | 27% CV (variance log(1 + 0.27^2) = 0.07031) |
+| IPV CL/F                         | Table 2                                      | 27% CV (variance log(1 + 0.27^2) = 0.07037) |
 | IPV Vd/F                         | Table 2                                      | 150% CV (variance log(1 + 1.50^2) = 1.17865) |
-| IPV ka                           | Table 2                                      | 61% CV (variance log(1 + 0.61^2) = 0.31641) |
-| IPV F1                           | Table 2                                      | 1.05% CV (variance log(1 + 0.0105^2) = 0.0001103) |
+| IPV ka                           | Table 2                                      | 61% CV (variance log(1 + 0.61^2) = 0.31634) |
+| IPV F1                           | Table 2                                      | 1.05% CV (variance log(1 + 0.0105^2) = 0.0001102) |
 | Residual error (LTBS)            | Table 2; Methods Sect. 2.4                   | sigma_log = 0.275 in log(ng/mL); maps to proportional in linear-space nlmixr2 |
 | Bioavailability F (absolute)     | Fig. 2 caption                               | Not identifiable; structurally anchored at 1 (F1 + F2 = 1) |
 
