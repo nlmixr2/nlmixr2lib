@@ -17710,6 +17710,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Bartels_2021_indacaterol.R` (`vc *= exp(0.25 * STUDY_IRIDIUM)`), `Bartels_2021_mometasoneFuroate.R` (`vc *= exp(0.19 * STUDY_IRIDIUM)`).
 - **Notes:** An empirical study effect on the apparent central volume that absorbs the higher maximal concentrations seen in PALLADIUM (Bartels 2021 Sect. 3.1 and 3.6); the authors attribute it to no mechanism. The IND/GLY/MF formulation was studied only in IRIDIUM, so in the source data `FORM_MF_INDGLYMF = 1` implies `STUDY_IRIDIUM = 1`; the two effects were nonetheless estimated separately on the MF Vc/F.
 
+### STUDY_MB09C0119 (**canonical for the MB09-C-01-19 (SIMBA) phase III denosumab-biosimilar study indicator**)
+- **Description:** 1 = subject enrolled in MB09-C-01-19 (SIMBA, NCT05338086), the phase III study of the MB09 denosumab biosimilar versus EU-Prolia (60 mg SC every 6 months) in postmenopausal women with osteoporosis; 0 = subject enrolled in the phase I study MB09-A-01-19 (NCT05299073; healthy men, single 35 mg SC dose of MB09, EU-Xgeva or US-Xgeva). Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (phase I study MB09-A-01-19).
+- **Source aliases:** `Study` -- the Sanchez-Vidaurre 2025 Table 4 row label `Study~V`; the dataset coding and the reference study are not published.
+- **Example models:** `SanchezVidaurre_2025_denosumab.R` (`vc = exp(lvc - 0.534 * STUDY_MB09C0119 + etalvc)`).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. In the source the study, the population (healthy men vs postmenopausal women with osteoporosis), the dose (35 vs 60 mg) and the sampling design (rich vs sparse) all coincide, so the indicator can equally be read as any of them; it is named for the trial because the source tested "study" as the covariate (Results 3.2.3). The coding direction (phase I = reference) is the maintainers' reading, since the paper prints only the coefficient; the founding model's vignette documents that this reading does not reproduce the paper's own phase III figure. Distinct from `DIS_HEALTHY` (reference = patient), which `Choi_2025_denosumab.R` uses for the same healthy-men + PMO-women design.
+
 ### STUDY_ARROW_PART2 (**canonical for ARROW PK Substudy Part 2 study indicator**)
 - **Description:** 1 = record from the ARROW PK Substudy Part 2 (the antiretroviral-dosing substudy of the ARROW trial in African children living with HIV-1), 0 = record from any other study pooled into the analysis. Per-record (study-fixed) binary indicator.
 - **Units:** (binary)
