@@ -374,9 +374,9 @@ model's half-life over the same interval is about
   difference leaves the system. The second chunk below solves the model
   with the Table 4 lung flows: the loss is many times the antibody's
   clearance and the plasma profile collapses within the first day, so
-  the authors' own implementation cannot have combined the printed lung
-  flows with the printed equations; how they closed the flows is not
-  stated. To preserve total mAb mass the model file derives
+  the published Figure 8c curve cannot have come from the printed lung
+  flows combined with the printed equations; how the authors closed the
+  flows is not stated. To preserve total mAb mass the model file derives
   `Q_lu = sum_X Q_X / (1 - 1/500)`, `L_lu = Q_lu / 500`, and
   `BCQ_lu = sum_X BCQ_X` from the tissue-row values, about 1.8% below
   the Table 4 lung flows. The closed-system mass balance verified above
@@ -436,7 +436,9 @@ stopifnot(
 ```
 
 With the Table 4 lung flows the lung sends out about
-`r round(lung_leak_L_h, 2)` L/h x C_lung more than the tissues take in,
+`r round(lung_leak_L_h, 2)` L/h x C_lung more than the tissues take in.
+Because the lung vascular concentration tracks plasma, that loss acts
+as a clearance of the order of
 `r round(lung_leak_L_h / cl_packaged)` times the packaged model's
 clearance of `r signif(cl_packaged, 2)` L/h.
 * **C_LNLF carried as a metadata parameter only.** The paper estimates
@@ -528,10 +530,11 @@ plasma concentration from scaling `L_LymphNode` 9.1-fold either way is
   9.1-fold either way changes plasma by at most
   `r signif(ln_max_dev_pct, 2)`% (Assumptions above). The Table 4 lung
   flows include the lymph-node row although the equations route no
-  blood through the lymph node; used literally, they remove mAb about
-  `r round(lung_leak_L_h / cl_packaged)` times faster than the
-  packaged model clears it, and the plasma profile collapses within the
-  first day instead of matching Figure 8c. The lymph node has no
+  blood through the lymph node; used literally, they lose mAb at the
+  lung outflow at a rate of the order of
+  `r round(lung_leak_L_h / cl_packaged)` times the packaged model's
+  clearance, and the plasma profile collapses within the first day
+  instead of matching Figure 8c. The lymph node has no
   elimination term, so a mass-conserving closure of its flows cannot add
   or remove clearance; only a closure that does not conserve mass, such
   as the literal Table 4 lung flow, changes it.
