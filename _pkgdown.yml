@@ -4568,8 +4568,12 @@ navbar:
         href: articles/Chang_2024_mavacamten.html
       - text: "Mavacamten lvef (Merali 2024)"
         href: articles/Merali_2024_mavacamten.html
+      - text: "Mavacamten lvef (Wu 2025)"
+        href: articles/Wu_2025_mavacamten.html
       - text: "Mavacamten lvot gradient valsalva (Merali 2024)"
         href: articles/Merali_2024_mavacamten.html
+      - text: "Mavacamten lvot gradient valsalva (Wu 2025)"
+        href: articles/Wu_2025_mavacamten.html
       - text: "Mavacoxib cockatiel iv (Dhondt 2017)"
         href: articles/Dhondt_2017_cox2inhibitors_cockatiel.html
       - text: "Mavacoxib cockatiel oral cf (Dhondt 2017)"
@@ -11384,6 +11388,7 @@ articles:
   - articles/Wu_2024_daptomycin
   - articles/Wu_2024_gfr_maturation
   - articles/Wu_2024_inotuzumab
+  - articles/Wu_2025_mavacamten
   - articles/Wu_2025_paracetamol
   - articles/Wu_2025_sitafloxacin
   - articles/Wurthwein_2013_caspofungin

@@ -2510,7 +2510,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Role:** Left ventricular ejection fraction (%) PD output: stroke volume as a percentage of end-diastolic volume, an imaging measure of systolic function.
 - **Source aliases:**
   - `LVEF` -- the clinical abbreviation; used directly in Hallik 2020 Table 4. It is also the observation name of the earlier `deVriesSchultink_2018_trastuzumab_LVEF.R`, which is left unchanged.
-- **Example models:** `Hallik_2020_dobutamine_lvef.R` (linear in plasma dobutamine, `lvef = rbase_lvef + slope_lvef * Cc`, fitted jointly with `Cc`), `Merali_2024_mavacamten_lvef.R` (single-output exposure-response model, `lvef = rbase * (1 - slope * CAV^qq)` in the weekly-average mavacamten concentration `CAV`, log-normal residual error).
+- **Example models:** `Hallik_2020_dobutamine_lvef.R` (linear in plasma dobutamine, `lvef = rbase_lvef + slope_lvef * Cc`, fitted jointly with `Cc`), `Merali_2024_mavacamten_lvef.R` (single-output exposure-response model, `lvef = rbase * (1 - slope * CAV^qq)` in the weekly-average mavacamten concentration `CAV`, log-normal residual error), `Wu_2025_mavacamten_lvef.R` (refit of the Merali 2024 model with Chinese patients added).
 - **Notes:** Holds a percentage, not a drug concentration. Named in lowercase to match the PD-state family (`hr`, `map`, `rvo`, `lvo`). Distinct from any baseline-LVEF *covariate*, which is an input rather than the model's predicted output.
 
 ### lvot_gradient_valsalva (**canonical Valsalva left ventricular outflow tract peak gradient PD output**)
@@ -2518,7 +2518,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Role:** Peak left ventricular outflow tract (LVOT) pressure gradient (mmHg) measured by Doppler echocardiography during the Valsalva manoeuvre: the provoked measure of outflow obstruction in obstructive hypertrophic cardiomyopathy and the efficacy endpoint that cardiac myosin inhibitors are titrated against (target below 30 mmHg).
 - **Source aliases:**
   - `VLVOTg` / `VLVOT` -- Merali 2024 Results equation and Table 2, and its Data S2 nlme script.
-- **Example models:** `Merali_2024_mavacamten_lvot_gradient_valsalva.R` (single-output exposure-response model, `rbase * pbo(t) * exp(-slope * CAV)` with an exponential placebo time course, exponential residual error).
+- **Example models:** `Merali_2024_mavacamten_lvot_gradient_valsalva.R` (single-output exposure-response model, `rbase * pbo(t) * exp(-slope * CAV)` with an exponential placebo time course, exponential residual error), `Wu_2025_mavacamten_lvot_gradient_valsalva.R` (refit of the Merali 2024 model with Chinese patients added).
 - **Notes:** Holds a pressure difference, not a drug concentration. Spelled out per the maintainers' output-naming rule, keeping LVOT as the established echocardiography abbreviation (as in `lvef`); the provocation is a suffix qualifier (as in `ftoe_cerebral`), leaving room for `lvot_gradient_rest` and `lvot_gradient_exercise`, which are different measurements and must not share this name. Its observed-baseline covariate is `LVOT_GRADIENT_VALSALVA_BL`.
 
 ### ftoe_cerebral (**canonical cerebral fractional tissue oxygen extraction PD output**)
