@@ -324,7 +324,7 @@ intravenous bolus, shown as the median and the 2.5th-97.5th percentile band.
 The figure does not give the creatinine clearance; the plasma model's reference
 value of 80 mL/min/1.73 m^2 is used. Residual error is not added.
 
-```{r fig2}
+```{r fig2, fig.width = 7, fig.height = 3.5}
 ev_fig2 <- bind_rows(
   etas |>
     mutate(
@@ -378,7 +378,7 @@ faster and match the figure more closely. No parameter was adjusted.
 
 # Replicate Figure 3 and Table 1 (probability of target attainment)
 
-```{r pta}
+```{r pta, fig.width = 7, fig.height = 9}
 cmin_csf <- sim |>
   group_by(arm, treatment, crcl, regimen, id) |>
   summarise(cmin = min(Ccsf), .groups = "drop")
@@ -392,16 +392,17 @@ ggplot(pta |> filter(arm %in% regimens$arm[!is.na(regimens$bp_paper)]),
   geom_line() +
   geom_point() +
   geom_hline(yintercept = 90, linetype = "dotted") +
-  scale_x_log10(breaks = mics, labels = mics) +
+  scale_x_log10(breaks = c(0.25, 1, 4, 16, 64), labels = c(0.25, 1, 4, 16, 64)) +
   scale_shape_manual(values = 0:14) +
-  facet_wrap(~ paste0("CLcr = ", crcl, " mL/min"), ncol = 1) +
+  facet_wrap(~ factor(paste0("CLcr = ", crcl, " mL/min"), levels = paste0("CLcr = ", c(90, 60, 30), " mL/min")), ncol = 1) +
   labs(
     x = "MIC (ug/mL)", y = "PTA, 100% T > MIC in CSF (%)",
     shape = NULL, colour = NULL,
     caption = "Replicates Figure 3 of Onita 2025 (200 subjects per regimen)."
   ) +
   theme_bw() +
-  theme(legend.position = "right")
+  theme(legend.position = "bottom") +
+  guides(shape = guide_legend(ncol = 3), colour = guide_legend(ncol = 3))
 ```
 
 ```{r table1}
