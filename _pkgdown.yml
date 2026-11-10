@@ -5136,6 +5136,8 @@ navbar:
         href: articles/Kyhl_2016_nalmefene.html
       - text: "Nalmefene (Laffont 2024)"
         href: articles/Laffont_2024_nalmefene.html
+      - text: "Naloxone (AlYacoub 2025)"
+        href: articles/AlYacoub_2025_naloxone.html
       - text: "Naloxone (Dowling 2008)"
         href: articles/Dowling_2008_naloxone.html
       - text: "Naloxone (Gu 2023)"
@@ -8685,6 +8687,7 @@ articles:
   - articles/AlHroot_2025_fosfomycin
   - articles/AlQurain_2022_tramadol
   - articles/AlSallami_2016_unfractionatedHeparin
+  - articles/AlYacoub_2025_naloxone
   - articles/AlZubaydi_2024_gabapentin
   - articles/AlfoseaCuadrado_2024_reserpine_rat
   - articles/Alghamdi_2019_cycloserine
