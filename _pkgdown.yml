@@ -8362,6 +8362,8 @@ navbar:
         href: articles/Wang_2024_voriconazole.html
       - text: "Voriconazole (Wang 2025)"
         href: articles/Wang_2025_voriconazole.html
+      - text: "Voriconazole (Yun 2025)"
+        href: articles/Yun_2025_voriconazole.html
       - text: "Voriconazole (Zakria 2026)"
         href: articles/Zakria_2026_voriconazole.html
       - text: "Voriconazole pbpk (AbdullahKoolmees 2024)"
@@ -11514,6 +11516,7 @@ articles:
   - articles/Yuan_2021_lithium
   - articles/Yukawa_1990_phenytoin
   - articles/Yukawa_2002_clonazepam_pediatric
+  - articles/Yun_2025_voriconazole
   - articles/Zaid_2021_pb212dotamtate_mouse_pbpk
   - articles/Zakria_2026_voriconazole
   - articles/Zandvliet_2008_carboplatin
