@@ -181,8 +181,15 @@ stopifnot(!anyDuplicated(events[events$evid == 0, c("id", "time")]))
 # Simulation
 
 ```{r simulate}
+# Virus amounts are in RNA copies (doses of 10^11 - 10^12). After the last dose
+# they wash out towards zero, and with the default absolute tolerance (1e-8
+# copies) lsoda shrinks its step to machine precision ("t + h = t") for about
+# half the cohort. An absolute tolerance of 1 copy on the three virus states
+# removes that; the B-cell and ADA states keep the default. Against a solve
+# with the default tolerance, Cc above 1 copy/mL and ADA above 1 differ by
+# less than 5e-5 (relative).
 sim <- rxode2::rxSolve(mod, events, keep = "arm", returnType = "data.frame",
-                       useLinCmt = FALSE) |>
+                       useLinCmt = FALSE, atol = c(1, 1, 1, rep(1e-8, 4))) |>
   filter(!duplicated(paste(id, time)))
 # Residual error drawn explicitly on the log scale (Data Analysis: additive
 # error in the log domain for each endpoint).
@@ -289,8 +296,16 @@ base_ev <- bind_rows(lapply(c(0, 8, 64), function(b) {
   make_arm(paste("ADA_TITER_BASE =", b), "i.v.", 3e8, 1, 0L) |>
     mutate(ADA_TITER_BASE = b, id = match(b, c(0, 8, 64)))
 }))
-base_sim <- rxode2::rxSolve(rxode2::zeroRe(mod), base_ev, keep = "ADA_TITER_BASE",
-                            returnType = "data.frame", useLinCmt = FALSE) |>
+# The three subjects share the typical parameters on purpose, so rxode2's
+# "multi-subject simulation without 'omega'" warning is expected; only that
+# warning is muffled.
+base_sim <- withCallingHandlers(
+  rxode2::rxSolve(rxode2::zeroRe(mod), base_ev, keep = "ADA_TITER_BASE",
+                  returnType = "data.frame", useLinCmt = FALSE),
+  warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) invokeRestart("muffleWarning")
+  }
+) |>
   filter(!duplicated(paste(id, time)))
 offset <- base_sim |>
   group_by(time) |>
