@@ -62,7 +62,9 @@ mod <- readModelDb("Shah_2012_mAb_PBPK")
 The packaged model is a literal transcription of the equations and
 parameter values from Shah & Betts 2012. Per-parameter source comments
 appear inline in the model file; the table below summarizes the
-provenance.
+provenance. With these published values the model does not reproduce the
+paper's human plasma curve (Figure 8c); the comparison is below and the
+details are under Errata.
 
 | Equation / parameter | Value (human) | Source |
 |----------------------|---------------|--------|
@@ -178,15 +180,31 @@ knitr::kable(fcrn_check,
              caption = "FcRn mass balance in the heart endosome.")
 ```
 
-# Adalimumab 5 mg/kg IV - replicates Shah & Betts 2012 Figure 8c
+# Adalimumab 5 mg/kg IV compared with Shah & Betts 2012 Figure 8c
 
-The human plasma profile in Shah & Betts Fig 8c is from Weisman et al.
-2003. We simulate the typical-value plasma trajectory and compare its
-shape and approximate magnitudes to the published figure.
+Shah & Betts 2012 Figure 8c shows human plasma adalimumab after a single
+5 mg/kg IV dose: the observed mean concentrations from Weisman et al.
+2003 (solid dots) and the fitted platform model (solid line). The values
+below were digitized from the published figure. The four observed means
+after the first day are clearly resolved. The three or four observed
+means in the first day overlap one another and span roughly 440 to
+670 nM, so they are not tabulated. The published model curve is read
+where the observed points do not hide it.
+
+```{r fig-8c-digitized}
+fig8c_curve <- data.frame(
+  time = c(100, 250, 300, 400, 450, 600, 650, 750, 800, 850, 900, 950, 1000),
+  paper_model_nM = c(295, 212, 192, 160, 148, 114, 105, 86.4, 79.6, 73.3, 67.5, 61.7, 56.8)
+)
+fig8c_observed <- data.frame(
+  time = c(186, 353, 527, 690),
+  observed_nM = c(259, 194, 150, 114)
+)
+```
 
 ```{r adalimumab-sim}
 ev_long <- et(amt = dose_nmol, cmt = "plasma", time = 0) |>
-  et(seq(0, 1008, by = 4))  # 6 weeks of follow-up
+  et(sort(unique(c(seq(0, 1008, by = 4), fig8c_curve$time, fig8c_observed$time))))
 
 sim <- as.data.frame(rxSolve(mod, events = ev_long))
 
@@ -195,19 +213,61 @@ mw_ada <- 144190  # g/mol
 sim$Cc_mg_per_L <- sim$Cc * mw_ada * 1e-6
 ```
 
-```{r fig-8c, fig.cap = "Replicates Shah & Betts 2012 Figure 8c: human plasma adalimumab after 5 mg/kg IV. Solid line is the platform PBPK model simulation."}
+```{r fig-8c, fig.cap = "Human plasma adalimumab after 5 mg/kg IV. Solid line: the packaged model. Dashed line and open circles: the model curve published in Shah & Betts 2012 Figure 8c (digitized). Filled circles: the observed means in the same figure (digitized; the overlapping first-day points are omitted)."}
 sim |>
   filter(time > 0) |>
-  ggplot(aes(time / 24, Cc)) +
+  ggplot(aes(time, Cc)) +
   geom_line() +
-  scale_y_log10() +
+  geom_line(data = fig8c_curve, aes(time, paper_model_nM), linetype = "dashed") +
+  geom_point(data = fig8c_curve, aes(time, paper_model_nM), shape = 1) +
+  geom_point(data = fig8c_observed, aes(time, observed_nM), size = 2.5) +
+  scale_y_log10(limits = c(1, 1000)) +
   labs(
-    x = "Time (days)",
+    x = "Time (h)",
     y = "Plasma adalimumab (nM)",
     title = "Human plasma adalimumab after 5 mg/kg IV",
-    caption = "Replicates Shah & Betts 2012 Figure 8c (panel C)."
+    caption = "Axes as in Shah & Betts 2012 Figure 8c."
   )
 ```
+
+```{r fig-8c-table}
+fig8c_compare <- fig8c_curve |>
+  left_join(sim |> select(time, Cc), by = "time") |>
+  transmute(
+    time_h = time,
+    paper_model_nM,
+    packaged_nM = signif(Cc, 3),
+    ratio = round(Cc / paper_model_nM, 2)
+  )
+knitr::kable(
+  fig8c_compare,
+  caption = "Packaged model versus the model curve published in Figure 8c (digitized)."
+)
+
+obs_compare <- fig8c_observed |>
+  left_join(sim |> select(time, Cc), by = "time") |>
+  mutate(pct_pe = 100 * abs(Cc - observed_nM) / observed_nM)
+median_pe <- median(obs_compare$pct_pe)
+
+half_life_h <- function(time, conc, t1 = 800, t2 = 1000) {
+  log(2) / (log(conc[time == t1] / conc[time == t2]) / (t2 - t1))
+}
+thalf_packaged <- half_life_h(sim$time, sim$Cc)
+thalf_paper <- half_life_h(fig8c_curve$time, fig8c_curve$paper_model_nM)
+ratio_1000 <- fig8c_compare$ratio[fig8c_compare$time_h == 1000]
+
+# The text below states that the packaged model lies above every resolved
+# observation and has a longer terminal half-life than the published curve.
+stopifnot(
+  all(obs_compare$Cc > obs_compare$observed_nM),
+  thalf_packaged > thalf_paper
+)
+```
+
+At 1000 h the packaged model is `r ratio_1000`-fold the published model
+curve. Between 800 and 1000 h its half-life is `r round(thalf_packaged)` h
+(`r round(thalf_packaged / 24, 1)` days), against `r round(thalf_paper)` h
+(`r round(thalf_paper / 24, 1)` days) for the published curve. See Errata.
 
 ```{r profile-table}
 profile <- sim |>
@@ -263,18 +323,23 @@ knitr::kable(
 
 ## Comparison against published values
 
-The Shah & Betts 2012 paper reports a median percent-prediction-error of
-16.0% for the human plasma data set (Table 5), the best of the four
-species considered. Specific NCA parameters are not tabulated in the
-paper.
+The Shah & Betts 2012 paper reports a median percent-prediction-error
+(%PE = |C_pred - C_obs| / C_obs x 100) of 16.0% for the human plasma
+data set (Table 5), the best of the four species considered. Against the
+four resolved observed means in Figure 8c, the packaged model's median
+%PE is `r round(median_pe, 1)`%. The paper's value also covers the
+first-day observations, which are not tabulated here, so the two numbers
+are not strictly comparable, but the packaged model sits above every
+resolved observation (by `r round(min(obs_compare$pct_pe))`% to
+`r round(max(obs_compare$pct_pe))`%). Specific NCA parameters are not
+tabulated in the paper.
 
-Published terminal half-life of adalimumab in healthy and rheumatoid
-arthritis subjects after IV dosing is roughly 10-20 days (Weisman 2003,
-Nestorov 2014). The simulated terminal half-life from the typical-value
-PBPK trajectory is in the lower part of this range, consistent with the
-fitted Kdeg = 42.9 1/h being a population-average across multiple mAbs
-and species (and the human cohort dominating the half-life signal less
-than the longer-lived monkey and rat data).
+The published terminal half-life of adalimumab after IV dosing is
+roughly 10-20 days (Weisman 2003, Nestorov 2014), and the published
+model curve in Figure 8c falls within it (about
+`r round(thalf_paper / 24)` days between 800 and 1000 h). The packaged
+model's half-life over the same interval is about
+`r round(thalf_packaged / 24)` days, longer than both; see Errata.
 
 # Assumptions and deviations
 
@@ -295,17 +360,35 @@ than the longer-lived monkey and rat data).
   and `lkoff` numeric values, and rename the function and vignette per
   the file-naming convention.
 * **Lung plasma flow derived for mass balance.** Shah & Betts 2012
-  Table 4 reports `Q_lu = 181.913 L/h` and `BCQ_lu = 148.838 L/h`, but
-  these values do not equal `sum_X Q_X + L_lu` and `sum_X BCQ_X` from
-  the same table (about 1.8 to 2.0% high). Using the table values
-  literally creates a slow but non-trivial mass leak at the
-  lung-arterial junction (lung outputs more mass per unit time than
-  the tissues can absorb). To preserve total mAb mass conservation
-  the model file derives `Q_lu = sum_X Q_X / (1 - 1/500)`, `L_lu =
-  Q_lu / 500`, and `BCQ_lu = sum_X BCQ_X` from the tissue-row values.
-  Numerically this is a ~1.8% reduction relative to the Table 4 lung
-  flows; the dynamics are essentially unchanged but the closed-system
-  mass balance verified above is satisfied exactly.
+  Table 4 reports `Q_lu = 181.913 L/h` and `BCQ_lu = 148.838 L/h`. These
+  are the sums of the tissue rows plus the "Ly. Node" row (3.670 L/h
+  plasma, 3.002 L/h blood cells; checked in the chunk below), but
+  Eqs 1-3 give the lymph node no blood flow: it receives only lymph and
+  returns it to plasma. Used literally, the table lung flow sends about
+  3.3 L/h x C_lung more out of the lung than the tissues take in, and
+  that mAb leaves the system. To preserve total mAb mass the model file
+  derives `Q_lu = sum_X Q_X / (1 - 1/500)`, `L_lu = Q_lu / 500`, and
+  `BCQ_lu = sum_X BCQ_X` from the tissue-row values, about 1.8% below
+  the Table 4 lung flows. The closed-system mass balance verified above
+  is then satisfied exactly.
+
+```{r table4-lung-flow}
+# Table 4 plasma and blood-cell flows (mL/h), non-lung tissues in table order
+plq_tissues <- c(7752, 33469, 11626, 11233, 2591, 21453, 36402, 13210,
+                 12368, 12867, 3056, 353, 6343, 5521)
+bcq_tissues <- c(6342, 27383, 9512, 9191, 2120, 17553, 29784, 10808,
+                 10120, 10527, 2500, 289, 5189, 4517)
+knitr::kable(
+  data.frame(
+    flow = c("plasma", "blood cells"),
+    table4_lung = c(181913, 148838),
+    sum_tissues = c(sum(plq_tissues), sum(bcq_tissues)),
+    lymph_node_row = c(3670, 3002),
+    sum_tissues_plus_lymph_node = c(sum(plq_tissues) + 3670, sum(bcq_tissues) + 3002)
+  ),
+  caption = "Table 4 lung flows equal the tissue-row sums plus the lymph-node row (mL/h)."
+)
+```
 * **C_LNLF carried as a metadata parameter only.** The paper estimates
   `C_LNLF = 9.1` as the proportionality constant between the lymph-
   node-to-plasma flow `L_LymphNode` and "the plasma flow of the given
@@ -314,7 +397,34 @@ than the longer-lived monkey and rat data).
   1-4 (3.670 L/h for human). The model file uses the table value
   `L_LymphNode` as the lymph node return flow and exposes
   `lclnlf` as a separately-estimated parameter for traceability, but
-  `lclnlf` does not enter the ODE system.
+  `lclnlf` does not enter the ODE system. The paper describes C_LNLF
+  only in words and does not print the formula for `L_LymphNode`. The
+  choice hardly matters: scaling `L_LymphNode` by C_LNLF in either
+  direction moves plasma concentrations by well under 1% (chunk below),
+  in line with the paper's finding that the output is least sensitive
+  to this rate (Figure 10).
+
+```{r lymph-node-sensitivity, message = FALSE}
+ln_check <- lapply(
+  c(packaged = 1, times_clnlf = 9.1, over_clnlf = 1 / 9.1),
+  function(f) {
+    m <- mod |> ini(llymphnode = log(3.670 * f))
+    s <- as.data.frame(rxSolve(m, events = ev_long))
+    s$Cc[s$time %in% c(24, 300, 1000)]
+  }
+)
+ln_table <- data.frame(
+  time_h = c(24, 300, 1000),
+  packaged_nM = signif(ln_check$packaged, 4),
+  L_LymphNode_x9.1 = signif(ln_check$times_clnlf, 4),
+  L_LymphNode_div9.1 = signif(ln_check$over_clnlf, 4)
+)
+knitr::kable(ln_table, caption = "Plasma adalimumab (nM) with the lymph-node return flow scaled by C_LNLF.")
+stopifnot(
+  max(abs(ln_check$times_clnlf / ln_check$packaged - 1)) < 0.01,
+  max(abs(ln_check$over_clnlf / ln_check$packaged - 1)) < 0.01
+)
+```
 * **No IIV, no residual error.** Shah & Betts 2012 fits 52 mean
   digitized plasma and tissue profiles with a single point estimate
   per parameter; the variance model (Eq 14) operates on the residual
@@ -338,3 +448,41 @@ than the longer-lived monkey and rat data).
   (C^V, C^BC, C^E_unbound, etc.) and is the most readable mapping
   available. No convention change in the rest of nlmixr2lib is
   implied.
+
+# Errata
+
+* **The published equations and parameter values do not reproduce the
+  published human plasma curve (Figure 8c).** The packaged model
+  implements Eqs 1-9, 11 and 12, the Table 4 physiology, the Table 6
+  estimates and the fixed values given in the text (Kon, Koff, FR,
+  sigma_V, sigma_IS, lymph flow = plasma flow / 500), and each term was
+  re-checked against the printed equations. With these values the
+  simulated profile declines more slowly than the model curve printed in
+  Figure 8c: at 1000 h it is `r ratio_1000`-fold the published curve,
+  its terminal half-life is about `r round(thalf_packaged / 24)` days
+  against about `r round(thalf_paper / 24)` days, and its median %PE
+  against the resolved observed means is `r round(median_pe, 1)`%
+  against the 16.0% the paper reports for human plasma (Table 5). The
+  early distribution phase is also shallower. No published erratum for
+  the paper has been found.
+* **The two parts of the implementation the paper leaves open do not
+  explain the difference.** The formula for the lymph-node return flow
+  (`L_LymphNode` from C_LNLF) is not printed, but scaling that flow
+  9.1-fold either way changes plasma by under 1% (Assumptions above).
+  The Table 4 lung flows include the lymph-node row although the
+  equations route no blood through the lymph node; used literally, they
+  remove mAb from the system several hundred times faster than the
+  antibody's own clearance, so the profile collapses within hours
+  instead of matching Figure 8c. The lymph node has no clearance of its
+  own, so the way its flows are closed cannot change the clearance.
+* **The difference therefore lies in the clearance and distribution
+  part of the model** (endosomal uptake, FcRn binding and endosomal
+  degradation). The paper's sensitivity analysis (Figure 10) finds
+  plasma exposure most sensitive to Kdeg and Koff, then to FcRn, Kon,
+  sigma_V and CLup. The source of the mismatch has not been
+  identified. It may be a detail of the authors' original
+  implementation that the paper does not print. The parameters were not
+  re-estimated here, so the packaged model represents the published
+  equations and parameter values. It is not a reproduction of the
+  published curves, and simulated human exposure should be read with
+  that in mind.

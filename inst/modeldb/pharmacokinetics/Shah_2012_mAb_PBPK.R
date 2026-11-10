@@ -140,7 +140,10 @@ Shah_2012_mAb_PBPK <- function() {
     # "Ly. Node" plasma flow column = 3670 mL/h. Treated as a fixed, species-
     # specific physiological flow in this model file; the C_LNLF system
     # parameter above is retained for traceability against Table 6 but does
-    # not directly enter the ODEs.
+    # not directly enter the ODEs. The paper describes C_LNLF only in words and
+    # does not print how L_LymphNode is computed from it; scaling this flow
+    # 9.1-fold either way changes plasma concentrations by under 1% (see the
+    # vignette).
     llymphnode <- log(3.670); label("Lymph-node-to-plasma flow L_LymphNode (L/h, human)") # Table 4 row Ly.Node
   })
 
@@ -179,14 +182,15 @@ Shah_2012_mAb_PBPK <- function() {
     clu_ht  <- clup_pv * v_ht_e
 
     # Lung. Volumes from Table 4. Plasma and blood-cell flows are derived from
-    # the sum of non-lung tissue arterial inflows so that the lung's vascular
-    # mass balance closes exactly. The Shah & Betts 2012 Table 4 reference
-    # values (q_lu = 181.913 L/h, bcq_lu = 148.838 L/h) come from a different
-    # physiological reference than the tissue rows and do not perfectly equal
-    # sum_X q_X + l_lu (they are ~1.8% high), which would cause a slow but
-    # non-trivial leak at the lung-arterial junction. Using the sum-derived
-    # values keeps total mAb mass conserved (apart from the explicit Kdeg
-    # endosomal degradation).
+    # the sum of the non-lung tissue arterial inflows so that the lung's
+    # vascular mass balance closes exactly. The Table 4 lung flows
+    # (q_lu = 181.913 L/h, bcq_lu = 148.838 L/h) equal the sum of the tissue
+    # rows PLUS the "Ly. Node" row (3.670 L/h plasma, 3.002 L/h blood cells),
+    # but Eqs 1-3 route no blood flow through the lymph node. Used literally,
+    # the table lung flow sends about 3.3 L/h x C_lung more out of the lung
+    # than the tissues take in, and that mAb leaves the system. The
+    # sum-derived flows keep total mAb mass conserved (apart from the explicit
+    # Kdeg endosomal degradation).
     v_lu_vp <- 0.0550; v_lu_bc <- 0.0450; v_lu_e <- 0.00500; v_lu_is <- 0.300
     sv_lu   <- 0.95
 
@@ -556,8 +560,9 @@ Shah_2012_mAb_PBPK <- function() {
 
     # === Observation ===
     # Cc reports the central plasma concentration (nM). The state amounts are in
-    # nmol; users dosing in mg should convert via dose_nmol = dose_mg / MW * 1e9
-    # where MW is the antibody molar mass (e.g., 144,190 g/mol for adalimumab).
+    # nmol; users dosing in mg should convert via dose_nmol = dose_mg / MW * 1e6
+    # where MW is the antibody molar mass in g/mol (e.g., 144,190 g/mol for
+    # adalimumab, so 355 mg is 2,462 nmol).
     Cc <- cv_p
   })
 }
