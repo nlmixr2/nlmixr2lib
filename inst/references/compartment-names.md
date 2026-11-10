@@ -1213,6 +1213,33 @@ These four outputs are the component scores of the NASH Clinical Research Networ
 
 ---
 
+## Markov state-occupancy probabilities (`s_<state>` namespace)
+
+A continuous-time Markov model (CTMM) of a categorical status written as ODEs carries one state per category whose value is the PROBABILITY of being in that category, not an amount: `d/dt(s_<a>) <- -k_ab * s_<a> + k_ba * s_<b>`, with the states summing to 1 and initialised from the subject's observed status at baseline. The `s_` prefix marks such an occupancy state. The observed category is then an ordinal / binary rxode2 endpoint (`<status> ~ c(p0, ...)`) built from the state probabilities.
+
+### s_adaneg (**canonical CTMM state: probability of being anti-drug-antibody negative**)
+- **Type:** compartment
+- **Role:** Probability of the ADA-negative state in a two-state continuous-time Markov model of immunogenicity; dimensionless, `s_adaneg + s_adapos = 1`.
+- **Source aliases:** `A0` -- van der Walt 2025 Methods ('A0 and A1 represent the probabilities of ADA being negative and positive').
+- **Example models:** `vanderWalt_2025_avelumab.R`.
+- **Notes:** Initialised as `1 - ADA_POS_BASE`. In the founding model the transition rate constants are `lambda01` (negative to positive) and `lambda10` (positive to negative).
+
+### s_adapos (**canonical CTMM state: probability of being anti-drug-antibody positive**)
+- **Type:** compartment
+- **Role:** Probability of the ADA-positive state in a two-state continuous-time Markov model of immunogenicity; dimensionless.
+- **Source aliases:** `A1` -- van der Walt 2025 Methods; `p1` / `p(ADA+)` in the paper's figures.
+- **Example models:** `vanderWalt_2025_avelumab.R` (the probability raises avelumab clearance linearly, `1 + 0.15 * p(ADA+)`).
+- **Notes:** Initialised as `ADA_POS_BASE`. Distinct from the covariate `ADA_POS`, which is an OBSERVED status column; `s_adapos` is the model-predicted probability.
+
+### ada_status (**canonical binary anti-drug-antibody status output**)
+- **Type:** compartment
+- **Role:** Observed ADA status as a binary rxode2 endpoint, `ada_status ~ c(p0_ada)`: category 1 = ADA-negative, 2 = ADA-positive; the likelihood is Bernoulli on the model probability of ADA positivity.
+- **Source aliases:** `ADA+ / ADA-` observations (van der Walt 2025, likelihood `p1` / `p0`).
+- **Example models:** `vanderWalt_2025_avelumab.R`.
+- **Notes:** A categorical OUTPUT. The covariate `ADA_POS` is the same quantity used as an input column; an ADA titer or concentration endpoint is continuous and needs its own name.
+
+---
+
 ## Body-weight PD output
 
 ### bw (**canonical body-weight PD output**)

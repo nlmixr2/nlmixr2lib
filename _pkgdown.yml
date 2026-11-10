@@ -690,6 +690,8 @@ navbar:
         href: articles/Liu_2025_avatrombopag.html
       - text: "Avelumab (Masters 2022)"
         href: articles/Masters_2022_avelumab.html
+      - text: "Avelumab (vanderWalt 2025)"
+        href: articles/vanderWalt_2025_avelumab.html
       - text: "Avibactam (Chen 2025)"
         href: articles/Chen_2025_ceftazidime_avibactam.html
       - text: "Avibactam (Dimelow 2018)"
@@ -11708,6 +11710,7 @@ articles:
   - articles/vanderVeer_2024_gentamicin
   - articles/vanderVeer_2025_amikacin
   - articles/vanderWalt_2013_dapagliflozin
+  - articles/vanderWalt_2025_avelumab
   - articles/vanderZeeuw_2026_immunoglobulin
   - articles/vonHentig_2009_saquinavir
   internal: true
