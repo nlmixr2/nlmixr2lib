@@ -85,9 +85,9 @@ Ramesh_2025_adtkd_muc1_egfr <- function() {
     # Log-normal IIV. Table 2A prints omega as the SD of the random effect
     # with the %CV in brackets; the variances are log(1 + CV^2), which
     # carries more significant digits than the printed SD.
-    etalt50max ~ 0.0058048 # Table 2A omega_DPT50 = 0.07 [7.63% CV]
-    etalhill_late ~ 0.43671 # Table 2A omega_gamma2 = 0.66 [74% CV]
-    etalhill + etale0 ~ c(0.045600, -0.012752, 0.0089845) # Table 2A omega_gamma1 = 0.21 [21.6% CV], omega_DP0 = 0.09 [9.5% CV], correlation gamma1-DP0 = -0.63 (RSE 105%)
+    etalt50max ~ log(1 + 0.0763^2) # Table 2A omega_DPT50 = 0.07 [7.63% CV]
+    etalhill_late ~ log(1 + 0.74^2) # Table 2A omega_gamma2 = 0.66 [74% CV]
+    etalhill + etale0 ~ c(log(1 + 0.216^2), -0.63 * sqrt(log(1 + 0.216^2) * log(1 + 0.095^2)), log(1 + 0.095^2)) # Table 2A omega_gamma1 = 0.21 [21.6% CV], omega_DP0 = 0.09 [9.5% CV], correlation gamma1-DP0 = -0.63 (RSE 105%)
 
     # Monolix proportional error model: DV = E + b * E * e.
     propSd <- 0.12; label("Proportional residual SD (fraction)") # Table 2A 'proportional' = 0.12 (RSE 1.70%)

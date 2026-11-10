@@ -166,9 +166,14 @@ typ_events <- cov_grid |>
   dplyr::mutate(evid = 0, amt = 0) |>
   dplyr::arrange(id, time)
 
+# zeroRe() removes the random effects, so rxSolve() warns that a
+# multi-subject solve has no omega; each subject here is a covariate-grid
+# typical subject, which is what is intended.
 solve_typical <- function(mod, label) {
-  rxode2::rxSolve(rxode2::zeroRe(mod), typ_events, returnType = "data.frame",
-                  keep = c("CRCL_BASE", "AGE_BASE")) |>
+  suppressWarnings(
+    rxode2::rxSolve(rxode2::zeroRe(mod), typ_events, returnType = "data.frame",
+                    keep = c("CRCL_BASE", "AGE_BASE"))
+  ) |>
     dplyr::mutate(genotype = label)
 }
 typ <- dplyr::bind_rows(

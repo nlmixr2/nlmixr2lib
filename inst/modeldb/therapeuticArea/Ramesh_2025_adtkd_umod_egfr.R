@@ -81,12 +81,11 @@ Ramesh_2025_adtkd_umod_egfr <- function() {
     e_crcl_base_e0 <- 1; label("Power exponent of eGFR at first clinic visit on DP0 (unitless)") # Table 2A beta_eGFR_FCV_DP0 = 1 (RSE 1.38%)
 
     # Log-normal IIV. Table 2A prints omega as the SD of the random effect
-    # with the %CV in brackets; the variances are log(1 + CV^2), which
-    # carries more significant digits than the printed SD (0.8 for gamma2,
-    # whose 98.93% CV implies 0.826).
-    etalt50max ~ 0.0057745 # Table 2A omega_DPT50 = 0.07 [7.61% CV]
-    etalhill_late ~ 0.68245 # Table 2A omega_gamma2 = 0.8 [98.93% CV]
-    etalhill + etale0 ~ c(1.5610, -0.14201, 0.016682) # Table 2A omega_gamma1 = 1.25 [194% CV], omega_DP0 = 0.13 [12.97% CV], correlation gamma1-DP0 = -0.88 (RSE 8.37%)
+    # with the %CV in brackets; the variances are written as log(1 + CV^2),
+    # which carries more significant digits than the printed SD.
+    etalt50max ~ log(1 + 0.0761^2) # Table 2A omega_DPT50 = 0.07 [7.61% CV]
+    etalhill_late ~ log(1 + 0.9893^2) # Table 2A omega_gamma2 = 0.8 [98.93% CV]
+    etalhill + etale0 ~ c(log(1 + 1.94^2), -0.88 * sqrt(log(1 + 1.94^2) * log(1 + 0.1297^2)), log(1 + 0.1297^2)) # Table 2A omega_gamma1 = 1.25 [194% CV], omega_DP0 = 0.13 [12.97% CV], correlation gamma1-DP0 = -0.88 (RSE 8.37%)
 
     # Monolix combined1 error model: DV = E + (a + b * E) * e.
     addSd <- 0.33; label("Additive residual SD (mL/min/1.73 m^2)") # Table 2A 'additive' = 0.33 (RSE 27.5%)
