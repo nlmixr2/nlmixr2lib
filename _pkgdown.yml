@@ -446,6 +446,8 @@ navbar:
         href: articles/Moein_2024_apitolisib.html
       - text: "Apitolisib mouse (Moein 2024)"
         href: articles/Moein_2024_apitolisib.html
+      - text: "Apixaban (AjavonHartmann 2025)"
+        href: articles/AjavonHartmann_2025_apixaban.html
       - text: "Apixaban (Cirincione 2018)"
         href: articles/Cirincione_2018_apixaban.html
       - text: "Apixaban (Gaspar 2023)"
@@ -8679,6 +8681,7 @@ articles:
   - articles/AitOudhia_2012_canakinumab
   - articles/AitOudhia_2016_sunitinib
   - articles/AitOudhia_2024_sotatercept
+  - articles/AjavonHartmann_2025_apixaban
   - articles/Akbar_2025_voriconazole
   - articles/Akil_2016_citalopram
   - articles/Aksenov_2018_uricAcid
