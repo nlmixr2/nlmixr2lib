@@ -365,14 +365,26 @@ changes only the approach to steady state; in the ECMO model it raises
 clearance, so the plateau falls by `exp(-0.0999 * (gas - 3.75))`.
 
 ```{r gas-flow, fig.width = 7, fig.height = 3.5}
+# Typical-value solves over several covariate levels are multi-subject solves
+# of a zeroRe() model, so rxode2 notes that there is no omega; that note is
+# expected here and muffled.
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) invokeRestart("muffleWarning")
+}
+solve_typical <- function(mod, events, ...) {
+  withCallingHandlers(
+    rxode2::rxSolve(rxode2::zeroRe(mod), events, keep = "Q_ECMO_GAS", returnType = "data.frame", ...),
+    warning = muffle_no_omega
+  )
+}
 gas_levels <- c(2.5, 3.75, 5.5)
 ev_gas <- dplyr::bind_rows(lapply(seq_along(gas_levels), function(i) {
   ev_typ |> dplyr::mutate(id = i, Q_ECMO_GAS = gas_levels[i])
 }))
 gas_sim <- dplyr::bind_rows(
-  rxode2::rxSolve(rxode2::zeroRe(mod_patient), ev_gas, keep = "Q_ECMO_GAS", returnType = "data.frame") |>
+  solve_typical(mod_patient, ev_gas) |>
     dplyr::mutate(model = "Patient model"),
-  rxode2::rxSolve(rxode2::zeroRe(mod_circuit), ev_gas, keep = "Q_ECMO_GAS", returnType = "data.frame") |>
+  solve_typical(mod_circuit, ev_gas) |>
     dplyr::mutate(model = "ECMO model")
 )
 ggplot(gas_sim, aes(time, Cc, colour = factor(Q_ECMO_GAS))) +
@@ -387,7 +399,7 @@ ggplot(gas_sim, aes(time, Cc, colour = factor(Q_ECMO_GAS))) +
 gas_ss <- dplyr::bind_rows(lapply(seq_along(gas_levels), function(i) {
   ev_long |> dplyr::mutate(id = i, Q_ECMO_GAS = gas_levels[i])
 })) |>
-  rxode2::rxSolve(object = rxode2::zeroRe(mod_circuit), rtol = 1e-10, atol = 1e-12, keep = "Q_ECMO_GAS", returnType = "data.frame") |>
+  solve_typical(mod = mod_circuit, rtol = 1e-10, atol = 1e-12) |>
   dplyr::filter(abs(time - 23.99) < 1e-9) |>
   dplyr::arrange(Q_ECMO_GAS)
 stopifnot(all(abs(gas_ss$Cc / (1000 * 30 / (th_c[["lcl"]] * exp(0.0999 * (gas_levels - 3.75)))) - 1) < 1e-3))

@@ -121,14 +121,14 @@ Lee_2025_nafamostat_circuit <- function() {
 
     # IIV: the table percentages are omega x 100 (footnote b gives RSE 'for
     # standard deviation'), so variance = (percent / 100)^2.
-    etalcl ~ 0.087025 # Table 2 ECMO model: omegaCL = 29.5% -> 0.295^2
-    etalvc ~ fixed(0.394384) # Table 2 ECMO model: omegaV1 = 62.8%, footnote a -> 0.628^2
-    etalq ~ fixed(1.7956) # Table 2 ECMO model: omegaQ = 134%, footnote a -> 1.34^2
+    etalcl ~ 0.295^2 # Table 2 ECMO model: omegaCL = 29.5%
+    etalvc ~ fixed(0.628^2) # Table 2 ECMO model: omegaV1 = 62.8%, footnote a
+    etalq ~ fixed(1.34^2) # Table 2 ECMO model: omegaQ = 134%, footnote a
     etalvp ~ fixed(0) # Table 2 ECMO model: omegaV2 = 0.000%, footnote a
-    etalimax ~ fixed(0.074529) # Table 3 ECMO model: omegaImax = 27.3%, footnote a -> 0.273^2
+    etalimax ~ fixed(0.273^2) # Table 3 ECMO model: omegaImax = 27.3%, footnote a
     etalic50 ~ fixed(0) # Table 3 ECMO model: row 'omegaEC50' (IIV of IC50) = 0.000%, footnote a
-    etalkin ~ 0.574564 # Table 3 ECMO model: omegaKin = 75.8% (no RSE, bootstrap CI or footnote a printed) -> 0.758^2
-    etalrbase ~ 0.044944 # Table 3 ECMO model: omegaBase = 21.2% -> 0.212^2
+    etalkin ~ 0.758^2 # Table 3 ECMO model: omegaKin = 75.8% (no RSE, bootstrap CI or footnote a printed)
+    etalrbase ~ 0.212^2 # Table 3 ECMO model: omegaBase = 21.2%
 
     # Residual error
     propSd <- 0.309

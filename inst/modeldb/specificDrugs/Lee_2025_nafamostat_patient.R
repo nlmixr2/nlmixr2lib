@@ -119,14 +119,14 @@ Lee_2025_nafamostat_patient <- function() {
 
     # IIV: the table percentages are omega x 100 (footnote b gives RSE 'for
     # standard deviation'), so variance = (percent / 100)^2.
-    etalcl ~ 0.375769 # Table 2 patient model: omegaCL = 61.3% -> 0.613^2
-    etalvc ~ fixed(0.483025) # Table 2 patient model: omegaV1 = 69.5%, footnote a -> 0.695^2
-    etalq ~ fixed(5.9049) # Table 2 patient model: omegaQ = 243%, footnote a -> 2.43^2
-    etalvp ~ fixed(0.242064) # Table 2 patient model: omegaV2 = 49.2%, footnote a -> 0.492^2
-    etalimax ~ fixed(0.257049) # Table 3 patient model: omegaImax = 50.7%, footnote a -> 0.507^2
-    etalic50 ~ fixed(0.498436) # Table 3 patient model: row 'omegaEC50' (IIV of IC50) = 70.6%, footnote a -> 0.706^2
-    etalkin ~ 1.1025 # Table 3 patient model: omegaKin = 105% -> 1.05^2
-    etalrbase ~ 0.042849 # Table 3 patient model: omegaBase = 20.7% -> 0.207^2
+    etalcl ~ 0.613^2 # Table 2 patient model: omegaCL = 61.3%
+    etalvc ~ fixed(0.695^2) # Table 2 patient model: omegaV1 = 69.5%, footnote a
+    etalq ~ fixed(2.43^2) # Table 2 patient model: omegaQ = 243%, footnote a
+    etalvp ~ fixed(0.492^2) # Table 2 patient model: omegaV2 = 49.2%, footnote a
+    etalimax ~ fixed(0.507^2) # Table 3 patient model: omegaImax = 50.7%, footnote a
+    etalic50 ~ fixed(0.706^2) # Table 3 patient model: row 'omegaEC50' (IIV of IC50) = 70.6%, footnote a
+    etalkin ~ 1.05^2 # Table 3 patient model: omegaKin = 105%
+    etalrbase ~ 0.207^2 # Table 3 patient model: omegaBase = 20.7%
 
     # Residual error
     propSd <- 0.287
