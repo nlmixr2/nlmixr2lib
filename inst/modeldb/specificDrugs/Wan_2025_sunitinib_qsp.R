@@ -61,10 +61,10 @@ Wan_2025_sunitinib_qsp <- function() {
       units = "(binary)",
       type = "binary",
       reference_category = "0 (cardiovascular healthy)",
-      notes = "Selects the hypertension FB_LVESV of Wan 2025 Table 2 (0.0045 vs 0.0042 1/mL). Wan defines the hypertensive virtual population by MAP0 at or above 106 mmHg (35% of the virtual cohort). Mutually exclusive with DIS_DCM; if both are 1, DIS_DCM takes precedence.",
+      notes = "Selects the hypertension FB_LVESV of Wan 2025 Table 2 (0.0045 vs 0.0042 1/mL). Wan defines the hypertensive virtual population by MAP0 at or above 106 mmHg (35% of the virtual cohort). Mutually exclusive with DIS_DILATED_CARDIOMYOPATHY; if both are 1, DIS_DILATED_CARDIOMYOPATHY takes precedence.",
       source_name = "Hypertension population (Table 2 column)"
     ),
-    DIS_DCM = list(
+    DIS_DILATED_CARDIOMYOPATHY = list(
       description = "Dilated cardiomyopathy indicator",
       units = "(binary)",
       type = "binary",
@@ -287,7 +287,7 @@ Wan_2025_sunitinib_qsp <- function() {
     if (DIS_HYPERT == 1) {
       lfb_pop <- lfb_lvesv_hypert
     }
-    if (DIS_DCM == 1) {
+    if (DIS_DILATED_CARDIOMYOPATHY == 1) {
       lfb_pop <- lfb_lvesv_dcm
     }
     fb_lvesv <- exp(lfb_pop + etalfb_lvesv)

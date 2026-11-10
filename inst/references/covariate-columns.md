@@ -8251,10 +8251,10 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:**
   - `HYPERT` -- prior canonical name used in `Girard_2012_pimasertib.R` prior to the 2026-06-19 DIS_ prefix standardization.
   - `MHHY` (medical history of hypertension) -- used in `Girard_2012_pimasertib.R`.
-- **Example models:** `Girard_2012_pimasertib.R` (additive shift on the cumulative-logit AE-score model: `theta_mhhy * DIS_HYPERT`; +0.539 logit units in patients with prior hypertension). The 21 `Wan_2025_<tki>_qsp.R` models (selects the hypertension LVESV-feedback constant `FB_LVESV` = 0.0045 vs 0.0042 1/mL of the cardiovascular QSP; Wan 2025 defines the hypertensive virtual population by baseline MAP >= 106 mmHg).
+- **Example models:** `Girard_2012_pimasertib.R` (additive shift on the cumulative-logit AE-score model: `theta_mhhy * DIS_HYPERT`; +0.539 logit units in patients with prior hypertension). The 19 `Wan_2025_<tki>_qsp.R` models (selects the hypertension LVESV-feedback constant `FB_LVESV` = 0.0045 vs 0.0042 1/mL of the cardiovascular QSP; Wan 2025 defines the hypertensive virtual population by baseline MAP >= 106 mmHg).
 - **Notes:** Companion to `DIS_DIAB` (diabetes-mellitus comorbidity); both are baseline binary medical-history flags collected from clinical-history forms. Captures any prior or current hypertension diagnosis, regardless of treatment status; if a future model needs to separate treated vs untreated hypertension, register a refinement (`DIS_HYPERT_TREATED`).
 
-### DIS_DCM (**canonical for dilated cardiomyopathy indicator**)
+### DIS_DILATED_CARDIOMYOPATHY (**canonical for dilated cardiomyopathy indicator**)
 - **Description:** 1 = patient has dilated cardiomyopathy (enlarged left ventricle with systolic dysfunction); 0 = no dilated cardiomyopathy. Time-fixed per subject.
 - **Units:** (binary)
 - **Type:** binary
@@ -8262,7 +8262,7 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 (no dilated cardiomyopathy).
 - **Source aliases:**
   - `DCM`, "Dilated Cardiomyopathy" population column -- Wan 2025 Table 2.
-- **Example models:** the 21 `Wan_2025_<tki>_qsp.R` models (selects the dilated-cardiomyopathy LVESV-feedback constant `FB_LVESV` = 0.0028 vs 0.0042 1/mL of the cardiovascular QSP; Wan 2025 defines the population by baseline LVEDV >= 146 mL).
+- **Example models:** the 19 `Wan_2025_<tki>_qsp.R` models (selects the dilated-cardiomyopathy LVESV-feedback constant `FB_LVESV` = 0.0028 vs 0.0042 1/mL of the cardiovascular QSP; Wan 2025 defines the population by baseline LVEDV >= 146 mL).
 - **Notes:** Distinct from `DIS_CHF` (congestive heart failure, a clinical syndrome that dilated cardiomyopathy may or may not have produced) and from hypertrophic cardiomyopathy, which needs its own indicator. In the founding models the population is mutually exclusive with `DIS_HYPERT`; the baselines that characterise it (LVEDV, LVESV, heart rate, MAP) are supplied separately as `LVEDV_BL`, `LVESV_BL`, `HR_BL` and `MAP_BL`.
 
 ### DIS_HYPERLIP (**canonical for hyperlipidemia / hypercholesterolemia diagnosis indicator**)

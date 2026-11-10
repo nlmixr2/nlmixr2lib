@@ -1,8 +1,8 @@
 ---
-title: "Tyrosine kinase inhibitor cardiotoxicity QSP-PK-TD, 21 TKIs (Wan 2025)"
+title: "Tyrosine kinase inhibitor cardiotoxicity QSP-PK-TD, 19 TKIs (Wan 2025)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Tyrosine kinase inhibitor cardiotoxicity QSP-PK-TD, 21 TKIs (Wan 2025)}
+  %\VignetteIndexEntry{Tyrosine kinase inhibitor cardiotoxicity QSP-PK-TD, 19 TKIs (Wan 2025)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -48,19 +48,22 @@ layers:
    `FB_LVESV` for cardiovascular-healthy, hypertensive and
    dilated-cardiomyopathy patients (Table 2).
 
-The paper contributes 21 model files, one per TKI:
+The package carries 19 of the 21 TKIs, one model file each. Ibrutinib and
+nilotinib are not included: Table S2 gives only a lag time for their
+absorption, and the zero-order absorption duration of the primary PK models
+(Al-Ghazawi 2021, Giles 2013) is needed to reproduce their exposure.
 
 ```{r models}
 drugs <- c(
   "afatinib", "axitinib", "bosutinib", "cabozantinib", "crizotinib",
-  "dabrafenib", "dasatinib", "erlotinib", "gefitinib", "ibrutinib",
-  "imatinib", "lapatinib", "nilotinib", "pazopanib", "ponatinib",
-  "regorafenib", "sorafenib", "sunitinib", "trametinib", "vandetanib",
-  "vemurafenib"
+  "dabrafenib", "dasatinib", "erlotinib", "gefitinib", "imatinib",
+  "lapatinib", "pazopanib", "ponatinib", "regorafenib", "sorafenib",
+  "sunitinib", "trametinib", "vandetanib", "vemurafenib"
 )
 # Wan 2025 Figures 1-3, panel B = cardiotoxic, panel A = non-cardiotoxic
+# (nilotinib, also cardiotoxic, is not packaged)
 cardiotoxic <- c(
-  "afatinib", "dasatinib", "imatinib", "lapatinib", "nilotinib", "pazopanib",
+  "afatinib", "dasatinib", "imatinib", "lapatinib", "pazopanib",
   "ponatinib", "regorafenib", "sorafenib", "sunitinib", "trametinib",
   "vandetanib"
 )
@@ -69,9 +72,7 @@ mods <- lapply(setNames(drugs, drugs), function(d) rxode2::rxode2(readModelDb(mo
 mods_typ <- lapply(mods, rxode2::zeroRe)
 ```
 
-Dosing regimens are from Table S4. Ibrutinib and nilotinib have no absorption
-rate constant in Table S2, so their dose goes to `central` after the lag time;
-ponatinib has two parallel absorption routes and takes the same dose record
+Dosing regimens are from Table S4. Ponatinib has two parallel absorption routes and takes the same dose record
 in both `depot` and `depot2` (the model splits it by `fdepot`).
 
 ```{r regimens}
@@ -80,16 +81,14 @@ regimen <- tibble::tribble(
   "afatinib", 40, 24, "axitinib", 5, 12, "bosutinib", 500, 24,
   "cabozantinib", 140, 24, "crizotinib", 250, 12, "dabrafenib", 150, 12,
   "dasatinib", 100, 24, "erlotinib", 150, 24, "gefitinib", 250, 24,
-  "ibrutinib", 560, 24, "imatinib", 400, 24, "lapatinib", 1250, 24,
-  "nilotinib", 400, 12, "pazopanib", 800, 24, "ponatinib", 45, 24,
+  "imatinib", 400, 24, "lapatinib", 1250, 24,
+  "pazopanib", 800, 24, "ponatinib", 45, 24,
   "regorafenib", 160, 24, "sorafenib", 400, 12, "sunitinib", 50, 24,
   "trametinib", 2, 24, "vandetanib", 300, 24, "vemurafenib", 960, 24
 )
 dose_cmts <- function(drug) {
   switch(drug,
     ponatinib = c("depot", "depot2"),
-    ibrutinib = "central",
-    nilotinib = "central",
     "depot"
   )
 }
@@ -107,7 +106,7 @@ obs_events <- function(times) {
 # Cardiovascular-healthy typical patient (Table 2)
 healthy_typ <- data.frame(
   LVEDV_BL = 113, LVESV_BL = 113 * (1 - 0.6), HR_BL = 70, MAP_BL = 94.92,
-  DIS_HYPERT = 0L, DIS_DCM = 0L
+  DIS_HYPERT = 0L, DIS_DILATED_CARDIOMYOPATHY = 0L
 )
 ```
 
@@ -190,7 +189,7 @@ per_drug |>
 # Untreated steady state
 
 With no drug every state must stay at its baseline: the TD states at 1 and the
-QSP at the covariate baselines. This checks the kin/kout balance in all 21
+QSP at the covariate baselines. This checks the kin/kout balance in all 19
 files.
 
 ```{r steady-state}
@@ -252,8 +251,8 @@ iv <- dplyr::bind_rows(lapply(drugs, invitro))
 stopifnot(all(abs(iv$cin / iv$conc - 1) < 1e-3))
 ```
 
-Model curves of Figure 3 read at the tested concentrations (digitised by the
-maintainers; `NA` where a data point hides the curve):
+Model curves of Figure 3 read at the tested concentrations for the 19 packaged
+TKIs (digitised by the maintainers; `NA` where a data point hides the curve):
 
 ```{r fig3-digitised}
 fig3 <- tibble::tribble(
@@ -267,10 +266,8 @@ fig3 <- tibble::tribble(
   "dasatinib", 0.93, 0.77, 0.54, 0.26, 0.10, NA,
   "erlotinib", 0.96, 0.97, 0.97, NA, 0.99, NA,
   "gefitinib", 0.97, 0.91, 0.74, 0.43, 0.22, NA,
-  "ibrutinib", 0.90, 0.71, 0.49, 0.18, NA, NA,
   "imatinib", 0.96, NA, 0.82, 0.72, 0.47, NA,
   "lapatinib", 0.90, 0.74, 0.50, 0.23, 0.10, NA,
-  "nilotinib", 0.97, NA, 0.77, 0.56, 0.30, NA,
   "pazopanib", 0.99, 0.97, 0.94, 0.83, NA, 0.49,
   "ponatinib", 0.85, 0.63, 0.36, 0.13, NA, NA,
   "regorafenib", 0.94, 0.81, 0.62, 0.36, 0.17, NA,
@@ -323,7 +320,7 @@ ggplot(iv, aes(conc, aac)) +
 # Effective concentration at steady state (Table S1)
 
 Table S1 lists the effective myocardial concentration of the 12 cardiotoxic
-TKIs. It is the steady-state peak of `Cc x fu x Kp x H`; PKNCA computes the
+TKIs, 11 of which are packaged. It is the steady-state peak of `Cc x fu x Kp x H`; PKNCA computes the
 peak of `cin` over the fourth-week dosing interval of each typical patient.
 
 ```{r table-s1}
@@ -356,7 +353,7 @@ nca_res <- as.data.frame(PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, intervals = iv
 table_s1 <- tibble::tribble(
   ~drug, ~ceff_paper,
   "afatinib", 0.01, "dasatinib", 0.05, "imatinib", 0.47, "lapatinib", 0.008,
-  "nilotinib", 0.15, "pazopanib", 0.61, "ponatinib", 0.0076,
+  "pazopanib", 0.61, "ponatinib", 0.0076,
   "regorafenib", 0.01, "sorafenib", 0.077, "sunitinib", 0.047,
   "trametinib", 0.0003, "vandetanib", 1.32
 )
@@ -372,7 +369,7 @@ s1_cmp |>
     "Table S1 Ceff (uM)" = ceff_paper, "Simulated / Table S1" = ratio
   ) |>
   knitr::kable()
-# Deterministic typical-value solves: eight of twelve TKIs reproduce Table S1.
+# Deterministic typical-value solves: eight of the eleven TKIs reproduce Table S1.
 matched <- c("afatinib", "dasatinib", "imatinib", "lapatinib", "pazopanib", "ponatinib", "regorafenib", "vandetanib")
 stopifnot(all(abs(s1_cmp$ratio[s1_cmp$drug %in% matched] - 1) < 0.15))
 ```
@@ -381,9 +378,8 @@ Eight TKIs reproduce Table S1 within 10%, which confirms the exposure
 conventions: the observed Kp where one is reported, `H = IC50,2D / IC50,3D`,
 total ponatinib bioavailability 1 split over its two absorption routes, and
 the steady-state peak as the summary. Imatinib matches only with its two
-Table S8 columns transposed (see below). Four do not match: nilotinib (about 2.3x;
-Table S2 gives no absorption rate constant, so the input is instantaneous
-after the lag and the peak is too high), sorafenib (0.34x) and sunitinib
+Table S8 columns transposed (see below). Three do not match: sorafenib (0.34x)
+and sunitinib
 (0.14x), for which no combination of the printed fu, Kp and H reproduces the
 table (sunitinib matches the predicted Kp without H), and trametinib (10x,
 consistent with a fraction unbound of 0.26% rather than the printed 2.6%).
@@ -438,7 +434,7 @@ pops <- data.frame(
   HR_BL = c(70, 70, 57),
   MAP_BL = c(94.92, 106, 91.54),
   DIS_HYPERT = c(0L, 1L, 0L),
-  DIS_DCM = c(0L, 0L, 1L)
+  DIS_DILATED_CARDIOMYOPATHY = c(0L, 0L, 1L)
 )
 # Table 2 SV0 and TPR0 follow from the baselines
 pops |>
@@ -486,7 +482,7 @@ make_population <- function(n, population) {
   data.frame(
     population = population, LVEDV_BL = lvedv, LVESV_BL = lvedv * (1 - index_sv),
     HR_BL = 70, MAP_BL = map, DIS_HYPERT = as.integer(population == "Hypertension"),
-    DIS_DCM = 0L
+    DIS_DILATED_CARDIOMYOPATHY = 0L
   )
 }
 cohort <- dplyr::bind_rows(make_population(n_per, "Healthy"), make_population(n_per, "Hypertension")) |>
@@ -523,7 +519,6 @@ fig4h <- tibble::tribble(
   "sorafenib", 8.54, "3.3-18.6",
   "trametinib", 1.70, "3-11",
   "pazopanib", 4.43, "7-13",
-  "nilotinib", 3.63, "1-13.4",
   "sunitinib", 1.79, "2.7-19"
 )
 stopifnot(sum(incidence$n_solved) >= 0.95 * nrow(cohort) * length(cardiotoxic))
@@ -559,8 +554,8 @@ others <- inc_tab$weighted[inc_tab$drug != "vandetanib"]
 stopifnot(
   # The paper's one outlier: vandetanib's predicted incidence exceeds 20%.
   inc_tab$weighted[inc_tab$drug == "vandetanib"] > 20,
-  # The other eleven sit in the low single digits, as in Fig. 4H
-  # (median of the paper's eleven values: 2.4%).
+  # The other ten sit in the low single digits, as in Fig. 4H
+  # (median of the paper's ten values: 2.1%).
   median(others) < 8
 )
 ```
@@ -598,9 +593,9 @@ translation to clinical incidence.
   and accounting for heterogeneity improved the imatinib prediction). The
   model uses H = 0.422.
 * **Absorption not fully specified in Table S2.** Ibrutinib and nilotinib have
-  only a lag time; the dose enters `central` after the lag (the primary
-  papers, Al-Ghazawi 2021 and Giles 2013, describe zero-order absorption
-  whose duration Table S2 does not give). Ponatinib uses the two parallel
+  only a lag time; their primary PK models (Al-Ghazawi 2021, Giles 2013)
+  describe zero-order absorption whose duration Table S2 does not give, so
+  these two TKIs are not packaged. Ponatinib uses the two parallel
   routes of Hanley 2022: a fraction 0.534 (the Table S2 "F") through a depot
   and two transit compartments at ktr = 1.30 1/h, the rest by first-order
   absorption at ka = 4.41 1/h after a 3.93-h lag; total bioavailability 1
@@ -608,8 +603,8 @@ translation to clinical incidence.
   and two transit compartments (ka = ktr = 0.48 1/h) with the printed
   0.36-h lag; Table S2 does not give the number of transit compartments, so
   both are taken from the primary papers.
-* **Printed values kept despite Table S1.** Nilotinib, sorafenib, sunitinib
-  and trametinib do not reproduce Table S1 (see above); the printed Table
+* **Printed values kept despite Table S1.** Sorafenib, sunitinib and
+  trametinib do not reproduce Table S1 (see above); the printed Table
   S2, S5, S7 and S8 values are kept. Vemurafenib fu (0.001%) and gefitinib fu
   (0.1%) are also kept as printed. Vemurafenib is dosed 960 mg once daily, as
   printed in Table S4.
@@ -622,7 +617,7 @@ translation to clinical incidence.
 * **Cardiovascular QSP.** The dissipation rate constants, the MAP feedback
   `FB_MAP_0` with its baseline-MAP exponent, and the numerical guard are those
   of the Sang 2021 human model, as Section 4.3 states; `FB_LVESV` and the
-  baselines are the Table 2 values. `DIS_HYPERT` and `DIS_DCM` select the
+  baselines are the Table 2 values. `DIS_HYPERT` and `DIS_DILATED_CARDIOMYOPATHY` select the
   population's `FB_LVESV`; the baselines are supplied as covariates.
 * **Population definition.** Hypertensive MAP is sampled from the Table 2
   log-normal and kept only at or above 106 mmHg; the incidence definition
