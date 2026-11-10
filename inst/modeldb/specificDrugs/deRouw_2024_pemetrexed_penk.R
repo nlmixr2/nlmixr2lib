@@ -1,5 +1,5 @@
 deRouw_2024_pemetrexed_penk <- function() {
-  description <- "Three-compartment population PK model for intravenous pemetrexed in adults with lung cancer (de Rouw 2024), with total clearance an exponential function of the plasma pro-enkephalin concentration: CL = 5.62 * exp(-0.0877 * PENK / 35) (L/h). This is one of six renal-biomarker covariate models the paper compares (Table 2) and the weakest (OFV drop -13.0, IIV on CL 21.8%); the CKD-EPI creatinine-cystatin C model (deRouw_2024_pemetrexed_ckdepicrcys) fitted best. The paper reports only the clearance equation and the IIV on clearance; the volumes, intercompartmental clearances, their IIV and the residual error are carried from the de Rouw 2021 base model, which the 2024 analysis refitted to its own data without reporting the refit values."
+  description <- "Three-compartment population PK model for intravenous pemetrexed in adults with lung cancer (de Rouw 2024), with total clearance an exponential function of the plasma pro-enkephalin concentration: CL = 5.62 * exp(-0.0877 * PROENKEPHALIN / 35) (L/h). This is one of six renal-biomarker covariate models the paper compares (Table 2) and the weakest (OFV drop -13.0, IIV on CL 21.8%); the CKD-EPI creatinine-cystatin C model (deRouw_2024_pemetrexed_ckdepicrcys) fitted best. The paper reports only the clearance equation and the IIV on clearance; the volumes, intercompartmental clearances, their IIV and the residual error are carried from the de Rouw 2021 base model, which the 2024 analysis refitted to its own data without reporting the refit values."
   reference <- paste(
     "de Rouw N, Beunders R, Hartmann O, Schulte J, Boosman RJ, Derijks HJ, Burger DM, van den Heuvel MM, Hilbrands LB, Pickkers P, ter Heine R. A comparison of the renal function biomarkers serum creatinine, pro-enkephalin and cystatin C to predict clearance of pemetrexed. Cancer Chemother Pharmacol. 2024;94(6):799-806. doi:10.1007/s00280-024-04717-w.",
     "Volumes, intercompartmental clearances, their IIV and the residual error: de Rouw N, Boosman RJ, Huitema ADR, Hilbrands LB, Svensson EM, Derijks HJ, van den Heuvel MM, Burger DM, ter Heine R. Rethinking the application of pemetrexed for patients with renal impairment: a pharmacokinetic analysis. Clin Pharmacokinet. 2021;60(5):649-654. doi:10.1007/s40262-020-00972-1 (Supplementary Table S1, base model)."
@@ -8,12 +8,12 @@ deRouw_2024_pemetrexed_penk <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
-    PENK = list(
+    PROENKEPHALIN = list(
       description = "Plasma pro-enkephalin (PENK) concentration at baseline",
       units = "pmol/L",
       type = "continuous",
       reference_category = NULL,
-      notes = "de Rouw 2024 'PENKABS', the absolute plasma concentration measured with the sphingotec immunoassay, sampled at baseline. Enters CL through exp(e_penk_cl * PENK / 35); 35 pmol/L is 'the median PENK concentration in the population' (Table 2 footnote), although Table 1 tabulates a median of 37.3 pmol/L (IQR 30.8-46.1).",
+      notes = "de Rouw 2024 'PENKABS', the absolute plasma concentration measured with the sphingotec immunoassay, sampled at baseline. Enters CL through exp(e_proenkephalin_cl * PROENKEPHALIN / 35); 35 pmol/L is 'the median PENK concentration in the population' (Table 2 footnote), although Table 1 tabulates a median of 37.3 pmol/L (IQR 30.8-46.1).",
       source_name = "PENKABS"
     ),
     WT = list(
@@ -49,10 +49,10 @@ deRouw_2024_pemetrexed_penk <- function() {
     # Clearance. de Rouw 2024 Table 2, row 'PENKABS (pmol/L)':
     #   Clpred = 5.62 . e(-0.0877*(PENKABS/35))   (L/h; PENK in pmol/L)
     # As printed, PENK is scaled by (not centred on) its 35 pmol/L median,
-    # so 5.62 L/h is the clearance at PENK = 0 and the typical patient
-    # (PENK = 35) has 5.62 * exp(-0.0877) = 5.15 L/h.
+    # so 5.62 L/h is the clearance at PROENKEPHALIN = 0 and the typical patient
+    # (PROENKEPHALIN = 35) has 5.62 * exp(-0.0877) = 5.15 L/h.
     lcl <- log(5.62); label("Clearance at zero pro-enkephalin (L/h)") # Table 2 PENKABS row: 5.62
-    e_penk_cl <- -0.0877; label("Exponential coefficient of PENK/35 on clearance (unitless)") # Table 2 PENKABS row: -0.0877
+    e_proenkephalin_cl <- -0.0877; label("Exponential coefficient of PROENKEPHALIN/35 on clearance (unitless)") # Table 2 PENKABS row: -0.0877
 
     # Volumes and intercompartmental clearances: de Rouw 2021 supplement
     # Table S1, 'Base' column, the model the 2024 analysis refitted
@@ -87,7 +87,7 @@ deRouw_2024_pemetrexed_penk <- function() {
   model({
     # Clearance as printed in de Rouw 2024 Table 2, with log-normal IIV
     # (de Rouw 2021 NONMEM code: CL = TVCL * EXP(ETA(1))).
-    cl <- exp(lcl + etalcl) * exp(e_penk_cl * PENK / 35)
+    cl <- exp(lcl + etalcl) * exp(e_proenkephalin_cl * PROENKEPHALIN / 35)
 
     vc <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc
     vp <- exp(lvp + etalvp) * (WT / 70)^e_wt_vc

@@ -42,7 +42,8 @@ article.
 | `deRouw_2024_pemetrexed_ckdepicyspenk` | 5.81 x exp(-0.0206 x PENK / 35) x (CKD-EPI cystatin C / 75)^0.378 | 17.3% | -41.0 |
 
 All eGFR values are in mL/min, de-indexed to the patient's body surface area
-(`CRCL` column, NOT mL/min/1.73 m^2); PENK is in pmol/L. The combined
+(`CRCL` column, NOT mL/min/1.73 m^2); PENK is in pmol/L (`PROENKEPHALIN`
+column). The combined
 creatinine-cystatin C model fitted best.
 
 The paper reports only these clearance equations and the IIV on clearance. The
@@ -120,14 +121,14 @@ model's `cl` with the closed form; both sides use the same parameters, so the
 tolerance is tight.
 
 ```{r clpred-function}
-clpred <- function(model, CRCL, PENK) {
+clpred <- function(model, CRCL, PROENKEPHALIN) {
   switch(model,
     ckdepicr = 1.66 + 0.0358 * CRCL,
     ckdepicys = 2.46 + 0.0344 * CRCL,
     ckdepicrcys = 1.89 + 0.038 * CRCL,
-    penk = 5.62 * exp(-0.0877 * PENK / 35),
+    penk = 5.62 * exp(-0.0877 * PROENKEPHALIN / 35),
     egfrpenkcr = 1.82 + 0.0295 * CRCL,
-    ckdepicyspenk = 5.81 * exp(-0.0206 * PENK / 35) * (CRCL / 75)^0.378
+    ckdepicyspenk = 5.81 * exp(-0.0206 * PROENKEPHALIN / 35) * (CRCL / 75)^0.378
   )
 }
 # Table 1 medians of the renal marker each model's CRCL column carries.
@@ -152,7 +153,7 @@ typ_events <- function(model) {
       id = 1L,
       WT = 77.1,
       CRCL = ifelse(is.na(crcl_median[[model]]), 90, crcl_median[[model]]),
-      PENK = penk_median
+      PROENKEPHALIN = penk_median
     )
 }
 typ <- bind_rows(lapply(names(mods), function(m) {
@@ -161,9 +162,9 @@ typ <- bind_rows(lapply(names(mods), function(m) {
 }))
 typ_cl <- typ |>
   group_by(model) |>
-  summarise(cl_model = first(cl), CRCL = first(CRCL), PENK = first(PENK)) |>
+  summarise(cl_model = first(cl), CRCL = first(CRCL), PROENKEPHALIN = first(PROENKEPHALIN)) |>
   rowwise() |>
-  mutate(cl_printed = clpred(model, CRCL, PENK)) |>
+  mutate(cl_printed = clpred(model, CRCL, PROENKEPHALIN)) |>
   ungroup() |>
   mutate(model = factor(model, levels = names(mods))) |>
   arrange(model)
@@ -176,7 +177,7 @@ typ_cl |>
   rename(
     "Covariate model" = model,
     "eGFR (mL/min)" = CRCL,
-    "PENK (pmol/L)" = PENK,
+    "PENK (pmol/L)" = PROENKEPHALIN,
     "Model CL (L/h)" = cl_model,
     "Table 2 CL (L/h)" = cl_printed
   ) |>
@@ -225,7 +226,7 @@ cohort <- tibble(
   egfr_cys = draw(75.1, 59.8, 92.2),
   egfr_crcys = draw(89.0, 73.3, 99.5),
   egfr_penkcr = draw(112.5, 98.9, 122.6),
-  PENK = draw(37.3, 30.8, 46.1, sign = -1)
+  PROENKEPHALIN = draw(37.3, 30.8, 46.1, sign = -1)
 )
 crcl_column <- c(
   ckdepicr = "egfr_cr", ckdepicys = "egfr_cys", ckdepicrcys = "egfr_crcys",
@@ -238,7 +239,7 @@ summary(select(cohort, -id))
 cohort_events <- function(model) {
   cov <- cohort |>
     mutate(CRCL = .data[[crcl_column[[model]]]]) |>
-    select(id, WT, CRCL, PENK)
+    select(id, WT, CRCL, PROENKEPHALIN)
   rxode2::et(amt = dose_mg, dur = 1 / 6, cmt = "central") |>
     rxode2::et(obs_times, cmt = "central") |>
     rxode2::et(id = cov$id) |>
@@ -261,9 +262,9 @@ evaluated at that patient's covariates.
 ```{r fig1, fig.height = 7, fig.cap = "Replicates Figure 1 of de Rouw 2024: individual versus covariate-predicted clearance for the six covariate models, with the line of unity."}
 cl_ind <- sim |>
   group_by(model, id) |>
-  summarise(cl_true = first(cl), CRCL = first(CRCL), PENK = first(PENK), .groups = "drop") |>
+  summarise(cl_true = first(cl), CRCL = first(CRCL), PROENKEPHALIN = first(PROENKEPHALIN), .groups = "drop") |>
   rowwise() |>
-  mutate(cl_pred = clpred(model, CRCL, PENK)) |>
+  mutate(cl_pred = clpred(model, CRCL, PROENKEPHALIN)) |>
   ungroup() |>
   mutate(panel = factor(model_labels[model], levels = model_labels))
 ggplot(cl_ind, aes(cl_pred, cl_true)) +
