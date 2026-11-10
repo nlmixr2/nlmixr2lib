@@ -115,7 +115,7 @@ Tohi_2023_nivolumab <- function() {
     # omega^2 = log(1 + CV^2). IIV on Q and V2 could not be estimated and was
     # held at zero (Results 'Base Model'), so those parameters carry no eta.
     etalcl ~ 0.03695 # Table 2: IIV for CL = 19.4 CV%; log(1 + 0.194^2) = 0.03695
-    etalvc ~ 0.19425 # Table 2: IIV for V1 = 46.3 CV%; log(1 + 0.463^2) = 0.19425
+    etalvc ~ log(1 + 0.463^2)  # Table 2: IIV for V1 = 46.3 CV%
 
     propSd <- 0.160; label("Proportional residual error (fraction)") # Table 2: proportional error = 16.0 CV%
   })

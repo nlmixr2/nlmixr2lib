@@ -1,0 +1,440 @@
+---
+title: "Niclosamide in sheep (Weiss 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Niclosamide in sheep (Weiss 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Weiss 2023 studied nebulized niclosamide ethanolamine (NEN), an inhaled
+formulation of the oral anthelminthic niclosamide, in healthy ewes. Plasma
+concentrations after three nebulized doses and one intravenous infusion were
+fitted simultaneously with a three-compartment population PK model in NONMEM
+(FOCE+I), which estimates the absolute bioavailability of the nebulized dose.
+Epithelial lining fluid (ELF) concentrations and the oral arm were analysed by
+non-compartmental methods only (the paper reports that no ELF model could be
+established), so they are not part of the model.
+
+* Article: <https://doi.org/10.1007/s11095-023-03559-0>
+* Open access: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10447587/>
+
+```{r model}
+mod <- readModelDb("Weiss_2023_niclosamide_sheep")
+mod_ui <- rxode2::rxode2(mod)
+mod_ui
+```
+
+# Population
+
+Ten 12-month-old Merino cross-bred ewes in two cohorts of five (Table I). The
+nebulized cohort (sheep 1-5, 25-35 kg) received a placebo and then 10, 30 and
+60 mg NEN by an in-line eFlow nebulizer through an endotracheal tube, over
+24-27 min, with 7-day washouts. The second cohort (sheep 11-14 and 18,
+40.6 +/- 2.1 kg) received 1132 mg oral niclosamide and a 3 mg intravenous NEN
+infusion over 30 min. Plasma was sampled at 14 time points over 12 h (Table I).
+Only the nebulized and intravenous plasma data enter the population PK model.
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| Structure: absorption compartment, central, shallow and deep peripheral | -- | Methods, "Non-compartmental and compartmental Pharmacokinetic analysis", equations for dAabs/dt, dA1/dt, dA2/dt, dA3/dt |
+| Nebulized input: zero-order into the absorption compartment | over the nebulization time | Methods, same section ("time-delimited zero-order ... input") |
+| IV input: zero-order into central | 3 mL at 0.1 mL/min (30 min) | Methods, "Niclosamide administration procedures"; Table S1 |
+| `lka` | 20.9 1/h | Table S2; Table II |
+| `lfdepot` (Fneb) | 85.8% | Table S2 (Table II rounds to 86%) |
+| `lcl` | 170 L/h | Table S2 |
+| `lvc` (V1) | 15.7 L | Table S2 |
+| `lvp` (V2, shallow) | 10.1 L | Table S2 |
+| `lq` (CLd1) | 57.4 L/h | Table S2 |
+| `lvp2` (V3, deep) | 148 L | Table S2 |
+| `lq2` (CLd2) | 7.47 L/h | Table S2 |
+| `etalka` | 76% CV | Table S2 |
+| `etalcl` | 34% CV | Table S2 |
+| `etalvc` | 71% CV | Table S2 |
+| `etalvp` | 28% CV | Table S2 |
+| `propSd` | 25.2% | Table S2 |
+| `addSd` | 0.26 ng/mL | Table S2 |
+| Half-lives (validation target) | 0.041, 0.2, 14 h | Table II; Results text |
+| Plasma NCA (validation target) | Cmax, Tmax, AUC0-t | Table II |
+
+# Typical-value checks
+
+## Disposition half-lives
+
+Table II reports half-lives of 0.041 h (alpha), 0.2 h (beta) and 14 h
+(terminal). These are the eigenvalues of the typical-value disposition
+matrix, so they follow from CL, V1, V2, V3, CLd1 and CLd2 alone.
+
+```{r half-lives}
+th <- exp(mod_ui$theta)
+kel <- th[["lcl"]] / th[["lvc"]]
+k12 <- th[["lq"]] / th[["lvc"]]
+k21 <- th[["lq"]] / th[["lvp"]]
+k13 <- th[["lq2"]] / th[["lvc"]]
+k31 <- th[["lq2"]] / th[["lvp2"]]
+disp <- matrix(
+  c(-(kel + k12 + k13), k21, k31,
+    k12, -k21, 0,
+    k13, 0, -k31),
+  nrow = 3, byrow = TRUE
+)
+thalf <- sort(log(2) / -eigen(disp)$values)
+data.frame(
+  phase = c("alpha", "beta", "terminal"),
+  model_h = signif(thalf, 3),
+  published_h = c(0.041, 0.2, 14)
+) |>
+  knitr::kable(caption = "Typical-value half-lives versus Table II.")
+
+# The parameters are deterministic here, so the comparison is a rounding check.
+stopifnot(
+  abs(thalf[1] - 0.041) < 0.0005,
+  abs(thalf[2] - 0.2) < 0.025,
+  abs(thalf[3] - 14) < 0.5
+)
+```
+
+## Nebulized bioavailability and dose linearity
+
+The dose-normalised typical-value AUC0-inf of a nebulized dose relative to the
+intravenous dose recovers Fneb, and the model is linear in dose (the paper
+reports dose-linear plasma PK across 10-60 mg NEN, Fig. S3).
+
+```{r bioavailability}
+mod_typ <- rxode2::zeroRe(mod_ui)
+ev_typ <- rbind(
+  data.frame(id = 1L, time = 0, amt = 10, dur = 27 / 60, evid = 1L, cmt = "depot"),
+  data.frame(id = 2L, time = 0, amt = 60, dur = 25 / 60, evid = 1L, cmt = "depot"),
+  data.frame(id = 3L, time = 0, amt = 3, dur = 0.5, evid = 1L, cmt = "central")
+)
+obs_typ <- expand.grid(id = 1:3, time = c(seq(0, 2, by = 0.005), seq(2.05, 400, by = 0.05)))
+obs_typ <- transform(obs_typ, amt = 0, dur = 0, evid = 0L, cmt = "central")
+sim_typ <- rxode2::rxSolve(mod_typ, rbind(ev_typ, obs_typ), returnType = "data.frame")
+
+auc_typ <- sim_typ |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    cmax = max(Cc),
+    auc = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2)
+  ) |>
+  dplyr::mutate(dose = c(10, 60, 3), auc_per_mg = auc / dose)
+f_neb <- auc_typ$auc_per_mg[1] / auc_typ$auc_per_mg[3]
+knitr::kable(auc_typ, digits = 3, caption = "Typical-value exposure (AUC to 400 h).")
+f_neb
+
+stopifnot(
+  # AUC(nebulized)/AUC(IV), dose-normalised, equals Fneb = 0.858.
+  abs(f_neb - 0.858) < 0.01,
+  # Linear model: 60 mg and 10 mg give the same dose-normalised AUC.
+  abs(auc_typ$auc_per_mg[2] / auc_typ$auc_per_mg[1] - 1) < 0.01
+)
+```
+
+# Which dose to enter: nominal or delivered
+
+The nebulizer was charged with 10, 30 or 60 mg NEN, but drug left in the
+nebulizer, lines and expiratory filters was rinsed out and assayed so that the
+actual delivered dose could be calculated (Methods). Table S1 reports the
+delivered doses as 0.271, 0.762 and 1.401 mg/kg; for ewes of 25-35 kg that is
+roughly 70-80% of the nominal charge. The intravenous dose (0.073 mg/kg in
+40.6 kg ewes, 2.96 mg) has no such loss.
+
+The paper does not say which of the two entered the modelling data set, but
+its own model simulations settle it. The median (P50) curves of Figure S3 were
+digitised by the maintainers at 2-5 h, where they are clear of the observed
+points, and compared with the typical-value prediction for the nominal doses:
+
+```{r dose-basis}
+# Figure S3 P50, digitised by the maintainers against the 0.5 ng/mL LLOQ line
+# (which reads back as 0.495 ng/mL). Time is from the start of nebulization.
+fig_s3 <- data.frame(
+  nominal_mg = c(10, 10, 10, 10, 30, 30, 30, 60, 60, 60, 60),
+  time = c(2, 3, 4, 4.9, 3, 4, 4.9, 2, 3, 4, 4.9),
+  p50_fig = c(0.18, 0.075, 0.062, 0.062, 0.20, 0.16, 0.16, 0.95, 0.41, 0.35, 0.33)
+)
+neb_dur <- c(`10` = 27, `30` = 24, `60` = 25) / 60
+ev_nom <- do.call(rbind, lapply(seq_along(neb_dur), function(i) {
+  rbind(
+    data.frame(id = i, time = 0, amt = as.numeric(names(neb_dur)[i]),
+               dur = neb_dur[[i]], evid = 1L, cmt = "depot"),
+    data.frame(id = i, time = c(2, 3, 4, 4.9), amt = 0, dur = 0, evid = 0L,
+               cmt = "central")
+  )
+}))
+typ_nom <- rxode2::rxSolve(mod_typ, ev_nom, returnType = "data.frame") |>
+  dplyr::mutate(nominal_mg = as.numeric(names(neb_dur))[id]) |>
+  dplyr::select(nominal_mg, time, Cc_nominal = Cc)
+dose_basis <- dplyr::inner_join(fig_s3, typ_nom, by = c("nominal_mg", "time")) |>
+  dplyr::mutate(ratio = p50_fig / Cc_nominal)
+knitr::kable(dose_basis, digits = 3,
+             caption = "Figure S3 P50 versus the typical-value prediction for the nominal nebulizer charge.")
+summary(dose_basis$ratio)
+
+# The paper's simulations sit well below a nominal-dose simulation in every
+# dose group, so the data set did not carry the nominal charge.
+stopifnot(median(dose_basis$ratio) < 0.85)
+```
+
+Figure S3 lies 0.6-0.75 times below the nominal-dose prediction in all three
+groups and at every time, which is the size of the delivery loss. The model
+should therefore be dosed with the **delivered** nebulized dose. The
+simulations below use the Table S1 mean delivered dose in mg/kg multiplied by
+30 kg, the middle of the 25-35 kg weight range of the nebulized cohort.
+
+# Virtual cohort and simulation
+
+One hundred virtual ewes per arm receive each of the four modelled regimens.
+Nebulization times are the Table S1 means (27, 24 and 25 min for the 10, 30
+and 60 mg doses); the IV dose is a 30 min infusion. Plasma is sampled on the
+Table I schedule: before dosing, at 7.5 and 15 min during dosing, and at 0, 5,
+15 and 30 min and 1, 2, 3, 4, 6, 8 and 12 h after the end of dosing. A dense
+grid is added for the figure.
+
+```{r cohort}
+arms <- data.frame(
+  treatment = c("0.167% NEN nebulized", "0.5% NEN nebulized",
+                "1% NEN nebulized", "0.1% NEN intravenous"),
+  nominal_mg = c(10, 30, 60, 3),
+  # Table S1 delivered dose (mg/kg) x 30 kg for the nebulized cohort and
+  # x 40.6 kg (Table I footnote) for the intravenous cohort.
+  amt = c(0.271 * 30, 0.762 * 30, 1.401 * 30, 0.073 * 40.6),
+  dur_min = c(27, 24, 25, 30),
+  cmt = c("depot", "depot", "depot", "central")
+)
+knitr::kable(arms, digits = 2, caption = "Simulated regimens (amt = delivered dose, mg NEN).")
+arms$treatment <- factor(arms$treatment, levels = arms$treatment)
+n_per_arm <- 100L
+post_end_h <- c(0, 5, 15, 30, 60, 120, 180, 240, 360, 480, 720) / 60
+
+make_arm <- function(i, n, id_offset) {
+  a <- arms[i, ]
+  ids <- id_offset + seq_len(n)
+  dur <- a$dur_min / 60
+  sched <- sort(unique(c(0, 7.5 / 60, 15 / 60, dur + post_end_h)))
+  grid <- seq(0, dur + 12, by = 1 / 60)
+  sched <- round(sched, 6)
+  obs_times <- sort(unique(round(c(sched, grid), 6)))
+  dose <- data.frame(id = ids, time = 0, amt = a$amt, dur = dur, evid = 1L,
+                     cmt = a$cmt, treatment = a$treatment, scheduled = FALSE)
+  obs <- expand.grid(id = ids, time = obs_times)
+  obs$amt <- 0
+  obs$dur <- 0
+  obs$evid <- 0L
+  obs$cmt <- "central"
+  obs$treatment <- a$treatment
+  obs$scheduled <- obs$time %in% sched
+  rbind(dose, obs)
+}
+events <- do.call(rbind, lapply(seq_len(nrow(arms)), function(i) {
+  make_arm(i, n_per_arm, (i - 1L) * n_per_arm)
+}))
+events <- events[order(events$id, events$time, -events$evid), ]
+stopifnot(!anyDuplicated(events[events$evid == 1, "id"]))
+
+rxode2::rxSetSeed(20230727)
+sim <- rxode2::rxSolve(mod_ui, events, keep = c("treatment", "scheduled"),
+                       returnType = "data.frame")
+```
+
+# Replicate Figure 2A
+
+```{r fig2a, fig.height = 5}
+llq <- 0.5
+sim |>
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(
+    p05 = quantile(Cc, 0.05), p50 = median(Cc), p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  dplyr::filter(time > 0, time <= 3) |>
+  ggplot(aes(time, p50, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.15, colour = NA) +
+  geom_line() +
+  geom_hline(yintercept = llq, linetype = "dashed") +
+  scale_y_log10() +
+  labs(x = "Time after start of dosing (h)", y = "Plasma niclosamide (ng/mL)",
+       colour = NULL, fill = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+Replicates Figure 2A (semilog panel) of Weiss 2023: median and 90% prediction
+interval of plasma niclosamide by dose group; dashed line is the 0.5 ng/mL
+LLOQ. As in the paper, concentrations peak at the end of nebulization, fall
+steeply over the first 1-2 h and approach the LLOQ by 1-2 h for the 10 mg dose,
+with the IV profile tracking the 10 mg nebulized profile.
+
+# Replicate Figure S3
+
+```{r fig-s3, fig.height = 4}
+sim_p50 <- sim |>
+  dplyr::filter(treatment != "0.1% NEN intravenous") |>
+  dplyr::mutate(nominal_mg = arms$nominal_mg[match(treatment, arms$treatment)]) |>
+  dplyr::group_by(nominal_mg, treatment, time) |>
+  dplyr::summarise(
+    P10 = quantile(Cc, 0.1), P50 = median(Cc), P90 = quantile(Cc, 0.9),
+    .groups = "drop"
+  )
+fig_s3_lab <- fig_s3 |>
+  dplyr::mutate(treatment = arms$treatment[match(nominal_mg, arms$nominal_mg)])
+sim_p50 |>
+  dplyr::filter(time > 0, time <= 5) |>
+  tidyr::pivot_longer(c(P10, P50, P90), names_to = "percentile", values_to = "Cc") |>
+  ggplot(aes(time, Cc)) +
+  geom_line(aes(linetype = percentile)) +
+  geom_point(data = fig_s3_lab, aes(time, p50_fig), colour = "red") +
+  geom_hline(yintercept = llq, linetype = "dotted") +
+  facet_wrap(~treatment) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Plasma niclosamide (ng/mL)", linetype = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+s3_check <- dplyr::inner_join(
+  fig_s3,
+  sim_p50 |> dplyr::mutate(time = round(time, 4)),
+  by = c("nominal_mg", "time")
+) |>
+  dplyr::mutate(ratio = P50 / p50_fig)
+knitr::kable(dplyr::select(s3_check, nominal_mg, time, p50_fig, P50, ratio), digits = 3,
+             caption = "Simulated P50 (delivered doses) versus the digitised Figure S3 P50.")
+
+stopifnot(
+  nrow(s3_check) == nrow(fig_s3),
+  abs(log(median(s3_check$ratio))) < log(1.3)
+)
+```
+
+Replicates Figure S3 of Weiss 2023 (P10, P50 and P90 of the model simulations
+by dose group); red points are the digitised published P50. With the delivered
+doses the simulated median comes within about 20% of the published one (median
+ratio near 1.2). The remaining gap is the size of either a lighter cohort
+(about 25 kg rather than 30 kg) or a salt-to-base correction of the doses
+(factor 0.84), which this comparison cannot separate.
+
+# PKNCA validation
+
+The paper's NCA (PKSolver) used the scheduled samples above the LLOQ, so the
+simulated individual predictions are taken on the Table I schedule and samples
+below 0.5 ng/mL are dropped before the NCA. The pre-dose sample is kept as
+zero.
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(scheduled) |>
+  dplyr::mutate(Cc = ifelse(time > 0 & Cc < llq, NA_real_, Cc)) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+stopifnot(all(sim_nca$Cc[sim_nca$time == 0] == 0))
+stopifnot(length(unique(sim_nca$id[sim_nca$time == 0])) == nrow(arms) * n_per_arm)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, dur, treatment)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, duration = "dur")
+
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against published NCA
+
+Table II reports the mean of the observed NCA parameters for the nebulized
+groups (Tmax converted from min to h below); no plasma NCA is tabulated for the
+intravenous arm. `ncaComparisonTable()` summarises the simulated cohort by its
+median.
+
+```{r nca-compare}
+published <- data.frame(
+  treatment = c("0.167% NEN nebulized", "0.5% NEN nebulized", "1% NEN nebulized"),
+  cmax = c(76.6, 239.8, 577.1),
+  tmax = c(27.1, 24.3, 22.2) / 60,
+  auclast = c(35.9, 96.1, 261.4)
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "ng/mL", tmax = "h", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated (median) vs. published (mean, Table II) plasma NCA. * differs from reference by >20%.")
+```
+
+```{r nca-assert}
+sim_med <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "auclast"),
+                treatment %in% published$treatment) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(med = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = med) |>
+  dplyr::left_join(published, by = "treatment", suffix = c("_sim", "_pub"))
+sim_med
+
+# Structural check on the centre of the distribution: a mis-transcribed CL,
+# volume, Fneb or dose unit moves these ratios by far more than the band.
+stopifnot(
+  all(sim_med$cmax_sim / sim_med$cmax_pub > 0.67 & sim_med$cmax_sim / sim_med$cmax_pub < 1.5),
+  all(sim_med$auclast_sim / sim_med$auclast_pub > 0.67 & sim_med$auclast_sim / sim_med$auclast_pub < 1.5)
+)
+```
+
+Rows starred in the table (typically the 1% Cmax, about 25% low, and the 0.5%
+AUC0-t, about 20% high) go in opposite directions across groups: the
+observed means are not dose-proportional (Cmax per mg NEN 7.7, 8.0 and 9.6;
+AUC0-t per mg 3.6, 3.2 and 4.4), whereas the model is linear, as the paper
+concluded from its population analysis. The simulated medians are compared with observed arithmetic means of five
+sheep per group, whose standard deviations in Table II are 20-38% of the mean
+for Cmax and 29-32% for AUC0-t, and from which eight implausible data points
+were excluded before the NCA (Fig. 2 legend). The simulated doses also rest on
+an assumed 30 kg body weight. Differences of the order of 20-30% are therefore
+within the precision of the published values.
+
+# Assumptions and deviations
+
+- **Delivered, not nominal, nebulized dose.** The paper does not state which
+  dose entered the modelling data set. Its own Figure S3 simulations sit
+  0.6-0.75 times below a nominal-dose simulation in every group, matching the
+  delivery loss implied by Table S1, so the model is dosed with the delivered
+  dose. The individual body weights of the nebulized cohort are not reported;
+  the vignette uses 30 kg, the middle of the stated 25-35 kg range.
+- **Salt basis.** Doses are entered in mg of niclosamide ethanolamine (NEN),
+  the unit the paper reports for every dose (Table I, Table S1). The paper
+  does not state a salt correction before modelling. If the data set used
+  niclosamide-equivalent doses instead (NEN is about 84% niclosamide by mass),
+  CL and the volumes would be about 16% lower on a NEN-dose basis; Fneb is
+  unaffected because both routes share the same basis. The Figure S3
+  comparison cannot separate the two, because the unknown body weights
+  (25-35 kg) move the delivered dose by more than 16%.
+- **IIV scale.** Table S2 reports IIV as %CV for a log-normal model; the
+  variances are omega^2 = log(CV^2 + 1). Table S2 lists no covariance, so the
+  etas are independent (the paper tested a CL-V covariance during model
+  building).
+- **Bioavailability placement.** The paper writes Fneb on the
+  absorption-to-central flux (ka * Fneb * Aabs). The model applies it to the
+  nebulized dose (`f(depot)`), which gives identical central, peripheral and
+  plasma amounts.
+- **Nebulization time.** The zero-order nebulized input uses the Table S1 mean
+  delivery time per dose group in this vignette; the paper used the individual
+  recorded delivery times.
+- **Out of scope.** No ELF model was established and the oral arm was not
+  modelled (Results; Discussion), so neither appears here. The deep peripheral
+  parameters had RSE above 100% (Table S2 footnote); the paper cautions against
+  extrapolating beyond 3 h for regimens outside those studied.
+- **Errata.** No correction notice was found for this article (Europe PMC,
+  checked 2026-10-27).

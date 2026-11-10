@@ -84,7 +84,7 @@ Grasela_1985_phenobarbital <- function() {
     # Inter-individual variability. Abstract reports CV%; convert to the
     # internal log-normal variance via omega^2 = log(CV^2 + 1).
     etalcl ~ 0.03546   # CV 19% -> log(1 + 0.19^2)
-    etalvc ~ 0.02527   # CV 16% -> log(1 + 0.16^2)
+    etalvc ~ log(1 + 0.16^2)  # CV 16%
 
     # Residual error: NOT reported in the abstract. Fixed at zero so the
     # model can be loaded and simulated deterministically; see Errata in

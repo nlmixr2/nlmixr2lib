@@ -59,10 +59,10 @@ Every parameter and equation traces back to the publication; the per-parameter o
 | `e_child_cl = log(14.4 / 432)` -- CHILD shift on log CL/F | -3.402 | Sidhu 1998 Table 2 (CL/F children = 14.4 L/h/kg; rel. s.e. 24%) |
 | `e_child_vc = log(37.9 / 1600)` -- CHILD shift on log V/F | -3.741 | Sidhu 1998 Table 2 (V/F children = 37.9 L/kg; rel. s.e. 33%) |
 | `e_occ2_fdepot = log(1 / 6.9)` -- Day-5 shift on log F | -1.932 | Sidhu 1998 Table 2 (delta_F_Day1->Day5 = 6.9; rel. s.e. 20%) |
-| `etalcl + etalvc ~ c(0.1843, 0.3493, 0.7334)` -- IIV with near-unity correlation | 45% / 104% CV, cor = 0.95 | Sidhu 1998 Table 2 (omega CL/F = 45%, omega V/F = 104%) + Results p. 350 ('correlation between eta V/F and eta CL/F was found to be near unity') |
+| `etalcl + etalvc ~ c(0.1844, 0.3493, 0.7331)` -- IIV with near-unity correlation | 45% / 104% CV, cor = 0.95 | Sidhu 1998 Table 2 (omega CL/F = 45%, omega V/F = 104%) + Results p. 350 ('correlation between eta V/F and eta CL/F was found to be near unity') |
 | `etalka ~ 3.5316` -- IIV ka | 576% CV | Sidhu 1998 Table 2 (omega ka = 576%; rel. s.e. 21%); retained per Results (estimating its variance was preferred to fixing) |
-| `etaiov_cl_1 = etaiov_cl_2 ~ 0.2475` -- IOV on log CL/F | 53% CV (shared) | Sidhu 1998 Table 2 (pi CL/F = 53%; rel. s.e. 32%) |
-| `etaiov_vc_1 = etaiov_vc_2 ~ 0.5536` -- IOV on log V/F | 86% CV (shared) | Sidhu 1998 Table 2 (pi V/F = 86%; rel. s.e. 36%) |
+| `etaiov_cl_1 = etaiov_cl_2 ~ 0.2476` -- IOV on log CL/F | 53% CV (shared) | Sidhu 1998 Table 2 (pi CL/F = 53%; rel. s.e. 32%) |
+| `etaiov_vc_1 = etaiov_vc_2 ~ 0.5537` -- IOV on log V/F | 86% CV (shared) | Sidhu 1998 Table 2 (pi V/F = 86%; rel. s.e. 36%) |
 | `propSd = 0.47` -- proportional residual error (fraction) | 47% CV | Sidhu 1998 Table 2 (sigma = 47%; rel. s.e. 41%) |
 | Age-group switch `ln_cl_typ = lcl + CHILD * (e_child_cl + log(WT))` | -- | Sidhu 1998 Table 2 (separate CL/F and V/F for adults and children) + footnote b (children's units adjusted for total body weight) |
 | Time-dependent F: `f(depot) = exp(lfdepot + e_occ2_fdepot * oc2)` | -- | Sidhu 1998 Methods 'time-variance modelled both as systematic and random variability' + Table 2 (delta_F_Day1->Day5 = 6.9) |

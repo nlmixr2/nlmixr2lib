@@ -195,11 +195,11 @@ Lindauer_2017_pembrolizumab <- function() {
     # Inter-individual variability -- carried unchanged from the mouse
     # PK/PD fit (Lindauer 2017 Table S2). Only L0 and W0 have IIV;
     # omega^2 = log(CV^2 + 1).
-    #   L0:  CV 59.4% -> omega^2 = log(0.594^2 + 1) = 0.30237
-    #   W0:  CV 37.5% -> omega^2 = log(0.375^2 + 1) = 0.13164
+    #   L0:  CV 59.4% -> omega^2 = log(0.594^2 + 1) = 0.30220
+    #   W0:  CV 37.5% -> omega^2 = log(0.375^2 + 1) = 0.13158
     # ----------------------------------------------------------------------
-    etall0    ~ 0.30237                                                                                                       # Lindauer 2017 Table S2 IIV L0 = 59.4% CV
-    etalrbase ~ 0.13164                                                                                                       # Lindauer 2017 Table S2 IIV W0 = 37.5% CV
+    etall0    ~ log(1 + 0.594^2)  # Lindauer 2017 Table S2 IIV L0 = 59.4% CV
+    etalrbase ~ log(1 + 0.375^2)  # Lindauer 2017 Table S2 IIV W0 = 37.5% CV
 
     # ----------------------------------------------------------------------
     # Residual error -- mouse-fit values reused as placeholders for human

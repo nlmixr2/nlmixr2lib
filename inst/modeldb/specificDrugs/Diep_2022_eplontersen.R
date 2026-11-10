@@ -99,14 +99,14 @@ Diep_2022_eplontersen <- function() {
     # injection site differences"; reported shrinkages 22.2% arm and 21.6%
     # abdomen are subgroup-specific, but the underlying eta is one parameter
     # paired with the reference-site lka).
-    etalcl   ~ 0.04357   # Diep 2022 Table 2 IIV%CL = 21.1%   -> log(0.211^2 + 1)
-    etalvc   ~ 0.24017   # Diep 2022 Table 2 IIV%Vc = 52.1%   -> log(0.521^2 + 1)
-    etalq    ~ 0.12777   # Diep 2022 Table 2 IIV%Q  = 36.9%   -> log(0.369^2 + 1)
-    etalvp   ~ 0.18147   # Diep 2022 Table 2 IIV%Vp = 44.6%   -> log(0.446^2 + 1)
-    etalka   ~ 0.14378   # Diep 2022 Table 2 IIV%ka = 39.3%   -> log(0.393^2 + 1)
+    etalcl   ~ log(1 + 0.211^2)  # Diep 2022 Table 2 IIV%CL = 21.1%
+    etalvc   ~ log(1 + 0.521^2)  # Diep 2022 Table 2 IIV%Vc = 52.1%
+    etalq    ~ log(1 + 0.369^2)  # Diep 2022 Table 2 IIV%Q  = 36.9%
+    etalvp   ~ log(1 + 0.446^2)  # Diep 2022 Table 2 IIV%Vp = 44.6%
+    etalka   ~ log(1 + 0.393^2)  # Diep 2022 Table 2 IIV%ka = 39.3%
     etalrbase   ~ 0.09633   # Diep 2022 Table 3 IIV%BL  = 31.8%  -> log(0.318^2 + 1)
-    etalkout ~ 0.19349   # Diep 2022 Table 3 IIV%kout = 46.2% -> log(0.462^2 + 1)
-    etalic50 ~ 0.52295   # Diep 2022 Table 3 IIV%IC50 = 82.9% -> log(0.829^2 + 1)
+    etalkout ~ log(1 + 0.462^2)  # Diep 2022 Table 3 IIV%kout = 46.2%
+    etalic50 ~ log(1 + 0.829^2)  # Diep 2022 Table 3 IIV%IC50 = 82.9%
 
     # ---- Residual error ----
     # PK: Diep 2022 Table 2 reports sigma^2_add = 0.0851 as the additive

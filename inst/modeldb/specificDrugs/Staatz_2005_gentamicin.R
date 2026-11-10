@@ -94,7 +94,7 @@ Staatz_2005_gentamicin <- function() {
     # intercompartmental clearance (Q) further stabilized the model with no
     # change in OFV"). Log-normal IIV: omega^2 = log(CV^2 + 1).
     etalcl ~ 0.07037   # log(0.27^2 + 1); 27% CV on CL (Table 4 'All data': etaCL = 27%)
-    etalvp ~ 0.45506   # log(0.84^2 + 1); 84% CV on V2 (Table 4 'All data': etaV2 = 84%)
+    etalvp ~ log(1 + 0.84^2)  # 84% CV on V2 (Table 4 'All data': etaV2 = 84%)
 
     # Residual error: combined additive + proportional (Staatz 2005 Table 4
     # 'All data' column).

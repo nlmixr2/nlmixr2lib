@@ -83,11 +83,11 @@ Viberg_2006_cefuroxime <- function() {
     # Conversion of CV% to log-scale variance: omega^2 = log(1 + CV^2).
     #   IIV CL : 27% CV -> log(1 + 0.27^2) = 0.07037
     #   IIV V1 : 18% CV -> log(1 + 0.18^2) = 0.03189
-    #   IIV V2 : 48% CV -> log(1 + 0.48^2) = 0.20724
+    #   IIV V2 : 48% CV -> log(1 + 0.48^2) = 0.20734
     # No IIV was estimated on Q (Viberg 2006 Table 4 reports "- -" for Q).
     etalcl ~ 0.07037                                                                                # Viberg 2006 Table 4 (IIV CL 27%)
     etalvc ~ 0.03189                                                                                # Viberg 2006 Table 4 (IIV V1 18%)
-    etalvp ~ 0.20724                                                                                # Viberg 2006 Table 4 (IIV V2 48%)
+    etalvp ~ log(1 + 0.48^2)  # Viberg 2006 Table 4 (IIV V2 48%)
 
     # Residual error -- proportional only (Viberg 2006 Results paragraph 2:
     # "The residual error was adequately described by only a proportional

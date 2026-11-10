@@ -61,7 +61,7 @@ The table below collects the entries in one place.
 | `lka` (Ka) | 0.85 1/h | Table 2, Estimate column, Ka row |
 | IIV CL/F (omega^2 = log(0.363^2 + 1) = 0.1238) | 36.3% CV | Table 2, Estimate column, Variability in CL/F row |
 | IIV V/F (omega^2 = log(0.414^2 + 1) = 0.1582) | 41.4% CV | Table 2, Estimate column, Variability in V/F row |
-| IIV Ka (omega^2 = log(0.743^2 + 1) = 0.4397) | 74.3% CV | Table 2, Estimate column, Variability in Ka row |
+| IIV Ka (omega^2 = log(0.743^2 + 1) = 0.4396) | 74.3% CV | Table 2, Estimate column, Variability in Ka row |
 | Proportional residual error | 33.5% CV | Table 2, Estimate column, RUV row |
 | Bioavailability F | implicit in CL/F and V/F (apparent) | Methods 'Pharmacokinetic analysis' (parameterized as CL/F and V/F throughout) |
 | 1-cmt structure with first-order absorption | -- | Methods 'Pharmacokinetic analysis' (NONMEM ADVAN2/TRANS2; one-compartment chosen because the regression for the two-compartment model did not converge) |

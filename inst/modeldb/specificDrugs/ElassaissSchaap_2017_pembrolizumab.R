@@ -62,7 +62,7 @@ ElassaissSchaap_2017_pembrolizumab <- function() {
 
     # IIV (Elassaiss-Schaap 2017 Table 2). omega^2 = log(CV^2 + 1) for
     # log-normal BSV per the paper's stated CV-to-variance formula.
-    # Vmax    : BSV 22.7% -> omega^2 = log(0.227^2 + 1) = log(1.05153) = 0.05024
+    # Vmax    : BSV 22.7% -> omega^2 = log(0.227^2 + 1) = log(1.05153) = 0.05025
     # F       : IOV 37.7% -> omega^2 = log(0.377^2 + 1) = log(1.14213) = 0.13289
     #   F's variability is reported as interoccasion variability across
     #   dosing cycles. Following the nlmixr2lib convention for paper-reported
@@ -70,7 +70,7 @@ ElassaissSchaap_2017_pembrolizumab <- function() {
     #   it is encoded as conventional IIV on lfdepot (see Liesenfeld 2013
     #   dabigatran for the same pattern).
     # Base    : BSV 12.0% -> omega^2 = log(0.120^2 + 1) = log(1.01440) = 0.01430
-    etalvmax     ~ 0.05024                                                                              # Table 2: Vmax BSV 22.7% CV
+    etalvmax     ~ log(1 + 0.227^2)  # Table 2: Vmax BSV 22.7% CV
     etalfdepot   ~ 0.13289                                                                              # Table 2: F   IOV 37.7% (recast as IIV)
     etalbaseline ~ 0.01430                                                                              # Table 2: Base BSV 12.0% CV
 

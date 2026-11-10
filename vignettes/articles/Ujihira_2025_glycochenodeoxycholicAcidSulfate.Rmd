@@ -107,12 +107,12 @@ source.
 | `lcl_prob` = log(0.95) L/h | 0.95 (RSE 7%) | Table 2, PROB `CL PROB` |
 | `lkiu_oat3` = log(2.7) umol/L | 2.7 (RSE 12%) | Table 2, PROB `K i,unbound,OAT3` |
 | `e_prob_clh` = -0.4118 | `X` = 1.7 (RSE 5%), encoded as 1/X - 1 | Table 2, PROB `X`; Eq. 2 |
-| `etalksyn` = 0.3164 | IIV 61% (RSE 15%), log(1 + 0.61^2) | Table 2, GCDCA-S IIV |
+| `etalksyn` = 0.3163 | IIV 61% (RSE 15%), log(1 + 0.61^2) | Table 2, GCDCA-S IIV |
 | `etalcl_renal` = 0.0560 | IIV 24% (RSE 25%) | Table 2, GCDCA-S IIV |
-| `etaltlag_rif` = 0.1920 | IIV 46% (RSE 32%) | Table 2, RIF IIV |
-| `etald1_rif` = 0.4657 | IIV 77% (RSE 37%) | Table 2, RIF IIV |
+| `etaltlag_rif` = 0.1919 | IIV 46% (RSE 32%) | Table 2, RIF IIV |
+| `etald1_rif` = 0.4656 | IIV 77% (RSE 37%) | Table 2, RIF IIV |
 | `etalcl_rif` = 0.0319 | IIV 18% (RSE 35%) | Table 2, RIF IIV |
-| `etalvc_prob` = 0.0917 | IIV 31% (RSE 28%) | Table 2, PROB IIV |
+| `etalvc_prob` = 0.0918 | IIV 31% (RSE 28%) | Table 2, PROB IIV |
 | `etalcl_prob` = 0.0704 | IIV 27% (RSE 20%) | Table 2, PROB IIV |
 | `etalkiu_oat3` = 0.0975 | IIV 32% (RSE 27%) | Table 2, PROB IIV |
 | `propSd` = 0.45 | 45% (RSE 3%) | Table 2, `sigma prop - GCDCA-S plasma` |
@@ -501,7 +501,7 @@ baseline_by_subject <- cohort |>
 baseline_by_subject
 
 # Analytic log-normal mean of the baseline: median * exp(omega^2 / 2).
-c(analytic_mean_nM = css_analytic * 1000 * exp(0.3163576 / 2),
+c(analytic_mean_nM = css_analytic * 1000 * exp(log(1 + 0.61^2) / 2),
   reported_mean_nM = 80)
 ```
 

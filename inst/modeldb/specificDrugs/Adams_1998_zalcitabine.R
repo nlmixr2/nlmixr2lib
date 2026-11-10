@@ -108,8 +108,8 @@ Adams_1998_zalcitabine <- function() {
     # V = TVV * exp(eta2); no off-diagonal covariance reported). The paper reports
     # the IIVs as %CV values; converted to log-scale variance via
     # omega^2 = log(1 + CV^2).
-    etalcl ~ 0.0551  # %CV = 23.8 per Table 3 -> log(1 + 0.238^2) = 0.05511
-    etalvc ~ 0.2559  # %CV = 54.0 per Table 3 -> log(1 + 0.540^2) = 0.25589
+    etalcl ~ log(1 + 0.238^2)  # %CV = 23.8 per Table 3
+    etalvc ~ log(1 + 0.540^2)  # %CV = 54.0 per Table 3
 
     # Residual error (Adams 1998 Table 3 'Error': y = F + F * eps1; i.e., proportional).
     # The paper reports 'Residual variability = 20.6%'.

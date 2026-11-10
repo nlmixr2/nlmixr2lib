@@ -123,8 +123,8 @@ Sanches_2022_piperacillin <- function() {
     # not an omega matrix. Each marginal is approximated by a log-normal with
     # the reported %CV, omega^2 = log(1 + CV^2); no correlations are reported,
     # so the etas are independent.
-    etalcl ~ 0.128393 # Table 2, CL CV 37% -> log(1 + 0.37^2)
-    etalvc ~ 0.162472 # Table 2, V CV 42% -> log(1 + 0.42^2)
+    etalcl ~ log(1 + 0.37^2)  # Table 2, CL CV 37%
+    etalvc ~ log(1 + 0.42^2)  # Table 2, V CV 42%
     etalk12 ~ 0.016759 # Table 2, KCP CV 13% -> log(1 + 0.13^2)
     etalk21 ~ 0.891998 # Table 2, KPC CV 120% -> log(1 + 1.20^2); the rounded mean and SD give 0.09/0.08 = 113%
 

@@ -61,8 +61,8 @@ equals dBP0) and a linear drug effect `(1 + dBP_slope * AUC)`.
 | `e_placebo_dbp0 = log(77.6 / 71.8) = 0.0777` | Table 2 row 'dBP0 placebo' = 77.6 (RSE 1.6%) |
 | `lmrt = log(361)` h | Table 2 row 'MRT (= 1/kout)' = 361 h (RSE 17%) |
 | `ldbp_slope = log(0.119)` L/(mg*h) | Table 2 row 'dBP slope' = 0.119 (RSE 9.4%) |
-| `etaldbp0 + etaldbp_slope ~ c(0.01435, 0.04657, 0.3578)` | Table 2 IIV CV% (dBP0 = 12%, dBP_slope = 65%), Results: 'A correlation between dBP0 and dBP Drug effect (65%) was estimated' |
-| `etalmrt ~ 0.5328` | Table 2 IIV CV% MRT = 83% |
+| `etaldbp0 + etaldbp_slope ~ c(log(1 + 0.12^2), 0.65 * sqrt(log(1 + 0.12^2) * log(1 + 0.65^2)), log(1 + 0.65^2))` | Table 2 IIV CV% (dBP0 = 12%, dBP_slope = 65%), Results: 'A correlation between dBP0 and dBP Drug effect (65%) was estimated' |
+| `etalmrt ~ log(1 + 0.83^2)` | Table 2 IIV CV% MRT = 83% |
 | `addSd_dbp = 6.24` mmHg | Table 2 row 'Residual error (mmHg)' = 6.24 (RSE 16%) |
 | `propSd_dbp = 0.0697` | Table 2 row 'Residual error (%)' = 6.97 (RSE 24%) |
 

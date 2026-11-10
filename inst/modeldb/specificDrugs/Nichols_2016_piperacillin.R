@@ -84,12 +84,12 @@ Nichols_2016_piperacillin <- function() {
 
     # ===== IIV (Nichols 2016 Table 2) =====
     # Exponential (log-normal) IIV; CV%-to-variance: omega^2 = log(1 + CV^2)
-    # 17.3% -> log(1 + 0.173^2) = 0.029497
-    # 25.2% -> log(1 + 0.252^2) = 0.061539
+    # 17.3% -> log(1 + 0.173^2) = 0.029490
+    # 25.2% -> log(1 + 0.252^2) = 0.061569
     # No correlation block: paper states "model did not support the correlation
     # between CL and V" (delta-OFV = -0.783).
-    etalcl ~ 0.029497  # Nichols 2016 Table 2: omega_CL 17.3% CV (%SE 59.0, shrinkage 10.3%)
-    etalvc ~ 0.061539  # Nichols 2016 Table 2: omega_V  25.2% CV (%SE 59.1, shrinkage 18.0%)
+    etalcl ~ log(1 + 0.173^2)  # Nichols 2016 Table 2: omega_CL 17.3% CV (%SE 59.0, shrinkage 10.3%)
+    etalvc ~ log(1 + 0.252^2)  # Nichols 2016 Table 2: omega_V  25.2% CV (%SE 59.1, shrinkage 18.0%)
 
     # ===== Residual error (Nichols 2016 Table 2: proportional only) =====
     propSd <- 0.253; label("Proportional residual error (fraction)")  # Nichols 2016 Table 2: sigma_proportional 25.3% CV (%SE 28.7)

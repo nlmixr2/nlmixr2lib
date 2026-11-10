@@ -153,18 +153,18 @@ Almond_2016_rifampicin_invitro <- function() {
     # correlation between parameters is reported, so the block is diagonal.
     # =====================================================================
 
-    etalemax_activity ~ 0.121511
+    etalemax_activity ~ log(1 + 0.3594^2)
     # Table 2: S.D. 7.8 on Indmax 22.7 -> CV = 7.8 / 21.7 = 0.3594 on emax;
-    # omega^2 = log(1 + 0.3594^2) = 0.121511.
-    etalec50_activity ~ 0.105361
+    # omega^2 = log(1 + 0.3594^2) = 0.121481.
+    etalec50_activity ~ log(1 + 0.3333^2)
     # Table 2: S.D. 0.10 on IndC50 0.30 -> CV = 0.3333;
-    # omega^2 = log(1 + 0.3333^2) = 0.105361.
-    etalemax_mrna ~ 0.057011
+    # omega^2 = log(1 + 0.3333^2) = 0.105341.
+    etalemax_mrna ~ log(1 + 0.2422^2)
     # Table 2: S.D. 7.0 on Indmax 29.9 -> CV = 7.0 / 28.9 = 0.2422 on emax;
-    # omega^2 = log(1 + 0.2422^2) = 0.057011.
-    etalec50_mrna ~ 0.217534
+    # omega^2 = log(1 + 0.2422^2) = 0.057005.
+    etalec50_mrna ~ log(1 + 0.4930^2)
     # Table 2: S.D. 0.35 on IndC50 0.71 -> CV = 0.4930;
-    # omega^2 = log(1 + 0.4930^2) = 0.217534.
+    # omega^2 = log(1 + 0.4930^2) = 0.217567.
 
     # =====================================================================
     # Residual error is NOT reported. The source fitted each donor's

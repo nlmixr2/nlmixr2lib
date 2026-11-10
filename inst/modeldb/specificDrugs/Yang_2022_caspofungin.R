@@ -141,7 +141,7 @@ Yang_2022_caspofungin <- function() {
     e_wt_vc <- 0.24; label("Fractional change in V for weight >= 70 kg (unitless)") # Table 3, theta6 = 0.24 (bootstrap 95% CI 0.10-0.37)
 
     # IIV: Table 3 'Inter-individual variability (%)' read as CV%, omega^2 = log(CV^2 + 1)
-    etalcl ~ 0.081825 # Table 3, IIV CL 29.2 -> log(0.292^2 + 1)
+    etalcl ~ log(1 + 0.292^2)  # Table 3, IIV CL 29.2
     etalvc ~ 0.300448 # Table 3, IIV V 59.2 -> log(0.592^2 + 1)
 
     propSd <- 0.193; label("Proportional residual error (fraction)") # Table 3, residual variability 'Proportional (%)' = 19.3
