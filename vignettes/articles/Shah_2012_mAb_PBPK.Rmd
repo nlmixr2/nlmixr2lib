@@ -186,10 +186,11 @@ Shah & Betts 2012 Figure 8c shows human plasma adalimumab after a single
 5 mg/kg IV dose: the observed mean concentrations from Weisman et al.
 2003 (solid dots) and the fitted platform model (solid line). The values
 below were digitized from the published figure. The four observed means
-after the first day are clearly resolved. The three or four observed
-means in the first day overlap one another and span roughly 440 to
-670 nM, so they are not tabulated. The published model curve is read
-where the observed points do not hide it.
+after the first day are clearly resolved. The observed means in the
+first day overlap one another on the figure and cannot be read
+individually (together they span roughly 440 to 670 nM), so they are not
+tabulated. The published model curve is read where the observed points
+do not hide it.
 
 ```{r fig-8c-digitized}
 fig8c_curve <- data.frame(
@@ -255,6 +256,7 @@ half_life_h <- function(time, conc, t1 = 800, t2 = 1000) {
 thalf_packaged <- half_life_h(sim$time, sim$Cc)
 thalf_paper <- half_life_h(fig8c_curve$time, fig8c_curve$paper_model_nM)
 ratio_1000 <- fig8c_compare$ratio[fig8c_compare$time_h == 1000]
+ratio_100 <- fig8c_compare$ratio[fig8c_compare$time_h == 100]
 
 # The text below states that the packaged model lies above every resolved
 # observation and has a longer terminal half-life than the published curve.
@@ -361,13 +363,21 @@ model's half-life over the same interval is about
   the file-naming convention.
 * **Lung plasma flow derived for mass balance.** Shah & Betts 2012
   Table 4 reports `Q_lu = 181.913 L/h` and `BCQ_lu = 148.838 L/h`. These
-  are the sums of the tissue rows plus the "Ly. Node" row (3.670 L/h
-  plasma, 3.002 L/h blood cells; checked in the chunk below), but
-  Eqs 1-3 give the lymph node no blood flow: it receives only lymph and
-  returns it to plasma. Used literally, the table lung flow sends about
-  3.3 L/h x C_lung more out of the lung than the tissues take in, and
-  that mAb leaves the system. To preserve total mAb mass the model file
-  derives `Q_lu = sum_X Q_X / (1 - 1/500)`, `L_lu = Q_lu / 500`, and
+  equal, to within 1 mL/h of rounding, the sums of the tissue rows plus
+  the "Ly. Node" row (3.670 L/h plasma, 3.002 L/h blood cells; first
+  chunk below). Eqs 1-3, however, give the lymph node no blood flow: it
+  receives only lymph and returns it to plasma. Read as that lymph
+  return, the "Ly. Node" row makes the plasma inflow and outflow nearly
+  balance as fluid, but the mAb balance at the lung outflow still does
+  not close: used literally in the printed equations, the table lung
+  flow sends more mAb out of the lung than the tissues take in, and the
+  difference leaves the system. The second chunk below solves the model
+  with the Table 4 lung flows: the loss is many times the antibody's
+  clearance and the plasma profile collapses within the first day, so
+  the authors' own implementation cannot have combined the printed lung
+  flows with the printed equations; how they closed the flows is not
+  stated. To preserve total mAb mass the model file derives
+  `Q_lu = sum_X Q_X / (1 - 1/500)`, `L_lu = Q_lu / 500`, and
   `BCQ_lu = sum_X BCQ_X` from the tissue-row values, about 1.8% below
   the Table 4 lung flows. The closed-system mass balance verified above
   is then satisfied exactly.
@@ -386,9 +396,49 @@ knitr::kable(
     lymph_node_row = c(3670, 3002),
     sum_tissues_plus_lymph_node = c(sum(plq_tissues) + 3670, sum(bcq_tissues) + 3002)
   ),
-  caption = "Table 4 lung flows equal the tissue-row sums plus the lymph-node row (mL/h)."
+  caption = "Table 4 lung flows against the tissue-row sums plus the lymph-node row (mL/h)."
+)
+stopifnot(
+  abs(sum(plq_tissues) + 3670 - 181913) <= 1,
+  abs(sum(bcq_tissues) + 3002 - 148838) <= 1
 )
 ```
+
+```{r table4-lung-flow-literal, message = FALSE}
+# Solve with the Table 4 lung flows in place of the derived ones.
+mod_lung_table4 <- mod |> model({
+  q_lu <- 181.913
+  bcq_lu <- 148.838
+})
+sim_lung_table4 <- as.data.frame(rxSolve(mod_lung_table4, events = ev_long))
+
+# Plasma-flow mismatch at the lung outflow (L/h): lung output minus tissue intake
+lung_leak_L_h <- (181.913 - 181.913 / 500) - sum(plq_tissues) / 1000
+
+# Clearance of the packaged model: dose / AUC(0-inf)
+auc_last <- with(sim, sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2))
+auc_inf <- auc_last + tail(sim$Cc, 1) * thalf_packaged / log(2)
+cl_packaged <- dose_nmol / auc_inf
+
+lung_compare <- data.frame(
+  time_h = c(4, 8, 24, 100),
+  packaged_nM = signif(sim$Cc[match(c(4, 8, 24, 100), sim$time)], 3),
+  table4_lung_flows_nM = signif(sim_lung_table4$Cc[match(c(4, 8, 24, 100), sim_lung_table4$time)], 3)
+)
+knitr::kable(
+  transform(lung_compare, table4_lung_flows_nM = formatC(table4_lung_flows_nM, digits = 3, format = "g")),
+  caption = "Plasma adalimumab (nM) with the derived lung flows and with the Table 4 lung flows."
+)
+stopifnot(
+  lung_compare$table4_lung_flows_nM[lung_compare$time_h == 24] <
+    0.01 * lung_compare$packaged_nM[lung_compare$time_h == 24]
+)
+```
+
+With the Table 4 lung flows the lung sends out about
+`r round(lung_leak_L_h, 2)` L/h x C_lung more than the tissues take in,
+`r round(lung_leak_L_h / cl_packaged)` times the packaged model's
+clearance of `r signif(cl_packaged, 2)` L/h.
 * **C_LNLF carried as a metadata parameter only.** The paper estimates
   `C_LNLF = 9.1` as the proportionality constant between the lymph-
   node-to-plasma flow `L_LymphNode` and "the plasma flow of the given
@@ -400,9 +450,9 @@ knitr::kable(
   `lclnlf` does not enter the ODE system. The paper describes C_LNLF
   only in words and does not print the formula for `L_LymphNode`. The
   choice hardly matters: scaling `L_LymphNode` by C_LNLF in either
-  direction moves plasma concentrations by well under 1% (chunk below),
-  in line with the paper's finding that the output is least sensitive
-  to this rate (Figure 10).
+  direction barely moves plasma concentrations (chunk below), in line
+  with the paper's finding that the output is least sensitive to this
+  rate (Figure 10).
 
 ```{r lymph-node-sensitivity, message = FALSE}
 ln_check <- lapply(
@@ -410,21 +460,27 @@ ln_check <- lapply(
   function(f) {
     m <- mod |> ini(llymphnode = log(3.670 * f))
     s <- as.data.frame(rxSolve(m, events = ev_long))
-    s$Cc[s$time %in% c(24, 300, 1000)]
+    s[s$time > 0, c("time", "Cc")]
   }
 )
+ln_max_dev_pct <- 100 * max(
+  abs(ln_check$times_clnlf$Cc / ln_check$packaged$Cc - 1),
+  abs(ln_check$over_clnlf$Cc / ln_check$packaged$Cc - 1)
+)
+ln_rows <- match(c(24, 300, 1000), ln_check$packaged$time)
 ln_table <- data.frame(
   time_h = c(24, 300, 1000),
-  packaged_nM = signif(ln_check$packaged, 4),
-  L_LymphNode_x9.1 = signif(ln_check$times_clnlf, 4),
-  L_LymphNode_div9.1 = signif(ln_check$over_clnlf, 4)
+  packaged_nM = signif(ln_check$packaged$Cc[ln_rows], 4),
+  L_LymphNode_x9.1 = signif(ln_check$times_clnlf$Cc[ln_rows], 4),
+  L_LymphNode_div9.1 = signif(ln_check$over_clnlf$Cc[ln_rows], 4)
 )
 knitr::kable(ln_table, caption = "Plasma adalimumab (nM) with the lymph-node return flow scaled by C_LNLF.")
-stopifnot(
-  max(abs(ln_check$times_clnlf / ln_check$packaged - 1)) < 0.01,
-  max(abs(ln_check$over_clnlf / ln_check$packaged - 1)) < 0.01
-)
+stopifnot(ln_max_dev_pct < 1)
 ```
+
+Over every simulated time from 4 to 1008 h, the largest change in
+plasma concentration from scaling `L_LymphNode` 9.1-fold either way is
+`r signif(ln_max_dev_pct, 2)`%.
 * **No IIV, no residual error.** Shah & Betts 2012 fits 52 mean
   digitized plasma and tissue profiles with a single point estimate
   per parameter; the variance model (Eq 14) operates on the residual
@@ -463,18 +519,22 @@ stopifnot(
   against about `r round(thalf_paper / 24)` days, and its median %PE
   against the resolved observed means is `r round(median_pe, 1)`%
   against the 16.0% the paper reports for human plasma (Table 5). The
-  early distribution phase is also shallower. No published erratum for
-  the paper has been found.
+  gap opens early: at 100 h the packaged model is already
+  `r ratio_100`-fold the published curve. No correction to the paper is
+  listed in PubMed (PMID 22143261) or Crossref (checked November 2026).
 * **The two parts of the implementation the paper leaves open do not
   explain the difference.** The formula for the lymph-node return flow
   (`L_LymphNode` from C_LNLF) is not printed, but scaling that flow
-  9.1-fold either way changes plasma by under 1% (Assumptions above).
-  The Table 4 lung flows include the lymph-node row although the
-  equations route no blood through the lymph node; used literally, they
-  remove mAb from the system several hundred times faster than the
-  antibody's own clearance, so the profile collapses within hours
-  instead of matching Figure 8c. The lymph node has no clearance of its
-  own, so the way its flows are closed cannot change the clearance.
+  9.1-fold either way changes plasma by at most
+  `r signif(ln_max_dev_pct, 2)`% (Assumptions above). The Table 4 lung
+  flows include the lymph-node row although the equations route no
+  blood through the lymph node; used literally, they remove mAb about
+  `r round(lung_leak_L_h / cl_packaged)` times faster than the
+  packaged model clears it, and the plasma profile collapses within the
+  first day instead of matching Figure 8c. The lymph node has no
+  elimination term, so a mass-conserving closure of its flows cannot add
+  or remove clearance; only a closure that does not conserve mass, such
+  as the literal Table 4 lung flow, changes it.
 * **The difference therefore lies in the clearance and distribution
   part of the model** (endosomal uptake, FcRn binding and endosomal
   degradation). The paper's sensitivity analysis (Figure 10) finds
