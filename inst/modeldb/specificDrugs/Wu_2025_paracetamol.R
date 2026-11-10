@@ -204,15 +204,15 @@ Wu_2025_paracetamol <- function() {
     # Inter-individual variability (Table 3 reports IIV as omega% (CV%) +
     # shrinkage; omega^2 = log(1 + CV^2) for the lognormal parameterisation).
     # =====================================================================
-    etalvp           ~ 0.07227   # IIV(V_P)            = 27.38%  -> log(1 + 0.2738^2) = 0.07227 (shrinkage 19.7%)
-    etalka           ~ 0.34636   # IIV(Ka, rectal)     = 64.43%  -> log(1 + 0.6443^2) = 0.34636 (shrinkage 64.6%)
-    etalcl_gluc      ~ 0.27084   # IIV(CL_form,GLU)    = 55.99%  -> log(1 + 0.5599^2) = 0.27084 (shrinkage 24.1%)
-    etalcl_sulf      ~ 0.12150   # IIV(CL_form,SULF)   = 36.10%  -> log(1 + 0.3610^2) = 0.12150 (shrinkage 18.8%)
-    etalcl_cysmer    ~ 0.39646   # IIV(CL_form,OXI)    = 70.49%  -> log(1 + 0.7049^2) = 0.39646 (shrinkage 25.6%)
-    etalfrn_pcm      ~ 0.45914   # IIV(f_PCM)          = 78.20%  -> log(1 + 0.7820^2) = 0.45914 (shrinkage 50.5%)
-    etalfrn_gluc     ~ 0.15469   # IIV(f_GLU)          = 40.89%  -> log(1 + 0.4089^2) = 0.15469 (shrinkage 48.2%)
-    etalfrn_sulf     ~ 0.15967   # IIV(f_SULF + secr)  = 41.50%  -> log(1 + 0.4150^2) = 0.15967 (shrinkage 34.8%)
-    etalfrn_cysmer   ~ 0.16438   # IIV(f_OXI)          = 42.38%  -> log(1 + 0.4238^2) = 0.16438 (shrinkage 48.6%)
+    etalvp           ~ log(1 + 0.2738^2)  # IIV(V_P)            = 27.38% (shrinkage 19.7%)
+    etalka           ~ log(1 + 0.6443^2)  # IIV(Ka, rectal)     = 64.43% (shrinkage 64.6%)
+    etalcl_gluc      ~ log(1 + 0.5599^2)  # IIV(CL_form,GLU)    = 55.99% (shrinkage 24.1%)
+    etalcl_sulf      ~ log(1 + 0.361^2)  # IIV(CL_form,SULF)   = 36.10% (shrinkage 18.8%)
+    etalcl_cysmer    ~ log(1 + 0.7049^2)  # IIV(CL_form,OXI)    = 70.49% (shrinkage 25.6%)
+    etalfrn_pcm      ~ log(1 + 0.782^2)  # IIV(f_PCM)          = 78.20% (shrinkage 50.5%)
+    etalfrn_gluc     ~ log(1 + 0.4089^2)  # IIV(f_GLU)          = 40.89% (shrinkage 48.2%)
+    etalfrn_sulf     ~ log(1 + 0.415^2)  # IIV(f_SULF + secr)  = 41.50% (shrinkage 34.8%)
+    etalfrn_cysmer   ~ log(1 + 0.4238^2)  # IIV(f_OXI)          = 42.38% (shrinkage 48.6%)
 
     # =====================================================================
     # Residual error -- exponential model on log-transformed concentrations

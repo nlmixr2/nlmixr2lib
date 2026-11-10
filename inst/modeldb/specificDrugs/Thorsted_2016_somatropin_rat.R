@@ -141,9 +141,9 @@ Thorsted_2016_somatropin_rat <- function() {
     # CL 11.6% CV -> 0.01337; Vp 18.4% CV -> 0.03330; cov -> -0.01199.
     etalcl + etalvp ~ c(0.01337,
                         -0.01199, 0.03330)                                                  # Table 2 IIV CL 11.6% CV, Vp 18.4% CV, correlation -0.568
-    etalka2  ~ 0.008613                                                                     # Table 2 IIV ka2 9.3% CV: log(0.093^2 + 1)
-    etalrbase   ~ 0.028504                                                                     # Table 2 IIV R0 17.0% CV: log(0.170^2 + 1)
-    etalwtbase ~ 0.002697                                                                   # Table 2 IIV WT_BASE 5.2% CV: log(0.052^2 + 1)
+    etalka2  ~ log(1 + 0.093^2)  # Table 2 IIV ka2 9.3% CV
+    etalrbase   ~ log(1 + 0.17^2)  # Table 2 IIV R0 17.0% CV
+    etalwtbase ~ log(1 + 0.052^2)  # Table 2 IIV WT_BASE 5.2% CV
 
     # Residual error - Thorsted 2016 Table 2 (PKPD-study values).
     propSd        <- 0.233;    label("Proportional residual error on rhGH plasma concentration (fraction)") # Table 2 Prop-PK

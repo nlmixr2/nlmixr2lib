@@ -57,7 +57,7 @@ The same information is available programmatically via
 | `e_dose_high_cl` (500 mg/m^2 regimen on CL, `1 + THETA`) | -0.323 | Table 4 |
 | `e_dose_high_vc` (500 mg/m^2 regimen on VD, `1 + THETA`) | -0.371 | Table 4 |
 | `e_bsa_vc` (`(BSA/1.58)^THETA` on VD) | 0.861 | Table 4; Methods Equation 1 |
-| `etalcl` | 46.4% CV -> 0.19500 | Table 3, final model; `%CV = sqrt(exp(omega^2) - 1)` (Methods) |
+| `etalcl` | 46.4% CV -> 0.19499 | Table 3, final model; `%CV = sqrt(exp(omega^2) - 1)` (Methods) |
 | `etalvc` | 35.9% CV -> 0.12123 | Table 3, final model |
 | `addSd` | 1.54 mg/L | Table 3, 'Additive error 1' |
 | PD structure: `ANC = ANC0 + slope * AUC` | -- | Methods Equation 5; Results 'Pharmacodynamic Modeling'; Figure 7 |

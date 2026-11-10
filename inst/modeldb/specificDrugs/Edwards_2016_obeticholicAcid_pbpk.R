@@ -166,9 +166,9 @@ Edwards_2016_obeticholicAcid_pbpk <- function() {
     # ---- Between-subject variability ------------------------------------
     # Supplemental Table 3 reports BSV on only two parameters, as %CV from
     # Phoenix NLME. Converted to log-scale variance by omega^2 = log(CV^2 + 1):
-    #   Ka  195%  -> log(1.95^2 + 1)  = 1.5692
+    #   Ka  195%  -> log(1.95^2 + 1)  = 1.5691
     #   f22  78.1% -> log(0.781^2 + 1) = 0.4762
-    etalka    ~ 1.5692  # Suppl Table 3, BSV 195% CV on Ka
+    etalka    ~ log(1 + 1.95^2)  # Suppl Table 3, BSV 195% CV on Ka
     etalf_bd_gb ~ 0.4762 # Suppl Table 3, BSV 78.1% CV on flow from bile duct to gallbladder
 
     # ---- Residual error ---------------------------------------------------

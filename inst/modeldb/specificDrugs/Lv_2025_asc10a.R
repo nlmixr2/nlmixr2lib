@@ -192,9 +192,9 @@ Lv_2025_asc10a <- function() {
     # and Hien 2017. No IIV was reported on Q, Vp, or F (only IIV on F is
     # implicit in the fixed F = 1 anchoring).
     # =========================================================================
-    etalcl  ~ 0.02884  # Lv 2025 Table 2 IIV on CL = 17.1% CV (RSE 10.6%); omega^2 = log(1 + 0.171^2) = 0.02884
+    etalcl  ~ log(1 + 0.171^2)  # Lv 2025 Table 2 IIV on CL = 17.1% CV (RSE 10.6%)
     etalvc  ~ 0.01055  # Lv 2025 Table 2 IIV on Vc = 10.3% CV (RSE 22.2%); omega^2 = log(1 + 0.103^2) = 0.01055
-    etalktr ~ 0.09693  # Lv 2025 Table 2 IIV on KTR = 31.9% CV (RSE 9.5%); omega^2 = log(1 + 0.319^2) = 0.09693
+    etalktr ~ log(1 + 0.319^2)  # Lv 2025 Table 2 IIV on KTR = 31.9% CV (RSE 9.5%)
 
     # =========================================================================
     # Residual variability: combined additive + proportional. Proportional

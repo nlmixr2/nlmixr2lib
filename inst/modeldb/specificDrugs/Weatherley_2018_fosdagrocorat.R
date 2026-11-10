@@ -157,8 +157,8 @@ Weatherley_2018_fosdagrocorat <- function() {
     etalka ~ 1.974
     # omega^2 = log(2.49^2 + 1) = 1.974; Weatherley 2018 Table 2 'Without BLQ or taper': IIV K12 = 249%
 
-    etalfdepot ~ 0.0550
-    # omega^2 = log(0.238^2 + 1) = 0.0550; Weatherley 2018 Table 2: IOV on F1 = 23.8% (modelled as IIV; see vignette Assumptions)
+    etalfdepot ~ log(1 + 0.238^2)
+    # omega^2 = log(0.238^2 + 1) = 0.0551; Weatherley 2018 Table 2: IOV on F1 = 23.8% (modelled as IIV; see vignette Assumptions)
 
     # ------------------------------------------------------------------
     # METABOLITE-1 RESIDUAL ERROR
@@ -194,8 +194,8 @@ Weatherley_2018_fosdagrocorat <- function() {
     # METABOLITE-2 INTER-INDIVIDUAL VARIABILITY
     # ------------------------------------------------------------------
 
-    etalvc_noxide ~ 0.1771
-    # omega^2 = log(0.44^2 + 1) = 0.1771; Weatherley 2018 Table 2 'Without BLQ or taper': IIV Vm = 44%
+    etalvc_noxide ~ log(1 + 0.44^2)
+    # omega^2 = log(0.44^2 + 1) = 0.1770; Weatherley 2018 Table 2 'Without BLQ or taper': IIV Vm = 44%
 
     etalcl_noxide ~ 0.0654
     # omega^2 = log(0.26^2 + 1) = 0.0654; Weatherley 2018 Table 2 'Without BLQ or taper': IIV CLm = 26%

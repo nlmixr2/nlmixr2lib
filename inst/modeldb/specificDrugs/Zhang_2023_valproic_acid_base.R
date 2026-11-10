@@ -97,10 +97,10 @@ Zhang_2023_valproic_acid_base <- function() {
     # IIV - diagonal (no correlation reported). Zhang 2023 reports
     # between-subject variability as CV%, so the internal variance is
     # omega^2 = log(CV^2 + 1).
-    #   BSV_CL/F = 45.7% -> omega^2 = log(0.457^2 + 1) = 0.18966
+    #   BSV_CL/F = 45.7% -> omega^2 = log(0.457^2 + 1) = 0.18967
     #   BSV_V/F  = 68.6% -> omega^2 = log(0.686^2 + 1) = 0.38567
     # ----------------------------------------------------------------
-    etalcl ~ 0.18966  # Zhang 2023 Supplementary Table S3 base model (BSV_CL/F = 45.7%, 8.1% RSE)
+    etalcl ~ log(1 + 0.457^2)  # Zhang 2023 Supplementary Table S3 base model (BSV_CL/F = 45.7%, 8.1% RSE)
     etalvc ~ 0.38567  # Zhang 2023 Supplementary Table S3 base model (BSV_V/F = 68.6%, 8.9% RSE)
 
     # ----------------------------------------------------------------

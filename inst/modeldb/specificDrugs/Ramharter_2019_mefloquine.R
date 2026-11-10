@@ -223,8 +223,8 @@ Ramharter_2019_mefloquine <- function() {
     # (paper Table 2: "IIV Vcentral,MQ"), ONE eta on CL shared across (+)-MQ
     # and (-)-MQ (paper Table 2: "IIV CLMQ"), and ONE eta on CL_CMQ. Reported
     # as %CV: omega^2 = log(1 + CV^2) for a log-normal random effect.
-    #   Vc shared: %CV = 119  -> omega^2 = log(1 + 1.19^2) = log(2.4161) = 0.8821
-    #   CL shared: %CV = 34.6 -> omega^2 = log(1 + 0.346^2) = log(1.1197) = 0.1132
+    #   Vc shared: %CV = 119  -> omega^2 = log(1 + 1.19^2) = log(2.4161) = 0.8822
+    #   CL shared: %CV = 34.6 -> omega^2 = log(1 + 0.346^2) = log(1.1197) = 0.1131
     #   CL_CMQ:    %CV = 42.7 -> omega^2 = log(1 + 0.427^2) = log(1.1823) = 0.1675
     # The shared-across-enantiomers eta is implemented in nlmixr2 as a 2x2
     # block with var_r = var_s = cov = omega^2 (perfect correlation), so the
@@ -232,8 +232,8 @@ Ramharter_2019_mefloquine <- function() {
     # identical realised values for each subject and the structure matches
     # the paper's single shared eta exactly.
     # =========================================================================
-    etalvc_r + etalvc_s ~ c(0.8821, 0.8821, 0.8821)   # Ramharter 2019 Table 2: IIV Vcentral,MQ = 119 %CV (90% CI 80.3-189) -- shared across (+)-MQ and (-)-MQ
-    etalcl_r + etalcl_s ~ c(0.1132, 0.1132, 0.1132)   # Ramharter 2019 Table 2: IIV CL,MQ = 34.6 %CV (90% CI 33.7-47.3) -- shared across (+)-MQ and (-)-MQ
+    etalvc_r + etalvc_s ~ c(log(1 + 1.19^2), log(1 + 1.19^2), log(1 + 1.19^2))   # Ramharter 2019 Table 2: IIV Vcentral,MQ = 119 %CV (90% CI 80.3-189) -- shared across (+)-MQ and (-)-MQ
+    etalcl_r + etalcl_s ~ c(log(1 + 0.346^2), log(1 + 0.346^2), log(1 + 0.346^2))   # Ramharter 2019 Table 2: IIV CL,MQ = 34.6 %CV (90% CI 33.7-47.3) -- shared across (+)-MQ and (-)-MQ
     etalcl_cmq          ~ 0.1675                       # Ramharter 2019 Table 2: IIV CL,CMQ = 42.7 %CV (90% CI 39.4-55.6) -- independent CMQ-clearance eta
 
     # =========================================================================

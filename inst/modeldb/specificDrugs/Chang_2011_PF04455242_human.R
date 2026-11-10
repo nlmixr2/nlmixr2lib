@@ -66,18 +66,18 @@ Chang_2011_PF04455242_human <- function() {
     # correlation = 0.485. The log-scale covariance is then
     #   0.485 * sqrt(var_lcl * var_lvc)
     # = 0.485 * sqrt(log(0.537^2+1) * log(0.485^2+1))
-    # = 0.485 * sqrt(0.2533 * 0.2113)
+    # = 0.485 * sqrt(0.2534 * 0.2113)
     # = 0.485 * 0.2314
     # = 0.1122
     # See vignette Errata for the alternative interpretations considered.
-    etalcl + etalvc ~ c(0.2533, 0.1122, 0.2113)
-    # Table III: omega-CL = 53.7%CV -> log(0.537^2+1) = 0.2533
+    etalcl + etalvc ~ c(log(1 + 0.537^2), 0.485 * sqrt(0.2113 * log(1 + 0.537^2)), 0.2113)
+    # Table III: omega-CL = 53.7%CV -> log(0.537^2+1) = 0.2534
     #            omega-Vc = 48.5%CV -> log(0.485^2+1) = 0.2113
     #            cov(omega-CL, omega-Vc) interpreted as r = 0.485 (see comment above)
-    etald1   ~ 0.0896  # Table III, omega-D1   = 30.6%CV -> log(0.306^2+1) = 0.0896
-    etalvp   ~ 0.0721  # Table III, omega-Vp   = 27.3%CV -> log(0.273^2+1) = 0.0721
-    etalq    ~ 0.0721  # Table III, omega-Q    = 27.3%CV -> log(0.273^2+1) = 0.0721
-    etaltlag ~ 0.0687  # Table III, omega-ALAG1 = 26.6%CV -> log(0.266^2+1) = 0.0687
+    etald1   ~ log(1 + 0.306^2)  # Table III, omega-D1   = 30.6%CV
+    etalvp   ~ log(1 + 0.273^2)  # Table III, omega-Vp   = 27.3%CV
+    etalq    ~ log(1 + 0.273^2)  # Table III, omega-Q    = 27.3%CV
+    etaltlag ~ log(1 + 0.266^2)  # Table III, omega-ALAG1 = 26.6%CV
 
     expSd <- 0.326; label("PF-04455242 log-scale residual SD (unitless, lnorm; LTBS)")  # Table III, 32.6% under the LTBS specification Eq. 14
 
@@ -107,10 +107,10 @@ Chang_2011_PF04455242_human <- function() {
     # -- the parenthesised unit indicates ADDITIVE IIV on the linear
     # scale, not a %CV. Encoded here as multiplicative log-scale IIV
     # using the equivalent CV = 3.1 / 9.53 = 32.5%, omega^2 =
-    # log(0.325^2 + 1) = 0.1003. This approximates the paper's additive
+    # log(0.325^2 + 1) = 0.1004. This approximates the paper's additive
     # IIV; the difference is < 5% for prolactin values within
     # +-2 SD of baseline and is documented in vignette Errata.
-    etalrbase  ~ 0.1003   # Table IV, omega-BL = 3.1 ng/mL (additive); approximated as CV = 32.5% (see comment above)
+    etalrbase  ~ log(1 + 0.325^2)  # Table IV, omega-BL = 3.1 ng/mL (additive); approximated as CV = 32.5% (see comment above)
     etallambda ~ 0.0388   # Table IV, omega-lambda = 19.9%CV -> log(0.199^2+1) = 0.0388
 
     propSd_PRL <- 0.175; label("Human prolactin proportional residual error (fraction)")  # Table IV, 17.5%

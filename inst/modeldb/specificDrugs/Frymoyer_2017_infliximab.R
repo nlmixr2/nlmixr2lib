@@ -124,12 +124,12 @@ Frymoyer_2017_infliximab <- function() {
     # Inter-individual variability (diagonal). Frymoyer 2017 Methods reports the
     # IIV as an exponential error model with %CV; the on-log-scale variance is
     # omega^2 = log(1 + CV^2). %CV values: 30.7% (CL), 12.6% (Vc), 55.3% (Vp).
-    #   var_cl = log(1 + 0.307^2) = 0.09010
+    #   var_cl = log(1 + 0.307^2) = 0.09007
     #   var_vc = log(1 + 0.126^2) = 0.01575
-    #   var_vp = log(1 + 0.553^2) = 0.26687
-    etalcl ~ 0.09010   # Frymoyer 2017 Methods: 30.7% CV on CL
+    #   var_vp = log(1 + 0.553^2) = 0.26682
+    etalcl ~ log(1 + 0.307^2)  # Frymoyer 2017 Methods: 30.7% CV on CL
     etalvc ~ 0.01575   # Frymoyer 2017 Methods: 12.6% CV on Vc
-    etalvp ~ 0.26687   # Frymoyer 2017 Methods: 55.3% CV on Vp
+    etalvp ~ log(1 + 0.553^2)  # Frymoyer 2017 Methods: 55.3% CV on Vp
 
     # Residual error -- combined proportional (29.2% CV) + additive
     # (SD 0.371 ug/mL) per Frymoyer 2017 Methods.

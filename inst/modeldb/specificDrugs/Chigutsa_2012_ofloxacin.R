@@ -265,14 +265,14 @@ Chigutsa_2012_ofloxacin <- function() {
     # interpreted here as the correlation coefficient r between the two
     # etas (the most common alternative reporting convention). The off-
     # diagonal covariance is then
-    #   cov = r * sqrt(var_CL * var_Vc) = 0.56 * sqrt(0.0654 * 0.0862) = 0.0421
+    #   cov = r * sqrt(var_CL * var_Vc) = 0.56 * sqrt(0.0654 * 0.0862) = 0.0420
     # which is the standard conversion for correlated IIV.
     # var(eta_CL)   = log(1 + 0.26^2)  -- Table 3 PPV CL = 26% CV (footnote b: variance on overall clearance)
     # cov(eta_CL, eta_Vc) = 0.56 * sqrt(0.06539 * 0.08618)  -- Table 3 'Covariance ... = 0.56' interpreted as correlation r
     # var(eta_Vc)   = log(1 + 0.30^2)  -- Table 3 PPV Vc = 30% CV
     etalcl + etalvc ~ c(0.06539, 0.04203, 0.08618)
     # var(eta_MTT) = log(1 + 0.54^2)  -- Table 3 PPV MTT = 54% CV (shared across fasted Durban and fed Cape Town MTT)
-    etalmtt ~ 0.25596
+    etalmtt ~ log(1 + 0.54^2)
 
     # Combined additive + proportional residual error (Chigutsa 2012
     # Table 3 'Additive error' and 'Proportional error'). Concentrations

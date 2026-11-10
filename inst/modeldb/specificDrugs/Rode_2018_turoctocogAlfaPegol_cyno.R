@@ -112,8 +112,8 @@ Rode_2018_turoctocogAlfaPegol_cyno <- function() {
     e_dose_high_vc <- -0.49; label("Fractional change in V for the 250 IU/kg IV dose (unitless)") # Table S2 'Relative effect of high IV dose on V' = -49% [95% CI -64, -34]
     e_dose_high_cl <- -0.29; label("Fractional change in CL for the 250 IU/kg IV dose (unitless)") # Table S2 'Relative effect of high IV dose on Cl' = -29% [95% CI -42, -16]
 
-    etalka ~ 0.14177 # Table S2 IIV ka 39% CV -> log(1 + 0.39^2)
-    etalfdepot ~ 0.019414 # Table S2 IIV F 14% CV -> log(1 + 0.14^2)
+    etalka ~ log(1 + 0.39^2)  # Table S2 IIV ka 39% CV
+    etalfdepot ~ log(1 + 0.14^2)  # Table S2 IIV F 14% CV
 
     propSd <- 0.39; label("Proportional residual error (fraction)") # Table S2 proportional residual error = 39% [95% CI 34, 45]
   })

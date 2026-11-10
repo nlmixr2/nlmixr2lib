@@ -108,11 +108,11 @@ Rosario_2008_maraviroc <- function() {
     # =========================================================================
     # Inter-individual variability -- Table 2 IIV (CV%) column.
     # omega^2 = log(CV^2 + 1) for log-normal IIV.
-    #   Ka  CV  89%        -> omega^2 = log(1 + 0.89^2) = 0.5831
-    #   V2  CV  31%        -> omega^2 = log(1 + 0.31^2) = 0.0917
+    #   Ka  CV  89%        -> omega^2 = log(1 + 0.89^2) = 0.5834
+    #   V2  CV  31%        -> omega^2 = log(1 + 0.31^2) = 0.0918
     #   K23 CV  24%        -> omega^2 = log(1 + 0.24^2) = 0.0560
-    #   KD  CV  21%        -> omega^2 = log(1 + 0.21^2) = 0.0431
-    #   E0  CV  28%        -> omega^2 = log(1 + 0.28^2) = 0.0754
+    #   KD  CV  21%        -> omega^2 = log(1 + 0.21^2) = 0.0432
+    #   E0  CV  28%        -> omega^2 = log(1 + 0.28^2) = 0.0755
     #   ALAG1 CV > 100%    -> approximated as 100% here (omega^2 = log(2) = 0.6931); see vignette Errata.
     # IOV on Ka (60% CV) reported in Table 2 is NOT encoded (no occasion column in the
     # nlmixr2 model interface); see vignette Errata for the dropped IOV.
@@ -120,12 +120,12 @@ Rosario_2008_maraviroc <- function() {
     # Table 2; not encoded here (set to fixed(0) implicitly by omission); see
     # vignette Errata.
     # =========================================================================
-    etalka   ~ 0.5831
-    etalvc   ~ 0.0917
+    etalka   ~ log(1 + 0.89^2)
+    etalvc   ~ log(1 + 0.31^2)
     etalk12  ~ 0.0560
     etaltlag ~ 0.6931
-    etalkd   ~ 0.0431
-    etale0   ~ 0.0754
+    etalkd   ~ log(1 + 0.21^2)
+    etale0   ~ log(1 + 0.28^2)
 
     # =========================================================================
     # Residual error -- Table 2.

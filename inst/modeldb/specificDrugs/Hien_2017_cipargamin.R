@@ -211,14 +211,14 @@ Hien_2017_cipargamin <- function() {
     # vignette's Assumptions and deviations documents this limitation of
     # the log-normal-on-fraction encoding.
     # =========================================================================
-    etalcl     ~ 0.03362  # Hien 2017 Table 3 %CV for IIV on CL/F = 18.5%; omega^2 = log(1 + 0.185^2) = 0.03362
-    etalmtt    ~ 0.36011  # Hien 2017 Table 3 %CV for IIV on MTT = 65.2%; omega^2 = log(1 + 0.652^2) = 0.36011
-    etalka     ~ 1.41146  # Hien 2017 Table 3 %CV for IIV on Ka = 176%; omega^2 = log(1 + 1.76^2) = 1.41146
-    etalfdepot ~ 0.06617  # Hien 2017 Table 3 %CV for IIV on F (bioavailability) = 26.2%; omega^2 = log(1 + 0.262^2) = 0.06617
+    etalcl     ~ log(1 + 0.185^2)  # Hien 2017 Table 3 %CV for IIV on CL/F = 18.5%
+    etalmtt    ~ log(1 + 0.652^2)  # Hien 2017 Table 3 %CV for IIV on MTT = 65.2%
+    etalka     ~ log(1 + 1.76^2)  # Hien 2017 Table 3 %CV for IIV on Ka = 176%
+    etalfdepot ~ log(1 + 0.262^2)  # Hien 2017 Table 3 %CV for IIV on F (bioavailability) = 26.2%
 
-    etalemax   ~ 0.32418  # Hien 2017 Table 3 %CV for IIV on E_max = 62.2%; omega^2 = log(1 + 0.622^2) = 0.32418
-    etalfsen   ~ 0.51240  # Hien 2017 Table 3 %CV for IIV on F_sen = 81.8%; omega^2 = log(1 + 0.818^2) = 0.51240
-    etalkact   ~ 0.15672  # Hien 2017 Table 3 %CV for IIV on K_act = 41.5%; omega^2 = log(1 + 0.415^2) = 0.15672
+    etalemax   ~ log(1 + 0.622^2)  # Hien 2017 Table 3 %CV for IIV on E_max = 62.2%
+    etalfsen   ~ log(1 + 0.818^2)  # Hien 2017 Table 3 %CV for IIV on F_sen = 81.8%
+    etalkact   ~ log(1 + 0.415^2)  # Hien 2017 Table 3 %CV for IIV on K_act = 41.5%
 
     # =========================================================================
     # Residual error. Table 3 reports the PK residual as sigma = 17.5% CV,

@@ -64,8 +64,8 @@ The table below collects the entries in one place.
 | `e_slco1b1_hap15_het_fdepot` (Frel multiplier for *15 het) | 1.50 | Table II, Final Model column, Frel SLCO1B1\\*15 heterozygote row |
 | `e_slco1b1_hap15_hom_fdepot` (Frel multiplier for *15 hom) | 1.95 | Table II, Final Model column, Frel SLCO1B1\\*15 homozygote row |
 | IIV MTT (omega^2 = log(1 + 0.352^2) = 0.1168) | 35.2% CV | Table II, Final Model IIV column, MTT row |
-| IIV CL/F (omega^2 = log(1 + 0.279^2) = 0.0749) | 27.9% CV | Table II, Final Model IIV column, CL/F row |
-| IIV V1/F (omega^2 = log(1 + 0.344^2) = 0.1119) | 34.4% CV | Table II, Final Model IIV column, V1/F row |
+| IIV CL/F (omega^2 = log(1 + 0.279^2) = 0.0750) | 27.9% CV | Table II, Final Model IIV column, CL/F row |
+| IIV V1/F (omega^2 = log(1 + 0.344^2) = 0.1118) | 34.4% CV | Table II, Final Model IIV column, V1/F row |
 | IIV K12  (omega^2 = log(1 + 0.512^2) = 0.2328) | 51.2% CV | Table II, Final Model IIV column, K12 row |
 | Proportional residual error | 18.8% | Table II, Final Model column, "Proportional error" row |
 | Additive residual error | 0.176 ng/mL | Table II, Final Model column, "Additive error" row |

@@ -106,6 +106,17 @@ review.
 | Dynamic LPV CL/F inhibition equation                   | `CL_LPV(t) = CL0_LPV * (1 - Imax * C_RTV / (IC50 + C_RTV))` | Methods 'Population pharmacokinetic analysis' equation |
 | Savic transit-chain input rate (RTV)                   | `rate = bio * dose * (ktr*t)^NN * exp(-ktr*t) / Gamma(NN+1)` with `ktr = (NN+1)/MTT` | Methods 'Population pharmacokinetic analysis' paragraph 2 (citing Savic et al.) |
 
+# Errata
+
+- **The published CVs are first-order approximations.** The Methods state:
+  "Since variability in such a model can be approximately interpreted as a
+  deviation proportional to the typical value, it will be reported as %
+  coefficient of variation (CV)." Each printed CV is therefore the standard
+  deviation of the corresponding random effect, and the model's variances
+  are the squares of the printed CVs (for example `etalka ~ 0.942^2` for
+  the 94.2% IOV on lopinavir ka), not the exact log-normal conversion
+  `log(1 + CV^2)`.
+
 # Virtual cohort
 
 Original observed data are not publicly available. The simulations

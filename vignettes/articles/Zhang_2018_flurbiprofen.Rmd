@@ -84,7 +84,7 @@ below collects them for review.
 | `lkeo` (Ke / ke0) | `log(0.0015)` 1/h | Table 2 final model: theta_Ke = 0.0015 /h |
 | `e_wt_keo` | -0.0080 (1/kg) | Table 2 final model: theta_weight = -0.0080 |
 | `e_ht_keo` | -0.0162 (1/cm) | Table 2 final model: theta_height = -0.0162 |
-| `etalcl`  IIV variance | 0.5217 | omega_CL = 82.75% (Table 2) -> omega^2 = log(1 + 0.8275^2) |
+| `etalcl`  IIV variance | 0.5216 | omega_CL = 82.75% (Table 2) -> omega^2 = log(1 + 0.8275^2) |
 | `etalvc`  IIV variance | 0.00789 | omega_Vd = 8.90% (Table 2) -> omega^2 = log(1 + 0.089^2) |
 | `etalkeo` IIV variance | 0.000484 | omega_Ke = 2.20% (Table 2) -> omega^2 = log(1 + 0.022^2) |
 | `addSd` (plasma residual) | 0.0023 mg/L | Table 2 final model: sigma = 0.0023 mg/L |

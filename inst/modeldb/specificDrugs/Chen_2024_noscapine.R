@@ -428,10 +428,10 @@ Chen_2024_noscapine <- function() {
     # eta with the variance fixed equal to the occasion-1 estimate
     # (Chen_2023_nemonoxacin.R / Jonsson_2011_ethambutol.R precedent).
     # ------------------------------------------------------------------
-    etaiov_ktr_1 ~ 0.228795      # Table 4: IOV TR = 50.7% CV (RSE 16.5%, shrinkage 2.7%) -> log(1 + 0.507^2)
-    etaiov_ktr_2 ~ fix(0.228795) # SAME-equivalent: equal to the occasion-1 IOV variance
-    etaiov_q_1   ~ 0.088404      # Table 4: IOV Qp1/F = 30.4% CV (RSE 13.2%, shrinkage 14.5%) -> log(1 + 0.304^2)
-    etaiov_q_2   ~ fix(0.088404) # SAME-equivalent: equal to the occasion-1 IOV variance
+    etaiov_ktr_1 ~ log(1 + 0.507^2)  # Table 4: IOV TR = 50.7% CV (RSE 16.5%, shrinkage 2.7%)
+    etaiov_ktr_2 ~ fix(log(1 + 0.507^2))  # SAME-equivalent: equal to the occasion-1 IOV variance
+    etaiov_q_1   ~ log(1 + 0.304^2)  # Table 4: IOV Qp1/F = 30.4% CV (RSE 13.2%, shrinkage 14.5%)
+    etaiov_q_2   ~ fix(log(1 + 0.304^2))  # SAME-equivalent: equal to the occasion-1 IOV variance
 
     # ------------------------------------------------------------------
     # Residual error. Sect. 2.4.1: 'An additive residual error model was

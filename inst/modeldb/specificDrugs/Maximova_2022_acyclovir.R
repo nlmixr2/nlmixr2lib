@@ -75,8 +75,8 @@ Maximova_2022_acyclovir <- function() {
 
     # Inter-individual variability (log-normal), Table 2 reported as CV%;
     # omega^2 = log(1 + CV^2).
-    etalcl ~ 0.18596 # Table 2 IIV CL = 45.2% CV -> log(1 + 0.452^2)
-    etalvc ~ 0.27878 # Table 2 IIV V = 56.7% CV -> log(1 + 0.567^2)
+    etalcl ~ log(1 + 0.452^2)  # Table 2 IIV CL = 45.2% CV
+    etalvc ~ log(1 + 0.567^2)  # Table 2 IIV V = 56.7% CV
 
     # Inter-occasion variability on CL, Table 2 IOV CL = 20.0% CV ->
     # log(1 + 0.20^2) = 0.03922; one eta per occasion with a shared variance.

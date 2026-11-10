@@ -96,7 +96,7 @@ Karaiskos_2015_colistin <- function() {
     # documents the loss of correlation in the vignette Assumptions section.
     # omega^2 = log(CV^2 + 1) for log-normal etas.
     etalcl_nonren ~ 0.02528  # log(0.16^2 + 1); 16% CV on CMS CL (shared with Sl_CRCL via model())
-    etalcl_col    ~ 0.40546  # log(0.71^2 + 1); 71% CV on colistin CL/fm
+    etalcl_col    ~ log(1 + 0.71^2)  # 71% CV on colistin CL/fm
 
     # Residual error. Source applies separate additive + proportional errors
     # to CMS and colistin observations (Table 2). The source ALSO links the

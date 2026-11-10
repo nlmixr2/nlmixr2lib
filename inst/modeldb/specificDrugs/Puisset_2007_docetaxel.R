@@ -152,14 +152,14 @@ Puisset_2007_docetaxel <- function() {
     # was estimated for Circ0, MTT, and Slope according to an exponential model. A log-normal
     # distribution of the parameters was assumed.'). No IIV on gamma. Reported as CV%; converted
     # to log-eta variance via omega^2 = log(1 + CV^2):
-    #   Circ0 IIV  49.2%  -> log(1 + 0.492^2) = 0.2169
+    #   Circ0 IIV  49.2%  -> log(1 + 0.492^2) = 0.2168
     #   MTT   IIV  25.5%  -> log(1 + 0.255^2) = 0.0630
     #   Slope IIV  44.0%  -> log(1 + 0.440^2) = 0.1770  (final-model IIV, Table 3 -- reduced from
     #                                                    the structural-only 96.5% in Table 2 by
     #                                                    the AAG + PRIOR_CHEMO_LINES_GE2 +
     #                                                    STUDY_TOULOUSE covariate effects)
     # ------------------------------------------------------------------
-    etalcirc0 ~ 0.2169   # Table 2 'Present study': IIV Circ0 = 49.2% CV (RSE 18.3%)
+    etalcirc0 ~ log(1 + 0.492^2)  # Table 2 'Present study': IIV Circ0 = 49.2% CV (RSE 18.3%)
     etalmtt   ~ 0.0630   # Table 2 'Present study': IIV MTT   = 25.5% CV (RSE 40.2%)
     etalslope ~ 0.1770   # Table 3 final model:    IIV Slope = 44%   CV
 
