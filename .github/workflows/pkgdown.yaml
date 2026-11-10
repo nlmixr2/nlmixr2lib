@@ -16,9 +16,10 @@
 on:
   push:
     branches: [main, master]
-  pull_request:
-    branches: [main, master]
-    types: [opened, synchronize, reopened, edited]
+  # PR checks run only when a reviewer approves with the phrase
+  # "ready to be merged" (pushes to a PR branch no longer start CI).
+  pull_request_review:
+    types: [submitted]
   release:
     types: [published]
   workflow_dispatch:
@@ -38,7 +39,7 @@ permissions: read-all
 # runs queue behind each other instead.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}${{ github.event.action == 'edited' && !github.event.changes.base && format('-{0}', github.run_id) || '' }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: ${{ (github.event_name == 'pull_request' || github.event_name == 'pull_request_review') }}
 
 env:
   # Number of runner jobs the article render fans out over. Keep the matrix
@@ -47,7 +48,7 @@ env:
 
 jobs:
   render:
-    if: github.event_name != 'pull_request' || github.event.action != 'edited' || github.event.changes.base
+    if: ((github.event_name != 'pull_request' && github.event_name != 'pull_request_review') || github.event.action != 'edited' || github.event.changes.base) && (github.event_name != 'pull_request_review' || (github.event.review.state == 'approved' && contains(github.event.review.body, 'ready to be merged') && contains(fromJSON('["main","master"]'), github.event.pull_request.base.ref)))
     runs-on: ubuntu-latest
     strategy:
       # Surface EVERY failing shard in one round. With fail-fast the first
@@ -110,7 +111,7 @@ jobs:
           if-no-files-found: error
 
   assemble:
-    if: github.event_name != 'pull_request' || github.event.action != 'edited' || github.event.changes.base
+    if: ((github.event_name != 'pull_request' && github.event_name != 'pull_request_review') || github.event.action != 'edited' || github.event.changes.base) && (github.event_name != 'pull_request_review' || (github.event.review.state == 'approved' && contains(github.event.review.body, 'ready to be merged') && contains(fromJSON('["main","master"]'), github.event.pull_request.base.ref)))
     needs: render
     runs-on: ubuntu-latest
     env:
@@ -184,7 +185,7 @@ jobs:
         run: Rscript .github/scripts/pkgdown-parallel-build.R
 
       - name: Deploy to GitHub pages 🚀
-        if: github.event_name != 'pull_request'
+        if: (github.event_name != 'pull_request' && github.event_name != 'pull_request_review')
         uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f # v4.8.0
         with:
           clean: false
