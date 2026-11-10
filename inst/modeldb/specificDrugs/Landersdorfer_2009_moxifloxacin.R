@@ -104,8 +104,8 @@ Landersdorfer_2009_moxifloxacin <- function() {
     # 'Assumptions and deviations' section for the impact on Monte Carlo
     # simulations and the user-facing override pattern.
     # =========================================================================
-    etalfcortical   ~ 0.115573  # 35% CV; log(1 + 0.35^2) = 0.115573 - Table 1 MAP-Bayesian
-    etalfcancellous ~ 0.207436  # 48% CV; log(1 + 0.48^2) = 0.207436 - Table 1 MAP-Bayesian
+    etalfcortical   ~ log(1 + 0.35^2)  # 35% CV - Table 1 MAP-Bayesian
+    etalfcancellous ~ log(1 + 0.48^2)  # 48% CV - Table 1 MAP-Bayesian
 
     # =========================================================================
     # Residual error - proportional model on each of serum, cortical bone,

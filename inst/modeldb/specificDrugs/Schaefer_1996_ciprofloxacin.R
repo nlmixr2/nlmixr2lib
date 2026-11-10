@@ -115,9 +115,9 @@ Schaefer_1996_ciprofloxacin <- function() {
     # elements in covariance matrix allowed" but Table 4 reports no
     # numeric off-diagonal values; documented as a deviation in the
     # vignette Assumptions section.
-    etalcl ~ 0.006061  # Table 4 vCL = 7.8% CV  -> log(1 + 0.078^2) = 0.006061
-    etalvc ~ 0.049837  # Table 4 vV2 = 22.6% CV -> log(1 + 0.226^2) = 0.049837
-    etalvp ~ 0.021957  # Table 4 vV3 = 14.9% CV -> log(1 + 0.149^2) = 0.021957
+    etalcl ~ log(1 + 0.078^2)  # Table 4 vCL = 7.8% CV
+    etalvc ~ log(1 + 0.226^2)  # Table 4 vV2 = 22.6% CV
+    etalvp ~ log(1 + 0.149^2)  # Table 4 vV3 = 14.9% CV
 
     # Residual error. Paper form Y = F * (1 + e), epsilon ~ N(0,
     # sigma^2) with sigma = 0.319 (Table 4 d = 31.9% CV).

@@ -78,11 +78,11 @@ Bi_2017_peginterferon_alfa_2a <- function() {
     # a log-normal distribution"; CV% reported in Table 2). Internal variance
     # is omega^2 = log(CV^2 + 1):
     #   omega^2_CL = log(0.295^2 + 1) = 0.08344
-    #   omega^2_V  = log(1.010^2 + 1) = 0.70321
-    #   omega^2_Ka = log(0.640^2 + 1) = 0.34340
+    #   omega^2_V  = log(1.010^2 + 1) = 0.70315
+    #   omega^2_Ka = log(0.640^2 + 1) = 0.34331
     etalcl ~ 0.08344  # Bi 2017 Table 2: IIV CL CV = 29.5% -> omega^2 = log(0.295^2 + 1)
-    etalvc ~ 0.70321  # Bi 2017 Table 2: IIV V  CV = 101%  -> omega^2 = log(1.010^2 + 1)
-    etalka ~ 0.34340  # Bi 2017 Table 2: IIV Ka CV = 64.0% -> omega^2 = log(0.640^2 + 1)
+    etalvc ~ log(1 + 1.01^2)  # Bi 2017 Table 2: IIV V  CV = 101%
+    etalka ~ log(1 + 0.64^2)  # Bi 2017 Table 2: IIV Ka CV = 64.0%
 
     # Residual error - combined proportional + additive on linear-scale Cc
     # (Bi 2017 Methods, "Combined error model"; Table 2 reports CV% and SD).

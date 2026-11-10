@@ -96,24 +96,24 @@ Sikma_2020_tacrolimus_unbound_plasma <- function() {
     # Source paper reports IIV as %CV; converted to log-scale variance via
     # omega^2 = log(1 + CV^2). "Fixed" entries from Table 3 are wrapped in
     # `fixed(...)` so the source's structural choice is preserved.
-    #   CL      CV 42.1%       -> log(1 + 0.421^2)  = 0.16320
+    #   CL      CV 42.1%       -> log(1 + 0.421^2)  = 0.16317
     #   V1      CV 10% Fixed   -> log(1 + 0.10^2)   = 0.00995
     #   Q       CV 10% Fixed   -> log(1 + 0.10^2)   = 0.00995
     #   V2      CV 10% Fixed   -> log(1 + 0.10^2)   = 0.00995
     #   Ka      CV 10% Fixed   -> log(1 + 0.10^2)   = 0.00995
     #   F       CV 10% Fixed   -> log(1 + 0.10^2)   = 0.00995
-    #   Bmax    CV 27%         -> log(1 + 0.27^2)   = 0.07034
-    #   Kd      CV  3% Fixed   -> log(1 + 0.03^2)   = 0.000899
-    #   Nplasma CV 29%         -> log(1 + 0.29^2)   = 0.08076
-    etalcl      ~ 0.16320                                       # Sikma 2020 Table 3 IIV CL = 42.1% (95% CI 30-60)
+    #   Bmax    CV 27%         -> log(1 + 0.27^2)   = 0.07037
+    #   Kd      CV  3% Fixed   -> log(1 + 0.03^2)   = 0.000900
+    #   Nplasma CV 29%         -> log(1 + 0.29^2)   = 0.08075
+    etalcl      ~ log(1 + 0.421^2)  # Sikma 2020 Table 3 IIV CL = 42.1% (95% CI 30-60)
     etalvc      ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV V1 = 10%
     etalq       ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV Q = 10%
     etalvp      ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV V2 = 10%
     etalka      ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV Ka = 10%
     etalfdepot  ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV F = 10%
-    etalbmax    ~ 0.07034                                       # Sikma 2020 Table 3 IIV Bmax = 27% (95% CI 19-36)
-    etalkd      ~ fixed(0.000899)                               # Sikma 2020 Table 3 IIV Kd = 3%
-    etalnplasma ~ 0.08076                                       # Sikma 2020 Table 3 IIV Nplasma = 29% (95% CI 22-41)
+    etalbmax    ~ log(1 + 0.27^2)  # Sikma 2020 Table 3 IIV Bmax = 27% (95% CI 19-36)
+    etalkd      ~ fixed(log(1 + 0.03^2))  # Sikma 2020 Table 3 IIV Kd = 3%
+    etalnplasma ~ log(1 + 0.29^2)  # Sikma 2020 Table 3 IIV Nplasma = 29% (95% CI 22-41)
 
     # ---- Residual error (Sikma 2020 Table 3) --------------------------------
     # Proportional residual on the linear concentration scale, separate per

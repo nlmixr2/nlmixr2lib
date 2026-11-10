@@ -107,10 +107,10 @@ Ruhs_2012_methotrexate <- function() {
     # ---------------------------------------------------------------
     etalcl    ~ 0.02089  # log(1 + 0.1453^2); Table 2 CL    IIV 14.53% CV
     etalvc    ~ 0.03199  # log(1 + 0.1803^2); Table 2 V1    IIV 18.03% CV
-    etalq     ~ 0.12584  # log(1 + 0.3661^2); Table 2 Q     IIV 36.61% CV
+    etalq     ~ log(1 + 0.3661^2)  # Table 2 Q     IIV 36.61% CV
     etalhcybl ~ 0.03528  # log(1 + 0.1895^2); Table 2 HCYBL IIV 18.95% CV
-    etalkout  ~ 0.10472  # log(1 + 0.3323^2); Table 2 kout  IIV 33.23% CV
-    etalec50  ~ 0.25285  # log(1 + 0.5363^2); Table 2 EC50  IIV 53.63% CV
+    etalkout  ~ log(1 + 0.3323^2)  # Table 2 kout  IIV 33.23% CV
+    etalec50  ~ log(1 + 0.5363^2)  # Table 2 EC50  IIV 53.63% CV
 
     # ---------------------------------------------------------------
     # Residual error (Ruhs 2012 Table 2).

@@ -76,7 +76,7 @@ review.
 | `lvp` (Vp/F) | 286 L | Table 2, row "V3 (L)", RSE 25% |
 | `e_age_cl` | -0.69 | Table 2, row "thetaAGE", RSE 32% |
 | `e_ffm_cl` | 1.41 | Table 2, row "thetaFFM", RSE 17% |
-| `etalcl` | 23% CV -> omega^2 = 0.0515459 | Table 2, row "IIV_CL (%)", RSE 14% |
+| `etalcl` | 23% CV -> omega^2 = 0.0515483 | Table 2, row "IIV_CL (%)", RSE 14% |
 | `propSd` | 20% | Table 2, row "sigma_prop (%)", RSE 10% |
 | CL covariate equation | `CL = thetaCL * (1 + thetaAGE * (AGE - 63)/63) * (1 + thetaFFM * (FFM - 46.35)/46.35)` | Table 2 footnote ("Final equation") |
 | AGE reference (63 y), FFM reference (46.35 kg) | medians | Table 2 footnote; Table 1 cohort medians |

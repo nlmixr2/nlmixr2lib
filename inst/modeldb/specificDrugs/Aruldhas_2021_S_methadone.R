@@ -320,11 +320,11 @@ Aruldhas_2021_S_methadone <- function() {
 
     # ----- Between-subject variability (Aruldhas 2021 Table 2) -----
     # Exact log-normal conversion omega^2 = log(CV^2 + 1).
-    etalcl           ~ 0.15361   # Aruldhas 2021 Table 2 'CL BSV %CV = 40.9' for S-methadone; log(1 + 0.409^2) = 0.15361
-    etalvc           ~ 0.33170   # Aruldhas 2021 Table 2 'V2 BSV %CV = 63.6' for S-methadone; log(1 + 0.636^2) = 0.33170
-    etalvp           ~ 0.79102   # Aruldhas 2021 Table 2 'V4 BSV %CV = 116' (labelled 'V3' in Table 2, see implementation notes) for S-methadone; log(1 + 1.16^2) = 0.79102
-    etalclf          ~ 0.20505   # Aruldhas 2021 Table 2 'CLF BSV %CV = 47.9' for S-methadone; log(1 + 0.479^2) = 0.20505
-    etalcl_eddp      ~ 0.10689   # Aruldhas 2021 Table 2 'CL3 BSV %CV = 33.7' for S-methadone; log(1 + 0.337^2) = 0.10689
+    etalcl           ~ log(1 + 0.409^2)  # Aruldhas 2021 Table 2 'CL BSV %CV = 40.9' for S-methadone
+    etalvc           ~ log(1 + 0.636^2)  # Aruldhas 2021 Table 2 'V2 BSV %CV = 63.6' for S-methadone
+    etalvp           ~ log(1 + 1.16^2)  # Aruldhas 2021 Table 2 'V4 BSV %CV = 116' (labelled 'V3' in Table 2, see implementation notes) for S-methadone
+    etalclf          ~ log(1 + 0.479^2)  # Aruldhas 2021 Table 2 'CLF BSV %CV = 47.9' for S-methadone
+    etalcl_eddp      ~ log(1 + 0.337^2)  # Aruldhas 2021 Table 2 'CL3 BSV %CV = 33.7' for S-methadone
 
     # ----- Residual error (Aruldhas 2021 Table 2) -----
     propSd           <- 0.165;   label("Proportional residual SD for S-methadone plasma concentration (fraction)")  # Aruldhas 2021 Table 2 'RUV drug = 0.165 (6.15)' for S-methadone

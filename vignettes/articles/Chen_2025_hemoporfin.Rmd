@@ -140,9 +140,9 @@ tibble::tribble(
   "e_ffm_vc",      "1 (fixed)",   "Table 2, theta2 = 1 FIX; Data S2 $THETA '(0, 1) FIX'",
   "e_study_f",     "-0.175",      "Table 2, theta_study (RSE 33.1%); Equation 2",
   "FFM reference", "46.1 kg",     "Results 3.3, median FFM of the adult volunteers",
-  "etalcl",        "0.0167584",   "Table 2, IIV CL 13.0 CV%; log(0.130^2 + 1)",
+  "etalcl",        "0.0167588",   "Table 2, IIV CL 13.0 CV%; log(0.130^2 + 1)",
   "etalq",         "0.0392207",   "Table 2, IIV Q2 20.0 CV%; log(0.200^2 + 1)",
-  "etalvc",        "0.0460116",   "Table 2, IIV V1 21.7 CV%; log(0.217^2 + 1)",
+  "etalvc",        "0.0460139",   "Table 2, IIV V1 21.7 CV%; log(0.217^2 + 1)",
   "propSd",        "0.267",       "Table 2, sigma_prop 26.7 CV%; Data S2 THETA(9)",
   "addSd",         "0.240 ng/mL", "Table 2, sigma_add; Data S2 THETA(10)",
   "ER beta0/beta1", "see below",  "Table S1 (Data S1); Equation 3"

@@ -88,7 +88,7 @@ He_2022_gentamicin <- function() {
     # Inter-individual variability, Table 2 reported as CV% with the footnote
     # CV(%) = sqrt(exp(omega^2) - 1) * 100, so omega^2 = log(CV^2 + 1).
     # Table 2: IIV CL_body 69.3 %CV (RSE 35.6%, shrinkage 17.8%)
-    etalcl ~ 0.392211 # log(0.693^2 + 1)
+    etalcl ~ log(1 + 0.693^2)
     # Table 2: IIV V_d 22.1 %CV (RSE 37.0%, shrinkage 0.1%)
     etalvc ~ 0.047686 # log(0.221^2 + 1)
 

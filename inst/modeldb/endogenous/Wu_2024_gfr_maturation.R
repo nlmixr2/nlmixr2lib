@@ -196,10 +196,10 @@ Wu_2024_gfr_maturation <- function() {
 
     # ---- Inter-individual variability (Wu 2024 Table II) ----
     # CV% to omega^2 conversion: omega^2 = log(1 + CV^2).
-    etalgfrbirth ~ 0.09229  # CV 31.1 % -> omega^2 = log(1 + 0.311^2) = 0.09229 (Wu 2024 Table II, RSE 16 %, shrinkage 57 %)
-    etalgfrmax   ~ 0.02850  # CV 17.0 % -> omega^2 = log(1 + 0.17^2)  = 0.02850 (Wu 2024 Table II, RSE 10 %, shrinkage 47 %)
-    etalpna50    ~ 0.27184  # CV 55.9 % -> omega^2 = log(1 + 0.559^2) = 0.27184 (Wu 2024 Table II, RSE 43 %, shrinkage 57 %)
-    etalhill     ~ 0.11862  # CV 35.5 % -> omega^2 = log(1 + 0.355^2) = 0.11862 (Wu 2024 Table II, RSE 20 %, shrinkage 55 %)
+    etalgfrbirth ~ log(1 + 0.311^2)  # CV 31.1 % (Wu 2024 Table II, RSE 16 %, shrinkage 57 %)
+    etalgfrmax   ~ log(1 + 0.17^2)  # CV 17.0 % (Wu 2024 Table II, RSE 10 %, shrinkage 47 %)
+    etalpna50    ~ log(1 + 0.559^2)  # CV 55.9 % (Wu 2024 Table II, RSE 43 %, shrinkage 57 %)
+    etalhill     ~ log(1 + 0.355^2)  # CV 35.5 % (Wu 2024 Table II, RSE 20 %, shrinkage 55 %)
 
     # ---- Residual error (Wu 2024 Table II 'Residual errors' rows) ----
     # Inulin CL observations were log-transformed with constant

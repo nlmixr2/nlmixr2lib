@@ -193,7 +193,7 @@ Felmlee_2010_ghb_rat <- function() {
     # Fung_2008_butanediol_rat.
     # ================================================================
     etalvp ~ 0.025278             # Table I: Vtissue1 CV 16 percent -> log(1 + 0.16^2) = 0.025278
-    etaluf ~ 0.832909             # Table I: UF CV 114 percent -> log(1 + 1.14^2) = 0.832909
+    etaluf ~ log(1 + 1.14^2)  # Table I: UF CV 114 percent
 
     # ================================================================
     # Residual unexplained variability. Source paper Eqs. 9-10 use a

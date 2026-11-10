@@ -129,13 +129,14 @@ LlanosPaez_2017_gentamicin <- function() {
     f_gfrmax <- 0.41;  label("Maximum fractional reduction in renal function (GFR_max / GFR_obs)")  # Llanos-Paez 2018 Table I: GFR_max = 41% of GFR_obs (ref 10)
 
     # ===== IIV (Llanos-Paez 2017 AAC Table 2 final model) =====
-    # CV%-to-variance: omega^2 = log(1 + CV^2)
-    # CL CV 16.0% -> 0.02528, V1 CV 21.5% -> 0.04525, corr(CL,V1) = 0.692,
-    #   cov = 0.692 * sqrt(0.02528 * 0.04525) = 0.02340
-    etalcl + etalvc ~ c(0.02528,
-                        0.02339, 0.04519)  # AAC Table 2: BSV CL 16.0%, BSV V1 21.5%, corr 69.2%
-    etalq  ~ 0.03119   # AAC Table 2: BSV Q  17.8% CV  -> log(1 + 0.178^2)
-    etalvp ~ 0.32885   # AAC Table 2: BSV V2 62.4% CV  -> log(1 + 0.624^2)
+    # AAC Methods (after Eq. 1): each parameter has "a variance of omega^2
+    # BSV_P, where the square root of the variance represents the reported
+    # BSV", so each variance is the square of the printed CV.
+    # CL CV 16.0%, V1 CV 21.5%, corr(CL,V1) = 0.692, cov = 0.692 * 0.160 * 0.215
+    etalcl + etalvc ~ c(0.160^2,
+                        0.692 * 0.160 * 0.215, 0.215^2)  # AAC Table 2: BSV CL 16.0%, BSV V1 21.5%, corr 69.2%
+    etalq  ~ 0.178^2   # AAC Table 2: BSV Q  17.8% CV
+    etalvp ~ 0.624^2   # AAC Table 2: BSV V2 62.4% CV
 
     # ===== Residual error =====
     propSd <- 0.275;  label("Proportional residual error (fraction)")  # AAC Table 2: 27.5%

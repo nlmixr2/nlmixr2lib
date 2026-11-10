@@ -54,7 +54,7 @@ review.
 | `e_wt_cl` (theta2)     | 1.55 (unitless)        | Table 3, row "theta_2"                           |
 | `e_creat_cl` (theta3)  | 0.337 (unitless)       | Table 3, row "theta_3"                           |
 | `e_wt_vc` (theta5)     | 1.05 (unitless)        | Table 3, row "theta_5"                           |
-| `etalcl` (37.9% CV)    | 0.1343                 | Table 3, row "CL %CV" (Inter-individual variability) |
+| `etalcl` (37.9% CV)    | 0.1342                 | Table 3, row "CL %CV" (Inter-individual variability) |
 | `propSd`               | 0.375 (37.5%)          | Table 3, row "Proportional %CV"                  |
 | WT reference (2.9)     | 2.9 kg                 | Table 3 final-model footnote                     |
 | CREAT reference (23.3) | 23.3 umol/L            | Table 3 final-model footnote                     |

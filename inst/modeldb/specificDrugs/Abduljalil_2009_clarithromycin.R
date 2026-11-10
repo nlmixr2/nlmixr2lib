@@ -140,10 +140,10 @@ Abduljalil_2009_clarithromycin <- function() {
 
     # ----- Between-subject variability (Abduljalil 2009 Table 1) -----
     # Exact log-normal conversion omega^2 = log(CV^2 + 1).
-    etalka         ~ 0.18664   # Abduljalil 2009 Table 1: CV = 45.3%; log(1 + 0.453^2) = 0.18664
-    etalvc         ~ 0.06203   # Abduljalil 2009 Table 1: CV = 25.3%; log(1 + 0.253^2) = 0.06203
-    etalcl         ~ 0.02981   # Abduljalil 2009 Table 1: CV = 17.4%; log(1 + 0.174^2) = 0.02981
-    etalcl_ohcla   ~ 0.07502   # Abduljalil 2009 Table 1: CV = 27.9%; log(1 + 0.279^2) = 0.07502
+    etalka         ~ log(1 + 0.453^2)  # Abduljalil 2009 Table 1: CV = 45.3%
+    etalvc         ~ log(1 + 0.253^2)  # Abduljalil 2009 Table 1: CV = 25.3%
+    etalcl         ~ log(1 + 0.174^2)  # Abduljalil 2009 Table 1: CV = 17.4%
+    etalcl_ohcla   ~ log(1 + 0.279^2)  # Abduljalil 2009 Table 1: CV = 27.9%
 
     # ----- Residual error (Abduljalil 2009 Table 1) -----
     addSd        <- 0.12;     label("Additive residual SD on clarithromycin plasma concentration (ug/mL)")  # Abduljalil 2009 Table 1: additive error of clarithromycin = 0.12 ug/mL

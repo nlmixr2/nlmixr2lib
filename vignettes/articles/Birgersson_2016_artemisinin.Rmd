@@ -55,9 +55,9 @@ Every parameter and equation traces back to the open-access publication; the per
 | `lmtt = log(0.787)` -- MTT (h) | 0.787 | Birgersson 2016 Table 2 (Final model) |
 | `nn_fix = fixed(7)` -- transit compartments | 7 (fixed) | Birgersson 2016 Table 2 ("Nr. trans comp = 7 fix") |
 | `lfdepot = fixed(log(1))` -- F | 1.00 (fixed) | Birgersson 2016 Table 2 ("F (%) = 100 (fixed)") |
-| `etalcl ~ 0.02883` -- IOV(CL/F) re-encoded as IIV | 17.1% CV* | Birgersson 2016 Table 2 IIV/IOV column (* = IOV); variance = log(0.171^2 + 1) |
-| `etalmtt ~ 0.25530` -- IOV(MTT) re-encoded as IIV | 53.9% CV* | Birgersson 2016 Table 2 IIV/IOV column (* = IOV); variance = log(0.539^2 + 1) |
-| `etalfdepot ~ 0.11122` -- IIV(F) | 34.3% CV  | Birgersson 2016 Table 2 IIV/IOV column; variance = log(0.343^2 + 1) |
+| `etalcl ~ 0.02882` -- IOV(CL/F) re-encoded as IIV | 17.1% CV* | Birgersson 2016 Table 2 IIV/IOV column (* = IOV); variance = log(0.171^2 + 1) |
+| `etalmtt ~ 0.25505` -- IOV(MTT) re-encoded as IIV | 53.9% CV* | Birgersson 2016 Table 2 IIV/IOV column (* = IOV); variance = log(0.539^2 + 1) |
+| `etalfdepot ~ 0.11123` -- IIV(F) | 34.3% CV  | Birgersson 2016 Table 2 IIV/IOV column; variance = log(0.343^2 + 1) |
 | `propSd = 0.516` -- log-scale SD of the residual | 51.6% CV | Birgersson 2016 Table 2 (sigma = 51.6% CV); paper Methods 'additive error model on the log-transformed drug concentrations' |
 | Transit-absorption chain (Savic 2007): `depot -> transit1 -> ... -> transit7 -> central` with `ktr = (nn_fix + 1) / mtt` | -- | Birgersson 2016 Methods 'Pharmacokinetic analysis' and Results 'best characterized by a one-compartment disposition model with seven transit compartments in the absorption phase'; convention follows Birgersson 2019 artesunate (sibling sister model) |
 | One-compartment disposition with first-order elimination: `d/dt(central) = ktr * transit7 - (cl/vc) * central` | -- | Birgersson 2016 Methods and Results (one-compartment best fit; two- and three-compartment alternatives rejected on physiological grounds) |

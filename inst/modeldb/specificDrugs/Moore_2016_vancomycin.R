@@ -76,7 +76,7 @@ Moore_2016_vancomycin <- function() {
     # intercompartmental clearance (Q) and peripheral volume of
     # distribution (V2) did not increase the objective value function
     # significantly").
-    etalcl ~ 0.4655 # log(0.77^2 + 1); 77% CV on CL (Moore 2016 Table 2)
+    etalcl ~ log(1 + 0.77^2)  # 77% CV on CL (Moore 2016 Table 2)
     etalvc ~ 0.1094 # log(0.34^2 + 1); 34% CV on Vc (Moore 2016 Table 2)
 
     # Proportional residual error. Moore 2016 Table 2 reports the

@@ -74,9 +74,9 @@ numeric values are reproduced verbatim from Tadayasu 2014 Table 3.
 | `lkd` (KD)                       | 0.108 nmol/L  | Table 3 row KD                                                 |
 | `lamax2` (AMAX2/F1, peripheral)  | 534 nmol      | Table 3 row AMAX2/F1                                           |
 | `emax` (Emax fraction)           | 0.925         | Table 3 row EMAX (92.5 %)                                      |
-| IIV F1 (CV 46.7 %)               | omega^2 = 0.19727 | Table 3 row 'IIV in F1'                                    |
+| IIV F1 (CV 46.7 %)               | omega^2 = 0.19728 | Table 3 row 'IIV in F1'                                    |
 | IIV KA (CV 73.6 %)               | omega^2 = 0.43288 | Table 3 row 'IIV in KA'                                    |
-| IIV CL (CV 68.8 %)               | omega^2 = 0.38754 | Table 3 row 'IIV in CL'                                    |
+| IIV CL (CV 68.8 %)               | omega^2 = 0.38753 | Table 3 row 'IIV in CL'                                    |
 | IIV BMAX (CV 14.2 %)             | omega^2 = 0.01996 | Table 3 row 'IIV in BMAX'                                  |
 | OMEGA matrix                     | diagonal      | Tadayasu 2014 Results, Pharmacokinetic model (BMAX-CL block tested but not retained) |
 | PK proportional residual (CV 27.0 %) | propSd = 0.270 | Table 3 row 'Proportional residual variability PK'         |
