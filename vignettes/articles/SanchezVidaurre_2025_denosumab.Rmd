@@ -53,8 +53,7 @@ coding or its reference study. The model encodes it as
 reference, so phase III women get V/F = 5.27 L. That reading over-predicts the
 paper's own phase III simulation (Figure 3) by about 1.7-fold at the peak, and
 the opposite coding contradicts the phase I results. The section
-[Study effect on V/F](#study-effect-on-vf) below shows the comparison. The
-question has been put to the corresponding author.
+[Study effect on V/F](#study-effect-on-vf) below shows the comparison.
 
 # Population
 

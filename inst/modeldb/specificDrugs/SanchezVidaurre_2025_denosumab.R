@@ -46,8 +46,7 @@ SanchezVidaurre_2025_denosumab <- function() {
         "pooled V/F of 9.00 L sits next to the phase-I-only 9.33 L. Under this reading phase III V/F",
         "is 5.27 L, which over-predicts the peak of the paper's own phase III simulation (Figure 3)",
         "by about 1.7-fold; with the indicator at 0 the peaks of Figures 3 and 4 are reproduced,",
-        "though their terminal phase falls between the two readings.",
-        "The question has been sent to the corresponding author."
+        "though their terminal phase falls between the two readings."
       ),
       source_name = "Study"
     )
