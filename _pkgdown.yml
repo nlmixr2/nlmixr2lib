@@ -5766,8 +5766,20 @@ navbar:
         href: articles/Zou_2026_pembrolizumab_qol.html
       - text: "Pemetrexed (Cao 2022)"
         href: articles/Cao_2022_pemetrexed.html
+      - text: "Pemetrexed ckdepicr (deRouw 2024)"
+        href: articles/deRouw_2024_pemetrexed.html
+      - text: "Pemetrexed ckdepicrcys (deRouw 2024)"
+        href: articles/deRouw_2024_pemetrexed.html
+      - text: "Pemetrexed ckdepicys (deRouw 2024)"
+        href: articles/deRouw_2024_pemetrexed.html
+      - text: "Pemetrexed ckdepicyspenk (deRouw 2024)"
+        href: articles/deRouw_2024_pemetrexed.html
+      - text: "Pemetrexed egfrpenkcr (deRouw 2024)"
+        href: articles/deRouw_2024_pemetrexed.html
       - text: "Pemetrexed osimertinib mouse qsp (Hu 2026)"
         href: articles/Hu_2026_pemetrexed_osimertinib_mouse_qsp.html
+      - text: "Pemetrexed penk (deRouw 2024)"
+        href: articles/deRouw_2024_pemetrexed.html
       - text: "Pemigatinib (Gong 2023)"
         href: articles/Gong_2023_pemigatinib.html
       - text: "Pemigatinib (Ji 2022)"
@@ -11667,6 +11679,7 @@ articles:
   - articles/deJonge_2005_paclitaxel
   - articles/deKock_2017_sulfadoxinePyrimethamine
   - articles/deKock_2018_sulfadoxinePyrimethamine
+  - articles/deRouw_2024_pemetrexed
   - articles/deVelde_2020_imipenem
   - articles/deVriesSchultink_2018_cardiotoxicity
   - articles/deVriesSchultink_2020_zenocutuzumab
