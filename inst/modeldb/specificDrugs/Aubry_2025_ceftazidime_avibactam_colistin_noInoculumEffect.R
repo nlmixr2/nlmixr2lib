@@ -106,7 +106,7 @@ Aubry_2025_ceftazidime_avibactam_colistin_noInoculumEffect <- function() {
     hillint_col_caz <- fixed(1);    label("Sigmoidicity of the colistin-on-ceftazidime/avibactam interaction (unitless)")              # Table S1: gamma_INT_Emax 1 fixed
 
     # --- Inter-experimental variability on the inoculum (Table S1) ---
-    etainoc ~ 0.008797 # IEV_INOC 9.40% CV estimated (Table S1, RSE 33%); log(0.094^2 + 1) = 0.008797; multiplies the log10-scale inoculum
+    etainoc ~ log(1 + 0.094^2) # IEV_INOC 9.40% CV estimated (Table S1, RSE 33%); multiplies the log10-scale inoculum
 
     # --- Residual error (Table S1; Code S1 $ERROR) ---
     # Table S1 prints RES_ADD = 2.06 'log10 CFU/mL', but the value is the NONMEM
