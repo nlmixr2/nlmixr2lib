@@ -194,7 +194,7 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:**
   - `V_CSF` -- Luu 2017 Table 2.
   - `Vcns`, `Vcns/F` -- Stott 2023 Table 1, where the paper names the compartment "CNS" but samples it by lumbar puncture and reports the observation as a CSF concentration.
-- **Example models:** `Luu_2017_nusinersen.R` (V_CSF = 0.433 L, intrathecal antisense oligonucleotide), `Stott_2023_flucytosine.R` (apparent Vcns/F = 41.73 L, oral flucytosine).
+- **Example models:** `Luu_2017_nusinersen.R` (V_CSF = 0.433 L, intrathecal antisense oligonucleotide), `Stott_2023_flucytosine.R` (apparent Vcns/F = 41.73 L, oral flucytosine), `Chiang_2024_ondansetron_male_rat.R` and `Chiang_2024_ondansetron_female_rat.R` (VCSF = 0.25 mL fixed, cisterna-magna CSF).
 - **Notes:** Member of the `lv<compartment>` family that names a volume after the canonical compartment it scales, alongside `lvelf`. Distinct from `lvc`: `lvcsf` never scales a plasma concentration. Pairs with `k_central_csf` / `k_csf_central` when the CSF leg is parameterised by rate constants rather than by an inter-compartmental clearance.
 
 ### lvmilk (**canonical log-transformed breast-milk compartment volume**)
@@ -1161,7 +1161,7 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Role:** First-order transfer rate constants between `central` and the canonical `csf` compartment (1 / time). Deliberately a directional PAIR rather than a single inter-compartmental clearance, for the same reason as `k_central_elf` / `k_elf_central`: plasma-to-CSF distribution is asymmetric, and the ratio `k_central_csf / k_csf_central` scaled by `vc / vcsf` is exactly the steady-state CSF:plasma penetration ratio that a CNS-infection PK analysis turns on. A symmetric `q` / `vcsf` parameterisation cannot express it -- in `Stott_2023_flucytosine.R` the two implied flows differ by 38% (`k_central_csf * vc` = 272 L/h against `k_csf_central * vcsf` = 376 L/h). The log-transformed `lk_central_csf` / `lk_csf_central` forms are used in `ini`.
 - **Source aliases:**
   - `K23` / `K32` -- Stott 2023 Equations 2-3 and Table 1. The paper numbers its states 1 = gut, 2 = circulation, 3 = CNS, 4 = peripheral, so its `K23` / `K32` are the central-to-CSF pair and its `K24` / `K42` are the ordinary central-to-`peripheral1` pair (`k12` / `k21`).
-- **Example models:** `Stott_2023_flucytosine.R`.
+- **Example models:** `Stott_2023_flucytosine.R`; `Chiang_2024_ondansetron_male_rat.R` and `Chiang_2024_ondansetron_female_rat.R` (Chiang 2024 `k15` / `k51`).
 - **Notes:** Member of the established `k_<from>_<to>` directional-transfer family already used for `k_central_elf` / `k_elf_central` (`Abouelhassan_2024_sulbactam_human.R`), `k_central_milk` / `k_milk_central` (`Wattanakul_2024_primaquine.R`) and `k_csf_plasma` / `k_csf_brain` / `k_brain_csf` (`Biliouris_2018_nusinersen.R`). Use this family, not `k13` / `k31`, whenever a transfer connects `central` to a named non-numbered compartment: `k13` / `k31` are reserved for `central` <-> `peripheral2`, and a source paper's own subscripts index its own state numbering, so the digits carry no transferable meaning. Pairs with `lvcsf`. Distinct from `k_csf_plasma`, which names a one-way CSF-to-plasma efflux in a model that has no reciprocal plasma-to-CSF leg.
 
 ### k_central_milk, k_milk_central (**canonical bare central-to-milk and milk-to-central rate constants**)
@@ -1178,8 +1178,41 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Role:** First-order transfer rate constant (1 / time) from `central` (blood / plasma) into the bare `brain` compartment of a compartmental (non-PBPK) brain-distribution model, depleting `central`. The log-transformed `lk_central_brain` form is used in `ini`. Use it alone when the model has no return leg -- every loss from brain (efflux to blood, lymphatic drainage, metabolism) is lumped into `keff_brain` -- and pair it with a `k_brain_central` return when the source fits one.
 - **Source aliases:**
   - `k23` -- Kaikousidis 2023 Figures 2 and 4 and Tables 2-4 (states 1 = depot, 2 = blood, 3 = brain).
-- **Example models:** `Kaikousidis_2023_donepezil_oral_meandata_mouse.R` and its `_oral_rawdata_`, `_intranasal_meandata_`, `_intranasal_rawdata_` and `_combined_` siblings (k23 = 0.008-0.014 1/min).
+  - `k13` -- Chiang 2024 Eqs. 1 and 3 and Table III (states A1 = central, A3 = brain).
+- **Example models:** `Kaikousidis_2023_donepezil_oral_meandata_mouse.R` and its `_oral_rawdata_`, `_intranasal_meandata_`, `_intranasal_rawdata_` and `_combined_` siblings (k23 = 0.008-0.014 1/min); `Chiang_2024_ondansetron_male_rat.R` and `Chiang_2024_ondansetron_female_rat.R` (paired with `k_brain_central`).
 - **Notes:** Member of the `k_<from>_<to>` directional-transfer family (`k_central_elf`, `k_central_csf`, `k_central_milk`), whose note directs the family be used whenever a transfer connects `central` to a named non-numbered compartment; the source subscript `23` indexes that paper's own state numbering. With no return leg the structure is the parent-metabolite one, so only the ratio `k_central_brain / v_brain` is identifiable from brain concentrations unless the blood volume is fixed (Kaikousidis 2023 fixes it). Pairs with `lv_brain` and `keff_brain`. Distinct from the PBPK brain parameters (`kp_brain`, perfusion-limited exchange), which describe a tissue at partition equilibrium with its blood flow rather than an estimated transfer rate.
+
+### k_brain_central (**canonical bare brain-to-central passive return rate constant**)
+- **Type:** bare-pk
+- **Role:** First-order passive transfer rate constant (1 / time) from the bare `brain` compartment back to `central`; the return leg paired with `k_central_brain` when the source fits a reversible exchange. The log-transformed `lk_brain_central` form is used in `ini`. A transporter-mediated efflux fitted as a separate term is NOT folded in here; it carries its own `_pgp`-suffixed constant (`k_cns_central_pgp`).
+- **Source aliases:**
+  - `k31` -- Chiang 2024 Eqs. 1 and 3 and Table III.
+- **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
+- **Notes:** Member of the `k_<from>_<to>` directional-transfer family (`k_central_brain`, `k_central_csf` / `k_csf_central`). Distinct from `keff_brain`, which removes drug from brain without naming the destination, and from `k_brain_csf` (`Biliouris_2018_nusinersen.R`), the brain-to-CSF leg.
+
+### k_central_spinal_cord, k_spinal_cord_central (**canonical bare central-to-spinal-cord and spinal-cord-to-central rate constants**)
+- **Type:** bare-pk
+- **Role:** First-order passive transfer rate constants (1 / time) between `central` and the bare whole-tissue `spinal_cord` compartment. The log-transformed `lk_central_spinal_cord` / `lk_spinal_cord_central` forms are used in `ini`.
+- **Source aliases:**
+  - `k14` / `k41` -- Chiang 2024 Eqs. 1 and 4 and Table III (states A1 = central, A4 = spinal cord).
+- **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
+- **Notes:** Ratified by the maintainers 2026-11-10 (PMC11263240) together with the `spinal_cord` compartment. Members of the `k_<from>_<to>` directional-transfer family; the spinal-cord counterparts of `k_central_brain` / `k_brain_central`. Pairs with `lv_spinal_cord`.
+
+### k_cns_csf, k_csf_cns (**canonical bare CNS-tissue-to-CSF and CSF-to-CNS-tissue rate constants shared by brain and spinal cord**)
+- **Type:** bare-pk
+- **Role:** ONE first-order rate constant (1 / time) applied to both brain-to-CSF and spinal-cord-to-CSF transfer (`k_cns_csf`), and ONE applied to both CSF-to-brain and CSF-to-spinal-cord transfer (`k_csf_cns`), for a model whose source estimates the two tissue legs jointly. `cns` is a parameter token meaning brain and spinal-cord tissue together; it is not a compartment. Because each leg is first order on its own donor, `d/dt(csf)` gains `k_cns_csf * (brain + spinal_cord)` and loses `2 * k_csf_cns * csf`. The log-transformed `lk_cns_csf` / `lk_csf_cns` forms are used in `ini`.
+- **Source aliases:**
+  - `k35=45` / `k53=54` -- Chiang 2024 Table III (Eqs. 3-5 write them as `k35`, `k45` and `k53`, `k54`).
+- **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
+- **Notes:** Ratified by the maintainers 2026-11-10 (PMC11263240), in preference to brain-named constants with spinal-cord aliases, so the name records that the source estimated a single shared value. The `cns` token follows `lvcns` (`Luu_2017_nusinersen.R`). A model that estimates separate brain and spinal-cord legs uses `k_brain_csf` / `k_csf_brain` and `k_spinal_cord_csf` / `k_csf_spinal_cord` instead.
+
+### k_cns_central_pgp (**canonical bare P-glycoprotein-mediated CNS-tissue-to-central efflux rate constant**)
+- **Type:** bare-pk
+- **Role:** First-order P-glycoprotein (Pgp) mediated efflux rate constant (1 / time) from CNS tissue back to `central`, applied to both `brain` and `spinal_cord` when the source estimates one value for the two, additive to the passive return legs `k_brain_central` / `k_spinal_cord_central`. The log-transformed `lk_cns_central_pgp` form is used in `ini`. Gated off by a knockout indicator (`* (1 - STRAIN_ABCB1A_KO)`) and shifted by a Pgp-inhibitor covariate (`e_conmed_tariquidar_k_cns_central_pgp`).
+- **Source aliases:**
+  - `kPgp` (wild type) and `kPgp,TRQ` (tariquidar-treated) -- Chiang 2024 Eqs. 1, 3, 4 and Table III.
+- **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
+- **Notes:** Ratified by the maintainers 2026-11-10 (PMC11263240). Member of the `k_<from>_<to>` family with the `cns` shared-tissue token (see `k_cns_csf`), carrying a `_pgp` suffix for the transporter-mediated component, after the P-gp clearance components of `Westerhout_2013_quinidine.R` (`lcl_dbr_pl_pgp`). A brain-only Pgp efflux would be `k_brain_central_pgp`.
 
 ### fdepot (**canonical bare depot fraction**)
 - **Type:** bare-pk
@@ -2691,8 +2724,16 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Role:** Apparent volume of distribution of the bare `brain` compartment in a compartmental brain-distribution model (volume); the brain concentration is `brain / v_brain`. A member of the `lv_<space>` family (`lv_elf`, `lv_kidney`, `lv_lung`), for the reason given under `lv_kidney`: `lvp` / `lvp2` are reserved for numbered peripheral compartments and a sampled, named organ is not one. The bare form `v_brain` is used inside `model()`.
 - **Source aliases:**
   - `Vbrain`, `V2` (intranasal tables), `Vbrain_PO` / `Vbrain_IN` -- Kaikousidis 2023 Tables 2-4.
-- **Example models:** `Kaikousidis_2023_donepezil_oral_meandata_mouse.R` (`Vbrain = 0.018 L`) and its siblings; `Kaikousidis_2023_donepezil_combined_mouse.R` carries route-stratified `lv_brain_oral` / `lv_brain_intranasal`.
+- **Example models:** `Kaikousidis_2023_donepezil_oral_meandata_mouse.R` (`Vbrain = 0.018 L`) and its siblings; `Kaikousidis_2023_donepezil_combined_mouse.R` carries route-stratified `lv_brain_oral` / `lv_brain_intranasal`; `Chiang_2024_ondansetron_male_rat.R` and `Chiang_2024_ondansetron_female_rat.R` (`Vbrain = 1.8 mL`, fixed to the anatomical rat brain volume).
 - **Notes:** An apparent volume, scaled by the unknown fraction of the dose reaching the brain, so in the founding paper it differs between routes (0.015 L oral vs 0.005 L intranasal in the joint fit) rather than approximating the anatomical brain volume. Distinct from `lvcsf` (a CSF / CNS fluid compartment) and from the `brain_<region>` extracellular-fluid volumes of brain-PBPK models.
+
+### lv_spinal_cord, v_spinal_cord (**canonical log-transformed spinal-cord compartment volume**)
+- **Type:** log-transformed-pk
+- **Role:** Volume of the bare whole-tissue `spinal_cord` compartment (volume); the spinal-cord concentration is `spinal_cord / v_spinal_cord`. The bare form `v_spinal_cord` is used inside `model()`.
+- **Source aliases:**
+  - `Vspinal` -- Chiang 2024 Table III (0.6 mL, fixed to the measured rat spinal-cord volume).
+- **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
+- **Notes:** Ratified by the maintainers 2026-11-10 (PMC11263240). Member of the `lv_<space>` family (`lv_elf`, `lv_kidney`, `lv_brain`); the spinal-cord counterpart of `lv_brain`. Wrap in `fixed()` when the source fixes it from anatomy.
 
 ### lq_other, q_other (**canonical log-transformed blood flow to the lumped `other` tissue compartment**)
 - **Type:** log-transformed-pk

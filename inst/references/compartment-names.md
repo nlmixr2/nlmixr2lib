@@ -228,9 +228,10 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 
 ### csf (**canonical cerebrospinal-fluid compartment**)
 - **Type:** compartment
-- **Role:** Cerebrospinal-fluid physiologic compartment used by mechanistic mAb / TMDD models with multiple body-fluid distribution volumes.
-- **Source aliases:** none.
-- **Example models:** `PerezRuixo_2025_posdinemab.R`.
+- **Role:** Cerebrospinal-fluid physiologic compartment used by mechanistic mAb / TMDD models with multiple body-fluid distribution volumes, and the CSF compartment of compartmental CNS-distribution models.
+- **Source aliases:**
+  - `A5` -- Chiang 2024 Eqs. 1-5 ('A5 - CSF', cisterna-magna CSF, `VCSF` fixed at 0.25 mL).
+- **Example models:** `PerezRuixo_2025_posdinemab.R`; `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
 
 ### isf (**canonical interstitial-fluid compartment**)
 - **Type:** compartment
@@ -3798,7 +3799,16 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Role:** Bare brain organ compartment in full-body PBPK extractions, and the whole-brain (total tissue) compartment of compartmental brain-distribution models that sample brain homogenate rather than a resolved region or fluid.
 - **Source aliases:**
   - `BRAIN` -- Kaikousidis 2023 Figures 2 and 4 (perfused whole-brain homogenate, observed as `Cbrain = brain / v_brain`).
-- **Example models:** `Zhang_2011_nutlin3a.R`; `Kaikousidis_2023_donepezil_oral_meandata_mouse.R` and its siblings (compartmental, fed by `k_central_brain` and, after intranasal dosing, by direct and delayed nose-to-brain inputs; drained by `keff_brain`).
+  - `A3` -- Chiang 2024 Eqs. 1-5 ('A3 - brain').
+- **Example models:** `Zhang_2011_nutlin3a.R`; `Kaikousidis_2023_donepezil_oral_meandata_mouse.R` and its siblings (compartmental, fed by `k_central_brain` and, after intranasal dosing, by direct and delayed nose-to-brain inputs; drained by `keff_brain`); `Chiang_2024_ondansetron_male_rat.R` and `Chiang_2024_ondansetron_female_rat.R` (bidirectional `k_central_brain` / `k_brain_central` exchange plus Pgp efflux `k_cns_central_pgp`, and exchange with `csf`).
+
+### spinal_cord (**canonical bare whole-spinal-cord compartment**)
+- **Type:** compartment
+- **Role:** Whole spinal-cord tissue compartment of a compartmental CNS-distribution model, sampled as spinal-cord homogenate and observed as `Cspinal_cord = spinal_cord / v_spinal_cord`. The spinal-cord counterpart of the bare `brain` compartment.
+- **Source aliases:**
+  - `A4` -- Chiang 2024 Eqs. 1-5 ('A4 - spinal cord'), volume `Vspinal` fixed at 0.6 mL.
+- **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
+- **Notes:** Ratified by the maintainers 2026-11-10 (PMC11263240). Distinct from the regional `spinal_cord_cervical` / `spinal_cord_thoracic` / `spinal_cord_lumbar` states of `Biliouris_2018_nusinersen.R` (paper-specific, segment-resolved tissue), from `brain_csf_sas_spinal` (the spinal subarachnoid CSF, a fluid rather than tissue) and from `cord` (umbilical cord in `Nie_2025_sufentanil.R`). Volume `lv_spinal_cord`; transfers named by the `k_<from>_<to>` family (`k_central_spinal_cord`, `k_spinal_cord_central`). When the source estimates one constant for brain and spinal cord jointly, use the `cns` token (`k_cns_csf`, `k_csf_cns`, `k_cns_central_pgp`) rather than aliasing a spinal-cord constant to a brain one.
 
 ### trachea (**canonical bare trachea compartment**)
 - **Type:** compartment
