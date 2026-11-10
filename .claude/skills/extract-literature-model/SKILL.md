@@ -81,8 +81,9 @@ Rscript .claude/skills/extract-literature-model/scripts/acquire-paper.R \
 Interpret the exit code:
 
 - **0** → PDF at `--out` is valid; proceed.
-- **2** → all 5 sources tried, none produced a valid PDF whose title matched. Read `/tmp/acquire-log.json` for the per-source outcome, then sidecar-ask the operator with the structured attempts list (Options: A operator drops the PDF and re-dispatches, B operator emails corresponding author, C skip). Do **not** attempt to fabricate the missing source.
-- **3** → environment problem (missing `curl`, bad DOI). Fix the environment; do not work around.
+- **1** → unexpected error (for example an accepted download could not be moved onto `--out`). The message is on stderr and `/tmp/acquire-log.json` has `result: "error"` and the message. Fix the cause; do not work around.
+- **2** → all 5 sources tried, none produced a valid PDF whose title matched. Read `/tmp/acquire-log.json` for the per-source outcome, then sidecar-ask the operator with the structured attempts list (Options: A operator drops the PDF and re-dispatches, B operator emails corresponding author, C skip). Do **not** attempt to fabricate the missing source. If a file was already at `--out` it is left as it was: stderr says so and the log has `out_left_in_place: true`; that file did not validate, so do not use it.
+- **3** → argument or environment problem (missing `curl`, missing `--doi` / `--out`, an option without a value, unknown option). Fix the invocation or the environment; do not work around.
 
 For supplements / errata that the script doesn't cover, see `references/oa-acquisition.md` for the full ladder; if a supplement is unobtainable but the lead PDF is on disk, decide based on whether the missing supplement contains parameter values you need (sidecar-ask if it does; document the gap in vignette Errata if it doesn't).
 

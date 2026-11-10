@@ -85,9 +85,12 @@ loadAcquirer <- function(scriptPath, candidates) {
 }
 
 # Returns list(status = <exit status, or NA when main() raised an error>,
-#              error = <error message, or NULL>).
+#              error = <error message, or NULL>,
+#              messages = <character vector of stderr messages>).
 runMain <- function(env, argv) {
-  suppressMessages(
+  seen <- new.env(parent = emptyenv())
+  seen$messages <- character()
+  res <- withCallingHandlers(
     tryCatch(
       {
         env$main(argv)
@@ -97,8 +100,14 @@ runMain <- function(env, argv) {
       error = function(e) {
         list(status = NA_integer_, error = conditionMessage(e))
       }
-    )
+    ),
+    message = function(m) {
+      seen$messages <- c(seen$messages, conditionMessage(m))
+      invokeRestart("muffleMessage")
+    }
   )
+  res$messages <- seen$messages
+  res
 }
 
 md5 <- function(path) unname(tools::md5sum(path))
@@ -201,6 +210,10 @@ scenarioAllRejected <- function(root, fx, scriptPath) {
     "rejected: no file left at --out"
   )
   check(
+    !any(grepl("left as it was", res$messages, fixed = TRUE)),
+    "rejected: no kept-file warning when --out did not exist"
+  )
+  check(
     identical(list.files(dir), "acquire-log.json"),
     "rejected: no download leftovers in the output directory"
   )
@@ -212,6 +225,10 @@ scenarioAllRejected <- function(root, fx, scriptPath) {
       "rejected: log result is all-sources-failed"
     )
     check(length(lg$attempts) == 3L, "rejected: log records every attempt")
+    check(
+      is.null(lg$out_left_in_place),
+      "rejected: a fresh --out is not reported as left in place"
+    )
   } else {
     check(FALSE, "rejected: log file written")
   }
@@ -252,14 +269,26 @@ scenarioErrorInsideAttempt <- function(root, fx, scriptPath) {
   env <- loadAcquirer(scriptPath, fileUrl(fx$good))
   env$titleMatches <- function(pdfPath, expectedFragment) stop("boom")
   res <- runMain(env, argvFor(dir))
+  check(is.null(res$error), sprintf("error: main raised: %s", res$error))
+  check(identical(res$status, 1L), "error: an unexpected error exits 1")
   check(
-    identical(res$error, "boom"),
-    sprintf("error: the underlying error propagates (got %s)", res$error)
+    any(grepl("ERROR: boom", res$messages, fixed = TRUE)),
+    "error: the underlying message is reported on stderr"
   )
   check(
-    length(list.files(dir)) == 0L,
-    "error: an error mid-attempt leaves nothing in the output directory"
+    identical(list.files(dir), "acquire-log.json"),
+    "error: only the log is left in the output directory"
   )
+  logPath <- file.path(dir, "acquire-log.json")
+  if (file.exists(logPath)) {
+    lg <- readLog(logPath)
+    check(
+      identical(lg$result, "error") && identical(lg$error, "boom"),
+      "error: the log records the error"
+    )
+  } else {
+    check(FALSE, "error: log file written")
+  }
 }
 
 scenarioPreexistingFile <- function(root, fx, scriptPath) {
@@ -275,6 +304,19 @@ scenarioPreexistingFile <- function(root, fx, scriptPath) {
   check(
     file.exists(out) && md5(out) == before,
     "preexisting: a failed run leaves the caller's file untouched"
+  )
+  check(
+    any(
+      grepl(out, res$messages, fixed = TRUE) &
+        grepl("did not validate", res$messages, fixed = TRUE) &
+        grepl("left as it was", res$messages, fixed = TRUE)
+    ),
+    "preexisting: stderr names --out as unvalidated and left in place"
+  )
+  logPath <- file.path(dir, "acquire-log.json")
+  check(
+    file.exists(logPath) && isTRUE(readLog(logPath)$out_left_in_place),
+    "preexisting: the log flags --out as left in place"
   )
 
   # An accepted download replaces it.
@@ -304,6 +346,126 @@ scenarioAlreadyOnDisk <- function(root, fx, scriptPath) {
   check(
     identical(lg$result, "already-on-disk") && length(lg$attempts) == 0L,
     "on-disk: no download is attempted"
+  )
+}
+
+scenarioTitleCheckSkipped <- function(root, fx, scriptPath) {
+  dir <- newWorkDir(root, "title-skipped")
+  env <- loadAcquirer(scriptPath, fileUrl(fx$wrong))
+  env$titleMatches <- function(pdfPath, expectedFragment) NA
+  res <- runMain(env, argvFor(dir))
+  out <- file.path(dir, "lead.pdf")
+  check(is.null(res$error), sprintf("skipped: main raised: %s", res$error))
+  check(identical(res$status, 0L), "skipped: exit status is 0")
+  check(
+    file.exists(out) && md5(out) == md5(fx$wrong),
+    "skipped: a valid PDF is accepted when the title cannot be checked"
+  )
+  logPath <- file.path(dir, "acquire-log.json")
+  if (file.exists(logPath)) {
+    lg <- readLog(logPath)
+    check(
+      length(lg$attempts) == 1L &&
+        grepl("title check skipped", lg$attempts[[1L]]$reason, fixed = TRUE),
+      "skipped: the log says the title check was skipped"
+    )
+  } else {
+    check(FALSE, "skipped: log file written")
+  }
+}
+
+scenarioInstallFailure <- function(root, fx, scriptPath) {
+  # A directory at --out cannot be replaced by file.rename().
+  dir <- newWorkDir(root, "install-failure")
+  out <- file.path(dir, "lead.pdf")
+  dir.create(out)
+  env <- loadAcquirer(scriptPath, fileUrl(fx$good))
+  res <- runMain(env, argvFor(dir))
+  check(is.null(res$error), sprintf("install: main raised: %s", res$error))
+  check(identical(res$status, 1L), "install: exit status is 1")
+  check(
+    any(grepl("ERROR", res$messages, fixed = TRUE)),
+    "install: the failure is reported on stderr"
+  )
+  check(dir.exists(out), "install: the directory at --out is untouched")
+  check(
+    identical(sort(list.files(dir)), c("acquire-log.json", "lead.pdf")),
+    "install: no staging file left behind"
+  )
+  logPath <- file.path(dir, "acquire-log.json")
+  if (file.exists(logPath)) {
+    lg <- readLog(logPath)
+    check(
+      identical(lg$result, "error") && length(lg$attempts) == 1L,
+      "install: the log records the failed attempt and the error result"
+    )
+    if (length(lg$attempts) == 1L) {
+      check(
+        grepl("could not be moved onto --out", lg$attempts[[1L]]$reason, fixed = TRUE),
+        "install: the attempt's reason names the failed move"
+      )
+    }
+  } else {
+    check(FALSE, "install: log file written")
+  }
+}
+
+scenarioArgumentErrors <- function(root, fx, scriptPath) {
+  dir <- newWorkDir(root, "arg-errors")
+  out <- file.path(dir, "lead.pdf")
+  cases <- list(
+    "missing --doi" = c("--out", out),
+    "missing --out" = c("--doi", "10.0000/fixture"),
+    "unknown option" = c("--doi", "10.0000/fixture", "--out", out, "--bogus", "1"),
+    "option without a value" = c("--out", out, "--doi")
+  )
+  for (nm in names(cases)) {
+    env <- loadAcquirer(scriptPath, fileUrl(fx$good))
+    res <- runMain(env, cases[[nm]])
+    check(
+      identical(res$status, 3L),
+      sprintf("args: %s exits 3 (got %s)", nm, format(res$status))
+    )
+    check(
+      any(grepl("ERROR", res$messages, fixed = TRUE)),
+      sprintf("args: %s is reported on stderr", nm)
+    )
+  }
+  env <- loadAcquirer(scriptPath, fileUrl(fx$good))
+  env$Sys.which <- function(names) stats::setNames(rep("", length(names)), names)
+  res <- runMain(env, argvFor(dir))
+  check(identical(res$status, 3L), "args: curl absent from PATH exits 3")
+  check(
+    length(list.files(dir)) == 0L,
+    "args: argument errors write neither a PDF nor a log"
+  )
+}
+
+scenarioStaleStagingFile <- function(root, fx, scriptPath) {
+  # A staging file left by an interrupted earlier run is overwritten by the
+  # next download and never survives the run, whatever the outcome.
+  dirOk <- newWorkDir(root, "stale-part-ok")
+  writeLines("stale", file.path(dirOk, "lead.pdf.part"))
+  env <- loadAcquirer(scriptPath, fileUrl(fx$good))
+  res <- runMain(env, argvFor(dirOk))
+  check(identical(res$status, 0L), "stale: a run over a stale .part succeeds")
+  check(
+    identical(sort(list.files(dirOk)), c("acquire-log.json", "lead.pdf")),
+    "stale: the stale .part is gone after a successful run"
+  )
+  check(
+    md5(file.path(dirOk, "lead.pdf")) == md5(fx$good),
+    "stale: --out holds the downloaded PDF, not the stale bytes"
+  )
+
+  dirFail <- newWorkDir(root, "stale-part-fail")
+  writeLines("stale", file.path(dirFail, "lead.pdf.part"))
+  env2 <- loadAcquirer(scriptPath, fileUrl(fx$html))
+  res2 <- runMain(env2, argvFor(dirFail))
+  check(identical(res2$status, 2L), "stale: a rejected run over a stale .part exits 2")
+  check(
+    identical(list.files(dirFail), "acquire-log.json"),
+    "stale: the stale .part is gone after a failed run"
   )
 }
 
@@ -346,6 +508,18 @@ main <- function() {
   })
   runScenario("already on disk", function() {
     scenarioAlreadyOnDisk(root, fx, scriptPath)
+  })
+  runScenario("title check skipped", function() {
+    scenarioTitleCheckSkipped(root, fx, scriptPath)
+  })
+  runScenario("install failure", function() {
+    scenarioInstallFailure(root, fx, scriptPath)
+  })
+  runScenario("argument errors", function() {
+    scenarioArgumentErrors(root, fx, scriptPath)
+  })
+  runScenario("stale staging file", function() {
+    scenarioStaleStagingFile(root, fx, scriptPath)
   })
 
   nFail <- length(results$failures)
