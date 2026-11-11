@@ -3934,6 +3934,14 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Example models:** `Jin_2024_parkinson_progression.R` (founding example; effects of female sex, LRRK2 G2019S and LRRK2 rs76904798).
 - **Notes:** Ratified by the maintainers 2026-11-06. Distinct from a disease-time offset: SReFT also aligns each subject on the disease-time axis by an offset that it solves by an inverse-Gompertz average rather than estimating as a random effect, so the library's SReFT models take disease time as the model time and do not carry the offset.
 
+### lv_spinal_cord, v_spinal_cord (**canonical log-transformed spinal-cord compartment volume**)
+- **Type:** log-transformed-pk
+- **Role:** Volume of the bare whole-tissue `spinal_cord` compartment (volume); the spinal-cord concentration is `spinal_cord / v_spinal_cord`. The bare form `v_spinal_cord` is used inside `model()`.
+- **Source aliases:**
+  - `Vspinal` -- Chiang 2024 Table III (0.6 mL, fixed to the measured rat spinal-cord volume).
+- **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
+- **Notes:** Ratified by the maintainers 2026-11-10 (PMC11263240). Member of the `lv_<space>` family (`lv_elf`, `lv_kidney`, `lv_brain`); the spinal-cord counterpart of `lv_brain`. Wrap in `fixed()` when the source fixes it from anatomy.
+
 ## Nested (multi-level) random effects
 
 model in this library to carry a second hierarchical level of random effects.
@@ -4449,3 +4457,11 @@ Prescription, geometry and transport parameters of an extracorporeal blood circu
   - `VR` -- Wanika 2024 Eq 5 (`VM = VC(0) * VR`) and Table 2.
 - **Example models:** `Wanika_2024_alectinib.R`, `Wanika_2024_crizotinib.R`, `Wanika_2024_erlotinib.R`, `Wanika_2024_gefitinib.R` (founding examples; `vr` 3.2-4.2 across the four TKIs, with the uptake and efflux constants named as `k_<from>_<to>` family members `k_medium_intracellular` / `k_intracellular_medium`).
 - **Notes:** Expressing the medium volume as a ratio lets the absolute initial cell volume cancel out of the equations, so no cell-volume input is needed. Not a volume of distribution and not a partition coefficient: it is a fixed experimental geometry (estimated in the founding example because the per-well cell volume was unknown), so do not reuse `lvc`, `lvp` or a `kp_<tissue>` name for it. The states `medium` and `intracellular` are paper-specific compartments, as in `Mody_2023_doxorubicin_dexrazoxane_jimt1.R`.
+
+### lcorr_urine_vol, corr_urine_vol (**canonical estimated correction factor on a measured urine collection volume**)
+- **Type:** paper-named-param
+- **Role:** Unitless multiplier applied to the *measured* urine volume of a collection interval in the urinary-concentration observation equation, `Curine <- urine / (URINE_VOL_INTERVAL / 1000 * corr_urine_vol)`. It absorbs a systematic under- or over-recovery of the collected volume (urine lost in or evaporated from a diaper, incomplete voiding) so that the modelled excreted amount and the measured concentration reconcile. Log-transformed in `ini()`, bare inside `model()`; a per-sample random effect takes the IIV name `etalcorr_urine_vol`.
+- **Source aliases:**
+  - `THETA(18)` / "urine volume correction factor" -- Wu 2023 Table II and supplementary control stream (`S5 = UVOL*THETA(18)*EXP(ETA(7))`, the same scale on `S6`..`S8`).
+- **Example models:** `Wu_2023_paracetamol.R` (founding example -- `corr_urine_vol = 3.62` with 138.4% CV inter-sample variability, applied to the diaper urine volume of preterm neonates; the factor is shared by the urinary paracetamol, glucuronide, sulfate and oxidative-metabolite observables).
+- **Notes:** Ratified 2026-11-06 (PMC10547636). Deliberately NOT a member of `cal_slope_<assay>`: that family maps one assay's prediction onto another assay's scale, whereas this factor corrects a measured covariate volume that divides the prediction, so expressing it as a calibration slope would need the reciprocal of the printed value and would misdescribe the quantity. Distinct from `URINE_VOL_INTERVAL` (the measured volume itself, a covariate column) and from `urprod` (an estimated urine-production RATE that integrates a modelled `urine_vol` state when no volume was measured).
