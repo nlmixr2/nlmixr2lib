@@ -210,9 +210,6 @@ dose_mg_kg <- 2
 mw_g_per_mol <- 150000    # nominal aglycosylated human IgG1; see Assumptions
 dose_nmol <- dose_mg_kg * bw_kg * 1e-3 / mw_g_per_mol * 1e9
 
-# Fast-clearance threshold used throughout Liu 2023: 12 mL/day/kg.
-cl_threshold_mL_h <- 12 * bw_kg / 24
-
 sample_times <- sort(unique(c(
   0, 0.0833, 0.25, 0.5, 1, 2, 4, 6, 8, 12,
   seq(24, 168, by = 12), seq(192, 672, by = 24)
@@ -247,10 +244,8 @@ stopifnot(dplyr::n_distinct(sim$id) == nrow(ab_panel), !anyNA(sim$Cc))
 
 The published curves overlaid on Figures 4, 5 and 6 below were digitized from the
 published figures of Liu 2023: each line's position was read against its own
-panel's axis ticks and is given to three significant figures. They are the
-authors' model curves, not observations. Figure 6 is printed at the smallest
-scale, with a decade about half the height it has in Figures 4 and 5, so its values
-are the least precise.
+panel's axis ticks. They are the authors' model curves, not observations. Figure 6
+is printed at the smallest scale of the three, so its values are the least precise.
 
 ```{r digitized-curves}
 # Liu 2023 Figure 5: the 20 curves are F1 = 0.4 * 10^(k / 19), k = 0..19, i.e.
@@ -325,7 +320,19 @@ sim_digit <- rxode2::rxSolve(mod_fun, events = ev_digit, keep = "ab",
   as.data.frame() |>
   dplyr::mutate(conc = Cc * mw_g_per_mol / 1e3)
 stopifnot(setequal(unique(sim_digit$ab), unique(fig46_pub$ab)))
+
+# Ab1 and Ab20 sit on the same F1 plateau, so their published lines are the same
+# curve read twice; the spread between the two readings measures the precision.
+repeat_pair <- merge(fig46_pub[fig46_pub$ab == "Ab1", c("time", "conc")],
+                     fig46_pub[fig46_pub$ab == "Ab20", c("time", "conc")], by = "time")
+digit_spread_pct <- 100 * max(abs(repeat_pair$conc.x / repeat_pair$conc.y - 1))
+stopifnot(nrow(repeat_pair) == 7, digit_spread_pct < 10)
+n_fig4_digit <- dplyr::n_distinct(fig46_pub$ab[fig46_pub$figure != "6"])
 ```
+
+The values are written to three significant figures, but that overstates their
+precision: Ab1 and Ab20 share the same `F1`, so their published lines are one curve
+read twice, and the two readings differ by up to `r round(digit_spread_pct, 1)`%.
 
 ## Figure 3d - sigmoidal relationship between `F1` and heparin retention time
 
@@ -363,7 +370,8 @@ quantitative observed-vs-predicted comparison follows in the PKNCA section.
 ```{r figure-4}
 # Replicates the fitted profiles of Figure 4a,b of Liu 2023.
 fig4b_abs <- c("Ab14", "Ab36", "Ab39", "Ab63", "Ab84")
-stopifnot(sum(ab_panel$fitted) == 53, all(fig4b_abs %in% ab_panel$ab[ab_panel$fitted]))
+stopifnot(sum(ab_panel$fitted) == 53, all(fig4b_abs %in% ab_panel$ab[ab_panel$fitted]),
+          sum(ab_panel$fitted & !ab_panel$ab %in% fig4b_abs) == 48)
 sim |>
   dplyr::filter(fitted, time > 0) |>
   dplyr::mutate(
@@ -390,11 +398,12 @@ sim |>
   labs(x = "Time (h)", y = "Plasma concentration (ng/mL)",
        title = "Figure 4 - model-fitted profiles for the training panel",
        caption = paste0("Coloured lines: packaged model (2 mg/kg IV). Black dashed lines and points:\n",
-                        "published fitted lines of Liu 2023 Figure 4a,b for nine antibodies, digitized."))
+                        "published fitted lines of Liu 2023 Figure 4a,b for ", n_fig4_digit,
+                        " antibodies, digitized."))
 ```
 
-The same nine antibodies, and the two digitized validation antibodies of Figure 6,
-one panel each:
+The same `r n_fig4_digit` antibodies, and the two digitized validation antibodies of
+Figure 6, one panel each:
 
 ```{r figure-4-6-overlay, fig.height = 6}
 # Packaged model (solid) against the digitized published lines (dashed, points).
@@ -700,25 +709,57 @@ knitr::kable(
   cmp,
   caption = "Simulated versus published NCA (Liu 2023 Supplementary Table S1). * differs from the reference by more than 20%."
 )
+
+# Signed percentage differences quoted in the paragraph below, matched by antibody.
+pct_diff <- function(param) {
+  ref <- published[[param]][match(simulated$ab, published$ab)]
+  stats::setNames(100 * (simulated[[param]] / ref - 1), simulated$ab)
+}
+cl_pct <- pct_diff("cl.obs")
+thalf_pct <- pct_diff("half.life")
+fmt_pct <- function(x) sprintf("%+.0f%%", x)
+plateau_abs <- c("Ab20", "Ab1", "Ab51")
+cl_plateau_uL_h <- simulated$cl.obs[simulated$ab %in% plateau_abs] * 1e6
+stopifnot(
+  setequal(simulated$ab, published$ab),
+  diff(range(cl_plateau_uL_h)) / mean(cl_plateau_uL_h) < 0.01,
+  abs(cl_pct[["Ab14"]]) < 20, cl_pct[["Ab39"]] > 20, cl_pct[["Ab39"]] < 30,
+  cl_pct[["Ab97"]] < -20, cl_pct[["Ab98"]] < -20, cl_pct[["Ab85"]] > 20,
+  all(thalf_pct[c("Ab1", "Ab51", "Ab39", "Ab14", "Ab98")] > 20),
+  all(thalf_pct[c("Ab20", "Ab85")] < -20), abs(thalf_pct[["Ab97"]]) < 5
+)
 ```
 
 `ncaComparisonTable()` labels PKNCA's `cl.obs` as "CL/F"; dosing here is
 intravenous, so that row is plain systemic clearance (no bioavailability term).
 
-Clearance is reproduced closely for the low-retention plateau (Ab20, Ab1, Ab51) and
-for antibodies just above the threshold (Ab39, Ab14), which is where the covariate
-model was trained. It is systematically **under-predicted** for the extreme-retention
-validation antibodies (Ab98 at 32.6 min, Ab85 at 20.4 min), because the sigmoid
-plateaus at `b` = 3.65 and cannot describe the further clearance escalation seen
-beyond the training range - the paper makes the same point ("we still notice huge mAb
-PK variability when Heparin_RT is large, leading to PK underprediction almost 30% of
-the time"). Half-life is over-predicted across the board relative to the reported
-values. Part of this is the model itself: its terminal phase is longer than that of
-the published model curves (next section, and *Shape of the published model curves*
-under Assumptions and deviations). In addition, the simulated terminal phase is
-estimated over a 672 h window from a smooth noise-free profile, whereas the published
-half-lives come from sparse composite mean profiles (`n = 3` per time point). No
-parameter was tuned to improve either comparison.
+The three low-retention antibodies (Ab20, Ab1 and Ab51) sit on the sigmoid's lower
+plateau, so the model gives them practically the same profile and clearance,
+`r sprintf("%.2f", mean(cl_plateau_uL_h))` uL/h (within 1% of each other), while their reported clearances span
+`r sprintf("%.2f", min(published$cl.obs[published$ab %in% plateau_abs]) * 1e6)`-`r sprintf("%.2f", max(published$cl.obs[published$ab %in% plateau_abs]) * 1e6)` uL/h.
+The simulated clearance therefore differs by `r fmt_pct(cl_pct[["Ab20"]])` for Ab20,
+`r fmt_pct(cl_pct[["Ab1"]])` for Ab1 and `r fmt_pct(cl_pct[["Ab51"]])` for Ab51: one
+`F1` per plateau cannot carry that spread (see *Half-life within the low-retention
+plateau* below). Of the other five, clearance is within 20% only for Ab14
+(`r fmt_pct(cl_pct[["Ab14"]])`) and just outside it for Ab39
+(`r fmt_pct(cl_pct[["Ab39"]])`). It is under-predicted for Ab97
+(`r fmt_pct(cl_pct[["Ab97"]])`) and Ab98 (`r fmt_pct(cl_pct[["Ab98"]])`) and
+over-predicted for Ab85 (`r fmt_pct(cl_pct[["Ab85"]])`). Above the 16.5 min threshold
+the sigmoid plateaus at `b` = 3.65, so the model gives all high-retention antibodies
+nearly the same clearance and cannot follow the spread among them; the paper notes
+"huge mAb PK variability when Heparin_RT is large, leading to PK underprediction
+almost 30% of the time". Half-life differs in both directions: it is longer than
+reported for Ab1, Ab51, Ab39, Ab14 and Ab98
+(`r fmt_pct(min(thalf_pct[c("Ab1", "Ab51", "Ab39", "Ab14", "Ab98")]))` to
+`r fmt_pct(max(thalf_pct[c("Ab1", "Ab51", "Ab39", "Ab14", "Ab98")]))`), shorter for
+Ab20 (`r fmt_pct(thalf_pct[["Ab20"]])`) and Ab85 (`r fmt_pct(thalf_pct[["Ab85"]])`),
+and about equal for Ab97 (`r sprintf("%+.1f%%", thalf_pct[["Ab97"]])`). Where it is longer, part
+of the difference is the model itself: its terminal phase is longer than that of the
+published model curves (next section, and *Shape of the published model curves*
+under Assumptions and deviations). The simulated half-lives are also estimated over
+a 672 h window from smooth noise-free profiles, whereas the published ones come from
+sparse composite mean profiles (`n = 3` per time point). No parameter was tuned to
+improve either comparison.
 
 ## Comparison with the published model curves
 
@@ -849,11 +890,13 @@ stopifnot(f2_change_pct < 15)
 
 ```{r published-clearance-compare}
 # Clearance side 1: the individually estimated F1 and F2 of Supplementary
-# Table S2 against the clearance of Supplementary Table S1. Ab76 (atypical
-# profile) and Ab45 (three-phase profile that the individual fit did not
-# describe) are left out, as in Liu 2023.
+# Table S2 against the clearance of Supplementary Table S1, for all 56 training
+# antibodies. The summary is also given without Ab76 and Ab45, whose individual
+# fits Liu 2023 reports did not describe their profiles (Ab76 has a distinct
+# steep alpha phase, Ab45 a three-phase profile); a single F1/F2 pair is then not
+# expected to reproduce their clearance.
 indiv <- ab_panel |>
-  dplyr::filter(panel_set == "training", !ab %in% c("Ab45", "Ab76")) |>
+  dplyr::filter(panel_set == "training") |>
   dplyr::mutate(id = dplyr::row_number())
 long_times <- c(seq(0, 2, by = 0.05), seq(2.5, 24, by = 0.5), seq(26, 4000, by = 2))
 ev_ind <- rxode2::et(amt = dose_nmol, cmt = "plasma", id = indiv$id) |>
@@ -878,9 +921,14 @@ cl_ind <- sim_ind |>
   dplyr::summarise(auc_nM_h = auc_inf(time, Cc), .groups = "drop") |>
   dplyr::left_join(indiv |> dplyr::select(id, ab, cl_obs), by = "id") |>
   dplyr::mutate(cl_sim_mL_h = dose_nmol / auc_nM_h * 1000, ratio = cl_sim_mL_h / cl_obs)
-gm_cl_ind <- exp(mean(log(cl_ind$ratio)))
-within20_cl_ind <- sum(abs(cl_ind$ratio - 1) < 0.2)
-stopifnot(nrow(cl_ind) == 54, gm_cl_ind > 0.9, gm_cl_ind < 1.1, within20_cl_ind >= 40)
+gm_cl_all <- exp(mean(log(cl_ind$ratio)))
+within20_cl_all <- sum(abs(cl_ind$ratio - 1) < 0.2)
+cl_ind54 <- cl_ind[!cl_ind$ab %in% c("Ab45", "Ab76"), ]
+gm_cl_ind <- exp(mean(log(cl_ind54$ratio)))
+within20_cl_ind <- sum(abs(cl_ind54$ratio - 1) < 0.2)
+stopifnot(nrow(cl_ind) == 56, nrow(cl_ind54) == 54,
+          gm_cl_all > 0.9, gm_cl_all < 1.1, within20_cl_all >= 40,
+          gm_cl_ind > 0.9, gm_cl_ind < 1.1, within20_cl_ind >= 40)
 
 # Clearance side 2: Supplementary Table S3's %PE together with the observed AUC
 # of Table S1 gives the AUC(0-672 h) the published model predicted for each
@@ -892,12 +940,35 @@ val_auc <- nca_wide |>
 gm_auc_val <- exp(mean(log(val_auc$ratio)))
 stopifnot(nrow(val_auc) == 14, gm_auc_val > 0.9, gm_auc_val < 1.05)
 
+# The AUC in ng*h/mL does not depend on the assumed molar mass: the dose in nmol
+# scales with 1 / molar mass and the ng/mL conversion with molar mass, and the
+# model is linear at this dose. Re-solving with a molar mass 10% higher pins it.
+auc_trapezoid <- function(time, conc) sum(diff(time) * (head(conc, -1) + tail(conc, -1)) / 2)
+auc_ng <- function(mw) {
+  dose_mw <- dose_mg_kg * bw_kg * 1e-3 / mw * 1e9
+  ev_mw <- rxode2::et(amt = dose_mw, cmt = "plasma", id = seq_along(val_auc$HEPARIN_RT)) |>
+    rxode2::et(seq(0, 672, by = 1), id = seq_along(val_auc$HEPARIN_RT))
+  rxode2::rxSolve(mod_fun, events = ev_mw,
+                  params = data.frame(id = seq_along(val_auc$HEPARIN_RT),
+                                      HEPARIN_RT = val_auc$HEPARIN_RT),
+                  atol = 1e-10, rtol = 1e-8) |>
+    as.data.frame() |>
+    dplyr::group_by(id) |>
+    dplyr::summarise(auc = auc_trapezoid(time, Cc) * mw / 1e3, .groups = "drop") |>
+    dplyr::pull(auc)
+}
+mw_change_pct <- 100 * max(abs(auc_ng(1.1 * mw_g_per_mol) / auc_ng(mw_g_per_mol) - 1))
+stopifnot(mw_change_pct < 1)
+
 tibble::tibble(
-  Check = c("Table S2 F1/F2 -> CL, against Table S1 CL (54 antibodies)",
+  Check = c("Table S2 F1/F2 -> CL, against Table S1 CL (all 56 training antibodies)",
+            "Same, without Ab45 and Ab76 (54 antibodies)",
             "AUC(0-672 h), against the published model's prediction (Table S3, 14 antibodies)"),
-  `Geometric-mean ratio` = c(gm_cl_ind, gm_auc_val),
-  `Min` = c(min(cl_ind$ratio), min(val_auc$ratio)),
-  `Max` = c(max(cl_ind$ratio), max(val_auc$ratio))
+  `Geometric-mean ratio` = c(gm_cl_all, gm_cl_ind, gm_auc_val),
+  `Within 20%` = c(sprintf("%d of 56", within20_cl_all), sprintf("%d of 54", within20_cl_ind),
+                   sprintf("%d of 14", sum(abs(val_auc$ratio - 1) < 0.2))),
+  `Min` = c(min(cl_ind$ratio), min(cl_ind54$ratio), min(val_auc$ratio)),
+  `Max` = c(max(cl_ind$ratio), max(cl_ind54$ratio), max(val_auc$ratio))
 ) |>
   knitr::kable(digits = 2, caption = "Packaged model / published model, clearance and exposure.")
 ```
@@ -905,9 +976,15 @@ tibble::tibble(
 The packaged model matches the published model's clearance and exposure but not the
 shape of its curves. With the individually estimated `F1` and `F2` of Supplementary
 Table S2 it reproduces the Supplementary Table S1 clearances (geometric-mean ratio
-`r sprintf("%.2f", gm_cl_ind)`, `r within20_cl_ind` of 54 antibodies within 20%), and
-its validation-set AUCs match those the published model predicted (geometric-mean
-ratio `r sprintf("%.2f", gm_auc_val)`). The curves differ in shape: at 2.2 h every
+`r sprintf("%.2f", gm_cl_all)` over all 56 training antibodies, `r within20_cl_all` of
+them within 20%; `r sprintf("%.2f", gm_cl_ind)` and `r within20_cl_ind` of 54 without
+Ab45 and Ab76, whose individual fits did not describe their profiles). Its
+validation-set AUCs match those the published model predicted (geometric-mean ratio
+`r sprintf("%.2f", gm_auc_val)`); this comparison does not depend on the assumed
+molar mass (a 10% higher molar mass changes the simulated AUCs by at most
+`r sprintf("%.2f", mw_change_pct)`%), so the remaining offset of about
+`r round(100 * abs(1 - gm_auc_val))`% is not a molar-mass effect, and its source is not
+determined. The curves differ in shape: at 2.2 h every
 simulated Figure 5 curve lies below the whole band of published curves, at the last
 digitized time every simulated curve lies above its published counterpart, and on
 every digitized curve the simulated/published ratio rises with time. The deviation is
@@ -928,8 +1005,9 @@ recorded under *Shape of the published model curves* below.
   drive `sigma_V` above 1 (negative convection).
 - **Lung plasma flow is derived, not taken from Table 1.** Shah & Betts 2012 Table 1
   reports 373 mL/h for mouse lung, but the fourteen tissues the lung supplies sum to
-  371.51 mL/h; the 1.49 mL/h difference is the lymph node's perfusion, which is not an
-  antibody-transport path in this model. Using 373 mL/h directly opens a 0.4%
+  371.51 mL/h; the 1.49 mL/h difference is the lymph node's perfusion (1.65 mL/h in
+  Table 1, within the table's rounding), which is not an antibody-transport path in
+  this model. Using 373 mL/h directly opens a 0.4%
   arterial leak - roughly 1.5 mL/h - which is two orders of magnitude larger than the
   antibodies' true clearance (2.6-29 uL/h) and would dominate the terminal phase. The
   model derives `q_lu` as the sum of the non-lung arterial supplies so the arterial
@@ -957,7 +1035,7 @@ recorded under *Shape of the published model curves* below.
   Dose divided by the 0.944 mL plasma volume is
   `r format(round(c0, -2), big.mark = ",")` ng/mL. At 2.2 h the 20 published Figure 5
   curves are still at `r round(band_pct[["lower"]])`-`r round(band_pct[["upper"]])`%
-  of that and fall over the first one to two days, whereas the simulated curves are
+  of that, whereas the simulated curves are
   already at `r round(sim_2h_pct[1])`-`r round(sim_2h_pct[2])`%: within the first
   hour the simulated antibody occupies
   `r sprintf("%.2f", min(v_1h_mL))`-`r sprintf("%.2f", max(v_1h_mL))` mL, the plasma
@@ -971,15 +1049,16 @@ recorded under *Shape of the published model curves* below.
   reaches 10 ng/mL at `r round(cross$sim_time[cross$k == 19])` h instead of the
   published `r cross$time[cross$k == 19]` h. In the first hours every simulated
   Figure 5 curve lies below the published ones, and at the last digitized
-  time every simulated curve lies above its published counterpart. The cause is not determined. Two candidates are ruled out. The pinocytosis scaling is not the
-  cause: Supplementary Methods 2 prints the per-organ form used here,
-  `CL_UP,ORG = CL_UP * V_E,ORG`, and with it the clearance and exposure checks agree
-  with the published model (geometric-mean ratios `r sprintf("%.2f", gm_cl_ind)` and
-  `r sprintf("%.2f", gm_auc_val)`). Nor is `F2`, which the paper does not state for
-  Figure 5: fixing it at 1 instead of 1.45 moves the digitized Figure 5 points by at
-  most `r round(f2_change_pct, 1)`%. Liu 2023 states that all other values are those
-  of Shah & Betts 2012 and publishes no model code, so the model keeps the published
-  physiology unchanged.
+  time every simulated curve lies above its published counterpart. The cause is not determined. What the
+  checks show is limited. The clearance and exposure checks agree with the published
+  model under the per-organ pinocytosis form that Supplementary Methods 2 prints and
+  the model uses, `CL_UP,ORG = CL_UP * V_E,ORG` (geometric-mean ratios
+  `r sprintf("%.2f", gm_cl_all)` and `r sprintf("%.2f", gm_auc_val)`), so the
+  elimination side matches; those checks do not test distribution, so they do not
+  locate the difference in shape. `F2`, which the paper does not state for Figure 5,
+  moves the digitized Figure 5 points by at most `r round(f2_change_pct, 1)`% between
+  1 and 1.45. Liu 2023 states that all other values are those of Shah & Betts 2012 and
+  publishes no model code, so the model keeps the published physiology unchanged.
 - **Molar mass.** The model runs in nmol and nM, which is the natural scale for the
   FcRn binding terms. Neither Liu 2023 nor Shah & Betts 2012 reports a molar mass for
   the panel, so this vignette uses 150,000 g/mol - the nominal value for an
@@ -987,7 +1066,9 @@ recorded under *Shape of the published model curves* below.
   concentrations in ng/mL. This is **not** a paper-derived value. The primary
   validation metrics (clearance, half-life, classification against the 12 mL/day/kg
   threshold) are unaffected by the choice, because both dose and AUC scale with
-  1/molar mass; only the AUC-based %PE column scales linearly with it.
+  1/molar mass. AUC in `ng*h/mL`, and with it the %PE column, does not depend on it
+  either: the model is linear at this dose, so the nmol dose and the ng/mL conversion
+  cancel (checked in *Comparison with the published model curves*).
 - **Body weight.** Liu 2023 does not state a body weight. The model is built on
   Shah & Betts 2012's 28 g mouse physiology, and 28 g is also what reconciles
   Supplementary Table S1's mg/kg dose, ng*h/mL AUC and mL/h clearance columns
