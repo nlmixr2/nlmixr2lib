@@ -292,6 +292,10 @@ navbar:
         href: articles/Taddio_2018_hepatobiliary_transport_pet_pbpk.html
       - text: "Amatuximab (Gupta 2016)"
         href: articles/Gupta_2016_amatuximab.html
+      - text: "Amcenestrant (Cerou 2024)"
+        href: articles/Cerou_2024_amcenestrant.html
+      - text: "Amcenestrant ameera12 (Cerou 2024)"
+        href: articles/Cerou_2024_amcenestrant.html
       - text: "Amg221 (Gibbs 2011)"
         href: articles/Gibbs_2011_amg221.html
       - text: "Amifampridine (Thakkar 2017)"
@@ -9135,6 +9139,7 @@ articles:
   - articles/Cendros_2025_enflicoxib
   - articles/Centanni_2024_vincristine
   - articles/Centanni_2025_sunitinib_thrombocytopenia
+  - articles/Cerou_2024_amcenestrant
   - articles/Cerqueira_2025_resveratrol
   - articles/Cha_2024_zolpidem
   - articles/Chae_2012_metformin
