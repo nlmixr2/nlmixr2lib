@@ -2402,6 +2402,14 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Zou_2020_leuprorelin.R` (founding example; `kge_sens = 1.96e-3` 1/day, omega^2 2.59; Zou 2020 Table 2).
 - **Notes:** A qualifier-suffixed member of the `kge` family (compare the arm suffixes `lkge_<arm>` and the endpoint suffix `kge_ctdna`). Plain `kge` stays the growth rate of the drug-RESISTANT fraction (`growth` state) in the same model; the `_sens` suffix is what distinguishes the two growth rates. Only needed when the data window includes pre-treatment observations of the sensitive clone -- the classic Stein model starts at treatment start and has no such term.
 
+### kmut (**canonical sensitive-to-resistant clone transfer (mutation) rate constant**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant at which the drug-sensitive sub-population (`shrink` state) converts into the drug-resistant sub-population (`growth` state) in a clonal-selection tumor model with acquired resistance (1 / time): `d/dt(shrink) <- ... - kmut * shrink` and `d/dt(growth) <- kmut * shrink + ...`, so the conversion conserves tumor size. Inside `model` the bare name is `kmut`; the log-transformed `lkmut` form is used in `ini`, with IIV `etalkmut`.
+- **Source aliases:**
+  - `km`, `KM1` -- Yin 2024 notation ('km represents mutation rate'; Table 3 'Mutation rate constant'). Do NOT map this `km` to the Michaelis-Menten constant `km`.
+- **Example models:** `Yin_2024_erlotinib_tumor.R` (founding example; `kmut = 0.00911` 1/day, 56.5% CV), `Yin_2024_erlotinib_tumor_ctdna.R` (`kmut = 0.00824` 1/day); Yin 2024 Table 3.
+- **Notes:** Distinct from `rp` / `fsen`, which fix a PRE-EXISTING resistant fraction at baseline (primary resistance): `kmut` generates resistance during treatment from a fully sensitive baseline (acquired resistance), and the two can coexist in one model. In Yin 2024 the transfer is switched on only while on treatment (`kmut * TRT_PHASE`), which is the paper's assumption that resistance is drug-selected; keep that gate when the source has it.
+
 ### rp (**canonical negative-log resistant fraction**)
 - **Type:** paper-named-param
 - **Role:** Positive unitless parameter giving the drug-resistant fraction of a clonal-selection model's baseline as `R = exp(-rp)`, so the resistant fraction is bounded in `(0, 1)` for any positive `rp` and a log-normal IIV on `rp` keeps it there. Inside `model` the bare name is `rp`; the log-transformed `lrp` form is used in `ini`, with IIV `etalrp`. The resistant and sensitive sub-states are seeded as `growth(0) = exp(-rp) * y0` and `shrink(0) = (1 - exp(-rp)) * y0`.

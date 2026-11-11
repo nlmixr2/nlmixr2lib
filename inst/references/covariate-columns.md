@@ -7701,15 +7701,16 @@ their source-paper conventions where those names are unambiguous and
 readable.
 
 ### TRT_PHASE (**canonical for double-blind active-treatment-phase indicator**)
-- **Description:** 1 = the record falls within the active double-blind treatment phase (drug + placebo effects are switched on); 0 = baseline / run-in / off-treatment (drug + placebo effects are zeroed).
+- **Description:** 1 = the record falls within the active treatment phase (drug effects -- and, in a placebo-controlled trial, placebo effects -- are switched on); 0 = baseline / run-in / off-treatment (those effects are zeroed). Covers a double-blind treatment period and, more generally, any on-treatment window whose start is carried as a time-varying data column (e.g. 1 from the first dose onwards).
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
 - **Reference category:** 0 (baseline / off-treatment).
 - **Source aliases:**
   - `Q2` -- used in the Schoemaker 2018 LEV / BRV pediatric extrapolation (DDMODEL00000239) as the treatment-phase gating multiplier on the combined placebo + drug-effect log-rate term (`LE = LS0 + Q2 * LTRTE`).
-- **Example models:** `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239); `Courlet_2023_melanoma_ici_tgi.R` and `Courlet_2023_melanoma_ici_tgi_radiomics.R` (ON/OFF immune checkpoint inhibitor regressor `trt` gating the log-kill term of a TGI model; see Notes for its post-discontinuation convention).
-- **Notes:** New canonical because the source name `Q2` collides with the canonical PK parameter `q2` (inter-compartmental clearance to peripheral2) -- `q2` could not be used as a covariate column without confusing source-trace lookups. Useful for any phase-gated PD model where placebo and drug effects are constrained to a specific study period; analogous to a "treatment-on" indicator. **Post-discontinuation convention varies by source; read it before supplying the column.** In the Courlet 2023 TGI models the regressor stays 1 after treatment discontinuation (Supplementary Material S6: 'trt (=0 for baseline images and =1 for on-treatment images and images collected after treatment discontinuation)'), because the paper found the same kill rate described post-discontinuation images; a user who sets it back to 0 after the last dose simulates a different model from the published one. In Schoemaker 2018 the column follows the study-phase definition above.
+  - `UNDERTREAT` -- Yin 2024 NONMEM data column (Appendix S2, 'if treatment started: 1, yes'), switching on the erlotinib kill rate, the sensitive-to-resistant transfer and the resistant-clone growth.
+- **Example models:** `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239), `Yin_2024_erlotinib_tumor.R` and `Yin_2024_erlotinib_tumor_ctdna.R` (1 from the start of erlotinib; before it the tumor grows at `kge` only).
+- **Notes:** New canonical because the source name `Q2` collides with the canonical PK parameter `q2` (inter-compartmental clearance to peripheral2) -- `q2` could not be used as a covariate column without confusing source-trace lookups. Useful for any phase-gated PD model where placebo and drug effects are constrained to a specific study period; analogous to a "treatment-on" indicator.
 
 ### PDV (**canonical for previous-period observed count (Markov-feedback state)**)
 - **Description:** Previous-period observed count, supplied per-record as a covariate input to capture Markov dependence on the previous count. For daily-count datasets PDV is the observation on the immediately preceding day; for monthly (or other aggregate) records PDV is the observed count from the immediately preceding interval. The biological identity of the count is paper-specific (seizures in Ahn 2010 / Schoemaker 2018, contrast-enhancing MS lesions in Velez de Mendizabal 2013); the canonical concept is "the immediately preceding observed count, used as a Markov-state covariate".
@@ -11042,7 +11043,7 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** n/a -- used with power scaling `(TUM_SLD / ref)^exponent`. Reference values observed: 70.0 mm (de Vries Schultink 2020 zenocutuzumab population median).
 - **Source aliases:**
   - `SoL` / "sum of lesions" (de Vries Schultink 2020 zenocutuzumab) -- same construct, mm.
-- **Example models:** `deVriesSchultink_2020_zenocutuzumab.R` (reference 70.0 mm; power exponent 0.447 on Vmax of the parallel non-linear / Michaelis-Menten clearance).
+- **Example models:** `deVriesSchultink_2020_zenocutuzumab.R` (reference 70.0 mm; power exponent 0.447 on Vmax of the parallel non-linear / Michaelis-Menten clearance), `Yin_2024_erlotinib_tumor.R` and `Yin_2024_erlotinib_tumor_ctdna.R` (observed baseline SLD as the initial condition of the drug-sensitive `shrink` state; Yin 2024 Table 3 'TS_0 = Observed baseline').
 - **Notes:** Distinct from `TUMSZ` (pooled tumor-size canonical covering RECIST sum-of-diameters / SPPD / sum-of-linear-diameters); `TUM_SLD` is the precise RECIST 1.1 sum-of-longest-diameters metric. When the source paper reports tumor burden in cm, convert to mm (the canonical unit) on data ingestion and scale the per-model reference accordingly so `(TUM_SLD / ref)^exp` is numerically invariant. Also used as the per-subject initial-condition input for tumour-growth / angiogenesis-inhibition (TGI) ODE models where the source paper sets the SLD state at time zero from the observed baseline SLD rather than estimating a typical-value baseline (e.g., `Ouerdani_2015_pazopanib.R` uses `tumorSize(0) <- TUM_SLD`).
 
 ### TUM_VOL (**canonical for volumetric tumor burden**)
@@ -11201,7 +11202,29 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - `y0` (Ribba 2022 Eq. 1 symbol for the observed baseline used as a Monolix regressor).
   - `ctDNA0` (Ribba 2022 Eq. 2 symbol for the same quantity in the joint ctDNA / SLD model).
 - **Example models:** `Ribba_2022_ctdna.R` (Stein bi-exponential on log10 ctDNA; `growth_ctdna(0) <- log10(CTDNA)`), `Ribba_2022_ctdna_sld_joint.R` (joint ctDNA / SLD model; same initial-condition use alongside `TUM_SLD`).
-- **Notes:** Deliberately NOT pooled with variant-allele-frequency (VAF) or ctDNA-tumor-fraction (cTF) readouts: MMPM is an absolute concentration of mutant molecules whereas VAF and cTF are dimensionless ratios of mutant to wild-type (or aneuploidy-derived) signal, so the two are not interconvertible without the wild-type denominator. A future VAF / cTF canonical should be registered separately (e.g. `CTDNA_VAF`) rather than aliased onto `CTDNA`. The assay platform matters for cross-study pooling -- Ribba 2022 used the Roche AVENIO panel for the MMPM cohorts (Weber 2021 and OAK) and the FMI panel for the cTF cohort (IMspire170) -- so record the panel in the per-model `covariateData[[CTDNA]]$notes`.
+- **Notes:** Deliberately NOT pooled with variant-allele-frequency (VAF) or ctDNA-tumor-fraction (cTF) readouts: MMPM is an absolute concentration of mutant molecules whereas VAF and cTF are dimensionless ratios of mutant to wild-type (or aneuploidy-derived) signal, so the two are not interconvertible without the wild-type denominator. VAF readouts use the separate `CTDNA_VAF` canonical; a ctDNA-tumor-fraction (cTF) canonical should likewise be registered separately rather than aliased onto `CTDNA`. The assay platform matters for cross-study pooling -- Ribba 2022 used the Roche AVENIO panel for the MMPM cohorts (Weber 2021 and OAK) and the FMI panel for the cTF cohort (IMspire170) -- so record the panel in the per-model `covariateData[[CTDNA]]$notes`.
+
+### CTDNA_VAF (**canonical for baseline plasma ctDNA variant allele frequency**)
+- **Description:** Baseline (start-of-treatment) variant allele frequency of a tumor-derived variant in plasma cell-free DNA, measured by next-generation sequencing: the percentage of sequencing reads at the variant locus that carry the mutant allele. The variant (or pooled set of variants) the VAF refers to is model-specific -- for example the primary sensitising EGFR variant of an EGFR-mutant NSCLC -- and must be stated in the per-model `covariateData[[CTDNA_VAF]]$notes`. A subject with no detectable variant has `CTDNA_VAF = 0`.
+- **Units:** % (percentage of reads, 0-100)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous. Models that dichotomise it at a cohort cut-off apply the cut inside `model` (Yin 2024: VAF < 1.74%, the cohort median, versus >= 1.74%) so the threshold is visible at the call site rather than baked into the column.
+- **Source aliases:**
+  - `baseVAF` -- Yin 2024 NONMEM data column (Appendix S2), baseline VAF of the primary EGFR variant (exon 19 deletion, p.L858R or p.K852R); the paper coded a missing sample as a negative value, which maps to `CTDNA_VAF_MISSING = 1`.
+- **Example models:** `Yin_2024_erlotinib_tumor_ctdna.R` (categorical effect on the tumor growth rate `kge`: multiplied by 0.334 when VAF < 1.74% and by 0.281 when the baseline sample is missing, relative to VAF >= 1.74%; Yin 2024 Table 3).
+- **Notes:** A dimensionless ratio, deliberately not pooled with the absolute ctDNA concentration `CTDNA` (mutant molecules per mL) -- the two are not interconvertible without the wild-type denominator. Record the percent scale explicitly; some sources report VAF as a fraction (0-1), which must be multiplied by 100 on ingestion. Pair with `CTDNA_VAF_MISSING` when the source keeps an unavailable baseline sample as its own category.
+
+### CTDNA_VAF_MISSING (**canonical for baseline-ctDNA-VAF-unavailable indicator**)
+- **Description:** Binary indicator for a subject whose baseline plasma ctDNA VAF was not measured (no baseline cfDNA sample). 1 = unavailable; 0 = available, in which case the value is carried in `CTDNA_VAF`. Companion to `CTDNA_VAF`, for sources that retain "unavailable" as a distinct modelled category with its own estimated coefficient.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (baseline VAF available). When `CTDNA_VAF_MISSING == 1`, set `CTDNA_VAF` to any finite non-negative placeholder (e.g. 0); the model gates the VAF term off for these subjects.
+- **Source aliases:**
+  - `baseVAF < 0` -- Yin 2024 NONMEM missing-value code (Appendix S2, 'no sample group').
+- **Example models:** `Yin_2024_erlotinib_tumor_ctdna.R` (kg multiplied by 0.281 for the 6 of 18 patients without a baseline sample; Yin 2024 Table 3).
+- **Notes:** Follows the missing-data-indicator pattern of `ADA_MISSING` and `TUM_EGFR_MUT_MISSING`. As with every missingness coefficient, the estimate describes who lacked a baseline sample rather than any tumor biology; Yin 2024 found the missing group not significantly different from the VAF < 1.74% group.
 
 ### CTDNA_VAF (**canonical for variant allele frequency of somatic variants in circulating tumor DNA**)
 - **Description:** Variant (minor) allele frequency, in per cent, of the somatic variant(s) detected in a liquid-biopsy (plasma ctDNA) sequencing panel: the fraction of sequenced alleles at the locus carrying the variant. Baseline (time-fixed) unless a model states otherwise. Which variant(s) the value summarises -- a single driver mutation, or all detected somatic variants -- differs between papers and must be recorded in each model's `covariateData[[CTDNA_VAF]]$description` / `notes`.
