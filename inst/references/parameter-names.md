@@ -4138,7 +4138,7 @@ Prescription, geometry and transport parameters of an extracorporeal blood circu
 - **Type:** paper-named-param
 - **Role:** Blood flow rate drawn from the patient (or the ex vivo reservoir) through the circuit. Splits on the systemic haematocrit into the red-cell and plasma delivery fluxes.
 - **Source aliases:** `Q_BFR`, `BFR`, `blood flow rate`
-- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example), `Gebreyesus_2024_cefazolin.R` (cardiopulmonary-bypass circuit; fixed to an adult cardiac output of 336 L/h, scaled allometrically to body weight and by `fcircuit`)
 - **Notes:** Papers print this in mL/min while every other circuit flow is printed in mL/h; convert both to the model's `units$time` and say so in the parameter comment.
 
 ### qdia (**canonical dialysate flow rate**)
@@ -4247,6 +4247,13 @@ Prescription, geometry and transport parameters of an extracorporeal blood circu
 - **Source aliases:** `K_m` (McKnite 2026 Results 3.3 and MoBi reaction `MidazolamDegradation`)
 - **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
 - **Notes:** Papers report this in molar units (pmol/mL, umol/L) even when the model is built in mass units; convert with the molecular weight and record the arithmetic in the parameter comment. Pairs with [[vmaxcrrt]].
+
+### fcircuit (**canonical scaling factor on an extracorporeal circuit's volume and flow**)
+- **Type:** paper-named-param
+- **Role:** Unitless factor that multiplies both the volume and the exchange flow of a lumped extracorporeal-circuit compartment, scaling a nominal circuit (a priming volume and a blood flow) to the fraction that exchanges with the modelled plasma: `vcircuit <- CIRCUIT_PRIME_VOL * fcircuit`, `qcircuit <- qbfr * (WT / 70)^0.75 * fcircuit`.
+- **Source aliases:** `THETA(8)`, `Scaling factor for the CPB compartment` (Gebreyesus 2024 Table 3 and Supplementary Material S3)
+- **Example models:** `Gebreyesus_2024_cefazolin.R` (founding example; estimated at 0.679, which the authors read as the plasma proportion of whole blood)
+- **Notes:** Ratified by the maintainers 2026-11-06 (PMC11881764). Carried bare, like `fdepot`, because it is estimated without between-subject variability on a bounded scale. Distinct from `hct` (a measured haematocrit; a value of 1 - `hct` would be a derived plasma fraction, not an estimate), from `krbc` (a red-cell partition ratio) from the `sf<n>` Kpu scaling factors, whose entry forbids reuse for a generic scaling factor, and from the `f<matrix>` concentration ratios (`circuit` is not a sampled matrix; nothing is measured in it). One factor scales both volume and flow, so the circuit's exchange rate constant out of the circuit (`qcircuit / vcircuit`) does not depend on it; a paper that scales the two separately needs two parameters.
 
 ## Neural-ODE (NODE) network parameters
 
