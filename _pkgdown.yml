@@ -7126,6 +7126,8 @@ navbar:
         href: articles/Sharma_2018_SHetA2.html
       - text: "SKL10406 (Park 2014)"
         href: articles/Park_2014_SKL10406.html
+      - text: "SNB101 (Park 2025)"
+        href: articles/Park_2025_SNB101.html
       - text: "SPI 62 (Wu 2021)"
         href: articles/Wu_2021_SPI_62.html
       - text: "SPI 62 (Wu 2023)"
@@ -11029,7 +11031,7 @@ articles:
   - articles/Park_2023_bevacizumab
   - articles/Park_2023_everolimus
   - articles/Park_2023_mycophenolic_acid
-  - articles/Park_2023_pregabalin
+  - articles/Park_2025_SNB101
   - articles/Park_2025_cd19_cart_sle_qsp
   - articles/Park_2025_donepezil
   - articles/Park_2025_efineptakin_alfa

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Luu 2001 octamethylcyclotetrasiloxane (D4) siloxane toxicokinetic PBPK ([doi:10.1289/ehp.109-1240468](https://doi.org/10.1289/ehp.109-1240468)) -- two models (female Sprague-Dawley rat IV calibration and human inhalation/implant scale-up).
+- Add Park 2025 SNB-101 nanoparticle irinotecan and SN-38 ([doi:10.3389/fphar.2025.1556618](https://doi.org/10.3389/fphar.2025.1556618)) -- adults with advanced solid tumours (phase I dose escalation).
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
