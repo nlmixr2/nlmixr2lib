@@ -10,7 +10,7 @@
 
 - Add Pouzin 2023 tusamitamab ravtansine CYP3A4/1A2/2B6 downregulation IVIVE-PK ([doi:10.1002/cpt.3102](https://doi.org/10.1002/cpt.3102)) -- adults with advanced CEACAM5-expressing solid tumors (typical-value simulation from in vitro constants).
 
-- Add Briggs 2023 dupilumab EASI and IGA exposure-response ([doi:10.1007/s11095-023-03616-8](https://doi.org/10.1007/s11095-023-03616-8)) -- children (6-11 years), adolescents and adults with moderate-to-severe atopic dermatitis.
+- Add Jin 2024 Parkinson's disease SReFT progression model with sex and LRRK2 effects ([doi:10.1002/psp4.13112](https://doi.org/10.1002/psp4.13112)) -- PPMI patients with Parkinson's disease.
 
 - Add Iwaki 2021 guselkumab PPPASI PK/PD ([doi:10.1002/jcph.1953](https://doi.org/10.1002/jcph.1953)) -- Japanese adults with palmoplantar pustulosis.
 

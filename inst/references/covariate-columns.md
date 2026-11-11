@@ -17654,6 +17654,28 @@ Per-model `covariateData[[CYP2C19]]$notes` must document which orientation is in
 - **Example models:** `Mohanan_2017_fludarabine.R` (log-scale multiplicative effect on the BSA-normalised clearance of the fludarabine nucleoside F-ara-A, `exp(e_snp_nt5e_rs2295890_cl * SNP_NT5E_RS2295890)` with `e_snp_nt5e_rs2295890_cl = log(5.03 / 7.12) = -0.347`, i.e. variant carriers clear F-ara-A 29% more slowly than GG wild-type homozygotes, P = 0.038; Mohanan 2017 Abstract and Table 2).
 - **Notes:** **Complete linkage disequilibrium caveat.** Mohanan 2017 reports that rs2295890 was in complete linkage disequilibrium with four other *NT5E* 5'-region SNPs in its cohort -- rs9450278, rs9450279, rs4599602 and rs4458647 -- so in that dataset the column may equivalently be derived from any of the five markers, and the effect cannot be attributed to rs2295890 specifically. A paper that genotypes one of the other four and reports it separately should record the alias here rather than registering a sibling canonical, unless it also breaks the LD block. Variant-carrier rate in the founding cohort was 15 of 48 successfully genotyped patients (31%), with a variant-allele frequency of 0.18 matching the 1000 Genomes expectation. Mohanan 2017 states this is the first report of an *NT5E* polymorphism affecting fludarabine pharmacokinetics and that the functional mechanism was still under investigation, so the coefficient should be treated as an empirical cohort association rather than an established transporter- or enzyme-mediated effect; scope is `specific` for that reason as well as because the affected parameter is paper-defined. Distinct from the nucleoside-transporter SNPs screened but not retained in the same analysis (*SLC28A3*/CNT3 rs7853758, *SLC29A1*/hENT1 rs747199) and from *NT5C2* rs4917996, which is a different 5'-nucleotidase gene (cytosolic NT5C2 rather than ecto-5'-nucleotidase NT5E); those three are carried in that model's `covariatesDataExcluded` because no coefficient was reported for any of them. Promote to general if a second paper ratifies the same carrier-versus-GG semantics.
 
+### SNP_LRRK2_RS34637584 (**canonical for LRRK2 p.G2019S (rs34637584) mutant-allele carrier indicator**)
+- **Description:** Binary genotype indicator for the *LRRK2* p.G2019S missense variant (dbSNP rs34637584), the most common monogenic cause of Parkinson's disease. 1 = at least one mutant allele (heterozygous or homozygous carrier); 0 = no mutant allele. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no mutant allele).
+- **Source aliases:**
+  - `G2019S` -- Jin 2024 (Methods 'SNP selection': "SNPs were converted to binary variables with or without at least one mutant allele"; Table S1 row 'G2019S' 418 major / 62 heterozygous / 1 minor homozygous; Data S1 `$INPUT` column `G2019S`). Same orientation as the canonical, no value transformation.
+- **Example models:** `Jin_2024_parkinson_progression.R` (additive effect on the SReFT disease-time progression factor, `ftdis = 1 + ... + e_snp_lrrk2_rs34637584_ftdis * SNP_LRRK2_RS34637584 + ...` with `e_snp_lrrk2_rs34637584_ftdis = -0.254`: carriers progress through all four biomarkers 25.4% more slowly in disease time).
+- **Notes:** Member of the `SNP_<GENE>_RS<rsid>` family. The source paper names the variant by its protein change (G2019S) rather than its rsID; the rsID is the canonical identifier here so a later paper that cites rs34637584 lands on the same column. Distinct from `SNP_LRRK2_RS76904798`, a different LRRK2-region locus tested in the same model.
+
+### SNP_LRRK2_RS76904798 (**canonical for LRRK2-region rs76904798 mutant-allele carrier indicator**)
+- **Description:** Binary genotype indicator for the *LRRK2*-region single-nucleotide polymorphism rs76904798, a Parkinson's disease risk locus. 1 = at least one mutant allele (heterozygous or homozygous carrier); 0 = no mutant allele. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no mutant allele).
+- **Source aliases:**
+  - `rs76904798` -- Jin 2024 (Methods 'SNP selection'; Table S1 row 'rs76904798' 352 major / 124 heterozygous / 5 minor homozygous; Data S1 `$INPUT` column `rs76904798`). Same orientation as the canonical, no value transformation.
+- **Example models:** `Jin_2024_parkinson_progression.R` (additive effect on the SReFT disease-time progression factor with `e_snp_lrrk2_rs76904798_ftdis = -0.104`: carriers progress 10.4% more slowly; the bootstrap 95% CI crosses zero).
+- **Notes:** Member of the `SNP_<GENE>_RS<rsid>` family. Distinct from `SNP_LRRK2_RS34637584` (p.G2019S).
+
 ## Lifestyle / medical history
 
 ### CAREGIVER_PARENT (**canonical for parent-as-primary-caregiver indicator**)

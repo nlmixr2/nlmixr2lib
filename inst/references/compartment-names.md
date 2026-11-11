@@ -4072,6 +4072,70 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
 - **Notes:** Use this for the FEMALE (or sex-unspecified lumped) gonadal / reproductive-tract compartment. The male gonad organ has its own canonical `testes`, which is a perfusion-limited whole-organ state; do not reuse `testes` for an ovary / uterus compartment or vice versa. The paper's lumped label is kept (rather than `uterus`) because the compartment explicitly includes the ovaries and stands for estradiol target tissue generally; record the membership in the model `description`. Like `testes`, it is not splanchnic: its venous outflow returns to `venous` blood.
 
+### updrs_z (**canonical log-standardized MDS-UPDRS Part I-III total score output**)
+- **Type:** compartment
+- **Role:** Fitted (DV) scale of the MDS-UPDRS Part I-III total in a SReFT disease-progression model: the score x is mapped onto (0, 1) by X = (x + 0.5) / (236 + 1), converted to y = X / (1 - X), log-transformed and z-standardized with the analysis-data mean and SD of log(y). Unitless; carries the additive residual `addSd_updrs_z`.
+- **Source aliases:**
+  - `DV` for `BM = 1` (MDS-UPDRS total) -- Jin 2024 Data S1.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Back-transformed raw-scale companion: `updrs`. Distinct from `d_updrs` (change from baseline in total UPDRS, Lee 2011).
+
+### scopaaut_z (**canonical log-standardized SCOPA-AUT score output**)
+- **Type:** compartment
+- **Role:** Fitted (DV) scale of the SCOPA-AUT autonomic-dysfunction score in a SReFT model: mapped onto (0, 1) with Xmax = 69, logit-transformed as for `updrs_z` and z-standardized. Unitless; carries `addSd_scopaaut_z`.
+- **Source aliases:**
+  - `DV` for `BM = 2` (SCOPA-AUT) -- Jin 2024 Data S1.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Raw-scale companion: `scopaaut`.
+
+### datscan_z (**canonical log-standardized DaTSCAN specific binding ratio output**)
+- **Type:** compartment
+- **Role:** Fitted (DV) scale of the DaTSCAN mean-striatum specific binding ratio in a SReFT model: log of the ratio, z-standardized. Unitless; carries `addSd_datscan_z`.
+- **Source aliases:**
+  - `DV` for `BM = 3` (DaTSCAN) -- Jin 2024 Data S1.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Raw-scale companion: `datscan`.
+
+### asyn_z (**canonical log-standardized CSF alpha-synuclein output**)
+- **Type:** compartment
+- **Role:** Fitted (DV) scale of the cerebrospinal-fluid alpha-synuclein concentration in a SReFT model: log of the pg/mL concentration, z-standardized. Unitless; carries `addSd_asyn_z`.
+- **Source aliases:**
+  - `DV` for `BM = 4` (alpha-synuclein) -- Jin 2024 Data S1.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Raw-scale companion: `asyn`.
+
+### updrs (**canonical MDS-UPDRS Part I-III total score output**)
+- **Type:** compartment
+- **Role:** Movement Disorder Society Unified Parkinson's Disease Rating Scale Parts I-III total, in points (0-236; higher is worse), as an algebraic back-transform of `updrs_z`: y = exp(updrs_z * SD + mean), updrs = y / (1 + y) * 237 - 0.5.
+- **Source aliases:**
+  - 'MDS-UPDRS total' -- Jin 2024.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. An algebraic typical/individual prediction with no residual error of its own; the residual lives on `updrs_z`. Distinct from `d_updrs` (change from baseline).
+
+### scopaaut (**canonical SCOPA-AUT score output**)
+- **Type:** compartment
+- **Role:** Scales for Outcomes in Parkinson's Disease -- Autonomic dysfunction total, in points (0-69; higher is worse), back-transformed from `scopaaut_z` as for `updrs`.
+- **Source aliases:**
+  - 'SCOPA-AUT' -- Jin 2024.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Algebraic; residual on `scopaaut_z`.
+
+### datscan (**canonical DaTSCAN mean-striatum specific binding ratio output**)
+- **Type:** compartment
+- **Role:** Dopamine-transporter SPECT (DaTSCAN) specific binding ratio in the mean striatum (unitless ratio; falls as dopaminergic neurons are lost), back-transformed from `datscan_z` as exp(datscan_z * SD + mean).
+- **Source aliases:**
+  - 'DaTSCAN (mean striatum)' -- Jin 2024.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Algebraic; residual on `datscan_z`.
+
+### asyn (**canonical CSF alpha-synuclein concentration output**)
+- **Type:** compartment
+- **Role:** Cerebrospinal-fluid alpha-synuclein concentration in pg/mL, back-transformed from `asyn_z` as exp(asyn_z * SD + mean).
+- **Source aliases:**
+  - 'alpha-synuclein (pg/mL)' -- Jin 2024.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Algebraic; residual on `asyn_z`. Measured in CSF, so not a plasma `Cc`-type state.
+
 ## Adaptive-resistance bacterial states
 
 ### aron (**canonical adaptive-resistance on state**)
