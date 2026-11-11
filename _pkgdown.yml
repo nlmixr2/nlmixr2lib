@@ -3856,6 +3856,8 @@ navbar:
         href: articles/Chen_2022_isoniazid.html
       - text: "Isoniazid (Horita 2018)"
         href: articles/Horita_2018_isoniazid.html
+      - text: "Isoniazid (Janssen 2025)"
+        href: articles/Janssen_2025_rifapentine_isoniazid.html
       - text: "Isoniazid (Kengo 2024)"
         href: articles/Kengo_2024_clofazimine_ddi.html
       - text: "Isoniazid (Kloprogge 2020)"
@@ -6530,6 +6532,8 @@ navbar:
         href: articles/Svensson_2020_rifampicin.html
       - text: "Rifapentine (Francis 2019)"
         href: articles/Francis_2019_rifapentine.html
+      - text: "Rifapentine (Janssen 2025)"
+        href: articles/Janssen_2025_rifapentine_isoniazid.html
       - text: "Rifapentine (Zvada 2010)"
         href: articles/Zvada_2010_rifapentine.html
       - text: "Rilotumumab (Zhang 2016)"
@@ -9739,6 +9743,7 @@ articles:
   - articles/Jansen_2023_itraconazole
   - articles/Janssen_2017_cabazitaxel_phenotyping
   - articles/Janssen_2023_pregnancy_cytotoxics
+  - articles/Janssen_2025_rifapentine_isoniazid
   - articles/Jansson_2008_eflornithine
   - articles/Jarugula_2025_apixaban
   - articles/Jaworowicz_2006_levalbuterol
