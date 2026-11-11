@@ -5936,6 +5936,24 @@ navbar:
         href: articles/Lee_2023_patritumab.html
       - text: "Patritumab (Lu 2022)"
         href: articles/Lu_2022_patritumab.html
+      - text: "PatritumabDeruxtecan anc decrease (Li 2025)"
+        href: articles/Li_2025_patritumabDeruxtecan_exposure_response.html
+      - text: "PatritumabDeruxtecan discontinuation (Li 2025)"
+        href: articles/Li_2025_patritumabDeruxtecan_exposure_response.html
+      - text: "PatritumabDeruxtecan dose reduction (Li 2025)"
+        href: articles/Li_2025_patritumabDeruxtecan_exposure_response.html
+      - text: "PatritumabDeruxtecan ild (Li 2025)"
+        href: articles/Li_2025_patritumabDeruxtecan_exposure_response.html
+      - text: "PatritumabDeruxtecan nausea vomiting (Li 2025)"
+        href: articles/Li_2025_patritumabDeruxtecan_exposure_response.html
+      - text: "PatritumabDeruxtecan orr (Li 2025)"
+        href: articles/Li_2025_patritumabDeruxtecan_exposure_response.html
+      - text: "PatritumabDeruxtecan plt decrease (Li 2025)"
+        href: articles/Li_2025_patritumabDeruxtecan_exposure_response.html
+      - text: "PatritumabDeruxtecan sae (Li 2025)"
+        href: articles/Li_2025_patritumabDeruxtecan_exposure_response.html
+      - text: "PatritumabDeruxtecan teae grade3 (Li 2025)"
+        href: articles/Li_2025_patritumabDeruxtecan_exposure_response.html
       - text: "Pazopanib (Ouerdani 2015)"
         href: articles/Ouerdani_2015_pazopanib.html
       - text: "Pazopanib (Ozbey 2021)"
@@ -10555,7 +10573,7 @@ articles:
   - articles/Li_2025_lacosamide
   - articles/Li_2025_levamlodipine
   - articles/Li_2025_modakafuspAlfa
-  - articles/Li_2025_mosunetuzumab
+  - articles/Li_2025_patritumabDeruxtecan_exposure_response
   - articles/Li_2025_polymyxinB
   - articles/Li_2025_tetrahydrocannabinol
   - articles/Li_2026_alvespimycin
