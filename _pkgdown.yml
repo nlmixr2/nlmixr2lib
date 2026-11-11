@@ -1938,6 +1938,10 @@ navbar:
         href: articles/Belldina_2003_cysteamine.html
       - text: "Cytarabine cpx351 (Wang 2019)"
         href: articles/Wang_2019_cpx351.html
+      - text: "D4 human (Luu 2001)"
+        href: articles/Luu_2001_d4_siloxane.html
+      - text: "D4 rat (Luu 2001)"
+        href: articles/Luu_2001_d4_siloxane.html
       - text: "DRL17822 (Goulooze 2020)"
         href: articles/Goulooze_2020_DRL17822.html
       - text: "DZIF10c (Kurup 2024)"
@@ -10674,6 +10678,7 @@ articles:
   - articles/Luo_2021_daratumumab
   - articles/Luo_2023_tigecycline
   - articles/Luo_2024_CES1_cirrhosis
+  - articles/Luu_2001_d4_siloxane
   - articles/Luu_2017_nusinersen
   - articles/Luu_2022_antiVegf
   - articles/Lv_2024_delafloxacin
