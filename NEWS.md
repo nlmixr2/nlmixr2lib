@@ -10,7 +10,7 @@
 
 - Add Pouzin 2023 tusamitamab ravtansine CYP3A4/1A2/2B6 downregulation IVIVE-PK ([doi:10.1002/cpt.3102](https://doi.org/10.1002/cpt.3102)) -- adults with advanced CEACAM5-expressing solid tumors (typical-value simulation from in vitro constants).
 
-- Add Onita 2025 cefazolin plasma and cerebrospinal-fluid PK ([doi:10.3390/antibiotics14101008](https://doi.org/10.3390/antibiotics14101008)) -- adults with suspected meningitis (hybrid of a published plasma model and CSF physiology).
+- Add Duong 2025 clobetasol propionate ([doi:10.1002/bcp.70102](https://doi.org/10.1002/bcp.70102)) -- healthy adult males, intravenous (one-compartment reduction of a Simcyp PBPK model).
 
 - Add Iwaki 2021 guselkumab PPPASI PK/PD ([doi:10.1002/jcph.1953](https://doi.org/10.1002/jcph.1953)) -- Japanese adults with palmoplantar pustulosis.
 

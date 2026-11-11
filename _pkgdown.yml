@@ -1808,6 +1808,8 @@ navbar:
         href: articles/Michalon_2025_cliramitug.html
       - text: "Clobazam (Tuo 2025)"
         href: articles/Tuo_2025_clobazam.html
+      - text: "ClobetasolPropionate (Duong 2025)"
+        href: articles/Duong_2025_clobetasolPropionate.html
       - text: "Clofarabine (Nijstad 2021)"
         href: articles/Nijstad_2021_clofarabine.html
       - text: "Clofazimine (Stemkens 2024)"
@@ -9806,6 +9808,7 @@ articles:
   - articles/Duong_2016_WHIG_T2DM
   - articles/Duong_2017_AT9283
   - articles/Duong_2022_gentamicin
+  - articles/Duong_2025_clobetasolPropionate
   - articles/Dvorackova_2023_posaconazole
   - articles/Dvorackova_2026_valganciclovir
   - articles/Easterling_2018_magnesium_sulfate
