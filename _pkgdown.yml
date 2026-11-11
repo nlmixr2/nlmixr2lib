@@ -4992,6 +4992,8 @@ navbar:
         href: articles/Almquist_2015_Mig1.html
       - text: "Miglustat (Hajjar 2018)"
         href: articles/Hajjar_2018_pompe_disease.html
+      - text: "Milrinone (OHanlon 2024)"
+        href: articles/OHanlon_2024_milrinone.html
       - text: "Miltefosine (Dorlo 2008)"
         href: articles/Dorlo_2008_miltefosine.html
       - text: "Miltefosine (Dorlo 2017)"
@@ -10602,6 +10604,7 @@ articles:
   - articles/Novakovic_2017_cladribine
   - articles/Nyangwa_2026_pretomanid
   - articles/OBrien_2017_ramucirumab
+  - articles/OHanlon_2024_milrinone
   - articles/ObrinkHansen_2015_piperacillin
   - articles/Odongo_2015_sulfadoxinePyrimethamine
   - articles/Offman_2023_XTMAB16

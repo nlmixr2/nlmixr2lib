@@ -896,6 +896,7 @@ clearance expression references `t` / `time` without one of these.
 | Sigmoidal in time: `cl <- cl_base * exp(max * t^g / (t50^g + t^g))` | `cl_time_` | `cl_time_max`, `cl_t50`, `cl_time_hill` |
 | Exponential decay to a constant: `cl <- cl_exp_inf + cl_exp_component * exp(-k * t)` | `cl_exp_` | `cl_exp_inf`, `cl_exp_component`, `cl_exp_kdes` |
 | Exponential change by a fraction of the baseline: `cl <- cl * (1 + cl_exp_famp * (1 - exp(-cl_exp_kdes * t)))` | `cl_exp_` | `cl_exp_famp` (signed, linear; negative = decline), `cl_exp_kdes`. Founding example: `Yang_2021_unecritinib.R` |
+| Exponential recovery of a fractional deficit below the asymptote: `cl <- cl * (1 - cl_exp_fdef * exp(-cl_exp_kdes * t))` | `cl_exp_` | `cl_exp_fdef` (linear; `cl` is the ASYMPTOTE, not the t = 0 value), `lcl_exp_kdes`. Founding example: `OHanlon_2024_milrinone.R` |
 | Concentration-driven autoinduction: `cl <- cl_base * exp(max * C^g/(ec50^g + C^g) * t/(t50 + t))` | `cl_time_` + `cl_conc_` | `cl_time_max`, `cl_t50`, `cl_ec50`, `cl_conc_hill` |
 | Linear in time: `cl <- cl_base * (1 + slope * t)` | `cl_time_` | `cl_time_slope` (1/time; a percent per unit time is divided by 100). Founding example: `Cloesmeijer_2020_clonidine.R` |
 | Piecewise-constant step: `cl <- cl * (t < tclchange) + cl_late * (t >= tclchange)` | `tclchange` | `ltclchange`, `lcl_late` |
@@ -959,6 +960,20 @@ so the curve runs from `cl_pna0` at PNA 0 to the asymptote
 | Absolute amount gained between birth and full maturation | `cl_matspan` | The *span*, not the plateau: the plateau is `cl_pna0 + cl_matspan`. Named so it cannot be mistaken for a total clearance. |
 | Postnatal age at half of the maturation span | `pna50` | Carries the PNA anchor in the name, so it is distinct from the bare `t50` that `cl_time_` forbids and from a PD `ec50`. |
 | Sigmoidicity of the maturation | `lhill` | Already canonical -- see "Sigmoidal PD shape parameters". No separate maturation-specific spelling. |
+
+A different postnatal-age form describes the *decay of an excess present at
+birth* rather than a rise toward maturity (O'Hanlon 2024 milrinone, where
+neonatal volume is twice its size-standardised mature value at birth):
+
+```
+vc <- vc * (1 + vc_pna_famp * exp(-vc_pna_kdes * PNA))
+```
+
+`vc_pna_famp` is the linear fractional excess at PNA 0 and `lvc_pna_kdes` the
+log-scale decay rate per unit of postnatal age (a half-time `TVOL` gives
+`log(log(2) / TVOL)`). Swap the stem for another parameter
+(`<param>_pna_famp`, `l<param>_pna_kdes`). Founding example:
+`OHanlon_2024_milrinone.R`.
 
 Substitute the maturing parameter's own stem for `cl_` when the model matures
 something other than clearance (`gfr_pna0` / `gfr_matspan` for a glomerular
