@@ -8466,6 +8466,10 @@ navbar:
         href: articles/Nguyen_2025_valbenazine_huntington_chorea.html
       - text: "Valemetostat (Inoue 2025)"
         href: articles/Inoue_2025_valemetostat_ptcl.html
+      - text: "Valemetostat QTcF (Tachibana 2025)"
+        href: articles/Tachibana_2025_valemetostat_QTc.html
+      - text: "Valemetostat QTcP (Tachibana 2025)"
+        href: articles/Tachibana_2025_valemetostat_QTc.html
       - text: "Valemetostat anc decrease (Fukae 2024)"
         href: articles/Fukae_2024_valemetostat_exposure_response.html
       - text: "Valemetostat anemia (Fukae 2024)"
@@ -11625,6 +11629,7 @@ articles:
   - articles/Syvanen_2011_verapamil_rat
   - articles/Syvanen_2012_quinidine_rat
   - articles/Szederkenyi_2024_transdermal_skinonachip
+  - articles/Tachibana_2025_valemetostat_QTc
   - articles/Tadayasu_2014_linagliptin
   - articles/Taddio_2018_hepatobiliary_transport_pet_pbpk
   - articles/Takada_2022_roxadustat
