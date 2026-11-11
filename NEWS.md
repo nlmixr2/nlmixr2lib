@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Schneider 2025 bevacizumab + chemotherapy NSCLC tumor growth inhibition model ([doi:10.1002/psp4.70079](https://doi.org/10.1002/psp4.70079)) -- adults with non-small cell lung cancer in 11 pooled bevacizumab trials. Registers drug-name suffixes for bevacizumab, cisplatin, pemetrexed, drozitumab, paclitaxel, carboplatin, gemcitabine and erlotinib.
+- Add Kumar 2025 upifitamab rilsodotin conjugated and released AF-HPA payload with itraconazole interaction ([doi:10.1002/psp4.70088](https://doi.org/10.1002/psp4.70088)) -- adults with solid tumours.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 

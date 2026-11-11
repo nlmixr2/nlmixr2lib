@@ -8396,6 +8396,8 @@ navbar:
         href: articles/Mohamed_2019_upadacitinib.html
       - text: "Upadacitinib tnfir (Mohamed 2019)"
         href: articles/Mohamed_2019_upadacitinib.html
+      - text: "UpifitamabRilsodotin (Kumar 2025)"
+        href: articles/Kumar_2025_upifitamabRilsodotin.html
       - text: "Uprifosbuvir pbpk (vandenBerg 2021)"
         href: articles/vandenBerg_2021_uprifosbuvir.html
       - text: "Ustekinumab (Aguiar 2021)"
@@ -10507,6 +10509,7 @@ articles:
   - articles/Kudryashova_2024_nsclc_survival_mbma
   - articles/Kuester_2008_matuzumab
   - articles/Kumar_2024_mAb_popPBPK
+  - articles/Kumar_2025_upifitamabRilsodotin
   - articles/Kumpulainen_2010_flurbiprofen
   - articles/Kumta_2025_piperacillin_tazobactam
   - articles/Kunarajah_2017_doxorubicin

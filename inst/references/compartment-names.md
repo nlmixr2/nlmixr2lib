@@ -6477,6 +6477,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** ADC popPK extractions with Me-DM4 metabolite.
 
+### afhpa (**canonical auristatin F-hydroxypropylamide (AF-HPA) payload suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Unconjugated (released) auristatin F-hydroxypropylamide (AF-HPA), the auristatin payload of the Dolaflexin antibody-drug conjugate platform (upifitamab rilsodotin), released from the conjugate by hydrolysis of its ester-based linker.
+- **Source aliases:**
+  - `unconjugated AF-HPA` -- Kumar 2025 throughout.
+- **Example models:** `Kumar_2025_upifitamabRilsodotin.R` (founding example; Simcyp ADC PBPK reduced to a 2-compartment conjugated-payload model releasing `fm_afhpa` 0.525 of its clearance into a 1-compartment free-payload model).
+- **Notes:** Named for the released payload, not the conjugate, the same orientation as `rez` and `dxd`. In Kumar 2025 the unsuffixed states hold *conjugated AF-HPA*, i.e. the ADC dose expressed as payload equivalents (molecular weight 803 for both species), rather than the antibody, so payload release is a 1:1 mass transfer with no drug-antibody-ratio factor in the model. Distinct from AF (auristatin F), MMAF-HPA and MMAF, the downstream AF-HPA metabolites, which would each take their own suffix.
+
 ### rez (**canonical rezetecan payload suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Rezetecan (topoisomerase-I-inhibitor, exatecan-derivative) ADC payload species suffix.
