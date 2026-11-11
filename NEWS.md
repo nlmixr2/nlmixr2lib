@@ -10,7 +10,7 @@
 
 - Add Pouzin 2023 tusamitamab ravtansine CYP3A4/1A2/2B6 downregulation IVIVE-PK ([doi:10.1002/cpt.3102](https://doi.org/10.1002/cpt.3102)) -- adults with advanced CEACAM5-expressing solid tumors (typical-value simulation from in vitro constants).
 
-- Add Ooi 2023 bevurogant (BI 730357) PK and bounded-integer PASI PK/PD ([doi:10.1002/psp4.12948](https://doi.org/10.1002/psp4.12948)) -- healthy adults and adults with moderate-to-severe plaque psoriasis.
+- Add Wang 2023 polymyxin B acute kidney injury exposure-response ([doi:10.1002/psp4.13040](https://doi.org/10.1002/psp4.13040)) -- critically ill Chinese adults with multidrug-resistant Gram-negative infections.
 
 - Add Iwaki 2021 guselkumab PPPASI PK/PD ([doi:10.1002/jcph.1953](https://doi.org/10.1002/jcph.1953)) -- Japanese adults with palmoplantar pustulosis.
 

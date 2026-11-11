@@ -3492,6 +3492,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Sun_2025_maribavir_renal_disorder.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.08 per 10 ug*h/mL; reference-patient probability 0.032 at zero exposure)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Registered on first sighting as a well-formed member of the explicitly extensible adverse-event-term family, not as a new modelling concept. The endpoint is an INVESTIGATOR-REPORTED adverse-event term with no severity threshold, so it sits at a higher event rate than a laboratory-defined or CTCAE-graded endpoint for the same toxicity and is subsumed by (not a competing risk against) a composite such as `prob_teae_grade3` or `prob_sae`. Distinct from the RENAL-FUNCTION COVARIATES (`CRCL`, `EGFR`, `RENALFUNC_REL`), which are inputs describing a patient's kidney function; this is an OUTPUT, the probability of a reported renal adverse event. A model needing a continuous renal trajectory should model creatinine or eGFR as a state, not use this canonical.
 
+### prob_aki (**canonical criteria-defined acute-kidney-injury probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient develops acute kidney injury meeting a laboratory / urine-output criterion set (KDIGO, any stage) during drug therapy, in a static landmark exposure-safety logistic model.
+- **Source aliases:** `AKI`, `drug-induced AKI`, `nephrotoxicity` (when defined by KDIGO / RIFLE / AKIN criteria).
+- **Example models:** `Wang_2023_polymyxinB_aki.R` (founding example; KDIGO, any time during the polymyxin B course, `logit = -4.623 + 0.116 * WBC + 0.040 * AUC_POLYMYXINB`, observed 30/55), `Wang_2023_polymyxinB_aki_cmid.R` (same endpoint and cohort, univariate on the mid-dosing-interval concentration, `logit = -2.742 + 0.845 * CMID_INTERVAL`).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Record the criterion set (KDIGO, RIFLE, AKIN), any stage threshold, and the ascertainment window per model. Distinct from `prob_renal_disorder`, an investigator-reported adverse-event term without a laboratory definition, and from the `KDIGO_AKI_1/_2/_3` covariate indicators, which are INPUTS describing a stage already present.
+
 ### prob_gvhd (**canonical acute-graft-versus-host-disease adverse-event probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that an allogeneic haematopoietic-cell-transplant recipient reports acute graft-versus-host disease as a treatment-emergent adverse event, in a static landmark exposure-safety logistic model.

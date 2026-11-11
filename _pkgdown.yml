@@ -6098,6 +6098,10 @@ navbar:
         href: articles/vanderMeijden_2023_polymyxinB.html
       - text: "PolymyxinB KpneumoniaeATCC43816 (vanderMeijden 2023)"
         href: articles/vanderMeijden_2023_polymyxinB.html
+      - text: "PolymyxinB aki (Wang 2023)"
+        href: articles/Wang_2023_polymyxinB.html
+      - text: "PolymyxinB aki cmid (Wang 2023)"
+        href: articles/Wang_2023_polymyxinB.html
       - text: "PolymyxinB meropenem fosfomycin BRKP28 (Mahadevan 2026)"
         href: articles/Mahadevan_2026_polymyxinB_combination_CRKP.html
       - text: "PolymyxinB meropenem fosfomycin BRKP61 (Mahadevan 2026)"
@@ -11351,6 +11355,7 @@ articles:
   - articles/Wang_2022b_mycophenolic_acid
   - articles/Wang_2023_dorzagliatin
   - articles/Wang_2023_methotrexate
+  - articles/Wang_2023_polymyxinB
   - articles/Wang_2023_teicoplanin
   - articles/Wang_2023_zoledronicAcid
   - articles/Wang_2024_amphenmulin
