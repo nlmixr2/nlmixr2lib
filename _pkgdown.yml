@@ -7776,12 +7776,20 @@ navbar:
         href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
       - text: "Trastuzumab mouse (Tosca 2023)"
         href: articles/Tosca_2023_men1611_trastuzumab.html
+      - text: "Trastuzumab mpbpk (Pressly 2023)"
+        href: articles/Pressly_2023_trastuzumab_tmdd_tutorial.html
+      - text: "Trastuzumab mpbpk fcrn (Pressly 2023)"
+        href: articles/Pressly_2023_trastuzumab_tmdd_tutorial.html
+      - text: "Trastuzumab mpbpk shedding (Pressly 2023)"
+        href: articles/Pressly_2023_trastuzumab_tmdd_tutorial.html
       - text: "Trastuzumab pf05280014 (Chen 2019)"
         href: articles/Chen_2019_trastuzumab.html
       - text: "Trastuzumab reference (Chen 2019)"
         href: articles/Chen_2019_trastuzumab.html
       - text: "Trastuzumab skbr3 (FehlingKaschek 2019)"
         href: articles/FehlingKaschek_2019_trastuzumab_skbr3.html
+      - text: "Trastuzumab tmdd (Pressly 2023)"
+        href: articles/Pressly_2023_trastuzumab_tmdd_tutorial.html
       - text: "Trastuzumab vc mmae mouse qsp (Chang 2023)"
         href: articles/Chang_2023_trastuzumab_vc_mmae.html
       - text: "TrastuzumabDeruxtecan (Yin 2021)"
@@ -10636,6 +10644,7 @@ articles:
   - articles/Preijers_2021_factor_viii
   - articles/Press_2010_ciclosporin
   - articles/Pressiat_2022_amikacin
+  - articles/Pressly_2023_trastuzumab_tmdd_tutorial
   - articles/Proctor_2026_durvalumab_cachexia
   - articles/Prohn_2021_letermovir
   - articles/Protzenko_2025_busulfan
