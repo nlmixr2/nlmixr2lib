@@ -1982,6 +1982,8 @@ navbar:
         href: articles/Nemitz_2026_dapagliflozin_pbpk.html
       - text: "Dapivirine pbpk (Kay 2018)"
         href: articles/Kay_2018_dapivirine.html
+      - text: "Daprodustat (Mahar 2025)"
+        href: articles/Mahar_2025_daprodustat.html
       - text: "Dapsone (Gatti 1996)"
         href: articles/Gatti_1996_dapsone.html
       - text: "Dapsone (Hall 2017)"
@@ -10515,6 +10517,7 @@ articles:
   - articles/Maciel_2024_quinine
   - articles/Macpherson_2015_rosuvastatin
   - articles/Mahadevan_2026_polymyxinB_combination_CRKP
+  - articles/Mahar_2025_daprodustat
   - articles/Mahomed_2025_CAP256V2LS
   - articles/Maizaud_2025_missed_mycophenolate_doses
   - articles/Majekodunmi_2017_HIV_HCV_CD4_recovery

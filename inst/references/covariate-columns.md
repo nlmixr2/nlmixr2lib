@@ -1591,7 +1591,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
   - `HEMODIAL` -- prior canonical name (pre-2026-06-19 RRT_<modality>_<kind> standardization).
   - `DIAL` -- used in `Goti_2018_vancomycin.R` (binary indicator on CL and Vc in a 2-compartment vancomycin popPK model). Goti 2018 Methods notes the indicator was created for the routine-TDM cohort (n = 336 hemodialysis subjects of 1812 total) and that all hemodialysis procedures were intermittent and used high-flux membranes.
   - `DIT1` -- used in `Knebel_2008_epoetinDelta.R` (the first of two dialysis-modality switches in a three-level covariate; `DIT1 = 1` selects the hemodialysis stratum, with predialysis rather than "no hemodialysis" as the reference -- see the Notes below).
-- **Example models:** `Goti_2018_vancomycin.R` (multiplicative factors on CL and Vc: `0.7^RRT_HEMODIAL_STATUS` on CL and `0.5^RRT_HEMODIAL_STATUS` on Vc, so dialysis subjects have 30% lower CL and 50% lower central volume than non-dialysis subjects), `VanWart_2025_telavancin.R` (used purely as a gate, not as an effect in its own right: it restricts the additive `T_POST_HEMODIAL > 48 h` central-volume increase to the 8 chronic-kidney-disease-stage-5 subjects, while the dialysis CLEARANCE arm of the same model is gated by the time-varying `RRT_HEMODIAL_ACTIVE` instead -- the clearest available illustration of the STATUS-versus-ACTIVE split), `Knebel_2008_epoetinDelta.R` (exponentiated-switch factor `4.53^RRT_HEMODIAL_STATUS` on central volume only, paired with `PERIT_DIAL` against a predialysis reference in a pediatric CKD erythropoietin popPK model), `Li_2019_avibactam.R` (selects an ABSOLUTE on-dialysis clearance of 20.8 L/h in place of the reference-clearance construction, Li 2019 Table 2 theta6; mutually exclusive in effect with that model's `RENALIMP_ESRD` term, which supplies the much lower off-dialysis clearance).
+- **Example models:** `Goti_2018_vancomycin.R` (multiplicative factors on CL and Vc: `0.7^RRT_HEMODIAL_STATUS` on CL and `0.5^RRT_HEMODIAL_STATUS` on Vc, so dialysis subjects have 30% lower CL and 50% lower central volume than non-dialysis subjects), `VanWart_2025_telavancin.R` (used purely as a gate, not as an effect in its own right: it restricts the additive `T_POST_HEMODIAL > 48 h` central-volume increase to the 8 chronic-kidney-disease-stage-5 subjects, while the dialysis CLEARANCE arm of the same model is gated by the time-varying `RRT_HEMODIAL_ACTIVE` instead -- the clearest available illustration of the STATUS-versus-ACTIVE split), `Knebel_2008_epoetinDelta.R` (exponentiated-switch factor `4.53^RRT_HEMODIAL_STATUS` on central volume only, paired with `PERIT_DIAL` against a predialysis reference in a pediatric CKD erythropoietin popPK model), `Li_2019_avibactam.R` (selects an ABSOLUTE on-dialysis clearance of 20.8 L/h in place of the reference-clearance construction, Li 2019 Table 2 theta6; mutually exclusive in effect with that model's `RENALIMP_ESRD` term, which supplies the much lower off-dialysis clearance), `Mahar_2025_daprodustat.R` (three-level ND / HD / PD dialysis population with non-dialysis as the reference, paired with `PERIT_DIAL`; selects the HD hemoglobin baselines, +13.8% red-cell lifespan and -57.3% disease-progression rate).
 - **Notes:** Specific to intermittent hemodialysis (IHD). Distinct from peritoneal dialysis (PD) and from continuous renal replacement therapy (CRRT), each of which has different drug-extraction kinetics and would warrant its own canonical (`RRT_PERIT_DIAL_STATUS`, `RRT_CRRT_STATUS`) if a future paper retains them as covariates. **Three-level dialysis-modality cohorts:** when a paper's cohort spans predialysis, hemodialysis, and peritoneal dialysis and takes predialysis as the reference, encode the two non-reference strata as `RRT_HEMODIAL_STATUS` and `PERIT_DIAL` together, with both indicators 0 for the predialysis stratum (`Knebel_2008_epoetinDelta.R`). The 1-levels still mean exactly what the two canonical definitions say; what shifts is the reference the estimated effects are read against, which is a per-paper fact and must be documented in each model's `covariateData[[...]]$reference_category` and `$notes` rather than inferred from the register. This differs from the two-level chronic-dialysis case (`Takama_2007_darbepoetin.R`) where the two indicators are perfectly anti-correlated and only one is needed. Goti 2018 treats `RRT_HEMODIAL_STATUS` as time-fixed per subject because session-level dialysis timing was not reliably documented in the source EHR data; a future paper that resolves drug clearance during versus between dialysis sessions would use a time-varying form (`RRT_HEMODIAL_ACTIVE`) or a separate per-session covariate. When pairing `RRT_HEMODIAL_STATUS` with `CRCL`, note that the Cockcroft-Gault CRCL of an anuric hemodialysis patient is by convention very low or set per institution to a small floor value (Goti 2018 truncated CRCL > 150 mL/min to 150 mL/min and corrected SCr < 1 mg/dL in elderly subjects); residual renal function in hemodialysis subjects is highly variable and the dialysis indicator captures the bulk PK shift on top of the CRCL covariate.
 
 ### RRT_CRRT_STATUS (**canonical for continuous / extended renal-replacement-therapy treatment-status indicator**)
@@ -2027,6 +2027,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
   - `LIVSTBL` (baseline liver stiffness) -- the NONMEM `$INPUT` column in Ooi 2026 Supplementary Datafiles S5 and S6; same quantity in kPa, no value transformation.
 - **Example models:** `Ooi_2026_elafibranor_alptb.R` (power exponent 0.333 on the typical baseline total bilirubin of the joint ALP / total-bilirubin indirect-response model; Ooi 2026 Table 2).
 - **Notes:** A bare clinical-measurement abbreviation in the same group as `ALB`, `ALT`, `ALP`, `TBILI` and `CRCL`, and registered at general scope because liver stiffness is a standard hepatology measurement rather than a paper-defined construct. Distinct from the categorical fibrosis-stage and hepatic-impairment indicators (`HEPIMP`, `HEPIMP_MILD`, ...), which classify rather than measure. When a source imputes a missing LSM by setting the covariate factor to 1 (as Ooi 2026 does), supply the reference value instead so the power term evaluates to 1.
+
+### CHRONIC_KIDNEY_DISEASE_STAGE (**canonical for chronic-kidney-disease stage as an ordinal number**)
+- **Description:** Subject's chronic kidney disease stage at baseline, coded as an ordinal number and used as a continuous regressor. Stages 1-5 follow the KDIGO eGFR bands (CKD-EPI): >= 90, 60-89, 30-59, 15-29 and < 15 mL/min/1.73 m^2. Time-fixed.
+- **Units:** (stage)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with a normalized power form `(CHRONIC_KIDNEY_DISEASE_STAGE / ref)^exponent`. Reference observed: 5 (Mahar 2025 control stream `medStage`).
+- **Source aliases:**
+  - `STAGE` -- Mahar 2025 control stream (`BLSTAG = (STAGE/medStage)**THETA(11)`). Mahar 2025 Table S2 adds a stage 6 for dialysis-dependent subjects (eGFR < 15 mL/min/1.73 m^2 and on HD or PD) to separate them from stage-5 non-dialysis subjects.
+- **Example models:** `Mahar_2025_daprodustat.R` (founding example; doi:10.1002/cpt.3544. Power exponent -0.107 on the hemoglobin baselines).
+- **Notes:** Any extension of the 1-5 scale (such as Mahar 2025's stage 6) is paper-specific and must be recorded in each model's `covariateData[[CHRONIC_KIDNEY_DISEASE_STAGE]]$notes`. Distinct from the binary `RENALIMP_*` severity indicators and from the measured `CRCL` / eGFR covariates. Name ratified 2026-11-06 in the spelled-out form (the abbreviation `CKD_STAGE` was declined under the standing preference for spelled-out new canonicals).
 
 ### RENALIMP (**canonical for renal-impairment indicator (any degree)**)
 - **Description:** 1 = renal impairment of any degree (mild, moderate, severe, or kidney failure / ESRD), 0 = normal renal function. Pooled parent of the `RENALIMP_*` severity family, for source papers that carry renal impairment as a single binary covariate rather than resolving the individual strata. The threshold separating "normal" from "impaired" is paper-specific and must be documented in per-model `covariateData[[RENALIMP]]$notes`; a common scheme (used by Zhang 2025 and mirrored in FDA / EMA renal-impairment labeling guidance) is eGFR < 90 mL/min/1.73 m^2 as impaired.
@@ -2469,7 +2480,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Source aliases:**
   - `DIA` -- used in `Takama_2007_darbepoetin.R` (dialysis-modality indicator: `DIA = 0` for hemodialysis, `DIA = 1` for peritoneal dialysis; maps directly onto `PERIT_DIAL` with no value transformation). Takama 2007 Table 4 and Methods describe the covariate equation `V1 = theta_V1 * [1 + theta_V1_WT * (WT - 54) + theta_V1_DIA * DIA]` where `theta_V1_DIA = 0.170` increments V1 by +17% in PD subjects relative to HD subjects.
   - `DIT2` -- used in `Knebel_2008_epoetinDelta.R` (the second of two dialysis-modality switches in a three-level covariate; `DIT2 = 1` selects the peritoneal-dialysis stratum, with predialysis rather than hemodialysis as the reference -- see the Notes below).
-- **Example models:** `Takama_2007_darbepoetin.R` (+17% multiplicative-deviation effect on central volume V1; chronic-dialysis cohort comparing 63 HD vs 68 PD Japanese adult patients), `Knebel_2008_epoetinDelta.R` (exponentiated-switch factor `2.48^PERIT_DIAL` on central volume only, paired with `RRT_HEMODIAL_STATUS` against a predialysis reference in a pediatric CKD erythropoietin popPK model).
+- **Example models:** `Takama_2007_darbepoetin.R` (+17% multiplicative-deviation effect on central volume V1; chronic-dialysis cohort comparing 63 HD vs 68 PD Japanese adult patients), `Knebel_2008_epoetinDelta.R` (exponentiated-switch factor `2.48^PERIT_DIAL` on central volume only, paired with `RRT_HEMODIAL_STATUS` against a predialysis reference in a pediatric CKD erythropoietin popPK model), `Mahar_2025_daprodustat.R` (paired with `RRT_HEMODIAL_STATUS` against a non-dialysis reference; selects the PD hemoglobin baselines and shares the -57.3% disease-progression effect with HD).
 - **Notes:** Distinct from `RRT_HEMODIAL_STATUS` (intermittent-hemodialysis IHD indicator; `RRT_HEMODIAL_STATUS = 1` selects HD subjects) and from `RRT_CRRT_STATUS` (continuous / extended RRT indicator). When a cohort spans three modalities (predialysis / HD / PD) and the paper takes predialysis as the reference, `PERIT_DIAL` and `RRT_HEMODIAL_STATUS` are both used, are no longer anti-correlated, and are both 0 for the predialysis stratum; see the three-level paragraph in the `RRT_HEMODIAL_STATUS` Notes. In a chronic-dialysis cohort where every subject is on either HD or PD, `RRT_HEMODIAL_STATUS` and `PERIT_DIAL` are perfectly anti-correlated (`PERIT_DIAL = 1 - RRT_HEMODIAL_STATUS`); the choice of which to use as the covariate is dictated by which modality the source paper treats as the reference category. Takama 2007 took HD as the reference and reports a +17% effect on V1 for PD, so `PERIT_DIAL` is the natural canonical for that paper (V1 increases when `PERIT_DIAL = 1`). Anticipated in the `RRT_HEMODIAL_STATUS` register-entry notes ("would warrant its own canonical (`RRT_PERIT_DIAL_STATUS`, `RRT_CRRT_STATUS`) if a future paper retains them as covariates") and ratified canonically on 2026-06-12 alongside the Takama 2007 darbepoetin alfa extraction. Future audit may rename this to `RRT_PERIT_DIAL_STATUS` for consistency with the RRT_<modality>_<kind> family; left unchanged for now to avoid disturbing the Takama 2007 ingestion before broader peritoneal-dialysis coverage in the registry.
 
 ### HEMOADSORB_ACTIVE (**canonical for hemoadsorption-active indicator (time-varying cartridge-in-circuit gate)**)
@@ -2693,6 +2704,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Source aliases:** none known.
 - **Example models:** `Bellanti_2015_deferoxamine.R` (ug/L; initial condition for the ferritin compartment; n=27 transfusion-dependent beta-thalassaemia major paediatric / adolescent cohort, median 2260, range 393-8500), `Angeli_2016_iron_hepcidin.R` (ug/L; per-subject end-of-cycle baseline used as a power-law multiplier `(FERRITIN_BL / 53)^exponent` on hepcidin elimination `kout_hep` (exponent -0.60) and on the hepcidin post-menses rebound `krel_hep` (exponent -1.95); higher baseline ferritin -> slower hepcidin elimination and a smaller rebound, consistent with iron-regulatory feedback).
 - **Notes:** Iron storage protein; elevated in transfusional iron overload (beta-thalassaemia major, sickle-cell disease on chronic transfusion, MDS on transfusion support) and in some inflammatory states (acute-phase reactant); near normal in healthy adults (typically ~30-300 ug/L). Promoted from `specific` to `general` on 2026-06-03 with the Angeli 2016 iron / hepcidin extraction (the second model to register `FERRITIN_BL` with consistent baseline-ferritin semantics across two distinct mechanistic uses).
+
+### HEPCIDIN_BL (**canonical for baseline serum hepcidin concentration**)
+- **Description:** Per-subject serum hepcidin concentration at study baseline, before treatment. Time-fixed. Hepcidin is the iron-regulatory hormone that blocks iron export from macrophages and enterocytes; high values mark iron-restricted erythropoiesis and inflammation.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with a normalized power form `(HEPCIDIN_BL / ref)^exponent`. Reference observed: 121.356 ng/mL (Mahar 2025 control stream `medBhep`, also imputed when missing).
+- **Source aliases:**
+  - `BHEP` -- Mahar 2025 control stream (`BLHEP = (BHEP/medBhep)**THETA(13)`).
+- **Example models:** `Mahar_2025_daprodustat.R` (founding example; doi:10.1002/cpt.3544. Power exponent -0.0170 on the hemoglobin baselines).
+- **Notes:** Distinct from the `hep` hepcidin state of `Angeli_2016_iron_hepcidin.R`, which is a modelled time-varying output rather than a baseline covariate. The covariate-effect parameter form is `e_hepcidin_bl_<param>`. Name ratified 2026-11-06.
 
 ### IRON_BL (**canonical for baseline (pre-dose) serum total iron concentration**)
 - **Description:** Per-subject baseline serum total iron concentration (transferrin-bound plus any non-transferrin-bound iron), measured before drug administration. Static per-subject (or per-administration) covariate. The baseline definition varies by paper -- a single pre-dose value, or an average over a drug-free baseline sampling window when serum iron shows a marked diurnal fluctuation -- and MUST be recorded per model in `covariateData[[IRON_BL]]$notes`.
@@ -4859,6 +4881,17 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Han_2024_ainuovirine.R` (selects the piecewise relative bioavailability `fdepot = 1 * is_dose75 + 0.716 * is_dose150 + 0.410 * is_dose300` in the two-compartment population PK model -- founding example).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (siblings: `DOSE_CIPARGAMIN_MG`, `DOSE_CABAMIQUINE_MG`, `DOSE_TBPPI_MG`, `DOSE_TAK071_MG`). `ANV` is the paper's own abbreviation for ainuovirine. The **piecewise** reading distinguishes this entry from most of the family, which enter as continuous power terms `(DOSE_x / ref)^e_dose_param`: Han 2024 estimated two independent bioavailability levels rather than one exponent, so a power form would misstate the model, and interpolation between the studied levels carries no support from the source data. A future ainuovirine model that fits a continuous dose-exponent form should record that in its own `covariateData[[DOSE_ANV_MG]]$notes` rather than re-registering the column. Distinct from `MULTI_DOSE_PT`, which the same model carries alongside this one: `DOSE_ANV_MG` selects the bioavailability level (a between-dose-group contrast) while `MULTI_DOSE_PT` selects the clearance level (a within-subject first-dose-versus-steady-state contrast); the two are orthogonal and both apply to the phase 1 records.
 
+### DOSE_DAPRODUSTAT_MG (**canonical for the current daprodustat dose level**)
+- **Description:** Daprodustat dose level, in mg per administration, currently assigned to the subject by the titration algorithm, carried on every record and 0 when no daprodustat is being given. TIME-VARYING: it changes at each titration step.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters a power-function drug effect, not a centred covariate effect. In `Mahar_2025_daprodustat.R` the effect is `1 + SLOPE * (DOSE_DAPRODUSTAT_MG / (WT / 73.3)^0.75)^GAMMA` on precursor production.
+- **Source aliases:**
+  - `CDOSE` -- Mahar 2025 control stream data item (`DDR = CDOSE/WTSL * CLOP_DOSE` in $DES).
+- **Example models:** `Mahar_2025_daprodustat.R` (founding example; doi:10.1002/cpt.3544).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. A dose-driven model needs no dosing events: the column itself is the driver. For the three-times-weekly regimen of Mahar 2025 study 204837 the value is the per-administration dose, and the model's study-204837 factor (0.422, close to 3/7) converts it.
+
 ### DOSE_TICLOPIDINE_MG (**canonical for the ticlopidine dose currently being administered**)
 - **Description:** Amount of ticlopidine, in mg, currently being administered, carried on every record of a ticlopidine dosing period and **0 outside it** (placebo phase, and the washout that follows the last ticlopidine dose). TIME-VARYING by construction: the fall to 0 at the end of dosing is load-bearing.
 - **Units:** mg
@@ -6504,8 +6537,20 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Source aliases:**
   - `ESAD` -- used in `Naik_2013_peginesatide.R` (Naik 2013 paper notation; prior epoetin alfa / darbepoetin alfa weekly dose in units/week for CKD hemodialysis subjects enrolling on peginesatide).
   - `DEPO` -- used in `Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta.R` (Chanu 2010 notation; "previous weekly EPO dose at the start of C.E.R.A. maintenance treatment", IU/week, for CKD dialysis subjects switching from epoetin to methoxy polyethylene glycol-epoetin beta).
-- **Example models:** `Naik_2013_peginesatide.R` (Naik 2013 eq 16; exponential covariate on the baseline-hemoglobin parameter: `hgbbl = exp(lhgbbl + etalhgbbl + e_esad_lhgbbl * (ESAD - 7996) * ESADF)` with `e_esad_lhgbbl = -4.49e-7 1/(units/week)`; effect is small in magnitude but retained as the only PD-side statistically significant covariate per backward-elimination at P < 0.005), `Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta.R` (Chanu 2010 Table IV; normalized power covariate on SC50, `ec50 = exp(lec50 + etalec50) * (CRP / 5)^0.319 * esad_ratio^0.303` where `esad_ratio` collapses to 1 for ESA-naive subjects; a 5-fold rise in prior epoetin dose raises SC50 by 63%, the only PD covariate the paper judges clinically relevant, and the basis for setting the C.E.R.A. starting dose from the prior ESA dose).
+  - `PEPOD2` (= `PRIEPDB * WTBL`) -- used in `Mahar_2025_daprodustat.R` (Mahar 2025 control stream; prior ESA dose standardized to IU/week from the per-kilogram data item PRIEPDB, IU/kg/week).
+- **Example models:** `Naik_2013_peginesatide.R` (Naik 2013 eq 16; exponential covariate on the baseline-hemoglobin parameter: `hgbbl = exp(lhgbbl + etalhgbbl + e_esad_lhgbbl * (ESAD - 7996) * ESADF)` with `e_esad_lhgbbl = -4.49e-7 1/(units/week)`; effect is small in magnitude but retained as the only PD-side statistically significant covariate per backward-elimination at P < 0.005), `Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta.R` (Chanu 2010 Table IV; normalized power covariate on SC50, `ec50 = exp(lec50 + etalec50) * (CRP / 5)^0.319 * esad_ratio^0.303` where `esad_ratio` collapses to 1 for ESA-naive subjects; a 5-fold rise in prior epoetin dose raises SC50 by 63%, the only PD covariate the paper judges clinically relevant, and the basis for setting the C.E.R.A. starting dose from the prior ESA dose), `Mahar_2025_daprodustat.R` (uncentred exponential effect on the true, post-washout hemoglobin baseline of ESA users switching to daprodustat, `exp(e_esad_rbase_true / 1000 * ESAD)` with `e_esad_rbase_true = -0.00797`; ESAD > 0 doubles as the ESA-user flag, as in Chanu 2010).
 - **Notes:** Specific scope because the values are intrinsically tied to ESA-switch popPK/PD studies and the units/week reporting convention is paper-specific (different ESAs have different specific activities; epoetin-equivalent conversion factors must be documented per-model). The ESADF indicator (built inline in the model() block as `(ESAD > 0)`) handles the "no prior ESA dose available" data-quality case used by Naik 2013; `Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta.R` reuses the same indicator for a stronger purpose, as the ESA-naive / ESA-treated switch that also selects the hemoglobin initial condition and turns the prior-ESA-withdrawal term on or off, so in that model ESAD = 0 means genuinely ESA-naive rather than merely unrecorded. Future papers that need to distinguish prior-ESA-naive from prior-ESA-treated-with-unrecorded-dose within one dataset may still register a parallel canonical (e.g., `ESA_NAIVE`).
+
+### ESA_HYPORESPONDER (**canonical for erythropoiesis-stimulating-agent (ESA) hyporesponder indicator**)
+- **Description:** 1 = a prior ESA user classified as hyporesponsive to ESA treatment at study entry; 0 = an ESA user who is not a hyporesponder, an ESA non-user, or a subject whose status is unknown. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not a hyporesponder, ESA non-user, or unknown).
+- **Source aliases:**
+  - `HYPORESP` -- Mahar 2025 control stream (`IF(HYPORESP.EQ.1) BLHYP = (1+THETA(10))`; the code 222 = unknown/ESA non-user carries no effect and maps to 0 here).
+- **Example models:** `Mahar_2025_daprodustat.R` (founding example; doi:10.1002/cpt.3544. Lowers the apparent, ESA-elevated hemoglobin baseline of ESA users by `e_esa_hyporesponder_rbase = -0.0307`).
+- **Notes:** The classification is paper-defined; Mahar 2025 (Table S4 footnote c) uses an ESA resistance index >= 1.5 IU/kg/week per g/L of hemoglobin or a prior ESA dose >= 450 IU/kg/week. Record the definition in each model's `covariateData[[ESA_HYPORESPONDER]]$notes`. Companion of `ESAD` (prior ESA dose). Name ratified 2026-11-06.
 
 ### DOSE_IND (**canonical for per-arm once-daily inhaled indacaterol dose**)
 - **Description:** Per-study-arm once-daily inhaled indacaterol dose (ug/day; 0 for placebo arms). Study-arm-level (not individual-level) drug-exposure covariate used as the dose regressor in a model-based meta-analysis (MBMA) of bronchodilator dose-response.
@@ -18644,6 +18689,50 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `DREAMM` -- Rathi 2021 Supplementary Methods control streams, coded 1 / 2 and applied as `THETA**(2-DREAMM)`, so `STUDY_DREAMM1 = 2 - DREAMM`.
 - **Example models:** `Rathi_2021_belantamab.R` (multiplies ADC CL by 0.608 and V1 by 0.66, the total-antibody correction factor by 0.848 and the cys-mcMMAF central volume by 1.507; also selects the DREAMM-1 VALA assay recalibration and the DREAMM-1 cys-mcMMAF residual error).
 - **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Rathi 2021 could not explain the study effect (Discussion: possibly assay or process differences); simulations of a new population set it to 0.
+
+### STUDY_205270 (**canonical for the daprodustat phase III study 205270 indicator**)
+- **Description:** 1 = subject from GSK study 205270 (daprodustat vs placebo, once daily, ESA non-users not on dialysis, 28 weeks); 0 = any other study in the pooled analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any other pooled study; study 200807 is the residual-error reference).
+- **Source aliases:**
+  - `STUDYID == 205270` -- Mahar 2025 control stream.
+- **Example models:** `Mahar_2025_daprodustat.R` (scales the apparent-baseline random effect by 0.729, selects the 5.72 g/L additive residual SD, and forces the ESA-user flag to 0).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Siblings from the same pooled analysis: `STUDY_204837`, `STUDY_201410`, `STUDY_200808`; study 200807 is the reference and has no indicator.
+
+### STUDY_204837 (**canonical for the daprodustat phase III three-times-weekly study 204837 indicator**)
+- **Description:** 1 = subject from GSK study 204837 (daprodustat three times weekly vs epoetin alfa, ESA users on hemodialysis, 52 weeks); 0 = any other study in the pooled analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (once-daily studies; study 200807 is the residual-error reference).
+- **Source aliases:**
+  - `STUDYID == 204837` -- Mahar 2025 control stream (`IF(STUDYID.EQ.204837) TIW = THETA(26)`).
+- **Example models:** `Mahar_2025_daprodustat.R` (multiplies the drug effect by 0.422 for the three-times-weekly regimen and selects the 6.28 g/L additive residual SD).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Because it is the only three-times-weekly study, the indicator is also the model's t.i.w.-dosing switch.
+
+### STUDY_201410 (**canonical for the daprodustat phase III incident-dialysis study 201410 indicator**)
+- **Description:** 1 = subject from GSK study 201410 (daprodustat vs darbepoetin alfa, ESA non-users just starting or about to start hemodialysis or peritoneal dialysis, 52 weeks); 0 = any other study in the pooled analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any other pooled study; study 200807 is the residual-error reference).
+- **Source aliases:**
+  - `STUDYID == 201410` -- Mahar 2025 control stream (`IF(STUDYID.EQ.201410) POP = 4`, the "just started / starting dialysis" population).
+- **Example models:** `Mahar_2025_daprodustat.R` (carries the starting-dialysis effects: +30.9% red-cell lifespan, +96.8% disease-progression rate and the starting-HD / starting-PD baselines; scales the apparent-baseline random effect by 1.13; selects the 7.24 g/L additive residual SD).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. The control stream defines the starting-dialysis population by study, so the indicator is also the model's incident-dialysis switch; the dialysis modality comes from `RRT_HEMODIAL_STATUS` / `PERIT_DIAL`.
+
+### STUDY_200808 (**canonical for the daprodustat phase III non-dialysis study 200808 indicator**)
+- **Description:** 1 = subject from GSK study 200808 (daprodustat vs darbepoetin alfa, ESA non-users and users not on dialysis, event-driven up to about 4 years); 0 = any other study in the pooled analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any other pooled study; study 200807 is the residual-error reference).
+- **Source aliases:**
+  - `STUDYID == 200808` -- Mahar 2025 control stream.
+- **Example models:** `Mahar_2025_daprodustat.R` (selects the 6.39 g/L additive residual SD; no structural effect).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family.
 
 ### STUDY_NC003 (**canonical for the NC-003 pretomanid combination-regimen study cohort indicator**)
 - **Description:** 1 = subject enrolled in NC-003, a phase 2a study of pretomanid in combination regimens containing bedaquiline, clofazimine and/or pyrazinamide; 0 = subject from any other study in the pooled analysis. Subject-level (time-fixed).
