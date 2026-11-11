@@ -156,9 +156,9 @@ later implementation uses it and Kumar 2024's estimate is on its scale:
 
 1. Chang 2019 ("augmenting our previously published platform PBPK
    model") prints `CLup_i = CLup * V_ES_i` and sets `CLup` to 0.55 L/h/L
-   for all tissues except the brain. That is 15 x 0.0366, the value that
-   keeps the total pinocytosis clearance of the 2012 code when every
-   tissue's uptake is scaled by its own endosomal volume.
+   for all tissues except the brain. That is 15 x 0.0366: over the 2012
+   model's 15 tissues, the per-tissue form with 0.55 L/h/L gives the same
+   total pinocytosis clearance as the 2012 code's form with 0.0366 L/h/L.
 2. Kumar 2024's estimate, 0.32 L/h/L (Suppl. Table S2), is of the same
    order as Chang 2019's per-tissue value, and about 9 times the 0.0366
    L/h/L of the whole-body form.
@@ -388,11 +388,11 @@ knitr::kable(
 )
 ```
 
-The clearance is the sharpest of these checks. It is an *emergent* quantity:
-nothing in the model is a clearance term, so it falls out of `CLup`,
-`kdeg`, `FR`, the FcRn binding constants and the whole-body physiology
-together. Recovering ~0.2 L/day shows that the re-estimated `CLup` and `kdeg`, in
-the per-tissue form, give the clearance of a linear IgG1.
+The clearance is an *emergent* quantity: nothing in the model is a
+clearance term, so it falls out of `CLup`, `kdeg`, `FR`, the FcRn binding
+constants and the whole-body physiology together. Recovering ~0.2 L/day
+shows that the re-estimated `CLup` and `kdeg`, in the per-tissue form, give
+the clearance of a linear IgG1.
 
 # Replicating Figure 7 (local sensitivity analysis)
 
@@ -934,9 +934,9 @@ paper or its supplement.
   supplement, so no `propSd` / `addSd` is included. Both files are
   typical-value plus inter-antibody simulators.
 * **Lung plasma flow derived for mass-balance closure.** The Table 4 lung
-  flows equal the sums of the tissue flows plus the "Ly. Node" row, about
-  1.8% more than the tissues take in; used literally they remove mAb at the
-  lung outflow. `q_lu` is derived as
+  flows equal the sums of the tissue flows plus the "Ly. Node" row: 181.913
+  L/h of plasma against the 178.244 L/h the tissues take in, about 2% more.
+  Used literally, they remove mAb at the lung outflow. `q_lu` is derived as
   `sum(q_X) / (1 - 1/500)` and `bcq_lu` as `sum(bcq_X)`.
 * **`C_LNLF` not carried.** Kumar 2024 inherits Shah & Betts' `C_LNLF`
   = 9.1. The Shah & Betts ADAPT code and Chang 2019 set the lymph-node
