@@ -11,6 +11,8 @@
 
 - Add Dong 2024 adefovir ([doi:10.1007/s00228-024-03673-x](https://doi.org/10.1007/s00228-024-03673-x)) -- healthy adults given adefovir dipivoxil alone and with a transporter phenotyping cocktail.
 
+- Add Lanoiselee 2024 unfractionated heparin ([doi:10.3390/pharmaceutics16060770](https://doi.org/10.3390/pharmaceutics16060770)) -- adults on veno-arterial ECMO.
+
 - Add Iwaki 2021 guselkumab PPPASI PK/PD ([doi:10.1002/jcph.1953](https://doi.org/10.1002/jcph.1953)) -- Japanese adults with palmoplantar pustulosis.
 
 - `checkModelConventions()` no longer reports `DV` as a covariate. A custom likelihood `ll(<endpoint>) ~ ...` has to read the observed value, and `DV` is a dataset column, not a covariate.

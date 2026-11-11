@@ -8042,6 +8042,8 @@ navbar:
         href: articles/AlSallami_2016_unfractionatedHeparin.html
       - text: "UnfractionatedHeparin (Jia 2015)"
         href: articles/Jia_2015_unfractionatedHeparin.html
+      - text: "UnfractionatedHeparin (Lanoiselee 2024)"
+        href: articles/Lanoiselee_2024_unfractionatedHeparin.html
       - text: "Upadacitinib (Bhatnagar 2024)"
         href: articles/Bhatnagar_2024_upadacitinib.html
       - text: "Upadacitinib (Klunder 2017)"
@@ -10201,6 +10203,7 @@ articles:
   - articles/Langeskov_2022_semaglutide_ddi
   - articles/Lanke_2019_tolvaptan
   - articles/Lanoiselee_2021_cefazolin
+  - articles/Lanoiselee_2024_unfractionatedHeparin
   - articles/Laouenan_2015_ribavirin
   - articles/LaporteAmargos_2026_piperacillin
   - articles/Larizza_2018_cpeptide_insulin_secretion
