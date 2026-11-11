@@ -1,0 +1,514 @@
+---
+title: "VRC07523LS (Smith 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{VRC07523LS (Smith 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Smith_2026_VRC07523LS"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Smith_2026_VRC07523LS"))$description`
+* Article: <https://doi.org/10.1111/cts.70488> (open access; Supplementary
+  Appendix S1 carries Tables S1-S2)
+
+VRC07-523LS is a CD4-binding-site broadly neutralizing anti-HIV-1 IgG1 with
+the LS (M428L/N434S) Fc mutation that extends its half-life. Smith 2026 fitted
+a two-compartment model with first-order subcutaneous absorption to serum
+concentrations from adults without HIV and adults with untreated HIV-1
+viremia, using a previously published VRC07-523LS model (Mayer 2024) as a
+Bayesian prior. Clearance rises with the time-varying plasma HIV-1 RNA
+through a hyperbolic function:
+
+$$CL_i(t) = CL_{TV} \cdot \left(1 + E_{max,i} \cdot \frac{HIV(t)^\gamma}{EC_{50}^\gamma + HIV(t)^\gamma}\right) \cdot e^{\eta_{CL,i}}$$
+
+with $\gamma$ fixed to 1. In the packaged model the viral load is the
+covariate column `HIV_VLOAD` (copies/mL, linear scale); set it to 0 for
+people without HIV or with suppressed virus.
+
+# Population
+
+The model was fitted to 34 adults (Supplementary Table S1): 25 healthy adults
+from the VRC 605 phase 1 dose-escalation trial (NCT02840474; 1, 5, 20 or
+40 mg/kg IV, or 5 mg/kg SC, as single doses or three doses 12 weeks apart)
+and 9 adults with chronic HIV-1 viremia not on antiretroviral therapy
+(NCT03015181), who received 40 mg/kg IV and started antiretroviral therapy
+about two weeks later. Median weight was 75.1 kg (IQR 61.5-85.05), median age
+26 years (IQR 23.25-31.75), and 44.1% were female; 26 participants (76.5%)
+received IV and 8 (23.5%) SC doses. In the viremic group the mean viral load
+was 35,264 copies/mL at antibody initiation, rebounded to a peak of 4,410
+copies/mL at week 3, and was suppressed (mean 22.2 copies/mL) by weeks 7-8
+(Figure 1).
+
+The same information is available programmatically:
+
+```{r population}
+str(rxode2::rxode(readModelDb("Smith_2026_VRC07523LS"))$population)
+```
+
+# Source trace
+
+| Quantity | Value | Source location |
+|---|---|---|
+| Structure: two-compartment, first-order SC absorption | -- | Results, first paragraph of "The Influence of Viremia on BNAb Pharmacokinetics" |
+| `CL(t) = CL_TV * (1 + Emax * HIV^gamma / (EC50^gamma + HIV^gamma)) * exp(eta)` | -- | Results, clearance equation |
+| `lka` (absorption half-life Tabs) | 2.02 day, ka = ln(2)/2.02 | Table 1 `T abs` |
+| `logitfdepot` (SC bioavailability) | 0.486 | Table 1 `F bio` |
+| `lcl` (CL without viral load) | 99.3 mL/day | Table 1 `CL` |
+| `lvc` (V1) | 2080 mL | Table 1 `V1` |
+| `lvp` (V2) | 2760 mL | Table 1 `V2` |
+| `lq` (CLD) | 518 mL/day | Table 1 `CLD` |
+| `le_vload_cl` (Emax, maximal fractional CL increase) | 5.46 | Table 1 `CLmax`; Results "increase to 5.46-fold higher (i.e., CL = 641 mL/day)" |
+| `lvload50_cl` (EC50) | 10^4.22 = 16,596 copies/mL | Table 1 `EC50` (log10 copy/mL); Results "16,595 copies/mL" |
+| `hill` (gamma) | 1 (fixed) | Table 1 `gamma` |
+| `etalka` | 0.481^2 | Table 1 `omega Tabs` (SD) |
+| `etalogitfdepot` | 1.06^2 | Table 1 `omega F` (SD) |
+| `etalcl`, `etalvp` and their covariance | 0.296^2, 0.390^2, 0.819 x 0.296 x 0.390 | Table 1 `omega CL`, `omega V2`, `rho CL ~ V2` |
+| `etalvc` | 0.382^2 | Table 1 `omega V1` |
+| `etalq` | 0.611^2 | Table 1 `omega CLD` |
+| `etale_vload_cl` | 0.448^2 | Table 1 `omega CLMAX` |
+| `addSd` | 0.523 mg/L | Table 1 `sigma a` |
+| `propSd` | 0.204 | Table 1 `sigma p` |
+
+# Typical-value checks
+
+The closed-form typical values follow directly from Table 1 and are checked
+against numbers the paper quotes in the text.
+
+```{r closed-form}
+mod <- rxode2::rxode(readModelDb("Smith_2026_VRC07523LS"))
+th <- mod$theta
+cl0 <- exp(th[["lcl"]]) * 1000 # mL/day
+cl_max <- cl0 * (1 + exp(th[["le_vload_cl"]])) # mL/day, HIV(t) >> EC50
+ec50 <- exp(th[["lvload50_cl"]]) # copies/mL
+
+# Terminal (beta) half-life of the two-compartment system without viremia.
+kel <- exp(th[["lcl"]]) / exp(th[["lvc"]])
+k12 <- exp(th[["lq"]]) / exp(th[["lvc"]])
+k21 <- exp(th[["lq"]]) / exp(th[["lvp"]])
+beta <- ((kel + k12 + k21) - sqrt((kel + k12 + k21)^2 - 4 * kel * k21)) / 2
+thalf_beta <- log(2) / beta
+
+checks <- tibble::tibble(
+  Quantity = c(
+    "CL at saturating viral load (mL/day)",
+    "EC50 (copies/mL)",
+    "Typical terminal half-life without viremia (day)"
+  ),
+  Model = c(cl_max, ec50, thalf_beta),
+  Paper = c(641, 16595, 36.3),
+  `Paper source` = c(
+    "Results: 'CL = 641 mL/day'",
+    "Results: '16,595 copies/mL'",
+    "Discussion: median terminal half-life 36.3 days"
+  )
+)
+knitr::kable(checks, digits = 1)
+
+stopifnot(
+  abs(cl_max / 641 - 1) < 0.005,
+  abs(ec50 / 16595 - 1) < 0.001,
+  abs(thalf_beta / 36.3 - 1) < 0.05
+)
+```
+
+The 36.3-day figure is the median individual estimate in the study, so it is
+compared with the typical value only approximately.
+
+# Virtual cohort and simulation (Figure 3)
+
+Figure 3 simulates single 1-hour IV infusions of 700, 1400 and 2100 mg under
+seven static viral loads (0 to 30,000 copies/mL). The paper used 1500 virtual
+subjects; here each of the 21 arms has 200 virtual subjects. The model has no
+body-size covariate, so no demographic distribution is needed.
+
+```{r fig3-sim}
+rxode2::rxSetSeed(20260211)
+n_per_arm <- 200
+arms <- expand.grid(
+  dose = c(700, 1400, 2100),
+  vl = c(0, 100, 300, 1000, 3000, 10000, 30000)
+)
+arms$arm <- seq_len(nrow(arms))
+t_obs <- seq(0, 75 * 7, by = 1) # daily for 75 weeks
+
+make_arm <- function(i) {
+  ids <- (i - 1) * n_per_arm + seq_len(n_per_arm)
+  dose_rows <- data.frame(
+    id = ids, time = 0, amt = arms$dose[i], rate = arms$dose[i] * 24,
+    evid = 1, cmt = "central"
+  )
+  obs_rows <- expand.grid(id = ids, time = t_obs)
+  obs_rows$amt <- 0
+  obs_rows$rate <- 0
+  obs_rows$evid <- 0
+  obs_rows$cmt <- "central"
+  out <- rbind(dose_rows, obs_rows)
+  out$HIV_VLOAD <- arms$vl[i]
+  out$arm <- i
+  out
+}
+ev_fig3 <- do.call(rbind, lapply(arms$arm, make_arm))
+ev_fig3 <- ev_fig3[order(ev_fig3$id, ev_fig3$time, -ev_fig3$evid), ]
+
+sim_fig3 <- rxode2::rxSolve(mod, ev_fig3, keep = "arm", returnType = "data.frame") |>
+  left_join(arms, by = "arm")
+```
+
+```{r fig3a, fig.width = 8, fig.height = 5}
+sim_fig3 |>
+  filter(vl %in% c(0, 1000, 10000, 30000)) |>
+  group_by(dose, vl, time) |>
+  summarise(
+    med = median(Cc),
+    lo = quantile(Cc, 0.1),
+    hi = quantile(Cc, 0.9),
+    .groups = "drop"
+  ) |>
+  filter(time > 0) |>
+  mutate(
+    Dose = factor(paste(dose, "mg"), levels = paste(c(700, 1400, 2100), "mg")),
+    `Viral load` = factor(vl)
+  ) |>
+  ggplot(aes(time / 7, med, colour = `Viral load`, fill = `Viral load`)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.15, colour = NA) +
+  geom_line() +
+  geom_hline(yintercept = c(1, 10), linetype = "dashed") +
+  scale_y_log10() +
+  coord_cartesian(ylim = c(0.01, 1000)) +
+  facet_wrap(~Dose) +
+  labs(
+    x = "Time (weeks)", y = "VRC07-523LS (mg/L)",
+    colour = "Viral load\n(copies/mL)", fill = "Viral load\n(copies/mL)"
+  ) +
+  theme_bw()
+```
+
+Replicates Figure 3A of Smith 2026 (median and 10th-90th percentile band;
+dashed lines at the 1 and 10 mg/L targets).
+
+## Time to 1 mg/L (Figure 3B)
+
+The time to target is the first daily time after the infusion at which a
+subject's concentration is at or below the target. Subjects still above the
+target at 75 weeks are counted as reaching it after the simulated window
+(`Inf`), which keeps them in the upper percentiles.
+
+```{r fig3b}
+time_to <- function(time, conc, target) {
+  i <- which(time > 1 & conc <= target)[1]
+  if (is.na(i)) Inf else time[i]
+}
+ttt <- sim_fig3 |>
+  group_by(id, dose, vl) |>
+  summarise(
+    t1 = time_to(time, Cc, 1),
+    t10 = time_to(time, Cc, 10),
+    .groups = "drop"
+  )
+ttt_sum <- ttt |>
+  group_by(dose, vl) |>
+  summarise(
+    t1_p10 = quantile(t1, 0.1) / 7,
+    t1_p90 = quantile(t1, 0.9) / 7,
+    t10_p10 = quantile(t10, 0.1) / 7,
+    t10_p90 = quantile(t10, 0.9) / 7,
+    .groups = "drop"
+  )
+ttt_sum |>
+  dplyr::rename(
+    "Dose (mg)" = dose,
+    "Viral load (copies/mL)" = vl,
+    "1 mg/L, 10th pct (wk)" = t1_p10,
+    "1 mg/L, 90th pct (wk)" = t1_p90,
+    "10 mg/L, 10th pct (wk)" = t10_p10,
+    "10 mg/L, 90th pct (wk)" = t10_p90
+  ) |>
+  knitr::kable(digits = 1, caption = "Simulated time (weeks) by which 10% and 90% of subjects are at or below each target.")
+```
+
+The paper quotes the 2100 mg arm numerically: under no viremia the 10th-90th
+percentile time to 1 mg/L is 35.4-62.3 weeks (Results; the Discussion gives
+35 and 60.5 weeks), and at a static 30,000 copies/mL it is 7.59-18.7 weeks.
+
+```{r fig3b-compare}
+pub_fig3 <- tibble::tibble(
+  vl = c(0, 0, 30000, 30000),
+  Percentile = c("10th", "90th", "10th", "90th"),
+  Paper = c(35.4, 62.3, 7.59, 18.7)
+)
+sim_2100 <- ttt_sum |>
+  filter(dose == 2100, vl %in% c(0, 30000)) |>
+  select(vl, `10th` = t1_p10, `90th` = t1_p90) |>
+  pivot_longer(-vl, names_to = "Percentile", values_to = "Simulated")
+cmp_fig3 <- pub_fig3 |>
+  left_join(sim_2100, by = c("vl", "Percentile")) |>
+  mutate(`Difference (%)` = 100 * (Simulated - Paper) / Paper)
+cmp_fig3 |>
+  dplyr::rename("Viral load (copies/mL)" = vl) |>
+  knitr::kable(digits = 1, caption = "Time (weeks) to 1 mg/L after 2100 mg IV: paper vs simulation.")
+
+stopifnot(all(abs(cmp_fig3$`Difference (%)`) < 20))
+```
+
+The paper also states that, without viremia, the 700-2100 mg doses keep
+concentrations above the IC50 of 0.055 mg/L beyond 52 weeks; the simulated
+median concentration at week 52 is:
+
+```{r ic50}
+c52 <- sim_fig3 |>
+  filter(vl == 0, time == 364) |>
+  group_by(dose) |>
+  summarise(median_c52 = median(Cc), .groups = "drop")
+c52 |>
+  dplyr::rename("Dose (mg)" = dose, "Median at week 52 (mg/L)" = median_c52) |>
+  knitr::kable(digits = 3)
+stopifnot(all(c52$median_c52 > 0.055))
+```
+
+# Regimen optimization (Figure 4)
+
+The genetic algorithm in the paper chose doses so that the 90th percentile of
+the trough concentration equals 1 mg/L. Without viremia the selected single
+dose was 924 mg. The Results describe the target time as 52 weeks and the
+Methods as 48 weeks; both are shown below. With viremia the paper fixed the
+viral-load time course at the 90th percentile observed in the viremic
+participants (Figure 1) and reports a single dose of 1955 mg, or 158 mg
+followed by 68 mg at week 26.
+
+The 90th-percentile viral-load curve is not tabulated, so it was digitised
+approximately by the maintainers from the upper edge of the 90% band in
+Figure 1 and interpolated log-linearly between the points below. This makes
+the viremic scenarios illustrative only.
+
+```{r fig1-vl}
+vl90 <- tibble::tibble(
+  week = c(0, 0.15, 0.3, 0.6, 1, 1.5, 2, 2.3, 3, 4, 5, 6, 7, 52),
+  vl = c(45000, 60000, 35000, 10000, 1400, 7000, 9000, 9000, 14000, 7500, 700, 40, 25, 25)
+)
+vl_at <- function(t_day) {
+  10^approx(vl90$week * 7, log10(vl90$vl), xout = t_day, rule = 2)$y
+}
+```
+
+```{r fig4}
+rxode2::rxSetSeed(20260212)
+n_fig4 <- 200
+t_fig4 <- seq(0, 56 * 7, by = 1)
+scen_tbl <- tibble::tibble(
+  scenario = c("No viremia, 924 mg", "Viremia, 1955 mg", "Viremia, 158 mg + 68 mg at week 26"),
+  viremic = c(FALSE, TRUE, TRUE)
+)
+make_fig4 <- function(i) {
+  ids <- (i - 1) * n_fig4 + seq_len(n_fig4)
+  doses <- switch(i,
+    data.frame(time = 0, amt = 924),
+    data.frame(time = 0, amt = 1955),
+    data.frame(time = c(0, 26 * 7), amt = c(158, 68))
+  )
+  dose_rows <- merge(data.frame(id = ids), doses)
+  dose_rows$rate <- dose_rows$amt * 24
+  dose_rows$evid <- 1
+  obs_rows <- expand.grid(id = ids, time = t_fig4)
+  obs_rows$amt <- 0
+  obs_rows$rate <- 0
+  obs_rows$evid <- 0
+  out <- rbind(dose_rows[, names(obs_rows)], obs_rows)
+  out$cmt <- "central"
+  out$HIV_VLOAD <- if (scen_tbl$viremic[i]) vl_at(out$time) else 0
+  out$scen <- i
+  out
+}
+ev_fig4 <- do.call(rbind, lapply(seq_len(nrow(scen_tbl)), make_fig4))
+ev_fig4 <- ev_fig4[order(ev_fig4$id, ev_fig4$time, -ev_fig4$evid), ]
+sim_fig4 <- rxode2::rxSolve(mod, ev_fig4,
+  keep = "scen", returnType = "data.frame",
+  covsInterpolation = "locf"
+) |>
+  mutate(scenario = scen_tbl$scenario[scen])
+
+troughs <- sim_fig4 |>
+  filter(
+    (scen %in% 1:2 & time %in% (c(48, 52) * 7)) |
+      (scen == 3 & time %in% (c(26, 52) * 7))
+  ) |>
+  group_by(scenario, week = time / 7) |>
+  summarise(p90 = quantile(Cc, 0.9), median = median(Cc), .groups = "drop")
+troughs |>
+  dplyr::rename(
+    "Scenario" = scenario, "Week" = week,
+    "90th percentile (mg/L)" = p90, "Median (mg/L)" = median
+  ) |>
+  knitr::kable(digits = 2, caption = "Simulated concentrations at the Figure 4 target times; the paper's optimized doses put the 90th percentile at 1 mg/L.")
+
+# The 90th percentile of 200 subjects is a robust quantile; a mis-transcribed
+# clearance or volume moves it by far more than the 25% allowed here.
+p90_924_wk52 <- troughs |>
+  filter(scenario == "No viremia, 924 mg", week == 52) |>
+  pull(p90)
+stopifnot(abs(p90_924_wk52 - 1) < 0.25)
+```
+
+```{r fig4-plot, fig.width = 8, fig.height = 4}
+sim_fig4 |>
+  filter(time > 0) |>
+  group_by(scenario, time) |>
+  summarise(med = median(Cc), lo = quantile(Cc, 0.1), hi = quantile(Cc, 0.9), .groups = "drop") |>
+  ggplot(aes(time / 7, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  scale_y_log10() +
+  facet_wrap(~scenario) +
+  labs(x = "Time (weeks)", y = "VRC07-523LS (mg/L)") +
+  theme_bw()
+```
+
+Replicates Figure 4 of Smith 2026 (median and 10th-90th percentile band).
+
+For the no-viremia 924 mg regimen, the simulated 90th percentile is close to
+1 mg/L at week 52, matching the 52-week target stated in the Results (it is
+still near 1.5 mg/L at week 48, the time named in the Methods). The viremic
+regimens also put the 90th percentile near 1 mg/L at their target times, but
+they depend on the approximate digitisation of the Figure 1 band and are not
+used as a formal check.
+
+# PKNCA validation (healthy-adult dose groups)
+
+The healthy-adult single-dose groups of VRC 605 are simulated at the cohort
+median weight (75.1 kg), 200 virtual subjects per group, with no viral load.
+The IV infusion duration is not stated in Smith 2026; 1 hour is assumed, as
+in the paper's own simulations.
+
+```{r pknca-sim}
+rxode2::rxSetSeed(20260213)
+grp <- tibble::tibble(
+  treatment = c("1 mg/kg IV", "5 mg/kg IV", "20 mg/kg IV", "40 mg/kg IV", "5 mg/kg SC"),
+  mgkg = c(1, 5, 20, 40, 5),
+  route = c("iv", "iv", "iv", "iv", "sc")
+)
+t_nca <- c(0, 1 / 24, 0.25, 1, 2, 3, 7, 14, 21, 28, 42, 56, 84, 112, 140, 168, 224, 280, 336)
+make_grp <- function(i) {
+  ids <- (i - 1) * 200 + seq_len(200)
+  amt <- grp$mgkg[i] * 75.1
+  dose_rows <- data.frame(
+    id = ids, time = 0, amt = amt,
+    rate = if (grp$route[i] == "iv") amt * 24 else 0,
+    evid = 1, cmt = if (grp$route[i] == "iv") "central" else "depot"
+  )
+  obs_rows <- expand.grid(id = ids, time = t_nca)
+  obs_rows$amt <- 0
+  obs_rows$rate <- 0
+  obs_rows$evid <- 0
+  obs_rows$cmt <- "central"
+  out <- rbind(dose_rows, obs_rows)
+  out$HIV_VLOAD <- 0
+  out$treatment <- grp$treatment[i]
+  out
+}
+ev_nca <- do.call(rbind, lapply(seq_len(nrow(grp)), make_grp))
+ev_nca <- ev_nca[order(ev_nca$id, ev_nca$time, -ev_nca$evid), ]
+sim_nca <- rxode2::rxSolve(mod, ev_nca, keep = "treatment", returnType = "data.frame")
+```
+
+```{r pknca}
+conc_df <- sim_nca |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+dose_df <- ev_nca |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id, concu = "mg/L", timeu = "day")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, doseu = "mg")
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+summary(nca_res)
+```
+
+The only NCA-type quantity the paper reports is the median terminal
+half-life without viremia, 36.3 days (Discussion). It is compared with the
+simulated IV groups, whose terminal phase is not confounded by absorption.
+
+```{r nca-compare}
+published <- tibble::tibble(
+  treatment = c("1 mg/kg IV", "5 mg/kg IV", "20 mg/kg IV", "40 mg/kg IV"),
+  half.life = 36.3
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  params = "half.life",
+  units = c(half.life = "day"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated vs published median terminal half-life (IV groups). * marks rows differing by >20%.")
+
+hl <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "half.life", grepl("IV", treatment))
+stopifnot(abs(median(hl$PPORRES) / 36.3 - 1) < 0.15)
+```
+
+The model has linear clearance in the absence of viremia, so dose-normalized
+exposure is the same across the IV groups; the half-life is close to the
+published median in every group.
+
+# Assumptions and deviations
+
+* **Scale of the bioavailability IIV.** Table 1 gives `omega F` = 1.06 (as
+  an SD) without saying on which scale it acts. A log-normal eta of that size
+  would give about a quarter of subjects a bioavailability above 1, so the
+  model applies it on the logit scale (`logitfdepot`), which keeps F in
+  (0, 1) with the typical value 0.486 as the median.
+* **Other IIV.** All other etas are log-normal, as the clearance equation
+  (`exp(eta_CL)`) shows for CL; Table 1 reports each omega as an SD, so the
+  variances are the squares. The absorption half-life IIV is placed on
+  `log(ka)` (`ka = ln(2) / Tabs`), which is the same distribution with the
+  sign of the eta reversed.
+* **Bootstrap column for V2 and CLD.** In Table 1 the bootstrap medians of
+  `omega V2` (0.614) and `omega CLD` (0.387) look transposed relative to the
+  estimates (0.390 and 0.611). The model uses the Estimate column.
+* **EC50 scale.** Table 1 lists EC50 as 4.22 on the log10 scale; the Results
+  give the same value as 16,595 copies/mL. The model uses the linear value
+  10^4.22 in the hyperbolic function of the linear viral load. Applying the
+  function to log10 viral load instead would give a large clearance increase
+  at viral loads of 1-30 copies/mL, which the Figure 3 caption says were
+  indistinguishable from no viremia.
+* **Emax as a fractional increase.** `CLmax` = 5.46 is the increment added to
+  1 in the clearance equation, so maximal clearance is 6.46-fold the baseline
+  (641 mL/day), as the abstract and Results state.
+* **Residual error.** Combined additive (0.523 mg/L) and proportional
+  (0.204) error; the paper does not say whether the two terms add on the SD
+  or the variance scale. The nlmixr2 default (variance scale) is used.
+* **Supplementary Table S1 dose labels.** Table S1 lists the dose groups as
+  "1 mg / 2 mg / 20 mg / 40 mg"; the Methods and the group sizes (3 / 11 /
+  8 / 12) show these are 1 / 5 / 20 / 40 mg/kg.
+* **Viral-load inputs.** The paper does not state how viral loads below the
+  limit of quantitation were coded; at < 50 copies/mL the effect on CL is
+  below 0.3% of Emax, so 0 and the limit give the same prediction.
+* **Infusion duration.** 1 hour, as in the paper's Figure 4 simulations.
+* **Figure 1 viral-load curve.** Digitised approximately; the viremic
+  regimen checks in the Figure 4 section are illustrative.
+* **Covariates screened but not retained.** HIV status, sex, height, weight,
+  age, baseline serum creatinine and baseline hematocrit were tested and are
+  not in the final model; they are listed in `covariatesDataExcluded`.
+* **Participant-specific analysis.** The ADAPT5 maximum a posteriori fits of
+  three ACTG A5386 participants (Supplementary Table S2, Figure 5) are
+  individual Bayesian estimates, not a population model, and are not
+  packaged.

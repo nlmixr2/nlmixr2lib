@@ -7948,6 +7948,8 @@ navbar:
         href: articles/Hu_2026_utreloxastat.html
       - text: "VRC07523LS (Huynh 2026)"
         href: articles/Huynh_2026_VRC07523LS.html
+      - text: "VRC07523LS (Smith 2026)"
+        href: articles/Smith_2026_VRC07523LS.html
       - text: "Vaborbactam (Trang 2021)"
         href: articles/Trang_2021_meropenem_vaborbactam.html
       - text: "Valbenazine (Nguyen 2025)"
@@ -10909,6 +10911,7 @@ articles:
   - articles/Smit_2022_moxidectin
   - articles/Smith_2017_clindamycin
   - articles/Smith_2022_pah_competitive_metabolism
+  - articles/Smith_2026_VRC07523LS
   - articles/Smuszkiewicz_2017_dexmedetomidine
   - articles/Smythe_2012_rifampicin
   - articles/Smythe_2013_gatifloxacin
