@@ -3634,6 +3634,8 @@ navbar:
         href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
       - text: "Imipenem children (Yoshizawa 2013)"
         href: articles/Zhang_2025_imipenem_model_review.html
+      - text: "Imipenem mucus (Guo 2025)"
+        href: articles/Guo_2025_mucus_spatial_pkpd.html
       - text: "Imipenem neonates (Yoshizawa 2013)"
         href: articles/Zhang_2025_imipenem_model_review.html
       - text: "Imipenem neutropenia (Lafaurie 2023)"
@@ -9511,6 +9513,7 @@ articles:
   - articles/Guo_2022_PF_06939999
   - articles/Guo_2022_ciprofloxacin
   - articles/Guo_2025_glp1ReceptorAgonists_mbma
+  - articles/Guo_2025_mucus_spatial_pkpd
   - articles/Gupta_2006_peginterferon_alfa_2b
   - articles/Gupta_2015_ixazomib
   - articles/Gupta_2016_amatuximab
