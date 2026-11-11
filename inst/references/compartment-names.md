@@ -3572,6 +3572,20 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Lalovic_2020_lemborexant_uti.R` (founding example; linear in the lemborexant average steady-state concentration on the logit, not statistically significant).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. An investigator-reported adverse-event term with no severity threshold. Distinct from `prob_infection` (an invasive fungal or bacterial infection composite in transplant recipients).
 
+### prob_ivh_severe (**canonical severe-intraventricular-hemorrhage probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a preterm neonate develops severe intraventricular hemorrhage (Grade III or IV by cranial ultrasound in the first week of life, versus none, Grade I or Grade II), in a static per-subject logistic exposure-response model of indomethacin IVH prophylaxis.
+- **Source aliases:** none.
+- **Example models:** `Yeung_2025_indomethacin_ivh.R` (founding example; linear in the dose-normalised indomethacin AUC0-inf, site, gestational age, postnatal age at first dose, sex and race; only gestational age significant).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. The dichotomy is by severity grade, not by IVH occurrence; a model of any-grade IVH would register a separate `prob_ivh`.
+
+### prob_pda_failure (**canonical patent-ductus-arteriosus treatment-failure probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patent ductus arteriosus is not resolved after a pharmacological treatment course, i.e. a further course or surgical ligation is needed, in a per-course logistic exposure-response model.
+- **Source aliases:** none.
+- **Example models:** `Yeung_2025_indomethacin_pda.R` (founding example; mixed-effects logistic regression in the per-course indomethacin AUC with a subject random intercept; no predictor significant).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Failure, not success, is the event coded 1 (Yeung 2025 Table 2 '0 = success, 1 = failure'); an open ductus that needs no further treatment counts as success.
+
 ### prob_influenza (**canonical influenza adverse-event probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient reports influenza (including 'flu' and influenza-like illness as pooled by the source) as a treatment-emergent adverse event at any time during a study, in a static landmark exposure-safety logistic model. A per-subject binary outcome.
@@ -5149,6 +5163,13 @@ Two distinct decompositions of the reticulocyte pool are registered, and a model
 - **Role:** Urine volume PD output.
 - **Source aliases:** none.
 - **Example models:** `Heuberger_2018_salbutamol.R`.
+
+### urine_output_nadir (**canonical urine-output-rate nadir PD output**)
+- **Type:** compartment
+- **Role:** Lowest urine output rate (mL/kg/h) within a fixed window after a dose -- 12 h in the founding example -- predicted by a static per-dose exposure-toxicity regression. A drug-induced oliguria endpoint; 1 and 0.5 mL/kg/h are the clinical concern thresholds in neonates.
+- **Source aliases:** `UOP rate nadir within 12 h after dose` (Yeung 2025).
+- **Example models:** `Yeung_2025_indomethacin_uop.R` (founding example; ln of the nadir linear in the per-dose indomethacin Cmax and weight-normalised fluid intake, log-normal residual).
+- **Notes:** A RATE normalised by body weight, not a volume: distinct from `urine_vol` (urine volume) and from the cumulative drug amount in `urine`.
 
 ### weight (**canonical bare body-weight PD output**)
 - **Type:** compartment
