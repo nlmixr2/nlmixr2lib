@@ -1,0 +1,334 @@
+---
+title: "Paracetamol pain relief (Zhao 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Paracetamol pain relief (Zhao 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Zhao_2025b_paracetamol_painrelief"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Zhao_2025b_paracetamol_painrelief"))$description`
+* Article: <https://doi.org/10.1002/psp4.70161> (open access, PMC12823458)
+
+Zhao 2025 builds a GastroPlus whole-body PBPK model of paracetamol
+(acetaminophen, APAP) together with five metabolites (glucuronide, sulfate,
+NAPQI, cysteine and mercapturate conjugates) in healthy adults, extrapolates it
+to overweight, obese, NAFLD, NASH and cirrhotic (Child-Pugh A/B/C) virtual
+populations using the platform's built-in disease physiologies, and finally
+links the predicted plasma paracetamol concentration to a 0-10 pain relief score
+with a direct sigmoid Emax model.
+
+**Only the last component, the pain relief PD layer, is packaged in
+nlmixr2lib.** The PBPK layers cannot be reproduced from the publication (see
+[Assumptions and deviations](#assumptions-and-deviations)). The PD layer is
+fully specified by four printed numbers and is self-contained once a plasma
+paracetamol concentration is supplied through the `CEFFECT` covariate column.
+
+Note that `Zhao_2025_paracetamol` in this package is a different paper (a
+population PK model in spinal muscular atrophy, Br J Clin Pharmacol 2025); the
+`2025b` in this model's name only separates the two.
+
+```{r model}
+mod <- readModelDb("Zhao_2025b_paracetamol_painrelief")
+mod
+```
+
+# Population
+
+The PD relationship was benchmarked on the plasma concentration and pain relief
+data of Shinoda 2007 (Biol Pharm Bull 30:157-161), a study of Japanese patients
+with chronic pain given a single 1 g oral paracetamol tablet (Zhao 2025 Methods,
+"The PK/PD Model on the MASLD-Related Population", and supplementary Table S3).
+Zhao 2025 does not restate the size or demographics of that cohort, so they are
+left unreported in the model metadata. The PD model was then applied, unchanged,
+to the PBPK-predicted plasma profiles of the normal-weight, overweight, obese,
+non-NAFLD, NAFLD, NASH, healthy and cirrhosis Child-Pugh A/B/C virtual
+populations.
+
+```{r population}
+str(rxode2::rxode(readModelDb("Zhao_2025b_paracetamol_painrelief"))$population)
+```
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Model form | `score = E0 + Emax * C^hill / (EC50^hill + C^hill)` | Results, "PK/PD Simulation on MASLD-Related Population" ("Sigmoid Emax model, also known as Hill equations") |
+| Driver `C` | plasma paracetamol concentration (`CEFFECT`, ug/mL) | same paragraph ("Predicted APAP plasma concentrations were related to pain relief scores"); supplement, effect-site section |
+| Output scale | pain relief score, continuous, 0-10 | Methods, "The PK/PD Model on the MASLD-Related Population"; Results |
+| `e0` | 0 (fixed) | Results ("E0 = 0 ... the worst pain relief possible") |
+| `lemax` | log(3.898) | Results ("Emax = 3.898") |
+| `lec50` | log(1.612 ug/mL) | Results ("EC50 = 1.612 ug/mL") |
+| `lhill` | log(1.36) | Results ("Hill coefficient = 1.36") |
+| `addSd` | 0 (fixed) | not reported; see Assumptions |
+| Peak score 3.15 (normal weight) to 2.63 (obese) | used as a check below | Results, same paragraph |
+| Plasma Cmax about 10000 ng/mL after 1 g (Shinoda benchmark) | used as a check below | Supplement, Figure S7 paragraph |
+
+# Concentration-response relationship
+
+```{r cr-curve}
+conc_grid <- data.frame(
+  id = 1L,
+  time = seq(0, 30, by = 0.01),
+  evid = 0L
+)
+conc_grid$CEFFECT <- conc_grid$time
+cr <- as.data.frame(rxSolve(mod, conc_grid)) |>
+  mutate(CEFFECT = time)
+```
+
+```{r cr-plot, fig.cap = "Pain relief score versus plasma paracetamol concentration. This is the concentration-response relationship underlying Figure 5 of Zhao 2025 (Figure 5 shows it in 3-D against time and concentration). The dashed line marks EC50 = 1.612 ug/mL."}
+ggplot(cr, aes(CEFFECT, score)) +
+  geom_line(linewidth = 0.8) +
+  geom_vline(xintercept = 1.612, linetype = "dashed") +
+  geom_hline(yintercept = 3.898, linetype = "dotted") +
+  labs(
+    x = "Plasma paracetamol concentration (ug/mL)",
+    y = "Pain relief score (0-10)"
+  ) +
+  theme_bw()
+```
+
+## Definitional checks
+
+These checks use the model on its own printed parameters, so they are exact
+and a transcription error in any of the four values breaks them.
+
+```{r definitional}
+score_at <- function(conc) {
+  d <- data.frame(id = 1L, time = seq_along(conc) - 1, evid = 0L, CEFFECT = conc)
+  as.data.frame(rxSolve(mod, d))$score
+}
+emax <- 3.898
+ec50 <- 1.612
+hill <- 1.36
+checks <- data.frame(
+  check = c(
+    "score at C = 0 equals E0",
+    "score at C = EC50 equals Emax / 2",
+    "score at C = 1000 ug/mL approaches Emax",
+    "score at 2 x EC50, closed form"
+  ),
+  model = score_at(c(0, ec50, 1000, 2 * ec50)),
+  expected = c(0, emax / 2, emax * 1000^hill / (ec50^hill + 1000^hill),
+               emax * 2^hill / (1 + 2^hill))
+)
+knitr::kable(checks, digits = 5)
+stopifnot(
+  all(abs(checks$model - checks$expected) < 1e-8),
+  all(diff(cr$score) >= 0)
+)
+```
+
+## Peak scores stated in the paper
+
+Zhao 2025 reports that, from normal weight to obese, the predicted peak pain
+relief score falls "from 3.15 to 2.63". Because the model is a direct Emax on
+plasma concentration, each peak score corresponds to exactly one peak plasma
+concentration, obtained by inverting the Hill equation:
+`C = EC50 * (E / (Emax - E))^(1 / hill)`.
+
+```{r inversion}
+inv <- data.frame(
+  population = c("normal weight", "obese"),
+  peak_score = c(3.15, 2.63)
+) |>
+  mutate(implied_cmax_ug_mL = ec50 * (peak_score / (emax - peak_score))^(1 / hill))
+inv$model_score_at_implied_cmax <- score_at(inv$implied_cmax_ug_mL)
+inv |>
+  dplyr::rename(
+    "Population" = population,
+    "Peak score (paper)" = peak_score,
+    "Implied plasma Cmax (ug/mL)" = implied_cmax_ug_mL,
+    "Model score at that Cmax" = model_score_at_implied_cmax
+  ) |>
+  knitr::kable(digits = 3)
+stopifnot(all(abs(inv$model_score_at_implied_cmax - inv$peak_score) < 1e-8))
+```
+
+The implied peak concentrations, 4.6 and 2.8 ug/mL, lie inside the 0-8000 ng/mL
+concentration axis of the normal-weight / overweight / obese panel of Figure 5,
+and the obese population's lower value is consistent with the paper's statement
+that obesity lowers APAP peak concentrations. The supplement reports a
+PBPK-simulated plasma Cmax of about 10000 ng/mL for the 1 g tablet benchmark
+(Figure S7); at 10 ug/mL the model gives a score of
+`r round(score_at(10), 2)`, close to the plateau of about 3.6-3.8 visible in
+the control-group curves of Figure 5.
+
+# Simulation: driving the PD model from a population PK model
+
+In use, `CEFFECT` comes from a paracetamol PK model. Here the plasma profile
+after a single 1 g fasted tablet in a 70 kg, 176 cm man is taken from the
+library's `Morse_2022_acetaminophen` popPK model (healthy adults, the same
+1 g tablet dose as the Shinoda benchmark) and fed into the pain relief model.
+This illustrates the workflow; it does not reproduce the GastroPlus profiles of
+Zhao 2025, whose peak-effect times (0.49-0.97 h across the populations) depend
+on the unreproducible PBPK layer.
+
+```{r pk-typical}
+pk <- readModelDb("Morse_2022_acetaminophen")
+pk_cov <- function(ev) {
+  ev$WT <- 70
+  ev$HT <- 176
+  ev$SEXF <- 0
+  ev$FED <- 0
+  ev$FORM_APAPIBU_SUSP <- 0
+  ev$FORM_POWDER <- 0
+  ev
+}
+ev_typ <- et(amt = 1000, cmt = "depot") |>
+  et(seq(0, 8, by = 0.01), cmt = "central") |>
+  as.data.frame() |>
+  pk_cov()
+# zeroRe() removes the residual error too, so rxode2 warns "No sigma
+# parameters in the model"; that is the intended typical-value solve.
+pk_typ <- suppressWarnings(
+  as.data.frame(rxSolve(rxode2::zeroRe(pk), ev_typ, returnType = "data.frame"))
+)
+
+pd_in <- data.frame(id = 1L, time = pk_typ$time, evid = 0L, CEFFECT = pk_typ$Cc)
+pd_typ <- as.data.frame(rxSolve(mod, pd_in)) |>
+  mutate(Cc = pk_typ$Cc)
+```
+
+```{r pk-pd-plot, fig.cap = "Typical plasma paracetamol concentration after a 1 g fasted tablet (Morse 2022 popPK) and the pain relief score it drives through the Zhao 2025 PD model. Compare with the time axis of Figure 5 of Zhao 2025."}
+pd_long <- bind_rows(
+  data.frame(time = pd_typ$time, value = pd_typ$Cc, panel = "Plasma paracetamol (ug/mL)"),
+  data.frame(time = pd_typ$time, value = pd_typ$score, panel = "Pain relief score (0-10)")
+)
+ggplot(pd_long, aes(time, value)) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~panel, ncol = 1, scales = "free_y") +
+  labs(x = "Time after dose (h)", y = NULL) +
+  theme_bw()
+```
+
+## NCA of the driving profile and the direct-effect identity
+
+For a direct (no effect-compartment) Emax model, the peak score occurs at the
+plasma Tmax and equals the Emax function evaluated at the plasma Cmax. PKNCA
+supplies the driver's Cmax and Tmax.
+
+```{r pknca}
+nca_conc <- pk_typ |>
+  dplyr::filter(!is.na(Cc)) |>
+  mutate(id = 1L, treatment = "1 g tablet") |>
+  select(id, time, Cc, treatment)
+nca_dose <- data.frame(id = 1L, time = 0, amt = 1000, treatment = "1 g tablet")
+conc_obj <- PKNCAconc(nca_conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCAdose(nca_dose, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = 8, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_res <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tab <- as.data.frame(nca_res$result) |>
+  select(PPTESTCD, PPORRES)
+knitr::kable(nca_tab, digits = 3)
+
+cmax_pk <- nca_tab$PPORRES[nca_tab$PPTESTCD == "cmax"]
+tmax_pk <- nca_tab$PPORRES[nca_tab$PPTESTCD == "tmax"]
+peak_pd <- max(pd_typ$score)
+tpeak_pd <- pd_typ$time[which.max(pd_typ$score)]
+identity <- data.frame(
+  quantity = c("time of peak score (h)", "peak score"),
+  from_pd = c(tpeak_pd, peak_pd),
+  from_pk = c(tmax_pk, score_at(cmax_pk))
+)
+knitr::kable(identity, digits = 4)
+# Both sides use the same solved profile, so the identity is exact.
+stopifnot(
+  abs(tpeak_pd - tmax_pk) < 1e-10,
+  abs(peak_pd - score_at(cmax_pk)) < 1e-8
+)
+```
+
+## Variability in the driving PK
+
+The PD layer has no reported between-subject variability, so all spread in the
+predicted score below comes from the Morse 2022 PK variability (200 simulated
+adults with the same covariates).
+
+```{r pk-vpc}
+rxode2::rxSetSeed(20251125)
+n_sub <- 200
+ev_pop <- et(amt = 1000, cmt = "depot") |>
+  et(seq(0, 8, by = 0.05), cmt = "central") |>
+  et(id = seq_len(n_sub)) |>
+  as.data.frame() |>
+  pk_cov()
+pk_pop <- as.data.frame(rxSolve(pk, ev_pop, returnType = "data.frame"))
+# The PD model has no etas, so rxode2 warns about a multi-subject solve
+# without omega; each subject differs only through its own CEFFECT column.
+pd_pop <- suppressWarnings(as.data.frame(rxSolve(
+  mod,
+  data.frame(id = pk_pop$id, time = pk_pop$time, evid = 0L, CEFFECT = pk_pop$Cc)
+)))
+band <- pd_pop |>
+  group_by(time) |>
+  summarise(
+    p05 = quantile(score, 0.05),
+    p50 = median(score),
+    p95 = quantile(score, 0.95),
+    .groups = "drop"
+  )
+peak_by_id <- pd_pop |>
+  group_by(id) |>
+  summarise(peak = max(score), tpeak = time[which.max(score)], .groups = "drop")
+summary(peak_by_id$peak)
+summary(peak_by_id$tpeak)
+```
+
+```{r pk-vpc-plot, fig.cap = "Median and 90% interval of the pain relief score after a 1 g fasted tablet, with spread from Morse 2022 PK variability only."}
+ggplot(band, aes(time)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line(aes(y = p50), linewidth = 0.8) +
+  labs(x = "Time after dose (h)", y = "Pain relief score (0-10)") +
+  theme_bw()
+```
+
+# Assumptions and deviations
+
+* **Only the PD layer is packaged.** The paracetamol and five-metabolite PBPK
+  layers were built in GastroPlus. Their tissue partition coefficients are given
+  only as a method name (Lukacova), enzyme Vmax values are expressed per mg of
+  enzyme with the per-tissue enzyme amounts left to the software, organ volumes
+  and blood flows come from the software's PEAR physiology generator, and the
+  overweight / obese / NAFLD / NASH / cirrhosis physiologies are the platform's
+  preset populations used without modification (Discussion). None of these are
+  printed, so the PBPK model cannot be reproduced from the publication. The
+  paper's printed Vss (68.46 L) and total clearance (21.18 L/h) are
+  noncompartmental summaries of the observed intravenous studies used as
+  benchmarks, not parameters of the PBPK model, and a compartmental model built
+  from them would not carry the paper's MASLD-population predictions. They are
+  recorded in the `CEFFECT` covariate notes for provenance.
+* **Plasma is the effect site.** The paper relates the score directly to plasma
+  concentration with no effect compartment; its supplement argues that plasma
+  is a reasonable surrogate for unbound brain concentration, because the
+  simulated profiles peak 0.07 h apart.
+* **Origin of the PD parameters.** The paper calls E0, EC50, Emax and the Hill
+  coefficient "the individual PD parameters" obtained with the GastroPlus PD
+  module against the Shinoda 2007 benchmark data, and gives no standard errors.
+  They are carried exactly as printed; E0 = 0 is the bottom of the score scale
+  and is fixed.
+* **No variability or residual error.** No between-subject variability or
+  residual-error model is reported for the PD layer; the residual SD is fixed at
+  zero. Users fitting this model to individual data should free it.
+* **Benchmark cohort not described.** Zhao 2025 does not restate the size,
+  sex mix or body weight of the Shinoda 2007 cohort, so those population fields
+  are left unreported.
+* **Figure 5 not digitised.** Figure 5 is a 3-D rendering of score against time
+  and concentration, which cannot be read reliably; the checks above use the
+  peak scores and concentrations stated in the text instead.
+* **Driving PK in this vignette.** The simulations use the library's Morse 2022
+  popPK model as the source of `CEFFECT`, which is a demonstration of the
+  intended workflow and not part of Zhao 2025.
