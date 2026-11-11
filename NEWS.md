@@ -9,7 +9,7 @@
 
 - Add Pouzin 2023 tusamitamab ravtansine CYP3A4/1A2/2B6 downregulation IVIVE-PK ([doi:10.1002/cpt.3102](https://doi.org/10.1002/cpt.3102)) -- adults with advanced CEACAM5-expressing solid tumors (typical-value simulation from in vitro constants).
 
-- Add Wang 2023 polymyxin B acute kidney injury exposure-response ([doi:10.1002/psp4.13040](https://doi.org/10.1002/psp4.13040)) -- critically ill Chinese adults with multidrug-resistant Gram-negative infections.
+- Add Briggs 2023 dupilumab EASI and IGA exposure-response ([doi:10.1007/s11095-023-03616-8](https://doi.org/10.1007/s11095-023-03616-8)) -- children (6-11 years), adolescents and adults with moderate-to-severe atopic dermatitis.
 
 - Add Iwaki 2021 guselkumab PPPASI PK/PD ([doi:10.1002/jcph.1953](https://doi.org/10.1002/jcph.1953)) -- Japanese adults with palmoplantar pustulosis.
 
