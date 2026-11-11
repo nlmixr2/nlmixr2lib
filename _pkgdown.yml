@@ -680,6 +680,8 @@ navbar:
         href: articles/Kakara_2014_statins_LDLC.html
       - text: "Atorvastatin (Knebel 2013)"
         href: articles/Knebel_2013_atorvastatin.html
+      - text: "Atorvastatin (Kong 2025)"
+        href: articles/Kong_2025_microdose_cocktail_esrd.html
       - text: "Atorvastatin (Langeskov 2022)"
         href: articles/Langeskov_2022_semaglutide_ddi.html
       - text: "Atorvastatin (Stillemans 2022)"
@@ -1932,6 +1934,8 @@ navbar:
         href: articles/Kurup_2024_DZIF10c.html
       - text: "Dabigatran (Fuhr 2020)"
         href: articles/Fuhr_2020_dabigatran.html
+      - text: "Dabigatran (Kong 2025)"
+        href: articles/Kong_2025_microdose_cocktail_esrd.html
       - text: "Dabigatran (Liesenfeld 2013)"
         href: articles/Liesenfeld_2013_dabigatran.html
       - text: "Dabigatran (Liu 2022)"
@@ -5006,6 +5010,8 @@ navbar:
         href: articles/Franken_2017_midazolam.html
       - text: "Midazolam (Janssen 2017)"
         href: articles/Janssen_2017_cabazitaxel_phenotyping.html
+      - text: "Midazolam (Kong 2025)"
+        href: articles/Kong_2025_microdose_cocktail_esrd.html
       - text: "Midazolam (McCann 2025)"
         href: articles/McCann_2025_midazolam.html
       - text: "Midazolam (Nassar 2022)"
@@ -6194,6 +6200,8 @@ navbar:
         href: articles/Tian_2025_pirtobrutinib.html
       - text: "Pitavastatin (Kakara 2014)"
         href: articles/Kakara_2014_statins_LDLC.html
+      - text: "Pitavastatin (Kong 2025)"
+        href: articles/Kong_2025_microdose_cocktail_esrd.html
       - text: "Pixavir (Yang 2026)"
         href: articles/Yang_2026_pixavir.html
       - text: "Plazomicin (Trang 2019)"
@@ -6954,6 +6962,8 @@ navbar:
         href: articles/Hanke_2021_rosuvastatin.html
       - text: "Rosuvastatin (Kakara 2014)"
         href: articles/Kakara_2014_statins_LDLC.html
+      - text: "Rosuvastatin (Kong 2025)"
+        href: articles/Kong_2025_microdose_cocktail_esrd.html
       - text: "Rosuvastatin (Macpherson 2015)"
         href: articles/Macpherson_2015_rosuvastatin.html
       - text: "Rosuvastatin ezetimibe (An 2025)"
@@ -10268,6 +10278,7 @@ articles:
   - articles/Komatsu_2015_digoxin
   - articles/Komatsu_2016_penicillinG
   - articles/Kong_2020_vonoprazan_pbpk
+  - articles/Kong_2025_microdose_cocktail_esrd
   - articles/Kong_2025_piperacillin_tazobactam
   - articles/Kong_2025_sudapyridine
   - articles/Kong_2025b_piperacillin_tazobactam
