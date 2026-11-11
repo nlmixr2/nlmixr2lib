@@ -6030,6 +6030,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Kloprogge_2020_hrze_bacterialload.R` (exponential effect on the sputum bacterial kill rate LAM, coefficient 0.0005 per umol*h/L).
 - **Notes:** Member of the `AUC_<DRUG>` family, which `AUC_EMPA`'s Notes declare extensible; sibling of `AUC_RIF` from the same model. The upstream model that generates this column is `modellib('Kloprogge_2020_isoniazid')` (dose / CL at steady state). Distinct from an AUC/MIC ratio: Kloprogge 2020 also tested isoniazid AUC0-24/MIC in the MIC subset, which should get a separate canonical if a model ever retains it.
 
+### AUC_ETHAMBUTOL (**canonical for ethambutol AUC over a 24 h dosing interval, as the numerator of the AUC0-24/MIC index**)
+- **Description:** Ethambutol area under the concentration-time curve over one 24 h dosing interval (AUC0-24), supplied as a static exposure column to an exposure-response model that has no PK ODE of its own. In the founding model it is the AUC0-24 of the hollow-fiber central compartment, which was run to mimic unbound ethambutol concentrations at the centre of tuberculosis lung cavities; the model divides it by its own `mic` parameter to form the AUC0-24/MIC index.
+- **Units:** `mg*h/L`. Document per-model via `covariateData[[AUC_ETHAMBUTOL]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- set to 0 for non-treated control records, where the sigmoid Emax term vanishes and the burden equals the drug-free control value. Founding-model exposures: 1.0-16.6 mg*h/L (AUC0-24/MIC 0.13-2.07 against an MIC of 8 mg/L).
+- **Source aliases:**
+  - `AUC0-24`, `AUC0-24/MIC` (numerator) -- Gumbo 2026 Figure 2B (absolute AUC0-24 in mg*h/L), Figure 3 panel titles and Table 2 (the ratio).
+- **Example models:** `Gumbo_2026_ethambutol_hfs.R` (hollow-fiber M. kansasii day-by-day inhibitory sigmoid Emax on log10 CFU/mL and time-to-positivity, plus a quadratic resistant subpopulation).
+- **Notes:** Member of the `AUC_<DRUG>` family, which `AUC_EMPA`'s Notes declare extensible; INN spelled out, as for `AUC_FENEBRUTINIB` and `AUC_ACALABRUTINIB`. The absolute-AUC form (rather than an `AUCMIC_<DRUG>` ratio column) follows the `AUCMIC_TYLO` rule because the source reports the challenge-strain MIC (8 mg/L) and that MIC reproduces the paper's own index: the plotted HFS AUC0-24 values equal 8 x the printed AUC0-24/MIC values for all six regimens. Not a plasma AUC: a model that consumes a patient plasma ethambutol AUC (for example from `Gumbo_2026_ethambutol.R`) should say so in its covariate notes, because Gumbo 2026 compared the hollow-fiber exposures to cavity-centre rather than plasma AUCs.
+
 ### AUC_RIF (**canonical for rifampicin plasma AUC over a 24 h dosing interval**)
 - **Description:** Per-subject (time-fixed) rifampicin plasma AUC over a 0-24 h once-daily dosing interval, used as an exposure covariate in exposure-response models. In Svensson 2020 it is the individual AUC0-24 on day 2 +/- 1 of treatment (before autoinduction is complete), predicted from the empirical Bayes estimates of the companion popPK model, and it reduces the hazard of death through an Emax function.
 - **Units:** `mg*h/L` (Svensson 2020). Kloprogge 2020 carries the column in `umol*h/L` because its PK data were molar; convert with the rifampicin molecular weight 822.94 g/mol (`AUC_umol = AUC_mg * 1000 / 822.94`). Each model's `covariateData[["AUC_RIF"]]$units` states which.

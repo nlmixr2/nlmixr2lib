@@ -2880,6 +2880,8 @@ navbar:
         href: articles/Patel_2025_eteplirsen.html
       - text: "Ethambutol (BeraldiMagalhaes 2021)"
         href: articles/BeraldiMagalhaes_2021_ethambutol.html
+      - text: "Ethambutol (Gumbo 2026)"
+        href: articles/Gumbo_2026_ethambutol.html
       - text: "Ethambutol (Horita 2018)"
         href: articles/Horita_2018_ethambutol.html
       - text: "Ethambutol (Jonsson 2011)"
@@ -2898,12 +2900,8 @@ navbar:
         href: articles/Tikiso_2022_ethambutol.html
       - text: "Ethambutol (Wijk 2024)"
         href: articles/Wijk_2024_first_line_tb_drugs.html
-      - text: "Ethambutol human fromMouse pbpk (Karakitsios 2024)"
-        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
-      - text: "Ethambutol human fromRabbit pbpk (Karakitsios 2024)"
-        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
-      - text: "Ethambutol mouse pbpk (Karakitsios 2024)"
-        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
+      - text: "Ethambutol hfs (Gumbo 2026)"
+        href: articles/Gumbo_2026_ethambutol.html
       - text: "Ethambutol pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
       - text: "Ethambutol rabbit pbpk (Karakitsios 2024)"
@@ -10171,7 +10169,7 @@ articles:
   - articles/Guan_2021_yimitasvir
   - articles/Guiastrennec_2016_gastric_emptying
   - articles/Guidi_2019_artesunate_mefloquine
-  - articles/Gulave_2025_morphine_pbpk
+  - articles/Gumbo_2026_ethambutol
   - articles/Guo_2016_taurocholate_schh
   - articles/Guo_2020_valproic_acid
   - articles/Guo_2022_PF_06939999
