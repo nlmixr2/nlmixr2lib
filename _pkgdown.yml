@@ -5522,6 +5522,10 @@ navbar:
         href: articles/Lam_2025_ondansetron.html
       - text: "Ondansetron (deAlwis 1998)"
         href: articles/deAlwis_1998_ondansetron.html
+      - text: "Ondansetron female rat (Chiang 2024)"
+        href: articles/Chiang_2024_ondansetron.html
+      - text: "Ondansetron male rat (Chiang 2024)"
+        href: articles/Chiang_2024_ondansetron.html
       - text: "Ontamalimab (Wang 2020)"
         href: articles/Wang_2020_ontamalimab.html
       - text: "Orin1001 (Li 2024)"
@@ -9245,6 +9249,7 @@ articles:
   - articles/CherkaouiRbati_2023_dsm265
   - articles/Chetty_2014_efalizumab_cd11a_pasi
   - articles/Chi_2018_propofol
+  - articles/Chiang_2024_ondansetron
   - articles/Chien_2022_imatinib
   - articles/Chigutsa_2011_rifampicin
   - articles/Chigutsa_2012_ofloxacin
