@@ -5086,6 +5086,8 @@ navbar:
         href: articles/Yang_2021_metformin_ddi_pbpk.html
       - text: "Metformin pbpk (Nishiyama 2019)"
         href: articles/Nishiyama_2019_metformin_cimetidine.html
+      - text: "Metformin placentaperfusion (Tiley 2026)"
+        href: articles/Tiley_2026_metformin_placentaperfusion.html
       - text: "Methadone (Watt 2026)"
         href: articles/Watt_2026_methadone.html
       - text: "Methotrexate (Arshad 2021)"
@@ -11824,6 +11826,7 @@ articles:
   - articles/Tien_2024_meropenem
   - articles/Tikiso_2021_abacavir
   - articles/Tikiso_2022_ethambutol
+  - articles/Tiley_2026_metformin_placentaperfusion
   - articles/Timmermann_2019_brodalumab
   - articles/Ting_2014_tobramycin_inhaled
   - articles/Tiraboschi_2023_avalglucosidaseAlfa
