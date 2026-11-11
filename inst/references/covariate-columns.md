@@ -10990,16 +10990,38 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Sun_2025_maribavir_nausea.R` (coefficient `-2.98`, OR 0.0508, 95% CI 0.00313-0.826, p = 0.0363 -- subjects with prior prophylaxis had markedly lower treatment-emergent nausea risk), `Song_2024_maribavir_cmv_clearance_wk16.R` (coefficient `-0.818`, OR 0.441; Song 2024 Table S1.3, row 'Prior use of CMV prophylaxis'; 98 of 231 SOLSTICE patients positive per Table S1.2).
 - **Notes:** Only 22 of 238 subjects (9.2%) were positive in the founding cohort, and the fitted odds ratio has a confidence interval spanning more than two orders of magnitude, so the effect size should be treated as poorly determined even though the p-value is nominally significant. The specific prophylactic agent is NOT recorded by the source, so this column cannot be decomposed by drug; a paper that does report the agent should use the `CONMED_<INN>` family instead of, or in addition to, this composite. **Distinct from `DIS_CMV`** (the disease-state indicator marking a transplant recipient with CMV infection) and from `TX_HCT`. Scope: specific.
 
-### MIC (**canonical for the minimum inhibitory concentration of the modelled antibacterial against the subject's infecting isolate**)
-- **Description:** Minimum inhibitory concentration (MIC) of the antibacterial being modelled, measured against the clinical isolate recovered from the subject (broth microdilution or an equivalent standardised susceptibility test). Carries pathogen susceptibility into an antibacterial PK/PD model as a per-subject covariate, typically on a potency parameter (IC50 / EC50) of a biomarker or bacterial-kill response. The drug is implied by the model, as for `CRCL`: the column must hold the MIC measured for the modelled drug, not for a co-administered agent. Time-fixed per subject (the isolate's susceptibility at diagnosis); for polymicrobial infections the source paper's rule for choosing one MIC must be recorded per model.
-- **Units:** mg/L
-- **Type:** continuous
-- **Scope:** general
-- **Reference category:** n/a -- continuous. Founding model uses an UNCENTERED exponential effect, `exp(beta * MIC)`, so the typical value is the extrapolation to MIC = 0.
+### DENV_SEROTYPE1 (**canonical for infecting dengue virus serotype 1 indicator**)
+- **Description:** 1 = the infecting dengue virus is serotype 1 (DENV-1), 0 = any other serotype. Time-fixed per subject, typed by serotype-specific RT-qPCR or NS1 ELISA at enrolment. One of a set of mutually exclusive `DENV_SEROTYPE<n>` indicators decomposed from a single four-level serotype column, following the register's decomposed-binary convention for multi-level categoricals; a model registers only the serotypes whose effect it estimates, and the remaining serotypes form the reference group (all retained indicators 0).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (another serotype). In the founding model the reference group is serotype 2 or 4 (`DENV_SEROTYPE1 = DENV_SEROTYPE3 = 0`).
 - **Source aliases:**
-  - `MIC` -- Troisi 2024 Results, Table 3 ('MIC on IC50') and ESM covariate equation `IC50 = IC50pop x e^(beta_MIC x MIC)`; meropenem MIC against the Gram-negative isolate from the bronchoalveolar lavage / blood culture.
-- **Example models:** `Troisi_2024_meropenem.R` (exponential effect on the meropenem IC50 for inhibition of C-reactive protein production: `ic50 = 0.79 * exp(0.44 * MIC) * exp(2.46 * CONMED_ANTIMRSA)`; Table 2 cohort median MIC 0.25 mg/L, IQR 0.12-4, range 0.12-64 -- founding example).
-- **Notes:** Distinct from the ratio PK/PD-index canonicals `AUCMIC_<DRUG>`, `CMAXMIC_<DRUG>` and `FTMIC_<DRUG>`, which carry an exposure already divided by an MIC; `MIC` is the bare susceptibility value, and the model computes any exposure ratio itself. MIC values are reported on the two-fold dilution scale and are often censored at the panel limits (Troisi 2024 reports 0.12 mg/L, the lowest dilution tested, for most Enterobacterales isolates); supply the reported value as-is. With an uncentered exponential effect the covariate dominates at high MIC (`exp(0.44 * 16)` is about 1100-fold in the founding model), so simulations should stay within the source cohort's MIC range.
+  - `SERO` (four-level 1-4; `DENV_SEROTYPE1 = (SERO == 1)`) -- used in `Ding_2024_ivermectin.R` (NONMEM `$INPUT` 'Serotype of dengue virus').
+- **Example models:** `Ding_2024_ivermectin.R` (multiplies the log10 exponent of the infection rate constant and of the virus production rate constant, as in the NONMEM code `TVBETA = THETA(1) * CSERO1; BETA = 10**TVBETA`: `+0.152` on beta and `+0.356` on p).
+- **Notes:** Dengue-specific. Register a `DENV_SEROTYPE2` / `DENV_SEROTYPE4` sibling when a paper first estimates an effect for that serotype. Record which serotypes make up the reference group in `covariateData[[DENV_SEROTYPE1]]$reference_category`, because it differs between papers. Distinct from [[DENV_PRIMARY]], the primary-versus-secondary infection indicator.
+
+### DENV_SEROTYPE3 (**canonical for infecting dengue virus serotype 3 indicator**)
+- **Description:** 1 = the infecting dengue virus is serotype 3 (DENV-3), 0 = any other serotype. Time-fixed per subject. Sibling of [[DENV_SEROTYPE1]]; same decomposition and reference-group rules.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (another serotype). In the founding model the reference group is serotype 2 or 4.
+- **Source aliases:**
+  - `SERO` (four-level 1-4; `DENV_SEROTYPE3 = (SERO == 3)`) -- used in `Ding_2024_ivermectin.R`.
+- **Example models:** `Ding_2024_ivermectin.R` (multiplies the log10 exponent of beta by `1 - 0.128` and of p by `1 - 0.290`; serotype 3 infections give lower viral loads).
+- **Notes:** Dengue-specific. See [[DENV_SEROTYPE1]].
+
+### DENV_PRIMARY (**canonical for primary dengue infection indicator**)
+- **Description:** 1 = primary (first-ever) dengue virus infection, 0 = secondary infection (a previous infection with a different serotype). Time-fixed per subject. Usually classified from the ratio of dengue-specific IgM to IgG by ELISA in the acute phase.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (secondary infection), the large majority in endemic-area adult cohorts.
+- **Source aliases:**
+  - `TYPE` (1 = primary, 2 = secondary; `DENV_PRIMARY = (TYPE == 1)`) -- used in `Ding_2024_ivermectin.R` (NONMEM `$INPUT` 'Infection type (primary or secondary infection)').
+- **Example models:** `Ding_2024_ivermectin.R` (proportional effect on the time to half-maximal NS1 secretion, ET50 x (1 + 0.231 x DENV_PRIMARY)).
+- **Notes:** Dengue-prefixed because primary versus secondary infection has a dengue-specific immunological meaning: pre-existing heterotypic antibody from the first infection can enhance or neutralise the second (antibody-dependent enhancement), and changes the antibody and NS1 kinetics. Encode the raw source coding with care: many datasets use 1 = primary, 2 = secondary, so `DENV_PRIMARY = 2 - TYPE` (or `TYPE == 1`), not `TYPE - 1`.
 
 ## Vaccine immunogenicity (placebo-corrected `_RATIO` family)
 
@@ -16301,6 +16323,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - `anti-PEG IgG prior` / `IgGprior` -- Wurthwein 2025 ESM Tables S5, S6.
 - **Example models:** `Wurthwein_2025_pegasparaginase_hrPostinduction.R`.
 - **Notes:** Registered as a distinct member rather than folded into `ABPEG_IGM` because the two isotypes are separately assayed, carry different cut points, and are routinely tested head-to-head: Wurthwein 2025 ESM Table S6 fits both and keeps IgM (BIC 73239 versus 73259), concluding 'the influence of anti-PEG IgGprior was less pronounced'. A model that screens IgG without retaining it should record it in `covariatesDataExcluded`, not `covariateData`.
+
+### ABNS1_IGG (**canonical for anti-dengue-NS1 IgG antibody level**)
+- **Description:** Level of IgG antibody specific to the dengue virus non-structural protein 1 (NS1) antigen, measured by sandwich ELISA against purified NS1 from all four serotypes. Stored on the assay's LINEAR scale; apply any log transform inside `model()`. In the founding model it is measured once per patient (day 5 after fever onset) and used as a time-fixed covariate.
+- **Units:** relative units, normalised to internal controls (pooled convalescent sera with anti-NS1 antibodies at fixed dilutions); document the assay per model via `covariateData[[ABNS1_IGG]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as a hockey stick above a cut point. Cut point observed: 4 on the natural-log scale = exp(4) = 54.6 relative units on the linear scale (Ding 2024).
+- **Source aliases:**
+  - `IGGN` ('NS1 specific IgG (nature log-transformed)'; `ABNS1_IGG = exp(IGGN)`) -- used in `Ding_2024_ivermectin.R`.
+- **Example models:** `Ding_2024_ivermectin.R` (NS1 elimination rate `kB = kbase + 0.112 * t * max(log(ABNS1_IGG) - 4, 0)`, so elimination rises linearly with time in patients whose day-5 anti-NS1 IgG exceeds the cut point).
+- **Notes:** Antigen-specific antibody against a VIRAL antigen, not an anti-drug antibody: distinct from `ADA_*`, `CONC_ADA_*` and the pre-existing anti-PEG `ABPEG_<isotype>` family above, and from total serum `IGG`. Isotype is carried in the name because the founding paper screened anti-NS1 IgA, IgM and IgG and retained only IgG; register `ABNS1_IGM` / `ABNS1_IGA` siblings if a later model retains another isotype. Not the NS1 antigen itself, which is a modelled output (the `ns1` state) in the founding model. The founding paper measured it at a single time point, so a model that uses a time-varying anti-NS1 IgG should say so in its notes.
 
 ## Disease / treatment history
 
