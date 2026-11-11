@@ -5910,10 +5910,16 @@ navbar:
         href: articles/Ouerdani_2015_pazopanib.html
       - text: "Pazopanib (Ozbey 2021)"
         href: articles/Ozbey_2021_pazopanib.html
+      - text: "Pazopanib (Tan 2025)"
+        href: articles/Tan_2025_pazopanib.html
+      - text: "Pazopanib livertox (Tan 2025)"
+        href: articles/Tan_2025_pazopanib.html
       - text: "Pazopanib mouse (Ouerdani 2015)"
         href: articles/Ouerdani_2015_pazopanib_mouse.html
-      - text: "Pazopanib qsp (Wan 2025)"
-        href: articles/Wan_2025_tki_cardiotoxicity.html
+      - text: "Pazopanib tumor mrcc (Tan 2025)"
+        href: articles/Tan_2025_pazopanib.html
+      - text: "Pazopanib tumor sts (Tan 2025)"
+        href: articles/Tan_2025_pazopanib.html
       - text: "Pb212dotamtate mouse pbpk (Zaid 2021)"
         href: articles/Zaid_2021_pb212dotamtate_mouse_pbpk.html
       - text: "Peficitinib (Toyoshima 2021)"
@@ -11445,6 +11451,7 @@ articles:
   - articles/Tan_2024_cabozantinib
   - articles/Tan_2025_adomeglivant_hba1c
   - articles/Tan_2025_cabotegravir_rilpivirine
+  - articles/Tan_2025_pazopanib
   - articles/Tan_2025_piperacillin
   - articles/Tanaka_2012_phenytoin
   - articles/Taneja_2019_glpg1690
