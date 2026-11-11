@@ -6078,6 +6078,8 @@ navbar:
         href: articles/Wattanakul_2026_paracetamol.html
       - text: "Paracetamol human (Gasthuys 2023)"
         href: articles/Gasthuys_2023_paracetamol.html
+      - text: "Paracetamol painrelief (Zhao 2025b)"
+        href: articles/Zhao_2025b_paracetamol_painrelief.html
       - text: "ParathyroidHormone (Visscher 2025)"
         href: articles/Visscher_2025_parathyroidHormone.html
       - text: "Paritaprevir (Mensing 2017)"
@@ -12342,6 +12344,7 @@ articles:
   - articles/Zhao_2025_nivolumab
   - articles/Zhao_2025_paracetamol
   - articles/Zhao_2025_vancomycin
+  - articles/Zhao_2025b_paracetamol_painrelief
   - articles/Zhao_2026_durvalumab
   - articles/Zhao_2026_infliximab
   - articles/Zhao_2026_venetoclax

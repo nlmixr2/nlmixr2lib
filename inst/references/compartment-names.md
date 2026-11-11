@@ -2644,7 +2644,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Generic pain-score PD output.
 - **Source aliases:** none.
-- **Example models:** `Plan_2012_pain.R` (and its sibling `Plan_2012_bmd_fracture.R`); `Thiel_2018_diclofenac_painrelief.R` and `Thiel_2018_celecoxib_painrelief.R` (placebo-adjusted mean pain relief score, higher = more relief, as a direct Hill function of the PGE2 decrease).
+- **Example models:** `Plan_2012_pain.R` (and its sibling `Plan_2012_bmd_fracture.R`); `Thiel_2018_diclofenac_painrelief.R` and `Thiel_2018_celecoxib_painrelief.R` (placebo-adjusted mean pain relief score, higher = more relief, as a direct Hill function of the PGE2 decrease); `Zhao_2025b_paracetamol_painrelief.R` (absolute 0-10 pain relief score, higher = more relief, as a direct sigmoid Emax of the paracetamol plasma concentration supplied through `CEFFECT`).
 
 ### logit_qol_ghs (**canonical logit-scale EORTC QLQ-C30 GHS/QoL PD output**)
 - **Type:** compartment
