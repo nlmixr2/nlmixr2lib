@@ -4952,6 +4952,14 @@ navbar:
         href: articles/Landersdorfer_2018_meropenem_tobramycin.html
       - text: "Meropenem vaborbactam (Reed 2025)"
         href: articles/Reed_2025_meropenem_vaborbactam.html
+      - text: "Mescaline (Mueller 2025)"
+        href: articles/Mueller_2025_mescaline.html
+      - text: "Mescaline anydrugeffect (Mueller 2025)"
+        href: articles/Mueller_2025_mescaline.html
+      - text: "Mescaline egodissolution (Mueller 2025)"
+        href: articles/Mueller_2025_mescaline.html
+      - text: "Mescaline gooddrugeffect (Mueller 2025)"
+        href: articles/Mueller_2025_mescaline.html
       - text: "Metformin (Chae 2012)"
         href: articles/Chae_2012_metformin.html
       - text: "Metformin (Choi 2018)"
@@ -10894,6 +10902,7 @@ articles:
   - articles/Mouton_2025_cefuroxime
   - articles/Muangkasem_2025_ertapenem
   - articles/MuellerSchoell_2021_axicabtageneCiloleucel_qsp
+  - articles/Mueller_2025_mescaline
   - articles/Muhamad_2025_cholecalciferol_pbpk
   - articles/Mukai_2019_mogamulizumab
   - articles/Mukap_2025_amoxicillin

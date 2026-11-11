@@ -1239,6 +1239,27 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Eckernas_2022_dimethyltryptamine.R` (effect-compartment sigmoidal Emax model of intravenous N,N-dimethyltryptamine, zero baseline, Emax fixed to 10, residual error additive on the 0-10 logit scale).
 - **Notes:** Family-conforming member of the clinical-score PD output family (`pasi`, `cows`, `smokingurges`, `desiretousevas`), lowercase run-together. Named for the psychedelic experience rather than the bare `intensityrating`, so it is not confused with the 0-10 pain-intensity numeric rating scales used in analgesic PD models, which need their own canonical. Questionnaire-based psychedelic endpoints (e.g. the 5D-ASC or Mystical Experience Questionnaire dimensions) are multi-item instruments and are NOT covered by this name.
 
+### anydrugeffectvas (**canonical 'any drug effect' VAS output compartment**)
+- **Type:** compartment
+- **Role:** Single-item 'any drug effect' visual analog scale (VAS) output: a 100-mm unipolar line from 'not at all' (0) to 'extremely' (100), read as percent, rated repeatedly after dosing. It measures the overall strength of a drug's subjective effect regardless of its quality, and is the standard primary subjective outcome of the Basel psychedelic and stimulant studies (LSD, psilocybin, MDMA, mescaline). ABSOLUTE reading bounded on 0-100.
+- **Source aliases:** `VAS 'any drug effect'`, `any drug effect` -- Mueller 2025 paper notation.
+- **Example models:** `Mueller_2025_mescaline_anydrugeffect.R` (effect-compartment sigmoid Emax driven by plasma mescaline, Emax fixed at 100 percent, zero baseline).
+- **Notes:** Family-conforming member of the clinical-score PD output family (`desiretousevas`, `psychedelicintensity`), lowercase run-together with the `vas` suffix of `desiretousevas`. Distinct from `psychedelicintensity`, a 0-10 numeric rating of the psychedelic experience; the 'any drug effect' VAS is drug-class-agnostic. Its companions on the same VAS panel are `gooddrugeffectvas` and `egodissolutionvas`; a 'bad drug effect' VAS, if modelled, should register a sibling `baddrugeffectvas`.
+
+### gooddrugeffectvas (**canonical 'good drug effect' VAS output compartment**)
+- **Type:** compartment
+- **Role:** Single-item 'good drug effect' visual analog scale (VAS) output: a 100-mm unipolar line from 'not at all' (0) to 'extremely' (100), read as percent. Rates the positive (liked) component of a drug's subjective effect. ABSOLUTE reading bounded on 0-100.
+- **Source aliases:** `VAS 'good drug effect'`, `good drug effect` -- Mueller 2025 paper notation.
+- **Example models:** `Mueller_2025_mescaline_gooddrugeffect.R` (same effect-compartment sigmoid-Emax structure as the 'any drug effect' model, refitted to this scale).
+- **Notes:** Companion of `anydrugeffectvas`. Not the same endpoint as the opioid abuse-liability 'drug liking' VAS (`druglikingvascfb`), which is a bipolar scale centred on a neutral 50 and is analysed as a change score.
+
+### egodissolutionvas (**canonical ego-dissolution VAS output compartment**)
+- **Type:** compartment
+- **Role:** Single-item ego-dissolution visual analog scale (VAS) output, rated on the statement 'the boundaries between me and my surroundings seem to blur' (item 71 of the 5D-ASC questionnaire presented as a stand-alone VAS): a 100-mm unipolar line from 'not at all' (0) to 'extremely' (100), read as percent. Measures loss of the sense of self, a characteristic psychedelic effect. ABSOLUTE reading bounded on 0-100.
+- **Source aliases:** `VAS 'ego dissolution'`, `the boundaries between me and my surroundings seem to blur` -- Mueller 2025 paper notation.
+- **Example models:** `Mueller_2025_mescaline_egodissolution.R` (same effect-compartment sigmoid-Emax structure as the 'any drug effect' model, refitted to this scale).
+- **Notes:** Companion of `anydrugeffectvas`. This is the single-item VAS, not a multi-item 5D-ASC dimension score (e.g. 'oceanic boundlessness'), which would need its own canonical.
+
 ---
 
 ## Depression-severity clinical scores
