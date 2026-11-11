@@ -63,6 +63,7 @@ Other absorption:
 \code{\link[=addWeibullAbs]{addWeibullAbs()}},
 \code{\link[=convertAbsForceLongerDelay]{convertAbsForceLongerDelay()}},
 \code{\link[=convertAbsSequential]{convertAbsSequential()}},
+\code{\link[=convertTransitMtt]{convertTransitMtt()}},
 \code{\link[=removeTransit]{removeTransit()}},
 \code{\link[=removeZeroOrderAbs]{removeZeroOrderAbs()}}
 }

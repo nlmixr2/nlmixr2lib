@@ -88,15 +88,6 @@ addSecondAbsorption <- function(
   .zoFirst <- !rxode2::testCompartmentExists(.ui, depot)
   if (delay == "transit") {
     checkmate::assertIntegerish(n, lower = 1L, len = 1L, any.missing = FALSE)
-    # addTransit() uses a single shared prefix, so a transit chain on
-    # the first path would be rewired into the second path's chain
-    # (central reading ka*transitN + ka2*transitN); refuse instead
-    if (rxode2::testCompartmentExists(.ui, "transit1")) {
-      stop(
-        "a transit chain is already present; a transit second path needs its own prefix (not yet supported)",
-        call. = FALSE
-      )
-    }
   }
   # the second depot always starts as a first-order path; a zero-order
   # second path is a modeled duration on depot2 itself (the depot keeps
@@ -143,7 +134,11 @@ addSecondAbsorption <- function(
   if (delay == "lag") {
     .ui <- addLag(.ui, depot2)
   } else if (delay == "transit") {
-    .ui <- addTransit(.ui, n, central = central, depot = depot2, ka = ka2)
+    # the second chain gets a letter-tagged prefix and rate (transitB1..N,
+    # ktrB) so it can never collide with the first path's numbered chain
+    # (transit1..N, ktr) — a numeric prefix would clash once a chain
+    # reaches 10+ compartments
+    .ui <- addTransit(.ui, n, central = central, depot = depot2, transit = "transitB", ktr = "ktrB", ka = ka2)
   }
   # logit F1 split with the estimated fraction on the first path
   # (Monolix F1 convention); for a zero-order first path there is no

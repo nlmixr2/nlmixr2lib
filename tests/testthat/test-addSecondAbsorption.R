@@ -28,8 +28,8 @@ test_that("addSecondAbsorption lag and transit delays", {
 
   res <- res0 |> addSecondAbsorption(type = "first", delay = "transit", n = 3)
 
-  expect_true("transit3" %in% res$state)
-  expect_true("lktr" %in% res$iniDf$name)
+  expect_true("transitB3" %in% res$state)
+  expect_true("lktrB" %in% res$iniDf$name)
 
   # transit count is required and validated
   expect_error(res0 |> addSecondAbsorption(delay = "transit"), regexp = "ntransit|n")
@@ -315,13 +315,40 @@ test_that("convertAbsForceLongerDelay reads a custom first lag variable", {
   expect_true("diffTlag2" %in% res$iniDf$name)
 })
 
-test_that("addSecondAbsorption transit on a transit first path errors cleanly", {
-  # both paths would share the transit prefix, so the second
-  # addTransit() call would rewire the first path's chain (central
-  # would read ka*transit2 + ka2*transit2); refuse instead of
-  # silently cross-wiring
-  expect_error(
-    res0 |> addTransit(2) |> addSecondAbsorption(delay = "transit", n = 2),
-    regexp = "transit"
+test_that("addSecondAbsorption transit on a transit first path keeps both chains", {
+  # the second chain uses its own letter-tagged prefix (transitB1..N,
+  # ktrB), so the first path's transit1..N chain is left untouched
+  res <- suppressWarnings(
+    res0 |> addTransit(2) |> addSecondAbsorption(delay = "transit", n = 2)
   )
+
+  expect_true(all(c("transit1", "transit2", "transitB1", "transitB2") %in% res$state))
+  expect_true("lktrB" %in% res$iniDf$name)
+  expect_equal(
+    rxode2::modelExtract(res, "d/dt(central)"),
+    "d/dt(central) <- ka * transit2 - kel * central + ka2 * transitB2"
+  )
+
+  # mass is conserved: with elimination off, the two paths together
+  # hold the full dose (F1 and 1-F1) at the end of the run
+  e <- rxode2::et(time = 0, amt = 100, cmt = "depot") |>
+    rxode2::et(seq(0, 400, by = 10))
+  s <- as.data.frame(rxode2::rxSolve(
+    res,
+    e,
+    params = c(
+      lka = log(1.2),
+      lcl = log(1e-9),
+      lvc = log(10),
+      lka2 = log(1.5),
+      lktr = log(2),
+      lktrB = log(3),
+      logitfDepot = logit(0.7),
+      propSd = 0.5
+    ),
+    addDosing = TRUE
+  ))
+  last <- s[s$time == max(s$time), ]
+  cmts <- intersect(c("depot", "transit1", "transit2", "depot2", "transitB1", "transitB2", "central"), names(last))
+  expect_equal(sum(last[, cmts]), 100, tolerance = 1e-3)
 })
