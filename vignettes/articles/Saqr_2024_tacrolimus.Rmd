@@ -1,0 +1,385 @@
+---
+title: "Tacrolimus (Saqr 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tacrolimus (Saqr 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+suppressPackageStartupMessages({
+  library(nlmixr2lib)
+  library(PKNCA)
+  library(rxode2)
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+})
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Saqr_2024_tacrolimus"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("Saqr_2024_tacrolimus"))$description`
+* Article: <https://doi.org/10.1111/bcp.16172>
+
+Saqr 2024 asked whether the corticosteroid-tacrolimus drug-drug interaction
+depends on CYP3A genotype. Each kidney transplant recipient was assigned a
+count of CYP3A loss-of-function (LOF) alleles -- CYP3A5\*3, \*6 and \*7 plus
+CYP3A4\*22 -- grouped as 0, 1, 2 or 3/4, and at each trough the presence or
+absence of a corticosteroid was crossed with that group to give eight
+categories. Each category has its own multiplicative factor on apparent oral
+clearance (CL/F), relative to 2 LOF alleles without steroids.
+
+The structural model is the steady-state regression used by the same group
+since Passey 2011 (see `Passey_2011_tacrolimus`): the trough is approximated by
+the average steady-state concentration, Css = total daily dose / (24 x CL/F)
+(Saqr 2024 Equations 1-2). The model therefore has no compartments and no dose
+events; the current total daily dose is a per-record covariate,
+`DOSE_TAC_MGD`, and every record is an observation.
+
+# Population
+
+The development cohort was 1608 adult kidney transplant recipients with 28,718
+whole-blood tacrolimus troughs from the first 6 months post-transplant, enrolled
+in the DeKAF Genomics study (NCT00270712) at seven US centres from 2005 to 2011
+(Saqr 2024 Table 1). 63.3% were male; 78.1% Caucasian, 16.6% African American,
+3.2% Asian and 2.1% Hispanic; 59.4% had a living donor, 38.6% were diabetic at
+transplant and 15.6% had a prior kidney transplant. The LOF groups held 4.4%
+(0 LOF), 19.7% (1 LOF), 67.1% (2 LOF) and 8.0% (3/4 LOF) of patients (0.8% with
+no genotype). Steroids were present at 63.6% of troughs, calcium channel
+blockers (CCB) at 37.8%, prophylactic antivirals at 56.7% and ACE inhibitors at
+13.5%. The median recipient age, the reference of the age effect, was 51.41
+years. The model was validated externally in the GEN03 cohort (854 patients,
+15,828 troughs; Table 5: MPE -1.42 ng/mL, MPPE -17.8%, RMSE 2.6 ng/mL).
+
+The same information is stored in the model metadata:
+
+```{r population}
+str(rxode2::rxode2(readModelDb("Saqr_2024_tacrolimus"))$population)
+```
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| Trough approximated by Css | Ctrough ~ Css | Saqr 2024 Equation 1 |
+| Css from daily dose | Css = TDD / (24 x CL/F) | Equation 2; supplement NONMEM `CSS=RATE/CL`, `TVCL=THETA(1)/1000` |
+| Random effects on CL/F | CL/F = TVCL x exp(eta_IIV + eta_ISV) | Equation 3; NONMEM `$LEVEL UNIT=(2[1])` |
+| Residual error | C = Cpred (1 + eps_prop) + eps_add | Equation 4; NONMEM `Y=F*(1+ERR(1))+ERR(2)` |
+| `lcl` | log(27.2) L/h | Table 3, typical value of CL/F |
+| `e_lof0_cl`, `e_lof0_steroid_cl` | 2.37, 2.65 | Table 3, 0-LOF without / with steroids |
+| `e_lof1_cl`, `e_lof1_steroid_cl` | 1.78, 1.87 | Table 3, 1-LOF without / with steroids |
+| 2-LOF without steroids (reference) | 1 | Table 3 |
+| `e_lof2_steroid_cl` | 1.03 | Table 3, 2-LOF with steroids |
+| `e_lof34_cl`, `e_lof34_steroid_cl` | 0.68, 0.75 | Table 3, 3/4-LOF without / with steroids |
+| `e_diab_cl` | 0.90 | Table 3, diabetes at time of transplant |
+| `e_pod_lt9_cl` | 1.21 | Table 3, before Day 9 post-transplant; NONMEM `DAYSPL` |
+| `e_ccb_cl` | 0.93 | Table 3, CCB use |
+| `e_antiviral_cl` | 0.96 | Table 3, antiviral use |
+| `e_acei_cl` | 1.04 | Table 3, ACE inhibitor use |
+| `e_age_cl` | -0.35 | Table 3, (Age/51.41)^-0.35; NONMEM `CLAGE` |
+| `etalcl` | log(1 + 0.449^2) | Table 3, interindividual variability 44.9% CV |
+| `etalcl_site` | log(1 + 0.189^2), nested on `SITEN` | Table 3, inter-site variability 18.9% CV |
+| `propSd` | 0.272 | Table 3, proportional residual variability 27.2% |
+| `addSd` | sqrt(8.5) ng/mL | Table 3, additive residual variability 8.5 (read as a variance; see below) |
+| LOF count | CYP3A5 \*3/\*6/\*7 + CYP3A4\*22 | Methods 'Covariate analysis'; Table S1 |
+
+# Model set-up
+
+The nested between-site random effect means `rxSolve()` needs the `omega`
+list passed explicitly and at least two distinct `SITEN` values in every
+solve.
+
+```{r model}
+mod <- rxode2::rxode2(readModelDb("Saqr_2024_tacrolimus"))
+mod_typical <- rxode2::zeroRe(mod)
+
+solve_saqr <- function(model, events) {
+  stopifnot(dplyr::n_distinct(events$SITEN) >= 2L)
+  rxode2::rxSolve(model, events = events, omega = model$omega) |>
+    as.data.frame()
+}
+
+# The LOF group is rebuilt in model() from three genotype columns:
+# CYP3A5 LOF alleles = 2 - CYP3A5_STAR1_HET - 2 * CYP3A5_STAR1_HOM, plus
+# one for a CYP3A4*22 carrier.
+lof_genotypes <- tibble::tribble(
+  ~lof_group, ~CYP3A5_STAR1_HET, ~CYP3A5_STAR1_HOM, ~SNP_CYP3A4_RS35599367,
+  "0-LOF",    0,                 1,                 0,
+  "1-LOF",    1,                 0,                 0,
+  "2-LOF",    0,                 0,                 0,
+  "3/4-LOF",  0,                 0,                 1
+)
+
+reference_covariates <- tibble::tibble(
+  time = 0, evid = 0L, DOSE_TAC_MGD = 6, DIS_DIAB = 0, POD = 30, AGE = 51.41,
+  CONMED_CCB = 0, CONMED_ANTIVIRAL = 0, CONMED_ACEI = 0
+)
+```
+
+# Typical clearance by LOF group and steroid use (Table 4)
+
+Table 4 lists the typical CL/F of each LOF group with and without steroids,
+for the reference values of every other covariate. These are the Table 3
+factors multiplied by 27.2 L/h, so the check below compares two calculations
+from the same parameters and uses a tight tolerance.
+
+```{r table4}
+table4 <- tibble::tribble(
+  ~lof_group, ~CONMED_STEROID, ~cl_paper,
+  "0-LOF",    0,               64.46,
+  "0-LOF",    1,               72.08,
+  "1-LOF",    0,               48.42,
+  "1-LOF",    1,               50.86,
+  "2-LOF",    0,               27.2,
+  "2-LOF",    1,               28.02,
+  "3/4-LOF",  0,               18.5,
+  "3/4-LOF",  1,               20.4
+)
+
+ev_t4 <- table4 |>
+  dplyr::left_join(lof_genotypes, by = "lof_group") |>
+  dplyr::mutate(id = dplyr::row_number(), SITEN = id) |>
+  dplyr::bind_cols(reference_covariates)
+
+sim_t4 <- solve_saqr(mod_typical, ev_t4) |>
+  dplyr::select(id, cl) |>
+  dplyr::left_join(dplyr::select(ev_t4, id, lof_group, CONMED_STEROID, cl_paper), by = "id") |>
+  dplyr::mutate(pct_diff = 100 * (cl - cl_paper) / cl_paper)
+
+sim_t4 |>
+  dplyr::mutate(Steroids = ifelse(CONMED_STEROID == 1, "with", "without")) |>
+  dplyr::select(lof_group, Steroids, cl, cl_paper, pct_diff) |>
+  dplyr::rename(
+    "LOF group" = lof_group,
+    "Simulated CL/F (L/h)" = cl,
+    "Saqr 2024 Table 4 (L/h)" = cl_paper,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2)
+
+# Both sides are deterministic products of the Table 3 estimates; the only
+# difference is the two-decimal rounding in Table 4.
+stopifnot(all(abs(sim_t4$pct_diff) < 0.5))
+
+steroid_effect <- sim_t4 |>
+  dplyr::select(lof_group, CONMED_STEROID, cl) |>
+  tidyr::pivot_wider(names_from = CONMED_STEROID, values_from = cl, names_prefix = "s") |>
+  dplyr::mutate(
+    pct_higher = 100 * (s1 - s0) / s0,
+    pct_paper = c(11.8, 5, 3, 10.3)
+  )
+steroid_effect |>
+  dplyr::select(lof_group, pct_higher, pct_paper) |>
+  dplyr::rename(
+    "LOF group" = lof_group,
+    "Simulated % higher CL/F with steroids" = pct_higher,
+    "Saqr 2024 Table 4 (%)" = pct_paper
+  ) |>
+  knitr::kable(digits = 1)
+stopifnot(all(abs(steroid_effect$pct_higher - steroid_effect$pct_paper) < 0.3))
+```
+
+The steroid effect is largest with 0 LOF alleles (+11.8%) and smallest with 2
+LOF alleles (+3%), as the paper reports.
+
+# Simulated trough distributions (Table 6)
+
+Table 6 gives the share of simulated troughs below, within and above
+6-12 ng/mL for eight scenarios: each LOF group with and without steroids, age
+51 years, before day 9 post-transplant, with the daily dose the authors chose
+for that group. The authors simulated 1000 troughs per scenario from the fixed
+and random effects; here 200 virtual patients per scenario are used. Each
+patient gets their own `SITEN` value, so the between-site effect is drawn
+independently per patient, as for a patient whose centre is not known.
+
+```{r table6}
+table6 <- tibble::tribble(
+  ~case, ~lof_group, ~CONMED_STEROID, ~DOSE_TAC_MGD, ~lt6, ~in6_12, ~gt12,
+  "1a", "0-LOF",   1, 17,  30.2, 44.9, 24.9,
+  "1b", "0-LOF",   0, 17,  23.1, 44.5, 32.4,
+  "2a", "1-LOF",   1, 12,  30.2, 44.9, 24.9,
+  "2b", "1-LOF",   0, 12,  27.2, 44.3, 28.5,
+  "3a", "2-LOF",   1, 6.5, 31.1, 44.5, 24.4,
+  "3b", "2-LOF",   0, 6.5, 29.4, 45.0, 25.6,
+  "4a", "3/4-LOF", 1, 5,   27.9, 44.3, 27.8,
+  "4b", "3/4-LOF", 0, 5,   22.1, 43.5, 34.4
+)
+
+n_per_case <- 200L
+ev_t6 <- table6 |>
+  dplyr::select(case, lof_group, CONMED_STEROID, DOSE_TAC_MGD) |>
+  dplyr::left_join(lof_genotypes, by = "lof_group") |>
+  tidyr::uncount(n_per_case) |>
+  dplyr::mutate(
+    id = dplyr::row_number(), SITEN = id, time = 0, evid = 0L,
+    AGE = 51, POD = 5, DIS_DIAB = 0, CONMED_CCB = 0, CONMED_ANTIVIRAL = 0,
+    CONMED_ACEI = 0
+  )
+
+summarise_bands <- function(sim, events) {
+  sim |>
+    dplyr::select(id, sim) |>
+    dplyr::left_join(dplyr::select(events, id, case), by = "id") |>
+    dplyr::group_by(case) |>
+    dplyr::summarise(
+      lt6 = 100 * mean(sim < 6),
+      in6_12 = 100 * mean(sim >= 6 & sim <= 12),
+      gt12 = 100 * mean(sim > 12),
+      .groups = "drop"
+    )
+}
+
+rxode2::rxSetSeed(20240712)
+bands <- summarise_bands(solve_saqr(mod, ev_t6), ev_t6)
+
+bands |>
+  dplyr::left_join(
+    dplyr::select(table6, case, lt6_paper = lt6, in6_12_paper = in6_12, gt12_paper = gt12),
+    by = "case"
+  ) |>
+  dplyr::select(case, lt6, lt6_paper, in6_12, in6_12_paper, gt12, gt12_paper) |>
+  dplyr::rename(
+    "Case" = case,
+    "< 6 ng/mL, simulated (%)" = lt6,
+    "< 6 ng/mL, Table 6 (%)" = lt6_paper,
+    "6-12 ng/mL, simulated (%)" = in6_12,
+    "6-12 ng/mL, Table 6 (%)" = in6_12_paper,
+    "> 12 ng/mL, simulated (%)" = gt12,
+    "> 12 ng/mL, Table 6 (%)" = gt12_paper
+  ) |>
+  knitr::kable(digits = 1)
+
+pooled <- tibble::tibble(
+  band = c("< 6", "6-12", "> 12"),
+  simulated = c(mean(bands$lt6), mean(bands$in6_12), mean(bands$gt12)),
+  paper = c(mean(table6$lt6), mean(table6$in6_12), mean(table6$gt12))
+)
+pooled |>
+  dplyr::rename(
+    "Trough band (ng/mL)" = band,
+    "Simulated, mean over cases (%)" = simulated,
+    "Table 6, mean over cases (%)" = paper
+  ) |>
+  knitr::kable(digits = 1)
+
+# Centre check, pooled over 1600 simulated troughs (Monte Carlo SE about 1.2
+# percentage points per band). The additive SD read literally as 8.5 ng/mL
+# would put only about 24% of troughs inside 6-12 ng/mL (see below).
+stopifnot(all(abs(pooled$simulated - pooled$paper) < 7))
+```
+
+## The additive residual error is a variance
+
+Table 3 prints the additive residual variability as 8.5 with a footnote that
+it is a standard deviation. Read that way, the additive error alone would have
+an SD larger than the median trough (8.2 ng/mL), and the Table 6 simulation
+would put only about a quarter of the troughs within 6-12 ng/mL, against 44-45%
+in every Table 6 scenario. Read as a variance (SD = 2.92 ng/mL) it reproduces
+Table 6, as shown above. The value is also in line with the additive SD of
+3.19 ng/mL that the same group estimated from DeKAF troughs with the same
+structural model (Passey 2011). The model therefore uses `addSd = sqrt(8.5)`.
+
+```{r table6-sd}
+mod_sd85 <- mod |> rxode2::ini(addSd = 8.5)
+rxode2::rxSetSeed(20240712)
+bands_sd85 <- summarise_bands(solve_saqr(mod_sd85, ev_t6), ev_t6)
+tibble::tibble(
+  reading = c("variance 8.5 (model)", "SD 8.5 (literal footnote)", "Table 6"),
+  in6_12 = c(mean(bands$in6_12), mean(bands_sd85$in6_12), mean(table6$in6_12))
+) |>
+  dplyr::rename(
+    "Additive error reading" = reading,
+    "6-12 ng/mL, mean over cases (%)" = in6_12
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+```{r table6-plot, fig.cap = "Share of simulated troughs below, within and above 6-12 ng/mL by scenario; points are Saqr 2024 Table 6. Replicates Table 6 of Saqr 2024."}
+bands |>
+  tidyr::pivot_longer(-case, names_to = "band", values_to = "pct") |>
+  dplyr::left_join(
+    tidyr::pivot_longer(dplyr::select(table6, case, lt6, in6_12, gt12), -case,
+      names_to = "band", values_to = "paper"
+    ),
+    by = c("case", "band")
+  ) |>
+  dplyr::mutate(band = factor(band, c("lt6", "in6_12", "gt12"), c("< 6", "6-12", "> 12"))) |>
+  ggplot(aes(case, pct, fill = band)) +
+  geom_col(position = position_dodge(width = 0.8), width = 0.75) +
+  geom_point(aes(y = paper), position = position_dodge(width = 0.8), shape = 21, fill = "white") +
+  labs(x = "Table 6 case", y = "Simulated troughs (%)", fill = "Trough (ng/mL)") +
+  theme_minimal()
+```
+
+# Dose-normalised troughs (Table 2)
+
+Table 2 reports the observed median dose-normalised trough (ng/mL per mg/day)
+by LOF group and steroid use, pooled over both cohorts and all troughs. The
+typical-value prediction for a reference patient (day 9 or later, age 51.41
+years, no other co-medication) is 1000 / (24 x CL/F). The observed medians mix
+every covariate pattern and include the first 9 days, when CL/F is 21% higher,
+so they are shown for orientation only.
+
+```{r table2}
+sim_t4 |>
+  dplyr::mutate(
+    dn_typical = 1000 / (24 * cl),
+    dn_observed = c(0.633, 0.53, 0.96, 0.73, 1.87, 1.43, 2.62, 1.98),
+    Steroids = ifelse(CONMED_STEROID == 1, "with", "without")
+  ) |>
+  dplyr::select(lof_group, Steroids, dn_typical, dn_observed) |>
+  dplyr::rename(
+    "LOF group" = lof_group,
+    "Typical predicted C/D (ng/mL per mg/day)" = dn_typical,
+    "Table 2 observed median" = dn_observed
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+The predicted ordering across LOF groups matches the observed one, with dose
+requirements about fourfold apart between 0 and 3/4 LOF alleles.
+
+# NCA
+
+This is a steady-state regression model with no time course: a record's
+prediction depends only on the current daily dose and covariates. There is no
+concentration-time profile to which NCA could be applied, so the PKNCA section
+of the usual validation is replaced by the closed-form Table 4 check and the
+Table 6 replication above.
+
+# Assumptions and deviations
+
+* **Additive residual error read as a variance.** Table 3 labels the 8.5 an SD;
+  the model uses SD = sqrt(8.5) = 2.92 ng/mL because only that reading
+  reproduces Table 6 (see above). With it, the pooled share of troughs below
+  6 ng/mL is a few points higher than in Table 6 and the share within
+  6-12 ng/mL a few points lower; the authors' simulation settings beyond
+  "fixed and random effects" are not reported.
+* **Variability conversion.** Table 3 gives the between-subject and between-site
+  variability as CV%; the variances are log(1 + CV^2).
+* **Between-site variability as a nested random effect.** Equation 3 and the
+  NONMEM `$LEVEL` record put the inter-site effect on a level above the
+  patient. It is encoded with the `SITEN` grouping column; patients from an
+  unknown centre can be given distinct `SITEN` values so the site effect is
+  drawn per patient.
+* **LOF count from three genotype columns.** The model rebuilds the composite
+  LOF count from CYP3A5 \*1 allele indicators (counting \*3, \*6 and \*7 as
+  loss of function) and a CYP3A4\*22 carrier indicator, then assigns the
+  group (counts of 3 and 4 share the 3/4-LOF factor, as in the paper). A
+  carrier indicator cannot tell \*22/\*22 from \*1/\*22, which changes the
+  group only for diplotypes absent from both cohorts (Table S1).
+* **Missing data.** The NONMEM code gives a patient with unknown genotype or
+  steroid status the 2-LOF-with-steroids factor, and treats missing diabetes or
+  antiviral status as absent. The model has no missing-value branch; supply
+  those values explicitly.
+* **Day 9 boundary.** "Before Day 9" is implemented as `POD < 9`, with the day
+  of transplant as day 0.
+* **Daily dose as a covariate.** The NONMEM data carried the dose as a `RATE`
+  column (CSS = RATE / CL); here it is the total daily dose `DOSE_TAC_MGD` in
+  mg/day, divided by 24 in `model()`.
+* **External validation.** The GEN03 metrics (Table 5) need the patient-level
+  data and are not reproduced.
