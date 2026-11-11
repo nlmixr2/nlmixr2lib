@@ -3023,6 +3023,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Fukae_2024_valemetostat_orr_investigator.R` (Bayesian logistic exposure-response for ORR by investigator assessment in relapsed/refractory ATLL, pooled across the J101 phase I and J201 phase II trials), `Li_2025_mosunetuzumab_orr.R` (Emax logistic on the two-cycle mosunetuzumab AUC0-42 in relapsed/refractory follicular lymphoma; maximal response 81.4 percent, E50 3.12 day*ug/mL).
 - **Notes:** See `prob_orr_central` for the shared conventions. In the founding paper the investigator-assessed model was fit on 38 patients versus 25 for central assessment, and estimated a steeper exposure slope (odds ratio 1.22 vs 1.08 per 250 ng*h/mL); the authors attribute the difference to the smaller central-assessment sample rather than to a real biological difference.
 
+### prob_orr (**canonical objective-response probability output, assessor not specified**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient achieves a confirmed objective response (complete or partial response) in a static landmark exposure-response logistic model, where the source paper does not say whether response was adjudicated by independent central review or by the investigator. Use `prob_orr_central` or `prob_orr_investigator` whenever the source states the assessor; this generic form exists so that an unstated assessor is not guessed.
+- **Source aliases:** `Pr(OR)`, `ORR` (Du 2025).
+- **Example models:** `Du_2025_repotrectinib_orr_ros1.R` and `Du_2025_repotrectinib_orr_ntrk.R` (logistic regressions on log Cavg56 in ROS1-positive NSCLC and NTRK-positive solid tumours from TRIDENT-1; the paper defines the endpoint as a confirmed complete or partial response without naming the assessor).
+- **Notes:** See `prob_orr_central` for the shared conventions (placeholder additive residual, Bernoulli source likelihood).
+
 ### prob_anemia (**canonical severe-anemia probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences a severe (CTCAE grade >= 3) anemia event, assessed from laboratory hemoglobin values rather than from investigator-reported adverse-event terms, in a static landmark exposure-safety logistic model.
