@@ -8,7 +8,7 @@
 - Add Jian 2026 peginterferon alfa-2b (Pegbing) platelet and white-cell myelosuppression ([doi:10.1002/cpt.70079](https://doi.org/10.1002/cpt.70079)) -- adults with chronic hepatitis B, extrapolated to essential thrombocythemia.
 - Add Pouzin 2023 tusamitamab ravtansine CYP3A4/1A2/2B6 downregulation IVIVE-PK ([doi:10.1002/cpt.3102](https://doi.org/10.1002/cpt.3102)) -- adults with advanced CEACAM5-expressing solid tumors (typical-value simulation from in vitro constants).
 
-- Add Nel 2026 ceftriaxone subcutaneous vs intravenous ([doi:10.1128/aac.01081-25](https://doi.org/10.1128/aac.01081-25)) -- non-critically ill adult inpatients with infections.
+- Add Chu 2026 liposomal amphotericin B + miltefosine PK-PD with parasite feedback on MPS uptake ([doi:10.1002/cpt.70124](https://doi.org/10.1002/cpt.70124)) -- patients with post-kala-azar dermal leishmaniasis in India and Bangladesh.
 
 - Add Iwaki 2021 guselkumab PPPASI PK/PD ([doi:10.1002/jcph.1953](https://doi.org/10.1002/jcph.1953)) -- Japanese adults with palmoplantar pustulosis.
 
