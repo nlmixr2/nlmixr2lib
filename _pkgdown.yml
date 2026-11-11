@@ -1640,6 +1640,8 @@ navbar:
         href: articles/Hartman_2021_ceftriaxone.html
       - text: "Ceftriaxone (Marianski 2026)"
         href: articles/Marianski_2026_ceftriaxone.html
+      - text: "Ceftriaxone (Nel 2026)"
+        href: articles/Nel_2026_ceftriaxone.html
       - text: "Ceftriaxone (RoubaudBaudron 2025)"
         href: articles/RoubaudBaudron_2025_ceftriaxone.html
       - text: "Ceftriaxone (Tsai 2023)"
@@ -11064,6 +11066,7 @@ articles:
   - articles/Nayak_2021_rivipansel
   - articles/Ndzamba_2025_ethambutol
   - articles/Neant_2023_covid19_news2
+  - articles/Nel_2026_ceftriaxone
   - articles/Nemitz_2026_dapagliflozin_pbpk
   - articles/Nemoto_2017_ethanol
   - articles/Neroutsos_2022_busulfan
