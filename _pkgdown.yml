@@ -8098,6 +8098,10 @@ navbar:
         href: articles/Frey_2013_tocilizumab.html
       - text: "Tocilizumab (Moes 2022)"
         href: articles/Moes_2022_tocilizumab.html
+      - text: "Tocilizumab crs (Jamois 2025)"
+        href: articles/Jamois_2025_tocilizumab.html
+      - text: "Tocilizumab ra (Jamois 2025)"
+        href: articles/Jamois_2025_tocilizumab.html
       - text: "Tofacitinib (Chang 2024)"
         href: articles/Chang_2024_tofacitinib.html
       - text: "Tofacitinib (Tse 2020)"
@@ -10213,6 +10217,7 @@ articles:
   - articles/Jain_2011_sorafenib
   - articles/Jaiswal_2025_dordaviprone
   - articles/James_2025_fepixnebart
+  - articles/Jamois_2025_tocilizumab
   - articles/Jang_2019_cefprozil
   - articles/Jang_2021_oxcarbazepine
   - articles/Jang_2023_zaltoprofen

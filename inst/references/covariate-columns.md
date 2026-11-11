@@ -4225,6 +4225,18 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Nicolas_2019_alirocumab.R` (ng/mL, uncentred additive effect on the LDL-C EC50, +0.00219 mg/L per ng/mL, giving EC50 2.22-3.91 mg/L across the observed 5th-95th percentile range), `Nolain_2022_alirocumab.R` (nM; power effect `(TPCSK9_BASE / 6.99)^0.930` on the free-PCSK9 IC50 of the LDL-C model, centred on the dataset median 6.99 nM, AND the initial condition / synthesis anchor of the QSS-TMDD total-PCSK9 state: `Ptot(0) = TPCSK9_BASE * Vc`, `ksyn = kdeg * TPCSK9_BASE`; the paper defines it as the individual observed pre-dose value).
 - **Notes:** Time-fixed baseline companion to `TPCSK9`, on the same `TBILI` / `TBILI_BASE` pattern the register already uses for total bilirubin -- carry both columns whenever a model fits a baseline effect and a time-varying effect of the same analyte on different parameters, as Nicolas 2019 does (baseline total on EC50, time-varying total on Emax). Distinct from `PCSK9`, which is the baseline **free** (unbound) value and is the covariate on Emax and on the Hill coefficient in the same model: a data set that populates one from the other shifts the covariate by roughly two-fold. Nicolas 2019 computed the baseline as the mean of all measurements taken before the first dose, including screening (Sect. 2.3); record the per-model baseline definition, since a single pre-dose draw and a screening-inclusive mean are not the same quantity.
 
+### TSIL6R_BASE (**canonical for per-subject observed baseline total soluble IL-6 receptor (time-fixed)**)
+- **Description:** Total (unbound plus drug-bound) serum soluble interleukin-6 receptor (sIL-6R) concentration measured before the first dose of an anti-IL-6R therapeutic, held time-fixed per subject. Used by QSS-TMDD / indirect-response models of anti-IL-6R antibodies as the initial condition of the total-target state and as a covariate on the target turnover rates.
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a. Jamois 2025 centres its effects at 40 ng/mL (`(BASE/40)^theta` on kint and kdeg).
+- **Source aliases:**
+  - `SIL6R` -- Jamois 2025 Table S6 $INPUT column; missing values coded negative (`SIL6RMISS = 1 if SIL6R < 0`), in which case the model uses the estimated typical baseline `exp(theta24 + eta9)` instead.
+  - `BASE` / `sBASE` -- Jamois 2025 Table S6 / Tables S1 and S5 symbol for the baseline that enters the model.
+- **Example models:** `Jamois_2025_tocilizumab_crs.R` and `Jamois_2025_tocilizumab_ra.R` (initial condition `total_target(0) = BASE`; power effects `(BASE/40)^0.193` on kint and `(BASE/40)^-0.528` on kdeg; supply 0 or a negative value to use the model baseline, 29.4 ng/mL in the CRS model and 47.6 ng/mL in the RA / JIA model).
+- **Notes:** Same `T<analyte>_BASE` pattern as `TPCSK9_BASE`: the `T` marks a total (free plus bound) analyte, `_BASE` the time-fixed observed pre-dose value. A time-varying total sIL-6R covariate, if a model ever needs one, would be the companion `TSIL6R`. Distinct from `IL6` (the ligand, interleukin-6) and from any free-sIL-6R measurement: before the first dose there is no drug-bound receptor, but free and total assays differ, so record the assay per model. Ratified by the maintainers 2026-11-06.
+
 ### SBCMA (**canonical for soluble B-cell maturation antigen concentration**)
 - **Description:** Baseline serum (or plasma) concentration of soluble B-cell maturation antigen (sBCMA), the shed extracellular domain of the BCMA receptor (TNFRSF17). Serves as a soluble-target biomarker for BCMA-directed therapeutics (anti-BCMA antibody-drug conjugates such as belantamab mafodotin, BCMA-targeted bispecifics, and BCMA CAR-T) -- sBCMA is elevated in multiple-myeloma and reflects tumour burden, and contributes to target-mediated drug disposition by sequestering circulating drug.
 - **Units:** ng/mL (equivalent to ug/L; 1 ng/mL = 1 ug/L). Document per-model via `covariateData[[SBCMA]]$units`.
@@ -12217,6 +12229,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `Ide_2020_elotuzumab.R` (multiplicative effect on CL = 1.15; paired with `ECOG_GE1` to retain separate ECOG = 1 vs ECOG >= 2 effects); `Yang_2025_axatilimab_sae.R` (source is a baseline Karnofsky/Lansky score <= 70, 'unable to work', mapped to ECOG >= 2 by the Oken 1982 crosswalk; log-odds 0.687, odds ratio 2.0, on serious TEAEs).
 - **Notes:** Parallels `ECOG_GE1`. Use only when the source paper reports a separate effect for ECOG >= 2 in addition to ECOG_GE1; otherwise `ECOG_GE1` alone is sufficient. The paired (`ECOG_GE1`, `ECOG_GE2`) decomposition reproduces a three-level (`ECOG = 0`, `ECOG = 1`, `ECOG >= 2`) ordinal effect with two binaries.
 
+### CRS_GRADE_GE2 (**canonical for first cytokine release syndrome event of grade >= 2 indicator**)
+- **Description:** 1 if the patient's first cytokine release syndrome (CRS) event was ASTCT grade 2 or higher, 0 if it was grade 1. Time-fixed per subject (the grade of the first CRS event, not the worst or the current grade).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (first CRS event grade 1).
+- **Source aliases:**
+  - `FIRSTCRS` (grade of the first CRS event, thresholded `CRS2 = 1 if FIRSTCRS1 >= 2`) -- Jamois 2025 Table S6; a missing grade (`FIRSTCRS < 0`) was imputed as grade 2, so supply 1 when the grade is unknown to reproduce the source handling. Decompose: `CRS_GRADE_GE2 = as.integer(FIRSTCRS >= 2)`.
+- **Example models:** `Jamois_2025_tocilizumab_crs.R` (multiplicative effect exp(theta31) = 1.60 on tocilizumab linear CL in patients treated for bispecific-antibody-induced CRS, Table S5 'CL CRS grade>1').
+- **Notes:** Threshold-indicator pattern of `ECOG_GE2` / `IPI_GE4`, with `GRADE` spelled out so the threshold is read as a severity grade rather than a count of CRS events. A model that thresholds the worst (maximum) grade instead should register its own column (`MAXCRS` was a separate, unused column in the Jamois 2025 data set). Ratified by the maintainers 2026-11-06.
+
 ### IPI_GE4 (**canonical for International Prognostic Index high-risk group indicator, IPI >= 4**)
 - **Description:** 1 if the baseline International Prognostic Index (IPI) for aggressive non-Hodgkin lymphoma is 4 or 5 (the high-risk group), 0 if it is 0 to 3. The IPI scores one point each for age > 60 years, elevated serum lactate dehydrogenase, ECOG performance status >= 2, Ann Arbor stage III-IV and more than one extranodal site. Time-fixed per subject.
 - **Units:** (binary)
@@ -18978,6 +19001,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Han_2022_cabotegravir.R` (founding example; fractional change `(1 + e_inj_split_ka_im * INJ_SPLIT)` on the long-acting intramuscular absorption rate constant with `e_inj_split_ka_im = 0.478`, i.e. 47.8% faster absorption from a split dose; 726 of 12 169 cabotegravir LA injections (6.0%) in the model-building dataset were split), `Han_2024_cabotegravir.R` (the same fixed effect `e_inj_split_ka_gluteal = 0.478` on the typical gluteal rate, which the thigh rate inherits through `TV_KA3 = TV_KA2 + THETA1`; the Han 2024 thigh data contained no split injections).
 - **Notes:** Shared by the Han 2022 (oral + gluteal) and Han 2024 (thigh) cabotegravir models, the latter carrying the Han 2022 gluteal absorption model forward; one definition serves both. Belongs with the administration-technique covariates `NEEDLE_LEN_IN`, `INJSITE_ARM` / `INJSITE_THIGH` / `INJSITE_BUTTOCK` and `DEVICE_AI`, but is distinct from all of them: it records how the volume was divided, not the site, needle or device. Distinct from `FORM_TRI_SPLIT50`, which is a broken TABLET (a dose-form integrity flag in the drug-specific `FORM_<drug>_<formulation>` family) rather than a divided injection. General scope because dividing a large-volume depot injection between two sites is a routine practice for long-acting injectables of any drug. Ratified by the maintainers 2026-10-15.
 
+### SC_INJ_GROUP3 (**canonical for the undefined subcutaneous-injection category SINJ = 3 indicator (Jamois 2025 tocilizumab)**)
+- **Description:** 1 = the subcutaneous dose belongs to category 3 of the source data set's `SINJ` column; 0 = any other category (and IV dosing). The source does not define what `SINJ` encodes (injection site, device, or patient subgroup) nor what level 3 is; the column is carried so the estimated effect stays selectable.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any other SINJ category).
+- **Source aliases:**
+  - `SINJ` (`IF(SINJ.EQ.3) FF1 = THETA(17)`) -- Jamois 2025 Table S6; Table S1 labels the effect 'F SC,SJIT3'. Decompose: `SC_INJ_GROUP3 = as.integer(SINJ == 3)`.
+- **Example models:** `Jamois_2025_tocilizumab_ra.R` and `Jamois_2025_tocilizumab_crs.R` (multiplies the log SC bioavailability by 0.692, raising F toward 1; inherited fixed in the CRS model, where every dose is IV and the column has no effect).
+- **Notes:** Deliberately opaque: the name records only the source category, because the meaning is unknown. If a later tocilizumab source defines `SINJ` (the Table S1 label 'SJIT3' may point to a juvenile-arthritis injection subgroup), register the defined concept and retire this column in its favour. Belongs near the administration-technique covariates `INJSITE_ARM` / `INJSITE_THIGH`, `INJ_SPLIT` and `NEEDLE_LEN_IN`, but cannot be mapped to any of them. Ratified by the maintainers 2026-11-06.
+
 ### NEEDLE_LEN_IN (**canonical for injection needle length in inches**)
 - **Description:** Length of the needle used to give an injection, in INCHES. Per-dose-record continuous covariate; supply it on each dose record and carry it forward. Intended for intramuscular depot injections, where a needle too short for the subcutaneous fat layer deposits drug outside the muscle and slows absorption.
 - **Units:** inch
@@ -18988,6 +19022,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `NDL` -- Han 2022 Table 3 row 'NDL exponent on KALA' and Results 3.2 equation '(NDL/1.5)^0.478', 'NDL denotes needle length in inches'.
 - **Example models:** `Han_2022_cabotegravir.R` (founding example; power function `(NEEDLE_LEN_IN / 1.5)^e_needle_len_in_ka_im` with exponent 0.478 on the long-acting intramuscular absorption rate constant of cabotegravir; recorded lengths 1, 1.5, 2 and 2.5 inch, 88.5% of injections at 1.5 inch, Han 2022 Table 2), `Han_2024_cabotegravir.R` (the same fixed exponent `e_needle_len_in_ka_gluteal = 0.478` on the typical gluteal rate, inherited by the thigh rate; 363 of 366 thigh injections used a 1.5-inch needle).
 - **Notes:** The unit is part of the name on purpose: the inch is non-SI, models divide by a reference length in inches, and a value supplied in millimetres would silently give a wrong absorption rate. A paper that reports needle length in another unit should register its own unit-suffixed sibling rather than reuse this column. Shared by the Han 2022 and Han 2024 cabotegravir models with one definition. Belongs with the administration-technique covariates `INJ_SPLIT`, `INJSITE_ARM` / `INJSITE_THIGH` / `INJSITE_BUTTOCK` and `DEVICE_AI`; distinct from an injection-depth or skin-to-muscle-thickness measurement (Tan 2025 documents one, unregistered, as `INJDEPTH`), which is a property of the patient rather than of the needle. Ratified by the maintainers 2026-10-15.
+
+### STUDY_25220_28117 (**canonical for the tocilizumab SC studies NA25220 / 28117 indicator**)
+- **Description:** 1 = record from either of the tocilizumab subcutaneous studies NA25220 or 28117; 0 = any other study. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (all other studies).
+- **Source aliases:**
+  - `STUD` (`ST2 = 1 if STUD = 25220 or 28117`) -- Jamois 2025 Table S6; Table S1 labels the effect 'ka, NA25220'.
+- **Example models:** `Jamois_2025_tocilizumab_ra.R` and `Jamois_2025_tocilizumab_crs.R` (multiplies the SC absorption rate ka by exp(theta16) = 0.807; inherited fixed in the CRS model, where it is always 0).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family; one indicator covers two studies because the model gives them a single shared effect, as `STUDY_DORZA_EARLY` does.
 
 ### STUDY_93NNBT007 (**canonical for the 93NNBT007 single-dose oral nicotine microtablet study indicator**)
 - **Description:** 1 = record from study 93NNBT007, in which nicotine microtablets were swallowed whole as a single dose; 0 = study 92NNBT005, in which the microtablets were chewed before swallowing and dosed repeatedly. Subject-level (time-fixed).
