@@ -13626,7 +13626,8 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Scope:** general
 - **Reference category:** n/a -- enters as `log(ALPR / <median>)` (Cerou 2024) or as a power term `(ALPR / ref)^exponent` (Thai 2023). Reference values observed: 0.89 (Cerou 2024 development model; the per-study medians in the authors' PAGE 2022 poster were 0.94, 0.89 and 0.59); 1, the upper limit of normal (Thai 2023, which does not report the analysis-set median, so its model centres on the ULN).
 - **Source aliases:**
-  - `ALKN` -- Cerou 2024 Table 3 ('alkaline phosphatase normalized to upper limit value'); Thai 2023 Table 3 ("alkaline phosphatase normalized to the upper limit value").
+  - `ALKN` -- Cerou 2024 Table 3 ('alkaline phosphatase normalized to upper limit value').
+  - `ALKN` -- Thai 2023 Table 3 ("alkaline phosphatase normalized to the upper limit value").
 - **Example models:** `Cerou_2024_amcenestrant_ameera12.R` (log-linear effect on the PFS hazard: `exp(0.93 * log(ALPR / 0.89))`), `Thai_2023_isatuximab.R` (power effect `(ALPR / 1)^-0.233` on the baseline serum M-protein M0 of the isatuximab M-protein/PFS joint model).
 - **Notes:** Member of the `<analyte>R` ULN-ratio family with `ALBR` and `LDHR`. Distinct from `ALP` (absolute activity in U/L); never substitute one for the other, since a model calibrated on a ratio near 1 is badly wrong if fed a U/L value near 100. In Cerou 2024 the Japanese AMEERA-2 study had a raw median of 202.5 IU/L but a normalised median of 0.59, so raw ALP and ALPR are not proportional across sites.
 
