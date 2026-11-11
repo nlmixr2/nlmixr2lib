@@ -834,8 +834,12 @@ navbar:
         href: articles/Dimelow_2024_belimumab.html
       - text: "Belimumab (Struemper 2017)"
         href: articles/Struemper_2017_belimumab.html
+      - text: "Belimumab (Wu 2025)"
+        href: articles/Wu_2025_belimumab.html
       - text: "Belimumab (Zhou 2021)"
         href: articles/Zhou_2021_belimumab.html
+      - text: "Belimumab sri (Wu 2025)"
+        href: articles/Wu_2025_belimumab.html
       - text: "Belzutifan (Marathe 2023)"
         href: articles/Marathe_2023_belzutifan.html
       - text: "Bemarituzumab (Xiang 2020)"
@@ -11664,6 +11668,7 @@ articles:
   - articles/Wu_2024_daptomycin
   - articles/Wu_2024_gfr_maturation
   - articles/Wu_2024_inotuzumab
+  - articles/Wu_2025_belimumab
   - articles/Wu_2025_paracetamol
   - articles/Wu_2025_sitafloxacin
   - articles/Wurthwein_2013_caspofungin

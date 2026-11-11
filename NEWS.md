@@ -8,6 +8,8 @@
 - Add Mehta 2025 burosumab PK/serum phosphorus and fracture-count models ([doi:10.1002/jcph.6140](https://doi.org/10.1002/jcph.6140)) -- children and adults with X-linked hypophosphatemia (fracture model: adults in UX023-CL303; ratifies `CAV_PHOS`, `TRT_BUROSUMAB` and the `fracture_count` output).
 - Add Pouzin 2023 tusamitamab ravtansine CYP3A4/1A2/2B6 downregulation IVIVE-PK ([doi:10.1002/cpt.3102](https://doi.org/10.1002/cpt.3102)) -- adults with advanced CEACAM5-expressing solid tumors (typical-value simulation from in vitro constants).
 
+- Add Wu 2025 belimumab PK and Week-52 SRI exposure-response models ([doi:10.1111/bcp.16263](https://doi.org/10.1111/bcp.16263)) -- healthy adults and adult and paediatric patients with systemic lupus erythematosus, including Mainland Chinese participants.
+
 - Add Iwaki 2021 guselkumab PPPASI PK/PD ([doi:10.1002/jcph.1953](https://doi.org/10.1002/jcph.1953)) -- Japanese adults with palmoplantar pustulosis.
 
 - `checkModelConventions()` no longer reports `DV` as a covariate. A custom likelihood `ll(<endpoint>) ~ ...` has to read the observed value, and `DV` is a dataset column, not a covariate.
