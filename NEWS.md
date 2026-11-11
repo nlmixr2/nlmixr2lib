@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Obura 2025 benzylpenicillin ([doi:10.1002/psp4.70072](https://doi.org/10.1002/psp4.70072)) -- labouring women receiving intrapartum prophylaxis against early-onset neonatal Group B Streptococcus disease (maternal plasma and umbilical cord blood).
+- Add Sakares 2025 deferasirox iron-chelation PD model ([doi:10.1111/cts.70355](https://doi.org/10.1111/cts.70355)) -- adults with transfusion-dependent thalassaemia and healthy adults.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
