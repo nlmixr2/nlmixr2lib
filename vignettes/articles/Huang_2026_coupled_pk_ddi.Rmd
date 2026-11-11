@@ -1,0 +1,608 @@
+---
+title: "Metoprolol + captopril and imeglimin + metformin coupled PK DDI (Huang 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Metoprolol + captopril and imeglimin + metformin coupled PK DDI (Huang 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Huang 2026 proposes a "coupled" two-compartment PK model for a pair of orally
+co-administered drugs X and Y. Each drug has first-order absorption from a
+gastrointestinal compartment and two-compartment disposition written with
+micro rate constants on amounts. Each rate constant of one drug is a linear
+function of the amount of the other drug in the compartment that the process
+leaves (Huang 2026 equation 1):
+
+$$
+\begin{aligned}
+\frac{dx_0}{dt} &= -(\alpha_{00} + \alpha'_{00} y_0)\,x_0 \\
+\frac{dx_1}{dt} &= (\alpha_{00} + \alpha'_{00} y_0)\,x_0 - (\alpha_{12} + \alpha'_{12} y_1)\,x_1
+  + (\alpha_{21} + \alpha'_{21} y_2)\,x_2 - (\alpha_{10} + \alpha'_{10} y_1)\,x_1 \\
+\frac{dx_2}{dt} &= (\alpha_{12} + \alpha'_{12} y_1)\,x_1 - (\alpha_{21} + \alpha'_{21} y_2)\,x_2
+\end{aligned}
+$$
+
+and the same for drug Y with $\beta$ in place of $\alpha$ and $x$ in place of
+$y$. The intercepts are the single-drug rate constants (h$^{-1}$); the slopes
+$\alpha'$, $\beta'$ are the interaction parameters, in 1/(g h), because the
+paper carries amounts in g. A negative slope means inhibition and a positive
+slope means promotion. When either drug is given alone, every slope multiplies
+zero and the model reduces to two ordinary two-compartment models.
+
+The paper fits two drug pairs, and each is packaged as its own model:
+
+* `Huang_2026_metoprolol_captopril`: metoprolol is drug X (bare names) and
+  captopril is drug Y (suffix `_captopril`). Parameters are from Huang 2026
+  Tables 7 and 8.
+* `Huang_2026_imeglimin_metformin`: imeglimin is drug X (bare names) and
+  metformin is drug Y (suffix `_metformin`). Parameters are from the S1 File,
+  S8 and S9 Tables.
+
+In both models the amounts are in mg, and the other drug's amount is divided
+by 1000 inside `model()` so that the slopes can be used as printed. Neither
+model has inter-individual variability or a residual-error model, because the
+paper fits mean profiles by least squares and reports neither.
+
+* Citation: `r rxode2::rxode(readModelDb("Huang_2026_metoprolol_captopril"))$reference`
+* Article: <https://doi.org/10.1371/journal.pone.0339052>
+
+```{r load-models}
+mod_mc <- readModelDb("Huang_2026_metoprolol_captopril")
+mod_im <- readModelDb("Huang_2026_imeglimin_metformin")
+```
+
+# Population
+
+**Metoprolol + captopril** (Qu 2001, Chin Pharm J 36(2):111-2, as described in
+Huang 2026 "Data source"): 12 healthy volunteers aged 22-29 years, weighing
+60-70 kg. They were randomised into three groups of four that rotated through
+metoprolol 50 mg, captopril 50 mg and metoprolol 50 mg + captopril 50 mg, with
+a 2-week washout. Samples were taken from 0.25 to 12 h. The model was fitted to
+the mean profiles in S1 File, S6 Table (footnote: "Weight is 65 kg").
+
+**Imeglimin + metformin** (Chevalier 2020 and Fouqueray 2020): 16 healthy
+Caucasian men and women aged 19-55 years (imeglimin alone, then with
+cimetidine), and 16 healthy Caucasian men aged 18-60 years (metformin 850 mg
+with imeglimin 1500 mg, twice daily on days 1-6 and once daily on days 7-12).
+The mean profiles are in S7 Table (footnote: "Weight is 79 kg"). The
+combination and metformin-alone profiles have a non-zero pre-dose
+concentration, because they were sampled at steady state.
+
+The same information is available from the `population` element of each model
+(`readModelDb("Huang_2026_metoprolol_captopril")()$population`).
+
+# Source trace
+
+| Parameter | Metoprolol + captopril | Imeglimin + metformin | Source |
+|---|---|---|---|
+| `lka` ($\alpha_{00}$) | 0.205 1/h | 0.268 1/h | Table 7 / S8 Table |
+| `lk12` ($\alpha_{12}$) | 84.192 1/h | 231.984 1/h | Table 7 / S8 Table |
+| `lk21` ($\alpha_{21}$) | 8.122 1/h | 4.519 1/h | Table 7 / S8 Table |
+| `lkel` ($\alpha_{10}$) | 15.162 1/h | 28.344 1/h | Table 7 / S8 Table |
+| `lka_<Y>` ($\beta_{00}$) | 0.716 1/h | 0.200 1/h | Table 7 / S8 Table |
+| `lk12_<Y>` ($\beta_{12}$) | 69.474 1/h | 25.194 1/h | Table 7 / S8 Table |
+| `lk21_<Y>` ($\beta_{21}$) | 19.222 1/h | 1.299 1/h | Table 7 / S8 Table |
+| `lkel_<Y>` ($\beta_{10}$) | 14.591 1/h | 18.969 1/h | Table 7 / S8 Table |
+| `lvc` ($V_c$, shared by the pair) | 4163.137 mL | 4721.361 mL | Table 7 / S8 Table |
+| `ddi_ka` ($\alpha'_{00}$) | -1.270 1/(g h) | -0.178 1/(g h) | Table 8 / S9 Table |
+| `ddi_k12` ($\alpha'_{12}$) | -729.2 | 9945 | Table 8 / S9 Table |
+| `ddi_k21` ($\alpha'_{21}$) | 585.2 | -2.729 | Table 8 / S9 Table |
+| `ddi_kel` ($\alpha'_{10}$) | -4854 | -45.004 | Table 8 / S9 Table |
+| `ddi_ka_<Y>` ($\beta'_{00}$) | -2.354 | -0.062 | Table 8 / S9 Table |
+| `ddi_k12_<Y>` ($\beta'_{12}$) | -9704 | -3.224 | Table 8 / S9 Table |
+| `ddi_k21_<Y>` ($\beta'_{21}$) | 4905 | -4.141 | Table 8 / S9 Table |
+| `ddi_kel_<Y>` ($\beta'_{10}$) | -2481 | 1.13 | Table 8 / S9 Table |
+| ODE system | | | Equation 1 |
+| `Cc = central / vc` | | | Equation 2 ($x = V_c c_x$) |
+
+`<Y>` is `captopril` or `metformin`.
+
+# Known-answer check: the hypothetical drug pair of Table 2
+
+Huang 2026 Table 1 defines a hypothetical pair (X: 0.6 g; rate constants
+$\alpha_{00} = \alpha_{12} = \alpha_{21} = \alpha_{10} = 0.5$ 1/h. Y: 1 g;
+$\beta_{00} = 0.6$, $\beta_{12} = 0.5$, $\beta_{21} = 0.4$,
+$\beta_{10} = 0.3$ 1/h). Table 2 then varies $\alpha'_{00}$ with all other
+slopes at zero, and reports Cmax, Tmax, AUC and "t1/2" of the drug X amount in
+the central compartment. This is a deterministic check of equation 1 and of
+the unit handling, so the packaged structure is run with the Table 1 values
+substituted for its parameters.
+
+```{r table2-sim}
+table1_par <- c(
+  lka = log(0.5), lk12 = log(0.5), lk21 = log(0.5), lkel = log(0.5),
+  lka_captopril = log(0.6), lk12_captopril = log(0.5),
+  lk21_captopril = log(0.4), lkel_captopril = log(0.3),
+  ddi_k12 = 0, ddi_k21 = 0, ddi_kel = 0, ddi_ka_captopril = 0,
+  ddi_k12_captopril = 0, ddi_k21_captopril = 0, ddi_kel_captopril = 0
+)
+alpha00p <- c(-0.4, -0.2, 0, 0.2, 0.4, 2)
+# 0.005 h resolves Tmax to well under 1%; a finer grid makes PKNCA slow.
+grid_t2 <- sort(unique(c(seq(0, 12, by = 0.005), seq(12, 100, by = 0.5))))
+
+ev_t2 <- et(amt = 600, cmt = "depot") |>
+  et(amt = 1000, cmt = "depot_captopril") |>
+  et(grid_t2, cmt = "central")
+
+sim_t2 <- bind_rows(lapply(seq_along(alpha00p), function(i) {
+  s <- rxSolve(mod_mc, ev_t2, params = c(table1_par, ddi_ka = alpha00p[i]))
+  as.data.frame(s) |>
+    transmute(id = i, scenario = sprintf("alpha00' = %g", alpha00p[i]),
+              time, amount_g = central / 1000)
+}))
+```
+
+Table 2 tabulates an amount, not a concentration, so PKNCA is run on the
+central amount in g (Cmax in 10^3 mg, AUC in 10^3 mg h).
+
+```{r table2-nca}
+dose_t2 <- sim_t2 |> distinct(id, scenario) |> mutate(time = 0, amt = 0.6)
+nca_t2 <- pk.nca(PKNCAdata(
+  PKNCAconc(filter(sim_t2, !is.na(amount_g)), amount_g ~ time | scenario + id),
+  PKNCAdose(dose_t2, amt ~ time | scenario + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE)
+))
+
+published_t2 <- tibble::tibble(
+  scenario = sprintf("alpha00' = %g", alpha00p),
+  cmax = c(0.14241, 0.14992, 0.16496, 0.18381, 0.20294, 0.31125),
+  tmax = c(3.0869, 2.3374, 1.7292, 1.3703, 1.1548, 0.6399),
+  aucinf.obs = c(1.19917, 1.19926, 1.19933, 1.19938, 1.19943, 1.19954)
+)
+
+cmp_t2 <- ncaComparisonTable(
+  simulated = nca_t2, reference = published_t2, by = "scenario",
+  units = c(cmax = "10^3 mg", tmax = "h", aucinf.obs = "10^3 mg*h"),
+  tolerance_pct = 20
+)
+cmp_t2 |>
+  rename("Scenario" = scenario) |>
+  knitr::kable(caption = "Simulated versus Huang 2026 Table 2 (drug X, central amount).")
+```
+
+Cmax reproduces to five significant figures. Tmax agrees to within 1%, and the
+small remaining difference is consistent with the paper reading Tmax off a
+coarser time grid. The paper's AUC values lie a little below the exact value,
+which is $x_0(0)/\alpha_{10} = 1.2$ g h. They behave like an AUC truncated at a
+finite horizon, so PKNCA's AUC0-inf of 1.2 differs from them by less than
+0.1%.
+
+Table 2's "t1/2" column is not a terminal half-life. It equals the time at
+which the central amount falls back to half of Cmax, measured from dosing:
+
+```{r table2-thalf}
+t_half_cmax <- sim_t2 |>
+  group_by(scenario) |>
+  summarise(
+    cmax = max(amount_g),
+    tmax = time[which.max(amount_g)],
+    t_half = time[time > tmax & amount_g <= cmax / 2][1],
+    .groups = "drop"
+  ) |>
+  left_join(
+    tibble::tibble(scenario = sprintf("alpha00' = %g", alpha00p),
+                   t_half_paper = c(7.9743, 7.1375, 6.1715, 5.2568, 4.5160, 2.3653)),
+    by = "scenario"
+  ) |>
+  mutate(pct_diff = 100 * (t_half - t_half_paper) / t_half_paper)
+t_half_cmax |>
+  select(scenario, t_half, t_half_paper, pct_diff) |>
+  rename("Scenario" = scenario, "Time to Cmax/2, simulated (h)" = t_half,
+         "Table 2 't1/2' (h)" = t_half_paper, "% diff" = pct_diff) |>
+  knitr::kable(digits = 4)
+
+# Deterministic solve with no random effects, so the bounds are tight.
+cmp_raw <- as.data.frame(nca_t2) |>
+  filter(PPTESTCD %in% c("cmax", "tmax")) |>
+  select(scenario, PPTESTCD, PPORRES) |>
+  left_join(pivot_longer(published_t2, -scenario, names_to = "PPTESTCD", values_to = "ref"),
+            by = c("scenario", "PPTESTCD")) |>
+  mutate(rel = abs(PPORRES - ref) / ref)
+stopifnot(
+  all(cmp_raw$rel[cmp_raw$PPTESTCD == "cmax"] < 0.001),
+  all(cmp_raw$rel[cmp_raw$PPTESTCD == "tmax"] < 0.02),
+  all(abs(t_half_cmax$pct_diff) < 0.5)
+)
+```
+
+# Metoprolol + captopril
+
+## Profiles alone and combined (Figures 9-11)
+
+Each drug is given as 50 mg into its depot at time 0, alone or together.
+Observations are recorded on the central states, so the outputs carry both the
+central amounts and the concentrations `Cc` / `Cc_captopril`.
+
+```{r mc-sim}
+obs_t <- sort(unique(c(seq(0, 24, by = 0.01))))
+ev_mc <- function(id, met, cap) {
+  e <- et(obs_t, cmt = "central")
+  if (met) e <- e |> et(amt = 50, cmt = "depot")
+  if (cap) e <- e |> et(amt = 50, cmt = "depot_captopril")
+  as.data.frame(e) |> mutate(id = id)
+}
+events_mc <- bind_rows(
+  ev_mc(1, TRUE, FALSE) |> mutate(treatment = "Metoprolol alone"),
+  ev_mc(2, FALSE, TRUE) |> mutate(treatment = "Captopril alone"),
+  ev_mc(3, TRUE, TRUE) |> mutate(treatment = "Combination")
+)
+sim_mc <- as.data.frame(rxSolve(mod_mc, events_mc, keep = "treatment"))
+```
+
+The paper fits central amounts. Its plotted "observed" amounts in Figures 9-11
+equal the S6 Table mean concentrations times 3.25 L, which is 0.05 L/kg times
+the 65 kg footnote weight. They are not the concentrations times the printed
+$V_c$ of 4.163 L. For example, metoprolol 168.0 ng/mL at 1.5 h is plotted at
+0.547 mg, and captopril 590.7 ng/mL in combination is plotted at 1.92 mg. The
+observed amounts are rebuilt the same way below.
+
+```{r mc-obs}
+s6 <- tibble::tribble(
+  ~time, ~met_alone, ~met_comb, ~cap_alone, ~cap_comb,
+  0.25, 21.6, 27.2, 277.6, 293.9,
+  0.5, 86.4, 109.1, 580.3, 590.7,
+  0.75, 127.3, 137.4, 526.0, 544.7,
+  1, 145.0, 162.1, 359.1, 387.9,
+  1.5, 168.0, 199.8, 295.2, 307.8,
+  2, 156.9, 180.2, 231.2, 257.5,
+  2.5, 134.4, 159.3, 156.6, 182.4,
+  3, 114.1, 136.0, 107.9, 127.9,
+  4, 89.4, 115.1, 72.1, 86.3,
+  6, 68.9, 105.4, 56.4, 69.1,
+  8, 44.6, 61.2, 34.1, 43.5,
+  12, 21.5, 28.4, 16.0, 16.6
+)
+v_plot_mc <- 0.05 * 65 # L; reproduces the plotted observed amounts
+obs_mc <- s6 |>
+  pivot_longer(-time, values_to = "conc") |>
+  mutate(
+    drug = ifelse(startsWith(name, "met"), "Metoprolol", "Captopril"),
+    treatment = case_when(
+      name == "met_alone" ~ "Metoprolol alone",
+      name == "cap_alone" ~ "Captopril alone",
+      TRUE ~ "Combination"
+    ),
+    amount = conc * v_plot_mc / 1000
+  )
+
+pred_mc <- sim_mc |>
+  filter(time <= 12) |>
+  transmute(treatment, time, Metoprolol = central, Captopril = central_captopril) |>
+  pivot_longer(c(Metoprolol, Captopril), names_to = "drug", values_to = "amount") |>
+  filter(!(treatment == "Metoprolol alone" & drug == "Captopril"),
+         !(treatment == "Captopril alone" & drug == "Metoprolol"))
+
+ggplot(pred_mc, aes(time, amount, colour = drug)) +
+  geom_line() +
+  geom_point(data = obs_mc, shape = 21, size = 2) +
+  facet_wrap(~treatment) +
+  labs(x = "Time (h)", y = "Central amount (mg)", colour = NULL,
+       caption = "Replicates Figures 9, 10 and 11 of Huang 2026 (points: S6 Table x 3.25 L).")
+```
+
+The simulated metoprolol-alone peak is 0.47 mg at 1.7 h, as in Figure 9. In
+combination the peaks are 0.59 mg for metoprolol and 1.68 mg for captopril, as
+in Figure 11.
+
+## Interaction strengths quoted in the text
+
+The "Parameter analysis" section reports, for each slope, the average
+percentage change of the corresponding rate constant over 0-2, 0-6 and 0-12 h
+in the combination arm. The percentage is $100\,\alpha' \bar{y}/\alpha$ with
+$\bar{y}$ the time-averaged amount of the other drug, in g, in the driving
+compartment. These values depend on every slope and every rate constant at
+once, so they are a joint check of the whole parameter set, the sign of
+$\beta'_{10}$ included.
+
+```{r mc-avg}
+comb <- sim_mc |> filter(treatment == "Combination")
+time_avg <- function(x, upto) {
+  i <- comb$time <= upto
+  tt <- comb$time[i]
+  yy <- x[i]
+  sum(diff(tt) * (head(yy, -1) + tail(yy, -1)) / 2) / upto
+}
+ip <- as.list(rxode2::rxode(mod_mc)$theta)
+pct_tab <- tibble::tribble(
+  ~slope, ~intercept, ~driver, ~p2, ~p6, ~p12,
+  "ddi_ka", "lka", "depot_captopril", -18.08, -8.27, -4.23,
+  "ddi_k12", "lk12", "central_captopril", -1.07, -0.53, -0.27,
+  "ddi_k21", "lk21", "peripheral1_captopril", 15.78, 7.41, 3.84,
+  "ddi_kel", "lkel", "central_captopril", -39.58, -19.40, -9.97,
+  "ddi_ka_captopril", "lka_captopril", "depot", -14.07, -10.13, -6.60,
+  "ddi_k12_captopril", "lk12_captopril", "central", -6.27, -5.98, -4.05,
+  "ddi_k21_captopril", "lk21_captopril", "peripheral1", 94.82, 103.96, 72.38,
+  "ddi_kel_captopril", "lkel_captopril", "central", -7.63, -7.28, -4.92
+) |>
+  pivot_longer(c(p2, p6, p12), names_to = "window", values_to = "paper") |>
+  mutate(upto = as.numeric(sub("p", "", window))) |>
+  rowwise() |>
+  mutate(simulated = 100 * ip[[slope]] * time_avg(comb[[driver]] / 1000, upto) / exp(ip[[intercept]])) |>
+  ungroup() |>
+  mutate(pct_diff = 100 * (simulated - paper) / paper)
+
+pct_tab |>
+  select(slope, upto, paper, simulated, pct_diff) |>
+  rename("Slope" = slope, "Average over 0-t (h)" = upto, "Paper (%)" = paper,
+         "Simulated (%)" = simulated, "Relative diff (%)" = pct_diff) |>
+  knitr::kable(digits = 2, caption = "Average change in each rate constant caused by the other drug (sign = direction).")
+
+stopifnot(max(abs(pct_tab$pct_diff)) < 5)
+```
+
+The paper describes these values as positive "inhibition" or "facilitation"
+percentages. The table gives them signed, with the paper's values negated where
+the text calls the effect inhibition. All 24 values are reproduced to within
+about 2%. This includes the $\beta'_{10}$ row, which reproduces only with the
+negative slope printed in Table 8 and said in the text.
+
+## Concentrations and NCA
+
+The concentration outputs follow the paper's equation 2 with the printed
+$V_c$ (`Cc = central / vc`). Because the paper's plotted amounts use 3.25 L
+rather than 4.163 L (see above), the simulated concentrations sit about 22%
+(3.25 / 4.163 = 0.78) below the S6 Table means that the fit was made to. The
+NCA below compares simulated Cmax and AUC0-12 with NCA of the S6 Table mean
+profiles.
+
+```{r mc-nca}
+sim_conc <- bind_rows(
+  sim_mc |> filter(treatment != "Captopril alone") |>
+    transmute(id, time, treatment, analyte = "Metoprolol", Cc),
+  sim_mc |> filter(treatment != "Metoprolol alone") |>
+    transmute(id, time, treatment, analyte = "Captopril", Cc = Cc_captopril)
+) |>
+  filter(!is.na(Cc)) |>
+  mutate(group = paste(analyte, "-", treatment))
+
+obs_conc <- obs_mc |>
+  transmute(time, group = paste(drug, "-", treatment), Cc = conc) |>
+  mutate(id = as.integer(factor(group)))
+obs_conc <- bind_rows(obs_conc, obs_conc |> distinct(id, group) |> mutate(time = 0, Cc = 0)) |>
+  arrange(group, time)
+
+nca_int <- data.frame(start = 0, end = 12, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+run_nca <- function(d) {
+  doses <- d |> distinct(id, group) |> mutate(time = 0, amt = 50)
+  pk.nca(PKNCAdata(PKNCAconc(d, Cc ~ time | group + id),
+                   PKNCAdose(doses, amt ~ time | group + id),
+                   intervals = nca_int))
+}
+nca_sim_mc <- run_nca(sim_conc)
+nca_obs_mc <- run_nca(obs_conc)
+
+obs_wide <- as.data.frame(nca_obs_mc) |>
+  select(group, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+ncaComparisonTable(
+  simulated = nca_sim_mc, reference = obs_wide, by = "group",
+  params = c("cmax", "tmax", "auclast"),
+  units = c(cmax = "ng/mL", tmax = "h", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+) |>
+  rename("Analyte - arm" = group) |>
+  knitr::kable(caption = "Simulated NCA (0-12 h) versus NCA of the S6 Table mean profiles.")
+```
+
+Simulated Cmax and AUC0-12 are 18-36% below the NCA of the mean data. Two
+things add up to this, and neither is a mis-transcribed rate constant. First,
+the volume issue above costs about 22%. Second, the published fits themselves
+under-predict the observed peaks: in Figure 10 the fitted captopril peak is
+about 1.55 mg against an observed 1.89 mg, and the simulation reproduces the
+fitted curve, not the data. The Tmax differences reflect the 0.25-0.5 h spacing
+of the sampling times around the peak. The model reproduces the direction of
+the reported interaction. Metoprolol exposure is higher in the combination arm
+(captopril slows metoprolol elimination, $\alpha'_{10} < 0$), while captopril
+changes less.
+
+```{r mc-ratio}
+as.data.frame(nca_sim_mc) |>
+  filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  separate(group, c("analyte", "arm"), sep = " - ") |>
+  select(analyte, arm, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = arm, values_from = PPORRES) |>
+  mutate(ratio = Combination / coalesce(`Metoprolol alone`, `Captopril alone`)) |>
+  select(analyte, PPTESTCD, ratio) |>
+  rename("Analyte" = analyte, "Parameter" = PPTESTCD, "Combination / alone" = ratio) |>
+  knitr::kable(digits = 3)
+```
+
+# Imeglimin + metformin
+
+The S7 Table profiles come from repeated dosing: the metformin-alone and both
+combination profiles start from a non-zero pre-dose concentration. The paper
+does not state the starting amounts its simulations used. Here, the central
+amount starts at the pre-dose concentration times 3.95 L (0.05 L/kg times the
+79 kg footnote weight, as for the metoprolol pair). The peripheral amount
+starts at distribution equilibrium with it, $x_2(0) = x_1(0)\,k_{12}/k_{21}$,
+and the doses go into the depots at time 0.
+
+```{r im-sim}
+v_plot_im <- 0.05 * 79
+s7 <- tibble::tribble(
+  ~time, ~ime_alone, ~ime_comb, ~mtf_alone, ~mtf_comb,
+  0, 0, 793.4, 276.2, 355.8,
+  0.5, 759.8, NA, NA, NA,
+  1, 1337.5, 998.1, 1284.8, 1134.9,
+  1.5, 1564.4, 1115.9, 1311.4, 1041.1,
+  2, 1712.2, 1243.1, 1270.1, 944.1,
+  3, 1825.7, 1351.6, 1214.4, 876.5,
+  4, 1658.1, 1388.8, 1170.3, 803.0,
+  5, NA, 1395.0, 996.6, 746.9,
+  6, 1021.2, 1159.3, 767.2, 588.3,
+  8, 666.2, 963.9, 532.3, 479.4,
+  10, 453.8, 747.4, 379.2, 370.5,
+  12, 295.7, 573.7, 276.3, 300.1
+)
+th_im <- rxode2::rxode(mod_im)$theta
+eq_ratio_x <- exp(th_im[["lk12"]] - th_im[["lk21"]])
+eq_ratio_y <- exp(th_im[["lk12_metformin"]] - th_im[["lk21_metformin"]])
+start_amt <- function(conc) conc * v_plot_im / 1000
+
+solve_im <- function(ime_dose, mtf_dose, ime_c0, mtf_c0, label) {
+  inits <- c(
+    depot = ime_dose, central = start_amt(ime_c0), peripheral1 = start_amt(ime_c0) * eq_ratio_x,
+    depot_metformin = mtf_dose, central_metformin = start_amt(mtf_c0),
+    peripheral1_metformin = start_amt(mtf_c0) * eq_ratio_y
+  )
+  as.data.frame(rxSolve(mod_im, et(seq(0, 12, by = 0.005), cmt = "central"), inits = inits)) |>
+    mutate(treatment = label)
+}
+sim_im <- bind_rows(
+  solve_im(1500, 0, 0, 0, "Imeglimin alone"),
+  solve_im(0, 850, 0, 276.2, "Metformin alone"),
+  solve_im(1500, 850, 793.4, 355.8, "Combination")
+)
+
+obs_im <- s7 |>
+  pivot_longer(-time, values_to = "conc") |>
+  filter(!is.na(conc)) |>
+  mutate(
+    drug = ifelse(startsWith(name, "ime"), "Imeglimin", "Metformin"),
+    treatment = case_when(
+      name == "ime_alone" ~ "Imeglimin alone",
+      name == "mtf_alone" ~ "Metformin alone",
+      TRUE ~ "Combination"
+    ),
+    amount = conc * v_plot_im / 1000
+  )
+pred_im <- sim_im |>
+  transmute(treatment, time, Imeglimin = central, Metformin = central_metformin) |>
+  pivot_longer(c(Imeglimin, Metformin), names_to = "drug", values_to = "amount") |>
+  filter(!(treatment == "Imeglimin alone" & drug == "Metformin"),
+         !(treatment == "Metformin alone" & drug == "Imeglimin"))
+
+ggplot(pred_im, aes(time, amount, colour = drug)) +
+  geom_line() +
+  geom_point(data = obs_im, shape = 21, size = 2) +
+  facet_wrap(~treatment) +
+  labs(x = "Time (h)", y = "Central amount (mg)", colour = NULL,
+       caption = "Compare with S16-S18 Figs of Huang 2026 (points: S7 Table x 3.95 L).")
+```
+
+The single-drug profiles follow S16 and S17 Figs: imeglimin peaks at about
+6.8 mg near 2.5 h, against about 7.0 mg in S16. In the combination arm the
+imeglimin profile follows S18, but the metformin profile does not. S18 shows
+metformin rising to about 4.9 mg within 0.2 h. With the printed parameters,
+imeglimin slows metformin absorption ($\beta'_{00} < 0$) and return from the
+periphery ($\beta'_{21} < 0$), so the metformin central amount never rises
+above about 2.6 mg in the first hours. It dips to about 1.6 mg and then climbs
+again late in the interval, as the imeglimin peripheral amount, and with it the
+inhibition of metformin's return from the periphery, falls.
+
+The same text-quoted average percentages as for the metoprolol pair (S1 File,
+section 3.2) are compared below.
+
+```{r im-avg}
+comb_im <- sim_im |> filter(treatment == "Combination")
+time_avg_im <- function(x, upto) {
+  i <- comb_im$time <= upto
+  tt <- comb_im$time[i]
+  yy <- x[i]
+  sum(diff(tt) * (head(yy, -1) + tail(yy, -1)) / 2) / upto
+}
+ip_im <- as.list(th_im)
+pct_im <- tibble::tribble(
+  ~slope, ~intercept, ~driver, ~p2, ~p6, ~p12,
+  "ddi_ka", "lka", "depot_metformin", -50.48, -39.57, -27.44,
+  "ddi_k12", "lk12", "central_metformin", 18.91, 15.21, 11.38,
+  "ddi_k21", "lk21", "peripheral1_metformin", -1.88, -1.07, -0.87,
+  "ddi_kel", "lkel", "central_metformin", -0.70, -0.56, -0.42,
+  "ddi_ka_metformin", "lka_metformin", "depot", -41.08, -31.09, -20.48,
+  "ddi_k12_metformin", "lk12_metformin", "central", -0.052, -0.048, -0.042,
+  "ddi_k21_metformin", "lk21_metformin", "peripheral1", -76.06, -90.09, -77.06,
+  "ddi_kel_metformin", "lkel_metformin", "central", 0.024, 0.029, 0.025
+) |>
+  pivot_longer(c(p2, p6, p12), names_to = "window", values_to = "paper") |>
+  mutate(upto = as.numeric(sub("p", "", window))) |>
+  rowwise() |>
+  mutate(simulated = 100 * ip_im[[slope]] * time_avg_im(comb_im[[driver]] / 1000, upto) / exp(ip_im[[intercept]])) |>
+  ungroup() |>
+  mutate(pct_diff = 100 * (simulated - paper) / paper)
+
+pct_im |>
+  select(slope, upto, paper, simulated, pct_diff) |>
+  rename("Slope" = slope, "Average over 0-t (h)" = upto, "Paper (%)" = paper,
+         "Simulated (%)" = simulated, "Relative diff (%)" = pct_diff) |>
+  knitr::kable(digits = 3)
+
+# Only the depot-driven terms are independent of the unreported starting
+# amounts; they depend on the doses and the two absorption parameters alone.
+stopifnot(max(abs(pct_im$pct_diff[pct_im$slope %in% c("ddi_ka", "ddi_ka_metformin")])) < 2)
+```
+
+The depot-driven terms ($\alpha'_{00}$, $\beta'_{00}$) reproduce exactly.
+The terms driven by the imeglimin amounts ($\beta'_{12}$, $\beta'_{21}$,
+$\beta'_{10}$) agree to within about 8%, except $\beta'_{12}$ at 6 and 12 h
+(about 23% high), and these depend on the unreported starting distribution.
+The terms driven by the metformin amounts do not reproduce. $\alpha'_{12}$ and
+$\alpha'_{10}$ are about 43% low at 2 and 6 h, which implies that the paper's
+simulation carried about 1.7 times more metformin in the central compartment
+than the printed parameters give; this is the same discrepancy seen in the S18
+metformin curve. $\alpha'_{21}$ is several-fold larger in magnitude than the
+paper's value, because metformin accumulates in its peripheral compartment
+here. The parameters are carried as printed and have not been adjusted to
+close this gap.
+
+# Assumptions and deviations
+
+* **Units of the rate constants.** Table 7 labels the rate constants
+  "10^-3 h^-1". They are carried in h^-1. That is the unit in the S1 File, S8
+  Table header, and it is what the paper's own worked example
+  ($\alpha'_{00} y_0(0)/\alpha_{00} = -1.270 \times 0.05 / 0.205 = -30.9\%$)
+  and the Figure 9-11 fits require.
+* **Units of the slopes.** The interaction slopes are in 1/(g h), as the text
+  states ("every 1 g of Cap ... reduces the rate of Met absorption by 1.27
+  h-1") and as the S9 Table header gives. Table 8's header reads
+  "1*10^3/(mg*h)". The model carries amounts in mg and divides the driving
+  amount by 1000.
+* **Sign of $\beta'_{10}$ (metoprolol on captopril elimination).** Table 8
+  prints -2481 and the text calls it negative. The S1 File, S9 Table prints
+  +2481. The negative value is used: it reproduces Figure 11 and the
+  text-quoted averages, and +2481 reproduces neither.
+* **Sign of the metformin $\beta'_{10}$.** S9 Table prints +1.13. The S1 File
+  text calls it "negative" but in the same sentence says imeglimin
+  *facilitates* metformin elimination, which requires a positive slope. The
+  printed +1.13 is used.
+* **Volume used for concentrations.** The concentration outputs use the
+  printed $V_c$ (equation 2). The paper's plotted observed amounts instead
+  equal the measured concentrations times 0.05 L/kg times the footnote body
+  weight (3.25 L and 3.95 L), which is not stated anywhere in the paper. So
+  `Cc` is about 22% (metoprolol pair) or 16% (imeglimin pair) below the
+  concentrations the authors fitted. To recover them, use
+  `central / (0.05 * 65)` or `central / (0.05 * 79)` (mg/L).
+* **Single shared $V_c$.** The paper reports one $V_c$ per drug pair, applied
+  to both drugs. It is kept as one parameter.
+* **Bioavailability.** The paper puts the whole dose in the gastrointestinal
+  compartment, so bioavailability is implicitly 1 and all rate constants are
+  apparent oral values. No `f(depot)` term is used.
+* **No variability.** The paper fits mean profiles by penalised least squares
+  and reports no inter-individual variability or residual error, so the
+  models are typical-value only. The 95% CIs in Tables 7 and 8 are
+  bootstrap intervals of the point estimates.
+* **Validity range.** The authors state that the linear coupling is valid
+  only near the doses studied. The coupled rate constants can become negative
+  if the other drug's amount is much larger than in the source studies; the
+  model does not guard against this.
+* **Imeglimin + metformin starting amounts.** The paper does not report the
+  initial conditions it used for the steady-state metformin-alone and
+  combination profiles. The choice made here (pre-dose central amount, with
+  the peripheral at distribution equilibrium) is the maintainers'
+  assumption, and it affects only the validation figures, not the model.
+* **Hypothetical drug pair.** The Table 1 / Table 2 hypothetical drugs are a
+  simulation demonstration, not a fitted model. They are used above only as
+  a known-answer check and are not packaged.

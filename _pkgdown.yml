@@ -3582,6 +3582,8 @@ navbar:
         href: articles/Jeong_2025_imc002.html
       - text: "Imeglimin (Tomita 2022)"
         href: articles/Tomita_2022_imeglimin.html
+      - text: "Imeglimin metformin (Huang 2026)"
+        href: articles/Huang_2026_coupled_pk_ddi.html
       - text: "Imetelstat (GonzalezSales 2024)"
         href: articles/GonzalezSales_2024_imetelstat.html
       - text: "Iminobiotin (Admiraal 2023)"
@@ -4810,6 +4812,8 @@ navbar:
         href: articles/Eugene_2016a_metoprolol.html
       - text: "Metoprolol (Eugene 2016b)"
         href: articles/Eugene_2016b_metoprolol_gender_dose_equivalence.html
+      - text: "Metoprolol captopril (Huang 2026)"
+        href: articles/Huang_2026_coupled_pk_ddi.html
       - text: "Metoprolol enantiomers (Eugene 2016b)"
         href: articles/Eugene_2016b_metoprolol_gender_dose_equivalence.html
       - text: "Metoprolol rat pbpk (Kir 2025)"
@@ -9673,6 +9677,7 @@ articles:
   - articles/Huang_2022_tacrolimus
   - articles/Huang_2025_colistinSulfate
   - articles/Huang_2025_dexmedetomidine
+  - articles/Huang_2026_coupled_pk_ddi
   - articles/Huang_2026_tiapride
   - articles/Huber_2024_ivivc_tumor_stasis
   - articles/Huestis_2025_midomafetamine
