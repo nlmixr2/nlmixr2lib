@@ -8396,3 +8396,32 @@ Four-compound whole-body PBPK models of the CYP1A2 methylxanthine network carry 
 - **Notes:** Ciprofloxacin already appears in the library as a parent analyte with bare canonical names (`Khan_2015_ciprofloxacin.R`); this suffix is for multi-compound models in which it is a co-administered perpetrator. Same role as the members of the "Transporter-DDI perpetrator drug suffixes" family, but placed here because ciprofloxacin is also a substrate of the enzyme it inhibits, so its own disposition has to be solved rather than assumed constant.
 
 ---
+
+## Coagulation-cascade species (thrombin generation)
+
+States for reduced coagulation-cascade models of thrombin generation, such as the calibrated automated thrombogram fitted by Ruiz 2025, and for the larger systems-biology cascades those models simplify. All three hold molar concentrations (nM) in the assay plasma. Distinct from the clotting-time outputs `PT` / `INR` / `aPTT` / `ECT` / `TT` / `dTT` and from the activity output `PCA`, which are laboratory read-outs rather than protein species.
+
+### tissue_factor (**canonical tissue factor concentration state**)
+- **Type:** compartment
+- **Role:** Tissue factor (TF, coagulation factor III), the trigger of the extrinsic coagulation pathway. In an in vitro thrombin-generation assay it is the recombinant TF added at the start (5 pM in the founding model), so its initial condition is the assay concentration and its first-order degradation is negligible over the experiment.
+- **Source aliases:**
+  - `TF` -- Ruiz 2025 Figure 2 and Equation 1.
+- **Example models:** `Ruiz_2025_thrombin_generation.R` (`tissue_factor(0) <- tf0`, `tf0 = fixed(0.005)` nM; it drives both the direct activation term and the `effect1..effect7` transit chain without being consumed by either).
+- **Notes:** Spelled out because `tf` is ambiguous (it also reads as tenofovir and as a generic "transfer function"). A model of in vivo TF expression would use the same state name.
+
+### prothrombin (**canonical prothrombin (factor II) concentration state**)
+- **Type:** compartment
+- **Role:** Prothrombin (coagulation factor II, FII), the zymogen converted to thrombin. In a thrombin-generation model it is the substrate pool depleted by the activation pathways; its initial condition is the subject's measured baseline, carried in the covariate column `PROTHROMBIN_BASE`.
+- **Source aliases:**
+  - `FII` -- Ruiz 2025 Figure 2.
+- **Example models:** `Ruiz_2025_thrombin_generation.R` (`prothrombin(0) <- PROTHROMBIN_BASE`).
+- **Notes:** Holds total factor II in nM. Distinct from the `npt` state of the vitamin-K-antagonist turnover models (`Ohara_2014_warfarin_s.R`), which tracks only the carboxylated, coagulation-competent subfraction in mg/L.
+
+### thrombin (**canonical thrombin (factor IIa) concentration state and output**)
+- **Type:** compartment
+- **Role:** Thrombin (activated factor II, FIIa), the product of prothrombin activation and the measured output of a thrombin-generation assay. Used both as the ODE state and, directly, as the observation variable (`thrombin ~ add(addSd) + prop(propSd)`).
+- **Source aliases:**
+  - `FIIa` -- Ruiz 2025 Figure 2 and Table 2.
+  - `IIa` -- common shorthand in the coagulation literature.
+- **Example models:** `Ruiz_2025_thrombin_generation.R` (single output; produced by a direct TF pathway with thrombin positive feedback and a transit-delayed pathway, removed first order).
+- **Notes:** Lowercase, following the biomarker-state convention, because it is a protein concentration rather than a clotting-time read-out. Summary indices of the thrombin-generation curve (lag time, peak height, time to peak, endogenous thrombin potential) are derived from this state and are not separate compartments.
