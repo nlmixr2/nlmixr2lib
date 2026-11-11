@@ -196,6 +196,15 @@ These describe the *measurement* process, so they belong with the residual-error
 block, not with the structural PK. Founding examples:
 `Siebinga_2023_lu177psma617.R` (`cal_slope_spect`, fixed) and
 `Lu_2016_pinatuzumab_polatuzumab.R` (the paper's `CORR`, estimated).
+### Urine collection-volume correction (`corr_urine_vol`)
+
+Unitless estimated multiplier on the *measured* urine volume of a collection
+interval, `Curine <- urine / (URINE_VOL_INTERVAL / 1000 * corr_urine_vol)`,
+for under-recovered volumes (urine lost in a diaper, incomplete voiding).
+Log form `lcorr_urine_vol`, per-sample IIV `etalcorr_urine_vol`. Not a
+`cal_slope_<assay>`: it divides a covariate volume rather than rescaling an
+assay. Founding example: `Wu_2023_paracetamol.R` (3.62, 138.4% CV).
+
 ## Absorption: transit and lag-time
 
 ### Transit-absorption chain (Savic parameterisation)
