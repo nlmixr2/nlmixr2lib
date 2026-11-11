@@ -114,6 +114,8 @@ navbar:
         href: articles/Morse_2022_acetaminophen_ibuprofen.html
       - text: "Acetaminophen (vanRongen 2016)"
         href: articles/vanRongen_2016_acetaminophen.html
+      - text: "Acetaminophen brain pbpk (Mehta 2024)"
+        href: articles/Mehta_2024_brain_pbpk.html
       - text: "Acetaminophen diclofenac mbma (Sethi 2024)"
         href: articles/Sethi_2024_acetaminophen_diclofenac_mbma.html
       - text: "Acetaminophen food (Franke 2015)"
@@ -5564,6 +5566,8 @@ navbar:
         href: articles/Agema_2021_oxycodone.html
       - text: "Oxycodone (Franke 2015)"
         href: articles/Franke_2015_oxycodone_acetaminophen.html
+      - text: "Oxycodone brain pbpk (Mehta 2024)"
+        href: articles/Mehta_2024_brain_pbpk.html
       - text: "Oxycodone food (Franke 2015)"
         href: articles/Franke_2015_oxycodone_acetaminophen.html
       - text: "Oxyfluorfen human (Decrane 2023)"
@@ -10396,6 +10400,7 @@ articles:
   - articles/Mehta_2018_fluticasoneFuroate_umeclidinium_vilanterol
   - articles/Mehta_2020_fluticasoneFuroate_umeclidinium_vilanterol
   - articles/Mehta_2023_tb_lesion_mpbpk
+  - articles/Mehta_2024_brain_pbpk
   - articles/Meid_2024_spironolactone_qsp
   - articles/Meister_2019_tribendimidine
   - articles/Melander_2025_cetirizine
