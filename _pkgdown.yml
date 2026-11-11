@@ -7234,6 +7234,8 @@ navbar:
         href: articles/ElKhateeb_2023_tacrolimus.html
       - text: "Tacrolimus (FernandezAlarcon 2024)"
         href: articles/FernandezAlarcon_2024_tacrolimus.html
+      - text: "Tacrolimus (Fontova 2023)"
+        href: articles/Fontova_2023_tacrolimus.html
       - text: "Tacrolimus (Francke 2025)"
         href: articles/Francke_2025_tacrolimus.html
       - text: "Tacrolimus (Franken 2022)"
@@ -9370,6 +9372,7 @@ articles:
   - articles/Flint_2017_s_ketamine
   - articles/Foissac_2011_atazanavir
   - articles/Fokkink_2022_immunoglobulin
+  - articles/Fontova_2023_tacrolimus
   - articles/Foo_2016_droperidol
   - articles/Forder_2019_calcitriolQuantumDots
   - articles/Foster_2023_enrofloxacin_cat
