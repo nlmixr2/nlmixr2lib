@@ -9,7 +9,7 @@
 
 - Add Pouzin 2023 tusamitamab ravtansine CYP3A4/1A2/2B6 downregulation IVIVE-PK ([doi:10.1002/cpt.3102](https://doi.org/10.1002/cpt.3102)) -- adults with advanced CEACAM5-expressing solid tumors (typical-value simulation from in vitro constants).
 
-- Add Wu 2025 belimumab PK and Week-52 SRI exposure-response models ([doi:10.1111/bcp.16263](https://doi.org/10.1111/bcp.16263)) -- healthy adults and adult and paediatric patients with systemic lupus erythematosus, including Mainland Chinese participants.
+- Add Li 2025 levamlodipine PK/PD ([doi:10.2147/DDDT.S501762](https://doi.org/10.2147/DDDT.S501762)) -- Chinese adults with essential hypertension (smokers and non-smokers).
 
 - Add Iwaki 2021 guselkumab PPPASI PK/PD ([doi:10.1002/jcph.1953](https://doi.org/10.1002/jcph.1953)) -- Japanese adults with palmoplantar pustulosis.
 

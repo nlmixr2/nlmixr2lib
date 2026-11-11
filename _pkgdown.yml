@@ -4268,6 +4268,8 @@ navbar:
         href: articles/Cheng_2026_levamisole_interspecies.html
       - text: "Levamisole mpbpk (Cheng 2026)"
         href: articles/Cheng_2026_levamisole_interspecies.html
+      - text: "Levamlodipine (Li 2025)"
+        href: articles/Li_2025_levamlodipine.html
       - text: "Levetiracetam (BilbaoMeseguer 2021)"
         href: articles/BilbaoMeseguer_2021_levetiracetam.html
       - text: "Levetiracetam (Damnjanovic 2023)"
@@ -10501,6 +10503,7 @@ articles:
   - articles/Li_2025_doxycycline_florfenicol_ducks
   - articles/Li_2025_epcoritamab
   - articles/Li_2025_lacosamide
+  - articles/Li_2025_levamlodipine
   - articles/Li_2025_modakafuspAlfa
   - articles/Li_2025_mosunetuzumab
   - articles/Li_2025_polymyxinB
