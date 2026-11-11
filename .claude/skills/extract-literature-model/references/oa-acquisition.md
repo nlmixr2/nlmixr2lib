@@ -21,18 +21,16 @@ For each missing or invalid file (file does not exist, is < 10 KB, or whose firs
 ## Validation rules
 
 - Size ≥ 10 KB AND first 4 bytes equal `%PDF`. Wiley/Elsevier non-OA endpoints typically return ~5 KB HTML challenge pages — reject (delete and try the next source). Never extract from a file whose head bytes are not `%PDF`.
-- The size floor and `%PDF` check are for PDFs. A non-PDF supplement (model code, `.docx`, `.xlsx`, `.zip`) is valid when it is not an HTML page (does not start with `<!DOCTYPE` or `<html`) and its content matches its extension; model code can be well under 10 KB.
+- The size floor and `%PDF` check are for PDFs. Check any other supplement or model file with `file -b --mime-type <file>`: reject `text/html` or `application/xhtml+xml` (an error or challenge page; `file` sees through a BOM, leading whitespace and letter case). Otherwise the type must match the extension: `text/*` for code and text (`.txt`, `.ctl`, `.mod`, `.m`, `.R`, `.csv`); `application/zip` or an `application/vnd.openxmlformats-officedocument.*` type, i.e. the ZIP signature `PK`, for `.zip`, `.docx`, `.xlsx`. No size floor: model code can be well under 10 KB.
 - **Title-content sanity check** for the lead PDF: after a successful download, `pdftotext -l 1 <file> -` and confirm the title / first-author line approximately matches what the task block expects. CrossRef DOIs occasionally point to a different paper than the task's metadata claims (publishers' DOI sequence is not always continuous, e.g. `10.1038/aps.2014.120` was a Zhang ROR review when the task expected Lu 2015 tacrolimus). If the downloaded PDF's title disagrees with the task expectation, don't extract from it — sidecar-ask the operator with the actual-vs-expected metadata.
 
 ## Reasonable-attempts cap
 
-Don't loop forever. The 5-source ladder above with one retry per source is the cap; after that, sidecar. If a source returns a 5xx error, retry once after 5 seconds; otherwise treat as failed and move on.
+Don't loop forever. The 5-source ladder above with one retry per source is the cap; after that, record and defer (below). If a source returns a 5xx error, retry once after 5 seconds; otherwise treat as failed and move on.
 
-## When to give up and sidecar
+## When to give up: record and defer
 
-If all 5 source paths have been tried and none produced a valid PDF whose title matches the task expectation, write a sidecar request describing what was attempted:
-
-> Lead PDF for <paper> not on disk and OA acquisition failed. Tried: CrossRef link array (n URLs), Unpaywall (oa_status=<status>, pdf_url=<url-or-none>), Europe PMC (PMCID=<id-or-not-found>), NCBI PMC (PMCID=<id-or-not-found>), publisher landing (<list-of-tried-URLs>). Each returned <reason: HTML challenge page / 404 / not-PDF / title-mismatch>. Options: (A) operator drops the PDF on disk and re-dispatches, (B) operator emails corresponding author, (C) skip this task. Which applies?
+If all 5 source paths have been tried and none produced a valid PDF, this is not a stop-and-ask: add the paper to `needs_acquisition.jsonl` and defer the task (SKILL.md Phase 1 Step 0). List what was tried in the report: CrossRef link array (n URLs), Unpaywall (`oa_status`, PDF URL or none), Europe PMC and NCBI PMC (PMCID or not found), publisher URLs, and what each returned. An HTTP failure (403, 404, HTML challenge page) goes in the row's `last_transport_error`, never in `reason`: a 403 is a scraper block, not a paywall, and a `reason` marks the paper unobtainable. A PDF whose title disagrees with the task is the identity question under Validation rules, not an acquisition failure.
 
 ## Supplements and errata
 
@@ -44,4 +42,4 @@ The same ladder applies, with publisher-specific tweaks:
 - **Frontiers**: typically inline at the article landing page; fetch the page and grep for `Image_*.pdf` / `Table_*.docx` / `Presentation_*.pdf` in the HTML.
 - **Errata**: search PubMed (`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=<title>+AND+erratum&retmode=json`) for the original PMID + erratum link; download the erratum PDF via the same OA ladder.
 
-If a supplement is unobtainable but the lead PDF is on disk, decide based on whether the missing supplement contains parameter values, equations or model code you need: if it does, or its contents are unknown, record it for acquisition and defer (SKILL.md Policy self-check, Acquisition); if the paper shows it holds nothing the model needs, document the gap in the vignette Errata and proceed.
+If a supplement is unobtainable but the lead PDF is on disk, handle it as SKILL.md Phase 1 Step 0 says for a supplement that cannot be obtained.

@@ -38,7 +38,8 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 ## B. Structural model
 
 - [ ] The number of compartments matches the source.
-- [ ] ODEs (or `linCmt()` shortcut) reproduce the equations shown in the paper, or the authors' published model code where the two differ. Any supplement or code deposit the article announces was obtained and read, and each text-vs-code difference is listed in the vignette (SKILL.md Phase 1 step 7).
+- [ ] ODEs (or `linCmt()` shortcut) reproduce the equations shown in the paper, or the authors' published model code where the two differ (SKILL.md Phase 1 step 7).
+- [ ] **Supplements and model code.** Every supplement or code deposit the article announces was obtained and read, or the vignette records why the model does not need it (SKILL.md Phase 1 Step 0). Each text-vs-code difference is listed in the vignette's Assumptions and deviations.
 - [ ] **Reference weight / age** for allometric and maturation terms matches the source (70 kg adult? 75 kg? 5 kg infant? 40 weeks PMA? term birth?).
 - [ ] **Allometric exponents** apply to the right parameters (usually 0.75 for CL/Q and 1.0 for volumes, but papers often fit custom exponents — use whatever the paper reports).
 - [ ] **Maturation form** matches the paper (sigmoidal asymptotic vs. Hill-type vs. exponential). The functional form determines whether `beta_cl` is "fraction mature at birth" or something else.
