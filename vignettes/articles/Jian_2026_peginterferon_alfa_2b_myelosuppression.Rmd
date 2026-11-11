@@ -24,6 +24,8 @@ library(ggplot2)
   2026;119(1):219-227); Supplementary Method 1 (Data S1) prints the ODEs.
 * PK layer: the Jian 2025 population PK model, shipped as
   `Jian_2025_peginterferon_alfa_2b` (doi:10.1002/psp4.70104).
+* Errata: Europe PMC listed no correction or erratum for the article on
+  2026-11-11.
 
 Pegbing is a 40 kDa Y-shaped branched-PEG peginterferon alfa-2b approved in
 China for chronic hepatitis B (CHB) and C. Jian 2026 used the platelet (PLT)
