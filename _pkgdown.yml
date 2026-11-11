@@ -5122,12 +5122,34 @@ navbar:
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
       - text: "Mosunetuzumab (Bender 2024)"
         href: articles/Bender_2024_mosunetuzumab.html
+      - text: "Mosunetuzumab cr (Li 2025)"
+        href: articles/Li_2025_mosunetuzumab.html
+      - text: "Mosunetuzumab cr cov (Li 2025)"
+        href: articles/Li_2025_mosunetuzumab.html
+      - text: "Mosunetuzumab crs cov (Li 2025)"
+        href: articles/Li_2025_mosunetuzumab.html
+      - text: "Mosunetuzumab crs fulldose1 (Li 2025)"
+        href: articles/Li_2025_mosunetuzumab.html
+      - text: "Mosunetuzumab crs groupa astct (Li 2025)"
+        href: articles/Li_2025_mosunetuzumab.html
+      - text: "Mosunetuzumab crs groupa lee (Li 2025)"
+        href: articles/Li_2025_mosunetuzumab.html
+      - text: "Mosunetuzumab crs groupb astct (Li 2025)"
+        href: articles/Li_2025_mosunetuzumab.html
+      - text: "Mosunetuzumab crs groupb lee (Li 2025)"
+        href: articles/Li_2025_mosunetuzumab.html
+      - text: "Mosunetuzumab crs stepup1 (Li 2025)"
+        href: articles/Li_2025_mosunetuzumab.html
+      - text: "Mosunetuzumab crs stepup2 (Li 2025)"
+        href: articles/Li_2025_mosunetuzumab.html
       - text: "Mosunetuzumab cyno (Ferl 2018)"
         href: articles/Ferl_2018_mosunetuzumab.html
       - text: "Mosunetuzumab cyno covariates (Ferl 2018)"
         href: articles/Ferl_2018_mosunetuzumab.html
       - text: "Mosunetuzumab human (Ferl 2018)"
         href: articles/Ferl_2018_mosunetuzumab.html
+      - text: "Mosunetuzumab orr (Li 2025)"
+        href: articles/Li_2025_mosunetuzumab.html
       - text: "Motesanib (Gosselin 2015)"
         href: articles/Gosselin_2015_motesanib.html
       - text: "Moxidectin (Smit 2022)"
@@ -10353,6 +10375,7 @@ articles:
   - articles/Li_2025_epcoritamab
   - articles/Li_2025_lacosamide
   - articles/Li_2025_modakafuspAlfa
+  - articles/Li_2025_mosunetuzumab
   - articles/Li_2025_polymyxinB
   - articles/Li_2025_tetrahydrocannabinol
   - articles/Li_2026_alvespimycin
