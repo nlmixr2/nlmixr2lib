@@ -3314,6 +3314,60 @@ navbar:
         href: articles/Zazo_2022_gentamicin.html
       - text: "Gepotidacin (Nguyen 2022)"
         href: articles/Nguyen_2022_gepotidacin.html
+      - text: "Gepotidacin (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli 1032890 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli 1139570 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli 718513 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli 764023 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli 771034 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli 774319 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli 817317 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli 823196 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli 997577 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli ALL (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli ATCC25922 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli IR5 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli NCTC13441 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli Y6700034261B (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli Y6700050509B (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli Y6702665868B (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli Y6702902277A (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Ecoli pooled (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Kpneumoniae 1203214 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Kpneumoniae 1286210 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Kpneumoniae 1449616 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Kpneumoniae 1478575 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Kpneumoniae 1478677 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Kpneumoniae 1511191 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Kpneumoniae 1511289 (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
+      - text: "Gepotidacin Kpneumoniae pooled (Singley 2026)"
+        href: articles/Singley_2026_gepotidacin.html
       - text: "Gevokizumab (Cao 2013)"
         href: articles/Cao_2013_gevokizumab.html
       - text: "Gevokizumab (Karakitsios 2024)"
@@ -10900,6 +10954,7 @@ articles:
   - articles/Singh_2021_idecabtageneVicleucel
   - articles/Singh_2025_donidalorsen
   - articles/Singkham_2022_rivaroxaban
+  - articles/Singley_2026_gepotidacin
   - articles/Singu_2024_gentamicin
   - articles/Sinha_2026_oxcarbazepine
   - articles/Sjogren_2021_malnutrition_physiology
