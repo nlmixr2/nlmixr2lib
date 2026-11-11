@@ -3988,6 +3988,14 @@ navbar:
         href: articles/Fan_2025_iron_wholebody_pbpk.html
       - text: "Iruplinalkib (Yang 2025)"
         href: articles/Yang_2025_iruplinalkib.html
+      - text: "Iruplinalkib (Yang 2025b)"
+        href: articles/Yang_2025b_iruplinalkib.html
+      - text: "Iruplinalkib human (Yang 2025b)"
+        href: articles/Yang_2025b_iruplinalkib.html
+      - text: "Iruplinalkib mouse alk (Yang 2025b)"
+        href: articles/Yang_2025b_iruplinalkib.html
+      - text: "Iruplinalkib mouse ros1 (Yang 2025b)"
+        href: articles/Yang_2025b_iruplinalkib.html
       - text: "Isatuximab (Brillac 2025)"
         href: articles/Brillac_2025_isatuximab.html
       - text: "Isatuximab (Fau 2020)"
@@ -11911,6 +11919,7 @@ articles:
   - articles/Yang_2025_polymyxinB
   - articles/Yang_2025_rifampicin
   - articles/Yang_2025_venetoclax
+  - articles/Yang_2025b_iruplinalkib
   - articles/Yang_2026_APTM
   - articles/Yang_2026_copd_fev1
   - articles/Yang_2026_encorafenib
