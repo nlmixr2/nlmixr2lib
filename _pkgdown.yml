@@ -4778,6 +4778,8 @@ navbar:
         href: articles/Shekar_2014_meropenem.html
       - text: "Meropenem (Tao 2025)"
         href: articles/Tao_2025_meropenem.html
+      - text: "Meropenem (Tien 2024)"
+        href: articles/Tien_2024_meropenem.html
       - text: "Meropenem (Trang 2021)"
         href: articles/Trang_2021_meropenem_vaborbactam.html
       - text: "Meropenem (Troisi 2024)"
@@ -11320,6 +11322,7 @@ articles:
   - articles/Tian_2025_linezolid
   - articles/Tian_2025_pirtobrutinib
   - articles/Tiede_2021_turoctocogAlfa
+  - articles/Tien_2024_meropenem
   - articles/Tikiso_2021_abacavir
   - articles/Tikiso_2022_ethambutol
   - articles/Timmermann_2019_brodalumab

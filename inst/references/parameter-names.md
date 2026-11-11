@@ -3304,9 +3304,17 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 
 ### kdeg (**canonical degradation rate**)
 - **Type:** paper-named-param
-- **Role:** First-order degradation rate constant (paper-synonym for elimination in turnover models).
+- **Role:** First-order degradation rate constant (paper-synonym for elimination in turnover models). Also the chemical degradation rate constant of a drug in its prepared infusion solution.
 - **Source aliases:** none.
-- **Example models:** turnover PD models.
+- **Example models:** turnover PD models; `Tien_2024_meropenem.R` (in-container degradation of meropenem, linear-additive temperature and solution-strength effects plus an additive random slope, as fitted by `lmer`).
+
+### infusion_log_intercept (**canonical log-scale intercept of an in-container stability model**)
+- **Type:** paper-named-param
+- **Role:** Intercept of a first-order in-vitro stability model `log(C / C0) = infusion_log_intercept - kdeg * t`, i.e. the modelled log fraction of the initial concentration remaining at preparation (ideally 0). Enters the observable `infusion_fraction_remaining`; it does not scale the delivered dose.
+- **Source aliases:**
+  - `mu` / `(Intercept)` -- Tien 2024 Eq. 1 and S3 File `lmer` fit; `Tien_2024_meropenem.R` (with a random intercept `etainfusion_log_intercept` correlated with the random slope `etakdeg`).
+- **Example models:** `Tien_2024_meropenem.R`.
+- **Notes:** Signed and on the log scale already, so it is not log-transformed again. Pairs with `kdeg` for the in-container degradation rate constant and with the `infusion_container` state.
 
 ### kpin (**canonical precursor-pool production rate**)
 - **Type:** paper-named-param
