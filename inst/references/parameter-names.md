@@ -3748,6 +3748,23 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Example models:** `Snelder_2019_leuprorelin.R` (founding example; `nHT` = 2.05, RSE 9.90%, and `nHP` = 2.49, RSE 13.8%, in one joint model).
 - **Notes:** Ratified by the maintainers 2026-09-02 alongside the Snelder 2019 leuprorelin extraction. Registered because a single model carrying TWO Hill coefficients cannot use the bare canonical `hill` for both, and leaving one bare while suffixing the other is the "none keeps the bare canonical" ambiguity the stratum-suffix rule warns against. The suffix names the sigmoid, not the paper's symbol: `_dr` for a downregulation sigmoid, `_psa` for a sigmoid whose *output* is PSA. A model with only one sigmoid should keep the bare `hill`. Distinct from `gamma`, which stays a mechanistic-role designator for Friberg feedback and TGI power-law exponents.
 
+### lhill_late, hill_late (**canonical post-inflection Hill coefficient of an asymmetric sigmoid**)
+- **Type:** paper-named-param
+- **Role:** Hill coefficient that applies AFTER the inflection point of a single asymmetric sigmoid whose shape differs on the two sides of its half-maximal point: `f = (x/x50)^hill / (1 + (x/x50)^hill)` for `x <= x50` and `f = 1 / (1 + (x50/x)^hill_late)` for `x > x50`. Both branches equal 0.5 at `x = x50`, so the curve is continuous. Unitless and strictly positive; the log form `lhill_late` carries the `ini()` typical value and any exponential IIV (`etalhill_late`).
+- **Source aliases:**
+  - `gamma2`, `TV_gamma2` -- Ramesh 2025 Table 2A and Supplementary S2 'Asymmetrical_Model_Code' (`gamma1` before DPT50, `gamma2` after it).
+- **Example models:** `Ramesh_2025_adtkd_umod_egfr.R` (founding example; `gamma2` = 6.34 against `gamma1` = 1.12), `Ramesh_2025_adtkd_muc1_egfr.R` (`gamma2` = 10.2).
+- **Notes:** Follows the `lcl_late` convention: only the post-breakpoint arm carries the `_late` suffix and the pre-inflection coefficient keeps the bare `hill` / `lhill`, so a covariate on the early arm takes the ordinary shape (`e_<cov>_hill`) and one on the late arm `e_<cov>_hill_late`. Distinct from `hill_dr` / `hill_psa`, which belong to two DIFFERENT sigmoids in one model; `hill_late` is the second half of the SAME sigmoid.
+
+### lt50max, t50max (**canonical age or time at half of the maximum change of a disease-progression sigmoid**)
+- **Type:** paper-named-param
+- **Role:** The value of the sigmoid's driver (in the founding examples, the subject's age in years, which is also the model time) at which half of the maximum change `dmax` / `imax` of a disease-progression measure has occurred: `S = S0 * (1 - imax * age^hill / (t50max^hill + age^hill))` for a decline, or `S0 + dmax * ...` for a rise. Log form `lt50max` carries the `ini()` typical value and the exponential IIV `etalt50max`; covariate effects are `e_<cov>_t50max`.
+- **Source aliases:**
+  - `DPT50`, `TV_DPT50` -- Ramesh 2025 Table 2A (age at half of the maximum fractional eGFR decrease).
+  - `T50`, `$THETA(3)` -- Harun 2019 Table E3 (age at which 50% of the maximum FEV1% predicted change occurs).
+- **Example models:** `Harun_2019_cysticFibrosis.R` (FEV1% predicted versus age in children with cystic fibrosis, `t50max` = 8.38 years), `Ramesh_2025_adtkd_umod_egfr.R` (39.76 years), `Ramesh_2025_adtkd_muc1_egfr.R`.
+- **Notes:** Use for a disease-progression trajectory whose magnitude parameter is a fraction or an absolute span of the baseline measure. Distinct from the `age50_<param>` family, which is the hill = 1 half-point of a fractional age effect ON A PARAMETER (`kel`, `cl`), and from `cl_t50` / `ec50_t50`, which are half-times of a time-varying clearance or EC50. The name was first used in `Harun_2019_cysticFibrosis.R` and registered with the Ramesh 2025 extraction.
+
 ### agonist_kd_ratio (**canonical endogenous-agonist concentration relative to its own receptor Kd**)
 - **Type:** paper-named-param
 - **Role:** Unitless ratio of an endogenous agonist's (unknown) concentration to its dissociation constant for its own receptor, `[agonist] / Kd_agonist`, used to set baseline receptor occupancy in a competitive endogenous-agonist-versus-drug binding model. The two quantities are not separately identifiable from clinical data, so papers combine them into this single parameter and fix it, which fixes the baseline occupancy at `frac0 = agonist_kd_ratio / (1 + agonist_kd_ratio)`. Ligand-agnostic by design.
