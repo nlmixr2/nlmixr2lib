@@ -347,8 +347,86 @@ notes: <free text>
 - **Reference category:** n/a -- used with mean-centred linear-in-log form `log(SI) = log(SI_ref) + theta * (VISCERAL_ABDOMINAL_FAT - ref)`. Reference values observed: 141.8 cm^2 / CT-slice (Denti 2010 Table 1 pooled-population mean across 204 healthy adults aged 18-87).
 - **Source aliases:**
   - `VAF` -- universal abbreviation in the IVGTT / glucose-metabolism literature (Denti 2010, Basu 2003, Basu 2006). The canonical column is `VISCERAL_ABDOMINAL_FAT`; the source paper's column name is recorded in `covariateData[[VISCERAL_ABDOMINAL_FAT]]$source_name`.
-- **Example models:** `Denti_2010_glucoseMinimal.R` (introduces canonical; reference 141.8 cm^2 / CT-slice; linear-in-log effect coefficient -0.00208 per cm^2 deviation on insulin sensitivity `lsi`).
+  - `visceralfatarea` -- University of Michigan analytic-morphomics column (area inside the fascia meeting fat-density thresholds -205 to -51 HU), reported in mm^2 at L3 by Alikhani 2025; divide by 100 to supply cm^2.
+- **Example models:** `Denti_2010_glucoseMinimal.R` (introduces canonical; reference 141.8 cm^2 / CT-slice; linear-in-log effect coefficient -0.00208 per cm^2 deviation on insulin sensitivity `lsi`), `Alikhani_2025_gentamicin_tobramycin_bamor3.R` (L3 slice; denominator of the BAMor_3 radiomic biological-age index on aminoglycoside CL, where it enters only as a ratio to `CT_DORSAL_MUSCLE_AREA`).
 - **Notes:** Specific scope because the value reported is tied to the imaging modality (single-slice CT at L2 / L3 in the founding example). Volumetric CT, multi-slice averages, and MRI-derived volumetric adiposity from future papers can ratify under the same canonical with the assay method and units recorded per-model in `covariateData[[VISCERAL_ABDOMINAL_FAT]]$notes`. Distinct from `BODYFAT_PCT` (whole-body adiposity fraction by DEXA) and from `FFM` / `LBM` (fat-free mass / lean body mass). The H3-name uses underscores to preserve readability; future authors may abbreviate the source column as `VAF` in their own datasets and declare `source_name = "VAF"`.
+
+### CT_PSOAS_MUSCLE_AREA (**canonical for CT psoas muscle cross-sectional area**)
+- **Description:** Total (left + right) psoas muscle cross-sectional area on a single abdominal CT slice: the area of muscle-density pixels (-29 to 150 HU, expanded range) inside the psoas perimeters. Time-fixed at the scan.
+- **Units:** cm^2 (single CT slice). Record the vertebral level per model in `covariateData[[CT_PSOAS_MUSCLE_AREA]]$notes`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters composite morphomic indices in the founding models.
+- **Source aliases:**
+  - `total_psoas_expmarea` -- University of Michigan analytic-morphomics column, reported in mm^2 (divide by 100). Alikhani 2025 uses the L4 measurement.
+- **Example models:** `Alikhani_2025_gentamicin_tobramycin_bamor1.R` (numerator of BAMor_1, as a ratio to `CT_FASCIA_AREA`), `Alikhani_2025_gentamicin_tobramycin_bamor2.R` (factor of BAMor_2; converted to mm^2 inside `model()` because the published centring constant is in mm^2 units).
+- **Notes:** CT-derived area, distinct from the sex-specific skeletal-muscle index family and from whole-body `FFM` / `LBM`. The same measurement at a different vertebral level is a different number; state the level in the per-model notes.
+
+### CT_PSOAS_MUSCLE_DENSITY (**canonical for CT psoas muscle mean attenuation**)
+- **Description:** Mean CT attenuation of all pixels inside the total psoas area on a single abdominal CT slice; lower values indicate fat infiltration of the muscle (myosteatosis). Time-fixed at the scan.
+- **Units:** HU (Hounsfield units)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters composite morphomic indices in the founding models.
+- **Source aliases:**
+  - `avg_psoas_expmmeanhu` -- University of Michigan analytic-morphomics column. Alikhani 2025 uses the L4 measurement.
+- **Example models:** `Alikhani_2025_gentamicin_tobramycin_bamor2.R` (factor of BAMor_2).
+- **Notes:** Record the vertebral level per model in `covariateData[[CT_PSOAS_MUSCLE_DENSITY]]$notes`.
+
+### CT_DORSAL_MUSCLE_AREA (**canonical for CT dorsal muscle group cross-sectional area**)
+- **Description:** Cross-sectional area of muscle-density pixels (-29 to 150 HU, expanded range) inside the dorsal (paraspinal) muscle group perimeter on a single abdominal CT slice. Time-fixed at the scan.
+- **Units:** cm^2 (single CT slice). Record the vertebral level per model in `covariateData[[CT_DORSAL_MUSCLE_AREA]]$notes`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters composite morphomic indices in the founding model.
+- **Source aliases:**
+  - `dmgexpmarea` -- University of Michigan analytic-morphomics column, reported in mm^2 (divide by 100). Alikhani 2025 uses the L2 measurement.
+- **Example models:** `Alikhani_2025_gentamicin_tobramycin_bamor3.R` (numerator of BAMor_3, as a ratio to `VISCERAL_ABDOMINAL_FAT`).
+- **Notes:** The dorsal muscle group comprises the erector spinae and quadratus lumborum at the measured level.
+
+### CT_FASCIA_AREA (**canonical for CT area enclosed by the abdominal fascia**)
+- **Description:** Cross-sectional area enclosed by the abdominal-wall fascia on a single abdominal CT slice (the visceral cavity plus the muscle wall inside the fascia boundary). Time-fixed at the scan.
+- **Units:** cm^2 (single CT slice). Record the vertebral level per model in `covariateData[[CT_FASCIA_AREA]]$notes`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters composite morphomic indices in the founding model.
+- **Source aliases:**
+  - `fasciaarea` -- University of Michigan analytic-morphomics column, reported in mm^2 (divide by 100). Alikhani 2025 uses the L3 measurement.
+- **Example models:** `Alikhani_2025_gentamicin_tobramycin_bamor1.R` (denominator of BAMor_1).
+- **Notes:** A body-size measure of the trunk; distinct from `VISCERAL_ABDOMINAL_FAT`, which counts only the fat-density pixels inside the fascia.
+
+### CT_SUBCUTANEOUS_FAT_DENSITY (**canonical for CT subcutaneous fat attenuation**)
+- **Description:** Median CT attenuation of fat-density pixels (-205 to -51 HU) in the subcutaneous region (between skin and fascia) on a single abdominal CT slice. Values are negative; less negative values indicate denser, more fibrotic or inflamed adipose tissue. Time-fixed at the scan.
+- **Units:** HU (Hounsfield units)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used untransformed and uncentred, divided by 90, in the exponential term `exp(theta * CT_SUBCUTANEOUS_FAT_DENSITY / 90)` of the founding model.
+- **Source aliases:**
+  - `subcutfathu_mean`, `subcutfathu` -- University of Michigan analytic-morphomics column. Alikhani 2025 uses the L3 measurement (its Table 1 prints the unit as mm2 in error; Supplementary Table 2 defines it in HU).
+- **Example models:** `Alikhani_2025_gentamicin_tobramycin_bamor3.R` (exponential effect on CL, coefficient -0.93).
+- **Notes:** Record the vertebral level per model in `covariateData[[CT_SUBCUTANEOUS_FAT_DENSITY]]$notes`.
+
+### CT_VERTEBRAL_BMD (**canonical for CT trabecular vertebral bone density**)
+- **Description:** Mean CT attenuation inside a central trabecular bone core sample of the vertebral body on an abdominal CT slice (opportunistic CT bone mineral density). Time-fixed at the scan.
+- **Units:** HU (Hounsfield units)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters composite morphomic indices in the founding models.
+- **Source aliases:**
+  - `bmdhuvbaligned`, `BMD` -- University of Michigan analytic-morphomics column. Alikhani 2025 uses the L3 measurement.
+- **Example models:** `Alikhani_2025_gentamicin_tobramycin_bamor1.R` (factor of BAMor_1), `Alikhani_2025_gentamicin_tobramycin_bamor3.R` (factor of BAMor_3).
+- **Notes:** Not the DXA areal bone mineral density in g/cm^2 of `BMD_BL`; the two are different measurements on different scales and do not convert into each other. Record the vertebral level per model in `covariateData[[CT_VERTEBRAL_BMD]]$notes`.
+
+### CT_VERTEBRAL_SLAB_HEIGHT (**canonical for CT vertebral body slab height**)
+- **Description:** Height of the body slab assigned to a vertebral level in the analytic-morphomics CT segmentation (the craniocaudal extent of the vertebra), a skeletal-size descriptor. Time-fixed at the scan.
+- **Units:** mm
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters composite morphomic indices in the founding model.
+- **Source aliases:**
+  - `vbslabheight` -- University of Michigan analytic-morphomics column. Alikhani 2025 uses the L3 measurement.
+- **Example models:** `Alikhani_2025_gentamicin_tobramycin_bamor2.R` (factor of BAMor_2).
+- **Notes:** Record the vertebral level per model in `covariateData[[CT_VERTEBRAL_SLAB_HEIGHT]]$notes`.
 
 ### BODYFAT_PCT (**canonical for percent total body fat (whole-body adiposity fraction)**)
 - **Description:** Percent total body fat, measured as the fraction of total body mass classified as fat tissue by an imaging assay (typically dual-energy X-ray absorptiometry, DEXA). Expressed as a percentage (0-100). Time-fixed at baseline unless the source paper states otherwise. Captures whole-body adiposity, distinct from regional adiposity (visceral, abdominal, subcutaneous) and from fat-free mass.
@@ -1481,7 +1559,7 @@ Do **not** collapse the two onto one column, and do not use a single `_PRE` suff
   - `CRE` (umol/L, reference 70.73) -- used in `Thakre_2022_risankizumab.R`.
   - `SCR` -- common clinical-PK abbreviation; also Llanos-Paez 2020 source column for the patient's individual serum creatinine.
   - `Serum_creatinine` -- the NONMEM `$INPUT` column in `Ding_2026_vancomycin.R` (umol/L), abbreviated `Scr` in that stream's `$PK` block.
-- **Example models:** `Thakre_2022_risankizumab.R`, `Hennig_2013_tobra.R` (umol/L; paired with `CREAT_REF` for the SCR_mean / SCR ratio used in the Hennig 2013 renal-function factor), `Llanos_2017_gentamicin.R` (umol/L; standardized per-patient against `CREAT_REF` rather than a fixed cohort reference), `LlanosPaez_2020_gentamicin.R` (umol/L; used as the patient's `SCR_i` in the renal-function ratio `(CREAT_REF / CREAT)^0.58` on CL).
+- **Example models:** `Thakre_2022_risankizumab.R`, `Hennig_2013_tobra.R` (umol/L; paired with `CREAT_REF` for the SCR_mean / SCR ratio used in the Hennig 2013 renal-function factor), `Llanos_2017_gentamicin.R` (umol/L; standardized per-patient against `CREAT_REF` rather than a fixed cohort reference), `LlanosPaez_2020_gentamicin.R` (umol/L; used as the patient's `SCR_i` in the renal-function ratio `(CREAT_REF / CREAT)^0.58` on CL), `Alikhani_2025_gentamicin_tobramycin_bamor1.R` and its three siblings (mg/dL; denominator of an age or radiomic biological-age index on aminoglycoside CL).
 - **Notes:** `CREAT` chosen over the shorter `CRE`/`SCR` as the NONMEM/clinical-PK convention that is unambiguous. Per-model reference values must be documented in `covariateData[[CREAT]]$notes`.
 
 ### CREAT_REF (**canonical for sex/age/size-expected normal-mean serum creatinine**)
@@ -21046,6 +21124,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `DRUG` -- Chen 2017 (PMC5376397) Electronic Supplementary Material S2 control stream (`IF(DRUG.EQ.0) TVAF = THETA(8)`, selecting the untreated-mouse inoculum).
 - **Example models:** `Chen_2017_TB_MTP_rifampicin_mouse.R` (selects the initial fast-multiplying bacterial inoculum F0: 331000 CFU/lungs in rifampicin-treated mice vs 8340 CFU/lungs in untreated mice). The rifampicin drug effects themselves are concentration-driven in this model and need no indicator; the indicator only switches the baseline inoculum.
 - **Notes:** Specific scope. Well-formed member of the `TRT_<INN>` family established by `TRT_EPHEDRINE`: use `TRT_<INN>` when the drug is the study treatment under investigation, `CONMED_<INN>` when it is background co-medication, and a bare INN only for MBMA trial-arm indicators. Here the indicator is needed because the baseline inoculum (not a drug effect) differs between the treated and untreated groups.
+
+### TRT_TOBRAMYCIN (**canonical for tobramycin-versus-gentamicin drug indicator**)
+- **Description:** Binary indicator of which aminoglycoside a subject received in a pooled gentamicin + tobramycin PK analysis: 1 = tobramycin, 0 = gentamicin. A per-subject property of the treatment.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (gentamicin).
+- **Source aliases:**
+  - `drug` -- Alikhani 2025 Monolix categorical covariate (reference level gentamicin; estimated effect `beta_V_drug_tobramycin`).
+- **Example models:** `Alikhani_2025_gentamicin_tobramycin_bamor1.R`, `Alikhani_2025_gentamicin_tobramycin_bamor2.R`, `Alikhani_2025_gentamicin_tobramycin_bamor3.R`, `Alikhani_2025_gentamicin_tobramycin_ca.R` (exponential effect on V, 0.24-0.29, i.e. a tobramycin V about 1.3 times the gentamicin V).
+- **Notes:** Specific scope. Member of the `TRT_<INN>` family: the drug is the study treatment under investigation, and the indicator selects between two drugs pooled in one model.
 
 ### TRT_REMDESIVIR (**canonical for remdesivir on-treatment indicator**)
 - **Description:** Binary remdesivir treatment indicator: 1 = the subject is receiving remdesivir at this record, 0 = not (standard-of-care-only subjects, and remdesivir-arm subjects before their first infusion or after treatment has stopped). **Time-varying** in the founding models, whose time axis is days since infection, so a record before randomisation carries 0 even in the remdesivir arm.

@@ -3434,6 +3434,14 @@ navbar:
         href: articles/Lee_2024_gentamicin.html
       - text: "Gentamicin term (Zazo 2022)"
         href: articles/Zazo_2022_gentamicin.html
+      - text: "Gentamicin tobramycin bamor1 (Alikhani 2025)"
+        href: articles/Alikhani_2025_gentamicin_tobramycin.html
+      - text: "Gentamicin tobramycin bamor2 (Alikhani 2025)"
+        href: articles/Alikhani_2025_gentamicin_tobramycin.html
+      - text: "Gentamicin tobramycin bamor3 (Alikhani 2025)"
+        href: articles/Alikhani_2025_gentamicin_tobramycin.html
+      - text: "Gentamicin tobramycin ca (Alikhani 2025)"
+        href: articles/Alikhani_2025_gentamicin_tobramycin.html
       - text: "Gepotidacin (Nguyen 2022)"
         href: articles/Nguyen_2022_gepotidacin.html
       - text: "Gevokizumab (Cao 2013)"
@@ -8995,6 +9003,7 @@ articles:
   - articles/Ali_2018_amodiaquine
   - articles/Ali_2022_artemisinin_naphthoquine
   - articles/Alihodzic_2022_ciprofloxacin
+  - articles/Alikhani_2025_gentamicin_tobramycin
   - articles/Allard_2020_factorviii
   - articles/Allegaert_2015_paracetamol
   - articles/Alli_2023_cefazolin
