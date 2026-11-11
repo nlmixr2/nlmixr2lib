@@ -12017,6 +12017,8 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Reference category:** n/a -- continuous. Models that dichotomise it at a cohort cut-off apply the cut inside `model` (Yin 2024: VAF < 1.74%, the cohort median, versus >= 1.74%) so the threshold is visible at the call site rather than baked into the column.
 - **Source aliases:**
   - `baseVAF` -- Yin 2024 NONMEM data column (Appendix S2), baseline VAF of the primary EGFR variant (exon 19 deletion, p.L858R or p.K852R); the paper coded a missing sample as a negative value, which maps to `CTDNA_VAF_MISSING = 1`.
+  - "Minor allele frequency" / `MAF` -- Milenkovic-Grisic 2024 notation ('minor allele frequency for all detected somatic variants in the sample').
+  - `VAF`, `baseVAF` -- common spellings.
 - **Example models:** `Yin_2024_erlotinib_tumor_ctdna.R` (categorical effect on the tumor growth rate `kge`: multiplied by 0.334 when VAF < 1.74% and by 0.281 when the baseline sample is missing, relative to VAF >= 1.74%; Yin 2024 Table 3), `MilenkovicGrisic_2024_bintrafuspAlfa_btc.R` (power effects `(CTDNA_VAF / 1)^0.106` on baseline tumour size and `(CTDNA_VAF / 1)^0.262` on the linear growth rate of an exponential-shrinkage plus linear-growth tumour-size model; the value summarises all detected somatic variants, and the paper does not state whether the sample was plasma or tissue).
 - **Notes:** A dimensionless ratio, deliberately not pooled with the absolute ctDNA concentration `CTDNA` (mutant molecules per mL) -- the two are not interconvertible without the wild-type denominator. Record the percent scale explicitly; some sources report VAF as a fraction (0-1), which must be multiplied by 100 on ingestion. Pair with `CTDNA_VAF_MISSING` when the source keeps an unavailable baseline sample as its own category.
 
@@ -12030,18 +12032,6 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - `baseVAF < 0` -- Yin 2024 NONMEM missing-value code (Appendix S2, 'no sample group').
 - **Example models:** `Yin_2024_erlotinib_tumor_ctdna.R` (kg multiplied by 0.281 for the 6 of 18 patients without a baseline sample; Yin 2024 Table 3).
 - **Notes:** Follows the missing-data-indicator pattern of `ADA_MISSING` and `TUM_EGFR_MUT_MISSING`. As with every missingness coefficient, the estimate describes who lacked a baseline sample rather than any tumor biology; Yin 2024 found the missing group not significantly different from the VAF < 1.74% group.
-
-### CTDNA_VAF (**canonical for variant allele frequency of somatic variants in circulating tumor DNA**)
-- **Description:** Variant (minor) allele frequency, in per cent, of the somatic variant(s) detected in a liquid-biopsy (plasma ctDNA) sequencing panel: the fraction of sequenced alleles at the locus carrying the variant. Baseline (time-fixed) unless a model states otherwise. Which variant(s) the value summarises -- a single driver mutation, or all detected somatic variants -- differs between papers and must be recorded in each model's `covariateData[[CTDNA_VAF]]$description` / `notes`.
-- **Units:** percent (0-100). A source reporting the 0-1 fraction needs the column multiplied by 100 or the coefficient rescaled.
-- **Type:** continuous
-- **Scope:** general
-- **Reference category:** n/a -- continuous. Reference values observed: 1 percent (Milenkovic-Grisic 2024, a maintainers' assumption because the paper prints none).
-- **Source aliases:**
-  - "Minor allele frequency" / `MAF` -- Milenkovic-Grisic 2024 notation ('minor allele frequency for all detected somatic variants in the sample').
-  - `VAF`, `baseVAF` -- common spellings.
-- **Example models:** `MilenkovicGrisic_2024_bintrafuspAlfa_btc.R` (power effects `(CTDNA_VAF / 1)^0.106` on baseline tumour size and `(CTDNA_VAF / 1)^0.262` on the linear growth rate of an exponential-shrinkage plus linear-growth tumour-size model; the value summarises all detected somatic variants, and the paper does not state whether the sample was plasma or tissue).
-- **Notes:** The name reserved by the `CTDNA` entry's Notes for a VAF readout. Distinct from `CTDNA` (an absolute concentration of mutant molecules per mL, not a ratio) and from `TUM_JAK2_V617F_VAF` (a single named variant in a haematological clone). A power form needs `CTDNA_VAF > 0`; record any floor applied to undetected (0 percent) values.
 
 ### TUMTP_HODGKIN_CLASSICAL (**canonical for classical Hodgkin lymphoma tumor-type indicator**)
 <!-- AUDIT 2026-06-19: renamed from `TUMTP_CHL` to `TUMTP_HODGKIN_CLASSICAL`. The prior name `TUMTP_CHL` is preserved as a source_alias for one release cycle so existing covariate-data CSVs continue to load. -->
