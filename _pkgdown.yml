@@ -7930,6 +7930,8 @@ navbar:
         href: articles/Miao_2023_teclistamab.html
       - text: "Teclistamab qsp (ChandralayamAyyappaMenon 2026)"
         href: articles/ChandralayamAyyappaMenon_2026_isb2001.html
+      - text: "Teclistamab qsp (Gevertz 2025)"
+        href: articles/Gevertz_2025_teclistamab.html
       - text: "Tecovirimat cyno (Leeds 2013)"
         href: articles/Leeds_2013_tecovirimat.html
       - text: "Tecovirimat human (Leeds 2013)"
@@ -10033,6 +10035,7 @@ articles:
   - articles/Georges_2009_ceftazidime
   - articles/Germovsek_2016_gentamicin
   - articles/Germovsek_2018_meropenem
+  - articles/Gevertz_2025_teclistamab
   - articles/Ghoneim_2021_gentamicin
   - articles/Giacometti_2025_dalbavancin
   - articles/Gibbs_2011_amg221
