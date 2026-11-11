@@ -7,6 +7,7 @@
 - Fix the signs of two omega covariances in `AlvarezJimenez_2016_scopolamine` ([doi:10.1111/bcp.13031](https://doi.org/10.1111/bcp.13031)): Table 2 prints both as negative, -0.06 for saccadic inaccuracy (EC50 vs. EMAX) and -0.153 for EEG delta Fz-Cz (EMAX vs. kIN), and the model carried both as positive. The vignette also notes that the saccadic value may be a correlation rather than a covariance. Twenty-seven inter-individual variances now equal log(1 + CV^2) of the published CVs, the conversion the model documents; six EC50 variances (saccadic peak velocity and five EEG endpoints) had been 39-49% too small.
 - Add Liang 2024b osimertinib intracranial EGFR occupancy ([doi:10.1038/s41598-024-63743-z](https://doi.org/10.1038/s41598-024-63743-z)) -- simulated NSCLC patients with brain metastases (wild-type, L858R+T790M, L858R and C797S EGFR).
 - Add Pouzin 2023 tusamitamab ravtansine CYP3A4/1A2/2B6 downregulation IVIVE-PK ([doi:10.1002/cpt.3102](https://doi.org/10.1002/cpt.3102)) -- adults with advanced CEACAM5-expressing solid tumors (typical-value simulation from in vitro constants).
+- Add Vasalou 2024 trastuzumab deruxtecan in vitro and mouse xenograft QSP ([doi:10.1002/psp4.13133](https://doi.org/10.1002/psp4.13133)) -- NCI-N87 and NCI-H322 cells in vitro; nude and NOD-SCID mice with NCI-N87, Capan-1, JIMT-1 and MDA-MB-468 xenografts.
 
 - Add Dong 2024 adefovir ([doi:10.1007/s00228-024-03673-x](https://doi.org/10.1007/s00228-024-03673-x)) -- healthy adults given adefovir dipivoxil alone and with a transporter phenotyping cocktail.
 

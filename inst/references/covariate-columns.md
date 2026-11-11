@@ -24175,6 +24175,39 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Sang_2021_doxorubicin_rat_qsp.R` (multiplies the doxorubicin myocardial-compliance effect by `1 - STRAIN_SD`, so SD rats show the systolic-dysfunction phenotype -- falling LVEF, rising LVEDV -- and WKY / SHR rats the diastolic-dysfunction phenotype with falling LVEDV), `White_2022_alfaxalone_rat_pop1.R` and `White_2022_alfaxalone_rat_pop2.R` (exponential strain effects on alfaxalone clearance (population 1 only) and volume of distribution, Lewis reference).
 - **Notes:** Member of the `STRAIN_<GROUP>` family (`STRAIN_C57BI6`, `STRAIN_NUDE`, `STRAIN_SHR`). Like `STRAIN_SHR`, the 1-level always means the named strain while the 0-level comparator is set by the paper, so check the consuming model's notes before pooling datasets across models. In Sang 2021 the strain and the dysfunction phenotype coincide study by study (studies 11-13 SD, study 14A-C WKY / SHR), and the paper describes the switch by phenotype; the column records the strain, which is the observable data item.
 
+### CELLLINE_CAPAN1 (**canonical for Capan-1 tumor cell-line indicator**)
+- **Description:** Binary tumor cell-line indicator: 1 = the subject carries a tumor grown from the Capan-1 human pancreatic adenocarcinoma cell line, 0 = a tumor from another cell line in the same analysis. Used when a preclinical model fit jointly across several xenografts switches cell-line-specific system parameters (receptor density, internalization rate, growth rate) by the implanted cell line.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (another cell line; NCI-N87 in Vasalou 2024).
+- **Source aliases:**
+  - `TYPE` (Vasalou 2024 NONMEM data column; `TYPE = 2` is Capan-1) -- decompose into `CELLLINE_CAPAN1 = as.integer(TYPE == 2)`.
+- **Example models:** `Vasalou_2024_trastuzumabDeruxtecan_mouse_qsp.R` (selects 2e4 HER2 receptors per cell and a HER2/ADC internalization rate of 2.77 1/day in the Krogh-cylinder tumor disposition model of trastuzumab deruxtecan; male NOD-SCID mice).
+- **Notes:** Founding member of the `CELLLINE_<NAME>` family. A cell line is a different covariate from the tumor histology captured by `TUMTP_<GROUP>` (two breast lines such as JIMT-1 and MDA-MB-468 share a histology but differ in receptor density) and from the host strain captured by `STRAIN_<GROUP>`. New lines take `CELLLINE_<NAME>`, with the line's published name uppercased and its punctuation and spaces dropped (`CELLLINE_MDAMB468` for MDA-MB-468, `CELLLINE_NCIN87` for NCI-N87). The indicators of one model are mutually exclusive; all zero is the model's reference line, which each consuming model names in its `covariateData` notes. Cell-line values are per-tumor and time-fixed. Not for in-vitro models, where the cell line is the whole system and is chosen by parameter values rather than by a data column.
+
+### CELLLINE_JIMT1 (**canonical for JIMT-1 tumor cell-line indicator**)
+- **Description:** Binary tumor cell-line indicator: 1 = the subject carries a tumor grown from the JIMT-1 human breast carcinoma cell line (HER2-amplified, trastuzumab-resistant), 0 = a tumor from another cell line in the same analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (another cell line; NCI-N87 in Vasalou 2024).
+- **Source aliases:**
+  - `TYPE` (Vasalou 2024 NONMEM data column; `TYPE = 3` is JIMT-1) -- decompose into `CELLLINE_JIMT1 = as.integer(TYPE == 3)`.
+- **Example models:** `Vasalou_2024_trastuzumabDeruxtecan_mouse_qsp.R` (selects 3.8e5 HER2 receptors per cell and the re-estimated internalization rate of 0.14 1/day; female nude mice).
+- **Notes:** Member of the `CELLLINE_<NAME>` family; see `CELLLINE_CAPAN1` for the naming rule and the distinction from `TUMTP_<GROUP>` and `STRAIN_<GROUP>`.
+
+### CELLLINE_MDAMB468 (**canonical for MDA-MB-468 tumor cell-line indicator**)
+- **Description:** Binary tumor cell-line indicator: 1 = the subject carries a tumor grown from the MDA-MB-468 human triple-negative breast carcinoma cell line (HER2 IHC 0), 0 = a tumor from another cell line in the same analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (another cell line; NCI-N87 in Vasalou 2024).
+- **Source aliases:**
+  - `TYPE` (Vasalou 2024 NONMEM data column; `TYPE = 4` is MDA-MB-468) -- decompose into `CELLLINE_MDAMB468 = as.integer(TYPE == 4)`.
+- **Example models:** `Vasalou_2024_trastuzumabDeruxtecan_mouse_qsp.R` (selects 4830 HER2 receptors per cell and an internalization rate of 4.158 1/day; female NOD-SCID mice).
+- **Notes:** Member of the `CELLLINE_<NAME>` family; see `CELLLINE_CAPAN1` for the naming rule and the distinction from `TUMTP_<GROUP>` and `STRAIN_<GROUP>`.
+
 ### DOSE_AZD7648_MGKGD (**canonical for concomitant AZD7648 total daily dose per kg body weight**)
 - **Description:** Total daily dose of co-administered AZD7648 (a DNA-dependent protein kinase inhibitor) in mg per kg body weight per day. Carried on every record so a drug-drug-interaction equation can read the co-medication dose level without back-computing it from the AZD7648 event records. It is the total across the dosing day, so a 75 mg/kg twice-daily regimen carries the value 150. Zero for olaparib monotherapy and for vehicle controls.
 - **Units:** mg/kg/day
