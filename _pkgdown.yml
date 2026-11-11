@@ -3608,6 +3608,8 @@ navbar:
         href: articles/Liu_2020_hydroxychloroquine_monkey.html
       - text: "HydroxyprogesteroneCaproate (Sharma 2016)"
         href: articles/Sharma_2016_hydroxyprogesteroneCaproate.html
+      - text: "HydroxysafflorYellowA calycosin rat (Sun 2025)"
+        href: articles/Sun_2025_hydroxysafflorYellowA_calycosin_rat.html
       - text: "HydroxysafflorYellowA rat (Chen 2024)"
         href: articles/Chen_2024_guhongInjection.html
       - text: "Hydroxyurea (Dong 2016)"
@@ -11398,6 +11400,7 @@ articles:
   - articles/Sun_2023_maribavir
   - articles/Sun_2024_tacrolimus
   - articles/Sun_2025_colistinSulfate
+  - articles/Sun_2025_hydroxysafflorYellowA_calycosin_rat
   - articles/Sun_2025_maribavir
   - articles/Sun_2025_paclitaxel
   - articles/Sun_2025_teicoplanin

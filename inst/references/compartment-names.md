@@ -5914,6 +5914,13 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
 - **Example models:** `Oggianu_2023_trazodone_gabapentin_mouse.R` (gabapentin given intraperitoneally alongside oral trazodone in the mouse acetic-acid writhing test; each drug's molar plasma concentration removes the nociceptive stimulus, with a concentration-product synergy term).
 - **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `olaparib` / `osimertinib` for whole co-administered agents. Trazodone keeps the bare canonical names because it is the parent drug of the combination; standalone gabapentin models (`AlZubaydi_2024_gabapentin.R`, `Silvola_2025_gabapentin_mpr.R`) keep the bare names because gabapentin is the parent there.
 
+### calycosin (**canonical calycosin sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Calycosin drug-name suffix for the non-parent arm of hydroxysafflor yellow A + calycosin combination models, covering its plasma state (`central_calycosin`), its per-biomarker effect compartments (`effect_<biomarker>_calycosin`), the associated parameters (`lkel_calycosin`, `ks_calycosin`, `lc0_calycosin`, `lke0_<biomarker>_calycosin`, `lec50_<biomarker>_calycosin`, `lhill_<biomarker>_calycosin`, `lemax_<biomarker>_calycosin`), the plasma output `Cc_calycosin` and its residual SD `addSd_calycosin`.
+- **Source aliases:** `CA` -- Sun 2025 notation.
+- **Example models:** `Sun_2025_hydroxysafflorYellowA_calycosin_rat.R` (calycosin, the isoflavone of Astragali Radix, co-injected intravenously with hydroxysafflor yellow A in MCAO rats; each drug's plasma concentration raises the other's elimination rate, and both drive three plasma biomarkers through independent effect compartments).
+- **Notes:** Full name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `olaparib` / `gabapentin` for whole co-administered agents. Calycosin is a natural product without an INN, so its common chemical name is used. Hydroxysafflor yellow A keeps the bare canonical names because it is listed first and carries the larger effect weights in the source paper.
+
 ### dox (**canonical doxorubicin drug-name suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Doxorubicin drug-name suffix for combination-therapy compartments, parameters and residual SDs (`central_dox`, `peripheral1_dox`, `peripheral2_dox`, `transit1_dox`, `conc_dox`, `lkmax_dox`, `lkc50_dox`, `lktr_dox`, `lkdeg_dox`, `addSd_Cc_dox`).
