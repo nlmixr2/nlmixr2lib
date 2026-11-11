@@ -6768,6 +6768,10 @@ navbar:
         href: articles/Wang_2024_risperidone_lai_switching.html
       - text: "Risperidone dog (Chen 2019)"
         href: articles/Chen_2019_risperidone_dog.html
+      - text: "Risperidone oral (Lindauer 2025)"
+        href: articles/Lindauer_2025_risperidone.html
+      - text: "Risperidone panss (Lindauer 2025)"
+        href: articles/Lindauer_2025_risperidone.html
       - text: "Risperidone panss subscales (PillaReddy 2013)"
         href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Risperidone rat pbpk (Yamamoto 2017)"
@@ -10441,6 +10445,7 @@ articles:
   - articles/Lin_2026_sc1cmt_coxTte
   - articles/Lindauer_2017_lacosamide
   - articles/Lindauer_2017_pembrolizumab
+  - articles/Lindauer_2025_risperidone
   - articles/Lindemalm_2005_cladribine
   - articles/Ling_2024_tnfi_biosimilars
   - articles/Ling_2024_voriconazole
