@@ -2823,6 +2823,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Nielsen_2015_vigabatrin.R`.
 - **Notes:** Member of the per-interval event-count PD-output family; siblings are `hae_attacks`, `ms_headache_days`, `migraine_days`, `cel_count`, and `score`. The underlying source likelihood in this family is frequently negative-binomial rather than Poisson (overdispersed counts); rxode2 exposes `llikNbinomMu()` but no negative-binomial *endpoint*, so these models declare `~ pois(...)` and expose the overdispersion as a model variable `ovdp` for downstream negative-binomial sampling via `rnbinom(mu, size = 1/ovdp)`. Distinct from `cumhaz` and the repeated-time-to-event Weibull hazards in `Lindauer_2017_lacosamide_seizure.R`, which model the *timing* of seizure events rather than a per-day count.
 
+### fracture_count (**canonical fracture plus pseudofracture count PD output**)
+- **Type:** compartment
+- **Role:** Number of active fractures plus pseudofractures on a skeletal survey, as a count-outcome PD output. The state holds the Poisson mean `lambda` at each assessment (an algebraic product of a baseline count, time effects and an exposure effect -- no ODE); the observation model is `fracture_count ~ pois(lambda)`. It is a prevalent count at each survey (fractures heal and new ones form), not a cumulative incidence.
+- **Source aliases:** `Y` (Mehta 2025 Equation 1, 'total fracture and pseudofracture counts').
+- **Example models:** `Mehta_2025_burosumab_fracture.R` (adults with X-linked hypophosphatemia under burosumab; founding example).
+- **Notes:** Member of the per-interval event-count PD-output family (`seizure_count`, `exac_count`, `hae_attacks`, `thrombocytopenia_count`, ...). Pooled fractures and pseudofractures take this name; a model of fractures alone would also use it and say so in its description.
+
 ### thrombocytopenia_count (**canonical per-period thrombocytopenia-event-count PD output**)
 - **Type:** compartment
 - **Role:** Count of thrombocytopenia events accumulated over a prophylaxis period, used as the observation variable of a count-outcome exposure-response model. The state holds the mean count `lambda` at each observation row (an algebraic product of a baseline count and a drug effect -- no ODE); the observation model is `thrombocytopenia_count ~ pois(lambda)`. Thrombocytopenia is defined by the source paper as a platelet count decreased by at least 25% from baseline or an absolute platelet count below 150,000/uL.
@@ -4826,7 +4833,7 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Source aliases:**
   - `E` / `EObs` -- the Phoenix NLME effect variable in Lee 2022 Supplemental Information 3 (`E = E0 + Emax * C^Gam / (EC50^Gam + C^Gam)`).
   - `phos`, `PHOS`, `PO4`, `Pi`, `serum phosphorus` -- common clinical-laboratory and figure-axis names.
-- **Example models:** `Lee_2022_burosumab.R` (direct Emax model of absolute serum phosphorus driven by the burosumab concentration, mg/dL; founding example).
+- **Example models:** `Lee_2022_burosumab.R` (direct Emax model of absolute serum phosphorus driven by the burosumab concentration, mg/dL; founding example), `Mehta_2025_burosumab.R` (direct Emax model with EC50 a power function of the individual baseline; its per-cycle average feeds `CAV_PHOS`).
 
 ### ca_unobs (**canonical unobserved calcium pool**)
 - **Type:** compartment

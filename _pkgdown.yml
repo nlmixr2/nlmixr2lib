@@ -1112,8 +1112,12 @@ navbar:
         href: articles/Kovar_2020_buprenorphine.html
       - text: "Burosumab (Lee 2022)"
         href: articles/Lee_2022_burosumab.html
+      - text: "Burosumab (Mehta 2025)"
+        href: articles/Mehta_2025_burosumab.html
       - text: "Burosumab (Zhang 2016)"
         href: articles/Zhang_2016_burosumab.html
+      - text: "Burosumab fracture (Mehta 2025)"
+        href: articles/Mehta_2025_burosumab.html
       - text: "Busulfan (Balis 2025)"
         href: articles/Balis_2025_busulfan.html
       - text: "Busulfan (Cao 2025)"
@@ -10554,7 +10558,7 @@ articles:
   - articles/Mehta_2018_fluticasoneFuroate_umeclidinium_vilanterol
   - articles/Mehta_2020_fluticasoneFuroate_umeclidinium_vilanterol
   - articles/Mehta_2023_tb_lesion_mpbpk
-  - articles/Mehta_2024_brain_pbpk
+  - articles/Mehta_2025_burosumab
   - articles/Meid_2024_spironolactone_qsp
   - articles/Meister_2019_tribendimidine
   - articles/Melander_2025_cetirizine
