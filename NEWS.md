@@ -8,7 +8,7 @@
 - Add Liang 2024b osimertinib intracranial EGFR occupancy ([doi:10.1038/s41598-024-63743-z](https://doi.org/10.1038/s41598-024-63743-z)) -- simulated NSCLC patients with brain metastases (wild-type, L858R+T790M, L858R and C797S EGFR).
 - Add Pouzin 2023 tusamitamab ravtansine CYP3A4/1A2/2B6 downregulation IVIVE-PK ([doi:10.1002/cpt.3102](https://doi.org/10.1002/cpt.3102)) -- adults with advanced CEACAM5-expressing solid tumors (typical-value simulation from in vitro constants).
 
-- Add Karakitsios 2024 rifampicin, moxifloxacin, ethambutol, pyrazinamide and isoniazid lung PBPK models ([doi:10.1093/jac/dkae109](https://doi.org/10.1093/jac/dkae109)) -- mice, rabbits with tuberculosis, and their extrapolation to adults with pulmonary tuberculosis.
+- Add Dong 2024 adefovir ([doi:10.1007/s00228-024-03673-x](https://doi.org/10.1007/s00228-024-03673-x)) -- healthy adults given adefovir dipivoxil alone and with a transporter phenotyping cocktail.
 
 - Add Iwaki 2021 guselkumab PPPASI PK/PD ([doi:10.1002/jcph.1953](https://doi.org/10.1002/jcph.1953)) -- Japanese adults with palmoplantar pustulosis.
 
