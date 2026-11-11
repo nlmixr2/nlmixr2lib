@@ -1319,6 +1319,22 @@ form. Log form `lcl_t50`. Units are the model's time unit.
 - **Notes:** This is the one member where `hill` is the correct role token -- it names the
 shape coefficient itself. See [[cl_time_max]] for the rename rationale.
 
+### wt_dosenum_max, alb_dosenum_max, erythrocyte_sedimentation_rate_dosenum_max, neutrophil_cd64_ratio_dosenum_max (**canonical maximal log-scale change of a covariate over successive doses**)
+- **Type:** paper-named-param
+- **Role:** Signed magnitude of the log-scale change in a covariate that the model PREDICTS from its pre-treatment value as a function of the dose number, in the hyperbolic form `cov_pred <- COV * exp(<cov>_dosenum_max * (CYCLE - 1) / (dosenum50 - 1 + CYCLE - 1))`. `exp(<cov>_dosenum_max) - 1` is the asymptotic fractional change. The stem is the lower-case canonical covariate name (`WT` -> `wt`, `ERYTHROCYTE_SEDIMENTATION_RATE` -> `erythrocyte_sedimentation_rate`, `NEUTROPHIL_CD64_RATIO` -> `neutrophil_cd64_ratio`).
+- **Source aliases:**
+  - `Emax` -- Samuels 2025 Methods equation and Table S1 (one per biomarker); used in `Samuels_2025_infliximab.R`.
+- **Example models:** `Samuels_2025_infliximab.R` (weight +0.046, albumin +0.110, ESR -0.978, nCD64 -0.362; the predicted biomarkers then enter infliximab clearance through the Xiong 2021 power covariate model).
+- **Notes:** Linear and signed, not log-transformed: negative values mean the covariate falls (an inflammatory marker resolving with treatment). Driven by the dose COUNT, not by time or by dose amount, which is what the `dosenum` token records; it is distinct from the time-driven [[cl_time_max]] family and from the dose-amount constants `fdepot_dose50` / `fdepot_dosemax`. Estimated on covariate data rather than on concentrations, so a refit to PK data should hold these values.
+
+### dosenum50 (**canonical dose number at half of a dose-count-driven covariate change**)
+- **Type:** paper-named-param
+- **Role:** The dose number (1-based, on the scale of the `CYCLE` covariate column) at which half of each `<cov>_dosenum_max` change has been reached, in the same hyperbolic form; `dosenum50 - 1` is the half-change point on the zero-based count of previous doses. Unitless count.
+- **Source aliases:**
+  - `D50` -- Samuels 2025 Methods ('D50 was fixed to 1.1'); the Data S1 code carries `D50 - 1 = 0.1` as a literal. Used in `Samuels_2025_infliximab.R`.
+- **Example models:** `Samuels_2025_infliximab.R` (held at 1.1, shared by all four biomarker trajectories).
+- **Notes:** Must exceed 1. A value just above 1 puts nearly the whole change between the first and second doses.
+
 ### cl_time_slope (**canonical fractional slope of a linear-in-time clearance change**)
 - **Type:** paper-named-param
 - **Role:** Fractional change in clearance per unit time in the linear-in-time form
