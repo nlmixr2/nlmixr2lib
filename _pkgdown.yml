@@ -7950,6 +7950,8 @@ navbar:
         href: articles/Soehoel_2022_tralokinumab.html
       - text: "Tramadol (AlQurain 2022)"
         href: articles/AlQurain_2022_tramadol.html
+      - text: "Tramadol (Healy 2025)"
+        href: articles/Healy_2025_tramadol.html
       - text: "Tramadol (Lee 2019)"
         href: articles/Lee_2019_tramadol.html
       - text: "Tramadol (SoriaChacartegui 2026)"
@@ -9841,6 +9843,7 @@ articles:
   - articles/He_2022_tacrolimus_wuzhi_schizandrol_cyp3a
   - articles/He_2025_YPEGrhGH
   - articles/He_2025_lidocaine
+  - articles/Healy_2025_tramadol
   - articles/Heathman_2024_efavirenz
   - articles/HeermavanVoss_2024_docetaxel
   - articles/Heida_2024_mycophenolic_acid
