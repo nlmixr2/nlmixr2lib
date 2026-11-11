@@ -5318,6 +5318,10 @@ navbar:
         href: articles/Zhang_2019b_nivolumab.html
       - text: "Nivolumab (Zhao 2025)"
         href: articles/Zhao_2025_nivolumab.html
+      - text: "Nivolumab ipilimumab orr (Sangro 2023)"
+        href: articles/Sangro_2023_nivolumab_ipilimumab_hcc.html
+      - text: "Nivolumab ipilimumab os (Sangro 2023)"
+        href: articles/Sangro_2023_nivolumab_ipilimumab_hcc.html
       - text: "Nivolumab qsp (RuizMartinez 2022)"
         href: articles/RuizMartinez_2022_nivolumab_qsp.html
       - text: "Nivolumab qsp (Shchelokov 2023)"
@@ -10806,6 +10810,7 @@ articles:
   - articles/Sandra_2024_siRNA_hbsag_mouse_mbma
   - articles/Sang_2021_doxorubicin_cardiotoxicity
   - articles/Sanghavi_2020_ipilimumab
+  - articles/Sangro_2023_nivolumab_ipilimumab_hcc
   - articles/Sanhajariya_2018_snake_venom
   - articles/Sano_2023_fesoterodine
   - articles/Santamaria_2017_rupatadine
