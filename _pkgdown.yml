@@ -4778,6 +4778,8 @@ navbar:
         href: articles/Tao_2025_meropenem.html
       - text: "Meropenem (Trang 2021)"
         href: articles/Trang_2021_meropenem_vaborbactam.html
+      - text: "Meropenem (Troisi 2024)"
+        href: articles/Troisi_2024_meropenem.html
       - text: "Meropenem (Ulldemolins 2015)"
         href: articles/Ulldemolins_2015_meropenem.html
       - text: "Meropenem (Wittau 2015)"
@@ -11342,6 +11344,7 @@ articles:
   - articles/Traynard_2017_prostateSignaling_qsp
   - articles/Tremoulet_2014_ampicillin
   - articles/Trivedi_2021_omecamtivMecarbil
+  - articles/Troisi_2024_meropenem
   - articles/Troy_2020_arylsulfataseA
   - articles/Trujillo_2025_proinsulin_qsp
   - articles/Truong_2025_elexacaftor_tezacaftor_ivacaftor
