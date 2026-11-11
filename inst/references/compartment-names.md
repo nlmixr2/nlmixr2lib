@@ -6019,8 +6019,72 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
 - **Role:** Docetaxel drug-name suffix for combination K-PD compartments and rate constants (`depot_kpd_docetaxel`, `lkel_docetaxel`, `kel_docetaxel`) and for the paired drug-effect parameters (`lkkill_docetaxel`, `lres_docetaxel`).
 - **Source aliases:**
   - `DOCE` / `KD1` / `DM1` / `KP1` -- Bruno 2012 NONMEM `$MODEL` compartment label and `$PK` parameter names.
-- **Example models:** `Bruno_2012_capecitabine_docetaxel_tgi.R` (docetaxel as one of two additive K-PD drug-effect arms of a tumor-growth-inhibition model).
+- **Example models:** `Bruno_2012_capecitabine_docetaxel_tgi.R` (docetaxel as one of two additive K-PD drug-effect arms of a tumor-growth-inhibition model), `Schneider_2025_bevacizumab_nsclc_tgi.R` (docetaxel as the second member of the microtubule mechanism-of-action group, weighted relative to paclitaxel, with two-compartment PK and the cumulative-exposure accumulator `auc_central_docetaxel`).
 - **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `olaparib` / `ethinylestradiol`. Docetaxel already appears in the library as a parent analyte with bare canonical names (`Koolen_2010_docetaxel.R`, `Ozawa_2007_docetaxel.R`, `Puisset_2007_docetaxel.R`, `Janssen_2023_docetaxel.R`, `Rietveld_2025_docetaxel.R`, `Netterberg_2017_docetaxel.R`); this suffix is for combination models in which neither drug can claim the bare names.
+
+### bevacizumab (**canonical bevacizumab sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Bevacizumab drug-name suffix for multi-drug combination models in which no single agent is the parent, covering its PK cascade (`central_bevacizumab`, `peripheral1_bevacizumab`), its cumulative-exposure accumulator `auc_central_bevacizumab` and the associated parameters (`lcl_bevacizumab`, `lvc_bevacizumab`, `Cc_bevacizumab`, drug-effect weight `lw_bevacizumab`, resistance rate `lres_bevacizumab`).
+- **Source aliases:**
+  - `bev` (deposited Mlxtran code: `cc_bev`, `cl_bev`, `v1_bev`, `k12_bev`, `k21_bev`, `w_bev`, `L_bev`).
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (bevacizumab as the anti-VEGF backbone of every regimen: its own two-compartment PK, a tau-delayed copy of that PK driving vascular normalisation, a direct anti-VEGF injury effect and an AUC-driven resistance term).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models. A standalone model of this drug keeps the bare canonical names.
+
+### cisplatin (**canonical cisplatin sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Cisplatin drug-name suffix for multi-drug combination models in which no single agent is the parent, covering its PK cascade (`central_cisplatin`, `peripheral1_cisplatin`), its cumulative-exposure accumulator `auc_central_cisplatin` and the associated parameters (`lcl_cisplatin`, `lvc_cisplatin`, `Cc_cisplatin`, drug-effect weight `lw_cisplatin`, resistance rate `lres_cisplatin`).
+- **Source aliases:**
+  - `cis` (deposited Mlxtran code: `cc_cis`, `cl_cis`, `v1_cis`, `q_cis`, `v2_cis`, `w_cis_rel`, `L_cis_rel`).
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (cisplatin as the reference agent of the platinum mechanism-of-action group, with two-compartment PK and an AUC-driven resistance term).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models. A standalone model of this drug keeps the bare canonical names.
+
+### pemetrexed (**canonical pemetrexed sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Pemetrexed drug-name suffix for multi-drug combination models in which no single agent is the parent, covering its PK cascade (`central_pemetrexed`, `peripheral1_pemetrexed`), its cumulative-exposure accumulator `auc_central_pemetrexed` and the associated parameters (`lcl_pemetrexed`, `lvc_pemetrexed`, `Cc_pemetrexed`, drug-effect weight `lw_pemetrexed`, resistance rate `lres_pemetrexed`).
+- **Source aliases:**
+  - `pem` (deposited Mlxtran code: `cc_pem`, `cl_pem`, `v1_pem`, `q_pem`, `v2_pem`, `w_pem`, `L_pem`).
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (pemetrexed as the antifolate arm, with two-compartment PK and an AUC-driven resistance term).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models. A standalone model of this drug keeps the bare canonical names.
+
+### drozitumab (**canonical drozitumab (PRO95780, apomab) sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Drozitumab (PRO95780, apomab) drug-name suffix for multi-drug combination models in which no single agent is the parent, covering its PK cascade (`central_drozitumab`, `peripheral1_drozitumab`), its cumulative-exposure accumulator `auc_central_drozitumab` and the associated parameters (`lcl_drozitumab`, `lvc_drozitumab`, `Cc_drozitumab`, drug-effect weight `lw_drozitumab`, resistance rate `lres_drozitumab`).
+- **Source aliases:**
+  - `apo` / `apomab` / `PRO95780` (deposited Mlxtran code: `cc_apo`, `cl_apo`, `v1_apo`, `q_apo`, `v2_apo`, `w_apo`, `L_apo`; the paper's text and tables call the agent apomab).
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (drozitumab as the death-receptor-5 agonist arm, with two-compartment PK and an AUC-driven resistance term).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models. A standalone model of this drug keeps the bare canonical names.
+
+### paclitaxel (**canonical paclitaxel sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Paclitaxel drug-name suffix for multi-drug combination models in which no single agent is the parent, covering its PK cascade (`central_paclitaxel`, `peripheral1_paclitaxel`, `peripheral2_paclitaxel`), its cumulative-exposure accumulator `auc_central_paclitaxel` and the associated parameters (`lcl_paclitaxel`, `lvc_paclitaxel`, `Cc_paclitaxel`, drug-effect weight `lw_paclitaxel`, resistance rate `lres_paclitaxel`).
+- **Source aliases:**
+  - `pac` (deposited Mlxtran code: `cc_pac`, `cl_pac`, `v1_pac`, `q1_pac`, `v2_pac`, `q2_pac`, `v3_pac`, `w_pac_rel`, `L_pac_rel`).
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (paclitaxel as the reference agent of the microtubule mechanism-of-action group, with three-compartment PK and an AUC-driven resistance term).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models. A standalone model of this drug keeps the bare canonical names.
+
+### carboplatin (**canonical carboplatin sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Carboplatin drug-name suffix for multi-drug combination models in which no single agent is the parent, covering its PK cascade (`central_carboplatin`, `peripheral1_carboplatin`), its cumulative-exposure accumulator `auc_central_carboplatin` and the associated parameters (`lcl_carboplatin`, `lvc_carboplatin`, `Cc_carboplatin`, drug-effect weight `lw_carboplatin`, resistance rate `lres_carboplatin`).
+- **Source aliases:**
+  - `car` (deposited Mlxtran code: `cc_car`, `cl_car`, `v1_car`, `q_car`, `v2_car`, `w_car`, `L_car`).
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (carboplatin as the second member of the platinum mechanism-of-action group, weighted relative to cisplatin, with two-compartment PK).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models. A standalone model of this drug keeps the bare canonical names.
+
+### gemcitabine (**canonical gemcitabine sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Gemcitabine drug-name suffix for multi-drug combination models in which no single agent is the parent, covering its PK cascade (`central_gemcitabine`, `peripheral1_gemcitabine`), its cumulative-exposure accumulator `auc_central_gemcitabine` and the associated parameters (`lcl_gemcitabine`, `lvc_gemcitabine`, `Cc_gemcitabine`, drug-effect weight `lw_gemcitabine`, resistance rate `lres_gemcitabine`).
+- **Source aliases:**
+  - `gem` (deposited Mlxtran code: `cc_gem`, `cl_gem`, `v1_gem`, `q_gem`, `v2_gem`, `w_gem`, `L_gem`).
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (gemcitabine as the nucleoside-analog arm, with two-compartment PK and an AUC-driven resistance term).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models. A standalone model of this drug keeps the bare canonical names.
+
+### erlotinib (**canonical erlotinib sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Erlotinib drug-name suffix for multi-drug combination models in which no single agent is the parent, covering its PK cascade (`central_erlotinib`, `peripheral1_erlotinib`, `depot_erlotinib`), its cumulative-exposure accumulator `auc_central_erlotinib` and the associated parameters (`lcl_erlotinib`, `lvc_erlotinib`, `Cc_erlotinib`, drug-effect weight `lw_erlotinib`, resistance rate `lres_erlotinib`).
+- **Source aliases:**
+  - `erl` (deposited Mlxtran code: `cc_erl`, `cl_erl`, `v1_erl`, `ka_erl`, `F_erl`, `w_erl`, `L_erl`).
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (erlotinib as the oral EGFR-inhibitor arm, with one-compartment first-order-absorption PK and an AUC-driven resistance term).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models. A standalone model of this drug keeps the bare canonical names.
 
 ### olaparib (**canonical olaparib sibling-drug suffix**)
 - **Type:** metabolite-suffix
