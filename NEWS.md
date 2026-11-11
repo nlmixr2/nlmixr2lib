@@ -16,6 +16,8 @@
 
 - `checkModelConventions()` no longer reports `DV` as a covariate. A custom likelihood `ll(<endpoint>) ~ ...` has to read the observed value, and `DV` is a dataset column, not a covariate.
 
+- Add Kim 2023 6-minute walk distance and vastus lateralis / soleus muscle fat fraction multivariate disease-progression models ([doi:10.1002/psp4.13021](https://doi.org/10.1002/psp4.13021)) -- ambulatory boys with Duchenne muscular dystrophy.
+
 - Add Hibma 2023 North Star Ambulatory Assessment and loss-of-ambulation disease-progression model ([doi:10.1002/psp4.12921](https://doi.org/10.1002/psp4.12921)) -- boys with Duchenne muscular dystrophy.
 
 - Add Hishe 2023 oxypurinol ([doi:10.1111/cts.13460](https://doi.org/10.1111/cts.13460)) -- adults with gout (five-study New Zealand pooled popPK; urate-transporter genetics screened but not retained).
