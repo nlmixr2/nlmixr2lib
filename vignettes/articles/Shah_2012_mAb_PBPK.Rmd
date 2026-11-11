@@ -100,7 +100,7 @@ below and the details are under Errata.
 | Tissue volumes (V_total, V_plasma, V_BC, V_E, V_IS, V_C) | per Table 4 | Table 4 |
 | Tissue plasma flows (PLQ_i) | per Table 4 | Table 4 |
 | Tissue blood-cell flows (BCQ_i) | per Table 4 | Table 4 |
-| Lung plasma and blood-cell flows | sum of the tissue flows (178.243 and 145.836 L/h) | ADAPT code; the Table 4 lung row also includes the Ly. Node row |
+| Lung plasma and blood-cell flows | sum of the tissue flows (178.244 and 145.835 L/h) | ADAPT code; the Table 4 lung row also includes the Ly. Node row |
 | Tissue vascular reflection coefficients (sigma_V) | 0.85 to 0.99 by tissue | text p.73 |
 | Lymph flows (L_i = PLQ_i / 500) | per tissue | text p.73 (Swartz 2001) |
 | Liver lymph flow | 1/500 of the total liver plasma inflow (hepatic artery plus portal) | ADAPT code |
@@ -177,7 +177,7 @@ the initial free FcRn (equal to `fcrn_M * V_endo_tissue`). Verify in
 the heart endosome:
 
 ```{r fcrn-conservation}
-fcrn_init_heart <- 4.98e-5 * 1e9 * 0.00171  # nmol; v_he_e = 0.00171 L
+fcrn_init_heart <- 4.98e-5 * 1e9 * 0.00171  # nmol; v_ht_e = 0.00171 L
 fcrn_check <- sim_no_deg |>
   filter(time %in% c(0, 24, 100, 200)) |>
   transmute(
@@ -476,7 +476,7 @@ stopifnot(
   which antibody returns from the lymph node to plasma and "the plasma
   flow of the given species" (p.73), but does not print the formula.
   The ADAPT code multiplies `C_LNLF` by the lung plasma flow, which for
-  the human gives about `r round(9.1 * 178.243)` L/h out of a lymph node
+  the human gives about `r round(sim$l_lnode[1])` L/h out of a lymph node
   of 0.274 L, so the node passes lymph on to plasma almost at once. The
   output barely depends on this rate, in line with the paper's finding
   that the output is least sensitive to it (Figure 10). Using the
@@ -487,7 +487,7 @@ stopifnot(
 # C_LNLF chosen so that C_LNLF x lung plasma flow equals the Table 4
 # "Ly. Node" plasma flow of 3.670 L/h
 sim_ln_table4 <- as.data.frame(rxSolve(
-  mod |> ini(lclnlf = log(3.670 / 178.243)),
+  mod |> ini(lclnlf = log(3.670 / sim$q_lu[1])),
   events = ev_long
 ))
 ln_max_dev_pct <- 100 * max(abs(
