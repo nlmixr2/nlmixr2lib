@@ -3550,6 +3550,18 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Beguin_2024_carboplatin_thrombocytopenia_dog.R`.
 - **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_MTX_MGM2`, `DOSE_EMPA_MGD`), so no separate ratification was required. A dedicated column rather than the general `DOSE` canonical, and rather than a `podo()`-derived amount, for two reasons: the model's `amt` is in ug per kg (the unit its ug/L concentration state demands) while the published regression is calibrated in mg/kg, so one shared column would silently mix units by a factor of 1000; and Beguin 2024 fitted the dose arm to the PRESCRIBED dose rather than to an amount reconstructed from the infusion record, so the covariate must remain evaluable when the PK layer is not solved. Convert with `amt [ug/kg] = DOSE_CARBOPLATIN_MGKG [mg/kg] * 1000`. Note that the paper prescribed on body-surface area, `BSA(m2) = 0.1 * WT(kg)^(2/3)` (Beguin 2024 Eq. 1), and reports the per-kg equivalent; the paper's own conclusion is that the per-kg figure is the better toxicity predictor of the two.
 
+### DOSE_MF_CUM_MGKG (**canonical for cumulative administered miltefosine dose per kilogram of body weight**)
+- **Description:** Running total of the oral miltefosine dose administered to the subject up to and including the current record, divided by body weight, in mg/kg. Time-varying per-record covariate.
+- **Units:** mg/kg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters relative bioavailability as a power function. `Verrest_2023_miltefosine.R` switches it on at 60 mg/kg and normalizes to 70 mg/kg, `(DOSE_MF_CUM_MGKG / 70)^-2.40`; `Chu_2026_amphotericinB_liposomal.R` applies it from the first dose with no normalizing value, `DOSE_MF_CUM_MGKG^-0.13`, so there the column must be positive on every miltefosine dose record.
+- **Source aliases:**
+  - `DDOS` -- Verrest 2023 NONMEM control stream (`AMTT/body weight`).
+  - `CumDose` -- Chu 2026 Supplementary Methods S3, Equation S1 ('derived from the sum of weight normalized daily dose').
+- **Example models:** `Verrest_2023_miltefosine.R`, `Chu_2026_amphotericinB_liposomal.R`.
+- **Notes:** Member of the auto-approved `DOSE_<DRUG>_<UNITS>` family with a `CUM` qualifier for the running total. Carried as a data column because rxode2 cannot read the dosing history inside `f()`; build it in the event table from the dose records. Both founding models attribute the falling bioavailability to saturable transport of miltefosine across the gut membrane.
+
 ### DOSE_DYP688_MGKG (**canonical for the DYP688 dose per administration of the treatment group, in mg/kg**)
 - **Description:** The DYP688 (PMEL17-targeted FR900359 antibody-drug conjugate) dose per administration of the animal's treatment group, normalised to body weight and expressed in mg/kg. Per-subject (per-group) covariate.
 - **Units:** mg/kg
