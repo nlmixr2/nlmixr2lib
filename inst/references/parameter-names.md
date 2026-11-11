@@ -2181,6 +2181,34 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Notes:** Named without a `time` infix because `t50` already denotes a time, matching
   [[cl_t50]].
 
+### kin_t50 (**canonical half-time of a sigmoidal-in-time rise of a turnover production rate**)
+- **Type:** bare-pk
+- **Role:** Time at which a zero-order production rate `kin` that switches on over time has
+  reached half of its full value. Log form `lkin_t50`. Units are the model's time unit. In
+  the founding model the rise is logistic with a fixed steepness,
+  `kprod <- kin / (1 + exp(-2 * (t - kin_t50)))`, so `kin_t50` is the midpoint of a smoothed
+  production delay rather than a Hill-type `t^h / (t50^h + t^h)` half-time; read the model body
+  for the form.
+- **Source aliases:**
+  - `Tlag` -- Rohleff 2025 Equation 15 and Table S3 (the smoothed onset of weight gain).
+- **Example models:** `Rohleff_2025_neonatalWeight.R` (founding example; 1.56 days).
+- **Notes:** Member of the sigmoidal-in-time `<param>_t50` family ([[cl_t50]], [[ec50_t50]]).
+  Distinct from `tlag` / `ltlag`, which is an absorption lag on a dosing event; this one
+  delays an endogenous production rate and is not tied to any dose.
+
+### kout_t50 (**canonical half-time of a declining turnover loss rate**)
+- **Type:** bare-pk
+- **Role:** Time at which a first-order loss rate `kout` that declines over time has fallen to
+  half of its initial value. Log form `lkout_t50`. Units are the model's time unit. In the
+  founding model the decline is hyperbolic to zero,
+  `kelim <- kout * (1 - t / (kout_t50 + t))`, i.e. a `t / (t50 + t)` change with an implicit
+  maximum of a full decline and no Hill exponent.
+- **Source aliases:**
+  - `T50` -- Rohleff 2025 Equation 15 and Table S3 (the waning of postnatal weight loss).
+- **Example models:** `Rohleff_2025_neonatalWeight.R` (founding example; 1.18 days).
+- **Notes:** Member of the sigmoidal-in-time `<param>_t50` family ([[cl_t50]], [[ec50_t50]]).
+  A model that estimates a partial decline would add a `kout_time_max` beside it.
+
 ### ec50_time_hill (**canonical Hill coefficient of a sigmoidal-in-time EC50 change**)
 - **Type:** paper-named-param
 - **Role:** Sigmoid steepness exponent of the same time-varying EC50 form. Log form
