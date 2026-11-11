@@ -5746,6 +5746,14 @@ navbar:
         href: articles/Gupta_2006_peginterferon_alfa_2b.html
       - text: "Peginterferon alfa 2b (Jian 2025)"
         href: articles/Jian_2025_peginterferon_alfa_2b.html
+      - text: "Peginterferon alfa 2b plt chb (Jian 2026)"
+        href: articles/Jian_2026_peginterferon_alfa_2b_myelosuppression.html
+      - text: "Peginterferon alfa 2b plt et (Jian 2026)"
+        href: articles/Jian_2026_peginterferon_alfa_2b_myelosuppression.html
+      - text: "Peginterferon alfa 2b wbc chb (Jian 2026)"
+        href: articles/Jian_2026_peginterferon_alfa_2b_myelosuppression.html
+      - text: "Peginterferon alfa 2b wbc et (Jian 2026)"
+        href: articles/Jian_2026_peginterferon_alfa_2b_myelosuppression.html
       - text: "Peginterferon alfa eot mbma (Hanan 2026)"
         href: articles/Hanan_2026_peginterferon_alfa_hbsag_loss.html
       - text: "Peginterferon beta 1a (Hu 2017)"
@@ -9770,6 +9778,7 @@ articles:
   - articles/Jia_2025_tak_071
   - articles/Jia_2026_rivaroxaban
   - articles/Jian_2025_peginterferon_alfa_2b
+  - articles/Jian_2026_peginterferon_alfa_2b_myelosuppression
   - articles/Jiang_2008_gemcitabine
   - articles/Jiang_2016_harmaline_meodmt_mouse
   - articles/Jiang_2021_ivosidenib
