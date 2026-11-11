@@ -23662,7 +23662,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Scope:** specific
 - **Reference category:** n/a; 0 = no receptor occupancy = baseline ventilation.
 - **Source aliases:** `RL_op` / `CAR` (binding-model output name).
-- **Example models:** `Mann_2022_respiratory_physiology.R`.
+- **Example models:** `Mann_2022_respiratory_physiology.R`, `Chakravartula_2024_fentanyl_pediatric.R`.
 - **Notes:** Scope: specific because the semantics are anchored to mu-opioid receptor occupancy in the Mann 2022 translational chain. Future opioid-pharmacology models that consume a different receptor-occupancy concept (e.g., kappa-opioid or delta-opioid) should register a separately named canonical with the receptor subtype in the name (e.g., `CAR_KAPPA`).
 
 ### Q_TOTAL_LPM (**canonical for total cardiac output input to the Mann 2022 opioid-PK shock-state Q_Scale feedback**)
@@ -23672,7 +23672,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Scope:** specific
 - **Reference category:** 4.87 L/min (FDA delaymymod.c baseline Q_0; gives Q_Scale = 1, no amplification). Standalone PK use should leave Q_TOTAL_LPM at this baseline.
 - **Source aliases:** `q_total` / `Q_total` / `Q` (physiology layer state name).
-- **Example models:** `Mann_2022_fentanyl_iv.R`, `Mann_2022_carfentanil_iv.R`.
+- **Example models:** `Mann_2022_fentanyl_iv.R`, `Mann_2022_carfentanil_iv.R`, `Chakravartula_2024_fentanyl_pk_pediatric.R`.
 - **Notes:** Scope: specific because the 4.87 / 1.6 / 0.05 numerics are anchored to the FDA delaymymod.c Q_0 baseline and the empirical sigmoid centred at Q/Q_0 = 1.6. In the composed Mann 2022 chain Q_TOTAL_LPM is the `Q_total = qb + qt` output of `Mann_2022_respiratory_physiology.R`; in standalone PK-only use the user supplies Q_TOTAL_LPM = 4.87 (or whatever fixed baseline appropriate).
 
 ### OPIOID_PATIENT_TYPE (**canonical for opioid-naive vs chronic-opioid-user indicator in the Mann 2022 respiratory-depression PD layer**)
@@ -23682,7 +23682,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Scope:** specific
 - **Reference category:** 0 (healthy opioid-naive).
 - **Source aliases:** none.
-- **Example models:** `Mann_2022_respiratory_physiology.R`.
+- **Example models:** `Mann_2022_respiratory_physiology.R`, `Chakravartula_2024_fentanyl_pediatric.R`.
 - **Notes:** Scope: specific because the two parameter sets are tied to the Mann 2022 chronic-vs-naive opioid pharmacology calibration. A future model that captures a graded tolerance (e.g., a continuous "tolerance index") rather than a two-class binary should register a separate continuous canonical.
 
 ### DIS_HF_OR_LF_SEV (**canonical for severe heart failure OR severe liver failure pooled indicator**)
