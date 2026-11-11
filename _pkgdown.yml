@@ -142,6 +142,8 @@ navbar:
         href: articles/Maximova_2022_acyclovir.html
       - text: "Acyclovir (Zeng 2009)"
         href: articles/Zeng_2009_acyclovir.html
+      - text: "Acyclovir pbpk (Sun 2025)"
+        href: articles/Sun_2025_acyclovir_pbpk.html
       - text: "Ad26cov2s (Dari 2023b)"
         href: articles/Dari_2023b_ad26cov2s.html
       - text: "Ad26cov2s selisa (Dari 2023)"
@@ -11482,6 +11484,7 @@ articles:
   - articles/Sun_2021_olanzapine_samidorphan
   - articles/Sun_2023_maribavir
   - articles/Sun_2024_tacrolimus
+  - articles/Sun_2025_acyclovir_pbpk
   - articles/Sun_2025_colistinSulfate
   - articles/Sun_2025_hydroxysafflorYellowA_calycosin_rat
   - articles/Sun_2025_maribavir
