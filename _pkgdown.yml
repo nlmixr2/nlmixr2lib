@@ -3548,6 +3548,8 @@ navbar:
         href: articles/Lin_2020_glasdegib.html
       - text: "Glenzocimab (Renaud 2020)"
         href: articles/Renaud_2020_glenzocimab.html
+      - text: "Glibenclamide (Comin 2025)"
+        href: articles/Comin_2025_glibenclamide.html
       - text: "Glibenclamide (Rambiritch 2016)"
         href: articles/Rambiritch_2016_glibenclamide.html
       - text: "Glibenclamide cpss fpg (Rambiritch 2016)"
@@ -9679,6 +9681,7 @@ articles:
   - articles/Collins_2023_belantamab_mprotein
   - articles/Collins_2025_midazolam
   - articles/Colombo_2006_atazanavir
+  - articles/Comin_2025_glibenclamide
   - articles/Comisar_2025_rimegepant
   - articles/Comisar_2025_zavegepant
   - articles/Conil_2007_ceftazidime
