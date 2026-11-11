@@ -7798,6 +7798,8 @@ navbar:
         href: articles/Henthorn_2024_tetrahydrocannabinol.html
       - text: "Tetrahydrocannabinol (Li 2025)"
         href: articles/Li_2025_tetrahydrocannabinol.html
+      - text: "Tetrahydrocannabinol (Qian 2025)"
+        href: articles/Qian_2025_tetrahydrocannabinol.html
       - text: "Tetrahydrocannabinol (Storgaard 2026)"
         href: articles/Storgaard_2026_tetrahydrocannabinol.html
       - text: "Tezacaftor (Truong 2025)"
@@ -10936,6 +10938,7 @@ articles:
   - articles/Qi_2014_sapropterin
   - articles/Qi_2019_vestronidaseAlfa
   - articles/Qi_2024_vosoritide
+  - articles/Qian_2025_tetrahydrocannabinol
   - articles/Qin_2025_ropeginterferon
   - articles/Quartino_2016_trastuzumab
   - articles/Quartino_2019_trastuzumab
