@@ -3112,6 +3112,8 @@ navbar:
         href: articles/Jeong_2021_fexuprazan.html
       - text: "Fibrinogen (Bellon 2020)"
         href: articles/Bellon_2020_fibrinogen.html
+      - text: "FidanacogeneElaparvovec (Wojciechowski 2025)"
+        href: articles/Wojciechowski_2025_fidanacogeneElaparvovec.html
       - text: "Filgrastim (Harrold 2020)"
         href: articles/Harrold_2020_filgrastim_ars.html
       - text: "Filgrastim (Jiang 2025)"
@@ -11917,6 +11919,7 @@ articles:
   - articles/Wojciechowski_2022_abrocitinib_platelets
   - articles/Wojciechowski_2022_domagrozumab
   - articles/Wojciechowski_2023_ritlecitinib
+  - articles/Wojciechowski_2025_fidanacogeneElaparvovec
   - articles/Wolowich_2025_thc_heart_rate
   - articles/Wong_2025_efanesoctocog
   - articles/Wright_2013_allopurinol
