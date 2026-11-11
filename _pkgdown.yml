@@ -2344,6 +2344,8 @@ navbar:
         href: articles/Chandasana_2024_abacavir_dolutegravir_lamivudine_pediatric.html
       - text: "Dolutegravir (Dickinson 2021)"
         href: articles/Dickinson_2021_dolutegravir.html
+      - text: "Dolutegravir (Dickinson 2026)"
+        href: articles/Dickinson_2026_dolutegravir.html
       - text: "Dolutegravir (Kawuma 2023)"
         href: articles/Kawuma_2023_dolutegravir.html
       - text: "Dolutegravir (Punyawudho 2025)"
@@ -9867,6 +9869,7 @@ articles:
   - articles/Dias_2024_quetiapine_rat
   - articles/Dickinson_2009_atazanavir
   - articles/Dickinson_2021_dolutegravir
+  - articles/Dickinson_2026_dolutegravir
   - articles/Diep_2022_eplontersen
   - articles/Diep_2026_donidalorsen
   - articles/Diepstraten_2013_propofol

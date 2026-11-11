@@ -12,7 +12,7 @@
 
 - Add Iwaki 2021 guselkumab PPPASI PK/PD ([doi:10.1002/jcph.1953](https://doi.org/10.1002/jcph.1953)) -- Japanese adults with palmoplantar pustulosis.
 
-- Add Wang 2025 aripiprazole once-monthly time-to-mood-recurrence exposure-response, continuous and 95 ng/mL cut-off ([doi:10.1002/cpdd.1580](https://doi.org/10.1002/cpdd.1580)) -- adults with bipolar I disorder.
+- Add Dickinson 2026 dolutegravir ([doi:10.1093/jac/dkaf445](https://doi.org/10.1093/jac/dkaf445)) -- healthy HIV-negative adults dosed to steady state and followed through washout.
 
 - `checkModelConventions()` no longer reports `DV` as a covariate. A custom likelihood `ll(<endpoint>) ~ ...` has to read the observed value, and `DV` is a dataset column, not a covariate.
 
