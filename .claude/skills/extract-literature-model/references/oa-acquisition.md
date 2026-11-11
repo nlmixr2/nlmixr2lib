@@ -16,11 +16,12 @@ For each missing or invalid file (file does not exist, is < 10 KB, or whose firs
    - Nature OA / Springer Nature OA: `https://www.nature.com/articles/<id>.pdf` (where `<id>` is the trailing segment of the DOI)
    - Hindawi: `https://onlinelibrary.wiley.com/doi/pdf/<DOI>` (post-Wiley acquisition)
    - Dovepress: `https://www.dovepress.com/getfile.php?fileID=<file_id>`
-   - Static Springer Nature media (for Nature Comm SI files): `https://static-content.springer.com/esm/art%3A<doi-percent-encoded>/MediaObjects/<id>_MOESM1_ESM.pdf`
+   - Static Springer Nature media (for Nature Comm SI files): `https://static-content.springer.com/esm/art%3A<doi-percent-encoded>/MediaObjects/<id>_MOESM1_ESM.pdf` (on 403, use the `media.springernature.com` form under Supplements below)
 
 ## Validation rules
 
 - Size ≥ 10 KB AND first 4 bytes equal `%PDF`. Wiley/Elsevier non-OA endpoints typically return ~5 KB HTML challenge pages — reject (delete and try the next source). Never extract from a file whose head bytes are not `%PDF`.
+- The size floor and `%PDF` check are for PDFs. A non-PDF supplement (model code, `.docx`, `.xlsx`, `.zip`) is valid when it is not an HTML page (does not start with `<!DOCTYPE` or `<html`) and its content matches its extension; model code can be well under 10 KB.
 - **Title-content sanity check** for the lead PDF: after a successful download, `pdftotext -l 1 <file> -` and confirm the title / first-author line approximately matches what the task block expects. CrossRef DOIs occasionally point to a different paper than the task's metadata claims (publishers' DOI sequence is not always continuous, e.g. `10.1038/aps.2014.120` was a Zhang ROR review when the task expected Lu 2015 tacrolimus). If the downloaded PDF's title disagrees with the task expectation, don't extract from it — sidecar-ask the operator with the actual-vs-expected metadata.
 
 ## Reasonable-attempts cap
@@ -38,9 +39,9 @@ If all 5 source paths have been tried and none produced a valid PDF whose title 
 The same ladder applies, with publisher-specific tweaks:
 
 - **Wiley supplements**: try `https://onlinelibrary.wiley.com/action/downloadSupplement?doi=<DOI>&file=<filename>`. Filenames often follow the pattern `<journal-prefix><articleid>-sup-<NNNN>-<descriptor>.pdf`; if the exact filename isn't known, fetch the article landing page and grep for `downloadSupplement` URLs.
-- **Springer Nature SI**: `https://static-content.springer.com/esm/art%3A<doi-percent-encoded>/MediaObjects/<id>_MOESM1_ESM.pdf`. Increment `MOESM2_ESM`, `MOESM3_ESM`, etc. for additional supplements.
+- **Springer Nature SI**: `https://static-content.springer.com/esm/art%3A<doi-percent-encoded>/MediaObjects/<id>_MOESM1_ESM.pdf`. Increment `MOESM2_ESM`, `MOESM3_ESM`, etc. for additional supplements. When `static-content.springer.com` returns 403, use `https://media.springernature.com/original/springer-static/esm/art%3A<DOI with / encoded as %2F>/MediaObjects/<filename>`. ESM files are often not PDFs (model code as `.txt`, `.docx`, `.xlsx`, `.zip`): take `<filename>` (`<journal-id>_<year>_<article-no>_MOESM<n>_ESM.<ext>`) from the article page's ESM links rather than assuming `.pdf`.
 - **BMC**: PMC mirror often has supplements at `https://www.ncbi.nlm.nih.gov/pmc/articles/<PMCID>/bin/<filename>`.
 - **Frontiers**: typically inline at the article landing page; fetch the page and grep for `Image_*.pdf` / `Table_*.docx` / `Presentation_*.pdf` in the HTML.
 - **Errata**: search PubMed (`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=<title>+AND+erratum&retmode=json`) for the original PMID + erratum link; download the erratum PDF via the same OA ladder.
 
-If a supplement is unobtainable but the lead PDF is on disk, decide based on whether the missing supplement contains parameter values you need: if it does, sidecar-ask before extracting (see Phase 4 missing-parameter pathway); if it does not, document the gap in the vignette Errata and proceed.
+If a supplement is unobtainable but the lead PDF is on disk, decide based on whether the missing supplement contains parameter values, equations or model code you need: if it does, or its contents are unknown, record it for acquisition and defer (SKILL.md Policy self-check, Acquisition); if the paper shows it holds nothing the model needs, document the gap in the vignette Errata and proceed.

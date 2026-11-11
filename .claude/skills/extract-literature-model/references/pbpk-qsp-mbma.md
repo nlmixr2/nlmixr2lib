@@ -27,7 +27,7 @@ Class-typical training-data defaults are NOT an acceptable substitute. "kdeg for
 Walk the paper for these provenance markers:
 
 - Are all structural parameters (vmax, km, kcat, organ volumes, blood flows, permeabilities, partition coefficients, between-study covariance, etc.) tabulated explicitly with units?
-- Are the ODEs written out, or only described in prose ("we used the standard SimCYP whole-body model")?
+- Are the ODEs written out (in the text, or in the authors' published model code, which outranks the text: SKILL.md Phase 1 step 7), or only described in prose ("we used the standard SimCYP whole-body model")?
 - Are the dosing-event handling and observation-mapping rules unambiguous?
 - For MBMA: are the per-study weights / variance estimates explicit, or only summary parameter point estimates?
 
