@@ -13,6 +13,8 @@
 
 - Add Lanoiselee 2024 unfractionated heparin ([doi:10.3390/pharmaceutics16060770](https://doi.org/10.3390/pharmaceutics16060770)) -- adults on veno-arterial ECMO.
 
+- Add Storset 2024 risperidone and 9-hydroxyrisperidone with per-allele CYP2D6 partial clearances ([doi:10.1007/s00228-024-03721-6](https://doi.org/10.1007/s00228-024-03721-6)) -- adults on oral risperidone with therapeutic drug monitoring.
+
 - Add Iwaki 2021 guselkumab PPPASI PK/PD ([doi:10.1002/jcph.1953](https://doi.org/10.1002/jcph.1953)) -- Japanese adults with palmoplantar pustulosis.
 
 - `checkModelConventions()` no longer reports `DV` as a covariate. A custom likelihood `ll(<endpoint>) ~ ...` has to read the observed value, and `DV` is a dataset column, not a covariate.
