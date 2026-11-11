@@ -2436,6 +2436,12 @@ navbar:
         href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
       - text: "Doxorubicin sorafenib mouse (Choi 2021)"
         href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
+      - text: "Doxorubicin trastuzumab ac16 (Yu 2025)"
+        href: articles/Yu_2025_trastuzumab_doxorubicin_cardiotoxicity.html
+      - text: "Doxorubicin trastuzumab bnp ac16 (Yu 2025)"
+        href: articles/Yu_2025_trastuzumab_doxorubicin_cardiotoxicity.html
+      - text: "Doxorubicin trastuzumab bnp human (Yu 2025)"
+        href: articles/Yu_2025_trastuzumab_doxorubicin_cardiotoxicity.html
       - text: "Doxycycline (Hopkins 2017)"
         href: articles/Hopkins_2017_doxycycline.html
       - text: "Doxycycline chicken (Petkova 2022)"
@@ -12077,6 +12083,7 @@ articles:
   - articles/Yu_2025_methotrexate
   - articles/Yu_2025_paliperidone
   - articles/Yu_2025_perampanel
+  - articles/Yu_2025_trastuzumab_doxorubicin_cardiotoxicity
   - articles/Yu_2025_vancomycin
   - articles/Yu_2025b_vancomycin
   - articles/Yu_2026_lacosamide
