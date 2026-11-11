@@ -3710,16 +3710,34 @@ navbar:
         href: articles/Wang_2021_icatibant.html
       - text: "Iclaprim (Lodise 2018)"
         href: articles/Lodise_2018_iclaprim.html
+      - text: "IdecabtageneVicleucel auc (Wu 2025)"
+        href: articles/Wu_2025_idecabtageneVicleucel.html
       - text: "IdecabtageneVicleucel cr (Connarn 2023)"
         href: articles/Connarn_2023_idecabtageneVicleucel.html
+      - text: "IdecabtageneVicleucel crs anti il6 (Wu 2025)"
+        href: articles/Wu_2025_idecabtageneVicleucel.html
       - text: "IdecabtageneVicleucel crs corticosteroid (Connarn 2023)"
         href: articles/Connarn_2023_idecabtageneVicleucel.html
+      - text: "IdecabtageneVicleucel crs corticosteroid (Wu 2025)"
+        href: articles/Wu_2025_idecabtageneVicleucel.html
       - text: "IdecabtageneVicleucel crs tocilizumab (Connarn 2023)"
         href: articles/Connarn_2023_idecabtageneVicleucel.html
+      - text: "IdecabtageneVicleucel dose crs anti il6 (Wu 2025)"
+        href: articles/Wu_2025_idecabtageneVicleucel.html
+      - text: "IdecabtageneVicleucel dose crs corticosteroid (Wu 2025)"
+        href: articles/Wu_2025_idecabtageneVicleucel.html
+      - text: "IdecabtageneVicleucel dose orr (Wu 2025)"
+        href: articles/Wu_2025_idecabtageneVicleucel.html
+      - text: "IdecabtageneVicleucel dose pfs (Wu 2025)"
+        href: articles/Wu_2025_idecabtageneVicleucel.html
       - text: "IdecabtageneVicleucel human (Singh 2021)"
         href: articles/Singh_2021_idecabtageneVicleucel.html
       - text: "IdecabtageneVicleucel orr (Connarn 2023)"
         href: articles/Connarn_2023_idecabtageneVicleucel.html
+      - text: "IdecabtageneVicleucel orr (Wu 2025)"
+        href: articles/Wu_2025_idecabtageneVicleucel.html
+      - text: "IdecabtageneVicleucel pfs (Wu 2025)"
+        href: articles/Wu_2025_idecabtageneVicleucel.html
       - text: "Ifosfamide (Brain 2008)"
         href: articles/Brain_2008_ifosfamide.html
       - text: "Ifosfamide (Freyer 2000)"
@@ -11954,7 +11972,7 @@ articles:
   - articles/Wu_2024_daptomycin
   - articles/Wu_2024_gfr_maturation
   - articles/Wu_2024_inotuzumab
-  - articles/Wu_2025_mavacamten
+  - articles/Wu_2025_idecabtageneVicleucel
   - articles/Wu_2025_paracetamol
   - articles/Wu_2025_sitafloxacin
   - articles/Wurthwein_2013_caspofungin
