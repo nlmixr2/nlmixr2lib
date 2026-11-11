@@ -4312,6 +4312,70 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Baranda_2024_sar439459_mouse.R` (MC38 tumour-bearing mice; study-specific baseline, shared Emax and EC50, driven by `CP_SAR439459_MGL`).
 - **Notes:** The matrix is in the name so that a future circulating TGF-beta output (plasma or serum total / active TGF-beta1, the usual clinical biomarker) can take the bare `tgfb` or its own matrix suffix without colliding -- intratumoral protein-normalised levels and plasma concentrations differ in units, in assay and in what the drug does to them. Distinct from the inflammatory-mediator states (`tnf`, `il6`, `il10`, `ifng`, `ifna`), which are indirect-response turnover states rather than direct-effect algebraic outputs.
 
+### updrs_z (**canonical log-standardized MDS-UPDRS Part I-III total score output**)
+- **Type:** compartment
+- **Role:** Fitted (DV) scale of the MDS-UPDRS Part I-III total in a SReFT disease-progression model: the score x is mapped onto (0, 1) by X = (x + 0.5) / (236 + 1), converted to y = X / (1 - X), log-transformed and z-standardized with the analysis-data mean and SD of log(y). Unitless; carries the additive residual `addSd_updrs_z`.
+- **Source aliases:**
+  - `DV` for `BM = 1` (MDS-UPDRS total) -- Jin 2024 Data S1.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Back-transformed raw-scale companion: `updrs`. Distinct from `d_updrs` (change from baseline in total UPDRS, Lee 2011).
+
+### scopaaut_z (**canonical log-standardized SCOPA-AUT score output**)
+- **Type:** compartment
+- **Role:** Fitted (DV) scale of the SCOPA-AUT autonomic-dysfunction score in a SReFT model: mapped onto (0, 1) with Xmax = 69, logit-transformed as for `updrs_z` and z-standardized. Unitless; carries `addSd_scopaaut_z`.
+- **Source aliases:**
+  - `DV` for `BM = 2` (SCOPA-AUT) -- Jin 2024 Data S1.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Raw-scale companion: `scopaaut`.
+
+### datscan_z (**canonical log-standardized DaTSCAN specific binding ratio output**)
+- **Type:** compartment
+- **Role:** Fitted (DV) scale of the DaTSCAN mean-striatum specific binding ratio in a SReFT model: log of the ratio, z-standardized. Unitless; carries `addSd_datscan_z`.
+- **Source aliases:**
+  - `DV` for `BM = 3` (DaTSCAN) -- Jin 2024 Data S1.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Raw-scale companion: `datscan`.
+
+### asyn_z (**canonical log-standardized CSF alpha-synuclein output**)
+- **Type:** compartment
+- **Role:** Fitted (DV) scale of the cerebrospinal-fluid alpha-synuclein concentration in a SReFT model: log of the pg/mL concentration, z-standardized. Unitless; carries `addSd_asyn_z`.
+- **Source aliases:**
+  - `DV` for `BM = 4` (alpha-synuclein) -- Jin 2024 Data S1.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Raw-scale companion: `asyn`.
+
+### updrs (**canonical MDS-UPDRS Part I-III total score output**)
+- **Type:** compartment
+- **Role:** Movement Disorder Society Unified Parkinson's Disease Rating Scale Parts I-III total, in points (0-236; higher is worse), as an algebraic back-transform of `updrs_z`: y = exp(updrs_z * SD + mean), updrs = y / (1 + y) * 237 - 0.5.
+- **Source aliases:**
+  - 'MDS-UPDRS total' -- Jin 2024.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. An algebraic typical/individual prediction with no residual error of its own; the residual lives on `updrs_z`. Distinct from `d_updrs` (change from baseline).
+
+### scopaaut (**canonical SCOPA-AUT score output**)
+- **Type:** compartment
+- **Role:** Scales for Outcomes in Parkinson's Disease -- Autonomic dysfunction total, in points (0-69; higher is worse), back-transformed from `scopaaut_z` as for `updrs`.
+- **Source aliases:**
+  - 'SCOPA-AUT' -- Jin 2024.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Algebraic; residual on `scopaaut_z`.
+
+### datscan (**canonical DaTSCAN mean-striatum specific binding ratio output**)
+- **Type:** compartment
+- **Role:** Dopamine-transporter SPECT (DaTSCAN) specific binding ratio in the mean striatum (unitless ratio; falls as dopaminergic neurons are lost), back-transformed from `datscan_z` as exp(datscan_z * SD + mean).
+- **Source aliases:**
+  - 'DaTSCAN (mean striatum)' -- Jin 2024.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Algebraic; residual on `datscan_z`.
+
+### asyn (**canonical CSF alpha-synuclein concentration output**)
+- **Type:** compartment
+- **Role:** Cerebrospinal-fluid alpha-synuclein concentration in pg/mL, back-transformed from `asyn_z` as exp(asyn_z * SD + mean).
+- **Source aliases:**
+  - 'alpha-synuclein (pg/mL)' -- Jin 2024.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Algebraic; residual on `asyn_z`. Measured in CSF, so not a plasma `Cc`-type state.
+
 ## Adaptive-resistance bacterial states
 
 ### aron (**canonical adaptive-resistance on state**)
@@ -5677,6 +5741,22 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 
 ---
 
+### prob_tol (**canonical probability of tolerance to laryngoscopy**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a sedated subject tolerates laryngoscopy without a response; the model-predicted probability behind the binary observation `tol`.
+- **Source aliases:** `P(Y = 1)` -- Vellinga 2025 main-text equation 3, 'probability of no response, P(Y = 1), to laryngoscopy'.
+- **Example models:** `Vellinga_2025_remimazolam_tol.R` (founding example; `prob_tol = Ca / (1 + Ca)` with `Ca` the remimazolam concentration over a remifentanil-shrunk C50, zero at zero drug).
+- **Notes:** Time-varying, like `prob_moaas<k>`: the driver is an arterial plasma concentration evolving under an ODE, not a landmark exposure metric. The observation is fitted through the complement `p0_tol = 1 - prob_tol` (rxode2 category 1, a response); `p0_tol` is an intermediate and is not registered. See `tol`.
+
+### prob_tots (**canonical probability of tolerance to tetanic stimulation**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a sedated subject tolerates a standardized tetanic electrical stimulus without a response; the model-predicted probability behind the binary observation `tots`.
+- **Source aliases:** `P(Y = 1)` -- Vellinga 2025 main-text equation 3, applied to tetanic stimulation.
+- **Example models:** `Vellinga_2025_remimazolam_tots.R` (founding example; same form as `prob_tol` with its own C50 and remifentanil EC50).
+- **Notes:** Time-varying, as for `prob_tol`. The observation is fitted through `p0_tots = 1 - prob_tots`. See `tots`.
+
+---
+
 ## MBMA placebo / drug arm output compartments
 
 The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for each clinical endpoint. The placebo arm captures the background placebo response; the drug arm carries the drug-driven delta.
@@ -5846,6 +5926,20 @@ The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for
 - **Example models:** `Li_2015_taspoglutide_mbma.R`.
 
 ---
+
+### prob_fvcpp_incr2p5 (**canonical probability of a ppFVC increase of at least 2.5% output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient's percent-predicted FVC rises by at least 2.5% from baseline at the landmark visit, in a static landmark exposure-response logistic model. Walker 2023 calls it the ppFVC minimal clinically important difference, a threshold borrowed from systemic-sclerosis-associated ILD because no validated ppFVC MCID exists for sarcoidosis.
+- **Source aliases:** `ppFVC Increase>2.5%`, `ppFVC MCID` -- Walker 2023 Figure 9 and Results 3.3.
+- **Example models:** `Walker_2023_efzofitimod_fvcpp_mcid.R` (founding example; logistic regression on the time-averaged efzofitimod AUC from Day 1 to Week 24 and baseline `FVC_PCTPRED`, Week-24 landmark).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the threshold is spelled into the name (`incr2p5`) because ppFVC responder thresholds vary between indications (2.5%, 5% and 10% are all in use), so a model using another threshold registers its own sibling rather than reusing this one. The source does not say whether the 2.5% is a relative change or 2.5 percentage points; record the reading in each model.
+
+### prob_ksqlung_mcid (**canonical probability of a KSQ-Lung improvement of at least 4 points output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient's King's Sarcoidosis Questionnaire-Lung score improves by at least 4 points from baseline (the validated sarcoidosis MCID, Baughman 2021) at the landmark visit, in a static landmark exposure-response logistic model.
+- **Source aliases:** `MCIDs in KSQ-Lung` -- Walker 2023 Figure 9.
+- **Example models:** `Walker_2023_efzofitimod_ksqlung_mcid.R` (founding example; logistic regression on the time-averaged efzofitimod AUC from Day 1 to Week 24 and `KSQ_LUNG_BL`, Week-24 landmark).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. `mcid` here means the validated 4-point KSQ-Lung threshold; the absolute score is the `ksqlung` output and the baseline is the covariate `KSQ_LUNG_BL`.
 
 ## Placebo kinetic-system compartments
 
@@ -8795,3 +8889,51 @@ States for reduced coagulation-cascade models of thrombin generation, such as th
   - `IIa` -- common shorthand in the coagulation literature.
 - **Example models:** `Ruiz_2025_thrombin_generation.R` (single output; produced by a direct TF pathway with thrombin positive feedback and a transit-delayed pathway, removed first order).
 - **Notes:** Lowercase, following the biomarker-state convention, because it is a protein concentration rather than a clotting-time read-out. Summary indices of the thrombin-generation curve (lag time, peak height, time to peak, endogenous thrombin potential) are derived from this state and are not separate compartments.
+
+## Myasthenia-gravis quantitative score
+
+### mgts (**canonical quantitative myasthenia-gravis total score output**)
+- **Type:** compartment
+- **Role:** Absolute total score of the Chinese quantitative myasthenia-gravis (MG) scoring system, the sum of the blepharoptosis, eyelid fatigue, eye movement, arm fatigue, leg fatigue, facial weakness, chewing, swallowing and respiratory item scores. Higher is more severe, so effective treatment drives it DOWN. Algebraic output in the founding model (no ODE state).
+- **Source aliases:** `TS` -- Chen 2023 Eq. 5 and the supplementary NONMEM `$PRED`.
+- **Example models:** `Chen_2023_tacrolimus.R` (`mgts = rbase * (1 - emax * auc_central / (auc50 + auc_central))`, an Emax function of the cumulative tacrolimus AUC from the first dose, with an Osserman-class-specific baseline and a proportional residual error).
+- **Notes:** Deliberately not `TS`, which is registered as the tumour-size output of the TGI family (`tumor_size, TS`). Distinct from the MG-ADL instrument (covariate `SCORE_MGADL`, 0-24) and from the US quantitative MG (QMG) score of Besinger and Barohn, which are different scales; a model of either should register its own output rather than reuse this name. A change-from-baseline fit should register `mgtscfb`.
+
+### mgrts (**canonical relative quantitative myasthenia-gravis total score output**)
+- **Type:** compartment
+- **Role:** Relative total score of the Chinese quantitative MG scoring system, `100 * (TS0 - TS) / TS0`, the percentage improvement of `mgts` from its pre-treatment baseline. **Sign convention: POSITIVE for clinical improvement.** Patients with a relative score above 25% are classed as responders. Derived algebraic output in the founding model, not an observed endpoint.
+- **Source aliases:** `RTS` -- Chen 2023 Eq. 6.
+- **Example models:** `Chen_2023_tacrolimus.R` (the paper's simulation endpoint for the 2-week responder assessment).
+- **Notes:** Same orientation as `madrsenh` (percentage reduction of a severity score). Because the founding model's drug effect is a fraction of baseline, `mgrts` there equals `100 * emax * cAUC / (auc50 + cAUC)` and does not depend on the baseline.
+
+---
+
+## Alopecia areata hair-regrowth ordinal scores
+
+### eyebrow_assessment (**canonical eyebrow assessment (EBA) score output**)
+- **Type:** compartment
+- **Role:** Eyebrow assessment score 0-3: 0 no eyebrows, 1 minimal, 2 moderate, 3 normal eyebrows (Wang 2025 Section 2.2). Ordinal PD output.
+- **Source aliases:** `EBA` -- Wang 2025.
+- **Example models:** `Wang_2025_ritlecitinib_eyebrow.R`.
+- **Notes:** Spelled out rather than the clinical acronym `EBA`, following the spelled-out form for new output names.
+
+### eyelash_assessment (**canonical eyelash assessment (ELA) score output**)
+- **Type:** compartment
+- **Role:** Eyelash assessment score 0-3: 0 no eyelashes, 1 minimal, 2 moderate, 3 normal eyelashes (Wang 2025 Section 2.2). Ordinal PD output.
+- **Source aliases:** `ELA` -- Wang 2025.
+- **Example models:** `Wang_2025_ritlecitinib_eyelash.R`.
+- **Notes:** Spelled out rather than the clinical acronym `ELA`, following the spelled-out form for new output names.
+
+---
+
+## Patient-reported gastrointestinal symptom scores
+
+### gsrs_diarrhea (**canonical GSRS diarrhea-bother ordinal score output**)
+- **Type:** compartment
+- **Role:** Gastrointestinal Symptom Rating Scale (GSRS) Question 11 score, the patient's rating of how bothered they were by diarrhea over the recall period, on the 7-point scale 1 (no discomfort at all) to 7 (very severe discomfort). Ordinal PD output: a proportional-odds model (`logite0` plus `logitstep<m>` thresholds) whose observation is the rxode2 ordinal endpoint `gsrs_diarrhea ~ c(p1, ..., p6)`, so simulated category `k` is score `k` and the per-score probabilities are the outputs to summarise.
+- **Source aliases:**
+  - `GSRS Question 11` / `diarrhea score` -- Carreno 2025 Methods and Table 2.
+- **Example models:** `Carreno_2025_linerixibat.R` (founding example; the cumulative logits carry an Emax function of the model-predicted serum `c4`).
+- **Notes:** One item of the 15-item GSRS. The other items, and the GSRS diarrhea syndrome sub-score (the mean of Questions 11, 12 and 14), are different scales and should get their own `gsrs_<item>` names rather than reuse this one. Some GSRS versions score 0-6 instead of 1-7; say which range a model uses in its `units`, and do not mix ranges under one name. A threshold probability such as P(score >= 4) is a derived quantity of the same model, not a separate output.
+
+---
