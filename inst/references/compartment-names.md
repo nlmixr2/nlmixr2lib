@@ -3027,7 +3027,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) of an overall response (partial response or better) when the response adjudication route is not fixed by the source -- typically the published trial-level ORR pooled across many trials in a model-based meta-analysis, each trial reporting its own primary assessment (investigator, independent review committee or both).
 - **Source aliases:** `ORR` -- Shah 2026 (IMWG overall response rate of each published trial arm).
-- **Example models:** `Shah_2026_rrmm_orr_mbma.R` (MBMA study-arm-level ORR across 21 relapsed/refractory multiple-myeloma regimens from 192 trials; a regimen-specific logit effect plus a background-corticosteroid shift and an Emax function of the percentage of second-line patients; the output is the STUDY-ARM response rate, not an individual patient's probability).
+- **Example models:** `Shah_2026_rrmm_orr_mbma.R` (MBMA study-arm-level ORR across 21 relapsed/refractory multiple-myeloma regimens from 192 trials; a regimen-specific logit effect plus a background-corticosteroid shift and an Emax function of the percentage of second-line patients; the output is the STUDY-ARM response rate, not an individual patient's probability), `Yang_2025_axatilimab_orr.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the single-dose AUC from time 0 to infinity, `AUC_AXATILIMAB_SD`).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Use `prob_orr_central` or `prob_orr_investigator` whenever the source fits one adjudication route; this unqualified name is only for sources that pool routes or do not state them, so that a reader is not told an adjudication the data do not have. The response criteria (IMWG for myeloma, RECIST for solid tumours, Lugano for lymphoma) are part of the endpoint and belong in the model's `description`.
 
 ### prob_anemia (**canonical severe-anemia probability output**)
@@ -3775,13 +3775,6 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** none.
 - **Example models:** `Sun_2025_maribavir_sae.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.04 per 10 ug*h/mL; reference-patient probability 0.19 at zero exposure); `Samineni_2022_venetoclax_sae.R` and `Samineni_2022_venetoclax_sae_base.R` (venetoclax plus R-CHOP; Table 4 with an age term, and the exposure-only Figure 5e curve); `Song_2024_maribavir_sae.R` (univariate logistic model on the 0-24 h steady-state maribavir AUC, odds ratio 1.19 per 50 ug*h/mL, in the SOLSTICE refractory cohort; coefficients recovered from the plotted fitted curve of Song 2024 Figure S1.5); `Yang_2025_axatilimab_sae.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the individual steady-state AUC over a 4-week cycle, `AUC_AXATILIMAB_SS`), centred baseline `ALB` and `ECOG_GE2`).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Registered on first sighting as a well-formed member of the explicitly extensible adverse-event-term family, not as a new modelling concept. **Distinct from `prob_teae_grade3`**, and the distinction is a common source of error: SERIOUSNESS is a regulatory reporting criterion whereas CTCAE grade >= 3 is a severity scale, and the two sets overlap without nesting -- a grade 3 laboratory abnormality requiring no hospitalisation is not serious, while a grade 2 event causing hospitalisation is. Distinct also from `prob_adr`, which pools every reaction with no threshold at all. As a composite it subsumes the single-preferred-term members of the family and must NOT be modelled alongside them as a competing risk.
-
-### prob_orr (**canonical overall-response probability output**)
-- **Type:** compartment
-- **Role:** Probability (0..1) that a patient achieves an overall response (complete or partial response) by a protocol-defined landmark assessment, in a static landmark exposure-response logistic model, where the paper reports a single response adjudication without a central-versus-investigator split.
-- **Source aliases:** none.
-- **Example models:** `Yang_2025_axatilimab_orr.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the single-dose AUC from time 0 to infinity, `AUC_AXATILIMAB_SD`); overall response of cGVHD by Cycle 7 Day 1, founding example).
-- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Record the response criteria and the landmark per model. Use `prob_orr_central` / `prob_orr_investigator` instead when the source fits separate models to the two adjudications.
 
 ### prob_mlss_improve7 (**canonical >= 7-point modified Lee Symptom Scale improvement probability output**)
 - **Type:** compartment
@@ -8055,7 +8048,7 @@ Favie 2020 (doi:10.1002/cpt.1917) fits seven drugs and five metabolites from the
 - **Type:** metabolite-suffix
 - **Role:** Remifentanil as a co-administered, non-parent analyte whose own pharmacokinetics are carried as ODE states in another drug's model (`central_remifentanil`, `peripheral1_remifentanil`, `peripheral2_remifentanil`, `lcl_remifentanil`, `Cc_remifentanil`, `propSd_remifentanil`), typically because its plasma concentration modulates the parent's clearance or effect. Standalone remifentanil models keep the bare canonical names.
 - **Source aliases:** `REMIFENTANIL`, `PERIREM1`, `PERIREM2` -- Vellinga 2025 Supplement 5 `$MODEL` compartment names; `V1R`, `CLR`, `Q2R` and so on for its parameters.
-- **Example models:** `Vellinga_2025_remimazolam.R` and its four pharmacodynamic siblings (founding example; the Eleveld 2017 remifentanil model held at its published values, its plasma concentration inhibiting the apparent CNS 7054 clearance and adding to the remimazolam drug effect).
+- **Example models:** `Vellinga_2025_remimazolam.R` and its four pharmacodynamic siblings (founding example; the Eleveld 2017 remifentanil model held at its published values, its plasma concentration inhibiting the apparent CNS 7054 clearance and adding to the remimazolam drug effect), `Ynineb_2025_propofol_remifentanil.R` (Minto three-compartment remifentanil PK feeding an effect compartment whose concentration enters a propofol-remifentanil Greco response surface on the Bispectral Index).
 - **Notes:** Spelled out rather than abbreviated: `remi` would be ambiguous between remifentanil and remimazolam, which co-occur in the founding example. Distinct from a covariate column that supplies a remifentanil concentration or co-medication flag as data instead of simulating it from remifentanil doses.
 
 ### hmg (**canonical hydroxymidazolam glucuronide suffix**)
@@ -8102,13 +8095,6 @@ Favie 2020 (doi:10.1002/cpt.1917) fits seven drugs and five metabolites from the
 - **Role:** Gentamicin as a non-parent analyte in a multi-drug model (`central_gentamicin`, `peripheral1_gentamicin`, `Cc_gentamicin`).
 - **Source aliases:** none.
 - **Example models:** `Favie_2020_neonatalHypothermia.R`.
-
-### remifentanil (**canonical remifentanil sibling-drug suffix**)
-- **Type:** metabolite-suffix
-- **Role:** Remifentanil as a co-administered, non-parent drug in a multi-drug model: its plasma and peripheral states (`central_remifentanil`, `peripheral1_remifentanil`, `peripheral2_remifentanil`), its effect compartment (`effect_remifentanil`), its concentration (`Cc_remifentanil`) and its parameters (`lcl_remifentanil`, `lvc_remifentanil`, `lke0_remifentanil`, `lec50_remifentanil`). Standalone remifentanil models keep the bare canonical names.
-- **Source aliases:** subscript `r` / `R` and `D2` -- Ynineb 2025 Table 7 (`C50r`) and Eq. 27 (`x_e,D2`, `C50,D2`).
-- **Example models:** `Ynineb_2025_propofol_remifentanil.R` (Minto three-compartment remifentanil PK feeding an effect compartment whose concentration enters a propofol-remifentanil Greco response surface on the Bispectral Index).
-- **Notes:** Full INN, following the `midazolam` / `lidocaine` precedent: `remi` would be ambiguous between remifentanil and remimazolam, which are co-administered in sedation studies.
 
 ## Transporter-DDI perpetrator drug suffixes
 
