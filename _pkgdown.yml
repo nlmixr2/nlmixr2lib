@@ -7066,6 +7066,8 @@ navbar:
         href: articles/Jia_2026_rivaroxaban.html
       - text: "Rivaroxaban (Lai 2026)"
         href: articles/Lai_2026_rivaroxaban.html
+      - text: "Rivaroxaban (Li 2025)"
+        href: articles/Li_2025_rivaroxaban.html
       - text: "Rivaroxaban (Ren 2026)"
         href: articles/Ren_2026_rivaroxaban.html
       - text: "Rivaroxaban (Singkham 2022)"
@@ -10700,6 +10702,7 @@ articles:
   - articles/Li_2025_modakafuspAlfa
   - articles/Li_2025_patritumabDeruxtecan_exposure_response
   - articles/Li_2025_polymyxinB
+  - articles/Li_2025_rivaroxaban
   - articles/Li_2025_tetrahydrocannabinol
   - articles/Li_2026_alvespimycin
   - articles/Li_2026_epcoritamab
