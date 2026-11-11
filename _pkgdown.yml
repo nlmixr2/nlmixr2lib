@@ -912,6 +912,10 @@ navbar:
         href: articles/Papachristos_2020_bevacizumab_qss.html
       - text: "Bevacizumab renal pbpk (Salgado 2022)"
         href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
+      - text: "Bevurogant (Ooi 2023)"
+        href: articles/Ooi_2023_bevurogant.html
+      - text: "Bevurogant pasi (Ooi 2023)"
+        href: articles/Ooi_2023_bevurogant.html
       - text: "Bhma mouse (Benson 2010)"
         href: articles/Benson_2010_bhma_mouse.html
       - text: "Biapenem (Chen 2024)"
@@ -10519,6 +10523,7 @@ articles:
   - articles/Onichimowski_2020_meropenem
   - articles/Oniki_2018_BMI_NAFLD
   - articles/Onita_2025_sulbactam
+  - articles/Ooi_2023_bevurogant
   - articles/Ooi_2026_elafibranor
   - articles/Oosten_2016_fentanyl
   - articles/Oosten_2017_morphine

@@ -1040,10 +1040,17 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Type:** compartment
 - **Role:** Dimensionless latent variable `R(t)` of a type I indirect-response model whose loss drives the drug effect on the PASI score: `d/dt(latent_pasi) <- kin * (1 - imax * CAV / (ic50 + CAV)) - kout * latent_pasi` with `kin = kout` and `latent_pasi(0) <- 1`, and the drug effect enters as `rbase * (1 - pmax) * (1 - latent_pasi)` in PASI units. It has no physical units or matrix (`specimen = "not applicable"`).
 - **Source aliases:** `R(t)` -- Tsamandouras 2024 Eq. 11-12; `A(1)` / `COMP = (PASI)` in its Online Resource 1 NONMEM code, where the state is named after the score it drives but holds R, not the score.
-- **Example models:** `Tsamandouras_2024_brepocitinib.R` (inhibition of the production of R by the individual average steady-state brepocitinib concentration, IC50 53.24 ng/mL, Imax fixed at 1).
+- **Example models:** `Tsamandouras_2024_brepocitinib.R` (inhibition of the production of R by the individual average steady-state brepocitinib concentration, IC50 53.24 ng/mL, Imax fixed at 1), `Ooi_2023_bevurogant_pasi.R` (a scaled variant: the state starts at the individual baseline probability `rbase` rather than 1, with `kin = rbase * kout` and Imax inhibition of production by CAV, so it equals `rbase * R(t)`; its logit, minus a placebo term, is the latent value of a bounded-integer PASI model).
 - **Notes:** Member of the `latent_<endpoint>` family, in which the suffix names the endpoint the latent variable drives (`latent_pppasi` for the palmoplantar score of `Iwaki_2021_guselkumab.R`). Distinct from `pasi`, which holds the score itself, and from `effect` (a ke0 effect compartment holding a concentration).
 
 ---
+
+### pasiprobit (**canonical latent PASI value on the probit scale of a bounded-integer model**)
+- **Type:** compartment
+- **Role:** Observation variable of a bounded-integer PASI model. The 73 integer PASI values 0-72 are ordered categories whose boundaries are `qnorm((1:72) / 73)`; `pasiprobit` is the individual latent value on that probit scale, and the observed score is the category it falls in after adding a normal error with the individual scaling SD g: `PASI = floor(73 * pnorm(pasiprobit + g * eps))`, capped at 72. Encoded as `pasiprobit ~ add(g)` so that rxode2 simulates the latent draw, and the integer score is recovered with `floor(73 * pnorm(sim))`. Not an ODE state; it has no physical units.
+- **Source aliases:** `IPRED` -- Ooi 2023 Appendix S1 NONMEM `$ERROR` (`IPRED = LOG(A(1)/(1-A(1)))-PL`, compared with the cut points `CO1`-`CO72`).
+- **Example models:** `Ooi_2023_bevurogant_pasi.R` (latent value = logit of the indirect-response disease state minus an individual placebo effect; scaling SD 0.0981 with a random effect correlated with the Imax random effect).
+- **Notes:** Used instead of the `probitNorm()` encoding of `Walsh_2024_buprenorphine_cows.R` because rxode2 accepts only an estimated SD inside `probitNorm()`, so a scaling SD carrying a random effect cannot be expressed there; `add()` accepts a calculated SD. Estimating with this encoding needs the observed PASI moved to the probit scale, which is not the exact interval likelihood of the bounded-integer model; the encoding is exact for simulation. A model of the same kind for another score takes `<score>probit`. Distinct from `pasi`, which holds the score on its 0-72 scale (in the founding model, the median of the continuous relaxation, `probitInv(pasiprobit, 0, 73)`), and from `latent_pasi`, the ODE state whose logit feeds this value.
 
 ### pppasi (**canonical PPPASI score output**)
 - **Type:** compartment
