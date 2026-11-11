@@ -1309,23 +1309,15 @@ These four outputs are the component scores of the NASH Clinical Research Networ
 
 ---
 
-## Alopecia areata hair-regrowth ordinal scores
+## Patient-reported gastrointestinal symptom scores
 
-Clinician-rated ordinal scores of eyebrow and eyelash hair loss used in alopecia areata trials. Each is a four-level numeric rating scale, 0 = none, 1 = minimal, 2 = moderate, 3 = normal (Wang 2025 Section 2.2), so a model of one of them is an ordinal (cumulative-probit or proportional-odds) model whose observation is the rxode2 ordinal endpoint `<score> ~ c(p0, p1, p2)`: the simulated value is a category (category `k` is score `k - 1`) and the per-score probabilities `p0`-`p3` are the outputs to summarise. Higher is better, the opposite direction from a hair-loss severity score. The scalp counterpart, the continuous Severity of Alopecia Tool (SALT) score, is not an ordinal output and is not covered here.
-
-### eyebrow_assessment (**canonical eyebrow assessment (EBA) score output**)
+### gsrs_diarrhea (**canonical GSRS diarrhea-bother ordinal score output**)
 - **Type:** compartment
-- **Role:** Eyebrow assessment score 0-3: 0 no eyebrows, 1 minimal, 2 moderate, 3 normal eyebrows (Wang 2025 Section 2.2). Ordinal PD output.
-- **Source aliases:** `EBA` -- Wang 2025.
-- **Example models:** `Wang_2025_ritlecitinib_eyebrow.R`.
-- **Notes:** Spelled out rather than the clinical acronym `EBA`, following the spelled-out form for new output names.
-
-### eyelash_assessment (**canonical eyelash assessment (ELA) score output**)
-- **Type:** compartment
-- **Role:** Eyelash assessment score 0-3: 0 no eyelashes, 1 minimal, 2 moderate, 3 normal eyelashes (Wang 2025 Section 2.2). Ordinal PD output.
-- **Source aliases:** `ELA` -- Wang 2025.
-- **Example models:** `Wang_2025_ritlecitinib_eyelash.R`.
-- **Notes:** Spelled out rather than the clinical acronym `ELA`, following the spelled-out form for new output names.
+- **Role:** Gastrointestinal Symptom Rating Scale (GSRS) Question 11 score, the patient's rating of how bothered they were by diarrhea over the recall period, on the 7-point scale 1 (no discomfort at all) to 7 (very severe discomfort). Ordinal PD output: a proportional-odds model (`logite0` plus `logitstep<m>` thresholds) whose observation is the rxode2 ordinal endpoint `gsrs_diarrhea ~ c(p1, ..., p6)`, so simulated category `k` is score `k` and the per-score probabilities are the outputs to summarise.
+- **Source aliases:**
+  - `GSRS Question 11` / `diarrhea score` -- Carreno 2025 Methods and Table 2.
+- **Example models:** `Carreno_2025_linerixibat.R` (founding example; the cumulative logits carry an Emax function of the model-predicted serum `c4`).
+- **Notes:** One item of the 15-item GSRS. The other items, and the GSRS diarrhea syndrome sub-score (the mean of Questions 11, 12 and 14), are different scales and should get their own `gsrs_<item>` names rather than reuse this one. Some GSRS versions score 0-6 instead of 1-7; say which range a model uses in its `units`, and do not mix ranges under one name. A threshold probability such as P(score >= 4) is a derived quantity of the same model, not a separate output.
 
 ---
 
@@ -4741,6 +4733,14 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Source aliases:**
   - `HDL` -- Krishna 2011 Eqs. 1, 2 and 8 output variable; casing only.
 - **Example models:** `Krishna_2011_anacetrapib_hdlc.R` (algebraic proportional-Emax output driven by the anacetrapib steady-state trough concentration; no ODE state).
+
+### c4 (**canonical serum 7-alpha-hydroxy-4-cholesten-3-one (C4) PD output**)
+- **Type:** compartment
+- **Role:** Serum 7-alpha-hydroxy-4-cholesten-3-one (C4) concentration, the circulating intermediate of hepatic bile-acid synthesis by CYP7A1 and the standard biomarker of that synthesis rate. Carried as an indirect-response turnover state in concentration units (ng/mL).
+- **Source aliases:**
+  - `C4` -- Carreno 2025 Supplementary Equation 1 and Table 2; casing only.
+- **Example models:** `Carreno_2025_linerixibat.R` (founding example; K-PD stimulation of C4 synthesis by the ileal bile acid transporter inhibitor linerixibat, with a dual-cosine diurnal rhythm on synthesis).
+- **Notes:** C4 rises when ileal bile-acid reabsorption is blocked (ileal bile acid transporter inhibitors such as linerixibat, odevixibat, maralixibat and elobixibat, and bile-acid sequestrants) and falls with FXR agonists, so the name serves both directions. It is a measured concentration, not a dose-driving amount: the K-PD virtual compartment that drives it is `depot_kpd`. Not to be confused with complement component C4, which, if a future model needs it, should get a distinct name such as `complement_c4`.
 
 ### gastric_ph (**canonical intragastric pH PD output**)
 - **Type:** compartment
