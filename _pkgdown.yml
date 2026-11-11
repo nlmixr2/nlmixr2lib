@@ -368,6 +368,8 @@ navbar:
         href: articles/Fournier_2018_amoxicillin.html
       - text: "Amoxicillin (Keij 2023)"
         href: articles/Keij_2023_amoxicillin.html
+      - text: "Amoxicillin (Mukap 2025)"
+        href: articles/Mukap_2025_amoxicillin.html
       - text: "Amoxicillin (Muller 2008)"
         href: articles/Muller_2008_amoxicillin.html
       - text: "Amoxicillin (Muller 2009)"
@@ -10696,6 +10698,7 @@ articles:
   - articles/MuellerSchoell_2021_axicabtageneCiloleucel_qsp
   - articles/Muhamad_2025_cholecalciferol_pbpk
   - articles/Mukai_2019_mogamulizumab
+  - articles/Mukap_2025_amoxicillin
   - articles/Mukherjee_2018_amlodipine
   - articles/Mukker_2026_tuvusertib
   - articles/Mukker_2026_tuvusertib_QTc
