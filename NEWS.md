@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Park 2025 SNB-101 nanoparticle irinotecan and SN-38 ([doi:10.3389/fphar.2025.1556618](https://doi.org/10.3389/fphar.2025.1556618)) -- adults with advanced solid tumours (phase I dose escalation).
+- Add Dobrev 2002 trichloroethylene / tetrachloroethylene / 1,1,1-trichloroethane mixture PBPK ([doi:10.1289/ehp.021101031](https://doi.org/10.1289/ehp.021101031)) -- occupational inhalation co-exposure in a 70 kg reference adult, with competitive inhibition of hepatic TCE oxidation.
 
 - Add Mohamed 2019 upadacitinib ACR20/50/70 Markov exposure-response models ([doi:10.1002/cpt.1543](https://doi.org/10.1002/cpt.1543)) -- adults with rheumatoid arthritis and an inadequate response to anti-TNF therapy (BALANCE I) or methotrexate (BALANCE II).
 
