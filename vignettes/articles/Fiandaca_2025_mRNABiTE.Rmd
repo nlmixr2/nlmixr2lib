@@ -193,6 +193,64 @@ whole 120 ug dose is placed in 0.944 mL of plasma, so `Cc(0)` is about
 `r format(round(DOSE_UG(6) / 0.00094435), big.mark = ",")` ng/mL, and the profile
 falls steeply through the observed points.
 
+## The recombinant arm from the LCM file
+
+Figure 4 of the paper is the SCM's training result, so the SCM file is the one
+that reproduces Figure 4A. The LCM file can be dosed into `plasma` in the same
+way, but it carries a 100-fold smaller pinocytosis rate `CL_up` (see the notes at
+the end of this article). The two files share every other protein-transport
+parameter and the same physiology, so comparing their recombinant arms shows how
+much that 100-fold difference in `CL_up` matters.
+
+```{r fig4a-lcm}
+rec_lcm <- sim_profile(lcm, "plasma", DOSE_UG(6))
+rec_both <- dplyr::inner_join(rec, rec_lcm, by = "time", suffix = c("_scm", "_lcm")) |>
+  dplyr::mutate(rel_diff = Cc_lcm / Cc_scm - 1)
+
+# Largest relative gap over the first 24 h, where every observed mean is above
+# 200 ng/mL, and the gap at 72 h, where both curves have fallen below 10 ng/mL.
+lcm_rec_gap_24 <- max(abs(rec_both$rel_diff[rec_both$time > 0 & rec_both$time <= 24]))
+lcm_rec_gap_72 <- rec_both$rel_diff[rec_both$time == 72]
+
+knitr::kable(
+  rec_both |>
+    dplyr::filter(time %in% t_obs) |>
+    dplyr::mutate(observed = obs_recombinant$mean[match(time, t_obs)],
+                  Cc_scm = round(Cc_scm, 1), Cc_lcm = round(Cc_lcm, 1),
+                  rel_diff = sprintf("%+.1f%%", 100 * rel_diff)) |>
+    dplyr::select(time, observed, Cc_scm, Cc_lcm, rel_diff) |>
+    dplyr::rename("Time (h)" = time, "Observed (ng/mL)" = observed,
+                  "SCM file (ng/mL)" = Cc_scm, "LCM file (ng/mL)" = Cc_lcm,
+                  "LCM vs SCM" = rel_diff),
+  caption = "Recombinant BiTE 6 mg/kg IV: SCM and LCM files against the observed means"
+)
+```
+
+```{r assert-lcm-recombinant}
+stopifnot(
+  # the recombinant arm differs between the files only through CL_up
+  abs(exp(scm$theta[["lclup"]] - lcm$theta[["lclup"]]) - 100) < 0.01,
+  scm$theta[["lkdeg"]] == lcm$theta[["lkdeg"]],
+  scm$theta[["lclnlf"]] == lcm$theta[["lclnlf"]],
+  # less pinocytic loss can only raise the curve
+  all(rec_both$rel_diff[rec_both$time > 0] > 0),
+  # the gap stated below: about 8% at most over the first 24 h
+  lcm_rec_gap_24 > 0.075, lcm_rec_gap_24 < 0.085,
+  # and both curves below 10 ng/mL by 72 h
+  rec_both$Cc_scm[rec_both$time == 72] < 10,
+  rec_both$Cc_lcm[rec_both$time == 72] < 10
+)
+```
+
+The LCM file's curve lies slightly above the SCM file's, by at most
+`r sprintf("%.1f", 100 * lcm_rec_gap_24)`% over the first 24 h. The relative gap
+widens later (`r sprintf("%.1f", 100 * lcm_rec_gap_72)`% at 72 h), but by then
+both curves are below 10 ng/mL, indistinguishable from zero on the published
+0-8000 ng/mL axis. A 100-fold change in `CL_up` therefore moves the recombinant
+arm only a little: at both published values, fluid-phase pinocytosis is a minor
+elimination route for this BiTE. The LCM file gives a close, but not identical,
+recombinant arm; use the SCM file to reproduce Figure 4A itself.
+
 # Replicating Figure 4B and 6B -- mRNA-encoded BiTE training
 
 ```{r fig4b}
@@ -566,9 +624,11 @@ Further notes:
   version of the product", which is the same dataset for both variants, yet the
   table reports 1e-1 for the SCM and 1e-3 for the LCM. The deposited
   `LCM_parameters_estimated.mat` confirms 9.9996e-4, so the values are reproduced
-  as published. In practice this means the LCM's protein-transport module is not
-  interchangeable with the SCM's: dosing `plasma` in the LCM file does **not**
-  reproduce Figure 4A. Use `Fiandaca_2025_mRNABiTE_scm` for the recombinant arm.
+  as published. The practical consequence is small: dosing `plasma` in the LCM
+  file gives a recombinant curve within
+  `r sprintf("%.1f", 100 * lcm_rec_gap_24)`% of the SCM file's over the first
+  24 h (see "The recombinant arm from the LCM file" above). Figure 4A is the
+  SCM's training result, so use `Fiandaca_2025_mRNABiTE_scm` to reproduce it.
 * **Tumour lymph is not returned to the lymph node.** The deposit's lymph-node
   equation sums the 15 anatomical tissues but omits the tumour's interstitial
   lymph flow, a small mass-balance leak. Reproduced as written.
