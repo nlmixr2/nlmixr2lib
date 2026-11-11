@@ -8408,6 +8408,8 @@ navbar:
         href: articles/Yarur_2025_ustekinumab.html
       - text: "Utreloxastat (Hu 2026)"
         href: articles/Hu_2026_utreloxastat.html
+      - text: "V937 (ParraGuillen 2025)"
+        href: articles/ParraGuillen_2025_v937.html
       - text: "VRC07523LS (Huynh 2026)"
         href: articles/Huynh_2026_VRC07523LS.html
       - text: "Vaborbactam (Trang 2021)"
@@ -11096,6 +11098,7 @@ articles:
   - articles/Parkinson_2025_balcinrenone
   - articles/Parmar_2023_spectinamides_pbpk
   - articles/ParraGuillen_2013_tumor_immunotherapy
+  - articles/ParraGuillen_2025_v937
   - articles/Passey_2011_tacrolimus
   - articles/Pastuszak_2021_testosteroneUndecanoate
   - articles/Patel_2011_fluconazole
