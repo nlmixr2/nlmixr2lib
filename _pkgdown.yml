@@ -2472,6 +2472,18 @@ navbar:
         href: articles/Jansson_2008_eflornithine.html
       - text: "Efpeglenatide (Choi 2025)"
         href: articles/Choi_2025_efpeglenatide.html
+      - text: "Efzofitimod (Walker 2023)"
+        href: articles/Walker_2023_efzofitimod.html
+      - text: "Efzofitimod fvcpp (Walker 2023)"
+        href: articles/Walker_2023_efzofitimod.html
+      - text: "Efzofitimod fvcpp mcid (Walker 2023)"
+        href: articles/Walker_2023_efzofitimod.html
+      - text: "Efzofitimod ksqlung (Walker 2023)"
+        href: articles/Walker_2023_efzofitimod.html
+      - text: "Efzofitimod ksqlung mcid (Walker 2023)"
+        href: articles/Walker_2023_efzofitimod.html
+      - text: "Efzofitimod ocs (Walker 2023)"
+        href: articles/Walker_2023_efzofitimod.html
       - text: "Egc human pbpk (Law 2017)"
         href: articles/Law_2017_teacatechins_pbpk.html
       - text: "Egcg human pbpk (Law 2017)"
@@ -11268,6 +11280,7 @@ articles:
   - articles/Wahlby_2004_time_varying_covariates
   - articles/Wahlquist_2024_propofol
   - articles/Wald_2022_brexanolone
+  - articles/Walker_2023_efzofitimod
   - articles/Wallender_2021_piperaquine
   - articles/Walsh_2024_buprenorphine_opioidBlockade
   - articles/Wan_2022_colecalciferol
