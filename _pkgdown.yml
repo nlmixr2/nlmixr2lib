@@ -528,6 +528,10 @@ navbar:
         href: articles/Hard_2017_aripiprazole_lauroxil.html
       - text: "Aripiprazole lauroxil nanocrystal (Hard 2018)"
         href: articles/Hard_2018_aripiprazole_lauroxil_nanocrystal.html
+      - text: "Aripiprazole recurrence (Wang 2025)"
+        href: articles/Wang_2025_aripiprazole_bipolar.html
+      - text: "Aripiprazole recurrence cutoff (Wang 2025)"
+        href: articles/Wang_2025_aripiprazole_bipolar.html
       - text: "Aripiprazole relapse (Wang 2022)"
         href: articles/Wang_2022_aripiprazole.html
       - text: "Armodafinil (Darwish 2012)"
@@ -11884,7 +11888,7 @@ articles:
   - articles/Wang_2024_tacrolimus
   - articles/Wang_2024_valproic_acid
   - articles/Wang_2024_voriconazole
-  - articles/Wang_2025_ritlecitinib_eyebrow_eyelash
+  - articles/Wang_2025_aripiprazole_bipolar
   - articles/Wang_2025_rivaroxaban
   - articles/Wang_2025_serplulimab
   - articles/Wang_2025_somatrogon
