@@ -795,7 +795,10 @@ checkModelConventions <- function(model, verbose = TRUE) {
 
 .checkCovariates <- function(ui, conv, model_name) {
   issues <- .emptyIssues()
-  covs_all <- ui$covariates %||% character()
+  # A data column that only names a random-effect nesting level in ini()
+  # (`etaiov_lcl ~ 0.1 | OCC`) is read from the data but never appears in
+  # model(), so rxode2 does not list it in ui$covariates.
+  covs_all <- union(ui$covariates %||% character(), .etaNestingColumns(ui))
   depends <- as.list(ui$meta)$depends %||% character()
   # `depends` names are model inputs supplied by an upstream model (e.g., Cc
   # threaded into a PD model); they are not epidemiological covariates.
@@ -1658,6 +1661,19 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # read the observation itself (e.g. Iwaki_2021_guselkumab's beta-CDF interval
 # probability of the observed PPPASI score).
 .reservedDataItems <- "DV"
+
+# Data columns that ini() uses as random-effect nesting levels
+# (`eta ~ var | OCC`). In rxode2's iniDf an eta row carries its level in
+# `condition` ("id" for between-subject etas); residual-error rows also use
+# `condition`, for the endpoint name, so only eta rows are read.
+.etaNestingColumns <- function(ui) {
+  iniDf <- ui$iniDf
+  if (is.null(iniDf) || !all(c("neta1", "condition") %in% names(iniDf))) {
+    return(character())
+  }
+  lev <- iniDf$condition[!is.na(iniDf$neta1)]
+  unique(setdiff(lev[!is.na(lev)], "id"))
+}
 
 # Issue #481: a clearance that depends on time must say so in its parameter
 # names. The old spellings cannot simply be banned by name -- `emax`, `imax`,
