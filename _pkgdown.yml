@@ -6620,16 +6620,26 @@ navbar:
         href: articles/Liang_2026_remimazolam.html
       - text: "Remimazolam (Ueshima 2025)"
         href: articles/Ueshima_2025_remimazolam.html
+      - text: "Remimazolam (Vellinga 2025)"
+        href: articles/Vellinga_2025_remimazolam.html
       - text: "Remimazolam (Zhou 2018)"
         href: articles/Zhou_2018_remimazolam.html
       - text: "Remimazolam (Zhou 2021)"
         href: articles/Zhou_2021_remimazolam.html
+      - text: "Remimazolam bis (Vellinga 2025)"
+        href: articles/Vellinga_2025_remimazolam.html
       - text: "Remimazolam bis (Zhou 2018)"
         href: articles/Zhou_2018_remimazolam.html
+      - text: "Remimazolam moaas (Vellinga 2025)"
+        href: articles/Vellinga_2025_remimazolam.html
       - text: "Remimazolam moaas (Zhou 2018)"
         href: articles/Zhou_2018_remimazolam.html
       - text: "Remimazolam pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
+      - text: "Remimazolam tol (Vellinga 2025)"
+        href: articles/Vellinga_2025_remimazolam.html
+      - text: "Remimazolam tots (Vellinga 2025)"
+        href: articles/Vellinga_2025_remimazolam.html
       - text: "Remlifanserin (Darwish 2026)"
         href: articles/Darwish_2026_remlifanserin.html
       - text: "Remoxipride rat pbpk (Yamamoto 2017)"
@@ -11500,6 +11510,7 @@ articles:
   - articles/Veinstein_2013_gentamicin
   - articles/VelezdeMendizabal_2012_lumiracoxib_rat
   - articles/VelezdeMendizabal_2013_multipleSclerosis
+  - articles/Vellinga_2025_remimazolam
   - articles/Venisse_2008_candida_albicans
   - articles/Verner_2015_pfas_birthweight
   - articles/Verrest_2023_miltefosine_paromomycin
