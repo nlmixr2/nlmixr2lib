@@ -465,66 +465,412 @@ signif(f_sc, 3)
 Both lie inside the observed mAb range, and no parameter has been adjusted
 to close the gap. See Errata for the candidate explanations.
 
+# Monte Carlo comparison with Supplementary Figure S1 (IV)
+
+Kumar 2024 Supplementary Figure S1 simulates the IV model after 1 mg/kg:
+the median of the simulated antibodies and a 90% band (5th to 95th
+percentile), drawn over observed profiles dose-normalized to 1 mg/kg and a
+curve from the Shah & Betts 2012 model. The median and the edges of the
+band were read from the published figure, to about +/-5%, and are compared
+here with the same statistics of a simulated cohort.
+
+Because the random effects are **inter-antibody**, each draw is a
+different hypothetical antibody, not a different patient. This section and
+the next use one cohort of 5000 antibodies. The etas are drawn with R's
+`rnorm()` (seed 20240709) from the model's omega matrix and passed to the
+typical-value model as parameters, so the cohort is the same on every
+machine and with every rxode2 version. The paper simulated 1000 antibodies;
+the larger cohort is used because the Figure 8 comparison below is with a
+mean, and a mean at late times is carried by the few antibodies that are
+cleared most slowly.
+
+```{r mc-cohort}
+n_ab <- 5000
+set.seed(20240709)
+eta_sd <- sqrt(diag(mod_sc$omega))
+cohort <- data.frame(
+  id = seq_len(n_ab),
+  vapply(eta_sd, function(s) rnorm(n_ab, 0, s), numeric(n_ab))
+)
+# The IV model's two random effects are the first two of the SC model's.
+stopifnot(identical(
+  diag(mod_iv$omega),
+  diag(mod_sc$omega)[names(diag(mod_iv$omega))]
+))
+
+nm_to_ugml <- function(nm) nm * mw_igg / 1e6
+
+# Solves the cohort in chunks and keeps only Cc: the full output of the 93-
+# and 99-state models has about 280 columns per row.
+sim_cohort <- function(model, amt, cmt, times, eta, chunk = 500) {
+  starts <- seq(1, nrow(eta), by = chunk)
+  out <- lapply(starts, function(i) {
+    p <- eta[i:min(i + chunk - 1, nrow(eta)), , drop = FALSE]
+    ev <- et(amt = amt, cmt = cmt, time = 0) |> et(times) |> et(id = p$id)
+    s <- rxSolve(model, ev, params = p, returnType = "data.frame")
+    data.frame(id = s$id, time = s$time, Cc = s$Cc)
+  })
+  bind_rows(out)
+}
+
+# Mean, median and 5th/95th percentiles across antibodies, in ug/mL.
+cohort_stats <- function(sim) {
+  sim |>
+    filter(time > 0) |>
+    mutate(conc = nm_to_ugml(Cc)) |>
+    group_by(time) |>
+    summarise(
+      mean = mean(conc),
+      median = median(conc),
+      p05 = unname(quantile(conc, 0.05)),
+      p95 = unname(quantile(conc, 0.95)),
+      .groups = "drop"
+    )
+}
+
+typ_iv <- zeroRe(mod_iv)
+typ_sc <- zeroRe(mod_sc)
+```
+
+```{r figS1-published}
+# Kumar 2024 Supplementary Figure S1, 1 mg/kg IV: median, 95th and 5th
+# percentile of the simulated antibodies (ug/mL), read from the figure.
+s1_median <- data.frame(
+  time = c(42, 60, 84, 105, 130, 150, 200, 250, 300, 400, 450, 500, 550,
+           600, 650, 690),
+  published = c(13.9, 12.6, 11.4, 10.6, 9.80, 9.27, 8.22, 7.36, 6.65, 5.44,
+                4.97, 4.52, 4.13, 3.79, 3.46, 3.22)
+)
+s1_p95 <- data.frame(
+  time = c(250, 500, 600, 700),
+  published = c(10.9, 8.39, 7.74, 7.17)
+)
+s1_p05 <- data.frame(
+  time = c(200, 300, 336, 400, 500, 600, 700),
+  published = c(4.61, 3.00, 2.58, 2.00, 1.33, 0.876, 0.595)
+)
+```
+
+The whole-body form of the pinocytosis clearance, which the Shah & Betts
+ADAPT code uses (reconciliation 1), gives every tissue the clearance
+`CLup` times the sum of the 15 tissue endosomal volumes. It is built here
+from the packaged model's own volumes, so the two forms differ only in that
+term.
+
+```{r figS1-wholebody}
+iv_lhs <- vapply(mod_iv$lstExpr, function(e) {
+  if (is.call(e) && identical(e[[1]], as.name("<-"))) deparse(e[[2]]) else ""
+}, character(1))
+v_e <- vapply(mod_iv$lstExpr[grepl("^v_[a-z]{2}_e$", iv_lhs)],
+              function(e) eval(e[[3]]), numeric(1))
+clu_names <- grep("^clu_[a-z]{2}$", iv_lhs, value = TRUE)
+stopifnot(length(v_e) == 15, length(clu_names) == 15)
+clu_wb <- lapply(clu_names, function(nm) {
+  str2lang(sprintf("%s <- clup_pv * %.10g", nm, sum(v_e)))
+})
+mod_iv_wb <- suppressMessages(
+  eval(as.call(c(list(quote(rxode2::model), quote(mod_iv)), clu_wb)))
+)
+```
+
+```{r figS1-sim}
+s1_times <- sort(unique(c(1, 2, 6, seq(12, 720, by = 12), s1_median$time,
+                          s1_p95$time, s1_p05$time)))
+dose_s1 <- mg_to_nmol(71)  # 1 mg/kg in the 71 kg reference adult
+iv_eta <- cohort[, c("id", "etalclup", "etalkdeg")]
+st_s1 <- cohort_stats(sim_cohort(typ_iv, dose_s1, "plasma", s1_times, iv_eta))
+st_s1_wb <- cohort_stats(
+  sim_cohort(zeroRe(mod_iv_wb), dose_s1, "plasma", s1_times, iv_eta)
+)
+
+s1_cmp <- s1_median |>
+  left_join(st_s1 |> select(time, simulated = median), by = "time") |>
+  left_join(st_s1_wb |> select(time, whole_body = median), by = "time") |>
+  mutate(ratio = simulated / published, ratio_wb = whole_body / published)
+s1_hi <- s1_p95 |>
+  left_join(st_s1 |> select(time, simulated = p95), by = "time") |>
+  mutate(ratio = simulated / published)
+s1_lo <- s1_p05 |>
+  left_join(st_s1 |> select(time, simulated = p05), by = "time") |>
+  mutate(ratio = simulated / published)
+
+s1_early <- s1_cmp$time <= 150
+s1_ratio_at <- function(t) s1_cmp$ratio[s1_cmp$time == t]
+# Terminal half-life over 300-690 h, from a log-linear fit to each median.
+s1_late <- s1_cmp$time >= 300
+s1_thalf <- function(conc) {
+  -log(2) / coef(lm(log(conc[s1_late]) ~ s1_cmp$time[s1_late]))[[2]] / 24
+}
+
+knitr::kable(
+  s1_cmp |>
+    transmute(
+      `Time (h)` = time,
+      `Published median` = published,
+      `Simulated median` = signif(simulated, 3),
+      `Ratio` = round(ratio, 2),
+      `Whole-body form median` = signif(whole_body, 3),
+      `Ratio (whole-body)` = round(ratio_wb, 2)
+    ),
+  caption = paste("Supplementary Figure S1 median (ug/mL) after 1 mg/kg IV",
+                  "against the simulated median of", n_ab, "antibodies.")
+)
+
+knitr::kable(
+  bind_rows(
+    s1_hi |> mutate(Percentile = "95th"),
+    s1_lo |> mutate(Percentile = "5th")
+  ) |>
+    transmute(Percentile, `Time (h)` = time, Published = published,
+              Simulated = signif(simulated, 3), Ratio = round(ratio, 2)),
+  caption = "Supplementary Figure S1 band edges (ug/mL) against the simulated percentiles."
+)
+
+stopifnot(
+  # Distribution phase: the packaged model follows the published median.
+  all(abs(s1_cmp$ratio[s1_early] - 1) < 0.05),
+  # From 200 h the model is above the published median, by 20-40% at 690 h.
+  all(s1_cmp$ratio[s1_cmp$time >= 200] > 1),
+  s1_ratio_at(690) > 1.2, s1_ratio_at(690) < 1.4,
+  # The whole-body form misses the distribution phase by more than 15%.
+  all(s1_cmp$ratio_wb[s1_early] < 0.85),
+  # The 95th percentiles agree; the published 5th percentile is lower.
+  all(abs(s1_hi$ratio - 1) < 0.05),
+  all(s1_lo$ratio[s1_lo$time >= 300] > 1.2)
+)
+```
+
+```{r fig-S1, fig.cap = "Replicates Kumar 2024 Supplementary Figure S1: 1 mg/kg IV. Line and band are the median and 5th-95th percentiles of the simulated antibodies; points are read from the published median (filled) and band edges (open)."}
+s1_pub <- bind_rows(
+  s1_median |> mutate(stat = "Median"),
+  s1_p95 |> mutate(stat = "5th or 95th percentile"),
+  s1_p05 |> mutate(stat = "5th or 95th percentile")
+)
+ggplot(st_s1, aes(time)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.2) +
+  geom_line(aes(y = median), linewidth = 0.8) +
+  geom_point(data = s1_pub, aes(y = published, shape = stat), size = 2) +
+  scale_shape_manual(values = c(Median = 16, `5th or 95th percentile` = 1)) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Plasma mAb (ug/mL)", shape = "Published",
+       title = "1 mg/kg IV, simulated antibodies against Supplementary Figure S1")
+```
+
+Over 42-150 h, the distribution phase, the simulated median is within
+`r round(100 * max(abs(s1_cmp$ratio[s1_early] - 1)), 1)`% of the published
+one. From about 200 h the published median declines faster: the model is
+`r round(100 * (s1_ratio_at(250) - 1))`% higher at 250 h,
+`r round(100 * (s1_ratio_at(500) - 1))`% higher at 500 h and
+`r round(100 * (s1_ratio_at(690) - 1))`% higher at 690 h. Over 300-690 h the
+published median has a half-life of
+`r round(s1_thalf(s1_cmp$published), 1)` days and the simulated one
+`r round(s1_thalf(s1_cmp$simulated), 1)` days. The 95th percentiles agree
+within `r round(100 * max(abs(s1_hi$ratio - 1)), 1)`%, while the published
+5th percentile is lower than the simulated one, by a factor of
+`r round(s1_lo$ratio[s1_lo$time == 700], 1)` at 700 h, so the published
+cohort has more quickly cleared antibodies. The cause was not determined;
+it is recorded under Assumptions and deviations.
+
+The form of the pinocytosis clearance does not explain the difference. With
+the whole-body form (`CLup` times `r round(1000 * sum(v_e), 1)` mL of
+endosomal volume in every tissue) the simulated median is
+`r round(100 * (1 - max(s1_cmp$ratio_wb[s1_early])))`-`r round(100 * (1 - min(s1_cmp$ratio_wb[s1_early])))`%
+below the published one over 42-150 h, and still
+`r round(100 * (1 - s1_cmp$ratio_wb[s1_cmp$time == 690]))`% below it at
+690 h.
+
 # Monte Carlo prediction window (Figure 8)
 
-Kumar 2024 simulated 1000 draws with inter-antibody variability on all four
-parameters to produce an *a priori* prediction window for SC mAb PK, and
-validated it against nine held-out antibodies. The cohort here is capped at
-200 draws per the library's simulation guidance; the window is essentially
-unchanged.
+Kumar 2024 used the SC model to predict a window for SC mAb PK a priori,
+and overlaid nine antibodies that were not used to build the model
+(Figure 8). Each panel is one antibody at its highest dose, from 70 to
+900 mg, with a solid line and a dashed 5th-95th percentile band from 1000
+simulated antibodies. The caption does not say which statistic the solid
+line is. The solid line of every panel, and the band of the three 600 mg
+panels, were read from the published figure, to about +/-5%.
 
-Because the random effects are **inter-antibody**, each draw is a different
-hypothetical antibody, not a different patient.
+The cohort is the one drawn above, simulated at each of the six dose
+levels.
 
-```{r monte-carlo}
-n_ab <- 200
-set.seed(20240709)
+```{r fig8-published}
+# Kumar 2024 Figure 8: the solid line of each panel (ug/mL), read from the
+# figure. xmax is the end of the panel's time axis (h).
+fig8_panels <- data.frame(
+  panel = LETTERS[1:9],
+  antibody = c("Emicizumab", "Etrolizumab", "Fremanezumab", "Galcanezumab",
+               "Ixekizumab", "Lanadelumab", "Omalizumab", "Quilizumab",
+               "Tralokinumab"),
+  dose_mg = c(70, 105, 900, 600, 160, 210, 600, 210, 600),
+  xmax = c(2700, 1700, 6000, 3000, 2700, 3000, 3000, 380, 3000)
+)
+fig8_pub <- bind_rows(
+  data.frame(panel = "A",
+             time = c(500, 750, 1000, 1500, 2000, 2500, 2650),
+             published = c(4.13, 2.89, 2.10, 1.16, 0.669, 0.406, 0.351)),
+  data.frame(panel = "B",
+             time = c(48, 72, 96, 168, 240, 336, 500, 750, 1250, 1500, 1650),
+             published = c(7.53, 8.47, 9.05, 9.05, 8.33, 7.41, 5.87, 4.14,
+                           2.20, 1.66, 1.40)),
+  data.frame(panel = "C",
+             time = c(168, 336, 500, 1000, 2000, 3000, 4000, 5000, 5900),
+             published = c(67.7, 53.3, 41.9, 21.7, 6.93, 2.65, 1.08, 0.494,
+                           0.263)),
+  data.frame(panel = "D",
+             time = c(240, 500, 750, 1000, 1500, 2000, 2500, 2650, 2950),
+             published = c(41.7, 29.2, 20.5, 14.8, 8.14, 4.77, 2.84, 2.46,
+                           1.87)),
+  data.frame(panel = "E",
+             time = c(120, 500, 750, 1000, 1500, 2000, 2500, 2650),
+             published = c(13.3, 8.39, 5.99, 4.35, 2.40, 1.39, 0.835, 0.723)),
+  data.frame(panel = "F",
+             time = c(120, 240, 750, 1500, 2000, 2500, 2650, 2950),
+             published = c(17.0, 15.4, 7.74, 3.06, 1.78, 1.07, 0.923, 0.703)),
+  data.frame(panel = "G",
+             time = c(48, 72, 96, 120, 168, 240, 336, 500, 750, 1000, 1500,
+                      2500, 2650, 2950),
+             published = c(38.4, 43.7, 45.8, 45.8, 45.1, 41.0, 36.1, 28.4,
+                           20.3, 14.8, 8.06, 2.82, 2.44, 1.86)),
+  data.frame(panel = "H",
+             time = c(48, 72, 96, 120, 150, 168, 200, 250, 300, 336, 370),
+             published = c(14.2, 16.2, 17.0, 17.2, 17.0, 16.7, 16.4, 15.4,
+                           14.4, 13.8, 12.9)),
+  data.frame(panel = "I",
+             time = c(72, 96, 120, 168, 240, 336, 500, 750, 1000, 1500, 2000,
+                      2500, 2650, 2950),
+             published = c(43.0, 45.2, 45.9, 44.5, 41.0, 36.0, 28.2, 20.4,
+                           14.5, 8.10, 4.67, 2.82, 2.44, 1.85))
+) |>
+  left_join(fig8_panels, by = "panel")
 
-ev_mc <- et(amt = mg_to_nmol(70), cmt = "is_subcutaneous", time = 0) |>
-  et(seq(0, 24 * 84, by = 12)) |>
-  et(id = seq_len(n_ab))
-
-mc <- as.data.frame(rxSolve(mod_sc, ev_mc,
-                            omega = mod_sc$omega,
-                            returnType = "data.frame"))
-
-stopifnot(length(unique(mc$id)) == n_ab)
-
-window <- mc |>
-  filter(time > 0) |>
-  group_by(time) |>
-  summarise(
-    lo  = quantile(Cc, 0.05),
-    med = median(Cc),
-    hi  = quantile(Cc, 0.95),
-    .groups = "drop"
-  )
+# The 5th and 95th percentile curves, read where the three 600 mg panels
+# (D, G, I) agree.
+fig8_band <- data.frame(
+  stat = c("p05", "p05", "p05", "p95", "p95"),
+  time = c(1000, 1500, 2950, 1500, 2950),
+  published = c(1.83, 0.47, 0.006, 24.6, 7.58)
+)
 ```
 
-```{r fig-8, fig.cap = "Replicates the prediction window of Kumar 2024 Figure 8 (panel A geometry: 70 mg SC). Band is the 5th-95th percentile across 200 simulated antibodies; line is the median."}
-ggplot(window, aes(time / 24)) +
-  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
-  geom_line(aes(y = med), linewidth = 0.8) +
+```{r fig8-sim}
+fig8_doses <- sort(unique(fig8_panels$dose_mg))
+st_fig8 <- bind_rows(lapply(fig8_doses, function(d) {
+  tmax <- max(fig8_panels$xmax[fig8_panels$dose_mg == d])
+  times <- sort(unique(c(seq(0, 384, by = 12), seq(432, min(tmax, 3000), by = 48),
+                         if (tmax > 3000) seq(3096, tmax, by = 96),
+                         fig8_pub$time[fig8_pub$dose_mg == d])))
+  sim <- sim_cohort(typ_sc, mg_to_nmol(d), "is_subcutaneous", times, cohort)
+  cohort_stats(sim) |> mutate(dose_mg = d)
+}))
+
+fig8_cmp <- fig8_pub |>
+  left_join(st_fig8, by = c("dose_mg", "time")) |>
+  mutate(ratio_mean = mean / published, ratio_median = median / published)
+
+fig8_to3000 <- fig8_cmp$time <= 3000
+fig8_late <- fig8_cmp$time >= 2500
+
+knitr::kable(
+  fig8_cmp |>
+    group_by(Panel = panel, Antibody = antibody, `Dose (mg)` = dose_mg) |>
+    summarise(
+      Points = n(),
+      `Time (h)` = paste(min(time), max(time), sep = "-"),
+      `Mean / published` = paste(sprintf("%.2f", range(ratio_mean)),
+                                 collapse = "-"),
+      `Median / published, last point` = round(ratio_median[which.max(time)], 2),
+      .groups = "drop"
+    ),
+  caption = paste("Figure 8 solid line against the mean and the median of",
+                  n_ab, "simulated antibodies, by panel.")
+)
+
+knitr::kable(
+  fig8_cmp |>
+    filter(panel == "I") |>
+    transmute(`Time (h)` = time, Published = published,
+              `Simulated mean` = signif(mean, 3),
+              `Mean / published` = round(ratio_mean, 2),
+              `Simulated median` = signif(median, 3),
+              `Median / published` = round(ratio_median, 2)),
+  caption = "Figure 8 panel I (tralokinumab, 600 mg SC) in full."
+)
+
+# A band edge more than 100-fold below the simulated mean lies in the far
+# tail of the cohort, where a few antibodies decide the percentile; it is
+# tabulated but held to no tolerance.
+fig8_band_cmp <- fig8_band |>
+  left_join(
+    st_fig8 |>
+      filter(dose_mg == 600) |>
+      select(time, mean, p05, p95) |>
+      tidyr::pivot_longer(c(p05, p95), names_to = "stat", values_to = "simulated"),
+    by = c("stat", "time")
+  ) |>
+  mutate(ratio = simulated / published, far_tail = published < mean / 100)
+
+knitr::kable(
+  fig8_band_cmp |>
+    transmute(Percentile = ifelse(stat == "p05", "5th", "95th"),
+              `Time (h)` = time, Published = published,
+              Simulated = signif(simulated, 3), Ratio = round(ratio, 2)),
+  caption = "Figure 8 band at 600 mg SC against the simulated percentiles."
+)
+
+stopifnot(
+  # The mean follows the solid line of every panel up to 3000 h.
+  all(abs(fig8_cmp$ratio_mean[fig8_to3000] - 1) < 0.12),
+  abs(median(fig8_cmp$ratio_mean) - 1) < 0.05,
+  # The median does not: from 2500 h it is well below the line.
+  all(fig8_cmp$ratio_median[fig8_late] < 0.6),
+  # The 600 mg band edges agree outside the far tail.
+  all(abs(fig8_band_cmp$ratio[!fig8_band_cmp$far_tail] - 1) < 0.2),
+  sum(fig8_band_cmp$far_tail) == 1
+)
+```
+
+```{r fig-8, fig.cap = "Replicates Kumar 2024 Figure 8. Band is the 5th-95th percentile and the solid line the mean of the simulated antibodies; the dashed line is their median. Points are read from the published solid lines.", fig.height = 8}
+fig8_label <- function(df) {
+  mutate(df, label = paste0(panel, ". ", antibody, " (", dose_mg, " mg)"))
+}
+fig8_curves <- fig8_panels |>
+  left_join(st_fig8, by = "dose_mg", relationship = "many-to-many") |>
+  filter(time <= xmax) |>
+  fig8_label()
+
+ggplot(fig8_curves, aes(time)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.2) +
+  geom_line(aes(y = mean), linewidth = 0.7) +
+  geom_line(aes(y = median), linetype = "dashed") +
+  geom_point(data = fig8_label(fig8_pub), aes(y = published), size = 1.5) +
+  facet_wrap(~label, scales = "free") +
   scale_y_log10() +
-  labs(x = "Time (days)", y = "Plasma mAb (nM)",
-       title = "A priori prediction window, 70 mg SC",
-       caption = "Replicates Kumar 2024 Figure 8 panel A geometry.")
+  labs(x = "Time (h)", y = "Plasma mAb (ug/mL)",
+       title = "A priori SC prediction window against Figure 8")
 ```
 
-```{r window-width}
-w <- window |>
-  filter(time %in% c(24 * 7, 24 * 28, 24 * 56)) |>
-  transmute(`Day` = time / 24,
-            `5th pct (nM)` = signif(lo, 3),
-            `Median (nM)` = signif(med, 3),
-            `95th pct (nM)` = signif(hi, 3),
-            `95th/5th` = signif(hi / lo, 3))
-knitr::kable(w, caption = "Width of the simulated inter-antibody prediction window.")
-```
+The mean of the simulated antibodies follows the solid line of every panel:
+within `r round(100 * max(abs(fig8_cmp$ratio_mean[fig8_to3000] - 1)), 1)`%
+at all `r sum(fig8_to3000)` points up to 3000 h, with a median ratio of
+`r sprintf("%.2f", median(fig8_cmp$ratio_mean))`. The median of the same
+antibodies agrees near the peak but falls below the line later, to
+`r sprintf("%.2f", max(fig8_cmp$ratio_median[fig8_late]))` of it or less from
+2500 h, so the published line is read as the mean. The 900 mg panel runs to
+6000 h; beyond 3000 h the mean there falls to
+`r sprintf("%.2f", fig8_cmp$ratio_mean[fig8_cmp$panel == "C" & fig8_cmp$time == 5900])`
+of the line at 5900 h, where it rests on the few antibodies that are
+cleared most slowly. At 600 mg the simulated 5th and 95th percentiles are
+within
+`r round(100 * max(abs(fig8_band_cmp$ratio[!fig8_band_cmp$far_tail] - 1)))`%
+of the published band, except the 5th percentile at
+`r fig8_band_cmp$time[fig8_band_cmp$far_tail]` h, about
+`r signif(with(fig8_band_cmp[fig8_band_cmp$far_tail, ], mean / published), 1)`-fold
+below the mean, where the simulated value is
+`r sprintf("%.1f", fig8_band_cmp$ratio[fig8_band_cmp$far_tail])` times the
+published one.
 
 The observed profiles of the nine validation antibodies are not reproduced
 here: Kumar 2024 overlays digitised data that are not tabulated in the
-paper or its supplement, so only the window itself can be replicated.
+paper or its supplement.
 
 # Assumptions and deviations
 
@@ -548,6 +894,27 @@ paper or its supplement, so only the window itself can be replicated.
   0.034 mL), and the SC lymph flow, which the paper says was "scaled down"
   but never tabulates - it is taken here as plasma flow / 500, the Shah &
   Betts rule. No parameter was adjusted to close the gap.
+* **Figure 8's solid line is compared with the mean of the simulated
+  antibodies.** The caption does not name the statistic. The mean
+  reproduces all nine panels, within
+  `r round(100 * max(abs(fig8_cmp$ratio_mean[fig8_to3000] - 1)), 1)`% up to
+  3000 h, while the median falls to
+  `r sprintf("%.2f", max(fig8_cmp$ratio_median[fig8_late]))` of the line or
+  less from 2500 h.
+* **After about 200 h the published IV median declines faster than this
+  model.** In Supplementary Figure S1 (1 mg/kg IV) the simulated median is
+  within `r round(100 * max(abs(s1_cmp$ratio[s1_early] - 1)), 1)`% of the
+  published one over 42-150 h but
+  `r round(100 * (s1_ratio_at(690) - 1))`% above it at 690 h (half-life over
+  300-690 h: `r round(s1_thalf(s1_cmp$published), 1)` days published,
+  `r round(s1_thalf(s1_cmp$simulated), 1)` days simulated), and the
+  published 5th percentile is lower by a factor of up to
+  `r round(max(s1_lo$ratio), 1)`. The cause was not determined. The form of
+  the pinocytosis clearance does not explain it: with the whole-body form the
+  median is
+  `r round(100 * (1 - max(s1_cmp$ratio_wb[s1_early])))`-`r round(100 * (1 - min(s1_cmp$ratio_wb[s1_early])))`%
+  below the published one over 42-150 h. The SC window of Figure 8, which
+  rests on the same disposition model, is reproduced up to 3000 h.
 * **`omega` values read as log-scale standard deviations.** The paper
   reports `omega_CLup` = 73%, `omega_kdeg` = 46%, `omega_kSC` = 193%,
   `omega_S_LU` = 49% without stating whether these are SDs of the random
