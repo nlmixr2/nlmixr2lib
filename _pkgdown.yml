@@ -6958,6 +6958,10 @@ navbar:
         href: articles/Qi_2014_sapropterin.html
       - text: "Saquinavir (vonHentig 2009)"
         href: articles/vonHentig_2009_saquinavir.html
+      - text: "Sar439459 (Baranda 2024)"
+        href: articles/Baranda_2024_sar439459.html
+      - text: "Sar439459 mouse (Baranda 2024)"
+        href: articles/Baranda_2024_sar439459.html
       - text: "Sar442257 qsp (Abrams 2022)"
         href: articles/Abrams_2022_sar442257_qsp.html
       - text: "Sarilumab (Xu 2019)"
@@ -8930,6 +8934,7 @@ articles:
   - articles/Balice_2022_daptomycin
   - articles/Balis_2025_busulfan
   - articles/Bamgboye_2026_topiramate
+  - articles/Baranda_2024_sar439459
   - articles/Barau_2012_mycophenolic_acid
   - articles/Bardhi_2026_ampicillin_foal
   - articles/Barnett_2018_coproporphyrin_I
