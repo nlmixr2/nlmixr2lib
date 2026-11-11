@@ -1604,8 +1604,12 @@ navbar:
         href: articles/AbdRahman_2020_chloroquine.html
       - text: "Chloroquine wholeblood (AbdRahman 2020)"
         href: articles/AbdRahman_2020_chloroquine.html
+      - text: "Cholecalciferol (Lang 2023)"
+        href: articles/Lang_2023_cholecalciferol.html
       - text: "Cholecalciferol (Tuey 2024)"
         href: articles/Tuey_2024_cholecalciferol.html
+      - text: "Cholecalciferol part1 (Lang 2023)"
+        href: articles/Lang_2023_cholecalciferol.html
       - text: "Cholecalciferol pbpk (Huang 2021)"
         href: articles/Huang_2021_cholecalciferol_pbpk.html
       - text: "Cholecalciferol pbpk (Muhamad 2025)"
@@ -10076,6 +10080,7 @@ articles:
   - articles/Landersdorfer_2018_imipenem_tobramycin
   - articles/Landersdorfer_2018_meropenem_tobramycin
   - articles/Lane_2011_warfarin
+  - articles/Lang_2023_cholecalciferol
   - articles/Langdon_2010_PF00821385
   - articles/Langenhorst_2019_fludarabine
   - articles/Langeskov_2022_semaglutide_ddi
