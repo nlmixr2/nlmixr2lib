@@ -6880,6 +6880,8 @@ navbar:
         href: articles/Huh_2024_ritlecitinib.html
       - text: "Ritlecitinib (Purohit 2023)"
         href: articles/Purohit_2023_ritlecitinib.html
+      - text: "Ritlecitinib QTcF (Huh 2025)"
+        href: articles/Huh_2025_ritlecitinib_safety.html
       - text: "Ritlecitinib base (Wojciechowski 2023)"
         href: articles/Wojciechowski_2023_ritlecitinib.html
       - text: "Ritlecitinib eyebrow (Wang 2025)"
@@ -6888,6 +6890,14 @@ navbar:
         href: articles/Wang_2025_ritlecitinib_eyebrow_eyelash.html
       - text: "Ritlecitinib final (Wojciechowski 2023)"
         href: articles/Wojciechowski_2023_ritlecitinib.html
+      - text: "Ritlecitinib herpes zoster (Huh 2025)"
+        href: articles/Huh_2025_ritlecitinib_safety.html
+      - text: "Ritlecitinib infections (Huh 2025)"
+        href: articles/Huh_2025_ritlecitinib_safety.html
+      - text: "Ritlecitinib lymphocytes (Huh 2025)"
+        href: articles/Huh_2025_ritlecitinib_safety.html
+      - text: "Ritlecitinib rash (Huh 2025)"
+        href: articles/Huh_2025_ritlecitinib_safety.html
       - text: "Ritlecitinib updated (Wojciechowski 2023)"
         href: articles/Wojciechowski_2023_ritlecitinib.html
       - text: "Ritonavir (Chen 2024)"
@@ -10074,6 +10084,7 @@ articles:
   - articles/Hughes_2025_ervogastat_clesacostat
   - articles/Huh_2021_sorafenib
   - articles/Huh_2024_ritlecitinib
+  - articles/Huh_2025_ritlecitinib_safety
   - articles/Hui_2024_linezolid
   - articles/Humphries_2021_tb_lung_pbpk
   - articles/Hunt_2024_renal_transporter_ontogeny
