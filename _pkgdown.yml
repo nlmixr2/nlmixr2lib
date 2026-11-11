@@ -1686,6 +1686,8 @@ navbar:
         href: articles/Zhao_2024_ciprofloxacin_colistin.html
       - text: "Ciprofloxacin pbpk (Sadiq 2017)"
         href: articles/Sadiq_2017_ciprofloxacin.html
+      - text: "Ciprofol (Liu 2024)"
+        href: articles/Liu_2024_ciprofol.html
       - text: "Ciprofol (Wang 2026)"
         href: articles/Wang_2026_ciprofol.html
       - text: "Cisplatin (Boer 2015)"
@@ -10299,6 +10301,7 @@ articles:
   - articles/Liu_2023_inflammation_cyp3a4_gfr
   - articles/Liu_2023_mAb_mouse_pbpk
   - articles/Liu_2024_cetirizine
+  - articles/Liu_2024_ciprofol
   - articles/Liu_2024_deutenzalutamide
   - articles/Liu_2024_saf189s
   - articles/Liu_2024_spatholobiCaulis
