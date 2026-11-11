@@ -567,8 +567,9 @@ stopifnot(
   pinocytosis clearance of `r signif(clu_per_tissue, 3)` L/h. The same
   laboratory later wrote the model with the per-tissue form and
   `CLup = 0.55` L/h/L (Chang et al. 2019,
-  doi:10.1007/s10928-019-09641-8), which is 15 x 0.0366 and so keeps the
-  code's total pinocytosis clearance. Eric
+  doi:10.1007/s10928-019-09641-8). That is 15 x 0.0366: over the 15
+  tissues, the per-tissue form with 0.55 L/h/L gives the same total
+  pinocytosis clearance as the code's form with 0.0366 L/h/L. Eric
   (GitHub user UPPSALAGUNNER) identified this difference by comparing the
   model with the ADAPT code
   ([issue 549](https://github.com/nlmixr2/nlmixr2lib/issues/549)).
