@@ -3873,6 +3873,15 @@ parameter name after the level token:
 - `eta_arm_<param>` -- **between-treatment-arm variability** (BTAV, IAV,
   inter-arm variability): one draw per treatment arm *within* a study, shared
   by every timepoint of that arm.
+- `eta_drug_<param>` -- **between-drug variability** (BDV): one draw per
+  drug, shared by every dose regimen and arm of that drug, for MBMAs whose
+  grouping hierarchy is drug -> regimen rather than study -> arm. Howden 2025
+  (`Howden_2025_antisecretory_mbma.R`) puts it on the logit-scale prediction
+  itself (`eta_drug_mu`, the NONMEM `MU`), with variance fixed to 1 and the
+  SD carried by an estimated structural term times the arm's `SE_ARM`; `mu`
+  is a `model()` quantity, not an `ini()` parameter, so the checker's "no
+  matching fixed effect" warning on that name is expected and is justified in
+  the model's vignette.
 
 `<param>` is the `ini()` fixed-effect name the eta acts on, spelled as in
 `ini()` (`eta_study_e0` for `e0`, `eta_arm_emax_mrss` for `emax_mrss`,
