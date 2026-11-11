@@ -55,6 +55,19 @@ Lindauer_2025_risperidone_oral <- function() {
         "remaining 86.81%."
       ),
       source_name = "mixture subpopulation IM (P(IM) = 8.26%)"
+    ),
+    OCC = list(
+      description = "Occasion index for inter-occasion variability on F1, D1 and KA: a new draw of etaiov_fdepot, etaiov_d1 and etaiov_ka for every value.",
+      units = "(count)",
+      type = "categorical",
+      reference_category = NULL,
+      notes = paste(
+        "Appendix S2 reports IOV on F1 (46.5% CV), D1 (158% CV) and KA",
+        "(108% CV). The vignette starts a new occasion at each once-daily",
+        "dose (OCC = dose number). Supply an integer per record; a",
+        "single-occasion simulation can set OCC = 1 throughout."
+      ),
+      source_name = "OCC"
     )
   )
 
