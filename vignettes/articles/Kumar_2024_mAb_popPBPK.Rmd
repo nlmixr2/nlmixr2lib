@@ -115,8 +115,6 @@ paper, which was available when this model was built.
 
 ## Units in the ODE system
 
-Identical to the `Shah_2012_mAb_PBPK` sibling.
-
 | Quantity | Units |
 |----------|-------|
 | State amounts (`vp_*`, `bc_*`, `eu_*`, `eb_*`, `is_*`) | nmol |
@@ -147,22 +145,23 @@ recorded here because each changes the numbers.
 
 ## 1. `CLup` scales by *each tissue's* endosomal volume
 
-Shah & Betts define `CLup` as the "rate of pinocytosis per unit endosomal
-space" but do not print how the tissue-level uptake clearance is formed.
-The Shah & Betts ADAPT deposit sets every tissue's uptake clearance to
-`CLup * V_endosomal,TOTAL`; Chang 2019 (same laboratory, explicitly
-"augmenting our previously published platform PBPK model") prints
-`CLup_i = CLup * V_ES_i`, i.e. scaling by *that tissue's* endosomal volume.
+Shah & Betts 2012 define `CLup` as the "rate of pinocytosis per unit
+endosomal space", and their text says it is multiplied by the endosomal
+volume of the given tissue. Their ADAPT 5 code, however, gives every
+tissue the same uptake clearance, `CLup * V_endosomal,TOTAL`, and their
+Table 6 estimate (0.0366 L/h/L) was made with that form (see the
+`Shah_2012_mAb_PBPK` vignette). Kumar 2024 does not say which form it
+uses. The per-tissue form is used here, because the same laboratory's
+later implementation uses it and Kumar 2024's estimate is on its scale:
 
-The per-tissue reading is used here, for three reasons:
-
-1. It is the only reading consistent with the parameter's own stated
-   definition ("per unit endosomal space").
-2. The total-volume reading is physically absurd for small tissues: thymus
-   (endosomal volume 0.0321 mL) would get an endosomal turnover rate of
-   ~3300 1/h against `kdeg` = 26.1 1/h.
-3. It reproduces a correct mAb clearance. The check below is the decisive
-   one.
+1. Chang 2019 ("augmenting our previously published platform PBPK
+   model") prints `CLup_i = CLup * V_ES_i` and sets `CLup` to 0.55 L/h/L
+   for all tissues except the brain. That is 15 x 0.0366: over the 2012
+   model's 15 tissues, the per-tissue form with 0.55 L/h/L gives the same
+   total pinocytosis clearance as the 2012 code's form with 0.0366 L/h/L.
+2. Kumar 2024's estimate, 0.32 L/h/L (Suppl. Table S2), is of the same
+   order as Chang 2019's per-tissue value, and about 9 times the 0.0366
+   L/h/L of the whole-body form.
 
 ## 2. The brain compartment is in the model
 
@@ -389,12 +388,11 @@ knitr::kable(
 )
 ```
 
-The clearance is the sharpest of these checks. It is an *emergent* quantity:
-nothing in the model is a clearance term, so it falls out of `CLup`,
-`kdeg`, `FR`, the FcRn binding constants and the whole-body physiology
-together. Recovering ~0.2 L/day is what confirms reconciliation 1 above; the
-total-endosomal-volume reading of `CLup` would inflate whole-body
-pinocytosis roughly 15-fold and put clearance far outside the mAb range.
+The clearance is an *emergent* quantity: nothing in the model is a
+clearance term, so it falls out of `CLup`, `kdeg`, `FR`, the FcRn binding
+constants and the whole-body physiology together. Recovering ~0.2 L/day
+shows that the re-estimated `CLup` and `kdeg`, in the per-tissue form, give
+the clearance of a linear IgG1.
 
 # Replicating Figure 7 (local sensitivity analysis)
 
@@ -531,9 +529,9 @@ paper or its supplement, so only the window itself can be replicated.
 # Assumptions and deviations
 
 * **`CLup` scales by per-tissue endosomal volume.** Resolved in favour of
-  the Chang 2019 printed form over the Shah & Betts ADAPT deposit's
-  total-endosomal-volume form; see reconciliation 1. Validated by the
-  emergent clearance (~0.2 L/day).
+  the Chang 2019 printed form over the Shah & Betts ADAPT code's
+  total-endosomal-volume form, because Kumar 2024's `CLup` estimate is on
+  the per-tissue scale; see reconciliation 1.
 * **Brain compartment retained.** Kumar 2024 Section 2.2's tissue list omits
   the brain, but Figure 1 draws it and the Section 2.5 central-volume
   arithmetic requires it (1412 mL is reproduced exactly only with the brain
@@ -568,22 +566,20 @@ paper or its supplement, so only the window itself can be replicated.
   in Monolix but does not report its coefficients anywhere in the paper or
   supplement, so no `propSd` / `addSd` is included. Both files are
   typical-value plus inter-antibody simulators.
-* **Lung plasma flow derived for mass-balance closure.** As in the
-  `Shah_2012_mAb_PBPK` sibling, the Table 4 lung flows are ~1.8% higher than
-  the sum of the tissue inflows they must equal; using them literally leaks
-  mass at the lung-arterial junction. `q_lu` is derived as
+* **Lung plasma flow derived for mass-balance closure.** The Table 4 lung
+  flows equal the sums of the tissue flows plus the "Ly. Node" row: 181.913
+  L/h of plasma against the 178.244 L/h the tissues take in, about 2% more.
+  Used literally, they remove mAb at the lung outflow. `q_lu` is derived as
   `sum(q_X) / (1 - 1/500)` and `bcq_lu` as `sum(bcq_X)`.
 * **`C_LNLF` not carried.** Kumar 2024 inherits Shah & Betts' `C_LNLF`
-  = 9.1, but the lymph-node return flow is tabulated directly (3.670 L/h,
-  Table 4) and that value is used. `C_LNLF` does not enter the ODEs and is
-  omitted from `ini()`.
+  = 9.1. The Shah & Betts ADAPT code and Chang 2019 set the lymph-node
+  outflow to `C_LNLF` times the lung plasma flow; this model uses the
+  Table 4 "Ly. Node" flow (3.670 L/h) instead, so `C_LNLF` does not enter
+  the ODEs and is omitted from `ini()`. Plasma concentrations hardly depend
+  on this outflow (in the `Shah_2012_mAb_PBPK` vignette the two choices
+  differ by under 0.1%).
 * **No antigen binding, no TMDD.** By construction: antibodies with
   nonlinear PK were excluded from the dataset.
-* **`compartmentData` metadata absent.** Both files omit the per-state
-  `compartmentData` block, matching the `Shah_2012_mAb_PBPK` sibling.
-  `checkModelConventions()` raises the same warning for that registered
-  model; it is tracked in nlmixr2lib issue #482 for the PBPK family as a
-  whole rather than being specific to this extraction.
 * **Approval status is documented, not modelled.** Kumar 2024 compares the
   individual parameter distributions of FDA-approved versus clinically
   tested mAbs (Figure 6) and reports the medians, but concludes there is no
