@@ -2764,8 +2764,16 @@ navbar:
         href: articles/Tikiso_2022_ethambutol.html
       - text: "Ethambutol (Wijk 2024)"
         href: articles/Wijk_2024_first_line_tb_drugs.html
+      - text: "Ethambutol human fromMouse pbpk (Karakitsios 2024)"
+        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
+      - text: "Ethambutol human fromRabbit pbpk (Karakitsios 2024)"
+        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
+      - text: "Ethambutol mouse pbpk (Karakitsios 2024)"
+        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
       - text: "Ethambutol pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
+      - text: "Ethambutol rabbit pbpk (Karakitsios 2024)"
+        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
       - text: "Ethanol (Lim 2017)"
         href: articles/Lim_2017_ethanol.html
       - text: "Ethanol (Nemoto 2017)"
@@ -3938,6 +3946,10 @@ navbar:
         href: articles/Wijk_2024_first_line_tb_drugs.html
       - text: "Isoniazid (Wilkins 2011)"
         href: articles/Wilkins_2011_isoniazid.html
+      - text: "Isoniazid human fromMouse pbpk (Karakitsios 2024)"
+        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
+      - text: "Isoniazid mouse pbpk (Karakitsios 2024)"
+        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
       - text: "Isoniazid nat2class (Chen 2022)"
         href: articles/Chen_2022_isoniazid.html
       - text: "Isoniazid pbpk (Garessus 2019)"
@@ -5114,6 +5126,10 @@ navbar:
         href: articles/Sidamo_2022_fluoroquinolones_mdr_tb.html
       - text: "Moxifloxacin (Willmann 2019)"
         href: articles/Willmann_2019_moxifloxacin.html
+      - text: "Moxifloxacin human fromRabbit pbpk (Karakitsios 2024)"
+        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
+      - text: "Moxifloxacin rabbit pbpk (Karakitsios 2024)"
+        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
       - text: "Mrna1273 qsp (Dasti 2025)"
         href: articles/Dasti_2025_mrna_vaccines.html
       - text: "Mt107 cyclosporine mouse pbpk (Taddio 2018)"
@@ -6328,6 +6344,10 @@ navbar:
         href: articles/Rao_2021_antituberculosis_critical_illness.html
       - text: "Pyrazinamide (Wijk 2024)"
         href: articles/Wijk_2024_first_line_tb_drugs.html
+      - text: "Pyrazinamide human fromMouse pbpk (Karakitsios 2024)"
+        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
+      - text: "Pyrazinamide mouse pbpk (Karakitsios 2024)"
+        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
       - text: "Pyrazinamide mpbpk (Mehta 2023)"
         href: articles/Mehta_2023_tb_lesion_mpbpk.html
       - text: "Pyrazinamide pbpk (Ramachandran 2023)"
@@ -6608,12 +6628,20 @@ navbar:
         href: articles/Koele_2024_tb_bacterialload.html
       - text: "Rifampicin ffm (Bilal 2024)"
         href: articles/Bilal_2024_rifampicin.html
+      - text: "Rifampicin human fromMouse pbpk (Karakitsios 2024)"
+        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
+      - text: "Rifampicin human fromRabbit pbpk (Karakitsios 2024)"
+        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
       - text: "Rifampicin invitro (Almond 2016)"
         href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Rifampicin invivo (Almond 2016)"
         href: articles/Almond_2016_cyp3a4_induction.html
+      - text: "Rifampicin mouse pbpk (Karakitsios 2024)"
+        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
       - text: "Rifampicin pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
+      - text: "Rifampicin rabbit pbpk (Karakitsios 2024)"
+        href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
       - text: "Rifampicin sexwt (Bilal 2024)"
         href: articles/Bilal_2024_rifampicin.html
       - text: "Rifampicin survival (Svensson 2020)"
@@ -9953,6 +9981,7 @@ articles:
   - articles/Kappelhoff_2005_ritonavir
   - articles/Kapralos_2021_octreotide
   - articles/Karaiskos_2015_colistin
+  - articles/Karakitsios_2024_antitubercular_lung_pbpk
   - articles/Karakitsios_2024_gevokizumab
   - articles/Karakitsios_2025_bedaquiline_lung_pbpk
   - articles/Karlsson_2009_voriconazole
