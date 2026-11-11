@@ -8,7 +8,7 @@
 - Add Tan 2025 pazopanib population PK, grade >= 2 liver-toxicity time-to-event and mRCC / STS tumor size models ([doi:10.1007/s40262-025-01504-5](https://doi.org/10.1007/s40262-025-01504-5)) -- real-world adults with metastatic renal cell carcinoma or soft tissue sarcoma.
 - Add Pouzin 2023 tusamitamab ravtansine CYP3A4/1A2/2B6 downregulation IVIVE-PK ([doi:10.1002/cpt.3102](https://doi.org/10.1002/cpt.3102)) -- adults with advanced CEACAM5-expressing solid tumors (typical-value simulation from in vitro constants).
 
-- Add Li 2025 levamlodipine PK/PD ([doi:10.2147/DDDT.S501762](https://doi.org/10.2147/DDDT.S501762)) -- Chinese adults with essential hypertension (smokers and non-smokers).
+- Add Yun 2025 voriconazole ([doi:10.3389/fphar.2025.1543323](https://doi.org/10.3389/fphar.2025.1543323)) -- Chinese adults with liver cirrhosis (Child-Pugh A-C); registers the `RBP4` (serum retinol-binding protein) covariate.
 
 - Add Iwaki 2021 guselkumab PPPASI PK/PD ([doi:10.1002/jcph.1953](https://doi.org/10.1002/jcph.1953)) -- Japanese adults with palmoplantar pustulosis.
 
