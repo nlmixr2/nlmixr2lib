@@ -5475,7 +5475,7 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Scope:** specific
 - **Reference category:** n/a -- used directly inside `model` as `CL_INDIV` in place of an estimated `cl <- exp(lcl + etalcl)`.
 - **Source aliases:** `CLI` -- used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel CL).
-- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel CL EBE supplied as a covariate column following the Friberg 2002 convention; the Wahlby 2004 PD model layers BIL and DBIL covariate effects on top of the Friberg-Karlsson chain), `Yarur_2025_ustekinumab_clinbiorem_cl.R` and `Yarur_2025_ustekinumab_ehi50_cl.R` (L/day; per-dose-cycle empirical-Bayes ustekinumab clearance from `modellib('Yarur_2025_ustekinumab')` with every parameter fixed as the Bayesian prior; enters mixed-effects logistic regressions for clinical-and-biochemical remission and for an endoscopic healing index above 50 points LINEARLY and UNCENTRED, slopes `-13.5` and `+18.0` per L/day; Yarur 2025 Table S1).
+- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel CL EBE supplied as a covariate column following the Friberg 2002 convention; the Wahlby 2004 PD model layers BIL and DBIL covariate effects on top of the Friberg-Karlsson chain), `Yarur_2025_ustekinumab_clinbiorem_cl.R` and `Yarur_2025_ustekinumab_ehi50_cl.R` (L/day; per-dose-cycle empirical-Bayes ustekinumab clearance from `modellib('Yarur_2025_ustekinumab')` with every parameter fixed as the Bayesian prior; enters mixed-effects logistic regressions for clinical-and-biochemical remission and for an endoscopic healing index above 50 points LINEARLY and UNCENTRED, slopes `-13.5` and `+18.0` per L/day; Yarur 2025 Table S1), `Du_2026_cendakimab.R` (L/h; per-subject cendakimab clearance from the authors' unpublished population PK model drives an exposure-response model of dysphagia days).
 - **Notes:** Specific scope because the value is intrinsically tied to the modelled drug -- there is no shared meaning across drugs. Each model's `covariateData[[CL_INDIV]]$notes` should state which upstream popPK source the EBE values come from (e.g., Henningsson 2001 paclitaxel popPK, fixed in the DDMORE encoding) and whether placebo periods are present. Companion volumes are registered as `VC_INDIV` and `VP_INDIV`.
 
 ### CMAX_M1 (**canonical for maximum drug plasma concentration during month 1**)
@@ -5519,7 +5519,7 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Scope:** specific
 - **Reference category:** n/a -- used directly inside `model` as `VC_INDIV` in place of an estimated `vc <- exp(lvc + etalvc)`.
 - **Source aliases:** `V1I` -- used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel V1).
-- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel V1 EBE following the Friberg 2002 convention).
+- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel V1 EBE following the Friberg 2002 convention), `Du_2026_cendakimab.R` (cendakimab; the authors' population PK model is unpublished).
 - **Notes:** See `CL_INDIV` notes for the broader convention.
 
 ### VP_INDIV (**canonical for per-subject empirical-Bayes peripheral volume of distribution**)
@@ -5529,9 +5529,49 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Scope:** specific
 - **Reference category:** n/a -- used directly inside `model` as `VP_INDIV` in place of an estimated `vp <- exp(lvp + etalvp)`.
 - **Source aliases:** `V2I` -- used in `Friberg_2002_paclitaxel.R` (NM-TRAN data column for per-subject paclitaxel V2).
-- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel V2 EBE following the Friberg 2002 convention).
+- **Example models:** `Friberg_2002_paclitaxel.R`, `Wahlby_2004_paclitaxel_myelosuppression.R` (per-subject paclitaxel V2 EBE following the Friberg 2002 convention), `Du_2026_cendakimab.R` (cendakimab; the authors' population PK model is unpublished).
 - **Notes:** See `CL_INDIV` notes for the broader convention. For models requiring a second peripheral compartment, register `VP2_INDIV` (and add a follow-on entry to this register) when a second model legitimately needs it.
 
+
+### Q_INDIV (**canonical for per-subject empirical-Bayes intercompartmental clearance**)
+- **Description:** Individual point estimate of the modelled drug's (apparent) intercompartmental clearance between the central and first peripheral compartments, supplied per-subject as a fixed data column. Companion to `CL_INDIV`, `VC_INDIV` and `VP_INDIV` in sequential PK->PD encodings.
+- **Units:** L/day in the Cerou 2024 models, L/h in `Du_2026_cendakimab.R` (document per-model via `covariateData[[Q_INDIV]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used directly inside `model` as `Q_INDIV` in place of an estimated `q <- exp(lq + etalq)`.
+- **Source aliases:** `Q` -- Monolix regressor in Cerou 2024 Data S1 (`Q={use=regressor}`); `Qi` -- NONMEM data column in Du 2026 Data S1.
+- **Example models:** `Cerou_2024_amcenestrant.R`, `Cerou_2024_amcenestrant_ameera12.R` (apparent amcenestrant Q/F; see `KTR_INDIV`), `Du_2026_cendakimab.R` (cendakimab Q in L/h; the authors' population PK model is unpublished).
+- **Notes:** See `CL_INDIV` notes for the broader convention.
+
+### KA_INDIV (**canonical for per-subject empirical-Bayes first-order absorption rate constant**)
+- **Description:** Individual point estimate of the modelled drug's first-order absorption rate constant from the depot, supplied per-subject as a fixed data column. Companion to `CL_INDIV`, `VC_INDIV`, `Q_INDIV` and `VP_INDIV` in sequential PK->PD encodings with first-order extravascular absorption.
+- **Units:** 1/h in the founding model (document per-model via `covariateData[[KA_INDIV]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used directly inside `model` as `ka <- KA_INDIV` in place of an estimated `ka <- exp(lka + etalka)`.
+- **Source aliases:** `KAi` -- NONMEM data column in Du 2026 Data S1.
+- **Example models:** `Du_2026_cendakimab.R` (SC cendakimab; the authors' population PK model is unpublished).
+- **Notes:** See `CL_INDIV` notes for the broader convention. Distinct from `KTR_INDIV`, the rate of a transit-compartment absorption chain.
+
+### TLAG_INDIV (**canonical for per-subject empirical-Bayes absorption lag time**)
+- **Description:** Individual point estimate of the modelled drug's absorption lag time on the depot, supplied per-subject as a fixed data column and applied as `alag(depot) <- TLAG_INDIV`. Companion to `KA_INDIV` in sequential PK->PD encodings.
+- **Units:** h in the founding model (document per-model via `covariateData[[TLAG_INDIV]]$units`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used directly inside `model` in place of an estimated `tlag <- exp(ltlag + etaltlag)`.
+- **Source aliases:** `ALAG1i` -- NONMEM data column in Du 2026 Data S1 (applied as `ALAG1`).
+- **Example models:** `Du_2026_cendakimab.R`.
+- **Notes:** See `CL_INDIV` notes for the broader convention. The root follows the canonical lag-time parameter `tlag`.
+
+### FDEPOT_INDIV (**canonical for per-subject empirical-Bayes bioavailability of the depot dose**)
+- **Description:** Individual point estimate of the modelled drug's bioavailable fraction of a depot dose, supplied per-subject as a fixed data column and applied as `f(depot) <- FDEPOT_INDIV`. Companion to `KA_INDIV` in sequential PK->PD encodings.
+- **Units:** (fraction)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used directly inside `model` in place of an estimated `fdepot <- exp(lfdepot + etalfdepot)`.
+- **Source aliases:** `F1i` -- NONMEM data column in Du 2026 Data S1 (applied as `F1`).
+- **Example models:** `Du_2026_cendakimab.R`.
+- **Notes:** See `CL_INDIV` notes for the broader convention. The root follows the canonical bioavailability parameter `fdepot`. When `CL_INDIV` and the volumes are already apparent (divided by F), supply 1.
 ### BAS_SVEGFR3 (**canonical for individual posthoc baseline soluble VEGFR-3 concentration from an upstream PD fit**)
 - **Description:** Subject-specific empirical-Bayes (posthoc) baseline plasma sVEGFR-3 (soluble vascular endothelial growth factor receptor 3) concentration from a separately published indirect-response biomarker model that the current downstream PD model treats as a fixed input. Used as a per-subject (time-fixed) covariate in fatigue / adverse-event PD models that consume the upstream biomarker dynamics as data covariates without instantiating the biomarker ODE.
 - **Units:** pg/mL (document per-model via `covariateData[[BAS_SVEGFR3]]$units`).
@@ -7475,7 +7515,7 @@ readable.
 - **Reference category:** 0 (baseline / off-treatment).
 - **Source aliases:**
   - `Q2` -- used in the Schoemaker 2018 LEV / BRV pediatric extrapolation (DDMODEL00000239) as the treatment-phase gating multiplier on the combined placebo + drug-effect log-rate term (`LE = LS0 + Q2 * LTRTE`).
-- **Example models:** `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239).
+- **Example models:** `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239), `Du_2026_cendakimab.R` (the binomial size of the combined uniform-binomial likelihood of the dysphagia-day count; nominally 14, smaller when diary days are missing).
 - **Notes:** New canonical because the source name `Q2` collides with the canonical PK parameter `q2` (inter-compartmental clearance to peripheral2) -- `q2` could not be used as a covariate column without confusing source-trace lookups. Useful for any phase-gated PD model where placebo and drug effects are constrained to a specific study period; analogous to a "treatment-on" indicator.
 
 ### PDV (**canonical for previous-period observed count (Markov-feedback state)**)
@@ -7504,8 +7544,8 @@ readable.
 - **Type:** count
 - **Scope:** general
 - **Reference category:** n/a -- appears as a multiplier on a per-day rate.
-- **Source aliases:** `NDAYS` -- used in the Schoemaker 2018 LEV/BRV pediatric extrapolation (DDMODEL00000239).
-- **Example models:** `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239).
+- **Source aliases:** `NDAYS` -- used in the Schoemaker 2018 LEV/BRV pediatric extrapolation (DDMODEL00000239) and in the Du 2026 cendakimab NONMEM code ('Period which Dysphagia Days was evaluated').
+- **Example models:** `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239), `Du_2026_cendakimab.R` (the binomial size of the combined uniform-binomial likelihood of the dysphagia-day count; nominally 14, smaller when diary days are missing).
 - **Notes:** General scope because the count-interval-length concept is shared across any count or rate-based PD model that mixes record granularity (e.g., daily and monthly counts in the same dataset). For pure-daily or pure-monthly cohorts the column is constant; including it as a covariate keeps the model usable in mixed-granularity simulations.
 
 ### MOMENT (**canonical for endotracheal suctioning procedural state**)

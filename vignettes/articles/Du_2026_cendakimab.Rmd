@@ -1,0 +1,631 @@
+---
+title: "Cendakimab dysphagia days (Du 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cendakimab dysphagia days (Du 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>"
+)
+```
+
+```{r setup}
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(PKNCA)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Du_2026_cendakimab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Du_2026_cendakimab"))$description`
+* Article: <https://doi.org/10.1002/psp4.70199>
+
+Du 2026 models dysphagia days (DD), the number of days with dysphagia
+symptoms in a two-week diary window, in patients with eosinophilic
+esophagitis (EoE) treated with placebo or the anti-IL-13 antibody cendakimab
+in the phase 3 study CC-93538-EE-001. A count `k` out of `n` evaluable diary
+days follows a combined uniform-binomial (CUB) distribution:
+
+`P(k | n) = pi * Binomial(k | n, xi) + (1 - pi) / (n + 1)`
+
+The daily dysphagia probability `xi` is driven by a latent disease variable on
+the logit scale,
+
+`logit(xi) = BASE_i - Pmax * (1 - PBO(t)) - Emax * (1 - DE(t))`,
+
+where `PBO(t) = exp(-kPBOKON * t)` is the placebo onset and `DE(t)` is a
+turnover variable (`DE(0) = 1`, onset and offset rate `kDEKON`) whose
+production is inhibited by the serum cendakimab concentration,
+`Cp / (EC50 + Cp)`. Baseline counts are conditioned on the enrolment
+criterion `DD >= 4`.
+
+The analysis was sequential. Individual cendakimab concentrations were
+generated from the empirical Bayes PK parameters of a population PK model
+that the paper does not show, and the Supporting Information NONMEM code
+reads those parameters (`CLi`, `VCi`, `Qi`, `VPi`, `KAi`, `ALAG1i`, `F1i`)
+from the dataset. The packaged model does the same: the PK states are in
+`model()` and the per-subject PK parameters are covariate columns
+(`CL_INDIV`, `VC_INDIV`, `Q_INDIV`, `VP_INDIV`, `KA_INDIV`, `TLAG_INDIV`,
+`FDEPOT_INDIV`). No cendakimab population PK model has been published, so
+this vignette drives the model with an illustrative typical PK built by the
+maintainers to reproduce the simulated concentration profiles of Du 2026
+Figure 2 (see "Illustrative PK" below). It is not the authors' PK model.
+
+The likelihood is encoded exactly with `ll(dysphagia_days)`. Supply the
+observed count as `DV` and the number of evaluable diary days as `NDAYS`;
+the time origin is the first dose (the NONMEM `TIME` is "time after first
+dose"), and records at `time <= 0` are baseline records.
+
+# Population
+
+Du 2026 Table 1 summarises the 427 subjects of study CC-93538-EE-001 who
+received at least one dose and had at least one post-baseline DD assessment:
+143 on placebo, 143 on cendakimab 360 mg SC once weekly (QW) for 48 weeks and
+141 on 360 mg QW for 24 weeks followed by 360 mg every two weeks (QW/Q2W).
+Median age was 35 years (range 13 to 72; 34 adolescents), median body weight
+81.0 kg (41.8 to 176.9), 30.4% were female and 91.3% were White. 66.3% were
+steroid inadequate responders or intolerant (Steroid IR/I), the randomisation
+stratification factor that the final model carries on Emax, and 33.7% had a
+history of esophageal dilation. Enrolment required at least 4 dysphagia days
+in the baseline two-week window. The same information is stored in the model
+metadata:
+
+```{r population}
+str(rxode2::rxode(readModelDb("Du_2026_cendakimab"))$population)
+```
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| CUB probability mass function | `pi * Binomial(k | n, xi) + (1 - pi) / (n + 1)` | Equation 1; Data S1 `$ERROR` `PDF` |
+| Logit link and latent variable | `logit(xi) = BASE_i - fp(t) - fd(t)` | Equation 2; Data S1 `IPREF = BASE + PBOEFF + DEEFF` with negative effects |
+| Placebo effect | `dPBO/dt = -kPBOKON * PBO`, `PBO(0) = 1`, `fp = Pmax * (1 - PBO)` | Equations 3-4; Data S1 `DADT(4)` |
+| Drug effect | `dDE/dt = kDEKON * (1 - Cp / (EC50 + Cp)) - kDEKON * DE`, `DE(0) = 1`, `fd = Emax * (1 - DE)` | Equations 5-6; Data S1 `DADT(5)` |
+| Baseline truncation | `P(k >= 4) = pi * (1 - BinomialCDF(3)) + (1 - pi) * (n - 3) / (n + 1)` | Equations 7-8; Data S1 `CDFLB` |
+| Logit-transformed IIV on BASE | `BASE_i = BASE + (expit(LGT1 + eta) - expit(LGT1)) * LGT2` | Equations 9-10; Data S1 `ETABASET` (see Errata) |
+| Covariate on Pmax | `Pmax_i = Pmax + (BASE_i - BASE) * BASEPmax` | Methods 'Interindividual Variability and Covariate Model Development'; Data S1 `COVBASEPMAX` |
+| Covariate on Emax | `Emax_i = exp(log(Emax) + SIRINEmax * SIRIN)` | Data S1 `EMAX = EXP(LOG(POPEMAX)+COVSIRINEMAX)` |
+| Half-life to rate constant | `k = log(2) / (168 * t_half[weeks])` per hour | Data S1 `POPPBOKON`, `POPDEKON` |
+| PK structure | depot (lag, F1) -> central <-> peripheral, linear elimination | Data S1 `$MODEL`, `$PK`, `$DES` |
+| `logitrbase` (BASE) | 4.521 | Table 2 |
+| `lkpbo` | log(log(2) / (168 * 27.66)) | Table 2: half-life of PBO onset 27.66 weeks |
+| `lpmax` | log(8.092) | Table 2 |
+| `lkout` | log(log(2) / (168 * 1.408)) | Table 2: half-life of drug onset 1.408 weeks |
+| `lemax` | log(1.865) | Table 2 |
+| `lec50` | 4.337 (EC50 = 76.5 ug/mL) | Table 2 |
+| `logitskew_logitrbase` (LGT1) | -2.419 | Table 2 |
+| `logitwidth_logitrbase` (LGT2) | 61.24 | Table 2 |
+| `logitpinform` (pi, logit scale) | 2.568 | Table 2; Data S1 `PIP = EXP(PIPT)/(1+EXP(PIPT))` |
+| `e_logitrbase_pmax` (BASEPmax) | 0.9115 | Table 2 |
+| `e_steroid_ir_emax` (SIRINEmax) | 0.2377 | Table 2 |
+| `etalogitrbase`, `etalkpbo` | variances 4.309 and 4.041, covariance 1.178 | Table 2 |
+
+# Illustrative PK
+
+The cendakimab population PK model is not published. For the simulations
+below every treated subject receives the same illustrative PK parameters,
+chosen by the maintainers so that the typical profile reproduces the median
+curves of Du 2026 Figure 2 (lower panels): about 100 ug/mL at Week 4,
+150 to 155 ug/mL at Week 8, a QW plateau of about 185 to 190 ug/mL, and a
+QW/Q2W profile that falls to about half the QW level by Week 48, as the text
+states ("concentrations declined to ~50% of QW levels by Week 48"). Because
+`CL_INDIV` and the volumes are apparent values here, bioavailability is 1 and
+the lag time is 0. These values carry no between-subject variability; they
+exist only to exercise the exposure-response layer.
+
+```{r illustrative-pk}
+pk_typ <- tibble(
+  CL_INDIV = 0.0105, # L/h
+  VC_INDIV = 4.5, # L
+  Q_INDIV = 0.03, # L/h
+  VP_INDIV = 3.5, # L
+  KA_INDIV = 0.012, # 1/h
+  TLAG_INDIV = 0, # h
+  FDEPOT_INDIV = 1
+)
+knitr::kable(pk_typ, caption = "Illustrative typical cendakimab PK (not from Du 2026).")
+```
+
+# Virtual cohort
+
+Three arms as in the study: placebo, cendakimab 360 mg SC QW for 48 weeks, and
+360 mg SC QW for 24 weeks followed by Q2W to Week 48. Each subject is
+Steroid IR/I with probability 0.663 (Table 1). DD is simulated weekly from
+Week 0 to Week 48 with a full 14-day diary (`NDAYS = 14`). As in the paper's
+simulations, subjects whose simulated baseline DD is below 4 are replaced:
+300 subjects are drawn per arm and the first 200 eligible ones are kept.
+
+```{r cohort}
+rxode2::rxSetSeed(2026)
+set.seed(2026)
+
+wk <- 168
+n_draw <- 300L
+n_keep <- 200L
+
+arm_doses <- list(
+  "PBO" = numeric(0),
+  "CEN 360 mg QW" = seq(0, 47) * wk,
+  "CEN 360 mg QW/Q2W" = c(seq(0, 23), seq(24, 46, by = 2)) * wk
+)
+arm_levels <- names(arm_doses)
+
+make_arm <- function(i) {
+  ids <- (i - 1L) * n_draw + seq_len(n_draw)
+  obs <- tidyr::expand_grid(id = ids, time = seq(0, 48) * wk) |>
+    mutate(amt = 0, evid = 0L, cmt = "latent_dysphagia_days")
+  dose <- tidyr::expand_grid(id = ids, time = arm_doses[[i]]) |>
+    mutate(amt = 360, evid = 1L, cmt = "depot")
+  bind_rows(dose, obs) |>
+    mutate(arm = arm_levels[i])
+}
+
+subjects <- tibble(
+  id = seq_len(n_draw * length(arm_doses)),
+  STEROID_IR = as.integer(runif(n_draw * length(arm_doses)) < 0.663)
+)
+
+events <- bind_rows(lapply(seq_along(arm_doses), make_arm)) |>
+  left_join(subjects, by = "id") |>
+  bind_cols(pk_typ[rep(1, 1), ]) |>
+  mutate(NDAYS = 14) |>
+  arrange(id, time, desc(evid))
+
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
+```
+
+# Simulation
+
+`rxSolve()` returns the daily dysphagia probability `xi` and the CUB weight
+`pinform` at every record. A DD count is drawn from the CUB distribution: with
+probability `pinform` a binomial draw on `NDAYS` days, otherwise a uniform
+integer on 0 to `NDAYS`. The model mean of DD given `xi` is
+`pinform * NDAYS * xi + (1 - pinform) * NDAYS / 2`; it is used for the
+published-mean comparisons because it removes the count-sampling noise.
+
+```{r simulate}
+mod <- readModelDb("Du_2026_cendakimab")
+sim_all <- rxode2::rxSolve(mod, events = events, keep = c("arm", "STEROID_IR")) |>
+  as.data.frame() |>
+  mutate(
+    week = time / wk,
+    informative = runif(n()) < pinform,
+    dd = ifelse(
+      informative,
+      rbinom(n(), NDAYS, xi),
+      sample.int(15L, n(), replace = TRUE) - 1L
+    ),
+    dd_mean = pinform * NDAYS * xi + (1 - pinform) * NDAYS / 2
+  )
+
+eligible <- sim_all |>
+  filter(week == 0, dd >= 4) |>
+  group_by(arm) |>
+  slice_head(n = n_keep) |>
+  ungroup() |>
+  select(id, dd_bl = dd)
+
+sim <- sim_all |>
+  inner_join(eligible, by = "id") |>
+  mutate(arm = factor(arm, levels = arm_levels))
+
+count(distinct(sim, id, arm), arm)
+```
+
+# Replicate published figures
+
+## Mean DD and concentration by regimen (Figure 2)
+
+Replicates Figure 2 of Du 2026. Lines are the mean simulated DD per week;
+points are the published means at Weeks 0, 24 and 48 (Figure 2 labels).
+
+```{r fig2-dd, fig.width = 8, fig.height = 4}
+published_fig2 <- tribble(
+  ~arm, ~week, ~published,
+  "PBO", 0, 11.8,
+  "PBO", 24, 7.26,
+  "PBO", 48, 5.97,
+  "CEN 360 mg QW", 0, 11.8,
+  "CEN 360 mg QW", 24, 5.48,
+  "CEN 360 mg QW", 48, 4.33,
+  "CEN 360 mg QW/Q2W", 0, 11.8,
+  "CEN 360 mg QW/Q2W", 24, 5.49,
+  "CEN 360 mg QW/Q2W", 48, 4.62
+) |>
+  mutate(arm = factor(arm, levels = arm_levels))
+
+mean_dd <- sim |>
+  group_by(arm, week) |>
+  summarise(mean_dd = mean(dd), model_mean = mean(dd_mean), .groups = "drop")
+
+ggplot(mean_dd, aes(week, mean_dd)) +
+  geom_line(aes(colour = "Simulated mean DD")) +
+  geom_line(aes(y = model_mean, colour = "Mean of the model expectation")) +
+  geom_point(data = published_fig2, aes(y = published, colour = "Du 2026 Figure 2")) +
+  facet_wrap(~arm) +
+  scale_x_continuous(breaks = seq(0, 48, 8)) +
+  coord_cartesian(ylim = c(0, 14)) +
+  labs(x = "Time after first dose (weeks)", y = "Mean dysphagia days", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r fig2-table}
+fig2_cmp <- published_fig2 |>
+  left_join(mean_dd, by = c("arm", "week")) |>
+  mutate(pct_diff = 100 * (model_mean - published) / published)
+
+# Baseline: the observed (truncated, DD >= 4) count is the comparable quantity.
+fig2_cmp <- fig2_cmp |>
+  mutate(simulated = ifelse(week == 0, mean_dd, model_mean)) |>
+  mutate(pct_diff = 100 * (simulated - published) / published)
+
+fig2_cmp |>
+  select(arm, week, published, simulated, pct_diff) |>
+  mutate(across(c(simulated, pct_diff), \(x) round(x, 2))) |>
+  rename(
+    "Regimen" = arm,
+    "Week" = week,
+    "Published mean DD" = published,
+    "Simulated mean DD" = simulated,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Mean DD: simulation vs. Du 2026 Figure 2.")
+
+post <- fig2_cmp |> filter(week > 0)
+stopifnot(
+  # Structural: a wrong sign, rate or Emax moves every arm by far more.
+  median(abs(post$pct_diff)) < 12,
+  # Envelope across the six post-baseline arm-week means.
+  max(abs(post$pct_diff)) < 30,
+  abs(median(fig2_cmp$pct_diff[fig2_cmp$week == 0])) < 5
+)
+```
+
+The placebo arm depends only on the published PD parameters and matches
+Figure 2. The two cendakimab arms also depend on the illustrative PK, which
+has no between-subject variability. With 200 subjects per arm they run a
+few percent above the published means, which is within the Monte Carlo error
+of a cohort this size: a 3000-subject-per-arm run of the same setup gave
+4.23 (QW) against the published 4.33 at Week 48, and 6.14 against 5.97 on
+placebo.
+
+```{r fig2-pk, fig.width = 8, fig.height = 3.5}
+conc <- sim |>
+  filter(arm != "PBO") |>
+  group_by(arm, week) |>
+  summarise(Cc = median(Cc), .groups = "drop")
+
+ggplot(conc, aes(week, Cc)) +
+  geom_line() +
+  geom_hline(yintercept = exp(4.337), linetype = "dashed") +
+  facet_wrap(~arm) +
+  scale_x_continuous(breaks = seq(0, 48, 12)) +
+  labs(
+    x = "Time after first dose (weeks)",
+    y = "Cendakimab (ug/mL)",
+    caption = "Illustrative typical PK; dashed line: EC50 = 76.5 ug/mL."
+  ) +
+  theme_bw()
+```
+
+## Steroid IR/I vs. steroid R/N (Figure 3)
+
+Replicates Figure 3 of Du 2026. Steroid IR/I raises Emax by a factor of
+exp(0.2377) = 1.27. Du 2026 reports that at Week 48 Steroid IR/I subjects had
+about 0.31 (QW) and 0.26 (QW/Q2W) fewer mean DD than Steroid R/N subjects
+(Figure 3: 4.21 vs 4.53 and 4.54 vs 4.80). With 200 subjects per arm the
+between-subgroup comparison is dominated by sampling noise, so the effect is
+checked on the same subjects solved twice, once with every subject
+`STEROID_IR = 1` and once with `STEROID_IR = 0` (same random effects).
+
+```{r fig3, fig.width = 8, fig.height = 4}
+paired_events <- events |> semi_join(eligible, by = "id")
+solve_steroid <- function(value) {
+  rxode2::rxSetSeed(2026)
+  rxode2::rxSolve(
+    mod,
+    events = mutate(paired_events, STEROID_IR = value),
+    keep = "arm"
+  ) |>
+    as.data.frame() |>
+    mutate(week = time / wk, dd_mean = pinform * NDAYS * xi + (1 - pinform) * NDAYS / 2)
+}
+paired <- bind_rows(
+  solve_steroid(1L) |> mutate(group = "Steroid IR/I"),
+  solve_steroid(0L) |> mutate(group = "Steroid R/N")
+) |>
+  mutate(arm = factor(arm, levels = arm_levels))
+
+# The random effects must coincide between the two solves.
+eta_check <- paired |>
+  filter(time == 0) |>
+  select(id, group, rbase) |>
+  pivot_wider(names_from = group, values_from = rbase)
+stopifnot(isTRUE(all.equal(eta_check[["Steroid IR/I"]], eta_check[["Steroid R/N"]])))
+
+paired_mean <- paired |>
+  group_by(arm, group, week) |>
+  summarise(dd_mean = mean(dd_mean), .groups = "drop")
+
+ggplot(paired_mean, aes(week, dd_mean, colour = group)) +
+  geom_line() +
+  facet_wrap(~arm) +
+  scale_x_continuous(breaks = seq(0, 48, 8)) +
+  coord_cartesian(ylim = c(0, 14)) +
+  labs(x = "Time after first dose (weeks)", y = "Mean dysphagia days", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+steroid_wk48 <- paired_mean |>
+  filter(week == 48) |>
+  pivot_wider(names_from = group, values_from = dd_mean) |>
+  mutate(difference = `Steroid R/N` - `Steroid IR/I`) |>
+  left_join(
+    tibble(
+      arm = factor(arm_levels, levels = arm_levels),
+      published = c(5.94 - 5.97, 4.53 - 4.21, 4.80 - 4.54)
+    ),
+    by = "arm"
+  )
+steroid_wk48 |>
+  select(arm, `Steroid IR/I`, `Steroid R/N`, difference, published) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2))) |>
+  rename(
+    "Regimen" = arm,
+    "R/N minus IR/I (simulated)" = difference,
+    "R/N minus IR/I (Figure 3)" = published
+  ) |>
+  knitr::kable(caption = "Week-48 mean DD by steroid status (paired solve).")
+
+trt <- steroid_wk48 |> filter(arm != "PBO")
+stopifnot(
+  # The placebo arm has no drug effect, so steroid status cannot matter.
+  abs(steroid_wk48$difference[steroid_wk48$arm == "PBO"]) < 1e-8,
+  all(trt$difference > 0.1),
+  all(trt$difference < 0.6)
+)
+```
+
+## Baseline DD < 12 vs. >= 12 (Figure 4)
+
+Replicates Figure 4 of Du 2026, stratifying subjects by their simulated
+baseline DD.
+
+```{r fig4, fig.width = 8, fig.height = 4}
+strata <- sim |>
+  mutate(stratum = ifelse(dd_bl >= 12, "Baseline DD >= 12", "Baseline DD < 12")) |>
+  group_by(arm, stratum, week) |>
+  summarise(mean_dd = mean(dd), model_mean = mean(dd_mean), n = n(), .groups = "drop")
+
+ggplot(strata, aes(week, ifelse(week == 0, mean_dd, model_mean), colour = stratum)) +
+  geom_line() +
+  facet_wrap(~arm) +
+  scale_x_continuous(breaks = seq(0, 48, 8)) +
+  coord_cartesian(ylim = c(0, 14)) +
+  labs(x = "Time after first dose (weeks)", y = "Mean dysphagia days", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+published_fig4 <- tribble(
+  ~arm, ~stratum, ~week, ~published,
+  "PBO", "Baseline DD < 12", 48, 3.62,
+  "PBO", "Baseline DD >= 12", 48, 7.20,
+  "CEN 360 mg QW", "Baseline DD < 12", 48, 1.79,
+  "CEN 360 mg QW", "Baseline DD >= 12", 48, 5.62,
+  "CEN 360 mg QW/Q2W", "Baseline DD < 12", 48, 2.06,
+  "CEN 360 mg QW/Q2W", "Baseline DD >= 12", 48, 5.93
+) |>
+  mutate(arm = factor(arm, levels = arm_levels))
+
+fig4_cmp <- published_fig4 |>
+  left_join(strata, by = c("arm", "stratum", "week"))
+fig4_cmp |>
+  select(arm, stratum, n, published, model_mean) |>
+  mutate(model_mean = round(model_mean, 2)) |>
+  rename(
+    "Regimen" = arm,
+    "Stratum" = stratum,
+    "Subjects" = n,
+    "Week-48 mean DD (Figure 4)" = published,
+    "Week-48 mean DD (simulated)" = model_mean
+  ) |>
+  knitr::kable(caption = "Week-48 mean DD by baseline-DD stratum.")
+
+gap <- fig4_cmp |>
+  group_by(arm) |>
+  summarise(gap = diff(model_mean), published_gap = diff(published))
+stopifnot(all(gap$gap > 1.5), all(gap$gap < 7))
+```
+
+Du 2026 reports a Week-48 gap of about 3.9 days between the strata in both
+cendakimab arms. The simulated gaps are of the same size; the strata are
+small (a few dozen subjects below 12 days per arm), so the per-stratum means
+carry more sampling noise than the arm means.
+
+# Likelihood checks
+
+The CUB probability mass function must sum to 1 over `k = 0..NDAYS` on a
+post-baseline record, and over `k = 4..NDAYS` on a baseline record, where it
+is conditioned on `DD >= 4`. It must also equal the R reference
+`pi * dbinom(k, n, xi) + (1 - pi) / (n + 1)`. Each `DV` value is placed on its
+own typical-value placebo subject so the solves are independent.
+
+```{r likelihood-check}
+mod_typ <- rxode2::zeroRe(rxode2::rxode(mod))
+lik_events <- tidyr::expand_grid(DV = 0:14, time = c(0, 4 * wk)) |>
+  mutate(
+    id = row_number(),
+    amt = 0,
+    evid = 0L,
+    cmt = "latent_dysphagia_days",
+    NDAYS = 14,
+    STEROID_IR = 0L
+  ) |>
+  bind_cols(pk_typ[rep(1, 1), ])
+lik <- rxode2::rxSolve(mod_typ, events = lik_events, keep = "DV") |>
+  as.data.frame()
+
+lik_sum <- lik |>
+  mutate(baseline = time <= 0) |>
+  filter(!baseline | DV >= 4) |>
+  group_by(baseline) |>
+  summarise(total = sum(lik_dd))
+lik_sum
+stopifnot(all(abs(lik_sum$total - 1) < 1e-10))
+
+post_lik <- lik |> filter(time > 0)
+reference <- post_lik$pinform * dbinom(post_lik$DV, 14, post_lik$xi) +
+  (1 - post_lik$pinform) / 15
+stopifnot(isTRUE(all.equal(post_lik$lik_dd, reference, tolerance = 1e-10)))
+```
+
+# Drug-effect check
+
+On placebo the drug-effect variable stays at 1, so `drug_eff` is exactly 0.
+Under QW dosing the turnover variable approaches its steady state
+`1 - Cc / (EC50 + Cc)` with a half-life of 1.4 weeks; with the concentration
+near its plateau late in the QW arm the two agree closely.
+
+```{r drug-effect-check}
+pbo <- sim |> filter(arm == "PBO")
+stopifnot(max(abs(pbo$drug_eff)) < 1e-12)
+
+late_qw <- sim |>
+  filter(arm == "CEN 360 mg QW", week >= 40) |>
+  mutate(de_ss = 1 - Cc / (exp(4.337) + Cc))
+max(abs(late_qw$latent_dysphagia_days - late_qw$de_ss))
+stopifnot(max(abs(late_qw$latent_dysphagia_days - late_qw$de_ss)) < 0.02)
+```
+
+# PKNCA check of the illustrative PK
+
+Du 2026 reports no NCA results. This block confirms that the illustrative PK
+gives the steady-state exposure read from Figure 2 (QW plateau about 185 to
+190 ug/mL; QW/Q2W about half of QW at Week 48), over the last week (QW) and
+the last two weeks (QW/Q2W) of treatment.
+
+```{r pknca}
+pk_ids <- c("CEN 360 mg QW" = 1L, "CEN 360 mg QW/Q2W" = 2L)
+pk_events <- bind_rows(lapply(names(pk_ids), function(a) {
+  bind_rows(
+    tibble(id = pk_ids[[a]], time = arm_doses[[a]], amt = 360, evid = 1L, cmt = "depot"),
+    tibble(id = pk_ids[[a]], time = seq(44 * wk, 48 * wk, by = 12), amt = 0, evid = 0L, cmt = "central")
+  ) |>
+    mutate(arm = a)
+})) |>
+  bind_cols(pk_typ[rep(1, 1), ]) |>
+  mutate(NDAYS = 14, STEROID_IR = 0L) |>
+  arrange(id, time, desc(evid))
+
+pk_sim <- rxode2::rxSolve(mod_typ, events = pk_events, keep = "arm") |>
+  as.data.frame() |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, arm)
+
+doses_pk <- pk_events |>
+  filter(evid == 1L) |>
+  select(id, time, amt, arm)
+
+conc_obj <- PKNCA::PKNCAconc(pk_sim, Cc ~ time | arm + id)
+dose_obj <- PKNCA::PKNCAdose(doses_pk, amt ~ time | arm + id)
+intervals <- data.frame(
+  arm = c("CEN 360 mg QW", "CEN 360 mg QW/Q2W"),
+  start = c(47 * wk, 46 * wk),
+  end = c(48 * wk, 48 * wk),
+  cav = TRUE,
+  cmax = TRUE,
+  cmin = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tab <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cav", "cmax", "cmin")) |>
+  select(arm, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+nca_tab |>
+  mutate(across(where(is.numeric), \(x) round(x, 1))) |>
+  rename(
+    "Regimen" = arm,
+    "Cav,ss (ug/mL)" = cav,
+    "Cmax,ss (ug/mL)" = cmax,
+    "Cmin,ss (ug/mL)" = cmin
+  ) |>
+  knitr::kable(caption = "Steady-state NCA of the illustrative typical PK.")
+
+cav_qw <- nca_tab$cav[nca_tab$arm == "CEN 360 mg QW"]
+cav_q2w <- nca_tab$cav[nca_tab$arm == "CEN 360 mg QW/Q2W"]
+stopifnot(abs(cav_qw - 190) / 190 < 0.15, abs(cav_q2w / cav_qw - 0.5) < 0.05)
+```
+
+The QW average sits a few percent above the plateau read from Figure 2,
+whose curve is a weekly-sampled median that lies close to the trough; the
+QW/Q2W average is half the QW average, as the paper states.
+
+# Assumptions and deviations
+
+- **PK layer.** The authors' population PK model is not published (Du 2026
+  calls it "not shown"), and no other cendakimab population PK model has been
+  published. The model keeps the authors' sequential design, with the
+  per-subject PK parameters as covariate columns. The vignette's typical PK
+  (CL 0.0105 L/h, Vc 4.5 L, Q 0.03 L/h, Vp 3.5 L, ka 0.012 1/h, no lag,
+  F = 1) was chosen by the maintainers to reproduce the median concentration
+  curves of Du 2026 Figure 2. It is illustrative only, with no between-subject
+  variability, so the simulated cendakimab arms cannot reproduce the PK-driven
+  spread of the published simulations.
+- **Placebo onset in closed form.** `PBO(t) = exp(-kPBOKON * t)` replaces the
+  ODE `DADT(4) = -PBOKON*A(4)` with `A_0(4) = 1`; the two are identical when
+  the solve starts at the first dose (`t = 0`). A record before the first
+  dose would give `PBO > 1` in the closed form, while NONMEM starts the ODE at
+  the first record.
+- **Half-lives as rate constants.** Table 2 reports the placebo-onset and
+  drug-onset half-lives in weeks. The model stores
+  `log(log(2) / (168 * t_half))` per hour, the conversion in the NONMEM code;
+  the IIV is on the placebo rate constant, as in `PBOKON = POPPBOKON*EXP(ETA(2))`.
+- **Placebo subjects' PK columns.** The NONMEM code sets every PK parameter to
+  1 for placebo subjects. Placebo subjects receive no doses, so the values
+  are irrelevant as long as they are positive.
+- **Simulated cohort.** Only steroid status enters the final model. Each
+  subject is Steroid IR/I with probability 0.663 (Table 1), the diary is
+  complete (`NDAYS = 14`), and there is no dropout, as in the paper's
+  simulations. Du 2026 drew 1000 subjects per replicate over 500 replicates
+  with parameter uncertainty; the vignette uses 200 subjects per arm and the
+  point estimates.
+- **Endpoint names.** The count output is `dysphagia_days` and the
+  drug-effect latent state is `latent_dysphagia_days`; `xi` is the daily
+  dysphagia probability and `dd_binom_mean = NDAYS * xi` is the NONMEM `IPRE`.
+
+# Errata
+
+- **Equation 10 width factor.** Equation 10 prints the width factor of the
+  logit-transformed IIV as `e^thetaLGT2`. The Supporting Information NONMEM
+  code multiplies by `LGT2 = THETA(8)` directly
+  (`ETABASET = (EXP(LGT1+ETABASE)/(1+EXP(LGT1+ETABASE))-LGT1T)*LGT2`) with a
+  lower bound of 0 on THETA(8), and the Table 2 estimate of 61.24 is only
+  plausible on the linear scale (`e^61.24` would be about 4e26). The model
+  follows the code. Equation 10 also writes `LGT1` for the term subtracted
+  inside the brackets; the code subtracts `LGT1T = expit(LGT1)`, which is the
+  definition in Equation 9.
+- **IIV structure.** The Abstract states that IIV was estimated for baseline
+  DD, maximum placebo effect and maximum drug effect. The final model in
+  Table 2 and the NONMEM code has IIV on BASE and on the placebo-onset rate
+  constant only (with their covariance); IIV on Pmax and Emax was explored
+  (Table S3) and is not in the final model. The model follows Table 2.
+- **Covariance label.** The Table 2 footnote calls the `BASE-kPBOKON` entry a
+  correlation. The value 1.178 is the off-diagonal element of the NONMEM
+  `$OMEGA BLOCK(2)`, a covariance; the implied correlation is
+  1.178 / sqrt(4.309 * 4.041) = 0.28.
+- **Effect signs.** Equation 2 subtracts the placebo and drug effects; the
+  NONMEM code adds `PBOEFF = -1*PMAX*(1-A(4))` and `DEEFF = -1*EMAX*(1-A(5))`.
+  The two are the same.
+- No correction notice for Du 2026 was found on Europe PMC (checked
+  2026-11-11).
