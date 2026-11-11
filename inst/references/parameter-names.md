@@ -1791,12 +1791,13 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Chan_2021_pregabalin_lsr28.R` (`rmax_lsr28` = -0.924, common to children and adults, with population-specific intercepts 0.110 (adults) and -0.409 (children)).
 - **Notes:** Do not use `emax` here. Because the level is shared while the intercepts differ, the implied increment `int - rmax_lsr28` is 1.034 for adults and 0.515 for children; encoding the paper's value as an increment would give both populations the same drug effect, which is not the fitted model.
 
-### lrmin_alt, lrmin_ast (**canonical log-transformed asymptotic plateau level of a declining PD output**)
+### lrmin_alt, lrmin_ast, lrmin_egfr (**canonical log-transformed asymptotic plateau level of a declining PD output**)
 - **Type:** paper-named-param
 - **Role:** Log-transformed level that a DECLINING PD endpoint approaches as time goes to infinity, in the endpoint's own clinical units -- the floor counterpart of the `lrmax_<output>` ceiling. It is an asymptotic PLATEAU, not the pre-treatment value: in a decline-to-asymptote model `y(t) = rmin + amplitude * g(t)` with `g(0) = 1` and `g(Inf) = 0`, the pre-treatment value is `rmin + amplitude`. Inside `model()` the bare names are `rmin_alt`, `rmin_ast` (or a bare `rmin` when the file has one output); the per-output suffix follows the `lrmax_<output>` precedent.
 - **Source aliases:**
+  - `eGFRstable` -- Kosinski 2023 Table 2 (the value the long-term eGFR trajectory decays to).
   - `Baseline` -- Tran 2026 Table 2 label for the term outside the Weibull exponential. Despite the label it is the asymptote: the pre-treatment arm means are Baseline + A = 73.0 U/L (ALT) and 45.7 U/L (AST), and the plateaus are 33.9 and 29.6 U/L.
-- **Example models:** `Tran_2026_pioglitazone_alt_mbma.R` (`rmin_alt` = 33.9 U/L), `Tran_2026_pioglitazone_ast_mbma.R` (`rmin_ast` = 29.6 U/L), each with the Weibull amplitude `lwamp_<output>`.
+- **Example models:** `Tran_2026_pioglitazone_alt_mbma.R` (`rmin_alt` = 33.9 U/L), `Tran_2026_pioglitazone_ast_mbma.R` (`rmin_ast` = 29.6 U/L), each with the Weibull amplitude `lwamp_<output>`; `Kosinski_2023_kidneyTransplant_egfr.R` (`rmin_egfr` = 8.85 mL/min/1.73 m^2, the paper's `eGFRstable`, with the exponential amplitude `lamp_decline_egfr`).
 - **Notes:** Do not use `lrbase` for this quantity even when the source calls it "Baseline": `lrbase` is the pre-treatment level, and the two differ by the whole amplitude of the decline (39.1 U/L for the founding ALT model). Register additional `lrmin_<output>` members as new endpoints appear rather than reusing an existing one.
 
 ### lwamp_alt, lwamp_ast (**canonical log-transformed amplitude of a Weibull decline to a plateau**)
@@ -1814,6 +1815,14 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `lambda1 (Placebo group)`, `lambda2 (Drug group)` -- Tran 2026 Table 2 (called the "shape factor" in Methods 2.2.2 and the Discussion).
 - **Example models:** `Tran_2026_pioglitazone_alt_mbma.R` (0.0689 placebo, 0.534 pioglitazone), `Tran_2026_pioglitazone_ast_mbma.R` (0.0352 placebo, 0.694 pioglitazone).
 - **Notes:** The `_placebo` / `_drug` stratum suffix matches the registered `slope_placebo` / `slope_drug` pair. A model with a single Weibull rate and no treatment split uses the plain `lwlambda`. Because `wlambda` multiplies `t^wgamma`, its units depend on `wgamma` and its value is not comparable across models with different exponents.
+
+### lamp_decline_egfr (**canonical log-transformed amplitude of an exponential decline from a recovery peak to a plateau**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed amplitude of a mono-exponential decline from a peak to the plateau `rmin_<output>`, in the endpoint's units. In the Chapman-Richards growth with stabilizing decay form `y(t) = (rmin + amp) * (1 - exp(-k_recovery * t)) + amp * (exp(-k_decline * t) - 1)`, `rmin + amp` is the peak the recovery phase would reach without decline and `amp` is how far the endpoint falls from it as `t` goes to infinity. Inside `model()` the bare name is `amp_decline_<output>`.
+- **Source aliases:**
+  - `eGFRdelta` (printed as eGFR with a Delta subscript) -- Kosinski 2023 Table 1 Eq. 5 and Table 2.
+- **Example models:** `Kosinski_2023_kidneyTransplant_egfr.R` (`amp_decline_egfr` = 46.1 mL/min/1.73 m^2).
+- **Notes:** The exponential sibling of the Weibull amplitude `lwamp_<output>`; do not reuse `lwamp_` because there is no Weibull exponent. Parameterising the peak as `rmin + amp` with both positive keeps the peak above the plateau, which is why the source estimates the amplitude rather than the peak. For another endpoint, swap the output suffix.
 
 ### lwgamma (**canonical log-transformed Weibull time exponent of a decline-to-plateau time course**)
 - **Type:** paper-named-param
@@ -2984,6 +2993,14 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
   - `K1`, `K2` -- Pastuszak 2021 Table 2 (units misprinted 'L/h'; they are 1/h) and the Results equation.
 - **Example models:** `Pastuszak_2021_testosteroneUndecanoate.R` (founding example; `k_suppression_te` = 10 1/h FIXED, effectively an immediate switch-off; `k_recovery_te` = 0.000727 1/h, a recovery half-life of about 40 days).
 - **Notes:** Spelled-out stems, per the maintainers' ruling. These describe an empirical change over time in a production rate, not a drug-concentration-driven feedback loop: no state carries the suppression. Distinct from `lkrec` / `lthalfrec` (recovery of an effect-compartment or indirect-response pool) and from the `_kdes` decay rate of a time-varying clearance (`cl_exp_kdes`). For another hormone, swap the analyte suffix (e.g. `lk_recovery_<analyte>`).
+
+### lk_recovery_egfr, k_recovery_egfr, lk_decline_egfr, k_decline_egfr (**canonical rate constants for early graft recovery and long-term decline of eGFR**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constants (1 / time) of an empirical eGFR trajectory after kidney transplantation: `k_recovery_egfr` is how fast eGFR rises to its peak as the graft recovers function, and `k_decline_egfr` how fast it then falls towards the plateau `rmin_egfr`. Together: `egfr(t) = (rmin_egfr + amp_decline_egfr) * (1 - exp(-k_recovery_egfr * t)) + amp_decline_egfr * (exp(-k_decline_egfr * t) - 1)`, with `t` the time since transplant. Log-transformed `ini()` primaries are `lk_recovery_egfr` / `lk_decline_egfr`.
+- **Source aliases:**
+  - `ka`, `ke` -- Kosinski 2023 Table 1 and Table 2 ('rate of exponential growth and decay').
+- **Example models:** `Kosinski_2023_kidneyTransplant_egfr.R` (founding example; `k_recovery_egfr` = 44.7 1/year, a recovery half-life of about 6 days for a deceased-donor graft; `k_decline_egfr` = 0.0034 1/year).
+- **Notes:** Spelled-out stems, as for `lk_recovery_te` / `lk_suppression_te`. The source's `ka` / `ke` are NOT absorption and elimination rate constants -- nothing is dosed -- so `lka` / `lkel` would mislead. Distinct from `lkrec` / `lthalfrec` (recovery of an effect-compartment or indirect-response pool). For another endpoint, swap the output suffix.
 
 ### lkin_stomach_deep, lkout_stomach_deep, kin_stomach_deep, kout_stomach_deep (**canonical stomach deep-pool exchange rate constants**)
 - **Type:** paper-named-param
