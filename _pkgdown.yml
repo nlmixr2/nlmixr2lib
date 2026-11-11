@@ -226,6 +226,8 @@ navbar:
         href: articles/Riggs_2012_albinterferon.html
       - text: "AlbuminNanoparticles mouse pbpk (Kutumova 2024)"
         href: articles/Kutumova_2024_albuminNanoparticles.html
+      - text: "Alectinib (Wanika 2024)"
+        href: articles/Wanika_2024_tki_nsclc_invitro.html
       - text: "Alectinib (vanderHeijden 2023)"
         href: articles/vanderHeijden_2023_alectinib.html
       - text: "Alemtuzumab (Admiraal 2019)"
@@ -1836,6 +1838,8 @@ navbar:
         href: articles/Desai_2024_crisprCas9.html
       - text: "CrisprCas9 nhp (Desai 2024)"
         href: articles/Desai_2024_crisprCas9.html
+      - text: "Crizotinib (Wanika 2024)"
+        href: articles/Wanika_2024_tki_nsclc_invitro.html
       - text: "Crizotinib mouse (Yamazaki 2008)"
         href: articles/Yamazaki_2008_crizotinib_mouse.html
       - text: "Crovalimab (Cosson 2025)"
@@ -2678,6 +2682,8 @@ navbar:
         href: articles/vanHasselt_2013_eribulin.html
       - text: "Eribulin (vanHasselt 2015)"
         href: articles/vanHasselt_2015_eribulin.html
+      - text: "Erlotinib (Wanika 2024)"
+        href: articles/Wanika_2024_tki_nsclc_invitro.html
       - text: "Erlotinib mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Ertapenem (Eyler 2014)"
@@ -3278,6 +3284,8 @@ navbar:
         href: articles/Choi_2016_gcc4401c_rivaroxaban.html
       - text: "Gefapixant (Chawla 2023)"
         href: articles/Chawla_2023_gefapixant.html
+      - text: "Gefitinib (Wanika 2024)"
+        href: articles/Wanika_2024_tki_nsclc_invitro.html
       - text: "Gemcitabine (Jiang 2008)"
         href: articles/Jiang_2008_gemcitabine.html
       - text: "Gemifloxacin (Landersdorfer 2009)"
@@ -11403,6 +11411,7 @@ articles:
   - articles/Wang_2026_ciprofol
   - articles/Wang_2026_polymyxinB
   - articles/Wang_2026_serplulimab
+  - articles/Wanika_2024_tki_nsclc_invitro
   - articles/Ward_2026_magnesium_pbpk
   - articles/Warren_2025_pde4_il13_atopic_dermatitis
   - articles/Wassef_2026_cefazolin
