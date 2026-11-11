@@ -74,9 +74,10 @@ test_that(".addDirToModelDbCached parses on cold run and reuses cache on warm ru
   # Spy on addFileToModelDb so we can assert cache hits avoid re-parsing.
   ns <- asNamespace("nlmixr2lib")
   orig <- get("addFileToModelDb", envir = ns)
-  count <- 0L
+  spy <- new.env(parent = emptyenv())
+  spy$calls <- 0L
   replacement <- function(...) {
-    count <<- count + 1L
+    spy$calls <- spy$calls + 1L
     orig(...)
   }
   unlockBinding("addFileToModelDb", ns)
@@ -90,14 +91,14 @@ test_that(".addDirToModelDbCached parses on cold run and reuses cache on warm ru
   )
 
   cold <- nlmixr2lib:::.addDirToModelDbCached(fixtureDir, entries = list())
-  expect_equal(count, 1L)
+  expect_equal(spy$calls, 1L)
   expect_equal(nrow(cold$modeldb), 1L)
   expect_identical(cold$modeldb$name, "PK_1cmt")
   expect_named(cold$entries, "PK_1cmt.R")
   expect_equal(nchar(cold$entries[["PK_1cmt.R"]]$hash), 32L)
 
   warm <- nlmixr2lib:::.addDirToModelDbCached(fixtureDir, entries = cold$entries)
-  expect_equal(count, 1L) # unchanged — no re-parse on cache hit
+  expect_equal(spy$calls, 1L) # unchanged — no re-parse on cache hit
   expect_equal(warm$modeldb, cold$modeldb)
   expect_identical(warm$entries, cold$entries)
 })
