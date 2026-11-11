@@ -400,6 +400,8 @@ navbar:
         href: articles/Beredaki_2024_amphotericinB_liposomal.html
       - text: "AmphotericinB liposomal cauris48h (Beredaki 2024)"
         href: articles/Beredaki_2024_amphotericinB_liposomal.html
+      - text: "AmphotericinB rat (Santos 2024)"
+        href: articles/Santos_2024_amphotericinB_rat.html
       - text: "Ampicillin (Setiawan 2023)"
         href: articles/Setiawan_2023_ampicillin_sulbactam.html
       - text: "Ampicillin (Tremoulet 2014)"
@@ -11039,6 +11041,7 @@ articles:
   - articles/Sano_2023_fesoterodine
   - articles/Santamaria_2017_rupatadine
   - articles/Santavy_2022_cefazolin
+  - articles/Santos_2024_amphotericinB_rat
   - articles/SanzCodina_2024_cefiderocol
   - articles/Saporta_2024_afabicin
   - articles/Saporta_2026_meropenem
