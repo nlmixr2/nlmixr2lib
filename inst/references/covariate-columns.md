@@ -10646,6 +10646,28 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Panjasawatwong_2020_tbm_mortality.R` (selects the grade III Weibull scale factor of the time-to-death hazard, lambda = 7.94e-5 1/h, Panjasawatwong 2020 Table S3).
 - **Notes:** Mutually exclusive with `TBM_GRADE_II` -- see that entry. Grade III carries by far the highest mortality: 18 of the 100 children in Panjasawatwong 2020 were grade III at baseline, and the fitted hazard puts their 8-month survival near 50%, against about 98% for grade I.
 
+### DIARRHEA_MAX_GRADE_1 (**canonical for overall-maximum diarrhea grade 1 (mild) indicator**)
+- **Description:** 1 = the highest diarrhea severity grade recorded for the participant over all stool assessments of the study (the "overall maximum diarrhea grade") is grade 1 (mild diarrhea); 0 = otherwise (overall maximum grade 0 or grade 2). Subject-level and time-fixed: it summarises the whole assessment window, so a participant who was diarrhea-free on day 1 and graded 1 on day 3 carries 1 on every record. Paired with `DIARRHEA_MAX_GRADE_2` to reproduce the three-level grade (0 = no diarrhea at any assessment, 1 = mild, 2 = severe) with two mutually exclusive level indicators; overall maximum grade 0 is the reference level (both indicators = 0).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general -- diarrhea severity grading is not drug- or disease-specific, and a summary severity grade over the dosing period is a natural covariate on oral bioavailability for any drug given to patients with diarrheal disease.
+- **Reference category:** 0; family reference level is overall maximum grade 0 (`DIARRHEA_MAX_GRADE_1` = 0 and `DIARRHEA_MAX_GRADE_2` = 0).
+- **Source aliases:**
+  - `Overall max diarrhea grade` / `overall maximum diarrhea grade` (ordinal column with levels 0 / 1 / 2) -- Zhang 2024 Table 3 rows 'Overall max diarrhea grade = 1' and '= 2'; decompose: `DIARRHEA_MAX_GRADE_1 = as.integer(grade == 1)`.
+- **Example models:** `Zhang_2024_clofazimine.R` (exponential shift on oral relative bioavailability, Zhang 2024 Equation 6: `fdepot = exp(lfdepot + etalfdepot + ... + e_diarrhea_max_grade_1_fdepot * DIARRHEA_MAX_GRADE_1 + e_diarrhea_max_grade_2_fdepot * DIARRHEA_MAX_GRADE_2)` with `e_diarrhea_max_grade_1_fdepot = -1.80`, so F = exp(-1.80) = 0.165 of the diarrhea-free value; Zhang 2024 Table 3. Grading in Zhang 2024: stool assessed before each of three daily doses on days 1-5 and once on day 6 -- founding example).
+- **Notes:** Level indicators, NOT cumulative thresholds -- the same encoding as the `TBM_GRADE_II` / `TBM_GRADE_III` and `ISS_II` / `ISS_III` pairs; a grade-2 participant has `DIARRHEA_MAX_GRADE_1` = 0. Distinct from `AE_DIARRHEA`, which is an ungraded, per-record, time-varying flag for *treatment-emergent* diarrhea at the time of the record; this entry is a graded subject-level maximum and, in the founding model, describes disease-driven (cryptosporidiosis-associated) diarrhea present before treatment. Distinct also from a *daily* maximum grade (the highest grade within one study day), which is time-varying and was screened but not retained by Zhang 2024 (Table 1, models 10-12); a model that uses the daily form needs its own per-record column. The grading scale is the source study's own two-step severity scale (mild / severe); record in each model's `covariateData[[DIARRHEA_MAX_GRADE_1]]$notes` how the grade was assessed and over which window the maximum was taken.
+
+### DIARRHEA_MAX_GRADE_2 (**canonical for overall-maximum diarrhea grade 2 (severe) indicator**)
+- **Description:** 1 = the highest diarrhea severity grade recorded for the participant over all stool assessments of the study is grade 2 (severe diarrhea); 0 = otherwise (overall maximum grade 0 or grade 1). Subject-level and time-fixed. Paired with `DIARRHEA_MAX_GRADE_1`; see that entry for the grading definition and the family encoding.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0; family reference level is overall maximum grade 0 (`DIARRHEA_MAX_GRADE_1` = 0 and `DIARRHEA_MAX_GRADE_2` = 0).
+- **Source aliases:**
+  - `Overall max diarrhea grade` / `overall maximum diarrhea grade` (ordinal column with levels 0 / 1 / 2) -- decompose: `DIARRHEA_MAX_GRADE_2 = as.integer(grade == 2)`.
+- **Example models:** `Zhang_2024_clofazimine.R` (exponential shift on oral relative bioavailability, `e_diarrhea_max_grade_2_fdepot = -3.08`, F = exp(-3.08) = 0.0460 of the diarrhea-free value; Zhang 2024 Table 3. Estimated from the single participant with an overall maximum grade of 2).
+- **Notes:** Mutually exclusive with `DIARRHEA_MAX_GRADE_1` -- see that entry.
+
 ### TTP_MGIT_BASE (**canonical for baseline mean time-to-positivity in mycobacterial growth indicator tube**)
 - **Description:** Subject-specific baseline (pre-treatment) mean time-to-positivity (TTP) in the mycobacterial growth indicator tube (MGIT) liquid-culture system, expressed in days. Computed in the source paper as the mean of three replicate spot-sputum-sample TTP values collected the day before the start of treatment. The MGIT system automatically records the time in hours from inoculation to a positive signal indicating presence of *M. tuberculosis* (cap at 42 days = negative); the per-subject baseline TTP is then used as a covariate driving the model's starting mycobacterial load (a longer baseline TTP corresponds to fewer viable bacteria in the inoculum and a lower starting MBL). Time-fixed per subject in the Svensson 2017 source.
 - **Units:** days
