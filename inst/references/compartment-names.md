@@ -1079,6 +1079,24 @@ The MTP framework partitions the bacterial population into three states. The ori
 
 ---
 
+## Myasthenia-gravis quantitative score
+
+### mgts (**canonical quantitative myasthenia-gravis total score output**)
+- **Type:** compartment
+- **Role:** Absolute total score of the Chinese quantitative myasthenia-gravis (MG) scoring system, the sum of the blepharoptosis, eyelid fatigue, eye movement, arm fatigue, leg fatigue, facial weakness, chewing, swallowing and respiratory item scores. Higher is more severe, so effective treatment drives it DOWN. Algebraic output in the founding model (no ODE state).
+- **Source aliases:** `TS` -- Chen 2023 Eq. 5 and the supplementary NONMEM `$PRED`.
+- **Example models:** `Chen_2023_tacrolimus.R` (`mgts = rbase * (1 - emax * auc_central / (auc50 + auc_central))`, an Emax function of the cumulative tacrolimus AUC from the first dose, with an Osserman-class-specific baseline and a proportional residual error).
+- **Notes:** Deliberately not `TS`, which is registered as the tumour-size output of the TGI family (`tumor_size, TS`). Distinct from the MG-ADL instrument (covariate `SCORE_MGADL`, 0-24) and from the US quantitative MG (QMG) score of Besinger and Barohn, which are different scales; a model of either should register its own output rather than reuse this name. A change-from-baseline fit should register `mgtscfb`.
+
+### mgrts (**canonical relative quantitative myasthenia-gravis total score output**)
+- **Type:** compartment
+- **Role:** Relative total score of the Chinese quantitative MG scoring system, `100 * (TS0 - TS) / TS0`, the percentage improvement of `mgts` from its pre-treatment baseline. **Sign convention: POSITIVE for clinical improvement.** Patients with a relative score above 25% are classed as responders. Derived algebraic output in the founding model, not an observed endpoint.
+- **Source aliases:** `RTS` -- Chen 2023 Eq. 6.
+- **Example models:** `Chen_2023_tacrolimus.R` (the paper's simulation endpoint for the 2-week responder assessment).
+- **Notes:** Same orientation as `madrsenh` (percentage reduction of a severity score). Because the founding model's drug effect is a fraction of baseline, `mgrts` there equals `100 * emax * cAUC / (auc50 + cAUC)` and does not depend on the baseline.
+
+---
+
 ## WOMAC osteoarthritis subscale scores
 
 ### womacpain, womacstiffness, womacfunction (**canonical WOMAC subscale score output compartments**)

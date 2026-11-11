@@ -10025,6 +10025,28 @@ Baseline morphology and laterality descriptors of a geographic atrophy (GA) lesi
 - **Example models:** `Gu_2025_digoxin_pbpk.R`.
 - **Notes:** Distinct from `DIS_CHF`, which is an unstratified compensated-CHF indicator; use `DIS_CHF` when the source treats heart failure as a single binary and this trio when it resolves NYHA classes. Distinct from the paediatric `SCORE_ROSS` severity instrument (NYHA is adult-only) and from `DIS_HF_OR_LF_SEV` (which pools severe heart failure with severe liver failure). The covariate-effect parameter form is `e_nyha4_<param>`, dropping the `DIS_CHF_` prefix per the `DIS_CANCER -> e_cancer_<param>` precedent.
 
+### DIS_MG_OSSERMAN2 (**canonical for Osserman class IIa or IIb myasthenia-gravis indicator**)
+- **Description:** 1 = subject has myasthenia gravis of Osserman clinical class IIa (mild generalized) or IIb (moderate generalized), 0 = otherwise. Time-fixed per subject. Member of the mutually-exclusive `DIS_MG_OSSERMAN2` / `DIS_MG_OSSERMAN34` pair; both = 0 selects the Osserman class I (ocular) reference.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (Osserman class I when `DIS_MG_OSSERMAN2` and `DIS_MG_OSSERMAN34` are both 0).
+- **Source aliases:**
+  - `OSSERMANB` (`OSM` = 2 or 3) -- used in `Chen_2023_tacrolimus.R` (Chen 2023 supplementary NONMEM `$PRED`; source column `OSM` codes 1 = I, 2 = IIa, 3 = IIb, 4 = III, 5 = IV).
+- **Example models:** `Chen_2023_tacrolimus.R` (selects a separately estimated baseline quantitative MG total score, 10.4 points for IIa/IIb against 4.08 for class I).
+- **Notes:** The IIa + IIb pooling is the founding paper's, made because of small strata; a future paper that keeps IIa and IIb apart should register `DIS_MG_OSSERMAN2A` / `DIS_MG_OSSERMAN2B` rather than overload this name. Distinct from the MG-ADL score covariate `SCORE_MGADL`, which is a symptom-severity instrument rather than a clinical class. The covariate-effect parameter form is `e_osserman2_<param>`; a separately estimated stratum value takes the `_osserman2` stratum suffix (`lrbase_osserman2`).
+
+### DIS_MG_OSSERMAN34 (**canonical for Osserman class III or IV myasthenia-gravis indicator**)
+- **Description:** 1 = subject has myasthenia gravis of Osserman clinical class III (acute fulminating) or IV (late severe), 0 = otherwise. Time-fixed per subject. Member of the mutually-exclusive `DIS_MG_OSSERMAN2` / `DIS_MG_OSSERMAN34` pair; both = 0 selects the Osserman class I (ocular) reference.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (Osserman class I when `DIS_MG_OSSERMAN2` and `DIS_MG_OSSERMAN34` are both 0).
+- **Source aliases:**
+  - `OSSERMANC` (`OSM` = 4 or 5) -- used in `Chen_2023_tacrolimus.R` (Chen 2023 supplementary NONMEM `$PRED`).
+- **Example models:** `Chen_2023_tacrolimus.R` (selects a separately estimated baseline quantitative MG total score of 19.0 points).
+- **Notes:** The III + IV pooling is the founding paper's (only four class-III patients). Osserman class V (muscle atrophy) has no indicator because no founding-paper patient had it; register `DIS_MG_OSSERMAN5` if a paper needs it. The covariate-effect parameter form is `e_osserman34_<param>`; a separately estimated stratum value takes the `_osserman34` stratum suffix (`lrbase_osserman34`).
+
 ## Epilepsy baseline seizure-severity indicators
 
 Baseline seizure-severity indicators derived from a pre-trial seizure count (typically the number of seizures in the 3 months before study entry, decomposed by the source paper into severity bins). The count itself is decomposed into a set of mutually-exclusive binary indicators per the maintainers' standing policy for count covariates ("count covariate -> decomposed binary indicators, not a single integer count"). Members are jointly restricted to at most one being = 1 for any subject; the reference category is 2-6 seizures in the previous 3 months (all indicators = 0 selects the reference).
