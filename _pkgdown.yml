@@ -200,6 +200,8 @@ navbar:
         href: articles/Nakao_2019_afatinib.html
       - text: "Afatinib mouse (Yang 2025)"
         href: articles/Yang_2025_afatinib_mouse.html
+      - text: "Afatinib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Aficamten (Xu 2025)"
         href: articles/Xu_2025_aficamten.html
       - text: "Aflibercept (Bihorel 2026)"
@@ -726,6 +728,8 @@ navbar:
         href: articles/Garrett_2014_axitinib.html
       - text: "Axitinib (Rini 2013)"
         href: articles/Rini_2013_axitinib.html
+      - text: "Axitinib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Axomadol (MangasSanjuan 2016)"
         href: articles/MangasSanjuan_2016_axomadol.html
       - text: "Azd7648 mouse (DeJongh 2025)"
@@ -1024,6 +1028,8 @@ navbar:
         href: articles/Hanley_2017_bortezomib.html
       - text: "Bosentan pbpk (Aoki 2024)"
         href: articles/Aoki_2024_bosentan_pbpk.html
+      - text: "Bosutinib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Brazikumab (Zhang 2023)"
         href: articles/Zhang_2023_brazikumab.html
       - text: "Brazikumab crp (Zhang 2023)"
@@ -1204,6 +1210,8 @@ navbar:
         href: articles/Lacy_2018_cabozantinib_exposure_response.html
       - text: "Cabozantinib liver dysfunction (Nguyen 2019)"
         href: articles/Nguyen_2019_cabozantinib.html
+      - text: "Cabozantinib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Cabozantinib tumor (Lacy 2018)"
         href: articles/Lacy_2018_cabozantinib_exposure_response.html
       - text: "Cafedrine theodrenaline ephedrine (Dings 2026)"
@@ -1890,6 +1898,8 @@ navbar:
         href: articles/Wanika_2024_tki_nsclc_invitro.html
       - text: "Crizotinib mouse (Yamazaki 2008)"
         href: articles/Yamazaki_2008_crizotinib_mouse.html
+      - text: "Crizotinib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Crovalimab (Cosson 2025)"
         href: articles/Cosson_2025_crovalimab.html
       - text: "CyaaE7 (ParraGuillen 2013)"
@@ -1952,6 +1962,8 @@ navbar:
         href: articles/Eaton_2025_dabigatran_sheep.html
       - text: "Dabrafenib (Balakirouchenane 2020)"
         href: articles/Balakirouchenane_2020_dabrafenib_trametinib.html
+      - text: "Dabrafenib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Daclatasvir (Osawa 2018)"
         href: articles/Osawa_2018_daclatasvir_asunaprevir.html
       - text: "Daclizumab (Othman 2014)"
@@ -2058,6 +2070,8 @@ navbar:
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Dasatinib (Hassouneh 2024)"
         href: articles/Hassouneh_2024_dasatinib.html
+      - text: "Dasatinib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Datopotamab (Hong 2025)"
         href: articles/Hong_2025_datopotamab.html
       - text: "Daunorubicin (Bogason 2011)"
@@ -2738,10 +2752,8 @@ navbar:
         href: articles/Yin_2024_erlotinib.html
       - text: "Erlotinib mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
-      - text: "Erlotinib tumor (Yin 2024)"
-        href: articles/Yin_2024_erlotinib.html
-      - text: "Erlotinib tumor ctdna (Yin 2024)"
-        href: articles/Yin_2024_erlotinib.html
+      - text: "Erlotinib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Ertapenem (Eyler 2014)"
         href: articles/Eyler_2014_ertapenem.html
       - text: "Ertapenem (Lakota 2018)"
@@ -3356,8 +3368,8 @@ navbar:
         href: articles/Choi_2016_gcc4401c_rivaroxaban.html
       - text: "Gefapixant (Chawla 2023)"
         href: articles/Chawla_2023_gefapixant.html
-      - text: "Gefitinib (Wanika 2024)"
-        href: articles/Wanika_2024_tki_nsclc_invitro.html
+      - text: "Gefitinib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Gemcitabine (Jiang 2008)"
         href: articles/Jiang_2008_gemcitabine.html
       - text: "Gemifloxacin (Landersdorfer 2009)"
@@ -3712,6 +3724,8 @@ navbar:
         href: articles/Yang_2025_imatinib_external_evaluation.html
       - text: "Imatinib (Yamakawa 2011)"
         href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imatinib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Imc002 (Jeong 2025)"
         href: articles/Jeong_2025_imc002.html
       - text: "Imeglimin (Tomita 2022)"
@@ -4148,6 +4162,8 @@ navbar:
         href: articles/BuilBruna_2015_lanreotide.html
       - text: "Lansoprazole (Sakurai 2007)"
         href: articles/Sakurai_2007_lansoprazole.html
+      - text: "Lapatinib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Latamoxef (Wang 2022)"
         href: articles/Wang_2022_latamoxef.html
       - text: "Latamoxef r (Wang 2022)"
@@ -5896,6 +5912,8 @@ navbar:
         href: articles/Ozbey_2021_pazopanib.html
       - text: "Pazopanib mouse (Ouerdani 2015)"
         href: articles/Ouerdani_2015_pazopanib_mouse.html
+      - text: "Pazopanib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Pb212dotamtate mouse pbpk (Zaid 2021)"
         href: articles/Zaid_2021_pb212dotamtate_mouse_pbpk.html
       - text: "Peficitinib (Toyoshima 2021)"
@@ -6308,6 +6326,8 @@ navbar:
         href: articles/Li_2017_pomalidomide.html
       - text: "Pomalidomide renalcat (Li 2017)"
         href: articles/Li_2017_pomalidomide.html
+      - text: "Ponatinib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Ponezumab (Nicholas 2009)"
         href: articles/Nicholas_2009_ponezumab.html
       - text: "Posaconazole (Dvorackova 2023)"
@@ -6624,6 +6644,8 @@ navbar:
         href: articles/Keunecke_2020_regorafenib.html
       - text: "Regorafenib phase3 (Keunecke 2020)"
         href: articles/Keunecke_2020_regorafenib.html
+      - text: "Regorafenib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Relebactam (Bhagunde 2019)"
         href: articles/Bhagunde_2019_imipenem_relebactam.html
       - text: "Relebactam (Patel 2022)"
@@ -7354,6 +7376,8 @@ navbar:
         href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
       - text: "Sorafenib pgp (Agarwal 2011)"
         href: articles/Agarwal_2011_sorafenib_transporters.html
+      - text: "Sorafenib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Sotalol (Yellepeddi 2025)"
         href: articles/Yellepeddi_2025_sotalol.html
       - text: "Sotatercept (AitOudhia 2024)"
@@ -7450,6 +7474,8 @@ navbar:
         href: articles/vanErp_2010_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
         href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
+      - text: "Sunitinib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Sunitinib su12662 (Wang 2020)"
         href: articles/Wang_2020_sunitinib.html
       - text: "Sunitinib su12662 (Wang 2021)"
@@ -8042,6 +8068,8 @@ navbar:
         href: articles/Balakirouchenane_2020_dabrafenib_trametinib.html
       - text: "Trametinib (Ravix 2024)"
         href: articles/Ravix_2024_trametinib.html
+      - text: "Trametinib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "TranexamicAcid (Dunn 2025)"
         href: articles/Dunn_2025_tranexamicAcid.html
       - text: "TranexamicAcid (Liu 2025)"
@@ -8494,6 +8522,8 @@ navbar:
         href: articles/Downes_2023_vancomycin.html
       - text: "Vancomycin thomson (Tong 2026)"
         href: articles/Tong_2026_vancomycin.html
+      - text: "Vandetanib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Varenicline (Fediuk 2021)"
         href: articles/Fediuk_2021_varenicline.html
       - text: "Varenicline (Ravva 2009)"
@@ -8528,6 +8558,8 @@ navbar:
         href: articles/Niu_2017_veliparib.html
       - text: "Veliparib (Stodtmann 2021)"
         href: articles/Stodtmann_2021_veliparib.html
+      - text: "Vemurafenib qsp (Wan 2025)"
+        href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Venetoclax (Dave 2019)"
         href: articles/Dave_2019_venetoclax.html
       - text: "Venetoclax (Samineni 2022)"
@@ -11599,6 +11631,7 @@ articles:
   - articles/Wallender_2021_piperaquine
   - articles/Walsh_2024_buprenorphine_opioidBlockade
   - articles/Wan_2022_colecalciferol
+  - articles/Wan_2025_tki_cardiotoxicity
   - articles/Wang_2010_romiplostim
   - articles/Wang_2011_raltegravir
   - articles/Wang_2012_levetiracetam
