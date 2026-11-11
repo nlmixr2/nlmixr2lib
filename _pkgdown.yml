@@ -6486,6 +6486,8 @@ navbar:
         href: articles/Hennig_2015_rifabutin.html
       - text: "Rifabutin (SemereGebreyesus 2024)"
         href: articles/SemereGebreyesus_2024_rifabutin.html
+      - text: "Rifabutin mouse (Chang 2023)"
+        href: articles/Chang_2023_rifapentine_rifabutin_mouse.html
       - text: "Rifampicin (Abdelgawad 2025)"
         href: articles/Abdelgawad_2025_rifampicin.html
       - text: "Rifampicin (Barnett 2018)"
@@ -6540,6 +6542,8 @@ navbar:
         href: articles/Francis_2019_rifapentine.html
       - text: "Rifapentine (Zvada 2010)"
         href: articles/Zvada_2010_rifapentine.html
+      - text: "Rifapentine mouse (Chang 2023)"
+        href: articles/Chang_2023_rifapentine_rifabutin_mouse.html
       - text: "Rilotumumab (Zhang 2016)"
         href: articles/Zhang_2016_rilotumumab.html
       - text: "Rilpivirine (Aouri 2017)"
@@ -9027,6 +9031,7 @@ articles:
   - articles/Chandorkar_2015_ceftolozane_tazobactam
   - articles/ChandralayamAyyappaMenon_2026_isb2001
   - articles/Chang_2011_PF04455242_prolactin
+  - articles/Chang_2023_rifapentine_rifabutin_mouse
   - articles/Chang_2023_trastuzumab_vc_mmae
   - articles/Chang_2024_mavacamten
   - articles/Chang_2024_tofacitinib
