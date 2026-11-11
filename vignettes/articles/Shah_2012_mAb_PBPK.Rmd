@@ -564,7 +564,11 @@ stopifnot(
   about `r round(thalf_text / 24)` days. The packaged model therefore
   uses the code's form, with the human whole-body endosomal volume from
   Table 4 (`r signif(v_e_total_human, 3)` L), which gives each tissue a
-  pinocytosis clearance of `r signif(clu_per_tissue, 3)` L/h. Eric
+  pinocytosis clearance of `r signif(clu_per_tissue, 3)` L/h. The same
+  laboratory later wrote the model with the per-tissue form and
+  `CLup = 0.55` L/h/L (Chang et al. 2019,
+  doi:10.1007/s10928-019-09641-8), which is 15 x 0.0366 and so keeps the
+  code's total pinocytosis clearance. Eric
   (GitHub user UPPSALAGUNNER) identified this difference by comparing the
   model with the ADAPT code
   ([issue 549](https://github.com/nlmixr2/nlmixr2lib/issues/549)).
