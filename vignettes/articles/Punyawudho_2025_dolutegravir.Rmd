@@ -146,7 +146,8 @@ typical_single_dose <- function(dose = 50, wt = 60, tbili_mgdl = 0.38) {
   d$TBILI <- tbili_mgdl * MGDL_TO_UMOLL
   d$OCC <- 1
   rxode2::rxSolve(mod_typical, d, returnType = "data.frame",
-                  atol = 1e-12, rtol = 1e-10, addDosing = FALSE)
+                  atol = 1e-12, rtol = 1e-10, addDosing = FALSE,
+                  addlKeepsCov = FALSE)
 }
 
 trap_auc <- function(df) {
@@ -319,7 +320,7 @@ rxode2::rxSetSeed(20260907)
 sim <- rxode2::rxSolve(
   ui, events,
   keep = c("regimen", "wtgrp", "grade"),
-  returnType = "data.frame", addDosing = FALSE
+  returnType = "data.frame", addDosing = FALSE, addlKeepsCov = FALSE
 )
 
 troughs <- sim |>
@@ -524,7 +525,7 @@ rxode2::rxSetSeed(20260907)
 sim_sd <- rxode2::rxSolve(
   ui, events, omega = omega_sd,
   keep = c("regimen", "wtgrp", "grade"),
-  returnType = "data.frame", addDosing = FALSE
+  returnType = "data.frame", addDosing = FALSE, addlKeepsCov = FALSE
 )
 
 convention <- dplyr::bind_rows(
@@ -633,7 +634,7 @@ stopifnot(!anyDuplicated(unique(vpc_events[, c("id", "time", "evid")])))
 rxode2::rxSetSeed(20260908)
 vpc_sim <- rxode2::rxSolve(
   ui, vpc_events, keep = c("arm", "amt_arm", "tau"),
-  returnType = "data.frame", addDosing = FALSE
+  returnType = "data.frame", addDosing = FALSE, addlKeepsCov = FALSE
 ) |>
   dplyr::mutate(tad = time - vpc_runin)
 
@@ -705,7 +706,8 @@ typical_ss <- function(dose, ii, tau, wt = 60, tbili_mgdl = 0.38, label) {
   # A single-subject solve returns no `id` column, so re-attach it explicitly
   # rather than assuming rxSolve carries it through.
   rxode2::rxSolve(mod_typical, d, returnType = "data.frame",
-                  atol = 1e-10, rtol = 1e-8, addDosing = FALSE) |>
+                  atol = 1e-10, rtol = 1e-8, addDosing = FALSE,
+                  addlKeepsCov = FALSE) |>
     dplyr::mutate(id = 1L, time = time - runin, treatment = label,
                   amt_dose = dose, tau = tau)
 }
@@ -924,6 +926,20 @@ stopifnot(
   behaviour. The paper does not state how it mapped its two occasions onto the
   10,000-subject steady-state simulation; alternating is the reading that
   preserves the physical meaning of between-occasion variability.
+* **Every simulation states `addlKeepsCov = FALSE`, the `rxSolve()` default.**
+  Doses carry an absorption lag, and `addlKeepsCov` decides which record's
+  `OCC` a lagged dose uses. With `FALSE` a dose takes its bioavailability from
+  the records in force when it is absorbed, 0.562 h after the dose record, so
+  a record inside the lag window, or one at the dose time sorted after the dose,
+  supplies the occasion; with `TRUE` it takes its bioavailability from its own
+  dose record, as NONMEM does. Every record here carries the occasion of the
+  dose that opened its interval, so the two settings give each dose the same
+  bioavailability. They still differ inside the lag window: with `FALSE` the
+  dose record's occasion applies to `ka` from the dose time, with `TRUE` only
+  from the end of the lag, so under `TRUE` the depot drains at the previous
+  occasion's `ka` for 0.562 h after each dose. The occasion etas are independent with equal
+  variance, so this changes individual troughs by up to about 0.3% and leaves
+  the population distribution, and every comparison below, unchanged.
 * **Grade 4 hyperbilirubinaemia is bounded at 8 mg/dL** for simulation. The
   DAIDS grade is open-ended ("> 6.1 mg/dL") and the paper does not say what
   upper bound it sampled to. Every grade 3 and grade 4 cell of Table 3 is
