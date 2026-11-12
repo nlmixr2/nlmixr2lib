@@ -337,10 +337,11 @@ and PPI use.
 Steady state is imposed with `rxode2`'s `ss = 1` dosing flag rather than by
 simulating weeks of doses, and the trough is read at the steady-state pre-dose
 time. The flag finds steady state by repeating the dosing interval until the
-pre-dose concentration changes by less than `ssRtol` (set explicitly below). Because dose is in mg/kg and V/F carries a `WT^1.78` term, weight is held at
-the Table 1 median for the whole grid, and each CCR band is represented by a
-single value: the Table 1 cohort median 103.81 mL/min for the "CCR >= 90" band and
-the band midpoint for the three impaired bands.
+pre-dose concentration changes by less than `ssRtol` (set explicitly below).
+Because dose is in mg/kg and V/F carries a `WT^1.78` term, weight is held at the
+Table 1 median for the whole grid, and each CCR band is represented by a single
+value: the Table 1 cohort median 103.81 mL/min for the "CCR >= 90" band and the
+band midpoint for the three impaired bands.
 
 The grid has 96 regimen-by-stratum arms (six mg/kg levels, BID or TID, four CCR
 bands, with or without a PPI), and a steady-state search is the expensive part of
@@ -483,6 +484,8 @@ stopifnot(nrow(pta) == nrow(pta_grid))
 # kel * tau of each subject in the 1 mg/kg solve; the steady-state search leaves a
 # relative residual of about ss_rtol / (kel * tau) in the pre-dose concentration.
 ss_cut <- 5e-4
+# Scientific notation without a zero-padded exponent: "5e-4", not "5e-04".
+sci <- function(x, digits = 0) sub("e([+-])0*", "e\\1", sprintf(paste0("%.", digits, "e"), x))
 pta_kel_tau <- sim_pta |>
   left_join(pta_strata[, c("stratum", "ii")], by = "stratum") |>
   mutate(kel_tau = cl / vc * ii)
@@ -494,7 +497,7 @@ interval while still far from steady state, so the search can stop early and lea
 a trough that is too low by up to about `ssRtol / (kel * tau)`. In the 1 mg/kg
 solve above `r n_slow` of the `r nrow(pta_kel_tau)` subject-strata
 (`r sprintf("%.1f", 100 * n_slow / nrow(pta_kel_tau))`%) have `kel * tau` below
-`r sprintf("%.0e", ss_cut)`; the slowest is `r sprintf("%.1e", min(pta_kel_tau$kel_tau))`, for which
+`r sci(ss_cut)`; the slowest is `r sci(min(pta_kel_tau$kel_tau), 1)`, for which
 the trough can be understated by up to about
 `r sprintf("%.1f", 100 * ss_rtol / min(pta_kel_tau$kel_tau))`%. Such a subject can
 change a PTA only if its trough lies within that fraction of the target.
@@ -535,8 +538,8 @@ lin_check |>
     "Explicit steady-state trough versus the scaled 1 mg/kg trough, per subject.")
 
 # Both solves leave the same relative steady-state-search residual, so the ratio
-# is exact to integrator precision (measured floor about 5e-11); the bound keeps
-# four orders of magnitude of headroom.
+# is exact to integrator precision (measured below 1e-9); the bound keeps three
+# orders of magnitude of headroom.
 stopifnot(max(abs(lin_check$rel_diff)) < 1e-6)
 ```
 
