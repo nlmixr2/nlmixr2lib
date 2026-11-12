@@ -37,25 +37,62 @@ test_that(".modeldbCacheWrite warns instead of erroring on a write failure", {
   expect_false(file.exists(badPath))
 })
 
-test_that(".modeldbGlobalSig has expected structure and reacts to R/modeldb.R edits", {
+test_that(".modeldbGlobalSig has expected structure and reacts to build, checker and register edits", {
   pkgDir <- tempfile("pkg")
   dir.create(file.path(pkgDir, "R"), recursive = TRUE)
   on.exit(unlink(pkgDir, recursive = TRUE), add = TRUE)
   writeLines("fake", file.path(pkgDir, "R/modeldb.R"))
 
+  writeLines("checker", file.path(pkgDir, "R/checkModelConventions.R"))
+  writeLines("conventions", file.path(pkgDir, "R/conventions.R"))
+  dir.create(file.path(pkgDir, "inst/references"), recursive = TRUE)
+  writeLines("b", file.path(pkgDir, "inst/references/b-register.md"))
+  writeLines("a", file.path(pkgDir, "inst/references/a-register.md"))
+
   sig <- nlmixr2lib:::.modeldbGlobalSig(pkgDir)
   expect_named(
     sig,
-    c("cacheVersion", "rVersion", "nlmixr2", "nlmixr2est", "rxode2", "modeldbRhash"),
+    c(
+      "cacheVersion",
+      "rVersion",
+      "nlmixr2",
+      "nlmixr2est",
+      "rxode2",
+      "modeldbRhash",
+      "checkerHash",
+      "registerHash"
+    ),
     ignore.order = TRUE
   )
   expect_identical(sig$cacheVersion, 3L)
   expect_identical(sig$rVersion, R.version.string)
   expect_equal(nchar(sig$modeldbRhash), 32L)
+  expect_named(sig$checkerHash, c("checkModelConventions.R", "conventions.R"))
+  expect_identical(nchar(unname(sig$checkerHash)), c(32L, 32L))
+  # Registers in C-collation order, whatever order they were written in.
+  expect_named(sig$registerHash, c("a-register.md", "b-register.md"))
+  expect_identical(nchar(unname(sig$registerHash)), c(32L, 32L))
+  expect_identical(nlmixr2lib:::.modeldbGlobalSig(pkgDir), sig)
 
   writeLines("different", file.path(pkgDir, "R/modeldb.R"))
   sig2 <- nlmixr2lib:::.modeldbGlobalSig(pkgDir)
   expect_false(identical(sig$modeldbRhash, sig2$modeldbRhash))
+
+  # Each checker file and each register is part of the signature.
+  for (f in c("R/checkModelConventions.R", "R/conventions.R", "inst/references/b-register.md")) {
+    before <- nlmixr2lib:::.modeldbGlobalSig(pkgDir)
+    cat("edit\n", file = file.path(pkgDir, f), append = TRUE)
+    expect_false(identical(nlmixr2lib:::.modeldbGlobalSig(pkgDir), before), label = f)
+  }
+  # A register added or removed changes it too.
+  before <- nlmixr2lib:::.modeldbGlobalSig(pkgDir)
+  writeLines("c", file.path(pkgDir, "inst/references/c-register.md"))
+  expect_named(
+    nlmixr2lib:::.modeldbGlobalSig(pkgDir)$registerHash,
+    c("a-register.md", "b-register.md", "c-register.md")
+  )
+  unlink(file.path(pkgDir, "inst/references/c-register.md"))
+  expect_identical(nlmixr2lib:::.modeldbGlobalSig(pkgDir), before)
 })
 
 # Counts calls to the per-file loader, delegating to the real one.

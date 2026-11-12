@@ -723,23 +723,38 @@ addFileToModelDb <- function(dir, file, modeldb) {
 
 # Build the global signature used to invalidate all entries at once. Changes to
 # the extraction code (R/modeldb.R) or to any upstream parser version force a
-# full rebuild. Silent upstream breakage without a version bump is not covered
-# here; the escape hatch is `unlink("data-raw/modeldb-cache.rds")`.
+# full rebuild. So do changes to the convention checker and to the
+# canonical-name registers: a cached model is not re-checked, so its cached
+# verdict holds only for the checker and registers it was checked against.
+# Silent upstream breakage without a version bump is not covered here; the
+# escape hatch is `unlink("data-raw/modeldb-cache.rds")`.
 .modeldbGlobalSig <- function(packageDirectory) {
-  safeVersion <- function(pkg) {
-    tryCatch(
-      as.character(utils::packageVersion(pkg)),
-      error = function(e) NA_character_
-    )
-  }
   list(
     cacheVersion = 3L,
     rVersion = R.version.string,
-    nlmixr2 = safeVersion("nlmixr2"),
-    nlmixr2est = safeVersion("nlmixr2est"),
-    rxode2 = safeVersion("rxode2"),
-    modeldbRhash = unname(tools::md5sum(file.path(packageDirectory, "R/modeldb.R")))
+    nlmixr2 = .modeldbSafeVersion("nlmixr2"),
+    nlmixr2est = .modeldbSafeVersion("nlmixr2est"),
+    rxode2 = .modeldbSafeVersion("rxode2"),
+    modeldbRhash = unname(tools::md5sum(file.path(packageDirectory, "R/modeldb.R"))),
+    checkerHash = .modeldbFileHashes(
+      file.path(packageDirectory, c("R/checkModelConventions.R", "R/conventions.R"))
+    ),
+    registerHash = .modeldbFileHashes(
+      .collateGlob(file.path(packageDirectory, "inst/references/*.md"))
+    )
   )
+}
+
+.modeldbSafeVersion <- function(pkg) {
+  tryCatch(
+    as.character(utils::packageVersion(pkg)),
+    error = function(e) NA_character_
+  )
+}
+
+# md5 of each file, named by its basename; NA for a file that does not exist.
+.modeldbFileHashes <- function(paths) {
+  stats::setNames(unname(tools::md5sum(paths)), basename(paths))
 }
 
 .modeldbCacheRead <- function(path) {

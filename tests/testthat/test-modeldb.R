@@ -42,12 +42,12 @@ test_that("modeldb is correctly generated", {
 
 # A minimal package tree that buildModelDb() can build: it finds the root by
 # its DESCRIPTION and hashes R/modeldb.R into the cache signature.
-.fixturePackage <- function(root) {
+.fixturePackage <- function(root, files = .buildFixtureFiles()) {
   writeLines("Package: fixture", file.path(root, "DESCRIPTION"))
   dir.create(file.path(root, "R"))
   writeLines("# fixture", file.path(root, "R", "modeldb.R"))
   dir.create(file.path(root, "data"))
-  .writeModelFixtures(file.path(root, "inst", "modeldb"), .buildFixtureFiles())
+  .writeModelFixtures(file.path(root, "inst", "modeldb"), files)
   invisible(root)
 }
 
@@ -141,6 +141,38 @@ test_that("a build that stops on errors caches the models that loaded cleanly", 
       "sub/Fixture_2026_nodesc.R"
     )
   )
+})
+
+test_that("editing a register makes the next build re-check every model", {
+  # A cached model is not re-checked, so its cached convention verdict is only
+  # as current as the registers it was checked against.
+  skip_on_cran()
+  pkg <- withr::local_tempdir("modeldb-pkg")
+  .fixturePackage(pkg, files = .buildFixtureFiles()[c("PK_1cmt.R", "PK_2cmt.R")])
+  register <- file.path(pkg, "inst", "references", "fixture-register.md")
+  dir.create(dirname(register))
+  writeLines(c("# Fixture register", "", "### FIXTURE_COV", "- **Type:** continuous"), register)
+  withr::local_dir(pkg)
+  withr::defer(nlmixr2lib:::.conventionErrorsReset())
+  .modeldbSpy$files <- character()
+  .modeldbSpy$fileRow <- nlmixr2lib:::.modeldbFileRow
+  testthat::local_mocked_bindings(.modeldbFileRow = .spyFileRow, .package = "nlmixr2lib")
+
+  suppressMessages(nlmixr2lib:::buildModelDb(workers = 1L))
+  expect_identical(.modeldbSpy$files, c("PK_1cmt.R", "PK_2cmt.R"))
+  # Unchanged register: every model is a cache hit.
+  suppressMessages(nlmixr2lib:::buildModelDb(workers = 1L))
+  expect_identical(.modeldbSpy$files, c("PK_1cmt.R", "PK_2cmt.R"))
+
+  cat("- **Scope:** general\n", file = register, append = TRUE)
+  suppressMessages(
+    expect_message(
+      nlmixr2lib:::buildModelDb(workers = 1L),
+      "modeldb cache invalidated (global signature changed)",
+      fixed = TRUE
+    )
+  )
+  expect_identical(.modeldbSpy$files, rep(c("PK_1cmt.R", "PK_2cmt.R"), 2L))
 })
 
 test_that("a build parses each register once, and not at all when every model is cached", {
