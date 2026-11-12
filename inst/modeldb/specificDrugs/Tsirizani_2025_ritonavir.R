@@ -125,6 +125,15 @@ Tsirizani_2025_ritonavir <- function() {
         "the lopinavir arm only, multiplies the absorption lag by 3.61.",
         "For a single witnessed morning dose matching the Table 3 reference",
         "condition, pass OCC = 2.",
+        "Doses are lagged and need rate = -2 for dur(depot), and for such a",
+        "dose rxSolve() does not always read OCC from the dose's own record:",
+        "with addlKeepsCov = FALSE (the default) a record at the dose's time",
+        "sorted after the dose supplies its bioavailability and zero-order",
+        "duration, and with addlKeepsCov = TRUE (or nonmem = TRUE) the",
+        "bioavailability comes from the record before the dose. Give every",
+        "record, observations included, the OCC of the dose that opened its",
+        "interval and use addlKeepsCov = FALSE; each dose then takes its own",
+        "occasion.",
         sep = " "
       ),
       source_name = "OCC"
