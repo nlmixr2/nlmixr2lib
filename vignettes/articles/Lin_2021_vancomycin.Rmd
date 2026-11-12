@@ -427,12 +427,12 @@ At steady state `AUC(0-tau) = Dose / CL`, whatever the volume. The PKNCA
 interval AUC is checked against each subject's own clearance.
 
 ```{r pknca}
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim$Cc))
 # Subjects with a very small V decay into integrator noise before the
 # trough. Assert the undershoot is noise relative to each subject's peak,
 # floor it at zero and drop the numerically-zero tail after the peak so the
 # log-down trapezoid does not follow the noise.
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(sim$Cc), sim$id, all)))
 conc <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, treatment, time, Cc) |>
