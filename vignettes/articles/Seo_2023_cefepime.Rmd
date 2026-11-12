@@ -599,8 +599,8 @@ state, `AUC(0-tau) = Dose / CL` for every individual in a linear model.
 ```{r pknca}
 tau_by_arm <- int_arms |> dplyr::select(arm, tau = ii, amt)
 
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(int_sim$Cc), int_sim$id, all)))
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(int_sim$Cc))
 nca_conc <- int_sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, arm) |>
