@@ -8218,6 +8218,8 @@ navbar:
         href: articles/Stodtmann_2021_veliparib.html
       - text: "Venetoclax (Dave 2019)"
         href: articles/Dave_2019_venetoclax.html
+      - text: "Venetoclax (Liu 2026)"
+        href: articles/Liu_2026_venetoclax.html
       - text: "Venetoclax (Samineni 2022)"
         href: articles/Samineni_2022_venetoclax.html
       - text: "Venetoclax (Thakre 2025)"
@@ -8242,6 +8244,8 @@ navbar:
         href: articles/Samineni_2022_venetoclax.html
       - text: "Venetoclax neutropenia base (Samineni 2022)"
         href: articles/Samineni_2022_venetoclax.html
+      - text: "Venetoclax orr (Liu 2026)"
+        href: articles/Liu_2026_venetoclax.html
       - text: "Venetoclax petcr (Samineni 2022)"
         href: articles/Samineni_2022_venetoclax.html
       - text: "Venetoclax petcr bcl2 fish (Samineni 2022)"
@@ -10185,6 +10189,7 @@ articles:
   - articles/Liu_2025_selpercatinib
   - articles/Liu_2025_tranexamicAcid
   - articles/Liu_2025_voriconazole
+  - articles/Liu_2026_venetoclax
   - articles/Liva_2021_rec2282
   - articles/Livio_2014_tobramycin
   - articles/LlanosPaez_2017_gentamicin

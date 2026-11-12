@@ -1,0 +1,468 @@
+---
+title: "Venetoclax (Liu 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Venetoclax (Liu 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+# readModelDb() returns the model *function*; rxode2::rxode() resolves it to
+# the rxUi that zeroRe() and the metadata accessors need.
+ui_pk <- rxode2::rxode(readModelDb("Liu_2026_venetoclax"))
+ui_pk_typ <- rxode2::zeroRe(ui_pk)
+ui_er <- rxode2::rxode(readModelDb("Liu_2026_venetoclax_orr"))
+```
+
+* Citation: `r ui_pk$reference`
+* PK model: `r ui_pk$description`
+* Exposure-response model: `r ui_er$description`
+* Article: <https://doi.org/10.2147/DDDT.S563629>
+
+Liu and colleagues measured venetoclax trough concentrations in 76 adult
+Chinese patients with hematological malignancies, most of them with acute
+myeloid leukemia (AML), treated in routine practice at a single Chongqing
+centre. Six published venetoclax population PK models, developed mostly in
+non-Asian patients, all under-predicted these concentrations, so the authors
+fitted a new model: one compartment, first-order absorption with ka fixed at
+0.16 1/h (every sample was a trough), CL/F 7.33 L/h and V/F 181 L, with no
+covariate retained. In the 63 AML patients they then related the individual
+steady-state average concentration (Cave) to the overall response after one
+cycle with a univariate logistic regression. The paper packages into two
+models here:
+
+* `Liu_2026_venetoclax` -- the population PK model (Table 3).
+* `Liu_2026_venetoclax_orr` -- the logistic exposure-response model (Figure
+  4B). Its coefficients are not printed and were digitised by the maintainers
+  from the fitted curve; the validation is in the exposure-response section
+  below.
+
+# Population
+
+```{r population}
+str(ui_pk$population)
+```
+
+The PK cohort (Table 1) was 76 patients, 46 male and 30 female, median age 53
+years (IQR 36-63) and median weight 60 kg (IQR 54-65): AML 63, myelodysplastic
+syndrome 7, acute lymphoblastic leukemia 3, and one patient each with acute
+promyelocytic leukemia, chronic myelomonocytic leukemia and mixed-phenotype
+acute leukemia. Every patient received venetoclax once daily with meals
+together with one or two chemotherapy agents, mostly azacitidine; moderate or
+strong CYP3A inhibitors and rituximab were exclusion criteria. Patients were
+markedly cytopenic at sampling (median platelets 31 x 10^9/L, neutrophils
+0.18 x 10^9/L) and most had low albumin. The 63 AML patients of the
+exposure-response analysis received 100 mg (n = 7), 200 mg (n = 13), 300 mg
+(n = 2) or 400 mg (n = 41) daily (Table S1).
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Structure: 1-compartment, first-order absorption, linear elimination | -- | Results, "VNX PK Characteristics in Chinese Patients" |
+| `lka` (ka) | 0.16 1/h, fixed | Table 3 (FIX; from earlier publications, references 36 and 39) |
+| `lcl` (CL/F) | 7.33 L/h | Table 3 (RSE 10%) |
+| `lvc` (V/F) | 181 L | Table 3 (RSE 30%) |
+| `etalcl` | log(1 + 0.53^2) = 0.2475 | Table 3, IIV CL/F 53% CV (shrinkage 6%) |
+| `propSd` | 0.32 | Table 3, sigma prop 32% |
+| `Cc = 1000 * central / vc` | ng/mL | Analytical Methods (LC-MS/MS in ng/mL); unit conversion only |
+| E-R: `logit(p) = logit_ref + e_cav_logit * CAV` | -- | Methods, "Exposure-Efficacy Relationship Evaluation"; Figure 4B |
+| `logit_ref` | -0.9055 | Figure 4B fitted curve, digitised (not printed) |
+| `e_cav_logit` | 0.0006443 per ng/mL | Figure 4B fitted curve, digitised (not printed; p = 0.0239 printed) |
+| `addSd_prob_orr_investigator` | 0.001, fixed | Not from source; placeholder residual for a Bernoulli likelihood |
+| `CAV` = daily dose / (24 x CL/F) | ng/mL | Methods, "Exposure-Efficacy Relationship Evaluation" (post hoc PK parameters) |
+
+# Virtual cohort and steady-state simulation
+
+The model has no covariates, so the virtual cohort only needs a dose arm.
+Each of the four doses used in the AML subset (100, 200, 300 and 400 mg once
+daily) gets 200 subjects, dosed for 14 days (the half-life at the typical
+CL/F and V/F is about 17 h, so day 14 is at steady state), with hourly
+observations over the last dosing interval.
+
+```{r cohort}
+doses <- c(100, 200, 300, 400)
+n_per_arm <- 200
+tau <- 24
+n_doses <- 14
+t_ss <- (n_doses - 1) * tau
+
+make_arm <- function(dose, arm_index) {
+  ids <- (arm_index - 1) * n_per_arm + seq_len(n_per_arm)
+  dose_rows <- tidyr::expand_grid(id = ids, time = seq(0, t_ss, by = tau)) |>
+    mutate(evid = 1L, amt = dose, cmt = "depot")
+  obs_rows <- tidyr::expand_grid(id = ids, time = t_ss + 0:tau) |>
+    mutate(evid = 0L, amt = 0, cmt = "central")
+  bind_rows(dose_rows, obs_rows) |>
+    mutate(dose = dose) |>
+    arrange(id, time, desc(evid))
+}
+events <- bind_rows(lapply(seq_along(doses), function(i) make_arm(doses[i], i)))
+
+rxode2::rxSetSeed(20261112)
+sim <- rxode2::rxSolve(ui_pk, events = events, keep = "dose", returnType = "data.frame")
+# zeroRe() leaves no omega, so rxode2 warns about a multi-subject solve
+# without one; that is the intent of a typical-value solve.
+sim_typ <- suppressWarnings(rxode2::rxSolve(
+  ui_pk_typ,
+  events = events |> filter(id %in% ((seq_along(doses) - 1) * n_per_arm + 1)),
+  keep = "dose", returnType = "data.frame"
+))
+```
+
+```{r profile-plot, fig.cap = "Simulated steady-state venetoclax concentrations over one dosing interval by daily dose (median and 5th-95th percentiles of 200 subjects per dose, IIV only), with the typical-value profile dashed. The paper has no concentration-time figure; its samples were all troughs."}
+sim |>
+  mutate(tad = time - t_ss) |>
+  group_by(dose, tad) |>
+  summarise(
+    lo = quantile(Cc, 0.05), med = median(Cc), hi = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tad, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2) +
+  geom_line() +
+  geom_line(
+    data = sim_typ |> mutate(tad = time - t_ss),
+    aes(tad, Cc), linetype = "dashed"
+  ) +
+  facet_wrap(~ paste(dose, "mg QD"), nrow = 1) +
+  labs(x = "Time after dose at steady state (h)", y = "Venetoclax (ng/mL)")
+```
+
+# PKNCA validation
+
+```{r pknca}
+conc <- sim |>
+  filter(!is.na(Cc)) |>
+  mutate(Cc = pmax(Cc, 0), tad = time - t_ss, treatment = paste(dose, "mg QD")) |>
+  select(id, treatment, tad, Cc)
+dose_df <- events |>
+  filter(evid == 1, time == t_ss) |>
+  mutate(tad = 0, treatment = paste(dose, "mg QD")) |>
+  select(id, treatment, tad, amt)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ tad | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ tad | treatment + id)
+intervals <- data.frame(start = 0, end = tau, cmax = TRUE, tmax = TRUE, cmin = TRUE, cav = TRUE)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_res <- as.data.frame(nca$result)
+
+nca_res |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "cmin", "cav")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(median = signif(median(PPORRES), 4), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::rename(
+    "Regimen" = treatment, "Cmax (ng/mL)" = cmax, "Tmax (h)" = tmax,
+    "Cmin (ng/mL)" = cmin, "Cave (ng/mL)" = cav
+  ) |>
+  knitr::kable(caption = "Median simulated steady-state NCA parameters by dose (200 subjects per dose).")
+```
+
+At steady state Cave equals the daily dose divided by 24 h x CL/F, the
+quantity the authors computed from each patient's post hoc CL/F to drive the
+exposure-response model. The typical-value solve reproduces that identity, and
+the PKNCA Cmin sits close to the 24-h trough because ka (0.16 1/h) is only
+four times the elimination rate constant, so the concentration is still
+falling when the next dose is given.
+
+```{r closed-form-check}
+cl_typ <- exp(ui_pk$theta[["lcl"]])
+cav_closed <- 1000 * doses / (tau * cl_typ)
+cav_typ_solve <- sim_typ |>
+  group_by(dose) |>
+  summarise(
+    cav = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2) / tau,
+    .groups = "drop"
+  )
+knitr::kable(
+  data.frame(
+    "Dose (mg)" = doses,
+    "Closed form 1000 x dose / (24 x CL/F)" = signif(cav_closed, 4),
+    "Typical-value solve (trapezoid)" = signif(cav_typ_solve$cav, 4),
+    check.names = FALSE
+  ),
+  caption = "Typical steady-state Cave: closed form against the solved typical profile."
+)
+# Same parameters on both sides; the gap is trapezoid and integrator error
+# on an hourly grid, well below 1%.
+stopifnot(max(abs(cav_typ_solve$cav / cav_closed - 1)) < 0.01)
+```
+
+# Comparison against published exposures
+
+The paper reports two exposure summaries that the model can be held against.
+Figure 4B draws a box of the individual post hoc Cave for each daily dose in
+the AML patients; the maintainers read the box medians off the publisher's
+figure (100, 200, 300 and 400 mg: about 521, 1313, 1938 and 2077 ng/mL). The
+Discussion reports a mean observed trough of 1470.18 +/- 855.63 ng/mL in the
+200 mg group.
+
+```{r nca-compare}
+published <- data.frame(
+  treatment = paste(doses, "mg QD"),
+  cav = c(521, 1313, 1938, 2077)
+)
+sim_long <- nca_res |>
+  filter(PPTESTCD == "cav") |>
+  select(treatment, PPTESTCD, PPORRES)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_long,
+  reference = published,
+  by = "treatment",
+  params = "cav",
+  units = c(cav = "ng/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated median steady-state Cave against the Figure 4B per-dose box",
+    "medians (digitised). Starred rows differ by more than 20%."
+  )
+)
+```
+
+```{r cmin-200}
+cmin200 <- nca_res |>
+  filter(PPTESTCD == "cmin", treatment == "200 mg QD")
+cmin_tab <- data.frame(
+  quantity = c("Mean Cmin, 200 mg QD (ng/mL)", "SD (ng/mL)"),
+  simulated = signif(c(mean(cmin200$PPORRES), sd(cmin200$PPORRES)), 4),
+  published = c(1470.18, 855.63)
+)
+cmin_tab |>
+  dplyr::rename("Quantity" = quantity, "Simulated (IIV only)" = simulated, "Published (observed)" = published) |>
+  knitr::kable(caption = "Mean steady-state trough at 200 mg once daily: simulation against the observed troughs quoted in the Discussion.")
+```
+
+The per-dose Cave medians agree with Figure 4B to within 20% (the
+simulated cohort runs high at 100 and 400 mg and low at 200 and 300 mg, where the boxes
+hold 7, 41, 13 and 2 patients). The simulated mean trough at 200 mg
+(`r sprintf("%.0f", mean(cmin200$PPORRES))` ng/mL) is
+`r sprintf("%.0f%%", 100 * (1 - mean(cmin200$PPORRES) / 1470.18))` lower
+than the observed 1470 ng/mL. That observed mean comes from the 200 mg
+patients' own troughs, which include the proportional residual error and a
+dose group that was not randomised: the Discussion notes that about 40% of
+patients on 100-200 mg had relatively high troughs, which is what reduced
+doses in routine therapeutic drug monitoring would select for, and the 200 mg
+box in Figure 4B already sits above the typical Cave. The model is not tuned
+to it.
+
+# Exposure-response model
+
+## Replicating Figure 4B
+
+```{r er-data}
+# Individual Cave (ng/mL) of the 63 AML patients, digitised by the maintainers
+# from the jittered dot plot of Figure 4A (non-responders left, responders
+# right) and cross-checked against the rug circles at p = 0 and p = 1 in
+# Figure 4B. Two pairs of responders overlap exactly and are listed twice.
+cave_nonresponder <- c(
+  328, 381, 540, 553, 699, 723, 1016, 1016, 1110, 1195, 1209, 1231, 1464,
+  1509, 1602, 1633, 1813, 1965, 2042, 2074, 2249, 2250, 2705, 3026, 3053, 3812
+)
+cave_responder <- c(
+  515, 699, 885, 911, 1297, 1305, 1318, 1318, 1404, 1514, 1539, 1659, 1675,
+  1718, 1731, 1737, 1788, 1822, 2077, 2094, 2172, 2384, 2470, 2470, 2508,
+  2517, 2569, 2840, 2934, 2934, 2996, 4421, 4863, 5402, 6192, 6477, 7334
+)
+er_obs <- data.frame(
+  id = seq_len(63),
+  CAV = c(cave_nonresponder, cave_responder),
+  response = rep(0:1, c(length(cave_nonresponder), length(cave_responder)))
+)
+stopifnot(
+  length(cave_nonresponder) == 26, # Results: 26 non-responders
+  length(cave_responder) == 37 # Results: 37 responders
+)
+
+# Evaluate the packaged model at each patient's Cave. The logistic model has
+# no random effect, so rxode2's multi-subject-without-omega warning is
+# expected and suppressed in the three solves of this model.
+er_pred <- suppressWarnings(rxode2::rxSolve(
+  ui_er,
+  events = er_obs |> mutate(time = 0, evid = 0L),
+  keep = c("CAV", "response"),
+  returnType = "data.frame"
+))
+```
+
+```{r er-figure, fig.cap = "Replicates Figure 4B of Liu 2026: probability of overall response against Cave in the 63 AML patients. The line is the packaged model; squares and bars are the observed response rate and exact 95% CI per Cave quartile, labelled with the counts printed in the figure; ticks mark the individual Cave of non-responders (bottom) and responders (top)."}
+q_breaks <- quantile(er_obs$CAV, c(0, 0.25, 0.5, 0.75, 1))
+quart <- er_obs |>
+  mutate(q = cut(CAV, q_breaks, include.lowest = TRUE)) |>
+  group_by(q) |>
+  summarise(
+    x = median(CAV), n = n(), r = sum(response),
+    lo = stats::binom.test(r, n)$conf.int[1],
+    hi = stats::binom.test(r, n)$conf.int[2],
+    .groups = "drop"
+  ) |>
+  mutate(p = r / n, lab = paste0(r, "/", n))
+
+curve <- data.frame(CAV = seq(330, 7350, by = 10)) |>
+  mutate(time = 0, evid = 0L, id = seq_len(n()))
+curve <- suppressWarnings(rxode2::rxSolve(ui_er, events = curve, keep = "CAV", returnType = "data.frame"))
+
+ggplot() +
+  geom_line(data = curve, aes(CAV, prob_orr_investigator), colour = "#E07B39", linewidth = 1) +
+  geom_errorbar(data = quart, aes(x, ymin = lo, ymax = hi), width = 0, colour = "#3C78B4") +
+  geom_point(data = quart, aes(x, p), shape = 15, size = 3, colour = "#3C78B4") +
+  geom_text(data = quart, aes(x, hi + 0.05, label = lab), colour = "#3C78B4") +
+  geom_rug(data = er_obs |> filter(response == 0), aes(CAV), sides = "b") +
+  geom_rug(data = er_obs |> filter(response == 1), aes(CAV), sides = "t") +
+  coord_cartesian(ylim = c(0, 1.05)) +
+  labs(x = "Cave (ng/mL)", y = "Probability of overall response")
+```
+
+## Validating the digitised coefficients
+
+Neither coefficient is printed, so the packaged values come from tracing the
+fitted curve in Figure 4B (2283 pixel columns, logit regressed on Cave with
+R^2 = 0.99992; against log Cave the fit is visibly worse, R^2 = 0.89, which
+settles that Cave enters untransformed). Three checks below use only the
+individual Cave values digitised from the other panel (Figure 4A) together
+with the printed numbers, not the traced curve:
+
+1. The per-quartile response counts reproduce the four labels printed in
+   Figure 4B.
+2. A maximum-likelihood logistic refit to the 63 digitised patients
+   reproduces the printed AIC (81.81) and p value (0.0239), and its
+   coefficients agree with the traced ones.
+3. A fitted logistic regression satisfies the score equation exactly: its
+   predicted probabilities sum to the number of responders. The packaged
+   coefficients, evaluated at the digitised Cave values, must therefore give
+   close to 37.
+
+```{r er-validate}
+refit <- stats::glm(response ~ CAV, family = stats::binomial(), data = er_obs)
+refit_p <- summary(refit)$coefficients["CAV", "Pr(>|z|)"]
+loglik_pkg <- sum(stats::dbinom(er_pred$response, 1, er_pred$prob_orr_investigator, log = TRUE))
+aic_pkg <- -2 * loglik_pkg + 2 * 2
+
+val <- data.frame(
+  check = c(
+    "Quartile counts (responders/n)",
+    "Intercept",
+    "Slope (per ng/mL)",
+    "AIC",
+    "Wald p for Cave",
+    "Sum of predicted probabilities"
+  ),
+  published = c("4/16, 12/16, 9/15, 12/16", "not printed", "not printed", "81.81", "0.0239", "37 responders"),
+  packaged_model = c(
+    "--",
+    sprintf("%.4f", ui_er$theta[["logit_ref"]]),
+    sprintf("%.3e", ui_er$theta[["e_cav_logit"]]),
+    sprintf("%.2f", aic_pkg),
+    "--",
+    sprintf("%.2f", sum(er_pred$prob_orr_investigator))
+  ),
+  refit_to_digitised_patients = c(
+    paste(quart$lab, collapse = ", "),
+    sprintf("%.4f", coef(refit)[[1]]),
+    sprintf("%.3e", coef(refit)[[2]]),
+    sprintf("%.2f", stats::AIC(refit)),
+    sprintf("%.4f", refit_p),
+    sprintf("%.2f", sum(stats::fitted(refit)))
+  )
+)
+val |>
+  dplyr::rename(
+    "Check" = check, "Published" = published,
+    "Packaged (traced curve)" = packaged_model,
+    "Refit to digitised Figure 4A" = refit_to_digitised_patients
+  ) |>
+  knitr::kable(caption = "Digitised exposure-response coefficients against the numbers printed in Figure 4.")
+
+stopifnot(
+  identical(quart$lab, c("4/16", "12/16", "9/15", "12/16")),
+  abs(stats::AIC(refit) - 81.81) < 0.05,
+  abs(refit_p - 0.0239) < 0.0005,
+  abs(aic_pkg - 81.81) < 0.05,
+  abs(sum(er_pred$prob_orr_investigator) - 37) < 0.5,
+  abs(coef(refit)[[2]] / ui_er$theta[["e_cav_logit"]] - 1) < 0.02
+)
+```
+
+The traced curve and the refit agree to within 1% on the slope and 0.004 on
+the intercept, and the packaged coefficients reproduce the printed AIC to
+the second decimal. The Wilcoxon comparison in Figure 4A (p = 0.012) is also
+reproduced by the digitised values:
+`r sprintf("p = %.4f", suppressWarnings(stats::wilcox.test(cave_responder, cave_nonresponder))$p.value)`.
+
+## Predicted response by dose
+
+Chaining the two models -- each simulated subject's steady-state Cave from the
+PK cohort fed into the logistic model -- gives the model-implied response
+rate per dose. This is a property of the fitted curve, not a reproduction of
+a published table; the paper describes the observed response rate rising from
+about 42% at 100 mg to 68% at 200 mg in small, non-randomised dose groups.
+
+```{r er-by-dose}
+cav_sim <- nca_res |>
+  filter(PPTESTCD == "cav") |>
+  transmute(id, treatment, CAV = PPORRES, time = 0, evid = 0L)
+orr_sim <- suppressWarnings(rxode2::rxSolve(ui_er, events = cav_sim, keep = "treatment", returnType = "data.frame"))
+orr_sim |>
+  group_by(treatment) |>
+  summarise(
+    median_cav = signif(median(CAV), 4),
+    mean_prob = round(mean(prob_orr_investigator), 3),
+    .groups = "drop"
+  ) |>
+  dplyr::rename(
+    "Regimen" = treatment, "Median Cave (ng/mL)" = median_cav,
+    "Model-predicted response rate" = mean_prob
+  ) |>
+  knitr::kable(caption = "Model-implied overall response rate by dose from the chained PK and exposure-response models (200 simulated subjects per dose).")
+```
+
+# Assumptions and deviations
+
+* **IIV scale.** Table 3 gives the between-subject variability on CL/F as
+  "53%" under the heading CV%. It is encoded as a log-normal variance
+  `log(1 + 0.53^2) = 0.2475`. If the authors' 53% is instead the square root
+  of the NONMEM omega, the variance would be 0.2809; the two readings differ
+  by about 3 percentage points in CV.
+* **ka fixed.** ka = 0.16 1/h is the value the authors fixed from earlier
+  venetoclax models because every sample was a trough. Absorption-phase
+  concentrations, Cmax and Tmax from this model are therefore not informed
+  by the Chinese data.
+* **No covariates.** The stepwise search found none. The screened
+  demographic and laboratory covariates are listed in the model's
+  `covariatesDataExcluded`.
+* **Exposure-response coefficients digitised.** `logit_ref` and
+  `e_cav_logit` were traced from Figure 4B of the publisher's PDF; the
+  validation above reproduces the printed AIC, p value and quartile counts.
+  The individual Cave values in this vignette were digitised from Figure 4A
+  and are approximate to a few ng/mL.
+* **Response definition.** "Overall response" here is complete or partial
+  remission on the bone-marrow assessment after one 28-day cycle, judged by
+  the treating physician against Chinese adult-AML guideline criteria; it
+  has no separate category for complete remission with incomplete count
+  recovery and is not a RECIST response.
+* **Placeholder residual.** The logistic model carries a fixed additive
+  residual of 0.001 on the probability so that it has an error model; the
+  source likelihood is Bernoulli.
+* **Analyses not packaged.** The same logistic analysis with Cmin as the
+  exposure metric in the AML subset (Figure S7) and the sensitivity analyses
+  in all 76 patients (Figures S8 and S9) are not encoded; Cave in the AML
+  subset is the primary analysis the authors carried forward.
+* **Cohort.** The simulations use 200 subjects per dose with no covariate
+  dependence; the published dose groups were small (7, 13, 2 and 41 AML
+  patients) and not randomised.
