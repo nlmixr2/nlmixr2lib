@@ -1662,6 +1662,8 @@ navbar:
         href: articles/Sadiq_2017_ciprofloxacin.html
       - text: "Ciprofol (Wang 2026)"
         href: articles/Wang_2026_ciprofol.html
+      - text: "Ciprofol (Zhu 2026)"
+        href: articles/Zhu_2026_ciprofol.html
       - text: "Cisplatin (Boer 2015)"
         href: articles/Boer_2015_cisplatin.html
       - text: "Cisplatin (Royer 2011)"
@@ -11636,6 +11638,7 @@ articles:
   - articles/Zhu_2024_borneol_pbpk
   - articles/Zhu_2024_infliximab
   - articles/Zhu_2024_pyrotinib
+  - articles/Zhu_2026_ciprofol
   - articles/Zhu_2026_denosumab
   - articles/Zieck_2023_ceftazidime
   - articles/Zierhut_2008_osteoprotegerin
