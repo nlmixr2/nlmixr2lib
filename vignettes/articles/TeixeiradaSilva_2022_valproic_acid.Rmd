@@ -243,8 +243,8 @@ ggplot(fig2, aes(time, Cc, colour = therapy)) +
 ## PKNCA on the Figure 2 profiles
 
 ```{r fig2-pknca}
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(fig2$Cc), fig2$id, all)))
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(fig2$Cc))
 fig2_conc <- fig2 |>
   filter(!is.na(Cc)) |>
   select(scenario, id, time, Cc)
@@ -403,8 +403,8 @@ stopifnot(
 ```
 
 ```{r vpc, fig.cap = "Simulated steady-state profiles by comedication arm (median and 5th-95th percentiles; 150 adults per arm; 500 mg gastro-resistant tablet every 12 h). The shaded band is the 50-100 mg/L therapeutic range."}
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(sim$Cc), sim$id, all)))
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim$Cc))
 sim |>
   filter(!is.na(Cc)) |>
   group_by(arm, time) |>
@@ -418,8 +418,8 @@ sim |>
 ```
 
 ```{r pknca}
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(sim$Cc), sim$id, all)))
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim$Cc))
 obs <- sim |>
   filter(!is.na(Cc)) |>
   select(id, arm, time, Cc)
