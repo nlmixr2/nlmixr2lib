@@ -535,6 +535,132 @@ sim <- rxode2::rxSolve(mod, events = ev, maxsteps = 1e6)
   draw. Long dose-only run-ins and dense output grids (which cap `hmax`)
   hit the same limit.
 
+## 14. A lagged dose that takes another record's covariates (no error; `f()` paired with the wrong occasion, dose level or flag)
+
+Nothing fails. It applies whenever the model has `alag()` and an
+`f()` (or `dur()` / `rate()`) that depends on a covariate that can
+change within a subject: `OCC`, a per-dose `DOSE_<DRUG>_MG`,
+`MULTI_DOSE*`, `SELFADMIN`, `FED`, a per-dose `CONMED_*`. The lag moves
+each dose to its absorption time, and `rxSolve()` then decides which
+record's covariates the dose uses. Measured on rxode2 5.1.8
+(`f()` = 1 on the previous record's value, 0.5 on the dose's own):
+
+| Dose type | Other record carrying a different value | `addlKeepsCov = FALSE` (default) | `addlKeepsCov = TRUE`, `nonmem = TRUE` |
+|---|---|---|---|
+| bolus | none | own record | own record |
+| bolus | same time, sorted after the dose | **that record** | own record |
+| bolus | inside the lag window | **that record** | own record |
+| bolus | the next dose, when the lag is longer than the interval | **that dose's record** | own record |
+| `rate = -2` (`dur()`), `rate = -1` (`rate()`), fixed rate | none | own record | **record before the dose** |
+| same | same time, sorted after the dose | **that record** | **record before the dose** |
+| same | inside the lag window | own record | **record before the dose** |
+| same | the next dose, when the lag is longer than the interval | own record | **that dose's record** |
+
+More facts from the same probes: `alag()` itself is always read from
+the dose's own record. A `dur()` that depends on the covariate is taken
+from a same-time record sorted after the dose, and from the next dose's
+record when the lag is longer than the dosing interval, under *either*
+setting (see the long-lag bullet below). On a bolus the setting also
+moves the time at which the dose record's covariates start to apply to
+continuous parameters such as `ka`: the dose time with `FALSE`, the end
+of the lag with `TRUE`. `rxSolve()` sorts a same-time dose ahead of an observation
+(`tieOrder = "evid"`) whatever order the data frame has.
+
+**Shapes that trigger it:**
+
+1. **A co-timed record carrying the previous value.** A trough sampled
+   at the dose time, built with the observation sorted first and the
+   per-dose column filled down, carries the previous dose's value;
+   `rxSolve()` then sorts it after the dose. Wang 2020 delamanid: the
+   observation at 480 h carried 100 mg into the first 200 mg dose,
+   which took the 100 mg bioavailability (day-21 Cmax 394 instead of
+   354 ng/mL). Goel 2016 sonidegib: observations hard-coded
+   `MULTI_DOSE_PT = 0` ("ignored on observation rows"), which stripped
+   the 16% multiple-dose F from every dose that shared its time with a
+   weekly trough.
+2. **Records inside the lag window.** A dense grid after a dose,
+   labelled with a default or with the previous dose's value (Burns
+   2015 tenofovir, `SELFADMIN`).
+3. **An `OCC` that alternates per dose, with samples labelled by a
+   fixed occasion.** Tsirizani 2025 ritonavir: evening doses were
+   `OCC = 1` and every sample `OCC = 2`, so the evening dose inside the
+   observed interval took the morning occasion. `addlKeepsCov = TRUE`
+   was worse there: the doses are `rate = -2`, so every run-in dose
+   took the other dose's occasion.
+
+**Fix: build the records by dose interval, and state the setting.**
+
+```r
+# Per-dose columns are NA on observation rows. Sort a same-time dose
+# first, as rxSolve() does, then carry each dose's values down to the
+# records of its interval.
+events <- dplyr::bind_rows(doses, obs) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  dplyr::group_by(id) |>
+  tidyr::fill(OCC, DOSE_X_MG, .direction = "down") |>
+  dplyr::ungroup()
+sim <- rxode2::rxSolve(mod, events, addlKeepsCov = FALSE)
+```
+
+- Pass `addlKeepsCov = FALSE` on every `rxSolve()` call that doses a
+  lagged compartment, and say in Assumptions and deviations which
+  records carry which values. With the records built this way `FALSE`
+  pairs every dose with its own values, for every dose type, as long as
+  the lag is shorter than the dosing interval.
+- Do not reach for `addlKeepsCov = TRUE` as the fix. It is NONMEM's
+  pairing only for bolus doses; on an infusion or a modelled duration
+  with a lag it pairs each dose with the record before it.
+- **A lag longer than the dosing interval** puts the next dose record
+  inside the lag window, which no event table can avoid. For bolus-only
+  models `TRUE` is then the setting that pairs every dose with its own
+  record; say so and use it. For `rate = -2` / `rate = -1` / fixed-rate
+  doses `FALSE` still gives `f()` its own record but `dur()` comes from
+  the next dose under either setting: count the affected subjects and
+  check them on AUC only (Tsirizani 2025, a 3.61-fold evening lag).
+- **Check the pairing.** For bolus-only models, solve once with each
+  setting: once the records are right, `f()` is paired the same under
+  both, so any remaining difference comes from a continuous parameter
+  inside the lag window and should be tiny. For any dose type, the
+  model is linear in the doses: zero the between-occasion variability
+  on the continuous parameters (`ka`), then require the full profile to
+  equal the sum of solves of each dose group alone on its own values
+  (the `superposition` chunk of `Tsirizani_2025_ritonavir.Rmd`; exact
+  on the analytic path, about 1e-7 on the ODE path).
+- **When the mis-pairing does not change results.** If the covariate
+  only selects among independent, equal-variance occasion etas
+  (Punyawudho 2025 dolutegravir, Schlachter 2026 atogepant), a dose
+  paired with the neighbouring occasion's draw changes individual
+  profiles but not the population distribution. Build the records by
+  interval anyway, state the setting, and note it.
+
+## 15. An `ss = 1` identity asserted as a maximum over the cohort fails on one draw
+
+`max(abs(AUCtau / (Dose / CL) - 1)) < 0.02` over every subject of an
+`ss = 1` cohort passes on most seeds and fails on the draw that
+produces a subject whose steady-state search cannot converge. The
+search repeats the dosing interval until the pre-dose concentration
+changes by less than `ssRtol`, so it stops early when elimination is
+slow, leaving a relative residual of about `ssRtol / (kel * tau)`.
+For a half-life of months or years that residual is large.
+
+- Gate the identity on `kel * tau`: residual <= `ssRtol / (kel * tau)`,
+  so for a 2% bound at `ssRtol = 1e-6` require `kel * tau >= 5e-4`
+  (residual at most 0.2%, 10x headroom). Count the excluded subjects
+  and assert that they are few. Pass `ssRtol` explicitly so the cut
+  and the solve use the same number. Worked example:
+  `Shu_2024_posaconazole.Rmd`, chunk `pknca-auc-identity`.
+- **`ss = 1` against an explicit multi-dose run** is limited by the
+  explicit run's own shortfall from steady state, about
+  `exp(-lambda_z * T)` for a run of length `T`, not by `ssRtol`. Gate
+  that comparison on `lambda_z * T >= log(10 / bound)`, which puts the
+  explicit run within a tenth of the bound of steady state. Roelofsen
+  2023 cefotaxime reached 4.7% against a 5% bound on one seed, for a
+  subject with a 185 h half-life. For a two-compartment model
+  `lambda_z` is the smaller root of the characteristic equation,
+  `(k_sum - sqrt(k_sum^2 - 4 * kel * k21)) / 2` with
+  `k_sum = kel + k12 + k21`, not `kel`. Worked example:
+  `Roelofsen_2023_cefotaxime.Rmd`, chunk `ss-check`.
+
 ## Process reminder
 
 The runner-merge-claude-branches skill runs `verify_vignettes_parallel.R`
