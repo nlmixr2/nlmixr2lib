@@ -1444,6 +1444,8 @@ navbar:
         href: articles/Bindellini_2025_cefazolin.html
       - text: "Cefazolin (Duke 2024)"
         href: articles/Duke_2024_cefazolin.html
+      - text: "Cefazolin (Gebreyesus 2024)"
+        href: articles/Gebreyesus_2024_cefazolin.html
       - text: "Cefazolin (Komatsu 2026)"
         href: articles/Komatsu_2026_cefazolin.html
       - text: "Cefazolin (Lanoiselee 2021)"
@@ -9951,6 +9953,7 @@ articles:
   - articles/Diao_2016_daclizumab_treg
   - articles/Dias_2022_tobramycin_rat
   - articles/Dias_2024_quetiapine_rat
+  - articles/Dias_2026_vildagliptin
   - articles/Dickinson_2009_atazanavir
   - articles/Dickinson_2021_dolutegravir
   - articles/Dickinson_2026_dolutegravir
