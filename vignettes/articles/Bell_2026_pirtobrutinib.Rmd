@@ -133,7 +133,7 @@ ev_s2 <- scenarios |>
     OCC = 1L
   )
 
-sim_s2 <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_s2) |>
+sim_s2 <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_s2, maxsteps = 1e6) |>
   as.data.frame() |>
   group_by(id) |>
   summarise(
@@ -378,6 +378,8 @@ virtual cohort is analysed with PKNCA (individual predictions, no residual
 error).
 
 ```{r pknca}
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim$Cc))
 sim_nca <- sim |>
   filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
@@ -468,7 +470,8 @@ ss_events <- bind_rows(
   arrange(id, time, desc(evid))
 stopifnot(!anyDuplicated(unique(ss_events[, c("id", "time", "evid")])))
 
-cmin_100 <- rxode2::rxSolve(mod, events = ss_events, keep = "cohort_type") |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+cmin_100 <- rxode2::rxSolve(mod, events = ss_events, keep = "cohort_type", maxsteps = 1e6) |>
   as.data.frame() |>
   filter(time == 24) |>
   select(id, cohort_type, cmin = Cc)

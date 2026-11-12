@@ -1,0 +1,360 @@
+---
+title: "Metformin placental cotyledon perfusion (Tiley 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Metformin placental cotyledon perfusion (Tiley 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+mod <- readModelDb("Tiley_2026_metformin_placentaperfusion")
+ui <- rxode2::rxode(mod)
+cat("* Citation: ", ui$reference, "\n", sep = "")
+cat("* Description: ", ui$description, "\n", sep = "")
+```
+
+* Article: <https://doi.org/10.1002/psp4.70136>
+* Open-access full text: <https://europepmc.org/article/MED/41289433>
+
+# What this file is, and what it is not
+
+Tiley and colleagues compared four ways of putting metformin placental
+transfer into a pregnancy PBPK model:
+
+| Approach | Placental transfer | Implementation | In this file? |
+|----------|--------------------|----------------|---------------|
+| 1 | Perfusion-limited placenta-fetus compartment | Simcyp | no |
+| 2 | Permeability-limited; CLPDM = CLPDF from the ex vivo open-system apparent cotyledon clearance | Simcyp | no |
+| 3 | Permeability-limited; CLPDM and CLPDF **fitted with a three-compartment model** to ex vivo closed-system cotyledon data | Phoenix WinNonlin fit, then Simcyp | **the ex vivo fit only** |
+| 4 | Permeability-limited; PAMPA passive clearance plus five placental transporters | Simcyp | no |
+
+All four whole-body models start from the default Simcyp metformin compound
+file and the Simcyp virtual pregnancy population. Their organ volumes, blood
+flows, partition coefficients and gestational-age placental volume are
+platform outputs that the paper does not print, and every placental input in
+Table 1 is normalised per mL of that unprinted placental volume, so none of
+the whole-body models can be rebuilt from the publication.
+
+The Approach 3 ex vivo model is self-contained: three ODEs printed as
+Equations 2-5, the reservoir and syncytiotrophoblast volumes and the dose
+stated in the Methods, and two fitted clearances. It is the part of the paper
+that is a fitted model of its own, and the data it was fitted to are printed in
+Table S1.
+
+# Population
+
+The model describes an isolated human term placenta, not a patient
+population. The data are the mean maternal-artery and fetal-vein metformin
+concentrations of a closed (recirculating) dual-side cotyledon perfusion,
+read by the source authors from Figure 1 of Nanovskaya et al. (*Am J Obstet
+Gynecol* 2006;195:1081-1085) and printed as Table S1. Metformin was added to
+the 250 mL maternal reservoir to a final concentration of 5 ug/mL (1250 ug);
+the fetal reservoir held 150 mL. The syncytiotrophoblast of one cotyledon was
+given a volume of 3.395 mL (67.9 mL placental syncytiotrophoblast volume over
+20 cotyledons). The number of perfused placentas is in the Nanovskaya report,
+not in this paper.
+
+# Source trace
+
+| Quantity | Value | Source |
+|----------|-------|--------|
+| Maternal reservoir `Vm` (`v_mres`) | 250 mL, fixed | Methods, Approach 3 |
+| Fetal reservoir `Vf` (`v_fres`) | 150 mL, fixed | Methods, Approach 3 |
+| Syncytiotrophoblast `Vs` (`v_pb`) | 3.395 mL, fixed | Methods, Approach 3 |
+| Dose | 1250 ug into the maternal reservoir | Methods, Approach 3 |
+| `CLPDM` (`lcl_pdm`) | 0.0023 L/h/mL placental volume = 1.263 mL/min per cotyledon | Methods, Approach 3; Table 1; Equation 1 inverted |
+| `CLPDF` (`lcl_pdf`) | 0.039 L/h/mL placental volume = 21.42 mL/min per cotyledon | Methods, Approach 3; Table 1; Equation 1 inverted |
+| Unit conversion | 20 cotyledons per placenta, 659 mL placental volume | Equation 1 and the sentence after it |
+| Concentrations | Equation 2 | Methods |
+| Maternal reservoir balance | Equation 3 | Methods |
+| Syncytiotrophoblast balance | Equation 4 | Methods |
+| Fetal reservoir balance | Equation 5 | Methods |
+| Fitted data | maternal and fetal concentrations, 0-240 min | Table S1 |
+
+The clearances the Phoenix fit produced, in mL/min for one cotyledon, are not
+printed; only their conversion through Equation 1 is. The model file inverts
+that conversion:
+
+```{r eq1}
+eq1_to_cot <- function(cl_per_ml_placenta) cl_per_ml_placenta * 659 / 20 * 1000 / 60
+cot_to_eq1 <- function(cl_cot) cl_cot * 20 / 659 * 60 / 1000
+est <- setNames(ui$iniDf$est, ui$iniDf$name)
+cl_cot <- exp(c(CLPDM = est[["lcl_pdm"]], CLPDF = est[["lcl_pdf"]]))
+eq1_tab <- tibble::tibble(
+  Clearance = names(cl_cot),
+  `Per cotyledon (mL/min)` = cl_cot,
+  `Back through Equation 1 (L/h/mL placenta)` = cot_to_eq1(cl_cot),
+  `Printed (L/h/mL placenta)` = c(0.0023, 0.039)
+)
+knitr::kable(eq1_tab, digits = c(0, 4, 5, 5))
+stopifnot(all(abs(eq1_tab[[3]] / eq1_tab[[4]] - 1) < 1e-6))
+```
+
+# Simulation
+
+```{r simulate}
+dose_ug <- 1250
+s1 <- tibble::tribble(
+  ~time_m, ~maternal, ~time_f, ~fetal,
+  0, 5.1, 0, 0,
+  4.8, 4.5, 4.8, 0.2,
+  10.0, 4.2, 10.0, 0.5,
+  15.2, 4.1, 15.2, 0.6,
+  20.0, 4.0, 20.4, 0.6,
+  29.9, 3.9, 30.4, 0.6,
+  40.4, 3.8, 40.4, 0.7,
+  50.4, 3.7, 50.4, 0.8,
+  59.9, 3.6, 60.4, 0.8,
+  75.6, 3.5, 75.6, 0.8,
+  90.3, 3.4, 90.3, 0.9,
+  106.0, 3.3, 106.0, 0.9,
+  120.7, 3.3, 120.7, 1.0,
+  150.7, 3.1, 150.7, 1.1,
+  181.1, 3.0, 181.1, 1.1,
+  211.0, 2.9, 211.0, 1.2,
+  240.0, 2.8, 240.0, 1.2
+)
+obs_times <- sort(unique(c(s1$time_m, s1$time_f)))
+tgrid <- sort(unique(c(seq(0, 240, by = 1), obs_times)))
+ev <- et(amt = dose_ug, cmt = "maternal_reservoir") |>
+  et(tgrid, cmt = "maternal_reservoir")
+sim <- as.data.frame(rxSolve(mod, ev))
+head(sim[, c("time", "Cmaternal", "Cfetal")])
+```
+
+# Comparison with the fitted data (Table S1)
+
+The paper does not show the Approach 3 fit itself. The table and figure below
+put this model against the data it was fitted to.
+
+```{r tableS1}
+pred_at <- function(t, y) approx(sim$time, y, xout = t)$y
+cmp <- s1 |>
+  mutate(
+    model_maternal = pred_at(time_m, sim$Cmaternal),
+    model_fetal = pred_at(time_f, sim$Cfetal)
+  )
+cmp |>
+  select(time_m, maternal, model_maternal, time_f, fetal, model_fetal) |>
+  dplyr::rename(
+    "Maternal time (min)" = time_m,
+    "Maternal, Table S1" = maternal,
+    "Maternal, model" = model_maternal,
+    "Fetal time (min)" = time_f,
+    "Fetal, Table S1" = fetal,
+    "Fetal, model" = model_fetal
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+```{r tableS1-plot, fig.width = 7, fig.height = 4.5}
+obs_long <- bind_rows(
+  tibble::tibble(time = s1$time_m, conc = s1$maternal, reservoir = "maternal"),
+  tibble::tibble(time = s1$time_f, conc = s1$fetal, reservoir = "fetal")
+)
+sim_long <- sim |>
+  select(time, maternal = Cmaternal, fetal = Cfetal) |>
+  pivot_longer(-time, names_to = "reservoir", values_to = "conc")
+ggplot() +
+  geom_line(data = sim_long, aes(time, conc, colour = reservoir)) +
+  geom_point(data = obs_long, aes(time, conc, colour = reservoir), shape = 1) +
+  labs(
+    x = "Time (min)", y = "Metformin (ug/mL)", colour = "Reservoir",
+    caption = "Lines: this model. Circles: Table S1 of Tiley 2026 (Nanovskaya 2006 Figure 1)."
+  ) +
+  theme_bw()
+```
+
+The fetal rise over the first 15 min is reproduced (within about 30%), but
+from 30 min onward the model's fetal concentration climbs well above the data
+(2.9 vs 1.2 ug/mL at 240 min) and its maternal concentration falls more
+slowly (3.2 vs 2.8 ug/mL). This is a property of the printed model, not of the
+transcription, as the next two sections show.
+
+## The printed structure cannot fit these data at any clearances
+
+Equations 3-5 conserve mass: whatever leaves the maternal reservoir is in the
+syncytiotrophoblast or the fetal reservoir. The authors state the same
+assumption ("any metformin not accounted for in the maternal or fetal
+reservoirs at a given timepoint was assumed to be in the syncytiotrophoblast").
+Applied to Table S1, it puts several hundred micrograms into a 3.395 mL
+compartment, a syncytiotrophoblast concentration far above the maternal one,
+which passive diffusion from the maternal side cannot produce:
+
+```{r mass-gap}
+gap <- s1 |>
+  filter(time_m == time_f, time_m > 0) |>
+  mutate(
+    recovered_ug = maternal * 250 + fetal * 150,
+    implied_pb_ug = dose_ug - recovered_ug,
+    implied_c_pb = implied_pb_ug / 3.395
+  )
+gap |>
+  select(time_m, maternal, fetal, recovered_ug, implied_pb_ug, implied_c_pb) |>
+  dplyr::rename(
+    "Time (min)" = time_m,
+    "Maternal (ug/mL)" = maternal,
+    "Fetal (ug/mL)" = fetal,
+    "In reservoirs (ug)" = recovered_ug,
+    "Left for syncytiotrophoblast (ug)" = implied_pb_ug,
+    "Implied syncytiotrophoblast conc (ug/mL)" = implied_c_pb
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+So no pair of clearances lets this structure follow both reservoirs; the best
+it can do is trade the maternal fit against the fetal one.
+
+## The printed clearances are a weighted least-squares fit of this structure
+
+The paper does not state the Phoenix weighting scheme. Re-fitting the two
+clearances to Table S1 with the same structure, volumes and dose shows that
+the printed values sit almost exactly at the minimum of a
+1/predicted-squared (relative) weighted least-squares objective. They are not
+the unweighted optimum, which would put the series clearance near 0.5 mL/min
+and match the late fetal points at the cost of the early ones.
+
+```{r refit}
+fit_obs <- cmp |> filter(time_m > 0)
+sim_pair <- function(cl_pdm, cl_pdf) {
+  m <- mod |> ini(lcl_pdm = log(cl_pdm), lcl_pdf = log(cl_pdf))
+  s <- as.data.frame(rxSolve(m, ev))
+  list(
+    maternal = approx(s$time, s$Cmaternal, xout = fit_obs$time_m)$y,
+    fetal = approx(s$time, s$Cfetal, xout = fit_obs$time_f)$y
+  )
+}
+obj_rel <- function(p) {
+  q <- sim_pair(p[1], p[2])
+  sum(((q$maternal - fit_obs$maternal) / q$maternal)^2 +
+    ((q$fetal - fit_obs$fetal) / q$fetal)^2)
+}
+obj_unw <- function(p) {
+  q <- sim_pair(p[1], p[2])
+  sum((q$maternal - fit_obs$maternal)^2 + (q$fetal - fit_obs$fetal)^2)
+}
+fit_rel <- optim(log(c(1, 1)), function(lp) obj_rel(exp(lp)),
+  method = "L-BFGS-B", lower = log(c(0.01, 0.01)), upper = log(c(100, 100))
+)
+fit_unw <- optim(log(c(1, 1)), function(lp) obj_unw(exp(lp)),
+  method = "L-BFGS-B", lower = log(c(0.01, 0.01)), upper = log(c(100, 100))
+)
+series <- function(a, b) 1 / (1 / a + 1 / b)
+alt_67 <- c(0.0023, 0.039) * 67.9 / 20 * 1000 / 60
+refit_tab <- tibble::tibble(
+  Clearances = c(
+    "Printed (this file)",
+    "Relative-weighted refit",
+    "Unweighted refit",
+    "Printed values converted with 67.9 mL instead of 659 mL"
+  ),
+  `CLPDM (mL/min)` = c(cl_cot[1], exp(fit_rel$par[1]), exp(fit_unw$par[1]), alt_67[1]),
+  `CLPDF (mL/min)` = c(cl_cot[2], exp(fit_rel$par[2]), exp(fit_unw$par[2]), alt_67[2])
+) |>
+  mutate(
+    `Series clearance (mL/min)` = series(`CLPDM (mL/min)`, `CLPDF (mL/min)`),
+    `Relative-weighted objective` = mapply(function(a, b) obj_rel(c(a, b)), `CLPDM (mL/min)`, `CLPDF (mL/min)`)
+  )
+knitr::kable(refit_tab, digits = 3)
+
+stopifnot(
+  # The printed pair is within 10% of the relative-weighted minimum ...
+  refit_tab$`Relative-weighted objective`[1] < 1.10 * fit_rel$value,
+  # ... and a wrong Equation 1 conversion is not (it is several times worse).
+  refit_tab$`Relative-weighted objective`[4] > 3 * fit_rel$value
+)
+```
+
+The refit drives one of the two clearances to its upper bound: with a
+3.395 mL syncytiotrophoblast, the reservoirs only see the two barriers in
+series, so the data fix the series clearance (about 1.0-1.2 mL/min under
+relative weighting) and say little about how it splits between `CLPDM` and
+`CLPDF`. The printed split (1.26 and 21.4 mL/min) is one point on that ridge.
+
+# Structural checks
+
+## Mass balance and the closed-form equilibrium
+
+The system has no elimination, so the total amount must stay at the dose and
+all three compartments must settle at `1250 / (250 + 3.395 + 150)` ug/mL.
+
+```{r mass-balance}
+ev_long <- et(amt = dose_ug, cmt = "maternal_reservoir") |>
+  et(c(seq(0, 240, by = 10), 5000, 20000), cmt = "maternal_reservoir")
+sim_long_t <- as.data.frame(rxSolve(mod, ev_long, atol = 1e-10, rtol = 1e-10))
+total <- with(sim_long_t, maternal_reservoir + placental_barrier + fetal_reservoir)
+c_eq <- dose_ug / (250 + 3.395 + 150)
+end <- sim_long_t[sim_long_t$time == 20000, ]
+knitr::kable(tibble::tibble(
+  Quantity = c("Max |total amount - dose| (ug)", "Closed-form equilibrium (ug/mL)", "Maternal at 20000 min", "Fetal at 20000 min"),
+  Value = c(max(abs(total - dose_ug)), c_eq, end$Cmaternal, end$Cfetal)
+), digits = 6)
+stopifnot(
+  max(abs(total - dose_ug)) < 1e-4,
+  abs(end$Cmaternal / c_eq - 1) < 1e-4,
+  abs(end$Cfetal / c_eq - 1) < 1e-4
+)
+```
+
+## Only the series clearance matters to the reservoirs
+
+Swapping the two printed clearances leaves the reservoir curves almost
+unchanged, which is why the fit cannot separate them.
+
+```{r swap}
+mod_swap <- mod |> ini(lcl_pdm = log(cl_cot[["CLPDF"]]), lcl_pdf = log(cl_cot[["CLPDM"]]))
+sim_swap <- as.data.frame(rxSolve(mod_swap, ev))
+max_diff <- c(
+  maternal = max(abs(sim_swap$Cmaternal - sim$Cmaternal)),
+  fetal = max(abs(sim_swap$Cfetal - sim$Cfetal))
+)
+max_diff
+stopifnot(all(max_diff < 0.1))
+```
+
+# NCA
+
+Non-compartmental analysis is not a meaningful check for a closed ex vivo
+perfusion circuit with no elimination, and the paper reports no NCA for this
+model (its Table 2 summarises the whole-body Simcyp simulations). The
+validation above relies instead on the exact Equation 1 round trip, mass
+balance, the closed-form equilibrium and the refit to the paper's own data.
+
+# Assumptions and deviations
+
+* **Per-cotyledon clearances are derived.** The paper prints the fitted
+  clearances only after converting them with Equation 1 (20 cotyledons per
+  placenta, 659 mL placental volume). The file inverts that conversion; the
+  printed values have two significant figures, so the per-cotyledon
+  clearances carry about 2% rounding.
+* **Equation 1 conversion volume.** Equation 1 and the sentence after it use a
+  659 mL placental volume, while the syncytiotrophoblast volume uses 67.9 mL;
+  the refit above shows the 659 mL reading is the one consistent with the
+  data, and the 67.9 mL reading is several times worse.
+* **Poor fit is the model's, not the transcription's.** The stated
+  mass-conserving structure cannot follow the Table S1 maternal decline and
+  fetal rise together. The printed clearances are close to the relative-weighted
+  least-squares optimum of that structure, so the file carries them as
+  printed; they are not tuned to the late data points.
+* **No variability or residual error.** The Phoenix fit was to the mean
+  digitised curves and no variances, standard errors or residual error are
+  reported, so the file carries typical values only.
+* **Initial maternal concentration.** The model starts the maternal reservoir
+  at the nominal 5 ug/mL (1250 ug in 250 mL), as stated for the Phoenix
+  simulation; Table S1 reads 5.1 ug/mL at time 0.
+* **Whole-body PBPK not reproduced.** The Simcyp pregnancy PBPK models
+  (Approaches 1-4), including the Approach 4 transporter clearances in Table 1
+  and File S1, are platform inputs normalised to an unprinted placental
+  volume and are not part of this file.

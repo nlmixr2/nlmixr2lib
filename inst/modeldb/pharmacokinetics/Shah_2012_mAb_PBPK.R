@@ -120,28 +120,26 @@ Shah_2012_mAb_PBPK <- function() {
     disease_state = "Adults with rheumatoid arthritis (validation cohort, Weisman 2003).",
     dose_range = "Validation: 5 mg/kg IV single dose adalimumab (Weisman 2003 cohort 4).",
     regions = "Multi-source (digitized mean profiles from Weisman 2003 for human; Bazin-Redureau 1997 for rat; Hinton 2004 for rhesus monkey; Garg/Balthasar 2007, Baxter 1994, Ferl 2005, control IgG/IVIG mouse studies for mouse).",
-    notes = "Platform PBPK model fit simultaneously to 52 plasma and tissue concentration profiles spanning four species (mouse, rat, monkey, human) and several mAbs (control IgG, 7E3, MOPC21, cT84.66, OST577, adalimumab). Four system parameters (FcRn, CLup, Kdeg, C_LNLF) were estimated from pooled data; physiology and FcRn association/dissociation rates were fixed from literature. This model file packages the human (71 kg) parameterization without antigen binding (non-target-mediated disposition). For tumor-targeting or antigen-specific applications, additional terms on cell-membrane binding (Kon_Ag, Koff_Ag, Kint) would be required - see paper Eqs 9-10.",
+    notes = "Platform PBPK model fit simultaneously to 52 plasma and tissue concentration profiles spanning four species (mouse, rat, monkey, human) and several mAbs (control IgG, 7E3, MOPC21, cT84.66, OST577, adalimumab). Four system parameters (FcRn, CLup, Kdeg, C_LNLF) were estimated from pooled data; physiology and FcRn association/dissociation rates were fixed from literature. This model file packages the human (71 kg) parameterization without antigen binding (non-target-mediated disposition). Where the printed text differs from or leaves open the implementation, the equations follow the authors' ADAPT 5 model code (Electronic Supplementary Material 1), notably pinocytosis clearance scaled by the whole-body endosomal volume. For tumor-targeting or antigen-specific applications, additional terms on cell-membrane binding (Kon_Ag, Koff_Ag, Kint) would be required - see paper Eqs 9-10.",
     scope_note = "Mechanistic platform model: no IIV, no residual error - intended for typical-value simulation. See vignette for steady-state, mass-balance, and adalimumab plasma replication checks."
   )
 
   ini({
     # Four system parameters estimated by simultaneous fit to pooled multi-species
-    # data (Shah & Betts 2012 Table 6).
+    # data (Shah & Betts 2012 Table 6). Where the printed text leaves the
+    # implementation open or differs from it, the equations follow the authors'
+    # ADAPT 5 model code, the paper's Electronic Supplementary Material 1
+    # (10928_2011_9232_MOESM1_ESM.txt, written for the mouse): pinocytosis
+    # clearance, lymph-node outflow, lung flows and liver lymph flow. See the
+    # vignette's Errata.
     lfcrn   <- log(4.98e-5);  label("Endosomal FcRn concentration (mol/L)")        # Table 6 (CV% 11.1)
-    lclup   <- log(0.0366);   label("Pinocytosis rate per unit endosomal volume (L/h/L)") # Table 6 (CV% 3.48)
+    lclup   <- log(0.0366);   label("Pinocytosis rate per unit whole-body endosomal volume (L/h/L)") # Table 6 (CV% 3.48)
     lkdeg   <- log(42.9);     label("Endosomal degradation rate of FcRn-unbound mAb (1/h)") # Table 6 (CV% 15.7)
-    lclnlf  <- log(9.1);      label("Lymph-node-to-plasma transfer scaling C_LNLF (unitless ratio)") # Table 6 (CV% > 50)
+    lclnlf  <- log(9.1);      label("Lymph-node outflow per unit lung plasma flow, C_LNLF (unitless)") # Table 6 (CV% > 50)
 
     # Species-specific FcRn-IgG binding (text p.73, human values).
     lkon    <- log(5.59e8);   label("FcRn-IgG association rate constant (1/M/h, human)") # text p.73
     lkoff   <- log(23.9);     label("FcRn-IgG dissociation rate constant (1/h, human)")  # text p.73
-
-    # Lymph-node return flow L_LymphNode (L/h, human). Reported in Table 4 row
-    # "Ly. Node" plasma flow column = 3670 mL/h. Treated as a fixed, species-
-    # specific physiological flow in this model file; the C_LNLF system
-    # parameter above is retained for traceability against Table 6 but does
-    # not directly enter the ODEs.
-    llymphnode <- log(3.670); label("Lymph-node-to-plasma flow L_LymphNode (L/h, human)") # Table 4 row Ly.Node
   })
 
   model({
@@ -151,7 +149,6 @@ Shah_2012_mAb_PBPK <- function() {
     c_lnlf  <- exp(lclnlf)
     kon_M   <- exp(lkon)
     koff    <- exp(lkoff)
-    l_lnode <- exp(llymphnode)
 
     # Convert FcRn molar concentration to nM and Kon from 1/M/h to 1/(nM h)
     fcrn   <- fcrn_M * 1e9     # nM (49800 nM at 4.98e-5 M)
@@ -169,24 +166,15 @@ Shah_2012_mAb_PBPK <- function() {
     v_bcc    <- 2.558
 
     # Lymph node - Total V = Cell V = 274 mL; treated as a single mixing
-    # compartment. l_lnode (above) sets the outflow rate.
+    # compartment. Its outflow l_lnode is set with the lung flow below.
     v_lnode  <- 0.274
 
     # Heart
     v_ht_vp <- 0.0131; v_ht_bc <- 0.0108; v_ht_e <- 0.00171; v_ht_is <- 0.0488
     q_ht    <- 7.752;  bcq_ht  <- 6.342;  sv_ht  <- 0.95
     l_ht    <- q_ht / 500
-    clu_ht  <- clup_pv * v_ht_e
 
-    # Lung. Volumes from Table 4. Plasma and blood-cell flows are derived from
-    # the sum of non-lung tissue arterial inflows so that the lung's vascular
-    # mass balance closes exactly. The Shah & Betts 2012 Table 4 reference
-    # values (q_lu = 181.913 L/h, bcq_lu = 148.838 L/h) come from a different
-    # physiological reference than the tissue rows and do not perfectly equal
-    # sum_X q_X + l_lu (they are ~1.8% high), which would cause a slow but
-    # non-trivial leak at the lung-arterial junction. Using the sum-derived
-    # values keeps total mAb mass conserved (apart from the explicit Kdeg
-    # endosomal degradation).
+    # Lung. Volumes from Table 4; flows are set from the tissue rows below.
     v_lu_vp <- 0.0550; v_lu_bc <- 0.0450; v_lu_e <- 0.00500; v_lu_is <- 0.300
     sv_lu   <- 0.95
 
@@ -194,90 +182,114 @@ Shah_2012_mAb_PBPK <- function() {
     v_mu_vp <- 0.662;  v_mu_bc <- 0.541;  v_mu_e <- 0.150;   v_mu_is <- 3.910
     q_mu    <- 33.469; bcq_mu  <- 27.383; sv_mu  <- 0.95
     l_mu    <- q_mu / 500
-    clu_mu  <- clup_pv * v_mu_e
 
     # Skin
     v_sk_vp <- 0.127;  v_sk_bc <- 0.104;  v_sk_e <- 0.0170;  v_sk_is <- 1.125
     q_sk    <- 11.626; bcq_sk  <- 9.512;  sv_sk  <- 0.95
     l_sk    <- q_sk / 500
-    clu_sk  <- clup_pv * v_sk_e
 
     # Adipose
     v_ad_vp <- 0.148;  v_ad_bc <- 0.121;  v_ad_e <- 0.0673;  v_ad_is <- 2.289
     q_ad    <- 11.233; bcq_ad  <- 9.191;  sv_ad  <- 0.95
     l_ad    <- q_ad / 500
-    clu_ad  <- clup_pv * v_ad_e
 
     # Bone
     v_bo_vp <- 0.224;  v_bo_bc <- 0.183;  v_bo_e <- 0.0508;  v_bo_is <- 1.891
     q_bo    <- 2.591;  bcq_bo  <- 2.120;  sv_bo  <- 0.85
     l_bo    <- q_bo / 500
-    clu_bo  <- clup_pv * v_bo_e
 
     # Brain
     v_br_vp <- 0.0319; v_br_bc <- 0.0261; v_br_e <- 0.00725; v_br_is <- 0.261
     q_br    <- 21.453; bcq_br  <- 17.553; sv_br  <- 0.99
     l_br    <- q_br / 500
-    clu_br  <- clup_pv * v_br_e
 
     # Kidney
     v_ki_vp <- 0.0182; v_ki_bc <- 0.0149; v_ki_e <- 0.00166; v_ki_is <- 0.0498
     q_ki    <- 36.402; bcq_ki  <- 29.784; sv_ki  <- 0.90
     l_ki    <- q_ki / 500
-    clu_ki  <- clup_pv * v_ki_e
 
     # Liver (special - receives portal flow from spleen, pancreas, S.Int, L.Int)
     v_li_vp <- 0.183;  v_li_bc <- 0.149;  v_li_e <- 0.0107;  v_li_is <- 0.429
     q_li    <- 13.210; bcq_li  <- 10.808; sv_li  <- 0.85
-    l_li    <- q_li / 500
-    clu_li  <- clup_pv * v_li_e
 
     # Small intestine (feeds liver portal)
     v_si_vp <- 0.00615; v_si_bc <- 0.00503; v_si_e <- 0.00193; v_si_is <- 0.0671
     q_si    <- 12.368; bcq_si  <- 10.120; sv_si  <- 0.90
     l_si    <- q_si / 500
-    clu_si  <- clup_pv * v_si_e
 
     # Large intestine (feeds liver portal)
     v_lr_vp <- 0.00874; v_lr_bc <- 0.00715; v_lr_e <- 0.00274; v_lr_is <- 0.0953
     q_lr    <- 12.867; bcq_lr  <- 10.527; sv_lr  <- 0.95
     l_lr    <- q_lr / 500
-    clu_lr  <- clup_pv * v_lr_e
 
     # Pancreas (feeds liver portal)
     v_pa_vp <- 0.00570; v_pa_bc <- 0.00466; v_pa_e <- 0.000518; v_pa_is <- 0.0180
     q_pa    <- 3.056;  bcq_pa  <- 2.500;  sv_pa  <- 0.90
     l_pa    <- q_pa / 500
-    clu_pa  <- clup_pv * v_pa_e
 
     # Thymus
     v_th_vp <- 0.000353; v_th_bc <- 0.000288; v_th_e <- 0.0000321; v_th_is <- 0.00109
     q_th    <- 0.353;  bcq_th  <- 0.289;  sv_th  <- 0.90
     l_th    <- q_th / 500
-    clu_th  <- clup_pv * v_th_e
 
     # Spleen (feeds liver portal)
     v_sp_vp <- 0.0268; v_sp_bc <- 0.0219; v_sp_e <- 0.00111; v_sp_is <- 0.0443
     q_sp    <- 6.343;  bcq_sp  <- 5.189;  sv_sp  <- 0.85
     l_sp    <- q_sp / 500
-    clu_sp  <- clup_pv * v_sp_e
 
     # Other (composite carcass: stomach, bladder, gallbladder, thyroid, etc.)
     v_ot_vp <- 0.204;  v_ot_bc <- 0.167;  v_ot_e <- 0.0243;  v_ot_is <- 0.831
     q_ot    <- 5.521;  bcq_ot  <- 4.517;  sv_ot  <- 0.95
     l_ot    <- q_ot / 500
-    clu_ot  <- clup_pv * v_ot_e
 
-    # Derived lung plasma and blood-cell flows (mass-balance closure).
-    # q_lu * (1 - 1/500) = sum_X q_X (where X iterates non-lung tissues).
+    # Lung plasma and blood-cell flows are the sums of the other tissues' flows,
+    # as in the ADAPT code (LU_PLQ_M = 0.373131 L/h = sum of the mouse tissue
+    # PLQ values; Table 1 lists 373 mL/h). The lung receives q_lu + l_lu from
+    # plasma, sends q_lu to the tissues and l_lu to its interstitium. The
+    # Table 4 human lung flows (181.913 and 148.838 L/h) also include the
+    # "Ly. Node" row (3.670 and 3.002 L/h), which the equations give no blood
+    # flow; used here they would remove mAb at the lung outflow.
     sum_q_X   <- q_ht + q_mu + q_sk + q_ad + q_bo + q_br + q_ki + q_li +
                  q_si + q_lr + q_pa + q_th + q_sp + q_ot
     sum_bcq_X <- bcq_ht + bcq_mu + bcq_sk + bcq_ad + bcq_bo + bcq_br + bcq_ki +
                  bcq_li + bcq_si + bcq_lr + bcq_pa + bcq_th + bcq_sp + bcq_ot
-    q_lu      <- sum_q_X / (1 - 1/500)
+    q_lu      <- sum_q_X
     l_lu      <- q_lu / 500
     bcq_lu    <- sum_bcq_X
-    clu_lu    <- clup_pv * v_lu_e
+
+    # Liver lymph flow is 1/500 of the liver's total plasma inflow, hepatic
+    # artery plus the portal returns (ADAPT code, LIV_LF_M).
+    l_li <- (q_li + (q_si - l_si) + (q_lr - l_lr) + (q_pa - l_pa) + (q_sp - l_sp)) / 500
+
+    # Lymph-node outflow to plasma is C_LNLF times the lung plasma flow (ADAPT
+    # code, LN_LF_M = C_LNLF * LU_PLQ_M; the text describes C_LNLF as the ratio
+    # of this rate to "the plasma flow of the given species"). The Table 4
+    # "Ly. Node" flow is not used.
+    l_lnode <- c_lnlf * q_lu
+
+    # Pinocytosis clearance. As in the ADAPT code (HE_CL_UP_M = CL_UP * EV_TO_M
+    # for every tissue, with EV_TO_M = 1.3088E-04 L the sum of the 15 mouse
+    # tissue endosomal volumes), each tissue's clearance is CLup times the
+    # whole-body endosomal volume, not the tissue's own volume as the text
+    # describes (p.73). The Table 6 CLup was estimated with this form.
+    v_e_total <- v_ht_e + v_lu_e + v_mu_e + v_sk_e + v_ad_e + v_bo_e + v_br_e +
+                 v_ki_e + v_li_e + v_si_e + v_lr_e + v_pa_e + v_th_e + v_sp_e +
+                 v_ot_e
+    clu_ht <- clup_pv * v_e_total
+    clu_lu <- clup_pv * v_e_total
+    clu_mu <- clup_pv * v_e_total
+    clu_sk <- clup_pv * v_e_total
+    clu_ad <- clup_pv * v_e_total
+    clu_bo <- clup_pv * v_e_total
+    clu_br <- clup_pv * v_e_total
+    clu_ki <- clup_pv * v_e_total
+    clu_li <- clup_pv * v_e_total
+    clu_si <- clup_pv * v_e_total
+    clu_lr <- clup_pv * v_e_total
+    clu_pa <- clup_pv * v_e_total
+    clu_th <- clup_pv * v_e_total
+    clu_sp <- clup_pv * v_e_total
+    clu_ot <- clup_pv * v_e_total
 
     # === Concentration aliases (used in the ODE right-hand sides) ===
 
@@ -332,11 +344,12 @@ Shah_2012_mAb_PBPK <- function() {
 
     # === Vascular plasma ODEs (Eq 4 / Eq 11) ===
     # Arterial input: lung vascular plasma feeds every tissue except itself; the lung
-    # is fed from central plasma. Liver also receives portal venous outflow from
-    # spleen, pancreas, small intestine, and large intestine (Eq 11).
+    # is fed from central plasma at q_lu + l_lu and passes q_lu on to the tissues
+    # (ADAPT code). Liver also receives portal venous outflow from spleen,
+    # pancreas, small intestine, and large intestine (Eq 11).
 
     d/dt(vp_heart) <- q_ht * cv_lu - (q_ht - l_ht) * cv_ht - (1 - sv_ht) * l_ht * cv_ht - clu_ht * cv_ht + clu_ht * fr * ceb_ht
-    d/dt(vp_lung) <- q_lu * cv_p  - (q_lu - l_lu) * cv_lu - (1 - sv_lu) * l_lu * cv_lu - clu_lu * cv_lu + clu_lu * fr * ceb_lu
+    d/dt(vp_lung) <- (q_lu + l_lu) * cv_p - q_lu * cv_lu - (1 - sv_lu) * l_lu * cv_lu - clu_lu * cv_lu + clu_lu * fr * ceb_lu
     d/dt(vp_muscle) <- q_mu * cv_lu - (q_mu - l_mu) * cv_mu - (1 - sv_mu) * l_mu * cv_mu - clu_mu * cv_mu + clu_mu * fr * ceb_mu
     d/dt(vp_skin) <- q_sk * cv_lu - (q_sk - l_sk) * cv_sk - (1 - sv_sk) * l_sk * cv_sk - clu_sk * cv_sk + clu_sk * fr * ceb_sk
     d/dt(vp_adipose) <- q_ad * cv_lu - (q_ad - l_ad) * cv_ad - (1 - sv_ad) * l_ad * cv_ad - clu_ad * cv_ad + clu_ad * fr * ceb_ad
@@ -501,7 +514,7 @@ Shah_2012_mAb_PBPK <- function() {
                     (q_bo - l_bo) * cv_bo +
                     (q_ot - l_ot) * cv_ot +
                     l_lnode * cv_ln -
-                    q_lu * cv_p
+                    (q_lu + l_lu) * cv_p
 
     # === Central blood cells (Eq 2) ===
     d/dt(bcc) <- bcq_ht * cb_ht +
@@ -556,8 +569,9 @@ Shah_2012_mAb_PBPK <- function() {
 
     # === Observation ===
     # Cc reports the central plasma concentration (nM). The state amounts are in
-    # nmol; users dosing in mg should convert via dose_nmol = dose_mg / MW * 1e9
-    # where MW is the antibody molar mass (e.g., 144,190 g/mol for adalimumab).
+    # nmol; users dosing in mg should convert via dose_nmol = dose_mg / MW * 1e6
+    # where MW is the antibody molar mass in g/mol (e.g., 144,190 g/mol for
+    # adalimumab, so 355 mg is 2,462 nmol).
     Cc <- cv_p
   })
 }

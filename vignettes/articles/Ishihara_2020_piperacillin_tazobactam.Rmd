@@ -299,7 +299,8 @@ ev_ss <- bind_rows(ev_ss_dose, ev_ss_obs) |>
   arrange(id, time, desc(evid))
 ev_ss$ii[ev_ss$evid == 0] <- 0
 
-sim_ss <- rxode2::rxSolve(mod_pip, ev_ss, keep = "CRCL", returnType = "data.frame") |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_ss <- rxode2::rxSolve(mod_pip, ev_ss, keep = "CRCL", returnType = "data.frame", maxsteps = 1e6) |>
   left_join(select(subj, id, scenario), by = "id")
 
 mics <- 2^(-4:7)
@@ -416,6 +417,8 @@ pta_pip |>
 # PKNCA validation
 
 ```{r pknca}
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim$Cc))
 conc <- sim |>
   filter(!is.na(Cc)) |>
   mutate(interval = ifelse(time <= tau, "first dose", "steady state")) |>

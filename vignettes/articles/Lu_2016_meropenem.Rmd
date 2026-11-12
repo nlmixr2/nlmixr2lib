@@ -164,7 +164,9 @@ solve_arms <- function(events, ...) {
   out <- rxode2::rxSolve(
     mod, events = events,
     keep = c("treatment", "CSF_DRAIN_VOL_24H"),
-    useLinCmt = FALSE, sigma = NA, ...
+    useLinCmt = FALSE, sigma = NA,
+    # steady-state searches for long-half-life subjects exceed the default step budget
+    maxsteps = 1e6, ...
   ) |>
     as.data.frame()
   # A subject whose ODEs fail to reach steady state comes back all-NA and would

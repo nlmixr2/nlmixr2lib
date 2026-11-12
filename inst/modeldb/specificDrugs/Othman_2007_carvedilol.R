@@ -21,6 +21,9 @@ Othman_2007_carvedilol <- function() {
     "etafrel_cr_iov"
   )
 
+  # depot: controlled release; depot2 / depot3: immediate release, morning / evening.
+  dosing <- c("depot", "depot2", "depot3")
+
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what

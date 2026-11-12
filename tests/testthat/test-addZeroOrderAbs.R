@@ -29,17 +29,18 @@ test_that("addZeroOrderAbs on a model without a depot adds the duration", {
 })
 
 test_that("addZeroOrderAbs removes transit compartments", {
-  .w <- character(0)
+  seen <- new.env(parent = emptyenv())
+  seen$warnings <- character(0)
   res <- withCallingHandlers(
     res0 |> addTransit(3) |> addZeroOrderAbs(),
     warning = function(wn) {
-      .w <<- c(.w, conditionMessage(wn))
+      seen$warnings <- c(seen$warnings, conditionMessage(wn))
       invokeRestart("muffleWarning")
     }
   )
 
-  expect_true(any(grepl("transit compartments removed", .w)))
-  expect_true(any(grepl("removed for zero-order absorption", .w)))
+  expect_true(any(grepl("transit compartments removed", seen$warnings)))
+  expect_true(any(grepl("removed for zero-order absorption", seen$warnings)))
   expect_equal(sum(grepl("^transit", res$state)), 0L)
   expect_equal(rxode2::modelExtract(res, "dur(central)"), "dur(central) <- tk0")
 })

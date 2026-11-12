@@ -212,12 +212,36 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
   - `kid` -- deprecated.
 - **Example models:** `Ayyar_2024_givosiran.R`, `Gilkey_2015_DiRnanoparticle.R`.
 
+### vagina (**canonical vaginal mucosal-tissue compartment**)
+- **Type:** compartment
+- **Role:** Vaginal mucosal tissue as a sampled drug-distribution compartment (biopsy homogenate), used by HIV pre-exposure-prophylaxis tissue PK models. Holds parent drug; the intracellular anabolite in the same tissue is the metabolite-suffixed state `vagina_<metab>` (`vagina_tfvdp`, `vagina_ftctp`). The observation is `Cvagina` (`Cvagina_<metab>`), with residual `propSd_Cvagina`.
+- **Source aliases:**
+  - `Vv` (parent) / `Vvtp` (metabolite) -- Leung 2023 Figure 1 and control-stream compartments 4 and 7.
+- **Example models:** `Leung_2023_tenofovir.R`, `Leung_2023_emtricitabine.R` (founding examples).
+- **Notes:** Ratified by the maintainers 2026-11-06 with the Leung 2023 extraction (PMC10725258), together with `cervix` and `rectum`. A tissue, not a lumen or a dosing site: a vaginally applied dose would go into a `depot_<site>` state. Its `compartmentData` specimen is `tissue`.
+
+### cervix (**canonical cervical mucosal-tissue compartment**)
+- **Type:** compartment
+- **Role:** Cervical (ectocervical) mucosal tissue as a sampled drug-distribution compartment (biopsy homogenate). Holds parent drug; the anabolite in the same tissue is `cervix_<metab>`. The observation is `Ccervix` (`Ccervix_<metab>`).
+- **Source aliases:**
+  - `Ve` (parent) / `Vetp` (metabolite) -- Leung 2023 Figure 1 and control-stream compartments 5 and 8.
+- **Example models:** `Leung_2023_tenofovir.R`, `Leung_2023_emtricitabine.R` (founding examples).
+- **Notes:** See `vagina`.
+
+### rectum (**canonical rectal mucosal-tissue compartment**)
+- **Type:** compartment
+- **Role:** Rectal mucosal tissue as a sampled drug-distribution compartment (biopsy homogenate). Holds parent drug; the anabolite in the same tissue is `rectum_<metab>`. The observation is `Crectum` (`Crectum_<metab>`). In the founding example it receives drug both from plasma and, through `ka_rectum`, from the end of a gut-transit chain of unabsorbed drug.
+- **Source aliases:**
+  - `Vr` (parent) / `Vrtp` (metabolite) -- Leung 2023 Figure 1 and control-stream compartments 6 and 9.
+- **Example models:** `Leung_2023_tenofovir.R`, `Leung_2023_emtricitabine.R` (founding examples).
+- **Notes:** See `vagina`. The mucosa, not the large-intestine lumen: the luminal GI segments are `cecum` / `colon` and the transit stages `transit<n>`.
+
 ### cumhaz (**canonical cumulative-hazard state, single-hazard models**)
 - **Type:** compartment
 - **Role:** Cumulative-hazard state for time-to-event / dropout sub-models. Integrates instantaneous hazard so that `survival = exp(-cumhaz)`. Use the bare `cumhaz` name when a model has only one hazard; reserve `cumhaz_<type>` (e.g., `cumhaz_os`, `cumhaz_drop`) for multi-hazard models that need to disambiguate.
 - **Source aliases:**
   - `cumHazard` -- prior canonical name for the generic single-hazard form used in `Zecchin_2016_survival.R` (pre-2026-06-19 lowercase + drop-suffix standardization).
-- **Example models:** `Girard_2012_pimasertib.R`, `Zecchin_2016_survival.R`.
+- **Example models:** `Girard_2012_pimasertib.R`, `Zecchin_2016_survival.R`, `Li_2025_patritumabDeruxtecan_ild.R`, `Li_2025_patritumabDeruxtecan_dose_reduction.R`, `Li_2025_patritumabDeruxtecan_discontinuation.R` (a DISCRETE-TIME per-cycle hazard h integrated as the continuous rate -log(1 - h) / 21 per day, so that each whole 21-day cycle multiplies survival by exactly 1 - h).
 - **Notes:** Source NONMEM idiom is `$MODEL COMP=(CUMHAZ)` with `DADT(<cumhaz>) = HAZARD`. The pre-2026-06-19 register carried a separate `cumHazard` canonical for single-hazard models (used in `Zecchin_2016_survival.R`); the 2026-06-19 audit collapsed it into this entry under the maintainers' rule that single-hazard models drop any suffix and that all cumulative-hazard compartment names are uniformly lowercase.
 
 ### renal_cortex (**canonical renal-cortex accumulation compartment**)
@@ -228,9 +252,10 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 
 ### csf (**canonical cerebrospinal-fluid compartment**)
 - **Type:** compartment
-- **Role:** Cerebrospinal-fluid physiologic compartment used by mechanistic mAb / TMDD models with multiple body-fluid distribution volumes.
-- **Source aliases:** none.
-- **Example models:** `PerezRuixo_2025_posdinemab.R`.
+- **Role:** Cerebrospinal-fluid physiologic compartment used by mechanistic mAb / TMDD models with multiple body-fluid distribution volumes, and the CSF compartment of compartmental CNS-distribution models.
+- **Source aliases:**
+  - `A5` -- Chiang 2024 Eqs. 1-5 ('A5 - CSF', cisterna-magna CSF, `VCSF` fixed at 0.25 mL).
+- **Example models:** `PerezRuixo_2025_posdinemab.R`; `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
 
 ### isf (**canonical interstitial-fluid compartment**)
 - **Type:** compartment
@@ -812,12 +837,26 @@ The three canonicals below describe the drug-target-effector-cell mass-action bi
 - **Source aliases:** `FPG` -- used in `Xiang_2025_tacrolimus_fpg.R` (Xiang 2025 Eq. 2).
 - **Example models:** `Xiang_2025_tacrolimus_fpg.R` (founding example; linear direct effect of tacrolimus trough concentration on the pre-transplantation baseline, `fpg <- rbase_fpg + slope * Cc`, as a model of post-transplantation diabetes mellitus risk), `Rambiritch_2016_glibenclamide_dose_fpg.R` and `Rambiritch_2016_glibenclamide_cpss_fpg.R` (inhibitory Emax of the daily glibenclamide dose or its average steady-state concentration on the drug-free fasting blood glucose).
 
+### fpg_reduction (**canonical percent reduction in fasting plasma glucose versus a reference group**)
+- **Type:** compartment
+- **Role:** Percent (0-100) reduction in fasting plasma glucose relative to the time-matched mean of a concurrent reference group, as a single-arm PD output; positive values mean lower glucose than the reference. Computed per the source as `(FPG_reference - FPG_treated) / FPG_reference * 100`. Typically an algebraic direct effect of drug exposure with no ODE state, and it can be nonzero at zero concentration when the fitted baseline is. The `_reduction` suffix is a role suffix on the analyte `fpg`, read the same way as `fpg_placebo` / `fpg_drug` / `glucose_mean`.
+- **Source aliases:** `dFPG`, `E` -- used in `Jin_2025_dorzagliatin.R` (Jin 2025 Eq. 5, "dFPG = (FPGcontrol - FPGexp)/FPGcontrol x 100%"; Eq. 6 calls the same quantity E, "the mean percent blood glucose reduction").
+- **Example models:** `Jin_2025_dorzagliatin.R` (founding example; sigmoid Emax of the dorzagliatin plasma concentration on the reduction versus the vehicle control group), `Jin_2025_dorzagliatin_wx390.R` and `Jin_2025_dorzagliatin_alpelisib.R` (the same endpoint with the reference group being mice given the PI3K-alpha inhibitor WX390 or alpelisib alone).
+- **Notes:** Ratified by the maintainers on 2026-11-06 with the Jin 2025 dorzagliatin extraction. The reference is a concurrent control group, not the subject's own baseline; a percent reduction from the subject's own baseline is a different quantity and should register a sibling name rather than reuse this one. Distinct from `fpg` (absolute fasting plasma glucose, mmol/L) and from the `<state>cfb` / `d_<name>` change-from-baseline outputs.
+
 ### glucose_mean (**canonical time-averaged plasma glucose output**)
 - **Type:** compartment
 - **Role:** Blood or plasma glucose averaged over a defined observation window -- the area under the glucose-versus-time curve divided by the window duration -- as a single-arm PD output, in mmol/L. One value per subject per observation window (in the founding example, per 8-hour sampling day on each dose level), typically an algebraic direct effect of drug exposure on a baseline with no ODE state. Distinct from `fpg`, a single fasting measurement, and from `glucose`, the instantaneous concentration (whether a dynamic turnover state or an algebraic time profile): a model of the time-averaged endpoint and a model of either instantaneous one predict different quantities and should not share an output name. The `_mean` suffix is a role suffix on the analyte, read the same way as the `fpg_placebo` / `fpg_drug` arm suffixes.
 - **Source aliases:** none (Rambiritch 2016 "mean glucose concentration").
 - **Example models:** `Rambiritch_2016_glibenclamide_dose_meanglucose.R` (founding example; inhibitory Emax on the daily glibenclamide dose, Rambiritch 2016 Model 3), `Rambiritch_2016_glibenclamide_cpss_meanglucose.R` (the same endpoint driven by the average steady-state concentration, Model 4).
 - **Notes:** Ratified by the maintainers on 2026-09-21 with the Rambiritch 2016 glibenclamide PK/PD extraction.
+
+### glucose_2h (**canonical 2-h post-load OGTT plasma glucose output**)
+- **Type:** compartment
+- **Role:** Plasma glucose measured 2 h (120 min) after the standard oral glucose load of an oral glucose tolerance test (OGTT), as a longitudinal PD or disease-progression output. One value per OGTT visit. Distinct from `fpg` (the fasting 0-min measurement), `glucose` (the instantaneous plasma glucose, whether a turnover state or an algebraic profile) and `glucose_mean` (a time-averaged value): the 2-h value is a single timed sample after a defined challenge and a diagnostic criterion for diabetes in its own right. The `_2h` suffix is a role suffix on the analyte, read like `glucose_mean`. Units are documented per model (mg/dL in the founding example).
+- **Source aliases:** `GLU120` -- used in `Morales_2023_type1Diabetes.R` (Morales 2023 Eq. 1).
+- **Example models:** `Morales_2023_type1Diabetes.R` (founding example; sigmoid Emax rise in time since the derived baseline in individuals with >= 2 islet autoantibodies, also driving a Weibull hazard for type 1 diabetes diagnosis).
+- **Notes:** Ratified by the maintainers on 2026-11-06 with the Morales 2023 extraction. The baseline 2-h / fasting ratio used as a covariate is the covariate-register entry `OGTT_GLU_RATIO_BL`.
 
 ### insulin (**canonical plasma insulin compartment**)
 - **Type:** compartment
@@ -1040,10 +1079,17 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Type:** compartment
 - **Role:** Dimensionless latent variable `R(t)` of a type I indirect-response model whose loss drives the drug effect on the PASI score: `d/dt(latent_pasi) <- kin * (1 - imax * CAV / (ic50 + CAV)) - kout * latent_pasi` with `kin = kout` and `latent_pasi(0) <- 1`, and the drug effect enters as `rbase * (1 - pmax) * (1 - latent_pasi)` in PASI units. It has no physical units or matrix (`specimen = "not applicable"`).
 - **Source aliases:** `R(t)` -- Tsamandouras 2024 Eq. 11-12; `A(1)` / `COMP = (PASI)` in its Online Resource 1 NONMEM code, where the state is named after the score it drives but holds R, not the score.
-- **Example models:** `Tsamandouras_2024_brepocitinib.R` (inhibition of the production of R by the individual average steady-state brepocitinib concentration, IC50 53.24 ng/mL, Imax fixed at 1).
+- **Example models:** `Tsamandouras_2024_brepocitinib.R` (inhibition of the production of R by the individual average steady-state brepocitinib concentration, IC50 53.24 ng/mL, Imax fixed at 1), `Ooi_2023_bevurogant_pasi.R` (a scaled variant: the state starts at the individual baseline probability `rbase` rather than 1, with `kin = rbase * kout` and Imax inhibition of production by CAV, so it equals `rbase * R(t)`; its logit, minus a placebo term, is the latent value of a bounded-integer PASI model).
 - **Notes:** Member of the `latent_<endpoint>` family, in which the suffix names the endpoint the latent variable drives (`latent_pppasi` for the palmoplantar score of `Iwaki_2021_guselkumab.R`). Distinct from `pasi`, which holds the score itself, and from `effect` (a ke0 effect compartment holding a concentration).
 
 ---
+
+### pasiprobit (**canonical latent PASI value on the probit scale of a bounded-integer model**)
+- **Type:** compartment
+- **Role:** Observation variable of a bounded-integer PASI model. The 73 integer PASI values 0-72 are ordered categories whose boundaries are `qnorm((1:72) / 73)`; `pasiprobit` is the individual latent value on that probit scale, and the observed score is the category it falls in after adding a normal error with the individual scaling SD g: `PASI = floor(73 * pnorm(pasiprobit + g * eps))`, capped at 72. Encoded as `pasiprobit ~ add(g)` so that rxode2 simulates the latent draw, and the integer score is recovered with `floor(73 * pnorm(sim))`. Not an ODE state; it has no physical units.
+- **Source aliases:** `IPRED` -- Ooi 2023 Appendix S1 NONMEM `$ERROR` (`IPRED = LOG(A(1)/(1-A(1)))-PL`, compared with the cut points `CO1`-`CO72`).
+- **Example models:** `Ooi_2023_bevurogant_pasi.R` (latent value = logit of the indirect-response disease state minus an individual placebo effect; scaling SD 0.0981 with a random effect correlated with the Imax random effect).
+- **Notes:** Used instead of the `probitNorm()` encoding of `Walsh_2024_buprenorphine_cows.R` because rxode2 accepts only an estimated SD inside `probitNorm()`, so a scaling SD carrying a random effect cannot be expressed there; `add()` accepts a calculated SD. Estimating with this encoding needs the observed PASI moved to the probit scale, which is not the exact interval likelihood of the bounded-integer model; the encoding is exact for simulation. A model of the same kind for another score takes `<score>probit`. Distinct from `pasi`, which holds the score on its 0-72 scale (in the founding model, the median of the continuous relaxation, `probitInv(pasiprobit, 0, 73)`), and from `latent_pasi`, the ODE state whose logit feeds this value.
 
 ### pppasi (**canonical PPPASI score output**)
 - **Type:** compartment
@@ -1061,6 +1107,52 @@ The MTP framework partitions the bacterial population into three states. The ori
 
 ---
 
+## Atopic dermatitis scores (EASI, IGA)
+
+### easi (**canonical absolute EASI score output**)
+- **Type:** compartment
+- **Role:** Eczema Area and Severity Index (EASI) score on its 0-72 clinical scale, as a model output. In the founding model it is an algebraic output, the back-transform `max(easi_tukey, 1)^(1 / 0.4) - 1` of the fitted transformed score, floored at 0.
+- **Source aliases:** `EASI` -- Briggs 2023 notation.
+- **Example models:** `Briggs_2023_dupilumab_easi.R`.
+- **Notes:** The atopic-dermatitis sibling of `pasi`, spelled the same lowercase way. **Distinct from the covariate `SCORE_EASI`**, which is a baseline EASI value supplied as an input column, and from `prob_easi75`, a responder probability. A model that fits the change from baseline should register a companion `easicfb`, as `das28` and `das28cfb` are separated.
+
+### easi_tukey (**canonical Tukey-transformed EASI observation**)
+- **Type:** compartment
+- **Role:** The EASI score on the Tukey power-transformed scale `(EASI + 1)^lambda` that a model is fitted on, so the DV of an observation record is the transformed score, not the raw one. In the founding model lambda = 0.4 and the residual error is additive on this scale.
+- **Source aliases:** `(EASI + 1)^lambda` -- Briggs 2023 Online Resource.
+- **Example models:** `Briggs_2023_dupilumab_easi.R` (observed endpoint; the back-transformed score is the `easi` output).
+- **Notes:** The DV must be transformed before fitting, `DV = (EASI + 1)^0.4`. Kept separate from `easi` because the two differ by a nonlinear transform and a residual on one scale is not a residual on the other. A model with a different exponent still uses this name and records lambda in `model()`.
+
+### iga (**canonical Investigator's Global Assessment ordinal output**)
+- **Type:** compartment
+- **Role:** Investigator's Global Assessment (IGA) of atopic dermatitis, a 5-point ordinal score (0 clear, 1 almost clear, 2 mild, 3 moderate, 4 severe), as an ordinal endpoint `iga ~ c(p0, p1, p2, p3)`. rxode2 numbers the categories 1-5, so simulated category k is IGA k - 1.
+- **Source aliases:** `IGA` -- Briggs 2023 notation.
+- **Example models:** `Briggs_2023_dupilumab_iga.R` (cumulative-probit latent-variable model).
+- **Notes:** The atopic-dermatitis instrument; distinct from the psoriasis static Physician Global Assessment (`prob_spga01`). The baseline IGA used as a covariate is `IGA_MOD` (per subject) or `IGA_MOD_PCT` (per trial arm), not this output.
+
+### prob_iga01 (**canonical IGA 0/1 responder-probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that an atopic-dermatitis patient has an IGA score of 0 (clear) or 1 (almost clear), the usual IGA responder definition, i.e. the cumulative probability P(IGA <= 1).
+- **Source aliases:** `IGA 0/1`, `IGA 0/1 responders`.
+- **Example models:** `Briggs_2023_dupilumab_iga.R` (algebraic output alongside the ordinal `iga` endpoint).
+- **Notes:** The `01` suffix records the responder threshold, as in `prob_spga01`. Trial definitions that also require a >= 2-point reduction from baseline are a different endpoint and take their own name. A probability output, not a score.
+
+### latent_easi (**canonical latent drug-effect variable driving the EASI score**)
+- **Type:** compartment
+- **Role:** Dimensionless latent variable of a type I indirect-response model whose loss drives the drug effect on the EASI score: `d/dt(latent_easi) <- kout * (1 - inh) - kout * latent_easi` with `latent_easi(0) <- 1`, `inh = imax * C / (ic50 + C)`, and the drug effect entering as `rbase_t * (latent_easi - 1)` on the transformed EASI scale. No physical units or matrix (`specimen = "not applicable"`).
+- **Source aliases:** `R` -- Briggs 2023 Online Resource, where R starts at BASE; the state here is R / BASE.
+- **Example models:** `Briggs_2023_dupilumab_easi.R`.
+- **Notes:** Member of the `latent_<endpoint>` family (`latent_pasi`, `latent_pppasi`).
+
+### latent_iga (**canonical latent drug-effect variable driving the IGA score**)
+- **Type:** compartment
+- **Role:** Dimensionless latent variable of a type I indirect-response model whose loss drives the drug effect on the probit of the cumulative IGA probabilities: `d/dt(latent_iga) <- kout * (1 - C / (ic50 + C)) - kout * latent_iga` with `latent_iga(0) <- 1`, and the drug effect entering as `slope * (latent_iga - 1)`. No physical units or matrix (`specimen = "not applicable"`).
+- **Source aliases:** `R` -- Briggs 2023 Online Resource, where R starts at 0; the state here is R + 1.
+- **Example models:** `Briggs_2023_dupilumab_iga.R`.
+- **Notes:** Member of the `latent_<endpoint>` family (`latent_pasi`, `latent_pppasi`, `latent_easi`).
+
+---
+
 ## IPSS urological symptom score
 
 ### ipss (**canonical International Prostate Symptom Score output compartment**)
@@ -1069,6 +1161,17 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Source aliases:** `IPSS` -- D'Agate 2020 Equation 1 and the `$MODEL COMP=(IPSS)` state of its Supporting Information control stream.
 - **Example models:** `DAgate_2020_bph_ipss_mbma.R` (founding example; `d/dt(ipss) <- DISP * (1 - ipss/35) - (PLACEBO + TREATMENT) * ipss`, a saturating zero-order worsening term opposed by a decaying placebo effect and constant first-order treatment effects).
 - **Notes:** Follows the lowercase run-together convention of `pasi` / `das28` / `cows`. The score is discrete but, as in the founding example, is modelled as continuous; the authors' simulation step truncated simulated observations to [0, 35].
+
+---
+
+## PANSS schizophrenia symptom score
+
+### panss (**canonical Positive and Negative Syndrome Scale total-score output**)
+- **Type:** compartment
+- **Role:** Positive and Negative Syndrome Scale (PANSS) total score output for schizophrenia exposure-response and placebo-response models. Holds the ABSOLUTE total score on the standard 30-210 scale (30 items, each 1-7), not a change from baseline or a percent change. Typically an algebraic output of a Weibull placebo time course plus an Emax drug effect on the fraction of the baseline score. A model that fits the three subscales separately uses subscale-suffixed outputs instead (`PANSS_pos`, `PANSS_neg`, `PANSS_gen` in the `PillaReddy_2013_*_panss_subscales.R` family).
+- **Source aliases:** `PANSS`, `IPRED` / `IEFF` -- Lindauer 2025 supplemental control stream (`IEFF = BL * (1 - PLA - DE) + DRIFT * TIME`, `IPRED = IEFF`).
+- **Example models:** `Lindauer_2025_risperidone_panss.R` (founding example; `panss <- bl * (1 - placebo_eff - drug_eff) + drift_i * t`, additive residual error 4.78 PANSS points).
+- **Notes:** Follows the lowercase run-together convention of `ipss` / `pasi` / `das28` / `cows`. `Ivaturi_2017_RBP_7000.R` and `Cantillon_2018_brilaroxazine.R` predate this entry and carry the same quantity as the uppercase second output `PANSS` beside `Cc`. The score is discrete but is modelled as continuous. The observed baseline score used as a covariate is the separate column `PANSS_BL` in `covariate-columns.md`.
 
 ---
 
@@ -1135,6 +1238,27 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Source aliases:** `subjective intensity rating`, `psychedelic intensity`, `intensity ratings` -- Eckernas 2022 paper notation.
 - **Example models:** `Eckernas_2022_dimethyltryptamine.R` (effect-compartment sigmoidal Emax model of intravenous N,N-dimethyltryptamine, zero baseline, Emax fixed to 10, residual error additive on the 0-10 logit scale).
 - **Notes:** Family-conforming member of the clinical-score PD output family (`pasi`, `cows`, `smokingurges`, `desiretousevas`), lowercase run-together. Named for the psychedelic experience rather than the bare `intensityrating`, so it is not confused with the 0-10 pain-intensity numeric rating scales used in analgesic PD models, which need their own canonical. Questionnaire-based psychedelic endpoints (e.g. the 5D-ASC or Mystical Experience Questionnaire dimensions) are multi-item instruments and are NOT covered by this name.
+
+### anydrugeffectvas (**canonical 'any drug effect' VAS output compartment**)
+- **Type:** compartment
+- **Role:** Single-item 'any drug effect' visual analog scale (VAS) output: a 100-mm unipolar line from 'not at all' (0) to 'extremely' (100), read as percent, rated repeatedly after dosing. It measures the overall strength of a drug's subjective effect regardless of its quality, and is the standard primary subjective outcome of the Basel psychedelic and stimulant studies (LSD, psilocybin, MDMA, mescaline). ABSOLUTE reading bounded on 0-100.
+- **Source aliases:** `VAS 'any drug effect'`, `any drug effect` -- Mueller 2025 paper notation.
+- **Example models:** `Mueller_2025_mescaline_anydrugeffect.R` (effect-compartment sigmoid Emax driven by plasma mescaline, Emax fixed at 100 percent, zero baseline).
+- **Notes:** Family-conforming member of the clinical-score PD output family (`desiretousevas`, `psychedelicintensity`), lowercase run-together with the `vas` suffix of `desiretousevas`. Distinct from `psychedelicintensity`, a 0-10 numeric rating of the psychedelic experience; the 'any drug effect' VAS is drug-class-agnostic. Its companions on the same VAS panel are `gooddrugeffectvas` and `egodissolutionvas`; a 'bad drug effect' VAS, if modelled, should register a sibling `baddrugeffectvas`.
+
+### gooddrugeffectvas (**canonical 'good drug effect' VAS output compartment**)
+- **Type:** compartment
+- **Role:** Single-item 'good drug effect' visual analog scale (VAS) output: a 100-mm unipolar line from 'not at all' (0) to 'extremely' (100), read as percent. Rates the positive (liked) component of a drug's subjective effect. ABSOLUTE reading bounded on 0-100.
+- **Source aliases:** `VAS 'good drug effect'`, `good drug effect` -- Mueller 2025 paper notation.
+- **Example models:** `Mueller_2025_mescaline_gooddrugeffect.R` (same effect-compartment sigmoid-Emax structure as the 'any drug effect' model, refitted to this scale).
+- **Notes:** Companion of `anydrugeffectvas`. Not the same endpoint as the opioid abuse-liability 'drug liking' VAS (`druglikingvascfb`), which is a bipolar scale centred on a neutral 50 and is analysed as a change score.
+
+### egodissolutionvas (**canonical ego-dissolution VAS output compartment**)
+- **Type:** compartment
+- **Role:** Single-item ego-dissolution visual analog scale (VAS) output, rated on the statement 'the boundaries between me and my surroundings seem to blur' (item 71 of the 5D-ASC questionnaire presented as a stand-alone VAS): a 100-mm unipolar line from 'not at all' (0) to 'extremely' (100), read as percent. Measures loss of the sense of self, a characteristic psychedelic effect. ABSOLUTE reading bounded on 0-100.
+- **Source aliases:** `VAS 'ego dissolution'`, `the boundaries between me and my surroundings seem to blur` -- Mueller 2025 paper notation.
+- **Example models:** `Mueller_2025_mescaline_egodissolution.R` (same effect-compartment sigmoid-Emax structure as the 'any drug effect' model, refitted to this scale).
+- **Notes:** Companion of `anydrugeffectvas`. This is the single-item VAS, not a multi-item 5D-ASC dimension score (e.g. 'oceanic boundlessness'), which would need its own canonical.
 
 ---
 
@@ -1210,6 +1334,33 @@ These four outputs are the component scores of the NASH Clinical Research Networ
 - **Source aliases:** `Fibrosis` -- Tran 2026 Table 1.
 - **Example models:** `Tran_2026_pioglitazone_fibrosis_mbma.R`.
 - **Notes:** Liver fibrosis. Pulmonary fibrosis endpoints are lung-function measures (for example FVC) and have their own names.
+
+---
+
+## Markov state-occupancy probabilities (`s_<state>` namespace)
+
+A continuous-time Markov model (CTMM) of a categorical status written as ODEs carries one state per category whose value is the PROBABILITY of being in that category, not an amount: `d/dt(s_<a>) <- -k_ab * s_<a> + k_ba * s_<b>`, with the states summing to 1 and initialised from the subject's observed status at baseline. The `s_` prefix marks such an occupancy state. The observed category is then an ordinal / binary rxode2 endpoint (`<status> ~ c(p0, ...)`) built from the state probabilities.
+
+### s_adaneg (**canonical CTMM state: probability of being anti-drug-antibody negative**)
+- **Type:** compartment
+- **Role:** Probability of the ADA-negative state in a two-state continuous-time Markov model of immunogenicity; dimensionless, `s_adaneg + s_adapos = 1`.
+- **Source aliases:** `A0` -- van der Walt 2025 Methods ('A0 and A1 represent the probabilities of ADA being negative and positive').
+- **Example models:** `vanderWalt_2025_avelumab.R`.
+- **Notes:** Initialised as `1 - ADA_POS_BASE`. In the founding model the transition rate constants are `lambda01` (negative to positive) and `lambda10` (positive to negative).
+
+### s_adapos (**canonical CTMM state: probability of being anti-drug-antibody positive**)
+- **Type:** compartment
+- **Role:** Probability of the ADA-positive state in a two-state continuous-time Markov model of immunogenicity; dimensionless.
+- **Source aliases:** `A1` -- van der Walt 2025 Methods; `p1` / `p(ADA+)` in the paper's figures.
+- **Example models:** `vanderWalt_2025_avelumab.R` (the probability raises avelumab clearance linearly, `1 + 0.15 * p(ADA+)`).
+- **Notes:** Initialised as `ADA_POS_BASE`. Distinct from the covariate `ADA_POS`, which is an OBSERVED status column; `s_adapos` is the model-predicted probability.
+
+### ada_status (**canonical binary anti-drug-antibody status output**)
+- **Type:** compartment
+- **Role:** Observed ADA status as a binary rxode2 endpoint, `ada_status ~ c(p0_ada)`: category 1 = ADA-negative, 2 = ADA-positive; the likelihood is Bernoulli on the model probability of ADA positivity.
+- **Source aliases:** `ADA+ / ADA-` observations (van der Walt 2025, likelihood `p1` / `p0`).
+- **Example models:** `vanderWalt_2025_avelumab.R`.
+- **Notes:** A categorical OUTPUT. The covariate `ADA_POS` is the same quantity used as an input column; an ADA titer or concentration endpoint is continuous and needs its own name.
 
 ---
 
@@ -1690,7 +1841,7 @@ Rules for using the family:
 - **Role:** One spatial slab of a tissue across which a diffusion PDE is solved by the method of lines. Slab 1 carries the entry-face boundary condition (a flux, or a partition-coefficient-mediated concentration), interior slabs exchange with their two neighbours by `D * A / h * (C_i - C_i+1)`, and the far face carries the exit boundary condition -- typically a perfect sink `C(t, l) = 0`, whose flux is computed over a half-cell distance and delivered to the paired perfused compartment.
 - **Source aliases:**
   - `Ctiss(x)` -- Salehi 2025 Equation 1 (the continuous field these slabs discretise).
-- **Example models:** `Salehi_2025_nicotine_pbpk.R` (founding example; `buccal_slab1`.. `buccal_slab20`, 20 slabs across a 1.75 mm effective buccal epithelium with `D = 1.2e-5 cm^2/s`, perfect sink at the far face feeding `a_buccal`); `Boger_2018_inhaled_pbpk.R` (six parallel chains -- `elf_tb_slab<n>`, `epithelium_tb_slab<n>`, `subepithelium_tb_slab<n>` and the `_alv_` counterparts -- indexing lung *depth* rather than tissue thickness, plus the paired particle-phase chains `particles_<region>_<class>_slab<n>` / `pmass_<region>_<class>_slab<n>`); `Khera_2024_dyp688_mouse_krogh_qsp.R` (Krogh cylinder tumour model: 15 co-located species chains such as `adc_free_twoactive_slab<n>`, `target_free_slab<n>`, `payload_ext_slab<n>` and `gq_free_slab<n>` on 10 equal-width annular shells from the capillary wall (slab 1, Robin boundary condition) to the Krogh radius (zero-flux), so the slab index runs along the radial coordinate of a cylinder and fluxes are weighted by the face radius).
+- **Example models:** `Salehi_2025_nicotine_pbpk.R` (founding example; `buccal_slab1`.. `buccal_slab20`, 20 slabs across a 1.75 mm effective buccal epithelium with `D = 1.2e-5 cm^2/s`, perfect sink at the far face feeding `a_buccal`); `Boger_2018_inhaled_pbpk.R` (six parallel chains -- `elf_tb_slab<n>`, `epithelium_tb_slab<n>`, `subepithelium_tb_slab<n>` and the `_alv_` counterparts -- indexing lung *depth* rather than tissue thickness, plus the paired particle-phase chains `particles_<region>_<class>_slab<n>` / `pmass_<region>_<class>_slab<n>`); `Khera_2024_dyp688_mouse_krogh_qsp.R` (Krogh cylinder tumour model: 15 co-located species chains such as `adc_free_twoactive_slab<n>`, `target_free_slab<n>`, `payload_ext_slab<n>` and `gq_free_slab<n>` on 10 equal-width annular shells from the capillary wall (slab 1, Robin boundary condition) to the Krogh radius (zero-flux), so the slab index runs along the radial coordinate of a cylinder and fluxes are weighted by the face radius); `Guo_2025_mucus_spatial_pk.R` and `Guo_2025_imipenem_mucus.R` (airway mucus on the authors' 25 um grid of 21 nodes: node 1 is a Dirichlet boundary whose free concentration is an algebraic output equal to the (penetration-scaled) plasma concentration, so the free chain runs `mucus_free_slab2`..`mucus_free_slab20` while the co-located immobile chains `mucus_bound_slab<n>`, `bact_susceptible_slab<n>` and `bact_resistant_slab<n>` start at slab 1; slab index = grid node, node 21 copies node 20 as a reflective face; no paired perfused compartment because the paper treats plasma as an infinite, non-depleting source).
 - **Notes:** Validated by `slabCompartmentRegex` rather than by an enumerated list, since the slab count varies per model. Do not use this family for physiologically distinct serial compartments -- those get role-based names. The spatial coordinate need not be a thickness: in Boger 2018 the slab index runs along cumulative airway depth `x`, and several co-located tissue layers each carry their own chain on the same grid, so `elf_tb_slab7`, `epithelium_tb_slab7` and `subepithelium_tb_slab7` are three layers of the *same* slice. When a second, non-spatial coordinate is also discretised (there, particle size), put it in the stem as a letter-coded class (`particles_tb_c_slab7`) and keep `_slab<n>` for the spatial index, so the slab numbering means the same thing across every chain in the model.
 
 ---
@@ -1949,6 +2100,26 @@ Ratified 2026-09-02 (PMC13274749).
 - **Notes:** See the note on [[circuit_rbc]] for how this differs from `rbc_<analyte>`, `bcc` and `erythrocytes<n>`.
 
 ---
+
+## Infusion-solution (in-container) states
+
+States and observables that describe the drug while it is still in the prepared infusion container (bottle, bag or syringe-driver reservoir), before it reaches the patient. Used when a model couples chemical instability of the infusion solution to systemic PK.
+
+### infusion_container (**canonical prepared-infusion container drug-amount state**)
+- **Type:** compartment
+- **Role:** ODE state holding the intact drug amount remaining in the prepared infusion container (bottle, bag or syringe-driver reservoir) during an infusion. It is dosed as a bolus when the container is hung and is depleted both by chemical degradation (`-kdeg * infusion_container`) and by delivery to `central` at the constant volume rate of the pump, so the delivery rate is `podo(infusion_container) * exp(-kdeg * tad(infusion_container)) / TINF` while `tad(infusion_container) < TINF`, and the container empties exactly at `TINF`.
+- **Source aliases:**
+  - `Depot` -- used in the Tien 2024 S4 File RxODE code (`d/dt(Depot) = -k * Depot`, delivered at `Depot / duration` and re-initialised for each bottle); `Tien_2024_meropenem.R`.
+- **Example models:** `Tien_2024_meropenem.R` (meropenem degradation at 25/30/37 degC, 1 or 2 g/48 mL, coupled to the Ehmann 2019 ICU two-compartment model).
+- **Notes:** Spelled generically so one name covers bottles, bags and syringes. Distinct from `depot` (an extravascular absorption site inside the body) and from the extracorporeal `circuit_*` / `reservoir_*` namespace (blood circulating outside the body). Because the delivery rate is computed from the most recent dose into the container, the infusion length `TINF` must not exceed the container-renewal interval.
+
+### infusion_fraction_remaining (**canonical algebraic in-container fraction-of-initial-concentration-remaining observable**)
+- **Type:** compartment
+- **Role:** Algebraic observation variable: the fraction (0-1) of the initial drug concentration of a prepared infusion solution that remains intact at time `tad(infusion_container)` after preparation, `C(t) / C0`. It is the dependent variable of an in-vitro stability model, observed with additive error on `log(C / C0)` (`lnorm(expSd_infusion_fraction_remaining)`); its log-scale intercept is the parameter `infusion_log_intercept`.
+- **Source aliases:**
+  - `Perc` (percent remaining) and `y = log(Perc / 100)` -- Tien 2024 S2 / S3 Files; `Tien_2024_meropenem.R`.
+- **Example models:** `Tien_2024_meropenem.R`.
+- **Notes:** A fraction, not a percent (multiply by 100 for the paper's 'remaining percentage' axis; the log-normal residual SD is scale-invariant). Not integrated as a state: it is computed from the container's time since preparation and degradation rate constant, and is undefined before the first dose into `infusion_container`. Distinct from `gastric_remaining` (percent of a meal remaining in the stomach).
 
 ## Whole-body blood / lymph compartments
 
@@ -2224,6 +2395,13 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Example models:** `Bihorel_2021_BMS986166_nalc_sd.R`, `Bihorel_2021_BMS986166_nalc_md.R` (founding examples; ALC0 x (1 - Delta_placebo) x (1 - Imax x Cavg^h / (IC50^h + Cavg^h)) after a single dose and after 28 days of once-daily dosing).
 - **Notes:** A nadir summary, not a lymphocyte-count time course: a longitudinal circulating-lymphocyte state belongs in `circ` (or `circ_<celltype>`) or `lymph`-type turnover models. The maintainers ratified the spelled-out `lymphocyte_count` (2026-10-02) over the laboratory abbreviation `alc`, so the name reads without a lookup; it is still the ABSOLUTE count (10^3 cells/uL), not a percentage of white cells.
 
+### calcineurin_pct_above_nadir (**canonical calcineurin activity relative to the within-subject nadir**)
+- **Type:** compartment
+- **Role:** Percentage by which a patient's calcineurin (CN) activity at a given time exceeds that same patient's lowest (nadir) CN activity over the sampled profile, `100 * (I(t) - I_nadir) / I_nadir`, where I is CN activity measured in a cell lysate (e.g. PBMC dephosphorylation of the RIIp peptide, pmol RII/min/mg protein). Zero at the patient's nadir and positive elsewhere; a calcineurin inhibitor drives it DOWN, so higher values mean LESS inhibition. Normalising to the within-subject nadir removes between-patient differences in nadir activity before the PD fit. Used as the observation variable of direct-effect calcineurin-inhibitor concentration-response models.
+- **Source aliases:** `% inhibition Inadir` (Fontova 2023 Equation 2) -- translate to `calcineurin_pct_above_nadir`. Despite the source wording, the quantity is the activity above the nadir, not an inhibition.
+- **Example models:** `Fontova_2023_tacrolimus.R` (founding example; inhibitory Imax model without baseline driven by intracellular PBMC tacrolimus, `e0 * (1 - C / (ic50 + C))` with E0 = 30.4 percent and IC50 = 43.9 pg/million cells, in stable kidney transplant recipients on immediate- and extended-release tacrolimus).
+- **Notes:** Drug-agnostic: any calcineurin inhibitor (tacrolimus, ciclosporin, voclosporin) observed through the same nadir-normalised transform should reuse it. Distinct from absolute CN activity and from activity normalised to the pre-dose value (the paper's companion `% inhibition Imin`, Fontova 2023 Equation 1, `100 * (I_min - I(t)) / I_min`, where I_min is the patient's minimum inhibition, i.e. maximum activity); each of those would need its own canonical. The normalising nadir is a per-patient data constant, not a model parameter. Residual error follows the standard per-output rule (`addSd` for a single-output model, `addSd_calcineurin_pct_above_nadir` when multi-output).
+
 ### herg_inh (**canonical fractional hERG potassium-channel block**)
 - **Type:** compartment
 - **Role:** Fraction of the hERG (human ether-a-go-go related gene) potassium-channel tail current blocked by a drug, a unitless quantity bounded in `[0, 1]`. Used as the observation variable in in-vitro concentration-response models fitted to whole-cell patch-clamp data, the standard nonclinical assay for proarrhythmic (QT-prolongation) liability under ICH S7B. Typically observed from a sigmoidal Imax / Hill expression `imax * C^hill / (ic50^hill + C^hill)` driven by the nominal bath concentration.
@@ -2295,6 +2473,20 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Example models:** `Neant_2023_covid19_news2.R`, `Neant_2023_covid19_news2_highvl.R`, `Neant_2023_covid19_news2_lowvl.R`, `Neant_2023_covid19_news2_soc.R` (joint SARS-CoV-2 viral-kinetic / NEWS-2 models of hospitalised COVID-19 patients; observed alongside `log10_viral_load`).
 - **Notes:** Not an ODE state -- the score is algebraic in the founding models, so it needs no `compartmentData` entry. The common clinical cut points are 5 (urgent review) and 7 (emergency response); Neant 2023 uses NEWS-2 >= 7 at randomisation to define a high risk of clinical deterioration and NEWS-2 < 3 (low risk) or < 5 (high risk) to define clinical improvement. Distinct from the covariate register's `SCORE_*` family, which holds instrument scores supplied as model INPUTS, and from the generic pain `score`.
 
+### BIS (**canonical Bispectral Index processed-EEG sedation output**)
+- **Type:** compartment
+- **Role:** Bispectral Index, the dimensionless 0-100 processed-electroencephalogram index of hypnotic depth (about 95-100 awake, 40-60 the usual general-anaesthesia range, 0 an isoelectric EEG), modelled as a drug-driven decrease from an awake baseline -- an inhibitory (sigmoid) Emax or logistic function of an effect-site or plasma hypnotic concentration.
+- **Source aliases:** `BIS`, `Bispectral Index` -- the paper notation of every example model, so no translation is needed.
+- **Example models:** `Vellinga_2025_remimazolam_bis.R` (founding single-output registration; logistic model on the 0-100 scale combining remimazolam, competitive antagonism by the metabolite CNS 7054 and an additive remifentanil term, with a logit-domain residual `logitNorm(NA, 0, 100)`), `Zhou_2018_remimazolam_bis.R` (sigmoid Imax in a remimazolam effect compartment), `Chen_2024_remimazolam.R` and `Ueshima_2025_remimazolam.R` (multi-output remimazolam PK/PD), `BlussevanOudAlblas_2019_propofol_bis.R` (sigmoid Imax in a propofol effect compartment).
+- **Notes:** Upper-case because `BIS` is the instrument's registered name and the abbreviation every source prints; the residual-error names follow it (`addSd_BIS`, `propSd_BIS`, `expSd_BIS`). Holds an index reading, not a concentration, and is drug-agnostic: use it for any hypnotic. Distinct from the observer-scored ordinal sedation scale `moaas` (and its probability outputs `prob_moaas<k>`), which the same studies often model in parallel; BIS is a continuous instrument reading and does not share cutpoints with MOAA/S. A model of a BIS *change* from baseline needs its own entry rather than reusing this name.
+
+### moaas (**canonical MOAA/S ordinal sedation-score observation**)
+- **Type:** compartment
+- **Role:** The observed Modified Observer's Assessment of Alertness/Sedation (MOAA/S) score, a six-level ordinal scale from 5 (fully alert, responds readily to name spoken in a normal tone) down to 0 (no response to a painful trapezius squeeze), used as the ordinal (categorical) observation variable of a proportional-odds PD model, `moaas ~ c(prob_moaas0, ..., prob_moaas4)`.
+- **Source aliases:** `MOAAS`, `MOAA/S` -- Vellinga 2025 and Zhou 2018 notation.
+- **Example models:** `Vellinga_2025_remimazolam_moaas.R` (founding example; five cumulative logits with a remimazolam sigmoid Emax term, CNS 7054 competitive antagonism and a multiplicative remifentanil term, driven by arterial plasma concentrations).
+- **Notes:** Lower-case to match the `prob_moaas<k>` / `prob_moaas_le<k>` probability outputs it is observed through. **The rxode2 ordinal category index is the score plus one**: the `k`-th listed probability is category `k`, so category 1 is MOAA/S 0 (`prob_moaas0`) and the unlisted sixth category, MOAA/S 5, carries one minus the sum of the five listed probabilities. A dataset that codes the score itself (0-5) must add 1 before fitting. Holds an ordinal category, not a concentration; the per-category probabilities live in `prob_moaas<k>` (see the `prob_moaas0 ... prob_moaas5` entry), not here. Distinct from the continuous processed-EEG index `BIS`.
+
 ### log_car (**canonical log CAR-T cell-count PD output**)
 - **Type:** compartment
 - **Role:** Log-transformed CAR-T cell count per microlitre of blood, the observed output of a CAR-T cellular-kinetics model. The linear state is the total CAR-T cell pool; this is the log of its per-uL concentration, with an epsilon floor so the transform stays finite before expansion and after contraction.
@@ -2336,12 +2528,33 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 
 One family in this section is validated by shape rather than by enumeration -- see `prob_<endpoint>` immediately below. Its per-endpoint entries are retained as documentation of what each endpoint means, but `checkModelConventions()` no longer requires an entry to exist before accepting the name.
 
+### tol (**canonical tolerance-to-laryngoscopy binary observation**)
+- **Type:** compartment
+- **Role:** Binary observation of tolerance to laryngoscopy -- 1 when the sedated subject shows no response to laryngoscopy, 0 when the subject responds (Vellinga 2025: a size 3 curved Macintosh blade aimed at full view of the vocal cords; verbal acknowledgment, eye opening, grimacing, coughing, withdrawal or any purposeful or nonpurposeful movement counts as a response) -- used as the categorical observation variable of a logistic PD model, `tol ~ c(p0_tol)`, whose probability of tolerance is `prob_tol`.
+- **Source aliases:** `TOL` -- Vellinga 2025 notation ('tolerance to laryngoscopy (TOL)').
+- **Example models:** `Vellinga_2025_remimazolam_tol.R` (founding example; zero-baseline Emax in arterial remimazolam concentration with the C50 lowered by remifentanil by the factor `1 - CR / (CR + EC50R)`).
+- **Notes:** **rxode2 category 1 is a response (DV 0) and category 2 is tolerance (DV 1)**, so the listed probability is `p0_tol = 1 - prob_tol`; a dataset coding tolerance as 1 must add 1 before fitting. Lower-case to match `prob_tol`. Distinct from `tots` (a tetanic electrical stimulus, fitted with its own C50) and from the sedation scales `moaas` and `BIS`, which score the unstimulated state.
+
+### tots (**canonical tolerance-to-tetanic-stimulation binary observation**)
+- **Type:** compartment
+- **Role:** Binary observation of tolerance to tetanic stimulation -- 1 when the sedated subject shows no response to a standardized tetanic electrical stimulus (Vellinga 2025: 100 Hz, 50 mA for at most 30 s on the ulnar side of the non-dominant arm), 0 when the subject responds -- used as the categorical observation variable of a logistic PD model, `tots ~ c(p0_tots)`, whose probability of tolerance is `prob_tots`.
+- **Source aliases:** `TOTS` -- Vellinga 2025 notation ('tolerance to tetanic stimulation (TOTS)').
+- **Example models:** `Vellinga_2025_remimazolam_tots.R` (founding example; same zero-baseline Emax form as `tol`, with its own remimazolam C50 and remifentanil EC50).
+- **Notes:** Category coding as for `tol`: category 1 is a response (DV 0), category 2 is tolerance (DV 1), and the listed probability is `p0_tots = 1 - prob_tots`. A source using a different stimulus current, frequency or duration describes a different endpoint and should say so in the model's description. Distinct from `tol` (laryngoscopy).
+
 ### ve (**canonical vaccine-efficacy PD output**)
 - **Type:** compartment
 - **Role:** Vaccine efficacy, in percent, the observed output of a vaccine model-based meta-analysis (MBMA) relating an immunogenicity exposure axis (a serum neutralizing titre, or a convalescent-/placebo-normalized titre ratio) to clinical or preclinical protection. A static study-level output with no time course: `ve <- 100 * VEmax * f(exposure)` for a sigmoid / Hill protection curve. Bounded above by `100 * VEmax`; can go negative when the fitted curve predicts worse-than-placebo efficacy at low titres.
 - **Source aliases:** none. Source papers write it `VE`, `VE(%)`, `Vaccine Efficacy`, or `%VE`; none of those spellings is canonical here.
 - **Example models:** `Kandala_2022_covid19Vaccine_calibrated_mbma.R`, `Kandala_2022_covid19Vaccine_joint_mbma.R`, `Kandala_2022_covid19Vaccine_clinical_mbma.R`.
 - **Notes:** Distinct from the `prob_<endpoint>` family, which is a `[0, 1]` event probability for a single landmark endpoint; `ve` is a percent efficacy (a relative risk reduction versus placebo / control), typically shared across several vaccine candidates in an MBMA. Multi-severity vaccine models that report efficacy at several clinical levels use paper-named multi-output variants (`ve_ari`, `ve_lrtd2`, `ve_lrtd3` in `Kashihara_2026_rsvVaccine_*`), which are exempt from the single-output rule as paper-named multi-outputs; this bare `ve` is the single-output form. Not to be confused with the internal variable `ve` some PBPK / effect-compartment models use for an erythrocyte / endosomal / effect-site volume (e.g. `Harada_2025_cyanide_pbpk.R`, `Patidar_2024_mAb_human.R`, `Zhang_2025_drugA.R`) -- there `ve` is a derived volume term, never the observation. For the preclinical viral-load arm of a vaccine MBMA the protection endpoint is `log10_viral_load`, not `ve`.
+
+### nab_activity (**canonical neutralizing-antibody activity PD output**)
+- **Type:** compartment
+- **Role:** Serum neutralizing-antibody (NAb) activity, the observed output of a vaccine or infection immunogenicity model. The default scale is the fraction of neutralization in a surrogate-virus or pseudovirus neutralization assay, bounded in `[0, 1]` (an assay reporting percent neutralization is divided by 100); a model that carries the activity on another assay scale states the units in its `units` metadata. Either the algebraic image of an ODE antibody-activity state (`nab_activity <- antibody`) or a closed-form time curve with no state (a logit-linear mixed-effects model).
+- **Source aliases:** `NAb`, `NAb activity`, `AditxtScore` (de Pillis 2025, percent neutralization / 100).
+- **Example models:** `dePillis_2025_covid19Vaccine.R`, `dePillis_2025_covid19Vaccine_lme.R`.
+- **Notes:** Deliberately not the bare `nab`, which is registered as a metabolite-suffix token for an anti-drug neutralizing-antibody species in monoclonal-antibody popPK (`<canonical>_nab`); a bare `nab` observation would collide with that suffix. A vaccine-response titre or antibody concentration in assay units (e.g. U/mL) with no neutralization read-out is not this output. Fraction-bounded outputs typically carry a logit-normal residual error (`logitNorm()`), with bounds slightly outside `[0, 1]` where the source fit used them.
 
 ### `prob_<endpoint>` (**canonical landmark exposure-response probability output shape**)
 - **Type:** compartment
@@ -2431,7 +2644,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Generic pain-score PD output.
 - **Source aliases:** none.
-- **Example models:** `Plan_2012_pain.R` (and its sibling `Plan_2012_bmd_fracture.R`); `Thiel_2018_diclofenac_painrelief.R` and `Thiel_2018_celecoxib_painrelief.R` (placebo-adjusted mean pain relief score, higher = more relief, as a direct Hill function of the PGE2 decrease).
+- **Example models:** `Plan_2012_pain.R` (and its sibling `Plan_2012_bmd_fracture.R`); `Thiel_2018_diclofenac_painrelief.R` and `Thiel_2018_celecoxib_painrelief.R` (placebo-adjusted mean pain relief score, higher = more relief, as a direct Hill function of the PGE2 decrease); `Zhao_2025b_paracetamol_painrelief.R` (absolute 0-10 pain relief score, higher = more relief, as a direct sigmoid Emax of the paracetamol plasma concentration supplied through `CEFFECT`).
 
 ### logit_qol_ghs (**canonical logit-scale EORTC QLQ-C30 GHS/QoL PD output**)
 - **Type:** compartment
@@ -2439,6 +2652,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** `TransDV` (Zou 2026 Monolix `[FILEINFO]` / `[LONGITUDINAL]` observation column), `trans(y_ijk)` (Zou 2026 Equation 2).
 - **Example models:** `Zou_2026_pembrolizumab_qol_mbma.R`.
 - **Notes:** Named for the transform-prefix output family (`log10_viral_load`, `log_car`, `log_cfu`) rather than for the instrument alone, because the logit and the 0-100 score are different quantities and a consumer that maps one onto the other misstates every value by the transform. Distinct from the covariate register's `SCORE_*` family, which holds instrument scores supplied as model INPUTS. In an MBMA the residual SD on this scale is divided by `sqrt(N_ARM)` (the arm sample size) rather than being a per-subject quantity -- the observation is an arm MEAN, so its standard error shrinks with arm size; see the `N_ARM` entry in `inst/references/covariate-columns.md`. A single-example canonical: a second QoL model that observes the 0-100 score directly (with a residual on that scale) should use a separate linear-scale name rather than reusing this one.
+
+### logit_ee_healing (**canonical logit-scale erosive esophagitis healing-rate output**)
+- **Type:** compartment
+- **Role:** Logit-of-fraction transform of a study arm's erosive esophagitis healing rate (the proportion of the arm with complete mucosal healing at the assessment week), the modelled observation of an arm-level healing MBMA. The residual is additive on the logit scale, which keeps a simulated rate inside 0-100%. The percentage-scale counterpart is derived in `model()` as `ee_healing <- 100 * expit(logit_ee_healing)`.
+- **Source aliases:** `DV` / `IPRED` (Howden 2025 NONMEM `$PRED`, logit of `EEHR`), `logit(HR)` (Howden 2025 Figure 2).
+- **Example models:** `Howden_2025_antisecretory_mbma.R`.
+- **Notes:** Follows the transform-prefix output precedent of `logit_qol_ghs` (Zou 2026): the logit and the 0-100% rate are different quantities, so they carry different names. In an MBMA the random-effect and residual SDs on this scale are scaled per arm by the arm's standard error (`SE_ARM` in `inst/references/covariate-columns.md`). Distinct from the `prob_<endpoint>` family, whose models observe a probability on the probability scale.
 
 ### vas_pred (**canonical visual-analog-scale prediction**)
 - **Type:** compartment
@@ -2510,8 +2730,16 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Role:** Left ventricular ejection fraction (%) PD output: stroke volume as a percentage of end-diastolic volume, an imaging measure of systolic function.
 - **Source aliases:**
   - `LVEF` -- the clinical abbreviation; used directly in Hallik 2020 Table 4. It is also the observation name of the earlier `deVriesSchultink_2018_trastuzumab_LVEF.R`, which is left unchanged.
-- **Example models:** `Hallik_2020_dobutamine_lvef.R` (linear in plasma dobutamine, `lvef = rbase_lvef + slope_lvef * Cc`, fitted jointly with `Cc`).
+- **Example models:** `Hallik_2020_dobutamine_lvef.R` (linear in plasma dobutamine, `lvef = rbase_lvef + slope_lvef * Cc`, fitted jointly with `Cc`), `Merali_2024_mavacamten_lvef.R` (single-output exposure-response model, `lvef = rbase * (1 - slope * CAV^qq)` in the weekly-average mavacamten concentration `CAV`, log-normal residual error), `Wu_2025_mavacamten_lvef.R` (refit of the Merali 2024 model with Chinese patients added).
 - **Notes:** Holds a percentage, not a drug concentration. Named in lowercase to match the PD-state family (`hr`, `map`, `rvo`, `lvo`). Distinct from any baseline-LVEF *covariate*, which is an input rather than the model's predicted output.
+
+### lvot_gradient_valsalva (**canonical Valsalva left ventricular outflow tract peak gradient PD output**)
+- **Type:** compartment
+- **Role:** Peak left ventricular outflow tract (LVOT) pressure gradient (mmHg) measured by Doppler echocardiography during the Valsalva manoeuvre: the provoked measure of outflow obstruction in obstructive hypertrophic cardiomyopathy and the efficacy endpoint that cardiac myosin inhibitors are titrated against (target below 30 mmHg).
+- **Source aliases:**
+  - `VLVOTg` / `VLVOT` -- Merali 2024 Results equation and Table 2, and its Data S2 nlme script.
+- **Example models:** `Merali_2024_mavacamten_lvot_gradient_valsalva.R` (single-output exposure-response model, `rbase * pbo(t) * exp(-slope * CAV)` with an exponential placebo time course, exponential residual error), `Wu_2025_mavacamten_lvot_gradient_valsalva.R` (refit of the Merali 2024 model with Chinese patients added).
+- **Notes:** Holds a pressure difference, not a drug concentration. Spelled out per the maintainers' output-naming rule, keeping LVOT as the established echocardiography abbreviation (as in `lvef`); the provocation is a suffix qualifier (as in `ftoe_cerebral`), leaving room for `lvot_gradient_rest` and `lvot_gradient_exercise`, which are different measurements and must not share this name. Its observed-baseline covariate is `LVOT_GRADIENT_VALSALVA_BL`.
 
 ### ftoe_cerebral (**canonical cerebral fractional tissue oxygen extraction PD output**)
 - **Type:** compartment
@@ -2546,7 +2774,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** 6-minute walk-test distance PD output (Hamuro 2017 DMD).
 - **Source aliases:** none.
-- **Example models:** `Hamuro_2017_DMD_6MWT.R`.
+- **Example models:** `Hamuro_2017_DMD_6MWT.R`, `Kim_2023_DMD_6MWD_FFVL.R`, `Kim_2023_DMD_6MWD_FFSOL.R`.
 
 ### nsaa (**canonical North Star Ambulatory Assessment total-score output compartment**)
 - **Type:** compartment
@@ -2554,6 +2782,20 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** `NSAA` -- Hibma 2023 Equation 1.
 - **Example models:** `Hibma_2023_DMD_NSAA.R` (founding example; modified indirect response integrated over age from birth, `d/dt(nsaa) <- kin - kout * t * nsaa` with `nsaa(0) = 0`, joined to a log-normal loss-of-ambulation hazard).
 - **Notes:** Follows the lowercase run-together instrument convention of `pasi` / `ipss` / `das28`. The founding model lets the predicted score exceed 34 (the scale's ceiling is a test limit, not a limit on motor function); the authors capped simulated scores at 34 only in post-processing. Distinct from `walk_dist` (6-minute walk distance, a different DMD ambulatory endpoint).
+
+### ff_vl (**canonical vastus lateralis muscle fat fraction output**)
+- **Type:** compartment
+- **Role:** Fat fraction of the vastus lateralis muscle measured by single-voxel MR spectroscopy, fat / (fat + water) peak area, as a fraction from 0 to 1. A disease-progression output for muscular dystrophies, where fat replaces muscle as the disease advances.
+- **Source aliases:** `FFVL` -- Kim 2023.
+- **Example models:** `Kim_2023_DMD_6MWD_FFVL.R` (founding example; sigmoid Emax function of age fitted jointly with `walk_dist`).
+- **Notes:** A fraction, not a percentage. Further muscles extend the pattern as `ff_<muscle>` (`ff_sol`); the matching baseline covariate is `FF_<MUSCLE>_BL`. Distinct from `steatosis`, a hepatic histology grade.
+
+### ff_sol (**canonical soleus muscle fat fraction output**)
+- **Type:** compartment
+- **Role:** Fat fraction of the soleus muscle measured by single-voxel MR spectroscopy, fat / (fat + water) peak area, as a fraction from 0 to 1.
+- **Source aliases:** `FFSOL` -- Kim 2023.
+- **Example models:** `Kim_2023_DMD_6MWD_FFSOL.R` (founding example; sigmoid Emax function of age fitted jointly with `walk_dist`).
+- **Notes:** A fraction, not a percentage. Sibling of `ff_vl`.
 
 ### fev1pp (**canonical FEV1 percent predicted**)
 - **Type:** compartment
@@ -2572,7 +2814,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Forced vital capacity expressed as a percentage of a reference-equation predicted value -- the primary efficacy endpoint of the fibrosing interstitial-lung-disease trials (INPULSIS-1/2, SENSCIS, INBUILD, InPedILD) and the basis of nintedanib's approved labelling in adults and children.
 - **Source aliases:** `FVC%pred`, `FVCpp`, `FVC (% predicted)`.
-- **Example models:** `Hartmann_2026_nintedanib_fvcpp.R` (single `fvcpp` output; linear annual decline with a concentration-driven slope effect; FVC percent predicted is dimensionless).
+- **Example models:** `Hartmann_2026_nintedanib_fvcpp.R` (single `fvcpp` output; linear annual decline with a concentration-driven slope effect; FVC percent predicted is dimensionless), `Walker_2023_efzofitimod_fvcpp.R` (static landmark linear regression of the ABSOLUTE Week-24 ppFVC on time-averaged efzofitimod AUC and baseline `FVC_PCTPRED` in pulmonary sarcoidosis; the source labels the equation a percent change from baseline, but its values are the absolute score).
 - **Notes:** The direct FVC sibling of `fev1pp` -- same percent-of-predicted construct, different spirometric volume (vital capacity rather than one-second expiratory volume). Dimensionless, and **not** interconvertible with an absolute FVC volume without the reference equation, for the same reason `fev1pp` is not interconvertible with `FEV1`. Registered lowercase to match `fev1pp` rather than the uppercase `FEV1` form, because the percent-predicted endpoints are written lowercase throughout the register. Distinct from `fvcz`, which standardises the same measurement for age, sex and height as a Z-score.
 
 ### uprocfb (**canonical change-from-baseline daily urinary protein excretion**)
@@ -2596,12 +2838,40 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Vaskeikina_2026_systemicSclerosis_mbma.R` (founding example; arm-mean change from baseline in an MBMA of targeted therapies, `Emax * t / (ET50 + t)` with a comparator Emax of -5.29 points and additive per-drug shifts; jointly fitted with `fvcppcfb` and sharing its ET50).
 - **Notes:** Named under the library-wide `<state>cfb` change-from-baseline convention (maintainers' ruling of 2026-09-11, PMC11997835; see `bcvacfb`), matching its sibling output `fvcppcfb`. No absolute-score `mrss` state is registered; a model of the absolute score should register `mrss`. The founding model does not enforce the 0-51 bound, and a simulated arm mean can fall below minus its baseline at long times for the largest drug effects.
 
+### lncacvolcfb (**canonical change-from-baseline natural-log coronary artery calcium volume score**)
+- **Type:** compartment
+- **Role:** Change from baseline in the natural logarithm of the coronary artery calcium (CAC) volume score measured by non-contrast multi-detector computed tomography, used as the modelled endpoint of vascular-calcification progression models. A unitless log fold-change: `100 * (exp(lncacvolcfb) - 1)` is the percent change in CAC volume, and a positive value is calcification progression.
+- **Source aliases:** `change from baseline of log CAC volume`, `CFB CAC volume` (on the log scale), `% CFB CAC volume` (the back-transformed form) -- translate to `lncacvolcfb` on the natural-log scale.
+- **Example models:** `Perello_2024_hexasodiumFytate_cac.R` (founding example; simple Emax model in the average end-of-infusion hexasodium fytate concentration `CMAX`, with Emax constrained to -E0 so progression vanishes at saturating exposure, week-52 landmark in hemodialysis patients).
+- **Notes:** Named under the library-wide `<state>cfb` change-from-baseline convention (maintainers' ruling of 2026-09-11, PMC11997835; see `bcvacfb`), with the `ln` prefix of `lnalt` marking the natural-log scale. No absolute CAC-volume state is registered; a model of the absolute score should register `cacvol`, and one of the Agatston score a separate name, since volume (mm^3) and Agatston (density-weighted, unitless) scores are not interchangeable.
+
+### hydroxyapatite_inhibition (**canonical ex vivo hydroxyapatite-crystallization inhibition PD output**)
+- **Type:** compartment
+- **Role:** Percent (nominally 0-100) inhibition of calcium-phosphate (hydroxyapatite) crystallization measured ex vivo in a plasma sample by a spectrophotometric crystallization assay, used as the PD output of crystallization-inhibitor exposure-response models. The assay has background noise below about 20%, and placebo samples can read negative.
+- **Source aliases:** `% PD inhibition`, `PD effect`, `inhibition of hydroxyapatite crystallization` -- translate to `hydroxyapatite_inhibition`.
+- **Example models:** `Perello_2024_hexasodiumFytate_hydroxyapatite.R` (founding example; simple Emax model in the average end-of-infusion hexasodium fytate concentration `CMAX`, hemodialysis patients).
+- **Notes:** Spelled out rather than abbreviated, per the 2026-10-08 maintainer ruling on output names (cf. `serum_phosphorus`). Distinct from any in vivo calcification endpoint such as `lncacvolcfb`: this is a plasma-sample assay readout of the drug's crystallization-inhibiting capacity, not a measure of tissue calcification.
+
 ### fvcz (**canonical FVC Z-score**)
 - **Type:** compartment
 - **Role:** Forced vital capacity standardised for age, sex, height and ethnicity as a Z-score (GLI reference equations) -- the growth-robust form of the FVC endpoint, preferred over percent predicted in pediatric populations where a child's reference value changes as they grow.
 - **Source aliases:** `FVC Z-score`, `zFVC`, `FVC SDS`.
 - **Example models:** `Hartmann_2026_nintedanib_fvcz.R` (single `fvcz` output; linear annual decline with a concentration-driven slope effect).
 - **Notes:** A standardised score, so it is dimensionless and **signed** -- values are typically negative in fibrosing-ILD populations and a treatment benefit is a less-negative slope, which means sign-sensitive validation assertions on this state must not assume positivity. Registered alongside `fvcpp` because the two are reported as co-primary forms of the same measurement (Hartmann 2026 models both), but they are separate states: converting between them requires the GLI reference equation and the subject's age, sex and height, so never treat one as a rescaling of the other. This is the register's first Z-score-standardised endpoint; a further standardised endpoint (e.g. a height or weight Z-score) should follow the `<endpoint>z` form established here.
+
+### ksqlung (**canonical absolute King's Sarcoidosis Questionnaire-Lung score output**)
+- **Type:** compartment
+- **Role:** The King's Sarcoidosis Questionnaire-Lung (KSQ-Lung) module score, 0-100 points, HIGHER = BETTER pulmonary health status (cough, dyspnoea, chest pain). Algebraic output in the founding model (no ODE state).
+- **Source aliases:** `KSQ-Lung score`, `KSQL` -- Walker 2023.
+- **Example models:** `Walker_2023_efzofitimod_ksqlung.R` (founding example; static landmark linear regression of the Week-24 score on time-averaged efzofitimod AUC; the source labels the equation a percent change from baseline, but its values are the absolute score).
+- **Notes:** Lowercase run-together, following `pasi` / `ipss` / `madrs`. A change-from-baseline endpoint should register `ksqlungcfb` under the `<state>cfb` convention (see `bcvacfb`) rather than overload this name. The baseline reading is the covariate `KSQ_LUNG_BL`, and the 4-point responder probability is `prob_ksqlung_mcid`.
+
+### ocsdosecfb (**canonical percent change from baseline in daily oral corticosteroid dose output**)
+- **Type:** compartment
+- **Role:** Percent change from baseline in the mean daily oral corticosteroid dose (prednisone-equivalent), `100 * (dose - dose_0) / dose_0`, used as the steroid-sparing efficacy endpoint. **Sign convention: NEGATIVE for improvement** (less steroid needed). Algebraic output in the founding model (no ODE state).
+- **Source aliases:** `Mean Daily OCS Dose Post-Taper Period - Percent Change from Baseline`, `drug-adjusted AUC percent change from baseline` -- Walker 2023 Supplementary Equation A.1 and Figure 4.
+- **Example models:** `Walker_2023_efzofitimod_ocs.R` (founding example; static landmark linear regression on the post-taper time-averaged efzofitimod AUC in pulmonary sarcoidosis; the mean daily dose is the cumulative dose over Day 51 to Week 24 divided by the number of days recorded).
+- **Notes:** Formed by the `<state>cfb` change-from-baseline convention (see `bcvacfb`); like `crcfb` it is a PERCENT change, so a model of the absolute change in mg/day should register a sibling rather than overload this name. The averaging window is model-specific and goes in each model's description. The base state `ocsdose` is not registered.
 
 ### ms_headache_days (**canonical monthly headache-day count**)
 - **Type:** compartment
@@ -2636,6 +2906,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Nielsen_2015_vigabatrin.R`.
 - **Notes:** Member of the per-interval event-count PD-output family; siblings are `hae_attacks`, `ms_headache_days`, `migraine_days`, `cel_count`, and `score`. The underlying source likelihood in this family is frequently negative-binomial rather than Poisson (overdispersed counts); rxode2 exposes `llikNbinomMu()` but no negative-binomial *endpoint*, so these models declare `~ pois(...)` and expose the overdispersion as a model variable `ovdp` for downstream negative-binomial sampling via `rnbinom(mu, size = 1/ovdp)`. Distinct from `cumhaz` and the repeated-time-to-event Weibull hazards in `Lindauer_2017_lacosamide_seizure.R`, which model the *timing* of seizure events rather than a per-day count.
 
+### fracture_count (**canonical fracture plus pseudofracture count PD output**)
+- **Type:** compartment
+- **Role:** Number of active fractures plus pseudofractures on a skeletal survey, as a count-outcome PD output. The state holds the Poisson mean `lambda` at each assessment (an algebraic product of a baseline count, time effects and an exposure effect -- no ODE); the observation model is `fracture_count ~ pois(lambda)`. It is a prevalent count at each survey (fractures heal and new ones form), not a cumulative incidence.
+- **Source aliases:** `Y` (Mehta 2025 Equation 1, 'total fracture and pseudofracture counts').
+- **Example models:** `Mehta_2025_burosumab_fracture.R` (adults with X-linked hypophosphatemia under burosumab; founding example).
+- **Notes:** Member of the per-interval event-count PD-output family (`seizure_count`, `exac_count`, `hae_attacks`, `thrombocytopenia_count`, ...). Pooled fractures and pseudofractures take this name; a model of fractures alone would also use it and say so in its description.
+
 ### thrombocytopenia_count (**canonical per-period thrombocytopenia-event-count PD output**)
 - **Type:** compartment
 - **Role:** Count of thrombocytopenia events accumulated over a prophylaxis period, used as the observation variable of a count-outcome exposure-response model. The state holds the mean count `lambda` at each observation row (an algebraic product of a baseline count and a drug effect -- no ODE); the observation model is `thrombocytopenia_count ~ pois(lambda)`. Thrombocytopenia is defined by the source paper as a platelet count decreased by at least 25% from baseline or an absolute platelet count below 150,000/uL.
@@ -2649,6 +2926,27 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** `elevated LDH counts` (Patel 2025 Table S5 row group heading).
 - **Example models:** `Patel_2025_radamts13_count_ldh.R` (founding example; log-linear reduction of the baseline count by average plasma ADAMTS13 activity in patients with congenital thrombotic thrombocytopenic purpura).
 - **Notes:** Member of the per-interval event-count PD-output family; sibling of `thrombocytopenia_count`, with which it shares a cohort, an exposure driver and a fitting interval but not a drug-effect form (the source authors retained a sigmoid Emax for thrombocytopenia and a linear slope for LDH, so the two are separate fits and separate model files). Named for the *event* (an LDH elevation crossing a threshold) rather than for the analyte, so it is distinct from a hypothetical `ldh` canonical holding a continuous LDH concentration -- register that separately if a paper models the LDH time course itself. Distinct from `cumhaz` in `Patel_2025_radamts13_rtte_ldh.R`, which models the timing of the same events.
+
+### infection_count (**canonical first-infection-adverse-event count PD output**)
+- **Type:** compartment
+- **Role:** Count of first infection adverse events (moderate or severe infections and those leading to discontinuation) from the first dose to the record time, used as the observation variable of a Poisson exposure-response model. The mean count is `lambda = time * exp(<log rate>)`, an algebraic product with no ODE state; the observation model is `infection_count ~ pois(lambda)`.
+- **Source aliases:** 'Infections' (Huh 2025 Table 2 'Infections ER model').
+- **Example models:** `Huh_2025_ritlecitinib_infections.R` (founding example; ritlecitinib in healthy volunteers and alopecia areata and vitiligo patients).
+- **Notes:** Member of the per-interval event-count PD-output family (`thrombocytopenia_count`, `ldh_elevation_count`, `seizure_count`, `exac_count`). The count is the number of FIRST events (0 or 1) accumulated from the first dose to the record time: the source fitted only the first event per subject, so with the log(time) offset the model is equivalent to a constant-hazard time-to-first-event model, and `time` on the observation record must be the time since the first dose in days. The exposure driver is `CAV`, the time-weighted average concentration over that same interval, entering through its square root.
+
+### herpes_zoster_count (**canonical first-herpes-zoster-adverse-event count PD output**)
+- **Type:** compartment
+- **Role:** Count of first herpes zoster adverse events from the first dose to the record time, used as the observation variable of a Poisson exposure-response model. Distinct from `infection_count`: herpes zoster was analysed as its own endpoint with its own intercept, covariates and exposure slope. The mean count is `lambda = time * exp(<log rate>)`, an algebraic product with no ODE state; the observation model is `herpes_zoster_count ~ pois(lambda)`.
+- **Source aliases:** 'Herpes Zoster' / 'HZ infections' (Huh 2025 Table 2 'Herpes Zoster ER model').
+- **Example models:** `Huh_2025_ritlecitinib_herpes_zoster.R` (founding example).
+- **Notes:** Member of the per-interval event-count PD-output family (`thrombocytopenia_count`, `ldh_elevation_count`, `seizure_count`, `exac_count`). The count is the number of FIRST events (0 or 1) accumulated from the first dose to the record time: the source fitted only the first event per subject, so with the log(time) offset the model is equivalent to a constant-hazard time-to-first-event model, and `time` on the observation record must be the time since the first dose in days. The exposure driver is `CAV`, the time-weighted average concentration over that same interval, entering through its square root.
+
+### rash_count (**canonical first-rash-adverse-event count PD output**)
+- **Type:** compartment
+- **Role:** Count of first rash adverse events (rash/dermatitis, drug eruption, urticaria, acne and related skin terms) from the first dose to the record time, used as the observation variable of a Poisson exposure-response model. The mean count is `lambda = time * exp(<log rate>)`, an algebraic product with no ODE state; the observation model is `rash_count ~ pois(lambda)`.
+- **Source aliases:** 'Rash' (Huh 2025 Table 2 'Rash ER model').
+- **Example models:** `Huh_2025_ritlecitinib_rash.R` (founding example).
+- **Notes:** Member of the per-interval event-count PD-output family (`thrombocytopenia_count`, `ldh_elevation_count`, `seizure_count`, `exac_count`). The count is the number of FIRST events (0 or 1) accumulated from the first dose to the record time: the source fitted only the first event per subject, so with the log(time) offset the model is equivalent to a constant-hazard time-to-first-event model, and `time` on the observation record must be the time since the first dose in days. The exposure driver is `CAV`, the time-weighted average concentration over that same interval, entering through its square root.
 
 ### viral_load (**canonical viral load**)
 - **Type:** compartment
@@ -2715,15 +3013,22 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient achieves an overall response (complete response, including uncertified CR, or partial response) as adjudicated by **independent central review**, in a static landmark exposure-response logistic model. The central-vs-investigator distinction is load-bearing and is why this is a separate canonical from `prob_orr_investigator`: the two adjudications are separate endpoints fit as separate models on different analysis sets, and central review is the regulatory-grade assessment.
 - **Source aliases:** none.
-- **Example models:** `Fukae_2024_valemetostat_orr_central.R` (Bayesian logistic exposure-response for ORR by central assessment in relapsed/refractory ATLL; `prob_orr_central <- expit(...)` is the observation variable and carries the placeholder additive residual), `Liu_2024_saf189s_orr.R` (binomial logistic exposure-efficacy model for INDEPENDENT-REVIEW-COMMITTEE-assessed ORR in ALK+/ROS1+ non-small cell lung cancer; an IRC is an independent central review, so the central-assessment canonical is the right one even though that paper fits no investigator-assessed counterpart), `Babel_2026_telisotuzumab_orr.R` (binomial logistic exposure-efficacy model for telisotuzumab vedotin, ORR per INDEPENDENT CENTRAL REVIEW -- the same adjudication route as an IRC -- in c-Met overexpressing EGFR wild-type non-squamous NSCLC; the conjugate average serum concentration enters on the natural-log scale with a log-odds of 2.45 per e-fold), `Gupta_2022_brigatinib_orr.R` (binomial logistic exposure-efficacy model for BLINDED-INDEPENDENT-REVIEW-COMMITTEE-confirmed ORR in first-line ALK-positive NSCLC; brigatinib scan-interval daily AUC enters linearly with odds ratio 0.97, p = 0.108), `Connarn_2023_idecabtageneVicleucel_orr.R` (sigmoid Emax on the logit for ORR adjudicated by the KarMMa INDEPENDENT RESPONSE COMMITTEE under IMWG criteria after ide-cel CAR T-cell therapy in relapsed/refractory multiple myeloma; the natural log of the transgene-level AUC0-28 drives the Emax term, female sex adds 1.78 to the logit).
+- **Example models:** `Fukae_2024_valemetostat_orr_central.R` (Bayesian logistic exposure-response for ORR by central assessment in relapsed/refractory ATLL; `prob_orr_central <- expit(...)` is the observation variable and carries the placeholder additive residual), `Liu_2024_saf189s_orr.R` (binomial logistic exposure-efficacy model for INDEPENDENT-REVIEW-COMMITTEE-assessed ORR in ALK+/ROS1+ non-small cell lung cancer; an IRC is an independent central review, so the central-assessment canonical is the right one even though that paper fits no investigator-assessed counterpart), `Babel_2026_telisotuzumab_orr.R` (binomial logistic exposure-efficacy model for telisotuzumab vedotin, ORR per INDEPENDENT CENTRAL REVIEW -- the same adjudication route as an IRC -- in c-Met overexpressing EGFR wild-type non-squamous NSCLC; the conjugate average serum concentration enters on the natural-log scale with a log-odds of 2.45 per e-fold), `Gupta_2022_brigatinib_orr.R` (binomial logistic exposure-efficacy model for BLINDED-INDEPENDENT-REVIEW-COMMITTEE-confirmed ORR in first-line ALK-positive NSCLC; brigatinib scan-interval daily AUC enters linearly with odds ratio 0.97, p = 0.108), `Connarn_2023_idecabtageneVicleucel_orr.R` (sigmoid Emax on the logit for ORR adjudicated by the KarMMa INDEPENDENT RESPONSE COMMITTEE under IMWG criteria after ide-cel CAR T-cell therapy in relapsed/refractory multiple myeloma; the natural log of the transgene-level AUC0-28 drives the Emax term, female sex adds 1.78 to the logit)., `Wu_2025_idecabtageneVicleucel_orr.R` (sigmoid Emax on the logit in the natural log of the ide-cel transgene-level AUC0-28D; KarMMa-3 independent review committee), `Wu_2025_idecabtageneVicleucel_dose_orr.R` (exploratory dose-response), `Sangro_2023_nivolumab_ipilimumab_orr.R` (binomial logistic exposure-response for objective tumor response by BLINDED INDEPENDENT CENTRAL REVIEW in sorafenib-experienced advanced hepatocellular carcinoma on nivolumab with or without ipilimumab; nivolumab first-dose Cavg1 enters linearly and the natural log of ipilimumab first-dose Cavg1 enters with a log-odds of 0.3712), `Sathe_2025b_sacituzumab_orr.R` (linear, uncentred logit in the average serum concentration of intact sacituzumab govitecan, intercept -6.96 and slope 0.343 per ug/mL; blinded independent central review in metastatic triple-negative breast cancer), `Li_2025_patritumabDeruxtecan_orr.R` (BICR-assessed ORR in EGFR-mutated NSCLC on patritumab deruxtecan; logit-log-linear in the average Cycle 1-3 anti-HER3-ac-DXd trough, coefficients back-solved from a typical-value forest plot)
 - **Notes:** A probability output in `[0, 1]`, not a concentration or an amount. Follows the `prob_<endpoint>` output-naming shape founded by `prob_roc` and extended by `prob_scc`. Static (no time dimension): unlike `prob_scc`, which is a state-occupancy probability evolving under a multistate ODE, this is a landmark probability evaluated once per subject from baseline covariates and a scalar exposure metric. Founding models expose it with a small placeholder residual so the nlmixr2 observation machinery accepts the model; the source analysis uses an exact Bernoulli likelihood and estimates no residual error.
 
 ### prob_orr_investigator (**canonical investigator-assessment overall-response probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient achieves an overall response as adjudicated by the **treating investigator**, in a static landmark exposure-response logistic model. Sibling of `prob_orr_central`; kept distinct because investigator assessment is typically available on a larger analysis set and yields a systematically different response rate and exposure slope.
 - **Source aliases:** none.
-- **Example models:** `Fukae_2024_valemetostat_orr_investigator.R` (Bayesian logistic exposure-response for ORR by investigator assessment in relapsed/refractory ATLL, pooled across the J101 phase I and J201 phase II trials).
+- **Example models:** `Fukae_2024_valemetostat_orr_investigator.R` (Bayesian logistic exposure-response for ORR by investigator assessment in relapsed/refractory ATLL, pooled across the J101 phase I and J201 phase II trials), `Li_2025_mosunetuzumab_orr.R` (Emax logistic on the two-cycle mosunetuzumab AUC0-42 in relapsed/refractory follicular lymphoma; maximal response 81.4 percent, E50 3.12 day*ug/mL).
 - **Notes:** See `prob_orr_central` for the shared conventions. In the founding paper the investigator-assessed model was fit on 38 patients versus 25 for central assessment, and estimated a steeper exposure slope (odds ratio 1.22 vs 1.08 per 250 ng*h/mL); the authors attribute the difference to the smaller central-assessment sample rather than to a real biological difference.
+
+### prob_orr (**canonical overall-response probability output, adjudication route pooled or not stated**)
+- **Type:** compartment
+- **Role:** Probability (0..1) of an overall response (partial response or better) when the response adjudication route is not fixed by the source: the published trial-level ORR pooled across many trials in a model-based meta-analysis, each trial reporting its own primary assessment (investigator, independent review committee or both); a static landmark exposure-response logistic model whose paper reports a single response adjudication without a central-versus-investigator split; or one whose paper does not say whether response was adjudicated by independent central review or by the investigator.
+- **Source aliases:** `ORR` -- Shah 2026 (IMWG overall response rate of each published trial arm); `Pr(OR)`, `ORR` (Du 2025).
+- **Example models:** `Shah_2026_rrmm_orr_mbma.R` (MBMA study-arm-level ORR across 21 relapsed/refractory multiple-myeloma regimens from 192 trials; a regimen-specific logit effect plus a background-corticosteroid shift and an Emax function of the percentage of second-line patients; the output is the STUDY-ARM response rate, not an individual patient's probability), `Yang_2025_axatilimab_orr.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the single-dose AUC from time 0 to infinity, `AUC_AXATILIMAB_SD`, for overall response of cGVHD by Cycle 7 Day 1), `Du_2025_repotrectinib_orr_ros1.R`, `Du_2025_repotrectinib_orr_ntrk.R` (logistic regressions on log Cavg56 in ROS1-positive NSCLC and NTRK-positive solid tumours from TRIDENT-1; the paper defines the endpoint as a confirmed complete or partial response without naming the assessor).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Use `prob_orr_central` or `prob_orr_investigator` whenever the source fits one adjudication route, or separate models to the two adjudications; this unqualified name is only for sources that pool routes or do not state them, so that a reader is not told an adjudication the data do not have and an unstated assessor is not guessed. The response criteria (IMWG for myeloma, RECIST for solid tumours, Lugano for lymphoma) and, for a landmark model, the landmark assessment are part of the endpoint and belong in the model's `description`. See `prob_orr_central` for the shared conventions of the landmark logistic models (placeholder additive residual, Bernoulli source likelihood).
 
 ### prob_anemia (**canonical severe-anemia probability output**)
 - **Type:** compartment
@@ -2736,21 +3041,21 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences a severe (CTCAE grade >= 3) decrease in absolute neutrophil count, assessed from laboratory ANC values, in a static landmark exposure-safety logistic model.
 - **Source aliases:** none.
-- **Example models:** `Fukae_2024_valemetostat_anc_decrease.R` (Bayesian logistic exposure-safety model; baseline ANC odds ratio 0.594 per 2.5 x 10^9/L increase).
+- **Example models:** `Fukae_2024_valemetostat_anc_decrease.R` (Bayesian logistic exposure-safety model; baseline ANC odds ratio 0.594 per 2.5 x 10^9/L increase), `Li_2025_patritumabDeruxtecan_anc_decrease.R` (patritumab deruxtecan; logit-log-linear in Cycle 1 DXd Cmax with weight, baseline neutrophils, hemoglobin and country of origin, back-solved from a typical-value forest plot).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Distinct from the `circ` / neutrophil-count states of Friberg-family semi-mechanistic myelosuppression models, which carry an ANC value through an ODE chain; this is a threshold-crossing probability with no time dimension.
 
 ### prob_plt_decrease (**canonical severe-thrombocytopenia probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences a severe (CTCAE grade >= 3) decrease in platelet count, assessed from laboratory platelet values, in a static landmark exposure-safety logistic model.
 - **Source aliases:** none.
-- **Example models:** `Fukae_2024_valemetostat_plt_decrease.R` (Bayesian logistic exposure-safety model; the steepest exposure-safety relationship in the founding paper, odds ratio 2.03 per 250 ng*h/mL of unbound AUCss, and the largest single covariate effect, baseline platelet odds ratio 0.230 per 100 x 10^9/L).
+- **Example models:** `Fukae_2024_valemetostat_plt_decrease.R` (Bayesian logistic exposure-safety model; the steepest exposure-safety relationship in the founding paper, odds ratio 2.03 per 250 ng*h/mL of unbound AUCss, and the largest single covariate effect, baseline platelet odds ratio 0.230 per 100 x 10^9/L), `Li_2025_patritumabDeruxtecan_plt_decrease.R` (patritumab deruxtecan; logit-log-linear in Cycle 1 DXd Cmax with baseline platelets, hemoglobin, race and tumor type, back-solved from a typical-value forest plot).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Distinct from the circulating-platelet ODE state of platelet-dynamics models such as `PerezRuixo_2015_oxaliplatin_platelet_dynamics.R`; this is a threshold-crossing probability, not a count.
 
 ### prob_teae_grade3 (**canonical any-severe-treatment-emergent-adverse-event probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences **any** CTCAE grade >= 3 treatment-emergent adverse event, pooled across all preferred terms, in a static landmark exposure-safety logistic model. The composite "any severe TEAE" endpoint is the standard whole-tolerability summary in oncology exposure-safety analyses.
 - **Source aliases:** none.
-- **Example models:** `Fukae_2024_valemetostat_teae_grade3.R` (Bayesian logistic exposure-safety model; reference-patient probability 0.653), `Chen_2021_lorlatinib_teae_grade3.R` (frequentist binomial logistic exposure-safety model; the steady-state lorlatinib trough enters on the natural-log scale with odds ratio 3.214 per e-fold, alongside baseline total cholesterol and time on study prior to the event), `Babel_2026_telisotuzumab_teae.R` (frequentist binomial logistic exposure-safety model for telisotuzumab vedotin; the unconjugated MMAE payload average plasma concentration enters LINEARLY and uncentred in ng/mL with a log-odds of 0.7195 per ng/mL, so the intercept is a genuine zero-exposure probability of 25.3%), `Chen_2021_luspatercept_teae_grade3.R` (luspatercept in beta-thalassemia over treatment cycles 1-2; both logistic coefficients digitized from the fitted line in Figure 4A, a flat relationship with slope -0.00019 per ug*day/mL of starting-dose AUCss), `Suri_2019_brentuximab_teae.R` (frequentist binomial logistic exposure-safety model for brentuximab vedotin + AVD in classical Hodgkin lymphoma; time-averaged MMAE payload AUC enters linearly with a log-odds of 0.052 per ng*day/mL plus a primary-G-CSF-prophylaxis logit shift of -1.65, coefficients digitised from the source figure), `Yao_2025_acalabrutinib_teae_grade3.R` (frequentist binomial logistic exposure-safety model for acalabrutinib; the steady-state daily acalabrutinib AUC enters linearly and uncentred, slope 0.0001807 per ng*h/mL recovered from the fitted line of the source figure, P = 0.051; the endpoint is any grade >= 3 adverse event).
+- **Example models:** `Fukae_2024_valemetostat_teae_grade3.R` (Bayesian logistic exposure-safety model; reference-patient probability 0.653), `Chen_2021_lorlatinib_teae_grade3.R` (frequentist binomial logistic exposure-safety model; the steady-state lorlatinib trough enters on the natural-log scale with odds ratio 3.214 per e-fold, alongside baseline total cholesterol and time on study prior to the event), `Babel_2026_telisotuzumab_teae.R` (frequentist binomial logistic exposure-safety model for telisotuzumab vedotin; the unconjugated MMAE payload average plasma concentration enters LINEARLY and uncentred in ng/mL with a log-odds of 0.7195 per ng/mL, so the intercept is a genuine zero-exposure probability of 25.3%), `Chen_2021_luspatercept_teae_grade3.R` (luspatercept in beta-thalassemia over treatment cycles 1-2; both logistic coefficients digitized from the fitted line in Figure 4A, a flat relationship with slope -0.00019 per ug*day/mL of starting-dose AUCss), `Suri_2019_brentuximab_teae.R` (frequentist binomial logistic exposure-safety model for brentuximab vedotin + AVD in classical Hodgkin lymphoma; time-averaged MMAE payload AUC enters linearly with a log-odds of 0.052 per ng*day/mL plus a primary-G-CSF-prophylaxis logit shift of -1.65, coefficients digitised from the source figure), `Yao_2025_acalabrutinib_teae_grade3.R` (frequentist binomial logistic exposure-safety model for acalabrutinib; the steady-state daily acalabrutinib AUC enters linearly and uncentred, slope 0.0001807 per ng*h/mL recovered from the fitted line of the source figure, P = 0.051; the endpoint is any grade >= 3 adverse event), `Yang_2025_axatilimab_teae_grade3.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the individual steady-state AUC over a 4-week cycle, `AUC_AXATILIMAB_SS`), `Li_2025_patritumabDeruxtecan_teae_grade3.R` (patritumab deruxtecan; logit-log-linear in Cycle 1 DXd Cavg with age and race, back-solved from a typical-value forest plot).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Composite and therefore not mutually exclusive with the laboratory-value endpoints (`prob_anemia`, `prob_anc_decrease`, `prob_plt_decrease`), which are subsets of it; a model consuming several of these simultaneously must not treat them as competing risks. Chen 2021 makes the same point for a different pair -- because hypercholesterolemia was the most common adverse event in that trial, many of its grade >= 3 TEAEs *were* hypercholesterolemia events, so `prob_teae_grade3` and its paper-specific sibling `prob_hypercholesterolemia` overlap heavily there too. Babel 2026 supplies a third instance of the same overlap, and the clearest statement of why the driver matters: there the composite endpoint is the ONLY one of four that tracks the released MMAE PAYLOAD rather than the antibody-drug conjugate, while its subset endpoint `prob_peripheral_neuropathy_grade3` tracks the conjugate, so the two are neither competing risks nor driven by the same exposure column. The canonical spans both Bayesian and frequentist fits of the endpoint; the name refers to the endpoint definition, not to the estimation framework.
 
 ### prob_teae_grade2 (**canonical any-moderate-or-worse adverse-event probability output**)
@@ -2799,7 +3104,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences a CTCAE grade >= 4 neutropenia event during treatment, in a static landmark exposure-safety logistic model.
 - **Source aliases:** none.
-- **Example models:** `Suri_2019_brentuximab_neutropenia.R` (binomial logistic exposure-safety model for brentuximab vedotin + AVD; time-averaged MMAE payload AUC enters linearly with a log-odds of 0.0354 per ng*day/mL plus a primary-G-CSF-prophylaxis logit shift of -1.14, coefficients digitised from the source figure).
+- **Example models:** `Suri_2019_brentuximab_neutropenia.R` (binomial logistic exposure-safety model for brentuximab vedotin + AVD; time-averaged MMAE payload AUC enters linearly with a log-odds of 0.0354 per ng*day/mL plus a primary-G-CSF-prophylaxis logit shift of -1.14, coefficients digitised from the source figure); `Sathe_2025b_sacituzumab_neutropenia.R` (grade 4 threshold of a nonproportional-odds model of the worst neutropenia grade after sacituzumab govitecan, odds ratio 1.03 per ug/mL, not significant; the intercept is approximated from a printed dataset-average prediction).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. The grade threshold is part of the endpoint: distinct from `prob_anc_decrease` (laboratory grade >= 3) and from `prob_neutropenia` (any grade, investigator-reported). Subset of `prob_teae_grade3` when the composite is also modelled; not a competing risk against it.
 
 ### prob_corneal_epitheliopathy_grade2 (**canonical moderate-or-worse corneal-epitheliopathy probability output**)
@@ -2841,8 +3146,15 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient requires a **permanent dose reduction** because of a treatment-emergent adverse event, in a static landmark exposure-safety logistic model. Interpreted as the point at which a clinician judges the risk of the assigned dose to be unwarranted, which makes it the natural upper-bound criterion in a benefit-risk / region-of-practical-equivalence exposure analysis.
 - **Source aliases:** none.
-- **Example models:** `Fukae_2024_valemetostat_dose_reduction.R` (Bayesian logistic exposure-safety model; reference-patient probability 0.0774, and the endpoint the founding paper used to set the upper limit of its target exposure range).
+- **Example models:** `Fukae_2024_valemetostat_dose_reduction.R` (Bayesian logistic exposure-safety model; reference-patient probability 0.0774, and the endpoint the founding paper used to set the upper limit of its target exposure range), `Li_2025_patritumabDeruxtecan_dose_reduction.R` (patritumab deruxtecan; the CUMULATIVE probability of a first AE leading to dose reduction by time t, from a discrete-time per-cycle logit hazard driven by the cycle-varying DXd Cmax -- not a static landmark probability).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Paired with `prob_dose_interruption`. The founding paper's rationale for singling this endpoint out is worth carrying forward: maintaining the initial dose after an adverse event plausibly represents acceptance of a warranted risk, so the probability of *reduction* is the sharper tolerability criterion.
+
+### prob_treatment_discontinuation (**canonical adverse-event-driven treatment-discontinuation probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient permanently discontinues treatment because of an adverse event. In the founding model it is the CUMULATIVE probability of the first such event by time t, 1 - exp(-cumhaz), from a discrete-time per-cycle logit hazard.
+- **Source aliases:** `AEDC` -- Li 2025 Figure 3 abbreviation ('adverse events leading to discontinuation').
+- **Example models:** `Li_2025_patritumabDeruxtecan_discontinuation.R` (founding example; patritumab deruxtecan; per-cycle hazard log-linear in the cycle-varying DXd Cavg, back-solved from population-simulated 6-month rates per regimen).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Paired with `prob_dose_reduction`: the two are the tolerability endpoints of a dose-selection analysis, reduction being a recoverable and discontinuation a terminal response to toxicity. Distinct from `prob_dropout`, the state-occupancy probability of a multistate model in which dropout may have any cause.
 
 ### prob_hypercholesterolemia (**canonical severe-hypercholesterolemia probability output**)
 - **Type:** compartment
@@ -3170,7 +3482,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a subject experiences any treatment-emergent adverse event judged drug-related by the investigator, of any system organ class and any severity, at any point during a study. A per-subject binary outcome modelled by logistic regression on drug exposure.
 - **Source aliases:** none.
-- **Example models:** `Assmus_2022_emodepside_teae_drug_related.R` (oral emodepside; `logit(p) = -2.38 + 0.0064 * CMAX`, S7 Table -- founding example).
+- **Example models:** `Assmus_2022_emodepside_teae_drug_related.R` (oral emodepside; `logit(p) = -2.38 + 0.0064 * CMAX`, S7 Table -- founding example); `Yang_2025_axatilimab_teae_drug_related.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the individual steady-state AUC over a 4-week cycle, `AUC_AXATILIMAB_SS`)).
 - **Notes:** A probability output in `[0, 1]`. Composite over every system organ class, so it contains `prob_teae_interest`, `prob_eye_disorder` and `prob_nervous_system_disorder`. Distinct from `prob_teae_grade3` (any severe TEAE regardless of causality) and `prob_adr`.
 
 ### prob_nausea (**canonical nausea adverse-event probability output**)
@@ -3238,25 +3550,32 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Fediuk_2021_varenicline_nausea.R` (founding example; varenicline in adolescent smokers over a 12-week treatment period; demographic and nicotine-dependence covariates multiply the baseline logit and the steady-state AUC(0-24) enters additively, slope 0.00911 per ng*h/mL).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. A COMPOSITE of the upper-gastrointestinal tolerability pair, so it sits at a higher event rate than either `prob_nausea` or `prob_vomiting` alone for the same drug and must not be substituted for either of them, nor combined with them as though they were independent risks. Distinct from the legacy `p_nausea` (Ravva 2010 adult varenicline, nausea only). A paper that models the two terms separately should use `prob_nausea` and `prob_vomiting` instead.
 
+### prob_nausea_vomiting_grade2 (**canonical moderate-or-worse composite nausea-or-vomiting probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient has nausea OR vomiting of CTCAE grade >= 2 as a treatment-emergent adverse event, in a static landmark exposure-safety logistic model with one observation per subject.
+- **Source aliases:** none.
+- **Example models:** `Li_2025_patritumabDeruxtecan_nausea_vomiting.R` (founding example; patritumab deruxtecan; a MARGINAL population-average model, logit-log-linear in the Cycle 1 anti-HER3-ac-DXd Cavg, back-solved from population-simulated rates per regimen).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. The grade >= 2 threshold sibling of `prob_nausea_vomiting`, which counts any grade, so the two must not be compared or substituted for one another: grade 1 nausea is common with DXd-payload conjugates and is excluded here.
+
 ### prob_diarrhea (**canonical diarrhea adverse-event probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient reports diarrhea as a treatment-emergent adverse event, in a static landmark exposure-safety logistic model.
 - **Source aliases:** none.
-- **Example models:** `Sun_2025_maribavir_diarrhea.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.06 per 10 ug*h/mL; reference-patient probability 0.047 at zero exposure); `Gall_2023_fluorouracil_mouse.R`, `Gall_2023_fluorouracil_human.R`, `Gall_2023_doxorubicin_mouse.R`, `Gall_2023_doxorubicin_human.R` (a TIME-VARYING mechanistic usage: a logistic function of fractional villus-cell loss computed from the epithelial ODE states, `prob_diarrhea = 1 - 1/(1 + exp(-(beta_0 + beta_1 * loss/(loss + Loss50))))`, giving a diarrhea-risk trajectory over the course of injury and recovery rather than a single landmark probability).
+- **Example models:** `Sun_2025_maribavir_diarrhea.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.06 per 10 ug*h/mL; reference-patient probability 0.047 at zero exposure); `Gall_2023_fluorouracil_mouse.R`, `Gall_2023_fluorouracil_human.R`, `Gall_2023_doxorubicin_mouse.R`, `Gall_2023_doxorubicin_human.R` (a TIME-VARYING mechanistic usage: a logistic function of fractional villus-cell loss computed from the epithelial ODE states, `prob_diarrhea = 1 - 1/(1 + exp(-(beta_0 + beta_1 * loss/(loss + Loss50))))`, giving a diarrhea-risk trajectory over the course of injury and recovery rather than a single landmark probability); `Sathe_2025b_sacituzumab_diarrhea.R` (grade >= 1 threshold of a nonproportional-odds model of the worst diarrhea grade after sacituzumab govitecan, odds ratio 1.45 per ug/mL of intact-conjugate average concentration; the intercept is digitised from the published curve).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Registered on first sighting as a well-formed member of the explicitly extensible adverse-event-term family, not as a new modelling concept. In the founding `Sun_2025` example the endpoint is an INVESTIGATOR-REPORTED adverse-event term with no severity threshold, so it sits at a higher event rate than a laboratory-defined or CTCAE-graded endpoint for the same toxicity and is subsumed by (not a competing risk against) a composite such as `prob_teae_grade3` or `prob_sae`. Completes the gastrointestinal-tolerability trio with `prob_nausea` and `prob_vomiting`. The same canonical also covers the mechanistic time-varying form (Gall 2023), where the probability is an instantaneous function of a modelled epithelial-injury state rather than a static exposure metric; it is still a probability in `[0, 1]`, not a cell count or a modelled gut-transit / stool-frequency ODE state.
 
 ### prob_neutropenia (**canonical neutropenia adverse-event probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient reports neutropenia as a treatment-emergent adverse event, in a static landmark exposure-safety logistic model.
 - **Source aliases:** none.
-- **Example models:** `Sun_2025_maribavir_neutropenia.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.05 per 10 ug*h/mL; reference-patient probability 0.27 at zero exposure, the highest reference probability of that paper's fourteen safety endpoints)
+- **Example models:** `Sun_2025_maribavir_neutropenia.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.05 per 10 ug*h/mL; reference-patient probability 0.27 at zero exposure, the highest reference probability of that paper's fourteen safety endpoints); `Sathe_2025b_sacituzumab_neutropenia.R` (grade >= 1 threshold of a nonproportional-odds model of the worst neutropenia grade after sacituzumab govitecan, pooling the neutropenia, neutrophil count decreased and febrile neutropenia terms; odds ratio 1.37 per ug/mL of intact-conjugate average concentration, intercept digitised from the published curve).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Registered on first sighting as a well-formed member of the explicitly extensible adverse-event-term family, not as a new modelling concept. The endpoint is an INVESTIGATOR-REPORTED adverse-event term with no severity threshold, so it sits at a higher event rate than a laboratory-defined or CTCAE-graded endpoint for the same toxicity and is subsumed by (not a competing risk against) a composite such as `prob_teae_grade3` or `prob_sae`. **Distinct from `prob_anc_decrease`**, which is the LABORATORY-derived CTCAE grade >= 3 neutropenia endpoint assessed from absolute-neutrophil-count values. The two describe the same toxicity through different ascertainment routes and sit at materially different event rates, so a model must use whichever matches its source's endpoint definition. Distinct also from the circulating-neutrophil ODE state of myelosuppression models such as the Friberg semi-mechanistic family: this is a threshold-crossing probability, not a cell count.
 
 ### prob_neutropenia_grade3 (**canonical severe-neutropenia adverse-event probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences neutropenia of CTCAE grade 3 or worse as a reported adverse event, in a static landmark exposure-safety logistic model. The severity-qualified sibling of `prob_neutropenia`.
 - **Source aliases:** none.
-- **Example models:** `Zhou_2018_alisertib_neutropenia.R` (binomial logistic exposure-safety model on the natural log of the treatment-course-averaged daily alisertib AUC, `logit(p) = -2.316 + 0.675 * log(AUC_ALIS)`, n = 591; predicted incidence 39% for Western and 46% for East Asian patients at 50 mg twice daily, falling to 37% for East Asian patients at the 30 mg twice-daily regional dose -- founding example), `Brendel_2021_irinotecan_liposomal_neutropenia_irinotecan.R` and `Brendel_2021_irinotecan_liposomal_neutropenia_sn38.R` (univariable logistic regressions on log10 steady-state average concentration of total irinotecan, odds ratio 0.33 -- an INVERSE relationship -- or of SN-38, odds ratio 3.14, not significant; the endpoint pools the neutropenia, decreased-neutrophil-count and febrile-neutropenia adverse-event terms at grade >= 3, 24.7% event rate); `Samineni_2022_venetoclax_neutropenia.R` and `Samineni_2022_venetoclax_neutropenia_base.R` (venetoclax plus R-CHOP; Table 4 coefficients and the Figure 5a curve, which disagree).
+- **Example models:** `Zhou_2018_alisertib_neutropenia.R` (binomial logistic exposure-safety model on the natural log of the treatment-course-averaged daily alisertib AUC, `logit(p) = -2.316 + 0.675 * log(AUC_ALIS)`, n = 591; predicted incidence 39% for Western and 46% for East Asian patients at 50 mg twice daily, falling to 37% for East Asian patients at the 30 mg twice-daily regional dose -- founding example), `Brendel_2021_irinotecan_liposomal_neutropenia_irinotecan.R` and `Brendel_2021_irinotecan_liposomal_neutropenia_sn38.R` (univariable logistic regressions on log10 steady-state average concentration of total irinotecan, odds ratio 0.33 -- an INVERSE relationship -- or of SN-38, odds ratio 3.14, not significant; the endpoint pools the neutropenia, decreased-neutrophil-count and febrile-neutropenia adverse-event terms at grade >= 3, 24.7% event rate); `Samineni_2022_venetoclax_neutropenia.R` and `Samineni_2022_venetoclax_neutropenia_base.R` (venetoclax plus R-CHOP; Table 4 coefficients and the Figure 5a curve, which disagree); `Shah_2026_rrmm_neutropenia_mbma.R` (MBMA study-arm-level incidence across 11 relapsed/refractory multiple-myeloma regimens from 130 published trials, i.e. the trial-reported Grade >= 3 neutropenia adverse-event rate of each arm; a regimen-specific logit effect plus a background-alkylating-agent shift), `Sathe_2025b_sacituzumab_neutropenia.R` (grade >= 3 threshold of the same nonproportional-odds model as its `prob_neutropenia` output, odds ratio 1.09 per ug/mL; the published grade >= 1 and grade >= 3 curves cross near 17 ug/mL, so the grade >= 3 probability exceeds the any-grade probability at low exposure).
 - **Notes:** A probability output in `[0, 1]`. Kept as its own canonical rather than folded into `prob_neutropenia` for exactly the reason `prob_hyperglycemia_grade2` is kept apart from `prob_hyperglycemia`: the grade threshold defines a different endpoint, fit as a separate model and sitting at a materially different event rate. **Three neutropenia canonicals now coexist and the distinction between them is ascertainment, not synonymy** -- `prob_neutropenia` is the ungraded investigator-reported adverse-event term, `prob_anc_decrease` is the LABORATORY-derived grade >= 3 endpoint read off absolute-neutrophil-count values, and this one is the grade >= 3 threshold applied to the *reported adverse-event* term. Always read the Role field rather than inferring the route from the name. Distinct also from the circulating-neutrophil ODE state of Friberg-family myelosuppression models: this is a threshold-crossing probability, not a cell count. The `_grade3` suffix means "grade 3 or worse", matching the source convention "grade >= 3".
 
 ### prob_neutropenia_grade2 (**canonical moderate-or-worse neutropenia adverse-event probability output**)
@@ -3310,7 +3629,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences diarrhea of CTCAE grade 3 or worse as a reported adverse event, in a static landmark exposure-safety logistic model. The grade >= 3 sibling of `prob_diarrhea` (ungraded) and `prob_diarrhea_grade2` (grade >= 2).
 - **Source aliases:** none.
-- **Example models:** `Brendel_2021_irinotecan_liposomal_diarrhea_irinotecan.R` and `Brendel_2021_irinotecan_liposomal_diarrhea_sn38.R` (univariable binomial logistic regressions of grade >= 3 diarrhea at first event on log10 of the steady-state average concentration of total irinotecan, odds ratio 8.70, or of SN-38, odds ratio 7.30, in 316 patients with metastatic pancreatic cancer receiving liposomal irinotecan; 17.7% event rate -- founding examples).
+- **Example models:** `Brendel_2021_irinotecan_liposomal_diarrhea_irinotecan.R` and `Brendel_2021_irinotecan_liposomal_diarrhea_sn38.R` (univariable binomial logistic regressions of grade >= 3 diarrhea at first event on log10 of the steady-state average concentration of total irinotecan, odds ratio 8.70, or of SN-38, odds ratio 7.30, in 316 patients with metastatic pancreatic cancer receiving liposomal irinotecan; 17.7% event rate -- founding examples); `Sathe_2025b_sacituzumab_diarrhea.R` (grade >= 3 threshold of the same nonproportional-odds model as its `prob_diarrhea` output, odds ratio 1.01 per ug/mL, not significant; the intercept is approximated from a printed dataset-average prediction. The two thresholds have their own slopes and cross near 11 ug/mL).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Delayed diarrhea is the characteristic dose-limiting gastrointestinal toxicity of irinotecan, attributed to SN-38 exposure of the intestinal mucosa, which is why the founding paper fits the same endpoint against both the parent and the metabolite. The two founding models are alternative univariable fits of ONE endpoint, not competing risks and not additive: use one or the other. The `_grade3` suffix means "grade 3 or worse", matching the source convention "grade >= 3".
 
 ### prob_thrombocytopenia (**canonical thrombocytopenia adverse-event probability output**)
@@ -3369,6 +3688,20 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Lalovic_2020_lemborexant_uti.R` (founding example; linear in the lemborexant average steady-state concentration on the logit, not statistically significant).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. An investigator-reported adverse-event term with no severity threshold. Distinct from `prob_infection` (an invasive fungal or bacterial infection composite in transplant recipients).
 
+### prob_ivh_severe (**canonical severe-intraventricular-hemorrhage probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a preterm neonate develops severe intraventricular hemorrhage (Grade III or IV by cranial ultrasound in the first week of life, versus none, Grade I or Grade II), in a static per-subject logistic exposure-response model of indomethacin IVH prophylaxis.
+- **Source aliases:** none.
+- **Example models:** `Yeung_2025_indomethacin_ivh.R` (founding example; linear in the dose-normalised indomethacin AUC0-inf, site, gestational age, postnatal age at first dose, sex and race; only gestational age significant).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. The dichotomy is by severity grade, not by IVH occurrence; a model of any-grade IVH would register a separate `prob_ivh`.
+
+### prob_pda_failure (**canonical patent-ductus-arteriosus treatment-failure probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patent ductus arteriosus is not resolved after a pharmacological treatment course, i.e. a further course or surgical ligation is needed, in a per-course logistic exposure-response model.
+- **Source aliases:** none.
+- **Example models:** `Yeung_2025_indomethacin_pda.R` (founding example; mixed-effects logistic regression in the per-course indomethacin AUC with a subject random intercept; no predictor significant).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Failure, not success, is the event coded 1 (Yeung 2025 Table 2 '0 = success, 1 = failure'); an open ductus that needs no further treatment counts as success.
+
 ### prob_influenza (**canonical influenza adverse-event probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient reports influenza (including 'flu' and influenza-like illness as pooled by the source) as a treatment-emergent adverse event at any time during a study, in a static landmark exposure-safety logistic model. A per-subject binary outcome.
@@ -3425,6 +3758,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Example models:** `Sun_2025_maribavir_renal_disorder.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.08 per 10 ug*h/mL; reference-patient probability 0.032 at zero exposure)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Registered on first sighting as a well-formed member of the explicitly extensible adverse-event-term family, not as a new modelling concept. The endpoint is an INVESTIGATOR-REPORTED adverse-event term with no severity threshold, so it sits at a higher event rate than a laboratory-defined or CTCAE-graded endpoint for the same toxicity and is subsumed by (not a competing risk against) a composite such as `prob_teae_grade3` or `prob_sae`. Distinct from the RENAL-FUNCTION COVARIATES (`CRCL`, `EGFR`, `RENALFUNC_REL`), which are inputs describing a patient's kidney function; this is an OUTPUT, the probability of a reported renal adverse event. A model needing a continuous renal trajectory should model creatinine or eGFR as a state, not use this canonical.
 
+### prob_aki (**canonical criteria-defined acute-kidney-injury probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient develops acute kidney injury meeting a laboratory / urine-output criterion set (KDIGO, any stage) during drug therapy, in a static landmark exposure-safety logistic model.
+- **Source aliases:** `AKI`, `drug-induced AKI`, `nephrotoxicity` (when defined by KDIGO / RIFLE / AKIN criteria).
+- **Example models:** `Wang_2023_polymyxinB_aki.R` (founding example; KDIGO, any time during the polymyxin B course, `logit = -4.623 + 0.116 * WBC + 0.040 * AUC_POLYMYXINB`, observed 30/55), `Wang_2023_polymyxinB_aki_cmid.R` (same endpoint and cohort, univariate on the mid-dosing-interval concentration, `logit = -2.742 + 0.845 * CMID_INTERVAL`).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Record the criterion set (KDIGO, RIFLE, AKIN), any stage threshold, and the ascertainment window per model. Distinct from `prob_renal_disorder`, an investigator-reported adverse-event term without a laboratory definition, and from the `KDIGO_AKI_1/_2/_3` covariate indicators, which are INPUTS describing a stage already present.
+
 ### prob_gvhd (**canonical acute-graft-versus-host-disease adverse-event probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that an allogeneic haematopoietic-cell-transplant recipient reports acute graft-versus-host disease as a treatment-emergent adverse event, in a static landmark exposure-safety logistic model.
@@ -3457,8 +3797,50 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences ANY treatment-emergent serious adverse event, pooled across all preferred terms, in a static landmark exposure-safety logistic model. Seriousness is the regulatory criterion (death, life-threatening, hospitalisation, disability, congenital anomaly or other medically important event), not a CTCAE severity grade.
 - **Source aliases:** none.
-- **Example models:** `Sun_2025_maribavir_sae.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.04 per 10 ug*h/mL; reference-patient probability 0.19 at zero exposure); `Samineni_2022_venetoclax_sae.R` and `Samineni_2022_venetoclax_sae_base.R` (venetoclax plus R-CHOP; Table 4 with an age term, and the exposure-only Figure 5e curve); `Song_2024_maribavir_sae.R` (univariate logistic model on the 0-24 h steady-state maribavir AUC, odds ratio 1.19 per 50 ug*h/mL, in the SOLSTICE refractory cohort; coefficients recovered from the plotted fitted curve of Song 2024 Figure S1.5).
+- **Example models:** `Sun_2025_maribavir_sae.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.04 per 10 ug*h/mL; reference-patient probability 0.19 at zero exposure); `Samineni_2022_venetoclax_sae.R` and `Samineni_2022_venetoclax_sae_base.R` (venetoclax plus R-CHOP; Table 4 with an age term, and the exposure-only Figure 5e curve); `Song_2024_maribavir_sae.R` (univariate logistic model on the 0-24 h steady-state maribavir AUC, odds ratio 1.19 per 50 ug*h/mL, in the SOLSTICE refractory cohort; coefficients recovered from the plotted fitted curve of Song 2024 Figure S1.5); `Yang_2025_axatilimab_sae.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the individual steady-state AUC over a 4-week cycle, `AUC_AXATILIMAB_SS`), centred baseline `ALB` and `ECOG_GE2`), `Li_2025_patritumabDeruxtecan_sae.R` (patritumab deruxtecan; a MARGINAL population-average logit-log-linear model in Cycle 1 DXd Cavg, back-solved from population-simulated rates per regimen).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Registered on first sighting as a well-formed member of the explicitly extensible adverse-event-term family, not as a new modelling concept. **Distinct from `prob_teae_grade3`**, and the distinction is a common source of error: SERIOUSNESS is a regulatory reporting criterion whereas CTCAE grade >= 3 is a severity scale, and the two sets overlap without nesting -- a grade 3 laboratory abnormality requiring no hospitalisation is not serious, while a grade 2 event causing hospitalisation is. Distinct also from `prob_adr`, which pools every reaction with no threshold at all. As a composite it subsumes the single-preferred-term members of the family and must NOT be modelled alongside them as a competing risk.
+
+### prob_mlss_improve7 (**canonical >= 7-point modified Lee Symptom Scale improvement probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient with chronic graft-versus-host disease reports a clinically meaningful symptom improvement, a reduction of at least 7 points from baseline in the modified Lee Symptom Scale (mLSS) summary score, within a defined treatment window, in a static landmark exposure-response logistic model.
+- **Source aliases:** none.
+- **Example models:** `Yang_2025_axatilimab_mlss_improve7.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the single-dose AUC from time 0 to infinity, `AUC_AXATILIMAB_SD`) and a more-than-4-involved-organs indicator; window = first 6 cycles, founding example).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. The 7-point threshold is the regulatory threshold for a clinically meaningful mLSS change; a model using a different threshold needs a different name.
+
+### prob_amylase_lipase_increase (**canonical amylase-or-lipase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences an increase in serum amylase or lipase reported as a treatment-emergent adverse event (grouped adverse-event terms, any grade), in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Yang_2025_axatilimab_amylase_lipase_increase.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the individual steady-state AUC over a 4-week cycle, `AUC_AXATILIMAB_SS`) and centred baseline `LIPASE`, founding example).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Any-grade grouped term pooling both pancreatic enzymes. Distinct from the grade-thresholded single-enzyme members `prob_amylase_increase_grade2` / `_grade3` and `prob_lipase_increase_grade3`.
+
+### prob_cpk_increase (**canonical any-grade creatine-phosphokinase-increase probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a creatine phosphokinase (creatine kinase) elevation reported as a treatment-emergent adverse event (grouped adverse-event terms, any grade), in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Yang_2025_axatilimab_cpk_increase.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the individual steady-state AUC over a 4-week cycle, `AUC_AXATILIMAB_SS`) and centred baseline `CPK`, founding example).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Any-grade; distinct from the grade-thresholded `prob_cpk_increase_grade3`. For anti-CSF-1R antibodies the CPK rise reflects reduced Kupffer-cell clearance of the enzyme rather than muscle injury.
+
+### prob_liver_enzyme_increase (**canonical any-grade liver-enzyme-elevation probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a liver (hepatic) enzyme elevation reported as a treatment-emergent adverse event (grouped adverse-event terms pooling aminotransferase and related enzyme increases, any grade), in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Yang_2025_axatilimab_liver_enzyme_increase.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the individual steady-state AUC over a 4-week cycle, `AUC_AXATILIMAB_SS`), founding example).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Grouped across enzymes; distinct from the single-enzyme `prob_alt_increase*` / `prob_ast_increase*` members.
+
+### prob_periorbital_edema (**canonical periorbital-edema probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences periorbital edema reported as a treatment-emergent adverse event (grouped adverse-event terms, any grade), in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Yang_2025_axatilimab_periorbital_edema.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the individual steady-state AUC over a 4-week cycle, `AUC_AXATILIMAB_SS`), founding example).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. A class effect of CSF-1R blockade (reduced tissue-macrophage clearance).
+
+### prob_irr (**canonical infusion-related-reaction probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences an infusion-related reaction, including hypersensitivity reactions, reported as a treatment-emergent adverse event (grouped adverse-event terms, any grade), in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Yang_2025_axatilimab_irr.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the individual steady-state AUC over a 4-week cycle, `AUC_AXATILIMAB_SS`) and centred baseline `ALT`, founding example).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Record per model whether hypersensitivity reactions are pooled into the term.
 
 ### prob_clinical_success (**canonical antimicrobial clinical-cure / treatment-success probability output**)
 - **Type:** compartment
@@ -3527,7 +3909,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences, within a defined early treatment window, a treatment-emergent adverse event severe enough to force a DOSE MODIFICATION -- study-drug withdrawal, discontinuation, or dose reduction -- in a static landmark exposure-safety logistic model. The endpoint is defined by the clinical ACTION taken, not by a CTCAE grade or by a preferred term, and it pools every adverse-event type into a single event.
 - **Source aliases:** none. Source papers describe it as "TEAE leading to study drug withdrawal or dose reduction" or "dose reduction or discontinuation".
-- **Example models:** `Tamai_2017_lenvatinib_teae_dosemod.R` (founding example; frequentist logistic regression in 45 subjects with advanced hepatocellular carcinoma Child-Pugh class A, window = cycle 1 of 4 weeks, `logit = -4.71 + 1.82 * AUC_LEN / 1000` with lenvatinib steady-state 24 h AUC entering linearly and uncentred, and no covariate retained).
+- **Example models:** `Tamai_2017_lenvatinib_teae_dosemod.R` (founding example; frequentist logistic regression in 45 subjects with advanced hepatocellular carcinoma Child-Pugh class A, window = cycle 1 of 4 weeks, `logit = -4.71 + 1.82 * AUC_LEN / 1000` with lenvatinib steady-state 24 h AUC entering linearly and uncentred, and no covariate retained); `Yang_2025_axatilimab_teae_dosemod.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the individual steady-state AUC over a 4-week cycle, `AUC_AXATILIMAB_SS`); the action set includes dose interruptions as well as discontinuations and reductions, over the whole treatment period).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. **Record the window and the action set per model** -- they are the whole definition. The action-defined endpoint is a different construct from the severity-defined `prob_teae_grade3`: it is driven by what the treating physician did, so it is sensitive to the trial's dose-modification guidance and to how much headroom the starting dose leaves, and a drug studied at its maximum tolerated dose will show a high rate of it regardless of grade distribution. That sensitivity is the point rather than a defect -- in the founding paper the endpoint exists precisely to choose a STARTING DOSE, 74% of the phase 2 cohort having required reduction from 12 mg to 8 mg. Exposure for this endpoint must be frozen at the starting dose: because the modelled event IS the first dose change, an exposure column that tracks the current dose would be contaminated by the outcome. Do not treat it as a competing risk against grade-based or preferred-term endpoints, which it overlaps.
 
 ### prob_cpk_increase_grade3 (**canonical grade >= 3 creatine-phosphokinase-increase probability output**)
@@ -3569,7 +3951,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences ANY of a sponsor-defined list of adverse events of interest at CTCAE grade >= 3, in a static landmark exposure-safety logistic model. In the founding model the list is grade >= 3 CPK, AST, ALT, amylase or lipase elevation, hyperglycemia, hypertension, bradycardia, rash and pulmonary events.
 - **Source aliases:** none.
-- **Example models:** `Gupta_2022_brigatinib_aesi_grade3.R` (`logit = -0.175 + 0.01248 * AUC_BRIG_EVT`, observed 64/123).
+- **Example models:** `Gupta_2022_brigatinib_aesi_grade3.R` (`logit = -0.175 + 0.01248 * AUC_BRIG_EVT`, observed 64/123); `Yang_2025_axatilimab_aesi_grade3.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the individual steady-state AUC over a 4-week cycle, `AUC_AXATILIMAB_SS`); the list is infusion-related reactions, infections, hepatic enzyme, CPK, amylase and lipase elevations and periorbital edema).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. The severity-qualified sibling of `prob_aesi` (any grade). Distinct from `prob_teae_grade3`, which pools ALL preferred terms: this composite is restricted to the listed events of interest. It overlaps every listed single-event endpoint, so it must not be combined with them as competing risks.
 
 ### prob_hypertension_grade2 (**canonical grade >= 2 hypertension probability output**)
@@ -3822,7 +4204,16 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Role:** Bare brain organ compartment in full-body PBPK extractions, and the whole-brain (total tissue) compartment of compartmental brain-distribution models that sample brain homogenate rather than a resolved region or fluid.
 - **Source aliases:**
   - `BRAIN` -- Kaikousidis 2023 Figures 2 and 4 (perfused whole-brain homogenate, observed as `Cbrain = brain / v_brain`).
-- **Example models:** `Zhang_2011_nutlin3a.R`; `Kaikousidis_2023_donepezil_oral_meandata_mouse.R` and its siblings (compartmental, fed by `k_central_brain` and, after intranasal dosing, by direct and delayed nose-to-brain inputs; drained by `keff_brain`).
+  - `A3` -- Chiang 2024 Eqs. 1-5 ('A3 - brain').
+- **Example models:** `Zhang_2011_nutlin3a.R`; `Kaikousidis_2023_donepezil_oral_meandata_mouse.R` and its siblings (compartmental, fed by `k_central_brain` and, after intranasal dosing, by direct and delayed nose-to-brain inputs; drained by `keff_brain`); `Chiang_2024_ondansetron_male_rat.R` and `Chiang_2024_ondansetron_female_rat.R` (bidirectional `k_central_brain` / `k_brain_central` exchange plus Pgp efflux `k_cns_central_pgp`, and exchange with `csf`).
+
+### spinal_cord (**canonical bare whole-spinal-cord compartment**)
+- **Type:** compartment
+- **Role:** Whole spinal-cord tissue compartment of a compartmental CNS-distribution model, sampled as spinal-cord homogenate and observed as `Cspinal_cord = spinal_cord / v_spinal_cord`. The spinal-cord counterpart of the bare `brain` compartment.
+- **Source aliases:**
+  - `A4` -- Chiang 2024 Eqs. 1-5 ('A4 - spinal cord'), volume `Vspinal` fixed at 0.6 mL.
+- **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
+- **Notes:** Ratified by the maintainers 2026-11-10 (PMC11263240). Distinct from the regional `spinal_cord_cervical` / `spinal_cord_thoracic` / `spinal_cord_lumbar` states of `Biliouris_2018_nusinersen.R` (paper-specific, segment-resolved tissue), from `brain_csf_sas_spinal` (the spinal subarachnoid CSF, a fluid rather than tissue) and from `cord` (umbilical cord in `Nie_2025_sufentanil.R`). Volume `lv_spinal_cord`; transfers named by the `k_<from>_<to>` family (`k_central_spinal_cord`, `k_spinal_cord_central`). When the source estimates one constant for brain and spinal cord jointly, use the `cns` token (`k_cns_csf`, `k_csf_cns`, `k_cns_central_pgp`) rather than aliasing a spinal-cord constant to a brain one.
 
 ### trachea (**canonical bare trachea compartment**)
 - **Type:** compartment
@@ -3937,6 +4328,77 @@ One family in this section is validated by shape rather than by enumeration -- s
   - `{Gonads_cells}` / `E2(Gonads_cells)` -- Sier 2017 Additional file 1 balance equations and BioModels MODEL1711210001 / MODEL1711210002 species `E2_Gonads_cells`.
 - **Example models:** `Sier_2017_estradiol_pbpk.R`, `Sier_2017_estradiol_liverode_pbpk.R`.
 - **Notes:** Use this for the FEMALE (or sex-unspecified lumped) gonadal / reproductive-tract compartment. The male gonad organ has its own canonical `testes`, which is a perfusion-limited whole-organ state; do not reuse `testes` for an ovary / uterus compartment or vice versa. The paper's lumped label is kept (rather than `uterus`) because the compartment explicitly includes the ovaries and stands for estradiol target tissue generally; record the membership in the model `description`. Like `testes`, it is not splanchnic: its venous outflow returns to `venous` blood.
+
+### tgfb_tumor (**canonical intratumoral active TGF-beta PD output**)
+- **Type:** compartment
+- **Role:** Intratumoral active (free, bioactive) TGF-beta concentration, normalised to total tumour protein (pg/mg protein), the observed output of a direct concentration-effect model in which an anti-TGF-beta agent lowers the tumour level from a baseline: `tgfb_tumor <- e0 - emax * C / (ec50 + C)`. Algebraic in the driving concentration; no ODE state.
+- **Source aliases:** none. Baranda 2024 writes it `TGFbeta` / 'tumoral active TGFbeta'.
+- **Example models:** `Baranda_2024_sar439459_mouse.R` (MC38 tumour-bearing mice; study-specific baseline, shared Emax and EC50, driven by `CP_SAR439459_MGL`).
+- **Notes:** The matrix is in the name so that a future circulating TGF-beta output (plasma or serum total / active TGF-beta1, the usual clinical biomarker) can take the bare `tgfb` or its own matrix suffix without colliding -- intratumoral protein-normalised levels and plasma concentrations differ in units, in assay and in what the drug does to them. Distinct from the inflammatory-mediator states (`tnf`, `il6`, `il10`, `ifng`, `ifna`), which are indirect-response turnover states rather than direct-effect algebraic outputs.
+
+### updrs_z (**canonical log-standardized MDS-UPDRS Part I-III total score output**)
+- **Type:** compartment
+- **Role:** Fitted (DV) scale of the MDS-UPDRS Part I-III total in a SReFT disease-progression model: the score x is mapped onto (0, 1) by X = (x + 0.5) / (236 + 1), converted to y = X / (1 - X), log-transformed and z-standardized with the analysis-data mean and SD of log(y). Unitless; carries the additive residual `addSd_updrs_z`.
+- **Source aliases:**
+  - `DV` for `BM = 1` (MDS-UPDRS total) -- Jin 2024 Data S1.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Back-transformed raw-scale companion: `updrs`. Distinct from `d_updrs` (change from baseline in total UPDRS, Lee 2011).
+
+### scopaaut_z (**canonical log-standardized SCOPA-AUT score output**)
+- **Type:** compartment
+- **Role:** Fitted (DV) scale of the SCOPA-AUT autonomic-dysfunction score in a SReFT model: mapped onto (0, 1) with Xmax = 69, logit-transformed as for `updrs_z` and z-standardized. Unitless; carries `addSd_scopaaut_z`.
+- **Source aliases:**
+  - `DV` for `BM = 2` (SCOPA-AUT) -- Jin 2024 Data S1.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Raw-scale companion: `scopaaut`.
+
+### datscan_z (**canonical log-standardized DaTSCAN specific binding ratio output**)
+- **Type:** compartment
+- **Role:** Fitted (DV) scale of the DaTSCAN mean-striatum specific binding ratio in a SReFT model: log of the ratio, z-standardized. Unitless; carries `addSd_datscan_z`.
+- **Source aliases:**
+  - `DV` for `BM = 3` (DaTSCAN) -- Jin 2024 Data S1.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Raw-scale companion: `datscan`.
+
+### asyn_z (**canonical log-standardized CSF alpha-synuclein output**)
+- **Type:** compartment
+- **Role:** Fitted (DV) scale of the cerebrospinal-fluid alpha-synuclein concentration in a SReFT model: log of the pg/mL concentration, z-standardized. Unitless; carries `addSd_asyn_z`.
+- **Source aliases:**
+  - `DV` for `BM = 4` (alpha-synuclein) -- Jin 2024 Data S1.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Raw-scale companion: `asyn`.
+
+### updrs (**canonical MDS-UPDRS Part I-III total score output**)
+- **Type:** compartment
+- **Role:** Movement Disorder Society Unified Parkinson's Disease Rating Scale Parts I-III total, in points (0-236; higher is worse), as an algebraic back-transform of `updrs_z`: y = exp(updrs_z * SD + mean), updrs = y / (1 + y) * 237 - 0.5.
+- **Source aliases:**
+  - 'MDS-UPDRS total' -- Jin 2024.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. An algebraic typical/individual prediction with no residual error of its own; the residual lives on `updrs_z`. Distinct from `d_updrs` (change from baseline).
+
+### scopaaut (**canonical SCOPA-AUT score output**)
+- **Type:** compartment
+- **Role:** Scales for Outcomes in Parkinson's Disease -- Autonomic dysfunction total, in points (0-69; higher is worse), back-transformed from `scopaaut_z` as for `updrs`.
+- **Source aliases:**
+  - 'SCOPA-AUT' -- Jin 2024.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Algebraic; residual on `scopaaut_z`.
+
+### datscan (**canonical DaTSCAN mean-striatum specific binding ratio output**)
+- **Type:** compartment
+- **Role:** Dopamine-transporter SPECT (DaTSCAN) specific binding ratio in the mean striatum (unitless ratio; falls as dopaminergic neurons are lost), back-transformed from `datscan_z` as exp(datscan_z * SD + mean).
+- **Source aliases:**
+  - 'DaTSCAN (mean striatum)' -- Jin 2024.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Algebraic; residual on `datscan_z`.
+
+### asyn (**canonical CSF alpha-synuclein concentration output**)
+- **Type:** compartment
+- **Role:** Cerebrospinal-fluid alpha-synuclein concentration in pg/mL, back-transformed from `asyn_z` as exp(asyn_z * SD + mean).
+- **Source aliases:**
+  - 'alpha-synuclein (pg/mL)' -- Jin 2024.
+- **Example models:** `Jin_2024_parkinson_progression.R`.
+- **Notes:** Ratified by the maintainers 2026-11-06. Algebraic; residual on `asyn_z`. Measured in CSF, so not a plasma `Cc`-type state.
 
 ## Adaptive-resistance bacterial states
 
@@ -4127,6 +4589,12 @@ Physiological state variables of the Magosso / Ursino respiratory and cerebrovas
 - **Role:** First-order-filtered peripheral-chemoreflex O2 input signal (dimensionless); modulates blood flow with time-constant tau_o2. Paired with `yco2`.
 - **Source aliases:** none.
 - **Example models:** `Mann_2022_respiratory_physiology.R`.
+
+### y_child_o2 (**canonical child-specific brain O2 cerebral-blood-flow response**)
+- **Type:** compartment
+- **Role:** First-order-filtered brain-specific cerebral-blood-flow (CBF) response to arterial O2 (dimensionless), with the child time-constant tau_child_o2 and amplitude c1_child (Chakravartula 2024 Supplement eqs 3-4). The sibling of `yo2`, split out because the pediatric model gives the brain its own O2 response parameters while the peripheral tissue keeps the adult `yo2`; brain blood flow is then modulated by `yco2 + y_child_o2`. At adult parameter values it collapses onto `yo2` and the model reduces to `Mann_2022_respiratory_physiology`.
+- **Source aliases:** `y_child,O2` (paper notation).
+- **Example models:** `Chakravartula_2024_fentanyl_pediatric.R`.
 
 ### dp_state (**canonical peripheral chemoreflex ventilatory drive**)
 - **Type:** compartment
@@ -4502,6 +4970,14 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
   - `HDL` -- Krishna 2011 Eqs. 1, 2 and 8 output variable; casing only.
 - **Example models:** `Krishna_2011_anacetrapib_hdlc.R` (algebraic proportional-Emax output driven by the anacetrapib steady-state trough concentration; no ODE state).
 
+### c4 (**canonical serum 7-alpha-hydroxy-4-cholesten-3-one (C4) PD output**)
+- **Type:** compartment
+- **Role:** Serum 7-alpha-hydroxy-4-cholesten-3-one (C4) concentration, the circulating intermediate of hepatic bile-acid synthesis by CYP7A1 and the standard biomarker of that synthesis rate. Carried as an indirect-response turnover state in concentration units (ng/mL).
+- **Source aliases:**
+  - `C4` -- Carreno 2025 Supplementary Equation 1 and Table 2; casing only.
+- **Example models:** `Carreno_2025_linerixibat.R` (founding example; K-PD stimulation of C4 synthesis by the ileal bile acid transporter inhibitor linerixibat, with a dual-cosine diurnal rhythm on synthesis).
+- **Notes:** C4 rises when ileal bile-acid reabsorption is blocked (ileal bile acid transporter inhibitors such as linerixibat, odevixibat, maralixibat and elobixibat, and bile-acid sequestrants) and falls with FXR agonists, so the name serves both directions. It is a measured concentration, not a dose-driving amount: the K-PD virtual compartment that drives it is `depot_kpd`. Not to be confused with complement component C4, which, if a future model needs it, should get a distinct name such as `complement_c4`.
+
 ### gastric_ph (**canonical intragastric pH PD output**)
 - **Type:** compartment
 - **Role:** Intragastric pH, the acid-suppression endpoint of proton-pump-inhibitor and other antisecretory PD models, in pH units. Names the measured quantity regardless of how it is produced: an algebraic Emax function of plasma concentration, or `-log10` of a mechanistic intragastric H+ state.
@@ -4634,7 +5110,7 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Source aliases:**
   - `E` / `EObs` -- the Phoenix NLME effect variable in Lee 2022 Supplemental Information 3 (`E = E0 + Emax * C^Gam / (EC50^Gam + C^Gam)`).
   - `phos`, `PHOS`, `PO4`, `Pi`, `serum phosphorus` -- common clinical-laboratory and figure-axis names.
-- **Example models:** `Lee_2022_burosumab.R` (direct Emax model of absolute serum phosphorus driven by the burosumab concentration, mg/dL; founding example).
+- **Example models:** `Lee_2022_burosumab.R` (direct Emax model of absolute serum phosphorus driven by the burosumab concentration, mg/dL; founding example), `Mehta_2025_burosumab.R` (direct Emax model with EC50 a power function of the individual baseline; its per-cycle average feeds `CAV_PHOS`).
 
 ### ca_unobs (**canonical unobserved calcium pool**)
 - **Type:** compartment
@@ -4663,6 +5139,15 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
   - `He` -- Angeli 2016 paper notation; same orientation, no transformation.
 - **Example models:** `Angeli_2016_iron_hepcidin.R`.
 - **Notes:** The short `hep` form was chosen to mirror the paper's `He` notation and to follow the existing biomarker-state precedent of short lowercase names (`phe`, `pth`, `thb`, `psa`).
+
+
+### liver_iron (**canonical liver iron concentration PD output**)
+- **Type:** compartment
+- **Role:** Liver iron concentration (LIC, mg iron per g liver dry weight) as the PD output of iron-overload and iron-chelation models. Algebraic output of a storage-iron state, not a serum biomarker.
+- **Source aliases:**
+  - `LIC` -- Sakares 2025 (computed there as `[sFe] / 2886.2`, sFe in umol/L).
+- **Example models:** `Sakares_2025_deferasirox.R`.
+- **Notes:** Distinct from `iron` (serum iron) and from a liver drug-concentration compartment (`liver`). Baseline value enters through the covariate `LIVER_IRON_BL`.
 
 ### psa (**canonical prostate-specific antigen (lowercase form)**)
 - **Type:** compartment
@@ -4910,6 +5395,13 @@ Two distinct decompositions of the reticulocyte pool are registered, and a model
 - **Source aliases:** none.
 - **Example models:** `Heuberger_2018_salbutamol.R`.
 
+### urine_output_nadir (**canonical urine-output-rate nadir PD output**)
+- **Type:** compartment
+- **Role:** Lowest urine output rate (mL/kg/h) within a fixed window after a dose -- 12 h in the founding example -- predicted by a static per-dose exposure-toxicity regression. A drug-induced oliguria endpoint; 1 and 0.5 mL/kg/h are the clinical concern thresholds in neonates.
+- **Source aliases:** `UOP rate nadir within 12 h after dose` (Yeung 2025).
+- **Example models:** `Yeung_2025_indomethacin_uop.R` (founding example; ln of the nadir linear in the per-dose indomethacin Cmax and weight-normalised fluid intake, log-normal residual).
+- **Notes:** A RATE normalised by body weight, not a volume: distinct from `urine_vol` (urine volume) and from the cumulative drug amount in `urine`.
+
 ### weight (**canonical bare body-weight PD output**)
 - **Type:** compartment
 - **Role:** Body weight PD output.
@@ -4938,7 +5430,7 @@ Two distinct decompositions of the reticulocyte pool are registered, and a model
 - **Type:** compartment
 - **Role:** Generic protozoan-parasite burden pool and its paired PD output, the parasite counterpart of `bacteria` / `cfu` and `virus` / `viral_load`. Holds a parasite count or density -- parasites/mL of whole blood in visceral-leishmaniasis qPCR models, parasites/uL in malaria parasitaemia models, or a normalised surviving-viability fraction in in-vitro kill assays. Document the actual unit per-model via `compartmentData$parasites$units`.
 - **Source aliases:** `parasitaemia`, `parasitemia`, `blood parasite load`, `parasite load`, `P`, `N`.
-- **Example models:** `Verrest_2024_leishmania.R` (Leishmania blood parasite load in parasites/mL, whole blood; growth minus drug kill minus host immune suppression, floored at 1 parasite/mL), `Cao_2017_dha_ring_early.R`, `Cao_2017_dha_ring_mid.R`, `Cao_2017_dha_troph_early.R`, `Cao_2017_dha_troph_late.R` (in-vitro P. falciparum surviving-viability fraction normalised to 1 at t = 0), `Maciel_2024_quinine_mouse.R` (P. berghei percent parasitemia in mice; logistic growth to a fixed ceiling minus Emax killing by whole-blood quinine).
+- **Example models:** `Verrest_2024_leishmania.R` (Leishmania blood parasite load in parasites/mL, whole blood; growth minus drug kill minus host immune suppression, floored at 1 parasite/mL), `Cao_2017_dha_ring_early.R`, `Cao_2017_dha_ring_mid.R`, `Cao_2017_dha_troph_early.R`, `Cao_2017_dha_troph_late.R` (in-vitro P. falciparum surviving-viability fraction normalised to 1 at t = 0), `Maciel_2024_quinine_mouse.R` (P. berghei percent parasitemia in mice; logistic growth to a fixed ceiling minus Emax killing by whole-blood quinine), `Mim_2026_mefloquine_artesunate_mouse.R` (P. berghei percent parasitemia in mice; zero-order production inhibited by plasma artesunate and mefloquine, first-order loss).
 - **Notes:** Use the plural bare form `parasites` for a single undifferentiated pool. Models that resolve the parasite population into life-cycle stages or drug-response subpopulations keep the `parasite_<subpopulation>` prefixed form (`parasite_sensitive` / `parasite_refractory` in `Hien_2017_cipargamin.R`; `parasite_tinyrings` / `parasite_smallrings` / `parasite_largerings` / `parasite_matureschizonts` / `parasite_spleen` in `Hietala_2010_artemether_parasitemia.R`), which remain paper-specific because the stage vocabulary does not generalise across parasite species.
 
 ---
@@ -5136,8 +5628,15 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Type:** compartment
 - **Role:** Probabilities (0..1) attached to the Modified Observer's Assessment of Alertness/Sedation (MOAA/S) scale, a six-level ordinal sedation score running 5 (fully alert, responds readily to name spoken in a normal tone) down to 0 (does not respond to a painful trapezius squeeze). `prob_moaas<k>` is the probability of scoring exactly `k`; `prob_moaas_le<k>` is the cumulative probability of scoring `k` or lower, i.e. being at least that deeply sedated. Output by an ordered-categorical (proportional-odds) PD model in which a drug term raises every cumulative logit, so that deeper sedation becomes more likely as exposure rises.
 - **Source aliases:** `P0` ... `P5` and `P0_1` -- the trace labels of Zhou 2018 Figure 5, where `P0_1` is `P0 + P1` and equals `prob_moaas_le1`.
-- **Example models:** `Zhou_2018_remimazolam_moaas.R` (founding example; five baseline cumulative logits B1-B5 from Zhou 2018 Table 2 plus a common sigmoid Emax increment in remimazolam effect-site concentration, with `prob_moaas_le1` as the observed endpoint).
+- **Example models:** `Zhou_2018_remimazolam_moaas.R` (founding example; five baseline cumulative logits B1-B5 from Zhou 2018 Table 2 plus a common sigmoid Emax increment in remimazolam effect-site concentration, with `prob_moaas_le1` as the observed endpoint), `Vellinga_2025_remimazolam_moaas.R` (five cumulative logits driven by arterial remimazolam, CNS 7054 and remifentanil concentrations; the ordinal observation `moaas` is fitted through `prob_moaas0` ... `prob_moaas4`).
 - **Notes:** Probability outputs in `[0, 1]`. Members of the `prob_<endpoint>` family and validated by `probOutputRegex` rather than by enumeration, but documented here because the two suffix conventions are load-bearing and cannot be read off the name alone. **`_le<k>` is cumulative and `<k>` bare is exact**; the bare form is obtained by differencing adjacent cumulative forms, and the two must never be mixed in one comparison. **The scale is inverted relative to intuition**: a HIGHER MOAA/S score means a MORE alert subject, so `prob_moaas_le1` -- the standard clinical definition of loss of consciousness, "MOAA/S < 2" -- INCREASES with drug exposure. A six-level scale has only five free cutpoints because the top cumulative probability `P(MOAA/S <= 5)` is identically 1 and is therefore not registered; a source reporting five baseline values is reporting cutpoints for scores 0 through 4, which their required monotone ordering confirms. Unlike most of the `prob_<endpoint>` family these are **time-varying**: the driver is an effect-site concentration evolving under an ODE, not a scalar landmark exposure metric, which puts them alongside `prob_scc` rather than alongside `prob_orr_central`. Distinct from the continuous processed-EEG sedation index `BIS`, which the same papers often model in parallel from the same effect compartment but with its own equilibration rate constant; MOAA/S is an observer-scored ordinal judgement and BIS is an instrument reading, and the two do not share cutpoints.
+
+### prob_umss0, prob_umss1, prob_umss2, prob_umss3, prob_umss_ge1, prob_umss_ge2, prob_umss_ge3 (**canonical University of Michigan Sedation Scale category and cumulative probability outputs**)
+- **Type:** compartment
+- **Role:** Probabilities (0..1) attached to the University of Michigan Sedation Scale (UMSS), a five-level observer-scored paediatric sedation scale: 0 awake and alert, 1 minimally sedated, 2 moderately sedated (easily aroused by light touch or a simple verbal command), 3 deeply sedated (arousable only with significant physical stimulation), 4 unarousable. `prob_umss<k>` is the probability of scoring exactly `k`; `prob_umss_ge<k>` is the cumulative probability of scoring `k` or higher. Output by an ordered-categorical (proportional-odds) PD model driven by effect-site concentrations.
+- **Source aliases:** `PGE1` ... `PGE3` and `P0` ... `P3` -- Colin 2025 Supplemental Digital Content 1 UMSS control stream (`Pr[Y>=k]` and `Pr[Y=k]`).
+- **Example models:** `Colin_2025_remimazolam_umss.R` (founding example; remimazolam and fentanyl effect-site concentrations, each normalised by a category-specific EC50, summed under a simplified Minto response surface; UMSS 4 was not observed, so `prob_umss3` is P(UMSS >= 3) and no `prob_umss4` / `prob_umss_ge4` is produced; the ordinal observation `umss ~ c(prob_umss0, prob_umss1, prob_umss2)` simulates category `k` as score `k - 1`).
+- **Notes:** Members of the `prob_<endpoint>` family, validated by `probOutputRegex`; documented here because the suffix direction is load-bearing. **`_ge<k>` is cumulative upwards and `<k>` bare is exact.** The UMSS runs in the clinically intuitive direction -- a HIGHER score is DEEPER sedation, so `prob_umss_ge<k>` rises with exposure -- which is the opposite of MOAA/S, whose cumulative outputs are `prob_moaas_le<k>`. The two scales do not share cutpoints and must not be mapped onto each other. Time-varying, like `prob_moaas*`.
 
 ---
 
@@ -5266,6 +5765,22 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 
 ---
 
+### prob_tol (**canonical probability of tolerance to laryngoscopy**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a sedated subject tolerates laryngoscopy without a response; the model-predicted probability behind the binary observation `tol`.
+- **Source aliases:** `P(Y = 1)` -- Vellinga 2025 main-text equation 3, 'probability of no response, P(Y = 1), to laryngoscopy'.
+- **Example models:** `Vellinga_2025_remimazolam_tol.R` (founding example; `prob_tol = Ca / (1 + Ca)` with `Ca` the remimazolam concentration over a remifentanil-shrunk C50, zero at zero drug).
+- **Notes:** Time-varying, like `prob_moaas<k>`: the driver is an arterial plasma concentration evolving under an ODE, not a landmark exposure metric. The observation is fitted through the complement `p0_tol = 1 - prob_tol` (rxode2 category 1, a response); `p0_tol` is an intermediate and is not registered. See `tol`.
+
+### prob_tots (**canonical probability of tolerance to tetanic stimulation**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a sedated subject tolerates a standardized tetanic electrical stimulus without a response; the model-predicted probability behind the binary observation `tots`.
+- **Source aliases:** `P(Y = 1)` -- Vellinga 2025 main-text equation 3, applied to tetanic stimulation.
+- **Example models:** `Vellinga_2025_remimazolam_tots.R` (founding example; same form as `prob_tol` with its own C50 and remifentanil EC50).
+- **Notes:** Time-varying, as for `prob_tol`. The observation is fitted through `p0_tots = 1 - prob_tots`. See `tots`.
+
+---
+
 ## MBMA placebo / drug arm output compartments
 
 The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for each clinical endpoint. The placebo arm captures the background placebo response; the drug arm carries the drug-driven delta.
@@ -5295,15 +5810,57 @@ The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient develops cytokine release syndrome (CRS) that is managed with corticosteroids, in a static landmark exposure-safety logistic model of a single-infusion cell therapy. Defined by management, not by grade.
 - **Source aliases:** none ("CRS requiring steroids" in the founding paper).
-- **Example models:** `Connarn_2023_idecabtageneVicleucel_crs_corticosteroid.R` (linear logit in the natural log of the ide-cel transgene-level AUC0-28, slope 0.61; KarMMa, 18 events in 125 patients).
+- **Example models:** `Connarn_2023_idecabtageneVicleucel_crs_corticosteroid.R` (linear logit in the natural log of the ide-cel transgene-level AUC0-28, slope 0.61; KarMMa, 18 events in 125 patients)., `Wu_2025_idecabtageneVicleucel_crs_corticosteroid.R` (linear logit in the natural log of the ide-cel expansion rate Cmax/Tmax, slope 0.506; KarMMa-3, 60 events in 220 patients), `Wu_2025_idecabtageneVicleucel_dose_crs_corticosteroid.R` (exploratory dose-response)
 - **Notes:** A probability output in `[0, 1]`; regex-validated, so this entry is documentation rather than a gate. See `prob_crs_tocilizumab` for why a treatment-defined CRS event is its own endpoint; the two overlap and are not competing outcomes.
+
+### prob_crs_anti_il6 (**canonical cytokine-release-syndrome-requiring-anti-IL-6-treatment probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient develops cytokine release syndrome (CRS) that is managed with an anti-IL-6 agent -- tocilizumab (anti-IL-6 receptor) OR siltuximab (anti-IL-6) -- in a static landmark exposure-safety or dose-safety logistic model of a single-infusion cell therapy. Defined by management, not by grade.
+- **Source aliases:** none ("tCRS", "CRS requiring anti-IL6 (i.e., tocilizumab/siltuximab) treatment" in the founding paper).
+- **Example models:** `Wu_2025_idecabtageneVicleucel_crs_anti_il6.R` (linear logit in the natural log of the ide-cel expansion rate Cmax/Tmax, slope 0.6551, with a -0.8765 shift for post-infusion ADA positivity; KarMMa-3, 156 events in 220 patients), `Wu_2025_idecabtageneVicleucel_dose_crs_anti_il6.R` (exploratory dose-response, linear in the infused dose).
+- **Notes:** A probability output in `[0, 1]`; regex-validated, so this entry is documentation rather than a gate. Broader than `prob_crs_tocilizumab` (tocilizumab only), so the two are not interchangeable even though siltuximab use is uncommon in practice; see `prob_crs_tocilizumab` for why a treatment-defined CRS event is its own endpoint. Overlaps `prob_crs_corticosteroid`; the two are not competing outcomes.
 
 ### prob_cr_central (**canonical central-assessment complete-response-or-better probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient achieves a complete response or better (including stringent CR) as adjudicated by an independent central review or response committee, in a static landmark exposure-response logistic model. The complete-response counterpart of `prob_orr_central`.
 - **Source aliases:** none ("CRR", complete response rate, in the founding paper).
-- **Example models:** `Connarn_2023_idecabtageneVicleucel_cr.R` (linear logit in the natural log of the ide-cel transgene-level AUC0-28, slope 0.67, with a -1.68 shift for baseline serum M-protein above 10 g/L; KarMMa Independent Response Committee, IMWG criteria; 41 responders in 125 patients).
+- **Example models:** `Connarn_2023_idecabtageneVicleucel_cr.R` (linear logit in the natural log of the ide-cel transgene-level AUC0-28, slope 0.67, with a -1.68 shift for baseline serum M-protein above 10 g/L; KarMMa Independent Response Committee, IMWG criteria; 41 responders in 125 patients); `Sathe_2025b_sacituzumab_cr.R` (linear, uncentred logit in the average serum concentration of intact sacituzumab govitecan, intercept -8.89 and slope 0.309 per ug/mL; blinded independent central review in metastatic triple-negative breast cancer, 11 complete responders in 277 patients).
 - **Notes:** A probability output in `[0, 1]`; regex-validated, so this entry is documentation rather than a gate. Nested within `prob_orr_central` (every complete responder is an overall responder), so a consumer must not treat the two as competing outcomes; they were fitted as separate models in the founding paper and are not constrained to stay ordered at every exposure and covariate combination. Distinct from `prob_pet_cr` (an imaging-defined complete metabolic response) and `prob_chr` (a complete haematologic response). An investigator-assessed version would be `prob_cr_investigator`.
+
+### prob_cr_investigator (**canonical investigator-assessed complete-response probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient achieves a complete response as assessed by the study investigator, in a static landmark exposure-response logistic model. The investigator-assessed counterpart of `prob_cr_central`, and the complete-response counterpart of `prob_orr_investigator`.
+- **Source aliases:** none ("CRR", INV-assessed complete response rate, in the founding paper).
+- **Example models:** `Li_2025_mosunetuzumab_cr.R` (Emax logistic on the two-cycle mosunetuzumab AUC0-42, maximal response 68.6 percent, E50 9.18 day*ug/mL; relapsed/refractory follicular lymphoma, International Harmonization Project criteria), `Li_2025_mosunetuzumab_cr_cov.R` (its exploratory covariate version).
+- **Notes:** A probability output in `[0, 1]`; regex-validated, so this entry is documentation rather than a gate. Nested within `prob_orr_investigator` (every complete responder is an objective responder); fitted as separate models, so the pair is not constrained to stay ordered at every exposure. Not interchangeable with `prob_cr_central`: Li 2025 used investigator assessment because it covered more dose groups, while noting high concordance with the independent review facility.
+
+### prob_crs_grade2 (**canonical grade >= 2 cytokine-release-syndrome probability output over a multi-cycle window**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient has at least one cytokine release syndrome (CRS) event of grade 2 or higher over a stated multi-cycle window (in the founding paper the first two 21-day cycles), in a static landmark exposure-safety logistic model. The grading scale (ASTCT consensus or Lee 2014) is stated per model.
+- **Source aliases:** none ("Grade >= 2 CRS" in the founding paper).
+- **Example models:** `Li_2025_mosunetuzumab_crs_groupa_astct.R`, `Li_2025_mosunetuzumab_crs_groupa_lee.R`, `Li_2025_mosunetuzumab_crs_groupb_astct.R`, `Li_2025_mosunetuzumab_crs_groupb_lee.R` (linear logistic on the maximum CD20 receptor occupancy over days 0-42, `ROMAX`, fitted separately for fixed-dose Group A and step-up-dose Group B under each grading scale), `Li_2025_mosunetuzumab_crs_cov.R` (Group B, adding age > 64 years and 'other' histology).
+- **Notes:** A probability output in `[0, 1]`; regex-validated, so this entry is documentation rather than a gate. Scored over the whole window, not per dose event: the per-dose-event endpoints are `prob_crs_stepup1_grade2`, `prob_crs_stepup2_grade2` and `prob_crs_fulldose1_grade2` (and the any-grade `prob_crs_stepup1`), which must not be pooled with this one. ASTCT and Lee 2014 grades of the same patient can differ, so models fitted under different scales are different endpoints even though they share this output name; the model description names the scale.
+
+### prob_crs_stepup1_grade2 (**canonical grade >= 2 cytokine-release-syndrome-after-the-first-step-up-dose probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) of grade >= 2 CRS within the dosing window of the FIRST step-up dose of a T-cell-engaging bispecific regimen (for mosunetuzumab, the Cycle 1 Day 1 dose of 0.4-1 mg, up to the Day 8 dose), in a static per-dose-window exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Li_2025_mosunetuzumab_crs_stepup1.R` (linear logistic on the maximum CD20 receptor occupancy within the window, ASTCT grading; coefficients digitised from Li 2025 Figure 3a).
+- **Notes:** The grade >= 2 variant of `prob_crs_stepup1`, named on the `_grade2` pattern that entry anticipates. Sibling of `prob_crs_stepup2_grade2` and `prob_crs_fulldose1_grade2`; the three are per-dose-window endpoints whose exposure-response curves shift to the right with successive doses (CRS desensitisation), so they are not interchangeable.
+
+### prob_crs_stepup2_grade2 (**canonical grade >= 2 cytokine-release-syndrome-after-the-second-step-up-dose probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) of grade >= 2 CRS within the dosing window of the SECOND step-up dose (for mosunetuzumab, the Cycle 1 Day 8 dose of 1-2 mg, up to the Day 15 dose), in a static per-dose-window exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Li_2025_mosunetuzumab_crs_stepup2.R` (linear logistic on the maximum CD20 receptor occupancy within the window, ASTCT grading; the fitted slope is negative; coefficients digitised from Li 2025 Figure 3a).
+- **Notes:** See `prob_crs_stepup1_grade2`.
+
+### prob_crs_fulldose1_grade2 (**canonical grade >= 2 cytokine-release-syndrome-after-the-first-full-dose probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) of grade >= 2 CRS within the dosing window of the FIRST FULL (post-step-up) dose (for mosunetuzumab, the Cycle 1 Day 15 dose of 2.8-60 mg, up to the Cycle 2 Day 1 dose), in a static per-dose-window exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Li_2025_mosunetuzumab_crs_fulldose1.R` (linear logistic on the maximum CD20 receptor occupancy within the window, ASTCT grading; coefficients digitised from Li 2025 Figure 3a).
+- **Notes:** Named on the `fulldose1` pattern anticipated in the `prob_crs_stepup1` entry. See `prob_crs_stepup1_grade2`.
 
 ### prob_hb_increase_1g (**canonical probability of a >= 1 g/dL hemoglobin increase output**)
 - **Type:** compartment
@@ -5333,11 +5890,18 @@ The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for
 - **Example models:** `Quintairos_2021_kidneyTransplantRejection.R` (founding example; logit = -5.89 + 3.51 * `MIR155_URINE`, urinary-pellet miR155-5p relative expression; adult de novo kidney recipients, visits at week 1 and months 1, 2, 3 and 6; 8 events in 183 visit records from 58 patients).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape, validated by `conv$probOutputRegex`; this entry documents what the endpoint means. The window is the interval to the next scheduled visit, so it is not a fixed duration: in the founding study it runs from about 3 weeks (week 1 to month 1) to 3 months (month 3 to month 6). A probability over a fixed landmark (for example "rejection by month 12") or a time-to-rejection hazard is a different quantity and needs its own name. The founding model has no drug-exposure term: tacrolimus and mycophenolic acid exposures were tested and not retained, which the authors attribute to concentration-guided dosing. Antibody-mediated rejection, or a rejection diagnosed clinically without biopsy, is a different endpoint (append a qualifier such as `_abmr` or `_clinical`).
 
+### prob_sri (**canonical landmark SLE Responder Index response probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient with systemic lupus erythematosus is an SLE Responder Index (SRI-4) responder at a single landmark assessment (Week 52 in the founding model). SRI response is the composite of a >= 4-point SELENA-SLEDAI reduction, no new BILAG A or more than one new BILAG B organ score, and no worsening (< 0.3-point increase) in the physician's global assessment.
+- **Source aliases:** "SRI response at Week 52", "probability of an SRI response" (Wu 2025).
+- **Example models:** `Wu_2025_belimumab_sri.R` (belimumab; logistic Emax of the steady-state average concentration `CAV` with placebo-effect shifts for study, race and baseline SELENA-SLEDAI >= 10).
+- **Notes:** A probability, not a measured score; carries a placeholder additive residual because the source likelihood is Bernoulli. Distinct from the disease-activity score `SCORE_SLEDAI` (a covariate) and from other SLE response composites (BICLA, LLDAS), which would take their own `prob_<endpoint>` names.
+
 ### prob_ild (**canonical interstitial-lung-disease adverse-event probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences interstitial lung disease or an ILD-like event (pneumonitis, acute interstitial pneumonitis, alveolitis, diffuse alveolar damage, idiopathic pulmonary fibrosis, pulmonary toxicity, pulmonary fibrosis and related terms) during treatment, in a static landmark exposure-safety logistic model.
 - **Source aliases:** none.
-- **Example models:** `Johnson_2024_osimertinib_ild_osimertinib.R` (penalized logistic regression on the natural log of the osimertinib AUCss in nM*h, with Japanese and Asian non-Japanese race on the intercept; Japanese patients carry about three times the non-Asian probability at the same exposure), `Johnson_2024_osimertinib_ild_az5104.R` (the same model driven by the AZ5104 metabolite AUCss).
+- **Example models:** `Johnson_2024_osimertinib_ild_osimertinib.R` (penalized logistic regression on the natural log of the osimertinib AUCss in nM*h, with Japanese and Asian non-Japanese race on the intercept; Japanese patients carry about three times the non-Asian probability at the same exposure), `Johnson_2024_osimertinib_ild_az5104.R` (the same model driven by the AZ5104 metabolite AUCss), `Li_2025_patritumabDeruxtecan_ild.R` (patritumab deruxtecan; NOT a static landmark probability but the CUMULATIVE probability of a first adjudicated drug-related ILD event by time t, 1 - exp(-cumhaz), from a discrete-time per-cycle logit hazard driven by the cycle-varying anti-HER3-ac-DXd Cmax).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape, validated by `conv$probOutputRegex`; this entry documents what the endpoint means. The endpoint is a GROUPED adverse-event definition, any grade, investigator-reported -- not a radiological score or a measured lung-function state (cf. `fvcpp`), so it must not be read as the probability of a lung-function decline.
 
 ### prob_lvef_decrease (**canonical left-ventricular-ejection-fraction-decrease probability output**)
@@ -5346,6 +5910,20 @@ The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for
 - **Source aliases:** none.
 - **Example models:** `Johnson_2024_osimertinib_lvef_osimertinib.R` (penalized logistic regression on the natural log of the osimertinib AUCss in nM*h plus baseline LVEF in percent), `Johnson_2024_osimertinib_lvef_az5104.R` (the same model driven by the AZ5104 metabolite AUCss).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape (the `_decrease` suffix as in `prob_anc_decrease` / `prob_plt_decrease`). The event is a threshold crossing defined from serial echocardiography or MUGA LVEF values, not a heart-failure diagnosis. Distinct from the `lvef` PD output, which carries the LVEF value itself through time; this is the probability of crossing the 10-point / below-50% threshold, with no time dimension.
+
+### prob_pfs_12mo (**canonical 12-month progression-free-survival landmark probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient is alive and free of disease progression at 12 months, evaluated from a proportional-hazards model as `exp(-H0(12) * hr)`, where `hr` is the subject's relative hazard and `H0(12)` the baseline cumulative hazard at 12 months.
+- **Source aliases:** none ('probability of PFS at 12 months' in the founding paper).
+- **Example models:** `Sathe_2025b_sacituzumab_pfs.R` (Cox exposure-efficacy model for sacituzumab govitecan in metastatic triple-negative breast cancer; total-antibody average concentration and a four-level prior-treatment factor on the log hazard; the 12-month baseline cumulative hazard 3.43 is back-solved from the eight printed model-predicted probabilities of Supplementary Table S11 -- founding example).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape with the landmark time as a suffix. A Cox fit leaves the baseline hazard nonparametric, so a library model can expose a survival probability only at a landmark where the source printed predictions to back-solve `H0`; the value is valid at that time only and must not be read as a survivor function. Models that publish only coefficients (for example `Chan_2025_atezolizumab_pfs.R`) return the relative hazard alone. A different landmark takes a different suffix (`prob_pfs_6mo`). Distinct from a parametric survivor function evaluated over time.
+
+### prob_os_12mo (**canonical 12-month overall-survival landmark probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient is alive at 12 months, evaluated from a proportional-hazards model as `exp(-H0(12) * hr)`. The overall-survival sibling of `prob_pfs_12mo`.
+- **Source aliases:** none ('probability of OS at 12 months' in the founding paper).
+- **Example models:** `Sathe_2025b_sacituzumab_os.R` (Cox exposure-efficacy model for sacituzumab govitecan in metastatic triple-negative breast cancer; total-antibody average concentration and baseline LDH on the log hazard; the 12-month baseline cumulative hazard 3.31 is back-solved from the median-LDH rows of Supplementary Table S12 -- founding example).
+- **Notes:** See `prob_pfs_12mo` for the landmark-only caveat. Every patient alive and progression-free at 12 months is alive, so for one population the overall-survival probability is at least the progression-free one; models fitted separately are not constrained to keep that order across all covariate settings.
 
 ### fpg_placebo (**canonical fasting plasma glucose placebo arm**)
 - **Type:** compartment
@@ -5372,6 +5950,20 @@ The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for
 - **Example models:** `Li_2015_taspoglutide_mbma.R`.
 
 ---
+
+### prob_fvcpp_incr2p5 (**canonical probability of a ppFVC increase of at least 2.5% output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient's percent-predicted FVC rises by at least 2.5% from baseline at the landmark visit, in a static landmark exposure-response logistic model. Walker 2023 calls it the ppFVC minimal clinically important difference, a threshold borrowed from systemic-sclerosis-associated ILD because no validated ppFVC MCID exists for sarcoidosis.
+- **Source aliases:** `ppFVC Increase>2.5%`, `ppFVC MCID` -- Walker 2023 Figure 9 and Results 3.3.
+- **Example models:** `Walker_2023_efzofitimod_fvcpp_mcid.R` (founding example; logistic regression on the time-averaged efzofitimod AUC from Day 1 to Week 24 and baseline `FVC_PCTPRED`, Week-24 landmark).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the threshold is spelled into the name (`incr2p5`) because ppFVC responder thresholds vary between indications (2.5%, 5% and 10% are all in use), so a model using another threshold registers its own sibling rather than reusing this one. The source does not say whether the 2.5% is a relative change or 2.5 percentage points; record the reading in each model.
+
+### prob_ksqlung_mcid (**canonical probability of a KSQ-Lung improvement of at least 4 points output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient's King's Sarcoidosis Questionnaire-Lung score improves by at least 4 points from baseline (the validated sarcoidosis MCID, Baughman 2021) at the landmark visit, in a static landmark exposure-response logistic model.
+- **Source aliases:** `MCIDs in KSQ-Lung` -- Walker 2023 Figure 9.
+- **Example models:** `Walker_2023_efzofitimod_ksqlung_mcid.R` (founding example; logistic regression on the time-averaged efzofitimod AUC from Day 1 to Week 24 and `KSQ_LUNG_BL`, Week-24 landmark).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. `mcid` here means the validated 4-point KSQ-Lung threshold; the absolute score is the `ksqlung` output and the baseline is the covariate `KSQ_LUNG_BL`.
 
 ## Placebo kinetic-system compartments
 
@@ -5552,8 +6144,73 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
 - **Role:** Docetaxel drug-name suffix for combination K-PD compartments and rate constants (`depot_kpd_docetaxel`, `lkel_docetaxel`, `kel_docetaxel`) and for the paired drug-effect parameters (`lkkill_docetaxel`, `lres_docetaxel`).
 - **Source aliases:**
   - `DOCE` / `KD1` / `DM1` / `KP1` -- Bruno 2012 NONMEM `$MODEL` compartment label and `$PK` parameter names.
-- **Example models:** `Bruno_2012_capecitabine_docetaxel_tgi.R` (docetaxel as one of two additive K-PD drug-effect arms of a tumor-growth-inhibition model).
+- **Example models:** `Bruno_2012_capecitabine_docetaxel_tgi.R` (docetaxel as one of two additive K-PD drug-effect arms of a tumor-growth-inhibition model), `Schneider_2025_bevacizumab_nsclc_tgi.R` (docetaxel as the second member of the microtubule mechanism-of-action group, weighted relative to paclitaxel, with two-compartment PK and the cumulative-exposure accumulator `auc_central_docetaxel`).
 - **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `olaparib` / `ethinylestradiol`. Docetaxel already appears in the library as a parent analyte with bare canonical names (`Koolen_2010_docetaxel.R`, `Ozawa_2007_docetaxel.R`, `Puisset_2007_docetaxel.R`, `Janssen_2023_docetaxel.R`, `Rietveld_2025_docetaxel.R`, `Netterberg_2017_docetaxel.R`); this suffix is for combination models in which neither drug can claim the bare names.
+
+### bevacizumab (**canonical bevacizumab sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Bevacizumab drug-name suffix for multi-drug combination models in which no single agent is the parent, covering its PK cascade (`central_bevacizumab`, `peripheral1_bevacizumab`), its cumulative-exposure accumulator `auc_central_bevacizumab` and the associated parameters (`lcl_bevacizumab`, `lvc_bevacizumab`, `Cc_bevacizumab`, drug-effect weight `lw_bevacizumab`, resistance rate `lres_bevacizumab`).
+- **Source aliases:**
+  - `bev` (deposited Mlxtran code: `cc_bev`, `cl_bev`, `v1_bev`, `k12_bev`, `k21_bev`, `w_bev`, `L_bev`).
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (bevacizumab as the anti-VEGF backbone of every regimen: its own two-compartment PK, a tau-delayed copy of that PK driving vascular normalisation, a direct anti-VEGF injury effect and an AUC-driven resistance term).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models. A standalone model of this drug keeps the bare canonical names.
+
+### cisplatin (**canonical cisplatin sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Cisplatin drug-name suffix for multi-drug combination models in which no single agent is the parent, covering its PK cascade (`central_cisplatin`, `peripheral1_cisplatin`), its cumulative-exposure accumulator `auc_central_cisplatin` and the associated parameters (`lcl_cisplatin`, `lvc_cisplatin`, `Cc_cisplatin`, drug-effect weight `lw_cisplatin`, resistance rate `lres_cisplatin`).
+- **Source aliases:**
+  - `cis` (deposited Mlxtran code: `cc_cis`, `cl_cis`, `v1_cis`, `q_cis`, `v2_cis`, `w_cis_rel`, `L_cis_rel`).
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (cisplatin as the reference agent of the platinum mechanism-of-action group, with two-compartment PK and an AUC-driven resistance term).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models. A standalone model of this drug keeps the bare canonical names.
+
+### pemetrexed (**canonical pemetrexed sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Pemetrexed drug-name suffix for multi-drug combination models in which no single agent is the parent, covering its PK cascade (`central_pemetrexed`, `peripheral1_pemetrexed`), its cumulative-exposure accumulator `auc_central_pemetrexed` and the associated parameters (`lcl_pemetrexed`, `lvc_pemetrexed`, `Cc_pemetrexed`, drug-effect weight `lw_pemetrexed`, resistance rate `lres_pemetrexed`).
+- **Source aliases:**
+  - `pem` (deposited Mlxtran code: `cc_pem`, `cl_pem`, `v1_pem`, `q_pem`, `v2_pem`, `w_pem`, `L_pem`).
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (pemetrexed as the antifolate arm, with two-compartment PK and an AUC-driven resistance term).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models. A standalone model of this drug keeps the bare canonical names.
+
+### drozitumab (**canonical drozitumab (PRO95780, apomab) sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Drozitumab (PRO95780, apomab) drug-name suffix for multi-drug combination models in which no single agent is the parent, covering its PK cascade (`central_drozitumab`, `peripheral1_drozitumab`), its cumulative-exposure accumulator `auc_central_drozitumab` and the associated parameters (`lcl_drozitumab`, `lvc_drozitumab`, `Cc_drozitumab`, drug-effect weight `lw_drozitumab`, resistance rate `lres_drozitumab`).
+- **Source aliases:**
+  - `apo` / `apomab` / `PRO95780` (deposited Mlxtran code: `cc_apo`, `cl_apo`, `v1_apo`, `q_apo`, `v2_apo`, `w_apo`, `L_apo`; the paper's text and tables call the agent apomab).
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (drozitumab as the death-receptor-5 agonist arm, with two-compartment PK and an AUC-driven resistance term).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models. A standalone model of this drug keeps the bare canonical names.
+
+### paclitaxel (**canonical paclitaxel sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Paclitaxel drug-name suffix for multi-drug combination models in which no single agent is the parent, covering its PK cascade (`central_paclitaxel`, `peripheral1_paclitaxel`, `peripheral2_paclitaxel`), its cumulative-exposure accumulator `auc_central_paclitaxel` and the associated parameters (`lcl_paclitaxel`, `lvc_paclitaxel`, `Cc_paclitaxel`, drug-effect weight `lw_paclitaxel`, resistance rate `lres_paclitaxel`).
+- **Source aliases:**
+  - `pac` (deposited Mlxtran code: `cc_pac`, `cl_pac`, `v1_pac`, `q1_pac`, `v2_pac`, `q2_pac`, `v3_pac`, `w_pac_rel`, `L_pac_rel`).
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (paclitaxel as the reference agent of the microtubule mechanism-of-action group, with three-compartment PK and an AUC-driven resistance term).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models. A standalone model of this drug keeps the bare canonical names.
+
+### carboplatin (**canonical carboplatin sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Carboplatin drug-name suffix for multi-drug combination models that carry carboplatin PK as its own states, whether no single agent is the parent or a partner drug holds the bare canonical names. Covers its PK cascade (`central_carboplatin`, `peripheral1_carboplatin`), its concentration `Cc_carboplatin`, its cumulative-exposure accumulator `auc_central_carboplatin` and the associated parameters (`lcl_carboplatin`, `lvc_carboplatin`, `lq_carboplatin`, `lvp_carboplatin`, drug-effect weight `lw_carboplatin`, resistance rate `lres_carboplatin`, drug-effect slope `lslope_carboplatin` and its `etalslope_carboplatin`).
+- **Source aliases:**
+  - `car` (deposited Mlxtran code: `cc_car`, `cl_car`, `v1_car`, `q_car`, `v2_car`, `w_car`, `L_car`).
+  - `central_carb` / `Periph_carb` / `SLOPC` / `SLOPEC` -- Salem 2023 Appendix S1 and Table S1.
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (carboplatin as the second member of the platinum mechanism-of-action group, weighted relative to cisplatin, with two-compartment PK), `Salem_2023_paclitaxel.R` (doi:10.1002/psp4.12963; fixed two-compartment carboplatin PK whose concentration inhibits neutrophil proliferation through a linear slope multiplied with the paclitaxel effect in a Friberg myelosuppression chain).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models; the source abbreviations `car` and `carb` are not used (`carb` would read as carbidopa or carbohydrate, and is distinct from the `carbidopa` suffix). A carboplatin-only model keeps the bare canonical names (`central`, `lcl`, `Cc`) as in `Ekhart_2008_carboplatin.R`; the suffix is only for a combination model. Ratified by the maintainers 2026-11-06 with the Salem 2023 extraction.
+
+### gemcitabine (**canonical gemcitabine sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Gemcitabine drug-name suffix for multi-drug combination models in which no single agent is the parent, covering its PK cascade (`central_gemcitabine`, `peripheral1_gemcitabine`), its cumulative-exposure accumulator `auc_central_gemcitabine` and the associated parameters (`lcl_gemcitabine`, `lvc_gemcitabine`, `Cc_gemcitabine`, drug-effect weight `lw_gemcitabine`, resistance rate `lres_gemcitabine`).
+- **Source aliases:**
+  - `gem` (deposited Mlxtran code: `cc_gem`, `cl_gem`, `v1_gem`, `q_gem`, `v2_gem`, `w_gem`, `L_gem`).
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (gemcitabine as the nucleoside-analog arm, with two-compartment PK and an AUC-driven resistance term).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models. A standalone model of this drug keeps the bare canonical names.
+
+### erlotinib (**canonical erlotinib sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Erlotinib drug-name suffix for multi-drug combination models in which no single agent is the parent, covering its PK cascade (`central_erlotinib`, `peripheral1_erlotinib`, `depot_erlotinib`), its cumulative-exposure accumulator `auc_central_erlotinib` and the associated parameters (`lcl_erlotinib`, `lvc_erlotinib`, `Cc_erlotinib`, drug-effect weight `lw_erlotinib`, resistance rate `lres_erlotinib`).
+- **Source aliases:**
+  - `erl` (deposited Mlxtran code: `cc_erl`, `cl_erl`, `v1_erl`, `ka_erl`, `F_erl`, `w_erl`, `L_erl`).
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (erlotinib as the oral EGFR-inhibitor arm, with one-compartment first-order-absorption PK and an AUC-driven resistance term).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models. A standalone model of this drug keeps the bare canonical names.
 
 ### olaparib (**canonical olaparib sibling-drug suffix**)
 - **Type:** metabolite-suffix
@@ -5603,6 +6260,13 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
 - **Source aliases:** `gaba` -- Oggianu 2023 Supplementary Table S6 column labels.
 - **Example models:** `Oggianu_2023_trazodone_gabapentin_mouse.R` (gabapentin given intraperitoneally alongside oral trazodone in the mouse acetic-acid writhing test; each drug's molar plasma concentration removes the nociceptive stimulus, with a concentration-product synergy term).
 - **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `olaparib` / `osimertinib` for whole co-administered agents. Trazodone keeps the bare canonical names because it is the parent drug of the combination; standalone gabapentin models (`AlZubaydi_2024_gabapentin.R`, `Silvola_2025_gabapentin_mpr.R`) keep the bare names because gabapentin is the parent there.
+
+### calycosin (**canonical calycosin sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Calycosin drug-name suffix for the non-parent arm of hydroxysafflor yellow A + calycosin combination models, covering its plasma state (`central_calycosin`), its per-biomarker effect compartments (`effect_<biomarker>_calycosin`), the associated parameters (`lkel_calycosin`, `ks_calycosin`, `lc0_calycosin`, `lke0_<biomarker>_calycosin`, `lec50_<biomarker>_calycosin`, `lhill_<biomarker>_calycosin`, `lemax_<biomarker>_calycosin`), the plasma output `Cc_calycosin` and its residual SD `addSd_calycosin`.
+- **Source aliases:** `CA` -- Sun 2025 notation.
+- **Example models:** `Sun_2025_hydroxysafflorYellowA_calycosin_rat.R` (calycosin, the isoflavone of Astragali Radix, co-injected intravenously with hydroxysafflor yellow A in MCAO rats; each drug's plasma concentration raises the other's elimination rate, and both drive three plasma biomarkers through independent effect compartments).
+- **Notes:** Full name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `olaparib` / `gabapentin` for whole co-administered agents. Calycosin is a natural product without an INN, so its common chemical name is used. Hydroxysafflor yellow A keeps the bare canonical names because it is listed first and carries the larger effect weights in the source paper.
 
 ### dox (**canonical doxorubicin drug-name suffix**)
 - **Type:** metabolite-suffix
@@ -5687,6 +6351,22 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
   - `EZE`, `EZT`, `SCH 58235`, `Zetia`, `Ezetrol` -- generic spellings and the development code.
 - **Example models:** `An_2025_rosuvastatin_ezetimibe.R` (ezetimibe co-administered with rosuvastatin; four-compartment PK with intermittent gallbladder emptying driving the second arm of a Bliss-independent inhibition of LDL-C production).
 - **Notes:** Full INN name (lowercase), per the `sunitinib` / `irinotecan` / `olaparib` / `ethinylestradiol` precedent; see the `rosuvastatin` entry for why both arms of An 2025 are suffixed rather than one taking the bare names. The suffix names the ANALYTE the source papers measure, which for ezetimibe is conventionally "total ezetimibe" -- unchanged ezetimibe plus its phenolic glucuronide, the glucuronide accounting for 80-90% of the plasma total and having comparable potency. A future model that resolves the parent and the glucuronide as separate ODE states should register a distinct glucuronide metabolite suffix rather than overloading this one, and should say in its `description` which analyte each state carries.
+
+### mefloquine (**canonical mefloquine sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Mefloquine drug-name suffix for the long-acting partner of artemisinin-based antimalarial combination models, covering its PK cascade (`depot_mefloquine`, `central_mefloquine`, `peripheral1_mefloquine`), the associated PK parameters (`lka_mefloquine`, `lcl_mefloquine`, `lvc_mefloquine`, `lvp_mefloquine`, `lq_mefloquine`), the PD potency parameter of the mefloquine-driven effect (`lic50_mefloquine`), and the multi-output observation `Cc_mefloquine` with its residual SD (`propSd_mefloquine`).
+- **Source aliases:**
+  - `MQ`, `MFQ`, `A` -- Mim 2026 abbreviation (`IC50 (MQ)`) and Figure 5 subscript (`KaA`, `ClA`, `Cc_A`); generic spellings.
+- **Example models:** `Mim_2026_mefloquine_artesunate_mouse.R` (P. berghei-infected mice; two-compartment oral PK driving one arm of a capped additive inhibition of parasite production in a shared turnover model of percent parasitemia).
+- **Notes:** Full INN name (lowercase), per the `rosuvastatin` / `ezetimibe` precedent for a symmetric two-drug PD model in which neither drug can claim the bare canonical names. The registry's standalone mefloquine popPK models (`Guidi_2019_mefloquine.R`, `Hoglund_2018_mefloquine.R`, `Ramharter_2019_mefloquine.R`, `Simpson_2013_mefloquine.R`) correctly use bare canonical names because mefloquine is their sole analyte; this suffix must not be retrofitted onto them.
+
+### artesunate (**canonical artesunate sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Artesunate drug-name suffix for the fast-acting artemisinin arm of antimalarial combination models, covering its PK cascade (`depot_artesunate`, `central_artesunate`, `peripheral1_artesunate`), the associated PK parameters (`lka_artesunate`, `lcl_artesunate`, `lvc_artesunate`, `lvp_artesunate`, `lq_artesunate`), the PD potency parameter of the artesunate-driven effect (`lic50_artesunate`), and the multi-output observation `Cc_artesunate` with its residual SD (`propSd_artesunate`).
+- **Source aliases:**
+  - `AS`, `ARS`, `B` -- Mim 2026 abbreviation (`IC50 (AS)`) and Figure 5 subscript (`KaB`, `ClB`, `Cc_B`); generic spellings.
+- **Example models:** `Mim_2026_mefloquine_artesunate_mouse.R` (P. berghei-infected mice; two-compartment oral PK of the parent ester, measured by derivatisation HPLC, driving the second arm of the parasite-production inhibition).
+- **Notes:** Full INN name (lowercase); see the `mefloquine` entry for why both arms are suffixed. The suffix names the parent ester artesunate. Its active metabolite dihydroartemisinin keeps the separate `dihydroart` suffix, so a future model that carries both artesunate and dihydroartemisinin alongside a partner drug composes `central_artesunate` with `central_dihydroart`. The standalone artesunate models (`Guidi_2019_artesunate.R`, `Hendriksen_2013_artesunate.R`, and others) use bare canonical names and must not be retrofitted.
 
 ---
 
@@ -5939,6 +6619,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** ADC popPK extractions with Me-DM4 metabolite.
 
+### afhpa (**canonical auristatin F-hydroxypropylamide (AF-HPA) payload suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Unconjugated (released) auristatin F-hydroxypropylamide (AF-HPA), the auristatin payload of the Dolaflexin antibody-drug conjugate platform (upifitamab rilsodotin), released from the conjugate by hydrolysis of its ester-based linker.
+- **Source aliases:**
+  - `unconjugated AF-HPA` -- Kumar 2025 throughout.
+- **Example models:** `Kumar_2025_upifitamabRilsodotin.R` (founding example; Simcyp ADC PBPK reduced to a 2-compartment conjugated-payload model releasing `fm_afhpa` 0.525 of its clearance into a 1-compartment free-payload model).
+- **Notes:** Named for the released payload, not the conjugate, the same orientation as `rez` and `dxd`. In Kumar 2025 the unsuffixed states hold *conjugated AF-HPA*, i.e. the ADC dose expressed as payload equivalents (molecular weight 803 for both species), rather than the antibody, so payload release is a 1:1 mass transfer with no drug-antibody-ratio factor in the model. Distinct from AF (auristatin F), MMAF-HPA and MMAF, the downstream AF-HPA metabolites, which would each take their own suffix.
+
 ### rez (**canonical rezetecan payload suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Rezetecan (topoisomerase-I-inhibitor, exatecan-derivative) ADC payload species suffix.
@@ -6154,13 +6842,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Type:** metabolite-suffix
 - **Role:** Generic M1 metabolite suffix used by parent + metabolite popPK extractions in which the source paper names the major active metabolite simply "M1" without supplying a chemical name. Each model file's `description` / `reference` text identifies the specific compound; the `m1` suffix is the shared notational token. Disambiguation by drug context: in `Lehr_2010_tesofensine.R`, M1 is the major CYP3A4-formed metabolite of tesofensine.
 - **Source aliases:** none.
-- **Example models:** `Lehr_2010_tesofensine.R` (tesofensine M1, CYP3A4-formed, in vivo five-fold lower dopamine-reuptake potency than parent per Lehr 2010 Methods reference 17), `Michalickova_2020_riociguat.R` (riociguat M1 = desmethylriociguat, the pharmacologically active N-demethylated metabolite; `central_m1`, `lcl_m1`, `propSd_m1`), `Chauzy_2022_ceftaroline.R` (ceftaroline M-1, the microbiologically inactive open-beta-lactam-ring hydrolysis product of ceftaroline, which the paper names 'ceftaroline M-1'; `central_m1` / `peripheral1_m1` hold amount/fm with apparent /fm disposition parameters `lcl_m1`, `lvc_m1`, `lq_m1`, `lvp_m1`; here the parent is the prodrug ceftaroline fosamil in `central` and the active moiety carries the `ceftaroline` suffix).
+- **Example models:** `Lehr_2010_tesofensine.R` (tesofensine M1, CYP3A4-formed, in vivo five-fold lower dopamine-reuptake potency than parent per Lehr 2010 Methods reference 17), `Michalickova_2020_riociguat.R` (riociguat M1 = desmethylriociguat, the pharmacologically active N-demethylated metabolite; `central_m1`, `lcl_m1`, `propSd_m1`), `Chauzy_2022_ceftaroline.R` (ceftaroline M-1, the microbiologically inactive open-beta-lactam-ring hydrolysis product of ceftaroline, which the paper names 'ceftaroline M-1'; `central_m1` / `peripheral1_m1` hold amount/fm with apparent /fm disposition parameters `lcl_m1`, `lvc_m1`, `lq_m1`, `lvp_m1`; here the parent is the prodrug ceftaroline fosamil in `central` and the active moiety carries the `ceftaroline` suffix), `Elias_2025_glimepiride_pbpk.R` (glimepiride M1 = cyclohexylhydroxymethyl-glimepiride, the CYP2C9-formed active metabolite; whole-body PBPK states `venous_m1`, `liver_m1`, `urine_m1`, ... and output `Cc_m1`).
 
 ### m2 (**canonical paper-named M2 metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** A source paper's "M2" metabolite, whatever chemical entity that designation names in the paper at hand, following the same generic convention as `m1`, `m3`, `m4` and `m8`. Used as the metabolite suffix on the `central_m2` compartment, the `lcl_m2` / `lvc_m2` parameters, the `Cc_m2` observation and the `propSd_m2` / `addSd_m2` residuals. Drug contexts registered so far: in `Svensson_2013_bedaquiline.R` and `Svensson_2016_bedaquiline.R`, M2 is N-desmethyl-bedaquiline, the CYP3A4-mediated demethylation product of bedaquiline; in `Keunecke_2020_regorafenib_phase1.R` and `Keunecke_2020_regorafenib_phase3.R`, M-2 is regorafenib N-oxide (BAY 75-7495), a pharmacologically active metabolite formed pre-systemically that reaches concentrations close to the parent at steady state.
 - **Source aliases:** `M-2` -- the hyphenated form used throughout the regorafenib literature and in Keunecke 2020.
-- **Example models:** `Svensson_2013_bedaquiline.R`, `Svensson_2016_bedaquiline.R` (DDMODEL00000219), `Keunecke_2020_regorafenib_phase1.R`, `Keunecke_2020_regorafenib_phase3.R` (doi:10.1111/bcp.14334).
+- **Example models:** `Svensson_2013_bedaquiline.R`, `Svensson_2016_bedaquiline.R` (DDMODEL00000219), `Keunecke_2020_regorafenib_phase1.R`, `Keunecke_2020_regorafenib_phase3.R` (doi:10.1111/bcp.14334), `Elias_2025_glimepiride_pbpk.R` (glimepiride M2 = carboxy-glimepiride, formed from M1 in the liver; whole-body PBPK states `venous_m2`, `liver_m2`, `urine_m2`, ... and output `Cc_m2`).
 - **Notes:** Because `M<n>` designations are per-programme and carry no cross-paper chemical meaning, this token is shared by unrelated metabolites of unrelated drugs; the specific entity is recorded per model in the model file's `description` and `compartmentData`, not in the suffix. Generalised from the bedaquiline-only entry on 2026-09-02 alongside the Keunecke 2020 regorafenib extraction, matching the wording already used for `m1`, `m3`, `m4` and `m8`.
 
 ### m5 (**canonical paper-named M5 metabolite suffix**)
@@ -7224,7 +7912,7 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Role:** Tenofovir diphosphate active intracellular metabolite suffix.
 - **Source aliases:**
   - `TFV-DP` -- the standard antiretroviral-literature abbreviation.
-- **Example models:** `Chen_2016_tenofovir_emtricitabine.R` (bare `tfvdp` state, declared through that file's `paper_specific_compartments` escape hatch); `Yu_2026_tenofovir.R` (`pbmc_tfvdp` and `rbc_tfvdp`, one per assayed cell type); `Burns_2015_tenofovir.R` (`pbmc_tfvdp`, with `kmet_tfvdp` / `kel_tfvdp` naming the formation and elimination rate constants).
+- **Example models:** `Chen_2016_tenofovir_emtricitabine.R` (bare `tfvdp` state, declared through that file's `paper_specific_compartments` escape hatch); `Yu_2026_tenofovir.R` (`pbmc_tfvdp` and `rbc_tfvdp`, one per assayed cell type); `Burns_2015_tenofovir.R` (`pbmc_tfvdp`, with `kmet_tfvdp` / `kel_tfvdp` naming the formation and elimination rate constants); `Leung_2023_tenofovir.R` (`vagina_tfvdp`, `cervix_tfvdp`, `rectum_tfvdp`, one per mucosal tissue).
 - **Notes:** Prefer the matrix-qualified `pbmc_tfvdp` / `rbc_tfvdp` form over the bare `tfvdp`: tenofovir diphosphate is assayed in more than one cell type, the two compartments have materially different kinetics, and `pbmc` / `rbc_<analyte>` are themselves canonical so the qualified name validates natively without a per-model escape hatch. The paired rate-constant names take a SINGLE suffix (`kmet_tfvdp`, `kel_tfvdp`) rather than repeating the matrix, because `.isPkParam()` strips only one suffix and a two-layer `kel_pbmc_tfvdp` would pass compartment validation but fail parameter validation.
 
 ### faraatp (**canonical fludarabine triphosphate suffix**)
@@ -7239,7 +7927,7 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Type:** metabolite-suffix
 - **Role:** Emtricitabine triphosphate active intracellular metabolite suffix.
 - **Source aliases:** none.
-- **Example models:** `Chen_2016_tenofovir_emtricitabine.R`.
+- **Example models:** `Chen_2016_tenofovir_emtricitabine.R`, `Leung_2023_emtricitabine.R` (`vagina_ftctp`, `cervix_ftctp`, `rectum_ftctp`, one per mucosal tissue).
 
 ### snk (**canonical S-norketamine suffix**)
 - **Type:** metabolite-suffix
@@ -7484,6 +8172,13 @@ Favie 2020 (doi:10.1002/cpt.1917) fits seven drugs and five metabolites from the
 - **Source aliases:** none.
 - **Example models:** `Favie_2020_neonatalHypothermia.R`.
 
+### remifentanil (**canonical remifentanil sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Remifentanil as a co-administered, non-parent drug whose own pharmacokinetics are carried as ODE states in another drug's model, typically because its concentration modulates the parent's clearance or effect or enters a joint response surface: its plasma and peripheral states (`central_remifentanil`, `peripheral1_remifentanil`, `peripheral2_remifentanil`), its effect compartment (`effect_remifentanil`), its concentration (`Cc_remifentanil`), its parameters (`lcl_remifentanil`, `lvc_remifentanil`, `lke0_remifentanil`, `lec50_remifentanil`) and its residual error (`propSd_remifentanil`). Standalone remifentanil models keep the bare canonical names.
+- **Source aliases:** `REMIFENTANIL`, `PERIREM1`, `PERIREM2` -- Vellinga 2025 Supplement 5 `$MODEL` compartment names; `V1R`, `CLR`, `Q2R` and so on for its parameters; subscript `r` / `R` and `D2` -- Ynineb 2025 Table 7 (`C50r`) and Eq. 27 (`x_e,D2`, `C50,D2`).
+- **Example models:** `Vellinga_2025_remimazolam.R` and its four pharmacodynamic siblings (founding example; the Eleveld 2017 remifentanil model held at its published values, its plasma concentration inhibiting the apparent CNS 7054 clearance and adding to the remimazolam drug effect), `Ynineb_2025_propofol_remifentanil.R` (Minto three-compartment remifentanil PK feeding an effect compartment whose concentration enters a propofol-remifentanil Greco response surface on the Bispectral Index).
+- **Notes:** Spelled out as the full INN, following the `midazolam` / `lidocaine` precedent: `remi` would be ambiguous between remifentanil and remimazolam, which co-occur in the founding example and are co-administered in sedation studies. Distinct from a covariate column that supplies a remifentanil concentration or co-medication flag as data instead of simulating it from remifentanil doses.
+
 ### hmg (**canonical hydroxymidazolam glucuronide suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 1'-hydroxymidazolam glucuronide (HMG), the UGT conjugate of `1ohm` and the terminal renally-cleared metabolite of midazolam. Named with the source papers' own abbreviation.
@@ -7497,6 +8192,13 @@ Favie 2020 (doi:10.1002/cpt.1917) fits seven drugs and five metabolites from the
 - **Role:** Lidocaine as a non-parent analyte in a multi-drug model (`central_lidocaine`, `Cc_lidocaine`). Its metabolite MEGX keeps the registered `megx` suffix.
 - **Source aliases:** none.
 - **Example models:** `Favie_2020_neonatalHypothermia.R`.
+
+### fentanyl (**canonical fentanyl sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Fentanyl as a co-administered, non-parent drug in a multi-drug model: its plasma and peripheral states (`central_fentanyl`, `peripheral1_fentanyl`), its effect compartment (`effect_fentanyl`), its concentration (`Cc_fentanyl`) and its parameters (`lcl_fentanyl`, `lvc_fentanyl`, `lke0_fentanyl`, `lec50_fentanyl`). Standalone fentanyl models keep the bare canonical names.
+- **Source aliases:** `FENT` -- Colin 2025 Supplemental Digital Content 1 (`FENT_C`, `FENT_P`, `EFFECT_FENT`, `CL_FENT`, `CE_FENT`).
+- **Example models:** `Colin_2025_remimazolam_umss.R` (founding example; Ginsberg 1996 paediatric fentanyl PK feeding an effect compartment whose concentration enters a remimazolam-fentanyl Minto interaction on the University of Michigan Sedation Scale).
+- **Notes:** Full INN, following the `midazolam` / `lidocaine` precedent, because no short form was registered and `fent` is not an established abbreviation.
 
 ### phenobarbital (**canonical phenobarbital sibling-drug suffix**)
 - **Type:** metabolite-suffix
@@ -7953,8 +8655,9 @@ PBPK organ sub-compartment suffixes used by Ayyar 2024 givosiran whole-organ ext
 ### deep (**canonical deep-bound pool suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Deep-bound / sequestered pool inside the named organ.
-- **Source aliases:** none.
-- **Example models:** `Ayyar_2024_givosiran.R`, `Pan_2019_fentanyl_pbpk.R` (`gut_deep`, `liver_deep`, `spleen_deep`).
+- **Source aliases:** `x_t` ('trap' compartment) -- Ynineb 2025 Eq. 7d, where it is attached to `peripheral2`.
+- **Example models:** `Ayyar_2024_givosiran.R`, `Pan_2019_fentanyl_pbpk.R` (`gut_deep`, `liver_deep`, `spleen_deep`), `Ynineb_2025_propofol_remifentanil.R` (`peripheral2_deep`).
+- **Notes:** Also attaches to a compartmental-model peripheral state when the source sub-divides that peripheral compartment into a catenary sequestered pool that exchanges ONLY with it, never with `central`: `Ynineb_2025_propofol_remifentanil.R` uses `peripheral2_deep` for the drug trapped inside the fat compartment (`peripheral2`) of a three-compartment model. A deep pool that exchanges with `central` is an ordinary extra peripheral compartment (`peripheral3`), not `_deep`.
 
 ### deep2 (**canonical second deep pool suffix**)
 - **Type:** metabolite-suffix
@@ -8030,7 +8733,8 @@ Permeability-limited whole-body PBPK subcompartment suffixes. Each tissue carrie
 - **Type:** metabolite-suffix
 - **Role:** Residual plasma within the named tissue (the paper's "tissue plasma", TP) -- the plasma fraction of the blood left in the tissue after bleeding. For a blood compartment it is that compartment's plasma space. Perfused at the compartment's plasma flow and exchanging with `<organ>_bc` and `<organ>_ew`.
 - **Source aliases:** `TP`, `tp`, `plasma_<organ>`.
-- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`.
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`, `Mukap_2025_amoxicillin.R` (output `Cc_plasma`: the venous plasma concentration derived from a central compartment fitted to dried-blood-spot whole-blood data, `Cc_plasma <- ratio_plasma_central * Cc`; residual `expSd_plasma`).
+- **Notes:** As an output suffix, `Cc_plasma` is the plasma space of a `central` compartment whose own matrix is whole blood, matching the blood-compartment reading in the Role above. It is not an analyte suffix: the analyte is the parent drug.
 
 ### bc (**canonical residual-blood-cell subcompartment suffix**)
 - **Type:** metabolite-suffix
@@ -8188,5 +8892,84 @@ Four-compound whole-body PBPK models of the CYP1A2 methylxanthine network carry 
   - `CIP` -- the abbreviation used throughout Navid 2016 and its supplement.
 - **Example models:** `Navid_2016_theophylline_pbpk.R`.
 - **Notes:** Ciprofloxacin already appears in the library as a parent analyte with bare canonical names (`Khan_2015_ciprofloxacin.R`); this suffix is for multi-compound models in which it is a co-administered perpetrator. Same role as the members of the "Transporter-DDI perpetrator drug suffixes" family, but placed here because ciprofloxacin is also a substrate of the enzyme it inhibits, so its own disposition has to be solved rather than assumed constant.
+
+---
+
+## Coagulation-cascade species (thrombin generation)
+
+States for reduced coagulation-cascade models of thrombin generation, such as the calibrated automated thrombogram fitted by Ruiz 2025, and for the larger systems-biology cascades those models simplify. All three hold molar concentrations (nM) in the assay plasma. Distinct from the clotting-time outputs `PT` / `INR` / `aPTT` / `ECT` / `TT` / `dTT` and from the activity output `PCA`, which are laboratory read-outs rather than protein species.
+
+### tissue_factor (**canonical tissue factor concentration state**)
+- **Type:** compartment
+- **Role:** Tissue factor (TF, coagulation factor III), the trigger of the extrinsic coagulation pathway. In an in vitro thrombin-generation assay it is the recombinant TF added at the start (5 pM in the founding model), so its initial condition is the assay concentration and its first-order degradation is negligible over the experiment.
+- **Source aliases:**
+  - `TF` -- Ruiz 2025 Figure 2 and Equation 1.
+- **Example models:** `Ruiz_2025_thrombin_generation.R` (`tissue_factor(0) <- tf0`, `tf0 = fixed(0.005)` nM; it drives both the direct activation term and the `effect1..effect7` transit chain without being consumed by either).
+- **Notes:** Spelled out because `tf` is ambiguous (it also reads as tenofovir and as a generic "transfer function"). A model of in vivo TF expression would use the same state name.
+
+### prothrombin (**canonical prothrombin (factor II) concentration state**)
+- **Type:** compartment
+- **Role:** Prothrombin (coagulation factor II, FII), the zymogen converted to thrombin. In a thrombin-generation model it is the substrate pool depleted by the activation pathways; its initial condition is the subject's measured baseline, carried in the covariate column `PROTHROMBIN_BASE`.
+- **Source aliases:**
+  - `FII` -- Ruiz 2025 Figure 2.
+- **Example models:** `Ruiz_2025_thrombin_generation.R` (`prothrombin(0) <- PROTHROMBIN_BASE`).
+- **Notes:** Holds total factor II in nM. Distinct from the `npt` state of the vitamin-K-antagonist turnover models (`Ohara_2014_warfarin_s.R`), which tracks only the carboxylated, coagulation-competent subfraction in mg/L.
+
+### thrombin (**canonical thrombin (factor IIa) concentration state and output**)
+- **Type:** compartment
+- **Role:** Thrombin (activated factor II, FIIa), the product of prothrombin activation and the measured output of a thrombin-generation assay. Used both as the ODE state and, directly, as the observation variable (`thrombin ~ add(addSd) + prop(propSd)`).
+- **Source aliases:**
+  - `FIIa` -- Ruiz 2025 Figure 2 and Table 2.
+  - `IIa` -- common shorthand in the coagulation literature.
+- **Example models:** `Ruiz_2025_thrombin_generation.R` (single output; produced by a direct TF pathway with thrombin positive feedback and a transit-delayed pathway, removed first order).
+- **Notes:** Lowercase, following the biomarker-state convention, because it is a protein concentration rather than a clotting-time read-out. Summary indices of the thrombin-generation curve (lag time, peak height, time to peak, endogenous thrombin potential) are derived from this state and are not separate compartments.
+
+## Myasthenia-gravis quantitative score
+
+### mgts (**canonical quantitative myasthenia-gravis total score output**)
+- **Type:** compartment
+- **Role:** Absolute total score of the Chinese quantitative myasthenia-gravis (MG) scoring system, the sum of the blepharoptosis, eyelid fatigue, eye movement, arm fatigue, leg fatigue, facial weakness, chewing, swallowing and respiratory item scores. Higher is more severe, so effective treatment drives it DOWN. Algebraic output in the founding model (no ODE state).
+- **Source aliases:** `TS` -- Chen 2023 Eq. 5 and the supplementary NONMEM `$PRED`.
+- **Example models:** `Chen_2023_tacrolimus.R` (`mgts = rbase * (1 - emax * auc_central / (auc50 + auc_central))`, an Emax function of the cumulative tacrolimus AUC from the first dose, with an Osserman-class-specific baseline and a proportional residual error).
+- **Notes:** Deliberately not `TS`, which is registered as the tumour-size output of the TGI family (`tumor_size, TS`). Distinct from the MG-ADL instrument (covariate `SCORE_MGADL`, 0-24) and from the US quantitative MG (QMG) score of Besinger and Barohn, which are different scales; a model of either should register its own output rather than reuse this name. A change-from-baseline fit should register `mgtscfb`.
+
+### mgrts (**canonical relative quantitative myasthenia-gravis total score output**)
+- **Type:** compartment
+- **Role:** Relative total score of the Chinese quantitative MG scoring system, `100 * (TS0 - TS) / TS0`, the percentage improvement of `mgts` from its pre-treatment baseline. **Sign convention: POSITIVE for clinical improvement.** Patients with a relative score above 25% are classed as responders. Derived algebraic output in the founding model, not an observed endpoint.
+- **Source aliases:** `RTS` -- Chen 2023 Eq. 6.
+- **Example models:** `Chen_2023_tacrolimus.R` (the paper's simulation endpoint for the 2-week responder assessment).
+- **Notes:** Same orientation as `madrsenh` (percentage reduction of a severity score). Because the founding model's drug effect is a fraction of baseline, `mgrts` there equals `100 * emax * cAUC / (auc50 + cAUC)` and does not depend on the baseline.
+
+---
+
+## Alopecia areata hair-regrowth ordinal scores
+
+Clinician-rated ordinal scores of eyebrow and eyelash hair loss used in alopecia areata trials. Each is a four-level numeric rating scale, 0 = none, 1 = minimal, 2 = moderate, 3 = normal (Wang 2025 Section 2.2), so a model of one of them is an ordinal (cumulative-probit or proportional-odds) model whose observation is the rxode2 ordinal endpoint `<score> ~ c(p0, p1, p2)`: the simulated value is a category (category `k` is score `k - 1`) and the per-score probabilities `p0`-`p3` are the outputs to summarise. Higher is better, the opposite direction from a hair-loss severity score. The scalp counterpart, the continuous Severity of Alopecia Tool (SALT) score, is not an ordinal output and is not covered here.
+
+### eyebrow_assessment (**canonical eyebrow assessment (EBA) score output**)
+- **Type:** compartment
+- **Role:** Eyebrow assessment score 0-3: 0 no eyebrows, 1 minimal, 2 moderate, 3 normal eyebrows (Wang 2025 Section 2.2). Ordinal PD output.
+- **Source aliases:** `EBA` -- Wang 2025.
+- **Example models:** `Wang_2025_ritlecitinib_eyebrow.R`.
+- **Notes:** Spelled out rather than the clinical acronym `EBA`, following the spelled-out form for new output names.
+
+### eyelash_assessment (**canonical eyelash assessment (ELA) score output**)
+- **Type:** compartment
+- **Role:** Eyelash assessment score 0-3: 0 no eyelashes, 1 minimal, 2 moderate, 3 normal eyelashes (Wang 2025 Section 2.2). Ordinal PD output.
+- **Source aliases:** `ELA` -- Wang 2025.
+- **Example models:** `Wang_2025_ritlecitinib_eyelash.R`.
+- **Notes:** Spelled out rather than the clinical acronym `ELA`, following the spelled-out form for new output names.
+
+---
+
+## Patient-reported gastrointestinal symptom scores
+
+### gsrs_diarrhea (**canonical GSRS diarrhea-bother ordinal score output**)
+- **Type:** compartment
+- **Role:** Gastrointestinal Symptom Rating Scale (GSRS) Question 11 score, the patient's rating of how bothered they were by diarrhea over the recall period, on the 7-point scale 1 (no discomfort at all) to 7 (very severe discomfort). Ordinal PD output: a proportional-odds model (`logite0` plus `logitstep<m>` thresholds) whose observation is the rxode2 ordinal endpoint `gsrs_diarrhea ~ c(p1, ..., p6)`, so simulated category `k` is score `k` and the per-score probabilities are the outputs to summarise.
+- **Source aliases:**
+  - `GSRS Question 11` / `diarrhea score` -- Carreno 2025 Methods and Table 2.
+- **Example models:** `Carreno_2025_linerixibat.R` (founding example; the cumulative logits carry an Emax function of the model-predicted serum `c4`).
+- **Notes:** One item of the 15-item GSRS. The other items, and the GSRS diarrhea syndrome sub-score (the mean of Questions 11, 12 and 14), are different scales and should get their own `gsrs_<item>` names rather than reuse this one. Some GSRS versions score 0-6 instead of 1-7; say which range a model uses in its `units`, and do not mix ranges under one name. A threshold probability such as P(score >= 4) is a derived quantity of the same model, not a separate output.
 
 ---
