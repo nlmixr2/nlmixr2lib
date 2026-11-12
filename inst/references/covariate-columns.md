@@ -5423,6 +5423,40 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Wattanakul_2026_paracetamol_creatinine.R` (fractional increase of 0.254 in the creatinine rate constant per log10 unit), `Wattanakul_2026_paracetamol_alt.R` (+0.3% in the ln(ALT) slope per mg*h/L), `Wattanakul_2026_paracetamol_fcta.R` and `Wattanakul_2026_paracetamol_fctb.R` (+0.158 and +0.126 on the fever-clearance hazard per 100 mg*h/L).
 - **Notes:** Member of the `AUC_<DRUG>` family (`AUC_RIF`, `AUC_RTV`, `AUC_GCV`, ...). Specific scope because the 0-72 h window is tied to the 72 h PACKNOW regimen and spans the time-dependent fall in relative bioavailability of the companion PK model, so it is neither a single-dose nor a steady-state AUC; a model using a different paracetamol exposure window should register a sibling canonical. Compute it from `modellib('Wattanakul_2026_paracetamol')` by integrating `Cc` from 0 to 72 h.
 
+### AUC_CEFEPIME (**canonical for cefepime plasma AUC over the first 24 h of treatment**)
+- **Description:** Per-subject (time-fixed) cefepime plasma area under the concentration-time curve from the first dose to 24 h, used as the exposure regressor of an exposure-toxicity model that carries no PK compartments. In Pais 2026 it is each rat's AUC0-24 computed from its empirical-Bayes concentration profile given its exact dosing, using the companion population PK model.
+- **Units:** `mg*h/L`. Document per-model via `covariateData[[AUC_CEFEPIME]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the logit linearly as `logit_slope * (AUC_CEFEPIME - tc50)`, with no centring value beyond the TC50. Pais 2026 cohort median (IQR) 28,314 (9,737-41,639) mg*h/L.
+- **Source aliases:**
+  - `AUC_plasma` -- Pais 2026 Figure 5a x-axis label.
+  - `AUC0-24` (plasma) -- Pais 2026 Results and Figure 4a.
+- **Example models:** `Pais_2026_cefepime_seizure_aucplasma_rat.R` (logistic probability of modified Racine seizure stage > 1, TC50 30,658.6 mg*h/L).
+- **Notes:** Member of the `AUC_<DRUG>` family (`AUC_RIF`, `AUC_PARACETAMOL`, ...). Specific scope because the 0-24 h window is the FIRST dosing day (from the first dose), not a steady-state interval; a model using a steady-state cefepime AUC should register a sibling canonical. Compute it from `modellib('Pais_2026_cefepime_rat')` by integrating `Cc` from 0 to 24 h. The brain-tissue siblings `AUC_CEFEPIME_BRAIN_CORTEX` and `AUC_CEFEPIME_BRAIN_HIPPOCAMPUS` carry the same window in tissue.
+
+### AUC_CEFEPIME_BRAIN_CORTEX (**canonical for cefepime cerebral-cortex tissue AUC over the first 24 h of treatment**)
+- **Description:** Per-subject (time-fixed) cefepime AUC in cerebral-cortex tissue from the first dose to 24 h, used as the exposure regressor of an exposure-toxicity model that carries no PK compartments. In Pais 2026 it is integrated from each rat's empirical-Bayes cortex concentration profile (total tissue concentration, ug/g treated as mg/L).
+- **Units:** `mg*h/L`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the logit linearly as `logit_slope * (AUC_CEFEPIME_BRAIN_CORTEX - tc50)`. Pais 2026 cohort median (IQR) 565 (161.5-1,346) mg*h/L.
+- **Source aliases:**
+  - `AUC_cortex` -- Pais 2026 Figure 5c x-axis label.
+- **Example models:** `Pais_2026_cefepime_seizure_auccortex_rat.R` (TC50 760.8 mg*h/L).
+- **Notes:** A tissue-matrix member of the `AUC_<DRUG>` family: the `_BRAIN_<region>` suffix follows the `brain_<region>` compartment namespace (`brain_cortex`), so the matrix is part of the name rather than a model-level note -- a plasma AUC and a brain-tissue AUC of the same drug differ about 50-fold here and are not interchangeable. Compute it from `modellib('Pais_2026_cefepime_rat')` by integrating `Cbrain_cortex` from 0 to 24 h.
+
+### AUC_CEFEPIME_BRAIN_HIPPOCAMPUS (**canonical for cefepime hippocampus tissue AUC over the first 24 h of treatment**)
+- **Description:** Per-subject (time-fixed) cefepime AUC in hippocampus tissue from the first dose to 24 h, used as the exposure regressor of an exposure-toxicity model that carries no PK compartments. In Pais 2026 it is integrated from each rat's empirical-Bayes hippocampus concentration profile (total tissue concentration, ug/g treated as mg/L).
+- **Units:** `mg*h/L`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the logit linearly as `logit_slope * (AUC_CEFEPIME_BRAIN_HIPPOCAMPUS - tc50)`. Pais 2026 cohort median (IQR) 694.8 (151.5-1,152) mg*h/L.
+- **Source aliases:**
+  - `AUC_hippocampus` -- Pais 2026 Figure 5e x-axis label.
+- **Example models:** `Pais_2026_cefepime_seizure_auchippocampus_rat.R` (TC50 838.2 mg*h/L).
+- **Notes:** Hippocampus sibling of `AUC_CEFEPIME_BRAIN_CORTEX`; see that entry for the naming. Compute it from `modellib('Pais_2026_cefepime_rat')` by integrating `Cbrain_hippocampus` from 0 to 24 h.
+
 ### AUCU_VALE (**canonical for unbound valemetostat AUC over the 24 h dosing interval at steady state**)
 - **Description:** Per-subject **unbound** (free, non-protein-bound) valemetostat plasma area under the concentration-time curve over the once-daily 24 h dosing interval at steady state (unbound AUCss). Supplied as a per-subject data column, not computed by the consuming model: the Fukae 2024 exposure-response analyses are static logistic regressions with no PK layer, and the individual exposure values are empirical-Bayes predictions from the companion population PK model (Fukae M, Baron K, Tachibana M, et al. "Population pharmacokinetics of total and unbound valemetostat and platelet dynamics in healthy volunteers and patients with non-Hodgkin lymphoma." CPT Pharmacometrics Syst Pharmacol 2024, doi:10.1002/psp4.13201, PMC11494923). Valemetostat is an oral EZH1/EZH2 dual inhibitor; the unbound metric was chosen over total exposure because free drug is theoretically the moiety driving efficacy and toxicity (Fukae 2024 Discussion).
 - **Units:** `ng*h/mL`. Document per-model via `covariateData[[AUCU_VALE]]$units`.
@@ -5499,6 +5533,28 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
   - `Cmax` / `C max` -- printed name in Yang 2026 Table 2 (1352.50, 4739.75 and 10882.50 ng/mL at 5, 15 and 40 mg/kg), Figure 3C, Materials and methods ('Pharmacokinetic, pharmacodynamic, and statistical analysis', defining the Cmax/MIC index) and Table 3. Least-squares regression of the three tabulated values on dose returns R^2 = 0.994059, reproducing the paper's stated 0.9940 to the four decimal places it prints (the computed value rounds to 0.9941, so the paper truncated rather than rounded); inverting that regression at the Table 3 index targets reproduces the paper's own back-calculated daily doses of 14.13 and 23.38 mg/kg to within 0.3%.
 - **Example models:** `Yang_2026_APTM_cmaxmic.R` (Yang 2026 inhibitory sigmoid Emax PK/PD integration against *Mycoplasma gallisepticum* strain S6 in an intratracheal chicken infection model; `CMAX_APTM / mic` drives the signed 72 h change in lung log10 CFU/mL).
 - **Notes:** Specific scope -- APTM-specific. This is the first drug-specific member of a `CMAX_<DRUG>` family and is the parallel canonical that the `AUC_AMPH` and `AUCMIC_TYLO` entries direct a future Cmax/MIC-indexed antibacterial model to register rather than overloading an `AUC_<DRUG>` name; it is the peak-concentration twin of `AUC_APTM`, and the two drive the sibling models `Yang_2026_APTM_cmaxmic.R` and `Yang_2026_APTM_aucmic.R` respectively. Distinct from `CMAX_M1` (an empirical-Bayes month-1 peak derived from an upstream population PK model, not tied to a named drug) and from `PRED_CMAX_FREE` (the peak of a *co-medication* rather than of the modelled drug). Distinct from the `CONC_<DRUG>_<UNITS>` family, which carries an instantaneous concentration driving a mechanism-based kill-rate model: a peak concentration is a summary exposure metric, not a time course. A future APTM model using a different exposure metric (Ctrough, T>MIC, or a per-interval steady-state AUC) should register a parallel canonical rather than overload this name.
+
+### CMAX_CEFEPIME_BRAIN_CORTEX (**canonical for peak cefepime cerebral-cortex tissue concentration over the first 24 h of treatment**)
+- **Description:** Per-subject (time-fixed) maximum cefepime concentration in cerebral-cortex tissue over the first 24 h from the first dose, used as the exposure regressor of an exposure-toxicity model that carries no PK compartments. In Pais 2026 it is read from each rat's empirical-Bayes cortex profile on a 6-min grid (total tissue concentration, ug/g treated as mg/L).
+- **Units:** `mg/L`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the logit linearly as `logit_slope * (CMAX_CEFEPIME_BRAIN_CORTEX - tc50)`. Pais 2026 cohort median (IQR) 36.0 (16.3-75.6) mg/L.
+- **Source aliases:**
+  - `Cmax_cortex` -- Pais 2026 Figure 5d x-axis label.
+- **Example models:** `Pais_2026_cefepime_seizure_cmaxcortex_rat.R` (TC50 45.0 mg/L).
+- **Notes:** Member of the `CMAX_<DRUG>` family founded by `CMAX_APTM`, with the `_BRAIN_<region>` matrix suffix of `AUC_CEFEPIME_BRAIN_CORTEX` (see that entry). Because the cortex equilibrates slowly (peak about 6 h after an intravenous bolus), this peak is not the plasma Cmax and is not reached at the end of the infusion.
+
+### CMAX_CEFEPIME_BRAIN_HIPPOCAMPUS (**canonical for peak cefepime hippocampus tissue concentration over the first 24 h of treatment**)
+- **Description:** Per-subject (time-fixed) maximum cefepime concentration in hippocampus tissue over the first 24 h from the first dose, used as the exposure regressor of an exposure-toxicity model that carries no PK compartments. In Pais 2026 it is read from each rat's empirical-Bayes hippocampus profile on a 6-min grid (total tissue concentration, ug/g treated as mg/L).
+- **Units:** `mg/L`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the logit linearly as `logit_slope * (CMAX_CEFEPIME_BRAIN_HIPPOCAMPUS - tc50)`. Pais 2026 cohort median 41.9 mg/L; the IQR is printed as 31.7-62.8 in Results and 13.7-62.8 in the Abstract.
+- **Source aliases:**
+  - `Cmax_hippocampus` -- Pais 2026 Figure 5f x-axis label.
+- **Example models:** `Pais_2026_cefepime_seizure_cmaxhippocampus_rat.R` (TC50 48.2 mg/L).
+- **Notes:** Hippocampus sibling of `CMAX_CEFEPIME_BRAIN_CORTEX`; see that entry.
 
 ### CMIN_ARI (**canonical for model-predicted minimum aripiprazole plasma concentration proximate to a clinical event**)
 - **Description:** Individual model-predicted minimum (trough) aripiprazole plasma concentration at the time proximate to an impending-relapse event or to censoring, generated by applying a population PK model to the subject's recorded dosing history together with that subject's empirical-Bayes PK parameters. Continuous; time-invariant per subject (one value, read at the event / censoring time). Used as the exposure driver of a downstream time-to-event exposure-response model.

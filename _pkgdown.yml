@@ -1378,6 +1378,18 @@ navbar:
         href: articles/Vollmer_2023_cefepime_enmetazobactam.html
       - text: "Cefepime qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Cefepime rat (Pais 2026)"
+        href: articles/Pais_2026_cefepime_rat.html
+      - text: "Cefepime seizure auccortex rat (Pais 2026)"
+        href: articles/Pais_2026_cefepime_rat.html
+      - text: "Cefepime seizure auchippocampus rat (Pais 2026)"
+        href: articles/Pais_2026_cefepime_rat.html
+      - text: "Cefepime seizure aucplasma rat (Pais 2026)"
+        href: articles/Pais_2026_cefepime_rat.html
+      - text: "Cefepime seizure cmaxcortex rat (Pais 2026)"
+        href: articles/Pais_2026_cefepime_rat.html
+      - text: "Cefepime seizure cmaxhippocampus rat (Pais 2026)"
+        href: articles/Pais_2026_cefepime_rat.html
       - text: "Cefiderocol (Fouad 2024)"
         href: articles/Fouad_2024_cefiderocol.html
       - text: "Cefiderocol (Kawaguchi 2021)"
@@ -10535,6 +10547,7 @@ articles:
   - articles/Padoin_1998_cephalexin_rat
   - articles/Paiboonvong_2025_sitafloxacin
   - articles/Paioni_2021_gentamicin
+  - articles/Pais_2026_cefepime_rat
   - articles/Palmer_2025_moxifloxacin
   - articles/Pan_2019_fentanyl_lumping
   - articles/Pan_2026_adalimumab

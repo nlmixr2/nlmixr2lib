@@ -3182,6 +3182,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 
 ---
 
+### prob_racine_gt1 (**canonical convulsive-seizure (modified Racine stage > 1) probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that an animal reaches a convulsive seizure, scored as a stage greater than 1 on the modified Racine scale (0 no response; 1 ear and facial twitching; 2 myoclonic body jerks; 3 forelimb clonus and rearing; 4 clonic convulsions on the side; 5 generalised clonic convulsions on the back; 6 status epilepticus; 7 death), in a logistic exposure-toxicity model of a drug-induced neurotoxicity.
+- **Source aliases:** `Pr(seizurestage1)` -- Pais 2026 Figure 5 legend; the endpoint is written "seizure stage >1" in the Results.
+- **Example models:** `Pais_2026_cefepime_seizure_aucplasma_rat.R`, `Pais_2026_cefepime_seizure_auccortex_rat.R`, `Pais_2026_cefepime_seizure_cmaxcortex_rat.R`, `Pais_2026_cefepime_seizure_auchippocampus_rat.R`, `Pais_2026_cefepime_seizure_cmaxhippocampus_rat.R` (founding examples; `prob_racine_gt1 <- expit(logit_slope * (<exposure> - tc50))`, one exposure metric per model, Pais 2026 Figure 5).
+- **Notes:** A probability output in `[0, 1]`, following the `prob_<endpoint>` shape with the threshold carried in the name, as `prob_seizure50` does. The `gt1` threshold is load-bearing: it separates non-convulsive (stage <= 1) from convulsive activity, and a model of a different Racine cut (for example stage >= 4, generalised seizures) is a different endpoint that needs its own sibling. Distinct from `prob_seizure50`, a clinical antiseizure-medication responder probability (over-50% reduction in seizure frequency) where the drug prevents seizures; here the drug causes them.
+
 ### prob_seizure50 (**canonical over-50%-seizure-frequency-reduction probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient with epilepsy achieves an over-50% reduction in seizure frequency relative to their own pre-treatment baseline, in a logistic exposure-response model driven by an antiseizure-medication exposure metric. The "50% responder rate" is the standard primary efficacy endpoint of antiseizure-medication trials, so this output generalises well beyond its founding paper.

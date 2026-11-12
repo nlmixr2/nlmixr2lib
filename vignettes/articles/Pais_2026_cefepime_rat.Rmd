@@ -1,0 +1,402 @@
+---
+title: "Cefepime in rat plasma, cortex and hippocampus with seizure risk (Pais 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cefepime in rat plasma, cortex and hippocampus with seizure risk (Pais 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Pais_2026_cefepime_rat"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Pais_2026_cefepime_rat"))$description`
+* Article: <https://doi.org/10.1128/aac.01005-25>
+
+Pais 2026 gave intravenous cefepime to male Sprague-Dawley rats with
+folic-acid-induced acute kidney injury (AKI), which prolongs the cefepime
+plasma half-life about 10-fold, and scored seizures on a modified Racine scale.
+Plasma was sampled after each daily dose and the cerebral cortex and
+hippocampus were harvested once, at euthanasia. A three-compartment PK model
+(plasma exchanging with cortex and with hippocampus) was fitted in Monolix, and
+each rat's first-24-h exposures were then related to whether it reached a
+convulsive seizure (stage > 1) by five separate logistic regressions
+(Figure 5). The paper contributes six model files:
+
+| Model | What it is |
+|---|---|
+| `Pais_2026_cefepime_rat` | Three-compartment PK (plasma, cortex, hippocampus) |
+| `Pais_2026_cefepime_seizure_aucplasma_rat` | P(stage > 1) vs plasma AUC0-24 (Figure 5a) |
+| `Pais_2026_cefepime_seizure_auccortex_rat` | P(stage > 1) vs cortex AUC0-24 (Figure 5c) |
+| `Pais_2026_cefepime_seizure_cmaxcortex_rat` | P(stage > 1) vs cortex Cmax0-24 (Figure 5d) |
+| `Pais_2026_cefepime_seizure_auchippocampus_rat` | P(stage > 1) vs hippocampus AUC0-24 (Figure 5e) |
+| `Pais_2026_cefepime_seizure_cmaxhippocampus_rat` | P(stage > 1) vs hippocampus Cmax0-24 (Figure 5f) |
+
+# Population
+
+Eighteen male Sprague-Dawley rats, about 9-10 weeks old, mean (SD) weight
+282 (17.0) g (Methods, 'Experimental design and animals'). AKI was induced with
+folic acid 250 mg/kg intraperitoneally on day 1, followed in the multiple-dose
+arm by 100 mg/kg daily. Cefepime was given intravenously 30 min after folic
+acid, either 1,593 mg/kg once (serial sacrifice at 30 or 120 min on day 1) or
+1,250 mg/kg once daily for up to 5 days (sacrifice at 120 min on day 3 or 5).
+Plasma was sampled at 0, 15, 30 and 120 min after dosing; 127 of 129 plasma
+concentrations and all 18 cortex and 18 hippocampus concentrations were
+modelled (Results). Brain concentrations are total tissue concentrations in
+ug/g, treated as mg/L by the model.
+
+# Source trace
+
+| Item | Value | Source |
+|---|---|---|
+| Structure: central <-> cortex, central <-> hippocampus, kel from central | -- | Figure 3 schematic; Methods 'Ordinary differential equations' (with the two corrections below) |
+| `lkel` | 0.14 1/h | Table 2 (RSE 38.7%) |
+| `lvc` | 0.12 L | Table 2 (RSE 6.85%) |
+| `lv_brain_cortex` | 0.0039 L | Table 2 (RSE 18.6%) |
+| `lv_brain_hippocampus` | 0.00039 L | Table 2 (RSE 14.8%) |
+| `lk_central_brain_cortex` (k12) | 0.00013 1/h, fixed | Table 2 (no RSE); Discussion 'was fixed to reduce RSE%'; Table 1 selected model 'fixed k12' |
+| `lk_brain_cortex_central` (k21) | 0.17 1/h | Table 2 (RSE 18.5%) |
+| `lk_central_brain_hippocampus` (k13) | 0.000015 1/h | Table 2 (RSE 24.9%) |
+| `lk_brain_hippocampus_central` (k31) | 0.15 1/h | Table 2 (RSE 31.2%) |
+| `e_wt_kel` | 0.75, fixed | Table 2 'beta_kel_logtWT' (no RSE) |
+| `e_wt_vc` | 1, fixed | Table 2 'beta_Vcentral_logtWT' (no RSE) |
+| Weight reference | 0.282 kg | Methods (cohort mean 282 g); see Assumptions |
+| IIV | not encoded | Table 2 prints only corr(kel, Vhippocampus) = 0.92 |
+| Residual error | `fixed(0)` | not reported |
+| TC50, plasma AUC0-24 | 30,658.6 mg*h/L | Results; Figure 5 legend |
+| TC50, cortex AUC0-24 | 760.8 mg*h/L | Results; Figure 5 legend |
+| TC50, cortex Cmax0-24 | 45.0 mg/L | Results; Figure 5 legend |
+| TC50, hippocampus AUC0-24 | 838.2 mg*h/L | Results; Figure 5 legend |
+| TC50, hippocampus Cmax0-24 | 48.2 mg/L | Results; Figure 5 legend |
+| Logistic slopes (five) | 1.96e-4, 3.33e-3, 0.0590, 5.83e-3, 0.123 | digitised from Figure 5a, c, d, e, f |
+
+## The printed equations
+
+The Methods print the cortex equation as
+`ddt_Acortex = k12*Acentral - (Acortex*k12)` and the cortex output as
+`Ccortex = Acentral/Vcortex`. Read literally, k21 (estimated with an RSE of
+18.5%) would appear nowhere, and the cortex concentration would be plasma
+amount over a 4 mL volume, about `0.12 / 0.0039` = 31 times the plasma
+concentration. The Results contradict that: the median cortex AUC0-24 is 565
+against a plasma AUC0-24 of 28,314 mg*h/L, a ratio of 0.020. The Figure 3
+schematic (k12 out, k21 back) gives a steady-state cortex:plasma ratio of
+`k12 * Vc / (k21 * Vcortex)`, computed below; the hippocampus equations are
+printed consistently with the schematic. The model therefore uses the
+schematic.
+
+```{r printed-equation-check}
+p <- c(kel = 0.14, vc = 0.12, vcx = 0.0039, vhc = 0.00039,
+       k12 = 0.00013, k21 = 0.17, k13 = 0.000015, k31 = 0.15)
+ratios <- data.frame(
+  quantity = c("Cortex:plasma AUC, schematic reading",
+               "Cortex:plasma AUC, printed equations",
+               "Cortex:plasma AUC0-24, paper medians (565 / 28,314)",
+               "Hippocampus:plasma AUC, schematic reading",
+               "Hippocampus:plasma AUC0-24, paper medians (694.8 / 28,314)"),
+  ratio = c(p[["k12"]] * p[["vc"]] / (p[["k21"]] * p[["vcx"]]),
+            p[["vc"]] / p[["vcx"]],
+            565 / 28314,
+            p[["k13"]] * p[["vc"]] / (p[["k31"]] * p[["vhc"]]),
+            694.8 / 28314)
+)
+knitr::kable(ratios, digits = 4)
+stopifnot(
+  abs(ratios$ratio[1] / ratios$ratio[3] - 1) < 0.25,
+  abs(ratios$ratio[4] / ratios$ratio[5] - 1) < 0.30,
+  ratios$ratio[2] > 20
+)
+```
+
+# Simulation
+
+No between-animal variances are reported, so every simulation below is a
+typical-value simulation of a 282 g rat. The dose is given as a 2-min
+intravenous infusion.
+
+```{r simulate}
+# The models carry no random effects, so every id is a typical animal; rxode2's
+# note that a multi-subject solve has no omega is expected and is muffled alone.
+solve_typical <- function(model, data, ...) {
+  withCallingHandlers(
+    rxSolve(model, data, returnType = "data.frame", ...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+mod <- readModelDb("Pais_2026_cefepime_rat")
+wt <- 0.282
+
+make_events <- function(arm, mg_per_kg, n_doses, t_end, id) {
+  dose_times <- (seq_len(n_doses) - 1) * 24
+  amt <- mg_per_kg * wt
+  obs_times <- sort(unique(c(seq(0, t_end, by = 0.1), dose_times)))
+  bind_rows(
+    data.frame(id = id, time = dose_times, amt = amt, rate = amt / (2 / 60),
+               evid = 1L, cmt = "central", dvid = NA_integer_),
+    data.frame(id = id, time = obs_times, amt = 0, rate = 0,
+               evid = 0L, cmt = "central", dvid = 1L)
+  ) |>
+    mutate(WT = wt, arm = arm) |>
+    arrange(time, desc(evid))
+}
+
+events <- bind_rows(
+  make_events("1,250 mg/kg daily x5", 1250, 5, 120, 1),
+  make_events("1,593 mg/kg once", 1593, 1, 24, 2)
+)
+sim <- solve_typical(mod, events, keep = "arm")
+sim_long <- sim |>
+  select(id, arm, time, Plasma = Cc, Cortex = Cbrain_cortex,
+         Hippocampus = Cbrain_hippocampus) |>
+  pivot_longer(c(Plasma, Cortex, Hippocampus), names_to = "matrix",
+               values_to = "conc") |>
+  mutate(matrix = factor(matrix, levels = c("Plasma", "Cortex", "Hippocampus")))
+```
+
+## Concentration-time profiles
+
+Compare with the population (green) curves of Supplementary Figure S1: plasma
+peaks of roughly 3,000-3,700 mg/L that decline to the low hundreds by 24 h,
+and brain profiles that rise slowly to a peak of roughly 30-40 mg/L about 6-7 h
+after each dose. The brain compartments equilibrate more slowly than plasma
+declines, so their peak lags far behind the plasma peak.
+
+```{r profiles, fig.height = 6}
+ggplot(sim_long, aes(time, conc, colour = arm)) +
+  geom_line() +
+  facet_wrap(~matrix, ncol = 1, scales = "free_y") +
+  labs(x = "Time (h)", y = "Cefepime (mg/L)", colour = NULL,
+       title = "Typical-value cefepime profiles, 282 g rat with AKI",
+       caption = "Compare with Pais 2026 Supplementary Figure S1 (population fits).") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# NCA over the first 24 h (PKNCA)
+
+The paper's exposures are AUC0-24 and Cmax0-24 from the first dose.
+
+```{r pknca}
+nca_conc <- sim_long |>
+  filter(time <= 24, !is.na(conc)) |>
+  mutate(group = paste(arm, matrix, sep = " | "))
+nca_dose <- events |>
+  filter(evid == 1L, time == 0) |>
+  select(id, arm, time, amt) |>
+  inner_join(distinct(nca_conc, id, arm, group), by = c("id", "arm"),
+             relationship = "one-to-many")
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, conc ~ time | group + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | group + id, route = "intravascular",
+                             duration = 2 / 60)
+intervals <- data.frame(start = 0, end = 24, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_wide <- as.data.frame(nca_res$result) |>
+  select(group, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+nca_wide |>
+  dplyr::rename("Arm | matrix" = group, "Cmax0-24 (mg/L)" = cmax,
+                "Tmax (h)" = tmax, "AUC0-24 (mg*h/L)" = auclast) |>
+  knitr::kable(digits = c(0, 1, 1, 0))
+```
+
+## Comparison with the published exposures
+
+The paper reports the median (IQR) over its 18 rats of each exposure, computed
+from the individual empirical-Bayes profiles and pooled across both dosing arms
+(Results, 'Cefepime pharmacokinetic model and estimated exposures'). The same
+pooled median is used as the reference for each simulated arm.
+
+```{r nca-compare}
+paper <- tibble::tribble(
+  ~matrix,       ~cmax, ~auclast,
+  "Plasma",       3480,    28314,
+  "Cortex",       36.0,      565,
+  "Hippocampus",  41.9,    694.8
+)
+reference <- tidyr::crossing(arm = unique(nca_conc$arm), paper) |>
+  mutate(group = paste(arm, matrix, sep = " | ")) |>
+  select(group, cmax, auclast)
+simulated <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  select(group, PPTESTCD, PPORRES)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated, reference, by = "group",
+  units = c(cmax = "mg/L", auclast = "mg*h/L")
+)
+knitr::kable(cmp, caption = "Typical-value simulation vs the paper's median first-24-h exposures.")
+```
+
+`r attr(cmp, "footnote")`
+
+The 1,593 mg/kg arm reproduces every pooled median to within 10%. The
+1,250 mg/kg arm sits below them, and three of its rows are flagged: cortex
+Cmax (-22%), cortex AUC0-24 (-23%) and plasma AUC0-24 (-29%). That is
+expected for the lower dose against a median pooled across both doses, and the
+hippocampus and plasma Cmax medians lie between the two arms. Every simulated
+AUC0-24 and brain Cmax is inside the paper's IQR (for plasma AUC0-24,
+9,737-41,639 mg*h/L); the two plasma Cmax values, 2,900 and 3,700 mg/L,
+bracket its narrow IQR of 3,266-3,695 mg/L. The paper's values are medians of
+individual empirical-Bayes exposures, and the between-rat spread is wide
+(individual plasma AUC0-24 from about 7,000 to 52,000 mg*h/L in Figure 4a);
+that variability is not reported as a variance and cannot be carried here, and
+the split of the 18 rats between the two arms is not stated. Nothing has been
+tuned.
+
+```{r nca-assert}
+sim_w <- nca_wide |> separate(group, c("arm", "matrix"), sep = " \\| ") |>
+  left_join(paper, by = "matrix", suffix = c("_sim", "_paper"))
+stopifnot(
+  # Brain exposures within 25% of the pooled medians in both arms.
+  all(abs(sim_w$auclast_sim / sim_w$auclast_paper - 1)[sim_w$matrix != "Plasma"] < 0.25),
+  all(abs(sim_w$cmax_sim / sim_w$cmax_paper - 1) < 0.25),
+  # Plasma AUC0-24 inside the published IQR.
+  all(between(sim_w$auclast_sim[sim_w$matrix == "Plasma"], 9737, 41639))
+)
+```
+
+# Exposure-seizure logistic models
+
+Each logistic model gives `P(stage > 1) = expit(slope * (exposure - TC50))`.
+The TC50s are printed; the slopes are not, and were digitised from the red
+predicted-probability markers of Figure 5. Fitting `logit(p)` on exposure
+freely, without holding TC50, returns TC50s within 1% of the printed ones
+(30,370 vs 30,658.6; 766 vs 760.8; 44.9 vs 45.0; 842 vs 838.2; 48.1 vs 48.2),
+which confirms the axis calibration.
+
+```{r logistic-models}
+lr_models <- tibble::tribble(
+  ~model,                                             ~covariate,                         ~label,                         ~tc50,
+  "Pais_2026_cefepime_seizure_aucplasma_rat",       "AUC_CEFEPIME",                     "Plasma AUC0-24 (mg*h/L)",       30658.6,
+  "Pais_2026_cefepime_seizure_auccortex_rat",       "AUC_CEFEPIME_BRAIN_CORTEX",        "Cortex AUC0-24 (mg*h/L)",         760.8,
+  "Pais_2026_cefepime_seizure_cmaxcortex_rat",      "CMAX_CEFEPIME_BRAIN_CORTEX",       "Cortex Cmax0-24 (mg/L)",           45.0,
+  "Pais_2026_cefepime_seizure_auchippocampus_rat",  "AUC_CEFEPIME_BRAIN_HIPPOCAMPUS",   "Hippocampus AUC0-24 (mg*h/L)",    838.2,
+  "Pais_2026_cefepime_seizure_cmaxhippocampus_rat", "CMAX_CEFEPIME_BRAIN_HIPPOCAMPUS",  "Hippocampus Cmax0-24 (mg/L)",      48.2
+)
+
+solve_logistic <- function(model, covariate, x) {
+  d <- data.frame(id = seq_along(x), time = 0, evid = 0L, amt = 0)
+  d[[covariate]] <- x
+  out <- solve_typical(readModelDb(model), d)
+  data.frame(exposure = x, prob = out$prob_racine_gt1)
+}
+
+curves <- lr_models |>
+  rowwise() |>
+  reframe(label = label, tc50 = tc50,
+          solve_logistic(model, covariate, seq(0, 2.2 * tc50, length.out = 200)))
+at_tc50 <- lr_models |>
+  rowwise() |>
+  reframe(label = label, solve_logistic(model, covariate, tc50))
+knitr::kable(at_tc50, digits = 3, caption = "Each model returns 0.5 at its TC50.")
+stopifnot(all(abs(at_tc50$prob - 0.5) < 1e-6))
+```
+
+```{r logistic-plot, fig.height = 6}
+ggplot(curves, aes(exposure, prob)) +
+  geom_line() +
+  geom_vline(aes(xintercept = tc50), linetype = 2, colour = "grey50") +
+  facet_wrap(~label, scales = "free_x", ncol = 2) +
+  labs(x = "Exposure", y = "P(seizure stage > 1)",
+       caption = "Replicates the fitted probabilities of Pais 2026 Figure 5a, c-f; dashed = TC50.") +
+  theme_bw()
+```
+
+## Digitised points
+
+The Figure 5a predicted probabilities that were read from the figure are
+reproduced by the plasma model:
+
+```{r digitised-check}
+fig5a <- data.frame(
+  exposure = c(20407, 23889, 32831, 35240, 35787, 36984, 41267, 43605, 46698),
+  prob_figure = c(0.106, 0.193, 0.599, 0.716, 0.749, 0.775, 0.910, 0.933, 0.958)
+)
+chk <- solve_logistic("Pais_2026_cefepime_seizure_aucplasma_rat", "AUC_CEFEPIME",
+                      fig5a$exposure) |>
+  mutate(prob_figure = fig5a$prob_figure, diff = prob - prob_figure)
+knitr::kable(chk, digits = 3)
+stopifnot(max(abs(chk$diff)) < 0.05)
+```
+
+## Linking the PK model to the seizure models
+
+Feeding the typical-value first-24-h exposures from the PK model into the five
+logistic models gives the seizure probability of a typical 282 g rat in each
+arm. All five metrics agree that the typical rat sits below TC50, with the
+higher single dose closer to it -- consistent with the paper's observation that
+seizure-prone rats were those with the higher individual exposures.
+
+```{r pk-to-pd}
+typ_exposure <- nca_wide |>
+  separate(group, c("arm", "matrix"), sep = " \\| ")
+pk_pd <- bind_rows(
+  typ_exposure |> filter(matrix == "Plasma") |>
+    transmute(arm, model = lr_models$model[1], covariate = lr_models$covariate[1], x = auclast),
+  typ_exposure |> filter(matrix == "Cortex") |>
+    transmute(arm, model = lr_models$model[2], covariate = lr_models$covariate[2], x = auclast),
+  typ_exposure |> filter(matrix == "Cortex") |>
+    transmute(arm, model = lr_models$model[3], covariate = lr_models$covariate[3], x = cmax),
+  typ_exposure |> filter(matrix == "Hippocampus") |>
+    transmute(arm, model = lr_models$model[4], covariate = lr_models$covariate[4], x = auclast),
+  typ_exposure |> filter(matrix == "Hippocampus") |>
+    transmute(arm, model = lr_models$model[5], covariate = lr_models$covariate[5], x = cmax)
+) |>
+  rowwise() |>
+  mutate(prob = solve_logistic(model, covariate, x)$prob) |>
+  ungroup()
+pk_pd |>
+  dplyr::rename("Arm" = arm, "Model" = model, "Exposure" = x,
+                "P(stage > 1)" = prob) |>
+  select(-covariate) |>
+  knitr::kable(digits = c(0, 0, 1, 3))
+```
+
+# Assumptions and deviations
+
+* **Printed ODE typographical errors.** The cortex equation and the cortex
+  output are printed with k12 in place of k21 and Acentral in place of Acortex.
+  The model follows the Figure 3 schematic; the paper's own cortex and
+  hippocampus exposures confirm that reading (see 'The printed equations').
+* **Weight reference.** The covariate model is centred on "the median rat
+  weight of the data set", which is not printed. The cohort mean, 282 g, is
+  used (`WT / 0.282`, WT in kg). With a 17 g SD the choice moves kel and Vc by
+  a few percent at most.
+* **Weight exponents as printed.** Table 2 gives +0.75 on kel and +1 on Vc
+  (Monolix `log(WT/WTref)` covariates, no RSE, so fixed). A positive exponent
+  on a rate constant is unusual (allometry would give -0.25) but is carried as
+  printed.
+* **No between-animal variability.** Table 2 reports a 0.92 correlation between
+  the kel and Vhippocampus random effects but no standard deviation for any
+  random effect, so no eta is encoded and all simulations are typical-value.
+* **No residual error.** Neither the error model nor its magnitude is reported;
+  each output carries additive and proportional SDs fixed at 0.
+* **Dosing duration.** The infusion length of the main study is not stated
+  (the escalation study infused at 0.5-1 mL/min; the preliminary study over
+  about 2 min). A 2-min infusion is used; it does not affect the brain
+  exposures or AUC0-24.
+* **Logistic slopes digitised.** The five logistic slopes are not printed and
+  were digitised from Figure 5, holding the printed TC50s. Their placeholder
+  additive residual (`fixed(0.001)`) is not from the source, whose likelihood is
+  Bernoulli.
+* **Hippocampus Cmax IQR.** The Results print the hippocampus Cmax0-24 IQR as
+  31.7-62.8 mg/L and the Abstract as 13.7-62.8 mg/L; only the median (41.9) is
+  used here.
+* **Not encoded.** The Kaplan-Meier curve of time to seizure split at the
+  plasma TC50 (Figure 5b) is a descriptive analysis with no fitted parameters.
