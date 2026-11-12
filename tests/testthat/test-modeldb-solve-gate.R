@@ -197,18 +197,19 @@ knownBrokenModels <- c(
   res
 }
 
-# Probe results keyed by model name, computed once per set of names. An
+# Probe results keyed by model name, each model probed at most once however
+# many tests ask for it: the tests below cover overlapping sets of models. An
 # environment rather than a variable so the memo survives across test_that()
 # blocks without superassignment.
 .gateCache <- new.env(parent = emptyenv())
+.gateCache$res <- list()
 .gateProbe <- function(names_) {
-  key <- paste(names_, collapse = "\r")
-  if (!identical(.gateCache$key, key)) {
-    blocks <- split(names_, ceiling(seq_along(names_) / .probeBlockSize))
-    .gateCache$res <- do.call(c, unname(lapply(blocks, .probeInChild)))
-    .gateCache$key <- key
+  todo <- setdiff(names_, names(.gateCache$res))
+  if (length(todo)) {
+    blocks <- split(todo, ceiling(seq_along(todo) / .probeBlockSize))
+    .gateCache$res <- c(.gateCache$res, do.call(c, unname(lapply(blocks, .probeInChild))))
   }
-  .gateCache$res
+  .gateCache$res[names_]
 }
 
 test_that("every model in the registry responds to a dose", {
@@ -283,6 +284,90 @@ test_that("every model in the registry responds to a dose", {
       "to drive it -- work out which, then add it to knownBrokenModels or to ",
       "probeUnsupportedModels accordingly. Do not put a broken model in ",
       "probeUnsupportedModels: that claims the model is fine."
+    )
+  )
+})
+
+test_that("the non-finite check reads ODE states only, not timing outputs", {
+  ui <- rxode2::rxUiDecompress(rxode2::as.rxUi(.dtStomachDosedModel))
+  solved <- data.frame(
+    time = c(0, 1),
+    stomach = c(1, NaN),
+    central = c(0, Inf),
+    Cc = c(0, NA),
+    tad = c(NA, 1)
+  )
+  expect_identical(probeNonFiniteStates(ui, solved), c("stomach", "central"))
+  solved$stomach <- c(1, 0.5)
+  solved$central <- c(0, 1)
+  # `Cc` and `tad` are still NA, and are not states.
+  expect_identical(probeNonFiniteStates(ui, solved), character(0))
+  # A state missing from the output (a linCmt() conversion drops them) is not
+  # looked for.
+  expect_identical(probeNonFiniteStates(ui, solved[, c("time", "Cc")]), character(0))
+})
+
+test_that("doseTimingCandidates() finds the models that read a compartment's dose history", {
+  skip_on_cran()
+  cand <- doseTimingCandidates()
+  # podo(stomach) and tad(stomach)
+  expect_true("Bulitta_2009_cefuroxime_axetil" %in% cand)
+  # tafd(bact_susceptible), the bacterial inoculum
+  expect_true("Thorsted_2023_neutrophil_mouse" %in% cand)
+  # Bare first-order absorption: no dose-history call at all
+  expect_false("PK_1cmt_des" %in% cand)
+})
+
+test_that("a dosed probe solve leaves every ODE state finite", {
+  # A state goes NaN when a derivative does, and the usual cause in this
+  # registry is a dose-history function -- `tad(cmt)`, `podo(cmt)`,
+  # `tafd(cmt)` -- reading a compartment the probe never doses. The probe
+  # doses the registry's first `dosing` compartment, so a model whose `dosing`
+  # metadata leaves out the compartment its timing reads (or that has none, and
+  # gets the depot/central fallback) solves with NaN states. The solve does not
+  # error: every state is NA from the first step after the dose. The first test
+  # above passes such a model, because `doseEffect` ignores NA and the time-0
+  # row still shows the dose.
+  #
+  # Timing outputs themselves (`tad()`, a time since inoculation) are NA until
+  # their first event by design, so only `d/dt()` states are checked; see
+  # probeNonFiniteStates().
+  #
+  # On the default path this covers the linCmt-risk screen plus every model
+  # that reads a named compartment's dose history (doseTimingCandidates()),
+  # which is the class this check exists for; under `full`, every model.
+  skip_on_cran()
+  skip_if_not_installed("rxode2")
+
+  db <- nlmixr2lib::modeldb
+  names_ <- if (.solveGateScope() == "full") {
+    db$name
+  } else {
+    intersect(db$name, union(linCmtRiskCandidates(), doseTimingCandidates()))
+  }
+  expect_gt(length(names_), 0)
+
+  res <- .gateProbe(names_)
+  exempt <- c(probeUnsupportedModels, knownBrokenModels)
+  nonFinite <- character(0)
+  for (n in setdiff(names_, exempt)) {
+    states <- unique(c(res[[n]]$lin$nonFiniteStates, res[[n]]$ode$nonFiniteStates))
+    if (length(states)) {
+      nonFinite <- c(nonFinite, sprintf("%s (%s)", n, paste(states, collapse = ", ")))
+    }
+  }
+
+  expect_equal(
+    nonFinite,
+    character(0),
+    info = paste0(
+      "Model(s) whose dosed probe solve leaves an ODE state NaN or infinite: ",
+      paste(nonFinite, collapse = "; "),
+      ". Check that every compartment the model's tad()/podo()/tafd()/... ",
+      "calls name is in its `dosing` metadata (checkModelConventions() ",
+      "reports this as dose_timing_compartment), and that the first entry is ",
+      "the usual route. If the model is genuinely broken, add it to ",
+      "knownBrokenModels with the evidence."
     )
   )
 })

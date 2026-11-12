@@ -472,6 +472,33 @@ linCmtRiskCandidates <- function() {
   unname(sub("[.]R$", "", basename(files[keep])))
 }
 
+# Does this model file's model() block read the dose history of a named
+# compartment (`tad(depot2)`, `podo(stomach)`, ...)? Uses the convention
+# checker's own walker, so the screen and the rule agree on what counts.
+.probeReadsDoseHistory <- function(path) {
+  mb <- tryCatch(.probeModelBlockOfFile(path), error = function(e) NULL)
+  length(nlmixr2lib:::.doseTimingCalls(mb)) > 0L
+}
+
+#' Registry models that read a named compartment's dose history
+#'
+#' These are the models a wrong dosing compartment breaks: the probe doses the
+#' registry's first `dosing` compartment, and a dose-history function of any
+#' other compartment is NA, which makes the derivatives that use it NaN.
+#' Enumerated from the model files like `linCmtRiskCandidates()`.
+#'
+#' @return Character vector of model names.
+#' @noRd
+doseTimingCandidates <- function() {
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  if (!nzchar(root)) {
+    return(character(0))
+  }
+  files <- list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
+  keep <- vapply(files, .probeReadsDoseHistory, logical(1))
+  unname(sub("[.]R$", "", basename(files[keep])))
+}
+
 # One solve of an already-prepared model. `amt = 0` gives the no-dose control,
 # which keeps the two solves identical in every other respect -- same event
 # grid, same covariates, same solver settings.
@@ -505,6 +532,24 @@ linCmtRiskCandidates <- function() {
   list(result = first, form = NA_character_)
 }
 
+#' ODE states that a solve leaves NaN or infinite
+#'
+#' Only `d/dt()` states count. A timing output such as `tad()`, a time since
+#' inoculation or a trigger time is NA before its first event by design, but a
+#' state is an amount: a non-finite one means a derivative was non-finite,
+#' which newer rxode2 builds refuse outright by failing the subject.
+#' States a `linCmt()` conversion removed from the output are not looked for.
+#'
+#' @param ui The rxUi that was solved.
+#' @param solved The solve, as a data frame.
+#' @return Character vector of state names, empty when every state is finite.
+#' @noRd
+probeNonFiniteStates <- function(ui, solved) {
+  states <- intersect(ui$state, names(solved))
+  bad <- colSums(!is.finite(as.matrix(solved[, states, drop = FALSE]))) > 0
+  states[bad]
+}
+
 #' Solve one registry model at typical values, with and without a dose
 #'
 #' The no-dose solve is the control.  Asking "is the solve identically zero"
@@ -519,8 +564,8 @@ linCmtRiskCandidates <- function() {
 #'   ODE-to-`linCmt()` optimisation.
 #' @return A list with `status` (one of "ok", "skip", "error"), and on success
 #'   `doseEffect` (the largest absolute difference the dose made to any
-#'   model quantity), `dosed`/`undosed` data frames, and the covariate
-#'   provenance.
+#'   model quantity), `nonFiniteStates` (see `probeNonFiniteStates()`), the
+#'   `dosed` data frame, and the covariate provenance.
 #' @noRd
 probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100) {
   out <- list(name = name, status = "error", message = NA_character_)
@@ -577,7 +622,7 @@ probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100) {
   out$status <- "ok"
   out$doseCmt <- doseCmt
   out$doseEffect <- if (all(is.na(diffs))) NA_real_ else max(diffs, na.rm = TRUE)
-  out$nonFinite <- any(!is.finite(as.matrix(dosed[, cols, drop = FALSE])))
+  out$nonFiniteStates <- probeNonFiniteStates(ui, dosed)
   out$dosed <- dosed
   out$cols <- cols
   out$covWhy <- cov$why
