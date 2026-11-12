@@ -201,7 +201,6 @@ ev_nca <- bind_rows(
   ) |>
   arrange(id, time, desc(evid))
 
-# steady-state searches for long-half-life subjects exceed the default step budget
 sim_nca <- rxode2::rxSolve(
   rxode2::zeroRe(mod),
   events = ev_nca, keep = "treatment", returnType = "data.frame",
@@ -209,8 +208,8 @@ sim_nca <- rxode2::rxSolve(
   maxsteps = 1e6
 )
 
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(sim_nca$Cc), sim_nca$id, all)))
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_nca$Cc))
 conc_df <- sim_nca |>
   filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
