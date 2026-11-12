@@ -7116,8 +7116,16 @@ navbar:
         href: articles/Grzeskowiak_2023_sugammadex_rocuronium.html
       - text: "Sugammadex rocuronium (Kleijn 2011)"
         href: articles/Kleijn_2011_sugammadex_rocuronium.html
+      - text: "Sugemalimab (Sheng 2026)"
+        href: articles/Sheng_2026_sugemalimab.html
       - text: "Sugemalimab (Wang 2024)"
         href: articles/Wang_2024_sugemalimab.html
+      - text: "Sugemalimab os (Sheng 2026)"
+        href: articles/Sheng_2026_sugemalimab.html
+      - text: "Sugemalimab pfs bicr (Sheng 2026)"
+        href: articles/Sheng_2026_sugemalimab.html
+      - text: "Sugemalimab pfs inv (Sheng 2026)"
+        href: articles/Sheng_2026_sugemalimab.html
       - text: "Sulbactam (Abouelhassan 2025)"
         href: articles/Abouelhassan_2025_sulbactam_durlobactam_crrt.html
       - text: "Sulbactam (Onita 2025)"
@@ -10854,6 +10862,7 @@ articles:
   - articles/Sheng_2013_ABPM
   - articles/Sheng_2016_quinine_rat
   - articles/Sheng_2020_mycophenolic_acid
+  - articles/Sheng_2026_sugemalimab
   - articles/Sherer_2012_AAA
   - articles/Sherwin_2012_mycophenolic_acid
   - articles/Sherwin_2012_risperidone
