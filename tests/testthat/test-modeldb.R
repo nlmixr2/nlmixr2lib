@@ -268,7 +268,31 @@ test_that("a parallel build gives the same rows, cache and errors as a serial on
   expect_named(serialErrors$failures, file.path(dir, "sub/Fixture_2026_mismatch.R"))
 })
 
-test_that("a worker that dies fails every file of its chunk, by name", {
+test_that("a worker that is killed fails every file of its chunk, by name", {
+  # The crash path: the process dies (a segfault, the DLL limit, the OOM
+  # killer) and leaves no result, only its exit.
+  skip_on_cran()
+  skip_if_not_installed("callr")
+  dir <- withr::local_tempdir("modeldb-fixture")
+  files <- c("PK_1cmt.R", "PK_2cmt.R")
+  .writeModelFixtures(dir, .buildFixtureFiles()[files])
+  w <- nlmixr2lib:::.modeldbStartWorker(
+    loader = nlmixr2lib:::.modeldbWorkerLoader(),
+    dir = dir,
+    files = files,
+    hashes = c("h1", "h2"),
+    registers = nlmixr2lib:::.modeldbRegisterSnapshot()
+  )
+  w$proc$kill()
+  expect_false(w$proc$is_alive())
+  res <- suppressMessages(nlmixr2lib:::.modeldbCollectWorker(w))
+  expect_identical(vapply(res, `[[`, "", "file"), files)
+  expect_identical(vapply(res, `[[`, "", "hash"), c("h1", "h2"))
+  expect_true(all(startsWith(vapply(res, `[[`, "", "failure"), "worker process failed: ")))
+  expect_false(file.exists(w$log))
+})
+
+test_that("a worker that cannot load the package fails every file of its chunk, by name", {
   skip_on_cran()
   skip_if_not_installed("callr")
   w <- nlmixr2lib:::.modeldbStartWorker(
