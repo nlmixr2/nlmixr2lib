@@ -1,0 +1,520 @@
+---
+title: "Afabicin and immune response in immunocompetent mouse thigh infection (Saporta 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Afabicin and immune response in immunocompetent mouse thigh infection (Saporta 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Saporta 2026 extended the afabicin pharmacokinetic/pharmacodynamic (PK/PD)
+model of Saporta 2024 to immunocompetent mice. The drug-effect structure for
+afabicin desphosphono, the active moiety of the FabI-inhibitor prodrug
+afabicin, was kept. A neutrophil-mediated immune response was added in the
+thigh, and the model was fitted jointly to the earlier in vitro time-kill data
+and to new immunocompetent mouse thigh infection data from five
+*Staphylococcus aureus* strains.
+
+```{r model}
+mod <- rxode2::rxode(readModelDb("Saporta_2026_afabicin_invitro_mouse"))
+
+# The model has no inter-experiment variability, so only the residual error is
+# zeroed for typical-value simulations.
+mod_tv <- rxode2::zeroRe(mod, "sigma")
+
+# With no omega, rxode2 notes that a multi-subject solve has no between-subject
+# variability. That is expected here and is muffled; any other warning shows.
+muffle_no_omega <- function(w) {
+  if (grepl("multi-subject simulation without", conditionMessage(w))) {
+    invokeRestart("muffleWarning")
+  }
+}
+solve_df <- function(model, ev, ...) {
+  withCallingHandlers(
+    as.data.frame(rxode2::rxSolve(model, ev, ...)),
+    warning = muffle_no_omega
+  )
+}
+```
+
+* Citation: `r mod$reference`
+* Article: <https://doi.org/10.1128/aac.00959-25>
+* PubMed Central open-access copy: <https://pmc.ncbi.nlm.nih.gov/articles/PMC13041350/>
+* Sibling models: `Saporta_2024_afabicin_invitro` and
+  `Saporta_2024_afabicin_invitro_mouse` (in vitro and neutropenic mouse thigh;
+  see the Saporta 2024 article).
+
+## Structure
+
+The model carries two bacterial systems side by side, as the authors fitted
+them jointly:
+
+* **In vitro** (`log_cfu_invitro`, `dvid = 1`): growing drug-susceptible
+  bacteria `bact_s` and dormant bacteria `bact_d`, driven by a static bath
+  concentration dosed into `afabicin_desphosphono` (mg/L).
+* **Thigh** (`log_cfu_thigh`, `dvid = 2`): `bact_s_thigh`, `bact_d_thigh` and
+  a phagocytosed state `bact_phagocytosed_thigh`, driven by the unbound plasma
+  concentration `fu * CP_AFABICIN_DESPHOSPHONO_MGL` with `fu = 0.02`.
+
+Transfer from S to D is `kSD = (S + D) * (kgrowth - kdeath) / Bmax`. Afabicin
+desphosphono kills only S bacteria through a sigmoid Emax model with
+`EC50 = beta * MIC^gamma`, and an adaptation pair (`aroff` -> `aron`, onset
+`kon * C`, offset `koff`) lowers Emax as `Emax * (1 - ASon / (ASon + AS50))`.
+In the thigh, Emax is `Emax vitro * RatioEmax` and `beta` has its own in vivo
+value. Model time zero is the time of infection; treatment started 2 h later.
+
+Neutrophils follow a fixed Friberg maturation chain (`prol`, `transit1` to
+`transit3`, `circ`) and move into the thigh (`neut_thigh`) at the transit
+rate `ktr = 4 / MTT`, amplified after infection by the surge
+`1 + Namp / (((T - NT0) / NSW)^6 + 1)`. Neutrophils phagocytose S and D
+bacteria at `kphag = kphag,max * (1 - (P/N)^H / ((P/N)^H + (P/N50)^H))`, where
+P/N is the ratio of phagocytosed bacteria to thigh neutrophils. Phagocytosed
+bacteria are digested at `kdig = kphag,max` and still count as CFU until then,
+because phagocytes were lysed before plating.
+
+## The mouse PK is a user-supplied input
+
+Supplementary text 2 prints the structure of the mouse PK model that produced
+the plasma concentrations (an intraperitoneal depot, one absorption transit
+compartment and a two-compartment afabicin desphosphono model), but no
+published source reports its parameter values. The thigh system therefore
+reads the total plasma concentration from the time-varying covariate column
+`CP_AFABICIN_DESPHOSPHONO_MGL` (mg/L). Set it to 0 for growth controls and for
+records that only simulate the in vitro system.
+
+# Population
+
+```{r population}
+str(mod$population)
+```
+
+The in vivo data are 819 immunocompetent female ICR or Swiss Webster mice
+infected intramuscularly in the thigh with one of five *S. aureus* strains
+(Supplementary Table S1; afabicin desphosphono MIC 0.004 to 0.06 mg/L).
+Afabicin 0.011 to 150 mg/kg was given intraperitoneally every 6 h from 2 h
+after infection; one strain (IHMA 1073118) was studied in controls only. Thighs
+were harvested 2 to 74 h after infection. The in vitro arm re-uses the static
+time-kill data described in Saporta 2024.
+
+# Source trace
+
+## Equations
+
+| Model element | Source location |
+|---|---|
+| S, D and P bacterial states, kSD from S + D and Bmax | Eqs 2-4; Figure 1 |
+| Saturable phagocytosis on the P/N ratio | Eq 5; Results, 'Model for immune response' |
+| kdig equal to kphag,max, not saturable | Results ('No saturation of the digestion process'; 'kdig could share the same estimate') |
+| Neutrophil maturation chain with feedback exponent 0.149 | Supplementary text 1 |
+| Recruitment surge into the thigh, from the time of infection | Eq 1; Supplementary text 1; Figure S1 |
+| Every neutrophil state starts at Ncirc,T0 | Supplementary text 1 |
+| EC50 = beta * MIC^gamma | Eq 6 |
+| Drug effect on S only | Materials and Methods, 'PKPD modeling of afabicin desphosphono activity' |
+| Sigmoid Emax with adaptation (ASoff / ASon, AS50) | Materials and Methods; Figure 1; structure of Saporta 2024 Eqs 3-5 |
+| Emax vivo = Emax vitro * RatioEmax | Table 1 |
+| ATCC 33591 inoculum bioavailability | Table 1; Results, 'Model for immune response' |
+| Unbound driver, fu = 0.02 | Supplementary text 2 ('Unbound concentrations from Central'); value from Saporta 2024 Methods |
+| Additive error on log10 counts per setting | Materials and Methods, 'Data analysis and software'; Table 1 footnote a |
+
+## Parameters
+
+```{r param-trace}
+ini_tab <- mod$iniDf |>
+  filter(!is.na(ntheta)) |>
+  transmute(parameter = name, value = signif(est, 4), fixed = fix, label)
+knitr::kable(ini_tab, caption = "ini() values. Log-scale entries back-transform to the Table 1 values listed in the model file's source-trace comments.")
+```
+
+| Parameter | Table 1 value | Model entry |
+|---|---|---|
+| kgrowth | 1.10 /h (fixed) | `lkgrowth` |
+| kdeath | 0.179 /h (fixed) | `lkdeath` |
+| Bmax vitro / vivo | 9.86 log10 CFU/mL / 9.08 log10 CFU/g (fixed) | `lbmax`, `lbmax_thigh` |
+| RES vitro / vivo | 0.877 / 0.555 log10 | `addSd_log_cfu_invitro`, `addSd_log_cfu_thigh` |
+| F33591 | 0.437 | `finoc_atcc33591` |
+| Ncirc,T0 | 6.23 log10 N/mL (fixed) | `lcirc0` |
+| MTT | 37.7 h (fixed) | `lmtt` |
+| Namp, NT0, NSW | 44.2, 50.5 h, 28.2 h (fixed) | `lnamp`, `lnt0`, `lnsw` |
+| kphag,max = kdig | 0.963 /h | `lkn_max` |
+| P/N50 | 114 CFU/N | `lpn50` |
+| H | 0.475 | `lhill_pn` |
+| Emax vitro | 2.99 /h | `lemax` |
+| RatioEmax | 0.0796 | `lratio_emax_thigh` |
+| beta vitro / vivo | 1 (fixed) / 0.182 | `lec50`, `lec50_thigh` |
+| gamma | 0.185 | `e_mic_ec50` |
+| Hill | 0.515 | `lhill` |
+| kon | 0.556 mL/(ug h) | `lkon` |
+| koff | 0.0139 /h (fixed) | `lkoff` |
+| AS50 | 0.784 | `lar50` |
+| Feedback exponent | 0.149 | `lgamma` (Supplementary text 1) |
+| fu | 0.02 | `fu` (Saporta 2024) |
+
+# Checks against values stated in the text
+
+The Results and Abstract quote derived quantities that follow from Table 1:
+an in vivo Emax of 0.24 /h against 2.99 /h in vitro, an EC50 about 80%
+(Abstract: 82%) lower in vivo, and a baseline circulating neutrophil count of
+1.69 x 10^6 /mL (Prediction of clinical efficacy).
+
+```{r text-checks}
+th <- setNames(mod$iniDf$est, mod$iniDf$name)
+chk <- tibble::tibble(
+  quantity = c("Emax vivo (1/h)", "EC50 reduction in vivo (%)", "Ncirc,T0 (cells/mL)"),
+  model = c(
+    exp(th[["lemax"]] + th[["lratio_emax_thigh"]]),
+    100 * (1 - exp(th[["lec50_thigh"]] - th[["lec50"]])),
+    exp(th[["lcirc0"]])
+  ),
+  paper = c(0.24, 82, 1.69e6)
+) |>
+  mutate(pct_diff = 100 * (model - paper) / paper)
+knitr::kable(chk, digits = 3)
+# The paper rounds to two or three significant figures.
+stopifnot(all(abs(chk$pct_diff) < 2))
+```
+
+# Neutrophil dynamics
+
+Without a cytotoxic drug the maturation chain stays at its baseline, so the
+circulating count is constant and only the thigh pool moves, following the
+recruitment surge of Figure S1 (peak at 50.5 h after infection).
+
+```{r neutrophils}
+ev_ctrl <- data.frame(
+  id = 1L, time = seq(0, 120, by = 1), evid = 0L, dvid = 2L,
+  CP_AFABICIN_DESPHOSPHONO_MGL = 0
+)
+sim_neut <- solve_df(mod_tv, ev_ctrl, params = c(linoc_thigh = log(10^7.36)))
+
+ggplot(sim_neut, aes(time, neut_thigh / exp(th[["lcirc0"]]))) +
+  geom_line() +
+  labs(
+    x = "Time after infection (h)",
+    y = "Thigh neutrophils / baseline circulating count",
+    caption = "Compare with Figure S1 of Saporta 2026 (surge function)."
+  )
+
+stopifnot(
+  # The feedback chain holds Ncirc at baseline in the absence of drug.
+  max(abs(sim_neut$circ / exp(th[["lcirc0"]]) - 1)) < 1e-6,
+  # Thigh neutrophils peak a few hours after the surge peak, delayed by the
+  # 1 / ktr = 9.4 h residence time.
+  sim_neut$time[which.max(sim_neut$neut_thigh)] > 50.5,
+  sim_neut$time[which.max(sim_neut$neut_thigh)] < 70
+)
+```
+
+# Growth controls against Supplementary Table S2
+
+Supplementary Table S2 lists the median observed count of every untreated
+control group. Each group is simulated from its own inoculum (time 0), with the
+F33591 inoculum bioavailability applied to the ATCC 33591 groups. Growth does
+not depend on the MIC, so the strains differ only through that flag.
+
+```{r controls-data}
+# Supplementary Table S2, control rows: strain, inoculum (log10 CFU/g) and the
+# median observed count at each sampling time after infection.
+ctrl_obs <- tibble::tribble(
+  ~strain, ~inoc, ~time, ~obs,
+  "570-493", 7.36, 2, 7.87, "570-493", 7.36, 26, 8.63,
+  "570-493", 6.77, 2, 7.23, "570-493", 6.77, 26, 7.58, "570-493", 6.77, 50, 7.83,
+  "570-493", 7.40, 2, 7.94, "570-493", 7.40, 26, 8.98, "570-493", 7.40, 50, 8.98,
+  "570-493", 7.67, 2, 8.30, "570-493", 7.67, 21, 9.27,
+  "570-493", 8.11, 2, 8.39, "570-493", 8.11, 21, 9.27,
+  "ATCC 29213", 7.36, 2, 7.85, "ATCC 29213", 7.36, 26, 8.71,
+  "ATCC 29213", 6.97, 2, 7.85, "ATCC 29213", 6.97, 74, 7.51,
+  "ATCC 29213", 6.13, 2, 6.89, "ATCC 29213", 6.13, 26, 6.67, "ATCC 29213", 6.13, 50, 6.30,
+  "ATCC 29213", 6.80, 2, 7.57, "ATCC 29213", 6.80, 26, 8.41, "ATCC 29213", 6.80, 50, 7.87,
+  "ATCC 29213", 7.05, 2, 7.51, "ATCC 29213", 7.05, 26, 7.88, "ATCC 29213", 7.05, 50, 7.55,
+  "ATCC 29213", 7.17, 2, 7.71, "ATCC 29213", 7.17, 26, 8.82, "ATCC 29213", 7.17, 50, 8.65,
+  "ATCC 29213", 8.10, 2, 8.59, "ATCC 29213", 8.10, 50, 8.95, "ATCC 29213", 8.10, 74, 8.61,
+  "ATCC 29213", 7.23, 2, 7.72, "ATCC 29213", 7.23, 6, 8.19, "ATCC 29213", 7.23, 10, 8.47,
+  "ATCC 29213", 7.54, 2, 7.93, "ATCC 29213", 7.54, 18, 9.04,
+  "ATCC 33591", 7.20, 2, 7.57, "ATCC 33591", 7.20, 26, 8.33,
+  "ATCC 33591", 6.27, 2, 6.06, "ATCC 33591", 6.27, 26, 5.98,
+  "ATCC 33591", 7.28, 2, 7.15, "ATCC 33591", 7.28, 4, 7.29, "ATCC 33591", 7.28, 6, 7.63,
+  "ATCC 33591", 7.28, 12, 8.00, "ATCC 33591", 7.28, 20, 7.77, "ATCC 33591", 7.28, 26, 7.86,
+  "ATCC 33591", 6.48, 2, 6.36, "ATCC 33591", 6.48, 26, 4.65, "ATCC 33591", 6.48, 50, 6.13,
+  "ATCC 33591", 7.26, 2, 7.09, "ATCC 33591", 7.26, 26, 8.04, "ATCC 33591", 7.26, 50, 7.89,
+  "ATCC 33591", 7.67, 2, 7.31, "ATCC 33591", 7.67, 26, 8.41, "ATCC 33591", 7.67, 50, 8.28,
+  "ATCC 33591", 8.11, 2, 7.59, "ATCC 33591", 8.11, 26, 9.29, "ATCC 33591", 8.11, 50, 8.70,
+  "ATCC 33591", 7.58, 2, 7.67, "ATCC 33591", 7.58, 6, 7.98, "ATCC 33591", 7.58, 10, 8.13,
+  "IHMA 1074670", 7.14, 2, 7.39, "IHMA 1074670", 7.14, 26, 8.32,
+  "IHMA 1074670", 6.46, 2, 6.58, "IHMA 1074670", 6.46, 26, 6.48, "IHMA 1074670", 6.46, 50, 4.40,
+  "IHMA 1074670", 7.13, 2, 7.42, "IHMA 1074670", 7.13, 26, 8.01, "IHMA 1074670", 7.13, 50, 8.22,
+  "IHMA 1074670", 7.40, 2, 7.68, "IHMA 1074670", 7.40, 17, 8.57,
+  "IHMA 1074670", 7.83, 2, 8.00, "IHMA 1074670", 7.83, 17, 9.01,
+  "IHMA 1073118", 6.20, 2, 6.51, "IHMA 1073118", 6.20, 26, 5.80, "IHMA 1073118", 6.20, 50, 5.27,
+  "IHMA 1073118", 6.72, 2, 7.42, "IHMA 1073118", 6.72, 26, 8.02, "IHMA 1073118", 6.72, 50, 8.23,
+  "IHMA 1073118", 7.10, 2, 7.39, "IHMA 1073118", 7.10, 26, 8.40, "IHMA 1073118", 7.10, 50, 8.02,
+  "IHMA 1073118", 7.56, 2, 7.88, "IHMA 1073118", 7.56, 18, 8.87
+)
+
+groups <- ctrl_obs |>
+  distinct(strain, inoc) |>
+  mutate(id = row_number())
+ctrl_params <- groups |>
+  transmute(
+    id,
+    linoc_thigh = log(10^inoc),
+    strain_atcc33591 = as.numeric(strain == "ATCC 33591")
+  )
+ev_groups <- groups |>
+  select(id) |>
+  tidyr::crossing(time = seq(0, 74, by = 1)) |>
+  mutate(evid = 0L, dvid = 2L, CP_AFABICIN_DESPHOSPHONO_MGL = 0)
+
+sim_ctrl <- solve_df(mod_tv, ev_groups, params = ctrl_params) |>
+  left_join(groups, by = "id")
+```
+
+```{r controls-plot, fig.height = 7, fig.cap = "Typical-value growth-control predictions (lines) against the Supplementary Table S2 medians (points), coloured by inoculum size. Compare with the control panels of Figure 2 and Figure S2 of Saporta 2026."}
+ggplot(sim_ctrl, aes(time, log_cfu_thigh, colour = factor(inoc))) +
+  geom_line() +
+  geom_point(data = ctrl_obs, aes(time, obs)) +
+  facet_wrap(~strain) +
+  labs(
+    x = "Time after infection (h)", y = "Thigh count (log10 CFU/g)",
+    colour = "Inoculum (log10 CFU/g)"
+  ) +
+  theme(legend.position = "bottom")
+```
+
+```{r controls-check}
+ctrl_cmp <- ctrl_obs |>
+  left_join(groups, by = c("strain", "inoc")) |>
+  left_join(sim_ctrl |> select(id, time, pred = log_cfu_thigh), by = c("id", "time")) |>
+  mutate(resid = obs - pred)
+
+ctrl_cmp |>
+  group_by(strain) |>
+  summarise(
+    n = n(),
+    median_resid = median(resid),
+    median_abs_resid = median(abs(resid))
+  ) |>
+  mutate(across(where(is.numeric) & !n, ~ round(.x, 2))) |>
+  rename(
+    "Strain" = strain, "Medians compared" = n,
+    "Median (obs - pred)" = median_resid,
+    "Median |obs - pred|" = median_abs_resid
+  ) |>
+  knitr::kable(caption = "Growth-control medians (Table S2) against typical-value predictions, log10 CFU/g.")
+
+overall <- ctrl_cmp |>
+  summarise(
+    median_resid = median(resid),
+    median_abs = median(abs(resid)),
+    q90_abs = quantile(abs(resid), 0.9)
+  )
+knitr::kable(overall, digits = 2)
+stopifnot(
+  # Centre: an error in kphag,max, P/N50, the surge or Bmax shifts every
+  # control group by most of a log10 unit.
+  abs(overall$median_resid) < 0.35,
+  overall$median_abs < 0.5,
+  # Envelope: the low-inoculum groups the paper flags as highly variable
+  # (up to 4 log10 at 50 h) sit in the upper tail.
+  overall$q90_abs < 1.5
+)
+```
+
+The typical-value curves follow the control medians across strains and
+inoculum sizes. The largest residuals are in the lowest-inoculum groups
+(about 6 log10 CFU/g), where the paper reports observations spanning up to
+4 log10 CFU/g at 50 h and notes that the model, without variability in the
+immune response, cannot capture all of them.
+
+# Contribution of the immune response
+
+Setting `kphag,max` near zero removes phagocytosis while keeping the bacterial
+growth parameters, giving the corresponding neutropenic-like growth curve.
+Bacteria then grow toward Bmax (9.08 log10 CFU/g); the neutrophil response
+holds counts about one log10 lower and turns them down as the recruitment
+surge peaks.
+
+```{r immune-contribution}
+ev_one <- ev_ctrl |> filter(time <= 74)
+sim_immune <- bind_rows(
+  solve_df(mod_tv, ev_one, params = c(linoc_thigh = log(10^7.36))) |>
+    mutate(scenario = "Immunocompetent (final model)"),
+  solve_df(mod_tv, ev_one, params = c(linoc_thigh = log(10^7.36), lkn_max = log(1e-8))) |>
+    mutate(scenario = "No phagocytosis")
+)
+ggplot(sim_immune, aes(time, log_cfu_thigh, linetype = scenario)) +
+  geom_line() +
+  geom_hline(yintercept = 9.08, colour = "grey50") +
+  labs(x = "Time after infection (h)", y = "Thigh count (log10 CFU/g)", linetype = NULL) +
+  theme(legend.position = "bottom")
+
+at74 <- sim_immune |>
+  filter(time == 74) |>
+  select(scenario, log_cfu_thigh)
+knitr::kable(at74, digits = 2)
+stopifnot(
+  at74$log_cfu_thigh[at74$scenario == "No phagocytosis"] -
+    at74$log_cfu_thigh[at74$scenario == "Immunocompetent (final model)"] > 0.5
+)
+```
+
+# Afabicin effect in the thigh under constant exposure
+
+Without the mouse PK, source Figures 2 and 3 (treated groups) cannot be
+replicated. Holding the unbound concentration constant from 2 h after
+infection shows the drug-effect parameters directly. The in vivo Emax is
+0.24 /h, so even at saturating exposure the kill rate on S bacteria is below
+the net growth rate (`kgrowth - kdeath` = 0.92 /h); the decline in counts
+comes from the drug effect and the phagocytosis together. The in vivo EC50 at
+an MIC of 0.008 mg/L is `0.182 * 0.008^0.185` = 0.075 mg/L unbound.
+
+```{r thigh-constant}
+cu_levels <- c(0, 0.01, 0.03, 0.1, 0.3, 1)
+ev_cu <- tidyr::expand_grid(id = seq_along(cu_levels), time = seq(0, 74, by = 1)) |>
+  mutate(
+    evid = 0L, dvid = 2L, cu = cu_levels[id],
+    CP_AFABICIN_DESPHOSPHONO_MGL = ifelse(time >= 2, cu / 0.02, 0)
+  )
+sim_cu <- solve_df(mod_tv, ev_cu, params = c(linoc_thigh = log(10^7.36)), keep = "cu")
+
+ggplot(sim_cu, aes(time, log_cfu_thigh, colour = factor(cu))) +
+  geom_line() +
+  labs(
+    x = "Time after infection (h)", y = "Thigh count (log10 CFU/g)",
+    colour = "Unbound C (mg/L)",
+    caption = "MIC 0.008 mg/L (ATCC 29213), inoculum 7.36 log10 CFU/g. Constant exposure is illustrative, not an afabicin dosing regimen."
+  )
+
+cu74 <- sim_cu |>
+  filter(time == 74) |>
+  arrange(cu)
+knitr::kable(cu74 |> select(cu, log_cfu_thigh), digits = 2)
+# Deterministic solve: killing increases monotonically with exposure.
+stopifnot(all(diff(cu74$log_cfu_thigh) < 0))
+```
+
+# The in vitro arm
+
+The in vitro system shares `gamma`, `Hill`, `kon`, `koff` and `AS50` with the
+thigh. A growth control approaches Bmax vitro (9.86 log10 CFU/mL), and static
+concentrations around the in vitro EC50 at an MIC of 0.008 mg/L
+(`0.008^0.185` = 0.41 mg/L) produce graded responses: delayed growth or
+early killing followed by regrowth as adaptation builds at the lower
+concentrations, and sustained killing at the highest.
+
+```{r invitro}
+conc_levels <- c(0, 0.1, 0.4, 1.6, 6.4)
+ev_vitro <- bind_rows(
+  data.frame(
+    id = seq_along(conc_levels), time = 0, evid = 1L,
+    cmt = "afabicin_desphosphono", amt = conc_levels
+  ),
+  tidyr::expand_grid(id = seq_along(conc_levels), time = seq(0, 240, by = 1)) |>
+    mutate(evid = 0L, dvid = 1L)
+) |>
+  mutate(CP_AFABICIN_DESPHOSPHONO_MGL = 0) |>
+  arrange(id, time, desc(evid))
+sim_vitro <- solve_df(mod_tv, ev_vitro) |>
+  mutate(conc0 = conc_levels[id])
+
+ggplot(sim_vitro |> filter(time <= 48), aes(time, log_cfu_invitro, colour = factor(conc0))) +
+  geom_line() +
+  labs(x = "Time (h)", y = "In vitro count (log10 CFU/mL)", colour = "C (mg/L)")
+
+ctrl_vitro <- sim_vitro |> filter(conc0 == 0, time == 240)
+stopifnot(abs(ctrl_vitro$log_cfu_invitro - 9.86) < 0.05)
+```
+
+# Human projection (source Figure 4)
+
+The paper projected the model to patients with a human population PK model of
+afabicin (Supplementary Table S3), assuming human neutrophils are as potent as
+murine ones, and varied only the baseline neutrophil count (1.69 x 10^6 or
+5 x 10^6 /mL). That PK model is printed as a parameter table without its
+equations (see Assumptions and deviations), so it is not packaged here.
+The immune-response part of the projection can still be shown. Raising
+`lcirc0` to the human value gives the untreated course of a 7 log10 CFU/g
+infection; the paper notes that the immune response alone does not reach the
+bacterial killing achieved with afabicin.
+
+```{r human-immune}
+ev_h <- data.frame(
+  id = 1L, time = seq(0, 96, by = 1), evid = 0L, dvid = 2L,
+  CP_AFABICIN_DESPHOSPHONO_MGL = 0
+)
+sim_h <- bind_rows(
+  solve_df(mod_tv, ev_h, params = c(linoc_thigh = log(1e7), lcirc0 = log(1.69e6))) |>
+    mutate(baseline = "1.69 x 10^6 /mL"),
+  solve_df(mod_tv, ev_h, params = c(linoc_thigh = log(1e7), lcirc0 = log(5e6))) |>
+    mutate(baseline = "5 x 10^6 /mL")
+)
+ggplot(sim_h, aes(time, log_cfu_thigh, colour = baseline)) +
+  geom_line() +
+  geom_vline(xintercept = 24, linetype = "dashed") +
+  labs(
+    x = "Time after infection (h)", y = "Bacterial count (log10 CFU/g)",
+    colour = "Baseline neutrophils",
+    caption = "Untreated course; the dashed line marks the source Figure 4 treatment start (24 h)."
+  )
+
+h96 <- sim_h |>
+  filter(time == 96) |>
+  arrange(baseline)
+# More neutrophils, more phagocytosis: the higher baseline ends lower.
+stopifnot(h96$log_cfu_thigh[2] < h96$log_cfu_thigh[1])
+```
+
+# PKNCA
+
+The model carries no PK. The in vitro concentration is static and the mouse
+plasma concentration is an external input, so there is no concentration-time
+profile for non-compartmental analysis. Validation instead relies on the
+closed-form checks, the neutrophil steady state, the growth-control comparison
+against Supplementary Table S2 and the structural checks above. `PKNCA` is
+loaded only for consistency with the other articles.
+
+# Assumptions and deviations
+
+* **Mouse PK not encoded.** The mouse PK model (Bader 2017, a conference
+  poster) has unpublished parameter values, so the thigh system takes the
+  total plasma concentration `CP_AFABICIN_DESPHOSPHONO_MGL` as a time-varying
+  input. The treated-group panels of Figures 2 and 3 cannot be replicated.
+* **Unbound fraction from Saporta 2024.** Saporta 2026 states that unbound
+  concentrations drove the effect but does not repeat the value; `fu = 0.02`
+  is taken from the Saporta 2024 Methods, which used the same PK model and
+  effect structure.
+* **Human PK model not packaged.** Supplementary Table S3 lists the values of
+  the human afabicin / afabicin desphosphono PK model used for Figure 4
+  (built from Phase I data, not otherwise published) but not its equations.
+  The reference height and weight of the linear covariate effects, the form
+  and reference dose of the dose effect on the oral bioavailability logit,
+  whether the oral transit and absorption feed afabicin or afabicin
+  desphosphono, and the human unbound fraction are not reported, so the
+  human projection cannot be rebuilt from the source.
+* **F33591 value.** Table 1 gives 0.437 for the final model; the Results quote
+  0.458 from the immune-response model before the drug-effect parameters were
+  re-estimated jointly. The Table 1 value is used.
+* **Strain and inoculum are design inputs.** `mic` / `mic_thigh` default to
+  0.008 mg/L (ATCC 29213), `linoc_thigh` to 7.2 log10 CFU/g (the middle of the
+  7.14 to 7.36 treated-group inocula in Table 2) and `linoc` to 6 log10 CFU/mL.
+  `strain_atcc33591 = 1` applies the F33591 inoculum bioavailability. Override
+  these with `rxSolve(params = ...)`, per id where needed.
+* **beta is carried as the EC50 at an MIC of 1 mg/L** (`lec50`,
+  `lec50_thigh`), as in the Saporta 2024 models, and `gamma` as
+  `e_mic_ec50`. The feedback exponent 0.149 is printed in Supplementary text 1
+  rather than Table 1 and is fixed.
+* **Units of P/N.** P is in CFU/g of thigh and the neutrophil count in
+  cells/mL; the ratio is used as printed (P/N50 = 114 CFU/N).
+* **Limit of detection not modelled.** The paper does not describe a
+  censoring method, and the model returns uncensored log10 counts.

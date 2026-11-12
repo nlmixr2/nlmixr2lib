@@ -192,6 +192,8 @@ navbar:
         href: articles/Saporta_2024_afabicin.html
       - text: "Afabicin invitro mouse (Saporta 2024)"
         href: articles/Saporta_2024_afabicin.html
+      - text: "Afabicin invitro mouse (Saporta 2026)"
+        href: articles/Saporta_2026_afabicin.html
       - text: "Afatinib (Nakao 2019)"
         href: articles/Nakao_2019_afatinib.html
       - text: "Afatinib mouse (Yang 2025)"
@@ -10776,6 +10778,7 @@ articles:
   - articles/Santavy_2022_cefazolin
   - articles/SanzCodina_2024_cefiderocol
   - articles/Saporta_2024_afabicin
+  - articles/Saporta_2026_afabicin
   - articles/Saporta_2026_meropenem
   - articles/Sarashina_2005_epinastine
   - articles/Sasaki_2022_delamanid
