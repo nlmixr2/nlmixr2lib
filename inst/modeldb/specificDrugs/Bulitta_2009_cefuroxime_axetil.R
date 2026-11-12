@@ -31,6 +31,11 @@ Bulitta_2009_cefuroxime_axetil <- function() {
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # The suspension is dosed into the stomach. The release rate reads
+  # podo(stomach) and tad(stomach), which have no value until a dose lands
+  # there, so a dose into any other compartment leaves every derivative NaN.
+  dosing <- "stomach"
+
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
