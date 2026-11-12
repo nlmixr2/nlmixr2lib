@@ -276,11 +276,11 @@ human reference range marked. The replication below plots the simulated median
 and 5th-95th percentile band from the stochastic cohort, on the same axes.
 
 ```{r figure-3, fig.height = 4}
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_pop_ss$Cc))
 # Replicates Figure 3 of Munana 2018: steady-state LEV concentrations over one
 # q12h dosing interval, by treatment group. Panel A = LEV-XR alone,
 # B = LEV-XR + phenobarbital, C = LEV-XR + zonisamide.
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(sim_pop_ss$Cc), sim_pop_ss$id, all)))
 fig3 <- sim_pop_ss |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::group_by(treatment, time) |>
@@ -344,8 +344,8 @@ steady-state `AUCtau` are the same number; that identity is checked further
 down.)
 
 ```{r pknca}
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(sim_typ_sd$Cc), sim_typ_sd$id, all)))
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_typ_sd$Cc))
 sim_nca <- sim_typ_sd |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
@@ -507,8 +507,8 @@ observation that dogs on phenobarbital are the ones at risk of falling below the
 5 ug/mL lower reference bound.
 
 ```{r steady-state}
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(sim_typ_ss$Cc), sim_typ_ss$id, all)))
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_typ_ss$Cc))
 auc_tau <- sim_typ_ss |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::group_by(treatment) |>
@@ -553,8 +553,6 @@ and Table 1's Cmax is the single-dose closed form, as the flip-flop and
 # raising the target to 10 ug/mL put 6/6 LP, 3/6 L and 1/5 LZ dogs below it at
 # one or more sampling times. The trough is the minimum of the interval, so
 # "below X at any sampled time" is "trough below X".
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(sim_pop_ss$Cc), sim_pop_ss$id, all)))
 trough <- sim_pop_ss |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::group_by(treatment, id) |>
