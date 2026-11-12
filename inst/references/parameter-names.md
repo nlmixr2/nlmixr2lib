@@ -1763,6 +1763,14 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (`rmax_hr` = 77.8 beats/min, `rmax_map` = 119 mmHg, `rmax_sbp` = 169 mmHg; each enters `endpoint = BL + (rmax - BL) * conc/(conc + ec50) + ...`).
 - **Notes:** The plateau-level sibling of `lrbase`; `lemax` is explicitly **not** a substitute because it denotes an increment, so a model that reported `lemax = log(77.8)` for a 77.8 beats/min ceiling above an 84 beats/min baseline would predict a rise where the paper predicts a fall. A signed consequence worth noting: because the ceiling can sit *below* the baseline, the recovered `emax` may be negative (in the founding model `rmax_hr - HR_BL` = 77.8 - 84 = -6.2 beats/min for cafedrine/theodrenaline, and +5.5 for ephedrine after its +15% effect) -- which is exactly the paper's finding that one drug is heart-rate-neutral. Register additional `lrmax_<output>` members as new endpoints appear rather than reusing an existing one.
 
+### lrmax_alternative_pathway_activity (**canonical log-transformed floor level of complement alternative pathway activity under maximal inhibition**)
+- **Type:** paper-named-param
+- **Role:** Log of the complement alternative pathway activity (%) reached at saturating inhibitor concentration, in the output's own units. A member of the `lrmax_<output>` family: the source estimates the attained level, not the decrement, so the inhibitory term is written `ap = base - (base - rmax) * C / (ic50 + C)`. Inside `model()` the bare name is `rmax_alternative_pathway_activity`.
+- **Source aliases:**
+  - `Imax`, `IMAX` -- Chen 2026 Table 4 and PK-PD control stream (`IPRED = BASE - (BASE - IMAX) * DRUGE`); Table 4 defines Imax as the "minimum alternative pathway activity due to inhibition by danicopan".
+- **Example models:** `Chen_2026_danicopan.R` (`rmax_alternative_pathway_activity` = 3.05% against a typical baseline of 29.1%).
+- **Notes:** Do not encode the source's `Imax` as `limax`: that name is an increment, and reading 3.05 as the amount of activity removed would leave a typical patient at about 26% rather than about 3% at full inhibition.
+
 ### rmax_lsr28 (**canonical bare maximum attainable level of the log 28-day seizure rate intercept**)
 - **Type:** paper-named-param
 - **Role:** Bare (untransformed) member of the `lrmax_<output>` plateau-level family for the natural log-transformed 28-day seizure rate `lsr28`: the level the intercept term reaches under maximal drug effect, in log(seizures per 28 days). The drug increment is recovered as a difference, `lsr28 = int - (int - rmax_lsr28) * CAV / (ec50 + CAV) + ...`. Bare because the value is signed (negative in the founding model), following the positivity condition of the "Transform prefixes" rule.
