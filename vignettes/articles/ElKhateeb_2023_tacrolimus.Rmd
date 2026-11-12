@@ -281,12 +281,21 @@ ev_vpc <- cohort |>
   ) |>
   arrange(id, time, desc(evid))
 
-sim_vpc <- rxode2::rxSolve(mod_base, ev_vpc, maxsteps = 1e6, returnType = "data.frame")
+# The occasion effect is shared by every subject on the same occasion within one
+# solve, so the pooled quantiles of a single solve move with those six draws: the
+# median of 1200 troughs differed from the published 12.86 ng/mL by up to 21% over
+# eight seeds, and by at most 13% with ten replicate solves, each with fresh draws,
+# pooled.
+n_rep <- 10
+sim_vpc <- dplyr::bind_rows(lapply(seq_len(n_rep), function(r) {
+  rxode2::rxSolve(mod_base, ev_vpc, maxsteps = 1e6, returnType = "data.frame") |>
+    mutate(rep = r)
+}))
 
 # Every subject-occasion must have solved: an NA trough would otherwise leave the
 # quantiles below without a trace.
 troughs <- sim_vpc |> filter(time == 12)
-stopifnot(nrow(troughs) == n_sub * n_occ, !anyNA(troughs$sim))
+stopifnot(nrow(troughs) == n_sub * n_occ * n_rep, !anyNA(troughs$sim))
 # Follow-up day of the occasion, for the plot (occasions are 5000 h apart).
 troughs$day <- ((troughs$OCC - 1) * 5000 + 12) / 24
 vpc_tab <- tibble(
@@ -309,7 +318,7 @@ stopifnot(
   # Centre: a wrong CLint, volume or bioavailability term moves the median
   # by tens of percent.
   abs(median(troughs$sim) / 12.86 - 1) < 0.20,
-  # Envelope, on robust quantiles of 1200 simulated troughs.
+  # Envelope, on robust quantiles of 12000 simulated troughs.
   quantile(troughs$sim, 0.975) > 25, quantile(troughs$sim, 0.975) < 60,
   quantile(troughs$sim, 0.025) > 2, quantile(troughs$sim, 0.025) < 7
 )
