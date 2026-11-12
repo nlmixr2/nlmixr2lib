@@ -4698,6 +4698,8 @@ navbar:
         href: articles/Chen_2021_lorlatinib_exposure_response.html
       - text: "Lormetazepam (leNoble 2024)"
         href: articles/leNoble_2024_lormetazepam.html
+      - text: "Losartan pbpk (Tensil 2026)"
+        href: articles/Tensil_2026_losartan_pbpk.html
       - text: "Losmapimod (Yang 2013)"
         href: articles/Yang_2013_losmapimod.html
       - text: "Lserine (Lee 2024)"
@@ -11878,6 +11880,7 @@ articles:
   - articles/Teixeira_2026_meloxicam_dog
   - articles/TeixeiradaSilva_2022_valproic_acid
   - articles/Teng_2018_rrmm_pfs_mbma
+  - articles/Tensil_2026_losartan_pbpk
   - articles/TerHeine_2014_tamoxifen
   - articles/TerHeine_2018_everolimus
   - articles/Ternant_2021_infliximab
