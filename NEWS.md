@@ -2018,14 +2018,6 @@
 
 - Add Yang 2017 buagafuran ([doi:10.3389/fphar.2017.00683](https://doi.org/10.3389/fphar.2017.00683)) -- male Wistar rats in the elevated plus-maze.
 
-- Cite the published corrigendum to Patel 2017 selumetinib
-  ([doi:10.1002/psp4.12254](https://doi.org/10.1002/psp4.12254)) in
-  `Patel_2017_selumetinib` and its vignette. The corrigendum corrects the
-  Table 2 unit for `theta1` and `theta9` from `nmol/hr` to `hr`, confirming
-  the hours interpretation the model already encoded; no parameter value
-  changes. The open-access archived copy of the parent article is the
-  uncorrected version, so the citation is the only record of the fix.
-
 - Add Chan 2017 idiopathic pulmonary fibrosis %predicted FVC model-based meta-analysis ([doi:10.1002/psp4.12227](https://doi.org/10.1002/psp4.12227)) -- 4,919 adults with idiopathic pulmonary fibrosis across 43 arms in 20 trials; 15 treatment regimens including pirfenidone and nintedanib.
 
 - Add Marchand 2017 nicotine ([doi:10.1007/s13318-017-0405-2](https://doi.org/10.1007/s13318-017-0405-2)) — healthy adult smokers using heated tobacco, cigarettes, nasal spray or gum.
@@ -4523,12 +4515,6 @@
 - Add Dias 2024 quetiapine ([doi:10.1002/psp4.13107](https://doi.org/10.1002/psp4.13107)) - naive and schizophrenia phenotyped Wistar rats.
 
 - Add Zazo 2024 ceftazidime-avibactam ([doi:10.3390/antibiotics13090861](https://doi.org/10.3390/antibiotics13090861)) — simulated non-ICU and ICU adults with renal impairment (two population-specific models).
-
-- Canonical unit spellings. The machine-readable `units` block wrote the same
-  time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
-  -- so a consumer parsing `units$time` could not canonicalise it without
-  carrying its own spelling table. Same for `"minute"`/`"min"` and
-  `"microgram"`/`"ug"`.
 
 - Add Willemin 2024 interleukin-6 / CYP PBPK ([doi:10.1002/psp4.13144](https://doi.org/10.1002/psp4.13144)) - patients with relapsed/refractory multiple myeloma experiencing cytokine release syndrome after teclistamab.
 
