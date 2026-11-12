@@ -173,11 +173,13 @@ ev_ss <- bind_rows(lapply(seq_len(nrow(arms)), function(i) {
 })) |>
   arrange(id, time, desc(evid))
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_ss <- rxode2::rxSolve(
   mod,
   events = ev_ss, returnType = "data.frame",
   rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
-  keep = "treatment"
+  keep = "treatment",
+  maxsteps = 1e6
 )
 trough <- sim_ss |>
   filter(time == 0) |>
@@ -215,11 +217,13 @@ ev_fix <- ev_ss |>
   mutate(base_id = (id - 1) %% n_sub + 1) |>
   left_join(data.frame(base_id = seq_len(n_sub), eta_draw), by = "base_id") |>
   select(-base_id)
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_fix <- rxode2::rxSolve(
   rxode2::zeroRe(mod),
   events = ev_fix, returnType = "data.frame",
   rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
-  keep = "treatment"
+  keep = "treatment",
+  maxsteps = 1e6
 )
 med_fix <- sim_fix |>
   filter(time == 0) |>
@@ -241,6 +245,8 @@ stopifnot(abs(ratio_30 - 0.5) < 1e-6, abs(ratio_45 - 0.75) < 1e-6)
 # PKNCA over the steady-state dosing interval
 
 ```{r pknca}
+# A subject whose steady-state search fails comes back NA; stop rather than drop it.
+stopifnot(!any(tapply(is.na(sim_ss$Cc), sim_ss$id, all)))
 conc_ss <- sim_ss |>
   filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
