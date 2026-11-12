@@ -2848,3 +2848,103 @@ test_that("the model column names the model by how it was supplied", {
   res <- suppressWarnings(checkModelConventions(ui, verbose = FALSE))
   expect_equal(unique(res$model), "<rxUi>")
 })
+
+# Dose-history compartments -------------------------------------------------
+#
+# `tad(cmt)`, `podo(cmt)` and their siblings read the doses given into `cmt`.
+# When the registry's dosing compartments leave `cmt` out, nothing doses it,
+# the function is NA for every subject and every derivative that uses it is
+# NaN. The fixture models are in helper-doseTimingModels.R.
+
+.dtCategory <- function(model) {
+  res <- suppressWarnings(checkModelConventions(model, verbose = FALSE))
+  res[res$category == "dose_timing_compartment", , drop = FALSE]
+}
+
+test_that("every dose-history function takes a compartment in the installed rxode2", {
+  # The list is rxode2's syntax table, not something rxode2 exports. Parsing
+  # each one with a compartment argument fails as soon as rxode2 drops or
+  # renames one, and the dosenum() control shows the parser does refuse a
+  # compartment where the function takes none.
+  for (fn in nlmixr2lib:::.doseTimingFunctions) {
+    mv <- tryCatch(
+      suppressMessages(rxode2::rxModelVars(paste0("d/dt(depot) <- -depot; x <- ", fn, "(depot)"))),
+      error = function(e) e
+    )
+    expect_false(inherits(mv, "error"), info = fn)
+  }
+  expect_error(
+    suppressMessages(utils::capture.output(
+      rxode2::rxModelVars("d/dt(depot) <- -depot; x <- dosenum(depot)")
+    )),
+    "syntax error"
+  )
+})
+
+test_that(".doseTimingCalls collects named-compartment calls at any depth", {
+  e <- quote({
+    a <- podo(stomach) * exp(-k * tad(stomach))
+    if (tafd("depot2") > 1) b <- tad() else b <- tlast0(central)
+    x[, 1] <- dosenum()
+  })
+  hits <- nlmixr2lib:::.doseTimingCalls(e)
+  expect_equal(
+    vapply(hits, paste, character(1), collapse = ":"),
+    c("podo:stomach", "tad:stomach", "tafd:depot2", "tlast0:central")
+  )
+  expect_equal(nlmixr2lib:::.doseTimingCalls(quote(tad())), list())
+  expect_equal(nlmixr2lib:::.doseTimingCalls(quote(central)), list())
+})
+
+test_that("a timing read of an undosed compartment is an error (fallback case)", {
+  hit <- .dtCategory(.dtStomachModel)
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$severity, "error")
+  expect_equal(hit$name, "stomach")
+  expect_equal(
+    hit$message,
+    paste0(
+      "`podo(stomach)`, `tad(stomach)` read the doses given into 'stomach', ",
+      "which is not a dosing compartment (no `dosing` metadata, so the ",
+      "depot/central fallback gives: central)."
+    )
+  )
+  expect_true(grepl("dosing <- c(\"stomach\"", hit$suggestion, fixed = TRUE))
+})
+
+test_that("declaring the read compartment in `dosing` clears the error", {
+  expect_equal(nrow(.dtCategory(.dtStomachDosedModel)), 0L)
+})
+
+test_that("a timing read of depot is covered by the depot/central fallback", {
+  ui <- suppressMessages(nlmixr2est::nlmixr(.dtFallbackDepotModel))
+  expect_null(ui$meta$dosing)
+  expect_equal(nrow(.dtCategory(.dtFallbackDepotModel)), 0L)
+})
+
+test_that("bare tad() and podo() name no compartment and are not flagged", {
+  expect_equal(nrow(.dtCategory(.dtBareTimingModel)), 0L)
+})
+
+test_that("with several dosing compartments only the undeclared one is flagged", {
+  hit <- .dtCategory(.dtTwoDepotModel)
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$name, "depot3")
+  expect_equal(
+    hit$message,
+    paste0(
+      "`tafd(depot3)` reads the doses given into 'depot3', which is not a ",
+      "dosing compartment (`dosing` declares: depot, depot2)."
+    )
+  )
+})
+
+test_that("the message says when `dosing` is empty or there is no fallback", {
+  hit <- .dtCategory(.dtEmptyDosingModel)
+  expect_equal(hit$name, "stomach")
+  expect_true(grepl("(`dosing` is declared empty)", hit$message, fixed = TRUE))
+
+  hit2 <- .dtCategory(.dtNoFallbackModel)
+  expect_equal(hit2$name, "stomach")
+  expect_true(grepl("no depot or central compartment to fall back to", hit2$message, fixed = TRUE))
+})

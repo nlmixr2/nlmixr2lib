@@ -2,6 +2,8 @@
 
 # development version
 
+- `checkModelConventions()` reports an error when a dose-history function names a compartment the model is not dosed into: `tad()`, `tad0()`, `tafd()`, `tafd0()`, `tlast()`, `tlast0()`, `tfirst()`, `tfirst0()`, `dose()`, `dose0()`, `podo()` or `podo0()` of a compartment missing from its `dosing` metadata (or, without metadata, from the depot/central fallback that `buildModelDb()` records). Nothing doses that compartment, so the function is NA for every subject and any derivative using it is NaN.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

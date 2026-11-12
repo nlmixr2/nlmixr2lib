@@ -7,8 +7,11 @@
 #' file-level metadata (description, reference, units, covariateData);
 #' parameter names (log-prefix PK params, `eta`-prefix IIV, `propSd`/`addSd`
 #' residual error); parameter labels; covariates (canonical register, units,
-#' declared aliases); compartment names; the observation variable (`Cc`); and
-#' a syntactic dosing-vs-concentration unit cross-check.
+#' declared aliases); compartment names; the observation variable (`Cc`); a
+#' syntactic dosing-vs-concentration unit cross-check; and that every
+#' dose-history call naming a compartment (`tad(cmt)`, `podo(cmt)`,
+#' `tafd(cmt)`, ...) names one the model is dosed into (its `dosing` metadata,
+#' or else `depot` and/or `central`).
 #'
 #' When any issue of severity `"error"` or `"warning"` is found, a `warning()`
 #' is emitted whose message directs the user to call this function for the
@@ -73,7 +76,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkFmFamily(ui, conv),
     .checkLogitBackTransform(ui, conv),
     .checkHandWrittenInverseLogit(ui, conv),
-    .checkCentralConcentrationName(ui, conv)
+    .checkCentralConcentrationName(ui, conv),
+    .checkDoseTimingCompartments(ui, conv)
   )
   issues <- do.call(rbind, checks)
   if (is.null(issues) || nrow(issues) == 0) {
@@ -2601,6 +2605,107 @@ checkModelConventions <- function(model, verbose = TRUE) {
           "draw. `expit(x)` is bit-identical to `1/(1+exp(-x))` and within",
           "2 ulp of `exp(x)/(1+exp(x))`. For the negative convention write",
           "`expit(-x)`."
+        )
+      )
+    )
+  }
+  issues
+}
+
+# rxode2's dose-history functions that take a compartment argument (the
+# syntax table in `?rxode2`). Each one reads the doses given into that
+# compartment, and with none given it returns NA (or 0 for the `*0` forms) for
+# every subject: a derivative that uses it is NaN, and newer rxode2 builds fail
+# the subject outright. `dosenum()` takes no compartment.
+.doseTimingFunctions <- c(
+  "tad",
+  "tad0",
+  "tafd",
+  "tafd0",
+  "tlast",
+  "tlast0",
+  "tfirst",
+  "tfirst0",
+  "dose",
+  "dose0",
+  "podo",
+  "podo0"
+)
+
+# Every `f(cmt)` call to a dose-history function in an expression, as
+# c(fn = , cmt = ) pairs. A bare `tad()` refers to any compartment's doses and
+# is not collected.
+.doseTimingCalls <- function(e, acc = list()) {
+  if (!is.call(e)) {
+    return(acc)
+  }
+  fn <- e[[1]]
+  if (is.name(fn) && as.character(fn) %in% .doseTimingFunctions && length(e) >= 2L) {
+    arg <- e[[2]]
+    if (is.name(arg) || (is.character(arg) && length(arg) == 1L)) {
+      acc[[length(acc) + 1L]] <- c(fn = as.character(fn), cmt = as.character(arg))
+    }
+  }
+  # `e[[i]]` is tested in place: bound to a variable, an empty argument such
+  # as the one in `x[, 1]` errors when the variable is read.
+  for (i in seq_along(e)[-1L]) {
+    if (is.call(e[[i]])) acc <- .doseTimingCalls(e[[i]], acc)
+  }
+  acc
+}
+
+# A dose-history function must name a compartment the model is dosed into. A
+# model that reads `podo(stomach)` but declares no `dosing` gets the
+# depot/central fallback in the registry, so anything that doses the registry's
+# compartment never doses `stomach` and every derivative using it is NaN.
+.checkDoseTimingCompartments <- function(ui, conv) {
+  issues <- .emptyIssues()
+  exprs <- tryCatch(ui$lstExpr, error = function(e) NULL)
+  calls <- list()
+  for (e in exprs) {
+    calls <- .doseTimingCalls(e, calls)
+  }
+  if (!length(calls)) {
+    return(issues)
+  }
+  fns <- vapply(calls, `[[`, character(1), "fn")
+  cmts <- vapply(calls, `[[`, character(1), "cmt")
+  declared <- ui$meta$dosing
+  dosing <- trimws(unlist(strsplit(as.character(.modelDosingCmts(ui)), ",", fixed = TRUE)))
+  where <- if (!is.null(declared)) {
+    if (length(dosing)) {
+      sprintf("`dosing` declares: %s", paste(dosing, collapse = ", "))
+    } else {
+      "`dosing` is declared empty"
+    }
+  } else if (length(dosing)) {
+    sprintf("no `dosing` metadata, so the depot/central fallback gives: %s", paste(dosing, collapse = ", "))
+  } else {
+    "no `dosing` metadata, and no depot or central compartment to fall back to"
+  }
+  for (cm in setdiff(unique(cmts), dosing)) {
+    used <- unique(sprintf("%s(%s)", fns[cmts == cm], cm))
+    issues <- rbind(
+      issues,
+      .issue(
+        "dose_timing_compartment",
+        "error",
+        cm,
+        sprintf(
+          "%s read%s the doses given into '%s', which is not a dosing compartment (%s).",
+          paste0("`", used, "`", collapse = ", "),
+          if (length(used) == 1L) "s" else "",
+          cm,
+          where
+        ),
+        paste0(
+          "If the paper doses into '",
+          cm,
+          "', declare it in the metadata (`dosing <- c(\"",
+          cm,
+          "\", ...)`, first if it is the usual route); buildModelDb() records ",
+          "it and the solve probe doses the first entry. Otherwise the ",
+          "function is NA for every subject and any derivative using it is NaN."
         )
       )
     )
