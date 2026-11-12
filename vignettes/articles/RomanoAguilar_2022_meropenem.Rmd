@@ -178,7 +178,12 @@ cf <- rxode2::rxSolve(ui, ev_cf, returnType = "data.frame",
                       rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
                       maxsteps = 1e6) |>
   dplyr::mutate(Cc_closed = css_1cmt(time, cl, vc, dose = 1000, tinf = 3, tau = 8),
-                rel_err = abs(Cc / Cc_closed - 1))
+                # Where the closed form is within two orders of magnitude of the solver's
+                # absolute tolerance (atol = 1e-12) a plain relative error measures the
+                # tolerance, and reaches 1e2 for a fast-eliminating subject at the trough.
+                # The error is taken against max(closed form, conc_floor), with
+                # conc_floor = 100 * atol / bound (mg/L).
+                rel_err = abs(Cc - Cc_closed) / pmax(Cc_closed, 100 * 1e-12 / 1e-5))
 
 cat(sprintf("max relative error vs closed form: %.3g\n", max(cf$rel_err)))
 stopifnot(max(cf$rel_err) < 1e-5)
@@ -463,10 +468,14 @@ rxode2::rxSetSeed(8)
 sim_nca <- rxode2::rxSolve(ui, ev_nca, returnType = "data.frame",
                            keep = "treatment", maxsteps = 1e6,
                            rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12)
-stopifnot(min(sim_nca$Cc) >= 0)
+# The solver's undershoot below zero is of the order of atol (1e-12 mg/L) at the
+# trough of a fast-eliminating subject, so the check is relative to the peak, and
+# the undershoot is floored before PKNCA's log-down trapezoid.
+stopifnot(all(sim_nca$Cc >= -1e-6 * max(sim_nca$Cc, na.rm = TRUE), na.rm = TRUE))
 
 conc <- sim_nca |>
   dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(Cc = pmax(Cc, 0)) |>
   dplyr::select(id, time, Cc, treatment)
 dose_df <- ev_nca |>
   dplyr::filter(evid == 1) |>
