@@ -45,7 +45,7 @@ Wang_2020_delamanid <- function() {
       units = "mg",
       type = "continuous",
       reference_category = NULL,
-      notes = "Used as a level selector for the dose-dependent relative bioavailability, not as a continuous dose-response driver. Reference dose 100 mg (F1 = 1). Table 4 theta7 (F1 for the 200-mg dose, 0.760) applies to doses above 100 mg up to 200 mg and theta8 (F1 for doses above 200 mg, 0.580) applies to the 250- and 300-mg doses. Only 100, 200, 250 and 300 mg doses were studied; the model does not interpolate between them.",
+      notes = "Used as a level selector for the dose-dependent relative bioavailability, not as a continuous dose-response driver. Reference dose 100 mg (F1 = 1). Table 4 theta7 (F1 for the 200-mg dose, 0.760) applies to doses above 100 mg up to 200 mg and theta8 (F1 for doses above 200 mg, 0.580) applies to the 250- and 300-mg doses. Only 100, 200, 250 and 300 mg doses were studied; the model does not interpolate between them. Doses carry an absorption lag, so the rxSolve() option addlKeepsCov decides which record a dose's value is read from: with addlKeepsCov = FALSE (the default) a lagged dose takes f() from the records in force when it is absorbed, so an observation at the dose time (rxSolve sorts it after the dose) or inside the lag window supplies the value; with addlKeepsCov = TRUE it takes f() from its own dose record, as NONMEM does. Give every record the value of the dose that opened its interval and the two settings agree.",
       source_name = "AMT"
     ),
     OUTPATIENT = list(
@@ -53,7 +53,7 @@ Wang_2020_delamanid <- function() {
       units = "(binary)",
       type = "binary",
       reference_category = "0 (inpatient / hospitalized)",
-      notes = "Time-varying at the dose record; patients were hospitalized all, part or none of the time depending on the trial (Discussion). Multiplies relative bioavailability by 1.09 (Table 4 theta12, row 'F1,out').",
+      notes = "Time-varying at the dose record; patients were hospitalized all, part or none of the time depending on the trial (Discussion). Multiplies relative bioavailability by 1.09 (Table 4 theta12, row 'F1,out'). Read per dose like DOSE_DELAMANID_MG; see its note on addlKeepsCov.",
       source_name = "OUT"
     ),
     REGION_EASTASIA = list(

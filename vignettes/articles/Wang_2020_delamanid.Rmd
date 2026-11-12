@@ -311,9 +311,13 @@ obs_rows <- subjects |>
 
 # DOSE_DELAMANID_MG is a property of the dose record (it sets that dose's
 # relative bioavailability); observation rows carry the value of the most
-# recent dose so the column has no gaps.
+# recent dose so the column has no gaps. A dose and an observation at the same
+# time are sorted dose first before filling, so the observation carries the
+# value of that dose: rxSolve orders a same-time dose ahead of the observation,
+# and with addlKeepsCov = FALSE a lagged dose takes its bioavailability from
+# the records in force when it is absorbed, which include that observation.
 events <- bind_rows(obs_rows, dose_rows) |>
-  arrange(id, time, desc(evid == 0L)) |>
+  arrange(id, time, desc(evid)) |>
   group_by(id) |>
   tidyr::fill(DOSE_DELAMANID_MG, .direction = "downup") |>
   ungroup() |>
@@ -329,7 +333,8 @@ rxode2::rxSetSeed(20201216)
 mod_nores <- rxode2::zeroRe(mod, which = "sigma")
 sim <- as.data.frame(rxode2::rxSolve(
   mod_nores, events,
-  returnType = "data.frame", covsInterpolation = "locf"
+  returnType = "data.frame", covsInterpolation = "locf",
+  addlKeepsCov = FALSE
 ))
 sim <- sim |>
   left_join(subjects |> select(id, group, regimen, region, sex), by = "id") |>
@@ -519,8 +524,11 @@ typ_dose <- bind_rows(
   select(-day, -evening)
 typ_obs <- tidyr::crossing(typ_subj, time = seq(0, 30 * 24, by = 1)) |>
   mutate(evid = 0L, cmt = "central", amt = 0)
+# Dose first at a shared time, as in the cohort above: the observation at
+# 480 h then carries the 200 mg of the first once-daily dose, which is the
+# value that dose's bioavailability is read from.
 typ_events <- bind_rows(typ_obs, typ_dose) |>
-  arrange(id, time, desc(evid == 0L)) |>
+  arrange(id, time, desc(evid)) |>
   group_by(id) |>
   tidyr::fill(DOSE_DELAMANID_MG, .direction = "downup") |>
   ungroup() |>
@@ -537,7 +545,8 @@ typ_events <- bind_rows(typ_obs, typ_dose) |>
   )
 typ_sim <- as.data.frame(rxode2::rxSolve(
   mod_typ, typ_events,
-  returnType = "data.frame", covsInterpolation = "locf"
+  returnType = "data.frame", covsInterpolation = "locf",
+  addlKeepsCov = FALSE
 )) |>
   left_join(typ_subj, by = "id")
 
@@ -584,6 +593,20 @@ The typical patient's accumulation ratio for 100 mg twice daily is
   The model applies the 200-mg value to any dose above 100 mg up to 200 mg.
   Only 100, 200, 250 and 300 mg were studied, so intermediate doses are an
   extrapolation.
+* **Which record a lagged dose reads its bioavailability from.**
+  `DOSE_DELAMANID_MG` and `OUTPATIENT` are per-dose values, and every dose
+  has an absorption lag. With `addlKeepsCov = FALSE`, the `rxSolve()`
+  default, a lagged dose takes `f()` from the records in force when it is
+  absorbed; with `addlKeepsCov = TRUE` it takes `f()` from its own dose
+  record, as NONMEM does. The two agree when every record carries the value
+  of the dose that opened its interval, which is how the event tables here
+  are built: a same-time dose is sorted ahead of its observation before the
+  value is carried down, matching the order `rxSolve()` uses. Sorted the
+  other way, the observation at 480 h would carry 100 mg into the lag window
+  of the first 200 mg once-daily dose, which would then receive the 100 mg
+  bioavailability: the typical day-21 Cmax would be 394 ng/mL instead of 354
+  and the 480-504 h AUC 9.4% higher. Every dosing simulation states
+  `addlKeepsCov = FALSE`.
 * **Weight reference.** The Methods describe a normalised power model without
   printing the reference weight. 55 kg, the population median (Table 2) and
   the weight of the Figure 1 typical patient, is used; the Figure 1 weight
