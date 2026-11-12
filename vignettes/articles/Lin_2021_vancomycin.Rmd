@@ -117,7 +117,8 @@ mod0 <- rxode2::zeroRe(mod)
 # zero (typical values) or supplied as data columns, so that is intended.
 solve0 <- function(events, ...) {
   withCallingHandlers(
-    suppressMessages(rxode2::rxSolve(mod0, events = events, returnType = "data.frame", ...)),
+    # steady-state searches for long-half-life subjects exceed the default step budget
+    suppressMessages(rxode2::rxSolve(mod0, events = events, returnType = "data.frame", ..., maxsteps = 1e6)),
     warning = function(w) {
       if (grepl("omega", conditionMessage(w))) invokeRestart("muffleWarning")
     }
@@ -430,6 +431,8 @@ interval AUC is checked against each subject's own clearance.
 # trough. Assert the undershoot is noise relative to each subject's peak,
 # floor it at zero and drop the numerically-zero tail after the peak so the
 # log-down trapezoid does not follow the noise.
+# A subject whose steady-state search fails comes back NA; stop rather than drop it.
+stopifnot(!any(tapply(is.na(sim$Cc), sim$id, all)))
 conc <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, treatment, time, Cc) |>
