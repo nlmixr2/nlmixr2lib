@@ -196,6 +196,7 @@ mb_ev <- dplyr::bind_rows(
 ) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 mb_sim <- rxode2::rxSolve(mod_typ, mb_ev, returnType = "data.frame",
                           keep = c("DIS_CRITILL", "CRCL"),
                           rtol = 1e-8, atol = 1e-10, maxsteps = 1e6, maxSS = 20000L)
@@ -579,8 +580,8 @@ doses <- events |>
 nca_intervals <- data.frame(start = 240, end = 264, cmax = TRUE, tmax = TRUE, auclast = TRUE)
 
 run_nca <- function(sim_df) {
-  # A subject whose steady-state search fails comes back NA; stop rather than drop it.
-  stopifnot(!any(tapply(is.na(sim_df$Cc), sim_df$id, all)))
+  # A subject that fails to solve comes back NA; stop rather than drop it.
+  stopifnot(!anyNA(sim_df$Cc))
   conc <- sim_df |>
     dplyr::filter(!is.na(Cc)) |>
     dplyr::select(id, time, Cc, treatment)
