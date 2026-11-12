@@ -7004,6 +7004,8 @@ navbar:
         href: articles/Stringer_2013_sipoglitazar.html
       - text: "Siponimod (Huth 2019)"
         href: articles/Huth_2019_siponimod.html
+      - text: "Siremadlin (Sou 2026)"
+        href: articles/Sou_2026_siremadlin.html
       - text: "Sirolimus (Chen 2020)"
         href: articles/Chen_2020_sirolimus.html
       - text: "Sirolimus (Chen 2021)"
@@ -10936,6 +10938,7 @@ articles:
   - articles/Soraluce_2020_linezolid
   - articles/SoriaChacartegui_2026_tramadol
   - articles/Soto_2014_ampicillin_sulbactam
+  - articles/Sou_2026_siremadlin
   - articles/Soy_2015_benznidazole
   - articles/Sridharan_2019_primaquine
   - articles/Srimani_2022_ixazomib

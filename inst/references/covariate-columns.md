@@ -9829,7 +9829,8 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 (no hematologic malignancy; paper-defined, and may include solid-tumour malignancy).
 - **Source aliases:**
   - `COMO == 1` -- the `FLAT1` indicator of the Werumeus Buning 2021 Appendix C NONMEM control stream ("hematologic malignancy").
-- **Example models:** `WerumeusBuning_2021_ceftazidime.R` (multiplicative factor `1.57^DIS_HEME_MALIG` on the off-CVVH ceftazidime clearance in critically ill adults; 14/96 patients; oncologic (solid) malignancy was a separate comorbidity category and sits in the reference group).
+  - `SOL` -- the solid-tumour indicator of the Sou 2026 Monolix code, the complement of this column (`DIS_HEME_MALIG = 1 - SOL`); the paper's figures label the same split `HEM`.
+- **Example models:** `WerumeusBuning_2021_ceftazidime.R` (multiplicative factor `1.57^DIS_HEME_MALIG` on the off-CVVH ceftazidime clearance in critically ill adults; 14/96 patients; oncologic (solid) malignancy was a separate comorbidity category and sits in the reference group); `Sou_2026_siremadlin.R` (oncology phase I pooling solid-tumour and haematological-malignancy patients, where every subject has cancer and the reference group 0 is solid tumour; the indicator selects a separate typical value AND a separate IIV variance for the baseline platelet count and the platelet mean maturation time).
 - **Notes:** Member of the `DIS_<CONDITION>` family; covariate-effect parameter form `e_heme_malig_<param>`. This is the whole-class comorbidity flag. Distinct from the per-disease indicators used in pooled hematologic-oncology analyses (`DIS_AML`, `DIS_MM`, `DIS_OTHER_HEME` and siblings), where every subject has a hematologic malignancy and the indicators contrast one disease against another, and from `DIS_CANCER` (advanced solid tumours).
 
 ### DIS_FXS (**canonical for fragile X syndrome disease-state indicator**)
