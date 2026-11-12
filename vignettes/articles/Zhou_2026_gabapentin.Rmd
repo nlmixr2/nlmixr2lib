@@ -1,0 +1,503 @@
+---
+title: "Gabapentin (Zhou 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Gabapentin (Zhou 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Zhou_2026_gabapentin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Zhou_2026_gabapentin"))$description`
+* Article: <https://doi.org/10.3389/fphar.2026.1760901> (open access; the
+  Supplementary Material holds the Monolix and Simulx model code used for the
+  structure below)
+
+Zhou et al. pooled two Brazilian studies of oral immediate-release gabapentin
+in chronic neuropathic pain and fitted a joint population PK/PD model in
+Monolix. Plasma PK is two-compartment with a lag time, first-order absorption
+and an eGFR-dependent apparent clearance. Pain intensity (0-10 Visual Analog
+Scale) declines through a full inhibitory Imax model driven by an effect
+compartment. The effect compartment has separate input and output rate
+constants (`ke1`, `ke2` in the paper), and carriers of the *SLC22A2* (OCT2)
+c.808G>T variant have a markedly slower input, which the authors interpret as
+impaired transporter-mediated delivery of gabapentin to its site of action.
+
+# Population
+
+The model was fitted to 94 adults (53 women; mean age 53 years, SD 11; mean
+weight 81.97 kg, SD 17.34; mean BMI 29.9 kg/m^2) with chronic neuropathic pain
+from diabetic neuropathy or compressive radiculopathy, treated at the Clinical
+Hospital of the University of Sao Paulo (Ribeirao Preto). Study 1 (n = 29)
+gave a single 300 mg capsule with rich PK and pain sampling; Study 2 (n = 65)
+gave 600-3600 mg/day with sparse sampling. Mean CKD-EPI 2021 eGFR was 90.29
+mL/min/1.73 m^2 (SD 22.79): 49 subjects had normal or high function, 22 mild,
+11 mild-to-severe and 1 severe impairment, and 11 had no creatinine value.
+For *SLC22A2* c.808G>T there were 79 GG and 15 GT subjects and no TT
+homozygotes. The data comprised 568 plasma concentrations and 392 pain scores
+(Zhou 2026 Methods 'Study population'; Supplementary Table S1).
+
+The same information is available programmatically via
+`readModelDb("Zhou_2026_gabapentin")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `ltlag` | log(0.34 h) | Table 1 'tlag' |
+| `lka` | log(0.14 1/h) | Table 1 'ka' |
+| `lcl` | log(10.16 L/h) | Table 1 'CL/F' |
+| `e_crcl_cl` | 1.34 | Table 1 'logt (eGFR/84.85) on CL/F' |
+| eGFR reference | 84.8532 mL/min/1.73 m^2 | Methods (84.85); Supplementary Data 2 `log(EGFR_CKD/84.8532)` |
+| `lvc` | log(18.16 L) | Table 1 'V1/F' |
+| `lq` | log(6.58 L/h) | Table 1 'Q' |
+| `lvp` | log(357.67 L) | Table 1 'V2/F' (no IIV; Supplementary Data 2 `no-variability`) |
+| `lk1e` | log(0.53 1/h) | Table 1 'ke1' |
+| `e_snp_oct2_k1e` | -2.44 | Table 1 'OCT2 on ke1'; Methods: `theta_pop * exp(beta * covariate)`, GG = 0, GT = 1 |
+| `lke0` | log(1 1/h), fixed | Table 1 'ke2' (fixed) |
+| `logite0` | logit(7.31 / 10.1) | Table 1 'E0'; Supplementary Data 2 `E0 = {distribution=logitNormal, max=10.1}` |
+| `lic50` | log(0.26311 mg/L), fixed | Table 1 'IC50' = 263.11 ng/mL (fixed) |
+| `limax` | log(1), fixed | Table 1 'Imax' = 1 (fixed) |
+| IIV variances | SD^2 of Table 1 omega | Table 1 footnote: omega is the SD of the random effects |
+| `expSd` | 0.19 | Table 1 PK 'Additive (a)'; Supplementary Data 2 `y1 = {distribution=logNormal, errorModel=constant(a1)}` |
+| `addSd_score`, `propSd_score` | 0.52, 0.30 | Table 1 PD 'Additive (a)', 'Proportional (b)'; Supplementary Data 2 `y2 = {distribution=logitNormal, min=-0.2, max=10.2, errorModel=combined1(a2, b2)}` |
+| PK ODEs | n/a | Supplementary Data 1 `pkmodel(Tlag, ka, V, Cl, k12, k21)`; Figure 1 |
+| `d/dt(effect) <- k1e * Cc - ke0 * effect` | n/a | Supplementary Data 1 `ddt_Ce = ke1 * Cc - ke2 * Ce` |
+| `score <- e0 * (1 - imax * effect / (effect + ic50))` | n/a | Supplementary Data 1 `E = E0 * (1 - Ce/(Ce+IC50))` |
+
+# Structural checks against the paper's text
+
+The Results section gives the typical CL/F at three eGFR values and the
+typical `ke1` in each genotype. These are deterministic, so they are checked
+exactly.
+
+```{r structural}
+mod <- readModelDb("Zhou_2026_gabapentin")
+mod_typ <- mod |> rxode2::zeroRe()
+
+ev_typ <- data.frame(
+  id = 1:4,
+  time = 0,
+  evid = 0L,
+  amt = 0,
+  cmt = "central",
+  dvid = 1L,
+  CRCL = c(100, 75, 45, 100),
+  SNP_SLC22A2_808GT = c(0, 0, 0, 1)
+)
+typ <- rxode2::rxSolve(mod_typ, ev_typ, keep = c("CRCL", "SNP_SLC22A2_808GT")) |>
+  as.data.frame()
+
+typ |>
+  dplyr::select(id, CRCL, SNP_SLC22A2_808GT, cl, k1e) |>
+  dplyr::mutate(cl = round(cl, 2), k1e = round(k1e, 3)) |>
+  dplyr::rename(
+    "eGFR (mL/min/1.73 m^2)" = CRCL,
+    "OCT2 808GT" = SNP_SLC22A2_808GT,
+    "CL/F (L/h)" = cl,
+    "k1e (1/h)" = k1e
+  ) |>
+  knitr::kable(caption = "Typical CL/F and effect-compartment input rate constant.")
+
+# Results: 'typical CL/F values of 12.66, 8.61, and 4.34 L/h' at eGFR 100, 75, 45
+stopifnot(isTRUE(all.equal(round(typ$cl[1:3], 2), c(12.66, 8.61, 4.34))))
+# Results: 'ke1 values of 0.53 h-1 for GG and 0.05 h-1 for GT genotypes'
+stopifnot(round(typ$k1e[1], 2) == 0.53, round(typ$k1e[4], 2) == 0.05)
+```
+
+# Single-dose profiles (Study 1 design)
+
+A typical 300 mg single dose at the cohort mean eGFR shows the hysteresis the
+authors describe: plasma concentrations peak within a few hours, while pain
+relief peaks later and, in a GT carrier, is much smaller because the effect
+compartment fills about 11-fold more slowly.
+
+```{r single-dose}
+ev_sd <- tidyr::expand_grid(
+  id = 1:2,
+  time = c(0, seq(0.25, 48, by = 0.25))
+) |>
+  dplyr::mutate(
+    evid = 0L, amt = 0, cmt = "central", dvid = 1L,
+    CRCL = 90.29,
+    SNP_SLC22A2_808GT = id - 1
+  )
+ev_sd <- dplyr::bind_rows(
+  data.frame(
+    id = 1:2, time = 0, evid = 1L, amt = 300, cmt = "depot", dvid = NA_integer_,
+    CRCL = 90.29, SNP_SLC22A2_808GT = 0:1
+  ),
+  ev_sd
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+sd_typ <- rxode2::rxSolve(mod_typ, ev_sd, keep = "SNP_SLC22A2_808GT") |>
+  as.data.frame() |>
+  dplyr::mutate(
+    genotype = ifelse(SNP_SLC22A2_808GT == 1, "GT", "GG"),
+    relief = 100 * (1 - score / e0)
+  )
+
+sd_typ |>
+  dplyr::select(time, genotype, `Plasma gabapentin (mg/L)` = Cc, `Pain attenuation (%)` = relief) |>
+  tidyr::pivot_longer(-c(time, genotype)) |>
+  ggplot(aes(time, value, colour = genotype)) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~name, scales = "free_y") +
+  scale_colour_manual(values = c(GG = "#E69F00", GT = "#7B3FA0")) +
+  labs(
+    x = "Time after a single 300 mg dose (h)", y = NULL, colour = "SLC22A2 c.808",
+    caption = "Typical-value profiles at eGFR 90.29 mL/min/1.73 m^2 (cohort mean)."
+  ) +
+  theme_bw()
+
+tmax_cc <- sd_typ$time[sd_typ$genotype == "GG"][which.max(sd_typ$Cc[sd_typ$genotype == "GG"])]
+tmax_relief <- sd_typ$time[sd_typ$genotype == "GG"][which.max(sd_typ$relief[sd_typ$genotype == "GG"])]
+# The effect peak lags the plasma peak (Methods: 'temporal delay between plasma
+# concentrations and response', Supplementary Figure S1).
+stopifnot(tmax_relief > tmax_cc)
+```
+
+# Steady-state clinical trial simulations (Figures 2, 4 and 5)
+
+The paper simulated virtual cohorts of 200 subjects per renal-function stage
+and genotype, with eGFR drawn uniformly within each stage (Stage 1: 90-120,
+Stage 2: 60-89, Stage 3: 30-59, Stage 4: 15-29 mL/min/1.73 m^2), each genotype
+at 100% frequency, and the label maintenance regimens: TID for Stages 1-2,
+BID for Stage 3 and QD for Stage 4. Pain attenuation is the percent reduction
+from baseline, `100 - 100 * E / E0`; it is evaluated over the last dosing
+interval at steady state. Steady state is set here with `ss = 1` dosing rather
+than by simulating 5 weeks of doses: the effect compartment empties at `ke0` =
+1 1/h, so it equilibrates within hours, and the terminal PK half-life is a few
+days.
+
+```{r cohort}
+rxode2::rxSetSeed(20261025)
+set.seed(20261025)
+
+stages <- data.frame(
+  stage = 1:4,
+  egfr_lo = c(90, 60, 30, 15),
+  egfr_hi = c(120, 89, 59, 29),
+  tau = c(8, 8, 12, 24),
+  freq = c("TID", "TID", "BID", "QD")
+)
+regimens <- dplyr::bind_rows(
+  tidyr::expand_grid(stage = 1:2, dose = c(300, 400, 600, 900, 1200)),
+  tidyr::expand_grid(stage = 3:4, dose = c(200, 300, 400, 700))
+) |>
+  dplyr::left_join(stages, by = "stage")
+arms <- tidyr::expand_grid(regimens, oct2 = 0:1) |>
+  dplyr::mutate(
+    arm = dplyr::row_number(),
+    genotype = ifelse(oct2 == 1, "GT", "GG")
+  )
+
+n_per_arm <- 200
+
+make_arm <- function(a, n) {
+  ids <- (a$arm - 1L) * n + seq_len(n)
+  subj <- data.frame(
+    id = ids,
+    arm = a$arm,
+    stage = a$stage,
+    dose = a$dose,
+    freq = a$freq,
+    tau = a$tau,
+    genotype = a$genotype,
+    CRCL = stats::runif(n, a$egfr_lo, a$egfr_hi),
+    SNP_SLC22A2_808GT = a$oct2
+  )
+  doses <- subj |>
+    dplyr::mutate(time = 0, evid = 1L, amt = a$dose, ii = a$tau, ss = 1L, cmt = "depot", dvid = NA_integer_)
+  obs <- tidyr::expand_grid(subj, time = seq(0, a$tau, by = 0.1)) |>
+    dplyr::mutate(evid = 0L, amt = 0, ii = 0, ss = 0L, cmt = "central", dvid = 1L)
+  dplyr::bind_rows(doses, obs)
+}
+
+events <- lapply(seq_len(nrow(arms)), function(i) make_arm(arms[i, ], n_per_arm)) |>
+  dplyr::bind_rows() |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+nrow(arms)
+```
+
+```{r simulate}
+sim <- rxode2::rxSolve(
+  mod, events,
+  keep = c("arm", "stage", "dose", "freq", "tau", "genotype", "CRCL"),
+  maxsteps = 1e6
+) |>
+  as.data.frame()
+stopifnot(!anyNA(sim$Cc), !anyNA(sim$effect))
+```
+
+## Exposure by renal function (Figure 2, PKNCA)
+
+The paper reports that Stage 2, 3 and 4 patients have about 1.6-, 3.0- and
+7.9-fold higher AUCtau than Stage 1 patients at 300 mg per dosing interval
+(GG genotype). AUCtau and Cmax over the steady-state interval are computed with
+PKNCA for those four arms.
+
+```{r pknca}
+nca_arms <- arms |> dplyr::filter(dose == 300, genotype == "GG")
+
+conc_df <- sim |>
+  dplyr::filter(arm %in% nca_arms$arm, !is.na(Cc)) |>
+  dplyr::mutate(treatment = paste0("Stage ", stage, " 300 mg ", freq)) |>
+  dplyr::select(id, time, Cc, treatment)
+dose_df <- events |>
+  dplyr::filter(evid == 1, arm %in% nca_arms$arm) |>
+  dplyr::mutate(treatment = paste0("Stage ", stage, " 300 mg ", freq)) |>
+  dplyr::select(id, time, amt, treatment, tau)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- dose_df |>
+  dplyr::distinct(treatment, tau) |>
+  dplyr::transmute(treatment, start = 0, end = tau, auclast = TRUE, cmax = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_med <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cmax")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::arrange(treatment)
+
+auc_ref <- nca_med$auclast[nca_med$treatment == "Stage 1 300 mg TID"]
+fold <- nca_med |>
+  dplyr::mutate(
+    fold_sim = auclast / auc_ref,
+    fold_paper = c(1, 1.6, 3.0, 7.9)
+  )
+
+fold |>
+  dplyr::mutate(dplyr::across(c(auclast, cmax), ~ signif(.x, 3)), dplyr::across(c(fold_sim), ~ round(.x, 2))) |>
+  dplyr::rename(
+    "Regimen" = treatment,
+    "Median AUCtau (mg*h/L)" = auclast,
+    "Median Cmax,ss (mg/L)" = cmax,
+    "AUCtau fold vs Stage 1 (simulated)" = fold_sim,
+    "AUCtau fold vs Stage 1 (paper)" = fold_paper
+  ) |>
+  knitr::kable(caption = "Steady-state exposure at 300 mg per dosing interval, GG genotype (PKNCA).")
+
+# A missing or inverted eGFR exponent collapses every fold change to 1, and a
+# wrong reference eGFR shifts all three together; 25% admits the sampling
+# spread of 200-subject medians (omega_CL = 0.46).
+stopifnot(all(abs(fold$fold_sim[-1] / fold$fold_paper[-1] - 1) < 0.25))
+```
+
+The fold changes reproduce the paper's text to within about 10%. Exposure
+does not depend on genotype in the model (OCT2 acts only on the effect
+compartment input), as the paper reports.
+
+## Probability of sustained pain relief (Figure 5)
+
+PTA is the percentage of subjects whose pain attenuation is at least 50% for
+at least 80% of the steady-state dosing interval. Because the model inhibits
+the baseline fully (`Imax = 1`), 50% attenuation is reached exactly when the
+effect-site concentration equals `IC50`, independent of the baseline score.
+
+```{r pta}
+ic50 <- unique(sim$ic50)
+stopifnot(length(ic50) == 1L)
+
+ind <- sim |>
+  dplyr::mutate(relief = 100 * effect / (effect + ic50)) |>
+  dplyr::group_by(id, arm, stage, dose, genotype) |>
+  dplyr::summarise(
+    frac_time = mean(relief >= 50),
+    max_relief = max(relief),
+    .groups = "drop"
+  )
+
+sim_tab <- ind |>
+  dplyr::group_by(stage, dose, genotype) |>
+  dplyr::summarise(
+    pta = 100 * mean(frac_time >= 0.8),
+    substantial = 100 * mean(max_relief > 50),
+    moderate = 100 * mean(max_relief >= 30 & max_relief <= 50),
+    .groups = "drop"
+  )
+
+# Figure 5 (PTA) and Figure 4 (maximum pain attenuation >50%, 30-50%) cells,
+# transcribed from the published heat maps.
+paper_tab <- dplyr::bind_rows(
+  data.frame(
+    genotype = "GG",
+    stage = c(rep(1, 5), rep(2, 5), rep(3, 4), rep(4, 4)),
+    dose = c(300, 400, 600, 900, 1200, 300, 400, 600, 900, 1200, 200, 300, 400, 700, 200, 300, 400, 700),
+    pta_paper = c(76, 75, 84, 89, 90, 84, 89, 89, 90, 93, 84, 86, 88, 89, 86, 84, 88, 93),
+    substantial_paper = c(81, 78, 86, 90, 92, 86, 90, 91, 92, 93, 86, 88, 91, 92, 88, 88, 92, 96),
+    moderate_paper = c(6, 12, 9, 6, 5, 6, 6, 4, 5, 4, 7, 8, 5, 3, 6, 7, 5, 3)
+  ),
+  data.frame(
+    genotype = "GT",
+    stage = c(rep(1, 5), rep(2, 5), rep(3, 4), rep(4, 4)),
+    dose = c(300, 400, 600, 900, 1200, 300, 400, 600, 900, 1200, 200, 300, 400, 700, 200, 300, 400, 700),
+    pta_paper = c(32, 38, 44, 61, 60, 40, 48, 52, 60, 68, 38, 51, 52, 62, 44, 53, 58, 66),
+    substantial_paper = c(38, 44, 50, 68, 65, 44, 50, 58, 64, 72, 42, 54, 57, 65, 52, 59, 64, 70),
+    moderate_paper = c(20, 18, 17, 8, 15, 14, 14, 16, 12, 12, 14, 13, 15, 15, 12, 14, 12, 12)
+  )
+)
+
+cmp <- dplyr::inner_join(sim_tab, paper_tab, by = c("genotype", "stage", "dose"))
+stopifnot(nrow(cmp) == 36L)
+
+cmp |>
+  dplyr::mutate(
+    regimen = paste0(dose, " mg ", stages$freq[stage]),
+    dplyr::across(c(pta, substantial, moderate), ~ round(.x))
+  ) |>
+  dplyr::arrange(genotype, stage, dose) |>
+  dplyr::select(genotype, stage, regimen, pta, pta_paper, substantial, substantial_paper, moderate, moderate_paper) |>
+  dplyr::rename(
+    "Genotype" = genotype,
+    "Stage" = stage,
+    "Regimen" = regimen,
+    "PTA sim (%)" = pta,
+    "PTA paper (%)" = pta_paper,
+    ">50% sim (%)" = substantial,
+    ">50% paper (%)" = substantial_paper,
+    "30-50% sim (%)" = moderate,
+    "30-50% paper (%)" = moderate_paper
+  ) |>
+  knitr::kable(caption = "Simulated vs published response probabilities (Figure 5 PTA; Figure 4 maximum pain attenuation).")
+```
+
+```{r figure-5}
+# Replicates the heat map of Figure 5 of Zhou 2026.
+sim_tab |>
+  dplyr::mutate(
+    regimen = factor(dose),
+    stage_lab = paste("Stage", stage)
+  ) |>
+  ggplot(aes(stage_lab, regimen, fill = pta)) +
+  geom_tile(colour = "white") +
+  geom_text(aes(label = round(pta))) +
+  facet_wrap(~genotype) +
+  scale_fill_gradient2(low = "#D73027", mid = "#FEE08B", high = "#1A9850", midpoint = 50, limits = c(0, 100)) +
+  labs(
+    x = "Renal function category", y = "Dose per administration (mg)", fill = "PTA (%)",
+    caption = "Replicates Figure 5 of Zhou 2026 (TID in Stages 1-2, BID in Stage 3, QD in Stage 4)."
+  ) +
+  theme_bw()
+```
+
+```{r pta-gates}
+d_pta <- cmp$pta - cmp$pta_paper
+d_sub <- cmp$substantial - cmp$substantial_paper
+gap <- function(x, g) mean(x[g == "GG"]) - mean(x[g == "GT"])
+
+c(
+  pta_mean_diff = mean(d_pta),
+  pta_q90_absdiff = unname(quantile(abs(d_pta), 0.9)),
+  substantial_mean_diff = mean(d_sub),
+  substantial_q90_absdiff = unname(quantile(abs(d_sub), 0.9)),
+  genotype_gap_sim = gap(cmp$pta, cmp$genotype),
+  genotype_gap_paper = gap(cmp$pta_paper, cmp$genotype)
+)
+
+# Both sides are 200-subject Monte Carlo estimates, so a single cell differs by
+# up to ~5 percentage points by chance (binomial SE ~3.5 points per side).
+# Assert on the centre and a robust quantile across the 36 cells: a wrong IC50
+# unit, a dropped genotype effect or a mis-transcribed ke1 moves every cell by
+# tens of points.
+stopifnot(
+  abs(mean(d_pta)) < 8,
+  quantile(abs(d_pta), 0.9) < 15,
+  abs(mean(d_sub)) < 8,
+  quantile(abs(d_sub), 0.9) < 15,
+  # Paper: GG carriers reach roughly 35 points higher PTA than GT carriers.
+  abs(gap(cmp$pta, cmp$genotype) - gap(cmp$pta_paper, cmp$genotype)) < 12
+)
+```
+
+The simulated probabilities track the published heat maps cell by cell to
+within the Monte Carlo noise of two 200-subject cohorts, including the
+headline numbers in the text (Stage 1, 300 mg TID: 76% of GG versus 32% of GT
+carriers with sustained relief; 1200 mg TID: 60% of GT carriers).
+
+## Exposure-response by genotype (Figure 6)
+
+```{r figure-6}
+# Replicates Figure 6 of Zhou 2026: mean maximum pain attenuation against mean
+# AUCtau per regimen.
+ind_auc <- sim |>
+  dplyr::group_by(id, arm, stage, dose, genotype) |>
+  dplyr::summarise(
+    auc = sum(diff(time) * (utils::head(Cc, -1) + utils::tail(Cc, -1)) / 2),
+    max_relief = max(100 * effect / (effect + ic50)),
+    .groups = "drop"
+  )
+ind_auc |>
+  dplyr::group_by(stage, dose, genotype) |>
+  dplyr::summarise(auc = mean(auc), max_relief = mean(max_relief), .groups = "drop") |>
+  ggplot(aes(auc, max_relief, colour = genotype)) +
+  geom_point(data = ind_auc, alpha = 0.08, size = 0.6) +
+  geom_point(size = 2, colour = "black") +
+  geom_line() +
+  facet_wrap(~ paste("Stage", stage), nrow = 1) +
+  scale_colour_manual(values = c(GG = "#E69F00", GT = "#7B3FA0")) +
+  scale_x_log10() +
+  labs(
+    x = "AUCtau (mg*h/L)", y = "Maximum pain attenuation (%)", colour = "SLC22A2 c.808",
+    caption = "Replicates Figure 6 of Zhou 2026. Black points: regimen means."
+  ) +
+  theme_bw()
+```
+
+# Assumptions and deviations
+
+- **Effect-compartment rate constants.** The paper names the effect-compartment
+  input and output rate constants `ke1` and `ke2`
+  (`dCe/dt = ke1 * Cc - ke2 * Ce`). In the model file they are `k1e` (input
+  from plasma, following the NONMEM `K1E` notation used in
+  `Groenendaal_2007_morphine_rat_eeg`) and `ke0` (loss from the effect
+  compartment). Because `ke1` and `ke2` differ, the effect-site concentration
+  at steady state is `k1e / ke0` times the plasma concentration rather than
+  equal to it; `IC50` refers to this scaled effect-site quantity.
+- **IC50 units.** Table 1 prints IC50 = 263.11 ng/mL. The model runs in mg and
+  L (plasma LLOQ 0.2 ug/mL; CL/F 10.16 L/h for doses in mg), so IC50 is
+  carried as 0.26311 mg/L. The simulated response probabilities agreeing with
+  Figures 4 and 5 confirms the conversion.
+- **Imax.** The Monolix code writes the pain model as
+  `E = E0 * (1 - Ce / (Ce + IC50))` without Imax; Table 1 reports Imax fixed
+  to 1. The model file carries `limax = log(1)` fixed, so the two are
+  identical.
+- **Baseline pain.** E0 is logit-normal on (0, 10.1) as in the Simulx code
+  (`max = 10.1`, default `min = 0`); the typical value 7.31 is stored as
+  `logite0 = logit(7.31 / 10.1)` and the Table 1 omega (0.98) is the SD on
+  that logit scale.
+- **Residual error.** Monolix observation models were translated directly:
+  plasma concentrations are log-normal with a constant error
+  (`Cc ~ lnorm(expSd)`), and the pain score is logit-normal on (-0.2, 10.2)
+  with a combined1 error applied on the logit scale,
+  `logit(y) = logit(E) + (a + b * logit(E)) * eps`, which rxode2 writes as
+  `logitNorm(addSd_score, -0.2, 10.2) + propT(propSd_score) + combined1()`.
+- **eGFR reference.** The Methods quote 84.85 mL/min/1.73 m^2; the model uses
+  the 84.8532 printed in the Simulx code.
+- **OCT2 genotype.** Only GG and GT subjects were observed. The register
+  column `SNP_SLC22A2_808GT` is a carrier indicator (1 for GT or TT), but the
+  estimated effect applies to heterozygotes; using it for TT homozygotes is an
+  extrapolation the data do not support.
+- **Steady state.** The paper simulated 5 weeks of dosing; this vignette uses
+  `ss = 1` dosing, which gives the same steady state (the effect compartment
+  equilibrates within hours and the PK within days).
+- **Heat-map values** in the comparison tables were transcribed by the
+  maintainers from the published Figures 4 and 5. No correction notice was
+  found for the article as of 2026-11-12.

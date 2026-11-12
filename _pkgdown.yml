@@ -3174,6 +3174,8 @@ navbar:
         href: articles/Siebinga_2023_hadotatate.html
       - text: "Gabapentin (AlZubaydi 2024)"
         href: articles/AlZubaydi_2024_gabapentin.html
+      - text: "Gabapentin (Zhou 2026)"
+        href: articles/Zhou_2026_gabapentin.html
       - text: "Gabapentin milkcmt (Silvola 2025)"
         href: articles/Silvola_2025_gabapentin.html
       - text: "Gabapentin mpr (Silvola 2025)"
@@ -11624,6 +11626,7 @@ articles:
   - articles/Zhou_2025_fruquintinib_poppk
   - articles/Zhou_2025_tacrolimus
   - articles/Zhou_2025_teicoplanin
+  - articles/Zhou_2026_gabapentin
   - articles/Zhou_2026_tacrolimus
   - articles/Zhu_2013_ganitumab
   - articles/Zhu_2014_tacrolimus
