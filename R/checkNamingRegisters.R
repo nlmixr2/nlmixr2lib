@@ -130,6 +130,12 @@
   sub(pat, "\\1", hits, perl = TRUE)
 }
 
+# A model file cited by name: a backticked bare `Name.R`. The leading letter
+# or digit skips suffix fragments such as `_cm.R` and elisions such as
+# `..._eucast.R`; package sources are cited with their directory
+# (`R/conventions.R`), which the backtick-anchored token cannot match.
+.modelCitationPattern <- "`([A-Za-z0-9][A-Za-z0-9_.-]*[.]R)`"
+
 .parseRegister <- function(path) {
   lines <- readLines(path, warn = FALSE)
   out <- list()
@@ -174,7 +180,8 @@
         hasExampleField = FALSE,
         inEx = FALSE,
         hasTypeField = FALSE,
-        type = NA_character_
+        type = NA_character_,
+        exLines = integer()
       )
     } else if (!is.null(cur)) {
       st <- trimws(ln)
@@ -196,6 +203,7 @@
         # The list often continues onto following lines; reading only the header
         # line reports a populated entry as example-less.
         cur$examples <- c(cur$examples, .allMatches(ln, "`([A-Za-z0-9_.-]+[.]R)`"))
+        cur$exLines <- c(cur$exLines, i)
       }
       cur$xrefs <- c(cur$xrefs, .allMatches(ln, "\\[\\[([^]]+)\\]\\]"))
     }
@@ -219,7 +227,11 @@
 #'   \item duplicate canonical entries (globally for covariates; per section
 #'     for compartments, where a token may legitimately be both a bare
 #'     compartment and a suffix);
-#'   \item citations of model files that do not exist on disk;
+#'   \item citations of model files that do not exist on disk, both in
+#'     `Example models:` lines and anywhere else in a register (a `Notes:` or
+#'     `Source aliases:` line, a policy note). A citation is a backticked bare
+#'     file name such as `Zhou_2010_digoxin.R`; a suffix fragment such as
+#'     `_cm.R` is not one;
 #'   \item canonicals that no model uses;
 #'   \item `[[cross-references]]` with no matching entry;
 #'   \item entries with no `Example models:` line, outside an explicit
@@ -388,6 +400,28 @@ checkNamingRegisters <- function(root = NULL) {
         if (!(t %in% canon)) {
           add(f, "broken-xref", e$name, e$line, paste0("[[", t, "]] has no entry"))
         }
+      }
+    }
+
+    # A model file cited anywhere else -- a `Notes:` or `Source aliases:`
+    # line, a policy note, the preamble -- has to exist too. `Example models:`
+    # lines of real entries are skipped because orphan-example-model above
+    # already reports them, so a dangling example is reported once.
+    exLines <- unlist(lapply(real, `[[`, "exLines"))
+    entryLines <- vapply(ents, `[[`, integer(1), "line")
+    entryNames <- vapply(ents, `[[`, character(1), "name")
+    lines <- readLines(path, warn = FALSE)
+    for (i in setdiff(seq_along(lines), exLines)) {
+      miss <- setdiff(.allMatches(lines[[i]], .modelCitationPattern), onDisk)
+      if (length(miss)) {
+        owner <- entryNames[entryLines <= i]
+        add(
+          f,
+          "orphan-model-citation",
+          if (length(owner)) owner[[length(owner)]] else NA_character_,
+          i,
+          paste("cites absent file(s):", paste(unique(miss), collapse = ", "))
+        )
       }
     }
   }

@@ -26,7 +26,11 @@ Checks performed:
   \item duplicate canonical entries (globally for covariates; per section
     for compartments, where a token may legitimately be both a bare
     compartment and a suffix);
-  \item citations of model files that do not exist on disk;
+  \item citations of model files that do not exist on disk, both in
+    `Example models:` lines and anywhere else in a register (a `Notes:` or
+    `Source aliases:` line, a policy note). A citation is a backticked bare
+    file name such as `Zhou_2010_digoxin.R`; a suffix fragment such as
+    `_cm.R` is not one;
   \item canonicals that no model uses;
   \item `[[cross-references]]` with no matching entry;
   \item entries with no `Example models:` line, outside an explicit
