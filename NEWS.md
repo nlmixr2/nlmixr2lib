@@ -2,6 +2,25 @@
 
 # development version
 
+- `checkNamingRegisters()` now also reports a model file cited anywhere in a
+  register, such as a `Notes:` or `Source aliases:` line, that does not exist
+  (check `orphan-model-citation`). Before, only `Example models:` lines were
+  read. The one such citation, `Yukawa_1996_digoxin.R` in the
+  `CONMED_DIURETIC` notes, is corrected to `Zhou_2010_digoxin.R`.
+
+- Restore the `Hansson_2013_sunitinib_os` article, which had been deleted on
+  the mistaken belief that the model was renamed; the rename was of the
+  companion e84 OS model, now `Hansson_2013_sunitinib_svegfr3_os`.
+  `Brekkan_2018_pegfilgrastim` no longer names an article that was never
+  written, so the "Specific drug models" menu no longer links to a missing
+  page. A test now checks that every article link on the site resolves, and
+  that every model either has an article or is listed, with a reason, as a
+  generic template or as awaiting one.
+
+- Register the five `STUDY_*` cohort indicators and four `FORM_BP_*`
+  observation-block indicators of `Lallemand_2023_benzylpenicillin_horse` in
+  the covariate register, clearing its nine unregistered-covariate warnings.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.
