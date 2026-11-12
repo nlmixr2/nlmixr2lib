@@ -4978,6 +4978,8 @@ navbar:
         href: articles/Ramharter_2019_mefloquine.html
       - text: "Mefloquine (Simpson 2013)"
         href: articles/Simpson_2013_mefloquine.html
+      - text: "Mefloquine artesunate mouse (Mim 2026)"
+        href: articles/Mim_2026_mefloquine_artesunate.html
       - text: "Meloxicam cockatiel iv (Dhondt 2017)"
         href: articles/Dhondt_2017_cox2inhibitors_cockatiel.html
       - text: "Meloxicam cockatiel oral (Dhondt 2017)"
@@ -11105,6 +11107,7 @@ articles:
   - articles/MilenkovicGrisic_2024_tumor_dynamics
   - articles/Mileva_2021_doxycycline_rabbit
   - articles/Milosheska_2016_lamotrigine
+  - articles/Mim_2026_mefloquine_artesunate
   - articles/Mimram_2022_clindamycin
   - articles/Minichmayr_2024_ceftaroline
   - articles/Minichmayr_2025_nafld_histology
