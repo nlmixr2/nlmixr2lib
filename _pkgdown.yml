@@ -7338,6 +7338,8 @@ navbar:
         href: articles/Sikma_2020_tacrolimus_unbound_plasma.html
       - text: "Tadalafil (FergusonSells 2022)"
         href: articles/FergusonSells_2022_tadalafil.html
+      - text: "Tafamidis qsp (Ulaszek 2026)"
+        href: articles/Ulaszek_2026_tafamidis.html
       - text: "Tafenoquine (Charles 2007)"
         href: articles/Charles_2007_tafenoquine.html
       - text: "Tafenoquine (Edstein 2001)"
@@ -11152,6 +11154,7 @@ articles:
   - articles/Ueshima_2025_remimazolam
   - articles/Ugolkov_2026_bcell_mouse_qsp
   - articles/Ujihira_2025_glycochenodeoxycholicAcidSulfate
+  - articles/Ulaszek_2026_tafamidis
   - articles/Ulldemolins_2015_meropenem
   - articles/Umpierrez_2021_cyclosporine
   - articles/Urien_2004_cisplatin

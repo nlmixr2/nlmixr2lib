@@ -1,0 +1,618 @@
+---
+title: "Tafamidis (Ulaszek 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tafamidis (Ulaszek 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta}
+ui <- rxode2::rxode(readModelDb("Ulaszek_2026_tafamidis_qsp"))
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article: <https://doi.org/10.3390/pharmaceutics18030367>
+* Supplement (Lua model code, population-sampling R scripts, Simcyp
+  simulation workbook): <https://www.mdpi.com/article/10.3390/pharmaceutics18030367/s1>
+
+Ulaszek 2026 couples a Simcyp V23 whole-body PBPK model of tafamidis to a
+six-ODE quantitative systems pharmacology (QSP) model of tafamidis binding to
+transthyretin (TTR) and of TTR turnover. The PBPK model is a forcing function:
+its total plasma tafamidis concentration feeds the QSP model, with no feedback.
+Only the QSP layer is packaged here. The PBPK layer relies on Simcyp database
+physiology (organ volumes, blood flows, the ADAM absorption model) that the
+paper does not publish, so it cannot be rebuilt from the published sources;
+the total plasma concentration therefore enters as the time-varying covariate
+`CP_TAFAMIDIS_UM`.
+
+To drive the QSP model this article uses the paper's own PBPK output. The
+supplementary simulation workbook contains the Simcyp plasma profile of each of
+the 30 virtual subjects (sheet "Conc Profiles CSys(CPlasma)", in uM) for
+80 mg tafamidis meglumine once daily. The first 21 days of those profiles,
+resampled from the 0.254 h Simcyp grid to every fourth point (1.02 h), ship
+with this article as `data/Ulaszek_2026_tafamidis_simcyp.csv`. Resampling
+changes the steady-state unbound-to-total TTR ratio by less than 0.001
+percentage points relative to the full-resolution profiles.
+
+# Population
+
+The QSP simulations use 30 virtual healthy men aged 30-40 years. Each subject
+has a baseline TTR sampled from a normal distribution with the mean and SD that
+Ingenbleek et al. report for this age and sex stratum (Section 2.4); the
+baseline was split into a synthesis rate r and a degradation rate Tdeg
+(baseline TTR = r / Tdeg) by an optimiser started from the Oppenheimer et al.
+turnover estimates. Albumin is the Simcyp healthy-volunteer value for each
+virtual subject (Table A2). The age range was chosen to match the only
+multiple-dose tafamidis study (B3461056, 30 healthy men, Lockwood 2020) and the
+radiolabelled TTR turnover studies. Women were not simulated.
+
+The same information is available programmatically:
+
+```{r population}
+str(ui$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source; this
+table collects them.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `ksyn` (r) | 0.092565 uM/h (typical); per subject in the cohort table below | Supplementary R script `1_TTR sampling.R` (Oppenheimer average used as optimiser start); per-subject values: deposited Lua script `patient_synthesis_and_degradation_rates_table` |
+| `kdeg` (Tdeg) | 0.015125 1/h (typical); per subject below | Section 2.4 (Oppenheimer 0.363 1/day); same R script and Lua table |
+| `kdiss` | 0.0024 1/h | Table A2, 'Dissociation rate of unbound TTR' |
+| `kreassoc` (paper `ka`) | 360,000 1/(uM^3 h) | Table A2, 'Association rate of unbound TTR' |
+| `kdeg_monomer` (Mdeg) | 0.016 1/h | Table A2, 'Monomer degradation rate' |
+| `kon1` | 16,200 1/(uM h) | Table A2 |
+| `koff1` | 50.2 1/h (Nelson-based); 28.8 (Corazza) | Table A2 |
+| `kon2` | 12,600 1/(uM h) | Table A2 |
+| `koff2` | 2998.8 1/h (Nelson-based); 216 (Corazza) | Table A2 |
+| `kon_alb` | 1000 1/(uM h) | Table A2 |
+| `koff_alb` | 1800 1/h | Table A2 |
+| `f_kdeg_bound` (s) | 0.735 | Deposited Lua script (`T_bound_deg = P[2]*0.735`); Section 2.3 Eq 4 and Table A2 give the approximation 0.75 |
+| Albumin MW | 66,500 g/mol | Deposited Lua script (`getIndivHSA()/66500*1000000`) |
+| Free tafamidis | `CP - (TTR1 + 2 TTR2 + Alb1)` | Eq 11 |
+| Single-bound complex | ODE | Eq 5 |
+| Double-bound complex | ODE | Eq 6 |
+| Free TTR tetramer | ODE | Eq 7 |
+| TTR monomer | ODE | Eq 8 |
+| Tafamidis-albumin complex | ODE | Eq 9 |
+| Free albumin | ODE | Eq 10 |
+| Initial free TTR | `ksyn / kdeg` (r / Tdeg) | Eq 2; Lua `odeInitStep` |
+| Initial monomer | `(kdiss / ka * r / Tdeg)^(1/4)` | Eq A1; Lua `odeInitStep` |
+
+# Virtual cohort
+
+The per-subject synthesis and degradation rates are copied from the deposited
+Simcyp Lua script; the albumin values are the "Individual albumin
+concentration" column of the workbook's "PD Individual Parameters" sheet (uM),
+converted to g/L with the 66,500 g/mol molecular weight that the script uses.
+
+```{r cohort}
+cohort <- tibble::tribble(
+  ~id, ~ksyn, ~kdeg, ~alb_um,
+   1, 0.098274765, 0.015599744, 709.16,
+   2, 0.08934705, 0.023197852, 560.03,
+   3, 0.088828345, 0.02134827, 832.92,
+   4, 0.086720324, 0.02833187, 673.12,
+   5, 0.093612972, 0.017874036, 644.91,
+   6, 0.09032345, 0.016821943, 814.53,
+   7, 0.098823533, 0.013755775, 793.27,
+   8, 0.096938652, 0.016522241, 703.99,
+   9, 0.097610791, 0.018947115, 702.28,
+  10, 0.090586344, 0.020690342, 591.49,
+  11, 0.091644791, 0.01711909, 669.91,
+  12, 0.097223292, 0.016557065, 683.69,
+  13, 0.090158856, 0.020920587, 592.60,
+  14, 0.08762943, 0.01607184, 734.20,
+  15, 0.088231829, 0.019360376, 642.53,
+  16, 0.092693381, 0.019022058, 610.85,
+  17, 0.093396252, 0.015083833, 725.69,
+  18, 0.099642671, 0.015063841, 626.55,
+  19, 0.094942884, 0.01654143, 682.26,
+  20, 0.097456425, 0.015510181, 555.25,
+  21, 0.098408399, 0.013098644, 600.40,
+  22, 0.101319506, 0.015128306, 706.44,
+  23, 0.091696066, 0.016738084, 736.95,
+  24, 0.097680873, 0.017382859, 788.84,
+  25, 0.096866445, 0.014774395, 702.95,
+  26, 0.098317866, 0.01396194, 693.51,
+  27, 0.089049769, 0.020835372, 690.36,
+  28, 0.088789839, 0.021414132, 719.15,
+  29, 0.10033951, 0.0141965, 622.97,
+  30, 0.096185628, 0.015841171, 617.25
+) |>
+  mutate(
+    ALB = alb_um * 66500 / 1e6,
+    ttr0 = ksyn / kdeg
+  )
+
+cohort |>
+  summarise(
+    `Baseline TTR, mean (uM)` = mean(ttr0),
+    `Baseline TTR, range (uM)` = sprintf("%.2f-%.2f", min(ttr0), max(ttr0)),
+    `Albumin, mean (g/L)` = mean(ALB),
+    `Albumin, range (g/L)` = sprintf("%.1f-%.1f", min(ALB), max(ALB))
+  ) |>
+  knitr::kable(digits = 2, caption = "Virtual cohort (n = 30).")
+```
+
+The Discussion's "low-TTR patient (3.85 uM)" and "high-TTR patient (7.51 uM)"
+are subjects 2 and 21:
+
+```{r low-high}
+low_id <- cohort$id[which.min(abs(cohort$ttr0 - 3.85))]
+high_id <- cohort$id[which.min(abs(cohort$ttr0 - 7.51))]
+stopifnot(low_id == 2, high_id == 21)
+```
+
+# Tafamidis driver profiles
+
+```{r driver}
+driver_wide <- utils::read.csv(file.path("data", "Ulaszek_2026_tafamidis_simcyp.csv"))
+driver <- driver_wide |>
+  pivot_longer(-time, names_to = "id", names_prefix = "id", values_to = "CP_TAFAMIDIS_UM") |>
+  mutate(id = as.integer(id)) |>
+  arrange(id, time)
+
+mw_tafamidis <- 308.12 # g/mol, free acid (Table A1)
+```
+
+## PKNCA check of the driver against Table 2
+
+The profiles are the paper's own PBPK output, so their NCA should match the
+PBPK predictions the paper tabulates. Table 2 reports the predicted day-7
+values of study B3461056 (80 mg once daily) and the single-dose values of study
+B3461054 (fasted). The workbook doses at the Simcyp grid points nearest each
+24 h multiple; the nominal 24 h dosing times are used here.
+
+```{r driver-nca}
+dose_df <- tibble(
+  id = rep(1:30, each = 21),
+  time = rep(24 * (0:20), times = 30),
+  amt = 48.8, # mg tafamidis per 80 mg tafamidis meglumine (Section 2.3)
+  treatment = "80 mg QD"
+)
+
+conc_df <- driver |>
+  transmute(id, time, conc = CP_TAFAMIDIS_UM * mw_tafamidis, treatment = "80 mg QD")
+
+conc_obj <- PKNCAconc(conc_df, conc ~ time | treatment + id)
+dose_obj <- PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = c(0, 144),
+  end = c(24, 168),
+  cmax = TRUE,
+  tmax = TRUE,
+  aucint.last = c(FALSE, TRUE)
+)
+nca_res <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+simulated_nca <- as.data.frame(nca_res) |>
+  mutate(treatment = ifelse(start == 0, "Single dose (day 1)", "Day 7")) |>
+  select(treatment, PPTESTCD, PPORRES)
+
+published <- tibble::tribble(
+  ~treatment, ~cmax, ~tmax, ~aucint.last,
+  # Table 2, B3461056 day 7, PREDICTED medians: AUC144-168h 179,721 ng*h/mL,
+  # Cmax 9085 ng/mL, Tmax 1.90 h
+  "Day 7", 9085, 1.90, 179721,
+  # Table 2, B3461054 single dose fasted, PREDICTED: Cmax geometric mean
+  # 3586 ng/mL, Tmax median 2.26 h
+  "Single dose (day 1)", 3586, 2.26, NA
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = simulated_nca,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "ng/mL", tmax = "h", aucint.last = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Driver NCA (median of the 30 workbook profiles) against the PBPK",
+    "predictions of Ulaszek 2026 Table 2."
+  )
+)
+```
+
+```{r driver-nca-check}
+day7 <- as.data.frame(nca_res) |> filter(start == 144)
+med7 <- tapply(day7$PPORRES, day7$PPTESTCD, median)
+# The driver is a single 30-subject Simcyp trial while Table 2 summarises the
+# paper's own predicted cohort; the exposure scale must agree closely.
+stopifnot(
+  abs(med7[["aucint.last"]] / 179721 - 1) < 0.10,
+  abs(med7[["cmax"]] / 9085 - 1) < 0.10
+)
+```
+
+Cmax and AUC agree within 4%. The day-7 Tmax is the one starred row: the
+shipped profiles are on a 1.02 h grid and the workbook doses at 143.99 h rather
+than at the nominal 144 h, so a Tmax difference of about 0.4 h is within the
+grid's resolution rather than a difference in exposure.
+
+# Simulation: 80 mg tafamidis meglumine once daily
+
+```{r solve-80}
+ev <- driver |>
+  left_join(select(cohort, id, ALB), by = "id")
+per_subject <- select(cohort, ksyn, kdeg)
+
+solve_qsp <- function(model, events, params) {
+  rxode2::rxSolve(
+    model,
+    events = events,
+    params = params,
+    covsInterpolation = "linear",
+    atol = 1e-10,
+    rtol = 1e-8,
+    maxsteps = 1e6,
+    returnType = "data.frame"
+  )
+}
+
+sim80 <- solve_qsp(ui, ev, per_subject)
+```
+
+## Replicate Figure 3
+
+```{r fig3, fig.width = 7, fig.height = 4.5}
+state_labels <- c(
+  complex_ttr1 = "Single tafamidis-TTR complex",
+  complex_ttr2 = "Double tafamidis-TTR complex",
+  ttr_free = "Free TTR",
+  ttr_monomer = "TTR monomer",
+  complex_albumin = "Tafamidis-albumin complex",
+  ttr_bound = "Bound TTR",
+  ttr_total = "Total TTR"
+)
+sim80 |>
+  select(id, time, all_of(names(state_labels))) |>
+  pivot_longer(-c(id, time), names_to = "state") |>
+  group_by(time, state) |>
+  summarise(value = mean(value), .groups = "drop") |>
+  mutate(state = factor(state_labels[state], levels = state_labels)) |>
+  ggplot(aes(time, value, colour = state)) +
+  geom_line() +
+  labs(
+    x = "Time (h)",
+    y = "Mean concentration (uM)",
+    colour = NULL,
+    caption = "Replicates the first 21 days of Figure 3 of Ulaszek 2026 (Nelson-based binding constants)."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(ncol = 2))
+```
+
+## Identity check against the deposited simulation
+
+The workbook's "PD Custom ODE" sheet holds the Simcyp solution of the same
+equations for the same 30 subjects. Both solves share the driver profile and
+every parameter, so the population means must agree to within integrator and
+resampling error. The reference values are the workbook's population means at
+five times on the shipped grid.
+
+```{r identity}
+workbook_means <- tibble::tribble(
+  ~time, ~complex_ttr1, ~complex_ttr2, ~ttr_free, ~ttr_monomer, ~complex_albumin, ~albumin,
+  2.0352, 4.41014, 0.322302, 0.845401, 0.00766591, 6.55205, 674.383,
+  24.4224, 4.69780, 0.353242, 0.897627, 0.00840514, 6.70954, 674.225,
+  168.9216, 5.50736, 1.301401, 0.318329, 0.00634387, 20.76375, 660.171,
+  336.8256, 5.68405, 1.336763, 0.331020, 0.00640140, 20.71367, 660.221,
+  503.7120, 5.94709, 0.864625, 0.570647, 0.00677440, 13.01677, 667.918
+)
+
+states <- setdiff(names(workbook_means), "time")
+model_means <- sim80 |>
+  filter(round(time, 4) %in% round(workbook_means$time, 4)) |>
+  group_by(time) |>
+  summarise(across(all_of(states), mean), .groups = "drop")
+
+identity <- workbook_means |>
+  pivot_longer(-time, names_to = "state", values_to = "workbook") |>
+  left_join(
+    pivot_longer(model_means, -time, names_to = "state", values_to = "model"),
+    by = c("time", "state")
+  ) |>
+  mutate(pct_diff = 100 * (model / workbook - 1))
+
+identity |>
+  group_by(state) |>
+  summarise(`max abs % diff` = max(abs(pct_diff))) |>
+  knitr::kable(digits = 3, caption = "Model vs workbook population means over the five check times.")
+
+stopifnot(
+  nrow(identity) == 30,
+  all(abs(identity$pct_diff[identity$state != "ttr_monomer"]) < 1)
+)
+```
+
+The five drug-bound, TTR and albumin states agree to well under 1%. The
+monomer does not: the workbook monomer is 10-14% below this solve whenever drug
+is present, and it settles at 0.0127 uM rather than the 0.0143 uM that the
+printed monomer equation (Eq 8) gives at baseline, even after the drug washes
+out. The baseline monomer here equals Eq A1 exactly:
+
+```{r monomer-baseline}
+base <- sim80 |> filter(time == 0)
+eq_a1 <- with(cohort, (0.0024 / 360000 * ksyn / kdeg)^(1 / 4))
+stopifnot(max(abs(base$ttr_monomer / eq_a1 - 1)) < 1e-8)
+```
+
+The deposited equations reproduce every other workbook state, so the monomer
+offset is a property of the Simcyp solve of that one state. The monomer
+carries well under 1% of total TTR, so the offset does not move any other
+state.
+
+## The 33% rise in total TTR
+
+The paper calibrates the bound-complex clearance so that total TTR rises by
+about 33% at steady state (Section 2.3). The text derives the scaling factor
+analytically as 1/1.33, about 0.75, which assumes that all TTR is drug-bound and
+that monomer loss is negligible. The deposited script uses 0.735. Under the full
+model, with 5% of TTR still unbound and a monomer drain, 0.735 gives the 33%
+rise and 0.75 falls short:
+
+```{r ttr-rise}
+rise <- function(sim) {
+  sim |>
+    filter(time == 0 | round(time, 4) == 503.712) |>
+    group_by(time) |>
+    summarise(ttr_total = mean(ttr_total), .groups = "drop") |>
+    with(ttr_total[2] / ttr_total[1] - 1)
+}
+ui_075 <- ui |> rxode2::ini(f_kdeg_bound = 0.75)
+rise_0735 <- rise(sim80)
+rise_075 <- rise(solve_qsp(ui_075, ev, per_subject))
+
+tibble(
+  `Scaling factor s` = c("0.735", "0.75"),
+  `Rise in mean total TTR, day 21 (%)` = 100 * c(rise_0735, rise_075)
+) |>
+  knitr::kable(digits = 1)
+
+# Workbook: mean total TTR rises from 5.542 uM to 7.382 uM by day 21
+# (+33.2%), the same value as on day 91.
+stopifnot(
+  abs(100 * rise_0735 - 33.2) < 0.5,
+  rise_075 < rise_0735 - 0.01
+)
+```
+
+## Albumin mass balance
+
+Albumin has no synthesis or loss in the model, so free albumin plus the
+tafamidis-albumin complex must stay at each subject's input albumin.
+
+```{r albumin-balance}
+alb_check <- sim80 |>
+  left_join(select(cohort, id, alb_um), by = "id") |>
+  mutate(rel = (albumin + complex_albumin) / alb_um - 1)
+# Rounding of the cohort albumin to two decimals is the only difference.
+stopifnot(max(abs(alb_check$rel)) < 1e-5)
+```
+
+# Corazza-based binding constants (Figure A2)
+
+The paper runs the model with a second set of binding constants taken
+directly from Corazza 2019 (`koff1` 28.8 and `koff2` 216 1/h). Tighter binding
+shifts tafamidis from the single-bound into the double-bound complex.
+
+```{r figA2, fig.width = 7, fig.height = 4}
+ui_corazza <- ui |> rxode2::ini(koff1 = 28.8, koff2 = 216)
+sim80_cor <- solve_qsp(ui_corazza, ev, per_subject)
+
+bind_rows(
+  Nelson = sim80,
+  Corazza = sim80_cor,
+  .id = "set"
+) |>
+  select(set, id, time, complex_ttr1, complex_ttr2, ttr_free) |>
+  pivot_longer(c(complex_ttr1, complex_ttr2, ttr_free), names_to = "state") |>
+  group_by(set, time, state) |>
+  summarise(value = mean(value), .groups = "drop") |>
+  mutate(state = state_labels[state]) |>
+  ggplot(aes(time, value, colour = state)) +
+  geom_line() +
+  facet_wrap(~set) +
+  labs(
+    x = "Time (h)",
+    y = "Mean concentration (uM)",
+    colour = NULL,
+    caption = "Replicates Figure A2 (Corazza) against Figure 3 (Nelson) of Ulaszek 2026."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+ss_bound <- function(sim) {
+  sim |>
+    filter(time >= 480) |>
+    summarise(across(c(complex_ttr1, complex_ttr2), mean))
+}
+stopifnot(
+  ss_bound(sim80_cor)$complex_ttr2 > ss_bound(sim80)$complex_ttr2,
+  ss_bound(sim80_cor)$complex_ttr1 < ss_bound(sim80)$complex_ttr1
+)
+```
+
+# Dose sensitivity (Figure 4)
+
+Figure 4 plots the steady-state unbound-to-total TTR ratio for 20, 40, 60, 80
+and 160 mg tafamidis meglumine once daily: the population mean (with SD) and
+the low-TTR and high-TTR subjects. The workbook holds only the 80 mg profiles,
+so the other doses are approximated by scaling them with dose, which assumes
+linear tafamidis pharmacokinetics over this range. The ratio is averaged over
+the last dosing interval (day 21).
+
+```{r fig4-solve}
+doses <- c(20, 40, 60, 80, 160)
+
+ratio_by_dose <- function(model) {
+  bind_rows(lapply(doses, function(d) {
+    ev_d <- mutate(ev, CP_TAFAMIDIS_UM = CP_TAFAMIDIS_UM * d / 80)
+    solve_qsp(model, ev_d, per_subject) |>
+      filter(time >= 480) |>
+      group_by(id) |>
+      summarise(ratio = 100 * mean(ttr_unbound_ratio), .groups = "drop") |>
+      mutate(dose = d)
+  }))
+}
+fig4 <- bind_rows(
+  Nelson = ratio_by_dose(ui),
+  Corazza = ratio_by_dose(ui_corazza),
+  .id = "set"
+)
+
+fig4_summary <- fig4 |>
+  group_by(set, dose) |>
+  summarise(
+    mean = mean(ratio),
+    sd = sd(ratio),
+    low = ratio[id == low_id],
+    high = ratio[id == high_id],
+    .groups = "drop"
+  )
+```
+
+The published values come from the Discussion where it states them
+(population mean 4.59% at 60 mg and 2.19% at 80 mg; low-TTR subject 2.55% at
+60 mg; high-TTR subject 3.86% at 80 mg) and were otherwise digitised by the
+maintainers from Figure 4 (bar tops measured on the published image; the
+digitised bars reproduce the four Discussion values to within 0.2 percentage
+points).
+
+```{r fig4-compare}
+paper_fig4 <- tibble::tribble(
+  ~dose, ~mean, ~low, ~high,
+  20, 32.7, 24.9, 45.4,
+  40, 11.4, 6.83, 19.5,
+  60, 4.59, 2.55, 8.17,
+  80, 2.19, 1.10, 3.86
+)
+
+fig4_cmp <- fig4_summary |>
+  select(set, dose, mean, low, high) |>
+  pivot_longer(c(mean, low, high), names_to = "group", values_to = "model") |>
+  inner_join(
+    pivot_longer(paper_fig4, -dose, names_to = "group", values_to = "paper"),
+    by = c("dose", "group")
+  ) |>
+  mutate(pct_diff = 100 * (model / paper - 1))
+
+fig4_cmp |>
+  select(set, dose, group, paper, model, pct_diff) |>
+  pivot_wider(names_from = set, values_from = c(model, pct_diff)) |>
+  arrange(group, dose) |>
+  rename(
+    `Dose (mg)` = dose,
+    Group = group,
+    `Paper (%)` = paper,
+    `Nelson set (%)` = model_Nelson,
+    `Corazza set (%)` = model_Corazza,
+    `Nelson % diff` = pct_diff_Nelson,
+    `Corazza % diff` = pct_diff_Corazza
+  ) |>
+  knitr::kable(digits = 2, caption = "Unbound-to-total TTR ratio at steady state against Figure 4 of Ulaszek 2026.")
+```
+
+```{r fig4-plot, fig.width = 7, fig.height = 4}
+fig4_summary |>
+  ggplot(aes(factor(dose), mean, fill = set)) +
+  geom_col(position = position_dodge(0.8), width = 0.7) +
+  geom_errorbar(
+    aes(ymin = mean - sd, ymax = mean + sd),
+    position = position_dodge(0.8),
+    width = 0.25
+  ) +
+  geom_point(
+    data = paper_fig4,
+    aes(factor(dose), mean),
+    inherit.aes = FALSE,
+    shape = 4,
+    size = 3
+  ) +
+  labs(
+    x = "Tafamidis meglumine dose (mg once daily)",
+    y = "Unbound / total TTR ratio (%)",
+    fill = "Binding constants",
+    caption = "Replicates the population-mean bars of Figure 4 of Ulaszek 2026 (crosses: published values)."
+  ) +
+  theme_bw()
+```
+
+The Corazza-based constants reproduce Figure 4 to within 15% for every bar
+(within 1% for the 20 mg mean), with the largest shortfalls at 60-80 mg where
+the published ratios are smallest and most sensitive to the dose-scaled
+drivers; the Nelson-based constants,
+which the deposited script and Figure 3 use, give unbound fractions 1.8 to
+3.9 times the published values at 60-80 mg. Figure 4 was therefore evidently generated with
+the Corazza set, although the paper does not say so.
+
+```{r fig4-check}
+cor_rows <- filter(fig4_cmp, set == "Corazza")
+nel_80 <- filter(fig4_cmp, set == "Nelson", dose == 80, group == "mean")
+stopifnot(
+  # Structural: the Corazza set lands on the published bars.
+  abs(median(cor_rows$pct_diff)) < 10,
+  max(abs(cor_rows$pct_diff)) < 25,
+  # The Nelson set does not (5.5% against 2.19% at 80 mg).
+  nel_80$pct_diff > 100
+)
+```
+
+# Assumptions and deviations
+
+* **PBPK layer not extracted.** The Simcyp V23 whole-body PBPK model of
+  tafamidis is not reproducible from the published sources: organ volumes,
+  blood flows and the ADAM absorption rate are Simcyp database outputs, and
+  Table A1 prints only the compound inputs (physicochemical properties,
+  fu 0.008, B:P 0.55, tissue Kp values, Peff, total clearance 0.262 L/h,
+  Vss 0.169 L/kg). Total plasma tafamidis is a covariate instead.
+* **Driver profiles from the supplement.** The article drives the model with
+  the paper's own Simcyp plasma profiles (30 subjects, first 21 days of
+  80 mg once daily) rather than with an independent PK model; the PKNCA check
+  above confirms they match the PBPK predictions of Table 2.
+* **Scaling factor 0.735, not 0.75.** Section 2.3 and Table A2 give the
+  bound-complex clearance factor as 1/1.33, about 0.75, an analytic
+  approximation. The deposited Simcyp script uses 0.735, and that value
+  reproduces the 33% rise in the full model and the workbook outputs, so the
+  model carries 0.735.
+* **Typical `ksyn` and `kdeg`.** The model's default synthesis and degradation
+  rates are the Oppenheimer averages that seeded the per-subject split
+  (baseline TTR 6.12 uM). The paper never simulates a "typical" subject; its
+  results always use the 30 per-subject pairs, which this article supplies
+  through `params`.
+* **Binding constants.** The model defaults to the Nelson-based set, which the
+  deposited script and Figure 3 use. Figure 4 matches the Corazza-based set
+  instead (see above); switch with
+  `ini(koff1 = 28.8, koff2 = 216)`.
+* **Monomer.** The workbook's monomer trajectory is 10-14% below the solution
+  of the printed Eq 8; every other state matches. The model follows the
+  printed equation.
+* **Dose scaling for Figure 4.** The non-80 mg drivers are the 80 mg profiles
+  scaled by dose, assuming linear pharmacokinetics; Figure 4 used separate
+  Simcyp runs at each dose.
+* **Monomer degradation rate.** Table A2 states that no data exist for
+  `kdeg_monomer`; the paper assumes it equals the average TTR degradation rate.
+* **No variability model.** The paper fits no IIV or residual error; the
+  between-subject spread comes only from the per-subject turnover rates,
+  albumin and drug exposure.
