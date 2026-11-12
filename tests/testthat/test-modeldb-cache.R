@@ -58,6 +58,14 @@ test_that(".modeldbGlobalSig has expected structure and reacts to R/modeldb.R ed
   expect_false(identical(sig$modeldbRhash, sig2$modeldbRhash))
 })
 
+# Counts calls to the per-file loader, delegating to the real one.
+.cacheSpy <- new.env(parent = emptyenv())
+
+.countingFileRow <- function(dir, file) {
+  .cacheSpy$count <- .cacheSpy$count + 1L
+  .cacheSpy$fileRow(dir = dir, file = file)
+}
+
 test_that(".addDirToModelDbCached parses on cold run and reuses cache on warm run", {
   skip_if_not_installed("nlmixr2est")
 
@@ -71,33 +79,20 @@ test_that(".addDirToModelDbCached parses on cold run and reuses cache on warm ru
   }
   file.copy(srcFile, file.path(fixtureDir, "PK_1cmt.R"))
 
-  # Spy on addFileToModelDb so we can assert cache hits avoid re-parsing.
-  ns <- asNamespace("nlmixr2lib")
-  orig <- get("addFileToModelDb", envir = ns)
-  count <- 0L
-  replacement <- function(...) {
-    count <<- count + 1L
-    orig(...)
-  }
-  unlockBinding("addFileToModelDb", ns)
-  assign("addFileToModelDb", replacement, envir = ns)
-  on.exit(
-    {
-      assign("addFileToModelDb", orig, envir = ns)
-      lockBinding("addFileToModelDb", ns)
-    },
-    add = TRUE
-  )
+  # Spy on the per-file loader so we can assert cache hits avoid re-parsing.
+  .cacheSpy$count <- 0L
+  .cacheSpy$fileRow <- nlmixr2lib:::.modeldbFileRow
+  testthat::local_mocked_bindings(.modeldbFileRow = .countingFileRow, .package = "nlmixr2lib")
 
   cold <- nlmixr2lib:::.addDirToModelDbCached(fixtureDir, entries = list())
-  expect_equal(count, 1L)
+  expect_equal(.cacheSpy$count, 1L)
   expect_equal(nrow(cold$modeldb), 1L)
   expect_identical(cold$modeldb$name, "PK_1cmt")
   expect_named(cold$entries, "PK_1cmt.R")
   expect_equal(nchar(cold$entries[["PK_1cmt.R"]]$hash), 32L)
 
   warm <- nlmixr2lib:::.addDirToModelDbCached(fixtureDir, entries = cold$entries)
-  expect_equal(count, 1L) # unchanged — no re-parse on cache hit
+  expect_equal(.cacheSpy$count, 1L) # unchanged — no re-parse on cache hit
   expect_equal(warm$modeldb, cold$modeldb)
   expect_identical(warm$entries, cold$entries)
 })
