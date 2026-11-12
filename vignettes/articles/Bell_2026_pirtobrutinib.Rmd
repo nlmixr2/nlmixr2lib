@@ -133,7 +133,6 @@ ev_s2 <- scenarios |>
     OCC = 1L
   )
 
-# steady-state searches for long-half-life subjects exceed the default step budget
 sim_s2 <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_s2, maxsteps = 1e6) |>
   as.data.frame() |>
   group_by(id) |>
@@ -379,8 +378,8 @@ virtual cohort is analysed with PKNCA (individual predictions, no residual
 error).
 
 ```{r pknca}
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(sim$Cc), sim$id, all)))
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim$Cc))
 sim_nca <- sim |>
   filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
