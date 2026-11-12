@@ -244,6 +244,7 @@ ev_typ <- function(n_doses) {
   }))
 }
 solve_trough <- function(n_doses, t_obs) {
+  # steady-state searches for long-half-life subjects exceed the default step budget
   rxode2::rxSolve(
     mod, ev_typ(n_doses), omega = NA, sigma = NA, returnType = "data.frame",
     useLinCmt = FALSE, maxsteps = 1e6, keep = "scenario"
@@ -439,6 +440,7 @@ wiring independently of the published numbers.
 ev_nca <- dplyr::bind_rows(lapply(seq_len(nrow(scenarios)), function(i) {
   make_events(scenarios[i, ], id_offset = i - 1L, grid = grid)
 }))
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_nca <- rxode2::rxSolve(
   mod, ev_nca, omega = NA, sigma = NA, returnType = "data.frame",
   useLinCmt = FALSE, maxsteps = 1e6, keep = "scenario"
@@ -452,6 +454,8 @@ intervals <- data.frame(start = 0, end = tau, cmax = TRUE, tmax = TRUE,
                         cmin = TRUE, auclast = TRUE)
 
 run_nca <- function(conc_col) {
+  # A subject that fails to solve comes back NA; stop rather than drop it.
+  stopifnot(!anyNA(sim_nca[[conc_col]]))
   conc <- sim_nca |>
     dplyr::filter(!is.na(.data[[conc_col]])) |>
     dplyr::transmute(id, time, scenario, conc = .data[[conc_col]])
