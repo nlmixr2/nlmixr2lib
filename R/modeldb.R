@@ -19,6 +19,16 @@ utils::globalVariables(c("modeldb"))
 .conventionErrorsReset <- function() {
   .conventionErrorEnv$byModel <- list()
   .conventionErrorEnv$failures <- list()
+  .conventionErrorEnv$duplicates <- list()
+  invisible(NULL)
+}
+
+# Record a model name defined by more than one file.
+.modeldbDuplicateAdd <- function(name, files) {
+  if (is.null(.conventionErrorEnv$duplicates)) {
+    .conventionErrorsReset()
+  }
+  .conventionErrorEnv$duplicates[[name]] <- files
   invisible(NULL)
 }
 
@@ -47,7 +57,8 @@ utils::globalVariables(c("modeldb"))
 .conventionErrorsStopIfAny <- function() {
   byModel <- .conventionErrorEnv$byModel
   failures <- .conventionErrorEnv$failures
-  if (length(byModel) == 0 && length(failures) == 0) {
+  duplicates <- .conventionErrorEnv$duplicates
+  if (length(byModel) == 0 && length(failures) == 0 && length(duplicates) == 0) {
     return(invisible(NULL))
   }
   parts <- character()
@@ -62,6 +73,17 @@ utils::globalVariables(c("modeldb"))
       sprintf(
         "buildModelDb(): %d model file(s) could not be loaded.\n%s",
         length(failures),
+        paste(detail, collapse = "\n")
+      )
+    )
+  }
+  if (length(duplicates) > 0) {
+    detail <- paste0("  ", names(duplicates), ": ", vapply(duplicates, paste, character(1), collapse = ", "))
+    parts <- c(
+      parts,
+      sprintf(
+        "buildModelDb(): %d duplicated model name(s).\n%s",
+        length(duplicates),
         paste(detail, collapse = "\n")
       )
     )
@@ -480,12 +502,13 @@ addFileToModelDb <- function(dir, file, modeldb) {
   }
   rows <- rows[lengths(rows) > 0L]
   modeldb <- if (length(rows) > 0L) do.call(rbind, rows) else data.frame()
-  if (anyDuplicated(modeldb$name)) {
-    stop(
-      "Duplicated model name: ",
-      paste(unique(modeldb$name[duplicated(modeldb$name)]), collapse = ", "),
-      call. = FALSE
-    )
+  dupNames <- unique(modeldb$name[duplicated(modeldb$name)])
+  if (length(dupNames) > 0L) {
+    # Stop here, but with every error gathered so far, not only the duplicates.
+    for (nm in dupNames) {
+      .modeldbDuplicateAdd(nm, modeldb$filename[modeldb$name == nm])
+    }
+    .conventionErrorsStopIfAny()
   }
   acc$entries <- acc$entries[filesToLoad[filesToLoad %in% names(acc$entries)]]
   list(modeldb = modeldb, entries = acc$entries)

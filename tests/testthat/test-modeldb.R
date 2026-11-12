@@ -179,6 +179,42 @@ test_that("editing a register makes the next build re-check every model", {
   expect_identical(.modeldbSpy$files, rep(c("PK_1cmt.R", "PK_2cmt.R"), 2L))
 })
 
+test_that("a duplicate model name stops the walk with every error gathered so far", {
+  skip_on_cran()
+  dir <- withr::local_tempdir("modeldb-fixture")
+  files <- .buildFixtureFiles()
+  files[["sub/PK_1cmt.R"]] <- .templateModelLines("PK_1cmt")
+  .writeModelFixtures(dir, files)
+  nlmixr2lib:::.conventionErrorsReset()
+  withr::defer(nlmixr2lib:::.conventionErrorsReset())
+  acc <- new.env(parent = emptyenv())
+
+  err <- tryCatch(
+    suppressMessages(nlmixr2lib:::.addDirToModelDbCached(dir, list(), acc = acc)),
+    error = identity
+  )
+  expect_s3_class(err, "error")
+  msg <- conditionMessage(err)
+  expect_match(
+    msg,
+    paste0(
+      "buildModelDb(): 1 duplicated model name(s).\n  PK_1cmt: ",
+      file.path(dir, "PK_1cmt.R"),
+      ", ",
+      file.path(dir, "sub/PK_1cmt.R")
+    ),
+    fixed = TRUE
+  )
+  expect_match(msg, "buildModelDb(): 1 model file(s) could not be loaded.", fixed = TRUE)
+  expect_match(msg, "buildModelDb(): 1 convention error(s) in 1 model(s).", fixed = TRUE)
+  # What a stopped buildModelDb() saves on exit: every model that loaded
+  # cleanly, both copies of the duplicate included.
+  expect_identical(
+    names(acc$entries),
+    c("PK_1cmt.R", "PK_2cmt.R", "sub/Fixture_2026_clean.R", "sub/PK_1cmt.R")
+  )
+})
+
 test_that("a build parses each register once, and not at all when every model is cached", {
   skip_on_cran()
   dir <- withr::local_tempdir("modeldb-fixture")
