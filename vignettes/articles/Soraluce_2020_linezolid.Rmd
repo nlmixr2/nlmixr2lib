@@ -146,11 +146,13 @@ events <- rxode2::et(amt = DOSE, dur = TINF, ii = TAU, ss = 1, cmt = "central") 
 ```{r simulate}
 mod <- readModelDb("Soraluce_2020_linezolid")
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim <- rxode2::rxSolve(
   mod,
   events = events,
   keep = c("arm", "CRCL", "QEFF"),
-  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 ```
@@ -164,6 +166,8 @@ simulated median and 2.5th-97.5th percentile band of the individual
 predictions for each arm.
 
 ```{r figure-2}
+# A subject whose steady-state search fails comes back NA; stop rather than drop it.
+stopifnot(!any(tapply(is.na(sim$Cc), sim$id, all)))
 vpc <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::group_by(arm, time) |>
@@ -198,6 +202,8 @@ parameters, so the only difference is trapezoidal error on the observation grid 
 a tight bound is appropriate.
 
 ```{r pknca}
+# A subject whose steady-state search fails comes back NA; stop rather than drop it.
+stopifnot(!any(tapply(is.na(sim$Cc), sim$id, all)))
 conc_df <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, arm)
@@ -391,6 +397,8 @@ therefore shown for context and not gated.
 auc24 <- nca_res |>
   dplyr::filter(PPTESTCD == "auclast") |>
   dplyr::transmute(id, arm, auc24 = 2 * PPORRES)
+# A subject whose steady-state search fails comes back NA; stop rather than drop it.
+stopifnot(!any(tapply(is.na(sim$Cc), sim$id, all)))
 cmin <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::group_by(id, arm) |>
