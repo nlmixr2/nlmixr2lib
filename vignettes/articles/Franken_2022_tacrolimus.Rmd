@@ -246,7 +246,7 @@ ev_typ <- function(n_doses) {
 solve_trough <- function(n_doses, t_obs) {
   rxode2::rxSolve(
     mod, ev_typ(n_doses), omega = NA, sigma = NA, returnType = "data.frame",
-    useLinCmt = FALSE, maxsteps = 500000L, keep = "scenario"
+    useLinCmt = FALSE, maxsteps = 1e6, keep = "scenario"
   ) |>
     dplyr::filter(time == t_obs) |>
     dplyr::transmute(scenario = as.character(scenario), Cc, Cpbmc,
@@ -441,7 +441,7 @@ ev_nca <- dplyr::bind_rows(lapply(seq_len(nrow(scenarios)), function(i) {
 }))
 sim_nca <- rxode2::rxSolve(
   mod, ev_nca, omega = NA, sigma = NA, returnType = "data.frame",
-  useLinCmt = FALSE, maxsteps = 500000L, keep = "scenario"
+  useLinCmt = FALSE, maxsteps = 1e6, keep = "scenario"
 ) |>
   dplyr::mutate(scenario = as.character(scenario))
 
