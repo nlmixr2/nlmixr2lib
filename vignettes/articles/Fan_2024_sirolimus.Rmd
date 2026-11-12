@@ -228,9 +228,7 @@ band.
 ```{r cohort-fig5}
 set.seed(112233)
 
-# obs_by = 1 h: the steady-state AUC identity below is checked by linear
-# trapezoidal integration, whose discretisation error is what limits it. A 1 h
-# grid holds that error under 0.25% per subject; a 2 h grid gives ~0.85%.
+# obs_by = 1 h: the profile is plotted, and the last interval feeds the NCA table.
 make_profile_arm <- function(n, wt, tau, mgkgd, regimen, id_offset = 0L,
                              obs_by = 1) {
   subj <- tibble(id = id_offset + seq_len(n), WT = wt, tau = tau,
@@ -600,12 +598,60 @@ just on average. Testing it per subject is much stricter than comparing medians,
 because a median over 200 log-normal draws carries a few percent of noise that
 would mask a real error.
 
+The 28-day profile above is short of steady state for the slowest subjects: after
+`SIM_END` hours a subject of terminal rate `k` is `exp(-k * SIM_END)` short, which
+is 0.3% for a half-life of 80 h and 1% for 100 h, and would be read as an NCA
+error. The identity is therefore checked on a separate solve of the same two
+regimens at exact steady state (`ss = 1`), sampled every 0.25 h.
+
 ```{r auc-identity}
-cl_i <- sim_fig5 |>
+# Resolve the grid outside make_ss_arm()'s crossing(), as in make_profile_arm().
+make_ss_arm <- function(n, wt, tau, mgkgd, regimen, id_offset = 0L) {
+  subj <- tibble(id = id_offset + seq_len(n), WT = wt, tau = tau,
+                 mgkgd = mgkgd, regimen = regimen)
+  obs_times <- seq(0, tau, by = 0.25)
+  dosing <- subj |>
+    mutate(time = 0, amt = mgkgd * WT * tau / 24, evid = 1L, cmt = "depot",
+           ss = 1L, ii = tau)
+  obs <- subj |>
+    tidyr::crossing(time = obs_times) |>
+    mutate(amt = NA_real_, evid = 0L, cmt = "central", ss = 0L, ii = 0)
+  bind_rows(dosing, obs) |> arrange(id, time, desc(evid))
+}
+
+events_ss_id <- bind_rows(
+  make_ss_arm(N_PER_ARM, 25, 12, 0.07, "q12h", id_offset =         0L),
+  make_ss_arm(N_PER_ARM, 25, 24, 0.07, "q24h", id_offset = N_PER_ARM)
+)
+stopifnot(!anyDuplicated(unique(events_ss_id[, c("id", "time", "evid")])))
+
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_ss_id <- rxode2::rxSolve(mod, events = events_ss_id,
+                             keep = c("WT", "regimen", "tau"), maxsteps = 1e6) |>
+  as.data.frame()
+stopifnot(dplyr::n_distinct(sim_ss_id$id) == 2L * N_PER_ARM, !anyNA(sim_ss_id$Cc))
+
+auc_ss_nca <- function(regimen_label, tau) {
+  conc <- sim_ss_id |>
+    filter(regimen == regimen_label) |>
+    select(id, time, Cc, regimen)
+  dose <- events_ss_id |>
+    filter(regimen == regimen_label, evid == 1) |>
+    select(id, time, amt, regimen)
+  nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, Cc ~ time | regimen + id, concu = "ng/mL", timeu = "h"),
+    PKNCA::PKNCAdose(dose, amt ~ time | regimen + id, doseu = "mg"),
+    intervals = data.frame(start = 0, end = tau, auclast = TRUE)
+  ))
+  as.data.frame(nca$result)
+}
+nca_id <- bind_rows(auc_ss_nca("q12h", 12), auc_ss_nca("q24h", 24))
+
+cl_i <- sim_ss_id |>
   distinct(id, regimen, cl) |>
   mutate(dose_mg = 0.07 * 25 * ifelse(regimen == "q12h", 12, 24) / 24)
 
-auc_i <- nca_ss |>
+auc_i <- nca_id |>
   filter(PPTESTCD == "auclast") |>
   select(id, regimen, auc_obs = PPORRES) |>
   left_join(cl_i, by = c("id", "regimen")) |>
@@ -628,10 +674,10 @@ auc_i |>
                caption = "Per-subject check of AUC0-tau,ss = Dose / CL.")
 
 # The only remaining error source is linear-trapezoidal discretisation, which
-# slightly under-reads the curvature of the absorption peak. On the 1 h grid it
-# stays under 0.25% per subject; 0.5% is a tight bound on it.
+# slightly under-reads the curvature of the absorption peak, plus the steady-state
+# search residual (ssRtol / (k * tau), far below it). 0.1% is a tight bound.
 stopifnot(nrow(auc_i) == 2L * N_PER_ARM)
-stopifnot(max(abs(auc_i$pct_err)) < 0.5)
+stopifnot(max(abs(auc_i$pct_err)) < 0.1)
 ```
 
 # Assumptions and deviations
@@ -689,12 +735,13 @@ stopifnot(max(abs(auc_i$pct_err)) < 0.5)
   at the heaviest weight modelled (65 kg) the typical half-life is about 46 h,
   but a subject 3 SD low on `etalcl` clears roughly 2.2-fold more slowly, giving
   a half-life near 100 h. At 672 h even those subjects are about 6.7 half-lives
-  in, so every trough reported here is a steady-state trough. This was checked
-  directly: extending the horizon to 1008 h leaves the steady-state
-  `AUC0-tau = Dose/CL` residual unchanged at 0.85%, confirming that what remains
-  is trapezoidal discretisation and not incomplete convergence. An earlier
-  14-day horizon left the slowest subjects roughly 4.9 half-lives in and biased
-  their AUC low by up to 4.5%.
+  in, so every trough reported here is a steady-state trough to within about 1%.
+  The interval AUC of that run is short of steady state by about `exp(-k * 672 h)`
+  for the slowest subjects (0.3% at a half-life of 80 h, 1% at 100 h), so the
+  per-subject `AUC0-tau = Dose/CL` identity is checked on a separate `ss = 1`
+  solve of the same regimens, where the residual is trapezoidal discretisation on
+  a 0.25 h grid (about 0.01%). An earlier 14-day horizon left the slowest subjects
+  roughly 4.9 half-lives in and biased their AUC low by up to 4.5%.
 
 - **Monte Carlo precision.** Each arm uses 200 participants versus the paper's
   1,000 replicates, giving a Monte Carlo standard error of about 3 percentage

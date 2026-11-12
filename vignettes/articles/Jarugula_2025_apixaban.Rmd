@@ -258,10 +258,11 @@ events_a <- dplyr::bind_rows(
   dplyr::arrange(id, time, dplyr::desc(evid))
 
 rxode2::rxSetSeed(20250430)
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_a <- rxode2::rxSolve(
   mod, events_a,
   keep = c("tier", "DOSE_APIXABAN_MG"),
-  maxsteps = 500000L,
+  maxsteps = 1e6,
   returnType = "data.frame"
 )
 # A solver failure would drop subjects silently through the PKNCA filter below.
@@ -409,9 +410,10 @@ t3_ev <- dplyr::bind_rows(
     dplyr::mutate(amt = 0, evid = 0L, ss = 0L, ii = 0)
 ) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
+# steady-state searches for long-half-life subjects exceed the default step budget
 t3_sim <- rxode2::rxSolve(two_cmt, t3_ev,
   params = t3 |> dplyr::select(id, ka, cl, vc, q, vp),
-  returnType = "data.frame"
+  returnType = "data.frame", maxsteps = 1e6
 )
 t3_sim |>
   dplyr::group_by(id) |>
