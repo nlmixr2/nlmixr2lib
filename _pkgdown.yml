@@ -4052,6 +4052,8 @@ navbar:
         href: articles/Lalovic_2020_lemborexant.html
       - text: "Lemborexant uti (Lalovic 2020)"
         href: articles/Lalovic_2020_lemborexant.html
+      - text: "Lenacapavir (Kim 2026)"
+        href: articles/Kim_2026_lenacapavir.html
       - text: "Lenalidomide (Kim 2026)"
         href: articles/Kim_2026_lenalidomide.html
       - text: "Lenalidomide (Liang 2024)"
@@ -9903,6 +9905,7 @@ articles:
   - articles/Kim_2024_vancomycin
   - articles/Kim_2025_evogliptin
   - articles/Kim_2025_infliximab
+  - articles/Kim_2026_lenacapavir
   - articles/Kim_2026_lenalidomide
   - articles/Kim_2026_midazolam
   - articles/Kim_2026_zolpidem

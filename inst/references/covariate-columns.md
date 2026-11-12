@@ -4330,6 +4330,16 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Salinger_2019_pretomanid.R` (four power-function effects normalised to 200 mg: on relative bioavailability in fasted subjects only (`e_dose_fdepot` = -0.264, carrying its own random effect), on the first-order absorption rate constant for all subjects (`e_dose_ka` = -0.128), on the transit mean transit time in fasted subjects only (`e_dose_mtt` = -0.155), and on the apparent central volume (`e_dose_vc` = 0.111). A separate indicator term `e_dose_1000mg_fdepot` = -0.00302 applies only to the 1000 mg FED records, which Salinger 2019 added to keep an odd high-dose fed cohort from distorting the fit near the 200 mg clinical dose), `Zou_2022_pretomanid.R` (one power-function effect on relative bioavailability, `e_dose_fdepot` = 0.0822 normalised to 200 mg, fitted to fed-only data over 10-200 mg; the fed-only design is why the exponent is positive here while Salinger 2019's fasted exponent is negative).
 - **Notes:** Well-formed member of the auto-approved `DOSE_<drug>_<units>` canonical family. The dose dependence is genuinely a bioavailability / absorption phenomenon rather than saturable elimination: Salinger 2019's model is linear in clearance at any given dose, and the dose covariate does not touch CL at all. Because several of the effects are gated on prandial state, a data set must carry `FED` alongside this column for the model to be evaluable. Keep this column consistent with the event table's `amt` on dose rows; a mismatch silently rescales bioavailability without changing the administered amount. Sibling to `DOSE_TBAJ587_MG` and `DOSE_BEDAQUILINE_MG` in the antitubercular set.
 
+### DOSE_LENACAPAVIR_PO_MG (**canonical for the nominal oral lenacapavir tablet dose per administration**)
+- **Description:** Nominal lenacapavir oral tablet dose per administration, in milligrams; 0 for a regimen without oral doses. Subject-level for single-dose-level regimens.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used un-normalised in the power law `Vd(dose) = 508.16 * dose^0.61` L.
+- **Source aliases:** "input dose in mg" -- Kim 2026 Table 1 caption and Methods "Parameter Estimation".
+- **Example models:** `Kim_2026_lenacapavir.R` (dose-dependent apparent volume of oral lenacapavir, applied as the relative oral input `Vd / Vd(dose)`; the injected routes use one dose-independent volume).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family with the route qualifier of `DOSE_SEMAGLUTIDE_PO_MG`: lenacapavir is given both orally and by injection, and only the oral dose carries the less-than-proportional exposure. Keep it consistent with the `amt` of the oral dose records.
+
 ### DOSE_CONTEZOLID_MG (**canonical for administered oral contezolid dose in mg**)
 - **Description:** Nominal oral contezolid dose level on the dose record, in milligrams. Selects a dose-level-specific relative bioavailability, so it is a dose-record-level covariate rather than only an event-table `amt`.
 - **Units:** mg
@@ -17631,6 +17641,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Bulitta_2024_contezolid.R` (selects the IV-study additive and proportional residual errors for contezolid, 0.0392 mg/L and 0.192, and for MRX-1320, 0.00636 mg/L and 0.117, instead of the oral-study values; acts on no structural parameter).
 - **Notes:** Well-formed member of the auto-approved `STUDY_<id>` canonical family. The study and the dosing route coincide in the source (MRX4-002 is the only IV study), so the indicator can equally be read as "subject received IV contezolid acefosamil".
 
+### STUDY_GSUS2004072 (**canonical for the GS-US-200-4072 lenacapavir phase 1b monotherapy study indicator**)
+- **Description:** 1 = the GS-US-200-4072 phase 1b study of single subcutaneous lenacapavir aqueous-suspension doses (20-450 mg) in adults with untreated HIV-1, 0 = the GS-US-200-4070 phase 1 study of the same formulation in healthy adults. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (GS-US-200-4070, healthy adults).
+- **Source aliases:** "Study 3" -- Kim 2026 Table 1 and Supplementary Table S1 (Study 1 = GS-US-200-4070).
+- **Example models:** `Kim_2026_lenacapavir.R` (read only when `FORM_LENACAPAVIR_SCAQ = 1`; selects the Study 3 aqueous-suspension release parameters, whose PK drives the viral-load decline that fixed the IC50).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` canonical family (hyphens dropped from the protocol number). The source fitted the two studies separately and gives no covariate explanation for the difference; the study and the HIV status coincide, but the indicator should not be read as an HIV-status effect.
+
 ### STUDY_MIRROR (**canonical for MIRROR dose-finding study indicator**)
 - **Description:** 1 = subject enrolled in the MIRROR dose-finding study (NCT01457924; phase 2; SC ofatumumab dose-ranging in RRMS), 0 = other study in the Yu 2022 pooled analysis.
 - **Units:** (binary)
@@ -18355,6 +18375,36 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** `FORM` (TB-HAART control-stream column, 1 = Rifafour, 2 = Antib-4; `FORM_EMB_ANTIB4 = as.integer(FORM == 2)`).
 - **Example models:** `Ndzamba_2025_ethambutol.R` (Antib-4 multiplies ethambutol bioavailability by 1.260 and the absorption mean transit time by 1.371: `f_form <- 1 + e_form_antib4_fdepot * FORM_EMB_ANTIB4`, `mtt_form <- 1 + e_form_antib4_mtt * FORM_EMB_ANTIB4`).
 - **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` canonical family, a sibling of `FORM_CLO_GENERIC` and `FORM_CZP_LUVERINA`. `EMB` is the standard abbreviation for ethambutol already used by `CONC_EMB_MGL`. The product is a four-drug combination, so a model of rifampicin, isoniazid or pyrazinamide from a cohort that mixed the same two products should register its own `FORM_<drug>_ANTIB4` sibling rather than reuse this ethambutol-specific name, because the product effect is drug-specific. Per-subject and time-fixed in the founding cohort: TB-HAART participants were not switched between products, and Antib-4 was given only when Rifafour was out of stock at enrolment (7 of 61 participants), so product is not randomised. Antib-4 was later withdrawn in South Africa over quality concerns (Ndzamba 2025 Discussion). Distinct from `FORM_FDC`, which contrasts an FDC against single-drug tablets.
+
+### FORM_LENACAPAVIR_SCAQ (**canonical for the lenacapavir subcutaneous aqueous-suspension formulation indicator**)
+- **Description:** 1 = lenacapavir injections are the subcutaneous aqueous suspension (phase 1 GS-US-200-4070 and phase 1b GS-US-200-4072), 0 = another injectable lenacapavir formulation. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (with `FORM_LENACAPAVIR_IM_ETOH5` and `FORM_LENACAPAVIR_IM_ETOH10` also 0: the subcutaneous PEG/water solution of GS-US-200-4358, the clinical twice-yearly formulation).
+- **Source aliases:** "SC aqueous suspension" -- Kim 2026 Supplementary Table S1 and Table 1 (Studies 1 and 3).
+- **Example models:** `Kim_2026_lenacapavir.R` (selects the aqueous-suspension direct-release rate, transit rate, direct fraction and transit-chain length of Table 1; `STUDY_GSUS2004072` picks the Study 1 or Study 3 fit).
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family. The three lenacapavir formulation indicators are mutually exclusive. The source fitted the same aqueous suspension separately to the healthy-volunteer and the HIV-infected study, so the formulation alone does not identify a parameter set.
+
+### FORM_LENACAPAVIR_IM_ETOH5 (**canonical for the lenacapavir intramuscular ethanol/water solution with 5% w/w ethanol indicator**)
+- **Description:** 1 = lenacapavir injections are the intramuscular ethanol/water solution with 5% w/w ethanol (formulation F1 of the once-yearly phase 1 study, Jogiraju 2025), 0 = another injectable lenacapavir formulation. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (see `FORM_LENACAPAVIR_SCAQ` for the all-zero reference formulation).
+- **Source aliases:** "5000 mg with 5% w/w ethanol (F1)" -- Kim 2026 Supplementary Table S1 (Study 5).
+- **Example models:** `Kim_2026_lenacapavir.R` (Study 5 release rates and transit-chain length, F1 direct fraction 12.8%).
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family; mutually exclusive with `FORM_LENACAPAVIR_SCAQ` and `FORM_LENACAPAVIR_IM_ETOH10`.
+
+### FORM_LENACAPAVIR_IM_ETOH10 (**canonical for the lenacapavir intramuscular ethanol/water solution with 10% w/w ethanol indicator**)
+- **Description:** 1 = lenacapavir injections are the intramuscular ethanol/water solution with 10% w/w ethanol (formulation F2 of the once-yearly phase 1 study, Jogiraju 2025), 0 = another injectable lenacapavir formulation. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (see `FORM_LENACAPAVIR_SCAQ` for the all-zero reference formulation).
+- **Source aliases:** "5000 mg with 10% w/w ethanol (F2)" -- Kim 2026 Supplementary Table S1 (Study 5).
+- **Example models:** `Kim_2026_lenacapavir.R` (Study 5 release rates and transit-chain length, F2 direct fraction 43.6%).
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family; mutually exclusive with `FORM_LENACAPAVIR_SCAQ` and `FORM_LENACAPAVIR_IM_ETOH5`.
 
 ### FORM_DCN_SD (**canonical for the diacerein PEG 8000 solid-dispersion formulation indicator**)
 - **Description:** 1 = the dose is the optimised diacerein solid dispersion (PEG 8000, drug:polymer 1:4 w/w, prepared by solvent evaporation), which is amorphous and releases about 95% of the dose within 15 minutes in vitro; 0 = plain crystalline diacerein powder, which releases about 48% within 60 minutes and no more.

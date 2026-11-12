@@ -1,0 +1,588 @@
+---
+title: "Lenacapavir long-acting PrEP and resistance selection (Kim 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lenacapavir long-acting PrEP and resistance selection (Kim 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Kim_2026_lenacapavir"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Kim_2026_lenacapavir"))$description`
+* Article: <https://doi.org/10.1002/psp4.70254> (open access, PMC13093070)
+* Authors' code and digitised data: <https://github.com/KleistLab/LenPrEP>
+  (GPL-3.0)
+
+Kim et al. built an integrated model of the HIV-1 capsid inhibitor
+lenacapavir (LEN): one plasma PK model for oral tablets and for the
+subcutaneous (SC) and intramuscular (IM) long-acting formulations, an Emax
+effect of plasma LEN on the production of infectious virions, an established
+HIV-1 viral dynamics model used to estimate the IC50 from a monotherapy
+study, and a branching-process view of the first replication cycles after
+exposure that gives the reproduction number, the infection probability and
+the prophylactic efficacy against wild-type virus and seven capsid-resistant
+mutants. The PK was fitted to published *mean* (or median)
+concentration-time profiles by least squares, so it is a typical-value
+model: no between-subject variability and no residual error.
+
+# Population
+
+The PK data are 15 single-dose mean profiles digitised from five studies
+(Supplementary Table S1): oral tablets of 300, 900 and 1800 mg in healthy
+adults (GS-US-200-4071, Study 2); the SC aqueous suspension at 30-450 mg in
+healthy adults (GS-US-200-4070, Study 1) and at 20-450 mg in adults with
+untreated HIV-1 (GS-US-200-4072, Study 3); the SC PEG/water solution at 309
+and 927 mg in healthy adults (GS-US-200-4358, Study 4; the formulation used
+twice-yearly in the PURPOSE trials); and a 5000 mg IM ethanol/water solution
+with 5% (F1) or 10% (F2) w/w ethanol in healthy adults (Jogiraju 2025, Study
+5). Cohorts had 6-20 participants (136 in total); demographics were not
+reported. The IC50 was fitted to the mean viral-load decline after single
+SC doses of 20, 50, 150 and 450 mg in Study 3 (6 per dose).
+
+The same information is available programmatically via
+`readModelDb("Kim_2026_lenacapavir")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `d/dt(depot_oral)` | n/a | Eq. (1) |
+| `d/dt(depot)` | n/a | Eq. (2), PIdir(0) = Frac x dose |
+| `d/dt(transit1..3)`, `d/dt(central)` | n/a | Eq. (3) and Figure 1A (Erlang input = transit chain) |
+| `f(depot_oral)` = Vd / Vd(dose) | n/a | Eq. (3) with the Table 1 caption power law |
+| `eta_wt` and the mutant Emax terms | n/a | Eq. (5) |
+| viral-dynamics ODEs | n/a | Supplementary Eqs. (S1)-(S8); drug on NT, NM from deposit `ode_complex()` |
+| `viral_load`, `d_viral_load` | n/a | Figure 3 caption; volumes from deposit `solve_pd_ode()` |
+| `lambda_inf`, `r0_wt`, `rt_*` | n/a | Eqs. (6)-(8); Supplementary Eqs. (S13)-(S18) |
+| `phi_*` | n/a | Eqs. (9)-(10), per transmitted virion |
+| `lkel` | fixed log(0.0026) | Table 1, ke |
+| `lvc` | log(1618) | Table 1, Vd |
+| `lka_oral` | fixed log(1.08) | Table 1, ka (Eq. 4) |
+| `lvc_oral`, `e_dose_vc_oral` | log(508.16), 0.61 | Table 1 caption |
+| `lka_*`, `lktr_*`, `logitfrel_*`, `ntr_*` | see `ini()` | Table 1, kdirect, kindirect, Frac, n per study |
+| `pkvar_lower`, `pkvar_upper` | 0.15, 4.0 | Methods "PK Variability" |
+| `lic50` | log(1.6) | Results; Table S3 caption |
+| `hill` | fixed 2.1 | Methods "Estimation of Antiviral Potency" |
+| viral-dynamics constants | see `ini()` | Table S3 and its caption |
+| `k_int_plas`, `rna_per_virion` | 50, 2 | Figure 3 caption |
+| `v_int`, `v_plas` | 9.6 L, 3.1 L | deposit `solve_pd_ode()` |
+| `fc_*`, `fit_*` | see `ini()` | Table S4 |
+
+## Units, and how to dose the model
+
+Time is in hours and doses in mg. `Cc` is plasma LEN in ng/mL; `Cc_lower`
+and `Cc_upper` are the paper's PK-variability envelope (0.15 and 4.0 times
+the typical concentration, from the PURPOSE 2 trial). The viral-dynamics
+rates are per day in `ini()` and are divided by 24 inside the ODEs.
+
+* **Oral tablet:** dose `amt = <mg>` into `depot_oral`, and carry the oral
+  dose in `DOSE_LENACAPAVIR_PO_MG` (it sets the dose-dependent oral volume).
+* **Injection:** dose the full injected amount **twice** at the same time,
+  once into `depot` (direct release) and once into `transit1` (indirect
+  release). `f()` gives `depot` the fraction Frac and `transit1` the
+  fraction 1 - Frac.
+* **Formulation:** all indicators 0 selects the SC PEG/water solution (Study
+  4). `FORM_LENACAPAVIR_SCAQ = 1` selects the SC aqueous suspension, with
+  `STUDY_GSUS2004072` choosing the Study 3 (1) or Study 1 (0) fit.
+  `FORM_LENACAPAVIR_IM_ETOH5` or `FORM_LENACAPAVIR_IM_ETOH10` selects the IM
+  solution.
+
+Outputs:
+
+* `viral_load` (HIV-1 RNA copies/mL) and `d_viral_load` (log10 change from
+  baseline) come from the viral-dynamics model of a person with untreated
+  chronic HIV-1 infection, which starts at its drug-free steady state.
+* `rt_<strain>` is the reproduction number of a strain at the current plasma
+  concentration, and `phi_<strain>` is the prophylactic efficacy against that
+  strain relative to wild-type exposure without drug (Eq. 10), both for
+  constant exposure in a virus-naive person. Strains: `wt`, `q67h`, `n74d`,
+  `q67h_n74d`, `q67h_t107n`, `m66i_t107a`, `q67h_k70r`, `q67h_k70r_t107n`.
+
+```{r helpers}
+mod <- readModelDb("Kim_2026_lenacapavir")
+
+form_cols <- function(ev, form) {
+  ev$FORM_LENACAPAVIR_SCAQ <- as.integer(form %in% c("scaq1", "scaq3"))
+  ev$STUDY_GSUS2004072 <- as.integer(form == "scaq3")
+  ev$FORM_LENACAPAVIR_IM_ETOH5 <- as.integer(form == "im5")
+  ev$FORM_LENACAPAVIR_IM_ETOH10 <- as.integer(form == "im10")
+  ev
+}
+
+# Injections every `tau` hours (n of them), observed on `obs` (hours).
+injection_events <- function(dose, form, obs, n = 1, tau = 0, id = 1L) {
+  dose_times <- (seq_len(n) - 1) * tau
+  ev <- bind_rows(
+    tibble(id = id, time = rep(dose_times, each = 2), amt = dose, evid = 1L,
+           cmt = rep(c("depot", "transit1"), n)),
+    tibble(id = id, time = obs, amt = 0, evid = 0L, cmt = "central")
+  ) |>
+    arrange(time, desc(evid)) |>
+    as.data.frame()
+  ev$DOSE_LENACAPAVIR_PO_MG <- 0
+  form_cols(ev, form)
+}
+
+oral_events <- function(dose, obs, id = 1L) {
+  ev <- bind_rows(
+    tibble(id = id, time = 0, amt = dose, evid = 1L, cmt = "depot_oral"),
+    tibble(id = id, time = obs, amt = 0, evid = 0L, cmt = "central")
+  ) |>
+    as.data.frame()
+  ev$DOSE_LENACAPAVIR_PO_MG <- dose
+  form_cols(ev, "peg")
+}
+
+solve_typical <- function(ev) {
+  rxode2::rxSolve(mod, events = ev, maxsteps = 1e6, returnType = "data.frame")
+}
+```
+
+# Virtual cohort
+
+The model has no random effects, so every simulation below is a single
+typical individual per scenario; no virtual cohort is drawn. The paper's
+inter-individual range is the fixed 0.15x-4.0x envelope `Cc_lower` /
+`Cc_upper`.
+
+# Replicate Figure 1: single-dose PK by route and formulation
+
+```{r pk-sim}
+scenarios <- tribble(
+  ~panel,                    ~form,   ~dose, ~days,
+  "Oral (Study 2)",          "oral",    300,    60,
+  "Oral (Study 2)",          "oral",    900,    60,
+  "Oral (Study 2)",          "oral",   1800,    60,
+  "SC aqueous (Study 1)",    "scaq1",    30,   224,
+  "SC aqueous (Study 1)",    "scaq1",   100,   224,
+  "SC aqueous (Study 1)",    "scaq1",   300,   224,
+  "SC aqueous (Study 1)",    "scaq1",   450,   224,
+  "SC aqueous (Study 3)",    "scaq3",    20,     9,
+  "SC aqueous (Study 3)",    "scaq3",    50,     9,
+  "SC aqueous (Study 3)",    "scaq3",   150,     9,
+  "SC aqueous (Study 3)",    "scaq3",   450,     9,
+  "SC PEG (Study 4)",        "peg",     309,   364,
+  "SC PEG (Study 4)",        "peg",     927,   364,
+  "IM 5% ethanol (Study 5)", "im5",    5000,   392,
+  "IM 10% ethanol (Study 5)", "im10",  5000,   392
+) |>
+  mutate(treatment = paste(panel, dose, "mg"))
+
+pk_sim <- lapply(seq_len(nrow(scenarios)), function(i) {
+  sc <- scenarios[i, ]
+  step <- if (sc$form == "oral") 0.25 else 6
+  obs <- seq(0, sc$days * 24, by = step)
+  ev <- if (sc$form == "oral") oral_events(sc$dose, obs) else
+    injection_events(sc$dose, sc$form, obs)
+  s <- solve_typical(ev)
+  tibble(treatment = sc$treatment, panel = sc$panel, dose = sc$dose,
+         time = s$time, Cc = s$Cc)
+}) |>
+  bind_rows()
+```
+
+```{r fig1, fig.width = 8, fig.height = 6, fig.cap = "Replicates Figure 1B-C of Kim 2026: typical plasma LEN after a single dose, by route and formulation."}
+ggplot(pk_sim |> filter(Cc > 0.3),
+       aes(time / 24, Cc, colour = factor(dose))) +
+  geom_line() +
+  facet_wrap(~panel, scales = "free") +
+  scale_y_log10() +
+  labs(x = "Days post-dose", y = "Plasma LEN (ng/mL)", colour = "Dose (mg)")
+```
+
+# PKNCA against Supplementary Table S2
+
+Table S2 lists, for each dose, the Cmax and Tmax that the published model
+predicts. PKNCA on the packaged model's single-dose profiles reproduces them.
+Study 3 was observed for 9 days only, and the paper's model values for it
+(Tmax = 9 days at every dose) are the maximum within that window, so the
+Study 3 profiles above stop at day 9.
+
+```{r pknca}
+nca_in <- pk_sim |>
+  mutate(id = 1L, time_day = time / 24) |>
+  filter(!is.na(Cc)) |>
+  select(id, treatment, time_day, Cc)
+dose_df <- scenarios |>
+  transmute(id = 1L, treatment, dose, time_day = 0)
+
+o_conc <- PKNCAconc(nca_in, Cc ~ time_day | treatment + id)
+o_dose <- PKNCAdose(dose_df, dose ~ time_day | treatment + id)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE)
+nca_res <- as.data.frame(pk.nca(PKNCAdata(o_conc, o_dose,
+                                          intervals = intervals)))
+
+# Supplementary Table S2, "model" columns (Cmax in ng/mL, Tmax in days).
+ref_s2 <- tibble(
+  treatment = scenarios$treatment,
+  cmax = c(21.3, 24.1, 34.3, 3.1, 10.2, 30.7, 46.1, 2.1, 5.2, 15.7, 47.1,
+           16.1, 48.2, 176.2, 219.8),
+  tmax = c(0.2, 0.2, 0.2, 20.9, 21, 20.9, 20.8, 9, 9, 9, 9, 84, 84, 112.5,
+           83.9)
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res |> select(treatment, PPTESTCD, PPORRES),
+  reference = ref_s2,
+  by = "treatment",
+  units = c(cmax = "ng/mL", tmax = "day")
+)
+knitr::kable(cmp, caption = paste(
+  "Single-dose Cmax and Tmax from PKNCA on the packaged model against the",
+  "model values of Kim 2026 Supplementary Table S2. * marks a difference",
+  "above 20%."
+))
+```
+
+```{r pknca-check}
+sim_cmax <- nca_res |>
+  filter(PPTESTCD == "cmax") |>
+  select(treatment, cmax_sim = PPORRES) |>
+  left_join(ref_s2, by = "treatment") |>
+  mutate(pct = 100 * (cmax_sim / cmax - 1))
+# The injectable parameter sets reproduce Table S2 to within 3% at every dose
+# (measured -0.6% to +1.0%); F2 and the oral doses are discussed under
+# "Assumptions and deviations".
+inj <- sim_cmax |> filter(!grepl("Oral|10% ethanol", treatment))
+stopifnot(all(abs(inj$pct) < 3))
+# The oral power law approximates the per-dose oral volumes of Table 1.
+oral <- sim_cmax |> filter(grepl("Oral", treatment))
+stopifnot(all(abs(oral$pct) < 20))
+```
+
+# Twice-yearly SC and once-yearly IM dosing
+
+Results: with 927 mg of the SC PEG formulation every 26 weeks the
+population-average steady-state range is 32-62 ng/mL (Ctrough to Cpeak); the
+5 ng/mL threshold for full protection against wild-type virus is reached
+within 23 h of the first injection and maintained up to 50.5 weeks after the
+last one. Text S1: once-yearly 5000 mg IM (F1) gives 51.40-205.68 ng/mL.
+
+```{r multidose}
+tau_sc <- 26 * 7 * 24
+n_sc <- 8
+sc_obs <- sort(unique(c(seq(0, (n_sc + 3) * tau_sc, by = 24), 23, 24)))
+sc_ms <- solve_typical(injection_events(927, "peg", sc_obs, n = n_sc,
+                                        tau = tau_sc))
+last_sc <- (n_sc - 1) * tau_sc
+ss_sc <- sc_ms |> filter(time >= last_sc - tau_sc, time < last_sc)
+after_sc <- sc_ms |> filter(time > last_sc)
+weeks_above5 <- (after_sc$time[which(after_sc$Cc < 5)[1]] - last_sc) / 168
+
+tau_im <- 52 * 7 * 24
+n_im <- 5
+im_ms <- solve_typical(injection_events(
+  5000, "im5", seq(0, (n_im + 1) * tau_im, by = 24), n = n_im, tau = tau_im
+))
+last_im <- (n_im - 1) * tau_im
+ss_im <- im_ms |> filter(time >= last_im - tau_im, time < last_im)
+
+tibble(
+  Quantity = c("SC q26w steady-state trough (ng/mL)",
+               "SC q26w steady-state peak (ng/mL)",
+               "Cc 23 h after the first SC injection (ng/mL)",
+               "Weeks above 5 ng/mL after the last SC injection",
+               "IM yearly steady-state trough (ng/mL)",
+               "IM yearly steady-state peak (ng/mL)"),
+  Paper = c(32, 62, 5, 50.5, 51.40, 205.68),
+  Model = c(min(ss_sc$Cc), max(ss_sc$Cc), sc_ms$Cc[sc_ms$time == 23],
+            weeks_above5, min(ss_im$Cc), max(ss_im$Cc))
+) |>
+  knitr::kable(digits = 2)
+
+# Measured 32.2 / 62.8 ng/mL, 5.0 ng/mL at 23 h, 50.1 weeks; IM 55.5 /
+# 200.8 ng/mL. A wrong Vd, ke or PEG release constant moves the SC range by
+# tens of percent.
+stopifnot(
+  abs(min(ss_sc$Cc) / 32 - 1) < 0.05,
+  abs(max(ss_sc$Cc) / 62 - 1) < 0.05,
+  abs(sc_ms$Cc[sc_ms$time == 23] / 5 - 1) < 0.05,
+  abs(weeks_above5 / 50.5 - 1) < 0.05,
+  abs(min(ss_im$Cc) / 51.40 - 1) < 0.15,
+  abs(max(ss_im$Cc) / 205.68 - 1) < 0.05
+)
+```
+
+```{r fig-ss, fig.width = 7, fig.height = 4, fig.cap = "Twice-yearly 927 mg SC PEG LEN: typical profile (line) with the paper's 0.15x-4.0x variability envelope (band) and the 5 ng/mL full-protection threshold (dashed)."}
+ggplot(sc_ms |> filter(time > 0, time <= (n_sc + 2) * tau_sc),
+       aes(time / 24 / 7)) +
+  geom_ribbon(aes(ymin = Cc_lower, ymax = Cc_upper), fill = "grey80") +
+  geom_line(aes(y = Cc)) +
+  geom_hline(yintercept = 5, linetype = "dashed") +
+  scale_y_log10() +
+  labs(x = "Weeks after the first injection", y = "Plasma LEN (ng/mL)")
+```
+
+# Replicate Figure 3: viral-load decline after single SC doses
+
+Mean change from baseline in plasma HIV-1 RNA in Study 3, as digitised by the
+authors (deposit `Data/PD`), against the packaged model with the Study 3 PK
+parameters.
+
+```{r vl-data}
+vl_obs <- tribble(
+  ~dose, ~day, ~dvl,
+  20, 0, 0, 20, 1.0023, -0.0508, 20, 1.9872, -0.2099, 20, 2.9981, -0.4891,
+  20, 5.9933, -0.9465, 20, 6.9874, -1.0327, 20, 7.9895, -1.2697,
+  20, 9.0003, -1.2966,
+  50, 0, 0, 50, 1.0023, -0.0675, 50, 1.9842, -0.4255, 50, 2.9873, -0.7623,
+  50, 5.992, -1.4402, 50, 6.9929, -1.5342, 50, 7.9965, -1.6221,
+  50, 8.9973, -1.7934,
+  150, 0.9997, -0.066, 150, 1.9897, -0.2753, 150, 3.0062, -0.5847,
+  150, 5.9926, -1.1094, 150, 6.9933, -1.3157, 150, 7.9941, -1.5068,
+  150, 8.9947, -1.7616,
+  450, 0, 0, 450, 0.9995, -0.1722, 450, 1.9945, -0.5636, 450, 2.9897, -0.9398,
+  450, 5.9916, -1.6799, 450, 6.9977, -1.8467, 450, 7.9933, -1.9468,
+  450, 8.994, -2.1379
+)
+
+vl_sim <- lapply(c(20, 50, 150, 450), function(d) {
+  s <- solve_typical(injection_events(d, "scaq3", seq(0, 20 * 24, by = 6)))
+  tibble(dose = d, day = s$time / 24, dvl = s$d_viral_load,
+         log10_vl = log10(s$viral_load))
+}) |>
+  bind_rows()
+
+# Untreated baseline: Table S3 says betaT and betaM were tuned to about
+# 4.5 log10 copies/mL.
+baseline_log10 <- vl_sim$log10_vl[vl_sim$day == 0][1]
+baseline_log10
+stopifnot(abs(baseline_log10 - 4.5) < 0.1)
+```
+
+```{r fig3, fig.width = 7, fig.height = 5, fig.cap = "Replicates Figure 3 of Kim 2026: log10 change from baseline in plasma HIV-1 RNA after single SC aqueous doses in Study 3. Points: digitised means; lines: packaged model."}
+ggplot() +
+  geom_line(data = vl_sim, aes(day, dvl)) +
+  geom_point(data = vl_obs, aes(day, dvl)) +
+  facet_wrap(~ paste(dose, "mg")) +
+  labs(x = "Days post-dose", y = "Change in HIV-1 RNA (log10 copies/mL)")
+```
+
+```{r vl-check}
+vl_cmp <- vl_obs |>
+  rowwise() |>
+  mutate(model = approx(vl_sim$day[vl_sim$dose == dose],
+                        vl_sim$dvl[vl_sim$dose == dose], xout = day)$y) |>
+  ungroup()
+vl_tab <- vl_cmp |>
+  group_by(dose) |>
+  summarise(mean_abs_diff = mean(abs(model - dvl)),
+            day9_obs = dvl[which.max(day)], day9_model = model[which.max(day)])
+knitr::kable(vl_tab, digits = 2)
+# Measured mean absolute differences 0.12-0.42 log10, largest at 150 mg,
+# whose observed decline is smaller than at 50 mg (the paper notes the large
+# inter-individual variability of n = 6). An IC50 off by 2-fold shifts the
+# day-9 decline by about 0.4 log10.
+stopifnot(median(vl_tab$mean_abs_diff) < 0.3, max(vl_tab$mean_abs_diff) < 0.5)
+```
+
+# Prophylactic efficacy and the mutant selection window (Figures 4-5)
+
+The reproduction number and efficacy outputs are algebraic in the plasma
+concentration. Evaluating them on a concentration grid reproduces the
+concentration-response relationships of Figures 4 and 5.
+
+```{r conc-grid}
+conc_grid <- exp(seq(log(0.05), log(5000), length.out = 600))
+vc <- exp(rxode2::rxode(mod)$theta[["lvc"]])
+grid_ev <- bind_rows(
+  tibble(id = seq_along(conc_grid), time = 0, amt = conc_grid * vc / 1000,
+         evid = 1L, cmt = "central"),
+  tibble(id = seq_along(conc_grid), time = 0, amt = 0, evid = 0L,
+         cmt = "central")
+) |>
+  arrange(id, desc(evid)) |>
+  as.data.frame()
+grid_ev$DOSE_LENACAPAVIR_PO_MG <- 0
+grid_ev <- form_cols(grid_ev, "peg")
+grid <- solve_typical(grid_ev)
+
+strains <- c("wt", "q67h", "n74d", "q67h_n74d", "q67h_t107n", "m66i_t107a",
+             "q67h_k70r", "q67h_k70r_t107n")
+grid_long <- grid |>
+  select(Cc, all_of(paste0("rt_", strains)), all_of(paste0("phi_", strains))) |>
+  pivot_longer(-Cc, names_to = c(".value", "strain"),
+               names_pattern = "(rt|phi)_(.*)")
+```
+
+```{r ec95}
+# Concentration at which a monotone output crosses a target (log-linear).
+crossing <- function(x, y, target) {
+  i <- which(diff(sign(y - target)) != 0)[1]
+  exp(approx(y[i:(i + 1)], log(x[i:(i + 1)]), xout = target)$y)
+}
+wt <- grid_long |> filter(strain == "wt")
+ec95 <- crossing(wt$Cc, wt$phi, 0.95)
+full_protect <- crossing(wt$Cc, wt$rt, 1)
+c(EC95 = ec95, full_protection = full_protect,
+  R0_wt = grid$r0_wt[1])
+# Paper: EC95 = 4.7 ng/mL, full protection at 5 ng/mL (Figure 5), drug-free
+# R0 about 11.3. Measured 4.75, 4.87 and 11.33.
+stopifnot(
+  abs(ec95 / 4.7 - 1) < 0.03,
+  full_protect > 4.7, full_protect < 5,
+  abs(grid$r0_wt[1] / 11.3 - 1) < 0.01
+)
+```
+
+```{r msw}
+msw_paper <- tribble(
+  ~strain,             ~lower, ~upper,
+  "q67h",                 0.8,   21,
+  "n74d",                 1.7,   59,
+  "q67h_n74d",            2.5, 1107.6,
+  "q67h_t107n",           1.9,  141.6,
+  "m66i_t107a",           3.6,  537.2,
+  "q67h_k70r",            1.3,  106.8,
+  "q67h_k70r_t107n",      0.8, 1142.3
+)
+msw_model <- lapply(msw_paper$strain, function(s) {
+  m <- grid_long |> filter(strain == s)
+  tibble(strain = s,
+         # mutant overtakes wild type: R_t(mutant) = R_t(WT)
+         lower_model = crossing(m$Cc, m$rt - wt$rt, 0),
+         # mutant can no longer sustain infection: R_t(mutant) = 1
+         upper_model = crossing(m$Cc, m$rt, 1))
+}) |>
+  bind_rows()
+msw <- left_join(msw_paper, msw_model, by = "strain")
+msw |>
+  rename("Strain" = strain, "Lower (paper)" = lower,
+         "Upper (paper)" = upper, "Lower (model)" = lower_model,
+         "Upper (model)" = upper_model) |>
+  knitr::kable(digits = 1, caption = paste(
+    "Mutant selection window bounds (ng/mL): Results and Text S1 of",
+    "Kim 2026 against the packaged model."
+  ))
+# Upper bounds are exact algebra on Table S4 (measured within 1.5%); lower
+# bounds are printed to one decimal in the paper.
+stopifnot(
+  all(abs(msw$upper_model / msw$upper - 1) < 0.02),
+  all(abs(msw$lower_model - msw$lower) < 0.1)
+)
+```
+
+```{r fig5, fig.width = 8, fig.height = 6, fig.cap = "Replicates Figure 5 of Kim 2026 (median phenotypes): reduction in infection risk relative to wild-type exposure without drug. Dark band: average steady-state range with twice-yearly SC LEN (32-62 ng/mL); light band: variability range (4.8-248 ng/mL)."}
+grid_mut <- grid_long |> filter(strain != "wt")
+ggplot(grid_mut, aes(Cc, phi)) +
+  annotate("rect", xmin = 4.8, xmax = 248, ymin = -Inf, ymax = Inf,
+           fill = "grey90") +
+  annotate("rect", xmin = 32, xmax = 62, ymin = -Inf, ymax = Inf,
+           fill = "grey70") +
+  geom_line(data = wt |> select(-strain), colour = "black") +
+  geom_line(colour = "firebrick", linetype = "dashed") +
+  geom_vline(xintercept = 5, linetype = "dotted") +
+  facet_wrap(~strain) +
+  scale_x_log10() +
+  labs(x = "Plasma LEN (ng/mL)", y = "Reduction in infection risk (phi)")
+```
+
+```{r fig5-check}
+phi_at <- function(s, conc) {
+  m <- grid_long |> filter(strain == s)
+  approx(log(m$Cc), m$phi, xout = log(conc))$y
+}
+# Results: in the 32-62 ng/mL steady-state range Q67H is fully prevented and
+# Q67H+K70R+T107N is barely affected (2-6% median reduction); Q67H+N74D
+# 24-27%; M66I+T107A 53-63%.
+fig5 <- tibble(
+  strain = c("q67h", "q67h_k70r_t107n", "q67h_n74d", "m66i_t107a"),
+  at_32 = sapply(strain, phi_at, conc = 32),
+  at_62 = sapply(strain, phi_at, conc = 62)
+)
+knitr::kable(fig5, digits = 3)
+stopifnot(
+  fig5$at_32[1] == 1,
+  fig5$at_62[2] < 0.10,
+  fig5$at_32[3] > 0.15, fig5$at_62[3] < 0.35,
+  fig5$at_32[4] > 0.45, fig5$at_62[4] < 0.70
+)
+```
+
+# Assumptions and deviations
+
+* **Code deposit as a source.** The paper prints the PK structure, Table 1,
+  the viral-dynamics equations and constants (Eqs. S1-S8, Table S3) and the
+  Emax model, but not how LEN enters Eqs. S7-S8 or the plasma and
+  interstitial volumes that convert total-body virus to plasma viral load.
+  Both come from the authors' deposited code (GPL-3.0): LEN multiplies the
+  infectious-virion production NT and NM by (1 - eta) and the total virion
+  output NhatT / NhatM is unchanged, so the remainder becomes non-infectious
+  (Methods: LEN "disrupt[s] viral maturation, leading to the production of
+  non-infectious viral particles"); Vint = 9.6 L and Vplas = 3.1 L. With
+  these, the untreated baseline is 4.44 log10 copies/mL against the "about
+  4.5" of Table S3.
+* **The deposited PK code is not the published model.** The deposit's PK
+  ODE (`ode_system()`) feeds the indirect pathway with a product of a
+  decaying depot and an Erlang term of order n, and its `.ini` files hold
+  starting values (e.g. Vd = 139 L). That form does not reproduce Table S2,
+  whereas Equation (3) with the Table 1 estimates reproduces every
+  injectable Cmax in Table S2 to within 1.0% (except F2, below). The model
+  follows the paper.
+* **Erlang input as a transit chain.** Equation (3) writes the indirect input
+  as the Erlang(n, kindirect) density times the indirectly released amount,
+  evaluated from each dose time. That is exactly the output of n transit
+  compartments with rate kindirect dosed in the first one, which also handles
+  repeated injections by superposition, as the paper's numerical method does.
+  The model carries three transit compartments and n (1-3 across Table 1)
+  selects which one empties into plasma.
+* **Route-specific volume.** Equation (3) divides the oral input by the
+  dose-dependent Vd(dose) and the injected input by the common Vd, in the
+  same concentration equation. The model keeps `central` on the Vd scale and
+  applies Vd / Vd(dose) as the relative oral input, which is the same
+  equation.
+* **Oral volume from the power law.** Table 1 lists fitted oral volumes for
+  the three studied doses (13,304, 35,374 and 46,516 L) and gives the power
+  law Vd(dose) = 508.16 x dose^0.61 for any dose. The model uses the power
+  law, so it also covers the 600 mg oral lead-in of the clinical regimen. At
+  the studied doses it gives 16,483, 32,217 and 49,172 L, so the simulated
+  oral Cmax differs from Table S2 by -16%, +14% and +5%.
+* **IM 10% ethanol (F2) Cmax.** Table S2 lists a model Cmax of 219.8 ng/mL
+  for F2, but Table 1's F2 parameters give 179.5 ng/mL (and the F2 Tmax of
+  83 days matches Table S2's 83.9). Figure 1C shows both IM formulations
+  peaking below 200 ng/mL, consistent with 179.5, so the Table S2 entry is
+  taken as a transcription error and the Table 1 values are kept.
+* **Figure 3 after day 9.** Over the observed 9 days the model is within
+  about 0.25 log10 of the published fit at every dose. After day 9 the
+  published curves flatten, whereas the Study 3 PK of Table 1 (three transit
+  compartments, Erlang peak near day 27) keeps raising the concentration and
+  the decline continues. The deposit's PD fit used different Study 3 PK
+  starting values, so Figure 3 may have been drawn with an earlier PK fit;
+  the model keeps the Table 1 parameters and the stated IC50 = 1.6 ng/mL.
+* **Efficacy per transmitted virion.** The paper averages the infection
+  probability over the number of virions transmitted by receptive anal
+  intercourse, drawn from the inoculum distribution of Duwal 2016, which is
+  not printed. The packaged `phi_*` is the efficacy for one transmitted
+  virion (Eqs. 9-10 with n = 1). It gives EC95 = 4.75 ng/mL against the
+  paper's 4.7 and the same full-protection threshold, because R_t <= 1 makes
+  the infection probability zero for any inoculum size.
+* **Time-resolved infection and de novo resistance** (Eqs. 11-14, Figure 6)
+  need a backward-in-time solve of the multi-strain extinction-probability
+  equations for each exposure time, which an rxode2 forward simulation cannot
+  express; they are not packaged. The `rt_*` and `phi_*` outputs give the
+  constant-exposure view that defines the mutant selection windows and
+  Figures 4-5.
+* **Mutant phenotypes** use the Table S4 median fold change and average
+  replication capacity; the shaded uncertainty ranges of Figures 4-5 (Table
+  S4 minimum-maximum) can be reproduced by overriding `fc_*` / `fit_*` in
+  `ini()`.
+* **Clearance of free virus.** The viral-load outputs use CL = 23/day
+  (chronic infection) and the prophylaxis outputs use 2.3/day (virus-naive),
+  as stated in the Table S3 caption.
+* **No IIV or residual error.** The model was fitted to mean profiles by
+  least squares. The paper's inter-individual range is the fixed
+  0.15x-4.0x envelope from PURPOSE 2, packaged as `Cc_lower` / `Cc_upper`.
