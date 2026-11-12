@@ -214,8 +214,16 @@ from the drawn eGFR, age and sex, so the eGFR the model computes reproduces
 the drawn value exactly. Covariates are held constant within a patient.
 
 ```{r cohort}
+# set.seed() fixes the covariate draws below (base R); rxSetSeed() fixes the
+# random effects rxode2 draws in rxSolve().
+set.seed(20230501)
 rxode2::rxSetSeed(20230501)
-n_per_arm <- 200
+# 1000 per arm keeps the Figure 4 comparison stable: over eight seeds the
+# median of the six median differences ranged 5.1-8.3% and the largest single
+# difference 7.3-16.6%, against the 10% and 25% bounds checked below. At 200
+# per arm they ranged 1.1-10.2% and 5.1-28.1%, so a bound could fail on the
+# draw alone.
+n_per_arm <- 1000
 
 lnorm_from_iqr <- function(n, median, q1, q3) {
   exp(rnorm(n, log(median), (log(q3) - log(q1)) / (2 * qnorm(0.75))))
