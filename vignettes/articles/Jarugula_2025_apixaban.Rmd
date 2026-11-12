@@ -261,7 +261,7 @@ rxode2::rxSetSeed(20250430)
 sim_a <- rxode2::rxSolve(
   mod, events_a,
   keep = c("tier", "DOSE_APIXABAN_MG"),
-  maxsteps = 500000L,
+  maxsteps = 1e6,
   returnType = "data.frame"
 )
 # A solver failure would drop subjects silently through the PKNCA filter below.
@@ -273,6 +273,8 @@ stopifnot(!anyNA(sim_a$Cc), dplyr::n_distinct(sim_a$id) == nrow(cohort_a))
 ## Figure 1a: steady-state AUC by weight tier, PREVAPIX regimen
 
 ```{r pknca}
+# A subject whose steady-state search fails comes back NA; stop rather than drop it.
+stopifnot(!any(tapply(is.na(sim_a$Cc), sim_a$id, all)))
 sim_nca <- sim_a |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, antiFXa, tier)
@@ -409,9 +411,10 @@ t3_ev <- dplyr::bind_rows(
     dplyr::mutate(amt = 0, evid = 0L, ss = 0L, ii = 0)
 ) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
+# steady-state searches for long-half-life subjects exceed the default step budget
 t3_sim <- rxode2::rxSolve(two_cmt, t3_ev,
   params = t3 |> dplyr::select(id, ka, cl, vc, q, vp),
-  returnType = "data.frame"
+  returnType = "data.frame", maxsteps = 1e6
 )
 t3_sim |>
   dplyr::group_by(id) |>
