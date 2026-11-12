@@ -203,6 +203,10 @@ addFileToModelDb <- function(dir, file, modeldb) {
 
   # Parse the model to get the fixed effects and DV parameters
   mod <- nlmixr2est::nlmixr(eval(parsedFile))
+  # rxode2 names the ui after the deparsed argument ("eval(parsedFile)"). The
+  # checker identifies the model by this name, and a covariate registered with
+  # `Scope: specific` is allowed only in the models its entry lists.
+  mod$modelName <- modelName
 
   # Convention check. Error-severity issues are accumulated and abort
   # `buildModelDb()` once every model has been visited -- see
