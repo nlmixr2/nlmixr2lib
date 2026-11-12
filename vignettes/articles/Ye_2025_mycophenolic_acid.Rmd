@@ -178,33 +178,64 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 # returns NA for that subject (79 of 146 here; 4 still at 1e6). At 1e7 every subject -- and, in testing, even a
 # +4 SD Vp/F draw -- reaches steady state or rxode2's maxSS = 10000 interval
 # cap before the step budget. The analytic linCmt() path ignores maxsteps.
+#
+# ssRtol: the steady-state search stops when the pre-dose concentration changes by
+# less than this fraction per interval (rxode2's default, set explicitly because
+# the identity below depends on it).
+ss_rtol <- 1e-6
 simdf <- rxode2::rxSolve(
   mod, events = events, keep = c("WT", "treatment"), addDosing = FALSE,
-  maxsteps = 1e7
+  maxsteps = 1e7, ssRtol = ss_rtol
 ) |>
   as.data.frame()
 
 trapz <- function(t, y) sum(diff(t) * (utils::head(y, -1) + utils::tail(y, -1)) / 2)
 
+stopifnot(all(c("kel", "k12", "k21") %in% names(simdf)))
+
+# Identity bound (percent) and the terminal-rate cut-off it implies. The search
+# stops with a relative residual of about ss_rtol / (lambda_z * TAU), where
+# lambda_z is the terminal rate constant of the two-compartment disposition; the
+# cut-off keeps that residual at or below a tenth of the bound.
+auc_bound_pct <- 0.25
+ss_cut <- 10 * ss_rtol / (auc_bound_pct / 100)
+
 auc_by_subject <- simdf |>
   dplyr::group_by(id, WT) |>
-  dplyr::summarise(auc_ss = trapz(time, Cc), .groups = "drop") |>
+  dplyr::summarise(
+    auc_ss = trapz(time, Cc),
+    kel = dplyr::first(kel), k12 = dplyr::first(k12), k21 = dplyr::first(k21),
+    .groups = "drop"
+  ) |>
   dplyr::mutate(
     auc_closed_form = DOSE / CL_F,
-    pct_diff        = 100 * (auc_ss - auc_closed_form) / auc_closed_form
+    pct_diff        = 100 * (auc_ss - auc_closed_form) / auc_closed_form,
+    lambda_z        = ((kel + k12 + k21) -
+                         sqrt((kel + k12 + k21)^2 - 4 * kel * k21)) / 2,
+    ss_resolved     = lambda_z * TAU >= ss_cut
   )
 
 summary(auc_by_subject$pct_diff)
 
-# Deterministic identity, not a cohort statistic: the only error is the
-# trapezoidal quadrature on the grid above (plus, when integrated as ODEs,
-# the ss = 1 convergence tolerance). Realised worst-subject |pct| was
-# 0.0095 on the refined grid (against 0.51 on a uniform 0.05 h grid), and
-# 0.0148 integrated as ODEs, so 0.25 carries ~17-25x headroom for an
-# unluckier low-Vc draw while still failing instantly on a mis-transcribed
-# CL, dose or unit -- those move it by tens of percent.
-stopifnot(max(abs(auc_by_subject$pct_diff)) < 0.25)
+# Deterministic identity over the subjects whose steady-state search resolves
+# it: the only error is the trapezoidal quadrature on the grid above plus the
+# search residual of at most a tenth of the bound. Realised worst-subject |pct|
+# was 0.0095 on the refined grid (against 0.51 on a uniform 0.05 h grid) and
+# 0.0148 integrated as ODEs. A mis-transcribed CL, dose or unit moves it by tens
+# of percent. Only a small share of subjects may fall below the cut-off.
+n_ss_unresolved <- sum(!auc_by_subject$ss_resolved)
+stopifnot(mean(auc_by_subject$ss_resolved) >= 0.95)
+stopifnot(max(abs(auc_by_subject$pct_diff[auc_by_subject$ss_resolved])) < auc_bound_pct)
 ```
+
+The `ss = 1` flag finds steady state by repeating the dosing interval until the
+pre-dose concentration changes by less than `ssRtol`. A subject with a very long
+terminal half-life changes by only a tiny fraction per interval while still far
+from steady state, so the search can stop early, with a relative residual of about
+`ssRtol / (lambda_z * tau)`. The identity is therefore asserted for the subjects
+with `lambda_z * tau >= ` `r signif(ss_cut, 2)` (residual at most a tenth of the
+`r auc_bound_pct`% bound): `r n_ss_unresolved` of the `r nrow(auc_by_subject)`
+simulated subjects fall below that cut-off and are left out of the identity.
 
 ## 2. Body weight moves Vp only -- steady-state exposure is weight-independent
 
@@ -234,7 +265,7 @@ probe_events <- tibble::tibble(id = seq_along(wt_probe), WT = wt_probe) |>
 # 55 and 70 kg fail at the default).
 probe <- rxode2::rxSolve(
   rxode2::zeroRe(mod), probe_events, keep = "WT", addDosing = FALSE,
-  maxsteps = 1e7
+  maxsteps = 1e7, ssRtol = ss_rtol
 ) |>
   as.data.frame()
 
