@@ -235,7 +235,8 @@ from steady state, so the search can stop early, with a relative residual of abo
 `ssRtol / (lambda_z * tau)`. The identity is therefore asserted for the subjects
 with `lambda_z * tau >= ` `r signif(ss_cut, 2)` (residual at most a tenth of the
 `r auc_bound_pct`% bound): `r n_ss_unresolved` of the `r nrow(auc_by_subject)`
-simulated subjects fall below that cut-off and are left out of the identity.
+simulated subjects `r if (n_ss_unresolved == 1) "falls" else "fall"` below that
+cut-off and `r if (n_ss_unresolved == 1) "is" else "are"` left out of the identity.
 
 ## 2. Body weight moves Vp only -- steady-state exposure is weight-independent
 
