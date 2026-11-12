@@ -180,7 +180,13 @@ dose_recs <- pop[rep(seq_len(n_subj), each = days), ] |>
     MULTI_DOSE_PT = as.integer(time > 0)  # 0 for first dose, 1 thereafter
   )
 
-# Build observation records (trough every 7 days + dense day 1 + dense at SS)
+# Build observation records (trough every 7 days + dense day 1 + dense at SS).
+# MULTI_DOSE_PT describes a dose, so every observation carries the value of the
+# most recent dose, a dose at the same time included: rxSolve sorts a same-time
+# dose ahead of the observation, and with addlKeepsCov = FALSE a dose delayed by
+# alag() takes f(depot) from the records in force when it is absorbed. A 0 on
+# the trough at 168 h would otherwise strip the 16% multiple-dose F from the
+# dose given at that time.
 all_obs_times <- sort(unique(c(trough_times, day1_times, ss_times)))
 obs_recs <- pop[rep(seq_len(n_subj), each = length(all_obs_times)), ] |>
   mutate(
@@ -188,7 +194,7 @@ obs_recs <- pop[rep(seq_len(n_subj), each = length(all_obs_times)), ] |>
     amt           = 0,
     evid          = 0L,
     cmt           = "central",
-    MULTI_DOSE_PT = 0L                    # ignored on observation rows
+    MULTI_DOSE_PT = as.integer(time >= dose_times[2])
   )
 
 events <- bind_rows(dose_recs, obs_recs) |>
@@ -203,7 +209,8 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 
 ```{r simulate}
 mod <- readModelDb("Goel_2016_Sonidegib")
-sim <- rxode2::rxSolve(mod, events = events, keep = c("arm", "DOSE")) |>
+sim <- rxode2::rxSolve(mod, events = events, keep = c("arm", "DOSE"),
+                       addlKeepsCov = FALSE) |>
   as.data.frame()
 ```
 
@@ -385,6 +392,18 @@ profile declines monotonically after Tmax.
   thereafter in cancer-patient simulations. The simulation in this vignette
   follows that convention; healthy-volunteer simulations should keep
   `MULTI_DOSE_PT = 0` for all dose records.
+- Doses have an absorption lag, so the `rxSolve()` option `addlKeepsCov`
+  decides which record a dose's `MULTI_DOSE_PT`, and every other covariate on
+  bioavailability, is read from. With `addlKeepsCov = FALSE`, the default, a
+  lagged dose takes `f(depot)` from the records in force when it is absorbed,
+  so an observation at the dose time (sorted after the dose) or inside the
+  0.474 h lag supplies the value; with `addlKeepsCov = TRUE` it takes the
+  value from its own dose record, as NONMEM does. The observation records
+  here carry the value of the most recent dose, so the two settings agree;
+  the simulation states `addlKeepsCov = FALSE`. Observation records carrying
+  `MULTI_DOSE_PT = 0` would remove the 16% multiple-dose bioavailability from
+  every dose that shares its time with an observation: the weekly troughs and
+  the final steady-state dose.
 - `DOSE` must be supplied as a per-dose-record column matching the rxode2 `amt`
   column. The model uses `DOSE` (and not `amt` directly) inside `f(depot)` so
   that the dose-dependent F covariate effect can be evaluated symbolically.
