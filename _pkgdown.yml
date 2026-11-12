@@ -794,6 +794,8 @@ navbar:
         href: articles/Michelet_2025_BI754111_mpbpk.html
       - text: "BIIB023 (Galluppi 2016)"
         href: articles/Galluppi_2016_BIIB023.html
+      - text: "BITS7201A mpbpk (Spinosa 2026)"
+        href: articles/Spinosa_2026_bispecific_mpbpk.html
       - text: "BMS986166 (Bihorel 2021)"
         href: articles/Bihorel_2021_BMS986166.html
       - text: "BMS986166 nalc md (Bihorel 2021)"
@@ -1036,6 +1038,8 @@ navbar:
         href: articles/Karrer_2018_bisphenols_pbpk.html
       - text: "Bitopertin (Rognas 2025)"
         href: articles/Rognas_2025_bitopertin.html
+      - text: "Bivalent mab mpbpk (Spinosa 2026)"
+        href: articles/Spinosa_2026_bispecific_mpbpk.html
       - text: "Bivalirudin (Zhang 2012)"
         href: articles/Zhang_2012_bivalirudin.html
       - text: "Blinatumomab (Clements 2020)"
@@ -5432,6 +5436,8 @@ navbar:
         href: articles/Ferl_2018_mosunetuzumab.html
       - text: "Mosunetuzumab cyno covariates (Ferl 2018)"
         href: articles/Ferl_2018_mosunetuzumab.html
+      - text: "Mosunetuzumab cyno mpbpk (Spinosa 2026)"
+        href: articles/Spinosa_2026_bispecific_mpbpk.html
       - text: "Mosunetuzumab human (Ferl 2018)"
         href: articles/Ferl_2018_mosunetuzumab.html
       - text: "Mosunetuzumab orr (Li 2025)"
@@ -8492,6 +8498,8 @@ navbar:
         href: articles/Sheiner_1979_tubocurarine.html
       - text: "Tucatinib (Zhang 2024)"
         href: articles/Zhang_2024_tucatinib.html
+      - text: "Tumor targeted bsab mpbpk (Spinosa 2026)"
+        href: articles/Spinosa_2026_bispecific_mpbpk.html
       - text: "TuroctocogAlfa (Tiede 2021)"
         href: articles/Tiede_2021_turoctocogAlfa.html
       - text: "TuroctocogAlfaPegol cyno (Rode 2018)"
@@ -11711,6 +11719,7 @@ articles:
   - articles/SoriaChacartegui_2026_tramadol
   - articles/Soto_2014_ampicillin_sulbactam
   - articles/Soy_2015_benznidazole
+  - articles/Spinosa_2026_bispecific_mpbpk
   - articles/Sridharan_2019_primaquine
   - articles/Srimani_2022_ixazomib
   - articles/Staatz_2005_gentamicin_vancomycin
