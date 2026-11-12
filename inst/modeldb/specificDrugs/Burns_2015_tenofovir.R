@@ -96,6 +96,10 @@ Burns_2015_tenofovir <- function() {
         "full-compliance scenario the authors simulated for their steady-state",
         "and single-dose qualification runs; the F1 machinery then collapses to",
         "F = 1 and plays no part.",
+        "To simulate the adherence adjustment, carry SELFADMIN = 1 on every",
+        "record from the self-administered dose to the next dose: rxode2",
+        "evaluates F for a dose moved by the absorption lag with the covariates",
+        "in force when it arrives (unless rxSolve(addlKeepsCov = TRUE)).",
         "Polarity matches the canonical (self-administered = 1) and matches the",
         "paper, in which the unobserved dose is the one carrying the",
         "adjustment."

@@ -114,10 +114,13 @@ These checks use the typical-value model (`zeroRe()`), so they are deterministic
 mod_typ <- suppressWarnings(rxode2::zeroRe(ui))
 th <- ui$theta
 
-# Build one subject's event table. Dose rows carry the dose in DOSE_MANNAC_MG
-# (the control stream's DOSEMG); observation rows nominate the ManNAc/Neu5Ac
-# endpoint pair with dvid = 1, which returns both Cc and Cc_neu5ac as columns.
-# The dose covariate follows id/time/amt/evid/cmt/dvid on purpose.
+# Build one subject's event table. Every record carries the subject's dose in
+# DOSE_MANNAC_MG (the control stream's DOSEMG): rxode2 evaluates f(depot) for a
+# dose moved by alag() with the covariates in force when it arrives, so a 0 on
+# an observation row between a dose and its arrival would give that dose F = 1.
+# Observation rows nominate the ManNAc/Neu5Ac endpoint pair with dvid = 1,
+# which returns both Cc and Cc_neu5ac as columns. The dose covariate follows
+# id/time/amt/evid/cmt/dvid on purpose.
 make_events <- function(id, dose_mg, dose_times, obs_times, occ = 1L) {
   doses <- data.frame(
     id = id, time = dose_times, amt = dose_mg, evid = 1L, cmt = "depot",
@@ -125,7 +128,7 @@ make_events <- function(id, dose_mg, dose_times, obs_times, occ = 1L) {
   )
   obs <- data.frame(
     id = id, time = obs_times, amt = 0, evid = 0L, cmt = NA_character_,
-    dvid = 1L, DOSE_MANNAC_MG = 0
+    dvid = 1L, DOSE_MANNAC_MG = dose_mg
   )
   out <- rbind(doses, obs)
   out$OCC <- occ
