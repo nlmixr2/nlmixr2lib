@@ -435,8 +435,8 @@ steady-state concentration at a population median of 10,205 ng/mL, which the
 main text describes as close to the median on 800 mg once daily.
 
 ```{r pknca}
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(ss_sim$Cc), ss_sim$id, all)))
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(ss_sim$Cc))
 sim_nca <- ss_sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
