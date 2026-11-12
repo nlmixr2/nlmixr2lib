@@ -4172,6 +4172,8 @@ navbar:
         href: articles/Reinecke_2018_levonorgestrel_contraceptives.html
       - text: "Levonorgestrel lngIus8 (Reinecke 2018)"
         href: articles/Reinecke_2018_levonorgestrel_contraceptives.html
+      - text: "Levonorgestrel pbpk (Li 2026)"
+        href: articles/Li_2026_levonorgestrel.html
       - text: "Levonorgestrel progestinOnlyPill (Reinecke 2018)"
         href: articles/Reinecke_2018_levonorgestrel_contraceptives.html
       - text: "Levosimendan (Bertin 2026)"
@@ -10129,6 +10131,7 @@ articles:
   - articles/Li_2026_alvespimycin
   - articles/Li_2026_epcoritamab
   - articles/Li_2026_etranacogene
+  - articles/Li_2026_levonorgestrel
   - articles/Liang_2023_polymyxinB
   - articles/Liang_2024_lenalidomide
   - articles/Liang_2024_osimertinib
