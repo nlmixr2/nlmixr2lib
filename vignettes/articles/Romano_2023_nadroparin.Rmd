@@ -218,11 +218,8 @@ the drawn value exactly. Covariates are held constant within a patient.
 # random effects rxode2 draws in rxSolve().
 set.seed(20230501)
 rxode2::rxSetSeed(20230501)
-# 1000 per arm keeps the Figure 4 comparison stable: over eight seeds the
-# median of the six median differences ranged 5.1-8.3% and the largest single
-# difference 7.3-16.6%, against the 10% and 25% bounds checked below. At 200
-# per arm they ranged 1.1-10.2% and 5.1-28.1%, so a bound could fail on the
-# draw alone.
+# 1000 per arm keeps both Figure 4 bounds (10% on the median of the six
+# differences, 25% on the largest) clear across seeds; 200 per arm did not.
 n_per_arm <- 1000
 
 lnorm_from_iqr <- function(n, median, q1, q3) {
