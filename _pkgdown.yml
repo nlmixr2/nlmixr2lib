@@ -1980,6 +1980,26 @@ navbar:
         href: articles/Hassouneh_2024_dasatinib.html
       - text: "Datopotamab (Hong 2025)"
         href: articles/Hong_2025_datopotamab.html
+      - text: "Datopotamab dose interruption (Tang 2026)"
+        href: articles/Tang_2026_datopotamab_exposure_response.html
+      - text: "Datopotamab dose reduction (Tang 2026)"
+        href: articles/Tang_2026_datopotamab_exposure_response.html
+      - text: "Datopotamab os (Tang 2026)"
+        href: articles/Tang_2026_datopotamab_exposure_response.html
+      - text: "Datopotamab ose (Tang 2026)"
+        href: articles/Tang_2026_datopotamab_exposure_response.html
+      - text: "Datopotamab ose grade2 (Tang 2026)"
+        href: articles/Tang_2026_datopotamab_exposure_response.html
+      - text: "Datopotamab pfs (Tang 2026)"
+        href: articles/Tang_2026_datopotamab_exposure_response.html
+      - text: "Datopotamab sae (Tang 2026)"
+        href: articles/Tang_2026_datopotamab_exposure_response.html
+      - text: "Datopotamab stomatitis (Tang 2026)"
+        href: articles/Tang_2026_datopotamab_exposure_response.html
+      - text: "Datopotamab stomatitis grade2 (Tang 2026)"
+        href: articles/Tang_2026_datopotamab_exposure_response.html
+      - text: "Datopotamab teae grade3 (Tang 2026)"
+        href: articles/Tang_2026_datopotamab_exposure_response.html
       - text: "Daunorubicin (Bogason 2011)"
         href: articles/Bogason_2011_daunorubicin.html
       - text: "Daunorubicin (Varatharajan 2016)"
@@ -11049,6 +11069,7 @@ articles:
   - articles/Tang_2019_amoxicillin
   - articles/Tang_2023_polymyxinB
   - articles/Tang_2023_tenecteplase
+  - articles/Tang_2026_datopotamab_exposure_response
   - articles/Tang_2026_vixarelimab
   - articles/Tanzawa_2022_fluconazole
   - articles/Tao_2025_meropenem

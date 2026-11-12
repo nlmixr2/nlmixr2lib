@@ -3272,7 +3272,31 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:**
   - `mucositis` -- Zhou 2018 abstract; the Results and Figure 7 consistently use "stomatitis", which is the narrower and more accurate term and is the one this canonical takes.
 - **Example models:** `Zhou_2018_alisertib_stomatitis.R` (binomial logistic exposure-safety model on the natural log of the treatment-course-averaged daily alisertib AUC, `logit(p) = -6.485 + 1.434 * log(AUC_ALIS)`, n = 593; predicted incidence 7% for Western and 13% for East Asian patients at 50 mg twice daily -- founding example); `Zhou_2022_alisertib_stomatitis.R` (paediatric alisertib, linear in the average steady-state concentration `CSS_ALIS`, `logit(p) = -2.162 + 0.2238 * CSS_ALIS`, n = 146).
-- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. In the founding paper this is the STEEPEST of three parallel exposure-safety relationships -- its log-AUC slope is roughly twice that of the neutropenia and diarrhoea endpoints -- so a rise in exposure moves the stomatitis risk proportionally much further than the other two, which is what makes it load-bearing in a regional dose-selection argument even though its absolute event rate is the lowest of the three. No ungraded `prob_stomatitis` sibling is registered yet; if a future paper fits an any-grade stomatitis endpoint it must take that name rather than overload this one. Distinct from a modelled oral-mucosal-cell ODE state in a mechanistic mucositis model: this is the probability of crossing a categorical toxicity-grade threshold, not a cell count or a lesion area.
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. In the founding paper this is the STEEPEST of three parallel exposure-safety relationships -- its log-AUC slope is roughly twice that of the neutropenia and diarrhoea endpoints -- so a rise in exposure moves the stomatitis risk proportionally much further than the other two, which is what makes it load-bearing in a regional dose-selection argument even though its absolute event rate is the lowest of the three. The ungraded sibling is `prob_stomatitis`. Distinct from a modelled oral-mucosal-cell ODE state in a mechanistic mucositis model: this is the probability of crossing a categorical toxicity-grade threshold, not a cell count or a lesion area.
+
+### prob_stomatitis (**canonical any-grade stomatitis probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences stomatitis of any CTCAE grade, in a static landmark exposure-safety logistic model. The any-grade sibling of `prob_stomatitis_grade2`.
+- **Source aliases:**
+  - `Oral mucositis/stomatitis any grade`, `Stomatitis Any Grade` -- Tang 2026 Table 3 and Table S4 (single MedDRA v26.0 preferred term Stomatitis).
+- **Example models:** `Tang_2026_datopotamab_stomatitis.R` (linear in the intact datopotamab deruxtecan average concentration, `logit(p) = -2.35939 + 0.07587 * CAV`, CAV in ug/mL, n = 1081 -- founding example).
+- **Notes:** A probability output in `[0, 1]`; follows the `prob_<endpoint>` shape. An any-grade event is not mutually exclusive with the grade 2 or worse event, so `prob_stomatitis >= prob_stomatitis_grade2` should hold for the same patient when both come from one analysis; it is not enforced across independently fitted models, which may use different exposure metrics (Tang 2026 uses Cavg for any grade and Cycle-1 AUC for grade 2 or worse).
+
+### prob_ocular_surface_event (**canonical any-grade ocular-surface-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences an ocular surface event (OSE) of any grade, in a static landmark exposure-safety logistic model. OSE is a composite of ocular-surface adverse-event preferred terms (keratitis, dry eye, conjunctivitis and related terms) characteristic of antibody-drug conjugates with topoisomerase-I or tubulin-inhibitor payloads.
+- **Source aliases:**
+  - `Ocular surface event any grade`, `OSE Any Grade` -- Tang 2026 Table 3 and Table S4 (preferred-term list based on MedDRA v26.0).
+- **Example models:** `Tang_2026_datopotamab_ose.R` (linear in the intact datopotamab deruxtecan average concentration plus a breast-versus-lung cancer shift, `logit(p) = -3.67083 + 0.074398 * CAV + 1.040719 * TUMTP_BREAST`, n = 1081 -- founding example).
+- **Notes:** A probability output in `[0, 1]`; follows the `prob_<endpoint>` shape. Broader than `prob_corneal_epitheliopathy_grade2`, which is a single corneal finding graded on an ophthalmic scale; the OSE composite is defined by a sponsor preferred-term list, so check the per-model notes for its membership before comparing across drugs.
+
+### prob_ocular_surface_event_grade2 (**canonical moderate-or-worse ocular-surface-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences an ocular surface event of CTCAE grade 2 or worse, in a static landmark exposure-safety logistic model. The grade-threshold sibling of `prob_ocular_surface_event`.
+- **Source aliases:**
+  - `Ocular surface event >= Grade 2`, `OSE Grade 2+` -- Tang 2026 Table 3 and Table S4.
+- **Example models:** `Tang_2026_datopotamab_ose_grade2.R` (`logit(p) = -4.74822 + 0.070107 * CAV`, CAV the intact datopotamab deruxtecan average concentration in ug/mL, n = 1081 -- founding example).
+- **Notes:** A probability output in `[0, 1]`; follows the `prob_<endpoint>` shape. Not mutually exclusive with the any-grade event.
 
 ### prob_diarrhea_grade2 (**canonical moderate-or-worse diarrhea probability output**)
 - **Type:** compartment
