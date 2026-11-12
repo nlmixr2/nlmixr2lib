@@ -153,8 +153,8 @@ ev_typ <- bind_rows(
 sim_typ <- rxode2::rxSolve(mod_typ, ev_typ, keep = "treatment") |>
   as.data.frame()
 
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(sim_typ$Cc), sim_typ$id, all)))
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_typ$Cc))
 conc_ss <- sim_typ |>
   filter(!is.na(Cc), time >= 216, time <= 228) |>
   select(id, time, Cc, treatment)
