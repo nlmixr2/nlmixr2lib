@@ -167,6 +167,7 @@ fig3_events <- bind_rows(
   select(id, time, evid, amt, cmt, ii, ss, everything())
 
 rxode2::rxSetSeed(2023)
+# steady-state searches for long-half-life subjects exceed the default step budget
 fig3 <- rxode2::rxSolve(
   mod, fig3_events,
   keep = c("panel", "scenario"), maxsteps = 1e6, returnType = "data.frame"
@@ -285,11 +286,9 @@ ss_events <- bind_rows(
   select(id, time, evid, amt, cmt, ii, ss, everything())
 
 rxode2::rxSetSeed(2024)
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_ss <- rxode2::rxSolve(mod, ss_events, maxsteps = 1e6, returnType = "data.frame")
 stopifnot(!anyNA(sim_ss$Cc), n_distinct(sim_ss$id) == n_sub)
-
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(sim_ss$Cc), sim_ss$id, all)))
 conc <- sim_ss |>
   filter(!is.na(Cc)) |>
   left_join(treat, by = "id") |>
