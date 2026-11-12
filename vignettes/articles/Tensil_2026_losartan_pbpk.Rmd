@@ -110,13 +110,14 @@ per scenario.
 | RAAS fixed parameters | `rensec_k`, `rensec_fa_e3174` | Table S7 (0.1 mmol/min; 5) |
 | Baseline hormones | `ren_ref`, `ang1_ref`, `ang2_ref`, `ald_ref`, `anggen_ref` | Archived SBML `*_ref` (1, 10, 8, 250, 10 pmol/L) |
 | Baseline blood pressure | `sbp_ref`, `dbp_ref` | Results 3.2 (120/80 mmHg) |
-| Scenario covariates | `WT`, `RENALFUNC_REL`, `HEPFUNC_REL`, `CYP2C9` | Table S7 (`BW`, `KI__f_renal_function`, `f_cirrhosis`, `LI__f_cyp2c9`); per-study values Table S5 |
+| Scenario covariates | `WT`, `RENALFUNC_REL`, `HEPFUNC_REL`, `CYP2C9` | Table S7 (`BW`, `KI__f_renal_function`, `LI__f_cyp2c9`); `f_cirrhosis` from the archived SBML and Tables S5/S6; per-study values Table S5 |
 
 None of the rate laws or ODEs are printed in the manuscript or the
 Supplementary Materials. They were taken from the authors' archived SBML model,
-which Methods Section 2.3 names as the model source (`models/losartan_body_flat.md`,
-Zenodo [10.5281/zenodo.18213663](https://doi.org/10.5281/zenodo.18213663),
-release 0.8.0 -- the version the paper cites). Every parameter value of that
+which Methods Section 2.3 cites as shared on Zenodo at v0.8.0 (reference 53:
+[10.5281/zenodo.18213663](https://doi.org/10.5281/zenodo.18213663); file
+`models/losartan_body_flat.md` of the 0.8.0 release of
+github.com/matthiaskoenig/losartan-model). Every parameter value of that
 release agrees with Supplementary Tables S2, S3 and S7 to the printed precision,
 apart from the `ALDSEC_k` entry of Table S3 (see Errata); the full-precision SBML
 values are used in `ini()`.
@@ -532,8 +533,10 @@ stopifnot(
 
 ## Multiple dosing
 
-The model handles repeated doses through ordinary dosing records; this
-simulates 50 mg once daily for seven days (Fischer 2002 design).
+The model handles repeated doses through ordinary dosing records. This
+illustrative simulation gives 50 mg once daily for seven days at the 72 kg body
+weight used for the Fischer 2002 multiple-dose study (Table 1, Table S5); the
+paper does not print that study's regimen.
 
 ```{r multiple-dose, fig.height = 3}
 ev_md <- rbind(
@@ -657,8 +660,9 @@ close to the approximately 33% quoted in the paper's Introduction.
 supplement give the parameter values but no rate law or ODE. The equations were
 taken from the authors' archive at release 0.8.0, the release the paper cites;
 its parameters match Supplementary Tables S2, S3 and S7. A later release (0.9.0)
-re-fits several parameters (for example `Kp_los` 3.262 to 1.167, `E50_e3174`
-2.91e-4 to 2.07e-4 mmol/L) and is not the published model.
+re-fits several parameters (its release notes list, for example, `Kp_los`
+3.262 to 1.167 and `E50_e3174` 2.91e-4 to 2.07e-4 mmol/L) and is not the
+published model.
 
 **2. Table S3 prints the aldosterone secretion rate in the wrong unit.** Table S3
 lists `ALDSEC_k = 1.011 mmole/min`, Table S7 and the SBML give 1.01e-6 mmol/min.
@@ -701,8 +705,8 @@ angiotensin I 10, angiotensin II 8, aldosterone 250 pmol/L; 120/80 mmHg).
 cirrhosis severity (`HEPFUNC_REL = 1 - f_cirrhosis`). The paper does not print a
 genotype-to-activity map for CYP2C9 or ABCB1, nor a KDIGO-to-renal-function map;
 the values used in each study simulation are listed in Supplementary Table S5
-and quoted above. ABCB1 activity is kept as the parameter `f_abcb1` because no
-continuous P-glycoprotein activity covariate is registered.
+and quoted above. ABCB1 activity is kept as the parameter `f_abcb1` because the
+library has no continuous P-glycoprotein activity covariate.
 
 **8. Known model limitations reported by the authors.** The model under-predicts
 E3174 accumulation in cirrhosis and over-predicts it in renal impairment

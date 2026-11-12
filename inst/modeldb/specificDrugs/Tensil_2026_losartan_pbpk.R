@@ -156,8 +156,9 @@ Tensil_2026_losartan_pbpk <- function() {
         "f_cirrhosis = 1 - HEPFUNC_REL. f_cirrhosis acts twice, as the",
         "fraction of parenchymal liver volume lost (shrinking the",
         "metabolising tissue volume) and as the fraction of portal and",
-        "hepatic-arterial blood shunted past the liver (Methods Section",
-        "2.3, 'progressive cirrhosis'). The FDA 1995 study 67 cirrhosis",
+        "hepatic-arterial blood shunted past the liver (source SBML; Methods",
+        "Section 2.3 describes it as 'progressive cirrhosis'). The FDA 1995",
+        "study 67 cirrhosis",
         "simulation uses f_cirrhosis = 0.67 (HEPFUNC_REL = 0.33;",
         "Supplementary Table S5) and the paper's Figure 4 scans",
         "f_cirrhosis over 0-0.9. Take care with the inversion when",
@@ -167,21 +168,20 @@ Tensil_2026_losartan_pbpk <- function() {
       source_name = "f_cirrhosis"
     ),
     CYP2C9 = list(
-      description = "CYP2C9 activity relative to the *1/*1 genotype",
-      units = "(fraction of *1/*1 activity)",
+      description = "CYP2C9 activity relative to the reference (wild-type) activity",
+      units = "(fraction of reference activity)",
       type = "continuous",
       reference_category = NULL,
       notes = paste(
-        "1 = *1/*1 (normal) activity. Multiplies the hepatic CYP2C9",
-        "losartan -> E3174 Vmax directly; no centering is applied (Methods",
-        "Section 2.3, 'allele-specific activity scaling'). The per-study",
-        "simulations use 1.0 for *1/*1 and, for reduced-function carriers,",
-        "0.8, 0.6, 0.585, 0.525, 0.385 and 0.17 (Supplementary Table S5:",
-        "Bae 2011, Han 2009, Huang 2021, Lee 2003, Li 2009, Sekino 2003,",
-        "Yasar 2002). The paper does not print the genotype-to-activity",
-        "map, so which value belongs to which diplotype is taken from the",
-        "study groups in the vignette. Source name f_cyp2c9 (SBML",
-        "LI__f_cyp2c9)."
+        "1 = reference activity (Supplementary Table S7 default; read as",
+        "the wild-type *1/*1 genotype). Multiplies the hepatic CYP2C9",
+        "losartan -> E3174 Vmax directly, with no centering (source SBML;",
+        "Methods Section 2.3 describes it as 'allele-specific activity",
+        "scaling'). Besides 1.0, the per-study simulations use 0.8, 0.6,",
+        "0.585, 0.525, 0.385 and 0.17 for genotyped groups (Supplementary",
+        "Table S5: Bae 2011, Han 2009, Huang 2021, Lee 2003, Li 2009,",
+        "Sekino 2003, Yasar 2002). The paper does not print which diplotype",
+        "each value belongs to. Source name f_cyp2c9 (SBML LI__f_cyp2c9)."
       ),
       source_name = "f_cyp2c9"
     )
@@ -260,7 +260,7 @@ Tensil_2026_losartan_pbpk <- function() {
       "intravenous losartan 10-30 mg and intravenous E3174 10-20 mg",
       "(FDA 1995 studies 60 and 67, Lo 1995)."
     ),
-    regions = "not reported; the curated studies are international",
+    regions = "not reported",
     notes = paste(
       "Deterministic typical-individual model. Methods Section 2.3 states",
       "that 'all simulations were performed deterministically using the",
@@ -313,14 +313,14 @@ Tensil_2026_losartan_pbpk <- function() {
     # Methods Section 2.3: one partition coefficient for all tissues for
     # losartan; no tissue partitioning for E3174 and L158.
     kp_los      <- fixed(3.26214895692923);  label("Tissue-to-plasma partition coefficient, losartan (unitless)")  # Table S2 Kp_los = 3.262; Methods 2.3 'KpLOS=3.262'
-    ftissue_los <- fixed(0.144942664253079); label("Tissue distribution rate, losartan (L/min)")                   # Table S2 ftissue_los = 0.145
+    ftissue_los <- fixed(0.144942664253079); label("Tissue distribution rate, losartan (L/min)")                   # Table S2 ftissue_los = 0.145 ('tissue blood flow rate'); Table S7 'tissue distribution LOS'
 
     # ================= Absorption ========================================
     ka_dis_los <- fixed(2);                  label("Dissolution rate of losartan in the GI tract (1/hr)")               # Table S7 GU__Ka_dis_los = 2
     losabs_k   <- fixed(0.0361772268991116); label("Absorption rate of losartan in the GI tract (1/min)")                # Table S2 GU__LOSABS_k = 0.036
     f_losefl_k <- fixed(1.02003554075262);   label("P-glycoprotein efflux rate relative to absorption (unitless)")      # Table S2 GU__f_LOSEFL_k = 1.020
     f_los_abs  <- fixed(0.6);                label("Fraction of the luminal absorption flux entering enterocytes (unitless)")  # Table S7 GU__F_los_abs = 0.6
-    metexc_k   <- fixed(2.69641608199351e-05); label("Fecal excretion rate of E3174 and L158 from the gut lumen (1/min)")  # Table S2 GU__METEXC_k = 2.696e-5
+    metexc_k   <- fixed(2.69641608199351e-05); label("Fecal excretion rate of E3174 and L158 from the gut lumen (1/min)")  # Table S2 GU__METEXC_k = 2.696e-5 (unit printed 'l/min'; Table S7 and SBML give 1/min)
     f_oatp2b1  <- fixed(1);                  label("Intestinal uptake (OATP2B1) activity scaling factor (unitless)")    # Table S7 GU__f_OATP2B1 = 1
     f_abcb1    <- fixed(1);                  label("Intestinal P-glycoprotein (ABCB1) activity scaling factor (unitless)")  # Table S7 GU__f_abcb1 = 1
 
