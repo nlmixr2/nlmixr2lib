@@ -253,7 +253,7 @@ solve_typical <- function(dose, times, covs = list(), ii = NULL, until = NULL) {
   ev <- rxode2::et(ev, times, cmt = "central")
   d <- as.data.frame(ev)
   for (nm in names(cv)) d[[nm]] <- cv[[nm]]
-  rxode2::rxSolve(modT, d, returnType = "data.frame") |>
+  rxode2::rxSolve(modT, d, returnType = "data.frame", addlKeepsCov = FALSE) |>
     dplyr::filter(!is.na(Cc))
 }
 
@@ -427,7 +427,8 @@ stopifnot(length(unique(events$id)) == 3 * n_per_arm)
 # Simulation
 
 ```{r simulate}
-sim <- rxode2::rxSolve(mod, events = events, keep = c("arm", "WT")) |>
+sim <- rxode2::rxSolve(mod, events = events, keep = c("arm", "WT"),
+                       addlKeepsCov = FALSE) |>
   as.data.frame()
 stopifnot(nrow(sim) > 0, any(!is.na(sim$Cc)))
 ```
@@ -692,6 +693,21 @@ stopifnot(
   are encoded, sharing the single reported variance via the registered
   `fixed()` idiom for NONMEM's `$OMEGA BLOCK(1) SAME`. The cohort above maps one
   occasion to each dosing week. Pass `OCC = 1` for single-occasion data.
+
+* **Every simulation states `addlKeepsCov = FALSE`, the `rxSolve()` default.**
+  Doses are lagged and given with `rate = -2`, and `addlKeepsCov` decides which
+  record's covariates such a dose takes its bioavailability from. With `FALSE`
+  a dose takes it from its own record unless a record at the same time is
+  sorted after it; with `TRUE` (and with `nonmem = TRUE`) a lagged `rate = -2`
+  dose takes it from the record *before* it, which in this cohort is the
+  previous dose. Every observation here carries the occasion of the dose that
+  opened its interval, so `FALSE` gives each dose its own occasion and its own
+  `DOSE_ATOGEPANT_MG` and comedication values. `TRUE` would shift each
+  occasion's bioavailability eta onto the next dose; because the four occasion
+  etas are independent with equal variance, the population distribution would
+  be the same, but individual profiles would not, and a dataset whose dose or
+  comedication changes between doses would give each dose the previous dose's
+  bioavailability.
 
 * **The blood-to-plasma ratio is a derived output, not a second endpoint.**
   Studies CGP-PK-02 and CGP-MD-01 contributed dried-blood-sample concentrations,

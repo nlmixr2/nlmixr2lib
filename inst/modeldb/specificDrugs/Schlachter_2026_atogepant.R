@@ -305,7 +305,15 @@ Schlachter_2026_atogepant <- function() {
         "analysis dataset defined, so the occasion count of four here is an",
         "implementation choice, not a source value; one variance is reported",
         "and every occasion shares it. Pass OCC = 1 for single-occasion",
-        "data so the first IOV eta applies. See the vignette Errata."
+        "data so the first IOV eta applies. See the vignette Errata.",
+        "Doses are lagged and need rate = -2 for dur(depot), and the",
+        "rxSolve() option addlKeepsCov decides which record such a dose takes",
+        "f() from: with addlKeepsCov = FALSE (the default) its own record,",
+        "unless a record at the same time is sorted after it; with",
+        "addlKeepsCov = TRUE (or nonmem = TRUE) the record before it. Give",
+        "every record, observations included, the OCC (and the dose and",
+        "comedication values) of the dose that opened its interval and use",
+        "addlKeepsCov = FALSE, so each dose takes its own values."
       ),
       source_name = "Occasion"
     )
