@@ -5196,6 +5196,8 @@ navbar:
         href: articles/Lyauk_2016_methylphenidate.html
       - text: "Methylphenidate (Teuscher 2015)"
         href: articles/Teuscher_2015_methylphenidate.html
+      - text: "Methylprednisolone (Cleary 2026)"
+        href: articles/Cleary_2026_methylprednisolone.html
       - text: "Methylprednisolone il10 (Hornik 2019)"
         href: articles/Hornik_2019_methylprednisolone.html
       - text: "Methylprednisolone il6 (Hornik 2019)"
@@ -9827,6 +9829,7 @@ articles:
   - articles/Claret_2014_DCR_OS_PFS_nsclc
   - articles/Claret_2014_motesanib_nsclc
   - articles/Cleary_2023_risdiplam
+  - articles/Cleary_2026_methylprednisolone
   - articles/Clegg_2024_nirsevimab
   - articles/Clegg_2024_sodiumZirconiumCyclosilicate
   - articles/Clegg_2024_tixagevimab_cilgavimab
