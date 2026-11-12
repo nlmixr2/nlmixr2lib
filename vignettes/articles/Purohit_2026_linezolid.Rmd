@@ -1,0 +1,408 @@
+---
+title: "Linezolid (Purohit 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Linezolid (Purohit 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Purohit_2026_linezolid"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Purohit_2026_linezolid"))$description`
+* Article: <https://doi.org/10.1093/ofid/ofag154> (open access, PMC13064523)
+
+Purohit et al. describe linezolid pharmacokinetics in plasma and lumbar
+cerebrospinal fluid (CSF) from the ALTER trial, which randomised Ugandan adults
+with tuberculous meningitis (TBM) to standard-dose (10 mg/kg) or high-dose
+(35 mg/kg) rifampicin with or without linezolid for the first 4 weeks. The
+final model is a one-compartment model with first-order absorption and linear
+clearance, linked to a CSF effect compartment parameterised by a transfer rate
+constant (`kp`) and a CSF-to-plasma partition coefficient (`PC`). The only
+retained covariate is the absolute daily rifampicin dose: participants on 1650
+or 2100 mg/day had a 34.2% higher linezolid clearance than those on 300, 450,
+600 or 1200 mg/day.
+
+# Population
+
+Eighteen participants contributed 73 plasma and 30 CSF linezolid
+concentrations (Results; Supplementary Table 2). Median age was 38.5 years
+(range 26-72) and median weight 50 kg (range 34-69); 50% were female, and all
+were living with HIV (6 on antiretroviral therapy). TBM was definite in 5,
+probable in 12 and possible in 1 participant; MRC grade I/II/III in 27.8% /
+50% / 22.2% (Table 1). Twelve participants received linezolid 1200 mg once
+daily and 6 (inadvertently) 600 mg twice daily; 8 received high-dose and 10
+standard-dose rifampicin. Plasma was sampled intensively on day 1 (0, 2, 4 and
+8 h) and sparsely on day 14; one lumbar puncture per visit was randomised to
+an early (0-2 h), medium (2-6 h) or late (6-8 h) window.
+
+The same information is available programmatically via
+`readModelDb("Purohit_2026_linezolid")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing at its source; the
+table collects them.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` | log(0.40) 1/h | Table 2, ka 0.40 (0.19-0.61) |
+| `lcl` | log(6.01) L/h | Table 2, CL 6.01 (5.01-7.01) |
+| `lvc` | log(27.70) L | Table 2, V 27.70 (16.27-38.77) |
+| `lfdepot` | fixed(log(1)) | Table 2, F relative bioavailability 1 (fixed) |
+| `lke0` (paper `kp`) | log(0.383) 1/h | Table 2, kp 0.383 (0.282-0.484) |
+| `lppc` (paper `PC`) | log(0.535) | Table 2, PC 0.535 (0.458-0.612) |
+| `e_dose_rifampicin_cl` | 0.342 | Table 2, effect of 1650 or 2100 mg rifampicin on CL 34.2% (2.4-66.4) |
+| `etalcl` | log(1 + 0.177^2) | Table 2, IIV on CL 17.7% CV |
+| `etalke0` | log(1 + 0.925^2) | Table 2, IIV on kp 92.5% CV |
+| `propSd` | 0.333 | Table 2, plasma proportional error 33.3% |
+| `addSd` | 0.26 mg/L | Table 2, plasma additive error 0.26 ug/mL |
+| `propSd_Ccsf` | 0.316 | Table 2, CSF proportional error 31.6% |
+| One-compartment, first-order absorption, linear CL | n/a | Results, Pharmacokinetic Model; Figure 1 |
+| `d/dt(csf) <- ke0 * (ppc * Cc - csf)` | n/a | Figure 1 and caption (kp rate, PC extent); Discussion ("hypothetical effect compartment") |
+| `cl` x (1 + 0.342) when rifampicin >= 1650 mg/day | n/a | Results paragraph after Figure 1; Table 2 |
+| Plasma combined, CSF proportional residual error | n/a | Results, Pharmacokinetic Model |
+
+# Virtual cohort
+
+The individual data are not public. The cohort below reproduces the paper's
+simulation design (Methods, Simulations): linezolid 1200 mg once daily or
+600 mg twice daily for 4 weeks, given with each rifampicin dose, grouped as in
+Figures 4-6 into a 300-1200 mg/day and a 1650-2100 mg/day rifampicin category.
+Only the category enters the model, so each subject's dose is drawn from the
+doses in its category. There are 200 subjects per regimen x rifampicin
+category.
+
+```{r cohort}
+set.seed(2026)
+n_per_arm <- 200
+
+arms <- tidyr::expand_grid(
+  regimen = c("1200 mg QD", "600 mg BID"),
+  rif_group = c("RIF 300-1200 mg", "RIF 1650-2100 mg")
+) |>
+  dplyr::mutate(arm = dplyr::row_number())
+
+subjects <- arms |>
+  dplyr::slice(rep(seq_len(dplyr::n()), each = n_per_arm)) |>
+  dplyr::mutate(
+    id = dplyr::row_number(),
+    DOSE_RIFAMPICIN_MG = ifelse(
+      rif_group == "RIF 300-1200 mg",
+      sample(c(300, 450, 600, 1200), dplyr::n(), replace = TRUE),
+      sample(c(1650, 2100), dplyr::n(), replace = TRUE)
+    )
+  )
+stopifnot(!anyDuplicated(subjects$id))
+
+t_end <- 28 * 24
+obs_times <- seq(0, t_end, by = 0.5)
+
+make_events <- function(subj) {
+  dose_amt <- ifelse(subj$regimen == "1200 mg QD", 1200, 600)
+  dose_ii <- ifelse(subj$regimen == "1200 mg QD", 24, 12)
+  dose_rows <- do.call(rbind, lapply(seq_len(nrow(subj)), function(i) {
+    tt <- seq(0, t_end - dose_ii[i], by = dose_ii[i])
+    data.frame(id = subj$id[i], time = tt, amt = dose_amt[i], evid = 1L,
+               cmt = "depot", dvid = NA_integer_)
+  }))
+  obs_rows <- tidyr::expand_grid(id = subj$id, time = obs_times) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
+  dplyr::bind_rows(dose_rows, obs_rows) |>
+    dplyr::left_join(
+      subj |> dplyr::select(id, regimen, rif_group, DOSE_RIFAMPICIN_MG),
+      by = "id"
+    ) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+events <- make_events(subjects)
+```
+
+The model declares two endpoints (plasma `Cc` and CSF `Ccsf`), so observation
+rows name the ODE state `central` and carry `dvid = 1`; rxode2 then returns
+both `Cc` and `Ccsf` at every observation time.
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Purohit_2026_linezolid")
+rxode2::rxSetSeed(2026)
+sim <- rxode2::rxSolve(
+  mod, events = events,
+  keep = c("regimen", "rif_group", "DOSE_RIFAMPICIN_MG"),
+  returnType = "data.frame"
+) |>
+  dplyr::select(id, time, Cc, Ccsf, regimen, rif_group)
+```
+
+# Replicate published figures
+
+## Figure 4: concentration-time profiles over the first 72 hours
+
+```{r figure-4, fig.width = 8, fig.height = 6}
+# Replicates Figure 4 of Purohit 2026: median and 95% interval of simulated
+# plasma (A, B) and CSF (C, D) linezolid concentrations.
+fig4 <- sim |>
+  dplyr::filter(time <= 72) |>
+  tidyr::pivot_longer(c(Cc, Ccsf), names_to = "matrix", values_to = "conc") |>
+  dplyr::mutate(matrix = ifelse(matrix == "Cc", "Plasma", "CSF")) |>
+  dplyr::group_by(matrix, regimen, rif_group, time) |>
+  dplyr::summarise(
+    q025 = quantile(conc, 0.025), q50 = median(conc),
+    q975 = quantile(conc, 0.975), .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    matrix = factor(matrix, levels = c("Plasma", "CSF")),
+    rif_group = factor(rif_group, levels = c("RIF 300-1200 mg", "RIF 1650-2100 mg"))
+  )
+
+ggplot(fig4, aes(time, q50, colour = regimen, fill = regimen)) +
+  geom_ribbon(aes(ymin = q025, ymax = q975), alpha = 0.2, colour = NA) +
+  geom_line() +
+  geom_hline(yintercept = 1, linetype = "dashed", colour = "red") +
+  facet_grid(matrix ~ rif_group, scales = "free_y") +
+  scale_x_continuous(breaks = seq(0, 72, 12)) +
+  labs(x = "Time (h)", y = "Linezolid concentration (mg/L)",
+       colour = "Linezolid", fill = "Linezolid",
+       caption = "Replicates Figure 4 of Purohit 2026. Dashed line: MIC 1 mg/L.")
+```
+
+## Figures 5 and 6: time above the MIC over 4 weeks
+
+The paper reports the percentage of time that plasma (Figure 5) and CSF
+(Figure 6) linezolid concentrations stay above an MIC of 1 mg/L over the
+4-week simulated course. Here it is the fraction of the 0.5-hour grid points
+above 1 mg/L, averaged over subjects.
+
+```{r figure-5-6}
+tmic <- sim |>
+  dplyr::filter(time < t_end) |>
+  dplyr::group_by(regimen, rif_group, id) |>
+  dplyr::summarise(
+    plasma = mean(Cc > 1) * 100,
+    csf = mean(Ccsf > 1) * 100,
+    .groups = "drop"
+  ) |>
+  dplyr::group_by(regimen, rif_group) |>
+  dplyr::summarise(plasma = mean(plasma), csf = mean(csf), .groups = "drop")
+
+published_tmic <- tibble::tribble(
+  ~regimen,      ~rif_group,          ~plasma_pub, ~csf_pub,
+  "1200 mg QD", "RIF 300-1200 mg",    86.2,        88.3,
+  "600 mg BID", "RIF 300-1200 mg",    99.9,        99.7,
+  "1200 mg QD", "RIF 1650-2100 mg",   70.4,        77.1,
+  "600 mg BID", "RIF 1650-2100 mg",   99.5,        99.2
+)
+
+tmic_cmp <- dplyr::left_join(published_tmic, tmic, by = c("regimen", "rif_group")) |>
+  dplyr::mutate(
+    plasma_diff = plasma - plasma_pub,
+    csf_diff = csf - csf_pub
+  )
+
+tmic_cmp |>
+  dplyr::select(regimen, rif_group, plasma_pub, plasma, csf_pub, csf) |>
+  dplyr::rename(
+    "Linezolid" = regimen,
+    "Rifampicin" = rif_group,
+    "Plasma T>MIC, published (%)" = plasma_pub,
+    "Plasma T>MIC, simulated (%)" = plasma,
+    "CSF T>MIC, published (%)" = csf_pub,
+    "CSF T>MIC, simulated (%)" = csf
+  ) |>
+  knitr::kable(digits = 1, caption = paste(
+    "Percentage of time above an MIC of 1 mg/L over 4 weeks.",
+    "Published values: Figures 5 and 6 and Results of Purohit 2026."
+  ))
+
+tmic_cmp |>
+  dplyr::mutate(source = "Simulated") |>
+  dplyr::select(regimen, rif_group, source, Plasma = plasma, CSF = csf) |>
+  dplyr::bind_rows(
+    published_tmic |>
+      dplyr::mutate(source = "Published") |>
+      dplyr::select(regimen, rif_group, source, Plasma = plasma_pub, CSF = csf_pub)
+  ) |>
+  tidyr::pivot_longer(c(Plasma, CSF), names_to = "matrix", values_to = "tmic") |>
+  dplyr::mutate(matrix = factor(matrix, levels = c("Plasma", "CSF"))) |>
+  ggplot(aes(rif_group, tmic, fill = regimen, alpha = source)) +
+  geom_col(position = position_dodge(width = 0.9), colour = "black") +
+  scale_alpha_manual(values = c(Published = 0.45, Simulated = 1)) +
+  facet_wrap(~matrix) +
+  labs(x = "Rifampicin dose", y = "Time above MIC (%)", fill = "Linezolid",
+       alpha = NULL,
+       caption = "Replicates Figures 5 (plasma) and 6 (CSF) of Purohit 2026.")
+```
+
+The simulated percentages agree with the published values to within about
+1.5 percentage points. The once-daily regimen is the sensitive one: a 34%
+change in clearance moves its plasma T>MIC by about 16 points (86% to 70%), so
+the gate below fails on a mis-transcribed clearance, volume, absorption rate
+or covariate effect. The means are over 200 subjects per arm; across two
+seeds the largest difference from the published value was 1.2 points (CSF,
+once daily with high-dose rifampicin), so a 4-point tolerance leaves headroom
+for a different cohort draw without being able to pass a wrong model.
+
+```{r tmic-gate}
+stopifnot(
+  all(abs(tmic_cmp$plasma_diff) < 4),
+  all(abs(tmic_cmp$csf_diff) < 4)
+)
+```
+
+# PKNCA validation
+
+PKNCA is run separately for plasma and CSF over the first dosing day
+(0-24 h) and a steady-state day (day 14, 312-336 h), grouped by regimen and
+rifampicin category. The day-1 Cmin is the pre-dose zero at time 0; the
+day-14 Cmin is the steady-state trough.
+
+```{r pknca}
+nca_window <- function(df) {
+  df |> dplyr::filter(time <= 24 | (time >= 312 & time <= 336))
+}
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  nca_window() |>
+  dplyr::mutate(treatment = paste(regimen, rif_group, sep = " | ")) |>
+  dplyr::select(id, time, amt, treatment)
+
+intervals <- data.frame(
+  start = c(0, 312), end = c(24, 336),
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, cmin = TRUE
+)
+
+run_nca <- function(conc_col) {
+  conc_df <- sim |>
+    nca_window() |>
+    dplyr::mutate(treatment = paste(regimen, rif_group, sep = " | ")) |>
+    dplyr::select(id, time, treatment, conc = dplyr::all_of(conc_col)) |>
+    dplyr::filter(!is.na(conc))
+  conc_obj <- PKNCA::PKNCAconc(conc_df, conc ~ time | treatment + id)
+  dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+}
+
+nca_plasma <- run_nca("Cc")
+nca_csf <- run_nca("Ccsf")
+
+summarise_nca <- function(res) {
+  as.data.frame(res) |>
+    dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "cmin")) |>
+    dplyr::mutate(day = ifelse(start == 0, "Day 1", "Day 14")) |>
+    dplyr::group_by(treatment, day, PPTESTCD) |>
+    dplyr::summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+}
+
+summarise_nca(nca_plasma) |>
+  dplyr::rename(
+    "Regimen | rifampicin" = treatment, "Day" = day,
+    "Cmax (mg/L)" = cmax, "Tmax (h)" = tmax,
+    "AUC0-24 (mg*h/L)" = auclast, "Cmin (mg/L)" = cmin
+  ) |>
+  knitr::kable(digits = 2, caption = "Plasma linezolid NCA (simulated medians).")
+
+summarise_nca(nca_csf) |>
+  dplyr::rename(
+    "Regimen | rifampicin" = treatment, "Day" = day,
+    "Cmax (mg/L)" = cmax, "Tmax (h)" = tmax,
+    "AUC0-24 (mg*h/L)" = auclast, "Cmin (mg/L)" = cmin
+  ) |>
+  knitr::kable(digits = 2, caption = "CSF linezolid NCA (simulated medians).")
+```
+
+## Comparison against published values
+
+The paper reports no NCA table. The reference values below are the peak
+median concentrations over the first 24 hours, digitised by the maintainers
+from Figure 4 (about +/- 0.5 mg/L reading precision for plasma and +/- 0.3
+mg/L for CSF; for the twice-daily regimen the second-dose peak is the
+higher one).
+
+```{r nca-compare}
+fig4_ref <- tibble::tribble(
+  ~treatment,                             ~matrix,  ~cmax,
+  "1200 mg QD | RIF 300-1200 mg",         "Plasma", 21.0,
+  "600 mg BID | RIF 300-1200 mg",         "Plasma", 12.2,
+  "1200 mg QD | RIF 1650-2100 mg",        "Plasma", 18.5,
+  "600 mg BID | RIF 1650-2100 mg",        "Plasma", 10.0,
+  "1200 mg QD | RIF 300-1200 mg",         "CSF",    8.6,
+  "600 mg BID | RIF 300-1200 mg",         "CSF",    5.3,
+  "1200 mg QD | RIF 1650-2100 mg",        "CSF",    7.2,
+  "600 mg BID | RIF 1650-2100 mg",        "CSF",    4.3
+)
+
+day1 <- function(res) {
+  as.data.frame(res) |> dplyr::filter(start == 0)
+}
+
+cmp <- dplyr::bind_rows(
+  nlmixr2lib::ncaComparisonTable(
+    simulated = day1(nca_plasma) |> dplyr::mutate(matrix = "Plasma"),
+    reference = fig4_ref |> dplyr::filter(matrix == "Plasma"),
+    by = c("treatment", "matrix"), params = "cmax",
+    units = c(cmax = "mg/L"), tolerance_pct = 20
+  ),
+  nlmixr2lib::ncaComparisonTable(
+    simulated = day1(nca_csf) |> dplyr::mutate(matrix = "CSF"),
+    reference = fig4_ref |> dplyr::filter(matrix == "CSF"),
+    by = c("treatment", "matrix"), params = "cmax",
+    units = c(cmax = "mg/L"), tolerance_pct = 20
+  )
+)
+knitr::kable(cmp, caption = paste(
+  "Simulated day-1 Cmax (median) vs. the Figure 4 median peak.",
+  "* differs from reference by >20%."
+))
+```
+
+# Assumptions and deviations
+
+- **Table 2 vs. Results text.** The Results text quotes the partition
+  coefficient as 53.8% and kp as 0.382 1/h, whereas Table 2 gives 0.535 and
+  0.383 1/h. The model uses the Table 2 final estimates; the differences are
+  below 1%.
+- **IIV scale.** Table 2 states that interindividual variability is
+  expressed as a percent coefficient of variation, so the variances are
+  `log(1 + CV^2)`. The table gives no confidence interval for the IIV rows,
+  so the scale cannot be checked numerically. Reading the percentages as
+  `sqrt(omega^2)` instead changes the simulated T>MIC by less than 0.5
+  points, so the Figure 5 and 6 comparison does not separate the two
+  readings either.
+- **Rifampicin dose effect.** The paper treats the daily rifampicin dose as
+  categorical and reports a single effect for 1650 or 2100 mg relative to
+  300-1200 mg. The model encodes it as `DOSE_RIFAMPICIN_MG >= 1650`. The
+  weight-band doses of 750 mg (standard arm, >= 71 kg) and 2550 mg (high-dose
+  arm, >= 71 kg) were not observed; the threshold places them in the
+  reference and high categories, which is an extrapolation.
+- **CSF compartment.** The paper describes CSF concentrations "as levels
+  within a hypothetical effect compartment" with a rate (kp) and an extent
+  (PC) of entry. It is implemented as `d/dt(csf) = kp * (PC * Cc - csf)`,
+  with `csf` holding a concentration and no mass removed from plasma. The
+  paper's `kp` is named `ke0` and `PC` is named `ppc`, following the
+  library's effect-compartment conventions.
+- **Residual error.** The plasma combined additive and proportional error is
+  encoded with nlmixr2's `add() + prop()`. The paper does not say whether its
+  NONMEM error model summed the variances or the standard deviations.
+- **Simulation design.** The paper's simulations drew demographics from the
+  18 trial participants over 500 trials. No covariate other than the
+  rifampicin dose category enters the model, so 200 subjects per regimen and
+  rifampicin category are simulated here, with doses drawn from the doses in
+  each category.
+- **Figure 4 reference values** were digitised by the maintainers and are
+  approximate.
+- No erratum or correction notice was found on Europe PMC as of 2026-11-12.

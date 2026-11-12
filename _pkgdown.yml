@@ -4214,6 +4214,8 @@ navbar:
         href: articles/Mockeliunas_2022_linezolid.html
       - text: "Linezolid (Nguyen 2026)"
         href: articles/Nguyen_2026_linezolid.html
+      - text: "Linezolid (Purohit 2026)"
+        href: articles/Purohit_2026_linezolid.html
       - text: "Linezolid (Schmidt 2009)"
         href: articles/Schmidt_2009_oxazolidinones.html
       - text: "Linezolid (Soraluce 2020)"
@@ -10642,6 +10644,7 @@ articles:
   - articles/Puisset_2007_docetaxel
   - articles/Punyawudho_2025_dolutegravir
   - articles/Purohit_2023_ritlecitinib
+  - articles/Purohit_2026_linezolid
   - articles/Qi_2014_sapropterin
   - articles/Qi_2019_vestronidaseAlfa
   - articles/Qi_2024_vosoritide
