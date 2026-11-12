@@ -675,9 +675,9 @@ auc_i |>
 
 # The only remaining error source is linear-trapezoidal discretisation, which
 # slightly under-reads the curvature of the absorption peak, plus the steady-state
-# search residual (ssRtol / (k * tau), far below it). 0.5% is a tight bound.
+# search residual (ssRtol / (k * tau), far below it). 0.1% is a tight bound.
 stopifnot(nrow(auc_i) == 2L * N_PER_ARM)
-stopifnot(max(abs(auc_i$pct_err)) < 0.5)
+stopifnot(max(abs(auc_i$pct_err)) < 0.1)
 ```
 
 # Assumptions and deviations
@@ -735,12 +735,13 @@ stopifnot(max(abs(auc_i$pct_err)) < 0.5)
   at the heaviest weight modelled (65 kg) the typical half-life is about 46 h,
   but a subject 3 SD low on `etalcl` clears roughly 2.2-fold more slowly, giving
   a half-life near 100 h. At 672 h even those subjects are about 6.7 half-lives
-  in, so every trough reported here is a steady-state trough. This was checked
-  directly: extending the horizon to 1008 h leaves the steady-state
-  `AUC0-tau = Dose/CL` residual unchanged at 0.85%, confirming that what remains
-  is trapezoidal discretisation and not incomplete convergence. An earlier
-  14-day horizon left the slowest subjects roughly 4.9 half-lives in and biased
-  their AUC low by up to 4.5%.
+  in, so every trough reported here is a steady-state trough to within about 1%.
+  The interval AUC of that run is short of steady state by about `exp(-k * 672 h)`
+  for the slowest subjects (0.3% at a half-life of 80 h, 1% at 100 h), so the
+  per-subject `AUC0-tau = Dose/CL` identity is checked on a separate `ss = 1`
+  solve of the same regimens, where the residual is trapezoidal discretisation on
+  a 0.25 h grid (about 0.01%). An earlier 14-day horizon left the slowest subjects
+  roughly 4.9 half-lives in and biased their AUC low by up to 4.5%.
 
 - **Monte Carlo precision.** Each arm uses 200 participants versus the paper's
   1,000 replicates, giving a Monte Carlo standard error of about 3 percentage
