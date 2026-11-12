@@ -132,8 +132,11 @@ make_cohort <- function(n, dose, label, id_offset = 0L) {
   # Observations on the ODE state `central` (never on the observable `Cc`):
   # the steady-state interval, then the washout after the final dose.
   obs <- subj |>
-    tidyr::crossing(time = c(seq(0, tau, by = 0.25),
-                             seq(t_last, t_last + 192, by = 4))) |>
+    # 0.05 h through the first 4 h: the trapezoid error of AUC(0-tau) on a 0.25 h
+    # grid reaches 0.4% for a fast-absorbing subject, close to the 0.5% bound of the
+    # per-subject identity.
+    tidyr::crossing(time = sort(unique(c(seq(0, 4, by = 0.05), seq(0, tau, by = 0.25),
+                                         seq(t_last, t_last + 192, by = 4))))) |>
     mutate(amt = NA_real_, evid = 0L, cmt = "central", ii = 0, ss = 0L)
   bind_rows(dos, obs) |> arrange(id, time, desc(evid))
 }
