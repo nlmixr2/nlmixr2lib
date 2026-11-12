@@ -111,8 +111,9 @@ make_events <- function(reg) {
 }
 
 ev_typ <- make_events(regimens)
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_typ,
-                           keep = c("treatment", "WT")) |>
+                           keep = c("treatment", "WT"), maxsteps = 1e6) |>
   as.data.frame()
 ```
 
@@ -180,6 +181,8 @@ exponents together. The typical half-life at 70 kg is
 # PKNCA on the typical-value profiles
 
 ```{r pknca}
+# A subject whose steady-state search fails comes back NA; stop rather than drop it.
+stopifnot(!any(tapply(is.na(sim_typ$Cc), sim_typ$id, all)))
 conc_df <- sim_typ |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
@@ -236,8 +239,9 @@ reg_iiv <- regimens |>
   tidyr::uncount(n_per) |>
   dplyr::mutate(id = dplyr::row_number(), ctrough_pub = NA_real_)
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_iiv <- rxode2::rxSolve(mod, events = make_events(reg_iiv),
-                           keep = c("treatment", "WT")) |>
+                           keep = c("treatment", "WT"), maxsteps = 1e6) |>
   as.data.frame()
 
 sim_iiv |>
