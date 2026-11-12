@@ -6228,8 +6228,6 @@ navbar:
         href: articles/Crass_2025_pegcetacoplan_intravitreal.html
       - text: "Pegcetacoplan ldh (Crass 2024)"
         href: articles/Crass_2024_pegcetacoplan.html
-      - text: "Pegfilgrastim (Brekkan 2018)"
-        href: articles/Brekkan_2018_pegfilgrastim.html
       - text: "Peginesatide (Naik 2013)"
         href: articles/Naik_2013_peginesatide.html
       - text: "Peginterferon alfa 24wk mbma (Hanan 2026)"
@@ -10305,6 +10303,7 @@ articles:
   - articles/Hansson_2013_sunitinib_dbp
   - articles/Hansson_2013_sunitinib_hfs
   - articles/Hansson_2013_sunitinib_myelosuppression
+  - articles/Hansson_2013_sunitinib_os
   - articles/Hansson_2013_sunitinib_svegfr3_os
   - articles/Hansson_2013a_sunitinib
   - articles/Hansson_2013b_sunitinib
