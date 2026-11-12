@@ -197,8 +197,9 @@ ev_fu <- do.call(rbind, lapply(seq_len(nrow(fu_grid)), function(i) {
     dplyr::mutate(CRCL = fu_grid$CRCL[i], ALB = fu_grid$ALB[i])
 }))
 trap <- function(x, y) sum(diff(x) * (head(y, -1) + tail(y, -1)) / 2)
+# steady-state searches for long-half-life subjects exceed the default step budget
 fu_typ <- rxode2::rxSolve(typ, ev_fu, returnType = "data.frame",
-                          rtol = 1e-10, atol = 1e-12) |>
+                          rtol = 1e-10, atol = 1e-12, maxsteps = 1e6) |>
   dplyr::group_by(id) |>
   dplyr::summarise(CRCL = CRCL[1], ALB = ALB[1],
                    fu = trap(time, Cunbound) / trap(time, Cc), .groups = "drop")
@@ -289,7 +290,8 @@ c(n_arms = nrow(arms), n_per_arm = n_arm, n_total = nrow(cohort))
 
 ```{r simulate}
 rxode2::rxSetSeed(2025)
-sim <- rxode2::rxSolve(ui, events, returnType = "data.frame") |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim <- rxode2::rxSolve(ui, events, returnType = "data.frame", maxsteps = 1e6) |>
   dplyr::left_join(cohort |> dplyr::select(id, arm_label, band), by = "id")
 stopifnot(!anyNA(sim$Cc), !anyNA(sim$Cunbound), nrow(sim) == nrow(cohort))
 ```
