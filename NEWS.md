@@ -10,7 +10,7 @@
 
 - Add Pouzin 2023 tusamitamab ravtansine CYP3A4/1A2/2B6 downregulation IVIVE-PK ([doi:10.1002/cpt.3102](https://doi.org/10.1002/cpt.3102)) -- adults with advanced CEACAM5-expressing solid tumors (typical-value simulation from in vitro constants).
 
-- Add Cleary 2026 methylprednisolone ([doi:10.1002/psp4.70212](https://doi.org/10.1002/psp4.70212)) -- intravenous disposition layer of a GastroPlus long-acting intramuscular methylprednisolone acetate PBPK model, adults.
+- Add Sheng 2026 sugemalimab popPK and PFS/OS exposure-response ([doi:10.1002/psp4.70220](https://doi.org/10.1002/psp4.70220)) -- adults with advanced solid tumours or lymphomas (popPK) and stage IV NSCLC (exposure-response).
 
 - Add Iwaki 2021 guselkumab PPPASI PK/PD ([doi:10.1002/jcph.1953](https://doi.org/10.1002/jcph.1953)) -- Japanese adults with palmoplantar pustulosis.
 
