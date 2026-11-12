@@ -258,15 +258,24 @@ Supplementary File 3 Figure 3 is the prediction-corrected VPC of the base model:
 dose-adjusted troughs scatter around a median of about 13 ng/mL with a 95%
 band of roughly 6-30 ng/mL, flat over the follow-up. The 1167 observed troughs
 in Supplementary File 1 have median 12.9 ng/mL, 2.5th percentile 3.9 and 97.5th
-percentile 39.8 ng/mL. Each virtual subject below contributes six troughs, one
-per occasion, each after steady-state dosing at 5 mg every 12 h.
+percentile 39.8 ng/mL. Each of the 200 virtual subjects below contributes six
+troughs, one per occasion, each after steady-state dosing at 5 mg every 12 h.
+Every subject-occasion is simulated as a virtual subject of its own: giving one
+subject six occasions in a single event table, with a steady-state record at each,
+makes rxode2's steady-state search return NA for some subjects at the later
+occasions. The troughs of one virtual subject are therefore independent here; the
+pooled quantiles, which are what the table and the assertions use, do not depend
+on that.
 
 ```{r vpc}
 n_occ <- 6
+# One steady-state record at time 0 and the trough 12 h later, per subject-occasion
+# (id runs over n_sub * n_occ; OCC fixes the occasion's random effect).
 ev_vpc <- cohort |>
   tidyr::crossing(OCC = seq_len(n_occ), evid = c(1, 0)) |>
   mutate(
-    time = (OCC - 1) * 5000 + ifelse(evid == 1, 0, 12),
+    id = (OCC - 1L) * n_sub + id,
+    time = ifelse(evid == 1, 0, 12),
     amt = ifelse(evid == 1, 5, 0), ss = ifelse(evid == 1, 1, 0),
     ii = ifelse(evid == 1, 12, 0), cmt = "central"
   ) |>
@@ -274,7 +283,12 @@ ev_vpc <- cohort |>
 
 sim_vpc <- rxode2::rxSolve(mod_base, ev_vpc, maxsteps = 1e6, returnType = "data.frame")
 
-troughs <- sim_vpc |> filter(!is.na(sim))
+# Every subject-occasion must have solved: an NA trough would otherwise leave the
+# quantiles below without a trace.
+troughs <- sim_vpc |> filter(time == 12)
+stopifnot(nrow(troughs) == n_sub * n_occ, !anyNA(troughs$sim))
+# Follow-up day of the occasion, for the plot (occasions are 5000 h apart).
+troughs$day <- ((troughs$OCC - 1) * 5000 + 12) / 24
 vpc_tab <- tibble(
   Statistic = c("2.5th percentile", "Median", "97.5th percentile"),
   `Observed, Supplementary File 1 (ng/mL)` = c(3.9, 12.86, 39.77),
@@ -282,7 +296,7 @@ vpc_tab <- tibble(
 )
 knitr::kable(vpc_tab, digits = 1, caption = "Dose-normalised troughs: simulated vs observed.")
 
-ggplot(troughs, aes(time / 24, sim)) +
+ggplot(troughs, aes(day, sim)) +
   geom_point(alpha = 0.15, colour = "darkgreen") +
   geom_hline(yintercept = quantile(troughs$sim, c(0.025, 0.5, 0.975)), linetype = c(2, 1, 2)) +
   scale_y_log10() +
