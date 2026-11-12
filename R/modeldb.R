@@ -354,23 +354,8 @@ addFileToModelDb <- function(dir, file, modeldb) {
   }
 
   # Finding dosing
-  dosing <- NULL
-  dosing_meta <- mod$meta$dosing
-  if (!is.null(dosing_meta)) {
-    dosing <- paste(dosing_meta, collapse = ",")
-  } else {
-    if ("depot" %in% mod$props$cmt) {
-      dosing <- c(dosing, "depot")
-    }
-    if ("central" %in% mod$props$cmt) {
-      dosing <- c(dosing, "central")
-    }
-    if (!is.null(dosing)) {
-      dosing <- paste(dosing, collapse = ",")
-    } else {
-      dosing <- NA_character_
-    }
-  }
+  dosing <- .modelDosingCmts(mod)
+  dosing <- if (is.null(dosing)) NA_character_ else paste(dosing, collapse = ",")
 
   # Finding depends
   depends <- NULL
@@ -427,6 +412,20 @@ addFileToModelDb <- function(dir, file, modeldb) {
   list(row = ret, errors = errors)
 }
 ## nocov end
+
+# The compartments a model is dosed into: its `dosing` metadata when it
+# declares one, otherwise whichever of `depot` and `central` it has, in that
+# order. NULL when it declares nothing and has neither. A declared
+# `dosing <- character(0)` (a model driven by a covariate rather than doses) is
+# returned as-is, so the registry records it as "" rather than NA.
+.modelDosingCmts <- function(ui) {
+  declared <- ui$meta$dosing
+  if (!is.null(declared)) {
+    return(declared)
+  }
+  fallback <- intersect(c("depot", "central"), ui$props$cmt)
+  if (length(fallback)) fallback else NULL
+}
 
 # Walk a modeldb directory and return rows + updated cache entries. Reuses a
 # cached row when the file's md5 matches the cached hash; otherwise re-parses

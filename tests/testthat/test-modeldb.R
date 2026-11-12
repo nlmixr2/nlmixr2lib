@@ -456,3 +456,17 @@ test_that("a worker count must be one positive whole number", {
   withr::local_options(nlmixr2lib.buildModelDb.workers = 0)
   expect_error(nlmixr2lib:::buildModelDb(), "nlmixr2lib.buildModelDb.workers", fixed = TRUE)
 })
+
+test_that(".modelDosingCmts reads `dosing` metadata, else falls back to depot and central", {
+  # Declared metadata is returned as written, even when it names neither
+  # depot nor central.
+  expect_identical(.dtDosingCmts(.dtStomachDosedModel), "stomach")
+  expect_identical(.dtDosingCmts(.dtTwoDepotModel), c("depot", "depot2"))
+  # A declared empty vector stays empty, so the registry records "" (nothing
+  # is dosed) rather than NA (nothing was said).
+  expect_identical(.dtDosingCmts(.dtEmptyDosingModel), character(0))
+  # Without metadata: depot before central, and only the ones that exist.
+  expect_identical(.dtDosingCmts(.dtFallbackDepotModel), c("depot", "central"))
+  expect_identical(.dtDosingCmts(.dtStomachModel), "central")
+  expect_null(.dtDosingCmts(.dtNoFallbackModel))
+})
