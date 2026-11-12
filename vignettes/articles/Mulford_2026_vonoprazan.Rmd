@@ -306,7 +306,10 @@ make_events <- function(subj, ss, day2) {
               ii = if (ss) 24 else 0, ss = if (ss) 1L else 0L)
   obs_rows <- subj |>
     select(id) |>
-    tidyr::crossing(time = seq(0, 24, by = 0.25)) |>
+    # 0.05 h through the absorption phase: the trapezoid error of AUC(0-24) on a
+    # 0.25 h grid reaches 0.25% for a fast-absorbing subject, half of the 0.5% bound
+    # of the mass-balance identities below.
+    tidyr::crossing(time = sort(unique(c(seq(0, 4, by = 0.05), seq(0, 24, by = 0.25))))) |>
     # cmt is the ODE STATE, never the algebraic observable "Cc": naming the
     # observable auto-injects a compartment slot and renumbers the states.
     mutate(amt = NA_real_, evid = 0L, cmt = "central", ii = 0, ss = 0L)
@@ -612,11 +615,12 @@ data.frame(
   knitr::kable(caption = "Exact mass-balance identities, worst absolute deviation from 1 across all subjects.")
 
 # Deterministic given each subject's drawn etas -- trapezoidal error on the
-# 0.25 h observation grid only, which is why the tolerance is looser than the
-# 1e-4 used on the 0.01 h grid of the structural gate above. Realised worst
-# deviations across 600 subjects are about 1.2e-3 on each identity; the bound
-# still fails on any topology, bioavailability-target or output-scaling error,
-# all of which break mass balance by percent-scale amounts rather than 0.1%.
+# observation grid only (0.05 h through the first 4 h, 0.25 h after), which is why
+# the tolerance is looser than the 1e-4 used on the 0.01 h grid of the structural
+# gate above. Realised worst deviations across 600 subjects are about 3e-4 on each
+# identity (at most 3.3e-4 over eight seeds); the bound still fails on any
+# topology, bioavailability-target or output-scaling error, all of which break mass
+# balance by percent-scale amounts rather than 0.1%.
 stopifnot(max(abs(d1$mb_ratio - 1)) < 5e-3,
           max(abs(ss$ss_ratio - 1)) < 5e-3)
 ```

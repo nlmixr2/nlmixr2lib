@@ -228,9 +228,11 @@ keep_cols <- c("treatment", "CONMED_PB", "CONMED_ZNS")
 
 sim_typ_sd <- rxode2::rxSolve(mod_typ, events = events_typ_sd, keep = keep_cols) |>
   as.data.frame()
-sim_typ_ss <- rxode2::rxSolve(mod_typ, events = events_typ_ss, keep = keep_cols) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_typ_ss <- rxode2::rxSolve(mod_typ, events = events_typ_ss, keep = keep_cols, maxsteps = 1e6) |>
   as.data.frame()
-sim_pop_ss <- rxode2::rxSolve(mod, events = events_pop_ss, keep = keep_cols) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_pop_ss <- rxode2::rxSolve(mod, events = events_pop_ss, keep = keep_cols, maxsteps = 1e6) |>
   as.data.frame()
 
 # Concentrations must stay non-negative for PKNCA's terminal-slope fit.
@@ -274,6 +276,8 @@ human reference range marked. The replication below plots the simulated median
 and 5th-95th percentile band from the stochastic cohort, on the same axes.
 
 ```{r figure-3, fig.height = 4}
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_pop_ss$Cc))
 # Replicates Figure 3 of Munana 2018: steady-state LEV concentrations over one
 # q12h dosing interval, by treatment group. Panel A = LEV-XR alone,
 # B = LEV-XR + phenobarbital, C = LEV-XR + zonisamide.
@@ -340,6 +344,8 @@ steady-state `AUCtau` are the same number; that identity is checked further
 down.)
 
 ```{r pknca}
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_typ_sd$Cc))
 sim_nca <- sim_typ_sd |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
@@ -501,6 +507,8 @@ observation that dogs on phenobarbital are the ones at risk of falling below the
 5 ug/mL lower reference bound.
 
 ```{r steady-state}
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_typ_ss$Cc))
 auc_tau <- sim_typ_ss |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::group_by(treatment) |>

@@ -1109,6 +1109,8 @@
   }
   entries <- .parseCovariateColumns(.covariateColumnsPath())
   .covariateRegisterCache$canonical <- entries
+  # The alias map is derived from these entries, so it goes stale with them.
+  .covariateRegisterCache$aliasMap <- NULL
   entries
 }
 
@@ -1313,13 +1315,27 @@
 
 .nlmixr2libCovariateAliasMap <- function() {
   conv <- .loadCanonicalCovariates()
-  out <- character()
-  for (canon in names(conv)) {
-    for (a in conv[[canon]]$aliases) {
-      out[a] <- canon
-    }
+  # Memoised beside the register it is derived from: the checker asks for it
+  # once per model and once per covariate-effect parameter, and building it
+  # was most of the per-model time in buildModelDb().
+  if (is.null(.covariateRegisterCache$aliasMap)) {
+    .covariateRegisterCache$aliasMap <- .buildCovariateAliasMap(conv)
   }
-  out
+  .covariateRegisterCache$aliasMap
+}
+
+# Named character vector alias -> canonical name. An alias listed under more
+# than one canonical maps to the one written last in the register, and keeps
+# the position of its first appearance.
+.buildCovariateAliasMap <- function(conv) {
+  aliases <- unlist(lapply(conv, `[[`, "aliases"), use.names = FALSE)
+  canons <- rep(names(conv), lengths(lapply(conv, `[[`, "aliases")))
+  if (length(aliases) == 0L) {
+    return(character())
+  }
+  keys <- unique(aliases)
+  lastIdx <- length(aliases) + 1L - match(keys, rev(aliases))
+  stats::setNames(canons[lastIdx], keys)
 }
 
 # Return TRUE when `name` is a canonical log-transformed PK parameter or

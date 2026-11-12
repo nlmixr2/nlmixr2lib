@@ -795,7 +795,10 @@ checkModelConventions <- function(model, verbose = TRUE) {
 
 .checkCovariates <- function(ui, conv, model_name) {
   issues <- .emptyIssues()
-  covs_all <- ui$covariates %||% character()
+  # A data column that only names a random-effect nesting level in ini()
+  # (`etaiov_lcl ~ 0.1 | OCC`) is read from the data but never appears in
+  # model(), so rxode2 does not list it in ui$covariates.
+  covs_all <- union(ui$covariates %||% character(), .etaNestingColumns(ui))
   depends <- as.list(ui$meta)$depends %||% character()
   # `depends` names are model inputs supplied by an upstream model (e.g., Cc
   # threaded into a PD model); they are not epidemiological covariates.
@@ -1659,6 +1662,19 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # probability of the observed PPPASI score).
 .reservedDataItems <- "DV"
 
+# Data columns that ini() uses as random-effect nesting levels
+# (`eta ~ var | OCC`). In rxode2's iniDf an eta row carries its level in
+# `condition` ("id" for between-subject etas); residual-error rows also use
+# `condition`, for the endpoint name, so only eta rows are read.
+.etaNestingColumns <- function(ui) {
+  iniDf <- ui$iniDf
+  if (is.null(iniDf) || !all(c("neta1", "condition") %in% names(iniDf))) {
+    return(character())
+  }
+  lev <- iniDf$condition[!is.na(iniDf$neta1)]
+  unique(setdiff(lev[!is.na(lev)], "id"))
+}
+
 # Issue #481: a clearance that depends on time must say so in its parameter
 # names. The old spellings cannot simply be banned by name -- `emax`, `imax`,
 # `gamma`, `hill`, `t50` and `kdes` are all legitimate PD names elsewhere in
@@ -1676,8 +1692,10 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # (step / NONMEM MTIME) form, which is the only one of the three whose early arm
 # keeps the plain `cl` name -- so there is no `cl_*` stem on the left of its
 # switch and the breakpoint is what identifies the structure. `cl_time_slope`
-# is the fractional slope of the linear-in-time form `cl * (1 + slope * t)`.
-.timeVaryingClearanceAcceptPattern <- "cl_time_max|cl_t50|cl_time_hill|cl_time_slope|cl_exp_|tclchange"
+# is the fractional slope of the linear-in-time form `cl * (1 + slope * t)`;
+# `cl_time_fday` is the fraction compounded once per dosing day in
+# `cl * (1 + cl_time_fday)^floor(t / 24)`.
+.timeVaryingClearanceAcceptPattern <- "cl_time_max|cl_t50|cl_time_hill|cl_time_slope|cl_time_fday|cl_exp_|tclchange"
 
 # The `ini({})` block declares parameters and their labels; only `model({})`
 # contains the equations. Scanning the whole function makes label prose such as
@@ -1726,6 +1744,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
         paste(
           "Use cl_time_max / cl_t50 / cl_time_hill for a sigmoidal-in-time",
           "clearance, cl_time_slope for a linear-in-time clearance,",
+          "cl_time_fday for a clearance compounded once per dosing day,",
           "cl_exp_inf / cl_exp_component / cl_exp_kdes for an exponential",
           "decay, or tclchange / cl_late for a piecewise-constant step, so",
           "the structure can be found by name (issue #481)."

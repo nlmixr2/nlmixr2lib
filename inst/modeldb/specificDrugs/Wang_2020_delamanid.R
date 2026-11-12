@@ -2,6 +2,9 @@ Wang_2020_delamanid <- function() {
   description <- "Two-compartment population PK model for oral delamanid in adults with pulmonary multidrug-resistant tuberculosis (Wang 2020): first-order absorption with lag time, morning doses (dosed into depot) and evening doses (dosed into depot2) with separate absorption rate constants, lag times and relative bioavailability, and relative bioavailability that also falls with dose and depends on inpatient versus outpatient setting and enrollment region."
   reference <- "Wang X, Mallikaarjun S, Gibiansky E. Population Pharmacokinetic Analysis of Delamanid in Patients with Pulmonary Multidrug-Resistant Tuberculosis. Antimicrob Agents Chemother. 2020;65(1):e01202-20. doi:10.1128/AAC.01202-20"
   vignette <- "Wang_2020_delamanid"
+  # depot: morning doses; depot2: evening doses.
+  dosing <- c("depot", "depot2")
+
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(

@@ -116,7 +116,8 @@ ss_events <- function(ids, amt, ii, dur, crcl, grid) {
 crcl_grid <- c(5, 20, 50, 77.21, 110, 150, 170)
 chk <- ss_events(seq_along(crcl_grid), amt = 2000, ii = 24, dur = 0.5,
                  crcl = crcl_grid, grid = seq(0, 24, by = 0.05))
-sim_chk <- rxode2::rxSolve(mod_typ, chk, keep = "CRCL", returnType = "data.frame")
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_chk <- rxode2::rxSolve(mod_typ, chk, keep = "CRCL", returnType = "data.frame", maxsteps = 1e6)
 
 par_chk <- sim_chk |>
   dplyr::group_by(id, CRCL) |>
@@ -167,7 +168,7 @@ auc_chk <- lapply(seq_len(nrow(regimens)), function(i) {
   r <- regimens[i, ]
   ev <- ss_events(seq_along(crcl_grid), r$amt, r$ii, r$dur, crcl_grid,
                   seq(0, 24, by = 0.01))
-  rxode2::rxSolve(mod_typ, ev, keep = "CRCL", returnType = "data.frame") |>
+  rxode2::rxSolve(mod_typ, ev, keep = "CRCL", returnType = "data.frame", maxsteps = 1e6) |>
     dplyr::group_by(id, CRCL) |>
     dplyr::summarise(
       cl   = dplyr::first(cl),
@@ -199,7 +200,7 @@ prof <- lapply(c("2 g q8h, 4 h infusion", "2 g q12h, 4 h infusion",
     r <- regimens[regimens$arm == a, ]
     ev <- ss_events(seq_along(crcl_grid), r$amt, r$ii, r$dur, crcl_grid,
                     seq(0, 24, by = 0.05))
-    rxode2::rxSolve(mod_typ, ev, keep = "CRCL", returnType = "data.frame") |>
+    rxode2::rxSolve(mod_typ, ev, keep = "CRCL", returnType = "data.frame", maxsteps = 1e6) |>
       dplyr::mutate(arm = a)
   }) |>
   dplyr::bind_rows()
@@ -460,6 +461,7 @@ int_events <- dplyr::bind_rows(lapply(seq_len(nrow(int_arms)), function(i) {
 }))
 stopifnot(!anyDuplicated(unique(int_events[, c("id", "time", "evid")])))
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 int_sim <- rxode2::rxSolve(mod, int_events, keep = c("arm", "CRCL"),
                            returnType = "data.frame",
                            # The shape check at the end of the vignette asserts
@@ -470,7 +472,7 @@ int_sim <- rxode2::rxSolve(mod, int_events, keep = c("arm", "CRCL"),
                            # and C(tau); with both pairs tightened the
                            # difference is ~2e-9 mg/L.
                            rtol = 1e-10, atol = 1e-12,
-                           ssRtol = 1e-10, ssAtol = 1e-12)
+                           ssRtol = 1e-10, ssAtol = 1e-12, maxsteps = 1e6)
 
 # One pass per MIC rather than a crossing() of the 289,000-row simulation
 # frame with the MIC grid, which would materialise 2.3 million rows.
@@ -597,6 +599,8 @@ state, `AUC(0-tau) = Dose / CL` for every individual in a linear model.
 ```{r pknca}
 tau_by_arm <- int_arms |> dplyr::select(arm, tau = ii, amt)
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(int_sim$Cc))
 nca_conc <- int_sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, arm) |>

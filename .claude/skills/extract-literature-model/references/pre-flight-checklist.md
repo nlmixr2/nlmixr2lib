@@ -12,7 +12,7 @@ Read this once at dispatch, before starting the 6-phase workflow. Every trigger 
 
 ## Source acquisition (Phase 1)
 
-- **Lead PDF missing and OA acquisition failed.** All 5 ladder sources tried, no valid PDF whose title matches the task expectation. Sidecar with the structured attempts log from `scripts/acquire-paper.R` (`acquire-log.json`).
+- **Lead PDF or supplement missing and OA acquisition failed: not a trigger.** Record it in `needs_acquisition.jsonl` and defer (SKILL.md Phase 1 Step 0; `references/oa-acquisition.md`, When to give up).
 - **Paper-identity mismatch.** The on-disk file's title / first-author / journal / year / drug disagrees with the task's `Paper metadata` block. Sidecar with both actual and expected metadata.
 - **Abstract only on disk.** The trimmed `.md` is < ~3 KB or the raw PMC XML / PDF only contains front matter + abstract. Population-PK parameter values are not in an abstract.
 - **Upstream popPK dependency missing.** The current paper's PD model fixes PK parameters from a separate publication that is not on disk. Sidecar with the identifiable upstream paper (queue as dependency) or with the unidentifiable case (operator decision).

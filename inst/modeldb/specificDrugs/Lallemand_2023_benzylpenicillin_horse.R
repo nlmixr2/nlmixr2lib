@@ -11,6 +11,11 @@ Lallemand_2023_benzylpenicillin_horse <- function() {
     sep = " "
   )
   vignette <- "Lallemand_2023_benzylpenicillin_horse"
+  # central: IV sodium benzylpenicillin; depot1: IM sodium; depot2: IM
+  # procaine; depot3 + depot4: Duplocilline (procaine + benzathine);
+  # depot5-depot7: the first, second and third penethamate doses.
+  dosing <- c("central", "depot1", "depot2", "depot3", "depot4", "depot5", "depot6", "depot7")
+
   units <- list(time = "h", dosing = "ug/kg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what

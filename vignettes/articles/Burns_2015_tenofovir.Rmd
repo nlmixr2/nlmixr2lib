@@ -685,15 +685,21 @@ qualification runs.
 # Reproduce the estimation dataset's dosing structure for one subject: an
 # unobserved dose 12 h before an observed in-clinic dose (Methods: the
 # preclinic dose was a mean of 12.9 h, range 1.95-35 h, before the clinic
-# dose).
+# dose). SELFADMIN describes the dose, so it keeps the prior dose's value on
+# every record until the in-clinic dose: rxode2 evaluates f(depot) for a dose
+# moved by alag() with the covariates in force when it arrives (unless
+# `addlKeepsCov = TRUE`), so with the 0.5 h lag a SELFADMIN = 0 observation at
+# 0.25 h would otherwise give the prior dose F = 1.
 adherence_case <- function(selfadmin_f1) {
+  obs_time <- seq(0, 36, by = 0.25)
   dplyr::bind_rows(
     data.frame(id = 1L, time = 0, amt = DOSE_UMOL, evid = 1L,
                cmt = "depot", dvid = NA_integer_, SELFADMIN = selfadmin_f1),
     data.frame(id = 1L, time = 12, amt = DOSE_UMOL, evid = 1L,
                cmt = "depot", dvid = NA_integer_, SELFADMIN = 0),
-    data.frame(id = 1L, time = seq(0, 36, by = 0.25), amt = NA_real_,
-               evid = 0L, cmt = "central", dvid = 1L, SELFADMIN = 0)
+    data.frame(id = 1L, time = obs_time, amt = NA_real_,
+               evid = 0L, cmt = "central", dvid = 1L,
+               SELFADMIN = ifelse(obs_time < 12, selfadmin_f1, 0))
   ) |>
     dplyr::mutate(WT = 73) |>
     dplyr::arrange(time, dplyr::desc(evid))

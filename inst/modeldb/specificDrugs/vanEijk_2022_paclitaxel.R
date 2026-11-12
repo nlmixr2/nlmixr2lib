@@ -15,6 +15,10 @@ vanEijk_2022_paclitaxel <- function() {
     sep = " "
   )
   vignette <- "vanEijk_2022_paclitaxel"
+  # Paclitaxel and ritonavir, morning (depot1, depot1_rtv) and 7 h later
+  # (depot2, depot2_rtv).
+  dosing <- c("depot1", "depot1_rtv", "depot2", "depot2_rtv")
+
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # TSP-1 is a turnover biomarker state of this paper only (thrombospondin-1

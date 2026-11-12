@@ -258,23 +258,53 @@ Supplementary File 3 Figure 3 is the prediction-corrected VPC of the base model:
 dose-adjusted troughs scatter around a median of about 13 ng/mL with a 95%
 band of roughly 6-30 ng/mL, flat over the follow-up. The 1167 observed troughs
 in Supplementary File 1 have median 12.9 ng/mL, 2.5th percentile 3.9 and 97.5th
-percentile 39.8 ng/mL. Each virtual subject below contributes six troughs, one
-per occasion, each after steady-state dosing at 5 mg every 12 h.
+percentile 39.8 ng/mL. The simulation pools 1200 troughs: the covariates of the 200
+virtual subjects on each of six occasions, every one after steady-state dosing at
+5 mg every 12 h. Each subject-occasion is simulated as a virtual subject of its own.
+With six steady-state records per subject in one event table, switched through
+`OCC`, some of the later troughs came back NA, so the troughs that share a set of
+covariates are independent here; the pooled quantiles, which are what the table and
+the assertions use, do not depend on that.
 
 ```{r vpc}
 n_occ <- 6
+# One steady-state record at time 0 and the trough 12 h later, per subject-occasion
+# (id runs over n_sub * n_occ; OCC fixes the occasion's random effect).
 ev_vpc <- cohort |>
   tidyr::crossing(OCC = seq_len(n_occ), evid = c(1, 0)) |>
   mutate(
-    time = (OCC - 1) * 5000 + ifelse(evid == 1, 0, 12),
+    id = (OCC - 1L) * n_sub + id,
+    time = ifelse(evid == 1, 0, 12),
     amt = ifelse(evid == 1, 5, 0), ss = ifelse(evid == 1, 1, 0),
     ii = ifelse(evid == 1, 12, 0), cmt = "central"
   ) |>
   arrange(id, time, desc(evid))
 
+# rxode2 draws the occasion effect (`etaiov_lclint`) per subject and occasion only
+# when some subject has two or more `OCC` levels. When every subject has exactly one,
+# it treats `OCC` as a level above the subject and every subject on that occasion
+# shares one draw. The extra record below (evid = 2: it doses and observes nothing)
+# gives the first subject a second occasion level to select the per-subject draw.
+ev_iov <- ev_vpc[ev_vpc$id == 1L & ev_vpc$evid == 0, ]
+ev_iov$OCC <- n_occ + 1L
+ev_iov$evid <- 2L
+ev_iov$time <- 13
+ev_vpc <- bind_rows(ev_vpc, ev_iov) |> arrange(id, time, desc(evid))
+
 sim_vpc <- rxode2::rxSolve(mod_base, ev_vpc, maxsteps = 1e6, returnType = "data.frame")
 
-troughs <- sim_vpc |> filter(!is.na(sim))
+# Every subject-occasion must have solved: an NA trough would otherwise leave the
+# quantiles below without a trace.
+troughs <- sim_vpc |> filter(time == 12)
+stopifnot(nrow(troughs) == n_sub * n_occ, !anyNA(troughs$sim))
+# One occasion effect per subject-occasion, not one per occasion: if rxode2's
+# detection of the nesting changes, the render fails instead of sharing silently.
+iov_per_occasion <- troughs |>
+  group_by(OCC) |>
+  summarise(n_distinct_iov = n_distinct(round(etaiov_lclint, 8)), .groups = "drop")
+stopifnot(nrow(iov_per_occasion) == n_occ, all(iov_per_occasion$n_distinct_iov == n_sub))
+# Follow-up day of the occasion, for the plot (occasions are 5000 h apart).
+troughs$day <- ((troughs$OCC - 1) * 5000 + 12) / 24
 vpc_tab <- tibble(
   Statistic = c("2.5th percentile", "Median", "97.5th percentile"),
   `Observed, Supplementary File 1 (ng/mL)` = c(3.9, 12.86, 39.77),
@@ -282,7 +312,7 @@ vpc_tab <- tibble(
 )
 knitr::kable(vpc_tab, digits = 1, caption = "Dose-normalised troughs: simulated vs observed.")
 
-ggplot(troughs, aes(time / 24, sim)) +
+ggplot(troughs, aes(day, sim)) +
   geom_point(alpha = 0.15, colour = "darkgreen") +
   geom_hline(yintercept = quantile(troughs$sim, c(0.025, 0.5, 0.975)), linetype = c(2, 1, 2)) +
   scale_y_log10() +
@@ -429,8 +459,12 @@ stopifnot(
   input and should not be read as predictions of the real oral peak; the model
   is built for troughs.
 - **Inter-occasion variability** uses the native nested random effect
-  `etaiov_lclint ~ ... | OCC`, with one occasion per trough as in the paper.
-  Event tables must carry an `OCC` column with at least two distinct values.
+  `etaiov_lclint ~ ... | OCC`, with one occasion per trough as in the paper. Event
+  tables must carry an `OCC` column, and rxode2 draws the occasion effect per
+  subject and occasion only when some subject has at least two occasions; when every
+  subject has exactly one, all subjects on the same occasion share one draw. The VPC
+  event table therefore adds one record that gives one subject a second occasion,
+  and asserts the number of distinct occasion effects.
   The library's convention checker reports `OCC` as a covariate not referenced
   in `model()`, because it is consumed by the `ini()` nesting syntax.
 - **Virtual cohort.** Height and weight are not tabulated in the article; the
