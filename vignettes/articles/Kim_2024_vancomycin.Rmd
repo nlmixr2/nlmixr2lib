@@ -167,6 +167,8 @@ simulated and published NCA see the same design. `AUClast` is computed over
 0-8 h; `Cmax`, `AUCinf` and the terminal half-life over 0-infinity.
 
 ```{r pknca}
+# A subject whose steady-state search fails comes back NA; stop rather than drop it.
+stopifnot(!any(tapply(is.na(sim$Cc), sim$id, all)))
 nca_conc <- sim |>
   filter(time %in% c(0, 2, 3, 4, 6, 8), !is.na(Cc)) |>
   select(id, time, Cc, treatment)
@@ -401,7 +403,8 @@ trough_ev <- bind_rows(lapply(c(6, 8, 12), function(tau) {
 })) |>
   arrange(id, time, desc(evid))
 
-trough_sim <- rxode2::rxSolve(mod, trough_ev, keep = c("age_group", "tau")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+trough_sim <- rxode2::rxSolve(mod, trough_ev, keep = c("age_group", "tau"), maxsteps = 1e6) |>
   as.data.frame() |>
   filter(time == tau) |>
   mutate(auc24_10 = 10 * WT * (24 / tau) / cl, trough_10 = Cc)
