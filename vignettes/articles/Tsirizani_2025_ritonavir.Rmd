@@ -478,7 +478,7 @@ stopifnot(
 
 `r sum(sup_check$long_lag)` of the `r nrow(sup_check)` twice-daily children
 have an evening lag longer than 12 h. Every other child matches the
-superposition to within `r signif(max(sup_check$max_err[!sup_check$long_lag]), 1)`.
+superposition to within `r sprintf("%.0e", max(sup_check$max_err[!sup_check$long_lag]))` relative.
 
 # Replicating the published figures
 
