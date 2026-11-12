@@ -77,6 +77,10 @@ test_that("modeldb is correctly generated", {
   res
 }
 
+.noCallr <- function() {
+  FALSE
+}
+
 .conventionErrorState <- function() {
   env <- nlmixr2lib:::.conventionErrorEnv
   list(byModel = env$byModel, failures = env$failures)
@@ -280,6 +284,71 @@ test_that("a worker that dies fails every file of its chunk, by name", {
   expect_identical(vapply(res, `[[`, "", "hash"), c("h1", "h2"))
   expect_true(all(startsWith(vapply(res, `[[`, "", "failure"), "worker process failed: ")))
   expect_false(file.exists(w$log))
+})
+
+test_that("workers load the code this session runs, or the build stays in this session", {
+  ns <- asNamespace("nlmixr2lib")
+  # Code sourced into a plain environment, as roxygen2::load_source() does: no
+  # other process can load it.
+  sourced <- nlmixr2lib:::.modeldbWorkerLoader(codeEnv = new.env(), haveCallr = TRUE)
+  expect_null(sourced$type)
+  expect_match(sourced$serialReason, "not a loaded nlmixr2lib namespace", fixed = TRUE)
+  # A pkgload development namespace: workers run load_all() on its tree.
+  expect_identical(
+    nlmixr2lib:::.modeldbWorkerLoader(codeEnv = ns, isDev = TRUE, path = "/src/nlmixr2lib", haveCallr = TRUE),
+    list(type = "source", path = "/src/nlmixr2lib")
+  )
+  # An installed namespace: workers load the copy this session loaded, only
+  # while it is still installed.
+  inst <- file.path(withr::local_tempdir("lib"), "nlmixr2lib")
+  dir.create(file.path(inst, "Meta"), recursive = TRUE)
+  file.create(file.path(inst, "Meta", "package.rds"))
+  expect_identical(
+    nlmixr2lib:::.modeldbWorkerLoader(codeEnv = ns, isDev = FALSE, path = inst, haveCallr = TRUE),
+    list(type = "installed", path = inst)
+  )
+  unlink(file.path(inst, "Meta"), recursive = TRUE)
+  gone <- nlmixr2lib:::.modeldbWorkerLoader(codeEnv = ns, isDev = FALSE, path = inst, haveCallr = TRUE)
+  expect_null(gone$type)
+  expect_identical(gone$serialReason, paste0("the installed nlmixr2lib this session loaded is no longer at ", inst))
+  expect_identical(
+    nlmixr2lib:::.modeldbWorkerLoader(codeEnv = ns, haveCallr = FALSE),
+    list(serialReason = "the 'callr' package is not installed")
+  )
+})
+
+test_that("under a development load, workers re-run load_all() on the same tree", {
+  skip_if_not_installed("callr")
+  skip_if_not(nlmixr2lib:::.modeldbIsDevNamespace(), "nlmixr2lib is installed here, not a pkgload load")
+  loader <- nlmixr2lib:::.modeldbWorkerLoader()
+  expect_identical(loader, list(type = "source", path = getNamespaceInfo("nlmixr2lib", "path")))
+  expect_true(file.exists(file.path(loader$path, "DESCRIPTION")))
+})
+
+test_that("under an installed package, workers load the copy this session loaded", {
+  # The branch R CMD check takes; the parallel test above then runs its
+  # workers from the installed copy.
+  skip_if_not_installed("callr")
+  skip_if(nlmixr2lib:::.modeldbIsDevNamespace(), "nlmixr2lib is a pkgload load here, not installed")
+  loader <- nlmixr2lib:::.modeldbWorkerLoader()
+  expect_identical(loader, list(type = "installed", path = getNamespaceInfo("nlmixr2lib", "path")))
+  expect_true(file.exists(file.path(loader$path, "Meta", "package.rds")))
+})
+
+test_that("a build that cannot start workers parses in this session and says why", {
+  skip_on_cran()
+  dir <- withr::local_tempdir("modeldb-fixture")
+  .writeModelFixtures(dir, .buildFixtureFiles()[c("PK_1cmt.R", "PK_2cmt.R")])
+  serial <- suppressMessages(nlmixr2lib:::.addDirToModelDbCached(dir, list()))
+  testthat::local_mocked_bindings(.modeldbHaveCallr = .noCallr, .package = "nlmixr2lib")
+  suppressMessages(
+    expect_message(
+      fallback <- nlmixr2lib:::.addDirToModelDbCached(dir, list(), workers = 2L, chunkSize = 1L),
+      "modeldb: parsing 2 model(s) in this session: the 'callr' package is not installed",
+      fixed = TRUE
+    )
+  )
+  expect_identical(fallback, serial)
 })
 
 test_that("misses are split into bounded chunks, and a few stay in this session", {

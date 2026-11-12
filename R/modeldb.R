@@ -100,15 +100,25 @@ utils::globalVariables(c("modeldb"))
 #' the file's md5 hash. The cache is written whenever the function exits,
 #' including when it stops on a convention error, a model that cannot be
 #' loaded, or an interrupt: every model that loaded cleanly is kept, and the
-#' models that failed are left out so the next build re-checks only them.
+#' models that failed are left out so the next build re-checks only them. A
+#' parallel build records its models a chunk at a time, so an interrupt loses
+#' the chunks still being parsed.
 #'
 #' @param workers Number of R processes that parse the models missing from the
 #'   cache. `1` parses them in this R session. With more than one, the misses
 #'   are split into chunks of at most 200 models (`.modeldbChunkMax`), each
 #'   parsed by a fresh `callr` process, so a process never accumulates more
 #'   than one chunk's worth of rxode2 state. 20 or fewer misses always run in
-#'   this session. The rows, their order and the cache are the same for every
-#'   worker count. The default is the option
+#'   this session. The rows, their order, the cache and the errors reported are
+#'   the same for every worker count; the log comes out in the order the chunks
+#'   finish. Workers run the code this session runs: under a pkgload
+#'   development load (`devtools::document()`, `load_all()`) each worker re-runs
+#'   `pkgload::load_all()` on the source tree as it starts, so a file edited
+#'   during a build reaches the workers started after the edit; under an
+#'   installed package they load it from the same library. When neither holds
+#'   (the code was sourced, as `roxygenise(load_code = roxygen2::load_source)`
+#'   does) or `callr` is not installed, the misses are parsed in this session
+#'   and a message says why. The default is the option
 #'   `nlmixr2lib.buildModelDb.workers` when set, otherwise
 #'   `min(8, max(1, rxode2::getRxThreads() %/% 2))`: a quarter of the cores on
 #'   rxode2's own default (half the cores), and smaller under `R CMD check`,
@@ -400,12 +410,14 @@ addFileToModelDb <- function(dir, file, modeldb) {
 # cached row when the file's md5 matches the cached hash; otherwise re-parses
 # via .modeldbFileRow(), in this session or in `workers` worker processes.
 #
-# `acc$entries` is the cache as it stands, updated after every parsed model,
-# so the caller can save it however the walk ends. It starts from the cached
-# entries of the files still on disk; a model that loads cleanly replaces its
-# entry and one that errors (convention or R error) loses it. Errors are
-# recorded with .conventionErrorsAdd() / .modeldbFailureAdd() in file order,
-# the same for every worker count, and raised by the caller.
+# `acc$entries` is the cache as it stands, so the caller can save it however
+# the walk ends. It is updated after each model in this session and after each
+# finished chunk in a parallel walk (an interrupt loses the chunks still
+# running). It starts from the cached entries of the files still on disk; a
+# model that loads cleanly replaces its entry and one that errors (convention
+# or R error) loses it. Errors are recorded with .conventionErrorsAdd() /
+# .modeldbFailureAdd() in file order, the same for every worker count, and
+# raised by the caller.
 #
 # `chunkSize` overrides the chunking computed by .modeldbChunkPlan(); tests
 # use it to put a handful of fixture models through the worker path.
@@ -519,9 +531,10 @@ addFileToModelDb <- function(dir, file, modeldb) {
   out
 }
 
-# Largest number of models one worker process parses. rxode2 keeps state per
-# model parsed in a session (one process has died of R's DLL limit near model
-# 616), so a worker parses one chunk and exits.
+# Largest number of models one worker process parses; a worker parses one
+# chunk and exits. A guard, not a measured need: the parse-and-check path
+# shows no per-model DLL leak (a session that parsed all 4,662 models ended
+# with 38 DLLs), but this bounds whatever rxode2 state does accumulate.
 .modeldbChunkMax <- 200L
 # Smallest chunk worth a process: starting a worker and loading the package
 # costs about as much as parsing 20 models.
@@ -540,22 +553,26 @@ addFileToModelDb <- function(dir, file, modeldb) {
 
 .modeldbRunMisses <- function(dir, files, hashes, workers, acc, chunkSize = NULL) {
   plan <- .modeldbChunkPlan(length(files), workers, chunkSize)
+  if (plan$workers > 1L) {
+    loader <- .modeldbWorkerLoader()
+    if (!is.null(loader$serialReason)) {
+      message(sprintf("modeldb: parsing %d model(s) in this session: %s", length(files), loader$serialReason))
+      plan$workers <- 1L
+    }
+  }
   if (plan$workers <= 1L) {
     return(.modeldbProcessFiles(dir, files, hashes, acc))
   }
-  .modeldbProcessParallel(dir, files, hashes, plan, acc)
+  .modeldbProcessParallel(dir, files, hashes, plan, acc, loader)
 }
 
 # Parse the misses chunk by chunk in up to `plan$workers` concurrent callr
-# processes. Each process loads the package the same way this session did and
-# is seeded with this session's parsed registers. Results come back in file
-# order whatever order the chunks finish in.
-.modeldbProcessParallel <- function(dir, files, hashes, plan, acc) {
-  if (!requireNamespace("callr", quietly = TRUE)) {
-    stop("buildModelDb(workers > 1) needs the 'callr' package", call. = FALSE) # nocov
-  }
+# processes. Each process loads the package as `loader` says and is seeded
+# with this session's parsed registers. Results come back in file order
+# whatever order the chunks finish in. The cache in `acc` is updated as each
+# chunk finishes, so an interrupt loses the chunks still running.
+.modeldbProcessParallel <- function(dir, files, hashes, plan, acc, loader) {
   chunks <- split(seq_along(files), plan$chunk)
-  loader <- .modeldbWorkerLoader()
   registers <- .modeldbRegisterSnapshot()
   message(sprintf(
     "modeldb: parsing %d model(s) in %d chunk(s) on %d worker process(es)",
@@ -654,13 +671,54 @@ addFileToModelDb <- function(dir, file, modeldb) {
   )
 }
 
-# How a worker loads nlmixr2lib: from the source tree when this session runs a
-# pkgload development copy (devtools::document(), load_all()), otherwise the
-# installed copy this session loaded. Either way it runs the same code.
-.modeldbWorkerLoader <- function() {
-  path <- getNamespaceInfo("nlmixr2lib", "path")
-  dev <- requireNamespace("pkgload", quietly = TRUE) && pkgload::is_dev_package("nlmixr2lib")
-  list(type = if (dev) "source" else "installed", path = path)
+# How a worker loads nlmixr2lib so that it runs the code this session runs.
+# `codeEnv` is where the build's own functions live:
+# - "source": a pkgload development namespace (devtools::document(),
+#   load_all()). Each worker re-runs pkgload::load_all() on that tree as it
+#   starts, so a file edited during a build reaches the workers started after
+#   the edit.
+# - "installed": the nlmixr2lib namespace loaded from an installed library;
+#   workers load the package from that library.
+# Anything else -- code sourced into a plain environment, as
+# roxygenise(load_code = roxygen2::load_source) does, an installed copy no
+# longer on disk, or no callr -- gives no way to run the same code in another
+# process, and `serialReason` says why the misses stay in this session.
+.modeldbWorkerLoader <- function(
+  codeEnv = environment(.modeldbWorkerLoader),
+  isDev = NULL,
+  path = NULL,
+  haveCallr = .modeldbHaveCallr()
+) {
+  if (!haveCallr) {
+    return(list(serialReason = "the 'callr' package is not installed"))
+  }
+  if (!isNamespace(codeEnv) || !identical(unname(getNamespaceName(codeEnv)), "nlmixr2lib")) {
+    return(list(
+      serialReason = paste(
+        "the build code is not a loaded nlmixr2lib namespace (it was sourced,",
+        "e.g. by roxygenise(load_code = roxygen2::load_source)), so no worker",
+        "process could run the same code"
+      )
+    ))
+  }
+  if (is.null(isDev)) {
+    isDev <- .modeldbIsDevNamespace()
+  }
+  if (is.null(path)) {
+    path <- getNamespaceInfo(codeEnv, "path")
+  }
+  if (!isDev && !file.exists(file.path(path, "Meta", "package.rds"))) {
+    return(list(serialReason = paste0("the installed nlmixr2lib this session loaded is no longer at ", path)))
+  }
+  list(type = if (isDev) "source" else "installed", path = path)
+}
+
+.modeldbIsDevNamespace <- function() {
+  requireNamespace("pkgload", quietly = TRUE) && pkgload::is_dev_package("nlmixr2lib")
+}
+
+.modeldbHaveCallr <- function() {
+  requireNamespace("callr", quietly = TRUE)
 }
 
 # Runs in a callr process, whose copy of this function has the global
