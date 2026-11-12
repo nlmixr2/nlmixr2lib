@@ -978,6 +978,8 @@ navbar:
         href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
       - text: "Bevacizumab mouse (Wu 2012)"
         href: articles/Wu_2012_bevacizumab_mouse.html
+      - text: "Bevacizumab mpbpk (Tsiros 2026)"
+        href: articles/Tsiros_2026_bevacizumab_mpbpk.html
       - text: "Bevacizumab nsclc pbpk (Salgado 2022)"
         href: articles/Salgado_2022_antibody_tumor_lymph_node_pbpk.html
       - text: "Bevacizumab nsclc tgi (Schneider 2025)"
@@ -11935,6 +11937,7 @@ articles:
   - articles/Tseng_2026_vancomycin
   - articles/Tsirizani_2024_darunavir
   - articles/Tsirizani_2025_ritonavir
+  - articles/Tsiros_2026_bevacizumab_mpbpk
   - articles/Tsuchitani_2024_telmisartan_pbpk
   - articles/Tsuchitani_2026_apixaban_pbpk
   - articles/Tsuchiwata_2026_tofacitinib
