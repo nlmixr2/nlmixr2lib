@@ -1,0 +1,476 @@
+---
+title: "Abemaciclib PK - tumor size - PFS (Chigutsa 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Abemaciclib PK - tumor size - PFS (Chigutsa 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+mod_fun <- readModelDb("Chigutsa_2026_abemaciclib")
+ui <- rxode2::rxode(mod_fun)
+cat("* Citation: ", ui$reference, "\n", sep = "")
+cat("* Article: <https://doi.org/10.1002/cpt.70212>\n")
+cat("* PK-layer article: <https://doi.org/10.1002/psp4.12544>\n")
+```
+
+* Description: `r ui$description`
+
+Chigutsa 2026 fitted the joint model sequentially in NONMEM 7.3: individual
+post hoc PK parameters from the published abemaciclib population PK model
+(Chigutsa 2020, CPT Pharmacometrics Syst Pharmacol 9:523-533) drove the
+tumor-size model, and individual post hoc tumor parameters then drove the PFS
+model. The PFS control stream in Data S1 of the 2026 paper writes out the PK
+equations, which are the Chigutsa 2020 semi-mechanistic model with the
+metabolite (M2, M20) equations switched off. The typical values and variances
+of the PK layer therefore come from Chigutsa 2020; this file uses its Table S2,
+the re-estimation that includes MONARCH 2 (the 2026 analysis says its PK data
+were already in the published PK model). Both articles are open access. No
+erratum was found for either article in Europe PMC (checked 2026-11-12).
+
+Model time is in **weeks**, as in the 2026 control stream; the per-hour
+Chigutsa 2020 PK constants are multiplied by 168 inside `model()`. Doses are
+in mg and converted to umol with the molecular weight (506.6 g/mol); the
+plasma concentration that drives both drug effects is in umol/L, and the
+observed `Cc` is reported in ng/mL.
+
+## Dosing the dual absorption
+
+Abemaciclib absorption runs in parallel through two routes, so each oral dose
+is entered **twice with the same `amt`**: once into `depot` (the transit route
+with gut metabolism and saturable uptake) and once into `liver` with
+`rate = -2` (the lagged zero-order route). `f(depot)` and `f(liver)` split the
+absorbed fraction between them.
+
+# Population
+
+The analysis used 663 women with HR+/HER2- advanced breast cancer that had
+progressed on endocrine therapy, from the MONARCH 2 trial (NCT02107703): 440
+randomized to abemaciclib + fulvestrant and 223 to placebo + fulvestrant. Of
+these, 477 had measurable disease and tumor-size data, and 186 had
+non-measurable bone-only disease and contributed only to the PFS model. The
+abemaciclib starting dose was 200 mg every 12 h before a protocol amendment and
+150 mg every 12 h after it, with 50 mg dose reductions; the average administered
+doses were 160 and 136 mg. The 2026 paper does not tabulate age, weight or
+race for this analysis set.
+
+```{r population}
+str(mod_fun()$population)
+```
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Fa (logit), transit fraction (logit) | 0.92, 0.493 | Chigutsa 2020 Table S2 (THETA1, THETA12) |
+| ka,max, Km of saturable absorption | 94.1 umol/h, 53.6 umol | Table S2 (THETA2, THETA18) |
+| MTT (four transits, ktr = 5/MTT) | 1.54 h | Table S2 (THETA3); control stream `KTR=(NN+1)/MTT` |
+| Vc, Q, Vp (70 kg; exponents 1, 0.75, 1) | 549 L, 4.37 L/h, 174 L | Table S2 (THETA4-6); control stream |
+| Zero-order duration, Box-Cox shape | 2.84 h, 0.292 | Table S2 (THETA7, THETA16) |
+| Lag time | 1.71 h | Table S2 (THETA9) |
+| Gut formation of M2, M20 | 0.347, 0.259 1/h | Table S2 (THETA8, THETA15) |
+| Hepatic CLint forming M2, M20 (70 kg, exponent 0.75) | 285, 819 L/h | Table S2 (THETA10, THETA11) |
+| Diarrhea on logit(Fa) | -1.28 | Table S2 (THETA17) |
+| C2 / C3 capsule on lag; C3 on ka,max | 0.822 / 1.06; -0.16 | Table S2 (THETA19-21) and footnotes e, f |
+| fu, blood:plasma ratio, QH, liver volume | 0.027, 0.84, 1.35 L/min, Urata 1995 | Chigutsa 2020 and 2026 control streams |
+| PK IIV (ka,max, D, MTT, Vc, CLint) | 61.0, 390.9, 76.9, 70.3, 44.5 %CV; r(D, MTT) 0.335 | Table S2 |
+| Fixed PK IIV | OMEGA 0.005 | Table S2 footnote b; control stream |
+| PK residual error (log scale) | 17.0% | Table S2 |
+| Baseline tumor size | 36.7 mm | Chigutsa 2026 Table 1 |
+| Damaged-cell transit rate | 0.934 1/week | Table 1 |
+| Zero-order growth rate | 0.00715 mm/week | Table 1 |
+| Fulvestrant damage rate | 0.00647 1/week | Table 1 |
+| Abemaciclib effect per umol/L | 0.0399 1/week | Table 1; Figure 2 |
+| Waning half-life, control / abemaciclib arm | 2.51 / 8.44 weeks | Table 1 |
+| Delay of onset of waning | 7.11 weeks | Table 1 |
+| Tumor IIV and correlations | 79.0, 15.1 (fixed), 11400, 268, 293, 19.7, 203, 473 %CV | Table 1 and footnotes a, b |
+| Tumor residual error | 1.39 mm + 9.04% | Table 1 |
+| Tumor equations | Healthy, Damage1-3, sum | Methods equations; Figure S1; Results equation |
+| Baseline hazard, measurable / non-measurable | 0.0157 / 0.0103 1/week | Table 2 |
+| CFB tumor size on hazard; mixture increase; mixture fraction | 0.0156 1/mm; 13.6; 0.479 | Table 2 |
+| Non-tumor drug effect; its waning half-life | 1.42 L/umol; 12.2 weeks | Table 2 |
+| Hepatic metastases, ECOG 1 on baseline hazard | 1.23, 0.479 | Table 2 |
+| Hazard equation | `HBASE * exp(CFB * THAZ - SLOPE * CONC * exp(-DECAY * t))` | Results equation; Data S1 `$DES` |
+
+Table 1 reports between-subject variability as %CV = 100 sqrt(exp(omega^2) - 1)
+(footnote a), so each variance is omega^2 = log(1 + CV^2). The two tumor
+correlation sets listed in Table 1 cover {baseline, growth rate} and
+{fulvestrant effect, abemaciclib effect, both waning half-lives, delay}; no
+correlations are reported between the two sets or with the transit rate, so
+they are entered as two blocks and an independent fixed variance.
+
+# Closed-form checks of the reported effect sizes
+
+```{r closed-form}
+ini_df <- ui$iniDf
+th <- setNames(ini_df$est, ini_df$name)
+mw <- 0.5066 # mg/umol
+
+# Figure 2: linear concentration-effect line, intercept = fulvestrant.
+shrink <- function(c_ngml) exp(th[["lkkill"]]) + exp(th[["lkkill_slope"]]) * c_ngml / 1000 / mw
+fig2 <- data.frame(conc = c(0, 50, 200, 600)) |> mutate(shrinkage = shrink(conc))
+knitr::kable(fig2, digits = 4, caption = "Typical tumor damage rate (1/week) vs abemaciclib concentration (ng/mL).")
+
+# Hazard statements in the Results text.
+thaz_low <- th[["e_cfb_haz"]]
+thaz_high <- th[["e_cfb_haz"]] * (1 + th[["e_mix_high_ts_hazard_cfb"]])
+checks <- data.frame(
+  statement = c(
+    "Intercept of Figure 2 (fulvestrant alone, 1/week)",
+    "Damage rate ratio, 200 vs 50 ng/mL ('only twice')",
+    "Tumor change doubling the hazard, high-impact class (mm; text: 3)",
+    "Tumor change doubling the hazard, other class (mm; text: 44)",
+    "Non-measurable vs measurable baseline hazard (text: 34% lower)",
+    "Hepatic metastases hazard ratio (text: doubled)",
+    "ECOG 1 vs 0 hazard ratio (text: 48% higher)"
+  ),
+  value = c(
+    shrink(0), shrink(200) / shrink(50), log(2) / thaz_high, log(2) / thaz_low,
+    1 - exp(th[["lhaz_nonmeasurable"]]) / exp(th[["lhaz"]]),
+    1 + th[["e_lmet_haz"]], 1 + th[["e_ecog_ge1_haz"]]
+  )
+)
+knitr::kable(checks, digits = 3)
+stopifnot(
+  abs(shrink(0) - 0.00647) < 1e-6,
+  # Figure 2 line reaches about 0.054/week at 600 ng/mL only if the driver is in umol/L.
+  abs(shrink(600) - 0.0537) < 0.001,
+  abs(shrink(200) / shrink(50) - 2) < 0.2,
+  abs(log(2) / thaz_high - 3) < 0.1,
+  abs(log(2) / thaz_low - 44) < 1,
+  abs(checks$value[5] - 0.34) < 0.01
+)
+```
+
+The Figure 2 check pins the concentration units: the plotted line rises from
+0.00647 to about 0.054 per week at 600 ng/mL, which matches 0.0399 per umol/L
+(600 ng/mL = 1.18 umol/L) and would be about 500-fold steeper if the
+coefficient were per ng/mL.
+
+## Typical waning of the tumor drug effect (Figure S3)
+
+```{r waning}
+wane <- expand.grid(time = seq(0, 52, by = 0.5), arm = c("Placebo + fulvestrant", "Abemaciclib + fulvestrant")) |>
+  mutate(
+    thalf = ifelse(arm == "Placebo + fulvestrant", exp(th[["lthalf_res"]]), exp(th[["lthalf_res_abemaciclib"]])),
+    frac = exp(-log(2) / thalf * pmax(time - exp(th[["ltdelay_res"]]), 0))
+  )
+ggplot(wane, aes(time, frac, colour = arm)) +
+  geom_line() +
+  labs(x = "Time on treatment (weeks)", y = "Fraction of initial drug effect", colour = NULL) +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+# Typical-value pharmacokinetics
+
+```{r pk-events}
+mod <- rxode2::rxode2(mod_fun)
+mod_typ <- rxode2::zeroRe(mod)
+
+base_cov <- data.frame(
+  WT = 70, HT = 164, AE_DIARRHEA = 0, FORM_ABEMACICLIB_C2 = 0,
+  FORM_ABEMACICLIB_C3 = 1, TRT_ABEMACICLIB = 1, RECIST_NONMEASURABLE = 0,
+  MIX_HIGH_TS_HAZARD = 0, LMET = 0, ECOG_GE1 = 0
+)
+
+# Each dose goes into depot and (rate = -2) into liver with the same amt.
+dose_rows <- function(ids, amt, times) {
+  d <- expand.grid(id = ids, time = times)
+  d$amt <- amt
+  d$evid <- 1L
+  d$rate <- 0
+  d$dvid <- NA_integer_
+  dep <- d
+  dep$cmt <- "depot"
+  liv <- d
+  liv$cmt <- "liver"
+  liv$rate <- -2
+  rbind(dep, liv)
+}
+# Two declared endpoints (Cc, tumor_size): observe on the ODE state with dvid = 1.
+obs_rows <- function(ids, times) {
+  d <- expand.grid(id = ids, time = times)
+  d$amt <- 0
+  d$evid <- 0L
+  d$rate <- 0
+  d$cmt <- "central"
+  d$dvid <- 1L
+  d
+}
+sd_hours <- c(0, 0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 16, 24, 36, 48, 72, 96, 120, 168, 240, 336, 480, 720)
+```
+
+```{r pk-typical}
+ev_typ <- rbind(
+  dose_rows(1, 150, 0), dose_rows(2, 200, 0),
+  obs_rows(1:2, sd_hours / 168)
+) |>
+  cbind(base_cov[rep(1, 1), ]) |>
+  arrange(id, time, desc(evid))
+sim_typ <- rxode2::rxSolve(mod_typ, ev_typ, returnType = "data.frame") |>
+  mutate(dose = ifelse(id == 1, "150 mg", "200 mg"), time_h = time * 168)
+ggplot(filter(sim_typ, time_h <= 96), aes(time_h, Cc, colour = dose)) +
+  geom_line() +
+  labs(x = "Time after a single dose (h)", y = "Abemaciclib (ng/mL)", colour = NULL) +
+  theme_bw()
+```
+
+# Simulated single-dose NCA vs Chigutsa 2020 Table 3
+
+Chigutsa 2020 Table 3 gives geometric means of model-derived single-dose
+exposures in MONARCH 2 (study JPBL) from each patient's post hoc parameters.
+The vignette simulates 200 virtual patients per starting dose with the full
+PK between-subject variability and compares the medians.
+
+```{r pk-cohort}
+rxode2::rxSetSeed(20261112)
+set.seed(20261112)
+n_pk <- 200
+pk_cov <- data.frame(
+  id = seq_len(2 * n_pk),
+  WT = exp(rnorm(2 * n_pk, log(68), 0.2)),
+  HT = rnorm(2 * n_pk, 162, 7)
+)
+pk_dose <- rep(c(150, 200), each = n_pk)
+ev_pk <- rbind(
+  dose_rows(seq_len(n_pk), 150, 0),
+  dose_rows(n_pk + seq_len(n_pk), 200, 0),
+  obs_rows(pk_cov$id, sd_hours / 168)
+) |>
+  left_join(pk_cov, by = "id") |>
+  cbind(base_cov[, setdiff(names(base_cov), c("WT", "HT"))]) |>
+  arrange(id, time, desc(evid))
+sim_pk <- rxode2::rxSolve(mod, ev_pk, returnType = "data.frame") |>
+  mutate(treatment = paste(pk_dose[id], "mg"), time_h = time * 168)
+
+conc_df <- sim_pk |>
+  filter(!is.na(Cc)) |>
+  select(id, treatment, time_h, Cc)
+dose_df <- data.frame(id = pk_cov$id, treatment = paste(pk_dose, "mg"), time_h = 0, amt = pk_dose)
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time_h | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time_h | treatment + id)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+published_pk <- data.frame(
+  treatment = c("150 mg", "200 mg"),
+  cmax = c(123, 141),
+  aucinf.obs = c(2960, 3580)
+)
+pk_cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published_pk,
+  by = "treatment",
+  units = c(cmax = "ng/mL", aucinf.obs = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(pk_cmp, caption = "Single-dose exposure, simulated median vs Chigutsa 2020 Table 3 (JPBL geometric means). * differs by >20%.")
+```
+
+```{r pk-gate}
+pk_med <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("cmax", "aucinf.obs")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(sim = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  left_join(
+    pivot_longer(published_pk, -treatment, names_to = "PPTESTCD", values_to = "ref"),
+    by = c("treatment", "PPTESTCD")
+  )
+# A unit, molecular-weight or route-split error moves these by far more than 25%.
+stopifnot(all(abs(pk_med$sim / pk_med$ref - 1) < 0.25))
+```
+
+# Virtual MONARCH 2 cohort: tumor size and PFS
+
+The 2026 paper does not report the baseline prevalence of hepatic metastases or
+ECOG performance status 1 in its analysis set, nor the weight and height
+distribution; the cohort below assumes 30% hepatic metastases, 40% ECOG 1,
+weight log-normal around 68 kg and height 162 +/- 7 cm. The non-measurable
+fraction (186/663) and the mixture fraction (0.479) are from the paper. Doses
+are given every 12 h with no reductions or interruptions, as in the paper's
+Figure 5 simulations, using the C3 capsule (the MONARCH 2 formulation).
+
+PFS event times are drawn from each subject's simulated survival curve
+(event at the first weekly grid time where `surv` falls below a uniform
+draw), with administrative censoring at 130 weeks.
+
+```{r cohort-sim}
+horizon <- 130
+ii <- 0.5 / 7
+n_dose <- floor(horizon / ii)
+arms <- data.frame(
+  arm = c("Placebo", "100 mg", "150 mg", "200 mg"),
+  dose = c(0, 100, 150, 200),
+  n = c(200, 100, 200, 100)
+)
+
+simulate_arm <- function(arm, dose, n, seed) {
+  set.seed(seed)
+  cov <- data.frame(
+    id = seq_len(n),
+    WT = exp(rnorm(n, log(68), 0.2)),
+    HT = rnorm(n, 162, 7),
+    AE_DIARRHEA = 0,
+    FORM_ABEMACICLIB_C2 = 0,
+    FORM_ABEMACICLIB_C3 = 1,
+    TRT_ABEMACICLIB = as.integer(dose > 0),
+    RECIST_NONMEASURABLE = rbinom(n, 1, 186 / 663),
+    MIX_HIGH_TS_HAZARD = rbinom(n, 1, 0.479),
+    LMET = rbinom(n, 1, 0.3),
+    ECOG_GE1 = rbinom(n, 1, 0.4)
+  )
+  ev <- obs_rows(cov$id, seq(0, horizon, by = 1))
+  if (dose > 0) {
+    dd <- dose_rows(cov$id, dose, 0)
+    dd$ii <- ii
+    dd$addl <- n_dose - 1
+    ev$ii <- 0
+    ev$addl <- 0
+    ev <- rbind(dd, ev)
+  }
+  ev <- left_join(ev, cov, by = "id") |> arrange(id, time, desc(evid))
+  rxode2::rxSetSeed(seed)
+  sim <- rxode2::rxSolve(mod, ev, returnType = "data.frame")
+  u <- runif(n)
+  ev_time <- vapply(seq_len(n), function(i) {
+    si <- sim[sim$id == i, ]
+    k <- which(si$surv < u[i])[1]
+    if (is.na(k)) Inf else si$time[k]
+  }, numeric(1))
+  list(
+    sim = mutate(sim, arm = arm, RECIST_NONMEASURABLE = cov$RECIST_NONMEASURABLE[id]),
+    pfs = data.frame(arm = arm, dose = dose, id = cov$id, pfs_week = ev_time)
+  )
+}
+res <- Map(simulate_arm, arms$arm, arms$dose, arms$n, seed = 100 + seq_len(nrow(arms)))
+pfs <- bind_rows(lapply(res, `[[`, "pfs"))
+```
+
+## Tumor size over time (cf. Figure 3)
+
+The paper's Figure 3 is a prediction-corrected VPC with and without simulated
+dropout at progression. The plot below shows the simulated median and 10th-90th
+percentiles of tumor size in measurable-disease patients without dropout, the
+analogue of Figure 3's upper panels.
+
+```{r tumor-vpc}
+ts_sim <- bind_rows(lapply(res[c("Placebo", "150 mg")], `[[`, "sim")) |>
+  filter(RECIST_NONMEASURABLE == 0, time <= 104) |>
+  group_by(arm, time) |>
+  summarise(
+    p10 = quantile(tumor_size, 0.1), p50 = median(tumor_size),
+    p90 = quantile(tumor_size, 0.9), .groups = "drop"
+  )
+ggplot(ts_sim, aes(time, p50, colour = arm, fill = arm)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), alpha = 0.2, colour = NA) +
+  geom_line() +
+  labs(x = "Time (weeks)", y = "Sum of longest diameters (mm)", colour = NULL, fill = NULL) +
+  theme_bw() + theme(legend.position = "bottom")
+
+ts0 <- filter(ts_sim, time == 0)
+stopifnot(
+  # Baseline median equals the typical baseline (log-normal median 36.7 mm).
+  all(abs(ts0$p50 / 36.7 - 1) < 0.15)
+)
+```
+
+## Median PFS by dose (Figure 5)
+
+```{r pfs-median}
+months <- 7 / 30.4375
+pfs_med <- pfs |>
+  group_by(arm, dose) |>
+  summarise(median_months = median(pfs_week) * months, events = sum(is.finite(pfs_week)), n = n(), .groups = "drop")
+paper <- data.frame(
+  arm = c("Placebo", "150 mg"),
+  paper = c("observed 9.7 (Figure 5); simulated curve starts near 8 at 0 mg", "simulated 19.6 (no reductions, text); observed 16.4 at 136 mg average")
+)
+knitr::kable(left_join(pfs_med, paper, by = "arm"), digits = 1, caption = "Simulated median PFS (months) vs Chigutsa 2026 Figure 5 and text.")
+
+ggplot(pfs_med, aes(dose, median_months)) +
+  geom_line() + geom_point() +
+  geom_point(
+    data = data.frame(dose = c(0, 136, 160), median_months = c(9.7, 16.4, 19.6)),
+    colour = c("red", "blue", "green3"), shape = 15, size = 3
+  ) +
+  labs(x = "Abemaciclib dose (mg every 12 h)", y = "Median PFS (months)") +
+  ylim(0, 30) + theme_bw()
+
+med <- setNames(pfs_med$median_months, pfs_med$arm)
+stopifnot(
+  # Control arm: the paper's simulated curve starts near 8 months at 0 mg and
+  # the observed median is 9.7 months; a 200-subject median moves by about a
+  # month between seeds, so the band is wide and centred between the two.
+  med[["Placebo"]] > 6, med[["Placebo"]] < 12,
+  # 150 mg every 12 h without reductions: paper 19.6 months.
+  abs(med[["150 mg"]] / 19.6 - 1) < 0.3,
+  # Clearly longer than control (paper: more than twofold).
+  med[["150 mg"]] / med[["Placebo"]] > 1.4,
+  med[["200 mg"]] / med[["Placebo"]] > 1.4
+)
+```
+
+Red, blue and green squares are the observed medians the paper plots in Figure
+5 (control; 150 mg starting dose at its 136 mg average; 200 mg starting dose at
+its 160 mg average), read from the figure. The simulated dose-response is
+shallow and increasing, as in the paper. Remaining differences from the
+paper's simulated medians are expected: the cohort's hepatic-metastasis and
+ECOG prevalences are assumptions, and the paper measured PFS from the baseline
+tumor scan whereas this simulation starts the hazard at the first dose.
+
+# Assumptions and deviations
+
+* **PK parameter set.** The 2026 analysis used individual post hoc PK
+  parameters from the published Chigutsa 2020 model. This file carries the
+  typical values and variances of the Chigutsa 2020 Table S2 re-estimation,
+  which includes MONARCH 2; the main-text Table 2 of Chigutsa 2020 is the
+  earlier fit without MONARCH 2.
+* **Metabolites not carried.** The 2026 control stream sets the M2 and M20
+  ODEs to zero; parent abemaciclib alone drives both effects. Gut and hepatic
+  formation of M2 and M20 remain as parent elimination pathways.
+* **Within-subject variability on CLint omitted.** Chigutsa 2020 estimated
+  inter-occasion variability (104.9 %CV) on intrinsic clearance in patients;
+  the 2026 control stream uses between-subject variability only ("no IOV for
+  steady state predictions"), and so does this file. Between-subject
+  variability uses the patient value (44.5%); the separate healthy-subject
+  value (41.2%) is not carried.
+* **PK residual error.** Chigutsa 2020 used a log-transformed residual with a
+  17.0% exponential component, a fixed negligible additive component
+  (1e-6 umol/L) and between-subject variability on the residual (65.6%). Only
+  the exponential component is encoded (`Cc ~ lnorm(expSd)`).
+* **Tumor residual error form.** Table 1 lists an additive (1.39 mm) and a
+  proportional (9.04%) error without the combination rule; the tumor control
+  stream is not published. The file uses nlmixr2's default combined form.
+* **Time origin.** The 2026 control stream starts the hazard at the
+  randomization time (`RANDTIME`) and the tumor model at the first record. The
+  file starts both, and the dosing, at time zero.
+* **Mixture.** The NONMEM `$MIXTURE` on the tumor-size coefficient of the
+  hazard is carried as the binary covariate `MIX_HIGH_TS_HAZARD`; draw it as
+  Bernoulli(0.479) for population simulation.
+* **Non-measurable disease.** For `RECIST_NONMEASURABLE = 1` the tumor-size
+  term is removed from the hazard and the hazard drug effect does not wane,
+  as in the control stream. Tumor size is still simulated for these subjects
+  but has no meaning and is not observed.
+* **Numerical guard.** The growth-rate variance is very large (11400 %CV), so a
+  few simulated patients grow tens of mm per week and their hazard overflows.
+  The file stops integrating the cumulative hazard once it exceeds 50
+  (survival below 2e-22), which leaves every reported survival value
+  unchanged.
+* **Diarrhea and formulation covariates** of the PK layer are kept from
+  Chigutsa 2020. The 2026 simulations do not describe diarrhea, and the
+  cohort here sets `AE_DIARRHEA = 0`.
+* **Height imputation.** The 2026 control stream imputes a missing height as
+  160 cm (164 cm in Chigutsa 2020); the file requires `HT`.
