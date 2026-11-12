@@ -1338,6 +1338,8 @@ navbar:
         href: articles/Berthaud_2025_cefazolin.html
       - text: "Cefazolin (Duke 2024)"
         href: articles/Duke_2024_cefazolin.html
+      - text: "Cefazolin (Komatsu 2026)"
+        href: articles/Komatsu_2026_cefazolin.html
       - text: "Cefazolin (Lanoiselee 2021)"
         href: articles/Lanoiselee_2021_cefazolin.html
       - text: "Cefazolin (Santavy 2022)"
@@ -9950,6 +9952,7 @@ articles:
   - articles/Kolowrat_2025_apixaban
   - articles/Komatsu_2015_digoxin
   - articles/Komatsu_2016_penicillinG
+  - articles/Komatsu_2026_cefazolin
   - articles/Kong_2020_vonoprazan_pbpk
   - articles/Kong_2025_piperacillin_tazobactam
   - articles/Kong_2025_sudapyridine
