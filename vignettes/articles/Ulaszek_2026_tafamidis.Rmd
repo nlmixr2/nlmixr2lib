@@ -205,10 +205,13 @@ nca_res <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 
 simulated_nca <- as.data.frame(nca_res) |>
   mutate(treatment = ifelse(start == 0, "Single dose (day 1)", "Day 7")) |>
-  select(treatment, PPTESTCD, PPORRES)
+  select(treatment, PPTESTCD, PPORRES) |>
+  # The interval AUC (144-168 h, interpolated to the bounds) is reported
+  # under the auclast label that ncaComparisonTable() knows.
+  mutate(PPTESTCD = ifelse(PPTESTCD == "aucint.last", "auclast", PPTESTCD))
 
 published <- tibble::tribble(
-  ~treatment, ~cmax, ~tmax, ~aucint.last,
+  ~treatment, ~cmax, ~tmax, ~auclast,
   # Table 2, B3461056 day 7, PREDICTED medians: AUC144-168h 179,721 ng*h/mL,
   # Cmax 9085 ng/mL, Tmax 1.90 h
   "Day 7", 9085, 1.90, 179721,
@@ -221,14 +224,15 @@ cmp <- nlmixr2lib::ncaComparisonTable(
   simulated = simulated_nca,
   reference = published,
   by = "treatment",
-  units = c(cmax = "ng/mL", tmax = "h", aucint.last = "ng*h/mL"),
+  units = c(cmax = "ng/mL", tmax = "h", auclast = "ng*h/mL"),
   tolerance_pct = 20
 )
 knitr::kable(
   cmp,
   caption = paste(
     "Driver NCA (median of the 30 workbook profiles) against the PBPK",
-    "predictions of Ulaszek 2026 Table 2."
+    "predictions of Ulaszek 2026 Table 2. AUClast is the day-7 AUC over",
+    "144-168 h."
   )
 )
 ```
