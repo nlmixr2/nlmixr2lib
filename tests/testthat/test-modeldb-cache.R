@@ -37,6 +37,23 @@ test_that(".modeldbCacheWrite warns instead of erroring on a write failure", {
   expect_false(file.exists(badPath))
 })
 
+test_that(".modeldbCacheWrite leaves only the cache behind, whether or not it succeeds", {
+  dir <- withr::local_tempdir("modeldb-cache")
+  path <- file.path(dir, "modeldb-cache.rds")
+  payload <- list(globalSig = list(a = 1L), entries = list())
+  nlmixr2lib:::.modeldbCacheWrite(path, payload)
+  nlmixr2lib:::.modeldbCacheWrite(path, payload)
+  expect_identical(list.files(dir, all.files = TRUE, no.. = TRUE), "modeldb-cache.rds")
+
+  # The rename fails when the target is a non-empty directory; the temporary
+  # file written beside it must not be left over.
+  unlink(path)
+  dir.create(file.path(path, "occupied"), recursive = TRUE)
+  expect_warning(nlmixr2lib:::.modeldbCacheWrite(path, payload), "Could not write modeldb cache")
+  expect_identical(list.files(dir, all.files = TRUE, no.. = TRUE), "modeldb-cache.rds")
+  expect_true(dir.exists(path))
+})
+
 test_that(".modeldbGlobalSig has expected structure and reacts to build, checker and register edits", {
   pkgDir <- tempfile("pkg")
   dir.create(file.path(pkgDir, "R"), recursive = TRUE)

@@ -831,20 +831,27 @@ addFileToModelDb <- function(dir, file, modeldb) {
   )
 }
 
+# Write through a temporary file in the cache's own directory and rename it
+# into place, so a reader never sees a half-written cache. The temporary name
+# is unique, so two builds of one tree cannot write the same temporary file,
+# and it is removed whether or not the write succeeds.
 .modeldbCacheWrite <- function(path, cache) {
-  reportFailure <- function(c) {
-    warning("Could not write modeldb cache to ", path, ": ", conditionMessage(c))
-  }
-  tryCatch(
+  tmp <- tempfile("modeldb-cache-", tmpdir = dirname(path), fileext = ".rds")
+  on.exit(unlink(tmp), add = TRUE)
+  res <- tryCatch(
     {
       dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE)
-      tmp <- paste0(path, ".tmp")
       saveRDS(cache, file = tmp)
       file.rename(tmp, path)
     },
-    warning = reportFailure,
-    error = reportFailure
+    warning = identity,
+    error = identity
   )
+  if (inherits(res, "condition")) {
+    warning("Could not write modeldb cache to ", path, ": ", conditionMessage(res), call. = FALSE)
+  } else if (!isTRUE(res)) {
+    warning("Could not write modeldb cache to ", path, ": the rename into place failed", call. = FALSE)
+  }
   invisible(NULL)
 }
 
