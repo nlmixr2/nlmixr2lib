@@ -316,8 +316,8 @@ nca_events <- bind_rows(lapply(c(0.06, 0.10), function(d) {
 sim_ss <- rxode2::rxSolve(mod, events = nca_events, keep = c("treatment"), maxsteps = 1e6) |>
   as.data.frame()
 
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(sim_ss$Cc), sim_ss$id, all)))
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_ss$Cc))
 conc_df <- sim_ss |>
   filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
