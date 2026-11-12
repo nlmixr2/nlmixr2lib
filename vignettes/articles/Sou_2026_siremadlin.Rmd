@@ -247,16 +247,28 @@ sim |>
 
 The paper defines thrombocytopenia as at least one predicted platelet count
 below the CTCAE grade threshold (grade 1 < 100, grade 2 < 75, grade 3 < 50,
-grade 4 < 25 10^9/L) during the 6 cycles. Pre-dose baseline values are
-counted: a HEM patient whose baseline is already below 100 counts as having
-a grade 1 event. That is why the HEM grade-1 probability is about 0.97 at
-every dose. Table 4 (post-HSCT) is the 1:1 average of the HEM and SOL arms.
+grade 4 < 25 10^9/L) during the 6 cycles. Because siremadlin only lowers
+platelet counts, a HEM patient whose baseline is already below 100 stays below
+it after the first dose and so has a grade 1 event. That is why the HEM
+grade-1 probability is about 0.97 at every dose. Table 4 (post-HSCT) is the
+1:1 average of the HEM and SOL arms.
 
 ```{r tcp}
 thresholds <- c(G1 = 100, G2 = 75, G3 = 50, G4 = 25)
 subject_min <- sim |>
   group_by(id, population, dose) |>
-  summarise(plt_min = min(PLT), .groups = "drop")
+  summarise(
+    plt_min = min(PLT),
+    plt_min_post = min(PLT[time > 0]),
+    .groups = "drop"
+  )
+# Subject-grade cells whose classification would change if time 0 were
+# excluded from the window.
+n_baseline_only <- sum(vapply(
+  thresholds,
+  function(th) sum((subject_min$plt_min < th) != (subject_min$plt_min_post < th)),
+  numeric(1)
+))
 
 prob_sim <- subject_min |>
   group_by(population, dose) |>
@@ -481,4 +493,12 @@ the median PKNCA half-lives above.
 - **kSR uncertainty.** The paper notes that kSR is poorly estimated (95% CI
   4.22e-06 to 4.10e-05 1/h; IIV SD 4.8; shrinkage 86%) and was retained on
   mechanistic grounds. Its value is carried unchanged.
-- **Errata.** No correction notice for Sou 2026 was found as of 2026-11-12.
+- **Threshold crossings.** The paper does not state whether the pre-dose
+  baseline counts towards a thrombocytopenia event. The minimum here is taken
+  over the whole window including time 0. In the cohort above, excluding
+  time 0 would change `r n_baseline_only` of the
+  `r 4 * nrow(subject_min)` subject-by-grade classifications, because the
+  drug starts lowering the count as soon as it is given. The predicted profile is
+  sampled every 12 h; the paper's sampling grid is not reported.
+- **Errata.** EuropePMC lists no correction or comment for Sou 2026 as of
+  2026-11-12.
