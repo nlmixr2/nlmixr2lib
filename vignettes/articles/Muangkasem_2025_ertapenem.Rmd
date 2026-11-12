@@ -532,6 +532,8 @@ intervals <- data.frame(start = 0, end = 24, cmax = TRUE, tmax = TRUE,
                         cmin = TRUE, auclast = TRUE, cav = TRUE)
 
 run_nca <- function(conc_col) {
+  # A subject that fails to solve comes back NA; stop rather than drop it.
+  stopifnot(!anyNA(sim_nca[[conc_col]]))
   conc <- sim_nca |>
     dplyr::filter(!is.na(.data[[conc_col]])) |>
     dplyr::transmute(id, time, treatment, conc = .data[[conc_col]])
