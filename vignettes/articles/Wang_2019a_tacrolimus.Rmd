@@ -213,7 +213,6 @@ sim <- rxode2::rxSolve(
 
 # Typical-value (population-prediction) counterpart: same covariates, both
 # etas zeroed. This is the model's analogue of the PRED axis of Figure 1.
-# steady-state searches for long-half-life subjects exceed the default step budget
 sim_typical <- rxode2::rxSolve(
   rxode2::zeroRe(mod),
   events = events,
@@ -486,8 +485,8 @@ generator, the typical-value solve is bit-reproducible across machines, so the
 tolerance below can be tight.
 
 ```{r pknca}
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(sim_typical$Cc), sim_typical$id, all)))
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_typical$Cc))
 sim_nca <- sim_typical |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, arm)
