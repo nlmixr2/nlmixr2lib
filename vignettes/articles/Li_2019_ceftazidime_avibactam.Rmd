@@ -425,8 +425,8 @@ Steady-state non-compartmental analysis over the full 24-hour window, which
 is the interval Li 2019 reports exposures on (`Cmax,ss` and `AUCss,0-24`).
 
 ```{r pknca}
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(sim$Cc), sim$id, all)))
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim$Cc))
 simNca <- sim |>
   filter(!is.na(Cc)) |>
   transmute(id, time, Cc, drug, indication)
