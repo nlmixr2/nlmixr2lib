@@ -191,21 +191,44 @@ ev_reg <- bind_rows(dose_rows, obs_rows) |>
   mutate(DIS_OBESE = 0L, MD_CATHETER = 1L) |>
   arrange(id, time, desc(evid))
 
-# The intercatheter random effect needs at least two catheter levels in the
-# data to be simulated; one extra subject carries catheter 2 and is dropped.
-ev_reg <- bind_rows(
-  ev_reg,
-  ev_reg |> filter(id == 1) |> mutate(id = max(ev_reg$id) + 1L, MD_CATHETER = 2L)
-)
+# rxode2 draws the intercatheter effect (`etaiov_lrr_md`) per subject and catheter
+# only when some subject has two or more `MD_CATHETER` levels. When every subject
+# has exactly one, it treats `MD_CATHETER` as a level above the subject and all
+# subjects on that catheter share one draw. The extra record below (evid = 2: it
+# doses and observes nothing), placed after the last observation, gives the first
+# subject a second catheter level and so selects the per-subject draw.
+ev_extra <- ev_reg |>
+  filter(id == 1, evid == 0) |>
+  slice_tail(n = 1) |>
+  mutate(evid = 2L, time = max(obs_times) + 1, MD_CATHETER = 2L)
+ev_reg <- bind_rows(ev_reg, ev_extra) |>
+  arrange(id, time, desc(evid))
 
 rxode2::rxSetSeed(20250401)
-sim_reg <- rxode2::rxSolve(
+sim_reg_all <- rxode2::rxSolve(
   mod,
   events = ev_reg,
   keep = c("patient", "regimen"),
   returnType = "data.frame"
-) |>
-  filter(id <= nrow(subjects))
+)
+
+# One catheter effect per subject and catheter, not one per catheter: if rxode2's
+# detection of the nesting changes, the render fails instead of sharing silently.
+iov_per_catheter <- sim_reg_all |>
+  distinct(id, MD_CATHETER, etaiov_lrr_md) |>
+  group_by(MD_CATHETER) |>
+  summarise(
+    n_subjects = n_distinct(id),
+    n_distinct_iov = n_distinct(round(etaiov_lrr_md, 8)),
+    .groups = "drop"
+  )
+stopifnot(
+  all(iov_per_catheter$MD_CATHETER == 1:2),
+  iov_per_catheter$n_subjects == c(nrow(subjects), 1L),
+  iov_per_catheter$n_distinct_iov == iov_per_catheter$n_subjects
+)
+sim_reg <- sim_reg_all |>
+  filter(time <= max(obs_times))
 ```
 
 ## Figure 2: unbound plasma and ISF concentrations
