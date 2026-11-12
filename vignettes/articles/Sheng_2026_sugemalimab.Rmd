@@ -41,7 +41,7 @@ as four files:
 
 The popPK model is not the same fit as the sugemalimab model of Wang 2024
 (`modellib("Wang_2024_sugemalimab")`, 1628 subjects from nine trials, with a
-sigmoid time effect on clearance). Sheng 2026 uses an earlier analysis of 1002
+sigmoid time effect on clearance). Sheng 2026 uses a separate analysis of 1002
 subjects from six trials in which total clearance is the sum of a
 time-independent and an exponentially decaying component,
 
@@ -121,7 +121,7 @@ built from the published summaries:
   within the observed 41-96 kg; sex and albumin as above.
 
 All subjects are ADA-negative (`ADA_TITER = 0.5`), as in the paper's
-simulations. Infusions last 1 hour.
+simulations. Infusions are assumed to last 1 hour (not reported).
 
 ```{r cohort-helpers}
 set.seed(20260226)
@@ -648,7 +648,7 @@ sim_ext |>
   residual error row (16.9) is plainly `THETA(7)` x 100. The BSV rows were
   therefore read as SD x 100, so the variance is (value / 100)^2 (for example
   1.042^2 = 1.086 for Kdes). The same reporting convention is documented in
-  the sugemalimab model of Wang 2024, which shares two authors.
+  the sugemalimab model of Wang 2024, which shares three authors (Sheng, Xu and Wang K).
 * **Correlations.** Only the three correlations that Table S2 reports were
   estimated; the control stream fixes all others to zero, and they are carried
   as zero.

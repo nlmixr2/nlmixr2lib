@@ -34,7 +34,7 @@ Sheng_2026_sugemalimab_pfs_bicr <- function() {
       units = "ug/mL",
       type = "continuous",
       reference_category = NULL,
-      notes = "Required input, time-fixed per subject. TOTAL serum sugemalimab at the end of the first 21-day cycle of 1200 mg IV every 3 weeks (source column CMINC1, 'Cmin,C1' in Table S3), the individual empirical-Bayes prediction from the companion population PK model modellib('Sheng_2026_sugemalimab'). Enters LINEARLY, UNCENTRED and RESCALED per 10 ug/mL: exp(e_ctrough_haz * CTROUGH / 10).",
+      notes = "Required input, time-fixed per subject. Serum sugemalimab trough of cycle 1 (end of the first 3-week interval of 1200 mg IV every 3 weeks; the paper does not state total vs unbound) (source column CMINC1, 'Cmin,C1' in Table S3), the individual empirical-Bayes prediction from the companion population PK model modellib('Sheng_2026_sugemalimab'). Enters LINEARLY, UNCENTRED and RESCALED per 10 ug/mL: exp(e_ctrough_haz * CTROUGH / 10).",
       source_name = "CMINC1"
     ),
     PDL1_TUM_POS = list(
@@ -55,7 +55,7 @@ Sheng_2026_sugemalimab_pfs_bicr <- function() {
     dose_range = "Sugemalimab 1200 mg IV every 3 weeks with platinum-based chemotherapy (single dose level).",
     regions = "Asia; the pivotal study enrolled only Asian patients (Sheng 2026 Discussion).",
     weight_range = "41-96 kg, mean 62 kg (Sheng 2026 Discussion).",
-    notes = "Sugemalimab arm of the phase III GEMSTONE-302 study (CS1001-302). GEMSTONE-302 observed BICR-assessed PFS 0.410 at 12 months and 0.230 at 24 months (Sheng 2026 Table 3 note)."
+    notes = "Sugemalimab arm of the phase III GEMSTONE-302 study (study 302 in Table S1). GEMSTONE-302 observed BICR-assessed PFS 0.410 at 12 months and 0.230 at 24 months (Sheng 2026 Table 3 note)."
   )
 
   ini({

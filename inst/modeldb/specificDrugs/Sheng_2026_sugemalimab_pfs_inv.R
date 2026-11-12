@@ -32,7 +32,7 @@ Sheng_2026_sugemalimab_pfs_inv <- function() {
       units = "ug/mL",
       type = "continuous",
       reference_category = NULL,
-      notes = "Required input, time-fixed per subject. TOTAL serum sugemalimab at the end of the first 21-day cycle of 1200 mg IV every 3 weeks (source column CMINC1, 'Cmin,C1' in Table S3), the individual empirical-Bayes prediction from the companion population PK model modellib('Sheng_2026_sugemalimab'). Cycle 1 was chosen over steady state because sugemalimab clearance falls with time in a way that tracks response. Enters LINEARLY, UNCENTRED and RESCALED per 10 ug/mL: exp(e_ctrough_haz * CTROUGH / 10). The 5th percentile of observed Ctrough,C1 in GEMSTONE-302 was 42.6 ug/mL.",
+      notes = "Required input, time-fixed per subject. Serum sugemalimab trough of cycle 1 (end of the first 3-week interval of 1200 mg IV every 3 weeks; the paper does not state total vs unbound) (source column CMINC1, 'Cmin,C1' in Table S3), the individual empirical-Bayes prediction from the companion population PK model modellib('Sheng_2026_sugemalimab'). Cycle 1 was chosen over steady state because sugemalimab clearance falls with time in a way that tracks response. Enters LINEARLY, UNCENTRED and RESCALED per 10 ug/mL: exp(e_ctrough_haz * CTROUGH / 10). The 5th percentile of observed Ctrough,C1 in GEMSTONE-302 was 42.6 ug/mL.",
       source_name = "CMINC1"
     ),
     PDL1_TUM_POS = list(
@@ -53,7 +53,7 @@ Sheng_2026_sugemalimab_pfs_inv <- function() {
     dose_range = "Sugemalimab 1200 mg IV every 3 weeks with platinum-based chemotherapy (single dose level).",
     regions = "Asia; the pivotal study enrolled only Asian patients (Sheng 2026 Discussion).",
     weight_range = "41-96 kg, mean 62 kg (Sheng 2026 Discussion).",
-    notes = "Sugemalimab arm of the phase III GEMSTONE-302 study (CS1001-302). Fitted in NONMEM with the Laplacian likelihood. GEMSTONE-302 observed investigator-assessed PFS 0.364 at 12 months and 0.199 at 24 months (Sheng 2026 Table 3 note). Of the Cycle-1 exposure metrics, Ctrough,C1 gave the largest improvement in fit; Cmax,C1 was not significant (Sheng 2026 Methods)."
+    notes = "Sugemalimab arm of the phase III GEMSTONE-302 study (study 302 in Table S1). Fitted in NONMEM with the Laplacian likelihood. GEMSTONE-302 observed investigator-assessed PFS 0.364 at 12 months and 0.199 at 24 months (Sheng 2026 Table 3 note). Of the Cycle-1 exposure metrics, Ctrough,C1 gave the largest improvement in fit; Cmax,C1 was not significant (Sheng 2026 Methods)."
   )
 
   ini({

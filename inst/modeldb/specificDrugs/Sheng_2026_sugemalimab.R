@@ -56,7 +56,7 @@ Sheng_2026_sugemalimab <- function() {
       units = "(binary)",
       type = "binary",
       reference_category = "0 (solid tumour: NSCLC or other solid tumours)",
-      notes = "Replaces the typical kdes (0.0465 vs 0.0188 1/day) and multiplies Vc by 0.896. Source DSSTAT == 1. The lymphoma cohort (n = 169) pools extranodal NK/T-cell lymphoma (study CS1001-201) and relapsed or refractory classical Hodgkin lymphoma (study CS1001-202).",
+      notes = "Replaces the typical kdes (0.0465 vs 0.0188 1/day) and multiplies Vc by 0.896. Source DSSTAT == 1. Lymphoma n = 169 (Table S1); the paper does not name the lymphoma histologies.",
       source_name = "DSSTAT"
     ),
     TUMTP_NSCLC = list(
@@ -83,7 +83,7 @@ Sheng_2026_sugemalimab <- function() {
     dose_range = "Sugemalimab IV 3, 10, 20 or 40 mg/kg (25 subjects) or 1200 mg (977 subjects, 97.5%) every 3 weeks.",
     regions = "Predominantly China (97.6% Asian).",
     ada_status = "ADA-negative 890 (88.8%), ADA-positive 112 (11.2%).",
-    notes = "Baseline demographics from Sheng 2026 Table S1. Two Phase I (CS1001-101 parts a and b, CS1001-102), two Phase II (CS1001-201 ENKTL, CS1001-202 cHL) and two Phase III (CS1001-301 / GEMSTONE-301 stage III NSCLC consolidation; CS1001-302 / GEMSTONE-302 stage IV NSCLC with platinum chemotherapy, n = 320) studies. 75 subjects (7.5%) weighed 80 kg or more. Fitted in NONMEM 7.5 by FOCE-I; time in the data set is in hours, parameters are reported per day."
+    notes = "Baseline demographics from Sheng 2026 Table S1. Two Phase I, two Phase II and two Phase III studies (Table S1 study codes 101 parts a and b, 102, 201, 202, 301 and 302; study 302 is GEMSTONE-302, n = 320, stage IV NSCLC with platinum chemotherapy). 75 subjects (7.5%) weighed 80 kg or more. Fitted in NONMEM by FOCE-I (control stream METHOD=1 INTER); time in the data set is in hours, parameters are reported per day."
   )
 
   ini({
