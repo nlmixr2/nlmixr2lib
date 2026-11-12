@@ -2026,6 +2026,10 @@ navbar:
         href: articles/Chen_2016_deoxypodophyllotoxin.html
       - text: "Deoxypodophyllotoxin rat pbpk (Chen 2016)"
         href: articles/Chen_2016_deoxypodophyllotoxin.html
+      - text: "Depemokimab (Zecchin 2026)"
+        href: articles/Zecchin_2026_depemokimab.html
+      - text: "Depemokimab dose time (Zecchin 2026)"
+        href: articles/Zecchin_2026_depemokimab.html
       - text: "Desflurane pig arterial (Lu 2024)"
         href: articles/Lu_2024_desflurane.html
       - text: "Desflurane pig endtidal (Lu 2024)"
@@ -11524,6 +11528,7 @@ articles:
   - articles/Zazo_2024_ceftazidime_avibactam
   - articles/Zecchin_2016_survival
   - articles/Zecchin_2016_tumorovarian
+  - articles/Zecchin_2026_depemokimab
   - articles/Zeng_2009_acyclovir
   - articles/Zeng_2010_mycophenolic_acid
   - articles/Zeng_2026_atezolizumab

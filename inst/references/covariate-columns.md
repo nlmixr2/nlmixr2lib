@@ -3436,7 +3436,7 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Reference category:** n/a -- used with power scaling `(EOS / ref)^exponent`.
 - **Source aliases:**
   - `BEOS` (baseline EOS) -- used in `Kotani_2022_astegolimab.R`.
-- **Example models:** `Kotani_2022_astegolimab.R` (reference 180 cells/uL, baseline).
+- **Example models:** `Kotani_2022_astegolimab.R` (reference 180 cells/uL, baseline), `Zecchin_2026_depemokimab.R` (baseline, power effects on the indirect-response baseline and Imax via `log(EOS / 260)`), `Zecchin_2026_depemokimab_dose_time.R` (baseline, log-linear `log(EOS / 1000)` = log GI/L).
 - **Notes:** Used as a surrogate of inflammatory burden that correlates with protein turnover and therefore mAb clearance. Canonical name drops the `B` prefix to match the `SCORE_EASI` / `AGE` / `WT` / `ALB` pattern; baseline-vs-time-varying status is documented in `covariateData[[EOS]]$notes`.
 
 ### FENO (**canonical for fractional exhaled nitric oxide concentration**)
@@ -7349,6 +7349,17 @@ Single-analyte microRNA or messenger-RNA expression levels measured by qPCR or s
 - **Example models:** `Takechi_2025_nemolizumab_mbma_iga.R` (per study arm; the only administered value in the meta-analysis is 300 mg Q2W, so no dose-response is identifiable and the column acts as a presence indicator selecting the dupilumab-specific Edrug and Kd), `Takechi_2025_nemolizumab_mbma_ppnrs.R`.
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. Every included dupilumab arm used the same 300 mg Q2W regimen, so this column carries only two distinct values (0 and 300) across the founding meta-analysis and the drug effect is estimated as a constant. Note the DIFFERENT dosing interval from its sibling `DOSE_NEMOLIZUMAB_MG` (Q2W vs Q4W): the two columns are not a common per-administration dose metric and must not be compared to each other numerically. Dupilumab appears elsewhere in this package as an atopic-dermatitis comparator; a model that needs an atopic-dermatitis dupilumab regimen must confirm the interval before reusing this column.
 
+### DOSE_DEPEMOKIMAB_MG (**canonical for the administered single subcutaneous depemokimab dose in mg**)
+- **Description:** Subcutaneous depemokimab (ultra-long-acting anti-IL-5 monoclonal antibody) dose of the subject's arm, in mg; 0 = placebo.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 selects the placebo equation in the founding model.
+- **Source aliases:**
+  - `DOSE` / `LNDOSE = log(DOSE)` -- used in `Zecchin_2026_depemokimab_dose_time.R` (Zecchin 2026 Table 1).
+- **Example models:** `Zecchin_2026_depemokimab_dose_time.R` (algebraic Bayesian dose-time response model of log blood eosinophil count after a single dose of 2-300 mg; the 2 mg dose carries its own relative potency F).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. The founding model is a single-dose model: the column is the one dose given at time 0, not a per-administration amount of a repeated regimen.
+
 ### CONC_LUMEFANTRINE_168H (**canonical for the individual capillary whole-blood lumefantrine concentration at the 168-hour (day 7) landmark from an upstream population PK fit**)
 - **Description:** Individual capillary whole-blood concentration of the antimalarial lumefantrine at the fixed 168 h (day 7) landmark after the first of the six twice-daily artemether-lumefantrine doses, carried as a per-episode exposure metric that drives a downstream exposure-response model. Member of the `CONC_` family in the drug-and-landmark-specific form `CONC_<ANALYTE>_<LANDMARK>` documented under [[CONC_SOTRO_168H]] -- the analyte and the landmark hour are both carried in the name rather than out-of-band in per-model notes. Not an observation in the downstream model: it is either the measured day 7 sample or the value read off the subject's own predicted profile from the companion population PK fit, depending on which the source analysis used.
 - **Units:** ng/mL
@@ -8846,6 +8857,53 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
   - `sAsthma` -- used in `Hua_2015_anrukinzumab.R`.
 - **Example models:** `Hua_2015_anrukinzumab.R` (multiplicative fractional change in SC bioavailability, -30.9%).
 - **Notes:** The moderate-to-severe vs. mild-to-moderate asthma cutoff is protocol-defined; Hua 2015 uses FEV1 55-80% and ACQ-5 >= 2 for "moderate to severe" (study 4) versus FEV1 > 70% and ACQ-5 <= 1 for "mild to moderate" (study 1). Scope: specific because the severity threshold is tied to a particular analysis plan; future asthma-severity indicators with different thresholds should register as separate canonicals.
+
+### DIS_SEVERE_ASTHMA (**canonical for severe asthma disease-state indicator**)
+- **Description:** 1 = patient with severe asthma, 0 = not. Time-fixed per subject. Severe as defined by the mepolizumab Phase III programme (MENSA / MUSCA / SIRIUS-type populations: exacerbations despite high-dose inhaled corticosteroid plus additional controllers).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the remaining population of the founding analysis: healthy participants, mild-to-moderate asthma and other eosinophilic conditions without their own indicator).
+- **Source aliases:**
+  - `hasSA` -- used in `Zecchin_2026_depemokimab.R` (Zecchin 2026 Table 2).
+- **Example models:** `Zecchin_2026_depemokimab.R` (log-scale additive effect +0.438 on the baseline blood eosinophil count KRO).
+- **Notes:** Distinct from `DIS_SASTHMA` (moderate-to-severe asthma, tied to the Hua 2015 FEV1 / ACQ-5 thresholds), whose Notes ask that asthma-severity indicators with different thresholds register separately. In the founding model the indicator is not mutually exclusive with `DIS_CHRONIC_RHINOSINUSITIS_NASAL_POLYPS`: the published CRSwNP predictions are reproduced only with both set to 1 (comorbid asthma); see the founding vignette.
+
+### DIS_CHRONIC_RHINOSINUSITIS_NASAL_POLYPS (**canonical for chronic rhinosinusitis with nasal polyps disease-state indicator**)
+- **Description:** 1 = patient with chronic rhinosinusitis with nasal polyps (CRSwNP), 0 = not. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (per-model complement group).
+- **Source aliases:**
+  - `hasCRSwNP` -- used in `Zecchin_2026_depemokimab.R` (Zecchin 2026 Table 2).
+  - `CRSwNP` -- the clinical abbreviation.
+- **Example models:** `Zecchin_2026_depemokimab.R` (log-scale additive effect +0.132, fixed, on the baseline blood eosinophil count KRO).
+- **Notes:** Spelled out rather than the `CRSWNP` abbreviation, following the spelled-out rule for multiword `DIS_` tokens (cf. `DIS_DILATED_CARDIOMYOPATHY`).
+
+### DIS_EOSINOPHILIC_GRANULOMATOSIS_POLYANGIITIS (**canonical for eosinophilic granulomatosis with polyangiitis disease-state indicator**)
+- **Description:** 1 = patient with eosinophilic granulomatosis with polyangiitis (EGPA, formerly Churg-Strauss syndrome), 0 = not. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (per-model complement group).
+- **Source aliases:**
+  - `hasEGPA` -- used in `Zecchin_2026_depemokimab.R` (Zecchin 2026 Table 2).
+  - `EGPA` -- the clinical abbreviation.
+- **Example models:** `Zecchin_2026_depemokimab.R` (log-scale additive effect +0.208, fixed, on the baseline blood eosinophil count KRO).
+- **Notes:** Spelled out rather than the `EGPA` abbreviation, following the spelled-out rule for multiword `DIS_` tokens.
+
+### DIS_HYPEREOSINOPHILIC_SYNDROME (**canonical for hypereosinophilic syndrome disease-state indicator**)
+- **Description:** 1 = patient with hypereosinophilic syndrome (HES), 0 = not. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (per-model complement group).
+- **Source aliases:**
+  - `hasHES` -- used in `Zecchin_2026_depemokimab.R` (Zecchin 2026 Table 2).
+  - `HES` -- the clinical abbreviation.
+- **Example models:** `Zecchin_2026_depemokimab.R` (log-scale additive effect +1.27 on the baseline blood eosinophil count KRO).
+- **Notes:** Spelled out rather than the `HES` abbreviation, following the spelled-out rule for multiword `DIS_` tokens. Not to be confused with the `hes` hydroxyethyl-starch suffix in `compartment-names.md`.
 
 ### DIS_EOE (**canonical for eosinophilic esophagitis disease-state indicator**)
 - **Description:** 1 = patient with eosinophilic esophagitis (EoE), 0 = non-EoE reference (in the founding analysis, a healthy adult volunteer). Time-fixed per subject. EoE is a chronic, type-2-inflammation-driven immune-mediated disease of the oesophagus diagnosed by peak intraepithelial eosinophil count on biopsy; it is a separately labelled indication for several type-2 biologics, so cohort membership is a stable clinical fact rather than a study-design construct.
@@ -21027,6 +21085,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `ST221` -- used in `Nielsen_2015_vigabatrin.R` (Nielsen 2015 Equation 10c).
 - **Example models:** `Nielsen_2015_vigabatrin.R` (shifts log overdispersion by -1.420 and the asymptotic time effect by -0.374, and raises the log SD of the baseline-rate random effect by +0.358).
 - **Notes:** Member of the `STUDY_<id>` auto-approve family; sibling of `STUDY_118` and `STUDY_192`. Studies 192 and 221 are the two pediatric cohorts with a *larger* maximum time (placebo) effect than adults, which the paper reconciles with the Rheims meta-analysis finding that placebo responder rates are about 1.9-fold greater in children than adults.
+
+### STUDY_200622 (**canonical for the mepolizumab Phase III hypereosinophilic syndrome Study 200622 indicator**)
+- **Description:** 1 = participant of GSK Study 200622 (mepolizumab 300 mg SC Q4W vs placebo in HES; Roufosse 2020), 0 = otherwise. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (all other studies of the mepolizumab population PK/PD meta-analysis).
+- **Source aliases:**
+  - `theta200622` -- the 'Mepolizumab (Study 200622) HES KRO' multiplier in Zecchin 2026 Table 2.
+- **Example models:** `Zecchin_2026_depemokimab.R` (multiplies the baseline blood eosinophil count KRO by 0.5, fixed).
+- **Notes:** Member of the `STUDY_<id>` auto-approve family. The founding paper's depemokimab HES predictions (Figure 4) are reproduced only with this indicator set to 1, because Study 200622 is the HES reference trial they are compared with.
 
 ### STUDY_NCT00936403 (**canonical for the Papathanasiou 2021 somatropin pooled analysis Trial 2 (NCT00936403) cohort indicator**)
 - **Description:** 1 = subject from Trial 2 (ClinicalTrials.gov NCT00936403; single-dose NNC126-0083 dose-escalation trial in prepubertal children with GHD, whose Norditropin comparator arm received 0.035 mg/kg/day for 7 days) of the Papathanasiou 2021 pooled Norditropin PK/PD analysis; 0 = otherwise. Time-fixed per subject.

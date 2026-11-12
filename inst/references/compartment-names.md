@@ -1990,6 +1990,15 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Example models:** myelosuppression PD models with ANC output; `Hansson_2013_sunitinib_myelosuppression.R` (as lower-case `anc`).
 - **Notes:** `anc` added 2026-06-28 as a canonical lower-case sibling. For paired-output multi-cell-type Friberg models prefer the `circ_anc` suffix form (see `circ`); the bare lower-case `anc` is the single-output PD-observation form. Distinct in Type from the `anc` cell-type metabolite suffix (see the Cell-type suffixes section), which the runtime parser routes separately.
 
+### blood_eosinophils (**canonical blood eosinophil count PD state / output**)
+- **Type:** compartment
+- **Role:** Absolute blood eosinophil count (BEC), in 10^9 cells/L (GI/L) or cells/uL as the source reports it, used as a turnover ODE state and/or a PD output of anti-IL-5 / anti-IL-5R exposure-response models. The output-name sibling of the `EOS` covariate column in `covariate-columns.md` (which carries the *baseline* count as a covariate). A change-from-baseline or percent-reduction endpoint is a different quantity and needs its own name. Spelled out rather than the clinical abbreviation `bec` / `eos`, following the 2026-10-08 maintainer ruling on new PD output names.
+- **Source aliases:**
+  - `eos` / `EOS` -- the indirect-response state in Zecchin 2026 (`deos(t)/dt = KOUT * (KRO * (1 + (Imax - 1) * C^GAMA / (C^GAMA + IC50^GAMA)) - eos(t))`).
+  - `LNEOS` -- log BEC in the Zecchin 2026 Bayesian dose-time response model (Table 1); the output is `exp(LNEOS)`.
+  - `BEC`, `blood eosinophil count` -- common figure-axis names.
+- **Example models:** `Zecchin_2026_depemokimab.R` (indirect-response state, GI/L; founding example), `Zecchin_2026_depemokimab_dose_time.R` (algebraic output, GI/L).
+
 ### PLT (**canonical platelet count**)
 - **Type:** compartment
 - **Role:** Platelet count PD output.
