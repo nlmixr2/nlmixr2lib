@@ -24,6 +24,9 @@ Back_2018_fenofibrate <- function() {
   vignette <- "Back_2018_fenofibrate"
   paper_specific_compartments <- c("stomach_food", "duodenum_food")
 
+  # stomach: fenofibrate; stomach_food: the meal, in kcal.
+  dosing <- c("stomach", "stomach_food")
+
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what

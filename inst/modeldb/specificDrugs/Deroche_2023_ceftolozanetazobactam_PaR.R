@@ -2,6 +2,10 @@ Deroche_2023_ceftolozanetazobactam_PaR <- function() {
   description <- "In vitro (Pseudomonas aeruginosa C/T-resistant clinical isolate PaR (ST252; MIC 32 mg/L), isogenic to PaS and recovered after 2 weeks of C/T treatment). Semi-mechanistic sequential time-kill PK/PD model with adaptive resistance (Mouton-type) describing C/T killing and regrowth. Logistic bacterial growth gated by a steep lag-time switch is opposed by a drug effect that sums two Emax terms, one for the non-adapted fraction (ARoff, potency EC50,off) and one for the adapted fraction (ARon, potency EC50,on), with ARon = 1 - exp(-kon*t). One of 11 strain-by-drug files from this paper (this file: PaR versus C/T). Emax and kon are shared across the clinical C/T strain group; all other parameters are strain-specific."
   reference <- "Deroche L, Plouzeau C, Bemer P, Dalichampt M, Michaud A, Chavanet P, Burucoa C, Rammaert B, Gregoire N, Marchand S, Cremniter J. Characterization of Pseudomonas aeruginosa resistance to ceftolozane-tazobactam due to ampC and/or ampD mutations observed during treatment using semi-mechanistic PKPD modeling. Antimicrob Agents Chemother. 2023 Oct 18;67(10):e00480-23. doi:10.1128/aac.00480-23. PMID:37695298; PMCID:PMC10583683. Structural model: effect Eq 1 (main text), adaptation Eqs 2-3 (main text), full differential equations Suppl Text S1 Eqs 2-6, schematic Fig 5. Parameter estimates: Table S3."
   vignette <- "Deroche_2023_ceftolozane_imipenem_resistance"
+  # bacteria: the inoculum and the second-TKC reinoculation, whose time
+  # tad() reads; cdrug: the static drug concentration.
+  dosing <- c("bacteria", "cdrug")
+
   units <- list(time = "h", dosing = "mg/L", concentration = "mg/L")
 
   # Drug concentration is a user-dosed state held constant within each

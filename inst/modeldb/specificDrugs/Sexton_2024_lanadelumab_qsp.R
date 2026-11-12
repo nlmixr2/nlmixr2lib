@@ -15,6 +15,9 @@ Sexton_2024_lanadelumab_qsp <- function() {
     sep = " "
   )
   vignette <- "Sexton_2024_lanadelumab_qsp"
+  # depot: subcutaneous lanadelumab; trigger: each HAE attack, amount = severity.
+  dosing <- c("depot", "trigger")
+
   units <- list(
     time = "h",
     dosing = "mg (lanadelumab SC into depot); nM increment (exogenous C1-INH into c1inh); unitless normalized attack severity (into trigger)",

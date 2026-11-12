@@ -51,6 +51,9 @@ Rietveld_2025_docetaxel <- function() {
   )
   vignette <- "Rietveld_2025_docetaxel"
 
+  # CPC634 is infused into entrapped; released docetaxel reaches central from there.
+  dosing <- "entrapped"
+
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   paper_specific_compartments <- c(
