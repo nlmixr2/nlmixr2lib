@@ -161,6 +161,8 @@ closed_form <- scen |>
   )
 
 run_nca <- function(sim, conc_col) {
+  # A subject that fails to solve comes back NA; stop rather than drop it.
+  stopifnot(!anyNA(sim[[conc_col]]))
   conc <- sim |>
     filter(!is.na(.data[[conc_col]])) |>
     transmute(id, time, conc = .data[[conc_col]], regimen, absorption)
