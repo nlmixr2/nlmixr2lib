@@ -242,8 +242,8 @@ sim_nca <- solve_cohort(cohort, dplyr::bind_rows(
 )) |>
   dplyr::left_join(dplyr::select(cohort, id, band), by = "id")
 
-# A subject whose steady-state search fails comes back NA; stop rather than drop it.
-stopifnot(!any(tapply(is.na(sim_nca$Cc), sim_nca$id, all)))
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_nca$Cc))
 nca_conc <- sim_nca |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(treatment = factor(paste("eGFR", band),
