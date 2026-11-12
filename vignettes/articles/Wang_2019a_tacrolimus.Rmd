@@ -202,19 +202,23 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```{r simulate}
 mod <- readModelDb("Wang_2019a_tacrolimus")
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep = c("arm", "AGE", "CYSC", "DOSE_TAC_MGD")
+  keep = c("arm", "AGE", "CYSC", "DOSE_TAC_MGD"),
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 
 # Typical-value (population-prediction) counterpart: same covariates, both
 # etas zeroed. This is the model's analogue of the PRED axis of Figure 1.
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_typical <- rxode2::rxSolve(
   rxode2::zeroRe(mod),
   events = events,
-  keep = c("arm", "AGE", "CYSC", "DOSE_TAC_MGD")
+  keep = c("arm", "AGE", "CYSC", "DOSE_TAC_MGD"),
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 ```
@@ -482,6 +486,8 @@ generator, the typical-value solve is bit-reproducible across machines, so the
 tolerance below can be tight.
 
 ```{r pknca}
+# A subject whose steady-state search fails comes back NA; stop rather than drop it.
+stopifnot(!any(tapply(is.na(sim_typical$Cc), sim_typical$id, all)))
 sim_nca <- sim_typical |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, arm)
