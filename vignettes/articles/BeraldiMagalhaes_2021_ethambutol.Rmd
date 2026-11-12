@@ -198,7 +198,7 @@ mb_ev <- dplyr::bind_rows(
 
 mb_sim <- rxode2::rxSolve(mod_typ, mb_ev, returnType = "data.frame",
                           keep = c("DIS_CRITILL", "CRCL"),
-                          rtol = 1e-8, atol = 1e-10, maxsteps = 500000L, maxSS = 20000L)
+                          rtol = 1e-8, atol = 1e-10, maxsteps = 1e6, maxSS = 20000L)
 
 mb <- mb_sim |>
   dplyr::group_by(id, DIS_CRITILL, CRCL) |>
@@ -579,6 +579,8 @@ doses <- events |>
 nca_intervals <- data.frame(start = 240, end = 264, cmax = TRUE, tmax = TRUE, auclast = TRUE)
 
 run_nca <- function(sim_df) {
+  # A subject whose steady-state search fails comes back NA; stop rather than drop it.
+  stopifnot(!any(tapply(is.na(sim_df$Cc), sim_df$id, all)))
   conc <- sim_df |>
     dplyr::filter(!is.na(Cc)) |>
     dplyr::select(id, time, Cc, treatment)
