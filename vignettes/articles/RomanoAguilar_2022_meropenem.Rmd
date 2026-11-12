@@ -471,7 +471,8 @@ sim_nca <- rxode2::rxSolve(ui, ev_nca, returnType = "data.frame",
 # The solver's undershoot below zero is of the order of atol (1e-12 mg/L) at the
 # trough of a fast-eliminating subject, so the check is relative to the peak, and
 # the undershoot is floored before PKNCA's log-down trapezoid.
-stopifnot(all(sim_nca$Cc >= -1e-6 * max(sim_nca$Cc, na.rm = TRUE), na.rm = TRUE))
+stopifnot(!anyNA(sim_nca$Cc),
+          all(sim_nca$Cc >= -1e-6 * max(sim_nca$Cc, na.rm = TRUE)))
 
 conc <- sim_nca |>
   dplyr::filter(!is.na(Cc)) |>
