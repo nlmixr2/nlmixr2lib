@@ -235,11 +235,14 @@ verifying against the integrator rather than assuming it.
 ```{r gate-auc}
 ssEv <- mkEvents(bands$crcl, dose = 300, tau = 8, grid = seq(0, 24, by = 0.005),
                  ss = TRUE)
+# steady-state searches for long-half-life subjects exceed the default step budget
 ssSol <- rxode2::rxSolve(rxode2::zeroRe(mod), ssEv, returnType = "data.frame",
-                         atol = 1e-12, rtol = 1e-10)
+                         atol = 1e-12, rtol = 1e-10, maxsteps = 1e6)
 
 trapz <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
 
+# A subject whose steady-state search fails comes back NA; stop rather than drop it.
+stopifnot(!any(tapply(is.na(ssSol$Cc), ssSol$id, all)))
 aucChk <- ssSol |>
   filter(!is.na(Cc)) |>
   group_by(id) |>
@@ -432,9 +435,12 @@ cohortEv <- bind_rows(lapply(seq_len(nrow(armGrid)), function(k) {
   e
 }))
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 cohort <- rxode2::rxSolve(mod, cohortEv, returnType = "data.frame",
-                          keep = "arm", atol = 1e-10, rtol = 1e-8)
+                          keep = "arm", atol = 1e-10, rtol = 1e-8, maxsteps = 1e6)
 
+# A subject whose steady-state search fails comes back NA; stop rather than drop it.
+stopifnot(!any(tapply(is.na(cohort$Cc), cohort$id, all)))
 subj <- cohort |>
   filter(!is.na(Cc)) |>
   group_by(arm, id) |>
@@ -704,6 +710,8 @@ runAccum <- function(model, ganesan, ...) {
   s <- suppressWarnings(
     rxode2::rxSolve(model, ev, returnType = "data.frame", keep = "arm", ...)
   )
+  # A subject whose steady-state search fails comes back NA; stop rather than drop it.
+  stopifnot(!any(tapply(is.na(s$Cc), s$id, all)))
   s |>
     filter(!is.na(Cc)) |>
     group_by(arm, id) |>
@@ -914,6 +922,8 @@ model. Restricting the regression to points at least 5 half-lives past Tmax via
 the gate below tests the model rather than PKNCA's window heuristic.
 
 ```{r pknca-run}
+# A subject whose steady-state search fails comes back NA; stop rather than drop it.
+stopifnot(!any(tapply(is.na(ncaSol$Cc), ncaSol$id, all)))
 simNca <- ncaSol |>
   filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment, lzFirst)
