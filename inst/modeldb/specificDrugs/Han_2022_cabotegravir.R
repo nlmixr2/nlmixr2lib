@@ -3,7 +3,7 @@ Han_2022_cabotegravir <- function() {
   reference <- "Han K, Baker M, Lovern M, Paul P, Xiong Y, Patel P, Moore KP, Seal CS, Cutrell AG, D'Amico RD, Benn PD, Landovitz RJ, Marzinke MA, Spreen WR, Ford SL. Population pharmacokinetics of cabotegravir following administration of oral tablet and long-acting intramuscular injection in adult HIV-1-infected and uninfected subjects. Br J Clin Pharmacol. 2022;88(10):4607-4622. doi:10.1111/bcp.15439"
   vignette <- "Han_2022_cabotegravir"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
-  dosing <- c("central", "depot_oral", "depot_im")
+  dosing <- c("depot_oral", "depot_im")
 
   covariateData <- list(
     WT = list(

@@ -19,6 +19,7 @@ HuttonSmith_2018_ranibizumab <- function() {
   )
 
   units <- list(time = "day", dosing = "mg", concentration = "pM (pmol/L)")
+  dosing <- "ranib_vit"
 
   # Issue #482: the ocular matrices are the reason this model is not
   # comparable with a serum-clearance model. Verified against Hutton-Smith

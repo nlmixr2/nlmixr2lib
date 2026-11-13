@@ -53,7 +53,7 @@ Hadigol_2026_talazoparib_enzalutamide <- function() {
   # drug-drug-interaction slope theta_slope can be used exactly as printed
   # in mL/ng without a hidden conversion factor.
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
-  dosing <- c("depot", "central", "depot_enz")
+  dosing <- c("depot", "depot_enz")
 
   covariateData <- list(
     WT = list(

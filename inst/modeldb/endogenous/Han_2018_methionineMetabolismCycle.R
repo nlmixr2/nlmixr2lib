@@ -3,6 +3,7 @@ Han_2018_methionineMetabolismCycle <- function() {
   reference <- "Han N, Chae JW, Jeon J, Lee J, Back HM, Song B, Kwon KI, Kim SK, Yun HY. Prediction of Methionine and Homocysteine levels in Zucker diabetic fatty (ZDF) rats as a DIS_DIAB animal model after consumption of a Methionine-rich diet. Nutr Metab (Lond). 2018;15:14. doi:10.1186/s12986-018-0247-1"
   vignette <- "Han_2018_methionineMetabolismCycle"
   units <- list(time = "h", dosing = "mmol/kg", concentration = "mmol/L")
+  dosing <- "met"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

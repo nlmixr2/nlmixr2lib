@@ -3,7 +3,7 @@ Han_2024_cabotegravir <- function() {
   reference <- "Han K, D'Amico RD, Spreen WR, Ford SL. Population pharmacokinetics of cabotegravir following intramuscular thigh injections in adults with and without HIV. Antimicrob Agents Chemother. 2024;68(12):e00880-24. doi:10.1128/aac.00880-24. Fixed parameters from: Han K, Baker M, Lovern M, et al. Br J Clin Pharmacol. 2022;88(10):4607-4622. doi:10.1111/bcp.15439"
   vignette <- "Han_2024_cabotegravir"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
-  dosing <- c("central", "depot_im_gluteal", "depot_im_thigh", "depot_oral")
+  dosing <- c("depot_im_gluteal", "depot_im_thigh", "depot_oral")
 
   covariateData <- list(
     WT = list(

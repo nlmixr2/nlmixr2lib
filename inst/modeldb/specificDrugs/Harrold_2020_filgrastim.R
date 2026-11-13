@@ -20,7 +20,7 @@ Harrold_2020_filgrastim <- function() {
     concentration = "nmol/L",
     notes = "Filgrastim dose in nmol to compartment 'depot' (1 ug = 1e-6/18800 mol = 53.2 pmol for filgrastim; molecular weight 18.8 kDa). Radiation dose in Gy delivered as a bolus to compartment 'depot_kpd'. Filgrastim concentration Cc reported in nM. ANC reported in cells/uL (= 10^9 cells/L when divided by 1000)."
   )
-  dosing <- c("depot", "central", "depot_kpd")
+  dosing <- c("depot", "depot_kpd")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

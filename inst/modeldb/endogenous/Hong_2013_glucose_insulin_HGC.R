@@ -38,6 +38,7 @@ Hong_2013_glucose_insulin_HGC <- function() {
     dosing = "mg of glucose (intravenous loading dose plus Biostator-controlled GIR into the glucose compartment)",
     concentration = "mg/L for glucose (G / VG) and mU/L for insulin (I / VI); convert to mg/dL via /10 and to mmol/L via /18.02 for glucose"
   )
+  dosing <- "glucose"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

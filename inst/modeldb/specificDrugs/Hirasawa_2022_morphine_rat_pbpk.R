@@ -33,6 +33,7 @@ Hirasawa_2022_morphine_rat_pbpk <- function() {
   vignette <- "Hirasawa_2022_leicns_pk31_csf_flow"
 
   units <- list(time = "min", dosing = "ng", concentration = "ng/mL")
+  dosing <- c("central", "brain_csf_lv", "brain_csf_tfv", "brain_csf_cm", "brain_csf_sas")
 
   # Choroid-plexus microvessels, separated from the whole-brain microvessels
   # in LeiCNS-PK3.1 as the donor for both blood-CSF barriers.

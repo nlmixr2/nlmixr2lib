@@ -46,6 +46,7 @@ Ippolito_2024_pacmilimab_qsp <- function() {
     dosing = "nmol",
     concentration = "nmol/L"
   )
+  dosing <- "q_V_C_P_mm"
 
   covariateData <- list()
 

@@ -42,6 +42,7 @@ Hong_2013_glucose_insulin_MTT <- function() {
     dosing = "mg of glucose (dummy meal dose of 100000 mg = 100 g into the glucose compartment; absorbed via the Savic transit chain)",
     concentration = "mg/L for glucose (G / VG) and mU/L for insulin (I / VI); convert glucose to mg/dL via /10 and to mmol/L via /18.02"
   )
+  dosing <- "glucose"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
