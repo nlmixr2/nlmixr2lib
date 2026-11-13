@@ -1,0 +1,503 @@
+---
+title: "S65487 PK/PD and microdose-optimized PK (Burlot 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{S65487 PK/PD and microdose-optimized PK (Burlot 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Burlot et al. (2026) report two final models for the intravenous Bcl2
+inhibitor S65487, both fitted in Monolix 2023R1:
+
+1. **PhI-II PK/PD model** (`Burlot_2026_S65487_pkpd`): a linear
+   three-compartment PK model linked to an indirect-response model in which
+   S65487 inhibits the formation (`kin`) of the Bcl2/Bim complex measured in
+   PBMC, fitted to the phase I and phase I/II therapeutic-dose data (Table 2).
+2. **Microdose-optimized (MO) PK model** (`Burlot_2026_S65487_microdose_pk`):
+   the same three-compartment backbone with an added Michaelis-Menten
+   elimination pathway and a Michaelis-Menten distribution into the second
+   peripheral compartment (a Michaelis-Menten approximation of target-mediated
+   drug disposition), fitted jointly to a 0.1 mg microdose in healthy
+   volunteers and to the therapeutic doses (Table 3, Equations 1-2).
+
+* Citation: `r rxode2::rxode(readModelDb("Burlot_2026_S65487_pkpd"))$reference`
+* Article: <https://doi.org/10.1002/psp4.70288>
+
+# Population
+
+The analyses pooled three studies (Table 1): a phase 0 microdose study in five
+healthy male volunteers (EXT 001; single 0.1 mg IV dose; median age 21 years,
+median weight 83.7 kg), a phase I monotherapy study in 60 adults with
+relapsed/refractory AML, non-Hodgkin lymphoma or multiple myeloma (study 002;
+25-1200 mg; median age 67 years; 35% female) and a phase I/II study of S65487
+plus azacitidine in 41 adults with previously untreated AML (study 003;
+50-533 mg; median age 75 years; 41.4% female). Doses were given as IV
+infusions on several weekly or intensified schedules (Supplementary Figure S1).
+
+The PhI-II PK/PD model uses the 101 patients of studies 002 and 003 (1947
+S65487 concentrations and 456 normalized Bcl2/Bim complex concentrations from 87
+patients). The MO PK model uses all 106 subjects (2031 S65487 concentrations).
+
+```{r population}
+str(rxode2::rxode(readModelDb("Burlot_2026_S65487_pkpd"))$population)
+str(rxode2::rxode(readModelDb("Burlot_2026_S65487_microdose_pk"))$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. Both tables
+report IIV as Monolix CV% (`100 * sqrt(exp(omega^2) - 1)`), so each variance in
+the model files is `omega^2 = log(1 + (CV/100)^2)`.
+
+## PhI-II PK/PD model (Table 2, 'PhI-II PK/PD model' column)
+
+| Parameter | Paper | Value | Source |
+|---|---|---|---|
+| `lcl` | Cl | 12.2 L/h | Table 2 |
+| `lvc` | Vcentral | 7.6 L | Table 2 |
+| `lq` / `lvp` | Q2 / V2 (1st peripheral) | 1.5 L/h / 16.4 L | Table 2 |
+| `lq2` / `lvp2` | Q3 / V3 (2nd peripheral) | 15.5 L/h / 14.8 L | Table 2 |
+| `lrbase` | R0 | 2.1e-4 ug/L | Table 2 |
+| `lkout` | kout | 0.4 1/h | Table 2 |
+| `limax` | Imax | 1 (fixed) | Results, 'Imax parameter was set to 1' |
+| `lic50` | IC50 (study 002) | 140.9 ug/L | Table 2 |
+| `e_study_s65487_003_ic50` | beta-IC50 STUDY003 | -1.6 | Table 2 |
+| `etalcl`, `etalvc` | IIV Cl, Vcentral; correlation | 58.9%, 119.6%; 0.6 | Table 2 |
+| `etalq`, `etalvp`, `etalq2`, `etalvp2` | IIV Q2, V2, Q3, V3 | 258.2%, 365.3%, 365.4%, 53.8% | Table 2 |
+| `etalrbase`, `etalkout`, `etalic50` | IIV R0, kout, IC50 | 146.2%, 90.2%, 1386.5% | Table 2 |
+| `addSd`, `propSd` | sigma Add, sigma Prop (PK, combined) | 2.9 ug/L, 0.5 | Table 2; Results 'combined model for PK data' |
+| `propSd_bcl2_bim` | sigma Prop2 (PD, proportional) | 0.7 | Table 2 |
+| `d/dt(bcl2_bim)` | `kin * (1 - Imax * Cc / (IC50 + Cc)) - kout * R` | n/a | Results; Supplementary Figure S2 |
+
+## MO PK model (Table 3)
+
+| Parameter | Paper | Value | Source |
+|---|---|---|---|
+| `lcl` | Cl | 10.5 L/h | Table 3 |
+| `lvc` | Vcentral | 9.2 L | Table 3 |
+| `lvmax` / `lkm` | VmaxElimination / KmElimination | 892.5 ug/h / 17.7 ug/L | Table 3; Equation 1 |
+| `lq` / `lvp` | Q2 / V2 | 14.4 L/h / 19.6 L | Table 3 |
+| `lk31` | k31 | 0.2 1/h | Table 3; Equation 2 |
+| `lvmax_peripheral2` / `lkm_peripheral2` | VmaxDistribution / KmDistribution | 5105.4 ug/h / 145.1 ug/L | Table 3; Equations 1-2 |
+| `etalcl`, `etalvc` | IIV Cl, Vcentral; correlation | 63.7%, 101.9%; 0.5 | Table 3 |
+| `etalq`, `etalvp` | IIV Q2, V2 | 161.5%, 81.5% | Table 3 |
+| `addSd`, `propSd` | sigma Add2, sigma Prop2 (therapeutic dose) | 6.7 ug/L, 0.5 | Table 3 |
+| `addSd_microdose`, `propSd_microdose` | sigma Add (fixed), sigma Prop (microdose) | 0.001 ug/L, 0.1 | Table 3 |
+| `d/dt(central)`, `d/dt(peripheral2)` | Equations 1-2 | n/a | Results; Supplementary Figure S7 |
+
+```{r models}
+mod_pkpd <- readModelDb("Burlot_2026_S65487_pkpd")
+mod_mo <- readModelDb("Burlot_2026_S65487_microdose_pk")
+```
+
+# PhI-II PK/PD model: Bcl2/Bim complex inhibition
+
+## Figure 2: typical-value profiles
+
+Figure 2 of the paper shows the normalized Bcl2/Bim complex change from
+baseline at 50-1200 mg on two schedules (A: days 1, 3, 5 and 8; B: days 1-5,
+8 and 9), separately for the phase I (study 002) and phase I/II (study 003)
+IC50. Infusions are simulated over 0.5 h (see Assumptions).
+
+```{r fig2-events}
+doses_fig2 <- c(50, 100, 150, 300, 500, 800, 1000, 1200)
+schedules <- list(
+  "A: days 1, 3, 5, 8" = c(1, 3, 5, 8),
+  "B: days 1-5, 8, 9" = c(1:5, 8, 9)
+)
+obs_times <- seq(0, 240, by = 0.5)
+
+make_arm <- function(id, dose, days, study, schedule, n = 1L) {
+  ids <- id - 1L + seq_len(n)
+  dosing <- tidyr::crossing(id = ids, time = (days - 1) * 24) |>
+    dplyr::mutate(evid = 1L, amt = dose, dur = 0.5, cmt = "central")
+  # Two declared endpoints (Cc and the bcl2_bim state): observation rows name
+  # the state endpoint; rxode2 still returns Cc on every row.
+  obs <- tidyr::crossing(id = ids, time = obs_times) |>
+    dplyr::mutate(evid = 0L, amt = NA_real_, dur = NA_real_, cmt = "bcl2_bim")
+  dplyr::bind_rows(dosing, obs) |>
+    dplyr::mutate(
+      STUDY_S65487_003 = study,
+      dose = dose,
+      schedule = schedule
+    ) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+arms_fig2 <- tidyr::crossing(
+  dose = doses_fig2,
+  schedule = names(schedules),
+  study = c(0L, 1L)
+) |>
+  dplyr::mutate(id = seq_len(dplyr::n()))
+
+ev_fig2 <- dplyr::bind_rows(lapply(seq_len(nrow(arms_fig2)), function(i) {
+  a <- arms_fig2[i, ]
+  make_arm(a$id, a$dose, schedules[[a$schedule]], a$study, a$schedule)
+}))
+stopifnot(!anyDuplicated(unique(ev_fig2[, c("id", "time", "evid")])))
+```
+
+```{r fig2, fig.width = 8, fig.height = 6}
+sim_typ <- rxode2::rxSolve(
+  mod_pkpd,
+  events = ev_fig2,
+  omega = NA,
+  sigma = NA,
+  useLinCmt = FALSE,
+  keep = c("dose", "schedule", "STUDY_S65487_003")
+) |>
+  as.data.frame() |>
+  dplyr::group_by(id) |>
+  dplyr::mutate(pct = 100 * (bcl2_bim / bcl2_bim[1] - 1)) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(
+    study = ifelse(STUDY_S65487_003 == 1, "Phase I/II (003)", "Phase I (002)"),
+    dose_f = factor(paste(dose, "mg"), levels = paste(doses_fig2, "mg"))
+  )
+
+ggplot(sim_typ, aes(time, pct, colour = dose_f)) +
+  geom_line() +
+  facet_grid(schedule ~ study) +
+  scale_x_continuous(breaks = seq(0, 240, by = 24)) +
+  labs(
+    x = "Time (h)",
+    y = "Bcl2/Bim complex change from baseline (%)",
+    colour = "Dose",
+    caption = "Replicates Figure 2 of Burlot 2026 (typical-value prediction)."
+  )
+```
+
+## Maximum predicted reduction
+
+The Results report the maximum predicted reduction of the complex at the top
+dose: 85.8% (schedule A) and 91.4% (schedule B) for the phase I population, and
+94.7% and 97.6% for the phase I/II population, from simulations of 2000 virtual
+patients per scenario. The figure axis is the change from the baseline
+*median*, so the published numbers are population medians, not typical-value
+predictions; with an IC50 IIV of 1386% CV the two differ by several percentage
+points. The check below therefore simulates 200 patients per scenario with
+between-subject variability and takes the median change from baseline at each
+time.
+
+```{r maxred}
+rxode2::rxSetSeed(20260617)
+n_arm <- 200L
+arms_max <- tidyr::crossing(schedule = names(schedules), study = c(0L, 1L)) |>
+  dplyr::mutate(id0 = (seq_len(dplyr::n()) - 1L) * n_arm + 1L)
+ev_max <- dplyr::bind_rows(lapply(seq_len(nrow(arms_max)), function(i) {
+  a <- arms_max[i, ]
+  make_arm(a$id0, 1200, schedules[[a$schedule]], a$study, a$schedule, n = n_arm)
+}))
+stopifnot(!anyDuplicated(unique(ev_max[, c("id", "time", "evid")])))
+
+sim_max <- rxode2::rxSolve(
+  mod_pkpd,
+  events = ev_max,
+  useLinCmt = FALSE,
+  keep = c("schedule", "STUDY_S65487_003")
+) |>
+  as.data.frame() |>
+  dplyr::select(id, time, bcl2_bim, schedule, STUDY_S65487_003) |>
+  dplyr::group_by(id) |>
+  dplyr::mutate(pct = 100 * (bcl2_bim / bcl2_bim[1] - 1)) |>
+  dplyr::ungroup()
+
+max_red <- sim_max |>
+  dplyr::group_by(schedule, STUDY_S65487_003, time) |>
+  dplyr::summarise(med = median(pct), .groups = "drop") |>
+  dplyr::group_by(schedule, STUDY_S65487_003) |>
+  dplyr::summarise(simulated = -min(med), .groups = "drop")
+
+typ_red <- sim_typ |>
+  dplyr::filter(dose == 1200) |>
+  dplyr::group_by(schedule, STUDY_S65487_003) |>
+  dplyr::summarise(typical = -min(pct), .groups = "drop")
+
+published_red <- tibble::tribble(
+  ~schedule, ~STUDY_S65487_003, ~published,
+  "A: days 1, 3, 5, 8", 0L, 85.8,
+  "B: days 1-5, 8, 9", 0L, 91.4,
+  "A: days 1, 3, 5, 8", 1L, 94.7,
+  "B: days 1-5, 8, 9", 1L, 97.6
+)
+
+tab_red <- published_red |>
+  dplyr::left_join(max_red, by = c("schedule", "STUDY_S65487_003")) |>
+  dplyr::left_join(typ_red, by = c("schedule", "STUDY_S65487_003")) |>
+  dplyr::mutate(
+    population = ifelse(STUDY_S65487_003 == 1, "Phase I/II (003)", "Phase I (002)"),
+    diff = simulated - published
+  )
+stopifnot(nrow(tab_red) == 4L, !anyNA(tab_red$simulated))
+
+tab_red |>
+  dplyr::select(population, schedule, published, simulated, typical, diff) |>
+  dplyr::rename(
+    "Population" = population,
+    "Schedule (1200 mg)" = schedule,
+    "Published max reduction (%)" = published,
+    "Simulated median max reduction (%)" = simulated,
+    "Typical-value max reduction (%)" = typical,
+    "Difference (points)" = diff
+  ) |>
+  knitr::kable(digits = 1)
+
+# A cohort of 200 per scenario puts the median within about 1-2 points of its
+# population value: the four differences were +0.8, -1.8, +1.4 and -0.1 points
+# with 200 per scenario and +1.3, -0.9, -0.5 and -0.5 with 500. A mis-transcribed IC50, IC50 study effect or
+# IC50 variance moves these by more than 5 points (the typical-value column,
+# which drops the IIV, is up to 6 points off in the phase I population).
+stopifnot(
+  all(abs(tab_red$diff) < 5),
+  abs(mean(tab_red$diff)) < 3
+)
+```
+
+# MO PK model: microdose versus therapeutic doses
+
+## NCA of individual clearance and volume (Figure 3A)
+
+The paper's non-compartmental exploration (Figure 3A) found mean individual
+clearance of 63.2 L/h after the microdose versus 14.2 L/h at therapeutic doses,
+and mean volume (Dose / lambda_z / AUC0-inf) of 855.0 versus 81.41 L. The
+cohorts below are simulated from the MO PK model on the published sampling
+schedules: the microdose study sampled to 48 h after a 0.25 h infusion, and the
+phase I study at the end of a 0.5 h infusion and 0.25-24 h afterwards
+(Supplemental material 1). The therapeutic arm uses 400 mg, inside the
+25-1200 mg range of the pooled NCA.
+
+```{r mo-events}
+rxode2::rxSetSeed(20260618)
+n_mo <- 200L
+t_micro <- c(0, 0.25, 0.33, 0.42, 0.58, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12, 18, 24, 36, 48)
+t_ther <- c(0, 0.5, 0.75, 1, 1.5, 2.5, 4.5, 7.5, 10.5, 24)
+
+make_pk_arm <- function(ids, dose, dur, times, ext001, treatment, obs_cmt = "central") {
+  dosing <- tibble::tibble(
+    id = ids, time = 0, evid = 1L, amt = dose, dur = dur, cmt = "central"
+  )
+  obs <- tidyr::crossing(id = ids, time = times) |>
+    dplyr::mutate(evid = 0L, amt = NA_real_, dur = NA_real_, cmt = obs_cmt)
+  dplyr::bind_rows(dosing, obs) |>
+    dplyr::mutate(STUDY_S65487_EXT001 = ext001, treatment = treatment) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+ev_mo <- dplyr::bind_rows(
+  make_pk_arm(seq_len(n_mo), 0.1, 0.25, t_micro, 1L, "Microdose 0.1 mg"),
+  make_pk_arm(n_mo + seq_len(n_mo), 400, 0.5, t_ther, 0L, "Therapeutic 400 mg")
+)
+stopifnot(!anyDuplicated(unique(ev_mo[, c("id", "time", "evid")])))
+
+sim_mo <- rxode2::rxSolve(mod_mo, events = ev_mo, keep = c("treatment")) |>
+  as.data.frame()
+```
+
+```{r mo-pknca}
+# Integrator noise at the far tail can undershoot zero by about atol.
+stopifnot(all(sim_mo$Cc >= -1e-6 * max(sim_mo$Cc), na.rm = TRUE))
+conc_mo <- sim_mo |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment) |>
+  dplyr::mutate(Cc = pmax(Cc, 0))
+conc_mo <- dplyr::bind_rows(
+  conc_mo,
+  conc_mo |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+dose_mo <- ev_mo |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, dur, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc_mo, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(
+  dose_mo, amt ~ time | treatment + id,
+  route = "intravascular", duration = "dur"
+)
+intervals_mo <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, aucinf.obs = TRUE, half.life = TRUE,
+  cl.obs = TRUE, vz.obs = TRUE
+)
+nca_mo <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals_mo))
+
+# Doses are in mg and Cc in ug/L, so Dose/AUC is in mg/(ug*h/L) = 1000 L/h.
+ind_mo <- as.data.frame(nca_mo) |>
+  dplyr::filter(PPTESTCD %in% c("aucinf.obs", "cl.obs", "vz.obs")) |>
+  dplyr::select(id, treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::mutate(
+    cl.obs = cl.obs * 1000,
+    vz.obs = vz.obs * 1000,
+    dn_auc = aucinf.obs / ifelse(grepl("Microdose", treatment), 0.1, 400) / 1000
+  )
+stopifnot(nrow(ind_mo) == 2L * n_mo)
+
+sim_means <- ind_mo |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(
+    cl.obs = mean(cl.obs, na.rm = TRUE),
+    vz.obs = mean(vz.obs, na.rm = TRUE),
+    .groups = "drop"
+  )
+published_nca <- tibble::tribble(
+  ~treatment, ~cl.obs, ~vz.obs,
+  "Microdose 0.1 mg", 63.2, 855.0,
+  "Therapeutic 400 mg", 14.2, 81.41
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_means,
+  reference = published_nca,
+  by = "treatment",
+  units = c(cl.obs = "L/h", vz.obs = "L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Mean individual NCA clearance and volume: MO PK model simulation vs. Burlot 2026 Figure 3A (observed). * differs from reference by >20%."
+)
+```
+
+```{r fig3a, fig.width = 8, fig.height = 4}
+ind_mo |>
+  dplyr::select(id, treatment, dn_auc, cl.obs, vz.obs) |>
+  tidyr::pivot_longer(c(dn_auc, cl.obs, vz.obs)) |>
+  dplyr::mutate(name = factor(
+    name,
+    levels = c("dn_auc", "cl.obs", "vz.obs"),
+    labels = c("Dose-normalized AUC (h/L)", "Cl (L/h)", "V (L)")
+  )) |>
+  ggplot(aes(treatment, value, fill = treatment)) +
+  geom_boxplot(outlier.size = 0.5) +
+  facet_wrap(~name, scales = "free_y") +
+  scale_y_log10() +
+  labs(
+    x = NULL, y = "Individual value", fill = NULL,
+    caption = "Replicates Figure 3A of Burlot 2026 with simulated subjects from the MO PK model."
+  ) +
+  theme(axis.text.x = element_blank())
+```
+
+The microdose clearance comes out close to the observed mean because, far
+below both Km values, the Michaelis-Menten elimination acts as an extra
+first-order clearance of VmaxElimination / KmElimination = 892.5 / 17.7 = 50.4
+L/h on top of the linear 10.5 L/h. Both volume rows exceed the 20% flag
+(about 550 L simulated vs 855 L observed for the microdose, about 100 L vs
+81 L at therapeutic doses). The published volumes are Dose / lambda_z / AUC
+from five microdose subjects and from the 24 h therapeutic sampling window, so
+lambda_z is poorly determined in both, and the paper does not report them as
+model-fitting targets. The values are left as published; the model is not
+adjusted to match them.
+
+```{r mo-check}
+# The ratio of the two clearances is the nonlinearity the MO PK model was
+# built to capture (observed ratio of means 63.2 / 14.2 = 4.5). The median
+# ratio is used because it is robust to which subjects land in the tails; it
+# came out at 5.8 here (ratio of means 5.0), with a cohort-to-cohort spread of
+# roughly +/- 0.5. A lost Michaelis-Menten arm or a units slip in Vmax
+# collapses the ratio towards 1 or moves it tenfold.
+med_cl <- ind_mo |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(cl = median(cl.obs, na.rm = TRUE), .groups = "drop")
+ratio_cl <- med_cl$cl[grepl("Microdose", med_cl$treatment)] /
+  med_cl$cl[grepl("Therapeutic", med_cl$treatment)]
+ratio_cl
+stopifnot(ratio_cl > 3, ratio_cl < 8)
+```
+
+## Exposure at the microdose: PhI-II versus MO PK model (Figure 4)
+
+Figure 4 shows that the PhI-II PK model over-predicted the microdose AUC
+about 4.8-fold (mean pAUC/oAUC) and the MO PK model about 1.1-fold. Both are
+ratios to the same observed AUCs, so the typical-value AUC0-48h of the two
+models after the 0.1 mg microdose should differ by about 4.8 / 1.1 = 4.4-fold.
+The PhI-II model's PK does not depend on the study covariate.
+
+```{r fig4}
+t_typ <- seq(0, 48, by = 0.05)
+ev_typ_mo <- make_pk_arm(1L, 0.1, 0.25, t_typ, 1L, "Microdose 0.1 mg")
+ev_typ_pkpd <- make_pk_arm(1L, 0.1, 0.25, t_typ, 1L, "Microdose 0.1 mg",
+                           obs_cmt = "bcl2_bim") |>
+  dplyr::mutate(STUDY_S65487_003 = 0L)
+auc48 <- function(mod, ev) {
+  s <- rxode2::rxSolve(mod, events = ev, omega = NA, sigma = NA,
+                       useLinCmt = FALSE) |>
+    as.data.frame()
+  stopifnot(nrow(s) == length(t_typ))
+  sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2)
+}
+auc_pkpd <- auc48(mod_pkpd, ev_typ_pkpd)
+auc_mo <- auc48(mod_mo, ev_typ_mo)
+tibble::tibble(
+  model = c("PhI-II PK/PD model", "MO PK model"),
+  `Typical AUC0-48h (ug*h/L)` = c(auc_pkpd, auc_mo)
+) |>
+  knitr::kable(digits = 4)
+auc_ratio <- auc_pkpd / auc_mo
+auc_ratio
+# Deterministic typical-value solves; the published 4.8 and 1.1 are means of
+# per-subject ratios in five subjects, so allow +/- 25% around 4.4.
+stopifnot(auc_ratio > 3.3, auc_ratio < 5.5)
+```
+
+# Assumptions and deviations
+
+- **Infusion durations.** The paper gives no infusion duration. The sampling
+  schedules in Supplemental material 1 place the end of infusion at 0.25 h in
+  the microdose study and at about 0.5 h in the phase I study (the phase I/II
+  study sampled 0.33 h after the start of infusion and again at its end). The
+  simulations use 0.25 h for the microdose and 0.5 h for every therapeutic dose,
+  including the Figure 2 scenarios.
+- **IIV scale.** Tables 2 and 3 give IIV as CV%. Monolix reports log-normal
+  random effects as `100 * sqrt(exp(omega^2) - 1)`, so the variances are
+  `log(1 + CV^2)`. The alternative reading (CV% = 100 * omega) would give an IC50
+  standard deviation of 13.9 on the log scale. The variance reading reproduces
+  the paper's population-median maximum reductions (table above).
+- **Correlations.** The Cl-Vcentral correlations are printed to one decimal
+  (0.6 and 0.5) and are used as printed.
+- **IC50 study effect.** Table 2 prints beta-IC50 STUDY003 = -1.6 on log(IC50),
+  giving 140.9 * exp(-1.6) = 28.4 ug/L for study 003, while the Results text
+  quotes 29.4 ug/L (which corresponds to -1.567, inside the rounding of -1.6).
+  The model uses the tabulated -1.6. The text's 140 ug/L for study 002 is the
+  rounded Table 2 value 140.9.
+- **Residual error form.** The paper says "combined" without naming the Monolix
+  variant. The models use `combined1()` (SD = a + b * f), the Monolix default.
+- **MO PK microdose proportional error.** Table 3 prints the microdose
+  proportional error as 0.1 with unit '%'. The model reads it as a fraction
+  (10%), consistent with the unitless 0.5 printed for the therapeutic-dose
+  proportional error; 0.1% would be an implausibly small assay error.
+- **Residual-error switch.** The MO PK model's two combined error models are
+  selected with `STUDY_S65487_EXT001` (1 = microdose study). In the source, the
+  study, the dose level, the population and the assay all coincide.
+- **Schematic labels.** Supplementary Figure S2 draws the Q2 and Q3 arrows next
+  to the opposite peripheral compartments; the caption and Table 2 pair Q2 with
+  V2 (1st peripheral) and Q3 with V3 (2nd peripheral), which the model follows.
+- **Units.** Doses are in mg and concentrations in ug/L, so `Cc = central / vc
+  * 1000`. VmaxElimination and VmaxDistribution are in ug/h and are divided by
+  1000 to give mg/h fluxes. R0 is the Bcl2/Bim complex concentration normalized
+  by total protein; Table 2 gives its unit as ug/L, which the model carries.
+- **Saturable distribution names.** VmaxDistribution and KmDistribution are
+  named `vmax_peripheral2` and `km_peripheral2`, following the
+  `vmax_<destination>` / `km_<destination>` pattern used for other saturable
+  transfers out of the central compartment.
+- **Base PK/PD model.** Table 2 also lists a base PK/PD model without the study
+  effect and the Cl-Vcentral correlation; only the final PhI-II PK/PD model is
+  packaged. The intermediate PhI-II PK model refitted with the microdose data,
+  whose estimates are not reported, is not packaged.
+- No erratum or correction notice was found for the article as of 2026-11-13.

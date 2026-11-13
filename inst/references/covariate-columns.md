@@ -19768,6 +19768,27 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Bihorel_2021_BMS986166.R` (selects the study-specific relative bioavailability of BMS-986166, 1 FIXED vs 0.764, the fraction of the molar dose absorbed as BMS-986166-P, 0.0771 vs 0.0797, and the study-specific low-exposure fold shifts on both).
 - **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Bihorel 2021 Discussion warns that the F1 difference may compensate for time-dependent PK changes after repeated dosing rather than reflect a true bioavailability difference, which is why the model keys it on the study and not on a single- vs multiple-dose regimen flag.
 
+### STUDY_S65487_003 (**canonical for the S65487 phase I/II study 003 (with azacitidine in untreated AML) indicator**)
+- **Description:** 1 = subject from S65487 study 003, the phase I/II study of S65487 in combination with azacitidine in previously untreated AML (EudraCT 2020-003061-19); 0 = study 002, the phase I S65487 monotherapy study in relapsed/refractory AML, non-Hodgkin lymphoma or multiple myeloma (EudraCT 2018-004170-97). Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (phase I study 002).
+- **Source aliases:**
+  - `STUDY003` -- the `beta-IC50 STUDY003` row of Burlot 2026 Table 2.
+- **Example models:** `Burlot_2026_S65487_pkpd.R` (log-scale effect -1.6 on the IC50 of S65487 inhibition of Bcl2/Bim complex formation; IC50 140.9 ug/L in study 002 vs about 29 ug/L in study 003).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. The drug token is carried because the bare sponsor study numbers (`002`, `003`) are not unique across programmes. Burlot 2026 attributes the effect to the populations (pretreated relapsed/refractory vs newly diagnosed patients) rather than to azacitidine, which does not act on the Bcl2/Bim complex; the model therefore keys it on the study, not on a `CONMED_AZACITIDINE` flag.
+
+### STUDY_S65487_EXT001 (**canonical for the S65487 phase 0 microdose study EXT 001 indicator**)
+- **Description:** 1 = subject from S65487 study EXT 001, the phase 0 single 0.1 mg IV microdose study in healthy volunteers (EudraCT 2018-001117-33); 0 = the therapeutic-dose studies 002 and 003. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (therapeutic-dose studies 002 / 003).
+- **Source aliases:** none (Burlot 2026 Table 3 labels the residual-error rows 'microdose' vs 'therapeutic dose').
+- **Example models:** `Burlot_2026_S65487_microdose_pk.R` (selects the microdose combined residual-error model, additive 0.001 ug/L fixed and proportional 0.1, over the therapeutic-dose one).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. In the source the study, the dose level, the population (healthy vs patients) and the bioanalytical assay (LLOQ 0.001 vs 5 ug/L) all coincide; Burlot 2026 ties the separate error models to the assays. The indicator selects residual error only and acts on no PK parameter.
+
 ### STUDY_MC38_2 (**canonical for the Baranda 2024 MC38 mouse study 2 indicator**)
 - **Description:** 1 = animal from MC38 syngeneic-tumour study 2 of the four pooled SAR439459 mouse studies in Baranda 2024 (single dose of 10, 25 or 50 mg/kg); 0 = any other study of the four. Subject-level (time-fixed).
 - **Units:** (binary)

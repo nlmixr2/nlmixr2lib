@@ -7358,6 +7358,10 @@ navbar:
         href: articles/Aruldhas_2021_methadone.html
       - text: "S33138 (Bertrand 2011)"
         href: articles/Bertrand_2011_S33138.html
+      - text: "S65487 microdose pk (Burlot 2026)"
+        href: articles/Burlot_2026_S65487.html
+      - text: "S65487 pkpd (Burlot 2026)"
+        href: articles/Burlot_2026_S65487.html
       - text: "SAL003 (Peng 2024)"
         href: articles/Peng_2024_SAL003.html
       - text: "SCR430 rat control pbpk (Kim 2022)"
@@ -9644,6 +9648,7 @@ articles:
   - articles/Bulitta_2011_cefpirome
   - articles/Bulitta_2019_pefloxacin
   - articles/Bulitta_2024_contezolid
+  - articles/Burlot_2026_S65487
   - articles/BurmeisterGetz_2025_iptacopan
   - articles/Burns_2015_tenofovir
   - articles/Bursi_2017_lidocaine
