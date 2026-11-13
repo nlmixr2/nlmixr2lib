@@ -697,16 +697,18 @@ stopifnot(
 * **Every simulation states `addlKeepsCov = FALSE`, the `rxSolve()` default.**
   Doses are lagged and given with `rate = -2`, and `addlKeepsCov` decides which
   record's covariates such a dose takes its bioavailability from. An
-  observation, or a dose into another compartment, at the same time as the
-  dose supplies it under either setting. Otherwise, with
+  observation at the same time as the dose supplies it under either setting
+  (a dose into another compartment can too, depending on its own lag and the
+  setting). Otherwise, with
   `FALSE` a dose takes it from its own record, and with `TRUE` (and with
   `nonmem = TRUE`) a lagged `rate = -2` dose takes it from the record *before*
   it, which in this cohort is the previous dose. The zero-order duration, which
-  depends on dose and formulation here, comes from an observation, or a dose
-  into another compartment, at the same time or inside the lag window under
-  either setting; another dose into the depot, or a record exactly at the
-  arrival time, does not count, and with `nonmem = TRUE` a record at the same
-  time counts only if its row comes after the dose's. Every observation here carries
+  depends on dose and formulation here, comes from an observation at the same
+  time or inside the lag window under either setting; a dose into another
+  compartment can too, depending on that compartment's own lag. Another dose
+  into the depot, or a record exactly at the arrival time, does not count,
+  and with `nonmem = TRUE` a record at the same time counts only if its row
+  comes after the dose's. Every observation here carries
   the occasion of the dose that opened its interval, so `FALSE` gives each dose
   its own occasion and its own `DOSE_ATOGEPANT_MG` and comedication values.
   `TRUE` would give the first dose of each week the previous week's
