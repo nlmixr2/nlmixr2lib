@@ -18,7 +18,7 @@ Chen_2014_immunogenicity_qsp <- function() {
     dosing = "pmole (antigenic protein; convert from mg via molecular weight)",
     concentration = "pM (antigenic protein in plasma)"
   )
-  dosing <- c("MS", "AgIS")
+  dosing <- c("Ag", "MS", "AgIS")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

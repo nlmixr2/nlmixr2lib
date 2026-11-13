@@ -3,7 +3,7 @@ Chun_2025_tramadol_ss <- function() {
   reference <- "Chun D, Mehta P, Guzy S, Cicali B, Lauretti GR, Lanchote VL, Vozmediano V, De Moraes N. Enhanced Sensitivity to Tramadol in Diabetic Neuropathic Pain Compared to Nerve Compression Neuropathies: A Population PK/PD Model Analysis. CPT Pharmacometrics Syst Pharmacol. 2025;14(4):781-795. doi:10.1002/psp4.13315"
   vignette <- "Chun_2025_tramadol"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
-  dosing <- c("depot", "central", "depot_m1")
+  dosing <- c("depot", "depot_m1")
 
   covariateData <- list(
     BMI = list(

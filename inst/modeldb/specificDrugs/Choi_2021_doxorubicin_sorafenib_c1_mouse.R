@@ -26,7 +26,7 @@ Choi_2021_doxorubicin_sorafenib_c1_mouse <- function() {
   vignette <- "Choi_2021_doxorubicin_sorafenib_mouse"
 
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
-  dosing <- "depot_sorafenib"
+  dosing <- c("depot_sorafenib", "central_dox")
 
   compartmentData <- list(
     central_dox = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = TRUE),

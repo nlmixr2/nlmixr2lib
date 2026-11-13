@@ -3,6 +3,7 @@ Cao_2013_tefibazumab <- function() {
   reference <- "Cao Y, Balthasar JP, Jusko WJ. Second-generation minimal physiologically-based pharmacokinetic model for monoclonal antibodies. J Pharmacokinet Pharmacodyn. 2013 Oct;40(5):597-607. doi:10.1007/s10928-013-9332-2. Tefibazumab plasma data digitized from Hetherington S et al. Antimicrob Agents Chemother. 2006;50(10):3499-3500 (PMID 17005843)."
   vignette <- "Cao_2013_tefibazumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  dosing <- "plasma"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

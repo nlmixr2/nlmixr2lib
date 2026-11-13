@@ -37,6 +37,7 @@ Colin_2025_remimazolam_umss <- function() {
     dosing = "mg (remimazolam and fentanyl)",
     concentration = "ng/mL (remimazolam, CNS 7054 and fentanyl; the UMSS outputs are category probabilities in 0-1)"
   )
+  dosing <- c("central", "central_fentanyl")
 
   # What each ODE state holds, verified against the Supplemental Digital
   # Content 1 'final PKPD model for UMSS' control stream ($MODEL ...

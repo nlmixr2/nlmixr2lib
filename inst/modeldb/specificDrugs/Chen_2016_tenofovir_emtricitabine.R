@@ -5,7 +5,7 @@ Chen_2016_tenofovir_emtricitabine <- function() {
   paper_specific_compartments <- c("tfvdp", "ftctp", "datp", "dgtp", "dctp", "ttp")
 
   units <- list(time = "day", dosing = "mg", concentration = "ng/mL")
-  dosing <- c("depot", "central", "depot_ftc")
+  dosing <- c("depot", "depot_ftc")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

@@ -8,7 +8,7 @@ Crass_2025_pegcetacoplan_intravitreal <- function() {
   )
   vignette <- "Crass_2025_pegcetacoplan_intravitreal"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
-  dosing <- c("central", "vitreous")
+  dosing <- "vitreous"
 
   covariateData <- list(
     AGE = list(

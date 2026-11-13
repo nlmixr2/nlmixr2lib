@@ -34,6 +34,7 @@ Chou_2021_pfos_rat_lactational_pbpk <- function() {
   )
   vignette <- "Chou_2021_pfos_pbpk"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- "stomach"
 
   paper_specific_compartments <- c(
     "kidney_blood",

@@ -25,7 +25,7 @@ Cardilin_2018_radiation_radiosensitizer_mouse <- function() {
   # Tumor volume is in mm^3; radiosensitizer concentration (Cc) is in ug/mL;
   # radiation dose is in Gy; RS1 dose is in mg/kg.
   units <- list(time = "day", dosing = "mg/kg", concentration = "ug/mL")
-  dosing <- c("central", "rad_depot")
+  dosing <- c("rad_depot", "central")
 
   # No patient covariates: this is a fixed-design xenograft experiment. The
   # radiation dose per fraction is encoded as the parameter `radDose` (Gy) so it

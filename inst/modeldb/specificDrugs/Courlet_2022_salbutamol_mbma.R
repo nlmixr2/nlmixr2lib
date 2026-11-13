@@ -23,7 +23,7 @@ Courlet_2022_salbutamol_mbma <- function() {
   )
   vignette <- "Courlet_2022_salbutamol_mbma"
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
-  dosing <- c("central", "depot_oral", "depot_lung")
+  dosing <- c("depot_oral", "depot_lung")
 
   compartmentData <- list(
     depot_lung = list(analyte = "salbutamol", units = "ug", specimen = "administration site", verified = TRUE),
