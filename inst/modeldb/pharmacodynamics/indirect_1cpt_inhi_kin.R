@@ -17,7 +17,7 @@ indirect_1cpt_inhi_kin <- function() {
     lvc  <- log(90) ; label("Central volume of distribution (Vc)")
     lkel <- 0.534; label("elimination rate (1/d)")
     lic50 <- 0.67; label("Drug concentration producing 50% of maximum inhibition at effect site (ic50)")
-    limax <- 0.56; label("Maximum inhibitory factor attributed to drug (imax)")
+    limax <- log(0.8); label("Maximum inhibitory factor attributed to drug (imax)")
     lkin <- 0.48; label("Zero-order rate constant for production of drug response(1/d)")
     lkout <- 0.34; label("First-order rate constant for loss of drug response")
     lfdepot <- 0.4; label("Bioavailability (F)")

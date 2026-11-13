@@ -17,7 +17,7 @@ indirect_prec_1cpt_inhi_CLV <- function() {
     lka  <- 0.45 ; label("Absorption rate (Ka)")
     lvc <- 3.45  ; label("Central volume of distribution (Vc)")
     lcl   <- 0.04 ; label("Clearance (CL)")
-    limax <- 0.56 ; label("Maximum inhibitory factor attributed to drug (imax)")
+    limax <- log(0.8) ; label("Maximum inhibitory factor attributed to drug (imax)")
     lic50 <- 0.67; label("Drug concentration producing 50% of maximum inhibition at effect site (ic50)")
     lkin <- 0.48; label("First-order rate constant for production of drug response(1/d)")
     lkout <- 0.34; label("First-order rate constant for loss of drug response")

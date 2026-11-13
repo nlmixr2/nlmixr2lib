@@ -20,7 +20,7 @@ indirect_circ_1cpt_inhi_kout_kin_t <- function() {
     lra  <- log(0.46); label ("Amplitude of drug response (Ra)")
     ltacro  <- 0.62; label ("peak time (Acrophase) (Tz)")
     lic50 <- 0.67; label("Drug concentration producing 50% of maximum inhibition at effect site (ic50)")
-    limax <- 0.56; label("Maximum inhibitory factor attributed to drug (imax)")
+    limax <- log(0.8); label("Maximum inhibitory factor attributed to drug (imax)")
     lkout <- 0.34; label("First-order rate constant for loss of drug response")
     lfdepot <- 0.4; label("Bioavailability (F)")
     propSd <- 0.5 ; label("Proportional residual error (fraction)")
