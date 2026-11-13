@@ -28,6 +28,7 @@ Fu_2019_paclitaxel_human_pbpk <- function() {
   )
   vignette <- "Fu_2019_paclitaxel_pbpk"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- "venous"
 
   compartmentData <- list(
     venous = list(analyte = "paclitaxel", units = "mg", specimen = "plasma", verified = TRUE),

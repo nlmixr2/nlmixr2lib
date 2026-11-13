@@ -12,7 +12,15 @@ Favie_2020_neonatalHypothermia <- function() {
   )
   vignette <- "Favie_2020_neonatalHypothermia"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
-  dosing <- c("central", "central_midazolam", "central_lidocaine", "central_phenobarbital")
+  dosing <- c(
+    "central",
+    "central_midazolam",
+    "central_lidocaine",
+    "central_phenobarbital",
+    "central_gentamicin",
+    "central_amoxicillin",
+    "central_benzylpenicillin"
+  )
 
   covariateData <- list(
     WT_BIRTH = list(

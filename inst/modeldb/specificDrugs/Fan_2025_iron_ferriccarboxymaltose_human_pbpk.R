@@ -34,7 +34,7 @@ Fan_2025_iron_ferriccarboxymaltose_human_pbpk <- function() {
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
-  dosing <- "ivip"
+  dosing <- c("ivip", "plasma")
 
   # The circulating iron-carbohydrate complex preparation. Paper-mechanistic:
   # it is the undissociated FCM colloid in blood, not a canonical PK state.

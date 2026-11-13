@@ -38,7 +38,7 @@ Fan_2025_nb457trimer_human <- function() {
   )
   vignette <- "Fan_2025_antiCD4_nanobody_HIV"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
-  dosing <- c("central", "depot_ip", "depot_sc")
+  dosing <- c("depot_sc", "depot_ip")
 
   covariateData <- list(
     WT = list(

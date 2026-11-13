@@ -3,7 +3,7 @@ Fidler_2020_ranibizumab <- function() {
   reference <- "Fidler M, Fleck BW, Stahl A, Marlow N, Chastain JE, Li J, Lepore D, Reynolds JD, Chiang MF, Fielder AR; RAINBOW study group. Ranibizumab population pharmacokinetics and free VEGF pharmacodynamics in preterm infants with retinopathy of prematurity in the RAINBOW trial. Transl Vis Sci Technol. 2020;9(8):43. doi:10.1167/tvst.9.8.43"
   vignette <- "Fidler_2020_ranibizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ng/mL")
-  dosing <- c("central", "vitreous")
+  dosing <- "vitreous"
 
   compartmentData <- list(
     vitreous = list(analyte = "ranibizumab", units = "mg", specimen = "vitreous", verified = TRUE),

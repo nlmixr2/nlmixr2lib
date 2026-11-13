@@ -31,7 +31,7 @@ Franken_2015_morphine <- function() {
     dosing = "mg",
     concentration = "ug/L"
   )
-  dosing <- c("depot", "central", "depot2", "depot3")
+  dosing <- c("depot", "depot2", "depot3")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

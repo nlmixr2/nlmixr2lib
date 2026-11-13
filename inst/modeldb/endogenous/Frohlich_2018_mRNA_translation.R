@@ -20,6 +20,7 @@ Frohlich_2018_mRNA_translation <- function() {
     dosing = "normalized mRNA mass (m0 = 1)",
     concentration = "log fluorescence intensity (a.u.)"
   )
+  dosing <- "mrna"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
