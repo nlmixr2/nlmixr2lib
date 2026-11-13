@@ -150,6 +150,8 @@ nal_arms <- data.frame(
   dose_ug = c(2000, 10000)
 )
 
+# Fixed seed: the draws below feed reported results.
+set.seed(20240101)
 sim_naloxone <- lapply(seq_len(nrow(nal_arms)), function(i) {
   ev <-
     et(amt = nal_arms$dose_ug[[i]], cmt = "depot", time = 0) |>

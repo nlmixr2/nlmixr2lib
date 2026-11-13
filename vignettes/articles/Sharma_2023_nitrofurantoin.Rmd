@@ -566,6 +566,8 @@ human_events <- do.call(rbind, lapply(seq_along(human_doses), function(i) {
 human_events <- with_normal_gfr(human_events)
 stopifnot(!anyDuplicated(unique(human_events[, c("id", "time", "evid")])))
 
+# Fixed seed: the draws below feed reported results.
+rxode2::rxSetSeed(2023)
 human_sim <- rxode2::rxSolve(
   human, human_events, keep = c("treatment", "dose_mg"), returnType = "data.frame"
 )

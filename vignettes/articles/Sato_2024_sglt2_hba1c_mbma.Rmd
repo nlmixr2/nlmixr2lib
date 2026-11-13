@@ -391,6 +391,8 @@ mod_isv <- rxode2::zeroRe(mod, "sigma")
 
 isv_arms <- ref_arm(200L)
 isv_arms$DOSE_EMPA_MGD <- 11.8
+# Fixed seed: the draws below feed reported results.
+rxode2::rxSetSeed(2024)
 isv <- rxode2::rxSolve(mod_isv, isv_arms, returnType = "data.frame")
 
 ggplot(data.frame(Cc = isv$Cc), aes(Cc)) +

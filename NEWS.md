@@ -2,6 +2,7 @@
 
 # development version
 
+- Thirteen articles drew random effects before setting a seed, so the numbers they report changed from one render to the next: Almond 2016, Chen 2025 hemoporfin, Deferm 2025, Denti 2010, Gatti 1996, Hoglund 2016, Kroemer 2024, Kyhl 2016, Riccobene 2016, Sato 2024, Sharma 2023, van Hasselt 2014 and Yang 2024. Each now sets a seed before those draws (`set.seed()` where the article already seeds that way, `rxode2::rxSetSeed()` otherwise), and renders reproduce.
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

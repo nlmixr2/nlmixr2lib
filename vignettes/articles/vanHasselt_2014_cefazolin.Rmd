@@ -506,6 +506,8 @@ parameterisations.
 ```{r vpc, fig.height = 4}
 n_sub <- 100L # per arm; the 200/arm cap is a ceiling, not a target
 
+# Fixed seed: the draws below feed reported results.
+rxode2::rxSetSeed(2014)
 vpc <- do.call(rbind, lapply(c("Empirical", "Semiphysiological"), function(m) {
   ui <- if (m == "Empirical") ui_emp else ui_semi
   out <- solve_profile(ui, ega = 25, ii = tau[["q8h"]], typical = FALSE, n = n_sub)

@@ -507,6 +507,8 @@ vpc_ev <- bind_rows(lapply(seq_len(nrow(vpc_arms)), function(k) {
   bind_rows(obs, doses) |> mutate(arm = arm$label)
 }))
 
+# Fixed seed: the draws below feed reported results.
+rxode2::rxSetSeed(2024)
 vpc_sim <- rxode2::rxSolve(
   hfim, select(vpc_ev, -arm), returnType = "data.frame",
   omega = hfim$omega, method = "dop853", useLinCmt = FALSE,

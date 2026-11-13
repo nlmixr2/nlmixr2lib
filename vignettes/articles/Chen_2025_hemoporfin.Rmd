@@ -658,6 +658,8 @@ rxode2's random draw. This section adds the published IIV to compare the *spread
 exposures, which is the quantity Chen 2025 reports as a %CV.
 
 ```{r iiv-cohort}
+# Fixed seed: the draws below feed reported results.
+rxode2::rxSetSeed(2025)
 sim_ped_iiv <- solve_cohort(pediatric, 5, model = pk_mod)
 sim_ad_iiv  <- solve_cohort(adult, 5, model = pk_mod)
 

@@ -460,6 +460,8 @@ donor_sim <- function(nm) {
          emax_mrna = out$emax_mrna,         ec50_mrna = out$ec50_mrna)
 }
 
+# Fixed seed: the draws below feed reported results.
+rxode2::rxSetSeed(2016)
 donors <- bind_rows(lapply(names(invitro_models), donor_sim))
 
 # Realised central value and realised spread per inducer.

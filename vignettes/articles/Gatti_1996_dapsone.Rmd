@@ -101,6 +101,8 @@ ev_spread <- tibble(
   id = seq_len(10000L), time = 0, amt = NA_real_, evid = 0L,
   cmt = "central", CONMED_RIF = 0L, TBILI = 11.97
 )
+# Fixed seed: the draws below feed reported results.
+set.seed(19961201)
 per_subject <- as.data.frame(rxode2::rxSolve(mod, events = ev_spread)) |>
   dplyr::distinct(id, cl, ka)
 spread <- tibble(
