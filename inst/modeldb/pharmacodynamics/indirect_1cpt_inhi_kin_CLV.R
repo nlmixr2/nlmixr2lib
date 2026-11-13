@@ -40,6 +40,7 @@ indirect_1cpt_inhi_kin_CLV <- function() {
     d/dt(central)    <- ka*depot -(kel)*central
     Cc <-  central/vc
     
+    effect(0) <- kin/kout
     d/dt(effect) <- kin*(1-imax*Cc/(Cc + ic50)) - kout*effect
    
     Cc ~ prop(propSd)

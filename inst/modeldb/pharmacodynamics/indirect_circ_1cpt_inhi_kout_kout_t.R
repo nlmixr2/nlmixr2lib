@@ -44,6 +44,7 @@ indirect_circ_1cpt_inhi_kout_kout_t <- function() {
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot -kel*central
+    effect(0) <- rm + ra*cos(0.2616*(0 - tacro))
     d/dt(effect) <- kin - kout_t*(1-imax*Cc/(Cc + ic50))*effect
     
     Cc ~ prop(propSd)

@@ -39,6 +39,7 @@ indirect_1cpt_stim_kin <- function() {
     
     Cc <-  central/vc
     
+    effect(0) <- kin/kout
     d/dt(effect) <- kin*(1+emax*Cc/(Cc + ec50)) - kout*effect
     
     Cc ~ prop(propSd)

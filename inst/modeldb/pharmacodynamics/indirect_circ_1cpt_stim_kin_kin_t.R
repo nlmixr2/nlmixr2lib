@@ -48,6 +48,7 @@ indirect_circ_1cpt_stim_kin_kin_t <- function() {
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot -kel*central
+    effect(0) <- rm + ra*cos(0.2616*(0 - tacro))
     d/dt(effect) <- kin_t*(1+emax*Cc/(Cc + ec50)) - kout*effect
     
     Cc ~ prop(propSd)
