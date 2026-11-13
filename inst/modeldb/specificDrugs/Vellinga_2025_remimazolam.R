@@ -33,6 +33,7 @@ Vellinga_2025_remimazolam <- function() {
     dosing = "mg (remimazolam, into central); ug (remifentanil, into central_remifentanil)",
     concentration = "ng/mL (remimazolam, CNS 7054 and remifentanil)"
   )
+  dosing <- c("central", "central_remifentanil")
 
   # What each ODE state holds. Supplement 5 model code: the parent states and
   # the transit pool carry remimazolam mass in mg (S1 = V1/1000 makes the

@@ -33,6 +33,7 @@ Tsai_2022_cart_pleural_tumor_mouse <- function() {
     dosing = "cells",
     concentration = "cells/mL"
   )
+  dosing <- c("a_venous", "pleural_space")
 
   # The pleural space is a paper-specific anatomical space (Tsai 2022 Fig. 2a
   # and Supplementary 'Model Equations', Compartment 6) with no registered

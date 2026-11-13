@@ -22,7 +22,7 @@ Ujihira_2025_glycochenodeoxycholicAcidSulfate <- function() {
   )
   vignette <- "Ujihira_2025_glycochenodeoxycholicAcidSulfate"
   units <- list(time = "h", dosing = "umol", concentration = "umol/L")
-  dosing <- c("central", "central_rif", "depot_prob")
+  dosing <- c("central_rif", "central", "depot_prob")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Checked against Ujihira 2025 Eqs 1-4 and Figure 2.

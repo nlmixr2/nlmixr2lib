@@ -28,6 +28,7 @@ Thorsted_2019_endotoxin <- function() {
     dosing = "EU",
     concentration = "EU/L (endotoxin); ng/L (TNF-alpha, IL-6)"
   )
+  dosing <- c("central", "central_contam")
 
   covariateData <- list(
     MIX_ETX_CONTAM = list(

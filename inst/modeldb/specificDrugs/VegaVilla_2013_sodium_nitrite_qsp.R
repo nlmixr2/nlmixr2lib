@@ -21,6 +21,7 @@ VegaVilla_2013_sodium_nitrite_qsp <- function() {
   )
 
   units <- list(time = "min", dosing = "umol", concentration = "umol/L")
+  dosing <- "nitrite_p"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

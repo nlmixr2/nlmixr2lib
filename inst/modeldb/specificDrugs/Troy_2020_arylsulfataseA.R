@@ -7,6 +7,7 @@ Troy_2020_arylsulfataseA <- function() {
     dosing = "mg",
     concentration = "ng/mL"
   )
+  dosing <- "csf"
 
   # cns_tissue is the compartment peripheral to csf that Troy 2020 introduced
   # to fit the CSF trough data: "The inclusion of a compartment peripheral to

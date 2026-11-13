@@ -57,7 +57,7 @@ Tsuchitani_2026_apixaban_pbpk <- function() {
   # 3.43 * 3.17 = 10.87 umol and MW = 5000 / 10.87 = 460 g/mol (the
   # 2.5 and 1.25 mg rows give 458 and 458). See the vignette.
   units <- list(time = "h", dosing = "umol", concentration = "umol/L")
-  dosing <- c("depot", "central", "depot_iv")
+  dosing <- c("depot", "depot_iv")
 
   # Canonical states used here: `depot` (oral dose in the stomach),
   # `central` (blood), `is_liver1..5` / `int_liver1..5` (the hepatic

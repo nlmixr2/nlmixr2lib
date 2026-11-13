@@ -34,6 +34,7 @@ Tsai_2022_cart_liver_tumor_mouse <- function() {
     dosing = "cells",
     concentration = "cells/mL"
   )
+  dosing <- c("a_venous", "vp_tumor", "vp_liver")
 
   # The gastrointestinal-tract vascular space has no registered vp_ organ
   # entry (vp_small_intestine / vp_large_intestine resolve the two segments,

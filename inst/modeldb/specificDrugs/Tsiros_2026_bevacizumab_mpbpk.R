@@ -14,6 +14,7 @@ Tsiros_2026_bevacizumab_mpbpk <- function() {
   )
   vignette <- "Tsiros_2026_bevacizumab_mpbpk"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- "plasma"
 
   covariateData <- list(
     WT = list(

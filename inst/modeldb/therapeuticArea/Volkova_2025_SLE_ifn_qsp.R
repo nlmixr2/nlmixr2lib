@@ -41,7 +41,16 @@ Volkova_2025_SLE_ifn_qsp <- function() {
     dosing = "mg",
     concentration = "ng/mL"
   )
-  dosing <- c("depot_daxdilimab", "depot_litifilimab", "depot_anifrolumab", "depot_sifalimumab")
+  dosing <- c(
+    "depot_daxdilimab",
+    "depot_litifilimab",
+    "depot_anifrolumab",
+    "depot_sifalimumab",
+    "central_anifrolumab",
+    "central_sifalimumab",
+    "central_daxdilimab",
+    "central_litifilimab"
+  )
 
   # Every state is either a paper-mechanistic biological species or a PK
   # compartment of one of four co-modelled drugs, none of which has a
