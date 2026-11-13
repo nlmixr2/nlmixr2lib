@@ -11,6 +11,7 @@ Kratochwil_2021_petesicatib <- function() {
   vignette <- "Kratochwil_2021_petesicatib"
   paper_specific_residual_sds <- c("expSd", "expSdEarlyFed")
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central", "depot2")
 
   covariateData <- list(
     FED = list(

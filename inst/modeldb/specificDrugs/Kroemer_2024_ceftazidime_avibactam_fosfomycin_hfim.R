@@ -3,6 +3,7 @@ Kroemer_2024_ceftazidime_avibactam_fosfomycin_hfim <- function() {
   reference <- "Kroemer N, Amann LF, Farooq A, Pfaffendorf C, Martens M, Decousser JW, Gregoire N, Nordmann P, Wicha SG. Pharmacokinetic/pharmacodynamic analysis of ceftazidime/avibactam and fosfomycin combinations in an in vitro hollow fiber infection model against multidrug-resistant Escherichia coli. Microbiol Spectr. 2024 Jan;12(1):e03318-23. doi:10.1128/spectrum.03318-23. Structural equations: supplemental material Text S3 Eqs 3-13. Parameter estimates: supplemental material Table S4 (with 95% confidence intervals from sampling importance resampling); parameters marked 'FIX to TKC parameter' are inherited from Table S3. Nominal hollow fiber pharmacokinetics: main-text Table 1."
   vignette <- "Kroemer_2024_ceftazidime_avibactam_fosfomycin"
   units <- list(time = "h", dosing = "mg/L", concentration = "mg/L")
+  dosing <- c("conc_caz", "conc_avi", "conc_fof")
 
   # Four bacterial subpopulations (Text S3 Eqs 9-12) plus the three antibiotic
   # concentration states of the hollow fiber central compartment. None maps onto

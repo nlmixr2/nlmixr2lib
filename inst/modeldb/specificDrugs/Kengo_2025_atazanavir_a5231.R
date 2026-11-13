@@ -41,6 +41,7 @@ Kengo_2025_atazanavir_a5231 <- function() {
   )
   vignette <- "Kengo_2025_atazanavir_ritonavir_rifampicin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central", "transit1")
 
   # The absorption delay is an explicit 11-compartment Savic chain rather than
   # a closed-form density; see the note above the ODE block in model() for why.

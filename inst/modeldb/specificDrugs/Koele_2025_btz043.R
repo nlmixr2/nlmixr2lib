@@ -15,6 +15,7 @@ Koele_2025_btz043 <- function() {
   )
   vignette <- "Koele_2025_btz043"
   units <- list(time = "h", dosing = "mg", concentration = "nmol/L")
+  dosing <- c("central", "depot1", "depot2")
 
   compartmentData <- list(
     depot1 = list(

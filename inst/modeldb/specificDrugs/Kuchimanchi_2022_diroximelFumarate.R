@@ -33,6 +33,7 @@ Kuchimanchi_2022_diroximelFumarate <- function() {
   # its molar-equivalent mass of MMF and of HES. Both outputs (Cc = MMF,
   # Cc_hes = HES) are in ug/mL.
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central", "depot_hes")
 
   # The residual SD is stratified by meal state and dose time within each
   # metabolite (eight thetas in the ESM control stream $ERROR block); the

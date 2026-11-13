@@ -11,6 +11,7 @@ Kloprogge_2020_ethambutol <- function() {
   )
   vignette <- "Kloprogge_2020_tuberculosis"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- "transit1"
 
   covariateData <- list(
     WT = list(

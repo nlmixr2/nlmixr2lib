@@ -28,6 +28,7 @@ Kim_2024_niclosamide_hamster <- function() {
   )
   vignette <- "Kim_2024_niclosamide_hamster"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central", "depot2")
 
   compartmentData <- list(
     depot = list(analyte = "niclosamide", units = "mg", specimen = "plasma", verified = TRUE),

@@ -17,6 +17,7 @@ Karrer_2018_bisphenolF_pbpk <- function() {
     amount = "nmol",
     weight = "kg"
   )
+  dosing <- c("stomach", "depot_td_thermalpaper", "depot_td_personalcare")
 
   covariateData <- list(
     WT = list(
