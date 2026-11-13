@@ -306,6 +306,8 @@ navbar:
         href: articles/Thakkar_2017_amifampridine.html
       - text: "Amikacin (Delattre 2010)"
         href: articles/Delattre_2010_amikacin.html
+      - text: "Amikacin (Ideno 2026)"
+        href: articles/Ideno_2026_scout.html
       - text: "Amikacin (Jin 2020)"
         href: articles/Jin_2020_amikacin.html
       - text: "Amikacin (Kato 2021)"
@@ -2836,6 +2838,8 @@ navbar:
         href: articles/Gupta_2025_erenumab_rat.html
       - text: "Ergothioneine pbpk (Okumura 2025)"
         href: articles/Okumura_2025_ergothioneine_pbpk.html
+      - text: "Eribulin (Ideno 2026)"
+        href: articles/Ideno_2026_scout.html
       - text: "Eribulin (Kawamura 2018)"
         href: articles/Kawamura_2018_eribulin.html
       - text: "Eribulin (vanHasselt 2013)"
@@ -10457,6 +10461,7 @@ articles:
   - articles/Ide_2009_pravastatin
   - articles/Ide_2020_elotuzumab
   - articles/Ide_2022_elotuzumab
+  - articles/Ideno_2026_scout
   - articles/Idkaidek_2011_ibuprofen
   - articles/Iida_2008_nicorandil
   - articles/Inoue_2025_valemetostat_ptcl
