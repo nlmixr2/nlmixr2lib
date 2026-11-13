@@ -703,6 +703,184 @@ test_that("an article with unresolved loader names is excused only by an evidenc
   expect_equal(nrow(.nestDrawViolations(models, art, exceptions = overlapping)), 1L)
 })
 
+test_that("a filter inside the data of group_by() does not group the count, whatever the pipe", {
+  dir <- .nestFixtureDir()
+  head <- "sim <- rxode2::rxSolve(readModelDb(\"Fixture_occ\"), events)"
+  native <- .nestWriteArticle(
+    dir,
+    "FilterThenGroupNative",
+    c(
+      head,
+      "chk <- sim |>",
+      "  dplyr::filter(OCC == 1) |>",
+      "  dplyr::group_by(id) |>",
+      "  dplyr::summarise(n = dplyr::n_distinct(etaiov))",
+      "stopifnot(all(chk$n == 1))"
+    )
+  )
+  magrittr <- .nestWriteArticle(
+    dir,
+    "FilterThenGroupMagrittr",
+    c(
+      head,
+      "chk <- sim %>%",
+      "  dplyr::filter(OCC == 1) %>%",
+      "  dplyr::group_by(id) %>%",
+      "  dplyr::summarise(n = dplyr::n_distinct(etaiov))",
+      "stopifnot(all(chk$n == 1))"
+    )
+  )
+  grouped <- .nestWriteArticle(
+    dir,
+    "GroupThenFilterNotNeeded",
+    c(
+      head,
+      "chk <- sim %>%",
+      "  dplyr::group_by(OCC) %>%",
+      "  dplyr::summarise(n = dplyr::n_distinct(etaiov))",
+      "stopifnot(all(chk$n == 100))"
+    )
+  )
+  v <- .nestDrawViolations(file.path(dir, "models"), c(native, magrittr, grouped))
+  expect_equal(v$article, c("FilterThenGroupNative.Rmd", "FilterThenGroupMagrittr.Rmd"))
+})
+
+test_that("grouping does not survive extracting a column or ungroup()", {
+  dir <- .nestFixtureDir()
+  head <- c(
+    "sim <- rxode2::rxSolve(readModelDb(\"Fixture_occ\"), events)",
+    "g <- sim |> dplyr::group_by(OCC)"
+  )
+  column <- .nestWriteArticle(dir, "GroupedColumn", c(head, "stopifnot(dplyr::n_distinct(g$etaiov) > 1)"))
+  ungrouped <- .nestWriteArticle(
+    dir,
+    "Ungrouped",
+    c(head, "chk <- g |> dplyr::ungroup() |> dplyr::summarise(n = dplyr::n_distinct(etaiov))", "stopifnot(chk$n > 1)")
+  )
+  ungrouped_symbol <- .nestWriteArticle(
+    dir,
+    "UngroupedSymbol",
+    c(
+      head,
+      "u <- dplyr::ungroup(g)",
+      "chk <- dplyr::summarise(u, n = dplyr::n_distinct(etaiov))",
+      "stopifnot(chk$n > 1)"
+    )
+  )
+  kept <- .nestWriteArticle(
+    dir,
+    "GroupKept",
+    c(head, "chk <- dplyr::summarise(g, n = dplyr::n_distinct(etaiov))", "stopifnot(all(chk$n == 100))")
+  )
+  v <- .nestDrawViolations(file.path(dir, "models"), c(column, ungrouped, ungrouped_symbol, kept))
+  expect_equal(v$article, c("GroupedColumn.Rmd", "Ungrouped.Rmd", "UngroupedSymbol.Rmd"))
+})
+
+test_that("zeroRe() that keeps the omegas still simulates", {
+  dir <- .nestFixtureDir()
+  make <- function(name, call) {
+    .nestWriteArticle(
+      dir,
+      name,
+      c("mod <- readModelDb(\"Fixture_occ\")", paste0("sim <- rxode2::rxSolve(", call, ", events)"))
+    )
+  }
+  arts <- c(
+    SigmaOnly = make("SigmaOnly", "rxode2::zeroRe(mod, which = \"sigma\")"),
+    SigmaPositional = make("SigmaPositional", "rxode2::zeroRe(mod, \"sigma\")"),
+    UnseenWhich = make("UnseenWhich", "rxode2::zeroRe(mod, which = w)"),
+    Default = make("Default", "rxode2::zeroRe(mod)"),
+    Omega = make("Omega", "rxode2::zeroRe(mod, which = \"omega\")"),
+    Both = make("Both", "rxode2::zeroRe(mod, which = c(\"omega\", \"sigma\"))")
+  )
+  v <- .nestDrawViolations(file.path(dir, "models"), arts)
+  expect_equal(v$article, c("SigmaOnly.Rmd", "SigmaPositional.Rmd", "UnseenWhich.Rmd"))
+})
+
+test_that("a solver passed as a function, not called, still simulates", {
+  dir <- .nestFixtureDir()
+  make <- function(name, code) .nestWriteArticle(dir, name, c("mod <- readModelDb(\"Fixture_occ\")", code))
+  arts <- c(
+    DoCall = make("DoCall", "sim <- do.call(\"rxSolve\", list(mod, events))"),
+    DoCallSymbol = make("DoCallSymbol", "sim <- do.call(rxode2::rxSolve, list(mod, events))"),
+    Lapply = make("Lapply", "sims <- lapply(list(events), rxSolve, object = mod)"),
+    Pmap = make("Pmap", "sims <- purrr::pmap(list(events), rxSolve, object = mod)"),
+    MapMany = make("MapMany", "sims <- Map(rxSolve, list(mod), list(events))"),
+    Typical = make("Typical", "sims <- lapply(list(events), rxode2::zeroRe)")
+  )
+  v <- .nestDrawViolations(file.path(dir, "models"), arts)
+  expect_equal(v$article, c("DoCall.Rmd", "DoCallSymbol.Rmd", "Lapply.Rmd", "Pmap.Rmd", "MapMany.Rmd"))
+})
+
+test_that("a default of a parameter is one of its values", {
+  dir <- .nestFixtureDir()
+  sim <- "sim <- rxode2::rxSolve(mod, events)"
+  cases <- list(
+    BuiltDefault = c("load_one <- function(nm = paste0(\"Fixture_\", z)) readModelDb(nm)", "mod <- load_one()", sim),
+    UnseenDefault = c(
+      "load_one <- function(nm = params$model) readModelDb(nm)",
+      "mod <- load_one(\"Unrelated_a\")",
+      sim
+    ),
+    LiteralDefault = c("load_one <- function(nm = \"Unrelated_a\") readModelDb(nm)", "mod <- load_one()", sim)
+  )
+  arts <- vapply(names(cases), function(nm) .nestWriteArticle(dir, nm, cases[[nm]]), character(1L))
+  v <- .nestDrawViolations(file.path(dir, "models"), arts)
+  expect_equal(v$article, c("BuiltDefault.Rmd", "UnseenDefault.Rmd"))
+})
+
+test_that("a matrix or a diagonal can hold model names", {
+  dir <- .nestFixtureDir()
+  art <- .nestWriteArticle(
+    dir,
+    "MatrixNames",
+    c(
+      "nm <- matrix(c(\"Unrelated_a\", params$model), 1L)",
+      "mod <- readModelDb(nm[1, 2])",
+      "sim <- rxode2::rxSolve(mod, events)"
+    )
+  )
+  expect_equal(.nestDrawViolations(file.path(dir, "models"), art)$article, "MatrixNames.Rmd")
+})
+
+test_that("an exception never excuses a name that can be a below-subject model", {
+  dir <- .nestFixtureDir()
+  data_only <- .nestWriteArticle(
+    dir,
+    "DataOnly",
+    c("mod <- readModelDb(read.csv(\"models.csv\")$model[1])", "sim <- rxode2::rxSolve(mod, events)")
+  )
+  built <- .nestWriteArticle(
+    dir,
+    "AlsoBuilt",
+    c(
+      "mod <- readModelDb(read.csv(\"models.csv\")$model[1])",
+      "other <- readModelDb(paste0(\"Fixture_\", kind))",
+      "sim <- rxode2::rxSolve(mod, events)"
+    )
+  )
+  hidden <- .nestWriteArticle(
+    dir,
+    "AlsoHidden",
+    c(
+      "mod <- readModelDb(read.csv(\"models.csv\")$model[1])",
+      "other <- readModelDb(sub(\"x$\", \"\", \"Fixture_occ\"))",
+      "sim <- rxode2::rxSolve(mod, events)"
+    )
+  )
+  exceptions <- data.frame(
+    article = c("DataOnly.Rmd", "AlsoBuilt.Rmd", "AlsoHidden.Rmd"),
+    prefix = "Unrelated_",
+    evidence = "all Unrelated_* models",
+    stringsAsFactors = FALSE
+  )
+  v <- .nestDrawViolations(file.path(dir, "models"), c(data_only, built, hidden), exceptions = exceptions)
+  expect_equal(unique(v$article), c("AlsoBuilt.Rmd", "AlsoHidden.Rmd"))
+  expect_true(any(grepl("a name built from pieces can be Fixture_occ", v$reason)))
+  expect_true(any(grepl("a string inside an unseen value is part of Fixture_occ", v$reason)))
+  expect_false("DataOnly.Rmd" %in% v$article)
+})
+
 test_that("a model name held in a symbol is matched, and an assertion clears it", {
   dir <- .nestFixtureDir()
   flagged <- .nestWriteArticle(
