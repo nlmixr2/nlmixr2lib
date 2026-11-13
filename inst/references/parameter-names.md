@@ -346,7 +346,7 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Role:** Clearance in force after the breakpoint of a piecewise-constant time-varying clearance (volume / time). Paired with `ltclchange`; the pre-breakpoint arm is the plain `lcl`.
 - **Source aliases:**
   - `CL>TCLchange` -- Park 2025.
-- **Example models:** `Park_2025_efineptakin_alfa.R`.
+- **Example models:** `Park_2025_efineptakin_alfa.R`, `Yusuff_2026_voriconazole.R` (late arm of a SMOOTH logistic transition `cl_early + (cl_late - cl_early) / (1 + exp(-0.1 * (t - cl_t50)))`, with the early arm on `lcl` and the midpoint on `lcl_t50`, as the `ltclchange` Notes direct for a smooth sigmoid).
 - **Notes:** Only the LATE arm carries a suffix, because the early arm is an ordinary clearance already covered by `lcl`. Covariates may act on the two arms independently -- in the founding example sex acts on `lcl` only and the late arm is sex-independent.
 
 ### ltclchange2 (**canonical log-transformed second clearance-step breakpoint time**)
@@ -1313,7 +1313,7 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 form. Log form `lcl_t50`. Units are the model's time unit.
 - **Source aliases:**
   - `cl_hill_t50` / `lcl_hill_t50` -- prior name (pre-2026-08-31 rename).
-- **Example models:** `Kuchimanchi_2024_dostarlimab.R`, `Masters_2022_avelumab.R`.
+- **Example models:** `Kuchimanchi_2024_dostarlimab.R`, `Masters_2022_avelumab.R`, `Yusuff_2026_voriconazole.R` (midpoint of a logistic-in-time transition between the absolute arms `lcl` and `lcl_late`, slope fixed at 0.1 1/h, rather than a Hill half-time; read the model body for the form).
 - **Notes:** Named without a `time` infix because `t50` already denotes a time; see
 [[cl_time_max]] for the rename rationale.
 
