@@ -64,7 +64,7 @@ Klunder_2017_upadacitinib <- function() {
     renal_function = "Mild and moderate renal impairment (CrCL 41-241 mL/min) included; subjects with eGFR < 40 mL/min/1.73 m^2 excluded by protocol.",
     n_observations = "6,399 quantifiable plasma concentrations. ~4% of post-baseline samples were below the LLOQ; intra-dose BLQ values and the first post-last-dose BLQ were imputed at LLOQ/2 and subsequent BLQ values were censored. ~0.9% of records were excluded as outliers consistent with inaccurate dosing records.",
     co_medication = "Concomitant CYP3A inhibitors (moderate/weak), CYP3A inducers, CYP2D6 inhibitors, and pH-modifying medications were tested as covariates but none were retained. Strong CYP3A inhibitors and inducers were prohibited in studies 4 and 5.",
-    notes = "Clinical-trial registry identifiers: NCT01741493, NCT02066389, NCT01960855. NONMEM 7.3 with FOCEI for the structural / covariate model and SAEM + importance sampling for the final model incorporating box-cox-transformed IOV on ALAG1 in phase II visits."
+    notes = "Clinical-trial registry identifiers: NCT01741493, NCT02066389, NCT01960855. NONMEM 7.3 with FOCEI for the structural / covariate model and SAEM + importance sampling for the final model incorporating box-cox-transformed IOV on ALAG1 in phase II visits. That IOV (omega^2 0.08, skewness parameter 8, Table 3; recording error of dose and sample times at six phase II PK visits) is not encoded: the paper does not define how the transformed eta enters ALAG1; see the vignette."
   )
 
   ini({

@@ -374,16 +374,42 @@ knitr::kable(nca_summary,
 
 # Assumptions and deviations
 
-- **IOV on ALAG1 omitted.** Klunder 2017 estimated a box-cox-transformed
-  inter-occasion variability term on ALAG1 with omega^2 = 0.08 and skewness
-  parameter 8 (Table 3, applied to phase IIb visits only). The IOV was
-  introduced specifically to absorb inaccuracies in recorded dosing time at
-  the phase IIb visits where exact dosing times were not always captured.
-  The packaged model omits the IOV term because (a) the simulation does not
-  carry phase-II occasion-level event records, (b) the box-cox-transformed
-  random-effect distribution is not directly representable in
-  `nlmixr2`/`rxode2` ini() syntax, and (c) the IOV did not affect the
-  typical-value PK structural estimates that are reproduced here.
+- **IOV on ALAG1 is not encoded, because the paper does not define how its
+  Box-Cox transform enters ALAG1.** Klunder 2018 (Clin Pharmacokinet
+  2018;57(8):977-988) Table 3 gives omega^2 = 0.08 (RSE 1.5%; bootstrap median
+  0.079, 95% CI 0.07-0.09) for a log-normal inter-occasion variability on ALAG1
+  at the visits of the phase II studies, and a skewness parameter theta = 8
+  (fixed) for the right-skewed Box-Cox transformation
+  `eta_t = ((exp(eta))^theta - 1) / theta` applied to it (Results, final model;
+  SAEM with importance sampling). The term represents error in the recorded
+  times of dosing and sampling at those visits ("to account for potential
+  inaccuracies in recording time of dosing or sampling"), not a physiological
+  change. The paper and its supplement (which holds only objective-function
+  tables) do not say how `eta_t` enters ALAG1, and the transformation's source
+  (Petersson 2009, ref. 22) is not open access. Two readings are possible and
+  neither is confirmed. With `eta ~ N(0, 0.08)` (SD 0.283) and the typical lag of
+  0.48 h:
+
+  | eta | eta_t | A: `TV * exp(eta_t)` | B: `TV * (1 + eta_t)` |
+  |-----|-------|----------------------|-----------------------|
+  | +1 SD | 1.08 | 1.41 h | 1.0 h |
+  | +2 SD | 11.4 | 4.4e4 h | 6.0 h |
+  | +2.5 SD | 35.7 | 1.5e15 h | 17.6 h |
+  | +3 SD | 110.8 | 6.3e47 h | 53.7 h |
+
+  Reading A, the direct substitution into a log-normal term, gives implausible
+  lags for the 0.6% of visits beyond +2.5 SD; reading B is finite but extreme.
+  The packaged model therefore carries neither, and its lag time is the
+  typical value with no inter-occasion variability. The phase II studies
+  (BALANCE I and II, Genovese 2016 doi 10.1002/art.39808 and Kremer 2016 doi
+  10.1002/art.39801, both 12-week) have post-baseline visits at weeks 2, 4, 6,
+  8 and 12, and Klunder 2018 reports a single predose sample at each study visit
+  and 1, 2 and 3 h samples in about 30% of subjects at the day 1 and week 8
+  visits, so the term applies over six PK visits (day 1 and weeks 2, 4, 6, 8,
+  12; the 30-day follow-up visit has no dose). Neither design paper states the
+  PK sampling schedule, so six is read from the visit schedule and Klunder's
+  description. The IOV does not affect the typical-value structural estimates
+  reproduced here.
 - **Disease-state-specific ISV via paired structural means.** The paper
   reports ISV on CL/F and Vc/F separately for healthy and RA cohorts. The
   packaged model encodes this with paired structural means (`lcl_h` /
