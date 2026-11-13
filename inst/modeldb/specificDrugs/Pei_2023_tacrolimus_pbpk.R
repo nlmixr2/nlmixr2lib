@@ -39,6 +39,7 @@ Pei_2023_tacrolimus_pbpk <- function() {
   )
   vignette <- "Pei_2023_tacrolimus"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "venous")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Tissue states hold total tacrolimus amount in the

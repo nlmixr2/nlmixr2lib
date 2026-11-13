@@ -19,6 +19,17 @@ Pouzin_2023_tusamitamab <- function() {
     dosing = "umol of antibody (= mg of ADC / 150)",
     concentration = "uM (umol/L) in antibody-equivalent for ADC and NAB; uM for free DM4 and MeDM4; CYP abundance as a fraction of baseline (unitless)"
   )
+  dosing <- c(
+    "dar1_central",
+    "dar2_central",
+    "dar3_central",
+    "dar4_central",
+    "dar5_central",
+    "dar6_central",
+    "dar7_central",
+    "dar8_central",
+    "central_nab"
+  )
 
   # What each ODE state holds. The PK states are those of
   # Pouzin_2022_tusamitamab (verified = FALSE there as here); the three hepatic

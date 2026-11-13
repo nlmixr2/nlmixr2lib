@@ -2,7 +2,7 @@ PK_double_sim_01 <- function() {
   description <- "PK double absorption model with simultaneous zero order and first order absorptions"
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
-  dosing <- c("central", "depot2")
+  dosing <- "depot2"
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE

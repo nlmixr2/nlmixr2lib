@@ -30,6 +30,7 @@ Paris_2023_nusinersen_qsp <- function() {
     dosing = "mg",
     concentration = "ng/mL"
   )
+  dosing <- "csf"
 
   # The pNfH model tracks concentrations (ng/mL) in seven fluid/tissue spaces
   # and the volumes (mL) of those spaces as ODE states; the nusinersen PK

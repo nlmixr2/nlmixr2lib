@@ -11,7 +11,7 @@ Oosten_2016_fentanyl <- function() {
   )
   vignette <- "Oosten_2016_fentanyl"
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL") # dose ug + Vc L -> Cc ug/L = ng/mL; matches Oosten 2016 plasma units (Methods + Table 2)
-  dosing <- c("depot", "central", "depot2")
+  dosing <- c("depot", "depot2")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

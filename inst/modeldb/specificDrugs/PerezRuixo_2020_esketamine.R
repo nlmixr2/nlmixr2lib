@@ -10,7 +10,7 @@ PerezRuixo_2020_esketamine <- function() {
   )
   vignette <- "PerezRuixo_2020_esketamine"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
-  dosing <- c("depot", "central", "depot2", "depot3")
+  dosing <- c("depot", "depot2", "depot3")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

@@ -38,7 +38,7 @@ Oosten_2017_morphine <- function() {
     dosing = "nmol",
     concentration = "nmol/L"
   )
-  dosing <- c("depot", "central", "depot3", "depot2")
+  dosing <- c("depot", "depot3", "depot2")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Oosten 2017 Fig. 1 (model diagram)

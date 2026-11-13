@@ -33,7 +33,7 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
     dosing = "mg",
     concentration = "mg/L (= ug/mL) for sulfadoxine plasma; ng/mL for pyrimethamine plasma"
   )
-  dosing <- c("depot", "central", "depot_pyra")
+  dosing <- c("depot", "depot_pyra")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

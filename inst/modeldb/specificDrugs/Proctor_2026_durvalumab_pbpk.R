@@ -9,6 +9,7 @@ Proctor_2026_durvalumab_pbpk <- function() {
   )
   vignette <- "Proctor_2026_durvalumab_cachexia"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+  dosing <- "plasma"
 
   # Structural equations are Appendix S1 Eq S1-S30; every physiological constant
   # and initial condition below is transcribed from the complete SimBiology model
