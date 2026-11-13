@@ -702,7 +702,8 @@ stopifnot(
   `nonmem = TRUE`) a lagged `rate = -2` dose takes it from the record *before*
   it, which in this cohort is the previous dose. The zero-order duration, which
   depends on dose and formulation here, comes from a record at the same time
-  or inside the lag window under either setting. Every observation here carries
+  or inside the lag window under either setting; with `nonmem = TRUE` a record
+  at the same time counts only if its row comes after the dose's. Every observation here carries
   the occasion of the dose that opened its interval, so `FALSE` gives each dose
   its own occasion and its own `DOSE_ATOGEPANT_MG` and comedication values.
   `TRUE` would give the first dose of each week the previous week's

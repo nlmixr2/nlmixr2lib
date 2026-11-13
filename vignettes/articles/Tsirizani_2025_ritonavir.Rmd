@@ -387,16 +387,16 @@ nrow(events)
 
 ```{r simulate}
 rxode2::rxSetSeed(20250926)
-# Solved on rxode2's analytic linCmt() path, the counterpart of the source's
-# NONMEM ADVAN4. rxode2 integrates ODE models numerically by default, and the
-# two paths agree on the once-daily arms to a median 6e-8 and a maximum 4e-6
-# relative. On the twice-daily arm, where ka changes with the occasion between
-# the morning and evening doses, they do not: on rxode2 5.1.8.9000 they differ
-# by more than 0.1% in 54 of the 170 children, by up to 36% at single time
-# points and by up to 5.5% in AUC (median 3e-5). The gap is the same with
-# liblsoda or dop853 at rtol 1e-10, so it is not integration error, and it
-# vanishes when ka is the same on both occasions: the two paths apply a change
-# of ka to drug already in the depot differently.
+# Solved on rxode2's analytic linCmt() path (useLinCmt = TRUE); rxode2
+# integrates ODE models numerically by default. This is a choice of path, not a
+# claim that it reproduces the source's NONMEM ADVAN4 fit. Measured on rxode2
+# 5.1.8.9000 (e4cb67f), the two paths agree on the once-daily arms to a median
+# 6e-8 and a maximum 4e-6 relative. On the twice-daily arm, where ka changes
+# with the occasion between the morning and evening doses, they differ by more
+# than 0.1% in 54 of the 170 children, by up to 36% at single time points and
+# by up to 5.5% in AUC (median 3e-5). Measured: the gap is the same with
+# liblsoda or dop853 at rtol 1e-10, and it disappears when ka is the same on
+# both occasions.
 sim_solve <- rxode2::rxSolve(mod, events, addDosing = FALSE, useLinCmt = TRUE,
                              addlKeepsCov = FALSE)
 sim <-
@@ -1125,14 +1125,15 @@ is deliberately not encoded.
   between-occasion variability on CL, to zero. Writing them as `~ fixed(0)`
   would make OMEGA singular; Table 3 lists no such rows either.
 * **Solver path.** The simulations request rxode2's analytic `linCmt()`
-  solution explicitly, the counterpart of the source's NONMEM ADVAN4. rxode2
-  integrates ODE models numerically by default, and the two paths agree on the
-  once-daily arms to better than 4e-6. On the twice-daily arm, where `ka`
-  changes with the occasion between the morning and evening doses, they differ
-  by up to 36% at single time points in 54 of the 170 children, and by up to
-  5.5% in AUC. The gap is not integration error and vanishes when `ka` is the
-  same on both occasions, so the two paths differ in how they apply a change of
-  `ka` to drug already in the depot (see the comment in the `simulate` chunk).
+  solution explicitly (`useLinCmt = TRUE`); rxode2 integrates ODE models
+  numerically by default. This is a choice of path; it has not been shown to
+  reproduce the source's NONMEM ADVAN4 fit. Measured on rxode2 5.1.8.9000
+  (e4cb67f), the two paths agree on the once-daily arms to better than 4e-6.
+  On the twice-daily arm, where `ka` changes with the occasion between the
+  morning and evening doses, they differ by up to 36% at single time points in
+  54 of the 170 children, and by up to 5.5% in AUC. The gap is the same at
+  rtol 1e-10 with either integrator, and it disappears when `ka` is the same on
+  both occasions (see the comment in the `simulate` chunk).
 * **Occasion assignment during the simulated run-in.** `OCC` both selects the
   BOV eta and identifies the evening dose. Run-in doses are labelled by time of
   day so each gets its correct absorption lag; the steady-state AUC of the final
@@ -1145,7 +1146,8 @@ is deliberately not encoded.
   always read the occasion from the dose's own record. The lag is always read
   from the dose record. The zero-order duration comes from a record at the
   same time as the dose or inside the lag window, if there is one, under
-  either setting of `addlKeepsCov`. The bioavailability comes from a record at
+  either setting of `addlKeepsCov`; with `nonmem = TRUE` a record at the same
+  time counts only if its row comes after the dose's. The bioavailability comes from a record at
   the same time as the dose, if there is one, under either setting. Otherwise,
   with `addlKeepsCov = FALSE`, the default, it comes from the dose's own
   record: a record inside the lag window is ignored, unlike for a bolus dose.

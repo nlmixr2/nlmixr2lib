@@ -312,7 +312,8 @@ Schlachter_2026_atogepant <- function() {
         "addlKeepsCov = FALSE (the default) its own record, and with",
         "addlKeepsCov = TRUE (or nonmem = TRUE) the record before it. Under",
         "either setting dur() comes from a record at the same time or inside",
-        "the lag window, if there is one. Give",
+        "the lag window, if there is one; with nonmem = TRUE a record at the",
+        "same time counts only if its row comes after the dose's. Give",
         "every record, observations included, the OCC (and the dose and",
         "comedication values) of the dose that opened its interval and use",
         "addlKeepsCov = FALSE, so each dose takes its own values."
