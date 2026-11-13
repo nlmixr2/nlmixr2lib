@@ -172,6 +172,18 @@ Categorical / binary covariates each get their own parameter — do not
 omit the parameter token. `e_asian_cl`, `e_black_cl`, `e_multiracial_cl`
 are correct; `e_asian` (no parameter token) is not.
 
+## Time-varying covariates in simulations
+
+When a covariate changes within a subject (an occasion, a dose level, age
+or weight over time), build the event table for `rxSolve()`'s default
+`covsInterpolation = "locf"`: each record carries the value in force from
+that record until the next one. Do this for models fitted in NONMEM too.
+Use `covsInterpolation = "nocb"` only for a table built the NONMEM way,
+where each record carries the value for the interval that ends at it, and
+say so. Never solve a table built for one rule with the other. Where a
+result depends on the rule, pass `covsInterpolation = "locf"` explicitly
+and say which rule the table follows.
+
 ## Drug effects
 
 Different drug effects may be investigated during model building.  And, multiple

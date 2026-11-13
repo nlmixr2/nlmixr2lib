@@ -673,6 +673,45 @@ sim <- rxode2::rxSolve(mod, events, addlKeepsCov = FALSE)
   profiles but not the population distribution. Build the records by
   interval anyway, state the setting, and note it.
 
+**Which interpolation rule: `locf`, stated where it matters.** This
+applies to every covariate that changes within a subject, lagged doses or
+not. Between two records `rxSolve()` holds a covariate at one record's
+value: the earlier record's with `covsInterpolation = "locf"` (the
+default), the later record's with `"nocb"`.
+
+- Build every event table for `locf`: each record carries the value in
+  force from that record until the next (a dose carries the occasion it
+  opens, a visit the weight measured at it). This holds for models fitted
+  in NONMEM too. NONMEM applies a record's values to the interval that
+  ends at it, which is `nocb` (nonmem2rx validates against NONMEM with
+  it), but a simulation states its own design, and a `locf` table states
+  it directly. nlmixr2 estimates with `locf`.
+- Use `nocb` only for a table built NONMEM's way, each record carrying
+  the value for the interval that ends at it, such as a replayed source
+  dataset or a NONMEM test case. Say so beside the call (Royston 2025
+  letermovir).
+- Never solve a table built for one rule with the other. Solving the
+  library's `locf` tables with `nocb` moved the median subject's AUC by
+  1% or more in 25 articles and by up to 43% (Jonsson 2011 ethambutol).
+  The moves are largest where an occasion or dose level changes after a
+  stretch with only dose records, such as a run-in; with a record within
+  an hour before each change, no occasion article moved by 1%.
+- Pass `covsInterpolation = "locf"` explicitly, and say in Assumptions
+  and deviations which rule the tables follow, wherever the result
+  depends on the rule: solve the subjects of each call that varies a
+  covariate with `"locf"` and with `"nocb"`, and treat a move of 1% or
+  more in the median subject's AUC as dependent.
+  `design/covariate-interpolation-harness.R` runs that check over a
+  whole article.
+- For a covariate that changes continuously (postnatal or postmenstrual
+  age, weight growth, a concentration fed in as a covariate), a step rule
+  is a discretisation: put records densely enough that `locf` and `nocb`
+  agree to the article's tolerance, or use `covsInterpolation = "linear"`
+  where the values are defined at the records.
+
+The study behind this rule, with the per-article measurements, is
+`design/covariate-interpolation-convention.md`.
+
 ## 15. An `ss = 1` identity asserted as a maximum over the cohort fails on one draw
 
 `max(abs(AUCtau / (Dose / CL) - 1)) < 0.02` over every subject of an

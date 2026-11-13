@@ -356,6 +356,7 @@ Use `references/vignette-template.md`. Required sections, in order:
 
 - give every record, observations included, the covariate values of the dose that opened its interval, a same-time dose included (sort doses first, then fill down);
 - pass `addlKeepsCov = FALSE` explicitly on every `rxSolve()` call that doses a lagged compartment;
+- build the tables for rxode2's default `covsInterpolation = "locf"` (each record carries the value in force from it onward), for NONMEM-fitted models too, and pass `covsInterpolation = "locf"` explicitly wherever the result depends on the rule (pattern 14, "Which interpolation rule"); use `"nocb"` only for a table built NONMEM's way;
 - say in **Assumptions and deviations** which records carry which values and why. Pattern 14 in `references/known-vignette-failure-patterns.md` has the shapes that trigger the mis-pairing, a superposition check that pins the pairing, and the one exception: a lag longer than the dosing interval.
 
 For **endogenous / turnover models** where NCA isn't the right validation, replace the PKNCA section with the steady-state / perturbation-recovery / mass-balance checks described in `references/endogenous-validation.md`. For **multi-output models**, run one PKNCA block per output.
