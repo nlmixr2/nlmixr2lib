@@ -21,6 +21,7 @@ Mallick_2020_pyrethroids_pbpk <- function() {
     amount = "umol",
     weight = "kg"
   )
+  dosing <- "gut_lumen"
 
   covariateData <- list(
     WT = list(

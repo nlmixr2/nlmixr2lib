@@ -33,6 +33,7 @@ Maskawa_2025_vancomycin_mouse_firstorder <- function() {
     dosing = "mg",
     concentration = "mg/g"
   )
+  dosing <- "stomach"
 
   compartmentData <- list(
     # Supplement section 2: M_a(t), antibiotic mass in the stomach.

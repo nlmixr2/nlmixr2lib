@@ -22,6 +22,7 @@ Mori_2018_zoledronicAcid <- function() {
     # and the KD * A signal enters the inhibition factor in mg / day units
     # which match the published EKD50 of 5.776e-3 mg / day.
   )
+  dosing <- "depot_kpd"
 
   paper_specific_compartments <- c("bmd")
 

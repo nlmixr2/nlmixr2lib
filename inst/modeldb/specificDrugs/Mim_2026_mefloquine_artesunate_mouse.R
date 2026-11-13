@@ -26,6 +26,7 @@ Mim_2026_mefloquine_artesunate_mouse <- function() {
   # Doses in mg/kg and volumes in L/kg (the paper's mL/kg / 1000), so
   # amount / volume is mg/L = ug/mL, the unit of the Table 3 IC50 values.
   units <- list(time = "h", dosing = "mg/kg", concentration = "mg/L")
+  dosing <- c("depot_mefloquine", "depot_artesunate")
 
   # No covariate analysis was performed: Results, 'formal covariate analysis
   # was not performed, recognizing that IIV and residual unexplained

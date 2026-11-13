@@ -54,6 +54,7 @@ Mi_2023_cefquinome_pbpk <- function() {
   # identical to the ug/mL the paper reports (and to the PPM used for the
   # maximum residue limits in liver and kidney).
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "depot2")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

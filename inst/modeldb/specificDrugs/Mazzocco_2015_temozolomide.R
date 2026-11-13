@@ -24,6 +24,7 @@ Mazzocco_2015_temozolomide <- function() {
     dosing = "arbitrary unit per TMZ cycle (K-PD bolus to the depot_kpd virtual drug compartment; the source paper represents each 5-day daily-dosing TMZ cycle as a single bolus of arbitrary magnitude, with the dose units absorbed into the typical-value gamma)",
     concentration = "mm (mean tumour diameter MTD = P + Q + Qp; not a drug concentration)"
   )
+  dosing <- "depot_kpd"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

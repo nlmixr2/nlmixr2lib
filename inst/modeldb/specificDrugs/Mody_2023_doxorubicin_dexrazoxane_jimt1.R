@@ -16,6 +16,7 @@ Mody_2023_doxorubicin_dexrazoxane_jimt1 <- function() {
     dosing = "uM (drug concentration applied to the culture medium at t = 0)",
     concentration = "uM (medium drug concentration); % (cell viability, the PD readout)"
   )
+  dosing <- c("conc_dox", "conc_dexrazoxane")
 
   compartmentData <- list(
     conc_dox = list(analyte = "doxorubicin", units = "uM", specimen = "administration site", verified = TRUE),

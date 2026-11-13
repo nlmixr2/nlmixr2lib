@@ -3,6 +3,7 @@ Mohamed_2012_gentamicin <- function() {
   reference <- "Mohamed AF, Nielsen EI, Cars O, Friberg LE. Pharmacokinetic-pharmacodynamic model for gentamicin and its adaptive resistance with predictions of dosing schedules in newborn infants. Antimicrob Agents Chemother. 2012 Jan;56(1):179-188. doi:10.1128/AAC.00694-11. Model differential equations (Eqs 1-7), Figure 1 schematic, and final-model parameter estimates (Table 1) are in the main text."
   vignette <- "Mohamed_2012_gentamicin"
   units <- list(time = "h", dosing = "mg/L", concentration = "mg/L")
+  dosing <- "cgent"
 
   # paper-mechanistic states (bacterial populations, adaptive-resistance
   # binding states, and the in-vitro flask gentamicin concentration);

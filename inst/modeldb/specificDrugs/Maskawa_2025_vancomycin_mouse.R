@@ -32,6 +32,7 @@ Maskawa_2025_vancomycin_mouse <- function() {
     dosing = "mg",
     concentration = "mg/g"
   )
+  dosing <- "cecum"
 
   compartmentData <- list(
     # Methods 'Mathematical model': M_b(t), antibiotic mass in the cecum.
