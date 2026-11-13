@@ -34,7 +34,7 @@ Zhang_2012_lopinavir_ritonavir_pedi <- function() {
   )
   vignette <- "Zhang_2012_lopinavir_ritonavir_pedi"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
-  dosing <- c("depot", "central", "depot_rtv")
+  dosing <- c("depot", "depot_rtv")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

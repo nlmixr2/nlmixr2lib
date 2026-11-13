@@ -3,7 +3,7 @@ Wang_2022_ornithinePhenylacetate <- function() {
   reference <- "Wang X, Vilchez RA. Population Pharmacokinetic Analysis to Assist Dose Selection of the L-Ornithine Salt of Phenylacetic Acid. Clin Pharmacokinet. 2022;61(4):515-526. doi:10.1007/s40262-021-01075-1"
   vignette <- "Wang_2022_ornithinePhenylacetate"
   units <- list(time = "h", dosing = "mmol", concentration = "ug/mL")
-  dosing <- c("central", "central_ornithine")
+  dosing <- c("central_ornithine", "central")
 
   compartmentData <- list(
     central = list(analyte = "phenylacetic acid", units = "mmol", specimen = "plasma", verified = TRUE),

@@ -42,7 +42,7 @@ Yamada_2025_oncolyticVirus_mouse_qsp <- function() {
     volume = "mm^3",
     concentration = "nM (anti-PD-1 serum concentration)"
   )
-  dosing <- "mAbDep"
+  dosing <- c("virus", "mAbDep")
 
   covariateData <- list()
 

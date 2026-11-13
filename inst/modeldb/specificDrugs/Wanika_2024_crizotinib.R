@@ -15,6 +15,7 @@ Wanika_2024_crizotinib <- function() {
     dosing = "umol/L (drug concentration applied to the culture medium at t = 0)",
     concentration = "umol/L (medium and intracellular drug concentration); % (tumour cell viability, the PD readout)"
   )
+  dosing <- "medium"
 
   compartmentData <- list(
     medium = list(analyte = "crizotinib", units = "umol/L", specimen = "administration site", verified = TRUE),

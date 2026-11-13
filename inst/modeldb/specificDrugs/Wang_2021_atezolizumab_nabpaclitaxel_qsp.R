@@ -38,7 +38,7 @@ Wang_2021_atezolizumab_nabpaclitaxel_qsp <- function() {
     dosing = "nmol (atezolizumab, nivolumab, ipilimumab, entinostat); ug (nab-paclitaxel)",
     concentration = "nmol/L (antibodies); ug/L (nab-paclitaxel plasma)"
   )
-  dosing <- c("q_V_C_ENT_Buccal", "q_V_C_Dose2")
+  dosing <- c("q_V_C_atezo", "q_V_C_ENT_Buccal", "q_V_C_Dose2", "q_V_1_NabP")
 
   covariateData <- list()
 

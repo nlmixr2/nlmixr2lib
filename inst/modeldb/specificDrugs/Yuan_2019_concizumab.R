@@ -39,6 +39,7 @@ Yuan_2019_concizumab <- function() {
   )
 
   units <- list(time = "day", dosing = "nmol", concentration = "nM")
+  dosing <- c("depot", "a_p")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

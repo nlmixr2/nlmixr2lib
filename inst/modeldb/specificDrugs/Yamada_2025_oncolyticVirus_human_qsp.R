@@ -52,7 +52,7 @@ Yamada_2025_oncolyticVirus_human_qsp <- function() {
     dosing = "nmol (antibodies, entinostat); pfu (virus, held as molecule-equivalents with 1 pfu = 1 molecule)",
     concentration = "nmol/L"
   )
-  dosing <- c("q_V_C_ENT_Buccal", "q_V_C_Dose2")
+  dosing <- c("q_V_T_Virus_T", "q_V_C_ENT_Buccal", "q_V_C_Dose2", "q_V_C_pembro")
 
   covariateData <- list()
 

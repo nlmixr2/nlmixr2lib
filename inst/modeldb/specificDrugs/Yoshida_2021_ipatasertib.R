@@ -30,7 +30,7 @@ Yoshida_2021_ipatasertib <- function() {
   reference <- "Yoshida K, Wilkins J, Winkler J, Wade JR, Kotani N, Wang N, Sane R, Chanu P. Population pharmacokinetics of ipatasertib and its metabolite in cancer patients. J Clin Pharmacol. 2021;61(12):1579-1591. doi:10.1002/jcph.1942"
   vignette <- "Yoshida_2021_ipatasertib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
-  dosing <- c("depot", "central", "depot_m1")
+  dosing <- c("depot", "depot_m1")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

@@ -43,7 +43,7 @@ Wang_2020_entinostat_nivolumab_ipilimumab_qsp <- function() {
     dosing = "nmol",
     concentration = "nmol/L"
   )
-  dosing <- c("q_V_C_ENT_Buccal", "q_V_C_Dose2")
+  dosing <- c("q_V_C_ENT_Buccal", "q_V_C_Dose2", "q_V_C_nivo", "q_V_C_ipi")
 
   covariateData <- list()
 

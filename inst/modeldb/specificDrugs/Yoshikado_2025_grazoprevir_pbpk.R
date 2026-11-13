@@ -95,7 +95,7 @@ Yoshikado_2025_grazoprevir_pbpk <- function() {
   # 238,238 nmol), i.e. a molecular weight of 784.9 g/mol, the
   # monohydrate; the vignette uses the same factor.
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
-  dosing <- c("central", "stomach")
+  dosing <- "stomach"
 
   covariateData <- list(
     SNP_SLCO1B1_RS4149056_HOM = list(

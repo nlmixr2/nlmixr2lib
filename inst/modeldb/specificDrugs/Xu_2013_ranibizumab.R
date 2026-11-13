@@ -3,7 +3,7 @@ Xu_2013_ranibizumab <- function() {
   reference <- "Xu L, Lu T, Tuomi L, Jumbe N, Lu J, Eppler S, Kuebler P, Damico-Beyer LA, Joshi A. Pharmacokinetics of ranibizumab in patients with neovascular age-related macular degeneration: a population approach. Invest Ophthalmol Vis Sci. 2013;54(3):1616-1624. doi:10.1167/iovs.12-10260."
   vignette <- "Xu_2013_ranibizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ng/mL")
-  dosing <- c("central", "vitreous")
+  dosing <- c("vitreous", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

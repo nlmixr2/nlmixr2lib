@@ -8,6 +8,7 @@ Zhang_2011_nutlin3a <- function() {
     concentration = "mg/L",
     weight = "kg"
   )
+  dosing <- c("depot", "venous")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

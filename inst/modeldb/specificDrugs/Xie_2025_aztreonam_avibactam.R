@@ -37,6 +37,7 @@ Xie_2025_aztreonam_avibactam <- function() {
   )
   vignette <- "Xie_2025_aztreonam_avibactam"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("central", "central_avi")
 
   # Aztreonam residual variability is stratified by study phase, so the
   # canonical propSd / addSd consumed by the error model are derived inside

@@ -33,6 +33,7 @@ Wojciechowski_2025_fidanacogeneElaparvovec <- function() {
     dosing = "vg (fidanacogene elaparvovec, into transgene); IU (FIX replacement, into central or central_ehl)",
     concentration = "IU/dL (FIX activity)"
   )
+  dosing <- c("transgene", "central")
 
   # Gene-therapy expression states and the extended-half-life FIX product
   # states are specific to this model.

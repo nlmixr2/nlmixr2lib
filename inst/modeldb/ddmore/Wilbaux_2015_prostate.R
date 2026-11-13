@@ -18,7 +18,7 @@ Wilbaux_2015_prostate <- function() {
     dosing = "AU (arbitrary unit per treatment cycle; the K-PD chemo/hormo compartments accept AMT = 1 per administered cycle)",
     concentration = "ng/mL (PSA endpoint); CTC count reported as cells per 7.5 mL aliquot (alpha = 0.0015 scales total-body CTC to aliquot count)"
   )
-  dosing <- c("chemo", "chemo_d", "hormo", "hormo_d")
+  dosing <- c("chemo", "chemo_d", "hormo", "hormo_d", "ctc")
 
   ddmore_id <- "DDMODEL00000261"
   replicate_of <- NULL

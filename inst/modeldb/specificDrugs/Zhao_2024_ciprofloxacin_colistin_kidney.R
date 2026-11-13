@@ -21,6 +21,7 @@ Zhao_2024_ciprofloxacin_colistin_kidney <- function() {
   )
   vignette <- "Zhao_2024_ciprofloxacin_colistin"
   units <- list(time = "h", dosing = "mg (ciprofloxacin) or mol (colistimethate)", concentration = "mg/L")
+  dosing <- c("cipCentral", "cms1Central")
 
   # Bacterial subpopulation indices follow Fig. 1 of the paper (see the sibling
   # in vitro model). cipCentral/cipPeripheral/cipKidney carry ciprofloxacin;
