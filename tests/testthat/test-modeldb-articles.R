@@ -47,11 +47,13 @@
     }
   }
   vign <- file.path(root, "vignettes")
+  indexed <- character()
   for (grp in yml[["articles"]]) {
     for (entry in unlist(grp[["contents"]])) {
       if (grepl("(", entry, fixed = TRUE)) {
         next
       }
+      indexed <- c(indexed, entry)
       rmd <- if (startsWith(entry, "articles/")) {
         file.path(vign, "articles", paste0(sub("^articles/", "", entry), ".Rmd"))
       } else {
@@ -63,7 +65,21 @@
     }
   }
   attr(out, "nHref") <- length(hrefs)
+  attr(out, "indexed") <- indexed
   out
+}
+
+# Plain list items (`- <name>`, no `:` and no selector call) in the top-level
+# `articles:` section of _pkgdown.yml, counted from the raw lines. This is an
+# independent count of what .danglingArticleLinks() walks.
+.articleEntryLineCount <- function(lines) {
+  start <- grep("^articles:", lines)
+  if (length(start) != 1L) {
+    return(0L)
+  }
+  keys <- grep("^[A-Za-z_]", lines)
+  end <- c(keys[keys > start], length(lines) + 1L)[[1]] - 1L
+  sum(grepl("^[[:space:]]*-[[:space:]]+[^:(]+$", lines[seq_len(end - start) + start]))
 }
 
 # One message per model whose `vignette` names no built article, per
@@ -117,10 +133,17 @@ test_that("every _pkgdown.yml article link resolves to an article pkgdown builds
   skip_if(!dir.exists(file.path(root, "vignettes", "articles")), "vignettes/articles not present (installed package)")
 
   dangling <- .danglingArticleLinks(root)
-  # The YAML walk must see every href the file holds; a parse that silently
-  # found none would pass the check below on an empty set.
+  # The YAML walk must see every href and every `articles:` entry the file
+  # holds; a parse that silently found none would pass the check below on an
+  # empty set.
   lines <- readLines(file.path(root, "_pkgdown.yml"), warn = FALSE)
   expect_equal(attr(dangling, "nHref"), sum(grepl("^[[:space:]]*-?[[:space:]]*href:[[:space:]]*articles/", lines)))
+  indexed <- attr(dangling, "indexed")
+  expect_equal(length(indexed), .articleEntryLineCount(lines))
+  # pkgdown aborts the site build when an article is missing from a non-empty
+  # `articles:` index, so every built article must be listed, and listed once.
+  expect_setequal(sub("^articles/", "", indexed), .builtArticles(root))
+  expect_equal(anyDuplicated(indexed), 0L)
   expect_equal(
     nrow(dangling),
     0L,
@@ -172,6 +195,13 @@ test_that("the article checks detect each defect class they claim to", {
   )
   dangling <- .danglingArticleLinks(tmp)
   expect_equal(attr(dangling, "nHref"), 3L)
+  expect_equal(
+    attr(dangling, "indexed"),
+    c("guide", "missing_guide", "articles/Real_2020_drug", "articles/Gone_2019_drug")
+  )
+  expect_equal(.articleEntryLineCount(readLines(file.path(tmp, "_pkgdown.yml"))), 4L)
+  # A section the walk cannot see is counted as empty, not as an error.
+  expect_equal(.articleEntryLineCount(c("url: x", "navbar:", "  left: []")), 0L)
   expect_equal(dangling$target, c("articles/Ghost_2018_drug.html", "missing_guide", "articles/Gone_2019_drug"))
   expect_equal(dangling$where, c("navbar href", "articles group General", "articles group internal"))
 
