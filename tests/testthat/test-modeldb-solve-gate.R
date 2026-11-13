@@ -93,18 +93,10 @@ probeUnsupportedModels <- c(
 )
 
 # (2) Genuinely BROKEN models, quarantined so this gate can go green while the
-# defects are recorded rather than hidden. It predates the gate and has no
-# vignette -- which is precisely why nothing caught it.
-#
-#   indirect_prec_1cpt_stim_r0rmaxcrmax
-#     It overwrites the estimated emax with the value that makes its EC50
-#     negative, and defines kin in terms of itself:
-#     kin <- (kout*(kin+kpout)*rbase)/kpin. The negative EC50 makes Cc + EC50
-#     cross zero as Cc rises, so the solver hits a singularity: "could not
-#     solve the system".
-knownBrokenModels <- c(
-  "indirect_prec_1cpt_stim_r0rmaxcrmax"
-)
+# defects are recorded rather than hidden. Each entry names the model and the
+# defect that stops it solving; remove the entry in the commit that fixes it.
+# None is known.
+knownBrokenModels <- character(0)
 
 # Solving every model in the registry takes roughly an hour. That is the right
 # cost for a release gate and the wrong cost for an edit-run-edit loop, so the
