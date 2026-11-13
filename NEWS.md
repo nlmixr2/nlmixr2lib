@@ -69,6 +69,13 @@
     precursor production rate from R0. **Breaking for code** that loads them
     by their old names.
 
+- Seven inhibition templates defaulted to an Imax of exp(0.56) = 1.75:
+  `indirect_1cpt_inhi_kin` and its `_CLV` variant, the four circadian
+  inhibition templates and `indirect_prec_1cpt_inhi_CLV`. Above 1, the
+  inhibition factor 1 - Imax*C/(C + IC50) turns negative at high
+  concentration and drives the inhibited rate negative. Their `limax` now
+  defaults to `log(0.8)`. **Breaking for simulations** from these templates.
+
 - Every `indirect_*` template now starts at its drug-free baseline. The
   response starts at kin/kout, or for the circadian templates at the circadian
   baseline at t = 0; the precursor templates' pool starts at its steady state.
@@ -96,7 +103,8 @@
 
 - Correct the descriptions of nine `indirect_*` templates. Two circadian
   `*_kout_t` models said `kin_t`, and `indirect_prec_1cpt_stim_CLV` said
-  inhibition. A "cosntants" typo is fixed in five descriptions.
+  inhibition, in its description and in the labels of its Emax and EC50. A
+  "cosntants" typo is fixed in five descriptions.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
