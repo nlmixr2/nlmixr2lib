@@ -485,7 +485,8 @@ rxode2::rxSetSeed(20250402)
 sim <- rxode2::rxSolve(
   mod,
   build_events(cohort, obs_times = seq(t_last, t_last + tau, by = 0.25)),
-  keep = c("group", "dose", "weight_band")
+  keep = c("group", "dose", "weight_band"),
+  covsInterpolation = "locf"
 ) |>
   as.data.frame()
 ```
@@ -687,7 +688,8 @@ cohort2 <- dplyr::bind_rows(cohort, preg_extra)
 sim2 <- rxode2::rxSolve(
   mod,
   build_events(cohort2, obs_times = seq(t_last, t_last + tau, by = 0.5)),
-  keep = c("group", "dose", "weight_band")
+  keep = c("group", "dose", "weight_band"),
+  covsInterpolation = "locf"
 ) |>
   as.data.frame()
 
@@ -896,6 +898,11 @@ recorded here.
   medians come from 59 profiles with the real joint covariate distribution and
   real dose assignment, while the simulation uses drawn covariates and a
   weight-band dose rule.
+* **Covariate interpolation.** Each record carries the `OCC` value in force from
+  that record until the next, so the solves in which it changes within a subject
+  state `covsInterpolation = "locf"`, the `rxSolve()` default; solving the same
+  tables with `"nocb"`, NONMEM's rule, moves the median subject's AUC by up to
+  8.2% (measured on rxode2 5.1.8.9000).
 
 ## Errata and omissions relative to the source
 

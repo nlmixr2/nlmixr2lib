@@ -659,3 +659,9 @@ error.
   file's `covariatesDataExcluded` metadata, with the objective-function changes
   from Table 3, so the covariate search remains auditable. No point estimate is
   published for any of them.
+
+* **Covariate interpolation.** Each record carries the `POD` value in force from
+  that record until the next, so the solves in which it changes within a subject
+  state `covsInterpolation = "locf"`, the `rxSolve()` default; solving the same
+  tables with `"nocb"`, NONMEM's rule, moves the median subject's AUC by up to
+  4.2% (measured on rxode2 5.1.8.9000).

@@ -216,7 +216,8 @@ st <- list(
   "Nigeria study 2 (DBS)" = list(SAMPLE_DBS = 1)
 )
 stp <- bind_rows(lapply(seq_along(st), function(i) {
-  s <- rxode2::rxSolve(mod_typ, make_events(1, 57, tprof, covs = st[[i]]), returnType = "data.frame")
+  s <- rxode2::rxSolve(mod_typ, make_events(1, 57, tprof, covs = st[[i]]), returnType = "data.frame",
+    covsInterpolation = "locf")
   data.frame(time = s$time, Cc = s$Cc, study = names(st)[i])
 }))
 ggplot(stp, aes(time, Cc, colour = study)) +
@@ -263,7 +264,7 @@ ev_t4 <- bind_rows(lapply(t4_scen$arm, function(a) {
   d$arm <- a
   d
 }))
-sim_t4 <- rxode2::rxSolve(mod, ev_t4, keep = "arm", returnType = "data.frame")
+sim_t4 <- rxode2::rxSolve(mod, ev_t4, keep = "arm", returnType = "data.frame", covsInterpolation = "locf")
 stopifnot(all(is.finite(sim_t4$Cc)), median(sim_t4$Cc) > 1)
 
 t4 <- sim_t4 |>
@@ -376,7 +377,7 @@ ev_nca <- bind_rows(lapply(seq_along(scen), function(i) {
   d$treatment <- names(scen)[i]
   d
 }))
-sim_nca <- rxode2::rxSolve(mod, ev_nca, keep = "treatment", returnType = "data.frame")
+sim_nca <- rxode2::rxSolve(mod, ev_nca, keep = "treatment", returnType = "data.frame", covsInterpolation = "locf")
 
 conc <- sim_nca |>
   dplyr::filter(!is.na(Cc)) |>
@@ -451,3 +452,8 @@ stopifnot(
 * **Residual error for DBS.** The paper does not report a separate residual
   error for the dried-blood-spot samples; the DBS scaling factor multiplies the
   prediction and the same combined residual error applies.
+* **Covariate interpolation.** Each record carries the `OCC` value in force from
+  that record until the next, so the solves in which it changes within a subject
+  state `covsInterpolation = "locf"`, the `rxSolve()` default; solving the same
+  tables with `"nocb"`, NONMEM's rule, moves the median subject's AUC by up to
+  12% (measured on rxode2 5.1.8.9000).

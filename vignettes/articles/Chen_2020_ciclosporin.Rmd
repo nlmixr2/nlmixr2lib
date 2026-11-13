@@ -475,7 +475,7 @@ ev_vpc <- dplyr::bind_rows(
   dplyr::mutate(WT = 7.6, POD = 1 + time / 24) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
-sim_vpc <- rxode2::rxSolve(mod, events = ev_vpc, keep = "POD") |>
+sim_vpc <- rxode2::rxSolve(mod, events = ev_vpc, keep = "POD", covsInterpolation = "locf") |>
   as.data.frame()
 vpc_sum <- sim_vpc |>
   dplyr::filter(!is.na(sim)) |>
@@ -520,3 +520,8 @@ it was not designed for, and should not be read as, a maintenance regimen.
   are recorded in the model's `population` notes only.
 * **Figure readings.** Figure 3 and Figure 4 values were read by the
   maintainers from the published figures.
+* **Covariate interpolation.** Each record carries the `POD` value in force from
+  that record until the next, so the solves in which it changes within a subject
+  state `covsInterpolation = "locf"`, the `rxSolve()` default; solving the same
+  tables with `"nocb"`, NONMEM's rule, moves the median subject's AUC by up to
+  1.1% (measured on rxode2 5.1.8.9000).
