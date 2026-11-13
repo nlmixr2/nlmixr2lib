@@ -104,6 +104,7 @@ Asaumi_2022_quinidine_rifampicin_pbpk <- function() {
   )
 
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
+  dosing <- c("central", "stomach")
 
   covariateData <- list(
     WT = list(

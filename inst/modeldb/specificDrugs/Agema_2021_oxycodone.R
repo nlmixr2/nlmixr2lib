@@ -32,6 +32,7 @@ Agema_2021_oxycodone <- function() {
   # and noroxymorphone (287.31 g/mol), which pins the concentration
   # conversion. The dose conversion (mg tablet -> mmol) is not printed.
   units <- list(time = "h", dosing = "mmol", concentration = "nmol/L")
+  dosing <- c("depot", "central", "depot2")
 
   compartmentData <- list(
     depot = list(

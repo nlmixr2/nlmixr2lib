@@ -41,6 +41,7 @@ Ashraf_2018_s_ketamine_ticlopidine <- function() {
   )
   vignette <- "Ashraf_2018_s_ketamine_ticlopidine"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central", "depot_tic")
 
   covariateData <- list(
     WT = list(
