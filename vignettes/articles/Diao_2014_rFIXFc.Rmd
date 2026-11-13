@@ -90,6 +90,8 @@ them in one place for review.
 | `etalq` (IIV on Q2)                | 0.128164                           | Diao 2014 Table 3: IIV Q2 = 35.8%                                   |
 | `etalvp` (IIV on V2)               | 0.213444                           | Diao 2014 Table 3: IIV V2 = 46.2%                                   |
 | `etalvp2` (IIV on V3)              | 0.142129                           | Diao 2014 Table 3: IIV V3 = 37.7%                                   |
+| `etaiov_cl_1` (`_2` fixed)         | 0.151^2 = 0.022801                 | Diao 2014 Table 3 (p. 474): IOV on CL = 15.1%                       |
+| `etaiov_vc_1` (`_2` fixed)         | 0.174^2 = 0.030276                 | Diao 2014 Table 3 (p. 474): IOV on V1 = 17.4%                       |
 | `propSd` (proportional residual)   | 0.106                              | Diao 2014 Table 3: proportional residual error = 10.6%              |
 | `addSd` (additive residual, IU/dL) | 0.24                               | Diao 2014 Table 3: additive residual error = 0.24 IU/dL             |
 | Equation: `d/dt(central)`          | n/a                                | Diao 2014 Fig. 2 (three-compartment IV model schematic)             |
@@ -104,8 +106,8 @@ were computed by squaring 0.177, 0.217, 0.358, 0.462, and 0.377. The
 CL:V1 covariance was computed as `0.756 * 0.177 * 0.217 = 0.029042`.
 
 Inter-occasion variability on CL (15.1% CV) and V1 (17.4% CV) was estimated
-in the paper from 21 repeat PK profiles at week 26. IOV is not implemented
-in this static model file; see *Assumptions and deviations*. IIV on Q3 was
+in the paper from 21 repeat PK profiles at week 26 and is encoded with two
+occasions; see *Assumptions and deviations*. IIV on Q3 was
 evaluated but dropped from the final model (high standard error 87%; Diao
 2014 Sec. 3.1).
 
@@ -126,6 +128,7 @@ make_cohort <- function(n, dose_iu_per_kg, label, id_offset = 0L) {
   tibble(
     ID        = id_offset + seq_len(n),
     WT        = pmin(pmax(rlnorm(n, log(73), 0.27), 45), 187),
+    OCC       = 1L,
     treatment = label,
     dose_iukg = dose_iu_per_kg
   )
@@ -233,7 +236,7 @@ ev_ref <- rxode2::et(amt = 50 * 73, time = 0, cmt = "central") |>
   rxode2::et(0)
 sim_ref <- rxode2::rxSolve(
   mod_typ, events = ev_ref,
-  params = data.frame(WT = 73),
+  params = data.frame(WT = 73, OCC = 1L),
   returnType = "data.frame"
 )
 
@@ -256,6 +259,67 @@ V3 = `r round(ref_pars$vp2, 1)` dL, and
 Vss = V1 + V2 + V3 = `r round(ref_pars$Vss, 1)` dL --- matching the values
 reported in Diao 2014 Table 3 (CL = 2.39 dL/h, V1 = 71.4 dL, Q2 = 1.67 dL/h,
 V2 = 87.0 dL, Q3 = 39.3 dL/h, V3 = 39.9 dL, Vss = 198 dL).
+
+# Between-occasion variability (Diao 2014 Table 3)
+
+Table 3 reports between-occasion variability on CL (15.1% CV) and V1 (17.4%
+CV). The baseline profile at week 1 is occasion 1 and the repeat profile at
+week 26 is occasion 2 (Section 3.2). The chunk below gives 300 virtual patients
+both profiles, a 50 IU/kg dose at week 1 and again at week 26, and checks that
+each occasion carries its own draw per patient, that the SD of the draws on each
+occasion matches the published IOV, and that the within-patient SD of log CL and
+log V1 does too.
+
+```{r bov-check}
+set.seed(20140326)
+rxode2::rxSetSeed(20140326)
+
+n_bov <- 300L
+week26 <- 26 * 7 * 24  # h
+bov_pop <- tibble(ID = seq_len(n_bov), WT = 73)
+bov_ev <- bind_rows(
+  tidyr::crossing(bov_pop, OCC = 1:2) |>
+    mutate(TIME = c(0, week26)[OCC], AMT = 73 * 50, EVID = 1, CMT = "central"),
+  tidyr::crossing(bov_pop, OCC = 1:2) |>
+    mutate(TIME = c(0, week26)[OCC] + 1, AMT = NA_real_, EVID = 0, CMT = "central")
+) |>
+  arrange(ID, TIME, desc(EVID)) |>
+  as.data.frame()
+
+bov_sim <- rxode2::rxSolve(mod, events = bov_ev, keep = "OCC", returnType = "data.frame") |>
+  filter(!is.na(Cc))
+
+# One eta per patient and occasion: the number of distinct draws on an occasion
+# equals the number of patients.
+iov_per_occasion <- bov_sim |>
+  group_by(OCC) |>
+  summarise(
+    across(c(iov_cl, iov_vc), \(x) n_distinct(round(x, 8)), .names = "n_{.col}"),
+    .groups = "drop"
+  )
+
+# The footnote gives IOV as sqrt(variance) * 100, so the published CV is the SD of
+# the eta. The SD of the 300 draws on an occasion has a relative standard error of
+# 1 / sqrt(2 * 299) = 4.1%, so 20% is about five standard errors.
+bov_omega <- c(cl = 0.151, vc = 0.174)
+iov_sd <- bov_sim |>
+  group_by(OCC) |>
+  summarise(across(c(iov_cl, iov_vc), sd, .names = "sd_{.col}"), .groups = "drop")
+iov_sd_ratio <- as.matrix(iov_sd[, c("sd_iov_cl", "sd_iov_vc")]) /
+  matrix(bov_omega, nrow = nrow(iov_sd), ncol = 2L, byrow = TRUE)
+within_sd <- c(
+  cl = sqrt(mean(tapply(log(bov_sim$cl), bov_sim$id, var))),
+  vc = sqrt(mean(tapply(log(bov_sim$vc), bov_sim$id, var)))
+)
+print(round(rbind(published = bov_omega, within_patient = within_sd), 3))
+print(round(iov_sd_ratio, 3))
+stopifnot(
+  nrow(iov_per_occasion) == 2L,
+  unlist(iov_per_occasion[, -1]) == n_bov,
+  abs(iov_sd_ratio - 1) < 0.20,
+  abs(within_sd / bov_omega - 1) < 0.20
+)
+```
 
 # PKNCA validation
 
@@ -371,14 +435,21 @@ consistent: typical CL = 2.39 dL/h, V1 = 71.4 dL, and Vss = V1 + V2 + V3 =
 
 # Assumptions and deviations
 
-- **Inter-occasion variability omitted.** Diao 2014 estimated IOV on CL
-  (15.1% CV) and V1 (17.4% CV) from 21 repeat PK profiles at week 26 in the
-  Arm 1 sequential PK subgroup. The static library model has no occasion
-  variable, so IOV is not implemented as a separate eta. For Bayesian
-  forecasting use cases that explicitly model occasions, the IOV variances
-  (`omega^2_IOV_CL = 0.151^2 = 0.022801` and
-  `omega^2_IOV_V1 = 0.174^2 = 0.030276`) can be added on top of the packaged
-  IIV.
+- **Inter-occasion variability uses the occasion-indicator expansion.** Diao
+  2014 Table 3 (p. 474) reports IOV on CL (15.1% CV) and V1 (17.4% CV), none
+  on the other parameters. The baseline profile at week 1 is occasion 1 and the
+  repeat profile at week 26 is occasion 2, with 21 patients of the Arm 1
+  sequential PK subgroup contributing an occasion 2 (Section 3.2, p. 472;
+  p. 473). Each term is two etas on the log parameter selected by the `OCC`
+  column, occasion 1 at the squared CV (`0.151^2`, `0.174^2`: the footnote
+  gives IOV as sqrt(variance) \* 100, as for the IIV) and occasion 2 fixed to it.
+  rxode2's `| OCC` level shares one draw per occasion when no subject has two or
+  more occasions, which is the shape of the virtual cohort above, so the
+  expansion is used. Records with `OCC` beyond 2 carry no IOV, and `OCC` is
+  required in every event table, also for the zero-random-effects runs. Because
+  the occasion effect enters as an indicator-weighted sum, rxode2 warns `some
+  etas defaulted to non-mu referenced`; that affects only the speed of a future
+  estimation run, not simulation.
 - **Inter-individual variability convention.** Diao 2014 footnotes Table 3
   with "IIV calculated as sqrt(variance) \* 100", i.e., the reported CV%
   values are `sqrt(omega^2) * 100`, not the log-normal
