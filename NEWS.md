@@ -30,9 +30,9 @@
   themselves are unchanged. `indirect_0cpt_transitEx` now mentions its
   ten-compartment transit absorption chain. Two circadian `*_kout_t` models
   said `kin_t`, and the two stimulation `indirect_prec_1cpt_stim_*` models said
-  inhibition. `indirect_prec_1cpt_stim_r0rmaxcrmax` no longer claims a
-  clearance-and-volume parameterization, and a "cosntants" typo is fixed in five
-  descriptions.
+  inhibition. `indirect_prec_1cpt_stim_r0rmaxcrmax` now says that its PK
+  is parameterized with clearance and volume and its response with R0, Rmax
+  and CRmax. A "cosntants" typo is fixed in five descriptions.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
