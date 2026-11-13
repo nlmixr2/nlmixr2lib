@@ -86,7 +86,7 @@ provenance.
 | Module | Equations (paper Supp.) | Parameters (Table S2) | State variables (Table S1) |
 |--------|-------------------------|-----------------------|----------------------------|
 | 1. Maturation signal + DC | Eqs 1-3                | `betaMS`, `betaID`, `deltaID`, `KMS`, `betaMD`, `iDC0` | `MS`, `iDC`, `mDC` |
-| 2. Antigen presentation   | Eqs 4-13, 14.2         | `alphaAgE`, `betaAgE`, `betaPep`, `betaMHC`, `betaPM`, `kExt`, `kIntCplx`, `Vendo`, `konMHC`, `KpMN`, `KpMM`, `cp0pl`, `koffC` | `AgE`, `pE`, `cpE`, `cptE`, `mhcE`, `pmE`, `cpmE`, `pmM`, `cpmM`, `mhcM` |
+| 2. Antigen presentation   | Eqs 4-13, 14.2         | `alphaAgE`, `betaAgE`, `betaPep`, `betaMHC`, `betaPM`, `kExt`, `kIntCplx`, `Vendo`, `konMHC`, `KpMN`, `KpMM`, `cp0pl`, `koffC`, `koffT` (= Kd x `konMHC`, Kd = 150 nmol/L) | `AgE`, `pE`, `cpE`, `cptE`, `mhcE`, `pmE`, `cpmE`, `pmM`, `cpmM`, `mhcM` |
 | 3. T helper cell          | Eqs 14-18 (with 14.1, 15.1, 16.1, 16.2) | `betaNT`, `deltaNT`, `rhoAT`, `betaAT`, `deltaMT`, `betaMT`, `betaFT`, `fracT1`, `NT0` | `NT`, `aTn`, `aTm`, `MT`, `FT` |
 | 4. B cell                 | Eqs 19-24 (with 19.1, 19.2, 19.3, 20.1, 20.2, 21.1), Eqs 4.1.1-4.1.8 | `deltaNB`, `deltaMB`, `betaMB`, `betaSP`, `betaLP`, `rhoABN`, `rhoABM`, `betaAB`, `fracB1`, `fracB2`, `CCN`, `CCM`, `BRN`, `KRb`, `Kab`, `NB0` | `NB`, `aBn`, `aBm`, `MB`, `SP`, `LP` |
 | 5. ADA disposition        | Eq 25                  | `alphaAb`, `betaAb`, `betaCmp` | `Ab` |
@@ -267,21 +267,23 @@ support vector states). Every deviation is enumerated below.
   uses a larger effective coupling; the published equation set alone
   is insufficient to reproduce Figure 4d/4e quantitatively.
 - **Membrane peptide-MHC dissociation (supplement Eqs 8, 12, 13).**
-  Complexes on the DC membrane dissociate - the T-epitope complex at
-  `koffT`, the competing-peptide complex at `koffC` - and the freed
-  MHC-II (`mhcM`) is internalized back to the endosome. `koffT =
-  1296 /day` is the demo T-epitope's off-rate, from its Kd = 150 nmol/L
-  and `konMHC` (Table S2); `koffC = 34560 /day` belongs to the
-  competing peptide only. With these equations the model presents about
-  3.5-fold less T-epitope-MHC on the DC surface than a version that
-  internalized the membrane complexes intact, so the T-cell, B-cell and
-  ADA responses are smaller still (ADA at day 100: 6.2e-6 falls to
-  4.8e-7).
+  Complexes on the DC membrane dissociate: the T-epitope complex
+  (`pmM`) at `koffT`, the competing-peptide complex (`cpmM`) at `koffC`.
+  The freed MHC-II (`mhcM`) is internalized back to the endosome at
+  `kIntCplx`. `koffT = 1296 /day` is the demo T-epitope's off-rate, from
+  its Kd = 150 nmol/L and `konMHC` (Table S2); `koffC = 34560 /day`
+  belongs to the competing peptide only. A presented complex therefore
+  lasts about a minute on the membrane. In the demo above, the DC
+  carries at most about 0.006 T-epitope-MHC complexes (`pMtot`), the
+  activation fractions `Dn`/`Dm` stay below about 2e-4, and ADA (`Ab`)
+  at day 100 is about 5e-7. `mhcM` is fed by these dissociations, but it
+  peaks near 4e-18 pmole per DC against about 1e-6 for endosomal
+  `mhcE`, so its recycling has no visible effect.
 - **Known gap to Figure 4.** The simulated T-cell, B-cell and ADA
   responses stay far below the paper's Figure 4. This is a known gap,
-  not a reproduction: it follows from the untabulated `Msynth` above,
-  and from the "Ag-specific" `betaCmp` and `MS0` below, for which the
-  packaged model uses neutral defaults.
+  not a reproduction. It is most likely attributable to the
+  untabulated `Msynth` above, and to the "Ag-specific" `betaCmp` and
+  `MS0` below, for which the packaged model uses neutral defaults.
 - **Immune-complex clearance rate `betaCmp` marked "Ag-specific" in
   Table S2** - no default value given. Set to `betaCmp = betaAb`
   (0.0301 /day) as the neutral choice (Ag-Ab complex cleared at same
