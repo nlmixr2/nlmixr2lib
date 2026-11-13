@@ -393,12 +393,15 @@ knitr::kable(nca_summary,
   | eta | eta_t | A: `TV * exp(eta_t)` | B: `TV * (1 + eta_t)` |
   |-----|-------|----------------------|-----------------------|
   | +1 SD | 1.08 | 1.41 h | 1.0 h |
+  | +1.5 SD | 3.60 | 17.5 h | 2.2 h |
   | +2 SD | 11.4 | 4.4e4 h | 6.0 h |
   | +2.5 SD | 35.7 | 1.5e15 h | 17.6 h |
   | +3 SD | 110.8 | 6.3e47 h | 53.7 h |
 
-  Reading A, the direct substitution into a log-normal term, gives implausible
-  lags for the 0.6% of visits beyond +2.5 SD; reading B is finite but extreme.
+  Reading A, the direct substitution into a log-normal term, gives a lag of
+  about 17 h from +1.5 SD (6.7% of visits) and an absurd one beyond +2 SD (2.3%
+  of visits); reading B stays finite but reaches 17.6 h at +2.5 SD (0.6% of
+  visits).
   The packaged model therefore carries neither, and its lag time is the
   typical value with no inter-occasion variability. The phase II studies
   (BALANCE I and II, Genovese 2016 doi 10.1002/art.39808 and Kremer 2016 doi
