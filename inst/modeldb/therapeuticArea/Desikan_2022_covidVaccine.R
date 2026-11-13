@@ -98,7 +98,7 @@ Desikan_2022_covidVaccine <- function() {
       "5e3 background titre floor."
     )
   )
-  dosing <- c("agW", "Bw", "agV", "Bv")
+  dosing <- c("agW", "Bw", "agV", "Bv", "Aw", "Av")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

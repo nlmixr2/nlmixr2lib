@@ -34,7 +34,7 @@ deKock_2017_sulfadoxinePyrimethamine <- function() {
     dosing = "mg",
     concentration = "mg/L for sulfadoxine (whole blood); ng/mL for pyrimethamine (whole blood)"
   )
-  dosing <- c("depot", "central", "depot_pyra")
+  dosing <- c("depot", "depot_pyra")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

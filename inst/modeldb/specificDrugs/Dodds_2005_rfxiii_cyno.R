@@ -24,6 +24,7 @@ Dodds_2005_rfxiii_cyno <- function() {
     dosing = "mg/kg (IV bolus of rA2 dimer; doses are weight-normalised throughout)",
     concentration = "mg/L (each assay output: ELISA reading in mass/volume on plasma)"
   )
+  dosing <- "A2"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

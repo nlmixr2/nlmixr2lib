@@ -40,6 +40,7 @@ Elmokadem_2023_mavoglurant_pbpk <- function() {
   )
   vignette <- "Elmokadem_2023_mavoglurant_pbpk"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- "venous"
 
   covariateData <- list(
     WT = list(
