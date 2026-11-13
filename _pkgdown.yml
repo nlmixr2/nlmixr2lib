@@ -1010,6 +1010,8 @@ navbar:
         href: articles/Stader_2021_bictegravir_ddi_pbpk.html
       - text: "Bictegravir pbpk (Stader 2021)"
         href: articles/Stader_2021_bictegravir_pbpk.html
+      - text: "Bictegravir rabbit (Oliveira 2026)"
+        href: articles/Oliveira_2026_antiretroviral_implant_rabbit.html
       - text: "Biib107 (Toukam 2025)"
         href: articles/Toukam_2025_biib107.html
       - text: "Bilastine (Togawa 2016)"
@@ -2750,6 +2752,8 @@ navbar:
         href: articles/Valade_2014_emtricitabine.html
       - text: "Emtricitabine (Valade 2015)"
         href: articles/Valade_2015_emtricitabine.html
+      - text: "Emtricitabine rabbit (Oliveira 2026)"
+        href: articles/Oliveira_2026_antiretroviral_implant_rabbit.html
       - text: "Enalapril (Faisal 2019)"
         href: articles/Faisal_2019_enalapril.html
       - text: "Enalapril enalaprilat pediatric (Steichert 2025)"
@@ -4204,6 +4208,8 @@ navbar:
         href: articles/ChandralayamAyyappaMenon_2026_isb2001.html
       - text: "Islatravir (Kim 2024)"
         href: articles/Kim_2024_islatravir.html
+      - text: "Islatravir rabbit (Oliveira 2026)"
+        href: articles/Oliveira_2026_antiretroviral_implant_rabbit.html
       - text: "Islatravir rat (Kinsale 2024)"
         href: articles/Kinsale_2024_islatravir_rat.html
       - text: "Isolariciresinol rat (Liu 2024)"
@@ -11286,6 +11292,7 @@ articles:
   - articles/Okumura_2025_ergothioneine_pbpk
   - articles/Olafuyi_2025_propyleneGlycol
   - articles/Olagunju_2018_efavirenz
+  - articles/Oliveira_2026_antiretroviral_implant_rabbit
   - articles/Olivo_2024_methotrexate
   - articles/Olivo_2025_vancomycin
   - articles/Ollier_2015_ropivacaine
