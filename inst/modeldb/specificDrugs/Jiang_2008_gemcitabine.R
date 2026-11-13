@@ -17,7 +17,10 @@ Jiang_2008_gemcitabine <- function() {
     "order (multiplicative factors 0.65 when gemcitabine is given first and",
     "0.54 when oxaliplatin is given first), and a non-small-cell lung cancer",
     "indicator (multiplicative factor 1.24) on apparent dFdU central volume.",
-    "Residual error is proportional for both analytes."
+    "Between-occasion variability (two occasions, selected by the OCC column)",
+    "is included on gemcitabine clearance and central volume and on apparent",
+    "dFdU clearance and central volume. Residual error is proportional for both",
+    "analytes."
   )
   reference <- paste(
     "Jiang X, Galettis P, Links M, Mitchell PL, McLachlan AJ. (2008).",
@@ -128,6 +131,29 @@ Jiang_2008_gemcitabine <- function() {
         "Ahamadi 2017 pembrolizumab and Aoyama 2012 sepantronium."
       ),
       source_name = "NSCLC"
+    ),
+    OCC = list(
+      description = "Occasion index (1-2): one gemcitabine concentration-time profile, for between-occasion variability",
+      units = "(count)",
+      type = "categorical",
+      reference_category = NULL,
+      notes = paste(
+        "Jiang 2008 does not define an occasion. The database holds 122",
+        "concentration-time profiles from 94 patients (Results, p. 329), and Study",
+        "3 is a randomised crossover of a 30-min and a 100-min gemcitabine infusion",
+        "(Methods, p. 328; the first and second peaks of the Figure 4 and 5",
+        "predictive checks, p. 331, derive from the two infusions). An occasion is",
+        "taken as one concentration-time profile, so at most two per patient.",
+        "Decomposed inside model() into the binary flags oc1 and oc2 that select one",
+        "of two BOV etas on each of CL_gem, V_C,gem, CL_dFdU/F and V_C,dFdU/F.",
+        "rxode2's `| OCC` level shares one draw per occasion when no subject has two",
+        "or more occasions, so the occasions are expanded into indicator-multiplexed",
+        "etas; occasion 1 carries the estimated variance and occasion 2 is fixed to",
+        "the same value. Records with OCC outside 1-2 carry no BOV; a single-profile",
+        "simulation passes OCC = 1.",
+        sep = " "
+      ),
+      source_name = "occasion"
     )
   )
 
@@ -213,11 +239,9 @@ Jiang_2008_gemcitabine <- function() {
 
     # Inter-individual variability (BSV CV% from Jiang 2008 Table 3
     # converted to log-normal omega^2 via omega^2 = log(1 + CV^2)). The
-    # paper also reports between-occasion variability (BOV CV%) on
-    # CL_gem (12%), V_C,gem (93%), CL_dFdU/F (11%), and V_C,dFdU/F (10%);
-    # nlmixr2 has no native occasion-level random-effect slot for a
-    # static model definition, so BOV is documented as a deviation in
-    # the validation vignette and only BSV is encoded here.
+    # same table reports between-occasion variability (BOV CV%) on
+    # CL_gem (12%), V_C,gem (93%), CL_dFdU/F (11%), and V_C,dFdU/F (10%),
+    # encoded below with the same conversion.
     etalcl       ~ log(1 + 0.31^2)  # Jiang 2008 Table 3 BSV CL_gem = 31% CV
     etalvc       ~ log(1 + 0.39^2)  # Jiang 2008 Table 3 BSV V_C,gem = 39% CV
     etalq        ~ log(1 + 0.44^2)  # Jiang 2008 Table 3 BSV Q_gem = 44% CV
@@ -227,6 +251,20 @@ Jiang_2008_gemcitabine <- function() {
     etalq_dfdu   ~ 0.08075  # log(1 + 0.29^2); Jiang 2008 Table 3 BSV Q_dFdU/F = 29% CV
     etalvp_dfdu  ~ log(1 + 0.38^2)  # Jiang 2008 Table 3 BSV V_P,dFdU/F = 38% CV
 
+    # Between-occasion variability: one variance shared by the two occasions
+    # (profiles) of a patient. rxode2's `| OCC` level shares one draw per
+    # occasion when no subject has two or more occasions, so each occasion is
+    # an indicator-multiplexed eta (see the OCC covariate); occasion 2 is
+    # fixed to occasion 1.
+    etaiov_cl_1      ~ log(1 + 0.12^2)           # Jiang 2008 Table 3 BOV CL_gem = 12% CV
+    etaiov_cl_2      ~ fixed(log(1 + 0.12^2))    # same variance as occasion 1
+    etaiov_vc_1      ~ log(1 + 0.93^2)           # Jiang 2008 Table 3 BOV V_C,gem = 93% CV
+    etaiov_vc_2      ~ fixed(log(1 + 0.93^2))    # same variance as occasion 1
+    etaiov_cl_dfdu_1 ~ log(1 + 0.11^2)           # Jiang 2008 Table 3 BOV CL_dFdU/F = 11% CV
+    etaiov_cl_dfdu_2 ~ fixed(log(1 + 0.11^2))    # same variance as occasion 1
+    etaiov_vc_dfdu_1 ~ log(1 + 0.10^2)           # Jiang 2008 Table 3 BOV V_C,dFdU/F = 10% CV
+    etaiov_vc_dfdu_2 ~ fixed(log(1 + 0.10^2))    # same variance as occasion 1
+
     # Residual error: proportional for both gemcitabine and dFdU
     # (Jiang 2008 Methods: "Proportional statistical models were
     # employed to describe ... residual error for gemcitabine and dFdU").
@@ -235,9 +273,18 @@ Jiang_2008_gemcitabine <- function() {
   })
 
   model({
+    # Occasion flags: one BOV eta applies per record. A single-profile
+    # simulation passes OCC = 1.
+    oc1 <- (OCC == 1)
+    oc2 <- (OCC == 2)
+    iov_cl      <- oc1 * etaiov_cl_1      + oc2 * etaiov_cl_2
+    iov_vc      <- oc1 * etaiov_vc_1      + oc2 * etaiov_vc_2
+    iov_cl_dfdu <- oc1 * etaiov_cl_dfdu_1 + oc2 * etaiov_cl_dfdu_2
+    iov_vc_dfdu <- oc1 * etaiov_vc_dfdu_1 + oc2 * etaiov_vc_dfdu_2
+
     # Gemcitabine individual PK parameters.
-    cl <- exp(lcl + etalcl)
-    vc <- exp(lvc + etalvc)
+    cl <- exp(lcl + etalcl + iov_cl)
+    vc <- exp(lvc + etalvc + iov_vc)
     q  <- exp(lq  + etalq)
     vp <- exp(lvp + etalvp)
 
@@ -247,9 +294,9 @@ Jiang_2008_gemcitabine <- function() {
     # power; GEMOX / OXGEM / TUMTP_NSCLC via multiplicative powers
     # preserving the source equations' symbolic form (a^X with X in
     # {0,1} is the multiplier when X = 1 and 1 when X = 0).
-    cl_dfdu <- exp(lcl_dfdu + etalcl_dfdu) *
+    cl_dfdu <- exp(lcl_dfdu + etalcl_dfdu + iov_cl_dfdu) *
                  (1 + e_crcl_cl_dfdu * CRCL / 70)
-    vc_dfdu <- exp(lvc_dfdu + etalvc_dfdu) *
+    vc_dfdu <- exp(lvc_dfdu + etalvc_dfdu + iov_vc_dfdu) *
                  (BSA / 1.73)^e_bsa_vc_dfdu *
                  e_gemox_vc_dfdu^GEMOX *
                  e_oxgem_vc_dfdu^OXGEM *

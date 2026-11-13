@@ -95,6 +95,10 @@ The table below collects them in one place for review.
 | `etalvc_dfdu`                  | omega^2 = 0.0223            | Table 3 BSV V_C,dFdU/F 15% CV -> log(1 + 0.15^2)                           |
 | `etalq_dfdu`                   | omega^2 = 0.0808            | Table 3 BSV Q_dFdU/F 29% CV -> log(1 + 0.29^2)                             |
 | `etalvp_dfdu`                  | omega^2 = 0.1349            | Table 3 BSV V_P,dFdU/F 38% CV -> log(1 + 0.38^2)                           |
+| `etaiov_cl_1` (`_2` fixed)     | omega^2 = 0.0143            | Table 3 BOV CL_gem 12% CV -> log(1 + 0.12^2)                               |
+| `etaiov_vc_1` (`_2` fixed)     | omega^2 = 0.6232            | Table 3 BOV V_C,gem 93% CV -> log(1 + 0.93^2)                              |
+| `etaiov_cl_dfdu_1` (`_2` fixed) | omega^2 = 0.0120           | Table 3 BOV CL_dFdU/F 11% CV -> log(1 + 0.11^2)                            |
+| `etaiov_vc_dfdu_1` (`_2` fixed) | omega^2 = 0.0100           | Table 3 BOV V_C,dFdU/F 10% CV -> log(1 + 0.10^2)                           |
 | `propSd`                       | 0.40                        | Table 3 row "Residual variability sigma_GEM" (40% CV)                      |
 | `propSd_dfdu`                  | 0.19                        | Table 3 row "Residual variability sigma_dFdU" (19% CV)                     |
 | `d/dt(central)`                | -kel_gem * central - k12 * central + k21 * peripheral1 | Methods page 328 ("two-compartment ... FO elimination") + ADVAN6 parent-metabolite parameterisation |
@@ -111,7 +115,11 @@ surface area, creatinine clearance, and NSCLC indicator distributions
 that bracket the published Table 2 demographics. Each patient receives
 a single gemcitabine 1250 mg/m^2 30-min IV infusion (the modal Study 1
 / Study 2 dose); the absolute mg dose is computed per subject as
-`1250 * BSA`.
+`1250 * BSA`. Each patient contributes one concentration-time profile
+(`OCC = 1`), so the stochastic cohort carries the first occasion's
+between-occasion variability on top of the between-subject variability;
+the section on between-occasion variability below simulates the two
+profiles of a crossover patient.
 
 ```{r cohort}
 set.seed(20070326)
@@ -173,6 +181,7 @@ build_events <- function(row) {
       TUMTP_NSCLC = row$TUMTP_NSCLC,
       GEMOX       = row$GEMOX,
       OXGEM       = row$OXGEM,
+      OCC         = 1L,
       treatment   = row$treatment
     )
 }
@@ -326,6 +335,79 @@ ggplot(typ_long, aes(time, conc, colour = treatment)) +
   )
 ```
 
+## Between-occasion variability (Jiang 2008 Table 3)
+
+Table 3 reports between-occasion variability (BOV) on CL_gem (12% CV),
+V_C,gem (93% CV), CL_dFdU/F (11% CV) and V_C,dFdU/F (10% CV). The paper
+does not define an occasion; the model takes it as one concentration-time
+profile, so a patient has at most two (the 30-min and the 100-min
+infusion of Study 3, page 328; the 122 profiles of 94 patients, page 329).
+The chunk below simulates 300 crossover patients, one 1000 mg/m^2 infusion
+of 30 min (occasion 1) and one of 100 min (occasion 2) a week apart, and
+checks that each occasion carries its own draw per patient and that the
+within-patient SD of each log parameter matches the published BOV.
+
+```{r bov-check}
+set.seed(20080326)
+rxode2::rxSetSeed(20080326)
+
+n_bov <- 300L
+occasion_start <- c(0, 10080)  # min; the two infusions of a crossover patient
+infusion_min   <- c(30, 100)
+
+bov_subj <- tibble::tibble(
+  id = seq_len(n_bov), BSA = 1.8, CRCL = 83,
+  TUMTP_NSCLC = 0L, GEMOX = 0L, OXGEM = 0L
+)
+bov_ev <- dplyr::bind_rows(
+  tidyr::crossing(bov_subj, OCC = 1:2) |>
+    dplyr::mutate(
+      time = occasion_start[OCC], evid = 1L, amt = 1000 * BSA,
+      cmt = "central", dur = infusion_min[OCC]
+    ),
+  tidyr::crossing(bov_subj, OCC = 1:2) |>
+    dplyr::mutate(
+      time = occasion_start[OCC] + 10, evid = 0L, amt = 0,
+      cmt = "Cc", dur = 0
+    )
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+bov_sim <- rxode2::rxSolve(mod, events = bov_ev, keep = "OCC") |>
+  as.data.frame()
+
+# One eta per patient and occasion: the number of distinct draws on an
+# occasion equals the number of patients.
+iov_per_occasion <- bov_sim |>
+  dplyr::group_by(OCC) |>
+  dplyr::summarise(
+    dplyr::across(
+      c(iov_cl, iov_vc, iov_cl_dfdu, iov_vc_dfdu),
+      \(x) dplyr::n_distinct(round(x, 8)),
+      .names = "n_{.col}"
+    ),
+    .groups = "drop"
+  )
+
+# The variance of a log parameter across the two occasions of one patient is
+# the BOV variance, since the BSV and the covariates are the same on both.
+bov_cv    <- c(cl = 0.12, vc = 0.93, cl_dfdu = 0.11, vc_dfdu = 0.10)
+bov_omega <- sqrt(log(1 + bov_cv^2))
+within_sd <- vapply(
+  names(bov_cv),
+  function(p) sqrt(mean(tapply(log(bov_sim[[p]]), bov_sim$id, var))),
+  numeric(1L)
+)
+print(round(rbind(published = bov_omega, simulated = within_sd), 3))
+stopifnot(
+  nrow(iov_per_occasion) == 2L,
+  unlist(iov_per_occasion[, -1]) == n_bov,
+  # 300 patients x 1 degree of freedom: the SD of the estimate is about 4%,
+  # so 20% is a bound on the centre, not on the extremes of the draw.
+  abs(within_sd / bov_omega - 1) < 0.20
+)
+```
+
 # PKNCA validation
 
 Two PKNCA passes are run -- one for gemcitabine `Cc` and one for the
@@ -431,13 +513,25 @@ knitr::kable(
 
 # Assumptions and deviations
 
-- **Between-occasion variability (BOV) is not encoded.** Jiang 2008
-  Table 3 reports BOV on CL_gem (12% CV), V_C,gem (93% CV),
-  CL_dFdU/F (11% CV), and V_C,dFdU/F (10% CV) in addition to the BSV
-  values. nlmixr2 has no native occasion-level random-effect slot for
-  a static model definition, so only BSV is encoded in `ini()`. Users
-  fitting the model to multi-cycle data should consider adding an
-  occasion-level eta layer externally.
+- **BOV uses the occasion-indicator expansion, with two occasions.**
+  Jiang 2008 Table 3 (page 329) reports BOV on CL_gem (12% CV),
+  V_C,gem (93% CV), CL_dFdU/F (11% CV) and V_C,dFdU/F (10% CV), and none
+  on Q or V_P. Each is encoded as two etas selected by the `OCC` column,
+  occasion 1 at `log(1 + CV^2)` (the CV-to-variance convention of the BSV)
+  and occasion 2 fixed to it. The paper does not define an occasion; it is
+  taken as one concentration-time profile, which gives at most two per
+  patient (122 profiles in 94 patients, page 329; the 30-min and 100-min
+  infusions of the Study 3 crossover, page 328). rxode2's `| OCC` level shares
+  one draw per occasion when no subject has two or more occasions, which is the
+  shape of the virtual cohort above, so the expansion is used. Records with
+  `OCC` outside 1-2 carry no BOV. The paper states proportional models for
+  the variability (page 329); the log-normal conversion is the one the BSV
+  already uses, and the 93% on V_C,gem is where it differs most from a
+  proportional-eta variance (0.62 against 0.86). Because the occasion effect
+  enters as an indicator-weighted sum, rxode2 warns `some etas defaulted to
+  non-mu referenced`; that affects only the speed of a future estimation run,
+  not simulation. The typical-value profiles zero the random effects and are
+  unchanged.
 - **NSCLC prevalence by regimen approximated from Table 1.** The
   paper does not publish a 3 x 2 contingency of regimen x NSCLC; the
   virtual cohort above uses Study 2 (NSCLC-only) + Study 1 (diverse
