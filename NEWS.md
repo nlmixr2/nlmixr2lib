@@ -2,6 +2,8 @@
 
 # development version
 
+- `tgi_sat_genVonBertalanffy` and `tgi_no_sat_powerLaw`: `lgamma` is now `log(0.95)`, so the growth exponent `gamma` is 0.95, the proliferative fraction the label describes. It was `0.95` on the log scale, which made `gamma` exp(0.95) = 2.59; growth then outran any linear loss and the tumour size reached infinity in finite time (NaN from t = 0.5 in `tgi_sat_genVonBertalanffy`; `tgi_no_sat_powerLaw` could not be solved). **Breaking for simulation code** that used the old default.
+
 - The registry's full-scope solve gate (`NLMIXR2LIB_SOLVE_GATE=full`) passes. Its probe now drives models it could not before: those with a random effect on a within-subject grouping variable (`| OCC`), those mixing an algebraic endpoint with ODE-state endpoints, and neonatal or pregnancy models whose age covariates it had set to an adult's age. It also reads a reference value held in a named constant, falls back to `dop853` when rxode2's default solver fails or returns NaN states without a warning, lengthens the time grid when an absorption lag outlasts it, and re-solves a linCmt divergence at tight tolerances before reporting it. The 81 models whose solution rxode2's opt-in ODE-to-linCmt conversion changes are quarantined by cause. `tgi_sat_genVonBertalanffy` and `tgi_no_sat_powerLaw`, whose growth exponent is exp(0.95) = 2.59, are recorded as broken.
 
 - `tgi_sat_genLogistic`'s `lgamma` label now describes the generalized-logistic shape exponent rather than a proliferative fraction.
