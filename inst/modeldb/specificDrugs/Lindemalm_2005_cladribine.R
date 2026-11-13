@@ -3,6 +3,7 @@ Lindemalm_2005_cladribine <- function() {
   reference <- "Lindemalm S, Savic RM, Karlsson MO, Juliusson G, Liliemark J, Albertioni F. Application of population pharmacokinetics to cladribine. BMC Pharmacol. 2005;5:4. doi:10.1186/1471-2210-5-4. PMID: 15757511; PMCID: PMC1079880."
   vignette <- "Lindemalm_2005_cladribine"
   units <- list(time = "h", dosing = "mg", concentration = "nmol/L")
+  dosing <- c("central", "depot_oral", "depot_sc")
 
   compartmentData <- list(
     depot_oral = list(analyte = "cladribine", units = "mg", specimen = "administration site", verified = TRUE),

@@ -47,6 +47,7 @@ Levitt_2005_propofol_pbpk <- function() {
   )
   vignette <- "Levitt_2005_propofol_pbpk"
   units <- list(time = "min", dosing = "mg", concentration = "mg/L")
+  dosing <- "lung_seq"
 
   paper_specific_compartments <- c("lung_seq")
 

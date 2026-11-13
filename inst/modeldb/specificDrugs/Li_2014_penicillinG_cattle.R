@@ -3,6 +3,7 @@ Li_2014_penicillinG_cattle <- function() {
   reference <- "Li M, Gehring R, Tell L, Baynes R, Huang Q, Riviere JE. Interspecies mixed-effect pharmacokinetic modeling of penicillin G in cattle and swine. Antimicrob Agents Chemother. 2014;58(8):4495-4503. doi:10.1128/AAC.02806-14"
   vignette <- "Li_2014_penicillinG"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("central", "depot2", "depot1", "depot3", "depot4")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

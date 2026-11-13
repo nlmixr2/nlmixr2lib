@@ -10,6 +10,7 @@ Lacy_2018_cabozantinib <- function() {
   )
   vignette <- "Lacy_2018_cabozantinib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("central", "depot1")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
