@@ -47,6 +47,7 @@ Bauer_2023_vwfFviii_humateP <- function() {
     dosing = "IU (VWF:RCo activity into central; FVIII:C activity into fviii)",
     concentration = "IU/dL (VWF:RCo activity; FVIII:C activity)"
   )
+  dosing <- c("central", "fviii")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

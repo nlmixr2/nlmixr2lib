@@ -49,7 +49,7 @@ Benson_2010_reboxetine_apparent_qsp <- function() {
   # volume term anywhere in Equations 1-5. Dosing and concentration units
   # are therefore the same (nM).
   units <- list(time = "h", dosing = "nM", concentration = "nM")
-  dosing <- "reboxetine"
+  dosing <- c("reboxetine", "tracer")
 
   covariateData <- list()
 

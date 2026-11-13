@@ -39,7 +39,7 @@ Boak_2014_linezolid <- function() {
     concentration = "mg/L",
     platelet = "10^9 cells/L"
   )
-  dosing <- c("depot", "central", "lat1")
+  dosing <- "lat1"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

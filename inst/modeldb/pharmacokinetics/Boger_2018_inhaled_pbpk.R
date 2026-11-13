@@ -30,6 +30,7 @@ Boger_2018_inhaled_pbpk <- function() {
   )
   vignette <- "Boger_2018_inhaled_pbpk"
   units <- list(time = "h", dosing = "nmol", concentration = "nM")
+  dosing <- "a_venous"
 
   # No covariates: the paper simulates a single 70 kg reference adult and
   # varies only the solubility, particle size distribution and lung-deposited

@@ -13,6 +13,7 @@ Bizzotto_2016_glucose <- function() {
   paper_specific_compartments <- c("X1", "X", "Z1", "Z", "xHL1", "xHL2", "xPER1", "xPER2", "xPER3", "xPER4")
 
   units <- list(time = "min", dosing = "umol/m^2", concentration = "mmol/L")
+  dosing <- c("xHL1", "xHL2")
   ddmore_id <- "DDMODEL00000227"
   replicate_of <- NULL
 

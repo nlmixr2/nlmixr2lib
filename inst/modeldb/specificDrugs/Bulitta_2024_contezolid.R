@@ -38,7 +38,7 @@ Bulitta_2024_contezolid <- function() {
   vignette <- "Bulitta_2024_contezolid"
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
-  dosing <- c("depot", "central", "depot_iv", "transit1")
+  dosing <- c("depot_iv", "transit1")
 
   covariateData <- list(
     WT = list(

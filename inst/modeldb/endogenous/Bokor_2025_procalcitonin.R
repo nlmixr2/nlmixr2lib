@@ -27,7 +27,7 @@ Bokor_2025_procalcitonin <- function() {
     dosing = "unit (nominal birth-event bolus of 1 into the birth-stimulus compartment at the time of birth)",
     concentration = "ug/L"
   )
-  dosing <- c("central", "birth")
+  dosing <- "birth"
 
   covariateData <- list(
     WT = list(
