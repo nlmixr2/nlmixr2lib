@@ -542,29 +542,41 @@ Nothing fails. It applies whenever the model has `alag()` and an
 change within a subject: `OCC`, a per-dose `DOSE_<DRUG>_MG`,
 `MULTI_DOSE*`, `SELFADMIN`, `FED`, a per-dose `CONMED_*`. The lag moves
 each dose to its absorption time, and `rxSolve()` then decides which
-record's covariates the dose uses. Measured on rxode2 5.1.8
-(`f()` = 1 on the previous record's value, 0.5 on the dose's own):
+record's covariates the dose uses. Measured on rxode2 5.1.8.9000 with a
+lag of 0.5 h and three distinct values, so that each result names its
+source: the dose's own record, the last record at an earlier time, and
+one other record near the dose.
+
+`f()`:
 
 | Dose type | Other record carrying a different value | `addlKeepsCov = FALSE` (default) | `addlKeepsCov = TRUE`, `nonmem = TRUE` |
 |---|---|---|---|
 | bolus | none | own record | own record |
-| bolus | same time, sorted after the dose | **that record** | own record |
+| bolus | same time as the dose | **that record** | own record |
 | bolus | inside the lag window | **that record** | own record |
-| bolus | the next dose, when the lag is longer than the interval | **that dose's record** | own record |
-| `rate = -2` (`dur()`), `rate = -1` (`rate()`), fixed rate | none | own record | **record before the dose** |
-| same | same time, sorted after the dose | **that record** | **record before the dose** |
-| same | inside the lag window | own record | **record before the dose** |
-| same | the next dose, when the lag is longer than the interval | own record | **that dose's record** |
+| fixed rate | none | own record | **record before the dose** |
+| fixed rate | same time as the dose | **that record** | **record before the dose** |
+| fixed rate | inside the lag window | own record | **record before the dose** |
+| `rate = -1` / `rate = -2` | none | own record | **record before the dose** |
+| `rate = -1` / `rate = -2` | same time as the dose | **that record** | **that record** |
+| `rate = -1` / `rate = -2` | inside the lag window | own record | **record before the dose** |
 
-More facts from the same probes: `alag()` itself is always read from
-the dose's own record. A `dur()` that depends on the covariate is taken
-from a same-time record sorted after the dose, and from the next dose's
-record when the lag is longer than the dosing interval, under *either*
-setting (see the long-lag bullet below). On a bolus the setting also
-moves the time at which the dose record's covariates start to apply to
-continuous parameters such as `ka`: the dose time with `FALSE`, the end
-of the lag with `TRUE`. `rxSolve()` sorts a same-time dose ahead of an observation
-(`tieOrder = "evid"`) whatever order the data frame has.
+Modelled `rate()` (`rate = -1`) and `dur()` (`rate = -2`):
+
+| Other record carrying a different value | `addlKeepsCov = FALSE` (default) | `addlKeepsCov = TRUE` | `nonmem = TRUE` |
+|---|---|---|---|
+| none | own record | own record | own record |
+| same time as the dose | **that record** | **that record** | **that record** if its row follows the dose's, else own record |
+| inside the lag window | **that record** | **that record** | **that record** |
+
+More facts from the same probes:
+
+- `alag()` itself is always read from the dose's own record.
+- With no lag, every dose reads all three from its own record.
+- "Record before the dose" is the last record at an earlier time; a record at the dose's own time does not count.
+- A lag longer than the dosing interval is the lag-window case, with the next dose's record as the record inside the window. The rows above hold unchanged: an infusion under `TRUE` still reads the record before it, and its `rate()` / `dur()` come from the next dose under every setting.
+- On a bolus, the setting also moves the time at which the dose record's covariates start to apply to continuous parameters such as `ka`: the dose time with `FALSE`, the end of the lag with `TRUE`.
+- `rxSolve()` sorts a same-time dose ahead of an observation whatever order the data frame has (`tieOrder = "evid"`). `nonmem = TRUE` sets `tieOrder = "data"` and keeps the row order.
 
 **Shapes that trigger it:**
 
@@ -608,8 +620,11 @@ sim <- rxode2::rxSolve(mod, events, addlKeepsCov = FALSE)
   pairs every dose with its own values, for every dose type, as long as
   the lag is shorter than the dosing interval.
 - Do not reach for `addlKeepsCov = TRUE` as the fix. It is NONMEM's
-  pairing only for bolus doses; on an infusion or a modelled duration
-  with a lag it pairs each dose with the record before it.
+  pairing only for bolus doses. With a lag, an infusion's `f()` comes
+  from the record before it, or for `rate = -1` / `rate = -2` from a
+  record at its own time if there is one. Its modelled `rate()` /
+  `dur()` still comes from a record at its time or inside its lag
+  window.
 - **A lag longer than the dosing interval** puts the next dose record
   inside the lag window, which no event table can avoid. For bolus-only
   models `TRUE` is then the setting that pairs every dose with its own
