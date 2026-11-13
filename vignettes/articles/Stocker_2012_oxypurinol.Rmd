@@ -319,14 +319,14 @@ ggplot(comed_ratios, aes(stratum, fraction_change, fill = stratum)) +
 
 ## Between-occasion variability on CL/Fm (Stocker 2012 Table 3)
 
-Stocker 2012 Table 3 reports a between-occasion variability of 21% CV on CL/Fm, where an occasion is a readmission or a change in concomitant medication (Methods, p. 479). The packaged model carries it as five indicator-multiplexed etas selected by `OCC`. The chunk below gives 200 virtual patients three occasions each, one observation per occasion, and checks that every occasion carries its own draw per patient and that the within-patient spread of log CL/Fm matches the published 21% CV (`omega = sqrt(log(1 + 0.21^2))`).
+Stocker 2012 Table 3 reports a between-occasion variability of 21% CV on CL/Fm, where an occasion is a readmission or a change in concomitant medication (Methods, p. 479). The packaged model carries it as five indicator-multiplexed etas selected by `OCC`. The chunk below gives 200 virtual patients all five occasions of the model, one observation per occasion, and checks that every occasion carries its own draw per patient, that the SD of the draws on each occasion matches the published 21% CV, and that the within-patient spread of log CL/Fm does too (`omega = sqrt(log(1 + 0.21^2))`).
 
 ```{r bov-check}
 set.seed(20120204)
 rxode2::rxSetSeed(20120204)
 
 n_bov <- 200L
-n_occ <- 3L
+n_occ <- 5L
 bov_covs <- tibble(CRCL = ref_crcl, LBM = ref_lbm, CONMED_DIURETIC = 0L, CONMED_PROBENECID = 0L)
 bov_ev <- bind_rows(
   tidyr::crossing(id = seq_len(n_bov), bov_covs) |>
@@ -354,16 +354,24 @@ within_sd <- bov_sim |>
   summarise(sd = sqrt(mean(v))) |>
   pull(sd)
 
+# Each occasion's own slot against the published omega: the SD of the 200 draws on
+# an occasion has a relative standard error of 1 / sqrt(2 * 199) = 5.0%, so 20% is
+# four standard errors. All five slots are exercised.
+iov_sd <- bov_sim |>
+  group_by(OCC) |>
+  summarise(sd_iov = sd(iov_cl), .groups = "drop")
 cat(sprintf(
   "Within-patient SD of log CL/Fm over %d occasions: %.3f (published BOV omega %.3f)\n",
   n_occ, within_sd, bov_omega
 ))
+print(round(setNames(iov_sd$sd_iov / bov_omega, paste("occasion", iov_sd$OCC)), 3))
 stopifnot(
   nrow(iov_per_occasion) == n_occ,
   iov_per_occasion$n_distinct_iov == n_bov,
-  # 200 patients x 2 degrees of freedom: the SD of the estimate is about 3.5%,
-  # so 15% is a bound on the centre, not on the extremes of the draw.
-  abs(within_sd / bov_omega - 1) < 0.15
+  abs(iov_sd$sd_iov / bov_omega - 1) < 0.20,
+  # 200 patients x 4 degrees of freedom: the SD of the estimate is about 2.5%,
+  # so 10% is a bound on the centre, not on the extremes of the draw.
+  abs(within_sd / bov_omega - 1) < 0.10
 )
 ```
 

@@ -138,11 +138,11 @@ Stocker_2012_oxypurinol <- function() {
     # shares one draw per occasion when no subject has two or more
     # occasions, so the occasions are expanded into indicator-multiplexed
     # etas (see the OCC covariate); occasions 2-5 are fixed to occasion 1.
-    etaiov_cl_1 ~ 0.043155          # Stocker 2012 Table 3: BOV CL/Fm 21% CV; omega^2 = log(1 + 0.21^2)
-    etaiov_cl_2 ~ fixed(0.043155)   # same variance as occasion 1
-    etaiov_cl_3 ~ fixed(0.043155)   # same variance as occasion 1
-    etaiov_cl_4 ~ fixed(0.043155)   # same variance as occasion 1
-    etaiov_cl_5 ~ fixed(0.043155)   # same variance as occasion 1
+    etaiov_cl_1 ~ log(1 + 0.21^2)         # Stocker 2012 Table 3: BOV CL/Fm 21% CV; omega^2 = 0.043155
+    etaiov_cl_2 ~ fixed(log(1 + 0.21^2))  # same variance as occasion 1
+    etaiov_cl_3 ~ fixed(log(1 + 0.21^2))  # same variance as occasion 1
+    etaiov_cl_4 ~ fixed(log(1 + 0.21^2))  # same variance as occasion 1
+    etaiov_cl_5 ~ fixed(log(1 + 0.21^2))  # same variance as occasion 1
 
     # Residual error. Stocker 2012 Methods describe a combined
     # additive + proportional residual error model retained as the

@@ -340,12 +340,15 @@ ggplot(typ_long, aes(time, conc, colour = treatment)) +
 Table 3 reports between-occasion variability (BOV) on CL_gem (12% CV),
 V_C,gem (93% CV), CL_dFdU/F (11% CV) and V_C,dFdU/F (10% CV). The paper
 does not define an occasion; the model takes it as one concentration-time
-profile, so a patient has at most two (the 30-min and the 100-min
-infusion of Study 3, page 328; the 122 profiles of 94 patients, page 329).
+profile. The crossover of Study 3 gives two (the 30-min and the 100-min
+infusion, page 328; 122 profiles from 94 patients, page 329); the day-1 and
+day-8 doses of the 21-day cycles of Studies 1 and 2 may count as further
+occasions, which the paper does not report, and only two are encoded.
 The chunk below simulates 300 crossover patients, one 1000 mg/m^2 infusion
 of 30 min (occasion 1) and one of 100 min (occasion 2) a week apart, and
-checks that each occasion carries its own draw per patient and that the
-within-patient SD of each log parameter matches the published BOV.
+checks that each occasion carries its own draw per patient, that the SD of
+the draws on each occasion matches the published BOV, and that the
+within-patient SD of each log parameter does too.
 
 ```{r bov-check}
 set.seed(20080326)
@@ -399,12 +402,30 @@ within_sd <- vapply(
   numeric(1L)
 )
 print(round(rbind(published = bov_omega, simulated = within_sd), 3))
+
+# Each occasion's own slot is checked against the published omega: the SD of the
+# 300 draws on an occasion has a relative standard error of 1 / sqrt(2 * 299) =
+# 4.1%, so 20% is about five standard errors.
+iov_sd <- bov_sim |>
+  dplyr::group_by(OCC) |>
+  dplyr::summarise(
+    dplyr::across(
+      c(iov_cl, iov_vc, iov_cl_dfdu, iov_vc_dfdu),
+      sd,
+      .names = "sd_{.col}"
+    ),
+    .groups = "drop"
+  )
+iov_sd_ratio <- as.matrix(iov_sd[, paste0("sd_iov_", names(bov_cv))]) /
+  matrix(bov_omega, nrow = nrow(iov_sd), ncol = length(bov_omega), byrow = TRUE)
+print(round(iov_sd_ratio, 3))
 stopifnot(
   nrow(iov_per_occasion) == 2L,
   unlist(iov_per_occasion[, -1]) == n_bov,
   # 300 patients x 1 degree of freedom: the SD of the estimate is about 4%,
   # so 20% is a bound on the centre, not on the extremes of the draw.
-  abs(within_sd / bov_omega - 1) < 0.20
+  abs(within_sd / bov_omega - 1) < 0.20,
+  abs(iov_sd_ratio - 1) < 0.20
 )
 ```
 
@@ -519,12 +540,15 @@ knitr::kable(
   on Q or V_P. Each is encoded as two etas selected by the `OCC` column,
   occasion 1 at `log(1 + CV^2)` (the CV-to-variance convention of the BSV)
   and occasion 2 fixed to it. The paper does not define an occasion; it is
-  taken as one concentration-time profile, which gives at most two per
-  patient (122 profiles in 94 patients, page 329; the 30-min and 100-min
-  infusions of the Study 3 crossover, page 328). rxode2's `| OCC` level shares
+  taken as one concentration-time profile. The Study 3 crossover gives two
+  (the 30-min and 100-min infusions, page 328; 122 profiles in 94 patients,
+  page 329), and the day-1 and day-8 doses of the 21-day cycles of Studies 1
+  and 2 may count as further occasions, which the paper does not report.
+  rxode2's `| OCC` level shares
   one draw per occasion when no subject has two or more occasions, which is the
   shape of the virtual cohort above, so the expansion is used. Records with
-  `OCC` outside 1-2 carry no BOV. The paper states proportional models for
+  `OCC` beyond 2 carry no BOV, and `OCC` is required in every event table,
+  also for the zero-random-effects runs. The paper states proportional models for
   the variability (page 329); the log-normal conversion is the one the BSV
   already uses, and the 93% on V_C,gem is where it differs most from a
   proportional-eta variance (0.62 against 0.86). Because the occasion effect
