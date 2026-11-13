@@ -517,19 +517,32 @@ probeMaxRelDiff <- function(a, b) {
 # these before it is reported.
 .probeTightSolver <- list(atol = 1e-12, rtol = 1e-12, maxsteps = 1e6)
 
-#' probeMaxRelDiff() of a model's two paths, both solved at tight tolerances
+#' Re-solve a model's two paths for a closer comparison
+#'
+#' Both paths are solved at tight tolerances (see .probeTightSolver), and, when
+#' `form` is given, only in that observation form. Comparing the two paths in
+#' one common form separates a conversion that changes the values from one
+#' that only changes which observation records the converted model accepts.
 #'
 #' @param name Registry model name.
 #' @param db The model registry.
-#' @return The largest relative disagreement, or NA when either path fails.
+#' @param form One of .probeEventForms, or NULL to let each path find its own.
+#' @return probeMaxRelDiff() of the two solves, or NA when either path fails.
 #' @noRd
-probeTightRelDiff <- function(name, db) {
-  lin <- probeSolveModel(name, db, useLinCmt = TRUE, solverArgs = .probeTightSolver)
-  ode <- probeSolveModel(name, db, useLinCmt = FALSE, solverArgs = .probeTightSolver)
+probeRecheck <- function(name, db, form = NULL) {
+  forms <- if (is.null(form)) .probeEventForms else form
+  lin <- probeSolveModel(name, db, useLinCmt = TRUE, solverArgs = .probeTightSolver, forms = forms)
+  ode <- probeSolveModel(name, db, useLinCmt = FALSE, solverArgs = .probeTightSolver, forms = forms)
   if (!identical(lin$status, "ok") || !identical(ode$status, "ok")) {
     return(NA_real_)
   }
   probeMaxRelDiff(lin, ode)
+}
+
+# The observation form to re-solve a divergent pair in: the one the converted
+# model accepted, when the two paths needed different forms; NULL otherwise.
+probeCommonForm <- function(lin, ode) {
+  if (!identical(lin$eventForm, ode$eventForm)) lin$eventForm else NULL
 }
 
 # Screening for models at risk of the ODE-to-linCmt conversion defect ------
@@ -718,9 +731,18 @@ doseTimingCandidates <- function() {
 # Find an observation-record form this model accepts, and return the dosed
 # solve made with it.  Returns a `try-error` carrying the FIRST form's message
 # when none works, because that message names the real obstacle.
-.probeSolveWithAnyForm <- function(ui, doseCmt, amt, times, covValues, useLinCmt, solverArgs = list()) {
+.probeSolveWithAnyForm <- function(
+  ui,
+  doseCmt,
+  amt,
+  times,
+  covValues,
+  useLinCmt,
+  solverArgs = list(),
+  forms = .probeEventForms
+) {
   first <- NULL
-  for (form in .probeEventForms) {
+  for (form in forms) {
     r <- try(.probeSolveOnce(ui, doseCmt, amt, times, covValues, useLinCmt, form, solverArgs), silent = TRUE)
     if (!inherits(r, "try-error")) {
       return(list(result = r, form = form))
@@ -749,11 +771,20 @@ doseTimingCandidates <- function() {
 # The dosed solve, with the first solver that gives finite states. When none
 # does, the default solver's attempt is returned, so a failure is reported as
 # rxSolve() gives it under its defaults.
-.probeSolveDosed <- function(ui, doseCmt, amt, times, covValues, useLinCmt, solverArgs = list()) {
+.probeSolveDosed <- function(
+  ui,
+  doseCmt,
+  amt,
+  times,
+  covValues,
+  useLinCmt,
+  solverArgs = list(),
+  forms = .probeEventForms
+) {
   first <- NULL
   for (m in names(.probeSolverMethods)) {
     args <- utils::modifyList(.probeSolverMethods[[m]], solverArgs)
-    attempt <- .probeSolveWithAnyForm(ui, doseCmt, amt, times, covValues, useLinCmt, args)
+    attempt <- .probeSolveWithAnyForm(ui, doseCmt, amt, times, covValues, useLinCmt, args, forms)
     attempt$method <- m
     attempt$solverArgs <- args
     if (!inherits(attempt$result, "try-error") && !length(probeNonFiniteStates(ui, attempt$result))) {
@@ -804,7 +835,7 @@ probeNonFiniteStates <- function(ui, solved) {
 #'   `dosed` data frame, the solver (`method`) and grid (`horizon`) used, and
 #'   the covariate provenance.
 #' @noRd
-probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100, solverArgs = list()) {
+probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100, solverArgs = list(), forms = .probeEventForms) {
   out <- list(name = name, status = "error", message = NA_character_)
   ui <- try(rxode2::rxUiDecompress(rxode2::as.rxUi(nlmixr2lib::readModelDb(name))), silent = TRUE)
   if (inherits(ui, "try-error")) {
@@ -817,13 +848,13 @@ probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100, solverArgs = 
     out$message <- "no dosing compartment declared in the registry"
     return(out)
   }
-  c(list(name = name), .probeSolveUi(ui, doseCmt, useLinCmt, amt, solverArgs))
+  c(list(name = name), .probeSolveUi(ui, doseCmt, useLinCmt, amt, solverArgs, forms))
 }
 
 # probeSolveModel() for a model already loaded, so fixture models can be
 # probed without a registry entry. Probes on the default grid, and again on a
 # grid .probeLongHorizon times longer when the dose changed nothing there.
-.probeSolveUi <- function(ui, doseCmt, useLinCmt = TRUE, amt = 100, solverArgs = list()) {
+.probeSolveUi <- function(ui, doseCmt, useLinCmt = TRUE, amt = 100, solverArgs = list(), forms = .probeEventForms) {
   out <- list(status = "error", message = NA_character_)
   ui <- try(.probeZeroRe(ui), silent = TRUE)
   if (inherits(ui, "try-error")) {
@@ -831,10 +862,10 @@ probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100, solverArgs = 
     return(out)
   }
   cov <- probeCovariateValues(ui)
-  res <- .probeSolveGrid(ui, doseCmt, amt, probeTimeGrid(ui), cov, useLinCmt, solverArgs)
+  res <- .probeSolveGrid(ui, doseCmt, amt, probeTimeGrid(ui), cov, useLinCmt, solverArgs, forms)
   res$horizon <- 1
   if (identical(res$status, "ok") && !isTRUE(res$doseEffect > 0)) {
-    longer <- .probeSolveGrid(ui, doseCmt, amt, probeTimeGrid(ui, .probeLongHorizon), cov, useLinCmt, solverArgs)
+    longer <- .probeSolveGrid(ui, doseCmt, amt, probeTimeGrid(ui, .probeLongHorizon), cov, useLinCmt, solverArgs, forms)
     if (identical(longer$status, "ok") && isTRUE(longer$doseEffect > 0)) {
       res <- longer
       res$horizon <- .probeLongHorizon
@@ -855,9 +886,9 @@ probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100, solverArgs = 
 }
 
 # The dosed and no-dose solves on one time grid, and what the dose changed.
-.probeSolveGrid <- function(ui, doseCmt, amt, times, cov, useLinCmt, solverArgs) {
+.probeSolveGrid <- function(ui, doseCmt, amt, times, cov, useLinCmt, solverArgs, forms = .probeEventForms) {
   out <- list(status = "error", message = NA_character_, covWhy = cov$why)
-  attempt <- .probeSolveDosed(ui, doseCmt, amt, times, cov$values, useLinCmt, solverArgs)
+  attempt <- .probeSolveDosed(ui, doseCmt, amt, times, cov$values, useLinCmt, solverArgs, forms)
   dosed <- attempt$result
   if (inherits(dosed, "try-error")) {
     out$message <- paste("solve failed:", conditionMessage(attr(dosed, "condition")))
