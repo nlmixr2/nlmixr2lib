@@ -316,6 +316,55 @@ test_that("the non-finite check reads ODE states only, not timing outputs", {
   expect_identical(probeNonFiniteStates(ui, solved[, c("time", "Cc")]), character(0))
 })
 
+test_that("the probe doses each declared compartment whose dose history the model reads", {
+  # .dtTwoDepotModel reads tad(depot), tad0(depot2) and tafd(depot3).
+  ui <- rxode2::rxUiDecompress(rxode2::as.rxUi(.dtTwoDepotModel))
+  db <- data.frame(name = "m", dosing = "depot,depot2")
+  expect_identical(probeDoseCmts("m", db, ui), c("depot", "depot2"))
+  # An undeclared compartment is never dosed, so a wrong `dosing` still leaves
+  # its dose-history reads NA.
+  db$dosing <- "depot"
+  expect_identical(probeDoseCmts("m", db, ui), "depot")
+  # The first declared compartment is always dosed, read or not.
+  db$dosing <- "central,depot2"
+  expect_identical(probeDoseCmts("m", db, ui), c("central", "depot2"))
+  db$dosing <- NA_character_
+  expect_identical(probeDoseCmts("m", db, ui), NA_character_)
+})
+
+test_that("the probe event table holds one dose record per dosed compartment", {
+  ui <- rxode2::rxUiDecompress(rxode2::as.rxUi(.dtTwoDepotModel))
+  ev <- as.data.frame(probeEvents(ui, c("depot", "depot2"), 100, c(0, 1)))
+  doses <- ev[ev$evid == 1L, ]
+  expect_identical(doses$cmt, c("depot", "depot2"))
+  expect_equal(doses$amt, c(100, 100))
+  expect_equal(doses$time, c(0, 0))
+})
+
+test_that("the probe is unchanged for a model reading only its first dosing compartment", {
+  # Most of the registry: a second dosing compartment is declared (or none),
+  # and every dose-history read names the first one. The probe must dose just
+  # that compartment, as it did before it learned to dose more than one, so
+  # these models are probed exactly as before.
+  times <- c(0, 1, 2)
+  # tad(depot), with central declared but not read.
+  ui <- rxode2::rxUiDecompress(rxode2::as.rxUi(.dtFallbackDepotModel))
+  db <- data.frame(name = "m", dosing = "depot,central")
+  expect_identical(probeDoseCmts("m", db, ui), "depot")
+  expect_identical(
+    as.data.frame(probeEvents(ui, probeDoseCmts("m", db, ui), 100, times)),
+    as.data.frame(rxode2::et(rxode2::et(amt = 100, cmt = "depot"), times))
+  )
+  # podo(stomach) and tad(stomach), stomach the only dosing compartment.
+  ui <- rxode2::rxUiDecompress(rxode2::as.rxUi(.dtStomachDosedModel))
+  db <- data.frame(name = "m", dosing = "stomach")
+  expect_identical(probeDoseCmts("m", db, ui), "stomach")
+  # Bare podo() and tad() name no compartment, so nothing is added.
+  ui <- rxode2::rxUiDecompress(rxode2::as.rxUi(.dtBareTimingModel))
+  db <- data.frame(name = "m", dosing = "central,stomach")
+  expect_identical(probeDoseCmts("m", db, ui), "central")
+})
+
 test_that("doseTimingCandidates() finds the models that read a compartment's dose history", {
   skip_on_cran()
   cand <- doseTimingCandidates()
@@ -331,9 +380,10 @@ test_that("a dosed probe solve leaves every ODE state finite", {
   # A state goes NaN when a derivative does, and the usual cause in this
   # registry is a dose-history function -- `tad(cmt)`, `podo(cmt)`,
   # `tafd(cmt)` -- reading a compartment the probe never doses. The probe
-  # doses the registry's first `dosing` compartment, so a model whose `dosing`
-  # metadata leaves out the compartment its timing reads (or that has none, and
-  # gets the depot/central fallback) solves with NaN states. The solve does not
+  # doses the registry's first `dosing` compartment and any other declared one
+  # whose dose history the model reads (probeDoseCmts()), so a model whose
+  # `dosing` metadata leaves out the compartment its timing reads (or that has
+  # none, and gets the depot/central fallback) solves with NaN states. The solve does not
   # error: every state is NA from the first step after the dose. The first test
   # above passes such a model, because `doseEffect` ignores NA and the time-0
   # row still shows the dose.

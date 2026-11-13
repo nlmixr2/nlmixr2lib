@@ -264,6 +264,23 @@ probeDoseCmt <- function(name, db) {
   strsplit(d, ",")[[1]][1]
 }
 
+# Every compartment the probe doses: the registry's first dosing compartment,
+# plus any other declared dosing compartment whose dose history the model
+# reads. A split dose such as `f(depot) <- frel; f(depot2) <- 1 - frel` with
+# `tad(depot2)` in a rate needs both records, or that tad() is NA and the
+# derivatives using it are NaN. Compartments the model does not declare are
+# never added, so a wrong `dosing` still shows up as non-finite states.
+probeDoseCmts <- function(name, db, ui) {
+  first <- probeDoseCmt(name, db)
+  if (is.na(first)) {
+    return(first)
+  }
+  declared <- strsplit(db$dosing[db$name == name], ",")[[1]]
+  calls <- nlmixr2lib:::.doseTimingCalls(.probeModelExpr(ui))
+  read <- vapply(calls, `[[`, character(1), "cmt")
+  unique(c(first, intersect(declared, read)))
+}
+
 # Build the event table.  Observation records need a compartment or dvid once
 # a model has more than one endpoint, otherwise rxode2 raises
 # "'dvid'->'cmt' or 'cmt' on observation record" -- which is an event-table
@@ -275,7 +292,10 @@ probeDoseCmt <- function(name, db) {
 # large majority, `dvid` indices cover models whose endpoint names are not
 # compartment names, and untagged observations cover the rest.
 probeEvents <- function(ui, doseCmt, amt, times, form = "cmt") {
-  ev <- rxode2::et(amt = amt, cmt = doseCmt)
+  ev <- rxode2::et(amt = amt, cmt = doseCmt[[1]])
+  for (cm in doseCmt[-1]) {
+    ev <- rxode2::et(ev, amt = amt, cmt = cm)
+  }
   eps <- ui$predDf$cond
   if (length(eps) > 1L && !identical(form, "plain")) {
     if (identical(form, "dvid")) {
@@ -482,9 +502,10 @@ linCmtRiskCandidates <- function() {
 
 #' Registry models that read a named compartment's dose history
 #'
-#' These are the models a wrong dosing compartment breaks: the probe doses the
-#' registry's first `dosing` compartment, and a dose-history function of any
-#' other compartment is NA, which makes the derivatives that use it NaN.
+#' These are the models a wrong dosing compartment breaks: the probe doses only
+#' the registry's `dosing` compartments (see probeDoseCmts()), and a
+#' dose-history function of any other compartment is NA, which makes the
+#' derivatives that use it NaN.
 #' Enumerated from the model files like `linCmtRiskCandidates()`.
 #'
 #' @return Character vector of model names.
@@ -575,8 +596,8 @@ probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100) {
     out$message <- paste("could not load:", conditionMessage(attr(ui, "condition")))
     return(out)
   }
-  doseCmt <- probeDoseCmt(name, db)
-  if (is.na(doseCmt)) {
+  doseCmt <- probeDoseCmts(name, db, ui)
+  if (is.na(doseCmt[[1]])) {
     out$status <- "skip"
     out$message <- "no dosing compartment declared in the registry"
     return(out)
