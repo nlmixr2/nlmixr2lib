@@ -99,3 +99,16 @@ test_that("a dose moves each circadian template's response the way its name says
     expect_gt(max(abs(drugEffect)), 1, label = paste(nm, "largest drug effect"))
   }
 })
+
+test_that("each circadian template's own ini() values give a positive baseline it stays on", {
+  # With ra >= rm the baseline touches zero once a day, where a *_kout_t
+  # template's loss rate divides by zero.
+  skip_on_cran()
+  for (nm in .circTemplates) {
+    p <- .circThetas(nm, numeric())
+    expect_lt(exp(p[["lra"]]), exp(p[["lrm"]]), label = paste(nm, "amplitude"))
+    free <- .circSolve(nm, p, dose = FALSE)
+    deviation <- max(abs(free$effect - .circBaseline(free$time, p))) / exp(p[["lrm"]])
+    expect_lt(deviation, 1e-7, label = paste(nm, "relative deviation at the template's values"))
+  }
+})

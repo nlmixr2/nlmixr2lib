@@ -17,7 +17,7 @@ indirect_circ_1cpt_stim_kin_kout_t <- function() {
     lvc  <- 3.45 ; label("Central volume of distribution (Vc)")
     lkel <- 0.534; label("elimination rate (1/d)")
     lrm  <- 0.62; label ("Mean Baseline for drug response (mesor)(Rm)")
-    lra  <- 0.62; label ("Amplitude of drug response (Ra)")
+    lra  <- log(0.46); label ("Amplitude of drug response (Ra)")
     ltacro  <- 0.62; label ("peak time (Acrophase) (Tz)")
     lec50 <- 0.67; label("Drug concentration producing 50% of maximum stimulation at effect site (ec50)")
     lemax <- 0.85; label("Maximum effect attributed to drug (emax)")
