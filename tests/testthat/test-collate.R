@@ -119,15 +119,9 @@ test_that("the committed modeldb rows are in C-collation order", {
 })
 
 test_that("the committed _pkgdown.yml regenerates byte-for-byte in any locale", {
-  root <- testthat::test_path("..", "..")
-  skip_if(
-    !file.exists(file.path(root, "_pkgdown.yml")),
-    "_pkgdown.yml not present (installed package)"
-  )
-  skip_if(
-    !dir.exists(file.path(root, "vignettes")),
-    "vignettes/ not present (installed package)"
-  )
+  root <- .sourceTreeRoot()
+  .skipIfNoSourceTree(file.path(root, "_pkgdown.yml"))
+  .skipIfNoSourceTree(file.path(root, "vignettes"), "vignettes/")
   committed <- readLines(file.path(root, "_pkgdown.yml"), encoding = "UTF-8", warn = FALSE)
   res <- .collateBothLocales(function() .collateRegenerateNavbar(root))
   expect_identical(res$C, committed)
@@ -139,8 +133,8 @@ test_that("the generator orders nothing with the collation locale", {
   # ordering in it must go through R/collate.R, so a bare sort(), order(),
   # list.files() or Sys.glob() added later fails here instead of surfacing as
   # a mystery diff months afterwards.
-  src <- testthat::test_path("..", "..", "R", "modeldb.R")
-  skip_if(!file.exists(src), "package source not present (installed package)")
+  src <- file.path(.sourceTreeRoot(), "R", "modeldb.R")
+  .skipIfNoSourceTree(src, "package source")
   expect_identical(.collateBareOrderingCalls(src), character(0))
 })
 

@@ -128,9 +128,9 @@
 
 test_that("every _pkgdown.yml article link resolves to an article pkgdown builds", {
   skip_if_not_installed("yaml")
-  root <- normalizePath(testthat::test_path("..", ".."), mustWork = FALSE)
-  skip_if(!file.exists(file.path(root, "_pkgdown.yml")), "_pkgdown.yml not present (installed package)")
-  skip_if(!dir.exists(file.path(root, "vignettes", "articles")), "vignettes/articles not present (installed package)")
+  root <- .sourceTreeRoot()
+  .skipIfNoSourceTree(file.path(root, "_pkgdown.yml"))
+  .skipIfNoSourceTree(file.path(root, "vignettes", "articles"), "vignettes/articles")
 
   dangling <- .danglingArticleLinks(root)
   # The YAML walk must see every href and every `articles:` entry the file
@@ -152,7 +152,7 @@ test_that("every _pkgdown.yml article link resolves to an article pkgdown builds
 })
 
 test_that("every model has an article, or is listed with a reason", {
-  root <- normalizePath(testthat::test_path("..", ".."), mustWork = FALSE)
+  root <- .sourceTreeRoot()
   built <- if (dir.exists(file.path(root, "vignettes", "articles"))) .builtArticles(root)
   # Without the source tree the article files cannot be checked, but the
   # exemption list can: an article-less model still has to be listed.

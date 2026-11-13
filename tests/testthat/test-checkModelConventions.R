@@ -1735,8 +1735,8 @@ test_that("the extraction skill never teaches a name the rules reject", {
   # INSTRUCTIONS, so a retired name cannot survive in the guidance that new
   # models are written from -- which is how `allo_cl`, `logitfr`, `Km` and
   # `Vmax` were still being taught after the models themselves were migrated.
-  skillDir <- testthat::test_path("..", "..", ".claude", "skills", "extract-literature-model")
-  skip_if(!dir.exists(skillDir), "extraction skill not present (installed package)")
+  skillDir <- file.path(.sourceTreeRoot(), ".claude", "skills", "extract-literature-model")
+  .skipIfNoSourceTree(skillDir, "extraction skill")
   conv <- nlmixr2lib:::.nlmixr2libConventions()
   docs <- list.files(skillDir, pattern = "[.]md$", recursive = TRUE, full.names = TRUE)
   expect_true(length(docs) > 0L)
@@ -1753,8 +1753,8 @@ test_that("the extraction skill never teaches a name the rules reject", {
 })
 
 test_that("the extraction skill never shows fixed() repeated in a label", {
-  skillDir <- testthat::test_path("..", "..", ".claude", "skills", "extract-literature-model")
-  skip_if(!dir.exists(skillDir), "extraction skill not present (installed package)")
+  skillDir <- file.path(.sourceTreeRoot(), ".claude", "skills", "extract-literature-model")
+  .skipIfNoSourceTree(skillDir, "extraction skill")
   pat <- paste0("<-\\s*fixed\\(.*\\)\\s*;\\s*label\\(\"[^\"]*", "\\bfixed(?![- ](?:effects?|dose|dosing))\\b")
   offenders <- character(0)
   for (f in list.files(skillDir, pattern = "[.]md$", recursive = TRUE, full.names = TRUE)) {
