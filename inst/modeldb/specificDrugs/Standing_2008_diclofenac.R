@@ -1,5 +1,5 @@
 Standing_2008_diclofenac <- function() {
-  description <- "One-compartment population PK model for oral diclofenac suspension in children and adult volunteers (Standing 2008): two parallel transit-absorption arms (Savic 2007 analytical input form) feeding two depot compartments that each absorb into a single central disposition compartment with linear elimination. Allometric weight scaling on clearance and volume to a 70 kg reference. Captures the double-peak absorption profile common to immediate-release diclofenac. Separate proportional residual error for paediatric and adult cohorts. Source paper additionally fits between-occasion variability (BOV) on CL/F (20%) and Vd/F (93%) -- BOV is not implemented in this nlmixr2 model file because it requires an OCC column in the user dataset; users who want BOV can add an etalcl_bov / etalvc_bov occasion-level random effect themselves."
+  description <- "One-compartment population PK model for oral diclofenac suspension in children and adult volunteers (Standing 2008): two parallel transit-absorption arms (Savic 2007 analytical input form) feeding two depot compartments that each absorb into a single central disposition compartment with linear elimination. Allometric weight scaling on clearance and volume to a 70 kg reference. Captures the double-peak absorption profile common to immediate-release diclofenac. Separate proportional residual error for paediatric and adult cohorts. Between-occasion variability (BOV) on CL/F (20%) and Vd/F (93%), two occasions (admissions) selected by OCC, is included."
   reference <- paste(
     "Standing JF, Howard RF, Johnson A, Savage I, Wong ICK.",
     "Population pharmacokinetics of oral diclofenac for acute pain in children.",
@@ -35,6 +35,32 @@ Standing_2008_diclofenac <- function() {
       reference_category = 0,
       notes = "Used only to switch proportional residual error between cohorts. Standing 2008 estimated separate residual error for the two datasets because the two cohorts were analysed with different bioanalytical methods (HPLC/MS with ketoprofen internal standard on paediatric serum vs naproxen internal standard on adult plasma; assay LLOQs 10.1 ng/mL vs 10 ng/mL). Paper Methods page 848 'Pharmacokinetic model building'.",
       source_name = "CHILD"
+    ),
+    OCC = list(
+      description = "Occasion index (1-2): one hospital admission, for between-occasion variability on CL/F and Vd/F",
+      units = "(count)",
+      type = "categorical",
+      reference_category = NULL,
+      notes = paste(
+        "Standing 2008 Methods (p. 847): a child re-admitted for surgery during the",
+        "recruitment phase was eligible to enter the study on a second occasion;",
+        "Results (p. 849): seven patients were re-admitted and re-entered on a second",
+        "occasion (74 children recruited, 70 sampled; 558 concentrations from 100",
+        "subjects). The 30 adult volunteers took a single dose in a bioequivalence",
+        "study, so an occasion is one admission and there are at most two, with only 7",
+        "children having a second. Between-occasion variability was added to the",
+        "clearance and volume terms (Methods, p. 848); Table 2 (p. 851) gives 20% (RSE",
+        "89.6%) on CL/F and 93% (RSE 280%) on Vd/F, both poorly estimated.",
+        "Decomposed inside model() into the binary flags oc1 and oc2 that select one of",
+        "two BOV etas on each of log-CL and log-V. rxode2's `| OCC` level shares one",
+        "draw per occasion when no subject has two or more occasions, so the occasions",
+        "are expanded into indicator-multiplexed etas; occasion 1 carries the estimated",
+        "variance and occasion 2 is fixed to the same value. Records with OCC beyond 2",
+        "carry no BOV, and OCC is required in every event table, also for zeroRe()",
+        "runs; a single-admission simulation passes OCC = 1.",
+        sep = " "
+      ),
+      source_name = "occasion"
     )
   )
 
@@ -106,6 +132,18 @@ Standing_2008_diclofenac <- function() {
     etalvc     ~ log(1 + 0.54^2)  # Table 2 IIV(Vd/F)   = 54%  CV
     etalcl     ~ 0.0654   # Table 2 IIV(CL/F)   = 26%  CV; log(1 + 0.26^2) = log(1.0676) = 0.0654
 
+    # Between-occasion variability (Table 2, p. 851; added to clearance and
+    # volume, Methods p. 848), on the same log(1 + CV^2) convention as the IIV
+    # above. One variance is shared by the two occasions (admissions). rxode2's
+    # `| OCC` level shares one draw per occasion when no subject has two or more
+    # occasions, so each occasion is an indicator-multiplexed eta (see the OCC
+    # covariate); occasion 2 is fixed to occasion 1. Both terms are poorly
+    # estimated (RSE 89.6% and 280%) and only 7 children had a second admission.
+    etaiov_cl_1 ~ log(1 + 0.20^2)         # Table 2 BOV(CL/F) = 20% CV (RSE 89.6%)
+    etaiov_cl_2 ~ fixed(log(1 + 0.20^2))  # same variance as occasion 1
+    etaiov_vc_1 ~ log(1 + 0.93^2)         # Table 2 BOV(Vd/F) = 93% CV (RSE 280%)
+    etaiov_vc_2 ~ fixed(log(1 + 0.93^2))  # same variance as occasion 1
+
     # Residual proportional error stratified by cohort (Methods page 848:
     # 'estimation of residual variability was undertaken separately for
     # the two groups' due to different assay methods).
@@ -130,8 +168,14 @@ Standing_2008_diclofenac <- function() {
     mtt2   <- exp(lmtt2   + etalmtt2)
     n2     <- exp(ln2     + etaln2)
     ka2    <- exp(lka2    + etalka2)
-    vc     <- exp(lvc     + etalvc) * (WT / 70)^e_wt_vc
-    cl     <- exp(lcl     + etalcl) * (WT / 70)^e_wt_cl
+    # Occasion flags: one BOV eta applies per record. A single-admission
+    # simulation passes OCC = 1.
+    oc1 <- (OCC == 1)
+    oc2 <- (OCC == 2)
+    iov_vc <- oc1 * etaiov_vc_1 + oc2 * etaiov_vc_2
+    iov_cl <- oc1 * etaiov_cl_1 + oc2 * etaiov_cl_2
+    vc     <- exp(lvc     + etalvc + iov_vc) * (WT / 70)^e_wt_vc
+    cl     <- exp(lcl     + etalcl + iov_cl) * (WT / 70)^e_wt_cl
 
     kel <- cl / vc
 

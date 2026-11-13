@@ -80,6 +80,8 @@ below for review:
 | `etalka2` (IIV t1/2A2, variance)               | 0.2152              | Table 2 IIV(t1/2A2) = 49%  CV; log(1 + 0.49^2) (equivalent on log(ka2)) |
 | `etalvc` (IIV Vd/F, variance)                  | 0.2559              | Table 2 IIV(Vd/F)   = 54%  CV; log(1 + 0.54^2) |
 | `etalcl` (IIV CL/F, variance)                  | 0.0654              | Table 2 IIV(CL/F)   = 26%  CV; log(1 + 0.26^2) |
+| `etaiov_cl_1` (`_2` fixed)                     | log(1 + 0.20^2) = 0.0392 | Table 2 (p. 851) BOV(CL/F) = 20% CV (RSE 89.6%) |
+| `etaiov_vc_1` (`_2` fixed)                     | log(1 + 0.93^2) = 0.6232 | Table 2 (p. 851) BOV(Vd/F) = 93% CV (RSE 280%) |
 | `propSdAdult` (adult proportional residual SD) | 0.29                | Table 2: adult proportional residual variability = 29% (RSE 5.9%) |
 | `propSdPaed` (paediatric proportional residual SD) | 0.18            | Table 2: paediatric proportional residual variability = 18% (RSE 19.9%) |
 | Dual transit + single central compartment      | n/a                 | Figure 2 schematic; Methods page 848 ('Best fit was obtained using dual absorption compartments with a single disposition compartment, and transit absorption') |
@@ -140,16 +142,16 @@ make_cohort <- function(spec, id_offset) {
 
   dose1 <- data.frame(id = ids, cohort = spec$cohort, time = 0,
                       evid = 1L, amt = dose_nmol, cmt = "depot1",
-                      WT = wts, CHILD = spec$child_flag,
+                      WT = wts, CHILD = spec$child_flag, OCC = 1L,
                       dose_mg = dose_mg)
   dose2 <- data.frame(id = ids, cohort = spec$cohort, time = 0,
                       evid = 1L, amt = dose_nmol, cmt = "depot2",
-                      WT = wts, CHILD = spec$child_flag,
+                      WT = wts, CHILD = spec$child_flag, OCC = 1L,
                       dose_mg = dose_mg)
   obs <- do.call(rbind, lapply(seq_len(n_per_cohort), function(k) {
     data.frame(id = ids[k], cohort = spec$cohort, time = obs_grid,
                evid = 0L, amt = 0, cmt = "Cc",
-               WT = wts[k], CHILD = spec$child_flag,
+               WT = wts[k], CHILD = spec$child_flag, OCC = 1L,
                dose_mg = dose_mg[k])
   }))
   rbind(dose1, dose2, obs)
@@ -223,6 +225,69 @@ ggplot(median_by_cohort, aes(time, median_Cc, colour = cohort)) +
        title = "Median simulated concentration profiles by age cohort",
        subtitle = "Adult 50 mg; paediatric cohorts 1 mg/kg.") +
   theme_minimal()
+```
+
+# Between-occasion variability (Standing 2008 Table 2)
+
+Table 2 reports between-occasion variability of 20% CV on CL/F and 93% CV on Vd/F.
+An occasion is one admission; seven children were re-admitted and entered a second
+time. The chunk below gives 300 virtual children two admissions each, a 50 mg dose
+at each, and checks that every occasion carries its own draw per child, that the SD
+of the draws on each occasion matches the published BOV on the `log(1 + CV^2)`
+scale, and that the within-child SD of log CL and log V does too. It simulates two
+admissions for all 300, not only seven as in the study.
+
+```{r bov-check}
+set.seed(20080309)
+rxode2::rxSetSeed(20080309)
+
+n_bov <- 300L
+occasion_start <- c(0, 1000)  # h; two admissions
+bov_events <- do.call(rbind, lapply(1:2, function(k) {
+  base <- data.frame(id = seq_len(n_bov), WT = 20, CHILD = 1L, OCC = k)
+  dose_nmol <- 20 * 1e6 / mw_diclofenac_na
+  rbind(
+    transform(base, time = occasion_start[k], evid = 1L, amt = dose_nmol, cmt = "depot1"),
+    transform(base, time = occasion_start[k], evid = 1L, amt = dose_nmol, cmt = "depot2"),
+    transform(base, time = occasion_start[k] + 1, evid = 0L, amt = 0, cmt = "Cc")
+  )
+}))
+bov_events <- bov_events[order(bov_events$id, bov_events$time, -bov_events$evid), ]
+
+bov_sim <- as.data.frame(rxode2::rxSolve(mod(), events = bov_events, keep = "OCC"))
+# The draws exist whether or not the concentration solved (a few transit-chain solves
+# return NA), so the rows are kept by their parameters.
+bov_sim <- bov_sim[!is.na(bov_sim$cl), ]
+
+# One eta per child and occasion: the number of distinct draws on an occasion
+# equals the number of children.
+iov_per_occasion <- bov_sim |>
+  dplyr::group_by(OCC) |>
+  dplyr::summarise(
+    dplyr::across(c(iov_cl, iov_vc), \(x) dplyr::n_distinct(round(x, 8)), .names = "n_{.col}"),
+    .groups = "drop"
+  )
+
+# The SD of the 300 draws on an occasion has a relative standard error of
+# 1 / sqrt(2 * 299) = 4.1%, so 20% is about five standard errors.
+bov_omega <- sqrt(log(1 + c(cl = 0.20, vc = 0.93)^2))
+iov_sd <- bov_sim |>
+  dplyr::group_by(OCC) |>
+  dplyr::summarise(dplyr::across(c(iov_cl, iov_vc), sd, .names = "sd_{.col}"), .groups = "drop")
+iov_sd_ratio <- as.matrix(iov_sd[, c("sd_iov_cl", "sd_iov_vc")]) /
+  matrix(bov_omega, nrow = nrow(iov_sd), ncol = 2L, byrow = TRUE)
+within_sd <- c(
+  cl = sqrt(mean(tapply(log(bov_sim$cl), bov_sim$id, var))),
+  vc = sqrt(mean(tapply(log(bov_sim$vc), bov_sim$id, var)))
+)
+print(round(rbind(published = bov_omega, within_child = within_sd), 3))
+print(round(iov_sd_ratio, 3))
+stopifnot(
+  nrow(iov_per_occasion) == 2L,
+  unlist(iov_per_occasion[, -1]) == n_bov,
+  abs(iov_sd_ratio - 1) < 0.20,
+  abs(within_sd / bov_omega - 1) < 0.20
+)
 ```
 
 # PKNCA validation
@@ -332,16 +397,22 @@ cmp |>
   absorption; it is required because rxode2's `transit()` is
   compartment-aware (it reads `podo()` / `tad()` for the dose-target
   compartment).
-* **Between-occasion variability not implemented in the rxode2 model.**
-  Standing 2008 Table 2 reports BOV on CL/F (20 % CV) and Vd/F (93 %
-  CV). Because BOV requires an `OCC` column in the user dataset and
-  this model is intended primarily for typical-value + IIV simulation,
-  the BOV terms are documented in the model's `description` but not
-  encoded in `ini()` / `model()`. Users who want BOV can add
-  occasion-level random effects manually: `etalcl_occ ~ 0.0392` (=
-  `log(1 + 0.20^2)`) and `etalvc_occ ~ log(1 + 0.93^2) = 0.5972`,
-  then add `+ etalcl_occ` / `+ etalvc_occ` to the individual-parameter
-  expressions.
+* **Between-occasion variability uses the occasion-indicator expansion, with
+  two occasions.** Standing 2008 Table 2 (p. 851) reports BOV on CL/F of 20%
+  CV (RSE 89.6%) and on Vd/F of 93% CV (RSE 280%); both are poorly estimated.
+  An occasion is one admission: a child re-admitted for surgery could re-enter
+  the study on a second occasion (Methods, p. 847) and seven did (Results,
+  p. 849), while the 30 adult volunteers took a single dose. Each term is two
+  etas on the log parameter selected by the `OCC` column, occasion 1 at
+  `log(1 + CV^2)` (`log(1 + 0.20^2)` and `log(1 + 0.93^2)`, the convention of
+  the IIV above) and occasion 2 fixed to it. rxode2's `| OCC` level shares one
+  draw per occasion when no subject has two or more occasions, which is the
+  shape of the virtual cohort above, so the expansion is used. Records with
+  `OCC` beyond 2 carry no BOV, and `OCC` is required in every event table, also
+  for zero-random-effects runs. Because the occasion effect enters as an
+  indicator-weighted sum, rxode2 warns `some etas defaulted to non-mu
+  referenced`; that affects only the speed of a future estimation run, not
+  simulation.
 * **Virtual-cohort weight distributions are approximate.** Standing
   2008 Table 1 reports the paediatric weight range as 9-37 kg and the
   adult range as 48-94 kg but does not tabulate weight-by-age strata.
