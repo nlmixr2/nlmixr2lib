@@ -21214,7 +21214,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Huh_2021_sorafenib.R` (founding example; multiplicative relative bioavailability on the transit-chain input, `fdepot <- exp(e_form_syo1644_fdepot * FORM_SORAFENIB_SYO1644)` with `exp(e_form_syo1644_fdepot) = 1.62`).
 - **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` canonical family. Named for the product code rather than a generic `_NANO` token because the effect estimate is specific to this product; a different sorafenib nanoformulation would need its own indicator. In the founding study each subject took the same assigned formulation in both periods, so the indicator is constant within a subject there, but nothing in the model requires that.
 
-### FORM_BP_NA_IM (**canonical for the intramuscular sodium benzylpenicillin solution observation-block indicator**)
+### FORM_BENZYLPENICILLIN_SODIUM_IM (**canonical for the intramuscular sodium benzylpenicillin solution observation-block indicator**)
 - **Description:** 1 = the observation follows intramuscular sodium benzylpenicillin (Geepenil); 0 = it follows intravenous sodium or potassium benzylpenicillin or another of the intramuscular products. Per-observation-record indicator: a horse in a crossover carries 1 on its sodium-benzylpenicillin occasion and 0 on its other occasion.
 - **Units:** (binary)
 - **Type:** binary
@@ -21223,9 +21223,9 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:**
   - observation block `CObsPeniNa` -- Lallemand 2023 Supplementary Data 2 Phoenix model.
 - **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (selects the additive residual SD of this block, 0.163 ug/mL, Supplementary Table S7 row stdev1; the proportional CV is shared by all blocks).
-- **Notes:** Member of the auto-approved `FORM_<drug>_<formulation>` family; `BP` is benzylpenicillin and `NA` its sodium salt. Mutually exclusive with `FORM_BP_PROC`, `FORM_BP_DUPLO` and `FORM_BP_PENETH`; when all four are 0 the record is an intravenous observation.
+- **Notes:** Member of the auto-approved `FORM_<drug>_<formulation>` family. Mutually exclusive with `FORM_BENZYLPENICILLIN_PROCAINE`, `FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE` and `FORM_BENZYLPENICILLIN_PENETHAMATE`; when all four are 0 the record is an intravenous observation.
 
-### FORM_BP_PROC (**canonical for the single-ingredient intramuscular procaine benzylpenicillin observation-block indicator**)
+### FORM_BENZYLPENICILLIN_PROCAINE (**canonical for the single-ingredient intramuscular procaine benzylpenicillin observation-block indicator**)
 - **Description:** 1 = the observation follows intramuscular procaine benzylpenicillin from a single-ingredient product (Depocilline, Penovet, Norocillin or the Japanese 'KS' product); 0 = it follows intravenous benzylpenicillin or another of the intramuscular products. Per-observation-record indicator.
 - **Units:** (binary)
 - **Type:** binary
@@ -21234,9 +21234,9 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:**
   - observation block `CObsPROC` -- Lallemand 2023 Supplementary Data 2 Phoenix model.
 - **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (selects the additive residual SD of this block, 0.00458 ug/mL, Supplementary Table S7 row stdev3).
-- **Notes:** Member of the auto-approved `FORM_<drug>_<formulation>` family. Does not cover the procaine benzylpenicillin in the Duplocilline combination, which is its own block (`FORM_BP_DUPLO`). Mutually exclusive with the other three `FORM_BP_*` indicators.
+- **Notes:** Member of the auto-approved `FORM_<drug>_<formulation>` family. Does not cover the procaine benzylpenicillin in the Duplocilline combination, which is its own block (`FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE`). Mutually exclusive with the other three `FORM_BENZYLPENICILLIN_*` indicators.
 
-### FORM_BP_DUPLO (**canonical for the Duplocilline procaine plus benzathine benzylpenicillin observation-block indicator**)
+### FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE (**canonical for the Duplocilline procaine plus benzathine benzylpenicillin observation-block indicator**)
 - **Description:** 1 = the observation follows intramuscular Duplocilline, a fixed combination of procaine and benzathine benzylpenicillin; 0 = it follows intravenous benzylpenicillin or another of the intramuscular products. Per-observation-record indicator.
 - **Units:** (binary)
 - **Type:** binary
@@ -21245,9 +21245,9 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:**
   - observation block `CObsBenza` -- Lallemand 2023 Supplementary Data 2 Phoenix model.
 - **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (selects the additive residual SD of this block, 0.00654 ug/mL, Supplementary Table S7 row stdev2; the measured concentration is the benzylpenicillin released from both components).
-- **Notes:** Member of the auto-approved `FORM_<drug>_<formulation>` family. Mutually exclusive with the other three `FORM_BP_*` indicators.
+- **Notes:** Member of the auto-approved `FORM_<drug>_<formulation>` family. Mutually exclusive with the other three `FORM_BENZYLPENICILLIN_*` indicators.
 
-### FORM_BP_PENETH (**canonical for the intramuscular penethamate hydriodide observation-block indicator**)
+### FORM_BENZYLPENICILLIN_PENETHAMATE (**canonical for the intramuscular penethamate hydriodide observation-block indicator**)
 - **Description:** 1 = the observation follows intramuscular penethamate hydriodide (Penetavet), a benzylpenicillin prodrug; 0 = it follows intravenous benzylpenicillin or another of the intramuscular products. Per-observation-record indicator.
 - **Units:** (binary)
 - **Type:** binary
@@ -21256,7 +21256,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:**
   - observation block `CObsPenethamate` -- Lallemand 2023 Supplementary Data 2 Phoenix model.
 - **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (selects the additive residual SD of this block, 0.00807 ug/mL, Supplementary Table S7 row stdev4; the measured concentration is the benzylpenicillin released from all three injection sites).
-- **Notes:** Member of the auto-approved `FORM_<drug>_<formulation>` family. Mutually exclusive with the other three `FORM_BP_*` indicators.
+- **Notes:** Member of the auto-approved `FORM_<drug>_<formulation>` family. Mutually exclusive with the other three `FORM_BENZYLPENICILLIN_*` indicators.
 
 ### RIA_ASSAY (**canonical for radioimmunoassay vs LC-MS/MS bioanalytical method indicator**)
 - **Description:** 1 = radioimmunoassay; 0 = LC-MS/MS.

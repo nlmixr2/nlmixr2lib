@@ -17,9 +17,14 @@
   that every model either has an article or is listed, with a reason, as a
   generic template or as awaiting one.
 
-- Register the five `STUDY_*` cohort indicators and four `FORM_BP_*`
-  observation-block indicators of `Lallemand_2023_benzylpenicillin_horse` in
-  the covariate register, clearing its nine unregistered-covariate warnings.
+- `Lallemand_2023_benzylpenicillin_horse`: the four observation-block
+  indicators are renamed to spell out the drug, and are registered with the
+  model's five `STUDY_*` cohort indicators, clearing its nine
+  unregistered-covariate warnings. Data sets must use the new column names:
+  `FORM_BP_NA_IM` is now `FORM_BENZYLPENICILLIN_SODIUM_IM`, `FORM_BP_PROC` is
+  `FORM_BENZYLPENICILLIN_PROCAINE`, `FORM_BP_DUPLO` is
+  `FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE` and `FORM_BP_PENETH` is
+  `FORM_BENZYLPENICILLIN_PENETHAMATE`. No equation or value changed.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

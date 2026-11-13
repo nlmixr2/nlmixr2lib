@@ -252,8 +252,11 @@ bsv |>
 
 ```{r helpers}
 cov_names <- c("STUDY_SWEDEN_IV", "STUDY_SWEDEN_IM", "STUDY_USA1", "STUDY_USA2",
-               "STUDY_JAPAN", "FORM_BP_NA_IM", "FORM_BP_PROC", "FORM_BP_DUPLO",
-               "FORM_BP_PENETH")
+               "STUDY_JAPAN",
+               "FORM_BENZYLPENICILLIN_SODIUM_IM",
+               "FORM_BENZYLPENICILLIN_PROCAINE",
+               "FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE",
+               "FORM_BENZYLPENICILLIN_PENETHAMATE")
 
 DOSE <- 12360  # ug/kg = 12.36 mg/kg = 22,000 IU/kg, the paper's reference dose
 
@@ -271,7 +274,7 @@ make_events <- function(doses, obs_times, n = 1L, id_offset = 0L) {
 }
 
 # One row per subject of time-invariant covariates. Every covariate in this
-# model is subject-level (or, for the FORM_BP_* flags, occasion-level but
+# model is subject-level (or, for the FORM_BENZYLPENICILLIN_* flags, occasion-level but
 # constant within a simulated arm), so they belong in `iCov` rather than as
 # per-row columns of the event table. This matters a great deal for speed:
 # repeating them on every event row makes rxode2 treat them as time-varying
@@ -334,18 +337,18 @@ grid120 <- seq(0, 120, by = 0.25)
 sc_forms <- build_scenario(list(
   "IM procaine BP, 12.36 mg/kg q24h x3" = list(
     doses = tibble(time = c(0, 24, 48), amt = DOSE, cmt = "depot2"),
-    obs = grid120, set = "FORM_BP_PROC"),
+    obs = grid120, set = "FORM_BENZYLPENICILLIN_PROCAINE"),
   "IM Duplocilline, 12.36 mg/kg q48h x2" = list(
     doses = bind_rows(tibble(time = c(0, 48), amt = DOSE, cmt = "depot3"),
                       tibble(time = c(0, 48), amt = DOSE, cmt = "depot4")),
-    obs = grid120, set = "FORM_BP_DUPLO"),
+    obs = grid120, set = "FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE"),
   "IM penethamate, 12.36 then 6.18 mg/kg q24h" = list(
     doses = tibble(time = c(0, 24, 48), amt = c(DOSE, DOSE / 2, DOSE / 2),
                    cmt = c("depot5", "depot6", "depot7")),
-    obs = grid120, set = "FORM_BP_PENETH"),
+    obs = grid120, set = "FORM_BENZYLPENICILLIN_PENETHAMATE"),
   "IM sodium BP, 12.36 mg/kg q12h" = list(
     doses = tibble(time = seq(0, 72, by = 12), amt = DOSE, cmt = "depot1"),
-    obs = grid120, set = "FORM_BP_NA_IM"),
+    obs = grid120, set = "FORM_BENZYLPENICILLIN_SODIUM_IM"),
   "IV bolus sodium BP, 12.36 mg/kg" = list(
     doses = tibble(time = 0, amt = DOSE, cmt = "central"),
     obs = grid120, set = character())
@@ -376,7 +379,7 @@ is rate-limiting.
 Lallemand 2023 estimated a separate additive residual standard deviation for each of its
 five observation blocks (Supplementary Table S7, rows `stdev0`-`stdev4`) while sharing one
 multiplicative CV across all of them. The packaged model keeps a single `Cc` endpoint - the
-assay measures one analyte - and derives `addSd` from the `FORM_BP_*` indicator columns, so
+assay measures one analyte - and derives `addSd` from the `FORM_BENZYLPENICILLIN_*` indicator columns, so
 all five published values are retained. Every simulation above and below runs with
 `sigma = NA` (no residual noise added), so this check reads the derived `addSd` back out of
 the solution to confirm the switch selects the right block.
@@ -408,7 +411,7 @@ chk_addsd |>
   transmute(Arm = arm, `Supplementary Table S7 row` = row,
             `Published SD (ug/mL)` = `Supp. Table S7`,
             `Selected by the model` = addSd) |>
-  knitr::kable(caption = paste("The additive residual SD selected by the FORM_BP_*",
+  knitr::kable(caption = paste("The additive residual SD selected by the FORM_BENZYLPENICILLIN_*",
                                "indicators, against the five published values."))
 ```
 
@@ -439,7 +442,8 @@ proc_arm_covs <- list(France = character(), Sweden = "STUDY_SWEDEN_IM",
                       USA1 = "STUDY_USA1", Japan = "STUDY_JAPAN")
 sc_proc <- build_scenario(
   lapply(proc_arm_covs, function(s) {
-    list(doses = proc_doses, obs = seq(0, 72, by = 0.5), set = c("FORM_BP_PROC", s))
+    list(doses = proc_doses, obs = seq(0, 72, by = 0.5),
+         set = c("FORM_BENZYLPENICILLIN_PROCAINE", s))
   }),
   n = N_ARM
 )
@@ -620,11 +624,11 @@ sc_la <- build_scenario(list(
   Duplocilline = list(
     doses = bind_rows(tibble(time = c(0, 48), amt = DOSE, cmt = "depot3"),
                       tibble(time = c(0, 48), amt = DOSE, cmt = "depot4")),
-    obs = seq(0, 96, by = 0.5), set = "FORM_BP_DUPLO"),
+    obs = seq(0, 96, by = 0.5), set = "FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE"),
   Penethamate = list(
     doses = tibble(time = c(0, 24, 48), amt = c(DOSE, DOSE / 2, DOSE / 2),
                    cmt = c("depot5", "depot6", "depot7")),
-    obs = seq(0, 72, by = 0.5), set = "FORM_BP_PENETH")
+    obs = seq(0, 72, by = 0.5), set = "FORM_BENZYLPENICILLIN_PENETHAMATE")
 ), n = N_ARM)
 
 sim_la <- solve_scenario(sc_la)
@@ -977,8 +981,8 @@ No parameter was adjusted to narrow any of these gaps.
   observation blocks (Supplementary Table S7, `stdev0`-`stdev4`) while sharing one
   multiplicative CV of 0.283 across all of them. Because the assay measures a single
   analyte, the packaged model keeps one endpoint (`Cc`) and selects the additive SD from
-  the `FORM_BP_*` indicator columns, so all five published values are retained and used.
-  The `FORM_BP_*` covariates are therefore **observation-level**, not subject-level.
+  the `FORM_BENZYLPENICILLIN_*` indicator columns, so all five published values are retained and used.
+  The `FORM_BENZYLPENICILLIN_*` covariates are therefore **observation-level**, not subject-level.
 
 * **Weight-normalised units.** Volumes are mL/kg and clearances mL/kg/h exactly as
   published, so doses must be supplied in **ug/kg** (12,360 ug/kg = 12.36 mg/kg =
