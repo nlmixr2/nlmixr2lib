@@ -424,7 +424,9 @@ addFileToModelDb <- function(dir, file, modeldb) {
       category = .parseModelCategory(fileName),
       filename = fileName
     )
-  list(row = ret, errors = errors)
+  # The nesting_assertion rule reads the model's article, which the model file's
+  # hash does not cover, so such a model is parsed on every build.
+  list(row = ret, errors = errors, volatile = nrow(.nestedEtaRows(mod)) > 0L)
 }
 ## nocov end
 
@@ -517,17 +519,18 @@ addFileToModelDb <- function(dir, file, modeldb) {
 # Result for one parsed file: its cache key and hash, and either the row (with
 # any error-severity convention issues) or `failure`, the message of the R
 # error that stopped it loading.
-.modeldbFileResult <- function(file, hash, row = NULL, errors = NULL, failure = NULL) {
-  list(file = file, hash = hash, row = row, errors = errors, failure = failure)
+.modeldbFileResult <- function(file, hash, row = NULL, errors = NULL, failure = NULL, volatile = FALSE) {
+  list(file = file, hash = hash, row = row, errors = errors, failure = failure, volatile = volatile)
 }
 
 # Keep the cache in step with one result: a clean model is (re)cached, and a
-# model with an error loses any entry it had, so it is re-checked next build.
+# model with an error, or whose verdict depends on a file other than the model
+# file (`volatile`), loses any entry it had, so it is re-checked next build.
 .modeldbAccRecord <- function(acc, res) {
   if (is.null(acc)) {
     return(invisible(NULL))
   }
-  if (is.null(res$failure) && is.null(res$errors)) {
+  if (is.null(res$failure) && is.null(res$errors) && !isTRUE(res$volatile)) {
     acc$entries[[res$file]] <- list(hash = res$hash, row = res$row)
   } else {
     acc$entries[[res$file]] <- NULL
@@ -547,7 +550,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
         .modeldbFileResult(files[i], hashes[i], failure = conditionMessage(loaded))
       } else {
         rownames(loaded$row) <- NULL
-        .modeldbFileResult(files[i], hashes[i], row = loaded$row, errors = loaded$errors)
+        .modeldbFileResult(files[i], hashes[i], row = loaded$row, errors = loaded$errors, volatile = loaded$volatile)
       }
     .modeldbAccRecord(acc, out[[i]])
   }
