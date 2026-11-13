@@ -77,7 +77,7 @@ Standing_2008_diclofenac <- function() {
     disease_state = "Paediatric day-surgery patients (dermatology, general, plastic surgery) plus healthy adult volunteers",
     dose_range = "Single oral dose: 1 mg/kg diclofenac sodium suspension (paediatric, rounded to nearest 5 mg); 50 mg diclofenac sodium suspension (adult); formulation 50 mg/5 mL Rosemont Pharmaceuticals oral suspension",
     regions = "United Kingdom (Great Ormond Street Hospital, London) and Ireland (Shandon Clinic, Cork; adult bioequivalence cohort)",
-    notes = "Pooled analysis of 558 serum/plasma diclofenac concentrations: 206 from 70 paediatric patients (sparse, 3 samples per dose) plus 352 from 30 adult volunteers (rich, 14 samples per dose). Demographics per Standing 2008 Table 1. Paediatric concentrations are serum, adult concentrations are plasma. NONMEM v6 FOCEI with interaction. Mass units expressed as nanomoles (MW diclofenac sodium = 318.13 g/mol for dose, MW diclofenac free acid = 296.15 g/mol for measured concentration). Simulation limit: a dose record given later than about 600 h after time zero returns NA concentrations for part of the population with no error (the transit-chain input fails to solve; 36 of 400 children for a dose at 800 h, 89 at 1000 h, 339 at 2000 h, observed 1 h later), whatever the solver or tolerance; start the clock at the first dose (a dose at 0 h solves for every child at any later observation time)."
+    notes = "Pooled analysis of 558 serum/plasma diclofenac concentrations: 206 from 70 paediatric patients (sparse, 3 samples per dose) plus 352 from 30 adult volunteers (rich, 14 samples per dose). Demographics per Standing 2008 Table 1. Paediatric concentrations are serum, adult concentrations are plasma. NONMEM v6 FOCEI with interaction. Mass units expressed as nanomoles (MW diclofenac sodium = 318.13 g/mol for dose, MW diclofenac free acid = 296.15 g/mol for measured concentration). Simulation limit: a dose record given later than about 600 h after time zero returns NA concentrations for part of the population with no error (the transit-chain input fails to solve; 36 of 400 children for a dose at 800 h, 89 at 1000 h, 339 at 2000 h, observed 1 h later), whatever the solver or tolerance; start the clock at the first dose (a dose at 0 h solves for every child at any later observation time). Arm-1 bioavailability: the paper bounds the combined bioavailability at 100% (F2 = 1 - F1) but gives no form for the individual F1 (Table 2: IIV 24% CV), so the model caps F1 = exp(lfdepot + etalfdepot) at 1; about 6.6% of children sit at F1 = 1, so the effective IIV on F1 is slightly below 24%."
   )
 
   ini({
@@ -163,7 +163,9 @@ Standing_2008_diclofenac <- function() {
     # 70 kg per Methods page 848).
     mtt1   <- exp(lmtt1   + etalmtt1)
     n1     <- exp(ln1     + etaln1)
-    fdepot <- exp(lfdepot + etalfdepot)
+    # F1 is capped at 1 so that F2 = 1 - F1 stays non-negative: the paper bounds the
+    # combined bioavailability at 100% and gives no form for the individual F1.
+    fdepot <- min(exp(lfdepot + etalfdepot), 1)
     ka1    <- exp(lka1    + etalka1)
     mtt2   <- exp(lmtt2   + etalmtt2)
     n2     <- exp(ln2     + etaln2)
