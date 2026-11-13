@@ -2896,6 +2896,49 @@ test_that(".doseTimingCalls collects named-compartment calls at any depth", {
   expect_equal(nlmixr2lib:::.doseTimingCalls(quote(central)), list())
 })
 
+test_that(".doseTimingCalls skips an empty first argument and a namespaced call", {
+  expect_equal(nlmixr2lib:::.doseTimingCalls(quote(tad(, depot))), list())
+  expect_equal(nlmixr2lib:::.doseTimingCalls(quote(rxode2::tad(depot))), list())
+  # rxode2 rejects all three spellings in a model, so a model-level fixture
+  # cannot carry them; the walker is pinned on bare expressions above.
+  for (code in c("x <- tad(, depot)", "x <- rxode2::tad(depot)", "x <- tad(\"depot\")")) {
+    expect_error(
+      suppressMessages(utils::capture.output(rxode2::rxModelVars(paste0("d/dt(depot) <- -depot; ", code)))),
+      "syntax error",
+      info = code
+    )
+  }
+})
+
+test_that("a model() block that cannot be read is reported, not passed", {
+  ui <- new.env()
+  makeActiveBinding("lstExpr", function() stop("unparseable"), ui)
+  hit <- nlmixr2lib:::.checkDoseTimingCompartments(ui, NULL)
+  expect_identical(nrow(hit), 1L)
+  expect_identical(hit$category, "dose_timing_compartment")
+  expect_identical(hit$severity, "error")
+  expect_identical(
+    hit$message,
+    "The model() block could not be read to check dose-history compartments: unparseable"
+  )
+})
+
+test_that("a timing read inside an if/else is checked like any other", {
+  hit <- .dtCategory(.dtIfElseModel)
+  expect_identical(hit$name, "stomach")
+  expect_identical(
+    hit$message,
+    paste0(
+      "`tad(stomach)` reads the doses given into 'stomach', which is not a ",
+      "dosing compartment (`dosing` declares: depot)."
+    )
+  )
+})
+
+test_that("variables named tad or dose are not dose-history reads", {
+  expect_identical(nrow(.dtCategory(.dtShadowNamesModel)), 0L)
+})
+
 test_that("a timing read of an undosed compartment is an error (fallback case)", {
   hit <- .dtCategory(.dtStomachModel)
   expect_equal(nrow(hit), 1L)

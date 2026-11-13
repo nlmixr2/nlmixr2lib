@@ -2634,20 +2634,25 @@ checkModelConventions <- function(model, verbose = TRUE) {
 
 # Every `f(cmt)` call to a dose-history function in an expression, as
 # c(fn = , cmt = ) pairs. A bare `tad()` refers to any compartment's doses and
-# is not collected.
+# is not collected. A namespaced `rxode2::tad(depot)` is not collected either:
+# rxode2's model syntax has no `::` and rejects it, as it rejects a quoted
+# compartment, so only an expression built outside a model can carry either.
+# The quoted form is still collected.
 .doseTimingCalls <- function(e, acc = list()) {
   if (!is.call(e)) {
     return(acc)
   }
-  fn <- e[[1]]
-  if (is.name(fn) && as.character(fn) %in% .doseTimingFunctions && length(e) >= 2L) {
-    arg <- e[[2]]
-    if (is.name(arg) || (is.character(arg) && length(arg) == 1L)) {
-      acc[[length(acc) + 1L]] <- c(fn = as.character(fn), cmt = as.character(arg))
-    }
+  # `e[[i]]` is tested in place throughout: bound to a variable, an empty
+  # argument such as the one in `x[, 1]` or `tad(, 1)` errors when the variable
+  # is read. The empty argument is a name whose text is "".
+  if (
+    is.name(e[[1]]) &&
+      as.character(e[[1]]) %in% .doseTimingFunctions &&
+      length(e) >= 2L &&
+      ((is.name(e[[2]]) && nzchar(as.character(e[[2]]))) || (is.character(e[[2]]) && length(e[[2]]) == 1L))
+  ) {
+    acc[[length(acc) + 1L]] <- c(fn = as.character(e[[1]]), cmt = as.character(e[[2]]))
   }
-  # `e[[i]]` is tested in place: bound to a variable, an empty argument such
-  # as the one in `x[, 1]` errors when the variable is read.
   for (i in seq_along(e)[-1L]) {
     if (is.call(e[[i]])) acc <- .doseTimingCalls(e[[i]], acc)
   }
@@ -2660,7 +2665,18 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # compartment never doses `stomach` and every derivative using it is NaN.
 .checkDoseTimingCompartments <- function(ui, conv) {
   issues <- .emptyIssues()
-  exprs <- tryCatch(ui$lstExpr, error = function(e) NULL)
+  # A model() block that cannot be read is reported, not treated as one with no
+  # dose-history calls: the rule must be able to go red.
+  exprs <- tryCatch(ui$lstExpr, error = function(e) e)
+  if (inherits(exprs, "error")) {
+    return(.issue(
+      "dose_timing_compartment",
+      "error",
+      NA_character_,
+      paste0("The model() block could not be read to check dose-history compartments: ", conditionMessage(exprs)),
+      "Check that the model parses with rxode2::rxode2()."
+    ))
+  }
   calls <- list()
   for (e in exprs) {
     calls <- .doseTimingCalls(e, calls)

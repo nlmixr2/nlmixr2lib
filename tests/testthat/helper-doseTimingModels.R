@@ -174,3 +174,59 @@
 .dtDosingCmts <- function(model) {
   nlmixr2lib:::.modelDosingCmts(suppressMessages(nlmixr2est::nlmixr(model)))
 }
+
+# A read of an undeclared compartment inside one branch of an if/else.
+.dtIfElseModel <- function() {
+  description <- "Depot model with a stomach timing read inside an if/else"
+  reference <- "R"
+  dosing <- "depot"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  ini({
+    lka <- 0; label("Absorption rate (ka, 1/h)")
+    lcl <- 1; label("Clearance (CL, L/h)")
+    lvc <- 3; label("Central volume (Vc, L)")
+    propSd <- 0.1; label("Proportional residual error (fraction)")
+  })
+  model({
+    ka <- exp(lka)
+    cl <- exp(lcl)
+    vc <- exp(lvc)
+    if (t > 1) {
+      kgut <- ka * (tad(stomach) > 0.5)
+    } else {
+      kgut <- ka
+    }
+    d/dt(depot) <- -ka * depot
+    d/dt(stomach) <- -kgut * stomach
+    d/dt(central) <- ka * depot + kgut * stomach - cl / vc * central
+    Cc <- central / vc
+    Cc ~ prop(propSd)
+  })
+}
+
+# Variables named after dose-history functions: `tad <- tad(depot)` reads a
+# declared compartment, and `dose <- 5` is an assignment, not a call. Neither
+# is flagged.
+.dtShadowNamesModel <- function() {
+  description <- "Depot model with variables named tad and dose"
+  reference <- "R"
+  dosing <- "depot"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  ini({
+    lka <- 0; label("Absorption rate (ka, 1/h)")
+    lcl <- 1; label("Clearance (CL, L/h)")
+    lvc <- 3; label("Central volume (Vc, L)")
+    propSd <- 0.1; label("Proportional residual error (fraction)")
+  })
+  model({
+    tad <- tad(depot)
+    dose <- 5
+    ka <- exp(lka) * (tad > 0.5)
+    cl <- exp(lcl)
+    vc <- exp(lvc)
+    d/dt(depot) <- -ka * depot
+    d/dt(central) <- ka * depot - cl / vc * central
+    Cc <- central / vc * dose / 5
+    Cc ~ prop(propSd)
+  })
+}

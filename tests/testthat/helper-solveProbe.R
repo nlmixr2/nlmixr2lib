@@ -276,7 +276,11 @@ probeDoseCmts <- function(name, db, ui) {
     return(first)
   }
   declared <- strsplit(db$dosing[db$name == name], ",")[[1]]
-  calls <- nlmixr2lib:::.doseTimingCalls(.probeModelExpr(ui))
+  body <- .probeModelExpr(ui)
+  if (is.null(body)) {
+    stop("cannot read the model() block of ", name, " to find its dose-history reads", call. = FALSE)
+  }
+  calls <- nlmixr2lib:::.doseTimingCalls(body)
   read <- vapply(calls, `[[`, character(1), "cmt")
   unique(c(first, intersect(declared, read)))
 }
@@ -494,9 +498,15 @@ linCmtRiskCandidates <- function() {
 
 # Does this model file's model() block read the dose history of a named
 # compartment (`tad(depot2)`, `podo(stomach)`, ...)? Uses the convention
-# checker's own walker, so the screen and the rule agree on what counts.
+# checker's own walker, so the screen and the rule agree on what counts. A
+# file that fails to load, or has no model() block, is an error rather than a
+# model that reads nothing: dropped silently, it would leave the gate's
+# default scope.
 .probeReadsDoseHistory <- function(path) {
-  mb <- tryCatch(.probeModelBlockOfFile(path), error = function(e) NULL)
+  mb <- .probeModelBlockOfFile(path)
+  if (is.null(mb)) {
+    stop("no model() block in ", path, call. = FALSE)
+  }
   length(nlmixr2lib:::.doseTimingCalls(mb)) > 0L
 }
 
@@ -512,10 +522,10 @@ linCmtRiskCandidates <- function() {
 #' @noRd
 doseTimingCandidates <- function() {
   root <- system.file("modeldb", package = "nlmixr2lib")
-  if (!nzchar(root)) {
-    return(character(0))
+  files <- if (nzchar(root)) list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE) else character(0)
+  if (!length(files)) {
+    stop("no model files found under the installed modeldb/ directory", call. = FALSE)
   }
-  files <- list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
   keep <- vapply(files, .probeReadsDoseHistory, logical(1))
   unname(sub("[.]R$", "", basename(files[keep])))
 }
