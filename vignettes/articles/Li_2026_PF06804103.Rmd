@@ -1,0 +1,532 @@
+---
+title: "PF-06804103 (Li 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PF-06804103 (Li 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", message = FALSE)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Li_2026_PF06804103"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Li_2026_PF06804103"))$description`
+* Article: <https://doi.org/10.1002/psp4.70261> (open access, PMC13274674)
+
+Li 2026 developed three longitudinal models for PF-06804103, a site-specific
+anti-HER2 antibody-drug conjugate, from the phase 1 study NCT03284723: a
+two-compartment population PK model (Table 1), a repeated time-to-event (RTTE)
+model for grade >= 2 peripheral neuropathy (PN) (Table 2), and a tumor-dynamics
+model for the sum of longest diameters (Table 3). The PD models were fitted on
+the individual PK estimates and the three were then integrated into one
+adaptive-dosing trial simulation in which each PN event delays and reduces the
+next dose, which in turn changes the exposure that drives later PN events and
+tumor shrinkage. The authors published the NONMEM simulation code for the
+integrated model (Supporting Information S1) and the PD equations (S2); this
+package model reproduces that integrated model.
+
+# Population
+
+95 adults with HER2-expressing (HER2-positive or HER2-low) breast or gastric
+cancer received PF-06804103 0.15-5 mg/kg as an IV infusion on Day 1 of every
+3-week cycle. They contributed 1508 PK records, 35 grade >= 2 PN events and
+335 tumor-size measurements. Li 2026 does not tabulate the baseline
+demographics; the authors' code normalises body weight to 63.45 kg and the log
+of the baseline sum of longest diameters to 3.98 (53.5 mm), which are taken
+here as the analysis medians.
+
+```{r population}
+str(readModelDb("Li_2026_PF06804103")()$population)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` | log(0.03089 L/h) | Table 1, ThetaCL |
+| `lvc` | log(1.681 L) | Table 1, ThetaVc |
+| `lvp` | log(3.005 L) | Table 1, ThetaVp |
+| `lq` | log(24.86 L/h) | Table 1, ThetaQ |
+| `e_male_vc` | -0.3186 | Table 1, ThetaMale-V1 (linear categorical effect, Methods) |
+| `e_wt_vc` | -0.6198 | Table 1, ThetaSex-BWT (power effect, Methods; see deviations) |
+| `etalcl`, `etalvc`, `etalvp`, `etalq` | 0.06063, 0.01875, 0.009123, 0.07759 | Table 1, omega2 |
+| `expSd` | 0.3589 | Table 1, ThetaRes. Error (SD on the log scale, table footnote) |
+| `lktr` | -7.47 | Table 2, Thetalog(KTR) |
+| `lalpha_haz` | -15.2 | Table 2, Thetalog(alpha) |
+| `lgam_haz` | -0.959 | Table 2, Thetalog(gamma) |
+| `etalalpha_haz` | 0.0205 | Table 2, omega2 log(alpha) |
+| `lp` | log(1.958e-5 1/h) | Table 3, ThetaKG |
+| `lkkill` | log(4.079e-5 1/h per ug/mL) | Table 3, ThetaKD |
+| `lres` | log(0.0015 1/h) | Table 3, Thetalambda |
+| `e_wt_p` | 5.097 | Table 3, ThetaKG-BWT |
+| `e_tum_sld_p` | 4.536 | Table 3, ThetaKG-BSLD |
+| `etalp`, `etalkkill`, `etalres` | 2.04, 0.894, 1.31 | Table 3, omega2 |
+| `expSd_tumor_size` | 0.132 | Table 3, ThetaRes. Err (SD on the log scale) |
+| Two-compartment PK ODEs | n/a | Supporting Information S1, `$DES` DADT(1), DADT(2) |
+| Transit and effect compartments | n/a | S2 eq 1-2; S1 DADT(5), DADT(3) |
+| Weibull hazard `gamma * (alpha * Ce)^gamma * t^(gamma - 1)` | n/a | S2 eq 3-4; S1 DADT(4) incl. the 1e-6 offsets and zero hazard at t = 0 |
+| Tumor ODE `KG * SLD - KD * exp(-lambda * t) * Cp * SLD` | n/a | S2 eq 5; S1 DADT(7) |
+| KG covariates `(BWT/63.45)^e * (log(BSLD)/3.98)^e`, `SLD(0) = BSLD` | n/a | S1 `$PK` (KGCOV, A_0(7)) |
+| Concentration units: ng/mL for the hazard, ug/mL for tumor kill | n/a | S1 header (mcg/L), Table 3 KD units; checked against Table 4 below |
+
+# Virtual cohort
+
+The paper simulated its 95 participants with their individual PK estimates and
+covariates, which are not public. The virtual cohort below uses 150 subjects
+with body weight log-normal around 63.45 kg (CV about 20%, 40-120 kg), 80%
+female (breast and gastric cancer; the sex split is not reported) and baseline
+sum of longest diameters log-normal around 53.5 mm (10-250 mm). Random effects
+are drawn in base R from the model's omega matrix so that the cohort, and the
+PN event thresholds, are identical on every machine; the same 150 subjects are
+used for every regimen, so the regimen contrasts are paired.
+
+```{r cohort}
+mod <- rxode2::rxode(readModelDb("Li_2026_PF06804103"))
+omega <- mod$omega
+
+set.seed(20261113)
+n_sub <- 150
+cohort <- tibble(
+  id = seq_len(n_sub),
+  WT = pmin(pmax(rlnorm(n_sub, log(63.45), 0.2), 40), 120),
+  SEXF = rbinom(n_sub, 1, 0.8),
+  TUM_SLD = pmin(pmax(rlnorm(n_sub, log(53.5), 0.6), 10), 250)
+)
+eta <- matrix(rnorm(n_sub * nrow(omega)), n_sub) %*% chol(omega)
+colnames(eta) <- rownames(omega)
+cohort <- bind_cols(cohort, as_tibble(eta))
+
+# Exp(1) thresholds for the first three PN events: an event occurs when the
+# cumulative hazard accrued since the previous event exceeds the threshold,
+# which is the same rule as the authors' survival-vs-uniform comparison.
+pn_threshold <- matrix(rexp(n_sub * 3), n_sub)
+
+summary(cohort[, c("WT", "SEXF", "TUM_SLD")])
+```
+
+# Cycle-1 pharmacokinetics
+
+Each starting dose is a 1-h IV infusion (the infusion rate in the authors'
+simulation dataset). Figure 2 of Li 2026 shows individual peak concentrations
+of roughly 45-55 ug/mL after 3-4 mg/kg.
+
+```{r cycle1}
+make_obs <- function(times, cohort, group) {
+  tidyr::expand_grid(id = cohort$id, time = times) |>
+    left_join(cohort, by = "id") |>
+    mutate(amt = 0, rate = 0, evid = 0L, cmt = "central", dvid = 1L, treatment = group)
+}
+
+make_dose <- function(dose_tbl, cohort, group) {
+  dose_tbl |>
+    left_join(cohort, by = "id") |>
+    mutate(amt = mgkg * WT, rate = amt, evid = 1L, cmt = "central",
+           dvid = NA_integer_, treatment = group) |>
+    select(-mgkg)
+}
+
+c1_times <- sort(unique(c(seq(0, 24, by = 1), seq(24, 504, by = 12))))
+c1_events <- bind_rows(lapply(c(3, 3.5, 4), function(d) {
+  grp <- paste(d, "mg/kg")
+  bind_rows(
+    make_dose(tibble(id = cohort$id, time = 0, mgkg = d), cohort, grp),
+    make_obs(c1_times, cohort, grp)
+  ) |> mutate(id = id + 1000L * match(d, c(3, 3.5, 4)))
+})) |> arrange(id, time, desc(evid))
+
+c1_sim <- rxode2::rxSolve(mod, events = c1_events, omega = NA, sigma = NA,
+                          useLinCmt = FALSE, keep = "treatment",
+                          returnType = "data.frame")
+
+c1_sim |>
+  group_by(treatment, time) |>
+  summarise(med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95),
+            .groups = "drop") |>
+  ggplot(aes(time / 24, med, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.15, colour = NA) +
+  geom_line() +
+  labs(x = "Time after first dose (day)", y = "PF-06804103 (ug/mL)",
+       colour = "Starting dose", fill = "Starting dose",
+       caption = "Median and 90% interval of the virtual cohort, cycle 1.")
+```
+
+## PKNCA
+
+```{r pknca}
+sim_nca <- c1_sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, treatment, time)
+
+dose_df <- c1_events |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, duration = 1)
+intervals <- data.frame(start = 0, end = 504, cmax = TRUE, tmax = TRUE,
+                        auclast = TRUE, aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_tbl <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "aucinf.obs", "half.life")) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(median = signif(median(PPORRES, na.rm = TRUE), 3), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+
+nca_tbl |>
+  dplyr::rename(
+    "Starting dose" = treatment,
+    "Cmax (ug/mL)" = cmax,
+    "Tmax (h)" = tmax,
+    "AUC0-504 (ug*h/mL)" = auclast,
+    "AUC0-inf (ug*h/mL)" = aucinf.obs,
+    "t1/2 (h)" = half.life
+  ) |>
+  knitr::kable(caption = "Simulated cycle-1 NCA (medians of the virtual cohort).")
+```
+
+Li 2026 reports no NCA, so the check is internal: for a linear model, AUC from
+zero to infinity must equal dose / CL for every subject. Both sides use the same
+drawn parameters, so the bound only has to absorb the trapezoidal and
+extrapolation error. The simulated Cmax is also checked against the 45-55
+ug/mL peaks of Figure 2.
+
+```{r pknca-check}
+cl_ind <- exp(log(0.03089) + cohort$etalcl)
+auc_chk <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  left_join(dose_df |> select(id, treatment, amt), by = c("id", "treatment")) |>
+  mutate(expected = amt / cl_ind[id %% 1000L],
+         pct_diff = 100 * (PPORRES / expected - 1))
+cmax_4 <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD == "cmax", treatment == "4 mg/kg") |>
+  pull(PPORRES)
+
+stopifnot(
+  abs(median(auc_chk$pct_diff)) < 2,
+  quantile(abs(auc_chk$pct_diff), 0.9) < 5,
+  median(cmax_4) > 40, median(cmax_4) < 70
+)
+summary(auc_chk$pct_diff)
+```
+
+# Adaptive-dosing simulation
+
+The dose-modification rules follow the Methods and the authors' code. Doses are
+given every 504 h (3 weeks) up to 6048 h. At each grade >= 2 PN event the next
+scheduled dose is delayed by 2 weeks (1 week in the fourth regimen) and the dose
+drops one level; a PN event at the lowest level (2 mg/kg) ends treatment. The
+four regimens are 4 -> 3 -> 2 mg/kg, 3.5 -> 2.75 -> 2 mg/kg, 3 -> 2 mg/kg, and
+3 -> 2 mg/kg with the 1-week delay.
+
+rxode2 cannot change a dosing history from inside the ODE the way the NONMEM
+`COM()` variables do, so the vignette re-solves each subject with the dosing
+history implied by its events so far. Each pass finds every subject's next PN
+event on a daily grid, rewrites the doses after it, and re-solves. Doses before
+an event never change, so earlier events stay where they were.
+
+```{r adaptive-helpers}
+horizon <- 6048
+grid <- seq(0, horizon, by = 24)
+
+adaptive_events <- function(doses, cohort, group) {
+  bind_rows(make_dose(doses, cohort, group), make_obs(grid, cohort, group)) |>
+    arrange(id, time, desc(evid))
+}
+
+solve_adaptive <- function(doses, cohort, group) {
+  rxode2::rxSolve(mod, events = adaptive_events(doses, cohort, group),
+                  omega = NA, sigma = NA, useLinCmt = FALSE,
+                  returnType = "data.frame")
+}
+
+# First grid time after t_prev at which the cumulative hazard accrued since
+# t_prev reaches the subject's threshold; NA if none before the horizon.
+next_event_time <- function(sim, t_prev, threshold) {
+  sim |>
+    select(id, time, cumhaz) |>
+    filter(!is.na(t_prev[id]), time >= t_prev[id]) |>
+    group_by(id) |>
+    mutate(gain = cumhaz - first(cumhaz)) |>
+    summarise(t_event = time[which(gain >= threshold[first(id)])[1]], .groups = "drop")
+}
+
+# Remove the doses at or after the event and, unless the subject is at the
+# lowest level, restart the schedule at (next scheduled dose + delay).
+modify_doses <- function(doses, i, t_event, next_level, delay) {
+  mine <- doses$id == i
+  upcoming <- doses$time[mine & doses$time >= t_event]
+  doses <- doses[!(mine & doses$time >= t_event), ]
+  if (!is.na(next_level) && length(upcoming) > 0) {
+    t1 <- min(upcoming) + delay
+    if (t1 <= horizon - 1) {
+      doses <- bind_rows(doses, tibble(id = i, time = seq(t1, horizon - 1, by = 504),
+                                       mgkg = next_level))
+    }
+  }
+  doses
+}
+
+run_regimen <- function(reg, cohort, pn_threshold) {
+  doses <- tidyr::expand_grid(id = cohort$id, time = seq(0, horizon - 1, by = 504)) |>
+    mutate(mgkg = reg$levels[1])
+  ev_t <- matrix(NA_real_, nrow(cohort), length(reg$levels))
+  for (k in seq_along(reg$levels)) {
+    sim <- solve_adaptive(doses, cohort, reg$name)
+    t_prev <- if (k == 1) rep(0, nrow(cohort)) else ev_t[, k - 1]
+    hit <- next_event_time(sim, t_prev, pn_threshold[, k]) |> filter(!is.na(t_event))
+    if (nrow(hit) == 0) break
+    ev_t[hit$id, k] <- hit$t_event
+    for (j in seq_len(nrow(hit))) {
+      doses <- modify_doses(doses, hit$id[j], hit$t_event[j],
+                            reg$levels[k + 1], reg$delay)
+    }
+  }
+  sim <- solve_adaptive(doses, cohort, reg$name)
+  list(sim = mutate(sim, regimen = reg$name), ev_t = ev_t,
+       doses = mutate(doses, regimen = reg$name))
+}
+```
+
+```{r adaptive-run}
+regimens <- list(
+  list(name = "3 mg/kg", levels = c(3, 2), delay = 336),
+  list(name = "3 mg/kg (1-week delay)", levels = c(3, 2), delay = 168),
+  list(name = "3.5 mg/kg", levels = c(3.5, 2.75, 2), delay = 336),
+  list(name = "4 mg/kg", levels = c(4, 3, 2), delay = 336)
+)
+adaptive <- lapply(regimens, run_regimen, cohort = cohort, pn_threshold = pn_threshold)
+names(adaptive) <- vapply(regimens, `[[`, "", "name")
+```
+
+## Tumor response and study status
+
+Tumor size is read weekly, as in the authors' simulation dataset. A subject
+leaves the study at the first week with tumor size >= 120% of its nadir
+(progression) or after the PN event that ends treatment. An objective response
+is a decrease of >= 30% from baseline at any on-study week up to the cut-off.
+The simulated tumor size is the individual prediction, without residual error.
+
+```{r tumor-status}
+tumor_status <- function(res, n_levels) {
+  t_disc <- res$ev_t[, n_levels]
+  res$sim |>
+    filter(time %% 168 == 0) |>
+    group_by(id) |>
+    arrange(time, .by_group = TRUE) |>
+    mutate(
+      pchg = 100 * (tumor_size / first(tumor_size) - 1),
+      prior_nadir = lag(cummin(tumor_size), default = first(tumor_size)),
+      progressed = cumsum(tumor_size >= 1.2 * prior_nadir) > 0,
+      discontinued = !is.na(t_disc[id]) & time > t_disc[id],
+      on_study = !progressed & !discontinued
+    ) |>
+    ungroup()
+}
+
+tumor <- bind_rows(lapply(seq_along(regimens), function(r) {
+  tumor_status(adaptive[[r]], length(regimens[[r]]$levels))
+}))
+```
+
+## Comparison with Table 4
+
+```{r table4}
+summarise_regimen <- function(r, cutoff) {
+  ev_t <- adaptive[[r]]$ev_t
+  n_lev <- length(regimens[[r]]$levels)
+  orr <- tumor |>
+    filter(regimen == regimens[[r]]$name, time <= cutoff, on_study) |>
+    group_by(id) |>
+    summarise(resp = any(pchg <= -30), .groups = "drop")
+  tibble(
+    regimen = regimens[[r]]$name,
+    cycle = if (cutoff == 2016) "Cycle 5" else "Cycle 9",
+    ORR = 100 * sum(orr$resp) / n_sub,
+    `Dose reduction >= 1` = 100 * mean(!is.na(ev_t[, 1]) & ev_t[, 1] <= cutoff),
+    Discontinuation = 100 * mean(!is.na(ev_t[, n_lev]) & ev_t[, n_lev] <= cutoff)
+  )
+}
+
+sim_t4 <- bind_rows(lapply(seq_along(regimens), function(r) {
+  bind_rows(summarise_regimen(r, 2016), summarise_regimen(r, 4032))
+})) |>
+  pivot_longer(c(ORR, `Dose reduction >= 1`, Discontinuation),
+               names_to = "endpoint", values_to = "simulated")
+
+pub_t4 <- tribble(
+  ~endpoint, ~regimen, ~cycle, ~published,
+  "ORR", "3 mg/kg", "Cycle 5", 38,
+  "ORR", "3 mg/kg", "Cycle 9", 40,
+  "ORR", "3 mg/kg (1-week delay)", "Cycle 5", 39,
+  "ORR", "3 mg/kg (1-week delay)", "Cycle 9", 41,
+  "ORR", "3.5 mg/kg", "Cycle 5", 44,
+  "ORR", "3.5 mg/kg", "Cycle 9", 46,
+  "ORR", "4 mg/kg", "Cycle 5", 49,
+  "ORR", "4 mg/kg", "Cycle 9", 50,
+  "Dose reduction >= 1", "3 mg/kg", "Cycle 5", 43,
+  "Dose reduction >= 1", "3 mg/kg", "Cycle 9", 64,
+  "Dose reduction >= 1", "3 mg/kg (1-week delay)", "Cycle 5", 42,
+  "Dose reduction >= 1", "3 mg/kg (1-week delay)", "Cycle 9", 64,
+  "Dose reduction >= 1", "3.5 mg/kg", "Cycle 5", 44,
+  "Dose reduction >= 1", "3.5 mg/kg", "Cycle 9", 67,
+  "Dose reduction >= 1", "4 mg/kg", "Cycle 5", 47,
+  "Dose reduction >= 1", "4 mg/kg", "Cycle 9", 69,
+  "Discontinuation", "3 mg/kg", "Cycle 5", 10,
+  "Discontinuation", "3 mg/kg", "Cycle 9", 27,
+  "Discontinuation", "3 mg/kg (1-week delay)", "Cycle 5", 11,
+  "Discontinuation", "3 mg/kg (1-week delay)", "Cycle 9", 27,
+  "Discontinuation", "3.5 mg/kg", "Cycle 5", 2,
+  "Discontinuation", "3.5 mg/kg", "Cycle 9", 9,
+  "Discontinuation", "4 mg/kg", "Cycle 5", 2,
+  "Discontinuation", "4 mg/kg", "Cycle 9", 10
+)
+
+t4 <- left_join(pub_t4, sim_t4, by = c("endpoint", "regimen", "cycle")) |>
+  mutate(simulated = round(simulated), difference = simulated - published)
+
+t4 |>
+  dplyr::rename(
+    "Endpoint" = endpoint, "Starting dose" = regimen, "Cut-off" = cycle,
+    "Li 2026 Table 4 (%)" = published, "Simulated (%)" = simulated,
+    "Difference (points)" = difference
+  ) |>
+  knitr::kable(caption = "Replicates Table 4 of Li 2026 (published values are medians over 500 simulated trials of the 95 study participants).")
+
+stopifnot(
+  all(!is.na(t4$simulated)),
+  # Every cell within 12 percentage points of the published median. The
+  # published 95% intervals are about +/- 10 points, and the virtual cohort
+  # differs from the study participants.
+  max(abs(t4$difference)) < 12,
+  # The paper's conclusions: 4 mg/kg gives the highest ORR and the 3 mg/kg
+  # regimens the highest discontinuation.
+  with(sim_t4, simulated[endpoint == "ORR" & regimen == "4 mg/kg" & cycle == "Cycle 5"] -
+    simulated[endpoint == "ORR" & regimen == "3 mg/kg" & cycle == "Cycle 5"]) > 3,
+  with(sim_t4, simulated[endpoint == "Discontinuation" & regimen == "3 mg/kg" & cycle == "Cycle 9"] -
+    simulated[endpoint == "Discontinuation" & regimen == "4 mg/kg" & cycle == "Cycle 9"]) > 8
+)
+```
+
+The dose-reduction rate is the most direct test of the PK and RTTE models: it
+depends only on the exposure before the first PN event. The simulated rates sit
+2-7 points below the published medians in every regimen, inside the published
+95% intervals; a consistent offset of this size is expected from a virtual
+cohort whose body-weight and PK distributions differ from the 95 study
+participants. The agreement also confirms that the hazard runs on the
+concentration in ng/mL. With the concentration in ug/mL the first-event
+probability by cycle 5 at 4 mg/kg falls to about 10%, against 47% in Table 4.
+
+## Figure 3: median tumor size change
+
+```{r figure3}
+fig3_digitised <- tribble(
+  ~regimen, ~published_c5,
+  "3 mg/kg", -23.3,
+  "3 mg/kg (1-week delay)", -23.6,
+  "3.5 mg/kg", -26.9,
+  "4 mg/kg", -30.4
+)
+
+fig3 <- tumor |>
+  filter(on_study) |>
+  group_by(regimen, time) |>
+  summarise(median_pchg = median(pchg), .groups = "drop")
+
+ggplot(fig3, aes(time / 504 + 1, median_pchg, colour = regimen)) +
+  geom_line() +
+  geom_vline(xintercept = 5, linetype = "dashed") +
+  coord_cartesian(xlim = c(1, 9)) +
+  labs(x = "Time (cycle)", y = "Median tumor burden change from baseline (%)",
+       colour = "Starting dose regimen",
+       caption = "Replicates Figure 3 of Li 2026 (on-study subjects only).")
+
+fig3_c5 <- fig3 |>
+  filter(time == 2016) |>
+  left_join(fig3_digitised, by = "regimen") |>
+  mutate(difference = median_pchg - published_c5)
+
+fig3_c5 |>
+  mutate(median_pchg = round(median_pchg, 1), difference = round(difference, 1)) |>
+  dplyr::rename(
+    "Starting dose" = regimen, "Time (h)" = time,
+    "Simulated median change (%)" = median_pchg,
+    "Figure 3, cycle 5 (%)" = published_c5,
+    "Difference (points)" = difference
+  ) |>
+  knitr::kable(caption = "Median tumor change at the cycle-5 cut-off; Figure 3 values read from the published figure.")
+
+stopifnot(max(abs(fig3_c5$difference)) < 6)
+```
+
+## Example individual (Figure 2)
+
+```{r figure2}
+ex_id <- adaptive[["4 mg/kg"]]$ev_t[, 1] |> (\(x) which(!is.na(x) & x < 2016))()
+ex_id <- ex_id[1]
+ex <- adaptive[["4 mg/kg"]]$sim |> filter(id == ex_id)
+ex_events <- adaptive[["4 mg/kg"]]$ev_t[ex_id, ]
+ggplot(ex, aes(time / 504 + 1)) +
+  geom_line(aes(y = Cc)) +
+  geom_line(aes(y = tumor_size), linetype = "dashed") +
+  geom_vline(xintercept = ex_events[!is.na(ex_events)] / 504 + 1, colour = "red") +
+  labs(x = "Time (cycle)", y = "PF-06804103 (ug/mL, solid) and tumor size (mm, dashed)",
+       caption = "One simulated subject starting at 4 mg/kg; red lines mark grade >= 2 PN events (cf. Figure 2 of Li 2026).")
+```
+
+# Assumptions and deviations
+
+* **Concentration units of the PN hazard.** The hazard is driven by the
+  concentration in ng/mL (1000 x `Cc`), while the tumor kill term uses ug/mL.
+  Table 3 states the KD units in ug/mL; Table 2 gives no units for alpha. The
+  authors' code computes one concentration (amount in mcg over volume in L,
+  i.e. ng/mL, per its header) for both terms. Only ng/mL for the hazard
+  reproduces the dose-reduction rates of Table 4 (above), and only ug/mL for the
+  tumor term reproduces the tumor shrinkage of Figure 3, so the model uses each
+  sub-model's own unit.
+* **Central-volume covariates.** Table 1 lists 'ThetaMale-V1' = -0.3186 and
+  'ThetaSex-BWT' = -0.6198 without the covariate equations. The Methods state
+  that categorical covariates entered linearly and continuous ones as power
+  functions, and the Results that body weight and sex were the two covariates on
+  Vc, so the model uses `Vc = ThetaVc * (1 + ThetaMale * male) * (WT / 63.45)^ThetaBWT`
+  and reads 'ThetaSex-BWT' as the body-weight exponent. No reference weight is
+  printed for the PK model; 63.45 kg is the reference weight of the authors'
+  tumor-model code for the same participants. The PK covariates do not appear
+  in the authors' code, which used each participant's individual PK estimates.
+* **Code values that differ from the tables.** The published simulation code
+  carries slightly different values from Tables 2 and 3: log(KTR) -7.64 vs
+  -7.47, log(alpha) -15 vs -15.2, log(gamma) -0.961 vs -0.959, KG exponents 5.37
+  and 5.02 vs 5.097 and 4.536, and an alpha IIV variance of 0.278 vs 0.0205. The
+  model uses the final estimates in the tables; the structure, the covariate
+  reference values (63.45 kg, 3.98) and the log transform of baseline SLD come
+  from the code.
+* **Omitted bookkeeping state.** The code's effect-AUC compartment (`EFFAUC`,
+  `DADT(6) = KTR * A(3)`) does not enter any equation and is not included.
+* **Infusion duration.** Doses are 1-h infusions, as in the authors' simulation
+  dataset (rate = amount); the paper does not state the duration.
+* **Simulation harness.** The NONMEM code changes doses through `COM()`
+  variables during integration; the vignette reaches the same dosing histories
+  by re-solving after each event, detecting events on a daily grid. The tumor
+  is read weekly as in the authors' dataset, progression is >= 20% above the
+  nadir, and ORR counts responses among all simulated subjects.
+* **Virtual cohort.** The paper simulated its 95 participants with their
+  individual PK estimates. The virtual cohort draws PK random effects from
+  Table 1 and assumes the covariate distributions given above (body weight,
+  80% female, baseline SLD); the paper does not report them. The KG covariate
+  exponents are large, so ORR is sensitive to these distributions.

@@ -6020,6 +6020,8 @@ navbar:
         href: articles/Lin_2022_PF05251749.html
       - text: "PF05251749 750mg (Lin 2022)"
         href: articles/Lin_2022_PF05251749.html
+      - text: "PF06804103 (Li 2026)"
+        href: articles/Li_2026_PF06804103.html
       - text: "PRO95780 (Cao 2013)"
         href: articles/Cao_2013_PRO95780.html
       - text: "Paclitaxel (He 2022)"
@@ -10900,6 +10902,7 @@ articles:
   - articles/Li_2025_polymyxinB
   - articles/Li_2025_rivaroxaban
   - articles/Li_2025_tetrahydrocannabinol
+  - articles/Li_2026_PF06804103
   - articles/Li_2026_alvespimycin
   - articles/Li_2026_epcoritamab
   - articles/Li_2026_etranacogene
