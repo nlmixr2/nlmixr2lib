@@ -209,7 +209,9 @@ Yu_2025b_vancomycin <- function() {
     # 16.2% -- so the variance is 0.161^2 = 0.025921.
     #
     # Implemented by the occasion-indicator expansion rather than rxode2's
-    # `~ var | OCC` syntax, which parses but cannot be simulated from an rxUi.
+    # `~ var | OCC` syntax, so the draws are per subject and occasion whatever
+    # the nesting shape of the data (the syntax shares one draw per occasion
+    # when no subject has two or more occasions).
     # Occasions after the first repeat the same variance, the analogue of
     # NONMEM's $OMEGA BLOCK(1) SAME, and are therefore fixed().
     #

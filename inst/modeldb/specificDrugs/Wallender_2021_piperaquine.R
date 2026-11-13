@@ -60,7 +60,7 @@ Wallender_2021_piperaquine <- function() {
       units = "(count)",
       type = "categorical",
       reference_category = NULL,
-      notes = "One occasion per three-day DP course. Between-occasion variability on F was estimated at 66.9% (5.9% RSE, 95% CI 62.3-71.3%) in Table 2 and is the largest single variance component of the PK model. rxode2 has no NONMEM-style '| occ' variability level, so occasions 1 to 25 are multiplexed inside model() by binary indicators onto etaiov_fdepot_1 .. etaiov_fdepot_25 sharing one variance (the equivalent of NONMEM $OMEGA BLOCK(1) SAME). The cap of 25 covers the trial exactly: the every-4-weeks arm received a DP course every 4 weeks from 8 to 104 weeks of age, which is 25 courses. OCC = 0, or any value outside 1..25, zeroes every indicator and yields the occasion-free typical value. Simulating more than 25 courses requires adding further etaiov_fdepot_<n> terms.",
+      notes = "One occasion per three-day DP course. Between-occasion variability on F was estimated at 66.9% (5.9% RSE, 95% CI 62.3-71.3%) in Table 2 and is the largest single variance component of the PK model. rxode2's '| occ' variability level shares one draw per occasion when no subject has two or more occasions, so occasions 1 to 25 are multiplexed inside model() by binary indicators onto etaiov_fdepot_1 .. etaiov_fdepot_25 sharing one variance (the equivalent of NONMEM $OMEGA BLOCK(1) SAME). The cap of 25 covers the trial exactly: the every-4-weeks arm received a DP course every 4 weeks from 8 to 104 weeks of age, which is 25 courses. OCC = 0, or any value outside 1..25, zeroes every indicator and yields the occasion-free typical value. Simulating more than 25 courses requires adding further etaiov_fdepot_<n> terms.",
       source_name = "OCC"
     ),
     SAMPLE_CAPILLARY = list(
@@ -228,7 +228,8 @@ Wallender_2021_piperaquine <- function() {
     # 62.3-71.3%)", entered in Eq. 2 as exp(BOV). This is the largest
     # variance component in the model. log(0.669^2 + 1) = 0.3698801.
     #
-    # rxode2 has no NONMEM-style "| occ" variability level, so the single
+    # rxode2's "| occ" variability level shares one draw per occasion when no
+    # subject has two or more occasions, so the single
     # published BOV term is expanded into 25 per-occasion etas selected
     # by binary indicators on the OCC column, all sharing one variance
     # (the equivalent of NONMEM $OMEGA BLOCK(1) SAME). 25 covers the

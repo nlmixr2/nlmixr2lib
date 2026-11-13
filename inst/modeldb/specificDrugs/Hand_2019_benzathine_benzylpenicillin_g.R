@@ -238,8 +238,9 @@ Hand_2019_benzathine_benzylpenicillin_g <- function() {
     # ==========================================================================
     # Table 3: 'IOV in t1/2,abs-2' = 30% (shrinkage 46%; bootstrap 31, 95% CI
     # 20-48); omega^2 = 0.30^2 = 0.09. An occasion is one monthly injection
-    # cycle, and the source data span six of them. rxode2 parses but cannot
-    # simulate the native 'eta ~ var | occ' multi-level syntax, so this is
+    # cycle, and the source data span six of them. The native
+    # 'eta ~ var | occ' multi-level syntax shares one draw per occasion when no
+    # subject has two or more occasions, so this is
     # encoded as a single occasion-indexed eta (the repository's registered
     # etaiov_<param>_<occasion> form) that is drawn once per subject per solve.
     # A single-cycle simulation reproduces the source exactly; a multi-cycle

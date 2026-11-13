@@ -196,8 +196,9 @@ Wallender_2021_piperaquine_malaria <- function() {
     etalmtt ~ 0.1711123
 
     # Table 2 theta Between occasion variability 66.9%; log(0.669^2 + 1) = 0.3698801.
-    # Expanded into 25 per-occasion etas sharing one variance because rxode2
-    # has no NONMEM-style "| occ" level; see the sister PK model file.
+    # Expanded into 25 per-occasion etas sharing one variance because the
+    # "| occ" level shares one draw per occasion when no subject has two or
+    # more occasions; see the sister PK model file.
     etaiov_fdepot_1  ~ 0.3698801
     etaiov_fdepot_2  ~ fixed(0.3698801)
     etaiov_fdepot_3  ~ fixed(0.3698801)

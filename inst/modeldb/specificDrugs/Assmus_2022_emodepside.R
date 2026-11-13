@@ -221,8 +221,10 @@ Assmus_2022_emodepside <- function() {
     etalvp2 ~ 0.0908 # S1 Code $OMEGA IIV_V3 0.0908 (on V = 647); Table 3 Vp2/F IIV 30.8% CV
 
     # Inter-occasion variability on MTT, multiple ascending dose study only.
-    # rxode2 has no NONMEM-style occasion level, so each occasion has its own
-    # eta; the second is fixed to the first ($OMEGA BLOCK(1) SAME).
+    # Each occasion has its own eta, so the draws are per subject and occasion
+    # whatever the nesting shape of the data (rxode2's `| occ` level shares one
+    # draw per occasion when no subject has two or more occasions); the second
+    # is fixed to the first ($OMEGA BLOCK(1) SAME).
     etaiov_mtt_1 ~ 0.0692 # S1 Code $OMEGA BLOCK(1) IOV MT 0.0692; Table 3 MTT IOV 26.8% CV
     etaiov_mtt_2 ~ fixed(0.0692) # S1 Code $OMEGA BLOCK(1) SAME
 

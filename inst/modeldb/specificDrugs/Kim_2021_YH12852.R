@@ -182,8 +182,10 @@ Kim_2021_YH12852 <- function() {
     etalslp_kge ~ 1.221025 # Table 1 IIV SLP 110.5%
 
     # ---- Between-occasion variability (2 occasions, shared magnitude) -------
-    # rxode2 has no NONMEM-style occasion level, so each occasion gets its own
-    # eta. The second occasion's variance is fixed to the first, which is the
+    # Each occasion gets its own eta, so the draws are per subject and occasion
+    # whatever the nesting shape of the data (rxode2's `| occ` level shares one
+    # draw per occasion when no subject has two or more occasions). The second
+    # occasion's variance is fixed to the first, which is the
     # $OMEGA BLOCK(3) SAME idiom. The BLOCK(3) covariances are not reported.
     etaiov_cl_1 ~ 0.082369 # Table 1 IOV CL/F 28.7%
     etaiov_cl_2 ~ fixed(0.082369) # shared magnitude ($OMEGA BLOCK(3) SAME)

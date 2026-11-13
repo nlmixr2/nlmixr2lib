@@ -229,7 +229,9 @@ Chan_2020_fenebrutinib <- function() {
 
     # Inter-occasion variability on F1, five occasions (ETA(10)-ETA(14) in
     # Model S1) with one reported variance, encoded as the occasion-indicator
-    # expansion because rxode2 cannot simulate the `eta ~ var | OCC` form.
+    # expansion, so the draws are per subject and occasion whatever the nesting
+    # shape of the data (the `eta ~ var | OCC` form shares one draw per occasion
+    # when no subject has two or more occasions).
     # Occasions 2-5 repeat occasion 1's variance ($OMEGA BLOCK(1) SAME).
     etaiov_f_1 ~ 0.299 # Table I, omega10.1 'omega2 IOV on F1' = 0.299 (RSE 5.30%; shrinkage 26.0%)
     etaiov_f_2 ~ fixed(0.299) # same variance as occasion 1 (SAME)

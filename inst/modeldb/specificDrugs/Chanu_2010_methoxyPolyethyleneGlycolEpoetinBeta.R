@@ -165,8 +165,10 @@ Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta <- function() {
         "on study days 1, 57 and 127 (AMICUS) or 1, 57 and 141 (MAXIMA,",
         "PROTOS), i.e. three occasions per subject. Decomposed inside model()",
         "into binary indicators oc1..oc3 that multiplex the three IOV etas on",
-        "log-CL, following the Jonsson_2011_ethambutol.R idiom (rxode2 parses",
-        "but cannot simulate the eta ~ var | occ form). Records outside those",
+        "log-CL, following the Jonsson_2011_ethambutol.R idiom (the draws are",
+        "per subject and occasion whatever the nesting shape of the data; the",
+        "eta ~ var | occ form shares one draw per occasion when no subject has",
+        "two or more occasions). Records outside those",
         "three occasions should carry OCC = 1."
       ),
       source_name = "OCC"
@@ -261,8 +263,9 @@ Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta <- function() {
     # 'Random effects IOV' row, CL CV% = 9). Chanu 2010 Methods also mentions
     # preliminary IOV on F, which the final model does not retain. Encoded as
     # the occasion-indicator expansion rather than the eta ~ var | occ form,
-    # which rxode2 parses but cannot simulate; occasions 2 and 3 are fixed equal
-    # to occasion 1, the equivalent of a NONMEM $OMEGA BLOCK(1) SAME.
+    # which shares one draw per occasion when no subject has two or more
+    # occasions; occasions 2 and 3 are fixed equal to occasion 1, the
+    # equivalent of a NONMEM $OMEGA BLOCK(1) SAME.
     etaiov_cl_1 ~ 0.0081        # Chanu 2010 Table III: IOV CL CV% = 9 (RSE 32%) -> 0.09^2
     etaiov_cl_2 ~ fix(0.0081)   # Chanu 2010 Table III: SAME-equivalent
     etaiov_cl_3 ~ fix(0.0081)   # Chanu 2010 Table III: SAME-equivalent

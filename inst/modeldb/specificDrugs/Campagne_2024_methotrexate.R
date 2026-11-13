@@ -140,7 +140,9 @@ Campagne_2024_methotrexate <- function() {
     # SD in Table 2 and squared here. One variance per parameter is estimated;
     # occasions 2-4 share occasion 1's variance. Implemented by the
     # occasion-indicator expansion rather than rxode2's `eta ~ var | OCC`
-    # syntax, which parses but cannot be simulated from an rxUi.
+    # syntax, so the draws are per subject and occasion whatever the nesting
+    # shape of the data (the syntax shares one draw per occasion when no
+    # subject has two or more occasions).
     etaiov_cl_nonmet_1 ~ 0.0144 # Table 2 'IOV-CL' SD 0.12 -> 0.12^2
     etaiov_cl_nonmet_2 ~ fixed(0.0144) # same variance as occasion 1
     etaiov_cl_nonmet_3 ~ fixed(0.0144) # same variance as occasion 1

@@ -163,8 +163,10 @@ Kawuma_2023_tenofovir <- function() {
     etalcl ~ 0.040401      # Table 2 CL row, footnote d (BSV) 20.1% (16.1-24.7); omega^2 = 0.201^2
 
     # Between-occasion variability across the two occasions defined in Methods.
-    # rxode2 has no NONMEM-style `| occasion` level, so each occasion gets its
-    # own eta and the indicators in model() select among them. The second
+    # Each occasion gets its own eta and the indicators in model() select among
+    # them, so the draws are per subject and occasion whatever the nesting shape
+    # of the data (rxode2's `| occ` level shares one draw per occasion when no
+    # subject has two or more occasions). The second
     # occasion's variance is fixed to the first, which is the $OMEGA BLOCK(1)
     # SAME idiom: one magnitude shared by every occasion.
     etaiov_fdepot_tdf_1 ~ 0.057121        # Table 2 F_TDF row, footnote e (BOV) 23.9% (18.2-30.3); omega^2 = 0.239^2

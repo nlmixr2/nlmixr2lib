@@ -154,8 +154,10 @@ Adamiszak_2025_ceftaroline <- function() {
         "contribute two occasions in the authors' deposited dataset, each with",
         "its own CrCL (Methods 4.2 states 18 patients had two CrCL",
         "measurements). Decomposed inside model() into the indicators oc1 / oc2",
-        "selecting the per-occasion eta, because rxode2 parses but cannot",
-        "simulate the `eta ~ var | occ` syntax; the occasion-2 variance is",
+        "selecting the per-occasion eta, so the draws are per subject and",
+        "occasion whatever the nesting shape of the data (the `eta ~ var | occ`",
+        "syntax shares one draw per occasion when no subject has two or more",
+        "occasions); the occasion-2 variance is",
         "fixed() to occasion 1 (one IOV magnitude reported). Records with any",
         "other OCC value receive no IOV."
       ),

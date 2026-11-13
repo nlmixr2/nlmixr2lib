@@ -351,7 +351,9 @@ Ding_2026_vancomycin <- function() {
     # variances.
     #
     # Implemented by the occasion-indicator expansion rather than rxode2's
-    # `~ var | OCC` syntax, which parses but cannot be simulated from an rxUi.
+    # `~ var | OCC` syntax, so the draws are per subject and occasion whatever
+    # the nesting shape of the data (the syntax shares one draw per occasion
+    # when no subject has two or more occasions).
     # This is also the more faithful translation of a NONMEM $PK IOV block.
     # Occasions after the first repeat the same variance, the analogue of
     # NONMEM's $OMEGA BLOCK(1) SAME, and are therefore fixed().

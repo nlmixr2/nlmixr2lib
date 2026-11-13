@@ -172,7 +172,7 @@ Mohanan_2017_fludarabine <- function() {
         "Methods), so six occasions are encoded: OCC = 1 is the day -7 dose through OCC = 6, the",
         "day -2 dose. Decomposed inside model() into indicators occ1..occ6 that select per-occasion",
         "etas, following the Ding 2026 vancomycin and Chen 2023 nemonoxacin precedents; rxode2's",
-        "'~ var | OCC' syntax parses but cannot be simulated from an rxUi. Only the first eta of",
+        "'~ var | OCC' syntax shares one draw per occasion when no subject has two or more occasions. Only the first eta of",
         "each parameter's set carries the estimated variance and the remaining five are fixed to",
         "the same value, which is the nlmixr2lib encoding of a single shared IOV magnitude. PK was",
         "actually sampled on days -7, -4 and -2 in the first 7 patients and on days -7 and -3 in",
