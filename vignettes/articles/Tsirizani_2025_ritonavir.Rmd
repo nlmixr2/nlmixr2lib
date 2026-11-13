@@ -387,17 +387,15 @@ nrow(events)
 
 ```{r simulate}
 rxode2::rxSetSeed(20250926)
-# Solved on rxode2's analytic linCmt() path (useLinCmt = TRUE); rxode2
-# integrates ODE models numerically by default. This is a choice of path, not a
-# claim that it reproduces the source's NONMEM ADVAN4 fit. Measured on rxode2
-# 5.1.8.9000 (e4cb67f), the two paths agree on the once-daily arms to a median
-# 6e-8 and a maximum 4e-6 relative. On the twice-daily arm, where ka changes
-# with the occasion between the morning and evening doses, they differ by more
-# than 0.1% in 54 of the 170 children, by up to 36% at single time points and
-# by up to 5.5% in AUC (median 3e-5). Measured: the gap is the same with
-# liblsoda or dop853 at rtol 1e-10, and it disappears when ka is the same on
-# both occasions.
-sim_solve <- rxode2::rxSolve(mod, events, addDosing = FALSE, useLinCmt = TRUE,
+# Solved on rxode2's default ODE path. Measured on rxode2 5.1.8.9000
+# (e4cb67f), it matches an exact piecewise solution of this event table (each
+# record's occasion holding until the next record) to 1.5e-6 in the three
+# twice-daily children checked. The analytic linCmt() path on that build does
+# not: in the twice-daily arm, ka changes at a lagged dose's record with no
+# other record since the previous dose, and linCmt() keeps the previous
+# occasion's ka until the dose arrives. That moves individual profiles by up to
+# 36% at single time points and 5.5% in AUC, and the arm medians by 0.01%.
+sim_solve <- rxode2::rxSolve(mod, events, addDosing = FALSE,
                              addlKeepsCov = FALSE)
 sim <-
   sim_solve |>
@@ -434,6 +432,8 @@ sup_par <-
   dplyr::filter(id %in% twice_daily) |>
   dplyr::mutate(etaiov_ka_1 = 0, etaiov_ka_2 = 0)
 mod_typ_sup <- rxode2::zeroRe(mod)
+# The analytic path is exact here: with the ka IOV zeroed, no parameter that
+# acts between records changes with the occasion.
 solve_sup <- function(ev) {
   rxode2::rxSolve(mod_typ_sup, dplyr::filter(ev, id %in% twice_daily),
                   params = sup_par, addDosing = FALSE, useLinCmt = TRUE,
@@ -590,7 +590,8 @@ f2_events <-
   as.data.frame()
 
 f2_sim <-
-  # Analytic path for the same reason as the `simulate` chunk.
+  # The analytic path is exact here: with every random effect zeroed, no
+  # parameter that acts between records changes with the occasion.
   rxode2::rxSolve(mod_typ, f2_events, addDosing = FALSE, useLinCmt = TRUE,
                   addlKeepsCov = FALSE) |>
   as.data.frame() |>
@@ -1124,16 +1125,19 @@ is deliberately not encoded.
   S1 fixes between-subject variability on Vc, ka, F, Vp and Q, and
   between-occasion variability on CL, to zero. Writing them as `~ fixed(0)`
   would make OMEGA singular; Table 3 lists no such rows either.
-* **Solver path.** The simulations request rxode2's analytic `linCmt()`
-  solution explicitly (`useLinCmt = TRUE`); rxode2 integrates ODE models
-  numerically by default. This is a choice of path; it has not been shown to
-  reproduce the source's NONMEM ADVAN4 fit. Measured on rxode2 5.1.8.9000
-  (e4cb67f), the two paths agree on the once-daily arms to better than 4e-6.
-  On the twice-daily arm, where `ka` changes with the occasion between the
-  morning and evening doses, they differ by up to 36% at single time points in
-  54 of the 170 children, and by up to 5.5% in AUC. The gap is the same at
-  rtol 1e-10 with either integrator, and it disappears when `ka` is the same on
-  both occasions (see the comment in the `simulate` chunk).
+* **Solver path.** The cohort simulation uses rxode2's default numerical ODE
+  solution. Measured on rxode2 5.1.8.9000 (e4cb67f), it agrees with an exact
+  piecewise solution of the event table, in which each record's occasion holds
+  until the next record, to 1.5e-6 in the three twice-daily children checked.
+  The analytic `linCmt()` path on that build does not. In the twice-daily arm
+  `ka` changes at each lagged dose's record, with no other record since the
+  previous dose during the run-in, and `linCmt()` keeps the previous
+  occasion's `ka` until the dose arrives. That moves individual profiles by up
+  to 36% at single time points (54 of 170 children by more than 0.1%) and by up
+  to 5.5% in AUC, and the arm medians by 0.01%. The superposition check and
+  Figure 2 still use `linCmt()`, which is exact for them because no parameter
+  that acts between records changes with the occasion there. None of this is a
+  claim that either path reproduces the source's NONMEM ADVAN4 fit.
 * **Occasion assignment during the simulated run-in.** `OCC` both selects the
   BOV eta and identifies the evening dose. Run-in doses are labelled by time of
   day so each gets its correct absorption lag; the steady-state AUC of the final
