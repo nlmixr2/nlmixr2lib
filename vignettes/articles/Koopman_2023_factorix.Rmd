@@ -88,6 +88,7 @@ them in one place for review.
 | Reference age                      | 15.8 years             | Koopman 2023 equations on p. 226: `(AGE - 15.8)`                    |
 | IIV block `etalcl + etalvc`        | c(0.05570, 0.03281, 0.09986) | Koopman 2023 Table 2: IIV CL = 23.6%, IIV V1 = 31.6%, corr CL:V1 = 44.0% |
 | `etalvp`                           | 0.16974                | Koopman 2023 Table 2: IIV V2 = 41.2%                                |
+| `etaiov_cl_1` (`_2` ... `_9` fixed) | 0.198^2 = 0.039204    | Koopman 2023 Table 2 (p. 226): IOV on CL = 19.8%; 1-9 occasions per individual (p. 223) |
 | `propSd`                           | 0.163                  | Koopman 2023 Table 2: proportional error = 16.3%                    |
 | `addSd`                            | 1.04 IU/dL             | Koopman 2023 Table 2: additive error = 1.04 IU/dL                   |
 | Equation: `d/dt(central)`          | n/a                    | Koopman 2023 p. 226 (new model equations): two-compartment IV       |
@@ -99,9 +100,8 @@ are `sqrt(omega^2) * 100`, so `omega^2 = (CV/100)^2`. The IIV variances above
 were computed by squaring `0.236`, `0.316`, and `0.412`, and the CL:V1
 covariance as `0.44 * 0.236 * 0.316`.
 
-The new model also reports inter-occasion variability on CL (IOV CL = 19.8%)
-which is not implemented in this static model file; see *Assumptions and
-deviations*.
+The new model also reports inter-occasion variability on CL (IOV CL = 19.8%),
+encoded with nine occasions; see *Assumptions and deviations*.
 
 # Virtual cohort
 
@@ -122,6 +122,7 @@ make_cohort <- function(n, age_min, age_max, wt_log_mean, wt_log_sd,
     ID        = id_offset + seq_len(n),
     AGE       = runif(n, age_min, age_max),
     WT        = pmin(pmax(rlnorm(n, log(wt_log_mean), wt_log_sd), wt_lo), wt_hi),
+    OCC       = 1L,
     age_group = label
   )
 }
@@ -248,7 +249,7 @@ ev_ref <- rxode2::et(amt = 50 * 73, time = 0, cmt = "central") |>
   rxode2::et(seq(0, 0))
 sim_ref <- rxode2::rxSolve(
   mod_typ, events = ev_ref,
-  params = data.frame(WT = 73, AGE = 15.8),
+  params = data.frame(WT = 73, AGE = 15.8, OCC = 1L),
   returnType = "data.frame"
 )
 
@@ -269,6 +270,63 @@ Q2 = `r round(ref_pars$q, 2)` dL/h, V2 = `r round(ref_pars$vp, 1)` dL, and
 Vss = V1 + V2 = `r round(ref_pars$Vss, 1)` dL — matching the values reported
 in Koopman 2023 Table 2 (CL = 1.41 dL/h, V1 = 73.1 dL, Q2 = 2.77 dL/h,
 V2 = 80.1 dL, Vss = 153 dL).
+
+# Inter-occasion variability (Koopman 2023 Table 2)
+
+Table 2 reports inter-occasion variability on CL of 19.8% CV, where an occasion
+is a visit with a PK assessment and an individual has up to nine (Methods 2.4,
+Results 3.1). The chunk below gives 200 virtual patients all nine occasions, one
+observation per occasion, and checks that every occasion carries its own draw per
+patient, that the SD of the draws on each occasion matches the published IOV, and
+that the within-patient SD of log CL does too.
+
+```{r bov-check}
+set.seed(20230326)
+rxode2::rxSetSeed(20230326)
+
+n_bov <- 200L
+n_occ <- 9L
+bov_pop <- tibble(ID = seq_len(n_bov), WT = 73, AGE = 15.8)
+bov_ev <- bind_rows(
+  tidyr::crossing(bov_pop, OCC = seq_len(n_occ)) |>
+    mutate(TIME = (OCC - 1L) * 28 * 24, AMT = 73 * 50, EVID = 1, CMT = "central"),
+  tidyr::crossing(bov_pop, OCC = seq_len(n_occ)) |>
+    mutate(TIME = (OCC - 1L) * 28 * 24 + 1, AMT = NA_real_, EVID = 0, CMT = "central")
+) |>
+  arrange(ID, TIME, desc(EVID)) |>
+  as.data.frame()
+
+bov_sim <- rxode2::rxSolve(mod, events = bov_ev, keep = "OCC", returnType = "data.frame") |>
+  filter(!is.na(Cc))
+
+# One eta per patient and occasion: the number of distinct draws on an occasion
+# equals the number of patients.
+iov_per_occasion <- bov_sim |>
+  group_by(OCC) |>
+  summarise(n_distinct_iov = n_distinct(round(iov_cl, 8)), .groups = "drop")
+
+# The footnote gives IOV as sqrt(variance) * 100%, so the published CV is the SD of
+# the eta. The SD of the 200 draws on an occasion has a relative standard error of
+# 1 / sqrt(2 * 199) = 5.0%, so 20% is four standard errors; the within-patient SD
+# over nine occasions has 1600 degrees of freedom, a standard error of 1.8%, so 10%
+# is five.
+bov_omega <- 0.198
+iov_sd <- bov_sim |>
+  group_by(OCC) |>
+  summarise(sd_iov = sd(iov_cl), .groups = "drop")
+within_sd <- sqrt(mean(tapply(log(bov_sim$cl), bov_sim$id, var)))
+cat(sprintf(
+  "Within-patient SD of log CL over %d occasions: %.3f (published IOV %.3f)\n",
+  n_occ, within_sd, bov_omega
+))
+print(round(setNames(iov_sd$sd_iov / bov_omega, paste("occasion", iov_sd$OCC)), 3))
+stopifnot(
+  nrow(iov_per_occasion) == n_occ,
+  iov_per_occasion$n_distinct_iov == n_bov,
+  abs(iov_sd$sd_iov / bov_omega - 1) < 0.20,
+  abs(within_sd / bov_omega - 1) < 0.10
+)
+```
 
 # PKNCA validation
 
@@ -384,13 +442,22 @@ ranges.
 
 # Assumptions and deviations
 
-- **Inter-occasion variability omitted.** Koopman 2023 estimated IOV on CL
-  (19.8% CV, RSE 22%, shrinkage 36%) reflecting within-subject variability
-  across PK profiling visits. The static library model has no occasion
-  variable, so IOV is not implemented as a separate eta. For Bayesian
-  forecasting use cases that explicitly model occasions, the IOV variance
-  (`omega^2_IOV_CL = 0.198^2 = 0.03920`) should be added on top of the
-  packaged IIV.
+- **Inter-occasion variability uses the occasion-indicator expansion.** Koopman
+  2023 Table 2 (p. 226) reports IOV on CL of 19.8% CV (RSE 22%, shrinkage 36%);
+  the table's IOV on V1 belongs to the published model it is compared with, and
+  the new model has none. The first visit with PK profiling is occasion 1 and
+  later visits with a PK assessment are further occasions (Methods 2.4,
+  p. 222), a median of 2 per individual and up to 9 (Results 3.1, p. 223).
+  The term is nine etas on log-CL selected by the `OCC` column, occasion 1 at
+  `0.198^2` (the footnote gives IIV and IOV as sqrt(variance) \* 100%) and
+  occasions 2-9 fixed to it. rxode2's `| OCC` level shares one draw per occasion
+  when no subject has two or more occasions, which is the shape of the virtual
+  cohort above, so the expansion is used. Records with `OCC` beyond 9 carry no
+  IOV, and `OCC` is required in every event table, also for the
+  zero-random-effects runs. Because the occasion effect enters as an
+  indicator-weighted sum, rxode2 warns `some etas defaulted to non-mu
+  referenced`; that affects only the speed of a future estimation run, not
+  simulation.
 - **Inter-individual variability convention.** Koopman 2023 footnotes Table 2
   with "IIV and IOV coefficient of variation calculated as: sqrt(variance) \*
   100%", i.e., the reported CV% values are `sqrt(omega^2) * 100`, not the
