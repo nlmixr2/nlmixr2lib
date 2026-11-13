@@ -2,6 +2,8 @@
 
 # development version
 
+- `checkModelConventions()` warns about an ODE state that can never leave 0: every term of its `d/dt()` vanishes when it is 0, it has no initial condition, and it is not a dosing compartment. That is usually a dose route missing from the `dosing` metadata, such as a second depot or a stomach. It reads the equations rxode2 compiles, so a continuation line that starts with an operator counts as part of the equation above it.
+
 - The registry's solve gate (`tests/testthat/test-modeldb-solve-gate.R`) now fails when a dosed probe solve leaves an ODE state NaN or infinite. Timing outputs such as `tad()` may legitimately be NA and are not checked. By default the gate also probes every model that reads a named compartment's dose history, so a wrong `dosing` compartment is caught without `NLMIXR2LIB_SOLVE_GATE=full`. The probe doses every declared `dosing` compartment whose dose history the model reads, not only the first, so a split dose (`tad(depot2)` alongside `depot`) is probed as the model expects.
 
 - `checkModelConventions()` reports an error when a dose-history function names a compartment the model is not dosed into: `tad()`, `tad0()`, `tafd()`, `tafd0()`, `tlast()`, `tlast0()`, `tfirst()`, `tfirst0()`, `dose()`, `dose0()`, `podo()` or `podo0()` of a compartment missing from its `dosing` metadata (or, without metadata, from the depot/central fallback that `buildModelDb()` records). Nothing doses that compartment, so the function is NA for every subject and any derivative using it is NaN.

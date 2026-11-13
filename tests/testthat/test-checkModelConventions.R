@@ -2991,3 +2991,66 @@ test_that("the message says when `dosing` is empty or there is no fallback", {
   expect_equal(hit2$name, "stomach")
   expect_true(grepl("no depot or central compartment to fall back to", hit2$message, fixed = TRUE))
 })
+
+# Dead states ---------------------------------------------------------------
+#
+# An ODE state with no input term, no initial condition and no `dosing` entry
+# stays at 0 in every simulation. The fixture models are in
+# helper-deadStateModels.R.
+
+.dsCategory <- function(model) {
+  res <- suppressWarnings(checkModelConventions(model, verbose = FALSE))
+  res[res$category == "dead_state", , drop = FALSE]
+}
+
+test_that(".additiveTerms and .hasStateFactor split and classify d/dt() terms", {
+  terms <- nlmixr2lib:::.additiveTerms(quote(-ka * depot + kin * (1 + e) - (k * (a - depot))))
+  expect_identical(terms, list(quote(-ka * depot), quote(kin * (1 + e)), quote(k * (a - depot))))
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(-ka * depot), "depot"))
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(vmax * depot / (km + depot)), "depot"))
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(depot), "depot"))
+  # The state inside a difference is not a factor: other - depot can be
+  # non-zero when depot is 0.
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(k * (other - depot)), "depot"))
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(km / depot), "depot"))
+  expect_false(nlmixr2lib:::.isInputTerm(quote(-ka * depot), "depot"))
+  expect_false(nlmixr2lib:::.isInputTerm(0, "depot"))
+  expect_true(nlmixr2lib:::.isInputTerm(quote(ka * other), "depot"))
+})
+
+test_that("an undeclared second depot of a split dose is a dead state", {
+  hit <- .dsCategory(.dsSplitDoseModel)
+  expect_identical(hit$name, "depot2")
+  expect_identical(hit$severity, "warning")
+  expect_identical(
+    hit$message,
+    paste0(
+      "State 'depot2' can never leave 0: every term of its d/dt() vanishes ",
+      "when it is 0, it has no initial condition, and it is not a dosing compartment."
+    )
+  )
+  expect_identical(nrow(.dsCategory(.dsSplitDoseDeclaredModel)), 0L)
+})
+
+test_that("an initial condition, an inflow or a production term keeps a state alive", {
+  expect_identical(nrow(.dsCategory(.dsAliveModel)), 0L)
+})
+
+test_that("an operator-led continuation line counts, as rxode2 compiles it", {
+  # R parses `+ q / vc * central` as its own statement; rxode2 joins it to
+  # d/dt(peripheral1), which is then fed.
+  expect_identical(nrow(.dsCategory(.dsContinuationModel)), 0L)
+})
+
+test_that("a constant state that is never dosed is dead", {
+  hit <- .dsCategory(.dsConstantZeroModel)
+  expect_identical(hit$name, "c2")
+})
+
+test_that("a model that cannot be read is reported by the dead-state check", {
+  hit <- nlmixr2lib:::.checkDeadStates(new.env(), NULL)
+  expect_identical(nrow(hit), 1L)
+  expect_identical(hit$category, "dead_state")
+  expect_identical(hit$severity, "error")
+  expect_true(startsWith(hit$message, "The model could not be read to check for dead states: "))
+})
