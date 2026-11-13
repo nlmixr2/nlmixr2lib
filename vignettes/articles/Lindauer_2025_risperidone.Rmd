@@ -396,6 +396,30 @@ oral_sim <- rxode2::rxSolve(
   ui_oral, oral_ev,
   returnType = "data.frame", keep = "treatment"
 )
+
+# rxode2 draws the occasion effects per subject and occasion only when some
+# subject has two or more `OCC` levels, as here (levels 1 to 7 for every
+# subject). When every subject has exactly one, it treats `OCC` as a level above
+# the subject and all subjects on an occasion share one draw. Counting the
+# distinct draws per occasion makes the render fail instead of sharing silently.
+iov_per_occasion <- oral_sim |>
+  group_by(OCC) |>
+  summarise(
+    n_subjects = n_distinct(id),
+    across(
+      c(etaiov_fdepot, etaiov_d1, etaiov_ka),
+      \(x) n_distinct(round(x, 8)),
+      .names = "n_distinct_{.col}"
+    ),
+    .groups = "drop"
+  )
+stopifnot(
+  nrow(iov_per_occasion) == 7L,
+  iov_per_occasion$n_subjects == 2L * n_oral,
+  iov_per_occasion$n_distinct_etaiov_fdepot == iov_per_occasion$n_subjects,
+  iov_per_occasion$n_distinct_etaiov_d1 == iov_per_occasion$n_subjects,
+  iov_per_occasion$n_distinct_etaiov_ka == iov_per_occasion$n_subjects
+)
 ```
 
 ```{r figS5, fig.cap = "Median and 5th-95th percentiles of the active-moiety concentration (orange) and D2RO (blue) over the first week of oral risperidone. The dashed line marks 65% D2RO. Compare with Figure S5 of Lindauer 2025."}
