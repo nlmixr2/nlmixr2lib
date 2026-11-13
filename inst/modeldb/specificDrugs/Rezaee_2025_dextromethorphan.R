@@ -24,6 +24,7 @@ Rezaee_2025_dextromethorphan <- function() {
   )
   vignette <- "Rezaee_2025_dextromethorphan"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central", "depot_dxor")
 
   covariateData <- list(
     TRT_DEXTROMETHORPHAN = list(

@@ -41,6 +41,7 @@ Royer_2011_cisplatin <- function() {
   paper_specific_compartments <- c("peritoneum", "bound")
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("central", "peritoneum")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

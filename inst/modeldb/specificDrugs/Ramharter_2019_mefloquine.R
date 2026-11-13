@@ -32,6 +32,7 @@ Ramharter_2019_mefloquine <- function() {
   )
   vignette <- "Ramharter_2019_mefloquine"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+  dosing <- c("depot_r", "depot_s")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

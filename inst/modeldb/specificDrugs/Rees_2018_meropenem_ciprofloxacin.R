@@ -3,6 +3,7 @@ Rees_2018_meropenem_ciprofloxacin <- function() {
   reference <- "Rees VE, Yadav R, Rogers KE, Bulitta JB, Wirth V, Oliver A, Boyce JD, Peleg AY, Nation RL, Landersdorfer CB. Meropenem combined with ciprofloxacin combats hypermutable Pseudomonas aeruginosa from respiratory infections of cystic fibrosis patients. Antimicrob Agents Chemother. 2018 Oct 24;62(11):e01150-18. doi:10.1128/AAC.01150-18. Model differential equations (Eqs 1-4) and static-time-kill parameters (Table S1) are in the supplemental material."
   vignette <- "Rees_2018_meropenem_ciprofloxacin"
   units <- list(time = "h", dosing = "mg/L", concentration = "mg/L")
+  dosing <- c("cmem", "ccip")
 
   # No patient covariates: this is an in vitro mechanism-based model. The drug
   # exposures (meropenem and ciprofloxacin concentrations) are state variables
