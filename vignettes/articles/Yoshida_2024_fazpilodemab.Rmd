@@ -76,6 +76,7 @@ unit-invariant).
 | `b_dc_g2`                | -1.33                       | B_discon_G2 = -1.33 (= -4.31 + 2.98)                       |
 | `etalcl`                 | 0.0174 (var)                | E_CL = 0.0174                                              |
 | `etalfdepot`             | 0.0952 (var)                | E_F1 = 0.0952                                              |
+| `etaiov_fdepot_1` (`_2` ... `_7` fixed) | 0.0341 (var)   | `[OMEGA] @name IOV` IOV1 = 0.0341; one occasion per dose    |
 | `etalvc`                 | 0.286 (var)                 | E_V2 = 0.286                                               |
 | `etalka2`                | 0.297 (var)                 | E_KA2 = 0.297                                              |
 | `etalcl_ada`             | 5.21 (var)                  | E_CLADAMAX = 5.21                                          |
@@ -107,9 +108,11 @@ sim_duration_days <- 84L   # 12 weeks (paper's exposure window for AUCss / Cmax,
 n_doses <- ceiling(sim_duration_days / 14) + 1L
 
 make_cohort <- function(n, amt_mg, id_offset, ada_frac = 0.0) {
-  doses <- rxode2::et(amt = amt_mg, cmt = "depot", ii = 14, addl = n_doses - 1L)
+  doses <- rxode2::et(amt = amt_mg, time = seq(0, by = 14, length.out = n_doses), cmt = "depot")
   ev <- rxode2::et(doses, seq(0, sim_duration_days, by = 2), cmt = "central")
   ev <- as.data.frame(ev)
+  # The occasion of a record is its dose number: each dose draws its own F1.
+  ev$OCC <- pmin(as.integer(floor(ev$time / 14)) + 1L, n_doses)
   ev_list <- lapply(seq_len(n), function(i) {
     out <- ev
     out$id <- id_offset + i
@@ -189,6 +192,7 @@ mod_typ <- mod |> rxode2::zeroRe()
 
 ev_ada <- rxode2::et(amt = 100, cmt = "depot", ii = 14, addl = 11) |>
   rxode2::et(seq(0, 180, by = 2), cmt = "central")
+ev_ada$OCC <- 1L
 ev_ada_pos <- ev_ada
 ev_ada_pos$ADA_POS <- 1
 ev_ada_pos$PREV_AE_SCORE <- 0
@@ -236,6 +240,7 @@ grade.
 ev_dtmm <- rxode2::et(amt = 100, cmt = "depot") |>
   rxode2::et(seq(0, 28, by = 1), cmt = "central")
 ev_dtmm$ADA_POS <- 0
+ev_dtmm$OCC <- 1L
 
 dtmm_long <- bind_rows(lapply(0:2, function(prev) {
   evx <- ev_dtmm
@@ -303,6 +308,52 @@ data.frame(
       "S2.3.1 mrgsolve [PARAM] block."
     )
   )
+```
+
+## Inter-occasion variability on F1 (Supplement S2.3.1)
+
+Supplement S2.3.1 gives an IOV variance of 0.0341 on F1, redrawn at every dosing.
+The chunk below gives 200 virtual patients the seven q2w doses of the 84-day
+window, with `OCC` the dose number, and checks that each dose carries its own draw
+per patient and that the SD of the draws on each dose matches `sqrt(0.0341)`.
+
+```{r bov-check}
+set.seed(20240102)
+rxode2::rxSetSeed(20240102)
+
+n_bov <- 200L
+bov_ev <- bind_rows(lapply(seq_len(n_bov), function(i) {
+  doses <- rxode2::et(amt = 100, time = seq(0, by = 14, length.out = n_doses), cmt = "depot")
+  ev <- as.data.frame(rxode2::et(doses, seq(1, sim_duration_days + 1, by = 14), cmt = "central"))
+  ev$id <- i
+  ev$ADA_POS <- 0L
+  ev$PREV_AE_SCORE <- 0L
+  ev$OCC <- pmin(as.integer(floor(ev$time / 14)) + 1L, n_doses)
+  ev
+}))
+
+bov_sim <- rxode2::rxSolve(mod, events = bov_ev, keep = "OCC") |>
+  as.data.frame() |>
+  filter(!is.na(Cc))
+
+# One eta per patient and dose: the number of distinct draws on an occasion equals
+# the number of patients.
+iov_per_occasion <- bov_sim |>
+  group_by(OCC) |>
+  summarise(n_distinct_iov = n_distinct(round(iov_fdepot, 8)), .groups = "drop")
+
+# The SD of the 200 draws on an occasion has a relative standard error of
+# 1 / sqrt(2 * 199) = 5.0%, so 20% is four standard errors.
+bov_omega <- sqrt(0.0341)
+iov_sd <- bov_sim |>
+  group_by(OCC) |>
+  summarise(sd_iov = sd(iov_fdepot), .groups = "drop")
+print(round(setNames(iov_sd$sd_iov / bov_omega, paste("dose", iov_sd$OCC)), 3))
+stopifnot(
+  nrow(iov_per_occasion) == n_doses,
+  iov_per_occasion$n_distinct_iov == n_bov,
+  abs(iov_sd$sd_iov / bov_omega - 1) < 0.20
+)
 ```
 
 # PKNCA validation
@@ -386,13 +437,24 @@ nca_summary |>
   omitted and deferred to future work. The longitudinal DTMM AE model encoded
   here is a richer characterisation of the same dose-response and supersedes
   the static logistic for downstream simulation use.
-- **Between-occasion variability (IOV = 0.0341 on F1) is NOT implemented in
-  this model file.** nlmixr2's native IOV support requires an OCC column in
-  the dataset; users who want to mirror the source paper's IOV can add an
-  `etaiov_fdepot` occasion-level random effect with variance 0.0341 to the
-  model's `ini()` and include `OCC` (integer dosing-cycle index) in their
-  event table. Standing 2008 (`Standing_2008_diclofenac.R`) is the
-  in-library precedent for documenting IOV as a deferred user customisation.
+- **Inter-occasion variability on F1 uses the occasion-indicator expansion,
+  with one occasion per dose.** Supplement S2.3.1 gives `[OMEGA] @name IOV` =
+  0.0341, entering as `F1 = TVF1*exp(ETA_F1 + IOV)`, and its code comment says one
+  IOV is enough because the simulation is re-run at every dosing, so a dose is an
+  occasion. The main text only says the trial simulations consider BSV and
+  interoccasion variability in PKs, so the occasion definition rests on the
+  supplement. The term is seven etas on log-F1 selected by the `OCC` column,
+  which holds the dose number (`f(depot)` is evaluated on each dose record),
+  occasion 1 at 0.0341 and occasions 2-7 fixed to it. Seven covers the 84-day
+  q2w window above (doses on days 0 to 84); a longer simulation needs more
+  `etaiov_fdepot_<k>` slots and flags. rxode2's `| OCC` level shares one draw per
+  occasion when no subject has two or more occasions, which is the shape of the
+  virtual cohort above, so the expansion is used. Records with `OCC` beyond 7
+  carry no IOV, and `OCC` is required in every event table, also for the
+  zero-random-effects runs (set to 1 there). Because the occasion effect enters
+  as an indicator-weighted sum, rxode2 warns `some etas defaulted to non-mu
+  referenced`; that affects only the speed of a future estimation run, not
+  simulation.
 - **PREV_AE_SCORE is a time-varying covariate input.** The algebraic DTMM
   transition probabilities (`p_ae_g0`, `p_ae_g1`, `p_ae_g23`) and the
   discontinuation probability (`p_dc`) depend on the previous-day AE grade;
