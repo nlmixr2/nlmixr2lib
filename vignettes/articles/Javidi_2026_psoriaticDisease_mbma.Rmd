@@ -1,0 +1,654 @@
+---
+title: "Psoriasis and psoriatic arthritis bridging MBMA (Javidi 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Psoriasis and psoriatic arthritis bridging MBMA (Javidi 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Javidi 2026 is a model-based meta-analysis (MBMA) that uses published
+aggregate trial data to project efficacy into an indication a drug has not been
+studied in. Its worked example bridges plaque psoriasis (PsO) and psoriatic
+arthritis (PsA). It has two steps, and this package ships the three fitted
+models as three files:
+
+* `Javidi_2026_psoriaticDisease_bridging_mbma` -- **Model 1**, the
+  cross-indication bridge. One nonlinear mixed-effects longitudinal
+  dose-response model fitted jointly to PASI75 in PsO, PASI75 in PsA and ACR20
+  in PsA (66 trials, 190 arms, 30,450 participants). It exposes the three
+  outputs `prob_pasi75` (PsO), `prob_pasi75_psa` and `prob_acr20` (PsA).
+* `Javidi_2026_psa_acr50_acr70_wk16_mbma` and
+  `Javidi_2026_psa_acr50_acr70_wk24_mbma` -- **Model 2**, the cross-endpoint
+  bridge within PsA. The logit of an arm's ACR50 or ACR70 rate is a linear
+  function of the same arm's ACR20 rate, with a drug-class slope. The authors
+  fitted it separately to week-16 and week-24 data (27 trials, 78 arms,
+  11,326 participants), so each week is its own file.
+
+The paper chains the two: Model 1 projects ACR20 for a new indication, and
+Model 2 turns that ACR20 into ACR50 and ACR70.
+
+* Article: Javidi M, et al. CPT Pharmacometrics Syst Pharmacol.
+  2026;15(5):726-740. <https://doi.org/10.1002/psp4.70207> (PMC13142780).
+* Supporting Information (Data S1): the authors' complete R code (nlme `nlme()`
+  for Model 1, `gnls()` for Model 2), Equations S.2.1-S.6 and every parameter
+  estimate (Tables S1-S3). No estimate is in the main text.
+* No erratum was found (Europe PMC search, 2026-11-13).
+
+```{r models}
+mod1 <- rxode2::rxode2(readModelDb("Javidi_2026_psoriaticDisease_bridging_mbma"))
+mod2wk16 <- rxode2::rxode2(readModelDb("Javidi_2026_psa_acr50_acr70_wk16_mbma"))
+mod2wk24 <- rxode2::rxode2(readModelDb("Javidi_2026_psa_acr50_acr70_wk24_mbma"))
+typ1 <- rxode2::zeroRe(mod1)
+typ2wk16 <- rxode2::zeroRe(mod2wk16)
+typ2wk24 <- rxode2::zeroRe(mod2wk24)
+```
+
+# Population
+
+All three models work at the **study-arm** level: one observation is one
+trial arm's responder rate at one time, not one patient's outcome. Model 1's
+random effects are between-trial, and Model 2 has none.
+
+The data came from a vendor-curated database of randomised, parallel-group,
+placebo- or active-controlled PsO and PsA trials published 2000-2023, built
+following the Cochrane Handbook and PRISMA (Methods 'Data'). Sixty-seven phase
+2 / phase 3 trials of 11 drugs were selected (34 PsO, 33 PsA; Supporting
+Information Table S5): adalimumab, apremilast, bimekizumab, deucravacitinib,
+etanercept, guselkumab, ixekizumab, risankizumab, secukinumab, tofacitinib and
+ustekinumab, plus brepocitinib in Model 2. Model 1 kept only compounds studied
+in both indications. Longitudinal data run to 52 weeks; data after a
+re-randomisation, a regimen change or substantial drop-out were excluded. The
+deucravacitinib PsA phase 2 trial (IM011-084) was held out of both models for
+external validation. No arm-level demographics are reported.
+
+# Source trace
+
+Every equation and every `ini()` value, with where it came from. The in-file
+comments carry the same trace per line.
+
+```{r source-trace-equations}
+tibble::tribble(
+  ~Component, ~Source,
+  "Y = p + eps, Var(eps) = p (1 - p) / N", "Equations 1 and 1.1; Data S1 Model 1 code (varPower(0.5) on fitted*(1 - fitted)/n, sigma = 1)",
+  "p = inverse-logit(pbo + tr.eff)", "Equation 1.2",
+  "pbo = p.eff + plsp * (1 - exp(-k.pbo * t)) + eta", "Equation 2; k.pbo enters the code as exp(pk)",
+  "p.eff = indication / endpoint intercepts + p.eff.ph3 on phase 3 placebo arms", "Equation S.2.1",
+  "tr.eff = drg.eff * (1 - exp(-k.drg * t)), k.drg = k.drg.psa + k.drg.psa.acr20 + k.drug", "Equations 3 and S.3.1; code exp(k)",
+  "drg.eff = c.eff + EMAX * dose / (dose + ED50) + X + gamma", "Equation 3.2; code exp(ed50)",
+  "c.eff, EMAX, ED50, X shifts by indication / endpoint / phase", "Equations S.3.2.1-S.3.2.4",
+  "(eta, gamma) ~ N(0, omega), block-diagonal 6 x 6", "Equation 4; Table S2 (A.)",
+  "Model 2: logit(Y_s) = slp * ACR20 + intc_s", "Equation 5; Data S1 Model 2 code",
+  "slp = slp.ph3 + slp.acr + slp.drg.class + slp.prtnf * prTNF", "Equation S.6",
+  "Model 2 residual: Var(logit) = 1 / (p (1 - p) n), p = ACR20", "Data S1 Model 2 code (varFixed(~mdl.weights), sigma = 1)"
+) |>
+  knitr::kable(caption = "Structural, covariate and residual equations.")
+```
+
+```{r source-trace-params}
+tibble::tribble(
+  ~Block, ~Parameters, ~Source,
+  "Model 1 placebo", "p.eff.pso, p.eff.psa, p.eff.psa.acr20, p.eff.ph3, plsp, k.pbo", "Table S1",
+  "Model 1 treatment shifts", "drg.eff.psa, drg.eff.psa.acr20, drg.eff.ph3 (PsO, PsA)", "Table S1",
+  "Model 1 dose-independent drugs", "x.psa, x.psa.acr20, x.drg for 7 drugs", "Table S1",
+  "Model 1 dose-response drugs", "emax.psa.acr20, ed50.psa, ed50.psa.acr20, emax.drg / ed50.drg for 4 drugs", "Table S1",
+  "Model 1 onset", "k.drg.psa, k.drg.psa.acr20, k.drug for 10 drugs (tofacitinib = reference, 0)", "Table S1; Data S1 code formula",
+  "Model 1 random effects", "6 variances, 4 covariances", "Table S2 (A.)",
+  "Model 1 / 2 residual", "sigma = 1 (fixed)", "Data S1 nlmeControl / gnlsControl(sigma = 1)",
+  "Model 2 week 16", "8 class slopes, slp.acr, slp.ph3, slp.prtnf, 2 intercepts", "Table S3, 16wk rows",
+  "Model 2 week 24", "7 class slopes, slp.acr, slp.ph3, slp.prtnf, 2 intercepts", "Table S3, 24wk rows",
+  "Normalised-dose reference regimens", "guselkumab 100 mg q8w, tofacitinib 5 mg BID, secukinumab 300 mg, deucravacitinib 6 mg QD", "derived from Figure S6 and Table S4 (see below)",
+  "Prior-TNF normalisation", "(PRIOR_TNF_PCT - 57) / 19", "centre: Figures S15 / S20 captions; scale: derived from Figure S19"
+) |>
+  knitr::kable(caption = "Parameter provenance by block.")
+```
+
+# Study arms
+
+Model 1 takes treatment through one `TRT_<INN>` indicator per drug; the four
+drugs with a dose-response model also take a normalised dose
+`DOSE_<DRUG>_REL` (1 = the reference regimen). Phase enters through
+`STUDY_PHASE3`, and `N_ARM` is needed only by the residual.
+
+```{r arm-helper}
+trtCols <- c(
+  "TRT_ADALIMUMAB", "TRT_APREMILAST", "TRT_BIMEKIZUMAB", "TRT_DEUCRAVACITINIB",
+  "TRT_ETANERCEPT", "TRT_GUSELKUMAB", "TRT_IXEKIZUMAB", "TRT_RISANKIZUMAB",
+  "TRT_SECUKINUMAB", "TRT_TOFACITINIB", "TRT_USTEKINUMAB"
+)
+doseCols <- c(
+  "DOSE_GUSELKUMAB_REL", "DOSE_TOFACITINIB_REL", "DOSE_SECUKINUMAB_REL",
+  "DOSE_DEUCRAVACITINIB_REL"
+)
+
+#' One Model 1 arm: observations at `times` for `drug` (NA = placebo).
+model1Arm <- function(id, drug = NA, relDose = 0, phase3 = 0, times = c(16, 24),
+                      nArm = 100) {
+  d <- data.frame(id = id, time = times, STUDY_PHASE3 = phase3, N_ARM = nArm)
+  for (cc in c(trtCols, doseCols)) d[[cc]] <- 0
+  if (!is.na(drug)) {
+    d[[paste0("TRT_", drug)]] <- 1
+    doseCol <- paste0("DOSE_", drug, "_REL")
+    if (doseCol %in% doseCols) d[[doseCol]] <- relDose
+  }
+  d
+}
+
+classCols <- c(
+  "TRT_PDE4_INHIBITOR", "TRT_ANTITNF", "TRT_ANTIIL17", "TRT_ANTIIL17AF",
+  "TRT_ANTIIL23", "TRT_ANTIIL12_23", "TRT_TYK2_INHIBITOR"
+)
+
+#' One Model 2 arm at week `wk` for drug class `cls` (NA = placebo).
+model2Arm <- function(id, acr20Pct, cls = NA, phase3 = 0, priorTnfPct = 57,
+                      wk = 16, nArm = 100) {
+  d <- data.frame(
+    id = id, time = wk, RESP_ACR20_PCT = acr20Pct, STUDY_PHASE3 = phase3,
+    PRIOR_TNF_PCT = priorTnfPct, N_ARM = nArm
+  )
+  for (cc in classCols) d[[cc]] <- 0
+  if (!is.na(cls)) d[[cls]] <- 1
+  d
+}
+```
+
+# Model 1: cross-indication bridge
+
+## Reproducing Table 1 (Model 1 rows)
+
+Table 1 projects the three Model 1 endpoints at weeks 16 and 24 for placebo
+and the anti-TNF class in phase 2 and phase 3 trials. The paper defines the
+anti-TNF class as the average treatment effect of adalimumab and etanercept;
+both arms share the same placebo part, so the class logit is the mean of the
+two drugs' logits.
+
+```{r table1-model1}
+armsT1 <- bind_rows(
+  model1Arm(1, phase3 = 0), model1Arm(2, phase3 = 1),
+  model1Arm(3, "ADALIMUMAB", phase3 = 0), model1Arm(4, "ADALIMUMAB", phase3 = 1),
+  model1Arm(5, "ETANERCEPT", phase3 = 0), model1Arm(6, "ETANERCEPT", phase3 = 1)
+)
+armKey <- tibble(
+  id = 1:6, phase = rep(2:3, 3),
+  arm = rep(c("Placebo", "Adalimumab", "Etanercept"), each = 2)
+)
+sol1 <- rxode2::rxSolve(typ1, armsT1, returnType = "data.frame") |>
+  select(id, time, prob_pasi75, prob_pasi75_psa, prob_acr20) |>
+  left_join(armKey, by = "id") |>
+  pivot_longer(starts_with("prob_"), names_to = "output", values_to = "p") |>
+  mutate(
+    Treatment = ifelse(arm == "Placebo", "Placebo", "Anti-TNF class"),
+    logitP = qlogis(p)
+  ) |>
+  group_by(Treatment, phase, output, time) |>
+  summarise(sim = 100 * plogis(mean(logitP)), .groups = "drop")
+
+# Javidi 2026 Table 1, Model 1 rows: projected value [95% CI].
+pub1 <- tribble(
+  ~Treatment, ~phase, ~output, ~time, ~pub, ~lo, ~hi,
+  "Placebo", 2, "prob_pasi75", 16, 8.28, 6.95, 9.85,
+  "Placebo", 2, "prob_pasi75", 24, 9.02, 7.59, 10.71,
+  "Placebo", 2, "prob_pasi75_psa", 16, 11.07, 9.22, 13.23,
+  "Placebo", 2, "prob_pasi75_psa", 24, 11.29, 9.41, 13.49,
+  "Placebo", 2, "prob_acr20", 16, 22.47, 19.62, 25.58,
+  "Placebo", 2, "prob_acr20", 24, 22.87, 19.99, 26,
+  "Placebo", 3, "prob_pasi75", 16, 8.78, 7.66, 10.07,
+  "Placebo", 3, "prob_pasi75", 24, 9.57, 8.34, 10.97,
+  "Placebo", 3, "prob_pasi75_psa", 16, 11.72, 10.19, 13.44,
+  "Placebo", 3, "prob_pasi75_psa", 24, 11.95, 10.39, 13.72,
+  "Placebo", 3, "prob_acr20", 16, 23.62, 21.62, 25.73,
+  "Placebo", 3, "prob_acr20", 24, 24.03, 21.98, 26.2,
+  "Anti-TNF class", 2, "prob_pasi75", 16, 57.89, 51.77, 63.79,
+  "Anti-TNF class", 2, "prob_pasi75", 24, 60.76, 54.6, 66.59,
+  "Anti-TNF class", 2, "prob_pasi75_psa", 16, 43.97, 36.58, 51.44,
+  "Anti-TNF class", 2, "prob_pasi75_psa", 24, 52.14, 43.22, 60.55,
+  "Anti-TNF class", 2, "prob_acr20", 16, 47.55, 36.07, 59.13,
+  "Anti-TNF class", 2, "prob_acr20", 24, 48.2, 36.62, 59.85,
+  "Anti-TNF class", 3, "prob_pasi75", 16, 65.48, 61.8, 69.01,
+  "Anti-TNF class", 3, "prob_pasi75", 24, 68.24, 64.58, 71.7,
+  "Anti-TNF class", 3, "prob_pasi75_psa", 16, 39.17, 34.87, 43.76,
+  "Anti-TNF class", 3, "prob_pasi75_psa", 24, 46.36, 41.47, 51.39,
+  "Anti-TNF class", 3, "prob_acr20", 16, 39.8, 31.23, 48.93,
+  "Anti-TNF class", 3, "prob_acr20", 24, 40.4, 31.75, 49.6
+)
+cmp1 <- inner_join(pub1, sol1, by = c("Treatment", "phase", "output", "time")) |>
+  mutate(diff = sim - pub)
+stopifnot(nrow(cmp1) == nrow(pub1))
+
+cmp1 |>
+  transmute(
+    Treatment, Phase = phase, Output = output, Week = time,
+    `Published [95% CI]` = sprintf("%.2f [%.2f, %.2f]", pub, lo, hi),
+    `Simulated` = sprintf("%.2f", sim), `Difference` = sprintf("%+.2f", diff)
+  ) |>
+  knitr::kable(caption = "Model 1 typical values against Javidi 2026 Table 1 (percent responders).")
+
+# Deterministic typical values against the centre of the paper's 50,000-draw
+# parameter-uncertainty simulation. Rows driven by well-determined terms agree
+# to rounding; rows driven by the slow, uncertain PsA drug onset rate can sit a
+# fraction of a point off, because the centre of a nonlinear function of
+# uncertain parameters is not the function at their estimates.
+stopifnot(
+  median(abs(cmp1$diff)) < 0.1,
+  max(abs(cmp1$diff)) < 1,
+  all(cmp1$sim >= cmp1$lo & cmp1$sim <= cmp1$hi)
+)
+```
+
+The placebo rows and every PASI75-in-PsO and ACR20 row of Table 1 are
+reproduced to within about 0.1 percentage point (median absolute difference
+`r sprintf("%.2f", median(abs(cmp1$diff)))`). The anti-TNF PASI75-in-PsA rows
+are off by up to `r sprintf("%.2f", max(abs(cmp1$diff)))` points. Those are the
+rows governed by the slowest and least certain onset rate (PsA shift
+k.drg.psa = -1.72 on the log scale): Table 1 reports the centre of 50,000
+parameter-uncertainty draws, and for a strongly nonlinear term that centre
+need not equal the typical value. Every row lies inside its published interval.
+
+## External validation: deucravacitinib in PsA (Table S4)
+
+The paper's headline application: deucravacitinib was studied in psoriasis,
+and its PsA trial IM011-084 was withheld from fitting. Model 1 projects that
+phase 2 trial's ACR20 and PASI75 at week 16 for placebo, 6 mg QD and 12 mg QD.
+
+```{r tableS4-model1}
+armsS4 <- bind_rows(
+  model1Arm(1, times = 16),
+  model1Arm(2, "DEUCRAVACITINIB", relDose = 1, times = 16),
+  model1Arm(3, "DEUCRAVACITINIB", relDose = 2, times = 16)
+)
+solS4 <- rxode2::rxSolve(typ1, armsS4, returnType = "data.frame") |>
+  mutate(Arm = c("Placebo", "Deucravacitinib 6 mg QD", "Deucravacitinib 12 mg QD")[id])
+
+pubS4 <- tribble(
+  ~Arm, ~Endpoint, ~observed, ~pub, ~lo, ~hi,
+  "Placebo", "ACR20", 31.8, 22.7, 10.6, 36.4,
+  "Placebo", "PASI75", 20.4, 11.1, 3.7, 20.4,
+  "Deucravacitinib 6 mg QD", "ACR20", 52.9, 51.4, 14.3, 87.1,
+  "Deucravacitinib 6 mg QD", "PASI75", 42.4, 37.3, 20.3, 57.6,
+  "Deucravacitinib 12 mg QD", "ACR20", 62.7, 55.2, 14.9, 89.6,
+  "Deucravacitinib 12 mg QD", "PASI75", 59.6, 44.2, 25, 65.4
+)
+simS4 <- solS4 |>
+  transmute(Arm, ACR20 = 100 * prob_acr20, PASI75 = 100 * prob_pasi75_psa) |>
+  pivot_longer(c(ACR20, PASI75), names_to = "Endpoint", values_to = "sim")
+cmpS4 <- inner_join(pubS4, simS4, by = c("Arm", "Endpoint")) |>
+  mutate(diff = sim - pub)
+
+cmpS4 |>
+  transmute(
+    Arm, Endpoint, `Observed (IM011-084)` = observed,
+    `Published projection [95% PI]` = sprintf("%.1f [%.1f, %.1f]", pub, lo, hi),
+    Simulated = sprintf("%.1f", sim), Difference = sprintf("%+.1f", diff)
+  ) |>
+  knitr::kable(caption = "Model 1 week-16 projections for IM011-084 against Javidi 2026 Table S4 (percent responders).")
+
+stopifnot(max(abs(cmpS4$diff)) < 1.5)
+```
+
+The 6 mg QD = 1 and 12 mg QD = 2 normalised doses reproduce all four active
+projections to within about one percentage point, which is how the
+deucravacitinib reference regimen was confirmed.
+
+## Normalised dose of the other dose-response drugs (Figure S6)
+
+The paper normalises dose 'by the approved dose or the most frequent tested
+dose for each compound' without listing the reference regimens. Its
+Figure S6 draws the Model 1 ACR20 curve for every PsA regimen in a potential
+phase 3 trial, and the plateaus pin the reference: guselkumab 100 mg q8w = 1
+(q4w = 2), tofacitinib 5 mg BID = 1 (10 mg BID = 2), and secukinumab
+300 mg = 1 (150 mg = 0.5, 75 mg = 0.25). The figure below redraws those
+curves from the packaged model; compare it with Figure S6.
+
+```{r figS6, fig.cap = "Model 1 ACR20 in PsA, potential phase 3 trial, for the dose-response drugs at the recovered normalised doses. Replicates the guselkumab, secukinumab and tofacitinib panels of Javidi 2026 Supporting Information Figure S6 (plateaus about 0.64 / 0.66, 0.44 / 0.47 / 0.52 and 0.42 / 0.44)."}
+regimens <- tribble(
+  ~label, ~drug, ~rel,
+  "guselkumab 100 mg q8w", "GUSELKUMAB", 1,
+  "guselkumab 100 mg q4w", "GUSELKUMAB", 2,
+  "secukinumab 75 mg", "SECUKINUMAB", 0.25,
+  "secukinumab 150 mg", "SECUKINUMAB", 0.5,
+  "secukinumab 300 mg", "SECUKINUMAB", 1,
+  "tofacitinib 5 mg BID", "TOFACITINIB", 1,
+  "tofacitinib 10 mg BID", "TOFACITINIB", 2
+)
+armsS6 <- bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+  model1Arm(i, regimens$drug[i], regimens$rel[i], phase3 = 1, times = seq(0, 24, by = 0.5))
+}))
+solS6 <- rxode2::rxSolve(typ1, armsS6, returnType = "data.frame") |>
+  mutate(regimen = regimens$label[id], drug = tolower(regimens$drug[id]))
+
+ggplot(solS6, aes(time, prob_acr20, colour = regimen)) +
+  geom_line() +
+  facet_wrap(~drug) +
+  labs(x = "Time (weeks)", y = "ACR20 (proportion of patients)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+plateau <- solS6 |> filter(time == 24) |> select(regimen, prob_acr20)
+knitr::kable(plateau, digits = 3, caption = "Week-24 ACR20 at the recovered normalised doses.")
+```
+
+## Figure 5: endpoints across indications
+
+Figure 5 of the paper simulates the three Model 1 endpoints to week 24 for
+placebo and the anti-TNF class, by study phase.
+
+```{r fig5, fig.cap = "Typical PASI75 (PsO), PASI75 (PsA) and ACR20 (PsA) over 24 weeks for placebo and the anti-TNF class (mean logit of adalimumab and etanercept). Replicates the central lines of Javidi 2026 Figure 5; the paper's shaded 95% CIs come from parameter uncertainty, which is not part of the packaged model."}
+armsF5 <- bind_rows(
+  model1Arm(1, phase3 = 0, times = seq(0, 24, by = 0.5)),
+  model1Arm(2, phase3 = 1, times = seq(0, 24, by = 0.5)),
+  model1Arm(3, "ADALIMUMAB", phase3 = 0, times = seq(0, 24, by = 0.5)),
+  model1Arm(4, "ADALIMUMAB", phase3 = 1, times = seq(0, 24, by = 0.5)),
+  model1Arm(5, "ETANERCEPT", phase3 = 0, times = seq(0, 24, by = 0.5)),
+  model1Arm(6, "ETANERCEPT", phase3 = 1, times = seq(0, 24, by = 0.5))
+)
+solF5 <- rxode2::rxSolve(typ1, armsF5, returnType = "data.frame") |>
+  select(id, time, prob_pasi75, prob_pasi75_psa, prob_acr20) |>
+  left_join(armKey, by = "id") |>
+  pivot_longer(starts_with("prob_"), names_to = "output", values_to = "p") |>
+  mutate(Treatment = ifelse(arm == "Placebo", "Placebo", "Anti-TNF class")) |>
+  group_by(Treatment, phase, output, time) |>
+  summarise(p = plogis(mean(qlogis(p))), .groups = "drop") |>
+  mutate(
+    output = factor(output,
+      levels = c("prob_pasi75", "prob_pasi75_psa", "prob_acr20"),
+      labels = c("PASI75 in PsO", "PASI75 in PsA", "ACR20 in PsA")
+    ),
+    Phase = paste("Phase", phase)
+  )
+
+ggplot(solF5, aes(time, 100 * p, colour = Treatment, linetype = Phase)) +
+  geom_line() +
+  facet_wrap(~output) +
+  labs(x = "Time (weeks)", y = "Responders (%)") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+As the paper notes, PASI75 has a much wider dynamic range in PsO than in PsA,
+and the phase 3 anti-TNF effect is larger in PsO but smaller in PsA than in
+phase 2.
+
+## Between-trial variability
+
+Model 1's random effects describe how much trials differ. The 95% prediction
+interval Table S4 reports for the IM011-084 deucravacitinib 6 mg ACR20
+projection, 14.3% to 87.1%, is dominated by the large between-trial variance
+of the ACR20 treatment effect (0.628 on the logit scale). Simulating 200
+virtual trials with the residual removed shows the same spread.
+
+```{r btv, fig.cap = "Week-16 ACR20 for deucravacitinib 6 mg QD in a phase 2 PsA trial, 200 simulated trials (between-trial random effects only)."}
+rxode2::rxSetSeed(20260505)
+nTrials <- 200
+armsBtv <- bind_rows(lapply(seq_len(nTrials), function(i) {
+  model1Arm(i, "DEUCRAVACITINIB", relDose = 1, times = 16)
+}))
+solBtv <- rxode2::rxSolve(rxode2::zeroRe(mod1, "sigma"), armsBtv, returnType = "data.frame")
+btvQ <- 100 * stats::quantile(solBtv$prob_acr20, c(0.025, 0.5, 0.975))
+knitr::kable(
+  tibble(
+    Quantity = c("2.5th percentile", "Median", "97.5th percentile"),
+    `Simulated (% ACR20)` = round(unname(btvQ), 1),
+    `Table S4 projection` = c(14.3, 51.4, 87.1)
+  ),
+  caption = "Between-trial spread of the deucravacitinib 6 mg QD week-16 ACR20 projection."
+)
+
+ggplot(solBtv, aes(100 * prob_acr20)) +
+  geom_histogram(bins = 25, fill = "grey70", colour = "grey30") +
+  geom_vline(xintercept = c(14.3, 51.4, 87.1), linetype = c(2, 1, 2), colour = "red") +
+  labs(x = "ACR20 at week 16 (%)", y = "Simulated trials") +
+  theme_bw()
+
+# Gate on the centre only: the simulated extremes depend on the RNG stream.
+stopifnot(abs(btvQ[[2]] - 51.4) < 6)
+```
+
+The paper's interval also carries parameter uncertainty, which the packaged
+model does not, so the simulated interval is expected to be similar or a little
+narrower.
+
+# Model 2: cross-endpoint bridge
+
+## Reproducing Table 1 (Model 2 rows)
+
+The paper feeds Model 1's ACR20 projections into Model 2 for a mixed
+population (50% prior-TNF-experienced). The chain below does the same with
+the Table 1 ACR20 values.
+
+```{r table1-model2}
+acr20In <- cmp1 |>
+  filter(output == "prob_acr20") |>
+  transmute(Treatment, phase, time, acr20 = sim)
+armsM2 <- acr20In |>
+  mutate(
+    id = row_number(),
+    cls = ifelse(Treatment == "Placebo", NA_character_, "TRT_ANTITNF")
+  )
+runM2 <- function(arms, wk, ui) {
+  sub <- filter(arms, time == wk)
+  dat <- bind_rows(lapply(seq_len(nrow(sub)), function(i) {
+    model2Arm(sub$id[i], sub$acr20[i], sub$cls[i],
+      phase3 = as.integer(sub$phase[i] == 3), priorTnfPct = 50, wk = wk
+    )
+  }))
+  rxode2::rxSolve(ui, dat, returnType = "data.frame") |>
+    select(id, prob_acr50, prob_acr70) |>
+    left_join(sub, by = "id")
+}
+solM2 <- bind_rows(runM2(armsM2, 16, typ2wk16), runM2(armsM2, 24, typ2wk24)) |>
+  pivot_longer(c(prob_acr50, prob_acr70), names_to = "output", values_to = "p") |>
+  mutate(sim = 100 * p)
+
+pubM2 <- tribble(
+  ~Treatment, ~phase, ~output, ~time, ~pub, ~lo, ~hi,
+  "Placebo", 2, "prob_acr50", 16, 8.21, 6.2, 10.81,
+  "Placebo", 2, "prob_acr50", 24, 10.05, 7.5, 13.3,
+  "Placebo", 2, "prob_acr70", 16, 2.57, 1.91, 3.45,
+  "Placebo", 2, "prob_acr70", 24, 3.86, 2.83, 5.23,
+  "Placebo", 3, "prob_acr50", 16, 7.82, 5.82, 10.46,
+  "Placebo", 3, "prob_acr50", 24, 9.77, 7.17, 13.12,
+  "Placebo", 3, "prob_acr70", 16, 2.47, 1.81, 3.37,
+  "Placebo", 3, "prob_acr70", 24, 3.77, 2.72, 5.18,
+  "Anti-TNF class", 2, "prob_acr50", 16, 25.98, 18.67, 34.99,
+  "Anti-TNF class", 2, "prob_acr50", 24, 32.83, 23.8, 43.14,
+  "Anti-TNF class", 2, "prob_acr70", 16, 11.94, 8.13, 17.27,
+  "Anti-TNF class", 2, "prob_acr70", 24, 16.77, 11.41, 23.82,
+  "Anti-TNF class", 3, "prob_acr50", 16, 18.67, 13.86, 24.72,
+  "Anti-TNF class", 3, "prob_acr50", 24, 23.59, 17.5, 30.85,
+  "Anti-TNF class", 3, "prob_acr70", 16, 7.54, 5.4, 10.48,
+  "Anti-TNF class", 3, "prob_acr70", 24, 10.87, 7.74, 14.99
+)
+cmpM2 <- inner_join(pubM2, solM2, by = c("Treatment", "phase", "output", "time")) |>
+  mutate(diff = sim - pub)
+stopifnot(nrow(cmpM2) == nrow(pubM2))
+
+cmpM2 |>
+  transmute(
+    Treatment, Phase = phase, Output = output, Week = time,
+    `ACR20 input (%)` = sprintf("%.2f", acr20),
+    `Published [95% CI]` = sprintf("%.2f [%.2f, %.2f]", pub, lo, hi),
+    Simulated = sprintf("%.2f", sim), Difference = sprintf("%+.2f", diff)
+  ) |>
+  knitr::kable(caption = "Model 1 -> Model 2 chain against Javidi 2026 Table 1 (percent responders).")
+
+stopifnot(
+  # Every chained value lies inside the paper's own 95% interval.
+  all(cmpM2$sim >= cmpM2$lo & cmpM2$sim <= cmpM2$hi),
+  max(abs(cmpM2$diff)) < 3
+)
+```
+
+The chained values sit inside every published interval but are up to
+`r sprintf("%.1f", max(abs(cmpM2$diff)))` percentage points from the published
+centre, where the Model 1 rows agree to within a few hundredths. The Model 2
+rows of Table 1 are summaries of 50,000 joint draws of both models'
+parameters, and Model 2 is nonlinear in two uncertain inputs (the ACR20 draw
+and the slope), so the summary need not equal the typical-value chain; a
+transcription error would instead move a row by a whole slope or intercept
+step, far outside its interval.
+
+## External validation: ACR50 and ACR70 in IM011-084 (Table S4)
+
+```{r tableS4-model2}
+s4in <- solS4 |> transmute(id, Arm, acr20 = 100 * prob_acr20)
+datS4m2 <- bind_rows(
+  model2Arm(1, s4in$acr20[1]),
+  model2Arm(2, s4in$acr20[2], "TRT_TYK2_INHIBITOR"),
+  model2Arm(3, s4in$acr20[3], "TRT_TYK2_INHIBITOR")
+)
+solS4m2 <- rxode2::rxSolve(typ2wk16, datS4m2, returnType = "data.frame") |>
+  left_join(s4in, by = "id") |>
+  transmute(Arm, ACR50 = 100 * prob_acr50, ACR70 = 100 * prob_acr70) |>
+  pivot_longer(c(ACR50, ACR70), names_to = "Endpoint", values_to = "sim")
+pubS4m2 <- tribble(
+  ~Arm, ~Endpoint, ~observed, ~pub, ~lo, ~hi,
+  "Placebo", "ACR50", 10.6, 8.1, 6.2, 10.7,
+  "Placebo", "ACR70", 1.5, 2.6, 1.9, 3.4,
+  "Deucravacitinib 6 mg QD", "ACR50", 24.3, 24.7, 18.2, 32.5,
+  "Deucravacitinib 6 mg QD", "ACR70", 14.3, 11.6, 8.2, 16.2,
+  "Deucravacitinib 12 mg QD", "ACR50", 32.8, 27.1, 19.7, 36.1,
+  "Deucravacitinib 12 mg QD", "ACR70", 19.4, 13.5, 9.3, 19.1
+)
+cmpS4m2 <- inner_join(pubS4m2, solS4m2, by = c("Arm", "Endpoint")) |>
+  mutate(diff = sim - pub)
+cmpS4m2 |>
+  transmute(
+    Arm, Endpoint, `Observed (IM011-084)` = observed,
+    `Published projection [95% PI]` = sprintf("%.1f [%.1f, %.1f]", pub, lo, hi),
+    Simulated = sprintf("%.1f", sim), Difference = sprintf("%+.1f", diff)
+  ) |>
+  knitr::kable(caption = "Model 1 -> Model 2 week-16 projections for IM011-084 against Javidi 2026 Table S4 (percent responders; prior-TNF percentage set to the 57% reference, as the trial's is not reported).")
+
+stopifnot(all(cmpS4m2$sim >= cmpS4m2$lo & cmpS4m2$sim <= cmpS4m2$hi))
+```
+
+Placebo is reproduced exactly; the deucravacitinib ACR50 / ACR70 chain runs
+`r sprintf("%.1f", min(cmpS4m2$diff[cmpS4m2$Arm != "Placebo"]))` to
+`r sprintf("%.1f", max(cmpS4m2$diff[cmpS4m2$Arm != "Placebo"]))` points above
+the published centre, inside every interval. As for Table 1, the published
+values summarise joint parameter draws of both models; the trial's
+prior-TNF-experienced percentage is also not reported, and the 57% reference
+used here is an assumption.
+
+## Figure 4: ACR50 and ACR70 against ACR20
+
+```{r fig4, fig.cap = "Model 2 typical ACR50 and ACR70 against ACR20 by drug class (phase 3, 57% prior-TNF-experienced) at weeks 16 and 24. Compare with the predicted points of Javidi 2026 Figure 4."}
+grid <- expand.grid(
+  acr20 = seq(10, 80, by = 2), cls = c(NA, classCols), wk = c(16, 24),
+  stringsAsFactors = FALSE
+) |>
+  filter(!(wk == 24 & cls %in% "TRT_TYK2_INHIBITOR"))
+solF4 <- bind_rows(lapply(c(16, 24), function(w) {
+  g <- filter(grid, wk == w)
+  dat <- bind_rows(lapply(seq_len(nrow(g)), function(i) {
+    model2Arm(i, g$acr20[i], g$cls[i], phase3 = 1, wk = w)
+  }))
+  ui <- if (w == 16) typ2wk16 else typ2wk24
+  rxode2::rxSolve(ui, dat, returnType = "data.frame") |>
+    select(id, prob_acr50, prob_acr70) |>
+    bind_cols(select(g, -wk)) |>
+    mutate(wk = w)
+})) |>
+  mutate(Class = ifelse(is.na(cls), "placebo", tolower(sub("TRT_", "", cls)))) |>
+  pivot_longer(c(prob_acr50, prob_acr70), names_to = "output", values_to = "p")
+
+ggplot(solF4, aes(acr20 / 100, p, colour = Class)) +
+  geom_line() +
+  facet_grid(output ~ paste("Week", wk)) +
+  labs(x = "ACR20 (proportion)", y = "ACR50 or ACR70 (proportion)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# Assumptions and deviations
+
+## Three files for two models
+
+Model 2 is one model structure fitted twice, once to week-16 and once to
+week-24 data, with different estimates (Table S3). Each fit is its own file;
+neither is valid at other times.
+
+## Model 1 outputs per indication
+
+The source codes indication and endpoint as indicator columns of a single
+response. The packaged model instead computes all three endpoint-indication
+responses on every record (`prob_pasi75` for PsO, `prob_pasi75_psa` and
+`prob_acr20` for PsA) with the same parameters and random effects, so one
+solve gives a drug's PsO and PsA projections side by side. A user reads the
+output that matches the trial; nothing in the fitted model changes.
+
+## Unprinted dose normalisation
+
+The paper normalises dose to 'the approved dose or the most frequent tested
+dose for each compound' but does not list the regimens. The maintainers
+recovered them from the paper's own typical-value curves and projections:
+deucravacitinib 6 mg QD (Table S4, both doses reproduced within one
+percentage point), and guselkumab 100 mg q8w, tofacitinib 5 mg BID and
+secukinumab 300 mg (Figure S6 plateaus). Loading doses are ignored, as in
+Figure S6, where the 10 mg/kg intravenous secukinumab loading arms follow the
+150 mg curve.
+
+## Unprinted prior-TNF normalisation
+
+Model 2's prior-TNF covariate is 'the normalized observed values of %
+population with prior-TNF experienced'; the normalisation is not given. The
+packaged model uses `(PRIOR_TNF_PCT - 57) / 19`. The centre is the 'average of
+% prior TNF-experienced = 57%' that the Figure S15 and S20 captions give as the
+reference value. The scale was recovered by the maintainers from Figure S19,
+whose prediction lines change by a known logit amount between 0% and 100%
+prior-TNF: a joint fit of the 43 panels gives 18.5-19.7 percentage points per
+normalised unit whatever the centre, while the centre itself is not
+identifiable from that figure. The coefficient is 0.04-0.05 (SE 0.04), so
+across 0-100% the covariate moves ACR50 or ACR70 by less than one percentage
+point.
+
+## Study-phase binning
+
+The database holds phase 2a / 2b, 3b and 4 trials (Table S5), but both models
+use a two-level phase 3 indicator. How the intermediate phases were binned is
+not stated; `STUDY_PHASE3` should be 1 for phase 3 (and presumably 3b / 4) and
+0 for phase 2 trials.
+
+## Tofacitinib onset rate
+
+The Model 1 onset-rate formula has no intercept and no tofacitinib term
+(Data S1 code; Table S1 lists ten `k.drug` rows for eleven drugs), so
+tofacitinib's log onset rate is 0 in PsO (rate 1 per week), shifted by the PsA
+and ACR20 terms in PsA.
+
+## Residual error
+
+* Both models fix sigma to 1 and weight each record by the binomial variance
+  of its arm proportion, which needs the arm size `N_ARM`. Each output's
+  residual carries a `fixed(1)` multiplier and the weight is applied in
+  `model()`. Typical-value simulations (`zeroRe()`) do not depend on it.
+* Model 1 also has a continuous first-order autoregressive (`corCAR1`)
+  correlation between the residuals of one arm over time. Its estimate is not
+  reported, and rxode2 residuals are independent, so the packaged model omits
+  it; it affects only the joint distribution of simulated observations, not
+  any typical value.
+* The Data S1 comment block labels `p.y` as 'logit transformation of observed
+  ACR20 values' and `p.x` as 'observed values of ACR50 or ACR70', the reverse
+  of Equation 5 and of the model formula `p.y ~ A*p.x + intc`. The packaged
+  model follows Equation 5 (logit of ACR50 / ACR70 on the ACR20 proportion),
+  which is the only reading that reproduces Table 1. The Model 2 residual
+  weight `mdl.weights = 1/(p(1 - p)n)` is defined with p = observed ACR20 and
+  is implemented that way.
+
+## Scope
+
+All three models simulate study-arm responder rates, not individual
+patients. Model 1 random effects are between-trial; the paper's confidence
+intervals additionally include parameter uncertainty, which is not part of the
+packaged models.

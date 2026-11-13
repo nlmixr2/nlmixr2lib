@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Javidi 2026 psoriasis / psoriatic arthritis bridging MBMA (PASI75, ACR20, ACR50, ACR70; 11 drugs) ([doi:10.1002/psp4.70207](https://doi.org/10.1002/psp4.70207)) -- study arms of randomised trials in plaque psoriasis and psoriatic arthritis.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.
