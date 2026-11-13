@@ -63,6 +63,7 @@ Nishiyama_2019_metformin_pbpk <- function() {
   )
   vignette <- "Nishiyama_2019_metformin_cimetidine"
   units <- list(time = "h", dosing = "ug", concentration = "ug/L")
+  dosing <- "transit1"
 
   # No covariates: the model is a single typical-subject physiology.
   covariateData <- list()

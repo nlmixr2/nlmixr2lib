@@ -28,6 +28,7 @@ Oggianu_2023_trazodone_gabapentin_mouse <- function() {
     dosing = "mg/kg (drugs); unit stimulus (acetic acid)",
     concentration = "ng/mL"
   )
+  dosing <- c("central", "stimulus")
 
   # The acetic-acid stimulus site and the writhing count are specific to
   # the writhing-test model; transit1-transit9 follow the registered

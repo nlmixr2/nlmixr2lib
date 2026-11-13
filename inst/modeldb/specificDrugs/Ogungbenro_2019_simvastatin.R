@@ -10,6 +10,7 @@ Ogungbenro_2019_simvastatin <- function() {
   )
   vignette <- "Ogungbenro_2019_simvastatin"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+  dosing <- c("depot", "central", "depot2")
 
   # Log-scale residual-error parameters of the double-exponential error model
   # (Table 1 footnote c). They are thetas feeding a computed lnorm() SD, so the

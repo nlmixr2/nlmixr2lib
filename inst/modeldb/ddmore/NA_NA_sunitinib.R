@@ -27,6 +27,7 @@ NA_NA_sunitinib <- function() {
   paper_specific_residual_sds <- c("propSd_Cc_metab")
 
   units <- list(time = "day", dosing = "mg", concentration = "mg/mL")
+  dosing <- c("depot", "central", "depot_metab")
   ddmore_id <- "DDMODEL00000231"
   replicate_of <- NULL
 

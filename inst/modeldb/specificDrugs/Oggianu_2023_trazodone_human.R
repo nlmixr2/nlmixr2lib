@@ -26,6 +26,7 @@ Oggianu_2023_trazodone_human <- function() {
     dosing = "mg (trazodone); unit stimulus (acetic acid)",
     concentration = "ng/mL"
   )
+  dosing <- c("depot", "central", "stimulus")
 
   # The acetic-acid stimulus site and the writhing count are specific to
   # the writhing-test model; transit1-transit9 follow the registered
