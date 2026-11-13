@@ -399,10 +399,11 @@ for pediatric dose selection.
   with occasions 2-4 fixed to the occasion-1 variances; the BLOCK(3)
   off-diagonals are zero in the source, so the etas are uncorrelated. Records
   with `OCC` outside 1-4 receive no inter-occasion variability.
-* **Mu-referencing warning.** rxode2 has no occasion level for random effects,
-  so the per-occasion etas are combined through occasion indicators. rxode2
-  warns that these etas are not mu-referenced. The warning concerns estimation
-  speed only; simulation is unaffected.
+* **Mu-referencing warning.** rxode2's `| occ` level shares one draw per
+  occasion when no subject has two or more occasions, so the per-occasion etas
+  are combined through occasion indicators. rxode2 warns that these etas are
+  not mu-referenced. The warning concerns estimation speed only; simulation is
+  unaffected.
 * **Time-varying residual error.** The control stream switches on a `TAD`
   data column; the model uses rxode2's `tad()`, the time since the most recent
   dose, which is the same quantity for single doses separated by washouts.

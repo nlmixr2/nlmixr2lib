@@ -406,9 +406,10 @@ stopifnot(mean(g_var$auc_mtx) > mean(g_wt$auc_mtx))
 * **Inter-occasion variability.** The paper estimates one IOV variance per
   parameter across the four induction cycles. This is encoded as four
   per-occasion eta slots selected by the `OCC` column (occasions 2-4 share
-  occasion 1's variance via `fixed()`), because rxode2 cannot simulate the
-  native `eta ~ var | OCC` syntax from an rxUi. Records with `OCC` outside 1-4
-  receive no IOV.
+  occasion 1's variance via `fixed()`), so the draws are per subject and
+  occasion whatever the nesting shape of the data (the native
+  `eta ~ var | OCC` syntax shares one draw per occasion when no subject has
+  two or more occasions). Records with `OCC` outside 1-4 receive no IOV.
 * **Genotype effect sign.** The printed covariate equations write the genotype
   terms as `(theta)^SNP`, which with a negative `theta` would make a carrier's
   clearance negative. The Methods state that "categorical covariates were

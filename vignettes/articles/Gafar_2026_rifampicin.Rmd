@@ -723,14 +723,14 @@ the "14.7 CV%" of Table 2 is the coefficient of variation of the multiplier on
 $\log K_m$, not of $K_m$: a one-standard-deviation draw moves $K_m$ from 64.1
 mg/L to about 36 or 123 mg/L.
 
-**Between-occasion variability is expanded into per-occasion etas.** rxode2
-parses the `eta ~ var | occ` multi-level syntax but cannot simulate from it, so
-the `$OMEGA BLOCK(1) <value>` + `$OMEGA BLOCK(1) SAME` pairs are written out as
-`etaiov_*_1` (estimated) and `etaiov_*_2` (`fix()`ed to the same variance),
-multiplexed by the canonical `OCC` column. This is also the more faithful
-translation, since it is exactly what the `$PK` block's
-`IF (OCC.EQ.1) THEN ... ELSE ...` construct does. Pass `OCC = 1` for a
-single-occasion simulation. The model emits a
+**Between-occasion variability is expanded into per-occasion etas.** The
+`eta ~ var | occ` multi-level syntax shares one draw per occasion when no
+subject has two or more occasions, so the `$OMEGA BLOCK(1) <value>` +
+`$OMEGA BLOCK(1) SAME` pairs are written out as `etaiov_*_1` (estimated) and
+`etaiov_*_2` (`fix()`ed to the same variance), multiplexed by the canonical
+`OCC` column. This is also the more faithful translation, since it is exactly
+what the `$PK` block's `IF (OCC.EQ.1) THEN ... ELSE ...` construct does. Pass
+`OCC = 1` for a single-occasion simulation. The model emits a
 `some etas defaulted to non-mu referenced` warning from this idiom; it affects
 estimation only, not simulation, and is the accepted cost of the pattern
 (`Jonsson_2011_ethambutol.R` emits the same warning).

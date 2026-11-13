@@ -850,14 +850,15 @@ model, not a published result of Hand 2019.
   r(`t1/2,abs-1`, `t1/2,abs-2`) = -1 the two absorption etas are perfectly
   collinear, so r(`t1/2,abs-1`, `V`) = -r(`t1/2,abs-2`, `V`) = +0.746 is forced
   by arithmetic rather than assumed.
-* **Inter-occasion variability is drawn once per solve.** rxode2 parses but
-  cannot simulate the native `eta ~ var | occ` multi-level syntax, so the 30%
-  IOV on `t1/2,abs-2` is encoded as a single occasion-indexed eta
-  (`etaiov_lthalf_abs2_1`). The cohort simulation in this vignette is a single
-  injection cycle, so that draw is exact; a user who simulates many cycles will
-  reuse one draw across all of them and therefore under-represent within-subject
-  cycle-to-cycle variation. The paper's own reported IOV shrinkage is 46%, so
-  this term is weakly informed in any case.
+* **Inter-occasion variability is drawn once per solve.** The native
+  `eta ~ var | occ` multi-level syntax shares one draw per occasion when no
+  subject has two or more occasions, so the 30% IOV on `t1/2,abs-2` is encoded
+  as a single occasion-indexed eta (`etaiov_lthalf_abs2_1`). The cohort
+  simulation in this vignette is a single injection cycle, so that draw is
+  exact; a user who simulates many cycles will reuse one draw across all of them
+  and therefore under-represent within-subject cycle-to-cycle variation. The
+  paper's own reported IOV shrinkage is 46%, so this term is weakly informed in
+  any case.
 * **Table 2 is read as a single dosing cycle, not as a steady-state cycle.**
   The paper does not state which interval its per-participant Cmin, Cmax, Tmax
   and time-above-target values cover. The model discriminates the two readings

@@ -711,9 +711,10 @@ check above, where the Week 27 typical-value exposures of the 24/4, 72/4 and
 - **Inter-occasion variability on DRSP bioavailability.** Appendix 2 reports one
   shared IOV magnitude (19.5 CV%) without a per-occasion breakdown, so the two
   occasions carry the same variance with the second fixed, which is the NONMEM
-  `$OMEGA BLOCK(1) SAME` idiom. `rxode2` cannot simulate the `eta ~ var | OCC`
-  multi-level syntax, so the occasion-indicator expansion is used; it emits a
-  benign mu-referencing warning that affects estimation only, not simulation.
+  `$OMEGA BLOCK(1) SAME` idiom. The `eta ~ var | OCC` multi-level syntax shares
+  one draw per occasion when no subject has two or more occasions, so the
+  occasion-indicator expansion is used; it emits a benign mu-referencing warning
+  that affects estimation only, not simulation.
 - **No regimen covariate.** The paper tested 'treatment group' as a covariate
   and rejected it (drop in objective function of 3.032 for EE and 1.256 for
   DRSP), so the shipped models carry no regimen term. Regimen enters only

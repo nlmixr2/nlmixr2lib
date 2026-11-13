@@ -592,19 +592,20 @@ weight distribution.
   amount; giving only one record delivers only that pathway's share.
 
 * **Between-occasion variability is encoded with explicit per-occasion etas.**
-  rxode2 has no NONMEM-style `| occasion` random-effect level, so the BOV on
-  `F_TDF`, `Ka_TDF` and `Ka_TAF` is expanded into one eta per occasion,
-  selected by the `OCC` indicators. Kawuma 2023 defines exactly two occasions
-  (the unobserved dose the day before the visit, and the observed dose on the
-  day of the visit), so two are encoded, with the second variance fixed to the
-  first -- the equivalent of NONMEM's `$OMEGA BLOCK(1) SAME`. Because the
-  occasion effect enters as an indicator-weighted sum rather than as a bare
-  term, rxode2 emits `some etas defaulted to non-mu referenced` on every solve.
-  This is expected and affects only mu-referencing speed-ups in a future
-  *estimation* run; simulation, which is what this model is shipped for, is
-  unaffected. Passing `OCC = 0` (as every simulation here does) zeroes all
-  indicators and removes the between-occasion contribution, reproducing the
-  authors' own simulation setting.
+  rxode2's `| occasion` random-effect level shares one draw per occasion when
+  no subject has two or more occasions, so the BOV on `F_TDF`, `Ka_TDF` and
+  `Ka_TAF` is expanded into one eta per occasion, selected by the `OCC`
+  indicators. Kawuma 2023 defines exactly two occasions (the unobserved dose
+  the day before the visit, and the observed dose on the day of the visit), so
+  two are encoded, with the second variance fixed to the first -- the
+  equivalent of NONMEM's `$OMEGA BLOCK(1) SAME`. Because the occasion effect
+  enters as an indicator-weighted sum rather than as a bare term, rxode2 emits
+  `some etas defaulted to non-mu referenced` on every solve. This is expected
+  and affects only mu-referencing speed-ups in a future *estimation* run;
+  simulation, which is what this model is shipped for, is unaffected. Passing
+  `OCC = 0` (as every simulation here does) zeroes all indicators and removes
+  the between-occasion contribution, reproducing the authors' own simulation
+  setting.
 
 * **The variance scale is the SD convention.** Table 2 footnote b states
   `CV% = sqrt(omega^2) * 100`, so the `ini()` variances are `(CV/100)^2`. Using

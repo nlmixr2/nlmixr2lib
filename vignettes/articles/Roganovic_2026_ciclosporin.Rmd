@@ -603,11 +603,12 @@ adjusted to narrow it.
 
 - **Six occasions are encoded, not 33.** Roganovic 2026 defines an occasion as
   one TDM day and reports a maximum of 33 per patient, with a single shared IOV
-  variance (NONMEM `$OMEGA BLOCK(1) SAME`). rxode2 has no native occasion
-  level, so the variance is expanded into six indicator-multiplexed etas -- one
-  per TDM day over a one-week window, a superset of the two occasions the
-  paper's own simulation uses. The count is an extraction-side construct;
-  records with `OCC` outside 1 to 6 carry no IOV. Extending it is mechanical.
+  variance (NONMEM `$OMEGA BLOCK(1) SAME`). rxode2's `| occ` level shares one
+  draw per occasion when no subject has two or more occasions, so the variance
+  is expanded into six indicator-multiplexed etas -- one per TDM day over a
+  one-week window, a superset of the two occasions the paper's own simulation
+  uses. The count is an extraction-side construct; records with `OCC` outside 1
+  to 6 carry no IOV. Extending it is mechanical.
 
 - **Simulated dose read as 5 mg/kg every 12 hours.** Section 2.4 says only
   "using 5 mg/kg dose" and gives no interval, while the clinical protocol in

@@ -764,14 +764,15 @@ stopifnot(max(mass_balance$rel_diff) < 0.02)
   the alternative (`omega^2 = CV^2`) would raise the baseline-hazard variance
   from 0.395 to 0.484.
 
-* **Between-occasion variability.** rxode2 has no NONMEM-style `| occ`
-  variability level, so the single published BOV term of 66.9% on bioavailability
-  is expanded into 25 per-occasion etas selected by binary indicators on the
-  `OCC` column, all sharing one variance. Twenty-five covers the every-4-weeks
-  arm exactly. Indicator multiplexing makes rxode2 report "some etas defaulted
-  to non-mu referenced" on every solve; that warning concerns estimation-time
-  mu-referencing optimisations only and is inert for simulation. Simulating more
-  than 25 courses requires adding further `etaiov_fdepot_<n>` terms.
+* **Between-occasion variability.** rxode2's `| occ` level shares one draw per
+  occasion when no subject has two or more occasions, so the single published BOV
+  term of 66.9% on bioavailability is expanded into 25 per-occasion etas selected
+  by binary indicators on the `OCC` column, all sharing one variance. Twenty-five
+  covers the every-4-weeks arm exactly. Indicator multiplexing makes rxode2
+  report "some etas defaulted to non-mu referenced" on every solve; that warning
+  concerns estimation-time mu-referencing optimisations only and is inert for
+  simulation. Simulating more than 25 courses requires adding further
+  `etaiov_fdepot_<n>` terms.
 
 * **No residual error is published for two of the three models.** The
   repeated-time-to-event layer is fitted with an event-density likelihood and
