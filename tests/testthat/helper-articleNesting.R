@@ -205,11 +205,23 @@
     if (is.name(e) && !strings_only) {
       acc$tok <- c(acc$tok, as.character(e))
     } else if (is.character(e)) {
-      acc$tok <- c(acc$tok, e)
+      acc$tok <- c(acc$tok, e[!is.na(e)])
     }
     invisible(NULL)
   })
   unique(acc$tok)
+}
+
+# The tokens of every element of a list of language objects; empty arguments
+# are skipped.
+.nestTokensList <- function(lst, strings_only = FALSE) {
+  out <- character()
+  for (i in seq_along(lst)) {
+    if (!identical(lst[i], list(quote(expr = )))) {
+      out <- c(out, .nestTokens(lst[[i]], strings_only))
+    }
+  }
+  unique(out)
 }
 
 # Follow the symbols in `tokens` back through the assignments that define them,
@@ -230,27 +242,142 @@
   tokens
 }
 
-# Functions that build a string; a model name passed through one of them is
-# not a literal the gate can match.
-.nestStringBuilders <- c(
-  "paste",
-  "paste0",
-  "sprintf",
-  "glue",
-  "file.path",
-  "gsub",
-  "sub",
-  "toupper",
-  "tolower",
-  "substr",
-  "substring",
-  "strsplit",
-  "format",
-  "formatC",
-  "str_c",
-  "str_glue",
-  "str_replace",
-  "str_sub"
+# Functions that count distinct values.
+.nestCountWords <- c("n_distinct", "unique", "uniqueN", "duplicated", "anyDuplicated")
+
+# Calls whose first argument (the data, the columns, the vector iterated over)
+# or whose `.by` / `by` argument names what a count inside them is taken over,
+# and calls whose every argument does.
+.nestScopeFirstArg <- c(
+  "summarise",
+  "summarize",
+  "mutate",
+  "reframe",
+  "transmute",
+  "across",
+  "with",
+  "within",
+  "lapply",
+  "sapply",
+  "vapply",
+  "map",
+  "map_dbl",
+  "map_int",
+  "map_lgl",
+  "map_chr",
+  "map_df",
+  "%>%",
+  "%<>%",
+  "%T>%"
+)
+.nestScopeAllArgs <- c("tapply", "aggregate", "by", "ave", "mapply", "Map", "split", "outer")
+
+# One token vector per count call (n_distinct, unique, ...) in `expr`: the
+# tokens of the call's own arguments, plus those of the data and grouping
+# arguments of the calls around it. `anc` is the chain of enclosing calls.
+.nestScopeWalk <- function(expr, anc, acc) {
+  if (is.expression(expr)) {
+    for (i in seq_along(expr)) {
+      .nestScopeWalk(expr[[i]], anc, acc)
+    }
+    return(invisible(NULL))
+  }
+  if (!is.call(expr)) {
+    return(invisible(NULL))
+  }
+  nm <- .nestCallName(expr)
+  if (!is.na(nm) && nm %in% .nestCountWords) {
+    scope <- .nestTokensList(as.list(expr)[-1L])
+    for (a in anc) {
+      an <- .nestCallName(a)
+      if (is.na(an)) {
+        next
+      }
+      args <- as.list(a)[-1L]
+      if (an %in% .nestScopeFirstArg) {
+        by_args <- if (is.null(names(args))) list() else args[names(args) %in% c(".by", "by")]
+        scope <- c(scope, .nestTokensList(args[seq_len(min(1L, length(args)))]), .nestTokensList(by_args))
+      }
+      if (an %in% .nestScopeAllArgs) {
+        scope <- c(scope, .nestTokensList(args))
+      }
+    }
+    acc$scopes[[length(acc$scopes) + 1L]] <- unique(scope)
+  }
+  kids <- as.list(expr)
+  for (i in seq_along(kids)) {
+    if (!identical(kids[i], list(quote(expr = )))) {
+      .nestScopeWalk(kids[[i]], c(anc, list(expr)), acc)
+    }
+  }
+  invisible(NULL)
+}
+
+# The count-call scopes of a list of expressions.
+.nestCountScopes <- function(exprs) {
+  acc <- new.env(parent = emptyenv())
+  acc$scopes <- list()
+  for (x in exprs) {
+    .nestScopeWalk(x, list(), acc)
+  }
+  acc$scopes
+}
+
+# Functions that join pieces into a string; the literal pieces of a model name
+# built with one are fragments of the name.
+.nestConcatenators <- c("paste", "paste0", "sprintf", "glue", "file.path", "str_c", "str_glue")
+
+# Calls through which the value of a model name passes unchanged: the vector or
+# table is built from their arguments (all of them, or the first), and a
+# mutate()-like call adds columns to its first argument.
+.nestPassAll <- c("c", "list", "tibble", "data.frame", "data_frame", "tribble", "expand.grid", "bind_rows")
+.nestPassFirst <- c(
+  "setNames",
+  "unique",
+  "rev",
+  "sort",
+  "rep",
+  "unlist",
+  "as.character",
+  "as.vector",
+  "head",
+  "tail",
+  "filter",
+  "arrange",
+  "select",
+  "slice",
+  "distinct",
+  "rename",
+  "left_join",
+  "inner_join",
+  "pull",
+  "unname",
+  "return",
+  "(",
+  "["
+)
+.nestPassBranches <- c("ifelse", "if_else", "if", "switch")
+.nestPassMutate <- c("mutate", "transmute")
+
+# The loader functions that take a model name.
+.nestLoaders <- c("readModelDb", "modellib")
+
+# Calls that apply a function over a vector; the loader may be passed as the
+# function, and a function literal's parameters take the vector's values.
+.nestIterators <- c(
+  "lapply",
+  "sapply",
+  "vapply",
+  "map",
+  "map_dbl",
+  "map_int",
+  "map_lgl",
+  "map_chr",
+  "map_df",
+  "Map",
+  "mapply",
+  "walk",
+  "Filter"
 )
 
 # The model-name argument of a readModelDb() / modellib() call: the argument named
@@ -271,29 +398,354 @@
   if (length(unnamed) == 0L) NULL else args[[unnamed[[1L]]]]
 }
 
-# Whether a model name given to a loader is built at run time in a way that
-# could produce one of `models`: the argument, followed back through up to four
-# assignments, calls a string function, and either holds no literal of five or
-# more characters (the name comes from data) or holds one that is part of one of
-# the model names. `paste0("Smith_2020_", drug)` is not such a call when no model
-# of interest starts with `Smith_2020_`. Format placeholders (`%s`, `{x}`) split
-# a literal into fragments. `assign` and `assign_str` map a symbol to the
-# tokens, and to the string constants, of every right-hand side assigned to it.
-.nestDynamicName <- function(arg, assign, assign_str, models) {
-  tok <- .nestExpandTokens(.nestTokens(arg), assign)
-  if (!any(.nestStringBuilders %in% tok)) {
-    return(FALSE)
+# Record that `key` takes the value of `expr`: its tokens and the expression
+# itself.
+.nestBind <- function(acc, key, expr) {
+  acc$assign[[key]] <- c(acc$assign[[key]], .nestTokens(expr))
+  acc$assign_expr[[key]] <- c(acc$assign_expr[[key]], list(expr))
+  invisible(NULL)
+}
+
+# The symbol an assignment target writes to: `x`, `x$a`, `x[i]`, `x[[i]]`.
+.nestAssignTarget <- function(lhs) {
+  while (is.call(lhs) && length(lhs) >= 2L && .nestCallName(lhs) %in% c("$", "[", "[[", "@")) {
+    lhs <- lhs[[2L]]
   }
-  lits <- c(
-    .nestTokens(arg, strings_only = TRUE),
-    unlist(assign_str[intersect(tok, names(assign_str))], use.names = FALSE)
+  if (is.name(lhs)) as.character(lhs) else NA_character_
+}
+
+# Whether `x` is the loader itself passed as a function (`readModelDb`,
+# `nlmixr2lib::readModelDb`).
+.nestIsLoaderRef <- function(x) {
+  if (is.name(x)) {
+    return(as.character(x) %in% .nestLoaders)
+  }
+  is.call(x) && .nestCallName(x) %in% c("::", ":::") && as.character(x[[3L]]) %in% .nestLoaders
+}
+
+# Bind what a call node defines: an assignment (and the parameters of a function
+# it assigns), a loop variable, and the parameters of a user-defined function
+# called here.
+.nestCollectBindings <- function(e, nm, args, acc) {
+  if (nm %in% c("<-", "=") && length(e) == 3L) {
+    key <- .nestAssignTarget(e[[2L]])
+    if (!is.na(key)) {
+      .nestBind(acc, key, e[[3L]])
+      rhs <- e[[3L]]
+      if (is.call(rhs) && identical(.nestCallName(rhs), "function")) {
+        acc$formals[[key]] <- names(rhs[[2L]])
+      }
+    }
+  }
+  if (nm == "for" && length(e) >= 3L && is.name(e[[2L]])) {
+    .nestBind(acc, as.character(e[[2L]]), e[[3L]])
+  }
+  if (nm %in% names(acc$formals)) {
+    .nestBindCall(acc, acc$formals[[nm]], args)
+  }
+  invisible(NULL)
+}
+
+# An iterator call (lapply, map, ...): the parameters of a function literal, the
+# `.x` of a formula and the parameters of a user-defined function given to it
+# take the values of the vector iterated over, and a loader given to it is a
+# loader call on that vector.
+.nestCollectIterator <- function(args, acc) {
+  is_fn <- vapply(args, function(a) .nestIsLoaderRef(a) || identical(.nestCallName(a), "function"), logical(1L))
+  data_args <- args[!is_fn]
+  if (!is.null(names(data_args))) {
+    data_args <- data_args[
+      !(names(data_args) %in% c("FUN", "f", ".f", "FUN.VALUE", ".progress", "SIMPLIFY", "USE.NAMES"))
+    ]
+  }
+  for (a in args) {
+    if (identical(.nestCallName(a), "function")) {
+      for (p in names(a[[2L]])) {
+        for (d in data_args) {
+          .nestBind(acc, p, d)
+        }
+      }
+    }
+    if (identical(.nestCallName(a), "~")) {
+      for (d in data_args) {
+        for (p in c(".x", ".", "..1")) {
+          .nestBind(acc, p, d)
+        }
+      }
+    }
+    if (.nestIsLoaderRef(a) && length(data_args) > 0L) {
+      acc$loader_args[[length(acc$loader_args) + 1L]] <- data_args[[1L]]
+    }
+    if (is.name(a) && as.character(a) %in% names(acc$formals) && length(data_args) > 0L) {
+      .nestBindCall(acc, acc$formals[[as.character(a)]], data_args)
+    }
+  }
+  invisible(NULL)
+}
+
+# Collect from one call node: bindings, assertions, loader arguments and
+# simulation calls.
+.nestCollect <- function(e, acc) {
+  nm <- .nestCallName(e)
+  if (is.na(nm)) {
+    return(invisible(NULL))
+  }
+  args <- as.list(e)[-1L]
+  .nestCollectBindings(e, nm, args, acc)
+  if (nm %in% .nestIterators) {
+    .nestCollectIterator(args, acc)
+  }
+  if (nm %in% c("stopifnot", "assert_that")) {
+    acc$asserts <- c(acc$asserts, args)
+  } else if (grepl("^expect_", nm)) {
+    acc$asserts[[length(acc$asserts) + 1L]] <- e
+  }
+  if (nm %in% .nestLoaders) {
+    arg <- .nestLoaderArg(e)
+    if (!is.null(arg) && !is.character(arg)) {
+      acc$loader_args[[length(acc$loader_args) + 1L]] <- arg
+    }
+  }
+  if (nm %in% c("rxSolve", "simulate", "solve") && length(e) >= 2L) {
+    if (!identical(.nestCallName(e[[2L]]), "zeroRe")) {
+      acc$simulates <- TRUE
+    }
+  }
+  invisible(NULL)
+}
+
+# Bind the parameters of a user-defined function to the arguments of one call
+# to it, by name and then by position.
+.nestBindCall <- function(acc, formals, args) {
+  an <- names(args)
+  if (is.null(an)) {
+    an <- rep("", length(args))
+  }
+  free <- setdiff(formals, an)
+  for (i in seq_along(args)) {
+    if (identical(args[i], list(quote(expr = )))) {
+      next
+    }
+    target <- if (nzchar(an[[i]]) && an[[i]] %in% formals) {
+      an[[i]]
+    } else if (length(free) > 0L) {
+      free[[1L]]
+    } else {
+      NA_character_
+    }
+    if (!is.na(target)) {
+      free <- setdiff(free, target)
+      .nestBind(acc, target, args[[i]])
+    }
+  }
+  invisible(NULL)
+}
+
+# A regular expression for each literal in `x`.
+.nestEscape <- function(x) {
+  gsub("([^A-Za-z0-9_ ])", "\\\\\\1", x, perl = TRUE)
+}
+
+# The pattern a concatenator call can produce: its literal pieces, escaped, with
+# `.*` for every piece that is not a string constant.
+.nestConcatPattern <- function(x) {
+  nm <- .nestCallName(x)
+  args <- as.list(x)[-1L]
+  an <- names(args)
+  if (is.null(an)) {
+    an <- rep("", length(args))
+  }
+  if (nm %in% c("sprintf", "glue", "str_glue")) {
+    fmt <- if (length(args) > 0L) args[[1L]] else NULL
+    if (!is.character(fmt) || length(fmt) != 1L) {
+      return(".*")
+    }
+    marked <- gsub("%[-+ 0#]*[0-9*]*(?:[.][0-9*]+)?[a-zA-Z]|\\{[^}]*\\}", "\001", fmt, perl = TRUE)
+    pieces <- strsplit(marked, "\001", fixed = TRUE)[[1L]]
+    if (endsWith(marked, "\001")) {
+      pieces <- c(pieces, "")
+    }
+    return(paste(.nestEscape(pieces), collapse = ".*"))
+  }
+  sep <- if (nm %in% c("paste0", "str_c")) {
+    ""
+  } else if (nm == "file.path") {
+    "/"
+  } else {
+    " "
+  }
+  if ("sep" %in% an && is.character(args[[which(an == "sep")[[1L]]]])) {
+    sep <- args[[which(an == "sep")[[1L]]]]
+  }
+  keep <- !(an %in% c("sep", "collapse"))
+  pieces <- vapply(
+    args[keep],
+    function(a) if (is.character(a) && length(a) == 1L) .nestEscape(a) else ".*",
+    character(1L)
   )
-  frags <- unlist(strsplit(lits, "%[-+0-9.]*[a-zA-Z]|\\{[^}]*\\}"))
-  frags <- frags[nchar(frags) >= 5L]
-  if (length(frags) == 0L) {
-    return(TRUE)
+  paste(pieces, collapse = .nestEscape(sep))
+}
+
+.nestMergeNames <- function(parts) {
+  list(
+    pat = unique(unlist(lapply(parts, `[[`, "pat"), use.names = FALSE)),
+    unknown = any(vapply(parts, `[[`, logical(1L), "unknown")),
+    why = unique(unlist(lapply(parts, `[[`, "why"), use.names = FALSE))
+  )
+}
+
+.nestUnknownName <- function(why) {
+  list(pat = character(), unknown = TRUE, why = why)
+}
+
+# What a model-name expression can evaluate to, as list(pat, unknown): the
+# patterns its values match (a literal gives its own text, a built name a
+# pattern with `.*`) and whether any value comes from somewhere the gate cannot
+# see (a symbol with no value bound in the article, a package object, a string
+# transformer, a function it does not follow). Symbols are followed through the
+# values bound to them; `x$col` and `x[["col"]]` select the named argument of a
+# table built in the article.
+.nestNameValue <- function(x, acc, depth = 0L, seen = character(), col = NA_character_) {
+  if (depth > 10L) {
+    return(.nestUnknownName("too deep"))
   }
-  any(vapply(frags, function(f) any(grepl(f, models, fixed = TRUE)), logical(1L)))
+  if (is.character(x)) {
+    return(list(pat = .nestEscape(x[!is.na(x)]), unknown = FALSE, why = character()))
+  }
+  if (is.numeric(x) || is.logical(x) || is.null(x)) {
+    return(list(pat = character(), unknown = FALSE, why = character()))
+  }
+  if (is.name(x)) {
+    return(.nestNameValueSymbol(as.character(x), acc, depth, seen, col))
+  }
+  if (!is.call(x)) {
+    return(.nestUnknownName("not an expression"))
+  }
+  nm <- .nestCallName(x)
+  if (is.na(nm)) {
+    return(.nestUnknownName("computed function"))
+  }
+  .nestNameValueCall(x, nm, as.list(x)[-1L], acc, depth, seen, col)
+}
+
+# The values of each expression in `exprs`, merged.
+.nestNameValueAll <- function(exprs, acc, depth, seen, col) {
+  .nestMergeNames(lapply(exprs, .nestNameValue, acc = acc, depth = depth + 1L, seen = seen, col = col))
+}
+
+# The value of a symbol: the values bound to it. A symbol reused for unrelated
+# values is resolved by the values that resolve.
+.nestNameValueSymbol <- function(key, acc, depth, seen, col) {
+  if (key %in% seen) {
+    return(list(pat = character(), unknown = FALSE, why = character()))
+  }
+  rhs <- acc$assign_expr[[key]]
+  if (length(rhs) == 0L) {
+    return(.nestUnknownName(paste0("`", key, "` has no value bound in the article")))
+  }
+  parts <- lapply(rhs, .nestNameValue, acc = acc, depth = depth + 1L, seen = c(seen, key), col = col)
+  resolved <- parts[!vapply(parts, `[[`, logical(1L), "unknown")]
+  .nestMergeNames(if (length(resolved) > 0L) resolved else parts)
+}
+
+# The values of a tribble() column: the data cells at that column's positions.
+.nestNameValueTribble <- function(args, col, acc, depth, seen) {
+  is_head <- vapply(args, function(a) identical(.nestCallName(a), "~"), logical(1L))
+  heads <- vapply(args[is_head], function(a) paste(deparse(a[[2L]]), collapse = ""), character(1L))
+  if (!(col %in% heads)) {
+    return(NULL)
+  }
+  data <- args[!is_head]
+  .nestNameValueAll(
+    data[seq(which(heads == col)[[1L]], length(data), by = length(heads))],
+    acc,
+    depth,
+    seen,
+    NA_character_
+  )
+}
+
+# The value of a call: a literal-building call gives the patterns of its pieces,
+# a call that passes its argument through gives that argument's value, and any
+# other call is unseen. `col` names the column being selected from a table.
+.nestNameValueCall <- function(x, nm, args, acc, depth, seen, col) {
+  an <- names(args)
+  if (is.null(an)) {
+    an <- rep("", length(args))
+  }
+  named <- !is.na(col) && col %in% an
+  if (nm == "~") {
+    return(list(pat = character(), unknown = FALSE, why = character()))
+  }
+  if (nm %in% .nestConcatenators) {
+    return(list(pat = .nestConcatPattern(x), unknown = FALSE, why = character()))
+  }
+  if (nm %in% c("$", "[[") && length(args) == 2L) {
+    pick <- if (nm == "$") {
+      as.character(args[[2L]])
+    } else if (is.character(args[[2L]])) {
+      args[[2L]]
+    } else {
+      NA_character_
+    }
+    return(.nestNameValue(args[[1L]], acc, depth + 1L, seen, pick))
+  }
+  if (nm == "%>%" && length(args) == 2L && is.call(args[[2L]])) {
+    piped <- as.call(c(args[[2L]][[1L]], list(args[[1L]]), as.list(args[[2L]])[-1L]))
+    return(.nestNameValue(piped, acc, depth + 1L, seen, col))
+  }
+  if (nm == "{" && length(args) >= 1L) {
+    return(.nestNameValue(args[[length(args)]], acc, depth + 1L, seen, col))
+  }
+  if (nm %in% .nestPassBranches && length(args) >= 2L) {
+    return(.nestNameValueAll(args[-1L], acc, depth, seen, col))
+  }
+  if (nm == "tribble" && !is.na(col)) {
+    value <- .nestNameValueTribble(args, col, acc, depth, seen)
+    if (!is.null(value)) {
+      return(value)
+    }
+  }
+  if (nm %in% .nestPassAll) {
+    return(.nestNameValueAll(if (named) args[an == col] else args, acc, depth, seen, NA_character_))
+  }
+  if (nm %in% .nestPassMutate && length(args) >= 1L) {
+    return(.nestNameValueAll(
+      if (named) args[an == col] else args[1L],
+      acc,
+      depth,
+      seen,
+      if (named) NA_character_ else col
+    ))
+  }
+  if (nm %in% .nestPassFirst && length(args) >= 1L) {
+    return(.nestNameValue(args[[1L]], acc, depth + 1L, seen, col))
+  }
+  if (nm %in% names(acc$formals)) {
+    defs <- Filter(function(r) identical(.nestCallName(r), "function"), acc$assign_expr[[nm]])
+    if (length(defs) > 0L) {
+      return(.nestMergeNames(lapply(defs, function(f) .nestNameValue(f[[3L]], acc, depth + 1L, seen, col))))
+    }
+  }
+  .nestUnknownName(paste0("value of `", nm, "()`"))
+}
+
+# Why a model name given to a loader cannot be matched against `models`, as a
+# character vector that is empty when it can: some value behind it is unseen
+# (see .nestNameValue()), or a name built from pieces can be one of `models`
+# (`paste0("Smith_2020_", drug)` cannot when no model starts with `Smith_2020_`).
+# Literal names are matched elsewhere.
+.nestDynamicName <- function(arg, acc, models) {
+  value <- .nestNameValue(arg, acc)
+  if (value$unknown) {
+    return(value$why)
+  }
+  built <- value$pat[grepl(".*", value$pat, fixed = TRUE)]
+  hit <- unique(unlist(lapply(built, function(p) models[grepl(paste0("^", p, "$"), models, perl = TRUE)])))
+  if (length(hit) > 0L) {
+    return(paste0("a name built from pieces can be ", paste(hit, collapse = ", ")))
+  }
+  character()
 }
 
 .nestNoFindings <- function() {
@@ -302,7 +754,7 @@
     etas = character(),
     simulates = FALSE,
     uncovered = character(),
-    dynamic = FALSE,
+    dynamic = character(),
     unparseable = integer()
   )
 }
@@ -311,15 +763,18 @@
 #   models, etas  the below-subject models it names and their `| G` etas;
 #   simulates     it calls rxSolve / simulate / solve with a first argument that
 #                 is not zeroRe();
-#   uncovered     etas with no per-level distinct-draw assertion. An assertion
-#                 is one stopifnot() / assert_that() argument, or one expect_*()
-#                 call, whose tokens (followed back through up to four
-#                 assignments) include a distinct-value count, the eta and the
-#                 eta's grouping column, so a count of subjects or a finiteness
-#                 check on the eta alone does not cover it;
-#   dynamic       a readModelDb() / modellib() call whose name argument is built
-#                 by a string function in a way that could name one of the
-#                 below-subject models (see .nestDynamicName());
+#   uncovered     etas with no per-level distinct-draw assertion. A count call
+#                 (n_distinct, unique, ...) covers an eta when its own arguments,
+#                 together with the data and grouping arguments of the calls
+#                 around it, hold the eta and its grouping column once their
+#                 symbols are followed back through assignments. The count is
+#                 looked for in each stopifnot() argument or expect_*() call and
+#                 in the assignments those reach, so a summary computed earlier
+#                 and asserted later counts, while a `unique()` that only builds
+#                 the event table does not;
+#   dynamic       the reasons a readModelDb() / modellib() call, or a loader
+#                 passed to lapply() and the like, has a model name that cannot
+#                 be matched (see .nestDynamicName()); empty when none;
 #   unparseable   lines of running R chunks that do not parse.
 # Most articles neither name a below-subject model nor pass a non-literal name
 # to a loader; those are not parsed.
@@ -327,7 +782,7 @@
   text <- paste(readLines(path, warn = FALSE), collapse = "\n")
   below <- nested[!nested$above_subject, , drop = FALSE]
   names_model <- any(vapply(unique(below$model), grepl, logical(1L), x = text, fixed = TRUE))
-  non_literal_loader <- grepl("(?:readModelDb|modellib)\\s*\\(\\s*[^\"'\\s)]", text, perl = TRUE)
+  non_literal_loader <- grepl("(?:readModelDb|modellib)\\s*(?:\\(\\s*[^\"'\\s)]|[,)])", text, perl = TRUE)
   if (!names_model && !non_literal_loader) {
     return(.nestNoFindings())
   }
@@ -335,7 +790,8 @@
   acc <- new.env(parent = emptyenv())
   acc$strings <- character()
   acc$assign <- list()
-  acc$assign_str <- list()
+  acc$assign_expr <- list()
+  acc$formals <- list()
   acc$asserts <- list()
   acc$loader_args <- list()
   acc$simulates <- FALSE
@@ -346,59 +802,28 @@
       } else if (is.name(e)) {
         acc$strings <- c(acc$strings, as.character(e))
       }
-      nm <- .nestCallName(e)
-      if (is.na(nm)) {
-        return(invisible(NULL))
-      }
-      if (nm %in% c("<-", "=") && length(e) == 3L && is.name(e[[2L]])) {
-        key <- as.character(e[[2L]])
-        acc$assign[[key]] <- c(acc$assign[[key]], .nestTokens(e[[3L]]))
-        acc$assign_str[[key]] <- c(acc$assign_str[[key]], .nestTokens(e[[3L]], strings_only = TRUE))
-      }
-      if (nm %in% c("stopifnot", "assert_that")) {
-        acc$asserts <- c(acc$asserts, as.list(e)[-1L])
-      } else if (grepl("^expect_", nm)) {
-        acc$asserts[[length(acc$asserts) + 1L]] <- e
-      }
-      if (nm %in% c("readModelDb", "modellib")) {
-        arg <- .nestLoaderArg(e)
-        if (!is.null(arg) && !is.character(arg)) {
-          acc$loader_args[[length(acc$loader_args) + 1L]] <- arg
-        }
-      }
-      if (nm %in% c("rxSolve", "simulate", "solve") && length(e) >= 2L) {
-        if (!identical(.nestCallName(e[[2L]]), "zeroRe")) {
-          acc$simulates <- TRUE
-        }
-      }
-      invisible(NULL)
+      .nestCollect(e, acc)
     })
   }
   acc$assign <- lapply(acc$assign, unique)
-  acc$assign_str <- lapply(acc$assign_str, unique)
   used <- nested[nested$model %in% acc$strings & !nested$above_subject, , drop = FALSE]
-  count_words <- c("n_distinct", "unique", "uniqueN", "duplicated", "anyDuplicated")
-  assert_tokens <- lapply(acc$asserts, function(a) .nestExpandTokens(.nestTokens(a), acc$assign))
-  has_count <- vapply(assert_tokens, function(tok) any(count_words %in% tok), logical(1L))
+  scopes <- unlist(
+    lapply(acc$asserts, function(a) {
+      tok <- .nestExpandTokens(.nestTokens(a), acc$assign)
+      reached <- unlist(acc$assign_expr[intersect(tok, names(acc$assign_expr))], recursive = FALSE)
+      .nestCountScopes(c(list(a), reached))
+    }),
+    recursive = FALSE
+  )
+  scope_tokens <- lapply(scopes, .nestExpandTokens, assign = acc$assign)
   covered <- vapply(
     seq_len(nrow(used)),
     function(i) {
-      any(vapply(
-        assert_tokens[has_count],
-        function(tok) all(c(used$eta[[i]], used$group[[i]]) %in% tok),
-        logical(1L)
-      ))
+      any(vapply(scope_tokens, function(tok) all(c(used$eta[[i]], used$group[[i]]) %in% tok), logical(1L)))
     },
     logical(1L)
   )
-  dynamic <- any(vapply(
-    acc$loader_args,
-    .nestDynamicName,
-    logical(1L),
-    assign = acc$assign,
-    assign_str = acc$assign_str,
-    models = unique(below$model)
-  ))
+  dynamic <- unique(unlist(lapply(acc$loader_args, .nestDynamicName, acc = acc, models = unique(below$model))))
   list(
     models = unique(used$model),
     etas = unique(used$eta),
@@ -436,12 +861,16 @@
         "no per-level distinct-draw assertion"
       )
     }
-    if (f$simulates && f$dynamic) {
+    if (f$simulates && length(f$dynamic) > 0L) {
       out[[length(out) + 1L]] <- .nestViolationRow(
         p,
         "",
         "",
-        "unverifiable: the model name given to readModelDb() or modellib() is built at run time"
+        paste0(
+          "unverifiable: a model name given to readModelDb() or modellib() cannot be resolved (",
+          paste(utils::head(f$dynamic, 3L), collapse = "; "),
+          ")"
+        )
       )
     }
     if (length(f$unparseable) > 0L) {

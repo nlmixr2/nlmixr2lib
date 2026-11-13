@@ -330,7 +330,7 @@ test_that("a model name built at run time that could name a below-subject model 
   )
   v <- .nestDrawViolations(file.path(dir, "models"), c(built, through_symbol, from_data))
   expect_equal(v$article, c("Built.Rmd", "ThroughSymbol.Rmd", "FromData.Rmd"))
-  expect_true(all(grepl("built at run time", v$reason)))
+  expect_true(all(grepl("cannot be resolved", v$reason)))
 })
 
 test_that("a built model name that cannot name a below-subject model, or is only used with zeroRe(), is not flagged", {
@@ -352,6 +352,165 @@ test_that("a built model name that cannot name a below-subject model, or is only
     )
   )
   expect_equal(nrow(.nestDrawViolations(file.path(dir, "models"), c(unrelated, typical))), 0L)
+})
+
+test_that("a count that only builds the event table, or sits in an unrelated argument, does not cover the eta", {
+  dir <- .nestFixtureDir()
+  one_argument <- .nestWriteArticle(
+    dir,
+    "OneArgument",
+    c(
+      "mod <- readModelDb(\"Fixture_occ\")",
+      "sim <- rxode2::rxSolve(mod, events)",
+      "stopifnot(dplyr::n_distinct(sim$id) == 100 && all(is.finite(sim$etaiov)) && all(sim$OCC > 0))"
+    )
+  )
+  through_events <- .nestWriteArticle(
+    dir,
+    "ThroughEvents",
+    c(
+      "ids <- 1:100",
+      "ev <- expand.grid(id = unique(ids), OCC = 1:3)",
+      "sim <- rxode2::rxSolve(readModelDb(\"Fixture_occ\"), ev)",
+      "stopifnot(all(is.finite(sim$etaiov[sim$OCC > 0])))"
+    )
+  )
+  summary_other <- .nestWriteArticle(
+    dir,
+    "SummaryOther",
+    c(
+      "sim <- rxode2::rxSolve(readModelDb(\"Fixture_occ\"), events)",
+      "chk <- sim |>",
+      "  dplyr::group_by(OCC) |>",
+      "  dplyr::summarise(n_ids = dplyr::n_distinct(id), spread = sd(etaiov))",
+      "stopifnot(all(chk$n_ids == 100))"
+    )
+  )
+  v <- .nestDrawViolations(file.path(dir, "models"), c(one_argument, through_events, summary_other))
+  expect_equal(v$article, c("OneArgument.Rmd", "ThroughEvents.Rmd", "SummaryOther.Rmd"))
+  expect_equal(v$reason, rep("no per-level distinct-draw assertion", 3L))
+})
+
+test_that("a distinct-draw count over the eta and its group clears the article however it is written", {
+  dir <- .nestFixtureDir()
+  forms <- list(
+    across = c(
+      "per_occ <- sim |>",
+      "  dplyr::group_by(OCC) |>",
+      "  dplyr::summarise(dplyr::across(c(etaiov), \\(x) dplyr::n_distinct(round(x, 8)), .names = \"n_{.col}\"))",
+      "stopifnot(per_occ$n_etaiov == 100)"
+    ),
+    by_argument = c(
+      "per_occ <- dplyr::summarise(sim, n = dplyr::n_distinct(etaiov), .by = OCC)",
+      "stopifnot(per_occ$n == 100)"
+    ),
+    magrittr = c(
+      "per_occ <- sim %>% dplyr::group_by(OCC) %>% dplyr::summarise(n = dplyr::n_distinct(etaiov))",
+      "stopifnot(per_occ$n == 100)"
+    ),
+    tapply = c(
+      "per_occ <- tapply(sim$etaiov, sim$OCC, function(x) length(unique(x)))",
+      "stopifnot(all(per_occ == 100))"
+    ),
+    expect = c(
+      "testthat::expect_equal(dplyr::n_distinct(sim$etaiov[sim$OCC == 2]), 100)"
+    )
+  )
+  arts <- vapply(
+    names(forms),
+    function(nm) {
+      .nestWriteArticle(dir, nm, c("sim <- rxode2::rxSolve(readModelDb(\"Fixture_occ\"), events)", forms[[nm]]))
+    },
+    character(1L)
+  )
+  expect_equal(nrow(.nestDrawViolations(file.path(dir, "models"), arts)), 0L)
+})
+
+test_that("a model name that comes from data, a loop over the library, params or lapply() is unverifiable", {
+  dir <- .nestFixtureDir()
+  sim <- "sim <- rxode2::rxSolve(mod, events)"
+  cases <- list(
+    FromLibrary = c(
+      "nm <- modeldb$name[grepl(\"Fixture\", modeldb$name)]",
+      "mod <- readModelDb(nm[1])",
+      sim
+    ),
+    LoopOverLibrary = c(
+      "for (m in modeldb$name) {",
+      "  mod <- readModelDb(m)",
+      "  sim <- rxode2::rxSolve(mod, events)",
+      "}"
+    ),
+    FromParams = c("mod <- readModelDb(params$model)", sim),
+    LapplyLoader = c(
+      "nm <- modeldb$name[grepl(\"Fixture\", modeldb$name)]",
+      "mods <- lapply(nm, readModelDb)",
+      "sim <- rxode2::rxSolve(mods[[1]], events)"
+    ),
+    PurrrLoader = c(
+      "nm <- readLines(\"models.txt\")",
+      "mods <- purrr::map(nm, nlmixr2lib::readModelDb)",
+      "sim <- rxode2::rxSolve(mods[[1]], events)"
+    ),
+    FunctionParameter = c(
+      "load_one <- function(nm) readModelDb(nm)",
+      "mods <- lapply(read.csv(\"models.csv\")$model, load_one)",
+      "sim <- rxode2::rxSolve(mods[[1]], events)"
+    )
+  )
+  arts <- vapply(
+    names(cases),
+    function(nm) .nestWriteArticle(dir, nm, cases[[nm]]),
+    character(1L)
+  )
+  v <- .nestDrawViolations(file.path(dir, "models"), arts)
+  expect_equal(v$article, paste0(names(cases), ".Rmd"))
+  expect_true(all(grepl("cannot be resolved", v$reason)))
+})
+
+test_that("a name that passes through a string transformer is unverifiable whatever its fragments", {
+  dir <- .nestFixtureDir()
+  sim <- "sim <- rxode2::rxSolve(mod, events)"
+  cases <- list(
+    Sub = c("mod <- readModelDb(sub(\"x$\", \"\", \"Fixture_occx\"))", sim),
+    Lower = c("mod <- readModelDb(tolower(\"Fixture_OCC\"))", sim),
+    ThroughSymbol = c("nm <- toupper(\"unrelated_a\")", "mod <- readModelDb(nm)", sim),
+    AroundConcatenation = c("nm <- gsub(\"-\", \"_\", paste0(\"Unrelated_\", id))", "mod <- readModelDb(nm)", sim)
+  )
+  arts <- vapply(names(cases), function(nm) .nestWriteArticle(dir, nm, cases[[nm]]), character(1L))
+  v <- .nestDrawViolations(file.path(dir, "models"), arts)
+  expect_equal(v$article, paste0(names(cases), ".Rmd"))
+})
+
+test_that("names that resolve to literals or to a pattern no below-subject model matches are not flagged", {
+  dir <- .nestFixtureDir()
+  sim <- "sim <- rxode2::rxSolve(mod, events)"
+  cases <- list(
+    LapplyLiterals = c("mods <- lapply(c(\"Unrelated_a\", \"Unrelated_b\"), readModelDb)", "mod <- mods[[1]]", sim),
+    LambdaLiterals = c("mods <- sapply(c(\"Unrelated_a\"), function(nm) readModelDb(nm))", "mod <- mods[[1]]", sim),
+    UserFunction = c("load_one <- function(nm) readModelDb(nm)", "mod <- load_one(\"Unrelated_a\")", sim),
+    UserFunctionIterated = c(
+      "load_one <- function(nm) readModelDb(nm)",
+      "mods <- lapply(c(\"Unrelated_a\", \"Unrelated_b\"), load_one)",
+      "mod <- mods[[1]]",
+      sim
+    ),
+    TribbleColumn = c(
+      "tab <- tibble::tribble(~label, ~model, \"first\", \"Unrelated_a\", \"second\", \"Unrelated_b\")",
+      "mod <- readModelDb(tab$model[1])",
+      sim
+    ),
+    TibbleColumnWithLabelTransform = c(
+      "tab <- tibble::tibble(model = c(\"Unrelated_a\", \"Unrelated_b\"), label = sub(\"^Unrelated_\", \"\", model))",
+      "mod <- readModelDb(tab$model[2])",
+      sim
+    ),
+    Branches = c("mod <- readModelDb(ifelse(dose == 1, \"Unrelated_a\", \"Unrelated_b\"))", sim),
+    BuiltFromUnrelatedPrefix = c("mod <- readModelDb(sprintf(\"Unrelated_2020_%s_mouse\", drug))", sim),
+    TransformedPieceOfAName = c("mod <- readModelDb(paste0(\"Unrelated_\", gsub(\"-\", \"_\", id)))", sim)
+  )
+  arts <- vapply(names(cases), function(nm) .nestWriteArticle(dir, nm, cases[[nm]]), character(1L))
+  expect_equal(nrow(.nestDrawViolations(file.path(dir, "models"), arts)), 0L)
 })
 
 test_that("a model name held in a symbol is matched, and an assertion clears it", {
