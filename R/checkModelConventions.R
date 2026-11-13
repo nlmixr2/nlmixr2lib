@@ -7,8 +7,10 @@
 #' file-level metadata (description, reference, units, covariateData);
 #' parameter names (log-prefix PK params, `eta`-prefix IIV, `propSd`/`addSd`
 #' residual error); parameter labels; covariates (canonical register, units,
-#' declared aliases); compartment names; the observation variable (`Cc`); and
-#' a syntactic dosing-vs-concentration unit cross-check.
+#' declared aliases); compartment names; the observation variable (`Cc`); a
+#' syntactic dosing-vs-concentration unit cross-check; and that no model()
+#' statement is a bare expression (an operator-led continuation line that R
+#' parses as a statement of its own).
 #'
 #' When any issue of severity `"error"` or `"warning"` is found, a `warning()`
 #' is emitted whose message directs the user to call this function for the
@@ -73,7 +75,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkFmFamily(ui, conv),
     .checkLogitBackTransform(ui, conv),
     .checkHandWrittenInverseLogit(ui, conv),
-    .checkCentralConcentrationName(ui, conv)
+    .checkCentralConcentrationName(ui, conv),
+    .checkBareStatements(ui, conv)
   )
   issues <- do.call(rbind, checks)
   if (is.null(issues) || nrow(issues) == 0) {
@@ -2602,6 +2605,91 @@ checkModelConventions <- function(model, verbose = TRUE) {
           "2 ulp of `exp(x)/(1+exp(x))`. For the negative convention write",
           "`expit(-x)`."
         )
+      )
+    )
+  }
+  issues
+}
+
+# Bare expression statements ------------------------------------------------
+#
+# R ends a statement at a line break when the line is a complete expression,
+# so a continuation line that starts with an operator,
+#
+#   d/dt(central) <- -kel * central
+#                    + k21 * peripheral1
+#
+# becomes a statement of its own. rxode2's parser joins it to the equation
+# above, so the model simulates as written, but ui$lstExpr holds the truncated
+# d/dt() and a dangling `+k21 * peripheral1`, and anything that reads or edits
+# the model through lstExpr (model piping, these checks) sees the wrong
+# equation.
+
+# Operators that head an arithmetic or logical expression, never a statement.
+.bareStatementHeads <- c(
+  "+",
+  "-",
+  "*",
+  "/",
+  "^",
+  "(",
+  "!",
+  "&",
+  "|",
+  "&&",
+  "||",
+  "==",
+  "!=",
+  "<",
+  ">",
+  "<=",
+  ">=",
+  "%%",
+  "%/%"
+)
+
+# A model() statement that is only a value: a symbol, a constant, or a call
+# whose head is an operator. Assignments, `~` error lines, if/else blocks and
+# rxode2's declarations (`linear(INS)`, `cmt(x)`, `dvid(...)`) are statements.
+.isBareStatement <- function(st) {
+  if (is.name(st) || is.atomic(st)) {
+    return(TRUE)
+  }
+  is.call(st) && is.name(st[[1]]) && as.character(st[[1]]) %in% .bareStatementHeads
+}
+
+.checkBareStatements <- function(ui, conv) {
+  issues <- .emptyIssues()
+  exprs <- tryCatch(ui$lstExpr, error = function(e) e)
+  if (inherits(exprs, "error")) {
+    return(.issue(
+      "bare_statement",
+      "error",
+      NA_character_,
+      paste0("The model() block could not be read to check for bare statements: ", conditionMessage(exprs)),
+      "Check that the model parses with rxode2::rxode2()."
+    ))
+  }
+  for (st in exprs) {
+    if (!.isBareStatement(st)) {
+      next
+    }
+    txt <- paste(deparse(st, width.cutoff = 500L), collapse = " ")
+    issues <- rbind(
+      issues,
+      .issue(
+        "bare_statement",
+        "error",
+        substr(txt, 1, 60),
+        paste0(
+          "`",
+          substr(txt, 1, 120),
+          "` is a statement of its own in model(). It is most likely a ",
+          "continuation line that starts with an operator: rxode2 joins it to ",
+          "the line above, but R does not, so ui$lstExpr holds a truncated ",
+          "equation."
+        ),
+        "Move the operator to the end of the previous line, so the expression continues across the line break."
       )
     )
   }

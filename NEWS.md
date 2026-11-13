@@ -2,6 +2,8 @@
 
 # development version
 
+- `checkModelConventions()` reports an error for a `model()` statement that is a bare expression. That is almost always a continuation line that starts with an operator: rxode2 joins it to the equation above, but R parses it as its own statement, so `ui$lstExpr`, and anything that edits a model through it, sees a truncated equation. Fourteen shipped models had such lines; the operators are moved to the line ends, and rxode2's compiled model is unchanged for each.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.
