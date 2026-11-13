@@ -28,8 +28,9 @@ documented in `vignettes/create-model-library.Rmd` and the
 file-level metadata (description, reference, units, covariateData);
 parameter names (log-prefix PK params, `eta`-prefix IIV, `propSd`/`addSd`
 residual error); parameter labels; covariates (canonical register, units,
-declared aliases); compartment names; the observation variable (`Cc`); and
-a syntactic dosing-vs-concentration unit cross-check.
+declared aliases); in a template, any symbol read but never defined;
+compartment names; the observation variable (`Cc`); and a syntactic
+dosing-vs-concentration unit cross-check.
 }
 \details{
 When any issue of severity `"error"` or `"warning"` is found, a `warning()`

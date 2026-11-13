@@ -7,8 +7,9 @@
 #' file-level metadata (description, reference, units, covariateData);
 #' parameter names (log-prefix PK params, `eta`-prefix IIV, `propSd`/`addSd`
 #' residual error); parameter labels; covariates (canonical register, units,
-#' declared aliases); compartment names; the observation variable (`Cc`); and
-#' a syntactic dosing-vs-concentration unit cross-check.
+#' declared aliases); in a template, any symbol read but never defined;
+#' compartment names; the observation variable (`Cc`); and a syntactic
+#' dosing-vs-concentration unit cross-check.
 #'
 #' When any issue of severity `"error"` or `"warning"` is found, a `warning()`
 #' is emitted whose message directs the user to call this function for the
@@ -63,6 +64,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkParameterUnits(ui, conv),
     .checkUnitSpellings(ui, conv),
     .checkCovariates(ui, conv, model_name),
+    .checkTemplateUndeclaredSymbols(ui, conv, model_name),
     .checkCompartments(ui, conv),
     .checkObservation(ui, conv),
     .checkUnits(ui, conv),
@@ -1011,6 +1013,44 @@ checkModelConventions <- function(model, verbose = TRUE) {
     }
   }
 
+  issues
+}
+
+# A template (reference "nlmixr2lib template") is self-contained: every
+# symbol its model() reads is assigned there, is a state or is an ini()
+# parameter. rxode2 lists anything else as a covariate. .checkCovariates()
+# requires a covariate to be declared in covariateData unless it is in
+# `depends`, which names inputs an upstream model supplies when models are
+# composed. No template composes that way: in every template whose `depends`
+# covered a name it read, the name was a typo or a parameter the template
+# forgot to define (an `ic50` where it estimates `ec50`, a `vc` with no
+# `lvc`), and the template could not be solved as shipped. So for a template,
+# `depends` declares nothing.
+.checkTemplateUndeclaredSymbols <- function(ui, conv, model_name) {
+  issues <- .emptyIssues()
+  meta <- as.list(ui$meta)
+  if (!identical(meta$reference, "nlmixr2lib template")) {
+    return(issues)
+  }
+  undeclared <- setdiff(
+    ui$covariates %||% character(),
+    c(names(meta$covariateData %||% list()), .reservedDataItems)
+  )
+  for (nm in undeclared) {
+    issues <- rbind(
+      issues,
+      .issue(
+        "template_symbols",
+        "error",
+        nm,
+        sprintf(
+          "Template reads '%s', which it never defines: it is not assigned in model(), not a state and not an ini() parameter.",
+          nm
+        ),
+        "Define it in ini() or model(), or correct the name; a template's `depends` does not declare it."
+      )
+    )
+  }
   issues
 }
 
