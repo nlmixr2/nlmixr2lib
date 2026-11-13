@@ -5026,6 +5026,8 @@ navbar:
         href: articles/Bergen_2017_meropenem.html
       - text: "Meropenem (Braune 2018)"
         href: articles/Braune_2018_meropenem.html
+      - text: "Meropenem (Briquet 2026)"
+        href: articles/Briquet_2026_meropenem.html
       - text: "Meropenem (ButraguenoLaiseca 2024)"
         href: articles/ButraguenoLaiseca_2024_meropenem.html
       - text: "Meropenem (Cojutti 2020)"
@@ -9614,6 +9616,7 @@ articles:
   - articles/Briggs_2023_dupilumab
   - articles/Brill_2014_midazolam
   - articles/Brillac_2025_isatuximab
+  - articles/Briquet_2026_meropenem
   - articles/Britz_2019_fluvoxamine
   - articles/Brochot_2015_darunavir
   - articles/Broeker_2018_tigecycline

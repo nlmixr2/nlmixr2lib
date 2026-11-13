@@ -1,0 +1,442 @@
+---
+title: "Meropenem (Briquet 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Meropenem (Briquet 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+mod <- readModelDb("Briquet_2026_meropenem")
+ui <- rxode2::rxode(mod)
+```
+
+* Citation: `r ui$reference`
+* Article: <https://doi.org/10.1128/aac.00372-26>
+* Supplement (Tables S1-S3, Figures S1-S2): published with the article.
+
+Briquet 2026 asks whether meropenem 2 g three times daily can be given during
+the day only, so that a home-care nurse does not have to visit at night. Each
+patient received the conventional schedule (doses every 8 h, "q8-8-8 h") and
+then, once clinically stable, the same three doses at 6 h intervals followed by
+a 12 h overnight gap ("q6-6-12 h", the OPAT-adapted schedule), all as 20 min
+infusions. Unbound meropenem was measured at steady state on both schedules and
+fitted with a two-compartment population model in Monolix. Monte Carlo
+simulations then compared six regimens -- the two schedules with 20 min
+infusions plus 3 h (conventional) and 1, 3 and 5 h (OPAT) prolonged
+infusions -- by the probability of target attainment (PTA) for
+f%T > MIC targets.
+
+The model describes **unbound** concentrations (measured in serum
+ultrafiltrate), so `Cc` here is the unbound concentration and the volumes are
+apparent volumes referenced to it.
+
+# Population
+
+`r ui$population$n_subjects` non-critically ill adults hospitalised at the
+Cliniques universitaires Saint-Luc, Brussels, between November 2019 and October
+2021 contributed 246 samples (all 22 patients on the conventional schedule, 20
+on the OPAT-adapted schedule), of which
+`r ui$population$n_observations` were analysed. Table 1: 12 men and 10 women,
+median age 61.5 years (26-82), median weight 85 kg (44-155), median BMI
+26.35 kg/m^2, CKD-EPI eGFR median 102 mL/min/1.73 m^2 (64-234; 16 patients above
+90 and 6 between 60 and 90). Infections were bone (15), intra-abdominal (5) and
+skin and soft tissue (2), all caused by Gram-negative organisms with meropenem
+MIC up to 2 mg/L. Body weight, height, sex, age, serum creatinine and eGFR were
+screened as covariates and none was retained.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Structure: two compartments, first-order elimination | -- | Results, "Population pharmacokinetic modeling" |
+| `lcl` | log(11.7 L/h) | Table 2, CL |
+| `lvc` | log(23.6 L) | Table 2, V1 |
+| `lq` | log(1.98 L/h) | Table 2, Q |
+| `lvp` | log(5.44 L) | Table 2, V2 |
+| IIV form `theta_j = theta_p * exp(eta_j)` | -- | Methods equation |
+| `etalcl` variance | 0.517^2 = 0.267289 | Table 2, IIV_CL (%) 51.7 (Monolix omega x 100) |
+| `etalvc` variance | 0.429^2 = 0.184041 | Table 2, IIV_V1 (%) 42.9 |
+| `etalcl`-`etalvc` covariance | 0.76 x 0.517 x 0.429 = 0.16856 | Table 2, Corr_V1_Cl 0.76 |
+| `addSd` | 0.16 mg/L | Table 2, Additive |
+| `propSd` | 0.41 | Table 2, Proportional |
+| Combined residual error | -- | Results ("combined (additive plus proportional)") |
+| Simulated regimens, steady state 120-144 h | -- | Methods, "Monte Carlo simulation"; Figure 2 |
+| PTA reference values | -- | Supplementary Table S3 |
+| Trough and fT > MIC reference values | -- | Supplementary Table S2; Results |
+
+# Deterministic gates
+
+```{r gate-typical}
+# At eta = 0 the individual parameters must reduce to Table 2 exactly.
+tv <- rxSolve(
+  rxode2::zeroRe(mod),
+  et(amt = 2000, dur = 1 / 3, cmt = "central") |> et(0:1, cmt = "central"),
+  returnType = "data.frame"
+)
+stopifnot(
+  isTRUE(all.equal(tv$cl[1], 11.7)),
+  isTRUE(all.equal(tv$vc[1], 23.6)),
+  isTRUE(all.equal(tv$q[1], 1.98)),
+  isTRUE(all.equal(tv$vp[1], 5.44))
+)
+
+# The Table 2 omega block: SDs 0.517 / 0.429 and correlation 0.76.
+om <- ui$omega
+stopifnot(
+  abs(sqrt(om["etalcl", "etalcl"]) - 0.517) < 1e-9,
+  abs(sqrt(om["etalvc", "etalvc"]) - 0.429) < 1e-9,
+  abs(om["etalcl", "etalvc"] / sqrt(om["etalcl", "etalcl"] * om["etalvc", "etalvc"]) - 0.76) < 1e-9
+)
+```
+
+# Simulated regimens
+
+All six regimens of Figure 2 and Table S3 deliver 6 g/day. Doses are given for
+six days and the steady-state day 120-144 h is observed on a 5 min grid, which
+lands exactly on the end of every infusion duration used (20 min, 1, 3 and 5 h).
+
+```{r regimens}
+regimens <- tibble::tribble(
+  ~regimen, ~schedule, ~dur_h, ~label,
+  "q8_20min", "q8-8-8 h", 1 / 3, "q8-8-8 h, 20 min infusion",
+  "q8_3h", "q8-8-8 h", 3, "q8-8-8 h, 3 h infusion",
+  "opat_20min", "q6-6-12 h", 1 / 3, "q6-6-12 h, 20 min infusion",
+  "opat_1h", "q6-6-12 h", 1, "q6-6-12 h, 1 h infusion",
+  "opat_3h", "q6-6-12 h", 3, "q6-6-12 h, 3 h infusion",
+  "opat_5h", "q6-6-12 h", 5, "q6-6-12 h, 5 h infusion"
+)
+regimens$label <- factor(regimens$label, levels = regimens$label)
+
+daily_times <- list("q8-8-8 h" = c(0, 8, 16), "q6-6-12 h" = c(0, 6, 12))
+obs_grid <- seq(120, 144, by = 1 / 12)
+n_per_arm <- 200
+
+make_events <- function(i) {
+  r <- regimens[i, ]
+  dose_t <- sort(as.numeric(outer(daily_times[[r$schedule]], seq(0, 120, by = 24), "+")))
+  ids <- (i - 1) * n_per_arm + seq_len(n_per_arm)
+  doses <- expand.grid(time = dose_t, id = ids) |>
+    mutate(amt = 2000, rate = 2000 / r$dur_h, evid = 1L, cmt = "central")
+  obs <- expand.grid(time = obs_grid, id = ids) |>
+    mutate(amt = 0, rate = 0, evid = 0L, cmt = "central")
+  bind_rows(doses, obs) |>
+    mutate(regimen = r$regimen) |>
+    arrange(id, time, desc(evid))
+}
+events <- bind_rows(lapply(seq_len(nrow(regimens)), make_events))
+```
+
+```{r simulate}
+rxode2::rxSetSeed(20261025)
+sim <- rxSolve(mod, events, keep = "regimen", returnType = "data.frame") |>
+  select(id, time, Cc, cl, regimen) |>
+  left_join(select(regimens, regimen, label), by = "regimen")
+```
+
+## Figure 2: steady-state concentration-time profiles
+
+```{r figure2, fig.height = 7}
+sim |>
+  group_by(label, time) |>
+  summarise(
+    median = median(Cc),
+    lo = quantile(Cc, 0.025),
+    hi = quantile(Cc, 0.975),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, median)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey80") +
+  geom_line() +
+  geom_hline(yintercept = 2, linetype = "dotdash") +
+  geom_hline(yintercept = 8, linetype = "dashed") +
+  scale_y_log10(limits = c(0.05, 300)) +
+  scale_x_continuous(breaks = c(120, 126, 128, 132, 136, 138, 144)) +
+  facet_wrap(~label, ncol = 2) +
+  labs(
+    x = "Time (h)", y = "Unbound meropenem (mg/L)",
+    caption = "Replicates Figure 2 of Briquet 2026: median and 95% interval, 200 subjects per regimen."
+  ) +
+  theme_bw()
+```
+
+# PKNCA validation
+
+The steady-state day (120-144 h) is analysed with PKNCA for the first 100
+simulated subjects of each regimen. At steady state the AUC over 24 h must
+equal the daily dose (6000 mg) divided by each subject's own clearance.
+
+```{r pknca}
+nca_ids <- sim |>
+  distinct(regimen, id) |>
+  group_by(regimen) |>
+  slice_head(n = 100) |>
+  ungroup()
+conc <- sim |>
+  semi_join(nca_ids, by = c("regimen", "id")) |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, regimen)
+dose_df <- events |>
+  filter(evid == 1, time >= 120 - 24) |>
+  semi_join(nca_ids, by = c("regimen", "id")) |>
+  select(id, time, amt, regimen)
+
+conc_obj <- PKNCAconc(conc, Cc ~ time | regimen + id)
+dose_obj <- PKNCAdose(dose_df, amt ~ time | regimen + id)
+intervals <- data.frame(start = 120, end = 144, auclast = TRUE, cmax = TRUE, cmin = TRUE, cav = TRUE)
+nca <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_wide <- as.data.frame(nca) |>
+  select(regimen, id, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+nca_wide |>
+  left_join(regimens, by = "regimen") |>
+  group_by(label) |>
+  summarise(
+    cmax = median(cmax), cmin = median(cmin),
+    auc = median(auclast), cav = median(cav), .groups = "drop"
+  ) |>
+  dplyr::rename(
+    "Regimen" = label, "Cmax (mg/L)" = cmax, "Cmin over 24 h (mg/L)" = cmin,
+    "AUC 120-144 h (mg*h/L)" = auc, "Cav (mg/L)" = cav
+  ) |>
+  knitr::kable(digits = 2, caption = "Median steady-state NCA by regimen (100 subjects each).")
+```
+
+```{r pknca-gate}
+# Both sides use the same drawn clearance, so the difference is numerical
+# (trapezoidal integration on a 5 min grid, residual approach to steady state).
+cl_by_id <- sim |> distinct(regimen, id, cl)
+auc_chk <- nca_wide |>
+  left_join(cl_by_id, by = c("regimen", "id")) |>
+  mutate(pct_diff = 100 * (auclast / (6000 / cl) - 1))
+summary(auc_chk$pct_diff)
+stopifnot(
+  abs(median(auc_chk$pct_diff)) < 1,
+  quantile(abs(auc_chk$pct_diff), 0.9) < 2
+)
+```
+
+# Comparison against the published simulations
+
+## Lowest trough (Table S2)
+
+The lowest trough of each regimen is the concentration at 144 h: 8 h after a
+conventional dose, 12 h after the evening OPAT dose.
+
+```{r trough}
+trough_ref <- tibble::tribble(
+  ~regimen, ~cmin,
+  "q8_20min", 3.2,
+  "q8_3h", 5.3,
+  "opat_20min", 1.2,
+  "opat_1h", 1.3,
+  "opat_3h", 1.7,
+  "opat_5h", 2.5
+)
+trough_sim <- sim |>
+  filter(abs(time - 144) < 1e-6) |>
+  group_by(regimen) |>
+  summarise(cmin = median(Cc), .groups = "drop")
+
+trough_tbl <- ncaComparisonTable(
+  trough_sim |> mutate(PPTESTCD = "cmin", PPORRES = cmin) |> select(regimen, PPTESTCD, PPORRES),
+  trough_ref,
+  by = "regimen",
+  units = c(cmin = "mg/L")
+)
+knitr::kable(trough_tbl, caption = "Median lowest trough versus Table S2 (paper: median of 1,000 simulated subjects).")
+
+trough_chk <- left_join(trough_sim, trough_ref, by = "regimen", suffix = c("_sim", "_ref")) |>
+  mutate(pct_diff = 100 * (cmin_sim / cmin_ref - 1))
+trough_chk
+# Each simulated median of 200 log-spread troughs carries roughly 10% Monte
+# Carlo error, so the gate is on the centre across regimens and on a bound
+# several SEs wide per regimen; a transcription error in CL or V1 moves every
+# trough by far more. Realised on this cohort: median -6.1%, largest |diff|
+# 19.1% (OPAT 3 h); a 5,000-subject run gave 3.20 / 5.16 / 1.15 / 1.27 / 1.68 /
+# 2.37 mg/L against the printed 3.2 / 5.3 / 1.2 / 1.3 / 1.7 / 2.5.
+stopifnot(
+  abs(median(trough_chk$pct_diff)) < 15,
+  max(abs(trough_chk$pct_diff)) < 40
+)
+```
+
+The ordering the paper draws its main caution from is reproduced: the overnight
+trough of every OPAT regimen sits below the conventional 20 min regimen's
+trough, and lengthening the OPAT infusion raises it.
+
+## Probability of target attainment (Table S3, Figure 3)
+
+f%T > MIC is the fraction of the steady-state day (120-144 h) for which the
+unbound concentration exceeds the MIC; a subject attains a target of X% when
+that fraction is at least X%.
+
+```{r pta-sim}
+targets <- c(30, 35, 40, 45, 50, 55, 100)
+mics <- c(0.125, 0.25, 0.5, 1, 2, 4, 8, 16, 32)
+ft <- sim |>
+  filter(time < 144) |>
+  select(regimen, id, Cc) |>
+  cross_join(tibble(mic = mics)) |>
+  group_by(regimen, id, mic) |>
+  summarise(ft = 100 * mean(Cc > mic), .groups = "drop")
+pta_sim <- ft |>
+  cross_join(tibble(target = targets)) |>
+  group_by(regimen, mic, target) |>
+  summarise(pta = 100 * mean(ft >= target - 1e-9), .groups = "drop")
+```
+
+```{r pta-ref}
+# Supplementary Table S3, one block per target. Columns in regimen order:
+# q8 20 min, q8 3 h, OPAT 20 min, OPAT 1 h, OPAT 3 h, OPAT 5 h.
+s3 <- function(target, mic, ...) {
+  v <- c(...)
+  tibble(target = target, mic = mic, regimen = regimens$regimen, pta_ref = v)
+}
+pta_ref <- bind_rows(
+  s3(30, 2, 100, 100, 100, 100, 100, 100),
+  s3(30, 4, 100, 100, 100, 100, 100, 100),
+  s3(30, 8, 97.9, 100, 97.9, 98.9, 100, 100),
+  s3(30, 16, 76.1, 88.4, 75.5, 79.5, 91.6, 86.3),
+  s3(30, 32, 29.1, 38.6, 27.7, 31.8, 41, 38.4),
+  s3(35, 2, 100, 100, 100, 100, 100, 100),
+  s3(35, 4, 99.3, 100, 99.3, 100, 100, 100),
+  s3(35, 8, 93.1, 99.7, 92.6, 97, 99.9, 100),
+  s3(35, 16, 66.1, 82.1, 66.2, 71.6, 83.8, 84.6),
+  s3(35, 32, 18.7, 32.6, 17.2, 22.8, 33.5, 35.9),
+  s3(40, 2, 99.9, 100, 99.9, 100, 100, 100),
+  s3(40, 4, 98.3, 100, 98.3, 99.3, 100, 100),
+  s3(40, 8, 86.1, 99, 85.5, 91.6, 99.4, 99.9),
+  s3(40, 16, 56.2, 74.7, 56.5, 61.3, 79.1, 82.6),
+  s3(40, 32, 12.4, 24.1, 12.5, 14.8, 26.7, 33.3),
+  s3(45, 2, 99.4, 100, 99.3, 99.8, 100, 100),
+  s3(45, 4, 95.8, 100, 95.5, 98.1, 100, 100),
+  s3(45, 8, 78.2, 96.6, 78.2, 83.9, 98, 99.7),
+  s3(45, 16, 43.6, 65.8, 44.2, 52, 71.9, 81),
+  s3(45, 32, 8.5, 16.8, 8.3, 11.5, 20.4, 30.6),
+  s3(50, 2, 98.3, 100, 98.3, 99.3, 100, 100),
+  s3(50, 4, 90.7, 99.7, 91.3, 95, 99.7, 100),
+  s3(50, 8, 69.5, 93.6, 71, 76.6, 93.9, 99.5),
+  s3(50, 16, 33, 60.9, 34.5, 40.9, 62.9, 78.6),
+  s3(50, 32, 4.6, 14.6, 5.9, 7.6, 15.2, 26.9),
+  s3(55, 2, 97.7, 100, 97.6, 98.3, 100, 100),
+  s3(55, 4, 86.4, 99, 86.4, 91.2, 99.1, 100),
+  s3(55, 8, 63.2, 83.7, 63.3, 70, 88.2, 99.2),
+  s3(55, 16, 27.8, 49.6, 27.9, 33.2, 54.1, 75.9),
+  s3(55, 32, 3.9, 10.3, 4.0, 5.5, 11.3, 23.3),
+  s3(100, 0.125, 99.7, 100, 95.6, 96.8, 98.8, 99.7),
+  s3(100, 0.25, 99.2, 99.8, 87.0, 88.4, 93.5, 97.6),
+  s3(100, 0.5, 95.0, 99.0, 72.5, 75.0, 82.3, 90.5),
+  s3(100, 1, 84.8, 94.3, 55.3, 58.5, 66.8, 76.2),
+  s3(100, 2, 67.4, 81.3, 31.9, 35.2, 44, 57.4),
+  s3(100, 4, 41.2, 61, 13.6, 15.5, 21, 31.3),
+  s3(100, 8, 16.3, 30, 3.8, 4.2, 6.9, 10.9),
+  s3(100, 16, 3.4, 7.2, 0.6, 0.6, 1.4, 2.6),
+  s3(100, 32, 0.3, 0.7, 0, 0, 0, 0)
+)
+pta_cmp <- inner_join(pta_ref, pta_sim, by = c("target", "mic", "regimen")) |>
+  mutate(diff = pta - pta_ref)
+stopifnot(nrow(pta_cmp) == nrow(pta_ref))
+```
+
+```{r figure3, fig.height = 7}
+pta_sim |>
+  left_join(regimens, by = "regimen") |>
+  mutate(target = factor(paste0(target, "% fT > MIC"), levels = paste0(targets, "% fT > MIC"))) |>
+  ggplot(aes(mic, pta, colour = label)) +
+  geom_line() +
+  geom_point(data = pta_ref |>
+    left_join(regimens, by = "regimen") |>
+    mutate(target = factor(paste0(target, "% fT > MIC"), levels = paste0(targets, "% fT > MIC"))), aes(y = pta_ref), shape = 4) +
+  geom_hline(yintercept = 90, linetype = "dashed") +
+  scale_x_log10(breaks = mics, labels = format(mics, drop0trailing = TRUE)) +
+  facet_wrap(~target, ncol = 2) +
+  labs(
+    x = "MIC (mg/L)", y = "PTA (%)", colour = NULL,
+    caption = "Replicates Figure 3 A-G of Briquet 2026. Lines: simulated; crosses: Table S3."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 90)) +
+  guides(colour = guide_legend(ncol = 2))
+```
+
+```{r pta-gate}
+pta_cmp |>
+  group_by(target) |>
+  summarise(
+    median_abs_diff = median(abs(diff)),
+    max_abs_diff = max(abs(diff)),
+    .groups = "drop"
+  ) |>
+  dplyr::rename(
+    "Target (% fT > MIC)" = target,
+    "Median |PTA difference| (points)" = median_abs_diff,
+    "Max |PTA difference| (points)" = max_abs_diff
+  ) |>
+  knitr::kable(digits = 1, caption = "Simulated minus Table S3 PTA, all 6 regimens x MICs.")
+
+# 200 subjects per arm against the paper's 1,000: a mid-range PTA carries a
+# Monte Carlo SE near 3 points here, so the gate is on the centre and on a
+# robust quantile of the 234 cells, not on the worst cell. A mis-transcribed
+# clearance or volume shifts whole MIC columns by tens of points. Realised on
+# this cohort: median 1.5 points, 90th percentile 6.3 points.
+c(median = median(abs(pta_cmp$diff)), q90 = unname(quantile(abs(pta_cmp$diff), 0.9)))
+stopifnot(
+  median(abs(pta_cmp$diff)) < 3,
+  quantile(abs(pta_cmp$diff), 0.9) < 10
+)
+```
+
+The 100% fT > MIC block is the most sensitive to the size of the
+inter-individual variability (it is set by the lower tail of the overnight
+trough), and it is reproduced closely. This also supports reading the Table 2
+"IIV (%)" entries as Monolix omega values x 100 (see below).
+
+# Assumptions and deviations
+
+* **IIV scale.** Table 2 prints "IIV_CL (%) 51.7" and "IIV_V1 (%) 42.9".
+  Monolix reports random effects as omega, the standard deviation of the
+  log-scale random effect, so these are read as omega = 0.517 and 0.429 and
+  squared for `ini()`. The alternative reading, a log-normal CV% (omega =
+  0.487 and 0.411), narrows the distribution slightly. In a 5,000-subject
+  check against Table S3 the omega reading reproduced the 100% fT > MIC row at
+  1 mg/L for the conventional 20 min regimen as 84.8% (paper 84.8%) against
+  87.7% for the CV reading, and was closer for the 40% fT > MIC row at 8 mg/L
+  across regimens. Typical-value predictions do not depend on this choice.
+* **Combined residual error form.** The paper says "combined (additive plus
+  proportional)" without the Monolix variant. Monolix's default `combined1`
+  (`y = f + (a + b f) e`) is encoded. The residual error does not enter any of
+  the comparisons above, which use the individual prediction `Cc`, as the
+  paper's simulated concentrations appear to.
+* **Simulation design.** The paper used Simulx with 1,000 subjects per
+  regimen; this article uses 200, so the PTA comparison carries a larger Monte
+  Carlo error. f%T > MIC is computed over the steady-state day 120-144 h
+  (Methods), on a 5 min grid.
+* **Table S2 versus Results text.** The ranges quoted for the overnight OPAT
+  troughs differ between the Results text (e.g. 1.2 [0.01-13] mg/L for the
+  20 min infusion) and Table S2 (1.2 [0.1-11] mg/L); the medians agree, and
+  only the medians are compared here.
+* **Figure 3 versus Table S3.** The Figure 3 legend lists five regimens (no
+  5 h OPAT infusion) while Table S3 tabulates six; all six are simulated here.
+* **Unbound concentrations.** All data and simulations in the paper are unbound
+  meropenem; no protein-binding correction is applied or needed to compare
+  `Cc` with an MIC.
+* **No covariates.** None was retained in the final model, so the model applies
+  to the studied population only: non-critically ill adults with eGFR of
+  roughly 60-230 mL/min/1.73 m^2. It should not be used for renal impairment,
+  where meropenem clearance falls.
+* A literature check for errata (Crossref, 2026-11-13) found none.
