@@ -12,6 +12,7 @@ Jonsson_2011_ethambutol <- function() {
   )
   vignette <- "Jonsson_2011_ethambutol"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central", "transit1")
   replicate_of <- "inst/modeldb/ddmore/Jonsson_2011_ethambutol_ddmore.R"
 
   # Issue #482: what each ODE state holds, in what amount units, in what

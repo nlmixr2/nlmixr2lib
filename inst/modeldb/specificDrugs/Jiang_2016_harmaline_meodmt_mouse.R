@@ -65,6 +65,7 @@ Jiang_2016_harmaline_meodmt_mouse <- function() {
   # Vmax is weight-normalised (Methods p.494). Dose records are therefore
   # umol/kg; see the vignette for the mg/kg -> umol/kg conversion.
   units <- list(time = "min", dosing = "umol/kg", concentration = "umol/L")
+  dosing <- c("depot_harmaline", "depot_meodmt", "stress")
 
   covariateData <- list(
     CYP2D6_TG = list(

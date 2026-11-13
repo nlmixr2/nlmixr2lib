@@ -13,6 +13,7 @@ Jonsson_2011_ethambutol_ddmore <- function() {
   )
   vignette <- "Jonsson_2011_ethambutol_ddmore"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central", "transit1")
   ddmore_id <- "DDMODEL00000220"
   replicate_of <- "inst/modeldb/specificDrugs/Jonsson_2011_ethambutol.R"
 

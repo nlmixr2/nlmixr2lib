@@ -11,6 +11,7 @@ Jin_2014_simvastatin <- function() {
   )
   vignette <- "Jin_2014_simvastatin"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+  dosing <- c("central", "depot1", "depot2", "depot3")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
