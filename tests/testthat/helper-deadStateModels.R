@@ -136,3 +136,35 @@
     log_cfu ~ add(addSd)
   })
 }
+
+# States whose only d/dt() term vanishes at 0 in less literal ways: a power, a
+# function that is 0 at 0, a variable defined as a multiple of the state, and
+# an explicit zero initial condition. aux_exp's term, exp(aux_exp), is 1 at 0,
+# so that state is fed.
+.dsFactorFormsModel <- function() {
+  description <- "States that vanish through powers, functions and aliases"
+  reference <- "R"
+  dosing <- "central"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  ini({
+    lcl <- 1; label("Clearance (CL, L/h)")
+    lvc <- 3; label("Central volume (Vc, L)")
+    lk <- -1; label("Rate constant (k, 1/h)")
+    propSd <- 0.1; label("Proportional residual error (fraction)")
+  })
+  model({
+    cl <- exp(lcl)
+    vc <- exp(lvc)
+    k <- exp(lk)
+    d/dt(central) <- -cl / vc * central
+    d/dt(aux_pow) <- -k * aux_pow^2
+    d/dt(aux_sqrt) <- -k * sqrt(aux_sqrt)
+    d/dt(aux_exp) <- -k * exp(aux_exp)
+    loss <- k * aux_alias
+    d/dt(aux_alias) <- -loss
+    aux_zero(0) <- 0
+    d/dt(aux_zero) <- -k * aux_zero
+    Cc <- central / vc
+    Cc ~ prop(propSd)
+  })
+}
