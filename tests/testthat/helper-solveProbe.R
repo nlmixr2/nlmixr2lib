@@ -95,14 +95,61 @@
   suppressWarnings(as.numeric(m))
 }
 
+# Variables a model() block sets to a plain number exactly once, such as
+# `ref_wt <- 88`, as a named numeric vector. A name assigned more than once has
+# no single value and is left out.
+.probeConstantAssignments <- function(expr) {
+  if (!is.call(expr) || !identical(expr[[1]], as.name("{"))) {
+    return(numeric(0))
+  }
+  nms <- character(0)
+  vals <- numeric(0)
+  everyName <- character(0)
+  for (i in seq_along(expr)[-1L]) {
+    st <- expr[[i]]
+    if (!is.call(st) || length(st) != 3L || !(identical(st[[1]], as.name("<-")) || identical(st[[1]], as.name("=")))) {
+      next
+    }
+    if (!is.name(st[[2]])) {
+      next
+    }
+    nm <- as.character(st[[2]])
+    everyName <- c(everyName, nm)
+    rhs <- st[[3]]
+    neg <- is.call(rhs) && length(rhs) == 2L && identical(rhs[[1]], as.name("-"))
+    if (neg) {
+      rhs <- rhs[[2]]
+    }
+    if (is.numeric(rhs) && length(rhs) == 1L && is.finite(rhs)) {
+      nms <- c(nms, nm)
+      vals <- c(vals, if (neg) -as.numeric(rhs) else as.numeric(rhs))
+    }
+  }
+  once <- names(which(table(everyName) == 1L))
+  keep <- nms %in% once
+  stats::setNames(vals[keep], nms[keep])
+}
+
+# A number written literally, or a name `consts` gives a value; NA otherwise.
+.probeResolveConstant <- function(x, consts) {
+  if (is.numeric(x) && length(x) == 1L && is.finite(x)) {
+    return(as.numeric(x))
+  }
+  if (is.name(x) && as.character(x) %in% names(consts)) {
+    return(consts[[as.character(x)]])
+  }
+  NA_real_
+}
+
 # Walk a model() block looking for the constant a covariate is normalised
 # against.  Population-PK models almost always write their reference value
-# literally into the equation -- `(WT / 70)^0.75`, `CRCL / 68`, `AGE - 40` --
-# so the author's own typical value is recoverable from the source rather than
-# guessed at.  Returns NA when no such constant appears.
+# into the equation -- `(WT / 70)^0.75`, `CRCL / 68`, `AGE - 40` -- or into a
+# named constant used there (`ref_wt <- 88; ...(WT - ref_wt)`), so the author's
+# own typical value is recoverable from the source rather than guessed at.
+# Returns NA when no such constant appears.
 # nolint start: cyclocomp_linter. One branch per expression shape; the
 # branch count is the rule set, not accidental complexity.
-.probeNormalisingWalk <- function(e, covName, hit) {
+.probeNormalisingWalk <- function(e, covName, hit, consts = numeric(0)) {
   if (is.finite(hit$value) || !is.call(e)) {
     return(invisible(NULL))
   }
@@ -112,25 +159,19 @@
   ) {
     lhs <- e[[2]]
     rhs <- e[[3]]
-    if (
-      is.name(lhs) && as.character(lhs) == covName && is.numeric(rhs) && length(rhs) == 1L && is.finite(rhs) && rhs != 0
-    ) {
-      hit$value <- as.numeric(rhs)
+    rv <- .probeResolveConstant(rhs, consts)
+    lv <- .probeResolveConstant(lhs, consts)
+    if (is.name(lhs) && as.character(lhs) == covName && is.finite(rv) && rv != 0) {
+      hit$value <- rv
     } else if (
-      identical(e[[1]], as.name("/")) &&
-        is.name(rhs) &&
-        as.character(rhs) == covName &&
-        is.numeric(lhs) &&
-        length(lhs) == 1L &&
-        is.finite(lhs) &&
-        lhs != 0
+      identical(e[[1]], as.name("/")) && is.name(rhs) && as.character(rhs) == covName && is.finite(lv) && lv != 0
     ) {
       # `70 / WT` -- the reference sits on the other side
-      hit$value <- as.numeric(lhs)
+      hit$value <- lv
     }
   }
   for (i in seq_along(e)) {
-    if (!is.null(e[[i]])) .probeNormalisingWalk(e[[i]], covName, hit)
+    if (!is.null(e[[i]])) .probeNormalisingWalk(e[[i]], covName, hit, consts)
   }
   invisible(NULL)
 }
@@ -142,8 +183,53 @@
   # target is named right where the assignment happens.
   hit <- new.env(parent = emptyenv())
   hit$value <- NA_real_
-  .probeNormalisingWalk(expr, covName, hit)
+  .probeNormalisingWalk(expr, covName, hit, .probeConstantAssignments(expr))
   hit$value
+}
+
+# Typical values for covariates that the unit table would put out of domain.
+# The unit table reads every duration as an adult's age (480 months, 14600
+# days, 350000 h), which suits AGE. For a postnatal or gestational age, a time
+# since injury or an infusion lag, it lands far outside the range the model was
+# fitted on, and a hematocrit given as a fraction falls through to the type
+# default of 1, which leaves no plasma. Each value is keyed by the leading word
+# of the declared units (see .probeUnitKey()), so a covariate gets the same
+# typical value on whichever scale a model carries it.
+.probeNameDefaults <- list(
+  # Two weeks after birth.
+  PNA = c(h = 336, days = 14, weeks = 2, months = 0.46, years = 0.038),
+  # Term.
+  PAGE = c(days = 280, weeks = 40, months = 9.2, years = 0.77),
+  GA = c(days = 266, weeks = 38),
+  DAY_AFTER_INJURY = c(days = 7),
+  # Ten minutes.
+  T_INFUSION_LAG = c(h = 0.17),
+  HCT = c(percent = 45, fraction = 0.45),
+  INS_BL = c(pmol = 60, mu = 10)
+)
+
+# The scale a free-text units string names, from its leading word: "days in
+# this paper (canonical PNA is months)" is days, "% (volume fraction times
+# 100)" is percent, "(fraction)" and "L/L" are fractions, "mU/L" and "uU/mL"
+# are both micro-units. NA when nothing matches.
+.probeUnitKey <- function(u) {
+  if (!is.character(u) || length(u) != 1L) {
+    return(NA_character_)
+  }
+  u <- tolower(trimws(u))
+  keys <- c(
+    percent = "^(%|percent)",
+    fraction = "^[(]?fraction|^l/l",
+    pmol = "^pmol",
+    mu = "^(mu|uu)/",
+    h = "^(h|hr|hours?)\\b",
+    days = "^days?\\b",
+    weeks = "^weeks?\\b",
+    months = "^months?\\b",
+    years = "^years?\\b"
+  )
+  hit <- names(keys)[vapply(keys, grepl, logical(1), x = u)]
+  if (length(hit)) hit[[1]] else NA_character_
 }
 
 # Pull the model() block out of an rxUi so the normalising-constant search has
@@ -209,7 +295,16 @@ probeCovariateValues <- function(ui) {
       next
     }
 
-    # 4. A physiological placeholder chosen from the declared units.
+    # 4. A typical value for a covariate the unit table would get wrong.
+    byScale <- .probeNameDefaults[[nm]]
+    scale <- .probeUnitKey(entry$units)
+    if (!is.null(byScale) && !is.na(scale) && scale %in% names(byScale)) {
+      values[[nm]] <- unname(byScale[[scale]])
+      why[[nm]] <- paste0("typical ", nm, " in ", scale)
+      next
+    }
+
+    # 5. A physiological placeholder chosen from the declared units.
     u <- entry$units
     if (is.character(u) && length(u) == 1L && u %in% names(.probeUnitDefaults)) {
       values[[nm]] <- unname(.probeUnitDefaults[[u]])
@@ -217,7 +312,7 @@ probeCovariateValues <- function(ui) {
       next
     }
 
-    # 5. Last resort, by declared type.  1 rather than 0 for anything
+    # 6. Last resort, by declared type.  1 rather than 0 for anything
     #    continuous, because a continuous covariate is far more likely to sit
     #    in a denominator than a binary one.
     ty <- entry$type
@@ -230,7 +325,7 @@ probeCovariateValues <- function(ui) {
 
 # Time grid, in the model's own time units.  A monoclonal antibody on a
 # 0-48 grid looks indistinguishable from a dead model if the units are days.
-probeTimeGrid <- function(ui) {
+probeTimeGrid <- function(ui, horizon = 1) {
   u <- as.list(ui$meta)$units
   tu <- if (is.list(u) && is.character(u$time) && length(u$time) == 1L) tolower(u$time) else ""
   end <- switch(
@@ -251,8 +346,14 @@ probeTimeGrid <- function(ui) {
     "months" = 12,
     48
   )
-  seq(0, end, length.out = 97L)
+  seq(0, end * horizon, length.out = 97L)
 }
+
+# How much longer the grid is made when a dose changes nothing on the default
+# grid: an absorption lag can exceed it (Khwarg_2024_donepezil_im's IM depot
+# lag is 235 h against a 48 h grid), which delays every effect past the last
+# observation. A model that is genuinely dead stays dead on the longer grid.
+.probeLongHorizon <- 10
 
 # The compartment a model expects to be dosed into, taken from the registry
 # rather than guessed.  Models that declare none are not probeable.
@@ -290,7 +391,15 @@ probeDoseCmts <- function(name, db, ui) {
 # works for every model in the registry, so probeSolveModel() tries them in
 # turn: naming the endpoint compartment is the most readable and works for the
 # large majority, `dvid` indices cover models whose endpoint names are not
-# compartment names, and untagged observations cover the rest.
+# compartment names, and untagged observations cover more. `first` tags every
+# observation with the first endpoint, as the vignettes of models mixing an
+# algebraic endpoint with ODE-state endpoints do (AlvarezJimenez_2016's
+# `Cc <- 1e6 * linCmt()` with PD states); rxSolve still returns every
+# endpoint's column.
+#
+# A model with a random effect on a grouping variable other than the subject
+# (`eta ~ v | OCC`) gets that column too: every record at level 1 except the
+# last, at level 2. See .probeGroupingVars().
 probeEvents <- function(ui, doseCmt, amt, times, form = "cmt") {
   ev <- rxode2::et(amt = amt, cmt = doseCmt[[1]])
   for (cm in doseCmt[-1]) {
@@ -302,6 +411,8 @@ probeEvents <- function(ui, doseCmt, amt, times, form = "cmt") {
       for (i in seq_along(eps)) {
         ev <- rxode2::et(ev, times, dvid = i)
       }
+    } else if (identical(form, "first")) {
+      ev <- rxode2::et(ev, times, cmt = eps[[1]])
     } else {
       for (ep in eps) {
         ev <- rxode2::et(ev, times, cmt = ep)
@@ -310,10 +421,32 @@ probeEvents <- function(ui, doseCmt, amt, times, form = "cmt") {
   } else {
     ev <- rxode2::et(ev, times)
   }
+  grp <- .probeGroupingVars(ui)
+  if (length(grp)) {
+    ev <- as.data.frame(ev)
+    if (!"id" %in% names(ev)) {
+      ev$id <- 1L
+    }
+    for (g in grp) {
+      ev[[g]] <- c(rep(1L, nrow(ev) - 1L), 2L)
+    }
+  }
   ev
 }
 
-.probeEventForms <- c("cmt", "dvid", "plain")
+.probeEventForms <- c("cmt", "dvid", "plain", "first")
+
+# Grouping variables of random effects that vary within a subject, such as
+# `etaiov ~ 0.1 | OCC`. rxSolve needs the column in the data even with the
+# etas zeroed. It also needs two levels of it: with one, it stops with "The
+# following parameter(s) are required for solving: THETA[1]". The zeroed etas
+# make the level irrelevant to every value solved. A grouping variable that is
+# also a covariate is supplied as one already.
+.probeGroupingVars <- function(ui) {
+  df <- ui$iniDf
+  cond <- df$condition[!is.na(df$neta1)]
+  setdiff(unique(cond[!is.na(cond)]), c("id", ui$allCovs))
+}
 
 # Every column worth comparing between two solves of the same model: the ODE
 # states and the model's own computed quantities, minus the stochastic
@@ -329,12 +462,20 @@ probeEvents <- function(ui, doseCmt, amt, times, form = "cmt") {
 #' Scaled per column so a 1e-4 threshold means the same thing for a
 #' concentration in ng/mL and an amount in mg. Columns present in only one of
 #' the two solves are ignored: the point is to compare the numbers the two
-#' paths both claim to produce.
+#' paths both claim to produce. Two paths that needed a different time grid
+#' (see .probeSolveUi()) or a different observation form (see probeEvents())
+#' disagree completely, and the result is 1: on the first the dose reached the
+#' model at different times, and on the second the event table the ODE model
+#' accepts no longer resolves after the conversion renumbered its
+#' compartments.
 #'
 #' @param a,b Results of `probeSolveModel()`, both with `status == "ok"`.
 #' @return A single non-negative number; 0 when the two solves agree.
 #' @noRd
 probeMaxRelDiff <- function(a, b) {
+  if (!identical(a$horizon, b$horizon) || !identical(a$eventForm, b$eventForm)) {
+    return(1)
+  }
   cols <- intersect(a$cols, b$cols)
   if (!length(cols) || nrow(a$dosed) != nrow(b$dosed)) {
     return(0)
@@ -360,6 +501,28 @@ probeMaxRelDiff <- function(a, b) {
     return(0)
   }
   max(rel, na.rm = TRUE)
+}
+
+# ODE solver error alone can put the two paths more than 1e-4 apart:
+# Matcha_2025_amikacin's peripheral amount differs by 8e-3 at rxSolve()'s
+# default tolerances and by 6e-5 at these. A conversion that changes the model
+# does not shrink with the tolerance, so a divergent model is re-solved at
+# these before it is reported.
+.probeTightSolver <- list(atol = 1e-12, rtol = 1e-12, maxsteps = 1e6)
+
+#' probeMaxRelDiff() of a model's two paths, both solved at tight tolerances
+#'
+#' @param name Registry model name.
+#' @param db The model registry.
+#' @return The largest relative disagreement, or NA when either path fails.
+#' @noRd
+probeTightRelDiff <- function(name, db) {
+  lin <- probeSolveModel(name, db, useLinCmt = TRUE, solverArgs = .probeTightSolver)
+  ode <- probeSolveModel(name, db, useLinCmt = FALSE, solverArgs = .probeTightSolver)
+  if (!identical(lin$status, "ok") || !identical(ode$status, "ok")) {
+    return(NA_real_)
+  }
+  probeMaxRelDiff(lin, ode)
 }
 
 # Screening for models at risk of the ODE-to-linCmt conversion defect ------
@@ -522,23 +685,25 @@ doseTimingCandidates <- function() {
 
 # One solve of an already-prepared model. `amt = 0` gives the no-dose control,
 # which keeps the two solves identical in every other respect -- same event
-# grid, same covariates, same solver settings.
-.probeSolveOnce <- function(ui, doseCmt, amt, times, covValues, useLinCmt, form) {
+# grid, same covariates, same solver settings. `solverArgs` are passed to
+# rxSolve() as they are (`method`, `atol`, `rtol`, ...).
+.probeSolveOnce <- function(ui, doseCmt, amt, times, covValues, useLinCmt, form, solverArgs = list()) {
   ev <- probeEvents(ui, doseCmt, amt, times, form)
   args <- list(object = ui, events = ev, returnType = "data.frame", addDosing = FALSE, useLinCmt = useLinCmt)
   if (length(covValues)) {
     args$params <- covValues
   }
+  args <- c(args, solverArgs)
   suppressWarnings(suppressMessages(do.call(rxode2::rxSolve, args)))
 }
 
 # Find an observation-record form this model accepts, and return the dosed
 # solve made with it.  Returns a `try-error` carrying the FIRST form's message
 # when none works, because that message names the real obstacle.
-.probeSolveWithAnyForm <- function(ui, doseCmt, amt, times, covValues, useLinCmt) {
+.probeSolveWithAnyForm <- function(ui, doseCmt, amt, times, covValues, useLinCmt, solverArgs = list()) {
   first <- NULL
   for (form in .probeEventForms) {
-    r <- try(.probeSolveOnce(ui, doseCmt, amt, times, covValues, useLinCmt, form), silent = TRUE)
+    r <- try(.probeSolveOnce(ui, doseCmt, amt, times, covValues, useLinCmt, form, solverArgs), silent = TRUE)
     if (!inherits(r, "try-error")) {
       return(list(result = r, form = form))
     }
@@ -552,6 +717,35 @@ doseTimingCandidates <- function() {
     if (NROW(ui$predDf) <= 1L) break
   }
   list(result = first, form = NA_character_)
+}
+
+# Solvers tried in turn, as extra rxSolve() arguments. rxode2's default
+# liblsoda returns every state NaN, with no warning, for the stiff time-kill
+# systems of Ho_2025_betalactam_pbp78_CRAB and the four
+# Mahadevan_2026_polymyxinB_meropenem_fosfomycin models, and cannot solve
+# Svensson_2016_rifampicin at all; dop853 solves all three, and their vignettes
+# already pass `method`. A model that is genuinely broken stays non-finite, or
+# unsolvable, under both.
+.probeSolverMethods <- list(default = list(), dop853 = list(method = "dop853"))
+
+# The dosed solve, with the first solver that gives finite states. When none
+# does, the default solver's attempt is returned, so a failure is reported as
+# rxSolve() gives it under its defaults.
+.probeSolveDosed <- function(ui, doseCmt, amt, times, covValues, useLinCmt, solverArgs = list()) {
+  first <- NULL
+  for (m in names(.probeSolverMethods)) {
+    args <- utils::modifyList(.probeSolverMethods[[m]], solverArgs)
+    attempt <- .probeSolveWithAnyForm(ui, doseCmt, amt, times, covValues, useLinCmt, args)
+    attempt$method <- m
+    attempt$solverArgs <- args
+    if (!inherits(attempt$result, "try-error") && !length(probeNonFiniteStates(ui, attempt$result))) {
+      return(attempt)
+    }
+    if (is.null(first)) {
+      first <- attempt
+    }
+  }
+  first
 }
 
 #' ODE states that a solve leaves NaN or infinite
@@ -584,12 +778,15 @@ probeNonFiniteStates <- function(ui, solved) {
 #'   subset it.
 #' @param useLinCmt Passed through to `rxSolve()`; `FALSE` disables rxode2's
 #'   ODE-to-`linCmt()` optimisation.
+#' @param solverArgs Extra `rxSolve()` arguments for every solve, such as
+#'   tighter `atol` and `rtol`.
 #' @return A list with `status` (one of "ok", "skip", "error"), and on success
 #'   `doseEffect` (the largest absolute difference the dose made to any
 #'   model quantity), `nonFiniteStates` (see `probeNonFiniteStates()`), the
-#'   `dosed` data frame, and the covariate provenance.
+#'   `dosed` data frame, the solver (`method`) and grid (`horizon`) used, and
+#'   the covariate provenance.
 #' @noRd
-probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100) {
+probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100, solverArgs = list()) {
   out <- list(name = name, status = "error", message = NA_character_)
   ui <- try(rxode2::rxUiDecompress(rxode2::as.rxUi(nlmixr2lib::readModelDb(name))), silent = TRUE)
   if (inherits(ui, "try-error")) {
@@ -602,25 +799,60 @@ probeSolveModel <- function(name, db, useLinCmt = TRUE, amt = 100) {
     out$message <- "no dosing compartment declared in the registry"
     return(out)
   }
-  ui <- try(rxode2::zeroRe(ui), silent = TRUE)
+  c(list(name = name), .probeSolveUi(ui, doseCmt, useLinCmt, amt, solverArgs))
+}
+
+# probeSolveModel() for a model already loaded, so fixture models can be
+# probed without a registry entry. Probes on the default grid, and again on a
+# grid .probeLongHorizon times longer when the dose changed nothing there.
+.probeSolveUi <- function(ui, doseCmt, useLinCmt = TRUE, amt = 100, solverArgs = list()) {
+  out <- list(status = "error", message = NA_character_)
+  ui <- try(.probeZeroRe(ui), silent = TRUE)
   if (inherits(ui, "try-error")) {
     out$message <- paste("zeroRe() failed:", conditionMessage(attr(ui, "condition")))
     return(out)
   }
   cov <- probeCovariateValues(ui)
-  times <- probeTimeGrid(ui)
-  attempt <- .probeSolveWithAnyForm(ui, doseCmt, amt, times, cov$values, useLinCmt)
+  res <- .probeSolveGrid(ui, doseCmt, amt, probeTimeGrid(ui), cov, useLinCmt, solverArgs)
+  res$horizon <- 1
+  if (identical(res$status, "ok") && !isTRUE(res$doseEffect > 0)) {
+    longer <- .probeSolveGrid(ui, doseCmt, amt, probeTimeGrid(ui, .probeLongHorizon), cov, useLinCmt, solverArgs)
+    if (identical(longer$status, "ok") && isTRUE(longer$doseEffect > 0)) {
+      res <- longer
+      res$horizon <- .probeLongHorizon
+    }
+  }
+  res
+}
+
+# zeroRe() for the kinds of random effect the model has. zeroRe() warns "No
+# omega parameters in the model" (or sigma) for a kind that is absent.
+.probeZeroRe <- function(ui) {
+  df <- ui$iniDf
+  which <- c(if (any(!is.na(df$neta1))) "omega", if (any(!is.na(df$err))) "sigma")
+  if (!length(which)) {
+    return(ui)
+  }
+  rxode2::zeroRe(ui, which = which)
+}
+
+# The dosed and no-dose solves on one time grid, and what the dose changed.
+.probeSolveGrid <- function(ui, doseCmt, amt, times, cov, useLinCmt, solverArgs) {
+  out <- list(status = "error", message = NA_character_, covWhy = cov$why)
+  attempt <- .probeSolveDosed(ui, doseCmt, amt, times, cov$values, useLinCmt, solverArgs)
   dosed <- attempt$result
   if (inherits(dosed, "try-error")) {
     out$message <- paste("solve failed:", conditionMessage(attr(dosed, "condition")))
-    out$covWhy <- cov$why
     return(out)
   }
   out$eventForm <- attempt$form
-  undosed <- try(.probeSolveOnce(ui, doseCmt, 0, times, cov$values, useLinCmt, attempt$form), silent = TRUE)
+  out$method <- attempt$method
+  undosed <- try(
+    .probeSolveOnce(ui, doseCmt, 0, times, cov$values, useLinCmt, attempt$form, attempt$solverArgs),
+    silent = TRUE
+  )
   if (inherits(undosed, "try-error")) {
     out$message <- paste("control solve failed:", conditionMessage(attr(undosed, "condition")))
-    out$covWhy <- cov$why
     return(out)
   }
   cols <- intersect(.probeValueCols(dosed), .probeValueCols(undosed))

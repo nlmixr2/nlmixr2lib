@@ -83,11 +83,7 @@ knownLinCmtDropModels <- character(0)
 # drive it -- work out which before adding it". Both causes turned up on
 # 2026-09-17, and they need different follow-up, so they get different lists.
 
-# (1) The probe's limitation, NOT a model defect. Retlich_2015_linagliptin
-# declares two endpoints (Cc and Dpp4Act) of which Dpp4Act is an algebraic
-# observable rather than an ODE state, and none of .probeEventForms builds an
-# observation table rxode2 accepts for that shape. The model itself is sound:
-# its vignette renders clean. Remove this entry when the probe learns the form.
+# (1) The probe's limitation, NOT a model defect.
 #
 # Kim_2024_islatravir: the probe's covariate derivation pairs an oral tablet
 # amount with the implant route. DOSE_ISLATRAVIR_MG takes 0.1 (the first
@@ -96,9 +92,22 @@ knownLinCmtDropModels <- character(0)
 # kce_implant to NA for an implant load outside its five studied loads (48, 52,
 # 54, 56, 62 mg), so every ODE state is NaN. That is the model refusing an
 # unsupported regimen, as designed. Its vignette solves the studied regimens.
+#
+# Hopkins_2024_amisulpride: the formulation is chosen by ten one-hot
+# FORM_SEP4199_* indicators with no reference level, so the probe's reference
+# value of 0 for each selects no formulation. Every bioavailability fraction is
+# then 0 and the dose changes nothing. The vignette sets exactly one indicator
+# per arm.
+#
+# Tan_2025_adomeglivant_ffh: the probe reads FPG = 3.5 from `FPG - 3.5`, which
+# is the HOMA glucose floor in `bcf0 <- INS_BL / (ki * (FPG - 3.5))`, not a
+# reference value. bcf0 is then infinite and Hba1c NaN from the first step. The
+# model requires INS_BL < 5 * (FPG - 3.5), as its covariateData says; at the
+# cohort reference FPG = 8.2 (the `FPG - 8.2` in kout) every state is finite.
 probeUnsupportedModels <- c(
-  "Retlich_2015_linagliptin",
-  "Kim_2024_islatravir"
+  "Kim_2024_islatravir",
+  "Hopkins_2024_amisulpride",
+  "Tan_2025_adomeglivant_ffh"
 )
 
 # (2) Genuinely BROKEN models, quarantined so this gate can go green while the
@@ -118,9 +127,20 @@ probeUnsupportedModels <- c(
 #   indirect_prec_1cpt_stim_r0rmaxcrmax
 #     Same negative-EC50 expression, AND line 42 defines kin in terms of
 #     itself: kin <- (kout*(kin+kpout)*rbase)/kpin.
+#
+#   tgi_sat_genVonBertalanffy, tgi_no_sat_powerLaw
+#     Both write `lgamma <- 0.95` and `gamma <- exp(lgamma)`, so the growth
+#     exponent is exp(0.95) = 2.59, though both label gamma "proliferative
+#     cells as a fraction of the full tumor volume". Every other lgamma in the
+#     registry is written `log(x)`. With gamma > 1, `kg * tumor_size^gamma`
+#     outgrows any linear loss and the tumour size reaches infinity in finite
+#     time: NaN from t = 0.5 in genVonBertalanffy, "could not solve the
+#     system" in powerLaw. Both solve at gamma = 0.95 or 2/3.
 knownBrokenModels <- c(
   "indirect_1cpt_stim_kin_r0rmaxcrmax",
-  "indirect_prec_1cpt_stim_r0rmaxcrmax"
+  "indirect_prec_1cpt_stim_r0rmaxcrmax",
+  "tgi_sat_genVonBertalanffy",
+  "tgi_no_sat_powerLaw"
 )
 
 # Solving every model in the registry takes roughly an hour. That is the right
@@ -261,12 +281,15 @@ test_that("every model in the registry responds to a dose", {
     if (is.na(r$doseEffect) || r$doseEffect <= 0) dead <- c(dead, n)
   }
 
+  # A model the probe cannot drive, or that is known to be broken, can also
+  # look dead (Hopkins_2024_amisulpride, whose probe selects no formulation).
+  deadExempt <- c(knownLinCmtDropModels, probeUnsupportedModels, knownBrokenModels)
   expect_equal(
-    setdiff(dead, knownLinCmtDropModels),
+    setdiff(dead, deadExempt),
     character(0),
     info = paste0(
       "Model(s) that a dose does not reach under default rxSolve() arguments: ",
-      paste(setdiff(dead, knownLinCmtDropModels), collapse = ", "),
+      paste(setdiff(dead, deadExempt), collapse = ", "),
       ". Try rxSolve(..., useLinCmt = FALSE); if that fixes it the model has ",
       "hit the ODE-to-linCmt conversion defect described at the top of this ",
       "file."
@@ -376,6 +399,156 @@ test_that("doseTimingCandidates() finds the models that read a compartment's dos
   expect_false("PK_1cmt_des" %in% cand)
 })
 
+test_that("the probe gives a within-subject grouping variable two levels", {
+  ui <- rxode2::rxUiDecompress(rxode2::as.rxUi(.pbOccModel))
+  expect_identical(.probeGroupingVars(ui), "OCC")
+  ev <- probeEvents(ui, "central", 100, c(0, 1, 2))
+  # Rows: observation at 0, dose at 0, observations at 1 and 2.
+  expect_identical(ev$OCC, c(1L, 1L, 1L, 2L))
+  # Without the column rxSolve cannot find OCC; with one level it asks for the
+  # level's THETA. With two it solves.
+  r <- .probeSolveUi(ui, "central", useLinCmt = FALSE)
+  expect_identical(r$status, "ok")
+  expect_gt(r$doseEffect, 0)
+  # Subject-level etas only: no extra column.
+  ui <- rxode2::rxUiDecompress(rxode2::as.rxUi(.pbLagModel))
+  expect_identical(.probeGroupingVars(ui), character(0))
+  expect_false("OCC" %in% names(as.data.frame(probeEvents(ui, "depot", 100, c(0, 1)))))
+})
+
+test_that("the `first` observation form tags every observation with the first endpoint", {
+  ui <- rxode2::rxUiDecompress(rxode2::as.rxUi(.pbTwoEndpointModel))
+  ev <- as.data.frame(probeEvents(ui, "central", 100, c(0, 1), "first"))
+  expect_identical(ev$cmt[ev$evid == 0L], c("Cc", "Cc"))
+  ev <- as.data.frame(probeEvents(ui, "central", 100, c(0, 1), "cmt"))
+  expect_identical(sort(ev$cmt[ev$evid == 0L]), c("Cc", "Cc", "effect", "effect"))
+})
+
+test_that("covariates the unit table would put out of domain get typical values", {
+  ui <- rxode2::rxUiDecompress(rxode2::as.rxUi(.pbNeonateModel))
+  cov <- probeCovariateValues(ui)
+  expect_identical(
+    cov$values[c("PNA", "GA", "HCT", "T_INFUSION_LAG")],
+    c(PNA = 0.46, GA = 38, HCT = 0.45, T_INFUSION_LAG = 0.17)
+  )
+  expect_identical(
+    unname(cov$why[c("PNA", "HCT")]),
+    c("typical PNA in months", "typical HCT in fraction")
+  )
+  r <- .probeSolveUi(ui, "central", useLinCmt = FALSE)
+  expect_identical(r$status, "ok")
+  expect_gt(r$doseEffect, 0)
+})
+
+test_that(".probeUnitKey() reads the scale from the leading word of a units string", {
+  expect_identical(.probeUnitKey("days in this paper (canonical PNA is months)"), "days")
+  expect_identical(.probeUnitKey("months"), "months")
+  expect_identical(.probeUnitKey("week"), "weeks")
+  expect_identical(.probeUnitKey("h"), "h")
+  expect_identical(.probeUnitKey("hours"), "h")
+  expect_identical(.probeUnitKey("% (volume fraction times 100)"), "percent")
+  expect_identical(.probeUnitKey("percent"), "percent")
+  expect_identical(.probeUnitKey("(fraction)"), "fraction")
+  expect_identical(.probeUnitKey("fraction (0-1)"), "fraction")
+  expect_identical(.probeUnitKey("L/L (volume fraction)"), "fraction")
+  expect_identical(.probeUnitKey("pmol/L"), "pmol")
+  expect_identical(.probeUnitKey("mU/L (paper internal units)"), "mu")
+  expect_identical(.probeUnitKey("uU/mL"), "mu")
+  expect_identical(.probeUnitKey("kg"), NA_character_)
+  expect_identical(.probeUnitKey(NULL), NA_character_)
+})
+
+test_that("a normalising constant held in a named variable is found", {
+  body <- quote({
+    ref_wt <- 88
+    neg <- -2
+    twice <- 1
+    twice <- 2
+    cl <- exp(lcl) * (1 + e_wt * (WT - ref_wt)) * (AGE - twice)
+  })
+  # `twice` has no single value, so it is left out.
+  expect_identical(.probeConstantAssignments(body), c(ref_wt = 88, neg = -2))
+  expect_identical(.probeNormalisingConstant(body, "WT"), 88)
+  expect_identical(.probeNormalisingConstant(body, "AGE"), NA_real_)
+  expect_identical(
+    .probeNormalisingConstant(
+      quote({
+    ref <- 70
+    x <- ref / WT
+  }),
+      "WT"
+    ),
+    70
+  )
+  # A literal still wins without any assignment.
+  expect_identical(
+    .probeNormalisingConstant(
+      quote({
+    x <- (WT / 70)^0.75
+  }),
+      "WT"
+    ),
+    70
+  )
+})
+
+test_that("the probe lengthens the grid when an absorption lag outlasts it", {
+  ui <- rxode2::rxUiDecompress(rxode2::as.rxUi(.pbLagModel))
+  r <- .probeSolveUi(ui, "depot", useLinCmt = FALSE)
+  expect_identical(r$status, "ok")
+  expect_identical(r$horizon, .probeLongHorizon)
+  expect_identical(max(r$dosed$time), 480)
+  expect_gt(r$doseEffect, 0)
+  # A 1 h lag responds on the default grid, which is kept.
+  short <- rxode2::rxUiDecompress(rxode2::as.rxUi(rxode2::ini(.pbLagModel, ltlag = log(1))))
+  r <- .probeSolveUi(short, "depot", useLinCmt = FALSE)
+  expect_identical(r$horizon, 1)
+  expect_identical(max(r$dosed$time), 48)
+})
+
+test_that("two paths on different grids or observation forms count as fully divergent", {
+  a <- list(dosed = data.frame(time = c(0, 1), Cc = c(1, 2)), cols = "Cc", horizon = 1, eventForm = "cmt")
+  expect_identical(probeMaxRelDiff(a, a), 0)
+  expect_identical(probeMaxRelDiff(a, utils::modifyList(a, list(horizon = 10))), 1)
+  expect_identical(probeMaxRelDiff(a, utils::modifyList(a, list(eventForm = "first"))), 1)
+})
+
+test_that("the probe falls back to dop853 when liblsoda cannot solve a model", {
+  skip_on_cran()
+  skip_if_not_installed("rxode2")
+  db <- nlmixr2lib::modeldb
+  # liblsoda stops with "could not solve the system".
+  r <- probeSolveModel("Svensson_2016_rifampicin", db, useLinCmt = FALSE)
+  expect_identical(r$status, "ok")
+  expect_identical(r$method, "dop853")
+  expect_identical(r$nonFiniteStates, character(0))
+  # liblsoda returns every state NaN, with no warning.
+  r <- probeSolveModel("Ho_2025_betalactam_pbp78_CRAB", db, useLinCmt = FALSE)
+  expect_identical(r$method, "dop853")
+  expect_identical(r$nonFiniteStates, character(0))
+  # A model liblsoda solves keeps the default.
+  expect_identical(probeSolveModel("PK_1cmt", db, useLinCmt = FALSE)$method, "default")
+})
+
+test_that("a model mixing an algebraic endpoint with ODE-state endpoints probes with the `first` form", {
+  skip_on_cran()
+  skip_if_not_installed("rxode2")
+  r <- probeSolveModel("AlvarezJimenez_2016_scopolamine", nlmixr2lib::modeldb, useLinCmt = FALSE)
+  expect_identical(r$status, "ok")
+  expect_identical(r$eventForm, "first")
+  expect_gt(r$doseEffect, 0)
+})
+
+test_that("a linCmt divergence that is ODE solver error disappears at tight tolerances", {
+  skip_on_cran()
+  skip_if_not_installed("rxode2")
+  db <- nlmixr2lib::modeldb
+  lin <- probeSolveModel("Matcha_2025_amikacin", db, useLinCmt = TRUE)
+  ode <- probeSolveModel("Matcha_2025_amikacin", db, useLinCmt = FALSE)
+  expect_gt(probeMaxRelDiff(lin, ode), 1e-4)
+  expect_lt(probeTightRelDiff("Matcha_2025_amikacin", db), 1e-4)
+})
+
 test_that("a dosed probe solve leaves every ODE state finite", {
   # A state goes NaN when a derivative does, and the usual cause in this
   # registry is a dose-history function -- `tad(cmt)`, `podo(cmt)`,
@@ -466,16 +639,24 @@ test_that("rxode2's linCmt() optimisation never changes a model's solution", {
     }
     if (probeMaxRelDiff(lin, ode) > 1e-4) divergent <- c(divergent, n)
   }
+  # ODE solver error alone can exceed 1e-4; a conversion that changes the model
+  # does not shrink with the tolerance. So what is left is re-solved at tight
+  # tolerances before it is reported (see .probeTightSolver). Quarantined,
+  # unsupported and broken models are not re-solved: none of them is expected
+  # to agree.
+  candidates <- setdiff(divergent, c(knownLinCmtDropModels, probeUnsupportedModels, knownBrokenModels))
+  tight <- vapply(candidates, probeTightRelDiff, numeric(1), db = db)
+  newDivergent <- candidates[is.na(tight) | tight > 1e-4]
 
   expect_equal(
-    setdiff(divergent, knownLinCmtDropModels),
+    newDivergent,
     character(0),
     info = paste0(
       "Model(s) that solve differently with and without rxode2's linCmt ",
-      "conversion: ",
-      paste(setdiff(divergent, knownLinCmtDropModels), collapse = ", "),
-      ". The conversion has dropped a term the analytical solution cannot ",
-      "represent; see the comment at the top of this file."
+      "conversion, even at tight ODE tolerances: ",
+      paste(newDivergent, collapse = ", "),
+      ". The conversion has changed the model; see the comment above ",
+      "knownLinCmtDropModels for the causes found so far."
     )
   )
 })
@@ -494,17 +675,19 @@ test_that("the linCmt-drop quarantine contains no model that already solves", {
   skip_on_cran()
   skip_if_not_installed("rxode2")
 
+  #
+  # The quarantined models are probed in child processes through .gateProbe(),
+  # like every other probe in this file, and share its memo.
   db <- nlmixr2lib::modeldb
-  for (nm in knownLinCmtDropModels) {
-    expect_true(
-      nm %in% db$name,
-      info = paste0(nm, " is quarantined but is not in the registry; ", "remove it from knownLinCmtDropModels.")
-    )
-    if (!nm %in% db$name) {
-      next
-    }
-    lin <- probeSolveModel(nm, db, useLinCmt = TRUE)
-    ode <- probeSolveModel(nm, db, useLinCmt = FALSE)
+  expect_equal(
+    setdiff(knownLinCmtDropModels, db$name),
+    character(0),
+    info = "Quarantined but not in the registry; remove from knownLinCmtDropModels."
+  )
+  res <- .gateProbe(intersect(knownLinCmtDropModels, db$name))
+  for (nm in names(res)) {
+    lin <- res[[nm]]$lin
+    ode <- res[[nm]]$ode
     stillBroken <- identical(ode$status, "ok") &&
       (!identical(lin$status, "ok") || probeMaxRelDiff(lin, ode) > 1e-4)
     expect_true(
