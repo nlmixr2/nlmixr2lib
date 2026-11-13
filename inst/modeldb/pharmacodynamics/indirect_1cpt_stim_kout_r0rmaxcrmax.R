@@ -18,9 +18,9 @@ indirect_1cpt_stim_kout_r0rmaxcrmax <- function() {
     lvc     <- 3.45 ; label("Central volume of distribution (Vc)")
     lcl     <- 0.85 ; label("Clearance (Cl)")
     lrbase     <- 0.2  ; label("Baseline response prior to drug administration (R0)")
-    lrmax   <- 0.9  ; label("Maximal response (CRmax)")
-    ls1     <- 1.0  ; label("Initial slope of the response versus time curve (S1)")
-    lemax   <- 0.56 ; label("Maximum inhibitory factor attributed to drug (Imax)")
+    lrmax   <- log(0.6) ; label("Lowest response, reached when the concentration is CRmax (Rmax)")
+    ls1     <- 1.0  ; label("Magnitude of the initial slope of the response versus time curve at high concentration (|S1|)")
+    lemax   <- 0.56 ; label("Maximum stimulatory factor attributed to drug (Emax)")
     lcrmax  <- 0.67 ; label("Plasma concentration of drug at the time of maximal response (CRmax)")
     lfdepot <- 0.4  ; label("Bioavailability (F)")
     propSd  <- 0.5  ; label("Proportional residual error (fraction)")
@@ -37,10 +37,14 @@ indirect_1cpt_stim_kout_r0rmaxcrmax <- function() {
     fdepot <- exp(lfdepot)
     
     kel <- cl/vc
-    emax <- (rbase-rmax)/rmax
-    kin <- -s1/emax
+    # Drug-free, the response rests at R0 = kin/kout. At high concentration
+    # it first falls at kin*Emax, so |S1| = kin*Emax. It is lowest, Rmax,
+    # when dR/dt = 0 at concentration CRmax:
+    #   kin = kout*(1 + Emax*CRmax/(CRmax + EC50))*Rmax,
+    # which gives EC50 below and needs R0/(1 + Emax) < Rmax < R0.
+    kin <- s1/emax
     kout <- kin/rbase
-    IC50 <- crmax*(rmax*(1+emax)-rbase)/(rbase-rmax)
+    EC50 <- crmax*(rmax*(1+emax)-rbase)/(rbase-rmax)
     
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
@@ -48,7 +52,7 @@ indirect_1cpt_stim_kout_r0rmaxcrmax <- function() {
     Cc <-  central/vc
     
   
-    d/dt(effect) <- kin - kout*(1+Emax*Cc/(Cc + EC50))*effect
+    d/dt(effect) <- kin - kout*(1+emax*Cc/(Cc + EC50))*effect
     
     
     Cc ~ prop(propSd)

@@ -93,24 +93,16 @@ probeUnsupportedModels <- c(
 )
 
 # (2) Genuinely BROKEN models, quarantined so this gate can go green while the
-# defects are recorded rather than hidden. Both predate the gate, neither has a
-# vignette -- which is precisely why nothing caught them. Do NOT "fix" either by
-# guessing the algebra; both need their source reparameterisation checked.
-#
-#   indirect_1cpt_stim_kin_r0rmaxcrmax
-#     IC50 <- crmax*(rbase*(1+emax)-rmax)/(rmax-rbase) evaluates to -0.9838 at
-#     the shipped ini values (rbase 1.2214, rmax 2.4596, emax 0.5034, crmax
-#     1.9542). A negative IC50 makes Cc + IC50 cross zero as Cc rises, so the
-#     solver hits a singularity: "could not solve the system". The sibling
-#     indirect_1cpt_stim_kout_r0rmaxcrmax uses the mirrored form
-#     crmax*(rmax*(1+emax)-rbase)/(rbase-rmax) and solves, which is what
-#     suggests a sign transposition here rather than a modelling choice.
+# defects are recorded rather than hidden. It predates the gate and has no
+# vignette -- which is precisely why nothing caught it.
 #
 #   indirect_prec_1cpt_stim_r0rmaxcrmax
-#     Same negative-EC50 expression, AND line 42 defines kin in terms of
-#     itself: kin <- (kout*(kin+kpout)*rbase)/kpin.
+#     It overwrites the estimated emax with the value that makes its EC50
+#     negative, and defines kin in terms of itself:
+#     kin <- (kout*(kin+kpout)*rbase)/kpin. The negative EC50 makes Cc + EC50
+#     cross zero as Cc rises, so the solver hits a singularity: "could not
+#     solve the system".
 knownBrokenModels <- c(
-  "indirect_1cpt_stim_kin_r0rmaxcrmax",
   "indirect_prec_1cpt_stim_r0rmaxcrmax"
 )
 
