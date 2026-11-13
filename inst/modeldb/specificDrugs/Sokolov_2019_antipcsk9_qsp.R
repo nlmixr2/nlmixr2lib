@@ -77,6 +77,7 @@ Sokolov_2019_antipcsk9_qsp <- function() {
       sep = " "
     )
   )
+  dosing <- c("depot_evolo", "depot_aliro", "depot_aln", "depot_inc", "depot_rg")
 
   covariateData <- list(
     TRT_ANTIPCSK9_SIRNA = list(

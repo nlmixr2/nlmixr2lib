@@ -32,6 +32,7 @@ Snelder_2014_cardiovascular_rat <- function() {
     dosing_notes = "This model has NO drug dosing compartment and no internal PK. Snelder 2014 Table 2 derived every plasma-concentration-time profile from a separate literature PK model (Segre 1998 amiloride, Stopher 1988 amlodipine, Perlstein 2002 atropine, Lin 1988 + Li 2007 enalapril, Ikegaki 2001 fasudil, Asdaq & Inamdar 2009 hydrochlorothiazide, Hamilton 1985 prazosin, van Steeg 2010 + Belpaire 1990 propranolol) and published no CL / V / ka / F value for any of them. Drug exposure therefore enters only through the seven time-varying CP_<drug>_NGML covariate columns, in ng/mL to match the EC50 and slope units of Table 5. The only dosing records this model consumes are unit impulses (amt = 1) into the `handling` compartment, one per manual-restraint / oral-gavage event, which drive the Equation 4 handling artefact. The doses actually administered in the two source studies are recorded in population$dose_range.",
     output_units = "HR in beats/min, SV in mL/beat, CO in mL/min, TPR in mmHg/(mL/min), MAP in mmHg."
   )
+  dosing <- "handling"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Four of the five states are hemodynamic quantities

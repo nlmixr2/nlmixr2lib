@@ -10,6 +10,7 @@ Schmid_2017_nintedanib <- function() {
   )
   vignette <- "Schmid_2017_nintedanib"
   units <- list(time = "h", dosing = "mg", concentration = "nmol/L")
+  dosing <- c("depot", "central", "depot_bibf")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

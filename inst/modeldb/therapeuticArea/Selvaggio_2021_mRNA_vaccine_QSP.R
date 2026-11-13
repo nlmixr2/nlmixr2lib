@@ -52,6 +52,7 @@ Selvaggio_2021_mRNA_vaccine_QSP <- function() {
   )
 
   units <- list(time = "day", dosing = "number of LNP molecules", concentration = "pmole antibody (Ab)")
+  dosing <- "lnp"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

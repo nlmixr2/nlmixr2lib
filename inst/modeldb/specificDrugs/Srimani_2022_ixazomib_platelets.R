@@ -12,6 +12,7 @@ Srimani_2022_ixazomib_platelets <- function() {
   )
   vignette <- "Srimani_2022_ixazomib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL", platelets = "10^9/L")
+  dosing <- c("depot", "central", "depot_kpd")
 
   compartmentData <- list(
     depot = list(analyte = "ixazomib", units = "mg", specimen = "administration site", verified = TRUE),

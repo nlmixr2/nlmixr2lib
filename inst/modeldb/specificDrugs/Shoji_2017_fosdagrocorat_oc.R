@@ -3,6 +3,7 @@ Shoji_2017_fosdagrocorat_oc <- function() {
   reference <- "Shoji S, Suzuki A, Conrado DJ, Peterson MC, Hey-Hadavi J, McCabe D, Rojo R, Tammara BK. Dissociated Agonist of Glucocorticoid Receptor or Prednisone for Active Rheumatoid Arthritis: Effects on P1NP and Osteocalcin Pharmacodynamics. CPT Pharmacometrics Syst Pharmacol. 2017;6(7):439-448. doi:10.1002/psp4.12201"
   vignette <- "Shoji_2017_fosdagrocorat_oc"
   units <- list(time = "week", dosing = "mg", concentration = "ng/mL")
+  dosing <- "depot_kpd"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

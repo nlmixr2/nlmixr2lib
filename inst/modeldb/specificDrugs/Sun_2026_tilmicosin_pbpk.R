@@ -47,6 +47,7 @@ Sun_2026_tilmicosin_pbpk <- function() {
   # identical to the ug/mL the paper reports (and to the mg/kg used for
   # the maximum residue limits in liver, kidney and muscle).
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- "stomach"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against the Supporting Information code

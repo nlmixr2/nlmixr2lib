@@ -38,6 +38,7 @@ Schneider_2025_bevacizumab_nsclc_tgi <- function() {
     dosing = "mg",
     concentration = "mm (the observed variable tumor_size is a lesion longest diameter; drug concentrations Cc_<drug> are in mg/mL)"
   )
+  dosing <- "depot_erlotinib"
 
   # The tau-delayed copy of the bevacizumab PK drives vascular normalisation
   # and receives the same doses as central_bevacizumab; the reversibly
