@@ -1882,6 +1882,8 @@ navbar:
         href: articles/Olmos_2019_clozapine.html
       - text: "Cobicistat (Overbeek 2025)"
         href: articles/Overbeek_2025_cobicistat_olaparib_boosting.html
+      - text: "Cobimetinib (Duong 2026)"
+        href: articles/Duong_2026_cobimetinib.html
       - text: "Codeine (Ashraf 2024)"
         href: articles/Ashraf_2024_codeine.html
       - text: "Colchicine (Wright 2025)"
@@ -10015,6 +10017,7 @@ articles:
   - articles/Duong_2017_AT9283
   - articles/Duong_2022_gentamicin
   - articles/Duong_2025_clobetasolPropionate
+  - articles/Duong_2026_cobimetinib
   - articles/Dvorackova_2023_posaconazole
   - articles/Dvorackova_2026_valganciclovir
   - articles/Easterling_2018_magnesium_sulfate

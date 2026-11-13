@@ -1,0 +1,651 @@
+---
+title: "Cobimetinib single-cell stochastic PK-PD (Duong 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cobimetinib single-cell stochastic PK-PD (Duong 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Duong_2026_cobimetinib"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Duong_2026_cobimetinib"))$description`
+* Article: <https://doi.org/10.1002/psp4.70282>
+
+Duong 2026 is a proof-of-principle simulation study. A representative patient
+takes cobimetinib 60 mg once daily on a 21-days-on / 7-days-off (21/7)
+schedule. Deterministic one-compartment plasma PK supplies a free plasma
+concentration that is identical for every tumour cell. Each cell takes the
+drug up at a rate proportional to its own influx-transporter count `T_i`
+(log-normal across cells), clears it by first-order intracellular metabolism,
+and accumulates a death hazard through a sigmoid-Emax function of its
+intracellular concentration. A cell dies when its cumulative hazard reaches
+`-log(U_i)` with `U_i ~ Uniform(0, 1)`; the population goes extinct when the
+last cell dies.
+
+In the packaged model **one simulated subject is one tumour cell**. The
+per-cell random effect `etalkin_int_tumor` carries the transporter
+heterogeneity: `T_i = 500 * exp(etalkin_int_tumor)`, so the uptake rate
+constant `k_in * T_i` is log-normal with geometric mean `0.038 * 500 = 19`
+1/h and log-scale SD 0.5. The model returns the cell's cumulative hazard
+`cumhaz` and survival probability `sur = exp(-cumhaz)`. Drawing `U_i` and
+taking the maximum death time over a population of cells is done outside the
+model, as in the authors' code, and is shown below.
+
+# Population
+
+No patient data were fitted. All parameter values are literature-derived or
+calibrated (Methods, Parameter Justification). The systemic PK represents one
+typical patient; the cellular layer represents a tumour of `N` cells
+(`N = 100` in Experiment 2, `N = 100` to `2000` in Experiment 4) whose
+transporter counts are drawn from `LogNormal(log(500), 0.5^2)` (a coefficient of
+variation of 53%).
+
+The same information is available programmatically via
+`readModelDb("Duong_2026_cobimetinib")()$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Duong_2026_cobimetinib.R`. The authors'
+Julia code (supplementary `pk.jl`, `cellular_dynamics.jl`, `models.jl`) was
+read alongside the text to confirm structure and units.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| One-compartment first-order absorption PK, superposition of doses | -- | Methods, Systemic Pharmacokinetics; `pk.jl` |
+| `lka` (ka) | 2.0 1/h | Methods, Systemic Pharmacokinetics |
+| `lvc` (V/F) | 806 L | Methods, Systemic Pharmacokinetics |
+| `lkel` (ke) | 0.0171 1/h | Methods, Systemic Pharmacokinetics |
+| `fu`, `Cu = fu * Cc` | 0.05 | Methods, Systemic Pharmacokinetics |
+| `dC_i = (k_in T_i C_p,u - k_met C_i) dt + sigma_C dW_i` | -- | Methods, Cellular Pharmacokinetics; `cellular_dynamics.jl` `euler_maruyama_step!` |
+| `lkin_int_tumor` (k_in x median T) | 0.038 1/h x 500 = 19 1/h | Methods, Cellular Pharmacokinetics (`k_in = 0.038`, `mu_T = log 500`) |
+| `lkout_int_tumor` (k_met) | 0.1 1/h | Methods, Cellular Pharmacokinetics |
+| `etalkin_int_tumor` (sigma_T^2) | 0.5^2 = 0.25 | Methods, Cellular Pharmacokinetics (`sigma_T = 0.5`) |
+| `mu_i = mu_max C_i^n / (EC50^n + C_i^n)` | -- | Methods, Cellular Pharmacodynamics and Death Process |
+| `lemax` (mu_max) | 1.5 1/day | Methods, Cellular Pharmacodynamics |
+| `lec50` (EC50) | 2.0 | Methods, Cellular Pharmacodynamics |
+| `lhill` (n) | 2.5 | Methods, Cellular Pharmacodynamics |
+| `H_i(t) = integral of mu_i`, death at `H_i >= -log(U_i)` | -- | Methods, Cellular Pharmacodynamics; `cellular_dynamics.jl` `update_hazard!`, `check_death!` |
+| sigma_C (omitted) | 0.01 | Methods, Cellular Pharmacokinetics |
+
+# Simulation set-up
+
+Dosing follows the 21/7 schedule for 180 days. The plasma PK is solved with
+the cell layer for a grid of 161 transporter counts spanning `+/- 5` log-scale
+SDs around the median, each grid point being one subject with its
+`etalkin_int_tumor` set explicitly. Because the cellular ODE is linear in
+`T_i` and starts from zero, a cell's state is a smooth function of `T_i`; the
+extinction-time Monte Carlo below interpolates between neighbouring grid
+cells instead of solving every one of the 10^5 to 10^6 cells it draws.
+
+```{r solve}
+mod <- readModelDb("Duong_2026_cobimetinib")
+ui <- rxode2::rxode(mod)
+
+sigma_t <- 0.5 # log-scale SD of the transporter count, Methods
+dose_days <- unlist(lapply(0:6, function(cycle) cycle * 28 + 0:20))
+dose_days <- dose_days[dose_days < 180]
+dt <- 0.5
+tgrid <- seq(0, 180 * 24, by = dt)
+
+ev <- rxode2::et(amt = 60, time = dose_days * 24, cmt = "depot") |>
+  rxode2::et(tgrid, cmt = "central")
+
+zgrid <- seq(-5, 5, length.out = 161)
+log_t_grid <- log(500) + sigma_t * zgrid
+cells <- data.frame(etalkin_int_tumor = sigma_t * zgrid)
+
+sim <- rxode2::rxSolve(
+  ui,
+  events = ev, params = cells, returnType = "data.frame",
+  rtol = 1e-8, atol = 1e-10
+)
+stopifnot(nrow(sim) == length(tgrid) * nrow(cells))
+
+# One column per grid cell, one row per output time
+as_grid <- function(col) matrix(sim[[col]], nrow = length(tgrid))
+cumhaz_grid <- as_grid("cumhaz")
+hazard_grid <- as_grid("hazard")
+conc_grid <- as_grid("int_tumor")
+median_cell <- which.min(abs(zgrid))
+typ <- sim[sim$sim.id == median_cell, ]
+```
+
+The intracellular state scales exactly with `T_i`: the ratio of any cell's
+concentration to the median cell's is `T_i / 500` at every time point. This is
+a property of the ODE (same drawn parameters on both sides), so the tolerance
+is the integration tolerance.
+
+```{r linearity}
+ratio <- conc_grid[-1, ] / conc_grid[-1, median_cell]
+expected <- matrix(exp(sigma_t * zgrid), nrow = nrow(ratio), ncol = ncol(ratio), byrow = TRUE)
+max_rel_err <- max(abs(ratio / expected - 1))
+max_rel_err
+stopifnot(max_rel_err < 1e-6) # measured ~2e-8
+```
+
+# Systemic pharmacokinetics
+
+The paper states that, at steady state, the PK reproduces Tmax = 2.4 h, an
+accumulation factor of about 2.9 and a free peak of about 0.01 (Methods,
+Systemic Pharmacokinetics). The packaged ODE is first checked against the
+paper's closed-form superposition equation, then PKNCA summarises day 1 and
+day 9.
+
+```{r pk-closed-form}
+closed_form <- function(t) {
+  vapply(t, function(tt) {
+    s <- tt - dose_days * 24
+    s <- s[s >= 0]
+    sum(60 / 806 * 2.0 / (2.0 - 0.0171) * (exp(-0.0171 * s) - exp(-2.0 * s)))
+  }, numeric(1))
+}
+chk <- typ[typ$time <= 21 * 24 & typ$time > 0, ]
+pk_rel_err <- max(abs(chk$Cc / closed_form(chk$time) - 1))
+pk_rel_err
+stopifnot(pk_rel_err < 1e-6) # measured ~6e-9
+```
+
+```{r pknca}
+nca_conc <- dplyr::bind_rows(
+  typ |>
+    dplyr::filter(time <= 24) |>
+    dplyr::mutate(treatment = "Day 1", tad = time),
+  typ |>
+    dplyr::filter(time >= 192, time <= 216) |>
+    dplyr::mutate(treatment = "Day 9", tad = time - 192)
+) |>
+  dplyr::mutate(id = 1L) |>
+  dplyr::filter(!is.na(Cu)) |>
+  dplyr::select(id, treatment, tad, Cu)
+nca_dose <- data.frame(id = 1L, treatment = c("Day 1", "Day 9"), tad = 0, amt = 60)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cu ~ tad | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ tad | treatment + id)
+intervals <- data.frame(start = 0, end = 24, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+nca_wide |>
+  dplyr::rename(
+    "Interval" = treatment, "Free Cmax" = cmax, "Tmax (h)" = tmax,
+    "Free AUC0-24" = auclast
+  ) |>
+  knitr::kable(digits = 4, caption = "PKNCA on the free plasma concentration, day 1 and day 9.")
+```
+
+```{r pk-compare}
+reference <- data.frame(
+  treatment = c("Day 1", "Day 9"),
+  tmax = c(2.4, NA),
+  cmax = c(NA, 0.01)
+)
+nlmixr2lib::ncaComparisonTable(
+  nca_res, reference,
+  by = "treatment", params = c("cmax", "tmax"), tolerance_pct = 20
+) |>
+  knitr::kable(caption = "Simulated vs. stated PK. Reference Tmax is the analytic single-dose value log(ka/ke)/(ka-ke) = 2.4 h that the authors' code checks against; the free Cmax reference is the stated steady-state free peak of about 0.01.")
+
+acc <- nca_wide$cmax[nca_wide$treatment == "Day 9"] / nca_wide$cmax[nca_wide$treatment == "Day 1"]
+acc
+stopifnot(abs(acc / 2.9 - 1) < 0.05)
+```
+
+The day-9 Tmax (about 2 h on the 0.5 h output grid) is earlier than 2.4 h
+because drug carried over from earlier doses is already declining when the
+next dose is absorbed; the 2.4 h quoted in the paper is the single-dose
+analytic value, reproduced on
+day 1.
+
+```{r pk-plot, fig.cap = "Typical plasma (free) and median-cell intracellular cobimetinib over the first 56 days of 21/7 dosing."}
+typ |>
+  dplyr::filter(time <= 56 * 24) |>
+  dplyr::transmute(
+    time_day = time / 24,
+    `Free plasma (Cu x 100)` = Cu * 100,
+    `Median-cell intracellular` = int_tumor
+  ) |>
+  tidyr::pivot_longer(-time_day) |>
+  ggplot(aes(time_day, value, colour = name)) +
+  geom_line() +
+  geom_hline(yintercept = 2.0, linetype = 2) +
+  labs(x = "Time (day)", y = "Concentration", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+The dashed line is EC50 = 2.0. The authors calibrated `k_in / k_met = 0.38` so
+that the median cell sits near EC50 at the typical steady-state free plasma
+level under the quasi-steady-state (QSS) relation `C_i = 0.38 * T_i * C_p,u`;
+with the full ODE the median cell peaks somewhat lower because `k_met` smooths
+the plasma peaks.
+
+# Amplification factor (Experiment 1, Figure 1, Table S3)
+
+The amplification factor is `A = Var(mu_i) / Var(T_i)` evaluated at day 9,
+3 h after the dose, using the QSS concentration `C_i = kappa * T_i * C_p,u`
+(Methods, Computational Implementation). It is deterministic given the plasma
+level, so it is computed here by quadrature over the log-normal transporter
+distribution, using the free plasma concentration from the packaged model.
+
+```{r amplification}
+cu_195 <- typ$Cu[typ$time == 195]
+kappa <- exp(log(0.038 * 500)) / 500 / 0.1
+amp <- function(sigma, n = 2.5, ec50 = 2.0, dose_mult = 1) {
+  z <- seq(-8, 8, length.out = 4001)
+  w <- dnorm(z) / sum(dnorm(z))
+  t_i <- 500 * exp(sigma * z)
+  c_i <- kappa * t_i * cu_195 * dose_mult
+  mu <- 1.5 * c_i^n / (ec50^n + c_i^n)
+  var_mu <- sum(w * mu^2) - sum(w * mu)^2
+  var_t <- sum(w * t_i^2) - sum(w * t_i)^2
+  var_mu / var_t
+}
+a_base <- amp(sigma_t)
+a_base
+# Paper: A = 1.525e-6 +/- 1.47e-8 (Results, Extended Observation); Table S2c
+# replicate means 1.445e-6 to 1.536e-6 across population sizes.
+stopifnot(abs(a_base / 1.525e-6 - 1) < 0.1)
+```
+
+```{r table-s3a}
+cv <- c(0.3, 0.5, 0.7, 0.9)
+sigma_cv <- sqrt(log(cv^2 + 1))
+hill_n <- c(1.0, 1.5, 2.0, 2.5, 3.0)
+paper_s3a <- matrix(
+  c(
+    0.478, 0.367, 0.259, 0.178,
+    1.02, 0.723, 0.492, 0.330,
+    1.71, 1.17, 0.728, 0.480,
+    2.49, 1.60, 0.991, 0.584,
+    3.30, 2.00, 1.16, 0.695
+  ),
+  nrow = 5, byrow = TRUE
+)
+sim_s3a <- outer(hill_n, sigma_cv, Vectorize(function(n, s) amp(s, n = n))) * 1e6
+s3a <- expand.grid(n = hill_n, CV = paste0(cv * 100, "%")) |>
+  dplyr::mutate(
+    paper = as.vector(paper_s3a),
+    simulated = as.vector(sim_s3a),
+    pct_diff = 100 * (simulated / paper - 1)
+  )
+s3a |>
+  tidyr::pivot_wider(id_cols = n, names_from = CV, values_from = simulated) |>
+  dplyr::rename("Hill n" = n) |>
+  knitr::kable(digits = 3, caption = "Simulated amplification factor A (x 1e-6), Hill n vs. transporter CV. Replicates Table S3a.")
+summary(s3a$pct_diff)
+# Table S3a is a 50-replicate Monte Carlo mean; the quadrature value is its
+# expectation. Measured agreement: all 20 cells within 5%.
+stopifnot(
+  abs(median(s3a$pct_diff)) < 5,
+  max(abs(s3a$pct_diff)) < 10
+)
+```
+
+```{r figure-1, fig.cap = "Amplification factor vs. Hill coefficient (sigma_T = 0.5) and vs. sigma_T (n = 2.5). Replicates Figure 1A and 1B; points are the values quoted in Results."}
+fig1 <- dplyr::bind_rows(
+  data.frame(panel = "A: vs Hill n (sigma_T = 0.5)", x = c(1, 1.5, 2, 2.5, 3, 4)) |>
+    dplyr::mutate(A = vapply(x, function(n) amp(sigma_t, n = n), numeric(1))),
+  data.frame(panel = "B: vs sigma_T (n = 2.5)", x = c(0.1, 0.3, 0.5, 0.7, 1.0)) |>
+    dplyr::mutate(A = vapply(x, amp, numeric(1)))
+)
+fig1_paper <- data.frame(
+  panel = c("A: vs Hill n (sigma_T = 0.5)", "A: vs Hill n (sigma_T = 0.5)", "B: vs sigma_T (n = 2.5)", "B: vs sigma_T (n = 2.5)"),
+  x = c(1, 4, 0.1, 1.0),
+  A = c(3.4e-7, 2.5e-6, 3.4e-6, 2.5e-7)
+)
+ggplot(fig1, aes(x, A)) +
+  geom_line() +
+  geom_point() +
+  geom_point(data = fig1_paper, colour = "red", shape = 4, size = 3) +
+  scale_y_log10() +
+  facet_wrap(~panel, scales = "free_x") +
+  labs(x = NULL, y = "Amplification factor A") +
+  theme_bw()
+```
+
+# Extinction-time distributions (Experiment 2, Table 1, Figure 2)
+
+Each population has `N = 100` cells, observed for 56 days (two 21/7 cycles);
+1000 populations per model variant, as in the paper. A cell's death time is
+the first output time at which its cumulative hazard reaches `-log(U_i)`. For a
+cell between two grid transporter counts, the death times of the neighbouring
+grid cells are found from their own cumulative-hazard curves and interpolated
+linearly in `log(T)`.
+
+```{r death-time}
+death_times <- function(log_t, threshold, window) {
+  keep <- tgrid <= window
+  tt <- tgrid[keep]
+  j <- pmin(pmax(findInterval(log_t, log_t_grid), 1L), length(log_t_grid) - 1L)
+  w <- (log_t - log_t_grid[j]) / (log_t_grid[j + 1L] - log_t_grid[j])
+  cross <- function(col, th) {
+    h <- cummax(cumhaz_grid[keep, col])
+    i <- findInterval(th, h, left.open = TRUE) + 1L
+    out <- rep(Inf, length(th))
+    ok <- i <= length(tt)
+    out[ok] <- tt[i[ok]]
+    out
+  }
+  lo <- hi <- numeric(length(log_t))
+  for (jj in unique(j)) {
+    k <- which(j == jj)
+    lo[k] <- cross(jj, threshold[k])
+    hi[k] <- cross(jj + 1L, threshold[k])
+  }
+  tau <- (1 - w) * lo + w * hi
+  # When only one neighbour crosses within the window, take the nearer one.
+  one_side <- is.finite(lo) != is.finite(hi)
+  tau[one_side] <- ifelse(w[one_side] < 0.5, lo[one_side], hi[one_side])
+  tau
+}
+
+extinction <- function(n_cells, sigma, window, n_pop) {
+  pop <- rep(seq_len(n_pop), each = n_cells)
+  log_t <- log(500) + sigma * rnorm(n_cells * n_pop)
+  tau <- death_times(log_t, -log(runif(n_cells * n_pop)), window)
+  as.numeric(tapply(tau, pop, max))
+}
+
+set.seed(20260101)
+ext_h <- extinction(100, 0, 56 * 24, 1000)
+ext_pkpd <- extinction(100, sigma_t, 56 * 24, 1000)
+```
+
+Model PK (each cell has its own concentration but every cell experiences the
+death rate averaged over the cells still alive) is not a per-cell model, so it
+is not part of the packaged model. It is reproduced here from the per-cell
+hazards for 200 populations: at each time step the alive cells' hazards are
+averaged and that average is added to every alive cell's cumulative hazard.
+
+```{r model-pk}
+model_pk_extinction <- function(n_cells, sigma, window, n_pop) {
+  keep <- which(tgrid <= window)
+  vapply(seq_len(n_pop), function(p) {
+    log_t <- log(500) + sigma * rnorm(n_cells)
+    j <- pmin(pmax(findInterval(log_t, log_t_grid), 1L), length(log_t_grid) - 1L)
+    w <- (log_t - log_t_grid[j]) / (log_t_grid[j + 1L] - log_t_grid[j])
+    hz <- sweep(hazard_grid[keep, j, drop = FALSE], 2, 1 - w, `*`) +
+      sweep(hazard_grid[keep, j + 1L, drop = FALSE], 2, w, `*`)
+    threshold <- -log(runif(n_cells))
+    h <- numeric(n_cells)
+    alive <- rep(TRUE, n_cells)
+    for (m in seq_along(keep)[-1]) {
+      mu_avg <- mean(hz[m - 1L, alive])
+      h[alive] <- h[alive] + mu_avg * dt / 24
+      alive <- alive & h < threshold
+      if (!any(alive)) {
+        return(tgrid[keep[m]])
+      }
+    }
+    Inf
+  }, numeric(1))
+}
+ext_pk <- model_pk_extinction(100, sigma_t, 56 * 24, 200)
+```
+
+```{r table-1}
+qs <- c(0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95)
+finite_q <- function(x) stats::quantile(x[is.finite(x)], qs, names = FALSE)
+paper_t1 <- data.frame(
+  Quantile = paste0("Q", qs * 100),
+  H_paper = c(182, 199, 234, 261, 293, 337, 378),
+  PK_paper = c(171, 187, 215, 252, 308, 438, 532),
+  PKPD_paper = c(301, 374, 706, 875, 1021, 1163, 1227)
+)
+t1 <- paper_t1 |>
+  dplyr::mutate(
+    H_sim = finite_q(ext_h),
+    PK_sim = finite_q(ext_pk),
+    PKPD_sim = finite_q(ext_pkpd)
+  )
+t1 |>
+  dplyr::select(Quantile, H_paper, H_sim, PK_paper, PK_sim, PKPD_paper, PKPD_sim) |>
+  dplyr::rename(
+    "Model H, paper (h)" = H_paper, "Model H, sim (h)" = H_sim,
+    "Model PK, paper (h)" = PK_paper, "Model PK, sim (h)" = PK_sim,
+    "Model PKPD, paper (h)" = PKPD_paper, "Model PKPD, sim (h)" = PKPD_sim
+  ) |>
+  knitr::kable(digits = 0, caption = "Extinction-time quantiles among extinct populations, 56-day window. Replicates Table 1.")
+
+ext_summary <- data.frame(
+  Model = c("H", "PK", "PKPD"),
+  `Extinct, paper (%)` = c(100, 99.2, 63.6),
+  `Extinct, sim (%)` = 100 * c(mean(is.finite(ext_h)), mean(is.finite(ext_pk)), mean(is.finite(ext_pkpd))),
+  `Variance, paper (h^2)` = c(2828, 16394, 62113),
+  `Variance, sim (h^2)` = c(var(ext_h), var(ext_pk[is.finite(ext_pk)]), var(ext_pkpd[is.finite(ext_pkpd)])),
+  check.names = FALSE
+)
+knitr::kable(ext_summary, digits = 1, caption = "Fraction of populations extinct by day 56 and extinction-time variance among extinct populations (Results, Experiment 2).")
+```
+
+```{r table-1-check}
+pkpd_extinct_pct <- 100 * mean(is.finite(ext_pkpd))
+med_h <- median(ext_h)
+med_pkpd <- median(ext_pkpd[is.finite(ext_pkpd)])
+c(pkpd_extinct_pct = pkpd_extinct_pct, med_h = med_h, med_pkpd = med_pkpd)
+stopifnot(
+  # Every homogeneous population goes extinct (paper: 1000/1000)
+  mean(is.finite(ext_h)) > 0.99,
+  # Paper 63.6%; binomial SE with 1000 populations is 1.5 points
+  abs(pkpd_extinct_pct - 63.6) < 10,
+  # Paper medians 261 h (H) and 875 h (PKPD)
+  abs(med_h / 261 - 1) < 0.1,
+  abs(med_pkpd / 875 - 1) < 0.1,
+  # Heterogeneity prolongs extinction by roughly 3.4-fold (paper)
+  med_pkpd / med_h > 2.5
+)
+```
+
+```{r figure-2, fig.cap = "Extinction times among extinct populations by model variant, 56-day window. Replicates Figure 2."}
+dplyr::bind_rows(
+  data.frame(Model = "H", tau = ext_h),
+  data.frame(Model = "PK", tau = ext_pk),
+  data.frame(Model = "PKPD", tau = ext_pkpd)
+) |>
+  dplyr::filter(is.finite(tau)) |>
+  ggplot(aes(Model, tau)) +
+  geom_boxplot(fill = "skyblue") +
+  labs(y = "Extinction time (h)") +
+  theme_bw()
+```
+
+# Extended 180-day simulation (Figure 3)
+
+```{r extended}
+set.seed(20260102)
+ext180_h <- extinction(100, 0, 180 * 24, 500)
+ext180_pkpd <- extinction(100, sigma_t, 180 * 24, 500)
+fin <- is.finite(ext180_pkpd)
+extended <- data.frame(
+  Quantity = c(
+    "Model H extinct (%)", "Model H mean (day)", "Model H SD (day)",
+    "Model PKPD extinct (%)", "Model PKPD mean (day)", "Model PKPD SD (day)"
+  ),
+  Paper = c(100, 11.2, 2.1, 95.2, 52.9, 29.8),
+  Simulated = c(
+    100 * mean(is.finite(ext180_h)), mean(ext180_h) / 24, sd(ext180_h) / 24,
+    100 * mean(fin), mean(ext180_pkpd[fin]) / 24, sd(ext180_pkpd[fin]) / 24
+  )
+)
+knitr::kable(extended, digits = 1, caption = "180-day simulations, 500 populations of 100 cells per variant (Results, Extended Observation).")
+stopifnot(
+  abs(mean(ext180_h) / 24 / 11.2 - 1) < 0.1,
+  abs(mean(ext180_pkpd[fin]) / 24 / 52.9 - 1) < 0.2
+)
+```
+
+```{r figure-3, fig.cap = "Extinction-time histograms, 180-day simulation. Replicates Figure 3; the PKPD peaks align with the on-treatment windows of successive cycles."}
+dplyr::bind_rows(
+  data.frame(Model = "H", tau = ext180_h),
+  data.frame(Model = "PKPD", tau = ext180_pkpd)
+) |>
+  dplyr::filter(is.finite(tau)) |>
+  ggplot(aes(tau, fill = Model)) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = 150, alpha = 0.6, position = "identity") +
+  labs(x = "Extinction time (h)", y = "Density") +
+  theme_bw()
+```
+
+# Mean-field models (Experiment 3, Table 2, Figure 4)
+
+The mean-field variants solve `dN/dt = -mu(C(t)) N` from `N(0) = 100` with a
+single transporter count and call the population extinct when `N < 1`, i.e.
+when the cumulative hazard reaches `log(100)`. The paper writes
+`C(t) = kappa * T * C_p,u(t)` (QSS); both the QSS and the packaged ODE
+concentration are shown.
+
+```{r mean-field}
+mf_time <- function(t_count, use_qss) {
+  if (use_qss) {
+    c_i <- kappa * t_count * typ$Cu
+    mu <- 1.5 * c_i^2.5 / (2^2.5 + c_i^2.5)
+    h <- c(0, cumsum((mu[-1] + mu[-length(mu)]) / 2 * dt / 24))
+  } else {
+    lt <- log(t_count)
+    j <- findInterval(lt, log_t_grid)
+    w <- (lt - log_t_grid[j]) / (log_t_grid[j + 1] - log_t_grid[j])
+    h <- (1 - w) * cumhaz_grid[, j] + w * cumhaz_grid[, j + 1]
+  }
+  tgrid[which(h >= log(100))[1]]
+}
+mf <- data.frame(
+  Variant = c("MF-mean", "MF-median", "MF-mode"),
+  Transporters = c(660, 500, 379),
+  Paper = c(216, 248, 346)
+) |>
+  dplyr::mutate(
+    `QSS (h)` = vapply(Transporters, mf_time, numeric(1), use_qss = TRUE),
+    `ODE (h)` = vapply(Transporters, mf_time, numeric(1), use_qss = FALSE)
+  )
+mf |>
+  dplyr::rename("Paper (h)" = Paper) |>
+  knitr::kable(digits = 1, caption = "Mean-field extinction times. Replicates Table 2.")
+# Deterministic. Measured: MF-median 248.5 vs 248 h, MF-mode 362.5 vs 346 h
+# (+5%). MF-mean comes out 184 vs 216 h (-15%) and is reported, not gated
+# (see Assumptions and deviations).
+stopifnot(
+  abs(mf$`QSS (h)`[mf$Variant == "MF-median"] / 248 - 1) < 0.02,
+  abs(mf$`QSS (h)`[mf$Variant == "MF-mode"] / 346 - 1) < 0.1,
+  # All mean-field times sit far below the stochastic PKPD median (875 h)
+  all(mf$`QSS (h)` < 0.5 * med_pkpd)
+)
+```
+
+```{r figure-4, fig.cap = "Model PKPD extinction-time distribution (56-day window, extinct populations) with the mean-field predictions (QSS) as vertical lines. Replicates Figure 4."}
+ggplot(data.frame(tau = ext_pkpd[is.finite(ext_pkpd)]), aes(tau)) +
+  geom_histogram(binwidth = 50, fill = "grey70", colour = "white") +
+  geom_vline(data = mf, aes(xintercept = `QSS (h)`, colour = Variant)) +
+  labs(x = "Extinction time (h)", y = "Populations", colour = NULL) +
+  theme_bw()
+```
+
+# Population size (Experiment 4, Table S2)
+
+200 populations per size over 180 days. Four of the paper's eight sizes are
+reproduced to keep the article quick to build.
+
+```{r scaling}
+set.seed(20260103)
+sizes <- c(100, 500, 1000, 2000)
+scaling <- dplyr::bind_rows(lapply(sizes, function(n_cells) {
+  e_h <- extinction(n_cells, 0, 180 * 24, 200)
+  e_p <- extinction(n_cells, sigma_t, 180 * 24, 200)
+  data.frame(
+    N = n_cells,
+    h_median_day = median(e_h) / 24,
+    pkpd_failure_pct = 100 * mean(!is.finite(e_p)),
+    pkpd_median_day = median(e_p[is.finite(e_p)]) / 24
+  )
+}))
+paper_s2 <- data.frame(
+  N = c(100, 500, 1000, 2000),
+  paper_h_median_day = c(11.0, 13.8, 14.6, 16.0),
+  paper_pkpd_failure_pct = c(2.5, 12.5, 24.5, 45.0),
+  paper_pkpd_median_day = c(43.4, 91.6, 118.5, 133.0)
+)
+s2 <- dplyr::left_join(paper_s2, scaling, by = "N")
+s2 |>
+  dplyr::select(N, paper_h_median_day, h_median_day, paper_pkpd_failure_pct, pkpd_failure_pct, paper_pkpd_median_day, pkpd_median_day) |>
+  dplyr::rename(
+    "H median, paper (day)" = paper_h_median_day, "H median, sim (day)" = h_median_day,
+    "PKPD failure, paper (%)" = paper_pkpd_failure_pct, "PKPD failure, sim (%)" = pkpd_failure_pct,
+    "PKPD median, paper (day)" = paper_pkpd_median_day, "PKPD median, sim (day)" = pkpd_median_day
+  ) |>
+  knitr::kable(digits = 1, caption = "Extinction outcome vs. tumour cell count. Replicates Tables S2a and S2b.")
+stopifnot(
+  abs(median(s2$h_median_day / s2$paper_h_median_day - 1)) < 0.1,
+  abs(median(s2$pkpd_median_day / s2$paper_pkpd_median_day - 1)) < 0.15,
+  # Failure rises with population size (paper: 2.5% at N = 100, 45% at N = 2000)
+  s2$pkpd_failure_pct[s2$N == 2000] - s2$pkpd_failure_pct[s2$N == 100] > 25
+)
+```
+
+# Assumptions and deviations
+
+* **Diffusion term omitted.** The paper's intracellular SDE has a diffusion
+  coefficient `sigma_C = 0.01` (h^-1/2, on the concentration scale). rxode2
+  integrates ODEs, so the packaged model carries the deterministic drift only.
+  The stationary SD of that noise, `sigma_C / sqrt(2 k_met) = 0.022`, is about
+  1% of EC50, and the paper's own Experiment 1 drops the noise (QSS). The
+  extinction-time, mean-field and scaling results above are reproduced without
+  it.
+* **Concentration units.** The paper labels all concentrations uM, but its code
+  computes the plasma concentration as dose (mg) / V/F (L) with no
+  molecular-weight conversion (`pk.jl`; the free peak of about 0.01 and the
+  calibration `0.38 * 500 * 0.0105 = 2.0 = EC50` both hold only on that
+  scale). The packaged model keeps that numerical scale and labels it mg/L.
+  The authors' code also carries stale reference values in its PK validation
+  routine (steady-state Cmax 0.51, free Cmax 0.026, accumulation 2.4) that
+  disagree with the paper text; the paper text is followed.
+* **Transporter heterogeneity as a random effect.** `T_i` enters only through
+  the product `k_in * T_i`, so it is encoded as a log-normal random effect on
+  `kin_int_tumor` (geometric mean `0.038 * 500`, variance 0.25). Model H is
+  `zeroRe()` of this model. Model PK, which averages death rates across cells,
+  is a population-level construction and is reproduced in this article rather
+  than in the model file.
+* **sigma_T.** The paper uses `sigma_T = 0.5` (CV 53%) for all baseline
+  experiments. Its Parameter Justification section also writes
+  `sigma_T = sqrt(log(CV^2 + 1)) = 0.472 for CV = 53%`, which is the value for
+  CV = 50%; 0.5 is used, as in the experiments and the code. The CV-indexed
+  sensitivity tables (Table S3) convert CV to sigma_T with that formula, as done
+  above.
+* **Death-time resolution and integration.** The authors integrate with
+  Euler-Maruyama at 0.1 h and update the hazard by the trapezoidal rule; here
+  the ODE is integrated by LSODA and death is detected on a 0.5 h output grid.
+  Monte Carlo draws differ from the paper's, so quantiles agree to within
+  Monte Carlo and multimodality effects: the PKPD distribution is
+  cycle-structured, so its lower quartile falls in a gap between treatment
+  cycles and moves more than the median between runs. The 56-day PKPD
+  extinction fraction comes out near 60% against the published 63.6% (about
+  two to three binomial standard errors with 1000 populations), and the
+  homogeneous lower quantiles are about 15% later than Table 1; the omitted
+  diffusion term and the Euler step are the likely sources. Medians, upper
+  quantiles, variances and the 180-day summaries agree to within about 5%.
+* **Amplification factor.** The quadrature value at baseline (1.45e-6) is
+  5% below the 1.525e-6 quoted for the 180-day runs and inside the
+  1.445e-6 to 1.536e-6 range of replicate means in Table S2c.
+* **Mean-field variants.** With the QSS concentration the paper writes, the
+  MF-median extinction time reproduces Table 2 (248.5 vs. 248 h) and MF-mode
+  is 5% above it (362.5 vs. 346 h), but MF-mean (660 transporters) comes out
+  about 15% earlier than the published 216 h. The paper does not give enough
+  detail to explain the MF-mean value; it is shown, not gated. The full ODE
+  gives the slower values in the last column because intracellular
+  concentrations lag plasma. The qualitative conclusion (all mean-field
+  predictions fall far below the stochastic median) holds either way.
+* **No residual error.** The model is a forward simulation of a mechanistic
+  hypothesis; it has no observation model.
