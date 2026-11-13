@@ -1948,13 +1948,13 @@ checkModelConventions <- function(model, verbose = TRUE) {
   if (!is.call(e)) {
     return(acc)
   }
-  op <- tryCatch(as.character(e[[1]]), error = function(e) character(0))
-  if (length(op) && op[[1]] %in% c("<-", "=") && length(e) >= 2L && is.name(e[[2]])) {
+  if (is.name(e[[1]]) && as.character(e[[1]]) %in% c("<-", "=") && length(e) >= 2L && is.name(e[[2]])) {
     acc <- c(acc, as.character(e[[2]]))
   }
+  # `e[[i]]` is tested in place: bound to a variable, an empty argument such
+  # as the one in `x[, 1]` errors when the variable is read.
   for (i in seq_along(e)) {
-    part <- tryCatch(e[[i]], error = function(e) NULL)
-    if (is.call(part)) acc <- .assignedNamesIn(part, acc)
+    if (is.call(e[[i]])) acc <- .assignedNamesIn(e[[i]], acc)
   }
   acc
 }
@@ -2057,10 +2057,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
     return(c(acc, as.character(e)))
   }
   if (is.call(e)) {
+    # `e[[i]]` is tested in place: bound to a variable, an empty argument such
+    # as the one in `x[, 1]` errors when the variable is read. The empty
+    # argument is a name whose text is "", and is not a symbol of the model.
     for (i in seq_along(e)) {
-      part <- tryCatch(e[[i]], error = function(e) NULL)
-      if (!is.null(part) && (is.call(part) || is.name(part))) {
-        acc <- .symbolsIn(part, acc)
+      if (is.call(e[[i]]) || (is.name(e[[i]]) && nzchar(as.character(e[[i]])))) {
+        acc <- .symbolsIn(e[[i]], acc)
       }
     }
   }
@@ -2510,10 +2512,12 @@ checkModelConventions <- function(model, verbose = TRUE) {
     e <- e[[2]]
   }
   if (is.call(e)) {
+    # Only calls can hold a `(`. `e[[i]]` is tested in place: bound to a
+    # variable, an empty argument such as the one in `x[, 1]` errors when the
+    # variable is read.
     for (i in seq_along(e)) {
-      part <- tryCatch(e[[i]], error = function(e) NULL)
-      if (!is.null(part) && (is.call(part) || is.name(part))) {
-        e[[i]] <- .stripParens(part)
+      if (is.call(e[[i]])) {
+        e[[i]] <- .stripParens(e[[i]])
       }
     }
   }
@@ -2573,9 +2577,10 @@ checkModelConventions <- function(model, verbose = TRUE) {
   if (!is.na(hit)) {
     acc <- c(acc, hit)
   }
+  # `e[[i]]` is tested in place: bound to a variable, an empty argument such
+  # as the one in `x[, 1]` errors when the variable is read.
   for (i in seq_along(e)) {
-    part <- tryCatch(e[[i]], error = function(e) NULL)
-    if (is.call(part)) acc <- .inverseLogitOffenders(part, acc)
+    if (is.call(e[[i]])) acc <- .inverseLogitOffenders(e[[i]], acc)
   }
   acc
 }

@@ -2991,3 +2991,23 @@ test_that("the message says when `dosing` is empty or there is no fallback", {
   expect_equal(hit2$name, "stomach")
   expect_true(grepl("no depot or central compartment to fall back to", hit2$message, fixed = TRUE))
 })
+
+# Expression walkers ---------------------------------------------------------
+#
+# An empty argument, as in `x[, 1]`, is a name whose text is "". Bound to a
+# variable it errors as soon as the variable is read, so every walker must test
+# `e[[i]]` in place. rxode2 model blocks do not carry one today; the walkers
+# also run on expressions built outside a model.
+
+test_that("the expression walkers handle an empty argument such as x[, 1]", {
+  e <- quote({
+    y <- 1 / (1 + exp(-x[, 1]))
+    z <- (x[, 1])
+  })
+  expect_identical(nlmixr2lib:::.assignedNamesIn(e), c("y", "z"))
+  expect_identical(nlmixr2lib:::.inverseLogitOffenders(e), "1/(1 + exp(-x[, 1]))")
+  # The empty argument is not a symbol.
+  expect_identical(nlmixr2lib:::.symbolsIn(quote(x[, 1] + y)), c("+", "[", "x", "y"))
+  expect_identical(nlmixr2lib:::.stripParens(quote((x[, 1]))), quote(x[, 1]))
+  expect_identical(nlmixr2lib:::.stripParens(quote(f((a), x[, 1]))), quote(f(a, x[, 1])))
+})
