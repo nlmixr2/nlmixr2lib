@@ -242,7 +242,9 @@ set.seed(20080309)
 rxode2::rxSetSeed(20080309)
 
 n_bov <- 300L
-occasion_start <- c(0, 1000)  # h; two admissions
+# The two admissions are 100 h apart: a dose record later than about 600 h after
+# time zero can return NA concentrations from the transit chain (see Assumptions).
+occasion_start <- c(0, 100)  # h; two admissions
 bov_events <- do.call(rbind, lapply(1:2, function(k) {
   base <- data.frame(id = seq_len(n_bov), WT = 20, CHILD = 1L, OCC = k)
   dose_nmol <- 20 * 1e6 / mw_diclofenac_na
@@ -255,9 +257,7 @@ bov_events <- do.call(rbind, lapply(1:2, function(k) {
 bov_events <- bov_events[order(bov_events$id, bov_events$time, -bov_events$evid), ]
 
 bov_sim <- as.data.frame(rxode2::rxSolve(mod(), events = bov_events, keep = "OCC"))
-# The draws exist whether or not the concentration solved (a few transit-chain solves
-# return NA), so the rows are kept by their parameters.
-bov_sim <- bov_sim[!is.na(bov_sim$cl), ]
+stopifnot(!anyNA(bov_sim$Cc))
 
 # One eta per child and occasion: the number of distinct draws on an occasion
 # equals the number of children.
@@ -397,6 +397,17 @@ cmp |>
   absorption; it is required because rxode2's `transit()` is
   compartment-aware (it reads `podo()` / `tad()` for the dose-target
   compartment).
+* **A dose record late in the event table can return NA concentrations.** The
+  transit-chain input of this model failed to solve for part of the simulated
+  children when a dose was given later than about 600 h after time zero and the
+  first observation followed it by 1 h: 5 of 400 children for a dose at 600 h, 36
+  at 800 h, 89 at 1000 h and 339 at 2000 h. It does not depend on the
+  between-occasion variability (the same counts with `OCC` beyond 2), on the
+  solver (liblsoda, lsoda and dop853 at default tolerances, liblsoda and dop853
+  at 1e-10 and lsoda at 1e-12 all failed), or on the observation time (a dose at 0 h observed at 1000 h solved
+  for every child, and so did a dose at 1000 h also observed 12 h later); the
+  simulations above, with the dose at time 0, never reach it. Start the clock
+  at the first dose, as in the cohort above.
 * **Between-occasion variability uses the occasion-indicator expansion, with
   two occasions.** Standing 2008 Table 2 (p. 851) reports BOV on CL/F of 20%
   CV (RSE 89.6%) and on Vd/F of 93% CV (RSE 280%); both are poorly estimated.
