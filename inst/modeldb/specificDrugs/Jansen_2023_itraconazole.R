@@ -10,7 +10,7 @@ Jansen_2023_itraconazole <- function() {
   )
   vignette <- "Jansen_2023_itraconazole"
   units <- list(time = "h", dosing = "mmol", concentration = "mmol/L")
-  dosing <- c("central", "central_np")
+  dosing <- "central_np"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against the supplementary final model control

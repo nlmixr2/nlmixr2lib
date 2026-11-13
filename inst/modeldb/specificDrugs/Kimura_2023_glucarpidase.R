@@ -3,7 +3,7 @@ Kimura_2023_glucarpidase <- function() {
   reference <- "Kimura T, Fukaya Y, Hamada Y, Yoshimura K, Kawamoto H. Pharmacokinetics and Pharmacodynamics of Glucarpidase Rescue Treatment After High-dose Methotrexate Therapy Based on Modeling and Simulation. Anticancer Res. 2023;43(5):1919-1924. doi:10.21873/anticanres.16351"
   vignette <- "Kimura_2023_glucarpidase"
   units <- list(time = "h", dosing = "umol", concentration = "umol/L")
-  dosing <- c("central", "central_cpg2")
+  dosing <- c("central_cpg2", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

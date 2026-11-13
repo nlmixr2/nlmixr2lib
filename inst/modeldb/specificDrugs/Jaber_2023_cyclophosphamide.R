@@ -7,7 +7,7 @@ Jaber_2023_cyclophosphamide <- function() {
     dosing = "mg",
     concentration = "ng/mL"
   )
-  dosing <- c("central", "depot_iv")
+  dosing <- "depot_iv"
 
   covariateData <- list(
     WT = list(

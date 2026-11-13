@@ -44,6 +44,7 @@ Kumar_2024_mAb_popPBPK_iv <- function() {
     dosing = "nmol",
     concentration = "nmol/L"
   )
+  dosing <- "plasma"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

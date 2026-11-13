@@ -35,7 +35,7 @@ Kim_2020_CKD_519 <- function() {
     hdl = "mg/dL",
     ldl = "mg/dL"
   )
-  dosing <- c("depot", "central", "transit1")
+  dosing <- "transit1"
 
   covariateData <- list(
     DOSE = list(

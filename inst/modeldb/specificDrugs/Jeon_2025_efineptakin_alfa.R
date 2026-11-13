@@ -7,6 +7,7 @@ Jeon_2025_efineptakin_alfa <- function() {
     dosing = "pmol (of rhIL-7-hyFc; f(abs_site) = 2 converts to pmol IL-7)",
     concentration = "pmol/L (IL-7)"
   )
+  dosing <- "abs_site"
 
   compartmentData <- list(
     abs_site = list(

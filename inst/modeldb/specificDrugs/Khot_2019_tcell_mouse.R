@@ -38,6 +38,7 @@ Khot_2019_tcell_mouse <- function() {
     dosing = "cells",
     concentration = "cells/mL"
   )
+  dosing <- "blood"
 
   # The two inguinal lymph nodes are transit nodes specific to this model
   # (left inguinal = non-draining, right inguinal = tumor-draining); the

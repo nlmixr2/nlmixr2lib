@@ -30,6 +30,7 @@ Jeong_2021_fexuprazan_pbpk <- function() {
     dosing = "mg",
     concentration = "ng/mL"
   )
+  dosing <- c("depot", "venous")
 
   # The two intestinal segments are perfused tissue compartments (not gut
   # lumen segments); the registered small/large-intestine names are luminal

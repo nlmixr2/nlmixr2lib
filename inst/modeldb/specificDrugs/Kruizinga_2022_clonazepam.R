@@ -29,7 +29,7 @@ Kruizinga_2022_clonazepam <- function() {
   # Figure 1). Dose is in mg and volumes in L, so mg/L is converted to ug/L by
   # a factor of 1000 in model().
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")
-  dosing <- c("depot", "central", "saliva")
+  dosing <- c("depot", "saliva")
 
   compartmentData <- list(
     depot = list(

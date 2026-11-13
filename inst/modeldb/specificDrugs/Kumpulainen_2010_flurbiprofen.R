@@ -9,7 +9,7 @@ Kumpulainen_2010_flurbiprofen <- function() {
   )
   vignette <- "Kumpulainen_2010_flurbiprofen"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
-  dosing <- c("depot", "central", "depot2")
+  dosing <- c("depot", "depot2")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

@@ -43,6 +43,7 @@ Kumar_2024_mAb_popPBPK_sc <- function() {
     dosing = "nmol",
     concentration = "nmol/L"
   )
+  dosing <- c("is_subcutaneous", "plasma")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

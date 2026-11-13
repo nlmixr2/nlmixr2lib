@@ -12,7 +12,7 @@ Kado_2020_benzathine_benzylpenicillin_g <- function() {
   )
   vignette <- "Kado_2020_benzathine_benzylpenicillin_g"
   units <- list(time = "day", dosing = "mg", concentration = "ng/mL")
-  dosing <- c("central", "depot1", "depot2", "depot3")
+  dosing <- c("depot1", "depot2", "depot3")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

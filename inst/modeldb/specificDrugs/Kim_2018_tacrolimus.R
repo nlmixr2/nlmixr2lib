@@ -13,6 +13,7 @@ Kim_2018_tacrolimus <- function() {
     dosing = "mg",
     concentration = "ng/mL (tacrolimus); ug/mL (MPA, MPAG, AcMPAG)"
   )
+  dosing <- c("depot", "depot_mpa")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

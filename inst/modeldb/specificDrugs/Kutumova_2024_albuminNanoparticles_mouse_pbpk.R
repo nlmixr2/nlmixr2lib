@@ -38,6 +38,7 @@ Kutumova_2024_albuminNanoparticles_mouse_pbpk <- function() {
   )
   vignette <- "Kutumova_2024_albuminNanoparticles"
   units <- list(time = "min", dosing = "mg", concentration = "mg/L")
+  dosing <- "venous"
 
   # `bile` is the cumulative amount excreted into bile; it is a bookkeeping
   # accumulator rather than a distribution compartment (same role as the

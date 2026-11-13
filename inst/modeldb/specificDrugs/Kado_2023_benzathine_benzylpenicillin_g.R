@@ -15,7 +15,7 @@ Kado_2023_benzathine_benzylpenicillin_g <- function() {
   )
   vignette <- "Kado_2023_benzathine_benzylpenicillin_g"
   units <- list(time = "day", dosing = "mg", concentration = "ng/mL")
-  dosing <- c("depot", "central", "depot2")
+  dosing <- c("depot", "depot2")
 
   # The final model was fitted to dried-blood-spot (whole blood) concentrations
   # (Results, 'Pharmacokinetic modeling'); plasma and DBS were shown to be

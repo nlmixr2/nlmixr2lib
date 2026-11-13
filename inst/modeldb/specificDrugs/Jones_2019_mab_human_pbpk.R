@@ -3,7 +3,7 @@ Jones_2019_mab_human_pbpk <- function() {
   reference <- "Jones HM, Zhang Z, Jasper P, Luo H, Avery LB, King LE, Neubert H, Barton HA, Betts AM, Webster R. A Physiologically-Based Pharmacokinetic Model for the Prediction of Monoclonal Antibody Pharmacokinetics From In Vitro Data. CPT Pharmacometrics Syst Pharmacol. 2019;8(10):738-747. doi:10.1002/psp4.12461"
   vignette <- "Jones_2019_mab_pbpk"
   units <- list(time = "h", dosing = "umol", concentration = "ug/mL")
-  dosing <- c("central", "depot_sc")
+  dosing <- c("depot_sc", "central")
 
   # Structural equations: Supplementary "PBPK Model Equations" (s001.pdf).
   # Every numeric constant below is transcribed from the deposited Berkeley

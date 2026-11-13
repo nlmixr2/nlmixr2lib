@@ -3,6 +3,7 @@ Jansson_2008_eflornithine_rat <- function() {
   reference <- "Jansson R, Malm M, Roth C, Ashton M. Enantioselective and nonlinear intestinal absorption of eflornithine in the rat. Antimicrob Agents Chemother. 2008;52(8):2842-2848. doi:10.1128/aac.00050-08"
   vignette <- "Jansson_2008_eflornithine"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot_l", "depot_d", "central_l", "central_d")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
