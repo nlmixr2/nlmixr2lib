@@ -19538,6 +19538,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Gibiansky_2022_tisotumab.R` (multiplies the ADC residual-error SD by 1.42; no effect on any PK parameter).
 - **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Acts on the residual error only, so simulations of a new population set it to 0.
 
+### STUDY_HELIOS_A (**canonical for the HELIOS-A vutrisiran phase III study indicator**)
+- **Description:** 1 = use the TTR-knockdown trajectory observed in HELIOS-A (NCT03759379), the phase III trial of vutrisiran in hereditary transthyretin amyloidosis with polyneuropathy; 0 = use the HELIOS-B (NCT04153149, ATTR cardiomyopathy) trajectory. A scenario-level selector, time-fixed.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (HELIOS-B trajectory).
+- **Source aliases:**
+  - `drug = 'vutrisiran_heliosa'` (vs `'vutrisiran_heliosb'`) -- Methven Jeknic 2026 code deposit `ttr/physiological.py`.
+- **Example models:** `MethvenJeknic_2026_attrcm_qsp.R` (selects the HELIOS-A single-exponential silencing plateau 0.851, intercept 0.633, rate 0.183 /month and first-visit clamp 0.75 month instead of the HELIOS-B values 0.797, 0.571, 0.179 /month and 1.5 month; acts only when `TRT_VUTRISIRAN = 1`).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. It selects which trial's observed TTR reduction drives the knockdown, not a cohort property: the paper uses HELIOS-B for its main comparison (Figure 5) and HELIOS-A as a sensitivity case (Figures S11-S12).
+
 ### STUDY_DREAMM1 (**canonical for the DREAMM-1 belantamab mafodotin phase I study indicator**)
 - **Description:** 1 = record from DREAMM-1 (BMA117159, NCT02064387), the open-label two-part phase I dose-escalation / expansion study of belantamab mafodotin in relapsed/refractory multiple myeloma; 0 = record from DREAMM-2 (205678, NCT03525678). Subject-level (time-fixed).
 - **Units:** (binary)
@@ -24679,6 +24690,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Alikhani_2025_gentamicin_tobramycin_bamor1.R`, `Alikhani_2025_gentamicin_tobramycin_bamor2.R`, `Alikhani_2025_gentamicin_tobramycin_bamor3.R`, `Alikhani_2025_gentamicin_tobramycin_ca.R` (exponential effect on V, 0.24-0.29, i.e. a tobramycin V about 1.3 times the gentamicin V).
 - **Notes:** Specific scope. Member of the `TRT_<INN>` family: the drug is the study treatment under investigation, and the indicator selects between two drugs pooled in one model.
 
+### TRT_ACORAMIDIS, TRT_TAFAMIDIS (**canonical for TTR-stabiliser drug indicators**)
+- **Description:** Binary indicators of which transthyretin kinetic stabiliser is present: `TRT_ACORAMIDIS` = 1 for acoramidis, `TRT_TAFAMIDIS` = 1 for tafamidis, both 0 for no stabiliser. Mutually exclusive. A per-scenario (or per-subject) property of the treatment.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 for both (no stabiliser bound; the drug amount itself is dosed into `central`).
+- **Source aliases:**
+  - `drug = 'acoramidis'` / `drug = 'tafamidis'` -- Methven Jeknic 2026 code deposit (`ttr/physiological.py`, `ttr/fpe.py`).
+- **Example models:** `MethvenJeknic_2026_attrcm_qsp.R` (select the drug's tetramer and albumin off-rates at 37 C: acoramidis 1050, 8319 and 9004 /h; tafamidis 433.05, 6205 and 109.8 /h; with neither set the stabiliser association rates are zero), `MethvenJeknic_2026_attrcm_fpe_invitro.R` (select the 25 C dissociation constants of Table 1: acoramidis Kd1 6.00 nM, Kd2 190 nM, Kd,albumin 250 uM; tafamidis 4.33 nM, 248 nM, 3.05 uM).
+- **Notes:** Specific scope. Members of the `TRT_<INN>` family. In both founding models the indicator does not itself carry an effect size: it switches which drug's binding constants apply to the stabiliser in `central`, so the model needs exactly one of them set whenever drug is dosed.
+
+### TRT_VUTRISIRAN (**canonical for vutrisiran TTR-knockdown indicator**)
+- **Description:** Binary indicator that the subject receives vutrisiran, the GalNAc-siRNA that silences hepatic transthyretin production. 1 = on vutrisiran from model time 0; 0 = no knockdown.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no knockdown).
+- **Source aliases:**
+  - `drug = 'vutrisiran_heliosb'` / `'vutrisiran_heliosa'` -- Methven Jeknic 2026 code deposit.
+- **Example models:** `MethvenJeknic_2026_attrcm_qsp.R` (multiplies TTR tetramer production by 1 minus a time-varying silencing fraction fitted to the HELIOS-B or, with `STUDY_HELIOS_A = 1`, HELIOS-A serum TTR reductions; about 80% at steady state).
+- **Notes:** Specific scope. Member of the `TRT_<INN>` family. The founding model has no vutrisiran PK: the indicator switches on an empirical knockdown trajectory, so model time must be time since the first vutrisiran dose.
+
 ## Occasion / period (IOV)
 
 ### OCC (**canonical for the integer-valued occasion / period column**)
@@ -27495,6 +27528,28 @@ expected to recur in any combined-evidence model; the rest are COPD-specific.
   - `X7A` -- used in `Lyauk_2016_methylphenidate.R`. Source coding matches this canonical directly (`IF(X7A.EQ.0) CLX7A = 1` wild-type, `IF(X7A.EQ.1) CLX7A = ( 1 + THETA(15))` variant), with the sentinel `999` for missing; **no value inversion**, in contrast to the sibling `SNP_CES1_RS71647871` in the same model.
 - **Example models:** `Lyauk_2016_methylphenidate.R` (linear proportional effect on apparent oral clearance, `e_snp_ces1_rs115629050_cl = -0.403`; TG carriers have 40.3% lower CL/F, giving a 1.68-fold higher d-methylphenidate AUC0-inf, Lyauk 2016 Table 1 theta 14 and Figure 4).
 - **Notes:** Member of the auto-approving `SNP_<GENE>_<RSID>` family. Scoped **specific** rather than general, unlike its sibling `SNP_CES1_RS71647871`: the founding paper is the first and so far only report of an rs115629050 effect on any drug's PK, its Discussion records that an in-vitro study of CES1-metabolised ACE inhibitors failed to detect an effect of the same variant, and 42% of the founding cohort could not be genotyped at this locus because the assay cannot resolve sequence downstream of *CES1A1* exon 5 when *CES1A2* is present. Promote to general only once a second paper ratifies the effect. Confirmed to be in linkage equilibrium with rs71647871 in the founding cohort (Lyauk 2016 Supplementary Figure S1), which is what permits both to enter one model. Pair with `SNP_CES1_RS115629050_MISSING`.
+
+### SNP_TTR_RS76992529 (**canonical for TTR rs76992529 (p.Val142Ile, V122I) variant indicator**)
+- **Description:** Binary germline indicator for the transthyretin variant rs76992529 (NM_000371.4:c.424G>A, p.Val142Ile; legacy mature-protein numbering V122I), the commonest amyloidogenic TTR variant in variant ATTR cardiomyopathy. 1 = variant carrier; 0 = wild-type TTR. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (wild-type TTR).
+- **Source aliases:**
+  - `genotype = 'V122I'` -- Methven Jeknic 2026 code deposit; `ATTRv` -- Methven Jeknic 2026 text, whose ATTRv cohort is parameterised on p.Val142Ile thermodynamics and kinetics.
+- **Example models:** `MethvenJeknic_2026_attrcm_qsp.R` (selects the ATTRv parameter set: tetramer association 8.912e15 /M^3/h, tetramer dissociation 8.196e-3 /h, monomer refolding 303.7 /h and baseline tetramer 3.09 uM, vs 2.791e19, 2.080e-3, 50.97 and 4.21 uM for wild-type).
+- **Notes:** Member of the auto-approving `SNP_<GENE>_<RSID>` family; rsID-to-protein mapping verified against dbSNP. In the founding model the indicator stands for the whole variant ATTR-CM cohort (p.Val142Ile was the majority variant in ATTRibute-CM, ATTR-ACT and HELIOS-B; others included p.Thr80Ala and p.Val50Met), so its parameter set mixes p.Val142Ile biophysics with cohort-mean serum TTR. Mutually exclusive with `SNP_TTR_RS28933981`.
+
+### SNP_TTR_RS28933981 (**canonical for TTR rs28933981 (p.Thr139Met, T119M) variant indicator**)
+- **Description:** Binary germline indicator for the transthyretin variant rs28933981 (p.Thr139Met; legacy mature-protein numbering T119M), a kinetically stabilising, disease-protective TTR variant. 1 = variant carrier; 0 = wild-type TTR. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (wild-type TTR).
+- **Source aliases:**
+  - `genotype = 'T119M'` -- Methven Jeknic 2026 code deposit; `p.Thr139Met` -- Methven Jeknic 2026 text.
+- **Example models:** `MethvenJeknic_2026_attrcm_qsp.R` (selects tetramer association 1.101e26 /M^3/h, tetramer dissociation 4.520e-4 /h, monomer refolding 945.8 /h and baseline tetramer 5.04 uM; the model predicts about 6% of the wild-type monomer efflux).
+- **Notes:** Member of the auto-approving `SNP_<GENE>_<RSID>` family; rsID-to-protein mapping verified against dbSNP. Mutually exclusive with `SNP_TTR_RS76992529`.
 
 ### SNP_CES1_RS115629050_MISSING (**canonical for CES1 rs115629050 genotype-missing indicator**)
 - **Description:** Binary indicator that a subject's *CES1* rs115629050 genotype could not be determined. 1 = genotype missing; 0 = genotype measured. Time-fixed per subject.
