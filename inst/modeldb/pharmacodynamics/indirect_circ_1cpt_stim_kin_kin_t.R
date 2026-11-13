@@ -1,6 +1,6 @@
 indirect_circ_1cpt_stim_kin_kin_t <- function() {
   description <- "One compartment indirect response model with stimulation of kin and circadian kin_t. Parameterized using rate constants."
-  depends <- c("vc", "ic50")
+  depends <- c("vc")
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -47,7 +47,7 @@ indirect_circ_1cpt_stim_kin_kin_t <- function() {
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot -kel*central
-    d/dt(effect) <- kin_t*(1+emax*Cc/(Cc + ic50)) - kout*effect
+    d/dt(effect) <- kin_t*(1+emax*Cc/(Cc + ec50)) - kout*effect
     
     Cc ~ prop(propSd)
   })
