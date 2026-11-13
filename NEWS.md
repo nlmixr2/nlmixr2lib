@@ -2,8 +2,6 @@
 
 # development version
 
-## Breaking changes
-
 - `indirect_0cpt_transitEx` is renamed `PK_2cmt_transit_mm_des` and moves to
   the pharmacokinetics models. It is a two-compartment PK model with a
   ten-compartment transit absorption chain and Michaelis-Menten elimination,
@@ -11,19 +9,22 @@
   category described it; its description now does. nlmixr2lib has no aliases
   for renamed models, so `readModelDb("indirect_0cpt_transitEx")` and
   `modellib("indirect_0cpt_transitEx")` now fail with "'name' not in
-  database"; use the new name. The model itself is unchanged.
+  database". **Breaking for code** that loads the model by its old name. The
+  model itself is unchanged.
 
 - `Lallemand_2023_benzylpenicillin_horse`: the four observation-block
   indicators are renamed to spell out the drug, and are registered with the
   model's five `STUDY_*` cohort indicators, clearing its nine
-  unregistered-covariate warnings. Data sets must use the new column names:
-  `FORM_BP_NA_IM` is now `FORM_BENZYLPENICILLIN_SODIUM_IM`, `FORM_BP_PROC` is
+  unregistered-covariate warnings. `FORM_BP_NA_IM` is now
+  `FORM_BENZYLPENICILLIN_SODIUM_IM`, `FORM_BP_PROC` is
   `FORM_BENZYLPENICILLIN_PROCAINE`, `FORM_BP_DUPLO` is
   `FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE` and `FORM_BP_PENETH` is
-  `FORM_BENZYLPENICILLIN_PENETHAMATE`. No equation or value changed.
+  `FORM_BENZYLPENICILLIN_PENETHAMATE`. **Breaking for data sets** that use the
+  old column names. No equation or value changed.
 
 - Fix the equations of six circadian indirect-response templates
-  (`indirect_circ_1cpt_*`); simulations from them change.
+  (`indirect_circ_1cpt_*`). **Breaking for simulations** from them, which
+  change.
   - In the four `*_kout_t` templates, a missing pair of parentheses in the
     circadian loss rate meant the drug-free response did not follow its
     circadian baseline. It now does, to solver tolerance.
@@ -46,9 +47,7 @@
     where they estimate `ec50`.
   - `tgi_sat_logistic` and `tgi_sat_genLogistic` grow at a first-order rate
     `kge` but estimated an unused zero-order rate `lkgl`. The parameter is now
-    `lkge`, with the same value.
-
-## Other changes
+    `lkge`, with the same value. **Breaking for code** that sets `lkgl`.
 
 - `checkNamingRegisters()` now also reports a model file cited anywhere in a
   register, such as a `Notes:` or `Source aliases:` line, that does not exist
