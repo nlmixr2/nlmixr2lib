@@ -51,6 +51,8 @@ The per-parameter origin is recorded as an in-file comment next to each `ini()` 
 | `etalcl` variance         | log(1 + 0.28^2) = 0.0755       | Table 3 row "BSV CL/Fm"; 28% CV |
 | `etalvc` variance         | log(1 + 0.45^2) = 0.1844       | Table 3 row "BSV V/Fm"; 45% CV |
 | `etalcl` x `etalvc` cov   | 0.33 * sqrt(0.0755 * 0.1844) = 0.0389 | Table 3 row "COV(CL/V), R"; r = 0.33 |
+| `etaiov_cl_1` variance    | log(1 + 0.21^2) = 0.043155     | Table 3 row "BOV CL/Fm" (p. 482); 21% CV; BOV estimated on CL/Fm only (Results, p. 480) |
+| `etaiov_cl_2` ... `etaiov_cl_5` | fixed(0.043155)          | Occasions 2-5 share occasion 1's variance; 1-5 occasions per patient (Table 1, p. 480) |
 | `addSd`                   | 1.32 mg/L                      | Table 3 row "Additive (mg/L)"; bootstrap median 1.32 (0.77, 1.64) |
 | `propSd`                  | 0.131 (13.1% CV)               | Table 3 row "Proportional (CV%)"; bootstrap median 12.9% (9.4%, 17.2%) |
 | CL/Fm equation            | `CL = TVCL * (1 + theta6 * (CRCL - 37.6)) * (1 + theta7 * DIUR) * (1 + theta8 * PROB)` | Page 480 equation, with linear-deviation form confirmed by the abstract's strata-CL values (1.8 / 0.6 / 0.3 / 0.18 L/h at normal / mild / moderate / severe renal impairment) |
@@ -67,7 +69,7 @@ Original observed concentration-time data are not publicly available. The vignet
 
 **Cohort B -- comedication strata at median renal function.** Three cohorts at the cohort median CRCL of 37.6 mL/min and LBM 60 kg: (i) no comedication, (ii) +diuretic only, (iii) +probenecid only. Holding renal function fixed isolates each Stocker 2012 theta7 / theta8 effect for direct comparison.
 
-For both cohorts the dosing scheme follows the cohort median allopurinol regimen (300 mg/day = 270 mg/day of oxypurinol-equivalents per the Stocker 2012 0.9 conversion), administered once-daily for 14 days to ensure approximate steady-state by the final dosing interval. Each cohort uses `n_per_arm = 60` virtual subjects with between-subject variability sampled from the model's encoded BSV block (28% CL CV, 45% V CV, r = 0.33). Because Stocker 2012 reports only the typical-value CL/Fm point estimates in the abstract and figures, the NCA comparison below also runs against a typical-value (random-effects-zeroed) simulation so the comparison is against the deterministic published values.
+For both cohorts the dosing scheme follows the cohort median allopurinol regimen (300 mg/day = 270 mg/day of oxypurinol-equivalents per the Stocker 2012 0.9 conversion), administered once-daily for 14 days to ensure approximate steady-state by the final dosing interval. Each cohort uses `n_per_arm = 60` virtual subjects with between-subject variability sampled from the model's encoded BSV block (28% CL CV, 45% V CV, r = 0.33) and one occasion (`OCC = 1`), so the stochastic spread also carries the 21% CL between-occasion variability of that occasion. Because Stocker 2012 reports only the typical-value CL/Fm point estimates in the abstract and figures, the NCA comparison below also runs against a typical-value (random-effects-zeroed) simulation so the comparison is against the deterministic published values.
 
 ```{r cohort}
 set.seed(20120203)
@@ -109,7 +111,8 @@ make_cohort_events <- function(stratum, n, crcl, lbm, diur, prob,
     CRCL              = crcl,
     LBM               = lbm,
     CONMED_DIURETIC       = diur,
-    CONMED_PROBENECID = prob
+    CONMED_PROBENECID = prob,
+    OCC               = 1L
   )
   doses <- tidyr::crossing(id = base$id, dose_idx = seq_len(n_doses)) |>
     mutate(time = (dose_idx - 1L) * tau, evid = 1L,
@@ -314,6 +317,56 @@ ggplot(comed_ratios, aes(stratum, fraction_change, fill = stratum)) +
                        "theta7 (-0.294) and theta8 (+0.383)."))
 ```
 
+## Between-occasion variability on CL/Fm (Stocker 2012 Table 3)
+
+Stocker 2012 Table 3 reports a between-occasion variability of 21% CV on CL/Fm, where an occasion is a readmission or a change in concomitant medication (Methods, p. 479). The packaged model carries it as five indicator-multiplexed etas selected by `OCC`. The chunk below gives 200 virtual patients three occasions each, one observation per occasion, and checks that every occasion carries its own draw per patient and that the within-patient spread of log CL/Fm matches the published 21% CV (`omega = sqrt(log(1 + 0.21^2))`).
+
+```{r bov-check}
+set.seed(20120204)
+rxode2::rxSetSeed(20120204)
+
+n_bov <- 200L
+n_occ <- 3L
+bov_covs <- tibble(CRCL = ref_crcl, LBM = ref_lbm, CONMED_DIURETIC = 0L, CONMED_PROBENECID = 0L)
+bov_ev <- bind_rows(
+  tidyr::crossing(id = seq_len(n_bov), bov_covs) |>
+    mutate(time = 0, evid = 1L, cmt = "depot", amt = dose_mg, OCC = 1L),
+  tidyr::crossing(id = seq_len(n_bov), OCC = seq_len(n_occ), bov_covs) |>
+    mutate(time = (OCC - 1L) * tau + 1, evid = 0L, cmt = "central", amt = NA_real_)
+) |>
+  arrange(id, time, desc(evid))
+
+bov_sim <- rxode2::rxSolve(mod_full, bov_ev, returnType = "data.frame") |>
+  filter(!is.na(Cc))
+
+# One eta per patient and occasion: the number of distinct draws on an occasion
+# equals the number of patients.
+iov_per_occasion <- bov_sim |>
+  group_by(OCC) |>
+  summarise(n_distinct_iov = n_distinct(round(iov_cl, 8)), .groups = "drop")
+
+# The variance of log CL/Fm across the occasions of one patient is the BOV
+# variance, since the BSV and the covariate terms are the same on every occasion.
+bov_omega <- sqrt(log(1 + 0.21^2))
+within_sd <- bov_sim |>
+  group_by(id) |>
+  summarise(v = var(log(cl)), .groups = "drop") |>
+  summarise(sd = sqrt(mean(v))) |>
+  pull(sd)
+
+cat(sprintf(
+  "Within-patient SD of log CL/Fm over %d occasions: %.3f (published BOV omega %.3f)\n",
+  n_occ, within_sd, bov_omega
+))
+stopifnot(
+  nrow(iov_per_occasion) == n_occ,
+  iov_per_occasion$n_distinct_iov == n_bov,
+  # 200 patients x 2 degrees of freedom: the SD of the estimate is about 3.5%,
+  # so 15% is a bound on the centre, not on the extremes of the draw.
+  abs(within_sd / bov_omega - 1) < 0.15
+)
+```
+
 # PKNCA validation
 
 PKNCA is run on the typical-value renal-strata simulation, restricted to the final 24-h dosing interval re-anchored to time = 0. The grouping is the renal stratum so each level can be compared against the paper's reported CL/Fm.
@@ -420,7 +473,7 @@ The remaining strata (normal, mild, severe) match the abstract within rounding. 
 - **Linear-deviation covariate-effect form.** The Stocker 2012 page-480 equation prints `TVCL/Fm = theta1 * (CLCr - 37.6)^theta6 * theta7^DIUR * theta8^PROB`, which would give `CL = 0` at the reference CRCL = 37.6 and would yield negative CL for DIUR = 1 (since theta7 = -0.294). The numerically valid reading that reproduces Stocker 2012 Table 3 point estimates and the abstract's stratum CL values (1.8 / 0.6 / 0.3 / 0.18 L/h) is the linear-deviation form `CL = theta1 * (1 + theta6 * (CRCL - 37.6)) * (1 + theta7 * DIUR) * (1 + theta8 * PROB)`. The packaged model uses this linear-deviation form; the in-file source-trace comment cites the page-480 equation and the abstract-derived numerical confirmation.
 - **Volume allometric exponent fixed.** The Stocker 2012 page-480 V/Fm equation prints `TVV/Fm = theta2 * (LBW/60)^theta9`, but `theta9` is not reported in Table 3 of the final model, and the paper notes the LBW scaling "did not lead to a significant improvement in the likelihood or decrease in the BSV" and was retained "since biologically V/Fm is likely to be dependent on body weight." The packaged model holds `theta9 = e_lbm_vc` fixed at the theoretical value of 1.0 (linear scaling), consistent with the absence of a Table 3 row for `theta9` and with the typical fixed-exponent convention for V/F allometric scaling.
 - **No IIV on Kfm.** Stocker 2012 Table 3 reports BSV only on CL/Fm and V/Fm; Kfm has no IIV row, so the packaged `ini()` does not include an `etalka` block. Users who want stochastic absorption-rate variability can add `etalka ~ <var>` themselves.
-- **BOV on CL/Fm not encoded.** Stocker 2012 Table 3 reports BOV CL/Fm of 21% CV in addition to the BSV CL/Fm of 28% CV. nlmixr2's `ini()` block does not natively encode occasion-level random effects; the packaged BSV of 28% CV captures only the subject-level component. Users who need an occasion-aware simulation should add an additional per-occasion `etalcl` with variance `log(1 + 0.21^2) = 0.04314` outside the model file. The `population$bov_cl_note` metadata field documents this gap explicitly.
+- **BOV on CL/Fm uses the occasion-indicator expansion.** Stocker 2012 Table 3 (p. 482) reports BOV CL/Fm of 21% CV in addition to the BSV CL/Fm of 28% CV, estimated on CL/Fm only (Results, p. 480). It is encoded as five etas on log-CL selected by the `OCC` column, occasion 1 at `log(1 + 0.21^2) = 0.043155` (the CV-to-variance convention of the BSV) and occasions 2-5 fixed to it; five is the paper's maximum (Table 1, p. 480). rxode2's `| OCC` level shares one draw per occasion when no subject has two or more occasions, which is the shape of the cohorts here, so the expansion is used. Records with `OCC` outside 1-5 carry no BOV. Because the occasion effect enters as an indicator-weighted sum, rxode2 warns `some etas defaulted to non-mu referenced`; that affects only the speed of a future estimation run, not simulation. The cohorts above are single-occasion (`OCC = 1`); the typical-value comparisons zero the random effects and are unchanged. The `population$bov_cl_note` field records the value.
 - **CRCL is raw Cockcroft-Gault using LBW, not BSA-normalised.** The canonical `CRCL` register entry in `inst/references/covariate-columns.md` covers both BSA-normalised (mL/min/1.73 m^2) and raw (mL/min) Cockcroft-Gault forms; the per-model `covariateData[[CRCL]]$notes` field records the raw-mL/min form for Stocker 2012, matching the `Delattre_2010_amikacin.R` precedent.
 - **Composite any-class diuretic indicator.** Stocker 2012 pools thiazide, loop, and potassium-sparing diuretic use into a single binary `DIUR` covariate. The packaged model uses the canonical `CONMED_DIURETIC` register entry (a composite multi-class indicator), with per-model `covariateData[[CONMED_DIURETIC]]$notes` recording the specific drug classes the source paper aggregated (thiazide + furosemide + spironolactone).
 - **Dose convention.** All doses entered into the packaged model are oxypurinol-equivalent doses, taken as 0.9 times the allopurinol dose per Stocker 2012 Methods (page 478, citing reference 6). For a typical clinical allopurinol dose of 300 mg/day, the simulation uses 270 mg/day.

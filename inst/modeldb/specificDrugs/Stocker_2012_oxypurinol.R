@@ -1,5 +1,5 @@
 Stocker_2012_oxypurinol <- function() {
-  description <- "One-compartment population PK model for oxypurinol (the active metabolite of allopurinol) in adults with gout (Stocker 2012). First-order formation from allopurinol (Kfm taken as the apparent first-order absorption rate into the central compartment), one-compartment distribution, and first-order elimination. Apparent clearance (CL/Fm) is modified by raw Cockcroft-Gault creatinine clearance based on lean body weight (CRCL), concomitant any-class diuretic use (CONMED_DIURETIC; thiazide / furosemide / spironolactone pooled), and concomitant probenecid use (CONMED_PROBENECID), each via a linear-deviation multiplicative factor. Apparent volume (V/Fm) is allometrically scaled on lean body weight (LBW) with the volume exponent held fixed at the theoretical value of 1.0. The dose entered into the model is the oxypurinol-equivalent dose, taken as 0.9 x allopurinol dose per the paper's prior published assumption."
+  description <- "One-compartment population PK model for oxypurinol (the active metabolite of allopurinol) in adults with gout (Stocker 2012). First-order formation from allopurinol (Kfm taken as the apparent first-order absorption rate into the central compartment), one-compartment distribution, and first-order elimination. Apparent clearance (CL/Fm) is modified by raw Cockcroft-Gault creatinine clearance based on lean body weight (CRCL), concomitant any-class diuretic use (CONMED_DIURETIC; thiazide / furosemide / spironolactone pooled), and concomitant probenecid use (CONMED_PROBENECID), each via a linear-deviation multiplicative factor. Apparent volume (V/Fm) is allometrically scaled on lean body weight (LBW) with the volume exponent held fixed at the theoretical value of 1.0. The dose entered into the model is the oxypurinol-equivalent dose, taken as 0.9 x allopurinol dose per the paper's prior published assumption. Between-subject variability on CL/Fm and V/Fm (correlated) and between-occasion variability on CL/Fm (five occasions, selected by OCC) are included."
   reference <- "Stocker SL, McLachlan AJ, Savic RM, Kirkpatrick CM, Graham GG, Williams KM, Day RO. The pharmacokinetics of oxypurinol in people with gout. Br J Clin Pharmacol. 2012 Sep;74(3):477-489. doi:10.1111/j.1365-2125.2012.04207.x"
   vignette <- "Stocker_2012_oxypurinol"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
@@ -44,6 +44,27 @@ Stocker_2012_oxypurinol <- function() {
       reference_category = "0 (no concomitant probenecid)",
       notes = "Stocker 2012 Table 1: 13% of the cohort (20 of 155 gouty patients) were on chronic oral probenecid. Linear-deviation multiplicative effect on CL/Fm: cl *= (1 + 0.383 * CONMED_PROBENECID), i.e. 38.3% higher apparent oxypurinol clearance when probenecid is coadministered. Time-varying per occasion in the source dataset because changes in concomitant medication define a new occasion. The mechanism is probenecid inhibiting renal tubular reabsorption of oxypurinol (Stocker 2012 Discussion, citing references [21, 30, 38]).",
       source_name = "PROB"
+    ),
+    OCC = list(
+      description = "Occasion index (1-5) for between-occasion variability on CL/Fm",
+      units = "(count)",
+      type = "categorical",
+      reference_category = NULL,
+      notes = paste(
+        "Stocker 2012 Methods (p. 479): an occasion is a change in concomitant",
+        "medication(s) and/or a readmission into hospital; Table 1 (p. 480)",
+        "classifies it as a new admission or the start of a new concomitant",
+        "medication and/or a major event such as surgery, with 1-5 occasions per",
+        "patient. Decomposed inside model() into the binary flags oc1..oc5 that",
+        "select one of five BOV etas on log-CL. rxode2's `| OCC` level shares one",
+        "draw per occasion when no subject has two or more occasions, so the",
+        "occasions are expanded into indicator-multiplexed etas; occasion 1",
+        "carries the estimated variance and occasions 2-5 are fixed to the same",
+        "value. Records with OCC outside 1-5 carry no BOV; a single-occasion",
+        "simulation passes OCC = 1.",
+        sep = " "
+      ),
+      source_name = "occasion"
     )
   )
 
@@ -64,7 +85,7 @@ Stocker_2012_oxypurinol <- function() {
     occasions = "1-5 PK occasions per patient; occasion defined as a hospital readmission or a change in concomitant medication.",
     co_medication = "All patients on at least one other medication (median 9, range 1-18). Significant covariates retained: concomitant diuretic (any class) and concomitant probenecid. Concomitant medications tested without retained effect: low-dose aspirin, colchicine, warfarin, angiotensin II receptor antagonists, beta-adrenoceptor antagonists, ACE inhibitors, calcium channel blockers, HMG-CoA reductase inhibitors, and antibiotics.",
     excluded = "7 patients excluded prior to modelling: 4 not at steady-state, 2 undergoing dialysis, 1 in acute renal failure.",
-    bov_cl_note = "Source paper reports between-occasion variability (BOV) on CL/Fm of 21% CV (Stocker 2012 Table 3, 'BOV CL/Fm'). nlmixr2lib's ini() does not natively encode occasion-level random effects; the BSV CL/Fm reported in the model file (28% CV) does not include this BOV term. Users who need an occasion-aware simulation must add an additional occasion-level eta on lcl with variance log(1 + 0.21^2) = 0.04314 outside the model file.",
+    bov_cl_note = "Between-occasion variability on CL/Fm is 21% CV (Stocker 2012 Table 3, p. 482, 'BOV CL/Fm'; base model 26%; bootstrap median 20% (13, 28)); it is encoded as five occasion-indicator etas on log-CL with variance log(1 + 0.21^2) = 0.043155, selected by the OCC column. BOV was estimated on CL/Fm only (Results, p. 480).",
     notes = "Cohort demographics in Stocker 2012 Table 1. Pharmacogenetic SNPs (SLC2A9, ABCG2, SLC22A13, SLC17A1, SLC22A11, SLC22A8) were tested but not retained after adjustment for CLCr, diuretics, and probenecid (Stocker 2012 Discussion). Bootstrap with 1000 replicates was used to refine parameter uncertainty (Stocker 2012 Table 3)."
   )
 
@@ -99,20 +120,29 @@ Stocker_2012_oxypurinol <- function() {
     e_conmed_diuretic_cl       <- -0.294;  label("Fractional change in CL/Fm with concomitant any-class diuretic (CONMED_DIURETIC = 1)")    # Stocker 2012 Table 3: theta7 = -0.294 (-0.386, -0.207); -29.4%
     e_conmed_probenecid_cl <-  0.383;  label("Fractional change in CL/Fm with concomitant probenecid (CONMED_PROBENECID = 1)")      # Stocker 2012 Table 3: theta8 = 0.383 (0.264, 0.499); +38.3%
 
-    # IIV. Stocker 2012 Methods (page 478) describes the IIV as
+    # IIV. Stocker 2012 Methods (p. 479) describes the IIV as
     # population parameter variability comprising between-subject
     # variability (BSV) plus between-occasion variability (BOV). Table 3
-    # reports BSV CL/Fm = 28% CV, BSV V/Fm = 45% CV, and BOV CL/Fm =
-    # 21% CV, with a positive correlation r = 0.33 between the CL and V
-    # subject-level random effects. nlmixr2lib's ini() encodes the BSV
-    # block here; the BOV is documented in population$bov_cl_note and
-    # is the user's responsibility to add as a per-occasion eta if
-    # needed.
+    # (p. 482) reports BSV CL/Fm = 28% CV, BSV V/Fm = 45% CV, and BOV
+    # CL/Fm = 21% CV, with a positive correlation r = 0.33 between the CL
+    # and V subject-level random effects. The BSV block and five BOV etas
+    # on log-CL are encoded here.
     # CV% -> log-normal variance: omega^2 = log(CV^2 + 1)
     #   omega^2_cl = log(1 + 0.28^2) = 0.0755
     #   omega^2_vc = log(1 + 0.45^2) = 0.1844
     #   cov_cl_vc  = 0.33 * sqrt(0.0755 * 0.1844) = 0.0389
     etalcl + etalvc ~ c(0.0755, 0.0389, 0.1844)  # Stocker 2012 Table 3: BSV CL/Fm 28% CV, BSV V/Fm 45% CV, COV(CL, V) r = 0.33
+
+    # BOV on CL/Fm: one shared variance across occasions 1-5 (the paper's
+    # maximum, Table 1), log(1 + 0.21^2) = 0.043155. rxode2's `| OCC` level
+    # shares one draw per occasion when no subject has two or more
+    # occasions, so the occasions are expanded into indicator-multiplexed
+    # etas (see the OCC covariate); occasions 2-5 are fixed to occasion 1.
+    etaiov_cl_1 ~ 0.043155          # Stocker 2012 Table 3: BOV CL/Fm 21% CV; omega^2 = log(1 + 0.21^2)
+    etaiov_cl_2 ~ fixed(0.043155)   # same variance as occasion 1
+    etaiov_cl_3 ~ fixed(0.043155)   # same variance as occasion 1
+    etaiov_cl_4 ~ fixed(0.043155)   # same variance as occasion 1
+    etaiov_cl_5 ~ fixed(0.043155)   # same variance as occasion 1
 
     # Residual error. Stocker 2012 Methods describe a combined
     # additive + proportional residual error model retained as the
@@ -136,9 +166,19 @@ Stocker_2012_oxypurinol <- function() {
               (1 + e_conmed_diuretic_cl       * CONMED_DIURETIC) *
               (1 + e_conmed_probenecid_cl * CONMED_PROBENECID)
 
+    # Occasion flags: one BOV eta applies per record. A single-occasion
+    # simulation passes OCC = 1.
+    oc1 <- (OCC == 1)
+    oc2 <- (OCC == 2)
+    oc3 <- (OCC == 3)
+    oc4 <- (OCC == 4)
+    oc5 <- (OCC == 5)
+    iov_cl <- oc1 * etaiov_cl_1 + oc2 * etaiov_cl_2 + oc3 * etaiov_cl_3 +
+      oc4 * etaiov_cl_4 + oc5 * etaiov_cl_5
+
     # Individual parameters.
     ka <- exp(lka)
-    cl <- exp(lcl + etalcl) * cov_cl
+    cl <- exp(lcl + etalcl + iov_cl) * cov_cl
     vc <- exp(lvc + etalvc) * (LBM / ref_lbm)^e_lbm_vc
     kel <- cl / vc
 
