@@ -3,6 +3,7 @@ Bihorel_2021_BMS986166 <- function() {
   reference <- "Bihorel S, Singhal S, Shevell D, Sun H, Xie J, Basdeo S, Liu A, Dutta S, Ludwig E, Huang H, Lin K, Fura A, Throup J, Girgis IG. Population Pharmacokinetic Analysis of BMS-986166, a Novel Selective Sphingosine-1-Phosphate-1 Receptor Modulator, and Exposure-Response Assessment of Lymphocyte Counts and Heart Rate in Healthy Participants. Clin Pharmacol Drug Dev. 2021;10(1):8-21. doi:10.1002/cpdd.878. PMCID: PMC7821288."
   vignette <- "Bihorel_2021_BMS986166"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central", "depot_bms986166p")
 
   covariateData <- list(
     STUDY_IM018003 = list(

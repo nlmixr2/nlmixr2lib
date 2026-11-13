@@ -46,6 +46,7 @@ Benson_2010_reboxetine_qsp <- function() {
   # volume term anywhere in Equations 10-15. Dosing and concentration units
   # are therefore the same (nM).
   units <- list(time = "h", dosing = "nM", concentration = "nM")
+  dosing <- c("reboxetine_ss", "reboxetine_rr")
 
   # Benson 2010 uses no covariates: every experiment shares one parameter
   # set and the only stochastic element is inter-experiment variability on

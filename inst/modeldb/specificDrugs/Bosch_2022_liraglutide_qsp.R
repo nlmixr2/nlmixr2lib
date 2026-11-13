@@ -63,6 +63,7 @@ Bosch_2022_liraglutide_qsp <- function() {
     dosing = "mmol (glucose meal) or pmol (liraglutide SC)",
     concentration = "mmol/L (glucose), pmol/L (insulin, GLP-1, glucagon, GIP, liraglutide)"
   )
+  dosing <- c("glc_dose", "lira_depot")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

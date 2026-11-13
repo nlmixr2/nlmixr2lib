@@ -27,6 +27,7 @@ Borghardt_2016_olodaterol <- function() {
   )
   vignette <- "Borghardt_2016_olodaterol"
   units <- list(time = "h", dosing = "ug", concentration = "pg/mL")
+  dosing <- c("depot", "central", "depot2", "depot3")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

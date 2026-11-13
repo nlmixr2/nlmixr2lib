@@ -122,6 +122,7 @@ Benson_2014_PF04457845_qsp <- function() {
       sep = " "
     )
   )
+  dosing <- "pf_gut"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

@@ -24,6 +24,7 @@ Byun_2024_efineptakin_alfa_mtmdd <- function() {
   )
   vignette <- "Byun_2024_tmdd_approximations"
   units <- list(time = "h", dosing = "pmol", concentration = "pmol/L")
+  dosing <- c("depot", "central", "depot2")
 
   compartmentData <- list(
     depot = list(

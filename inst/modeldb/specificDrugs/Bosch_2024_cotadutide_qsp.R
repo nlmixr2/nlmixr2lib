@@ -83,6 +83,7 @@ Bosch_2024_cotadutide_qsp <- function() {
       sep = " "
     )
   )
+  dosing <- c("depot", "central", "glucose_gut")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

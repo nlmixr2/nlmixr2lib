@@ -14,6 +14,7 @@ Bulitta_2009_ceftazidime <- function() {
     dosing = "mg/L (initial ceftazidime concentration in broth)",
     concentration = "log10 CFU/mL (observation); mg/L (drug state cb)"
   )
+  dosing <- "cb"
 
   paper_specific_compartments <- c(
     "bact_s1",

@@ -7,6 +7,7 @@ Bergen_2017_meropenem <- function() {
     dosing = "mg/L (concentration dosed directly into the cmem state, as in the in-vitro HFIM)",
     concentration = "log10 CFU/mL (observation); mg/L (cmem state)"
   )
+  dosing <- "cmem"
 
   # No patient covariates: this is an in vitro mechanism-based model. The
   # meropenem exposure is a state variable (cmem) dosed by the user, not a
