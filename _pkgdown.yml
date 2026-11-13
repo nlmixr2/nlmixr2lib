@@ -880,8 +880,14 @@ navbar:
         href: articles/Papathanasiou_2025_belantamab.html
       - text: "Belantamab (Rathi 2021)"
         href: articles/Rathi_2021_belantamab.html
+      - text: "Belantamab kva (Carreno 2026)"
+        href: articles/Carreno_2026_belantamab.html
       - text: "Belantamab mprotein (Collins 2023)"
         href: articles/Collins_2023_belantamab_mprotein.html
+      - text: "Belantamab mprotein bpd (Carreno 2026)"
+        href: articles/Carreno_2026_belantamab.html
+      - text: "Belantamab mprotein bvd (Carreno 2026)"
+        href: articles/Carreno_2026_belantamab.html
       - text: "Belatacept (Shen 2013)"
         href: articles/Shen_2013_belatacept.html
       - text: "Belimumab (Dimelow 2023)"
@@ -9695,6 +9701,7 @@ articles:
   - articles/Carmichael_2003_hydroxychloroquine
   - articles/Carral_2023_cap_nonadherence
   - articles/Carreno_2025_linerixibat
+  - articles/Carreno_2026_belantamab
   - articles/Carrot_2025_ovarianCancer
   - articles/Carrothers_2020_dalbavancin
   - articles/Carrothers_2023_dalbavancin
