@@ -543,22 +543,24 @@ change within a subject: `OCC`, a per-dose `DOSE_<DRUG>_MG`,
 `MULTI_DOSE*`, `SELFADMIN`, `FED`, a per-dose `CONMED_*`. The lag moves
 each dose to its absorption time, and `rxSolve()` then decides which
 record's covariates the dose uses. Measured on rxode2 5.1.8.9000 with a
-lag of 0.5 h and a distinct covariate value on every record, so that each
-result names the record it came from.
+lag of 0.5 h and a distinct covariate value on every record, including a
+last record no other shares, so that each result names the record it came
+from. "That record" below is an observation, or another dose (amt 10) into
+the same or another compartment, unless the cell says otherwise.
 
 `f()`:
 
 | Dose type | Other record carrying a different value | `addlKeepsCov = FALSE` (default) | `addlKeepsCov = TRUE`, `nonmem = TRUE` |
 |---|---|---|---|
 | bolus | none | own record | own record |
-| bolus | same time as the dose | **that record** | own record |
+| bolus | same time as the dose | **that record**, unless it is a dose into another compartment | own record |
 | bolus | inside the lag window | **that record** | own record |
 | fixed duration (`dur` data column) | any | as a bolus | as a bolus |
 | fixed rate | none, or inside the lag window | own record | **no single rule** (below) |
 | fixed rate | same time as the dose | **that record** | **no single rule** (below) |
 | `rate = -1` / `rate = -2` | none | own record | **record before the dose** |
-| `rate = -1` / `rate = -2` | same time as the dose | **that record** | **that record** |
-| `rate = -1` / `rate = -2` | inside the lag window | own record | **record before the dose** |
+| `rate = -1` / `rate = -2` | same time as the dose | **that record** | **that record**, unless it is a dose into the same compartment (then the record before the dose) |
+| `rate = -1` / `rate = -2` | inside the lag window | own record | **record before the dose**; **that record** when the dose is the subject's first record |
 
 Modelled `rate()` (`rate = -1`) and `dur()` (`rate = -2`):
 
@@ -568,15 +570,18 @@ Modelled `rate()` (`rate = -1`) and `dur()` (`rate = -2`):
 | same time as the dose | **that record** | **that record** | **that record** if its row follows the dose's, else own record |
 | inside the lag window | **that record** | **that record** | **that record** |
 
+In this table a dose into the same compartment never supplies the value,
+and neither does a record exactly at the dose's arrival time.
+
 More facts from the same probes:
 
 - `alag()` itself is always read from the dose's own record.
 - With no lag, every dose reads all three from its own record.
 - "Record before the dose" is the last record at an earlier time; a record at the dose's own time does not count.
-- A fixed-rate infusion's `f()` under `TRUE` / `nonmem = TRUE` depends on where unrelated records fall. Measured with the dose at 24 h, arriving at 24.5 h and running to 26.5 h, it reads:
-  - the subject's first record when that record is at or before t = 0 (a dose or an observation), even over a record at the dose's own time;
+- A fixed-rate infusion's `f()` under `TRUE` / `nonmem = TRUE` depends on where unrelated records fall, and on the dose's own amount. Measured with the dose at 24 h, arriving at 24.5 h (amt 100 at rate 50, 2 h at f = 1), it reads:
+  - the subject's first record when that record is at or before t = 0 (a dose or an observation), even over a record at the dose's own time; a first record at 0.5 to 5 h is not read;
   - otherwise a record at the dose's time (under `nonmem = TRUE` only if its row follows the dose's), or one from inside the lag window to 1 h after arrival;
-  - the record *after* one 1.5 to 2.5 h after arrival;
+  - a later record depending on the amount: one at 26 h is read at amt 101 and 200 but not at 100, one at 27 h only at 200, one at 30 h at none of them;
   - otherwise its own record.
 - A lag longer than the dosing interval is the lag-window case, with the next dose's record as the record inside the window. The rows above hold unchanged: a `rate = -1` / `rate = -2` infusion under `TRUE` still reads the record before it, and its `rate()` / `dur()` come from the next dose under every setting.
 - On a bolus, the setting also moves the time at which the dose record's covariates start to apply to continuous parameters such as `ka`: the dose time with `FALSE`, the end of the lag with `TRUE`.
@@ -628,7 +633,7 @@ sim <- rxode2::rxSolve(mod, events, addlKeepsCov = FALSE)
   a `rate = -1` / `rate = -2` infusion's `f()` comes from the record
   before it, or from a record at its own time if there is one, and a
   fixed-rate infusion's from a record that depends on where unrelated
-  records fall, often the subject's first. Its modelled `rate()` /
+  records fall and on its own amount, often the subject's first. Its modelled `rate()` /
   `dur()` still comes from a record at its time or inside its lag
   window.
 - **A lag longer than the dosing interval** puts the next dose record
