@@ -153,7 +153,7 @@ test_that("every _pkgdown.yml article link resolves to an article pkgdown builds
 
 test_that("every model has an article, or is listed with a reason", {
   root <- .sourceTreeRoot()
-  built <- if (dir.exists(file.path(root, "vignettes", "articles"))) .builtArticles(root)
+  built <- if (.hasSourceTree(file.path(root, "vignettes", "articles"), "vignettes/articles")) .builtArticles(root)
   # Without the source tree the article files cannot be checked, but the
   # exemption list can: an article-less model still has to be listed.
   issues <- .modelArticleIssues(nlmixr2lib::modeldb, .readArticleExemptions(), built)

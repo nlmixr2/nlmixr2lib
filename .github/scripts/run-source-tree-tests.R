@@ -13,24 +13,23 @@
 #
 # WHICH FILES
 #
-# Every tests/testthat/test-*.R that calls .skipIfNoSourceTree(), the helper in
-# tests/testthat/helper-sourceTree.R. With NLMIXR2LIB_REQUIRE_SOURCE_TREE set,
-# that helper errors instead of skipping, and this script also fails on any
-# other skip (a missing Suggests package, say), so the job cannot pass by not
-# running a test.
+# Every tests/testthat/test-*.R that calls .skipIfNoSourceTree() or
+# .hasSourceTree(), the gates in tests/testthat/helper-sourceTree.R; the
+# selection reads parsed calls, so a mention in a comment does not count. With
+# NLMIXR2LIB_REQUIRE_SOURCE_TREE set, a gate errors instead of skipping, and
+# this script also fails on any other skip (a missing Suggests package, say),
+# so the job cannot pass by not running a test. A test in that directory
+# checks that nothing reaches the source tree except through a gate.
 #
 # Run from the package root: Rscript .github/scripts/run-source-tree-tests.R
 
 testDir <- file.path("tests", "testthat")
-files <- list.files(testDir, pattern = "^test-.*[.]R$")
-callsHelper <- vapply(
-  file.path(testDir, files),
-  function(f) any(grepl(".skipIfNoSourceTree(", readLines(f, warn = FALSE), fixed = TRUE)),
-  logical(1)
-)
-files <- files[callsHelper]
+helpers <- new.env()
+sys.source(file.path(testDir, "helper-collate.R"), envir = helpers)
+sys.source(file.path(testDir, "helper-sourceTree.R"), envir = helpers)
+files <- basename(helpers$.sourceTreeTestFiles(testDir))
 if (length(files) == 0L) {
-  stop("no test file calls .skipIfNoSourceTree(); run this from the package root", call. = FALSE)
+  stop("no test file calls a source-tree gate; run this from the package root", call. = FALSE)
 }
 cat("Source-tree test files:\n", paste0("  ", files, "\n"), sep = "")
 
