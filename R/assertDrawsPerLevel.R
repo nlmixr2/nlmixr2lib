@@ -94,7 +94,9 @@ assertDrawsPerLevel <- function(sim, eta, by, n = NULL, id = NULL) {
     )
   }
   value <- draw[!duplicated(pair)]
-  lev <- level[!duplicated(pair)]
+  # Only the levels that occur: a factor `by` may carry unused levels, which
+  # tapply() would report as NA.
+  lev <- factor(as.character(level[!duplicated(pair)]), levels = as.character(sort(unique(level))))
   distinct <- tapply(value, lev, function(v) length(unique(v)))
   subjects <- tapply(seq_along(lev), lev, length)
   if (is.null(n)) {

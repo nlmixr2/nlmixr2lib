@@ -27,6 +27,22 @@ test_that("a draw per subject and level passes and the simulation comes back", {
   expect_invisible(assertDrawsPerLevel(sim, eta = "etaiov", by = "OCC"))
 })
 
+test_that("factor columns, with levels that do not occur, are read by the levels that do", {
+  sim <- .drawsSim()
+  sim$OCC <- factor(sim$OCC, levels = 1:4)
+  sim$id <- factor(sim$id)
+  expect_silent(assertDrawsPerLevel(sim, eta = "etaiov", by = "OCC", n = 3L))
+  expect_silent(assertDrawsPerLevel(sim, eta = "etaiov", by = "OCC"))
+  shared <- .drawsSim(shared = TRUE)
+  shared$OCC <- factor(shared$OCC, levels = 1:4)
+  expect_error(
+    assertDrawsPerLevel(shared, eta = "etaiov", by = "OCC"),
+    "level 1: 1 distinct of 3 subject(s); level 2: 1 distinct of 3 subject(s)",
+    fixed = TRUE,
+    class = "nlmixr2lib_drawsPerLevel"
+  )
+})
+
 test_that("a draw shared by the subjects of a level is an error naming the counts", {
   sim <- .drawsSim(shared = TRUE)
   expect_error(

@@ -2615,7 +2615,11 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # the rule finds the article through the model's `vignette` field and requires a
 # call of assertDrawsPerLevel() whose literal `eta` and `by` arguments cover the
 # model's eta and group. The call runs when the article renders; the rule checks
-# that it is there.
+# that it is there. What the rule does not see: which simulation the call is
+# given (one call covers every model of the article that has the same eta and
+# group), a call that never runs (inside a function the article does not call, or
+# under `if (FALSE)`), and a call written with magrittr's `%>%` rather than a
+# direct call or the native pipe.
 #
 # (model, G) pairs where G is a level above the subject on purpose, so that one
 # draw per level is the model; each with the evidence for it. Anything not
