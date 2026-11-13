@@ -25,7 +25,7 @@ Gu_2023_buprenorphine <- function() {
   )
   vignette <- "Gu_2023_buprenorphine_naloxone"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
-  dosing <- c("depot", "central", "transit1")
+  dosing <- c("transit1", "depot")
 
   # Amounts are mg of buprenorphine; norbuprenorphine is carried in
   # buprenorphine-mass equivalents (no molecular-weight conversion in the

@@ -30,7 +30,7 @@ Gu_2025_valsartan_pbpk <- function() {
   )
   vignette <- "Gu_2025_heart_failure_pbpk"
   units <- list(time = "min", dosing = "mg", concentration = "ug/mL")
-  dosing <- "stomach"
+  dosing <- c("stomach", "venous")
 
   # Gut-WALL tissue states and the caecum / colon lumen segments have no
   # canonical entry yet. wall_duodenum / wall_jejunum / wall_ileum follow

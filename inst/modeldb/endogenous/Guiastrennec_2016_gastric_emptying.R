@@ -71,7 +71,7 @@ Guiastrennec_2016_gastric_emptying <- function() {
     dosing = "mg (acetaminophen) and g (fats / proteins / carbohydrates) into the per-substrate stomach compartments",
     concentration = "umol/L (acetaminophen Cc); secondary outputs in pmol/L (TCCK) and mL (gallbladder volume GVol)"
   )
-  dosing <- c("central", "stomach", "stom_fat", "stom_prot", "stom_carb")
+  dosing <- c("stomach", "stom_fat", "stom_prot", "stom_carb")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

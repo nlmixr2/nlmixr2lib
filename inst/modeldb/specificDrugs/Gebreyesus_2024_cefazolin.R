@@ -21,6 +21,7 @@ Gebreyesus_2024_cefazolin <- function() {
   )
   vignette <- "Gebreyesus_2024_cefazolin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("central", "circuit_plasma")
 
   # Supplementary Material S3 control stream, $MODEL: COMP = (CENTRAL),
   # (PERIPHERAL), (CPB). Concentrations were measured in plasma by LC-MS/MS

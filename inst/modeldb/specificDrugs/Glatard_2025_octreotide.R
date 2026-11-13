@@ -27,7 +27,7 @@ Glatard_2025_octreotide <- function() {
   )
   vignette <- "Glatard_2025_octreotide"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
-  dosing <- c("depot", "central", "depot2", "depot3")
+  dosing <- c("depot", "depot2", "depot3")
 
   # `logitffast` / `etalogitffast` follow the registered logit transform
   # prefix; `expSdCam2029` / `expSdIr` are formulation-stratified residual

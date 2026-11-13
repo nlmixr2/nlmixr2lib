@@ -59,6 +59,7 @@ Gao_2012_exenatide_glucose_insulin_rat <- function() {
       "1/mM) and must not be rescaled independently."
     )
   )
+  dosing <- c("glucose", "central")
 
   # The drug compartments are ABSOLUTE amounts (nmol) paired with the
   # absolute central volume Vc = 43.2 mL of Table 2. The `glucose`
