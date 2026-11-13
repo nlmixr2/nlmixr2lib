@@ -1716,6 +1716,8 @@ navbar:
         href: articles/Dirks_2008_cetuximab.html
       - text: "Chemotherapy gcsf anc (Hughes 2023)"
         href: articles/Hughes_2023_chemotherapy_gcsf_anc.html
+      - text: "ChikusetsusaponinIVa rat (Shuai 2026)"
+        href: articles/Shuai_2026_chikusetsusaponinIVa_rat.html
       - text: "ChlorogenicAcid rat (Chen 2024)"
         href: articles/Chen_2024_guhongInjection.html
       - text: "Chloroprene mouse pbpk (Campbell 2023)"
@@ -11686,6 +11688,7 @@ articles:
   - articles/Shoji_2017_fosdagrocorat_p1np
   - articles/Shoji_2021_vancomycin
   - articles/Shu_2024_posaconazole
+  - articles/Shuai_2026_chikusetsusaponinIVa_rat
   - articles/Shulgin_2020_ici_adverse_events_mbma
   - articles/Siccardi_2012_efavirenz
   - articles/Sidamo_2022_fluoroquinolones_mdr_tb
