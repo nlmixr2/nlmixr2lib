@@ -2652,10 +2652,44 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # whose head is an operator. Assignments, `~` error lines, if/else blocks and
 # rxode2's declarations (`linear(INS)`, `cmt(x)`, `dvid(...)`) are statements.
 .isBareStatement <- function(st) {
-  if (is.name(st) || is.atomic(st)) {
+  if (is.name(st) || is.null(st) || is.numeric(st) || is.character(st) || is.logical(st)) {
     return(TRUE)
   }
   is.call(st) && is.name(st[[1]]) && as.character(st[[1]]) %in% .bareStatementHeads
+}
+
+# The statements of a block: the body of a `{`, or a single statement used as
+# a body without braces (`if (a) b <- 1`).
+.blockStatements <- function(b) {
+  if (is.call(b) && identical(b[[1]], as.name("{"))) as.list(b)[-1] else list(b)
+}
+
+# Every bare statement in a statement list, including those inside the bodies
+# of `{`, if/else, for and while: a continuation line inside an if block is
+# split by R just as one at the top level is.
+.bareStatementsIn <- function(stmts, acc = list()) {
+  for (st in stmts) {
+    if (.isBareStatement(st)) {
+      acc[[length(acc) + 1L]] <- st
+      next
+    }
+    if (!is.call(st) || !is.name(st[[1]])) {
+      next
+    }
+    op <- as.character(st[[1]])
+    bodies <- switch(
+      op,
+      "{" = list(st),
+      "if" = as.list(st)[-(1:2)],
+      "for" = list(st[[4]]),
+      "while" = list(st[[3]]),
+      list()
+    )
+    for (b in bodies) {
+      acc <- .bareStatementsIn(.blockStatements(b), acc)
+    }
+  }
+  acc
 }
 
 .checkBareStatements <- function(ui, conv) {
@@ -2670,10 +2704,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
       "Check that the model parses with rxode2::rxode2()."
     ))
   }
-  for (st in exprs) {
-    if (!.isBareStatement(st)) {
-      next
-    }
+  for (st in .bareStatementsIn(exprs)) {
     txt <- paste(deparse(st, width.cutoff = 500L), collapse = " ")
     issues <- rbind(
       issues,
@@ -2684,12 +2715,16 @@ checkModelConventions <- function(model, verbose = TRUE) {
         paste0(
           "`",
           substr(txt, 1, 120),
-          "` is a statement of its own in model(). It is most likely a ",
-          "continuation line that starts with an operator: rxode2 joins it to ",
-          "the line above, but R does not, so ui$lstExpr holds a truncated ",
-          "equation."
+          "` is a statement of its own in model(): a value, not an assignment ",
+          "or a declaration. If it is a continuation line that starts with an ",
+          "operator, rxode2 joins it to the line above but R does not, so ",
+          "ui$lstExpr holds a truncated equation. Otherwise it is a stray value ",
+          "with no effect."
         ),
-        "Move the operator to the end of the previous line, so the expression continues across the line break."
+        paste(
+          "For a continuation line, move the operator to the end of the previous",
+          "line so the expression continues across the line break; remove a stray value."
+        )
       )
     )
   }

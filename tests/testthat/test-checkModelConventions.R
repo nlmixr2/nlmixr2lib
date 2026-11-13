@@ -2860,6 +2860,9 @@ test_that(".isBareStatement() tells a value from a statement", {
   expect_true(nlmixr2lib:::.isBareStatement(quote(-6.1 * rmp80 - 2.4 * rmp90)))
   expect_true(nlmixr2lib:::.isBareStatement(quote(x)))
   expect_true(nlmixr2lib:::.isBareStatement(5))
+  expect_true(nlmixr2lib:::.isBareStatement("a"))
+  expect_true(nlmixr2lib:::.isBareStatement(TRUE))
+  expect_true(nlmixr2lib:::.isBareStatement(NULL))
   expect_false(nlmixr2lib:::.isBareStatement(quote(x <- 1)))
   expect_false(nlmixr2lib:::.isBareStatement(quote(Cc ~ prop(propSd))))
   expect_false(nlmixr2lib:::.isBareStatement(quote(if (a > 1) b <- 2)))
@@ -2874,7 +2877,31 @@ test_that("an operator-led continuation line is an error", {
   expect_identical(nrow(hit), 1L)
   expect_identical(hit$severity, "error")
   expect_identical(hit$name, "+q/vc * central")
-  expect_true(startsWith(hit$message, "`+q/vc * central` is a statement of its own in model()."))
+  expect_true(startsWith(hit$message, "`+q/vc * central` is a statement of its own in model(): a value,"))
+})
+
+test_that(".bareStatementsIn() looks inside braces, if/else, for and while bodies", {
+  # Built from text: the mix of braced and unbraced bodies is the point, and
+  # the style linter would reject it as code.
+  stmts <- as.list(str2lang(paste(
+    "{",
+    "a <- 1",
+    "if (x > 1) { b <- 2; +c } else if (x > 0) -d else { e <- 3 }",
+    "for (i in 1:2) { f }",
+    "while (FALSE) g <- 1",
+    "{ 7 }",
+    "}",
+    sep = "\n"
+  )))[-1]
+  found <- vapply(nlmixr2lib:::.bareStatementsIn(stmts), deparse, character(1))
+  expect_identical(found, c("+c", "-d", "f", "7"))
+})
+
+test_that("an operator-led continuation line inside an if block is an error", {
+  res <- suppressWarnings(checkModelConventions(.bsIfBlockModel, verbose = FALSE))
+  hit <- res[res$category == "bare_statement", , drop = FALSE]
+  expect_identical(nrow(hit), 1L)
+  expect_identical(hit$name, "+0.01")
 })
 
 test_that("the operator at the end of the line above passes, and compiles the same", {

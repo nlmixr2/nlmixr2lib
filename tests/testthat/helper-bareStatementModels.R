@@ -51,3 +51,29 @@
     Cc ~ prop(propSd)
   })
 }
+
+# The continuation line sits inside an if block.
+.bsIfBlockModel <- function() {
+  description <- "Model with an operator-led continuation line inside an if block"
+  reference <- "R"
+  dosing <- "central"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  ini({
+    lcl <- 1; label("Clearance (CL, L/h)")
+    lvc <- 3; label("Central volume (Vc, L)")
+    propSd <- 0.1; label("Proportional residual error (fraction)")
+  })
+  model({
+    cl <- exp(lcl)
+    vc <- exp(lvc)
+    if (WT > 70) {
+      kel <- cl / vc
+      + 0.01
+    } else {
+      kel <- cl / vc
+    }
+    d/dt(central) <- -kel * central
+    Cc <- central / vc
+    Cc ~ prop(propSd)
+  })
+}
