@@ -1,5 +1,5 @@
 indirect_prec_1cpt_stim_CLV <- function() {
-  description <- "One compartment precursor-dependent indirect response model with inhibition of drug response (effect). Parameterized with clearance and volume"
+  description <- "One compartment precursor-dependent indirect response model with stimulation of drug response (effect). Parameterized with clearance and volume."
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   # Issue #482: what each ODE state holds, in what amount units, in what
