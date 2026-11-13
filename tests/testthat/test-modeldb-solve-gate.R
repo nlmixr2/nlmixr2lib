@@ -102,9 +102,11 @@ probeUnsupportedModels <- c(
 )
 
 # (2) Genuinely BROKEN models, quarantined so this gate can go green while the
-# defects are recorded rather than hidden. Both predate the gate, neither has a
-# vignette -- which is precisely why nothing caught them. Do NOT "fix" either by
+# defects are recorded rather than hidden. The two indirect-response templates
+# have no vignette, which is why nothing caught them. Do NOT "fix" either by
 # guessing the algebra; both need their source reparameterisation checked.
+# Hong 2013 MTT has a vignette, but none of its checks needs the meal to
+# arrive.
 #
 #   indirect_1cpt_stim_kin_r0rmaxcrmax
 #     IC50 <- crmax*(rbase*(1+emax)-rmax)/(rmax-rbase) evaluates to -0.9838 at
@@ -118,9 +120,16 @@ probeUnsupportedModels <- c(
 #   indirect_prec_1cpt_stim_r0rmaxcrmax
 #     Same negative-EC50 expression, AND line 42 defines kin in terms of
 #     itself: kin <- (kout*(kin+kpout)*rbase)/kpin.
+#
+#   Hong_2013_glucose_insulin_MTT
+#     The meal dose never arrives. `absg <- transit(nn, mtt, bio)` is
+#     assigned outside `d/dt(glucose)`, so rxode2 does not tie it to the
+#     glucose dose, and `f(glucose) <- 0` suppresses the bolus itself. Even
+#     the article's 100 g meal leaves Gc at FPG throughout.
 knownBrokenModels <- c(
   "indirect_1cpt_stim_kin_r0rmaxcrmax",
-  "indirect_prec_1cpt_stim_r0rmaxcrmax"
+  "indirect_prec_1cpt_stim_r0rmaxcrmax",
+  "Hong_2013_glucose_insulin_MTT"
 )
 
 # Solving every model in the registry takes roughly an hour. That is the right
@@ -262,11 +271,11 @@ test_that("every model in the registry responds to a dose", {
   }
 
   expect_equal(
-    setdiff(dead, knownLinCmtDropModels),
+    setdiff(dead, c(knownLinCmtDropModels, knownBrokenModels)),
     character(0),
     info = paste0(
       "Model(s) that a dose does not reach under default rxSolve() arguments: ",
-      paste(setdiff(dead, knownLinCmtDropModels), collapse = ", "),
+      paste(setdiff(dead, c(knownLinCmtDropModels, knownBrokenModels)), collapse = ", "),
       ". Try rxSolve(..., useLinCmt = FALSE); if that fixes it the model has ",
       "hit the ODE-to-linCmt conversion defect described at the top of this ",
       "file."
