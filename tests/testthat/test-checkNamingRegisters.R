@@ -92,9 +92,8 @@ test_that("checkNamingRegisters detects each defect class it claims to", {
   )) {
     expect_true(chk %in% issues$check, info = chk)
   }
-  # A model file named in a Notes line is a citation too: a Notes line naming
-  # a digoxin model that never existed survived every register audit because
-  # only `Example models:` lines were read. Pin the entry, line and file.
+  # A model file named outside an `Example models:` line, here in Notes, is a
+  # citation, reported with its entry, line and file.
   cite <- issues[issues$check == "orphan-model-citation", ]
   expect_equal(cite$name, "notes_cite")
   expect_equal(cite$line, 41L)
