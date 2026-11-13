@@ -1,6 +1,5 @@
 indirect_1cpt_stim_kout <- function() {
   description <- "One compartment indirect response model with stimulation of kout. Parameterized using rate constants."
-  depends <- c("vc")
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -15,6 +14,7 @@ indirect_1cpt_stim_kout <- function() {
 
   ini({
     lka  <- 0.45 ; label("Absorption rate (Ka)")
+    lvc  <- log(90) ; label("Central volume of distribution (Vc)")
     lkel <- 0.534; label("elimination rate (1/d)")
     lec50 <- 0.67; label("Drug concentration producing 50% of maximum stimulation at effect site (ec50)")
     lemax <- 0.85; label("Maximum effect attributed to drug (emax)")
@@ -25,6 +25,7 @@ indirect_1cpt_stim_kout <- function() {
   })
   model({
     ka  <- exp(lka)
+    vc  <- exp(lvc)
     kel <- exp(lkel)
     ec50 <- exp(lec50)
     emax <- exp(lemax)

@@ -8,8 +8,7 @@
 .circW <- 0.2616
 
 # Values that keep both time-varying rates positive: rm > ra, kin > w*ra and
-# kout*(rm - ra) > w*ra. The templates' own ini() values set rm = ra, where the
-# baseline touches zero once a day.
+# kout*(rm - ra) > w*ra.
 .circParams <- c(
   lka = log(1),
   lkel = log(0.2),
@@ -45,26 +44,29 @@
 # loss or stimulating production raises it.
 .circDirection <- c(inhi_kin = -1, inhi_kout = 1, stim_kin = 1, stim_kout = -1)
 
-.circBaseline <- function(t) {
-  exp(.circParams[["lrm"]]) + exp(.circParams[["lra"]]) * cos(.circW * (t - exp(.circParams[["ltacro"]])))
+# R(t) for the log-scale parameters `p`.
+.circBaseline <- function(t, p) {
+  exp(p[["lrm"]]) + exp(p[["lra"]]) * cos(.circW * (t - exp(p[["ltacro"]])))
 }
 
-# Solve one template from R(0), with or without a 100-unit dose into depot.
-# Most of the templates take vc from outside (their `depends`), so it is
-# supplied when the model has no lvc of its own.
-.circSolve <- function(name, dose) {
-  ui <- rxode2::as.rxUi(nlmixr2lib::readModelDb(name))
-  pars <- .circParams[intersect(names(.circParams), ui$iniDf$name)]
-  if ("vc" %in% ui$allCovs) {
-    pars <- c(pars, vc = 10)
-  }
+# The template's ini() values, with `override` replacing those it shares.
+.circThetas <- function(name, override) {
+  theta <- rxode2::as.rxUi(nlmixr2lib::readModelDb(name))$theta
+  shared <- intersect(names(override), names(theta))
+  theta[shared] <- override[shared]
+  theta
+}
+
+# Solve one template at the log-scale parameters `p` from R(0), with or
+# without a 100-unit dose into depot.
+.circSolve <- function(name, p, dose) {
   times <- seq(0, 72, by = 0.25)
   ev <- if (dose) rxode2::et(rxode2::et(amt = 100, cmt = "depot"), times) else rxode2::et(times)
   rxode2::rxSolve(
-    ui,
+    rxode2::as.rxUi(nlmixr2lib::readModelDb(name)),
     events = ev,
-    params = pars,
-    inits = c(effect = .circBaseline(0)),
+    params = p,
+    inits = c(effect = .circBaseline(0, p)),
     atol = 1e-10,
     rtol = 1e-10,
     returnType = "data.frame",
@@ -75,8 +77,9 @@
 test_that("each circadian template's drug-free response stays on its circadian baseline", {
   skip_on_cran()
   for (nm in .circTemplates) {
-    free <- .circSolve(nm, dose = FALSE)
-    deviation <- max(abs(free$effect - .circBaseline(free$time))) / exp(.circParams[["lrm"]])
+    p <- .circThetas(nm, .circParams)
+    free <- .circSolve(nm, p, dose = FALSE)
+    deviation <- max(abs(free$effect - .circBaseline(free$time, p))) / exp(p[["lrm"]])
     expect_lt(deviation, 1e-7, label = paste(nm, "relative deviation"))
   }
 })
@@ -85,8 +88,9 @@ test_that("a dose moves each circadian template's response the way its name says
   skip_on_cran()
   for (nm in .circTemplates) {
     key <- sub("^indirect_circ_1cpt_(inhi|stim)_(kin|kout)_.*$", "\\1_\\2", nm)
-    free <- .circSolve(nm, dose = FALSE)
-    dosed <- .circSolve(nm, dose = TRUE)
+    p <- .circThetas(nm, .circParams)
+    free <- .circSolve(nm, p, dose = FALSE)
+    dosed <- .circSolve(nm, p, dose = TRUE)
     expect_equal(dosed$time, free$time)
     window <- dosed$time >= 1 & dosed$time <= 48
     drugEffect <- dosed$effect[window] - free$effect[window]
