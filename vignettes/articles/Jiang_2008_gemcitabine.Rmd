@@ -378,6 +378,7 @@ bov_ev <- dplyr::bind_rows(
 
 bov_sim <- rxode2::rxSolve(mod, events = bov_ev, keep = "OCC") |>
   as.data.frame()
+stopifnot(!anyNA(bov_sim$Cc))
 
 # One eta per patient and occasion: the number of distinct draws on an
 # occasion equals the number of patients.

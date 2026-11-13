@@ -336,8 +336,8 @@ bov_ev <- bind_rows(
 ) |>
   arrange(id, time, desc(evid))
 
-bov_sim <- rxode2::rxSolve(mod_full, bov_ev, returnType = "data.frame") |>
-  filter(!is.na(Cc))
+bov_sim <- rxode2::rxSolve(mod_full, bov_ev, returnType = "data.frame")
+stopifnot(!anyNA(bov_sim$Cc))
 
 # One eta per patient and occasion: the number of distinct draws on an occasion
 # equals the number of patients.
