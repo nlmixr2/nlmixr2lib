@@ -94,6 +94,7 @@ Asaumi_2019_repaglinide_rifampicin_pbpk <- function() {
     dosing = "umol (rifampicin); ug (repaglinide)",
     concentration = "ng/mL (Cc, repaglinide); umol/L (Cc_rif)"
   )
+  dosing <- c("central_rif", "gut_lumen_rif", "gut_lumen")
 
   covariateData <- list(
     WT = list(

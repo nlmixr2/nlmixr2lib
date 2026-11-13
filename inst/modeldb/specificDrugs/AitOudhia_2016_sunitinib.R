@@ -36,7 +36,7 @@ AitOudhia_2016_sunitinib <- function() {
   )
   vignette <- "AitOudhia_2016_sunitinib"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")
-  dosing <- c("depot", "central", "depot_su12662")
+  dosing <- c("depot", "depot_su12662")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

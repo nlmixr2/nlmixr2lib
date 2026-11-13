@@ -77,7 +77,7 @@ Asaumi_2019_pioglitazone_rifampicin_pbpk <- function() {
     dosing = "umol (rifampicin); ug (pioglitazone)",
     concentration = "ng/mL (Cc, pioglitazone); umol/L (Cc_rif)"
   )
-  dosing <- c("central", "gut_lumen")
+  dosing <- c("gut_lumen", "central_rif", "gut_lumen_rif")
 
   covariateData <- list(
     WT = list(

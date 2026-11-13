@@ -3,7 +3,7 @@ Agbo_2021_apomorphine <- function() {
   reference <- "Agbo F, Crass RL, Chiu YY, Chapel S, Galluppi G, Blum D, Navia B. Population pharmacokinetic analysis of apomorphine sublingual film or subcutaneous apomorphine in healthy subjects and patients with Parkinson's disease. Clin Transl Sci. 2021;14(4):1464-1475. doi:10.1111/cts.13008"
   vignette <- "Agbo_2021_apomorphine"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
-  dosing <- c("depot", "central", "depot_sulf", "depot2")
+  dosing <- c("depot", "depot_sulf", "depot2")
 
   covariateData <- list(
     WT = list(

@@ -9,7 +9,7 @@ An_2025_rosuvastatin_ezetimibe <- function() {
   )
   vignette <- "An_2025_rosuvastatin_ezetimibe"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
-  dosing <- "depot_rosuvastatin"
+  dosing <- c("depot_rosuvastatin", "depot_ezetimibe")
 
   # An 2025, "Covariate Analysis and Model Evaluation" and both Results
   # sections: age, weight, serum creatinine, albumin, ALP, ALT, AST and GGT

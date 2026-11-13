@@ -83,6 +83,7 @@ Asaumi_2019_pravastatin_rifampicin_pbpk <- function() {
     dosing = "umol (rifampicin); ug (pravastatin)",
     concentration = "ng/mL (Cc, pravastatin); umol/L (Cc_rif)"
   )
+  dosing <- c("central_rif", "gut_lumen_rif", "gut_lumen")
 
   covariateData <- list(
     WT = list(

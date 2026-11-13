@@ -13,7 +13,7 @@ Ahmad_2021_pyridoxicAcid <- function() {
   )
   vignette <- "Ahmad_2021_oatBiomarkers"
   units <- list(time = "h", dosing = "umol", concentration = "ug/L")
-  dosing <- c("central", "depot_prob")
+  dosing <- "depot_prob"
 
   # What each ODE state holds, in what amount units, in what biological
   # matrix. Checked against Ahmad 2021 Figure 1 and Eqs 2-3.

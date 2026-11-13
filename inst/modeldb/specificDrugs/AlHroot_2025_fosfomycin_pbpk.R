@@ -20,6 +20,7 @@ AlHroot_2025_fosfomycin_pbpk <- function() {
   )
   vignette <- "AlHroot_2025_fosfomycin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- "plasma"
 
   # The AM state has no registered compartment name.
   paper_specific_compartments <- c("alveolar_macrophage")

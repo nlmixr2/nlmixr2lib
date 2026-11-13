@@ -119,7 +119,7 @@ Asaumi_2022_talinolol_rifampicin_pbpk <- function() {
   # relative enzyme / transporter amount. Volumes are in L, so amount /
   # volume is ug/L = ng/mL, the unit of the printed Km,u and Ki values.
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
-  dosing <- c("central", "stomach")
+  dosing <- c("stomach", "central", "duodenum_lumen_rif")
 
   covariateData <- list(
     WT = list(

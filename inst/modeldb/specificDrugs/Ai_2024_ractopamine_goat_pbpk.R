@@ -3,7 +3,7 @@ Ai_2024_ractopamine_goat_pbpk <- function() {
   reference <- "Ai J, Gao Y, Yang F, Zhao Z, Dong J, Wang J, Fu S, Ma Y, Gu X. Development and application of a physiologically-based pharmacokinetic model for ractopamine in goats. Front Vet Sci. 2024;11:1399043. doi:10.3389/fvets.2024.1399043"
   vignette <- "Ai_2024_ractopamine_goat_pbpk"
   units <- list(time = "h", dosing = "ug", concentration = "ug/L")
-  dosing <- "stomach"
+  dosing <- c("stomach", "venous")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Every state below integrates a drug AMOUNT in ug,

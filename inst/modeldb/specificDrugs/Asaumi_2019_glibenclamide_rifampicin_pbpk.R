@@ -91,7 +91,7 @@ Asaumi_2019_glibenclamide_rifampicin_pbpk <- function() {
     dosing = "umol (rifampicin); ug (glibenclamide)",
     concentration = "ng/mL (Cc, glibenclamide); umol/L (Cc_rif)"
   )
-  dosing <- c("central", "gut_lumen")
+  dosing <- c("gut_lumen", "central_rif", "gut_lumen_rif")
 
   covariateData <- list(
     WT = list(

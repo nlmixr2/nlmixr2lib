@@ -32,6 +32,7 @@ Abrams_2022_sar442257_qsp <- function() {
     dosing = "molecules (SAR442257 molecules per well; 1 nM = Vol * 6.022e14 molecules)",
     concentration = "nM (free SAR442257 in Cc); cells and molecules per well for all states"
   )
+  dosing <- "tsAb"
 
   # The ODE system is the deposited Matlab model-generation code
   # (Supplementary files MOESM1-3: the main script with

@@ -79,6 +79,7 @@ Aoki_2024_intratarget_microdosing_pbpk <- function() {
   # between its microgram dose caps and umol (Table 2, "Molar mass ...
   # Fixed ... 400"), so 100 ug = 100 / 400 = 0.25 umol.
   units <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  dosing <- c("central", "is_tumor")
 
   # No covariates. Every physiological volume and blood flow is a fixed
   # function of body weight (Table 1) and the paper assumes a single body
