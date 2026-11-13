@@ -37,7 +37,22 @@
 #     .nestDynamicLoaderExceptions were excused by hand.
 #   * A simulation is a call to rxSolve / simulate / solve / predict, a solver
 #     passed to an iterator or do.call(), or nlmixr2(est = "rxSolve"); a helper
-#     that wraps the solve is found through the solver call inside it.
+#     that wraps the solve is found through the solver call inside it. A solver
+#     aliased to a symbol (`s <- rxSolve; s(mod, ev)`), stored in a list, or passed
+#     to a function outside .nestApplyCalls is not found.
+#   * The iterators that hand a function the values it iterates over are
+#     .nestIterators (lapply, sapply, vapply, map, map_dbl, map_int, map_lgl,
+#     map_chr, map_df, Map, mapply, walk, Filter); .nestApplyCalls adds do.call,
+#     match.fun, get, pmap, invoke_map, Reduce and Position for finding a solver
+#     or loader passed by name. tapply, aggregate, by, ave and map2 are in
+#     neither, so a model name that reaches a loader through them is an unbound
+#     parameter and is reported.
+#   * The gate checks that a count is present, not what its predicate tests:
+#     `stopifnot(is.data.frame(k))` over a per-level summary counts, and a tuple
+#     count such as `n_distinct(id, OCC, etaiov)` counts although it cannot show
+#     whether the draws differ between levels.
+#   * A count is found wherever it is written: one inside a function the article
+#     never calls, or under `if (FALSE)`, counts.
 #
 # Grouping columns that name a level ABOVE the subject on purpose (a study),
 # where one draw per level is the model. Each entry is (model, group) with the
@@ -864,6 +879,13 @@
     if (identical(head, "function")) {
       acc$ctx <- inner
       .nestBindDefaults(acc, fk, expr[[2L]])
+      # A default is code that runs: its strings and calls are read like the body's.
+      defaults <- as.list(expr[[2L]])
+      for (i in seq_along(defaults)) {
+        if (!identical(unname(defaults[i]), list(quote(expr = )))) {
+          .nestCollectWalk(defaults[[i]], inner, acc)
+        }
+      }
     }
   }
   kids <- as.list(expr)
