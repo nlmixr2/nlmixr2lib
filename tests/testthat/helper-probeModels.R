@@ -106,3 +106,28 @@
     Cc ~ prop(propSd)
   })
 }
+
+# FPG appears in `FPG - 3.5`, a floor rather than a reference, while its
+# covariateData states the reference 8.2; WT has no metadata and is read from
+# `WT / 70`.
+.pbMetadataReferenceModel <- function() {
+  description <- "Model whose covariate metadata states a reference the equations do not"
+  reference <- "R"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  covariateData <- list(
+    FPG = list(description = "Fasting plasma glucose", units = "mmol/L", type = "continuous", reference_value = 8.2)
+  )
+  ini({
+    lcl <- 1; label("Clearance (CL, L/h)")
+    lvc <- 3; label("Central volume (Vc, L)")
+    etalcl ~ 0.1
+    propSd <- 0.1; label("Proportional residual error (fraction)")
+  })
+  model({
+    cl <- exp(lcl + etalcl) * (FPG - 3.5) / 4.7 * (WT / 70)
+    vc <- exp(lvc)
+    d/dt(central) <- -cl / vc * central
+    Cc <- central / vc
+    Cc ~ prop(propSd)
+  })
+}

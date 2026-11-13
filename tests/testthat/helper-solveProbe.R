@@ -271,20 +271,11 @@ probeCovariateValues <- function(ui) {
       next
     }
 
-    # 2. The constant the model itself normalises against.  For a continuous
-    #    covariate this is strictly better than any table: it is the
-    #    population reference the authors fitted to, read out of their own
-    #    equation.
-    if (!is.null(body)) {
-      v <- .probeNormalisingConstant(body, nm)
-      if (is.finite(v)) {
-        values[[nm]] <- v
-        why[[nm]] <- paste0("normalising constant in model() (", format(v), ")")
-        next
-      }
-    }
-
-    # 3. Any other numeric reference the metadata happens to carry.
+    # 2. A numeric reference the metadata states. It comes before the
+    #    constant inferred from the equations because a model can say which
+    #    value is its reference; an equation can hold other constants of the
+    #    same covariate (Tan_2025's `FPG - 3.5` is the HOMA glucose floor, not
+    #    its reference).
     for (field in c("reference_value", "reference", "median", "typical_value")) {
       v <- .probeLeadingNumber(entry[[field]])
       if (is.finite(v)) break
@@ -293,6 +284,18 @@ probeCovariateValues <- function(ui) {
       values[[nm]] <- v
       why[[nm]] <- paste0("covariateData$", field)
       next
+    }
+
+    # 3. The constant the model itself normalises against.  For a continuous
+    #    covariate this is usually the population reference the authors
+    #    fitted to, read out of their own equation.
+    if (!is.null(body)) {
+      v <- .probeNormalisingConstant(body, nm)
+      if (is.finite(v)) {
+        values[[nm]] <- v
+        why[[nm]] <- paste0("normalising constant in model() (", format(v), ")")
+        next
+      }
     }
 
     # 4. A typical value for a covariate the unit table would get wrong.
@@ -586,9 +589,9 @@ probeTightRelDiff <- function(name, db) {
 # nolint start: cyclocomp_linter. Screens each model file for
 # linCmt-convertible topology; the branch count is the rule set.
 .probeScreenOneFile <- function(path) {
-  mb <- tryCatch(.probeModelBlockOfFile(path), error = function(e) NULL)
+  mb <- .probeModelBlockOfFile(path)
   if (is.null(mb)) {
-    return(FALSE)
+    stop("no model() block in ", path, call. = FALSE)
   }
   odes <- list()
   assigns <- list()
@@ -650,13 +653,22 @@ probeTightRelDiff <- function(name, db) {
 #' @noRd
 # nolint end
 linCmtRiskCandidates <- function() {
-  root <- system.file("modeldb", package = "nlmixr2lib")
-  if (!nzchar(root)) {
-    return(character(0))
-  }
-  files <- list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
-  keep <- vapply(files, function(f) isTRUE(tryCatch(.probeScreenOneFile(f), error = function(e) FALSE)), logical(1))
+  files <- .probeModelFiles()
+  keep <- vapply(files, .probeScreenOneFile, logical(1))
   unname(sub("[.]R$", "", basename(files[keep])))
+}
+
+# Every model file shipped in the installed modeldb/ directory. Finding none is
+# an error: an empty list would leave the gate's screened scope empty, and a
+# test that only checks the scope is non-empty could still pass on the other
+# screen.
+.probeModelFiles <- function() {
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  files <- if (nzchar(root)) list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE) else character(0)
+  if (!length(files)) {
+    stop("no model files found under the installed modeldb/ directory", call. = FALSE)
+  }
+  files
 }
 
 # Does this model file's model() block read the dose history of a named
@@ -684,11 +696,7 @@ linCmtRiskCandidates <- function() {
 #' @return Character vector of model names.
 #' @noRd
 doseTimingCandidates <- function() {
-  root <- system.file("modeldb", package = "nlmixr2lib")
-  files <- if (nzchar(root)) list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE) else character(0)
-  if (!length(files)) {
-    stop("no model files found under the installed modeldb/ directory", call. = FALSE)
-  }
+  files <- .probeModelFiles()
   keep <- vapply(files, .probeReadsDoseHistory, logical(1))
   unname(sub("[.]R$", "", basename(files[keep])))
 }

@@ -348,7 +348,8 @@ test_that("every model in the registry responds to a dose", {
   db <- nlmixr2lib::modeldb
   scope <- .solveGateScope()
   names_ <- if (scope == "full") db$name else intersect(db$name, linCmtRiskCandidates())
-  expect_gt(length(names_), 0)
+  # A floor on the screened scope, so an empty screen cannot pass unnoticed.
+  expect_gte(length(names_), 452L)
 
   res <- .gateProbe(names_)
   dead <- character(0)
@@ -540,6 +541,26 @@ test_that("doseTimingCandidates() finds the models that read a compartment's dos
   expect_true("Thorsted_2023_neutrophil_mouse" %in% cand)
   # Bare first-order absorption: no dose-history call at all
   expect_false("PK_1cmt_des" %in% cand)
+})
+
+test_that("linCmtRiskCandidates() screens every model file and stops on an unreadable one", {
+  skip_on_cran()
+  # A floor rather than an exact count, so a newly added model the screen
+  # selects does not fail this test.
+  expect_gte(length(linCmtRiskCandidates()), 452L)
+  path <- withr::local_tempfile(fileext = ".R")
+  writeLines("notTheFileName <- function() 1", path)
+  expect_error(.probeScreenOneFile(path), "no model\\(\\) block in ")
+})
+
+test_that("a reference value in covariateData beats a constant read from the equations", {
+  ui <- rxode2::rxUiDecompress(rxode2::as.rxUi(.pbMetadataReferenceModel))
+  cov <- probeCovariateValues(ui)
+  # The model also contains `FPG - 3.5`, which the equation rule would read.
+  expect_identical(cov$values[["FPG"]], 8.2)
+  expect_identical(cov$why[["FPG"]], "covariateData$reference_value")
+  # Without metadata the equation rule still applies.
+  expect_identical(cov$values[["WT"]], 70)
 })
 
 test_that("the probe gives a within-subject grouping variable two levels", {
@@ -773,7 +794,7 @@ test_that("rxode2's linCmt() optimisation never changes a model's solution", {
   } else {
     intersect(db$name, linCmtRiskCandidates())
   }
-  expect_gt(length(names_), 0)
+  expect_gte(length(names_), 452L)
 
   res <- .gateProbe(names_)
   divergent <- character(0)
