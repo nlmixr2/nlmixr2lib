@@ -513,6 +513,196 @@ test_that("names that resolve to literals or to a pattern no below-subject model
   expect_equal(nrow(.nestDrawViolations(file.path(dir, "models"), arts)), 0L)
 })
 
+test_that("a group that only filters the events, or only the data, does not group the count", {
+  dir <- .nestFixtureDir()
+  filtered_events <- .nestWriteArticle(
+    dir,
+    "FilteredEvents",
+    c(
+      "ev <- dplyr::filter(events, OCC <= 2)",
+      "sim <- rxode2::rxSolve(readModelDb(\"Fixture_occ\"), ev)",
+      "stopifnot(dplyr::n_distinct(sim$etaiov) > 1)"
+    )
+  )
+  filtered_data <- .nestWriteArticle(
+    dir,
+    "FilteredData",
+    c(
+      "sim <- rxode2::rxSolve(readModelDb(\"Fixture_occ\"), events)",
+      "chk <- sim |>",
+      "  dplyr::filter(OCC <= 2) |>",
+      "  dplyr::summarise(n = dplyr::n_distinct(etaiov))",
+      "stopifnot(chk$n > 1)"
+    )
+  )
+  subset_symbol <- .nestWriteArticle(
+    dir,
+    "SubsetSymbol",
+    c(
+      "sim <- rxode2::rxSolve(readModelDb(\"Fixture_occ\"), events)",
+      "x <- sim$etaiov[sim$OCC == 1]",
+      "stopifnot(length(unique(x)) == 100)"
+    )
+  )
+  v <- .nestDrawViolations(file.path(dir, "models"), c(filtered_events, filtered_data, subset_symbol))
+  expect_equal(v$article, c("FilteredEvents.Rmd", "FilteredData.Rmd", "SubsetSymbol.Rmd"))
+  expect_equal(v$reason, rep("no per-level distinct-draw assertion", 3L))
+})
+
+test_that("a count of the group alone, or of something else, does not cover the eta", {
+  dir <- .nestFixtureDir()
+  group_only <- .nestWriteArticle(
+    dir,
+    "GroupOnly",
+    c(
+      "sim <- rxode2::rxSolve(readModelDb(\"Fixture_occ\"), events)",
+      "chk <- sim |>",
+      "  dplyr::filter(is.finite(etaiov)) |>",
+      "  dplyr::group_by(OCC) |>",
+      "  dplyr::summarise(n = dplyr::n_distinct(OCC))",
+      "stopifnot(all(chk$n == 1))"
+    )
+  )
+  v <- .nestDrawViolations(file.path(dir, "models"), group_only)
+  expect_equal(v$article, "GroupOnly.Rmd")
+})
+
+test_that("a loader reached through a pipe, a formula, an alias or do.call() is followed", {
+  dir <- .nestFixtureDir()
+  sim <- "sim <- rxode2::rxSolve(mod, events)"
+  unseen <- "nm <- params$model"
+  cases <- list(
+    NativePipe = c(unseen, "mod <- nm |> readModelDb()", sim),
+    MagrittrPipe = c(unseen, "mod <- nm %>% readModelDb()", sim),
+    MagrittrPipeNamespaced = c(unseen, "mod <- nm %>% nlmixr2lib::readModelDb()", sim),
+    PipedIterator = c(unseen, "mods <- nm %>% purrr::map(readModelDb)", "mod <- mods[[1]]", sim),
+    FormulaIterator = c(unseen, "mods <- purrr::map(nm, ~ readModelDb(.x))", "mod <- mods[[1]]", sim),
+    LambdaCalledInPlace = c(unseen, "mod <- (\\(x) readModelDb(x))(nm)", sim),
+    Alias = c(unseen, "rd <- readModelDb", "mod <- rd(nm)", sim),
+    AliasByName = c(unseen, "rd <- get(\"readModelDb\")", "mod <- rd(nm)", sim),
+    AliasIterated = c(unseen, "rd <- nlmixr2lib::readModelDb", "mods <- lapply(nm, rd)", "mod <- mods[[1]]", sim),
+    DoCall = c(unseen, "mod <- do.call(readModelDb, list(nm))", sim),
+    DoCallByName = c(unseen, "mod <- do.call(\"readModelDb\", list(nm))", sim)
+  )
+  arts <- vapply(names(cases), function(nm) .nestWriteArticle(dir, nm, cases[[nm]]), character(1L))
+  v <- .nestDrawViolations(file.path(dir, "models"), arts)
+  expect_equal(v$article, paste0(names(cases), ".Rmd"))
+  expect_true(all(grepl("cannot be resolved", v$reason)))
+})
+
+test_that("a loader reached the same ways on literal names is not flagged", {
+  dir <- .nestFixtureDir()
+  sim <- "sim <- rxode2::rxSolve(mod, events)"
+  cases <- list(
+    NativePipe = c("mod <- \"Unrelated_a\" |> readModelDb()", sim),
+    MagrittrPipe = c("nm <- \"Unrelated_a\"", "mod <- nm %>% readModelDb()", sim),
+    FormulaIterator = c("mods <- purrr::map(c(\"Unrelated_a\"), ~ readModelDb(.x))", "mod <- mods[[1]]", sim),
+    Alias = c("rd <- readModelDb", "mod <- rd(\"Unrelated_a\")", sim),
+    DoCall = c("mod <- do.call(readModelDb, list(\"Unrelated_a\"))", sim)
+  )
+  arts <- vapply(names(cases), function(nm) .nestWriteArticle(dir, nm, cases[[nm]]), character(1L))
+  expect_equal(nrow(.nestDrawViolations(file.path(dir, "models"), arts)), 0L)
+})
+
+test_that("one value that cannot be seen makes a name unverifiable, whatever else is bound to it", {
+  dir <- .nestFixtureDir()
+  sim <- "sim <- rxode2::rxSolve(mod, events)"
+  cases <- list(
+    Reassigned = c("nm <- \"Unrelated_a\"", "nm <- params$model", "mod <- readModelDb(nm)", sim),
+    HelperLiteralAndData = c(
+      "load_one <- function(n) readModelDb(n)",
+      "mod <- load_one(\"Unrelated_a\")",
+      "mod <- load_one(params$model)",
+      sim
+    ),
+    IteratedLiteralAndData = c(
+      "load_one <- function(n) readModelDb(n)",
+      "mods <- lapply(c(\"Unrelated_a\"), load_one)",
+      "mods <- lapply(params$models, load_one)",
+      "mod <- mods[[1]]",
+      sim
+    ),
+    HelperNeverCalled = c("load_one <- function(n) readModelDb(n)", "mod <- NULL", sim)
+  )
+  arts <- vapply(names(cases), function(nm) .nestWriteArticle(dir, nm, cases[[nm]]), character(1L))
+  v <- .nestDrawViolations(file.path(dir, "models"), arts)
+  expect_equal(v$article, paste0(names(cases), ".Rmd"))
+})
+
+test_that("a parameter is looked up in its own function, not among the article's other variables", {
+  dir <- .nestFixtureDir()
+  sim <- "sim <- rxode2::rxSolve(mod, events)"
+  cases <- list(
+    LoopVariableElsewhere = c(
+      "fill <- function(covs) for (nm in names(covs)) ev[[nm]] <- covs[[nm]]",
+      "mods <- lapply(c(\"Unrelated_a\", \"Unrelated_b\"), function(nm) readModelDb(nm))",
+      "mod <- mods[[1]]",
+      sim
+    ),
+    LocalAssignmentElsewhere = c(
+      "f <- function() { nm <- params$model; nm }",
+      "nm <- \"Unrelated_a\"",
+      "mod <- readModelDb(nm)",
+      sim
+    ),
+    FormulaParameter = c(
+      "mods <- purrr::map(c(\"Unrelated_a\"), ~ readModelDb(.x))",
+      "x <- params$value",
+      "mod <- mods[[1]]",
+      sim
+    )
+  )
+  arts <- vapply(names(cases), function(nm) .nestWriteArticle(dir, nm, cases[[nm]]), character(1L))
+  expect_equal(nrow(.nestDrawViolations(file.path(dir, "models"), arts)), 0L)
+})
+
+test_that("predict() and nlmixr2(est = \"rxSolve\") count as simulating, zeroRe() does not", {
+  dir <- .nestFixtureDir()
+  predicted <- .nestWriteArticle(
+    dir,
+    "Predicted",
+    c("mod <- readModelDb(\"Fixture_occ\")", "pr <- predict(mod, events)")
+  )
+  fitted <- .nestWriteArticle(
+    dir,
+    "Fitted",
+    c("mod <- readModelDb(\"Fixture_occ\")", "fit <- nlmixr2::nlmixr2(mod, data, est = \"rxSolve\")")
+  )
+  typical <- .nestWriteArticle(
+    dir,
+    "TypicalPredict",
+    c("mod <- readModelDb(\"Fixture_occ\")", "pr <- predict(rxode2::zeroRe(mod), events)")
+  )
+  v <- .nestDrawViolations(file.path(dir, "models"), c(predicted, fitted, typical))
+  expect_equal(v$article, c("Predicted.Rmd", "Fitted.Rmd"))
+})
+
+test_that("an article with unresolved loader names is excused only by an evidenced entry for its model family", {
+  dir <- .nestFixtureDir()
+  art <- .nestWriteArticle(
+    dir,
+    "FromData",
+    c("mod <- readModelDb(read.csv(\"models.csv\")$model[1])", "sim <- rxode2::rxSolve(mod, events)")
+  )
+  none <- .nestDynamicLoaderExceptions[0L, ]
+  family <- data.frame(
+    article = "FromData.Rmd",
+    prefix = "Unrelated_",
+    evidence = "all Unrelated_* models",
+    stringsAsFactors = FALSE
+  )
+  overlapping <- data.frame(
+    article = "FromData.Rmd",
+    prefix = "Fixture_",
+    evidence = "wrong family",
+    stringsAsFactors = FALSE
+  )
+  models <- file.path(dir, "models")
+  expect_equal(nrow(.nestDrawViolations(models, art, exceptions = none)), 1L)
+  expect_equal(nrow(.nestDrawViolations(models, art, exceptions = family)), 0L)
+  expect_equal(nrow(.nestDrawViolations(models, art, exceptions = overlapping)), 1L)
+})
+
 test_that("a model name held in a symbol is matched, and an assertion clears it", {
   dir <- .nestFixtureDir()
   flagged <- .nestWriteArticle(
@@ -558,17 +748,34 @@ test_that("every article that simulates a below-subject `| G` model asserts per-
     full.names = TRUE
   )
   expect_gt(length(articles), 100L)
-  v <- .nestDrawViolations(file.path(root, "inst", "modeldb"), articles)
+  nested <- .nestedModels(file.path(root, "inst", "modeldb"))
+  # without the exceptions, so the table can be checked against what the gate says
+  v <- .nestDrawViolations(
+    file.path(root, "inst", "modeldb"),
+    articles,
+    exceptions = .nestDynamicLoaderExceptions[0L, ]
+  )
+  excepted <- v[v$article %in% .nestDynamicLoaderExceptions$article, ]
+  rest <- v[!(v$article %in% .nestDynamicLoaderExceptions$article), ]
   expect_equal(
-    nrow(v),
+    nrow(rest),
     0L,
     info = paste(
       "Articles the gate cannot clear for a below-subject `| G` model:",
-      paste0(v$article, " (", v$reason, "; ", v$models, "; ", v$etas, ")", collapse = "; "),
+      paste0(rest$article, " (", rest$reason, "; ", rest$models, "; ", rest$etas, ")", collapse = "; "),
       "rxode2 shares one draw per level when no subject has two or more levels of G.",
       "Give one subject a second level with an evid = 2 record and assert that",
       "n_distinct(round(<eta>, 8)) per level equals the subjects on that level;",
       "see ElKhateeb_2023_tacrolimus.Rmd."
     )
   )
+  # each excepted article still needs its row, for the unresolved loader names only
+  expect_setequal(excepted$article, .nestDynamicLoaderExceptions$article)
+  expect_true(all(grepl("cannot be resolved", excepted$reason)))
+  # and no below-subject model is in an excepted family
+  below <- nested$model[!nested$above_subject]
+  for (prefix in .nestDynamicLoaderExceptions$prefix) {
+    expect_false(any(startsWith(below, prefix)), info = prefix)
+  }
+  expect_true(all(nzchar(.nestDynamicLoaderExceptions$evidence)))
 })
