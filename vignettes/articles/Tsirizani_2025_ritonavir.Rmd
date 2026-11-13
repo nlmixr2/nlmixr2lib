@@ -439,7 +439,7 @@ mod_typ_sup <- rxode2::zeroRe(mod)
 solve_sup <- function(ev) {
   rxode2::rxSolve(mod_typ_sup, dplyr::filter(ev, id %in% twice_daily),
                   params = sup_par, addDosing = FALSE, useLinCmt = TRUE,
-                  addlKeepsCov = FALSE) |>
+                  addlKeepsCov = FALSE, covsInterpolation = "locf") |>
     as.data.frame()
 }
 sup_both <- solve_sup(events)
@@ -594,7 +594,7 @@ f2_events <-
 f2_sim <-
   # Analytic path for the same reason as the `simulate` chunk.
   rxode2::rxSolve(mod_typ, f2_events, addDosing = FALSE, useLinCmt = TRUE,
-                  addlKeepsCov = FALSE) |>
+                  addlKeepsCov = FALSE, covsInterpolation = "locf") |>
   as.data.frame() |>
   dplyr::mutate(tnca = time - T0)
 ```
@@ -1173,10 +1173,10 @@ is deliberately not encoded.
   the AUC, stays its own;
   only the shape of its input changes.
 * **Covariate interpolation.** Each record carries the `OCC` value in force
-  from that record until the next, so the cohort solve states
-  `covsInterpolation = "locf"`, the `rxSolve()` default; solving the same table
-  with `"nocb"`, NONMEM's rule, moves the median subject's AUC by up to 6.9%
-  (measured on rxode2 5.1.8.9000).
+  from that record until the next, so every solve in which it changes within a
+  subject states `covsInterpolation = "locf"`, the `rxSolve()` default; solving
+  the cohort's table with `"nocb"`, NONMEM's rule, moves the median subject's
+  AUC by up to 6.9% (measured on rxode2 5.1.8.9000).
 * **Weight is sampled uniformly within each WHO band, and matched across
   arms.** Table 1 reports band counts and a per-arm median weight of 26.0 kg but
   not the within-band distribution, so uniform sampling is the least-assumption

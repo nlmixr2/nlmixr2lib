@@ -910,3 +910,11 @@ here even though every patient received both drugs.
 **Between-subject variability is diagonal.** Neither table reports a
 correlation between the estimated etas, and neither control stream specifies a
 block `$OMEGA`.
+
+**Covariate interpolation.** Each record carries the covariate values in force
+from that record until the next; the miltefosine solves state
+`covsInterpolation = "locf"` for the cumulative dose, a step function, and the
+paromomycin solves state `"linear"` for the neutrophil count, which rises
+linearly, where a step rule would be a discretisation that moves the median
+subject's AUC by up to 1.1% between `"locf"` and `"nocb"` (measured on rxode2
+5.1.8.9000).
