@@ -41,7 +41,7 @@ Stader_2021_bictegravir_ddi_pbpk <- function() {
   )
   vignette <- "Stader_2021_bictegravir_ddi_pbpk"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
-  dosing <- c("stomach", "stomach_perpetrator", "stomach_perpetrator2")
+  dosing <- c("stomach", "stomach_perpetrator", "stomach_perpetrator2", "venous")
 
   covariateData <- list(
     AGE = list(

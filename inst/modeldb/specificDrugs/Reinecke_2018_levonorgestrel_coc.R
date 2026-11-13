@@ -38,7 +38,7 @@ Reinecke_2018_levonorgestrel_coc <- function() {
     dosing = "mg (levonorgestrel and ethinylestradiol)",
     concentration = "ng/L (total and unbound LNG, and ethinylestradiol, in serum); SHBG in nmol/L"
   )
-  dosing <- c("depot", "central", "depot_ethinylestradiol")
+  dosing <- c("depot", "depot_ethinylestradiol")
 
   compartmentData <- list(
     depot = list(analyte = "levonorgestrel", units = "mg", specimen = "administration site", verified = TRUE),

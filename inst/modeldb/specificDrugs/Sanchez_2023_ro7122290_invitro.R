@@ -11,6 +11,7 @@ Sanchez_2023_ro7122290_invitro <- function() {
     fold_kill = "fold increase over cibisatamab monotherapy",
     kill_mono_pct = "% of cibisatamab monotherapy killing without FAP-positive fibroblasts"
   )
+  dosing <- "medium"
 
   # The free-drug pool, the receptor pools and their complexes are
   # concentrations in the culture well; the transit chain and expr_41bb are

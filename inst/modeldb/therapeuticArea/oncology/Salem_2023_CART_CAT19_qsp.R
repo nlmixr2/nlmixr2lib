@@ -65,6 +65,7 @@ Salem_2023_CART_CAT19_qsp <- function() {
     dosing = "cells (total CAR+ T cells infused, 1e6 cells/kg in the source, given as two records with the same amt: one on carte_cd8_pb and one on carte_cd4_pb; f() applies the 38% CD8 / 54% CD4 product fractions)",
     concentration = "cells/uL (cart_pb, cart_bm); transgene copies/ug genomic DNA (transgene, transgene_bm)"
   )
+  dosing <- c("carte_cd8_pb", "carte_cd4_pb")
 
   covariateData <- list(
     WT = list(

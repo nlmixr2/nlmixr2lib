@@ -65,6 +65,7 @@ Singh_2021_idecabtageneVicleucel_human <- function() {
     dosing = "cells (CAR+ T cells; input as amt on the carte_pb compartment)",
     concentration = "transgene copies/ug genomic DNA (transgene); percent change from baseline (sbcma_pctchg, mprotein_pctchg)"
   )
+  dosing <- "carte_pb"
 
   compartmentData <- list(
     carte_pb = list(

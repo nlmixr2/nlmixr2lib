@@ -11,6 +11,7 @@ Scheuher_2023_ADC_mouse_qsp <- function() {
   )
   vignette <- "Scheuher_2023_ADC_platform_qsp"
   units <- list(time = "h", dosing = "nmol", concentration = "nM")
+  dosing <- "adc_central"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

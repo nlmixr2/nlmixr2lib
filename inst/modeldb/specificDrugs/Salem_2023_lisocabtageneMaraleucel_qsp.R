@@ -67,6 +67,7 @@ Salem_2023_lisocabtageneMaraleucel_qsp <- function() {
     dosing = "cells (total CAR+ T cells infused, given as two records with the same amt: one on carte_cd8_pb and one on carte_cd4_pb; f() applies the 50% / 50% subset split)",
     concentration = "cells/uL (cart_cd8_pb, cart_cd4_pb, cart_cd3_pb); transgene copies/ug genomic DNA (transgene)"
   )
+  dosing <- c("carte_cd8_pb", "carte_cd4_pb")
 
   covariateData <- list(
     DIS_ALL = list(

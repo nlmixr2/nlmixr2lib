@@ -27,6 +27,7 @@ Sharma_2023_nitrofurantoin_rat_pbpk <- function() {
     amount = "mg",
     weight = "kg"
   )
+  dosing <- c("a_plasma", "a_gut_lumen")
 
   compartmentData <- list(
     a_gut_lumen = list(analyte = "nitrofurantoin", units = "mg", specimen = "administration site", verified = TRUE),

@@ -9,7 +9,7 @@ Senek_2018_levodopa_carbidopa <- function() {
   )
   vignette <- "Senek_2018_levodopa_carbidopa"
   units <- list(time = "min", dosing = "mg", concentration = "ug/mL")
-  dosing <- c("depot", "central", "depot2", "depot_carbidopa", "depot2_carbidopa")
+  dosing <- c("depot", "depot2", "depot_carbidopa", "depot2_carbidopa")
 
   covariateData <- list(
     WT = list(

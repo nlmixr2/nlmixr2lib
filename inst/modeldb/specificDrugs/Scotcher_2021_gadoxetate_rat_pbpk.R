@@ -46,6 +46,7 @@ Scotcher_2021_gadoxetate_rat_pbpk <- function() {
     dosing = "umol",
     concentration = "umol/L"
   )
+  dosing <- "blood"
 
   covariateData <- list(
     CONMED_RIFAMPICIN_SD = list(

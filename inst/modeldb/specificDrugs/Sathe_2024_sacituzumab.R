@@ -3,6 +3,7 @@ Sathe_2024_sacituzumab <- function() {
   reference <- "Sathe AG, Singh I, Singh P, Diderichsen PM, Wang X, Chang P, Taqui A, Phan S, Girish S, Othman AA. Population Pharmacokinetics of Sacituzumab Govitecan in Patients with Metastatic Triple-Negative Breast Cancer and Other Solid Tumors. Clin Pharmacokinet. 2024;63(5):669-681. doi:10.1007/s40262-024-01366-3"
   vignette <- "Sathe_2024_sacituzumab"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("central", "central_tab")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

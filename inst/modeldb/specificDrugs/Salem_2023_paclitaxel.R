@@ -36,6 +36,7 @@ Salem_2023_paclitaxel <- function() {
     concentration_carboplatin = "mg/L",
     anc = "10^9 cells/L"
   )
+  dosing <- c("central", "central_carboplatin")
 
   covariateData <- list(
     BSA = list(

@@ -9,7 +9,7 @@ Senek_2020_levodopa <- function() {
   )
   vignette <- "Senek_2020_levodopa"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
-  dosing <- c("depot", "central", "depot_oral")
+  dosing <- c("depot", "depot_oral")
 
   compartmentData <- list(
     depot = list(analyte = "levodopa", units = "mg", specimen = "administration site", verified = TRUE),

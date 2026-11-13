@@ -108,6 +108,7 @@ Rao_2023_covid19_qsp <- function() {
     dosing = "mg",
     concentration = "ug/mL"
   )
+  dosing <- c("Ab21", "Ab")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

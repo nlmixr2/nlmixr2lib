@@ -22,7 +22,7 @@ Schipani_2013_atazanavir_ritonavir <- function() {
   )
   vignette <- "Schipani_2013_atazanavir_ritonavir"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
-  dosing <- c("depot", "central", "depot_rtv")
+  dosing <- c("depot", "depot_rtv")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

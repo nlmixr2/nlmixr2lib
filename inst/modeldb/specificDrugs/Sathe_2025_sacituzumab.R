@@ -9,6 +9,7 @@ Sathe_2025_sacituzumab <- function() {
   )
   vignette <- "Sathe_2025_sacituzumab"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("central", "central_tab")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
