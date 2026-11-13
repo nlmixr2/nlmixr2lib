@@ -2900,17 +2900,17 @@ test_that(".doseTimingCalls skips an empty first argument and a namespaced call"
   expect_equal(nlmixr2lib:::.doseTimingCalls(quote(tad(, depot))), list())
   expect_equal(nlmixr2lib:::.doseTimingCalls(quote(rxode2::tad(depot))), list())
   # rxode2 rejects all three spellings in a model, so a model-level fixture
-  # cannot carry them; the walker is pinned on bare expressions above.
+  # cannot carry them; the walker is pinned on bare expressions above. The
+  # parser's message depends on what it parsed before in the session:
+  # "syntax error" on its own, "string segment too long in rc_dup_str" after
+  # some earlier parses. Either way the model is refused.
   for (code in c("x <- rxode2::tad(depot)", "x <- tad(\"depot\")")) {
     expect_error(
       suppressMessages(utils::capture.output(rxode2::rxModelVars(paste0("d/dt(depot) <- -depot; ", code)))),
-      "syntax error",
+      "syntax error|string segment too long",
       info = code
     )
   }
-  # The parser's message for an empty argument depends on what it parsed
-  # before: "syntax error" on its own, "string segment too long in
-  # rc_dup_str" partway through this file. Either way it is refused.
   expect_error(
     suppressMessages(utils::capture.output(rxode2::rxModelVars("d/dt(depot) <- -depot; x <- tad(, depot)")))
   )
