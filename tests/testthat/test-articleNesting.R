@@ -23,7 +23,7 @@
   dir.create(file.path(dir, "articles"))
   writeLines(
     c(
-      "Fix_occ <- function() {",
+      "Fixture_occ <- function() {",
       "  ini({",
       "    lcl <- log(5)",
       "    etalcl ~ 0.09",
@@ -35,11 +35,11 @@
       "  })",
       "}"
     ),
-    file.path(dir, "models", "Fix_occ.R")
+    file.path(dir, "models", "Fixture_occ.R")
   )
   writeLines(
     c(
-      "Fix_study <- function() {",
+      "Fixture_study <- function() {",
       "  ini({",
       "    lcl <- log(5)",
       "    etastudy ~ 0.04 | SIDN",
@@ -49,30 +49,50 @@
       "  })",
       "}"
     ),
-    file.path(dir, "models", "Fix_study.R")
+    file.path(dir, "models", "Fixture_study.R")
   )
   dir
 }
 
-.nestWriteArticle <- function(dir, name, code) {
+.nestWriteArticle <- function(dir, name, code, header = "```{r sim}") {
   path <- file.path(dir, "articles", paste0(name, ".Rmd"))
-  writeLines(c("# Title", "", "```{r sim}", code, "```"), path)
+  writeLines(c("# Title", "", header, code, "```"), path)
+  path
+}
+
+# A model file whose ini() block is `ini_lines`.
+.nestWriteModel <- function(dir, name, ini_lines) {
+  path <- file.path(dir, paste0(name, ".R"))
+  writeLines(
+    c(
+      paste0(name, " <- function() {"),
+      "  ini({",
+      "    lcl <- log(5)",
+      paste0("    ", ini_lines),
+      "  })",
+      "  model({",
+      "    cl <- exp(lcl)",
+      "  })",
+      "}"
+    ),
+    path
+  )
   path
 }
 
 test_that("the scanner finds the `| G` etas of a model and nothing else", {
   dir <- .nestFixtureDir()
   expect_equal(
-    .nestedEtas(file.path(dir, "models", "Fix_occ.R")),
+    .nestedEtas(file.path(dir, "models", "Fixture_occ.R")),
     data.frame(eta = "etaiov", group = "OCC", stringsAsFactors = FALSE)
   )
   # the `cp ~ add(addSd) | cmt` endpoint form in model() is not an eta
-  expect_false("cmt" %in% .nestedEtas(file.path(dir, "models", "Fix_occ.R"))$group)
+  expect_false("cmt" %in% .nestedEtas(file.path(dir, "models", "Fixture_occ.R"))$group)
   nested <- .nestedModels(
     file.path(dir, "models"),
-    above = data.frame(model = "Fix_study", group = "SIDN", stringsAsFactors = FALSE)
+    above = data.frame(model = "Fixture_study", group = "SIDN", stringsAsFactors = FALSE)
   )
-  expect_equal(nested$model[order(nested$model)], c("Fix_occ", "Fix_study"))
+  expect_equal(nested$model[order(nested$model)], c("Fixture_occ", "Fixture_study"))
   expect_equal(nested$above_subject[order(nested$model)], c(FALSE, TRUE))
 })
 
@@ -82,13 +102,13 @@ test_that("an article that simulates a below-subject model without an assertion 
     dir,
     "NoAssertion",
     c(
-      "mod <- readModelDb(\"Fix_occ\")",
+      "mod <- readModelDb(\"Fixture_occ\")",
       "sim <- rxode2::rxSolve(mod, events)"
     )
   )
   v <- .nestDrawViolations(file.path(dir, "models"), art)
   expect_equal(v$article, "NoAssertion.Rmd")
-  expect_equal(v$models, "Fix_occ")
+  expect_equal(v$models, "Fixture_occ")
   expect_equal(v$etas, "etaiov")
 })
 
@@ -98,7 +118,7 @@ test_that("an assertion on something other than per-level distinct draws does no
     dir,
     "WrongAssertion",
     c(
-      "mod <- readModelDb(\"Fix_occ\")",
+      "mod <- readModelDb(\"Fixture_occ\")",
       "sim <- rxode2::rxSolve(mod, events)",
       "stopifnot(nrow(sim) == 3)",
       "# stopifnot(dplyr::n_distinct(sim$etaiov) == 3)"
@@ -113,16 +133,16 @@ test_that("a distinct-draw assertion, directly or through a summary, clears the 
     dir,
     "Direct",
     c(
-      "mod <- readModelDb(\"Fix_occ\")",
+      "mod <- readModelDb(\"Fixture_occ\")",
       "sim <- rxode2::rxSolve(mod, events)",
-      "stopifnot(length(unique(round(sim$etaiov, 8))) == 3L)"
+      "stopifnot(length(unique(round(sim$etaiov[sim$OCC == 1], 8))) == 3L)"
     )
   )
   summarised <- .nestWriteArticle(
     dir,
     "Summarised",
     c(
-      "mod <- readModelDb(\"Fix_occ\")",
+      "mod <- readModelDb(\"Fixture_occ\")",
       "sim <- rxode2::rxSolve(mod, events)",
       "per_occ <- sim |>",
       "  dplyr::group_by(OCC) |>",
@@ -139,7 +159,7 @@ test_that("an article that only solves with zeroRe(), or never solves, is not fl
     dir,
     "Typical",
     c(
-      "mod <- readModelDb(\"Fix_occ\")",
+      "mod <- readModelDb(\"Fixture_occ\")",
       "sim <- rxode2::rxSolve(rxode2::zeroRe(mod), events)"
     )
   )
@@ -147,7 +167,7 @@ test_that("an article that only solves with zeroRe(), or never solves, is not fl
     dir,
     "NoSolve",
     c(
-      "mod <- readModelDb(\"Fix_occ\")",
+      "mod <- readModelDb(\"Fixture_occ\")",
       "mod$theta"
     )
   )
@@ -160,14 +180,202 @@ test_that("an above-subject grouping on the allowlist is not flagged, and unlist
     dir,
     "Study",
     c(
-      "mod <- readModelDb(\"Fix_study\")",
+      "mod <- readModelDb(\"Fixture_study\")",
       "sim <- rxode2::rxSolve(mod, events)"
     )
   )
-  listed <- data.frame(model = "Fix_study", group = "SIDN", stringsAsFactors = FALSE)
+  listed <- data.frame(model = "Fixture_study", group = "SIDN", stringsAsFactors = FALSE)
   expect_equal(nrow(.nestDrawViolations(file.path(dir, "models"), art, above = listed)), 0L)
   unlisted <- data.frame(model = character(), group = character(), stringsAsFactors = FALSE)
-  expect_equal(.nestDrawViolations(file.path(dir, "models"), art, above = unlisted)$models, "Fix_study")
+  expect_equal(.nestDrawViolations(file.path(dir, "models"), art, above = unlisted)$models, "Fixture_study")
+})
+
+test_that("an eta whose `~` and `|` sit on different lines, or behind a comment, is still found", {
+  dir <- withr::local_tempdir()
+  split <- .nestWriteModel(dir, "Fixture_split", c("etaiov ~", "  0.25 | OCC"))
+  commented <- .nestWriteModel(dir, "Fixture_commented", c("etaiov ~ # between-occasion variance", "  0.25 | OCC"))
+  both <- data.frame(eta = "etaiov", group = "OCC", stringsAsFactors = FALSE)
+  expect_equal(.nestedEtas(split), both)
+  expect_equal(.nestedEtas(commented), both)
+})
+
+test_that("a correlated block over several etas yields one row per eta", {
+  dir <- withr::local_tempdir()
+  path <- .nestWriteModel(dir, "Fixture_block", "etaiov_a + etaiov_b ~ c(0.04, 0.01, 0.09) | OCC")
+  expect_equal(
+    .nestedEtas(path),
+    data.frame(eta = c("etaiov_a", "etaiov_b"), group = "OCC", stringsAsFactors = FALSE)
+  )
+})
+
+test_that("a grouping that is not a plain column name is a typed error, not a silent skip", {
+  dir <- withr::local_tempdir()
+  path <- .nestWriteModel(dir, "Fixture_interaction", "etaiov ~ 0.25 | interaction(a, b)")
+  expect_error(.nestedEtas(path), class = "nestUnsupportedGroup")
+  expect_error(.nestedEtas(path), "Fixture_interaction.R")
+  expect_error(.nestedModels(dir), class = "nestUnsupportedGroup")
+})
+
+test_that("a running chunk that does not parse is reported, with its line", {
+  dir <- .nestFixtureDir()
+  art <- .nestWriteArticle(
+    dir,
+    "Broken",
+    c(
+      "mod <- readModelDb(\"Fixture_occ\")",
+      "sim <- rxode2::rxSolve(mod,"
+    )
+  )
+  v <- .nestDrawViolations(file.path(dir, "models"), art)
+  expect_equal(v$article, "Broken.Rmd")
+  expect_equal(v$reason, "unverifiable: R chunk at line 3 does not parse")
+})
+
+test_that("chunks that do not run are skipped, however the option is written", {
+  dir <- .nestFixtureDir()
+  code <- c("mod <- readModelDb(\"Fixture_occ\")", "sim <- rxode2::rxSolve(mod, events")
+  header <- .nestWriteArticle(dir, "HeaderOff", code, header = "```{r sim, eval = FALSE}")
+  yaml <- .nestWriteArticle(dir, "YamlOff", c("#| eval: false", code))
+  rstyle <- .nestWriteArticle(dir, "RStyleOff", c("#| eval = FALSE", code))
+  expect_equal(nrow(.nestDrawViolations(file.path(dir, "models"), c(header, yaml, rstyle))), 0L)
+  # the same code in a running chunk is reported
+  running <- .nestWriteArticle(dir, "Running", code)
+  expect_equal(nrow(.nestDrawViolations(file.path(dir, "models"), running)), 1L)
+})
+
+test_that("an assertion inside a chunk that does not run does not count", {
+  dir <- .nestFixtureDir()
+  art <- .nestWriteArticle(
+    dir,
+    "AssertOff",
+    c(
+      "#| eval: false",
+      "stopifnot(dplyr::n_distinct(sim$etaiov[sim$OCC == 1]) == 100)"
+    )
+  )
+  writeLines(
+    c(
+      readLines(art),
+      "",
+      "```{r run}",
+      "sim <- rxode2::rxSolve(readModelDb(\"Fixture_occ\"), events)",
+      "```"
+    ),
+    art
+  )
+  expect_equal(.nestDrawViolations(file.path(dir, "models"), art)$article, "AssertOff.Rmd")
+})
+
+test_that("a count of subjects and a finiteness check on the eta do not make an assertion on the eta per level", {
+  dir <- .nestFixtureDir()
+  loose <- .nestWriteArticle(
+    dir,
+    "Loose",
+    c(
+      "mod <- readModelDb(\"Fixture_occ\")",
+      "sim <- rxode2::rxSolve(mod, events)",
+      "stopifnot(length(unique(sim$id)) == 100, all(is.finite(sim$etaiov)))"
+    )
+  )
+  split_args <- .nestWriteArticle(
+    dir,
+    "SplitArgs",
+    c(
+      "mod <- readModelDb(\"Fixture_occ\")",
+      "sim <- rxode2::rxSolve(mod, events)",
+      "stopifnot(dplyr::n_distinct(sim$id) == 100, all(sim$OCC %in% 1:3), all(is.finite(sim$etaiov)))"
+    )
+  )
+  per_level <- .nestWriteArticle(
+    dir,
+    "PerLevel",
+    c(
+      "mod <- readModelDb(\"Fixture_occ\")",
+      "sim <- rxode2::rxSolve(mod, events)",
+      "stopifnot(dplyr::n_distinct(sim$etaiov[sim$OCC == 1]) == 100)"
+    )
+  )
+  v <- .nestDrawViolations(file.path(dir, "models"), c(loose, split_args, per_level))
+  expect_equal(v$article, c("Loose.Rmd", "SplitArgs.Rmd"))
+  expect_equal(v$etas, c("etaiov", "etaiov"))
+})
+
+test_that("a model name built at run time that could name a below-subject model is unverifiable", {
+  dir <- .nestFixtureDir()
+  built <- .nestWriteArticle(
+    dir,
+    "Built",
+    c(
+      "kind <- \"occ\"",
+      "mod <- readModelDb(paste0(\"Fixture_\", kind))",
+      "sim <- rxode2::rxSolve(mod, events)"
+    )
+  )
+  through_symbol <- .nestWriteArticle(
+    dir,
+    "ThroughSymbol",
+    c(
+      "nm <- sprintf(\"Fixture_%s\", \"occ\")",
+      "mod <- nlmixr2lib::readModelDb(nm)",
+      "sim <- rxode2::rxSolve(mod, events)"
+    )
+  )
+  from_data <- .nestWriteArticle(
+    dir,
+    "FromData",
+    c(
+      "mod <- readModelDb(paste0(prefix, \"_\", suffix))",
+      "sim <- rxode2::rxSolve(mod, events)"
+    )
+  )
+  v <- .nestDrawViolations(file.path(dir, "models"), c(built, through_symbol, from_data))
+  expect_equal(v$article, c("Built.Rmd", "ThroughSymbol.Rmd", "FromData.Rmd"))
+  expect_true(all(grepl("built at run time", v$reason)))
+})
+
+test_that("a built model name that cannot name a below-subject model, or is only used with zeroRe(), is not flagged", {
+  dir <- .nestFixtureDir()
+  unrelated <- .nestWriteArticle(
+    dir,
+    "Unrelated",
+    c(
+      "mod <- readModelDb(paste0(\"Unrelated_2020_\", drug))",
+      "sim <- rxode2::rxSolve(mod, events)"
+    )
+  )
+  typical <- .nestWriteArticle(
+    dir,
+    "BuiltTypical",
+    c(
+      "mod <- readModelDb(paste0(\"Fixture_\", kind))",
+      "sim <- rxode2::rxSolve(rxode2::zeroRe(mod), events)"
+    )
+  )
+  expect_equal(nrow(.nestDrawViolations(file.path(dir, "models"), c(unrelated, typical))), 0L)
+})
+
+test_that("a model name held in a symbol is matched, and an assertion clears it", {
+  dir <- .nestFixtureDir()
+  flagged <- .nestWriteArticle(
+    dir,
+    "SymbolFlagged",
+    c(
+      "nm <- \"Fixture_occ\"",
+      "sim <- rxode2::rxSolve(readModelDb(nm), events)"
+    )
+  )
+  cleared <- .nestWriteArticle(
+    dir,
+    "SymbolCleared",
+    c(
+      "nm <- \"Fixture_occ\"",
+      "sim <- rxode2::rxSolve(readModelDb(nm), events)",
+      "stopifnot(dplyr::n_distinct(sim$etaiov[sim$OCC == 1]) == 100)"
+    )
+  )
+  v <- .nestDrawViolations(file.path(dir, "models"), c(flagged, cleared))
+  expect_equal(v$article, "SymbolFlagged.Rmd")
+  expect_equal(v$reason, "no per-level distinct-draw assertion")
 })
 
 test_that("the above-subject allowlist names only `| G` etas that still exist, with evidence", {
@@ -196,8 +404,8 @@ test_that("every article that simulates a below-subject `| G` model asserts per-
     nrow(v),
     0L,
     info = paste(
-      "Articles simulating a below-subject `| G` model without asserting that the eta is drawn per subject and level:",
-      paste0(v$article, " (", v$models, "; ", v$etas, ")", collapse = "; "),
+      "Articles the gate cannot clear for a below-subject `| G` model:",
+      paste0(v$article, " (", v$reason, "; ", v$models, "; ", v$etas, ")", collapse = "; "),
       "rxode2 shares one draw per level when no subject has two or more levels of G.",
       "Give one subject a second level with an evid = 2 record and assert that",
       "n_distinct(round(<eta>, 8)) per level equals the subjects on that level;",
