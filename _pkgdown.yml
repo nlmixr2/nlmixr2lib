@@ -6516,6 +6516,10 @@ navbar:
         href: articles/Yang_2026_pixavir.html
       - text: "Plazomicin (Trang 2019)"
         href: articles/Trang_2019_plazomicin.html
+      - text: "Plozalizumab cyno (Saravanakumar 2026)"
+        href: articles/Saravanakumar_2026_tak_500.html
+      - text: "Plozalizumab human (Saravanakumar 2026)"
+        href: articles/Saravanakumar_2026_tak_500.html
       - text: "Plozasiran (Ousey 2026)"
         href: articles/Ousey_2026_plozasiran.html
       - text: "Polatuzumab (Lu 2019)"
@@ -7996,6 +8000,10 @@ navbar:
         href: articles/Jia_2025_tak_071.html
       - text: "Tak 079 (Roepcke 2018)"
         href: articles/Roepcke_2018_tak_079.html
+      - text: "Tak 500 cyno (Saravanakumar 2026)"
+        href: articles/Saravanakumar_2026_tak_500.html
+      - text: "Tak 500 human (Saravanakumar 2026)"
+        href: articles/Saravanakumar_2026_tak_500.html
       - text: "Talazoparib enzalutamide (Hadigol 2026)"
         href: articles/Hadigol_2026_talazoparib_enzalutamide.html
       - text: "TaldefgrobepAlfa qsp (Nguyen 2020)"
@@ -11589,6 +11597,7 @@ articles:
   - articles/Saporta_2024_afabicin
   - articles/Saporta_2026_meropenem
   - articles/Sarashina_2005_epinastine
+  - articles/Saravanakumar_2026_tak_500
   - articles/Sasaki_2022_delamanid
   - articles/Sassen_2017_crisantaspase
   - articles/Sathe_2024_sacituzumab

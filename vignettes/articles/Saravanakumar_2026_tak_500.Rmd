@@ -1,0 +1,713 @@
+---
+title: "TAK-500 anti-CCR2 ADC and plozalizumab, monkey-to-human translation (Saravanakumar 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{TAK-500 anti-CCR2 ADC and plozalizumab, monkey-to-human translation (Saravanakumar 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Saravanakumar 2026 builds the human PK and receptor-occupancy projection for
+TAK-500, an antibody-drug conjugate that links the anti-CCR2 antibody
+plozalizumab (TAK-202, MLN1202) to the STING agonist dazostinag (TAK-676). The
+paper reports four models, packaged here as four files that share this article:
+
+| Model file | What it is | Source |
+|---|---|---|
+| `Saravanakumar_2026_tak_500_cyno` | TAK-500 PK, CCR2 receptor occupancy and monocyte trafficking in cynomolgus monkeys | Equations 1-14, Table 2, Figure 1 |
+| `Saravanakumar_2026_plozalizumab_cyno` | Plozalizumab PK in cynomolgus monkeys | Equations 15-18, Table S3, Figure 2 |
+| `Saravanakumar_2026_plozalizumab_human` | Plozalizumab PK and unbound CCR2 in healthy adults | Equations 19-25, Table S5, Figure 3 |
+| `Saravanakumar_2026_tak_500_human` | TAK-500 human projection (human plozalizumab disposition + monkey deconjugation rate) | Methods 'TAK-500 Human PK Projection', Table 3, Figure 4 |
+
+* Citation: `r rxode2::rxode(readModelDb("Saravanakumar_2026_tak_500_human"))$reference`
+* Article: <https://doi.org/10.1111/cts.70522>
+
+All four models hold amounts in nmol and concentrations in nM. Doses in mg are
+converted with the antibody molecular weight the paper reports (148,700 g/mol,
+so 1 mg = 6.725 nmol and 1 ug/mL = 6.72 nM).
+
+```{r helpers}
+mw_ab <- 148700
+mg_to_nmol <- function(mg) mg * 1e6 / mw_ab
+
+# Per-subject etas drawn with R's RNG from the model's own OMEGA and passed as
+# event-table columns with omega = NA. The cohort is then identical on every
+# machine and rxode2 build, so the assertions below test the model, not the
+# draw.
+draw_etas <- function(omega, n, seed) {
+  set.seed(seed)
+  z <- matrix(stats::rnorm(n * ncol(omega)), n) %*% chol(omega)
+  colnames(z) <- colnames(omega)
+  as.data.frame(z)
+}
+
+# One dose record per subject at time 0 into `cmt` (bolus when dur = 0, else a
+# zero-order infusion over `dur` h), then observation records on the same
+# state at `times`. `subj` holds id, amt and any per-subject columns. The
+# models with several `~` endpoints need `dvid` on observation rows; dvid = 1
+# still returns every endpoint column in a forward solve.
+build_events <- function(subj, times, cmt = "central", dur = 0) {
+  dose <- subj |>
+    mutate(time = 0, evid = 1L, cmt = cmt, rate = if (dur > 0) amt / dur else 0, dvid = NA_integer_)
+  obs <- subj |>
+    select(-amt) |>
+    tidyr::crossing(time = times) |>
+    mutate(evid = 0L, amt = 0, cmt = cmt, rate = 0, dvid = 1L)
+  bind_rows(dose, obs) |>
+    arrange(id, time, desc(evid)) |>
+    as.data.frame()
+}
+
+# Assay lower limits of quantification (Methods), in nM: total antibody
+# 30 ng/mL and conjugated TAK-676 0.651 ng/mL (LC-MS/MS, MW 148,700 and
+# 710.52 g/mol), plozalizumab 0.4 ug/mL (monkey ELISA).
+lloq <- c(tab = 30 / 148.7, cp = 0.651 / 710.52 * 1000, ploz_cyno = 0.4 * 6.72)
+
+# PKNCA on one analyte; the dose column is in nmol of the analyte. Samples
+# after time zero below `lloq` are dropped, as in the paper's NCA (BQL
+# samples are excluded from the terminal phase).
+run_nca <- function(sim, conc_col, dose_df, group, dur = 0, end = Inf, lloq = 0) {
+  conc <- sim |>
+    filter(!is.na(.data[[conc_col]])) |>
+    filter(time == 0 | .data[[conc_col]] >= lloq) |>
+    transmute(id, time, conc = .data[[conc_col]], group = .data[[group]])
+  conc <- bind_rows(
+    conc,
+    conc |> distinct(id, group) |> mutate(time = 0, conc = 0)
+  ) |>
+    distinct(id, group, time, .keep_all = TRUE) |>
+    arrange(id, group, time)
+  dose <- dose_df |> transmute(id, time = 0, amt, group = .data[[group]], duration = dur)
+  intervals <- data.frame(
+    start = 0, end = end, cmax = TRUE, aucinf.obs = TRUE,
+    half.life = TRUE, cl.obs = TRUE
+  )
+  PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, conc ~ time | group + id),
+    PKNCA::PKNCAdose(dose, amt ~ time | group + id, route = "intravascular", duration = "duration"),
+    intervals = intervals
+  ))
+}
+
+nca_long <- function(res, group_name) {
+  as.data.frame(res$result) |>
+    select(group, id, PPTESTCD, PPORRES) |>
+    rename(!!group_name := group)
+}
+```
+
+# Population
+
+* **Monkey TAK-500 study** (Table 1, Table 2): 12 protein-naive female
+  cynomolgus monkeys (2.6-4.5 kg), single IV slow bolus of 0.1, 0.5 or
+  3 mg/kg (n = 4 per dose), sampled to 408 h for total antibody and conjugated
+  TAK-676 (LC-MS/MS), whole-blood CCR2 receptor occupancy and monocyte counts.
+* **Monkey plozalizumab study** (Table S2, Table S3): male and female
+  cynomolgus monkeys given a single 30-min IV infusion and sampled to day 36
+  (ELISA). The Methods name 10, 30 and 100 mg/kg with 3 males + 3 females per
+  dose; the Results and Table S2 describe 1, 3, 10, 30 and 100 mg/kg.
+* **Human plozalizumab study** (Table S4, Table S5): phase I single ascending
+  dose in healthy volunteers, 1-h IV infusion of 0.1-10 mg/kg, 36 subjects with
+  data (6 per dose). Demographics are not reported.
+* **TAK-500 human projection** (Table 3, Figure 4): 50, 150 and 500 ug/kg as a
+  1-h infusion in a 70 kg adult; no TAK-500 human data were fitted.
+
+The same information is in each model's `population` metadata, e.g.
+`rxode2::rxode(readModelDb("Saravanakumar_2026_tak_500_cyno"))$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. Collected:
+
+| Model | Parameter | Value | Source |
+|---|---|---|---|
+| tak_500_cyno | `lvc` | log(0.113) L | Table 2 TV(Vc) |
+| tak_500_cyno | `lkel` | log(0.0253) 1/h | Table 2 TV(kel) |
+| tak_500_cyno | `lvmax` | log(0.104) nmol/h | Table 2 TV(Vmax) |
+| tak_500_cyno | `lkm` | log(21.58) nM | Table 2 TV(Km) |
+| tak_500_cyno | `lk12`, `lk21` | log(0.0177), log(0.0118) 1/h | Table 2 TV(kpt), TV(ktp) |
+| tak_500_cyno | `dar` | 4.6 (fixed) | Table 2 TV(DAR) Fixed |
+| tak_500_cyno | `lkdec` | log(0.0324) 1/h | Table 2 TV(kdec) |
+| tak_500_cyno | `lrbase_mono` | log(167) cells/uL | Table 2 TV(Monocytes) |
+| tak_500_cyno | `lk12_mono`, `lk21_mono` | log(1.96), log(0.055) 1/h | Table 2 TV(kin), TV(kout) |
+| tak_500_cyno | `lrbase_ro`, `lemax_ro` | log(7), log(59) % | Table 2 TV(RO_base), TV(ROmax) |
+| tak_500_cyno | `lec50` | log(5.31) nM | Table 2 TV(EC50) |
+| tak_500_cyno | `lgamma` | log(1.24) | Table 2 TV(r) |
+| tak_500_cyno | `etalkel`, `etalrbase_mono` | 0.06, 0.07 | Table 2 eta 6, 7 (variance x 100) |
+| tak_500_cyno | `propSd`, `propSd_tab`, `propSd_RO`, `propSd_mono` | 0.31, 0.33, 0.57, 0.63 | Table 2 proportional errors (%) |
+| plozalizumab_cyno | `lvc` | log(0.051) L/kg | Table S3 TV(Vc) |
+| plozalizumab_cyno | `lkel` | log(0.0129) 1/h | Table S3 TV(kel) |
+| plozalizumab_cyno | `lvmax` | log(0.0397) nmol/h/kg | Table S3 TV(Vmax) |
+| plozalizumab_cyno | `lkm` | log(13.9) nM | Table S3 TV(Km) |
+| plozalizumab_cyno | `lk12`, `lk21` | log(0.00801), log(0.00811) 1/h | Table S3 TV(kpt), TV(ktp) |
+| plozalizumab_cyno | `etalkel`, `etalkm` | 0.88, 0.24 | Table S3 eta 88, 24 |
+| plozalizumab_cyno | `propSd` | 0.30 | Table S3 proportional error |
+| plozalizumab_human | `lvc` | log(3.184) L | Table S5 TV(Vc) |
+| plozalizumab_human | `lkel` | log(0.002) 1/h | Table S5 TV(kel) |
+| plozalizumab_human | `lvmax` | log(1.72) nmol/h | Table S5 TV(Vmax) |
+| plozalizumab_human | `lkm` | log(46.6) nM | Table S5 TV(Km) |
+| plozalizumab_human | `lk12`, `lk21` | log(0.0091), log(0.0128) 1/h | Table S5 TV(kpt), TV(ktp) |
+| plozalizumab_human | `lrbase` | log(21509) MESF | Table S5 TV(ROb) |
+| plozalizumab_human | `limax` | log(0.522) | Table S5 TV(Emax) |
+| plozalizumab_human | `lic50` | log(5.71) nM | Table S5 TV(IC50) |
+| plozalizumab_human | `etalvc` | 0.02 | Table S5 eta 2 |
+| plozalizumab_human | `etalkel + etalkm` | 0.25, 0.21, 0.60 | Table S5 eta 25, omega Km,Kel 21, eta 60 |
+| plozalizumab_human | `etalrbase + etalimax` | 0.02, 0.02, 0.04 | Table S5 eta 2, omega ROb,Emax 2, eta 4 |
+| plozalizumab_human | `propSd`, `propSd_freeCCR2` | 0.16, 0.23 | Table S5 proportional errors |
+| tak_500_human | disposition, RO and IIV | as plozalizumab_human, fixed | Table S5; Methods assumption 1 |
+| tak_500_human | `lkdec` | log(0.0324) 1/h, fixed | Table 2; Methods assumption 2 |
+| tak_500_human | `dar` | 4.6, fixed | Methods assumption 3 |
+| all | ADC / antibody ODEs | | Equations 1-4 (ADC), 15-16 and 19-20 (plozalizumab) |
+| all | outputs | | Equations 5-6, 9-12, 17, 21-22 |
+
+# TAK-500 in cynomolgus monkeys (Figure 1, Table 1)
+
+The model has no body-weight term: Vc and Vmax are per animal, so a mg/kg dose
+has to be multiplied by a weight. Individual weights are not reported, so the
+typical animal is solved at the bottom, middle and top of the 2.6-4.5 kg range.
+
+```{r cyno-tak500-sim}
+mod_c500 <- readModelDb("Saravanakumar_2026_tak_500_cyno")
+cyno_times <- sort(unique(c(seq(0, 24, by = 0.5), seq(24, 408, by = 4),
+                            0.083, 0.83, 6, 72, 168, 240, 336)))
+subj_c500 <- tidyr::expand_grid(dose_mgkg = c(0.1, 0.5, 3), WT = c(2.6, 3.55, 4.5)) |>
+  mutate(id = row_number(), amt = mg_to_nmol(dose_mgkg * WT),
+         dose = paste(dose_mgkg, "mg/kg"), weight = paste(WT, "kg"))
+ev_c500 <- build_events(subj_c500, cyno_times)
+sim_c500 <- rxSolve(mod_c500, ev_c500, omega = NA, sigma = NA, useLinCmt = FALSE,
+                    keep = c("dose", "weight", "WT", "dose_mgkg"),
+                    returnType = "data.frame")
+```
+
+```{r figure-1, fig.height = 7}
+sim_c500 |>
+  select(time, dose, weight, `Total antibody (nM)` = Cc_tab,
+         `Conjugated payload (nM)` = Cc, `Receptor occupancy (%)` = RO,
+         `Monocytes (cells/uL)` = mono) |>
+  pivot_longer(-c(time, dose, weight)) |>
+  filter(value > 0) |>
+  ggplot(aes(time, value, colour = weight)) +
+  geom_line() +
+  facet_grid(name ~ dose, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = NULL, colour = "Body weight",
+       caption = "Replicates Figure 1B-M of Saravanakumar 2026 (typical animal).")
+```
+
+The shapes follow Figure 1: total antibody and conjugated payload fall
+bi-exponentially and faster at lower doses (target-mediated clearance),
+receptor occupancy starts near 7% + 59% x C/(5.31 + C) and decays to the 7%
+assay background, and monocytes leave the circulation within the first day
+and return over 1-2 weeks, more slowly after 3 mg/kg.
+
+```{r cyno-tak500-nca}
+dose_c500 <- subj_c500 |> filter(weight == "3.55 kg")
+sim_mid <- sim_c500 |> filter(weight == "3.55 kg")
+nca_tab <- run_nca(sim_mid, "Cc_tab", dose_c500, "dose", lloq = lloq[["tab"]])
+nca_cp <- run_nca(sim_mid, "Cc", dose_c500 |> mutate(amt = 4.6 * amt), "dose", lloq = lloq[["cp"]])
+
+to_cmp <- function(res, analyte) {
+  nca_long(res, "dose") |>
+    mutate(PPORRES = ifelse(PPTESTCD == "cl.obs", PPORRES * 1000 / 3.55, PPORRES),
+           analyte = analyte)
+}
+sim_cmp <- bind_rows(to_cmp(nca_tab, "Total Ab"), to_cmp(nca_cp, "Conjugated TAK-676")) |>
+  filter(PPTESTCD %in% c("cmax", "aucinf.obs", "half.life", "cl.obs"))
+
+ref_table1 <- tibble::tribble(
+  ~analyte, ~dose, ~half.life, ~cmax, ~aucinf.obs, ~cl.obs,
+  "Total Ab", "0.1 mg/kg", 15.4, 14.3, 151, 4.3,
+  "Total Ab", "0.5 mg/kg", 58.5, 68, 1273, 2.7,
+  "Total Ab", "3 mg/kg", 82.2, 425, 8930, 2.2,
+  "Conjugated TAK-676", "0.1 mg/kg", 7.0, 60, 339, 9.2,
+  "Conjugated TAK-676", "0.5 mg/kg", 15.7, 295, 3133, 5.0,
+  "Conjugated TAK-676", "3 mg/kg", 38.5, 1766, 23239, 3.8
+)
+cmp_c500 <- ncaComparisonTable(
+  sim_cmp, ref_table1, by = c("analyte", "dose"),
+  units = c(cmax = "nM", aucinf.obs = "nM*h", half.life = "h", cl.obs = "mL/h/kg")
+)
+knitr::kable(cmp_c500, caption = paste(
+  "Typical 3.55 kg monkey vs. Table 1 means (n = 4 per dose).",
+  "* differs by more than 20%."
+))
+```
+
+```{r cyno-tak500-weight}
+wt_tab <- sim_c500 |>
+  group_by(dose, weight) |>
+  summarise(cmax = max(Cc_tab), .groups = "drop") |>
+  left_join(
+    as.data.frame(run_nca(sim_c500 |> mutate(dw = paste(dose, weight)), "Cc_tab",
+                          subj_c500 |> mutate(dw = paste(dose, weight)), "dw",
+                          lloq = lloq[["tab"]])$result) |>
+      filter(PPTESTCD == "aucinf.obs") |>
+      transmute(dose = sub(" [0-9.]+ kg$", "", group), weight = sub("^.* mg/kg ", "", group),
+                aucinf = PPORRES),
+    by = c("dose", "weight")
+  ) |>
+  left_join(ref_table1 |> filter(analyte == "Total Ab") |> select(dose, ref_cmax = cmax, ref_auc = aucinf.obs),
+            by = "dose") |>
+  mutate(cmax_ratio = cmax / ref_cmax, auc_ratio = aucinf / ref_auc)
+wt_tab |>
+  transmute(Dose = dose, Weight = weight, `Cmax (nM)` = signif(cmax, 3),
+            `Cmax / Table 1` = round(cmax_ratio, 2), `AUCinf (nM*h)` = signif(aucinf, 3),
+            `AUCinf / Table 1` = round(auc_ratio, 2)) |>
+  knitr::kable(caption = "Total-antibody exposure of the typical animal across the reported weight range.")
+
+stopifnot(
+  # Structure: the conjugated payload is DAR x ADC, so at the first sample
+  # (before appreciable deconjugation) Cc / Cc_tab is close to 4.6, as the
+  # Table 1 Cmax ratios (4.2, 4.3, 4.2) show.
+  all(abs(with(sim_c500[sim_c500$time == 0.083, ], Cc / Cc_tab) / 4.2 - 1) < 0.15),
+  # Table 1 Cmax lies inside the model's weight band (2.6-4.5 kg) at every dose.
+  all(tapply(wt_tab$cmax_ratio, wt_tab$dose, min) < 1.15),
+  all(tapply(wt_tab$cmax_ratio, wt_tab$dose, max) > 0.85),
+  # Known deviation, pinned so a change to the model shows up: the typical
+  # animal's AUC is 1.3-3.2 times the Table 1 mean across 2.6-4.5 kg and the
+  # three doses (typical-value solve, so the range is deterministic).
+  all(wt_tab$auc_ratio > 1.1), all(wt_tab$auc_ratio < 4),
+  # Monocytes return towards the 167 cells/uL baseline by 408 h after 0.1 mg/kg.
+  all(sim_c500$mono[sim_c500$time == 408 & sim_c500$dose_mgkg == 0.1] > 150)
+)
+```
+
+Cmax agrees with Table 1 at the light end of the weight range (within 15% at
+2.6 kg), but at every weight the typical animal's total-antibody AUC is above
+the Table 1 mean (1.3-1.7 times at 2.6 kg, up to 3.2 times at 4.5 kg) and the
+clearance is correspondingly lower. The terminal half-life is also longer than
+Table 1's at the two lower doses, where the observed concentrations fell below
+the assay limit within three days. The packaged values were checked against
+Table 2 and its bootstrap medians, which agree. The same gap is visible against
+the authors' own Figure 1D curve (about 20 nM at 72 h after 3 mg/kg, versus
+about 34-66 nM here). The cause cannot be settled from the publication; see
+Assumptions and deviations.
+
+# Plozalizumab in cynomolgus monkeys (Figure 2, Table S2)
+
+```{r cyno-ploz-sim}
+mod_cploz <- readModelDb("Saravanakumar_2026_plozalizumab_cyno")
+ui_cploz <- rxode2::rxode(mod_cploz)
+n_c <- 200L
+doses_cploz <- c(0.1, 0.5, 1, 3, 10, 30, 100)
+eta_cploz <- draw_etas(ui_cploz$omega, n_c, seed = 2026)
+subj_cploz <- tidyr::expand_grid(dose_mgkg = doses_cploz, k = seq_len(n_c)) |>
+  mutate(id = row_number(), WT = 3, amt = mg_to_nmol(dose_mgkg * WT),
+         dose = factor(paste(dose_mgkg, "mg/kg"), levels = paste(doses_cploz, "mg/kg"))) |>
+  bind_cols(eta_cploz[rep(seq_len(n_c), length(doses_cploz)), , drop = FALSE]) |>
+  select(-k)
+cploz_times <- c(0.5, 1, 2, 4, 8, 12, 24 * c(1:8, 10, 12, 15, 19, 22, 29, 36))
+sim_cploz <- rxSolve(mod_cploz, build_events(subj_cploz, cploz_times), omega = NA, sigma = NA, useLinCmt = FALSE,
+                     keep = c("dose", "dose_mgkg"), returnType = "data.frame")
+```
+
+```{r figure-2}
+sim_c500_typ <- sim_c500 |> filter(weight == "3.55 kg", time <= 336)
+sim_cploz |>
+  filter(dose_mgkg %in% c(0.1, 0.5, 3), time <= 336) |>
+  group_by(dose, time) |>
+  summarise(lo = quantile(Cc, 0.025), med = median(Cc), hi = quantile(Cc, 0.975), .groups = "drop") |>
+  ggplot(aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "lightblue", alpha = 0.6) +
+  geom_line(colour = "steelblue") +
+  geom_line(data = sim_c500_typ, aes(time, Cc_tab), colour = "red", linetype = 2) +
+  facet_wrap(~dose) +
+  scale_y_log10(limits = c(1e-3, NA)) +
+  labs(x = "Time (h)", y = "Concentration (nM)",
+       caption = paste("Replicates Figure 2C-E of Saravanakumar 2026: plozalizumab 95% PI (blue)",
+                       "vs. typical TAK-500 total antibody (red, 3.55 kg)."))
+```
+
+Table S2 prints AUC in "h x uM", but its AUC and CL columns agree only if the
+AUC is in uM x day (at 100 mg/kg, 672 nmol/kg / 35.2 uM x day = 0.80 mL/h/kg,
+against the printed 0.83). The reference values below use uM x day and the
+half-lives (printed in days) are converted to hours.
+
+```{r cyno-ploz-nca}
+dose_cploz <- subj_cploz |> filter(dose_mgkg >= 1) |> mutate(dose = as.character(dose))
+nca_cploz <- run_nca(sim_cploz |> filter(dose_mgkg >= 1) |> mutate(dose = as.character(dose)),
+                     "Cc", dose_cploz, "dose", lloq = lloq[["ploz_cyno"]])
+sim_cploz_cmp <- nca_long(nca_cploz, "dose") |>
+  filter(PPTESTCD %in% c("aucinf.obs", "half.life", "cl.obs")) |>
+  mutate(PPORRES = ifelse(PPTESTCD == "cl.obs", PPORRES * 1000 / 3, PPORRES))
+ref_s2 <- tibble::tribble(
+  ~dose, ~aucinf.obs, ~cl.obs, ~half.life,
+  "1 mg/kg", 0.167, 1.90, 0.85,
+  "3 mg/kg", 1.66, 0.53, 2.0,
+  "10 mg/kg", 5.43, 0.66, 3.7,
+  "30 mg/kg", 15.8, 0.59, 2.3,
+  "100 mg/kg", 35.2, 0.83, 4.3
+) |>
+  mutate(aucinf.obs = aucinf.obs * 24000, half.life = half.life * 24)
+cmp_cploz <- ncaComparisonTable(
+  sim_cploz_cmp, ref_s2, by = "dose",
+  units = c(aucinf.obs = "nM*h", half.life = "h", cl.obs = "mL/h/kg")
+)
+knitr::kable(cmp_cploz, caption = paste(
+  "Median of 200 simulated monkeys per dose vs. Table S2 means (n = 3).",
+  "* differs by more than 20%."
+))
+```
+
+The plozalizumab model reproduces clearance within 35% at 1, 10, 30 and
+100 mg/kg. Table S2's 3 mg/kg mean clearance (0.53 mL/h/kg, n = 3) is lower
+than its 10-100 mg/kg means, which a model with saturable elimination cannot
+reproduce; with three animals per dose and a kel variance of 0.88 such
+scatter in the means is expected. In Figure 2
+the authors overlay this model on the TAK-500 total-antibody data; the packaged
+TAK-500 typical curve sits inside the plozalizumab interval, as in the paper.
+
+```{r cyno-ploz-check}
+cl_cploz <- sim_cploz_cmp |>
+  filter(PPTESTCD == "cl.obs") |>
+  group_by(dose) |>
+  summarise(cl = median(PPORRES), .groups = "drop") |>
+  left_join(ref_s2 |> select(dose, ref = cl.obs), by = "dose")
+cl_cploz_ok <- cl_cploz |> filter(dose != "3 mg/kg")
+stopifnot(
+  # Nonlinearity: median clearance at 1 mg/kg is well above that at 100 mg/kg.
+  with(cl_cploz, cl[dose == "1 mg/kg"] / cl[dose == "100 mg/kg"]) > 1.5,
+  # Within 35% of the Table S2 means at 1, 10, 30 and 100 mg/kg. The 3 mg/kg
+  # mean (0.53 mL/h/kg) is below the 10-100 mg/kg means, which no saturable
+  # model can produce, and is excluded.
+  all(abs(cl_cploz_ok$cl / cl_cploz_ok$ref - 1) < 0.35)
+)
+```
+
+# Plozalizumab in healthy adults (Figure 3, Table S4)
+
+```{r human-ploz-sim}
+mod_hploz <- readModelDb("Saravanakumar_2026_plozalizumab_human")
+ui_hploz <- rxode2::rxode(mod_hploz)
+n_h <- 100L
+doses_h <- c(0.1, 0.3, 1, 3, 6, 10)
+eta_h <- draw_etas(ui_hploz$omega, n_h, seed = 202)
+subj_h <- tidyr::expand_grid(dose_mgkg = doses_h, k = seq_len(n_h)) |>
+  mutate(id = row_number(), amt = mg_to_nmol(dose_mgkg * 70),
+         dose = factor(paste(dose_mgkg, "mg/kg"), levels = paste(doses_h, "mg/kg"))) |>
+  bind_cols(eta_h[rep(seq_len(n_h), length(doses_h)), , drop = FALSE]) |>
+  select(-k)
+h_times <- c(0.5, 1, 1.5, 2, 4, 8, 12, 24, 48, 72, 96, 120, 168, 240, 336, 504, 672,
+             1008, 1344, 1680, 2016, 2688)
+sim_hploz <- rxSolve(mod_hploz, build_events(subj_h, h_times, dur = 1), omega = NA, sigma = NA, useLinCmt = FALSE,
+                     keep = c("dose", "dose_mgkg"), returnType = "data.frame")
+```
+
+```{r figure-3, fig.height = 6}
+sim_hploz |>
+  select(dose, time, `Plozalizumab (nM)` = Cc, `Unbound CCR2 (MESF)` = freeCCR2) |>
+  pivot_longer(-c(dose, time)) |>
+  group_by(dose, time, name) |>
+  summarise(lo = quantile(value, 0.025), med = median(value), hi = quantile(value, 0.975),
+            .groups = "drop") |>
+  # Concentrations below 0.01 nM (the floor of Figure 3) are not drawn.
+  filter(name != "Plozalizumab (nM)" | hi > 0.01) |>
+  mutate(lo = pmax(lo, ifelse(name == "Plozalizumab (nM)", 0.01, 0)),
+         med = ifelse(med > lo, med, NA_real_)) |>
+  ggplot(aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "lightblue", alpha = 0.6) +
+  geom_line(na.rm = TRUE) +
+  facet_grid(name ~ dose, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = NULL,
+       caption = "Replicates Figure 3C-N of Saravanakumar 2026 (median and 95% interval, 70 kg).")
+```
+
+```{r human-ploz-nca}
+dose_h <- subj_h |> mutate(dose = as.character(dose))
+nca_h <- run_nca(sim_hploz |> mutate(dose = as.character(dose)), "Cc", dose_h, "dose", dur = 1)
+sim_h_cmp <- nca_long(nca_h, "dose") |>
+  filter(PPTESTCD %in% c("cmax", "aucinf.obs", "half.life", "cl.obs")) |>
+  mutate(PPORRES = ifelse(PPTESTCD == "cl.obs", PPORRES * 1000 / 70, PPORRES))
+ref_s4 <- tibble::tribble(
+  ~dose, ~cmax, ~aucinf.obs, ~cl.obs, ~half.life,
+  "0.1 mg/kg", 15.5, 0.613, 1.19, 1.4,
+  "0.3 mg/kg", 49.7, 2.81, 0.758, 2.2,
+  "1 mg/kg", 168, 21.7, 0.325, 5.2,
+  "3 mg/kg", 529, 96.7, 0.221, 7.1,
+  "6 mg/kg", 1266, 252, 0.179, 8.3,
+  "10 mg/kg", 1965, 575, 0.125, 9.5
+) |>
+  mutate(aucinf.obs = aucinf.obs * 1000, half.life = half.life * 24)
+cmp_h <- ncaComparisonTable(
+  sim_h_cmp, ref_s4, by = "dose",
+  units = c(cmax = "nM", aucinf.obs = "nM*h", half.life = "h", cl.obs = "mL/h/kg")
+)
+knitr::kable(cmp_h, caption = paste(
+  "Median of 100 simulated 70 kg adults per dose vs. Table S4 means (n = 6).",
+  "* differs by more than 20%."
+))
+
+cl_h <- sim_h_cmp |>
+  filter(PPTESTCD == "cl.obs") |>
+  group_by(dose) |>
+  summarise(cl = median(PPORRES), .groups = "drop") |>
+  left_join(ref_s4 |> select(dose, ref = cl.obs), by = "dose")
+cl_h_hi <- cl_h |> filter(dose %in% c("1 mg/kg", "3 mg/kg", "6 mg/kg", "10 mg/kg"))
+stopifnot(
+  # Clearance falls with dose (Table S4: 1.19 -> 0.125 mL/h/kg).
+  with(cl_h, cl[dose == "0.1 mg/kg"] / cl[dose == "10 mg/kg"]) > 2.5,
+  # Within 35% of Table S4 from 1 to 10 mg/kg.
+  all(abs(cl_h_hi$cl / cl_h_hi$ref - 1) < 0.35)
+)
+```
+
+From 1 to 10 mg/kg the simulated clearance is within 30% of Table S4. At 0.1
+and 0.3 mg/kg the model's clearance is about half the NCA value. This gap
+belongs to the paper's model, not to the transcription: the same parameters
+give the authors' own Table 3 clearance of 40 mL/h (0.57 mL/h/kg) at
+50 ug/kg, which the packaged projection reproduces below. The NCA half-lives
+at low doses were estimated from samples that fell below the assay limit
+within a few days, and the paper's half-lives at high doses come from the
+saturated phase; the simulated terminal phase is the low-concentration,
+target-mediated one, so half-lives are not comparable.
+
+Unbound CCR2 drops at once to about RO0 x (1 - 0.522 C / (5.71 + C)), stays
+suppressed while plozalizumab is above a few nM, and climbs back to the
+21,509 MESF baseline as the antibody clears, later after higher doses, as in
+Figure 3I-N.
+
+# TAK-500 human projection (Figure 4, Table 3)
+
+```{r human-tak500-sim}
+mod_h500 <- readModelDb("Saravanakumar_2026_tak_500_human")
+ui_h500 <- rxode2::rxode(mod_h500)
+n_p <- 200L
+doses_p <- c(50, 150, 500)
+p_times <- c(0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 24, 36, 48, 72, 96, 120, 144, 168, 216, 264, 336)
+make_proj <- function(eta) {
+  tidyr::expand_grid(dose_ugkg = doses_p, k = seq_len(n_p)) |>
+    mutate(id = row_number(), amt = mg_to_nmol(dose_ugkg * 70 / 1000),
+           dose = paste(dose_ugkg, "ug/kg")) |>
+    bind_cols(eta[rep(seq_len(n_p), length(doses_p)), , drop = FALSE]) |>
+    select(-k)
+}
+subj_p <- make_proj(draw_etas(ui_h500$omega, n_p, seed = 500))
+sim_p <- rxSolve(mod_h500, build_events(subj_p, p_times, dur = 1), omega = NA, sigma = NA, useLinCmt = FALSE,
+                 keep = c("dose", "dose_ugkg"), returnType = "data.frame")
+```
+
+```{r figure-4, fig.height = 3.5}
+fig4 <- sim_p |>
+  mutate(dose = factor(dose, levels = paste(doses_p, "ug/kg"))) |>
+  select(dose, time, `Total antibody` = Cc_tab, `Conjugated payload` = Cc, RO) |>
+  pivot_longer(c(`Total antibody`, `Conjugated payload`, RO)) |>
+  group_by(dose, time, name) |>
+  summarise(lo = quantile(value, 0.05), med = median(value), hi = quantile(value, 0.95),
+            .groups = "drop")
+fig4 |>
+  filter(name != "RO") |>
+  ggplot(aes(time, med, colour = name, fill = name)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+  geom_line() +
+  facet_wrap(~dose) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Serum concentration (nM)", colour = NULL, fill = NULL,
+       caption = "Replicates Figure 4A of Saravanakumar 2026 (median and 90% interval, 70 kg).")
+fig4 |>
+  filter(name == "RO") |>
+  ggplot(aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey70", alpha = 0.5) +
+  geom_line(colour = "firebrick") +
+  facet_wrap(~dose) +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(x = "Time (h)", y = "Receptor occupancy (%)",
+       caption = "Replicates Figure 4B of Saravanakumar 2026 (median and 90% interval, 70 kg).")
+```
+
+```{r human-tak500-nca}
+dose_p <- subj_p
+nca_p_tab <- run_nca(sim_p, "Cc_tab", dose_p, "dose", dur = 1, lloq = lloq[["tab"]])
+nca_p_cp <- run_nca(sim_p, "Cc", dose_p |> mutate(amt = 4.6 * amt), "dose", dur = 1, lloq = lloq[["cp"]])
+p_long <- bind_rows(
+  nca_long(nca_p_tab, "dose") |> mutate(analyte = "Total Ab"),
+  nca_long(nca_p_cp, "dose") |> mutate(analyte = "Conjugated TAK-676")
+) |>
+  filter(PPTESTCD %in% c("cmax", "aucinf.obs", "half.life", "cl.obs")) |>
+  mutate(PPORRES = ifelse(PPTESTCD == "cl.obs", PPORRES * 1000, PPORRES))
+
+ref_t3 <- tibble::tribble(
+  ~analyte, ~dose, ~PPTESTCD, ~ref_med, ~ref_lo, ~ref_hi,
+  "Total Ab", "50 ug/kg", "half.life", 114, 20.4, 263,
+  "Total Ab", "50 ug/kg", "cmax", 8.1, 5.4, 11.4,
+  "Total Ab", "50 ug/kg", "aucinf.obs", 588, 159, 1412,
+  "Total Ab", "50 ug/kg", "cl.obs", 40, 16.6, 147,
+  "Total Ab", "150 ug/kg", "half.life", 115, 26.3, 261,
+  "Total Ab", "150 ug/kg", "cmax", 24.0, 16.7, 34.6,
+  "Total Ab", "150 ug/kg", "aucinf.obs", 1910, 706, 4338,
+  "Total Ab", "150 ug/kg", "cl.obs", 36.9, 16.3, 99.9,
+  "Total Ab", "500 ug/kg", "half.life", 118, 48.7, 255,
+  "Total Ab", "500 ug/kg", "cmax", 80.7, 56.8, 115.7,
+  "Total Ab", "500 ug/kg", "aucinf.obs", 7666, 4291, 15198,
+  "Total Ab", "500 ug/kg", "cl.obs", 30.7, 15.5, 54.8,
+  "Conjugated TAK-676", "50 ug/kg", "half.life", 29.6, 9.1, 40.9,
+  "Conjugated TAK-676", "50 ug/kg", "cmax", 34, 24, 48,
+  "Conjugated TAK-676", "50 ug/kg", "aucinf.obs", 732, 424, 1072,
+  "Conjugated TAK-676", "50 ug/kg", "cl.obs", 148, 101, 256,
+  "Conjugated TAK-676", "150 ug/kg", "half.life", 30.5, 23.2, 70.2,
+  "Conjugated TAK-676", "150 ug/kg", "cmax", 101, 72, 145,
+  "Conjugated TAK-676", "150 ug/kg", "aucinf.obs", 2308, 1604, 3336,
+  "Conjugated TAK-676", "150 ug/kg", "cl.obs", 141, 97.6, 202,
+  "Conjugated TAK-676", "500 ug/kg", "half.life", 62.1, 31.5, 71.7,
+  "Conjugated TAK-676", "500 ug/kg", "cmax", 339, 239, 483,
+  "Conjugated TAK-676", "500 ug/kg", "aucinf.obs", 8754, 6460, 11879,
+  "Conjugated TAK-676", "500 ug/kg", "cl.obs", 124, 91.2, 168
+)
+
+cmp_p <- ncaComparisonTable(
+  p_long, ref_t3 |> select(analyte, dose, PPTESTCD, PPORRES = ref_med), by = c("analyte", "dose"),
+  units = c(cmax = "nM", aucinf.obs = "nM*h", half.life = "h", cl.obs = "mL/h")
+)
+knitr::kable(cmp_p, caption = paste(
+  "Median of 200 simulated 70 kg adults per dose vs. Table 3 medians.",
+  "* differs by more than 20%."
+))
+
+pi_p <- p_long |>
+  group_by(analyte, dose, PPTESTCD) |>
+  summarise(lo = quantile(PPORRES, 0.025, na.rm = TRUE), med = median(PPORRES, na.rm = TRUE),
+            hi = quantile(PPORRES, 0.975, na.rm = TRUE), .groups = "drop") |>
+  inner_join(ref_t3, by = c("analyte", "dose", "PPTESTCD"))
+pi_p |>
+  filter(PPTESTCD %in% c("cmax", "cl.obs")) |>
+  transmute(Analyte = analyte, Dose = dose, Parameter = PPTESTCD,
+            `Simulated 95% interval` = sprintf("%.3g (%.3g-%.3g)", med, lo, hi),
+            `Table 3 95% CI` = sprintf("%.3g (%.3g-%.3g)", ref_med, ref_lo, ref_hi)) |>
+  knitr::kable(caption = "Spread across subjects: simulated 2.5th-97.5th percentiles vs. Table 3.")
+```
+
+The projection reproduces Table 3: clearance of total antibody falls from
+about 40 to 31 mL/h between 50 and 500 ug/kg and conjugated-payload clearance
+from about 148 to 124 mL/h, with matching 95% intervals. The median
+conjugated-payload half-life depends on which phase the terminal fit
+selects once concentrations drop below the 0.92 nM assay limit; the simulated
+medians lie inside Table 3's 95% intervals at all three doses but do not
+match its medians. The simulated Cmax
+here is the individual prediction; Table 3's Cmax medians run about 9% higher
+and its intervals are wider, consistent with the authors' simulations
+including the 16% proportional residual error.
+
+## How the IIV column is read
+
+The supplement's 'eta' column (e.g. 25 on kel, 60 on Km, 21 for the Km-kel
+covariance) does not say whether it is a variance x 100 (Phoenix reports Omega
+as variances) or a %CV. Table 3's intervals decide it. Under the %CV reading
+the Vc variance would be log(1 + 0.02^2) = 0.0004, which makes the total
+antibody Cmax nearly identical across subjects; Table 3's Cmax interval spans a
+factor of two.
+
+```{r iiv-reading}
+om_cv <- ui_h500$omega
+cv <- c(etalvc = 0.02, etalkel = 0.25, etalkm = 0.60, etalrbase = 0.02, etalimax = 0.04)
+diag(om_cv)[names(cv)] <- log(1 + cv^2)
+om_cv["etalkel", "etalkm"] <- om_cv["etalkm", "etalkel"] <-
+  0.21 * sqrt(om_cv["etalkel", "etalkel"] * om_cv["etalkm", "etalkm"])
+om_cv["etalrbase", "etalimax"] <- om_cv["etalimax", "etalrbase"] <-
+  0.02 * sqrt(om_cv["etalrbase", "etalrbase"] * om_cv["etalimax", "etalimax"])
+subj_cv <- make_proj(draw_etas(om_cv, n_p, seed = 500))
+sim_cv <- rxSolve(mod_h500, build_events(subj_cv, p_times, dur = 1), omega = NA, sigma = NA, useLinCmt = FALSE,
+                  keep = c("dose"), returnType = "data.frame")
+width <- function(sim) {
+  sim |>
+    group_by(dose, id) |>
+    summarise(cmax = max(Cc_tab), .groups = "drop") |>
+    group_by(dose) |>
+    summarise(ratio = quantile(cmax, 0.975) / quantile(cmax, 0.025), .groups = "drop")
+}
+iiv_cmp <- width(sim_p) |>
+  rename(`Variance x 100 (packaged)` = ratio) |>
+  left_join(width(sim_cv) |> rename(`%CV` = ratio), by = "dose") |>
+  mutate(`Table 3` = c(`50 ug/kg` = 11.4 / 5.4, `150 ug/kg` = 34.6 / 16.7,
+                       `500 ug/kg` = 115.7 / 56.8)[dose])
+knitr::kable(iiv_cmp, digits = 2,
+             caption = "97.5th / 2.5th percentile ratio of total-antibody Cmax under the two readings.")
+
+cl_pi <- pi_p |> filter(PPTESTCD == "cl.obs")
+thalf_cp <- pi_p |> filter(PPTESTCD == "half.life", analyte == "Conjugated TAK-676")
+stopifnot(
+  # Conjugated-payload half-life: simulated median inside Table 3's 95% CI.
+  all(thalf_cp$med > thalf_cp$ref_lo & thalf_cp$med < thalf_cp$ref_hi),
+  # The packaged (variance) reading spreads Cmax by a factor near 1.8 (Table 3:
+  # 2.0-2.1 with residual error included); the %CV reading by under 1.15.
+  all(iiv_cmp$`Variance x 100 (packaged)` > 1.5),
+  all(iiv_cmp$`%CV` < 1.15),
+  # Central tendency of clearance matches Table 3 for both analytes.
+  all(abs(cl_pi$med / cl_pi$ref_med - 1) < 0.15),
+  # The 95% interval of clearance matches Table 3 (both ends within 30%).
+  all(abs(cl_pi$lo / cl_pi$ref_lo - 1) < 0.3),
+  all(abs(cl_pi$hi / cl_pi$ref_hi - 1) < 0.3)
+)
+```
+
+```{r figure-4b-check}
+ro_end <- sim_p |>
+  filter(time == 1) |>
+  group_by(dose) |>
+  summarise(RO = median(RO), .groups = "drop")
+knitr::kable(ro_end, digits = 1,
+             caption = "Median receptor occupancy at the end of the 1-h infusion (Figure 4B: about 28, 40 and 47%).")
+# Figure 4B medians read off the figure at the end of the infusion.
+stopifnot(all(abs(ro_end$RO - c(28, 40, 47)[match(ro_end$dose, paste(doses_p, "ug/kg"))]) < 6))
+```
+
+# Assumptions and deviations
+
+* **IIV scale.** The 'eta' columns of Table 2, Table S3 and Table S5 are read
+  as the Phoenix Omega variance x 100 (kel 25 -> 0.25). This reading
+  reproduces Table 3's 95% intervals of clearance and Cmax; the %CV reading
+  gives intervals far too narrow (see "How the IIV column is read"). The two
+  printed covariances ('omega Km,Kel' 21, 'omega ROb,Emax' 2) are read on the
+  same scale (correlations 0.54 and 0.71).
+* **Monkey TAK-500 exposure.** At every weight in the reported 2.6-4.5 kg
+  range the typical-animal total-antibody AUC exceeds the Table 1 mean (about
+  1.2-1.6 times at 2.6 kg, more at higher weights), and the typical curve sits
+  above the authors' Figure 1 simulation after the first day. Table 2 was
+  checked against its own bootstrap medians, which agree with the point
+  estimates. No parameter was adjusted; the gap is recorded as a known
+  deviation and pinned in the assertions above.
+* **Monkey weights.** Table 2 Vc and Vmax are per animal and individual weights
+  are not reported, so monkey simulations show 2.6, 3.55 and 4.5 kg.
+* **Peripheral monocytes at baseline.** Equations 11-12 do not state an
+  initial value for the peripheral monocyte pool. It starts at 0, so that
+  monocytes leave the circulation only under drug-induced occupancy and return
+  to the 167 cells/uL baseline after washout, as in Figure 1K-M.
+* **Equation 9 notation.** Equation 9 writes the occupancy denominator as
+  'Km + s2'; the parameter is the EC50 of Table 2 (5.31 nM), not the PK Km.
+* **Plozalizumab monkey parameters per kg.** Table S3 gives Vc in L/kg and
+  Vmax in nmol/h/kg (Table S1 prints the Vmax unit as nmol/h). The per-kg
+  reading is used and implemented as a linear WT scaling, so concentrations
+  do not depend on the weight supplied. The infusion (30 min) is modelled as
+  an IV bolus, as in the paper's model. Table S2 AUC is taken as uM x day (see
+  above). The Methods and the Results disagree on the monkey dose levels.
+* **Human weight.** The human models carry no weight covariate; simulations
+  use 70 kg, the standard of Table 3. The Table S4 comparison is therefore for a
+  70 kg subject against the observed cohort means.
+* **Emax unit.** Table S5 prints the Emax unit as 1/h; Equation 22 makes it a
+  fraction, which is how it is used. Bootstrap medians differ slightly from the
+  point estimates (Emax 0.539, IC50 6.50 nM, Vmax 1.69 nmol/h); the point
+  estimates are used.
+* **Projection DAR.** The Methods use a mean DAR of 4.6; the Figure 4 caption
+  says the projections are for DAR 4. Table 3's conjugated-payload Cmax
+  (34, 101, 339 nM) equals 4.6 times the typical total-antibody concentration
+  at the end of the infusion, so 4.6 is used.
+* **Projection residual error and RO.** The projection carries the
+  plozalizumab residual errors (16% on concentrations, assumed also for the
+  conjugated payload; 23% on unbound CCR2). Receptor occupancy in Figure 4B is
+  the human Equation 22 driven by total antibody, expressed as
+  100 x (1 - unbound / baseline).
+* **kdec.** The human projection uses the monkey estimate 0.0324 1/h (Table 2);
+  the Results text rounds it to 0.03 1/h.
+* No erratum or correction notice for this article was found (checked
+  2026-11-12).
