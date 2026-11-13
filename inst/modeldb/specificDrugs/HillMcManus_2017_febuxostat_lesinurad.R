@@ -7,6 +7,7 @@ HillMcManus_2017_febuxostat_lesinurad <- function() {
     dosing = "mg",
     concentration = "mg/dL"
   )
+  dosing <- c("depot_febx", "depot_lesn")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

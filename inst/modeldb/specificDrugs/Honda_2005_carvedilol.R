@@ -25,6 +25,7 @@ Honda_2005_carvedilol <- function() {
   )
   vignette <- "Honda_2005_carvedilol"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("central_r", "central_s")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

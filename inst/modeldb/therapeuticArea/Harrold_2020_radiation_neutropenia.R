@@ -16,6 +16,7 @@ Harrold_2020_radiation_neutropenia <- function() {
     dosing = "K-PD radiation amount, numerical magnitude in cGy (the published 750 cGy pivotal dose enters the depot_kpd compartment as a 750-unit bolus at t = 0; Table II reports k_PD,kill = 2.14 d^-1 'KPD^-1' where KPD = cGy^gamma. Simulating with `amt = 7.5` (Gy units) produces an ANC nadir that is too shallow and too early to match the paper's Fig 2 / Fig 3 placebo VPC; `amt = 750` reproduces the deep nadir at ~14-15 days reported in the Discussion. See vignette Assumptions and deviations.)",
     concentration = "10^9 cells/L (ANC)"
   )
+  dosing <- "depot_kpd"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

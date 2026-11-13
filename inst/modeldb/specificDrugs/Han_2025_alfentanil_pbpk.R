@@ -39,6 +39,7 @@ Han_2025_alfentanil_pbpk <- function() {
   )
   vignette <- "Han_2025_cyp3a4_pediatric_geriatric_pbpk"
   units <- list(time = "min", dosing = "mg", concentration = "ng/mL")
+  dosing <- "stomach"
 
   # Perfused gut-WALL tissue states. The gut LUMEN segments use the canonical
   # stomach / duodenum / jejunum / ileum / cecum / colon names; the tissue
