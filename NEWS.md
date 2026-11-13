@@ -2,6 +2,41 @@
 
 # development version
 
+## Breaking changes
+
+- `indirect_0cpt_transitEx` is renamed `PK_2cmt_transit_mm_des` and moves to
+  the pharmacokinetics models. It is a two-compartment PK model with a
+  ten-compartment transit absorption chain and Michaelis-Menten elimination,
+  with no indirect response, so neither its old name nor its pharmacodynamics
+  category described it; its description now does. nlmixr2lib has no aliases
+  for renamed models, so `readModelDb("indirect_0cpt_transitEx")` and
+  `modellib("indirect_0cpt_transitEx")` now fail with "'name' not in
+  database"; use the new name. The model itself is unchanged.
+
+- `Lallemand_2023_benzylpenicillin_horse`: the four observation-block
+  indicators are renamed to spell out the drug, and are registered with the
+  model's five `STUDY_*` cohort indicators, clearing its nine
+  unregistered-covariate warnings. Data sets must use the new column names:
+  `FORM_BP_NA_IM` is now `FORM_BENZYLPENICILLIN_SODIUM_IM`, `FORM_BP_PROC` is
+  `FORM_BENZYLPENICILLIN_PROCAINE`, `FORM_BP_DUPLO` is
+  `FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE` and `FORM_BP_PENETH` is
+  `FORM_BENZYLPENICILLIN_PENETHAMATE`. No equation or value changed.
+
+- Fix the equations of six circadian indirect-response templates
+  (`indirect_circ_1cpt_*`); simulations from them change.
+  - In the four `*_kout_t` templates, a missing pair of parentheses in the
+    circadian loss rate meant the drug-free response did not follow its
+    circadian baseline. It now does, to solver tolerance.
+  - `indirect_circ_1cpt_inhi_kin_kout_t` inhibited the loss rate. It now
+    inhibits production, as its name says.
+  - The four stimulation templates used an `ic50` they do not define (they
+    estimate `ec50`), and `indirect_circ_1cpt_stim_kout_kout_t` also used
+    undefined `kin_t` and `kout`. None of them could be solved without
+    supplying those names, which their `depends` listed. They now use their
+    own parameters, and `depends` is `vc` alone.
+
+## Other changes
+
 - `checkNamingRegisters()` now also reports a model file cited anywhere in a
   register, such as a `Notes:` or `Source aliases:` line, that does not exist
   (check `orphan-model-citation`). Before, only `Example models:` lines were
@@ -17,20 +52,9 @@
   that every model either has an article or is listed, with a reason, as a
   generic template or as awaiting one.
 
-- `Lallemand_2023_benzylpenicillin_horse`: the four observation-block
-  indicators are renamed to spell out the drug, and are registered with the
-  model's five `STUDY_*` cohort indicators, clearing its nine
-  unregistered-covariate warnings. Data sets must use the new column names:
-  `FORM_BP_NA_IM` is now `FORM_BENZYLPENICILLIN_SODIUM_IM`, `FORM_BP_PROC` is
-  `FORM_BENZYLPENICILLIN_PROCAINE`, `FORM_BP_DUPLO` is
-  `FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE` and `FORM_BP_PENETH` is
-  `FORM_BENZYLPENICILLIN_PENETHAMATE`. No equation or value changed.
-
-- Correct the descriptions of eleven `indirect_*` templates; the models
-  themselves are unchanged. `indirect_0cpt_transitEx` now mentions its
-  ten-compartment transit absorption chain. Two circadian `*_kout_t` models
-  said `kin_t`, and the two stimulation `indirect_prec_1cpt_stim_*` models said
-  inhibition. `indirect_prec_1cpt_stim_r0rmaxcrmax` now says that its PK
+- Correct the descriptions of ten `indirect_*` templates. Two circadian
+  `*_kout_t` models said `kin_t`, and the two stimulation
+  `indirect_prec_1cpt_stim_*` models said inhibition. `indirect_prec_1cpt_stim_r0rmaxcrmax` now says that its PK
   is parameterized with clearance and volume and its response with R0, Rmax
   and CRmax. A "cosntants" typo is fixed in five descriptions.
 
