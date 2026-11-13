@@ -546,7 +546,9 @@ record's covariates the dose uses. Measured on rxode2 5.1.8.9000 with a
 lag of 0.5 h and a distinct covariate value on every record, including a
 last record no other shares, so that each result names the record it came
 from. "That record" below is an observation, or another dose (amt 10) into
-the same or another compartment, unless the cell says otherwise.
+the same compartment or into another compartment without its own lag,
+unless the cell says otherwise; a lagged other compartment is below the
+tables.
 
 `f()`:
 
@@ -572,6 +574,17 @@ Modelled `rate()` (`rate = -1`) and `dur()` (`rate = -2`):
 
 In this table a dose into the same compartment never supplies the value,
 and neither does a record exactly at the dose's arrival time.
+
+A dose into another compartment that has its own `alag()` is moved to its
+own arrival, so whether it counts depends on that lag. Measured with the
+probed dose at 24 h arriving at 24.5 h, under all three settings alike:
+its `rate()` / `dur()` came from the other dose when that dose was recorded
+at or after 24 h and arrived no later than 24.5 h, or was recorded before
+24 h and arrived after 24.5 h; otherwise from its own record. With the
+other compartment's lag as long as the dose's, a dose in its window never
+counted. For `f()`, such a dose at the dose's own time supplied a
+`rate = -2` dose's `f()` under `FALSE` but not under `TRUE` or
+`nonmem = TRUE` (the record before the dose did).
 
 More facts from the same probes:
 

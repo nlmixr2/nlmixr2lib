@@ -1146,15 +1146,16 @@ is deliberately not encoded.
   interval, and every simulation states `addlKeepsCov = FALSE`.** Doses are
   lagged and given with `rate = -2`, and for such a dose `rxSolve()` does not
   always read the occasion from the dose's own record. The lag is always read
-  from the dose record. The zero-order duration comes from an observation, or
-  a dose into another compartment, at the same time as the dose or inside the
-  lag window, if there is one, under either setting of `addlKeepsCov`. Another
-  dose into the depot, or a record exactly at the arrival time, does not
-  count, and with `nonmem = TRUE` a record at the same time counts only if its
-  row comes after the dose's. The bioavailability comes from an observation,
-  or a dose into another compartment, at the same time as the dose, if there
-  is one, under either setting (with `FALSE`, another dose into the depot at
-  that time too). Otherwise,
+  from the dose record. The zero-order duration comes from an observation at
+  the same time as the dose or inside the lag window, if there is one, under
+  either setting of `addlKeepsCov`; a dose into another compartment can too,
+  depending on that compartment's own lag. Another dose into the depot, or a
+  record exactly at the arrival time, does not count, and with
+  `nonmem = TRUE` a record at the same time counts only if its row comes
+  after the dose's. The bioavailability comes from an observation at the same
+  time as the dose, if there is one, under either setting (a dose into
+  another compartment can too, depending on its own lag and the setting; with
+  `FALSE`, another dose into the depot at that time too). Otherwise,
   with `addlKeepsCov = FALSE`, the default, it comes from the dose's own
   record: a record inside the lag window is ignored, unlike for a bolus dose.
   With `addlKeepsCov = TRUE` (and with `nonmem = TRUE`) it comes from the
