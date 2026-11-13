@@ -2,6 +2,10 @@
 
 # development version
 
+- The registry's full-scope solve gate (`NLMIXR2LIB_SOLVE_GATE=full`) passes. Its probe now drives models it could not before: those with a random effect on a within-subject grouping variable (`| OCC`), those mixing an algebraic endpoint with ODE-state endpoints, and neonatal or pregnancy models whose age covariates it had set to an adult's age. It also reads a reference value held in a named constant, falls back to `dop853` when rxode2's default solver fails or returns NaN states without a warning, lengthens the time grid when an absorption lag outlasts it, and re-solves a linCmt divergence at tight tolerances before reporting it. The 81 models whose solution rxode2's opt-in ODE-to-linCmt conversion changes are quarantined by cause. `tgi_sat_genVonBertalanffy` and `tgi_no_sat_powerLaw`, whose growth exponent is exp(0.95) = 2.59, are recorded as broken.
+
+- `tgi_sat_genLogistic`'s `lgamma` label now describes the generalized-logistic shape exponent rather than a proliferative fraction.
+
 - The registry's solve gate (`tests/testthat/test-modeldb-solve-gate.R`) now fails when a dosed probe solve leaves an ODE state NaN or infinite. Timing outputs such as `tad()` may legitimately be NA and are not checked. By default the gate also probes every model that reads a named compartment's dose history, so a wrong `dosing` compartment is caught without `NLMIXR2LIB_SOLVE_GATE=full`. The probe doses every declared `dosing` compartment whose dose history the model reads, not only the first, so a split dose (`tad(depot2)` alongside `depot`) is probed as the model expects.
 
 - `checkModelConventions()` reports an error when a dose-history function names a compartment the model is not dosed into: `tad()`, `tad0()`, `tafd()`, `tafd0()`, `tlast()`, `tlast0()`, `tfirst()`, `tfirst0()`, `dose()`, `dose0()`, `podo()` or `podo0()` of a compartment missing from its `dosing` metadata (or, without metadata, from the depot/central fallback that `buildModelDb()` records). Nothing doses that compartment, so the function is NA for every subject and any derivative using it is NaN.

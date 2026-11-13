@@ -20,7 +20,7 @@ tgi_sat_genLogistic <- function() {
     lcl <- 1 ; label("Clearance (CL)")
     lvc  <- 3.45 ; label("Central volume of distribution (V)")
     lkgl <- 0.7; label("Zero-order linear growth rate (tumor size/time_unit)")
-    lgamma <- 0.95; label("proliferative cells as a fraction of the full tumor volume (gamma)")
+    lgamma <- 0.95; label("Generalized logistic shape exponent on TS/TSmax (unitless)")
     propSd <- 0.5 ; label("PK proportional residual error (fraction)")
     propSd_tumor_size <- 0.5 ; label("Tumor size proportional residual error (fraction)")
     addSd_tumor_size <- 30 ; label("Tumor size additive residual error (tumor volume)")
