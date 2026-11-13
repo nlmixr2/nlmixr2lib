@@ -214,19 +214,10 @@ sim_reg_all <- rxode2::rxSolve(
 
 # One catheter effect per subject and catheter, not one per catheter: if rxode2's
 # detection of the nesting changes, the render fails instead of sharing silently.
-iov_per_catheter <- sim_reg_all |>
-  distinct(id, MD_CATHETER, etaiov_lrr_md) |>
-  group_by(MD_CATHETER) |>
-  summarise(
-    n_subjects = n_distinct(id),
-    n_distinct_iov = n_distinct(round(etaiov_lrr_md, 8)),
-    .groups = "drop"
-  )
-stopifnot(
-  all(iov_per_catheter$MD_CATHETER == 1:2),
-  iov_per_catheter$n_subjects == c(nrow(subjects), 1L),
-  iov_per_catheter$n_distinct_iov == iov_per_catheter$n_subjects
-)
+nlmixr2lib:::assertDrawsPerLevel(sim_reg_all, eta = "etaiov_lrr_md", by = "MD_CATHETER")
+# Catheter 1 is every subject's; catheter 2 is one subject's.
+n_per_catheter <- table(unique(sim_reg_all[, c("id", "MD_CATHETER")])$MD_CATHETER)
+stopifnot(identical(as.vector(n_per_catheter), c(nrow(subjects), 1L)))
 sim_reg <- sim_reg_all |>
   filter(time <= max(obs_times))
 ```
