@@ -53,30 +53,130 @@
 # match the converter's topology. No reviewer is going to run
 # `rxode2:::.odeToLinDetect()` in their head. The gate has to be mechanical.
 
-# EMPTIED 2026-09-16. This list quarantined models defeated by rxode2's
-# ODE-to-linCmt conversion silently dropping exogenous input terms
-# (https://github.com/nlmixr2/rxode2/issues/1370). The entry condition it set
-# for its own removal was "the same commit that raises the rxode2 minimum in
-# DESCRIPTION to the first release that refuses to convert an ODE carrying an
-# exogenous input term" -- DESCRIPTION now requires rxode2 (>= 5.1.8), and that
-# release fixes it.
+# Models whose solution rxode2's ODE-to-linCmt conversion changes, by cause.
+# Each needs a fix in rxode2, not in the model file; the models stay faithful
+# to their papers. The conversion is opt-in (`useLinCmt = TRUE`), so a solve
+# with rxSolve()'s defaults is unaffected. The input-dropping defect this list
+# was first made for (https://github.com/nlmixr2/rxode2/issues/1370) is fixed
+# in rxode2 5.1.8, the DESCRIPTION minimum. The quarantine test below goes red
+# for any entry the conversion no longer changes.
 #
-# Verified rather than assumed: all eleven former entries were re-probed under
-# rxode2 5.1.8 with this file's own probeSolveModel(), and every one responds
-# to a dose again (doseEffect 5.4 to 130.4, none zero):
+# (1) Compartment renumbering (43 models). A model with several endpoints, some
+#     of them algebraic, is observed with `cmt = <endpoint>` or `dvid` records.
+#     The conversion removes the ODE states it replaces and renumbers the
+#     remaining compartments, so the ODE model's own observation records no
+#     longer resolve: "'dvid'->'cmt' or 'cmt' on observation record or on a
+#     undefined compartment" (Dimelow 2018 x2, Ji 2025, vanSteeg 2007 atenolol),
+#     or the converted model accepts only a different observation form than
+#     the ODE model (the other 39; see probeMaxRelDiff()).
 #
-#   Bienczak_2016_efavirenz 73.0   Chigutsa_2011_rifampicin 53.9
-#   Chigutsa_2012_ofloxacin 59.6   Dong_2014_mycophenolic_acid 130.4
-#   Marques_2025_salbutamol 5.4    ResendizGalvan_2025_cycloserine 93.1
-#   Sloan_2017_rifampicin 82.2     Smythe_2013_gatifloxacin 91.1
-#   Tikiso_2021_abacavir 60.0      Vinnard_2017_rifampicin 73.3
-#   Wilkins_2008_rifampicin 61.5
+# (2) States the model still reads (2 models). Porchet 1987 names its tissue
+#     states `other` and `brain` and reads them in `Cother <- other / ...`
+#     and `Cbrain <- brain / ...`. The conversion replaces them with linCmt's
+#     internal peripheral1 and peripheral2, and the solve stops with "The
+#     following parameter(s) are required for solving: peripheral2,
+#     peripheral1".
 #
-# No model file was rewritten to achieve this -- the fix was entirely upstream,
-# which is why the models were left faithful to their papers rather than
-# reshaped to dodge the converter. Keep the vector (empty) and the third test:
-# they are what will catch the next model that stops responding to a dose.
-knownLinCmtDropModels <- character(0)
+# (3) Time-dependent parameters (27 models). A clearance or absorption rate
+#     that depends on `t`, `time` or `tad()` (time-varying clearance of the
+#     monoclonal antibodies, Desai 2016's Weibull absorption) is held constant
+#     between records by the analytical solution, which only approximates
+#     the ODE. The difference does not shrink at tight ODE tolerances.
+#
+# (4) `kel <- cl / vc` with estimated micro-constants (9 models). A
+#     two-compartment model that derives `kel` from cl and vc but estimates
+#     k12 and k21 directly converts to a ONE-compartment solution: the
+#     peripheral compartment is dropped and Cc follows `dose / vc *
+#     exp(-kel * t)` (Valadez 2025 cefepime: Cc 45% off). Writing
+#     `-cl / vc * central` inline, estimating kel directly, or deriving k12
+#     and k21 from q avoids it.
+knownLinCmtDropModels <- c(
+  # (1) compartment renumbering
+  "Ahmed_2015_topiramate",
+  "Beijer_2026_cloxacillin",
+  "Broeker_2018_tigecycline",
+  "Bukkems_2022_factorviii_plasminPeak",
+  "Bukkems_2022_factorviii_thrombinPeak",
+  "Bukkems_2022_factorviii_thrombinPotential",
+  "ButraguenoLaiseca_2025_teicoplanin",
+  "Chen_2024_chlorogenicAcid_rat",
+  "Chen_2024_hydroxysafflorYellowA_rat",
+  "Chen_2024_kaempferol3OGlucoside_rat",
+  "Chen_2024_kaempferol3ORutinoside_rat",
+  "Chen_2024_nAcetylglutamine_rat",
+  "Chen_2024_pCoumaricAcid_rat",
+  "Chen_2024_rutin_rat",
+  "Diao_2016_daclizumab_treg",
+  "Dimelow_2018_avibactam",
+  "Dimelow_2018_ceftazidime",
+  "Eyler_2014_ertapenem",
+  "Gastonguay_2005_efaproxiral",
+  "Jager_2020_flucloxacillin",
+  "Ji_2025_eravacycline",
+  "Jin_2025_benralizumab",
+  "Kim_2025_evogliptin",
+  "Komatsu_2026_cefazolin",
+  "Lee_2024_eculizumab",
+  "Mo_2024_shikimicAcid_pig_iv",
+  "Mukap_2025_amoxicillin",
+  "Papachristos_2020_bevacizumab_pkpd",
+  "PerezGuille_2018_dexmedetomidine",
+  "Renaud_2020_glenzocimab",
+  "Valke_2024_factorviii_plasminPeak",
+  "Valke_2024_factorviii_thrombinPeak",
+  "Valke_2024_factorviii_thrombinPotential",
+  "vanHasselt_2014_cefazolin_empirical",
+  "vanHasselt_2014_cefazolin_semiphysiological",
+  "vanSteeg_2007_atenolol_noniso_rat",
+  "vanSteeg_2007_isoprenaline_rat",
+  "Wald_2022_brexanolone",
+  "Wang_2024_5hydroxysaxagliptin_rat",
+  "Wang_2024_saxagliptin_rat",
+  "Wittau_2015_meropenem",
+  "Yan_2019_benralizumab",
+  "Zhang_2012_bivalirudin",
+  # (2) states the model still reads
+  "Porchet_1987_nicotine_human_pbpk",
+  "Porchet_1987_nicotine_rabbit_pbpk",
+  # (3) time-dependent parameters
+  "Abegesah_2025_durvalumab",
+  "Bajaj_2017_nivolumab",
+  "Bonate_2004_apomine",
+  "Chang_2023_rifapentine_mouse",
+  "Chen_2024_adebrelimab",
+  "Cloesmeijer_2020_clonidine",
+  "Desai_2016_isavuconazole",
+  "Gibiansky_2014_obinutuzumab",
+  "Gibiansky_2021_rituximab",
+  "Gupta_2006_peginterferon_alfa_2b",
+  "Huppe_2023_fosfomycin",
+  "Miao_2023_teclistamab",
+  "OHanlon_2024_milrinone",
+  "Papathanasiou_2025_belantamab",
+  "PK_2cmt_tdcl_des",
+  "Prasanchaimontri_2024_favipiravir",
+  "Rozman_2017_rituximab",
+  "Sheng_2026_sugemalimab",
+  "Wada_2023_sparsentan",
+  "Wang_2024_sugemalimab",
+  "Wang_2025_serplulimab",
+  "Yamada_2025_zolbetuximab",
+  "Yang_2021_cemiplimab",
+  "Zeng_2026_atezolizumab",
+  "Zhang_2019b_nivolumab",
+  "Zhao_2025_nivolumab",
+  "Zhao_2026_durvalumab",
+  # (4) kel = cl / vc with estimated k12 and k21
+  "Carral_2023_levofloxacin",
+  "Cleary_2026_methylprednisolone",
+  "Ekhart_2008_carboplatin",
+  "Mohanan_2017_fludarabine",
+  "Nath_2007_melphalan",
+  "Stott_2018_amphotericinB_deoxycholate",
+  "Stott_2022_amphotericinB_liposomal",
+  "Valadez_2025_cefepime",
+  "Yang_2025_rifampicin"
+)
 
 # Models the probe cannot drive, SPLIT BY CAUSE. The test's own message says
 # "either the model is broken or helper-solveProbe.R needs to learn how to
