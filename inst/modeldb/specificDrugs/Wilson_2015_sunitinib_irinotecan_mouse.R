@@ -27,6 +27,7 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
     dosing = "unitless (K-PD; each oral sunitinib dose enters depot_kpd_sunitinib and each IV irinotecan dose enters depot_kpd_irinotecan with magnitude 1)",
     concentration = "mm (geometric mean of three orthogonal tumor diameters (l*w*h)^(1/3); not a drug concentration)"
   )
+  dosing <- c("depot_kpd_sunitinib", "depot_kpd_irinotecan")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

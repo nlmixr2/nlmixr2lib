@@ -22,6 +22,7 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
     dosing = "mg",
     concentration = "ug/L"
   )
+  dosing <- c("depot", "central", "depot_asv")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

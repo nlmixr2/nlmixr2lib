@@ -40,6 +40,7 @@ Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp <- function() {
     dosing = "nmol",
     concentration = "nmol/L"
   )
+  dosing <- c("q_V_C_ENT_Buccal", "q_V_C_Dose2")
 
   covariateData <- list()
 

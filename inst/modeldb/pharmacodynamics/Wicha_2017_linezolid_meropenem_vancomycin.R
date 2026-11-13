@@ -7,6 +7,7 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
     dosing = "mg/L (initial concentration)",
     concentration = "log10 CFU/mL (observation); mg/L (drug states)"
   )
+  dosing <- c("lzd", "mer", "van")
 
   # The model has no covariates -- it is a typical-value in-vitro PD model with
   # static drug exposures. Drug initial concentrations are applied via dosing
