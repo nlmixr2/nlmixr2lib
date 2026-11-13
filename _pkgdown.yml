@@ -2444,6 +2444,8 @@ navbar:
         href: articles/Melhem_2022_dostarlimab.html
       - text: "Dotatate pbpk (Budiansah 2025)"
         href: articles/Budiansah_2025_dotatate_pbpk.html
+      - text: "Doxorubicin (Dabour 2026)"
+        href: articles/Dabour_2026_doxorubicin.html
       - text: "Doxorubicin (Freyer 2000)"
         href: articles/Freyer_2000_AVI_regimen.html
       - text: "Doxorubicin (Janssen 2023)"
@@ -9903,6 +9905,7 @@ articles:
   - articles/DAgate_2020_bph_ipss_mbma
   - articles/DAgate_2021_bph_aurs_mbma
   - articles/DAgate_2024_aciclovir
+  - articles/Dabour_2026_doxorubicin
   - articles/Dadkhah_2022_busulfan
   - articles/Damle_2021_dalteparin
   - articles/Damnjanovic_2023_pediatric_antiepileptics

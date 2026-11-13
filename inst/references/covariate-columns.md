@@ -3991,6 +3991,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Verrest_2023_miltefosine.R`, `Chu_2026_amphotericinB_liposomal.R`.
 - **Notes:** Member of the auto-approved `DOSE_<DRUG>_<UNITS>` family with a `CUM` qualifier for the running total. Carried as a data column because rxode2 cannot read the dosing history inside `f()`; build it in the event table from the dose records. Both founding models attribute the falling bioavailability to saturable transport of miltefosine across the gut membrane.
 
+### DOSE_DOXORUBICIN_CUM_MGM2 (**canonical for cumulative doxorubicin dose through the current cycle, per body surface area**)
+- **Description:** Running total of the doxorubicin dose the subject has received, up to and including the current chemotherapy cycle, normalized to body surface area, in mg/m^2. Constant within a cycle (occasion) and stepping up between cycles; with the standard 60 mg/m^2 per cycle it takes the values 60, 120, 180 and 240 mg/m^2 for cycles 1-4.
+- **Units:** mg/m^2
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the GDF15 baseline as a power function normalized to one cycle, `(DOSE_DOXORUBICIN_CUM_MGM2 / 60)^0.352` (`Dabour_2026_doxorubicin.R`), so the column must be strictly positive.
+- **Source aliases:**
+  - `Cumulative DOX Dose` -- Dabour 2026 Equation 4.
+- **Example models:** `Dabour_2026_doxorubicin.R`.
+- **Notes:** Member of the auto-approved `DOSE_<DRUG>_<UNITS>` family with the `CUM` qualifier for a running total, following `DOSE_MF_CUM_MGKG`. Distinct from `PRIOR_ANTHRACYCLINE_DOSE`, which counts only the anthracycline received BEFORE the first analysed dose (0 for a cycle-1 subject, so it cannot feed a power function) and is time-fixed per subject; this column includes the current cycle's dose and changes between the occasions of a multi-cycle study. When a paper's running total includes other anthracyclines converted to doxorubicin equivalents, register a class-level sibling rather than overloading this drug-specific name.
+
 ### DOSE_DYP688_MGKG (**canonical for the DYP688 dose per administration of the treatment group, in mg/kg**)
 - **Description:** The DYP688 (PMEL17-targeted FR900359 antibody-drug conjugate) dose per administration of the animal's treatment group, normalised to body weight and expressed in mg/kg. Per-subject (per-group) covariate.
 - **Units:** mg/kg
