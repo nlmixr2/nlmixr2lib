@@ -23,6 +23,7 @@ deVriesSchultink_2018_anthracycline_troponinT <- function() {
   )
   vignette <- "deVriesSchultink_2018_cardiotoxicity"
   units <- list(time = "day", dosing = "mg", concentration = "ng/L")
+  dosing <- "depot_kpd"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

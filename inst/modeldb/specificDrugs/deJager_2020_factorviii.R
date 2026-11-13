@@ -3,6 +3,7 @@ deJager_2020_factorviii <- function() {
   reference <- "de Jager NCB, Bukkems LH, Heijdra JM, Hazendonk HCAM, Fijnvandraat K, Meijer K, Eikenboom J, Laros-van Gorkom BAP, Leebeek FWG, Cnossen MH, Mathot RAA; OPTI-CLOT group. One piece of the puzzle: Population pharmacokinetics of FVIII during perioperative Haemate P/Humate P treatment in von Willebrand disease patients. J Thromb Haemost. 2020;18(2):295-305. doi:10.1111/jth.14652. PMID:31557387. PMCID:PMC7028136."
   vignette <- "deJager_2020_factorviii"
   units <- list(time = "h", dosing = "IU", concentration = "IU/mL")
+  dosing <- c("central", "virtual")
 
   # Bookkeeping state for the fitted virtual dose (Methods 2.2): a fixed dose
   # given before the pre-dose FVIII sample that represents the patient's

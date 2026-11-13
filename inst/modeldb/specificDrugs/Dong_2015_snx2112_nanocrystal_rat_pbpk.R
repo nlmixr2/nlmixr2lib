@@ -30,6 +30,7 @@ Dong_2015_snx2112_nanocrystal_rat_pbpk <- function() {
     dosing = "umol",
     concentration = "umol/L"
   )
+  dosing <- "plasma_np"
 
   # Every ODE state is an AMOUNT of SNX-2112 in umol. A bare name holds the
   # dissolved (nonparticulate) drug and the _np suffix holds drug still in

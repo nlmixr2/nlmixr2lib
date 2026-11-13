@@ -3,6 +3,7 @@ Dunn_2025_tranexamicAcid <- function() {
   reference <- "Dunn A, Felfeli M, Seifert SM, Gilliot S, Ducloy-Bouthors A-S, Shakur-Still H, Geer A, Grassin-Delyle S, Luban NL, van den Anker JN, Gobburu JVS, Roberts I, Ahmadzia HK. Evaluating tranexamic acid dosing strategies for postpartum hemorrhage: a population pharmacokinetic approach in pregnant individuals. J Clin Pharmacol. 2025;65(10):1262-1272. doi:10.1002/jcph.70031"
   vignette <- "Dunn_2025_tranexamicAcid"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("central", "depot_im", "depot_oral")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

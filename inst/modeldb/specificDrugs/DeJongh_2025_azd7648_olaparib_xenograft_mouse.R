@@ -34,6 +34,7 @@ DeJongh_2025_azd7648_olaparib_xenograft_mouse <- function() {
     dosing = "umol/kg",
     concentration = "uM (plasma); the tumour output tumor_size is a volume in cm3"
   )
+  dosing <- c("depot", "central", "depot_olaparib")
 
   compartmentData <- list(
     depot = list(analyte = "AZD7648", units = "umol/kg", specimen = "administration site", verified = TRUE),

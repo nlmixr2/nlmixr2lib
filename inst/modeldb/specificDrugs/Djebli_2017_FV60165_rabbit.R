@@ -3,6 +3,7 @@ Djebli_2017_FV60165_rabbit <- function() {
   reference <- "Djebli N, Khier S, Griguer F, Coutant AL, Tavernier A, Fabre G, Leriche C, Fabre D. Ocular Drug Distribution After Topical Administration: Population Pharmacokinetic Model in Rabbits. Eur J Drug Metab Pharmacokinet. 2017;42(1):59-68. doi:10.1007/s13318-016-0319-4"
   vignette <- "Djebli_2017_FV60165_rabbit"
   units <- list(time = "h", dosing = "ug", concentration = "ng/uL")
+  dosing <- "tear"
 
   covariateData <- list(
     FORM_FV60165_NANOSUSP = list(

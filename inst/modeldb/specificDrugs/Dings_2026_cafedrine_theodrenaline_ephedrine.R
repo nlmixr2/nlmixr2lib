@@ -32,6 +32,7 @@ Dings_2026_cafedrine_theodrenaline_ephedrine <- function() {
   )
   vignette <- "Dings_2026_cafedrine_theodrenaline_ephedrine"
   units <- list(time = "min", dosing = "mg", concentration = "mg/L")
+  dosing <- "depot_kpd"
 
   # `effect_anaesthesia` is the paper's A9 (Dings 2026 Eqs A9 / A11): a
   # virtual state holding a hypothetical unit amount dosed at the time of

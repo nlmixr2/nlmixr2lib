@@ -17,6 +17,7 @@ Decrane_2023_oxyfluorfen_human <- function() {
     amount = "mg",
     weight = "kg"
   )
+  dosing <- "stomach"
 
   covariateData <- list(
     WT = list(

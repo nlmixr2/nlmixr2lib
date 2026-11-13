@@ -15,6 +15,7 @@ Dari_2023b_ad26cov2s <- function() {
     dosing = "1e8 viral particles",
     concentration = "EU/mL"
   )
+  dosing <- "antigen"
 
   # Mechanistic immune-response states of the Dari 2023 Figure 1 schematic;
   # none has a canonical compartment name.
