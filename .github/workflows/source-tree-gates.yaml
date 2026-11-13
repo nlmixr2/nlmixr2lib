@@ -47,6 +47,9 @@ jobs:
       security-events: read
       statuses: write
     runs-on: ubuntu-latest
+    # The tests take about 6 minutes locally; the rest is installing the
+    # dependencies, which takes longest when the cache misses.
+    timeout-minutes: 30
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
