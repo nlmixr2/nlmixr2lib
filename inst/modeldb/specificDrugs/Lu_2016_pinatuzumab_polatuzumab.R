@@ -3,6 +3,7 @@ Lu_2016_pinatuzumab_polatuzumab <- function() {
   reference <- "Lu D, Gibiansky L, Agarwal P, Dere RC, Li C, Chu Y-W, Hirata J, Joshi A, Jin JY, Girish S. Integrated Two-Analyte Population Pharmacokinetic Model for Antibody-Drug Conjugates in Patients: Implications for Reducing Pharmacokinetic Sampling. CPT Pharmacometrics Syst Pharmacol. 2016;5(12):665-673. doi:10.1002/psp4.12137"
   vignette <- "Lu_2016_pinatuzumab_polatuzumab"
   units <- list(time = "h", dosing = "nmol", concentration = "ng/mL")
+  dosing <- c("central_tab", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Lu 2016 Figure 2 defines A1/A2 as the molar amounts of

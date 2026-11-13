@@ -47,7 +47,7 @@ Li_2026_levonorgestrel_pbpk <- function() {
     concentration = "mg/L",
     amount = "mg"
   )
-  dosing <- c("depot", "depot_vaginal")
+  dosing <- c("depot", "depot_vaginal", "uterine_fluid")
 
   # The female-reproductive-tract states have no canonical compartment names.
   # Kay_2018_dapivirine_pbpk.R, from the same group and the code base this

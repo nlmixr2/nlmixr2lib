@@ -31,7 +31,7 @@ Luo_2024_flumazenil_pbpk <- function() {
   )
   vignette <- "Luo_2024_CES1_cirrhosis"
   units <- list(time = "min", dosing = "mg", concentration = "ug/mL")
-  dosing <- c("central", "stomach")
+  dosing <- c("stomach", "central")
 
   # Segment-resolved gut-WALL states. The gut LUMEN segments use the
   # canonical stomach / duodenum / jejunum / ileum names; the tissue (wall)

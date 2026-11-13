@@ -25,7 +25,7 @@ Lahu_2010_roflumilast <- function() {
   reference <- "Lahu G, Hunnemeyer A, Diletti E, Elmlinger M, Ruth P, Zech K, McCracken N, Facius A. Population pharmacokinetic modelling of roflumilast and roflumilast N-oxide by total phosphodiesterase-4 inhibitory activity and development of a population pharmacodynamic-adverse event model. Clin Pharmacokinet. 2010;49(9):589-606. doi:10.2165/11536600-000000000-00000"
   vignette <- "Lahu_2010_roflumilast"
   units <- list(time = "h", dosing = "ug", concentration = "ug/L")
-  dosing <- c("depot", "central", "central_noxide")
+  dosing <- c("depot", "central_noxide")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

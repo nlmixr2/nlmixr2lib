@@ -56,7 +56,7 @@ Lee_2023_tripegfilgrastim <- function() {
       "user-supplied simulation input -- see the vignette Errata."
     )
   )
-  dosing <- c("depot", "central", "depot_kpd_chemotherapy")
+  dosing <- c("depot", "depot_kpd_chemotherapy")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
