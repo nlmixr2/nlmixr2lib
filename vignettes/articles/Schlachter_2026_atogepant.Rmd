@@ -696,14 +696,17 @@ stopifnot(
 
 * **Every simulation states `addlKeepsCov = FALSE`, the `rxSolve()` default.**
   Doses are lagged and given with `rate = -2`, and `addlKeepsCov` decides which
-  record's covariates such a dose takes its bioavailability from. With `FALSE`
-  a dose takes it from its own record unless a record at the same time is
-  sorted after it; with `TRUE` (and with `nonmem = TRUE`) a lagged `rate = -2`
-  dose takes it from the record *before* it, which in this cohort is the
-  previous dose. Every observation here carries the occasion of the dose that
-  opened its interval, so `FALSE` gives each dose its own occasion and its own
-  `DOSE_ATOGEPANT_MG` and comedication values. `TRUE` would shift each
-  occasion's bioavailability eta onto the next dose; because the four occasion
+  record's covariates such a dose takes its bioavailability from. A record at
+  the same time as the dose supplies it under either setting. Otherwise, with
+  `FALSE` a dose takes it from its own record, and with `TRUE` (and with
+  `nonmem = TRUE`) a lagged `rate = -2` dose takes it from the record *before*
+  it, which in this cohort is the previous dose. The zero-order duration, which
+  depends on dose and formulation here, comes from a record at the same time
+  or inside the lag window under either setting. Every observation here carries
+  the occasion of the dose that opened its interval, so `FALSE` gives each dose
+  its own occasion and its own `DOSE_ATOGEPANT_MG` and comedication values.
+  `TRUE` would give the first dose of each week the previous week's
+  bioavailability eta; because the four occasion
   etas are independent with equal variance, the population distribution would
   be the same, but individual profiles would not, and a dataset whose dose or
   comedication changes between doses would give each dose the previous dose's
