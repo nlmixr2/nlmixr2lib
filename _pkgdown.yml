@@ -8294,6 +8294,8 @@ navbar:
         href: articles/Stein_2019_Tisagenlecleucel.html
       - text: "Tislelizumab (Budha 2023)"
         href: articles/Budha_2023_tislelizumab.html
+      - text: "Tislelizumab (Liu 2026)"
+        href: articles/Liu_2026_tislelizumab.html
       - text: "Tisotumab (Gibiansky 2022)"
         href: articles/Gibiansky_2022_tisotumab.html
       - text: "Tixagevimab (Clegg 2024)"
@@ -10963,6 +10965,7 @@ articles:
   - articles/Liu_2025_selpercatinib
   - articles/Liu_2025_tranexamicAcid
   - articles/Liu_2025_voriconazole
+  - articles/Liu_2026_tislelizumab
   - articles/Liva_2021_rec2282
   - articles/Livio_2014_tobramycin
   - articles/LlanosPaez_2017_gentamicin
