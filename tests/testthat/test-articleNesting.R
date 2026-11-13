@@ -829,6 +829,38 @@ test_that("a default of a parameter is one of its values", {
   expect_equal(v$article, c("BuiltDefault.Rmd", "UnseenDefault.Rmd"))
 })
 
+test_that("a below-subject model named only in a parameter default is found", {
+  dir <- .nestFixtureDir()
+  cases <- list(
+    NameDefault = c(
+      "run <- function(nm = \"Fixture_occ\") rxode2::rxSolve(readModelDb(nm), events)",
+      "sim <- run()"
+    ),
+    LoaderDefault = c(
+      "run <- function(mod = readModelDb(\"Fixture_occ\")) rxode2::rxSolve(mod, events)",
+      "sim <- run()"
+    ),
+    LambdaDefault = c(
+      "run <- \\(nm = \"Fixture_occ\") rxode2::rxSolve(readModelDb(nm), events)",
+      "sim <- run()"
+    )
+  )
+  arts <- vapply(names(cases), function(nm) .nestWriteArticle(dir, nm, cases[[nm]]), character(1L))
+  v <- .nestDrawViolations(file.path(dir, "models"), arts)
+  expect_equal(v$article, c("NameDefault.Rmd", "LoaderDefault.Rmd", "LambdaDefault.Rmd"))
+  expect_equal(unique(v$models), "Fixture_occ")
+
+  asserted <- .nestWriteArticle(
+    dir,
+    "AssertedDefault",
+    c(
+      cases$NameDefault,
+      "stopifnot(length(unique(round(sim$etaiov[sim$OCC == 1], 8))) == 3L)"
+    )
+  )
+  expect_equal(nrow(.nestDrawViolations(file.path(dir, "models"), asserted)), 0L)
+})
+
 test_that("a matrix or a diagonal can hold model names", {
   dir <- .nestFixtureDir()
   art <- .nestWriteArticle(
