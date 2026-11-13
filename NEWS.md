@@ -69,6 +69,12 @@
     precursor production rate from R0. **Breaking for code** that loads them
     by their old names.
 
+- Every `indirect_*` template now starts at its drug-free baseline. The
+  response starts at kin/kout, or for the circadian templates at the circadian
+  baseline at t = 0; the precursor templates' pool starts at its steady state.
+  Before, both started at 0 and climbed to baseline. **Breaking for
+  simulations** from these templates, whose results change from t = 0.
+
 - `checkModelConventions()` reports, as an error, any symbol a template
   (reference "nlmixr2lib template") reads but never defines, even when its
   `depends` lists it (category `template_symbols`).
