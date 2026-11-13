@@ -34,6 +34,7 @@ CherkaouiRbati_2017_midazolam_qsp <- function() {
   vignette <- "CherkaouiRbati_2017_midazolam_qsp"
 
   units <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  dosing <- c("depot", "depot_perpetrator")
 
   # This model carries no covariates: every parameter is a fixed physiological
   # or in vitro constant for an average 70 kg man (S1 Table), and the paper

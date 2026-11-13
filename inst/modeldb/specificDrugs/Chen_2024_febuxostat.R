@@ -10,6 +10,7 @@ Chen_2024_febuxostat <- function() {
   )
   vignette <- "Chen_2024_febuxostat"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central", "depot2")
 
   compartmentData <- list(
     depot = list(analyte = "febuxostat", units = "mg", specimen = "administration site", verified = TRUE),

@@ -33,6 +33,7 @@ Chu_2026_amphotericinB_liposomal <- function() {
   )
   vignette <- "Chu_2026_amphotericinB_liposomal"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("central", "depot_miltefosine")
 
   # mps: the paper's own structural element (Eq. 1, Figure 2), the
   # macrophage pool that takes up liposomes; no canonical compartment

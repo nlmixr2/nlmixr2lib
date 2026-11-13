@@ -12,6 +12,7 @@ Chang_2011_PF04455242_rat <- function() {
   paper_specific_compartments <- c("depot_spiradoline", "central_spiradoline")
 
   units <- list(time = "h", dosing = "mg/kg", concentration = "ng/mL")
+  dosing <- c("depot", "central", "depot_spiradoline")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

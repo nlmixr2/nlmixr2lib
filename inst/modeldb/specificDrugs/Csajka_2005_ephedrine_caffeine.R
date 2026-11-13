@@ -4,6 +4,7 @@ Csajka_2005_ephedrine_caffeine <- function() {
   vignette <- "Csajka_2005_ephedrine_caffeine"
 
   units <- list(time = "min", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central", "depot_caf")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

@@ -49,7 +49,8 @@ Campbell_2023_manganese_monkey_pbpk <- function() {
     "gut_lumen_mn54", # oral, unabsorbed fraction (Furchner 1966, Figure 4C)
     "depot_ip_mn54", # intraperitoneal (Dastur 1971, Figure 4A)
     "depot_sc_mn54", # subcutaneous infusion (Newland 1987, Figure 5A)
-    "depot_lung_mn54" # nebulised inhalation (Newland 1987, Figure 5B)
+    "depot_lung_mn54", # nebulised inhalation (Newland 1987, Figure 5B)
+    "depot_sc" # subcutaneous injection of unlabelled Mn (`depot_sc` compartment)
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what

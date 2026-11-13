@@ -20,6 +20,7 @@ Chen_2017_TB_MTP_GPDI_mouse <- function() {
     dosing = "mg/kg",
     concentration = "log(CFU/lungs) for the model observation; mg/L for the internal drug plasma trajectories Cc_rif / Cc_inh / Cc_emb / Cc_pza"
   )
+  dosing <- c("depot_rif", "depot_inh", "depot_emb", "depot_pza")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

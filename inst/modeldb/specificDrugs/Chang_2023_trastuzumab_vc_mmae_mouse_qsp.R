@@ -9,6 +9,7 @@ Chang_2023_trastuzumab_vc_mmae_mouse_qsp <- function() {
   )
   vignette <- "Chang_2023_trastuzumab_vc_mmae"
   units <- list(time = "h", dosing = "nmol", concentration = "nM")
+  dosing <- c("depot_adc", "depot_acpl")
 
   # What each ODE state holds, in what amount units, in which matrix. Amounts in
   # nmol throughout; the tumor pools track the same analytes in the tumor
