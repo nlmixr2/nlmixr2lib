@@ -932,7 +932,8 @@ stopifnot(
   the records in force when it is absorbed, 0.562 h after the dose record, so
   a record inside the lag window, or one at the dose time sorted after the dose,
   supplies the occasion; with `TRUE` it takes its bioavailability from its own
-  dose record, as NONMEM does. Every record here carries the occasion of the
+  dose record, as NONMEM does for bolus doses like these (a lagged infusion
+  under `TRUE` reads another record). Every record here carries the occasion of the
   dose that opened its interval, so the two settings give each dose the same
   bioavailability. They still differ inside the lag window: with `FALSE` the
   dose record's occasion applies to `ka` from the dose time, with `TRUE` only

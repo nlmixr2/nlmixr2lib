@@ -598,7 +598,8 @@ The typical patient's accumulation ratio for 100 mg twice daily is
   has an absorption lag. With `addlKeepsCov = FALSE`, the `rxSolve()`
   default, a lagged dose takes `f()` from the records in force when it is
   absorbed; with `addlKeepsCov = TRUE` it takes `f()` from its own dose
-  record, as NONMEM does. The two agree when every record carries the value
+  record, as NONMEM does for bolus doses like these (a lagged infusion under
+  `TRUE` reads another record). The two agree when every record carries the value
   of the dose that opened its interval, which is how the event tables here
   are built: a same-time dose is sorted ahead of its observation before the
   value is carried down, matching the order `rxSolve()` uses. Sorted the

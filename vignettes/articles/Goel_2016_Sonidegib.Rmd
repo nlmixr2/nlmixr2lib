@@ -398,7 +398,8 @@ profile declines monotonically after Tmax.
   lagged dose takes `f(depot)` from the records in force when it is absorbed,
   so an observation at the dose time (sorted after the dose) or inside the
   0.474 h lag supplies the value; with `addlKeepsCov = TRUE` it takes the
-  value from its own dose record, as NONMEM does. The observation records
+  value from its own dose record, as NONMEM does for bolus doses like these (a
+  lagged infusion under `TRUE` reads another record). The observation records
   here carry the value of the most recent dose, so the two settings agree;
   the simulation states `addlKeepsCov = FALSE`. Observation records carrying
   `MULTI_DOSE_PT = 0` would remove the 16% multiple-dose bioavailability from
