@@ -55,7 +55,7 @@ Mi_2024_aditoprim_pbpkpd <- function() {
   # they live in the in vitro broth system of the time-kill experiment,
   # not in a swine tissue, and are never dosed.
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
-  dosing <- c("depot", "depot2")
+  dosing <- c("depot2", "depot")
 
   covariateData <- list(
     WT = list(

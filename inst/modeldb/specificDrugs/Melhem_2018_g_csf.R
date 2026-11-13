@@ -53,7 +53,7 @@ Melhem_2018_g_csf <- function() {
       "and drive stimulation / elimination terms in the granulopoiesis chain."
     )
   )
-  dosing <- c("depot", "central", "depot_kpd_chemotherapy", "depot_kpd_corticosteroid")
+  dosing <- c("depot", "depot_kpd_chemotherapy", "depot_kpd_corticosteroid")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

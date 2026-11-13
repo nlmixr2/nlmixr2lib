@@ -27,6 +27,7 @@ Marcantonio_2022_omalizumab <- function() {
     dosing = "Omalizumab dose amount into depot (SC) in nmol; MW = 149000 Da so 225 mg = 1510 nmol.",
     concentration = "Free omalizumab plasma concentration Cc = Ab_00 / V in nM; V = 5 L."
   )
+  dosing <- c("depot", "Ab_00")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

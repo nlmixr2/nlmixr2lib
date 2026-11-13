@@ -34,6 +34,7 @@ Marcantonio_2022_trastuzumab <- function() {
     dosing = "Trastuzumab dose amount into Ab_00_c (IV bolus) in nmol; MW = 145531.5 Da so 140 mg = 962.0 nmol.",
     concentration = "Free trastuzumab plasma concentration Cc = Ab_00_c / Vc in nM; central volume Vc = 3 L, peripheral Vp = 13 L. Target engagement = drug-bound R1 / (drug-bound R1 + free R1)."
   )
+  dosing <- c("depot", "Ab_00_c")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

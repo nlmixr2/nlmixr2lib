@@ -45,7 +45,7 @@ Melillo_2023_gadoxetate_rat_pbpk <- function() {
     dosing = "umol (gadoxetate and every perpetrator; mg/kg x 0.25 kg / MW x 1000)",
     concentration = "umol/L"
   )
-  dosing <- c("central_rif", "depot_pioglitazone")
+  dosing <- c("blood", "central_rif", "depot_pioglitazone")
 
   compartmentData <- list(
     blood = list(analyte = "gadoxetate", units = "umol", specimen = "whole blood", verified = TRUE),

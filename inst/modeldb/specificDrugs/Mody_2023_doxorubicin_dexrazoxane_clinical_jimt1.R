@@ -19,6 +19,7 @@ Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1 <- function() {
     dosing = "mg (IV 15-min infusion; mg/m^2 doses pre-multiplied by the 1.8 m^2 typical body surface area in the event table)",
     concentration = "mg/L (plasma); uM (tumour-site PD driver, derived); % (cell viability, the PD readout)"
   )
+  dosing <- c("central_dox", "central_dexrazoxane")
 
   compartmentData <- list(
     central_dox = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = TRUE),

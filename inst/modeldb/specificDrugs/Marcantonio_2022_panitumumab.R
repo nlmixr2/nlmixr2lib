@@ -28,6 +28,7 @@ Marcantonio_2022_panitumumab <- function() {
     dosing = "Panitumumab dose amount into Ab_00_c (IV bolus) in nmol; MW = 150000 Da so 420 mg = 2800 nmol.",
     concentration = "Free panitumumab plasma concentration Cc = Ab_00_c / Vc in nM; central volume Vc = 3 L, peripheral Vp = 13 L. Target engagement = drug-bound R1 / (drug-bound R1 + free R1)."
   )
+  dosing <- c("depot", "Ab_00_c")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

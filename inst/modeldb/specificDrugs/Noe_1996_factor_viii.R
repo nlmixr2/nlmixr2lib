@@ -8,6 +8,7 @@ Noe_1996_factor_viii <- function() {
     dosing = "U/mL (mass dose divided by plasma volume; state is a concentration, not amount)",
     concentration = "U/mL (both factor VIII and vWF measured on the conventional 1 U/mL == 100% of normal-pool scale)"
   )
+  dosing <- c("vwf", "viii")
 
   population <- list(
     species = "human",

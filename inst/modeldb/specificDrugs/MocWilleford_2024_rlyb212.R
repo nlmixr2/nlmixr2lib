@@ -3,6 +3,7 @@ MocWilleford_2024_rlyb212 <- function() {
   reference <- "Moc Willeford C, Shetty K, Sheridan D, Engler F. Informing pregnancy dose via target-mediated drug disposition modeling and simulations for a recombinant human monoclonal antibody. CPT Pharmacometrics Syst Pharmacol. 2024;13(11):2002-2015. doi:10.1002/psp4.13250"
   vignette <- "MocWilleford_2024_rlyb212"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "target")
 
   paper_specific_compartments <- c("target_peripheral")
 

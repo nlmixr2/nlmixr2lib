@@ -13,7 +13,7 @@ Nguyen_2019_cabozantinib_liver_dysfunction <- function() {
   )
   vignette <- "Nguyen_2019_cabozantinib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
-  dosing <- c("central", "depot1")
+  dosing <- c("depot1", "central")
 
   compartmentData <- list(
     depot1 = list(analyte = "cabozantinib", units = "mg", specimen = "administration site", verified = TRUE),

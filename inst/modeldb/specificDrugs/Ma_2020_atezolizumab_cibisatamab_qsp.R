@@ -38,6 +38,7 @@ Ma_2020_atezolizumab_cibisatamab_qsp <- function() {
     dosing = "nmol",
     concentration = "nmol/L"
   )
+  dosing <- c("q_V_C_atezolizumab", "q_V_C_cibis")
 
   covariateData <- list()
 

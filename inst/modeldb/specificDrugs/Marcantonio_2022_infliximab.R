@@ -35,6 +35,7 @@ Marcantonio_2022_infliximab <- function() {
     ),
     concentration = "Free infliximab plasma concentration Cc = Ab_00 / V in nM; typical plasma volume V = 5 L."
   )
+  dosing <- c("depot", "Ab_00")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

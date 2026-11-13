@@ -16,6 +16,7 @@ Mody_2023_doxorubicin_dexrazoxane <- function() {
     dosing = "mg (IV; for a 1.8 m^2 body-surface-area typical subject, mg/m^2 doses are pre-multiplied by 1.8 in the event table)",
     concentration = "mg/L (plasma, both drugs); uM (TD driver, derived); % (cell viability, TD readout)"
   )
+  dosing <- c("central", "central_dex")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

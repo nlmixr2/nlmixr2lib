@@ -36,7 +36,7 @@ McLaughlin_2024_tld_1 <- function() {
   )
   vignette <- "McLaughlin_2024_tld_1"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
-  dosing <- c("central", "entrapped")
+  dosing <- "entrapped"
 
   paper_specific_compartments <- c("entrapped")
 

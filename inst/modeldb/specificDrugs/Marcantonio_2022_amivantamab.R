@@ -33,6 +33,7 @@ Marcantonio_2022_amivantamab <- function() {
     dosing = "Amivantamab dose amount into Ab_00_c (IV bolus) in nmol; MW = 150000 Da so 1050 mg = 7000 nmol.",
     concentration = "Free amivantamab plasma concentration Cc = Ab_00_c / Vc in nM; central Vc = 3 L, peripheral Vp = 13 L."
   )
+  dosing <- c("depot", "Ab_00_c")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

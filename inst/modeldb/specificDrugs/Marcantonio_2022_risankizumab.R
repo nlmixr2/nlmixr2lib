@@ -26,6 +26,7 @@ Marcantonio_2022_risankizumab <- function() {
     dosing = "Risankizumab dose amount into depot (SC) in nmol; MW = 145610 Da so 150 mg = 1030 nmol.",
     concentration = "Free risankizumab plasma concentration Cc = Ab_00 / V in nM; V = 5 L."
   )
+  dosing <- c("depot", "Ab_00")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

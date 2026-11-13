@@ -35,6 +35,7 @@ Nakamura_2024_linagliptin_human_pbpk <- function() {
   )
   vignette <- "Nakamura_2024_linagliptin_pbpk"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+  dosing <- c("ABlood", "Aduodenum_lumen")
 
   # GIMI (gastrointestinal-motility-inhibition) indicator. The paper
   # slows intestinal transit by the factor rAlpha until the colon mean

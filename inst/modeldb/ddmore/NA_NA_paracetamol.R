@@ -72,7 +72,7 @@ NA_NA_paracetamol <- function() {
     dosing = "mg", # paracetamol oral dose; glucose dose enters in g, see description
     concentration = "umol/L" # paracetamol; secondary outputs in mmol/L (glucose) and pmol/L (GLP-1, GIP), see description
   )
-  dosing <- c("central", "stomach_apap", "stomach_glu")
+  dosing <- c("stomach_apap", "stomach_glu")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
