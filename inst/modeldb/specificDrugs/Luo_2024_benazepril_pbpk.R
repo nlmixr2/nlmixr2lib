@@ -313,8 +313,8 @@ Luo_2024_benazepril_pbpk <- function() {
     d/dt(kidney) <- q_kid * c_sys - (q_kid + fu_b_i * cl_int_k) * eff_kid
 
     d/dt(central) <- q_liver * eff_liver + q_kid * eff_kid -
-                     (q_ha + q_kid) * c_sys - q_gut * c_sys
-                     + k21 * peripheral1 - k12 * central
+                     (q_ha + q_kid) * c_sys - q_gut * c_sys +
+                     k21 * peripheral1 - k12 * central
     d/dt(peripheral1) <- k12 * central - k21 * peripheral1
 
     # ---- benazeprilat: no lumen states (it is not absorbed from the gut lumen) ----
@@ -332,8 +332,8 @@ Luo_2024_benazepril_pbpk <- function() {
                        (q_kid + fu_b_i_benat * cl_int_k_benat) * eff_kid_benat
 
     d/dt(central_benat) <- q_liver * eff_liver_benat + q_kid * eff_kid_benat -
-                        (q_ha + q_kid) * c_sys_benat - q_gut * c_sys_benat
-                        + k21_benat * peripheral1_benat - k12_benat * central_benat
+                        (q_ha + q_kid) * c_sys_benat - q_gut * c_sys_benat +
+                        k21_benat * peripheral1_benat - k12_benat * central_benat
     d/dt(peripheral1_benat) <- k12_benat * central_benat - k21_benat * peripheral1_benat
 
     # Table 2 also reports an oral bioavailability F = 0.35 for this drug

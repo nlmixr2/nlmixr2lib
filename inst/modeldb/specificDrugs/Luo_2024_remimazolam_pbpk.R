@@ -243,9 +243,9 @@ Luo_2024_remimazolam_pbpk <- function() {
     d/dt(kidney) <- q_kid * c_sys - q_kid * eff_kid
 
     d/dt(central) <- q_liver * eff_liver + q_kid * eff_kid -
-                     (q_ha + q_kid) * c_sys - q_gut * c_sys
-                     + k21 * peripheral1 - k12 * central
-                     + k31 * peripheral2 - k13 * central
+                     (q_ha + q_kid) * c_sys - q_gut * c_sys +
+                     k21 * peripheral1 - k12 * central +
+                     k31 * peripheral2 - k13 * central
     d/dt(peripheral1) <- k12 * central - k21 * peripheral1
     d/dt(peripheral2) <- k13 * central - k31 * peripheral2
 

@@ -316,12 +316,12 @@ Lindauer_2017_pembrolizumab <- function() {
 
     # Plasma central (amount, nmol/day)
     d/dt(central) <-
-      - cl   * C1                                                # linear elimination (L/day * nM = nmol/day)
-      - vmax * mg_to_nmol * C1 / (km * ugmL_to_nM + C1)          # MM elim: Vmax in mg/day -> nmol/day, Km in ug/mL -> nM
-      - q    * C1 + q * C2                                       # peripheral exchange
-      - plq_total * C1 + plq_total * Cvs                         # plasma <-> tumor vascular exchange
-      - vc * kon_pd1  * C1 * (C_PD1_b - PD1b)                    # PD-1 binding (consumes antibody)
-      + vc * koff_pd1 * PD1b                                     # PD-1 dissociation
+      - cl   * C1 -                                                # linear elimination (L/day * nM = nmol/day)
+      vmax * mg_to_nmol * C1 / (km * ugmL_to_nM + C1) -          # MM elim: Vmax in mg/day -> nmol/day, Km in ug/mL -> nM
+      q    * C1 + q * C2 -                                       # peripheral exchange
+      plq_total * C1 + plq_total * Cvs -                         # plasma <-> tumor vascular exchange
+      vc * kon_pd1  * C1 * (C_PD1_b - PD1b) +                    # PD-1 binding (consumes antibody)
+      vc * koff_pd1 * PD1b                                     # PD-1 dissociation
 
     # Plasma peripheral (amount, nmol/day)
     d/dt(peripheral1) <- q * C1 - q * C2
@@ -329,52 +329,52 @@ Lindauer_2017_pembrolizumab <- function() {
     # Tumor vascular space (amount, nmol/day; Lindauer 2017 supplement
     # "Vascular space tumor")
     d/dt(tumor_vs) <-
-        plq_total                * C1
-      - (plq_total - l_total)    * Cvs
-      - (1 - v_ref)   * l_total  * Cvs
-      - clup_total               * Cvs
-      + clup_total * fr_recycle  * Ceb
+        plq_total                * C1 -
+      (plq_total - l_total)    * Cvs -
+      (1 - v_ref)   * l_total  * Cvs -
+      clup_total               * Cvs +
+      clup_total * fr_recycle  * Ceb
 
     # Tumor endosomal unbound (amount, nmol/day; Lindauer 2017 supplement
     # "Endosomal space mAb unbound to FcRn")
     d/dt(tumor_es_ub) <-
-        clup_total * (Cvs + Cis)
-      - v_es * kon_fcrn  * Ceub * fcrn_free
-      + v_es * koff_fcrn * Ceb
-      - v_es * kdeg_endo * Ceub
+        clup_total * (Cvs + Cis) -
+      v_es * kon_fcrn  * Ceub * fcrn_free +
+      v_es * koff_fcrn * Ceb -
+      v_es * kdeg_endo * Ceub
 
     # Tumor endosomal FcRn-bound (amount, nmol/day; Lindauer 2017
     # supplement "Endosomal space mAb bound to FcRn", with the inflow
     # term corrected to a proper FcRn-binding mass balance and the
     # outflow CLup recycling explicit)
     d/dt(tumor_es_b) <-
-        v_es * kon_fcrn  * Ceub * fcrn_free
-      - v_es * koff_fcrn * Ceb
-      - clup_total * Ceb
+        v_es * kon_fcrn  * Ceub * fcrn_free -
+      v_es * koff_fcrn * Ceb -
+      clup_total * Ceb
 
     # Tumor interstitial space (amount, nmol/day; Lindauer 2017
     # supplement "Interstitial compartment")
     d/dt(tumor_is) <-
-        (1 - v_ref)    * l_total * Cvs
-      - (1 - v_ref_is) * l_total * Cis
-      - clup_total * Cis
-      + clup_total * (1 - fr_recycle) * Ceb
-      - v_is * kon_pd1  * Cis * (C_PD1_t - PD1t)
-      + v_is * koff_pd1 * PD1t
+        (1 - v_ref)    * l_total * Cvs -
+      (1 - v_ref_is) * l_total * Cis -
+      clup_total * Cis +
+      clup_total * (1 - fr_recycle) * Ceb -
+      v_is * kon_pd1  * Cis * (C_PD1_t - PD1t) +
+      v_is * koff_pd1 * PD1t
 
     # Pembrolizumab-PD-1 complex in blood (amount, nmol/day; Lindauer
     # 2017 supplement "Drug receptor binding in blood")
     d/dt(complex_blood) <-
-        vc * kon_pd1  * C1 * (C_PD1_b - PD1b)
-      - vc * koff_pd1 * PD1b
-      -     kdeg_pd1  * complex_blood
+        vc * kon_pd1  * C1 * (C_PD1_b - PD1b) -
+      vc * koff_pd1 * PD1b -
+      kdeg_pd1  * complex_blood
 
     # Pembrolizumab-PD-1 complex in tumor (amount, nmol/day; Lindauer
     # 2017 supplement "Drug receptor binding in the tumor")
     d/dt(complex_tumor) <-
-        v_is * kon_pd1  * Cis * (C_PD1_t - PD1t)
-      - v_is * koff_pd1 * PD1t
-      -        kdeg_pd1 * complex_tumor
+        v_is * kon_pd1  * Cis * (C_PD1_t - PD1t) -
+      v_is * koff_pd1 * PD1t -
+      kdeg_pd1 * complex_tumor
 
     # Total tumor PD-1 receptor amount (nmol; Lindauer 2017 supplement
     # "Tumor PD-1 receptor upregulation and elimination"). At PD1t = 0
@@ -383,14 +383,14 @@ Lindauer_2017_pembrolizumab <- function() {
     # the right baseline.
     kin_tumor <- kdeg_pd1 * tmulti * C_PD1_b * (rbase * 1e-3 * f_v_is)
     d/dt(target_tumor) <-
-        kin_tumor * (1 + emax_tp * PD1t / (ec50_tp + PD1t))
-      - kdeg_pd1  * target_tumor
+        kin_tumor * (1 + emax_tp * PD1t / (ec50_tp + PD1t)) -
+      kdeg_pd1  * target_tumor
 
     # Tumor volume (mL/day; Lindauer 2017 supplement "Tumor volume",
     # Simeoni-style exp-to-linear growth with the drug effect DE).
     d/dt(tumor_vol) <-
-        l0 * tumor_vol / (1 + (l0 / l1 * tumor_vol)^psi)^(1 / psi)
-      - DE * tumor_vol
+        l0 * tumor_vol / (1 + (l0 / l1 * tumor_vol)^psi)^(1 / psi) -
+      DE * tumor_vol
 
     # ---- Initial conditions ----
     central(0)       <- 0

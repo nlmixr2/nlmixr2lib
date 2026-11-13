@@ -313,8 +313,8 @@ Luo_2024_cilazapril_pbpk <- function() {
     d/dt(kidney) <- q_kid * c_sys - (q_kid + fu_b_i * cl_int_k) * eff_kid
 
     d/dt(central) <- q_liver * eff_liver + q_kid * eff_kid -
-                     (q_ha + q_kid) * c_sys - q_gut * c_sys
-                     + k21 * peripheral1 - k12 * central
+                     (q_ha + q_kid) * c_sys - q_gut * c_sys +
+                     k21 * peripheral1 - k12 * central
     d/dt(peripheral1) <- k12 * central - k21 * peripheral1
 
     # ---- cilazaprilat: no lumen states (it is not absorbed from the gut lumen) ----
@@ -332,8 +332,8 @@ Luo_2024_cilazapril_pbpk <- function() {
                        (q_kid + fu_b_i_cilat * cl_int_k_cilat) * eff_kid_cilat
 
     d/dt(central_cilat) <- q_liver * eff_liver_cilat + q_kid * eff_kid_cilat -
-                        (q_ha + q_kid) * c_sys_cilat - q_gut * c_sys_cilat
-                        + k21_cilat * peripheral1_cilat - k12_cilat * central_cilat
+                        (q_ha + q_kid) * c_sys_cilat - q_gut * c_sys_cilat +
+                        k21_cilat * peripheral1_cilat - k12_cilat * central_cilat
     d/dt(peripheral1_cilat) <- k12_cilat * central_cilat - k21_cilat * peripheral1_cilat
 
     # ============================================================

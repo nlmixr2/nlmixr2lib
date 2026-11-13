@@ -716,449 +716,449 @@ Nakamura_2024_linagliptin_rat_pbpk <- function() {
   #########################
   
   # EHC
-  d/dt(Aehc) <- +CLinth_i*fbile*Aliver_1/Vh_i/Kph*fupAlb
-  +CLinth_i*fbile*Aliver_2/Vh_i/Kph*fupAlb
-  +CLinth_i*fbile*Aliver_3/Vh_i/Kph*fupAlb
-  +CLinth_i*fbile*Aliver_4/Vh_i/Kph*fupAlb
-  +CLinth_i*fbile*Aliver_5/Vh_i/Kph*fupAlb
-  -kbile*Aehc
+  d/dt(Aehc) <- +CLinth_i*fbile*Aliver_1/Vh_i/Kph*fupAlb +
+  CLinth_i*fbile*Aliver_2/Vh_i/Kph*fupAlb +
+  CLinth_i*fbile*Aliver_3/Vh_i/Kph*fupAlb +
+  CLinth_i*fbile*Aliver_4/Vh_i/Kph*fupAlb +
+  CLinth_i*fbile*Aliver_5/Vh_i/Kph*fupAlb -
+  kbile*Aehc
   
   # Serosa
-  d/dt(Aserosa) <- -kon*AsDPP4f_serosa*Aserosa/Vserosa/Kpgut*fupAlb
-  +koff*AsDPP4c_serosa
+  d/dt(Aserosa) <- -kon*AsDPP4f_serosa*Aserosa/Vserosa/Kpgut*fupAlb +
+  koff*AsDPP4c_serosa -
   
-  -kon*AtDPP4f_serosa*Aserosa/Vserosa/Kpgut*fupAlb
-  +koff*AtDPP4c_serosa
+  kon*AtDPP4f_serosa*Aserosa/Vserosa/Kpgut*fupAlb +
+  koff*AtDPP4c_serosa +
   
-  +Qserosa*Alung/Vl/Kpl*RB
-  -Qserosa*Aserosa/Vserosa/Kpgut*RB
+  Qserosa*Alung/Vl/Kpl*RB -
+  Qserosa*Aserosa/Vserosa/Kpgut*RB
   
-  d/dt(AsDPP4c_serosa) <- +kon*AsDPP4f_serosa*Aserosa/Vserosa/Kpgut*fupAlb
-  -koff*AsDPP4c_serosa
+  d/dt(AsDPP4c_serosa) <- +kon*AsDPP4f_serosa*Aserosa/Vserosa/Kpgut*fupAlb -
+  koff*AsDPP4c_serosa
   
-  d/dt(AsDPP4f_serosa) <- -kon*AsDPP4f_serosa*Aserosa/Vserosa/Kpgut*fupAlb
-  +koff*AsDPP4c_serosa
+  d/dt(AsDPP4f_serosa) <- -kon*AsDPP4f_serosa*Aserosa/Vserosa/Kpgut*fupAlb +
+  koff*AsDPP4c_serosa
   
-  d/dt(AtDPP4c_serosa) <- +kon*AtDPP4f_serosa*Aserosa/Vserosa/Kpgut*fupAlb
-  -koff*AtDPP4c_serosa
+  d/dt(AtDPP4c_serosa) <- +kon*AtDPP4f_serosa*Aserosa/Vserosa/Kpgut*fupAlb -
+  koff*AtDPP4c_serosa
   
-  d/dt(AtDPP4f_serosa) <- -kon*AtDPP4f_serosa*Aserosa/Vserosa/Kpgut*fupAlb
-  +koff*AtDPP4c_serosa
+  d/dt(AtDPP4f_serosa) <- -kon*AtDPP4f_serosa*Aserosa/Vserosa/Kpgut*fupAlb +
+  koff*AtDPP4c_serosa
   
   # Mucosal Blood
-  d/dt(Amucosal_blood) <- -kon*AsDPP4f_mucosal_blood*Amucosal_blood/Vmucosal_blood/RB*fupAlb
-  +koff*AsDPP4c_mucosal_blood
+  d/dt(Amucosal_blood) <- -kon*AsDPP4f_mucosal_blood*Amucosal_blood/Vmucosal_blood/RB*fupAlb +
+  koff*AsDPP4c_mucosal_blood -
   
-  -kon*AtDPP4f_mucosal_blood*Amucosal_blood/Vmucosal_blood/RB*fupAlb
-  +koff*AtDPP4c_mucosal_blood
+  kon*AtDPP4f_mucosal_blood*Amucosal_blood/Vmucosal_blood/RB*fupAlb +
+  koff*AtDPP4c_mucosal_blood +
   
-  +Qmucosal*Alung/Vl/Kpl*RB
-  -Qmucosal*Amucosal_blood/Vmucosal_blood
-  +fgut*(PSdifentBE/Gammaent)*Aenterocyte/Venterocyte
-  -(fupAlb/RB)*PSdifentBE*Amucosal_blood/Vmucosal_blood
+  Qmucosal*Alung/Vl/Kpl*RB -
+  Qmucosal*Amucosal_blood/Vmucosal_blood +
+  fgut*(PSdifentBE/Gammaent)*Aenterocyte/Venterocyte -
+  (fupAlb/RB)*PSdifentBE*Amucosal_blood/Vmucosal_blood
   
-  d/dt(AsDPP4c_mucosal_blood) <- +kon*AsDPP4f_mucosal_blood*Amucosal_blood/Vmucosal_blood/RB*fupAlb
-  -koff*AsDPP4c_mucosal_blood
+  d/dt(AsDPP4c_mucosal_blood) <- +kon*AsDPP4f_mucosal_blood*Amucosal_blood/Vmucosal_blood/RB*fupAlb -
+  koff*AsDPP4c_mucosal_blood
   
-  d/dt(AsDPP4f_mucosal_blood) <- -kon*AsDPP4f_mucosal_blood*Amucosal_blood/Vmucosal_blood/RB*fupAlb
-  +koff*AsDPP4c_mucosal_blood
+  d/dt(AsDPP4f_mucosal_blood) <- -kon*AsDPP4f_mucosal_blood*Amucosal_blood/Vmucosal_blood/RB*fupAlb +
+  koff*AsDPP4c_mucosal_blood
   
-  d/dt(AtDPP4c_mucosal_blood) <- +kon*AtDPP4f_mucosal_blood*Amucosal_blood/Vmucosal_blood/RB*fupAlb
-  -koff*AtDPP4c_mucosal_blood
+  d/dt(AtDPP4c_mucosal_blood) <- +kon*AtDPP4f_mucosal_blood*Amucosal_blood/Vmucosal_blood/RB*fupAlb -
+  koff*AtDPP4c_mucosal_blood
   
-  d/dt(AtDPP4f_mucosal_blood) <- -kon*AtDPP4f_mucosal_blood*Amucosal_blood/Vmucosal_blood/RB*fupAlb
-  +koff*AtDPP4c_mucosal_blood
+  d/dt(AtDPP4f_mucosal_blood) <- -kon*AtDPP4f_mucosal_blood*Amucosal_blood/Vmucosal_blood/RB*fupAlb +
+  koff*AtDPP4c_mucosal_blood
   
   # Enterocyte
-  d/dt(Aenterocyte) <- -fgut*(PSdifentBE/Gammaent)*Aenterocyte/Venterocyte
-  +(fupAlb/RB)*PSdifentBE*Amucosal_blood/Vmucosal_blood
-  +LR*PSdifentBE*Aintestinal_lumen/Vintestinal_lumen
-  -fgut*VmaxPgp/(KmPgp+fgut*Aenterocyte/Venterocyte)*Aenterocyte/Venterocyte
-  -fgut*AR*(PSdifentBE/Gammaent)*Aenterocyte/Venterocyte
+  d/dt(Aenterocyte) <- -fgut*(PSdifentBE/Gammaent)*Aenterocyte/Venterocyte +
+  (fupAlb/RB)*PSdifentBE*Amucosal_blood/Vmucosal_blood +
+  LR*PSdifentBE*Aintestinal_lumen/Vintestinal_lumen -
+  fgut*VmaxPgp/(KmPgp+fgut*Aenterocyte/Venterocyte)*Aenterocyte/Venterocyte -
+  fgut*AR*(PSdifentBE/Gammaent)*Aenterocyte/Venterocyte
   
   # Intestinal Lumen
-  d/dt(Aintestinal_lumen) <- -kon*AtDPP4f_intestinal_lumen*Aintestinal_lumen/Vintestinal_lumen
-  +koff*AtDPP4c_intestinal_lumen
+  d/dt(Aintestinal_lumen) <- -kon*AtDPP4f_intestinal_lumen*Aintestinal_lumen/Vintestinal_lumen +
+  koff*AtDPP4c_intestinal_lumen +
   
-  +kbile*Aehc
-  -Alpha*kfeces*Aintestinal_lumen
-  -LR*PSdifentBE*Aintestinal_lumen/Vintestinal_lumen
-  +fgut*VmaxPgp/(KmPgp+fgut*Aenterocyte/Venterocyte)*Aenterocyte/Venterocyte
-  +fgut*AR*(PSdifentBE/Gammaent)*Aenterocyte/Venterocyte
+  kbile*Aehc -
+  Alpha*kfeces*Aintestinal_lumen -
+  LR*PSdifentBE*Aintestinal_lumen/Vintestinal_lumen +
+  fgut*VmaxPgp/(KmPgp+fgut*Aenterocyte/Venterocyte)*Aenterocyte/Venterocyte +
+  fgut*AR*(PSdifentBE/Gammaent)*Aenterocyte/Venterocyte
   
-  d/dt(AtDPP4c_intestinal_lumen) <- +kon*AtDPP4f_intestinal_lumen*Aintestinal_lumen/Vintestinal_lumen
-  -koff*AtDPP4c_intestinal_lumen
+  d/dt(AtDPP4c_intestinal_lumen) <- +kon*AtDPP4f_intestinal_lumen*Aintestinal_lumen/Vintestinal_lumen -
+  koff*AtDPP4c_intestinal_lumen
   
-  d/dt(AtDPP4f_intestinal_lumen) <- -kon*AtDPP4f_intestinal_lumen*Aintestinal_lumen/Vintestinal_lumen
-  +koff*AtDPP4c_intestinal_lumen
+  d/dt(AtDPP4f_intestinal_lumen) <- -kon*AtDPP4f_intestinal_lumen*Aintestinal_lumen/Vintestinal_lumen +
+  koff*AtDPP4c_intestinal_lumen
   
   # Systemic Blood
-  d/dt(ABlood) <- -kon*AsDPP4f_blood*ABlood/VBlood/RB*fupAlb
-  +koff*AsDPP4c_blood
+  d/dt(ABlood) <- -kon*AsDPP4f_blood*ABlood/VBlood/RB*fupAlb +
+  koff*AsDPP4c_blood -
   
-  -kon*AtDPP4f_blood*ABlood/VBlood/RB*fupAlb
-  +koff*AtDPP4c_blood
+  kon*AtDPP4f_blood*ABlood/VBlood/RB*fupAlb +
+  koff*AtDPP4c_blood +
   
-  +Qh*Aliver_5/Vh_i/Kph*RB
-  +Qrep*Areproductiveorgans/Vrep/Kprep*RB
-  +Qthy*Athymus/Vthy/Kpthy*RB
-  +Qsal*Asalivarygland/Vsal/Kpsal_vivo*RB
-  +Qs*Askin/Vs/Kps*RB
-  +Qrem*Aremainder/Vrem/Kprem*RB
-  +(Qk-Qu)*Akves/Vkves/Kpk*RB
-  -Ql*ABlood/VBlood
+  Qh*Aliver_5/Vh_i/Kph*RB +
+  Qrep*Areproductiveorgans/Vrep/Kprep*RB +
+  Qthy*Athymus/Vthy/Kpthy*RB +
+  Qsal*Asalivarygland/Vsal/Kpsal_vivo*RB +
+  Qs*Askin/Vs/Kps*RB +
+  Qrem*Aremainder/Vrem/Kprem*RB +
+  (Qk-Qu)*Akves/Vkves/Kpk*RB -
+  Ql*ABlood/VBlood
   
-  d/dt(AsDPP4c_blood) <- +kon*AsDPP4f_blood*ABlood/VBlood/RB*fupAlb
-  -koff*AsDPP4c_blood
+  d/dt(AsDPP4c_blood) <- +kon*AsDPP4f_blood*ABlood/VBlood/RB*fupAlb -
+  koff*AsDPP4c_blood
   
-  d/dt(AsDPP4f_blood) <- -kon*AsDPP4f_blood*ABlood/VBlood/RB*fupAlb
-  +koff*AsDPP4c_blood
+  d/dt(AsDPP4f_blood) <- -kon*AsDPP4f_blood*ABlood/VBlood/RB*fupAlb +
+  koff*AsDPP4c_blood
   
-  d/dt(AtDPP4c_blood) <- +kon*AtDPP4f_blood*ABlood/VBlood/RB*fupAlb
-  -koff*AtDPP4c_blood
+  d/dt(AtDPP4c_blood) <- +kon*AtDPP4f_blood*ABlood/VBlood/RB*fupAlb -
+  koff*AtDPP4c_blood
   
-  d/dt(AtDPP4f_blood) <- -kon*AtDPP4f_blood*ABlood/VBlood/RB*fupAlb
-  +koff*AtDPP4c_blood
+  d/dt(AtDPP4f_blood) <- -kon*AtDPP4f_blood*ABlood/VBlood/RB*fupAlb +
+  koff*AtDPP4c_blood
   
   # Lung
-  d/dt(Alung) <- -kon*AsDPP4f_lung*Alung/Vl/Kpl*fupAlb
-  +koff*AsDPP4c_lung
+  d/dt(Alung) <- -kon*AsDPP4f_lung*Alung/Vl/Kpl*fupAlb +
+  koff*AsDPP4c_lung -
   
-  -kon*AtDPP4f_lung*Alung/Vl/Kpl*fupAlb
-  +koff*AtDPP4c_lung
+  kon*AtDPP4f_lung*Alung/Vl/Kpl*fupAlb +
+  koff*AtDPP4c_lung +
   
-  +Ql*ABlood/VBlood
-  -Qserosa*Alung/Vl/Kpl*RB
-  -Qmucosal*Alung/Vl/Kpl*RB
-  -Qha_proper*Alung/Vl/Kpl*RB
-  -Qpan*Alung/Vl/Kpl*RB
-  -Qspl*Alung/Vl/Kpl*RB
-  -Qrep*Alung/Vl/Kpl*RB
-  -Qthy*Alung/Vl/Kpl*RB
-  -Qsal*Alung/Vl/Kpl*RB
-  -Qs*Alung/Vl/Kpl*RB
-  -Qrem*Alung/Vl/Kpl*RB
-  -(Qk-GFR)*Alung/Vl/Kpl*RB
-  -GFR*Alung/Vl/Kpl*fupAlb
+  Ql*ABlood/VBlood -
+  Qserosa*Alung/Vl/Kpl*RB -
+  Qmucosal*Alung/Vl/Kpl*RB -
+  Qha_proper*Alung/Vl/Kpl*RB -
+  Qpan*Alung/Vl/Kpl*RB -
+  Qspl*Alung/Vl/Kpl*RB -
+  Qrep*Alung/Vl/Kpl*RB -
+  Qthy*Alung/Vl/Kpl*RB -
+  Qsal*Alung/Vl/Kpl*RB -
+  Qs*Alung/Vl/Kpl*RB -
+  Qrem*Alung/Vl/Kpl*RB -
+  (Qk-GFR)*Alung/Vl/Kpl*RB -
+  GFR*Alung/Vl/Kpl*fupAlb
   
-  d/dt(AsDPP4c_lung) <- +kon*AsDPP4f_lung*Alung/Vl/Kpl*fupAlb
-  -koff*AsDPP4c_lung
+  d/dt(AsDPP4c_lung) <- +kon*AsDPP4f_lung*Alung/Vl/Kpl*fupAlb -
+  koff*AsDPP4c_lung
   
-  d/dt(AsDPP4f_lung) <- -kon*AsDPP4f_lung*Alung/Vl/Kpl*fupAlb
-  +koff*AsDPP4c_lung
+  d/dt(AsDPP4f_lung) <- -kon*AsDPP4f_lung*Alung/Vl/Kpl*fupAlb +
+  koff*AsDPP4c_lung
   
-  d/dt(AtDPP4c_lung) <- +kon*AtDPP4f_lung*Alung/Vl/Kpl*fupAlb
-  -koff*AtDPP4c_lung
+  d/dt(AtDPP4c_lung) <- +kon*AtDPP4f_lung*Alung/Vl/Kpl*fupAlb -
+  koff*AtDPP4c_lung
   
-  d/dt(AtDPP4f_lung) <- -kon*AtDPP4f_lung*Alung/Vl/Kpl*fupAlb
-  +koff*AtDPP4c_lung
+  d/dt(AtDPP4f_lung) <- -kon*AtDPP4f_lung*Alung/Vl/Kpl*fupAlb +
+  koff*AtDPP4c_lung
   
   # Liver 1
-  d/dt(Aliver_1) <- -kon*AsDPP4f_hepat_1*Aliver_1/Vh_i/Kph*fupAlb
-  +koff*AsDPP4c_hepat_1
+  d/dt(Aliver_1) <- -kon*AsDPP4f_hepat_1*Aliver_1/Vh_i/Kph*fupAlb +
+  koff*AsDPP4c_hepat_1 -
   
-  -kon*AtDPP4f_hepat_1*Aliver_1/Vh_i/Kph*fupAlb
-  +koff*AtDPP4c_hepat_1
+  kon*AtDPP4f_hepat_1*Aliver_1/Vh_i/Kph*fupAlb +
+  koff*AtDPP4c_hepat_1 +
   
-  +Qha_proper*Alung/Vl/Kpl*RB
-  +Qpan*Apancreas/Vpan/Kppan*RB
-  +Qspl*Aspleen/Vspl/Kpspl*RB
-  +Qserosa*Aserosa/Vserosa/Kpgut*RB
-  +Qmucosal*Amucosal_blood/Vmucosal_blood
-  -Qh*Aliver_1/Vh_i/Kph*RB
-  -CLinth_i*Aliver_1/Vh_i/Kph*fupAlb
+  Qha_proper*Alung/Vl/Kpl*RB +
+  Qpan*Apancreas/Vpan/Kppan*RB +
+  Qspl*Aspleen/Vspl/Kpspl*RB +
+  Qserosa*Aserosa/Vserosa/Kpgut*RB +
+  Qmucosal*Amucosal_blood/Vmucosal_blood -
+  Qh*Aliver_1/Vh_i/Kph*RB -
+  CLinth_i*Aliver_1/Vh_i/Kph*fupAlb
   
-  d/dt(AsDPP4c_hepat_1) <- +kon*AsDPP4f_hepat_1*Aliver_1/Vh_i/Kph*fupAlb
-  -koff*AsDPP4c_hepat_1
+  d/dt(AsDPP4c_hepat_1) <- +kon*AsDPP4f_hepat_1*Aliver_1/Vh_i/Kph*fupAlb -
+  koff*AsDPP4c_hepat_1
   
-  d/dt(AsDPP4f_hepat_1) <- -kon*AsDPP4f_hepat_1*Aliver_1/Vh_i/Kph*fupAlb
-  +koff*AsDPP4c_hepat_1
+  d/dt(AsDPP4f_hepat_1) <- -kon*AsDPP4f_hepat_1*Aliver_1/Vh_i/Kph*fupAlb +
+  koff*AsDPP4c_hepat_1
   
-  d/dt(AtDPP4c_hepat_1) <- +kon*AtDPP4f_hepat_1*Aliver_1/Vh_i/Kph*fupAlb
-  -koff*AtDPP4c_hepat_1
+  d/dt(AtDPP4c_hepat_1) <- +kon*AtDPP4f_hepat_1*Aliver_1/Vh_i/Kph*fupAlb -
+  koff*AtDPP4c_hepat_1
   
-  d/dt(AtDPP4f_hepat_1) <- -kon*AtDPP4f_hepat_1*Aliver_1/Vh_i/Kph*fupAlb
-  +koff*AtDPP4c_hepat_1
+  d/dt(AtDPP4f_hepat_1) <- -kon*AtDPP4f_hepat_1*Aliver_1/Vh_i/Kph*fupAlb +
+  koff*AtDPP4c_hepat_1
   
   # Liver 2
-  d/dt(Aliver_2) <- -kon*AsDPP4f_hepat_2*Aliver_2/Vh_i/Kph*fupAlb
-  +koff*AsDPP4c_hepat_2
+  d/dt(Aliver_2) <- -kon*AsDPP4f_hepat_2*Aliver_2/Vh_i/Kph*fupAlb +
+  koff*AsDPP4c_hepat_2 -
   
-  -kon*AtDPP4f_hepat_2*Aliver_2/Vh_i/Kph*fupAlb
-  +koff*AtDPP4c_hepat_2
+  kon*AtDPP4f_hepat_2*Aliver_2/Vh_i/Kph*fupAlb +
+  koff*AtDPP4c_hepat_2 +
   
-  +Qh*Aliver_1/Vh_i/Kph*RB
-  -Qh*Aliver_2/Vh_i/Kph*RB
-  -CLinth_i*Aliver_2/Vh_i/Kph*fupAlb
+  Qh*Aliver_1/Vh_i/Kph*RB -
+  Qh*Aliver_2/Vh_i/Kph*RB -
+  CLinth_i*Aliver_2/Vh_i/Kph*fupAlb
   
   
-  d/dt(AsDPP4c_hepat_2) <- +kon*AsDPP4f_hepat_2*Aliver_2/Vh_i/Kph*fupAlb
-  -koff*AsDPP4c_hepat_2
+  d/dt(AsDPP4c_hepat_2) <- +kon*AsDPP4f_hepat_2*Aliver_2/Vh_i/Kph*fupAlb -
+  koff*AsDPP4c_hepat_2
   
-  d/dt(AsDPP4f_hepat_2) <- -kon*AsDPP4f_hepat_2*Aliver_2/Vh_i/Kph*fupAlb
-  +koff*AsDPP4c_hepat_2
+  d/dt(AsDPP4f_hepat_2) <- -kon*AsDPP4f_hepat_2*Aliver_2/Vh_i/Kph*fupAlb +
+  koff*AsDPP4c_hepat_2
   
-  d/dt(AtDPP4c_hepat_2) <- +kon*AtDPP4f_hepat_2*Aliver_2/Vh_i/Kph*fupAlb
-  -koff*AtDPP4c_hepat_2
+  d/dt(AtDPP4c_hepat_2) <- +kon*AtDPP4f_hepat_2*Aliver_2/Vh_i/Kph*fupAlb -
+  koff*AtDPP4c_hepat_2
   
-  d/dt(AtDPP4f_hepat_2) <- -kon*AtDPP4f_hepat_2*Aliver_2/Vh_i/Kph*fupAlb
-  +koff*AtDPP4c_hepat_2
+  d/dt(AtDPP4f_hepat_2) <- -kon*AtDPP4f_hepat_2*Aliver_2/Vh_i/Kph*fupAlb +
+  koff*AtDPP4c_hepat_2
   
   # Liver 3
-  d/dt(Aliver_3) <- -kon*AsDPP4f_hepat_3*Aliver_3/Vh_i/Kph*fupAlb
-  +koff*AsDPP4c_hepat_3
+  d/dt(Aliver_3) <- -kon*AsDPP4f_hepat_3*Aliver_3/Vh_i/Kph*fupAlb +
+  koff*AsDPP4c_hepat_3 -
   
-  -kon*AtDPP4f_hepat_3*Aliver_3/Vh_i/Kph*fupAlb
-  +koff*AtDPP4c_hepat_3
+  kon*AtDPP4f_hepat_3*Aliver_3/Vh_i/Kph*fupAlb +
+  koff*AtDPP4c_hepat_3 +
   
-  +Qh*Aliver_2/Vh_i/Kph*RB
-  -Qh*Aliver_3/Vh_i/Kph*RB
-  -CLinth_i*Aliver_3/Vh_i/Kph*fupAlb
+  Qh*Aliver_2/Vh_i/Kph*RB -
+  Qh*Aliver_3/Vh_i/Kph*RB -
+  CLinth_i*Aliver_3/Vh_i/Kph*fupAlb
   
-  d/dt(AsDPP4c_hepat_3) <- +kon*AsDPP4f_hepat_3*Aliver_3/Vh_i/Kph*fupAlb
-  -koff*AsDPP4c_hepat_3
+  d/dt(AsDPP4c_hepat_3) <- +kon*AsDPP4f_hepat_3*Aliver_3/Vh_i/Kph*fupAlb -
+  koff*AsDPP4c_hepat_3
   
-  d/dt(AsDPP4f_hepat_3) <- -kon*AsDPP4f_hepat_3*Aliver_3/Vh_i/Kph*fupAlb
-  +koff*AsDPP4c_hepat_3
+  d/dt(AsDPP4f_hepat_3) <- -kon*AsDPP4f_hepat_3*Aliver_3/Vh_i/Kph*fupAlb +
+  koff*AsDPP4c_hepat_3
   
-  d/dt(AtDPP4c_hepat_3) <- +kon*AtDPP4f_hepat_3*Aliver_3/Vh_i/Kph*fupAlb
-  -koff*AtDPP4c_hepat_3
+  d/dt(AtDPP4c_hepat_3) <- +kon*AtDPP4f_hepat_3*Aliver_3/Vh_i/Kph*fupAlb -
+  koff*AtDPP4c_hepat_3
   
-  d/dt(AtDPP4f_hepat_3) <- -kon*AtDPP4f_hepat_3*Aliver_3/Vh_i/Kph*fupAlb
-  +koff*AtDPP4c_hepat_3
+  d/dt(AtDPP4f_hepat_3) <- -kon*AtDPP4f_hepat_3*Aliver_3/Vh_i/Kph*fupAlb +
+  koff*AtDPP4c_hepat_3
   
   # Liver 4
-  d/dt(Aliver_4) <- -kon*AsDPP4f_hepat_4*Aliver_4/Vh_i/Kph*fupAlb
-  +koff*AsDPP4c_hepat_4
+  d/dt(Aliver_4) <- -kon*AsDPP4f_hepat_4*Aliver_4/Vh_i/Kph*fupAlb +
+  koff*AsDPP4c_hepat_4 -
   
-  -kon*AtDPP4f_hepat_4*Aliver_4/Vh_i/Kph*fupAlb
-  +koff*AtDPP4c_hepat_4
+  kon*AtDPP4f_hepat_4*Aliver_4/Vh_i/Kph*fupAlb +
+  koff*AtDPP4c_hepat_4 +
   
-  +Qh*Aliver_3/Vh_i/Kph*RB
-  -Qh*Aliver_4/Vh_i/Kph*RB
-  -CLinth_i*Aliver_4/Vh_i/Kph*fupAlb
+  Qh*Aliver_3/Vh_i/Kph*RB -
+  Qh*Aliver_4/Vh_i/Kph*RB -
+  CLinth_i*Aliver_4/Vh_i/Kph*fupAlb
   
-  d/dt(AsDPP4c_hepat_4) <- +kon*AsDPP4f_hepat_4*Aliver_4/Vh_i/Kph*fupAlb
-  -koff*AsDPP4c_hepat_4
+  d/dt(AsDPP4c_hepat_4) <- +kon*AsDPP4f_hepat_4*Aliver_4/Vh_i/Kph*fupAlb -
+  koff*AsDPP4c_hepat_4
   
-  d/dt(AsDPP4f_hepat_4) <- -kon*AsDPP4f_hepat_4*Aliver_4/Vh_i/Kph*fupAlb
-  +koff*AsDPP4c_hepat_4
+  d/dt(AsDPP4f_hepat_4) <- -kon*AsDPP4f_hepat_4*Aliver_4/Vh_i/Kph*fupAlb +
+  koff*AsDPP4c_hepat_4
   
-  d/dt(AtDPP4c_hepat_4) <- +kon*AtDPP4f_hepat_4*Aliver_4/Vh_i/Kph*fupAlb
-  -koff*AtDPP4c_hepat_4
+  d/dt(AtDPP4c_hepat_4) <- +kon*AtDPP4f_hepat_4*Aliver_4/Vh_i/Kph*fupAlb -
+  koff*AtDPP4c_hepat_4
   
-  d/dt(AtDPP4f_hepat_4) <- -kon*AtDPP4f_hepat_4*Aliver_4/Vh_i/Kph*fupAlb
-  +koff*AtDPP4c_hepat_4
+  d/dt(AtDPP4f_hepat_4) <- -kon*AtDPP4f_hepat_4*Aliver_4/Vh_i/Kph*fupAlb +
+  koff*AtDPP4c_hepat_4
   
   # Liver 5
-  d/dt(Aliver_5) <- -kon*AsDPP4f_hepat_5*Aliver_5/Vh_i/Kph*fupAlb
-  +koff*AsDPP4c_hepat_5
+  d/dt(Aliver_5) <- -kon*AsDPP4f_hepat_5*Aliver_5/Vh_i/Kph*fupAlb +
+  koff*AsDPP4c_hepat_5 -
   
-  -kon*AtDPP4f_hepat_5*Aliver_5/Vh_i/Kph*fupAlb
-  +koff*AtDPP4c_hepat_5
+  kon*AtDPP4f_hepat_5*Aliver_5/Vh_i/Kph*fupAlb +
+  koff*AtDPP4c_hepat_5 +
   
-  +Qh*Aliver_4/Vh_i/Kph*RB
-  -Qh*Aliver_5/Vh_i/Kph*RB
-  -CLinth_i*Aliver_5/Vh_i/Kph*fupAlb
+  Qh*Aliver_4/Vh_i/Kph*RB -
+  Qh*Aliver_5/Vh_i/Kph*RB -
+  CLinth_i*Aliver_5/Vh_i/Kph*fupAlb
   
-  d/dt(AsDPP4c_hepat_5) <- +kon*AsDPP4f_hepat_5*Aliver_5/Vh_i/Kph*fupAlb
-  -koff*AsDPP4c_hepat_5
+  d/dt(AsDPP4c_hepat_5) <- +kon*AsDPP4f_hepat_5*Aliver_5/Vh_i/Kph*fupAlb -
+  koff*AsDPP4c_hepat_5
   
-  d/dt(AsDPP4f_hepat_5) <- -kon*AsDPP4f_hepat_5*Aliver_5/Vh_i/Kph*fupAlb
-  +koff*AsDPP4c_hepat_5
+  d/dt(AsDPP4f_hepat_5) <- -kon*AsDPP4f_hepat_5*Aliver_5/Vh_i/Kph*fupAlb +
+  koff*AsDPP4c_hepat_5
   
-  d/dt(AtDPP4c_hepat_5) <- +kon*AtDPP4f_hepat_5*Aliver_5/Vh_i/Kph*fupAlb
-  -koff*AtDPP4c_hepat_5
+  d/dt(AtDPP4c_hepat_5) <- +kon*AtDPP4f_hepat_5*Aliver_5/Vh_i/Kph*fupAlb -
+  koff*AtDPP4c_hepat_5
   
-  d/dt(AtDPP4f_hepat_5) <- -kon*AtDPP4f_hepat_5*Aliver_5/Vh_i/Kph*fupAlb
-  +koff*AtDPP4c_hepat_5
+  d/dt(AtDPP4f_hepat_5) <- -kon*AtDPP4f_hepat_5*Aliver_5/Vh_i/Kph*fupAlb +
+  koff*AtDPP4c_hepat_5
   
   # Reproductive organs
-  d/dt(Areproductiveorgans) <- -kon*AsDPP4f_reproductiveorgans*Areproductiveorgans/Vrep/Kprep*fupAlb
-  +koff*AsDPP4c_reproductiveorgans
+  d/dt(Areproductiveorgans) <- -kon*AsDPP4f_reproductiveorgans*Areproductiveorgans/Vrep/Kprep*fupAlb +
+  koff*AsDPP4c_reproductiveorgans -
   
-  -kon*AtDPP4f_reproductiveorgans*Areproductiveorgans/Vrep/Kprep*fupAlb
-  +koff*AtDPP4c_reproductiveorgans
+  kon*AtDPP4f_reproductiveorgans*Areproductiveorgans/Vrep/Kprep*fupAlb +
+  koff*AtDPP4c_reproductiveorgans +
   
-  +Qrep*Alung/Vl/Kpl*RB
-  -Qrep*Areproductiveorgans/Vrep/Kprep*RB
+  Qrep*Alung/Vl/Kpl*RB -
+  Qrep*Areproductiveorgans/Vrep/Kprep*RB
   
-  d/dt(AsDPP4c_reproductiveorgans) <- +kon*AsDPP4f_reproductiveorgans*Areproductiveorgans/Vrep/Kprep*fupAlb
-  -koff*AsDPP4c_reproductiveorgans
+  d/dt(AsDPP4c_reproductiveorgans) <- +kon*AsDPP4f_reproductiveorgans*Areproductiveorgans/Vrep/Kprep*fupAlb -
+  koff*AsDPP4c_reproductiveorgans
   
-  d/dt(AsDPP4f_reproductiveorgans) <- -kon*AsDPP4f_reproductiveorgans*Areproductiveorgans/Vrep/Kprep*fupAlb
-  +koff*AsDPP4c_reproductiveorgans
+  d/dt(AsDPP4f_reproductiveorgans) <- -kon*AsDPP4f_reproductiveorgans*Areproductiveorgans/Vrep/Kprep*fupAlb +
+  koff*AsDPP4c_reproductiveorgans
   
-  d/dt(AtDPP4c_reproductiveorgans) <- +kon*AtDPP4f_reproductiveorgans*Areproductiveorgans/Vrep/Kprep*fupAlb
-  -koff*AtDPP4c_reproductiveorgans
+  d/dt(AtDPP4c_reproductiveorgans) <- +kon*AtDPP4f_reproductiveorgans*Areproductiveorgans/Vrep/Kprep*fupAlb -
+  koff*AtDPP4c_reproductiveorgans
   
-  d/dt(AtDPP4f_reproductiveorgans) <- -kon*AtDPP4f_reproductiveorgans*Areproductiveorgans/Vrep/Kprep*fupAlb
-  +koff*AtDPP4c_reproductiveorgans
+  d/dt(AtDPP4f_reproductiveorgans) <- -kon*AtDPP4f_reproductiveorgans*Areproductiveorgans/Vrep/Kprep*fupAlb +
+  koff*AtDPP4c_reproductiveorgans
   
   # Thymus
-  d/dt(Athymus) <- -kon*AsDPP4f_thymus*Athymus/Vthy/Kpthy*fupAlb
-  +koff*AsDPP4c_thymus
+  d/dt(Athymus) <- -kon*AsDPP4f_thymus*Athymus/Vthy/Kpthy*fupAlb +
+  koff*AsDPP4c_thymus -
   
-  -kon*AtDPP4f_thymus*Athymus/Vthy/Kpthy*fupAlb
-  +koff*AtDPP4c_thymus
+  kon*AtDPP4f_thymus*Athymus/Vthy/Kpthy*fupAlb +
+  koff*AtDPP4c_thymus +
   
-  +Qthy*Alung/Vl/Kpl*RB
-  -Qthy*Athymus/Vthy/Kpthy*RB
+  Qthy*Alung/Vl/Kpl*RB -
+  Qthy*Athymus/Vthy/Kpthy*RB
   
-  d/dt(AsDPP4c_thymus) <- +kon*AsDPP4f_thymus*Athymus/Vthy/Kpthy*fupAlb
-  -koff*AsDPP4c_thymus
+  d/dt(AsDPP4c_thymus) <- +kon*AsDPP4f_thymus*Athymus/Vthy/Kpthy*fupAlb -
+  koff*AsDPP4c_thymus
   
-  d/dt(AsDPP4f_thymus) <- -kon*AsDPP4f_thymus*Athymus/Vthy/Kpthy*fupAlb
-  +koff*AsDPP4c_thymus
+  d/dt(AsDPP4f_thymus) <- -kon*AsDPP4f_thymus*Athymus/Vthy/Kpthy*fupAlb +
+  koff*AsDPP4c_thymus
   
-  d/dt(AtDPP4c_thymus) <- +kon*AtDPP4f_thymus*Athymus/Vthy/Kpthy*fupAlb
-  -koff*AtDPP4c_thymus
+  d/dt(AtDPP4c_thymus) <- +kon*AtDPP4f_thymus*Athymus/Vthy/Kpthy*fupAlb -
+  koff*AtDPP4c_thymus
   
-  d/dt(AtDPP4f_thymus) <- -kon*AtDPP4f_thymus*Athymus/Vthy/Kpthy*fupAlb
-  +koff*AtDPP4c_thymus
+  d/dt(AtDPP4f_thymus) <- -kon*AtDPP4f_thymus*Athymus/Vthy/Kpthy*fupAlb +
+  koff*AtDPP4c_thymus
   
   # Salivary gland
-  d/dt(Asalivarygland) <- -kon*AsDPP4f_salivarygland*Asalivarygland/Vsal/Kpsal_vivo*fupAlb
-  +koff*AsDPP4c_salivarygland
+  d/dt(Asalivarygland) <- -kon*AsDPP4f_salivarygland*Asalivarygland/Vsal/Kpsal_vivo*fupAlb +
+  koff*AsDPP4c_salivarygland -
   
-  -kon*AtDPP4f_salivarygland*Asalivarygland/Vsal/Kpsal_vivo*fupAlb
-  +koff*AtDPP4c_salivarygland
+  kon*AtDPP4f_salivarygland*Asalivarygland/Vsal/Kpsal_vivo*fupAlb +
+  koff*AtDPP4c_salivarygland +
   
-  +Qsal*Alung/Vl/Kpl*RB
-  -Qsal*Asalivarygland/Vsal/Kpsal_vivo*RB
+  Qsal*Alung/Vl/Kpl*RB -
+  Qsal*Asalivarygland/Vsal/Kpsal_vivo*RB
   
-  d/dt(AsDPP4c_salivarygland) <- +kon*AsDPP4f_salivarygland*Asalivarygland/Vsal/Kpsal_vivo*fupAlb
-  -koff*AsDPP4c_salivarygland
+  d/dt(AsDPP4c_salivarygland) <- +kon*AsDPP4f_salivarygland*Asalivarygland/Vsal/Kpsal_vivo*fupAlb -
+  koff*AsDPP4c_salivarygland
   
-  d/dt(AsDPP4f_salivarygland) <- -kon*AsDPP4f_salivarygland*Asalivarygland/Vsal/Kpsal_vivo*fupAlb
-  +koff*AsDPP4c_salivarygland
+  d/dt(AsDPP4f_salivarygland) <- -kon*AsDPP4f_salivarygland*Asalivarygland/Vsal/Kpsal_vivo*fupAlb +
+  koff*AsDPP4c_salivarygland
   
-  d/dt(AtDPP4c_salivarygland) <- +kon*AtDPP4f_salivarygland*Asalivarygland/Vsal/Kpsal_vivo*fupAlb
-  -koff*AtDPP4c_salivarygland
+  d/dt(AtDPP4c_salivarygland) <- +kon*AtDPP4f_salivarygland*Asalivarygland/Vsal/Kpsal_vivo*fupAlb -
+  koff*AtDPP4c_salivarygland
   
-  d/dt(AtDPP4f_salivarygland) <- -kon*AtDPP4f_salivarygland*Asalivarygland/Vsal/Kpsal_vivo*fupAlb
-  +koff*AtDPP4c_salivarygland
+  d/dt(AtDPP4f_salivarygland) <- -kon*AtDPP4f_salivarygland*Asalivarygland/Vsal/Kpsal_vivo*fupAlb +
+  koff*AtDPP4c_salivarygland
   
   # Pancreas
-  d/dt(Apancreas) <- -kon*AsDPP4f_pancreas*Apancreas/Vpan/Kppan*fupAlb
-  +koff*AsDPP4c_pancreas
+  d/dt(Apancreas) <- -kon*AsDPP4f_pancreas*Apancreas/Vpan/Kppan*fupAlb +
+  koff*AsDPP4c_pancreas +
   
-  +Qpan*Alung/Vl/Kpl*RB
-  -Qpan*Apancreas/Vpan/Kppan*RB
+  Qpan*Alung/Vl/Kpl*RB -
+  Qpan*Apancreas/Vpan/Kppan*RB
   
-  d/dt(AsDPP4c_pancreas) <- +kon*AsDPP4f_pancreas*Apancreas/Vpan/Kppan*fupAlb
-  -koff*AsDPP4c_pancreas
+  d/dt(AsDPP4c_pancreas) <- +kon*AsDPP4f_pancreas*Apancreas/Vpan/Kppan*fupAlb -
+  koff*AsDPP4c_pancreas
   
-  d/dt(AsDPP4f_pancreas) <- -kon*AsDPP4f_pancreas*Apancreas/Vpan/Kppan*fupAlb
-  +koff*AsDPP4c_pancreas
+  d/dt(AsDPP4f_pancreas) <- -kon*AsDPP4f_pancreas*Apancreas/Vpan/Kppan*fupAlb +
+  koff*AsDPP4c_pancreas
   
   
-  d/dt(Aspleen) <- -kon*AsDPP4f_spleen*Aspleen/Vspl/Kpspl*fupAlb
-  +koff*AsDPP4c_spleen
+  d/dt(Aspleen) <- -kon*AsDPP4f_spleen*Aspleen/Vspl/Kpspl*fupAlb +
+  koff*AsDPP4c_spleen -
   
-  -kon*AtDPP4f_spleen*Aspleen/Vspl/Kpspl*fupAlb
-  +koff*AtDPP4c_spleen
+  kon*AtDPP4f_spleen*Aspleen/Vspl/Kpspl*fupAlb +
+  koff*AtDPP4c_spleen +
   
-  +Qspl*Alung/Vl/Kpl*RB
-  -Qspl*Aspleen/Vspl/Kpspl*RB
+  Qspl*Alung/Vl/Kpl*RB -
+  Qspl*Aspleen/Vspl/Kpspl*RB
   
-  d/dt(AsDPP4c_spleen) <- +kon*AsDPP4f_spleen*Aspleen/Vspl/Kpspl*fupAlb
-  -koff*AsDPP4c_spleen
+  d/dt(AsDPP4c_spleen) <- +kon*AsDPP4f_spleen*Aspleen/Vspl/Kpspl*fupAlb -
+  koff*AsDPP4c_spleen
   
-  d/dt(AsDPP4f_spleen) <- -kon*AsDPP4f_spleen *Aspleen/Vspl/Kpspl*fupAlb
-  +koff*AsDPP4c_spleen
+  d/dt(AsDPP4f_spleen) <- -kon*AsDPP4f_spleen *Aspleen/Vspl/Kpspl*fupAlb +
+  koff*AsDPP4c_spleen
   
-  d/dt(AtDPP4c_spleen) <- +kon*AtDPP4f_spleen*Aspleen/Vspl/Kpspl*fupAlb
-  -koff*AtDPP4c_spleen
+  d/dt(AtDPP4c_spleen) <- +kon*AtDPP4f_spleen*Aspleen/Vspl/Kpspl*fupAlb -
+  koff*AtDPP4c_spleen
   
-  d/dt(AtDPP4f_spleen) <- -kon*AtDPP4f_spleen*Aspleen/Vspl/Kpspl*fupAlb
-  +koff*AtDPP4c_spleen
+  d/dt(AtDPP4f_spleen) <- -kon*AtDPP4f_spleen*Aspleen/Vspl/Kpspl*fupAlb +
+  koff*AtDPP4c_spleen
   
   # Skin
-  d/dt(Askin) <- -kon*AsDPP4f_skin*Askin/Vs/Kps*fupAlb
-  +koff*AsDPP4c_skin
+  d/dt(Askin) <- -kon*AsDPP4f_skin*Askin/Vs/Kps*fupAlb +
+  koff*AsDPP4c_skin -
   
-  -kon*AtDPP4f_skin*Askin/Vs/Kps*fupAlb
-  +koff*AtDPP4c_skin
+  kon*AtDPP4f_skin*Askin/Vs/Kps*fupAlb +
+  koff*AtDPP4c_skin +
   
-  +Qs*Alung/Vl/Kpl*RB
-  -Qs*Askin/Vs/Kps*RB
+  Qs*Alung/Vl/Kpl*RB -
+  Qs*Askin/Vs/Kps*RB
   
-  d/dt(AsDPP4c_skin) <- +kon*AsDPP4f_skin*Askin/Vs/Kps*fupAlb
-  -koff*AsDPP4c_skin
+  d/dt(AsDPP4c_skin) <- +kon*AsDPP4f_skin*Askin/Vs/Kps*fupAlb -
+  koff*AsDPP4c_skin
   
-  d/dt(AsDPP4f_skin) <- -kon*AsDPP4f_skin*Askin/Vs/Kps*fupAlb
-  +koff*AsDPP4c_skin
+  d/dt(AsDPP4f_skin) <- -kon*AsDPP4f_skin*Askin/Vs/Kps*fupAlb +
+  koff*AsDPP4c_skin
   
-  d/dt(AtDPP4c_skin) <- +kon*AtDPP4f_skin*Askin/Vs/Kps*fupAlb
-  -koff*AtDPP4c_skin
+  d/dt(AtDPP4c_skin) <- +kon*AtDPP4f_skin*Askin/Vs/Kps*fupAlb -
+  koff*AtDPP4c_skin
   
-  d/dt(AtDPP4f_skin) <- -kon*AtDPP4f_skin*Askin/Vs/Kps*fupAlb
-  +koff*AtDPP4c_skin
+  d/dt(AtDPP4f_skin) <- -kon*AtDPP4f_skin*Askin/Vs/Kps*fupAlb +
+  koff*AtDPP4c_skin
   
   # Remainder
-  d/dt(Aremainder) <- -kon*AsDPP4f_remainder*Aremainder/Vrem/Kprem*fupAlb
-  +koff*AsDPP4c_remainder
+  d/dt(Aremainder) <- -kon*AsDPP4f_remainder*Aremainder/Vrem/Kprem*fupAlb +
+  koff*AsDPP4c_remainder +
   
-  +Qrem*Alung/Vl/Kpl*RB
-  -Qrem*Aremainder/Vrem/Kprem*RB
+  Qrem*Alung/Vl/Kpl*RB -
+  Qrem*Aremainder/Vrem/Kprem*RB
   
-  d/dt(AsDPP4c_remainder) <- +kon*AsDPP4f_remainder*Aremainder/Vrem/Kprem*fupAlb
-  -koff*AsDPP4c_remainder
+  d/dt(AsDPP4c_remainder) <- +kon*AsDPP4f_remainder*Aremainder/Vrem/Kprem*fupAlb -
+  koff*AsDPP4c_remainder
   
-  d/dt(AsDPP4f_remainder) <- -kon*AsDPP4f_remainder*Aremainder/Vrem/Kprem*fupAlb
-  +koff*AsDPP4c_remainder
+  d/dt(AsDPP4f_remainder) <- -kon*AsDPP4f_remainder*Aremainder/Vrem/Kprem*fupAlb +
+  koff*AsDPP4c_remainder
   
   # Kidney (Cell + Vessel)
-  d/dt(Akves) <- -kon*AsDPP4f_kidneyVessel*Akves/Vkves/Kpk*fupAlb
-  +koff*AsDPP4c_kidneyVessel
+  d/dt(Akves) <- -kon*AsDPP4f_kidneyVessel*Akves/Vkves/Kpk*fupAlb +
+  koff*AsDPP4c_kidneyVessel -
   
-  -kon*AtDPP4f_kidneyVessel*Akves/Vkves/Kpk*fupAlb
-  +koff*AtDPP4c_kidneyVessel
+  kon*AtDPP4f_kidneyVessel*Akves/Vkves/Kpk*fupAlb +
+  koff*AtDPP4c_kidneyVessel +
   
-  +(Qk-GFR)*Alung/Vl/Kpl*RB
-  -(Qk-Qu)*Akves/Vkves/Kpk*RB
+  (Qk-GFR)*Alung/Vl/Kpl*RB -
+  (Qk-Qu)*Akves/Vkves/Kpk*RB -
   
-  -CLsecint*Akves/Vkves/Kpk*fupAlb
-  +CLreabDPP4*AtDPP4c_kidneytubule/Vktubule
+  CLsecint*Akves/Vkves/Kpk*fupAlb +
+  CLreabDPP4*AtDPP4c_kidneytubule/Vktubule
   
-  d/dt(AsDPP4c_kidneyVessel) <- +kon*AsDPP4f_kidneyVessel*Akves/Vkves/Kpk*fupAlb
-  -koff*AsDPP4c_kidneyVessel
+  d/dt(AsDPP4c_kidneyVessel) <- +kon*AsDPP4f_kidneyVessel*Akves/Vkves/Kpk*fupAlb -
+  koff*AsDPP4c_kidneyVessel
   
-  d/dt(AsDPP4f_kidneyVessel) <- -kon*AsDPP4f_kidneyVessel*Akves/Vkves/Kpk*fupAlb
-  +koff*AsDPP4c_kidneyVessel
+  d/dt(AsDPP4f_kidneyVessel) <- -kon*AsDPP4f_kidneyVessel*Akves/Vkves/Kpk*fupAlb +
+  koff*AsDPP4c_kidneyVessel
   
-  d/dt(AtDPP4c_kidneyVessel) <- +kon*AtDPP4f_kidneyVessel*Akves/Vkves/Kpk*fupAlb
-  -koff*AtDPP4c_kidneyVessel
+  d/dt(AtDPP4c_kidneyVessel) <- +kon*AtDPP4f_kidneyVessel*Akves/Vkves/Kpk*fupAlb -
+  koff*AtDPP4c_kidneyVessel
   
-  d/dt(AtDPP4f_kidneyVessel) <- -kon*AtDPP4f_kidneyVessel*Akves/Vkves/Kpk*fupAlb
-  +koff*AtDPP4c_kidneyVessel
+  d/dt(AtDPP4f_kidneyVessel) <- -kon*AtDPP4f_kidneyVessel*Akves/Vkves/Kpk*fupAlb +
+  koff*AtDPP4c_kidneyVessel
   
   # Kidney (Tubule)
-  d/dt(Aktubule) <- -kon*AtDPP4f_kidneytubule*Aktubule/Vktubule
-  +koff*AtDPP4c_kidneytubule
+  d/dt(Aktubule) <- -kon*AtDPP4f_kidneytubule*Aktubule/Vktubule +
+  koff*AtDPP4c_kidneytubule +
   
-  +GFR*Alung/Vl/Kpl*fupAlb # GFR is intentional, not a typo
-  +CLsecint*Akves/Vkves/Kpk*fupAlb
-  -Qu*Aktubule/Vktubule
-  
-  
-  d/dt(AtDPP4c_kidneytubule) <- +kon*AtDPP4f_kidneytubule*Aktubule/Vktubule
-  -koff*AtDPP4c_kidneytubule
-  
-  -CLreabDPP4*AtDPP4c_kidneytubule/Vktubule
+  GFR*Alung/Vl/Kpl*fupAlb + # GFR is intentional, not a typo
+  CLsecint*Akves/Vkves/Kpk*fupAlb -
+  Qu*Aktubule/Vktubule
   
   
-  d/dt(AtDPP4f_kidneytubule) <- -kon*AtDPP4f_kidneytubule*Aktubule/Vktubule
-  +koff*AtDPP4c_kidneytubule
-  +CLreabDPP4*AtDPP4c_kidneytubule/Vktubule
+  d/dt(AtDPP4c_kidneytubule) <- +kon*AtDPP4f_kidneytubule*Aktubule/Vktubule -
+  koff*AtDPP4c_kidneytubule -
+  
+  CLreabDPP4*AtDPP4c_kidneytubule/Vktubule
   
   
-  d/dt(Xmetab) <- +CLinth_i*(1-fbile)*Aliver_1/Vh_i/Kph*fupAlb
-  +CLinth_i*(1-fbile)*Aliver_2/Vh_i/Kph*fupAlb
-  +CLinth_i*(1-fbile)*Aliver_3/Vh_i/Kph*fupAlb
-  +CLinth_i*(1-fbile)*Aliver_4/Vh_i/Kph*fupAlb
-  +CLinth_i*(1-fbile)*Aliver_5/Vh_i/Kph*fupAlb
+  d/dt(AtDPP4f_kidneytubule) <- -kon*AtDPP4f_kidneytubule*Aktubule/Vktubule +
+  koff*AtDPP4c_kidneytubule +
+  CLreabDPP4*AtDPP4c_kidneytubule/Vktubule
+  
+  
+  d/dt(Xmetab) <- +CLinth_i*(1-fbile)*Aliver_1/Vh_i/Kph*fupAlb +
+  CLinth_i*(1-fbile)*Aliver_2/Vh_i/Kph*fupAlb +
+  CLinth_i*(1-fbile)*Aliver_3/Vh_i/Kph*fupAlb +
+  CLinth_i*(1-fbile)*Aliver_4/Vh_i/Kph*fupAlb +
+  CLinth_i*(1-fbile)*Aliver_5/Vh_i/Kph*fupAlb
   
   d/dt(Xurine) <- +Qu*Aktubule/Vktubule
   
@@ -1168,9 +1168,9 @@ Nakamura_2024_linagliptin_rat_pbpk <- function() {
   # Allocating Amount of Soluble DPP-4 #
   ######################################
   AsDPP4 <- ADPP4*fsDPP4
-  Vtotal <- +VBlood+Veh+Vsv+Vlv+Vkvesv+Vsplv
-  +Vsalv+Vthyv+Vrepv+Vpanv+Vremv
-  +Vmucosal_blood+Vserosav
+  Vtotal <- +VBlood+Veh+Vsv+Vlv+Vkvesv+Vsplv +
+  Vsalv+Vthyv+Vrepv+Vpanv+Vremv +
+  Vmucosal_blood+Vserosav
   
   AsDPP4f_blood(0) <- AsDPP4*VBlood/Vtotal
   AsDPP4f_hepat_1(0) <- AsDPP4*Veh/Vtotal/5
