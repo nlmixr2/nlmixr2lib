@@ -33,7 +33,20 @@
     estimate `ec50`), and `indirect_circ_1cpt_stim_kout_kout_t` also used
     undefined `kin_t` and `kout`. None of them could be solved without
     supplying those names, which their `depends` listed. They now use their
-    own parameters, and `depends` is `vc` alone.
+    own parameters.
+  - Their default amplitude `lra` is now `log(0.46)`, a quarter of the
+    mesor. It equalled the mesor, so the baseline touched zero once a day,
+    where a `*_kout_t` template's loss rate divides by zero.
+
+- Twelve templates read a name they never defined, listed it in `depends`,
+  and could not be solved as shipped. Each now defines it.
+  - Seven circadian templates and `indirect_1cpt_stim_kout` used `vc` without
+    estimating it. They now estimate `lvc`, with the value their siblings use.
+  - `indirect_1cpt_stim_kin` and `indirect_1cpt_stim_kin_CLV` read `ic50`
+    where they estimate `ec50`.
+  - `tgi_sat_logistic` and `tgi_sat_genLogistic` grow at a first-order rate
+    `kge` but estimated an unused zero-order rate `lkgl`. The parameter is now
+    `lkge`, with the same value.
 
 ## Other changes
 
@@ -52,10 +65,11 @@
   that every model either has an article or is listed, with a reason, as a
   generic template or as awaiting one.
 
-- Correct the descriptions of ten `indirect_*` templates. Two circadian
+- Correct the descriptions of eleven `indirect_*` templates. Two circadian
   `*_kout_t` models said `kin_t`, and the two stimulation
-  `indirect_prec_1cpt_stim_*` models said inhibition. `indirect_prec_1cpt_stim_r0rmaxcrmax` now says that its PK
-  is parameterized with clearance and volume and its response with R0, Rmax
+  `indirect_prec_1cpt_stim_*` models said inhibition. Both
+  `indirect_prec_1cpt_*_r0rmaxcrmax` templates now say that their PK is
+  parameterized with clearance and volume and their response with R0, Rmax
   and CRmax. A "cosntants" typo is fixed in five descriptions.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
