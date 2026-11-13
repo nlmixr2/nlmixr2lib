@@ -1346,6 +1346,8 @@ navbar:
         href: articles/SanchezDengra_2021_neuro_pbpk_rat.html
       - text: "Carbenicillin qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Carboplatin (DeCarlo 2026)"
+        href: articles/DeCarlo_2026_carboplatin.html
       - text: "Carboplatin (Ekhart 2008)"
         href: articles/Ekhart_2008_carboplatin.html
       - text: "Carboplatin (Zandvliet 2008)"
@@ -9922,6 +9924,7 @@ articles:
   - articles/Dave_2019_venetoclax
   - articles/Davis_2008_maraviroc
   - articles/DeBonis_2025_il12_qsp
+  - articles/DeCarlo_2026_carboplatin
   - articles/DeCock_2012_propyleneGlycol
   - articles/DeJongh_2014_antithrombin
   - articles/DeJongh_2025_azd7648_olaparib_xenograft

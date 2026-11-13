@@ -2,6 +2,8 @@
 
 # development version
 
+- Add De Carlo 2026 carboplatin myelosuppression ([doi:10.1002/bcp.70413](https://doi.org/10.1002/bcp.70413)) -- adults with lung, gynaecological or oesophageal/gastric cancer (platelets and neutrophils, Ekhart 2006 PK).
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.
