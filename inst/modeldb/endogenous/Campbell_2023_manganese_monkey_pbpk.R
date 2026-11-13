@@ -50,7 +50,7 @@ Campbell_2023_manganese_monkey_pbpk <- function() {
     "depot_ip_mn54", # intraperitoneal (Dastur 1971, Figure 4A)
     "depot_sc_mn54", # subcutaneous infusion (Newland 1987, Figure 5A)
     "depot_lung_mn54", # nebulised inhalation (Newland 1987, Figure 5B)
-    "depot_sc" # subcutaneous injection of unlabelled Mn (`depot_sc` compartment)
+    "depot_sc" # subcutaneous unlabelled Mn: a supplement "Dosing Controls" route (KSBQ, shared with depot_sc_mn54); no study in the paper doses unlabelled Mn this way
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what

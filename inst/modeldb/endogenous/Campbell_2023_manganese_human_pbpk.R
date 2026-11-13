@@ -52,10 +52,10 @@ Campbell_2023_manganese_human_pbpk <- function() {
     "venous_mn54", # iv bolus (Mahoney and Small 1968, Mena 1967; Figures 7, 8)
     "liver_mn54", # labelled meal, absorbed fraction (Davidsson 1988, Figure 9)
     "gut_lumen_mn54", # labelled meal, unabsorbed fraction (Davidsson 1988, Figure 9)
-    "depot_ip_mn54", # intraperitoneal Mn-54 (`depot_ip_mn54` compartment)
-    "depot_lung_mn54", # inhaled Mn-54 (`depot_lung_mn54` compartment)
-    "depot_sc", # subcutaneous injection of unlabelled Mn (`depot_sc` compartment)
-    "depot_sc_mn54" # subcutaneous Mn-54 (`depot_sc_mn54` compartment)
+    "depot_ip_mn54", # intraperitoneal Mn-54: a supplement "Dosing Controls" route (KIPSLOW); the paper doses it in monkeys (Dastur 1971, Figure 4A), not humans, so kip = 0 here
+    "depot_lung_mn54", # nebulised Mn-54: the paper doses it in monkeys (Newland 1987, Figure 5B), not humans
+    "depot_sc", # subcutaneous unlabelled Mn: a supplement "Dosing Controls" route (KSBQ); no study in the paper uses it, and ksc = 0 here
+    "depot_sc_mn54" # subcutaneous Mn-54: the paper doses it in monkeys (Newland 1987, Figure 5A), not humans, so ksc = 0 here
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
