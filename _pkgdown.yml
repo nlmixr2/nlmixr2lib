@@ -6046,6 +6046,8 @@ navbar:
         href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Paclitaxel os (Ojara 2023)"
         href: articles/Ojara_2023_paclitaxel_nsclc.html
+      - text: "Paclitaxel rodent (Ibrahim 2026)"
+        href: articles/Ibrahim_2026_paclitaxel_rodent.html
       - text: "Paclitaxel tgi (Ojara 2023)"
         href: articles/Ojara_2023_paclitaxel_nsclc.html
       - text: "Pacmilimab qsp (Ippolito 2024)"
@@ -10454,6 +10456,7 @@ articles:
   - articles/Ibrahim_2019_oral2cmt_zeroorder_mm
   - articles/Ibrahim_2023_ibrutinib
   - articles/Ibrahim_2025_ibrutinib
+  - articles/Ibrahim_2026_paclitaxel_rodent
   - articles/Ide_2009_pravastatin
   - articles/Ide_2020_elotuzumab
   - articles/Ide_2022_elotuzumab
