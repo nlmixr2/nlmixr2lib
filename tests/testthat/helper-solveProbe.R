@@ -526,8 +526,9 @@ doseTimingCandidates <- function() {
     }
     # Only the multi-endpoint tagging varies between forms; for a
     # single-endpoint model all three build the same table, so retrying is
-    # pointless.
-    if (nrow(ui$predDf) <= 1L) break
+    # pointless. NROW() because a model with no residual-error line has a NULL
+    # predDf.
+    if (NROW(ui$predDf) <= 1L) break
   }
   list(result = first, form = NA_character_)
 }

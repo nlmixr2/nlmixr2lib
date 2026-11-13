@@ -88,8 +88,17 @@ knownLinCmtDropModels <- character(0)
 # observable rather than an ODE state, and none of .probeEventForms builds an
 # observation table rxode2 accepts for that shape. The model itself is sound:
 # its vignette renders clean. Remove this entry when the probe learns the form.
+#
+# Kim_2024_islatravir: the probe's covariate derivation pairs an oral tablet
+# amount with the implant route. DOSE_ISLATRAVIR_MG takes 0.1 (the first
+# `DOSE_ISLATRAVIR_MG - c` constant in model(), from `is_0p1`) while ROUTE_ORAL
+# takes its reference category 0 (implant). The model sets kimpl and
+# kce_implant to NA for an implant load outside its five studied loads (48, 52,
+# 54, 56, 62 mg), so every ODE state is NaN. That is the model refusing an
+# unsupported regimen, as designed. Its vignette solves the studied regimens.
 probeUnsupportedModels <- c(
-  "Retlich_2015_linagliptin"
+  "Retlich_2015_linagliptin",
+  "Kim_2024_islatravir"
 )
 
 # (2) Genuinely BROKEN models, quarantined so this gate can go green while the
