@@ -154,7 +154,8 @@ knownBrokenModels <- c(
 
 .probeInChild <- function(nms) {
   dev <- pkgload::is_dev_package("nlmixr2lib")
-  root <- if (dev) normalizePath(testthat::test_path("..", "..")) else NA_character_
+  # The directory this session's load_all() loaded the package from.
+  root <- if (dev) getNamespaceInfo(asNamespace("nlmixr2lib"), "path") else NA_character_
   helper <- normalizePath(testthat::test_path("helper-solveProbe.R"))
   trace <- nzchar(Sys.getenv("NLMIXR2LIB_SOLVE_GATE_TRACE")) && .Platform$OS.type == "unix"
   res <- callr::r(
