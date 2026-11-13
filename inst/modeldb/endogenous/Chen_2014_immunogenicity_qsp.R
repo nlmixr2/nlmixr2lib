@@ -155,6 +155,7 @@ Chen_2014_immunogenicity_qsp <- function() {
     KpMM      <- fixed(40);        label("Number of peptide-MHC on DC for half-max memory T activation (dimensionless)")# Table S2 (Kimachi 1997 ref 10)
     cp0pl     <- fixed(3.025e8);   label("Endogenous competing-protein amount in plasma (pmole)")               # Table S2 (Agrawal 1996 ref 8)
     koffC     <- fixed(34560);     label("Off-rate constant for competing peptide-MHC binding (1/day)")         # Table S2 (Agrawal 1996 ref 8)
+    koffT     <- fixed(150000 * 8.64e-3); label("Off-rate constant for T-epitope-MHC binding (1/day)")       # Ag-specific (Table S2 'koff'); Kd = koff/kon (supplement Eqs 5-8) with the demo T-epitope's Kd = 150 nmol/L = 150000 pM (Methods) and konMHC = 8.64e-3 /(pM*day) (Table S2): 150000 * 8.64e-3 = 1296 /day
 
     # 3) T helper cell kinetics (paper section 3)
     betaNT   <- fixed(0.0029);     label("Naive T-cell death rate (1/day)")                          # Table S2 (McCune 2000 ref 12)
@@ -229,15 +230,17 @@ Chen_2014_immunogenicity_qsp <- function() {
     cpEinflux <- alphaAgE * (cp0pl / Vp) * Vendo
 
     d/dt(AgE)  <- AgEinflux - betaAgE * AgE
-    d/dt(pE)   <- betaAgE * AgE - betaPep * pE - konMHC * pE * mhcE + koffC * pmE
+    d/dt(pE)   <- betaAgE * AgE - betaPep * pE - konMHC * pE * mhcE + koffT * pmE
     d/dt(cpE)  <- cpEinflux - betaAgE * cpE
     d/dt(cptE) <- betaAgE * cpE - betaPep * cptE - konMHC * cptE * mhcE + koffC * cpmE
-    d/dt(mhcE) <- Msynth - betaMHC * mhcE - konMHC * pE * mhcE + koffC * pmE - konMHC * cptE * mhcE + koffC * cpmE + kIntCplx * mhcM
-    d/dt(pmE)  <- konMHC * pE * mhcE - koffC * pmE - betaPM * pmE - kExt * pmE
+    d/dt(mhcE) <- Msynth - betaMHC * mhcE - konMHC * pE * mhcE + koffT * pmE - konMHC * cptE * mhcE + koffC * cpmE + kIntCplx * mhcM
+    d/dt(pmE)  <- konMHC * pE * mhcE - koffT * pmE - betaPM * pmE - kExt * pmE
     d/dt(cpmE) <- konMHC * cptE * mhcE - koffC * cpmE - betaPM * cpmE - kExt * cpmE
-    d/dt(pmM)  <- kExt * pmE - kIntCplx * pmM
-    d/dt(cpmM) <- kExt * cpmE - kIntCplx * cpmM
-    d/dt(mhcM) <- -kIntCplx * mhcM
+    # Supplement Eqs 8, 12, 13: membrane complexes dissociate, releasing free
+    # MHC-II on the membrane, which is internalized back to the endosome.
+    d/dt(pmM)  <- kExt * pmE - koffT * pmM
+    d/dt(cpmM) <- kExt * cpmE - koffC * cpmM
+    d/dt(mhcM) <- -kIntCplx * mhcM + koffT * pmM + koffC * cpmM
 
     # Total peptide-MHC on all DC membranes, in molecule number (Eq 14.2 with k=1, j=1):
     #   pM_j = pmM [pmole/DC] * 1e-12 [mol/pmole] * N_A [molec/mol] * mDC [DCs]

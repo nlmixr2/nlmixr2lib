@@ -266,6 +266,22 @@ support vector states). Every deviation is enumerated below.
   100-day demo. The paper's MATLAB implementation almost certainly
   uses a larger effective coupling; the published equation set alone
   is insufficient to reproduce Figure 4d/4e quantitatively.
+- **Membrane peptide-MHC dissociation (supplement Eqs 8, 12, 13).**
+  Complexes on the DC membrane dissociate - the T-epitope complex at
+  `koffT`, the competing-peptide complex at `koffC` - and the freed
+  MHC-II (`mhcM`) is internalized back to the endosome. `koffT =
+  1296 /day` is the demo T-epitope's off-rate, from its Kd = 150 nmol/L
+  and `konMHC` (Table S2); `koffC = 34560 /day` belongs to the
+  competing peptide only. With these equations the model presents about
+  3.5-fold less T-epitope-MHC on the DC surface than a version that
+  internalized the membrane complexes intact, so the T-cell, B-cell and
+  ADA responses are smaller still (ADA at day 100: 6.2e-6 falls to
+  4.8e-7).
+- **Known gap to Figure 4.** The simulated T-cell, B-cell and ADA
+  responses stay far below the paper's Figure 4. This is a known gap,
+  not a reproduction: it follows from the untabulated `Msynth` above,
+  and from the "Ag-specific" `betaCmp` and `MS0` below, for which the
+  packaged model uses neutral defaults.
 - **Immune-complex clearance rate `betaCmp` marked "Ag-specific" in
   Table S2** - no default value given. Set to `betaCmp = betaAb`
   (0.0301 /day) as the neutral choice (Ag-Ab complex cleared at same

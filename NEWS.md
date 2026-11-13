@@ -2,6 +2,8 @@
 
 # development version
 
+- `Chen_2014_immunogenicity_qsp` follows the source supplement's Eqs 8, 12 and 13 for the dendritic-cell membrane. Peptide-MHC complexes on the membrane now dissociate (`pmM` at the T-epitope off-rate, `cpmM` at the competing-peptide off-rate), and the freed MHC-II feeds `mhcM`, which was identically 0 before. A new `koffT` (1296 /day, from the demo T-epitope's Kd = 150 nmol/L and `konMHC`) replaces `koffC` in every T-epitope dissociation term; `koffC` is the competing peptide's off-rate. **Breaking for simulations**: peptide-MHC presentation, the T-helper and B-cell responses and ADA all change (for the vignette's demo, functional T cells at day 100 fall from 1.05 to 0.30).
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.
