@@ -1980,6 +1980,8 @@ navbar:
         href: articles/Campagne_2019_cyclophosphamide_mouse.html
       - text: "Cyclophosphamide mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
+      - text: "Cyclophosphamide mouse qsp (Fan 2026)"
+        href: articles/Fan_2026_cyclophosphamide_mouse_qsp.html
       - text: "Cycloserine (Alghamdi 2019)"
         href: articles/Alghamdi_2019_cycloserine.html
       - text: "Cycloserine (ResendizGalvan 2025)"
@@ -10053,6 +10055,7 @@ articles:
   - articles/Fan_2024_sirolimus
   - articles/Fan_2025_antiCD4_nanobody_HIV
   - articles/Fan_2025_iron_wholebody_pbpk
+  - articles/Fan_2026_cyclophosphamide_mouse_qsp
   - articles/Fang_2010_etanercept
   - articles/Fang_2013_pramlintide
   - articles/Fanta_2007_ciclosporin
