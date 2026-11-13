@@ -333,7 +333,7 @@ evening dose is sorted after it, and with `addlKeepsCov = FALSE`, the
 zero-order duration, so an `OCC = 2` sample there would hand the evening dose
 the morning occasion's values. `addlKeepsCov = TRUE` is not a remedy for these
 doses: with `rate = -2` and a lag it takes bioavailability from the record
-*before* the dose unless a record shares the dose's time, so every run-in
+*before* the dose unless an observation shares the dose's time, so every run-in
 morning dose would take the evening occasion's bioavailability and vice versa. The `superposition` chunk below
 checks the pairing directly.
 
@@ -419,10 +419,12 @@ parameter the combined solve and the separate solves legitimately differ.
 One case `rxSolve()` cannot pair correctly under either setting: an evening lag
 longer than the 12 h dosing interval (the 3.61-fold evening lag times a 62%
 between-occasion variability reaches it in a few percent of children). The
-evening dose then arrives after the next morning dose record, and `rxode2`
-takes its zero-order duration from that record, so it is absorbed over the
-morning occasion's duration. Its bioavailability, and therefore the AUC, is
-still its own. Those children are counted and checked on the AUC only.
+evening dose then arrives after the next morning dose. `rxode2` does not read
+the dose's zero-order duration from that morning dose record, but it does read
+it from samples inside the lag window: for the evening dose before the observed
+interval, those are the morning samples, so it is absorbed over the morning
+occasion's duration. Its bioavailability, and therefore the AUC, is still its
+own. Those children are counted and checked on the AUC only.
 
 ```{r superposition}
 # Trapezoidal AUC over the observed interval; also used for Figure 2 below.
@@ -1144,11 +1146,15 @@ is deliberately not encoded.
   interval, and every simulation states `addlKeepsCov = FALSE`.** Doses are
   lagged and given with `rate = -2`, and for such a dose `rxSolve()` does not
   always read the occasion from the dose's own record. The lag is always read
-  from the dose record. The zero-order duration comes from a record at the
-  same time as the dose or inside the lag window, if there is one, under
-  either setting of `addlKeepsCov`; with `nonmem = TRUE` a record at the same
-  time counts only if its row comes after the dose's. The bioavailability comes from a record at
-  the same time as the dose, if there is one, under either setting. Otherwise,
+  from the dose record. The zero-order duration comes from an observation, or
+  a dose into another compartment, at the same time as the dose or inside the
+  lag window, if there is one, under either setting of `addlKeepsCov`. Another
+  dose into the depot, or a record exactly at the arrival time, does not
+  count, and with `nonmem = TRUE` a record at the same time counts only if its
+  row comes after the dose's. The bioavailability comes from an observation,
+  or a dose into another compartment, at the same time as the dose, if there
+  is one, under either setting (with `FALSE`, another dose into the depot at
+  that time too). Otherwise,
   with `addlKeepsCov = FALSE`, the default, it comes from the dose's own
   record: a record inside the lag window is ignored, unlike for a bolus dose.
   With `addlKeepsCov = TRUE` (and with `nonmem = TRUE`) it comes from the
@@ -1161,8 +1167,9 @@ is deliberately not encoded.
   run-in dose would take the other dose's occasion. The `superposition` chunk
   pins the pairing. It also counts the one case neither setting handles: when
   a child's evening lag is longer than the 12 h dosing interval, the evening
-  dose arrives after the next morning dose record and takes that record's
-  zero-order duration. Its bioavailability, and so the AUC, stays its own;
+  dose arrives after the next morning dose, and takes its zero-order duration
+  from the morning samples inside its lag window. Its bioavailability, and so
+  the AUC, stays its own;
   only the shape of its input changes.
 * **Weight is sampled uniformly within each WHO band, and matched across
   arms.** Table 1 reports band counts and a per-arm median weight of 26.0 kg but

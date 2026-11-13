@@ -583,7 +583,7 @@ More facts from the same probes:
   - otherwise a record at the dose's time (under `nonmem = TRUE` only if its row follows the dose's), or one from inside the lag window to 1 h after arrival;
   - a later record depending on the amount: one at 26 h is read at amt 101 and 200 but not at 100, one at 27 h only at 200, one at 30 h at none of them;
   - otherwise its own record.
-- A lag longer than the dosing interval is the lag-window case, with the next dose's record as the record inside the window. The rows above hold unchanged: a `rate = -1` / `rate = -2` infusion under `TRUE` still reads the record before it, and its `rate()` / `dur()` come from the next dose under every setting.
+- A lag longer than the dosing interval puts the next dose's record inside the window. For `f()` the rows above hold with that record as the lag-window record: a bolus under `FALSE` reads it, and a `rate = -1` / `rate = -2` infusion under `TRUE` still reads the record before the dose. A modelled `rate()` / `dur()` is not read from that dose record, under any setting, but from an observation inside the window, such as a sample after the next dose.
 - On a bolus, the setting also moves the time at which the dose record's covariates start to apply to continuous parameters such as `ka`: the dose time with `FALSE`, the end of the lag with `TRUE`.
 - `rxSolve()` sorts a same-time dose ahead of an observation whatever order the data frame has (`tieOrder = "evid"`). `nonmem = TRUE` sets `tieOrder = "data"` and keeps the row order.
 
@@ -635,14 +635,15 @@ sim <- rxode2::rxSolve(mod, events, addlKeepsCov = FALSE)
   fixed-rate infusion's from a record that depends on where unrelated
   records fall and on its own amount, often the subject's first. Its modelled `rate()` /
   `dur()` still comes from a record at its time or inside its lag
-  window.
+  window, other than a dose into the same compartment.
 - **A lag longer than the dosing interval** puts the next dose record
   inside the lag window, which no event table can avoid. For bolus-only
   models `TRUE` is then the setting that pairs every dose with its own
   record; say so and use it. For `rate = -2` / `rate = -1` / fixed-rate
-  doses `FALSE` still gives `f()` its own record but `dur()` comes from
-  the next dose under either setting: count the affected subjects and
-  check them on AUC only (Tsirizani 2025, a 3.61-fold evening lag).
+  doses `FALSE` still gives `f()` its own record, but a modelled `dur()` /
+  `rate()` comes from any observation inside the lag window (the samples
+  after the next dose) under every setting: count the affected subjects
+  and check them on AUC only (Tsirizani 2025, a 3.61-fold evening lag).
 - **Check the pairing.** For bolus-only models, solve once with each
   setting: once the records are right, `f()` is paired the same under
   both, so any remaining difference comes from a continuous parameter
