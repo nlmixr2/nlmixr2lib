@@ -5350,6 +5350,8 @@ navbar:
         href: articles/Chua_2023_mirikizumab.html
       - text: "Mirikizumab phase3 (Chua 2023)"
         href: articles/Chua_2023_mirikizumab.html
+      - text: "Mirtazapine (Yan 2026)"
+        href: articles/Yan_2026_mirtazapine.html
       - text: "Misoprostol (Vorontsova 2022)"
         href: articles/Vorontsova_2022_misoprostol.html
       - text: "Mitiperstat (Sunnaker 2026)"
@@ -12269,6 +12271,7 @@ articles:
   - articles/Yan_2022_inebilizumab
   - articles/Yan_2023_tafolecimab
   - articles/Yan_2024_amisulpride
+  - articles/Yan_2026_mirtazapine
   - articles/Yang_2010_rosuvastatin_mbma
   - articles/Yang_2013_losmapimod
   - articles/Yang_2016_dilmapimod
