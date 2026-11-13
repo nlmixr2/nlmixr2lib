@@ -8744,6 +8744,8 @@ navbar:
         href: articles/Chen_2023_vancomycin.html
       - text: "Vancomycin (Chen 2025)"
         href: articles/Chen_2025_vancomycin.html
+      - text: "Vancomycin (Chen 2026)"
+        href: articles/Chen_2026_vancomycin.html
       - text: "Vancomycin (Chung 2013)"
         href: articles/Chung_2013_vancomycin.html
       - text: "Vancomycin (Chung 2026)"
@@ -9796,6 +9798,7 @@ articles:
   - articles/Chen_2025_remimazolam
   - articles/Chen_2025_vancomycin
   - articles/Chen_2026_nsclc_os_mbma
+  - articles/Chen_2026_vancomycin
   - articles/Cheng_2019_lobaplatin
   - articles/Cheng_2020_sirolimus
   - articles/Cheng_2021_avadomide

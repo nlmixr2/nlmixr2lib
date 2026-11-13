@@ -1,0 +1,374 @@
+---
+title: "Vancomycin (Chen 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vancomycin (Chen 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Chen_2026_vancomycin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Chen_2026_vancomycin"))$description`
+* Article: <https://doi.org/10.3389/fphar.2026.1839423>
+
+Chen 2026 is a machine-learning paper: its deliverable is a CatBoost model that
+predicts an individual child's vancomycin clearance (CL) and volume of
+distribution (Vd) from six pre-dose variables. The training targets for that
+predictor were Bayesian posterior CL and Vd from a population PK model, and
+that population PK model is what is packaged here. It is the authors' earlier
+paediatric model (Chen 2023, packaged as `Chen_2023_vancomycin`) with the
+structure and covariates kept and every parameter re-estimated on the pooled
+data of two centres. The CatBoost predictor itself is a tree ensemble with no
+published equations and is not representable as an nlmixr2 model.
+
+# Population
+
+The pooled dataset holds 821 critically ill children (suspected or proven
+infection plus a pSOFA score of at least 2) treated with intermittent IV
+vancomycin for at least 3 days: 753 from Xinhua Hospital, Shanghai (June 2013
+to March 2023) and 68 from the People's Hospital of the Inner Mongolia
+Autonomous Region (June 2018 to March 2023). They contributed 1767 serum
+concentrations, 840 peaks and 927 troughs, measured by HPLC. Children on renal
+replacement therapy or ECMO were excluded. Chen 2026 Table 1 reports a median
+(IQR) age of 1.75 (0.41-6.41) years, postmenstrual age (PMA) 131.14
+(61.43-374.43) weeks, weight 11.00 (6.00-20.00) kg, eGFR 108.40
+(85.17-120.00) mL/min/1.73 m^2 and albumin 36.30 (31.60-40.50) g/L; 41.78% were
+female, 82.22% were in an ICU and 10.48% were after cardiothoracic surgery
+(CTS) on vasoactive agents. Supplementary Table S3 breaks these down by centre.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Structure: one compartment, IV infusion | -- | Methods, 'Population pharmacokinetic (PPK) analysis'; 'Data collection and preprocessing' (1 or 3 h infusions) |
+| CL equation | `7.84 * (WT/70)^0.75 * MF * (eGFR/109)^1.02 * 0.783^CTS` | Results, 'Individual pharmacokinetic-parameter estimation'; Supplementary Table S4 notes |
+| Vd equation | `36.6 * (WT/70) * (36.2/ALB)^0.255` | Same |
+| Maturation function | `MF = 1 / (1 + (PMA/TM50)^Hill)` | Same |
+| eGFR equation | `40.7 * (height/SCr)^0.64 * (30/BUN)^0.202` | Methods, 'Data collection and preprocessing'; Table S4 notes |
+| eGFR ceiling | 120 mL/min/1.73 m^2 | Chen 2023 framework (Table 2 Model D), retained per Chen 2026 Methods; see Assumptions |
+| `lcl` | log(7.84) | Table S4, theta_CL |
+| `lvc` | log(36.6) | Table S4, theta_V |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1 (fixed) | Results equations (constants, no RSE) |
+| `pma_tm50` | 37.1 weeks | Table S4, TM50 |
+| `pma_hill` | -1.64 | Table S4, Hill |
+| `e_crcl_cl` | 1.02 | Table S4, theta_eGFR |
+| `e_cts_cl` | 0.783 | Table S4, theta_1 |
+| `e_alb_vc` | 0.255 | Table S4, theta_ALB |
+| `etalcl`, `etalvc` | 0.283^2, 0.272^2, cov 0.0548 | Table S4, CL (%CV) 28.3, Vd (%CV) 27.2, Cov (CL-Vd) 0.0548 |
+| `propSd` | 0.177 | Table S4, Exponential (%CV) 17.7 |
+| `addSd` | 0.154 mg/L | Table S4, Additive 0.154 |
+
+# Comparison with the original Chen 2023 estimates
+
+Supplementary Table S4 prints the original and updated estimates side by side.
+The packaged models carry exactly those two columns.
+
+```{r param-compare}
+fixef_of <- function(name) {
+  m <- rxode2::rxode(readModelDb(name))
+  ini <- m$iniDf
+  ini <- ini[!is.na(ini$ntheta), ]
+  stats::setNames(ini$est, ini$name)
+}
+p23 <- fixef_of("Chen_2023_vancomycin")
+p26 <- fixef_of("Chen_2026_vancomycin")
+show <- c(lcl = "theta_CL (L/h)", lvc = "theta_V (L)", pma_tm50 = "TM50 (weeks)",
+          pma_hill = "Hill", e_crcl_cl = "theta_eGFR", e_cts_cl = "theta_1 (CTS)",
+          e_alb_vc = "theta_ALB", propSd = "Exponential/proportional", addSd = "Additive (mg/L)")
+back <- function(p) ifelse(names(p) %in% c("lcl", "lvc"), exp(p), p)
+cmp <- data.frame(
+  Parameter = unname(show),
+  `Chen 2023` = signif(back(p23[names(show)]), 3),
+  `Chen 2026` = signif(back(p26[names(show)]), 3),
+  check.names = FALSE
+)
+knitr::kable(cmp, caption = "Reproduces the fixed-effect and residual rows of Supplementary Table S4 of Chen 2026.")
+stopifnot(
+  isTRUE(all.equal(unname(back(p26[names(show)])),
+                   c(7.84, 36.6, 37.1, -1.64, 1.02, 0.783, 0.255, 0.177, 0.154)))
+)
+```
+
+# Simulation helpers
+
+```{r helpers}
+mod <- readModelDb("Chen_2026_vancomycin")
+mod_tv <- rxode2::zeroRe(mod)
+
+# Typical-value solves over many subjects warn that no omega is present, which
+# is the intent here; only that warning is muffled.
+solve_tv <- function(...) {
+  withCallingHandlers(
+    rxode2::rxSolve(...),
+    warning = muffle_no_omega
+  )
+}
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+    invokeRestart("muffleWarning")
+  }
+}
+
+# Intermittent 1-h IV infusions every `tau` h, with a dense observation grid
+# over the last dosing day.
+make_events <- function(cohort, mg_kg_day, tau = 6, days = 5, tinf = 1, obs_by = 0.1) {
+  last_day <- (days - 1) * 24
+  dose_times <- seq(0, days * 24 - tau, by = tau)
+  obs_times <- seq(last_day, days * 24, by = obs_by)
+  ev <- lapply(seq_len(nrow(cohort)), function(i) {
+    r <- cohort[i, ]
+    amt <- mg_kg_day * r$WT * tau / 24
+    d <- data.frame(id = r$id, time = dose_times, amt = amt, evid = 1, rate = amt / tinf)
+    o <- data.frame(id = r$id, time = obs_times, amt = NA_real_, evid = 0, rate = NA_real_)
+    out <- rbind(d, o)
+    out$cmt <- "central"
+    out$WT <- r$WT
+    out$PAGE <- r$PAGE
+    out$CRCL <- r$CRCL
+    out$ALB <- r$ALB
+    out$SURG_CARD_VASOACTIVE <- r$SURG_CARD_VASOACTIVE
+    out$group <- r$group
+    out$mg_kg_day <- mg_kg_day
+    out[order(out$time, -out$evid), ]
+  })
+  do.call(rbind, ev)
+}
+```
+
+# Structural identities
+
+Deterministic checks on the typical-value model, gated tightly.
+
+```{r identities}
+one <- function(WT, PAGE, CRCL, ALB, CTS) {
+  ch <- data.frame(id = 1L, WT = WT, PAGE = PAGE, CRCL = CRCL, ALB = ALB,
+                   SURG_CARD_VASOACTIVE = CTS, group = "x")
+  s <- solve_tv(mod_tv, make_events(ch, 40, tau = 24, days = 1, obs_by = 1),
+                       returnType = "data.frame")
+  c(cl = s$cl[1], vc = s$vc[1], mf = s$maturation_cl[1])
+}
+ref <- one(70, 1e6, 109, 36.2, 0)
+ids <- data.frame(
+  Check = c("CL of the reference adult (L/h)",
+            "Vd of the reference adult (L)",
+            "Maturation at PMA = TM50",
+            "CL at eGFR 200 equals CL at eGFR 120 (ceiling)",
+            "CTS multiplies CL by theta_1"),
+  Simulated = c(ref[["cl"]], ref[["vc"]], one(10, 37.1, 109, 36.2, 0)[["mf"]],
+                one(10, 200, 200, 36.2, 0)[["cl"]],
+                one(10, 200, 100, 36.2, 1)[["cl"]] / one(10, 200, 100, 36.2, 0)[["cl"]]),
+  Expected = c(7.84, 36.6, 0.5, one(10, 200, 120, 36.2, 0)[["cl"]], 0.783)
+)
+knitr::kable(ids, digits = 5)
+stopifnot(all(abs(ids$Simulated - ids$Expected) < 1e-4 * pmax(1, abs(ids$Expected))))
+```
+
+# Virtual cohort
+
+Chen 2026 does not publish individual data, so a cohort is reconstructed from
+the Table 1 summaries. Postnatal age is drawn from a quantile function that is
+log-linear between the Table 1 quartiles (0.41, 1.75 and 6.41 years) and the
+assumed extremes of 1 week and 17.9 years, so the median and IQR match, PMA
+is postnatal age plus 40 weeks (the gestational-age imputation the authors'
+group uses for children over one year, Chen 2023), and weight follows an
+approximate median weight-for-age curve with 15% log-normal scatter. Uncapped
+eGFR is log-normal around the Xinhua centre median and IQR of Supplementary
+Table S3 (109.3, 86.6-140.5), albumin is normal around the Table 1 median
+(36.3 g/L, IQR 31.6-40.5) and 10.48% of children are CTS patients.
+
+```{r cohort}
+set.seed(20261113)
+rxode2::rxSetSeed(20261113)
+n <- 400
+age <- exp(approx(c(0, 0.25, 0.5, 0.75, 1), log(c(1 / 52, 0.41, 1.75, 6.41, 17.9)),
+                  xout = runif(n))$y)
+# Approximate median weight-for-age (kg) of boys and girls combined.
+wfa <- data.frame(age = c(0, 0.25, 0.5, 1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 18),
+                  wt  = c(3.3, 6.0, 7.6, 9.6, 12.2, 14.3, 16.3, 18.3, 20.5, 25.6,
+                          31.9, 39.9, 49.0, 56.0, 60.0))
+cohort <- data.frame(
+  id = seq_len(n),
+  age = age,
+  PAGE = 40 + age * 52.18,
+  WT = approx(wfa$age, wfa$wt, xout = age)$y * exp(rnorm(n, 0, 0.15)),
+  CRCL = exp(rnorm(n, log(109.3), log(140.5 / 86.6) / (2 * qnorm(0.75)))),
+  ALB = pmax(15, rnorm(n, 36.3, (40.5 - 31.6) / (2 * qnorm(0.75)))),
+  SURG_CARD_VASOACTIVE = rbinom(n, 1, 0.1048)
+)
+cohort$group <- cut(cohort$age, c(0, 1, 4, 10, 18),
+                    labels = c("<1 year", "1 to <4 years", "4 to <10 years", ">=10 years"),
+                    right = FALSE)
+cohort$group <- as.character(cohort$group)
+summ <- function(x) sprintf("%.2f (%.2f-%.2f)", median(x), quantile(x, 0.25), quantile(x, 0.75))
+knitr::kable(data.frame(
+  Covariate = c("Age (years)", "PMA (weeks)", "Weight (kg)", "eGFR, capped at 120", "Albumin (g/L)"),
+  `Virtual cohort` = c(summ(cohort$age), summ(cohort$PAGE), summ(cohort$WT),
+                       summ(pmin(cohort$CRCL, 120)), summ(cohort$ALB)),
+  `Chen 2026 Table 1` = c("1.75 (0.41-6.41)", "131.14 (61.43-374.43)", "11.00 (6.00-20.00)",
+                          "108.40 (85.17-120.00)", "36.30 (31.60-40.50)"),
+  check.names = FALSE
+), caption = "Median (IQR) of the virtual cohort against Chen 2026 Table 1.")
+```
+
+# Individual CL and Vd against the Table 1 posterior estimates
+
+Chen 2026 Table 1 reports the distribution of the individual Bayesian
+posterior CL and Vd that the updated model produced for the 821 children:
+CL 1.56 (0.69-3.01) L/h and Vd 5.80 (3.22-10.82) L. Individual parameters
+simulated with between-subject variability over the virtual cohort should
+reproduce the centre of these distributions. The tolerance is loose because
+the cohort is reconstructed from marginal summaries.
+
+```{r posterior-compare}
+ev_one <- make_events(cohort, 60, tau = 6, days = 1, obs_by = 6)
+sim_iiv <- rxode2::rxSolve(mod, ev_one, returnType = "data.frame",
+                           keep = c("group"))
+indiv <- sim_iiv |>
+  group_by(id) |>
+  slice(1) |>
+  ungroup()
+pk_cmp <- data.frame(
+  Parameter = c("CL (L/h)", "Vd (L)"),
+  Simulated = c(summ(indiv$cl), summ(indiv$vc)),
+  `Chen 2026 Table 1` = c("1.56 (0.69-3.01)", "5.80 (3.22-10.82)"),
+  check.names = FALSE
+)
+knitr::kable(pk_cmp, caption = "Median (IQR) of individual CL and Vd: simulation against the Table 1 posterior estimates.")
+stopifnot(
+  abs(log(median(indiv$cl) / 1.56)) < log(1.3),
+  abs(log(median(indiv$vc) / 5.80)) < log(1.3)
+)
+```
+
+```{r cl-weight, fig.cap = "Individual CL and Vd across the virtual cohort against body weight. The dashed lines mark the Chen 2026 Table 1 posterior medians at the Table 1 median weight of 11 kg."}
+indiv |>
+  select(id, WT, cl, vc) |>
+  pivot_longer(c(cl, vc), names_to = "param", values_to = "value") |>
+  mutate(param = recode(param, cl = "CL (L/h)", vc = "Vd (L)")) |>
+  ggplot(aes(WT, value)) +
+  geom_point(alpha = 0.4) +
+  geom_hline(data = data.frame(param = c("CL (L/h)", "Vd (L)"), y = c(1.56, 5.80)),
+             aes(yintercept = y), linetype = "dashed") +
+  geom_vline(xintercept = 11, linetype = "dotted") +
+  scale_x_log10() + scale_y_log10() +
+  facet_wrap(~param, scales = "free_y") +
+  labs(x = "Body weight (kg)", y = NULL)
+```
+
+# Updated and original typical clearance across renal function
+
+```{r egfr-curves, fig.cap = "Typical CL of an 11 kg, 131-week-PMA child across eGFR under the original (Chen 2023) and updated (Chen 2026) estimates, with and without CTS. Both flatten above the 120 mL/min/1.73 m^2 ceiling."}
+grid <- expand.grid(CRCL = seq(20, 200, by = 5), CTS = c(0, 1))
+cl_curve <- function(name) {
+  m <- rxode2::zeroRe(readModelDb(name))
+  ch <- data.frame(id = seq_len(nrow(grid)), WT = 11, PAGE = 131.14, CRCL = grid$CRCL,
+                   ALB = 36.3, SURG_CARD_VASOACTIVE = grid$CTS, group = "x")
+  s <- solve_tv(m, make_events(ch, 40, tau = 24, days = 1, obs_by = 24),
+                       returnType = "data.frame")
+  s |> group_by(id) |> slice(1) |> ungroup() |>
+    transmute(CRCL, CTS = ifelse(SURG_CARD_VASOACTIVE == 1, "CTS", "non-CTS"),
+              cl, model = name)
+}
+curves <- bind_rows(cl_curve("Chen_2023_vancomycin"), cl_curve("Chen_2026_vancomycin"))
+ggplot(curves, aes(CRCL, cl, colour = model, linetype = CTS)) +
+  geom_line() +
+  geom_vline(xintercept = 120, linetype = "dotted") +
+  labs(x = "eGFR (mL/min/1.73 m^2)", y = "Typical CL (L/h)", colour = NULL, linetype = NULL)
+```
+
+# AUC-targeted initial dosing with PKNCA
+
+The Chen 2026 Discussion turns a predicted CL into a total daily dose as
+`Dose = target AUC24 / CL`, with 400-600 mg*h/L as the MRSA target. For a
+one-compartment linear model that identity is exact at steady state, so it
+doubles as a check of the packaged model through PKNCA: each virtual child is
+given a daily dose of 500 mg*h/L times its own typical-value CL, split every
+6 h as 1-h infusions, and the steady-state AUC over day 5 must equal 500.
+
+```{r auc-dosing}
+tv <- solve_tv(mod_tv, ev_one, returnType = "data.frame") |>
+  group_by(id) |> slice(1) |> ungroup() |> select(id, cl_tv = cl)
+dosed <- cohort |>
+  left_join(tv, by = "id") |>
+  slice_head(n = 120)
+ev_auc <- lapply(seq_len(nrow(dosed)), function(i) {
+  r <- dosed[i, ]
+  make_events(r, mg_kg_day = 500 * r$cl_tv / r$WT, tau = 6, days = 5, obs_by = 0.1)
+}) |> bind_rows()
+sim_auc <- solve_tv(mod_tv, ev_auc, returnType = "data.frame", keep = c("group"))
+
+conc <- sim_auc |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, group)
+doses <- ev_auc |>
+  filter(evid == 1) |>
+  select(id, time, amt, group)
+o_conc <- PKNCAconc(conc, Cc ~ time | group + id)
+o_dose <- PKNCAdose(doses, amt ~ time | group + id)
+intervals <- data.frame(start = 96, end = 120, auclast = TRUE, cmax = TRUE, cmin = TRUE)
+nca <- pk.nca(PKNCAdata(o_conc, o_dose, intervals = intervals,
+                        options = list(auc.method = "linear")))
+nca_res <- as.data.frame(nca$result)
+auc <- nca_res |> filter(PPTESTCD == "auclast")
+knitr::kable(
+  nca_res |>
+    group_by(group, PPTESTCD) |>
+    summarise(median = median(PPORRES), .groups = "drop") |>
+    mutate(group = factor(group, levels = c("<1 year", "1 to <4 years", "4 to <10 years", ">=10 years"))) |>
+    arrange(group) |>
+    pivot_wider(names_from = PPTESTCD, values_from = median) |>
+    rename("Age group" = group, "AUC24,ss (mg*h/L)" = auclast,
+           "Cmax,ss (mg/L)" = cmax, "Cmin,ss (mg/L)" = cmin),
+  digits = 1,
+  caption = "Median steady-state exposure on day 5 for a daily dose of 500 x CL, by age group."
+)
+stopifnot(all(abs(auc$PPORRES / 500 - 1) < 0.01))
+```
+
+Chen 2026 reports no NCA parameters (Cmax, AUC, half-life) of its own, so no
+side-by-side comparison against published NCA values is possible; the
+day-5 AUC equals the target to within 1% in every child, as the closed form
+requires.
+
+# Assumptions and deviations
+
+* **eGFR ceiling retained.** The printed Chen 2026 CL equation and the
+  Supplementary Table S4 formula notes show `(eGFR/109)^theta_eGFR` without a
+  ceiling. The packaged model keeps the 120 mL/min/1.73 m^2 ceiling of the
+  Chen 2023 final model because (i) Chen 2026 states that 'the original
+  structural and covariate framework was retained' and only the coefficients
+  were re-estimated, and (ii) the Table 1 eGFR summary has its upper quartile
+  at exactly 120.00, while the per-centre uncapped summaries of Supplementary
+  Table S3 reach 140.5, which is what a ceiling applied in the analysis
+  dataset produces. Users should supply the uncapped eGFR.
+* **Omega scale.** Table S4 gives the CL and Vd variabilities as %CV and their
+  covariance on the omega scale. The diagonals are encoded as
+  `(%CV/100)^2`, consistent with the covariance, following
+  `Chen_2023_vancomycin` for the same table layout.
+* **Residual error.** The combined exponential-plus-additive error is encoded
+  as proportional-plus-additive; the exponential arm becomes its first-order
+  proportional equivalent because rxode2 cannot solve a log-normal arm combined
+  with an additive arm.
+* **CTS as a time-varying covariate.** Chen 2026 handled CTS as time-varying in
+  the PPK model; the vignette holds it constant per child for simplicity.
+* **eGFR units.** Chen 2026 Table 1 and the subgroup tables label eGFR as
+  mL/min, while the Methods equation and Supplementary Table S4 notes give
+  mL/min/1.73 m^2; the equation is BSA-normalised by construction, so the
+  model uses mL/min/1.73 m^2.
+* **Virtual cohort.** The cohort is reconstructed from Table 1 and Table S3
+  marginal summaries with an approximate median weight-for-age curve; the
+  covariate correlations of the real cohort are not available.
+* **Not packaged.** The CatBoost CL and Vd predictor, the paper's main
+  deliverable, is a tree ensemble and has no closed form.
