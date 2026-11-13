@@ -12,6 +12,7 @@ Thai_2023_isatuximab <- function() {
   )
   vignette <- "Thai_2023_isatuximab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  dosing <- c("central", "depot_kpd")
 
   compartmentData <- list(
     central = list(analyte = "isatuximab", units = "mg", specimen = "plasma", verified = TRUE),

@@ -37,6 +37,7 @@ Thorsted_2016_somatropin_human <- function() {
     dosing = "ug",
     concentration = "ng/mL"
   )
+  dosing <- c("depot", "central", "depot2")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

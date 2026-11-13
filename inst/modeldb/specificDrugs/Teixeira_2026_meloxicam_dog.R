@@ -24,6 +24,7 @@ Teixeira_2026_meloxicam_dog <- function() {
   vignette <- "Teixeira_2026_meloxicam_dog"
 
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central", "depot2")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Confirmed against Teixeira 2026 Figure 1 (final model

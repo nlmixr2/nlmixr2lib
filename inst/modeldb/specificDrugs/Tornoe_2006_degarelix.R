@@ -29,6 +29,7 @@ Tornoe_2006_degarelix <- function() {
   )
   vignette <- "Tornoe_2006_HPG_axis"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central", "depot2")
 
   paper_specific_compartments <- c("feedback", "lhpool", "lh", "testosterone")
   paper_specific_etas <- c(

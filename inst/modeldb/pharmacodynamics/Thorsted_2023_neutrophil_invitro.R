@@ -39,6 +39,7 @@ Thorsted_2023_neutrophil_invitro <- function() {
     dosing = "CFU/mL (bacterial inoculum); cells/mL (neutrophils)",
     concentration = "log10 CFU/mL (observations); CFU/mL and cells/mL (states)"
   )
+  dosing <- c("neut_tube", "bact_lag")
 
   covariateData <- list()
 

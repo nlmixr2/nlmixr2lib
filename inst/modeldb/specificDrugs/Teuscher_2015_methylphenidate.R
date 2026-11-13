@@ -10,6 +10,7 @@ Teuscher_2015_methylphenidate <- function() {
   )
   vignette <- "Teuscher_2015_methylphenidate"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central", "depot2")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
