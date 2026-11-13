@@ -1,0 +1,586 @@
+---
+title: "Cefepime in whole blood and plasma (Amajor 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cefepime in whole blood and plasma (Amajor 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Amajor_2026_cefepime_wholeblood"))$reference`
+* Article: <https://doi.org/10.1128/aac.01736-25>
+* Open-access copy: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC13321836/>
+
+Amajor 2026 fitted one population PK model and reported it twice:
+
+* **`Amajor_2026_cefepime_wholeblood`** -- the primary fit (Table 2), to
+  total whole-blood cefepime measured on volumetric absorptive microsampling
+  (VAMS) tips. This is the model to use with VAMS concentrations.
+* **`Amajor_2026_cefepime_plasma`** -- the same final model re-run on the
+  VAMS concentrations divided by an in vitro whole-blood:plasma ratio of 0.58
+  (Table 3). The paper calls these "estimated plasma PK" parameters; they are
+  the ones to compare against plasma-based cefepime models and plasma MIC
+  breakpoints.
+
+Both share one structure: two compartments, intravenous dosing, allometric
+weight scaling centred on 36 kg (exponent 0.75 on CL and Q, 1 on V1 and V2),
+a power effect of the CKiD Under-25 (U25) creatinine eGFR on CL (reference
+100 mL/min/1.73 m^2), a power effect of age on V1 (reference 10 years),
+exponential between-subject variability on CL and V1 only, and proportional
+residual error.
+
+```{r load-models}
+mod_wb <- readModelDb("Amajor_2026_cefepime_wholeblood")
+mod_pl <- readModelDb("Amajor_2026_cefepime_plasma")
+ui_wb <- rxode2::rxode(mod_wb)
+ui_pl <- rxode2::rxode(mod_pl)
+
+# Typical-value solve (etas set to zero). rxode2 warns that a multi-subject
+# solve has no omega, which is the point here; only that warning is muffled.
+solve_typical <- function(mod, events, ...) {
+  withCallingHandlers(
+    rxode2::rxSolve(rxode2::zeroRe(mod, which = "omega"), events = events, ...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+```
+
+# Population
+
+`r ui_wb$population$n_subjects` critically ill children with multiple organ
+dysfunction syndrome (MODS) contributed `r ui_wb$population$n_observations`
+whole-blood VAMS concentrations (Amajor 2026 Table 1). They were enrolled in
+AMPLE, an ancillary antibiotic-PK cohort of the prospective observational
+PARADIGM study, at 14 sites of the Pediatric Acute Lung Injury and Sepsis
+Investigators (PALISI) network. Children on continuous renal replacement
+therapy or plasmapheresis were excluded; four (11%) were on ECMO.
+
+* Age: median 10 years (range 1 month to 17 years); three were infants (1, 5
+  and 5 months), all born at 37+ weeks.
+* Weight: median 36 kg (4.3 to 213.6 kg); height median 135 cm.
+* Female: 20 (54%).
+* U25 eGFR at the start of sampling: median 87.37 mL/min/1.73 m^2
+  (19.35 to 278.29); serum creatinine median 0.48 mg/dL.
+* Illness severity: PELOD-2 median 6, PRISM III median 11, Proulx median 2;
+  22 (59%) immunoparalysed (TNF-alpha response < 200 pg/mL).
+* Dose: median 47.6 mg/kg per dose (9.4 to 54.3). The interval and infusion
+  time are not reported.
+* Sampling: up to 15 VAMS samples over 3 days, median 11 per child; none below
+  the 0.1 mg/L limit of quantification.
+
+The same information is in the models' `population` metadata
+(`rxode2::rxode(readModelDb("Amajor_2026_cefepime_wholeblood"))$population`).
+
+# Source trace
+
+| Equation / parameter | Whole blood (`_wholeblood`) | Plasma (`_plasma`) | Source location |
+|---|---|---|---|
+| `lcl` | log(5.14) L/h | log(2.97) L/h | Table 2 / Table 3, `CL (L/h)` |
+| `lvc` | log(20.53) L | log(11.51) L | Table 2 / Table 3, `V1 (L)` |
+| `lq` | log(0.64) L/h | log(0.46) L/h | Table 2 / Table 3, `Q (L/h)` |
+| `lvp` | log(4.76) L | log(3.21) L | Table 2 / Table 3, `V2 (L)` |
+| `e_crcl_cl` | 0.47 | 0.49 | Table 2 / Table 3, `theta GFR` |
+| `e_age_vc` | -0.20 | -0.20 | Table 2 / Table 3, `theta Age` |
+| `e_wt_cl_q` | 0.75 (fixed) | 0.75 (fixed) | Table 2 / Table 3 equations; Methods, allometric powers 0.75 and 1 |
+| `e_wt_vc_vp` | 1 (fixed) | 1 (fixed) | Table 2 / Table 3 equations |
+| `etalcl` | 0.38^2 = 0.1444 | 0.37^2 = 0.1369 | Table 2 / Table 3, `BSV CL` (footnote: reported as SD and CV%) |
+| `etalvc` | 0.28^2 = 0.0784 | 0.29^2 = 0.0841 | Table 2 / Table 3, `BSV V1` |
+| `propSd` | 0.25 | 0.25 (carried from Table 2) | Table 2, `RV`; Table 3 prints no RV row |
+| No BSV on Q, V2 | -- | -- | Results, "PK model": fixed to zero |
+| Reference WT 36 kg, eGFR 100, age 10 y | -- | -- | Table 2 / Table 3 equations |
+| `cl`, `vc`, `q`, `vp` equations | -- | -- | Table 2 / Table 3 footers |
+| Proportional error | -- | -- | Results, "PK model" |
+| Whole-blood:plasma ratio 0.58 | -- | -- | Methods; Table S2 |
+
+## Transcription check
+
+Every row of Tables 2 and 3 prints an estimate, its standard error, its
+relative standard error and a 95% interval. Those four numbers constrain one
+another, so a misread digit shows up as an inconsistency.
+
+```{r transcription-check}
+tab <- tibble::tribble(
+  ~model,        ~parameter, ~value, ~se,   ~rse,  ~lo,   ~hi,   ~scale,
+  "whole blood", "CL",        5.14,  0.33,  6.55,  4.53,  5.84,  "log",
+  "whole blood", "V1",       20.53,  1.38,  6.72, 18.01, 23.41,  "log",
+  "whole blood", "Q",         0.64,  0.31, 48.4,   0.28,  1.47,  "log",
+  "whole blood", "V2",        4.76,  1.5,  31.5,   2.67,  8.48,  "log",
+  "whole blood", "theta_GFR", 0.47,  0.043, 9.23,  0.38,  0.55,  "normal",
+  "whole blood", "theta_Age", -0.20, 0.058, 28.5, -0.32, -0.09,  "normal",
+  "whole blood", "BSV_CL",    0.38,  0.048, 12.7,  0.29,  0.48,  "log",
+  "whole blood", "BSV_V1",    0.28,  0.054, 19.3,  0.19,  0.40,  "log",
+  "whole blood", "RV",        0.25,  0.011,  4.21, 0.23,  0.27,  "normal",
+  "plasma",      "CL",        2.97,  0.19,  6.48,  2.62,  3.37,  "log",
+  "plasma",      "V1",       11.51,  0.93,  8.12,  9.83, 13.49,  "log",
+  "plasma",      "Q",         0.46,  0.27, 57.8,   0.18,  1.20,  "log",
+  "plasma",      "V2",        3.21,  0.89, 27.9,   1.91,  5.38,  "log",
+  "plasma",      "theta_GFR", 0.49,  0.13, 26.0,   0.24,  0.74,  "normal",
+  "plasma",      "theta_Age", -0.20, 0.06, 27.7,  -0.32, -0.09,  "normal",
+  "plasma",      "BSV_CL",    0.37,  0.052, 13.9,  0.29,  0.49,  "log",
+  "plasma",      "BSV_V1",    0.29,  0.065, 22.4,  0.19,  0.44,  "log"
+) |>
+  mutate(
+    centre_from_ci = ifelse(scale == "log", sqrt(lo * hi), (lo + hi) / 2),
+    ci_pct_diff = 100 * (centre_from_ci - value) / abs(value),
+    se_from_rse = abs(value) * rse / 100,
+    se_pct_diff = 100 * (se_from_rse - se) / se
+  )
+
+tab |>
+  select(model, parameter, value, centre_from_ci, ci_pct_diff, se, se_from_rse, se_pct_diff) |>
+  rename(
+    "Model" = model,
+    "Parameter" = parameter,
+    "Printed value" = value,
+    "Centre of printed CI" = centre_from_ci,
+    "CI % diff" = ci_pct_diff,
+    "Printed SE" = se,
+    "SE from RSE" = se_from_rse,
+    "SE % diff" = se_pct_diff
+  ) |>
+  knitr::kable(digits = c(0, 0, 3, 3, 1, 3, 3, 1))
+
+# Deterministic arithmetic on transcribed numbers. The largest SE gap is
+# plasma theta_Age (RSE 27.7% of 0.20 = 0.055, printed 0.06 after two-decimal
+# rounding, -8%). The interval centre is looser because Monolix intervals are
+# not exactly symmetric on either scale. A misread digit moves a value by tens
+# of percent, so both bounds still go red on a transcription error.
+stopifnot(
+  max(abs(tab$se_pct_diff)) < 10,
+  max(abs(tab$ci_pct_diff)) < 10
+)
+```
+
+The theta-Age interval (-0.32 to -0.09) is centred on -0.205 in both tables,
+matching the printed -0.20. The CV% printed beside each BSV standard deviation
+is close to, but not exactly, `sqrt(exp(omega^2) - 1)` (0.38 gives 39.4%
+against the printed 39.0%; 0.28 gives 28.6% against 29.4%). The difference is
+within the two-decimal rounding of omega, and the Results text quotes "39% BSV"
+for CL and "28% BSV" for V1, so omega is read as a log-scale SD and squared.
+
+# Verification against the published equations
+
+## Covariate equations reproduced exactly
+
+```{r covariate-equation-check}
+grid <- tidyr::crossing(
+  WT = c(4.3, 12, 36, 70, 213.6),
+  CRCL = c(19.35, 87.37, 278.29),
+  AGE = c(1 / 12, 5, 10, 17)
+) |>
+  mutate(id = row_number(), time = 0, evid = 0L, cmt = "central", amt = NA_real_)
+
+eq_check <- function(mod, cl0, v10, q0, v20, th_gfr, th_age) {
+  solve_typical(mod, grid, keep = c("WT", "CRCL", "AGE")) |>
+    as.data.frame() |>
+    mutate(
+      cl_eq = cl0 * (WT / 36)^0.75 * (CRCL / 100)^th_gfr,
+      vc_eq = v10 * (WT / 36) * (AGE / 10)^th_age,
+      q_eq = q0 * (WT / 36)^0.75,
+      vp_eq = v20 * (WT / 36)
+    ) |>
+    summarise(
+      cl = max(abs(cl / cl_eq - 1)), vc = max(abs(vc / vc_eq - 1)),
+      q = max(abs(q / q_eq - 1)), vp = max(abs(vp / vp_eq - 1))
+    )
+}
+
+eq_err <- bind_rows(
+  `whole blood` = eq_check(mod_wb, 5.14, 20.53, 0.64, 4.76, 0.47, -0.20),
+  plasma = eq_check(mod_pl, 2.97, 11.51, 0.46, 3.21, 0.49, -0.20),
+  .id = "Model"
+)
+knitr::kable(eq_err, digits = 16, caption = "Maximum relative difference between the packaged typical-value parameters and the Table 2 / Table 3 equations evaluated by hand, over 60 covariate combinations spanning the cohort's ranges.")
+
+# Same inputs on both sides, so only floating-point noise is possible.
+stopifnot(all(as.matrix(eq_err[, -1]) < 1e-12))
+```
+
+## Numbers quoted in the Discussion
+
+The Discussion evaluates the plasma model for two reference children. Both are
+exact functions of the Table 3 equations.
+
+```{r discussion-check}
+typ_par <- function(mod, WT, CRCL, AGE) {
+  solve_typical(
+    mod,
+    data.frame(id = 1, time = 0, evid = 0L, cmt = "central", amt = NA_real_,
+               WT = WT, CRCL = CRCL, AGE = AGE)
+  ) |>
+    as.data.frame() |>
+    select(cl, vc)
+}
+
+# 70 kg, eGFR 147 mL/min/1.73 m^2 (median of Morales Junior 2025): the paper
+# quotes plasma CL 5.91 L/h and V1 22.4 L. The age-10 reference makes the age
+# term 1, which is what the quoted V1 implies.
+p70 <- typ_par(mod_pl, WT = 70, CRCL = 147, AGE = 10)
+# 9 kg, eGFR 153 (median of de Cacqueray 2022): the paper quotes 1.05 L/h.
+p9 <- typ_par(mod_pl, WT = 9, CRCL = 153, AGE = 10)
+p9_no_gfr <- 2.97 * (9 / 36)^0.75
+
+tibble::tibble(
+  Quantity = c("Plasma CL, 70 kg, eGFR 147", "Plasma V1, 70 kg, age 10",
+               "Plasma CL, 9 kg, eGFR 153", "Plasma CL, 9 kg, eGFR term omitted"),
+  `Packaged model` = c(p70$cl, p70$vc, p9$cl, p9_no_gfr),
+  `Amajor 2026 Discussion` = c(5.91, 22.4, 1.05, 1.05)
+) |>
+  mutate(`% diff` = 100 * (`Packaged model` / `Amajor 2026 Discussion` - 1)) |>
+  knitr::kable(digits = 2)
+
+stopifnot(
+  abs(p70$cl / 5.91 - 1) < 0.005,
+  abs(p70$vc / 22.4 - 1) < 0.005,
+  # The 9-kg figure in the Discussion matches the equation only without its
+  # eGFR term (see Assumptions and deviations); with the term it is 1.29 L/h.
+  abs(p9_no_gfr / 1.05 - 1) < 0.01,
+  abs(p9$cl / 1.29 - 1) < 0.01
+)
+```
+
+The 70-kg values reproduce to the printed precision. The 9-kg value of
+1.05 L/h does not: the Table 3 equation gives 1.29 L/h at eGFR 153, and
+1.05 L/h is what it gives with eGFR at the reference 100 (equivalently, with
+the eGFR term left out). The packaged model follows the printed equation.
+
+## The plasma re-fit tracks the 0.58 ratio
+
+Dividing every observation by a constant should scale CL and the volumes by
+that constant. The re-fit's CL ratio is 2.97 / 5.14 = 0.578, matching 0.58;
+V1 (0.561), Q (0.72) and V2 (0.67) drift further, which is consistent with
+their larger standard errors (Q and V2 have RSEs of 28-58%).
+
+```{r ratio-check}
+ratios <- c(CL = 2.97 / 5.14, V1 = 11.51 / 20.53, Q = 0.46 / 0.64, V2 = 3.21 / 4.76)
+knitr::kable(tibble::tibble(Parameter = names(ratios), `Plasma / whole blood` = ratios), digits = 3)
+stopifnot(abs(ratios[["CL"]] - 0.58) < 0.01)
+```
+
+# Virtual cohort
+
+Individual data are not public. The cohort below is virtual: ages are drawn so
+that the median is near the reported 10 years with a few infants, and weight
+follows an approximate pooled-sex CDC 50th-percentile weight-for-age curve
+with lognormal scatter (CV about 30%), wide enough to reach the obese tail the
+cohort contains. U25 eGFR is lognormal around the reported median of
+87 mL/min/1.73 m^2, truncated to the reported range. These distributions are
+**assumptions of this vignette**, not published quantities.
+
+Dosing is 50 mg/kg (capped at 2 g) every 8 hours as a 30-minute infusion. The
+paper reports only the dose per kilogram (median 47.6, range 9.4 to 54.3
+mg/kg); the minimum of 9.4 mg/kg is exactly a 2 g cap in the 213.6-kg child
+(2000 / 213.6 = 9.36), which supports the cap.
+
+```{r cohort}
+set.seed(20261113)
+n_sub <- 200L
+
+# Approximate CDC 50th-percentile weight-for-age, sexes pooled (kg).
+cdc_age <- c(1 / 12, 0.5, 1, 2, 4, 6, 8, 10, 12, 14, 16, 17)
+cdc_wt <- c(4.5, 7.8, 10, 12.5, 16.5, 20.7, 25.6, 32, 40.5, 50, 58, 61)
+
+cohort <- tibble(
+  id = seq_len(n_sub),
+  AGE = pmax(17 * stats::rbeta(n_sub, 1.4, 1.0), 1 / 12),
+  WT = pmin(pmax(
+    stats::approx(cdc_age, cdc_wt, xout = AGE)$y * stats::rlnorm(n_sub, 0, 0.3),
+    4.3
+  ), 213.6),
+  CRCL = pmin(pmax(stats::rlnorm(n_sub, log(87), 0.45), 19.35), 278.29),
+  dose = pmin(50 * WT, 2000)
+)
+
+tau <- 8
+t_inf <- 0.5
+dose_times <- seq(0, 64, by = tau) # 9 doses, 0-72 h
+obs_times <- sort(unique(c(seq(0, 72, by = 0.25), t_inf)))
+
+ev <- bind_rows(
+  cohort |> tidyr::crossing(time = dose_times) |>
+    mutate(evid = 1L, cmt = "central", amt = dose, rate = dose / t_inf),
+  cohort |> tidyr::crossing(time = obs_times) |>
+    mutate(evid = 0L, cmt = "central", amt = NA_real_, rate = NA_real_)
+) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, amt, rate, evid, cmt, WT, CRCL, AGE)
+
+knitr::kable(
+  cohort |> summarise(
+    `Age median (y)` = median(AGE), `Infants (<1 y)` = sum(AGE < 1),
+    `WT median (kg)` = median(WT), `WT range` = sprintf("%.1f-%.1f", min(WT), max(WT)),
+    `eGFR median` = median(CRCL), `Dose median (mg/kg)` = median(dose / WT)
+  ),
+  digits = 1, caption = "Virtual cohort. Amajor 2026 Table 1: age 10 y (1 m-17 y), weight 36 kg (4.3-213.6), U25 eGFR 87.37 (19.35-278.29), dose 47.6 mg/kg (9.4-54.3)."
+)
+```
+
+# Simulation
+
+```{r simulate}
+sim_wb <- rxode2::rxSolve(mod_wb, events = ev, keep = c("WT", "CRCL", "AGE")) |>
+  as.data.frame() |>
+  mutate(matrix = "whole blood (VAMS)")
+sim_pl <- rxode2::rxSolve(mod_pl, events = ev, keep = c("WT", "CRCL", "AGE")) |>
+  as.data.frame() |>
+  mutate(matrix = "plasma-equivalent")
+sim <- bind_rows(sim_wb, sim_pl)
+stopifnot(all(c("id", "time", "Cc") %in% names(sim)))
+```
+
+## Concentration-time profiles
+
+```{r profiles, fig.width = 7, fig.height = 4.5}
+sim |>
+  group_by(matrix, time) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50, colour = matrix, fill = matrix)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.2, colour = NA) +
+  geom_line() +
+  labs(
+    x = "Time (h)", y = "Cefepime (mg/L)", colour = NULL, fill = NULL,
+    caption = "Median and 5th-95th percentiles, 200 virtual children, 50 mg/kg (max 2 g) q8h, 30-min infusion."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+## Figure 3: visual predictive check
+
+Figure 3 of Amajor 2026 is a prediction-corrected VPC of the whole-blood model
+against time after the last dose, under the cohort's real (unreported)
+regimens. The observed median line below was read approximately off that
+figure by the maintainers; it is shown for orientation, against the simulated
+whole-blood distribution over the third day (48-72 h) of the assumed regimen.
+Prediction correction and the different regimens mean the two are not strictly
+comparable.
+
+```{r fig3, fig.width = 7, fig.height = 4.5}
+fig3_obs_median <- tibble::tribble(
+  ~tad, ~conc,
+  1.0, 62,
+  2.4, 45,
+  4.2, 25,
+  7.5, 12
+)
+
+vpc <- sim_wb |>
+  filter(time >= 48, time < 72) |>
+  mutate(tad = (time - 48) %% tau) |>
+  group_by(tad) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(vpc, aes(tad, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), fill = "steelblue", alpha = 0.25) +
+  geom_line(colour = "steelblue") +
+  geom_point(data = fig3_obs_median, aes(tad, conc), shape = 4, size = 3) +
+  labs(
+    x = "Time after dose (h)", y = "Whole-blood cefepime (mg/L)",
+    caption = "Replicates the layout of Figure 3 of Amajor 2026. Band: simulated 5th-95th percentiles.\nCrosses: observed median, read approximately from Figure 3."
+  )
+
+# Centre check on the TYPICAL-VALUE solve (etas zero), so it depends only
+# on the R-seeded covariates and not on rxode2's per-thread eta stream: the
+# median concentration 4.25 h after a day-3 dose is within a factor of 1.75 of
+# the observed median read off Figure 3. Wide on purpose (the regimen is
+# assumed and the figure is prediction-corrected); a clearance or volume
+# mis-scaled by the 0.58 whole-blood:plasma factor moves it out.
+typ_wb <- solve_typical(mod_wb, ev) |> as.data.frame()
+med_4h <- typ_wb |>
+  filter(abs(time - (48 + 4.25)) < 1e-8 | abs(time - (56 + 4.25)) < 1e-8 |
+    abs(time - (64 + 4.25)) < 1e-8) |>
+  pull(Cc) |>
+  median()
+cat(sprintf("Typical-value median 4.25 h after a day-3 dose: %.1f mg/L (Figure 3, about 25 mg/L)\n", med_4h))
+stopifnot(med_4h / 25 > 1 / 1.75, med_4h / 25 < 1.75)
+```
+
+# PKNCA validation
+
+The paper reports no NCA. PKNCA is used here to check what the two models
+must agree on: the same dose to the same child should give a plasma AUC about
+1 / 0.58 = 1.72 times the whole-blood AUC, because plasma CL is 0.58 times
+whole-blood CL (with eGFR exponents 0.49 vs 0.47, the ratio drifts by under
+3% across the eGFR range).
+
+```{r pknca}
+sim_typ <- bind_rows(
+  solve_typical(mod_wb, ev, keep = c("WT", "CRCL", "AGE")) |>
+    as.data.frame() |> mutate(matrix = "whole blood"),
+  solve_typical(mod_pl, ev, keep = c("WT", "CRCL", "AGE")) |>
+    as.data.frame() |> mutate(matrix = "plasma")
+)
+
+conc_df <- sim_typ |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, matrix)
+# The first infusion starts at t = 0, so the pre-dose concentration is 0.
+conc_df <- bind_rows(conc_df, conc_df |> distinct(id, matrix) |> mutate(time = 0, Cc = 0)) |>
+  distinct(id, matrix, time, .keep_all = TRUE) |>
+  arrange(matrix, id, time)
+
+dose_df <- ev |>
+  filter(evid == 1) |>
+  select(id, time, amt) |>
+  tidyr::crossing(matrix = c("whole blood", "plasma"))
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | matrix + id, concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | matrix + id, doseu = "mg")
+# Cmin only for the ninth interval: over the first interval it is the
+# pre-dose zero.
+intervals <- data.frame(
+  start = c(0, 64), end = c(8, 72),
+  cmax = TRUE, cmin = c(FALSE, TRUE), auclast = TRUE
+)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_res <- as.data.frame(nca$result) |>
+  mutate(interval = ifelse(start == 0, "first dose (0-8 h)", "ninth dose (64-72 h)"))
+
+nca_res |>
+  filter(PPTESTCD %in% c("cmax", "cmin", "auclast")) |>
+  group_by(matrix, interval, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  rename(
+    "Matrix" = matrix, "Interval" = interval,
+    "Cmax (mg/L)" = cmax, "Cmin (mg/L)" = cmin, "AUC (mg*h/L)" = auclast
+  ) |>
+  knitr::kable(digits = 1, caption = "Median typical-value NCA over the virtual cohort.")
+
+auc_ratio <- nca_res |>
+  filter(PPTESTCD == "auclast", interval == "ninth dose (64-72 h)") |>
+  select(id, matrix, PPORRES) |>
+  tidyr::pivot_wider(names_from = matrix, values_from = PPORRES) |>
+  mutate(ratio = plasma / `whole blood`)
+
+knitr::kable(
+  tibble::tibble(
+    `Median plasma / whole-blood AUC` = median(auc_ratio$ratio),
+    `Range` = sprintf("%.2f-%.2f", min(auc_ratio$ratio), max(auc_ratio$ratio)),
+    `Expected (1 / 0.58)` = 1 / 0.58
+  ),
+  digits = 3
+)
+
+# Typical values on both sides (no etas), so this is deterministic for a
+# given cohort. The range reflects the V1/Q/V2 drift and the eGFR exponent
+# difference, both bounded.
+stopifnot(
+  nrow(auc_ratio) == n_sub,
+  abs(median(auc_ratio$ratio) * 0.58 - 1) < 0.05
+)
+```
+
+# Target attainment (paper Results)
+
+For the 32 children who started cefepime at or after MODS onset, the paper
+simulated each child's first 24 h of whole-blood exposure from the empirical
+Bayes estimates and real doses, converted to free concentration assuming 20%
+protein binding, and counted how many stayed above each MIC for the whole 24 h
+(100% fT>MIC): 97% at 2 mg/L, 72% at 4, 41% at 8 and 9% at 16 mg/L.
+
+The same calculation on the virtual cohort is below, using individual
+predictions (`Cc`, no residual error) of the whole-blood model and the minimum
+free concentration from the end of the first infusion to 24 h.
+
+```{r pta}
+min_free <- sim_wb |>
+  filter(time >= t_inf, time <= 24) |>
+  group_by(id) |>
+  summarise(min_free = min(0.8 * Cc), .groups = "drop")
+
+pta <- tibble::tibble(
+  MIC = c(2, 4, 8, 16),
+  `Amajor 2026 (%)` = c(97, 72, 41, 9)
+) |>
+  rowwise() |>
+  mutate(`Virtual cohort (%)` = 100 * mean(min_free$min_free > MIC)) |>
+  ungroup()
+knitr::kable(pta, digits = 0, caption = "100% fT>MIC over the first 24 h, free concentration = 0.8 x whole-blood concentration.")
+cat(sprintf("Median minimum free concentration, 0.5-24 h: %.1f mg/L\n", median(min_free$min_free)))
+
+# Centre, not tails, and on the typical-value solve so it does not depend on
+# rxode2's eta stream: the paper's 50% crossing lies between MIC 4 (72%) and
+# 8 mg/L (41%). Under the assumed regimen and cohort, the median of the
+# typical-value minimum free concentration should fall in a band around that
+# (3-15 mg/L); a clearance mis-scaled by the 0.58 factor moves it out.
+min_free_typ <- typ_wb |>
+  filter(time >= t_inf, time <= 24) |>
+  group_by(id) |>
+  summarise(min_free = min(0.8 * Cc), .groups = "drop")
+cat(sprintf("Typical-value median minimum free concentration, 0.5-24 h: %.1f mg/L\n", median(min_free_typ$min_free)))
+stopifnot(
+  nrow(min_free_typ) == n_sub,
+  median(min_free_typ$min_free) > 3,
+  median(min_free_typ$min_free) < 15
+)
+```
+
+The virtual cohort reaches each target more often than the study children
+did. The doses and intervals the children actually received are not reported,
+and attainment of 100% fT>MIC depends strongly on the dosing interval, so this
+gap is expected under an assumed q8h regimen. It is also lighter than the
+study cohort (median `r round(median(cohort$WT))` kg against 36 kg) and lacks its heaviest children.
+
+# Assumptions and deviations
+
+* **Two models, one fit.** The plasma model is the authors' re-run of the
+  final whole-blood model on VAMS concentrations divided by 0.58. No plasma
+  sample was assayed in these patients, and the 0.58 ratio comes from in vitro
+  spiked blood (30 paired samples over 0.2 to 150 mg/L; Table S2). The paper
+  notes that clinical validation of the ratio is still needed.
+* **Residual error of the plasma model is carried over.** Table 3 prints no
+  RV row. Dividing every observation by the same constant leaves a
+  proportional residual unchanged, so the whole-blood value of 0.25 is used.
+* **The 9-kg comparison in the Discussion does not match the equation.** The
+  Discussion states a plasma CL of 1.05 L/h for a 9-kg child with eGFR
+  153 mL/min/1.73 m^2. The Table 3 equation gives 1.29 L/h; 1.05 L/h is the
+  value with the eGFR term at its reference. The 70-kg comparison in the same
+  paragraph matches the equation exactly, so the equation is taken as
+  correct.
+* **BSV is read as a log-scale SD.** Tables 2 and 3 say "BSV reported as SD
+  and CV%". The printed CV% values are within rounding of the lognormal
+  conversion.
+* **eGFR is time-varying in the source.** The paper updated U25 eGFR daily and
+  interpolated between values in Monolix. The vignette holds it constant per
+  child. Users with daily creatinine should supply a time-varying `CRCL`
+  column.
+* **The CKiD U25 equation is not in the model.** It is applied when preparing
+  `CRCL`, using serum creatinine only (the highest value of each day), as the
+  paper did. eGFR from another equation, such as bedside Schwartz, rescales the
+  renal term.
+* **Age must be positive.** The age effect is a power function centred on 10
+  years. Infant ages go in as fractional years.
+* **Dosing is assumed.** The paper reports the dose per kilogram only. The
+  vignette uses 50 mg/kg (max 2 g) q8h as a 30-minute infusion, so its
+  comparisons with the published target attainment and Figure 3 are
+  consistency checks, not reproductions.
+* **Protein binding is the paper's assumption.** The 20% binding applied to
+  whole-blood concentrations for fT>MIC follows the paper. Protein binding is
+  a plasma property, so this is an approximation for whole blood.
+* **Covariate screen.** Covariates screened and not kept are listed in the
+  model files' `covariatesDataExcluded` (PELOD-2, Proulx, fluid status, ECMO)
+  and in the `population` notes (Table S4).
+* **Figures 1 and 2 are not reproduced.** Figure 1 is a sampling schematic
+  and Figure 2 is a set of goodness-of-fit plots that need the observed data.

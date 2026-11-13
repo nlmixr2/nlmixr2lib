@@ -1488,8 +1488,12 @@ navbar:
         href: articles/Gotta_2025_cefepime_infant_neurotoxicity.html
       - text: "Cefepime enmetazobactam (Vollmer 2023)"
         href: articles/Vollmer_2023_cefepime_enmetazobactam.html
+      - text: "Cefepime plasma (Amajor 2026)"
+        href: articles/Amajor_2026_cefepime.html
       - text: "Cefepime qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Cefepime wholeblood (Amajor 2026)"
+        href: articles/Amajor_2026_cefepime.html
       - text: "Cefiderocol (Fouad 2024)"
         href: articles/Fouad_2024_cefiderocol.html
       - text: "Cefiderocol (Kawaguchi 2021)"
@@ -9418,6 +9422,7 @@ articles:
   - articles/AlvarezJimenez_2016_scopolamine
   - articles/Alvarez_2021_lopinavir
   - articles/Alvarez_2022_hydroxychloroquine
+  - articles/Amajor_2026_cefepime
   - articles/Ambery_2015_batefenterol
   - articles/Amice_2021_nicotine_pbpk
   - articles/An_2012_mitoxantrone_pbpk
