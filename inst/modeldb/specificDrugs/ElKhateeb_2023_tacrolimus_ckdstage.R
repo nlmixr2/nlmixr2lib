@@ -73,7 +73,7 @@ ElKhateeb_2023_tacrolimus_ckdstage <- function() {
       units = "(count)",
       type = "categorical",
       reference_category = "n/a -- nesting level of the inter-occasion random effect",
-      notes = "El-Khateeb 2023: 'Each Ctrough measurement was considered a separate occasion for each patient', so OCC increments with every trough (1167 occasions over 40 patients). Consumed by the ini() nesting syntax 'etaiov_lclint ~ ... | OCC', not by a model() expression. An event table needs at least two distinct OCC values.",
+      notes = "El-Khateeb 2023: 'Each Ctrough measurement was considered a separate occasion for each patient', so OCC increments with every trough (1167 occasions over 40 patients). Consumed by the ini() nesting syntax 'etaiov_lclint ~ ... | OCC', not by a model() expression. rxode2 draws the occasion effect per subject and occasion only when at least one subject has two or more OCC levels. If every subject has exactly one level, all subjects on a level share one draw; if the whole event table has a single level, rxSolve() fails with 'parameter(s) are required for solving: THETA[1]' (also with zeroRe()). When each subject has one occasion, add one evid = 2 record (no dose, no observation) that gives one subject a second OCC level.",
       source_name = "Occasion for each row"
     )
   )
