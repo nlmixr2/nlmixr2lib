@@ -49,6 +49,30 @@
     `kge` but estimated an unused zero-order rate `lkgl`. The parameter is now
     `lkge`, with the same value. **Breaking for code** that sets `lkgl`.
 
+- The R0/Rmax/CRmax indirect-response templates are corrected and their
+  parameters redefined. **Breaking for simulations** from them and for code
+  that sets their parameters.
+  - `indirect_1cpt_{inhi,stim}_{kin,kout}_r0rmaxcrmax` overwrote their
+    estimated `Imax` or `Emax` with the one value that makes the derived IC50
+    or EC50 zero or negative, so no dose produced a usable response. They now
+    keep it estimated. IC50 or EC50 follows from the response reaching Rmax at
+    concentration CRmax, `kin` from the magnitude of the initial slope |S1|,
+    and `kout` from the baseline R0. `Imax` now defaults to 0.8; it was 1.75,
+    which drives production negative. The two templates whose response falls
+    now default to an Rmax below R0.
+  - `indirect_prec_1cpt_inhi_r0rmaxcrmax` and
+    `indirect_prec_1cpt_stim_r0rmaxcrmax` are renamed
+    `indirect_prec_1cpt_inhi_r0` and `indirect_prec_1cpt_stim_r0`. A precursor
+    pool returns to its baseline at any constant concentration, so Rmax and
+    CRmax determine nothing in these models. They are now parameterized by R0,
+    kin, kout, kpout, Imax or Emax, and IC50 or EC50, and they derive the
+    precursor production rate from R0. **Breaking for code** that loads them
+    by their old names.
+
+- `checkModelConventions()` reports, as an error, any symbol a template
+  (reference "nlmixr2lib template") reads but never defines, even when its
+  `depends` lists it (category `template_symbols`).
+
 - `checkNamingRegisters()` now also reports a model file cited anywhere in a
   register, such as a `Notes:` or `Source aliases:` line, that does not exist
   (check `orphan-model-citation`). Before, only `Example models:` lines were
@@ -64,12 +88,9 @@
   that every model either has an article or is listed, with a reason, as a
   generic template or as awaiting one.
 
-- Correct the descriptions of eleven `indirect_*` templates. Two circadian
-  `*_kout_t` models said `kin_t`, and the two stimulation
-  `indirect_prec_1cpt_stim_*` models said inhibition. Both
-  `indirect_prec_1cpt_*_r0rmaxcrmax` templates now say that their PK is
-  parameterized with clearance and volume and their response with R0, Rmax
-  and CRmax. A "cosntants" typo is fixed in five descriptions.
+- Correct the descriptions of nine `indirect_*` templates. Two circadian
+  `*_kout_t` models said `kin_t`, and `indirect_prec_1cpt_stim_CLV` said
+  inhibition. A "cosntants" typo is fixed in five descriptions.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
