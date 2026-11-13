@@ -58,6 +58,7 @@ Peng_2014_MK3577 <- function() {
       sep = " "
     )
   )
+  dosing <- "sandostatin"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

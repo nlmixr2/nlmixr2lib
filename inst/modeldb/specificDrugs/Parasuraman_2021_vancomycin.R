@@ -11,6 +11,7 @@ Parasuraman_2021_vancomycin <- function() {
   )
   vignette <- "Parasuraman_2021_vancomycin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("central", "csf")
 
   covariateData <- list(
     WT = list(

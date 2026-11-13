@@ -21,6 +21,7 @@ ParraGuillen_2013_cyaaE7 <- function() {
     dosing = "(arbitrary unit, set to 1 at vaccine injection)",
     concentration = "(K-PD, no PK)"
   )
+  dosing <- "vac"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

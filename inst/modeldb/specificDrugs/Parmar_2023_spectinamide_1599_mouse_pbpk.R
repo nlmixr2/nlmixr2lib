@@ -38,6 +38,7 @@ Parmar_2023_spectinamide_1599_mouse_pbpk <- function() {
     dosing = "mg (absolute amount; the paper's mg/kg dose x 0.02 kg mouse body weight, e.g. 10 mg/kg = 0.2 mg)",
     concentration = "mg/L (equivalently ug/mL for plasma and ug/g for tissue under the paper's unit-tissue-density assumption)"
   )
+  dosing <- c("depot", "depot2")
 
   # No covariates. Parmar 2023 does not carry any subject-level covariate on
   # the model parameters: the physiology is tabulated per species (Table 2 /

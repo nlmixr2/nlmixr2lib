@@ -30,6 +30,7 @@ Penland_2024_sodiumZirconiumCyclosilicate <- function() {
     dosing = "g",
     concentration = "mmol/L (serum potassium)"
   )
+  dosing <- "depot_kpd"
 
   compartmentData <- list(
     depot_kpd = list(
