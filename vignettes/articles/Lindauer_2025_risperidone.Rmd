@@ -521,8 +521,9 @@ pooled_tmax <- pooled_curve$time[which.max(pooled_curve$p50)]
 # D2RO increases with the active-moiety concentration, so the median D2RO at a
 # time is the D2RO of the median concentration. It is evaluated at the pooled
 # dose-normalised peak scaled to each dose, which rests on the 400 pooled
-# subjects. The 3 mg peak (about 19 ng/mL) is close to the 15 ng/mL that gives
-# 65% D2RO, so the gate below is a floor of 55%, not a test against 65%.
+# subjects. The Figure S5 3 mg peak (19.5 ng/mL) is close to the 15.2 ng/mL that
+# gives 65% D2RO (Emax 100%, EC50 8.2 ng/mL), so the gate below is a floor of 55%
+# (10.0 ng/mL), not a test against 65%.
 d2ro_at_peak <- tibble(treatment = c("3 mg QD", "4 mg QD"), dose = c(3, 4)) |>
   mutate(
     am_peak = dose * pooled_peak,
@@ -570,20 +571,21 @@ cat(sprintf(
 ))
 stopifnot(
   # The pooled peak is set by absorption (KA, lag, IOV on D1), so the draw moves
-  # it by up to about a quarter; a mis-transcribed dose, unit or KA moves it
-  # further. It does not constrain clearance: the peak falls 2-3 h after dosing,
-  # before elimination (half-life about a day) has acted, so the AUC check below
-  # carries clearance.
+  # it by up to about a quarter, while a mis-transcribed dose or unit scales it.
+  # It is only weakly sensitive to clearance (tripling both clearances lowers it
+  # by about a tenth of the Figure S5 value), so the AUC check below carries
+  # clearance.
   abs(pooled_peak - paper_per_mg) / paper_per_mg < 0.30,
-  # A mis-transcribed KA, lag or zero-order duration moves the pooled median
-  # peak time by hours; the draw moves it by under an hour.
+  # A KA four times too small moves the pooled median peak time to 4.75-6 h; the
+  # draw moves it within 2.25-3 h.
   pooled_tmax >= 1, pooled_tmax <= 4,
   # A mis-transcribed EC50 or Emax moves the occupancy at the peak by tens of
   # points; the draw by a few.
   all(d2ro_at_peak$d2ro_peak >= 55),
-  # Clearance: the seventh-interval AUC is proportional to 1/CL, so a threefold
-  # error in either direction leaves the envelope (which spans a factor of two),
-  # while the draw moves the AUC by under 10%.
+  # Clearance: the seventh-interval AUC falls to about a third when both
+  # clearances are tripled and rises about 2.6 times when they are divided by
+  # three, so a threefold error either way leaves the envelope (which spans a
+  # factor of 1.95), while the draw moves the AUC by under 10%.
   auc7_per_mg >= auc7_lower, auc7_per_mg <= auc7_upper
 )
 ```
