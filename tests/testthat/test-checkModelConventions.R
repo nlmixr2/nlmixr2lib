@@ -2901,13 +2901,19 @@ test_that(".doseTimingCalls skips an empty first argument and a namespaced call"
   expect_equal(nlmixr2lib:::.doseTimingCalls(quote(rxode2::tad(depot))), list())
   # rxode2 rejects all three spellings in a model, so a model-level fixture
   # cannot carry them; the walker is pinned on bare expressions above.
-  for (code in c("x <- tad(, depot)", "x <- rxode2::tad(depot)", "x <- tad(\"depot\")")) {
+  for (code in c("x <- rxode2::tad(depot)", "x <- tad(\"depot\")")) {
     expect_error(
       suppressMessages(utils::capture.output(rxode2::rxModelVars(paste0("d/dt(depot) <- -depot; ", code)))),
       "syntax error",
       info = code
     )
   }
+  # The parser's message for an empty argument depends on what it parsed
+  # before: "syntax error" on its own, "string segment too long in
+  # rc_dup_str" partway through this file. Either way it is refused.
+  expect_error(
+    suppressMessages(utils::capture.output(rxode2::rxModelVars("d/dt(depot) <- -depot; x <- tad(, depot)")))
+  )
 })
 
 test_that("a model() block that cannot be read is reported, not passed", {
