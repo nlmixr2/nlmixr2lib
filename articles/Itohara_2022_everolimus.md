@@ -213,9 +213,10 @@ fig3_events <- bind_rows(
   select(id, time, evid, amt, cmt, ii, ss, everything())
 
 rxode2::rxSetSeed(2023)
+# steady-state searches for long-half-life subjects exceed the default step budget
 fig3 <- rxode2::rxSolve(
   mod, fig3_events,
-  keep = c("panel", "scenario"), maxsteps = 500000L, returnType = "data.frame"
+  keep = c("panel", "scenario"), maxsteps = 1e6, returnType = "data.frame"
 )
 stopifnot(!anyNA(fig3$Cc), n_distinct(fig3$id) == nrow(scen) * n_rep)
 
@@ -247,7 +248,7 @@ medians:
 typ <- rxode2::rxSolve(
   rxode2::zeroRe(mod),
   fig3_events |> filter(rep == 1),
-  keep = c("panel"), maxsteps = 500000L, returnType = "data.frame"
+  keep = c("panel"), maxsteps = 1e6, returnType = "data.frame"
 ) |>
   filter(time == 12) |>
   transmute(
@@ -385,9 +386,9 @@ ss_events <- bind_rows(
   select(id, time, evid, amt, cmt, ii, ss, everything())
 
 rxode2::rxSetSeed(2024)
-sim_ss <- rxode2::rxSolve(mod, ss_events, maxsteps = 500000L, returnType = "data.frame")
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_ss <- rxode2::rxSolve(mod, ss_events, maxsteps = 1e6, returnType = "data.frame")
 stopifnot(!anyNA(sim_ss$Cc), n_distinct(sim_ss$id) == n_sub)
-
 conc <- sim_ss |>
   filter(!is.na(Cc)) |>
   left_join(treat, by = "id") |>

@@ -284,11 +284,13 @@ ev_ss <- bind_rows(lapply(seq_len(nrow(arms)), function(i) {
 })) |>
   arrange(id, time, desc(evid))
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_ss <- rxode2::rxSolve(
   mod,
   events = ev_ss, returnType = "data.frame",
   rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
-  keep = "treatment"
+  keep = "treatment",
+  maxsteps = 1e6
 )
 trough <- sim_ss |>
   filter(time == 0) |>
@@ -342,7 +344,8 @@ sim_fix <- rxode2::rxSolve(
   rxode2::zeroRe(mod),
   events = ev_fix, returnType = "data.frame",
   rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
-  keep = "treatment"
+  keep = "treatment",
+  maxsteps = 1e6
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc'
@@ -370,6 +373,8 @@ stopifnot(abs(ratio_30 - 0.5) < 1e-6, abs(ratio_45 - 0.75) < 1e-6)
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_ss$Cc))
 conc_ss <- sim_ss |>
   filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)

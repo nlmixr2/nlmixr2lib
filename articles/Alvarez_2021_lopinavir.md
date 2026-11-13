@@ -215,7 +215,8 @@ ev_ss <- bind_rows(lapply(seq_along(rtv_chk), function(i) {
   ) |>
     mutate(CONMED_RTV_CC = rtv_chk[i])
 }))
-sim_ss <- rxode2::rxSolve(mod_typ, ev_ss, returnType = "data.frame")
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_ss <- rxode2::rxSolve(mod_typ, ev_ss, returnType = "data.frame", maxsteps = 1e6)
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 #> Warning: multi-subject simulation without without 'omega'
 ss_tab <- sim_ss |>
@@ -401,6 +402,8 @@ result.
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim$Cc))
 conc_df <- sim |>
   filter(time >= 228, !is.na(Cc)) |>
   select(id, time, Cc, treatment)

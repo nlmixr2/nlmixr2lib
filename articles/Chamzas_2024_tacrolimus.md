@@ -379,12 +379,12 @@ nca_events <- bind_rows(lapply(c(0.06, 0.10), function(d) {
   ))() |>
   arrange(id, time, desc(evid))
 
-sim_ss <- rxode2::rxSolve(mod, events = nca_events, keep = c("treatment")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_ss <- rxode2::rxSolve(mod, events = nca_events, keep = c("treatment"), maxsteps = 1e6) |>
   as.data.frame()
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> Warning: some ID(s) could not solve the ODEs correctly; These values are
-#> replaced with 'NA'
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_ss$Cc))
 conc_df <- sim_ss |>
   filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)
@@ -399,10 +399,6 @@ intervals <- data.frame(
   cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE
 )
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#> Warning: treatment=0.06 mg/kg/day; id=65: No concentration data
-#> Warning: treatment=0.06 mg/kg/day; id=71: No concentration data
-#> Warning: treatment=0.06 mg/kg/day; id=94: No concentration data
-#> Warning: treatment=0.10 mg/kg/day; id=198: No concentration data
 
 nca_wide <- as.data.frame(nca_res) |>
   select(treatment, id, PPTESTCD, PPORRES) |>
@@ -423,8 +419,8 @@ nca_wide |>
 
 | Regimen        | Cmax (ng/mL) | Tmax (h) | Cmin (ng/mL) | AUC0-12 (ng\*h/mL) |
 |:---------------|-------------:|---------:|-------------:|-------------------:|
-| 0.06 mg/kg/day |        17.42 |      1.4 |         8.33 |             127.37 |
-| 0.10 mg/kg/day |        31.97 |      1.1 |        16.74 |             246.00 |
+| 0.06 mg/kg/day |        18.01 |     1.35 |         8.57 |             129.65 |
+| 0.10 mg/kg/day |        32.12 |     1.10 |        16.90 |             246.95 |
 
 Steady-state NCA (medians across subjects). {.table}
 
@@ -445,7 +441,7 @@ stopifnot(
 )
 summary(auc_chk$pct_err)
 #>       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
-#> -0.1484071 -0.0012699 -0.0005867 -0.0023961 -0.0002601  0.0106449
+#> -0.1484071 -0.0013412 -0.0005984 -0.0024600 -0.0002648  0.0106449
 ```
 
 ## Assumptions and deviations

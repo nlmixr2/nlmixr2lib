@@ -208,6 +208,8 @@ computed over 0-8 h; `Cmax`, `AUCinf` and the terminal half-life over
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim$Cc))
 nca_conc <- sim |>
   filter(time %in% c(0, 2, 3, 4, 6, 8), !is.na(Cc)) |>
   select(id, time, Cc, treatment)
@@ -497,7 +499,8 @@ trough_ev <- bind_rows(lapply(c(6, 8, 12), function(tau) {
 })) |>
   arrange(id, time, desc(evid))
 
-trough_sim <- rxode2::rxSolve(mod, trough_ev, keep = c("age_group", "tau")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+trough_sim <- rxode2::rxSolve(mod, trough_ev, keep = c("age_group", "tau"), maxsteps = 1e6) |>
   as.data.frame() |>
   filter(time == tau) |>
   mutate(auc24_10 = 10 * WT * (24 / tau) / cl, trough_10 = Cc)

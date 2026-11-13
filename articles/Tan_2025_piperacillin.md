@@ -366,7 +366,7 @@ ev_tab <- bind_rows(lapply(seq_len(nrow(recs)), function(i) {
 }))
 
 sim_tab <- rxode2::rxSolve(mod_free, events = ev_tab, keep = "cell", returnType = "data.frame")
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:02
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:01
 
 pta <- sim_tab |>
   left_join(recs |> select(cell, type, target), by = "cell") |>

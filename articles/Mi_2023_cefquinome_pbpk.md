@@ -983,7 +983,7 @@ tibble(
 
 | Quantity                            | Value     |
 |:------------------------------------|:----------|
-| Max \|relative mass-balance error\| | 2.998e-14 |
+| Max \|relative mass-balance error\| | 2.032e-14 |
 | Fraction excreted renally at 240 h  | 0.9546    |
 | Fraction excreted in bile at 240 h  | 0.04533   |
 

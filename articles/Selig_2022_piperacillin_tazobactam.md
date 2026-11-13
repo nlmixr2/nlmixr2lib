@@ -364,7 +364,8 @@ ev_a <- dplyr::bind_rows(lapply(seq_along(qeffs), function(i) {
 })) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
-sim_a <- as.data.frame(rxode2::rxSolve(mod_pip, ev_a, returnType = "data.frame"))
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_a <- as.data.frame(rxode2::rxSolve(mod_pip, ev_a, returnType = "data.frame", maxsteps = 1e6))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 stopifnot(!anyNA(sim_a$Cc))
 
@@ -489,13 +490,17 @@ nca_events <- function(amt, qeff, id0) {
 }
 
 sim_nca <- dplyr::bind_rows(
-  as.data.frame(rxode2::rxSolve(mod_pip, nca_events(4000, 1.43, 0))) |>
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  as.data.frame(rxode2::rxSolve(mod_pip, nca_events(4000, 1.43, 0), maxsteps = 1e6)) |>
     dplyr::mutate(treatment = "Piperacillin 4000 mg q8h", dose = 4000),
-  as.data.frame(rxode2::rxSolve(mod_taz, nca_events(500, 1.09, 0))) |>
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  as.data.frame(rxode2::rxSolve(mod_taz, nca_events(500, 1.09, 0), maxsteps = 1e6)) |>
     dplyr::mutate(treatment = "Tazobactam 500 mg q8h", dose = 500)
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_nca$Cc))
 conc_nca <- sim_nca |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(treatment, id, time, Cc, cl, dose)

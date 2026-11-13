@@ -182,6 +182,8 @@ sim_typ <- rxode2::rxSolve(mod_typ, ev_typ, keep = "treatment") |>
 #> ℹ omega/sigma items treated as zero: 'etalcl'
 #> Warning: multi-subject simulation without without 'omega'
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_typ$Cc))
 conc_ss <- sim_typ |>
   filter(!is.na(Cc), time >= 216, time <= 228) |>
   select(id, time, Cc, treatment)
@@ -362,7 +364,8 @@ ev_cohort <- bind_rows(
   select(id, time, evid, amt, ss, ii, cmt, AGE, SNP_ABCB1_RS3789243_AG,
          SNP_ABCB1_RS3789243_GG)
 
-sim_cohort <- rxode2::rxSolve(mod, ev_cohort) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_cohort <- rxode2::rxSolve(mod, ev_cohort, maxsteps = 1e6) |>
   as.data.frame() |>
   filter(time == 12) |>
   left_join(cohort |> select(id, genotype, WT), by = "id")
@@ -466,7 +469,8 @@ ev_pta <- bind_rows(
   select(id, time, evid, amt, ss, ii, cmt, AGE, SNP_ABCB1_RS3789243_AG,
          SNP_ABCB1_RS3789243_GG)
 
-sim_pta25 <- rxode2::rxSolve(mod, ev_pta) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_pta25 <- rxode2::rxSolve(mod, ev_pta, maxsteps = 1e6) |>
   as.data.frame() |>
   filter(time == 12) |>
   select(id, Cc25 = Cc) |>
@@ -646,7 +650,8 @@ ev_fig3 <- bind_rows(
   select(id, time, evid, amt, ss, ii, cmt, AGE, SNP_ABCB1_RS3789243_AG,
          SNP_ABCB1_RS3789243_GG)
 
-sim_fig3 <- rxode2::rxSolve(mod, ev_fig3) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_fig3 <- rxode2::rxSolve(mod, ev_fig3, maxsteps = 1e6) |>
   as.data.frame() |>
   filter(time == 12) |>
   select(id, sim) |>

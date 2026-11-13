@@ -223,10 +223,12 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 
 mod <- readModelDb("Wang_2019a_tacrolimus")
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim <- rxode2::rxSolve(
   mod,
   events = events,
-  keep = c("arm", "AGE", "CYSC", "DOSE_TAC_MGD")
+  keep = c("arm", "AGE", "CYSC", "DOSE_TAC_MGD"),
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -236,7 +238,8 @@ sim <- rxode2::rxSolve(
 sim_typical <- rxode2::rxSolve(
   rxode2::zeroRe(mod),
   events = events,
-  keep = c("arm", "AGE", "CYSC", "DOSE_TAC_MGD")
+  keep = c("arm", "AGE", "CYSC", "DOSE_TAC_MGD"),
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -580,6 +583,8 @@ so the tolerance below can be tight.
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_typical$Cc))
 sim_nca <- sim_typical |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, arm)

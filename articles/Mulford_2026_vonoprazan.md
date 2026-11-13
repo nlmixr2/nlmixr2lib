@@ -357,7 +357,10 @@ make_events <- function(subj, ss, day2) {
               ii = if (ss) 24 else 0, ss = if (ss) 1L else 0L)
   obs_rows <- subj |>
     select(id) |>
-    tidyr::crossing(time = seq(0, 24, by = 0.25)) |>
+    # 0.05 h through the absorption phase: the trapezoid error of AUC(0-24) on a
+    # 0.25 h grid reaches 0.25% for a fast-absorbing subject, half of the 0.5% bound
+    # of the mass-balance identities below.
+    tidyr::crossing(time = sort(unique(c(seq(0, 4, by = 0.05), seq(0, 24, by = 0.25))))) |>
     # cmt is the ODE STATE, never the algebraic observable "Cc": naming the
     # observable auto-injects a compartment slot and renumbers the states.
     mutate(amt = NA_real_, evid = 0L, cmt = "central", ii = 0, ss = 0L)
@@ -458,12 +461,12 @@ nca_tbl |>
 
 | Population \| Dose | AUC0-24,ss (ng\*h/mL) | Cmax,ss (ng/mL) | Cmin,ss (ng/mL) | Tmax (h) |
 |:---|:---|:---|:---|:---|
-| Adolescents 10 mg | 86.9 \[55.1, 155.6\] | 10.3 \[6.2, 19.2\] | 0.9 \[0.3, 2.0\] | 1.8 \[1.0, 3.0\] |
-| Adolescents 20 mg | 226.1 \[120.9, 510.2\] | 27.8 \[15.2, 62.0\] | 2.2 \[0.7, 6.6\] | 1.9 \[1.0, 3.0\] |
+| Adolescents 10 mg | 86.9 \[55.1, 155.6\] | 10.3 \[6.2, 19.2\] | 0.9 \[0.3, 2.0\] | 1.9 \[1.0, 3.1\] |
+| Adolescents 20 mg | 226.2 \[120.9, 510.3\] | 27.8 \[15.2, 62.0\] | 2.2 \[0.7, 6.6\] | 1.9 \[0.9, 3.0\] |
 | Adults 10 mg | 91.8 \[51.0, 165.0\] | 10.5 \[6.0, 20.3\] | 0.9 \[0.4, 2.2\] | 2.2 \[1.2, 4.0\] |
-| Adults 20 mg | 217.0 \[109.1, 480.4\] | 24.6 \[12.3, 58.7\] | 2.0 \[0.8, 5.9\] | 2.2 \[1.2, 4.0\] |
-| Children 10 mg | 89.0 \[48.1, 189.1\] | 16.2 \[7.8, 32.3\] | 0.6 \[0.2, 1.8\] | 1.5 \[0.8, 2.5\] |
-| Children 20 mg | 228.7 \[121.6, 467.6\] | 39.8 \[19.9, 82.8\] | 1.5 \[0.4, 4.8\] | 1.5 \[0.8, 2.8\] |
+| Adults 20 mg | 217.0 \[109.1, 480.5\] | 24.6 \[12.3, 58.8\] | 2.0 \[0.8, 5.9\] | 2.2 \[1.2, 4.0\] |
+| Children 10 mg | 89.0 \[48.1, 189.1\] | 16.2 \[7.8, 32.3\] | 0.6 \[0.2, 1.8\] | 1.5 \[0.9, 2.6\] |
+| Children 20 mg | 228.7 \[121.6, 467.6\] | 39.8 \[20.0, 83.1\] | 1.5 \[0.4, 4.8\] | 1.5 \[0.8, 2.7\] |
 
 Simulated steady-state NCA: median \[5th, 95th percentile\], 100
 subjects per arm. {.table style="width:100%;"}
@@ -508,7 +511,7 @@ knitr::kable(cmp, caption = "Simulated steady-state AUC0-24 against the Mulford 
 
 | NCA parameter      | arm               | Reference | Simulated | % diff |
 |:-------------------|:------------------|:----------|:----------|:-------|
-| AUClast (ng\*h/mL) | Adults 10 mg      | 92        | 91.8      | -0.3%  |
+| AUClast (ng\*h/mL) | Adults 10 mg      | 92        | 91.8      | -0.2%  |
 | AUClast (ng\*h/mL) | Adults 20 mg      | 225       | 217       | -3.5%  |
 | AUClast (ng\*h/mL) | Adolescents 10 mg | 92        | 86.9      | -5.5%  |
 | AUClast (ng\*h/mL) | Adolescents 20 mg | 225       | 226       | +0.5%  |
@@ -544,8 +547,8 @@ knitr::kable(auc_med |>
 | Population | Dose (mg) | Simulated median AUC0-24,ss | Published adult reference | % difference |
 |:---|---:|---:|---:|---:|
 | Adolescents | 10 | 86.9 | 92 | -5.5 |
-| Adolescents | 20 | 226.1 | 225 | 0.5 |
-| Adults | 10 | 91.8 | 92 | -0.3 |
+| Adolescents | 20 | 226.2 | 225 | 0.5 |
+| Adults | 10 | 91.8 | 92 | -0.2 |
 | Adults | 20 | 217.0 | 225 | -3.5 |
 | Children | 10 | 89.0 | 92 | -3.3 |
 | Children | 20 | 228.7 | 225 | 1.6 |
@@ -599,7 +602,7 @@ data.frame(
 |     | Bound           | Published | Simulated | If BSV rows were variances |
 |:----|:----------------|----------:|----------:|---------------------------:|
 | 5%  | 5th percentile  |       123 |     109.1 |                       83.1 |
-| 95% | 95th percentile |       411 |     480.4 |                      608.3 |
+| 95% | 95th percentile |       411 |     480.5 |                      608.3 |
 
 Adults, 20 mg: simulated 90% prediction interval of AUC0-24,ss against
 the published interval. {.table}
@@ -749,8 +752,8 @@ data.frame(
 
 | Identity | Worst subject ratio | Subjects |
 |:---|---:|---:|
-| Day 1: cl \* AUC(0,24)/1000 vs frel\*dose - remaining | 0.0012240 | 600 |
-| Steady state: cl \* AUC(0,tau)/1000 vs frel\*dose | 0.0013339 | 600 |
+| Day 1: cl \* AUC(0,24)/1000 vs frel\*dose - remaining | 0.0002780 | 600 |
+| Steady state: cl \* AUC(0,tau)/1000 vs frel\*dose | 0.0002327 | 600 |
 
 Exact mass-balance identities, worst absolute deviation from 1 across
 all subjects. {.table}
@@ -759,11 +762,12 @@ all subjects. {.table}
 
 
 # Deterministic given each subject's drawn etas -- trapezoidal error on the
-# 0.25 h observation grid only, which is why the tolerance is looser than the
-# 1e-4 used on the 0.01 h grid of the structural gate above. Realised worst
-# deviations across 600 subjects are about 1.2e-3 on each identity; the bound
-# still fails on any topology, bioavailability-target or output-scaling error,
-# all of which break mass balance by percent-scale amounts rather than 0.1%.
+# observation grid only (0.05 h through the first 4 h, 0.25 h after), which is why
+# the tolerance is looser than the 1e-4 used on the 0.01 h grid of the structural
+# gate above. Realised worst deviations across 600 subjects are about 3e-4 on each
+# identity (at most 3.3e-4 over eight seeds); the bound still fails on any
+# topology, bioavailability-target or output-scaling error, all of which break mass
+# balance by percent-scale amounts rather than 0.1%.
 stopifnot(max(abs(d1$mb_ratio - 1)) < 5e-3,
           max(abs(ss$ss_ratio - 1)) < 5e-3)
 ```

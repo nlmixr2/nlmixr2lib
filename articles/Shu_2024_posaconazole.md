@@ -161,14 +161,13 @@ equation.
 
 This is strong but not conclusive, and it should not be oversold: the
 underlying ambiguity is a defect in the source that cannot be resolved
-from the source. What makes it tolerable is that it turns out not to
-matter for anything the paper concludes. The sensitivity analysis below
-re-runs the entire PTA grid under the alternative 829 L reading and
-recovers **identical** recommendations in all eight strata. A user who
-prefers the other reading can obtain it in one line –
-`rxode2::ini(mod, lvc = log(829))` – and the vignette shows exactly what
-changes (the shape of a single-dose profile and Cmax) and what does not
-(every trough-based conclusion in the paper).
+from the source. What makes it tolerable is that it changes little of
+what the paper concludes. The sensitivity analysis below re-runs the
+entire PTA grid under the alternative 829 L reading and compares the
+minimum regimen stratum by stratum. A user who prefers the other reading
+can obtain it in one line – `rxode2::ini(mod, lvc = log(829))` – and the
+vignette shows what changes (the shape of a single-dose profile and
+Cmax) and what mostly does not (the trough-based conclusions).
 
 Two arguments that look supportive but are **not**, recorded so a future
 reader does not have to re-derive them:
@@ -208,14 +207,11 @@ drawn at the published 11/62 prevalence.
 
 set.seed(20240824)
 
-# `rxode()` returns the rxUi object, so `mod$omega` can be passed explicitly to
-# every population `rxSolve()` below and `omega = NA` to the typical-value one.
-# rxode2 caches the previous solve's omega on the compiled model, so relying on
-# the default silently contaminates runs in either direction: a typical-value
-# call after a population call re-samples etas, and a population call after a
-# typical-value call can collapse every subject onto one patient. Both failures
-# render cleanly and reproduce exactly under a fixed seed, so each solve below is
-# followed by an assertion that the random effects did (or did not) vary.
+# `rxode()` returns the rxUi object, so `mod$omega` can be passed explicitly to the
+# TDM-style and NCA cohort solves below, and `omega = NA` to the typical-value
+# one. The PTA solves take their random effects from data columns instead. Each
+# solve is followed by an assertion that the random effects did (or did not) vary,
+# or that they equal the supplied values.
 mod <- rxode2::rxode(readModelDb("Shu_2024_posaconazole"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -287,7 +283,7 @@ typ <- rxode2::rxSolve(
   rxode2::et(amt = 200, cmt = "depot", ii = 8, ss = 1) |>
     rxode2::et(seq(0, 8, by = 0.25), cmt = "central"),
   params = data.frame(WT = 45.85, CRCL = 103.81, CONMED_PPI = 0),
-  omega = NA,  # required: zeroRe() alone does not stop eta re-sampling
+  omega = NA,  # states that no random effects are sampled; zeroRe() already zeroes omega
   returnType = "data.frame",
   # steady-state searches for long-half-life subjects exceed the default step budget
   maxsteps = 1e6
@@ -388,15 +384,43 @@ steady-state trough targets of 0.7 ug/mL (prophylaxis, Figure 4) and 1.0
 ug/mL (treatment, Figure 5), with 70% PTA as the acceptability
 threshold, stratified by creatinine clearance and PPI use.
 
-Steady state is imposed exactly with `rxode2`’s `ss = 1` dosing flag
-rather than by simulating weeks of doses, and the trough is read at the
-steady-state pre-dose time. Because dose is in mg/kg and V/F carries a
+Steady state is imposed with `rxode2`’s `ss = 1` dosing flag rather than
+by simulating weeks of doses, and the trough is read at the steady-state
+pre-dose time. The flag finds steady state by repeating the dosing
+interval until the pre-dose concentration changes by less than `ssRtol`
+(set explicitly below). Because dose is in mg/kg and V/F carries a
 `WT^1.78` term, weight is held at the Table 1 median for the whole grid,
 and each CCR band is represented by a single value: the Table 1 cohort
 median 103.81 mL/min for the “CCR \>= 90” band and the band midpoint for
 the three impaired bands.
 
+The grid has 96 regimen-by-stratum arms (six mg/kg levels, BID or TID,
+four CCR bands, with or without a PPI), and a steady-state search is the
+expensive part of each solve because the implied half-life is long. Two
+properties of the design keep that cost proportionate without shrinking
+any cohort:
+
+- **One set of 200 virtual subjects is used everywhere.** The random
+  effects `etalcl` and `etalvc` are drawn once, from the model’s
+  `omega`, and passed to `rxSolve()` as data columns. Every dose, CCR
+  band, PPI level and both readings of the volume equation (below) are
+  evaluated on the same 200 subjects, so differences between arms are
+  paired differences and carry none of the between-cohort sampling noise
+  that independent draws per arm would add. The draw uses base R’s
+  generator, so it does not depend on `rxode2`’s thread count.
+- **The model is linear in dose, so each stratum is solved once.** A
+  steady-state trough of a one-compartment model with first-order
+  absorption is proportional to dose subject by subject. Each of the 16
+  strata (BID or TID, CCR band, PPI) is solved at 1 mg/kg and the trough
+  for a k mg/kg regimen is k times that value. The `pta-dose-linearity`
+  chunk checks the scaling against explicit solves at 2 and 7 mg/kg in
+  three strata, from a fast-equilibrating one to the slowest.
+
 ``` r
+
+# Relative tolerance of the steady-state search (rxode2's default), passed to every
+# `ss = 1` solve in the article so the resolution limits quoted below track it.
+ss_rtol <- 1e-6
 
 ccr_bands <- tibble(
   band     = c("CCR >= 90", "CCR 60-90", "CCR 30-60", "CCR < 30"),
@@ -416,51 +440,183 @@ pta_grid <- tidyr::expand_grid(
     ppi_label = ifelse(ppi == 1L, "with PPI", "no PPI"),
     doses_day = ifelse(ii == 12, 2, 3),
     mgkg_day  = mgkg * doses_day,
+    stratum   = paste(freq, band, ppi_label, sep = " | "),
     arm       = paste(regimen, band, ppi_label, sep = " | ")
   )
 
-n_pta <- 200L  # per arm; the paper used 100
+pta_strata <- pta_grid |>
+  distinct(stratum, ii, ppi, CRCL_rep)
+stopifnot(nrow(pta_strata) == 16L)
+
+n_pta <- 200L  # subjects per arm; the paper used 100
 wt_ref <- 45.85
 
-make_pta_arm <- function(row, id_offset) {
-  ids <- id_offset + seq_len(n_pta)
-  ev <- rxode2::et(amt = row$mgkg * wt_ref, cmt = "depot",
-                   ii = row$ii, ss = 1, id = ids) |>
+# The model's omega is diagonal, so the two random effects are drawn independently.
+omega_pta <- mod$omega
+stopifnot(omega_pta["etalcl", "etalvc"] == 0)
+set.seed(20240824)
+etas_pta <- tibble(
+  sub    = seq_len(n_pta),
+  etalcl = stats::rnorm(n_pta, 0, sqrt(omega_pta["etalcl", "etalcl"])),
+  etalvc = stats::rnorm(n_pta, 0, sqrt(omega_pta["etalvc", "etalvc"]))
+)
+
+# One stratum, one dose, the subjects `sub` of `etas_pta`, steady-state trough
+# observed at time 0 (the pre-dose time).
+make_pta_arm <- function(row, id_offset, amt, sub = seq_len(n_pta)) {
+  ids <- id_offset + seq_along(sub)
+  ev <- rxode2::et(amt = amt, cmt = "depot", ii = row$ii, ss = 1, id = ids) |>
     rxode2::et(0, cmt = "central", id = ids) |>
     as.data.frame()
+  ev$etalcl <- etas_pta$etalcl[sub][ev$id - id_offset]
+  ev$etalvc <- etas_pta$etalvc[sub][ev$id - id_offset]
   ev$WT <- wt_ref
   ev$CRCL <- row$CRCL_rep
   ev$CONMED_PPI <- row$ppi
-  ev$arm <- row$arm
+  ev$stratum <- row$stratum
+  ev$sub <- sub[ev$id - id_offset]
   ev
 }
 
-events_pta <- bind_rows(lapply(seq_len(nrow(pta_grid)), function(i) {
-  make_pta_arm(pta_grid[i, ], id_offset = as.integer((i - 1L) * n_pta))
+# 1 mg/kg at the reference weight; the trough of a k mg/kg regimen is k times it.
+events_pta <- bind_rows(lapply(seq_len(nrow(pta_strata)), function(i) {
+  make_pta_arm(pta_strata[i, ], id_offset = as.integer((i - 1L) * n_pta),
+               amt = 1 * wt_ref)
 }))
 stopifnot(!anyDuplicated(unique(events_pta[, c("id", "time", "evid")])))
+
+# Random effects enter as data, so `omega = NA` and `sigma = NA` (which also keep
+# rxode2 from warning about a multi-subject solve without `omega`) leave exactly
+# the supplied etas. The solve is checked against
+# them: a silently ignored eta column would leave every subject at the typical
+# value and fail here.
+solve_unit_troughs <- function(model, events) {
+  sim <- rxode2::rxSolve(model, events = events, omega = NA, sigma = NA,
+                         keep = c("stratum", "sub", "etalcl", "CRCL"),
+                         returnType = "data.frame", maxsteps = 1e6,
+                         ssRtol = ss_rtol)
+  sim <- sim[!is.na(sim$Cc), ]
+  stopifnot(
+    nrow(sim) == sum(events$evid == 0L),
+    # cl = exp(lcl + etalcl) * (CRCL / 103.81)^e_crcl_cl
+    isTRUE(all.equal(
+      log(sim$cl) - log(11.5 * (sim$CRCL / 103.81)^0.68), sim$etalcl,
+      tolerance = 1e-8
+    ))
+  )
+  sim
+}
 ```
 
 ``` r
 
-set.seed(20240824)
-# steady-state searches for long-half-life subjects exceed the default step budget
-sim_pta <- rxode2::rxSolve(mod, events = events_pta, omega = mod$omega,
-                           keep = c("arm"), returnType = "data.frame",
-                           maxsteps = 1e6)
-#> [====|====|====|====|====|====|====|====|====|====] 0:12:29
-stopifnot(dplyr::n_distinct(round(sim_pta$cl, 8)) > 1L)
+sim_pta <- solve_unit_troughs(mod, events_pta)
+```
 
-pta <- sim_pta |>
-  filter(!is.na(Cc)) |>
-  group_by(arm) |>
+The 1 mg/kg troughs are scaled to each regimen and compared with the two
+targets:
+
+``` r
+
+# PTA per regimen arm from the 1 mg/kg steady-state troughs of `sim`.
+summarise_pta <- function(sim) {
+  pta_grid |>
+    left_join(sim[, c("stratum", "sub", "Cc")], by = "stratum",
+              relationship = "many-to-many") |>
+    mutate(Cmin = mgkg * Cc) |>
+    group_by(arm) |>
+    summarise(
+      PTA_prophylaxis = 100 * mean(Cmin >= 0.7),
+      PTA_treatment   = 100 * mean(Cmin >= 1.0),
+      median_Cmin     = median(Cmin),
+      .groups = "drop"
+    ) |>
+    left_join(pta_grid, by = "arm")
+}
+
+pta <- summarise_pta(sim_pta)
+stopifnot(nrow(pta) == nrow(pta_grid))
+```
+
+``` r
+
+# kel * tau of each subject in the 1 mg/kg solve; the steady-state search leaves a
+# relative residual of about ss_rtol / (kel * tau) in the pre-dose concentration.
+ss_cut <- 5e-4
+# Scientific notation without a zero-padded exponent: "5e-4", not "5e-04".
+sci <- function(x, digits = 0) sub("e([+-])0*", "e\\1", sprintf(paste0("%.", digits, "e"), x))
+pta_kel_tau <- sim_pta |>
+  left_join(pta_strata[, c("stratum", "ii")], by = "stratum") |>
+  mutate(kel_tau = cl / vc * ii)
+n_slow <- sum(pta_kel_tau$kel_tau < ss_cut)
+```
+
+A subject with a very small `kel * tau` changes by only a tiny fraction
+per dosing interval while still far from steady state, so the search can
+stop early and leave a trough that is too low by up to about
+`ssRtol / (kel * tau)`. In the 1 mg/kg solve above 101 of the 3200
+subject-strata (3.2%) have `kel * tau` below 5e-4; the slowest is
+5.9e-5, for which the trough can be understated by up to about 1.7%.
+Such a subject can change a PTA only if its trough lies within that
+fraction of the target.
+
+The scaling rests on dose proportionality, so it is checked directly
+rather than assumed: the 2 and 7 mg/kg regimens are solved explicitly
+for the first 50 subjects of three strata – the fastest to equilibrate
+(TID, CCR \>= 90, no PPI), a slow one (BID, CCR \< 30, with PPI) and the
+slowest (TID, CCR \< 30, with PPI) – and compared subject by subject
+with the scaled 1 mg/kg trough.
+
+``` r
+
+check_strata <- pta_strata[
+  pta_strata$stratum %in%
+    c("TID | CCR >= 90 | no PPI", "BID | CCR < 30 | with PPI", "TID | CCR < 30 | with PPI"),
+]
+stopifnot(nrow(check_strata) == 3L)
+n_check <- 50L
+
+lin_check <- bind_rows(lapply(c(2L, 7L), function(k) {
+  explicit <- bind_rows(lapply(seq_len(nrow(check_strata)), function(i) {
+    make_pta_arm(check_strata[i, ], id_offset = as.integer((i - 1L) * n_check),
+                 amt = k * wt_ref, sub = seq_len(n_check))
+  }))
+  sim_k <- solve_unit_troughs(mod, explicit)
+  sim_k |>
+    select(stratum, sub, Cc_explicit = Cc) |>
+    left_join(sim_pta[, c("stratum", "sub", "Cc")], by = c("stratum", "sub")) |>
+    mutate(mgkg = k, rel_diff = Cc_explicit / (k * Cc) - 1)
+}))
+
+lin_check |>
+  group_by(Stratum = stratum, `Dose (mg/kg)` = mgkg) |>
   summarise(
-    PTA_prophylaxis = 100 * mean(Cc >= 0.7),
-    PTA_treatment   = 100 * mean(Cc >= 1.0),
-    median_Cmin     = median(Cc),
+    `Max abs. relative difference` = format(max(abs(rel_diff)), digits = 2),
     .groups = "drop"
   ) |>
-  left_join(pta_grid, by = "arm")
+  knitr::kable(caption =
+    "Explicit steady-state trough versus the scaled 1 mg/kg trough, per subject.")
+```
+
+| Stratum                      | Dose (mg/kg) | Max abs. relative difference |
+|:-----------------------------|-------------:|:-----------------------------|
+| BID \| CCR \< 30 \| with PPI |            2 | 2.2e-12                      |
+| BID \| CCR \< 30 \| with PPI |            7 | 3.8e-12                      |
+| TID \| CCR \< 30 \| with PPI |            2 | 1.7e-12                      |
+| TID \| CCR \< 30 \| with PPI |            7 | 2.7e-12                      |
+| TID \| CCR \>= 90 \| no PPI  |            2 | 2.8e-11                      |
+| TID \| CCR \>= 90 \| no PPI  |            7 | 4.8e-11                      |
+
+Explicit steady-state trough versus the scaled 1 mg/kg trough, per
+subject. {.table}
+
+``` r
+
+
+# Both solves leave the same relative steady-state-search residual, so the ratio
+# is exact to integrator precision (measured below 1e-9); the bound keeps three
+# orders of magnitude of headroom.
+stopifnot(max(abs(lin_check$rel_diff)) < 1e-6)
 ```
 
 ``` r
@@ -538,23 +694,70 @@ simulated_rec |>
 | CCR band | PPI | Prophylaxis (simulated) | Prophylaxis (Shu 2024) | Treatment (simulated) | Treatment (Shu 2024) |
 |:---|:---|:---|:---|:---|:---|
 | CCR \>= 90 | no PPI | 4 mg/kg BID | 3 mg/kg TID | 4 mg/kg TID | 7 mg/kg BID |
-| CCR \>= 90 | with PPI | 3 mg/kg TID | 5 mg/kg BID | 4 mg/kg TID | 5 mg/kg TID |
-| CCR 60-90 | no PPI | 4 mg/kg BID | 4 mg/kg BID | 3 mg/kg TID | 4 mg/kg TID |
-| CCR 60-90 | with PPI | 3 mg/kg BID | 4 mg/kg BID | 3 mg/kg TID | 4 mg/kg TID |
+| CCR \>= 90 | with PPI | 4 mg/kg BID | 5 mg/kg BID | 4 mg/kg TID | 5 mg/kg TID |
+| CCR 60-90 | no PPI | 2 mg/kg TID | 4 mg/kg BID | 3 mg/kg TID | 4 mg/kg TID |
+| CCR 60-90 | with PPI | 2 mg/kg TID | 4 mg/kg BID | 3 mg/kg TID | 4 mg/kg TID |
 | CCR 30-60 | no PPI | 2 mg/kg TID | 3 mg/kg BID | 2 mg/kg TID | 4 mg/kg BID |
 | CCR 30-60 | with PPI | 2 mg/kg TID | 3 mg/kg BID | 2 mg/kg TID | 4 mg/kg BID |
-| CCR \< 30 | no PPI | 2 mg/kg BID | 2 mg/kg BID | 2 mg/kg TID | 3 mg/kg BID |
+| CCR \< 30 | no PPI | 2 mg/kg BID | 2 mg/kg BID | 2 mg/kg BID | 3 mg/kg BID |
 | CCR \< 30 | with PPI | 2 mg/kg BID | 2 mg/kg BID | 2 mg/kg BID | 3 mg/kg BID |
 
 Lowest daily-dose regimen reaching 70% PTA: this model vs the regimens
 recommended in Shu 2024 (Abstract and Results, ‘Simulations’). {.table}
 
-The daily doses agree closely: across the eight strata the simulated and
-published recommendations are within one dose step of each other on a
-mg/kg/day basis, and the direction of the dominant effect is reproduced
-exactly – the required dose falls monotonically as creatinine clearance
-falls, which is the paper’s central finding and the basis of its dosing
-table.
+``` r
+
+# Daily dose in mg/kg/day of a regimen label such as "3 mg/kg TID".
+daily_dose <- function(regimen) {
+  as.numeric(sub(" mg/kg.*", "", regimen)) * ifelse(grepl("TID$", regimen), 3, 2)
+}
+
+# "equal in a, lower in b (by x to y mg/kg/day) and higher in c (...)" for a
+# vector of differences in daily dose.
+describe_gaps <- function(gap) {
+  range_text <- function(g) {
+    if (length(g) == 0L) return("")
+    lo <- min(abs(g))
+    hi <- max(abs(g))
+    if (lo == hi) sprintf(" (by %g mg/kg/day)", lo) else sprintf(" (by %g to %g mg/kg/day)", lo, hi)
+  }
+  sprintf("equal in %d, lower in %d%s and higher in %d%s",
+          sum(gap == 0), sum(gap < 0), range_text(gap[gap < 0]),
+          sum(gap > 0), range_text(gap[gap > 0]))
+}
+
+rec_gaps <- simulated_rec |>
+  left_join(published_rec, by = c("band", "ppi_label")) |>
+  transmute(
+    prophylaxis = daily_dose(Prophylaxis) - daily_dose(Prophylaxis_pub),
+    treatment   = daily_dose(Treatment) - daily_dose(Treatment_pub)
+  ) |>
+  unlist()
+stopifnot(length(rec_gaps) == 16L, !anyNA(rec_gaps))
+
+# With the same subjects in every arm, a regimen's PTA can only fall as creatinine
+# clearance rises, so the minimum daily dose cannot rise with it.
+rec_by_ppi <- simulated_rec |>
+  mutate(Prophylaxis = daily_dose(Prophylaxis), Treatment = daily_dose(Treatment)) |>
+  arrange(ppi_label, desc(band))
+for (ppi_level in unique(rec_by_ppi$ppi_label)) {
+  d <- rec_by_ppi[rec_by_ppi$ppi_label == ppi_level, ]
+  stopifnot(!is.unsorted(d$Prophylaxis), !is.unsorted(d$Treatment))
+}
+```
+
+The simulated recommendations reproduce the structure of the published
+table. For the subjects drawn here, the simulated minimum regimen is
+equal in 4, lower in 12 (by 1 to 3 mg/kg/day) and higher in 0 of the 16
+stratum-by-target comparisons with the published regimen (simulated
+minus published daily dose). The direction of the dominant effect is
+reproduced – the required dose falls with falling creatinine clearance
+in every column, which is the paper’s central finding and the basis of
+its dosing table. Where the simulated dose is lower, the same direction
+is what a finite-duration simulation in the paper would produce (lower
+troughs need higher doses), the reconciliation discussed for the PPI arm
+below. A cohort of 200 subjects also carries sampling variability in
+which minimum regimen passes.
 
 #### The PPI arm reproduces with the opposite sign
 
@@ -607,20 +810,11 @@ validate CL/F and the CCR effect only.
 mod_alt <- mod |> rxode2::ini(lvc = log(829))
 #> ℹ change initial estimate of `lvc` to `6.7202201551353`
 
-set.seed(20240824)
-# steady-state searches for long-half-life subjects exceed the default step budget
-sim_alt <- rxode2::rxSolve(mod_alt, events = events_pta, omega = mod_alt$omega,
-                           keep = c("arm"), returnType = "data.frame",
-                           maxsteps = 1e6)
-#> [====|====|====|====|====|====|====|====|====|====] 0:04:59
-stopifnot(dplyr::n_distinct(round(sim_alt$cl, 8)) > 1L)
+# Same subjects, strata and 1 mg/kg events as the literal reading, so the two
+# columns below differ only through V/F.
+sim_alt <- solve_unit_troughs(mod_alt, events_pta)
 
-alt_rec <- sim_alt |>
-  filter(!is.na(Cc)) |>
-  group_by(arm) |>
-  summarise(PTA_prophylaxis = 100 * mean(Cc >= 0.7),
-            PTA_treatment   = 100 * mean(Cc >= 1.0), .groups = "drop") |>
-  left_join(pta_grid, by = "arm") |>
+alt_rec <- summarise_pta(sim_alt) |>
   group_by(band, ppi_label) |>
   group_modify(~ tibble(
     Prophylaxis = min_regimen(.x, "PTA_prophylaxis"),
@@ -649,17 +843,39 @@ simulated_rec |>
 
 | CCR band | PPI | Prophylaxis: V/F = 2769 L | Treatment: V/F = 2769 L | Prophylaxis: V/F = 829 L | Treatment: V/F = 829 L | Prophylaxis: Shu 2024 | Treatment: Shu 2024 |
 |:---|:---|:---|:---|:---|:---|:---|:---|
-| CCR \>= 90 | no PPI | 4 mg/kg BID | 4 mg/kg TID | 3 mg/kg TID | 4 mg/kg TID | 3 mg/kg TID | 7 mg/kg BID |
-| CCR \>= 90 | with PPI | 3 mg/kg TID | 4 mg/kg TID | 3 mg/kg TID | 4 mg/kg TID | 5 mg/kg BID | 5 mg/kg TID |
-| CCR 60-90 | no PPI | 4 mg/kg BID | 3 mg/kg TID | 4 mg/kg BID | 3 mg/kg TID | 4 mg/kg BID | 4 mg/kg TID |
-| CCR 60-90 | with PPI | 3 mg/kg BID | 3 mg/kg TID | 3 mg/kg BID | 3 mg/kg TID | 4 mg/kg BID | 4 mg/kg TID |
+| CCR \>= 90 | no PPI | 4 mg/kg BID | 4 mg/kg TID | 4 mg/kg BID | 4 mg/kg TID | 3 mg/kg TID | 7 mg/kg BID |
+| CCR \>= 90 | with PPI | 4 mg/kg BID | 4 mg/kg TID | 4 mg/kg BID | 4 mg/kg TID | 5 mg/kg BID | 5 mg/kg TID |
+| CCR 60-90 | no PPI | 2 mg/kg TID | 3 mg/kg TID | 4 mg/kg BID | 3 mg/kg TID | 4 mg/kg BID | 4 mg/kg TID |
+| CCR 60-90 | with PPI | 2 mg/kg TID | 3 mg/kg TID | 2 mg/kg TID | 3 mg/kg TID | 4 mg/kg BID | 4 mg/kg TID |
 | CCR 30-60 | no PPI | 2 mg/kg TID | 2 mg/kg TID | 2 mg/kg TID | 4 mg/kg BID | 3 mg/kg BID | 4 mg/kg BID |
 | CCR 30-60 | with PPI | 2 mg/kg TID | 2 mg/kg TID | 2 mg/kg TID | 2 mg/kg TID | 3 mg/kg BID | 4 mg/kg BID |
-| CCR \< 30 | no PPI | 2 mg/kg BID | 2 mg/kg TID | 2 mg/kg BID | 2 mg/kg TID | 2 mg/kg BID | 3 mg/kg BID |
+| CCR \< 30 | no PPI | 2 mg/kg BID | 2 mg/kg BID | 2 mg/kg BID | 2 mg/kg BID | 2 mg/kg BID | 3 mg/kg BID |
 | CCR \< 30 | with PPI | 2 mg/kg BID | 2 mg/kg BID | 2 mg/kg BID | 2 mg/kg BID | 2 mg/kg BID | 3 mg/kg BID |
 
 Minimum 70%-PTA regimen under the two readings of the Table 2 volume
 equation. {.table style="width:100%;"}
+
+``` r
+
+vol_gaps <- simulated_rec |>
+  left_join(alt_rec, by = c("band", "ppi_label"), suffix = c("_lit", "_alt")) |>
+  transmute(
+    prophylaxis = daily_dose(Prophylaxis_alt) - daily_dose(Prophylaxis_lit),
+    treatment   = daily_dose(Treatment_alt) - daily_dose(Treatment_lit)
+  ) |>
+  unlist()
+stopifnot(length(vol_gaps) == 16L, !anyNA(vol_gaps))
+```
+
+For the subjects drawn here, the minimum regimen under the 829 L reading
+(minus the literal reading) is equal in 14, lower in 0 and higher in 2
+(by 2 mg/kg/day) of the 16 stratum-by-target comparisons. The 829 L
+reading has the shorter half-life, so each subject’s trough sits further
+below its average concentration. The two columns are evaluated on the
+same 200 subjects, so these differences are the effect of V/F alone and
+not between-cohort sampling noise. The paper’s dose recommendations
+therefore constrain CL/F and the CCR effect and constrain V/F only
+weakly.
 
 ## PKNCA validation
 
@@ -694,7 +910,8 @@ events_ss <- bind_rows(
 # steady-state searches for long-half-life subjects exceed the default step budget
 sim_ss <- rxode2::rxSolve(mod, events = events_ss, omega = mod$omega,
                           keep = c("regimen", "WT", "CRCL", "CONMED_PPI"),
-                          returnType = "data.frame", maxsteps = 1e6)
+                          returnType = "data.frame", maxsteps = 1e6,
+                          ssRtol = ss_rtol)
 stopifnot(dplyr::n_distinct(round(sim_ss$cl, 8)) > 1L)
 ```
 
@@ -767,15 +984,28 @@ one-compartment linear model must satisfy at steady state:
 `AUCtau = Dose / (CL/F)`, exactly, for every subject. This is the
 strongest available arithmetic check on the encoding.
 
+The `ss = 1` flag finds steady state by repeating the dosing interval
+until the pre-dose concentration stops changing by more than `ssRtol`. A
+subject whose elimination is very slow changes by only a tiny fraction
+per interval while still far from steady state, so the search stops
+early and leaves a relative residual of about `ssRtol / (kel * tau)`.
+The identity is therefore checked for the subjects whose search is
+guaranteed to resolve it, those with `kel * tau >= 5e-4` (residual at
+most 0.2%, i.e. a terminal half-life up to about 1400 dosing intervals);
+the few subjects whose random effects, weight and PPI use combine to a
+half-life of years are counted and left out of the identity.
+
 ``` r
 
-cl_by_id <- sim_ss |> distinct(id, cl)
+cl_by_id <- sim_ss |> distinct(id, cl, vc)
 tau_by_reg <- c("200 mg TID" = 8, "200 mg BID" = 12)
 
 auc_check <- nca_wide |>
   left_join(cl_by_id, by = "id") |>
   mutate(
     tau           = tau_by_reg[regimen],
+    kel_tau       = cl / vc * tau,
+    ss_resolved   = kel_tau >= 5e-4,
     auc_expected  = 200 / cl,
     pct_error     = 100 * (auclast - auc_expected) / auc_expected
   )
@@ -783,29 +1013,36 @@ auc_check <- nca_wide |>
 auc_check |>
   group_by(regimen) |>
   summarise(
+    `Subjects`                   = n(),
+    `Excluded (kel*tau < 5e-4)`  = sum(!ss_resolved),
     `Median AUCtau (PKNCA)`      = median(auclast),
     `Median Dose/CL`             = median(auc_expected),
-    `Max abs. difference (%)`    = max(abs(pct_error)),
+    `Max abs. difference (%)`    = max(abs(pct_error[ss_resolved])),
     .groups = "drop"
   ) |>
   rename("Regimen" = regimen) |>
   knitr::kable(digits = 3, caption =
-    "Steady-state mass-balance identity AUCtau = Dose / (CL/F). The residual difference is trapezoidal-integration error on a 0.25 h grid, not a model discrepancy.")
+    "Steady-state mass-balance identity AUCtau = Dose / (CL/F), over the subjects whose steady-state search resolves it. The residual difference is trapezoidal-integration error on a 0.25 h grid plus the steady-state search residual, not a model discrepancy.")
 ```
 
-| Regimen    | Median AUCtau (PKNCA) | Median Dose/CL | Max abs. difference (%) |
-|:-----------|----------------------:|---------------:|------------------------:|
-| 200 mg BID |                18.740 |         18.741 |                   0.120 |
-| 200 mg TID |                15.408 |         15.410 |                   0.163 |
+| Regimen | Subjects | Excluded (kel\*tau \< 5e-4) | Median AUCtau (PKNCA) | Median Dose/CL | Max abs. difference (%) |
+|:---|---:|---:|---:|---:|---:|
+| 200 mg BID | 100 | 0 | 18.740 | 18.741 | 0.120 |
+| 200 mg TID | 100 | 0 | 15.408 | 15.410 | 0.163 |
 
-Steady-state mass-balance identity AUCtau = Dose / (CL/F). The residual
-difference is trapezoidal-integration error on a 0.25 h grid, not a
-model discrepancy. {.table}
+Steady-state mass-balance identity AUCtau = Dose / (CL/F), over the
+subjects whose steady-state search resolves it. The residual difference
+is trapezoidal-integration error on a 0.25 h grid plus the steady-state
+search residual, not a model discrepancy. {.table}
 
 ``` r
 
 
-stopifnot(max(abs(auc_check$pct_error)) < 2)
+# Measured floor over the resolved subjects: the search residual 100 * ssRtol /
+# (kel * tau) <= 0.2%, usually far below it; the 2% bound keeps >= 10x headroom.
+# Only a few percent of subjects fall below the resolution cut-off.
+stopifnot(mean(auc_check$ss_resolved) > 0.97)
+stopifnot(max(abs(auc_check$pct_error[auc_check$ss_resolved])) < 2)
 ```
 
 ``` r
@@ -844,8 +1081,9 @@ discussed above.
   is well corroborated by Table 2’s own RSE-versus-bootstrap
   inconsistency but is also, on the evidence of the sensitivity table,
   nearly inconsequential for trough-based predictions – it matters for
-  Cmax and for the shape of a single-dose profile, not for the paper’s
-  dose recommendations.
+  Cmax and for the shape of a single-dose profile, and changes the
+  minimum 70%-PTA regimen in only some strata (see the sensitivity
+  table).
 - **PPI effect direction at steady state.** The published model places
   the PPI effect on `V/F` only, so at exact steady state it raises the
   trough rather than lowering it, which is the opposite of the paper’s
@@ -889,10 +1127,16 @@ discussed above.
   flatter, higher trough.
 - **Simulation size.** The paper used n = 100 per scenario; this
   vignette uses n = 200 per arm for the PTA grid and n = 150 per arm for
-  the TDM-style cohorts, both within the 200-per-arm cap. Monte Carlo
-  error on a PTA near 70% is about 3 percentage points at n = 200, which
-  is enough to move a borderline regimen by one step in either
-  direction.
+  the TDM-style cohorts, both within the 200-per-arm cap. The PTA grid
+  evaluates the same 200 subjects (one draw of `etalcl` and `etalvc`) in
+  every arm, so each regimen’s cohort has 200 subjects but the arms are
+  not independent samples. Sampling error on a PTA near 70% is about 3
+  percentage points at n = 200, which is enough to change which regimen
+  is the minimum that passes; because the arms share subjects, their
+  sampling errors are correlated, so comparisons between arms are paired
+  rather than independent. Each stratum is solved once at 1 mg/kg and
+  scaled to the other doses, which is exact for this linear model
+  (checked in the `pta-dose-linearity` chunk).
 - **Dose distribution.** The observed-concentration comparison simulates
   200 mg TID and 200 mg BID because the paper reports only a 150-600
   mg/day range without a per-patient dose breakdown.

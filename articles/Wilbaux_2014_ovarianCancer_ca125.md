@@ -260,7 +260,7 @@ a sensible range.
 sim_vpc <- rxSolve(mod, ev_one, nSub = n_subj, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> [intdy -- t = 0 illegal]: 14 warning(s) for subject(s): 1 (sim 2), 1 (sim 21), 1 (sim 68), 1 (sim 76)
-#> [intdy -- t = 4.63915e-310 illegal]: 214 warning(s) for subject(s): 1 (sim 2), 1 (sim 21), 1 (sim 68), 1 (sim 76)
+#> [intdy -- t = 4.6847e-310 illegal]: 214 warning(s) for subject(s): 1 (sim 2), 1 (sim 21), 1 (sim 68), 1 (sim 76)
 #> [lsoda -- internal t + h = t (h too small for machine precision)]: 14 warning(s) for subject(s): 1 (sim 2), 1 (sim 21), 1 (sim 68), 1 (sim 76)
 # rxSolve duplicates rows when multiple cmts are observed at the same time;
 # dedup by (sim.id, time).
@@ -463,7 +463,7 @@ sessionInfo()
 #> [16] scales_1.4.0        textshaping_1.0.5   jquerylib_0.1.4    
 #> [19] cli_3.6.6           crayon_1.5.3        symengine_0.2.14   
 #> [22] rlang_1.3.0         withr_3.0.3         cachem_1.1.0       
-#> [25] yaml_2.3.12         otel_0.2.0          tools_4.6.2        
+#> [25] yaml_2.3.12         otel_0.3.0          tools_4.6.2        
 #> [28] parallel_4.6.2      memoise_2.0.1       checkmate_2.3.4    
 #> [31] rxode2lincmt_0.1.0  vctrs_0.7.3         R6_2.6.1           
 #> [34] lifecycle_1.0.5     fs_2.1.0            ragg_1.5.2         

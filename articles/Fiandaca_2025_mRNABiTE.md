@@ -214,6 +214,114 @@ axis: the whole 120 ug dose is placed in 0.944 mL of plasma, so `Cc(0)`
 is about 127,072 ng/mL, and the profile falls steeply through the
 observed points.
 
+### The recombinant arm from the LCM file
+
+Figure 4 of the paper is the SCM’s training result, so the SCM file is
+the one that reproduces Figure 4A. The LCM file can be dosed into
+`plasma` in the same way, but it carries a 100-fold smaller pinocytosis
+rate `CL_up` (see the notes at the end of this article). Outside the
+mRNA module the two files have the same model code, and every parameter
+they share takes the same value except `CL_up` and the mRNA-module
+rates; both facts are checked below. With no mRNA dosed, the mRNA states
+stay at zero, so comparing the two recombinant arms isolates the
+100-fold difference in `CL_up`.
+
+``` r
+
+rec_lcm <- sim_profile(lcm, "plasma", DOSE_UG(6))
+rec_both <- dplyr::inner_join(rec, rec_lcm, by = "time", suffix = c("_scm", "_lcm")) |>
+  dplyr::mutate(rel_diff = Cc_lcm / Cc_scm - 1)
+
+# Largest relative gap over the first 24 h, where every observed mean is high,
+# the gap at 72 h, and the largest gap over the whole 168 h.
+obs_min_24 <- min(obs_recombinant$mean[obs_recombinant$time <= 24])
+lcm_rec_gap_24 <- max(abs(rec_both$rel_diff[rec_both$time > 0 & rec_both$time <= 24]))
+lcm_rec_gap_72 <- rec_both$rel_diff[rec_both$time == 72]
+lcm_rec_gap_max <- max(abs(rec_both$rel_diff[rec_both$time > 0]))
+
+# Model and observed values at the sampling times from 24 h on.
+late <- rec_both |>
+  dplyr::filter(time %in% t_obs, time >= 24) |>
+  dplyr::mutate(observed = obs_recombinant$mean[match(time, t_obs)])
+
+knitr::kable(
+  rec_both |>
+    dplyr::filter(time %in% t_obs) |>
+    dplyr::mutate(observed = obs_recombinant$mean[match(time, t_obs)],
+                  Cc_scm = round(Cc_scm, 1), Cc_lcm = round(Cc_lcm, 1),
+                  rel_diff = sprintf("%+.1f%%", 100 * rel_diff)) |>
+    dplyr::select(time, observed, Cc_scm, Cc_lcm, rel_diff) |>
+    dplyr::rename("Time (h)" = time, "Observed (ng/mL)" = observed,
+                  "SCM file (ng/mL)" = Cc_scm, "LCM file (ng/mL)" = Cc_lcm,
+                  "LCM vs SCM" = rel_diff),
+  caption = "Recombinant BiTE 6 mg/kg IV: SCM and LCM files against the observed means"
+)
+```
+
+| Time (h) | Observed (ng/mL) | SCM file (ng/mL) | LCM file (ng/mL) | LCM vs SCM |
+|---------:|-----------------:|-----------------:|-----------------:|:-----------|
+|        1 |           6227.3 |          20342.0 |          20485.5 | +0.7%      |
+|        4 |           1772.7 |           2667.4 |           2725.8 | +2.2%      |
+|        6 |           1090.9 |           1288.2 |           1325.4 | +2.9%      |
+|       12 |            295.5 |            404.8 |            424.3 | +4.8%      |
+|       24 |            204.5 |            116.7 |            126.1 | +8.0%      |
+|       48 |             90.9 |             21.3 |             23.8 | +12.1%     |
+|       72 |             90.9 |              6.1 |              7.0 | +15.5%     |
+|      144 |             45.5 |              0.2 |              0.3 | +27.9%     |
+|      168 |             45.5 |              0.1 |              0.1 | +32.5%     |
+
+Recombinant BiTE 6 mg/kg IV: SCM and LCM files against the observed
+means {.table}
+
+``` r
+
+# Shared parameters whose values differ between the two files.
+shared_theta <- intersect(names(scm$theta), names(lcm$theta))
+differ_theta <- shared_theta[scm$theta[shared_theta] != lcm$theta[shared_theta]]
+
+# Model statements found in only one file, after removing the hepatic
+# translation terms (ktr_mrna * mrna_liver) from the liver interstitium ODE.
+model_lines <- function(ui) {
+  gsub("\\s*\\+\\s*ktr_mrna[0-9]\\s*\\*\\s*mrna_liver[0-9]", "",
+       vapply(ui$lstExpr, deparse1, ""))
+}
+only_one_file <- c(setdiff(model_lines(scm), model_lines(lcm)),
+                   setdiff(model_lines(lcm), model_lines(scm)))
+
+stopifnot(
+  # the parameters that differ are CL_up and the mRNA-module rates only
+  setequal(differ_theta, c("lclup", "lkbl2lv", "lks12", "lkrna",
+                           "lktr_mrna1", "lktr_mrna2")),
+  abs(exp(scm$theta[["lclup"]] - lcm$theta[["lclup"]]) - 100) < 0.01,
+  # the model statements that differ all define mRNA-module quantities
+  length(only_one_file) > 0,
+  all(grepl("^(d/dt\\(mrna_liver|ks23 <-|ktr_mrna3 <-)", only_one_file)),
+  # less pinocytic loss can only raise the curve
+  all(rec_both$rel_diff[rec_both$time > 0] > 0),
+  # the gaps stated below: about 8% over the first 24 h, about 15.5% at 72 h,
+  # about 32.5% at most over 168 h
+  lcm_rec_gap_24 > 0.075, lcm_rec_gap_24 < 0.085,
+  lcm_rec_gap_72 > 0.150, lcm_rec_gap_72 < 0.160,
+  lcm_rec_gap_max > 0.320, lcm_rec_gap_max < 0.330,
+  # both curves below 10 ng/mL by 72 h
+  rec_both$Cc_scm[rec_both$time == 72] < 10,
+  rec_both$Cc_lcm[rec_both$time == 72] < 10,
+  # from 24 h on, both files lie below every observed mean
+  all(late$Cc_scm < late$observed), all(late$Cc_lcm < late$observed)
+)
+```
+
+The LCM file’s curve lies above the SCM file’s at every time. Over the
+first 24 h, where every observed mean is at least 204.5 ng/mL, the gap
+is at most 8.0%. The relative gap grows as the curves fall, to 15.5% at
+72 h and 32.5% by 168 h, by which time both curves are below 10 ng/mL.
+From 24 h on, both files lie below every observed mean (at 24 h, 116.7
+ng/mL for the SCM file and 126.1 ng/mL for the LCM file, against 204.5
+ng/mL observed). The LCM file therefore gives a recombinant arm close to
+the SCM file’s while concentrations are high, but not an identical one;
+Figure 4A is the SCM’s training fit to these data, so use the SCM file
+to reproduce it.
+
 ## Replicating Figure 4B and 6B – mRNA-encoded BiTE training
 
 ``` r
@@ -664,10 +772,12 @@ Further notes:
   the recombinant version of the product”, which is the same dataset for
   both variants, yet the table reports 1e-1 for the SCM and 1e-3 for the
   LCM. The deposited `LCM_parameters_estimated.mat` confirms 9.9996e-4,
-  so the values are reproduced as published. In practice this means the
-  LCM’s protein-transport module is not interchangeable with the SCM’s:
-  dosing `plasma` in the LCM file does **not** reproduce Figure 4A. Use
-  `Fiandaca_2025_mRNABiTE_scm` for the recombinant arm.
+  so the values are reproduced as published. Dosing `plasma` in the LCM
+  file gives a recombinant curve within 8.0% of the SCM file’s over the
+  first 24 h; the relative gap grows to 32.5% by 168 h, when both curves
+  are below 10 ng/mL (see “The recombinant arm from the LCM file”
+  above). Figure 4A is the SCM’s training fit, so use
+  `Fiandaca_2025_mRNABiTE_scm` to reproduce it.
 - **Tumour lymph is not returned to the lymph node.** The deposit’s
   lymph-node equation sums the 15 anatomical tissues but omits the
   tumour’s interstitial lymph flow, a small mass-balance leak.

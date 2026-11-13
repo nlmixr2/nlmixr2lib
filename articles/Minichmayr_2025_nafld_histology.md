@@ -237,11 +237,11 @@ signif(max_err, 2)
 #>                steatosis             inflammation               ballooning 
 #>                  0.0e+00                  0.0e+00                  0.0e+00 
 #>                 fibrosis      portal_inflammation microvesicular_steatosis 
-#>                  0.0e+00                  3.3e-16                  3.3e-16 
+#>                  0.0e+00                  2.2e-16                  5.6e-16 
 #>          microgranulomas           lipogranulomas         acidophil_bodies 
-#>                  4.4e-16                  2.2e-16                  2.2e-16 
+#>                  3.3e-16                  2.2e-16                  1.1e-16 
 #>    pigmented_macrophages         megamitochondria          mallory_hyaline 
-#>                  3.3e-16                  2.2e-16                  2.2e-16 
+#>                  2.2e-16                  2.2e-16                  2.2e-16 
 #>          glycogen_nuclei 
 #>                  1.1e-16
 ```

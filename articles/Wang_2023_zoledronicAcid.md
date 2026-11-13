@@ -1216,7 +1216,7 @@ stopifnot(any(apr$apr_n > apr$total_n))   # the Table 3 inconsistency is real
     #> [40] grid_4.6.2          cli_3.6.6           dparser_1.3.1-14   
     #> [43] magrittr_2.0.5      utf8_1.2.6          withr_3.0.3        
     #> [46] scales_1.4.0        backports_1.5.1     rmarkdown_2.32     
-    #> [49] otel_0.2.0          askpass_1.2.1       ragg_1.5.2         
+    #> [49] otel_0.3.0          askpass_1.2.1       ragg_1.5.2         
     #> [52] memoise_2.0.1       evaluate_1.0.5      knitr_1.52         
     #> [55] rex_1.2.2           PreciseSums_0.7     rlang_1.3.0        
     #> [58] downlit_0.4.5       Rcpp_1.1.2          glue_1.8.1         

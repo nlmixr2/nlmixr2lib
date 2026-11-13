@@ -1,0 +1,655 @@
+# ADTKD eGFR decline and kidney failure (Ramesh 2025)
+
+``` r
+
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+rxode2::rxSetSeed(20250724)
+set.seed(20250724)
+```
+
+Ramesh et al. (2025) modelled the natural history of autosomal dominant
+tubulointerstitial kidney disease (ADTKD) in adults from the Wake Forest
+inherited-kidney-disease registry. The two genetic forms, UMOD
+(uromodulin) and MUC1 (mucin-1), were modelled separately, and for each
+form the paper fitted two independent models: a nonlinear mixed-effects
+model of eGFR against age, and a parametric time-to-event model of the
+age at kidney failure. The package therefore ships four model files that
+share this vignette:
+
+``` r
+
+umod_egfr <- nlmixr2lib::readModelDb("Ramesh_2025_adtkd_umod_egfr")
+muc1_egfr <- nlmixr2lib::readModelDb("Ramesh_2025_adtkd_muc1_egfr")
+umod_kf <- nlmixr2lib::readModelDb("Ramesh_2025_adtkd_umod_kf")
+muc1_kf <- nlmixr2lib::readModelDb("Ramesh_2025_adtkd_muc1_kf")
+```
+
+Reference: Ramesh SS, Rogge M, Kidd KO, Williams AH, Yoon DY, Roignot J,
+Blakeslee K, Bleyer AJ, Kim S (2025). Quantifying clinical and genetic
+factors influencing rate and severity of autosomal dominant
+tubulointerstitial kidney disease progression. *J Pharmacokinet
+Pharmacodyn* 52(4):41.
+[doi:10.1007/s10928-025-09989-0](https://doi.org/10.1007/s10928-025-09989-0)
+
+There is no drug in these models. The model time is the subject’s **age
+in years**, so a simulation data set carries age in its `time` column,
+has no dosing rows, and supplies the two time-fixed covariates measured
+at the first clinic visit: `CRCL_BASE` (eGFR at the first visit,
+mL/min/1.73 m^2) and `AGE_BASE` (age at the first visit, years). The
+kidney-failure model for UMOD also needs `SEXF`.
+
+## Population
+
+The analysis data set held 6,447 visits from 604 adults aged 18-80
+years: 371 with ADTKD-UMOD and 233 with ADTKD-MUC1 (Table 1). The median
+follow-up was 9 years. In the UMOD group 215 were female, the median age
+at the first clinic visit was 36.8 years (95% interval 18.3-58.9) and
+the median eGFR at that visit was 45.4 mL/min/1.73 m^2 (14.6-94.8); 105
+reached kidney failure. In the MUC1 group 142 were female, the median
+age at the first visit was 37.7 years (20.6-65.0), the median
+first-visit eGFR was 58.6 (25.4-101.7), and 145 reached kidney failure.
+eGFR was computed with the CKD-EPI creatinine equation; kidney failure
+was defined as an eGFR of 10 mL/min/1.73 m^2 or less, the point of
+dialysis initiation. Most participants (92%) were White. Each model was
+fitted to a random 80% training split and checked against the remaining
+20%.
+
+The same information is available programmatically through the
+`population` element of each model,
+e.g. `readModelDb("Ramesh_2025_adtkd_umod_egfr")()$population`.
+
+## Model structure
+
+**eGFR against age (Equation 1 and Supplementary S2).** For subject *i*
+at age *a*,
+
+eGFR = DP0 \* (1 - DPmax \* f(a)),
+
+where *f* is an asymmetric sigmoid in age: below the inflection age
+DPT50 it is `(a/DPT50)^g1 / (1 + (a/DPT50)^g1)`, and above it
+`1 / (1 + (DPT50/a)^g2)`. The two branches meet at 0.5 when `a = DPT50`,
+so the curve is continuous, but the steepness changes from the shallow
+`g1` (about 1) to the steep `g2` (6.3 for UMOD, 10.2 for MUC1). DP0 is
+the eGFR extrapolated to age 0, DPmax the maximum fractional decrease
+(fixed), and log-normal random effects act on DPT50, `g1`, `g2` and DP0,
+with `g1` and DP0 correlated. Continuous covariates enter as power terms
+centred on the observation-weighted means printed in Supplementary S2
+(eGFR 43.4044 mL/min/1.73 m^2, age 35.2138 years).
+
+**Age at kidney failure (Equation 2).** A Weibull hazard
+`h(a) = (p/Te) * (a/Te)^(p - 1)`, so that the kidney-failure-free
+probability is `S(a) = exp(-(a/Te)^p)` and `S(Te) = exp(-1) = 0.368` for
+every `p` (Supplementary S1 Equation S3). Te carries an exponential
+effect of male sex (UMOD only) and a power effect of the age at the
+first clinic visit. The files store the Weibull scale as the rate
+`lambda = 1/Te` and rebuild Te in
+[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html), so
+the paper’s covariate exponents keep their published signs.
+
+## Source trace
+
+| Model | Parameter | Value | Source |
+|----|----|----|----|
+| UMOD eGFR | `le0` (DP0) | log(76.69) | Table 2A TV_DP0 |
+| UMOD eGFR | `logitimax` (DPmax) | logit(0.999), fixed | Supplementary S2 `Imax_pop` FIXED (Table 2A prints 0.99) |
+| UMOD eGFR | `lt50max` (DPT50) | log(39.76) years | Table 2A TV_DPT50 |
+| UMOD eGFR | `lhill` (gamma1) | log(1.12) | Table 2A TV_gamma1 |
+| UMOD eGFR | `lhill_late` (gamma2) | log(6.34) | Table 2A TV_gamma2 |
+| UMOD eGFR | `e_age_base_t50max` | 0.93 | Table 2A beta_AFCV_DPT50 |
+| UMOD eGFR | `e_crcl_base_hill_late` | -0.68 | Table 2A beta_eGFR_FCV_gamma2 |
+| UMOD eGFR | `e_age_base_hill_late` | 1.14 | Table 2A beta_AFCV_gamma2 |
+| UMOD eGFR | `e_crcl_base_e0` | 1 | Table 2A beta_eGFR_FCV_DP0 |
+| UMOD eGFR | IIV DPT50 / gamma1 / gamma2 / DP0 | 7.61 / 194 / 98.93 / 12.97 %CV | Table 2A omega rows, variance log(1 + CV^2) |
+| UMOD eGFR | correlation gamma1-DP0 | -0.88 | Table 2A |
+| UMOD eGFR | `addSd`, `propSd` | 0.33, 0.11 | Table 2A error model (Monolix `combined1`) |
+| MUC1 eGFR | `le0` (DP0) | log(82.74) | Table 2A TV_DP0 |
+| MUC1 eGFR | `logitimax` (DPmax) | logit(0.999), fixed | Supplementary S2 `Imax_pop` FIXED |
+| MUC1 eGFR | `lt50max` (DPT50) | log(38.36) years | Table 2A TV_DPT50 |
+| MUC1 eGFR | `lhill` (gamma1) | log(0.9) | Table 2A TV_gamma1 |
+| MUC1 eGFR | `lhill_late` (gamma2) | log(10.23) | Table 2A TV_gamma2 |
+| MUC1 eGFR | `e_crcl_base_t50max` | 0.04 | Table 2A beta_eGFR_FCV_DPT50 |
+| MUC1 eGFR | `e_age_base_t50max` | 0.97 | Table 2A beta_AFCV_DPT50 |
+| MUC1 eGFR | `e_crcl_base_hill` | -0.67 | Table 2A beta_eGFR_FCV_gamma1 |
+| MUC1 eGFR | `e_crcl_base_hill_late` | -1.13 | Table 2A beta_eGFR_FCV_gamma2 |
+| MUC1 eGFR | `e_age_base_hill_late` | 0.28 | Table 2A beta_AFCV_gamma2 |
+| MUC1 eGFR | `e_crcl_base_e0` | 0.96 | Table 2A beta_eGFR_FCV_DP0 |
+| MUC1 eGFR | IIV DPT50 / gamma1 / gamma2 / DP0 | 7.63 / 21.6 / 74 / 9.5 %CV | Table 2A omega rows, variance log(1 + CV^2) |
+| MUC1 eGFR | correlation gamma1-DP0 | -0.63 | Table 2A |
+| MUC1 eGFR | `propSd` | 0.12 | Table 2A error model (Monolix `proportional`) |
+| UMOD KF | `llam_haz` | log(1/54.32) | Table 2B Te |
+| UMOD KF | `lalfa_haz` (p) | log(8.69) | Table 2B p |
+| UMOD KF | `e_male_te` | -0.07 | Table 2B beta_Te_Male |
+| UMOD KF | `e_age_base_te` | 0.59 | Table 2B beta_Te_AFCV |
+| MUC1 KF | `llam_haz` | log(1/51.54) | Table 2B Te |
+| MUC1 KF | `lalfa_haz` (p) | log(6.82) | Table 2B p |
+| MUC1 KF | `e_age_base_te` | 0.81 | Table 2B beta_Te_AFCV |
+| all | eGFR centring 43.4044, age centring 35.2138 |  | Supplementary S2 `logtBL_EGFR`, `logtBL_VA` |
+| eGFR | asymmetric sigmoid |  | Equation 1; Supplementary S2 `Asymmetrical_Model_Code` |
+| KF | Weibull hazard |  | Equation 2; Supplementary S1 Table S1.2 |
+
+## Structural verification
+
+The eGFR model is algebraic, so a typical-value solve is compared
+against an independent R implementation of Equation 1. Both sides use
+the same parameters, so the bound is tight.
+
+``` r
+
+egfr_closed <- function(age, e0, imax, t50, g1, g2) {
+  f <- ifelse(
+    age <= t50,
+    (age / t50)^g1 / (1 + (age / t50)^g1),
+    1 / (1 + (t50 / age)^g2)
+  )
+  e0 * (1 - imax * f)
+}
+
+cov_grid <- expand.grid(
+  CRCL_BASE = c(15, 30, 45, 60, 90),
+  AGE_BASE = c(20, 35, 50, 65)
+) |>
+  dplyr::mutate(id = dplyr::row_number())
+age_grid <- seq(18, 85, by = 0.5)
+typ_events <- cov_grid |>
+  tidyr::crossing(time = age_grid) |>
+  dplyr::mutate(evid = 0, amt = 0) |>
+  dplyr::arrange(id, time)
+
+# zeroRe() removes the random effects, so rxSolve() warns that a
+# multi-subject solve has no omega; each subject here is a covariate-grid
+# typical subject, which is what is intended.
+solve_typical <- function(mod, label) {
+  suppressWarnings(
+    rxode2::rxSolve(rxode2::zeroRe(mod), typ_events, returnType = "data.frame",
+                    keep = c("CRCL_BASE", "AGE_BASE"))
+  ) |>
+    dplyr::mutate(genotype = label)
+}
+typ <- dplyr::bind_rows(
+  solve_typical(umod_egfr, "UMOD"),
+  solve_typical(muc1_egfr, "MUC1")
+)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> ℹ omega/sigma items treated as zero: 'etalt50max', 'etalhill_late', 'etalhill', 'etale0'
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> ℹ omega/sigma items treated as zero: 'etalt50max', 'etalhill_late', 'etalhill', 'etale0'
+closed <- with(typ, egfr_closed(time, e0, imax, t50max, hill, hill_late))
+stopifnot(max(abs(typ$egfr - closed)) < 1e-8)
+
+# Continuity at the inflection age: both branches give f = 0.5 there.
+at_t50 <- typ |>
+  dplyr::group_by(genotype, id) |>
+  dplyr::summarise(
+    t50 = t50max[1], e0 = e0[1], imax = imax[1],
+    g1 = hill[1], g2 = hill_late[1], .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    below = egfr_closed(t50 * (1 - 1e-9), e0, imax, t50, g1, g2),
+    above = egfr_closed(t50 * (1 + 1e-9), e0, imax, t50, g1, g2)
+  )
+stopifnot(max(abs(at_t50$below - at_t50$above) / at_t50$e0) < 1e-6)
+```
+
+The Discussion notes that the near-unit exponent of the first-visit eGFR
+on DP0 “ensur\[es\] consistency between clinical observations and model
+predictions”. That is checkable: for a typical subject, the eGFR the
+model predicts at the age of the first visit should sit close to the
+eGFR measured at that visit, across the whole covariate grid.
+
+``` r
+
+first_visit <- typ |>
+  dplyr::filter(abs(time - AGE_BASE) < 1e-8) |>
+  dplyr::mutate(ratio = egfr / CRCL_BASE)
+
+first_visit |>
+  dplyr::group_by(genotype) |>
+  dplyr::summarise(
+    `median ratio` = round(median(ratio), 3),
+    `min ratio` = round(min(ratio), 3),
+    `max ratio` = round(max(ratio), 3)
+  ) |>
+  dplyr::rename(Genotype = genotype) |>
+  knitr::kable(caption = "Typical predicted eGFR at the first-visit age divided by the first-visit eGFR, over 20 covariate combinations.")
+```
+
+| Genotype | median ratio | min ratio | max ratio |
+|:---------|-------------:|----------:|----------:|
+| MUC1     |        0.987 |     0.951 |     1.050 |
+| UMOD     |        0.938 |     0.923 |     0.964 |
+
+Typical predicted eGFR at the first-visit age divided by the first-visit
+eGFR, over 20 covariate combinations. {.table}
+
+``` r
+
+
+stopifnot(
+  nrow(first_visit) == 40,
+  all(abs(first_visit$ratio - 1) < 0.15)
+)
+```
+
+The typical prediction at the first visit is within 15% of the measured
+first-visit eGFR everywhere on the grid, a little below it because the
+shallow pre-inflection branch has already lowered eGFR by the first
+visit.
+
+For the time-to-event models the solved survival is compared against
+`exp(-(age/Te)^p)`, and Equation S3 is checked: survival at age Te is
+`exp(-1)` whatever the shape.
+
+``` r
+
+kf_events <- expand.grid(
+  SEXF = c(0, 1),
+  AGE_BASE = c(20, 35.2138, 50),
+  time = seq(1, 90, by = 1)
+) |>
+  dplyr::mutate(id = as.integer(factor(paste(SEXF, AGE_BASE))), evid = 0, amt = 0) |>
+  dplyr::arrange(id, time)
+
+# The time-to-event models have no random effects, so rxSolve() warns that a
+# multi-subject solve has no omega; every subject is a typical subject here.
+kf <- suppressWarnings(dplyr::bind_rows(
+  rxode2::rxSolve(umod_kf, kf_events, returnType = "data.frame",
+                  keep = c("SEXF", "AGE_BASE")) |>
+    dplyr::mutate(genotype = "UMOD"),
+  rxode2::rxSolve(muc1_kf, kf_events, returnType = "data.frame",
+                  keep = c("SEXF", "AGE_BASE")) |>
+    dplyr::mutate(genotype = "MUC1")
+))
+stopifnot(max(abs(kf$sur - exp(-(kf$time / kf$te)^kf$alfa))) < 1e-12)
+
+at_te <- kf |>
+  dplyr::distinct(genotype, SEXF, AGE_BASE, te, lam, alfa) |>
+  dplyr::mutate(sur_te = exp(-(lam * te)^alfa))
+stopifnot(max(abs(at_te$sur_te - exp(-1))) < 1e-12)
+```
+
+## Published derived quantities
+
+The Discussion gives several numbers that follow from Table 2B.
+
+``` r
+
+umod_te <- 54.32
+umod_p <- 8.69
+muc1_te <- 51.54
+muc1_p <- 6.82
+male_te <- umod_te * exp(-0.07)
+
+derived <- tibble::tribble(
+  ~Quantity, ~Model, ~Paper,
+  "UMOD: Te for a male, years", male_te, 50.4,
+  "UMOD: years by which males reach Te earlier", umod_te - male_te, 3.8,
+  "UMOD: age at 50% KF-free, female, years", umod_te * log(2)^(1 / umod_p), 50,
+  "UMOD: age at 50% KF-free, male, years", male_te * log(2)^(1 / umod_p), 46.5,
+  "MUC1: age at 50% KF-free, years", muc1_te * log(2)^(1 / muc1_p), 48.3
+) |>
+  dplyr::mutate(Model = round(Model, 2))
+knitr::kable(derived, caption = "Discussion values against the packaged models at the reference covariates (age at first visit 35.2 years).")
+```
+
+| Quantity                                    | Model | Paper |
+|:--------------------------------------------|------:|------:|
+| UMOD: Te for a male, years                  | 50.65 |  50.4 |
+| UMOD: years by which males reach Te earlier |  3.67 |   3.8 |
+| UMOD: age at 50% KF-free, female, years     | 52.08 |  50.0 |
+| UMOD: age at 50% KF-free, male, years       | 48.56 |  46.5 |
+| MUC1: age at 50% KF-free, years             | 48.84 |  48.3 |
+
+Discussion values against the packaged models at the reference
+covariates (age at first visit 35.2 years). {.table}
+
+``` r
+
+
+stopifnot(
+  abs(derived$Model[1] - 50.4) < 0.5,
+  abs(derived$Model[2] - 3.8) < 0.5
+)
+```
+
+The male Te and the four-year sex gap are reproduced. The ages at 50%
+kidney-failure-free survival are 1-2 years above the Discussion’s values
+for UMOD and within a year for MUC1. The paper does not say at which age
+at first visit those ages were computed; the model values above are at
+the centring age of 35.2 years, and a 2-year shift corresponds to a
+first-visit age about 7 years younger, so the difference is not used as
+a gate.
+
+## Kidney-failure-free survival by age at first visit (Figures 4 and 5)
+
+Figures 4 and 5 are visual predictive checks stratified by sex (UMOD)
+and by 10-year bands of the age at the first clinic visit; the dashed
+line is the model-predicted median. The age at which that dashed line
+crosses 0.5 was read from each panel by the maintainers. The model value
+is the age at which the mean survival over an even grid of first-visit
+ages across the band falls to 0.5. The digitised values carry about 1
+year of reading error, and the model-side band average assumes
+first-visit ages are spread evenly across the band, which the registry
+cohort need not be.
+
+``` r
+
+band_median <- function(te0, p, b_male, b_age, male, lo, hi) {
+  afcv <- seq(lo, hi, length.out = 41)
+  te <- te0 * exp(b_male * male) * (afcv / 35.2138)^b_age
+  uniroot(function(a) mean(exp(-(a / te)^p)) - 0.5, c(1, 150))$root
+}
+
+fig45 <- tibble::tribble(
+  ~Figure, ~Genotype, ~Sex, ~lo, ~hi, ~digitised,
+  "4", "UMOD", "Female", 18, 28, 39.5,
+  "4", "UMOD", "Male", 18, 28, 36,
+  "4", "UMOD", "Female", 29, 38, 49.5,
+  "4", "UMOD", "Male", 29, 38, 46,
+  "4", "UMOD", "Female", 39, 48, 58.5,
+  "4", "UMOD", "Male", 39, 48, 54.5,
+  "5", "MUC1", "Both", 18, 28, 34.5,
+  "5", "MUC1", "Both", 29, 38, 45.5,
+  "5", "MUC1", "Both", 39, 48, 56,
+  "5", "MUC1", "Both", 49, 58, 67,
+  "5", "MUC1", "Both", 59, 72, 78
+) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    model = if (Genotype == "UMOD") {
+      band_median(umod_te, umod_p, -0.07, 0.59, as.numeric(Sex == "Male"), lo, hi)
+    } else {
+      band_median(muc1_te, muc1_p, 0, 0.81, 0, lo, hi)
+    }
+  ) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(diff = model - digitised)
+
+fig45 |>
+  dplyr::mutate(
+    band = paste0(lo, "-", hi),
+    model = round(model, 1),
+    diff = round(diff, 1)
+  ) |>
+  dplyr::select(Figure, Genotype, Sex, band, digitised, model, diff) |>
+  dplyr::rename(
+    `First-visit age band` = band,
+    `Figure median (years)` = digitised,
+    `Model median (years)` = model,
+    `Difference (years)` = diff
+  ) |>
+  knitr::kable(caption = "Age at which the predicted kidney-failure-free proportion reaches 0.5, by stratum.")
+```
+
+| Figure | Genotype | Sex | First-visit age band | Figure median (years) | Model median (years) | Difference (years) |
+|:---|:---|:---|:---|---:|---:|---:|
+| 4 | UMOD | Female | 18-28 | 39.5 | 40.1 | 0.6 |
+| 4 | UMOD | Male | 18-28 | 36.0 | 37.3 | 1.3 |
+| 4 | UMOD | Female | 29-38 | 49.5 | 50.3 | 0.8 |
+| 4 | UMOD | Male | 29-38 | 46.0 | 46.9 | 0.9 |
+| 4 | UMOD | Female | 39-48 | 58.5 | 58.8 | 0.3 |
+| 4 | UMOD | Male | 39-48 | 54.5 | 54.9 | 0.4 |
+| 5 | MUC1 | Both | 18-28 | 34.5 | 34.1 | -0.4 |
+| 5 | MUC1 | Both | 29-38 | 45.5 | 46.6 | 1.1 |
+| 5 | MUC1 | Both | 39-48 | 56.0 | 57.7 | 1.7 |
+| 5 | MUC1 | Both | 49-58 | 67.0 | 68.4 | 1.4 |
+| 5 | MUC1 | Both | 59-72 | 78.0 | 80.5 | 2.5 |
+
+Age at which the predicted kidney-failure-free proportion reaches 0.5,
+by stratum. {.table style="width:100%;"}
+
+``` r
+
+
+stopifnot(
+  abs(median(fig45$diff)) < 1.5,
+  max(abs(fig45$diff)) < 4
+)
+```
+
+The model reproduces the stratum medians of both figures to within 1.7
+years, and to within a year in most strata. The largest gap is the
+oldest MUC1 band, whose curve is cut off by the 80-year axis limit and
+whose 14-year band is the widest, so the even-spread assumption matters
+most there. The model medians sit slightly late overall, which is what a
+cohort whose first-visit ages cluster toward the lower edge of each band
+would produce.
+
+``` r
+
+curve_grid <- tidyr::crossing(
+  fig45 |> dplyr::select(Genotype, Sex, lo, hi),
+  age = seq(0, 90, by = 0.5)
+) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    sur = {
+      afcv <- seq(lo, hi, length.out = 41)
+      te <- if (Genotype == "UMOD") {
+        umod_te * exp(-0.07 * (Sex == "Male")) * (afcv / 35.2138)^0.59
+      } else {
+        muc1_te * (afcv / 35.2138)^0.81
+      }
+      p <- if (Genotype == "UMOD") umod_p else muc1_p
+      mean(exp(-(age / te)^p))
+    }
+  ) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(panel = paste0(Genotype, ", ", lo, "-", hi, " years"))
+
+ggplot(curve_grid, aes(age, sur, colour = Sex)) +
+  geom_line() +
+  geom_hline(yintercept = 0.5, linetype = "dotted") +
+  facet_wrap(~panel, ncol = 4) +
+  coord_cartesian(ylim = c(0.2, 1)) +
+  labs(
+    x = "Age (years)", y = "Proportion free of kidney failure",
+    title = "Typical survival by age at first clinic visit",
+    caption = "Replicates the model-predicted medians of Figures 4 and 5 of Ramesh 2025."
+  ) +
+  theme_bw()
+```
+
+![](Ramesh_2025_adtkd_files/figure-html/fig45_plot-1.png)
+
+## Covariate effects on the eGFR trajectory (Figure 2)
+
+Figure 2 shows the mean eGFR of simulated subjects for several
+first-visit eGFR values (panels A and B) and first-visit ages (panels C
+and D), each subject simulated with between-subject variability. The
+paper does not state the value of the other covariate in each panel;
+here the first-visit age is 21 years in panels A-B (the curves there
+start at about 21 years) and the first-visit eGFR is the centring value
+in panels C-D. Each covariate value is simulated with 200 replicates and
+the mean is plotted.
+
+``` r
+
+n_rep <- 200
+fig2_design <- dplyr::bind_rows(
+  tibble::tibble(panel = "eGFR at first visit", level = c(15, 35, 55, 75, 95, 120),
+                 CRCL_BASE = level, AGE_BASE = 21),
+  tibble::tibble(panel = "Age at first visit", level = c(25, 35, 45, 55, 65, 75),
+                 CRCL_BASE = 43.4044, AGE_BASE = level)
+) |>
+  dplyr::mutate(design = dplyr::row_number())
+
+fig2_events <- fig2_design |>
+  tidyr::crossing(rep = seq_len(n_rep)) |>
+  dplyr::mutate(id = dplyr::row_number()) |>
+  tidyr::crossing(time = seq(18, 100, by = 2)) |>
+  dplyr::filter(time >= AGE_BASE) |>
+  dplyr::mutate(evid = 0, amt = 0) |>
+  dplyr::arrange(id, time)
+
+sim_fig2 <- function(mod, label) {
+  rxode2::rxSolve(mod, fig2_events, returnType = "data.frame",
+                  keep = c("panel", "level")) |>
+    dplyr::group_by(panel, level, time) |>
+    dplyr::summarise(egfr = mean(egfr), .groups = "drop") |>
+    dplyr::mutate(genotype = label)
+}
+fig2 <- dplyr::bind_rows(
+  sim_fig2(umod_egfr, "UMOD"),
+  sim_fig2(muc1_egfr, "MUC1")
+)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+ggplot(fig2, aes(time, egfr, colour = factor(level), group = level)) +
+  geom_line() +
+  geom_hline(yintercept = 10, linetype = "dashed", colour = "red") +
+  facet_grid(panel ~ genotype) +
+  labs(
+    x = "Age (years)", y = "Mean eGFR (mL/min/1.73 m^2)", colour = "Covariate",
+    caption = "Replicates Figure 2 of Ramesh 2025 (panels A-D)."
+  ) +
+  theme_bw()
+```
+
+![](Ramesh_2025_adtkd_files/figure-html/fig2-1.png)
+
+As in Figure 2, a higher first-visit eGFR shifts the whole curve up and,
+through the negative exponent on the post-inflection Hill coefficient,
+flattens the late decline, while an older first-visit age delays the
+inflection. The panel A-B curves start near their first-visit eGFR, as
+the paper’s do.
+
+## Virtual-cohort eGFR distribution (Figure 3)
+
+Figure 3 is a visual predictive check of the training data. The
+registry’s visit schedule is not published, so a virtual cohort is used
+instead: 200 subjects per genotype, first-visit age and first-visit eGFR
+drawn independently from log-normal distributions matching the Table 1
+medians and 95% intervals (first-visit age truncated at 18 years), and
+annual visits for 9 years (the median follow-up). Residual error is
+included. The joint distribution of the two covariates is not published.
+
+``` r
+
+draw_cohort <- function(n, age_med, age_lo, age_hi, egfr_med, egfr_lo, egfr_hi) {
+  sd_age <- (log(age_hi) - log(age_lo)) / (2 * 1.96)
+  sd_egfr <- (log(egfr_hi) - log(egfr_lo)) / (2 * 1.96)
+  age <- exp(rnorm(n * 3, log(age_med), sd_age))
+  age <- age[age >= 18][seq_len(n)]
+  tibble::tibble(
+    id = seq_len(n),
+    AGE_BASE = age,
+    CRCL_BASE = exp(rnorm(n, log(egfr_med), sd_egfr))
+  )
+}
+visits <- function(cohort) {
+  cohort |>
+    tidyr::crossing(year = 0:9) |>
+    dplyr::mutate(time = AGE_BASE + year, evid = 0, amt = 0) |>
+    dplyr::select(-year) |>
+    dplyr::arrange(id, time)
+}
+cohort_umod <- draw_cohort(200, 36.77, 18.34, 58.93, 45.35, 14.56, 94.83)
+cohort_muc1 <- draw_cohort(200, 37.68, 20.56, 64.99, 58.63, 25.4, 101.74)
+
+vpc <- dplyr::bind_rows(
+  rxode2::rxSolve(umod_egfr, visits(cohort_umod), returnType = "data.frame") |>
+    dplyr::mutate(genotype = "UMOD"),
+  rxode2::rxSolve(muc1_egfr, visits(cohort_muc1), returnType = "data.frame") |>
+    dplyr::mutate(genotype = "MUC1")
+)
+
+vpc_bins <- vpc |>
+  dplyr::mutate(age_bin = cut(time, breaks = c(18, 27, 35, 41, 47, 53, 59, 70))) |>
+  dplyr::filter(!is.na(age_bin)) |>
+  dplyr::group_by(genotype, age_bin) |>
+  dplyr::summarise(
+    age = median(time),
+    p10 = quantile(sim, 0.1),
+    p50 = median(sim),
+    p90 = quantile(sim, 0.9),
+    .groups = "drop"
+  )
+
+ggplot(vpc_bins, aes(age)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), alpha = 0.2) +
+  geom_line(aes(y = p50)) +
+  facet_wrap(~genotype) +
+  coord_cartesian(ylim = c(0, 120)) +
+  labs(
+    x = "Age (years)", y = "eGFR (mL/min/1.73 m^2)",
+    caption = "Median and 10th-90th percentiles of a virtual cohort; compare Figure 3 of Ramesh 2025."
+  ) +
+  theme_bw()
+```
+
+![](Ramesh_2025_adtkd_files/figure-html/fig3_cohort-1.png)
+
+Figure 3’s predicted median falls from about 49 mL/min/1.73 m^2 at age
+23 to about 20 at age 63 for UMOD, and from about 51 at age 27 to about
+30 at age 66 for MUC1. The virtual cohort does **not** reproduce that
+fall: its median stays between about 34 and 47 across the age bins. The
+reason is the cohort, not the model. Because the first-visit eGFR scales
+DP0 almost proportionally (exponent 1 for UMOD, 0.96 for MUC1), each
+subject’s trajectory is anchored to the eGFR they arrive with, and the
+population fall with age in Figure 3 comes from the registry’s patients
+arriving later in life with lower eGFR. The paper reports the two
+first-visit covariates only as separate marginal summaries, so the
+virtual cohort draws them independently, and its older subjects enter
+with the same eGFR distribution as its younger ones. Within each subject
+the decline is as the model prescribes (Figure 2 above); the plot is
+shown to make this dependence on the input cohort explicit, and it is
+not used as a gate.
+
+## Assumptions and deviations
+
+- **Model time is age.** The eGFR models use age at the visit as the
+  Monolix regressor and the kidney-failure models use the age at the
+  event, so the packaged models take age in the `time` column. Neither
+  model is meant for ages below 18 years (Discussion).
+- **DPmax = 0.999, not 0.99.** Table 2A and the Results print 0.99,
+  while the Supplementary S2 project fixes `Imax_pop` to 0.999. A fixed
+  value in a Monolix project is the value the fit used, so the model
+  carries 0.999. The difference changes the late-life eGFR floor
+  `DP0 * (1 - DPmax)` from 0.8 to 0.08 mL/min/1.73 m^2 and is invisible
+  above the kidney-failure threshold.
+- **Supplementary S2 parameter values are initial values.** The
+  `<PARAMETER>` blocks of the Monolix projects differ from Table 2 on
+  every estimated value (e.g. UMOD `IC50_pop` 38.95 vs 39.76, Te_pop
+  64.29 vs 54.32, p_pop 20 vs 8.69), and the two time-to-event projects
+  carry a covariate model (UMOD: sub-mutation family and sex; MUC1:
+  none) that is not the final one in Table 2B. All estimates are
+  therefore from Table 2, with the structure, the centring values and
+  the fixed DPmax from Supplementary S2.
+- **IIV variances from the %CV.** Table 2A prints each omega as an SD to
+  one or two decimals with the %CV in brackets. The variances are
+  `log(1 + CV^2)`, which reproduces each printed SD to its rounding
+  except UMOD gamma2 (printed 0.8; the 98.93% CV implies 0.826).
+- **Correlation partner.** The MUC1 Results text says the -0.63
+  correlation is between gamma1 and “DP50”, but Table 2A and the
+  Supplementary S2 project both place it between gamma1 and DP0, which
+  is used.
+- **Centring of the age at first visit in the kidney-failure models.**
+  Table 2B footnote points to the weighted-mean centring of Equation S1
+  but the centring value of the time-to-event covariate is not printed.
+  The models use the 35.2138 years printed for the same covariate in the
+  eGFR projects; Figures 4 and 5 are reproduced with it.
+- **Survival from birth.** The time-to-event models give the probability
+  of being free of kidney failure from birth, as the Figure 4-5
+  predicted curves do. The probability of remaining free beyond a later
+  age `a0`, given freedom at `a0`, is `sur(a) / sur(a0)`.
+- **Censoring.** eGFR values below 10 mL/min/1.73 m^2 were handled as
+  censored (M4) in the fit. The packaged model simulates eGFR without
+  censoring, and the residual error can give values below zero for a
+  very low prediction.
+- **No PKNCA.** There is no drug and no concentration, so NCA does not
+  apply; validation uses the closed forms and the paper’s figures and
+  Discussion values instead.
+- **Virtual cohort.** The first-visit age and eGFR are drawn
+  independently because only their marginal medians and 95% intervals
+  are published; see the Figure 3 section for the consequence.
+- **Covariate canonical names.** eGFR at the first clinic visit is
+  carried as `CRCL_BASE` (time-fixed baseline renal function,
+  mL/min/1.73 m^2) and the age at the first visit as `AGE_BASE`, a
+  time-fixed baseline age distinct from the current age, which is the
+  model time.

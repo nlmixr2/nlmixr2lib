@@ -429,7 +429,7 @@ troughs <- bind_rows(
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp'
 #> [====|====|====|====|====|====|====|====|====|====] 0:00:03
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp'
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:06
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:05
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp'
 #> [====|====|====|====|====|====|====|====|====|====] 0:00:03
 p_tox <- troughs |>

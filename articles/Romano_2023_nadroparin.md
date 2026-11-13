@@ -246,8 +246,13 @@ held constant within a patient.
 
 ``` r
 
+# set.seed() fixes the covariate draws below (base R); rxSetSeed() fixes the
+# random effects rxode2 draws in rxSolve().
+set.seed(20230501)
 rxode2::rxSetSeed(20230501)
-n_per_arm <- 200
+# 1000 per arm keeps both Figure 4 bounds (10% on the median of the six
+# differences, 25% on the largest) clear across seeds; 200 per arm did not.
+n_per_arm <- 1000
 
 lnorm_from_iqr <- function(n, median, q1, q3) {
   exp(rnorm(n, log(median), (log(q3) - log(q1)) / (2 * qnorm(0.75))))
@@ -272,9 +277,9 @@ cohort |>
   knitr::kable(digits = 2)
 ```
 
-|   AGE |   CRP |  DDIMER | egfr_target | CREAT | vasopressor | corticosteroid | female |
-|------:|------:|--------:|------------:|------:|------------:|---------------:|-------:|
-| 63.45 | 69.83 | 1175.73 |       94.72 | 66.89 |        0.88 |           0.66 |    0.3 |
+|   AGE |   CRP | DDIMER | egfr_target | CREAT | vasopressor | corticosteroid | female |
+|------:|------:|-------:|------------:|------:|------------:|---------------:|-------:|
+| 61.24 | 75.02 | 1289.2 |       94.66 | 67.53 |         0.9 |           0.64 |   0.29 |
 
 ## Simulation of the dosing regimens in Figure 4
 
@@ -381,12 +386,12 @@ fig4_cmp |>
 
 | Regimen | Time after dose (h) | Figure 4 median (IU/mL) | Simulated median (IU/mL) | Median difference (%) | Figure 4 % in 0.3-0.7 | Simulated % in 0.3-0.7 |
 |:---|---:|---:|---:|---:|---:|---:|
-| 3800 IU BID | 4 | 0.30 | 0.32 | 5.9 | 46.2 | 53.0 |
-| 5700 IU BID | 4 | 0.45 | 0.51 | 12.9 | 55.4 | 81.0 |
-| 5700 IU BID | 12 | 0.27 | 0.33 | 21.3 | NA | 52.5 |
-| 7600 IU BID | 4 | 0.60 | 0.62 | 3.5 | 52.3 | 61.5 |
-| 7600 IU BID | 12 | 0.36 | 0.38 | 6.1 | NA | 47.0 |
-| 5700 IU QD | 4 | 0.31 | 0.31 | 0.6 | 52.3 | 56.5 |
+| 3800 IU BID | 4 | 0.30 | 0.32 | 6.6 | 46.2 | 54.4 |
+| 5700 IU BID | 4 | 0.45 | 0.50 | 10.0 | 55.4 | 74.2 |
+| 5700 IU BID | 12 | 0.27 | 0.31 | 16.6 | NA | 47.8 |
+| 7600 IU BID | 4 | 0.60 | 0.64 | 6.2 | 52.3 | 58.2 |
+| 7600 IU BID | 12 | 0.36 | 0.40 | 10.4 | NA | 51.8 |
+| 5700 IU QD | 4 | 0.31 | 0.32 | 2.0 | 52.3 | 59.4 |
 
 ``` r
 
@@ -474,10 +479,10 @@ nca_summary |>
 
 | Regimen     | AUCtau (IU\*h/mL) | Cav (IU/mL) | Cmax (IU/mL) | Cmin (IU/mL) | Tmax (h) |
 |:------------|------------------:|------------:|-------------:|-------------:|---------:|
-| 3800 IU BID |             3.267 |       0.272 |        0.318 |        0.198 |        4 |
-| 5700 IU BID |             5.279 |       0.440 |        0.508 |        0.327 |        4 |
-| 5700 IU QD  |             4.717 |       0.197 |        0.319 |        0.065 |        5 |
-| 7600 IU BID |             6.362 |       0.530 |        0.621 |        0.382 |        4 |
+| 3800 IU BID |             3.291 |       0.274 |        0.320 |        0.200 |     4.00 |
+| 5700 IU BID |             5.124 |       0.427 |        0.495 |        0.315 |     4.00 |
+| 5700 IU QD  |             4.833 |       0.201 |        0.323 |        0.069 |     5.25 |
+| 7600 IU BID |             6.555 |       0.546 |        0.637 |        0.397 |     4.00 |
 
 ``` r
 
@@ -489,7 +494,7 @@ auc_chk <- as.data.frame(nca_res) |>
   mutate(pct_diff = 100 * (auclast / (dose / cl) - 1))
 summary(auc_chk$pct_diff)
 #>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-#> -0.144191 -0.022629 -0.016779 -0.018930 -0.012495 -0.008268
+#> -0.455528 -0.022891 -0.016629 -0.019228 -0.012430 -0.008267
 # Same drawn clearance on both sides; the residual is trapezoidal error on a
 # 15-min grid plus, for the slowest-clearing patients, a small shortfall from
 # full steady state after ten days.

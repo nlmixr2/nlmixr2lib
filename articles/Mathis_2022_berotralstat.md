@@ -192,6 +192,8 @@ bands <- tibble::tribble(
 sdlog <- sqrt(log(1 + (17.2 / 77.7)^2))
 meanlog <- log(77.7) - sdlog^2 / 2
 
+# set.seed() seeds the base-R draws of the cohort below; rxSetSeed() seeds rxode2.
+set.seed(20220401)
 rxode2::rxSetSeed(20220401)
 cohort <- bands |>
   dplyr::rowwise() |>
@@ -217,10 +219,10 @@ cohort |>
 
 | Weight band                      |   N | Median weight (kg) | Min (kg) | Max (kg) |
 |:---------------------------------|----:|-------------------:|---------:|---------:|
-| Underweight adults (40-60 kg)    | 200 |               55.4 |     40.9 |     60.0 |
-| Low weight adults (60-80 kg)     | 200 |               71.8 |     60.0 |     79.9 |
-| Normal weight adults (80-100 kg) | 200 |               87.7 |     80.1 |     99.9 |
-| Overweight adults (100-120 kg)   | 200 |              106.7 |    100.2 |    119.2 |
+| Underweight adults (40-60 kg)    | 200 |               55.6 |     40.9 |     59.8 |
+| Low weight adults (60-80 kg)     | 200 |               70.9 |     60.2 |     80.0 |
+| Normal weight adults (80-100 kg) | 200 |               87.6 |     80.2 |     99.5 |
+| Overweight adults (100-120 kg)   | 200 |              106.6 |    100.1 |    119.6 |
 
 ## Simulation
 
@@ -265,8 +267,9 @@ sim_first <- rxode2::rxSolve(mod_no_study, ev_first, keep = "band",
 # silently. A larger step limit solves them all; the gate below fails loudly
 # if any subject is still missing.
 rxode2::rxSetSeed(20220402)
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_ss <- rxode2::rxSolve(mod_no_study, ev_ss, keep = "band",
-                          maxsteps = 500000L, returnType = "data.frame") |>
+                          maxsteps = 1e6, returnType = "data.frame") |>
   dplyr::mutate(regimen = "Steady state")
 #> ℹ omega/sigma items treated as zero: 'eta_study_lcl'
 sim <- dplyr::bind_rows(sim_first, sim_ss)
@@ -386,30 +389,30 @@ cmp |>
 
 | Weight band | NCA parameter | Simulated | Mathis 2022 Table 2 | % difference |
 |:---|:---|---:|---:|---:|
-| Underweight adults (40-60 kg) | AUC0-24, first dose (ng\*h/mL) | 801.87 | 816.00 | -1.73 |
-| Underweight adults (40-60 kg) | Cmax, first dose (ng/mL) | 65.32 | 67.00 | -2.51 |
-| Underweight adults (40-60 kg) | AUCtau, steady state (ng\*h/mL) | 2655.62 | 2574.00 | 3.17 |
-| Underweight adults (40-60 kg) | Cmax, steady state (ng/mL) | 149.68 | 155.00 | -3.43 |
-| Underweight adults (40-60 kg) | Geometric CV of AUCtau,ss (%) | 37.70 | 36.70 | 2.74 |
-| Underweight adults (40-60 kg) | Accumulation ratio | 3.31 | 3.15 | 5.14 |
-| Low weight adults (60-80 kg) | AUC0-24, first dose (ng\*h/mL) | 648.69 | 644.00 | 0.73 |
-| Low weight adults (60-80 kg) | Cmax, first dose (ng/mL) | 51.92 | 51.00 | 1.80 |
-| Low weight adults (60-80 kg) | AUCtau, steady state (ng\*h/mL) | 2358.18 | 2211.00 | 6.66 |
-| Low weight adults (60-80 kg) | Cmax, steady state (ng/mL) | 129.37 | 129.00 | 0.28 |
-| Low weight adults (60-80 kg) | Geometric CV of AUCtau,ss (%) | 38.84 | 38.30 | 1.42 |
-| Low weight adults (60-80 kg) | Accumulation ratio | 3.64 | 3.43 | 5.99 |
-| Normal weight adults (80-100 kg) | AUC0-24, first dose (ng\*h/mL) | 519.76 | 509.00 | 2.11 |
-| Normal weight adults (80-100 kg) | Cmax, first dose (ng/mL) | 40.70 | 40.00 | 1.74 |
-| Normal weight adults (80-100 kg) | AUCtau, steady state (ng\*h/mL) | 2017.00 | 1951.00 | 3.38 |
-| Normal weight adults (80-100 kg) | Cmax, steady state (ng/mL) | 107.89 | 111.00 | -2.81 |
-| Normal weight adults (80-100 kg) | Geometric CV of AUCtau,ss (%) | 40.82 | 37.00 | 10.31 |
-| Normal weight adults (80-100 kg) | Accumulation ratio | 3.88 | 3.83 | 1.32 |
-| Overweight adults (100-120 kg) | AUC0-24, first dose (ng\*h/mL) | 428.92 | 438.00 | -2.07 |
-| Overweight adults (100-120 kg) | Cmax, first dose (ng/mL) | 33.58 | 34.00 | -1.23 |
-| Overweight adults (100-120 kg) | AUCtau, steady state (ng\*h/mL) | 1840.12 | 1818.00 | 1.22 |
-| Overweight adults (100-120 kg) | Cmax, steady state (ng/mL) | 96.70 | 101.00 | -4.25 |
-| Overweight adults (100-120 kg) | Geometric CV of AUCtau,ss (%) | 34.35 | 36.90 | -6.90 |
-| Overweight adults (100-120 kg) | Accumulation ratio | 4.29 | 4.15 | 3.38 |
+| Underweight adults (40-60 kg) | AUC0-24, first dose (ng\*h/mL) | 802.82 | 816.00 | -1.62 |
+| Underweight adults (40-60 kg) | Cmax, first dose (ng/mL) | 65.41 | 67.00 | -2.38 |
+| Underweight adults (40-60 kg) | AUCtau, steady state (ng\*h/mL) | 2657.39 | 2574.00 | 3.24 |
+| Underweight adults (40-60 kg) | Cmax, steady state (ng/mL) | 149.83 | 155.00 | -3.34 |
+| Underweight adults (40-60 kg) | Geometric CV of AUCtau,ss (%) | 37.99 | 36.70 | 3.51 |
+| Underweight adults (40-60 kg) | Accumulation ratio | 3.31 | 3.15 | 5.08 |
+| Low weight adults (60-80 kg) | AUC0-24, first dose (ng\*h/mL) | 650.40 | 644.00 | 0.99 |
+| Low weight adults (60-80 kg) | Cmax, first dose (ng/mL) | 52.08 | 51.00 | 2.11 |
+| Low weight adults (60-80 kg) | AUCtau, steady state (ng\*h/mL) | 2361.70 | 2211.00 | 6.82 |
+| Low weight adults (60-80 kg) | Cmax, steady state (ng/mL) | 129.63 | 129.00 | 0.49 |
+| Low weight adults (60-80 kg) | Geometric CV of AUCtau,ss (%) | 38.57 | 38.30 | 0.71 |
+| Low weight adults (60-80 kg) | Accumulation ratio | 3.63 | 3.43 | 5.86 |
+| Normal weight adults (80-100 kg) | AUC0-24, first dose (ng\*h/mL) | 519.26 | 509.00 | 2.01 |
+| Normal weight adults (80-100 kg) | Cmax, first dose (ng/mL) | 40.66 | 40.00 | 1.66 |
+| Normal weight adults (80-100 kg) | AUCtau, steady state (ng\*h/mL) | 2016.20 | 1951.00 | 3.34 |
+| Normal weight adults (80-100 kg) | Cmax, steady state (ng/mL) | 107.87 | 111.00 | -2.82 |
+| Normal weight adults (80-100 kg) | Geometric CV of AUCtau,ss (%) | 40.76 | 37.00 | 10.16 |
+| Normal weight adults (80-100 kg) | Accumulation ratio | 3.88 | 3.83 | 1.38 |
+| Overweight adults (100-120 kg) | AUC0-24, first dose (ng\*h/mL) | 430.36 | 438.00 | -1.74 |
+| Overweight adults (100-120 kg) | Cmax, first dose (ng/mL) | 33.70 | 34.00 | -0.87 |
+| Overweight adults (100-120 kg) | AUCtau, steady state (ng\*h/mL) | 1843.41 | 1818.00 | 1.40 |
+| Overweight adults (100-120 kg) | Cmax, steady state (ng/mL) | 96.92 | 101.00 | -4.04 |
+| Overweight adults (100-120 kg) | Geometric CV of AUCtau,ss (%) | 34.29 | 36.90 | -7.07 |
+| Overweight adults (100-120 kg) | Accumulation ratio | 4.28 | 4.15 | 3.21 |
 
 Simulated geometric means (200 subjects per band) against the paper’s
 Table 2 (1000 per band), 150 mg once daily. {.table}
@@ -419,7 +422,7 @@ Table 2 (1000 per band), 150 mg once daily. {.table}
 exposure <- cmp |> dplyr::filter(metric %in% c("auc_first", "cmax_first", "auc_ss", "cmax_ss"))
 summary(exposure$pct_diff)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#> -4.2530 -2.1837  0.5063  0.1907  1.8786  6.6569
+#> -4.0389 -1.9026  0.7416  0.3282  2.0382  6.8160
 
 # Assert on the centre and on a robust quantile, not on the extremes: the
 # cohort is a random draw and its tails are not reproducible across rxode2

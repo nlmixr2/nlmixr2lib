@@ -174,7 +174,8 @@ mod_typ <- rxode2::zeroRe(mod)
 # without omega" warning is expected and muffled; any other warning surfaces.
 solve_ss <- function(events) {
   withCallingHandlers(
-    rxode2::rxSolve(mod_typ, events, returnType = "data.frame", keep = "group"),
+    # steady-state searches for long-half-life subjects exceed the default step budget
+    rxode2::rxSolve(mod_typ, events, returnType = "data.frame", keep = "group", maxsteps = 1e6),
     warning = function(w) {
       if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
         invokeRestart("muffleWarning")
@@ -460,6 +461,8 @@ ss_prof <- bind_rows(lapply(levels(groups$group), function(g) {
 #> ℹ omega/sigma items treated as zero: 'etalcl'
 #> ℹ omega/sigma items treated as zero: 'etalcl'
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(ss_prof$Cc))
 ss_conc <- ss_prof |>
   filter(!is.na(Cc)) |>
   select(id, group, time, Cc)

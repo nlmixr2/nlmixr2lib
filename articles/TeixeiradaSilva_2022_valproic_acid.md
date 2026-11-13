@@ -343,7 +343,8 @@ fig2_events <- bind_rows(lapply(seq_len(nrow(scen)), function(i) {
         typ_cov(s$age, s$wt, s$pht, s$pb, s$cbz, s$tab)) |>
     mutate(id = s$id)
 }))
-fig2 <- rxode2::rxSolve(mod, fig2_events, omega = NA, returnType = "data.frame") |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+fig2 <- rxode2::rxSolve(mod, fig2_events, omega = NA, returnType = "data.frame", maxsteps = 1e6) |>
   left_join(scen |> select(id, panel, therapy, scenario, tau), by = "id")
 #> Warning: multi-subject simulation without without 'omega'
 ```
@@ -403,6 +404,8 @@ and troughs digitised from the published figure.
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(fig2$Cc))
 fig2_conc <- fig2 |>
   filter(!is.na(Cc)) |>
   select(scenario, id, time, Cc)
@@ -614,7 +617,8 @@ events <- as.data.frame(ev_ss) |>
   tidyr::crossing(cohort) |>
   arrange(id, time, desc(evid))
 
-sim <- rxode2::rxSolve(mod, events, returnType = "data.frame", keep = "arm")
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim <- rxode2::rxSolve(mod, events, returnType = "data.frame", keep = "arm", maxsteps = 1e6)
 
 # The cohort must carry between-subject variability: dividing out the
 # covariate model leaves etalcl, whose SD must recover sqrt(0.06936) = 0.263.
@@ -631,6 +635,8 @@ stopifnot(
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim$Cc))
 sim |>
   filter(!is.na(Cc)) |>
   group_by(arm, time) |>
@@ -654,6 +660,8 @@ h). The shaded band is the 50-100 mg/L therapeutic range.
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim$Cc))
 obs <- sim |>
   filter(!is.na(Cc)) |>
   select(id, arm, time, Cc)

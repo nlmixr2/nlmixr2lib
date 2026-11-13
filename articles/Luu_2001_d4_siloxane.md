@@ -1,0 +1,347 @@
+# Octamethylcyclotetrasiloxane D4 siloxane PBPK (Luu 2001)
+
+``` r
+
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+## Model and source
+
+Luu and Hutter (2001, *Environ Health Perspect* 109:1095-1101,
+[doi:10.1289/ehp.109-1240468](https://doi.org/10.1289/ehp.109-1240468))
+developed a whole-body physiologically based pharmacokinetic (PBPK)
+model for **octamethylcyclotetrasiloxane (D4)**, a low-molecular-weight
+cyclic siloxane (CAS 556-67-2). D4 is a major component of silicone
+personal-care products and a precursor of the polydimethylsiloxane used
+in silicone breast implants, from which low-molecular-weight siloxanes
+slowly leach. D4 is highly lipophilic (log *P*_(oct/water) = 5.1) and
+accumulates in fat, which motivated a toxicokinetic model to relate
+external exposure to internal (target-organ) dose, especially in women.
+
+This is a toxicokinetic PBPK for an environmental / industrial chemical,
+not a therapeutic drug.
+
+The paper contributes **two** model files, sharing one material-balance
+structure but parameterised for the two species the authors calibrated
+and validated:
+
+| Model file | Role |
+|----|----|
+| `Luu_2001_d4_rat` | Female Sprague-Dawley rat, intravenous calibration (Kirkpatrick 1995) |
+| `Luu_2001_d4_human` | Human, physiology scaled by power law; inhalation / implant exposure |
+
+The structure (Figure 2 and the Appendix) is a flow-limited lung,
+richly-perfused tissue, a two-subcompartment fat depot (a weakly-bound
+compartment `Cf1` exchanging with a deep strongly-bound compartment
+`Cf2`), liver with first-order metabolism, GI tract and kidney, together
+with a blood model in which D4 is dissolved in plasma (`Cai`), weakly
+protein-bound (`Cwk`) and - in the rat only - strongly protein-bound
+(`Cstr`). The arterial concentration leaving the lung is `Hair x Clung`;
+each tissue receives `Q x Hair x Clung` by arterial perfusion and
+returns `Q x C / D` venous blood, where `D` is the tissue:blood
+distribution coefficient. The states are concentrations (ug/mL); the
+measured blood/tissue radioactivity is **total** D4 (dissolved plus
+protein-bound), which the model reports as `Cc`.
+
+``` r
+
+rat <- rxode2::rxode2(readModelDb("Luu_2001_d4_rat"))
+hum <- rxode2::rxode2(readModelDb("Luu_2001_d4_human"))
+```
+
+- Rat citation: Luu HMD, Hutter JC. Bioavailability of
+  octamethylcyclotetrasiloxane (D4) after exposure to silicones by
+  inhalation and implantation. Environ Health Perspect.
+  2001;109(11):1095-1101. <doi:10.1289/ehp.109-1240468>. Calibrated
+  parameters from Table 3 (rat / Sprague-Dawley column); physiologic
+  volumes and flows from Table 2 (rat); material-balance ODEs from the
+  Appendix.
+
+## Population
+
+The rat model was calibrated against the single and repeated intravenous
+`14`C-D4 disposition study of Kirkpatrick (1995): three groups of 20
+Sprague-Dawley rats (10 male, 10 female) dosed at 7 and 70 mg/kg single
+and 7 mg/kg daily for 14 days, with blood, liver, kidney, lung and fat
+sampled to 48 h. Only the female data were used, because females retain
+more D4 than males and the risk-assessment goal concerned women. The
+human model was scaled from the rat by power law (`Y = a M^0.75`) and
+validated against an independent inhalation study (Utell 1998) in which
+12 volunteers were exposed to 10 ppm D4 vapour for 1 h. The programmatic
+metadata are in each model’s `population` list
+(e.g. `readModelDb("Luu_2001_d4_rat")()$population`).
+
+## Source trace
+
+Each [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html)
+entry carries an in-file comment pointing to its source location. The
+table collects the calibrated (Table 3) parameters; the physiologic
+volumes and flows (Table 2) are fixed numeric constants in
+[`model()`](https://nlmixr2.github.io/rxode2/reference/model.html), each
+likewise commented.
+
+| Parameter | Rat | Human | Source |
+|----|----|----|----|
+| `Dr` richly-perfused:blood | 10 | 10 | Table 3 |
+| `Df1` weak-fat:blood | 700 | 700 | Table 3 |
+| `Df2` deep-fat:blood | 2,000 | 2,000 | Table 3 (estimated from log P = 5.1) |
+| `Dl` liver:blood | 7.4 | 7.4 | Table 3 |
+| `Dgi` GI:blood | 0.41 | 0.41 | Table 3 |
+| `Dk` kidney:blood | 40 | 40 | Table 3 |
+| `Hair` blood:air | 20.0 | 20.0 | Table 3 |
+| `kel` metabolism (1/h) | 9 | 728 | Table 3 (human = 9 x (70/0.20)^0.75) |
+| `ksi` / `kso` strong binding (1/h) | 0.4 / 0.07 | \- | Table 3 (human Vstrong = 0) |
+| `kwi` / `kwo` weak binding (1/h) | 0.2 / 1.0 | 0.2 / 1.0 | Table 3 |
+| `Vweak` / `Vstrong` (mL) | 1.0 / 1.0 | 10.4 / 0 | Table 3 |
+| `Qf2/Qf1`, `Vf2/Vf1` | 0.059, 0.73 | 0.059, 0.73 | Table 3 |
+| preload fraction to `Cwk` | 0.05 | 0.008 | Appendix |
+| `d/dt` material balances | n/a | n/a | Appendix equations |
+
+## Mass-balance gate
+
+The implemented ODEs lose parent D4 only to hepatic metabolism (into the
+`Mmet` accumulator); there is no exhalation or renal/faecal excretion of
+parent in the core equations (see Errata). The system is therefore
+closed: parent D4 in all tissues plus accumulated metabolites must equal
+the total input (the forcing-function dose plus the preloaded
+weakly-bound fraction) at all times. For the rat single 7 mg/kg IV
+(`DOSE = 1400` ug, 5% preloaded) the expected conserved total is
+`1.05 x 1400 = 1470` ug.
+
+``` r
+
+V <- c(Vlung = 14, Vr = 146, Vf1 = 14.2, Vf2 = 0.73 * 14.2, Vl = 8,
+       Vgi = 6, Vk = 1.9, Vblood = 8.5, Vweak = 1, Vstrong = 1)
+s_mb <- rxode2::rxSolve(rat, rxode2::et(seq(0, 72, by = 0.5)),
+                        c(DOSE = 1400, tinj = 0.1)) |> as.data.frame()
+parent <- with(s_mb, Clung * V["Vlung"] + Cr * V["Vr"] + Cf1 * V["Vf1"] +
+  Cf2 * V["Vf2"] + Cl * V["Vl"] + Cgi * V["Vgi"] + Ck * V["Vk"] +
+  Cai * V["Vblood"] + Cwk * V["Vweak"] + Cstr * V["Vstrong"])
+total <- parent + s_mb$Mmet
+rel_err <- max(abs(total[s_mb$time > 0.2] - 1470) / 1470)
+cat(sprintf("max relative mass-balance error (t > tinj): %.2e\n", rel_err))
+#> max relative mass-balance error (t > tinj): 6.26e-09
+stopifnot(rel_err < 1e-6)
+```
+
+## Rat intravenous disposition
+
+A single 7 mg/kg IV dose in a 0.20 kg rat is `DOSE = 1400` ug delivered
+over a near-instantaneous `tinj = 0.1` h forcing window (the paper
+reports `tmax = 0`). The plasma (total blood D4) profile is biphasic,
+driven by rapid tissue distribution and slow redistribution out of the
+high-affinity fat depot.
+
+``` r
+
+tgrid <- sort(unique(c(seq(0, 2, by = 0.02), seq(2, 72, by = 0.25))))
+rat_sim <- rxode2::rxSolve(rat, rxode2::et(tgrid), c(DOSE = 1400, tinj = 0.1)) |>
+  as.data.frame()
+```
+
+``` r
+
+rat_long <- rat_sim |>
+  transmute(time, Plasma = Cc, Fat = Cfat) |>
+  pivot_longer(c(Plasma, Fat), names_to = "Compartment", values_to = "conc")
+ggplot(rat_long, aes(time, conc, colour = Compartment)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "D4 concentration (ug/mL)",
+       title = "Rat 7 mg/kg single IV") +
+  theme_bw()
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
+```
+
+![Replicates Figure 3 (plasma) and Figure 4 (fat) of Luu 2001: predicted
+D4 after a single 7 mg/kg IV dose in the female SD
+rat.](Luu_2001_d4_siloxane_files/figure-html/rat-plot-1.png)
+
+Replicates Figure 3 (plasma) and Figure 4 (fat) of Luu 2001: predicted
+D4 after a single 7 mg/kg IV dose in the female SD rat.
+
+NCA on the simulated plasma profile, compared against the paper’s
+reported PK (Table 5, 7 mg/kg single IV). The paper’s model terminal
+half-life is 14.0 h.
+
+``` r
+
+conc_rat <- rat_sim |> dplyr::filter(!is.na(Cc)) |> transmute(id = 1L, time, conc = Cc)
+dose_rat <- data.frame(id = 1L, time = 0, dose = 1400)
+o_conc <- PKNCAconc(conc_rat, conc ~ time | id)
+o_dose <- PKNCAdose(dose_rat, dose ~ time | id)
+intervals <- data.frame(start = 0, end = Inf,
+                        cmax = TRUE, tmax = TRUE, auclast = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+res_rat <- pk.nca(PKNCAdata(o_conc, o_dose, intervals = intervals))
+nca_rat <- as.data.frame(res_rat$result)
+
+rat_cmp <- tibble::tibble(
+  Parameter = c("Cmax (ug/mL)", "tmax (h)", "AUClast (ug*h/mL)",
+                "AUCinf (ug*h/mL)", "terminal t1/2 (h)"),
+  Simulated = c(
+    nca_rat$PPORRES[nca_rat$PPTESTCD == "cmax"],
+    nca_rat$PPORRES[nca_rat$PPTESTCD == "tmax"],
+    nca_rat$PPORRES[nca_rat$PPTESTCD == "auclast"],
+    nca_rat$PPORRES[nca_rat$PPTESTCD == "aucinf.obs"],
+    nca_rat$PPORRES[nca_rat$PPTESTCD == "half.life"]),
+  Published = c(6.7, 0, 43.4, NA, 14.0))
+knitr::kable(rat_cmp, digits = 2,
+             caption = "Rat 7 mg/kg single IV: simulated NCA vs Luu 2001 Table 5.")
+```
+
+| Parameter          | Simulated | Published |
+|:-------------------|----------:|----------:|
+| Cmax (ug/mL)       |      8.45 |       6.7 |
+| tmax (h)           |      0.02 |       0.0 |
+| AUClast (ug\*h/mL) |     57.19 |      43.4 |
+| AUCinf (ug\*h/mL)  |     59.00 |        NA |
+| terminal t1/2 (h)  |     14.55 |      14.0 |
+
+Rat 7 mg/kg single IV: simulated NCA vs Luu 2001 Table 5. {.table}
+
+``` r
+
+
+# Structural check: Cmax and terminal half-life within PBPK reproduction
+# tolerance of the published values (no parameter was tuned).
+stopifnot(
+  abs(nca_rat$PPORRES[nca_rat$PPTESTCD == "cmax"] - 6.7) / 6.7 < 0.4,
+  abs(nca_rat$PPORRES[nca_rat$PPTESTCD == "half.life"] - 14.0) / 14.0 < 0.25
+)
+```
+
+## Human inhalation disposition
+
+The human validation scenario is the Utell (1998) 1-h inhalation
+exposure, which the authors reduce to a net absorbed dose of 11.1 mg
+delivered to the lung (`DOSE = 11100` ug, `tinj = 1` h), with 0.8%
+preloaded to the weakly-bound blood pool. Concentrations are reported in
+ng/mL.
+
+``` r
+
+hgrid <- sort(unique(c(seq(0, 2, by = 0.02), seq(2, 48, by = 0.1))))
+hum_sim <- rxode2::rxSolve(hum, rxode2::et(hgrid), c(DOSE = 11100, tinj = 1.0)) |>
+  as.data.frame()
+```
+
+``` r
+
+hum_long <- hum_sim |>
+  transmute(time, Plasma = Cc, Fat = Cfat) |>
+  pivot_longer(c(Plasma, Fat), names_to = "Compartment", values_to = "conc")
+ggplot(hum_long, aes(time, conc, colour = Compartment)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "D4 concentration (ng/mL)",
+       title = "Human 11.1 mg single 1-h inhalation") +
+  theme_bw()
+#> Warning in scale_y_log10(): log-10 transformation introduced infinite values.
+```
+
+![Replicates Figure 6 of Luu 2001: predicted D4 plasma and fat after a
+single 11.1 mg 1-h inhalation exposure in
+humans.](Luu_2001_d4_siloxane_files/figure-html/human-plot-1.png)
+
+Replicates Figure 6 of Luu 2001: predicted D4 plasma and fat after a
+single 11.1 mg 1-h inhalation exposure in humans.
+
+``` r
+
+conc_hum <- hum_sim |> dplyr::filter(!is.na(Cc)) |> transmute(id = 1L, time, conc = Cc)
+dose_hum <- data.frame(id = 1L, time = 0, dose = 11100)
+h_conc <- PKNCAconc(conc_hum, conc ~ time | id)
+h_dose <- PKNCAdose(dose_hum, dose ~ time | id)
+res_hum <- pk.nca(PKNCAdata(h_conc, h_dose, intervals = intervals))
+nca_hum <- as.data.frame(res_hum$result)
+
+hum_cmp <- tibble::tibble(
+  Parameter = c("Cmax (ng/mL)", "tmax (h)", "AUClast (ng*h/mL)",
+                "AUCinf (ng*h/mL)", "terminal t1/2 (h)"),
+  Simulated = c(
+    nca_hum$PPORRES[nca_hum$PPTESTCD == "cmax"],
+    nca_hum$PPORRES[nca_hum$PPTESTCD == "tmax"],
+    nca_hum$PPORRES[nca_hum$PPTESTCD == "auclast"],
+    nca_hum$PPORRES[nca_hum$PPTESTCD == "aucinf.obs"],
+    nca_hum$PPORRES[nca_hum$PPTESTCD == "half.life"]),
+  Published = c(69.4, 1, 453.4, NA, 7.4))
+knitr::kable(hum_cmp, digits = 2,
+             caption = "Human 11.1 mg inhalation: simulated NCA vs Luu 2001 Table 7.")
+```
+
+| Parameter          | Simulated | Published |
+|:-------------------|----------:|----------:|
+| Cmax (ng/mL)       |     50.45 |      69.4 |
+| tmax (h)           |      1.00 |       1.0 |
+| AUClast (ng\*h/mL) |    408.54 |     453.4 |
+| AUCinf (ng\*h/mL)  |    413.40 |        NA |
+| terminal t1/2 (h)  |      8.30 |       7.4 |
+
+Human 11.1 mg inhalation: simulated NCA vs Luu 2001 Table 7. {.table}
+
+``` r
+
+
+stopifnot(
+  abs(nca_hum$PPORRES[nca_hum$PPTESTCD == "cmax"] - 69.4) / 69.4 < 0.4,
+  nca_hum$PPORRES[nca_hum$PPTESTCD == "tmax"] == 1,
+  abs(nca_hum$PPORRES[nca_hum$PPTESTCD == "half.life"] - 7.4) / 7.4 < 0.3
+)
+```
+
+## Assumptions and deviations / Errata
+
+- **Observation = total blood D4.** The experimental readout is `14`C
+  radioactivity, i.e. total D4 in blood. The model reports
+  `Cc = (Cai*Vblood + Cwk*Vweak + Cstr*Vstrong) / Vblood`, the sum of
+  the dissolved and protein-bound pools. Reporting only the dissolved
+  `Cai` state underpredicts the measured concentration several-fold.
+- **Flow units.** Table 2 lists blood flows in mL/min, whereas the
+  Appendix rate constants are per hour; the flows are converted to mL/h
+  (x 60) in
+  [`model()`](https://nlmixr2.github.io/rxode2/reference/model.html).
+  The internal check `Qr + Qf + Ql + Qgi + Qk = Qt` holds exactly (rat
+  116.7, human 5200 mL/min), which fixes the tabulated fat flow / volume
+  as the weakly-bound-fat `Qf1` / `Vf1`, with the deep compartment
+  defined by the Table 3 ratios (`Qf2 = 0.059 Qf1`, `Vf2 = 0.73 Vf1`).
+- **Three printed-equation typographical corrections** (each commented
+  in the model file): the Appendix deep-fat equation is printed as a
+  self-cancelling `Qf2*Cf2/Df2 - Qf2*Cf2/Df2`; mass balance with the
+  `Cf1` equation requires the inflow `Qf2*Cf1/Df1`. The liver venous
+  term is printed `Ql*Cl/Dr`; the liver:blood coefficient is `Dl`. The
+  GI arterial term is printed `Ql*Clung*Hair`; the GI flow is `Qgi`.
+- **IV duration `tinj`.** The injection duration is not stated. The
+  reported `tmax = 0` implies a near-bolus; `tinj = 0.1` h is used and
+  affects only the first few minutes.
+- **Human inhalation input.** The paper reduces the 1-h, rest/exercise,
+  capture-efficiency exposure to a stated net absorbed dose of 11.1 mg.
+  The human model delivers this amount to the lung over `tinj` rather
+  than re-deriving the alveolar gas-exchange kinetics; the five
+  period-specific ventilation forcing functions of the Appendix are not
+  reproduced.
+- **Excretion mass balance not reproduced.** The core ODEs eliminate
+  parent D4 only by hepatic metabolism (into `Mmet`); they contain no
+  exhalation or renal/faecal excretion of parent. The percentage-of-dose
+  excretion splits of Table 4 (rat) and Table 6 (human) - exhaled
+  42-59%, urine, faeces - come from the paper’s separate metabolite /
+  exhalation accounting and are **not** a validation target here. The
+  model reproduces the plasma and fat concentration kinetics and the
+  plasma NCA of Tables 5 and 7.
+- **Repeated-dose and breast-implant scenarios.** The single injection /
+  inhalation window is implemented. The 14-day repeated IV (rat), 7-day
+  repeated inhalation (human) and first-order breast-implant desorption
+  (`kba D0 exp(-kba t)`) scenarios are not wired into the event handling
+  here; the `kba` desorption constant is not tabulated.
+- **Deterministic model.** No IIV or residual-error model is reported.
+  The `propSd` entry is a fixed placeholder and carries no information
+  from the paper.
+- **Species.** The rat model carries full weak + strong plasma protein
+  binding; the human model has no strong-binding pool (Table 3
+  `Vstrong = 0`), so the `Cstr` state is dropped - a genuine structural
+  difference, hence the two separate files.

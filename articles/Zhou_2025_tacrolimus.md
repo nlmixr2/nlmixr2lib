@@ -1079,9 +1079,12 @@ covariate-matched cohort).
 
 ``` r
 
+# 0.05 h through the absorption phase: the trapezoid error of AUC(tau,ss) on a
+# 0.25 h grid reaches 0.7% for a fast-absorbing subject, which is too close to the
+# 0.5% bound of the per-subject identity below.
+nca_grid <- sort(unique(c(seq(0, 4, by = 0.05), seq(4, 12, by = 0.25))))
 sim_nca_src <- solve_model(
-  ui, make_ss_events(cohort_mix, amt_q12h = dose_q12h,
-                     obs_times = seq(0, 12, by = 0.25)),
+  ui, make_ss_events(cohort_mix, amt_q12h = dose_q12h, obs_times = nca_grid),
   keep = c("genotype", "azole")
 ) |>
   assert_all_solved(expected_ids = cohort_mix$id)
@@ -1143,12 +1146,12 @@ nca_tbl |>
 
 | Parameter | Median | 5th pctile | 95th pctile |
 |:----------|-------:|-----------:|------------:|
-| AUClast   | 209.19 |      86.78 |      452.39 |
-| Cavg      |  17.43 |       7.23 |       37.70 |
+| AUClast   | 209.24 |      86.79 |      452.55 |
+| Cavg      |  17.44 |       7.23 |       37.71 |
 | Cmax      |  18.82 |       8.17 |       40.00 |
 | Cmin      |  16.18 |       5.17 |       35.95 |
 | Ctrough   |  16.18 |       5.17 |       35.95 |
-| Tmax      |   1.00 |       0.75 |        1.00 |
+| Tmax      |   0.90 |       0.85 |        0.90 |
 
 PKNCA steady-state summary over one q12h interval (covariate-matched
 cohort, 2.51 mg/day). {.table}
@@ -1173,7 +1176,7 @@ auc_check <- nca_tbl |>
 
 cat(sprintf("n = %d subjects; max |relative error| = %.4f%%\n",
             nrow(auc_check), 100 * max(abs(auc_check$rel_err))))
-#> n = 200 subjects; max |relative error| = 0.2681%
+#> n = 200 subjects; max |relative error| = 0.0122%
 
 stopifnot(
   nrow(auc_check) == n_mix,

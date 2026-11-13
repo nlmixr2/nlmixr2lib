@@ -413,13 +413,15 @@ assuming it.
 ssEv <- mkEvents(bands$crcl, dose = 300, tau = 8, grid = seq(0, 24, by = 0.005),
                  ss = TRUE)
 ssSol <- rxode2::rxSolve(rxode2::zeroRe(mod), ssEv, returnType = "data.frame",
-                         atol = 1e-12, rtol = 1e-10)
+                         atol = 1e-12, rtol = 1e-10, maxsteps = 1e6)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalka'
 #> Warning: multi-subject simulation without without 'omega'
 
 trapz <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(ssSol$Cc))
 aucChk <- ssSol |>
   filter(!is.na(Cc)) |>
   group_by(id) |>
@@ -645,10 +647,13 @@ cohortEv <- bind_rows(lapply(seq_len(nrow(armGrid)), function(k) {
   e
 }))
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 cohort <- rxode2::rxSolve(mod, cohortEv, returnType = "data.frame",
-                          keep = "arm", atol = 1e-10, rtol = 1e-8)
+                          keep = "arm", atol = 1e-10, rtol = 1e-8, maxsteps = 1e6)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(cohort$Cc))
 subj <- cohort |>
   filter(!is.na(Cc)) |>
   group_by(arm, id) |>
@@ -984,6 +989,8 @@ runAccum <- function(model, ganesan, ...) {
   s <- suppressWarnings(
     rxode2::rxSolve(model, ev, returnType = "data.frame", keep = "arm", ...)
   )
+  # A subject that fails to solve comes back NA; stop rather than drop it.
+  stopifnot(!anyNA(s$Cc))
   s |>
     filter(!is.na(Cc)) |>
     group_by(arm, id) |>
@@ -1254,6 +1261,8 @@ the model rather than PKNCA’s window heuristic.
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(ncaSol$Cc))
 simNca <- ncaSol |>
   filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment, lzFirst)

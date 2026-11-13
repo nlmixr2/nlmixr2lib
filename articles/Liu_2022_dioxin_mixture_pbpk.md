@@ -200,9 +200,9 @@ cols_tcdd <- c(CA = "Cc", CF = "Cfat", CRB = "Crest", CL = "Cliver_total", CYP =
 err_high <- rel_err_at_ages(s_high, ref_tcdd_high, cols_tcdd)
 err_low <- rel_err_at_ages(s_low, ref_tcdd_low, cols_tcdd)
 print(round(rbind(PoD = err_high, RfD = err_low), 9))
-#>            CA        CF       CRB       CL      CYP
-#> PoD 4.400e-08 4.200e-08 4.600e-08 7.00e-08 2.80e-08
-#> RfD 1.021e-06 1.032e-06 1.021e-06 1.51e-06 5.12e-07
+#>           CA        CF       CRB       CL      CYP
+#> PoD 4.40e-08 4.200e-08 4.700e-08 7.00e-08 2.80e-08
+#> RfD 1.02e-06 1.032e-06 1.021e-06 1.51e-06 5.12e-07
 
 stopifnot(
   "TCDD PoD reproduces the Octave reference" = max(err_high) < 1e-4,

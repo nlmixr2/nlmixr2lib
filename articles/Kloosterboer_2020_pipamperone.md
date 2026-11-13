@@ -128,7 +128,7 @@ make_events <- function(reg) {
 
 ev_typ <- make_events(regimens)
 sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_typ,
-                           keep = c("treatment", "WT")) |>
+                           keep = c("treatment", "WT"), maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ omega/sigma items treated as zero: 'etalcl'
@@ -223,6 +223,8 @@ matching the “mean elimination half-life (13 h)” of the Discussion.
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_typ$Cc))
 conc_df <- sim_typ |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
@@ -292,8 +294,9 @@ reg_iiv <- regimens |>
   tidyr::uncount(n_per) |>
   dplyr::mutate(id = dplyr::row_number(), ctrough_pub = NA_real_)
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_iiv <- rxode2::rxSolve(mod, events = make_events(reg_iiv),
-                           keep = c("treatment", "WT")) |>
+                           keep = c("treatment", "WT"), maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 

@@ -490,7 +490,8 @@ ssEvents <- do.call(rbind, lapply(seq_len(nrow(cohort)), function(i) {
   )
 }))
 
-ssSim <- rxode2::rxSolve(mod, ssEvents, returnType = "data.frame") |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+ssSim <- rxode2::rxSolve(mod, ssEvents, returnType = "data.frame", maxsteps = 1e6) |>
   dplyr::mutate(id = as.integer(as.character(id))) |>
   dplyr::left_join(cohort[, c("id", "arm")], by = "id")
 
@@ -526,6 +527,8 @@ ggplot(ssSim, aes(x = time, y = Cc, group = id)) +
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(ssSim$Cc))
 concData <- ssSim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, arm)

@@ -1016,7 +1016,7 @@ published figures.**
     #> [37] labeling_0.4.3      rxode2ll_2.0.18     fastmap_1.2.0      
     #> [40] grid_4.6.2          cli_3.6.6           dparser_1.3.1-14   
     #> [43] magrittr_2.0.5      withr_3.0.3         scales_1.4.0       
-    #> [46] backports_1.5.1     rmarkdown_2.32      otel_0.2.0         
+    #> [46] backports_1.5.1     rmarkdown_2.32      otel_0.3.0         
     #> [49] askpass_1.2.1       ragg_1.5.2          memoise_2.0.1      
     #> [52] evaluate_1.0.5      knitr_1.52          rex_1.2.2          
     #> [55] viridisLite_0.4.3   PreciseSums_0.7     rlang_1.3.0        

@@ -98,8 +98,10 @@ published trial demographics (Xu 2025 Table S5).
 tau <- 24  # once-daily dosing interval (h)
 
 # Observation grid over one dosing interval: dense through the absorption
-# phase so Tmax and Cmax are resolved, coarser across the flat tail.
-obs_grid <- sort(unique(c(seq(0, 4, by = 0.05), seq(4, tau, by = 0.5))))
+# phase so Tmax and Cmax are resolved, coarser across the flat tail. The absorption
+# step bounds the trapezoid error of the AUCtau identity below (0.05 h gave up to
+# 0.075% for a fast-absorbing subject; 0.02 h gives under 0.015%).
+obs_grid <- sort(unique(c(seq(0, 4, by = 0.02), seq(4, tau, by = 0.5))))
 
 # Build a steady-state event table from a per-subject covariate frame. The dose
 # record carries `ss = 1` with `ii = tau`, so rxode2 places each subject at
@@ -245,7 +247,7 @@ ident <- sim_cohorts |>
 max_ident_err <- max(abs(ident$pct_err))
 cat(sprintf("Largest |AUCtau - Dose/CL| error across %d subjects: %.3f%%\n",
             nrow(ident), max_ident_err))
-#> Largest |AUCtau - Dose/CL| error across 400 subjects: 0.038%
+#> Largest |AUCtau - Dose/CL| error across 400 subjects: 0.009%
 # Residual error is trapezoidal-integration error on the observation grid, not
 # steady-state approximation error: `ss = 1` places every subject exactly.
 stopifnot(max_ident_err < 0.1)
@@ -282,7 +284,7 @@ knitr::kable(
 | Dose (mg) | AUCtau (ng\*h/mL) | AUCtau / dose (ng\*h/mL per mg) |
 |----------:|------------------:|--------------------------------:|
 |         5 |            1908.4 |                           381.7 |
-|        10 |            3816.9 |                           381.7 |
+|        10 |            3816.8 |                           381.7 |
 |        15 |            5725.3 |                           381.7 |
 |        20 |            7633.7 |                           381.7 |
 
@@ -624,7 +626,7 @@ knitr::kable(
 |:-------------------|:--------|----------:|----------:|---------:|
 | Cmax (ng/mL)       | Healthy |       206 |       248 | +20.4%\* |
 | Cmax (ng/mL)       | oHCM    |       278 |       311 |   +11.9% |
-| Cmin (ng/mL)       | Healthy |       176 |       179 |    +1.7% |
+| Cmin (ng/mL)       | Healthy |       176 |       179 |    +1.6% |
 | Cmin (ng/mL)       | oHCM    |       242 |       245 |    +1.3% |
 | AUClast (ng\*h/mL) | Healthy |      4770 |      4830 |    +1.4% |
 | AUClast (ng\*h/mL) | oHCM    |      6420 |      6480 |    +1.0% |

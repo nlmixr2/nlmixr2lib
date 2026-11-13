@@ -255,9 +255,10 @@ mb_ev <- dplyr::bind_rows(
 ) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 mb_sim <- rxode2::rxSolve(mod_typ, mb_ev, returnType = "data.frame",
                           keep = c("DIS_CRITILL", "CRCL"),
-                          rtol = 1e-8, atol = 1e-10, maxsteps = 500000L, maxSS = 20000L)
+                          rtol = 1e-8, atol = 1e-10, maxsteps = 1e6, maxSS = 20000L)
 #> ℹ omega/sigma items treated as zero: 'etalcl_icu', 'etalvc_icu', 'etalka_occ1_icu', 'etalka_occ2_icu', 'etalfdepot_icu', 'etalq_icu', 'etalvp_icu', 'etalcl_outpt', 'etalvc_outpt', 'etalka_occ1_outpt', 'etalka_occ2_outpt', 'etalfdepot_outpt', 'etalq_outpt', 'etalvp_outpt'
 #> Warning: multi-subject simulation without without 'omega'
 
@@ -725,6 +726,8 @@ doses <- events |>
 nca_intervals <- data.frame(start = 240, end = 264, cmax = TRUE, tmax = TRUE, auclast = TRUE)
 
 run_nca <- function(sim_df) {
+  # A subject that fails to solve comes back NA; stop rather than drop it.
+  stopifnot(!anyNA(sim_df$Cc))
   conc <- sim_df |>
     dplyr::filter(!is.na(Cc)) |>
     dplyr::select(id, time, Cc, treatment)

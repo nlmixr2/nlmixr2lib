@@ -156,11 +156,13 @@ events <- rxode2::et(amt = DOSE, dur = TINF, ii = TAU, ss = 1, cmt = "central") 
 
 mod <- readModelDb("Soraluce_2020_linezolid")
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim <- rxode2::rxSolve(
   mod,
   events = events,
   keep = c("arm", "CRCL", "QEFF"),
-  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
+  maxsteps = 1e6
 ) |>
   as.data.frame()
 ```
@@ -175,6 +177,8 @@ individual predictions for each arm.
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim$Cc))
 vpc <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::group_by(arm, time) |>
@@ -213,6 +217,8 @@ appropriate.
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim$Cc))
 conc_df <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, arm)
@@ -442,6 +448,8 @@ gated.
 auc24 <- nca_res |>
   dplyr::filter(PPTESTCD == "auclast") |>
   dplyr::transmute(id, arm, auc24 = 2 * PPORRES)
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim$Cc))
 cmin <- sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::group_by(id, arm) |>

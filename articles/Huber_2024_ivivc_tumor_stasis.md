@@ -233,7 +233,7 @@ mod_hcc
 #>     tumor_vol <- 4 / 3 * pi * tumor_size^3
 #>   })
 #> }
-#> <environment: 0x55a0279442a8>
+#> <environment: 0x55d2f0538c98>
 ```
 
 ### Appendix A: re-analysis of the Diegmiller 2022 xenografts

@@ -1011,7 +1011,11 @@ round(c(median = median(egfr_nca), iqr = IQR(egfr_nca),
 #>  109.9   33.1   62.4  193.9
 
 tau_nca <- 6
-n_doses <- 10
+# Twenty doses: the interval AUC after n doses is short of steady state by about
+# exp(-n * k * tau), which for the slowest subjects of this cohort (eGFR ~60,
+# t1/2 6.5 h) is 0.17% after ten doses, a third of the 0.5% bound of the
+# per-subject identities below, and about 0.0003% after twenty.
+n_doses <- 20
 dose_times <- seq(0, by = tau_nca, length.out = n_doses)
 ss_start <- max(dose_times)
 ss_end <- ss_start + tau_nca
@@ -1103,12 +1107,11 @@ subject_pk <- sim |>
   mutate(auc_ref = 4500 / cl,
          hl_ref = log(2) * vc / cl,
          cav_ref = 4500 / (cl * tau_nca),
-         # The NCA interval opens just BEFORE the 10th dose, so its minimum is
-         # the trough after 9 doses, not the steady-state trough. For a
+         # The NCA interval opens just BEFORE the last dose, so its minimum is
+         # the trough after n_doses - 1 doses, not the steady-state trough. For a
          # one-compartment model that is the steady-state value times
-         # (1 - exp(-9 k tau)); a subject drawn with eGFR ~60 (t1/2 6.5 h) is
-         # still 0.3% short of steady state there, which the tight bound below
-         # would otherwise flag as an NCA error.
+         # (1 - exp(-(n_doses - 1) k tau)); the tight bound below would otherwise
+         # flag that shortfall as an NCA error.
          cmin_ref = ctrough_analytic(4500, 1, tau_nca, cl, vc) *
            (1 - exp(-(n_doses - 1) * (cl / vc) * tau_nca)))
 
@@ -1156,9 +1159,9 @@ nca_summary |>
 
 | Comparison | Median difference (%) | 90th percentile \|difference\| (%) | Max \|difference\| (%) |
 |:---|---:|---:|---:|
-| AUC(0-tau) vs Dose/CL | -0.003 | 0.008 | 0.179 |
+| AUC(0-tau) vs Dose/CL | -0.003 | 0.008 | 0.019 |
 | Half-life vs log(2)\*V/CL | 0.000 | 0.000 | 0.000 |
-| Cav vs Dose/(CL\*tau) | -0.003 | 0.008 | 0.179 |
+| Cav vs Dose/(CL\*tau) | -0.003 | 0.008 | 0.019 |
 | Cmin vs closed-form trough | 0.000 | 0.000 | 0.000 |
 
 PKNCA output against the closed-form steady-state identities, computed
@@ -1198,7 +1201,7 @@ summary(nca_res) |>
 
 | Interval Start | Interval End | treatment | N | AUClast (h\*mg/L) | Cmax (mg/L) | Cmin (mg/L) | Tmax (h) | Cav (mg/L) | Half-life (h) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|
-| 54 | 60 | 4500 mg Q6H, 1-hr infusion | 200 | 918 \[50.9\] | 345 \[22.3\] | 34.8 \[213\] | 1.00 \[1.00, 1.00\] | 153 \[50.9\] | 1.90 \[0.962\] |
+| 114 | 120 | 4500 mg Q6H, 1-hr infusion | 200 | 918 \[51.0\] | 345 \[22.3\] | 34.8 \[213\] | 1.00 \[1.00, 1.00\] | 153 \[51.0\] | 1.90 \[0.962\] |
 
 PKNCA steady-state summary over the final dosing interval, 4500 mg Q6H
 as a 1-hour infusion. {.table}

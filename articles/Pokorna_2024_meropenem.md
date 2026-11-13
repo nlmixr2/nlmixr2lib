@@ -223,11 +223,14 @@ ev_nca <- bind_rows(
 sim_nca <- rxode2::rxSolve(
   rxode2::zeroRe(mod),
   events = ev_nca, keep = "treatment", returnType = "data.frame",
-  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
+  maxsteps = 1e6
 )
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 #> Warning: multi-subject simulation without without 'omega'
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_nca$Cc))
 conc_df <- sim_nca |>
   filter(!is.na(Cc)) |>
   select(id, time, Cc, treatment)

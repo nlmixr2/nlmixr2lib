@@ -223,7 +223,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x556f4d1c55b0>
+#> <environment: 0x55aca479d298>
 ```
 
 ## Population
@@ -513,10 +513,15 @@ chk <- sim |>
     cc_closed = conc_closed(time, dose_tbl, cl, vc, iv = route == "IV")
   ) |>
   ungroup() |>
-  mutate(rel_err = abs(Cc - cc_closed) / cc_closed)
+  # Where the closed form is within two orders of magnitude of the solver's absolute
+  # tolerance (atol = 1e-10) a plain relative error measures the tolerance, and
+  # reaches 1e2 for a fast-eliminating subject whose whole profile is below it. The
+  # error is taken against max(closed form, conc_floor), with
+  # conc_floor = 100 * atol / bound (mg/L).
+  mutate(rel_err = abs(Cc - cc_closed) / pmax(cc_closed, 100 * 1e-10 / 1e-4))
 
 max(chk$rel_err)
-#> [1] 3.361512e-07
+#> [1] 9.860015e-08
 stopifnot(max(chk$rel_err) < 1e-4)
 ```
 

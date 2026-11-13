@@ -110,7 +110,8 @@ mod0 <- rxode2::zeroRe(mod)
 # zero (typical values) or supplied as data columns, so that is intended.
 solve0 <- function(events, ...) {
   withCallingHandlers(
-    suppressMessages(rxode2::rxSolve(mod0, events = events, returnType = "data.frame", ...)),
+    # steady-state searches for long-half-life subjects exceed the default step budget
+    suppressMessages(rxode2::rxSolve(mod0, events = events, returnType = "data.frame", ..., maxsteps = 1e6)),
     warning = function(w) {
       if (grepl("omega", conditionMessage(w))) invokeRestart("muffleWarning")
     }
@@ -472,6 +473,8 @@ interval AUC is checked against each subject’s own clearance.
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim$Cc))
 # Subjects with a very small V decay into integrator noise before the
 # trough. Assert the undershoot is noise relative to each subject's peak,
 # floor it at zero and drop the numerically-zero tail after the peak so the

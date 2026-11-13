@@ -255,25 +255,14 @@ stopifnot(!anyDuplicated(unique(events_ss[, c("id", "time", "evid")])))
 ``` r
 
 rxode2::rxSetSeed(20241029)
-sim_ss <- rxode2::rxSolve(mod, events = events_ss, keep = c("scenario")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_ss <- rxode2::rxSolve(mod, events = events_ss, keep = c("scenario"),
+                          maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> IDID=-1, excess work done on this call (perhaps wrong jt).
-#> Warning: some ID(s) could not solve the ODEs correctly; These values are
-#> replaced with 'NA'
+# A subject whose steady-state search fails comes back NA and would silently leave
+# every summary below.
+stopifnot(!anyNA(sim_ss$Cc), dplyr::n_distinct(sim_ss$id) == nrow(subjects))
 ```
 
 ### PKNCA over the steady-state dosing interval
@@ -281,7 +270,6 @@ sim_ss <- rxode2::rxSolve(mod, events = events_ss, keep = c("scenario")) |>
 ``` r
 
 nca_conc <- sim_ss |>
-  filter(!is.na(Cc)) |>
   select(id, time, Cc, scenario)
 nca_dose <- events_ss |>
   filter(evid == 1) |>
@@ -291,19 +279,6 @@ conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | scenario + id)
 dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | scenario + id)
 intervals <- data.frame(start = 0, end = 24, cav = TRUE, cmax = TRUE, cmin = TRUE)
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
-#> Warning: scenario=Esomeprazole; id=1484: No concentration data
-#> Warning: scenario=CYP2C19: PM; id=3405: No concentration data
-#> Warning: scenario=CYP2C19: PM; id=3431: No concentration data
-#> Warning: scenario=CYP2C19: PM; id=3433: No concentration data
-#> Warning: scenario=CYP2C19: PM; id=3441: No concentration data
-#> Warning: scenario=CYP2C19: PM; id=3447: No concentration data
-#> Warning: scenario=CYP2C19: PM; id=3474: No concentration data
-#> Warning: scenario=CYP2C19: PM; id=3484: No concentration data
-#> Warning: scenario=CYP2C19: PM; id=3485: No concentration data
-#> Warning: scenario=CYP2C19: PM; id=3488: No concentration data
-#> Warning: scenario=CYP2C19: PM; id=3500: No concentration data
-#> Warning: scenario=CYP2C19: PM; id=3564: No concentration data
-#> Warning: scenario=CYP2C19: PM; id=3584: No concentration data
 
 nca_ss <- as.data.frame(nca_res$result) |>
   filter(PPTESTCD %in% c("cav", "cmax", "cmin")) |>
@@ -398,7 +373,7 @@ knitr::kable(cmp, caption = "Simulated vs. digitised Figure 2(a) median Cavg,ss.
 | Cavg (ng/mL)  | CYP2C19: UM                | 178       | 188       | +5.9%    |
 | Cavg (ng/mL)  | CYP2C19: RM                | 229       | 227       | -0.9%    |
 | Cavg (ng/mL)  | CYP2C19: IM                | 343       | 351       | +2.3%    |
-| Cavg (ng/mL)  | CYP2C19: PM                | 808       | 774       | -4.2%    |
+| Cavg (ng/mL)  | CYP2C19: PM                | 808       | 811       | +0.4%    |
 
 Simulated vs. digitised Figure 2(a) median Cavg,ss. \* differs from the
 figure by more than 20%. {.table style="width:100%;"}
@@ -535,7 +510,7 @@ gate |>
 | CYP2C19: UM | 182 | 188 | 178 | 2.2 | 5.9 |
 | CYP2C19: RM | 228 | 227 | 229 | -0.2 | -0.9 |
 | CYP2C19: IM | 341 | 351 | 343 | -0.7 | 2.3 |
-| CYP2C19: PM | 820 | 774 | 808 | 1.5 | -4.2 |
+| CYP2C19: PM | 820 | 811 | 808 | 1.5 | 0.4 |
 
 Median Cavg,ss against the digitised Figure 2(a). {.table
 style="width:100%;"}

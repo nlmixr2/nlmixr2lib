@@ -271,11 +271,13 @@ sim_typ_sd <- rxode2::rxSolve(mod_typ, events = events_typ_sd, keep = keep_cols)
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etalkel', 'etalvc'
 #> Warning: multi-subject simulation without without 'omega'
-sim_typ_ss <- rxode2::rxSolve(mod_typ, events = events_typ_ss, keep = keep_cols) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_typ_ss <- rxode2::rxSolve(mod_typ, events = events_typ_ss, keep = keep_cols, maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ omega/sigma items treated as zero: 'etalka', 'etalkel', 'etalvc'
 #> Warning: multi-subject simulation without without 'omega'
-sim_pop_ss <- rxode2::rxSolve(mod, events = events_pop_ss, keep = keep_cols) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim_pop_ss <- rxode2::rxSolve(mod, events = events_pop_ss, keep = keep_cols, maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 
@@ -335,6 +337,8 @@ cohort, on the same axes.
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_pop_ss$Cc))
 # Replicates Figure 3 of Munana 2018: steady-state LEV concentrations over one
 # q12h dosing interval, by treatment group. Panel A = LEV-XR alone,
 # B = LEV-XR + phenobarbital, C = LEV-XR + zonisamide.
@@ -408,6 +412,8 @@ one-compartment model the single-dose `AUC0-inf` and the steady-state
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_typ_sd$Cc))
 sim_nca <- sim_typ_sd |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
@@ -630,6 +636,8 @@ ones at risk of falling below the 5 ug/mL lower reference bound.
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_typ_ss$Cc))
 auc_tau <- sim_typ_ss |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::group_by(treatment) |>

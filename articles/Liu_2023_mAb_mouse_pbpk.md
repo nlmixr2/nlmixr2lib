@@ -118,12 +118,15 @@ every `ini()` entry in
 | `sigma_V` per tissue (0.85 / 0.90 / 0.95 / 0.99) | constants in `model()` | Shah & Betts 2012 text p.73 (assigned by capillary pore size) |
 | Mouse organ volumes and plasma flows | see `model()` | Shah & Betts 2012 Table 1, “Physiological model parameters used for mouse (28 g male)” |
 | Lymph flow `L_ORG = 0.002 * PLQ_ORG` | ratio | Liu 2023 Supplementary Methods 2, “Lymph Flows” (equivalently Shah & Betts 2012: lymph flow 500-fold lower than plasma flow) |
+| `L_LIVER = 0.002 * (PLQ_LIVER + PLQ_LIVER,UPSTREAM)` | flow | Liu 2023 Supplementary Methods 2, “Lymph Flows” |
 | `L_LYMPH = C_LNLF * PLQ_LUNG` | flow | Liu 2023 Supplementary Methods 2, “Lymph Flows” |
+| `CL_UP,ORG = CL_UP * V_E,ORG` (pinocytosis scaled by each organ’s own endosomal volume) | n/a | Liu 2023 Supplementary Methods 2, “Equations for Organ Sub-Compartment” |
 | Plasma / lymph-node / vascular / endosomal / interstitial ODEs | n/a | Liu 2023 Supplementary Methods 2, “Essential differential equations” |
 | `HEPARIN_RT` per antibody | 2.92-32.6 min | Liu 2023 Supplementary Table S1 |
 | Observed AUC, half-life, clearance per antibody | see cohort chunk | Liu 2023 Supplementary Table S1 |
-| Individually estimated `F1` per antibody | see cohort chunk | Liu 2023 Supplementary Table S2 |
+| Individually estimated `F1` and `F2` per antibody | see cohort chunk | Liu 2023 Supplementary Table S2 |
 | Validation-set %PE and fast-clearance classification | see validation chunk | Liu 2023 Supplementary Table S3 |
+| Published model curves | digitized | Liu 2023 Figures 4a, 4b, 5 and 6 (see the `digitized-curves` chunk) |
 
 ## Virtual cohort
 
@@ -134,7 +137,7 @@ mouse per antibody, 70 in total (56 training + 14 validation), well
 inside the 200-per-arm cap.
 
 `HEPARIN_RT`, the observed AUC(0-672 h), half-life and clearance, and
-the individually estimated `F1` are transcribed from Liu 2023
+the individually estimated `F1` and `F2` are transcribed from Liu 2023
 Supplementary Tables S1 and S2; the validation-set %PE from
 Supplementary Table S3.
 
@@ -194,6 +197,14 @@ ab_panel <- tibble::tibble(
                0.628, 0.935, 1.77, 0.776, 0.543, 0.733, 0.638, 0.419, 0.903, 0.873,
                0.738, 1.53, 0.446, 0.602, 0.721, 2.35,
                rep(NA_real_, 14)),
+  # Supplementary Table S2, individually estimated F2 (training set only)
+  f2_indiv = c(0.733, 1.4, 4.66, 0.726, 0.822, 3.37, 1.61, 2.07, 1.02, 1.79,
+               2.4, 1.41, 0.934, 0.5, 0.991, 0.0226, 0.787, 2.27, 3.42, 1.72,
+               2.58, 4.43, 1.52, 5.34, 1.17, 1.2e-7, 2.03, 3.44e-6, 1.67, 1.23e-7,
+               1.44, 3.27, 2.15, 1.06, 1.37, 1.61, 1.41, 0.98, 1.14e-6, 1.24,
+               0.847, 3.41, 5.00, 0.519, 1.1, 1.28, 1.88, 1.67, 1.43, 1.77,
+               1.4, 17.6, 1.66, 2.77, 1.34, 8.7,
+               rep(NA_real_, 14)),
   # Supplementary Table S3, %PE on AUC (validation set only)
   pe_published = c(rep(NA_real_, 56),
                    -30.1, -3.7, -54.2, 19.8, -54.1, -60.3, 69.5, 77.2, 106, 125,
@@ -213,9 +224,6 @@ bw_kg <- 0.028
 dose_mg_kg <- 2
 mw_g_per_mol <- 150000    # nominal aglycosylated human IgG1; see Assumptions
 dose_nmol <- dose_mg_kg * bw_kg * 1e-3 / mw_g_per_mol * 1e9
-
-# Fast-clearance threshold used throughout Liu 2023: 12 mL/day/kg.
-cl_threshold_mL_h <- 12 * bw_kg / 24
 
 sample_times <- sort(unique(c(
   0, 0.0833, 0.25, 0.5, 1, 2, 4, 6, 8, 12,
@@ -251,6 +259,102 @@ stopifnot(dplyr::n_distinct(sim$id) == nrow(ab_panel), !anyNA(sim$Cc))
 
 ## Replicate published figures
 
+The published curves overlaid on Figures 4, 5 and 6 below were digitized
+from the published figures of Liu 2023: each line’s position was read
+against its own panel’s axis ticks. They are the authors’ model curves,
+not observations. Figure 6 is printed at the smallest scale of the
+three, so its values are the least precise.
+
+``` r
+
+# Liu 2023 Figure 5: the 20 curves are F1 = 0.4 * 10^(k / 19), k = 0..19, i.e.
+# log-spaced from 0.4 to 4 as the log10(F1) colour bar shows. The k = 8 curve
+# (F1 = 1.05) is drawn in white and cannot be read. Curves k = 17-19 reach the
+# 10 ng/mL axis floor before 698 h; their crossing times are recorded as
+# conc = 10 at that time. Before about 24 h only k = 0 and k = 19 separate.
+fig5_k <- 0:19
+fig5_f1 <- 0.4 * 10^(fig5_k / 19)
+fig5_pub <- rbind(
+  data.frame(k = fig5_k, time = 300,
+             conc = c(19600, 18000, 16400, 14800, 13200, 11600, 10100, 8710, NA, 6120,
+                      5040, 4040, 3200, 2480, 1890, 1400, 1020, 718, 506, 340)),
+  data.frame(k = fig5_k, time = 494.9,
+             conc = c(12800, 11100, 9610, 8180, 6870, 5600, 4500, 3550, NA, 2040,
+                      1490, 1060, 728, 488, 316, 197, 120, 70.5, 40.1, 21.6)),
+  data.frame(k = fig5_k, time = 697.6,
+             conc = c(8180, 6770, 5540, 4440, 3440, 2620, 1950, 1400, NA, 651,
+                      423, 264, 158, 91.0, 50.0, 26.2, 13.2, NA, NA, NA)),
+  data.frame(k = rep(c(0, 19), each = 6), time = rep(c(24, 48, 72, 100, 150, 200), 2),
+             conc = c(38600, 34500, 32100, 29300, 26800, 24400,
+                      19100, 12600, 8610, 5730, 2800, 1390)),
+  data.frame(k = 17:19, time = c(652, 597, 544), conc = 10)
+) |>
+  dplyr::filter(!is.na(conc)) |>
+  dplyr::mutate(F1 = fig5_f1[k + 1])
+
+# At 2.2 h all 20 published Figure 5 curves still overlap, inside this band.
+fig5_band_2h <- c(time = 2.2, lower = 37100, upper = 53400)
+
+# Liu 2023 Figures 4a, 4b (fitted lines of the final covariate model) and 6
+# (a-priori predicted lines), read at fixed times; NA where a data marker
+# covers the line or the line has ended.
+fig46_times <- c(100, 200, 300, 400, 500, 600, 690)
+fig46_pub <- rbind(
+  data.frame(ab = "Ab1",  figure = "4a", time = fig46_times,
+             conc = c(23200, 16700, 12100, 8730, 6480, 4560, 3380)),
+  data.frame(ab = "Ab20", figure = "4a", time = fig46_times,
+             conc = c(23200, 16700, 12100, 8500, 6140, 4440, 3290)),
+  data.frame(ab = "Ab50", figure = "4a", time = fig46_times,
+             conc = c(22100, 14700, 9730, 6450, NA, 2830, 1980)),
+  data.frame(ab = "Ab75", figure = "4a", time = fig46_times,
+             conc = c(20600, 13600, 9060, 6040, NA, 2650, 1840)),
+  data.frame(ab = "Ab63", figure = "4b", time = fig46_times,
+             conc = c(23100, 16500, 11800, 8560, 6120, 4430, 3280)),
+  data.frame(ab = "Ab84", figure = "4b", time = fig46_times,
+             conc = c(12100, 5270, 2350, 1070, 530, 213, 104)),
+  data.frame(ab = "Ab39", figure = "4b", time = fig46_times,
+             conc = c(10400, 4110, 1630, 647, 263, 104, 46.5)),
+  data.frame(ab = "Ab14", figure = "4b", time = fig46_times,
+             conc = c(5850, 1530, 411, 110, 29.9, NA, NA)),
+  data.frame(ab = "Ab36", figure = "4b", time = fig46_times,
+             conc = c(5890, 1540, 413, 111, 30.3, NA, NA)),
+  data.frame(ab = "Ab97", figure = "6", time = fig46_times,
+             conc = c(23500, 16800, 12000, 8570, 6390, 4380, NA)),
+  data.frame(ab = "Ab98", figure = "6", time = fig46_times,
+             conc = c(6260, 1700, 473, 134, 36.5, 10.4, NA))
+) |>
+  dplyr::filter(!is.na(conc))
+
+# The packaged model for the digitized antibodies, on a fine time grid.
+fine_times <- sort(unique(c(seq(0, 900, by = 2), 1, 2.2, 494.9, 697.6)))
+digit_abs <- ab_panel |>
+  dplyr::filter(ab %in% fig46_pub$ab) |>
+  dplyr::transmute(id = dplyr::row_number(), ab, HEPARIN_RT)
+ev_digit <- rxode2::et(amt = dose_nmol, cmt = "plasma", id = digit_abs$id) |>
+  rxode2::et(fine_times, id = digit_abs$id) |>
+  as.data.frame() |>
+  dplyr::left_join(digit_abs, by = "id")
+sim_digit <- rxode2::rxSolve(mod_fun, events = ev_digit, keep = "ab",
+                             atol = 1e-10, rtol = 1e-8) |>
+  as.data.frame() |>
+  dplyr::mutate(conc = Cc * mw_g_per_mol / 1e3)
+#> Warning: multi-subject simulation without without 'omega'
+stopifnot(setequal(unique(sim_digit$ab), unique(fig46_pub$ab)))
+
+# Ab1 and Ab20 sit on the same F1 plateau, so their published lines are the same
+# curve read twice; the spread between the two readings measures the precision.
+repeat_pair <- merge(fig46_pub[fig46_pub$ab == "Ab1", c("time", "conc")],
+                     fig46_pub[fig46_pub$ab == "Ab20", c("time", "conc")], by = "time")
+digit_spread_pct <- 100 * max(abs(repeat_pair$conc.x / repeat_pair$conc.y - 1))
+stopifnot(nrow(repeat_pair) == 7, digit_spread_pct < 10)
+n_fig4_digit <- dplyr::n_distinct(fig46_pub$ab[fig46_pub$figure != "6"])
+```
+
+The values are written to three significant figures, but that overstates
+their precision: Ab1 and Ab20 share the same `F1`, so their published
+lines are one curve read twice, and the two readings differ by up to
+5.5%.
+
 ### Figure 3d - sigmoidal relationship between `F1` and heparin retention time
 
 ``` r
@@ -281,70 +385,127 @@ ab_panel |>
 
 ### Figure 4 - training-set profiles, low- and high-clearance panels
 
-The paper splits Figure 4 into the low-clearance (4a) and high-clearance
-(4b) antibodies at the 12 mL/day/kg threshold. Observed points are not
-available in machine-readable form, so only the model-fitted lines are
-reproduced here; the quantitative observed-vs-predicted comparison
-follows in the PKNCA section.
+Figure 4 shows the 53 antibodies of the covariate fit in two panels, low
+clearance (4a, 48 antibodies) and high clearance (4b: Ab14, Ab36, Ab39,
+Ab63 and Ab84); the panel membership below is taken from the figure.
+Observed points are not available in machine-readable form, so only the
+model-fitted lines are reproduced here; the quantitative
+observed-vs-predicted comparison follows in the PKNCA section.
 
 ``` r
 
 # Replicates the fitted profiles of Figure 4a,b of Liu 2023.
+fig4b_abs <- c("Ab14", "Ab36", "Ab39", "Ab63", "Ab84")
+stopifnot(sum(ab_panel$fitted) == 53, all(fig4b_abs %in% ab_panel$ab[ab_panel$fitted]),
+          sum(ab_panel$fitted & !ab_panel$ab %in% fig4b_abs) == 48)
 sim |>
-  dplyr::filter(panel_set == "training", time > 0) |>
+  dplyr::filter(fitted, time > 0) |>
   dplyr::mutate(
-    cl_panel = ifelse(cl_obs > cl_threshold_mL_h,
-                      "(b) high clearance", "(a) low clearance"),
+    cl_panel = ifelse(ab %in% fig4b_abs, "(b) high clearance", "(a) low clearance"),
     conc_ng_mL = Cc * mw_g_per_mol / 1e3
   ) |>
   ggplot(aes(time, conc_ng_mL, group = ab, colour = HEPARIN_RT)) +
   geom_line(alpha = 0.8) +
+  geom_line(
+    data = fig46_pub |>
+      dplyr::filter(figure %in% c("4a", "4b")) |>
+      dplyr::mutate(cl_panel = ifelse(figure == "4b", "(b) high clearance", "(a) low clearance")),
+    aes(time, conc, group = ab), colour = "black", linetype = "dashed", inherit.aes = FALSE
+  ) +
+  geom_point(
+    data = fig46_pub |>
+      dplyr::filter(figure %in% c("4a", "4b")) |>
+      dplyr::mutate(cl_panel = ifelse(figure == "4b", "(b) high clearance", "(a) low clearance")),
+    aes(time, conc), colour = "black", size = 1, inherit.aes = FALSE
+  ) +
   facet_wrap(~cl_panel) +
   scale_y_log10() +
   scale_colour_viridis_c(name = "Heparin RT (min)", option = "plasma") +
   labs(x = "Time (h)", y = "Plasma concentration (ng/mL)",
        title = "Figure 4 - model-fitted profiles for the training panel",
-       caption = "Replicates the fitted lines of Figure 4a,b of Liu 2023 (2 mg/kg IV).")
+       caption = paste0("Coloured lines: packaged model (2 mg/kg IV). Black dashed lines and points:\n",
+                        "published fitted lines of Liu 2023 Figure 4a,b for ", n_fig4_digit,
+                        " antibodies, digitized."))
 ```
 
 ![](Liu_2023_mAb_mouse_pbpk_files/figure-html/figure-4-1.png)
 
-### Figure 5 - sensitivity of the plasma profile to `F1`
-
-The paper’s Figure 5 sweeps `F1` from 0.4 to 4. Because the packaged
-model derives `F1` from `HEPARIN_RT`, the sweep is done by collapsing
-the sigmoid’s two plateaus onto the target value
-(`clup_scale_min = clup_scale_max = F1`), which makes `F1` constant and
-independent of the covariate.
+The same 9 antibodies, and the two digitized validation antibodies of
+Figure 6, one panel each:
 
 ``` r
 
-# Replicates Figure 5 of Liu 2023: plasma PK after 2 mg/kg IV for F1 in [0.4, 4].
-f1_levels <- c(0.4, 0.67, 1, 1.5, 2, 3, 4)
+# Packaged model (solid) against the digitized published lines (dashed, points).
+f1_of_rt <- function(rt) 0.67 + (3.65 - 0.67) / (1 + (17.7 / rt)^22.7)
+panel_labels <- digit_abs |>
+  dplyr::left_join(dplyr::distinct(fig46_pub, ab, figure), by = "ab") |>
+  dplyr::mutate(label = sprintf("%s (Fig %s, F1 = %.2f)", ab, figure, f1_of_rt(HEPARIN_RT))) |>
+  dplyr::select(ab, label)
 
-ev1 <- rxode2::et(amt = dose_nmol, cmt = "plasma") |>
-  rxode2::et(sample_times)
+sim_digit |>
+  dplyr::filter(time > 0, time <= 700) |>
+  dplyr::left_join(panel_labels, by = "ab") |>
+  ggplot(aes(time, conc)) +
+  geom_line() +
+  geom_line(data = dplyr::left_join(fig46_pub, panel_labels, by = "ab"),
+            linetype = "dashed", colour = "red") +
+  geom_point(data = dplyr::left_join(fig46_pub, panel_labels, by = "ab"),
+             colour = "red", size = 1.2) +
+  facet_wrap(~label, ncol = 4) +
+  scale_y_log10() +
+  coord_cartesian(ylim = c(1, 1e5)) +
+  labs(x = "Time (h)", y = "Plasma concentration (ng/mL)",
+       title = "Packaged model versus published model lines",
+       caption = paste0("Black: packaged model. Red: Liu 2023 Figures 4a, 4b and 6, digitized.\n",
+                        "Same covariate model and dose (2 mg/kg IV) in both."))
+```
 
-sens <- lapply(f1_levels, function(clup_scale) {
-  rxode2::rxSolve(
-    mod_fun, events = ev1,
-    params = c(lclup_scale_min = log(clup_scale), lclup_scale_max = log(clup_scale), HEPARIN_RT = 10),
-    atol = 1e-10, rtol = 1e-8
-  ) |>
-    as.data.frame() |>
-    dplyr::mutate(F1 = clup_scale)
-}) |>
-  dplyr::bind_rows()
+![](Liu_2023_mAb_mouse_pbpk_files/figure-html/figure-4-6-overlay-1.png)
+
+### Figure 5 - sensitivity of the plasma profile to `F1`
+
+The paper’s Figure 5 sweeps `F1` over 20 log-spaced values from 0.4 to 4
+(`F1 = 0.4 * 10^(k / 19)`, k = 0..19). Because the packaged model
+derives `F1` from `HEPARIN_RT`, the sweep is done by collapsing the
+sigmoid’s two plateaus onto the target value
+(`clup_scale_min = clup_scale_max = F1`), which makes `F1` constant and
+independent of the covariate. `F2` stays at the final model’s 1.45; the
+paper does not state the value used for this figure.
+
+``` r
+
+# Replicates Figure 5 of Liu 2023: plasma PK after 2 mg/kg IV for the 20 F1
+# values of the published sweep, one id per F1 value.
+ev5 <- rxode2::et(amt = dose_nmol, cmt = "plasma", id = seq_along(fig5_f1)) |>
+  rxode2::et(fine_times, id = seq_along(fig5_f1))
+sweep_params <- data.frame(id = seq_along(fig5_f1),
+                           lclup_scale_min = log(fig5_f1), lclup_scale_max = log(fig5_f1),
+                           HEPARIN_RT = 10)
+sens <- rxode2::rxSolve(mod_fun, events = ev5, params = sweep_params,
+                        atol = 1e-10, rtol = 1e-8) |>
+  as.data.frame() |>
+  dplyr::mutate(k = id - 1, F1 = fig5_f1[id], conc = Cc * mw_g_per_mol / 1e3)
+#> Warning: multi-subject simulation without without 'omega'
 
 sens |>
-  dplyr::filter(time > 0) |>
-  ggplot(aes(time, Cc * mw_g_per_mol / 1e3, group = F1, colour = F1)) +
-  geom_line(linewidth = 0.8) +
+  dplyr::filter(time > 0, time <= 700) |>
+  ggplot(aes(time, conc, group = k, colour = log10(F1))) +
+  geom_line(linewidth = 0.6) +
+  geom_point(data = fig5_pub, aes(time, conc, fill = log10(F1)), shape = 21,
+             colour = "black", size = 1.8, inherit.aes = FALSE) +
+  geom_errorbar(data = data.frame(time = fig5_band_2h[["time"]],
+                                  lower = fig5_band_2h[["lower"]],
+                                  upper = fig5_band_2h[["upper"]]),
+                aes(x = time, ymin = lower, ymax = upper), width = 12,
+                colour = "black", inherit.aes = FALSE) +
   scale_y_log10() +
-  scale_colour_gradient(low = "red", high = "blue", name = expression(F[1])) +
+  coord_cartesian(ylim = c(10, 1e5)) +
+  scale_colour_gradient2(low = "firebrick", mid = "grey80", high = "navy", midpoint = 0,
+                         name = expression(log[10](F[1])), aesthetics = c("colour", "fill")) +
   labs(x = "Time (h)", y = "Plasma concentration (ng/mL)",
        title = "Figure 5 - sensitivity of plasma PK to F1",
-       caption = "Replicates Figure 5 of Liu 2023.")
+       caption = paste0("Lines: packaged model. Points: Liu 2023 Figure 5, digitized.\n",
+                        "The bar at 2.2 h spans all 20 published curves, which still overlap there."))
 ```
 
 ![](Liu_2023_mAb_mouse_pbpk_files/figure-html/figure-5-1.png)
@@ -353,16 +514,28 @@ sens |>
 
 ``` r
 
-# Replicates Figure 6 of Liu 2023: profiles predicted from Heparin_RT alone.
+# Replicates Figure 6 of Liu 2023: profiles predicted from Heparin_RT alone, one
+# panel per antibody, with the digitized published lines for Ab97 and Ab98.
+val_labels <- ab_panel |>
+  dplyr::filter(panel_set == "validation") |>
+  dplyr::transmute(ab, label = factor(sprintf("%s, RT %.1f min", ab, HEPARIN_RT),
+                                      levels = sprintf("%s, RT %.1f min", ab, HEPARIN_RT)))
 sim |>
   dplyr::filter(panel_set == "validation", time > 0) |>
-  ggplot(aes(time, Cc * mw_g_per_mol / 1e3, group = ab, colour = HEPARIN_RT)) +
-  geom_line(alpha = 0.9) +
+  dplyr::left_join(val_labels, by = "ab") |>
+  ggplot(aes(time, Cc * mw_g_per_mol / 1e3)) +
+  geom_line() +
+  geom_line(data = fig46_pub |> dplyr::filter(figure == "6") |> dplyr::left_join(val_labels, by = "ab"),
+            aes(time, conc), linetype = "dashed", colour = "red") +
+  geom_point(data = fig46_pub |> dplyr::filter(figure == "6") |> dplyr::left_join(val_labels, by = "ab"),
+             aes(time, conc), colour = "red", size = 1.2) +
+  facet_wrap(~label, ncol = 4) +
   scale_y_log10() +
-  scale_colour_viridis_c(name = "Heparin RT (min)", option = "plasma") +
+  coord_cartesian(ylim = c(0.1, 1e5)) +
   labs(x = "Time (h)", y = "Plasma concentration (ng/mL)",
        title = "Figure 6 - a-priori predictions for the validation panel",
-       caption = "Replicates the predicted lines of Figure 6 of Liu 2023 (2 mg/kg IV).")
+       caption = paste0("Black: packaged model (2 mg/kg IV). Red: Liu 2023 Figure 6 predicted lines\n",
+                        "for Ab97 and Ab98, digitized."))
 ```
 
 ![](Liu_2023_mAb_mouse_pbpk_files/figure-html/figure-6-1.png)
@@ -451,7 +624,7 @@ nca_wide |>
 
 ``` r
 
-nca_wide |>
+fold_summary <- nca_wide |>
   dplyr::mutate(fold = cl_pred / cl_obs) |>
   dplyr::group_by(panel_set) |>
   dplyr::summarise(
@@ -459,7 +632,14 @@ nca_wide |>
     median_fold = median(fold),
     within_2fold_pct = 100 * mean(fold > 0.5 & fold < 2),
     .groups = "drop"
-  ) |>
+  )
+# Pins the training-panel figures quoted under "Half-life within the
+# low-retention plateau" below.
+training_fold <- fold_summary[fold_summary$panel_set == "training", ]
+stopifnot(training_fold$median_fold > 0.85, training_fold$median_fold < 1,
+          training_fold$within_2fold_pct >= 85)
+
+fold_summary |>
   dplyr::rename(
     "Panel" = panel_set, "N" = n,
     "Median predicted/observed CL" = median_fold,
@@ -651,24 +831,371 @@ knitr::kable(
 Simulated versus published NCA (Liu 2023 Supplementary Table S1). \*
 differs from the reference by more than 20%. {.table}
 
+``` r
+
+
+# Signed percentage differences quoted in the paragraph below, matched by antibody.
+pct_diff <- function(param) {
+  ref <- published[[param]][match(simulated$ab, published$ab)]
+  stats::setNames(100 * (simulated[[param]] / ref - 1), simulated$ab)
+}
+cl_pct <- pct_diff("cl.obs")
+thalf_pct <- pct_diff("half.life")
+fmt_pct <- function(x) sprintf("%+.0f%%", x)
+plateau_abs <- c("Ab20", "Ab1", "Ab51")
+cl_plateau_uL_h <- simulated$cl.obs[simulated$ab %in% plateau_abs] * 1e6
+stopifnot(
+  setequal(simulated$ab, published$ab),
+  diff(range(cl_plateau_uL_h)) / mean(cl_plateau_uL_h) < 0.01,
+  abs(cl_pct[["Ab14"]]) < 20, cl_pct[["Ab39"]] > 20, cl_pct[["Ab39"]] < 30,
+  cl_pct[["Ab97"]] < -20, cl_pct[["Ab98"]] < -20, cl_pct[["Ab85"]] > 20,
+  all(thalf_pct[c("Ab1", "Ab51", "Ab39", "Ab14", "Ab98")] > 20),
+  all(thalf_pct[c("Ab20", "Ab85")] < -20), abs(thalf_pct[["Ab97"]]) < 5
+)
+```
+
 [`ncaComparisonTable()`](https://nlmixr2.github.io/nlmixr2lib/reference/ncaComparisonTable.md)
 labels PKNCA’s `cl.obs` as “CL/F”; dosing here is intravenous, so that
 row is plain systemic clearance (no bioavailability term).
 
-Clearance is reproduced closely for the low-retention plateau (Ab20,
-Ab1, Ab51) and for antibodies just above the threshold (Ab39, Ab14),
-which is where the covariate model was trained. It is systematically
-**under-predicted** for the extreme-retention validation antibodies
-(Ab98 at 32.6 min, Ab85 at 20.4 min), because the sigmoid plateaus at
-`b` = 3.65 and cannot describe the further clearance escalation seen
-beyond the training range - the paper makes the same point (“we still
-notice huge mAb PK variability when Heparin_RT is large, leading to PK
-underprediction almost 30% of the time”). Half-life is over-predicted
-across the board relative to the reported values; the simulated terminal
-phase is estimated over a 672 h window from a smooth noise-free profile,
-whereas the published half-lives come from sparse composite mean
-profiles (`n = 3` per time point). No parameter was tuned to improve
-either comparison.
+The three low-retention antibodies (Ab20, Ab1 and Ab51) sit on the
+sigmoid’s lower plateau, so the model gives them practically the same
+profile and clearance, 5.38 uL/h (within 1% of each other), while their
+reported clearances span 2.98-11.70 uL/h. The simulated clearance
+therefore differs by +80% for Ab20, -22% for Ab1 and -54% for Ab51: one
+`F1` per plateau cannot carry that spread (see *Half-life within the
+low-retention plateau* below). Of the other five, clearance is within
+20% only for Ab14 (-7%) and just outside it for Ab39 (+21%). It is
+under-predicted for Ab97 (-45%) and Ab98 (-65%) and over-predicted for
+Ab85 (+52%). Above the 16.5 min threshold the sigmoid plateaus at `b` =
+3.65, so the model gives all high-retention antibodies nearly the same
+clearance and cannot follow the spread among them; the paper notes “huge
+mAb PK variability when Heparin_RT is large, leading to PK
+underprediction almost 30% of the time”. Half-life differs in both
+directions: it is longer than reported for Ab1, Ab51, Ab39, Ab14 and
+Ab98 (+21% to +148%), shorter for Ab20 (-24%) and Ab85 (-44%), and about
+equal for Ab97 (+0.4%). Where it is longer, part of the difference is
+the model itself: its terminal phase is longer than that of the
+published model curves (next section, and *Shape of the published model
+curves* under Assumptions and deviations). The simulated half-lives are
+also estimated over a 672 h window from smooth noise-free profiles,
+whereas the published ones come from sparse composite mean profiles
+(`n = 3` per time point). No parameter was tuned to improve either
+comparison.
+
+### Comparison with the published model curves
+
+The digitized curves overlaid on Figures 4, 5 and 6 are the authors’ own
+model output, so they allow a model-to-model comparison that
+observations cannot. The first table pairs every digitized point with
+the packaged model at the same time; the checks after it compare the
+clearance and exposure the published model implies (Supplementary Tables
+S1-S3).
+
+``` r
+
+# Pair every digitized point with the packaged model at the same time.
+f5_pts <- fig5_pub |>
+  dplyr::filter(conc > 10) |>
+  dplyr::mutate(t_key = round(time, 1)) |>
+  dplyr::left_join(sens |> dplyr::transmute(k, t_key = round(time, 1), sim = conc),
+                   by = c("k", "t_key"))
+f46_pts <- fig46_pub |>
+  dplyr::mutate(t_key = round(time, 1)) |>
+  dplyr::left_join(sim_digit |> dplyr::transmute(ab, t_key = round(time, 1), sim = conc),
+                   by = c("ab", "t_key"))
+stopifnot(!anyNA(f5_pts$sim), !anyNA(f46_pts$sim))
+
+pts <- dplyr::bind_rows(
+  f5_pts |> dplyr::transmute(figure = "5", curve = sprintf("F1 = %.2f", F1), time,
+                             published = conc, simulated = sim),
+  f46_pts |> dplyr::transmute(figure, curve = ab, time, published = conc, simulated = sim)
+) |>
+  dplyr::mutate(ratio = simulated / published)
+
+per_curve <- pts |>
+  dplyr::group_by(figure, curve) |>
+  dplyr::arrange(time, .by_group = TRUE) |>
+  dplyr::summarise(
+    n = dplyr::n(),
+    first_h = dplyr::first(time), pub_first = dplyr::first(published),
+    sim_first = dplyr::first(simulated), ratio_first = dplyr::first(ratio),
+    last_h = dplyr::last(time), pub_last = dplyr::last(published),
+    sim_last = dplyr::last(simulated), ratio_last = dplyr::last(ratio),
+    .groups = "drop"
+  )
+# On every digitized curve the simulated/published ratio is higher at the last
+# digitized time than at the first, and above 1 at the last digitized time.
+stopifnot(all(per_curve$n >= 2), all(per_curve$ratio_last > per_curve$ratio_first),
+          all(per_curve$ratio_last > 1))
+
+per_curve |>
+  dplyr::mutate(
+    dplyr::across(c(pub_first, sim_first, pub_last, sim_last),
+                  ~ formatC(signif(.x, 3), format = "fg", digits = 3)),
+    dplyr::across(c(first_h, last_h), as.character)
+  ) |>
+  dplyr::rename(
+    Figure = figure, Curve = curve, Points = n,
+    `First time (h)` = first_h, `Published, first` = pub_first,
+    `Simulated, first` = sim_first, `Ratio, first` = ratio_first,
+    `Last time (h)` = last_h, `Published, last` = pub_last,
+    `Simulated, last` = sim_last, `Ratio, last` = ratio_last
+  ) |>
+  knitr::kable(digits = 2, caption = paste(
+    "Packaged model versus the digitized published model curves (ng/mL), at the",
+    "first and last digitized time of each curve. Ratio is simulated / published."))
+```
+
+| Figure | Curve | Points | First time (h) | Published, first | Simulated, first | Ratio, first | Last time (h) | Published, last | Simulated, last | Ratio, last |
+|:---|:---|---:|:---|:---|:---|---:|:---|:---|:---|---:|
+| 4a | Ab1 | 7 | 100 | 23200 | 19200 | 0.83 | 690 | 3380 | 4830 | 1.43 |
+| 4a | Ab20 | 7 | 100 | 23200 | 19200 | 0.83 | 690 | 3290 | 4830 | 1.47 |
+| 4a | Ab50 | 6 | 100 | 22100 | 17800 | 0.80 | 690 | 1980 | 3120 | 1.58 |
+| 4a | Ab75 | 6 | 100 | 20600 | 17800 | 0.86 | 690 | 1840 | 3120 | 1.70 |
+| 4b | Ab14 | 5 | 100 | 5850 | 6850 | 1.17 | 500 | 29.9 | 101 | 3.39 |
+| 4b | Ab36 | 5 | 100 | 5890 | 6890 | 1.17 | 500 | 30.3 | 104 | 3.42 |
+| 4b | Ab39 | 7 | 100 | 10400 | 10800 | 1.04 | 690 | 46.5 | 180 | 3.87 |
+| 4b | Ab63 | 7 | 100 | 23100 | 19200 | 0.83 | 690 | 3280 | 4810 | 1.47 |
+| 4b | Ab84 | 7 | 100 | 12100 | 12000 | 0.99 | 690 | 104 | 325 | 3.13 |
+| 5 | F1 = 0.40 | 9 | 24 | 38600 | 24600 | 0.64 | 697.6 | 8180 | 9200 | 1.12 |
+| 5 | F1 = 0.45 | 3 | 300 | 18000 | 15200 | 0.85 | 697.6 | 6770 | 8090 | 1.20 |
+| 5 | F1 = 0.51 | 3 | 300 | 16400 | 14300 | 0.87 | 697.6 | 5540 | 7010 | 1.27 |
+| 5 | F1 = 0.58 | 3 | 300 | 14800 | 13300 | 0.90 | 697.6 | 4440 | 5970 | 1.34 |
+| 5 | F1 = 0.65 | 3 | 300 | 13200 | 12300 | 0.93 | 697.6 | 3440 | 4980 | 1.45 |
+| 5 | F1 = 0.73 | 3 | 300 | 11600 | 11200 | 0.97 | 697.6 | 2620 | 4070 | 1.55 |
+| 5 | F1 = 0.83 | 3 | 300 | 10100 | 10100 | 1.00 | 697.6 | 1950 | 3250 | 1.67 |
+| 5 | F1 = 0.93 | 3 | 300 | 8710 | 9050 | 1.04 | 697.6 | 1400 | 2530 | 1.81 |
+| 5 | F1 = 1.19 | 3 | 300 | 6120 | 6930 | 1.13 | 697.6 | 651 | 1400 | 2.15 |
+| 5 | F1 = 1.34 | 3 | 300 | 5040 | 5930 | 1.18 | 697.6 | 423 | 988 | 2.33 |
+| 5 | F1 = 1.52 | 3 | 300 | 4040 | 4990 | 1.24 | 697.6 | 264 | 672 | 2.55 |
+| 5 | F1 = 1.71 | 3 | 300 | 3200 | 4120 | 1.29 | 697.6 | 158 | 439 | 2.78 |
+| 5 | F1 = 1.93 | 3 | 300 | 2480 | 3330 | 1.34 | 697.6 | 91 | 274 | 3.01 |
+| 5 | F1 = 2.18 | 3 | 300 | 1890 | 2640 | 1.40 | 697.6 | 50 | 163 | 3.26 |
+| 5 | F1 = 2.46 | 3 | 300 | 1400 | 2040 | 1.46 | 697.6 | 26.2 | 92.3 | 3.52 |
+| 5 | F1 = 2.78 | 3 | 300 | 1020 | 1540 | 1.51 | 697.6 | 13.2 | 49.5 | 3.75 |
+| 5 | F1 = 3.14 | 2 | 300 | 718 | 1130 | 1.58 | 494.9 | 70.5 | 175 | 2.48 |
+| 5 | F1 = 3.54 | 2 | 300 | 506 | 809 | 1.60 | 494.9 | 40.1 | 102 | 2.55 |
+| 5 | F1 = 4.00 | 8 | 24 | 19100 | 15100 | 0.79 | 494.9 | 21.6 | 57.3 | 2.65 |
+| 6 | Ab97 | 6 | 100 | 23500 | 18600 | 0.79 | 600 | 4380 | 5060 | 1.15 |
+| 6 | Ab98 | 6 | 100 | 6260 | 6550 | 1.05 | 600 | 10.4 | 28.4 | 2.73 |
+
+Packaged model versus the digitized published model curves (ng/mL), at
+the first and last digitized time of each curve. Ratio is simulated /
+published. {.table}
+
+``` r
+
+
+pts |>
+  dplyr::mutate(phase = ifelse(time <= 200, "24-200 h", "300-698 h")) |>
+  dplyr::group_by(Figure = figure, Phase = phase) |>
+  dplyr::summarise(
+    Points = dplyr::n(),
+    `Geometric-mean ratio` = exp(mean(log(ratio))),
+    `Min ratio` = min(ratio), `Max ratio` = max(ratio),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 2, caption = "Simulated / published ratio by figure and phase.")
+```
+
+| Figure | Phase     | Points | Geometric-mean ratio | Min ratio | Max ratio |
+|:-------|:----------|-------:|---------------------:|----------:|----------:|
+| 4a     | 24-200 h  |      8 |                 0.87 |      0.80 |      0.97 |
+| 4a     | 300-698 h |     18 |                 1.25 |      0.99 |      1.70 |
+| 4b     | 24-200 h  |     10 |                 1.15 |      0.83 |      1.56 |
+| 4b     | 300-698 h |     21 |                 2.07 |      1.02 |      3.87 |
+| 5      | 24-200 h  |     12 |                 0.84 |      0.64 |      1.31 |
+| 5      | 300-698 h |     54 |                 1.54 |      0.82 |      3.75 |
+| 6      | 24-200 h  |      4 |                 0.98 |      0.79 |      1.30 |
+| 6      | 300-698 h |      8 |                 1.45 |      0.92 |      2.73 |
+
+Simulated / published ratio by figure and phase. {.table}
+
+``` r
+
+
+# Time at which a curve falls to `level`, interpolated on the log scale.
+time_at_level <- function(time, conc, level) {
+  i <- which(conc < level & time > 0)[1]
+  stats::approx(log(conc[c(i - 1, i)]), time[c(i - 1, i)], log(level))$y
+}
+cross <- fig5_pub |>
+  dplyr::filter(conc == 10) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(sim_time = time_at_level(sens$time[sens$k == k], sens$conc[sens$k == k], 10)) |>
+  dplyr::ungroup()
+stopifnot(all(cross$sim_time > cross$time))
+knitr::kable(
+  cross |> dplyr::transmute(`F1` = round(F1, 2), `Published (h)` = time,
+                            `Simulated (h)` = round(sim_time)),
+  caption = "Time at which the Figure 5 curve falls to 10 ng/mL.")
+```
+
+|   F1 | Published (h) | Simulated (h) |
+|-----:|--------------:|--------------:|
+| 3.14 |           652 |           793 |
+| 3.54 |           597 |           714 |
+| 4.00 |           544 |           644 |
+
+Time at which the Figure 5 curve falls to 10 ng/mL. {.table}
+
+``` r
+
+
+# Initial phase. Dose / plasma volume (0.944 mL, Shah & Betts 2012 Table 1) is
+# the concentration before any distribution.
+c0 <- dose_nmol / (0.944 / 1000) * mw_g_per_mol / 1e3
+sim_2h <- sens$conc[sens$time == 2.2]
+v_1h_mL <- dose_nmol / sens$Cc[sens$time == 1] * 1000
+band_pct <- 100 * fig5_band_2h[c("lower", "upper")] / c0
+sim_2h_pct <- 100 * range(sim_2h) / c0
+stopifnot(length(sim_2h) == 20, max(sim_2h) < fig5_band_2h[["lower"]],
+          band_pct[["lower"]] > 60, sim_2h_pct[2] < 55,
+          all(v_1h_mL > 1.7), all(v_1h_mL < 2.1))
+
+# Terminal phase: half-life between 300 and 697.6 h for every Figure 5 curve
+# readable at both times.
+half_life <- function(c1, c2, dt) log(2) * dt / log(c1 / c2)
+term <- f5_pts |>
+  dplyr::filter(time %in% c(300, 697.6)) |>
+  dplyr::group_by(k, F1) |>
+  dplyr::filter(dplyr::n() == 2) |>
+  dplyr::summarise(
+    pub_thalf = half_life(conc[time == 300], conc[time == 697.6], 397.6),
+    sim_thalf = half_life(sim[time == 300], sim[time == 697.6], 397.6),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(thalf_ratio = sim_thalf / pub_thalf)
+stopifnot(nrow(term) == 16, all(term$thalf_ratio > 1.15))
+
+# F2 is not stated for Figure 5; the same sweep with F2 = 1 instead of 1.45.
+sens_f2 <- rxode2::rxSolve(mod_fun, events = ev5,
+                           params = transform(sweep_params, llymph_scale = 0),
+                           atol = 1e-10, rtol = 1e-8) |>
+  as.data.frame() |>
+  dplyr::transmute(k = id - 1, t_key = round(time, 1), sim_f2 = Cc * mw_g_per_mol / 1e3)
+#> Warning: multi-subject simulation without without 'omega'
+f2_change_pct <- f5_pts |>
+  dplyr::left_join(sens_f2, by = c("k", "t_key")) |>
+  dplyr::summarise(max_pct = 100 * max(abs(sim_f2 / sim - 1))) |>
+  dplyr::pull(max_pct)
+stopifnot(f2_change_pct < 15)
+```
+
+``` r
+
+# Clearance side 1: the individually estimated F1 and F2 of Supplementary
+# Table S2 against the clearance of Supplementary Table S1, for all 56 training
+# antibodies. The summary is also given without Ab76 and Ab45, whose individual
+# fits Liu 2023 reports did not describe their profiles (Ab76 has a distinct
+# steep alpha phase, Ab45 a three-phase profile); a single F1/F2 pair is then not
+# expected to reproduce their clearance.
+indiv <- ab_panel |>
+  dplyr::filter(panel_set == "training") |>
+  dplyr::mutate(id = dplyr::row_number())
+long_times <- c(seq(0, 2, by = 0.05), seq(2.5, 24, by = 0.5), seq(26, 4000, by = 2))
+ev_ind <- rxode2::et(amt = dose_nmol, cmt = "plasma", id = indiv$id) |>
+  rxode2::et(long_times, id = indiv$id)
+ind_params <- data.frame(id = indiv$id,
+                         lclup_scale_min = log(indiv$f1_indiv),
+                         lclup_scale_max = log(indiv$f1_indiv),
+                         llymph_scale = log(indiv$f2_indiv),
+                         HEPARIN_RT = 10)
+sim_ind <- rxode2::rxSolve(mod_fun, events = ev_ind, params = ind_params,
+                           atol = 1e-10, rtol = 1e-8) |>
+  as.data.frame()
+#> Warning: multi-subject simulation without without 'omega'
+
+# AUC(0-inf) by the linear trapezoid plus a log-linear tail from the last two points.
+auc_inf <- function(time, conc) {
+  n <- length(time)
+  lambda <- log(conc[n - 1] / conc[n]) / (time[n] - time[n - 1])
+  sum(diff(time) * (head(conc, -1) + tail(conc, -1)) / 2) + conc[n] / lambda
+}
+cl_ind <- sim_ind |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(auc_nM_h = auc_inf(time, Cc), .groups = "drop") |>
+  dplyr::left_join(indiv |> dplyr::select(id, ab, cl_obs), by = "id") |>
+  dplyr::mutate(cl_sim_mL_h = dose_nmol / auc_nM_h * 1000, ratio = cl_sim_mL_h / cl_obs)
+gm_cl_all <- exp(mean(log(cl_ind$ratio)))
+within20_cl_all <- sum(abs(cl_ind$ratio - 1) < 0.2)
+cl_ind54 <- cl_ind[!cl_ind$ab %in% c("Ab45", "Ab76"), ]
+gm_cl_ind <- exp(mean(log(cl_ind54$ratio)))
+within20_cl_ind <- sum(abs(cl_ind54$ratio - 1) < 0.2)
+stopifnot(nrow(cl_ind) == 56, nrow(cl_ind54) == 54,
+          gm_cl_all > 0.9, gm_cl_all < 1.1, within20_cl_all >= 40,
+          gm_cl_ind > 0.9, gm_cl_ind < 1.1, within20_cl_ind >= 40)
+
+# Clearance side 2: Supplementary Table S3's %PE together with the observed AUC
+# of Table S1 gives the AUC(0-672 h) the published model predicted for each
+# validation antibody.
+val_auc <- nca_wide |>
+  dplyr::filter(panel_set == "validation") |>
+  dplyr::mutate(auc_pred_liu = auc_obs * (1 + pe_published / 100),
+                ratio = auc_pred / auc_pred_liu)
+gm_auc_val <- exp(mean(log(val_auc$ratio)))
+stopifnot(nrow(val_auc) == 14, gm_auc_val > 0.9, gm_auc_val < 1.05)
+
+# The AUC in ng*h/mL does not depend on the assumed molar mass: the dose in nmol
+# scales with 1 / molar mass and the ng/mL conversion with molar mass, and the
+# model is linear at this dose. Re-solving with a molar mass 10% higher pins it.
+auc_trapezoid <- function(time, conc) sum(diff(time) * (head(conc, -1) + tail(conc, -1)) / 2)
+auc_ng <- function(mw) {
+  dose_mw <- dose_mg_kg * bw_kg * 1e-3 / mw * 1e9
+  ev_mw <- rxode2::et(amt = dose_mw, cmt = "plasma", id = seq_along(val_auc$HEPARIN_RT)) |>
+    rxode2::et(seq(0, 672, by = 1), id = seq_along(val_auc$HEPARIN_RT))
+  rxode2::rxSolve(mod_fun, events = ev_mw,
+                  params = data.frame(id = seq_along(val_auc$HEPARIN_RT),
+                                      HEPARIN_RT = val_auc$HEPARIN_RT),
+                  atol = 1e-10, rtol = 1e-8) |>
+    as.data.frame() |>
+    dplyr::group_by(id) |>
+    dplyr::summarise(auc = auc_trapezoid(time, Cc) * mw / 1e3, .groups = "drop") |>
+    dplyr::pull(auc)
+}
+mw_change_pct <- 100 * max(abs(auc_ng(1.1 * mw_g_per_mol) / auc_ng(mw_g_per_mol) - 1))
+#> Warning: multi-subject simulation without without 'omega'
+#> Warning: multi-subject simulation without without 'omega'
+stopifnot(mw_change_pct < 1)
+
+tibble::tibble(
+  Check = c("Table S2 F1/F2 -> CL, against Table S1 CL (all 56 training antibodies)",
+            "Same, without Ab45 and Ab76 (54 antibodies)",
+            "AUC(0-672 h), against the published model's prediction (Table S3, 14 antibodies)"),
+  `Geometric-mean ratio` = c(gm_cl_all, gm_cl_ind, gm_auc_val),
+  `Within 20%` = c(sprintf("%d of 56", within20_cl_all), sprintf("%d of 54", within20_cl_ind),
+                   sprintf("%d of 14", sum(abs(val_auc$ratio - 1) < 0.2))),
+  `Min` = c(min(cl_ind$ratio), min(cl_ind54$ratio), min(val_auc$ratio)),
+  `Max` = c(max(cl_ind$ratio), max(cl_ind54$ratio), max(val_auc$ratio))
+) |>
+  knitr::kable(digits = 2, caption = "Packaged model / published model, clearance and exposure.")
+```
+
+| Check | Geometric-mean ratio | Within 20% | Min | Max |
+|:---|---:|:---|---:|---:|
+| Table S2 F1/F2 -\> CL, against Table S1 CL (all 56 training antibodies) | 0.98 | 47 of 56 | 0.43 | 1.65 |
+| Same, without Ab45 and Ab76 (54 antibodies) | 0.98 | 47 of 54 | 0.65 | 1.38 |
+| AUC(0-672 h), against the published model’s prediction (Table S3, 14 antibodies) | 0.95 | 14 of 14 | 0.86 | 1.11 |
+
+Packaged model / published model, clearance and exposure. {.table}
+
+The packaged model matches the published model’s clearance and exposure
+but not the shape of its curves. With the individually estimated `F1`
+and `F2` of Supplementary Table S2 it reproduces the Supplementary Table
+S1 clearances (geometric-mean ratio 0.98 over all 56 training
+antibodies, 47 of them within 20%; 0.98 and 47 of 54 without Ab45 and
+Ab76, whose individual fits did not describe their profiles). Its
+validation-set AUCs match those the published model predicted
+(geometric-mean ratio 0.95); this comparison does not depend on the
+assumed molar mass (a 10% higher molar mass changes the simulated AUCs
+by at most 0.03%), so the remaining offset of about 5% is not a
+molar-mass effect, and its source is not determined. The curves differ
+in shape: at 2.2 h every simulated Figure 5 curve lies below the whole
+band of published curves, at the last digitized time every simulated
+curve lies above its published counterpart, and on every digitized curve
+the simulated/published ratio rises with time. The deviation is recorded
+under *Shape of the published model curves* below.
 
 ## Assumptions and deviations
 
@@ -688,19 +1215,21 @@ either comparison.
 - **Lung plasma flow is derived, not taken from Table 1.** Shah & Betts
   2012 Table 1 reports 373 mL/h for mouse lung, but the fourteen tissues
   the lung supplies sum to 371.51 mL/h; the 1.49 mL/h difference is the
-  lymph node’s perfusion, which is not an antibody-transport path in
-  this model. Using 373 mL/h directly opens a 0.4% arterial leak -
-  roughly 1.5 mL/h - which is two orders of magnitude larger than the
-  antibodies’ true clearance (2.6-29 uL/h) and would dominate the
-  terminal phase. The model derives `q_lu` as the sum of the non-lung
-  arterial supplies so the arterial junction closes exactly.
+  lymph node’s perfusion (1.65 mL/h in Table 1, within the table’s
+  rounding), which is not an antibody-transport path in this model.
+  Using 373 mL/h directly opens a 0.4% arterial leak - roughly 1.5
+  mL/h - which is two orders of magnitude larger than the antibodies’
+  true clearance (2.6-29 uL/h) and would dominate the terminal phase.
+  The model derives `q_lu` as the sum of the non-lung arterial supplies
+  so the arterial junction closes exactly.
 - **Liver lymph flow.** Supplementary Methods 2 prints
-  `L_LIVER = 0.002 * PLQ_LIVER + PLQ_LIVER,UPSTREAM`. Taken literally
-  this drops all portal inflow from the liver’s mass balance. The model
-  uses the parenthesisation that closes the balance,
-  `L_LIVER = 0.002 * (PLQ_LIVER + PLQ_LIVER,UPSTREAM)`, which makes the
-  liver’s vascular outflow 0.998 of its total inflow like every other
-  organ.
+  `L_LIVER = 0.002 * (PLQ_LIVER + PLQ_LIVER,UPSTREAM)`: 0.2% of the
+  liver’s total plasma inflow, the hepatic artery plus the portal return
+  from spleen, pancreas and both intestines. The model uses this
+  expression as printed, so it is not a deviation; it is listed because
+  it differs from the rule `L_ORG = 0.002 * PLQ_ORG` used for every
+  other organ. With it the liver’s vascular outflow is 0.998 of its
+  total inflow, as for the other organs.
 - **Liver arterial supply.** Supplementary Methods 2 writes the liver’s
   vascular inflow as `C_V,LIVER * (PLQ_LIVER - L_LIVER) + ...`, i.e. the
   liver feeding itself. The model uses `C_V,LUNG * PLQ_LIVER` (arterial
@@ -712,6 +1241,32 @@ either comparison.
   2023’s Supplementary Methods 2 equations and are dropped here,
   reducing the system from 93 to 77 states with no change in
   predictions.
+- **Shape of the published model curves.** The packaged model reproduces
+  the clearance and exposure of the published model (see *Comparison
+  with the published model curves*) but not the shape of its curves,
+  digitized from Figures 4, 5 and 6. Dose divided by the 0.944 mL plasma
+  volume is 59,300 ng/mL. At 2.2 h the 20 published Figure 5 curves are
+  still at 63-90% of that, whereas the simulated curves are already at
+  43-49%: within the first hour the simulated antibody occupies
+  1.86-1.98 mL, the plasma together with the organ vascular spaces of
+  Shah & Betts 2012 Table 1, which fill at blood-flow rates. Later the
+  published curves fall faster. Between 300 and 698 h the simulated
+  terminal half-life is 1.26-1.55 times the published one across the 16
+  Figure 5 curves readable at both times (490 h against 315 h at `F1` =
+  0.4), and the `F1` = 4 curve reaches 10 ng/mL at 644 h instead of the
+  published 544 h. In the first hours every simulated Figure 5 curve
+  lies below the published ones, and at the last digitized time every
+  simulated curve lies above its published counterpart. The cause is not
+  determined. What the checks show is limited. The clearance and
+  exposure checks agree with the published model under the per-organ
+  pinocytosis form that Supplementary Methods 2 prints and the model
+  uses, `CL_UP,ORG = CL_UP * V_E,ORG` (geometric-mean ratios 0.98 and
+  0.95), so the elimination side matches; those checks do not test
+  distribution, so they do not locate the difference in shape. `F2`,
+  which the paper does not state for Figure 5, moves the digitized
+  Figure 5 points by at most 7.9% between 1 and 1.45. Liu 2023 states
+  that all other values are those of Shah & Betts 2012 and publishes no
+  model code, so the model keeps the published physiology unchanged.
 - **Molar mass.** The model runs in nmol and nM, which is the natural
   scale for the FcRn binding terms. Neither Liu 2023 nor Shah & Betts
   2012 reports a molar mass for the panel, so this vignette uses 150,000
@@ -720,8 +1275,10 @@ either comparison.
   ng/mL. This is **not** a paper-derived value. The primary validation
   metrics (clearance, half-life, classification against the 12 mL/day/kg
   threshold) are unaffected by the choice, because both dose and AUC
-  scale with 1/molar mass; only the AUC-based %PE column scales linearly
-  with it.
+  scale with 1/molar mass. AUC in `ng*h/mL`, and with it the %PE column,
+  does not depend on it either: the model is linear at this dose, so the
+  nmol dose and the ng/mL conversion cancel (checked in *Comparison with
+  the published model curves*).
 - **Body weight.** Liu 2023 does not state a body weight. The model is
   built on Shah & Betts 2012’s 28 g mouse physiology, and 28 g is also
   what reconciles Supplementary Table S1’s mg/kg dose, ng*h/mL AUC and
@@ -734,7 +1291,8 @@ either comparison.
 - **No between-subject variability.** The published model has no
   random-effects layer; the 56 individually estimated `F1`/`F2` pairs of
   Supplementary Table S2 belong to the base model, not the final
-  covariate model, and are used here only to reproduce Figure 3d.
+  covariate model, and are used here only to reproduce Figure 3d and to
+  check the model’s clearance against Supplementary Table S1.
 - **Ab87 classification inconsistency in the source.** Supplementary
   Table S3 lists Ab87 as observed fast-clearing, but Supplementary Table
   S1’s clearance for Ab87 (0.0121 mL/h) is 10.4 mL/day/kg at 28 g, below
@@ -751,14 +1309,18 @@ either comparison.
   individually estimated F1”). AUC and clearance are nevertheless well
   reproduced (median predicted/observed clearance ratio 0.93 in the
   training panel, 93% within 2-fold). The simulated half-lives are
-  additionally estimated from smooth noise-free profiles over a 672 h
-  window, whereas the published values come from sparse composite mean
-  profiles with three animals per time point.
+  longer than the published ones partly because the model’s terminal
+  phase is longer than that of the published model curves (*Shape of the
+  published model curves* above), and partly because they are estimated
+  from smooth noise-free profiles over a 672 h window, whereas the
+  published values come from sparse composite mean profiles with three
+  animals per time point.
 - **Observed concentration-time data.** The observed points overlaid in
   Liu 2023’s Figures 4 and 6 are not published in machine-readable form.
-  The figure replications above therefore show model curves only; the
-  quantitative observed-versus-predicted comparison uses the NCA
-  summaries of Supplementary Tables S1 and S3.
+  The figure replications above therefore compare model curves only, the
+  packaged model against the published model curves digitized from those
+  figures; the quantitative observed-versus-predicted comparison uses
+  the NCA summaries of Supplementary Tables S1 and S3.
 - **Upstream platform parameters.** `FcRn`, `Kdeg`, `C_LNLF`, `Kon`,
   `Koff`, `FR`, `sigma_IS`, the per-tissue `sigma_V` values and the
   entire mouse physiology are inherited from Shah & Betts 2012, which

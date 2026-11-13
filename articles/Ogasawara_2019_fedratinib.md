@@ -383,7 +383,8 @@ stopifnot(
 
 ``` r
 
-sim <- rxode2::rxSolve(mod, events = events, keep = c("arm")) |>
+# steady-state searches for long-half-life subjects exceed the default step budget
+sim <- rxode2::rxSolve(mod, events = events, keep = c("arm"), maxsteps = 1e6) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
 ```
@@ -567,6 +568,8 @@ stopifnot(all(nca_sim$Cc >= 0))
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(nca_sim$Cc))
 sim_nca <- nca_sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, arm)

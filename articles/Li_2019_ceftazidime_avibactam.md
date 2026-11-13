@@ -505,8 +505,10 @@ evAvi <- makeEvents(cohort, "amtAvi")
 # Cc is the individual prediction. Li 2019's PTA simulations deliberately
 # "excluded residual error", so the residual model is switched off with
 # sigma = NA and only between-subject variability is retained.
-simCaz <- rxode2::rxSolve(uiCaz, evCaz, sigma = NA, returnType = "data.frame")
-simAvi <- rxode2::rxSolve(uiAvi, evAvi, sigma = NA, returnType = "data.frame")
+# steady-state searches for long-half-life subjects exceed the default step budget
+simCaz <- rxode2::rxSolve(uiCaz, evCaz, sigma = NA, returnType = "data.frame", maxsteps = 1e6)
+# steady-state searches for long-half-life subjects exceed the default step budget
+simAvi <- rxode2::rxSolve(uiAvi, evAvi, sigma = NA, returnType = "data.frame", maxsteps = 1e6)
 
 sim <- bind_rows(
   simCaz |> transmute(id = as.integer(as.character(id)), time, Cc, drug = "Ceftazidime"),
@@ -556,6 +558,8 @@ which is the interval Li 2019 reports exposures on (`Cmax,ss` and
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim$Cc))
 simNca <- sim |>
   filter(!is.na(Cc)) |>
   transmute(id, time, Cc, drug, indication)

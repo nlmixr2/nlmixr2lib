@@ -358,28 +358,64 @@ against an explicit multi-dose run for the *slowest* subjects in the
 simulated grid (eGFR 10, albumin 20 - the longest half-lives the paper’s
 design produces).
 
+Two things limit how closely the two runs can agree for a given subject.
+The explicit run of 60 doses (480 h) has reached steady state only to
+within about `exp(-lambda_z * 480)`, where `lambda_z` is the subject’s
+terminal rate constant; and the `ss = 1` search leaves a relative
+residual of about `ssRtol / (lambda_z * tau)`. The comparison is
+therefore asserted for the subjects with
+`lambda_z * 480 >= log(10 / bound)`, whose explicit run is within a
+tenth of the bound of steady state (the `ss = 1` residual is smaller
+still at that rate); the subjects below the cut-off are counted and left
+out.
+
 ``` r
 
+ss_rtol <- 1e-6          # rxode2's default steady-state search tolerance
+ss_bound_pct <- 5        # bound on the trough difference
+explicit_h <- 8 * 60     # length of the explicit run
+ss_cut <- log(10 / (ss_bound_pct / 100))
+
+# Per-subject trough and terminal rate constant of the two-compartment
+# disposition (kel, k12 and k21 are model variables).
 ssTrough <- function(ev) {
   d <- as.data.frame(ev)
   d$CRCL <- 10
   d$ALB <- 20
   rxode2::rxSetSeed(SEED)
   s <- rxode2::rxSolve(modPta, d, nSub = N_ARM, returnType = "data.frame",
-                       maxsteps = 200000L)
-  tapply(s$Cc, s$sim.id, min)
+                       maxsteps = 200000L, ssRtol = ss_rtol)
+  s |>
+    dplyr::group_by(sim.id) |>
+    dplyr::summarise(
+      trough = min(Cc),
+      lambda_z = {
+        k_sum <- dplyr::first(kel) + dplyr::first(k12) + dplyr::first(k21)
+        (k_sum - sqrt(k_sum^2 - 4 * dplyr::first(kel) * dplyr::first(k21))) / 2
+      },
+      .groups = "drop"
+    )
 }
 analytic <- ssTrough(
   rxode2::et(amt = 1000, ii = 8, ss = 1L, dur = 0.25) |>
     rxode2::et(seq(0, 8, length.out = 121)))
 explicit <- ssTrough(
-  rxode2::et(amt = 1000, ii = 8, until = 8 * 60, dur = 0.25) |>
-    rxode2::et(seq(8 * 59, 8 * 60, length.out = 121)))
-maxRelDiff <- 100 * max(abs(analytic - explicit) / explicit)
-cat(sprintf("ss = 1 vs a 60-dose explicit run: max relative difference in trough = %.2f%%\n",
-            maxRelDiff))
-#> ss = 1 vs a 60-dose explicit run: max relative difference in trough = 0.62%
-stopifnot(maxRelDiff < 5)
+  rxode2::et(amt = 1000, ii = 8, until = explicit_h, dur = 0.25) |>
+    rxode2::et(seq(explicit_h - 8, explicit_h, length.out = 121)))
+# Common random numbers: both runs must hold the same subjects.
+stopifnot(identical(analytic$sim.id, explicit$sim.id),
+          isTRUE(all.equal(analytic$lambda_z, explicit$lambda_z)))
+
+reached <- explicit$lambda_z * explicit_h >= ss_cut
+rel_diff_pct <- 100 * abs(analytic$trough - explicit$trough) / explicit$trough
+maxRelDiff <- max(rel_diff_pct[reached])
+cat(sprintf(paste0("ss = 1 vs a 60-dose explicit run: max relative difference in trough = %.2f%% ",
+                   "over %d of %d subjects (%d left out: explicit run short of steady state)\n"),
+            maxRelDiff, sum(reached), length(reached), sum(!reached)))
+#> ss = 1 vs a 60-dose explicit run: max relative difference in trough = 0.06% over 199 of 200 subjects (1 left out: explicit run short of steady state)
+# The left-out subjects have half-lives of days; only a small share may be.
+stopifnot(mean(reached) >= 0.95)
+stopifnot(maxRelDiff < ss_bound_pct)
 ```
 
 ## Validation 1: the published probability-of-target-attainment grid

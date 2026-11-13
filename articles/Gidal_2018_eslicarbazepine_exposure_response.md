@@ -348,10 +348,12 @@ stopifnot(!anyDuplicated(unique(ss_events[, c("id", "time", "evid")])))
 
 ``` r
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 ss_sim <- rxode2::rxSolve(
   pk_mod, events = ss_events,
   keep = c("treatment", "dose_mg", "WT", "CRCL", "SEXF", "DOSE_CBZ_MGD"),
-  returnType = "data.frame"
+  returnType = "data.frame",
+  maxsteps = 1e6
 ) |>
   as.data.frame() |>
   dplyr::filter(!is.na(Cc))
@@ -500,6 +502,8 @@ the main text describes as close to the median on 800 mg once daily.
 
 ``` r
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(ss_sim$Cc))
 sim_nca <- ss_sim |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::select(id, time, Cc, treatment)
