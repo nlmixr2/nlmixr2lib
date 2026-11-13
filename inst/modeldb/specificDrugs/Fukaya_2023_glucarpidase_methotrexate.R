@@ -7,6 +7,7 @@ Fukaya_2023_glucarpidase_methotrexate <- function() {
     dosing = "umol (methotrexate, into central); mg (glucarpidase protein mass, into central_cpg2)",
     concentration = "umol/L (methotrexate, Cc); mg/L (glucarpidase, Cc_cpg2)"
   )
+  dosing <- c("central", "central_cpg2")
 
   covariateData <- list(
     WT = list(

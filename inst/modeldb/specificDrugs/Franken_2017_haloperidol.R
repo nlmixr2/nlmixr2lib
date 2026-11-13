@@ -29,6 +29,7 @@ Franken_2017_haloperidol <- function() {
     dosing = "mg",
     concentration = "ug/L"
   )
+  dosing <- c("depot", "central", "depot2")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

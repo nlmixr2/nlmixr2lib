@@ -40,6 +40,7 @@ Facius_2018_roflumilast <- function() {
   )
   vignette <- "Facius_2018_roflumilast"
   units <- list(time = "h", dosing = "ug", concentration = "ug/L")
+  dosing <- c("depot", "central", "depot_noxide")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

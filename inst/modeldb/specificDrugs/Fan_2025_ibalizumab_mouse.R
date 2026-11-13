@@ -37,6 +37,7 @@ Fan_2025_ibalizumab_mouse <- function() {
   )
   vignette <- "Fan_2025_antiCD4_nanobody_HIV"
   units <- list(time = "h", dosing = "ug", concentration = "ug/mL")
+  dosing <- c("central", "depot_ip", "depot_sc")
 
   compartmentData <- list(
     depot_ip = list(analyte = "ibalizumab", units = "ug", specimen = "administration site", verified = TRUE),
