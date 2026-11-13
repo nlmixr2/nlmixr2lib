@@ -37,6 +37,7 @@ Zhang_2024_f53b_mouse_pbpk <- function() {
   )
   vignette <- "Zhang_2024_f53b_pbpk"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- "stomach"
 
   # States not covered by the canonical compartment register. These are the
   # gestational-PBPK states of Zhang 2024 Figure 1 (maternal kidney

@@ -84,6 +84,7 @@ Verrest_2024_leishmania <- function() {
       "CORRECTION note at the top of this file."
     )
   )
+  dosing <- c("depot_kpd_amphotericinb", "depot_kpd_ssg")
 
   compartmentData <- list(
     parasites = list(

@@ -10,6 +10,7 @@ Zhang_2025_nedosiran_uoxcr <- function() {
   )
   vignette <- "Zhang_2025_nedosiran"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central", "depot2")
 
   paper_specific_compartments <- c("uoxcr")
 

@@ -8,6 +8,7 @@ Yu_2025_doxorubicin_trastuzumab_ac16 <- function() {
     dosing = "nM (doxorubicin concentration applied to the culture medium at t = 0)",
     concentration = "nM (medium doxorubicin concentration); caspase activity and cell viability are dimensionless ratios to their t = 0 values"
   )
+  dosing <- "conc_dox"
 
   # The caspase / transit / viability states are the paper's own Figure 1
   # compartments (Cas9S, Cas91, Cas92, Cas31-Cas33, Tr1, Tr2); conc_dox

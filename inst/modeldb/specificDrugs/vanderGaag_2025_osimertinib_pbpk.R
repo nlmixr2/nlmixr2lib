@@ -53,6 +53,7 @@ vanderGaag_2025_osimertinib_pbpk <- function() {
   )
   vignette <- "vanderGaag_2025_osimertinib_pbpk"
   units <- list(time = "h", dosing = "nmol", concentration = "nM")
+  dosing <- "gut_lumen"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Every state holds an amount of osimertinib in nmol.

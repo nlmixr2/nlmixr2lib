@@ -38,6 +38,7 @@ Zhang_2024_f53b_human_pbpk <- function() {
   )
   vignette <- "Zhang_2024_f53b_pbpk"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- "stomach"
 
   paper_specific_compartments <- c(
     "kidney_blood",

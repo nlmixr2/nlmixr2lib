@@ -10,6 +10,7 @@ Zhang_2025_nedosiran <- function() {
   )
   vignette <- "Zhang_2025_nedosiran"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central", "depot2")
 
   covariateData <- list(
     WT = list(

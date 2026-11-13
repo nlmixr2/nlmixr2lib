@@ -38,6 +38,7 @@ Yu_2026_tenofovir <- function() {
   )
   vignette <- "Yu_2026_tenofovir"
   units <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  dosing <- c("depot", "central", "depot_tfv")
 
   covariateData <- list(
     EGA = list(

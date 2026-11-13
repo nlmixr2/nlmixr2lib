@@ -111,6 +111,7 @@ Zhou_2024_HER2breastCancer_qsp <- function() {
     dosing = "nmol/L",
     concentration = "nM"
   )
+  dosing <- c("lap_depot", "pyr_depot", "cap_depot")
 
   # Every state is a concentration (nmol/L) except dar (molecules of
   # payload per antibody) and Cells (tumour volume in mm3 in vivo, or a

@@ -31,6 +31,7 @@ Zhang_2022_dexketoprofen_pbpk <- function() {
   )
   vignette <- "Zhang_2022_dexketoprofen_pbpk"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("central", "stomach_undissolved")
 
   # CAT luminal states. Each segment carries an undissolved and a dissolved
   # pool, which no canonical GI compartment resolves; the seven intestinal

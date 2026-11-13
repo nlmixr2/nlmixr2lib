@@ -10,6 +10,7 @@ Zhang_2024_nedosiran <- function() {
   )
   vignette <- "Zhang_2024_nedosiran"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("central", "depot1", "depot2")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Structure read from Zhang 2024 Figure 3 (page 3183),

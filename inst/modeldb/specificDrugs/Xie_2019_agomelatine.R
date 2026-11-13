@@ -10,6 +10,7 @@ Xie_2019_agomelatine <- function() {
       dosing = "mg",
       concentration = "ng/mL" # applied to all three plasma outputs: calmt (agomelatine), c3oh (3-hydroxy-agomelatine), c7dm (7-desmethyl-agomelatine)
     )
+  dosing <- c("depot", "central", "depot2")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

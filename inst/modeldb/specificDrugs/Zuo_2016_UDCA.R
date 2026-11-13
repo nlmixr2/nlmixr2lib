@@ -15,6 +15,7 @@ Zuo_2016_UDCA <- function() {
   )
 
   units <- list(time = "h", dosing = "mg", concentration = "umol/L")
+  dosing <- "stomach_udca"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

@@ -14,6 +14,7 @@ vanHasselt_2015_eribulin <- function() {
     dosing = "ng*h/mL (predicted per-dose eribulin AUC, supplied as the amt for each dose event into compartment depot_kpd via the K-PD framework; the upstream eribulin popPK model -- Majid 2014 J Clin Pharmacol 54:1134; van Hasselt 2013 Br J Clin Pharmacol 76:412 -- is not encoded here)",
     concentration = "ng/mL (serum PSA)"
   )
+  dosing <- "depot_kpd"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
