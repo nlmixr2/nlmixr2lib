@@ -3,6 +3,7 @@ Gasthuys_2023_paracetamol_human <- function() {
   reference <- "Gasthuys E, Sandra L, Statelova M, Vertzoni M, Vermeulen A. The Use of Population Pharmacokinetics to Extrapolate Food Effects from Human Adults and Beagle Dogs to the Pediatric Population Illustrated with Paracetamol as a Test Case. Pharmaceuticals. 2024;17(1):53. doi:10.3390/ph17010053 (published online 2023-12-28). Human adult study design and data originally reported in Statelova et al. 2019 (cited as ref [16])."
   vignette <- "Gasthuys_2023_paracetamol"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central", "depot2")
 
   covariateData <- list(
     WT = list(

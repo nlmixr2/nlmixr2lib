@@ -37,6 +37,7 @@ Gadkar_2022_pi3kiColitis_qsp <- function() {
   )
   vignette <- "Gadkar_2022_pi3kiColitis_qsp"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central", "Activating_Event")
 
   # Mucosal states keep the names of the deposited SimBiology species
   # (Supplement S10 'ODEs'); the drug states use the canonical PK names.

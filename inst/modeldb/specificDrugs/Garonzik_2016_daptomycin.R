@@ -7,6 +7,7 @@ Garonzik_2016_daptomycin <- function() {
     dosing = "mg/L (static initial daptomycin concentration in the broth)",
     concentration = "log10 CFU/mL (observation); mg/L (daptomycin state)"
   )
+  dosing <- "dap"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

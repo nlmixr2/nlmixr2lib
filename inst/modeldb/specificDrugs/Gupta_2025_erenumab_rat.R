@@ -27,6 +27,7 @@ Gupta_2025_erenumab_rat <- function() {
     dosing = "ug (erenumab, absolute amount); mg/kg (tacrolimus and methotrexate doses into depot_tacrolimus / depot_methotrexate)",
     concentration = "ug/mL"
   )
+  dosing <- c("depot", "central", "depot_methotrexate", "depot_tacrolimus")
 
   # Immune-cell states use the paper's own symbols (Figure 2, Equations
   # S4-S9); the tacrolimus and methotrexate PK states are the immunosuppressant
