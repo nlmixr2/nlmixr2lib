@@ -45,6 +45,8 @@ indirect_circ_1cpt_inhi_kin_kout_t <- function() {
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot -kel*central
+    # Baseline at t = 0, where rxode2 starts when record times are positive. A negative
+    # first time, or rxSetIni0(FALSE), starts at the first record, off the baseline phase.
     effect(0) <- rm + ra*cos(0.2616*(0 - tacro))
     d/dt(effect) <- kin*(1-imax*Cc/(Cc + ic50)) - kout_t*effect
     
