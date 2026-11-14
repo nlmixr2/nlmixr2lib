@@ -71,9 +71,9 @@
 
 # The compartments an expression can evaluate to: its string literals, and
 # its whole-number literals as "#<n>". The conditions of `if`, ifelse() and
-# if_else(), comparisons, sequences and pasted strings are skipped:
-# `if (route == "iv") "central" else "depot"` names central and depot, not
-# "iv".
+# if_else(), comparisons, sequences, pasted strings and subscripts are
+# skipped: `if (route == "iv") "central" else "depot"` names central and
+# depot, not "iv", and `d["cmt"]` names nothing.
 .cmtLiteralsIn <- function(e) {
   if (is.character(e)) {
     return(e)
@@ -85,7 +85,13 @@
   if (!is.call(e) || .isCallTo(e, skipCalls)) {
     return(character(0))
   }
-  skip <- if (identical(e[[1]], as.name("if")) || .isCallTo(e, c("ifelse", "if_else"))) 2L else integer(0)
+  skip <- if (identical(e[[1]], as.name("if")) || .isCallTo(e, c("ifelse", "if_else"))) {
+    2L
+  } else if (.isCallTo(e, c("[", "[["))) {
+    seq_along(e)[-(1:2)]
+  } else {
+    integer(0)
+  }
   out <- character(0)
   for (i in setdiff(seq_along(e)[-1], skip)) {
     if (is.call(e[[i]]) || is.character(e[[i]]) || is.numeric(e[[i]])) out <- c(out, .cmtLiteralsIn(e[[i]]))
@@ -778,7 +784,11 @@ articleDoseCmts <- function(rmd, models) {
   unique(do.call(rbind, rows))
 }
 
-# The ODE states a model file declares with `d/dt()`, in file order.
+# The ODE states a model file declares with `d/dt()`, in file order, then
+# the compartments of a `linCmt()` solution, which rxode2 names depot and
+# central (depot only when the solution has an absorption rate; an article
+# that doses a depot the model lacks fails to render, so listing it here
+# changes no result).
 .declaredStates <- function(file) {
   mb <- .probeModelBlockOfFile(file)
   st <- character(0)
@@ -786,12 +796,15 @@ articleDoseCmts <- function(rmd, models) {
     x <- mb[[i]]
     if (is.call(x) && length(x) == 3L && .probeIsDdt(x[[2]])) st <- c(st, as.character(x[[2]][[3]][[2]]))
   }
+  if (.hasCallTo(mb, "linCmt")) {
+    st <- c(st, "depot", "central")
+  }
   unique(st)
 }
 
 # The model state each credited dose names, NA where it names none: a name
-# must be one of the model's `d/dt()` states, and "#<n>" is the model's n-th
-# state in rxode2's order.
+# must be one of the model's states (see .declaredStates()), and "#<n>" is
+# the model's n-th state in rxode2's order.
 .articleDoseStates <- function(d, files) {
   out <- rep(NA_character_, nrow(d))
   for (m in unique(d$model)) {
@@ -814,30 +827,74 @@ articleDoseCmts <- function(rmd, models) {
   !is.na(dosing) && state %in% strsplit(dosing, ",", fixed = TRUE)[[1]]
 }
 
+# The path of an article, in the first of `dirs` that holds it; NA for an
+# article in none of them.
+.articlePath <- function(article, dirs) {
+  p <- file.path(dirs, paste0(article, ".Rmd"))
+  if (any(file.exists(p))) p[file.exists(p)][1] else NA_character_
+}
+
+.articlePaths <- function(articles, dirs) {
+  vapply(articles, .articlePath, character(1), dirs = dirs, USE.NAMES = FALSE)
+}
+
 #' Article doses missing from their models' `dosing`
 #'
-#' Reads every article in `articleDir` that covers a registry model (see
-#' articleDoseCmts()) and returns each model state it doses that the model's
-#' `dosing` lacks.
+#' Reads the article each registry model names in its `vignette` (see
+#' articleDoseCmts()), from `articleDir` or the vignettes directory above it,
+#' and returns each model state an article doses that the model's `dosing`
+#' lacks. A model whose `vignette` is NA has no article.
 #'
 #' @param articleDir The articles directory.
 #' @param db The model registry.
 #' @param exempt A data frame with columns `model` and `state`: doses that
-#'   set or displace an endogenous state rather than give something.
+#'   are not dose targets of that model.
+#' @param noArticle Models whose `vignette` names an article that does not
+#'   exist. Any other such model is an error, and so is a listed model whose
+#'   article exists.
 #' @return A list: `gaps`, a data frame with one row per missing model and
-#'   state (`article`, `model`, `state`, and one `record` that doses it), and
-#'   `exempted`, the `exempt` rows the articles do dose.
+#'   state (`article`, `model`, `state`, and one `record` that doses it);
+#'   `exempted`, the `exempt` rows the articles do dose; and `unknown`, one
+#'   row per article and compartment name written in a dose record that is a
+#'   state of no registry model (`article`, `cmt`, `record`), such as a typo
+#'   or an observable.
 #' @noRd
-articleDoseGaps <- function(articleDir, db, exempt) {
+articleDoseGaps <- function(articleDir, db, exempt, noArticle = character(0)) {
   files <- list.files(system.file("modeldb", package = "nlmixr2lib"), "[.]R$", recursive = TRUE, full.names = TRUE)
-  article <- ifelse(is.na(db$vignette), db$name, db$vignette)
-  rmds <- file.path(articleDir, paste0(unique(article), ".Rmd"))
+  named <- db[!is.na(db$vignette), c("name", "vignette")]
+  articles <- unique(named$vignette)
+  rmds <- .articlePaths(articles, c(articleDir, dirname(articleDir)))
+  absent <- named$name[named$vignette %in% articles[is.na(rmds)]]
+  if (length(setdiff(absent, noArticle))) {
+    stop(
+      "model(s) whose `vignette` names no article in ",
+      articleDir,
+      " or the directory above it: ",
+      paste(setdiff(absent, noArticle), collapse = ", "),
+      call. = FALSE
+    )
+  }
+  if (length(setdiff(noArticle, absent))) {
+    stop(
+      "model(s) listed as having no article that are not in the registry or whose article exists: ",
+      paste(setdiff(noArticle, absent), collapse = ", "),
+      call. = FALSE
+    )
+  }
   rows <- list()
-  for (rmd in rmds[file.exists(rmds)]) {
-    a <- sub("[.]Rmd$", "", basename(rmd))
-    d <- articleDoseCmts(rmd, db$name[article == a])
-    if (nrow(d)) {
-      d$state <- .articleDoseStates(d, files)
+  unknown <- list()
+  for (j in which(!is.na(rmds))) {
+    a <- articles[j]
+    d <- articleDoseCmts(rmds[j], named$name[named$vignette == a])
+    if (!nrow(d)) {
+      next
+    }
+    d$state <- .articleDoseStates(d, files)
+    # A name written in the record that the credited model lacks; most are
+    # states of another model the article solves, and are dropped below.
+    lit <- is.na(d$state) & d$via == "literal" & !is.na(d$cmt) & !startsWith(d$cmt, "#")
+    if (any(lit)) {
+      unknown[[a]] <- data.frame(article = a, d[lit, c("cmt", "record")])
     }
     d <- d[!is.na(d$state), ]
     missing <- !mapply(.inDosing, d$state, db$dosing[match(d$model, db$name)], USE.NAMES = FALSE)
@@ -848,6 +905,18 @@ articleDoseGaps <- function(articleDir, db, exempt) {
     c(list(data.frame(article = character(0), model = character(0), state = character(0), record = character(0))), rows)
   )
   all <- all[!duplicated(all[, c("model", "state")]), ]
+  unknown <- do.call(
+    rbind,
+    c(list(data.frame(article = character(0), cmt = character(0), record = character(0))), unknown)
+  )
+  if (nrow(unknown)) {
+    unknown <- unknown[!unknown$cmt %in% unlist(lapply(files, .declaredStates)), ]
+  }
+  unknown <- unknown[!duplicated(unknown[, c("article", "cmt")]), ]
   isExempt <- paste(all$model, all$state) %in% paste(exempt$model, exempt$state)
-  list(gaps = all[!isExempt, ], exempted = exempt[paste(exempt$model, exempt$state) %in% paste(all$model, all$state), ])
+  list(
+    gaps = all[!isExempt, ],
+    exempted = exempt[paste(exempt$model, exempt$state) %in% paste(all$model, all$state), ],
+    unknown = unknown
+  )
 }

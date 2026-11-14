@@ -10,11 +10,6 @@
 # are not dose targets, so they stay out of `dosing`.
 articleStateDoses <- rbind(
   data.frame(
-    model = "Aoki_2024_intratarget_microdosing_pbpk",
-    state = "target",
-    reason = "the authors' code primes the free receptor; the packaged model sets it as an initial condition"
-  ),
-  data.frame(
     model = "Decrane_2023_oxyfluorfen_rat",
     state = "t4_serum",
     reason = "a signed bolus that displaces serum T4 from its baseline"
@@ -58,11 +53,40 @@ articleStateDoses <- rbind(
     model = "Zhang_2025_epoetinAlfa_erythroferrone_cia_rat",
     state = "erythrocytes",
     reason = "a transfusion or phlebotomy analogue that displaces the red-cell pool"
-  ),
-  data.frame(
-    model = "Zhou_2024_HER2breastCancer_qsp",
-    state = "NRG1",
-    reason = "NRG1 overexpression, imposed as a constant production rate"
+  )
+)
+
+# Doses the reader credits to a registry model that the article solves with
+# another model. Each record is named so the entry can be checked by hand.
+articleMiscreditedDoses <- data.frame(
+  model = "Aoki_2024_intratarget_microdosing_pbpk",
+  state = "target",
+  reason = paste(
+    "`ev_auth` in the xcheck chunk doses state 9 (`cmt = 9L`, the free receptor",
+    "X_FreeR) of the inline `authors` model, inside a loop that also solves the",
+    "packaged model; the packaged model sets `target(0) <- rtot` instead"
+  )
+)
+
+# Models whose `vignette` names an article that does not exist. No article
+# solves either of them.
+articleMissingArticles <- data.frame(
+  model = c("Brekkan_2018_pegfilgrastim", "Hansson_2013_sunitinib_os"),
+  reason = c(
+    "the Ibrahim 2019 article lists it, nothing doses it",
+    "the Hansson 2013 myelosuppression and Centanni 2025 articles name it, nothing doses it"
+  )
+)
+
+# Dose records whose dose rows the reader cannot tell from their observation
+# rows, so an observation's compartment reads as dosed. Each article doses
+# only model states.
+articleUnpairedRecords <- data.frame(
+  article = c(rep("Knibbe_2009_morphine", 3), "Wu_2025_paracetamol"),
+  cmt = c("Cc", "Cc_m3g", "Cc_m6g", "Cc"),
+  reason = c(
+    rep("`cmt = dplyr::case_when(MDV == 1 ~ \"central\", CMT == 1 ~ \"Cc\", ...)`: doses are the MDV == 1 rows", 3),
+    "`cmt = ifelse(evid == 1L, \"central\", \"Cc\")`: doses are the evid == 1 rows"
   )
 )
 
@@ -191,6 +215,12 @@ test_that("a compartment is read through pipes, variables and helper functions",
     c("central", "depot", "im", "iv")
   )
   expect_identical(.doseCmtsOfCode('ev <- data.frame(time = 0, amt = 5); ev$cmt <- "depot2"'), "depot2")
+  # A subscript names no compartment; the vector it subsets does.
+  expect_identical(.doseCmtsOfCode('ev <- rxode2::et(amt = 1, cmt = d["cmt"])'), character(0))
+  expect_identical(
+    .doseCmtsOfCode('ev <- rxode2::et(amt = 1, cmt = c("depot", "central")[[k]])'),
+    c("central", "depot")
+  )
   expect_identical(
     .doseCmtsOfCode(c(
       "run <- function(mod, amt, cmt) rxode2::rxSolve(mod, rxode2::et(amt = amt, cmt = cmt))",
@@ -235,11 +265,50 @@ test_that("each dose is credited to the model it is solved with", {
   expect_identical(nrow(d), 0L)
 })
 
+test_that("a model whose article is missing is an error, not a skip", {
+  articleDir <- file.path(tempfile(), "articles")
+  dir.create(articleDir, recursive = TRUE)
+  on.exit(unlink(dirname(articleDir), recursive = TRUE))
+  writeLines(c("```{r}", "x <- 1", "```"), file.path(articleDir, "Here.Rmd"))
+  db <- data.frame(name = c("A", "B", "C"), vignette = c("Here", "Gone", NA), dosing = NA_character_)
+  noExempt <- data.frame(model = character(0), state = character(0))
+  expect_error(articleDoseGaps(articleDir, db, noExempt), "names no article.*: B$")
+  expect_identical(nrow(articleDoseGaps(articleDir, db, noExempt, noArticle = "B")$gaps), 0L)
+  # A model listed as having no article must still lack one.
+  expect_error(articleDoseGaps(articleDir, db, noExempt, noArticle = c("A", "B")), "whose article exists: A$")
+  # An article in the vignettes directory above the articles counts.
+  writeLines(c("```{r}", "x <- 1", "```"), file.path(dirname(articleDir), "Gone.Rmd"))
+  expect_identical(nrow(articleDoseGaps(articleDir, db, noExempt)$gaps), 0L)
+})
+
+test_that("a dosed name that is a state of no registry model is reported", {
+  skip_on_cran()
+  articleDir <- file.path(tempfile(), "articles")
+  dir.create(articleDir, recursive = TRUE)
+  on.exit(unlink(dirname(articleDir), recursive = TRUE))
+  writeLines(
+    c(
+      "```{r}",
+      'm <- readModelDb("PK_1cmt")',
+      's1 <- rxode2::rxSolve(m, rxode2::et(amt = 1, cmt = "Cc"))',
+      's2 <- rxode2::rxSolve(m, rxode2::et(amt = 1, cmt = "centrl"))',
+      's3 <- rxode2::rxSolve(m, rxode2::et(amt = 1, cmt = "central"))',
+      "```"
+    ),
+    file.path(articleDir, "Typo.Rmd")
+  )
+  db <- data.frame(name = "PK_1cmt", vignette = "Typo", dosing = "depot,central")
+  res <- articleDoseGaps(articleDir, db, data.frame(model = character(0), state = character(0)))
+  expect_identical(nrow(res$gaps), 0L)
+  expect_identical(sort(res$unknown$cmt), c("Cc", "centrl"))
+})
+
 test_that("every compartment an article doses is in its model's `dosing`", {
   skip_on_cran()
   articleDir <- testthat::test_path("..", "..", "vignettes", "articles")
   skip_if(!dir.exists(articleDir), "vignettes/articles not present (installed package)")
-  res <- articleDoseGaps(articleDir, nlmixr2lib::modeldb, articleStateDoses)
+  exempt <- rbind(articleStateDoses, articleMiscreditedDoses)
+  res <- articleDoseGaps(articleDir, nlmixr2lib::modeldb, exempt, noArticle = articleMissingArticles$model)
   expect_identical(
     nrow(res$gaps),
     0L,
@@ -256,8 +325,20 @@ test_that("every compartment an article doses is in its model's `dosing`", {
   )
   # An exemption the articles no longer need, or whose state `dosing` now
   # lists, is stale.
-  stale <- articleStateDoses[
-    !paste(articleStateDoses$model, articleStateDoses$state) %in% paste(res$exempted$model, res$exempted$state),
-  ]
+  stale <- exempt[!paste(exempt$model, exempt$state) %in% paste(res$exempted$model, res$exempted$state), ]
   expect_identical(nrow(stale), 0L, info = paste(stale$model, stale$state, collapse = "\n"))
+  # A dosed name that is a state of no registry model is a typo or an
+  # observable, unless the reader is known to misread that record.
+  found <- paste(res$unknown$article, res$unknown$cmt)
+  listed <- paste(articleUnpairedRecords$article, articleUnpairedRecords$cmt)
+  unknown <- res$unknown[!found %in% listed, ]
+  expect_identical(
+    nrow(unknown),
+    0L,
+    info = paste(
+      sprintf("%s doses %s (%s)", unknown$article, unknown$cmt, substr(unknown$record, 1, 120)),
+      collapse = "\n"
+    )
+  )
+  expect_identical(setdiff(listed, found), character(0))
 })

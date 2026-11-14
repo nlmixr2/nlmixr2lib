@@ -111,7 +111,9 @@ Zhou_2024_HER2breastCancer_qsp <- function() {
     dosing = "nmol/L",
     concentration = "nM"
   )
-  dosing <- c("lap_depot", "pyr_depot", "cap_depot", "adc_central")
+  # NRG1 takes a zero-order infusion that stands in for NRG1 overexpression
+  # (Figure 7h): the published system has no NRG1 synthesis.
+  dosing <- c("lap_depot", "pyr_depot", "cap_depot", "adc_central", "NRG1")
 
   # Every state is a concentration (nmol/L) except dar (molecules of
   # payload per antibody) and Cells (tumour volume in mm3 in vivo, or a
