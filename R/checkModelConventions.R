@@ -2891,13 +2891,15 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # Every ODE state needs a way to become non-zero: an input term in its
 # d/dt(), an initial condition, or a dose. One with none of the three stays
 # at 0 in every simulation.
-.checkDeadStates <- function(ui, conv) {
-  issues <- .emptyIssues()
-  # The equations rxode2 compiles, not ui$lstExpr: rxode2's parser joins a
-  # continuation line that starts with an operator to the equation above it,
-  # but R ends the statement at the line break, so ui$lstExpr can hold a
-  # truncated d/dt(). The text is parsed inside braces because rxode2 writes
-  # `}` and `else` on separate lines, which R accepts only within a block.
+# The .odeDefinitions() of the equations rxode2 compiles, plus `aliases`, the
+# algebraic definitions a term can be followed through (only a variable
+# assigned exactly once has one). An error condition when the model cannot be
+# read. The compiled equations, not ui$lstExpr: rxode2's parser joins a
+# continuation line that starts with an operator to the equation above it,
+# but R ends the statement at the line break, so ui$lstExpr can hold a
+# truncated d/dt(). The text is parsed inside braces because rxode2 writes
+# `}` and `else` on separate lines, which R accepts only within a block.
+.compiledOdeDefinitions <- function(ui) {
   norm <- tryCatch(rxode2::rxModelVars(ui)$model[["normModel"]], error = function(e) e)
   if (!inherits(norm, "error") && (!is.character(norm) || length(norm) != 1L || !nzchar(trimws(norm)))) {
     norm <- simpleError("rxode2 returned no compiled equations")
@@ -2908,20 +2910,29 @@ checkModelConventions <- function(model, verbose = TRUE) {
     tryCatch(as.list(parse(text = paste0("{\n", norm, "\n}"))[[1]])[-1], error = function(e) e)
   }
   if (inherits(exprs, "error")) {
-    return(.issue(
-      "dead_state",
-      "error",
-      NA_character_,
-      paste0("The model could not be read to check for dead states: ", conditionMessage(exprs)),
-      "Check that the model parses with rxode2::rxode2()."
-    ))
+    return(exprs)
   }
   defs <- list(rhs = list(), init = character(0), alg = list(), algCount = integer(0))
   for (e in exprs) {
     defs <- .odeDefinitions(e, defs)
   }
-  # Only a variable assigned exactly once has a definition to follow.
-  aliases <- defs$alg[names(defs$algCount)[defs$algCount == 1L]]
+  defs$aliases <- defs$alg[names(defs$algCount)[defs$algCount == 1L]]
+  defs
+}
+
+.checkDeadStates <- function(ui, conv) {
+  issues <- .emptyIssues()
+  defs <- .compiledOdeDefinitions(ui)
+  if (inherits(defs, "error")) {
+    return(.issue(
+      "dead_state",
+      "error",
+      NA_character_,
+      paste0("The model could not be read to check for dead states: ", conditionMessage(defs)),
+      "Check that the model parses with rxode2::rxode2()."
+    ))
+  }
+  aliases <- defs$aliases
   dosing <- trimws(unlist(strsplit(as.character(.modelDosingCmts(ui)), ",", fixed = TRUE)))
   for (st in names(defs$rhs)) {
     if (st %in% dosing || st %in% defs$init) {
