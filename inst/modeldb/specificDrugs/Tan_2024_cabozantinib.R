@@ -140,7 +140,7 @@ Tan_2024_cabozantinib <- function() {
     renal_function = "Mean baseline creatinine clearance 70 mL/min/1.73m^2 (range 31-121) by CKD-EPI",
     dose_range = "20-60 mg once-daily oral cabozantinib tablets (median 40 mg). Starting dose 20 mg in 15%, 40 mg in 37%, 60 mg in 48%; last recorded dose 20 mg in 19%, 40 mg in 60%, 60 mg in 21%. Median treatment duration 75 days (range 11-552).",
     regions = "Single center, the Netherlands (Leiden University Medical Center)",
-    notes = "Retrospective therapeutic-drug-monitoring cohort treated between August 2018 and December 2021, one routine TDM observation minimum per patient. Baseline demographics from Tan 2024 Table 1; a side-by-side comparison against the 318 mRCC patients of the FDA registration phase III study is in Supplementary Table S1. Median 2 observations per patient (range 1-10); 36 of 75 observations (48%) were troughs. Median time after last dose 25.30 h (range 1.25-267.15 h). Steady state was NOT assumed; all administered doses were carried in the dataset via the NONMEM ADDL and II columns. Observed concentrations median 603 ng/mL (range 135-1471); trough concentrations median 632 ng/mL (range 308-1134). Assay: UPLC-MS/MS validated over 10-4000 ng/mL. IMPORTANT -- this 27-patient cohort was used only to EVALUATE and partially re-estimate the FDA registration model, which was itself developed on 63 healthy participants (phase I) plus 325 mRCC patients (phase III); every parameter other than CL/F and the proportional residual error is inherited from that much larger analysis."
+    notes = "Retrospective therapeutic-drug-monitoring cohort treated between August 2018 and December 2021, one routine TDM observation minimum per patient. Baseline demographics from Tan 2024 Table 1; a side-by-side comparison against the 318 mRCC patients of the FDA registration phase III study is in Supplementary Table S1. Median 2 observations per patient (range 1-10); 36 of 75 observations (48%) were troughs. Median time after last dose 25.30 h (range 1.25-267.15 h). Steady state was NOT assumed; all administered doses were carried in the dataset via the NONMEM ADDL and II columns. Observed concentrations median 603 ng/mL (range 135-1471); trough concentrations median 632 ng/mL (range 308-1134). Assay: UPLC-MS/MS validated over 10-4000 ng/mL. IMPORTANT -- this 27-patient cohort was used only to EVALUATE and partially re-estimate the FDA registration model, which was itself developed on 63 healthy participants (phase I) plus 325 mRCC patients (phase III); every parameter other than CL/F and the proportional residual error is inherited from that much larger analysis. The published control stream gives F1 an unbounded exponential IIV (F1 = TVF1 * EXP(ETA), F2 = 1 - F1); this model caps the simulated F1 at 1, which deviates from it: 3.9% of patients sit at the cap and the SD of F1 is 6.6% below that of the fitted lognormal."
   )
 
   ini({
@@ -181,11 +181,10 @@ Tan_2024_cabozantinib <- function() {
     # remaining (1 - F1) goes to the slow depot, so the two always sum to the
     # whole dose. The control stream parameterises this MULTIPLICATIVELY with
     # exponential IIV -- F1 = TVF1 * EXP(ETA(4)) -- rather than on the logit
-    # scale, so the canonical here is lffo (not logitffo). That choice is
-    # load-bearing: an exponential eta genuinely admits F1 > 1 in the upper
-    # tail, which is exactly the numerical failure Tan 2024 section 3.2
-    # reports and works around. Re-encoding on the logit scale would silently
-    # change the model. See the etalffo note below.
+    # scale, so the canonical here is lffo (not logitffo); re-encoding on the
+    # logit scale would change the model. The model body caps the dose split
+    # at min(F1, 1), which the control stream does not do; see the bound note
+    # on etalffo below.
     lffo <- fixed(log(0.675)) ; label("Fraction of the bioavailable dose routed to the fast depot F1 (unitless)")  # Table 2 F1 = 0.675; control stream $THETA (0.675) FIX ; F1
 
     # Bioavailability anchor. Neither control stream carries an F term: the
@@ -230,13 +229,22 @@ Tan_2024_cabozantinib <- function() {
     # Section 3.2: the registration value 0.385 "resulted in terminated runs
     # due to a negative F1 fraction, and it was impossible to continue using
     # this value. Therefore, we decrease the variance and set it to a 20%
-    # variation of F1". The mechanism is the exponential eta on F1 described
-    # above: F1 = 0.675 * exp(eta) exceeds 1 whenever eta > log(1/0.675) =
-    # 0.393, which makes the slow-depot fraction (1 - F1) negative. At the
-    # registration variance 0.385 (SD 0.620) that is 26% of subjects; at 0.05
-    # (SD 0.224) it is still about 4%. The tail is not eliminated, only
-    # shrunk, and it is a genuine property of the published model -- see the
-    # vignette Errata for how it shows up in simulation.
+    # variation of F1". The mechanism is the exponential eta on F1: F1 =
+    # 0.675 * exp(eta) exceeds 1 whenever eta > log(1/0.675) = 0.393, which
+    # makes the slow-depot fraction (1 - F1) negative. At the registration
+    # variance 0.385 (SD 0.620) that is 26% of subjects; at 0.05 (SD 0.224) it
+    # is still 3.9%.
+    #
+    # Bound on F1 (this model, not the paper): the published control stream is
+    # F1 = TVF1 * EXP(ETA(4)), F2 = 1 - F1 with no bound, and the authors
+    # reduced the IIV (Section 3.2, Table 2) rather than bounding F1. This
+    # model deviates from that: the model body applies min(F1, 1) to the dose
+    # split, so no subject receives a negative slow-depot fraction. With a
+    # typical value of 0.675 and omega 0.2236, P(F1 > 1) = 3.94%, so 3.9% of
+    # patients sit at the cap (F1 = 1, slow depot empty), and the SD of F1
+    # falls from 0.1567 (lognormal) to 0.1464 (capped), 6.6% lower; the mean
+    # falls 0.56%. The simulated F1 distribution therefore differs from the
+    # fitted lognormal.
     etalffo ~ fixed(0.05)                    # Table 2 final-model Omega2_F1 = 0.05 (registration file value 0.385); control stream $OMEGA 0.05 FIX ; F1
 
     # ---- Residual error ----
@@ -271,11 +279,13 @@ Tan_2024_cabozantinib <- function() {
     tlag  <- exp(ltlag)
     tlag2 <- exp(ltlag2)
 
-    # Exponential IIV on the fast-depot fraction, exactly as the control
-    # stream writes it (F1 = TVF1 * EXP(ETA(4))). This is deliberately NOT
-    # bounded to (0, 1) -- see the lffo and etalffo notes in ini().
-    ffo    <- exp(lffo + etalffo)
-    fdepot <- exp(lfdepot) * f_food
+    # Exponential IIV on the fast-depot fraction, as the control stream writes
+    # it (F1 = TVF1 * EXP(ETA(4))), kept mu-referenced; the dose split uses the
+    # value capped at 1, which the control stream does not (see the bound note
+    # on etalffo in ini()).
+    ffo        <- exp(lffo + etalffo)
+    ffo_capped <- min(ffo, 1)
+    fdepot     <- exp(lfdepot) * f_food
 
     # ---- Micro-constants ----
     kel <- cl / vc
@@ -294,8 +304,8 @@ Tan_2024_cabozantinib <- function() {
                           kel * central - k12 * central + k21 * peripheral1
     d/dt(peripheral1) <-  k12 * central - k21 * peripheral1
 
-    f(depot)     <- fdepot * ffo
-    f(depot2)    <- fdepot * (1 - ffo)
+    f(depot)     <- fdepot * ffo_capped
+    f(depot2)    <- fdepot * (1 - ffo_capped)
     alag(depot)  <- tlag
     alag(depot2) <- tlag2
 
