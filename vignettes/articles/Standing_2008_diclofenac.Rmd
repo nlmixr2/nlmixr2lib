@@ -175,18 +175,25 @@ sim <- as.data.frame(sim)
 sim$time <- as.numeric(sim$time)
 sim$Cc <- as.numeric(sim$Cc)
 
-# F1 and F2 = 1 - F1 are fractions of the dose. The model caps F1 at 1, so neither
-# leaves [0, 1] for any child, and the share at the cap is the probability that the
-# exponential F1 exceeds 1 (a binomial count, so the bound is four standard errors).
-f1 <- sim$fdepot[!duplicated(sim$id)]
-share_at_cap <- mean(f1 == 1)
+# F1 and F2 = 1 - F1 are fractions of the dose. The model doses
+# fdepot_capped = min(fdepot, 1), so neither leaves [0, 1] for any child, and the
+# share at the cap is the probability that the exponential F1 exceeds 1.
+f1 <- sim |>
+  dplyr::distinct(id, fdepot, fdepot_capped)
+n_at_cap <- sum(f1$fdepot_capped == 1)
 expected_at_cap <- pnorm(log(0.70) / sqrt(0.0560))
-print(round(c(children = length(f1), share_at_cap = share_at_cap, expected = expected_at_cap), 3))
+print(round(c(children = nrow(f1), n_at_cap = n_at_cap,
+              pct_at_cap = 100 * n_at_cap / nrow(f1),
+              pct_expected = 100 * expected_at_cap), 3))
 stopifnot(
-  !anyNA(f1),
-  all(f1 >= 0), all(f1 <= 1),
-  all(1 - f1 >= 0),
-  abs(share_at_cap - expected_at_cap) < 4 * sqrt(expected_at_cap * (1 - expected_at_cap) / length(f1))
+  !anyNA(f1$fdepot_capped),
+  all(f1$fdepot_capped >= 0), all(f1$fdepot_capped <= 1),
+  all(1 - f1$fdepot_capped >= 0),
+  # The cap binds exactly where the lognormal draw reaches 1.
+  identical(f1$fdepot_capped == 1, f1$fdepot >= 1),
+  # The count at the cap is binomial; require that neither tail is vanishingly small.
+  pbinom(n_at_cap, nrow(f1), expected_at_cap) > 1e-6,
+  pbinom(n_at_cap - 1L, nrow(f1), expected_at_cap, lower.tail = FALSE) > 1e-6
 )
 ```
 
@@ -405,7 +412,7 @@ cmp |>
 * **Single-administration dosing convention.** A user-facing
   administration generates two dose records (one to `depot1` and one
   to `depot2`) with the same `amt`. The transit() bio arguments
-  (`fdepot` and `1 - fdepot`) split the dose so the total mass
+  (`fdepot_capped` and `1 - fdepot_capped`) split the dose so the total mass
   entering central is `F1 * AMT + F2 * AMT = AMT`. This is the same
   rxode2 idiom used by `Lee_2015_sumatriptan.R` for dual-arm
   absorption; it is required because rxode2's `transit()` is
@@ -452,11 +459,13 @@ cmp |>
   IIV 24% CV). With an exponential IIV (`F1 = TVF1 * exp(eta)`, typical 0.70,
   variance 0.056) F1 exceeds 1 for about 6.6% of children, which sends a negative
   bioavailability, and a negative dose, to arm 2. The model therefore caps it,
-  `fdepot <- min(exp(lfdepot + etalfdepot), 1)`: F2 stays in [0, 1], the two arms
+  `fdepot_capped <- min(fdepot, 1)` with `fdepot <- exp(lfdepot + etalfdepot)` kept
+  as the lognormal, mu-referenced value: F2 stays in [0, 1], the two arms
   still sum to the dose, about 6.6% of children sit at F1 = 1, and the effective IIV
   on F1 is slightly below the published 24%. Typical-value simulations are
   unaffected. The chunk after the simulation checks that F1 and F2 lie in [0, 1] for
-  every child and that the share at the cap is the expected one.
+  every child, that the cap binds exactly where the lognormal draw reaches 1, and that
+  the count at the cap is consistent with the exact lognormal tail probability.
 * **Diclofenac sodium MW = 318.13 g/mol for dose conversion.** The
   packaged model carries amounts in nmol throughout; the
   vignette-side conversion `dose_nmol = dose_mg * 1e6 / 318.13`
