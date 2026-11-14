@@ -3824,6 +3824,10 @@ navbar:
         href: articles/Wang_2021_icatibant.html
       - text: "Iclaprim (Lodise 2018)"
         href: articles/Lodise_2018_iclaprim.html
+      - text: "Iclepertin (Hanke 2026)"
+        href: articles/Hanke_2026_iclepertin.html
+      - text: "Iclepertin hemoglobin (Hanke 2026)"
+        href: articles/Hanke_2026_iclepertin.html
       - text: "IdecabtageneVicleucel auc (Wu 2025)"
         href: articles/Wu_2025_idecabtageneVicleucel.html
       - text: "IdecabtageneVicleucel cr (Connarn 2023)"
@@ -10300,6 +10304,7 @@ articles:
   - articles/Hand_2019_benzathine_benzylpenicillin_g
   - articles/Hanke_2020_cimetidine
   - articles/Hanke_2021_rosuvastatin
+  - articles/Hanke_2026_iclepertin
   - articles/Hanley_2017_bortezomib
   - articles/Hanley_2024_brigatinib
   - articles/Hansson_2013_sunitinib_dbp
