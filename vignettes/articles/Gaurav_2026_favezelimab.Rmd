@@ -1,0 +1,571 @@
+---
+title: "Favezelimab (Gaurav 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Favezelimab (Gaurav 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Gaurav_2026_favezelimab"))$reference`
+* Description (PK): `r rxode2::rxode(readModelDb("Gaurav_2026_favezelimab"))$description`
+* Description (ORR): `r rxode2::rxode(readModelDb("Gaurav_2026_favezelimab_orr"))$description`
+* Article: <https://doi.org/10.1111/cts.70658> (open access, PMC13330136)
+
+Gaurav 2026 reports two models, packaged as two files:
+
+* `Gaurav_2026_favezelimab` -- the population PK model: two compartments with
+  parallel linear and Michaelis-Menten (target-mediated) elimination, a
+  full-model covariate structure on CL and Vc, and time-varying anti-drug
+  antibody (ADA) status on the linear component of CL.
+* `Gaurav_2026_favezelimab_orr` -- the exposure-efficacy logistic regression
+  of objective response rate (ORR) on the average favezelimab AUC in the
+  phase 1 gastric cancer cohort.
+
+The two exposure-safety analyses (Grade >= 3 drug-related adverse events and
+drug-related adverse events of special interest) found no significant
+exposure-response relationship, and the paper states that no further
+modelling was done for them, so there is no model to package.
+
+# Population
+
+The PK analysis pooled 724 patients and 8980 serum concentrations from two
+studies (Results, 'Patient Characteristics'; Supplementary Tables S1-S2):
+the first-in-human phase 1 study MK-4280-001 (P001, n = 475; 7-800 mg IV Q3W
+as monotherapy or with pembrolizumab, with or without chemotherapy or
+lenvatinib) and the phase 3 KEYFORM-007 study (n = 249; favezelimab 800 mg
+co-formulated with pembrolizumab 200 mg IV Q3W in PD-L1-positive previously
+treated metastatic colorectal cancer). Median age was 59 years (25-85),
+median weight 70.9 kg (33.0-145.9), 38.1% were female, 68.2% Caucasian and
+27.1% Asian. Median albumin was 40 g/L; 51.9% had ECOG performance status 1;
+29.8% had hepatic and 39.6% renal impairment of any degree. Overall 28.9% of
+patients were ADA-positive at some point (26.2% at 800 mg), with a median
+onset of about 3 weeks (Table S3).
+
+The exposure-efficacy analysis used the 80 gastric cancer patients of P001
+randomised to favezelimab 200 mg (n = 40) or 700 mg (n = 40) Q3W, each with
+pembrolizumab 200 mg; 9 (11.3%) responded (Table S6).
+
+```{r population}
+str(readModelDb("Gaurav_2026_favezelimab")()$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. Collected:
+
+| Parameter / equation | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` | log(0.0195 L/h) | Table 1, CL |
+| `lvc` | log(3.08 L) | Table 1, Vc |
+| `lq` | log(0.0322 L/h) | Table 1, Q |
+| `lvp` | log(1.22 L) | Table 1, Vp |
+| `lvmax` | log(13.6 ug/h) | Table 1, Vmax |
+| `lkm` | log(49.5 ug/L) | Table 1, Km (unit: see Assumptions) |
+| `e_wt_cl`, `e_wt_vc` | 0.599, 0.353 | Table 1, body weight effects; reference 71 kg from the footnote equations |
+| `e_alb_cl`, `e_alb_vc` | -1.11, -0.116 | Table 1, albumin effects; reference 40 g/L from the footnote equation |
+| `e_age_cl` | -0.115 | Table 1, age effect on CL; reference 59 years = median (Table S2) |
+| `e_male_cl`, `e_male_vc` | 0.200, 0.255 | Table 1, sex effects; applied to males per the footnote equations |
+| `e_race_asian_cl`, `e_race_asian_vc` | -0.245, -0.0974 | Table 1, Asian race effects |
+| `e_ecog_ge1_cl`, `e_ecog_ge1_vc` | 0.0742, -0.0031 | Table 1, ECOG effects |
+| `e_hepimp_cl`, `e_hepimp_vc` | 0.0461, 0.0123 | Table 1, hepatic impairment effects |
+| `e_renalimp_cl`, `e_renalimp_vc` | -0.0926, -0.0184 | Table 1, renal impairment effects |
+| `e_ada_pos_cl` | 1.11 | Table 1, ADA effect on CL (functional form: see Assumptions) |
+| `etalcl + etalvc` | var 0.167281, cov 0.01821195, var 0.033856 | Table 1, omega_CL 0.409, omega_Vc 0.184 (SDs), corr_Vc_CL 0.242 |
+| `addSd` | 30.3 ng/mL | Table 1, additive error; unit from the Results text |
+| `propSd` | 0.322 | Table 1, proportional error |
+| Power / exponential covariate forms | n/a | Table 1 footnote |
+| `d/dt(central)` with `vmax * Cc / (km + Cc)` | n/a | Results: '2-compartment TMDD model with MM approximation' |
+| `logit_ref` | -2.48928 | Table S7, intercept |
+| `e_auc_favezelimab_logit` | 4.36e-8 per ng*h/mL | Table S7, centred average AUC |
+| `auc_favezelimab_ref` | 1.54e7 ng*h/mL | Digitised from Figure 3 (not printed) |
+
+# Typical-value checks against the text
+
+The Results give the typical CL and Vc 'for a male (non-Asian) weighing
+71 kg, with an albumin level of 40 g/dL [sic; g/L], an ECOG status of zero,
+and normal renal function' as 0.023 L/h and 3.94 L.
+
+```{r typical-values}
+ref_male <- data.frame(
+  WT = 71, ALB = 40, AGE = 59, SEXF = 0, RACE_ASIAN = 0, ECOG_GE1 = 0,
+  HEPIMP = 0, RENALIMP = 0, ADA_POS = 0
+)
+cl_male <- 0.0195 * exp(0.200)
+vc_male <- 3.08 * exp(0.255)
+knitr::kable(
+  data.frame(
+    Parameter = c("CL (L/h)", "Vc (L)"),
+    Model = signif(c(cl_male, vc_male), 3),
+    Published = c(0.023, 3.94)
+  ),
+  caption = "Typical male CL and Vc implied by Table 1 versus the Results text."
+)
+stopifnot(
+  abs(cl_male / 0.023 - 1) < 0.05,
+  abs(vc_male / 3.94 - 1) < 0.02
+)
+```
+
+Both agree within rounding (CL 0.0238 printed as 0.023; Vc 3.98 versus
+3.94, a 1% difference). This is also what fixes the direction of the sex
+effect: the 0.200 and 0.255 coefficients raise CL and Vc for MALES, so female
+is the typical-value category of Table 1.
+
+# Nonlinearity and the Km unit
+
+The Methods give Km in ug/mL, Table 1 and the Results in ug/L. With
+Km = 49.5 ug/L (= 49.5 ng/mL) the low-concentration Michaelis-Menten
+clearance is Vmax / Km = 0.27 L/h, about twelve times the linear CL, which
+produces the dose nonlinearity the paper describes ('PK exposure increased
+with increase in dose and exhibited nonlinear PK at lower doses'). With
+ug/mL the same arm would be 1000-fold weaker and the PK would be linear at
+every studied dose. The dose-normalised cycle 1 AUC of a typical patient:
+
+```{r km-check}
+mod_pk <- readModelDb("Gaurav_2026_favezelimab")
+mod_typ <- rxode2::zeroRe(mod_pk)
+
+# Typical-value solves of several subjects warn that the simulation has no
+# omega; that is intended, so only that warning is muffled.
+solve_typ <- function(...) {
+  withCallingHandlers(
+    rxode2::rxSolve(..., returnType = "data.frame"),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+typ_events <- function(dose, id, n_cyc = 1, ada_from = Inf, cov = ref_male) {
+  obs_t <- unlist(lapply(seq_len(n_cyc) - 1, function(k) {
+    k * 504 + c(0, 0.5, 1, 2, 4, 8, 12, 24, 48, 72, 96, seq(120, 504, by = 24))
+  }))
+  obs_t <- sort(unique(obs_t))
+  doses <- data.frame(
+    id = id, time = (seq_len(n_cyc) - 1) * 504, evid = 1L, amt = dose,
+    rate = dose / 0.5, cmt = "central"
+  )
+  obs <- data.frame(id = id, time = obs_t, evid = 0L, amt = 0, rate = 0, cmt = "central")
+  ev <- dplyr::bind_rows(doses, obs) |> dplyr::arrange(id, time, dplyr::desc(evid))
+  ev <- cbind(ev, cov[rep(1, nrow(ev)), setdiff(names(cov), "ADA_POS"), drop = FALSE])
+  ev$ADA_POS <- as.integer(ev$time >= ada_from)
+  ev
+}
+
+doses_mg <- c(7, 21, 70, 200, 700, 800)
+ev_km <- dplyr::bind_rows(lapply(seq_along(doses_mg), function(i) typ_events(doses_mg[i], id = i)))
+ev_km$dose_mg <- doses_mg[ev_km$id]
+sim_km <- solve_typ(mod_typ, ev_km, keep = "dose_mg")
+
+nca_km_conc <- PKNCA::PKNCAconc(
+  sim_km |> dplyr::filter(!is.na(Cc)) |> dplyr::select(id, time, Cc, dose_mg),
+  Cc ~ time | dose_mg + id
+)
+nca_km_dose <- PKNCA::PKNCAdose(
+  ev_km |> dplyr::filter(evid == 1) |> dplyr::select(id, time, amt, dose_mg),
+  amt ~ time | dose_mg + id
+)
+nca_km <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  nca_km_conc, nca_km_dose,
+  intervals = data.frame(start = 0, end = 504, auclast = TRUE, cmax = TRUE)
+))
+dn <- as.data.frame(nca_km) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::transmute(dose_mg, dnAUC = PPORRES / dose_mg)
+dn |>
+  dplyr::mutate(dnAUC = round(dnAUC), `Relative to 800 mg` = round(dnAUC / dnAUC[dose_mg == 800], 2)) |>
+  dplyr::rename("Dose (mg)" = dose_mg, "AUC0-21d / dose (ng*h/mL per mg)" = dnAUC) |>
+  knitr::kable(caption = "Dose-normalised cycle 1 AUC, typical male patient.")
+stopifnot(
+  # TMDD makes the lowest dose clearly less than dose-proportional ...
+  dn$dnAUC[dn$dose_mg == 7] / dn$dnAUC[dn$dose_mg == 800] < 0.75,
+  # ... and the arm is saturated across the clinical range 200-800 mg.
+  abs(dn$dnAUC[dn$dose_mg == 200] / dn$dnAUC[dn$dose_mg == 800] - 1) < 0.1
+)
+```
+
+# Virtual cohort and simulation (800 mg Q3W)
+
+No individual data are available. The virtual cohort below draws covariates
+independently from the Table S2 marginal summaries: weight log-normal
+(median 70.9 kg, SD about 18 kg, truncated to 33-146 kg), albumin normal
+(mean 39.4 g/L, SD 5.1, truncated to 21-70.6), age normal (mean 58.6, SD
+11.2, truncated to 25-85), 38.1% female, 27.1% Asian, 51.9% ECOG 1, 29.8%
+hepatic impairment and 39.6% renal impairment. 26.2% of patients become
+ADA-positive at 504 h (the Table S3 median onset at 800 mg is 502 h) and stay
+positive, mirroring the source's last-observation-carried-forward handling.
+Five cycles are simulated, as in the source's forest-plot simulations. The
+infusion duration is not reported; 30 minutes is assumed.
+
+```{r cohort}
+set.seed(20261113)
+rxode2::rxSetSeed(20261113)
+
+rtrunc <- function(n, draw, lo, hi) {
+  x <- draw(n)
+  bad <- x < lo | x > hi
+  while (any(bad)) {
+    x[bad] <- draw(sum(bad))
+    bad <- x < lo | x > hi
+  }
+  x
+}
+
+make_cohort <- function(n, dose, ada_pct, n_cyc, id_offset = 0L, treatment) {
+  subj <- data.frame(
+    id = id_offset + seq_len(n),
+    WT = rtrunc(n, function(k) exp(rnorm(k, log(70.9), 0.242)), 33, 146),
+    ALB = rtrunc(n, function(k) rnorm(k, 39.4, 5.12), 21, 70.6),
+    AGE = rtrunc(n, function(k) rnorm(k, 58.6, 11.2), 25, 85),
+    SEXF = rbinom(n, 1, 0.381),
+    RACE_ASIAN = rbinom(n, 1, 0.271),
+    ECOG_GE1 = rbinom(n, 1, 0.519),
+    HEPIMP = rbinom(n, 1, 0.298),
+    RENALIMP = rbinom(n, 1, 0.396),
+    ADA_EVER = rbinom(n, 1, ada_pct)
+  )
+  ev <- dplyr::bind_rows(lapply(seq_len(n), function(i) {
+    typ_events(
+      dose, id = subj$id[i], n_cyc = n_cyc,
+      ada_from = if (subj$ADA_EVER[i] == 1) 504 else Inf,
+      cov = subj[i, c("WT", "ALB", "AGE", "SEXF", "RACE_ASIAN", "ECOG_GE1", "HEPIMP", "RENALIMP")]
+    )
+  }))
+  ev$treatment <- treatment
+  ev$ADA_EVER <- subj$ADA_EVER[match(ev$id, subj$id)]
+  ev
+}
+
+ev800 <- make_cohort(200, 800, 0.262, n_cyc = 5, treatment = "800 mg Q3W")
+stopifnot(!anyDuplicated(unique(ev800[, c("id", "time", "evid")])))
+
+sim800 <- rxode2::rxSolve(
+  mod_pk, ev800,
+  keep = c("treatment", "ADA_EVER", "SEXF", "RACE_ASIAN", "ECOG_GE1", "HEPIMP", "RENALIMP", "WT", "ALB", "AGE"),
+  returnType = "data.frame"
+)
+```
+
+## Concentration-time profile (compare Figure 2)
+
+Figure 2 of the paper is a prediction-corrected VPC pooled over all doses and
+cycles against time after the previous dose. It cannot be reproduced exactly
+without the data, but its observed medians, read off the figure by the
+maintainers (5.4e4, 2.25e4, 1.13e4 and 6.0e3 ng/mL at 168, 336, 504 and
+700 h), give a scale check for the dominant 800 mg regimen. The simulated
+cycle 1 percentiles at 800 mg are plotted with those points. The simulated
+800 mg medians sit 25-45% above the pooled observed medians, as expected when
+Figure 2 also pools the lower-dose P001 cohorts.
+
+```{r figure-2}
+fig2_obs <- data.frame(time = c(168, 336, 504, 700), Cc = c(5.4e4, 2.25e4, 1.13e4, 6.0e3))
+
+vpc800 <- sim800 |>
+  dplyr::filter(time <= 504) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    Q10 = quantile(Cc, 0.10), Q50 = median(Cc), Q90 = quantile(Cc, 0.90),
+    .groups = "drop"
+  )
+
+ggplot(vpc800, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q10, ymax = Q90), alpha = 0.25, fill = "steelblue") +
+  geom_line(colour = "steelblue") +
+  geom_point(data = fig2_obs, aes(time, Cc), shape = 4, size = 3) +
+  scale_y_log10(limits = c(10, 1e7)) +
+  scale_x_continuous(breaks = c(0, 24, 48, 72, 168, 336, 504, 672)) +
+  labs(
+    x = "Time after dose (h)", y = "Favezelimab Cc (ng/mL)",
+    title = "Cycle 1 at 800 mg: simulated median and 10th-90th percentiles",
+    caption = "Crosses: observed medians digitised from Figure 2 of Gaurav 2026 (all doses, prediction-corrected)."
+  )
+
+chk2 <- vpc800 |>
+  dplyr::filter(time %in% c(168, 336, 504)) |>
+  dplyr::left_join(fig2_obs, by = "time") |>
+  dplyr::mutate(ratio = Q50 / Cc)
+knitr::kable(chk2 |> dplyr::select(time, Q50, Cc, ratio) |>
+  dplyr::rename("Time (h)" = time, "Simulated median" = Q50, "Figure 2 median" = Cc, "Ratio" = ratio),
+  digits = 2, caption = "Simulated cycle 1 median at 800 mg versus the Figure 2 observed median.")
+# A mis-scaled volume, clearance or unit moves these medians by many-fold;
+# the window allows for Figure 2 pooling doses, cycles and prediction correction.
+stopifnot(all(chk2$ratio > 0.5 & chk2$ratio < 2))
+```
+
+## PKNCA: cycle 1 and steady state
+
+```{r pknca}
+nca_conc <- PKNCA::PKNCAconc(
+  sim800 |> dplyr::filter(!is.na(Cc)) |> dplyr::select(id, time, Cc, treatment),
+  Cc ~ time | treatment + id
+)
+nca_dose <- PKNCA::PKNCAdose(
+  ev800 |> dplyr::filter(evid == 1) |> dplyr::select(id, time, amt, treatment),
+  amt ~ time | treatment + id
+)
+nca800 <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  nca_conc, nca_dose,
+  intervals = data.frame(
+    start = c(0, 2016), end = c(504, 2520),
+    cmax = TRUE, auclast = TRUE, cmin = c(FALSE, TRUE)
+  )
+))
+nca800_df <- as.data.frame(nca800)
+nca800_df |>
+  dplyr::mutate(interval = ifelse(start == 0, "Cycle 1", "Cycle 5 (steady state)")) |>
+  dplyr::group_by(interval, PPTESTCD) |>
+  dplyr::summarise(median = signif(median(PPORRES), 3), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::rename("Interval" = interval, "AUC0-21d (ng*h/mL)" = auclast, "Cmax (ng/mL)" = cmax, "Cmin (ng/mL)" = cmin) |>
+  knitr::kable(caption = "Median simulated NCA at 800 mg Q3W (n = 200).")
+```
+
+The paper prints no NCA values (the dose-normalised NCA of Figures S3-S4 is
+graphical only), so there is no published table to compare against. At
+saturating doses the steady-state AUC over a dosing interval should equal
+dose / CL for each subject; the PKNCA result is checked against that below,
+using each subject's individual CL in cycle 5.
+
+```{r ss-auc-identity}
+cl_c5 <- sim800 |>
+  dplyr::filter(time > 2016, time <= 2520) |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(cl = mean(cl), .groups = "drop")
+auc_c5 <- nca800_df |>
+  dplyr::filter(start == 2016, PPTESTCD == "auclast") |>
+  dplyr::left_join(cl_c5, by = "id") |>
+  dplyr::mutate(ratio = PPORRES / (800 / cl * 1000))
+# The Michaelis-Menten arm and residual non-steady-state add a few percent.
+stopifnot(abs(median(auc_c5$ratio) - 1) < 0.05)
+```
+
+## Covariate effects on steady-state AUC (compare Figure 1)
+
+Figure 1 shows geometric mean ratios (GMRs) of AUC0-tau,ss by covariate
+subgroup, from empirical Bayes estimates of the 800 mg patients. The
+published subgroup GMRs include the effects of correlated covariates (for
+example, females and Asians are lighter), whereas this virtual cohort draws
+covariates independently, so the simulated GMRs isolate each model term and
+are expected to be closer to 1 for sex and race. ECOG and hepatic
+impairment, whose model terms are small, land near the published GMRs; the
+renal-impairment GMR scatters around the model's exp(0.0926) = 1.10 because
+of the 200-subject cohort.
+
+```{r figure-1}
+ss <- auc_c5 |>
+  dplyr::left_join(
+    sim800 |> dplyr::distinct(id, ADA_EVER, SEXF, RACE_ASIAN, ECOG_GE1, HEPIMP, RENALIMP),
+    by = "id"
+  )
+gmr <- function(x, g) exp(mean(log(x[g == 1])) - mean(log(x[g == 0])))
+fig1 <- data.frame(
+  Comparison = c("ADA positive vs negative", "Asian vs Caucasian/other", "Female vs male",
+                 "ECOG 1 vs 0", "Hepatic impaired vs normal", "Renal impaired vs normal"),
+  Simulated = c(
+    gmr(ss$PPORRES, ss$ADA_EVER), gmr(ss$PPORRES, ss$RACE_ASIAN), gmr(ss$PPORRES, ss$SEXF),
+    gmr(ss$PPORRES, ss$ECOG_GE1), gmr(ss$PPORRES, ss$HEPIMP), gmr(ss$PPORRES, ss$RENALIMP)
+  ),
+  Published = c(0.807, 1.41, 1.39, 0.788, 0.88, 1.05)
+)
+knitr::kable(fig1, digits = 2, caption = "AUC0-tau,ss GMRs: simulated cohort versus Figure 1 of Gaurav 2026.")
+```
+
+The ADA effect deserves a closer look because its functional form is not
+printed. Table 1 gives 'ADA Effect on CL' = 1.11. Read as a multiplicative
+factor on linear CL, a typical patient who turns ADA-positive at the start of
+cycle 2 has a steady-state AUC ratio of about 0.90; read as an exponential
+coefficient, exp(1.11) = 3.03, the ratio would be about 0.33. Figure 1 reports
+0.807 [90% CI 0.74, 0.88], which is compatible only with the factor reading,
+so that is the form the model uses.
+
+```{r ada-form}
+ev_ada <- dplyr::bind_rows(
+  typ_events(800, id = 1, n_cyc = 5),
+  typ_events(800, id = 2, n_cyc = 5, ada_from = 504)
+)
+auc_c5_typ <- function(mod) {
+  s <- solve_typ(mod, ev_ada) |> dplyr::filter(!is.na(Cc))
+  r <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(dplyr::select(s, id, time, Cc), Cc ~ time | id),
+    PKNCA::PKNCAdose(ev_ada |> dplyr::filter(evid == 1) |> dplyr::select(id, time, amt), amt ~ time | id),
+    intervals = data.frame(start = 2016, end = 2520, auclast = TRUE)
+  ))
+  a <- as.data.frame(r)
+  a$PPORRES[a$id == 2] / a$PPORRES[a$id == 1]
+}
+ratio_factor <- auc_c5_typ(mod_typ)
+ratio_exp <- auc_c5_typ(mod_typ |> rxode2::ini(e_ada_pos_cl = exp(1.11)))
+knitr::kable(
+  data.frame(
+    Reading = c("CL x 1.11 (used)", "CL x exp(1.11)", "Figure 1"),
+    `AUC ratio` = c(ratio_factor, ratio_exp, 0.807), check.names = FALSE
+  ),
+  digits = 3, caption = "Typical ADA-positive / ADA-negative steady-state AUC ratio."
+)
+stopifnot(
+  abs(ratio_factor - 1 / 1.11) < 0.02,
+  ratio_exp < 0.5
+)
+```
+
+# Exposure-response: objective response rate (Figure 3)
+
+The ORR model is linear on the logit in the average AUC per 21-day interval:
+logit(p) = -2.48928 + 4.36e-8 * (AUC - AUCc). Table S7 labels the exposure
+term 'centred' but does not print AUCc. The maintainers digitised the fitted
+line of Figure 3 and solved for AUCc with the printed slope and intercept,
+obtaining 1.54e7 ng*h/mL; an unconstrained fit of the digitised curve gives
+a slope of 4.373e-8, within 0.3% of the printed value, which confirms the
+reading. 1.54e7 sits between the 200 mg and 700 mg exposure ranges, as the
+median of the 80-patient cohort would.
+
+For an exposure-driven logistic model with an intercept, the fitted
+probabilities in the analysis set sum to the observed number of responders
+(9 of 80). A virtual gastric cohort of 40 patients per arm is simulated
+(covariates as above; ADA incidence 32.7% at 200 mg and 17.4% at 700 mg,
+Table S3), its average AUC over four cycles is computed with PKNCA, and the
+ORR model is applied to it.
+
+```{r orr-cohort}
+ev_gc <- dplyr::bind_rows(
+  make_cohort(40, 200, 0.327, n_cyc = 4, id_offset = 1000L, treatment = "200 mg"),
+  make_cohort(40, 700, 0.174, n_cyc = 4, id_offset = 2000L, treatment = "700 mg")
+)
+stopifnot(!anyDuplicated(unique(ev_gc[, c("id", "time", "evid")])))
+sim_gc <- rxode2::rxSolve(mod_pk, ev_gc, keep = "treatment", returnType = "data.frame")
+
+nca_gc <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(
+    sim_gc |> dplyr::filter(!is.na(Cc)) |> dplyr::select(id, time, Cc, treatment),
+    Cc ~ time | treatment + id
+  ),
+  PKNCA::PKNCAdose(
+    ev_gc |> dplyr::filter(evid == 1) |> dplyr::select(id, time, amt, treatment),
+    amt ~ time | treatment + id
+  ),
+  intervals = data.frame(start = c(0, 504, 1008, 1512), end = c(504, 1008, 1512, 2016), auclast = TRUE)
+))
+auc_avg <- as.data.frame(nca_gc) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::group_by(treatment, id) |>
+  dplyr::summarise(AUC_FAVEZELIMAB = mean(PPORRES), .groups = "drop")
+
+mod_orr <- readModelDb("Gaurav_2026_favezelimab_orr")
+orr <- solve_typ(
+  rxode2::zeroRe(mod_orr, which = "sigma"),
+  auc_avg |> dplyr::mutate(time = 0, evid = 0L),
+  keep = "treatment"
+)
+
+orr_tab <- orr |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(
+    median_auc = median(AUC_FAVEZELIMAB),
+    predicted = mean(prob_orr),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(observed = c(3 / 40, 6 / 40))
+orr_tab |>
+  dplyr::rename(
+    "Arm" = treatment, "Median AUCavg (ng*h/mL)" = median_auc,
+    "Mean predicted ORR" = predicted, "Observed ORR (Table S6)" = observed
+  ) |>
+  knitr::kable(digits = 3, caption = "Simulated ORR by arm versus Table S6.")
+
+overall_pred <- mean(orr$prob_orr)
+round(overall_pred, 3)
+# Score-equation check of the digitised centring: the mean fitted probability
+# over the analysis set equals 9/80 = 0.1125. A centring of 0 instead would
+# give about 0.29 here; the window allows for the virtual cohort's AUCs.
+stopifnot(abs(overall_pred - 9 / 80) < 0.04)
+```
+
+The mean predicted ORR over both arms lands close to the observed 11.3%, which
+is what the digitised centring has to deliver. Per arm, the model spreads the
+two arms further apart than the raw 7.5% and 15.0%, because a single line
+through 80 patients with 9 responders is not constrained to hit each arm. The
+simulated median exposures (about 0.85e7 and 3.5e7 ng*h/mL) are also around
+10% above the boxplot medians of Figure 3 (about 0.8e7 and 3.1e7), since the
+virtual cohort uses the whole PK population's covariates rather than those of
+gastric cancer patients.
+
+```{r figure-3}
+curve <- data.frame(AUC_FAVEZELIMAB = seq(0.5e7, 7.1e7, length.out = 100), time = 0, evid = 0L)
+curve_sim <- solve_typ(rxode2::zeroRe(mod_orr, which = "sigma"), curve)
+ggplot(curve_sim, aes(AUC_FAVEZELIMAB, prob_orr)) +
+  geom_line(colour = "blue") +
+  geom_rug(data = orr, aes(x = AUC_FAVEZELIMAB, colour = treatment), inherit.aes = FALSE, sides = "b") +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    x = "Favezelimab average AUC (ng*h/mL)", y = "Probability of objective response",
+    colour = "Simulated arm",
+    caption = "Replicates the fitted line of Figure 3 of Gaurav 2026; rug: simulated gastric cohort."
+  )
+```
+
+# Assumptions and deviations
+
+* **ADA functional form.** Table 1 lists 'ADA Effect on CL' = 1.11 without its
+  equation, and the Table 1 footnote equation omits it. The maintainers
+  encode it as a multiplicative factor on linear CL (`CL * 1.11^ADA_POS`),
+  because the exponential reading would cut the steady-state AUC of
+  ADA-positive patients to about one third, against the 0.807 GMR in Figure 1
+  (see the ADA form check above). ADA status is time-varying; the source
+  carried the last observed status forward. It acts on linear CL only, not
+  on Vmax.
+* **Km unit.** The Methods give Km in ug/mL; Table 1 and the Results give
+  ug/L. ug/L (= ng/mL) is used: it is the only reading under which the
+  Michaelis-Menten arm produces the dose nonlinearity the paper reports and
+  the statement that 800 mg troughs are 'much higher than Km'.
+* **Albumin unit.** The Table 1 footnote and Table S2 label albumin 'g/dL',
+  but the values (median 40, range 21-70.6), the Results ('<= 37 g/L') and
+  Figure 1 are in g/L. The model takes `ALB` in g/L with reference 40 g/L.
+* **Sex reference category.** The Methods say the most frequent category is
+  the reference, which would be male, but the footnote equations apply the
+  sex coefficients to males and the typical male CL in the Results equals
+  0.0195 * exp(0.200). The equations are followed: female is the reference,
+  and the model applies `exp(e_male_cl * (1 - SEXF))`.
+* **Full covariate model.** All covariates are kept, including those whose
+  95% CI includes zero (age, hepatic impairment, ECOG and renal impairment on
+  Vc, albumin on Vc), because the source used a full-model approach that
+  retains every prespecified covariate in the final model. The footnote
+  equation shows only the effects whose CI excludes zero.
+* **Reference values.** Weight is normalised to 71 kg (footnote equation),
+  albumin to 40 g/L and age to 59 years (Table S2 medians), as the power
+  model in the footnote centres on the median.
+* **Residual error.** Monolix combined error; the paper does not say whether
+  it is Monolix's `combined1` (SD = a + b * f, the Monolix default) or
+  `combined2`. `combined1` is used.
+* **Infusion duration** is not reported; the simulations assume 30 minutes.
+  It does not affect AUC and has negligible effect on Cmax.
+* **ORR centring value** (`auc_favezelimab_ref` = 1.54e7 ng*h/mL) was
+  digitised by the maintainers from the fitted line of Figure 3 (about 470
+  pixel columns; interquartile range of the per-column solutions
+  1.525e7-1.555e7); no printed value exists. It is fixed in the model.
+* **Average AUC definition.** 'AUCavg considering individual-specific dosing
+  history' is taken as the mean AUC per 21-day interval over the treatment
+  period. Because favezelimab reaches steady state within one or two cycles
+  at these doses, the average is close to the steady-state dose / CL.
+* **Virtual cohorts** draw covariates independently from the Table S2
+  marginals; the source cohorts have correlated covariates (Tables S4-S5),
+  which is why the simulated subgroup GMRs differ from Figure 1 for sex and
+  race.
+* **Safety endpoints.** Grade >= 3 drug-related AEs and drug-related AEOSI
+  showed no significant exposure-response relationship, and the paper did no
+  further modelling; no parameters exist to package.
+* No erratum or correction notice was found on Europe PMC as of 2026-11-13.

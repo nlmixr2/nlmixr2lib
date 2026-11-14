@@ -8180,6 +8180,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Yang_2025_axatilimab_teae_grade3.R`, `Yang_2025_axatilimab_teae_dosemod.R`, `Yang_2025_axatilimab_aesi_grade3.R`, `Yang_2025_axatilimab_sae.R`, `Yang_2025_axatilimab_teae_drug_related.R`, `Yang_2025_axatilimab_amylase_lipase_increase.R`, `Yang_2025_axatilimab_cpk_increase.R`, `Yang_2025_axatilimab_liver_enzyme_increase.R`, `Yang_2025_axatilimab_periorbital_edema.R`, `Yang_2025_axatilimab_irr.R`.
 - **Notes:** The cycle is 4 weeks (28 days) for both Q2W and Q4W regimens, so the metric is comparable across regimens. Distinct from `AUC_AXATILIMAB_SD`.
 
+### AUC_FAVEZELIMAB (**canonical for favezelimab average serum AUC per 21-day dosing interval over the treatment period**)
+- **Description:** Per-subject average favezelimab serum area under the concentration-time curve per 21-day (Q3W) dosing interval, averaged over the individual's treatment period using the actual dosing history (AUCavg), supplied as a static exposure covariate to an exposure-response model with no PK layer. Compute it from `modellib('Gaurav_2026_favezelimab')` as the cumulative AUC over the treatment period divided by the number of 21-day intervals; at steady state it approaches dose / CL.
+- **Units:** `ng*h/mL`. Document per-model via `covariateData[[AUC_FAVEZELIMAB]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters linearly on the logit, centred on 1.54e7 ng*h/mL (digitised from Gaurav 2026 Figure 3). Calibration: about 0.6e7 to 7.1e7 ng*h/mL across the P001 gastric cancer cohort at 200 and 700 mg Q3W.
+- **Source aliases:**
+  - `AUCavg` / 'Centered Favezelimab Average AUC' -- Gaurav 2026 Methods and Table S7.
+- **Example models:** `Gaurav_2026_favezelimab_orr.R` (objective response rate, log-odds 4.36e-8 per ng*h/mL).
+- **Notes:** Member of the `AUC_<DRUG>` family. Distinct from a steady-state dosing-interval AUC: because the average runs over the individual's actual treatment history it includes the first, pre-accumulation cycles and any time-varying anti-drug-antibody effect on clearance.
+
 ### DOSE_NEMOLIZUMAB_MG (**canonical for per-arm or per-subject assigned nemolizumab dose**)
 - **Description:** Assigned nemolizumab (anti-interleukin-31 receptor A monoclonal antibody) dose in mg per subcutaneous administration; 0 when the arm/subject did not receive nemolizumab (placebo or a comparator arm).
 - **Units:** mg (per administration)
