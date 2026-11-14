@@ -2726,14 +2726,14 @@ checkModelConventions <- function(model, verbose = TRUE) {
 
 # Why a nested eta has no assertion, or NULL when its article has one and reads
 # in full.
-.nestingProblem <- function(eta, group, calls, unparseable) {
+.nestingProblem <- function(eta, group, calls, unreadable) {
   covered <- any(vapply(
     calls,
     function(cl) !is.null(cl$eta) && !is.null(cl$by) && identical(cl$by, group) && eta %in% cl$eta,
     logical(1L)
   ))
-  broken <- if (length(unparseable) > 0L) {
-    paste(sprintf("the chunk at line %d %s", unparseable, names(unparseable)), collapse = "; ")
+  broken <- if (length(unreadable) > 0L) {
+    paste(sprintf("the chunk at line %d %s", unreadable, names(unreadable)), collapse = "; ")
   }
   if (covered) {
     return(if (!is.null(broken)) paste0(broken, ", so the article cannot be read in full"))
@@ -2756,10 +2756,20 @@ checkModelConventions <- function(model, verbose = TRUE) {
   paste(c(missing, broken), collapse = "; ")
 }
 
+# An `info` issue for each below-subject eta of a model whose article the rule
+# could not read, so that the caller (buildModelDb() in particular, whose
+# workers cannot message the build session) can say that the rule did not run.
+.nestingNotChecked <- function(nested, reason) {
+  do.call(
+    rbind,
+    lapply(nested$eta, function(eta) .issue("nesting_assertion", "info", eta, paste("not checked:", reason)))
+  )
+}
+
 .checkNestingAssertion <- function(ui, model_name, packageDir = NULL) {
   issues <- .emptyIssues()
   nested <- .nestedEtaRows(ui)
-  if (nrow(nested) == 0L || is.null(packageDir)) {
+  if (nrow(nested) == 0L) {
     return(issues)
   }
   above <- .nestingAboveSubjectGroups
@@ -2767,16 +2777,18 @@ checkModelConventions <- function(model, verbose = TRUE) {
   if (nrow(nested) == 0L) {
     return(issues)
   }
+  if (is.null(packageDir)) {
+    return(.nestingNotChecked(
+      nested,
+      "the model is not in the inst/modeldb of a package source tree, so the article that asserts its draws cannot be found"
+    ))
+  }
   articleDir <- .nestingArticleDir(packageDir)
   if (is.null(articleDir)) {
-    message(
-      "nesting_assertion skipped for ",
-      model_name,
-      ": ",
-      file.path(packageDir, "vignettes", "articles"),
-      " does not exist, so the article that asserts its draws cannot be read"
-    )
-    return(issues)
+    return(.nestingNotChecked(
+      nested,
+      paste0(packageDir, " has no vignettes/articles, so the article that asserts the draws cannot be read")
+    ))
   }
   vignette <- ui$meta$vignette
   has_vignette <- is.character(vignette) && length(vignette) == 1L && !is.na(vignette) && nzchar(vignette)
@@ -2793,7 +2805,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
   )
   problem <- NULL
   calls <- list()
-  unparseable <- integer()
+  unreadable <- integer()
   if (is.na(article)) {
     problem <- if (!has_vignette) {
       "the model has no `vignette` field, so no article asserts the draws"
@@ -2809,14 +2821,14 @@ checkModelConventions <- function(model, verbose = TRUE) {
       problem <- sprintf("the article `%s` could not be read", basename(article))
     } else {
       calls <- .articleDrawCalls(parsed$chunks)
-      unparseable <- parsed$unparseable
+      unreadable <- parsed$unreadable
     }
   }
   for (i in seq_len(nrow(nested))) {
     why <- if (!is.null(problem)) {
       problem
     } else {
-      .nestingProblem(nested$eta[[i]], nested$group[[i]], calls, unparseable)
+      .nestingProblem(nested$eta[[i]], nested$group[[i]], calls, unreadable)
     }
     if (is.null(why)) {
       next
