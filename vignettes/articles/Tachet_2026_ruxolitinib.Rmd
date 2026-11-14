@@ -1,0 +1,441 @@
+---
+title: "Ruxolitinib (Tachet 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ruxolitinib (Tachet 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Tachet_2026_ruxolitinib"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Tachet_2026_ruxolitinib"))$description`
+* Article: [Clin Pharmacol Ther 2026;120:753-761](https://doi.org/10.1002/cpt.70367) (open access)
+
+Tachet et al. followed adults treated with the JAK1/JAK2 inhibitor ruxolitinib
+in routine Swiss practice and fitted a population PK model in Monolix to 221
+steady-state concentrations, most of them single random samples taken at
+outpatient visits. The final model is one-compartmental with first-order
+absorption (ka fixed at 3.24 1/h) and linear elimination, with between-subject
+variability on apparent clearance only. Body weight scales V/F linearly, and a
+strong CYP3A or dual CYP2C9/CYP3A inhibitor (posaconazole, fluconazole) lowers
+CL/F by 39%.
+
+The paper then predicted each patient's steady-state trough (Cmin), peak (Cmax)
+and daily AUC (AUC24) at every documented visit and related them to the
+occurrence of any adverse event with univariable logistic regressions on the
+log scale. Cmin and AUC24 were significant; Cmax was not (P = 0.25). The
+package therefore carries three models from this paper:
+
+| Model | What it is |
+|---|---|
+| `Tachet_2026_ruxolitinib` | Population PK model (Table 2) |
+| `Tachet_2026_ruxolitinib_ae_ctrough` | Probability of any adverse event vs. steady-state Cmin (OR 1.51 per doubling) |
+| `Tachet_2026_ruxolitinib_ae_auc24` | Probability of any adverse event vs. steady-state AUC24 (OR 1.88 per doubling) |
+
+# Population
+
+```{r population, echo = FALSE}
+pop <- rxode2::rxode(readModelDb("Tachet_2026_ruxolitinib"))$population
+tibble::tibble(
+  Field = c("Subjects", "Observations", "Age", "Body weight", "Height", "Female (%)",
+            "Disease", "Dosing", "Co-medication", "Region"),
+  Value = c(pop$n_subjects, pop$n_observations, pop$age_range, pop$weight_range,
+            pop$height_range, pop$sex_female_pct, pop$disease_state, pop$dose_range,
+            pop$co_medication, pop$regions)
+) |>
+  knitr::kable(caption = "Study population (Tachet 2026 Table 1 and Supplementary Table S2).")
+```
+
+The cohort was heterogeneous: graft-versus-host disease (43%) and
+myeloproliferative neoplasms (about half, mostly myelofibrosis and polycythaemia
+vera) dominate, with a few patients with VEXAS, APECED or haemophagocytic
+lymphohistiocytosis. Eleven patients contributed a rich profile (pre-dose plus
+seven samples over 8 h); the rest contributed one to eleven sparse samples.
+Ruxolitinib regimens ranged from 5 mg once daily to 25 mg twice daily, with
+some asymmetric and extended-interval schedules.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Structure: 1-compartment, first-order absorption, linear elimination | -- | Results, 'Structural, statistical, and covariate models' |
+| `lka` | log(3.24) 1/h, fixed | Table 2 'k a (h-1)' = 3.24 FIX |
+| `lvc` | log(69) L at 73 kg | Table 2 'V pop (L)' = 69 |
+| `lcl` | log(14) L/h | Table 2 'CLpop' = 14 (unit misprinted as L) |
+| `e_wt_vc` | 1, fixed | Table 2 'beta V,BW' = 1 FIX; footnote BWmedian = 73 kg |
+| `e_conmed_cyp3a4_inh_strong_cl` | -0.50 | Table 2 'beta CL,CYP3A/2C9 inhibitors'; Results: 39% reduction |
+| `etalcl` | 0.12825 = log(1 + 0.37^2) | Table 2 'omega CL (CV, %)' = 37 |
+| `propSd` | 0.42 | Table 2 'sigma prop (CV, %)' = 42 |
+| V/F equation | 69 * (WT/73)^1 | Table 2 footnote, 'Final model' |
+| CL/F equation | 14 * exp(-0.50 * INH + eta) | Table 2 footnote, 'Final model' |
+| `e_ctrough_logit` | log(1.51) per doubling of Cmin | Results, 'Exploratory PK/PD analysis' |
+| `e_auc_ruxolitinib_logit` | log(1.88) per doubling of AUC24 | Results, 'Exploratory PK/PD analysis' |
+| `logit_ref` (Cmin model) | -2.40 | Not printed; reconstructed from Figure 3 (below) |
+| `logit_ref` (AUC24 model) | -7.53 | Not printed; reconstructed from Figure 3 (below) |
+| Validation targets | Median Cmin, PI90, % above 21 ng/mL per regimen | Table 3; Figure 2; Results, 'Model-based simulations' |
+
+# Typical-value checks
+
+The paper reports that its model implies a Tmax of 0.92 h and a half-life of
+3.45 h. The steady-state trough of a one-compartment model with first-order
+absorption also has a closed form, which the ODE solution must reproduce to
+numerical precision.
+
+```{r typical}
+mod <- readModelDb("Tachet_2026_ruxolitinib")
+ka <- 3.24; cl <- 14; vc <- 69
+kel <- cl / vc
+tmax <- log(ka / kel) / (ka - kel)
+thalf <- log(2) / kel
+stopifnot(abs(tmax / 0.92 - 1) < 0.02, abs(thalf / 3.45 - 1) < 0.02)
+
+# Steady-state 10 mg twice daily, typical 73 kg patient without inhibitor
+tau <- 12; dose <- 10
+ev_typ <- rbind(
+  data.frame(id = 1, time = 0, evid = 1, amt = dose, ii = tau, ss = 1, cmt = "depot"),
+  data.frame(id = 1, time = seq(0, tau, by = 0.25), evid = 0, amt = 0, ii = 0, ss = 0, cmt = "central")
+)
+ev_typ$WT <- 73
+ev_typ$CONMED_CYP3A4_INH_STRONG <- 0
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ, returnType = "data.frame")
+closed <- function(t) {
+  1000 * dose * ka / (vc * (ka - kel)) *
+    (exp(-kel * t) / (1 - exp(-kel * tau)) - exp(-ka * t) / (1 - exp(-ka * tau)))
+}
+err <- max(abs(sim_typ$Cc - closed(sim_typ$time)) / closed(sim_typ$time))
+stopifnot(err < 1e-4)
+tibble::tibble(
+  Quantity = c("Tmax (h)", "Half-life (h)", "Cmin at 10 mg BID, typical patient (ng/mL)",
+               "Max relative error, ODE vs closed form"),
+  Model = c(format(round(tmax, 2)), format(round(thalf, 2)), format(round(closed(tau), 1)),
+            format(signif(err, 2))),
+  Paper = c("0.92", "3.45", "--", "--")
+) |>
+  knitr::kable(caption = "Typical-value quantities of the final model.")
+```
+
+# Virtual cohort and simulation (Table 3, Figure 2)
+
+The paper simulated steady state for 5-25 mg twice daily, with and without a
+strong CYP3A or dual CYP2C9/CYP3A inhibitor, drawing body weight from a uniform
+distribution over the study range (40.7-116 kg). The same design is used here
+with 200 virtual patients per arm.
+
+```{r simulate}
+arms <- tidyr::expand_grid(dose = c(5, 10, 15, 20, 25), inh = c(0, 1)) |>
+  dplyr::mutate(
+    arm = seq_len(dplyr::n()),
+    treatment = sprintf("%d mg BID %s", dose, ifelse(inh == 1, "+ inhibitor", "alone"))
+  )
+n_per_arm <- 200
+rxode2::rxSetSeed(20261114)
+set.seed(20261114)
+subj <- arms[rep(seq_len(nrow(arms)), each = n_per_arm), ] |>
+  dplyr::mutate(id = seq_len(dplyr::n()), WT = runif(dplyr::n(), 40.7, 116))
+obs_times <- seq(0, tau, by = 0.25)
+events <- dplyr::bind_rows(
+  subj |> dplyr::mutate(time = 0, evid = 1L, amt = dose, ii = tau, ss = 1L, cmt = "depot"),
+  subj[rep(seq_len(nrow(subj)), each = length(obs_times)), ] |>
+    dplyr::mutate(time = rep(obs_times, nrow(subj)), evid = 0L, amt = 0, ii = 0, ss = 0L, cmt = "central")
+) |>
+  dplyr::mutate(CONMED_CYP3A4_INH_STRONG = inh) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  dplyr::select(id, time, evid, amt, ii, ss, cmt, WT, CONMED_CYP3A4_INH_STRONG, treatment, dose, inh)
+
+sim <- rxode2::rxSolve(mod, events, keep = c("treatment", "dose", "inh"), returnType = "data.frame")
+stopifnot(!anyNA(sim$Cc), length(unique(sim$id)) == nrow(subj))
+```
+
+## Table 3: trough concentrations
+
+```{r table-3}
+published_t3 <- tibble::tribble(
+  ~dose, ~inh, ~med, ~lo, ~hi, ~pct21,
+  5,  0, 7.5, 0.8, 28.0, 11,
+  5,  1, 23,  6,   61,   55,
+  10, 0, 16,  2,   55,   39,
+  10, 1, 48,  11,  119,  85,
+  15, 0, 25,  2,   87,   56,
+  15, 1, 69,  18,  174,  94,
+  20, 0, 32,  3,   118,  65,
+  20, 1, 94,  22,  235,  95,
+  25, 0, 39,  4,   130,  74,
+  25, 1, 115, 24,  298,  96
+)
+cmin_sim <- sim |>
+  dplyr::filter(time == tau) |>
+  dplyr::group_by(dose, inh) |>
+  dplyr::summarise(
+    sim_med = median(Cc), sim_lo = quantile(Cc, 0.05), sim_hi = quantile(Cc, 0.95),
+    sim_pct21 = 100 * mean(Cc > 21), .groups = "drop"
+  )
+t3 <- dplyr::left_join(published_t3, cmin_sim, by = c("dose", "inh")) |>
+  dplyr::mutate(pct_diff = 100 * (sim_med / med - 1))
+t3 |>
+  dplyr::transmute(
+    Regimen = paste(dose, "mg BID"), Inhibitor = ifelse(inh == 1, "+", "-"),
+    `Median Cmin, paper` = med, `Median Cmin, model` = round(sim_med, 1),
+    `PI90, paper` = sprintf("%g-%g", lo, hi),
+    `PI90, model` = sprintf("%.1f-%.0f", sim_lo, sim_hi),
+    `% > 21 ng/mL, paper` = pct21, `% > 21 ng/mL, model` = round(sim_pct21)
+  ) |>
+  knitr::kable(caption = "Replicates Table 3 of Tachet 2026 (model: 200 virtual patients per arm).")
+
+stopifnot(
+  # A mis-transcribed CL, V or inhibitor effect moves every arm by tens of percent.
+  abs(median(t3$pct_diff)) < 10,
+  quantile(abs(t3$pct_diff), 0.9) < 25,
+  median(abs(t3$sim_pct21 - t3$pct21)) < 8
+)
+```
+
+## Figure 2: 10 mg twice daily with and without inhibitor
+
+```{r figure-2}
+nca_in <- sim |>
+  dplyr::filter(dose == 10, !is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+ggplot(nca_in |> dplyr::filter(time == tau), aes(treatment, Cc)) +
+  geom_boxplot(outlier.shape = NA, fill = "grey85") +
+  geom_hline(yintercept = 21, linetype = "dashed", colour = "grey50") +
+  coord_cartesian(ylim = c(0, 140)) +
+  labs(x = NULL, y = "Simulated Cmin (ng/mL)",
+       caption = "Replicates Figure 2 (left) of Tachet 2026; dashed line: 21 ng/mL threshold.")
+```
+
+# PKNCA validation
+
+Steady-state NCA over one 12 h interval at 10 mg twice daily. Figure 2 of the
+paper labels its AUC panel 'AUC24', but its medians (about 715 and 1180
+ng*h/mL, read from the figure) equal one 10 mg dose divided by CL/F (714 and
+1177 ng*h/mL), i.e. the AUC over a 12 h dosing interval, so the interval AUC is
+compared with them here.
+
+```{r pknca}
+conc_obj <- PKNCA::PKNCAconc(nca_in, Cc ~ time | treatment + id, concu = "ng/mL", timeu = "h")
+dose_df <- events |>
+  dplyr::filter(evid == 1, dose == 10) |>
+  dplyr::select(id, time, amt, treatment)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, doseu = "mg")
+intervals <- data.frame(start = 0, end = tau, cmax = TRUE, cmin = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+published <- tibble::tribble(
+  ~treatment,                ~cmin, ~auclast,
+  "10 mg BID alone",         16,    715,
+  "10 mg BID + inhibitor",   48,    1180
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(cmin = "ng/mL", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated medians vs. Table 3 (Cmin) and Figure 2 (interval AUC). * differs from reference by >20%.")
+```
+
+```{r pknca-ratios}
+nca_med <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "cmin", "auclast")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(med = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = treatment, values_from = med) |>
+  dplyr::mutate(ratio = `10 mg BID + inhibitor` / `10 mg BID alone`)
+ratio_tab <- dplyr::left_join(
+  nca_med,
+  tibble::tibble(PPTESTCD = c("cmin", "auclast", "cmax"), paper = c(2.9, 1.7, 1.3)),
+  by = "PPTESTCD"
+)
+ratio_tab |>
+  dplyr::transmute(
+    `NCA parameter` = c(auclast = "AUC0-12", cmax = "Cmax", cmin = "Cmin")[PPTESTCD],
+    `Median ratio, model` = round(ratio, 2), `Median ratio, paper` = paper
+  ) |>
+  knitr::kable(caption = "Fold-increase of median exposure with a strong or dual inhibitor at 10 mg BID (Results, 'Model-based simulations').")
+# AUC and Cmax ratios are close to deterministic (AUC: exactly exp(0.50) = 1.65
+# for every subject); the Cmin ratio is a ratio of two cohort medians of a
+# highly variable trough and carries about 10% Monte Carlo noise at 200 per arm.
+tol <- c(auclast = 0.10, cmax = 0.10, cmin = 0.25)[ratio_tab$PPTESTCD]
+stopifnot(all(abs(ratio_tab$ratio / ratio_tab$paper - 1) < tol))
+```
+
+# Exposure-toxicity models
+
+## Reconstructing the unprinted intercepts
+
+The paper prints each odds ratio (per two-fold increase in exposure) but not
+the regression intercept. For a logistic regression fitted by maximum
+likelihood, the fitted probabilities sum to the number of events. The
+maintainers therefore reconstructed the visit-level exposure distribution from
+Figure 3 and solved that score equation for the intercept, holding the slope at
+its printed value:
+
+* Box quartiles were read from the pixel rows of the box lines in Figure 3
+  (axis calibrated from the tick marks).
+* Within each group, log-exposure was represented by a split normal distribution
+  that honours the first quartile, median and third quartile exactly.
+* About 66 non-toxic and 31 toxic visits are plotted in Figure 3 (maintainers'
+  count of the jittered points; overlapping points make the count uncertain by a
+  few in each group).
+
+```{r intercept}
+fig3 <- list(
+  ctrough = list(nt = c(4.79, 12.71, 25.21), t = c(9.38, 25.21, 48.54), or2 = 1.51),
+  auc24   = list(nt = c(890.9, 1464.1, 2355.0), t = c(1180.9, 2313.5, 3031.8), or2 = 1.88)
+)
+u <- stats::ppoints(4000) # quadrature grid on (0, 1), not a cohort
+split_normal_log <- function(q) {
+  l <- log(q)
+  ifelse(u < 0.5,
+         l[2] + qnorm(u) * (l[2] - l[1]) / qnorm(0.75),
+         l[2] + qnorm(u) * (l[3] - l[2]) / qnorm(0.75))
+}
+solve_intercept <- function(g, n0, n1) {
+  b <- log(g$or2) / log(2)
+  x0 <- split_normal_log(g$nt); x1 <- split_normal_log(g$t)
+  uniroot(function(a) n0 * mean(plogis(a + b * x0)) + n1 * mean(plogis(a + b * x1)) - n1,
+          c(-30, 30), tol = 1e-8)$root
+}
+counts <- list(c(66, 31), c(72, 29), c(60, 33))
+recon <- do.call(rbind, lapply(counts, function(n) {
+  data.frame(
+    `Non-toxic n` = n[1], `Toxic n` = n[2],
+    `Cmin model intercept` = round(solve_intercept(fig3$ctrough, n[1], n[2]), 3),
+    `AUC24 model intercept` = round(solve_intercept(fig3$auc24, n[1], n[2]), 3),
+    check.names = FALSE
+  )
+}))
+knitr::kable(recon, caption = "Score-equation intercepts; first row is the central count, the others bracket it.")
+
+ini_ref <- function(name) {
+  ui <- rxode2::rxode(readModelDb(name))
+  ui$iniDf$est[ui$iniDf$name == "logit_ref"]
+}
+stopifnot(
+  abs(ini_ref("Tachet_2026_ruxolitinib_ae_ctrough") - recon[1, 3]) < 0.01,
+  abs(ini_ref("Tachet_2026_ruxolitinib_ae_auc24") - recon[1, 4]) < 0.01
+)
+```
+
+The count uncertainty moves each intercept by about 0.16 on the logit scale.
+Using the auto-detected Figure 3 points directly instead of the split-normal
+reconstruction gave -2.41 and -7.35, so the shipped values (-2.40 and -7.53)
+are stable to the choice of reconstruction within about 0.2 logit.
+
+## The packaged models reproduce the printed odds ratios
+
+```{r er-check}
+er_at <- function(model, covariate, value) {
+  ev <- data.frame(id = seq_along(value), time = 0)
+  ev[[covariate]] <- value
+  # The logistic models carry no random effect, so rxode2 notes that a
+  # multi-subject solve has no omega; that is expected here.
+  out <- withCallingHandlers(
+    rxode2::rxSolve(readModelDb(model), events = ev, returnType = "data.frame"),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w))) invokeRestart("muffleWarning")
+    }
+  )
+  if (!is.null(out$id)) out <- out[order(out$id), , drop = FALSE]
+  stopifnot(nrow(out) == length(value))
+  out$prob_ae
+}
+odds <- function(p) p / (1 - p)
+p_c <- er_at("Tachet_2026_ruxolitinib_ae_ctrough", "CTROUGH", c(10, 20))
+p_a <- er_at("Tachet_2026_ruxolitinib_ae_auc24", "AUC_RUXOLITINIB", c(1500, 3000))
+or_c <- odds(p_c[2]) / odds(p_c[1])
+or_a <- odds(p_a[2]) / odds(p_a[1])
+stopifnot(abs(or_c - 1.51) < 1e-8, abs(or_a - 1.88) < 1e-8)
+tibble::tibble(
+  Model = c("Cmin", "AUC24"),
+  `OR per doubling, model` = round(c(or_c, or_a), 4),
+  `OR per doubling, paper` = c(1.51, 1.88)
+) |>
+  knitr::kable(caption = "Odds ratio per two-fold exposure increase (Results, 'Exploratory PK/PD analysis').")
+```
+
+## Probability of an adverse event across the simulated 10 mg BID cohort
+
+```{r er-cohort}
+ex <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("cmin", "auclast")) |>
+  dplyr::select(id, treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::mutate(auc24 = 2 * auclast) |>
+  dplyr::arrange(id)
+ex$p_cmin <- er_at("Tachet_2026_ruxolitinib_ae_ctrough", "CTROUGH", ex$cmin)
+ex$p_auc <- er_at("Tachet_2026_ruxolitinib_ae_auc24", "AUC_RUXOLITINIB", ex$auc24)
+ex |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(
+    `Median Cmin (ng/mL)` = round(median(cmin), 1),
+    `Median AUC24 (ng*h/mL)` = round(median(auc24)),
+    `Mean P(AE), Cmin model` = round(mean(p_cmin), 2),
+    `Mean P(AE), AUC24 model` = round(mean(p_auc), 2)
+  ) |>
+  dplyr::rename(Arm = treatment) |>
+  knitr::kable(caption = "Model-predicted probability of any adverse event at a visit.")
+
+curve <- dplyr::bind_rows(
+  tibble::tibble(metric = "Cmin (ng/mL)", x = exp(seq(log(1), log(150), length.out = 100))) |>
+    dplyr::mutate(p = er_at("Tachet_2026_ruxolitinib_ae_ctrough", "CTROUGH", x)),
+  tibble::tibble(metric = "AUC24 (ng*h/mL)", x = exp(seq(log(200), log(5000), length.out = 100))) |>
+    dplyr::mutate(p = er_at("Tachet_2026_ruxolitinib_ae_auc24", "AUC_RUXOLITINIB", x))
+)
+ggplot(curve, aes(x, p)) +
+  geom_line() +
+  scale_x_log10() +
+  facet_wrap(~metric, scales = "free_x") +
+  labs(x = "Steady-state exposure (log scale)", y = "P(any adverse event)",
+       caption = "Exposure-toxicity relationships behind Figure 3 of Tachet 2026.")
+```
+
+# Assumptions and deviations
+
+* **Intercepts of the exposure-toxicity models are reconstructed, not
+  published.** The paper prints only the odds ratios. The intercepts come from
+  the score equation over the Figure 3 exposure distributions with the printed
+  slopes held fixed (see above). A free two-parameter fit to the reconstructed
+  data gives shallower slopes (odds ratios about 1.3-1.4 for Cmin and 1.4-1.5
+  for AUC24) than printed, still inside the published 95% confidence intervals;
+  the printed slopes were kept. Treat absolute probabilities from these two
+  models as approximate (about 0.2 logit).
+* **Figure 2 'AUC24'** is the AUC over a 12 h dosing interval (its medians equal
+  10 mg / CL/F), whereas the exposure-toxicity analysis and Figure 3 use a true
+  24 h AUC (Figure 3 values reach 5000 ng*h/mL). The interval AUC is compared
+  with Figure 2 here, and twice the interval AUC feeds the AUC24 model.
+* **Reference body weight 73 kg** follows the Table 2 footnote and its model
+  equation; Table 1 prints the patient-level median as 72.0 kg.
+* **Between-subject variability on CL/F** is reported as a CV of 37% and
+  converted to a log-normal variance, log(1 + 0.37^2) = 0.128. If the 37% were
+  instead the Monolix omega (the standard deviation of eta), the variance would
+  be 0.137; the difference is small.
+* **Clearance unit**: Table 2 prints 'CLpop (L)'; the parameter is a clearance
+  in L/h, consistent with the reported half-life.
+* **Inhibitor category**: the indicator pools strong CYP3A inhibitors
+  (posaconazole) and dual CYP2C9/CYP3A inhibitors (fluconazole), and leaves
+  moderate CYP3A inhibitors and samples with missing status in the reference
+  group, as the paper did.
+* **Below-LLOQ data** (12 samples) were handled as censored in the source fit;
+  this does not affect simulation.
+* **Table 3 targets** come from 1,000 simulations in the paper; this vignette
+  uses 200 virtual patients per arm, so its prediction-interval bounds carry
+  more Monte Carlo noise than the medians.
+* **Cmax** was tested in the exposure-toxicity analysis but not significant and
+  no odds ratio is printed, so no Cmax model is packaged. The exposure-efficacy
+  analysis (physician global assessment) found no significant relationship and
+  printed no coefficients.
+* No erratum was found for this article (checked 2026-11-14).
