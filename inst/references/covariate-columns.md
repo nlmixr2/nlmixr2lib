@@ -1775,6 +1775,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Bi_2018_testosteroneCypionate.R` (g/dL calibration, reference 4.60 g/dL; power exponent -1.55 on the apparent central volume of a depot-testosterone popPK model, paired with the delta effect -0.27 dL/g on `(ALB - ALB_BASE)` centred at -0.2 g/dL. The centring constants appear only in the Supplementary S6 control stream, not in the main article), `Jiang_2021_ivosidenib.R` (g/L, reference 37 g/L; power exponents 0.82 on CL/F and 0.73 on Vc/F, paired with the albumin ratio `ALB / ALB_BASE` (exponents 0.99 and 1.1) -- the ratio form of the same baseline-plus-within-subject decomposition, and a second paper using `ALB_BASE` with consistent semantics), `Nguyen_2022_cemiplimab.R` (g/L, reference 38.6 g/L; power exponent -0.217 on the central volume V1, alongside a separate time-varying `ALB` column carrying exponent -1.11 on CL; the paper keeps the baseline and time-varying albumin columns separate without a delta decomposition).
 - **Notes:** Specific scope because the BCOV/DCOV decomposition is a paper-defined modelling choice. Promote to `general` if a second paper ratifies the column with consistent semantics. Distinct from time-fixed adult-cohort `ALB` (where the per-subject albumin is constant merely by data design); use `ALB_BASE` only when the source paper deliberately separates the baseline snapshot from a time-varying albumin column. Also distinct from `ALB_LT35`, which is a dichotomised prognostic indicator rather than a methodologic baseline-snapshot column.
 
+### ALB_GLOB_RATIO (**canonical for serum albumin-to-globulin ratio**)
+- **Description:** Serum albumin-to-globulin ratio (A/G ratio): serum albumin divided by serum globulin, both in g/L, where globulin is total protein minus albumin. A low ratio reflects hypoalbuminaemia, hyperglobulinaemia or both, and is used as a composite marker of systemic inflammation, nutritional status and disease burden. The bare name is the current value; document baseline-vs-time-varying status per model via `covariateData[[ALB_GLOB_RATIO]]$notes`.
+- **Units:** (unitless ratio)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(ALB_GLOB_RATIO / ref)^exponent`. Reference value observed: 1.55 (Zhou 2026 modelling-cohort mean).
+- **Source aliases:**
+  - `A/G ratio` / `AGR` / `A/G` -- common clinical-chemistry report labels; Zhou 2026 uses `A/G ratio` and `AG` in Eq 5. Derive as `ALB / (TPRO - ALB)` when only albumin and total protein are available.
+- **Example models:** `Zhou_2026_rituximab.R` (reference 1.55; power exponent -1.49 on CL of intravenous rituximab in diffuse large B-cell lymphoma, so a lower ratio gives a higher clearance).
+- **Notes:** Distinct from `ALB` (albumin alone) and `TPRO` (albumin plus globulin); Zhou 2026 screened all three and retained only the ratio.
+
 ### TPRO (**canonical for total serum protein**)
 - **Description:** Total serum protein concentration (sum of albumin + globulins; baseline or time-varying).
 - **Units:** **g/L** (SI; canonical as of 2026-06-19). US-convention papers report in g/dL; convert via `TPRO_gL = TPRO_gdL * 10` on data ingestion. Models calibrated to g/dL must apply an inline conversion in `model` (e.g., `tpro_gdL <- TPRO * 0.1`). 1 g/dL = 10 g/L.

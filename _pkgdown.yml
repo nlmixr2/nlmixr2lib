@@ -7210,6 +7210,8 @@ navbar:
         href: articles/Lioger_2017_rituximab.html
       - text: "Rituximab (Rozman 2017)"
         href: articles/Rozman_2017_rituximab.html
+      - text: "Rituximab (Zhou 2026)"
+        href: articles/Zhou_2026_rituximab.html
       - text: "Rituximab acr (Williams 2016)"
         href: articles/Williams_2016_rituximab_biosimilar.html
       - text: "Rituximab das28cfb (Williams 2016)"
@@ -12479,6 +12481,7 @@ articles:
   - articles/Zhou_2025_fruquintinib_poppk
   - articles/Zhou_2025_tacrolimus
   - articles/Zhou_2025_teicoplanin
+  - articles/Zhou_2026_rituximab
   - articles/Zhou_2026_tacrolimus
   - articles/Zhu_2013_ganitumab
   - articles/Zhu_2014_tacrolimus
