@@ -412,6 +412,8 @@ Glucose follows Figure 6: the median peak height and time match, and the 240-min
 
 **The MTT model's insulin peak is about 1.7 times Figure 6's.** Hong 2013's printed Eq. 7 and Table II, which the model encodes, put the median insulin peak near 100 mU/L at about 70 min, while the Figure 6 VPC median peaks at about 59 mU/L at about 88 min. Glucose matches Figure 6. The equation and every Table II value were checked against the paper, and the arithmetic under Assumptions and deviations shows that the printed model cannot give Figure 6's insulin curve, so the inconsistency is in the paper. Where the paper's equations and tables disagree with its figures, this library encodes the equations and tables. The `mtt-vpc-check` chunk pins the gap: the median insulin peak must stay 1.4 to 2.2 times Figure 6's.
 
+**The variances follow Eq. 11.** Tables I and II report IIV and IOV as %CV, which Eq. 11 defines as sqrt(omega^2) x 100% (sqrt(phi^2) x 100% for IOV), the usual approximation for a log-normal random effect. Each variance in both model files is therefore the squared CV, for example 0.657^2 for the 65.7% IOV on CLG. nlmixr2lib versions before this correction converted with the exact log-normal relation, log(CV^2 + 1), which gave smaller variances, the more so the larger the CV: HGC Amplitude (197% CV) had variance 1.59 rather than 3.88. The MTT checks above moved by less than 2% with the correction.
+
 # Session info
 
 ```{r session-info, echo = FALSE}

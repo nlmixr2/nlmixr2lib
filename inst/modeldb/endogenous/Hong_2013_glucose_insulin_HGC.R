@@ -114,16 +114,18 @@ Hong_2013_glucose_insulin_HGC <- function() {
 
     # ---------------------------------------------------------------------
     # Inter-individual variability (Table I "Random effects model IIV"
-    # column). Reported as %CV; converted to log-scale variance with
-    # omega^2 = log(CV^2 + 1). Hong 2013 fixed IIV to zero on Tsec, Tdur,
-    # gamma, and CLGI_HGC.
+    # column). Reported as %CV.
+    # Hong 2013 Eq. 11 prints "%CV(IIV) = sqrt(omega^2) * 100%;
+    # %CV(IOV) = sqrt(phi^2) * 100%", so each variance is (CV / 100)^2,
+    # written below as the squared CV.
+    # Hong 2013 fixed IIV to zero on Tsec, Tdur, gamma, and CLGI_HGC.
     # ---------------------------------------------------------------------
-    etalclg       ~ log(0.0957^2 + 1)             # CLG IIV 9.57% CV  -> var = log(1.00916) = 0.00912
-    etalvg        ~ log(0.158^2  + 1)             # VG  IIV 15.8% CV  -> var = log(1.02496) = 0.0247
-    etalamplitude ~ log(1.97^2   + 1)             # Amplitude IIV 197% CV -> var = log(4.8809) = 1.586
-    etalcli       ~ log(0.857^2  + 1)             # CLI IIV 85.7% CV  -> var = log(1.7344)  = 0.551
-    etalvi        ~ log(0.776^2  + 1)             # VI  IIV 77.6% CV  -> var = log(1.6022)  = 0.471
-    etalkie       ~ log(0.902^2  + 1)             # kIE IIV 90.2% CV  -> var = log(1.8136)  = 0.595
+    etalclg       ~ 0.0957^2    # CLG IIV 9.57% CV  -> var = 0.00916
+    etalvg        ~ 0.158^2     # VG  IIV 15.8% CV  -> var = 0.0250
+    etalamplitude ~ 1.97^2      # Amplitude IIV 197% CV -> var = 3.88
+    etalcli       ~ 0.857^2     # CLI IIV 85.7% CV  -> var = 0.734
+    etalvi        ~ 0.776^2     # VI  IIV 77.6% CV  -> var = 0.602
+    etalkie       ~ 0.902^2     # kIE IIV 90.2% CV  -> var = 0.814
 
     # ---------------------------------------------------------------------
     # Inter-occasion variability (Table I "IOV" column). Hong 2013 reports
@@ -134,13 +136,13 @@ Hong_2013_glucose_insulin_HGC <- function() {
     # throughout this library and registered in
     # inst/references/parameter-names.md as `etaiov_<param>_<occ>`; the
     # second occasion's variance is fixed() to the first, which is what
-    # NONMEM writes as $OMEGA BLOCK(1) SAME. Same %CV -> log-scale variance
-    # conversion as the IIV block above.
+    # NONMEM writes as $OMEGA BLOCK(1) SAME. Eq. 11 gives the variance as
+    # (CV / 100)^2, as for the IIV block above.
     # ---------------------------------------------------------------------
-    etaiov_clg_1 ~ log(0.318^2 + 1)           # CLG IOV 31.8% CV -> var = log(1.101124) = 0.09633
-    etaiov_clg_2 ~ fixed(log(0.318^2 + 1))    # SAME-equivalent: equal to the occasion-1 variance
-    etaiov_vg_1  ~ log(0.0922^2 + 1)          # VG  IOV 9.22% CV -> var = log(1.008501) = 0.008465
-    etaiov_vg_2  ~ fixed(log(0.0922^2 + 1))   # SAME-equivalent: equal to the occasion-1 variance
+    etaiov_clg_1 ~ 0.318^2           # CLG IOV 31.8% CV -> var = 0.101
+    etaiov_clg_2 ~ fixed(0.318^2)    # SAME-equivalent: equal to the occasion-1 variance
+    etaiov_vg_1  ~ 0.0922^2          # VG  IOV 9.22% CV -> var = 0.00850
+    etaiov_vg_2  ~ fixed(0.0922^2)   # SAME-equivalent: equal to the occasion-1 variance
 
     # ---------------------------------------------------------------------
     # Residual error (Table I "Residual proportional error" column).

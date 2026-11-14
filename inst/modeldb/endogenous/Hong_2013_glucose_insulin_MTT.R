@@ -126,12 +126,15 @@ Hong_2013_glucose_insulin_MTT <- function() {
     # ---------------------------------------------------------------------
     # Inter-individual variability (Table II "Random effects model IIV"
     # column). IIV fixed to zero on n and ABSG50 per the paper.
+    # Hong 2013 Eq. 11 prints "%CV(IIV) = sqrt(omega^2) * 100%;
+    # %CV(IOV) = sqrt(phi^2) * 100%", so each variance is (CV / 100)^2,
+    # written below as the squared CV.
     # ---------------------------------------------------------------------
-    etalmtt      ~ log(0.306^2 + 1)             # MTT     IIV 30.6% CV -> var = log(1.09364) = 0.0895
-    etalbio      ~ log(0.415^2 + 1)             # BIO     IIV 41.5% CV -> var = log(1.17223) = 0.159
-    etalclgi_mtt ~ log(0.476^2 + 1)             # CLGI_MTT IIV 47.6% CV -> var = log(1.22658) = 0.204
-    etalemax     ~ log(0.568^2 + 1)             # Emax    IIV 56.8% CV -> var = log(1.32262) = 0.280
-    etaliprg     ~ log(0.389^2 + 1)             # IPRG    IIV 38.9% CV -> var = log(1.15132) = 0.141
+    etalmtt      ~ 0.306^2    # MTT     IIV 30.6% CV -> var = 0.0936
+    etalbio      ~ 0.415^2    # BIO     IIV 41.5% CV -> var = 0.172
+    etalclgi_mtt ~ 0.476^2    # CLGI_MTT IIV 47.6% CV -> var = 0.227
+    etalemax     ~ 0.568^2    # Emax    IIV 56.8% CV -> var = 0.323
+    etaliprg     ~ 0.389^2    # IPRG    IIV 38.9% CV -> var = 0.151
 
     # ---------------------------------------------------------------------
     # Inter-occasion variability (Table II "IOV" column). Hong 2013 reports
@@ -144,15 +147,16 @@ Hong_2013_glucose_insulin_MTT <- function() {
     # NONMEM writes as $OMEGA BLOCK(1) SAME. The MTT IOV magnitudes exceed
     # the HGC ones because they span four occasions and absorb
     # intra-individual variability across the placebo / palosuran arms.
+    # Eq. 11 gives the variance as (CV / 100)^2, as for the IIV block above.
     # ---------------------------------------------------------------------
-    etaiov_clg_1 ~ log(0.657^2 + 1)           # CLG IOV 65.7% CV -> var = log(1.431649) = 0.35883
-    etaiov_clg_2 ~ fixed(log(0.657^2 + 1))    # SAME-equivalent: equal to the occasion-1 variance
-    etaiov_clg_3 ~ fixed(log(0.657^2 + 1))    # SAME-equivalent: equal to the occasion-1 variance
-    etaiov_clg_4 ~ fixed(log(0.657^2 + 1))    # SAME-equivalent: equal to the occasion-1 variance
-    etaiov_vg_1  ~ log(0.195^2 + 1)           # VG  IOV 19.5% CV -> var = log(1.038025) = 0.037320
-    etaiov_vg_2  ~ fixed(log(0.195^2 + 1))    # SAME-equivalent: equal to the occasion-1 variance
-    etaiov_vg_3  ~ fixed(log(0.195^2 + 1))    # SAME-equivalent: equal to the occasion-1 variance
-    etaiov_vg_4  ~ fixed(log(0.195^2 + 1))    # SAME-equivalent: equal to the occasion-1 variance
+    etaiov_clg_1 ~ 0.657^2           # CLG IOV 65.7% CV -> var = 0.432
+    etaiov_clg_2 ~ fixed(0.657^2)    # SAME-equivalent: equal to the occasion-1 variance
+    etaiov_clg_3 ~ fixed(0.657^2)    # SAME-equivalent: equal to the occasion-1 variance
+    etaiov_clg_4 ~ fixed(0.657^2)    # SAME-equivalent: equal to the occasion-1 variance
+    etaiov_vg_1  ~ 0.195^2           # VG  IOV 19.5% CV -> var = 0.0380
+    etaiov_vg_2  ~ fixed(0.195^2)    # SAME-equivalent: equal to the occasion-1 variance
+    etaiov_vg_3  ~ fixed(0.195^2)    # SAME-equivalent: equal to the occasion-1 variance
+    etaiov_vg_4  ~ fixed(0.195^2)    # SAME-equivalent: equal to the occasion-1 variance
 
     # ---------------------------------------------------------------------
     # Residual error (Table II "Residual proportional error" column).
