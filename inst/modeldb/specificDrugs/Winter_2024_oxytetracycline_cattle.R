@@ -73,7 +73,7 @@ Winter_2024_oxytetracycline_cattle <- function() {
     disease_state = "55 healthy animals; 14 infected (8 calves in a severe experimental pneumonia model, euthanised after 48 h; 6 cows with Trueperella pyogenes metritis)",
     dose_range = "20 mg/kg intramuscularly (long-acting formulations, eight products) and 20 or 40 mg/kg intravenously",
     regions = "Three published studies (Bulgaria, United Kingdom, Ireland/United States), two unpublished academic data sets and three unpublished pharmaceutical-company data sets",
-    notes = "Meta-analysis of eight data sets pooled by the authors. Sampling was rich (11-27 samples per animal per administration, at least 2 within the first hour and 7 within 24 h); sampling windows ran 0-48 h to 0-288 h. Twelve of 1,730 samples (0.7%) were below the limit of quantification and were discarded (Beal M1). Breed was 24 dairy / 45 beef (Friesian Holstein, Jersey, Aberdeen Angus cross, Polled Hereford and unspecified); breed, sex and health status were screened and rejected as covariates. A 'source' covariate (formulation plus analytical method, seven levels) was explored on Ka2 only, as a formulation-comparison exercise reported in Supplementary Table S4; it is NOT part of the final model and was deliberately excluded from the authors' Monte Carlo simulations so that the simulated variability reflects the diversity of EU formulations. Routes are carried in the rxode2 cmt column: 'central' for an intravenous dose; a simultaneous pair of dose records to 'depot1' and 'depot2', each carrying the full nominal dose, for an intramuscular dose (bioavailability is applied per depot by f(), exactly as the two Phoenix dosepoint() statements do). All parameters are body-weight-normalised, so amt is a per-kilogram amount in microg/kg (20 mg/kg = 20000)."
+    notes = "Meta-analysis of eight data sets pooled by the authors. Sampling was rich (11-27 samples per animal per administration, at least 2 within the first hour and 7 within 24 h); sampling windows ran 0-48 h to 0-288 h. Twelve of 1,730 samples (0.7%) were below the limit of quantification and were discarded (Beal M1). Breed was 24 dairy / 45 beef (Friesian Holstein, Jersey, Aberdeen Angus cross, Polled Hereford and unspecified); breed, sex and health status were screened and rejected as covariates. A 'source' covariate (formulation plus analytical method, seven levels) was explored on Ka2 only, as a formulation-comparison exercise reported in Supplementary Table S4; it is NOT part of the final model and was deliberately excluded from the authors' Monte Carlo simulations so that the simulated variability reflects the diversity of EU formulations. Routes are carried in the rxode2 cmt column: 'central' for an intravenous dose; a simultaneous pair of dose records to 'depot1' and 'depot2', each carrying the full nominal dose, for an intramuscular dose (bioavailability is applied per depot by f(), exactly as the two Phoenix dosepoint() statements do). All parameters are body-weight-normalised, so amt is a per-kilogram amount in microg/kg (20 mg/kg = 20000). The rapid-site fraction Frapid carries the paper's exponential IIV, which has no upper bound, so the simulated fraction is capped at 1: 1.4% of animals sit at the cap and the SD of Frapid is 1.9% below that of the fitted lognormal."
   )
 
   ini({
@@ -116,7 +116,15 @@ Winter_2024_oxytetracycline_cattle <- function() {
     # "to prevent the bioavailability being estimated greater than 100%".
     # See the vignette Errata for the Table 1 "Units = ilogit" annotation on
     # the tvFrapid row, which the control stream contradicts.
-    lffo        <- log(0.757) ; label("Fraction of the bioavailable dose entering the rapid (Ka1) absorption site (fraction)")   # Winter 2024 Table 1 tvFrapid = 0.757
+    #
+    # Bound on Frapid (etalffo): the exponential IIV has no upper bound and
+    # the paper gives Frapid no other bound (only the total F1 is ilogit
+    # transformed). The model body applies min(Frapid, 1) to the depot split.
+    # With a typical value of 0.757 and omega 0.1263, P(Frapid > 1) = 1.37%,
+    # so 1.4% of animals sit at the cap (Frapid = 1, slow depot empty), and the
+    # SD of Frapid falls from 0.0967 (lognormal) to 0.0949 (capped), 1.9%
+    # lower; the mean falls 0.08%. The eta stays in its published full block.
+    lffo       <- log(0.757) ; label("Fraction of the bioavailable dose entering the rapid (Ka1) absorption site (fraction)")   # Winter 2024 Table 1 tvFrapid = 0.757
     logitfdepot <- 1.281      ; label("Total intramuscular bioavailability on the ilogit scale (F1; expit(1.281) = 0.783)")              # Winter 2024 Table 1 tvF1 = 1.281 (ilogit scale; the table annotates the back-transform as a total F of 78.6%)
 
     # ------------------------------------------------------------------
@@ -192,10 +200,12 @@ Winter_2024_oxytetracycline_cattle <- function() {
     ka2  <- exp(lka2  + etalka2)
     tlag <- exp(ltlag + etaltlag)
 
-    # Frapid is a plain fraction with exponential IIV; F1 is on the ilogit
+    # Frapid is a plain fraction with exponential IIV, capped at 1 where it
+    # splits the dose (see the bound note in ini()); F1 is on the ilogit
     # scale (see the ini() note and the vignette Errata).
-    ffo    <- exp(lffo + etalffo)
-    fdepot <- expit(logitfdepot + etalogitfdepot)
+    ffo        <- exp(lffo + etalffo)
+    ffo_capped <- min(ffo, 1)
+    fdepot     <- expit(logitfdepot + etalogitfdepot)
 
     # Three-compartment disposition with two parallel absorption depots.
     # Supplementary Data S1:
@@ -216,8 +226,8 @@ Winter_2024_oxytetracycline_cattle <- function() {
     #   dosepoint(Abs1,             bioavail = (Frapid * F1), ...)
     #   dosepoint(Abs2, tlag = Tlag, bioavail = ((1 - Frapid) * F1), ...)
     # An intravenous dose goes to central, which carries no f().
-    f(depot1)    <- ffo * fdepot
-    f(depot2)    <- (1 - ffo) * fdepot
+    f(depot1)    <- ffo_capped * fdepot
+    f(depot2)    <- (1 - ffo_capped) * fdepot
     alag(depot2) <- tlag
 
     # Amounts are in ug/kg and vc is in mL/kg, so Cc is in ug/mL (= mg/L)

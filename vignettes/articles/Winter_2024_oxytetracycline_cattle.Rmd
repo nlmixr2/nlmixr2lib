@@ -77,9 +77,10 @@ Supplementary Data S1 describe a three-compartment disposition model fed by two
 **parallel** first-order absorption depots:
 
 * `depot1` releases with rate constant `ka1` (rapid) starting at the time of
-  administration, and receives the fraction `ffo * fdepot` of the nominal dose.
+  administration, and receives the fraction `ffo_capped * fdepot` of the
+  nominal dose, where `ffo_capped = min(ffo, 1)`.
 * `depot2` releases with rate constant `ka2` (slow), begins only after a lag
-  `tlag`, and receives `(1 - ffo) * fdepot`.
+  `tlag`, and receives `(1 - ffo_capped) * fdepot`.
 * `central`, `peripheral1` and `peripheral2` form the standard three-compartment
   system with clearance `cl` and inter-compartmental clearances `q` and `q2`.
 
@@ -283,6 +284,35 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid", "cmt")])))
 sim <- rxode2::rxSolve(mod, events = events, keep = "cohort", addDosing = FALSE) |>
   as.data.frame()
 stopifnot(!anyNA(sim$Cc))
+```
+
+The exponential IIV on the rapid-site fraction `Frapid` (`ffo`) has no upper
+bound, so the model splits the dose with `ffo_capped = min(ffo, 1)`. The share of
+animals at the cap is compared with the exact lognormal tail probability
+`P(Frapid > 1)`, and every animal's two depot fractions are required to lie in
+[0, 1]:
+
+```{r frapid-bound}
+frapid <- sim |>
+  dplyr::distinct(id, ffo, ffo_capped)
+share_at_cap <- mean(frapid$ffo_capped == 1)
+expected_at_cap <- pnorm(th[["lffo"]] / sqrt(mod$omega["etalffo", "etalffo"]))
+data.frame(
+  n = nrow(frapid),
+  n_at_cap = sum(frapid$ffo_capped == 1),
+  pct_at_cap = 100 * share_at_cap,
+  pct_expected = 100 * expected_at_cap
+)
+stopifnot(
+  !anyNA(frapid$ffo_capped),
+  all(frapid$ffo_capped >= 0), all(frapid$ffo_capped <= 1),
+  all(1 - frapid$ffo_capped >= 0),
+  # The cap binds exactly where the lognormal draw reaches 1.
+  identical(frapid$ffo_capped == 1, frapid$ffo >= 1),
+  # Binomial tolerance on the share at the cap, not an extreme of the cohort.
+  abs(share_at_cap - expected_at_cap) <
+    4 * sqrt(expected_at_cap * (1 - expected_at_cap) / nrow(frapid))
+)
 ```
 
 A deterministic run is used for the typical-value figure. Rather than
@@ -612,14 +642,17 @@ finding.
   against the typical-value prediction 0.24 for the control-stream reading and
   0.21 for the "ilogit" reading - so the observed data do not discriminate them
   and the control stream is decisive.
-* **`Frapid` can exceed 1 in the tails.** Because `Frapid` carries exponential
-  IIV (BSV 12.7%) without a bound, about 1.4% of simulated animals draw
-  `ffo > 1`, which makes `f(depot2)` slightly negative. This is a property of
-  the published parameterisation, not of the translation, and it is left in
-  place. It does not produce negative concentrations at the cohort sizes used
-  here (`stopifnot(!anyNA(sim$Cc))` above passes and no simulated `Cc` is
-  negative), and it leaves total exposure exactly correct because the two
-  depots still sum to `F1 * Dose`.
+* **`Frapid` is capped at 1.** `Frapid = 0.757 * exp(nFrapid)` carries the
+  paper's exponential IIV (BSV 12.7%), which has no upper bound, and the paper
+  gives `Frapid` no other bound (only the total `F1` is ilogit-transformed).
+  Uncapped, 1.4% of animals draw `ffo > 1` and `f(depot2)` is slightly
+  negative. The model therefore splits the dose with `min(Frapid, 1)`:
+  `P(Frapid > 1) = 1.37%` of animals sit at the cap (the `frapid-bound` chunk
+  reports the realised share), and the SD of `Frapid` falls from 0.0967 (the
+  lognormal) to 0.0949, 1.9% lower, with the mean 0.08% lower. The simulated
+  `Frapid` distribution therefore differs slightly from the fitted lognormal.
+  The cap leaves total exposure unchanged because the two depots still sum to
+  `F1 * Dose`.
 * **Parameter values are the "Single run" estimates of Table 1**, not the
   bootstrap medians in the adjacent columns and not the `fixef()` / `ranef()`
   numbers in Supplementary Data S1. The control-stream numbers are initial
