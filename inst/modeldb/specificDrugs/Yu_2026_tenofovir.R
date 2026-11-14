@@ -134,6 +134,9 @@ Yu_2026_tenofovir <- function() {
       sep = " "
     ),
     notes = paste(
+      "Ffast carries the paper's exponential IIV, which has no upper bound, so the",
+      "simulated fraction is capped at 1: 0.16% of women sit at the cap and the SD",
+      "of Ffast is 1.0% below that of the fitted lognormal.",
       "n_subjects is the sum of the per-arm participant counts in Table 1",
       "(24 + 73 + 28 + 46 + 25 + 28 = 224); the CONRAD 137 single-dose and",
       "multiple-dose phases may overlap, so the number of distinct women is",
@@ -177,6 +180,15 @@ Yu_2026_tenofovir <- function() {
     lfm <- log(0.826); label("Fraction FTFV of eliminated plasma TAF that converts to plasma TFV (unitless)")            # Table 2 (FTFV = 82.6%, RSE 6%)
     lfrac   <- log(0.278); label("Fraction Ffast of the TAF-to-TFV conversion that reaches plasma immediately (unitless)")   # Table 2 (Ffast = 27.8%, RSE 13%)
     lktr    <- log(0.0212); label("Transit-compartment rate constant Kslow for delayed TAF-to-TFV conversion (1/h)")         # Table 2 (Kslow = 0.0212 /h, RSE 11%)
+
+    # Bound on Ffast (etalfrac): Table 2 reports BSV on Ffast as a %CV of the
+    # exponential model P = TVP * exp(eta) (Methods 2.4.1), which has no upper
+    # bound, and the paper gives Ffast no other bound. The model body applies
+    # min(Ffast, 1) to the TAF-to-TFV split. With a typical value of 0.278 and
+    # omega 0.4338, P(Ffast > 1) = 0.158%, so 0.16% of women (about 1 in 630)
+    # sit at the cap (Ffast = 1, nothing through the transit compartment), and
+    # the SD of Ffast falls from 0.1390 (lognormal) to 0.1376 (capped), 1.0%
+    # lower; the mean falls 0.07%.
 
     # ------------------------------------------------------------------
     # Plasma tenofovir (`_tfv` metabolite suffix). Ka2 is the absorption
@@ -267,8 +279,11 @@ Yu_2026_tenofovir <- function() {
     cl     <- exp(lcl + etalcl)
     vc     <- exp(lvc + etalvc)
     fm     <- exp(lfm)
-    frac   <- exp(lfrac + etalfrac)
-    ktr    <- exp(lktr)
+    # Lognormal individual Ffast (mu-referenced) and the fraction actually
+    # used, capped at 1 (see the bound note on etalfrac in ini()).
+    frac        <- exp(lfrac + etalfrac)
+    frac_capped <- min(frac, 1)
+    ktr         <- exp(lktr)
 
     ka_tfv <- exp(lka_tfv + etalka_tfv)
     # Pregnancy raises plasma TFV apparent clearance in the second and
@@ -302,11 +317,11 @@ Yu_2026_tenofovir <- function() {
     #    pbmc_tfvdp / rbc_tfvdp         = CPBMC / CDBS (concentration states)
     d/dt(depot)    <- -ka * depot
     d/dt(central)  <-  ka * depot - kel * central
-    d/dt(transit1) <-  fm * (1 - frac) * kel * central - ktr * transit1
+    d/dt(transit1) <-  fm * (1 - frac_capped) * kel * central - ktr * transit1
 
     d/dt(depot_tfv)   <- -ka_tfv * depot_tfv
     d/dt(central_tfv) <-  ka_tfv * depot_tfv +
-                          fm * frac * kel * central +
+                          fm * frac_capped * kel * central +
                           ktr * transit1 -
                           kel_tfv * central_tfv -
                           k12_tfv * central_tfv + k21_tfv * peripheral1_tfv
