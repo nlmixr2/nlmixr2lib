@@ -230,18 +230,29 @@ test_that("no template in the library reads a symbol it never defines", {
   skip_on_cran()
   root <- system.file("modeldb", package = "nlmixr2lib")
   files <- list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
+  fileLines <- lapply(files, readLines, warn = FALSE)
   isTemplate <- vapply(
-    files,
-    function(f) any(grepl('^\\s*reference\\s*<-\\s*"nlmixr2lib template"', readLines(f, warn = FALSE))),
+    fileLines,
+    function(x) any(grepl('^\\s*reference\\s*<-\\s*"nlmixr2lib template"', x)),
     logical(1)
   )
+  # A template whose reference line is written another way (single quotes,
+  # `=`, a line break) would fail the pattern and drop out of the loop below
+  # unnoticed, so every file that names the reference must have matched it.
+  mentions <- vapply(fileLines, function(x) any(grepl("nlmixr2lib template", x, fixed = TRUE)), logical(1))
+  expect_identical(basename(files[mentions & !isTemplate]), character(0))
   templates <- sub("[.]R$", "", basename(files[isTemplate]))
-  expect_gt(length(templates), 0L)
+  # Update this count when a template is added or removed.
+  expect_identical(length(templates), 44L)
   for (nm in templates) {
     ui <- suppressMessages(rxode2::as.rxUi(readModelDb(nm)))
-    expect_identical(as.list(ui$meta)$reference, "nlmixr2lib template", label = paste(nm, "reference"))
+    meta <- as.list(ui$meta)
+    expect_identical(meta$reference, "nlmixr2lib template", label = paste(nm, "reference"))
     undeclared <- .checkTemplateUndeclaredSymbols(ui, NULL, nm)$name
     expect_identical(undeclared, character(0), label = paste(nm, "undeclared symbols"))
+    # The check ignores `depends` for a template, so one declared there would
+    # be dead metadata that reads as if it supplied a symbol.
+    expect_null(meta$depends, label = paste(nm, "depends"))
   }
 })
 
