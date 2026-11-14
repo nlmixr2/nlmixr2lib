@@ -3,6 +3,7 @@ indirect_circ_1cpt_stim_kout_kout_t <- function() {
   depends <- c("vc", "kin_t", "kout", "ic50")
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
+  dosing <- c("depot", "central")
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE
