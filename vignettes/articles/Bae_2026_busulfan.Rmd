@@ -1,0 +1,593 @@
+---
+title: "Busulfan (Bae 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Busulfan (Bae 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Bae_2026_busulfan"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Bae_2026_busulfan"))$description`
+* Article: <https://doi.org/10.1002/cpt.70337> (open access, PMC13339581)
+* Supplement: Supporting Information (Table S1, Figures S1-S3)
+
+Bae 2026 is a retrospective analysis of busulfan therapeutic drug monitoring
+(TDM) data from Seoul National University Children's Hospital. Its main
+question is clinical (does the maximum concentration, rather than the AUC,
+predict liver toxicity and survival), and it builds a population PK model to
+simulate published once-daily regimens. This vignette reproduces that PK
+model and its simulations.
+
+# Population
+
+`r rxode2::rxode(readModelDb("Bae_2026_busulfan"))$population$n_subjects`
+pediatric and young adult patients (Table 1) received once-daily intravenous
+busulfan for 4 days before allogeneic hematopoietic stem cell transplantation,
+infused over 3 h (2009-2013, n = 122) or 6 h (2014-2020, n = 212). Doses were
+adjusted by TDM to a cumulative 4-day AUC of 75,000 ug*h/L. Age was 0.6-30.3
+years (means 8.8 and 10.0 years), weight 7.4-91.3 kg (means 32.3 and 33.5 kg),
+BSA 0.26-2.13 m^2 (means 1.05 and 1.08 m^2), and 40.7% were female. Three
+quarters had a high-risk malignancy. The model was fitted to 5,357
+concentrations in NONMEM 7.5.1.
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| One-compartment model, elimination `-(CL/V) * A1 * A2` | structure | Eq. 1; Figure S2 |
+| Enzyme turnover `KENZ * (1 - Conc/(IC50 + Conc)) - KENZ * A2`, `A2(0) = 1` | structure | Eq. 2 (see deviations); Figure S2; Methods |
+| `V = theta1 * (BSA/1.73)^theta2` | structure | Table 3 footnote a |
+| `CL = theta3 * (BSA/1.73) * (1 - exp(-0.693/theta4 * Age))` | structure | Table 3 footnote b |
+| `lvc` (theta1) | 42 L | Table 3 (RSE 2%) |
+| `e_bsa_vc` (theta2) | 1.21 | Table 3 (RSE 3%) |
+| `lcl` (theta3) | 11 L/h | Table 3 (RSE 2%) |
+| `thalf_age_cl` (theta4) | 0.374 years | Table 3 (RSE 13%); Results "50% maturation ... at 0.37 years" |
+| `lic50` | 3,250 ug/L | Table 3 (RSE 8%); Results |
+| `lkenz` | 0.0404 1/h | Table 3 (RSE 17%) |
+| `etalcl` | 22.1% CV -> 0.04769 | Table 3 |
+| `etalvc` | 17.2% CV -> 0.02915 | Table 3 |
+| `etalcl`-`etalvc` covariance | 0.0226 | Table 3 'Correlation between IIV on CL and V' (see deviations) |
+| `propSd` | 0.103 | Table 3 |
+| Cmax 4,260.2 / 3,028.6 ug/L, cumulative AUC 75,063 / 74,732 ug*h/L | validation | Table 1 |
+| Target attainment of six published regimens | validation | Figure 4; Table S1 |
+
+# Virtual cohort
+
+The paper's simulations used the demographics of its own patients, which are
+not published individually. The cohort below matches the pooled Table 1
+summaries: age is drawn from a gamma distribution with the pooled mean (9.6
+years) and SD (6.2 years), truncated to the observed 0.6-30.3 years; weight
+and height follow CDC 50th-percentile growth references at that age with
+lognormal scatter, and BSA uses the Mosteller formula.
+
+```{r cohort}
+set.seed(20261114)
+n_sub <- 200L
+
+# CDC 50th percentile weight and stature for age, averaged across sexes.
+growth <- tibble::tribble(
+  ~age,  ~wt,  ~ht,
+  0.50,   7.6,  66,
+  1.00,   9.6,  75,
+  2.00,  12.2,  86,
+  3.00,  14.3,  95,
+  4.00,  16.3, 102,
+  5.00,  18.3, 109,
+  6.00,  20.6, 115,
+  7.00,  23.0, 121,
+  8.00,  25.6, 127,
+ 10.00,  32.0, 138,
+ 12.00,  40.5, 149,
+ 14.00,  50.0, 162,
+ 16.00,  58.0, 168,
+ 18.00,  63.0, 170,
+ 21.00,  68.0, 171,
+ 30.30,  70.0, 171
+)
+
+age_shape <- (9.6 / 6.2)^2
+age_rate <- 9.6 / 6.2^2
+p_lo <- stats::pgamma(0.6, age_shape, age_rate)
+p_hi <- stats::pgamma(30.3, age_shape, age_rate)
+
+cohort <- tibble::tibble(
+  id = seq_len(n_sub),
+  AGE = stats::qgamma(stats::runif(n_sub, p_lo, p_hi), age_shape, age_rate)
+) |>
+  mutate(
+    wt_med = stats::approx(growth$age, growth$wt, xout = AGE, rule = 2)$y,
+    ht_med = stats::approx(growth$age, growth$ht, xout = AGE, rule = 2)$y,
+    WT = wt_med * exp(stats::rnorm(n_sub, 0, 0.20)),
+    HT = ht_med * exp(stats::rnorm(n_sub, 0, 0.045)),
+    BSA = sqrt(HT * WT / 3600)
+  ) |>
+  select(id, AGE, WT, HT, BSA)
+
+tibble::tibble(
+  Characteristic = c("Age (years)", "Weight (kg)", "BSA (m^2)"),
+  Simulated = c(
+    sprintf("%.1f (%.1f) [%.1f-%.1f]", mean(cohort$AGE), sd(cohort$AGE), min(cohort$AGE), max(cohort$AGE)),
+    sprintf("%.1f (%.1f) [%.1f-%.1f]", mean(cohort$WT), sd(cohort$WT), min(cohort$WT), max(cohort$WT)),
+    sprintf("%.2f (%.2f) [%.2f-%.2f]", mean(cohort$BSA), sd(cohort$BSA), min(cohort$BSA), max(cohort$BSA))
+  ),
+  `Bae 2026 (3-h / 6-h group)` = c(
+    "8.8 (5.4) [0.6-22.2] / 10.0 (6.6) [0.7-30.3]",
+    "32.3 (18.7) [7.4-76.2] / 33.5 (19.2) [7.9-91.3]",
+    "1.05 (0.43) [0.37-1.92] / 1.08 (0.45) [0.26-2.13]"
+  )
+) |>
+  knitr::kable(caption = "Virtual cohort vs Bae 2026 Table 1, mean (SD) [range].")
+```
+
+# Model behaviour: enzyme auto-inhibition
+
+The enzyme pool starts at 1. Busulfan inhibits its synthesis, so it falls during
+each infusion and recovers slowly (turnover half-life
+`r round(log(2) / 0.0404, 1)` h) between doses, and the effective clearance
+`CL * enzyme` declines over the 4-day course. The plot shows a typical
+10-year-old (BSA 1.1 m^2) given 115 mg once daily over 3 or 6 h.
+
+```{r typical}
+mod <- readModelDb("Bae_2026_busulfan")
+mod_typ <- rxode2::zeroRe(mod)
+
+typ_events <- function(inf_dur, label) {
+  amt <- 115
+  rxode2::et(amt = amt, rate = amt / inf_dur, ii = 24, addl = 3, cmt = "central") |>
+    rxode2::et(seq(0, 96, by = 0.1), cmt = "central") |>
+    as.data.frame() |>
+    mutate(BSA = 1.1, AGE = 10, regimen = label)
+}
+
+typ <- bind_rows(
+  rxode2::rxSolve(mod_typ, typ_events(3, "3-h infusion"), keep = "regimen") |> as.data.frame(),
+  rxode2::rxSolve(mod_typ, typ_events(6, "6-h infusion"), keep = "regimen") |> as.data.frame()
+)
+
+typ |>
+  select(time, regimen, `Busulfan (ug/L)` = Cc, `Relative enzyme amount` = enzyme) |>
+  pivot_longer(-c(time, regimen)) |>
+  ggplot(aes(time, value, colour = regimen)) +
+  geom_line() +
+  facet_wrap(~name, ncol = 1, scales = "free_y") +
+  labs(x = "Time (h)", y = NULL, colour = NULL) +
+  theme_bw()
+
+enz_end <- typ |> filter(abs(time - 96) < 1e-8) |> select(regimen, enzyme)
+knitr::kable(enz_end, digits = 3, caption = "Relative enzyme amount at 96 h.")
+
+# Without drug the enzyme stays at its baseline of 1.
+blank <- rxode2::rxSolve(
+  mod_typ,
+  rxode2::et(seq(0, 96, by = 1), cmt = "central") |> as.data.frame() |>
+    mutate(BSA = 1.1, AGE = 10)
+) |> as.data.frame()
+stopifnot(max(abs(blank$enzyme - 1)) < 1e-8)
+```
+
+# Replicating the TDM cohort (Table 1)
+
+The two clinical arms were dosed by TDM to a cumulative 4-day AUC of
+75,000 ug*h/L. The simulation idealises this: each subject first receives the
+arm's mean daily dose per BSA (Table 1: 426.9 and 416.0 mg/m^2 over 4 days),
+and then every daily dose is rescaled by 75,000 / (that subject's cumulative
+AUC) and the course is simulated again. Cmax is then a consequence of the
+infusion duration and the model's volume and clearance, which is what Table 1
+lets us test.
+
+```{r tdm}
+grid <- seq(0, 96, by = 0.25)
+
+course_events <- function(sub, daily_mg, inf_dur, arm, id_offset) {
+  sub <- sub |> mutate(id = id + id_offset, arm = arm, daily_mg = daily_mg)
+  doses <- sub |>
+    tidyr::crossing(day = 0:3) |>
+    transmute(id, AGE, WT, BSA, arm, time = 24 * day, amt = daily_mg,
+              rate = daily_mg / inf_dur, evid = 1L, cmt = "central")
+  obs <- sub |>
+    select(id, AGE, WT, BSA, arm) |>
+    tidyr::crossing(time = grid) |>
+    mutate(amt = 0, rate = 0, evid = 0L, cmt = "central")
+  bind_rows(doses, obs) |> arrange(id, time, desc(evid))
+}
+
+cum_auc <- function(sim, end = 96) {
+  conc <- sim |> select(id, arm, time, Cc) |> filter(!is.na(Cc))
+  o_conc <- PKNCA::PKNCAconc(conc, Cc ~ time | arm + id)
+  o_dose <- PKNCA::PKNCAdose(
+    conc |> distinct(id, arm) |> mutate(time = 0, amt = 1),
+    amt ~ time | arm + id
+  )
+  intervals <- data.frame(start = 0, end = end, auclast = TRUE, cmax = TRUE)
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+  as.data.frame(res) |>
+    select(arm, id, PPTESTCD, PPORRES) |>
+    pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+}
+
+arms <- tibble::tribble(
+  ~arm,            ~mg_m2_day,  ~inf_dur, ~id_offset,
+  "3-h infusion",  426.9 / 4,   3,        0L,
+  "6-h infusion",  416.0 / 4,   6,        1000L
+)
+
+build_arm <- function(i, scale = NULL) {
+  a <- arms[i, ]
+  daily <- a$mg_m2_day * cohort$BSA
+  if (!is.null(scale)) daily <- daily * scale[[a$arm]]
+  course_events(cohort, daily, a$inf_dur, a$arm, a$id_offset)
+}
+
+# Both passes use the same seed so each subject keeps its random effects;
+# the assertion below confirms it.
+rxode2::rxSetSeed(20261114)
+ev1 <- bind_rows(build_arm(1), build_arm(2))
+sol1 <- rxode2::rxSolve(mod, ev1, keep = "arm", addDosing = FALSE)
+sim1 <- as.data.frame(sol1)
+stopifnot(dplyr::n_distinct(sim1$id) == 2L * n_sub)
+
+auc1 <- cum_auc(sim1) |> mutate(scale = 75000 / auclast)
+scale <- lapply(split(auc1, auc1$arm), function(d) d$scale[order(d$id)])
+
+rxode2::rxSetSeed(20261114)
+ev2 <- bind_rows(build_arm(1, scale), build_arm(2, scale))
+sol2 <- rxode2::rxSolve(mod, ev2, keep = "arm", addDosing = FALSE)
+sim2 <- as.data.frame(sol2)
+stopifnot(
+  dplyr::n_distinct(sim2$id) == 2L * n_sub,
+  isTRUE(all.equal(sol1$params$etalcl, sol2$params$etalcl)),
+  isTRUE(all.equal(sol1$params$etalvc, sol2$params$etalvc))
+)
+```
+
+## PKNCA over the 4-day course
+
+The NCA interval is the whole 0-96 h course, matching how Table 1 reports PK:
+`cmax` over the interval is the highest concentration of the four days and
+`auclast` is the cumulative AUC. The PKNCA formula groups by the infusion arm.
+
+```{r pknca-tdm}
+nca2 <- cum_auc(sim2)
+
+sim_summary <- nca2 |>
+  select(arm, id, cmax, auclast) |>
+  pivot_longer(c(cmax, auclast), names_to = "PPTESTCD", values_to = "PPORRES")
+
+reference <- data.frame(
+  arm = c("3-h infusion", "6-h infusion"),
+  cmax = c(4260.2, 3028.6),
+  auclast = c(75063.0, 74731.9)
+)
+
+tbl <- nlmixr2lib::ncaComparisonTable(
+  sim_summary, reference,
+  by = "arm",
+  units = c(cmax = "ug/L", auclast = "ug*h/L")
+)
+knitr::kable(tbl, caption = "Simulated (median of subjects) vs Bae 2026 Table 1 (mean); cumulative 0-96 h.")
+```
+
+The cumulative AUC agrees by construction of the idealised TDM. Cmax is the
+real test. The model's Cmax above is the individual prediction on a dense
+grid. The clinical Cmax in Table 1 is a measured concentration: the sample
+drawn at the end of each day's infusion, carrying assay and residual error,
+with the patient's highest value of the four days kept. The next table
+applies the same definition to the simulation, using the residual-error draw
+(`sim`) at the four end-of-infusion times.
+
+```{r observed-cmax}
+eoi <- sim2 |>
+  mutate(inf_dur = ifelse(arm == "3-h infusion", 3, 6)) |>
+  filter(abs((time %% 24) - inf_dur) < 1e-8, time < 96) |>
+  group_by(arm, id) |>
+  summarise(cmax_ipred = max(Cc), cmax_obs = max(sim), .groups = "drop")
+
+cmax_tab <- eoi |>
+  group_by(arm) |>
+  summarise(
+    ipred_mean = mean(cmax_ipred),
+    obs_mean = mean(cmax_obs),
+    obs_sd = sd(cmax_obs),
+    pct_above_cut = 100 * mean(cmax_obs > 4269.6),
+    .groups = "drop"
+  ) |>
+  left_join(
+    data.frame(arm = reference$arm, paper_mean = reference$cmax,
+               paper_sd = c(683.7, 380.8), paper_pct_above = c(46.7, 0)),
+    by = "arm"
+  )
+
+cmax_tab |>
+  dplyr::rename(
+    Arm = arm,
+    `Sim. IPRED Cmax, mean (ug/L)` = ipred_mean,
+    `Sim. measured-style Cmax, mean (ug/L)` = obs_mean,
+    `Sim. measured-style Cmax, SD` = obs_sd,
+    `Sim. % above 4,269.6 ug/L` = pct_above_cut,
+    `Table 1 Cmax, mean (ug/L)` = paper_mean,
+    `Table 1 Cmax, SD` = paper_sd,
+    `Paper % above 4,269.6 ug/L` = paper_pct_above
+  ) |>
+  knitr::kable(digits = 1, caption = "End-of-infusion Cmax (highest of the 4 days) vs Bae 2026 Table 1 and Discussion.")
+
+ratio_sim <- cmax_tab$obs_mean[1] / cmax_tab$obs_mean[2]
+ratio_paper <- 4260.2 / 3028.6
+```
+
+The paper's percentages above the 4,269.6 ug/L cut-off come from its
+Discussion (53.3% of the 3-h group were below it, all of the 6-h group). The
+simulated 3-h/6-h Cmax ratio is `r round(ratio_sim, 2)` against
+`r round(ratio_paper, 2)` in Table 1, so the effect of infusion duration is
+reproduced. The absolute peaks are 10-15% below the measured means in both
+arms even with residual error included, and fewer 3-h patients exceed the
+cut-off than in the clinic. The shortfall is similar in both arms, so it
+does not depend on the infusion duration; the paper gives no explanation
+(an unmodelled distribution phase near the peak is one possibility). No
+parameter has been adjusted for it.
+
+```{r tdm-checks}
+med_auc <- nca2 |> group_by(arm) |> summarise(m = median(auclast), .groups = "drop")
+stopifnot(
+  # Idealised TDM reaches the cumulative target despite the auto-inhibition
+  # nonlinearity.
+  all(abs(med_auc$m / 75000 - 1) < 0.05),
+  # Infusion-duration effect on Cmax at equal AUC: set by V and CL/V.
+  abs(ratio_sim / ratio_paper - 1) < 0.10,
+  # Mean measured-style Cmax per arm within 20% of Table 1 (the model runs
+  # 10-15% low; see the text).
+  all(abs(cmax_tab$obs_mean / cmax_tab$paper_mean - 1) < 0.20)
+)
+```
+
+# Replicating Figure 4 and Table S1: published regimens
+
+Figure 4 and Table S1 simulate six published regimens over 4 days and report
+the fraction of patients with Cmax below 4,269.6 ug/L and with a cumulative
+AUC of 60,000-90,000 ug*h/L. The Rhee et al. regimen ("BSA and dosing day
+based regimen by 9 age categories") is not tabulated in the paper and is
+omitted. The three once-daily regimens are also simulated with the infusion
+extended to 6 h, as in Table S1. The cumulative AUC is computed by PKNCA on
+the individual predictions; Cmax is the end-of-infusion concentration with
+residual error, highest over the 4 days (the paper's clinical definition).
+
+```{r regimens}
+dose_ema <- function(wt) {
+  ifelse(wt < 9, 1.0, ifelse(wt < 16, 1.2, ifelse(wt < 23, 1.1, ifelse(wt <= 34, 0.95, 0.8)))) * wt
+}
+dose_fda <- function(wt) ifelse(wt <= 12, 1.1, 0.8) * wt
+dose_buffery <- function(wt) {
+  ifelse(wt < 16.5, 4.8, ifelse(wt < 18.5, 4.4, ifelse(wt < 22.5, 4.0, ifelse(wt < 25.5, 3.6, 3.2)))) * wt
+}
+dose_lee <- function(age, bsa) ifelse(age < 1, 80, 120) * bsa
+dose_yin <- function(wt) 3.2 * wt
+
+regimen_events <- function(regimen, amt, inf_dur, ii, id_offset) {
+  n_dose <- 96 / ii
+  sub <- cohort |> mutate(id = id + id_offset, regimen = regimen, amt = amt)
+  sub <- sub |> mutate(inf_dur = inf_dur, dose_int = ii)
+  doses <- sub |>
+    tidyr::crossing(k = seq_len(n_dose) - 1L) |>
+    transmute(id, AGE, WT, BSA, regimen, inf_dur, dose_int, time = k * ii, amt,
+              rate = amt / inf_dur, evid = 1L, cmt = "central")
+  obs <- sub |>
+    select(id, AGE, WT, BSA, regimen, inf_dur, dose_int) |>
+    tidyr::crossing(time = seq(0, 96, by = 0.5)) |>
+    mutate(amt = 0, rate = 0, evid = 0L, cmt = "central")
+  bind_rows(doses, obs) |> arrange(id, time, desc(evid))
+}
+
+reg_ev <- bind_rows(
+  regimen_events("EMA (q6h, 2 h)", dose_ema(cohort$WT), 2, 6, 0L),
+  regimen_events("FDA (q6h, 2 h)", dose_fda(cohort$WT), 2, 6, 1000L),
+  regimen_events("Buffery (daily, 2 h)", dose_buffery(cohort$WT), 2, 24, 2000L),
+  regimen_events("Buffery (daily, 6 h)", dose_buffery(cohort$WT), 6, 24, 3000L),
+  regimen_events("Lee (daily, 3 h)", dose_lee(cohort$AGE, cohort$BSA), 3, 24, 4000L),
+  regimen_events("Lee (daily, 6 h)", dose_lee(cohort$AGE, cohort$BSA), 6, 24, 5000L),
+  regimen_events("Yin (daily, 3 h)", dose_yin(cohort$WT), 3, 24, 6000L),
+  regimen_events("Yin (daily, 6 h)", dose_yin(cohort$WT), 6, 24, 7000L)
+)
+
+rxode2::rxSetSeed(20261115)
+reg_sim <- rxode2::rxSolve(
+  mod, reg_ev, keep = c("regimen", "inf_dur", "dose_int"), addDosing = FALSE
+) |>
+  as.data.frame() |>
+  mutate(arm = regimen)
+stopifnot(dplyr::n_distinct(reg_sim$id) == 8L * n_sub)
+
+# Cmax as the paper defines it: the end-of-infusion concentration, here with
+# residual error, highest over the 4 days.
+reg_eoi <- reg_sim |>
+  filter(abs((time %% dose_int) - inf_dur) < 1e-8, time < 96) |>
+  group_by(id) |>
+  summarise(cmax_eoi = max(sim), .groups = "drop")
+
+reg_nca <- cum_auc(reg_sim) |>
+  mutate(regimen = arm) |>
+  left_join(reg_eoi, by = "id")
+stopifnot(!anyNA(reg_nca$cmax_eoi))
+```
+
+```{r fig4, fig.height = 6}
+ggplot(reg_nca, aes(auclast, cmax_eoi)) +
+  geom_point(alpha = 0.4, size = 1) +
+  geom_hline(yintercept = 4269.55, colour = "red", linetype = "dashed") +
+  geom_vline(xintercept = c(60000, 90000), colour = "red", linetype = "dashed") +
+  facet_wrap(~regimen, ncol = 4) +
+  labs(x = "Cumulative AUC 0-96 h (ug*h/L)", y = "End-of-infusion Cmax (ug/L)") +
+  theme_bw()
+```
+
+Replicates Figure 4 of Bae 2026 (plus the three 6-h variants of Table S1).
+
+```{r tableS1}
+attain <- reg_nca |>
+  group_by(regimen) |>
+  summarise(
+    auc_pct = 100 * mean(auclast >= 60000 & auclast <= 90000),
+    cmax_pct = 100 * mean(cmax_eoi < 4269.6),
+    .groups = "drop"
+  )
+
+paper_s1 <- tibble::tribble(
+  ~regimen,                 ~paper_auc, ~paper_cmax,
+  "EMA (q6h, 2 h)",          53.0,       100,
+  "FDA (q6h, 2 h)",          44.9,       100,
+  "Buffery (daily, 2 h)",    53.5,       46.7,
+  "Buffery (daily, 6 h)",    52.8,       94.7,
+  "Lee (daily, 3 h)",        48.0,       40.6,
+  "Lee (daily, 6 h)",        46.3,       86.0,
+  "Yin (daily, 3 h)",        42.8,       84.6,
+  "Yin (daily, 6 h)",        42.9,       97.7
+)
+
+s1 <- paper_s1 |> left_join(attain, by = "regimen")
+s1 |>
+  dplyr::rename(
+    Regimen = regimen,
+    `Table S1 AUC attainment (%)` = paper_auc,
+    `Simulated AUC attainment (%)` = auc_pct,
+    `Table S1 Cmax attainment (%)` = paper_cmax,
+    `Simulated Cmax attainment (%)` = cmax_pct
+  ) |>
+  knitr::kable(digits = 1, caption = "Target attainment, simulated vs Bae 2026 Table S1.")
+```
+
+```{r tableS1-checks}
+cmax_by <- setNames(s1$cmax_pct, s1$regimen)
+stopifnot(
+  # Four-times-daily 2-h regimens keep essentially everyone below the cut-off.
+  cmax_by[["EMA (q6h, 2 h)"]] >= 95,
+  cmax_by[["FDA (q6h, 2 h)"]] >= 95,
+  # Extending a once-daily infusion to 6 h raises Cmax attainment: the same
+  # subjects and doses are simulated with both durations.
+  cmax_by[["Buffery (daily, 6 h)"]] > cmax_by[["Buffery (daily, 2 h)"]] + 20,
+  cmax_by[["Lee (daily, 6 h)"]] > cmax_by[["Lee (daily, 3 h)"]] + 20,
+  cmax_by[["Yin (daily, 6 h)"]] >= cmax_by[["Yin (daily, 3 h)"]],
+  # Centre of the agreement with Table S1 across all regimens.
+  median(abs(s1$cmax_pct - s1$paper_cmax)) < 15
+)
+```
+
+The AUC attainment agrees closely with Table S1, and the four-times-daily and
+6-h rows agree on Cmax. For the three short once-daily infusions the simulated
+Cmax attainment is higher than the paper's, by up to about 15 percentage
+points: the packaged model gives somewhat lower peaks than the authors'
+simulation, consistent with the Table 1 comparison above. The paper does not
+say whether its simulated Cmax carried residual error; computed on the
+individual predictions instead, the once-daily attainment rises by a further
+5-15 points, so the residual-error definition is the closer of the two. The
+virtual cohort, which can only match the published summaries, is the other
+source of difference.
+
+# The enzyme equation as typeset
+
+Eq. 2 is typeset with a zero-order loss, `- KENZ`, where the turnover model
+the paper describes has `- KENZ * A2` (see the deviations below). Simulating
+the typeset form on the same cohort shows it is not the model behind Table S1.
+
+```{r literal-eq2}
+mod_lit <- rxode2::rxode(mod) |>
+  rxode2::model(d/dt(enzyme) <- kenz * (1 - Cc / (ic50 + Cc)) - kenz)
+
+lit_ev <- reg_ev |> filter(regimen %in% c("FDA (q6h, 2 h)", "Lee (daily, 3 h)"))
+rxode2::rxSetSeed(20261115)
+lit_sim <- rxode2::rxSolve(
+  mod_lit, lit_ev, keep = c("regimen", "inf_dur", "dose_int"), addDosing = FALSE
+) |> as.data.frame()
+
+lit_summary <- lit_sim |>
+  group_by(regimen, id) |>
+  summarise(
+    cmax_eoi = max(sim[abs((time %% dose_int) - inf_dur) < 1e-8 & time < 96]),
+    enzyme_96 = enzyme[which.max(time)],
+    .groups = "drop"
+  ) |>
+  group_by(regimen) |>
+  summarise(
+    cmax_pct = 100 * mean(cmax_eoi < 4269.6),
+    pct_enzyme_negative = 100 * mean(enzyme_96 < 0),
+    median_enzyme_96 = median(enzyme_96),
+    .groups = "drop"
+  )
+
+lit_summary |>
+  dplyr::rename(
+    Regimen = regimen,
+    `Cmax attainment, typeset Eq. 2 (%)` = cmax_pct,
+    `% subjects with enzyme < 0 at 96 h` = pct_enzyme_negative,
+    `Median enzyme at 96 h` = median_enzyme_96
+  ) |>
+  knitr::kable(digits = 2, caption = "Typeset Eq. 2 (zero-order enzyme loss) on the Table S1 regimens.")
+
+fda_lit <- lit_summary$cmax_pct[lit_summary$regimen == "FDA (q6h, 2 h)"]
+stopifnot(
+  # The typeset form cannot give the 100% four-times-daily attainment of
+  # Table S1; the packaged first-order form does.
+  fda_lit < 95,
+  cmax_by[["FDA (q6h, 2 h)"]] >= 95
+)
+```
+
+# Assumptions and deviations
+
+* **Enzyme equation.** The typeset Eq. 2 reads
+  `dA2/dt = KENZ * (1 - Conc/(IC50 + Conc)) - KENZ`, with no `A2` in the loss
+  term. As printed the enzyme would never turn over: with no drug it stays at 1
+  only because both terms cancel, and once inhibited it never recovers. The
+  model implements first-order loss `KENZ * A2`. Three things in the paper
+  support this: Figure S2 draws `KENZ` as a rate out of the enzyme compartment;
+  the Methods call the model an enzyme *turnover* model whose initial amount is
+  1 (the steady state of `KENZ - KENZ * A2`); and the Discussion compares
+  `KENZ` with enzyme turnover half-lives of 10-140 h, which only a first-order
+  loss has (here ln(2)/0.0404 = 17.2 h).
+* **IIV off-diagonal.** Table 3 labels 0.0226 as the "Correlation between IIV
+  on CL and V", with bootstrap 95% CI 0.0153-0.0316. A correlation estimated
+  from 334 subjects has a standard error of roughly 0.05, so an interval that
+  narrow cannot belong to a correlation near zero; it fits a covariance on the
+  omega scale. The model uses 0.0226 as the covariance, which corresponds to a
+  correlation of `r round(0.0226 / sqrt(0.04769 * 0.02915), 2)`.
+* **IIV scale.** IIV is reported as CV%; it is converted with
+  `omega^2 = log(1 + CV^2)`. Reading the CV as `sqrt(omega^2)` instead changes
+  the variances by under 2%.
+* **Typeset Eq. 2 tested and rejected.** Simulated as typeset (section above),
+  the enzyme amount falls without recovery, below zero for some subjects by
+  day 4, and the FDA four-times-daily regimen keeps only
+  `r round(fda_lit)`% of subjects below the Cmax cut-off, against 100% in
+  Table S1. The first-order form gives
+  `r round(cmax_by[["FDA (q6h, 2 h)"]])`%.
+* **Cmax shortfall.** The model's end-of-infusion Cmax is 10-15% below the
+  Table 1 means at matched cumulative AUC; this is reported, not corrected.
+* **Residual error.** Table 3 reports 0.103 without saying whether it is a
+  variance or an SD. It is used as the proportional SD (10.3%). A variance of
+  0.103 would be a 32% SD, and then the measured Cmax in the 6-h group could not
+  have the 12.6% coefficient of variation Table 1 reports (380.8 / 3,028.6),
+  since every measured Cmax carries that error.
+* **Age maturation constant.** The CL equation uses 0.693 as printed rather
+  than ln(2).
+* **TDM simulation.** The clinical TDM adjusted doses from measured
+  concentrations, day by day. The vignette uses one idealised adjustment from
+  the model's own cumulative AUC, which reproduces the narrow AUC spread of
+  Table 1 but not the day-to-day dosing history.
+* **Virtual cohort.** Built from Table 1 summaries with CDC growth references;
+  the paper used its own patients' demographics.
+* **Regimen details.** Weight bands that the paper gives as integer kg ranges
+  (Buffery: 10-16, 17-18, 19-22, 23-25, >26 kg) are split at the half-kg; the
+  Buffery 10-16 kg dose is also applied below 10 kg, where the paper gives no
+  band. The Rhee et al. regimen is omitted because its age-band table is not in
+  the paper.
+* **BSA formula.** The paper does not say how BSA was calculated; Mosteller is
+  used for the virtual cohort.

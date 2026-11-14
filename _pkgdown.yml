@@ -1190,6 +1190,8 @@ navbar:
         href: articles/Zhang_2016_burosumab.html
       - text: "Burosumab fracture (Mehta 2025)"
         href: articles/Mehta_2025_burosumab.html
+      - text: "Busulfan (Bae 2026)"
+        href: articles/Bae_2026_busulfan.html
       - text: "Busulfan (Balis 2025)"
         href: articles/Balis_2025_busulfan.html
       - text: "Busulfan (Cao 2025)"
@@ -9477,6 +9479,7 @@ articles:
   - articles/Back_2018_fenofibrate
   - articles/Back_2019_pediatric_size_maturation
   - articles/Bae_2026_MIT001
+  - articles/Bae_2026_busulfan
   - articles/Baheti_2011_tenofovir
   - articles/Bai_2021_mkAsodnLiposome_pbpk
   - articles/Bai_2024_imipenem
