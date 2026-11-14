@@ -3272,6 +3272,8 @@ navbar:
         href: articles/Chou_2022_igpbpk.html
       - text: "Fluorouracil (Arshad 2020)"
         href: articles/Arshad_2020_fluorouracil.html
+      - text: "Fluorouracil (Tan 2026)"
+        href: articles/Tan_2026_fluorouracil.html
       - text: "Fluorouracil (Yamada 2025)"
         href: articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab.html
       - text: "Fluorouracil colon26 daily mouse qsp (Ma 2022)"
@@ -11867,6 +11869,7 @@ articles:
   - articles/Tan_2025_cabotegravir_rilpivirine
   - articles/Tan_2025_pazopanib
   - articles/Tan_2025_piperacillin
+  - articles/Tan_2026_fluorouracil
   - articles/Tanaka_2012_phenytoin
   - articles/Taneja_2019_glpg1690
   - articles/Tang_2019_amoxicillin
