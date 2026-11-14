@@ -5997,6 +5997,28 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Yeung_2025_indomethacin_pda.R` (founding example; log-odds -0.0065 per ug*h/mL for patent-ductus-arteriosus treatment failure, not significant).
 - **Notes:** Member of the `AUC_<DRUG>` family with a window qualifier, parallel to `AUC_INDO` per the `AUC_EMPA` Notes (a different exposure metric registers a parallel canonical rather than overloading one).
 
+### AUC_BUSULFAN_FIRST (**canonical for first-dose busulfan AUC0-inf**)
+- **Description:** Per-subject busulfan plasma AUC from time zero to infinity after the first dose of a conditioning course, computed as the first dose divided by the individual (empirical-Bayes) clearance. For a linear one-compartment model this equals the steady-state AUC over one dosing interval at that dose. Supplied as a data column, typically from a population PK model, not computed by the consuming model.
+- **Units:** `mg*h/L`
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- Huang 2026 dichotomises it at 4.5 mg*h/L (reference >= 4.5). Cohort median 4.5 mg*h/L, range 1.8-10.5.
+- **Source aliases:**
+  - `AUC first` / `AUCfirst` -- Huang 2026 Results, Figure 3A and Table S2a.
+- **Example models:** `Huang_2026_busulfan_efs.R` (founding example; event-free-survival hazard ratio 1.63 for AUC first < 4.5 vs >= 4.5 mg*h/L in pediatric HSCT).
+- **Notes:** Member of the `AUC_<DRUG>` family with a window qualifier. A per-course cumulative busulfan AUC is the separate `AUC_BUSULFAN_COURSE`. Sources reporting busulfan AUC in uM*min convert with 1 mg*h/L = 243.6 uM*min (MW 246.3 g/mol).
+
+### AUC_BUSULFAN_COURSE (**canonical for cumulative busulfan AUC over a conditioning course**)
+- **Description:** Per-subject cumulative busulfan plasma AUC over the whole conditioning course (all doses, e.g. 12 doses for a 3-day or 16 doses for a 4-day q6h regimen), computed as each dose divided by the individual (empirical-Bayes) clearance and summed. Not dose-normalised. Supplied as a data column, typically from a population PK model.
+- **Units:** `mg*h/L`
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters through regimen-specific cut points. Huang 2026: 3-day courses dichotomised at 54 mg*h/L (median 54.2, range 26.5-119.0); 4-day courses against a 70-90 mg*h/L reference window (median 70.5, range 30.2-109.9).
+- **Source aliases:**
+  - `cAUC3 days` and `cAUC4 days` -- Huang 2026 Results, Figures 3B-C and Tables S2b, S2c, S4b and S6. The course length is a property of the cohort the consuming model was fitted to, not a separate column.
+- **Example models:** `Huang_2026_busulfan_efs_bu3.R` (founding example; EFS hazard ratio 1.73 below 54 mg*h/L), `Huang_2026_busulfan_efs_bu4.R` (EFS hazard ratios 2.94 below and 3.22 above the 70-90 mg*h/L window), `Huang_2026_busulfan_nrm_bu3.R` (nonrelapse-mortality hazard ratio 2.48 below 54 mg*h/L, adjusted for age band), `Huang_2026_busulfan_hc_bu3.R` (grade 3-4 hemorrhagic-cystitis hazard ratio 0.38 below 54 mg*h/L).
+- **Notes:** Member of the `AUC_<DRUG>` family with a window qualifier, parallel to `AUC_INDO_COURSE`. Distinct from `AUC_BUSULFAN_FIRST`, the single-dose exposure.
+
 ### AUC_LUSP (**canonical for luspatercept steady-state AUC over the 3-week dosing interval**)
 - **Description:** Luspatercept area under the serum concentration-time curve over the 21-day (once every 3 weeks) dosing interval at steady state, used as the exposure driver of landmark exposure-response models. Chen 2021 derives it outside the population PK run as dose / individual CL/F (empirical Bayes estimate), which is exact for the linear one-compartment luspatercept model. Time-fixed per subject in the founding models, which all use the STARTING dose (`AUCss`); the same paper's time-averaged `AUCavg` (cumulative dose / CL/F / treatment days x 21) and event-interval `AUC_TEAE` metrics coincide with it only while a patient is on the starting dose.
 - **Units:** `ug*day/mL`
