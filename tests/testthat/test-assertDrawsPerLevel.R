@@ -485,6 +485,17 @@ test_that(".checkOneModel() runs the rule on a model of a source tree, not on a 
   expect_equal(sum(alone$category == "nesting_assertion"), 0L)
 })
 
+test_that("checkModelConventions() reads the source tree from the tag buildModelDb() puts on a model", {
+  skip_if_not_installed("nlmixr2est")
+  ui <- .nestFixtureUi(vignette = "No_such_article_in_the_source_tree")
+  expect_null(.resolveModel(ui)$packageDir)
+  pkg <- .nestFixtureArticles("1")
+  attr(ui, "nlmixr2libPackageDir") <- pkg
+  expect_identical(.resolveModel(ui)$packageDir, pkg)
+  res <- suppressWarnings(suppressMessages(checkModelConventions(ui, verbose = FALSE)))
+  expect_equal(sum(res$category == "nesting_assertion"), 1L)
+})
+
 test_that("a registered model is checked against the source tree its file is in", {
   skip_on_cran()
   skip_if_not_installed("nlmixr2est")

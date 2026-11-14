@@ -320,11 +320,12 @@ addFileToModelDb <- function(dir, file, modeldb) {
   # Convention check. Error-severity issues are accumulated and abort
   # `buildModelDb()` once every model has been visited, so one run reports
   # every offending model instead of one per rebuild.
-  # The model's own package source tree, which holds the articles the
-  # nesting_assertion rule reads, comes from its path, so a build run from an
-  # installed copy of the package still reads the tree it builds.
+  # The package source tree the model file is in holds the articles the
+  # nesting_assertion rule reads; it comes from the file's path, so a build run
+  # from an installed copy of the package still reads the tree it builds.
+  attr(mod, "nlmixr2libPackageDir") <- .packageDirOfModelFile(fileName)
   issues <- tryCatch(
-    suppressWarnings(.checkOneModel(mod, verbose = FALSE, packageDir = .packageDirOfModelFile(fileName))),
+    suppressWarnings(checkModelConventions(mod, verbose = FALSE)),
     error = function(e) NULL
   )
   errors <- NULL

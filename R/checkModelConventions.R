@@ -54,15 +54,14 @@ checkModelConventions <- function(model, verbose = TRUE) {
 }
 
 # `packageDir` is the source directory of the package whose inst/modeldb holds
-# the model, where it is known (buildModelDb() reads it from the model's path); for
-# a model given by name it is found from the registry's file for the model.
+# the model, when the caller knows it; otherwise .resolveModel() finds it.
 .checkOneModel <- function(model, verbose, packageDir = NULL) {
   resolved <- .resolveModel(model)
   ui <- resolved$ui
   model_name <- resolved$name
   conv <- .nlmixr2libConventions()
   if (is.null(packageDir)) {
-    packageDir <- .packageDirOfModelFile(resolved$file)
+    packageDir <- resolved$packageDir
   }
 
   checks <- list(
@@ -105,7 +104,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
     checkmate::assertCharacter(model, len = 1, any.missing = FALSE, min.chars = 1)
     fun <- readModelDb(model)
     ui <- nlmixr2est::nlmixr(fun)
-    return(list(ui = ui, name = model, file = .modelDbFile(model)))
+    return(list(ui = ui, name = model, packageDir = .packageDirOfModelFile(.modelDbFile(model))))
   }
   if (inherits(model, "rxUi")) {
     # `ui$modelName` is a single character string, or NULL for an anonymous
@@ -114,7 +113,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
     if (is.null(nm)) {
       nm <- "<rxUi>"
     }
-    return(list(ui = model, name = nm))
+    # buildModelDb() tags the ui with the source tree its file is in.
+    return(list(ui = model, name = nm, packageDir = attr(model, "nlmixr2libPackageDir", exact = TRUE)))
   }
   if (is.function(model)) {
     ui <- nlmixr2est::nlmixr(model)
