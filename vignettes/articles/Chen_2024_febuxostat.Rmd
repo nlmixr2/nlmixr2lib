@@ -243,9 +243,9 @@ stopifnot(
   all(1 - f1$fdepot_capped >= 0),
   # The cap binds exactly where the lognormal draw reaches 1.
   identical(f1$fdepot_capped == 1, f1$fdepot >= 1),
-  # Binomial tolerance on the share at the cap, not an extreme of the cohort.
-  abs(share_at_cap - expected_at_cap) <
-    4 * sqrt(expected_at_cap * (1 - expected_at_cap) / nrow(f1))
+  # The count at the cap is binomial; require that neither tail is vanishingly small.
+  pbinom(sum(f1$fdepot_capped == 1), nrow(f1), expected_at_cap) > 1e-6,
+  pbinom(sum(f1$fdepot_capped == 1) - 1L, nrow(f1), expected_at_cap, lower.tail = FALSE) > 1e-6
 )
 ```
 
