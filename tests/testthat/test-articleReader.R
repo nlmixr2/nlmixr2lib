@@ -16,7 +16,7 @@
   acc$calls
 }
 
-test_that("the running chunks come back parsed, one list per chunk, with nothing unparseable", {
+test_that("the running chunks come back parsed, one list per chunk, with nothing unreadable", {
   path <- .readerArticle(c(
     "# Title",
     "",
@@ -32,11 +32,11 @@ test_that("the running chunks come back parsed, one list per chunk, with nothing
     "```"
   ))
   read <- .articleExprs(path)
-  expect_named(read, c("chunks", "unparseable"))
+  expect_named(read, c("chunks", "unreadable"))
   expect_length(read$chunks, 2L)
   expect_length(read$chunks[[1L]], 2L)
   expect_identical(read$chunks[[2L]][[1L]], quote(y <- f(x)))
-  expect_length(read$unparseable, 0L)
+  expect_length(read$unreadable, 0L)
 })
 
 test_that("a chunk that does not run is not read, however eval is written", {
@@ -54,6 +54,18 @@ test_that("a chunk that does not run is not read, however eval is written", {
     expect_identical(.readerCalls(.articleExprs(path)), "shown()", label = header)
   }
   for (opt in c("#| eval: true", "#| eval: yes", "#| eval: y", "#| eval: on", "#| echo: false")) {
+    path <- .readerArticle(c("```{r a}", opt, "shown()", "```"))
+    expect_identical(.readerCalls(.articleExprs(path)), "shown()", label = opt)
+  }
+})
+
+test_that("an eval given as a YAML !expr tag is read as the R expression it holds", {
+  for (opt in c("#| eval: !expr FALSE", "#| eval: !expr F", "#|   eval:   !expr   FALSE  ")) {
+    path <- .readerArticle(c("```{r a}", opt, "hidden()", "```", "```{r b}", "shown()", "```"))
+    expect_identical(.readerCalls(.articleExprs(path)), "shown()", label = opt)
+  }
+  # TRUE, a computed expression, and the YAML word "false" after the tag run.
+  for (opt in c("#| eval: !expr TRUE", "#| eval: !expr have_data", "#| eval: !expr false")) {
     path <- .readerArticle(c("```{r a}", opt, "shown()", "```"))
     expect_identical(.readerCalls(.articleExprs(path)), "shown()", label = opt)
   }
@@ -108,7 +120,7 @@ test_that("chunks fenced with more than three backticks are read and close on a 
     "```"
   ))
   read <- .articleExprs(path)
-  expect_length(read$unparseable, 0L)
+  expect_length(read$unreadable, 0L)
   # The string literal that holds a three-backtick line is one call on its own.
   calls <- .readerCalls(read)
   expect_length(calls, 4L)
@@ -136,18 +148,18 @@ test_that("a chunk that does not parse, or is never closed, is reported by its o
   path <- .readerArticle(c("```{r ok}", "ok()", "```", "", "```{r bad}", "x <- (1 +", "```", "```{r open}", "never()"))
   read <- .articleExprs(path)
   expect_identical(.readerCalls(read), "ok()")
-  expect_identical(read$unparseable, c("does not parse" = 5L, "is never closed" = 8L))
+  expect_identical(read$unreadable, c("does not parse" = 5L, "is never closed" = 8L))
   # A chunk that does not run is not code, closed or not.
   path <- .readerArticle(c("```{r bad, eval = FALSE}", "x <- (1 +", "```", "```{r open, eval = FALSE}", "never()"))
   read <- .articleExprs(path)
   expect_length(read$chunks, 0L)
-  expect_length(read$unparseable, 0L)
+  expect_length(read$unreadable, 0L)
 })
 
 test_that("an article with no chunks reads as empty, not as an error", {
   read <- .articleExprs(.readerArticle(c("# Only prose", "", "text")))
   expect_identical(read$chunks, list())
-  expect_length(read$unparseable, 0L)
+  expect_length(read$unreadable, 0L)
 })
 
 test_that(".unpipe() rewrites magrittr pipes at every depth and leaves everything else alone", {
@@ -164,6 +176,106 @@ test_that(".unpipe() rewrites magrittr pipes at every depth and leaves everythin
   expect_identical(.unpipe(quote(x)), quote(x))
   expect_identical(.unpipe(1L), 1L)
   expect_identical(.unpipe(quote(x %in% y)), quote(x %in% y))
+})
+
+test_that(".unpipe() puts the lhs where a direct `.` is, and does not add it as the first argument then", {
+  expect_identical(.unpipe(quote(x %>% f(y, .))), quote(f(y, x)))
+  expect_identical(.unpipe(quote(x %>% f(., y, .))), quote(f(x, y, x)))
+  expect_identical(.unpipe(quote(x %>% f(.))), quote(f(x)))
+  expect_identical(.unpipe(quote(x %>% .$a)), quote(x$a))
+  expect_identical(.unpipe(quote(x %>% pkg::f(y, .))), quote(pkg::f(y, x)))
+  # A `.` that is not a direct argument does not stop the lhs being added.
+  expect_identical(.unpipe(quote(x %>% f(g(.)))), quote(f(x, g(.))))
+  expect_identical(.unpipe(quote(x %>% f(y = .z))), quote(f(x, y = .z)))
+  expect_identical(.unpipe(quote(x %>% f(y, .) %>% h(2))), quote(h(f(y, x), 2)))
+  # An empty argument next to the dot.
+  expect_identical(.unpipe(quote(x %>% m[, .])), quote(m[, x]))
+})
+
+test_that(".unpipe() gives the value magrittr gives, for every form it rewrites", {
+  # magrittr is not a dependency of the package: it is the reference when present.
+  skip_if_not_installed("magrittr")
+  `%>%` <- getExportedValue("magrittr", "%>%")
+  env <- new.env(parent = environment())
+  env$f <- function(...) list(...)
+  env$g <- function(v) v * 10
+  env$h <- function(v, w = 1) v + w
+  env$x <- 3
+  # magrittr binds `.` to the lhs, also inside a nested call; the rewrite leaves
+  # that `.` in place, so it is bound here to the same value.
+  env$. <- env$x
+  env$y <- 7
+  env$lst <- list(a = 5)
+  env$m <- matrix(1:4, 2)
+  forms <- list(
+    quote(x %>% f(y)),
+    quote(x %>% f(y, .)),
+    quote(x %>% f(., y, .)),
+    quote(x %>% f(g(.))),
+    quote(x %>% g),
+    quote(x %>% h(1, w = .)),
+    quote(x %>% h(1, w = .)),
+    quote(lst %>% .$a),
+    quote(x %>% f(y) %>% length()),
+    quote(x %>% h(y, .) %>% g()),
+    quote(h(x %>% g, y)),
+    quote(m %>% .[1, 2])
+  )
+  for (form in forms) {
+    expect_identical(eval(.unpipe(form), env), eval(form, env), label = paste(deparse(form), collapse = " "))
+  }
+})
+
+test_that("a chunk that pipes into a form the reader does not rewrite is reported, and still returned", {
+  for (code in c("y <- x %>% pkg::f", "y <- x %>% {f(.)}", "y <- x %>% (function(d) f(d))", "z <- x %>% h() %>% {k(.)}")) {
+    path <- .readerArticle(c("```{r ok}", "ok()", "```", "```{r p}", code, "```"))
+    read <- .articleExprs(path)
+    expect_identical(
+      read$unreadable,
+      c("pipes into a `{`, `(` or `pkg::f` form that the reader does not rewrite" = 4L),
+      label = code
+    )
+    expect_length(read$chunks, 2L)
+  }
+  # The forms it does rewrite raise nothing.
+  path <- .readerArticle(c("```{r p}", "y <- x %>% f(a, .) %>% g %>% pkg::h(1)", "```"))
+  expect_length(.articleExprs(path)$unreadable, 0L)
+})
+
+test_that("a chunk that sets the knitr option eval makes which chunks run unknown, and is reported", {
+  sets <- c(
+    "knitr::opts_chunk$set(eval = FALSE)",
+    "opts_chunk$set(eval = TRUE)",
+    "knitr::opts_chunk$set(collapse = TRUE, eval = have_data)",
+    "knitr:::opts_chunk$set(eval = FALSE)",
+    "knitr::opts_chunk$set(list(echo = TRUE, eval = FALSE))"
+  )
+  for (code in sets) {
+    path <- .readerArticle(c("```{r setup, include = FALSE}", code, "```", "```{r b}", "shown()", "```"))
+    read <- .articleExprs(path)
+    expect_identical(
+      read$unreadable,
+      c("sets the knitr chunk option `eval` for the chunks after it, so which chunks run is unknown" = 1L),
+      label = code
+    )
+    expect_identical(.readerCalls(read)[[length(.readerCalls(read))]], "shown()", label = code)
+  }
+  # Other options, other functions and other objects named `set` do not.
+  quiet <- c(
+    "knitr::opts_chunk$set(echo = FALSE, collapse = TRUE)",
+    "knitr::opts_chunk$set(list(echo = FALSE))",
+    "knitr::opts_knit$set(eval = FALSE)",
+    "other$set(eval = FALSE)",
+    "set(eval = FALSE)",
+    "opts_chunk$get(\"eval\")"
+  )
+  for (code in quiet) {
+    path <- .readerArticle(c("```{r setup}", code, "```"))
+    expect_length(.articleExprs(path)$unreadable, 0L)
+  }
+  # Inside a chunk that does not run, it sets nothing.
+  path <- .readerArticle(c("```{r setup, eval = FALSE}", "knitr::opts_chunk$set(eval = FALSE)", "```"))
+  expect_length(.articleExprs(path)$unreadable, 0L)
 })
 
 test_that(".walkCalls() visits every call of a call, an expression, a list and a function's defaults", {

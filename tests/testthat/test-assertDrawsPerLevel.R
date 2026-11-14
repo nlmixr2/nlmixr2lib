@@ -421,6 +421,35 @@ test_that("an article that cannot be read, or has a chunk that does not parse, i
   )
 })
 
+test_that("an article whose chunks the reader cannot take at face value fails the rule, with the call present", {
+  skip_if_not_installed("nlmixr2est")
+  ui <- .nestFixtureUi()
+  # What runs after the call is unknown once eval is set for the whole article.
+  setter <- .nestFixtureArticles(c(.callOk, "```", "", "```{r later}", "knitr::opts_chunk$set(eval = FALSE)"))
+  v <- .nestRuleIssues(ui, setter)
+  expect_equal(nrow(v), 1L)
+  expect_match(
+    v$message,
+    paste0(
+      "the chunk at line 7 sets the knitr chunk option `eval` for the chunks after it, ",
+      "so which chunks run is unknown, so the article cannot be read in full"
+    ),
+    fixed = TRUE
+  )
+  # A pipe into a form that is not rewritten may hide the call.
+  piped <- .nestFixtureArticles(c(.callOk, "```", "", "```{r later}", "res <- sim %>% {assertDrawsPerLevel(., eta = \"x\", by = \"OCC\")}"))
+  v <- .nestRuleIssues(ui, piped)
+  expect_equal(nrow(v), 1L)
+  expect_match(
+    v$message,
+    "the chunk at line 7 pipes into a `{`, `(` or `pkg::f` form that the reader does not rewrite",
+    fixed = TRUE
+  )
+  # A pipe that is rewritten is read in full.
+  fine <- .nestFixtureArticles(c(.callOk, "```", "", "```{r later}", "res <- sim %>% invisible()"))
+  expect_equal(nrow(.nestRuleIssues(ui, fine)), 0L)
+})
+
 test_that("an article in vignettes/ beside articles/ is found", {
   skip_if_not_installed("nlmixr2est")
   pkg <- .nestFixtureArticles("1")
@@ -430,7 +459,9 @@ test_that("an article in vignettes/ beside articles/ is found", {
 
 test_that("the rule does nothing outside a source tree, without a nested eta, or for an evidenced above-subject group", {
   skip_if_not_installed("nlmixr2est")
-  expect_equal(nrow(.nestRuleIssues(.nestFixtureUi(), NULL)), 0L)
+  outside <- .nestRuleIssues(.nestFixtureUi(), NULL)
+  expect_identical(outside$severity, "info")
+  expect_match(outside$message, "^not checked: the model is not in the inst/modeldb of a package source tree")
   plain <- suppressWarnings(suppressMessages(nlmixr2est::nlmixr(function() {
     ini({
       lcl <- log(5)
@@ -482,7 +513,8 @@ test_that(".checkOneModel() runs the rule on a model of a source tree, not on a 
   expect_identical(hit$severity, "error")
   # A model of the user's own, given as a function, belongs to no source tree.
   alone <- suppressWarnings(suppressMessages(.checkOneModel(ui, verbose = FALSE)))
-  expect_equal(sum(alone$category == "nesting_assertion"), 0L)
+  expect_equal(sum(alone$category == "nesting_assertion" & alone$severity == "error"), 0L)
+  expect_equal(sum(alone$category == "nesting_assertion" & alone$severity == "info"), 1L)
 })
 
 test_that("checkModelConventions() reads the source tree from the tag buildModelDb() puts on a model", {
@@ -579,19 +611,71 @@ test_that("a model file of a source tree is checked against that tree's articles
   }
 })
 
-test_that("a source tree without vignettes/articles skips the rule with a message, and checks nothing", {
+test_that("a source tree without vignettes/articles skips the rule, says so in an info issue, and checks nothing", {
   skip_if_not_installed("nlmixr2est")
   ui <- .nestFixtureUi()
   pkg <- .nestFixtureTree(NULL)
-  expect_message(
-    res <- .checkNestingAssertion(ui, "Fixture_occ_model", packageDir = pkg),
-    "nesting_assertion skipped for Fixture_occ_model",
-    fixed = TRUE
+  res <- .checkNestingAssertion(ui, "Fixture_occ_model", packageDir = pkg)
+  expect_equal(nrow(res), length(.nestedEtaRows(ui)$eta))
+  expect_identical(unique(res$category), "nesting_assertion")
+  expect_identical(unique(res$severity), "info")
+  expect_identical(sort(res$name), sort(.nestedEtaRows(ui)$eta))
+  expect_identical(
+    unique(res$message),
+    paste0(
+      "not checked: ",
+      pkg,
+      " has no vignettes/articles, so the article that asserts the draws cannot be read"
+    )
   )
-  expect_equal(nrow(res), 0L)
   row <- suppressWarnings(suppressMessages(.modeldbFileRow(file.path(pkg, "inst", "modeldb"), "Fixture_occ_model.R")))
-  n <- if (is.null(row$errors)) 0L else sum(row$errors$category == "nesting_assertion")
-  expect_equal(n, 0L)
+  expect_equal(sum(row$errors$category == "nesting_assertion"), 0L)
+  # One note for the model, whatever the number of its nested etas.
+  expect_identical(row$notes, unique(res$message))
+})
+
+test_that("a model outside a source tree is not checked, and its info issue says why", {
+  skip_if_not_installed("nlmixr2est")
+  ui <- .nestFixtureUi()
+  res <- .checkNestingAssertion(ui, "Fixture_occ_model", packageDir = NULL)
+  expect_identical(unique(res$severity), "info")
+  expect_identical(
+    unique(res$message),
+    paste0(
+      "not checked: the model is not in the inst/modeldb of a package source tree, ",
+      "so the article that asserts its draws cannot be found"
+    )
+  )
+  # A model whose group is above the subject on purpose has nothing to check or to say.
+  study <- .nestFixtureUi(group = "SIDN", eta = "etalcl_study", vignette = NULL)
+  expect_equal(nrow(.checkNestingAssertion(study, "Qi_2024_vosoritide", packageDir = NULL)), 0L)
+})
+
+test_that("the build session prints one summary line per reason a rule did not run", {
+  expect_silent(.modeldbNotesSummary(character()))
+  expect_silent(.modeldbNotesSummary(NULL))
+  msgs <- testthat::capture_messages(
+    .modeldbNotesSummary(c("not checked: a", "not checked: b", "not checked: a"))
+  )
+  expect_identical(
+    msgs,
+    c("nesting_assertion not checked: a (2 model(s))\n", "nesting_assertion not checked: b (1 model(s))\n")
+  )
+})
+
+test_that("a directory walk over a tree without articles says once that the rule did not run", {
+  skip_if_not_installed("nlmixr2est")
+  pkg <- .nestFixtureTree(NULL)
+  withr::defer(.conventionErrorsReset())
+  msgs <- testthat::capture_messages(
+    suppressWarnings(suppressPackageStartupMessages(
+      .addDirToModelDbCached(file.path(pkg, "inst", "modeldb"), list())
+    ))
+  )
+  line <- grep("^nesting_assertion not checked", msgs, value = TRUE)
+  expect_length(line, 1L)
+  expect_match(line, "has no vignettes/articles", fixed = TRUE)
+  expect_match(line, "(1 model(s))", fixed = TRUE)
 })
 
 test_that("the above-subject allowlist names only nested groups that still exist, with evidence", {
