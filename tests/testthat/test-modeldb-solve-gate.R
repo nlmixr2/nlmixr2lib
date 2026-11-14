@@ -125,14 +125,9 @@ knownBrokenModels <- c(
 
 # (3) Models a dose does not reach because of a recorded model defect. Only the
 # dead-dose check exempts them; every other check still runs on them, and the
-# dead-dose check fails once one of them responds to a dose again.
-#
-#   Hong_2013_glucose_insulin_MTT
-#     The meal dose never arrives. `absg <- transit(nn, mtt, bio)` is
-#     assigned outside `d/dt(glucose)`, so rxode2 does not tie it to the
-#     glucose dose, and `f(glucose) <- 0` suppresses the bolus itself. Even
-#     the article's 100 g meal leaves Gc at FPG throughout.
-knownDeadDoseModels <- "Hong_2013_glucose_insulin_MTT"
+# dead-dose check fails once one of them responds to a dose again. Each entry
+# names the model and the defect.
+knownDeadDoseModels <- character(0)
 
 # Solving every model in the registry takes roughly an hour. That is the right
 # cost for a release gate and the wrong cost for an edit-run-edit loop, so the
