@@ -2865,7 +2865,9 @@ test_that("every dose-history function takes a compartment in the installed rxod
   # The list is rxode2's syntax table, not something rxode2 exports. Parsing
   # each one with a compartment argument fails as soon as rxode2 drops or
   # renames one, and the dosenum() control shows the parser does refuse a
-  # compartment where the function takes none.
+  # compartment where the function takes none. The parser's message for that
+  # refusal depends on what it parsed before in the session, as in the test
+  # below.
   for (fn in nlmixr2lib:::.doseTimingFunctions) {
     mv <- tryCatch(
       suppressMessages(rxode2::rxModelVars(paste0("d/dt(depot) <- -depot; x <- ", fn, "(depot)"))),
@@ -2877,7 +2879,7 @@ test_that("every dose-history function takes a compartment in the installed rxod
     suppressMessages(utils::capture.output(
       rxode2::rxModelVars("d/dt(depot) <- -depot; x <- dosenum(depot)")
     )),
-    "syntax error"
+    "syntax error|string segment too long"
   )
 })
 
