@@ -275,6 +275,100 @@ test_that("the build checks a model under its own name, so its specific-scope co
   expect_identical(scope$model[scope$name == "CTROUGH"], "Fixture_2026_ctrough")
 })
 
+# A checker that raises an error for the model named in `.modeldbSpy$throwFor`
+# and otherwise runs the real one.
+.throwingCheckModelConventions <- function(model, verbose = TRUE) {
+  if (identical(model$modelName, .modeldbSpy$throwFor)) {
+    stop("boom: the checker hit something it cannot read", call. = FALSE)
+  }
+  .modeldbSpy$checkModelConventions(model, verbose = verbose)
+}
+
+test_that("an error raised by the convention checker is not read as a clean model", {
+  skip_on_cran()
+  dir <- withr::local_tempdir("modeldb-fixture")
+  .writeModelFixtures(dir, list("Fixture_2026_clean.R" = .renamedTemplate("Fixture_2026_clean")))
+  .modeldbSpy$checkModelConventions <- nlmixr2lib::checkModelConventions
+  .modeldbSpy$throwFor <- "Fixture_2026_clean"
+  testthat::local_mocked_bindings(checkModelConventions = .throwingCheckModelConventions, .package = "nlmixr2lib")
+
+  err <- tryCatch(
+    suppressMessages(suppressPackageStartupMessages(nlmixr2lib:::.modeldbFileRow(dir, "Fixture_2026_clean.R"))),
+    error = identity
+  )
+  expect_s3_class(err, "error")
+  expect_identical(
+    conditionMessage(err),
+    "checkModelConventions() raised an error for Fixture_2026_clean: boom: the checker hit something it cannot read"
+  )
+})
+
+test_that("a model whose convention check raises an error is recorded as a failure and left out of the cache", {
+  skip_on_cran()
+  dir <- withr::local_tempdir("modeldb-fixture")
+  .writeModelFixtures(
+    dir,
+    list(
+      "Fixture_2026_a.R" = .renamedTemplate("Fixture_2026_a"),
+      "Fixture_2026_b.R" = .renamedTemplate("Fixture_2026_b")
+    )
+  )
+  .modeldbSpy$checkModelConventions <- nlmixr2lib::checkModelConventions
+  .modeldbSpy$throwFor <- "Fixture_2026_a"
+  testthat::local_mocked_bindings(checkModelConventions = .throwingCheckModelConventions, .package = "nlmixr2lib")
+  nlmixr2lib:::.conventionErrorsReset()
+  withr::defer(nlmixr2lib:::.conventionErrorsReset())
+  acc <- new.env(parent = emptyenv())
+
+  err <- tryCatch(
+    {
+      suppressMessages(nlmixr2lib:::.addDirToModelDbCached(dir, list(), acc = acc))
+      suppressMessages(nlmixr2lib:::.conventionErrorsStopIfAny())
+    },
+    error = identity
+  )
+  expect_s3_class(err, "error")
+  expect_match(conditionMessage(err), "buildModelDb(): 1 model file(s) could not be loaded.", fixed = TRUE)
+  expect_match(
+    conditionMessage(err),
+    paste0(
+      file.path(dir, "Fixture_2026_a.R"),
+      ": checkModelConventions() raised an error for Fixture_2026_a: boom"
+    ),
+    fixed = TRUE
+  )
+  # The model that checked cleanly is cached; the one whose check failed is not.
+  expect_identical(names(acc$entries), "Fixture_2026_b.R")
+})
+
+test_that("a build whose convention checker raises an error stops and caches no row for that model", {
+  skip_on_cran()
+  pkg <- withr::local_tempdir("modeldb-pkg")
+  .fixturePackage(
+    pkg,
+    files = list(
+      "Fixture_2026_a.R" = .renamedTemplate("Fixture_2026_a"),
+      "Fixture_2026_b.R" = .renamedTemplate("Fixture_2026_b")
+    )
+  )
+  withr::local_dir(pkg)
+  withr::defer(nlmixr2lib:::.conventionErrorsReset())
+  .modeldbSpy$checkModelConventions <- nlmixr2lib::checkModelConventions
+  .modeldbSpy$throwFor <- "Fixture_2026_b"
+  testthat::local_mocked_bindings(checkModelConventions = .throwingCheckModelConventions, .package = "nlmixr2lib")
+
+  err <- tryCatch(suppressMessages(nlmixr2lib:::buildModelDb(workers = 1L)), error = identity)
+  expect_s3_class(err, "error")
+  expect_match(
+    conditionMessage(err),
+    "Fixture_2026_b.R: checkModelConventions() raised an error for Fixture_2026_b: boom",
+    fixed = TRUE
+  )
+  # Nothing is published, and the next build re-checks the model whose check failed.
+  expect_false(file.exists(file.path(pkg, "data", "modeldb.rda")))
+  expect_identical(names(readRDS(file.path(pkg, "data-raw", "modeldb-cache.rds"))$entries), "Fixture_2026_a.R")
+})
+
 test_that("a parallel build gives the same rows, cache and errors as a serial one", {
   skip_on_cran()
   skip_if_not_installed("callr")
