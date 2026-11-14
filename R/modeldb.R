@@ -283,6 +283,7 @@ addDirToModelDb <- function(dir, modeldb = data.frame()) {
 #' @export
 addFileToModelDb <- function(dir, file, modeldb) {
   res <- .modeldbFileRow(dir = dir, file = file)
+  .modeldbNotesSummary(res$notes)
   if (!is.null(res$errors)) {
     .conventionErrorsAdd(res$row$name, res$errors)
   }
@@ -329,6 +330,9 @@ addFileToModelDb <- function(dir, file, modeldb) {
     error = function(e) NULL
   )
   errors <- NULL
+  # Rules that could not run for this model (info severity); the build session
+  # reports them, since a worker's messages are not seen.
+  notes <- as.character(unique(issues$message[issues$category == "nesting_assertion" & issues$severity == "info"]))
   if (!is.null(issues) && nrow(issues) > 0) {
     n_err <- sum(issues$severity == "error")
     n_warn <- sum(issues$severity == "warning")
@@ -430,7 +434,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
     )
   # The nesting_assertion rule reads the model's article, which the model file's
   # hash does not cover, so such a model is parsed on every build.
-  list(row = ret, errors = errors, volatile = nrow(.nestedEtaRows(mod)) > 0L)
+  list(row = ret, errors = errors, volatile = nrow(.nestedEtaRows(mod)) > 0L, notes = notes)
 }
 ## nocov end
 
@@ -494,6 +498,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
       acc = acc,
       chunkSize = chunkSize
     )
+    .modeldbNotesSummary(unlist(lapply(results, function(res) res$notes), use.names = FALSE))
     for (j in seq_along(missIdx)) {
       res <- results[[j]]
       if (!is.null(res$failure)) {
@@ -520,11 +525,26 @@ addFileToModelDb <- function(dir, file, modeldb) {
   list(modeldb = modeldb, entries = acc$entries)
 }
 
+# One line per distinct reason a convention rule did not run, with the number of
+# models it applies to. Built from the notes of every model in the build session,
+# because a worker process's messages are lost, so a build in which a rule never
+# ran says so instead of passing silently.
+.modeldbNotesSummary <- function(notes) {
+  if (length(notes) == 0L) {
+    return(invisible(NULL))
+  }
+  counts <- table(notes)
+  for (reason in names(counts)) {
+    message("nesting_assertion ", reason, " (", counts[[reason]], " model(s))")
+  }
+  invisible(NULL)
+}
+
 # Result for one parsed file: its cache key and hash, and either the row (with
 # any error-severity convention issues) or `failure`, the message of the R
 # error that stopped it loading.
-.modeldbFileResult <- function(file, hash, row = NULL, errors = NULL, failure = NULL, volatile = FALSE) {
-  list(file = file, hash = hash, row = row, errors = errors, failure = failure, volatile = volatile)
+.modeldbFileResult <- function(file, hash, row = NULL, errors = NULL, failure = NULL, volatile = FALSE, notes = character()) {
+  list(file = file, hash = hash, row = row, errors = errors, failure = failure, volatile = volatile, notes = notes)
 }
 
 # Keep the cache in step with one result: a clean model is (re)cached, and a
@@ -554,7 +574,14 @@ addFileToModelDb <- function(dir, file, modeldb) {
         .modeldbFileResult(files[i], hashes[i], failure = conditionMessage(loaded))
       } else {
         rownames(loaded$row) <- NULL
-        .modeldbFileResult(files[i], hashes[i], row = loaded$row, errors = loaded$errors, volatile = loaded$volatile)
+        .modeldbFileResult(
+          files[i],
+          hashes[i],
+          row = loaded$row,
+          errors = loaded$errors,
+          volatile = loaded$volatile,
+          notes = loaded$notes
+        )
       }
     .modeldbAccRecord(acc, out[[i]])
   }
