@@ -142,7 +142,15 @@ sim <- rxode2::rxSolve(mod, events = events, returnType = "data.frame") |>
   left_join(select(cohort, id, arm, dose_mg), by = "id")
 
 typ_mod <- rxode2::zeroRe(mod)
-sim_typ <- rxode2::rxSolve(typ_mod, events = events, returnType = "data.frame") |>
+# Each subject keeps its own dose and hematocrit with the random effects at
+# zero; rxode2 warns that a multi-subject solve has no omega, which is the
+# intent here. Only that message is muffled.
+sim_typ <- withCallingHandlers(
+  rxode2::rxSolve(typ_mod, events = events, returnType = "data.frame"),
+  warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w))) invokeRestart("muffleWarning")
+  }
+) |>
   select(id, time, Cc, auc_central, cauc, egfrcfb, cl, slope_i) |>
   left_join(select(cohort, id, arm, dose_mg), by = "id")
 ```
