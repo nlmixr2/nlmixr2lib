@@ -6548,6 +6548,8 @@ navbar:
         href: articles/Wang_2026_polymyxinB.html
       - text: "PolymyxinB (Xu 2024)"
         href: articles/Xu_2024_polymyxinB.html
+      - text: "PolymyxinB (Xu 2026)"
+        href: articles/Xu_2026_polymyxinB.html
       - text: "PolymyxinB (Yang 2025)"
         href: articles/Yang_2025_polymyxinB.html
       - text: "PolymyxinB (vanderMeijden 2023)"
@@ -12255,6 +12257,7 @@ articles:
   - articles/Xu_2025_aficamten
   - articles/Xu_2025_enrofloxacin_largemouthBass
   - articles/Xu_2026_caspofungin
+  - articles/Xu_2026_polymyxinB
   - articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas
   - articles/Yadav_2017_imipenem_tobramycin
   - articles/Yaghini_2021_quantumDot
