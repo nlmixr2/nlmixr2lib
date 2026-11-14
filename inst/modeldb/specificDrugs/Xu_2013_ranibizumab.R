@@ -103,12 +103,14 @@ Xu_2013_ranibizumab <- function() {
   model({
     # 1. Individual parameters
     # CL/F carries the CRCL power effect on the median-centered ratio.
-    # Ka carries the verteporfin-PDT linear multiplier (1 + theta6 * PDT).
-    # frac is bounded in (0, 1) at the typical value; log-normal sampling on
-    # the log scale may cross 1 in the extreme upper tail (see vignette
-    # Assumptions and deviations); in that case the fdepot bioavailability
-    # would fall below 0, so upstream users of very-large-eta sims should
-    # cap frac at the (0, 1) boundary.
+    # Ka carries the verteporfin-PDT multiplier (1 - theta6 * PDT), 35.3% lower
+    # for PDT subjects (Xu 2013 Results). The paper's PDT vitreous half-life of
+    # 13.3 days is ln(2) / (0.0806 * (1 - 0.353)); a multiplier of
+    # (1 + theta6 * PDT) would give 6.4 days.
+    # frac is log-normal with a typical value of 0.0251 and omega 0.7616, so
+    # P(frac > 1) = 6.5e-7, about 1 in 1.5 million subjects; f(vitreous) =
+    # 1 - frac stays positive at any practical cohort size and frac is not
+    # capped.
     cl   <- exp(lcl  + etalcl)  * (CRCL / 65.22) ^ e_crcl_cl
     vc   <- exp(lvc  + etalvc)
     ka   <- exp(lka  + etalka)  * (1 - e_conmed_verteporfin_ka * CONMED_VERTEPORFIN)

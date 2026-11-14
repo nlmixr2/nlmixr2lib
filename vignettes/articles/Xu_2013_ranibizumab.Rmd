@@ -336,14 +336,14 @@ knitr::kable(
   both the vitreous and central dose rows at each injection time; the
   event-building code in this vignette shows the pattern.
 - **`lfrac` log-normal sampling.** The paper's shunt fraction (typical
-  value 0.0251 with 88.7% CV) is bounded in (0, 1) by definition; the
-  log-normal parameterisation used here can produce simulated
-  per-subject values above 1 in the extreme upper tail, which would
-  drive `f(vitreous) = 1 - frac` below zero. At the paper's typical
-  value and CV this is a rare-tail event (approx. 1 in 100 subjects in
-  a naive simulation) but downstream users of very-large-eta sims
-  should cap `frac` at the (0, 1) boundary. The paper does not
-  describe how the NONMEM implementation handled this constraint.
+  value 0.0251 with 88.7% CV, `omega = 0.7616`) is bounded in (0, 1) by
+  definition; the log-normal parameterisation used here can produce a
+  simulated per-subject value above 1, which would drive
+  `f(vitreous) = 1 - frac` below zero. At the paper's typical value and
+  CV that happens with probability `pnorm(log(0.0251) / 0.7616)` =
+  6.5e-7, about 1 in 1.5 million subjects, so `frac` is not capped and no
+  cohort of practical size reaches it. The paper does not describe how the
+  NONMEM implementation handled this constraint.
 - **Vitreous volume 4 mL.** Reproduced as a hardcoded numeric factor
   from Xu 2013 Materials and Methods ("vitreous volume of 4 mL"). This
   drives the `Cvit` derived output; the fitted model itself does not
