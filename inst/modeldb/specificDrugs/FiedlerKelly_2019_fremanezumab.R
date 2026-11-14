@@ -10,6 +10,7 @@ FiedlerKelly_2019_fremanezumab <- function() {
   )
   vignette <- "FiedlerKelly_2019_fremanezumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

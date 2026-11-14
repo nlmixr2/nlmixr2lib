@@ -3,6 +3,7 @@ Lin_2021_asparaginaseErwiniaRecombinant <- function() {
   reference <- "Lin T, Dumas T, Kaullen J, Berry NS, Choi MR, Zomorodi K, Silverman JA. Population pharmacokinetic model development and simulation for recombinant Erwinia asparaginase produced in Pseudomonas fluorescens (JZP-458). Clin Pharmacol Drug Dev. 2021;10(12):1503-1513. doi:10.1002/cpdd.1002"
   vignette <- "Lin_2021_asparaginaseErwiniaRecombinant"
   units <- list(time = "h", dosing = "IU", concentration = "IU/mL")
+  dosing <- c("depot", "central")
 
   # Amounts are asparaginase ACTIVITY units (IU), not mass: the assay reads
   # serum asparaginase activity in IU/mL and the zero-order absorption rate is

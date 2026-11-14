@@ -54,6 +54,7 @@ Huth_2019_siponimod <- function() {
   )
   vignette <- "Huth_2019_siponimod"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. The source is a whole-body PBPK, so these three

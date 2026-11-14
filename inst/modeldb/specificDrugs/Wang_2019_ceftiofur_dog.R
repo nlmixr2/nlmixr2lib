@@ -38,6 +38,7 @@ Wang_2019_ceftiofur_dog <- function() {
     dosing = "mg",
     concentration = "ug/mL"
   )
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     SEXF = list(

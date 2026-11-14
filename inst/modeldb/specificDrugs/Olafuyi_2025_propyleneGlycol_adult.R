@@ -17,6 +17,7 @@ Olafuyi_2025_propyleneGlycol_adult <- function() {
   )
   vignette <- "Olafuyi_2025_propyleneGlycol"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

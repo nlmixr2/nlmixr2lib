@@ -3,6 +3,7 @@ Cosson_2025_crovalimab <- function() {
   reference <- "Cosson V, Fu R, Kulasekararaj A, Nishimura JI, Panse J, Roth A, Scheinberg P, Tong H, Yoon SS, Beveridge L, Gotanda K, Jaminion F, Henrich A, Lundberg P, Shi D, Sreckovic S, Zhang Y, Zhang Z, Benkali K, Buatois S. Pharmacokinetic characterization and exposure-response relationship of crovalimab in the COMMODORE 1, 2 and 3 and COMPOSER trials of patients with paroxysmal nocturnal haemoglobinuria. Br J Clin Pharmacol. 2025;91(5):1479. doi:10.1111/bcp.16394"
   vignette <- "Cosson_2025_crovalimab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

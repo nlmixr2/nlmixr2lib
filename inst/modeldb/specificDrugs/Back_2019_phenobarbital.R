@@ -3,6 +3,7 @@ Back_2019_phenobarbital <- function() {
   reference <- "Back HM, Lee JB, Han N, Goo S, Jung E, Kim J, Song B, An SH, Kim JT, Rhie SJ, Ree YS, Chae JW, Kim JW, Yun HY. Application of Size and Maturation Functions to Population Pharmacokinetic Modeling of Pediatric Patients. Pharmaceutics. 2019;11(6):259. doi:10.3390/pharmaceutics11060259"
   vignette <- "Back_2019_pediatric_size_maturation"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

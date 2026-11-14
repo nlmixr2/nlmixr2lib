@@ -21,6 +21,7 @@ RoubaudBaudron_2025_ceftriaxone <- function() {
   )
   vignette <- "RoubaudBaudron_2025_ceftriaxone"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # The between-subject random effect on clearance is additive on the linear
   # (L/h) scale: Results state 'clearance was normally distributed in the

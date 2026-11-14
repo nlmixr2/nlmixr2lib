@@ -3,6 +3,7 @@ Luo_2021_daratumumab <- function() {
   reference <- "Luo MM, Usmani SZ, Mateos MV, Nahi H, Chari A, San-Miguel J, Touzeau C, Suzuki K, Kaiser M, Carson R, Heuck C, Qi M, Zhou H, Sun YN, Parasrampuria DA. Exposure-Response and Population Pharmacokinetic Analyses of a Novel Subcutaneous Formulation of Daratumumab Administered to Multiple Myeloma Patients. J Clin Pharmacol. 2021;61(5):614-627. doi:10.1002/jcph.1771"
   vignette <- "Luo_2021_daratumumab"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "daratumumab", units = "mg", specimen = "administration site", verified = TRUE),

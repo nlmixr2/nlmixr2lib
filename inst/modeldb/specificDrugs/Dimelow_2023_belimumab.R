@@ -12,6 +12,7 @@ Dimelow_2023_belimumab <- function() {
   )
   vignette <- "Dimelow_2023_belimumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   # Model structure (Dimelow 2023 Figure 2a, the stimulus-based model; the
   # final Model D of Table 1):

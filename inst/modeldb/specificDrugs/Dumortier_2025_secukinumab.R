@@ -22,6 +22,7 @@ Dumortier_2025_secukinumab <- function() {
   )
   vignette <- "Dumortier_2025_secukinumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

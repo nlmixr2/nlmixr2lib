@@ -25,6 +25,7 @@ PichardoAlmarza_2017_simvastatin_qsp <- function() {
   vignette <- "PichardoAlmarza_2017_simvastatin_qsp"
 
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Pichardo-Almarza 2017 Figure 4 and

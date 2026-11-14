@@ -3,6 +3,7 @@ Du_2019_magnesiumSulfate <- function() {
   reference <- "Du L, Wenning L, Migoya E, Xu Y, Carvalho B, Brookfield K, Witjes H, de Greef R, Lumbiganon P, Sangkomkamhang U, Titapant V, Duley L, Long Q, Oladapo OT. Population pharmacokinetic modeling to evaluate standard magnesium sulfate treatments and alternative dosing regimens for women with preeclampsia. J Clin Pharmacol 2019;59(3):374-385. doi:10.1002/jcph.1328"
   vignette <- "Du_2019_magnesiumSulfate"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

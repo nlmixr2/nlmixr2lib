@@ -26,6 +26,7 @@ Na_2025_hosu53_dog <- function() {
   )
   vignette <- "Na_2025_hosu53"
   units <- list(time = "h", dosing = "nmol", concentration = "umol/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Amount units are nmol because Na 2025 reports the

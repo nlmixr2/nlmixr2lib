@@ -22,6 +22,7 @@ Rode_2018_turoctocogAlfaPegol_mouse <- function() {
   )
   vignette <- "Rode_2018_turoctocogAlfaPegol"
   units <- list(time = "h", dosing = "IU/kg", concentration = "IU/mL")
+  dosing <- c("depot", "central")
 
   # Amounts are per kilogram of body weight because Table S1 reports V/Bw and
   # the doses are in IU/kg, so amount / volume is still IU/mL.

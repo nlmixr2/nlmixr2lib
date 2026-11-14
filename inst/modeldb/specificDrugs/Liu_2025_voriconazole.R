@@ -10,6 +10,7 @@ Liu_2025_voriconazole <- function() {
   )
   vignette <- "Liu_2025_voriconazole"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = TRUE),

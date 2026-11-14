@@ -30,6 +30,7 @@ Moein_2024_apitolisib_mouse <- function() {
   )
   vignette <- "Moein_2024_apitolisib"
   units <- list(time = "h", dosing = "mg/kg", concentration = "ug/L")
+  dosing <- c("depot", "central")
 
   covariateData <- list()
 

@@ -4,6 +4,7 @@ Fanta_2007_ciclosporin <- function() {
   paper_specific_residual_sds <- c("propSdPo", "propSdIv", "addSdIv")
   vignette <- "Fanta_2007_ciclosporin"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

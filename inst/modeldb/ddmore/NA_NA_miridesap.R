@@ -7,6 +7,7 @@ NA_NA_miridesap <- function() {
     dosing = "mg",
     concentration = "ng/mL (CPHPC plasma); ng/mL-equivalent (SAP plasma; equal to mg/L * 1000)"
   )
+  dosing <- c("depot", "central")
 
   ddmore_id <- "DDMODEL00000262"
   replicate_of <- NULL

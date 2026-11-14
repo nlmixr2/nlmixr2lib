@@ -3,6 +3,7 @@ Pereira_2024_M6495_cyno <- function() {
   reference <- "Pereira JNS, Ottevaere I, Serruys B, Guehring H, Ladel C, Lindemann S. Translational pharmacokinetic and pharmacodynamic modelling of the anti-ADAMTS-5 NANOBODY(R) (M6495) using the neo-epitope ARGS as a biomarker. J Pharmacokinet Pharmacodyn. 2024;52(1):8. doi:10.1007/s10928-024-09958-z. PMCID: PMC11662058."
   vignette <- "Pereira_2024_M6495"
   units <- list(time = "h", dosing = "mg/kg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # ARGS is the serum aggrecan neo-epitope released by ADAMTS-5 cleavage; it
   # is a paper-specific biomarker turnover state with no canonical name.

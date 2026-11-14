@@ -19,6 +19,7 @@ Tosca_2023_men1611_mouse <- function() {
   vignette <- "Tosca_2023_men1611_trastuzumab"
 
   units <- list(time = "h", dosing = "mg/kg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     FORM_SOLUTION = list(

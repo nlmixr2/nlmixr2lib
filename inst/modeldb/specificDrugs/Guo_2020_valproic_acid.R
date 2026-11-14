@@ -3,6 +3,7 @@ Guo_2020_valproic_acid <- function() {
   reference <- "Guo J, Huo Y, Li F, Li Y, Guo Z, Han H, Zhou Y. Impact of gender, albumin, and CYP2C19 polymorphisms on valproic acid in Chinese patients: a population pharmacokinetic model. J Int Med Res. 2020;48(8):300060520952281. doi:10.1177/0300060520952281. PMCID PMC7469748. Final-model equations 3-6 and Table 2; cohort demographics from Table 1."
   vignette <- "Guo_2020_valproic_acid"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = TRUE),

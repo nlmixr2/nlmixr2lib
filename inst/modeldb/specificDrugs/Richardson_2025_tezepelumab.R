@@ -31,6 +31,7 @@ Richardson_2025_tezepelumab <- function() {
   )
   vignette <- "Richardson_2025_automated_popPK"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "tezepelumab", units = "mg", specimen = "administration site", verified = TRUE),

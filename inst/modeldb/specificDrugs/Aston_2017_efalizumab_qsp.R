@@ -42,6 +42,7 @@ Aston_2017_efalizumab_qsp <- function() {
   # Penney_2025_tce_tmdd_qsp.R records "nmol" for a mg/kg-dosed model.
   # Concentration is ug/mL, the units of Kmc and of the reported affinity.
   units <- list(time = "day", dosing = "ug", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   # X3 is the TOTAL (free + drug-bound) CD11a on the T-cell surface, and the
   # bound species is not carried as a separate state, which is exactly the

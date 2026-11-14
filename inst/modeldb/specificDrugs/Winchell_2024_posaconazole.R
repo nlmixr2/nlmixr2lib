@@ -3,6 +3,7 @@ Winchell_2024_posaconazole <- function() {
   reference <- "Winchell G, de Greef R, Ouerdani A, Fauchet F, Wrishko RE, Mangin E, Bruno C, Waskin H. A population pharmacokinetic model for posaconazole intravenous solution and oral powder for suspension formulations in pediatric patients with neutropenia. Antimicrob Agents Chemother. 2024;68(4):e01197-23. doi:10.1128/aac.01197-23."
   vignette <- "Winchell_2024_posaconazole"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "posaconazole", units = "mg", specimen = "administration site", verified = TRUE),

@@ -19,6 +19,7 @@ Prohn_2021_letermovir_hsct <- function() {
   # observation is scaled to ng/mL rather than the mg/L that mg and L give
   # directly.
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "letermovir", units = "mg", specimen = "administration site", verified = TRUE),

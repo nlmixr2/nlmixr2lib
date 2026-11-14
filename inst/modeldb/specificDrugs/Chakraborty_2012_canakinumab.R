@@ -7,6 +7,7 @@ Chakraborty_2012_canakinumab <- function() {
     dosing = "mg",
     concentration = "ug/mL (total canakinumab); pg/mL (total IL-1b)"
   )
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

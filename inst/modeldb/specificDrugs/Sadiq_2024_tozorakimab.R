@@ -11,6 +11,7 @@ Sadiq_2024_tozorakimab <- function() {
   )
   vignette <- "Sadiq_2024_tozorakimab"
   units <- list(time = "day", dosing = "nmol", concentration = "nM")
+  dosing <- c("depot", "central")
 
   # The model is molar throughout: every target-engagement parameter in Table 2
   # carries molar units (Kon in 1/nM/day, Kd and the baselines in nM), so the

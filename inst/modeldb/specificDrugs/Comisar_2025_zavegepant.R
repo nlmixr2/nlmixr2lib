@@ -42,6 +42,7 @@ Comisar_2025_zavegepant <- function() {
   )
   vignette <- "Comisar_2025_zavegepant"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Comisar 2025 Figure 1 (schematic of

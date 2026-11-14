@@ -43,6 +43,7 @@ Sager_2023_sotrovimab <- function() {
   )
   vignette <- "Sager_2023_sotrovimab"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

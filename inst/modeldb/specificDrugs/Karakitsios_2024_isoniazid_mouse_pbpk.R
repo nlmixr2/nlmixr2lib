@@ -24,6 +24,7 @@ Karakitsios_2024_isoniazid_mouse_pbpk <- function() {
   )
   vignette <- "Karakitsios_2024_antitubercular_lung_pbpk"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     DOSE_ISONIAZID_MGKG = list(

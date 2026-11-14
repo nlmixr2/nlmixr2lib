@@ -11,6 +11,7 @@ Zeng_2010_mycophenolic_acid <- function() {
   )
   vignette <- "Zeng_2010_mycophenolic_acid"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

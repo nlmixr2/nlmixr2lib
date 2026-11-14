@@ -12,6 +12,7 @@ Kinsale_2024_islatravir_rat <- function() {
   )
   vignette <- "Kinsale_2024_islatravir_rat"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   # No covariates: the naive-pooled fit has a single set of structural
   # parameters for all three dose levels. Doses were given per kg of body

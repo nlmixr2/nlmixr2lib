@@ -13,6 +13,7 @@ Straube_2025_omalizumab_1cmt <- function() {
   )
   vignette <- "Straube_2025_TMDD_high_vs_low_affinity"
   units <- list(time = "day", dosing = "nmol", concentration = "nM")
+  dosing <- c("depot", "central")
 
   # Issue #482. analyte is stated by the source (omalizumab is an anti-IgE
   # monoclonal antibody; Straube 2025 section 3.2). specimen is NOT stated --

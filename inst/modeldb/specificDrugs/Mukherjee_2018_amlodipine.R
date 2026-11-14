@@ -50,6 +50,7 @@ Mukherjee_2018_amlodipine <- function() {
   )
   vignette <- "Mukherjee_2018_amlodipine"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

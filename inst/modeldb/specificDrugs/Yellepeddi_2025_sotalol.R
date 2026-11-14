@@ -44,6 +44,7 @@ Yellepeddi_2025_sotalol <- function() {
     dosing = "mg",
     concentration = "ng/mL"
   )
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Yellepeddi 2025 Supplementary

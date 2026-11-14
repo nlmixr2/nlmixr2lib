@@ -3,6 +3,7 @@ McLachlan_1996_fluconazole <- function() {
   reference <- "McLachlan AJ, Tett SE. Pharmacokinetics of fluconazole in people with HIV infection: a population analysis. Br J Clin Pharmacol. 1996;41(4):291-298. doi:10.1046/j.1365-2125.1996.03085.x"
   vignette <- "McLachlan_1996_fluconazole"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

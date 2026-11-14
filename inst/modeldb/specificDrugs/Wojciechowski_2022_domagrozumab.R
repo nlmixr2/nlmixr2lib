@@ -3,6 +3,7 @@ Wojciechowski_2022_domagrozumab <- function() {
   reference <- "Wojciechowski J, Purohit VS, Harnisch LO, Dua P, Tan B, Nicholas T. Population PK and PD Analysis of Domagrozumab in Pediatric Patients with Duchenne Muscular Dystrophy. Clin Pharmacol Ther. 2022;112(6):1291-1302. doi:10.1002/cpt.2747"
   vignette <- "Wojciechowski_2022_domagrozumab"
   units <- list(time = "h", dosing = "mg", concentration = "nmol/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

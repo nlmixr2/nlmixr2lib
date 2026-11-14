@@ -6,6 +6,7 @@ Kwak_2025_mg1113_human <- function() {
   paper_specific_compartments <- c("stfpi", "mtfpi", "astfpi", "amtfpi")
 
   units <- list(time = "day", dosing = "nmol", concentration = "nM")
+  dosing <- c("depot", "central")
 
   # Issue #482: the four TFPI-species states are carried by the paper as
   # CONCENTRATIONS (nM) in the central compartment, not as amounts.

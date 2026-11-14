@@ -33,6 +33,7 @@ Moein_2024_apitolisib_human <- function() {
   )
   vignette <- "Moein_2024_apitolisib"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")
+  dosing <- c("depot", "central")
 
   covariateData <- list()
 

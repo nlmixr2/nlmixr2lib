@@ -10,6 +10,7 @@ Huang_2017_vrc01 <- function() {
   )
   vignette <- "Huang_2017_vrc01"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

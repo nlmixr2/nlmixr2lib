@@ -7,6 +7,7 @@ Watt_2026_methadone <- function() {
     dosing = "mg",
     concentration = "mg/L"
   )
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Watt 2026 Methods (plasma methadone

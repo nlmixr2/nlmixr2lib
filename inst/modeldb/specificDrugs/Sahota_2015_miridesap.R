@@ -7,6 +7,7 @@ Sahota_2015_miridesap <- function() {
     dosing = "mg",
     concentration = "ng/mL (CPHPC plasma); ng/mL-equivalent for SAP (mg/L * 1000)"
   )
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

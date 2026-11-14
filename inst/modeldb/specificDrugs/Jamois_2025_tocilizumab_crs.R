@@ -4,6 +4,7 @@ Jamois_2025_tocilizumab_crs <- function() {
   vignette <- "Jamois_2025_tocilizumab"
   paper_specific_etas <- c("etaruv", "etaruv_total_target")
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "tocilizumab", units = "mg", specimen = "administration site", verified = TRUE),

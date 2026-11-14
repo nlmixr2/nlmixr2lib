@@ -18,6 +18,7 @@ Kim_2020_voriconazole <- function() {
   )
   vignette <- "Kim_2020_voriconazole"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     # Oral doses only (Figure 2: 'Oral dose -> Bioavailability (F) -> Gut').

@@ -18,6 +18,7 @@ Wang_2024_leritrelvir <- function() {
   )
   vignette <- "Wang_2024_leritrelvir"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     CONMED_RTV = list(

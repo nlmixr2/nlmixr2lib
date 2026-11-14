@@ -3,6 +3,7 @@ Hennig_2015_phenytoin <- function() {
   reference <- "Hennig S, Norris R, Tu Q, van Breda K, Riney K, Foster K, Lister B, Charles B. Population Pharmacokinetics of Phenytoin in Critically Ill Children. J Clin Pharmacol. 2015;55(3):355-364. doi:10.1002/jcph.417"
   vignette <- "Hennig_2015_phenytoin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

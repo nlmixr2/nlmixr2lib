@@ -36,6 +36,7 @@ Cerqueira_2025_resveratrol_rat_oral <- function() {
     dosing = "ug",
     concentration = "ng/mL"
   )
+  dosing <- c("depot", "central")
 
   # Per-kg normalisation: the source reports V in L/kg and dose in mg/kg,
   # so the state amounts are ug/kg and central/vc is ug/L == ng/mL.

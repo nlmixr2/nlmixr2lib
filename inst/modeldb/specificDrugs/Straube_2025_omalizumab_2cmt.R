@@ -13,6 +13,7 @@ Straube_2025_omalizumab_2cmt <- function() {
   )
   vignette <- "Straube_2025_TMDD_high_vs_low_affinity"
   units <- list(time = "day", dosing = "nmol", concentration = "nM")
+  dosing <- c("depot", "central")
 
   # Issue #482. analyte is stated by the source; specimen is not, so the
   # circulating states are verified = FALSE. peripheral1 holds FREE drug only

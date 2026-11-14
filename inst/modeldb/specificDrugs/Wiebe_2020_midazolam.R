@@ -31,6 +31,7 @@ Wiebe_2020_midazolam <- function() {
     dosing = "nmol",
     concentration = "nM"
   )
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

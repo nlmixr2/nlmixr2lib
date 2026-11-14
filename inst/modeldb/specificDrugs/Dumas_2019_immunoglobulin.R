@@ -3,6 +3,7 @@ Dumas_2019_immunoglobulin <- function() {
   reference <- "Dumas T, Berry NS, Wolfsegger M, Jolles S, McCoy B, Yel L. Population pharmacokinetic modeling and simulation of immunoglobulin exposure with varying dosing intervals of subcutaneous immunoglobulin 20% (Ig20Gly) in patients with primary immunodeficiency diseases. Int Immunopharmacol. 2019;71:404-10. doi:10.1016/j.intimp.2019.03.034 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):811-36. doi:10.1007/s40262-026-01641-5, Table 4 (reference 53)"
   vignette <- "vanderZeeuw_2026_immunoglobulin"
   units <- list(time = "day", dosing = "g", concentration = "g/L")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

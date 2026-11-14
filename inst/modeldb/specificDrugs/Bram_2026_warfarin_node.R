@@ -15,6 +15,7 @@ Bram_2026_warfarin_node <- function() {
   )
   vignette <- "Bram_2026_node_lasso_model_development"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "warfarin", units = "mg", specimen = "administration site", verified = TRUE),

@@ -19,6 +19,7 @@ Agoram_2006_darbepoetin_alfa <- function() {
   )
   vignette <- "Agoram_2006_darbepoetin_alfa"
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

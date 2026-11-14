@@ -27,6 +27,7 @@ Nguyen_2020_fseeefc_monkey_qsp <- function() {
   )
   vignette <- "Nguyen_2020_myostatin_activin_dmd_qsp"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   # Every non-drug state is a paper-specific molecular species in a named
   # physiological space; none has a canonical compartment name. The drug in

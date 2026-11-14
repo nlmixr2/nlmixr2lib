@@ -25,6 +25,7 @@ Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta <- function() {
   )
   vignette <- "Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta"
   units <- list(time = "day", dosing = "ug", concentration = "ng/mL", hemoglobin = "g/dL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = TRUE for all three states: the analyte and

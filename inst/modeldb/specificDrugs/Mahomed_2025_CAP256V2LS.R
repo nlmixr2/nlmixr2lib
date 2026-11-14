@@ -3,6 +3,7 @@ Mahomed_2025_CAP256V2LS <- function() {
   reference <- "Mahomed S, Beliveau M, Heredia-Ortiz R, Osman F, Letsoalo M, Garrett N, Gengiah TN, Archary D, Wang J, Narpala S, Castro M, Serebryannyy L, Carlton K, Koup RA, Moore PL, Morris L, Abdool Karim Q, Abdool Karim SS. Population pharmacokinetics of weight-based compared with fixed dosing of CAP256V2LS, a broadly neutralizing antibody for HIV prevention in women. J Antimicrob Chemother. 2025; 80: 2135-2144. doi:10.1093/jac/dkaf181"
   vignette <- "Mahomed_2025_CAP256V2LS"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "CAP256V2LS", units = "mg", specimen = "administration site", verified = TRUE),

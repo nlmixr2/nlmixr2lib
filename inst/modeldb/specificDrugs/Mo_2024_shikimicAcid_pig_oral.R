@@ -29,6 +29,7 @@ Mo_2024_shikimicAcid_pig_oral <- function() {
   )
   vignette <- "Mo_2024_shikimicAcid"
   units <- list(time = "h", dosing = "ng/kg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "shikimic acid", units = "ng", specimen = "administration site", verified = TRUE),

@@ -25,6 +25,7 @@ Zhao_2009_ganciclovir <- function() {
   )
   vignette <- "Yang_2023_ganciclovir_model_repository"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

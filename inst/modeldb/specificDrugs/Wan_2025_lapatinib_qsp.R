@@ -22,6 +22,7 @@ Wan_2025_lapatinib_qsp <- function() {
     dosing = "mg",
     concentration = "mg/L (plasma Cc); the effective myocardial concentration driving the toxicodynamics is in umol/L"
   )
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     LVEDV_BL = list(

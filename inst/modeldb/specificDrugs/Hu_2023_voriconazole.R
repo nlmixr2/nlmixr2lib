@@ -3,6 +3,7 @@ Hu_2023_voriconazole <- function() {
   reference <- "Hu L, Huang S, Huang Q, Huang J, Feng Z, He G. Population pharmacokinetics of voriconazole and the role of CYP2C19 genotype on treatment optimization in pediatric patients. PLoS ONE. 2023;18(9):e0288794. doi:10.1371/journal.pone.0288794"
   vignette <- "Hu_2023_voriconazole"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

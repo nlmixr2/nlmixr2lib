@@ -41,6 +41,7 @@ Gao_2025_cefquinome_foal <- function() {
     dosing = "mg/kg",
     concentration = "ug/mL"
   )
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "cefquinome", units = "mg/kg", specimen = "administration site", verified = TRUE),

@@ -3,6 +3,7 @@ Quartino_2016_trastuzumab <- function() {
   reference <- "Quartino AL, Hillenbach C, Li J, Li H, Wada DR, Visich J, Li C, Heinzmann D, Jin JY, Lum BL. Population pharmacokinetic and exposure-response analysis for trastuzumab administered using a subcutaneous 'manual syringe' injection or intravenously in women with HER2-positive early breast cancer. Cancer Chemother Pharmacol. 2016;77(1):77-88. doi:10.1007/s00280-015-2922-5"
   vignette <- "Quartino_2016_trastuzumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

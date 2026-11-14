@@ -3,6 +3,7 @@ Wang_2010_romiplostim <- function() {
   reference <- "Wang YC, Krzyzanski W, Doshi S, Xiao JJ, Perez-Ruixo JJ, Chow AT. Pharmacodynamics-Mediated Drug Disposition (PDMDD) and Precursor Pool Lifespan Model for Single Dose of Romiplostim in Healthy Subjects. AAPS J. 2010 Dec;12(4):729-740. doi:10.1208/s12248-010-9234-9 (PMID 20963535)."
   vignette <- "Wang_2010_romiplostim"
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL", platelet = "10^9/L")
+  dosing <- c("depot", "central")
 
   paper_specific_compartments <- c(
     "plt1",

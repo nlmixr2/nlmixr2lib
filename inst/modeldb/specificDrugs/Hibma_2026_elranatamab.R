@@ -16,6 +16,7 @@ Hibma_2026_elranatamab <- function() {
     dosing = "mg",
     concentration = "ng/mL (free and total elranatamab: Cc, Cc_total); nM (free and total soluble BCMA: Ctarget, Ctotal_target)"
   )
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     SEXF = list(

@@ -35,6 +35,7 @@ Schoemaker_1996_dalteparin <- function() {
     dosing = "IU",
     concentration = "IU/mL"
   )
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

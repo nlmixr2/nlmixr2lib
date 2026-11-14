@@ -22,6 +22,7 @@ DeBonis_2025_il12_qsp <- function() {
   )
   vignette <- "DeBonis_2025_il12_qsp"
   units <- list(time = "day", dosing = "pmol", concentration = "pg/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "IL-12", units = "pmol", specimen = "administration site", verified = TRUE),

@@ -26,6 +26,7 @@ Nagy_2017_obiltoxaximab <- function() {
   )
   vignette <- "Nagy_2017_obiltoxaximab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

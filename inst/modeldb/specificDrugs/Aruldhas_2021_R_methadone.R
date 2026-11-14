@@ -31,6 +31,7 @@ Aruldhas_2021_R_methadone <- function() {
   )
   vignette <- "Aruldhas_2021_methadone"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

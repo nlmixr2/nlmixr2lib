@@ -3,6 +3,7 @@ Li_2022_immunoglobulin <- function() {
   reference <- "Li Z, Follman K, Freshwater E, Engler F, Yel L. Integrated population pharmacokinetics of immunoglobulin G following intravenous or subcutaneous administration of various immunoglobulin products in patients with primary immunodeficiencies. Int Immunopharmacol. 2022;113(Pt A):109331. doi:10.1016/j.intimp.2022.109331 -- parameter values transcribed from the secondary source: van der Zeeuw SL, van Tilburg SJ, Jacobs BC, Koch BCP, Dalm VASH, Crombag MBS, Preijers T. Population pharmacokinetics and pharmacodynamics of immunoglobulins: a systematic review. Clin Pharmacokinet. 2026;65(6):811-36. doi:10.1007/s40262-026-01641-5, Table 4 (reference 42)"
   vignette <- "vanderZeeuw_2026_immunoglobulin"
   units <- list(time = "day", dosing = "g", concentration = "g/L")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     LBM = list(

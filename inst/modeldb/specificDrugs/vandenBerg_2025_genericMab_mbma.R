@@ -34,6 +34,7 @@ vandenBerg_2025_genericMab_mbma <- function() {
     dosing = "mg (intravenous into central, or subcutaneous into depot; the paper's illustrative simulation used a single 100 mg dose by either route)",
     concentration = "mg/L (equivalently ug/mL; central amount in mg divided by Vc in L, matching the NONMEM scaling S2 = VC in Supplementary Section M5)"
   )
+  dosing <- c("depot", "central")
 
   # No covariates are part of this model -- the generic model was built
   # deliberately without them (Methods, "Generic model simulation": "No RUV or

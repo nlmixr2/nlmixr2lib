@@ -3,6 +3,7 @@ Feng_2006_enoxaparin <- function() {
   reference <- "Feng Y, Green B, Duffull SB, Kane-Gill SL, Bobek MB, Bies RR. Development of a dosage strategy in patients receiving enoxaparin by continuous intravenous infusion using modelling and simulation. Br J Clin Pharmacol. 2006;62(2):165-176. doi:10.1111/j.1365-2125.2006.02650.x"
   vignette <- "Feng_2006_enoxaparin"
   units <- list(time = "h", dosing = "IU", concentration = "IU/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

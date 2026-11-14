@@ -35,6 +35,7 @@ Gao_2012_exenatide_rat <- function() {
     dosing = "nmol",
     concentration = "nmol/L (nM); the paper converted all doses to moles using a molecular weight of 4186.6 g/mol for exendin-4"
   )
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "exenatide", units = "nmol", specimen = "administration site", verified = TRUE),

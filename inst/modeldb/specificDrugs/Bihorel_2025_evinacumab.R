@@ -4,6 +4,7 @@ Bihorel_2025_evinacumab <- function() {
   vignette <- "Bihorel_2025_evinacumab"
 
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

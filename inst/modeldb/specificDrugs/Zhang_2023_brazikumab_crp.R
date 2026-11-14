@@ -3,6 +3,7 @@ Zhang_2023_brazikumab_crp <- function() {
   reference <- "Zhang N, Chan ML, Li J, Brohawn PZ, Sun B, Vainshtein I, Roskos LK, Faggioni R, Savic RM. Combining pharmacometric models with predictive and prognostic biomarkers for precision therapy in Crohn's disease: A case study of brazikumab. CPT Pharmacometrics Syst Pharmacol. 2023;12(12):1945-1959. doi:10.1002/psp4.13044"
   vignette <- "Zhang_2023_brazikumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   # The CDAI turnover state is the paper's efficacy endpoint. It is the direct
   # analogue of the registered `das28` disease-activity-score output compartment

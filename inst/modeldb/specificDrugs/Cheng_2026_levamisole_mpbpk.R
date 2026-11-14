@@ -30,6 +30,7 @@ Cheng_2026_levamisole_mpbpk <- function() {
     concentration = "mg/L",
     weight = "kg"
   )
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. `central` is Cheng 2026's Blood compartment (Fig. 3):

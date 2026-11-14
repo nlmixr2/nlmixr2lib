@@ -14,6 +14,7 @@ Knebel_2008_epoetinDelta <- function() {
     dosing = "IU",
     concentration = "mIU/mL"
   )
+  dosing <- c("depot", "central")
 
   # Serum erythropoietin was measured by ELISA in mEU/mL and converted to
   # bioassay/potency international units at 1 IU = 1.3 EU (Knebel 2008

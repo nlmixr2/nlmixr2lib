@@ -3,6 +3,7 @@ Healy_2025_tramadol <- function() {
   reference <- "Healy P, Allegaert K, Della Pasqua O. Evaluation of the effect of CYP2D6 and OCT1 polymorphisms on the pharmacokinetics of tramadol: Implications for clinical safety and dose rationale in paediatric chronic pain. Br J Clin Pharmacol. 2025;91(2):283-296. doi:10.1111/bcp.16201"
   vignette <- "Healy_2025_tramadol"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

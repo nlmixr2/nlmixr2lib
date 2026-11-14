@@ -16,6 +16,7 @@ Tortorici_2021_immunoglobulin <- function() {
   )
   vignette <- "vanderZeeuw_2026_immunoglobulin"
   units <- list(time = "day", dosing = "g", concentration = "g/L")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

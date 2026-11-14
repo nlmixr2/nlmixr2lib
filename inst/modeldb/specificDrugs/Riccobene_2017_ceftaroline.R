@@ -18,6 +18,7 @@ Riccobene_2017_ceftaroline <- function() {
   vignette <- "Riccobene_2017_ceftaroline"
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

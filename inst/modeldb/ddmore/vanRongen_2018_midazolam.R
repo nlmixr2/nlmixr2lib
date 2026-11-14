@@ -12,6 +12,7 @@ vanRongen_2018_midazolam <- function() {
   )
   vignette <- "vanRongen_2018_midazolam"
   units <- list(time = "min", dosing = "ug", concentration = "microgram/L")
+  dosing <- c("depot", "central")
   ddmore_id <- "DDMODEL00000250"
   replicate_of <- NULL
 

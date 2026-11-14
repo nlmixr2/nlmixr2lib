@@ -14,6 +14,7 @@ Yan_2019_benralizumab <- function() {
   )
   vignette <- "Yan_2019_benralizumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "benralizumab", units = "mg", specimen = "administration site", verified = TRUE),

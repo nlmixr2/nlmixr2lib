@@ -19,6 +19,7 @@ Yang_2024_ganciclovir <- function() {
   )
   vignette <- "Yang_2024_ganciclovir"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "valganciclovir", units = "mg", specimen = "administration site", verified = TRUE),
