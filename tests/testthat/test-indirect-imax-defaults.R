@@ -8,7 +8,15 @@
 test_that("every indirect inhibition template's default Imax is in (0, 1]", {
   skip_on_cran()
   templates <- grep("^indirect_.*_inhi_", nlmixr2lib::modeldb$name, value = TRUE)
-  expect_gt(length(templates), 0L)
+  # A template file the registry missed would drop out of the loop unnoticed.
+  onDisk <- list.files(
+    system.file("modeldb", package = "nlmixr2lib"),
+    pattern = "^indirect_.*_inhi_.*[.]R$",
+    recursive = TRUE
+  )
+  expect_setequal(templates, sub("[.]R$", "", basename(onDisk)))
+  # Update this count when an inhibition template is added or removed.
+  expect_identical(length(templates), 12L)
   for (nm in templates) {
     ui <- rxode2::as.rxUi(nlmixr2lib::readModelDb(nm))
     theta <- ui$theta

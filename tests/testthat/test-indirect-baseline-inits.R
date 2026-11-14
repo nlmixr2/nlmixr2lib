@@ -9,7 +9,11 @@
 test_that("every indirect_* template starts at its drug-free baseline", {
   skip_on_cran()
   templates <- grep("^indirect_", nlmixr2lib::modeldb$name, value = TRUE)
-  expect_gt(length(templates), 0L)
+  # A template file the registry missed would drop out of the loop unnoticed.
+  onDisk <- list.files(system.file("modeldb", package = "nlmixr2lib"), pattern = "^indirect_.*[.]R$", recursive = TRUE)
+  expect_setequal(templates, sub("[.]R$", "", basename(onDisk)))
+  # Update this count when an indirect-response template is added or removed.
+  expect_identical(length(templates), 24L)
   times <- seq(0, 48, by = 0.5)
   for (nm in templates) {
     ui <- rxode2::as.rxUi(nlmixr2lib::readModelDb(nm))
