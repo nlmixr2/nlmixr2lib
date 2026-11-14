@@ -170,6 +170,129 @@
   })
 }
 
+# Fallback fixtures: depot and central, no `dosing`, differing in how central
+# is reached and whether it is a route of its own.
+
+# depot feeds central, which also takes an infusion of its own (`dur()`).
+.dtInfusedCentralModel <- function() {
+  description <- "Oral and infused model relying on the depot/central fallback"
+  reference <- "R"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  ini({
+    lka <- 0; label("Absorption rate (ka, 1/h)")
+    lcl <- 1; label("Clearance (CL, L/h)")
+    lvc <- 3; label("Central volume (Vc, L)")
+    propSd <- 0.1; label("Proportional residual error (fraction)")
+  })
+  model({
+    ka <- exp(lka)
+    cl <- exp(lcl)
+    vc <- exp(lvc)
+    d/dt(depot) <- -ka * depot
+    d/dt(central) <- ka * depot - cl / vc * central
+    dur(central) <- 0.5
+    Cc <- central / vc
+    Cc ~ prop(propSd)
+  })
+}
+
+# depot feeds central, and the model reads central's dose history.
+.dtCentralTimingModel <- function() {
+  description <- "Oral model reading the time since a central dose"
+  reference <- "R"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  ini({
+    lka <- 0; label("Absorption rate (ka, 1/h)")
+    lcl <- 1; label("Clearance (CL, L/h)")
+    lvc <- 3; label("Central volume (Vc, L)")
+    propSd <- 0.1; label("Proportional residual error (fraction)")
+  })
+  model({
+    ka <- exp(lka)
+    cl <- exp(lcl) * (1 + 0.1 * (tad(central) < 1))
+    vc <- exp(lvc)
+    d/dt(depot) <- -ka * depot
+    d/dt(central) <- ka * depot - cl / vc * central
+    Cc <- central / vc
+    Cc ~ prop(propSd)
+  })
+}
+
+# depot reaches central only through a transit compartment.
+.dtTransitFallbackModel <- function() {
+  description <- "Oral model with a transit compartment relying on the fallback"
+  reference <- "R"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  ini({
+    lka <- 0; label("Absorption rate (ka, 1/h)")
+    lktr <- 0; label("Transit rate (ktr, 1/h)")
+    lcl <- 1; label("Clearance (CL, L/h)")
+    lvc <- 3; label("Central volume (Vc, L)")
+    propSd <- 0.1; label("Proportional residual error (fraction)")
+  })
+  model({
+    ka <- exp(lka)
+    ktr <- exp(lktr)
+    cl <- exp(lcl)
+    vc <- exp(lvc)
+    d/dt(depot) <- -ktr * depot
+    d/dt(transit1) <- ktr * depot - ka * transit1
+    d/dt(central) <- ka * transit1 - cl / vc * central
+    Cc <- central / vc
+    Cc ~ prop(propSd)
+  })
+}
+
+# depot feeds a metabolite pool, not central, so central is a route of its
+# own.
+.dtSeparateDepotModel <- function() {
+  description <- "Depot feeding a metabolite, central dosed on its own"
+  reference <- "R"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  ini({
+    lka <- 0; label("Absorption rate (ka, 1/h)")
+    lcl <- 1; label("Clearance (CL, L/h)")
+    lvc <- 3; label("Central volume (Vc, L)")
+    propSd <- 0.1; label("Proportional residual error (fraction)")
+  })
+  model({
+    ka <- exp(lka)
+    cl <- exp(lcl)
+    vc <- exp(lvc)
+    d/dt(depot) <- -ka * depot
+    d/dt(metabolite) <- ka * depot - cl / vc * metabolite
+    d/dt(central) <- -cl / vc * central
+    Cc <- central / vc
+    Cc ~ prop(propSd)
+  })
+}
+
+# A linCmt() solution with an absorption rate: its depot feeds its central.
+.dtLinCmtDepotModel <- function() {
+  description <- "One-compartment linCmt() model with first-order absorption"
+  reference <- "R"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  ini({
+    lka <- 0; label("Absorption rate (ka, 1/h)")
+    lcl <- 1; label("Clearance (CL, L/h)")
+    lvc <- 3; label("Central volume (Vc, L)")
+    propSd <- 0.1; label("Proportional residual error (fraction)")
+  })
+  model({
+    ka <- exp(lka)
+    cl <- exp(lcl)
+    vc <- exp(lvc)
+    Cc <- linCmt()
+    Cc ~ prop(propSd)
+  })
+}
+
+# Reading this as an active binding fails, as reading an unparseable
+# model() block does.
+.dtUnreadableModelBlock <- function() {
+  stop("the model() block could not be read")
+}
+
 # The registry's dosing compartments for a fixture model.
 .dtDosingCmts <- function(model) {
   nlmixr2lib:::.modelDosingCmts(suppressMessages(nlmixr2est::nlmixr(model)))

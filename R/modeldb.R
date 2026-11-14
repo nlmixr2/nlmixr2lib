@@ -415,16 +415,83 @@ addFileToModelDb <- function(dir, file, modeldb) {
 
 # The compartments a model is dosed into: its `dosing` metadata when it
 # declares one, otherwise whichever of `depot` and `central` it has, in that
-# order. NULL when it declares nothing and has neither. A declared
-# `dosing <- character(0)` (a model driven by a covariate rather than doses) is
-# returned as-is, so the registry records it as "" rather than NA.
+# order. A `central` that `depot` feeds is where an oral dose arrives, not a
+# route, so it is left out of the fallback unless the model gives it a dose
+# property or reads its dose history (.centralIsDosed()). NULL when the model
+# declares nothing and has neither. A declared `dosing <- character(0)` (a
+# model driven by a covariate rather than doses) is returned as-is, so the
+# registry records it as "" rather than NA.
 .modelDosingCmts <- function(ui) {
   declared <- ui$meta$dosing
   if (!is.null(declared)) {
     return(declared)
   }
   fallback <- intersect(c("depot", "central"), ui$props$cmt)
+  if (identical(fallback, c("depot", "central")) && .depotFeedsCentral(ui) && !.centralIsDosed(ui)) {
+    fallback <- "depot"
+  }
   if (length(fallback)) fallback else NULL
+}
+
+# Does an amount in `depot` reach `central` through the ODEs: is there a chain
+# of states from depot to central, each the factor of an input term in the
+# next one's d/dt() (`ka * depot` in d/dt(central), or through a transit
+# chain)? A linCmt() solution's depot always feeds its central. FALSE when
+# the equations cannot be read, which keeps central in the fallback.
+.depotFeedsCentral <- function(ui) {
+  if (isTRUE(ui$props$linCmt)) {
+    return(TRUE)
+  }
+  defs <- .compiledOdeDefinitions(ui)
+  if (inherits(defs, "error")) {
+    return(FALSE)
+  }
+  reached <- "depot"
+  frontier <- "depot"
+  while (length(frontier)) {
+    fed <- character(0)
+    for (st in setdiff(names(defs$rhs), reached)) {
+      terms <- unlist(lapply(defs$rhs[[st]], .additiveTerms), recursive = FALSE)
+      inputs <- terms[vapply(terms, .isInputTerm, logical(1), state = st, aliases = defs$aliases)]
+      if (.anyTermHasFactor(inputs, frontier, defs$aliases)) fed <- c(fed, st)
+    }
+    if ("central" %in% fed) {
+      return(TRUE)
+    }
+    reached <- c(reached, fed)
+    frontier <- fed
+  }
+  FALSE
+}
+
+# Does any of `terms` have one of `states` as a factor (.hasStateFactor())?
+.anyTermHasFactor <- function(terms, states, aliases) {
+  for (s in states) {
+    if (any(vapply(terms, .hasStateFactor, logical(1), state = s, aliases = aliases))) {
+      return(TRUE)
+    }
+  }
+  FALSE
+}
+
+# Is `central` a dose route of its own: does the model set a dose property on
+# it (bioavailability, lag, duration or rate; not its initial condition), or
+# read its dose history (`tad(central)` and the like)? TRUE when the model
+# block cannot be read, which keeps central in the fallback.
+.centralIsDosed <- function(ui) {
+  cp <- ui$props$cmtProp
+  if (!is.null(cp) && any(cp$Compartment == "central" & cp$Property %in% c("f", "F", "lag", "alag", "dur", "rate"))) {
+    return(TRUE)
+  }
+  exprs <- tryCatch(ui$lstExpr, error = function(e) e)
+  if (inherits(exprs, "error")) {
+    return(TRUE)
+  }
+  calls <- list()
+  for (e in exprs) {
+    calls <- .doseTimingCalls(e, calls)
+  }
+  "central" %in% vapply(calls, `[[`, character(1), "cmt")
 }
 
 # Walk a modeldb directory and return rows + updated cache entries. Reuses a

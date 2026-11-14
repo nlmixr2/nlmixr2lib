@@ -466,7 +466,30 @@ test_that(".modelDosingCmts reads `dosing` metadata, else falls back to depot an
   # is dosed) rather than NA (nothing was said).
   expect_identical(.dtDosingCmts(.dtEmptyDosingModel), character(0))
   # Without metadata: depot before central, and only the ones that exist.
-  expect_identical(.dtDosingCmts(.dtFallbackDepotModel), c("depot", "central"))
   expect_identical(.dtDosingCmts(.dtStomachModel), "central")
   expect_null(.dtDosingCmts(.dtNoFallbackModel))
+})
+
+test_that("the fallback leaves out a central that depot feeds, unless central is a route", {
+  # depot feeds central directly, through a transit compartment, or inside a
+  # linCmt() solution: central is where the oral dose arrives.
+  expect_identical(.dtDosingCmts(.dtFallbackDepotModel), "depot")
+  expect_identical(.dtDosingCmts(.dtTransitFallbackModel), "depot")
+  expect_identical(.dtDosingCmts(.dtLinCmtDepotModel), "depot")
+  # central with a dose property of its own, or whose dose history the model
+  # reads, is a route.
+  expect_identical(.dtDosingCmts(.dtInfusedCentralModel), c("depot", "central"))
+  expect_identical(.dtDosingCmts(.dtCentralTimingModel), c("depot", "central"))
+  # depot that does not reach central leaves central the only way in.
+  expect_identical(.dtDosingCmts(.dtSeparateDepotModel), c("depot", "central"))
+})
+
+test_that("an unreadable model keeps central in the fallback", {
+  ui <- new.env()
+  ui$props <- list(linCmt = FALSE, cmtProp = NULL)
+  makeActiveBinding("lstExpr", .dtUnreadableModelBlock, ui)
+  # No compiled equations: depot cannot be shown to reach central.
+  expect_false(nlmixr2lib:::.depotFeedsCentral(ui))
+  # No model() block: central's dose history cannot be ruled out.
+  expect_true(nlmixr2lib:::.centralIsDosed(ui))
 })
