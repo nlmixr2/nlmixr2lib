@@ -3026,6 +3026,30 @@ test_that(".additiveTerms and .hasStateFactor split and classify d/dt() terms", 
   expect_true(nlmixr2lib:::.isInputTerm(quote(ka * other), "depot"))
 })
 
+# The signs .signedAdditiveTerms() gives the terms of `e`, in order.
+.termSigns <- function(e, aliases = list()) {
+  vapply(nlmixr2lib:::.signedAdditiveTerms(e, aliases = aliases), `[[`, integer(1), "sign")
+}
+
+test_that(".signedAdditiveTerms gives each term the sign it enters with", {
+  # Binary and unary minus down the sum.
+  expect_identical(.termSigns(quote(a - b + c)), c(1L, -1L, 1L))
+  expect_identical(.termSigns(quote(-(a - b))), c(-1L, 1L))
+  # A negated factor inside a product: -ka * depot parses as (-ka) * depot.
+  expect_identical(.termSigns(quote(-ka * depot - cl / vc * central)), c(-1L, -1L))
+  expect_identical(.termSigns(quote(x + ka * depot * -1)), c(1L, -1L))
+  expect_identical(.termSigns(quote(x - ka * depot / (-v))), c(1L, 1L))
+  expect_identical(.termSigns(quote(-2 * -ka * depot)), 1L)
+  # A sum inside a product shows no sign.
+  expect_identical(.termSigns(quote(ka * (a - b))), 1L)
+  # A variable assigned once is followed.
+  expect_identical(.termSigns(quote(x + loss), list(loss = quote(-ka * depot))), c(1L, -1L))
+  expect_identical(
+    nlmixr2lib:::.signedAdditiveTerms(quote(a - b))[[2]],
+    list(term = quote(b), sign = -1L)
+  )
+})
+
 test_that("an undeclared second depot of a split dose is a dead state", {
   hit <- .dsCategory(.dsSplitDoseModel)
   expect_identical(hit$name, "depot2")

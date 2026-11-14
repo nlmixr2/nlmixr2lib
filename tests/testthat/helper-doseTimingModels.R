@@ -287,6 +287,117 @@
   })
 }
 
+# depot feeds a metabolite pool; in d/dt(central) it appears only in a term
+# that removes from central, which is not a feed.
+.dtLossOnlyModel <- function() {
+  description <- "Depot removing from central without feeding it"
+  reference <- "R"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  ini({
+    lka <- 0; label("Absorption rate (ka, 1/h)")
+    lcl <- 1; label("Clearance (CL, L/h)")
+    lvc <- 3; label("Central volume (Vc, L)")
+    propSd <- 0.1; label("Proportional residual error (fraction)")
+  })
+  model({
+    ka <- exp(lka)
+    cl <- exp(lcl)
+    vc <- exp(lvc)
+    d/dt(depot) <- -ka * depot
+    d/dt(metabolite) <- ka * depot - cl / vc * metabolite
+    d/dt(central) <- -ka * depot - cl / vc * central
+    Cc <- central / vc
+    Cc ~ prop(propSd)
+  })
+}
+
+# depot feeds central through a variable assigned once, which is followed to
+# its definition.
+.dtAliasFeedModel <- function() {
+  description <- "Oral model whose absorption rate is a named variable"
+  reference <- "R"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  ini({
+    lka <- 0; label("Absorption rate (ka, 1/h)")
+    lcl <- 1; label("Clearance (CL, L/h)")
+    lvc <- 3; label("Central volume (Vc, L)")
+    propSd <- 0.1; label("Proportional residual error (fraction)")
+  })
+  model({
+    ka <- exp(lka)
+    cl <- exp(lcl)
+    vc <- exp(lvc)
+    absorb <- ka * depot
+    d/dt(depot) <- -absorb
+    d/dt(central) <- absorb - cl / vc * central
+    Cc <- central / vc
+    Cc ~ prop(propSd)
+  })
+}
+
+# depot feeds central through a variable assigned in each branch of an
+# if/else. A variable assigned more than once is not followed, so the feed is
+# not seen.
+.dtIfElseAliasFeedModel <- function() {
+  description <- "Oral model whose absorption rate is assigned in an if/else"
+  reference <- "R"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  ini({
+    lka <- 0; label("Absorption rate (ka, 1/h)")
+    lcl <- 1; label("Clearance (CL, L/h)")
+    lvc <- 3; label("Central volume (Vc, L)")
+    propSd <- 0.1; label("Proportional residual error (fraction)")
+  })
+  model({
+    ka <- exp(lka)
+    cl <- exp(lcl)
+    vc <- exp(lvc)
+    if (t > 1) {
+      absorb <- ka * depot
+    } else {
+      absorb <- 0.5 * ka * depot
+    }
+    d/dt(depot) <- -absorb
+    d/dt(central) <- absorb - cl / vc * central
+    Cc <- central / vc
+    Cc ~ prop(propSd)
+  })
+}
+
+# d/dt(central) is assigned in each branch of an if/else, and depot feeds it
+# in both.
+.dtIfElseFeedModel <- function() {
+  description <- "Oral model whose central equation is assigned in an if/else"
+  reference <- "R"
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  ini({
+    lka <- 0; label("Absorption rate (ka, 1/h)")
+    lcl <- 1; label("Clearance (CL, L/h)")
+    lvc <- 3; label("Central volume (Vc, L)")
+    propSd <- 0.1; label("Proportional residual error (fraction)")
+  })
+  model({
+    ka <- exp(lka)
+    cl <- exp(lcl)
+    vc <- exp(lvc)
+    d/dt(depot) <- -ka * depot
+    if (t > 1) {
+      d/dt(central) <- ka * depot - cl / vc * central
+    } else {
+      d/dt(central) <- 0.5 * ka * depot - cl / vc * central
+    }
+    Cc <- central / vc
+    Cc ~ prop(propSd)
+  })
+}
+
+# .dtFallbackDepotModel, in which depot feeds central, with one statement
+# appended to its model() block, given as text ("dur(central) <- 0.5").
+.dtFallbackVariant <- function(statement) {
+  ui <- suppressMessages(rxode2::rxode2(.dtFallbackDepotModel))
+  suppressMessages(eval(bquote(rxode2::model(ui, .(str2lang(statement)), append = TRUE))))
+}
+
 # Reading this as an active binding fails, as reading an unparseable
 # model() block does.
 .dtUnreadableModelBlock <- function() {

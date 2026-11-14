@@ -434,10 +434,12 @@ addFileToModelDb <- function(dir, file, modeldb) {
 }
 
 # Does an amount in `depot` reach `central` through the ODEs: is there a chain
-# of states from depot to central, each the factor of an input term in the
+# of states from depot to central, each the factor of an inflow term in the
 # next one's d/dt() (`ka * depot` in d/dt(central), or through a transit
-# chain)? A linCmt() solution's depot always feeds its central. FALSE when
-# the equations cannot be read, which keeps central in the fallback.
+# chain)? An inflow is an input term with a positive sign (.isInflowTerm()),
+# so `- ka * depot` in d/dt(central) is not one. A linCmt() solution's depot
+# always feeds its central. FALSE when the equations cannot be read, which
+# keeps central in the fallback.
 .depotFeedsCentral <- function(ui) {
   if (isTRUE(ui$props$linCmt)) {
     return(TRUE)
@@ -451,9 +453,9 @@ addFileToModelDb <- function(dir, file, modeldb) {
   while (length(frontier)) {
     fed <- character(0)
     for (st in setdiff(names(defs$rhs), reached)) {
-      terms <- unlist(lapply(defs$rhs[[st]], .additiveTerms), recursive = FALSE)
-      inputs <- terms[vapply(terms, .isInputTerm, logical(1), state = st, aliases = defs$aliases)]
-      if (.anyTermHasFactor(inputs, frontier, defs$aliases)) fed <- c(fed, st)
+      terms <- unlist(lapply(defs$rhs[[st]], .signedAdditiveTerms, aliases = defs$aliases), recursive = FALSE)
+      inflows <- terms[vapply(terms, .isInflowTerm, logical(1), state = st, aliases = defs$aliases)]
+      if (.anyTermHasFactor(lapply(inflows, `[[`, "term"), frontier, defs$aliases)) fed <- c(fed, st)
     }
     if ("central" %in% fed) {
       return(TRUE)
@@ -462,6 +464,13 @@ addFileToModelDb <- function(dir, file, modeldb) {
     frontier <- fed
   }
   FALSE
+}
+
+# A signed term from .signedAdditiveTerms() that adds to `state`: positive,
+# and an input term (.isInputTerm()), one that can be non-zero while `state`
+# is 0.
+.isInflowTerm <- function(signed, state, aliases) {
+  signed$sign > 0L && .isInputTerm(signed$term, state, aliases)
 }
 
 # Does any of `terms` have one of `states` as a factor (.hasStateFactor())?
@@ -474,13 +483,19 @@ addFileToModelDb <- function(dir, file, modeldb) {
   FALSE
 }
 
+# The dose properties a model can set on a compartment in model():
+# bioavailability, lag time, infusion duration and rate. rxode2 reports
+# `F()` as "f" and `lag()` as "alag" in props$cmtProp; every spelling is
+# matched, whichever one it reports.
+.doseProperties <- c("f", "F", "lag", "alag", "dur", "rate")
+
 # Is `central` a dose route of its own: does the model set a dose property on
-# it (bioavailability, lag, duration or rate; not its initial condition), or
-# read its dose history (`tad(central)` and the like)? TRUE when the model
-# block cannot be read, which keeps central in the fallback.
+# it (.doseProperties; not its initial condition), or read its dose history
+# (`tad(central)` and the like)? TRUE when the model block cannot be read,
+# which keeps central in the fallback.
 .centralIsDosed <- function(ui) {
   cp <- ui$props$cmtProp
-  if (!is.null(cp) && any(cp$Compartment == "central" & cp$Property %in% c("f", "F", "lag", "alag", "dur", "rate"))) {
+  if (!is.null(cp) && any(cp$Compartment == "central" & cp$Property %in% .doseProperties)) {
     return(TRUE)
   }
   exprs <- tryCatch(ui$lstExpr, error = function(e) e)
