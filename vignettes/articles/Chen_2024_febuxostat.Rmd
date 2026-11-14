@@ -211,23 +211,42 @@ sim <- rxode2::rxSolve(
   keep = c("treatment", "dose_mg", "WT", "FED_HIGHFAT")
 ) |>
   as.data.frame() |>
-  dplyr::select(id, time, treatment, dose_mg, WT, FED_HIGHFAT, Cc, sim, fdepot)
+  dplyr::select(id, time, treatment, dose_mg, WT, FED_HIGHFAT, Cc, sim, fdepot, fdepot_capped)
 ```
 
 `Cc` is the individual prediction; `sim` additionally carries the combined
 residual error and is therefore the observed-concentration analogue used for
 the NCA comparison below.
 
-The lognormal `F1` distribution reported by the paper is unbounded above, so a
-small fraction of simulated subjects draw `F1 > 1` and receive a negative dose
-fraction into the second depot. The count is reported here rather than filtered
-away, because filtering would misrepresent the published parameterisation:
+The lognormal `F1` distribution reported by the paper has no upper bound, so some
+simulated subjects draw `fdepot > 1`. The model doses `fdepot_capped =
+min(fdepot, 1)`, so those subjects put the whole dose into the first depot and
+the second depot never receives a negative amount. The share of subjects at the
+cap is reported below and compared with the exact lognormal tail probability
+`P(F1 > 1) = pnorm(log(0.51) / sqrt(0.102596))`; the check then requires every
+subject's dose fractions `F1` and `1 - F1` to lie in [0, 1]:
 
 ```{r f1-tail}
-f1_tail <- sim |>
-  dplyr::distinct(id, fdepot) |>
-  dplyr::summarise(n = dplyr::n(), n_gt1 = sum(fdepot > 1), pct = 100 * mean(fdepot > 1))
-f1_tail
+f1 <- sim |>
+  dplyr::distinct(id, fdepot, fdepot_capped)
+share_at_cap <- mean(f1$fdepot_capped == 1)
+expected_at_cap <- pnorm(log(0.51) / sqrt(0.102596))
+data.frame(
+  n = nrow(f1),
+  n_at_cap = sum(f1$fdepot_capped == 1),
+  pct_at_cap = 100 * share_at_cap,
+  pct_expected = 100 * expected_at_cap
+)
+stopifnot(
+  !anyNA(f1$fdepot_capped),
+  all(f1$fdepot_capped >= 0), all(f1$fdepot_capped <= 1),
+  all(1 - f1$fdepot_capped >= 0),
+  # The cap binds exactly where the lognormal draw reaches 1.
+  identical(f1$fdepot_capped == 1, f1$fdepot >= 1),
+  # Binomial tolerance on the share at the cap, not an extreme of the cohort.
+  abs(share_at_cap - expected_at_cap) <
+    4 * sqrt(expected_at_cap * (1 - expected_at_cap) / nrow(f1))
+)
 ```
 
 # Replicate published figures
@@ -673,14 +692,18 @@ which the paper under-specifies.
   the `100 * omega` reading gives 31.9% / 41.7%. The CV conversion is the better
   match in every arm and is also what Monolix reports natively for
   lognormally-distributed parameters.
-* **`F1` is encoded with the lognormal IIV the paper states, and is therefore
-  unbounded above.** `F1 = 0.51` with a 32.87% CV puts 1.8% of subjects above
-  `F1 = 1`, where `f(depot2) = 1 - F1` turns negative; about 0.4% of subjects
-  show negative concentrations as a result (see the `f1-tail` chunk, which
-  reports the realised count for this cohort). A logit-normal distribution
-  would be the usual Monolix choice for a bounded fraction, but the paper
-  neither states one nor reports a logit-scale omega, so no substitute value
-  was invented. Typical-value simulations (`omega = NA`) are unaffected.
+* **`F1` is capped at 1.** The paper states a lognormal IIV for every
+  parameter (`F1 = 0.51 * exp(eta)`, 32.87% CV), which has no upper bound, and
+  gives no bound for `F1`. Uncapped, 1.8% of subjects lie above `F1 = 1`, where
+  `f(depot2) = 1 - F1` is negative and about 0.4% of subjects show negative
+  concentrations. The model therefore doses `min(F1, 1)`: 1.8% of subjects sit
+  at the cap (`P(F1 > 1) = 1.78%`; the `f1-tail` chunk reports the realised
+  share), and the SD of `F1` falls from 0.1765 (the lognormal) to 0.1685, 4.5%
+  lower, with the mean 0.4% lower. The simulated `F1` distribution therefore
+  differs slightly from the fitted lognormal. A logit-normal distribution would
+  be the usual Monolix choice for a bounded fraction, but the paper neither
+  states one nor reports a logit-scale omega, so no substitute value was
+  invented. Typical-value simulations (`omega = NA`) are unaffected.
 * **Combined residual-error variance form.** The paper reports an additive term
   (2.14 ng/mL) and a proportional term (0.12) but does not say whether Monolix's
   `combined1` (`a + b*f`) or `combined2` (`sqrt(a^2 + (b*f)^2)`) form was used.

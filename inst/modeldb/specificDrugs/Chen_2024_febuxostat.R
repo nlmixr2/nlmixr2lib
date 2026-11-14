@@ -98,6 +98,9 @@ Chen_2024_febuxostat <- function() {
       "80 mg fed n = 30. Concentrations below the lower limit of quantification were",
       "omitted. Sampling ran from 30 min pre-dose to 48 h (20 mg study) or 36 h (80 mg",
       "study) post-dose. Estimation by SAEM in Monolix Suite 2023R1.",
+      "F1 carries the paper's lognormal IIV, which has no upper bound, so the",
+      "simulated fraction is capped at 1: 1.8% of subjects sit at the cap and the",
+      "SD of F1 is 4.5% below that of the fitted lognormal.",
       sep = " "
     )
   )
@@ -171,12 +174,14 @@ Chen_2024_febuxostat <- function() {
     # IIV is uncorrelated - the paper reports no off-diagonal omega terms
     # and no correlation matrix.
     #
-    # CAVEAT on etalfdepot: F1 is a fraction bounded on (0, 1), but the
-    # paper states a lognormal distribution for every parameter, which is
-    # unbounded above. Encoded literally (as here), P(F1 > 1) = 1.8%, and
-    # those subjects receive a negative dose fraction into depot2. Monolix
-    # would more usually declare a fraction as logit-normal, but the paper
-    # neither says so nor reports a logit-scale omega, so no such value is
+    # Bound on F1 (etalfdepot): F1 is a fraction in (0, 1), but the paper
+    # states a lognormal distribution for every parameter, F1 = TV * exp(eta),
+    # which has no upper bound, and gives no other bound for F1. The model
+    # body applies min(F1, 1) to the dose split. With a typical value of 0.51
+    # and omega 0.3203, P(F1 > 1) = 1.78%, so 1.8% of subjects sit at the cap
+    # (F1 = 1, depot2 empty), and the SD of F1 falls from 0.1765 (lognormal)
+    # to 0.1685 (capped), 4.5% lower; the mean falls 0.4%. The paper neither
+    # states a logit-normal form nor reports a logit-scale omega, so none is
     # invented here. Typical-value simulations (zeroRe() / omega = NA) are
     # unaffected. See the vignette Errata.
     # =====================================================================
@@ -214,7 +219,10 @@ Chen_2024_febuxostat <- function() {
     ka2    <- exp(lka2 + etalka2) * exp(e_fed_highfat_ka2 * FED_HIGHFAT)
     tlag   <- exp(ltlag + etaltlag) * exp(e_fed_highfat_tlag * FED_HIGHFAT)
     tlag2  <- exp(ltlag2 + etaltlag2)
-    fdepot <- exp(lfdepot + etalfdepot)
+    # Lognormal individual F1 (mu-referenced) and the fraction actually
+    # dosed, capped at 1 (see the bound note on etalfdepot in ini()).
+    fdepot        <- exp(lfdepot + etalfdepot)
+    fdepot_capped <- min(fdepot, 1)
 
     cl <- exp(lcl + etalcl)
     vc <- exp(lvc + etalvc) * (WT / 60)^e_wt_vc
@@ -237,8 +245,8 @@ Chen_2024_febuxostat <- function() {
     # The same dose record is given to both depots; F1 and 1 - F1
     # partition it. Total bioavailability is 1 by construction, so
     # CL/F, Vc/F, Q/F and Vp/F remain apparent parameters.
-    f(depot)     <- fdepot
-    f(depot2)    <- 1 - fdepot
+    f(depot)     <- fdepot_capped
+    f(depot2)    <- 1 - fdepot_capped
     alag(depot)  <- tlag
     alag(depot2) <- tlag2
 
