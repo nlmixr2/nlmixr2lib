@@ -7928,6 +7928,8 @@ navbar:
         href: articles/Storset_2014_tacrolimus.html
       - text: "Tacrolimus (Sun 2024)"
         href: articles/Sun_2024_tacrolimus.html
+      - text: "Tacrolimus (Tang 2026)"
+        href: articles/Tang_2026_tacrolimus.html
       - text: "Tacrolimus (Wang 2019a)"
         href: articles/Wang_2019a_tacrolimus.html
       - text: "Tacrolimus (Wang 2019b)"
@@ -11872,6 +11874,7 @@ articles:
   - articles/Tang_2019_amoxicillin
   - articles/Tang_2023_polymyxinB
   - articles/Tang_2023_tenecteplase
+  - articles/Tang_2026_tacrolimus
   - articles/Tang_2026_vixarelimab
   - articles/Tanzawa_2022_fluconazole
   - articles/Tao_2025_meropenem

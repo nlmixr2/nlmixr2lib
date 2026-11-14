@@ -1,0 +1,450 @@
+---
+title: "Tacrolimus (Tang 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tacrolimus (Tang 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Tang_2026_tacrolimus"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Tang_2026_tacrolimus"))$description`
+* Article: [Ther Drug Monit. 2026;48(4):473-480](https://doi.org/10.1097/FTD.0000000000001418)
+
+Tang et al. modelled the link between cumulative tacrolimus exposure and the
+decline in kidney function in the first year after liver transplantation. They
+fitted the model in two steps in Phoenix NLME. First, a one-compartment
+population PK model was fitted to routine whole-blood troughs of once-daily
+modified-release tacrolimus. Then, for each patient, the empirical Bayes CL/F
+was used to compute a daily AUC0-24h (daily dose / CL/F), and these were summed
+over 3-month intervals to give the cumulative AUC `cAUC3mon`. The change in
+eGFR over each interval was regressed on `cAUC3mon` with a direct linear model
+with no intercept. The slope depends on the patient's eGFR category before
+transplantation.
+
+Trough concentrations and AUC0-24h as short-term exposure metrics, effect
+compartment and indirect response models, and cumulative AUCs over 1, 2, 4 and
+6 months were also tried (Supplemental Table S1). Only the final `cAUC3mon`
+model is packaged here.
+
+# Population
+
+The analysis included 44 adult liver transplant recipients at the University of
+Osaka Hospital, Japan (transplants 2010-2020): median age 56 years (range
+22-69), median weight 59 kg (36.8-118), 54.5 % female, and 84.1 % living-donor
+grafts (Table 1). All received once-daily modified-release tacrolimus
+(Graceptor), adjusted to trough targets of 8-12 ng/mL in weeks 1-2, 6-10 ng/mL
+up to month 3 and 4-8 ng/mL after that. The median observed dose was 4 mg
+(0.1-32 mg). There were 3360 troughs and 3504 eGFR measurements. The
+pre-transplant baseline eGFR is the mean of the last three values before
+transplantation, calculated with the Japanese equation
+`194 * age^-0.287 * SCr^-1.094` (times 0.739 for women).
+
+# Source trace
+
+| Item | Value | Source |
+|---|---|---|
+| Structure: one-compartment, first-order absorption, no lag | -- | Methods 'Population PK Model' |
+| `lka` | log(0.19) 1/h, held constant | Table 2; Methods (from Lu 2019, reference 8) |
+| `lcl` | log(23.46) L/h | Table 2 |
+| `lvc` | log(1607.81) L | Table 2 |
+| `e_pod_cl` | 1.68 on (min(POD, 14) / 14) | Table 2 and footnote |
+| `e_hct_cl` | -0.59 on (HCT / 30) | Table 2 and footnote |
+| `etalcl`, `etalvc` | SD 0.62, 0.71; correlation 0.47 | Table 2 (footnote: omega is an SD) |
+| `addSd` | 3.04 ng/mL | Table 2, PK block |
+| Structure: change in eGFR = Slope x cAUC3mon | -- | Results 'Population PK/PD Model'; Supplemental Figure S2 |
+| `slope` | -0.59 mL/min/1.73 m^2 per mg*h/L | Table 2 (magnitude), Results text and Table 2 footnote (sign) |
+| `e_renalimp_mild_slope` | -0.68 | Table 2 |
+| `e_renalimp_mod_slope` | -1.14 | Table 2 |
+| `e_renalimp_sev_slope` | -0.92 | Table 2 |
+| `etaslope` | SD 0.20, additive | Table 2; Results ('additive IIV model') |
+| `addSd_egfrcfb` | 15.41 mL/min/1.73 m^2 | Table 2, PK/PD block |
+| cAUC = sum of daily dose / CL/F (state `cauc`) | -- | Methods 'Population PK/PD Model' |
+
+# Virtual cohort
+
+Every simulation below uses one cohort of 200 patients, 50 in each
+pre-transplant eGFR category. The paper does not report how its 44 patients
+were split across the categories, so equal arms are used.
+
+Each patient takes a fixed once-daily dose drawn from a log-normal
+distribution around the cohort median of 4 mg, rounded to 0.5 mg and kept
+between 0.5 and 15 mg. In the clinic the dose was titrated to trough targets,
+so this cohort has a wider exposure range than the real one. It is a
+stress test of the model, not a copy of the study. Hematocrit is constant for
+each patient and drawn around the cohort median of 28.7 %. Dosing starts on
+post-operative day 1 (time 0) and lasts 365 days. `POD` counts up by one each
+day.
+
+```{r cohort}
+set.seed(2026)
+rxode2::rxSetSeed(2026)
+
+arms <- c("eGFR >= 90", "eGFR 60 to <90", "eGFR 30 to <60", "eGFR <30")
+n_per_arm <- 50
+cohort <- tibble(
+  id = seq_len(n_per_arm * length(arms)),
+  arm = factor(rep(arms, each = n_per_arm), levels = arms),
+  HCT = pmin(pmax(rnorm(n_per_arm * length(arms), 28.7, 5), 14), 50),
+  dose_mg = pmin(pmax(round(2 * exp(rnorm(n_per_arm * length(arms), log(4), 0.5))) / 2, 0.5), 15)
+) |>
+  mutate(
+    RENALIMP_MILD = as.integer(arm == "eGFR 60 to <90"),
+    RENALIMP_MOD = as.integer(arm == "eGFR 30 to <60"),
+    RENALIMP_SEV = as.integer(arm == "eGFR <30")
+  )
+
+n_days <- 365
+interval_h <- 24 * n_days / 4 # four 3-month intervals
+dose_times <- 24 * (seq_len(n_days) - 1)
+trough_times <- dose_times + 23.9
+rich_times <- 24 * 359 + 0:24 # day 360 dosing interval
+boundary_times <- interval_h * 0:4
+obs_times <- sort(unique(c(trough_times, rich_times, boundary_times)))
+
+make_events <- function(subject) {
+  doses <- tibble(time = dose_times, evid = 1L, amt = subject$dose_mg, cmt = "depot", dvid = NA_integer_)
+  # The model has two endpoints (Cc and egfrcfb); observation rows name the
+  # ODE state plus dvid = 1, and every endpoint column is returned on each row.
+  obs <- tibble(time = obs_times, evid = 0L, amt = 0, cmt = "central", dvid = 1L)
+  bind_rows(doses, obs) |>
+    arrange(time, desc(evid)) |>
+    mutate(
+      id = subject$id,
+      POD = floor(time / 24) + 1,
+      HCT = subject$HCT,
+      RENALIMP_MILD = subject$RENALIMP_MILD,
+      RENALIMP_MOD = subject$RENALIMP_MOD,
+      RENALIMP_SEV = subject$RENALIMP_SEV
+    )
+}
+events <- bind_rows(lapply(split(cohort, cohort$id), make_events))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Tang_2026_tacrolimus")
+sim <- rxode2::rxSolve(mod, events = events, returnType = "data.frame") |>
+  select(id, time, Cc, auc_central, cauc, egfrcfb, cl, slope_i) |>
+  left_join(select(cohort, id, arm, dose_mg), by = "id")
+
+typ_mod <- rxode2::zeroRe(mod)
+sim_typ <- rxode2::rxSolve(typ_mod, events = events, returnType = "data.frame") |>
+  select(id, time, Cc, auc_central, cauc, egfrcfb, cl, slope_i) |>
+  left_join(select(cohort, id, arm, dose_mg), by = "id")
+```
+
+## Typical slopes against the paper's footnote
+
+The Table 2 footnote prints the slope for each pre-transplant eGFR category:
+-0.59, -0.19, 0.08 and -0.05 mL/min/1.73 m^2 per mg*h/L. With the random
+effects set to zero, the packaged model's `egfrcfb / cauc` gives these
+values. The Results text says that "an increase of 10 mg h/L in the cAUC3mon
+resulted in a decrease of 5.9 mL/min/1.73 m^2" in the reference group.
+
+```{r slopes}
+slope_chk <- sim_typ |>
+  filter(time > 0) |>
+  group_by(arm) |>
+  summarise(model_slope = mean(egfrcfb / cauc), .groups = "drop") |>
+  mutate(paper_slope = c(-0.59, -0.19, 0.08, -0.05))
+slope_chk |>
+  dplyr::rename(
+    "Pre-transplant eGFR" = arm,
+    "Model slope" = model_slope,
+    "Table 2 footnote" = paper_slope
+  ) |>
+  knitr::kable(digits = 4)
+
+stopifnot(
+  # The footnote rounds to two decimals.
+  all(abs(round(slope_chk$model_slope, 2) - slope_chk$paper_slope) < 1e-9),
+  # Results: 10 mg*h/L lowers eGFR by 5.9 in the reference group.
+  abs(10 * slope_chk$model_slope[1] - (-5.9)) < 1e-9
+)
+```
+
+## Cumulative AUC: the paper's definition
+
+The paper computed each day's AUC0-24h as daily dose / individual CL/F and
+summed these over the interval. The model carries this sum in the state
+`cauc`: after each once-daily dose it accumulates dose / (24 x CL/F) for
+24 hours. Over the first 3-month interval it should equal the sum of
+dose / CL/F over the days, with CL/F taken on each day at that day's POD.
+
+```{r cauc-closed-form}
+first_interval <- sim |>
+  filter(time == interval_h) |>
+  select(id, arm, dose_mg, cauc, auc_central)
+# The paper's metric: the sum over the days of the interval of dose / CL/F,
+# with CL/F read once per day (POD and HCT are constant within a day).
+cl_daily <- sim |>
+  filter(time %in% trough_times, time < interval_h) |>
+  group_by(id) |>
+  summarise(auc_paper = sum(first(dose_mg) / cl), .groups = "drop")
+first_interval <- left_join(first_interval, cl_daily, by = "id") |>
+  mutate(
+    pct_diff = 100 * (cauc - auc_paper) / auc_paper,
+    pct_integral = 100 * (auc_central - cauc) / cauc
+  )
+summary(first_interval$pct_diff)
+# The last day of the interval is only partly counted (91.25 days), so the
+# two differ by less than one day's increment; same drawn parameters.
+stopifnot(all(abs(first_interval$pct_diff) < 1))
+```
+
+The paper's cAUC is not the integral of the concentration. `auc_central`
+carries the integral. At steady state the two give the same daily increment,
+because the AUC over one dosing interval equals dose / CL/F. Day 360 is used
+for this check. A subject with low clearance and high volume has a half-life
+of several weeks, so the check uses the median and the 90th percentile, not
+the worst case.
+
+```{r auc-steady-state}
+auc_day360 <- sim |>
+  filter(time %in% range(rich_times)) |>
+  group_by(id) |>
+  summarise(
+    auc_model = diff(auc_central),
+    auc_paper = diff(cauc),
+    .groups = "drop"
+  ) |>
+  mutate(pct_diff = 100 * (auc_model - auc_paper) / auc_paper)
+summary(auc_day360$pct_diff)
+stopifnot(
+  abs(median(auc_day360$pct_diff)) < 0.5,
+  quantile(abs(auc_day360$pct_diff), 0.9) < 2
+)
+```
+
+Over the first two post-operative weeks the two diverge widely. The
+`(POD / 14)^1.68` term makes CL/F very small on the first days (about 1 % of
+the typical value on POD 1). Each early dose then adds a large dose / CL/F,
+while the concentration is still building up slowly in the large apparent
+volume. Over the first 3-month interval, the concentration integral in this
+cohort is a median of `r round(median(first_interval$pct_integral), 0)` %
+different from the paper's cAUC.
+The slope was estimated against the paper's cAUC, so `cauc` drives the eGFR
+output.
+
+# Replicate published figures
+
+## Figure 1: trough concentrations over the first year
+
+The paper shows a prediction-corrected VPC. Here the plot shows the simulated
+troughs, with residual error, at the cohort's own fixed doses. The trough rises
+over the first two weeks, while CL/F is still low because of the
+`(POD / 14)^1.68` term. It then settles at the steady-state level. That level is
+about 5 ng/mL at the median prediction-corrected trough in Figure 1B.
+
+```{r fig1, fig.width = 7, fig.height = 4.5}
+troughs <- sim |>
+  filter(time %in% trough_times) |>
+  mutate(Cobs = Cc + rnorm(n(), 0, 3.04))
+trough_summary <- troughs |>
+  group_by(time) |>
+  summarise(
+    p05 = quantile(Cobs, 0.05),
+    p50 = quantile(Cobs, 0.5),
+    p95 = quantile(Cobs, 0.95),
+    .groups = "drop"
+  )
+ggplot(trough_summary, aes(time)) +
+  geom_ribbon(aes(ymin = pmax(p05, 0.1), ymax = p95), fill = "steelblue", alpha = 0.3) +
+  geom_line(aes(y = p50), colour = "steelblue4") +
+  scale_y_log10(limits = c(0.1, 1000)) +
+  labs(
+    x = "Time after the first dose (h)",
+    y = "Tacrolimus trough (ng/mL)",
+    caption = "Replicates the layout of Figure 1B of Tang 2026: simulated median and 5th-95th percentiles."
+  ) +
+  theme_bw()
+```
+
+The paper's typical patient (4 mg/day, POD >= 14, HCT 30 %) has a
+steady-state average concentration of dose / (CL/F x 24 h):
+
+```{r typical-css}
+css_typ <- 4 / (23.46 * 24) * 1000
+css_typ
+```
+
+For comparison, Table 1 gives a median observed trough of 7.3 ng/mL.
+
+## Figure 2: change in eGFR against cAUC3mon
+
+For each subject and each 3-month interval, the change in eGFR is the slope
+times that interval's cumulative AUC, plus the additive residual error. Because
+the model is linear with no intercept, the change over an interval is the
+difference in `egfrcfb` between the end and start of that interval, and the
+interval's cAUC3mon is the difference in `cauc`.
+
+```{r fig2, fig.width = 7, fig.height = 5}
+intervals <- sim |>
+  filter(time %in% boundary_times) |>
+  arrange(id, time) |>
+  group_by(id, arm) |>
+  mutate(
+    cauc3mon = cauc - lag(cauc),
+    d_egfr_ipred = egfrcfb - lag(egfrcfb)
+  ) |>
+  filter(!is.na(cauc3mon)) |>
+  ungroup() |>
+  mutate(d_egfr_obs = d_egfr_ipred + rnorm(n(), 0, 15.41))
+
+# The difference of egfrcfb over an interval is exactly the slope times
+# that interval's cumulative AUC (same drawn parameters; numerical error only).
+stopifnot(all(abs(intervals$d_egfr_ipred - intervals$slope_i * intervals$cauc3mon) < 1e-6))
+
+summary(intervals$cauc3mon)
+
+bins <- c(0, 10, 20, 35, 60, Inf)
+vpc2 <- intervals |>
+  mutate(bin = cut(cauc3mon, bins)) |>
+  group_by(bin) |>
+  summarise(
+    cauc = median(cauc3mon),
+    p05 = quantile(d_egfr_obs, 0.05),
+    p50 = quantile(d_egfr_obs, 0.5),
+    p95 = quantile(d_egfr_obs, 0.95),
+    n = n(),
+    .groups = "drop"
+  )
+ggplot(intervals, aes(cauc3mon, d_egfr_obs)) +
+  geom_point(aes(colour = arm), alpha = 0.4, size = 1) +
+  geom_line(data = vpc2, aes(cauc, p50), linewidth = 1) +
+  geom_line(data = vpc2, aes(cauc, p05), linetype = "dashed") +
+  geom_line(data = vpc2, aes(cauc, p95), linetype = "dashed") +
+  coord_cartesian(xlim = c(0, 150), ylim = c(-100, 100)) +
+  labs(
+    x = "cAUC3mon (mg h/L)",
+    y = "Change in eGFR (mL/min/1.73 m^2)",
+    colour = "Pre-transplant eGFR",
+    caption = "Replicates Figure 2 of Tang 2026: simulated interval changes with 5th, 50th and 95th percentiles."
+  ) +
+  theme_bw()
+knitr::kable(vpc2, digits = 1)
+```
+
+Figure 2 of the paper has most intervals between 0 and 50 mg*h/L, a median
+change near 0 at low cAUC3mon falling to about -15 mL/min/1.73 m^2 near
+50 mg*h/L, and 5th-95th percentiles of roughly -50 to +40 mL/min/1.73 m^2. The
+simulated percentiles here also include the three pre-transplant categories
+with flatter or positive slopes, in equal shares, which is an assumption (see
+below).
+
+## Typical eGFR decline over the year by pre-transplant eGFR
+
+```{r egfr-time, fig.width = 7, fig.height = 4}
+sim_typ |>
+  filter(time %in% trough_times) |>
+  group_by(arm, time) |>
+  summarise(egfrcfb = median(egfrcfb), .groups = "drop") |>
+  ggplot(aes(time / 24, egfrcfb, colour = arm)) +
+  geom_line() +
+  labs(
+    x = "Days after transplantation",
+    y = "Typical change in eGFR (mL/min/1.73 m^2)",
+    colour = "Pre-transplant eGFR",
+    caption = "Median over the cohort's doses and hematocrit, random effects set to zero."
+  ) +
+  theme_bw()
+```
+
+# PKNCA validation
+
+NCA over the day-360 dosing interval for each pre-transplant eGFR arm. The PK
+does not depend on the arm, so the arms differ only by chance. The paper
+reports no NCA, so there is no published table to compare against. Instead, the
+check below compares the PKNCA AUC0-24 with dose / CL/F, which is the paper's
+own AUC0-24h.
+
+```{r pknca}
+# rich_times starts at the day-360 dose, so the interval has its time-0 record
+conc_nca <- sim[sim$time %in% rich_times, ] |>
+  filter(!is.na(Cc)) |>
+  mutate(time_nca = time - min(rich_times)) |>
+  select(id, arm, time = time_nca, Cc)
+dose_nca <- cohort |>
+  transmute(id, arm, time = 0, amt = dose_mg)
+
+conc_obj <- PKNCAconc(conc_nca, Cc ~ time | arm + id)
+dose_obj <- PKNCAdose(dose_nca, amt ~ time | arm + id)
+intervals_nca <- data.frame(
+  start = 0, end = 24,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE
+)
+nca_res <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals_nca))
+summary(nca_res)
+
+auc_nca <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, auclast = PPORRES) |>
+  left_join(select(auc_day360, id, auc_paper), by = "id") |>
+  mutate(pct_diff = 100 * (auclast / 1000 - auc_paper) / auc_paper)
+summary(auc_nca$pct_diff)
+stopifnot(
+  # Linear-up/log-down trapezoids on an hourly grid against the exact
+  # steady-state integral: within a few percent.
+  abs(median(auc_nca$pct_diff)) < 2,
+  quantile(abs(auc_nca$pct_diff), 0.9) < 5
+)
+```
+
+# Assumptions and deviations
+
+* **Omega scale.** The Table 2 footnote defines omega as the standard
+  deviation of the IIV. The row `omega CL,V = 0.47` is therefore read as a
+  correlation. As a covariance of two SDs (0.62 and 0.71) it would imply a
+  correlation of 1.07, which is impossible. Phoenix NLME normally reports
+  variances, and reading the diagonals as variances would also be consistent
+  (0.47 would then be a covariance with correlation 0.71). The footnote's
+  reading was chosen. Figure 1B supports it: at steady state, the predicted
+  95th percentile of the prediction-corrected trough is about 3.2 times the
+  median (about 16 against 5 ng/mL). With CL/F SD 0.62 plus the 3.04 ng/mL
+  additive error, this ratio is about 2.8; with SD sqrt(0.62) = 0.79 it is
+  about 3.5. The slope's omega (0.20) is read as an SD too.
+* **Sign of the slope.** Table 2 prints theta Slope as 0.59. The Results
+  ("The population estimate of the slope was -0.59") and the Table 2 footnote
+  give the negative sign. The packaged `slope` is -0.59 and the category effects
+  enter as `slope * (1 + theta)`. This reproduces all four footnote slopes.
+* **Position of the slope IIV.** The additive eta is added after the
+  covariate effect. The paper does not say whether it enters before or after
+  the `(1 + theta)` factor.
+* **cAUC.** The paper summed daily dose / CL/F, with CL/F from each
+  patient's empirical Bayes estimates. CL/F depends on post-operative day and
+  hematocrit, so "individual clearance" is read as that day's
+  covariate-adjusted CL/F. The paper does not say this explicitly. `cauc`
+  reproduces this sum for once-daily dosing, the paper's only regimen. It adds
+  dose / CL/F for the most recent dose over the following 24 hours. It does
+  not handle twice-daily dosing, where only the last dose would be counted.
+  The concentration integral `auc_central` is also provided, but it is not
+  the exposure the slope was estimated against.
+* **Interval structure.** The paper fitted the change in eGFR over each 3-month
+  interval against that interval's cAUC3mon. The change over the first interval
+  is measured from the pre-transplant baseline. `egfrcfb` is the change from
+  time 0 (the start of AUC accumulation). For a later interval, take the
+  difference of `egfrcfb` at the interval's end and start. Because the model is
+  linear with no intercept, this is exactly the model's prediction for that
+  interval. The residual error (15.41) applies to a single interval's change.
+* **POD = 0.** The `(POD / 14)^1.68` term is zero at POD 0, which gives zero
+  clearance. Supply `POD >= 1`.
+* **Cohort.** The doses are fixed rather than titrated to trough targets as in
+  the clinic, and the pre-transplant eGFR categories are equal in size. Neither
+  distribution is reported in the paper. Hematocrit is constant within a
+  subject, although it varies over time in the real data.
+* **Errata.** No erratum or correction was found in Europe PMC (checked
+  2026-11-14).

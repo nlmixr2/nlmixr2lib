@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Tang 2026 tacrolimus PK and cumulative-exposure eGFR model ([doi:10.1097/FTD.0000000000001418](https://doi.org/10.1097/FTD.0000000000001418)) -- adult liver transplant recipients in the first post-transplant year.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

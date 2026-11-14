@@ -1294,6 +1294,13 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Wattanakul_2026_paracetamol_creatinine.R` (exponential approach to a plateau, `crcfb = Plateau * (1 - exp(-kappa * t))`, with the plateau scaled by the enrollment KDIGO stage and the rate constant by log10 paracetamol AUC0-72h; additive residual 7.94%).
 - **Notes:** The `cfb` suffix follows the `ppsvcfb` / `tmccfb` / `das28cfb` precedent. This is a PERCENT change; a model of the absolute creatinine concentration or of an absolute (umol/L) change should register a sibling rather than overload this name.
 
+### egfrcfb (**canonical change in estimated glomerular filtration rate output**)
+- **Type:** compartment
+- **Role:** Absolute change in the estimated glomerular filtration rate, in mL/min/1.73 m^2, used as the modelled endpoint by exposure-response models whose structural equation targets the change score directly rather than the eGFR level. Signed: a NEGATIVE value is a decline in kidney function. The reference point of the change (pre-treatment baseline, start of an interval) must be stated in each model's `description`.
+- **Source aliases:** `change in eGFR`, `altered eGFR` -- Tang 2026 Methods and Results.
+- **Example models:** `Tang_2026_tacrolimus.R` (founding example; direct linear model with no intercept, `egfrcfb = slope_i * cauc`, where `cauc` is the paper's cumulative tacrolimus AUC in mg*h/L (running sum of daily dose / CL/F) and the slope depends on the pre-transplant eGFR category; change from the start of cAUC accumulation, so the change over a later interval is the difference of `egfrcfb` across that interval).
+- **Notes:** Formed by the library-wide `<state>cfb` change-from-baseline convention (see `bcvacfb`) on the registered `egfr` state. Distinct from `egfr` (the modelled eGFR level), from `crcfb` (a PERCENT change in serum creatinine) and from the covariate columns `CRCL` / `CRCL_BASE` (measured renal function a user supplies). A model of a PERCENT change in eGFR should register a sibling rather than overload this name.
+
 ### lnalt (**canonical natural-logarithm serum alanine aminotransferase output**)
 - **Type:** compartment
 - **Role:** Natural logarithm of serum alanine aminotransferase activity (ALT in U/L), used as a continuous hepatic-safety PD endpoint fitted on the log scale with an additive residual. Algebraic output in the founding model (no ODE state).
