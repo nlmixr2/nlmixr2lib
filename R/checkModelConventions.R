@@ -53,11 +53,17 @@ checkModelConventions <- function(model, verbose = TRUE) {
   invisible(issues)
 }
 
-.checkOneModel <- function(model, verbose) {
+# `packageDir` is the source directory of the package whose inst/modeldb holds
+# the model, where it is known (buildModelDb() reads it from the model's path); for
+# a model given by name it is found from the registry's file for the model.
+.checkOneModel <- function(model, verbose, packageDir = NULL) {
   resolved <- .resolveModel(model)
   ui <- resolved$ui
   model_name <- resolved$name
   conv <- .nlmixr2libConventions()
+  if (is.null(packageDir)) {
+    packageDir <- .packageDirOfModelFile(resolved$file)
+  }
 
   checks <- list(
     .checkFileMetadata(ui, conv),
@@ -77,7 +83,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkLogitBackTransform(ui, conv),
     .checkHandWrittenInverseLogit(ui, conv),
     .checkCentralConcentrationName(ui, conv),
-    .checkNestingAssertion(ui, model_name)
+    .checkNestingAssertion(ui, model_name, packageDir)
   )
   issues <- do.call(rbind, checks)
   if (is.null(issues) || nrow(issues) == 0) {
@@ -99,7 +105,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
     checkmate::assertCharacter(model, len = 1, any.missing = FALSE, min.chars = 1)
     fun <- readModelDb(model)
     ui <- nlmixr2est::nlmixr(fun)
-    return(list(ui = ui, name = model))
+    return(list(ui = ui, name = model, file = .modelDbFile(model)))
   }
   if (inherits(model, "rxUi")) {
     # `ui$modelName` is a single character string, or NULL for an anonymous
@@ -2617,9 +2623,15 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # model's eta and group. The call runs when the article renders; the rule checks
 # that it is there. What the rule does not see: which simulation the call is
 # given (one call covers every model of the article that has the same eta and
-# group), a call that never runs (inside a function the article does not call, or
-# under `if (FALSE)`), and a call written with magrittr's `%>%` rather than a
-# direct call or the native pipe.
+# group, as the ElKhateeb variants share one article that simulates only the
+# base model with random effects), and a call that never runs (inside a function
+# the article does not call, or under `if (FALSE)`).
+#
+# The rule applies to a model that lives in the `inst/modeldb` of a package
+# source tree, and reads the articles of that tree (`vignettes/articles`). A
+# model given as a function, or found in an installed package, belongs to no
+# source tree and is not checked; a source tree without `vignettes/articles`
+# skips the rule with a message.
 #
 # (model, G) pairs where G is a level above the subject on purpose, so that one
 # draw per level is the model; each with the evidence for it. Anything not
@@ -2654,88 +2666,26 @@ checkModelConventions <- function(model, verbose = TRUE) {
   data.frame(eta = iniDf$name[keep], group = iniDf$condition[keep], stringsAsFactors = FALSE)
 }
 
-# The directory of the internal articles in the source tree, or NULL when the
-# package is installed (the articles are not built into the package), where the
-# rule has nothing to read.
-.nestingArticleDir <- function() {
-  dir <- file.path(getNamespaceInfo(asNamespace("nlmixr2lib"), "path"), "vignettes", "articles")
+# The source directory of the package whose `inst/modeldb` holds the model file
+# `file`, or NULL when the file is not in one (a model of the user's own, or one
+# of an installed package, where `inst/` is flattened into the package root).
+.packageDirOfModelFile <- function(file) {
+  if (is.null(file) || length(file) != 1L || is.na(file) || !nzchar(file)) {
+    return(NULL)
+  }
+  path <- normalizePath(file, winslash = "/", mustWork = FALSE)
+  if (!grepl("/inst/modeldb/", path, fixed = TRUE)) {
+    return(NULL)
+  }
+  dir <- sub("^(.*)/inst/modeldb/.*$", "\\1", path)
+  if (file.exists(file.path(dir, "DESCRIPTION"))) dir else NULL
+}
+
+# The directory of the internal articles of the package source tree `packageDir`,
+# or NULL when it has none.
+.nestingArticleDir <- function(packageDir) {
+  dir <- file.path(packageDir, "vignettes", "articles")
   if (dir.exists(dir)) dir else NULL
-}
-
-# The R chunks of an Rmd, parsed, as list(chunks, unparseable). A chunk is
-# skipped when it does not run (`eval = FALSE` in its header, or `#| eval: false`
-# / `#| eval = FALSE` in its body). `unparseable` holds the line of each running
-# chunk that does not parse, so a caller cannot mistake it for an empty chunk.
-.articleChunks <- function(path) {
-  lines <- readLines(path, warn = FALSE)
-  is_open <- grepl("^\\s*```\\{[rR][ ,}]", lines)
-  is_close <- grepl("^\\s*```\\s*$", lines)
-  chunks <- list()
-  unparseable <- integer()
-  inchunk <- FALSE
-  skip <- FALSE
-  start <- 0L
-  buf <- character()
-  for (i in seq_along(lines)) {
-    if (!inchunk && is_open[[i]]) {
-      inchunk <- TRUE
-      skip <- grepl("eval\\s*=\\s*(FALSE|F)\\b", lines[[i]])
-      start <- i
-      buf <- character()
-    } else if (inchunk && is_close[[i]]) {
-      inchunk <- FALSE
-      if (!skip) {
-        parsed <- tryCatch(parse(text = buf, keep.source = FALSE), error = function(e) NULL)
-        if (is.null(parsed)) {
-          unparseable <- c(unparseable, start)
-        } else {
-          chunks[[length(chunks) + 1L]] <- parsed
-        }
-      }
-    } else if (inchunk) {
-      if (grepl("^#\\|\\s*eval\\s*[:=]\\s*(false|FALSE|False|F)\\s*$", lines[[i]])) {
-        skip <- TRUE
-      }
-      buf <- c(buf, lines[[i]])
-    }
-  }
-  list(chunks = chunks, unparseable = unparseable)
-}
-
-# Call `fn` on every call node of a language object, depth first. Empty
-# arguments (`x[, 1]`) are unbound symbols that cannot be passed on, so they are
-# skipped in their list slot.
-.walkCalls <- function(expr, fn) {
-  if (is.expression(expr)) {
-    for (i in seq_along(expr)) {
-      .walkCalls(expr[[i]], fn)
-    }
-    return(invisible(NULL))
-  }
-  if (!is.call(expr)) {
-    return(invisible(NULL))
-  }
-  fn(expr)
-  kids <- as.list(expr)
-  for (i in seq_along(kids)) {
-    if (!identical(kids[i], list(quote(expr = )))) {
-      .walkCalls(kids[[i]], fn)
-    }
-  }
-  invisible(NULL)
-}
-
-# The function a call is made through, with any `pkg::` or `pkg:::` prefix
-# dropped, or NA.
-.calledName <- function(e) {
-  head <- e[[1L]]
-  if (is.name(head)) {
-    return(as.character(head))
-  }
-  if (is.call(head) && length(head) == 3L && is.name(head[[1L]]) && as.character(head[[1L]]) %in% c("::", ":::")) {
-    return(as.character(head[[3L]]))
-  }
-  NA_character_
 }
 
 # The strings of a literal character vector (`"a"`, `c("a", "b")`), or NULL.
@@ -2783,7 +2733,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
     logical(1L)
   ))
   broken <- if (length(unparseable) > 0L) {
-    sprintf("a running chunk at line %s does not parse", paste(unparseable, collapse = ", "))
+    paste(sprintf("the chunk at line %d %s", unparseable, names(unparseable)), collapse = "; ")
   }
   if (covered) {
     return(if (!is.null(broken)) paste0(broken, ", so the article cannot be read in full"))
@@ -2806,15 +2756,26 @@ checkModelConventions <- function(model, verbose = TRUE) {
   paste(c(missing, broken), collapse = "; ")
 }
 
-.checkNestingAssertion <- function(ui, model_name, articleDir = .nestingArticleDir()) {
+.checkNestingAssertion <- function(ui, model_name, packageDir = NULL) {
   issues <- .emptyIssues()
   nested <- .nestedEtaRows(ui)
-  if (nrow(nested) == 0L || is.null(articleDir)) {
+  if (nrow(nested) == 0L || is.null(packageDir)) {
     return(issues)
   }
   above <- .nestingAboveSubjectGroups
   nested <- nested[!(paste(model_name, nested$group) %in% paste(above$model, above$group)), , drop = FALSE]
   if (nrow(nested) == 0L) {
+    return(issues)
+  }
+  articleDir <- .nestingArticleDir(packageDir)
+  if (is.null(articleDir)) {
+    message(
+      "nesting_assertion skipped for ",
+      model_name,
+      ": ",
+      file.path(packageDir, "vignettes", "articles"),
+      " does not exist, so the article that asserts its draws cannot be read"
+    )
     return(issues)
   }
   vignette <- ui$meta$vignette
@@ -2843,7 +2804,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
       )
     }
   } else {
-    parsed <- tryCatch(.articleChunks(article), error = function(e) NULL)
+    parsed <- tryCatch(.articleExprs(article), error = function(e) NULL)
     if (is.null(parsed)) {
       problem <- sprintf("the article `%s` could not be read", basename(article))
     } else {

@@ -98,6 +98,26 @@ test_that("a draw that changes within a subject and level is an error", {
   )
 })
 
+test_that("draws are compared exactly, so an eta of tiny variance is not read as shared", {
+  # Independent draws near 1e-12 differ in the 13th digit and no earlier one.
+  tiny <- .drawsSim()
+  tiny$etaiov <- 1e-12 * (1 + as.numeric(tiny$OCC) / 10 + tiny$id / 1000)
+  expect_silent(assertDrawsPerLevel(tiny, eta = "etaiov", by = "OCC"))
+  expect_silent(assertDrawsPerLevel(tiny, eta = "etaiov", by = "OCC", n = 3L))
+  # Draws shared by the subjects of a level are bit-identical and still caught.
+  shared <- .drawsSim()
+  shared$etaiov <- 1e-12 * as.numeric(shared$OCC)
+  expect_error(
+    assertDrawsPerLevel(shared, eta = "etaiov", by = "OCC"),
+    "is shared",
+    class = "nlmixr2lib_drawsPerLevel"
+  )
+  # Two draws one ulp apart are two draws.
+  ulp <- .drawsSim(levels = list(`1` = 1:2, `2` = 3:4))
+  ulp$etaiov <- rep(c(0.5, 0.5 + 2^-53, 0.25, 0.25 - 2^-54), each = 2)
+  expect_silent(assertDrawsPerLevel(ulp, eta = "etaiov", by = "OCC"))
+})
+
 test_that("n requires exactly that many distinct draws on every level", {
   sim <- .drawsSim()
   expect_silent(assertDrawsPerLevel(sim, eta = "etaiov", by = "OCC", n = 3L))
@@ -232,16 +252,17 @@ test_that("rxode2 shares the draw when every subject has one level, and the help
   suppressWarnings(suppressMessages(nlmixr2est::nlmixr(eval(parse(text = paste(text, collapse = "\n"))))))
 }
 
-# An article directory with `Fixture_article.Rmd` holding `code` in one chunk.
+# A package source directory whose vignettes/articles holds `Fixture_article.Rmd`
+# with `code` in one chunk.
 .nestFixtureArticles <- function(code, header = "```{r sim}", name = "Fixture_article", env = parent.frame()) {
-  dir <- file.path(withr::local_tempdir(.local_envir = env), "articles")
-  dir.create(dir)
-  writeLines(c("# Title", "", header, code, "```"), file.path(dir, paste0(name, ".Rmd")))
-  dir
+  pkg <- file.path(withr::local_tempdir(.local_envir = env), "pkg")
+  dir.create(file.path(pkg, "vignettes", "articles"), recursive = TRUE)
+  writeLines(c("# Title", "", header, code, "```"), file.path(pkg, "vignettes", "articles", paste0(name, ".Rmd")))
+  pkg
 }
 
-.nestRuleIssues <- function(ui, dir, model = "Fixture_occ") {
-  .checkNestingAssertion(ui, model, articleDir = dir)
+.nestRuleIssues <- function(ui, pkg, model = "Fixture_occ") {
+  .checkNestingAssertion(ui, model, packageDir = pkg)
 }
 
 .callOk <- "nlmixr2lib:::assertDrawsPerLevel(sim, eta = \"etaiov\", by = \"OCC\")"
@@ -256,6 +277,8 @@ test_that("a nested eta with the helper called on its eta and group in the artic
     reordered = "assertDrawsPerLevel(by = \"OCC\", sim = sim, eta = \"etaiov\", n = 3L)",
     exported = "nlmixr2lib::assertDrawsPerLevel(sim, eta = \"etaiov\", by = \"OCC\")",
     piped = "sim |> nlmixr2lib:::assertDrawsPerLevel(eta = \"etaiov\", by = \"OCC\")",
+    magrittr = "sim %>% nlmixr2lib:::assertDrawsPerLevel(eta = \"etaiov\", by = \"OCC\")",
+    magrittr_bare = "sim %>% assertDrawsPerLevel(\"etaiov\", \"OCC\")",
     several = "assertDrawsPerLevel(sim, eta = c(\"other\", \"etaiov\"), by = \"OCC\")"
   )
   for (nm in names(cases)) {
@@ -307,10 +330,66 @@ test_that("a call in a chunk that does not run does not count, however eval is w
   for (h in headers) {
     expect_equal(nrow(.nestRuleIssues(ui, .nestFixtureArticles(.callOk, header = h))), 1L, label = h)
   }
-  for (opt in c("#| eval: false", "#| eval = FALSE")) {
+  # Every YAML spelling of FALSE that knitr reads, and R's own spellings.
+  falsy <- c(paste("#| eval:", .yamlFalse), "#| eval = FALSE", "#| eval = F")
+  for (opt in falsy) {
     expect_equal(nrow(.nestRuleIssues(ui, .nestFixtureArticles(c(opt, .callOk)))), 1L, label = opt)
   }
+  for (opt in c("#| eval: true", "#| eval: yes", "#| eval: on", "#| eval: y", "#| echo: false")) {
+    expect_equal(nrow(.nestRuleIssues(ui, .nestFixtureArticles(c(opt, .callOk)))), 0L, label = opt)
+  }
   expect_equal(nrow(.nestRuleIssues(ui, .nestFixtureArticles(.callOk, header = "```{r sim, eval = TRUE}"))), 0L)
+})
+
+test_that("a chunk fenced with four backticks is read, and is closed by four", {
+  skip_if_not_installed("nlmixr2est")
+  ui <- .nestFixtureUi()
+  base <- withr::local_tempdir()
+  four <- function(code, header = "````{r sim}", close = "````") {
+    pkg <- tempfile("pkg", tmpdir = base)
+    dir.create(file.path(pkg, "vignettes", "articles"), recursive = TRUE)
+    writeLines(
+      c("# Title", "", header, code, close),
+      file.path(pkg, "vignettes", "articles", "Fixture_article.Rmd")
+    )
+    pkg
+  }
+  expect_equal(nrow(.nestRuleIssues(ui, four(.callOk))), 0L)
+  # A three-backtick line inside the chunk does not close it, so the call after it counts.
+  expect_equal(nrow(.nestRuleIssues(ui, four(c("x <- '", "```", "'", .callOk)))), 0L)
+  expect_equal(nrow(.nestRuleIssues(ui, four(.callOk, header = "````{r sim, eval = FALSE}"))), 1L)
+})
+
+test_that("a call in a verbatim fenced block that merely shows a chunk does not count", {
+  skip_if_not_installed("nlmixr2est")
+  ui <- .nestFixtureUi()
+  pkg <- file.path(withr::local_tempdir(), "pkg")
+  dir.create(file.path(pkg, "vignettes", "articles"), recursive = TRUE)
+  writeLines(
+    c("# Title", "", "````markdown", "```{r}", .callOk, "```", "````"),
+    file.path(pkg, "vignettes", "articles", "Fixture_article.Rmd")
+  )
+  expect_equal(nrow(.nestRuleIssues(ui, pkg)), 1L)
+})
+
+test_that("a chunk that is never closed is an error, not a missing call", {
+  skip_if_not_installed("nlmixr2est")
+  ui <- .nestFixtureUi()
+  pkg <- file.path(withr::local_tempdir(), "pkg")
+  dir.create(file.path(pkg, "vignettes", "articles"), recursive = TRUE)
+  writeLines(
+    c("# Title", "", "```{r sim}", .callOk, "```", "", "```{r tail}", "x <- 1"),
+    file.path(pkg, "vignettes", "articles", "Fixture_article.Rmd")
+  )
+  v <- .nestRuleIssues(ui, pkg)
+  expect_equal(nrow(v), 1L)
+  expect_match(v$message, "the chunk at line 7 is never closed, so the article cannot be read in full", fixed = TRUE)
+  # An unclosed chunk that does not run is not code.
+  writeLines(
+    c("# Title", "", "```{r sim}", .callOk, "```", "", "```{r tail, eval = FALSE}", "x <- 1"),
+    file.path(pkg, "vignettes", "articles", "Fixture_article.Rmd")
+  )
+  expect_equal(nrow(.nestRuleIssues(ui, pkg)), 0L)
 })
 
 test_that("an article that cannot be read, or has a chunk that does not parse, is an error", {
@@ -328,7 +407,7 @@ test_that("an article that cannot be read, or has a chunk that does not parse, i
   expect_equal(nrow(v), 1L)
   expect_match(
     v$message,
-    "the article has no assertDrawsPerLevel() call; a running chunk at line 3 does not parse",
+    "the article has no assertDrawsPerLevel() call; the chunk at line 3 does not parse",
     fixed = TRUE
   )
   # The call is in a chunk that parses and a later chunk does not.
@@ -337,19 +416,19 @@ test_that("an article that cannot be read, or has a chunk that does not parse, i
   expect_equal(nrow(v), 1L)
   expect_match(
     v$message,
-    "a running chunk at line 7 does not parse, so the article cannot be read in full",
+    "the chunk at line 7 does not parse, so the article cannot be read in full",
     fixed = TRUE
   )
 })
 
 test_that("an article in vignettes/ beside articles/ is found", {
   skip_if_not_installed("nlmixr2est")
-  articles <- .nestFixtureArticles("1")
-  writeLines(c("```{r}", .callOk, "```"), file.path(dirname(articles), "Fixture_top.Rmd"))
-  expect_equal(nrow(.nestRuleIssues(.nestFixtureUi(vignette = "Fixture_top"), articles)), 0L)
+  pkg <- .nestFixtureArticles("1")
+  writeLines(c("```{r}", .callOk, "```"), file.path(pkg, "vignettes", "Fixture_top.Rmd"))
+  expect_equal(nrow(.nestRuleIssues(.nestFixtureUi(vignette = "Fixture_top"), pkg)), 0L)
 })
 
-test_that("the rule does nothing without an articles directory, a nested eta, or for an evidenced above-subject group", {
+test_that("the rule does nothing outside a source tree, without a nested eta, or for an evidenced above-subject group", {
   skip_if_not_installed("nlmixr2est")
   expect_equal(nrow(.nestRuleIssues(.nestFixtureUi(), NULL)), 0L)
   plain <- suppressWarnings(suppressMessages(nlmixr2est::nlmixr(function() {
@@ -393,15 +472,115 @@ test_that("each uncovered eta of a model is reported, and a correlated block yie
   expect_identical(v$name, "etaiov2")
 })
 
-test_that("checkModelConventions() runs the rule on a model with a nested eta", {
-  skip_on_cran()
+test_that(".checkOneModel() runs the rule on a model of a source tree, not on a model given as a function", {
   skip_if_not_installed("nlmixr2est")
-  skip_if(is.null(.nestingArticleDir()), "no vignettes/articles directory (installed package)")
   ui <- .nestFixtureUi(vignette = "No_such_article_in_the_source_tree")
-  res <- suppressWarnings(suppressMessages(.checkOneModel(ui, verbose = FALSE)))
+  pkg <- .nestFixtureArticles("1")
+  res <- suppressWarnings(suppressMessages(.checkOneModel(ui, verbose = FALSE, packageDir = pkg)))
   hit <- res[res$category == "nesting_assertion", ]
   expect_equal(nrow(hit), 1L)
   expect_identical(hit$severity, "error")
+  # A model of the user's own, given as a function, belongs to no source tree.
+  alone <- suppressWarnings(suppressMessages(.checkOneModel(ui, verbose = FALSE)))
+  expect_equal(sum(alone$category == "nesting_assertion"), 0L)
+})
+
+test_that("a registered model is checked against the source tree its file is in", {
+  skip_on_cran()
+  skip_if_not_installed("nlmixr2est")
+  path <- .modelDbFile("Lindauer_2025_risperidone_oral")
+  src <- .packageDirOfModelFile(path)
+  skip_if(is.null(src), "the model library is not in a source tree (installed package)")
+  expect_true(dir.exists(file.path(src, "vignettes", "articles")))
+  res <- suppressWarnings(suppressMessages(.checkOneModel("Lindauer_2025_risperidone_oral", verbose = FALSE)))
+  expect_equal(sum(res$category == "nesting_assertion"), 0L)
+})
+
+# A package source tree on disk: DESCRIPTION, inst/modeldb/<model>.R holding the
+# fixture model, and vignettes/articles/Fixture_article.Rmd holding `code` (the
+# articles directory is left out when `code` is NULL).
+.nestFixtureTree <- function(code, model = "Fixture_occ_model", env = parent.frame()) {
+  pkg <- file.path(withr::local_tempdir(.local_envir = env), "src", "pkg")
+  dir.create(file.path(pkg, "inst", "modeldb"), recursive = TRUE)
+  writeLines(c("Package: fixture", "Version: 0.0.1"), file.path(pkg, "DESCRIPTION"))
+  writeLines(
+    c(
+      paste0(model, " <- function() {"),
+      "  description <- \"Fixture\"",
+      "  vignette <- \"Fixture_article\"",
+      "  ini({",
+      "    lcl <- log(5)",
+      "    etacl ~ 0.09",
+      "    etaiov ~ 0.25 | OCC",
+      "    addSd <- 0.1",
+      "  })",
+      "  model({",
+      "    cl <- exp(lcl + etacl + etaiov)",
+      "    cp <- 100 / cl",
+      "    cp ~ add(addSd)",
+      "  })",
+      "}"
+    ),
+    file.path(pkg, "inst", "modeldb", paste0(model, ".R"))
+  )
+  if (!is.null(code)) {
+    dir.create(file.path(pkg, "vignettes", "articles"), recursive = TRUE)
+    writeLines(
+      c("```{r sim}", code, "```"),
+      file.path(pkg, "vignettes", "articles", "Fixture_article.Rmd")
+    )
+  }
+  pkg
+}
+
+test_that(".packageDirOfModelFile() names the tree whose inst/modeldb holds the file", {
+  pkg <- .nestFixtureTree(.callOk)
+  file <- file.path(pkg, "inst", "modeldb", "Fixture_occ_model.R")
+  expect_identical(.packageDirOfModelFile(file), normalizePath(pkg, winslash = "/"))
+  # A file in a category folder of inst/modeldb.
+  dir.create(file.path(pkg, "inst", "modeldb", "specificDrugs"))
+  expect_identical(
+    .packageDirOfModelFile(file.path(pkg, "inst", "modeldb", "specificDrugs", "M.R")),
+    normalizePath(pkg, winslash = "/")
+  )
+  # Not in inst/modeldb, no DESCRIPTION at the root, or not a path.
+  expect_null(.packageDirOfModelFile(file.path(pkg, "R", "M.R")))
+  installed <- file.path(withr::local_tempdir(), "lib", "pkg", "modeldb", "M.R")
+  expect_null(.packageDirOfModelFile(installed))
+  bare <- file.path(withr::local_tempdir(), "inst", "modeldb", "M.R")
+  expect_null(.packageDirOfModelFile(bare))
+  for (bad in list(NULL, NA_character_, "", c(file, file))) {
+    expect_null(.packageDirOfModelFile(bad))
+  }
+})
+
+test_that("a model file of a source tree is checked against that tree's articles, whichever package runs the build", {
+  skip_if_not_installed("nlmixr2est")
+  # The tree is not the loaded package: its articles, and only its, decide.
+  good <- .nestFixtureTree(.callOk)
+  bad <- .nestFixtureTree("sim <- run()")
+  for (case in list(list(pkg = good, n = 0L), list(pkg = bad, n = 1L))) {
+    dir <- file.path(case$pkg, "inst", "modeldb")
+    res <- suppressWarnings(suppressMessages(.modeldbFileRow(dir, "Fixture_occ_model.R")))
+    n <- if (is.null(res$errors)) 0L else sum(res$errors$category == "nesting_assertion")
+    expect_equal(n, case$n)
+    expect_true(res$volatile)
+  }
+})
+
+test_that("a source tree without vignettes/articles skips the rule with a message, and checks nothing", {
+  skip_if_not_installed("nlmixr2est")
+  ui <- .nestFixtureUi()
+  pkg <- .nestFixtureTree(NULL)
+  expect_message(
+    res <- .checkNestingAssertion(ui, "Fixture_occ_model", packageDir = pkg),
+    "nesting_assertion skipped for Fixture_occ_model",
+    fixed = TRUE
+  )
+  expect_equal(nrow(res), 0L)
+  row <- suppressWarnings(suppressMessages(.modeldbFileRow(file.path(pkg, "inst", "modeldb"), "Fixture_occ_model.R")))
+  n <- if (is.null(row$errors)) 0L else sum(row$errors$category == "nesting_assertion")
+  expect_equal(n, 0L)
 })
 
 test_that("the above-subject allowlist names only nested groups that still exist, with evidence", {
@@ -428,20 +607,25 @@ test_that("the above-subject allowlist names only nested groups that still exist
 test_that("the library's below-subject models have their draws asserted, and lose that when the call goes", {
   skip_on_cran()
   skip_if_not_installed("nlmixr2est")
-  articles <- .nestingArticleDir()
-  skip_if(is.null(articles), "no vignettes/articles directory (installed package)")
-  scratch <- file.path(withr::local_tempdir(), "articles")
-  dir.create(scratch)
+  src <- .packageDirOfModelFile(.modelDbFile(.nestedLibraryModels[[1L]]))
+  skip_if(is.null(src), "the model library is not in a source tree (installed package)")
+  articles <- .nestingArticleDir(src)
+  expect_false(is.null(articles))
+  scratch <- file.path(withr::local_tempdir(), "pkg")
+  dir.create(file.path(scratch, "vignettes", "articles"), recursive = TRUE)
   for (m in .nestedLibraryModels) {
     ui <- suppressWarnings(suppressMessages(nlmixr2est::nlmixr(readModelDb(m))))
     expect_gt(nrow(.nestedEtaRows(ui)), 0L, label = m)
-    expect_equal(nrow(.checkNestingAssertion(ui, m)), 0L, label = m)
+    expect_equal(nrow(.checkNestingAssertion(ui, m, packageDir = src)), 0L, label = m)
     # The same article with the call disarmed: assertDrawsPerLevel( -> invisible(.
     path <- file.path(articles, paste0(ui$meta$vignette, ".Rmd"))
     txt <- readLines(path, warn = FALSE)
     expect_true(any(grepl("assertDrawsPerLevel(", txt, fixed = TRUE)), label = m)
-    writeLines(gsub("assertDrawsPerLevel(", "invisible(", txt, fixed = TRUE), file.path(scratch, basename(path)))
-    red <- .checkNestingAssertion(ui, m, articleDir = scratch)
+    writeLines(
+      gsub("assertDrawsPerLevel(", "invisible(", txt, fixed = TRUE),
+      file.path(scratch, "vignettes", "articles", basename(path))
+    )
+    red <- .checkNestingAssertion(ui, m, packageDir = scratch)
     expect_equal(sort(red$name), sort(.nestedEtaRows(ui)$eta), label = m)
     expect_true(all(red$severity == "error"), label = m)
   }

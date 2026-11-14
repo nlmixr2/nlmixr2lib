@@ -320,8 +320,11 @@ addFileToModelDb <- function(dir, file, modeldb) {
   # Convention check. Error-severity issues are accumulated and abort
   # `buildModelDb()` once every model has been visited, so one run reports
   # every offending model instead of one per rebuild.
+  # The model's own package source tree, which holds the articles the
+  # nesting_assertion rule reads, comes from its path, so a build run from an
+  # installed copy of the package still reads the tree it builds.
   issues <- tryCatch(
-    suppressWarnings(checkModelConventions(mod, verbose = FALSE)),
+    suppressWarnings(.checkOneModel(mod, verbose = FALSE, packageDir = .packageDirOfModelFile(fileName))),
     error = function(e) NULL
   )
   errors <- NULL
