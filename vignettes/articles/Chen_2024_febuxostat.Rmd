@@ -238,6 +238,9 @@ data.frame(
   pct_expected = 100 * expected_at_cap
 )
 stopifnot(
+  # One lognormal draw per subject across every arm and period: a second value
+  # for an id would be counted twice below.
+  !anyDuplicated(f1$id),
   !anyNA(f1$fdepot_capped),
   all(f1$fdepot_capped >= 0), all(f1$fdepot_capped <= 1),
   all(1 - f1$fdepot_capped >= 0),

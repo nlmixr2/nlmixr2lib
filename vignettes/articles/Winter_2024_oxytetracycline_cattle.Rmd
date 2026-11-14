@@ -304,6 +304,9 @@ data.frame(
   pct_expected = 100 * expected_at_cap
 )
 stopifnot(
+  # One lognormal draw per animal across every cohort and period: a second value
+  # for an id would be counted twice below.
+  !anyDuplicated(frapid$id),
   !anyNA(frapid$ffo_capped),
   all(frapid$ffo_capped >= 0), all(frapid$ffo_capped <= 1),
   all(1 - frapid$ffo_capped >= 0),

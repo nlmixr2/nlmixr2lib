@@ -377,7 +377,7 @@ tibble::tibble(
 ) |> knitr::kable(caption = "Probability that the fast-depot fraction exceeds 1.")
 
 # All five arms share one set of subjects (common random numbers), so the tail
-# is a property of the 200 distinct subjects, not of 1000 arm-subject rows.
+# is a property of the `n_per_arm` distinct subjects, not of every arm-subject row.
 ffo_tab <- sim |>
   filter(regimen == regimens$regimen[1]) |>
   distinct(id, ffo, ffo_capped)
@@ -386,20 +386,26 @@ observed_over_1
 ```
 
 ```{r ffo-tail-gate}
-# The analytic tail probability at omega^2 = 0.05 is 3.9%; at n = 200 the
-# binomial standard error is 1.4 points. The bound is wide enough for the
-# sampling noise of any cohort the model can produce, and still red if the eta
-# were dropped (0%) or left at the registration value 0.385 (26%).
-stopifnot(observed_over_1 > 0.5, observed_over_1 < 12)
+# The count of subjects at the cap is binomial(n, P(F1 > 1)), P = 3.94% at
+# omega^2 = 0.05. Neither tail of that count may be vanishingly small (each
+# above 1e-6), so the check does not depend on which rxode2 build drew the
+# cohort; a registration-value variance of 0.385 (26% at the cap) fails the
+# upper tail by many orders of magnitude.
+n_at_cap <- sum(ffo_tab$ffo_capped == 1)
+expected_at_cap <- frac_over_1(0.05)
 
 # The dose fractions F1 and 1 - F1 of every subject lie in [0, 1] and the cap
 # binds exactly where the lognormal draw reaches 1.
 stopifnot(
-  nrow(ffo_tab) == 200L,
+  # One lognormal draw per subject: a second value for an id would be counted twice.
+  !anyDuplicated(ffo_tab$id),
+  nrow(ffo_tab) == n_per_arm,
   !anyNA(ffo_tab$ffo_capped),
   all(ffo_tab$ffo_capped >= 0), all(ffo_tab$ffo_capped <= 1),
   all(1 - ffo_tab$ffo_capped >= 0),
-  identical(ffo_tab$ffo_capped == 1, ffo_tab$ffo >= 1)
+  identical(ffo_tab$ffo_capped == 1, ffo_tab$ffo >= 1),
+  pbinom(n_at_cap, nrow(ffo_tab), expected_at_cap) > 1e-6,
+  pbinom(n_at_cap - 1L, nrow(ffo_tab), expected_at_cap, lower.tail = FALSE) > 1e-6
 )
 ```
 
