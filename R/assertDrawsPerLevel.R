@@ -79,7 +79,9 @@ assertDrawsPerLevel <- function(sim, eta, by, n = NULL, id = NULL) {
   if (anyNA(x)) {
     .drawsStop("`", eta, "` has ", sum(is.na(x)), " NA value(s)")
   }
-  draw <- round(as.numeric(x), 10L)
+  # Compared exactly: the subjects of a level that share a draw carry the same
+  # double, and a tiny-variance eta still differs between independent draws.
+  draw <- as.numeric(x)
   pair <- paste(subject, level, sep = "\n")
   per_pair <- tapply(draw, pair, function(v) length(unique(v)))
   if (any(per_pair > 1L)) {
