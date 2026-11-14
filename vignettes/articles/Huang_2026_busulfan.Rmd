@@ -137,10 +137,12 @@ std_adult <- data.frame(
   amt = rep(c(1, 0), 2), cmt = "central",
   WT = 70, FFM = 56.1, AGE = 30, GA = 40, GSTA1_RM = rep(c(1, 0), each = 2), OCC = 1
 )
-s_std <- rxode2::rxSolve(typ, std_adult, returnType = "data.frame") |>
-  group_by(id) |>
-  slice_tail(n = 1) |>
-  ungroup()
+# One solve per subject: a multi-subject solve of a model with no omega warns.
+s_std <- lapply(split(std_adult, std_adult$id), function(d) {
+  s <- rxode2::rxSolve(typ, d, returnType = "data.frame")
+  cbind(id = d$id[1], s[nrow(s), c("cl", "vc", "fmat")])
+}) |>
+  bind_rows()
 s_std |> select(id, cl, vc, fmat)
 stopifnot(
   abs(s_std$fmat[1] - 1) < 1e-4,
@@ -621,7 +623,10 @@ models carry no baseline hazard, so they cannot produce absolute survival.
 * **Occasions.** The paper reports BOV on CL but does not define an
   occasion. Sampling was around the first and fifth doses, so the model
   takes the conditioning day as the occasion (`OCC` 1-4). Records with `OCC`
-  outside 1-4 have no BOV.
+  outside 1-4 have no BOV. rxode2 has no NONMEM-style occasion level, so the
+  four occasion etas are selected by indicators, which rxode2 cannot
+  mu-reference; it warns "some etas defaulted to non-mu referenced" on every
+  solve. The warning affects only estimation speed-ups, not simulation.
 * **Residual error.** The paper gives a proportional (17.8%) and an additive
   (0.0312 mg/L) term without the combination rule; the nlmixr2 default
   `add() + prop()` (variances add) is used.
