@@ -42,8 +42,9 @@ the MPA amount. BSA acts on clearance as `CL/F = 4.28 * (BSA / 1.23)^1.30`.
 Each oral EC-MPS dose is two event records at the same time with the same
 EC-MPS amount: one to `depot` (the first-order arm) and one to `central`
 with `rate = -2` (the zero-order arm, whose duration `d2` is a model
-parameter). The model applies the fractions `0.936 * ffo` and
-`0.936 * (1 - ffo)` and the two lag times itself.
+parameter). The model applies the fractions `0.936 * ffo_capped` and
+`0.936 * (1 - ffo_capped)`, where `ffo_capped = min(ffo, 1)`, and the two lag
+times itself.
 
 ```{r dose-helper}
 mod <- readModelDb("Wang_2022b_mycophenolic_acid")
@@ -143,12 +144,9 @@ the log scale, so `d2` exceeds 100 h in about 6% of children) and the lags
 reach a day or more, so dosing runs for 40 days before the measured
 interval. The cohort covers the observed BSA range on two regimens.
 
-The AUC uses the linear trapezoid. Children whose first-order fraction `F`
-exceeds 1 (see "Subjects with F above 1" below) receive a negative zero-order
-input, and when that input is short their concentration dips below zero even
-at steady state; the log-down trapezoid cannot integrate those intervals,
-while the linear trapezoid integrates the signed concentration and still
-recovers the mass balance.
+The AUC uses the linear trapezoid. Children whose first-order fraction `F` sits at
+its cap of 1 (see "Subjects with F above 1" below) have no zero-order arm, and
+the linear trapezoid integrates their interval on the same footing as the rest.
 
 ```{r ss-sim}
 rxode2::rxSetSeed(20220910)
@@ -183,8 +181,8 @@ dose_ss <- subj_ss |>
 o_conc <- PKNCA::PKNCAconc(conc_ss, Cc ~ time | treatment + id)
 o_dose <- PKNCA::PKNCAdose(dose_ss, amt ~ time | treatment + id)
 intervals <- data.frame(start = t_ss, end = t_ss + 12, auclast = TRUE, cav = TRUE)
-# PKNCA warns once per subject with a negative concentration; those
-# subjects are expected here (F > 1) and are counted below instead.
+# PKNCA warns for any negative concentration, including solver round-off of
+# order 1e-15; a real negative concentration is excluded by the check below.
 nca_ss <- withCallingHandlers(
   PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals, options = list(auc.method = "linear"))),
   warning = function(w) {
@@ -192,6 +190,9 @@ nca_ss <- withCallingHandlers(
   }
 )
 c(`Subjects with a negative Cc in the interval` = sum(tapply(conc_ss$Cc, conc_ss$id, min) < 0))
+# F is capped at 1, so no child has a negative zero-order arm and no
+# concentration goes below zero beyond round-off.
+stopifnot(min(conc_ss$Cc) > -1e-8)
 
 auc_ss <- as.data.frame(nca_ss$result) |>
   filter(PPTESTCD == "auclast") |>
@@ -325,19 +326,44 @@ stopifnot(
 ## Subjects with F above 1
 
 Wang 2022 states that every parameter, including the fraction `F`, is
-log-normal. With `F` = 0.553 and an IIV SD of 0.513, a child has `F > 1`
-when `eta > log(1 / 0.553)`, which happens with probability
-`r signif(100 * pnorm(log(1 / 0.553) / 0.513, lower.tail = FALSE), 3)`%.
-The zero-order arm `1 - F` is then negative; the total MPA absorbed is still
-0.936 times the dose. The model keeps the published distribution.
+log-normal, which has no upper bound, and gives `F` no other bound. With
+`F` = 0.553 and an IIV SD of 0.513, a child has `F > 1` when
+`eta > log(1 / 0.553)`, which happens with probability
+`r signif(100 * pnorm(log(1 / 0.553) / 0.513, lower.tail = FALSE), 3)`%. Left
+alone, the zero-order arm `1 - F` of those children is negative. The model
+therefore splits the dose with `ffo_capped = min(ffo, 1)`.
+
+**This changes the distribution of `F`.** 12.4% of children sit at the cap
+(`F = 1`, no zero-order arm), the SD of `F` falls from 0.3461 (the fitted
+log-normal) to 0.2464, 28.8% lower, and the mean falls 6.4%, from 0.631 to
+0.590. The simulated `F` distribution therefore differs from the fitted
+log-normal; the total MPA absorbed is still 0.936 times the dose for every
+child, so the steady-state AUC does not move.
 
 ```{r ffo-share}
 ffo_tab <- sim_vpc |>
   group_by(id) |>
-  summarise(ffo = first(ffo), min_cc = min(Cc))
+  summarise(ffo = first(ffo), ffo_capped = first(ffo_capped), min_cc = min(Cc))
+ui <- rxode2::rxode2(mod)
+expected_at_cap <- pnorm(
+  ui$theta[["lffo"]] / sqrt(ui$omega["etalffo", "etalffo"])
+)
+n_at_cap <- sum(ffo_tab$ffo_capped == 1)
 c(
-  `Fraction of simulated subjects with F > 1` = mean(ffo_tab$ffo > 1),
+  `Fraction of simulated subjects at the cap (F > 1 before it)` = n_at_cap / nrow(ffo_tab),
+  `Exact lognormal P(F > 1)` = expected_at_cap,
   `Fraction with any negative Cc at the sampled times` = mean(ffo_tab$min_cc < 0)
+)
+stopifnot(
+  !anyNA(ffo_tab$ffo_capped),
+  all(ffo_tab$ffo_capped >= 0), all(ffo_tab$ffo_capped <= 1),
+  all(1 - ffo_tab$ffo_capped >= 0),
+  # The cap binds exactly where the log-normal draw reaches 1.
+  identical(ffo_tab$ffo_capped == 1, ffo_tab$ffo >= 1),
+  # The count at the cap is binomial; require that neither tail is vanishingly small.
+  pbinom(n_at_cap, nrow(ffo_tab), expected_at_cap) > 1e-6,
+  pbinom(n_at_cap - 1L, nrow(ffo_tab), expected_at_cap, lower.tail = FALSE) > 1e-6,
+  all(ffo_tab$min_cc > -1e-8)
 )
 ```
 
@@ -439,11 +465,16 @@ stopifnot(
 * **File name.** `Wang_2022_mycophenolic_acid` already holds a different
   Wang 2022 paper (Front Pharmacol, adult renal transplant, mycophenolate
   mofetil), so this model is `Wang_2022b_mycophenolic_acid`.
-* **Log-normal `F`.** The paper states that every parameter is log-normal,
-  including the first-order fraction `F`. About 12% of children then have
-  `F > 1` and a negative zero-order arm. The model keeps the published
-  distribution rather than moving `F` to the logit scale, which would
-  narrow its tails; total absorption stays 0.936 times the dose, so the
+* **`F` is capped at 1, so its simulated distribution differs from the paper's.**
+  The paper states that every parameter is log-normal, including the first-order
+  fraction `F` (`F = 0.553 * exp(eta)`, omega 0.513), which has no upper bound,
+  and gives `F` no other bound. Uncapped, 12.4% of children have `F > 1` and a
+  negative zero-order arm. The model splits the dose with `min(F, 1)`: **12.4%
+  of simulated children sit at the cap**, the **SD of `F` falls by about 29%**
+  (0.3461 to 0.2464) and the mean by 6.4% (0.631 to 0.590), so the simulated `F`
+  distribution is not the fitted log-normal. The median `F` is unchanged at
+  0.553. Moving `F` to a logit scale was not done: the paper gives no logit-scale
+  variance. Total absorption stays 0.936 times the dose for every child, so the
   steady-state AUC and the paper's dosing recommendations are unaffected.
 * **Lag increment.** `diffTlag2` is estimated with its own IIV as the
   increment of the zero-order lag over `Tlag1`; it is encoded as

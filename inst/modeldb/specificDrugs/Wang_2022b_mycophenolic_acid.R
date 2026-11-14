@@ -1,5 +1,5 @@
 Wang_2022b_mycophenolic_acid <- function() {
-  description <- "Population PK model for mycophenolic acid (MPA) after oral enteric-coated mycophenolate sodium (EC-MPS) in children after renal transplantation (Wang 2022b). One-compartment disposition with linear elimination and a double extravascular absorption: a first-order arm (rate ka, fraction F of the MPA dose, lag time Tlag1) running in parallel with a zero-order arm (duration Tk02, fraction 1 - F) whose lag time Tlag2 = Tlag1 + diffTlag2 is longer than the first. The EC-MPS dose is converted to MPA by the factor 0.936. Body surface area enters the apparent clearance as a power term (BSA / 1.23)^1.30. Log-normal IIV on all seven absorption and disposition parameters; combined additive plus proportional residual error. Each oral dose is given as two event records, one to depot and one to central with rate = -2."
+  description <- "Population PK model for mycophenolic acid (MPA) after oral enteric-coated mycophenolate sodium (EC-MPS) in children after renal transplantation (Wang 2022b). One-compartment disposition with linear elimination and a double extravascular absorption: a first-order arm (rate ka, fraction F of the MPA dose, lag time Tlag1) running in parallel with a zero-order arm (duration Tk02, fraction 1 - F) whose lag time Tlag2 = Tlag1 + diffTlag2 is longer than the first. The EC-MPS dose is converted to MPA by the factor 0.936. Body surface area enters the apparent clearance as a power term (BSA / 1.23)^1.30. Log-normal IIV on all seven absorption and disposition parameters, except that the simulated first-order fraction F is capped at 1 (12.4% of children sit at the cap, so its spread is narrower than the fitted log-normal); combined additive plus proportional residual error. Each oral dose is given as two event records, one to depot and one to central with rate = -2."
   reference <- paste(
     "Wang G, Ye Q, Huang Y, Xu H, Li Z.",
     "Population Pharmacokinetics of Enteric-Coated Mycophenolate Sodium in",
@@ -47,7 +47,7 @@ Wang_2022b_mycophenolic_acid <- function() {
     dose_range = "Oral enteric-coated mycophenolate sodium (Myfortic, 180 mg tablets); median 10.5 mg/kg/day (3.4-24.0), 325 mg/m^2/day (117-605). Doses are EC-MPS mass; the model converts to MPA with the factor 0.936.",
     regions = "China (Shanghai).",
     co_medication = "Tacrolimus in 94 of 96 patients (97.9%), cyclosporin in 2 (2.08%).",
-    notes = "Retrospective TDM data, June 2018 - August 2019 (modelling group, Table 1); MPA sampled 30 min before a dose and 20 min, 1 h and 3 h after it, by EMIT on a Viva-E analyser (LLOQ 0.1 mg/L, BLOQ data retained). Monolix 2019R1. An external validation group of 32 children (September 2019 - July 2020) gave MPE -0.880%, MAPE 10.0% and RMSE 0.810 mg/L (Table 3)."
+    notes = "Retrospective TDM data, June 2018 - August 2019 (modelling group, Table 1); MPA sampled 30 min before a dose and 20 min, 1 h and 3 h after it, by EMIT on a Viva-E analyser (LLOQ 0.1 mg/L, BLOQ data retained). Monolix 2019R1. An external validation group of 32 children (September 2019 - July 2020) gave MPE -0.880%, MAPE 10.0% and RMSE 0.810 mg/L (Table 3). The first-order fraction F carries the paper's log-normal IIV, which has no upper bound, so the simulated F is capped at 1: 12.4% of children sit at the cap and the SD of F falls by 28.8% against the fitted log-normal, so the simulated F distribution differs from it."
   )
 
   ini({
@@ -67,6 +67,15 @@ Wang_2022b_mycophenolic_acid <- function() {
     # below is omega^2.
     etalka ~ 0.783225 # Table 2: omega_ka1 = 0.885 (SD)
     etald2 ~ 5.3361 # Table 2: omega_Tk02 = 2.31 (SD)
+    # Bound on F (etalffo): Methods 2.2 states that every parameter, including
+    # the fraction F, is log-normal, ln(F) = ln(Fpop) + eta, which has no upper
+    # bound, and the paper gives F no other bound. The model body applies
+    # min(F, 1) to the dose split. With a typical value of 0.553 and omega
+    # 0.513, P(F > 1) = 12.41%: 12.4% of children sit at the cap (F = 1, no
+    # zero-order arm), the SD of F falls from 0.3461 (log-normal) to 0.2464
+    # (capped), 28.8% lower, and the mean falls 6.4% (0.6308 to 0.5905). The
+    # simulated F distribution therefore differs from the fitted log-normal;
+    # the total absorbed fraction is fmpa for every child either way.
     etalffo ~ 0.263169 # Table 2: omega_F1 = 0.513 (SD)
     etaltlag ~ 0.331776 # Table 2: omega_Tlag1 = 0.576 (SD)
     etaldtlag2 ~ 0.885481 # Table 2: omega_diffTlag2 = 0.941 (SD)
@@ -85,11 +94,11 @@ Wang_2022b_mycophenolic_acid <- function() {
 
     ka <- exp(lka + etalka)
     d2 <- exp(ld2 + etald2)
-    # F is log-normal as stated in Methods 2.2, so it can exceed 1 in the
-    # upper tail (about 12% of subjects); the zero-order arm 1 - F is then
-    # negative. Kept as published; the total absorbed fraction is fmpa
-    # for every subject.
+    # F is log-normal as stated in Methods 2.2, kept mu-referenced; the dose
+    # split uses the value capped at 1 (see the bound note on etalffo in
+    # ini()). The total absorbed fraction is fmpa for every subject.
     ffo <- exp(lffo + etalffo)
+    ffo_capped <- min(ffo, 1)
     tlag <- exp(ltlag + etaltlag)
     dtlag2 <- exp(ldtlag2 + etaldtlag2)
     tlag2 <- tlag + dtlag2
@@ -103,9 +112,9 @@ Wang_2022b_mycophenolic_acid <- function() {
 
     # First-order arm: dose record to depot. Zero-order arm: a parallel
     # dose record to central with rate = -2 so dur(central) applies.
-    f(depot) <- fmpa * ffo
+    f(depot) <- fmpa * ffo_capped
     alag(depot) <- tlag
-    f(central) <- fmpa * (1 - ffo)
+    f(central) <- fmpa * (1 - ffo_capped)
     alag(central) <- tlag2
     dur(central) <- d2
 
