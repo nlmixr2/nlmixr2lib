@@ -1,0 +1,587 @@
+---
+title: "Glecaprevir and pibrentasvir in children with HCV (Thakre 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Glecaprevir and pibrentasvir in children with HCV (Thakre 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+options(cli.progress_show_after = Inf)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Thakre 2026 built two independent population PK models from the same pediatric
+DORA study: one for glecaprevir (GLE) and one for pibrentasvir (PIB), the two
+components of the fixed-dose combination Mavyret. Each is packaged as its own
+model and both are validated here.
+
+* Citation: `r rxode2::rxode(readModelDb("Thakre_2026_glecaprevir"))$reference`
+* Glecaprevir: `r rxode2::rxode(readModelDb("Thakre_2026_glecaprevir"))$description`
+* Pibrentasvir: `r rxode2::rxode(readModelDb("Thakre_2026_pibrentasvir"))$description`
+* Article: <https://doi.org/10.1007/s40262-026-01637-1> (open access, with an
+  electronic supplementary document holding the demographics, Table S1)
+
+# Population
+
+The analysis pooled 126 patients aged 3 to 17 years with chronic hepatitis C
+from the phase 2/3 DORA study (NCT03067129). Part 1 (cohort 1, n = 47) enrolled
+adolescents aged 12 to <18 years who took the adult tablets (GLE/PIB
+300 mg/120 mg once daily). Part 2 enrolled children aged 9 to <12 (cohort 2),
+6 to <9 (cohort 3) and 3 to <6 years (cohort 4); 79 of them were analysed. The
+children took a pediatric coated-granule formulation dosed by weight band, first
+at a GLE/PIB dose ratio of 40/15 mg and then at the final 50/20 mg ratio
+(150/60 mg for 12 to <20 kg, 200/80 mg for 20 to <30 kg, 250/100 mg for 30 to
+<45 kg; Table 1). Body weight ranged 12.7-108.9 kg (median 36.45 kg), 55.6% of
+patients were female, 70.6% White, 15.9% Asian and 5.6% Black. None had
+cirrhosis; genotypes 1-4 were represented (ESM Table S1). The models were fitted
+to 693 GLE and 693 PIB plasma concentrations with NONMEM 7.4.3 (FOCE-INT).
+
+The same information is available programmatically:
+
+```{r population}
+str(readModelDb("Thakre_2026_glecaprevir")()$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. The table
+collects them.
+
+| Equation / parameter | GLE value | PIB value | Source location |
+|----------------------|-----------|-----------|-----------------|
+| `lcl` (CL/F at 70 kg, L/day) | log(1830) | log(2170) | Table 2 / Table 3 |
+| `lvc` (V2/F at 70 kg, L) | log(358) | log(528) | Table 2 / Table 3 |
+| `lq` (Q/F, L/day) | -- | log(765) | Table 3 |
+| `lvp` (V3/F, L) | -- | log(3750) | Table 3 |
+| `ltlag` (ALAG1, day) | -- | log(0.0556) | Table 3 |
+| `lkaratio` (absorption factor) | log(3.65) | log(2.47) | Tables 2 and 3, footnote b |
+| `e_wt_cl` (weight on CL/F) | 1.04 | 0.440 | Tables 2 and 3 |
+| `e_wt_vc` (weight on V2/F) | 1.19 | 0.757 | Tables 2 and 3 |
+| `e_form_granule_fdepot` (F1, Part 2) | 0.800 FIX | 1.20 FIX | Tables 2 and 3; Methods, Model Development |
+| `etalcl` (variance) | 1.39 | 0.359 | Tables 2 and 3, IIV |
+| `etalvc` (variance) | 1.52 | 0.170 | Tables 2 and 3, IIV |
+| `propSd` | sqrt(0.568) = 0.7537 | sqrt(0.229) = 0.4785 | Tables 2 and 3, sigma^2 (proportional) |
+| `cl = exp(lcl + etalcl) * (WT/70)^e_wt_cl` | | | ESM Fig. S3 / S4 legends; Methods (70 kg reference) |
+| `ka = karatio * cl / vc` | | | Tables 2 and 3 footnote b; Results, Model Results |
+| `f(depot) = 1 + (e_form_granule_fdepot - 1) * FORM_GRANULE` | | | Methods, Model Development |
+| One-compartment (GLE) / two-compartment with lag (PIB) | | | Results, Model Results |
+
+The tables also print the derived typical absorption rate constants, 18.6 1/day
+(GLE) and 10.1 1/day (PIB). They follow from the absorption factor, CL/F and
+V2/F, and the check below confirms the transcription:
+
+```{r derived-ka}
+ka_check <- tibble::tibble(
+  drug = c("glecaprevir", "pibrentasvir"),
+  ka_model = c(3.65 * 1830 / 358, 2.47 * 2170 / 528),
+  ka_paper = c(18.6, 10.1)
+) |>
+  dplyr::mutate(pct_diff = 100 * (ka_model / ka_paper - 1))
+knitr::kable(ka_check, digits = 2, caption = "Derived typical ka (1/day) at 70 kg.")
+# Rounding of the printed table values only; a mis-transcribed CL, V or factor
+# moves this by far more than 1%.
+stopifnot(all(abs(ka_check$pct_diff) < 1))
+```
+
+# Virtual cohorts
+
+Two designs from the paper are reproduced, both at steady state after 14 daily
+doses with rich sampling over the last dosing interval (day 13 to day 14):
+
+1. **DORA cohorts (Table 4 and Figure 3).** Cohort 1 adolescents on the adult
+   tablet (300/120 mg) and cohorts 2-4 children on the pediatric granules at the
+   final 50/20 mg dose ratio. Body weights are drawn from a normal distribution
+   with each cohort's mean and SD, truncated to its observed range (ESM
+   Table S1). 100 virtual patients per cohort.
+2. **Virtual children (Results, "Simulated GLE and PIB Steady-State
+   Exposures").** The paper drew 10,000 children with weight uniform on
+   12-45 kg and dosed them by weight band. Here 200 per band are drawn from the
+   same uniform distribution within each band.
+
+```{r cohort}
+set.seed(20260526)
+
+# Truncated-normal draw by rejection, used for the DORA cohort weights.
+rtruncnorm_wt <- function(n, mean, sd, lower, upper) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- rnorm(2 * n, mean, sd)
+    out <- c(out, x[x >= lower & x <= upper])
+  }
+  out[seq_len(n)]
+}
+
+design <- tibble::tribble(
+  ~group,                            ~design,     ~n,  ~gle, ~pib, ~granule, ~wt_mean, ~wt_sd, ~wt_lo, ~wt_hi,
+  "Cohort 1 (12 to <18 y, tablet)",  "DORA",      100, 300,  120,  0L,       59.22,    14.08,  32.0,   108.9,
+  "Cohort 2 (9 to <12 y)",           "DORA",      100, 250,  100,  1L,       36.92,    4.44,   29.4,   44.3,
+  "Cohort 3 (6 to <9 y)",            "DORA",      100, 200,  80,   1L,       24.45,    3.50,   19.6,   33.5,
+  "Cohort 4 (3 to <6 y)",            "DORA",      100, 150,  60,   1L,       15.86,    2.01,   12.7,   21.2,
+  "12 to <20 kg",                    "Virtual",   200, 150,  60,   1L,       NA,       NA,     12,     20,
+  "20 to <30 kg",                    "Virtual",   200, 200,  80,   1L,       NA,       NA,     20,     30,
+  "30 to <45 kg",                    "Virtual",   200, 250,  100,  1L,       NA,       NA,     30,     45
+)
+design$id_offset <- c(0L, cumsum(design$n)[-nrow(design)])
+
+subjects <- dplyr::bind_rows(lapply(seq_len(nrow(design)), function(i) {
+  d <- design[i, ]
+  wt <- if (d$design == "DORA") {
+    rtruncnorm_wt(d$n, d$wt_mean, d$wt_sd, d$wt_lo, d$wt_hi)
+  } else {
+    runif(d$n, d$wt_lo, d$wt_hi)
+  }
+  tibble::tibble(
+    id = d$id_offset + seq_len(d$n),
+    group = d$group,
+    design = d$design,
+    WT = wt,
+    FORM_GRANULE = d$granule,
+    amt_gle = d$gle,
+    amt_pib = d$pib
+  )
+}))
+stopifnot(!anyDuplicated(subjects$id))
+
+dose_days <- 0:13
+obs_days <- 13 + seq(0, 24, by = 0.5) / 24
+
+events_base <- dplyr::bind_rows(
+  subjects |>
+    tidyr::crossing(time = dose_days) |>
+    dplyr::mutate(evid = 1L, cmt = "depot"),
+  subjects |>
+    tidyr::crossing(time = obs_days) |>
+    dplyr::mutate(evid = 0L, cmt = "central", amt_gle = 0, amt_pib = 0)
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+events_gle <- events_base |> dplyr::mutate(amt = amt_gle)
+events_pib <- events_base |> dplyr::mutate(amt = amt_pib)
+```
+
+# Simulation
+
+```{r simulate}
+mod_gle <- readModelDb("Thakre_2026_glecaprevir")
+mod_pib <- readModelDb("Thakre_2026_pibrentasvir")
+
+keep_cols <- c("group", "design")
+rxode2::rxSetSeed(20260526)
+sim_gle <- rxode2::rxSolve(mod_gle, events = events_gle, keep = keep_cols) |>
+  as.data.frame() |>
+  dplyr::mutate(drug = "Glecaprevir")
+sim_pib <- rxode2::rxSolve(mod_pib, events = events_pib, keep = keep_cols) |>
+  as.data.frame() |>
+  dplyr::mutate(drug = "Pibrentasvir")
+
+# The population solves keep their between-subject variability.
+iiv_check <- dplyr::bind_rows(sim_gle, sim_pib) |>
+  dplyr::distinct(drug, id, cl, WT) |>
+  dplyr::group_by(drug) |>
+  dplyr::summarise(
+    sd_eta_cl = sd(log(cl) - ifelse(drug == "Glecaprevir", 1.04, 0.44) * log(WT / 70)),
+    .groups = "drop"
+  )
+# Expected sqrt(1.39) = 1.18 (GLE) and sqrt(0.359) = 0.60 (PIB).
+stopifnot(all(iiv_check$sd_eta_cl > 0.4))
+
+sim <- dplyr::bind_rows(sim_gle, sim_pib) |>
+  dplyr::select(id, time, Cc, group, design, drug) |>
+  dplyr::mutate(time_h = 24 * time, tad_h = time_h - 13 * 24)
+stopifnot(all(is.finite(sim$Cc)))
+```
+
+A handful of glecaprevir patients draw an extreme V2/F (the paper's IIV variance
+is 1.52, about 189% CV) and so an elimination half-life of minutes; their
+profiles fall between the 0.5 h output times and their solved concentrations
+sit at the integrator's absolute tolerance, a little above or below zero. The
+undershoot is asserted to be noise and floored at zero.
+
+```{r floor}
+# Measured undershoot about -3e-7 ng/mL against a cohort maximum above 1e4.
+stopifnot(all(sim$Cc >= -1e-6 * max(sim$Cc)))
+sim <- dplyr::mutate(sim, Cc = pmax(Cc, 0))
+```
+
+## Steady-state profiles (Figure 2 analogue)
+
+Figure 2 of the paper is a prediction-corrected VPC of concentration versus time
+since the last dose. Without the observed data the prediction correction cannot
+be reproduced, so the figure below shows the simulated 5th, 50th and 95th
+percentiles over the steady-state dosing interval in each DORA cohort.
+Percentiles below the assay's lower limit of quantification (about 1 ng/mL for
+both analytes) are drawn at that limit (dotted line).
+
+```{r figure-2, fig.width = 7, fig.height = 5}
+sim |>
+  dplyr::filter(design == "DORA") |>
+  dplyr::group_by(drug, group, tad_h) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05),
+    Q50 = quantile(Cc, 0.50),
+    Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(dplyr::across(c(Q05, Q50, Q95), function(x) pmax(x, 1))) |>
+  ggplot(aes(tad_h, Q50, colour = group, fill = group)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.12, colour = NA) +
+  geom_line() +
+  geom_hline(yintercept = 1, linetype = "dotted") +
+  facet_wrap(~drug, scales = "free_y") +
+  scale_y_log10() +
+  labs(
+    x = "Time since last dose (h)",
+    y = "Plasma concentration (ng/mL)",
+    colour = NULL, fill = NULL,
+    caption = "Simulated median and 90% interval at steady state; compare Figure 2 of Thakre 2026."
+  ) +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(ncol = 2))
+```
+
+# PKNCA validation
+
+AUC24 is computed with PKNCA over the last dosing interval (hours 312-336),
+grouped by drug and simulation group, with the linear trapezoidal rule the paper
+used for its own simulations.
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time_h, Cc, drug, group)
+
+dose_df <- dplyr::bind_rows(
+  events_gle |> dplyr::filter(evid == 1) |> dplyr::mutate(drug = "Glecaprevir"),
+  events_pib |> dplyr::filter(evid == 1) |> dplyr::mutate(drug = "Pibrentasvir")
+) |>
+  dplyr::mutate(time_h = 24 * time) |>
+  dplyr::select(id, time_h, amt, drug, group)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time_h | drug + group + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time_h | drug + group + id)
+intervals <- data.frame(start = 312, end = 336, auclast = TRUE, cmax = TRUE, cmin = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_obj, dose_obj,
+  intervals = intervals,
+  options = list(auc.method = "linear")
+))
+
+auc <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(id, drug, group, auc24 = PPORRES)
+stopifnot(nrow(auc) == 2 * nrow(subjects), all(is.finite(auc$auc24)))
+```
+
+## Comparison against the published steady-state AUC24
+
+The paper reports two sets of geometric mean AUC24 values (ng*h/mL):
+
+- **Virtual children by weight band** (Results, "Simulated GLE and PIB
+  Steady-State Exposures"): a population simulation from the final models, the
+  same kind of calculation as this vignette. This is the validation target.
+- **DORA cohorts** (Table 4): geometric means of the *post hoc* individual
+  estimates of the patients who received the final dose. These reflect the
+  observed patients' empirical Bayes estimates, not the population
+  distribution: in children they lie 30-40% above what the typical-value model
+  predicts for their weights. For the cohort 1 adolescents the two agree
+  (typical-value prediction at the median 57.7 kg about 4800 ng*h/mL for
+  glecaprevir and 1440 ng*h/mL for pibrentasvir, against 5020 and 1590). A population
+  simulation is not expected to reproduce them and they are shown for context
+  only.
+
+For a log-normal AUC24 the geometric mean equals the median, so the simulated
+medians (the summary `ncaComparisonTable()` uses) are compared with the
+published geometric means. The median is also robust to the few glecaprevir
+tail patients whose grid trapezoid AUC is near zero.
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~drug,          ~group,                           ~auclast,
+  "Glecaprevir",  "12 to <20 kg",                   6340,
+  "Glecaprevir",  "20 to <30 kg",                   6020,
+  "Glecaprevir",  "30 to <45 kg",                   4600,
+  "Glecaprevir",  "Cohort 1 (12 to <18 y, tablet)", 5020,
+  "Glecaprevir",  "Cohort 2 (9 to <12 y)",          7100,
+  "Glecaprevir",  "Cohort 3 (6 to <9 y)",           6960,
+  "Glecaprevir",  "Cohort 4 (3 to <6 y)",           8490,
+  "Pibrentasvir", "12 to <20 kg",                   1410,
+  "Pibrentasvir", "20 to <30 kg",                   1700,
+  "Pibrentasvir", "30 to <45 kg",                   1720,
+  "Pibrentasvir", "Cohort 1 (12 to <18 y, tablet)", 1590,
+  "Pibrentasvir", "Cohort 2 (9 to <12 y)",          2060,
+  "Pibrentasvir", "Cohort 3 (6 to <9 y)",           1900,
+  "Pibrentasvir", "Cohort 4 (3 to <6 y)",           1820
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = dplyr::filter(as.data.frame(nca_res), PPTESTCD == "auclast"),
+  reference = published,
+  by = c("drug", "group"),
+  units = c(auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Steady-state AUC24: published geometric means (weight bands from the",
+    "Results; DORA cohorts from Table 4, post hoc) vs. simulated medians.",
+    "* differs from the published value by more than 20%."
+  )
+)
+```
+
+The glecaprevir rows carry large Monte-Carlo error: the CL/F IIV variance of
+1.39 gives a 200-patient median a standard error of about
+1.25 x sqrt(1.39 / 200) = 10%, and a 100-patient median about 15%, so single
+rows (here the 30 to <45 kg band and cohort 1) can miss by 20-45% with a correct
+model. The glecaprevir rows for the cohort 2-4 children are further starred for
+the reason given above: Table 4 summarises post hoc estimates of the observed
+children, whose exposures were higher than the population model predicts. The
+gate below therefore pools the 600 virtual children per drug, and the seed-free
+check after it removes the Monte-Carlo error entirely.
+
+```{r nca-gate}
+virtual <- published |>
+  dplyr::filter(!grepl("^Cohort", group)) |>
+  dplyr::rename(pub = auclast)
+gate <- auc |>
+  dplyr::inner_join(virtual, by = c("drug", "group")) |>
+  dplyr::group_by(drug) |>
+  dplyr::summarise(n = dplyr::n(), median_ratio = median(auc24 / pub), .groups = "drop")
+knitr::kable(gate, digits = 3, caption = "Virtual children: median of simulated AUC24 / published geometric mean, pooled over the three weight bands.")
+# Pooled over 600 patients per drug the glecaprevir median carries a
+# Monte-Carlo SE of about 6% and pibrentasvir about 3%; measured 1.16 (GLE)
+# and 0.97 (PIB). A mis-transcribed CL/F, F1 ratio or unit moves the ratio far
+# outside this band.
+stopifnot(nrow(gate) == 2, all(gate$n == 600), all(abs(gate$median_ratio - 1) < 0.3))
+```
+
+### Seed-free check of the virtual-children geometric means
+
+With exact steady-state AUC24 = F x Dose / CL and log-normal CL/F, the expected
+geometric mean over a weight band is F x Dose / CL evaluated at the band's
+geometric-mean weight; the random effects drop out. For weight uniform on
+[a, b] the geometric-mean weight is exp((b ln b - b - a ln a + a) / (b - a)).
+
+```{r closed-form-gm}
+band <- tibble::tibble(
+  group = c("12 to <20 kg", "20 to <30 kg", "30 to <45 kg"),
+  a = c(12, 20, 30), b = c(20, 30, 45),
+  gle = c(150, 200, 250), pib = c(60, 80, 100)
+) |>
+  dplyr::mutate(wt_gm = exp((b * log(b) - b - a * log(a) + a) / (b - a)))
+expected_gm <- dplyr::bind_rows(
+  band |> dplyr::mutate(drug = "Glecaprevir", gm = 0.8 * gle / (1830 * (wt_gm / 70)^1.04) * 24000),
+  band |> dplyr::mutate(drug = "Pibrentasvir", gm = 1.2 * pib / (2170 * (wt_gm / 70)^0.44) * 24000)
+) |>
+  dplyr::inner_join(virtual, by = c("drug", "group")) |>
+  dplyr::mutate(pct_diff = 100 * (gm / pub - 1)) |>
+  dplyr::select(drug, group, wt_gm, gm, pub, pct_diff)
+expected_gm |>
+  dplyr::rename(
+    "Drug" = drug, "Weight band" = group, "Geometric-mean weight (kg)" = wt_gm,
+    "Expected GM AUC24" = gm, "Published GM AUC24" = pub, "% diff" = pct_diff
+  ) |>
+  knitr::kable(digits = 1)
+# Deterministic: measured +2% to +16% (GLE) and -1% to +9% (PIB). Part of the
+# gap is that the paper integrated its simulated day-14 profiles over the
+# intensive-PK sampling times only, and that pibrentasvir is 3-8% short of steady
+# state on day 14 (next section).
+stopifnot(all(abs(expected_gm$pct_diff) < 20))
+```
+
+## Deterministic steady-state check
+
+At steady state the dosing-interval AUC equals F x Dose / CL for both models
+(linear elimination from the central compartment). A typical-value solve
+reproduces that closed form, confirming the formulation factor, weight scaling
+and unit conversion together. Pibrentasvir's slow peripheral phase
+(Q/V3 = 0.2 1/day) is still accumulating on day 14, so this check doses for
+60 days; the day-14 AUC24 of the paper's design is shown alongside.
+
+```{r closed-form}
+typ <- subjects |>
+  dplyr::group_by(group) |>
+  dplyr::slice(1) |>
+  dplyr::ungroup()
+ev_typ <- dplyr::bind_rows(
+  typ |>
+    tidyr::crossing(time = 0:59) |>
+    dplyr::mutate(evid = 1L, cmt = "depot"),
+  typ |>
+    tidyr::crossing(time = c(13 + seq(0, 24, by = 0.5) / 24, 59 + seq(0, 24, by = 0.5) / 24)) |>
+    dplyr::mutate(evid = 0L, cmt = "central", amt_gle = 0, amt_pib = 0)
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+# omega = NA removes the random effects for this solve only. rxode2 warns on
+# every multi-subject solve without omega; that one warning is expected here.
+solve_typical <- function(mod, events) {
+  withCallingHandlers(
+    rxode2::rxSolve(mod, events = events, omega = NA, atol = 1e-10, rtol = 1e-10),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  ) |>
+    as.data.frame()
+}
+sim_typ <- dplyr::bind_rows(
+  solve_typical(mod_gle, dplyr::mutate(ev_typ, amt = amt_gle)) |> dplyr::mutate(drug = "Glecaprevir"),
+  solve_typical(mod_pib, dplyr::mutate(ev_typ, amt = amt_pib)) |> dplyr::mutate(drug = "Pibrentasvir")
+)
+
+trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+closed <- sim_typ |>
+  dplyr::group_by(drug, id) |>
+  dplyr::summarise(
+    auc_day14 = trap(24 * time[time <= 14], Cc[time <= 14]),
+    auc_day60 = trap(24 * time[time >= 59], Cc[time >= 59]),
+    .groups = "drop"
+  ) |>
+  dplyr::left_join(dplyr::select(subjects, id, WT, FORM_GRANULE, amt_gle, amt_pib), by = "id") |>
+  dplyr::mutate(
+    cl70 = ifelse(drug == "Glecaprevir", 1830, 2170),
+    ewt = ifelse(drug == "Glecaprevir", 1.04, 0.44),
+    frel = ifelse(FORM_GRANULE == 1, ifelse(drug == "Glecaprevir", 0.8, 1.2), 1),
+    dose = ifelse(drug == "Glecaprevir", amt_gle, amt_pib),
+    auc_closed = frel * dose / (cl70 * (WT / 70)^ewt) * 24 * 1000,
+    pct_diff_day60 = 100 * (auc_day60 / auc_closed - 1),
+    pct_diff_day14 = 100 * (auc_day14 / auc_closed - 1)
+  )
+closed |>
+  dplyr::select(drug, WT, FORM_GRANULE, dose, auc_closed, auc_day60, pct_diff_day60, auc_day14, pct_diff_day14) |>
+  dplyr::rename(
+    "Drug" = drug, "Weight (kg)" = WT, "Granules" = FORM_GRANULE, "Dose (mg)" = dose,
+    "F x Dose / CL" = auc_closed, "AUC24 day 60" = auc_day60, "% diff day 60" = pct_diff_day60,
+    "AUC24 day 14" = auc_day14, "% diff day 14" = pct_diff_day14
+  ) |>
+  knitr::kable(digits = 1, caption = "Typical-value AUC24 (ng*h/mL), 0.5 h trapezoid vs. the steady-state closed form.")
+# Same parameters on both sides: at day 60 the gap is trapezoid error over the
+# 0.5 h grid only.
+stopifnot(all(abs(closed$pct_diff_day60) < 2))
+```
+
+## Exposure distributions (Figure 3)
+
+Figure 3 compares the per-patient AUC24 distributions with the adult target
+ranges (GLE 2400-9600 ng*h/mL, PIB 715-2860 ng*h/mL; two-fold around the adult
+geometric means).
+
+```{r figure-3, fig.width = 7, fig.height = 5}
+targets <- tibble::tibble(
+  drug = rep(c("Glecaprevir", "Pibrentasvir"), each = 2),
+  bound = c(2400, 9600, 715, 2860)
+)
+auc |>
+  dplyr::filter(group %in% design$group[design$design == "DORA"]) |>
+  # The few glecaprevir tail patients whose profile falls between output times
+  # have a grid AUC near zero; they are drawn at the 100 ng*h/mL axis floor.
+  dplyr::mutate(auc24 = pmax(auc24, 100)) |>
+  ggplot(aes(group, auc24)) +
+  geom_boxplot(outlier.size = 0.5) +
+  geom_hline(data = targets, aes(yintercept = bound), linetype = "dashed") +
+  facet_wrap(~drug, scales = "free_y") +
+  scale_y_log10() +
+  labs(
+    x = NULL, y = "Steady-state AUC24 (ng*h/mL)",
+    caption = paste(
+      "Simulated DORA cohorts; dashed lines are the adult target ranges (Figure 3 of Thakre 2026).",
+      "Values below 100 are drawn at 100.",
+      sep = "\n"
+    )
+  ) +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+The simulated spread is reported as the geometric %CV next to the paper's
+Table 4 values. The paper's values come from post hoc estimates in 17-44
+patients per cohort and the simulation draws from the full IIV, so only the
+order of magnitude is compared.
+
+```{r cv-table}
+auc |>
+  dplyr::filter(group %in% design$group[design$design == "DORA"]) |>
+  dplyr::group_by(drug, group) |>
+  dplyr::summarise(
+    sim_gcv_pct = 100 * sqrt(exp(var(log(auc24))) - 1),
+    .groups = "drop"
+  ) |>
+  dplyr::left_join(
+    tibble::tribble(
+      ~drug,          ~group,                           ~paper_gcv_pct,
+      "Glecaprevir",  "Cohort 1 (12 to <18 y, tablet)", 184,
+      "Glecaprevir",  "Cohort 2 (9 to <12 y)",          140,
+      "Glecaprevir",  "Cohort 3 (6 to <9 y)",           133,
+      "Glecaprevir",  "Cohort 4 (3 to <6 y)",           175,
+      "Pibrentasvir", "Cohort 1 (12 to <18 y, tablet)", 56,
+      "Pibrentasvir", "Cohort 2 (9 to <12 y)",          71,
+      "Pibrentasvir", "Cohort 3 (6 to <9 y)",           57,
+      "Pibrentasvir", "Cohort 4 (3 to <6 y)",           66
+    ),
+    by = c("drug", "group")
+  ) |>
+  dplyr::rename(
+    "Drug" = drug, "Cohort" = group,
+    "Simulated geometric %CV" = sim_gcv_pct,
+    "Thakre 2026 Table 4 %CV" = paper_gcv_pct
+  ) |>
+  knitr::kable(digits = 0)
+```
+
+# Assumptions and deviations
+
+- **CL/F-V2/F covariance not reported.** The paper states that correlated random
+  effects were included for CL/F and V2/F, but Tables 2 and 3 print only the two
+  variances. Neither the article nor its supplement gives the covariance or the
+  correlation, so both models carry a diagonal IIV (covariance 0). Exposure
+  metrics that depend only on CL/F (steady-state AUC24, the paper's primary
+  output) are unaffected; the individual elimination rate, and therefore the
+  individual ka and peak-trough swing, are more variable than in the authors'
+  model, most noticeably for glecaprevir with its very large variances.
+- **ka tied to the individual elimination rate.** The paper estimates ka as a
+  factor times ke = CL/V2 "to avoid flip-flop behavior" (Tables 2 and 3,
+  footnote b). The model applies the factor to each patient's own CL/V2,
+  including random effects and weight scaling, because only that form keeps
+  every patient's ka above ke. The derived typical ka values (18.6 and
+  10.1 1/day) are reproduced above.
+- **Residual error as a variance.** The residual tables are headed "sigma^2"
+  and the IIV variances round-trip exactly to the printed %CVs through
+  sqrt(exp(omega) - 1), so 0.568 (GLE) and 0.229 (PIB) are taken as variances
+  of a proportional error: SDs 0.754 and 0.479.
+- **Formulation indicator.** The fixed F1 ratios (0.8 GLE, 1.2 PIB) apply to all
+  Part 2 dosing. The intensive-PK children took separate GLE and PIB coated
+  granules and the others a single packet of co-packaged granules; the paper
+  uses one F1 ratio for both, and so does `FORM_GRANULE`.
+- **Time unit.** The paper reports CL/F and Q/F in L/day, ka in 1/day and ALAG1
+  in days; the model keeps day as the time unit. The vignette converts to hours
+  for AUC24 in ng*h/mL.
+- **Virtual DORA cohort weights.** Weights are truncated-normal draws from the
+  ESM Table S1 mean, SD and range of each cohort, not the observed weights. The
+  paper's Table 4 values are geometric means of post hoc individual estimates
+  in the patients who received the final dose (n = 17-44 per cohort), so a
+  population simulation is not expected to match row by row.
+- **Simulated AUC24.** The paper integrated its simulated last-day profiles with
+  the linear trapezoidal rule on the intensive-PK sampling times (Table 1:
+  0, 2, 4, 6 and 12 h after the dose); this vignette integrates a 0.5 h grid. Each weight band holds 200
+  virtual children instead of a share of 10,000. With the diagonal IIV a few
+  glecaprevir patients have half-lives of minutes and a grid AUC near zero;
+  medians rather than geometric means are therefore compared, and the
+  seed-free closed-form check confirms the geometric means.
+- **Pibrentasvir is not at steady state on day 14.** The slow peripheral phase
+  leaves the typical day-14 AUC24 3-8% below F x Dose / CL. The paper's
+  simulation design (14 days of dosing) is kept for the comparison with its
+  results.
+- **No erratum.** No correction notice for the article was found as of
+  2026-11-14.

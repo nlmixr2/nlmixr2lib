@@ -3646,6 +3646,8 @@ navbar:
         href: articles/Fostvedt_2021_glasdegib.html
       - text: "Glasdegib healthy (Lin 2020)"
         href: articles/Lin_2020_glasdegib.html
+      - text: "Glecaprevir (Thakre 2026)"
+        href: articles/Thakre_2026_glecaprevir_pibrentasvir.html
       - text: "Glenzocimab (Renaud 2020)"
         href: articles/Renaud_2020_glenzocimab.html
       - text: "Glibenclamide (Comin 2025)"
@@ -6384,6 +6386,8 @@ navbar:
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Phosphocreatine (He 2020)"
         href: articles/He_2020_phosphocreatine.html
+      - text: "Pibrentasvir (Thakre 2026)"
+        href: articles/Thakre_2026_glecaprevir_pibrentasvir.html
       - text: "Pinatuzumab polatuzumab (Lu 2016)"
         href: articles/Lu_2016_pinatuzumab_polatuzumab.html
       - text: "Pioglitazone alt mbma (Tran 2026)"
@@ -11904,6 +11908,7 @@ articles:
   - articles/Thakkar_2018_tafenoquine
   - articles/Thakre_2022_risankizumab
   - articles/Thakre_2025_venetoclax
+  - articles/Thakre_2026_glecaprevir_pibrentasvir
   - articles/Themans_2019_meropenem
   - articles/Themans_2020_hydroxychloroquine
   - articles/Thiel_2018_cox2_pge2_painrelief
