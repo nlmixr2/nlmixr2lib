@@ -8,7 +8,8 @@ Hong_2013_glucose_insulin_MTT <- function() {
     "and replaces the biphasic insulin-secretion equation with a",
     "power-function plus incretin Emax form. Glucose absorption from the",
     "meal is modelled as a continuous Savic 2007 analytical transit",
-    "compartment chain (rxode2 transit(n, mtt, BIO)) with non-integer n =",
+    "compartment chain (paper Eq 5, with its Stirling approximation of",
+    "gamma(n + 1)) with non-integer n =",
     "0.781, mean transit time MTT = 62.5 min, and a 'bioavailability' BIO",
     "(0.252) multiplied by a dummy meal dose of 100 g of glucose. The",
     "incretin effect (insulin secretion triggered by oral glucose intake",
@@ -205,15 +206,30 @@ Hong_2013_glucose_insulin_MTT <- function() {
     # disposition assumption (CLGI_MTT replaces CLGI_HGC).
     gp <- gcss * (clg + clgi_mtt * icss)
 
-    # Glucose absorption rate from the Savic 2007 analytical transit
-    # compartment chain (rxode2 builtin `transit(n, mtt, bio)` computes
-    # the per-time absorption rate from the prior-dose amount and time
-    # since dose). The dummy 100 g (= 100000 mg) meal dose is supplied
-    # via the dataset as a dose into the glucose compartment with f
-    # (glucose) = 0 below so the bolus is suppressed and the transit()
-    # chain drives the absorption rate. The paper Eq 5 form is exactly
-    # the Savic analytical Erlang form with continuous n.
-    absg <- transit(nn, mtt, bio)
+    # Glucose absorption rate ABSG (mg/min), paper Eqs 5-6: the Savic 2007
+    # analytical transit form, with ktr = (n + 1) / MTT and the meal amount
+    # and time since the meal read from the dose into `glucose` (the dummy
+    # 100 g = 100000 mg meal). f(glucose) = 0 below keeps that dose from
+    # entering as a bolus, so ABSG is the only meal input. ABSG drives both
+    # the glucose input (Eq 4) and the incretin effect (Eq 7), so it is
+    # written out here rather than as rxode2's transit(), which reads the
+    # dose only inside the d/dt() of the dosed compartment. Before the
+    # first meal tad(glucose) is NA and ABSG is 0. A later meal replaces
+    # the earlier one's absorption, as podo() and tad() describe the last
+    # dose.
+    #
+    # The denominator sqrt(2*pi) * n^(n + 0.5) * exp(-n) is Stirling's
+    # approximation of gamma(n + 1), as Eq 5 prints it and as the NONMEM
+    # fit estimated BIO = 0.252 under it. At n = 0.781 it is 0.903 of the
+    # exact gamma(1.781), so this ABSG absorbs 1/0.903 = 1.108 times the
+    # BIO * 100000 mg that rxode2's transit() (exact lgamma) would.
+    ktr   <- (nn + 1) / mtt
+    tmeal <- tad(glucose)
+    absg  <- 0
+    if (!is.na(tmeal)) {
+      absg <- ktr * podo(glucose) * bio * (ktr * tmeal)^nn /
+        (sqrt(2 * pi) * nn^(nn + 0.5) * exp(-nn)) * exp(-ktr * tmeal)
+    }
 
     # Insulin-secretion rate (paper Eq 6-7). Power function in
     # (glucose_concentration / GCss) for the second-phase response,
@@ -240,10 +256,10 @@ Hong_2013_glucose_insulin_MTT <- function() {
     insulin(0) <- icss * vi
     effect(0)  <- icss
 
-    # Suppress the dose bolus on the glucose compartment so the
-    # transit() chain drives the absorption rate from the prior-dose
-    # amount and time. Downstream users supply the meal dose via the
-    # dataset (e.g., et(amt = 100000, cmt = "glucose")).
+    # Suppress the dose bolus on the glucose compartment so ABSG, read
+    # from the dose amount and time, is the meal input. Downstream users
+    # supply the meal dose via the dataset (e.g.,
+    # et(amt = 100000, cmt = "glucose")).
     f(glucose) <- 0
 
     # Observation variables.

@@ -68,9 +68,10 @@ The per-parameter origin is recorded in the in-file comments next to each `ini()
 
 | Parameter      | Value                                  | Source location                                                                 |
 |----------------|----------------------------------------|---------------------------------------------------------------------------------|
-| Eq. 4          | dG/dt with transit-absorption input    | Hong 2013, p. 1055, Eq. 4                                                       |
-| Eq. 5          | ABSG = Savic analytical transit form   | Hong 2013, p. 1055, Eq. 5                                                       |
-| Eq. 6          | IR_MTT = power x incretin Emax         | Hong 2013, p. 1055, Eq. 6                                                       |
+| Eq. 4          | dG/dt with transit-absorption input    | Hong 2013, p. 1054, Eq. 4                                                       |
+| Eq. 5          | ABSG = Savic analytical transit form, Stirling denominator | Hong 2013, p. 1054, Eq. 5                                   |
+| Eq. 6          | kca = (n + 1) / MTT                    | Hong 2013, p. 1054, Eq. 6                                                       |
+| Eq. 7          | dI/dt = power x incretin Emax secretion | Hong 2013, p. 1055, Eq. 7                                                      |
 | `n`            | 0.781                                  | Table II                                                                        |
 | `MTT`          | 62.5 min                               | Table II                                                                        |
 | `BIO`          | 0.252                                  | Table II                                                                        |
@@ -97,7 +98,7 @@ Both models use `glucose` as a state holding glucose **amount** in mg, `insulin`
 | Linear `ir_second = gamma * t * delta_g`    | mU/min                         | mU/(min^2*(mg/L)) * min * (mg/L) = mU/min                                            |
 | `(CLI / VI) * insulin`                      | mU/min                         | (L/min / L) * mU = mU/min                                                            |
 | `kie * (insulin/VI - effect)`               | (mU/L)/min                     | (1/min) * (mU/L) = (mU/L)/min                                                        |
-| MTT `absg = transit(n, mtt, bio)`           | mg/min                         | dose mg / chain min, returned per the Savic analytical form                          |
+| MTT `absg` (Eq. 5)                          | mg/min                         | ktr (1/min) * meal dose (mg) * BIO, times the dimensionless Savic shape              |
 
 All ODE right-hand sides match their state-divided-by-time units consistently.
 
@@ -199,7 +200,7 @@ The simulated insulin profile shows the expected biphasic shape: a sharp early p
 
 # Perturbation-recovery (MTT: 100 g oral meal)
 
-The MTT model takes a dummy 100 g (= 100000 mg) meal-glucose dose and absorbs it via the Savic analytical transit chain (`transit(n, MTT, BIO)` with n = 0.781, MTT = 62.5 min, BIO = 0.252). The dose enters the `glucose` compartment with `f(glucose) = 0` so the bolus is suppressed and the transit chain drives the absorption rate.
+The MTT model takes a dummy 100 g (= 100000 mg) meal-glucose dose and absorbs it at the rate ABSG of Eq. 5, the Savic analytical transit form with n = 0.781, MTT = 62.5 min and BIO = 0.252. The dose enters the `glucose` compartment with `f(glucose) = 0`, so the bolus itself is suppressed; ABSG, computed from that dose's amount and time, is the meal input to glucose and drives the incretin term of insulin secretion. Eq. 5 approximates gamma(n + 1) by Stirling's formula, which at n = 0.781 is 0.903 of the exact value, so the meal delivers 100000 x 0.252 / 0.903 = 27.9 g of glucose (see Assumptions and deviations).
 
 ```{r mtt-perturb}
 mtt_events <- rxode2::et() |>
@@ -211,13 +212,21 @@ mtt_events$OCC    <- 1
 
 mtt_sim <- rxode2::rxSolve(mod_mtt_typ, events = mtt_events, returnType = "tibble")
 
+# The meal arrives: glucose rises well above its baseline within the 4 h,
+# insulin follows it, and glucose has turned back down by the end.
+stopifnot(
+  max(mtt_sim$Gc) > 1.2 * gcss,
+  max(mtt_sim$Ic) > 2 * icss,
+  tail(mtt_sim$Gc, 1) < max(mtt_sim$Gc)
+)
+
 ggplot(mtt_sim, aes(time)) +
   geom_line(aes(y = Gc, colour = "Glucose (mg/L)"), linewidth = 1) +
   geom_hline(yintercept = gcss, linetype = "dashed", colour = "grey50") +
   scale_colour_manual(values = c("Glucose (mg/L)" = "#1f77b4")) +
   labs(x = "Time (min)", y = "Glucose (mg/L)", colour = "",
        title = "MTT typical-value glucose response",
-       subtitle = "100 g oral meal absorbed via Savic transit chain (n = 0.781, MTT = 62.5 min, BIO = 0.252)") +
+       subtitle = "100 g oral meal absorbed per Eq. 5 (n = 0.781, MTT = 62.5 min, BIO = 0.252)") +
   theme_minimal()
 
 ggplot(mtt_sim, aes(time)) +
@@ -230,7 +239,7 @@ ggplot(mtt_sim, aes(time)) +
   theme_minimal()
 ```
 
-The MTT glucose excursion shows the slow rise characteristic of mean-transit-time 62.5 min absorption, peaks within the first hour, and decays back toward baseline over the 4-h observation window. The insulin response mimics the glucose curve (per the power x incretin Emax form) rather than rising linearly with time -- this is the key qualitative difference from the HGC model.
+The MTT glucose excursion shows the slow rise characteristic of mean-transit-time 62.5 min absorption, peaks at about 70 min, and decays back toward baseline over the 4-h observation window. The insulin response mimics the glucose curve (per the power x incretin Emax form) rather than rising linearly with time -- this is the key qualitative difference from the HGC model.
 
 # Population VPC-style simulation
 
@@ -289,14 +298,25 @@ ggplot(hgc_pop_summary, aes(time)) +
   theme_minimal()
 ```
 
+Figure 6 starts from a median glucose of about 1.12 g/L (10th to 90th percentile about 1.02 to 1.23 g/L) and a median insulin of about 12 mU/L (about 8 to 18 mU/L), below the screening range the HGC cohort above is drawn from. The MTT cohort therefore draws its baselines to match those t = 0 bands, so that its percentiles can be read against the figure. It has 500 subjects rather than 100: the checks below compare cohort medians with the figure, and with 100 subjects the median insulin peak moves by about 20% from one random draw to the next.
+
 ```{r mtt-vpc}
+n_mtt <- 500L
+mtt_cohort <- tibble::tibble(
+  id     = seq_len(n_mtt),
+  FPG    = 1120 * exp(rnorm(n_mtt, 0, 0.073)),   # mg/L; 10th-90th about 1020-1230
+  INS_BL = 12 * exp(rnorm(n_mtt, 0, 0.316)),     # mU/L; 10th-90th about 8-18
+  OCC    = 1L                                    # single occasion; see Assumptions
+)
+
 mtt_one <- rxode2::et() |>
   rxode2::et(amt = 100000, cmt = "glucose", time = 0) |>
   rxode2::et(seq(0, 240, by = 5), cmt = "Gc") |>
   as.data.frame()
 
-mtt_pop_events <- tidyr::crossing(cohort_baseline, mtt_one) |>
+mtt_pop_events <- tidyr::crossing(mtt_cohort, mtt_one) |>
   dplyr::arrange(id, time)
+rxode2::rxSetSeed(2013)
 mtt_pop_sim <- rxode2::rxSolve(mod_mtt, events = mtt_pop_events,
                                returnType = "tibble")
 
@@ -317,7 +337,7 @@ ggplot(mtt_pop_summary, aes(time)) +
   geom_ribbon(aes(ymin = Q10_G, ymax = Q90_G), alpha = 0.25, fill = "#1f77b4") +
   geom_line(aes(y = Q50_G), colour = "#1f77b4", linewidth = 1) +
   labs(x = "Time (min)", y = "Glucose (mg/L)",
-       title = "MTT VPC-style summary (n = 100)",
+       title = "MTT VPC-style summary (n = 500)",
        caption = "Replicates Figure 6 (MTT glucose VPC) of Hong 2013.") +
   theme_minimal()
 
@@ -325,10 +345,51 @@ ggplot(mtt_pop_summary, aes(time)) +
   geom_ribbon(aes(ymin = Q10_I, ymax = Q90_I), alpha = 0.25, fill = "#d62728") +
   geom_line(aes(y = Q50_I), colour = "#d62728", linewidth = 1) +
   labs(x = "Time (min)", y = "Insulin (mU/L)",
-       title = "MTT VPC-style summary (n = 100)",
+       title = "MTT VPC-style summary (n = 500)",
        caption = "Replicates Figure 6 (MTT insulin VPC) of Hong 2013.") +
   theme_minimal()
 ```
+
+The cohort medians against Figure 6's medians, digitised from the figure (both treatment arms show the same curves):
+
+```{r mtt-vpc-check}
+fig6 <- c(g_peak = 1574, t_g_peak = 70, g_240 = 1035, i_peak = 59, t_i_peak = 88, i_240 = 9.6)
+med <- mtt_pop_summary
+sim6 <- c(
+  g_peak   = max(med$Q50_G),
+  t_g_peak = med$time[which.max(med$Q50_G)],
+  g_240    = unname(med$Q50_G[med$time == 240]),
+  i_peak   = max(med$Q50_I),
+  t_i_peak = med$time[which.max(med$Q50_I)],
+  i_240    = unname(med$Q50_I[med$time == 240])
+)
+knitr::kable(
+  data.frame(
+    quantity  = c("glucose peak (mg/L)", "glucose peak time (min)", "glucose at 240 min (mg/L)",
+                  "insulin peak (mU/L)", "insulin peak time (min)", "insulin at 240 min (mU/L)"),
+    figure6   = unname(fig6),
+    simulated = round(unname(sim6), 1)
+  ),
+  caption = "Median of the n = 500 MTT cohort against the median line of Hong 2013 Figure 6."
+)
+
+stopifnot(
+  # Glucose: the meal's size, timing and clearance.
+  abs(sim6[["g_peak"]] / fig6[["g_peak"]] - 1) < 0.10,
+  abs(sim6[["t_g_peak"]] - fig6[["t_g_peak"]]) <= 15,
+  abs(sim6[["g_240"]] / fig6[["g_240"]] - 1) < 0.10,
+  # Insulin: its shape, a peak inside the meal window and a return toward
+  # baseline by 4 h.
+  sim6[["t_i_peak"]] >= 30, sim6[["t_i_peak"]] <= 120,
+  sim6[["i_240"]] < 1.5 * med$Q50_I[med$time == 0],
+  # Insulin: the printed Eq. 7 and Table II put the peak well above Figure 6
+  # (see Errata). This goes red if either side is reinterpreted.
+  sim6[["i_peak"]] / fig6[["i_peak"]] > 1.4,
+  sim6[["i_peak"]] / fig6[["i_peak"]] < 2.2
+)
+```
+
+Glucose follows Figure 6: the median peak height and time match, and the 240-min value is a few percent low. Insulin peaks earlier and about 1.7 times higher than Figure 6's median; the Errata section shows that this follows from the printed equations.
 
 # Assumptions and deviations
 
@@ -341,8 +402,15 @@ ggplot(mtt_pop_summary, aes(time)) +
 - **Log-additive residual error implemented as proportional in linear space.** The paper uses additive epsilon on log-transformed observations, which it notes "approximately corresponds to a proportional error model on nontransformed data." The model files implement the proportional-in-linear-space form per the paper's own interpretation; for downstream use cases where a strict log-normal residual is preferred, swap `~ prop(propSd_*)` for `~ lnorm(expSd_*)` with the same numeric value.
 - **HGC GIR (glucose infusion rate) is a user-supplied dataset input.** The Biostator regulates GIR minute-to-minute in the actual study; in the model, GIR enters as dose / infusion records on the `glucose` compartment via the dataset. The vignette uses a constant approximate GIR of 200 mg/min for illustration; downstream users can supply any observed or simulated GIR profile.
 - **HGC Gaussian first-phase pulse is not gated by glucose elevation.** The paper's HGC insulin-secretion equation `IR_first(t) = Amplitude / (Tdur * sqrt(2*pi)) * exp(-(t - Tsec)^2 / (2 * Tdur^2))` fires at t ~= Tsec = 3.54 min regardless of whether a glucose challenge is present at t = 0. The paper implicitly treats t = 0 as the start of the HGC procedure; the model file does the same. Consequently, drug-free baseline simulations show a small transient insulin spike at ~3.5 min and a small glucose dip from baseline within the first ~10 min before returning to baseline (see the approach-to-baseline check above). Downstream users who want to skip the first-phase pulse can multiply `ir_first` by a glucose-elevation gate (`(G/VG - GCss > 0)`) or set Amplitude to zero. The MTT companion model has no first-phase pulse and therefore holds exactly at baseline under no perturbation.
-- **VPC populations downscaled (n = 100 vs. paper n = 1000).** Hong 2013 Figures 5 and 6 used 1000 simulated datasets; this vignette uses 100 subjects to keep the render under 5 minutes. The qualitative shape and the 10th / 50th / 90th percentile bands are preserved; downstream users seeking publication-quality VPCs should re-run with n = 1000.
+- **Meal absorption follows Eq. 5 as printed, with Stirling's approximation.** Eq. 5 divides by sqrt(2 pi) n^(n + 0.5) e^(-n), Stirling's approximation of gamma(n + 1), and BIO = 0.252 was estimated with that form. At n = 0.781 it is 0.903 of the exact gamma(1.781), so the model absorbs 1 / 0.903 = 1.108 times what rxode2's `transit()` (which uses the exact gamma) would: 27.9 g rather than 25.2 g of the 100 g dummy meal. The model writes Eq. 5 out rather than calling `transit()`, also because ABSG drives the incretin term of Eq. 7 as well as the glucose input, and `transit()` reads the dose only inside the `d/dt()` of the dosed compartment. ABSG is 0 before the first meal; a second meal replaces the first one's absorption, since the dose amount and time it reads are those of the last dose.
+- **MTT insulin is encoded as Eq. 7 and Table II print it, which puts it above Figure 6 (see Errata).** At Figure 6's own median glucose peak (1574 mg/L from a 1120 mg/L baseline), the glucose term of Eq. 7 is (1574 / 1120)^3.06 = 2.83. Eq. 5 gives ABSG of about 218 mg/min at 65 min, so the incretin factor is 1 + 2.02 x 218 / (218 + 14.8) = 2.89. Secretion is then 2.83 x 2.89 = 8.2 times its baseline ICss x CLI. Insulin's half-life is ln 2 x VI / CLI = ln 2 x 6.09 / 1.54 = 2.7 min, so insulin follows secretion within minutes: about 12 x 8.2 = 98 mU/L at the glucose peak, and it cannot peak 20 min after glucose as Figure 6's median does (about 59 mU/L at about 88 min). Eq. 7 matches the model term for term, and N, MTT, BIO, CLGI_MTT, Emax, ABSG50 and IPRG match Table II. The gap is internal to the paper; the printed equations and table are encoded, and the article pins the gap so that a reinterpretation of either shows.
+- **The MTT VPC cohort's baselines match Figure 6, not the screening range.** The HGC cohort draws FPG uniformly over the 110-180 mg/dL screening range, a median of 145 mg/dL. Figure 6's median glucose starts at about 112 mg/dL, so the MTT cohort draws FPG and INS_BL log-normally around Figure 6's t = 0 medians and 10th-90th percentile bands instead.
+- **VPC populations downscaled (n = 100 HGC and 500 MTT vs. paper n = 1000).** Hong 2013 Figures 5 and 6 used 1000 simulated datasets; this vignette uses 100 HGC and 500 MTT subjects to keep the render under 5 minutes. The MTT cohort is larger because its medians are checked against Figure 6. The qualitative shape and the 10th / 50th / 90th percentile bands are preserved; downstream users seeking publication-quality VPCs should re-run with n = 1000.
 - **Inter-occasion variability (IOV) is encoded via occasion indicators.** Hong 2013 Tables I and II report IOV on CLG (31.8% CV HGC, 65.7% CV MTT) and VG (9.22% HGC, 19.5% MTT), and both model files now encode it. The form is the occasion-indicator expansion used throughout this library: one eta slot per occasion (`etaiov_clg_<occ>`, `etaiov_vg_<occ>`) selected inside `model()` by mutually exclusive `oc<n>` indicators built from the required `OCC` column -- two occasions for HGC (one per treatment period of the crossover), four for MTT (two crossover periods x palosuran / placebo). Occasions after the first have their variance `fixed()` to the first, which is what NONMEM writes as `$OMEGA BLOCK(1) SAME`. The simulations in this vignette set `OCC = 1` throughout, so they show the between-subject component only; supply a varying `OCC` to exercise the between-occasion component as well.
+
+# Errata
+
+**The MTT model's insulin peak is about 1.7 times Figure 6's.** Hong 2013's printed Eq. 7 and Table II, which the model encodes, put the median insulin peak near 100 mU/L at about 70 min, while the Figure 6 VPC median peaks at about 59 mU/L at about 88 min. Glucose matches Figure 6. The equation and every Table II value were checked against the paper, and the arithmetic under Assumptions and deviations shows that the printed model cannot give Figure 6's insulin curve, so the inconsistency is in the paper. Where the paper's equations and tables disagree with its figures, this library encodes the equations and tables. The `mtt-vpc-check` chunk pins the gap: the median insulin peak must stay 1.4 to 2.2 times Figure 6's.
 
 # Session info
 
