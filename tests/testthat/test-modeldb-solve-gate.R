@@ -247,10 +247,18 @@ knownLongLagModels <- c(
 # reference value. bcf0 is then infinite and Hba1c NaN from the first step. The
 # model requires INS_BL < 5 * (FPG - 3.5), as its covariateData says; at the
 # cohort reference FPG = 8.2 (the `FPG - 8.2` in kout) every state is finite.
+#
+# Wang_2024_evorpacept_qsp: rxSolve() cannot solve it at its default tolerances
+# ("could not solve the system" on both paths). Its amounts span about ten
+# orders of magnitude in nmol, from whole-body antibody pools down to
+# per-synapse receptor densities, and its vignette solves with atol = 1e-18,
+# rtol = 1e-8 and maxsteps = 5e6. With those settings the probe's dose into
+# q_V_C_aCD47 solves on both paths and every state stays finite.
 probeUnsupportedModels <- c(
   "Kim_2024_islatravir",
   "Hopkins_2024_amisulpride",
-  "Tan_2025_adomeglivant_ffh"
+  "Tan_2025_adomeglivant_ffh",
+  "Wang_2024_evorpacept_qsp"
 )
 
 # (2) Genuinely BROKEN models, quarantined so this gate can go green while the
