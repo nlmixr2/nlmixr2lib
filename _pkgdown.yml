@@ -1358,6 +1358,8 @@ navbar:
         href: articles/Chotsiri_2024_primaquine_metabolites.html
       - text: "Carfentanil iv (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
+      - text: "Cariprazine (Ismaeil 2026)"
+        href: articles/Ismaeil_2026_cariprazine.html
       - text: "Cariprazine (Periclou 2021)"
         href: articles/Periclou_2021_cariprazine.html
       - text: "Cariprazine initial (Periclou 2021)"
@@ -10467,6 +10469,7 @@ articles:
   - articles/Ishibashi_2024_ensitrelvir
   - articles/Ishihara_2020_piperacillin_tazobactam
   - articles/Isla_2024_fosfomycinCalcium
+  - articles/Ismaeil_2026_cariprazine
   - articles/Itohara_2019_tacrolimus
   - articles/Itohara_2022_everolimus
   - articles/Ivanova_2024_synucleinopathy_qsp

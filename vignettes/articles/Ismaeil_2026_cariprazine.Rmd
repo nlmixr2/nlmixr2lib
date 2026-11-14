@@ -1,0 +1,567 @@
+---
+title: "Cariprazine, desmethyl-cariprazine and didesmethyl-cariprazine in children and adolescents (Ismaeil 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cariprazine, desmethyl-cariprazine and didesmethyl-cariprazine in children and adolescents (Ismaeil 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Ismaeil_2026_cariprazine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Ismaeil_2026_cariprazine"))$description`
+* Article: [J Clin Pharmacol 2026;66(7):e70243](https://doi.org/10.1002/jcph.70243) (open access)
+* Supplement: Supporting Information (Table S1 and Figures S1-S7)
+
+Ismaeil 2026 adapts the adult cariprazine population PK model of Periclou
+2021 (packaged as `Periclou_2021_cariprazine`) to children and adolescents. The
+structure is unchanged, and every structural, race, sex and first-dose
+parameter is fixed to its adult value. Only three things were re-estimated on
+the pediatric data:
+
+* the body-weight exponents on `CL/F` and `Vc/F` of cariprazine, DCAR and DDCAR,
+  still referenced to the adult 79 kg (Equation 1);
+* the between-subject variances on cariprazine `CL/F`, `Vc/F` and `Ka`, and on
+  `CL/F` and `Vc/F` of each metabolite;
+* the proportional residual errors for "full profile studies".
+
+The three analytes were fitted one after the other with the preceding
+analyte's parameters fixed, and they share one ODE system in the packaged file.
+
+# Population
+
+The analysis pooled two phase 1 studies (Table 2): 101 patients, of whom 25 were
+children aged 10-12 years, 60 adolescents aged 13-17 years and 16 adults aged
+18-40 years. Mean age was 16 years and mean body weight 59.6 kg (range
+26.9-95.4 kg; 9 patients under 40 kg); 60% were male and 58% White, 41% Black
+and 1% Asian. Study 1 enrolled adolescents with schizophrenia and children and
+adolescents with bipolar I disorder (1.5, 3 or 4.5 mg once daily after
+titration, 42 days); Study 2 enrolled adolescents and adults with schizophrenia
+(1.5, 3 or 6 mg once daily, 28 days). The data hold 4237 concentrations
+(cariprazine 1570, DCAR 1269, DDCAR 1398).
+
+The same information is available programmatically via
+`readModelDb("Ismaeil_2026_cariprazine")()$population`.
+
+# Model structure
+
+* `depot` receives each dose as a **zero-order input** over `DUR` = 2.57 h and
+  empties into `central` at `Ka`.
+* Cariprazine distributes to `peripheral1` (`Q3/F`) and `peripheral2`
+  (`Q4/F`). Its elimination forms DCAR in `central_dcar`, which exchanges with
+  `peripheral1_dcar`.
+* DCAR elimination passes through one delay compartment, `transit1`
+  (`DDKTR` = 0.0269 1/h), into `central_ddcar`, which exchanges with
+  `peripheral1_ddcar`.
+* A first-dose shift raises cariprazine `Vc/F`, `Vp1/F` and `Q3/F` and DCAR
+  `Vc/F` and `Vp/F` until the second dose; the model builds it from
+  `dosenum()`.
+* Weight enters every `CL/F` and `Vc/F` as `(WT / 79)^theta`.
+
+Dose records must use `rate = -2` so that rxode2 applies `dur(depot)`. Every
+observation row returns all three concentrations; the event tables below place
+observations on the ODE state `central` with `dvid = 1`.
+
+The covariate `STUDY_CARIPRAZINE_FULLPROFILE` selects the residual error: 1 for
+the full-profile studies the model was fitted to (both pediatric studies), 0 for
+the sparse-sampling studies whose error is held at the adult value. All
+simulations below set it to 1.
+
+```{r model}
+mod <- readModelDb("Ismaeil_2026_cariprazine")
+mod_typ <- rxode2::zeroRe(rxode2::rxode2(mod), which = "omega")
+mod_adult <- readModelDb("Periclou_2021_cariprazine")
+
+# ng/mL per nM (molecular weights 427.4, 413.4 and 399.7 g/mol for
+# cariprazine, DCAR and DDCAR), as in the Periclou 2021 article.
+mw <- c(CAR = 0.4274, DCAR = 0.4134, DDCAR = 0.3997)
+
+make_events <- function(id, dose_times, amts, obs_times, covs) {
+  ev <- rbind(
+    data.frame(id = id, time = dose_times, amt = amts, rate = -2, evid = 1L,
+               cmt = "depot", dvid = NA_integer_),
+    data.frame(id = id, time = obs_times, amt = NA_real_, rate = NA_real_,
+               evid = 0L, cmt = "central", dvid = 1L)
+  )
+  ev <- ev[order(ev$time, -ev$evid), ]
+  cbind(ev, covs[rep(1, nrow(ev)), , drop = FALSE], row.names = NULL)
+}
+
+to_nM <- function(sim) {
+  if (!"id" %in% names(sim)) sim$id <- 1L
+  sim |>
+    dplyr::mutate(
+      CAR = Cc / mw[["CAR"]],
+      DCAR = Cc_dcar / mw[["DCAR"]],
+      DDCAR = Cc_ddcar / mw[["DDCAR"]],
+      Total = CAR + DCAR + DDCAR
+    )
+}
+
+trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+
+white_male <- function(WT) {
+  data.frame(WT = WT, SEXF = 0, RACE_BLACK = 0, RACE_ASIAN = 0, RACE_JAPANESE = 0,
+             STUDY_CARIPRAZINE_FULLPROFILE = 1)
+}
+```
+
+# Source trace
+
+| Parameter | Value | Source location |
+|-----------|-------|-----------------|
+| `ld1` (DUR), `lka` (Ka) | log(2.57 h), log(0.352 1/h), fixed | Table 3 |
+| `lcl` (CL/F) | log(21.5 L/h), fixed | Table 3 |
+| `e_wt_cl` | 0.0977 | Table 3 'Power of CL/F for weight' |
+| `e_black_cl`, `e_asian_cl`, `e_japanese_cl` | -0.0907, -0.178, -0.111, fixed | Table 3 |
+| `lvc` (Vc/F), `e_fd_vc` | log(266 L), 2.84, fixed | Table 3 |
+| `e_wt_vc` | 0.998 | Table 3 'Power of Vc/F for weight' |
+| `lq` (Q3/F), `e_fd_q` | log(0.431 L/h), 39.4, fixed | Table 3 |
+| `lvp` (Vp1/F), `e_fd_vp` | log(149 L), 2.61, fixed | Table 3 |
+| `lq2` (Q4/F), `lvp2` (Vp2/F) | log(100 L/h), log(501 L), fixed | Table 3 |
+| `lcl_dcar`, `e_black_cl_dcar`, `e_asian_cl_dcar`, `e_japanese_cl_dcar`, `e_sexf_cl_dcar` | log(77.3 L/h), 0.249, -0.0861, -0.145, -0.160, fixed | Table 4 |
+| `e_wt_cl_dcar`, `e_wt_vc_dcar` | 0.0697, 0.284 | Table 4 'Power of CL/F / Vc/F for weight' |
+| `lvc_dcar`, `e_fd_vc_dcar` | log(128 L), 1.27, fixed | Table 4 |
+| `lq_dcar`, `lvp_dcar`, `e_fd_vp_dcar` | log(78.5 L/h), log(347 L), 0.535, fixed | Table 4 |
+| `lcl_ddcar`, `e_black_cl_ddcar`, `e_asian_cl_ddcar`, `e_japanese_cl_ddcar` | log(9.24 L/h), 0.547, -0.194, -0.156, fixed | Table 5 |
+| `e_wt_cl_ddcar`, `e_wt_vc_ddcar` | 0.511, 0.244 | Table 5 'Power of CL/F / Vc/F for weight' |
+| `lvc_ddcar`, `e_black_vc_ddcar`, `e_asian_vc_ddcar`, `e_japanese_vc_ddcar` | log(1310 L), 0.676, -0.240, 0.0888, fixed | Table 5 |
+| `lq_ddcar`, `lvp_ddcar`, `lktr` | log(0.386 L/h), log(258 L), log(0.0269 1/h), fixed | Table 5 |
+| `etalcl`, `etalvc`, `etalka` | 0.0608, 1.47, 0.906 | Table 3 IIV (25.0%, 184%, 121% CV) |
+| `etalcl_dcar`, `etalvc_dcar` | 0.105, 1.56 | Table 4 IIV (33.2%, 194% CV) |
+| `etalcl_ddcar`, `etalvc_ddcar` | 0.167, 0.295 | Table 5 IIV (42.6%, 58.6% CV) |
+| `propSd_fullprofile`, `propSd_sparse` | 0.107, 0.154 fixed | Table 3 |
+| `propSd_fullprofile_dcar`, `propSd_sparse_dcar` | 0.0688, 0.141 fixed | Table 4 |
+| `propSd_fullprofile_ddcar`, `propSd_sparse_ddcar` | 0.0470, 0.0875 fixed | Table 5 |
+| Weight model `theta = TV * (WT / 79)^theta_ped * exp(eta)` | n/a | Equation 1 |
+| ODEs, zero-order input, first-dose shift | n/a | Methods 'Pediatric Population Pharmacokinetic Model'; Periclou 2021 Supplemental Equation Sets 1 and 3 |
+
+# Deterministic checks
+
+## Weight exponents: steady-state AUC equals Dose / CL
+
+Every molecule of cariprazine eliminated becomes DCAR and every molecule of
+DCAR becomes DDCAR, so at steady state each analyte's AUC over one dosing
+interval must equal `Dose / CL` of that analyte. Checking this at 35 kg, far
+from the 79 kg reference, confirms that each re-estimated weight exponent sits
+on the right clearance.
+
+```{r mass-balance}
+wt_chk <- 35
+ev_mb <- make_events(1L, seq(0, 139 * 24, by = 24), 4.5,
+                     seq(139 * 24, 140 * 24, by = 0.05), white_male(wt_chk))
+mb <- rxode2::rxSolve(mod_typ, ev_mb, returnType = "data.frame")
+cl_expected <- c(21.5 * (wt_chk / 79)^0.0977, 77.3 * (wt_chk / 79)^0.0697,
+                 9.24 * (wt_chk / 79)^0.511)
+mb_tab <- data.frame(
+  analyte = c("CAR", "DCAR", "DDCAR"),
+  auc_tau = c(trap(mb$time, mb$Cc), trap(mb$time, mb$Cc_dcar), trap(mb$time, mb$Cc_ddcar)),
+  dose_over_cl = 4500 / cl_expected
+) |>
+  dplyr::mutate(pct_diff = 100 * (auc_tau - dose_over_cl) / dose_over_cl)
+mb_tab |>
+  dplyr::rename("Analyte" = analyte, "AUC over 24 h (ng*h/mL)" = auc_tau,
+                "Dose / CL (ng*h/mL)" = dose_over_cl, "Difference (%)" = pct_diff) |>
+  knitr::kable(digits = 2, caption = "Typical 35 kg White male, 4.5 mg once daily, day 140.")
+# Same parameters on both sides, so only numerical error separates them.
+stopifnot(max(abs(mb_tab$pct_diff)) < 0.5)
+```
+
+## Pediatric versus adult weight effects
+
+At the 79 kg reference the pediatric and adult models share every typical
+value. Away from it they differ only through the weight exponents; the
+pediatric model's shallower exponents on `Vc/F` (cariprazine 0.998 vs 1.66, DCAR
+0.284 vs 1.18) and on DDCAR `Vc/F` (0.244 vs 0.881) change the within-interval
+shape, while the DDCAR clearance exponent (0.511 vs 0.427) sets most of the
+total exposure.
+
+```{r typical-profiles, fig.height = 4}
+obs_ss <- seq(41 * 24, 42 * 24, by = 0.25)
+typ <- dplyr::bind_rows(lapply(c(35, 55, 79), function(w) {
+  ev <- make_events(1L, seq(0, 41 * 24, by = 24), 4.5, obs_ss, white_male(w))
+  dplyr::bind_rows(
+    rxode2::rxSolve(mod_typ, ev, returnType = "data.frame") |> to_nM() |>
+      dplyr::mutate(model = "Ismaeil 2026 (pediatric)"),
+    rxode2::rxSolve(rxode2::zeroRe(rxode2::rxode2(mod_adult)), ev,
+                    returnType = "data.frame") |> to_nM() |>
+      dplyr::mutate(model = "Periclou 2021 (adult)")
+  ) |>
+    dplyr::mutate(WT = paste(w, "kg"))
+}))
+ggplot(typ, aes(time / 24 - 41, Total, colour = model)) +
+  geom_line() +
+  facet_wrap(~WT) +
+  labs(x = "Time after the 42nd daily 4.5 mg dose (days)", y = "Total CAR (nM)",
+       colour = NULL, title = "Typical White male, total cariprazine at steady state")
+
+# At 79 kg the two models must coincide exactly.
+at79 <- typ |> dplyr::filter(WT == "79 kg") |>
+  dplyr::select(model, time, Total) |>
+  tidyr::pivot_wider(names_from = model, values_from = Total)
+stopifnot(max(abs(at79[[2]] - at79[[3]]) / at79[[3]]) < 1e-6)
+```
+
+# Virtual cohorts (Table 1, Table S1)
+
+The paper drew 1000 children aged 10-12 years and 1000 adolescents aged
+13-17 years, sampled body weight from the CDC weight-for-age charts, split the
+children at 40 kg, and gave every virtual patient the sex and race
+proportions of the adult population (33.6% female; 45.6% White, 34.9% Black,
+14.3% Asian, 1.7% Japanese, 3.5% other). The CDC tables are not distributed
+with this package, so weight is drawn here from a log-normal distribution:
+
+* children: median 38.3 kg and log-scale SD 0.24, which puts 57.1% of children
+  under 40 kg -- the 571 of 1000 in Table S1 -- and is then split into the
+  Table S1 ranges 23.1-40.0 kg and 40.0-93.6 kg;
+* adolescents: median 55 kg (close to the sex-averaged CDC median at
+  15 years) with the same spread, kept inside the Table S1 range
+  31.7-157 kg;
+* adults (legacy adult model): normal with the Periclou 2021 mean and SD
+  (78.9 +/- 18.7 kg) inside its observed range 33.1-155.1 kg.
+
+Each group has 200 virtual patients, re-used for every dose level.
+
+```{r cohort}
+set.seed(20260313)
+n_sub <- 200
+
+draw_in_range <- function(n, rdraw, lo, hi) {
+  w <- numeric(0)
+  while (length(w) < n) {
+    x <- rdraw(4 * n)
+    w <- c(w, x[x >= lo & x < hi])
+  }
+  w[seq_len(n)]
+}
+rlnorm_med <- function(med) function(n) med * exp(rnorm(n, 0, 0.24))
+
+make_cohort <- function(group, wt) {
+  race <- sample(c("White", "Black", "Asian", "Japanese", "Other"), n_sub, replace = TRUE,
+                 prob = c(45.6, 34.9, 14.3, 1.7, 3.5))
+  data.frame(group = group, WT = wt, SEXF = rbinom(n_sub, 1, 0.336),
+             RACE_BLACK = as.integer(race == "Black"),
+             RACE_ASIAN = as.integer(race == "Asian"),
+             RACE_JAPANESE = as.integer(race == "Japanese"),
+             STUDY_CARIPRAZINE_FULLPROFILE = 1)
+}
+
+cohorts <- dplyr::bind_rows(
+  make_cohort("Children (<40 kg)", draw_in_range(n_sub, rlnorm_med(38.3), 23.1, 40)),
+  make_cohort("Children (>=40 kg)", draw_in_range(n_sub, rlnorm_med(38.3), 40, 93.6)),
+  make_cohort("Adolescents", draw_in_range(n_sub, rlnorm_med(55), 31.7, 157)),
+  make_cohort("Adults", draw_in_range(n_sub, function(n) rnorm(n, 78.9, 18.7), 33.1, 155.1))
+)
+cohorts |>
+  dplyr::group_by(group) |>
+  dplyr::summarise(n = dplyr::n(), median_wt = median(WT), min_wt = min(WT),
+                   max_wt = max(WT), pct_female = 100 * mean(SEXF)) |>
+  dplyr::rename("Group" = group, "N" = n, "Median weight (kg)" = median_wt,
+                "Min (kg)" = min_wt, "Max (kg)" = max_wt, "Female (%)" = pct_female) |>
+  knitr::kable(digits = 1, caption = "Virtual cohorts.")
+```
+
+# Steady-state exposure after 42 days (replicates Figure 2 and Table S1)
+
+Each group receives a fixed daily dose for 42 days (Table 1): 1.5, 3 or 4.5 mg
+in the pediatric groups with the pediatric model, and 1.5, 3, 4.5 or 6 mg in
+the adults with the legacy adult model. Total CAR is the molar sum of the
+three analytes, and exposure is taken over the 42nd dosing interval. Residual
+error is not part of these exposure metrics; the solved `Cc` columns are
+individual predictions.
+
+```{r ss-simulate}
+doses <- list(
+  "Children (<40 kg)" = c(1.5, 3, 4.5), "Children (>=40 kg)" = c(1.5, 3, 4.5),
+  "Adolescents" = c(1.5, 3, 4.5), "Adults" = c(1.5, 3, 4.5, 6)
+)
+obs_grid <- seq(41 * 24, 42 * 24, by = 1)
+arm_id <- 0L
+ss_events <- list()
+for (g in names(doses)) {
+  coh <- cohorts[cohorts$group == g, ]
+  for (d in doses[[g]]) {
+    arm_id <- arm_id + 1L
+    ss_events[[arm_id]] <- dplyr::bind_rows(lapply(seq_len(n_sub), function(i) {
+      make_events((arm_id - 1L) * n_sub + i, seq(0, 41 * 24, by = 24), d, obs_grid,
+                  coh[i, -1])
+    })) |>
+      dplyr::mutate(group = g, treatment = paste(d, "mg"))
+  }
+}
+ss_events <- dplyr::bind_rows(ss_events)
+stopifnot(!anyDuplicated(ss_events[, c("id", "time", "evid")]))
+
+ev_ped <- ss_events |> dplyr::filter(group != "Adults")
+ev_adu <- ss_events |> dplyr::filter(group == "Adults")
+ss_sim <- dplyr::bind_rows(
+  rxode2::rxSolve(mod, ev_ped, keep = c("group", "treatment"), returnType = "data.frame"),
+  rxode2::rxSolve(mod_adult, dplyr::select(ev_adu, -STUDY_CARIPRAZINE_FULLPROFILE),
+                  keep = c("group", "treatment"), returnType = "data.frame")
+) |>
+  to_nM() |>
+  dplyr::select(id, time, group, treatment, Total)
+```
+
+```{r pknca}
+nca_conc <- ss_sim |>
+  dplyr::filter(!is.na(Total)) |>
+  dplyr::mutate(time = time - 41 * 24)
+nca_dose <- ss_events |>
+  dplyr::filter(evid == 1, time == 41 * 24) |>
+  dplyr::mutate(time = 0) |>
+  dplyr::select(id, time, amt, group, treatment)
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Total ~ time | group + treatment + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | group + treatment + id)
+intervals <- data.frame(start = 0, end = 24, cmax = TRUE, cmin = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+```{r fig2, fig.height = 6}
+table_s1 <- tibble::tribble(
+  ~group, ~treatment, ~auclast, ~cmax, ~cmin,
+  "Children (<40 kg)", "1.5 mg", 700, 32.0, 27.2,
+  "Children (<40 kg)", "3 mg", 1394, 63.5, 53.7,
+  "Children (<40 kg)", "4.5 mg", 2083, 95.8, 80.9,
+  "Children (>=40 kg)", "1.5 mg", 619, 28.6, 23.8,
+  "Children (>=40 kg)", "3 mg", 1230, 56.6, 47.3,
+  "Children (>=40 kg)", "4.5 mg", 1846, 84.5, 72.1,
+  "Adolescents", "1.5 mg", 570, 26.4, 22.1,
+  "Adolescents", "3 mg", 1163, 53.6, 45.0,
+  "Adolescents", "4.5 mg", 1715, 78.8, 65.9,
+  "Adults", "1.5 mg", 538, 25.0, 20.9,
+  "Adults", "3 mg", 1045, 48.7, 40.5,
+  "Adults", "4.5 mg", 1578, 72.6, 60.9,
+  "Adults", "6 mg", 2091, 96.5, 81.1
+)
+grp_levels <- c("Adults", "Adolescents", "Children (<40 kg)", "Children (>=40 kg)")
+nca_ind <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cmax", "cmin")) |>
+  dplyr::mutate(group = factor(group, grp_levels))
+ggplot(nca_ind, aes(treatment, PPORRES, fill = group)) +
+  geom_boxplot(outlier.size = 0.4) +
+  geom_point(data = table_s1 |>
+               tidyr::pivot_longer(c(auclast, cmax, cmin), names_to = "PPTESTCD",
+                                   values_to = "PPORRES") |>
+               dplyr::mutate(group = factor(group, grp_levels)),
+             aes(group = group), position = position_dodge(width = 0.75),
+             shape = 4, size = 2.5) +
+  facet_wrap(~PPTESTCD, scales = "free_y",
+             labeller = as_labeller(c(auclast = "AUCtau,ss (nM*h)", cmax = "Cmax,ss (nM)",
+                                      cmin = "Ctrough,ss (nM)"))) +
+  labs(x = "Daily dose", y = NULL, fill = NULL,
+       title = "Steady-state total CAR after 42 days of fixed dosing",
+       caption = "Boxes: simulated. Crosses: Table S1 medians of Ismaeil 2026. Replicates Figure 2.") +
+  theme(legend.position = "bottom")
+```
+
+## Comparison against Table S1
+
+```{r nca-compare}
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = table_s1,
+  by = c("group", "treatment"),
+  units = c(auclast = "nM*h", cmax = "nM", cmin = "nM"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated vs Table S1 median steady-state total CAR exposure. * differs from reference by >20%.")
+```
+
+```{r nca-gate}
+sim_med <- nca_ind |>
+  dplyr::group_by(group, treatment, PPTESTCD) |>
+  dplyr::summarise(sim = median(PPORRES), .groups = "drop") |>
+  dplyr::mutate(group = as.character(group)) |>
+  dplyr::left_join(
+    table_s1 |> tidyr::pivot_longer(c(auclast, cmax, cmin), names_to = "PPTESTCD",
+                                    values_to = "ref"),
+    by = c("group", "treatment", "PPTESTCD")
+  ) |>
+  dplyr::mutate(pct_diff = 100 * (sim - ref) / ref)
+ped <- sim_med$group != "Adults"
+# Centre and envelope of the 39 per-arm medians. At authoring the pediatric
+# medians sat 2-18% above Table S1 (median about 11%) and the adult (Periclou
+# 2021) medians 7-15% above, so the offset comes from the shared adult
+# structure (see Assumptions and deviations). A mis-transcribed weight
+# exponent, clearance or dose moves whole groups by far more than this.
+stopifnot(
+  nrow(sim_med) == 39,
+  abs(median(sim_med$pct_diff[ped])) < 20,
+  quantile(abs(sim_med$pct_diff[ped]), 0.9) < 30,
+  abs(median(sim_med$pct_diff[!ped])) < 25
+)
+
+# The quantity behind the dosing recommendation: exposure relative to adults
+# at the same dose. Children under 40 kg have the highest exposure (about 20%
+# above the next group, so the ordering is robust); the gaps between
+# children >= 40 kg, adolescents and adults are smaller than the cohort noise of
+# a 200-subject median, so those are compared as ratios, not as an ordering.
+auc45 <- sim_med |>
+  dplyr::filter(PPTESTCD == "auclast", treatment == "4.5 mg") |>
+  dplyr::select(group, sim, ref) |>
+  dplyr::mutate(sim_ratio = sim / sim[group == "Adults"],
+                ref_ratio = ref / ref[group == "Adults"])
+stopifnot(
+  auc45$sim[auc45$group == "Children (<40 kg)"] == max(auc45$sim),
+  all(abs(auc45$sim_ratio - auc45$ref_ratio) < 0.2)
+)
+auc45 |>
+  dplyr::rename("Group" = group, "Simulated AUC (nM*h)" = sim, "Table S1 AUC (nM*h)" = ref,
+                "Simulated ratio to adults" = sim_ratio, "Table S1 ratio to adults" = ref_ratio) |>
+  knitr::kable(digits = 2, caption = "4.5 mg once daily: median total CAR AUCtau,ss relative to adults.")
+```
+
+# Titration (replicates Figure 3)
+
+Figure 3 titrates the pediatric groups with 0.5 mg on days 1-2, 1.5 mg on
+days 3-4, 3 mg on days 5-7 and 4.5 mg from day 8, and the adults with 1.5 mg on
+day 1, 3 mg on days 2-4, 4.5 mg on days 5-7 and 6 mg from day 8 (the dose labels
+printed in the Figure 3 insets), for 42 days.
+
+```{r titration, fig.height = 6}
+amts_ped <- c(0.5, 0.5, 1.5, 1.5, 3, 3, 3, rep(4.5, 35))
+amts_adu <- c(1.5, 3, 3, 3, 4.5, 4.5, 4.5, rep(6, 35))
+# Troughs are sampled 0.01 h before each dose: a sample at the dose time
+# itself already sees the post-first-dose volumes.
+trough_times <- 1:41 * 24 - 0.01
+obs_tit <- sort(c(seq(0, 42 * 24, by = 2), trough_times))
+tit_events <- dplyr::bind_rows(lapply(seq_along(grp_levels), function(k) {
+  g <- grp_levels[k]
+  coh <- cohorts[cohorts$group == g, ]
+  amts <- if (g == "Adults") amts_adu else amts_ped
+  dplyr::bind_rows(lapply(seq_len(n_sub), function(i) {
+    make_events((k - 1L) * n_sub + i, seq(0, 41 * 24, by = 24), amts, obs_tit, coh[i, -1])
+  })) |>
+    dplyr::mutate(group = g)
+}))
+tit_sim <- dplyr::bind_rows(
+  rxode2::rxSolve(mod, dplyr::filter(tit_events, group != "Adults"), keep = "group",
+                  returnType = "data.frame"),
+  rxode2::rxSolve(mod_adult,
+                  dplyr::filter(tit_events, group == "Adults") |>
+                    dplyr::select(-STUDY_CARIPRAZINE_FULLPROFILE),
+                  keep = "group", returnType = "data.frame")
+) |>
+  to_nM()
+tit_sum <- tit_sim |>
+  dplyr::group_by(group, time) |>
+  dplyr::summarise(Q05 = quantile(Total, 0.05), Q50 = median(Total),
+                   Q95 = quantile(Total, 0.95), .groups = "drop")
+ped_panels <- dplyr::bind_rows(lapply(grp_levels[-1], function(g) {
+  dplyr::bind_rows(
+    tit_sum |> dplyr::filter(group == g) |> dplyr::mutate(series = g),
+    tit_sum |> dplyr::filter(group == "Adults") |> dplyr::mutate(series = "Adults (6 mg)")
+  ) |>
+    dplyr::mutate(panel = g)
+}))
+ggplot(ped_panels, aes(time / 24, Q50, colour = series, fill = series)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.2, colour = NA) +
+  geom_line() +
+  facet_wrap(~panel, ncol = 1) +
+  labs(x = "Time (day)", y = "Total CAR (nM)", colour = NULL, fill = NULL,
+       title = "Total CAR during titration (median, 5th-95th percentile)",
+       caption = "Replicates Figure 3 of Ismaeil 2026.")
+```
+
+```{r titration-check}
+# During titration (days 1-7) the lower pediatric doses keep the median total
+# CAR below the adult median at every daily trough, as the paper reports.
+trough_days <- tit_sum |>
+  dplyr::filter(time %in% trough_times[1:7]) |>
+  dplyr::select(group, time, Q50) |>
+  tidyr::pivot_wider(names_from = group, values_from = Q50)
+stopifnot(
+  all(trough_days[["Adolescents"]] < trough_days[["Adults"]]),
+  all(trough_days[["Children (<40 kg)"]] < trough_days[["Adults"]]),
+  all(trough_days[["Children (>=40 kg)"]] < trough_days[["Adults"]])
+)
+trough_days |>
+  dplyr::mutate(time = round(time / 24)) |>
+  dplyr::rename("Day" = time) |>
+  knitr::kable(digits = 1, caption = "Median total CAR (nM) at the end of each titration day.")
+```
+
+# Simulated concentrations with residual error
+
+A short check that the full-profile residual error is active: concentrations
+of 200 adolescents at 4.5 mg on day 42, with the individual prediction (`Cc`)
+and the simulated observation (`sim`) for cariprazine.
+
+```{r residual}
+ev_res <- ss_events |> dplyr::filter(group == "Adolescents", treatment == "4.5 mg")
+res_sim <- rxode2::rxSolve(mod, ev_res, returnType = "data.frame") |>
+  dplyr::filter(CMT == 10)
+rel_err <- log(res_sim$sim / res_sim$Cc)
+# A proportional SD of 0.107 gives a log-ratio SD close to 0.107.
+stopifnot(abs(sd(rel_err[is.finite(rel_err)]) - 0.107) < 0.02)
+```
+
+# Assumptions and deviations
+
+- **Residual errors are read as standard deviations.** Tables 3-5 print the
+  proportional errors without a scale. They sit in the parameter table with
+  %RSE and confidence intervals, as error terms coded on a `THETA` usually do,
+  while the IIV is printed as variances alongside a %CV column. The width of
+  the printed confidence intervals also fits an SD better: relative to the
+  estimate they are 1.3-1.6 times the minimum width an SD estimated from 1270-
+  1570 observations can have, whereas a variance would need intervals 0.65-0.8
+  times its minimum width. The values are therefore encoded as SDs.
+- **Which studies are "full profile studies".** The re-estimated residual
+  errors apply to "full profile studies"; the fixed values are the adult
+  model's errors for the other studies (Periclou 2021 estimated residual
+  variability separately for phase 1 and phase 2/3 studies but did not print
+  it). Both pediatric studies are full-profile studies, so every observation of
+  the model-development data carries `STUDY_CARIPRAZINE_FULLPROFILE = 1`.
+- **Table 5 'Proportional error DCAR (fixed)'** is listed in the DDCAR table,
+  next to the DDCAR full-profile error; it is taken as the fixed DDCAR error of
+  the other studies.
+- **DDCAR age effect.** Table 5 lists a power of DDCAR `Vc/F` on age fixed to
+  0, with no reference age. It has no effect and is not encoded; age is
+  recorded under `covariatesDataExcluded`.
+- **Units printed in Table 3.** `Q3/F` is printed in L and `DUR` as "DUR/F, h";
+  they are a clearance in L/h and a duration in h, as in Periclou 2021.
+- **Model structure from Periclou 2021.** Ismaeil 2026 describes the structure
+  in prose and fixes every structural value to the adult model; the equations
+  (zero-order input into the depot, transit-delayed DDCAR formation, the
+  first-dose indicator) follow Periclou 2021, as in `Periclou_2021_cariprazine`.
+  The first-dose shift is built from `dosenum()` and switches off at the second
+  dose; a sample drawn at the exact time of the second dose already sees the
+  later-dose volumes, so the titration troughs are taken 0.01 h before each
+  dose.
+- **Mass chain.** Metabolite formation is amount for amount in mg of dose and
+  the metabolite parameters are apparent, as in the adult model.
+- **Steady-state exposure sits about 11% above Table S1.** The pediatric
+  medians are 2-18% above Table S1. The adult legacy model shows the same
+  offset under the same simulation, 7-15% above the adult rows of Table S1, and
+  the `Periclou_2021_cariprazine` article finds that model 8-15% above
+  Periclou 2021 Table 3. The offset is therefore shared with the adult
+  structure (the metabolite molar conversion and the authors' use of the
+  observed adult dataset are possible sources), and the pediatric-to-adult
+  exposure ratios that drove the dosing decision agree within about 0.06.
+  The simulated gap between children of at least 40 kg and adolescents is
+  smaller than in Table S1 (ratios to adults 1.15 vs 1.13 here, 1.17 vs 1.09
+  in Table S1).
+- **Virtual cohort.** Weight is drawn from log-normal distributions anchored to
+  the Table S1 split at 40 kg and weight ranges rather than from the CDC LMS
+  tables the paper used; the adolescent median of 55 kg is an assumption. Sex
+  and race follow the adult proportions, as in the paper. No correlation
+  between weight, sex and race is imposed.
+- **Adult titration.** Table 1 prints 1.5 mg on days 1-2 and 3 mg on days 3-4
+  for adults, while the text and the Figure 3 insets give 1.5 mg on day 1 and
+  3 mg from day 2; Figure 3 is replicated with the inset doses.
+- **IIV.** Off-diagonal elements are not reported; the random effects are
+  independent.
+- **Errata.** No correction to this article is listed in Europe PMC as of
+  2026-11-14.

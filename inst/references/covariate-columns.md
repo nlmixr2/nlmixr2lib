@@ -23063,6 +23063,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Tomita_2022_imeglimin.R` (log-scale residual SD 0.190 in phase I vs 0.359 in phase II / III post-dose samples; pre-dose samples use 0.505 via `SAMPLE_PREDOSE`).
 - **Notes:** Member of the `STUDY_<id>` family; same role as `STUDY_NIPOCALIMAB_PHASE1`.
 
+### STUDY_CARIPRAZINE_FULLPROFILE (**canonical for the cariprazine full-profile-sampling study indicator in the Ismaeil 2026 pediatric analysis**)
+- **Description:** 1 = the observation comes from a cariprazine study with full-profile PK sampling (both phase 1 pediatric studies of Ismaeil 2026); 0 = a study without full-profile sampling (the sparse-sampling adult studies behind the Periclou 2021 model, whose residual error Ismaeil 2026 keeps fixed). Used to switch the proportional residual-error magnitude of cariprazine, DCAR and DDCAR.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (sparse-sampling study).
+- **Source aliases:** derived per subject from the study design (Ismaeil 2026 Tables 3-5 'Proportional error full profile studies' vs 'Proportional error (fixed)').
+- **Example models:** `Ismaeil_2026_cariprazine.R` (proportional residual SD 0.107 / 0.0688 / 0.0470 for cariprazine / DCAR / DDCAR in full-profile studies vs 0.154 / 0.141 / 0.0875 fixed for the other studies).
+- **Notes:** Member of the `STUDY_<id>` family. A study-level indicator, so pre-dose samples of a full-profile study carry 1; this is why `SAMPLE_INTENSIVE` (per-observation sampling window) does not apply. Every observation of the Ismaeil 2026 model-development dataset carries 1.
+
 ### STUDY_WX0593_002 (**canonical for the WX-0593-002 food-effect crossover study cohort indicator in the Yang 2025 iruplinalkib pooled analysis**)
 - **Description:** 1 = the observation record originates from WX-0593-002 (CTR20190737), the randomized two-period crossover food-effect study in 16 healthy Chinese volunteers dosed 120 mg fasted then fed (or the reverse) with a 7-day washout; 0 = the record originates from one of the three solid-tumor studies in the pooled analysis (WX-0593-001 phase 1 dose escalation/expansion, WX-0593-003 single-arm phase 2, WX-0593-004 randomized phase 3; 376 subjects). In the earlier two-study analysis (`Yang_2025b_iruplinalkib.R`) the only other study is WX-0593-001, so 0 = WX-0593-001. Used to switch the proportional residual-error magnitude between the two study groups.
 - **Units:** (binary)
