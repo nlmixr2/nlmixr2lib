@@ -13076,7 +13076,7 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Source aliases:**
   - `Number of prior regimens: >2` -- Inoue 2025 Tables S4-S10. **Off-by-one applies**: more than two prior regimens means fourth line or later.
   - `LINE == "4L+"` / `Number of prior lines of therapy: >=4` -- direct mapping, no arithmetic.
-- **Example models:** `Inoue_2025_valemetostat_orr_bicr.R`, `Inoue_2025_valemetostat_anemia.R`, `Inoue_2025_valemetostat_neutropenia.R`, `Inoue_2025_valemetostat_thrombocytopenia.R`, `Inoue_2025_valemetostat_teae_grade3.R`, `Inoue_2025_valemetostat_dose_reduction.R`, `Inoue_2025_valemetostat_dose_interruption.R` (all seven carry it as a main effect on the logit and an interaction on the exposure slope).
+- **Example models:** `Inoue_2025_valemetostat_orr_bicr.R`, `Inoue_2025_valemetostat_anemia.R`, `Inoue_2025_valemetostat_neutropenia.R`, `Inoue_2025_valemetostat_thrombocytopenia.R`, `Inoue_2025_valemetostat_teae_grade3.R`, `Inoue_2025_valemetostat_dose_reduction.R`, `Inoue_2025_valemetostat_dose_interruption.R` (all seven carry it as a main effect on the logit and an interaction on the exposure slope); `Chudasama_2026_enfortumab.R` (proportional change `(1 + 0.354 * LINE_4L_PLUS)` on the tumor growth rate; the source column PTHRALL2N codes >= 3 prior lines in all settings against 0-2 prior lines, so its reference level pools zero, one and two prior lines).
 - **Notes:** See `LINE_3L` for the full off-by-one warning, the `N prior regimens -> line N + 1` mapping rule and the 2026-09-11 naming ratification; the same caveats apply here. This indicator is open-ended on the right, so it pools 4L, 5L and beyond -- if a future source estimates separate effects for those, register a further parallel canonical (`LINE_5L_PLUS`, or explicit `LINE_4L` / `LINE_5L`) rather than redefining this one, following the precedent `LINE_1L` set.
 
 ### LINE_4L (**canonical for fourth-line-therapy indicator**)
@@ -21257,6 +21257,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `OHanlon_2024_milrinone.R` (founding example; selects the batch-2 combined residual error, CV 0.332 and SD 7.86 ug/L, in place of the batch-1 CV 0.382 and SD 34.8 ug/L for plasma milrinone by LC-MS, LLOQ 5 ug/L in both batches).
 - **Notes:** Ratified by the maintainers 2026-11-06 as a member of the `ASSAY_<method>` family. Distinct from every other `ASSAY_` entry, which contrasts two different analytical METHODS or platforms; here the method is identical and only the run series differs, so the indicator carries measurement precision, never a concentration-scale bias. Distinct from a `STUDY_<id>` indicator because both batches belong to one study. Enters the residual-error model only; a simulation of a new population sets it to 0. A model that pools a second study measured by a different method keeps that study on its own indicator (in the founding model `STUDY_PARADISIS2007`), and `ASSAY_BATCH2` must then be 0 for that study's rows.
 
+### ASSAY_LAB_INTERTEK (**canonical for the Intertek-vs-other bioanalytical laboratory indicator**)
+- **Description:** 1 = drug concentrations quantified by the Intertek bioanalytical laboratory; 0 = quantified by the other laboratory used in the pooled analysis. Per-subject (per-sample in principle).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the non-Intertek laboratory).
+- **Source aliases:**
+  - `Analytic laboratory (Intertek)` -- Zuo 2024 (Clin Pharmacol Ther 116:1278) Table 1 row label.
+- **Example models:** `Chudasama_2026_enfortumab.R` (proportional change `(1 - 0.355 * ASSAY_LAB_INTERTEK)` on the second peripheral volume V3 of the conjugated ADC, inherited from the Zuo 2024 final population PK model).
+- **Notes:** A bioanalytical-site effect, not a patient property: simulations of new patients set it to 0. Distinct from the method-contrast `ASSAY_<method>` entries (`ASSAY_LCMSMS`, `ASSAY_OSA`) because the same ligand-binding assay is assumed at both sites, and from `ASSAY_OSA_LOCAL` (local versus central laboratory). The `ASSAY_LAB_<site>` form is a proposed family for a named laboratory.
+
 ### TRACER_TC99M_DTPA (**canonical for the 99mTc-DTPA-vs-51Cr-EDTA exogenous GFR-tracer identity indicator**)
 - **Description:** 1 = the record's administered exogenous glomerular-filtration tracer is technetium-99m diethylenetriaminepentaacetate (99mTc-DTPA); 0 = chromium-51 ethylenediaminetetraacetate (51Cr-EDTA). Per-record (per-occasion) binary covariate identifying which tracer compound a plasma-concentration record and its PK parameters belong to, when a population analysis fits two exogenous GFR tracers simultaneously in order to estimate the systematic bias between their measured clearances.
 - **Units:** (binary)
@@ -21300,6 +21311,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `CSGRPN` -- Wojciechowski 2025 ESM control stream run57.mod (`CSGRPN` = 1, 2, 3 for processes 1-3; 0 for observations not associated with gene therapy); `FORM_FIDANACOGENE_PROCESS1 = as.integer(CSGRPN == 1)`, `FORM_FIDANACOGENE_PROCESS2 = as.integer(CSGRPN == 2)`.
 - **Example models:** `Wojciechowski_2025_fidanacogeneElaparvovec.R` (fractional effects on the FIX synthesis rate constant: `ksyn * (1 + 0.356 * FORM_FIDANACOGENE_PROCESS1 + 0.658 * FORM_FIDANACOGENE_PROCESS2)`, Table 2).
 - **Notes:** A manufacturing-process comparability indicator in the same family as `FORM_LEC_PROCESSB`. The drug token is spelled out (`FIDANACOGENE`) rather than abbreviated. Set both to 0 to simulate the commercial product. Processes 1 and 2 shorten the time to peak FIX activity (19.1% and 30.5% earlier) without changing the 15-year AUC (Wojciechowski 2025 Results).
+
+### FORM_ENFORTUMAB_PROCESSA (**canonical for enfortumab vedotin manufacturing process A drug-product indicator**)
+- **Description:** 1 = enfortumab vedotin drug product manufactured by process A; 0 = the other manufacturing process. Per-subject in the founding analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the non-A manufacturing process, which is the reference population of Zuo 2024 Figure 2).
+- **Source aliases:**
+  - `Manufacturer process (A)` -- Zuo 2024 (Clin Pharmacol Ther 116:1278) Table 1 row label.
+- **Example models:** `Chudasama_2026_enfortumab.R` (proportional change `(1 - 0.110 * FORM_ENFORTUMAB_PROCESSA)` on the conjugated-ADC clearance, inherited from the Zuo 2024 final population PK model).
+- **Notes:** A manufacturing-process comparability indicator in the same family as `FORM_LEC_PROCESSB` and `FORM_FIDANACOGENE_PROCESS1`. Zuo 2024 does not name the other process or say which one is commercial; set 0 to simulate the reference material.
 
 ### FORM_NALIRI_PREVSITE (**canonical for the liposomal irinotecan previous-manufacturing-site drug-product indicator**)
 - **Description:** 1 = liposomal irinotecan (nal-IRI, irinotecan liposome injection) manufactured at the PREVIOUS manufacturing site; 0 = product from the current commercial site. Per-subject in the founding analysis: previous-site material was used in phase I studies conducted before 2012, current-site material in all pivotal studies (NAPOLI-1, NCT02551991).
