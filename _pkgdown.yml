@@ -418,6 +418,8 @@ navbar:
         href: articles/Bardhi_2026_ampicillin_foal.html
       - text: "Ampicillin sulbactam (Soto 2014)"
         href: articles/Soto_2014_ampicillin_sulbactam.html
+      - text: "Amrubicin (Makino 2026)"
+        href: articles/Makino_2026_amrubicin.html
       - text: "Amyloid (vanMaanen 2025)"
         href: articles/vanMaanen_2025_amyloid.html
       - text: "Anacetrapib (Krishna 2011)"
@@ -11022,6 +11024,7 @@ articles:
   - articles/Majekodunmi_2017_HIV_HCV_CD4_recovery
   - articles/Majid_2024_lecanemab
   - articles/Majid_2024_lenvatinib
+  - articles/Makino_2026_amrubicin
   - articles/Maleki_2024_brepocitinib
   - articles/Mallick_2020_pyrethroids
   - articles/Mandema_2005_gemcabene_mbma
