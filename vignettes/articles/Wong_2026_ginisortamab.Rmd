@@ -1,0 +1,542 @@
+---
+title: "Ginisortamab (Wong 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ginisortamab (Wong 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Wong_2026_ginisortamab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Wong_2026_ginisortamab"))$description`
+* Article: <https://doi.org/10.1002/bcp.70567> (open access; the Supporting
+  Information holds the NONMEM control stream of the final model, Tables S1-S3
+  and Figures S1-S3)
+
+Ginisortamab is a human IgG monoclonal antibody that binds gremlin-1, a bone
+morphogenetic protein (BMP) antagonist, and restores BMP signalling. The model
+describes serum free ginisortamab and serum total gremlin-1 with a
+two-compartment, quasi-steady-state target-mediated drug disposition
+(TMDD-QSS) model, and is used to predict suppression of free gremlin-1.
+
+# Population
+
+The model was fitted to 25 adults with recurrent or metastatic advanced solid
+tumours associated with GREM1 mRNA expression in the monotherapy
+dose-escalation module of the first-in-human ONC001 study (NCT04393298, UK
+sites). Participants received ginisortamab 100, 250, 500, 1000 or 2000 mg as a
+60-min intravenous infusion every 2 weeks (Q2W). Median age was 64 years
+(range 37-74), 32% were female, median weight 69 kg (46-116), median BMI
+24 kg/m^2 (19-36) and median body surface area (BSA) 1.8 m^2 (1.4-2.4); 92%
+were White. The most common tumours were colorectal (11/25), pancreatic (6/25)
+and prostate (3/25) adenocarcinoma. All participants were anti-drug-antibody
+negative. The analysis used 371 ginisortamab and 270 total gremlin-1 serum
+concentrations (Wong 2026 Table S1 and Table S2).
+
+The same information is available programmatically via
+`readModelDb("Wong_2026_ginisortamab")()$population`.
+
+# Source trace
+
+Every value below is the NONMEM final estimate in Wong 2026 Table 1. The
+equations are those of the Supporting Information control stream (`$PK`,
+`$DES`, `$ERROR`), which agree with the Figure 2 equations.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL) | log(0.433 L/day) | Table 1 |
+| `lvc` (Vc at BSA 2 m^2) | log(4.38 L) | Table 1 |
+| `lq` (Q) | log(0.849 L/day) | Table 1 |
+| `lvp` (Vp at BSA 2 m^2) | log(3.23 L) | Table 1 |
+| `e_bsa_vc` | 1.31 | Table 1; Figure 2 `(BSA/2)^1.3`; control stream `THETA(9)` |
+| `e_bsa_vp` | 2.18 | Table 1; Figure 2 `(BSA/2)^2.2`; control stream `THETA(10)` |
+| `lksyn` (Ksyn) | log(0.378 nmol/L/day) | Table 1 |
+| `lkdeg` (Kdeg) | log(61.8 1/day) | Table 1 |
+| `lkss` (Kss) | log(7.59 nmol/L) | Table 1 |
+| `lkint` (Kint) | log(3.23 1/day) | Table 1 |
+| `etalcl` | 0.051112 (22.9% CV) | Table 1; omega = log(1 + CV^2) per the Table 1 note |
+| `etalvc`, `etalvp` block | 0.016504, 0.027092, 0.047265 (12.9% and 22.0% CV, r = 0.97) | Table 1; control stream `$OMEGA BLOCK(2)` |
+| `etalkdeg` | 0.13555 (38.1% CV) | Table 1 |
+| `etalkint` | 0.26767 (55.4% CV) | Table 1 |
+| `propSd` | 0.108 | Table 1, RUV ginisortamab 10.8% |
+| `propSd_Ctotal_target` | 0.356 | Table 1, RUV total gremlin-1 35.6% |
+| `mw` = 150000 g/mol | - | control stream `$PK` (`MW = 150000`) |
+| Free drug `cfree` (QSS root) | - | control stream `$DES` `CONC` |
+| `d/dt(central)`, `d/dt(peripheral1)`, `d/dt(total_target)` | - | control stream `$DES` `DADT(1)`-`DADT(3)` |
+| `total_target(0) = Ksyn/Kdeg` | - | control stream `$PK` (`A_0(3) = BLR`) |
+| `Cc = cfree` (ug/mL), `Ctotal_target = total_target * MW/1000` (ng/mL) | - | control stream `$ERROR` (`IPRED`) |
+| `tfree`, `target_suppression` | - | control stream `$ERROR` (`TFREE`); Methods, Modelling and simulation approaches |
+
+# Typical-value checks
+
+The paper reports a typical terminal half-life of about 13.3 days and a
+gremlin-1 turnover time (1/Kdeg) of about 23 min (Results, Population PK/PD
+model evaluation). Baseline total gremlin-1 is Ksyn/Kdeg, read on the ng/mL
+scale with the control stream's conversion factor; Figure 1B shows pre-dose
+total gremlin-1 near 1 ng/mL.
+
+```{r typical-checks}
+mod <- readModelDb("Wong_2026_ginisortamab")
+ui <- rxode2::rxode(mod)
+th <- ui$theta
+
+cl <- exp(th[["lcl"]])
+vc <- exp(th[["lvc"]])
+q <- exp(th[["lq"]])
+vp <- exp(th[["lvp"]])
+kel <- cl / vc
+k12 <- q / vc
+k21 <- q / vp
+beta <- 0.5 * (k12 + k21 + kel - sqrt((k12 + k21 + kel)^2 - 4 * k21 * kel))
+thalf_beta <- log(2) / beta
+turnover_min <- 1 / exp(th[["lkdeg"]]) * 24 * 60
+baseline_ngml <- exp(th[["lksyn"]]) / exp(th[["lkdeg"]]) * 150000 / 1000
+
+typical <- data.frame(
+  Quantity = c(
+    "Terminal half-life (day)",
+    "Gremlin-1 turnover time 1/Kdeg (min)",
+    "Baseline total gremlin-1 (ng/mL)"
+  ),
+  Model = signif(c(thalf_beta, turnover_min, baseline_ngml), 3),
+  Paper = c("~13.3", "~23", "~1 (Figure 1B, pre-dose)")
+)
+knitr::kable(typical, caption = "Closed-form typical values at BSA = 2 m^2.")
+
+stopifnot(
+  # Closed form from the published thetas; the paper's ~13.3 days is the
+  # typical subject in its own covariate set, so allow a few percent.
+  abs(thalf_beta / 13.3 - 1) < 0.05,
+  abs(turnover_min / 23 - 1) < 0.05,
+  baseline_ngml > 0.5, baseline_ngml < 2
+)
+```
+
+# Virtual cohort
+
+The published simulations used 1000 virtual subjects per regimen with BSA
+resampled from the ONC001 participants. The individual BSA values are not
+published, so BSA is drawn here from a log-normal distribution with median
+1.8 m^2 truncated to the observed range 1.4-2.4 m^2 (Table S1). Each regimen
+has 200 subjects.
+
+Nine regimens are simulated, as in Table 2 and Table S3: the five
+dose-escalation regimens (100-2000 mg Q2W, 60-min infusion, six 28-day
+cycles), the hypothetical 1000 mg once-weekly (QW) regimen (60-min infusion,
+six 28-day cycles), and the three dose-optimisation regimens (2000 mg Q2W
+30-min infusion, six 28-day cycles; 3000 mg Q3W 90-min infusion, eight 21-day
+cycles; 4000 mg Q4W 120-min infusion, six 28-day cycles).
+
+```{r cohort}
+set.seed(20260430)
+rxode2::rxSetSeed(20260430)
+
+regimens <- tibble::tribble(
+  ~regimen,               ~dose, ~tau, ~n_dose, ~inf_min,
+  "100 mg Q2W, 60 min",     100,   14,      12,       60,
+  "250 mg Q2W, 60 min",     250,   14,      12,       60,
+  "500 mg Q2W, 60 min",     500,   14,      12,       60,
+  "1000 mg Q2W, 60 min",   1000,   14,      12,       60,
+  "2000 mg Q2W, 60 min",   2000,   14,      12,       60,
+  "1000 mg QW, 60 min",    1000,    7,      24,       60,
+  "2000 mg Q2W, 30 min",   2000,   14,      12,       30,
+  "3000 mg Q3W, 90 min",   3000,   21,       8,       90,
+  "4000 mg Q4W, 120 min",  4000,   28,       6,      120
+) |>
+  mutate(
+    dur = inf_min / 60 / 24,
+    t_last = (n_dose - 1) * tau
+  )
+
+n_per_regimen <- 200L
+
+sample_bsa <- function(n) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- rlnorm(2 * n, meanlog = log(1.8), sdlog = 0.12)
+    out <- c(out, x[x >= 1.4 & x <= 2.4])
+  }
+  out[seq_len(n)]
+}
+
+make_regimen <- function(i, n, id_offset) {
+  r <- regimens[i, ]
+  ids <- id_offset + seq_len(n)
+  dose_times <- (seq_len(r$n_dose) - 1) * r$tau
+  obs_times <- sort(unique(round(c(
+    seq(0, r$t_last + 70, by = 0.5),
+    seq(0, r$tau, by = 0.1),
+    seq(r$t_last, r$t_last + r$tau, by = 0.1),
+    r$dur,
+    r$t_last + r$dur
+  ), 6)))
+  subj <- tibble(id = ids, BSA = sample_bsa(n), regimen = r$regimen)
+  doses <- tidyr::crossing(subj, time = dose_times) |>
+    mutate(evid = 1L, amt = r$dose, dur = r$dur, cmt = "central", dvid = NA_integer_)
+  obs <- tidyr::crossing(subj, time = obs_times) |>
+    mutate(evid = 0L, amt = 0, dur = 0, cmt = "central", dvid = 1L)
+  bind_rows(doses, obs)
+}
+
+events <- bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+  make_regimen(i, n_per_regimen, id_offset = (i - 1L) * n_per_regimen)
+})) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
+```
+
+# Simulation
+
+The model has two endpoints (free ginisortamab `Cc` and total gremlin-1
+`Ctotal_target`), so observation rows carry `dvid = 1` on the `central` state;
+rxode2 returns every output column on every observation row.
+
+```{r simulate}
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep = c("regimen", "BSA"),
+  returnType = "data.frame"
+) |>
+  left_join(regimens |> select(regimen, tau, t_last, dur), by = "regimen") |>
+  mutate(regimen = factor(regimen, levels = regimens$regimen))
+```
+
+# Replicate published figures
+
+```{r figure-1, fig.height = 7}
+# Replicates Figure 1 of Wong 2026: free ginisortamab (A) and total gremlin-1
+# (B) by dose for the dose-escalation regimens (simulated median and 5th-95th
+# percentiles; the figure shows observed data and their medians).
+esc <- sim |>
+  filter(grepl("Q2W, 60 min", regimen)) |>
+  mutate(dose = factor(sub(" Q2W.*", "", regimen), levels = paste(c(100, 250, 500, 1000, 2000), "mg")))
+
+pa <- esc |>
+  filter(time >= 1 / 24, time <= 98) |>
+  group_by(dose, time) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50, colour = dose, fill = dose)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.15, colour = NA) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time since first dose (days)", y = "Free ginisortamab (ug/mL)",
+       colour = "Dose", fill = "Dose",
+       title = "Figure 1A - ginisortamab serum concentration")
+
+pb <- esc |>
+  filter(time <= 14) |>
+  group_by(dose, time) |>
+  summarise(
+    Q05 = quantile(Ctotal_target, 0.05), Q50 = median(Ctotal_target),
+    Q95 = quantile(Ctotal_target, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50, colour = dose, fill = dose)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.15, colour = NA) +
+  geom_line() +
+  labs(x = "Time since first dose (days)", y = "Total gremlin-1 (ng/mL)",
+       colour = "Dose", fill = "Dose",
+       title = "Figure 1B - total gremlin-1 serum concentration",
+       caption = "Replicates Figure 1 of Wong 2026 (simulated median and 90% interval).")
+
+print(pa)
+print(pb)
+```
+
+The simulated median total gremlin-1 rises within a day from about 1 ng/mL
+to about 8 ng/mL at 100 mg and about 17 ng/mL at 2000 mg, and stays higher at
+the higher doses through the dosing interval, as in Figure 1B: once gremlin-1
+is bound, its loss is governed by Kint (3.23/day) rather than by the much
+faster Kdeg (61.8/day).
+
+```{r figure-5, fig.height = 6}
+# Replicates Figure 5 of Wong 2026: predicted percent gremlin-1 suppression
+# over six 28-day cycles of the dose-escalation regimens.
+esc |>
+  filter(time <= 168) |>
+  group_by(dose, time) |>
+  summarise(
+    Q05 = quantile(target_suppression, 0.05),
+    Q50 = median(target_suppression),
+    Q95 = quantile(target_suppression, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), fill = "steelblue", alpha = 0.3) +
+  geom_line() +
+  facet_wrap(~dose, ncol = 2) +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(x = "Time (days)", y = "Target suppression (%)",
+       title = "Figure 5 - gremlin-1 suppression, dose-escalation regimens",
+       caption = "Replicates Figure 5 of Wong 2026 (median and 90% prediction interval).")
+```
+
+```{r figure-6}
+# Replicates Figure 6 of Wong 2026: median suppression from the start of the
+# last 28-day cycle (doses at 140 and 154 days) through washout.
+esc |>
+  filter(time >= 140, time <= 140 + 84) |>
+  group_by(dose, time) |>
+  summarise(Q50 = median(target_suppression), .groups = "drop") |>
+  ggplot(aes(time - 140, Q50, colour = dose)) +
+  geom_line() +
+  scale_x_continuous(breaks = seq(0, 84, by = 14)) +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(x = "Time since start of last cycle (days)", y = "Target suppression (%)",
+       colour = "Dose",
+       title = "Figure 6 - median suppression after repeated dosing",
+       caption = "Replicates Figure 6 of Wong 2026.")
+```
+
+# Target suppression against Table 2
+
+Table 2 reports the median (90% prediction interval) suppression at the end
+of the dosing interval and the maximum suppression within the interval, after
+the first dose and after the last dose (steady state).
+
+```{r table-2}
+supp <- bind_rows(
+  sim |>
+    filter(time >= 0, time <= tau) |>
+    mutate(period = "First dose"),
+  sim |>
+    filter(time >= t_last, time <= t_last + tau) |>
+    mutate(period = "Last dose")
+) |>
+  group_by(regimen, period, id) |>
+  summarise(
+    end = target_suppression[which.max(time)],
+    max = max(target_suppression),
+    .groups = "drop"
+  )
+
+supp_sim <- supp |>
+  group_by(regimen, period) |>
+  summarise(
+    end_med = median(end), end_lo = quantile(end, 0.05), end_hi = quantile(end, 0.95),
+    max_med = median(max), max_lo = quantile(max, 0.05), max_hi = quantile(max, 0.95),
+    .groups = "drop"
+  )
+
+supp_pub <- tibble::tribble(
+  ~regimen,               ~period,      ~end_pub, ~max_pub,
+  "100 mg Q2W, 60 min",   "First dose",       18,       87,
+  "250 mg Q2W, 60 min",   "First dose",       35,       94,
+  "500 mg Q2W, 60 min",   "First dose",       53,       97,
+  "1000 mg Q2W, 60 min",  "First dose",       69,       98,
+  "2000 mg Q2W, 60 min",  "First dose",       82,       99,
+  "1000 mg QW, 60 min",   "First dose",       77,       98,
+  "2000 mg Q2W, 30 min",  "First dose",       82,       99,
+  "3000 mg Q3W, 90 min",  "First dose",       81,       99,
+  "4000 mg Q4W, 120 min", "First dose",       80,       99,
+  "100 mg Q2W, 60 min",   "Last dose",        29,       77,
+  "250 mg Q2W, 60 min",   "Last dose",        51,       86,
+  "500 mg Q2W, 60 min",   "Last dose",        68,       91,
+  "1000 mg Q2W, 60 min",  "Last dose",        81,       95,
+  "2000 mg Q2W, 60 min",  "Last dose",        89,       97,
+  "1000 mg QW, 60 min",   "Last dose",        91,       96,
+  "2000 mg Q2W, 30 min",  "Last dose",        89,       97,
+  "3000 mg Q3W, 90 min",  "Last dose",        86,       98,
+  "4000 mg Q4W, 120 min", "Last dose",        83,       98
+)
+
+supp_cmp <- supp_pub |>
+  mutate(regimen = factor(regimen, levels = regimens$regimen)) |>
+  left_join(supp_sim, by = c("regimen", "period")) |>
+  mutate(d_end = end_med - end_pub, d_max = max_med - max_pub) |>
+  arrange(period, regimen)
+
+supp_cmp |>
+  transmute(
+    regimen, period,
+    end_sim = sprintf("%.0f (%.0f-%.0f)", end_med, end_lo, end_hi),
+    end_pub, d_end = round(d_end, 1),
+    max_sim = sprintf("%.0f (%.0f-%.0f)", max_med, max_lo, max_hi),
+    max_pub, d_max = round(d_max, 1)
+  ) |>
+  rename(
+    "Regimen" = regimen,
+    "Period" = period,
+    "End of interval, simulated (%)" = end_sim,
+    "End of interval, Table 2 (%)" = end_pub,
+    "Difference (points)" = d_end,
+    "Maximum, simulated (%)" = max_sim,
+    "Maximum, Table 2 (%)" = max_pub,
+    "Difference, max (points)" = d_max
+  ) |>
+  knitr::kable(caption = "Median (5th-95th percentile) simulated suppression against the Table 2 medians.")
+
+stopifnot(
+  # A mis-transcribed Kdeg, Kss, Kint or Ksyn moves these medians by tens of
+  # percentage points; the remaining gap is Monte Carlo error and the
+  # unpublished BSA sample.
+  abs(median(supp_cmp$d_end)) < 4,
+  max(abs(supp_cmp$d_end)) < 12,
+  max(abs(supp_cmp$d_max)) < 6
+)
+```
+
+# PKNCA validation
+
+Free ginisortamab exposure after the first dose and after the last dose is
+computed with PKNCA over each dosing interval and compared with the medians of
+Table S3. `cav` is AUCtau divided by tau, as defined in the paper.
+
+```{r pknca}
+nca_window <- bind_rows(
+  sim |> filter(time >= 0, time <= tau),
+  sim |> filter(time >= t_last, time <= t_last + tau)
+) |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, regimen) |>
+  mutate(regimen = as.character(regimen)) |>
+  distinct(id, time, .keep_all = TRUE) |>
+  arrange(id, time)
+
+conc_obj <- PKNCA::PKNCAconc(nca_window, Cc ~ time | regimen + id)
+
+dose_df <- events |>
+  filter(evid == 1) |>
+  select(id, time, amt, regimen)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id)
+
+# Table S3 Cmin is the end-of-interval trough. Over the first interval the
+# PKNCA minimum is the pre-dose zero, so the trough is read with `ctrough`
+# there; over the last interval the minimum is the trough, read with `cmin`.
+intervals <- bind_rows(
+  regimens |> transmute(regimen, start = 0, end = tau, ctrough = TRUE, cmin = FALSE),
+  regimens |> transmute(regimen, start = t_last, end = t_last + tau, ctrough = FALSE, cmin = TRUE)
+) |>
+  mutate(cmax = TRUE, auclast = TRUE, cav = TRUE)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_long <- as.data.frame(nca_res$result) |>
+  left_join(regimens |> select(regimen, t_last), by = "regimen") |>
+  mutate(
+    period = ifelse(start == 0, "First dose", "Last dose"),
+    PPTESTCD = ifelse(PPTESTCD == "ctrough", "cmin", PPTESTCD)
+  ) |>
+  filter(PPTESTCD %in% c("cmax", "cmin", "auclast", "cav")) |>
+  select(regimen, period, PPTESTCD, PPORRES)
+```
+
+## Comparison against published NCA
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~regimen,               ~period,       ~cmin,  ~cav,   ~cmax,   ~auclast,
+  "100 mg Q2W, 60 min",   "First dose",   5.05,  10.2,    28.7,    143.4,
+  "250 mg Q2W, 60 min",   "First dose",   12.7,  25.7,    71.9,    359.2,
+  "500 mg Q2W, 60 min",   "First dose",   25.5,  51.4,   143.7,    719.4,
+  "1000 mg Q2W, 60 min",  "First dose",   51.1, 102.8,   287.4,   1439.8,
+  "2000 mg Q2W, 60 min",  "First dose",  102.5, 205.8,   574.9,   2881.3,
+  "1000 mg QW, 60 min",   "First dose",  82.27, 140.5,   288.9,    983.6,
+  "2000 mg Q2W, 30 min",  "First dose",  102.7, 208.0,   583.5,   2912.0,
+  "3000 mg Q3W, 90 min",  "First dose",  105.5, 250.3,   855.2,   5256.3,
+  "4000 mg Q4W, 120 min", "First dose",   91.9, 278.0,  1117.9,   7784.8,
+  "100 mg Q2W, 60 min",   "Last dose",     9.4,  16.8,    40.2,    235.1,
+  "250 mg Q2W, 60 min",   "Last dose",    23.7,  42.2,   100.8,    590.8,
+  "500 mg Q2W, 60 min",   "Last dose",    47.5,  84.7,   201.9,   1185.5,
+  "1000 mg Q2W, 60 min",  "Last dose",    95.4, 169.9,   404.1,   2378.1,
+  "2000 mg Q2W, 60 min",  "Last dose",   191.2, 340.3,   808.7,   4764.0,
+  "1000 mg QW, 60 min",   "Last dose",   245.1, 343.5,   578.9,   2404.7,
+  "2000 mg Q2W, 30 min",  "Last dose",   192.4, 341.1,   822.8,   4774.8,
+  "3000 mg Q3W, 90 min",  "Last dose",   153.5, 346.8,  1039.9,   7282.6,
+  "4000 mg Q4W, 120 min", "Last dose",   115.5, 341.2,  1267.9,   9552.7
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_long,
+  reference = published,
+  by = c("regimen", "period"),
+  units = c(cmax = "ug/mL", cmin = "ug/mL", cav = "ug/mL", auclast = "ug*day/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated (median of 200 subjects) vs. Table S3 medians.",
+    "AUC is AUCtau over the dosing interval.",
+    if (!is.null(attr(cmp, "footnote"))) attr(cmp, "footnote") else ""
+  )
+)
+
+pct <- nca_long |>
+  group_by(regimen, period, PPTESTCD) |>
+  summarise(sim = median(PPORRES), .groups = "drop") |>
+  inner_join(
+    published |> pivot_longer(c(cmin, cav, cmax, auclast), names_to = "PPTESTCD", values_to = "ref"),
+    by = c("regimen", "period", "PPTESTCD")
+  ) |>
+  mutate(pct_diff = 100 * (sim / ref - 1))
+
+stopifnot(
+  # One row per regimen, period and parameter.
+  nrow(pct) == 72,
+  # AUC and Cav are governed by CL alone (no covariate on CL), so a
+  # mis-transcribed clearance or dose shifts them all together by tens of
+  # percent. The simulated medians sit about 4% below Table S3 (see text).
+  abs(median(pct$pct_diff[pct$PPTESTCD %in% c("auclast", "cav")])) < 10,
+  quantile(abs(pct$pct_diff), 0.9) < 20
+)
+```
+
+The AUC and Cav medians agree with Table S3 within about 7% across all nine
+regimens (typically about 4% low), and Cmin within about 6% after both the
+first and the last dose.
+Cmax runs about 8-14% below the Table S3 medians. Cmax depends on Vc and
+therefore on the BSA distribution, which the paper resampled from the
+individual ONC001 values that are not published; the virtual cohort here is
+centred at the Table S1 median of 1.8 m^2. A smaller BSA in the paper's
+resampled cohort would raise Cmax and, slightly, AUCtau, which fits the
+direction of both gaps. The parameters were not adjusted.
+
+# Assumptions and deviations
+
+- **Units and molecular weight.** The authors' control stream works in nmol and
+  nmol/L and converts both analytes to ng/mL with a molecular weight of
+  150000 g/mol (`IPRED = CONC1*(MW/1000)` for ginisortamab and
+  `IPRED = A(3)*(MW/1000)` for total gremlin-1). The packaged model takes doses
+  in mg, converts the central amount to nmol/L with the same 150 kDa factor,
+  returns free ginisortamab in ug/mL and total gremlin-1 in ng/mL with the
+  control stream's factor. Gremlin-1 is a far smaller protein than an IgG, so
+  Ksyn, Kss and the baseline are nominal nmol/L on that 150 kDa scale; they
+  reproduce the fitted ng/mL data (pre-dose total gremlin-1 about 1 ng/mL in
+  Figure 1B) and must be read back with the same factor.
+- **BSA centring.** The control stream and Figure 2 centre BSA at 2 m^2, and the
+  Results call 2 m^2 the participant median, but Table S1 reports a median of
+  1.8 m^2 (range 1.4-2.4). The fitted centring constant 2 m^2 is used.
+- **Virtual BSA distribution.** The paper resampled individual BSA values that
+  are not published; a log-normal (median 1.8 m^2, log-SD 0.12) truncated to
+  1.4-2.4 m^2 is used instead. Cmax is the metric most sensitive to this
+  choice.
+- **Cohort size.** 200 virtual subjects per regimen rather than the paper's
+  1000.
+- **Free drug.** The bridging assay measures free ginisortamab (Methods,
+  Sampling and bioanalytical methods), so `Cc` is the free concentration from
+  the QSS root, as in the control stream.
+- **Target suppression.** `target_suppression` is
+  `100 * (1 - tfree / (Ksyn/Kdeg))`, the percent change in free gremlin-1
+  relative to the individual model baseline (Methods, Modelling and simulation
+  approaches); free gremlin-1 is the control stream's `TFREE`.
+- No erratum or correction notice was found for this article (Europe PMC
+  search, 2026-11-15).
