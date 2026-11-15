@@ -3100,6 +3100,8 @@ navbar:
         href: articles/Irie_2021_favipiravir.html
       - text: "Favipiravir (Prasanchaimontri 2024)"
         href: articles/Prasanchaimontri_2024_favipiravir.html
+      - text: "Favipiravir (Yamada 2026)"
+        href: articles/Yamada_2026_favipiravir.html
       - text: "Fazpilodemab (Yoshida 2024)"
         href: articles/Yoshida_2024_fazpilodemab.html
       - text: "Febuxostat (Chen 2024)"
@@ -12261,6 +12263,7 @@ articles:
   - articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab
   - articles/Yamada_2025_oncolytic_virus_pembrolizumab
   - articles/Yamada_2025_zolbetuximab
+  - articles/Yamada_2026_favipiravir
   - articles/Yamaguchi_2024_cefiderocol
   - articles/Yamamoto_2017_cns_pbpk_rat
   - articles/Yamamoto_2023_tominersen
