@@ -7382,6 +7382,10 @@ navbar:
         href: articles/Wu_2023_SPI_62.html
       - text: "SR9009 qsp (Tseng 2025)"
         href: articles/Tseng_2025_SR9009.html
+      - text: "SYHA1805 human (Zhang 2026)"
+        href: articles/Zhang_2026_SYHA1805.html
+      - text: "SYHA1805 monkey (Zhang 2026)"
+        href: articles/Zhang_2026_SYHA1805.html
       - text: "Sabirnetug (Siemers 2025)"
         href: articles/Siemers_2025_sabirnetug.html
       - text: "Sacituzumab (Sathe 2024)"
@@ -12429,6 +12433,7 @@ articles:
   - articles/Zhang_2025_obesity_renal_clearance
   - articles/Zhang_2025_olanzapine
   - articles/Zhang_2025_remdesivir
+  - articles/Zhang_2026_SYHA1805
   - articles/Zhang_2026_linezolid
   - articles/Zhang_2026_ribociclib
   - articles/Zhang_2026_tebipenem
