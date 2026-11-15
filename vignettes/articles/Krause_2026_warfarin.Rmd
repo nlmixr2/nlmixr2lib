@@ -1,0 +1,697 @@
+---
+title: "Warfarin (Krause 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Warfarin (Krause 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Krause_2026_warfarin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Krause_2026_warfarin"))$description`
+* Article: <https://doi.org/10.1007/s10928-026-10053-8>
+
+Krause and Celliere (2026) is a tutorial on deriving pediatric doses from an
+adult population PK model by steady-state exposure matching. The worked example
+is an adult two-compartment warfarin model, fitted in Monolix to the single-dose
+O'Reilly warfarin dataset, with body weight on every clearance and volume
+through allometric exponents fixed to 0.75 and 1. That model is packaged here.
+The paper then uses it to find, for each body weight from 10 to 75 kg, the
+once-daily dose whose steady-state Cmax, Ctrough or AUC matches a 75 kg adult
+taking 10 mg once daily, and to turn those optimum doses into a dosing table
+under three strategies (best fit, conservative, progressive). This article
+repeats that whole workflow with the packaged model.
+
+The authors deposited their Monolix project, data and R/Simulx scripts, and
+the outputs those scripts produced, as Supplementary Material 2. Those outputs
+give exact reference values, and the checks below compare against them.
+
+# Population
+
+Thirty-two adults aged 21 to 63 years received a single oral warfarin loading
+dose of 1.5 mg/kg (60 to 153 mg). Plasma concentrations were measured at 1, 2,
+3, 6, 9 and 12 h after the dose in 14 subjects and at 24, 36, 48, 72, 96 and
+120 h in all subjects, 247 concentrations in total. The article prints no
+demographics table; from the deposited dataset, body weight ranged from 40 to
+102 kg (median 71.65 kg), median age was 27.5 years, and 5 of the 32 subjects
+(15.6%) were female.
+
+The same information is available programmatically:
+
+```{r population}
+readModelDb("Krause_2026_warfarin")()$population
+```
+
+# Source trace
+
+Every `ini()` value is the full-precision estimate in the deposited
+`populationParameters.txt` of the Monolix run
+`Warfarin-TwoCompLinPKAllomScalingBW`, the run named as the model in the
+deposited `101-Setup.R`. Table 2 of the article prints the same estimates
+rounded.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `ltlag` | log(0.7352) h | Table 2 tlag 0.74 h |
+| `lka` | log(0.9591) 1/h | Table 2 ka 0.96 1/h |
+| `lcl` | log(0.1393) L/h | Table 2 CL 0.14 L/h |
+| `lvc` | log(6.567) L | Table 2 Vc 6.57 L |
+| `lq` | log(3.839) L/h | Table 2 Q 3.84 L/h |
+| `lvp` | log(2.123) L | Table 2 Vp 2.12 L |
+| `e_wt_cl`, `e_wt_q` | 0.75, held constant | Table 2 beta CL / beta Q, body weight 0.75 |
+| `e_wt_vc`, `e_wt_vp` | 1, held constant | Table 2 beta Vc / beta Vp, body weight 1.00 |
+| `etaltlag` | 0.3108 (omega 0.557) | Table 2 tlag random-effect SD 0.56, 60.4 %CV |
+| `etalka` | 0.5458 (omega 0.739) | Table 2 ka random-effect SD 0.74, 85.2 %CV |
+| `etalcl` | 0.06821 (omega 0.261) | Table 2 CL random-effect SD 0.26, 26.6 %CV |
+| `etalvc` | 0.004829 (omega 0.0695) | Table 2 Vc random-effect SD 0.07, 7.00 %CV |
+| `etalq` | 6.210 (omega 2.49) | Table 2 Q random-effect SD 2.49, 2228.9 %CV |
+| `etalvp` | 0.2026 (omega 0.450) | Table 2 Vp random-effect SD 0.45, 47.4 %CV |
+| `addSd` | 0.2073 mg/L | Table 2 error parameter a 0.21 |
+| `propSd` | 0.04852 | Table 2 error parameter b 0.05 |
+| `(WT / 75)^e` on CL, Q, Vc, Vp | n/a | Supplementary Material 1, covariate equations; mlxtran `logtWt = log(wt/75)` |
+| `d/dt(depot)`, `d/dt(central)`, `d/dt(peripheral1)`, `alag(depot)` | n/a | Supplementary Material 1, Monolix `pkmodel(Tlag, ka, V, Cl, k12, k21)` with `k12 = Q/V1`, `k21 = Q/V2` |
+| `Cc ~ add(addSd) + prop(propSd) + combined1()` | n/a | mlxtran `errorModel = combined1(a1, b1)` |
+
+# Steady-state exposure of the typical subject
+
+The paper defines steady state as the 30th once-daily dose: exposure is taken
+over 696 to 720 h, with concentrations output every 0.2 h (deposited
+`101-Setup.R`). Cmax is the largest concentration in that window, Ctrough the
+last one (at 720 h, 24 h after the 30th dose) and AUC the integral over the
+window. Because the model is linear, exposure is proportional to dose, so one
+typical subject per weight on 1 mg once daily is enough; every other dose is a
+multiple of it.
+
+```{r typical-sim}
+mod <- readModelDb("Krause_2026_warfarin")
+mod_typ <- rxode2::zeroRe(mod)
+
+ss_window <- c(696, 720)
+dose_times <- seq(0, 696, by = 24)
+obs_times <- round(seq(ss_window[1], ss_window[2], by = 0.2), 1)
+
+make_ss_events <- function(wt, dose, id_offset = 0L) {
+  ids <- id_offset + seq_along(wt)
+  doses <- tidyr::expand_grid(
+    data.frame(id = ids, WT = wt, dose = dose),
+    time = dose_times
+  ) |>
+    mutate(evid = 1L, amt = dose, cmt = "depot")
+  obs <- tidyr::expand_grid(
+    data.frame(id = ids, WT = wt, dose = dose),
+    time = obs_times
+  ) |>
+    mutate(evid = 0L, amt = 0, cmt = "central")
+  bind_rows(doses, obs) |> arrange(id, time, desc(evid))
+}
+
+weights_fine <- seq(10, 75, by = 2.5)
+ev_typ <- make_ss_events(weights_fine, dose = 1)
+
+sim_typ <- rxode2::rxSolve(
+  mod_typ,
+  events = ev_typ,
+  keep = c("WT", "dose"),
+  rtol = 1e-10,
+  atol = 1e-12,
+  maxsteps = 1e6,
+  omega = NA,
+  sigma = NA
+) |>
+  as.data.frame()
+```
+
+The steady-state exposures are computed with PKNCA, one interval per typical
+subject (`cmax`, `clast.obs` -- the last concentration of the window, which is the
+paper's Ctrough -- and a linear-trapezoid `auclast` over 696-720 h).
+
+```{r typical-pknca}
+conc_typ <- sim_typ |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, WT)
+dose_typ <- ev_typ |>
+  filter(evid == 1) |>
+  select(id, time, amt, WT)
+
+nca_typ <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc_typ, Cc ~ time | WT + id),
+    PKNCA::PKNCAdose(dose_typ, amt ~ time | WT + id),
+    intervals = data.frame(
+      start = ss_window[1],
+      end = ss_window[2],
+      cmax = TRUE,
+      clast.obs = TRUE,
+      auclast = TRUE
+    ),
+    options = list(auc.method = "linear")
+  )
+)
+
+per_mg <- as.data.frame(nca_typ) |>
+  select(WT, PPTESTCD, PPORRES) |>
+  mutate(
+    metric = c(cmax = "Cmax", clast.obs = "Ctrough", auclast = "AUC")[PPTESTCD]
+  ) |>
+  select(WT, metric, per_mg = PPORRES)
+stopifnot(nrow(per_mg) == 3 * length(weights_fine), !anyNA(per_mg$per_mg))
+```
+
+The deposited file `R/output.data/data-exposures.txt` lists the typical-subject
+exposures the authors' Simulx run produced for every weight and dose of the
+grid. The rows below are its 10 mg values at four weights.
+
+```{r typical-compare}
+deposited_10mg <- tibble::tribble(
+  ~WT, ~cmax,   ~clast.obs, ~auclast,
+  10,  16.9102, 10.1502,  325.264,
+  30,  7.05289, 4.78473,  142.703,
+  50,  4.71599, 3.35043,  97.2921,
+  75,  3.43193, 2.51878,  71.7854
+) |>
+  mutate(WT = as.character(WT))
+
+sim_10mg <- as.data.frame(nca_typ) |>
+  filter(WT %in% c(10, 30, 50, 75)) |>
+  mutate(WT = as.character(WT), PPORRES = 10 * PPORRES) |>
+  select(WT, PPTESTCD, PPORRES)
+
+cmp_typ <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_10mg,
+  reference = deposited_10mg,
+  by = "WT",
+  units = c(cmax = "mg/L", clast.obs = "mg/L", auclast = "h*mg/L"),
+  tolerance_pct = 1
+)
+cmp_typ |>
+  dplyr::rename("Body weight (kg)" = WT) |>
+  knitr::kable(
+    caption = paste(
+      "Typical-subject steady-state exposure on 10 mg once daily: packaged",
+      "model (Simulated) against the authors' deposited Simulx output",
+      "(Reference)."
+    )
+  )
+
+pct_diff <- with(
+  inner_join(
+    sim_10mg,
+    pivot_longer(deposited_10mg, -WT, names_to = "PPTESTCD", values_to = "ref"),
+    by = c("WT", "PPTESTCD")
+  ),
+  100 * (PPORRES / ref - 1)
+)
+# Deterministic comparison (typical subject, same output grid); the measured
+# agreement is better than 0.05 %. A transcription error in any parameter or
+# in the 75 kg reference weight moves these by whole percent.
+stopifnot(length(pct_diff) == 12L, max(abs(pct_diff)) < 0.5)
+
+# At steady state the AUC over one dosing interval equals dose / CL.
+cl_75 <- exp(rxode2::rxode(mod)$theta[["lcl"]])
+auc_ref <- per_mg$per_mg[per_mg$WT == 75 & per_mg$metric == "AUC"] * 10
+stopifnot(abs(auc_ref / (10 / cl_75) - 1) < 1e-3)
+```
+
+The packaged model reproduces the authors' typical-subject exposures to within
+0.05% at every weight and metric, and the 75 kg reference AUC equals
+10 mg / CL = `r signif(10 / cl_75, 4)` h*mg/L.
+
+# Optimum doses on the fine grid (Figure 3)
+
+The fine grid uses doses from 0 to 10 mg in 0.2 mg steps. For each weight and
+metric the optimum dose is the one whose exposure lies closest to the reference
+exposure of a 75 kg adult on 10 mg (the best-fit rule of Table 1). The
+conservative and progressive rules of Table 1 are written out alongside it;
+when two doses tie, the lower dose is taken, as in the authors' code.
+
+```{r fine-grid}
+ref_exposure <- per_mg |>
+  filter(WT == 75) |>
+  transmute(metric, ref = 10 * per_mg)
+
+exposure_grid <- function(doses, weights) {
+  per_mg |>
+    filter(WT %in% weights) |>
+    tidyr::crossing(dose = doses) |>
+    mutate(value = per_mg * dose) |>
+    left_join(ref_exposure, by = "metric") |>
+    mutate(delta = value - ref)
+}
+
+optimum_dose <- function(dose, delta, strategy) {
+  o <- order(dose)
+  dose <- dose[o]
+  delta <- delta[o]
+  switch(
+    strategy,
+    "Best fit" = dose[which.min(abs(delta))],
+    "Conservative" = if (any(delta <= 0)) max(dose[delta <= 0]) else 0,
+    "Progressive" = if (any(delta >= 0)) min(dose[delta >= 0]) else 0
+  )
+}
+
+fine_doses <- round(seq(0, 10, by = 0.2), 1)
+grid_fine <- exposure_grid(fine_doses, weights_fine)
+opt_fine <- grid_fine |>
+  group_by(metric, WT) |>
+  summarise(
+    dose = optimum_dose(dose, delta, "Best fit"),
+    .groups = "drop"
+  )
+```
+
+```{r figure-3, fig.width = 6, fig.height = 4}
+ggplot(opt_fine, aes(WT, dose, colour = metric)) +
+  geom_step(direction = "mid") +
+  geom_point(size = 1) +
+  labs(
+    x = "Body weight (kg)",
+    y = "Optimum dose (mg)",
+    colour = "Exposure metric",
+    title = "Optimum dose by body weight (best fit, fine grid)",
+    caption = "Replicates Figure 3 of Krause 2026."
+  ) +
+  theme_bw()
+```
+
+The Results section reports the optimum doses at 10, 30 and 50 kg; the packaged
+model returns them exactly. The deposited `Table-Dosing-Recommendation-Fine.txt`
+holds all 81 best-fit optimum doses (27 weights by 3 metrics), and the packaged
+model reproduces every one of them as well (checked while preparing this
+article; the file is not shipped with the package).
+
+```{r figure-3-check}
+published_opt <- tibble::tribble(
+  ~WT, ~metric,   ~published,
+  10,  "Cmax",    2.0,
+  10,  "AUC",     2.2,
+  10,  "Ctrough", 2.4,
+  30,  "Cmax",    4.8,
+  30,  "AUC",     5.0,
+  30,  "Ctrough", 5.2,
+  50,  "Cmax",    7.2,
+  50,  "AUC",     7.4,
+  50,  "Ctrough", 7.6
+)
+chk_opt <- inner_join(published_opt, opt_fine, by = c("WT", "metric"))
+chk_opt |>
+  dplyr::rename(
+    "Body weight (kg)" = WT,
+    "Exposure metric" = metric,
+    "Published optimum (mg)" = published,
+    "Packaged model (mg)" = dose
+  ) |>
+  knitr::kable(caption = "Optimum doses quoted in the Results section.")
+stopifnot(nrow(chk_opt) == 9L, all(abs(chk_opt$dose - chk_opt$published) < 1e-8))
+```
+
+# Dosing table from the available doses (Table 3, Figure 4)
+
+The available doses are 0, 2, 4, 6, 8 and 10 mg and the body weight category
+limits are 10, 20, 30, 40, 50, 60 and 75 kg. Applying each Table 1 rule at
+each category limit gives the optimum available dose there.
+
+```{r available}
+weights_steps <- c(10, 20, 30, 40, 50, 60, 75)
+grid_avail <- exposure_grid(seq(0, 10, by = 2), weights_steps)
+strategies <- c("Best fit", "Conservative", "Progressive")
+
+opt_avail <- tidyr::crossing(
+  strategy = strategies,
+  grid_avail |> distinct(metric, WT)
+)
+opt_avail$dose <- mapply(
+  function(s, m, w) {
+    g <- grid_avail[grid_avail$metric == m & grid_avail$WT == w, ]
+    optimum_dose(g$dose, g$delta, s)
+  },
+  opt_avail$strategy,
+  opt_avail$metric,
+  opt_avail$WT
+)
+```
+
+Table 3 of the paper turns these into weight bands. Read at the category
+limits, its bands give the doses below; the packaged model reproduces every
+cell.
+
+```{r table-3}
+# Dose at each category limit (10, 20, 30, 40, 50, 60, 75 kg) read from the
+# Table 3 weight bands. Progressive Ctrough uses the deposited
+# Table-Dosing-Recommendation-Available.txt band 50.01-75 kg for 10 mg; Table 3
+# prints that band as '>40 - 75', which overlaps the 8 mg band above it.
+table3 <- tibble::tribble(
+  ~strategy,      ~metric,   ~doses,
+  "Best fit",     "AUC",     c(2, 4, 6, 6, 8, 8, 10),
+  "Best fit",     "Cmax",    c(2, 4, 4, 6, 8, 8, 10),
+  "Best fit",     "Ctrough", c(2, 4, 6, 6, 8, 8, 10),
+  "Conservative", "AUC",     c(2, 2, 4, 6, 6, 8, 10),
+  "Conservative", "Cmax",    c(2, 2, 4, 6, 6, 8, 10),
+  "Conservative", "Ctrough", c(2, 2, 4, 6, 6, 8, 10),
+  "Progressive",  "AUC",     c(4, 4, 6, 8, 8, 10, 10),
+  "Progressive",  "Cmax",    c(4, 4, 6, 8, 8, 10, 10),
+  "Progressive",  "Ctrough", c(4, 4, 6, 8, 8, 10, 10)
+) |>
+  tidyr::unnest(doses) |>
+  group_by(strategy, metric) |>
+  mutate(WT = weights_steps) |>
+  ungroup() |>
+  rename(published = doses)
+
+chk_avail <- inner_join(table3, opt_avail, by = c("strategy", "metric", "WT"))
+stopifnot(nrow(chk_avail) == 63L, all(chk_avail$dose == chk_avail$published))
+
+opt_avail |>
+  mutate(WT = paste(WT, "kg")) |>
+  tidyr::pivot_wider(names_from = WT, values_from = dose) |>
+  dplyr::rename("Strategy" = strategy, "Exposure metric" = metric) |>
+  knitr::kable(
+    caption = paste(
+      "Optimum available dose (mg) at each category limit; identical to",
+      "Table 3 of Krause 2026 in all 63 cells."
+    )
+  )
+```
+
+```{r figure-4, fig.width = 7, fig.height = 4}
+ggplot() +
+  geom_line(
+    data = opt_fine,
+    aes(WT, dose),
+    colour = "grey50",
+    linetype = "dashed"
+  ) +
+  geom_step(
+    data = opt_avail,
+    aes(WT, dose, colour = strategy),
+    direction = "mid"
+  ) +
+  geom_point(data = opt_avail, aes(WT, dose, colour = strategy)) +
+  facet_wrap(~metric) +
+  labs(
+    x = "Body weight (kg)",
+    y = "Dose (mg)",
+    colour = "Strategy",
+    title = "Dosing schemes by strategy",
+    caption = paste(
+      "Replicates Figure 4 of Krause 2026. Dashed: fine-grid optimum dose;",
+      "points: optimum available dose at the category limits."
+    )
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# Deviation from the reference exposure (Figure 5)
+
+Between the category limits the dosing table assigns one of the neighbouring
+available doses, so exposure departs most from the reference at the limits
+where the dose changes. Figure 5 plots the percentage deviation of the exposure
+reached with the optimum available dose at each fine-grid weight.
+
+```{r figure-5, fig.width = 7, fig.height = 4}
+deviation <- tidyr::crossing(
+  strategy = strategies,
+  grid_avail |> distinct(metric),
+  WT = weights_fine
+)
+grid_avail_fine <- exposure_grid(seq(0, 10, by = 2), weights_fine)
+deviation$dose <- mapply(
+  function(s, m, w) {
+    g <- grid_avail_fine[grid_avail_fine$metric == m & grid_avail_fine$WT == w, ]
+    optimum_dose(g$dose, g$delta, s)
+  },
+  deviation$strategy,
+  deviation$metric,
+  deviation$WT
+)
+deviation <- deviation |>
+  left_join(per_mg, by = c("metric", "WT")) |>
+  left_join(ref_exposure, by = "metric") |>
+  mutate(pct = 100 * (per_mg * dose / ref - 1))
+
+ggplot(deviation, aes(WT, pct, colour = strategy)) +
+  geom_hline(yintercept = 0, colour = "grey50") +
+  geom_line() +
+  facet_wrap(~metric) +
+  labs(
+    x = "Body weight (kg)",
+    y = "Exposure deviation from reference (%)",
+    colour = "Strategy",
+    caption = "Replicates Figure 5 of Krause 2026."
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+dev_prog_cmax_10 <- deviation$pct[
+  deviation$strategy == "Progressive" &
+    deviation$metric == "Cmax" &
+    deviation$WT == 10
+]
+dev_cons_20 <- deviation |>
+  filter(strategy == "Conservative", WT == 20) |>
+  select(metric, pct)
+# Typical-subject (deterministic) values. The paper quotes them in round
+# words ('nearly twice', '40% less'); the bounds test that reading.
+stopifnot(
+  dev_prog_cmax_10 > 80,
+  dev_prog_cmax_10 < 110,
+  all(dev_cons_20$pct < -35),
+  all(dev_cons_20$pct > -55)
+)
+```
+
+The paper notes that with the progressive strategy and the Cmax metric a 10 kg
+child would reach nearly twice the intended exposure; the packaged model gives
+`r sprintf("%+.0f%%", dev_prog_cmax_10)`. It also notes that with the
+conservative strategy a 20 kg child would reach about 40% less exposure than
+targeted for every metric; the packaged model gives
+`r paste(sprintf("%s %+.0f%%", dev_cons_20$metric, dev_cons_20$pct), collapse = ", ")`.
+
+# Exposure with inter-individual variability (Figure 6)
+
+To place the dosing table in the context of PK variability, the paper simulates
+100 subjects per body weight on the dose assigned to that weight and compares
+the 90% prediction interval of each exposure metric with that of the reference
+adult (75 kg, 10 mg once daily). The cohort below does the same for the
+best-fit, AUC-based dose at each category limit, with 100 subjects per weight.
+
+```{r iiv-sim}
+rxode2::rxSetSeed(2026)
+n_per_weight <- 100L
+bf_auc <- opt_avail |>
+  filter(strategy == "Best fit", metric == "AUC")
+ev_iiv <- bind_rows(lapply(seq_len(nrow(bf_auc)), function(i) {
+  make_ss_events(
+    wt = rep(bf_auc$WT[i], n_per_weight),
+    dose = bf_auc$dose[i],
+    id_offset = (i - 1L) * n_per_weight
+  )
+}))
+stopifnot(length(unique(ev_iiv$id)) == n_per_weight * nrow(bf_auc))
+
+sim_iiv <- rxode2::rxSolve(
+  mod,
+  events = ev_iiv,
+  keep = c("WT", "dose"),
+  maxsteps = 1e6
+) |>
+  as.data.frame()
+
+# Same definitions as the authors' Simulx outcomes: maximum and last
+# concentration in the window, and the trapezoidal integral of Cc over it.
+exp_iiv <- sim_iiv |>
+  filter(!is.na(Cc)) |>
+  group_by(id, WT, dose) |>
+  summarise(
+    Cmax = max(Cc),
+    Ctrough = Cc[time == ss_window[2]],
+    AUC = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+    .groups = "drop"
+  ) |>
+  pivot_longer(c(Cmax, Ctrough, AUC), names_to = "metric", values_to = "value")
+stopifnot(nrow(exp_iiv) == 3L * n_per_weight * nrow(bf_auc), !anyNA(exp_iiv$value))
+```
+
+```{r figure-6, fig.width = 7, fig.height = 4}
+pi_iiv <- exp_iiv |>
+  group_by(metric, WT, dose) |>
+  summarise(
+    q05 = quantile(value, 0.05),
+    q50 = median(value),
+    q95 = quantile(value, 0.95),
+    .groups = "drop"
+  )
+pi_ref <- pi_iiv |>
+  filter(WT == 75) |>
+  select(metric, q05, q50, q95) |>
+  pivot_longer(-metric, names_to = "quantile", values_to = "value")
+
+ggplot(pi_iiv, aes(WT)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), fill = "steelblue", alpha = 0.3) +
+  geom_line(aes(y = q50), colour = "steelblue") +
+  geom_hline(
+    data = pi_ref,
+    aes(yintercept = value, linetype = quantile == "q50"),
+    colour = "grey30",
+    show.legend = FALSE
+  ) +
+  facet_wrap(~metric, scales = "free_y") +
+  labs(
+    x = "Body weight (kg)",
+    y = "Steady-state exposure (mg/L; h*mg/L for AUC)",
+    caption = paste(
+      "Replicates the best-fit AUC panel of Figure 6 of Krause 2026.",
+      "Band: 90% prediction interval at the dose assigned to each weight;",
+      "lines: median and 90% interval of the 75 kg, 10 mg reference."
+    )
+  ) +
+  theme_bw()
+```
+
+The deposited `data-exposures-iiv.txt` holds the authors' 100 simulated
+reference subjects (75 kg, 10 mg once daily). The comparison below uses its
+5th, 50th and 95th percentiles. Both sides are random samples of 100 subjects,
+so the check is on the centre and on generous bounds for the tails.
+
+```{r figure-6-check}
+deposited_ref <- tibble::tribble(
+  ~metric,   ~q05,  ~q50, ~q95,
+  "AUC",     47.4,  71.2, 110,
+  "Cmax",    2.53,  3.39, 5.09,
+  "Ctrough", 1.58,  2.49, 3.97
+)
+chk_ref <- pi_iiv |>
+  filter(WT == 75) |>
+  select(metric, q05, q50, q95) |>
+  inner_join(deposited_ref, by = "metric", suffix = c("_sim", "_dep"))
+
+chk_ref |>
+  dplyr::rename(
+    "Exposure metric" = metric,
+    "5th pct, simulated" = q05_sim,
+    "5th pct, deposited" = q05_dep,
+    "Median, simulated" = q50_sim,
+    "Median, deposited" = q50_dep,
+    "95th pct, simulated" = q95_sim,
+    "95th pct, deposited" = q95_dep
+  ) |>
+  knitr::kable(
+    digits = 2,
+    caption = paste(
+      "Reference adult (75 kg, 10 mg once daily): steady-state exposure",
+      "quantiles from 100 simulated subjects, packaged model against the",
+      "authors' deposited simulation (mg/L; h*mg/L for AUC)."
+    )
+  )
+
+# With omega(CL) = 0.26, the median of 100 subjects has a standard error of
+# about 3 % and the 5th / 95th percentiles about 5-6 %, on each side. A
+# wrong omega (variance read as SD) or a wrong reference weight moves the
+# median or the tail by well over these bounds. Realised worst cases over
+# five cohorts (2 and 16 solver threads): median 4.4 %, 5th percentile 10 %,
+# 95th percentile 18 %.
+stopifnot(
+  nrow(chk_ref) == 3L,
+  all(abs(chk_ref$q50_sim / chk_ref$q50_dep - 1) < 0.12),
+  all(abs(chk_ref$q05_sim / chk_ref$q05_dep - 1) < 0.25),
+  all(abs(chk_ref$q95_sim / chk_ref$q95_dep - 1) < 0.25)
+)
+```
+
+# Single-dose profiles (Figure S1)
+
+Figure S1 shows typical concentration-time profiles after a single 1.5 mg/kg
+dose for 50 kg and 75 kg subjects.
+
+```{r figure-s1, fig.width = 6, fig.height = 4}
+ev_sd <- bind_rows(lapply(c(50, 75), function(w) {
+  id <- match(w, c(50, 75))
+  bind_rows(
+    data.frame(id = id, WT = w, time = 0, evid = 1L, amt = 1.5 * w, cmt = "depot"),
+    data.frame(
+      id = id,
+      WT = w,
+      time = seq(0, 144, by = 0.5),
+      evid = 0L,
+      amt = 0,
+      cmt = "central"
+    )
+  )
+})) |>
+  arrange(id, time, desc(evid))
+sim_sd <- rxode2::rxSolve(
+  mod_typ,
+  events = ev_sd,
+  keep = "WT",
+  omega = NA,
+  sigma = NA
+) |>
+  as.data.frame()
+
+ggplot(sim_sd, aes(time, Cc, colour = factor(WT))) +
+  geom_line() +
+  labs(
+    x = "Time after dose (h)",
+    y = "Warfarin concentration (mg/L)",
+    colour = "Body weight (kg)",
+    caption = paste(
+      "Replicates the allometric-model curves of Figure S1 of Krause 2026",
+      "(typical subjects, single 1.5 mg/kg dose)."
+    )
+  ) +
+  theme_bw()
+```
+
+# Assumptions and deviations
+
+- **Final model only.** Supplementary Tables S1 and S2 report two alternative
+  fits (all four weight exponents estimated; the exponent on Q removed). The
+  authors selected the fixed-allometry model of Table 2 on BICc and used it for
+  every dose derivation, so only that model is packaged.
+- **Full-precision estimates.** Table 2 rounds the estimates to two significant
+  figures (CL 0.14 L/h). The packaged values are the full-precision estimates
+  of the deposited Monolix run, which agree with Table 2 to its printed
+  precision and reproduce the authors' exposures to better than 0.05%; the
+  rounded values would shift the reference exposure by about 0.5%.
+- **Residual error form.** Monolix `combined1` is `y = Cc + (a + b * Cc) * e`,
+  which is `combined1()` in nlmixr2 (the nlmixr2 default, `combined2`, adds
+  the two variances instead).
+- **Concentration units.** Doses are in mg and volumes in L, so `Cc` is in
+  mg/L, the unit of the deposited dataset (for example 9.2 mg/L at 24 h after
+  100 mg). The Figure 6 caption gives the units as ng/mL; the exposures in the
+  deposited output (reference Cmax 3.43, AUC 71.8 = 10 mg / 0.139 L/h) are in
+  mg/L and h*mg/L. The deposited model folder also contains a variant with
+  `Cc2 = 1000 * Cc`, but the deposited setup simulates `Cc`.
+- **Table 3 typo.** The last band of the progressive / Ctrough row of Table 3
+  reads '>40 - 75' kg for 10 mg, overlapping the 8 mg band '>30 - 50' kg. The
+  deposited `Table-Dosing-Recommendation-Available.txt` gives 50.01-75 kg, the
+  same as for the other two metrics, and the packaged model agrees.
+- **Figure S1 caption.** The caption gives the 1.5 mg/kg doses for 50 and 75 kg
+  as 75 and 107.5 mg; 1.5 mg/kg at 75 kg is 112.5 mg, which is what is
+  simulated here.
+- **Covariates not used.** Sex and age are in the deposited dataset and are
+  declared in the Monolix project but enter no parameter model; they are
+  documented under `covariatesDataExcluded`.
+- **Inter-individual variability on Q.** The random-effect SD on Q is 2.49
+  (2229 %CV) and the standard error of Q itself is about 10^5 L/h (Table 2), so
+  Q is barely identifiable from these data. The value is packaged as
+  estimated. Individual Q values span several orders of magnitude in
+  simulation, which mainly affects Cmax; AUC is set by CL.
+- **Not a dosing recommendation.** The authors stress that the warfarin
+  example illustrates exposure matching only. Warfarin is titrated to INR in
+  practice, and the model carries no maturation, so it should not be used
+  below about 10 kg (roughly 2 years of age).
+- No erratum or correction notice for the article was found as of 2026-11-15.
