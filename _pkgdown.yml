@@ -2198,6 +2198,8 @@ navbar:
         href: articles/Chen_2016_deoxypodophyllotoxin.html
       - text: "Deoxypodophyllotoxin rat pbpk (Chen 2016)"
         href: articles/Chen_2016_deoxypodophyllotoxin.html
+      - text: "Depemokimab (Thorsted 2026)"
+        href: articles/Thorsted_2026_depemokimab.html
       - text: "Depemokimab (Zecchin 2026)"
         href: articles/Zecchin_2026_depemokimab.html
       - text: "Depemokimab dose time (Zecchin 2026)"
@@ -11918,6 +11920,7 @@ articles:
   - articles/Thorsted_2019_endotoxin
   - articles/Thorsted_2019_piperacillin
   - articles/Thorsted_2023_neutrophil_bacterial_killing
+  - articles/Thorsted_2026_depemokimab
   - articles/Thoueille_2023_lopinavir
   - articles/Thoueille_2023_tenofovir_ckd
   - articles/Thoueille_2024_rilpivirine

@@ -2168,7 +2168,7 @@ These are internationally standardised clinical abbreviations registered as cano
   - `eos` / `EOS` -- the indirect-response state in Zecchin 2026 (`deos(t)/dt = KOUT * (KRO * (1 + (Imax - 1) * C^GAMA / (C^GAMA + IC50^GAMA)) - eos(t))`).
   - `LNEOS` -- log BEC in the Zecchin 2026 Bayesian dose-time response model (Table 1); the output is `exp(LNEOS)`.
   - `BEC`, `blood eosinophil count` -- common figure-axis names.
-- **Example models:** `Zecchin_2026_depemokimab.R` (indirect-response state, GI/L; founding example), `Zecchin_2026_depemokimab_dose_time.R` (algebraic output, GI/L).
+- **Example models:** `Zecchin_2026_depemokimab.R` (indirect-response state, GI/L; founding example), `Zecchin_2026_depemokimab_dose_time.R` (algebraic output, GI/L), `Thorsted_2026_depemokimab.R` (indirect-response state in cells/uL; the paper models the count as a ratio of the placebo count, so the state integrates the product of that ratio and a linearly drifting placebo baseline).
 
 ### PLT (**canonical platelet count**)
 - **Type:** compartment

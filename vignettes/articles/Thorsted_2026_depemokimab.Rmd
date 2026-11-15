@@ -1,0 +1,585 @@
+---
+title: "Depemokimab PK and blood eosinophils (Thorsted 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Depemokimab PK and blood eosinophils (Thorsted 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Thorsted et al. (2026) pooled three Phase I and four Phase III studies of
+depemokimab, an ultra-long-acting anti-IL-5 monoclonal antibody given
+subcutaneously (SC) twice a year, to build:
+
+1. a population PK model: one compartment with first-order absorption and
+   first-order elimination (Supplementary Figure S1, Table S3), and
+2. a sequential PK/PD model of the blood eosinophil count (BEC): an
+   indirect-response model in which depemokimab inhibits eosinophil production
+   through a sigmoid Emax function, on top of a placebo baseline that drifts
+   linearly with time (Supplementary Figure S4, Table S4).
+
+The authors fitted the PK/PD model on individual predicted concentrations of
+the final PK model. The packaged model `Thorsted_2026_depemokimab` carries both
+layers, so one solve gives the concentration `Cc` (ug/mL) and the count
+`blood_eosinophils` (cells/uL).
+
+* Citation: `r rxode2::rxode(readModelDb("Thorsted_2026_depemokimab"))$reference`
+* Article: <https://doi.org/10.1002/jcph.70187>
+
+# Population
+
+The PK analysis included 961 participants with 9383 concentrations (Table 1):
+36 adults with mild-to-moderate asthma in the first-time-in-human (FTIH)
+ascending-dose study 205722 (single SC doses of 2-300 mg), 20 healthy Chinese
+volunteers (study 208021) and 140 healthy US volunteers (study 214099) given a
+single 100 mg or 300 mg dose, and 493 type 2 asthma (SWIFT-1/-2) and 272 CRSwNP
+(ANCHOR-1/-2) patients given 100 mg every 26 weeks. Mean age was 49.8 years
+(range 12-93), mean weight 78.0 kg (34.6-161) and 19% were Asian. The PK/PD
+analysis included 1324 participants on depemokimab or placebo from the FTIH,
+SWIFT-1/-2 and ANCHOR-1/-2 studies, with 14,273 counts and a mean baseline
+count of 440 cells/uL (Table 3). Healthy volunteers were not part of the PK/PD
+analysis.
+
+# Source trace
+
+| Item | Value | Source |
+|---|---|---|
+| One compartment, first-order absorption, Frel on the depot | structure | Supplementary Figure S1; Methods |
+| CL/F, V/F, ka | 0.0920 L/day, 6.29 L, 0.212 /day | Table S3 |
+| Frel | 1 (fixed) | Table S3 |
+| Allometric exponents, WT on CL/F and V/F | 0.841, 0.887 | Table S3 |
+| Albumin, eGFR on CL/F (per unit, exponential) | -0.00684, 0.00134 | Table S3; Supplementary Methods |
+| CRSwNP, FTIH, China HV, 2 mg dose on CL/F | 0.0625, 0.155, -0.219, -0.349 | Table S3 |
+| Asian race, HV on V/F | 0.0788, -0.0513 | Table S3 |
+| Age (per year), abdomen, HV, FTIH, China HV on ka | -0.00735, 0.520, 0.588, 0.627, 0.405 | Table S3 |
+| CRSwNP, FTIH on Frel | -0.0509, -0.173 | Table S3 |
+| IIV CL, Frel, ka (SD); correlation Frel-ka | 0.101, 0.167, 0.351; 0.638 | Table S3 |
+| RUV (log scale), IIV on RUV, TAD < 3 h on RUV | 0.178, 0.488, 5.18 | Table S3 |
+| Covariate reference subject (PK) | 76 kg, 50 years, albumin 45 g/L, eGFR 94, upper arm | Figure 2 caption |
+| Categorical effects TV x (1 + theta); continuous TV x exp(theta x (cov - ref)); WT power | equations | Supplementary Methods, Equation 1 |
+| Indirect response on the ratio of placebo, inhibition of kin | structure | Supplementary Figure S4 |
+| Placebo baseline, linear proportional change per year | structure | Results, "Final Depemokimab PK/PD Model" |
+| Baseline, placebo slope | 317 cells/uL, -0.0466 /year | Table S4 |
+| HLonset (kout = ln 2 / HLonset) | 3.08 days | Table S4 |
+| Emax, EC50, Hill | 0.848, 0.194 ug/mL, 1.64 | Table S4 |
+| Logit-additive covariates on Emax | Equation 2 | Supplementary Methods |
+| Predicted baseline, CRSwNP, age, weight, Asian (asthma), Asian (CRSwNP) on logit Emax | 0.834, 0.320, 0.00660, -0.00471, 0.450, 0.187 | Table S4 |
+| Covariate reference subject (PD) | 317 cells/uL, 54 years, 77.4 kg | Table S4 footnotes b, c |
+| FTIH on EC50, on placebo slope, on RUV | -0.561, +0.357, -0.242 | Table S4 |
+| IIV baseline (SD), IIV logit Emax (SD), IIV RUV, RUV | 0.646, 0.497, 0.396, 0.426 | Table S4 |
+
+# Model
+
+```{r model}
+mod <- readModelDb("Thorsted_2026_depemokimab")
+ui <- rxode2::rxode(mod)
+theta <- ui$theta
+```
+
+# Virtual cohort
+
+Each of the five PK data sources is represented by 200 virtual subjects given
+two 100 mg SC doses 26 weeks apart. Table 2 derives the second-interval
+exposure of the single-dose Phase I subjects by assuming a second dose at Day
+182, so all five cohorts use the same regimen. Covariates are drawn from the
+Table 1 means and SDs of each study (weight log-normal, the others normal,
+all clipped to the Table 1 range where given); race and injection site are
+drawn with the Table 1 proportions.
+
+```{r cohort}
+set.seed(2026)
+rxode2::rxSetSeed(2026)
+n_per <- 200
+
+study_spec <- tibble::tribble(
+  ~study,       ~age, ~age_sd, ~age_lo, ~age_hi, ~wt,  ~wt_sd, ~wt_lo, ~wt_hi, ~alb, ~alb_sd, ~egfr, ~egfr_sd, ~p_asian, ~p_arm, ~p_thigh, ~hv, ~crswnp, ~ftih, ~china,
+  "FTIH",       43.9, 10.6,    20,      63,      82.7, 10.2,   64.6,   107,     44.2, 2.36,    100,   12.0,     0.03,     1.00,   0.00,     0,   0,       1,     0,
+  "China HV",   29.7, 6.4,     20.9,    43.5,    63.7, 7.21,   50.9,   79.5,    46.4, 1.69,    103,   10.9,     1.00,     1.00,   0.00,     1,   0,       0,     1,
+  "US HV",      35.5, 8.0,     18,      50,      72.6, 11.0,   51.3,   101,     45.2, 3.02,    104,   17.6,     0.05,     0.34,   0.34,     1,   0,       0,     0,
+  "SWIFT-1/-2", 53.7, 14.8,    12,      82,      79.2, 19.7,   34.6,   161,     45.4, 3.05,    89.5,  19.1,     0.18,     0.95,   0.05,     0,   0,       0,     0,
+  "ANCHOR-1/-2", 52.4, 13.3,   20,      93,      79.0, 16.0,   45.9,   145,     45.8, 3.13,    92.2,  15.3,     0.24,     0.95,   0.05,     0,   1,       0,     0
+)
+
+draw_lognormal <- function(n, mean, sd) {
+  sdlog <- sqrt(log(1 + (sd / mean)^2))
+  exp(rnorm(n, log(mean) - sdlog^2 / 2, sdlog))
+}
+
+draw_study <- function(spec, id_offset) {
+  site <- sample(c("arm", "thigh", "abdomen"), n_per, replace = TRUE,
+                 prob = c(spec$p_arm, spec$p_thigh, max(0, 1 - spec$p_arm - spec$p_thigh)))
+  data.frame(
+    id = id_offset + seq_len(n_per),
+    study = spec$study,
+    AGE = pmin(pmax(rnorm(n_per, spec$age, spec$age_sd), spec$age_lo), spec$age_hi),
+    WT = pmin(pmax(draw_lognormal(n_per, spec$wt, spec$wt_sd), spec$wt_lo), spec$wt_hi),
+    ALB = rnorm(n_per, spec$alb, spec$alb_sd),
+    CRCL = rnorm(n_per, spec$egfr, spec$egfr_sd),
+    RACE_ASIAN = rbinom(n_per, 1, spec$p_asian),
+    INJSITE_ARM = as.integer(site == "arm"),
+    INJSITE_THIGH = as.integer(site == "thigh"),
+    DIS_HEALTHY = spec$hv,
+    DIS_CHRONIC_RHINOSINUSITIS_NASAL_POLYPS = spec$crswnp,
+    STUDY_205722 = spec$ftih,
+    STUDY_208021 = spec$china,
+    DOSE_LOW = 0
+  )
+}
+
+cohort <- dplyr::bind_rows(lapply(seq_len(nrow(study_spec)), function(i) {
+  draw_study(study_spec[i, ], id_offset = (i - 1L) * n_per)
+}))
+stopifnot(!anyDuplicated(cohort$id))
+
+obs_days <- 0:364
+make_events <- function(cov, dose_times, dose_amt) {
+  doses <- tidyr::crossing(id = cov$id, time = dose_times) |>
+    dplyr::mutate(evid = 1L, amt = dose_amt, cmt = "depot")
+  obs <- tidyr::crossing(id = cov$id, time = obs_days) |>
+    dplyr::mutate(evid = 0L, amt = 0, cmt = "blood_eosinophils")
+  dplyr::bind_rows(obs, doses) |>
+    dplyr::left_join(cov, by = "id") |>
+    dplyr::arrange(id, time, evid)
+}
+events <- make_events(cohort, dose_times = c(0, 182), dose_amt = 100)
+```
+
+Observation rows sit on the `blood_eosinophils` state; rxode2 still returns
+`Cc` at each of them.
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events, keep = "study", returnType = "data.frame")
+```
+
+# PK: individual parameters (Table 2)
+
+Table 2 reports geometric means of the individually predicted CL/F, V/F, ka
+and Frel per study. The simulated individual parameters are compared with them
+below.
+
+```{r pk-params}
+geo <- function(x) exp(mean(log(x)))
+indiv <- sim |>
+  dplyr::group_by(id, study) |>
+  dplyr::summarise(cl_f = cl[1], v_f = vc[1],
+                   ka = ka[1], frel = fdepot[1], .groups = "drop") |>
+  dplyr::mutate(thalf = log(2) * v_f / cl_f)
+
+published_par <- tibble::tribble(
+  ~study,        ~cl_f, ~v_f, ~ka,  ~frel, ~thalf,
+  "FTIH",        0.113, 6.44, 0.38, 0.88,  39.4,
+  "China HV",    0.063, 5.63, 0.60, 1.05,  62.0,
+  "US HV",       0.091, 5.76, 0.41, 0.97,  44.0,
+  "SWIFT-1/-2",  0.093, 6.53, 0.20, 1.01,  48.6,
+  "ANCHOR-1/-2", 0.100, 6.59, 0.20, 0.95,  45.8
+)
+
+par_cmp <- indiv |>
+  dplyr::group_by(study) |>
+  dplyr::summarise(dplyr::across(c(cl_f, v_f, ka, frel, thalf), geo), .groups = "drop") |>
+  tidyr::pivot_longer(-study, names_to = "parameter", values_to = "simulated") |>
+  dplyr::left_join(
+    tidyr::pivot_longer(published_par, -study, names_to = "parameter", values_to = "published"),
+    by = c("study", "parameter")
+  ) |>
+  dplyr::mutate(pct_diff = 100 * (simulated / published - 1))
+
+par_cmp |>
+  dplyr::mutate(study = factor(study, levels = study_spec$study)) |>
+  dplyr::arrange(study, parameter) |>
+  dplyr::rename(Study = study, Parameter = parameter, Simulated = simulated,
+                "Thorsted 2026 Table 2" = published, "Difference (%)" = pct_diff) |>
+  knitr::kable(digits = 3, caption = paste(
+    "Geometric means of individual PK parameters (CL/F and V/F in L/day and L,",
+    "ka in 1/day, t1/2 in days)."
+  ))
+```
+
+The parameters that carry the covariate model (CL/F, V/F and the half-life)
+match closely. Table 2 reports CL/F and V/F as the model parameters
+themselves (apparent values for Frel = 1), not divided by the individual
+relative bioavailability, so the simulated values are compared the same way.
+
+```{r pk-params-check}
+structural <- dplyr::filter(par_cmp, parameter %in% c("cl_f", "v_f", "thalf"))
+stopifnot(
+  abs(median(structural$pct_diff)) < 5,
+  max(abs(structural$pct_diff)) < 15
+)
+```
+
+# PK: concentration-time profiles
+
+```{r pk-profile, fig.width = 7, fig.height = 4.5}
+pk_summary <- sim |>
+  dplyr::filter(time > 0) |>
+  dplyr::group_by(study, time) |>
+  dplyr::summarise(med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95),
+                   .groups = "drop")
+ggplot(pk_summary, aes(time / 7, med, colour = study, fill = study)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.15, colour = NA) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Week", y = "Depemokimab (ug/mL)", colour = NULL, fill = NULL,
+       title = "Median and 90% interval, 100 mg SC at Weeks 0 and 26",
+       caption = "Compare with Figure 1 and Supplementary Figure S2 of Thorsted 2026.")
+```
+
+# PKNCA validation (Table 2 secondary parameters)
+
+Table 2 reports the second-interval (Weeks 26-52) Cmax, Tmax and AUCtau,ss and
+the troughs at Weeks 26 and 52. PKNCA computes them per study over the two
+dosing intervals.
+
+```{r pknca}
+conc <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, study, time, Cc)
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, study, time, amt)
+
+o_conc <- PKNCA::PKNCAconc(conc, Cc ~ time | study + id)
+o_dose <- PKNCA::PKNCAdose(dose_df, amt ~ time | study + id)
+intervals <- data.frame(
+  start = c(0, 182), end = c(182, 364),
+  cmax = c(FALSE, TRUE), tmax = c(FALSE, TRUE), auclast = c(FALSE, TRUE),
+  clast.obs = TRUE
+)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+nca_res <- as.data.frame(nca$result)
+```
+
+```{r nca-compare}
+second <- nca_res |> dplyr::filter(start == 182)
+first_trough <- nca_res |>
+  dplyr::filter(start == 0, PPTESTCD == "clast.obs") |>
+  dplyr::mutate(PPTESTCD = "ctrough")
+nca_both <- dplyr::bind_rows(second, first_trough)
+
+published_nca <- tibble::tribble(
+  ~study,        ~cmax, ~tmax, ~auclast, ~clast.obs, ~ctrough,
+  "FTIH",        12.29, 8.41,  778.8,    0.606,      0.585,
+  "China HV",    19.50, 6.56,  1661,     2.779,      2.463,
+  "US HV",       15.62, 8.05,  1071,     1.041,      0.987,
+  "SWIFT-1/-2",  13.63, 13.59, 1081,     1.315,      1.227,
+  "ANCHOR-1/-2", 12.46, 13.42, 950.3,    1.041,      0.982
+)
+
+nlmixr2lib::ncaComparisonTable(
+  simulated = nca_both, reference = published_nca, by = "study",
+  units = c(cmax = "ug/mL", tmax = "day", auclast = "ug*day/mL",
+            clast.obs = "ug/mL", ctrough = "ug/mL")
+) |>
+  knitr::kable(caption = paste(
+    "Simulated medians vs Thorsted 2026 Table 2 geometric means (100 mg at Weeks 0 and 26).",
+    "AUClast is AUCtau,ss over Weeks 26-52, Clast is the Week 52 trough and Ctrough the Week 26 trough.",
+    "* marks a difference above 20%."
+  ))
+```
+
+```{r nca-check}
+nca_cmp <- nca_both |>
+  dplyr::group_by(study, PPTESTCD) |>
+  dplyr::summarise(sim = median(PPORRES), .groups = "drop") |>
+  dplyr::inner_join(
+    tidyr::pivot_longer(published_nca, -study, names_to = "PPTESTCD", values_to = "pub"),
+    by = c("study", "PPTESTCD")
+  ) |>
+  dplyr::mutate(pct = 100 * (sim / pub - 1))
+exposure <- dplyr::filter(nca_cmp, PPTESTCD %in% c("cmax", "auclast", "clast.obs", "ctrough"))
+stopifnot(
+  nrow(exposure) == 20,
+  abs(median(exposure$pct)) < 10,
+  quantile(abs(exposure$pct), 0.9) < 25
+)
+```
+
+# PK/PD: structure checks
+
+The paper writes the eosinophil state as the count relative to the placebo
+count, R, with `dR/dt = kout * (1 - inh) - kout * R` and `R(0) = 1`, where
+`inh = Emax * C^hill / (C^hill + EC50^hill)`, and the placebo count is
+`BL * (1 + Pslp * t)`. The packaged state is the absolute count
+`B = BL * (1 + Pslp * t) * R`, which needs the product rule. Two checks pin that
+rewrite: a placebo subject must follow the linear placebo line exactly, and a
+treated subject's ratio to that line must equal R from the paper's own
+equation, solved separately here.
+
+```{r structure-check}
+typ <- data.frame(
+  WT = 77.4, AGE = 54, ALB = 45, CRCL = 94, RACE_ASIAN = 0, INJSITE_ARM = 1,
+  INJSITE_THIGH = 0, DIS_HEALTHY = 0, DIS_CHRONIC_RHINOSINUSITIS_NASAL_POLYPS = 0,
+  STUDY_205722 = 0, STUDY_208021 = 0, DOSE_LOW = 0
+)
+ev_typ <- dplyr::bind_rows(
+  make_events(cbind(id = 1L, typ), dose_times = c(0, 182), dose_amt = 100),
+  make_events(cbind(id = 2L, typ), dose_times = numeric(0), dose_amt = 0)
+)
+typ_sim <- rxode2::rxSolve(mod, ev_typ, omega = NA, sigma = NA, returnType = "data.frame")
+
+placebo <- dplyr::filter(typ_sim, id == 2)
+placebo_line <- exp(theta[["lrbase"]]) * (1 + theta[["slope_placebo"]] * placebo$time / 365.25)
+stopifnot(max(abs(placebo$blood_eosinophils / placebo_line - 1)) < 1e-5)
+
+ratio_model <- rxode2::rxode2({
+  d/dt(depot) <- -ka * depot
+  d/dt(central) <- ka * depot - kel * central
+  C <- central / vc
+  inh <- emax * C^hill / (C^hill + ec50^hill)
+  d/dt(ratio) <- kout * (1 - inh) - kout * ratio
+  ratio(0) <- 1
+})
+treated <- dplyr::filter(typ_sim, id == 1)
+ratio_pars <- c(ka = treated$ka[1], kel = treated$kel[1], vc = treated$vc[1],
+                emax = treated$emax[1], hill = treated$hill[1],
+                ec50 = treated$ec50[1], kout = treated$kout[1])
+ratio_ev <- rxode2::et(amt = 100 * treated$fdepot[1], time = c(0, 182), cmt = "depot") |>
+  rxode2::et(obs_days)
+ratio_sim <- as.data.frame(rxode2::rxSolve(ratio_model, ratio_pars, ratio_ev))
+ratio_packaged <- treated$blood_eosinophils /
+  (treated$rbase * (1 + treated$slope_pbo * treated$time / 365.25))
+stopifnot(max(abs(ratio_packaged - ratio_sim$ratio)) < 1e-4)
+```
+
+# PK/PD: replicate Figure 4
+
+Figure 4 shows the typical Week-52 percent reduction in BEC relative to
+placebo after 100 mg every 26 weeks for a reference non-Asian SWIFT asthma
+participant (predicted baseline 317 cells/uL, 54 years, 77.4 kg) and
+univariate covariate changes. The percent reduction is `100 * (1 - R)` at Day
+364. A different predicted baseline is set through `lrbase`, because the
+baseline effect on Emax acts on the individual predicted baseline.
+
+```{r fig4}
+fig4 <- tibble::tribble(
+  ~scenario,                  ~RACE_ASIAN, ~crswnp, ~ftih, ~bl,  ~AGE, ~WT,   ~published,
+  "Asian in ANCHOR",          1,           1,       0,     317,  54,   77.4,  85.6,
+  "Non-Asian in ANCHOR",      0,           1,       0,     317,  54,   77.4,  82.9,
+  "Asian in SWIFT",           1,           0,       0,     317,  54,   77.4,  86.3,
+  "Non-Asian in SWIFT",       0,           0,       0,     317,  54,   77.4,  81.0,
+  "FTIH",                     0,           0,       1,     317,  54,   77.4,  81.9,
+  "Baseline 684 cells/uL",    0,           0,       0,     684,  54,   77.4,  87.3,
+  "Baseline 151 cells/uL",    0,           0,       0,     151,  54,   77.4,  71.6,
+  "Age 70 years",             0,           0,       0,     317,  70,   77.4,  82.2,
+  "Age 33 years",             0,           0,       0,     317,  33,   77.4,  79.1,
+  "Weight 102.9 kg",          0,           0,       0,     317,  54,   102.9, 77.9,
+  "Weight 58 kg",             0,           0,       0,     317,  54,   58,    83.2
+)
+
+fig4_sim <- vapply(seq_len(nrow(fig4)), function(i) {
+  cv <- typ
+  cv$RACE_ASIAN <- fig4$RACE_ASIAN[i]
+  cv$DIS_CHRONIC_RHINOSINUSITIS_NASAL_POLYPS <- fig4$crswnp[i]
+  cv$STUDY_205722 <- fig4$ftih[i]
+  cv$AGE <- fig4$AGE[i]
+  cv$WT <- fig4$WT[i]
+  ev <- data.frame(id = 1L, time = c(0, 182, 364), evid = c(1L, 1L, 0L),
+                   amt = c(100, 100, 0), cmt = c("depot", "depot", "blood_eosinophils")) |>
+    cbind(cv)
+  pars <- theta
+  pars[["lrbase"]] <- log(fig4$bl[i])
+  s <- rxode2::rxSolve(mod, ev, params = pars, omega = NA, sigma = NA,
+                       returnType = "data.frame")
+  r <- s$blood_eosinophils[s$time == 364] / (s$rbase[1] * (1 + s$slope_pbo[1] * 364 / 365.25))
+  100 * (1 - r)
+}, numeric(1))
+
+fig4_cmp <- fig4 |>
+  dplyr::mutate(simulated = fig4_sim, difference = simulated - published)
+fig4_cmp |>
+  dplyr::select(scenario, published, simulated, difference) |>
+  dplyr::rename(Scenario = scenario, "Thorsted 2026 Figure 4 (%)" = published,
+                "Typical-value simulation (%)" = simulated,
+                "Difference (percentage points)" = difference) |>
+  knitr::kable(digits = 1, caption = "Week-52 BEC reduction from placebo, 100 mg every 26 weeks.")
+```
+
+Every scenario reproduces the published median within about half a percentage
+point. The published points are medians over parameter uncertainty, so a small
+offset from the typical value is expected.
+
+```{r fig4-check}
+stopifnot(max(abs(fig4_cmp$difference)) < 1.5)
+```
+
+# PK/PD: replicate Figure 5
+
+Figure 5 shows the steady-state BEC ratio of placebo for a concentration held
+constant, `1 - Emax * C^hill / (C^hill + EC50^hill)`, for typical participants
+of each study population. The curves below use the reference covariates of
+Table S4 (54 years, 77.4 kg, baseline 317 cells/uL) for each population; the
+paper does not state which covariates it used for the FTIH curve.
+
+```{r fig5, fig.width = 7, fig.height = 4.5}
+expit <- function(x) 1 / (1 + exp(-x))
+emax_of <- function(crswnp) {
+  expit(theta[["logitemax"]] +
+    theta[["e_dis_chronic_rhinosinusitis_nasal_polyps_emax"]] * crswnp)
+}
+pop <- data.frame(
+  population = c("SWIFT-1/-2", "ANCHOR-1/-2", "FTIH Asthma study"),
+  emax = c(emax_of(0), emax_of(1), emax_of(0)),
+  ec50 = exp(theta[["lec50"]]) * c(1, 1, 1 + theta[["e_study_205722_ec50"]])
+)
+hill <- exp(theta[["lhill"]])
+conc_grid <- 10^seq(-2, 2, by = 0.02)
+fig5 <- tidyr::crossing(pop, conc = conc_grid) |>
+  dplyr::mutate(ratio = 1 - emax * conc^hill / (conc^hill + ec50^hill))
+
+ggplot(fig5, aes(conc, ratio, colour = population)) +
+  geom_line(linewidth = 1) +
+  scale_x_log10() +
+  labs(x = "Depemokimab concentration (ug/mL)", y = "Model-predicted BEC ratio of placebo",
+       colour = NULL, title = "Replicates Figure 5 of Thorsted 2026")
+
+knitr::kable(
+  dplyr::mutate(pop, floor = 1 - emax,
+                ec90 = ec50 * 9^(1 / hill)) |>
+    dplyr::rename(Population = population, Emax = emax, "EC50 (ug/mL)" = ec50,
+                  "Ratio at saturation" = floor, "EC90 (ug/mL)" = ec90),
+  digits = 3,
+  caption = "Typical Emax and potency; EC90 is the concentration giving 90% of Emax."
+)
+```
+
+# PK/PD: blood eosinophil time course and trough potency
+
+The SWIFT-1/-2 and ANCHOR-1/-2 cohorts above received 100 mg at Weeks 0 and 26;
+placebo arms of 200 subjects each are added from the same covariate
+distributions. The plot shows the BEC ratio to each subject's baseline
+(compare with Figure 3 and Supplementary Figure S5).
+
+```{r pd-placebo}
+placebo_cov <- dplyr::bind_rows(
+  draw_study(study_spec[4, ], id_offset = 5000L),
+  draw_study(study_spec[5, ], id_offset = 6000L)
+)
+placebo_ev <- make_events(placebo_cov, dose_times = numeric(0), dose_amt = 0)
+sim_pbo <- rxode2::rxSolve(mod, placebo_ev, keep = "study", returnType = "data.frame")
+
+pd <- dplyr::bind_rows(
+  sim |> dplyr::filter(study %in% c("SWIFT-1/-2", "ANCHOR-1/-2")) |>
+    dplyr::mutate(arm = "Depemokimab 100 mg Q26W"),
+  sim_pbo |> dplyr::mutate(arm = "Placebo")
+) |>
+  dplyr::group_by(id) |>
+  dplyr::mutate(ratio_bl = blood_eosinophils / blood_eosinophils[time == 0]) |>
+  dplyr::ungroup()
+```
+
+```{r pd-plot, fig.width = 7, fig.height = 5}
+pd_summary <- pd |>
+  dplyr::group_by(study, arm, time) |>
+  dplyr::summarise(med = median(ratio_bl), lo = quantile(ratio_bl, 0.05),
+                   hi = quantile(ratio_bl, 0.95), .groups = "drop")
+ggplot(pd_summary, aes(time / 7, med, colour = arm, fill = arm)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.15, colour = NA) +
+  geom_line() +
+  facet_wrap(~study) +
+  scale_y_log10() +
+  labs(x = "Week", y = "BEC ratio to baseline", colour = NULL, fill = NULL,
+       title = "Median and 90% interval of individual predictions")
+```
+
+The paper reports that 100 mg reduced the count to below 25% of baseline,
+with a small rise before the Week 26 dose, and that the reduction relative to
+placebo stayed close to 80% at Week 52. It also reports that at Week 52 every
+Phase III participant had a trough above the EC50, and that 94% (SWIFT-1/-2)
+and 83% (ANCHOR-1/-2) had troughs above the EC90.
+
+```{r pd-check}
+pd_week <- pd |>
+  dplyr::filter(time %in% c(28, 180, 364)) |>
+  dplyr::group_by(study, arm, time) |>
+  dplyr::summarise(median_ratio = median(ratio_bl), .groups = "drop")
+pd_week |>
+  dplyr::rename(Study = study, Arm = arm, Day = time, "Median ratio to baseline" = median_ratio) |>
+  knitr::kable(digits = 3, caption = "Median BEC ratio to baseline at Days 28, 180 and 364.")
+
+placebo_corrected <- pd_week |>
+  dplyr::filter(time == 364) |>
+  tidyr::pivot_wider(names_from = arm, values_from = median_ratio) |>
+  dplyr::mutate(reduction_pct = 100 * (1 - `Depemokimab 100 mg Q26W` / Placebo))
+placebo_corrected |>
+  dplyr::select(-time) |>
+  dplyr::rename(Study = study, "Reduction vs placebo (%)" = reduction_pct) |>
+  knitr::kable(digits = 3, caption = "Week-52 median ratio to baseline and reduction relative to placebo (ratio of median ratios).")
+
+troughs <- sim |>
+  dplyr::filter(study %in% c("SWIFT-1/-2", "ANCHOR-1/-2"), time == 364) |>
+  dplyr::mutate(ec90 = ec50 * 9^(1 / hill)) |>
+  dplyr::group_by(study) |>
+  dplyr::summarise(pct_above_ec50 = 100 * mean(Cc > ec50),
+                   pct_above_ec90 = 100 * mean(Cc > ec90), .groups = "drop") |>
+  dplyr::mutate(published_above_ec90 = c("ANCHOR-1/-2" = 83, "SWIFT-1/-2" = 94)[study])
+troughs |>
+  dplyr::rename(Study = study, "Above EC50 (%)" = pct_above_ec50, "Above EC90 (%)" = pct_above_ec90,
+                "Thorsted 2026, above EC90 (%)" = published_above_ec90) |>
+  knitr::kable(digits = 1, caption = "Week-52 troughs above the individual EC50 and EC90.")
+
+treated_nadir <- pd_week |>
+  dplyr::filter(arm == "Depemokimab 100 mg Q26W", time == 28)
+stopifnot(
+  all(treated_nadir$median_ratio < 0.25),
+  all(abs(placebo_corrected$reduction_pct - 80) < 8),
+  all(troughs$pct_above_ec50 > 95),
+  # A fraction over 200 subjects has a binomial SE of about 3 percentage
+  # points, and the cohort's covariates only approximate Table 1.
+  all(abs(troughs$pct_above_ec90 - troughs$published_above_ec90) < 15)
+)
+```
+
+# Assumptions and deviations
+
+* **Covariate centring.** Table S3 does not print the centring values of the
+  PK covariates. The model uses the reference subject of Figure 2 and
+  Supplementary Figure S3 (76 kg, 50 years, albumin 45 g/L, eGFR 94
+  mL/min/1.73 m^2), which are the medians of the PK population; the
+  Table 2 geometric means are reproduced with it. The PD centring (54 years,
+  77.4 kg, predicted baseline 317 cells/uL) is stated in Table S4.
+* **Covariate functional forms.** The Supplementary Methods state that
+  continuous covariates enter as exponential models and categorical ones as a
+  fractional difference from the most common category; Table S3 labels the
+  continuous effects "fractional change per unit". The model uses
+  `exp(theta * (cov - ref))`; the linear form `1 + theta * (cov - ref)` differs by
+  less than 0.5% over the observed albumin and eGFR ranges.
+* **Population and study indicators.** Following Table S1 footnote e, the
+  healthy-volunteer population effects apply to both healthy-volunteer
+  studies (`DIS_HEALTHY = 1`), and the China study adds its own effects
+  (`STUDY_208021 = 1`). The FTIH study effects (`STUDY_205722 = 1`) apply on
+  top of the asthma population. Table 2's ka of 0.60 /day in the China study
+  is reproduced only this way.
+* **Injection site.** The paper's reference site is the upper arm and only an
+  abdomen effect on ka was estimated. The abdomen indicator is formed as
+  `1 - INJSITE_ARM - INJSITE_THIGH`, so the reference subject needs
+  `INJSITE_ARM = 1`.
+* **Residual error.** Table S3 states that RUV is additive on the log scale
+  (reported as an approximate CV). Table S4 gives the eosinophil RUV in the
+  same form; it is implemented the same way. Both residual SDs carry an
+  exponential between-subject variability. The PK SD is multiplied by 6.18
+  for samples taken less than 3 h after a dose, using `tad(depot)`.
+* **Placebo slope units.** Pslp is a fractional change per year; the model
+  divides time in days by 365.25.
+* **Eosinophil state.** The paper integrates the count as a ratio of the
+  placebo count (Supplementary Figure S4). The packaged state is the absolute
+  count, obtained by the product rule; the structure check above shows the
+  two agree to within numerical error.
+* **2 mg dose effect.** The 2 mg FTIH cohort's CL/F effect is carried as
+  `DOSE_LOW`; it is not used in any simulation here.
+* **Not reproduced.** Figures 2 and S3 (univariate covariate effects on PK
+  exposure, with uncertainty) and the VPCs (Figure S2, S5) need the observed
+  data or the parameter uncertainty and are not reproduced; Table 2 and
+  Figure 4 cover the same covariate model.
