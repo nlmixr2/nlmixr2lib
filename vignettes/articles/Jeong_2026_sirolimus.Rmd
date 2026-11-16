@@ -1,0 +1,487 @@
+---
+title: "Sirolimus (Jeong 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sirolimus (Jeong 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Jeong_2026_sirolimus"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Jeong_2026_sirolimus"))$description`
+* Article: [Br J Clin Pharmacol. 2026;92(9):3115](https://doi.org/10.1002/bcp.70595)
+
+Jeong and colleagues pooled prospective (intensively sampled) and
+retrospective (therapeutic-drug-monitoring trough) whole-blood sirolimus data
+from children and adolescents with vascular anomalies and fitted a
+two-compartment model with first-order absorption in NONMEM 7.5 (FOCE-I) on
+log-transformed concentrations. Body size enters through allometric scaling to
+70 kg, clearance maturation through a sigmoid function of postmenstrual age
+(PMA) whose TM50 and Hill coefficient were fixed to literature values, and
+haemoglobin through a linear effect on clearance retained after a bootstrap
+stepwise covariate search. Because the pooled data could not identify every
+structural parameter, the final estimation used a NONMEM `$PRIOR NWPRI` built
+from the Miyazaki 2024 paediatric/adult sirolimus model.
+
+The paper then simulated once-daily mg/kg regimens for one month in eleven
+weight / PMA groups to pick, for each group, the dose that best keeps the
+steady-state trough within 5-15 ng/mL (Table 3, Figure S3), and showed how
+haemoglobin shifts the trough at the chosen dose (Figure 2). This vignette
+reproduces both.
+
+# Population
+
+28 paediatric patients (11 male / 17 female) contributed 107 whole-blood
+samples: 7 prospective patients gave 74 samples and 21 retrospective patients
+gave the remaining 33 (Results; Table 1). Age was 8.7 +/- 5.6 years
+(0.3-18.3; 4 infants, 15 children and 9 adolescents), weight 37 +/- 24.7 kg
+(6.3-83.8), and haemoglobin 12.6 +/- 1.2 g/dL (10.2-14.6). Gestational age was
+not recorded; PMA was derived as postnatal age + 40 weeks. Single doses ranged
+from 0.27 to 1.04 mg/m^2^ or 0.01 to 0.04 mg/kg (Discussion). The same
+information is available programmatically:
+
+```{r population}
+str(rxode2::rxode(readModelDb("Jeong_2026_sirolimus"))$population)
+```
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| Structure: depot -> central <-> peripheral, first-order absorption and elimination | -- | Results ("two-compartmental model"); Figure S1 scheme |
+| `lka` | 0.175 1/h | Table 2, Ka |
+| `lcl` | 14.7 L/h/70 kg | Table 2, CL/F |
+| `lvc` | 102 L/70 kg | Table 2, Vc/F |
+| `lvp` | 725 L/70 kg | Table 2, Vp/F |
+| `lq` | 24.7 L/h/70 kg | Table 2, Q/F |
+| `e_wt_cl` (CL and Q) | 0.75, fixed | Results final-model equation; Figure S1 |
+| `e_wt_vc` (Vc and Vp) | 1, fixed | Results final-model equation (Vc); Figure S1 (Vc and Vp) |
+| `ltm50_cl` | 62.9 weeks, fixed | Table 2, TM50 |
+| `lhill_cl` | 2.94, fixed | Table 2, Hill |
+| Maturation `MF = PMA^Hill / (TM50^Hill + PMA^Hill)` | -- | Results final-model equation |
+| `e_hgb_cl`, CL x (1 + e_hgb_cl x (HGB - 12.6)) | -0.155 per g/dL | Table 2, COVHGB; Results equation (centre 12.6) |
+| `etalcl` | 0.124 (variance) | Table 2, IIV_CL/F |
+| `etalvc` | 1.9 (variance) | Table 2, IIV_Vc/F; Figure S1 (eta1 on Vc) |
+| `expSd` | sqrt(0.13) = 0.361 | Table 2, RV (proportional) = 0.13 on log-transformed data |
+| Concentration `Cc = central / vc x 1000` (ng/mL) | -- | Units: dose mg, volume L |
+
+# Virtual cohort
+
+The paper generated weight and age from the 2017 Korean paediatric growth
+charts. Those charts are not reproduced in the source, so this vignette draws
+weight uniformly within each group's weight band and, for the infant groups,
+PMA uniformly within the group's PMA band. For the groups with PMA > 144 weeks
+(older than about 2 years) age is read off an approximate median
+weight-for-age relationship, floored at 2.1 years; clearance maturation is at
+least 92% complete at that age, so the choice moves clearance by a few percent
+at most and only in the 10-20 kg group.
+
+```{r cohort-helpers}
+groups <- data.frame(
+  grp = 1:11,
+  label = c(
+    "WT 5-10 kg, PMA 66-92 wk", "WT 5-10 kg, PMA 92-118 wk",
+    "WT 10-20 kg, PMA 118-144 wk", "WT 10-20 kg, PMA >144 wk",
+    "WT 20-30 kg", "WT 30-40 kg", "WT 40-50 kg", "WT 50-60 kg",
+    "WT 60-70 kg", "WT 70-80 kg", "WT 80-90 kg"
+  ),
+  wt_lo = c(5, 5, 10, 10, 20, 30, 40, 50, 60, 70, 80),
+  wt_hi = c(10, 10, 20, 20, 30, 40, 50, 60, 70, 80, 90),
+  pma_lo = c(66, 92, 118, NA, NA, NA, NA, NA, NA, NA, NA),
+  pma_hi = c(92, 118, 144, NA, NA, NA, NA, NA, NA, NA, NA),
+  # Table 3: recommended once-daily dose at normal haemoglobin (mg/kg)
+  dose_rec = c(0.08, 0.09, 0.09, 0.09, 0.08, 0.06, 0.06, 0.06, 0.08, 0.07, 0.06)
+)
+groups$label <- factor(groups$label, levels = groups$label)
+
+# Approximate median weight-for-age (years, kg) used only to give the
+# PMA > 144 week groups a plausible age.
+wt_for_age <- data.frame(
+  age = 2:18,
+  wt = c(12.5, 14.5, 16.5, 18.5, 21, 23, 25.5, 28.5, 32, 36, 40, 45, 50, 55, 59, 62, 64)
+)
+
+# One row per virtual subject: weight, PMA (weeks) and group.
+draw_cohort <- function(groups, n_per_cell, cells) {
+  out <- tidyr::expand_grid(groups, cells, rep = seq_len(n_per_cell))
+  out$WT <- stats::runif(nrow(out), out$wt_lo, out$wt_hi)
+  infant <- !is.na(out$pma_lo)
+  age_yr <- pmax(stats::approx(wt_for_age$wt, wt_for_age$age, out$WT, rule = 2)$y, 2.1)
+  out$PAGE <- 40 + age_yr * 52.18
+  out$PAGE[infant] <- stats::runif(sum(infant), out$pma_lo[infant], out$pma_hi[infant])
+  out$id <- seq_len(nrow(out))
+  out
+}
+
+# Once-daily dosing for one month (30 doses) with a trough sample at 720 h,
+# just before the 31st dose. Doses go into `depot`; the trough is observed on
+# the `central` state, where Cc is computed.
+make_events <- function(cohort) {
+  doses <- data.frame(
+    id = cohort$id, time = 0, amt = cohort$dose * cohort$WT, evid = 1L,
+    ii = 24, addl = 29L, cmt = "depot"
+  )
+  obs <- data.frame(
+    id = cohort$id, time = 720, amt = 0, evid = 0L,
+    ii = 0, addl = 0L, cmt = "central"
+  )
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::left_join(dplyr::select(cohort, id, WT, PAGE, HGB), by = "id") |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+```
+
+# Simulation
+
+```{r model}
+mod <- readModelDb("Jeong_2026_sirolimus")
+rxode2::rxSetSeed(20260512)
+set.seed(20260512)
+```
+
+## Figure S3 -- target attainment by dose and group
+
+Figure S3 tabulates, for each of the eleven groups and each once-daily dose of
+0.05-0.09 mg/kg, the percentage of simulated steady-state troughs inside 5-15
+ng/mL (panel A), below 5 ng/mL (panel B) and above 15 ng/mL (panel C). The
+haemoglobin effect was assessed only afterwards ("The effect of haemoglobin
+levels was assessed after completing the simulations based on weight and
+age"), so this simulation holds haemoglobin at the 12.6 g/dL reference, where
+the haemoglobin factor is exactly 1.
+
+```{r figS3-sim}
+cohort_s3 <- draw_cohort(
+  groups, n_per_cell = 200,
+  cells = data.frame(dose = c(0.05, 0.06, 0.07, 0.08, 0.09))
+)
+cohort_s3$HGB <- 12.6
+sim_s3 <- rxode2::rxSolve(mod, make_events(cohort_s3), returnType = "data.frame")
+stopifnot(length(unique(sim_s3$id)) == nrow(cohort_s3))
+
+attain <- sim_s3 |>
+  dplyr::filter(time == 720) |>
+  dplyr::left_join(dplyr::select(cohort_s3, id, grp, label, dose), by = "id") |>
+  dplyr::group_by(grp, label, dose) |>
+  dplyr::summarise(
+    target = 100 * mean(Cc >= 5 & Cc <= 15),
+    below = 100 * mean(Cc < 5),
+    above = 100 * mean(Cc > 15),
+    .groups = "drop"
+  )
+```
+
+```{r figS3-published}
+# Figure S3 panels B (below 5 ng/mL) and C (above 15 ng/mL), transcribed from
+# the cell labels; an empty cell is 0%. Rows are doses 0.05-0.09 mg/kg,
+# columns are groups 1-11. Panel A = 100 - B - C for every cell.
+pub_below <- rbind(
+  `0.05` = c(42, 58, 55, 61, 43, 36, 41, 34, 29, 30, 22),
+  `0.06` = c(30, 37, 38, 39, 35, 24, 17, 16, 27, 15, 9),
+  `0.07` = c(16, 32, 22, 31, 18, 16, 17, 10, 15, 12, 9),
+  `0.08` = c(3, 23, 23, 19, 16, 21, 7, 4, 5, 9, 4),
+  `0.09` = c(6, 10, 13, 15, 21, 10, 6, 6, 4, 0, 2)
+)
+pub_above <- rbind(
+  `0.05` = c(2, 0, 1, 0, 1, 1, 1, 3, 5, 1, 6),
+  `0.06` = c(4, 1, 2, 2, 1, 1, 8, 5, 9, 14, 7),
+  `0.07` = c(12, 6, 3, 0, 6, 10, 12, 13, 16, 12, 17),
+  `0.08` = c(20, 11, 6, 14, 7, 13, 23, 20, 20, 28, 38),
+  `0.09` = c(19, 16, 4, 11, 16, 22, 26, 31, 40, 45, 36)
+)
+pub_s3 <- tidyr::expand_grid(dose = c(0.05, 0.06, 0.07, 0.08, 0.09), grp = 1:11)
+pub_s3$below_pub <- pub_below[cbind(match(sprintf("%.2f", pub_s3$dose), rownames(pub_below)), pub_s3$grp)]
+pub_s3$above_pub <- pub_above[cbind(match(sprintf("%.2f", pub_s3$dose), rownames(pub_above)), pub_s3$grp)]
+pub_s3$target_pub <- 100 - pub_s3$below_pub - pub_s3$above_pub
+
+cmp_s3 <- attain |>
+  dplyr::mutate(dose = round(dose, 2)) |>
+  dplyr::inner_join(pub_s3, by = c("dose", "grp"))
+stopifnot(nrow(cmp_s3) == 55)
+```
+
+```{r figS3-plot, fig.width = 9, fig.height = 6}
+# Replicates Figure S3 of Jeong 2026 (panels A-C): percentage of steady-state
+# troughs in, below and above the 5-15 ng/mL window. Points = simulated here;
+# crosses = published cell values.
+cmp_s3 |>
+  tidyr::pivot_longer(
+    c(target, below, above, target_pub, below_pub, above_pub),
+    names_to = c("range", "source"), names_pattern = "([a-z]+)_?(pub)?"
+  ) |>
+  dplyr::mutate(
+    source = ifelse(source == "pub", "Published (Figure S3)", "Simulated"),
+    range = factor(range, c("target", "below", "above"),
+      c("5-15 ng/mL", "< 5 ng/mL", "> 15 ng/mL"))
+  ) |>
+  ggplot(aes(dose, value, colour = range, shape = source)) +
+  geom_point(size = 1.8) +
+  geom_line(data = function(d) dplyr::filter(d, source == "Simulated")) +
+  facet_wrap(~label, ncol = 4) +
+  scale_shape_manual(values = c(4, 16)) +
+  labs(x = "Once-daily dose (mg/kg)", y = "Subjects (%)", colour = NULL, shape = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r figS3-check}
+cmp_s3 |>
+  dplyr::summarise(
+    `Median difference, < 5 ng/mL (points)` = median(below - below_pub),
+    `Median difference, > 15 ng/mL (points)` = median(above - above_pub),
+    `90th pct abs difference, < 5 ng/mL` = unname(quantile(abs(below - below_pub), 0.9)),
+    `90th pct abs difference, > 15 ng/mL` = unname(quantile(abs(above - above_pub), 0.9))
+  ) |>
+  knitr::kable(digits = 1)
+
+stopifnot(
+  # Structural: a wrong clearance, volume, allometric exponent or variance
+  # scale shifts every cell in the same direction by tens of points.
+  abs(median(cmp_s3$below - cmp_s3$below_pub)) < 5,
+  abs(median(cmp_s3$above - cmp_s3$above_pub)) < 5,
+  # Envelope: the published cells come from 100 subjects each, so single
+  # cells carry roughly +/-10 points of Monte Carlo noise.
+  quantile(abs(cmp_s3$below - cmp_s3$below_pub), 0.9) < 20,
+  quantile(abs(cmp_s3$above - cmp_s3$above_pub), 0.9) < 20
+)
+```
+
+## Figure 2 -- haemoglobin effect at the recommended doses
+
+Figure 2 shows boxplots of steady-state troughs at each group's Table 3 dose,
+split into five 1-g/dL haemoglobin bands. The medians below were digitised by
+the maintainers from Figure 2, calibrated on the dashed 5 and 15 ng/mL
+reference lines of each panel row (accurate to roughly +/-0.4 ng/mL).
+
+```{r fig2-sim}
+cohort_f2 <- draw_cohort(groups, n_per_cell = 100, cells = data.frame(hb_bin = 10:14))
+cohort_f2$dose <- cohort_f2$dose_rec
+cohort_f2$HGB <- cohort_f2$hb_bin + stats::runif(nrow(cohort_f2))
+sim_f2 <- rxode2::rxSolve(mod, make_events(cohort_f2), returnType = "data.frame")
+stopifnot(length(unique(sim_f2$id)) == nrow(cohort_f2))
+
+trough_f2 <- sim_f2 |>
+  dplyr::filter(time == 720) |>
+  dplyr::left_join(dplyr::select(cohort_f2, id, grp, label, hb_bin), by = "id") |>
+  dplyr::mutate(hb = factor(paste0(hb_bin, "-", hb_bin + 1)))
+
+dig_f2 <- tidyr::expand_grid(grp = 1:11, hb_bin = 10:14)
+dig_f2$median_pub <- c(
+  6.96, 7.86, 10.54, 11.60, 14.80, 6.25, 7.86, 9.11, 11.96, 13.39,
+  6.25, 6.96, 8.21, 10.89, 13.39, 5.18, 6.25, 8.39, 10.54, 14.46,
+  5.86, 6.55, 8.28, 11.38, 13.45, 4.83, 5.17, 7.24, 8.45, 9.14,
+  4.83, 6.21, 7.59, 9.66, 11.03, 6.03, 6.90, 7.93, 10.69, 12.07,
+  7.32, 8.57, 10.89, 12.68, 16.79, 6.61, 7.50, 10.54, 11.61, 14.29,
+  5.89, 6.96, 8.39, 10.54, 13.39
+)
+```
+
+```{r fig2-plot, fig.width = 9, fig.height = 7}
+# Replicates Figure 2 of Jeong 2026: steady-state trough by haemoglobin band at
+# each group's Table 3 dose. Red crosses = medians digitised from Figure 2.
+trough_f2 |>
+  ggplot(aes(hb, Cc)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_point(
+    data = dplyr::left_join(dig_f2, dplyr::distinct(groups, grp, label), by = "grp") |>
+      dplyr::mutate(hb = factor(paste0(hb_bin, "-", hb_bin + 1))),
+    aes(y = median_pub), colour = "red", shape = 4, size = 2.5
+  ) +
+  geom_hline(yintercept = c(5, 15), linetype = "dashed", colour = "steelblue") +
+  coord_cartesian(ylim = c(0, 50)) +
+  facet_wrap(~label, ncol = 4) +
+  labs(x = "Haemoglobin (g/dL)", y = "Steady-state trough (ng/mL)") +
+  theme_bw()
+```
+
+```{r fig2-check}
+cmp_f2 <- trough_f2 |>
+  dplyr::group_by(grp, hb_bin) |>
+  dplyr::summarise(median_sim = median(Cc), .groups = "drop") |>
+  dplyr::inner_join(dig_f2, by = c("grp", "hb_bin")) |>
+  dplyr::mutate(pct_diff = 100 * (median_sim - median_pub) / median_pub)
+stopifnot(nrow(cmp_f2) == 55)
+
+data.frame(
+  `Median % difference` = median(cmp_f2$pct_diff),
+  `90th pct abs % difference` = unname(quantile(abs(cmp_f2$pct_diff), 0.9)),
+  check.names = FALSE
+) |>
+  knitr::kable(digits = 1)
+
+stopifnot(
+  abs(median(cmp_f2$pct_diff)) < 5,
+  quantile(abs(cmp_f2$pct_diff), 0.9) < 30
+)
+```
+
+## Haemoglobin centring: 12.6 or 12.9 g/dL?
+
+The main-text final-model equation centres haemoglobin on 12.6 g/dL (the
+cohort mean in Table 1), whereas the same equation drawn in Figure S1 uses
+12.9 g/dL. Centring on 12.9 instead of 12.6 is the same as lowering every
+subject's haemoglobin by 0.3 g/dL, which raises clearance by
+0.155 x 0.3 = 4.65% of the reference value. Re-running the Figure 2 simulation
+with that shift shows which reading reproduces the published medians.
+
+```{r hgb-centring}
+cohort_alt <- cohort_f2
+cohort_alt$HGB <- cohort_alt$HGB - 0.3
+sim_alt <- rxode2::rxSolve(mod, make_events(cohort_alt), returnType = "data.frame")
+cmp_alt <- sim_alt |>
+  dplyr::filter(time == 720) |>
+  dplyr::left_join(dplyr::select(cohort_alt, id, grp, hb_bin), by = "id") |>
+  dplyr::group_by(grp, hb_bin) |>
+  dplyr::summarise(median_sim = median(Cc), .groups = "drop") |>
+  dplyr::inner_join(dig_f2, by = c("grp", "hb_bin")) |>
+  dplyr::mutate(pct_diff = 100 * (median_sim - median_pub) / median_pub)
+
+data.frame(
+  Centring = c("12.6 g/dL (main text, packaged)", "12.9 g/dL (Figure S1)"),
+  `Median % difference vs Figure 2` = c(median(cmp_f2$pct_diff), median(cmp_alt$pct_diff)),
+  check.names = FALSE
+) |>
+  knitr::kable(digits = 1)
+```
+
+The 12.6 g/dL reading sits closer to the published medians; the 12.9 g/dL
+reading runs systematically lower. Both readings use the same simulated
+subjects, so the gap between the two rows (a few percent, as the 4.65%
+clearance shift predicts) is not Monte Carlo noise.
+
+```{r hgb-centring-check}
+# The shift lowers every trough, so the 12.9 reading must sit below the 12.6
+# reading on the same subjects.
+stopifnot(median(cmp_alt$pct_diff) < median(cmp_f2$pct_diff))
+```
+
+# PKNCA validation
+
+Typical-value steady-state profiles (random effects zeroed) for a
+representative subject from each group at its Table 3 dose and haemoglobin
+12.6 g/dL. `ss = 1` places each subject at the exact steady state.
+
+```{r pknca-sim}
+typ <- groups |>
+  dplyr::mutate(
+    id = grp,
+    WT = (wt_lo + wt_hi) / 2,
+    PAGE = ifelse(is.na(pma_lo),
+      40 + 52.18 * pmax(stats::approx(wt_for_age$wt, wt_for_age$age, (wt_lo + wt_hi) / 2, rule = 2)$y, 2.1),
+      (pma_lo + pma_hi) / 2
+    ),
+    HGB = 12.6,
+    amt = dose_rec * WT
+  )
+ev_typ <- dplyr::bind_rows(
+  data.frame(id = typ$id, time = 0, amt = typ$amt, evid = 1L, ii = 24, ss = 1L, cmt = "depot"),
+  tidyr::expand_grid(id = typ$id, time = seq(0, 24, by = 0.25)) |>
+    dplyr::mutate(amt = 0, evid = 0L, ii = 0, ss = 0L, cmt = "central")
+) |>
+  dplyr::left_join(dplyr::select(typ, id, WT, PAGE, HGB), by = "id") |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+# zeroRe() removes the random effects on purpose; rxode2 warns on every
+# multi-subject solve without omega, so muffle that one warning only.
+sim_typ <- withCallingHandlers(
+  rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ, returnType = "data.frame"),
+  warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+) |>
+  dplyr::left_join(dplyr::select(typ, id, label, amt), by = "id")
+```
+
+```{r pknca-run}
+conc <- sim_typ |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, label, time, Cc)
+dose_df <- typ |>
+  dplyr::transmute(id, label, time = 0, amt)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | label + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | label + id)
+intervals <- data.frame(
+  start = 0, end = 24,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE
+)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_wide <- as.data.frame(nca$result) |>
+  dplyr::select(label, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+nca_wide |>
+  dplyr::rename(
+    Group = label, `Cmax (ng/mL)` = cmax, `Tmax (h)` = tmax,
+    `Ctrough (ng/mL)` = cmin, `AUC0-24 (ng*h/mL)` = auclast, `Cavg (ng/mL)` = cav
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+The paper reports no NCA, so the check is closed-form: at steady state
+AUC0-tau = Dose / (CL/F), with CL/F the typical individual clearance at the
+subject's weight and PMA.
+
+```{r pknca-check}
+cl_typ <- 14.7 * (typ$WT / 70)^0.75 *
+  typ$PAGE^2.94 / (62.9^2.94 + typ$PAGE^2.94)
+auc_ref <- data.frame(label = typ$label, auc_ref = typ$amt * 1000 / cl_typ)
+chk <- dplyr::inner_join(nca_wide, auc_ref, by = "label") |>
+  dplyr::mutate(pct = 100 * (auclast - auc_ref) / auc_ref)
+stopifnot(nrow(chk) == 11, all(abs(chk$pct) < 1))
+# Every typical trough at the recommended dose should sit inside 5-15 ng/mL,
+# which is what Table 3 claims for the median subject.
+stopifnot(all(chk$cmin > 5 & chk$cmin < 15))
+```
+
+# Assumptions and deviations
+
+* **Variance scale.** Table 2 does not say whether the OMEGA and SIGMA
+  entries are variances or standard deviations. They are read as NONMEM
+  variances (the default output scale). The Figure S3 and Figure 2
+  comparisons above, which depend directly on the spread of the trough
+  distribution, reproduce the published percentages and medians under this
+  reading. The Vc/F variance of 1.9 is large, but its tight bootstrap
+  interval (1.85-1.96) reflects the informative Miyazaki 2024 prior rather
+  than the 28-subject data.
+* **Residual error.** Concentrations were log-transformed before fitting, so
+  the "proportional" residual error is encoded as additive on the log scale
+  (`lnorm(expSd)`, `expSd = sqrt(0.13)`).
+* **Haemoglobin centring.** The main-text equation centres haemoglobin on
+  12.6 g/dL and Figure S1 on 12.9 g/dL. The model uses 12.6 g/dL, which
+  equals the Table 1 cohort mean and reproduces Figure 2 (see the comparison
+  above). The linear factor `1 - 0.155 (HGB - 12.6)` would reach zero at
+  HGB = 19.05 g/dL; the model should not be used outside the observed
+  10.2-14.6 g/dL range.
+* **Vp/F scaling.** The main-text equation does not list Vp/F; Figure S1
+  scales it by (WT/70)^1, as for Vc/F, and that is what the model uses. Ka is
+  not scaled.
+* **Fixed maturation.** TM50 (62.9 weeks) and Hill (2.94) were fixed by the
+  authors to literature values (Miyazaki 2024) and are encoded as `fixed()`.
+  PMA must be supplied in weeks (postnatal age + 40 weeks when gestational
+  age is unknown, as the authors assumed).
+* **Virtual cohort.** The Korean growth charts used in the paper are not
+  reproduced in the source; weights are uniform within each band and ages for
+  the groups older than 2 years come from an approximate median
+  weight-for-age curve (see Virtual cohort). For Figure S3 haemoglobin is
+  held at the 12.6 g/dL reference; the paper's text implies haemoglobin was
+  not varied in those runs but does not give the value.
+* **Figure 1 not reproduced.** Figure 1 is a prediction- and
+  variability-corrected VPC of the observed data. The individual dosing
+  histories behind it are not published, so it cannot be regenerated.
+* **Prior-informed estimates.** The final estimates came from a NONMEM
+  `$PRIOR NWPRI` fit using the Miyazaki 2024 model as prior; the packaged
+  values are the posterior estimates printed in Table 2, not the prior means.
