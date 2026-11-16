@@ -7428,6 +7428,8 @@ navbar:
         href: articles/Vet_2020_salbutamol.html
       - text: "Salbutamol mbma (Courlet 2022)"
         href: articles/Courlet_2022_salbutamol_mbma.html
+      - text: "Salbutamol pbpk (Wen 2026)"
+        href: articles/Wen_2026_salbutamol_pbpk.html
       - text: "Salbutamol rat pbpk (Wen 2025)"
         href: articles/Wen_2025_pulmonary_pbpk.html
       - text: "Salmeterol (Rosenborg 2025)"
@@ -12152,6 +12154,7 @@ articles:
   - articles/Wen_2016_enrofloxacin_Pmultocida
   - articles/Wen_2022_osteoarthritis_placebo_mbma
   - articles/Wen_2025_pulmonary_pbpk
+  - articles/Wen_2026_salbutamol_pbpk
   - articles/Wenker_2024_piperacillin_tazobactam
   - articles/WerumeusBuning_2021_ceftazidime
   - articles/Westerhout_2012_acetaminophen_rat_pbpk
