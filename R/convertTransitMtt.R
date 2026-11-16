@@ -45,8 +45,16 @@ convertTransitMtt <- function(ui, transit = "transit", ktr = "ktr", mtt = "Mtt")
   .chain <- rxode2::rxModelVars(.ui)$state
   .chain <- .chain[grepl(paste0("^", transit, "[0-9]+$"), .chain)]
   if (length(.chain) != .n) {
-    stop("transit chain '", transit, "' is not consecutive (found ", length(.chain),
-      " compartments, expected ", .n, ")", call. = FALSE)
+    stop(
+      "transit chain '",
+      transit,
+      "' is not consecutive (found ",
+      length(.chain),
+      " compartments, expected ",
+      .n,
+      ")",
+      call. = FALSE
+    )
   }
   .lktr <- paste0("l", ktr)
   .lmtt <- paste0("l", mtt)

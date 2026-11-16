@@ -59,29 +59,27 @@ test_that("convertTransitMtt refuses a model without a transit chain", {
 })
 
 test_that("convertTransitMtt refuses a second conversion that reuses Mtt", {
-
   res <- res0 |> addTransit(3) |> convertTransitMtt()
 
   # the first chain's Mtt is taken; converting another chain without a
   # distinct mtt name must not silently couple them
   expect_error(
-    res |> addSecondAbsorption(type = "first", delay = "transit", n = 2) |>
+    res |>
+      addSecondAbsorption(type = "first", delay = "transit", n = 2) |>
       convertTransitMtt(transit = "transitB", ktr = "ktrB"),
     regexp = "already"
   )
 
   res2 <- suppressWarnings(
-    res |> addSecondAbsorption(type = "first", delay = "transit", n = 2) |>
+    res |>
+      addSecondAbsorption(type = "first", delay = "transit", n = 2) |>
       convertTransitMtt(transit = "transitB", ktr = "ktrB", mtt = "MttB")
   )
   expect_equal(rxode2::modelExtract(res2, "MttB"), "MttB <- exp(lMttB)")
   expect_equal(rxode2::modelExtract(res2, "Mtt"), "Mtt <- exp(lMtt)")
-
 })
 
 test_that("convertTransitMtt refuses a chain whose entry rate is not ktr", {
-
   m <- res0 |> addTransit(2)
   expect_error(m |> convertTransitMtt(ktr = "ktrX"), regexp = "ktrX|lktrX|not a log-scale")
-
 })

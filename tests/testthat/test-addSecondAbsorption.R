@@ -354,17 +354,13 @@ test_that("addSecondAbsorption transit on a transit first path keeps both chains
 })
 
 test_that("removeTransit leaves the second transit chain alone", {
-
   # the first chain's numbered compartments are removed; transitB1..N
   # is a different chain and must survive untouched
   res <- suppressWarnings(
-    res0 |> addTransit(2) |> addSecondAbsorption(delay = "transit", n = 2) |>
-      removeTransit()
+    res0 |> addTransit(2) |> addSecondAbsorption(delay = "transit", n = 2) |> removeTransit()
   )
 
   expect_false(any(c("transit1", "transit2") %in% res$state))
   expect_true(all(c("transitB1", "transitB2") %in% res$state))
-  expect_true("ktrB" %in% rxode2::rxModelVars(res)$params ||
-    "lktrB" %in% res$iniDf$name)
-
+  expect_true("ktrB" %in% rxode2::rxModelVars(res)$params || "lktrB" %in% res$iniDf$name)
 })
