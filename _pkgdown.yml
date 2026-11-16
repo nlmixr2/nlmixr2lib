@@ -2766,6 +2766,8 @@ navbar:
         href: articles/Cendros_2025_enflicoxib.html
       - text: "Enfortumab (Choules 2024)"
         href: articles/Choules_2024_vedotin_ddi.html
+      - text: "Enoxacin (Qin 2026)"
+        href: articles/Qin_2026_acid_reducing_agent_ddi.html
       - text: "Enoxaparin (Barras 2009)"
         href: articles/Barras_2009_enoxaparin.html
       - text: "Enoxaparin (Berges 2007)"
@@ -2842,6 +2844,8 @@ navbar:
         href: articles/vanHasselt_2013_eribulin.html
       - text: "Eribulin (vanHasselt 2015)"
         href: articles/vanHasselt_2015_eribulin.html
+      - text: "Erlotinib (Qin 2026)"
+        href: articles/Qin_2026_acid_reducing_agent_ddi.html
       - text: "Erlotinib (Wanika 2024)"
         href: articles/Wanika_2024_tki_nsclc_invitro.html
       - text: "Erlotinib (Yin 2024)"
@@ -3474,6 +3478,8 @@ navbar:
         href: articles/Choi_2016_gcc4401c_rivaroxaban.html
       - text: "Gefapixant (Chawla 2023)"
         href: articles/Chawla_2023_gefapixant.html
+      - text: "Gefitinib (Qin 2026)"
+        href: articles/Qin_2026_acid_reducing_agent_ddi.html
       - text: "Gefitinib (Wanika 2024)"
         href: articles/Wanika_2024_tki_nsclc_invitro.html
       - text: "Gefitinib qsp (Wan 2025)"
@@ -3896,6 +3902,8 @@ navbar:
         href: articles/Yang_2025_imatinib_external_evaluation.html
       - text: "Imatinib (Petain 2008)"
         href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imatinib (Qin 2026)"
+        href: articles/Qin_2026_acid_reducing_agent_ddi.html
       - text: "Imatinib (Said 2025)"
         href: articles/Said_2025_imatinib.html
       - text: "Imatinib (Schindler 2017)"
@@ -11445,6 +11453,7 @@ articles:
   - articles/Qi_2024_vosoritide
   - articles/Qian_2025_tetrahydrocannabinol
   - articles/Qin_2025_ropeginterferon
+  - articles/Qin_2026_acid_reducing_agent_ddi
   - articles/Quartino_2016_trastuzumab
   - articles/Quartino_2019_trastuzumab
   - articles/Quintairos_2021_tacrolimus_mycophenolic_acid
