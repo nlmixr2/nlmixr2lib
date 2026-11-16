@@ -358,7 +358,16 @@ typ_cov <- tibble::tibble(
 ) |>
   dplyr::mutate(id = dplyr::row_number(), dose_times = list(c(0, 7 * hours_per_day)))
 ev_typ <- make_events(typ_cov)
-sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ, returnType = "data.frame") |>
+
+# Typical values are the intent here, so rxode2's notice that a multi-subject
+# solve has no omega is expected; any other warning still surfaces.
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) invokeRestart("muffleWarning")
+}
+sim_typ <- withCallingHandlers(
+  rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ, returnType = "data.frame"),
+  warning = muffle_no_omega
+) |>
   dplyr::inner_join(dplyr::select(typ_cov, id, label), by = "id")
 
 ggplot(sim_typ, aes(time / hours_per_day, Cc, colour = label)) +
