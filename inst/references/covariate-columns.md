@@ -9699,6 +9699,39 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Santavy_2022_cefazolin.R` (exponential effect on the peripheral volume, `exp(-0.79 * SURG_CPB_MINI)`, reference = off-pump).
 - **Notes:** Mutually exclusive with `SURG_CPB_STD`; see that entry for the distinction from the `CPB_` phase windows, `T_CPB` and the ECMO family. Record the circuit hardware and temperature management in `covariateData[[SURG_CPB_MINI]]$notes`.
 
+### SURG_TOF (**canonical for tetralogy of Fallot total-correction surgery indicator**)
+- **Description:** 1 = the subject underwent total (complete) surgical correction of tetralogy of Fallot during the modelled admission; 0 = otherwise. Subject-level and time-fixed. Member of the congenital-heart-surgery procedure-type set `SURG_TOF` / `SURG_VSD_AVSD` / `SURG_GLENN`, whose members are mutually exclusive; the reference category is whatever cohort the source left un-indicated, and each model states it in `covariateData[[...]]$reference_category`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (in `Rantanen_2026_methylprednisolone.R`, the neonatal cardiac-surgery cohort when `SURG_VSD_AVSD` and `SURG_GLENN` are also 0).
+- **Source aliases:**
+  - `OPER = 1` -- used in `Rantanen_2026_methylprednisolone.R` (Rantanen 2026 four-level operation-group covariate; `SURG_TOF = as.integer(OPER == 1)`).
+- **Example models:** `Rantanen_2026_methylprednisolone.R` (log-additive effect on V, `exp(-0.404 * SURG_TOF)`, and an operation-group-specific proportional residual error).
+- **Notes:** Records the procedure, not the diagnosis: a patient with tetralogy of Fallot who had a palliative shunt rather than total correction is 0. In pooled paediatric datasets the procedure type is usually confounded with age at surgery and with the source trial, so the fitted effect is an empirical cohort descriptor; say so in the model's notes. Distinct from `SURG_CPB_STD` / `SURG_CPB_MINI` (circuit type) and from `RACHS1` (surgical risk category).
+
+### SURG_VSD_AVSD (**canonical for ventricular or atrioventricular septal defect repair surgery indicator**)
+- **Description:** 1 = the subject underwent surgical repair of a ventricular septal defect (VSD) or an atrioventricular septal defect (AVSD) during the modelled admission; 0 = otherwise. Subject-level and time-fixed. Member of the mutually exclusive procedure-type set `SURG_TOF` / `SURG_VSD_AVSD` / `SURG_GLENN`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (in `Rantanen_2026_methylprednisolone.R`, the neonatal cardiac-surgery cohort when `SURG_TOF` and `SURG_GLENN` are also 0).
+- **Source aliases:**
+  - `OPER = 2` -- used in `Rantanen_2026_methylprednisolone.R` (`SURG_VSD_AVSD = as.integer(OPER == 2)`).
+- **Example models:** `Rantanen_2026_methylprednisolone.R` (log-additive effect on V, `exp(-0.475 * SURG_VSD_AVSD)`, and an operation-group-specific proportional residual error).
+- **Notes:** Pools VSD and AVSD repair because the founding source does. A paper that separates them should register `SURG_VSD` and `SURG_AVSD` siblings rather than reuse this pooled indicator. See `SURG_TOF` for the confounding caveat.
+
+### SURG_GLENN (**canonical for bidirectional Glenn (superior cavopulmonary anastomosis) surgery indicator**)
+- **Description:** 1 = the subject underwent a bidirectional Glenn procedure (bidirectional superior cavopulmonary anastomosis; stage-2 single-ventricle palliation) during the modelled admission; 0 = otherwise. Subject-level and time-fixed. Member of the mutually exclusive procedure-type set `SURG_TOF` / `SURG_VSD_AVSD` / `SURG_GLENN`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (in `Rantanen_2026_methylprednisolone.R`, the neonatal cardiac-surgery cohort when `SURG_TOF` and `SURG_VSD_AVSD` are also 0).
+- **Source aliases:**
+  - `OPER = 3` -- used in `Rantanen_2026_methylprednisolone.R` (Rantanen 2026 'GLENN, procedure for patients with tricuspid atresia'; `SURG_GLENN = as.integer(OPER == 3)`).
+- **Example models:** `Rantanen_2026_methylprednisolone.R` (log-additive effect on V, `exp(-0.884 * SURG_GLENN)`, and an operation-group-specific proportional residual error).
+- **Notes:** Records the procedure. A hemi-Fontan is a different stage-2 operation and is 0 here. Related to, but distinct from, `ICSHUNT_R2L` (a physiology indicator, right-to-left shunt with Qp:Qs < 1), which a post-Glenn patient may also carry. See `SURG_TOF` for the confounding caveat.
+
 ### T_CPB (**canonical for total cardiopulmonary bypass duration during the most recent cardiac surgery**)
 - **Description:** Total time the patient spent on cardiopulmonary bypass (CPB) during their most recent cardiac-surgery operation. Time-fixed per subject (the duration of the bypass run is a single scalar set at the close of surgery). Captures composite physiological / pharmacological effects of CPB on post-operative drug disposition (hemodilution from priming volume, systemic inflammatory response, transient hepatic / renal hypoperfusion).
 - **Units:** minutes
