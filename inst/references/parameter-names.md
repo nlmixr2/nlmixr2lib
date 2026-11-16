@@ -3942,6 +3942,23 @@ One member was added alongside the Wang 2022 venlafaxine extraction: `fm_odv`, t
 - **Example models:** `Chiang_2024_ondansetron_male_rat.R`, `Chiang_2024_ondansetron_female_rat.R`.
 - **Notes:** Ratified by the maintainers 2026-11-10 (PMC11263240). Member of the `lv_<space>` family (`lv_elf`, `lv_kidney`, `lv_brain`); the spinal-cord counterpart of `lv_brain`. Wrap in `fixed()` when the source fixes it from anatomy.
 
+### lcurv_decline, lcurv_recovery (**canonical log-transformed curvatures of a piecewise-quadratic decline-and-recovery time course**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed curvatures (output units per time^2) of an empirical response that falls along one parabola from its baseline to a nadir at `tnadir` and recovers along a second parabola sharing the same vertex: `y = curv_decline * (t - tnadir)^2 + base - curv_decline * tnadir^2` for `t < tnadir`, and the same with `curv_recovery` afterwards. Inside `model()` the bare names are `curv_decline` and `curv_recovery`.
+- **Source aliases:**
+  - `A1`, `A2` -- Morita 2026 Equations 2-9 ("slopes" of neutrophil decline and recovery).
+- **Example models:** `Morita_2026_pemetrexed.R`.
+- **Notes:** Distinct from a turnover `kout` or a linear slope: the parabola's depth at the nadir is `curv_decline * tnadir^2`, so the two curvatures are not rates and their magnitudes are not comparable to first-order constants. Pairs with `ltnadir`.
+
+### ltnadir (**canonical log-transformed time of a response nadir**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed time at which an empirical time-course response reaches its minimum. Inside `model()` the bare name is `tnadir`. The time origin is model-specific -- clock time of day in a circadian rhythm, time after dose in a toxicity time course -- and each model states it in its `units` and labels.
+- **Source aliases:**
+  - `B` -- Morita 2026 Equations 2-3 and 9 (week after the pemetrexed dose at which neutrophil recovery starts).
+  - `t_min` -- GonzalezSales 2015 Table III (clock time of the testosterone nadir, h after midnight).
+- **Example models:** `Morita_2026_pemetrexed.R` (weeks after dose; vertex of the piecewise-quadratic neutrophil course), `GonzalezSales_2015_testosterone.R` (clock time; nadir of the asymmetric cosine circadian rhythm).
+- **Notes:** A parameter of the response shape, not a covariate: compare the `t_nadir` covariate of `Srimani_2022_ixazomib_mprotein.R`, a per-patient nadir time derived before the PK/PD fit and supplied as data.
+
 ## Nested (multi-level) random effects
 
 model in this library to carry a second hierarchical level of random effects.
