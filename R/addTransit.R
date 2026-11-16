@@ -153,7 +153,9 @@ removeTransit <- function(
   rxode2::assertVariableName(ktr)
   .mv <- rxode2::rxModelVars(.ui)
   .transitCmts <- .mv$state
-  .transitCmts <- .transitCmts[grepl(paste0("^", transit), .transitCmts)]
+  # numbered compartments only: a second chain with a letter-tagged
+  # prefix (transitB1..N) must not be read as part of this one
+  .transitCmts <- .transitCmts[grepl(paste0("^", transit, "[0-9]+$"), .transitCmts)]
   .nc <- nchar(transit) + 1
   .totTransit <- max(vapply(
     .transitCmts,

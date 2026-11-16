@@ -40,10 +40,27 @@ convertTransitMtt <- function(ui, transit = "transit", ktr = "ktr", mtt = "Mtt")
   if (.n == 0L) {
     stop("no transit chain '", transit, "1' is present", call. = FALSE)
   }
+  # the chain must be exactly transit1..N: a gap, or a longer chain
+  # beyond the loop, would otherwise be converted with the wrong n
+  .chain <- rxode2::rxModelVars(.ui)$state
+  .chain <- .chain[grepl(paste0("^", transit, "[0-9]+$"), .chain)]
+  if (length(.chain) != .n) {
+    stop("transit chain '", transit, "' is not consecutive (found ", length(.chain),
+      " compartments, expected ", .n, ")", call. = FALSE)
+  }
   .lktr <- paste0("l", ktr)
   .lmtt <- paste0("l", mtt)
+  rxode2::assertVariableNew(.ui, mtt)
+  rxode2::assertVariableNew(.ui, .lmtt)
   if (!rxode2::testVariableExists(.ui, .lktr)) {
     stop("'", ktr, "' is not a log-scale transit rate in the model", call. = FALSE)
+  }
+  # the chain's entry rate must be this chain's rate: a transit line
+  # driven by another rate would be silently re-parameterized
+  .entryPat <- paste0("^d/dt\\(", transit, "1\\)")
+  .entry <- Filter(function(l) grepl(.entryPat, deparse1(l)), .ui$lstExpr)
+  if (length(.entry) != 1L || !grepl(paste0("\\b", ktr, "\\b"), deparse1(.entry[[1L]]))) {
+    stop("'d/dt(", transit, "1)' does not use the rate '", ktr, "'", call. = FALSE)
   }
   .modelLines <- .ui$lstExpr
   .exprs <- list(str2lang(paste0(ktr, " <- exp(", .lktr, ")")))
