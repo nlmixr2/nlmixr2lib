@@ -8800,6 +8800,8 @@ navbar:
         href: articles/Parasuraman_2021_vancomycin.html
       - text: "Vancomycin (Polaskova 2024)"
         href: articles/Polaskova_2024_vancomycin.html
+      - text: "Vancomycin (Polaskova 2026)"
+        href: articles/Polaskova_2026_vancomycin.html
       - text: "Vancomycin (Revilla 2010)"
         href: articles/Revilla_2010_vancomycin.html
       - text: "Vancomycin (Roberts 2011)"
@@ -11420,6 +11422,7 @@ articles:
   - articles/Pohl_2022_linzagolix
   - articles/Pokorna_2024_meropenem
   - articles/Polaskova_2024_vancomycin
+  - articles/Polaskova_2026_vancomycin
   - articles/Polito_2016_fludrocortisone
   - articles/PonceBobadilla_2023_upadacitinib
   - articles/Por_2021_imipenem
