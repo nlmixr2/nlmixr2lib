@@ -1,0 +1,413 @@
+---
+title: "Levofloxacin (Bosnak 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Levofloxacin (Bosnak 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+mod <- readModelDb("Bosnak_2026_levofloxacin")
+ui <- rxode2::rxode(mod)
+```
+
+* Citation: `r ui$reference`
+* Article: <https://doi.org/10.1093/jac/dkag284> (open access, PMC13464500)
+* Model: `Bosnak_2026_levofloxacin`
+
+```{r description, echo = FALSE, results = "asis"}
+cat(ui$description, "\n")
+```
+
+# Population
+
+Bosnak 2026 is a prospective, single-centre case-control study at Hacettepe
+University Hospitals (Ankara, Turkiye) of adults with acute leukaemia or
+undergoing allogeneic haematopoietic stem cell transplantation who had an
+absolute neutrophil count below 500 cells/mm^3 for at least a week and took
+oral levofloxacin 750 mg once daily as febrile-neutropenia prophylaxis. One
+hundred and twenty neutropenic episodes in 108 patients were enrolled (60
+prophylaxis failures matched to 60 successes; Tables 1 and 2). Four plasma
+samples (2, 4, 8 and 24 h after one 750 mg dose) were complete in 103 episodes
+(60 successes, 43 failures), which form the population PK analysis set
+(Supplementary Table S2): median age 58 years (IQR 34-68), 57.3% male, median
+weight 66.6 kg (IQR 59.5-72.0), median Cockcroft-Gault creatinine clearance
+94 mL/min (IQR 75-143) and median neutrophil count 70 cells/mm^3.
+
+```{r population}
+str(ui$population[c("n_subjects", "n_patients", "sex_female_pct",
+                    "renal_function", "dose_range")])
+```
+
+# Source trace
+
+Every value is also carried as an in-file comment next to its `ini()` entry in
+`inst/modeldb/specificDrugs/Bosnak_2026_levofloxacin.R`.
+
+| Model element | Value | Source location |
+|---|---|---|
+| Structure: one compartment, first-order absorption and elimination | -- | Results 'Population PK model'; Supplementary S2 `pkmodel(ka, V, Cl)` |
+| `lka` (fixed) | log(1.12) 1/h | Table 3; Results (fixed to the preliminary estimate) |
+| `lcl` | log(4.77) L/h | Table 3 CL/F |
+| `lvc` | log(97.57) L | Table 3 V/F |
+| `e_crcl_cl` | 0.81 | Table 3 'Effect of CRCL on CL/F'; equation CL/F = 4.77 x (CRCL/94)^0.81 |
+| `e_wt_vc` (fixed) | 1 | Table 3 'Effect of WT on V/F'; equation V/F = 97.57 x (WT/66.6) |
+| Covariate centring | WT 66.6 kg, CRCL 94 mL/min | Table 3 footnote; Supplementary S2 `log(WT/66.6)`, `log(CRCL/94)` |
+| `etalcl` | log(0.4035^2 + 1) = 0.1508 | Table 3 IIV_CL/F 40.35 CV% |
+| `etalvc` | log(0.3537^2 + 1) = 0.1179 | Table 3 IIV_V/F 35.37 CV% |
+| `fu` (fixed) | 0.7 | Methods 'PK/PD target attainment' (30% binding); Supplementary S2 `Cfree = Cc * 0.7` |
+| `propSd` | 0.25 | Table 3 proportional error 25.0 CV%; Supplementary S2 `proportional(b)` |
+
+# Virtual cohort
+
+The paper prints covariate distributions for the PK analysis set as a whole
+(Supplementary Table S2) and, separately, for the prophylaxis-success and
+prophylaxis-failure groups of the full 120-episode cohort (Tables 1 and 2).
+Table 4 reports exposure by group, so two cohorts are built from the group
+medians and interquartile ranges of age, body weight and serum creatinine,
+with the group's female fraction; creatinine clearance is then computed from
+each virtual patient by the Cockcroft-Gault equation on total body weight
+(the paper does not state which weight it used). Each quantity is sampled
+from a split distribution that reproduces its printed median and both
+quartiles (log scale for weight and creatinine, linear for age).
+
+```{r cohort}
+# Split normal (or log-normal) through a printed median and IQR.
+rsplit <- function(n, med, q1, q3, log = TRUE) {
+  z <- stats::rnorm(n)
+  if (log) {
+    lo <- log(med / q1) / qnorm(0.75)
+    hi <- log(q3 / med) / qnorm(0.75)
+    exp(log(med) + ifelse(z < 0, lo, hi) * z)
+  } else {
+    lo <- (med - q1) / qnorm(0.75)
+    hi <- (q3 - med) / qnorm(0.75)
+    med + ifelse(z < 0, lo, hi) * z
+  }
+}
+
+make_group <- function(group, n, age, wt, scr, pfemale) {
+  d <- data.frame(
+    group = group,
+    AGE = pmin(pmax(rsplit(n, age[1], age[2], age[3], log = FALSE), 18), 90),
+    WT = rsplit(n, wt[1], wt[2], wt[3]),
+    SCR = rsplit(n, scr[1], scr[2], scr[3]),
+    SEXF = stats::rbinom(n, 1, pfemale)
+  )
+  d$CRCL <- (140 - d$AGE) * d$WT / (72 * d$SCR) * ifelse(d$SEXF == 1, 0.85, 1)
+  d
+}
+
+set.seed(2026)
+n_per_group <- 150
+cohort <- rbind(
+  # Table 1 / Table 2 'Prophylaxis success' column
+  make_group("Success", n_per_group, c(63.9, 33.3, 69.0), c(64.5, 60.0, 73.8),
+             c(0.82, 0.67, 1.02), 0.650),
+  # Table 1 / Table 2 'Prophylaxis failure' column
+  make_group("Failure", n_per_group, c(52.0, 35.3, 64.0), c(67.5, 59.7, 74.5),
+             c(0.72, 0.52, 0.89), 0.483)
+)
+cohort$id <- seq_len(nrow(cohort))
+
+cohort_summary <- cohort |>
+  summarise(
+    across(c(WT, CRCL), list(
+      median = median,
+      q1 = ~ quantile(.x, 0.25),
+      q3 = ~ quantile(.x, 0.75)
+    ))
+  )
+knitr::kable(cohort_summary, digits = 1,
+             caption = "Pooled virtual cohort; compare Supplementary Table S2 (WT 66.6 [59.5-72.0] kg, CRCL 94 [75-143] mL/min).")
+```
+
+The pooled cohort reproduces the PK-analysis covariate distribution of
+Supplementary Table S2 closely, which is a check on both the Cockcroft-Gault
+derivation and the group-level inputs.
+
+```{r cohort-check}
+stopifnot(
+  abs(median(cohort$WT) / 66.6 - 1) < 0.05,
+  abs(median(cohort$CRCL) / 94 - 1) < 0.15
+)
+```
+
+# Simulation
+
+Levofloxacin 750 mg once daily for seven days; the seventh dosing interval
+(144-168 h) is at steady state (elimination half-life about 14 h at the
+typical values).
+
+```{r simulate}
+dose_events <- rxode2::et(amt = 750, ii = 24, addl = 6, cmt = "depot") |>
+  rxode2::et(c(0, seq(144, 168, by = 0.5)), cmt = "central") |>
+  as.data.frame()
+
+events <- merge(
+  cohort[, c("id", "group", "WT", "CRCL")],
+  dose_events[, setdiff(names(dose_events), "id")],
+  by = NULL
+) |>
+  arrange(id, time, desc(evid))
+
+rxode2::rxSetSeed(2026)
+sim <- rxode2::rxSolve(mod, events, keep = "group", returnType = "data.frame")
+```
+
+## Typical-value profiles across renal function
+
+Bosnak 2026 shows observed concentrations (Supplementary Figure S1) but no
+model-predicted profiles; the figure below shows the model's typical steady-state
+profile at the median weight for the Supplementary Table S2 quartiles of
+creatinine clearance.
+
+```{r typical-profiles}
+# One single-subject solve per creatinine clearance, so that the
+# typical-value (zeroRe) solve is not a multi-subject simulation.
+mod_typ <- rxode2::zeroRe(mod)
+typ <- bind_rows(lapply(seq_along(c(75, 94, 143)), function(i) {
+  crcl <- c(75, 94, 143)[i]
+  ev <- dose_events[, setdiff(names(dose_events), "id")]
+  ev$WT <- 66.6
+  ev$CRCL <- crcl
+  out <- rxode2::rxSolve(mod_typ, ev, returnType = "data.frame")
+  out$id <- i
+  out$CRCL <- crcl
+  out
+}))
+
+typ |>
+  filter(time >= 144) |>
+  mutate(tad = time - 144, CRCL = factor(paste(CRCL, "mL/min"),
+                                         levels = paste(c(75, 94, 143), "mL/min"))) |>
+  ggplot(aes(tad, Cc, colour = CRCL)) +
+  geom_line() +
+  labs(x = "Time after dose (h)", y = "Total levofloxacin (mg/L)",
+       colour = "CRCL",
+       title = "Typical steady-state profiles, 750 mg once daily, WT 66.6 kg") +
+  theme_minimal()
+```
+
+The steady-state unbound AUC0-24 of a typical patient has a closed form,
+`fu * dose / (CL/F)`, so a PKNCA run on the typical solve must reproduce it.
+
+```{r typical-closed-form}
+typ_ss <- typ |> filter(time >= 144, id == 2)
+typ_conc <- PKNCA::PKNCAconc(typ_ss, Cu ~ time | id)
+typ_int <- data.frame(start = 144, end = 168, auclast = TRUE)
+typ_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(typ_conc, intervals = typ_int))
+typ_fauc <- as.data.frame(typ_nca)$PPORRES
+c(pknca = typ_fauc, closed_form = 0.7 * 750 / 4.77)
+stopifnot(abs(typ_fauc / (0.7 * 750 / 4.77) - 1) < 0.01)
+```
+
+# PKNCA validation
+
+Steady-state Cmax, Cmin and AUC0-24 are computed with PKNCA over the 144-168 h
+interval for each virtual patient, by group. Total concentrations (`Cc`) give
+Cmax and Cmin; the unbound concentration (`Cu`) gives the unbound AUC0-24.
+
+```{r pknca}
+nca_input <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, group, time, Cc, Cu)
+
+dose_df <- events |>
+  filter(evid == 1) |>
+  distinct(id, group) |>
+  mutate(time = 0, amt = 750)
+
+intervals_total <- data.frame(start = 144, end = 168, cmax = TRUE, cmin = TRUE)
+intervals_free <- data.frame(start = 144, end = 168, auclast = TRUE)
+
+nca_total <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_input, Cc ~ time | group + id),
+  PKNCA::PKNCAdose(dose_df, amt ~ time | group + id),
+  intervals = intervals_total
+))
+nca_free <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(nca_input, Cu ~ time | group + id),
+  PKNCA::PKNCAdose(dose_df, amt ~ time | group + id),
+  intervals = intervals_free
+))
+nca_sim <- bind_rows(
+  as.data.frame(nca_total$result),
+  as.data.frame(nca_free$result)
+)
+```
+
+## Comparison against Table 4
+
+Table 4 of Bosnak 2026 gives the medians of the individual (Bayesian
+posterior) exposures by prophylaxis group. Its "AUC0-24" row is the
+**unbound** steady-state AUC0-24, not the total: the total steady-state
+AUC of a typical patient is `750 / 4.77 = 157` mg*h/L, which no group median
+in Table 4 approaches, while the unbound value `0.7 * 157 = 110` mg*h/L sits
+between the two printed medians (108.3 and 90.67). This matches the fAUCtau
+output of the authors' Monolix code. The Cmax and Cmin rows are total
+concentrations (the assay measured total levofloxacin) at steady state; a
+single 750 mg dose would give a typical Cmax near 6.7 mg/L, well below both
+printed medians.
+
+```{r nca-compare}
+reference <- data.frame(
+  group = c("Success", "Failure"),
+  cmax = c(10.54, 9.46),     # Table 4 'Cmax (mg/L)'
+  cmin = c(3.54, 2.43),      # Table 4 'Cmin (trough)'
+  auclast = c(108.3, 90.67)  # Table 4 'AUC0-24' (unbound, steady state)
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  nca_sim, reference,
+  by = "group",
+  units = c(cmax = "mg/L", cmin = "mg/L", auclast = "mg*h/L")
+)
+knitr::kable(
+  cmp |> rename("Group" = group),
+  caption = "Steady-state exposure medians: Table 4 of Bosnak 2026 against the simulation. Cmax and Cmin are total concentrations; the AUC row is the unbound AUC0-24."
+)
+```
+
+```{r nca-footnote, echo = FALSE, results = "asis"}
+if (!is.null(attr(cmp, "footnote"))) cat(attr(cmp, "footnote"), "\n")
+```
+
+Cmax and unbound AUC agree with Table 4 within about 10% in both groups, and
+the simulated failure group has lower exposure than the success group, as in
+the paper, because its younger patients with lower serum creatinine have
+higher creatinine clearance. The simulated trough of the failure group runs
+higher than its printed median. The trough is the exposure most sensitive to
+the spread of the elimination rate, and the failure-group covariates are taken
+from the full 60-episode group (Tables 1 and 2) rather than the 43 failures
+that had complete PK sampling.
+
+```{r nca-assert}
+pct <- nca_sim |>
+  group_by(group, PPTESTCD) |>
+  summarise(sim = median(PPORRES), .groups = "drop") |>
+  inner_join(
+    reference |> pivot_longer(-group, names_to = "PPTESTCD", values_to = "ref"),
+    by = c("group", "PPTESTCD")
+  ) |>
+  mutate(pct_diff = 100 * (sim / ref - 1))
+stopifnot(
+  # Structural: a mis-transcribed CL/F, V/F, dose or covariate centre moves
+  # Cmax and AUC together by tens of percent.
+  all(abs(pct$pct_diff[pct$PPTESTCD %in% c("cmax", "auclast")]) < 20),
+  abs(median(pct$pct_diff)) < 10
+)
+```
+
+# PK/PD target attainment
+
+The paper's target is fAUC0-24/MIC >= 80, and its ROC analysis proposes an
+exploratory prophylaxis cutoff of fAUC0-24/MIC >= 48.46. The figure shows the
+fraction of the pooled virtual cohort reaching each target across MICs.
+
+```{r pta}
+fauc <- nca_sim |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, group, fauc = PPORRES)
+
+mics <- c(0.25, 0.5, 1, 2, 4, 6, 8, 12, 16, 32)
+pta <- expand.grid(mic = mics, target = c(80, 48.46)) |>
+  rowwise() |>
+  mutate(pta = mean(fauc$fauc / mic >= target)) |>
+  ungroup()
+
+ggplot(pta, aes(mic, pta, colour = factor(target))) +
+  geom_line() +
+  geom_point() +
+  scale_x_log10(breaks = mics) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "MIC (mg/L)", y = "Probability of target attainment",
+       colour = "fAUC0-24/MIC target",
+       title = "Levofloxacin 750 mg once daily at steady state") +
+  theme_minimal()
+```
+
+Applying the MIC distribution of Supplementary Table S3 (57 episodes at
+32 mg/L, 3 at 16, 5 at 12, 3 at 6 and 35 at the 2 mg/L EUCAST ECOFF) to the
+pooled cohort gives the overall attainment below, against the paper's 12/103
+(11.7%) and 29/103 (28.2%).
+
+```{r pta-overall}
+mic_s3 <- c(rep(32, 57), rep(16, 3), rep(12, 5), rep(6, 3), rep(2, 35))
+pta_overall <- sapply(c(80, 48.46), function(target) {
+  mean(sapply(mic_s3, function(m) mean(fauc$fauc / m >= target)))
+})
+knitr::kable(
+  data.frame(
+    target = c("fAUC0-24/MIC >= 80", "fAUC0-24/MIC >= 48.46"),
+    paper = c("12/103 (11.7%)", "29/103 (28.2%)"),
+    simulated = sprintf("%.1f%%", 100 * pta_overall)
+  ) |>
+    rename("Target" = target, "Bosnak 2026" = paper, "Simulated" = simulated),
+  caption = "Overall target attainment with the Supplementary Table S3 MIC distribution."
+)
+```
+
+Every attaining episode in the paper had the 2 mg/L ECOFF MIC (all colonizing
+and clinical isolates had MICs of 6 mg/L or more, Supplementary Table S3, and
+none of the 29 episodes attaining the 48.46 cutoff was colonized with
+levofloxacin-resistant bacteria). The simulation assigns MICs to patients at
+random, whereas the paper's ECOFF episodes are the patients with no positive
+culture, a subgroup whose covariates are not published separately; the
+simulated attainment is therefore a population-average figure and is expected
+to fall below the paper's individual-level count. It is shown for orientation
+and not used as a validation gate.
+
+# Exposure-response findings not encoded
+
+The paper's clinical analysis is a multivariable logistic regression of
+prophylaxis failure on profound neutropenia (odds ratio 4.17) and on attaining
+fAUC0-24/MIC >= 80 (odds ratio 0.12) or >= 48.46 (odds ratio 0.26). It is not
+part of the packaged model: the drug term is a yes/no target-attainment
+indicator rather than a continuous exposure, no intercept is reported, and in
+a matched case-control design (failures matched one-to-one to successes) the
+intercept reflects the sampling ratio rather than the risk of failure, so an
+absolute probability of prophylaxis failure cannot be predicted from it.
+
+# Assumptions and deviations
+
+* **IIV scale.** Table 3 prints the between-subject variability as CV%. These
+  are read as Monolix's log-normal coefficient of variation,
+  `CV = sqrt(exp(omega^2) - 1)`, so `omega^2 = log(CV^2 + 1)` (0.1508 for
+  CL/F, 0.1179 for V/F). Reading them as `100 * omega` would give 0.1628 and
+  0.1251; the difference has no material effect on the comparisons above.
+* **Bootstrap versus final estimates.** The final estimates of Table 3 are
+  used; the bootstrap medians (for example IIV on V/F 29.1%) are reported in
+  the in-file comments only.
+* **Absorption rate constant.** Ka is fixed at 1.12 1/h, the preliminary
+  estimate from model development, because sampling started at 2 h. The
+  Results describe the expected Tmax as about 1.5 h; with Ka 1.12 1/h and the
+  typical elimination rate the model's Tmax is about 2.9 h after a single dose,
+  so concentrations in the first two hours are not informed by data.
+* **Bioavailability.** Only oral data were collected, so CL/F and V/F are
+  apparent and the model carries no bioavailability parameter, as in the
+  authors' code.
+* **Unbound AUC accumulator.** The authors' Monolix code integrates
+  `0.7 * Cc` in an `fAUCtau` compartment that is a table output only. The
+  packaged model exposes the unbound concentration `Cu` instead and leaves
+  the integration to the user (here PKNCA), which gives the same quantity
+  without an extra state.
+* **Covariate cohort.** Cockcroft-Gault creatinine clearance is computed on
+  total body weight because the paper does not name the weight. The group
+  cohorts use the full 120-episode group summaries of Tables 1 and 2, because
+  group summaries for the 103-episode PK set are not published.
+* **Episodes, not patients.** The 120 neutropenic episodes came from 108
+  patients; the analysis treated episodes as individuals, so the model's
+  between-subject variability is between episodes.
