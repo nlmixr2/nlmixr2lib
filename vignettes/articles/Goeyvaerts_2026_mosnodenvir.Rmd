@@ -1,0 +1,581 @@
+---
+title: "Mosnodenvir PopPK and DENV-3 viral dynamics (Goeyvaerts 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Mosnodenvir PopPK and DENV-3 viral dynamics (Goeyvaerts 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Two rxode2 warnings are expected here and carry no information: the
+# indicator-multiplexed IOV etas are not mu-referenced, and the solves pass
+# their random effects as event-table columns with `omega = NA`.
+quietly <- function(expr) {
+  withCallingHandlers(expr, warning = function(w) {
+    if (grepl("non-mu referenced|multi-subject simulation without", conditionMessage(w))) {
+      invokeRestart("muffleWarning")
+    }
+  })
+}
+```
+
+# Model and source
+
+Goeyvaerts et al. (2026) combined a population pharmacokinetic (PopPK) model
+of the dengue antiviral mosnodenvir (JNJ-64281802) with a within-host viral
+dynamic model (VDM) of serum DENV-3 RNA in a controlled human infection model
+(CHIM), in which healthy volunteers took mosnodenvir as pre-exposure
+prophylaxis and were then inoculated with the DENV-3 strain rDEN3delta30. The
+two layers are linked sequentially: the PopPK model supplies each
+participant's average steady-state concentration (Cavg,SS), and a sigmoid
+Imax function of Cavg,SS inhibits virion production in the VDM.
+
+The paper contributes three models:
+
+| Model | Content |
+|---|---|
+| `Goeyvaerts_2026_mosnodenvir` | PopPK model (Supplement Table S2) |
+| `Goeyvaerts_2026_mosnodenvir_vdm_c1` | Interim VDM fitted to Cohort 1, used to choose the Cohort 2 regimens (Table 2, C1 column) |
+| `Goeyvaerts_2026_mosnodenvir_vdm` | Final VDM refitted to Cohorts 1 and 2 (Table 2, C1 and C2 column) |
+
+* Citation: `r rxode2::rxode(readModelDb("Goeyvaerts_2026_mosnodenvir"))$reference`
+* Article: <https://doi.org/10.1002/cpt.70439>
+
+```{r descriptions, echo = FALSE, results = "asis"}
+for (nm in c("Goeyvaerts_2026_mosnodenvir", "Goeyvaerts_2026_mosnodenvir_vdm_c1", "Goeyvaerts_2026_mosnodenvir_vdm")) {
+  cat("* **", nm, "**: ", quietly(rxode2::rxode(readModelDb(nm)))$description, "\n", sep = "")
+}
+```
+
+# Population
+
+**PopPK.** 8,352 plasma samples from 246 healthy adults in three Phase 1
+studies (64281802DNG1001, DNG1006, DNG1008) and Cohort 1 of the Phase 2a CHIM
+(64281802DNG2002), covering single doses of 50-1200 mg as oral solution,
+tablet (fasted and fed) and capsule, daily dosing of the solution, once- or
+twice-weekly dosing of the fed tablet after a BID loading phase, and the
+Cohort 1 capsule regimens (Supplement Table S1). Cohort 2 data were not used
+for estimation; individual Cohort 2 parameters were obtained by MAP Bayesian
+estimation with the PopPK model as prior.
+
+**VDM.** 54 participants of the Phase 2a CHIM (Table 1): Cohort 1 (n = 29;
+placebo 7, high 600/200 mg, medium 200/50 mg and low 40/10 mg QD
+loading/maintenance as fasted capsules) and Cohort 2 (n = 25; placebo 6,
+daily 800 mg BID loading then 250 mg QD, weekly high 450 mg BID loading then
+1200 mg weekly, weekly low 250 mg BID loading then 500 mg weekly, as fed
+tablets). Median age 32 (Cohort 1) and 29 (Cohort 2) years; 65.5% and 52.0%
+female; median BMI 27.1 and 24.4 kg/m^2. 1,047 serum samples, of which 86.6%
+had undetectable DENV-3 RNA (below the 36 copies/mL limit of detection).
+
+The same information is available programmatically via each model's
+`population` metadata, e.g.
+`readModelDb("Goeyvaerts_2026_mosnodenvir_vdm")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. The table
+collects them.
+
+| Model | Parameter | Value | Source |
+|---|---|---|---|
+| PopPK | `lcl` (CL/F) | 2.17 L/h | Supplement Table S2 |
+| PopPK | `lvc` (Vc/F) | 25.5 L | Supplement Table S2 |
+| PopPK | `lq` (Q/F) | 8.54 L/h | Supplement Table S2 |
+| PopPK | `lvp` (Vp/F) | 447 L | Supplement Table S2 |
+| PopPK | `lfdepot` (F, fed tablet) | 1 (fixed reference) | Supplement Table S2; Methods "relative to tablet formulation in fed conditions" |
+| PopPK | `lfdepot_capsule` | 0.683 | Supplement Table S2 |
+| PopPK | `limax_fdepot`, `led50` | 1, 400 mg (fixed) | Supplement Table S2 and note equation |
+| PopPK | `lka`, `lka_solution`, `lka_fed` | 0.0473, 0.0417, 0.0536 1/h | Supplement Table S2 |
+| PopPK | `e_dose_ka` | -0.152 | Supplement Table S2 and note equation |
+| PopPK | `lktr`, `lktr_fed` | 6.26, 4.19 1/h | Supplement Table S2 |
+| PopPK | `e_bmi_cl`, `e_bmi_fdepot`, `e_bmi_ka` | -1.69, -1.58, 1.39 | Supplement Table S2 (footnote a: (BMI/24.7)^gamma) |
+| PopPK | IIV CL/F, Vc/F, F, Ka, KTR | 29.5, 51.0, 33.3, 36.8, 46.4 %CV | Supplement Table S2 |
+| PopPK | IOV F, KTR | 22.7, 48.7 %CV | Supplement Table S2 |
+| PopPK | `expSd` | 15.3 %CV | Supplement Table S2 |
+| PopPK | Depot, 6 transits, central, peripheral structure | n/a | Supplement Figure S1 |
+| VDM | `lrbase_target` (T0) | 10^7 cells/mL | Table 2 |
+| VDM | `lkdeg_target` (kT), `lkdeg_infected` (kI) | 0.14 1/day | Table 2 |
+| VDM | `lprod_virus` (pI) | 10^2 | Table 2 |
+| VDM | `lalpha_immune` (alpha) | 10^-3 | Table 2 |
+| VDM | `lrbase_immune` (A0) | 1 | Table 2 |
+| VDM | `lrbase_virus` (V0) | 10^1.05 (C1); 10^1.28 (C1+C2) | Table 2 |
+| VDM | `lbeta_infect` (beta) | 10^-8.34 (C1); 10^-8.35 (C1+C2) | Table 2 |
+| VDM | `lkdeg_virus` (kV) | 1.13 (C1); 1.46 (C1+C2) 1/day | Table 2 |
+| VDM | `lphi_immune` (phi) | 10^-2.03 (C1); 10^-2.17 (C1+C2) | Table 2 |
+| VDM | `lic50` | 263 (C1); 200 (C1+C2) ng/mL | Table 2 |
+| VDM | `lhill` | 1.57 (C1); 1.55 (C1+C2) | Table 2 |
+| VDM | `limax` | 1 (fixed) | Table 2 |
+| VDM | IIV log10 V0, log10 phi, log10 IC50 | 52.5, 13.7, 19.6 (C1); 39.4, 12.2, 28.9 (C1+C2) %CV | Table 2 and footnote |
+| VDM | `expSd` | 1.27 (C1); 1.31 (C1+C2) | Table 2; Methods (natural-log RNA) |
+| VDM | ODEs | n/a | Eq. 2 with pI -> (1 - eps_p) pI; Eq. 3 |
+| VDM | R0, Re, RMIC | n/a | Supplement, "Reproductive numbers" and "RMIC" |
+
+# PopPK: virtual cohorts
+
+Six regimens with 200 virtual participants each: the three Cohort 1 regimens
+(fasted capsule; QD loading on Days -5 to -1, QD maintenance on Days 1-21) and
+the three Cohort 2 regimens (fed tablet; BID loading on Days -2 and -1, then QD
+maintenance on Days 1-21 or weekly maintenance on Days 1, 8 and 15). Time zero
+is the first loading dose, so Day 1 (inoculation) starts at 120 h for Cohort 1
+and 48 h for Cohort 2.
+
+The paper sampled BMI from the pooled PopPK dataset, which is not published.
+BMI is drawn here from a normal distribution with mean 25.5 and SD 4 kg/m^2,
+truncated to 18-35 kg/m^2, which spans the Phase 2a range (18.2-34.7 kg/m^2,
+Table 1) around the PopPK median of 24.7 kg/m^2.
+
+Random effects are drawn in R and passed as columns of the event table, with
+`omega = NA`, so the cohort is identical on every machine. As in the paper's
+simulations, inter-occasion variability is left out (`OCC = 0`).
+
+```{r pk-cohort}
+set.seed(20260809)
+n_per_arm <- 200
+
+regimens <- tibble::tribble(
+  ~regimen, ~cohort, ~ld, ~ld_ii, ~ld_n, ~md, ~md_ii, ~md_n, ~FED, ~FORM_CAPSULE,
+  "C1 low dose", "Cohort 1", 40, 24, 5, 10, 24, 21, 0, 1,
+  "C1 medium dose", "Cohort 1", 200, 24, 5, 50, 24, 21, 0, 1,
+  "C1 high dose", "Cohort 1", 600, 24, 5, 200, 24, 21, 0, 1,
+  "C2 daily dose", "Cohort 2", 800, 12, 4, 250, 24, 21, 1, 0,
+  "C2 weekly high dose", "Cohort 2", 450, 12, 4, 1200, 168, 3, 1, 0,
+  "C2 weekly low dose", "Cohort 2", 250, 12, 4, 500, 168, 3, 1, 0
+)
+
+pk_omega <- c(
+  etalcl = 0.083445, etalvc = 0.23119, etalfdepot = 0.10516,
+  etalka = 0.12701, etalktr = 0.19499
+)
+
+make_pk_arm <- function(i, n, id_offset) {
+  r <- regimens[i, ]
+  day1 <- r$ld_n * r$ld_ii # time of the first maintenance dose (Day 1)
+  dose_times <- c((seq_len(r$ld_n) - 1) * r$ld_ii, day1 + (seq_len(r$md_n) - 1) * r$md_ii)
+  dose_amts <- c(rep(r$ld, r$ld_n), rep(r$md, r$md_n))
+  ids <- id_offset + seq_len(n)
+  subj <- tibble(id = ids, BMI = pmin(pmax(rnorm(n, 25.5, 4), 18), 35))
+  for (e in names(pk_omega)) subj[[e]] <- rnorm(n, 0, sqrt(pk_omega[[e]]))
+  doses <- tidyr::expand_grid(id = ids, tibble(time = dose_times, amt = dose_amts)) |>
+    mutate(evid = 1L, cmt = "depot")
+  obs <- tidyr::expand_grid(id = ids, time = seq(0, day1 + 28 * 24, by = 1)) |>
+    mutate(evid = 0L, amt = NA_real_, cmt = "central")
+  bind_rows(doses, obs) |>
+    arrange(id, time, desc(evid)) |>
+    group_by(id) |>
+    # DOSE_MOSNODENVIR_MG carries the amount of the most recent dose record.
+    mutate(DOSE_MOSNODENVIR_MG = ifelse(evid == 1L, amt, NA_real_)) |>
+    tidyr::fill(DOSE_MOSNODENVIR_MG, .direction = "downup") |>
+    ungroup() |>
+    left_join(subj, by = "id") |>
+    mutate(
+      regimen = r$regimen, cohort = r$cohort, day1 = day1,
+      md = r$md, md_ii = r$md_ii,
+      FED = r$FED, FORM_CAPSULE = r$FORM_CAPSULE, FORM_SOLUTION = 0, OCC = 0L
+    )
+}
+
+pk_events <- bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+  make_pk_arm(i, n_per_arm, id_offset = (i - 1L) * n_per_arm)
+})) |>
+  mutate(amt = ifelse(is.na(amt), 0, amt)) |>
+  select(id, time, evid, amt, cmt, everything())
+stopifnot(!anyDuplicated(pk_events[, c("id", "time", "evid")]))
+```
+
+```{r pk-simulate}
+mod_pk <- quietly(readModelDb("Goeyvaerts_2026_mosnodenvir"))
+sim_pk <- quietly(rxode2::rxSolve(
+  mod_pk, pk_events,
+  omega = NA, returnType = "data.frame",
+  keep = c("regimen", "cohort", "day1", "md", "md_ii")
+))
+sim_pk$day <- (sim_pk$time - sim_pk$day1) / 24
+```
+
+## Figure 4: concentration-time profiles
+
+```{r figure-4}
+sim_pk |>
+  group_by(cohort, regimen, day) |>
+  summarise(mean_cc = mean(Cc), .groups = "drop") |>
+  ggplot(aes(day, mean_cc, colour = regimen)) +
+  geom_line() +
+  geom_hline(yintercept = c(11800, 2180), linetype = "dashed", colour = "grey40") +
+  facet_wrap(~cohort) +
+  labs(
+    x = "Time relative to Day 1 (inoculation) (days)",
+    y = "Mean mosnodenvir concentration (ng/mL)",
+    colour = NULL,
+    caption = paste(
+      "Replicates Figure 4 of Goeyvaerts 2026 (mean profiles; the paper also",
+      "shows 95% intervals\nacross study replicates). Dashed lines: NOAEL mean",
+      "Cmax 11,800 ng/mL and interim typical RMIC 2,180 ng/mL."
+    )
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+As in the paper, the C2 daily-dose maintenance concentrations sit above the
+C1 high dose, the C2 weekly high dose fluctuates around the C1 high dose with
+higher peaks, and the C2 weekly low dose lies between the C1 medium and high
+doses.
+
+## PKNCA: Table S4 exposure metrics
+
+Table S4 reports the mean (SD) Cmax and AUC24h of the Cohort 2 regimens on the
+day of highest exposure: Day -1 (the second loading day) for the daily
+regimen and Day 1 (the first 1200 or 500 mg weekly dose) for the weekly
+regimens.
+
+```{r pknca}
+c2 <- sim_pk |>
+  filter(cohort == "Cohort 2", !is.na(Cc)) |>
+  select(id, time, Cc, regimen)
+
+conc_obj <- PKNCA::PKNCAconc(c2, Cc ~ time | regimen + id)
+dose_obj <- PKNCA::PKNCAdose(
+  pk_events |>
+    filter(evid == 1L, cohort == "Cohort 2") |>
+    select(id, time, amt, regimen),
+  amt ~ time | regimen + id
+)
+intervals <- data.frame(
+  regimen = c("C2 daily dose", "C2 weekly high dose", "C2 weekly low dose"),
+  start = c(24, 48, 48),
+  end = c(48, 72, 72),
+  cmax = TRUE,
+  auclast = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+# Table S4 reports means, so the simulated results are averaged the same way
+# before comparison.
+sim_means <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  group_by(regimen, PPTESTCD) |>
+  summarise(value = mean(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = value)
+
+published_s4 <- tibble::tribble(
+  ~regimen, ~cmax, ~auclast,
+  "C2 daily dose", 8580, 171000,
+  "C2 weekly high dose", 8460, 166000,
+  "C2 weekly low dose", 4050, 81100
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_means,
+  reference = published_s4,
+  by = "regimen",
+  units = c(cmax = "ng/mL", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated vs. published (Table S4) mean exposure; AUC is over the 24-h day. * differs by >20%.")
+
+chk <- dplyr::inner_join(sim_means, published_s4, by = "regimen", suffix = c("_sim", "_pub"))
+stopifnot(
+  # A transcription error in CL/F, F or a volume moves these by tens of percent.
+  all(abs(chk$cmax_sim / chk$cmax_pub - 1) < 0.15),
+  all(abs(chk$auclast_sim / chk$auclast_pub - 1) < 0.15)
+)
+```
+
+All three regimens agree with Table S4 to within a few percent.
+
+# From PK to Cavg,SS
+
+The VDM is driven by each participant's average concentration over the
+maintenance dosing interval at steady state,
+Cavg,SS = 1000 F D / (CL/F tau) ng/mL, with F and CL/F the individual values of
+the PopPK model (the model returns them as `fdepot` and `cl`).
+
+```{r cavg}
+cavg <- sim_pk |>
+  group_by(regimen, id) |>
+  summarise(CAV = 1000 * first(fdepot) * first(md) / (first(cl) * first(md_ii)), .groups = "drop")
+
+cavg |>
+  group_by(regimen) |>
+  summarise(
+    `Median Cavg,SS (ng/mL)` = median(CAV),
+    `5th percentile` = quantile(CAV, 0.05),
+    `95th percentile` = quantile(CAV, 0.95)
+  ) |>
+  knitr::kable(digits = 0, caption = "Individual Cavg,SS by regimen.")
+```
+
+# Interim VDM (Cohort 1): Table 3
+
+The paper chose the Cohort 2 regimens with the PopPK model and the interim
+VDM, simulating 500 replicates of 6 participants per regimen, with IIV on
+log10 phi and log10 IC50 but not on log10 V0, and without residual error. Here
+200 participants per regimen (plus 200 on placebo) are simulated once; the
+paper's "median number of participants with undetectable DENV-3 RNA" is
+compared with 6 times the simulated proportion, and the medians of the AUC and
+onset metrics with the population medians.
+
+```{r vdm-c1-simulate}
+mod_c1 <- readModelDb("Goeyvaerts_2026_mosnodenvir_vdm_c1")
+
+set.seed(20260810)
+vdm_subj <- bind_rows(
+  cavg,
+  tibble(regimen = "Placebo", id = 10000L + seq_len(n_per_arm), CAV = 0)
+) |>
+  mutate(
+    etalic50 = rnorm(n(), 0, sqrt(1.1927746)),
+    etalphi_immune = rnorm(n(), 0, sqrt(0.4100762)),
+    etalrbase_virus = 0
+  )
+
+vdm_grid <- sort(unique(c(seq(0, 28, by = 0.25), 0:84)))
+vdm_events <- tidyr::expand_grid(id = vdm_subj$id, time = vdm_grid) |>
+  mutate(evid = 0L, amt = 0, cmt = "virus") |>
+  left_join(vdm_subj, by = "id") |>
+  select(id, time, evid, amt, cmt, everything())
+
+sim_c1 <- quietly(rxode2::rxSolve(
+  mod_c1, vdm_events,
+  omega = NA, returnType = "data.frame", keep = "regimen"
+))
+```
+
+```{r table-3}
+lod <- 36 # copies/mL
+
+vdm_metrics <- function(sim) {
+  sim |>
+    group_by(regimen, id) |>
+    summarise(
+      undetectable_d29 = all(viral_load[time <= 28] < lod),
+      auc_vl = {
+        k <- time <= 28
+        log10(sum(diff(time[k]) * (head(viral_load[k], -1) + tail(viral_load[k], -1)) / 2))
+      },
+      # Study day of the first daily sample with detectable RNA (Day 1 =
+      # inoculation); Inf when RNA stays undetectable through Day 85.
+      onset_day = {
+        d <- time[time %in% 0:84 & viral_load >= lod]
+        if (length(d)) min(d) + 1 else Inf
+      },
+      .groups = "drop"
+    )
+}
+
+summ_c1 <- vdm_metrics(sim_c1) |>
+  group_by(regimen) |>
+  summarise(
+    n_undetectable_of_6 = 6 * mean(undetectable_d29),
+    auc_median = median(auc_vl),
+    onset_median = median(onset_day),
+    .groups = "drop"
+  )
+
+published_t3 <- tibble::tribble(
+  ~regimen, ~n_undetectable_pub, ~auc_pub, ~onset_pub,
+  "Placebo", 0, 5.02, "3.0",
+  "C1 low dose", 0, 4.80, "3.0",
+  "C1 medium dose", 2, 4.03, "9.0",
+  "C1 high dose", 4, 1.50, "NA",
+  "C2 daily dose", 5, 1.20, "NA",
+  "C2 weekly high dose", 5, 1.34, "NA",
+  "C2 weekly low dose", 3, 2.66, "46"
+)
+
+t3 <- inner_join(published_t3, summ_c1, by = "regimen")
+t3 |>
+  mutate(onset_median = ifelse(is.finite(onset_median), format(onset_median), "not reached")) |>
+  dplyr::rename(
+    Regimen = regimen,
+    "Undetectable to Day 29, paper (of 6)" = n_undetectable_pub,
+    "Undetectable to Day 29, simulated (of 6)" = n_undetectable_of_6,
+    "AUC D1-D29 (VL), paper (log10 copies*day/mL)" = auc_pub,
+    "AUC D1-D29 (VL), simulated" = auc_median,
+    "Days to onset, paper (NA = median not reached)" = onset_pub,
+    "Days to onset, simulated" = onset_median
+  ) |>
+  knitr::kable(digits = 2, caption = "Replicates Table 3 of Goeyvaerts 2026 (interim Cohort 1 VDM).")
+
+stopifnot(
+  # Counts: the paper reports medians of 6-participant replicates (integers).
+  all(abs(t3$n_undetectable_of_6 - t3$n_undetectable_pub) <= 1),
+  # AUC: a wrong IC50, Hill coefficient or viral kinetic constant shifts the
+  # placebo and low-dose AUC by far more than this.
+  all(abs(t3$auc_median - t3$auc_pub) < 0.5),
+  # Untreated infection becomes detectable on study Day 3.
+  t3$onset_median[t3$regimen == "Placebo"] == 3
+)
+```
+
+The simulated counts, AUCs and onset days follow Table 3: no protection on
+placebo or the low dose, partial protection on the medium dose and the C2
+weekly low dose, and the median participant staying undetectable through Day
+85 on the C1 high, C2 daily and C2 weekly high doses. The simulated
+undetectable counts are proportions times 6 rather than the median of
+6-participant replicates, so they are not integers.
+
+# Reproductive numbers and RMIC: Figure 2
+
+The basic reproductive number R0 = pI beta T0 / (kV (kI + alpha A0)) does not
+involve the drug, the effective reproductive number is
+Re = (1 - eps_p) R0, and the reproduction minimum inhibitory concentration
+RMIC = (R0 - 1)^(1/h) IC50 is the Cavg,SS at which Re = 1. The models return
+all three as outputs.
+
+```{r figure-2}
+mod_final <- readModelDb("Goeyvaerts_2026_mosnodenvir_vdm")
+cav_grid <- c(0, 10^seq(0, 4.5, length.out = 120))
+typ_events <- tibble(id = seq_along(cav_grid), time = 0, evid = 0L, amt = 0, cmt = "virus", CAV = cav_grid)
+
+re_curve <- bind_rows(
+  quietly(rxode2::rxSolve(rxode2::zeroRe(mod_c1), typ_events, returnType = "data.frame")) |>
+    mutate(model = "(a) Cohort 1 (interim)", CAV = cav_grid),
+  quietly(rxode2::rxSolve(rxode2::zeroRe(mod_final), typ_events, returnType = "data.frame")) |>
+    mutate(model = "(b) Cohorts 1 and 2 (final)", CAV = cav_grid)
+)
+
+derived <- re_curve |>
+  group_by(model) |>
+  summarise(R0 = first(R0), RMIC = first(rmic), .groups = "drop")
+knitr::kable(derived, digits = c(0, 1, 0), caption = "Typical R0 and RMIC (paper: 28.7 and 2,180 ng/mL interim; 21.7 and 1,410 ng/mL final).")
+
+stopifnot(
+  abs(derived$R0 - c(28.7, 21.7)) < 0.1,
+  abs(derived$RMIC / c(2180, 1410) - 1) < 0.01
+)
+
+ggplot(filter(re_curve, CAV > 0), aes(CAV, Re)) +
+  geom_line() +
+  geom_hline(yintercept = 1, linetype = "dotted") +
+  geom_vline(data = derived, aes(xintercept = RMIC), colour = "steelblue") +
+  facet_wrap(~model) +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(
+    x = "Mosnodenvir Cavg,SS (ng/mL)", y = "Effective reproductive number Re",
+    caption = "Replicates the population curves of Figure 2 of Goeyvaerts 2026."
+  ) +
+  theme_bw()
+```
+
+# Final VDM (Cohorts 1 and 2)
+
+The final model, refitted to both cohorts, has a lower R0 (21.7) and IC50
+(200 ng/mL) but larger IIV on IC50. The paper reports the observed Cohort 2
+outcome rather than new simulations: participants with undetectable DENV-3 RNA
+through Day 29 were 4/6 (daily), 5/6 (weekly high), 5/6 (weekly low) and 0/6
+(placebo) (Discussion). The final model's predictions for the same virtual
+participants are shown for orientation; they are not a fitted quantity and
+are not gated.
+
+```{r vdm-final}
+set.seed(20260811)
+vdm_subj_final <- vdm_subj |>
+  mutate(
+    etalic50 = rnorm(n(), 0, sqrt(2.3446155)),
+    etalphi_immune = rnorm(n(), 0, sqrt(0.3715956))
+  )
+vdm_events_final <- vdm_events |>
+  select(-etalic50, -etalphi_immune) |>
+  left_join(vdm_subj_final |> select(id, etalic50, etalphi_immune), by = "id")
+
+sim_final <- quietly(rxode2::rxSolve(
+  mod_final, vdm_events_final,
+  omega = NA, returnType = "data.frame", keep = "regimen"
+))
+
+vdm_metrics(sim_final) |>
+  group_by(regimen) |>
+  summarise(
+    "Undetectable to Day 29 (of 6)" = 6 * mean(undetectable_d29),
+    "Median AUC D1-D29 (VL)" = median(auc_vl),
+    .groups = "drop"
+  ) |>
+  dplyr::rename(Regimen = regimen) |>
+  knitr::kable(digits = 2, caption = "Final VDM predictions for the same virtual participants.")
+
+sim_final |>
+  filter(time <= 42) |>
+  # Fully suppressed virus decays towards zero and the integrator can return
+  # tiny negative values; floor at 0.1 copies/mL for the log axis.
+  mutate(viral_load = pmax(viral_load, 0.1)) |>
+  group_by(regimen, time) |>
+  summarise(
+    med = median(viral_load), lo = quantile(viral_load, 0.1),
+    hi = quantile(viral_load, 0.9), .groups = "drop"
+  ) |>
+  ggplot(aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = c(36, 1000), linetype = "dashed", colour = "grey40") +
+  facet_wrap(~regimen) +
+  scale_y_log10() +
+  labs(
+    x = "Time since inoculation (days)", y = "DENV-3 RNA (copies/mL)",
+    caption = paste(
+      "Final VDM: median and 10th-90th percentiles; dashed lines LOD (36) and",
+      "LLOQ (1,000 copies/mL).\nValues below 0.1 copies/mL are drawn at 0.1."
+    )
+  ) +
+  theme_bw()
+```
+
+# Assumptions and deviations
+
+- **Two VDMs.** Table 2 reports the interim model (Cohort 1) and the final
+  model (Cohorts 1 and 2) side by side. Both are packaged: the interim model is
+  what the paper's dose-selection simulations (Figure 4 RMIC line, Table 3)
+  used, and the final model is the paper's headline result (R0 = 21.7,
+  RMIC = 1,410 ng/mL).
+- **Sequential linkage through Cavg,SS.** The VDM takes Cavg,SS as the `CAV`
+  covariate, constant over the infection course, exactly as the paper's model
+  does (the Discussion explains why a time-varying concentration was not
+  used). It is computed outside the models from the PopPK `fdepot` and `cl`.
+- **Log10-scale parameters converted to natural log.** The VDM was estimated
+  with V0, beta, phi, pI, alpha, T0 and IC50 on the log10 scale and additive
+  IIV on log10 V0, log10 phi and log10 IC50. The package stores
+  `log(10^x)` for each, and the IIV variance as
+  (ln 10 x CV x |theta|)^2, using the Table 2 footnote definition
+  CV% = sqrt(omega^2)/|theta| x 100 with theta on the log10 scale. The log10
+  IC50 is taken as log10 of the reported IC50 (200 or 263 ng/mL).
+- **Target-cell production.** The paper names a zero-order production rate bT
+  but reports no value. bT = kT T0 is used, which keeps target cells at T0
+  before infection and is the disease-free equilibrium that the
+  Supplement's R0 expression assumes.
+- **Initial conditions.** At inoculation (time 0) T = T0, I = 0, V = V0 and
+  A = A0, following the paper's definitions of V0 (baseline viral load), T0
+  and A0.
+- **Residual errors.** The VDM's additive error on natural-log RNA is encoded
+  as `lnorm(expSd)` on `viral_load`. The PopPK "proportional" error is
+  reported with CV% = sqrt(exp(sigma^2) - 1), i.e. a log-scale variance, and is
+  encoded as `lnorm(expSd)` with expSd = sqrt(log(1 + 0.153^2)) = 0.1521.
+  Censoring below the LOD (M3) and the LLOQ/2 imputation are estimation
+  devices and are not part of the simulation model.
+- **Formulation and food.** Only the tablet was given fed. The model maps
+  FED = 1 to the fed-tablet F (reference, 1), Ka and KTR; the capsule and the
+  solution were studied fasted only, and their F and Ka do not depend on FED.
+  BMI multiplies every formulation's F, as the supplement states a single BMI
+  effect on F.
+- **Inter-occasion variability.** The IOV on F and KTR is encoded for two
+  occasions (`OCC` = 1 or 2, a shared variance), matching the two-period
+  crossover studies it was introduced for; `OCC = 0` turns it off. The number
+  of occasions per participant in the pooled data is not reported.
+- **Dose-selection simulations.** The paper ran 500 replicates of 6
+  participants; this article runs one cohort of 200 per regimen and compares
+  6 times the simulated proportion with the paper's median count. BMI was
+  sampled from a truncated normal distribution, because the pooled PopPK
+  dataset is not available. Table 3's AUC D1-D29 (VL) is taken as log10 of the
+  trapezoidal AUC of linear-scale RNA from inoculation to Day 29, evaluated on
+  a 6-hour grid; the paper's sampling grid for this metric is not stated.
+- **Errata.** No correction notice for this article was found as of
+  2026-11-16.
