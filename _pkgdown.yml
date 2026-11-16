@@ -846,6 +846,8 @@ navbar:
         href: articles/Svensson_2018_bedaquiline.html
       - text: "Bedaquiline (Zou 2022)"
         href: articles/Zou_2022_bedaquiline.html
+      - text: "Bedaquiline (vanLieshout 2026)"
+        href: articles/vanLieshout_2026_bedaquiline.html
       - text: "Bedaquiline QTcF (Koele 2025)"
         href: articles/Koele_2025_bedaquiline_QTc.html
       - text: "Bedaquiline QTcTBT (Koele 2025)"
@@ -12541,6 +12543,7 @@ articles:
   - articles/vanHasselt_2015_eribulin
   - articles/vanHoogdalem_2020_busulfan
   - articles/vanIersel_2018_posaconazole
+  - articles/vanLieshout_2026_bedaquiline
   - articles/vanMaanen_2025_amyloid
   - articles/vanOs_2024_temocillin
   - articles/vanRongen_2015_midazolam
