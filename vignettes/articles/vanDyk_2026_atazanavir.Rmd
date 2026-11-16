@@ -1,0 +1,536 @@
+---
+title: "Ritonavir-boosted atazanavir in African children (van Dyk 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ritonavir-boosted atazanavir in African children (van Dyk 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("vanDyk_2026_atazanavir"))$reference`
+* Article: <https://doi.org/10.1128/aac.00592-26> (open access, PMC13436004)
+* Supplement: `aac.00592-26-s0001.pdf` (Table S1, dosing by weight band;
+  Figure S1, external-validation VPC). It contains no model code or extra
+  parameter values.
+
+Ritonavir-boosted atazanavir (ATV/r) is a once-daily option for
+subsequent-line antiretroviral therapy in children, but rifampicin-based
+tuberculosis treatment strongly induces its clearance. van Dyk et al. pooled
+intensive data from the CHAPAS-4 trial with sparse data from the VirTUAL
+study to build a pediatric atazanavir model, then simulated WHO weight-band
+dosing with and without rifampicin, carrying adult induction factors from
+the DERIVE trial (packaged here as `Kengo_2025_atazanavir`).
+
+```{r load-model}
+mod <- readModelDb("vanDyk_2026_atazanavir")
+mod_ui <- rxode2::rxode(mod)
+```
+
+# Population
+
+`r rxode2::rxode(mod)$population$n_subjects` children and adolescents
+(60 from CHAPAS-4 in Zambia, Uganda and Zimbabwe; 10 from VirTUAL in South
+Africa and Uganda) contributed 518 atazanavir concentrations (van Dyk 2026
+Table 1). Median (range) age was 10.9 (3.2-17.7) years and weight 29
+(15-85) kg; 56% were male. All received once-daily ATV/r: 150/100 mg
+(2.9%), 200/75 mg (34%) or 200/100 mg (7.1%) as separate tablets, or the
+300/100 mg fixed-dose combination (FDC, 56%). NRTI backbones were
+TAF/emtricitabine (49%), abacavir/lamivudine (31%), zidovudine/lamivudine
+(13%) and TDF/lamivudine (7.1%).
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| Structure: 2-compartment, lag + sequential zero-/first-order absorption | -- | Results 'Pharmacokinetic analysis'; Methods |
+| `lcl` CL/F at 27 kg | 4.8 L/h | Table 2 |
+| `lvc` Vc/F at 27 kg | 41.2 L | Table 2 |
+| `lq` Q/F at 27 kg | 0.418 L/h | Table 2 |
+| `lvp` Vp/F at 27 kg | 47.5 L | Table 2 |
+| `ltlag` lag time | 1 h (fixed) | Table 2 and footnote g |
+| `ld1` zero-order input duration D1 | 1.04 h | Table 2 |
+| `lka` absorption rate constant | 2.23 1/h | Table 2 |
+| `lfdepot` bioavailability | 1 (fixed) | Table 2 |
+| `e_fdc0_fdepot` non-FDC change in F | -26.7% | Table 2 and footnote c; Results |
+| `e_rif_qd_cl` CL change, rifampicin + once-daily ATV/r | 3.12-fold (fixed) | Table 2 footnote d; Methods 'Simulations' |
+| `e_rif_bid_cl` CL change, rifampicin + twice-daily ATV/r | 2.04-fold (fixed) | Table 2 footnote d; Methods 'Simulations' |
+| `e_rif_qd_fdepot` F change, rifampicin + once-daily ATV/r | -53% (fixed) | Table 2 footnote d; Methods 'Simulations' |
+| `e_selfadmin_iov` BOV-on-F scaling after an unobserved dose | 1.43 (fixed) | Table 2; Results |
+| `e_wt_cl`, `e_wt_vc` allometric exponents, 27 kg reference | 0.75, 1 (fixed) | Methods; Table 2 footnote a |
+| `etalcl` BSV CL | 18.9% CV -> omega^2 0.0351 | Table 2, footnote f |
+| `etaiov_tlag_*` BOV lag | 60.5% CV (fixed) -> 0.312 | Table 2, footnotes f, g |
+| `etaiov_d1_*` BOV D1 | 111% CV -> 0.803 | Table 2, footnote f |
+| `etaiov_ka_*` BOV ka | 162% CV -> 1.288 | Table 2, footnote f |
+| `etaiov_fdepot_*` BOV F | 34.7% CV -> 0.114 | Table 2, footnote f |
+| `propSd` proportional error | 11.8% | Table 2 |
+| `addSdChapas4`, `addSdVirtual` additive error | 0.021, 0.006 mg/L (fixed) | Table 2 footnote e (20% of LLOQ 0.105 / 0.030 mg/L) |
+
+The variances are `log((CV/100)^2 + 1)` because Table 2 footnote f defines
+the reported %CV as `sqrt(exp(omega^2) - 1) * 100`.
+
+# Virtual cohort
+
+The paper's simulation (Methods 'Simulations', Figure 2) populates four
+weight bands with uniformly distributed weights and doses them by the
+CHAPAS-4 scheme: 200 mg atazanavir below 25 kg, 300 mg at 25 kg and above,
+each given once daily without rifampicin, once daily with rifampicin, or
+twice daily with rifampicin. 200 virtual children are drawn per band and
+scenario (the paper used 1,000 per band).
+
+```{r cohort}
+set.seed(20260717)
+n_per_arm <- 200
+bands <- tibble::tibble(
+  band = factor(c("15-19.9 kg", "20-24.9 kg", "25-34.9 kg", "35-44.9 kg"),
+                levels = c("15-19.9 kg", "20-24.9 kg", "25-34.9 kg", "35-44.9 kg")),
+  wt_lo = c(15, 20, 25, 35),
+  wt_hi = c(19.9, 24.9, 34.9, 44.9),
+  dose = c(200, 200, 300, 300)
+)
+scenarios <- tibble::tibble(
+  scenario = factor(c("ATV/r OD", "ATV/r OD + RIF", "ATV/r BD + RIF"),
+                    levels = c("ATV/r OD", "ATV/r OD + RIF", "ATV/r BD + RIF")),
+  CONMED_RIF = c(0, 1, 1),
+  REGI_BID = c(0, 0, 1),
+  ii = c(24, 24, 12)
+)
+
+cohort <- tidyr::expand_grid(bands, scenarios, rep = seq_len(n_per_arm)) |>
+  dplyr::mutate(
+    id = dplyr::row_number(),
+    WT = stats::runif(dplyr::n(), wt_lo, wt_hi)
+  )
+
+cohort |>
+  dplyr::group_by(band) |>
+  dplyr::summarise(n = dplyr::n(), median_wt = median(WT), min_wt = min(WT),
+                   max_wt = max(WT), .groups = "drop") |>
+  knitr::kable(digits = 1, caption = "Simulated weights by band (all three scenarios pooled).")
+```
+
+# Simulation
+
+Doses are given for 28 days to reach steady state (the slow peripheral
+exchange gives a terminal half-life near 90 h) and the final 24 h are
+sampled. Each dose record uses `rate = -2`, so rxode2 applies the model's
+modelled zero-order duration D1 after the absorption lag. All doses share
+occasion 1 (`OCC = 1`), so the between-occasion deviations act as
+subject-level variability in this steady-state exercise, and every dose is
+treated as observed (`SELFADMIN = 0`).
+
+```{r sim-fn}
+make_events <- function(cohort, form_fdc, days = 28) {
+  doses <- cohort |>
+    dplyr::rowwise() |>
+    dplyr::reframe(id = id, time = seq(0, days * 24 - ii, by = ii), amt = dose) |>
+    dplyr::mutate(evid = 1L, cmt = "depot", rate = -2)
+  t_end <- days * 24
+  obs_times <- sort(unique(c(seq(t_end - 24, t_end, by = 0.5), t_end - 24 + c(1, 1.5, 2.5, 3.5))))
+  obs <- tidyr::expand_grid(id = cohort$id, time = obs_times) |>
+    dplyr::mutate(evid = 0L, cmt = "central", amt = NA_real_, rate = NA_real_)
+  covs <- cohort |>
+    dplyr::select(id, WT, CONMED_RIF, REGI_BID) |>
+    dplyr::mutate(FORM_FDC = form_fdc, OCC = 1, SELFADMIN = 0, STUDY_VIRTUAL = 0)
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    dplyr::left_join(covs, by = "id")
+}
+
+rxode2::rxSetSeed(20260717)
+ev_fdc <- make_events(cohort, form_fdc = 1)
+sim <- rxode2::rxSolve(mod, ev_fdc, returnType = "data.frame") |>
+  dplyr::left_join(dplyr::select(cohort, id, band, scenario, dose), by = "id") |>
+  dplyr::mutate(tad = time - (28 * 24 - 24))
+```
+
+## Structural check: steady-state AUC equals F x dose / CL
+
+With the random effects removed, the AUC over the last 24 h of a 28-day run
+must equal the daily bioavailable dose divided by clearance. This checks the
+dose route, the allometric reference, the formulation factor and both
+rifampicin branches against Table 2 in closed form, independent of any seed.
+
+```{r closed-form}
+mod_typ <- rxode2::zeroRe(mod)
+typ_cohort <- tidyr::expand_grid(
+  tibble::tibble(WT = c(17.5, 27, 40)),
+  scenarios,
+  FORM_FDC = c(0, 1)
+) |>
+  dplyr::mutate(id = dplyr::row_number(), dose = ifelse(WT < 25, 200, 300))
+
+ev_typ <- typ_cohort |>
+  dplyr::rowwise() |>
+  dplyr::reframe(id = id, time = seq(0, 28 * 24 - ii, by = ii), amt = dose) |>
+  dplyr::mutate(evid = 1L, cmt = "depot", rate = -2) |>
+  dplyr::bind_rows(
+    tidyr::expand_grid(id = typ_cohort$id, time = seq(27 * 24, 28 * 24, by = 0.05)) |>
+      dplyr::mutate(evid = 0L, cmt = "central")
+  ) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  dplyr::left_join(
+    dplyr::select(typ_cohort, id, WT, CONMED_RIF, REGI_BID, FORM_FDC) |>
+      dplyr::mutate(OCC = 1, SELFADMIN = 0, STUDY_VIRTUAL = 0),
+    by = "id"
+  )
+
+sim_typ <- rxode2::rxSolve(mod_typ, ev_typ, returnType = "data.frame",
+                           atol = 1e-10, rtol = 1e-10)
+
+auc_typ <- sim_typ |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(auc = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2), .groups = "drop") |>
+  dplyr::left_join(typ_cohort, by = "id") |>
+  dplyr::mutate(
+    f = (1 - 0.267 * (1 - FORM_FDC)) * (1 - 0.53 * CONMED_RIF * (1 - REGI_BID)),
+    cl = 4.8 * (WT / 27)^0.75 *
+      ifelse(CONMED_RIF == 1, ifelse(REGI_BID == 1, 2.04, 3.12), 1),
+    auc_expected = f * dose * (24 / ii) / cl,
+    pct_diff = 100 * (auc - auc_expected) / auc_expected
+  )
+
+auc_typ |>
+  dplyr::select(WT, scenario, FORM_FDC, dose, auc, auc_expected, pct_diff) |>
+  dplyr::rename("Weight (kg)" = WT, "Scenario" = scenario, "FDC" = FORM_FDC,
+                "Dose (mg)" = dose, "AUC0-24 solved" = auc,
+                "F x daily dose / CL" = auc_expected, "% diff" = pct_diff) |>
+  knitr::kable(digits = 2, caption = "Typical-value steady-state AUC0-24 (mg*h/L) against the closed form.")
+
+# Both sides use the same typical parameters, so the difference is numerical
+# (trapezoid on a 0.05 h grid and residual approach to steady state).
+stopifnot(all(abs(auc_typ$pct_diff) < 1))
+```
+
+## Replicate Figure 2
+
+Replicates Figure 2 of van Dyk 2026 (simulated steady-state Ctrough and
+AUC0-24 by weight band and scenario).
+
+```{r fig2-data}
+exposure <- sim |>
+  dplyr::filter(tad >= 0) |>
+  dplyr::group_by(id, band, scenario, dose) |>
+  dplyr::summarise(
+    auc24 = sum(diff(tad) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+    ctrough = Cc[which.max(tad)],
+    cmin = min(Cc),
+    .groups = "drop"
+  )
+```
+
+```{r fig2, fig.height = 5}
+exposure |>
+  tidyr::pivot_longer(c(ctrough, auc24), names_to = "metric", values_to = "value") |>
+  dplyr::mutate(metric = factor(metric, levels = c("ctrough", "auc24"),
+                                labels = c("Ctrough (mg/L)", "AUC0-24 (mg*h/L)"))) |>
+  ggplot(aes(scenario, value, fill = band)) +
+  stat_summary(
+    fun.data = function(y) {
+      q <- stats::quantile(y, c(0.05, 0.25, 0.5, 0.75, 0.95))
+      data.frame(ymin = q[1], lower = q[2], middle = q[3], upper = q[4], ymax = q[5])
+    },
+    geom = "boxplot", position = position_dodge(width = 0.8), width = 0.7
+  ) +
+  geom_hline(data = data.frame(metric = factor("Ctrough (mg/L)", levels = c("Ctrough (mg/L)", "AUC0-24 (mg*h/L)")),
+                               y = c(0.15, 0.014)),
+             aes(yintercept = y), linetype = "dashed", colour = c("blue", "red")) +
+  scale_y_log10() +
+  facet_wrap(~metric, scales = "free_y") +
+  labs(x = "Treatment regimen", y = NULL, fill = "Weight band",
+       caption = "Boxes: 5th, 25th, 50th, 75th, 95th percentiles. Dashed: MEC 0.15 mg/L (blue), PA-IC90 0.014 mg/L (red).") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+The paper's Results report the share of simulated troughs above the
+protein-adjusted IC90 (PA-IC90, 0.014 mg/L) and the minimum effective
+concentration (MEC, 0.15 mg/L):
+
+```{r target-attainment}
+attain <- exposure |>
+  dplyr::group_by(scenario) |>
+  dplyr::summarise(
+    above_pa_ic90 = 100 * mean(ctrough > 0.014),
+    above_mec = 100 * mean(ctrough > 0.15),
+    above_pa_ic90_cmin = 100 * mean(cmin > 0.014),
+    above_mec_cmin = 100 * mean(cmin > 0.15),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    paper = c("100% / 97.4%", "over 75% below PA-IC90 / 0% above MEC", "100% / 98.6%")
+  )
+
+attain |>
+  dplyr::rename("Scenario" = scenario,
+                "% Ctrough > PA-IC90" = above_pa_ic90,
+                "% Ctrough > MEC" = above_mec,
+                "% Cmin > PA-IC90" = above_pa_ic90_cmin,
+                "% Cmin > MEC" = above_mec_cmin,
+                "Paper (> PA-IC90 / > MEC)" = paper) |>
+  knitr::kable(digits = 1)
+
+# Margins are wide: each scenario sits far from the threshold being tested,
+# so these do not depend on which subjects land in the tails.
+oc <- attain$scenario
+stopifnot(
+  attain$above_mec[oc == "ATV/r OD"] > 90,
+  attain$above_mec[oc == "ATV/r OD + RIF"] < 5,
+  attain$above_pa_ic90[oc == "ATV/r OD + RIF"] < 50,
+  attain$above_mec[oc == "ATV/r BD + RIF"] > 90,
+  attain$above_mec_cmin[oc == "ATV/r OD"] > 90,
+  attain$above_pa_ic90_cmin[oc == "ATV/r OD + RIF"] < 50
+)
+```
+
+Ctrough here is the concentration at the end of the dosing interval, just
+before the next dose. Because each dose is held back by the 1 h lag and then
+enters over D1, concentrations keep falling briefly after the next dose, so
+the interval minimum (Cmin) is a little lower than Ctrough; the paper does
+not say which it plotted. Without rifampicin and with twice-daily ATV/r plus
+rifampicin, the simulated attainment matches the paper. With once-daily
+ATV/r plus rifampicin, the simulated troughs are about 0.01 mg/L, on the
+steep part of the attainment curve around the PA-IC90. About two thirds of
+simulated children fall below it, where the paper reports over three
+quarters. Both definitions give a similar share, so the trough definition
+does not explain the difference.
+
+## Replicate Figure 1 (CHAPAS-4 visual predictive check)
+
+Replicates the left panel of Figure 1 of van Dyk 2026 in outline: a
+CHAPAS-4-like cohort (weight-band shares from Table 1) sampled at steady
+state at the trial's week-6 times. Children under 25 kg take 200 mg as
+separate tablets (`FORM_FDC = 0`); heavier children take the 300/100 mg FDC.
+The home doses before the PK day are unobserved (`SELFADMIN = 1`, occasion 1)
+and the supervised PK-day dose is occasion 2.
+
+```{r vpc}
+set.seed(4)
+n_vpc <- 200
+vpc_cohort <- tibble::tibble(
+  id = seq_len(n_vpc),
+  band = sample(1:4, n_vpc, replace = TRUE, prob = c(12, 16, 18, 14))
+) |>
+  dplyr::mutate(
+    WT = stats::runif(n_vpc, c(15, 20, 25, 35)[band], c(19.9, 24.9, 34.9, 64)[band]),
+    dose = ifelse(WT < 25, 200, 300),
+    FORM_FDC = as.numeric(WT >= 25)
+  )
+pk_day <- 27 * 24
+vpc_doses <- vpc_cohort |>
+  dplyr::rowwise() |>
+  dplyr::reframe(id = id, time = seq(0, pk_day, by = 24), amt = dose) |>
+  dplyr::mutate(evid = 1L, cmt = "depot", rate = -2,
+                OCC = ifelse(time < pk_day, 1, 2),
+                SELFADMIN = ifelse(time < pk_day, 1, 0))
+vpc_obs <- tidyr::expand_grid(id = vpc_cohort$id,
+                              tad = c(0, 0.5, 1, 2, 3, 4, 6, 8, 12, 24)) |>
+  dplyr::mutate(time = pk_day + tad, evid = 0L, cmt = "central",
+                OCC = ifelse(tad == 0, 1, 2), SELFADMIN = ifelse(tad == 0, 1, 0)) |>
+  dplyr::select(-tad)
+vpc_ev <- dplyr::bind_rows(vpc_doses, vpc_obs) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  dplyr::left_join(dplyr::select(vpc_cohort, id, WT, FORM_FDC), by = "id") |>
+  dplyr::mutate(CONMED_RIF = 0, REGI_BID = 0, STUDY_VIRTUAL = 0)
+
+rxode2::rxSetSeed(4)
+vpc_sim <- rxode2::rxSolve(mod, vpc_ev, returnType = "data.frame") |>
+  dplyr::filter(time >= pk_day) |>
+  dplyr::mutate(tad = time - pk_day)
+
+vpc_q <- vpc_sim |>
+  dplyr::group_by(tad) |>
+  dplyr::summarise(p05 = quantile(sim, 0.05), p50 = median(sim), p95 = quantile(sim, 0.95),
+                   .groups = "drop")
+
+ggplot(vpc_q, aes(tad)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.25) +
+  geom_line(aes(y = p50)) +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = "Atazanavir (mg/L)",
+       caption = "Median and 90% prediction interval of simulated observations (with residual error).") +
+  theme_bw()
+```
+
+Read off the published Figure 1 (left), the observed median is about
+4.5 mg/L at 4 h and about 0.5 mg/L at 24 h.
+
+```{r vpc-check}
+vpc_tab <- vpc_q |>
+  dplyr::filter(tad %in% c(4, 24)) |>
+  dplyr::mutate(fig1_median = c(4.5, 0.5),
+                ratio = p50 / fig1_median)
+vpc_tab |>
+  dplyr::rename("Time after dose (h)" = tad, "Sim 5th" = p05, "Sim median" = p50,
+                "Sim 95th" = p95, "Figure 1 observed median (read off)" = fig1_median,
+                "Ratio" = ratio) |>
+  knitr::kable(digits = 2)
+
+# The Figure 1 medians are read off a log axis, so the tolerance is broad;
+# a misplaced allometric reference or dose route moves these by far more.
+stopifnot(all(vpc_tab$ratio > 0.6 & vpc_tab$ratio < 1.6))
+```
+
+# PKNCA validation
+
+Steady-state NCA over the final 24 h of each simulated child, grouped by
+scenario and weight band.
+
+```{r pknca}
+conc_nca <- sim |>
+  dplyr::filter(!is.na(Cc), tad >= 0) |>
+  dplyr::mutate(group = paste(scenario, band, sep = " | ")) |>
+  dplyr::select(id, group, scenario, band, tad, Cc)
+dose_nca <- sim |>
+  dplyr::distinct(id, scenario, band, dose) |>
+  dplyr::mutate(group = paste(scenario, band, sep = " | "), tad = 0)
+
+conc_obj <- PKNCA::PKNCAconc(conc_nca, Cc ~ tad | group + id, concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_nca, dose ~ tad | group + id, doseu = "mg")
+intervals <- data.frame(start = 0, end = 24, auclast = TRUE, cmax = TRUE,
+                        tmax = TRUE, ctrough = TRUE, cmin = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_df <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "ctrough", "cmin", "cmax", "tmax"))
+
+nca_df |>
+  dplyr::group_by(group, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::rename("Scenario | band" = group, "AUC0-24 (mg*h/L)" = auclast,
+                "Cmax (mg/L)" = cmax, "Ctrough (mg/L)" = ctrough,
+                "Cmin (mg/L)" = cmin, "Tmax (h)" = tmax) |>
+  knitr::kable(digits = 3, caption = "Median steady-state NCA (200 simulated children per group).")
+```
+
+## Comparison with Figure 2
+
+The paper reports its simulated exposures only graphically. The medians
+below were read off Figure 2 by the maintainers (log axes, so roughly
++/-10% precision). The Figure 2 trough medians are placed beside both the
+end-of-interval Ctrough and the interval Cmin.
+
+```{r compare}
+fig2_ref <- tidyr::expand_grid(
+  scenario = c("ATV/r OD", "ATV/r OD + RIF", "ATV/r BD + RIF"),
+  band = c("15-19.9 kg", "20-24.9 kg", "25-34.9 kg", "35-44.9 kg")
+) |>
+  dplyr::mutate(
+    group = paste(scenario, band, sep = " | "),
+    auclast = c(60, 50, 60, 46, 8.5, 7.5, 8.5, 7.3, 60, 48, 58, 46),
+    ctrough = c(0.50, 0.49, 0.65, 0.53, 0.0085, 0.0070, 0.0090, 0.0078,
+                0.67, 0.62, 0.82, 0.75),
+    cmin = ctrough
+  ) |>
+  dplyr::select(group, auclast, ctrough, cmin)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  nca_df |> dplyr::filter(PPTESTCD %in% c("auclast", "ctrough", "cmin")),
+  fig2_ref,
+  by = "group",
+  units = c(auclast = "mg*h/L", ctrough = "mg/L", cmin = "mg/L")
+)
+knitr::kable(cmp, digits = 3)
+if (!is.null(attr(cmp, "footnote"))) cat(attr(cmp, "footnote"))
+
+auc_cmp <- nca_df |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::group_by(group) |>
+  dplyr::summarise(sim = median(PPORRES), .groups = "drop") |>
+  dplyr::inner_join(fig2_ref, by = "group") |>
+  dplyr::mutate(pct = 100 * (sim - auclast) / auclast)
+
+# Centre and envelope, never a per-group extreme: a mis-scaled clearance or
+# a wrong formulation reading moves every group by 25% or more.
+stopifnot(
+  nrow(auc_cmp) == 12,
+  abs(median(auc_cmp$pct)) < 10,
+  max(abs(auc_cmp$pct)) < 25
+)
+```
+
+The simulated AUC0-24 matches Figure 2 in every band only when every child is
+given the FDC bioavailability (`FORM_FDC = 1`), which is how the simulation
+above was run. With the separate-tablet bioavailability applied to the two
+lower bands, as in the CHAPAS-4 dosing (Table S1), their AUC and Ctrough
+would be 26.7% lower, which would not match the figure:
+
+```{r form-reading}
+auc_typ |>
+  dplyr::filter(WT == 17.5) |>
+  dplyr::select(scenario, FORM_FDC, auc) |>
+  tidyr::pivot_wider(names_from = FORM_FDC, values_from = auc, names_prefix = "FDC_") |>
+  dplyr::mutate(fig2 = c(60, 8.5, 60)) |>
+  dplyr::rename("Scenario" = scenario, "Separate tablets (FORM_FDC = 0)" = FDC_0,
+                "FDC (FORM_FDC = 1)" = FDC_1, "Figure 2 median, 15-19.9 kg" = fig2) |>
+  knitr::kable(digits = 1, caption = "Typical AUC0-24 (mg*h/L) at 17.5 kg, 200 mg, by formulation reading.")
+```
+
+# Assumptions and deviations
+
+* **Number of occasions.** The paper treats each dose as a separate occasion
+  but does not say how many occasions the data held. Six occasion slots
+  (`OCC` 1-6) are carried, enough for the VirTUAL design (three visits, each
+  with a home dose and a clinic dose). Doses with `OCC` outside 1-6 get no
+  between-occasion deviation.
+* **Unobserved-dose scaling.** Table 2 gives a 1.43-fold "scaling factor on
+  BOV for the unobserved dose" and the Results say it inflates the
+  between-occasion variability on bioavailability. It is applied here as a
+  multiplier on the bioavailability occasion eta (standard-deviation scale),
+  the form the same group's control streams use (`Kengo_2025_atazanavir`,
+  `Ndzamba_2025_ethambutol`). Unlike Kengo 2025, only the bioavailability
+  eta is scaled, as the paper states.
+* **Rifampicin effects are assumptions, not estimates.** No atazanavir data
+  were collected with rifampicin. The fixed factors (CL x3.12 and F -53%
+  once daily; CL x2.04 twice daily) are the paper's adult-derived simulation
+  inputs, attributed to the Kengo et al. DERIVE model. They differ slightly
+  from the final estimates printed in Kengo 2025 Table 2 (3.05, 2.03 and
+  -52.5%; `Kengo_2025_atazanavir`); van Dyk 2026's own values are used here.
+  The rifampicin effect on ka in Kengo 2025 was not carried into this
+  paper's simulations and is not part of this model.
+* **Additive error by study.** The additive error was fixed to 20% of each
+  laboratory's LLOQ, which differs between CHAPAS-4 (0.105 mg/L) and VirTUAL
+  (0.030 mg/L); `STUDY_VIRTUAL` selects between them. It does not affect
+  typical-value or individual predictions.
+* **Formulation in the Figure 2 simulations.** The paper's Figure 2 medians
+  are reproduced only when all bands use the FDC bioavailability; the paper
+  does not say which formulation the simulations assumed. The model keeps
+  the estimated separate-tablet effect, so choose `FORM_FDC` to match the
+  regimen being simulated.
+* **Troughs with once-daily ATV/r plus rifampicin.** The simulated median
+  troughs in this scenario are 12-47% above the values read off Figure 2,
+  and about two thirds of simulated children fall below the PA-IC90 where
+  the paper reports over three quarters. AUC0-24 in the same scenario
+  matches Figure 2 within 8%, and troughs in the other two scenarios match
+  within about 20%. These troughs are around 0.01 mg/L on a log axis, where
+  reading values off the figure is least precise. The paper also does not
+  say whether its trough is the end-of-interval concentration or the
+  interval minimum (both are reported above), nor how between-occasion
+  variability was handled in its steady-state simulations. No parameter was
+  adjusted. The AUC comparison, which does not depend on these choices,
+  carries the assertion.
+* **Figure 2 and Figure 1 reference values** were read off the published
+  figures by the maintainers; the paper prints no exposure table. The adult
+  reference geometric mean AUC0-24 shown as a dashed line in Figure 2
+  (about 40 mg*h/L, from the paper's reference 21) is not used as a check.
+* **Data-handling methods not part of the model.** M7+ handling of BLQ
+  samples, exclusion of non-adherent participants and the B2 initialisation
+  of one CHAPAS-4 participant are estimation-time data handling and have no
+  counterpart in a simulation model.
+* **Covariates screened but not retained** (age, fat-free mass, ritonavir
+  AUC0-24 and dose, NRTI backbone) are listed in the model's
+  `covariatesDataExcluded`.
+* **Errata.** No erratum or correction was found for this article
+  (checked 2026-11-16).
