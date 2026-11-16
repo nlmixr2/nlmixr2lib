@@ -1,0 +1,483 @@
+---
+title: "Dalbavancin (Sayadi 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dalbavancin (Sayadi 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Sayadi_2026_dalbavancin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Sayadi_2026_dalbavancin"))$description`
+* Article: [Antimicrob Agents Chemother 2026;70(8):e00665-26](https://doi.org/10.1128/aac.00665-26)
+
+Dalbavancin is a long-acting lipoglycopeptide approved for acute bacterial skin
+and skin structure infection and used off-label in repeated 1500 mg doses for
+bone, joint and endovascular infections that need weeks of therapy. Sayadi 2026
+fitted a population PK model to routine therapeutic-drug-monitoring (TDM) data
+from 183 patients at Limoges University Hospital, validated it externally in 30
+patients from Nantes, benchmarked it against five published dalbavancin models
+(Carrothers 2020, Cojutti 2023 x2, Chiriac 2024 and Baiardi 2025) and a model
+average, and used Monte Carlo simulation to estimate how long a two-dose regimen
+keeps the probability of target attainment (PTA) for fAUC24/MIC >= 111.1 above
+90%.
+
+Only the model developed in the paper is packaged here. The five comparator
+models are the published models of other authors (several are already in
+nlmixr2lib, e.g. `Carrothers_2020_dalbavancin`, `Chiriac_2024_dalbavancin`,
+`Baiardi_2025_dalbavancin`), and the model average is a per-patient weighting of
+Bayesian posterior predictions, not a population model.
+
+# Population
+
+The development data set comprised 183 adults contributing 406 total plasma
+dalbavancin concentrations, all above the 0.5 mg/L LLOQ (Sayadi 2026 Table 2).
+The cohort was elderly (median age 77 years, IQR 67-83, range 23-99) and 62.8%
+male. Median body weight was 79 kg (IQR 65-88, range 32-138) and median CKD-EPI
+eGFR 75 mL/min/1.73 m^2 (IQR 49-87, range 14-135). Patients received 1 to 23
+doses (24.6% received three or more) with 1 to 25 TDM samples each, collected
+mostly at trough and in the late elimination phase. The main indications were
+osteoarticular infection (43.2%) and infective endocarditis (12.6%). Missing
+weights (n = 27) and creatinine values (n = 29) were imputed by k-nearest
+neighbours before fitting.
+
+The same information is available programmatically via
+`readModelDb("Sayadi_2026_dalbavancin")()$population`.
+
+# Source trace
+
+| Model element | Value | Source location |
+|---|---|---|
+| Structure: 2 compartments, IV infusion, first-order elimination | -- | Results, Structural model and covariates (BIC 2,981.7) |
+| `lcl` (CL) | 0.035 L/h | Table 4, TV_Cl |
+| `lvc` (V1) | 4.74 L | Table 4, TV_V1 |
+| `lq` (Q) | 0.033 L/h | Table 4, TV_Q |
+| `lvp` (V2) | 8.74 L | Table 4, TV_V2 |
+| `e_crcl_cl` | 0.22 | Table 4, beta eGFR,CL |
+| `e_wt_cl` | 0.61 | Table 4, beta WT,CL |
+| `e_wt_vc`, `e_wt_vp` | 1 (fixed) | Table 4 and footnote; Results, Structural model and covariates |
+| Covariate form: power, centred on the population median | `(cov / median)^beta` | Methods, Covariate analysis, equation 1 (see Assumptions) |
+| Reference covariate values | WT 79 kg, eGFR 75 mL/min/1.73 m^2 | Table 2 medians |
+| `etalcl`, `etalvc`, `etalq`, `etalvp` | omega SD 0.17, 0.2, 0.49, 0.34 (variance = SD^2) | Table 4, Standard deviation of the random effects |
+| `propSd` | 0.21 | Table 4, sigma prop |
+| `fu` | 0.07 (fixed) | Methods, Monte Carlo simulations and probability of target attainment |
+| PTA target fAUC24/MIC >= 111.1, MIC 0.125 and 0.25 mg/L | -- | Methods, Monte Carlo simulations |
+| Published PTA critical days | -- | Table S1 (supplement); Figures 2 and 3 |
+
+# Virtual cohort
+
+The paper's Monte Carlo design (Results, Monte Carlo simulations) stratifies
+patients two ways: by eGFR (15-29, 30-59, 60-89 and 90-120 mL/min/1.73 m^2) at
+the median weight of 79 kg, and by weight (30-49, 50-79, 80-119 and 120-200 kg)
+at the median eGFR of 75 mL/min/1.73 m^2. Each stratum receives 1500 mg on day 1
+and day 8 (D1/D8) or on day 1 and day 15 (D1/D15) as 30-minute infusions, and is
+followed for 100 days. The paper used 10,000 virtual patients per stratum; 200
+per stratum are used here, which resolves the day on which PTA falls below 90%
+to within a day or two.
+
+```{r cohort}
+mod <- readModelDb("Sayadi_2026_dalbavancin")
+# PTA is computed from the individual (error-free) unbound profile.
+mod_sim <- rxode2::zeroRe(mod, which = "sigma")
+
+set.seed(2026)
+rxode2::rxSetSeed(2026)
+
+n_per_stratum <- 200L
+strata <- dplyr::bind_rows(
+  tibble::tibble(
+    cov = "eGFR", stratum = c("15-29", "30-59", "60-89", "90-120"),
+    lo = c(15, 30, 60, 90), hi = c(29, 59, 89, 120)
+  ),
+  tibble::tibble(
+    cov = "Weight", stratum = c("30-49", "50-79", "80-119", "120-200"),
+    lo = c(30, 50, 80, 120), hi = c(49, 79, 119, 200)
+  )
+)
+regimens <- c("D1/D8", "D1/D15")
+second_day <- c("D1/D8" = 8, "D1/D15" = 15)
+
+# One row per virtual patient: the stratified covariate is drawn uniformly
+# within its stratum, the other covariate is held at the cohort median.
+cohort <- tidyr::expand_grid(regimen = regimens, strata) |>
+  dplyr::slice(rep(seq_len(dplyr::n()), each = n_per_stratum)) |>
+  dplyr::mutate(
+    id = dplyr::row_number(),
+    x = stats::runif(dplyr::n(), lo, hi),
+    CRCL = ifelse(cov == "eGFR", x, 75),
+    WT = ifelse(cov == "Weight", x, 79)
+  ) |>
+  dplyr::select(id, regimen, cov, stratum, CRCL, WT)
+
+cohort |>
+  dplyr::group_by(regimen, cov, stratum) |>
+  dplyr::summarise(
+    n = dplyr::n(), CRCL = median(CRCL), WT = median(WT),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+# Simulation
+
+```{r sim-helpers}
+hours_per_day <- 24
+obs_grid <- seq(0, 100 * hours_per_day, by = 2)
+
+# Event table: 1500 mg 30-minute infusions at the times (h) in the
+# `dose_times` list column, observations on the central compartment on a 2-h
+# grid plus 30 min after each dose so the trapezoid captures the
+# end-of-infusion peak.
+make_events <- function(cohort) {
+  doses <- cohort |>
+    dplyr::mutate(time = dose_times) |>
+    tidyr::unnest(time) |>
+    dplyr::mutate(evid = 1L, amt = 1500, rate = 3000, cmt = "central")
+  obs <- cohort |>
+    dplyr::mutate(time = lapply(dose_times, function(d) sort(unique(c(obs_grid, d + 0.5))))) |>
+    tidyr::unnest(time) |>
+    dplyr::mutate(evid = 0L, amt = 0, rate = 0, cmt = "central")
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    dplyr::select(id, time, evid, amt, rate, cmt, CRCL, WT)
+}
+
+# Unbound AUC over each calendar day (day 1 = 0-24 h) by the linear trapezoid,
+# as in the paper (pracma trapezoidal integration).
+daily_fauc <- function(sim) {
+  sim |>
+    dplyr::select(id, time, Ccu) |>
+    dplyr::arrange(id, time) |>
+    dplyr::group_by(id) |>
+    dplyr::mutate(
+      seg = (Ccu + dplyr::lead(Ccu)) / 2 * (dplyr::lead(time) - time),
+      day = floor(time / hours_per_day) + 1
+    ) |>
+    dplyr::filter(!is.na(seg), day <= 100) |>
+    dplyr::group_by(id, day) |>
+    dplyr::summarise(fauc24 = sum(seg), .groups = "drop")
+}
+
+# Population PTA per day for the two MICs.
+pta_by_day <- function(fauc, cohort, mic = c(0.125, 0.25)) {
+  fauc |>
+    dplyr::inner_join(cohort, by = "id") |>
+    tidyr::expand_grid(mic = mic) |>
+    dplyr::group_by(regimen, cov, stratum, mic, day) |>
+    dplyr::summarise(pta = mean(fauc24 / mic >= 111.1), .groups = "drop")
+}
+
+# First day on or after `from_day` on which PTA is below 90%; 100 when PTA
+# never falls below 90% within the 100-day horizon.
+critical_day <- function(pta, from_day) {
+  pta |>
+    dplyr::inner_join(from_day, by = c("regimen", "cov", "stratum", "mic")) |>
+    dplyr::group_by(regimen, cov, stratum, mic) |>
+    dplyr::summarise(
+      crit = if (any(day >= from & pta < 0.9)) min(day[day >= from & pta < 0.9]) else 100,
+      .groups = "drop"
+    )
+}
+```
+
+```{r sim-two-dose}
+two_dose <- cohort |>
+  dplyr::mutate(dose_times = lapply(regimen, function(r) c(0, (second_day[[r]] - 1) * hours_per_day)))
+ev2 <- make_events(two_dose)
+
+sim2 <- rxode2::rxSolve(mod_sim, ev2, returnType = "data.frame")
+stopifnot(all(sim2$Ccu >= 0))
+
+pta2 <- pta_by_day(daily_fauc(sim2), cohort)
+from2 <- tidyr::expand_grid(
+  tibble::tibble(regimen = regimens, from = unname(second_day[regimens])),
+  dplyr::distinct(strata, cov, stratum),
+  mic = c(0.125, 0.25)
+)
+crit2 <- critical_day(pta2, from2)
+```
+
+The paper then adds a third 1500 mg dose at the point where PTA drops below
+90% in each stratum. Here the third dose is given at the end of the stratum's
+simulated critical day, which reproduces the brief dip below 90% visible in
+Figures 2B, 2D, 2F and 2H of the paper.
+
+```{r sim-three-dose}
+three_dose <- cohort |>
+  tidyr::expand_grid(mic = c(0.125, 0.25)) |>
+  dplyr::inner_join(crit2, by = c("regimen", "cov", "stratum", "mic")) |>
+  dplyr::mutate(
+    id = dplyr::row_number(),
+    dose_times = Map(function(r, c) c(0, (second_day[[r]] - 1) * hours_per_day, c * hours_per_day), regimen, crit)
+  )
+ev3 <- make_events(three_dose)
+sim3 <- rxode2::rxSolve(mod_sim, ev3, returnType = "data.frame")
+
+pta3 <- daily_fauc(sim3) |>
+  dplyr::inner_join(dplyr::select(three_dose, id, regimen, cov, stratum, mic, crit), by = "id") |>
+  dplyr::group_by(regimen, cov, stratum, mic, day) |>
+  dplyr::summarise(pta = mean(fauc24 / mic >= 111.1), .groups = "drop")
+crit3 <- critical_day(pta3, dplyr::rename(crit2, from = crit) |> dplyr::mutate(from = from + 1))
+```
+
+# Replicate published figures
+
+## Figure 2 - PTA over time at an MIC of 0.25 mg/L
+
+```{r fig2, fig.height = 7}
+fig_pta <- dplyr::bind_rows(
+  dplyr::mutate(pta2, doses = "2 doses"),
+  dplyr::mutate(pta3, doses = "3 doses")
+) |>
+  dplyr::mutate(
+    stratum = factor(stratum, levels = unique(strata$stratum)),
+    panel = paste(regimen, "|", cov, "|", doses),
+    panel = factor(panel, levels = unique(panel[order(match(regimen, regimens), cov == "Weight", doses)]))
+  )
+
+ggplot(dplyr::filter(fig_pta, mic == 0.25), aes(day / 7, 100 * pta, colour = stratum)) +
+  geom_line() +
+  geom_hline(yintercept = 90, linetype = "dashed") +
+  facet_wrap(~panel, ncol = 2) +
+  labs(
+    x = "Time (weeks)", y = "PTA (%)", colour = "Stratum",
+    title = "PTA of fAUC24/MIC >= 111.1 at MIC 0.25 mg/L",
+    caption = "Replicates Figure 2 of Sayadi 2026 (eGFR in mL/min/1.73 m^2, weight in kg)."
+  )
+```
+
+## Figure 3 - PTA over time at an MIC of 0.125 mg/L
+
+```{r fig3, fig.height = 7}
+ggplot(dplyr::filter(fig_pta, mic == 0.125), aes(day / 7, 100 * pta, colour = stratum)) +
+  geom_line() +
+  geom_hline(yintercept = 90, linetype = "dashed") +
+  facet_wrap(~panel, ncol = 2) +
+  labs(
+    x = "Time (weeks)", y = "PTA (%)", colour = "Stratum",
+    title = "PTA of fAUC24/MIC >= 111.1 at MIC 0.125 mg/L",
+    caption = "Replicates Figure 3 of Sayadi 2026 (eGFR in mL/min/1.73 m^2, weight in kg)."
+  )
+```
+
+## Table S1 - day on which PTA falls below 90%
+
+Table S1 of the paper lists, per regimen and stratum, the day on which PTA
+first falls below 90% after the two-dose regimen (the day the third dose is
+due) and after the third dose (the day a fourth dose would be due).
+
+```{r tableS1}
+published <- tibble::tribble(
+  ~regimen, ~cov, ~stratum, ~d3_0125, ~d3_025, ~d4_0125, ~d4_025,
+  "D1/D15", "Weight", "120-200", 34, 26, 57, 40,
+  "D1/D15", "Weight", "30-49", 50, 41, 83, 66,
+  "D1/D15", "Weight", "50-79", 50, 37, 83, 60,
+  "D1/D15", "Weight", "80-119", 45, 29, 76, 48,
+  "D1/D15", "eGFR", "15-29", 64, 48, 100, 79,
+  "D1/D15", "eGFR", "30-59", 56, 41, 94, 68,
+  "D1/D15", "eGFR", "60-89", 51, 36, 85, 60,
+  "D1/D15", "eGFR", "90-120", 47, 34, 78, 55,
+  "D1/D8", "Weight", "120-200", 29, 20, 52, 34,
+  "D1/D8", "Weight", "30-49", 45, 36, 78, 61,
+  "D1/D8", "Weight", "50-79", 45, 32, 79, 56,
+  "D1/D8", "Weight", "80-119", 40, 24, 71, 43,
+  "D1/D8", "eGFR", "15-29", 59, 44, 100, 76,
+  "D1/D8", "eGFR", "30-59", 51, 36, 89, 63,
+  "D1/D8", "eGFR", "60-89", 46, 32, 80, 55,
+  "D1/D8", "eGFR", "90-120", 43, 29, 74, 50
+) |>
+  tidyr::pivot_longer(starts_with("d"), names_to = "key", values_to = "published") |>
+  dplyr::mutate(
+    dose = ifelse(substr(key, 2, 2) == "3", "3rd dose due", "4th dose due"),
+    mic = ifelse(grepl("0125", key), 0.125, 0.25)
+  ) |>
+  dplyr::select(-key)
+
+simulated <- dplyr::bind_rows(
+  dplyr::mutate(crit2, dose = "3rd dose due"),
+  dplyr::mutate(crit3, dose = "4th dose due")
+)
+
+chk <- published |>
+  dplyr::inner_join(simulated, by = c("regimen", "cov", "stratum", "mic", "dose")) |>
+  dplyr::mutate(diff_days = crit - published)
+stopifnot(nrow(chk) == 64L)
+
+chk |>
+  dplyr::arrange(dose, mic, regimen, cov) |>
+  dplyr::select(dose, mic, regimen, cov, stratum, published, crit, diff_days) |>
+  dplyr::rename(
+    "Dose" = dose, "MIC (mg/L)" = mic, "Regimen" = regimen, "Stratified by" = cov,
+    "Stratum" = stratum, "Published day" = published, "Simulated day" = crit,
+    "Difference (days)" = diff_days
+  ) |>
+  knitr::kable()
+```
+
+The simulated critical days track Table S1 across both regimens, both MICs and
+all strata. The eGFR strata agree to within about three days, at most ten
+percent of the published day. The weight strata run consistently later than
+published, by roughly two to nine days (up to about 15%), and more so after the
+third dose. The paper does not report how weights were distributed within each
+stratum (a uniform draw is used here), which would explain a shift confined to
+the weight strata. An error in clearance or its eGFR exponent would move the
+eGFR strata as well, and an error in a weight exponent would grow with distance
+from the 79 kg reference, whereas the shift is about as large in the 50-79 kg
+stratum as in the 120-200 kg one.
+
+```{r tableS1-check}
+summary(chk$diff_days)
+stopifnot(
+  # Structural: a mis-transcribed clearance, exponent or reference value shifts
+  # every stratum by a week or more.
+  abs(median(chk$diff_days)) <= 4,
+  # Envelope: robust to which strata land in the Monte Carlo tails.
+  quantile(abs(chk$diff_days), 0.9) <= 12
+)
+```
+
+# Typical-value profiles
+
+```{r typical}
+typ_cov <- tibble::tibble(
+  label = c("eGFR 20, 79 kg", "eGFR 75, 79 kg", "eGFR 110, 79 kg", "eGFR 75, 50 kg", "eGFR 75, 140 kg"),
+  CRCL = c(20, 75, 110, 75, 75),
+  WT = c(79, 79, 79, 50, 140)
+) |>
+  dplyr::mutate(id = dplyr::row_number(), dose_times = list(c(0, 7 * hours_per_day)))
+ev_typ <- make_events(typ_cov)
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ, returnType = "data.frame") |>
+  dplyr::inner_join(dplyr::select(typ_cov, id, label), by = "id")
+
+ggplot(sim_typ, aes(time / hours_per_day, Cc, colour = label)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(
+    x = "Time (days)", y = "Total dalbavancin (mg/L)", colour = NULL,
+    title = "Typical patients, 1500 mg on day 1 and day 8"
+  )
+```
+
+# PKNCA validation
+
+Sayadi 2026 reports no non-compartmental analysis, so the NCA below is an
+internal consistency check on the packaged model. A single 1500 mg dose is
+simulated in 50 eGFR-stratified patients per stratum (with between-subject
+variability) over 100 days. PKNCA reads a thinned grid -- 2-hourly over the
+first two days, 12-hourly to day 14, then daily -- because NCA on the full 2-h
+grid over 100 days is needlessly slow.
+
+```{r nca}
+n_nca <- 50L
+nca_cohort <- cohort |>
+  dplyr::filter(regimen == "D1/D8", cov == "eGFR") |>
+  dplyr::group_by(stratum) |>
+  dplyr::slice_head(n = n_nca) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(dose_times = list(0))
+ev_sd <- make_events(nca_cohort)
+sim_sd <- rxode2::rxSolve(mod_sim, ev_sd, returnType = "data.frame") |>
+  dplyr::inner_join(dplyr::select(nca_cohort, id, stratum), by = "id")
+
+nca_times <- c(seq(0, 48, by = 2), 0.5, seq(60, 14 * hours_per_day, by = 12), seq(15 * hours_per_day, 100 * hours_per_day, by = 24))
+conc_sd <- sim_sd |>
+  dplyr::filter(!is.na(Cc), time %in% nca_times) |>
+  dplyr::select(id, stratum, time, Cc)
+conc_sd <- dplyr::bind_rows(
+  conc_sd,
+  dplyr::distinct(conc_sd, id, stratum) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, stratum, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, time)
+
+dose_sd <- ev_sd |>
+  dplyr::filter(evid == 1) |>
+  dplyr::inner_join(dplyr::select(nca_cohort, id, stratum), by = "id") |>
+  dplyr::select(id, stratum, time, amt)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_sd, Cc ~ time | stratum + id),
+  PKNCA::PKNCAdose(dose_sd, amt ~ time | stratum + id),
+  intervals = data.frame(
+    start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+    aucinf.obs = TRUE, half.life = TRUE
+  )
+))
+
+as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "aucinf.obs", "half.life")) |>
+  dplyr::group_by(stratum, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::mutate(half.life = half.life / hours_per_day) |>
+  dplyr::rename(
+    "eGFR stratum" = stratum, "Cmax (mg/L)" = cmax,
+    "AUC0-inf (mg*h/L)" = aucinf.obs, "Terminal half-life (days)" = half.life
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+For a linear model eliminating only from the central compartment, AUC to
+infinity after one intravenous dose equals dose divided by the subject's
+clearance. This per-subject identity checks the PKNCA set-up and the
+simulation grid together.
+
+```{r nca-identity}
+auc_check <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD == "aucinf.obs") |>
+  dplyr::select(id, aucinf = PPORRES) |>
+  dplyr::inner_join(dplyr::distinct(sim_sd, id, cl), by = "id") |>
+  dplyr::mutate(pct_error = 100 * (aucinf - 1500 / cl) / (1500 / cl))
+stopifnot(nrow(auc_check) == 4L * n_nca)
+summary(auc_check$pct_error)
+# Same drawn parameters on both sides: the only difference is trapezoid and
+# extrapolation error on the thinned grid, so a tight bound holds for every
+# subject.
+stopifnot(max(abs(auc_check$pct_error)) < 2)
+```
+
+# Assumptions and deviations
+
+* **Covariate equation.** The Methods equation for continuous covariates is
+  typeset as `log(theta_i) = log(theta_pop) + log(theta_cov) x (Cov_i /
+  Cov_median)`, which is not a power function. The surrounding text ("tested
+  using power functions (allometric scaling)"), the Table 4 footnote ("beta,
+  covariate effect (power exponent)") and the fixed volume exponents of 1 all
+  describe the Monolix power form `theta_i = theta_pop x (Cov_i /
+  Cov_median)^beta`, which is used here. The Table S1 reproduction above
+  confirms this reading.
+* **Reference covariate values.** The paper centres on the "population median"
+  without printing it in the covariate equations; the Table 2 medians (79 kg,
+  75 mL/min/1.73 m^2) are used. Table 2 summarises the observed values, before
+  k-nearest-neighbour imputation of the 15-16% missing weights and creatinine
+  values, so the median Monolix used may differ slightly.
+* **eGFR column.** The paper's CKD-EPI eGFR (mL/min/1.73 m^2) is supplied in
+  the `CRCL` column, the package's canonical name for BSA-normalised renal
+  function.
+* **Random effects.** Table 4 reports omega as the standard deviation of the
+  log-normal random effect (CV% 17.5 for omega 0.17, i.e. sqrt(exp(omega^2) - 1));
+  the variances in `ini()` are the squared SDs. No correlations between random
+  effects were reported, so the omega matrix is diagonal.
+* **Unbound fraction.** `fu = 0.07` and the unbound output `Ccu` are not part
+  of the fitted model; they reproduce the paper's conversion for the PTA
+  simulations.
+* **PTA simulation details not reported.** The within-stratum covariate
+  distribution is drawn uniformly; the third dose is given at the end of the
+  stratum's critical day; fAUC24 is computed per calendar day by the linear
+  trapezoid on a 2-h grid without residual error. The paper's Methods state that
+  RUV was applied in the Monte Carlo simulations but not how it entered the
+  AUC; it is omitted here. Cohorts are 200 per stratum instead of 10,000.
+* **Comparator models and model averaging** are not packaged with this model
+  (see Model and source).

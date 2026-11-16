@@ -2064,6 +2064,8 @@ navbar:
         href: articles/Cojutti_2022_dalbavancin.html
       - text: "Dalbavancin (Cojutti 2024)"
         href: articles/Cojutti_2024_dalbavancin.html
+      - text: "Dalbavancin (Sayadi 2026)"
+        href: articles/Sayadi_2026_dalbavancin.html
       - text: "Dalbavancin nlls (Giacometti 2025)"
         href: articles/Giacometti_2025_dalbavancin.html
       - text: "Dalbavancin nlme (Giacometti 2025)"
@@ -11601,6 +11603,7 @@ articles:
   - articles/Savic_2017_cladribine
   - articles/Savic_2022_voxelotor
   - articles/Sawe_2025_levofloxacin
+  - articles/Sayadi_2026_dalbavancin
   - articles/Scarpignato_2022_vonoprazan
   - articles/SchaedeliStark_2024_balovaptan
   - articles/Schaefer_1996_ciprofloxacin
