@@ -12248,6 +12248,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `Srimani_2022_ixazomib_mprotein.R` (resistant M-protein population `exp(kL * (t - T_MPROTEIN_NADIR)) - 1` after the nadir; for simulation the vignette draws it from the model's own relapse hazard).
 - **Notes:** Member of the `T_<event>` family, but unlike most members (time-varying "time since X") it is a STATIC per-subject event time, constant over the record. The analyte is named so a nadir time of another biomarker (e.g. neutrophil count) cannot collide. It is a data-derived quantity, not a model parameter, so it belongs here rather than in `ini()`.
 
+### T_PROGRESSION (**canonical for per-subject time of disease progression after the first dose**)
+- **Description:** Per-subject time from the first dose to documented disease progression (RECIST progressive disease), supplied as data. Used by multistate models in which a hazard out of the progression state depends on WHEN the subject progressed (a semi-Markov time scale), so the hazard cannot be computed from model time alone.
+- **Units:** week (model time units; document the source scale in `covariateData[[T_PROGRESSION]]$notes`).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- the argument of a hazard function, e.g. the log-logistic `scale * shape * (scale * T_PROGRESSION)^(shape - 1) / (1 + (scale * T_PROGRESSION)^shape)`.
+- **Source aliases:**
+  - `TTP` -- time to progression, Liu 2026 Table S4 ('Time to Prog. on lambda36').
+- **Example models:** `Liu_2026_sunitinib_multistate.R` (progression -> death hazard lambda36 is log-logistic in the time to progression; constant once the subject has progressed).
+- **Notes:** Member of the `T_<event>` family and, like `T_MPROTEIN_NADIR`, a STATIC per-subject event time constant over the record. When fitting, it is the subject's observed progression time; for a subject who has not progressed it affects only the progression and death states. Population survival from baseline must integrate over the time-to-progression distribution (the founding vignette simulates individual histories from the model's hazards to do so). Distinct from `PFS_EVENT` (a binary event indicator) and from time-to-event outputs, which are predicted rather than supplied.
+
 ### PDL1_TUM (**canonical for tumor PD-L1 expression (tumor proportion score)**)
 - **Description:** Baseline tumor PD-L1 expression measured by immunohistochemistry, reported as Tumor Proportion Score (TPS) -- the percent of viable tumor cells with complete or partial membrane staining at any intensity. Used as a prognostic and predictive covariate for anti-PD-1 / anti-PD-L1 therapies. Distinct from `SPDL1` (soluble serum PD-L1 in pg/mL); `PDL1_TUM` is a tissue biomarker, `SPDL1` is a circulating biomarker.
 - **Units:** percent (0-100)
@@ -17724,7 +17735,7 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Source aliases:**
   - `Tdiag` -- used in `Terranova_2022_TGD_OS_gastric.R` (Terranova 2022 Supplementary Methods equation form `(Tdiag/53)^theta5` on the Gompertz tumor-growth rate constant `Kg`).
   - `Log time since diagnosis` -- Terranova 2022 Table S2 OS TTE coefficient label; enters on `log(median OS)` via `log(T_DIAG_CANCER) * beta`.
-- **Example models:** `Terranova_2022_TGD_OS_gastric.R` (power effect on Gompertzian `Kg`: `Kg = tvKg * (T_DIAG_CANCER / 53)^-0.00291`, reference 53 days; and additive linear-log effect on log-median OS: `log_median_OS += 0.0436 * log(T_DIAG_CANCER)`).
+- **Example models:** `Terranova_2022_TGD_OS_gastric.R` (power effect on Gompertzian `Kg`: `Kg = tvKg * (T_DIAG_CANCER / 53)^-0.00291`, reference 53 days; and additive linear-log effect on log-median OS: `log_median_OS += 0.0436 * log(T_DIAG_CANCER)`).; `Liu_2026_sunitinib_multistate.R` (dichotomised in `model()` as `T_DIAG_CANCER > 365.25`, time since diagnosis > 1 year: hazard ratio 0.950 on stable -> progression and 0.678 on progression -> death; source column `TDIAG`).
 - **Notes:** Sibling of `T_DIAG_DIAB` under the canonical `T_<event>` family. Auto-approved without a separate naming ruling per the T_<event> policy on 2026-07-24. For a 0-day subject (diagnosed at study entry) the power form `(0/53)^theta` evaluates to `0` when the exponent is positive, which is a boundary case; supply at least a small floor value (e.g. 1 day) for such subjects in simulation. Distinct from post-treatment intervals (`T_POST_ECMO`, etc.) which are time-since-intervention rather than time-since-diagnosis.
 
 
