@@ -1,0 +1,527 @@
+---
+title: "Datopotamab deruxtecan exposure-response in non-small cell lung cancer (Hong 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Datopotamab deruxtecan exposure-response in non-small cell lung cancer (Hong 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Hong 2026 reports the exposure-response (ER) analyses supporting the
+datopotamab deruxtecan (Dato-DXd) dose of 6 mg/kg every 3 weeks in previously
+treated advanced non-small cell lung cancer (NSCLC). Efficacy was analysed in
+644 NSCLC patients and safety in 729 patients (the same 644 plus 85 breast
+cancer patients) pooled from TROPION-PanTumor01, TROPION-Lung05 and
+TROPION-Lung01. Six of the paper's endpoints are packaged here:
+
+```{r models}
+erModels <- tibble::tribble(
+  ~Model,                                  ~Endpoint,                            ~Method,                         ~`Exposure metric`,      ~Output,
+  "Hong_2026_datopotamab_os",              "Overall survival",                   "Gompertz time-to-event",        "Dato-DXd AUC1",         "hazard, sur",
+  "Hong_2026_datopotamab_pfs",             "Progression-free survival",          "Exponential time-to-event",     "Dato-DXd AUCtau (time-varying)", "hazard, sur",
+  "Hong_2026_datopotamab_orr",             "Objective response (BICR)",          "Logistic, Emax",                "Dato-DXd Cav (ug/mL)",  "prob_orr_central",
+  "Hong_2026_datopotamab_teae_grade3",     "Grade 3+ TEAE",                      "Logistic, linear",              "DXd Cav (ng/mL)",       "prob_teae_grade3",
+  "Hong_2026_datopotamab_sae",             "Serious TEAE",                       "Logistic, linear",              "DXd Cav (ng/mL)",       "prob_sae",
+  "Hong_2026_datopotamab_dose_reduction",  "TEAE leading to dose reduction",     "Logistic, linear",              "Dato-DXd AUC1",         "prob_dose_reduction"
+)
+knitr::kable(erModels, caption = "The six packaged Hong 2026 models.")
+```
+
+* Citation: `r rxode2::rxode(readModelDb("Hong_2026_datopotamab_os"))$reference`
+* Article: <https://doi.org/10.1002/cpt.70477> (open access, PMC13572793)
+* The individual exposures were empirical Bayes predictions from the population
+  PK model of Hong 2025, packaged as `Hong_2025_datopotamab`.
+
+**How complete each model is.** The two survival models are the paper's final
+models, transcribed from Table 2 (overall survival) and Supplementary Table S4
+(progression-free survival). The four logistic models are a different kind of
+object. Hong 2026 prints no intercept or exposure coefficient for any logistic
+model -- only the ORR EC50 and the covariate odds ratios of the final models.
+What it does plot (Figures 3 and 4) is the curve of each endpoint's **drug-effect
+model**, the exposure-only model fitted before covariate selection. Those curves
+were digitised and the intercept and slope back-solved, so the four packaged
+logistic models are the exposure-only drug-effect models. The final-model
+covariate odds ratios are listed in the Assumptions section but not encoded,
+because adding them to an intercept from a different model would describe
+neither.
+
+**Endpoints not packaged.** The five adverse-event-of-special-interest
+time-to-event models (any-grade and grade 2+ oral mucositis/stomatitis,
+any-grade and grade 2+ ocular surface toxicity, adjudicated drug-related
+ILD/pneumonitis) are summarised in Table 3 only as covariate hazard ratios; no
+baseline hazard, Gompertz shape or exposure coefficient is printed or plotted,
+so they cannot be reconstructed.
+
+None of the six models has a dose: the exposure metric is a data column.
+`AUC_DATODXD` is the Cycle-1 AUC of intact Dato-DXd and `AUC_DATODXD_TAU` the
+cycle-wise AUC over each dosing interval; both are supplied in ug*day/mL and
+converted inside the model to the paper's mg*h/mL (multiply by 24 / 1000).
+**`CAV` carries two different analytes**: intact Dato-DXd in ug/mL for the ORR
+model and the released payload DXd in ng/mL for the two TEAE models.
+
+# Population
+
+```{r population}
+pop <- tibble::tribble(
+  ~Characteristic,                ~`Efficacy set (n = 644)`,
+  "Age, median (range), y",       "63 (26-84)",
+  "Weight, median (range), kg",   "65.0 (37.0-156)",
+  "Female",                       "45.8%",
+  "Race",                         "44% White, 42% Asian, 1.9% Black, 11% other",
+  "Region",                       "USA 35%, Europe 26%, Japan 22%, rest of world 16%, China 0.8%",
+  "ECOG performance status > 0",  "71%",
+  "Histology",                    "81% adenocarcinoma, 15% squamous, 0.8% large cell, 2.8% other",
+  "Liver metastases",             "23%",
+  "Last prior line contained IO", "54%",
+  "Actionable genomic alteration", "36%",
+  "Albumin, median (range), g/L", "38.0 (19.0-50.0)",
+  "Tumour size, median (range), mm", "67.0 (13.0-314)",
+  "Dose",                         "0.27-10 mg/kg Q3W (75% at 6 mg/kg)"
+)
+knitr::kable(pop, caption = "Hong 2026 Table S3 (overall column).")
+```
+
+The safety set adds 85 breast-cancer patients from TROPION-PanTumor01; the paper
+gives no separate demographic table for the 729.
+
+# Source trace
+
+| Model | Element | Value | Source |
+|---|---|---|---|
+| os | baseline hazard; Gompertz shape | 0.412 /year; 0.434 /year | Table 2 |
+| os | AUC1 slope | -0.0216 per mg*h/mL | Table 2 |
+| os | albumin; tumour size | -0.0612 per g/L; 0.00477 per mm | Table 2 |
+| os | ECOG > 0; squamous; liver metastasis; female | 0.569; 0.393; 0.411; -0.279 | Table 2 |
+| os | covariate centring | albumin 38 g/L, tumour size 67 mm | Figure 2 reference patient; Table S3 medians |
+| pfs | baseline hazard | 5.85 /year | Table S4 |
+| pfs | Emax; EC50 of AUCtau | -3.45; 17.6 mg*h/mL | Table S4 |
+| pfs | age; albumin | -0.0156 per year; 0.0266 per g/L applied as -0.0266 | Table S4; sign from Table 1 and Figure S2 |
+| pfs | squamous; last prior IO; liver metastasis; female | 0.598; -0.303; 0.537; -0.312 | Table S4 |
+| pfs | covariate centring | age 63 y, albumin 38 g/L | Figure S2 reference patient |
+| os, pfs | h(t) = h0(t) exp(f(Exposure) + sum beta_i X_i) | -- | Supplementary Equation S1 |
+| orr | EC50 | 0.00404 mg/mL = 4.04 ug/mL | Results, ORR |
+| orr | intercept; Emax | -7.845; 8.001 | back-solved from the Figure 3 curve |
+| teae_grade3 | intercept; DXd Cav slope | -1.092; 1.441 per ng/mL | back-solved from Figure 4, top left |
+| sae | intercept; DXd Cav slope | -1.851; 1.487 per ng/mL | back-solved from Figure 4, top right |
+| dose_reduction | intercept; AUC1 slope | -3.263; 0.1081 per mg*h/mL | back-solved from Figure 4, bottom |
+| all logistic | logit(P) = logit(Pbase) + f(Exposure) | -- | Supplementary Equation S2 |
+
+# Structural checks: hazard ratios of the survival models
+
+Table 1, Figure 2 (overall survival) and Figure S2 (progression-free survival)
+print hazard ratios against a reference patient. Each survival model is solved
+for the two patients at one time point and the hazard ratio compared with the
+printed value. Because the hazards are proportional, the ratio does not depend
+on the time chosen. The printed values are medians over 250 parameter vectors
+drawn from the estimates' uncertainty, so they can differ slightly from the
+ratio at the point estimates.
+
+```{r helpers}
+# Solve a model for several virtual patients at a single time (one row per
+# patient); covariates are columns of `covs`, one row per patient.
+solveRows <- function(modelName, covs, time = 0.5) {
+  ev <- data.frame(id = seq_len(nrow(covs)), time = time, amt = 0, evid = 0L)
+  ev <- cbind(ev, covs)
+  s <- as.data.frame(rxode2::rxSolve(
+    rxode2::rxode(readModelDb(modelName)),
+    events = ev, returnType = "data.frame"
+  ))
+  stopifnot(nrow(s) == nrow(covs))
+  s
+}
+
+refOs <- data.frame(
+  AUC_DATODXD = 15.2 * 1000 / 24, ALB = 38, TUMSZ = 67,
+  ECOG_GE1 = 0, TUMTP_NSCLC_SQUAM = 0, LMET = 0, SEXF = 0
+)
+refPfs <- data.frame(
+  AUC_DATODXD_TAU = 13.9 * 1000 / 24, AGE = 63, ALB = 38,
+  TUMTP_NSCLC_SQUAM = 0, LAST_PRIOR_IO = 0, LMET = 0, SEXF = 0
+)
+hrTable <- function(modelName, ref, changes) {
+  rows <- lapply(changes, function(ch) {
+    alt <- ref
+    for (nm in names(ch$set)) alt[[nm]] <- ch$set[[nm]]
+    h <- solveRows(modelName, rbind(ref, alt))$hazard
+    data.frame(Comparison = ch$label, Printed = ch$printed, Model = signif(h[2] / h[1], 3))
+  })
+  out <- do.call(rbind, rows)
+  out$`Diff (%)` <- round(100 * (out$Model / out$Printed - 1), 1)
+  out
+}
+mghml <- function(x) x * 1000 / 24 # mg*h/mL -> ug*day/mL
+```
+
+```{r hr-os}
+hrOs <- hrTable("Hong_2026_datopotamab_os", refOs, list(
+  list(label = "AUC1 7.38 vs 15.2 mg*h/mL", set = list(AUC_DATODXD = mghml(7.38)), printed = 1.17),
+  list(label = "AUC1 25.3 vs 15.2 mg*h/mL", set = list(AUC_DATODXD = mghml(25.3)), printed = 0.814),
+  list(label = "4 mg/kg median AUC1 10.2", set = list(AUC_DATODXD = mghml(10.2)), printed = 1.11),
+  list(label = "8 mg/kg median AUC1 21.4", set = list(AUC_DATODXD = mghml(21.4)), printed = 0.881),
+  list(label = "ECOG > 0", set = list(ECOG_GE1 = 1), printed = 1.80),
+  list(label = "Albumin 28.0 vs 38 g/L", set = list(ALB = 28), printed = 1.84),
+  list(label = "Albumin 45.0 vs 38 g/L", set = list(ALB = 45), printed = 0.652),
+  list(label = "Female sex", set = list(SEXF = 1), printed = 0.768),
+  list(label = "Tumour size 19.1 vs 67 mm", set = list(TUMSZ = 19.1), printed = 0.797),
+  list(label = "Tumour size 173 vs 67 mm", set = list(TUMSZ = 173), printed = 1.65),
+  list(label = "Liver metastasis", set = list(LMET = 1), printed = 1.52),
+  list(label = "Squamous histology", set = list(TUMTP_NSCLC_SQUAM = 1), printed = 1.48)
+))
+knitr::kable(hrOs, caption = "Overall survival: model hazard ratios against Table 1 and Figure 2.")
+```
+
+```{r hr-pfs}
+hrPfs <- hrTable("Hong_2026_datopotamab_pfs", refPfs, list(
+  list(label = "AUCtau 2.52 vs 13.9 mg*h/mL", set = list(AUC_DATODXD_TAU = mghml(2.52)), printed = 2.54),
+  list(label = "AUCtau 9.89 vs 13.9 mg*h/mL", set = list(AUC_DATODXD_TAU = mghml(9.89)), printed = 1.32),
+  list(label = "AUCtau 18.3 vs 13.9 mg*h/mL", set = list(AUC_DATODXD_TAU = mghml(18.3)), printed = 0.812),
+  list(label = "AUCtau 26.9 vs 13.9 mg*h/mL", set = list(AUC_DATODXD_TAU = mghml(26.9)), printed = 0.622),
+  list(label = "4 mg/kg median AUCtau 10.2", set = list(AUC_DATODXD_TAU = mghml(10.2)), printed = 1.29),
+  list(label = "8 mg/kg median AUCtau 18.0", set = list(AUC_DATODXD_TAU = mghml(18.0)), printed = 0.805),
+  list(label = "Liver metastasis", set = list(LMET = 1), printed = 1.71),
+  list(label = "Last prior line IO", set = list(LAST_PRIOR_IO = 1), printed = 0.752),
+  list(label = "Squamous histology", set = list(TUMTP_NSCLC_SQUAM = 1), printed = 1.78),
+  list(label = "Female sex", set = list(SEXF = 1), printed = 0.729),
+  list(label = "Age 43 vs 63 y", set = list(AGE = 43), printed = 1.37),
+  list(label = "Age 76.9 vs 63 y", set = list(AGE = 76.9), printed = 0.805),
+  list(label = "Albumin 28.0 vs 38 g/L", set = list(ALB = 28), printed = 1.29),
+  list(label = "Albumin 34.4 vs 38 g/L", set = list(ALB = 34.4), printed = 1.10),
+  list(label = "Albumin 41.0 vs 38 g/L", set = list(ALB = 41), printed = 0.926),
+  list(label = "Albumin 45.0 vs 38 g/L", set = list(ALB = 45), printed = 0.836)
+))
+knitr::kable(hrPfs, caption = "Progression-free survival: model hazard ratios against Table 1 and Figure S2.")
+```
+
+```{r hr-assert}
+# Every covariate and the near-reference exposure rows match to within 5%.
+# The PFS AUCtau rows at the 5th and 95th percentiles differ by 17% and 9%: they
+# sit far from the reference on the curved part of an Emax function whose EC50
+# has a 41.9% RSE, where the median over uncertainty draws departs from the
+# point estimate. Both still move in the printed direction.
+nearRef <- !grepl("2.52|26.9", hrPfs$Comparison)
+stopifnot(
+  all(abs(hrOs$`Diff (%)`) < 5),
+  all(abs(hrPfs$`Diff (%)`[nearRef]) < 5),
+  all(abs(hrPfs$`Diff (%)`[!nearRef]) < 20),
+  all(sign(log(hrPfs$Model)) == sign(log(hrPfs$Printed)))
+)
+```
+
+The albumin rows of the progression-free survival model are the check behind
+its one deviation from the printed table: Supplementary Table S4 prints the
+albumin coefficient as +0.0266 per g/L, which would make the hazard *rise* with
+albumin, whereas Table 1, Figure S2 and the Results all report the opposite.
+With the sign applied as negative the model reproduces all four printed albumin
+hazard ratios.
+
+# Structural checks: the Discussion's 6 versus 4 mg/kg contrasts
+
+The Discussion states that, compared with 4 mg/kg, 6 mg/kg was predicted to
+reduce the risk of death by 10%, the risk of progression or death by 22%, and
+to increase the odds of objective response by 35%. The median exposures of the
+two dose groups from Figures 2, S2 and S3 reproduce the first two through the
+survival models.
+
+```{r discussion}
+osDose <- solveRows("Hong_2026_datopotamab_os", rbind(
+  transform(refOs, AUC_DATODXD = mghml(10.2)),
+  transform(refOs, AUC_DATODXD = mghml(15.2))
+))$hazard
+pfsDose <- solveRows("Hong_2026_datopotamab_pfs", rbind(
+  transform(refPfs, AUC_DATODXD_TAU = mghml(10.2)),
+  transform(refPfs, AUC_DATODXD_TAU = mghml(13.9))
+))$hazard
+orrDose <- solveRows("Hong_2026_datopotamab_orr", data.frame(CAV = c(20.7, 28.9)))$prob_orr_central
+odds <- function(p) p / (1 - p)
+contrast <- data.frame(
+  Contrast = c(
+    "Overall survival: risk reduction",
+    "Progression-free survival: risk reduction",
+    "Objective response: odds increase"
+  ),
+  Printed = c(10, 22, 35),
+  Model = round(c(
+    100 * (1 - osDose[2] / osDose[1]),
+    100 * (1 - pfsDose[2] / pfsDose[1]),
+    100 * (odds(orrDose[2]) / odds(orrDose[1]) - 1)
+  ), 1)
+)
+knitr::kable(contrast, caption = "6 mg/kg versus 4 mg/kg at the dose-group median exposures (percent).")
+stopifnot(abs(contrast$Model[1:2] - contrast$Printed[1:2]) < 1.5)
+```
+
+The objective-response contrast is 38% here rather than 35% because the packaged
+ORR model is the drug-effect model (Emax 8.00 on the logit). The odds ratios of
+the final ORR model printed in Figure S3 imply Emax = 7.48 with the same EC50,
+which gives the paper's 35%:
+
+```{r orr-final-emax}
+gEmax <- function(cav) cav / (4.04 + cav)
+figS3 <- data.frame(
+  cav = c(13.0, 22.5, 36.0, 52.6, 20.7, 40.7),
+  or = c(0.426, 0.802, 1.18, 1.47, 0.738, 1.27)
+)
+figS3$impliedEmax <- log(figS3$or) / (gEmax(figS3$cav) - gEmax(28.9))
+figS3 |>
+  dplyr::rename(
+    "Dato-DXd Cav (ug/mL)" = cav,
+    "Printed OR vs 28.9 ug/mL" = or,
+    "Implied logit Emax" = impliedEmax
+  ) |>
+  knitr::kable(digits = 3, caption = "Figure S3 odds ratios of the final ORR model and the Emax each implies at EC50 = 4.04 ug/mL.")
+```
+
+```{r orr-final-assert}
+stopifnot(abs(mean(figS3$impliedEmax) - 7.48) < 0.1, sd(figS3$impliedEmax) < 0.15)
+```
+
+The six rows agree on one Emax, which confirms that the printed EC50 belongs to
+the final model and that the Emax form is read correctly; it also shows the
+final model's Emax is 7% smaller than the drug-effect model's.
+
+# Virtual cohort
+
+A virtual cohort of 200 patients per dose group (4, 6 and 8 mg/kg) draws its
+covariates from the Table S3 distributions. Individual exposures are lognormal
+around the dose-group medians of Figures 2 and S2, with the spread implied by the
+6 mg/kg 5th and 95th AUC1 percentiles (7.38 and 25.3 mg*h/mL, a log-scale SD of
+0.374); the same spread is assumed for AUCtau. AUCtau is held at each patient's
+mean value throughout follow-up.
+
+```{r cohort}
+rxode2::rxSetSeed(20261117)
+set.seed(20261117)
+nPerArm <- 200
+cohort <- tibble::tibble(
+  id = seq_len(3 * nPerArm),
+  dose = rep(c("4 mg/kg", "6 mg/kg", "8 mg/kg"), each = nPerArm),
+  auc1Med = rep(c(10.2, 15.2, 21.4), each = nPerArm),
+  auctauMed = rep(c(10.2, 13.9, 18.0), each = nPerArm),
+  z = rnorm(3 * nPerArm),
+  AGE = pmin(pmax(rnorm(3 * nPerArm, 61.6, 10.3), 26), 84),
+  ALB = pmin(pmax(rnorm(3 * nPerArm, 37.4, 5.10), 19), 50),
+  TUMSZ = pmin(pmax(exp(rnorm(3 * nPerArm, log(67), 0.6)), 13), 314),
+  ECOG_GE1 = rbinom(3 * nPerArm, 1, 0.71),
+  SEXF = rbinom(3 * nPerArm, 1, 0.458),
+  LMET = rbinom(3 * nPerArm, 1, 0.23),
+  TUMTP_NSCLC_SQUAM = rbinom(3 * nPerArm, 1, 0.15),
+  LAST_PRIOR_IO = rbinom(3 * nPerArm, 1, 0.54)
+) |>
+  mutate(
+    AUC_DATODXD = mghml(auc1Med * exp(0.374 * z)),
+    AUC_DATODXD_TAU = mghml(auctauMed * exp(0.374 * z))
+  )
+```
+
+# Simulated overall and progression-free survival
+
+The survival models are solved on a grid of 0 to 3 years. Each patient's
+survival curve is deterministic given the covariates; the population curve is
+their average.
+
+```{r tte-solve}
+timeGrid <- seq(0, 3, by = 1 / 52)
+tteEvents <- tidyr::crossing(
+  cohort |> select(-z, -auc1Med, -auctauMed, -dose),
+  time = timeGrid
+) |>
+  mutate(amt = 0, evid = 0L) |>
+  arrange(id, time)
+
+osSim <- as.data.frame(rxode2::rxSolve(
+  rxode2::rxode(readModelDb("Hong_2026_datopotamab_os")),
+  events = tteEvents, returnType = "data.frame"
+)) |>
+  left_join(cohort |> select(id, dose), by = "id")
+pfsSim <- as.data.frame(rxode2::rxSolve(
+  rxode2::rxode(readModelDb("Hong_2026_datopotamab_pfs")),
+  events = tteEvents, returnType = "data.frame"
+)) |>
+  left_join(cohort |> select(id, dose), by = "id")
+stopifnot(!anyNA(osSim$sur), !anyNA(pfsSim$sur))
+
+popCurve <- function(sim, endpoint) {
+  sim |>
+    group_by(dose, time) |>
+    summarise(sur = mean(sur), .groups = "drop") |>
+    mutate(endpoint = endpoint)
+}
+curves <- bind_rows(popCurve(osSim, "Overall survival"), popCurve(pfsSim, "Progression-free survival"))
+medianDays <- function(cv) {
+  cv |>
+    group_by(endpoint, dose) |>
+    summarise(`Median (days)` = round(365.25 * approx(rev(sur), rev(time), xout = 0.5)$y), .groups = "drop")
+}
+medians <- medianDays(curves)
+knitr::kable(medians, caption = "Model-predicted median survival of the virtual cohort.")
+```
+
+```{r tte-plot, fig.height = 4}
+ggplot(curves, aes(time * 365.25, 100 * sur, colour = dose)) +
+  geom_line() +
+  facet_wrap(~endpoint) +
+  labs(
+    x = "Time since first dose (days)", y = "Patients without event (%)", colour = NULL,
+    caption = "Compare with Figure 1 of Hong 2026 (observed Kaplan-Meier curves by exposure quartile)."
+  ) +
+  theme_bw()
+```
+
+Figure 1 of Hong 2026 shows the observed pooled curves: overall survival falls
+through 50% at roughly 230 days in the lowest AUC1 quartile and roughly 500 days
+in the highest, and progression-free survival at roughly 100 to 230 days across
+quartiles. The 6 mg/kg cohort lies inside both ranges. This check is what
+supports two structural readings that the paper does not state outright: that
+the overall-survival exposure term is uncentred (centring it at the reference
+AUC1 shortens the predicted median by about a quarter) and that age and albumin
+are centred at their medians.
+
+```{r tte-assert}
+os6 <- medians$`Median (days)`[medians$endpoint == "Overall survival" & medians$dose == "6 mg/kg"]
+pfs6 <- medians$`Median (days)`[medians$endpoint == "Progression-free survival" & medians$dose == "6 mg/kg"]
+stopifnot(os6 > 250, os6 < 550, pfs6 > 100, pfs6 < 300)
+```
+
+# Logistic models against the observed exposure quartiles
+
+Figures 3 and 4 plot the observed proportion of patients with the event in each
+exposure quartile at the quartile's mean exposure; the mean exposures below were
+read from the figures. The packaged drug-effect models are evaluated at those
+exposures.
+
+```{r logistic}
+obsQ <- tibble::tribble(
+  ~Model,                                 ~Output,               ~Covariate,    ~x,    ~n,  ~N,
+  "Hong_2026_datopotamab_orr",            "prob_orr_central",    "CAV",         16.2,  24,  148,
+  "Hong_2026_datopotamab_orr",            "prob_orr_central",    "CAV",         26.0,  46,  148,
+  "Hong_2026_datopotamab_orr",            "prob_orr_central",    "CAV",         32.4,  49,  148,
+  "Hong_2026_datopotamab_orr",            "prob_orr_central",    "CAV",         46.2,  55,  148,
+  "Hong_2026_datopotamab_teae_grade3",    "prob_teae_grade3",    "CAV",         0.337, 64,  188,
+  "Hong_2026_datopotamab_teae_grade3",    "prob_teae_grade3",    "CAV",         0.515, 75,  180,
+  "Hong_2026_datopotamab_teae_grade3",    "prob_teae_grade3",    "CAV",         0.679, 82,  184,
+  "Hong_2026_datopotamab_teae_grade3",    "prob_teae_grade3",    "CAV",         1.228, 120, 177,
+  "Hong_2026_datopotamab_sae",            "prob_sae",            "CAV",         0.331, 35,  197,
+  "Hong_2026_datopotamab_sae",            "prob_sae",            "CAV",         0.499, 45,  176,
+  "Hong_2026_datopotamab_sae",            "prob_sae",            "CAV",         0.650, 46,  176,
+  "Hong_2026_datopotamab_sae",            "prob_sae",            "CAV",         1.159, 91,  180,
+  "Hong_2026_datopotamab_dose_reduction", "prob_dose_reduction", "AUC_DATODXD", 9.36,  18,  183,
+  "Hong_2026_datopotamab_dose_reduction", "prob_dose_reduction", "AUC_DATODXD", 14.21, 28,  182,
+  "Hong_2026_datopotamab_dose_reduction", "prob_dose_reduction", "AUC_DATODXD", 17.21, 37,  182,
+  "Hong_2026_datopotamab_dose_reduction", "prob_dose_reduction", "AUC_DATODXD", 23.34, 57,  182
+)
+# Exposure units of the figures: ORR Cav in ug/mL (Figure 3 axis in mg/mL x
+# 1000), DXd Cav in ng/mL, AUC1 in mg*h/mL (converted to ug*day/mL here).
+obsQ$predicted <- NA_real_
+for (m in unique(obsQ$Model)) {
+  idx <- obsQ$Model == m
+  cv <- obsQ$Covariate[idx][1]
+  val <- obsQ$x[idx]
+  if (cv == "AUC_DATODXD") val <- mghml(val)
+  covs <- setNames(data.frame(val), cv)
+  obsQ$predicted[idx] <- solveRows(m, covs)[[obsQ$Output[idx][1]]]
+}
+obsQ <- obsQ |> mutate(observed = n / N, diff = predicted - observed)
+obsQ |>
+  mutate(across(c(observed, predicted, diff), \(v) round(v, 3))) |>
+  dplyr::rename("Quartile mean exposure" = x, "Events" = n, "Patients" = N) |>
+  knitr::kable(caption = "Observed quartile proportions (Figures 3 and 4) against the packaged models.")
+stopifnot(all(abs(obsQ$diff) < 0.06))
+```
+
+```{r logistic-plot, fig.height = 6}
+curveGrid <- bind_rows(
+  tibble::tibble(Model = "Hong_2026_datopotamab_orr", Output = "prob_orr_central", Covariate = "CAV", x = seq(0, 80, length.out = 81)),
+  tibble::tibble(Model = "Hong_2026_datopotamab_teae_grade3", Output = "prob_teae_grade3", Covariate = "CAV", x = seq(0, 1.4, length.out = 71)),
+  tibble::tibble(Model = "Hong_2026_datopotamab_sae", Output = "prob_sae", Covariate = "CAV", x = seq(0, 1.4, length.out = 71)),
+  tibble::tibble(Model = "Hong_2026_datopotamab_dose_reduction", Output = "prob_dose_reduction", Covariate = "AUC_DATODXD", x = seq(0, 40, length.out = 81))
+)
+curveGrid$p <- NA_real_
+for (m in unique(curveGrid$Model)) {
+  idx <- curveGrid$Model == m
+  cv <- curveGrid$Covariate[idx][1]
+  val <- curveGrid$x[idx]
+  if (cv == "AUC_DATODXD") val <- mghml(val)
+  curveGrid$p[idx] <- solveRows(m, setNames(data.frame(val), cv))[[curveGrid$Output[idx][1]]]
+}
+xLab <- c(
+  Hong_2026_datopotamab_orr = "ORR vs Dato-DXd Cav (ug/mL)",
+  Hong_2026_datopotamab_teae_grade3 = "Grade 3+ TEAE vs DXd Cav (ng/mL)",
+  Hong_2026_datopotamab_sae = "Serious TEAE vs DXd Cav (ng/mL)",
+  Hong_2026_datopotamab_dose_reduction = "Dose-reduction TEAE vs Dato-DXd AUC1 (mg*h/mL)"
+)
+ggplot(curveGrid, aes(x, p)) +
+  geom_line(colour = "navy") +
+  geom_point(data = obsQ, aes(x, observed), colour = "red", shape = 1, size = 2.5) +
+  facet_wrap(~Model, scales = "free_x", labeller = as_labeller(xLab)) +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    x = "Exposure", y = "Probability",
+    caption = "Replicates Figures 3 and 4 of Hong 2026 (drug-effect model curves; red: observed quartiles)."
+  ) +
+  theme_bw()
+```
+
+# PKNCA
+
+PKNCA does not apply: none of the six models has a pharmacokinetic layer or a
+dose. Exposures come from the population PK model packaged as
+`Hong_2025_datopotamab`, whose own article carries the NCA validation.
+
+# Assumptions and deviations
+
+* **Logistic models are the drug-effect models, not the final models.** No
+  logistic coefficient is printed except the ORR EC50. The intercepts and
+  exposure coefficients were back-solved by least squares from the digitised
+  model-predicted median curves of Figure 3 (ORR, read at Cav = 0.01 to 0.08
+  mg/mL, EC50 held at 0.00404 mg/mL; largest residual 0.0075 logit) and Figure 4
+  (the three TEAE panels, every pixel column of each curve; largest residual
+  0.004 on the probability scale). The plotted curves are the exposure-only
+  drug-effect models (Figure 3 and 4 captions), which is why they pass through
+  the observed quartile proportions of the whole analysis population.
+* **Final-model covariates of the logistic endpoints are not encoded.** Their
+  odds ratios are printed (Tables 1 and 3) but the final-model intercept and
+  exposure coefficient are not, and the drug-effect intercept is a
+  population-average quantity, not the final model's reference patient. The
+  printed odds ratios are: ORR, more than two prior lines of therapy 1.82 and
+  squamous histology 0.281; grade 3+ TEAE, Asian race 0.566 and ECOG > 0 1.50;
+  serious TEAE, ECOG > 0 2.14, squamous histology 1.68, breast cancer 0.380 and
+  Asian race 0.504; dose-reduction TEAE, region Europe 2.20 and any renal
+  impairment 1.90.
+* **Albumin sign in the progression-free survival model.** Supplementary Table
+  S4 prints +0.0266 per g/L; the model uses -0.0266 because Table 1, Figure S2
+  and the Results all show the hazard falling as albumin rises, and the negative
+  sign reproduces each printed albumin hazard ratio to within 1%.
+* **Centring.** The paper does not state the centring of continuous
+  covariates. Albumin (38 g/L), tumour size (67 mm) and age (63 years) are
+  centred at the medians that define the reference patients of Figures 2 and
+  S2 and that match Table S3. The exposure terms are uncentred: the
+  progression-free survival Emax function is zero at zero exposure by
+  construction, and an uncentred overall-survival slope reproduces the observed
+  median survival of Figure 1 where a centred one does not.
+* **EC50 unit.** Table S4 prints the progression-free survival EC50 unit as
+  (mg/mL*h)^-1; an EC50 has the unit of its exposure, mg/mL*h.
+* **AESI and ILD models are not packaged.** The five adverse-event-of-special
+  interest time-to-event models are summarised only by covariate hazard ratios
+  (Table 3); no baseline hazard, shape or exposure coefficient is reported, and
+  ILD/pneumonitis showed no exposure-response relationship.
+* **Virtual cohort.** Covariate distributions follow Table S3 (normal age and
+  albumin, lognormal tumour size, independent binary covariates); exposures are
+  lognormal around the printed dose-group medians with a common spread. AUCtau
+  is constant per patient, a simplification of the cycle-wise metric, which the
+  paper reports to show minimal accumulation.
+* **No residual error.** The logistic models carry a placeholder additive
+  residual (SD 0.001 on the probability) only so the nlmixr2 observation
+  machinery accepts them; the source likelihoods are Bernoulli. The survival
+  models declare no endpoint.
