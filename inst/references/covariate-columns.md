@@ -8837,6 +8837,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `PillayFuentesLorente_2024_albendazole.R` (exponential categorical effect on both apparent metabolite clearances: exp(0.56) = 1.75, i.e. 75% higher albendazole sulfoxide CL/F, and exp(0.38) = 1.46, i.e. 46% higher albendazole sulfone CL/F, in the Tanzanian study population).
 - **Notes:** Specific scope, following the same pattern as `REGION_MOZAMBIQUE` / `REGION_SUDAN` / `REGION_ZAMBIA`: the canonical models a single Tanzania vs non-Tanzania contrast within one multi-site trial, and the comparator set is paper-specific. Note that a country indicator in this family is a proxy for whatever differs between the study populations (in Pillay-Fuentes Lorente 2024 the authors attribute it to drug-metabolising-enzyme polymorphisms, host-parasite interaction, nutritional status and gut microbiome differences), not to geography as such.
 
+### REGION_KENYA (**canonical for Kenya study-site / enrollment-country indicator**)
+- **Description:** 1 = subject enrolled in Kenya, 0 = otherwise. Country-level enrollment indicator for analyses that pool a Kenyan cohort with cohorts from other countries.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Kenyan subjects; the reference set varies per model -- in Centanni 2026 it is the Dutch cohort).
+- **Source aliases:** `NAT` (nationality, 0 = Dutch, 1 = Kenyan; Centanni 2026).
+- **Example models:** `Centanni_2026_vincristine.R` (one shared exponential coefficient, exp(-0.786) = 0.46, on vincristine CL and on the peripheral volume Vp; and the Emax of the neuropathy model replaced by exp(-100 x 20), effectively zero, in Kenyan children).
+- **Notes:** Specific scope, following the `REGION_TANZANIA` / `REGION_MOZAMBIQUE` pattern. In Centanni 2026 the source column is nationality, but nationality, enrollment country and study (the Dutch van de Velde 2020 trial versus the Kenyan CHAPATI study) coincide, so the indicator also carries any between-study difference. The authors read the Kenyan effects as population differences (CYP3A5, ABCB1 and CEP72 genotype frequencies, transporter-mediated neuronal uptake) rather than geography as such.
+
 ### REGION_POLAND (**canonical for Poland EPPICC enrollment-country indicator**)
 - **Description:** 1 = subject enrolled at the Polish EPPICC cohort site (Medical University Warsaw / Regional Hospital of Infectious Disease), 0 = otherwise. Country-level enrollment-country indicator used in the multi-country European Pregnancy and Paediatric HIV Cohort Collaboration (EPPICC) HIV/HCV coinfection study.
 - **Units:** (binary)
