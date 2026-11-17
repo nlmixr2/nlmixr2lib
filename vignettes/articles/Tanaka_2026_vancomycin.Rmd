@@ -1,0 +1,492 @@
+---
+title: "Vancomycin (Tanaka 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vancomycin (Tanaka 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Tanaka_2026_vancomycin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Tanaka_2026_vancomycin"))$description`
+* Article: <https://doi.org/10.1007/s11095-026-04145-w> (open access; the
+  electronic supplementary material holds supplementary Tables S1-S4, Figures
+  S1-S6 and the final NONMEM control stream)
+
+Tanaka 2026 is a retrospective population PK analysis of routine vancomycin
+therapeutic drug monitoring in Japanese children. Its question is whether a
+febrile state changes vancomycin clearance beyond what renal function explains.
+The final model says it does: clearance is 27% higher on days when the daily
+maximum body temperature reaches 38 degC, independently of the modified-Schwartz
+eGFR. The paper then turns the model into a dose table (Table IV): for each age
+group, eGFR band and temperature stratum, the daily dose in 5 mg/kg steps that
+maximises the probability of an AUC from 48 to 72 h between 400 and
+600 ug*h/mL. This vignette reproduces the clearance equation exactly and
+re-derives Table IV from the packaged model.
+
+# Population
+
+The model was fit to 214 serum vancomycin concentrations from 129 inpatients
+younger than 18 years treated in the Department of Pediatrics at Oita University
+Hospital, Japan, between April 2011 and March 2021 (Tanaka 2026 Table I). 52.7%
+were male. Age spanned the whole paediatric range: under 1 month 6.2%, 1 to
+<3 months 5.4%, 3 to <12 months 10.1%, 1 to <6 years 27.9%, 6 to <12 years
+25.6% and 12 to <18 years 24.8%. Median body weight was 16.9 kg (IQR 9.3-28.8),
+height 104.0 cm (IQR 73.5-138.5), postmenstrual age 6.8 years (IQR 2.0-12.2) and
+modified-Schwartz eGFR 118.4 mL/min/1.73 m^2 (IQR 96.8-151.9), with 26.4% of
+patients above 150 mL/min/1.73 m^2. The cohort was febrile: median daily
+maximum body temperature 38.6 degC (IQR 37.7-39.3), 30.2% met the paper's
+febrile-neutropenia definition, and MRSA was cultured in 14.7%. Patients on
+renal replacement therapy and those with an eGFR of 400 mL/min/1.73 m^2 or more
+were excluded. Most samples were troughs and 54.3% of patients contributed a
+single concentration, which is why the distribution parameters were fixed to
+literature values rather than estimated.
+
+The same information is available programmatically via the model's `population`
+metadata (`readModelDb("Tanaka_2026_vancomycin")()$population`).
+
+# Source trace
+
+Every `ini()` value carries its source as an in-file comment in
+`inst/modeldb/specificDrugs/Tanaka_2026_vancomycin.R`. The published control
+stream (supplement 2) holds initial estimates only; the final values come from
+Table III and supplement Table S3.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` | log(6.50) L/h | Table III theta_CL = 6.50 (RSE 5.0%); Results "6.50 L/h/70 kg" |
+| `ltmat50` | log(49.1) weeks | Table III theta_TM50 = 49.1 weeks (RSE 8.5%) |
+| `lhill_mat` | log(2.17) | Table III theta_Hill = 2.17 (RSE 14.7%) |
+| `e_crcl_cl` | 0.423 | Table III theta_eGFR = 0.423 (RSE 27.7%) |
+| `e_bodytemp_febrile_cl` | 1.27 | Table III theta_BT38 = 1.27 (RSE 3.8%); Results "CL increased by 27%" |
+| `lvc` | log(39.9) L, held constant | Table III Vc = 39.9 L/70 kg, no RSE; Methods: taken from Le 2013 and Kloprogge 2019 |
+| `lq` | log(3.85) L/h, held constant | Table III Q = 3.85 L/h/70 kg, no RSE; same Methods paragraph |
+| `lvp` | log(37.8) L, held constant | Table III Vp = 37.8 L/70 kg, no RSE; same Methods paragraph |
+| `e_wt_cl_q`, `e_wt_vc_vp` | 0.75, 1 (held constant) | Methods "Covariate Analysis" allometric equations; control stream `(BBWT/70)**0.75` and `(BBWT/70)` |
+| Rhodin renal maturation | `PAGE^3.4 / (47.7^3.4 + PAGE^3.4)` | Methods "Covariate Analysis"; Table III equation; control stream `Fmat_egfr` |
+| eGFR reference | 114.1 mL/min/1.73 m^2 (at full maturity) | Results CL equation and Table III equation; control stream `Fmat_egfr*114.1` |
+| Febrile threshold | daily maximum >= 38 degC -> 1 | Table II and Table III footnotes |
+| `etalcl` | omega^2 = 0.0963 | Table S3 'IIV CL' 0.0963; Table III 31.0% = sqrt(0.0963) (RSE 19.5%) |
+| `propSd` | 0.303 | Table III residual proportional error 30.3% (RSE 20.0%); control stream `Y = F*(1+ERR(1))` |
+| Two-compartment structure, IV input | n/a | Methods; control stream `ADVAN3 TRANS4`, `S1 = V1` |
+
+The CL equation in full (Results, and the first row of Table III):
+
+`CL = 6.50 * (WT/70)^0.75 * PAGE^2.17 / (49.1^2.17 + PAGE^2.17) * [CRCL / (Fmat_eGFR * 114.1)]^0.423 * 1.27^BODYTEMP_FEBRILE`
+
+with `PAGE` the postmenstrual age in weeks and `CRCL` the modified-Schwartz
+eGFR in mL/min/1.73 m^2.
+
+# The packaged model reproduces the published clearance equation
+
+The individual clearance is an algebraic output of the model, so a solve at a
+set of covariate values must return exactly what the Table III equation gives
+for the same values. The grid below spans the neonatal-to-adolescent range,
+three renal-function levels and both temperature states.
+
+```{r cl-equation}
+mod <- readModelDb("Tanaka_2026_vancomycin")
+mod_typ <- rxode2::zeroRe(mod, "omega")
+
+cl_published <- function(WT, PAGE, CRCL, febrile) {
+  fmat <- PAGE^2.17 / (49.1^2.17 + PAGE^2.17)
+  fmat_egfr <- PAGE^3.4 / (47.7^3.4 + PAGE^3.4)
+  6.50 * (WT / 70)^0.75 * fmat * (CRCL / (fmat_egfr * 114.1))^0.423 * 1.27^febrile
+}
+
+grid <- tidyr::expand_grid(
+  WT = c(4, 15, 45),
+  PAGE = c(46, 120, 900),
+  CRCL = c(60, 114.1, 180),
+  BODYTEMP_FEBRILE = c(0, 1)
+) |>
+  mutate(id = row_number())
+
+ev_grid <- grid |>
+  mutate(time = 0, evid = 0, cmt = "central")
+
+# Typical values for many covariate sets at once: rxode2 warns that a
+# multi-subject solve has no omega, which is the intent here.
+cl_check <- withCallingHandlers(
+  rxode2::rxSolve(mod_typ, events = ev_grid, returnType = "data.frame",
+                  keep = c("WT", "PAGE", "CRCL", "BODYTEMP_FEBRILE")),
+  warning = function(w) {
+    if (grepl("multi-subject simulation without", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+) |>
+  mutate(cl_eq = cl_published(WT, PAGE, CRCL, BODYTEMP_FEBRILE),
+         rel_err = cl / cl_eq - 1)
+
+# Algebraic output against its own closed form: pure floating-point error.
+stopifnot(nrow(cl_check) == nrow(grid), max(abs(cl_check$rel_err)) < 1e-10)
+
+# The febrile multiplier is exactly 1.27 for every covariate combination.
+ratio <- cl_check |>
+  select(WT, PAGE, CRCL, BODYTEMP_FEBRILE, cl) |>
+  tidyr::pivot_wider(names_from = BODYTEMP_FEBRILE, values_from = cl, names_prefix = "bt") |>
+  mutate(ratio = bt1 / bt0)
+stopifnot(max(abs(ratio$ratio - 1.27)) < 1e-10)
+
+cl_check |>
+  filter(WT == 15, CRCL == 114.1) |>
+  select(PAGE, BODYTEMP_FEBRILE, cl, cl_eq) |>
+  dplyr::rename("PMA (weeks)" = PAGE, "BT >= 38 degC" = BODYTEMP_FEBRILE,
+                "Model CL (L/h)" = cl, "Table III equation (L/h)" = cl_eq) |>
+  knitr::kable(digits = 4, caption = "Clearance for a 15 kg child at eGFR 114.1 mL/min/1.73 m^2.")
+```
+
+For an adult-sized reference subject (70 kg, fully matured) at an eGFR of
+114.1 mL/min/1.73 m^2 the model returns 6.50 L/h afebrile and 8.26 L/h febrile,
+the paper's theta_CL and theta_CL x theta_BT38.
+
+## How clearance moves with age, renal function and fever
+
+```{r cl-plots, fig.height = 4}
+age_curve <- tibble::tibble(
+  age_y = c(0, 1, 2, 3, 6, 9, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120, 132,
+            144, 156, 168, 180, 192, 204) / 12,
+  wt_med = c(3.0, 4.3, 5.5, 6.3, 7.7, 8.6, 9.2, 10.4, 11.8, 13.8, 15.8, 17.8,
+             20.0, 22.5, 25.5, 28.5, 32.5, 37.0, 42.0, 46.5, 50.0, 52.5, 54.5, 56.0)
+)
+wt_for_age <- function(age_y) stats::approx(age_curve$age_y, age_curve$wt_med, xout = age_y, rule = 2)$y
+
+profile_grid <- tidyr::expand_grid(
+  age_y = seq(1 / 12, 17.9, length.out = 120),
+  CRCL = c(60, 120, 180),
+  BODYTEMP_FEBRILE = c(0, 1)
+) |>
+  mutate(WT = wt_for_age(age_y), PAGE = age_y * 52.1775 + 40,
+         cl_per_kg = cl_published(WT, PAGE, CRCL, BODYTEMP_FEBRILE) / WT,
+         temp = ifelse(BODYTEMP_FEBRILE == 1, ">= 38 degC", "< 38 degC"))
+
+ggplot(profile_grid, aes(age_y, cl_per_kg, colour = factor(CRCL), linetype = temp)) +
+  geom_line() +
+  labs(x = "Postnatal age (years)", y = "Typical CL (L/h/kg)",
+       colour = "eGFR\n(mL/min/1.73 m^2)", linetype = "Daily max BT",
+       title = "Typical vancomycin clearance per kg by age, eGFR and fever",
+       caption = "Weight from the maintainers' approximate Japanese median weight-for-age curve; term birth.")
+```
+
+Weight-normalised clearance peaks in early childhood, where the maturation term
+is near complete but `(WT/70)^0.75 / WT` is still large, and falls through
+adolescence. This is the shape behind Table IV's highest mg/kg doses in the
+1 to <6 year group.
+
+# Steady-state identity
+
+At steady state the AUC over one dosing interval equals dose / CL whatever the
+distribution parameters. PKNCA on a typical-value solve checks that the ODE
+system, the infusion input and the clearance agree.
+
+```{r ss-identity}
+ss_subj <- data.frame(id = 1L, WT = 20, PAGE = 6 * 52.1775 + 40, CRCL = 120, BODYTEMP_FEBRILE = 0)
+tau <- 6
+ss_dose <- 15 * ss_subj$WT # 15 mg/kg q6h, 1-h infusion
+ev_ss <- dplyr::bind_rows(
+  ss_subj |> tidyr::crossing(time = seq(0, 234, by = tau)) |>
+    mutate(amt = ss_dose, dur = 1, evid = 1, cmt = "central"),
+  ss_subj |> tidyr::crossing(time = seq(228, 240, by = 0.05)) |>
+    mutate(amt = NA_real_, dur = NA_real_, evid = 0, cmt = "central")
+) |>
+  arrange(id, time, desc(evid))
+
+sim_ss <- rxode2::rxSolve(mod_typ, events = ev_ss, returnType = "data.frame",
+                          rtol = 1e-10, atol = 1e-12)
+# A single-subject solve returns no `id` column.
+conc_ss <- sim_ss |> filter(!is.na(Cc)) |> mutate(id = 1L, group = "typical") |> select(id, time, Cc, group)
+dose_ss <- ev_ss |> filter(evid == 1) |> select(id, time, amt) |> mutate(group = "typical")
+nca_ss <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_ss, Cc ~ time | group + id),
+  PKNCA::PKNCAdose(dose_ss, amt ~ time | group + id),
+  intervals = data.frame(start = 234, end = 240, auclast = TRUE, cmax = TRUE, cmin = TRUE),
+  options = list(auc.method = "linear")
+))
+auc_ss <- as.data.frame(nca_ss) |> filter(PPTESTCD == "auclast") |> pull(PPORRES)
+cl_ss <- cl_published(ss_subj$WT, ss_subj$PAGE, ss_subj$CRCL, 0)
+# Linear trapezoid on a 0.05-h grid: about 1e-4 relative error, from the
+# curvature of the decline.
+stopifnot(abs(auc_ss / (ss_dose / cl_ss) - 1) < 1e-3)
+tibble::tibble(
+  Quantity = c("PKNCA AUC over one interval at day 10 (ug*h/mL)", "Dose / CL (ug*h/mL)"),
+  Value = c(auc_ss, ss_dose / cl_ss)
+) |>
+  knitr::kable(digits = 2, caption = "6-year-old, 20 kg, eGFR 120, afebrile, 15 mg/kg q6h.")
+```
+
+# Replicating Table IV: optimal daily doses
+
+## Virtual cohort
+
+Tanaka 2026 simulated each stratum from age- and sex-specific weight
+distributions built from the Japanese year-2000 national growth survey LMS
+tables (Isojima 2016), eGFR drawn uniformly within each band, and the final
+model's population parameters, then computed AUC48-72h by the linear trapezoid
+on a 0.25-h grid. The LMS tables are not reproduced in the paper, so the cohort
+below uses the maintainers' approximate Japanese median weight-for-age curve
+with 12% log-normal scatter (see Assumptions and deviations). Ages are uniform
+within each age group and every child is assumed born at term, so postmenstrual
+age is postnatal age plus 40 weeks (the paper assigned 280 days of gestation
+where it was not recorded).
+
+The dosing regimen inside a day is not stated either. The cohort receives the
+daily dose as four 1-h infusions every 6 h. Because the model is linear, the
+AUC of every subject is proportional to the dose, so one solve at a reference
+daily dose of 10 mg/kg/day gives the AUC48-72h at any other dose by scaling.
+
+There are 40 strata (5 age groups x 4 eGFR bands x 2 temperature states) with
+100 virtual children each.
+
+```{r cohort}
+set.seed(20261101)
+rxode2::rxSetSeed(20261101)
+
+age_groups <- tibble::tribble(
+  ~age_group,           ~age_lo_y,  ~age_hi_y,
+  "1 - < 3 months",      1 / 12,     3 / 12,
+  "3 - < 12 months",     3 / 12,     1,
+  "1 - < 6 years",       1,          6,
+  "6 - < 12 years",      6,          12,
+  "12 - < 18 years",     12,         18
+)
+egfr_bands <- tibble::tribble(
+  ~egfr_band,   ~egfr_lo, ~egfr_hi,
+  "50 to 79",   50,       80,
+  "80 to 119",  80,       120,
+  "120 to 159", 120,      160,
+  "160 to 199", 160,      200
+)
+n_per_stratum <- 100L
+ref_daily_mgkg <- 10
+
+strata <- tidyr::crossing(age_groups, egfr_bands, BODYTEMP_FEBRILE = c(0, 1)) |>
+  mutate(stratum = row_number())
+
+cohort <- strata |>
+  tidyr::uncount(n_per_stratum) |>
+  mutate(
+    id = row_number(),
+    age_y = stats::runif(n(), age_lo_y, age_hi_y),
+    WT = wt_for_age(age_y) * exp(stats::rnorm(n(), 0, 0.12)),
+    PAGE = age_y * 52.1775 + 40,
+    CRCL = stats::runif(n(), egfr_lo, egfr_hi)
+  )
+stopifnot(nrow(cohort) == 40L * n_per_stratum, !anyDuplicated(cohort$id))
+
+dose_times <- seq(0, 66, by = 6)
+ev_doses <- cohort |>
+  select(id, WT, PAGE, CRCL, BODYTEMP_FEBRILE, stratum) |>
+  tidyr::crossing(time = dose_times) |>
+  mutate(amt = ref_daily_mgkg * WT / 4, dur = 1, evid = 1, cmt = "central")
+ev_obs <- cohort |>
+  select(id, WT, PAGE, CRCL, BODYTEMP_FEBRILE, stratum) |>
+  tidyr::crossing(time = seq(48, 72, by = 0.25)) |>
+  mutate(amt = NA_real_, dur = NA_real_, evid = 0, cmt = "central")
+ev_tab <- dplyr::bind_rows(ev_doses, ev_obs) |> arrange(id, time, desc(evid))
+```
+
+## Simulation and AUC48-72h
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events = ev_tab, returnType = "data.frame",
+                       keep = c("stratum"))
+stopifnot(!anyNA(sim$Cc))
+
+conc <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, stratum)
+dose_df <- ev_doses |> select(id, time, amt, stratum)
+
+nca_obj <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc, Cc ~ time | stratum + id),
+  PKNCA::PKNCAdose(dose_df, amt ~ time | stratum + id),
+  intervals = data.frame(start = 48, end = 72, auclast = TRUE),
+  options = list(auc.method = "linear")
+))
+auc_ref <- as.data.frame(nca_obj) |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, stratum, auc_ref = PPORRES)
+stopifnot(nrow(auc_ref) == nrow(cohort), !anyNA(auc_ref$auc_ref))
+```
+
+## Dose search
+
+For each stratum the dose in 5 mg/kg/day steps that maximises the proportion of
+children with AUC48-72h between 400 and 600 ug*h/mL is selected, as in the
+paper.
+
+```{r dose-search}
+dose_grid <- seq(5, 150, by = 5)
+pta <- auc_ref |>
+  tidyr::crossing(daily_mgkg = dose_grid) |>
+  mutate(auc = auc_ref * daily_mgkg / ref_daily_mgkg) |>
+  group_by(stratum, daily_mgkg) |>
+  summarise(pta = 100 * mean(auc >= 400 & auc <= 600), .groups = "drop")
+
+optimal <- pta |>
+  group_by(stratum) |>
+  slice_max(pta, n = 1, with_ties = FALSE) |>
+  ungroup() |>
+  left_join(strata, by = "stratum")
+
+table4 <- tibble::tribble(
+  ~age_group,         ~BODYTEMP_FEBRILE, ~egfr_band,   ~paper_dose, ~paper_pta,
+  "1 - < 3 months",   0, "50 to 79",   45, 49.8,
+  "1 - < 3 months",   0, "80 to 119",  55, 48.4,
+  "1 - < 3 months",   0, "120 to 159", 60, 49.6,
+  "1 - < 3 months",   0, "160 to 199", 70, 48.8,
+  "1 - < 3 months",   1, "50 to 79",   55, 50.0,
+  "1 - < 3 months",   1, "80 to 119",  65, 49.0,
+  "1 - < 3 months",   1, "120 to 159", 75, 49.0,
+  "1 - < 3 months",   1, "160 to 199", 85, 48.4,
+  "3 - < 12 months",  0, "50 to 79",   50, 47.8,
+  "3 - < 12 months",  0, "80 to 119",  55, 48.3,
+  "3 - < 12 months",  0, "120 to 159", 65, 48.5,
+  "3 - < 12 months",  0, "160 to 199", 70, 48.4,
+  "3 - < 12 months",  1, "50 to 79",   60, 48.6,
+  "3 - < 12 months",  1, "80 to 119",  70, 47.7,
+  "3 - < 12 months",  1, "120 to 159", 85, 48.1,
+  "3 - < 12 months",  1, "160 to 199", 90, 48.6,
+  "1 - < 6 years",    0, "50 to 79",   50, 49.8,
+  "1 - < 6 years",    0, "80 to 119",  60, 48.8,
+  "1 - < 6 years",    0, "120 to 159", 65, 48.8,
+  "1 - < 6 years",    0, "160 to 199", 75, 49.0,
+  "1 - < 6 years",    1, "50 to 79",   60, 48.2,
+  "1 - < 6 years",    1, "80 to 119",  75, 48.8,
+  "1 - < 6 years",    1, "120 to 159", 85, 49.1,
+  "1 - < 6 years",    1, "160 to 199", 95, 48.3,
+  "6 - < 12 years",   0, "50 to 79",   45, 48.7,
+  "6 - < 12 years",   0, "80 to 119",  50, 47.6,
+  "6 - < 12 years",   0, "120 to 159", 60, 48.2,
+  "6 - < 12 years",   0, "160 to 199", 65, 47.1,
+  "6 - < 12 years",   1, "50 to 79",   55, 48.3,
+  "6 - < 12 years",   1, "80 to 119",  65, 48.0,
+  "6 - < 12 years",   1, "120 to 159", 75, 47.4,
+  "6 - < 12 years",   1, "160 to 199", 85, 47.7,
+  "12 - < 18 years",  0, "50 to 79",   40, 50.1,
+  "12 - < 18 years",  0, "80 to 119",  45, 51.6,
+  "12 - < 18 years",  0, "120 to 159", 50, 49.5,
+  "12 - < 18 years",  0, "160 to 199", 60, 49.1,
+  "12 - < 18 years",  1, "50 to 79",   50, 48.8,
+  "12 - < 18 years",  1, "80 to 119",  55, 49.0,
+  "12 - < 18 years",  1, "120 to 159", 65, 49.3,
+  "12 - < 18 years",  1, "160 to 199", 75, 49.5
+)
+
+cmp <- table4 |>
+  inner_join(optimal, by = c("age_group", "egfr_band", "BODYTEMP_FEBRILE")) |>
+  left_join(pta |> rename(paper_dose = daily_mgkg, pta_at_paper_dose = pta),
+            by = c("stratum", "paper_dose")) |>
+  mutate(pct_diff = 100 * (daily_mgkg / paper_dose - 1))
+stopifnot(nrow(cmp) == 40L, !anyNA(cmp$pta_at_paper_dose))
+
+# Structural: a mis-transcribed CL, exponent, unit or febrile factor moves
+# every optimal dose by tens of percent. Envelope: the per-stratum optimum
+# rides on a flat attainment curve and a 100-child cohort, so single cells
+# can sit one or two 5-mg/kg steps from the paper's.
+stopifnot(
+  abs(median(cmp$pct_diff)) < 10,
+  quantile(abs(cmp$pct_diff), 0.9) < 25,
+  # At the paper's own doses about half the cohort should be in range
+  # (paper 47-52%); 100-child binomial SE is 5 points.
+  median(cmp$pta_at_paper_dose) > 35,
+  median(cmp$pta_at_paper_dose) < 60
+)
+
+cmp |>
+  mutate(temp = ifelse(BODYTEMP_FEBRILE == 1, ">= 38 degC", "< 38 degC")) |>
+  arrange(match(age_group, age_groups$age_group), BODYTEMP_FEBRILE,
+          match(egfr_band, egfr_bands$egfr_band)) |>
+  select(age_group, temp, egfr_band, paper_dose, daily_mgkg, paper_pta,
+         pta, pta_at_paper_dose) |>
+  dplyr::rename(
+    "Age" = age_group, "BT" = temp, "eGFR (mL/min/1.73 m^2)" = egfr_band,
+    "Paper optimal dose (mg/kg/day)" = paper_dose,
+    "Simulated optimal dose (mg/kg/day)" = daily_mgkg,
+    "Paper attainment (%)" = paper_pta,
+    "Simulated attainment at simulated optimum (%)" = pta,
+    "Simulated attainment at paper dose (%)" = pta_at_paper_dose
+  ) |>
+  knitr::kable(digits = 1, caption = "Replicates Table IV of Tanaka 2026.")
+```
+
+```{r table4-figure, fig.height = 5}
+cmp |>
+  mutate(temp = ifelse(BODYTEMP_FEBRILE == 1, ">= 38 degC", "< 38 degC"),
+         age_group = factor(age_group, levels = age_groups$age_group),
+         egfr_band = factor(egfr_band, levels = egfr_bands$egfr_band)) |>
+  select(age_group, egfr_band, temp, Paper = paper_dose, Simulated = daily_mgkg) |>
+  tidyr::pivot_longer(c(Paper, Simulated), names_to = "source", values_to = "dose") |>
+  ggplot(aes(egfr_band, dose, colour = temp, shape = source, group = interaction(temp, source))) +
+  geom_point(position = position_dodge(width = 0.4)) +
+  facet_wrap(~age_group, nrow = 1) +
+  labs(x = "eGFR band (mL/min/1.73 m^2)", y = "Optimal daily dose (mg/kg/day)",
+       colour = "Daily max BT", shape = NULL,
+       title = "Optimal daily vancomycin dose: Table IV versus the packaged model") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+The fever ratio is the paper's headline clinical result. Febrile children need
+1.2 to 1.3 times the afebrile dose in every stratum of Table IV; in the packaged
+model the ratio of optimal doses is:
+
+```{r fever-ratio}
+fever_ratio <- cmp |>
+  select(age_group, egfr_band, BODYTEMP_FEBRILE, daily_mgkg, paper_dose) |>
+  tidyr::pivot_wider(names_from = BODYTEMP_FEBRILE, values_from = c(daily_mgkg, paper_dose)) |>
+  mutate(sim_ratio = daily_mgkg_1 / daily_mgkg_0, paper_ratio = paper_dose_1 / paper_dose_0)
+# Clearance ratio is exactly 1.27, so the dose ratio sits near it; the 5-mg/kg
+# grid quantises single cells.
+stopifnot(abs(median(fever_ratio$sim_ratio) - 1.27) < 0.1)
+summary(fever_ratio[, c("paper_ratio", "sim_ratio")])
+```
+
+# Assumptions and deviations
+
+* **Weight-for-age.** The paper drew weights from the LMS parameters of the
+  Japanese year-2000 national growth survey (Isojima 2016), by sex. Those tables
+  are not in the paper or its supplement. The virtual cohort uses an approximate
+  sex-pooled Japanese median weight-for-age curve compiled by the maintainers,
+  with 12% log-normal scatter. Dose per kg depends on weight only through
+  `(WT/70)^0.75 / WT`, so a 10% error in a median weight shifts the optimal
+  mg/kg dose by about 2.5%.
+* **Term birth.** Every virtual child is assumed born at 40 weeks, so
+  postmenstrual age is postnatal age plus 40 weeks; the paper did the same when
+  gestational age was missing.
+* **Within-day regimen.** The paper does not say how the simulated daily dose
+  was divided or infused. Four 1-h infusions every 6 h were assumed. With linear
+  elimination the AUC48-72h barely depends on the split.
+* **Cohort size.** The paper used 10,000 subjects per stratum; this vignette
+  uses 100 per stratum to keep the build fast. The attainment curve is flat near
+  its maximum, so single strata can land one or two 5 mg/kg steps from the
+  paper's optimum; the gates test the median and the 90th percentile of the
+  difference, not each cell.
+* **Residual error.** AUC48-72h is computed from individual predictions without
+  residual error, as in the paper's dose-finding simulation.
+* **Covariate coding.** The paper's `BT38` column is carried as the
+  `BODYTEMP_FEBRILE` canonical (1 when the daily maximum body temperature is
+  >= 38 degC). It is time-varying in the source data; supply one value per
+  day. `PAGE` must be supplied in weeks.
+* **Residual-error SD.** Table III prints 30.3%; supplement Table S3 lists the
+  variance as 0.0912, whose square root is 0.302. The Table III value is used.
+* **Published model code.** The supplement's control stream carries initial
+  estimates; its structure (two-compartment `ADVAN3 TRANS4`, the `Fmat_egfr`
+  adjustment, the `BT38` branch on clearance and the proportional error) agrees
+  with the paper's equations, and the final values come from Table III.
+* **Figures not reproduced.** Figure 1 (goodness of fit) and Figure 2
+  (prediction-corrected VPC) need the observed data, which were not published.
+* **No published NCA.** The paper reports no non-compartmental parameters, so
+  there is no NCA comparison table; Table IV is the quantitative check.
