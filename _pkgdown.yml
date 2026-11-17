@@ -3148,6 +3148,10 @@ navbar:
         href: articles/Chakravartula_2024_fentanyl_pediatric_respiratory_depression.html
       - text: "Fentanyl pk pediatric (Chakravartula 2024)"
         href: articles/Chakravartula_2024_fentanyl_pediatric_respiratory_depression.html
+      - text: "Fentanyl rat control (Stach 2026)"
+        href: articles/Stach_2026_fentanyl_rat.html
+      - text: "Fentanyl rat hemorrhagicShock (Stach 2026)"
+        href: articles/Stach_2026_fentanyl_rat.html
       - text: "Fepixnebart (James 2025)"
         href: articles/James_2025_fepixnebart.html
       - text: "FerricCarboxymaltose rat (Cao 2025)"
@@ -11758,6 +11762,7 @@ articles:
   - articles/Sridharan_2019_primaquine
   - articles/Srimani_2022_ixazomib
   - articles/Staatz_2005_gentamicin_vancomycin
+  - articles/Stach_2026_fentanyl_rat
   - articles/Stachanow_2023_hydrocortisone
   - articles/Stader_2021_bictegravir_ddi_pbpk
   - articles/Stader_2021_bictegravir_pbpk
