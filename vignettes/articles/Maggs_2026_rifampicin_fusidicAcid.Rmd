@@ -1,0 +1,500 @@
+---
+title: "Rifampicin + fusidic acid interaction (Maggs 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rifampicin + fusidic acid interaction (Maggs 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Maggs_2026_fusidicAcid"))$reference`
+* Article: <https://doi.org/10.1093/jac/dkag293> (open access)
+* Fusidic acid model: `r rxode2::rxode(readModelDb("Maggs_2026_fusidicAcid"))$description`
+* Rifampicin model: `r rxode2::rxode(readModelDb("Maggs_2026_rifampicin"))$description`
+
+Maggs et al. ran a prospective, open-label drug-drug interaction study of oral
+fusidic acid (500 mg three times daily) and oral rifampicin (300 mg twice
+daily) in ten adults with staphylococcal infection. Participants were
+randomised to one "index" drug for the first 24 hours, after which the second
+drug was added and the combination continued for the treatment course.
+Concentrations were measured in capillary dried blood spots on Day 1, Day 2
+and at steady state (Day 28 +/- 7). The authors fitted two separate NONMEM
+models, and both are packaged here:
+
+* `Maggs_2026_fusidicAcid`: one-compartment, first-order absorption. Apparent
+  clearance falls to 24.4% of its starting value from 24 h after the first
+  dose (autoinhibition) and is then multiplied by 2.33 from 7 days after the
+  first dose (rifampicin-mediated induction).
+* `Maggs_2026_rifampicin`: joint rifampicin / 25-desacetyl rifampicin model
+  (ADVAN6). One compartment for each analyte, absorption lag, a small
+  pre-systemic conversion to the metabolite, all systemic rifampicin
+  clearance forming the metabolite, and a 39.2% reduction in metabolite
+  clearance when fusidic acid is co-administered.
+
+# Population
+
+Ten participants (three women) with osteoarticular (axial skeleton, 4),
+large-joint (4, including 2 prosthetic joint infections), endovascular (1) and
+small-joint (1) staphylococcal infections were recruited at two Melbourne
+hospitals between 2019 and 2022 (Results paragraph 1). Median (IQR) age was
+59 (48-68) years and body mass index 31 (29-35) kg/m2; baseline creatinine 78
+(63-89) umol/L, albumin 27 (21-35) g/L. Four participants started with
+fusidic acid and six with rifampicin. 96 fusidic acid, 101 rifampicin and 96
+25-desacetyl rifampicin concentrations were modelled. Body weight, which both
+models use for allometric scaling, is not reported.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| FA ka | 0.419 1/h | Table 2 |
+| FA CL/F (70 kg) | 6.9 L/h | Table 2 |
+| FA V/F (70 kg) | 45.3 L | Table 2 |
+| FA autoinhibition INT, from 24 h | -0.756 | Table 2 |
+| FA rifampicin induction rIND, from 7 days | 1.33 | Table 2 |
+| FA IIV ka / CL/F | 98.1% / 77.8% | Table 2 (100% x sqrt(variance)) |
+| FA proportional error | 72.2% | Table 2 |
+| Allometric exponents 0.75 (CL), 1 (V), 70 kg | fixed | Methods; Table 2 and 3 units |
+| Two step factors multiply | -- | Results: 4.09-fold Day-2 and 1.76-fold steady-state AUC ratios |
+| RIF ALAG | 0.512 h | Table 3 |
+| RIF ka | 3.11 1/h | Table 3 |
+| RIF CL/F, V/F (70 kg) | 14 L/h, 69.1 L | Table 3 |
+| DesRIF CLM/F, VM/F (70 kg) | 109 L/h, 46.2 L | Table 3 |
+| FP (fraction escaping first pass) | 0.981 | Table 3; packaged as `fm_desacetylrif = 1 - FP` |
+| All rifampicin clearance forms DesRIF | -- | Results ('all rifampicin is converted') |
+| FA effect on CLM/F, (1 - INT) | INT = 0.392 | Table 3; Results ('decreased by nearly 40%') |
+| RIF IIV ka / CLM/F; IOV CLM/F | 110% / 30%; 71.2% | Table 3 |
+| Occasions: Day 1, Day 2, Days 7-21, Day 28 | 4 | Methods; Table S1 |
+| RIF / DesRIF proportional error | 66.0% / 35.1% | Table 3 |
+
+# Virtual cohort and dosing
+
+Body weight is not reported, so every virtual participant weighs 70 kg, the
+models' reference weight; the simulations below therefore show the random
+effects and the time-dependent changes, not the cohort's size spread. The
+three sampling windows of Table 1 are Day 1 (first dose), Day 2 (24-32 h) and
+steady state (Day 28, 648 h after the first dose).
+
+```{r dosing}
+rxode2::rxSetSeed(20261025)
+
+n_sub <- 200
+t_ss <- 648 # Day 28, the steady-state sampling day
+windows <- tibble::tibble(
+  period = factor(c("Day 1", "Day 2", "Steady state (Day 28)"),
+                  levels = c("Day 1", "Day 2", "Steady state (Day 28)")),
+  start = c(0, 24, t_ss)
+)
+grid_fa <- sort(unique(c(seq(0, 8, by = 0.25), 0.583)))
+obs_fa <- sort(unique(as.vector(outer(grid_fa, windows$start, "+"))))
+
+# Fusidic acid 500 mg every 8 h from time 0 (the first fusidic acid dose).
+make_fa_events <- function(n) {
+  dose_times <- seq(0, t_ss, by = 8)
+  doses <- tidyr::expand_grid(id = seq_len(n), time = dose_times) |>
+    mutate(evid = 1L, amt = 500, cmt = "depot")
+  obs <- tidyr::expand_grid(id = seq_len(n), time = obs_fa) |>
+    mutate(evid = 0L, amt = 0, cmt = "central")
+  bind_rows(doses, obs) |>
+    arrange(id, time, desc(evid)) |>
+    mutate(WT = 70, T_FIRSTDOSE = time)
+}
+ev_fa <- make_fa_events(n_sub)
+```
+
+# Fusidic acid
+
+## Time-dependent clearance
+
+The two step factors on fusidic acid clearance are what the paper's
+interaction finding rests on, so they are checked first. At steady state
+AUCtau = Dose / (CL/F), so each phase's AUCtau ratio to Day 1 is the inverse
+of its clearance factor. The paper reports a 4.09-fold rise by Day 2 and a
+1.76-fold rise at steady state (Results); the packaged parameters give:
+
+```{r fa-cl-ratio}
+mod_fa <- readModelDb("Maggs_2026_fusidicAcid")
+ini_fa <- rxode2::rxode(mod_fa)$theta
+f_inh <- 1 + ini_fa[["e_autoinh_cl"]]
+f_ind <- 1 + ini_fa[["e_rif_ind_cl"]]
+ratio_tab <- tibble::tibble(
+  Phase = c("Day 2 (autoinhibition only)", "Steady state (both factors)"),
+  `CL/F factor` = c(f_inh, f_inh * f_ind),
+  `Model AUCtau ratio` = 1 / c(f_inh, f_inh * f_ind),
+  `Paper AUCtau ratio` = c(4.09, 1.76)
+)
+knitr::kable(ratio_tab, digits = 3,
+             caption = "AUCtau ratio relative to Day 1 (Maggs 2026 Results).")
+```
+
+The same ratio is reproduced by simulation. A typical 70 kg participant is
+dosed to steady state three times with `T_FIRSTDOSE` held at a value inside
+each phase, and PKNCA computes AUCtau over the last interval:
+
+```{r fa-ss-auc}
+mod_fa_typ <- rxode2::zeroRe(mod_fa)
+phase_tbl <- tibble::tibble(
+  phase = c("Day 1", "Day 2", "Steady state"),
+  T_FIRSTDOSE = c(0, 48, 400)
+)
+ev_phase <- lapply(seq_len(nrow(phase_tbl)), function(i) {
+  d <- tibble::tibble(id = i, time = seq(0, 240, by = 8), evid = 1L,
+                      amt = 500, cmt = "depot")
+  o <- tibble::tibble(id = i, time = seq(232, 240, by = 0.1), evid = 0L,
+                      amt = 0, cmt = "central")
+  bind_rows(d, o) |> mutate(WT = 70, T_FIRSTDOSE = phase_tbl$T_FIRSTDOSE[i])
+}) |> bind_rows() |> arrange(id, time, desc(evid))
+sim_phase <- rxode2::rxSolve(mod_fa_typ, ev_phase, returnType = "data.frame")
+conc_phase <- sim_phase |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc) |>
+  left_join(phase_tbl |> mutate(id = row_number()), by = "id")
+dose_phase <- ev_phase |> filter(evid == 1) |>
+  select(id, time, amt) |>
+  left_join(phase_tbl |> mutate(id = row_number()), by = "id")
+nca_phase <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_phase, Cc ~ time | phase + id),
+  PKNCA::PKNCAdose(dose_phase, amt ~ time | phase + id),
+  intervals = data.frame(start = 232, end = 240, auclast = TRUE)
+))
+auc_phase <- as.data.frame(nca_phase$result) |>
+  filter(PPTESTCD == "auclast") |>
+  select(phase, AUCtau = PPORRES) |>
+  mutate(`Ratio to Day 1` = AUCtau / AUCtau[phase == "Day 1"])
+knitr::kable(auc_phase, digits = 3,
+             caption = "Typical-value steady-state AUCtau (mg*h/L) in each clearance phase.")
+stopifnot(
+  abs(auc_phase$`Ratio to Day 1`[auc_phase$phase == "Day 2"] / 4.09 - 1) < 0.01,
+  abs(auc_phase$`Ratio to Day 1`[auc_phase$phase == "Steady state"] / 1.76 - 1) < 0.01
+)
+```
+
+## Concentration-time profiles
+
+```{r fa-sim}
+sim_fa <- rxode2::rxSolve(mod_fa, ev_fa, returnType = "data.frame")
+sim_fa_win <- sim_fa |>
+  filter(!is.na(Cc)) |>
+  mutate(window = findInterval(time, windows$start)) |>
+  mutate(period = windows$period[window],
+         tsld = time - windows$start[window]) |>
+  filter(tsld <= 8)
+```
+
+```{r fa-profile, fig.width = 8, fig.height = 3.5}
+sim_fa_win |>
+  group_by(period, tsld) |>
+  summarise(q05 = quantile(Cc, 0.05), q50 = median(Cc), q95 = quantile(Cc, 0.95),
+            .groups = "drop") |>
+  ggplot(aes(tsld, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~period) +
+  scale_y_log10() +
+  labs(x = "Time since last dose (h)", y = "Fusidic acid (mg/L)",
+       caption = "Median and 90% prediction interval. Compare Figure 1, top row, of Maggs 2026.")
+```
+
+## NCA against the reported Cmax
+
+The paper reports the mean raw observed fusidic acid Cmax from the protocol
+samples (30-40 min, 1.5-2 h, 3.5-4.5 h and, on Days 1 and 2, 7-8 h):
+8.68 mg/L on Day 1, 11.97 mg/L on Day 2 and 21.15 mg/L at Weeks 3-4 (Results
+paragraph 4). These are study-day summaries, not dose-number summaries.
+Figure 1 shows that only the four fusidic-acid-index participants had
+fusidic acid on Day 1, and that for the six rifampicin-index participants
+the Day-2 profile is their **first** fusidic acid dose. The simulated
+comparison follows the same mix: 40% of the virtual participants are
+fusidic-acid-index (Day 1 = first dose, Day 2 = 24-32 h) and 60% are
+rifampicin-index (Day 2 = their first fusidic acid dose); all contribute at
+steady state. Cmax is computed with PKNCA from the simulated observations
+(`sim`, including residual error) at the protocol times and averaged across
+participants to match the paper's arithmetic mean; the median and the
+5th-95th percentiles are shown beside the observed range.
+
+```{r fa-nca}
+protocol_tsld <- c(0, 0.583, 1.75, 4, 7.5)
+conc_fa <- sim_fa_win |>
+  filter(abs(outer(tsld, protocol_tsld, "-")) |> apply(1, min) < 1e-6) |>
+  filter(!(period == "Steady state (Day 28)" & tsld > 4.5)) |>
+  mutate(time_rel = tsld) |>
+  select(id, period, time_rel, Cc = sim)
+dose_fa <- conc_fa |> distinct(id, period) |> mutate(time_rel = 0, amt = 500)
+nca_fa <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_fa, Cc ~ time_rel | period + id),
+  PKNCA::PKNCAdose(dose_fa, amt ~ time_rel | period + id),
+  intervals = data.frame(start = 0, end = 8, cmax = TRUE)
+))
+cmax_id <- as.data.frame(nca_fa$result) |>
+  filter(PPTESTCD == "cmax") |>
+  mutate(period = as.character(period)) |>
+  select(id, period, cmax = PPORRES)
+# Study-day view: ids 1-80 are fusidic-acid-index, 81-200 rifampicin-index.
+# A rifampicin-index participant's Day-2 profile is a first fusidic acid dose,
+# which in this time-since-first-fusidic-acid-dose simulation is the Day 1
+# window.
+cmax_study <- bind_rows(
+  cmax_id |> filter(id <= 0.4 * n_sub, period != "Steady state (Day 28)"),
+  cmax_id |> filter(id > 0.4 * n_sub, period == "Day 1") |>
+    mutate(period = "Day 2"),
+  cmax_id |> filter(period == "Steady state (Day 28)")
+)
+sim_cmax <- cmax_study |>
+  group_by(period) |>
+  summarise(cmax = mean(cmax), .groups = "drop")
+published_fa <- tibble::tibble(
+  period = c("Day 1", "Day 2", "Steady state (Day 28)"),
+  cmax = c(8.68, 11.97, 21.15)
+)
+cmp_fa <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_cmax,
+  reference = published_fa,
+  by = "period",
+  units = c(cmax = "mg/L"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp_fa, caption = paste(
+  "Mean Cmax by study day from protocol-time samples: simulated (70 kg,",
+  "study arm mix) vs Maggs 2026 Results (n = 4, 10 and 9 evaluable).",
+  "* differs by more than 20%."
+))
+
+cmax_study |>
+  group_by(period) |>
+  summarise(
+    "Simulated median (mg/L)" = sprintf("%.1f", median(cmax)),
+    "Simulated 5th-95th percentile (mg/L)" = sprintf(
+      "%.1f-%.1f", quantile(cmax, 0.05), quantile(cmax, 0.95)
+    ),
+    .groups = "drop"
+  ) |>
+  mutate("Observed range (mg/L)" = c("3.26-13.90", "4.15-30.0", "1.23-42.0")) |>
+  dplyr::rename(Period = period) |>
+  knitr::kable(caption = "Spread of the study-day Cmax (observed range from Maggs 2026 Results).")
+```
+
+Day 1 and Day 2 agree within 20% once the study's arm mix is respected; the
+Day-2 rise is the autoinhibition step. At steady state the simulated mean is
+about twice the observed mean, although the simulated median (about 26 mg/L)
+is close to it and the observed range lies inside the simulated 5th-95th
+percentile interval. Three features of the comparison push the simulated
+steady-state mean up, and none of them points to a transcription error. The
+observed mean comes from nine evaluable participants whose Cmax spans a
+34-fold range. A proportional residual error of 72% on log-transformed data,
+together with 78% inter-individual variability on CL/F, gives the simulated
+maximum a long right tail that the arithmetic mean picks up (the residual
+error's lognormal mean factor alone is `exp(0.722^2 / 2) = 1.30`). And the
+virtual participants all weigh 70 kg, whereas the cohort's median BMI of 31
+kg/m2 suggests heavier participants with allometrically larger clearance and
+volume. The paper itself notes that "substantial variability was observed at
+steady state" in its VPC (Figure 3) and reports a 95% CI of 0.049-34.9 for
+the steady-state AUC ratio. The parameters are reproduced as published and
+were not tuned to this target; the time-dependent clearance factors that
+carry the paper's interaction finding are reproduced exactly above.
+
+# Rifampicin and 25-desacetyl rifampicin
+
+Two arms are simulated, each starting rifampicin 300 mg every 12 h at time 0:
+the rifampicin-index arm adds fusidic acid at 24 h (`CONMED_FUSIDIC` switches
+from 0 to 1), and the fusidic-acid-index arm takes fusidic acid throughout
+(`CONMED_FUSIDIC = 1`). The occasion column follows the paper's four
+sampling blocks.
+
+```{r rif-events}
+mod_rif <- readModelDb("Maggs_2026_rifampicin")
+n_arm <- 100
+grid_rif <- seq(0, 12, by = 0.25)
+obs_rif <- sort(unique(as.vector(outer(grid_rif, windows$start, "+"))))
+make_rif_events <- function(n, arm, id_offset) {
+  dose_times <- seq(0, t_ss, by = 12)
+  rif_index <- arm == "Rifampicin index"
+  doses <- tidyr::expand_grid(id = id_offset + seq_len(n), time = dose_times) |>
+    mutate(evid = 1L, amt = 300, cmt = "depot")
+  # Two error-model endpoints: observation rows name the parent state and
+  # carry dvid = 1; rxode2 still returns both Cc and Cc_desacetylrif.
+  obs <- tidyr::expand_grid(id = id_offset + seq_len(n), time = obs_rif) |>
+    mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L)
+  bind_rows(doses, obs) |>
+    arrange(id, time, desc(evid)) |>
+    mutate(
+      arm = arm,
+      WT = 70,
+      CONMED_FUSIDIC = if (rif_index) as.integer(time >= 24) else 1L,
+      OCC = case_when(time < 24 ~ 1L, time < 168 ~ 2L, time < 648 ~ 3L, TRUE ~ 4L)
+    )
+}
+ev_rif <- bind_rows(
+  make_rif_events(n_arm, "Rifampicin index", 0),
+  make_rif_events(n_arm, "Fusidic acid index", n_arm)
+)
+sim_rif <- rxode2::rxSolve(mod_rif, ev_rif, returnType = "data.frame",
+                           keep = c("arm", "CONMED_FUSIDIC"))
+sim_rif_win <- sim_rif |>
+  filter(!is.na(Cc)) |>
+  mutate(window = findInterval(time, windows$start)) |>
+  mutate(period = windows$period[window],
+         tsld = time - windows$start[window]) |>
+  filter(tsld <= 12)
+```
+
+```{r rif-profile, fig.width = 8, fig.height = 6}
+sim_rif_win |>
+  select(arm, period, tsld, Rifampicin = Cc, `25-desacetyl rifampicin` = Cc_desacetylrif) |>
+  pivot_longer(c(Rifampicin, `25-desacetyl rifampicin`), names_to = "analyte",
+               values_to = "conc") |>
+  group_by(arm, period, analyte, tsld) |>
+  summarise(q50 = median(conc), q05 = quantile(conc, 0.05),
+            q95 = quantile(conc, 0.95), .groups = "drop") |>
+  ggplot(aes(tsld, q50, colour = arm, fill = arm)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.15, colour = NA) +
+  geom_line() +
+  facet_grid(analyte ~ period, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time since last dose (h)", y = "Concentration (mg/L)",
+       colour = NULL, fill = NULL,
+       caption = "Median and 90% prediction interval. Compare Figure 1, middle and bottom rows, of Maggs 2026.") +
+  theme(legend.position = "bottom")
+```
+
+## NCA by arm and period
+
+```{r rif-nca}
+conc_rif <- sim_rif_win |>
+  mutate(time_rel = tsld) |>
+  select(id, arm, period, time_rel, Cc, Cc_desacetylrif)
+dose_rif <- conc_rif |> distinct(id, arm, period) |> mutate(time_rel = 0, amt = 300)
+nca_one <- function(conc_col) {
+  d <- conc_rif |> rename(conc = all_of(conc_col)) |> filter(!is.na(conc))
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(d, conc ~ time_rel | arm + period + id),
+    PKNCA::PKNCAdose(dose_rif, amt ~ time_rel | arm + period + id),
+    intervals = data.frame(start = 0, end = 12, cmax = TRUE, tmax = TRUE,
+                           auclast = TRUE)
+  ))
+  as.data.frame(res$result) |> mutate(analyte = conc_col)
+}
+nca_rif <- bind_rows(nca_one("Cc"), nca_one("Cc_desacetylrif"))
+nca_rif_summary <- nca_rif |>
+  group_by(analyte, arm, period, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median)
+nca_rif_summary |>
+  dplyr::rename(
+    Analyte = analyte, Arm = arm, Period = period,
+    "Cmax (mg/L)" = cmax, "Tmax (h)" = tmax, "AUC0-12 (mg*h/L)" = auclast
+  ) |>
+  knitr::kable(digits = 2, caption = "Median simulated NCA over the 12-h dosing interval.")
+```
+
+The paper reports no rifampicin NCA values. Two in-model checks stand in for
+a comparison:
+
+* All systemic rifampicin is converted to the metabolite, so at steady state
+  the metabolite-to-parent AUCtau ratio is
+  `CL / (CLM x (1 - 0.392))` plus the small first-pass contribution, and the
+  fusidic acid effect raises the metabolite's steady-state AUCtau by
+  `1 / (1 - 0.392) = 1.64`-fold at unchanged rifampicin exposure.
+
+```{r rif-check}
+mod_rif_typ <- rxode2::zeroRe(mod_rif)
+ev_typ <- bind_rows(
+  tibble::tibble(id = 1:2, time = 0) |>
+    tidyr::expand_grid(dt = seq(0, 240, by = 12)) |>
+    mutate(time = dt, evid = 1L, amt = 300, cmt = "depot") |> select(-dt),
+  tibble::tibble(id = 1:2) |>
+    tidyr::expand_grid(time = seq(228, 240, by = 0.05)) |>
+    mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L)
+) |>
+  arrange(id, time, desc(evid)) |>
+  mutate(WT = 70, OCC = 0L, CONMED_FUSIDIC = as.integer(id == 2))
+sim_typ <- rxode2::rxSolve(mod_rif_typ, ev_typ, returnType = "data.frame")
+auc_typ <- sim_typ |>
+  filter(time >= 228) |>
+  group_by(id) |>
+  summarise(
+    auc_rif = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+    auc_m = sum(diff(time) * (head(Cc_desacetylrif, -1) + tail(Cc_desacetylrif, -1)) / 2),
+    .groups = "drop"
+  )
+th <- rxode2::rxode(mod_rif)$theta
+expected_m_ratio <- 1 / (1 + th[["e_conmed_fusidic_cl_desacetylrif"]])
+check_tab <- tibble::tibble(
+  Quantity = c("Rifampicin AUCtau, without / with fusidic acid",
+               "Metabolite AUCtau, with / without fusidic acid",
+               "Rifampicin AUCtau vs F*Dose/CL (70 kg)"),
+  Simulated = c(auc_typ$auc_rif[1] / auc_typ$auc_rif[2],
+                auc_typ$auc_m[2] / auc_typ$auc_m[1],
+                auc_typ$auc_rif[1] / (300 * (1 - th[["fm_desacetylrif"]]) / exp(th[["lcl"]]))),
+  Expected = c(1, expected_m_ratio, 1)
+)
+knitr::kable(check_tab, digits = 3,
+             caption = "Typical-value steady-state checks of the rifampicin model.")
+stopifnot(all(abs(check_tab$Simulated / check_tab$Expected - 1) < 0.01))
+```
+
+# Assumptions and deviations
+
+* **Body weight.** Not reported; every virtual participant weighs 70 kg, the
+  models' reference weight.
+* **Time origin of the fusidic acid step factors.** Table 2 places the
+  autoinhibition "after 24 hours from the first dose" and the rifampicin
+  induction "after 7 days from the first dose". The packaged model reads both
+  from `T_FIRSTDOSE`, the time since the first **fusidic acid** dose. The
+  paper does not say whether its clock started at the first fusidic acid dose
+  or at the first study dose (rifampicin, 24 h earlier, for six of ten
+  participants). Figure 1 supports the fusidic-acid clock: the
+  rifampicin-index participants' Day-2 fusidic acid profiles, their first
+  fusidic acid dose 24 h after the first study dose, are mostly below 5 mg/L
+  and lie under the fusidic-acid-index participants' Day-2 profiles, as
+  expected if autoinhibition had not yet started. The induction
+  step is time-based in the source and is not gated on rifampicin exposure;
+  every participant was on rifampicin from the second study day.
+* **Multiplicative combination of the step factors.** The paper prints both
+  factors as `(1 + theta) x CL/F` without stating how they combine. The
+  multiplicative form is the one that reproduces both reported AUCtau
+  ratios exactly (4.09 and 1.76, above).
+* **Supplementary run descriptions.** Table S1 describes the final fusidic
+  acid run (1654) as an indicator "INDRA = 1 for Occasions 2 and 3" and Table
+  S2 prints the metabolite interaction as `(1 - THETA(8) * (RF_only - 1))`
+  without defining `RF_only`. The packaged models follow the main-text
+  Tables 2 and 3 and the Results, which state the timing and direction of
+  each effect explicitly.
+* **First-pass parameter.** Table 3's `FP` = 0.981 is the fraction absorbed
+  without first-pass metabolism; it is carried as its complement,
+  `fm_desacetylrif = 0.019`, the fraction converted to the metabolite before
+  reaching the circulation (the Results: "First-pass metabolism was <2%").
+  The paper does not state the structure in equations; the packaged form
+  splits the first-order absorption flux between the two compartments.
+* **Molecular weight.** The paper assumes "all rifampicin is converted to
+  25-desacetyl rifampicin" and does not mention a molecular-weight
+  correction; amounts are carried in rifampicin mass units, so the
+  metabolite's apparent volume and clearance absorb the 0.95 mass ratio.
+* **Inter-occasion variability.** The four occasions are the paper's
+  sampling blocks (Day 1, Day 2, Days 7-21, Day 28); occasions 2-4 share the
+  occasion-1 variance. `OCC = 0` switches it off.
+* **Absorption lag.** Table 3 prints an RSE of 0% for ALAG but a bootstrap
+  95% CI of 0.487-0.582 h, so it is carried as estimated, not fixed.
+* **Residual error.** Concentrations were log-transformed and the residual
+  variability is reported as a proportional error; it is encoded as
+  `prop()`, the linear-scale equivalent of an additive error on log
+  concentrations.
+* **Text inconsistency.** The Results quote "IIV on Ka and CL/F ... 110% and
+  78%" for the rifampicin model, but Table 3 has no IIV on rifampicin CL/F
+  and gives 30% on metabolite CLM/F; 77.8% is the fusidic acid CL/F value of
+  Table 2. Table 3 is followed.
+* **Matrix.** Concentrations are dried-blood-spot (whole blood) values, as
+  in the source.
+* **Errata.** No erratum or correction was found for this article in Europe PMC on
+  2026-11-17.

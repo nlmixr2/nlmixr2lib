@@ -3400,6 +3400,8 @@ navbar:
         href: articles/Hornik_2025_furosemide.html
       - text: "Furosemide pbpk (Gu 2025)"
         href: articles/Gu_2025_heart_failure_pbpk.html
+      - text: "FusidicAcid (Maggs 2026)"
+        href: articles/Maggs_2026_rifampicin_fusidicAcid.html
       - text: "FxiLica (Willmann 2021)"
         href: articles/Willmann_2021_fxi_aso.html
       - text: "G csf (Melhem 2018)"
@@ -7062,6 +7064,8 @@ navbar:
         href: articles/Horita_2018_rifampicin.html
       - text: "Rifampicin (Kloprogge 2020)"
         href: articles/Kloprogge_2020_tuberculosis.html
+      - text: "Rifampicin (Maggs 2026)"
+        href: articles/Maggs_2026_rifampicin_fusidicAcid.html
       - text: "Rifampicin (Marsot 2017)"
         href: articles/Marsot_2017_rifampicin.html
       - text: "Rifampicin (Panjasawatwong 2020)"
@@ -11015,6 +11019,7 @@ articles:
   - articles/Machavaram_2013_interleukin6_cyp3a_pbpk
   - articles/Maciel_2024_quinine
   - articles/Macpherson_2015_rosuvastatin
+  - articles/Maggs_2026_rifampicin_fusidicAcid
   - articles/Mahadevan_2026_polymyxinB_combination_CRKP
   - articles/Mahar_2025_daprodustat
   - articles/Mahomed_2025_CAP256V2LS
