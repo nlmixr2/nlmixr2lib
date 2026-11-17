@@ -1,0 +1,431 @@
+---
+title: "SIG001 cynomolgus monkey, mouse and projected human PK (Yao 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SIG001 cynomolgus monkey, mouse and projected human PK (Yao 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Yao et al. (2026) characterised the pharmacokinetics of SIG001, a humanized
+monoclonal antibody against tumour-associated sialylated IgG (SIA-IgG), in
+cynomolgus monkeys and CD-1 mice, and projected human PK by allometric scaling
+of the monkey model to choose a first-in-human (FIH) dose and a
+pharmacologically active dose (PAD) range. The paper contributes three models,
+all two-compartment with linear elimination:
+
+| Model | What it is |
+|---|---|
+| `Yao_2026_SIG001_cyno` | Population PK fit to cynomolgus monkeys (Table 1) |
+| `Yao_2026_SIG001_mouse` | Population PK fit to CD-1 mice (Table 2) |
+| `Yao_2026_SIG001_human` | Allometric human projection from the monkey fit (Equation 1, Results) |
+
+* Citation: `r rxode2::rxode(readModelDb("Yao_2026_SIG001_cyno"))$reference`
+* Article: <https://doi.org/10.3389/fphar.2026.1904283>
+
+All three models carry body-weight-normalised parameters (L/kg, L/h/kg), as the
+paper reports them (mL/kg, mL/h/kg). Doses are given in mg/kg to a nominal
+1-kg subject, and `Cc` is returned in ug/mL (mg/L).
+
+# Population
+
+**Cynomolgus monkey.** 18 healthy animals in three single-IV-dose groups (5,
+15 and 30 mg/kg; 3 male and 3 female per group), mean body weight 2.24 kg,
+serially sampled from 0.5 h to 28 days (251 quantifiable and 1 BQL ELISA
+observations, LLOQ 100 ng/mL).
+
+**Mouse.** Non-tumour-bearing CD-1 mice given single IV doses of 5, 10 or
+20 mg/kg. Each mouse gave two samples, six mice per time point per dose
+(twelve at 28 days), sexes balanced: about 45 mice per dose group, 216
+quantifiable and 54 BQL observations. BQL data were handled with the M3 method,
+and only IIV on CL was estimable.
+
+**Human.** No human data. Parameters are the monkey estimates scaled to a
+70-kg adult (Equation 1); the 30% IIV on CL and 10% proportional residual
+error are the authors' assumed values for monoclonal antibodies.
+
+```{r population}
+for (m in c("Yao_2026_SIG001_cyno", "Yao_2026_SIG001_mouse",
+            "Yao_2026_SIG001_human")) {
+  pop <- rxode2::rxode(readModelDb(m))$population
+  cat(m, ": ", pop$species, "; n = ", pop$n_subjects, "; ",
+      pop$dose_range, "\n", sep = "")
+}
+```
+
+# Source trace
+
+| Model element | Value | Source location |
+|---|---|---|
+| Structure (all species) | 2-cmt, linear CL, IV bolus | Methods 'Development and evaluation of population PK model'; Results |
+| Monkey CL, VC, Q, VP | 0.386 mL/h/kg, 47.2 mL/kg, 1.05 mL/h/kg, 31.4 mL/kg | Table 1 |
+| Monkey IIV CL, IIV VC | 18.8%, 16.2% | Table 1 |
+| Monkey proportional error | 12.6% | Table 1 |
+| Mouse CL, VC, Q, VP | 1.37 mL/h/kg, 57.7 mL/kg, 3.48 mL/h/kg, 32.9 mL/kg | Table 2 |
+| Mouse IIV CL | 43.4% | Table 2 |
+| Mouse proportional error | 20.6% | Table 2 |
+| Allometric equation, exponents | 0.8 (CL), 0.75 (Q), 1.0 (VC), 0.95 (VP); 70 kg vs 2.24 kg | Equation 1 and following text |
+| Human CL, VC, Q, VP | 0.194 mL/h/kg, 47.2 mL/kg, 0.44 mL/h/kg, 26.4 mL/kg | Results, 'Projection of FIH dose of SIG001' |
+| Human IIV CL (assumed) | 30% | Results; Discussion |
+| Human proportional error (assumed) | 10% | Results; Discussion |
+| Validation targets | NCA t1/2 153 h (monkey), 64.7 h (mouse); human t1/2 ~11 days; median Cmax,ss 45 ug/mL at 1.5 mg/kg Q2W; all 1.0 mg/kg Q2W predictions < 50 ug/mL; PAD 1.8-7.0 mg/kg Q2W | Results; Figure 5 |
+
+The human values printed in Results are reproduced by Equation 1 from the
+monkey estimates:
+
+```{r allometry-check}
+bw_ratio <- 70 / 2.24
+monkey <- c(cl = 0.386, vc = 47.2, q = 1.05, vp = 31.4)
+alpha <- c(cl = 0.8, vc = 1.0, q = 0.75, vp = 0.95)
+# Absolute scaling, then back to per kg: P_kg,human = P_kg,monkey * ratio^(alpha - 1)
+scaled <- monkey * bw_ratio^(alpha - 1)
+printed <- c(cl = 0.194, vc = 47.2, q = 0.44, vp = 26.4)
+knitr::kable(
+  data.frame(parameter = names(scaled), monkey = monkey,
+             equation_1 = signif(scaled, 3), printed = printed) |>
+    dplyr::rename("Parameter" = parameter, "Monkey (Table 1)" = monkey,
+                  "Equation 1" = equation_1, "Printed human value" = printed),
+  caption = "Human per-kg parameters: Equation 1 vs the values printed in Results (mL/h/kg or mL/kg)."
+)
+stopifnot(all(abs(scaled / printed - 1) < 0.01))
+```
+
+# Shared helpers
+
+```{r helpers}
+obs_grid <- sort(unique(c(0, 0.5, 1, 2, 4, 8, seq(12, 672, by = 12))))
+
+single_dose_events <- function(doses, n_per_dose, grid) {
+  dplyr::bind_rows(lapply(seq_along(doses), function(i) {
+    ids <- (i - 1L) * n_per_dose + seq_len(n_per_dose)
+    dose_rows <- data.frame(id = ids, time = 0, evid = 1L, amt = doses[[i]],
+                            cmt = "central")
+    obs_rows <- expand.grid(id = ids, time = grid)
+    obs_rows$evid <- 0L
+    obs_rows$amt <- 0
+    obs_rows$cmt <- "central"
+    out <- dplyr::bind_rows(dose_rows, obs_rows)
+    out$treatment <- paste(doses[[i]], "mg/kg")
+    out
+  })) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+run_single_dose_nca <- function(sim, events) {
+  conc <- sim |>
+    dplyr::filter(!is.na(Cc)) |>
+    dplyr::select(id, time, Cc, treatment)
+  dose <- events |>
+    dplyr::filter(evid == 1) |>
+    dplyr::select(id, time, amt, treatment)
+  conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id,
+                               concu = "ug/mL", timeu = "h")
+  dose_obj <- PKNCA::PKNCAdose(dose, amt ~ time | treatment + id,
+                               doseu = "mg/kg")
+  intervals <- data.frame(start = 0, end = Inf, cmax = TRUE,
+                          aucinf.obs = TRUE, half.life = TRUE)
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+}
+
+vpc_summary <- function(sim) {
+  # The bolus is ordered before the time-0 observation, so every time-0
+  # concentration is the post-dose dose / VC and plots on a log axis.
+  sim |>
+    dplyr::group_by(treatment, time) |>
+    dplyr::summarise(
+      p05 = quantile(sim, 0.05), p50 = median(sim), p95 = quantile(sim, 0.95),
+      .groups = "drop"
+    )
+}
+```
+
+# Cynomolgus monkey (Table 1 model)
+
+```{r cyno-sim}
+mod_cyno <- readModelDb("Yao_2026_SIG001_cyno")
+rxode2::rxSetSeed(20261)
+ev_cyno <- single_dose_events(c(5, 15, 30), n_per_dose = 100, grid = obs_grid)
+sim_cyno <- rxode2::rxSolve(mod_cyno, events = ev_cyno, keep = "treatment") |>
+  as.data.frame()
+```
+
+```{r cyno-vpc, fig.cap = "Replicates Figure 2 of Yao 2026: simulated median and 90% prediction interval of SIG001 serum concentration after single IV doses in cynomolgus monkeys (100 simulated animals per dose)."}
+vpc_summary(sim_cyno) |>
+  ggplot(aes(time / 24, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.3) +
+  geom_line(colour = "steelblue4") +
+  facet_wrap(~treatment) +
+  scale_y_log10() +
+  labs(x = "Time (day)", y = "SIG001 (ug/mL)")
+```
+
+```{r cyno-nca}
+nca_cyno <- run_single_dose_nca(sim_cyno, ev_cyno)
+knitr::kable(summary(nca_cyno), caption = "PKNCA summary, simulated monkeys.")
+```
+
+# Mouse (Table 2 model)
+
+```{r mouse-sim}
+mod_mouse <- readModelDb("Yao_2026_SIG001_mouse")
+rxode2::rxSetSeed(20262)
+ev_mouse <- single_dose_events(c(5, 10, 20), n_per_dose = 100, grid = obs_grid)
+sim_mouse <- rxode2::rxSolve(mod_mouse, events = ev_mouse, keep = "treatment") |>
+  as.data.frame()
+```
+
+```{r mouse-vpc, fig.cap = "Replicates the upper panels of Figure 3 of Yao 2026: simulated median and 90% prediction interval of SIG001 serum concentration after single IV doses in CD-1 mice (100 simulated mice per dose). The dashed line is the ELISA LLOQ of 0.1 ug/mL."}
+vpc_summary(sim_mouse) |>
+  ggplot(aes(time / 24, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "darkorange", alpha = 0.3) +
+  geom_line(colour = "darkorange4") +
+  geom_hline(yintercept = 0.1, linetype = "dashed") +
+  facet_wrap(~treatment) +
+  scale_y_log10() +
+  labs(x = "Time (day)", y = "SIG001 (ug/mL)")
+```
+
+```{r mouse-nca}
+nca_mouse <- run_single_dose_nca(sim_mouse, ev_mouse)
+knitr::kable(summary(nca_mouse), caption = "PKNCA summary, simulated mice.")
+```
+
+## Comparison against the published NCA half-lives
+
+Yao 2026 reports one NCA half-life per species ("153 h in cynomolgus monkeys and
+64.7 h in mice", Results), without a dose group. Each published value is
+therefore compared against every simulated dose group; the model is linear, so
+the simulated half-life does not depend on dose.
+
+```{r nca-compare}
+published_cyno <- tibble::tibble(treatment = c("5 mg/kg", "15 mg/kg", "30 mg/kg"),
+                                 half.life = 153)
+published_mouse <- tibble::tibble(treatment = c("5 mg/kg", "10 mg/kg", "20 mg/kg"),
+                                  half.life = 64.7)
+cmp_cyno <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_cyno, reference = published_cyno, by = "treatment",
+  units = c(half.life = "h"), tolerance_pct = 20
+)
+cmp_mouse <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_mouse, reference = published_mouse, by = "treatment",
+  units = c(half.life = "h"), tolerance_pct = 20
+)
+knitr::kable(
+  dplyr::bind_rows(
+    dplyr::mutate(cmp_cyno, Species = "cynomolgus monkey", .before = 1),
+    dplyr::mutate(cmp_mouse, Species = "mouse", .before = 1)
+  ),
+  caption = "Simulated (median of 100 animals per dose) vs published NCA half-life. * marks a difference above 20%."
+)
+
+hl <- as.data.frame(nca_cyno$result) |>
+  dplyr::filter(PPTESTCD == "half.life")
+hl_mouse <- as.data.frame(nca_mouse$result) |>
+  dplyr::filter(PPTESTCD == "half.life")
+stopifnot(
+  abs(median(hl$PPORRES) / 153 - 1) < 0.15,
+  # The mouse model's terminal half-life sits below the published NCA value
+  # (see the narrative); this only guards against a gross transcription error.
+  abs(median(hl_mouse$PPORRES) / 64.7 - 1) < 0.40
+)
+```
+
+The monkey half-life agrees with the published NCA value. The mouse model's
+terminal half-life (about 48 h for the typical animal) is roughly 25% shorter
+than the 64.7 h NCA value. The published value is a naive-pooled NCA of sparse
+data in which 20% of samples, concentrated at the late time points, were BQL
+and so absent from the terminal fit, while the model was fit with the M3 method
+that uses those BQL records; the paper itself notes the conditional weighted
+residuals drift upwards towards 28 days. The parameters were not adjusted.
+
+# Human projection (Equation 1 model)
+
+## First-in-human safety projection (Figure 5)
+
+```{r human-sim}
+mod_human <- readModelDb("Yao_2026_SIG001_human")
+tau <- 14 * 24
+dose_times <- seq(0, 10 * 7 * 24, by = tau)
+human_grid <- seq(0, 12 * 7 * 24, by = 4)
+
+human_events <- function(dose, n, id_offset) {
+  ids <- id_offset + seq_len(n)
+  dose_rows <- expand.grid(id = ids, time = dose_times)
+  dose_rows$evid <- 1L
+  dose_rows$amt <- dose
+  obs_rows <- expand.grid(id = ids, time = human_grid)
+  obs_rows$evid <- 0L
+  obs_rows$amt <- 0
+  out <- dplyr::bind_rows(dose_rows, obs_rows)
+  out$cmt <- "central"
+  out$treatment <- sprintf("%.1f mg/kg Q2W", dose)
+  dplyr::arrange(out, id, time, dplyr::desc(evid))
+}
+
+ev_human <- dplyr::bind_rows(
+  human_events(1.0, 200, 0L),
+  human_events(1.5, 200, 200L)
+)
+stopifnot(!anyDuplicated(ev_human[, c("id", "time", "evid")]))
+rxode2::rxSetSeed(20263)
+sim_human <- rxode2::rxSolve(mod_human, events = ev_human, keep = "treatment") |>
+  as.data.frame()
+```
+
+```{r human-fig5, fig.cap = "Replicates Figure 5 of Yao 2026: simulated SIG001 serum concentration in humans at (A) 1.0 mg/kg and (B) 1.5 mg/kg IV every 2 weeks; solid line = median, band = 90% prediction interval including residual error (200 simulated subjects per regimen). Dashed line: the 50 ug/mL cytokine-release threshold."}
+sim_human |>
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(p05 = quantile(sim, 0.05), p50 = median(sim),
+                   p95 = quantile(sim, 0.95), .groups = "drop") |>
+  ggplot(aes(time / (7 * 24), p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "seagreen", alpha = 0.3) +
+  geom_line(colour = "seagreen4") +
+  geom_hline(yintercept = 50, linetype = "dashed", colour = "grey40") +
+  facet_wrap(~treatment) +
+  scale_y_log10() +
+  labs(x = "Time (weeks)", y = "SIG001 (ug/mL)")
+```
+
+PKNCA over the last dosing interval (weeks 10-12) gives the steady-state peak:
+
+```{r human-nca}
+conc_h <- sim_human |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+dose_h <- ev_human |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+nca_human <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_h, Cc ~ time | treatment + id, concu = "ug/mL", timeu = "h"),
+  PKNCA::PKNCAdose(dose_h, amt ~ time | treatment + id, doseu = "mg/kg"),
+  intervals = data.frame(start = max(dose_times), end = max(dose_times) + tau,
+                         cmax = TRUE, cav = TRUE, auclast = TRUE)
+))
+knitr::kable(summary(nca_human), caption = "PKNCA summary over the 6th dosing interval (weeks 10-12).")
+
+cmax_ss <- as.data.frame(nca_human$result) |>
+  dplyr::filter(PPTESTCD == "cmax")
+cmax_med_15 <- median(cmax_ss$PPORRES[cmax_ss$treatment == "1.5 mg/kg Q2W"])
+
+# Peak with residual error, the quantity the paper's prediction interval shows.
+peak_sim <- sim_human |>
+  dplyr::filter(time == max(dose_times)) |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(p50 = median(sim), p95 = quantile(sim, 0.95), .groups = "drop")
+knitr::kable(peak_sim |>
+               dplyr::rename("Regimen" = treatment, "Median peak (ug/mL)" = p50,
+                             "95th percentile peak (ug/mL)" = p95),
+             digits = 1,
+             caption = "Simulated peak after the 6th dose, including residual error.")
+p95_10 <- peak_sim$p95[peak_sim$treatment == "1.0 mg/kg Q2W"]
+stopifnot(
+  length(cmax_med_15) == 1L, !is.na(cmax_med_15), length(p95_10) == 1L,
+  # Results: 'the median of predicted Cmax,ss for the 1.5 mg/kg dose regimen was 45 ug/mL'
+  abs(cmax_med_15 / 45 - 1) < 0.10,
+  # Results: 'the predictions for the 1.0 mg/kg dose regimen were all below the 50 ug/mL threshold'
+  p95_10 < 50
+)
+```
+
+The median steady-state Cmax at 1.5 mg/kg Q2W is
+`r sprintf("%.1f", cmax_med_15)` ug/mL (paper: 45 ug/mL), and the upper
+prediction bound at 1.0 mg/kg Q2W stays below 50 ug/mL, matching the paper's
+choice of 1.5 mg/kg / 10 = 0.15 mg/kg Q2W as the FIH dose.
+
+## Human half-life
+
+```{r human-halflife}
+p <- c(cl = 0.194, vc = 47.2, q = 0.44, vp = 26.4) # mL/h/kg, mL/kg
+k10 <- p[["cl"]] / p[["vc"]]
+k12 <- p[["q"]] / p[["vc"]]
+k21 <- p[["q"]] / p[["vp"]]
+s <- k10 + k12 + k21
+beta <- (s - sqrt(s^2 - 4 * k10 * k21)) / 2
+t_half_days <- log(2) / beta / 24
+cat(sprintf("Typical human terminal half-life = %.1f days\n", t_half_days))
+stopifnot(abs(t_half_days / 11 - 1) < 0.10)
+```
+
+The paper states "approximately 11 days".
+
+## Pharmacologically active dose (PAD) projection
+
+The paper matches the steady-state average concentration (Cavg,ss = AUCss /
+tau) of the efficacious mouse regimens (2.5 and 10 mg/kg) to human Q2W
+regimens and reports a human PAD of 1.8-7.0 mg/kg Q2W. For a linear model
+Cavg,ss = dose / (CL x tau), so the human Cavg,ss at the PAD bounds and the
+mouse Cavg,ss at the xenograft doses can be computed directly from the typical
+values. The mouse dosing interval used for this step is not stated; the
+xenograft schedules in Supplementary Table S1 were every 3 to 4 days, and the
+Discussion's statement that 50 ug/mL is the Cavg of 5 mg/kg in mice implies an
+interval of about 3 days.
+
+```{r pad}
+cl_mouse <- 1.37 / 1000 # L/h/kg
+cl_human <- 0.194 / 1000
+pad <- tibble::tibble(
+  mouse_dose = c(2.5, 10),
+  mouse_cavg_q3d = mouse_dose / (cl_mouse * 72),
+  mouse_cavg_q4d = mouse_dose / (cl_mouse * 96),
+  human_pad = c(1.8, 7.0),
+  human_cavg_q2w = human_pad / (cl_human * tau)
+)
+knitr::kable(
+  pad |>
+    dplyr::rename("Mouse dose (mg/kg)" = mouse_dose,
+                  "Mouse Cavg,ss Q3D (ug/mL)" = mouse_cavg_q3d,
+                  "Mouse Cavg,ss Q4D (ug/mL)" = mouse_cavg_q4d,
+                  "Published human PAD (mg/kg Q2W)" = human_pad,
+                  "Human Cavg,ss at PAD (ug/mL)" = human_cavg_q2w),
+  digits = 1,
+  caption = "Typical steady-state average concentrations behind the PAD projection."
+)
+# 5 mg/kg every 3 days in mice gives a Cavg near the 50 ug/mL threshold (Discussion).
+stopifnot(abs(5 / (cl_mouse * 72) / 50 - 1) < 0.05)
+```
+
+Matching Cavg,ss with mice dosed every 3 days gives human Q2W doses of
+`r sprintf("%.2f", pad$mouse_cavg_q3d[1] * cl_human * tau)` and
+`r sprintf("%.2f", pad$mouse_cavg_q3d[2] * cl_human * tau)` mg/kg, within
+about 10% of the published 1.8-7.0 mg/kg; the published range corresponds to
+a mouse interval of about 66 h. The paper's printed mouse Cavg,ss (1.25 and
+5.01 'mg/mL') and AUCss (420.0 and 1,683.4 'mg h/mL') values could not be
+reproduced from Table 2 under any stated unit or interval (dose / CL alone
+gives an AUC of 1,825 ug h/mL per 2.5 mg/kg dose), so they are not used as a
+validation target.
+
+# Assumptions and deviations
+
+* **IIV percentages.** Tables 1 and 2 report IIV as a percentage for
+  exponential random effects without saying whether it is a CV or
+  sqrt(omega^2) x 100. It is treated as a CV, omega^2 = log(CV^2 + 1); at
+  16-19% the two readings differ by under 2%, and at 43.4% (mouse CL) by about
+  8% in variance. The assumed 30% human IIV is treated the same way.
+* **Per-kg parameterisation.** The paper reports every parameter per kg body
+  weight and doses in mg/kg; the models keep that form (dose in mg/kg to a
+  nominal 1-kg subject) rather than introducing a body-weight covariate the
+  authors did not use.
+* **Human residual error and IIV** are the authors' assumed simulation values
+  (Dirks and Meibohm 2010), encoded as fixed, not estimates.
+* **Human values** use the per-kg numbers printed in Results (0.194, 47.2,
+  0.44, 26.4); Equation 1 reproduces them to within 1%.
+* **M3 / LLOQ.** The mouse fit used the M3 likelihood for BQL samples; that is
+  an estimation feature and is not part of the simulation model.
+* **Target-mediated disposition.** No TMDD was seen in healthy animals, which
+  express little SIA-IgG; the authors note that tumour-bearing patients may
+  show additional target-mediated clearance, which these models do not
+  capture.
+* **Errata.** No erratum or correction was found (Europe PMC search,
+  2026-11-17).
