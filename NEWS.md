@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Hoeben 2026 calaspargase pegol ([doi:10.1007/s13318-026-01010-4](https://doi.org/10.1007/s13318-026-01010-4)) -- JHH-5 hepatocellular-carcinoma xenograft mice and patients with acute lymphoblastic leukemia, with the translational tumor-growth projection to adults with hepatocellular carcinoma.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.
