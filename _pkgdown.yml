@@ -5726,6 +5726,8 @@ navbar:
         href: articles/Hartmann_2026_nintedanib.html
       - text: "Nipocalimab (Valenzuela 2025)"
         href: articles/Valenzuela_2025_nipocalimab.html
+      - text: "Nipocalimab (Zhou 2026)"
+        href: articles/Zhou_2026_nipocalimab.html
       - text: "Niraparib (Gaffney 2026)"
         href: articles/Gaffney_2026_niraparib.html
       - text: "Nirmatrelvir (Chan 2023)"
@@ -12479,6 +12481,7 @@ articles:
   - articles/Zhou_2025_fruquintinib_poppk
   - articles/Zhou_2025_tacrolimus
   - articles/Zhou_2025_teicoplanin
+  - articles/Zhou_2026_nipocalimab
   - articles/Zhou_2026_tacrolimus
   - articles/Zhu_2013_ganitumab
   - articles/Zhu_2014_tacrolimus
