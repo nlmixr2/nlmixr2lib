@@ -7796,6 +7796,17 @@ canonical names; the co-analyte carries the suffix throughout.
   - `Vollmer_2023_cefepime_enmetazobactam.R` (doi:10.1093/ofid/ofad500.2147), joint two-compartment-per-drug model pooled across Phase 1 to Phase 3, where cefepime is the unsuffixed parent.
 - **Notes:** Directly parallel to `taz`, and registered for the same reason: enmetazobactam is a sibling drug, not a metabolite -- it is co-formulated with cefepime in a fixed 4:1 mass ratio (EXBLIFEP, 2 g cefepime / 0.5 g enmetazobactam), dosed into its own central compartment, and fitted simultaneously with cefepime without interconversion. Do NOT reuse `taz`: enmetazobactam and tazobactam are distinct molecules with distinct clearances, and a model pairing cefepime with either one must name which inhibitor it carries.
 
+### avi (**canonical avibactam sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Avibactam (diazabicyclooctane beta-lactamase inhibitor) sibling-drug suffix, used when avibactam is co-modelled with a partner beta-lactam that is the unsuffixed parent. Drives `central_avi` / `peripheral1_avi` (and, for the oral prodrug, `depot_avi` / `transit<n>_avi`) compartments, `lcl_avi` / `lvc_avi` / `lq_avi` / `lvp_avi` / `lktr_avi` PK parameters, the `e_<cov>_<param>_avi` covariate-effect forms, and the `propSd_avi` / `addSd_avi` / `expSd_avi` residuals on the `Cc_avi` avibactam plasma concentration.
+- **Source aliases:**
+  - `AVI` -- abbreviation in Xie 2025 and Sahasrabudhe 2026 parameter tables (`CL_AVI`, `CL/F-AVI`).
+- **Example models:**
+  - `Xie_2025_aztreonam_avibactam.R` (intravenous aztreonam-avibactam; aztreonam is the unsuffixed parent).
+  - `Zazo_2024_ceftazidime_avibactam_control.R` and `Zazo_2024_ceftazidime_avibactam_icu.R` (intravenous ceftazidime-avibactam; ceftazidime is the unsuffixed parent).
+  - `Sahasrabudhe_2026_ceftibuten_avibactam.R` and `Sahasrabudhe_2026_ceftibuten_avibactam_crcl.R` (oral ceftibuten with the avibactam prodrug avibactam tomilopil; ceftibuten is the unsuffixed parent, and the prodrug dose enters `depot_avi` and is converted to avibactam equivalents).
+- **Notes:** Sibling drug, not a metabolite, registered for the same reason as `taz` and `enm`: models already used the suffix without a register entry, which left their `central_avi` / `peripheral1_avi` / `*_avi` residual names flagged. In the oral prodrug case the state holds avibactam-equivalent amounts after the molecular-weight conversion applied by `f(depot_avi)`.
+
 ### vab (**canonical vaborbactam sibling-drug suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Vaborbactam (cyclic boronic acid beta-lactamase inhibitor) sibling-drug suffix, used when vaborbactam is co-modelled with its fixed-ratio partner meropenem and meropenem is the unsuffixed parent. Drives `central_vab` and the circuit states `circuit_plasma_vab` / `circuit_return_vab`, the `lcl_vab` / `lcl_residual_vab` / `lvc_vab` PK parameters and the `lk_<from>_<to>_vab` circuit transfer constants, and the `propSd_vab` / `addSd_vab` residuals on the `Cc_vab` vaborbactam plasma concentration.

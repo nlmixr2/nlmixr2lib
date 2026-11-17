@@ -1618,6 +1618,10 @@ navbar:
         href: articles/Zazo_2024_ceftazidime_avibactam.html
       - text: "Ceftazidime qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Ceftibuten avibactam (Sahasrabudhe 2026)"
+        href: articles/Sahasrabudhe_2026_ceftibuten_avibactam.html
+      - text: "Ceftibuten avibactam crcl (Sahasrabudhe 2026)"
+        href: articles/Sahasrabudhe_2026_ceftibuten_avibactam.html
       - text: "Ceftiofur dog (Wang 2019)"
         href: articles/Wang_2019_ceftiofur_dog.html
       - text: "Ceftiofur pkpd balf (Mi 2022)"
@@ -11550,6 +11554,7 @@ articles:
   - articles/SaeHeng_2022_quinine_phenobarbital
   - articles/Saeheng_2024_atractylodesLancea
   - articles/Sager_2023_sotrovimab
+  - articles/Sahasrabudhe_2026_ceftibuten_avibactam
   - articles/Sahota_2015_miridesap
   - articles/Said_2025_imatinib
   - articles/Sakamoto_2021_fluconazole
