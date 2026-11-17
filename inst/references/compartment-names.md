@@ -4946,6 +4946,13 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
   - `HDL` -- Krishna 2011 Eqs. 1, 2 and 8 output variable; casing only.
 - **Example models:** `Krishna_2011_anacetrapib_hdlc.R` (algebraic proportional-Emax output driven by the anacetrapib steady-state trough concentration; no ODE state).
 
+### thyroglobulin (**canonical serum thyroglobulin tumor-marker PD output**)
+- **Type:** compartment
+- **Role:** Serum thyroglobulin (Tg) concentration, the tumor marker of differentiated thyroid cancer after total thyroidectomy (ng/mL, equivalently ug/L). Carried as a turnover state produced by tumor cells and eliminated first order, and observed directly as the model output. Spelled out rather than abbreviated because `tg` and `TG` are ambiguous with triglycerides and tumor growth.
+- **Source aliases:**
+  - `Tg` -- Barbolosi 2017 and Fusella Giuntini 2026 state and output name; spelled out.
+- **Example models:** `Barbolosi_2017_radioiodine.R` (dTg/dt = lambda * N - ke * Tg, with N the tumor-cell state killed by radioiodine activity; stimulated Tg is the single observed endpoint with proportional residual error).
+
 ### c4 (**canonical serum 7-alpha-hydroxy-4-cholesten-3-one (C4) PD output**)
 - **Type:** compartment
 - **Role:** Serum 7-alpha-hydroxy-4-cholesten-3-one (C4) concentration, the circulating intermediate of hepatic bile-acid synthesis by CYP7A1 and the standard biomarker of that synthesis rate. Carried as an indirect-response turnover state in concentration units (ng/mL).

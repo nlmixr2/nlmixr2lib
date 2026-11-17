@@ -6882,6 +6882,8 @@ navbar:
         href: articles/Patel_2025_radamts13_exposure_response.html
       - text: "Radiation radiosensitizer mouse (Cardilin 2018)"
         href: articles/Cardilin_2018_radiation_radiosensitizer_mouse.html
+      - text: "Radioiodine (Barbolosi 2017)"
+        href: articles/Barbolosi_2017_radioiodine.html
       - text: "Radiotherapy antipdl1 olaparib azd0156 mouse (Hodson 2023)"
         href: articles/Hodson_2023_radiotherapy_antipdl1_olaparib_azd0156_mouse.html
       - text: "Radotinib (Kang 2025)"
@@ -9493,6 +9495,7 @@ articles:
   - articles/Bamgboye_2026_topiramate
   - articles/Baranda_2024_sar439459
   - articles/Barau_2012_mycophenolic_acid
+  - articles/Barbolosi_2017_radioiodine
   - articles/Bardhi_2026_ampicillin_foal
   - articles/Barnett_2018_coproporphyrin_I
   - articles/Barnett_2018_rifampicin
