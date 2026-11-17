@@ -1,0 +1,468 @@
+---
+title: "Amikacin, gentamicin and tobramycin across the lifespan (Tong 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Amikacin, gentamicin and tobramycin across the lifespan (Tong 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Tong et al. 2026 fitted one population PK model to routine therapeutic drug
+monitoring data from patients of all ages who received amikacin, gentamicin
+or tobramycin. The three aminoglycosides share a single two-compartment model,
+with a few drug-specific factors:
+
+- Clearance (CL), central volume (Vc), inter-compartmental clearance (Q) and
+  peripheral volume (Vp) are shared. Relative to amikacin, CL is 1.17-fold
+  for tobramycin and 1.11-fold for gentamicin. For amikacin, Q is 0.84-fold
+  and Vp 1.41-fold relative to the other two drugs.
+- All four parameters scale allometrically (exponent 0.75 on CL and Q, 1 on
+  the volumes, 70 kg reference). The size descriptor `WTallo` is total body
+  weight below 1 year of age and the Al-Sallami (M2) fat-free mass from 3
+  years, with a linear blend in between.
+- CL also carries a sigmoidal postmenstrual-age (PMA) maturation function, a
+  sigmoidal age-related decline, both normalised to a 35-year-old, an
+  exponential effect of serum creatinine relative to an age-typical value,
+  and a cystic-fibrosis factor of 1.06.
+- Between-subject variability on CL (31.1% CV) and Vc (21.2% CV). The
+  residual error is combined proportional and additive, with its own
+  magnitudes for each drug.
+
+The drug a subject received is given by three indicator columns,
+`TRT_AMIKACIN`, `TRT_GENTAMICIN` and `TRT_TOBRAMYCIN`. Exactly one of them
+must be 1.
+
+- Citation: Tong DMH, Faldasz JD, Keizer RJ, Hughes JH. One Model to Dose
+  Them All: A Population Pharmacokinetic Model for Multiple Aminoglycosides
+  Across the Human Lifespan. J Clin Pharmacol. 2026;66(9):e70231.
+- Article: <https://doi.org/10.1002/jcph.70231>
+
+```{r load-model}
+mod <- readModelDb("Tong_2026_amikacin_gentamicin_tobramycin")
+# The residual SDs are model parameters rather than sigma estimates, so only
+# the between-subject variances are zeroed for typical-value solves.
+mod_typ <- rxode2::zeroRe(mod, which = "omega")
+
+# Typical-value solves are intended throughout; muffle only the notice rxode2
+# gives for them, so any other warning still surfaces.
+solve_typical <- function(model, events, ...) {
+  res <- withCallingHandlers(
+    rxode2::rxSolve(model, events, returnType = "data.frame", ...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+  as.data.frame(res)
+}
+```
+
+# Population
+
+The data came from the InsightRX Nova precision-dosing platform: 5658
+patients and 5972 treatment courses at 154 US hospitals between January 2013
+and December 2025 (Results, 'Patients and Data Collection'; Table 1). There
+were 3235 adult, 510 paediatric and 2227 neonatal treatment courses: 552 on
+amikacin, 3972 on gentamicin and 1448 on tobramycin. They contributed 13,822
+serum concentrations, of which 4.7% were below the limit of quantification.
+Age ranged from 0 to 100 years (median 22) and weight from 0.3 to 200 kg
+(median 55). 53% of treatment courses were in female patients and 74 in
+patients with cystic fibrosis, all of whom received tobramycin. The model was
+fitted to a random 70% training split of 4179 treatment courses.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Two-compartment model, IV infusion | ADVAN3 TRANS4 | Methods; Supplemental Code `$SUBROUTINE` |
+| `lcl` | 5.1 L/h | Table 2 theta_CL |
+| `lvc` | 28.3 L | Table 2 theta_Vc |
+| `lq` | 1.45 L/h | Table 2 theta_Q |
+| `lvp` | 24.7 L | Table 2 theta_Vp |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1 (fixed) | Table 2 equations; Results text |
+| `e_trt_tobramycin_cl` | 1.17 | Table 2 |
+| `e_trt_gentamicin_cl` | 1.11 | Table 2 |
+| `e_dis_cf_cl` | 1.06 | Table 2 |
+| `e_trt_amikacin_q` | 0.84 | Table 2 |
+| `e_trt_amikacin_vp` | 1.41 | Table 2 |
+| `e_creat_cl` | 0.631 dL/mg | Table 2 CL equation (parameter row 0.63) |
+| `ltmat50` | 1.03 years PMA | Table 2 'Maturation T50'; Figure S19 |
+| `lhill_mat` | 2.61 | Table 2 'Maturation Hill exponent' |
+| `ltdec50` | 66.1 years PMA | Table 2 'Age decay T50' |
+| `lhill_dec` | 2.34 (printed as -2.34) | Table 2 'Age decay Hill exponent'; Supplemental Code `GAMMA2 = -EXP(THETA(7))` |
+| `etalcl`, `etalvc` | 31.1%, 21.2% CV | Table 2, converted with log(1 + CV^2) |
+| `propSd_*`, `addSd_*` | per drug | Table 2 PROP/ADD rows |
+| PMA in years, reference 35 + 40/52 | -- | Supplemental Code `PMA_YRS`, `PMA_R` |
+| Maturation and decline functions | -- | Table 2 CL equation; Supplemental Code `Fmat`, `Fage` |
+| Age-typical serum creatinine | -- | Supplemental Code `LnSCRstd` |
+| WTallo and Al-Sallami FFM | -- | Methods equations; Supplemental Code `KAS`, `WT_USE` |
+| Drug-specific combined residual error | -- | Supplemental Code `$ERROR` (`VARPROP`, `VARADD`) |
+
+# Covariate effects at the typical value
+
+The drug and disease factors multiply the typical parameters exactly. The
+check below solves the typical-value model for one adult reference patient
+(70 kg WTallo, 35 years, serum creatinine at the age-typical value) under
+each drug, with and without cystic fibrosis.
+
+```{r ref-patient}
+# A 35-year-old man (97 kg, 185 cm) whose Al-Sallami FFM is close to 70 kg.
+ref_cov <- data.frame(AGE = 35, PAGE = 35 * 52 + 40, SEXF = 0, WT = 97, HT = 185)
+one_obs <- function(cov, id) {
+  cbind(data.frame(id = id, time = 0, evid = 0, amt = 0, cmt = "central"), cov)
+}
+drug_cols <- function(drug) {
+  data.frame(
+    TRT_AMIKACIN = as.integer(drug == "amikacin"),
+    TRT_GENTAMICIN = as.integer(drug == "gentamicin"),
+    TRT_TOBRAMYCIN = as.integer(drug == "tobramycin")
+  )
+}
+grid <- expand.grid(drug = c("amikacin", "gentamicin", "tobramycin"), DIS_CF = 0:1,
+                    stringsAsFactors = FALSE)
+# First pass: read the age-typical creatinine, then set CREAT equal to it.
+ref_events <- do.call(rbind, lapply(seq_len(nrow(grid)), function(i) {
+  one_obs(cbind(ref_cov, drug_cols(grid$drug[i]), DIS_CF = grid$DIS_CF[i], CREAT = 1), i)
+}))
+pass1 <- solve_typical(mod_typ, ref_events)
+ref_events$CREAT <- pass1$creat_std
+ref_sim <- solve_typical(mod_typ, ref_events)
+ref_tab <- cbind(grid, ref_sim[, c("wt_allo", "cl", "vc", "q", "vp")])
+knitr::kable(ref_tab, digits = 3)
+```
+
+```{r ref-checks}
+cl_ami <- ref_tab$cl[ref_tab$drug == "amikacin" & ref_tab$DIS_CF == 0]
+cl_gen <- ref_tab$cl[ref_tab$drug == "gentamicin" & ref_tab$DIS_CF == 0]
+cl_tob <- ref_tab$cl[ref_tab$drug == "tobramycin" & ref_tab$DIS_CF == 0]
+cl_tob_cf <- ref_tab$cl[ref_tab$drug == "tobramycin" & ref_tab$DIS_CF == 1]
+q_ami <- ref_tab$q[ref_tab$drug == "amikacin" & ref_tab$DIS_CF == 0]
+q_gen <- ref_tab$q[ref_tab$drug == "gentamicin" & ref_tab$DIS_CF == 0]
+vp_ami <- ref_tab$vp[ref_tab$drug == "amikacin" & ref_tab$DIS_CF == 0]
+vp_gen <- ref_tab$vp[ref_tab$drug == "gentamicin" & ref_tab$DIS_CF == 0]
+stopifnot(
+  # Results: 'Clearance of tobramycin and gentamicin was 17% and 11% higher
+  # compared to amikacin'; CF raises clearance by 6%.
+  abs(cl_tob / cl_ami - 1.17) < 1e-8,
+  abs(cl_gen / cl_ami - 1.11) < 1e-8,
+  abs(cl_tob_cf / cl_tob - 1.06) < 1e-8,
+  # Results: amikacin peripheral volume 41% higher, Q 16% lower.
+  abs(q_ami / q_gen - 0.84) < 1e-8,
+  abs(vp_ami / vp_gen - 1.41) < 1e-8
+)
+```
+
+For this patient `WTallo` is about 70 kg, so amikacin CL is close to the
+Table 2 theta_CL of 5.1 L/h. The age factor at 35 years is 1.0 by
+construction, and the creatinine factor is 1 when serum creatinine equals the
+age-typical value.
+
+# Effect of age on clearance (Figure S2)
+
+Figure S2 plots the combined maturation and decline factor,
+`(Fmat / FmatR) * (Fage / FageR)`, against age. The points below were
+digitised from the "Unified" curve of Figure S2 (panel B, log axis); the 40-year
+point is omitted because the two curves overlap there. The x axis is read as
+PMA in years, which reproduces the figure's decline limb exactly.
+
+```{r figS2-digitised}
+figS2 <- data.frame(
+  pma = c(0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1, 1.2, 1.5, 2, 3, 5, 7, 10, 15, 20,
+          25, 30, 50, 60, 70, 80, 90, 100),
+  effect = c(0.024, 0.066, 0.136, 0.223, 0.324, 0.532, 0.711, 0.848, 0.983,
+             1.107, 1.193, 1.229, 1.232, 1.226, 1.205, 1.169, 1.127, 1.072,
+             0.819, 0.696, 0.59, 0.497, 0.417, 0.351)
+)
+```
+
+```{r figS2-model}
+pma_grid <- unique(c(10^seq(-1, 2, length.out = 200), figS2$pma))
+age_events <- do.call(rbind, lapply(seq_along(pma_grid), function(i) {
+  x <- pma_grid[i]
+  one_obs(cbind(data.frame(AGE = max(x - 40 / 52, 0), PAGE = x * 52, SEXF = 0,
+                           WT = 70, HT = 170, CREAT = 0.8, DIS_CF = 0),
+                drug_cols("gentamicin")), i)
+}))
+age_effect <- function(sim) sim$fmat / sim$fmat_ref * sim$fdec / sim$fdec_ref
+sim_tab <- solve_typical(mod_typ, age_events)
+# Same curve with the maturation T50 at 1.03 * 52 / 60 = 0.893 years.
+mod_alt <- mod_typ |> rxode2::ini(ltmat50 = log(1.03 * 52 / 60))
+sim_alt <- solve_typical(mod_alt, age_events)
+curves <- rbind(
+  data.frame(pma = pma_grid, effect = age_effect(sim_tab), curve = "Model (Table 2, T50 = 1.03 y)"),
+  data.frame(pma = pma_grid, effect = age_effect(sim_alt), curve = "Model with T50 = 0.893 y")
+)
+ggplot(curves, aes(pma, effect, colour = curve)) +
+  geom_line() +
+  geom_point(data = figS2, aes(pma, effect), inherit.aes = FALSE) +
+  scale_x_log10() +
+  labs(x = "Postmenstrual age (years)", y = "Effect of age on clearance", colour = NULL,
+       caption = "Points: digitised from Figure S2B of Tong 2026 ('Unified').") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+Replicates Figure S2 (panel B) of Tong 2026.
+
+```{r figS2-checks}
+at_dig <- function(sim) {
+  eff <- age_effect(sim)
+  eff[match(figS2$pma, pma_grid)]
+}
+diff_tab <- figS2 |>
+  mutate(table2 = at_dig(sim_tab), t50_0893 = at_dig(sim_alt),
+         diff_table2 = table2 - effect, diff_t50_0893 = t50_0893 - effect)
+knitr::kable(diff_tab, digits = 3)
+stopifnot(
+  # Decline limb (3 years and older) reproduces the figure with Table 2 values.
+  max(abs(diff_tab$diff_table2[diff_tab$pma >= 3])) < 0.03,
+  # Maturation limb: the figure matches T50 = 0.893 years, not 1.03.
+  max(abs(diff_tab$diff_t50_0893[diff_tab$pma <= 2])) < 0.03,
+  min(diff_tab$diff_table2[diff_tab$pma >= 0.4 & diff_tab$pma <= 1.2]) < -0.08
+)
+```
+
+From 3 years of PMA onward the packaged model matches the figure to within
+0.03. Below 2 years it does not: the figure's maturation limb matches a T50 of
+about 0.89 years (equal to 1.03 x 52/60, and also to the control stream's
+initial estimate exp(-0.113)), not 1.03. At 1 year of PMA the figure shows an
+age factor of 0.71 where Table 2 gives 0.60. Table 2 (both the parameter row
+and the printed CL equation) and the leave-one-out forest plot of Figure S19,
+where the all-data `MAT_50` sits at about 1.03, agree with each other. The
+model therefore uses 1.03, and the figure discrepancy is listed under
+Assumptions and deviations below.
+
+# Virtual cohort and dosing
+
+The paper does not report doses, so the regimens below are common clinical
+regimens chosen by the maintainers for illustration: a 30-minute infusion every
+24 hours for three doses. There are 100 virtual patients per drug and age group.
+
+| Age group | Amikacin | Gentamicin | Tobramycin |
+|---|---|---|---|
+| Adults (18-85 y) | 15 mg/kg | 7 mg/kg | 7 mg/kg |
+| Children (2-17 y) | 15 mg/kg | 7.5 mg/kg | 7.5 mg/kg |
+| Neonates (GA 28-41 wk, 0-6 wk old) | 15 mg/kg | 4 mg/kg | 4 mg/kg |
+
+Covariates are drawn from simple distributions within the paper's ranges.
+Serum creatinine is set to the model's age-typical value times
+log-normal noise (SD 0.25 on the log scale), so the creatinine factor is
+centred on 1 in every age group.
+
+```{r cohort}
+set.seed(2026)
+n_per <- 100
+make_group <- function(age_group, drug, id0) {
+  n <- n_per
+  if (age_group == "Adults") {
+    AGE <- runif(n, 18, 85)
+    SEXF <- rbinom(n, 1, 0.53)
+    HT <- ifelse(SEXF == 1, rnorm(n, 162, 7), rnorm(n, 176, 7))
+    WT <- exp(rnorm(n, log(80), 0.25))
+    PAGE <- AGE * 52 + 40
+  } else if (age_group == "Children") {
+    AGE <- runif(n, 2, 17)
+    SEXF <- rbinom(n, 1, 0.5)
+    HT <- (80 + 5.8 * AGE) * exp(rnorm(n, 0, 0.04))
+    WT <- (9 + 2.6 * AGE) * exp(rnorm(n, 0, 0.15))
+    PAGE <- AGE * 52 + 40
+  } else {
+    GA <- runif(n, 28, 41)
+    PNA_wk <- runif(n, 0, 6)
+    SEXF <- rbinom(n, 1, 0.45)
+    WT <- 3.4 * exp(0.105 * (GA - 40)) * exp(rnorm(n, 0, 0.12)) + 0.15 * PNA_wk
+    HT <- 50 * (WT / 3.4)^0.33
+    AGE <- PNA_wk / 52
+    PAGE <- GA + PNA_wk
+  }
+  dose_mgkg <- c(Adults = 7, Children = 7.5, Neonates = 4)[[age_group]]
+  if (drug == "amikacin") dose_mgkg <- 15
+  data.frame(id = id0 + seq_len(n), age_group = age_group, drug = drug,
+             AGE = AGE, PAGE = PAGE, SEXF = SEXF, WT = WT, HT = HT,
+             DIS_CF = 0, dose = dose_mgkg * WT, drug_cols(drug))
+}
+groups <- expand.grid(age_group = c("Neonates", "Children", "Adults"),
+                      drug = c("amikacin", "gentamicin", "tobramycin"),
+                      stringsAsFactors = FALSE)
+cohort <- do.call(rbind, lapply(seq_len(nrow(groups)), function(i) {
+  make_group(groups$age_group[i], groups$drug[i], (i - 1) * n_per)
+}))
+cohort$group <- paste(cohort$age_group, cohort$drug, sep = " / ")
+
+# Age-typical serum creatinine for each virtual patient, from the model itself.
+cov_cols <- c("AGE", "PAGE", "SEXF", "WT", "HT", "DIS_CF",
+              "TRT_AMIKACIN", "TRT_GENTAMICIN", "TRT_TOBRAMYCIN")
+probe <- cbind(data.frame(id = cohort$id, time = 0, evid = 0, amt = 0, cmt = "central",
+                          CREAT = 1), cohort[, cov_cols])
+probe_sim <- solve_typical(mod_typ, probe)
+cohort$CREAT <- probe_sim$creat_std * exp(rnorm(nrow(cohort), 0, 0.25))
+
+cohort |>
+  group_by(age_group) |>
+  summarise(age = median(AGE), wt = median(WT), creat = median(CREAT), .groups = "drop") |>
+  knitr::kable(digits = 2)
+```
+
+```{r events}
+dose_times <- c(0, 24, 48)
+obs_times <- sort(unique(c(seq(0, 72, by = 0.5), dose_times + 0.5)))
+doses <- merge(cohort, data.frame(time = dose_times)) |>
+  mutate(evid = 1, amt = dose, rate = dose / 0.5, cmt = "central")
+obs <- merge(cohort, data.frame(time = obs_times)) |>
+  mutate(evid = 0, amt = 0, rate = 0, cmt = "central")
+events <- bind_rows(doses, obs) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, evid, amt, rate, cmt, group, age_group, drug, CREAT, all_of(cov_cols))
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events, keep = c("group", "age_group", "drug"),
+                       returnType = "data.frame") |>
+  as.data.frame()
+sim_sum <- sim |>
+  group_by(age_group, drug, time) |>
+  summarise(med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95),
+            .groups = "drop")
+ggplot(sim_sum, aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  facet_grid(drug ~ age_group, scales = "free_y") +
+  labs(x = "Time (h)", y = "Concentration (mg/L)",
+       caption = "Median and 90% prediction interval (IIV only), 100 patients per panel.") +
+  theme_bw()
+```
+
+The paper presents no concentration-time figures. This plot shows the
+illustrative regimens above and is not compared with a published figure.
+
+# PKNCA
+
+PKNCA is run on `Cc`, the individual prediction without residual error. The first dosing
+interval gives Cmax and AUC0-24. The trough before the fourth dose is the
+concentration at 72 h, the minimum of the 48-72 h interval.
+
+```{r pknca}
+conc <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, group)
+dose_df <- events |>
+  filter(evid == 1) |>
+  select(id, time, amt, group)
+conc_obj <- PKNCAconc(conc, Cc ~ time | group + id)
+dose_obj <- PKNCAdose(dose_df, amt ~ time | group + id)
+intervals <- data.frame(
+  start = c(0, 48), end = c(24, 72),
+  cmax = c(TRUE, FALSE), auclast = c(TRUE, FALSE), cmin = c(FALSE, TRUE)
+)
+nca <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tab <- as.data.frame(nca$result) |>
+  filter(PPTESTCD %in% c("cmax", "auclast", "cmin")) |>
+  group_by(group, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  rename("Group" = group, "Cmax, dose 1 (mg/L)" = cmax,
+         "AUC0-24, dose 1 (mg*h/L)" = auclast, "Trough at 72 h (mg/L)" = cmin)
+knitr::kable(nca_tab, digits = 2)
+```
+
+The paper reports no NCA results, so there is no published table to compare
+against. The predictions behave as the Table 2 estimates imply. At the
+same mg/kg dose, the adult tobramycin AUC is a few percent lower than the
+adult gentamicin AUC, in line with the ratio of their clearance factors
+(1.17 / 1.11, about 5%). Children have the highest weight-normalised
+clearance, so at comparable mg/kg doses they have the lowest AUCs and
+troughs. The adult cohort (median age about 54 years, on the declining limb
+of the age function) has the highest troughs.
+
+## Single-dose AUC against dose / CL
+
+For a linear model, the AUC from zero to infinity after one dose equals the
+dose divided by the clearance. The check below solves one typical patient per
+group out to 480 hours and compares the PKNCA AUC0-inf with `dose / cl` taken
+from the model.
+
+```{r auc-closed-form}
+typ <- cohort |>
+  group_by(group) |>
+  slice(1) |>
+  ungroup()
+sd_obs_times <- c(seq(0, 24, by = 0.25), seq(25, 480, by = 1))
+sd_events <- bind_rows(
+  typ |> mutate(time = 0, evid = 1, amt = dose, rate = dose / 0.5, cmt = "central"),
+  merge(typ, data.frame(time = sd_obs_times)) |>
+    mutate(evid = 0, amt = 0, rate = 0, cmt = "central")
+) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, evid, amt, rate, cmt, group, CREAT, all_of(cov_cols))
+sd_sim <- solve_typical(mod_typ, sd_events, keep = "group")
+sd_nca <- pk.nca(PKNCAdata(
+  PKNCAconc(sd_sim |> filter(!is.na(Cc)) |> select(id, time, Cc, group), Cc ~ time | group + id),
+  PKNCAdose(sd_events |> filter(evid == 1) |> select(id, time, amt, group), amt ~ time | group + id),
+  intervals = data.frame(start = 0, end = Inf, aucinf.obs = TRUE)
+))
+auc_chk <- as.data.frame(sd_nca$result) |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  select(group, aucinf = PPORRES) |>
+  left_join(sd_sim |> group_by(group) |> summarise(cl = first(cl), .groups = "drop"), by = "group") |>
+  left_join(typ |> select(group, dose), by = "group") |>
+  mutate(dose_over_cl = dose / cl, pct_diff = 100 * (aucinf / dose_over_cl - 1))
+knitr::kable(auc_chk, digits = 2)
+stopifnot(max(abs(auc_chk$pct_diff)) < 2)
+```
+
+# Assumptions and deviations
+
+- **Maturation T50 and Figure S2.** Table 2 and Figure S19 give a maturation
+  T50 of 1.03 years PMA, and the model uses that value. The "Unified" curve of
+  Figure S2, digitised above, matches the Table 2 values for the decline limb
+  but has a maturation limb consistent with a T50 of about 0.89 years. Figures
+  S20 and S24 draw the same compressed maturation limb. The cause is not
+  stated; the difference matters for patients below about 2 years of PMA
+  (age factor 0.60 versus 0.71 at 1 year of PMA).
+- **Figure S19 all-data estimates.** The all-data row of Figure S19 shows
+  estimates that differ slightly from Table 2 (CL about 4.97 L/h, tobramycin
+  factor about 1.155). The model uses Table 2, the paper's reported final
+  estimates.
+- **Published code over printed equations.** Where the Supplemental Code and
+  the printed equations differ, the model follows the code, which is what was
+  fitted:
+  - The reference age is PMA 35 + 40/52 years (Table 2 prints 35).
+  - Below 60 weeks, PMA in years is PMA/52. From 60 weeks it is postnatal age
+    plus 40/52, regardless of gestational age.
+  - The male Al-Sallami factor uses 13.2 years (the Methods equation prints
+    13.4).
+  - The age-typical serum creatinine depends on PMA only. The Methods
+    describe it as age- and sex-specific, but the code has no sex term. The
+    code's constants, including the base-10 logarithm of PMA, are used as
+    written.
+  - The age-decline Hill exponent is printed as -2.34, and the code builds it
+    as `-EXP(THETA(7))`. The model writes the decline as
+    `1 - pma^2.34 / (pma^2.34 + 66.1^2.34)`, which is algebraically identical.
+- **Fat-free mass input.** The source dataset supplied precomputed BMI and
+  Janmahasatian FFM columns. The model recomputes both from `WT`, `HT` and
+  `SEXF` with the Methods equation, then applies the Al-Sallami factor as the
+  code does.
+- **IIV covariance.** The control stream estimates an `OMEGA BLOCK(2)` on CL
+  and Vc, but Table 2 reports only the two variances (as %CV). The covariance
+  is set to zero. The %CV values are converted with omega^2 = log(1 + CV^2).
+- **Below-LOQ handling.** The source fitted below-LOQ concentrations with the
+  M3 likelihood (LLOQ 0.4 mg/L in the code). That affects estimation only and
+  is not part of the simulation model.
+- **Virtual cohort and doses.** The paper does not report doses or
+  per-age-group covariate distributions beyond Table 1. The regimens and
+  covariate distributions used here are illustrative choices by the
+  maintainers.
