@@ -7898,6 +7898,8 @@ navbar:
         href: articles/Kim_2018_tacrolimus.html
       - text: "Tacrolimus (Kirubakaran 2022)"
         href: articles/Kirubakaran_2022_tacrolimus.html
+      - text: "Tacrolimus (Komenkul 2026)"
+        href: articles/Komenkul_2026_tacrolimus.html
       - text: "Tacrolimus (Koomen 2023)"
         href: articles/Koomen_2023_tacrolimus.html
       - text: "Tacrolimus (Liu 2022)"
@@ -10712,6 +10714,7 @@ articles:
   - articles/Komatsu_2015_digoxin
   - articles/Komatsu_2016_penicillinG
   - articles/Komatsu_2026_cefazolin
+  - articles/Komenkul_2026_tacrolimus
   - articles/Kong_2020_vonoprazan_pbpk
   - articles/Kong_2025_microdose_cocktail_esrd
   - articles/Kong_2025_piperacillin_tazobactam
