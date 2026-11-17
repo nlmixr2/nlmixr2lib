@@ -8284,6 +8284,8 @@ navbar:
         href: articles/Sun_2026_tilmicosin.html
       - text: "Tilmicosin pkpd plasma (Sun 2026)"
         href: articles/Sun_2026_tilmicosin.html
+      - text: "Timolol (Li 2026)"
+        href: articles/Li_2026_timolol.html
       - text: "Tipifarnib (PerezRuixo 2006)"
         href: articles/PerezRuixo_2006_tipifarnib.html
       - text: "Tiropramide (Jeong 2020)"
@@ -10904,6 +10906,7 @@ articles:
   - articles/Li_2026_epcoritamab
   - articles/Li_2026_etranacogene
   - articles/Li_2026_levonorgestrel
+  - articles/Li_2026_timolol
   - articles/Liang_2023_polymyxinB
   - articles/Liang_2024_lenalidomide
   - articles/Liang_2024_osimertinib

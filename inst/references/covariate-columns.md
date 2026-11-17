@@ -19832,6 +19832,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Chandasana_2024b_abacavir.R` (study-specific relative bioavailability on the abacavir depot, applied jointly with `FORM_SOLUTION` so that the ARROW Part 2 tablet gets 1.62 and the ARROW Part 2 oral solution gets 1.75, both relative to the all-other-studies reference of 1; encoded on the log scale as `exp(e_arrow_tab_fdepot * STUDY_ARROW_PART2 * (1 - FORM_SOLUTION) + e_arrow_sol_fdepot * STUDY_ARROW_PART2 * FORM_SOLUTION)`).
 - **Notes:** The source model included this term because abacavir exposure observed in ARROW PK Substudy Part 2 was substantially higher than in the other pooled studies despite similar doses and formulations (Chandasana 2024 "ABC Pediatric PopPK Model"), i.e. it absorbs an unexplained between-study bioavailability shift rather than a mechanistic covariate effect. The effect is formulation-specific within the substudy, so it is always paired with a formulation indicator. Sibling of the other `STUDY_<id>` members; scoped specific because the reference category is the paper's own pooled-study set.
 
+### STUDY_CTR20202613 (**canonical for the timolol maleate gel phase Ib/II infantile-hemangioma study CTR20202613 indicator**)
+- **Description:** 1 = record from CTR20202613, the multicentre phase Ib/II dose-escalation study of topical 0.5% timolol maleate gel in infants with proliferative superficial infantile hemangioma; 0 = record from any other study in the pooled analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the phase I healthy-adult study CTR20191402, relative bioavailability fixed at 1).
+- **Source aliases:**
+  - `F1Ib/II` -- Li 2026 Table 1 row name for the study-specific relative bioavailability; the dataset column name is not published.
+- **Example models:** `Li_2026_timolol.R` (multiplies the relative bioavailability of the gel by 252 relative to healthy adults; no effect on CL/F, Vc/F or ka).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. In the source the study, the population (infants with infantile hemangioma vs healthy adults) and the application site (lesion vs intact skin) coincide, so the indicator is effectively an infant-patient switch; it is named for the trial because the source estimated one relative bioavailability per trial. Sibling of `STUDY_CTR20221992`; both are 0 for healthy adults.
+
+### STUDY_CTR20221992 (**canonical for the timolol maleate gel phase III infantile-hemangioma study CTR20221992 indicator**)
+- **Description:** 1 = record from CTR20221992, the multicentre, randomized, double-blind, placebo-controlled phase III study of topical 0.5% timolol maleate gel three times daily for 24 weeks in infants with proliferative superficial infantile hemangioma; 0 = record from any other study in the pooled analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the phase I healthy-adult study CTR20191402, relative bioavailability fixed at 1).
+- **Source aliases:**
+  - `F1III` -- Li 2026 Table 1 row name for the study-specific relative bioavailability; the dataset column name is not published.
+- **Example models:** `Li_2026_timolol.R` (multiplies the relative bioavailability of the gel by 202 relative to healthy adults; no effect on CL/F, Vc/F or ka).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Sibling of `STUDY_CTR20202613`; see that entry for why the indicator is also an infant-patient switch. This is the study of the approved three-times-daily regimen, so it is the natural infant stratum for a new simulation.
+
 ### STUDY_PHASE3 (**canonical for pooled phase III study-stratum indicator**)
 - **Description:** 1 = record from a phase III study in the pooled analysis, 0 = record from an earlier-phase (phase I / II) study. Per-record (study-fixed) binary indicator. Use when a source paper pools early-phase and phase III data and stratifies a model component by development phase as a whole rather than by individual trial -- the usual reason being that the phase III trials share a sparse (trough-only) sampling design while the early-phase studies contributed the rich profiles, so the two strata need different residual-error models.
 - **Units:** (binary)

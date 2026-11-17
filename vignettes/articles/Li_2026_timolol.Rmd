@@ -1,0 +1,440 @@
+---
+title: "Timolol maleate gel (Li 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Timolol maleate gel (Li 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Li_2026_timolol"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Li_2026_timolol"))$description`
+* Article: <https://doi.org/10.1002/psp4.70334> (open access; supplement
+  `psp4.70334-sup-0001`)
+
+Li et al. (2026) pooled three Chinese registration trials of a 0.5% timolol
+maleate gel developed for superficial infantile hemangioma: a phase I study in
+healthy adults (CTR20191402), a phase Ib/II dose-escalation study in infants
+(CTR20202613), and a randomized, placebo-controlled phase III study in infants
+(CTR20221992). The final model is one-compartment with first-order absorption
+and elimination, allometric body-weight scaling with fixed exponents (0.75 on
+CL/F, 1 on Vc/F, reference 60 kg), a relative bioavailability fixed to 1 in
+adults and estimated separately for each infant trial (252 and 202), IIV on CL/F
+only, and a proportional residual error. No covariate was retained beyond
+weight.
+
+# Population
+
+The analysis included 810 concentrations from 138 subjects: 478 from 24 healthy
+adults (16 male, 8 female; mean age 28.1 years, mean weight 60.4 kg; Table S3)
+and 332 from 114 infants with proliferative superficial infantile hemangioma
+(44 male, 70 female; mean age 2.98 months, range 1.2-6.0; mean weight 6.24 kg,
+range 3.50-9.57; Table S4). Infants were enrolled in the phase Ib/II study
+(n = 35) and the phase III study (n = 79). The median baseline lesion area was
+1.5 cm^2 (range 0.04-15.5). Concentrations were measured in dried blood spots
+by LC-MS/MS (LLOQ 0.0500 ng/mL).
+
+The gel was applied at a nominal 3 mg of gel per cm^2 per application. Adults
+covered 10% of body surface area (about 4.8 g of gel per application); infants
+treated the lesion. Dosing regimens (Table S1):
+
+| Study | Regimen |
+|---|---|
+| Phase I, adults | Single dose on day 1; then twice (cohort 1, days 5-10), four times or six times daily (cohorts 2 and 3, days 10-15); single dose on day 11 or day 16 |
+| Phase Ib/II, infants | Single dose on day 1; then twice, three times or five times daily for 6 days; single dose on day 11 |
+| Phase III, infants | Three times daily for 24 weeks |
+
+The same information is available programmatically via
+`readModelDb("Li_2026_timolol")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lka` | log(0.01) 1/h | Table 1, 'Ka, h-1' = 0.01 (RSE 4.3%) |
+| `lcl` | log(3030 x 10^3) L/h | Table 1, 'CL/F, x10^3 L/h' = 3030 (RSE 39.4%) |
+| `lvc` | log(22,100 x 10^3) L | Table 1, 'Vc/F, x10^3 L' = 22,100 (RSE 21.3%) |
+| `e_wt_cl` | 0.75 (fixed) | Table 1, 'WT on CL/F' = 0.75 FIX; footnote CL = CLTV x (WT/60)^0.75 |
+| `e_wt_vc` | 1 (fixed) | Table 1, 'WT on Vc/F' = 1 FIX; footnote Vc = Vc,TV x (WT/60) |
+| `lfdepot` | log(1) (fixed) | Table 1 footnote: F1 in healthy adults fixed to 1 |
+| `e_study_ctr20202613_fdepot` | 252 | Table 1, 'F1Ib/II' = 252 (RSE 29.4%) |
+| `e_study_ctr20221992_fdepot` | 202 | Table 1, 'F1III' = 202 (RSE 27.9%) |
+| `etalcl` | 1.396^2 = 1.949 | Table 1, 'omega (CL), %' = 139.6 (RSE 6.7%); see Assumptions |
+| `propSd` | 0.49 | Table 1, 'sigma (Prop), %' = 49.0 (RSE 6.0%) |
+| One compartment, first-order absorption and elimination | n/a | Results, Model Development |
+| Allometric scaling, reference weight 60 kg | n/a | Methods; Table 1 footnote |
+| `Cc = 1000 * central / vc` | n/a | mg/L to ng/mL; concentrations in ng/mL throughout the paper |
+
+# Virtual cohort
+
+The original data are not public. The cohorts below follow the Table S1
+schedules with covariates drawn to match Tables S3 and S4. Each dose is the
+nominal amount of gel: 4,800 mg per adult application, and 3 mg/cm^2 times the
+lesion area per infant application. Lesion areas are drawn from a log-normal
+distribution with the Table S4 median (1.5 cm^2) and a spread chosen to
+reproduce its mean (3.24 cm^2), truncated to the observed range.
+
+```{r cohort}
+set.seed(2026)
+rxode2::rxSetSeed(2026)
+
+rtrunc_norm <- function(n, mean, sd, lo, hi) {
+  pmin(pmax(rnorm(n, mean, sd), lo), hi)
+}
+
+# One subject-level covariate table per arm; IDs are offset so that arms can be
+# stacked without colliding.
+make_subjects <- function(n, arm, population, id_offset) {
+  is_adult <- population == "adult"
+  tibble(
+    id = id_offset + seq_len(n),
+    arm = arm,
+    WT = if (is_adult) {
+      rtrunc_norm(n, 60.4, 8.38, 49.4, 76.2)
+    } else {
+      rtrunc_norm(n, 6.24, 1.10, 3.50, 9.57)
+    },
+    BHS = if (is_adult) {
+      NA_real_
+    } else {
+      pmin(pmax(rlnorm(n, log(1.5), 1.24), 0.04), 15.5)
+    },
+    amt_app = if (is_adult) 4800 else 3 * BHS,
+    STUDY_CTR20202613 = as.integer(population == "phase Ib/II"),
+    STUDY_CTR20221992 = as.integer(population == "phase III")
+  )
+}
+
+# Dose times for the phase I and phase Ib/II design: a single dose at time 0,
+# a multiple-dose block of 6 days, and a final single dose.
+schedule_times <- function(per_day, block_start_h, last_dose_h) {
+  block <- seq(block_start_h, last_dose_h - 1e-6, by = 24 / per_day)
+  c(0, block, last_dose_h)
+}
+
+build_events <- function(subjects, dose_times, obs_times) {
+  doses <- tidyr::crossing(subjects, time = dose_times) |>
+    mutate(evid = 1L, cmt = "depot", amt = amt_app)
+  obs <- tidyr::crossing(subjects, time = obs_times) |>
+    mutate(evid = 0L, cmt = "central", amt = 0)
+  bind_rows(doses, obs) |>
+    arrange(id, time, desc(evid)) |>
+    select(-amt_app, -BHS)
+}
+
+n_arm <- 100L
+
+arms <- list(
+  list(arm = "Adults, twice daily", pop = "adult", per_day = 2, start = 96, last = 240),
+  list(arm = "Adults, four times daily", pop = "adult", per_day = 4, start = 216, last = 360),
+  list(arm = "Adults, six times daily", pop = "adult", per_day = 6, start = 216, last = 360),
+  list(arm = "Infants phase Ib/II, twice daily", pop = "phase Ib/II", per_day = 2, start = 96, last = 240),
+  list(arm = "Infants phase Ib/II, three times daily", pop = "phase Ib/II", per_day = 3, start = 96, last = 240),
+  list(arm = "Infants phase Ib/II, five times daily", pop = "phase Ib/II", per_day = 5, start = 96, last = 240)
+)
+
+events_short <- bind_rows(lapply(seq_along(arms), function(i) {
+  a <- arms[[i]]
+  subj <- make_subjects(n_arm, a$arm, a$pop, id_offset = (i - 1L) * n_arm)
+  dose_times <- schedule_times(a$per_day, a$start, a$last)
+  # Observing at every dose time as well puts a sample on each NCA interval
+  # boundary (the five-times-daily interval does not fall on the 2-h grid).
+  build_events(
+    subj,
+    dose_times = dose_times,
+    obs_times = sort(unique(c(seq(0, a$last + 240, by = 2), dose_times)))
+  )
+}))
+
+# Phase III: three times daily for 24 weeks, a dense grid over one steady-state
+# dosing interval at week 12 and a daily grid otherwise.
+subj_p3 <- make_subjects(200L, "Infants phase III, three times daily", "phase III",
+  id_offset = length(arms) * n_arm
+)
+week12 <- 12 * 7 * 24
+events_p3 <- build_events(
+  subj_p3,
+  dose_times = seq(0, 24 * 7 * 24 - 8, by = 8),
+  obs_times = sort(unique(c(seq(0, 24 * 7 * 24, by = 24), seq(week12, week12 + 8, by = 0.25))))
+)
+
+events <- bind_rows(events_short, events_p3)
+stopifnot(!anyDuplicated(events[events$evid == 1L, c("id", "time")]))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Li_2026_timolol")
+# The default LSODA step budget is occasionally exhausted between sparse
+# observations; a larger budget costs nothing when it is not needed.
+sim <- rxode2::rxSolve(mod, events = events, keep = c("arm", "WT"), maxsteps = 1e6) |>
+  as.data.frame()
+
+mod_typical <- rxode2::zeroRe(mod)
+```
+
+# Replicate Figure 2 (visual predictive check)
+
+The solid lines are the simulated medians and the shaded bands the simulated
+5th-95th percentiles. The points are the observed medians of Figure 2, read by
+the maintainers from the published plot by eye (approximate to the plot
+resolution). The infant panels use the nominal dose described above; see the
+next section for why they sit below the published data.
+
+```{r fig2-digitised}
+fig2_obs <- tribble(
+  ~arm, ~time, ~Cc,
+  "Adults, twice daily", 130, 0.035,
+  "Adults, twice daily", 180, 0.10,
+  "Adults, twice daily", 222, 0.20,
+  "Adults, twice daily", 300, 0.14,
+  "Adults, four times daily", 250, 0.03,
+  "Adults, four times daily", 300, 0.10,
+  "Adults, four times daily", 365, 0.30,
+  "Adults, four times daily", 450, 0.15,
+  "Adults, four times daily", 590, 0.03,
+  "Adults, six times daily", 260, 0.05,
+  "Adults, six times daily", 340, 0.55,
+  "Adults, six times daily", 385, 0.45,
+  "Adults, six times daily", 500, 0.12,
+  "Adults, six times daily", 590, 0.03,
+  "Infants phase Ib/II (all regimens)", 240, 2.0,
+  "Infants phase Ib/II (all regimens)", 250, 2.3,
+  "Infants phase Ib/II (all regimens)", 265, 1.3,
+  "Infants phase Ib/II (all regimens)", 289, 0.95,
+  "Infants phase Ib/II (all regimens)", 312, 0.65,
+  "Infants phase III, three times daily", 2000, 4.0,
+  "Infants phase III, three times daily", 4000, 4.3
+)
+```
+
+```{r fig2, fig.width = 8, fig.height = 9}
+vpc <- sim |>
+  mutate(panel = ifelse(grepl("phase Ib/II", arm), "Infants phase Ib/II (all regimens)", arm)) |>
+  filter(
+    (grepl("Adults, twice", panel) & time >= 100 & time <= 320) |
+      (grepl("Adults, (four|six)", panel) & time >= 230 & time <= 600) |
+      (grepl("Ib/II", panel) & time >= 240 & time <= 312) |
+      (grepl("phase III", panel) & time >= 1000 & time %% 24 == 0)
+  ) |>
+  group_by(panel, time) |>
+  summarise(
+    p05 = quantile(Cc, 0.05),
+    p50 = median(Cc),
+    p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+
+panel_levels <- c(
+  "Adults, twice daily", "Adults, four times daily", "Adults, six times daily",
+  "Infants phase Ib/II (all regimens)", "Infants phase III, three times daily"
+)
+vpc$panel <- factor(vpc$panel, levels = panel_levels)
+fig2_panels <- fig2_obs |>
+  rename(panel = arm) |>
+  mutate(panel = factor(panel, levels = panel_levels))
+
+ggplot(vpc, aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.25) +
+  geom_line(colour = "firebrick") +
+  geom_point(data = fig2_panels, aes(time, Cc), shape = 1, size = 2) +
+  scale_y_log10() +
+  facet_wrap(~panel, scales = "free", ncol = 2) +
+  labs(
+    x = "Time (h)", y = "Timolol concentration (ng/mL)",
+    caption = "Replicates Figure 2 of Li 2026. Points: observed medians read from the figure."
+  ) +
+  theme_bw()
+```
+
+```{r fig2-check}
+# Adult panels: the simulated median at each digitised time, against the
+# digitised observed median. Relative bioavailability is fixed to 1 in adults,
+# so this tests CL/F, Vc/F, ka and the dose-unit reading together.
+# Each digitised time is matched to the nearest point of the 2-h grid.
+sim_median_grid <- sim |>
+  filter(grepl("^Adults", arm)) |>
+  group_by(arm, time) |>
+  summarise(sim_median = median(Cc), .groups = "drop")
+adult_cmp <- fig2_obs |>
+  filter(grepl("^Adults", arm)) |>
+  mutate(time_grid = 2 * round(time / 2)) |>
+  left_join(sim_median_grid, by = c("arm", "time_grid" = "time")) |>
+  select(-time_grid) |>
+  mutate(ratio = sim_median / Cc)
+stopifnot(!anyNA(adult_cmp$sim_median))
+
+adult_cmp |>
+  rename(
+    "Arm" = arm, "Time (h)" = time, "Figure 2 median (ng/mL)" = Cc,
+    "Simulated median (ng/mL)" = sim_median, "Simulated / observed" = ratio
+  ) |>
+  knitr::kable(digits = 3)
+
+# Structural check on the centre of the comparison. A misread x10^3 on CL/F or
+# a dose in mg of timolol rather than mg of gel moves every ratio by a factor
+# of 200 to 1000; reading error on a log-scale figure is well under 2-fold.
+stopifnot(
+  abs(log(median(adult_cmp$ratio))) < log(2),
+  quantile(abs(log(adult_cmp$ratio)), 0.9) < log(3)
+)
+```
+
+The adult panels agree to within the reading error of the figure: the median
+ratio of simulated to observed is
+`r signif(median(adult_cmp$ratio), 2)`.
+
+# Infant exposure at the nominal dose
+
+For a dose of 1 mg of gel three times daily, the typical-value steady-state
+average concentration is `F * D / (tau * CL)`. With the phase III relative
+bioavailability and the median infant weight this can be checked against the
+solve directly; both sides use the same parameters, so the agreement is
+numerical.
+
+```{r infant-typical}
+p <- rxode2::rxode(mod)$theta
+cl_inf <- exp(p[["lcl"]]) * (6.2 / 60)^0.75
+cavg_per_mg <- 1000 * p[["e_study_ctr20221992_fdepot"]] * 1 / (8 * cl_inf)
+
+ev_check <- et(amt = 1, ii = 8, addl = 600, cmt = "depot") |>
+  et(c(seq(0, 3984, by = 24), seq(4000, 4008, by = 0.05)), cmt = "central")
+chk <- rxode2::rxSolve(mod_typical, ev_check,
+  params = c(WT = 6.2, STUDY_CTR20202613 = 0, STUDY_CTR20221992 = 1),
+  maxsteps = 1e6
+) |> as.data.frame()
+cavg_solve <- mean(chk$Cc[chk$time >= 4000])
+stopifnot(abs(cavg_solve / cavg_per_mg - 1) < 0.01)
+
+implied_mg_gel <- 4.62 / cavg_per_mg
+```
+
+The typical phase III infant reaches `r signif(cavg_per_mg, 3)` ng/mL per mg
+of gel per application at steady state. The paper's median empirical-Bayes
+Cmax,ss of 4.62 ng/mL (Results) therefore corresponds to about
+`r round(implied_mg_gel)` mg of gel per application, whereas 3 mg/cm^2 over the
+median 1.5 cm^2 lesion is 4.5 mg and over a 3 cm^2 lesion is the 9 mg the
+paper quotes. With the nominal dose, the model predicts infant concentrations
+one to two orders of magnitude below the published infant data (Figure 2D and
+2E above, and the comparison below), while it reproduces the adult data.
+
+The ratio of infant to adult concentration does not depend on the dose units,
+so the mismatch is not a units problem of the packaged model: the dose amounts
+the authors recorded for infants are evidently larger than the nominal
+3 mg/cm^2 times lesion area (for example, the gel may have been applied beyond
+the lesion margin), and the paper does not report them. Users simulating
+infants should treat the relative bioavailabilities as tied to the authors'
+infant dose records and expect the nominal-dose predictions here to be low.
+
+# PKNCA validation
+
+Steady-state NCA over one 8-hour dosing interval at week 12 for the phase III
+arm, and over the last multiple-dose interval for the other arms.
+
+```{r pknca}
+last_block_dose <- function(per_day, last) last - 24 / per_day
+intervals_tbl <- bind_rows(lapply(arms, function(a) {
+  tibble(arm = a$arm, start = last_block_dose(a$per_day, a$last), end = a$last)
+})) |>
+  bind_rows(tibble(arm = "Infants phase III, three times daily", start = week12, end = week12 + 8)) |>
+  mutate(cmax = TRUE, cmin = TRUE, cav = TRUE, auclast = TRUE)
+
+conc_df <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, arm, time, Cc)
+dose_df <- events |>
+  filter(evid == 1L) |>
+  select(id, arm, time, amt)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | arm + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals_tbl))
+
+nca_res$result |>
+  filter(PPTESTCD %in% c("cmax", "cmin", "cav")) |>
+  group_by(arm, PPTESTCD) |>
+  summarise(median = signif(median(PPORRES), 3), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  rename("Arm" = arm, "Cmax,ss (ng/mL)" = cmax, "Cmin,ss (ng/mL)" = cmin, "Cavg,ss (ng/mL)" = cav) |>
+  knitr::kable(caption = "Median simulated steady-state exposure per arm (nominal doses).")
+```
+
+```{r nca-compare}
+published <- tribble(
+  ~arm, ~cmax,
+  "Infants phase III, three times daily", 4.62
+)
+p3_res <- nca_res
+p3_res$result <- nca_res$result |>
+  filter(arm == "Infants phase III, three times daily", PPTESTCD == "cmax")
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = p3_res,
+  reference = published,
+  by = "arm",
+  units = c(cmax = "ng/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated (nominal dose) vs published median Cmax,ss. * differs by >20%.")
+
+p3_shortfall <- 4.62 / median(p3_res$result$PPORRES)
+```
+
+The starred phase III row is the infant dose discrepancy described in the
+previous section, not a transcription error: the parameters reproduce the adult
+data. The published median is `r round(p3_shortfall)` times the simulated one,
+in line with the ratio of the implied application amount
+(`r round(implied_mg_gel)` mg) to the nominal amount on the median lesion
+(4.5 mg), which is `r round(implied_mg_gel / 4.5)`.
+
+# Assumptions and deviations
+
+* **Dose units and the x10^3 scaling of CL/F and Vc/F.** Table 1 lists
+  'CL/F, x10^3 L/h' = 3030 and 'Vc/F, x10^3 L' = 22,100. The packaged model
+  reads these as 3.03 x 10^6 L/h and 2.21 x 10^7 L, with doses in mg of gel
+  applied (not mg of timolol). The paper expresses every dose as an amount of
+  gel (4.8 g per adult application, about 9 mg per infant application), and
+  this reading reproduces the adult data, where the relative bioavailability is
+  fixed to 1: the adult panels of Figure 2 agree within the reading error, and
+  a single 4,800 mg adult application gives a typical peak near 0.013 ng/mL,
+  consistent with the 83% of post-first-dose adult samples that were below the
+  limit of quantification (Table S2). Reading the parameters as 3030 L/h with
+  doses in mg of timolol maleate overpredicts the adult data several-fold.
+* **IIV scale.** Table 1 reports 'omega (CL), %' = 139.6 with RSE 6.7% and a
+  symmetric 95% CI (121-158). The packaged model reads this as the log-scale
+  standard deviation (omega = 1.396, variance 1.949) rather than a CV
+  (variance log(1 + 1.396^2) = 1.082). An RSE of 6.7% from 138 subjects is
+  below what a variance estimate can achieve (about sqrt(2/138) = 12%), and the
+  phase III VPC band in Figure 2E (5th-95th percentile spanning roughly 0.35 to
+  50 ng/mL around a median near 4 ng/mL) matches a total log-scale SD near 1.5,
+  which the SD reading gives and the CV reading does not.
+* **Infant doses.** The paper does not report the infant dose amounts used in
+  the analysis dataset. This vignette uses 3 mg/cm^2 times a lesion area drawn
+  to match Table S4. As discussed above, this underpredicts the infant data by
+  one to two orders of magnitude; the parameters were not adjusted.
+* **Body weight** is held at its baseline value. Infants in the phase III study
+  gain weight over 24 weeks; the paper does not say whether weight was
+  time-varying in the analysis.
+* **Matrix.** Concentrations were measured in dried blood spots; the paper
+  calls them plasma concentrations. The model output is the concentration the
+  model was fitted to.
+* **Dosing schedule.** The phase I and phase Ib/II schedules are laid out from
+  the sampling days in Table S1 (multiple-dose block on days 5-10 or 10-15,
+  final single dose on day 11 or 16). The adult arms simulate 100 subjects each
+  rather than 8; the phase III arm simulates 200 rather than 79.
+* **Observed medians in Figure 2** were read by eye from the published figure.
+* **Errata.** No erratum or correction was found in Europe PMC as of
+  2026-11-17.
