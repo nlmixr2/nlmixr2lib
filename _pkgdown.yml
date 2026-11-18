@@ -1302,6 +1302,8 @@ navbar:
         href: articles/Kosinsky_2022_camostat.html
       - text: "Camptothecin (Schmidt 2020)"
         href: articles/Schmidt_2020_camptothecin.html
+      - text: "Canagliflozin (Goeyvaerts 2026)"
+        href: articles/Goeyvaerts_2026_canagliflozin.html
       - text: "Canagliflozin mbma (Yao 2023)"
         href: articles/Yao_2023_sglt2_inhibitors.html
       - text: "Canakinumab (AitOudhia 2012)"
@@ -10216,6 +10218,7 @@ articles:
   - articles/Glatard_2025_octreotide
   - articles/Glazar_2025_glioma_tgi
   - articles/Goel_2016_Sonidegib
+  - articles/Goeyvaerts_2026_canagliflozin
   - articles/Goggin_2004_emfilermin
   - articles/Golubovic_2019_sirolimus
   - articles/Golzaryan_2025_lu177psmaIT_pbpk
