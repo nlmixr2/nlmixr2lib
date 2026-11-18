@@ -1,0 +1,475 @@
+---
+title: "Tacrolimus in membranous nephropathy (Cao 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tacrolimus in membranous nephropathy (Cao 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+mod <- readModelDb("Cao_2026_tacrolimus")
+ui <- rxode2::rxode(mod)
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article: <https://doi.org/10.2147/DDDT.S623781>
+
+Cao and colleagues built a one-compartment population PK model for oral
+tacrolimus from routine trough concentrations in 31 Chinese adults with
+membranous nephropathy (MN). Only body weight was retained, through fixed
+allometric exponents; none of the laboratory values or the 18 screened
+concomitant medications affected clearance. The model was then used in a
+Monte Carlo simulation to recommend weight-banded starting doses for adults
+(50-100 kg) and, by extrapolation, for children (10-40 kg), aiming for a
+trough of 4-10 ng/mL.
+
+# Population
+
+The analysis used 31 adults with MN treated at a single centre (Affiliated
+Hospital of Xuzhou Medical University, Jiangsu, China) between May 2022 and
+September 2025. Baseline characteristics (Table 1 of the source) were: 22 men
+/ 9 women; age mean 49.35 years (SD 11.07), range 30-67; body weight mean
+69.65 kg (SD 11.50), median 67.50, range 52-103. Serum albumin averaged
+34.05 g/L (range 19.0-44.5), consistent with the hypoalbuminaemia of
+nephrotic-range MN. Concomitant medication counts are Table 2.
+
+Every observation is a trough sampled about 30 minutes before the next dose,
+assayed by enzyme-multiplied immunoassay (Emit 2000; routine range
+2-30 ng/mL). The paper reports no administered doses.
+
+```{r population}
+str(ui$population, max.level = 1)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL/F at 70 kg) | 9.54 L/h | Table 3 and Equation (6); bootstrap median 9.66 [1.13, 13.75] |
+| `lvc` (V/F at 70 kg) | 76.3 L | Table 3 and Equation (7); bootstrap median 78.9 [3.0, 214.0] |
+| `lka` (absorption rate constant) | 4.48 1/h, **fixed** | Table 3 "4.48 (fixed)"; Methods, Modeling, citing references 33-34 |
+| `e_wt_cl` (allometric exponent, CL/F) | 0.75, **fixed** | Methods, Equation (3), citing Anderson & Holford 2008; Equation (6) |
+| `e_wt_vc` (allometric exponent, V/F) | 1, **fixed** | Methods, Equation (3); Equation (7) |
+| `etalcl` (IIV on CL/F) | 0.172 as an **SD** (variance 0.172^2) | Table 3 (omega_CL/F); bootstrap median 0.094 [0.003, 0.381]; scale settled below |
+| `addSd` (additive residual error) | 2.504 ng/mL | Table 3 (sigma_1, "additive error"); bootstrap median 2.601 [0.010, 3.508] |
+| Structural model: 1-compartment, first-order oral absorption | n/a | Methods, Modeling (CL/F, V/F and Ka) |
+| IIV form `B_i = TV(B) * exp(eta_i)` | n/a | Methods, Equation (1) |
+| Residual form `E_i = G_i + eps_1` | n/a | Methods, Equation (2) |
+| Reference weight 70 kg | n/a | Methods, Equation (3) |
+| Simulation regimen: total daily dose in two equal doses; target 4-10 ng/mL | n/a | Methods, Simulation |
+
+The seven equations are images in the article; the values above were read
+from the typeset equations and cross-checked against Table 3.
+
+# Simulation design
+
+The paper's Methods state that every simulated daily dose (0.01-0.14 mg/kg/day)
+"was administered in two equal daily doses", and that trough samples were
+taken about 30 minutes before the next dose. The simulation below therefore
+gives half the daily dose every 12 h for 14 days and reads the concentration
+11.5 h after the 28th dose. The longest elimination half-life in the
+simulated weight range (100 kg) is about 6 h, so this is steady state.
+
+Because the model has a single random effect (`etalcl`), the between-subject
+distribution is represented by a deterministic lattice of 200 equally spaced
+normal quantiles rather than by random draws. Every number in this vignette is
+therefore identical on every machine. Because the model is linear, each weight
+is solved once at 1 mg/kg/day and the troughs are scaled by the dose.
+
+```{r cohort}
+n_lattice <- 200L
+omega_sd <- 0.172 # Table 3, read as a standard deviation (see Check 2)
+z_grid <- stats::qnorm((seq_len(n_lattice) - 0.5) / n_lattice)
+
+weights <- tibble::tribble(
+  ~WT, ~group,
+  50, "Adult", 60, "Adult", 70, "Adult", 80, "Adult", 90, "Adult", 100, "Adult",
+  10, "Child", 20, "Child", 30, "Child", 40, "Child"
+)
+doses <- c(0.01, 0.02, 0.04, 0.06, 0.08, 0.10, 0.12, 0.14) # mg/kg/day
+
+make_events <- function(wt, w_index, eta) {
+  ids <- (w_index - 1L) * n_lattice + seq_len(n_lattice)
+  dose <- tibble::tibble(
+    id = ids, time = 0, evid = 1L, amt = wt * 1 / 2, ii = 12, addl = 27L,
+    cmt = "depot"
+  )
+  # Observation on the ODE state `central`; Cc is returned alongside it.
+  obs <- tibble::tibble(
+    id = ids, time = 27 * 12 + 11.5, evid = 0L, amt = NA_real_, ii = 0,
+    addl = 0L, cmt = "central"
+  )
+  dplyr::bind_rows(dose, obs) |>
+    dplyr::mutate(WT = wt, etalcl = eta[match(id, ids)])
+}
+
+events <- dplyr::bind_rows(lapply(seq_len(nrow(weights)), function(i) {
+  make_events(weights$WT[i], i, z_grid * omega_sd)
+})) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+stopifnot(dplyr::n_distinct(events$id) == nrow(weights) * n_lattice)
+```
+
+```{r simulate}
+solve_troughs <- function(ev) {
+  rxode2::rxSolve(mod, events = ev, omega = NA, returnType = "data.frame") |>
+    dplyr::filter(time == 27 * 12 + 11.5) |>
+    dplyr::select(id, WT, cl, trough_per_mgkgday = Cc)
+}
+tr1 <- suppressWarnings(solve_troughs(events))
+stopifnot(nrow(tr1) == nrow(weights) * n_lattice, !anyNA(tr1$trough_per_mgkgday))
+
+troughs <- tidyr::expand_grid(tr1, dose = doses) |>
+  dplyr::mutate(Cc = trough_per_mgkgday * dose) |>
+  dplyr::left_join(weights, by = "WT")
+```
+
+# Check 1 -- target attainment (Figures 5 and 7)
+
+The paper's primary endpoint is the probability that the steady-state trough
+lies in the 4-10 ng/mL target window, plotted against weight for each dose in
+Figure 5 (adults) and Figure 7 (children). The published probabilities below
+were read from those figures by the maintainers (precision about 1 percentage
+point); the paper simulated 1,000 patients per scenario, so its own Monte Carlo
+error is about 1.5 percentage points.
+
+```{r published-pta}
+# Rows: dose (mg/kg/day); columns: body weight (kg). Read from Figures 5 and 7.
+fig5 <- rbind(
+  `0.01` = c(0, 0, 0, 0, 0, 0),
+  `0.02` = c(7.5, 11.5, 16.0, 20.5, 25.5, 29.0),
+  `0.04` = c(72.5, 79.0, 83.0, 83.5, 84.3, 83.7),
+  `0.06` = c(76.0, 70.5, 65.0, 60.0, 53.3, 48.7),
+  `0.08` = c(51.2, 41.4, 33.3, 26.0, 20.7, 16.5),
+  `0.1` = c(26.5, 19.0, 13.5, 10.6, 8.1, 6.2),
+  `0.12` = c(13.2, 9.4, 6.2, 5.0, 3.3, 2.0),
+  `0.14` = c(7.3, 5.3, 3.0, 1.6, 0.6, 0.5)
+)
+colnames(fig5) <- c(50, 60, 70, 80, 90, 100)
+fig7 <- rbind(
+  `0.01` = c(0, 0, 0, 0),
+  `0.02` = c(0, 0, 1.5, 3.6),
+  `0.04` = c(5.8, 25.2, 45.0, 61.0),
+  `0.06` = c(27.3, 62.1, 77.5, 78.7),
+  `0.08` = c(49.7, 75.3, 70.8, 61.5),
+  `0.1` = c(64.6, 68.0, 53.2, 38.7),
+  `0.12` = c(69.8, 54.4, 35.3, 21.3),
+  `0.14` = c(66.2, 42.4, 21.4, 12.3)
+)
+colnames(fig7) <- c(10, 20, 30, 40)
+
+to_long <- function(m) {
+  as.data.frame(as.table(m), stringsAsFactors = FALSE) |>
+    dplyr::transmute(
+      dose = as.numeric(Var1), WT = as.numeric(Var2), pta_published = Freq
+    )
+}
+published <- dplyr::bind_rows(to_long(fig5), to_long(fig7))
+```
+
+```{r pta}
+in_window <- function(c) mean(c >= 4 & c <= 10)
+
+pta <- troughs |>
+  dplyr::group_by(group, WT, dose) |>
+  dplyr::summarise(pta_model = 100 * in_window(Cc), .groups = "drop") |>
+  dplyr::left_join(published, by = c("WT", "dose")) |>
+  dplyr::mutate(diff = pta_model - pta_published)
+
+pta |>
+  dplyr::select(group, dose, WT, pta_model) |>
+  dplyr::mutate(dose = sprintf("%.2f", dose)) |>
+  tidyr::pivot_wider(names_from = WT, values_from = pta_model) |>
+  dplyr::rename("Population" = group, "Dose (mg/kg/day)" = dose) |>
+  knitr::kable(digits = 1, caption = "Model probability (%) of a 4-10 ng/mL trough, by body weight (kg).")
+
+knitr::kable(
+  tibble::tibble(
+    Statistic = c("Median abs. difference", "90th percentile abs. difference", "Max abs. difference"),
+    `Percentage points` = c(
+      stats::median(abs(pta$diff)),
+      stats::quantile(abs(pta$diff), 0.9),
+      max(abs(pta$diff))
+    )
+  ),
+  digits = 1,
+  caption = "Model vs published target attainment over all 80 dose-weight cells of Figures 5 and 7."
+)
+```
+
+```{r pta-gate}
+stopifnot(
+  # Structural: a mis-transcribed CL/F, V/F, exponent or regimen moves the
+  # curves by tens of points.
+  stats::median(abs(pta$diff)) < 1.5,
+  # Envelope: published values are digitised and carry Monte Carlo error.
+  stats::quantile(abs(pta$diff), 0.9) < 3.5,
+  max(abs(pta$diff)) < 5
+)
+```
+
+```{r figure-5-7, fig.cap = "Replicates Figures 5 (adults) and 7 (children) of Cao 2026: probability of a 4-10 ng/mL steady-state trough. Lines: model; points: values read from the published figures."}
+pta |>
+  ggplot(aes(WT, pta_model, colour = factor(dose))) +
+  geom_line() +
+  geom_point(aes(y = pta_published), shape = 1) +
+  facet_wrap(~group, scales = "free_x") +
+  labs(
+    x = "Body weight (kg)", y = "Probability of 4-10 ng/mL (%)",
+    colour = "Dose (mg/kg/day)"
+  )
+```
+
+The model reproduces both published figures across all 80 cells, including
+the crossing points the paper used to define its weight bands (Table 4).
+
+# Check 2 -- which quantities are on which scale
+
+Table 3 prints `omega_CL/F = 0.172` and `sigma_1 = 2.504` without saying
+whether either is a standard deviation or a variance, nor whether the
+published Monte Carlo included residual error. The four combinations make
+very different predictions, so they are compared against the published
+attainment curves. Residual error is added analytically (additive normal
+error), keeping the comparison deterministic.
+
+```{r scale-check}
+add_sd <- ui$theta[["addSd"]]
+
+pta_variant <- function(omega_scale, resid_sd) {
+  troughs |>
+    dplyr::mutate(Cc_v = Cc * exp(z_grid[((id - 1L) %% n_lattice) + 1L] * (omega_scale - omega_sd))) |>
+    dplyr::group_by(WT, dose) |>
+    dplyr::summarise(
+      pta = if (resid_sd == 0) {
+        100 * in_window(Cc_v)
+      } else {
+        100 * mean(stats::pnorm((10 - Cc_v) / resid_sd) - stats::pnorm((4 - Cc_v) / resid_sd))
+      },
+      .groups = "drop"
+    ) |>
+    dplyr::left_join(published, by = c("WT", "dose")) |>
+    dplyr::summarise(
+      median_abs = stats::median(abs(pta - pta_published)),
+      max_abs = max(abs(pta - pta_published))
+    )
+}
+
+variants <- tibble::tribble(
+  ~reading, ~omega_scale, ~resid_sd,
+  "omega SD, no residual error (packaged)", 0.172, 0,
+  "omega SD, residual SD 2.504 included", 0.172, 2.504,
+  "omega variance (SD 0.415), no residual error", sqrt(0.172), 0,
+  "omega variance, residual variance (SD 1.58) included", sqrt(0.172), sqrt(2.504)
+)
+variants <- dplyr::bind_cols(
+  variants,
+  dplyr::bind_rows(Map(pta_variant, variants$omega_scale, variants$resid_sd))
+)
+
+variants |>
+  dplyr::select(reading, median_abs, max_abs) |>
+  dplyr::rename(
+    "Reading" = reading, "Median abs. difference (points)" = median_abs,
+    "Max abs. difference (points)" = max_abs
+  ) |>
+  knitr::kable(digits = 1, caption = "Agreement with Figures 5 and 7 under each reading of Table 3.")
+
+stopifnot(
+  variants$median_abs[1] < 2,
+  all(variants$median_abs[-1] > 3 * variants$median_abs[1])
+)
+```
+
+Only the packaged reading -- `omega_CL/F` a standard deviation and the
+published probabilities computed on individual predictions without residual
+error -- reproduces the paper. Reading the omega as a variance flattens every
+curve (no dose reaches the published 75-85% peaks), and adding a 2.5 ng/mL
+residual SD to a 4-10 ng/mL window pulls the peaks down by about 20 points.
+Note that this check settles the omega scale only: the residual error is
+absent from the paper's simulations, so the figures say nothing about whether
+`sigma_1` is an SD or a variance. It is packaged as an SD, the convention the
+same group's Table 3 format follows (compare `Wang_2019b_tacrolimus`).
+
+# Check 3 -- Table 4 recommended doses
+
+```{r table4}
+table4 <- tibble::tribble(
+  ~group, ~band, ~lo, ~hi, ~dose, ~published,
+  "Adult", "[50-53)", 50, 53, 0.06, "74.5-76.0",
+  "Adult", "[53-100]", 53, 100, 0.04, "74.5-84.3",
+  "Child", "[10-12.7)", 10, 12.7, 0.12, "66.0-69.8",
+  "Child", "[12.7-16.4)", 12.7, 16.4, 0.10, "66.0-68.0",
+  "Child", "[16.4-26.7)", 16.4, 26.7, 0.08, "68.0-76.5",
+  "Child", "[26.7-40]", 26.7, 40, 0.06, "74.0-78.7"
+)
+
+# The simulated weights that fall inside each band.
+t4 <- table4 |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    pta_at_sim_wts = {
+      p <- pta$pta_model[pta$group == group & pta$dose == dose & pta$WT >= lo & pta$WT <= hi]
+      if (length(p) == 0) "none simulated" else paste(sprintf("%.1f", p), collapse = ", ")
+    }
+  ) |>
+  dplyr::ungroup()
+
+t4 |>
+  dplyr::select(group, band, dose, published, pta_at_sim_wts) |>
+  dplyr::rename(
+    "Population" = group, "Weight band (kg)" = band, "Dose (mg/kg/day)" = dose,
+    "Published attainment (%)" = published,
+    "Model at simulated weights in band (%)" = pta_at_sim_wts
+  ) |>
+  knitr::kable(caption = "Table 4 recommended doses. The band edges are interpolated crossing points, so only the simulated weights inside each band can be compared.")
+```
+
+The 12.7-16.4 kg band contains no simulated weight; its published range comes
+from interpolating the curves at the band edges.
+
+```{r figure-4, fig.cap = "Replicates Figure 4 of Cao 2026: simulated steady-state troughs in adults by dose and weight. Dashed lines: 4-10 ng/mL target."}
+troughs |>
+  dplyr::filter(group == "Adult") |>
+  ggplot(aes(factor(dose), Cc)) +
+  geom_boxplot(outlier.size = 0.4) +
+  geom_hline(yintercept = c(4, 10), linetype = "dashed", colour = "red") +
+  facet_wrap(~ paste(WT, "kg"), ncol = 3) +
+  labs(x = "Daily dose (mg/kg/day, in two doses)", y = "Trough (ng/mL)")
+```
+
+# PKNCA validation
+
+The paper reports no non-compartmental analysis, so `ncaComparisonTable()` is
+not used. Instead PKNCA is run on a single 5 mg oral dose to a 70 kg lattice
+and compared with the model's closed-form solution. Both sides use the same
+parameters, so the difference is purely numerical and the bound is tight.
+
+```{r pknca}
+nca_times <- sort(unique(c(seq(0, 3, by = 0.02), seq(3.25, 72, by = 0.25))))
+nca_events <- dplyr::bind_rows(
+  tibble::tibble(
+    id = seq_len(n_lattice), time = 0, evid = 1L, amt = 5, cmt = "depot"
+  ),
+  tidyr::expand_grid(id = seq_len(n_lattice), time = nca_times) |>
+    dplyr::mutate(evid = 0L, amt = NA_real_, cmt = "central")
+) |>
+  dplyr::mutate(WT = 70, etalcl = z_grid[id] * omega_sd, treatment = "5 mg single oral dose") |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+nca_sim <- suppressWarnings(rxode2::rxSolve(
+  mod,
+  events = nca_events, omega = NA, returnType = "data.frame",
+  keep = "treatment"
+))
+
+sim_nca <- nca_sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, time)
+
+dose_df <- nca_events |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::select(id, time, amt, treatment)
+
+nca_data <- PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id),
+  intervals = data.frame(
+    start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+    aucinf.obs = TRUE, half.life = TRUE
+  )
+)
+nca_res <- PKNCA::pk.nca(nca_data)
+summary(nca_res)
+```
+
+```{r pknca-vs-closed-form}
+closed_form <- nca_sim |>
+  dplyr::distinct(id, cl, vc, ka) |>
+  dplyr::mutate(
+    kel = cl / vc,
+    aucinf_cf = 1000 * 5 / cl,
+    halflife_cf = log(2) / kel,
+    tmax_cf = log(ka / kel) / (ka - kel)
+  )
+
+cmp <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("aucinf.obs", "half.life", "tmax")) |>
+  dplyr::select(id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::mutate(id = as.integer(as.character(id))) |>
+  dplyr::left_join(closed_form, by = "id") |>
+  dplyr::mutate(
+    auc_pct = 100 * (aucinf.obs - aucinf_cf) / aucinf_cf,
+    hl_pct = 100 * (half.life - halflife_cf) / halflife_cf,
+    tmax_pct = 100 * (tmax - tmax_cf) / tmax_cf
+  )
+
+knitr::kable(
+  tibble::tibble(
+    Parameter = c("AUC0-inf vs Dose/(CL/F)", "Half-life vs ln(2)/kel", "Tmax vs ln(ka/kel)/(ka-kel)"),
+    `Median % difference` = c(stats::median(cmp$auc_pct), stats::median(cmp$hl_pct), stats::median(cmp$tmax_pct)),
+    `Max abs % difference` = c(max(abs(cmp$auc_pct)), max(abs(cmp$hl_pct)), max(abs(cmp$tmax_pct)))
+  ),
+  digits = 3,
+  caption = "PKNCA on the simulation vs the model's own closed-form solution."
+)
+
+# Same parameters on both sides: differences are numerical only. Tmax is
+# resolved to half a 0.02 h grid step (~1.5% of the ~0.7 h Tmax).
+stopifnot(
+  max(abs(cmp$auc_pct)) < 1,
+  max(abs(cmp$hl_pct)) < 1,
+  max(abs(cmp$tmax_pct)) < 3
+)
+```
+
+# Assumptions and deviations
+
+- **`omega_CL/F = 0.172` is read as a standard deviation** (about 17% CV;
+  see Check 2): the variance reading cannot reproduce Figures 5 and 7. The
+  bootstrap median of 0.094 is well below the estimate (bias -45%), so this
+  IIV is poorly determined in 31 patients; the packaged value is the final
+  estimate, not the bootstrap median.
+- **`sigma_1 = 2.504` is read as an additive SD in ng/mL.** The paper's
+  dosing simulations do not use it, so nothing in the paper tests this
+  reading; it follows the convention of the same group's earlier tacrolimus
+  model (`Wang_2019b_tacrolimus`).
+- **Published attainment excludes residual error.** The paper does not say
+  so, but only the individual-prediction calculation reproduces its figures
+  (Check 2).
+- **Trough time.** Troughs are read 11.5 h after a dose, matching the
+  "about 30 minutes before the next dose" sampling described in Methods.
+- **Children are an extrapolation.** No child contributed data. The paper's
+  paediatric doses (Figures 6-7, Table 4) apply the adult model with the
+  fixed allometric exponents down to 10 kg, without a maturation function.
+  The packaged model inherits that limitation.
+- **Matrix.** The paper names the assay (Emit 2000 Tacrolimus, a whole-blood
+  immunoassay) but not the matrix; the central compartment is recorded as
+  whole blood on that basis.
+- **Fixed `ka`.** 4.48 1/h is carried from the source's references 33-34
+  (Wang 2020, two Xenobiotica tacrolimus analyses), as also used by
+  `Wang_2019b_tacrolimus`.
+- **Figure values were digitised by eye** from Figures 5 and 7 to about
+  1 percentage point. The gate is set on the median and 90th percentile of the
+  absolute differences, not on individual cells.
