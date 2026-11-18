@@ -27893,3 +27893,25 @@ is the experimental condition itself, held constant for the whole solve.
   - `Sukarnjanaset et al. [11]` -- Kong 2025 Table 1 and Eq. 23.
 - **Example models:** `Kong_2025b_piperacillin_tazobactam.R` (sets the piperacillin unbound fraction to 1, held constant, instead of 0.645, so measured unbound equals total concentration in that study).
 - **Notes:** Auto-approved member of the `STUDY_<id>` family. Kong 2025 treats the study as an outlier in protein binding (Discussion, limitations). Sibling of `STUDY_SIME2014` in the same model.
+
+### STUDY_TOUTAIN1984 (**canonical for the Toutain 1984 IV dexamethasone horse study indicator**)
+- **Description:** 1 = the horse belongs to the Toutain et al. 1984 crossover study of IV dexamethasone alcohol and IV dexamethasone isonicotinate (0.05 mg/kg) in Saddlebred horses (Am J Vet Res 1984;45:1750-1756; conducted 1981); 0 = any other study of the pooled analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (all other pooled studies).
+- **Source aliases:**
+  - `STUDY_ID = 1` -- Yu 2026 (J Pharmacokinet Pharmacodyn) NONMEM PD control stream and Table 1 ('1-1981').
+- **Example models:** `Yu_2026_dexamethasone_horse_poppkpd.R` (switches on the stress-induced cortisol surge Rmax,stress / tau for 0.34 h after each dose; the PD control stream applies the surge only in this study).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. Sibling of `STUDY_EKSTRAND2015` in the same model. Simulations of a new population normally set it to 0; set it to 1 to reproduce a handling-stress surge at dosing.
+
+### STUDY_EKSTRAND2015 (**canonical for the Ekstrand 2015 IM dexamethasone isonicotinate horse study indicator**)
+- **Description:** 1 = the horse belongs to the Ekstrand et al. 2015 study of IM dexamethasone isonicotinate (0.0237 mg/kg DEX-equivalent) in Standardbred geldings (J Vet Pharmacol Ther 2015; conducted 2010); 0 = any other study of the pooled analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (all other pooled studies).
+- **Source aliases:**
+  - `STUDY_ID = 2` -- Yu 2026 (J Pharmacokinet Pharmacodyn) NONMEM PD control stream and Table 1 ('2-2010').
+- **Example models:** `Yu_2026_dexamethasone_horse_poppkpd.R` (selects the study-specific cortisol mesor Rm1 = 93 ng/mL instead of Rm2 = 47 ng/mL).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family. Sibling of `STUDY_TOUTAIN1984` in the same model.
