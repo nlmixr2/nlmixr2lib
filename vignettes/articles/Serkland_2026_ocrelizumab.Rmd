@@ -1,0 +1,425 @@
+---
+title: "Ocrelizumab (Serkland 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ocrelizumab (Serkland 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r readModelDb("Serkland_2026_ocrelizumab")()$meta$reference`
+* Description: `r readModelDb("Serkland_2026_ocrelizumab")()$meta$description`
+* Article: <https://doi.org/10.1007/s40262-026-01692-8>
+
+Serkland 2026 developed a population PK-PD model of ocrelizumab, an anti-CD20
+monoclonal antibody, from serum concentrations and CD19+ lymphocyte counts
+collected over 24 weeks after each of the first two 600 mg infusions in
+newly diagnosed relapsing-remitting multiple sclerosis (RRMS). The model was
+fitted in Monolix 2023R1 (SAEM).
+
+Three candidate structures are reported (Supplementary Table S1). The final
+model, packaged here, is "model 1 without TMDD" (Table 2):
+
+```
+dC/dt = -Q/V1 * C + Q/V1 * P - CL/V1 * C          (Eq. 5 without the CLT0 * B term)
+dP/dt =  Q/V2 * C - Q/V2 * P                       (Eq. 6)
+dB/dt =  B0 * kout - kdeg * C * B - kout * B,  B(0) = B0   (Eq. 12)
+```
+
+`C` and `P` are ocrelizumab concentrations (mg/L) in the central and
+peripheral compartments and `B` is the CD19+ lymphocyte count per mm^3. The
+drug removes B cells through a second-order term `kdeg * C * B` (the paper's
+"irreversible binding approximation"), and production is fixed so that the
+untreated count stays at the individual's observed baseline `B0`. Ocrelizumab
+elimination does not depend on the B-cell count in the final model.
+
+In the packaged model the paper's `kdeg` is named `kirrev` (log-scale
+`lkirrev`), because `kdeg` in nlmixr2lib denotes a first-order degradation
+rate constant (1/time), while this parameter is a second-order constant in
+L/(day*mg). The observed baseline count is supplied as the covariate
+`BLBCELL`.
+
+# Population
+
+Eleven treatment-naive adults with newly diagnosed RRMS (8 female, 3 male;
+mean age 36 years, range 22-50; mean weight 73 kg, range 61-96; mean height
+169 cm) from the ROS-MS sub-study of the Norwegian OVERLORD-MS trial received
+ocrelizumab 600 mg as an approximately 4-hour IV infusion every 6 months
+(Serkland 2026 Methods and Table 1). Samples were taken before and within
+30 min after the infusion and at 2, 4, 8, 12 and 24 weeks after each of the
+first two infusions (114 serum samples). Mean baseline CD19+ count was
+297 per mm^3 (range 127-726). Ocrelizumab was measured by LC-MS/MS (LLOQ
+4 ug/mL); CD19+ counts reported as zero were treated as censored below
+7 per mm^3. Age, weight, BMI and sex were screened as covariates and none was
+retained.
+
+The same information is available programmatically via
+`readModelDb("Serkland_2026_ocrelizumab")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lvc` (V1) | log(2.58 L) | Table 2 |
+| `lvp` (V2) | log(1.95 L) | Table 2 |
+| `lcl` (CL) | log(0.153 L/day) | Table 2 |
+| `lq` (Q) | log(0.220 L/day) | Table 2 |
+| `lkout` (kout) | fixed(log(0.02 1/day)) | Table 2 (fixed to the Pan et al. estimate; Results) |
+| `lkirrev` (paper `kdeg`) | log(1.70 L/(day*mg)) | Table 2 |
+| `etalvc` | 0.138^2 = 0.019044 | Table 2 (omega V1, SD) |
+| `etalvp` | 0.109^2 = 0.011881 | Table 2 (omega V2, SD) |
+| `etalcl` | 0.234^2 = 0.054756 | Table 2 (omega CL, SD) |
+| `addSd` | 0.545 mg/L | Table 2 (sigma add,OCR) |
+| `propSd` | 0.0662 | Table 2 (sigma prop,OCR) |
+| `addSd_Bcell` | 2.28 per mm^3 | Table 2 (sigma add,CD19+) |
+| Combined error form `(a + b*C) * e` | `combined1()` | Supplementary Material 2, Eq. 1 |
+| `d/dt(central)`, `d/dt(peripheral1)` | n/a | Eq. 5-6 with the target-mediated term removed (Sect. 2.4.1, Results) |
+| `d/dt(bcell)`, `kin = BLBCELL * kout`, `bcell(0) = BLBCELL` | n/a | Eq. 10 and Eq. 12 |
+| Log-normal IIV on V1, V2, CL only | n/a | Results ("random effects on CL, V1, and V2"); Supplementary Material 2 |
+
+# Typical-patient profile over two infusions
+
+A typical patient with the cohort-mean baseline count (297 per mm^3) receives
+600 mg over 4 hours on day 0 and day 182 (the 6-monthly schedule).
+
+```{r typical}
+mod <- readModelDb("Serkland_2026_ocrelizumab")
+mod_typical <- rxode2::zeroRe(mod)
+
+inf_rate <- 600 / (4 / 24) # mg/day for a 4-h infusion
+dose_times <- c(0, 182)
+
+make_events <- function(ids, obs_times, dose_times, blbcell) {
+  dose_rows <- tidyr::expand_grid(id = ids, time = dose_times) |>
+    dplyr::mutate(amt = 600, rate = inf_rate, evid = 1L, cmt = "central", dvid = NA_integer_)
+  obs_rows <- tidyr::expand_grid(id = ids, time = obs_times) |>
+    dplyr::mutate(amt = 0, rate = 0, evid = 0L, cmt = "central", dvid = 1L)
+  dplyr::bind_rows(dose_rows, obs_rows) |>
+    dplyr::left_join(tibble::tibble(id = ids, BLBCELL = blbcell), by = "id") |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    as.data.frame()
+}
+
+obs_grid <- sort(unique(c(seq(0, 364, by = 1), 4 / 24, 182 + 4 / 24)))
+ev_typ <- make_events(1L, obs_grid, dose_times, blbcell = 297)
+sim_typ <- rxode2::rxSolve(mod_typical, events = ev_typ, returnType = "data.frame")
+```
+
+```{r typical-plot, fig.height = 6}
+sim_typ |>
+  dplyr::select(time, Cc, Bcell) |>
+  tidyr::pivot_longer(-time, names_to = "output", values_to = "value") |>
+  dplyr::mutate(output = dplyr::recode(output,
+    Cc = "Ocrelizumab (mg/L)", Bcell = "CD19+ lymphocytes (per mm^3)"
+  )) |>
+  ggplot(aes(time, pmax(value, 1e-3))) +
+  geom_line() +
+  facet_wrap(~output, ncol = 1, scales = "free_y") +
+  scale_y_log10() +
+  labs(
+    x = "Time (days)", y = NULL,
+    title = "Typical patient, 600 mg every 182 days, baseline 297 per mm^3",
+    caption = "Compare with the observed profiles in Figure 1 of Serkland 2026."
+  )
+```
+
+Figure 1A of the paper shows observed peak concentrations after each infusion
+of roughly 170-300 mg/L and troughs just before the second infusion of roughly
+0.7-2 mg/L. The typical prediction lies inside the peak range and somewhat
+below the observed troughs, in line with the paper's own individual fit
+(Figure 2A, which predicts about 0.06 mg/L at day 187 against an observation
+of about 0.8 mg/L).
+
+```{r typical-check}
+typ_cmax1 <- max(sim_typ$Cc[sim_typ$time <= 10])
+typ_cmax2 <- max(sim_typ$Cc[sim_typ$time >= 182 & sim_typ$time <= 192])
+typ_trough <- sim_typ$Cc[sim_typ$time == 182]
+knitr::kable(
+  tibble::tibble(
+    Quantity = c("Peak after infusion 1 (mg/L)", "Peak after infusion 2 (mg/L)", "Concentration at day 182 (mg/L)"),
+    Typical = signif(c(typ_cmax1, typ_cmax2, typ_trough), 3),
+    `Figure 1A (observed)` = c("about 170-300", "about 170-300", "about 0.7-2")
+  ),
+  caption = "Typical-patient predictions against the observed ranges read from Figure 1A."
+)
+# Peak = dose / V1 less the small amount cleared during the 4-h infusion; a
+# wrong V1, dose unit or infusion rate moves this far outside the observed
+# 170-300 mg/L band.
+stopifnot(typ_cmax1 > 170, typ_cmax1 < 300)
+```
+
+# Virtual cohort and stochastic profiles
+
+A virtual cohort of 200 patients is simulated over the same two-infusion
+schedule. Individual baseline CD19+ counts are drawn from a log-normal
+distribution (median 270 per mm^3, geometric SD 0.45) truncated to the
+observed range 127-726 per mm^3, which reproduces the Table 1 mean of about
+297 per mm^3.
+
+```{r cohort}
+set.seed(2026)
+rxode2::rxSetSeed(2026)
+n_sub <- 200
+draw_b0 <- function(n) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- exp(rnorm(n, log(270), 0.45))
+    out <- c(out, x[x >= 127 & x <= 726])
+  }
+  out[seq_len(n)]
+}
+b0_cohort <- draw_b0(n_sub)
+obs_grid_vpc <- sort(unique(c(
+  0, 4 / 24, 1, 3, 7, 14, 21, 28, 42, 56, 84, 112, 140, 168, 182,
+  182 + c(4 / 24, 1, 3, 7, 14, 21, 28, 42, 56, 84, 112, 140, 168, 182)
+)))
+ev_vpc <- make_events(seq_len(n_sub), obs_grid_vpc, dose_times, blbcell = b0_cohort)
+stopifnot(!anyDuplicated(ev_vpc[, c("id", "time", "evid")]))
+sim_vpc <- rxode2::rxSolve(mod, events = ev_vpc, returnType = "data.frame")
+mean(b0_cohort)
+```
+
+```{r vpc-plot, fig.height = 6}
+sim_vpc |>
+  dplyr::select(id, time, Cc, Bcell) |>
+  tidyr::pivot_longer(c(Cc, Bcell), names_to = "output", values_to = "value") |>
+  dplyr::group_by(output, time) |>
+  dplyr::summarise(
+    Q05 = quantile(value, 0.05), Q50 = median(value), Q95 = quantile(value, 0.95),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(output = dplyr::recode(output,
+    Cc = "Ocrelizumab (mg/L)", Bcell = "CD19+ lymphocytes (per mm^3)"
+  )) |>
+  ggplot(aes(time, pmax(Q50, 1e-3))) +
+  geom_ribbon(aes(ymin = pmax(Q05, 1e-3), ymax = pmax(Q95, 1e-3)), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~output, ncol = 1, scales = "free_y") +
+  scale_y_log10() +
+  labs(
+    x = "Time (days)", y = NULL,
+    title = "Simulated 5th, 50th and 95th percentiles (200 virtual patients)",
+    caption = "Model-predicted profiles; compare with Figure 1 and Supplementary Figure 1 of Serkland 2026."
+  )
+```
+
+The simulated CD19+ counts drop to near zero within days of each infusion and
+start to recover towards the end of the 6-month interval in the patients with
+the fastest ocrelizumab clearance, as observed in three of the eleven patients
+(Figure 1B).
+
+# Replicate Figure 3: time to B-cell repopulation for patient ID1
+
+Figure 3A of the paper simulates 1000 virtual patients from the population
+distribution with the baseline count of patient ID1 (`B0 = 144` per mm^3),
+after a single 600 mg infusion, and reads off the day on which each
+trajectory exceeds the repopulation threshold of 10 per mm^3. The 5th, 50th
+and 95th percentile trajectories in Figure 3A cross the threshold at about
+168, 236 and 345 days (digitised by the maintainers from the crossings of the
+dashed and solid blue lines with the red threshold line). Here 200 virtual
+patients are simulated.
+
+```{r fig3}
+rxode2::rxSetSeed(144)
+n_fig3 <- 200
+ev_fig3 <- make_events(seq_len(n_fig3), seq(0, 500, by = 1), 0, blbcell = 144)
+sim_fig3 <- rxode2::rxSolve(mod, events = ev_fig3, returnType = "data.frame")
+
+cross_day <- sim_fig3 |>
+  dplyr::filter(time > 20) |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(day = dplyr::first(time[Bcell >= 10]), .groups = "drop")
+
+fig3_published <- c(Q05 = 168, Q50 = 236, Q95 = 345)
+fig3_sim <- quantile(cross_day$day, c(0.05, 0.5, 0.95), na.rm = TRUE)
+fig3_tab <- tibble::tibble(
+  Percentile = c("5th", "50th", "95th"),
+  Simulated = as.numeric(fig3_sim),
+  `Figure 3A (digitised)` = as.numeric(fig3_published),
+  `Difference (%)` = round(100 * (as.numeric(fig3_sim) / fig3_published - 1), 1)
+)
+knitr::kable(fig3_tab, caption = "Day on which CD19+ count first exceeds 10 per mm^3 after one 600 mg infusion, B0 = 144 per mm^3.")
+
+# Centre and robust tails only, never the extremes. The crossing day is driven
+# by the CL draw. With 3000 patients the model's own percentiles are about 155,
+# 224 and 321 days (two seeds), i.e. 5-8% below the digitised values. With 200
+# patients the SE of the median is about 2% and of the 5th/95th percentiles
+# about 5%, so the bounds sit 3 SE beyond the model-true offset. A misread kout
+# or kdeg, or a dose-unit error, moves the median by far more than 12%.
+stopifnot(
+  sum(is.na(cross_day$day)) <= 0.1 * n_fig3,
+  abs(fig3_tab$`Difference (%)`[2]) < 12,
+  all(abs(fig3_tab$`Difference (%)`[c(1, 3)]) < 25)
+)
+```
+
+```{r fig3-plot}
+sim_fig3 |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    Q05 = quantile(Bcell, 0.05), Q50 = median(Bcell), Q95 = quantile(Bcell, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time)) +
+  geom_line(data = sim_fig3, aes(y = Bcell, group = id), colour = "grey75", linewidth = 0.2) +
+  geom_line(aes(y = Q50), colour = "blue") +
+  geom_line(aes(y = Q05), colour = "blue", linetype = "dashed") +
+  geom_line(aes(y = Q95), colour = "blue", linetype = "dashed") +
+  geom_hline(yintercept = 10, colour = "red", linetype = "dotdash") +
+  labs(
+    x = "Day", y = "CD19+ lymphocyte count (per mm^3)",
+    title = "Figure 3A: 200 virtual patients, B0 = 144 per mm^3",
+    caption = "Replicates Figure 3A of Serkland 2026."
+  )
+```
+
+```{r fig3-hist}
+ggplot(cross_day, aes(day)) +
+  geom_histogram(binwidth = 7, fill = "skyblue", colour = "black") +
+  labs(
+    x = "Day of first CD19+ count above 10 per mm^3", y = "Patients",
+    caption = "Replicates Figure 3C of Serkland 2026 (unweighted prior)."
+  )
+```
+
+The crossing-day distribution agrees with Figure 3A and 3C, with the packaged
+model crossing the threshold about 5-8% (10-25 days) earlier than the
+digitised percentiles. The paper sampled 1000 patients and may also have
+included residual or estimation uncertainty in its draws, which this
+simulation does not. The vertical scale of
+Figure 3A does not: its trajectories start from, and return towards, about
+255 per mm^3 rather than the stated `B0 = 144` (see Assumptions and
+deviations).
+
+# PKNCA validation
+
+Non-compartmental parameters for ocrelizumab are computed over each 182-day
+dosing interval of the virtual cohort. The paper reports no NCA values, so the
+check is internal: the terminal half-life PKNCA estimates from the simulated
+profiles is compared with each patient's own analytic terminal (beta)
+half-life from the two-compartment micro-constants. CD19+ counts are a
+turnover response, not a drug concentration, and are not analysed by NCA.
+
+```{r pknca}
+sim_nca <- sim_vpc |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(treatment = "600 mg every 182 days") |>
+  dplyr::select(id, time, Cc, treatment)
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+dose_df <- ev_vpc |>
+  dplyr::filter(evid == 1) |>
+  dplyr::mutate(treatment = "600 mg every 182 days") |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = c(0, 182), end = c(182, 364),
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_df <- as.data.frame(nca_res)
+
+nca_df |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "half.life")) |>
+  dplyr::group_by(start, PPTESTCD) |>
+  dplyr::summarise(
+    median = signif(median(PPORRES, na.rm = TRUE), 3),
+    p05 = signif(quantile(PPORRES, 0.05, na.rm = TRUE), 3),
+    p95 = signif(quantile(PPORRES, 0.95, na.rm = TRUE), 3),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(Interval = ifelse(start == 0, "Infusion 1 (day 0-182)", "Infusion 2 (day 182-364)")) |>
+  dplyr::select(Interval, PPTESTCD, median, p05, p95) |>
+  dplyr::rename("NCA parameter" = PPTESTCD, Median = median, "5th pct" = p05, "95th pct" = p95) |>
+  knitr::kable(caption = "Simulated NCA of ocrelizumab (units: mg/L, day, day*mg/L).")
+```
+
+```{r halflife-check}
+indiv <- sim_vpc |>
+  dplyr::distinct(id, cl, vc, vp, q) |>
+  dplyr::mutate(
+    k10 = cl / vc, k12 = q / vc, k21 = q / vp,
+    beta = 0.5 * ((k10 + k12 + k21) - sqrt((k10 + k12 + k21)^2 - 4 * k10 * k21)),
+    thalf_analytic = log(2) / beta
+  )
+hl <- nca_df |>
+  dplyr::filter(PPTESTCD == "half.life", start == 0) |>
+  dplyr::select(id, thalf_nca = PPORRES) |>
+  dplyr::inner_join(indiv, by = "id") |>
+  dplyr::mutate(pct_diff = 100 * (thalf_nca / thalf_analytic - 1))
+summary(hl$thalf_analytic)
+summary(hl$pct_diff)
+# Both sides use the same drawn parameters; the gap is PKNCA's choice of
+# terminal points on a weekly-to-monthly grid, so a robust envelope applies.
+stopifnot(
+  abs(median(hl$pct_diff, na.rm = TRUE)) < 5,
+  quantile(abs(hl$pct_diff), 0.9, na.rm = TRUE) < 15
+)
+```
+
+The typical terminal half-life is
+`r signif(log(2) / (0.5 * ((0.153/2.58 + 0.220/2.58 + 0.220/1.95) - sqrt((0.153/2.58 + 0.220/2.58 + 0.220/1.95)^2 - 4 * (0.153/2.58) * (0.220/1.95)))), 3)`
+days, consistent with the roughly linear log-concentration decline over
+days 50-180 in Figure 1A.
+
+# Assumptions and deviations
+
+- **Final model only.** Supplementary Table S1 also reports "model 1 with
+  TMDD" (target-mediated elimination `CLT0 * C * B` with `CLT0` and `kout`
+  fixed; unstable estimation) and "model 2" (an Emax stimulation of B-cell
+  loss, "drastically worse model fit"). Both are model-development candidates
+  and are not packaged; the paper's final model is Table 2.
+- **Parameter name.** The paper's `kdeg` (L/(day*mg)) is packaged as
+  `kirrev`, the name already used in nlmixr2lib for a second-order
+  irreversible drug-by-target loss term (`Papasouliotis_2022_evobrutinib`).
+  The value is unchanged.
+- **Equation 8 typesetting.** The printed simplified PK equation (Eq. 8)
+  shows `Q/V2 * P` as the return term of the central compartment, whereas
+  Eq. 3 and Eq. 5 show `Q/V1 * P`. Only `Q/V1 * P` conserves mass for
+  concentrations `C` and `P`; the packaged model uses the standard
+  two-compartment amount form, which is equivalent to Eq. 3/5.
+- **Baseline count.** The final model uses each patient's observed baseline
+  count without a random effect (Eq. 10). For simulation the user supplies it
+  as `BLBCELL`. The paper used the population median for two patients with a
+  missing baseline.
+- **Infusion.** Doses are simulated as 600 mg over 4 hours, the approximate
+  infusion duration stated in the Methods. The trial gave 600 mg as a single
+  infusion every 6 months; the label's split first dose (2 x 300 mg two weeks
+  apart) is not part of this data set.
+- **Censoring.** CD19+ counts reported as zero were fitted with the M3 method
+  at a quantification limit of 7 per mm^3. This is part of the estimation, not
+  of the model; simulated `Bcell` values are uncensored.
+- **Figure 3A vertical scale.** The caption states `B0 = 144` per mm^3 for
+  patient ID1, and simulating with 144 gives threshold-crossing days within
+  5-8% of Figure 3A and the histogram of Figure 3C. The plotted trajectories,
+  however, start from and recover towards about 255 per mm^3, which is not
+  possible with `B0 = 144` because the model's steady state is `B0`.
+  Simulating with `B0 = 255` matches the plateau but moves the median
+  crossing about 30 days earlier (to about 200 days, against about 236 in the
+  figure). The two cannot both hold
+  for the published model; the caption value is used here.
+- **Model code not available.** The paper states that the Monolix files and
+  R scripts are deposited at Zenodo (doi:10.5281/zenodo.17184648). That DOI
+  did not resolve when this model was packaged (2026-11-18), so the model is
+  built from the printed equations and Table 2.
+- No erratum or correction notice was found for this article as of
+  2026-11-18.
