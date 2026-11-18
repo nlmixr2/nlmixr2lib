@@ -930,6 +930,8 @@ navbar:
         href: articles/Kado_2020_benzathine_benzylpenicillin_g.html
       - text: "Benzathine benzylpenicillin g (Kado 2023)"
         href: articles/Kado_2023_benzathine_benzylpenicillin_g.html
+      - text: "Benzene (Bois 1996)"
+        href: articles/Bois_1996_benzene.html
       - text: "Benznidazole (Altcheh 2023)"
         href: articles/Altcheh_2023_benznidazole.html
       - text: "Benznidazole (Assmus 2025)"
@@ -9582,6 +9584,7 @@ articles:
   - articles/Boer_2015_cisplatin
   - articles/Bogason_2011_daunorubicin
   - articles/Boger_2018_inhaled_pbpk
+  - articles/Bois_1996_benzene
   - articles/BoivinChampeaux_2026_hepatitisB_qsp
   - articles/Bokor_2025_procalcitonin
   - articles/Bonate_2004_apomine

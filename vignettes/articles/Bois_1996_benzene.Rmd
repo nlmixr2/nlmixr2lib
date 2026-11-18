@@ -1,0 +1,348 @@
+---
+title: "Benzene population toxicokinetics (Bois 1996)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Benzene population toxicokinetics (Bois 1996)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Bois_1996_benzene"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Bois_1996_benzene"))$description`
+* Article: [Environ Health Perspect 104 Suppl 6:1405-1411 (1996)](https://doi.org/10.1289/ehp.961041405)
+
+Bois and colleagues built a Bayesian (Markov-chain Monte Carlo) population
+physiologically based toxicokinetic (PBPK) model for benzene, an environmental
+and occupational carcinogen. The body is divided into five flow-limited
+compartments -- poorly perfused tissues, well-perfused tissues, fat, bone
+marrow and liver -- with instantaneous pulmonary equilibrium between alveolar
+air, venous blood and arterial blood. Benzene is metabolized by a
+Michaelis-Menten process in the liver and bone marrow; the metabolites, plus an
+endogenous baseline formation term, are excreted to urine, where urinary phenol
+is a measured output. The model was fit to inhalation-chamber data (blood and
+exhaled-air benzene, urinary phenol) from three male volunteers.
+
+The central result is that the **fraction of benzene metabolized is essentially
+constant (median ~52%, 90% CI 47-67%) and independent of exposure up to 10 ppm**
+-- i.e. metabolism is linear over the studied range -- and that roughly
+2-40 mg/day is metabolized in the bone marrow at a continuous 1 ppm exposure.
+This vignette reproduces those headline findings from the packaged model.
+
+# Population
+
+The data are from three healthy young white male volunteers (body weights 55,
+73 and 90 kg) exposed to benzene in an inhalation chamber for 4 h at 1.7 ppm
+(5.2 ug/L) and, one month later, at 10 ppm (30 ug/L). Blood and exhaled-air
+benzene and urinary phenol were measured during exposure and over the following
+two days (Pekari et al. 1992). The 24 estimated parameters are body-weight
+*scaling coefficients* rather than direct physiologic quantities; their
+posterior population geometric means (Table 2, column `exp(mu)`) are the model's
+typical values and their population heterogeneity (column `exp(Sigma)`,
+geometric SDs) is carried as lognormal between-subject variability.
+
+The same information is available programmatically via the model's `population`
+metadata (`readModelDb("Bois_1996_benzene")()$population`).
+
+```{r population}
+readModelDb("Bois_1996_benzene")()$population[c(
+  "species", "n_subjects", "weight_range", "disease_state"
+)]
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source location;
+the structural model (five tissue ODEs, pulmonary equilibrium, Michaelis-Menten
+metabolism, endogenous phenol formation) is from the Methods and Table 1
+scaling functions. Typical values are the posterior population geometric means
+of Table 2; between-subject variances are `log(exp(Sigma))^2` from the Table 2
+population-SD column.
+
+| Element | Value (typical) | Source |
+|---|---|---|
+| Ventilation/perfusion ratio `vpr` | 1.7 | Table 2, VPR `exp(mu)` |
+| Flow coefficients `scfwp/scfpp/scff/scfbm/scfl` | 0.34 / 0.041 / 0.029 / 0.19 / 1.0 | Table 2 (per unit tissue mass) |
+| Volume coefficients `scvwp/scvf/scvbm/scvl` | 0.23 / 0.25 / 0.052 / 0.031 | Table 2 (fractions of LM; fat of WT) |
+| Blood/air partition `pba` | 9.65 | Table 2, Pba `exp(mu)` |
+| Tissue/blood partitions `pwp/ppp/pf/pbm/pl` | 1.0 / 1.7 / 19 / 7.67 / 1.8 | Table 2 |
+| Liver `Vmax` coefficient `scvmaxl` | 5.8 (`Vmax = scvmaxl*LM^0.7`) | Table 2, Vmaxl `exp(mu)` |
+| Marrow `Vmax` fraction `scvmaxbm` | 0.16 | Table 2, Vmaxbm `exp(mu)` |
+| Liver / marrow first-order rates `rkml/rkmbm` (= Vmax/Km) | 0.60 / 2.8 /min | Table 2, Kml / Kmbm `exp(mu)` |
+| Endogenous phenol formation `kf` | 0.014 mg/min | Table 2, Kf `exp(mu)` |
+| Metabolite excretion `ke` | 0.0016 /min | Table 2, Ke `exp(mu)` |
+| Urine formation `fu` | 0.0025 L/min | Table 2, Fu `exp(mu)` |
+| Phenol fraction `fp` | 0.78 | Table 2, fp `exp(mu)` |
+| Residual (log-scale SD) blood / air / urine | 0.22 / 0.17 / 0.22 | Results (CV ~24 / 19 / 24%) |
+
+**Units check (per ODE term).** Tissue concentrations `C_i` are mg/L, volumes
+`V_i` L, flows `F_i` L/min, so `F_i/V_i*(Cart - C_i/P_i)` is `(L/min)/L * mg/L =
+mg/L/min`. The metabolism term `Vmax*C/(Km + C*V)` is `(mg/min)*(mg/L)/mg =
+mg/L/min`; multiplying by `V` (L) gives the amount rate mg/min that drives the
+metabolite pool `Amet` and the cumulative `AmetL/AmetBM`. The inhaled-amount
+rate `Qalv*Cinh` is `(L/min)*(mg/L) = mg/min`. Urinary phenol
+`fp*ke*Amet/fu` is `(1/min)*mg / (L/min) = mg/L`. All terms are dimensionally
+consistent.
+
+# Simulation setup
+
+Inhalation exposure enters the model as a time-constant air concentration
+`CEXP` (mg/L) held while `t < TEXP` (min) -- not as a dose event. The model has
+three observation endpoints (venous blood benzene `Cc`, exhaled-air benzene
+`Cexh`, urinary phenol `Cphu`), so observation rows carry `dvid = 1` to return
+all endpoint columns. Body weight `WT` drives lean body mass and all organ
+volumes and flows.
+
+```{r simfun}
+bz <- readModelDb("Bois_1996_benzene")
+
+# Typical-value model (between-subject variability zeroed).
+bz_tv <- rxode2::zeroRe(bz)
+
+sim_bz <- function(mod, times, wt, cexp, texp) {
+  obs <- data.frame(
+    id = 1L, time = times, amt = NA_real_, evid = 0L,
+    cmt = NA_character_, dvid = 1L, WT = wt
+  )
+  as.data.frame(rxode2::rxSolve(
+    mod, obs,
+    params = c(CEXP = cexp, TEXP = texp),
+    atol = 1e-12, rtol = 1e-10, maxsteps = 1e6
+  ))
+}
+
+ppm_to_mgL <- 0.003 / 1 # 1 ppm benzene = 3 ug/L = 0.003 mg/L
+```
+
+# Figure replication: chamber time courses (Figures 4 and 5)
+
+Simulated venous-blood and exhaled-air benzene and urinary-phenol time courses
+for subject 1 (55 kg) during and after a 4-h exposure, as in Figures 4 and 5 of
+Bois 1996. Blood and air benzene rise during the exposure and fall rapidly once
+it ends; urinary phenol rises more slowly and returns toward its endogenous
+baseline. We show the 10 ppm exposure (Figure 4A/C, Figure 5) and the 1.7 ppm
+exposure (Figure 4B/D).
+
+```{r fig-timecourse}
+tt <- seq(0, 2880, by = 5) # 48 h, minutes
+hi <- sim_bz(bz_tv, tt, wt = 55, cexp = 10 * ppm_to_mgL, texp = 240)
+lo <- sim_bz(bz_tv, tt, wt = 55, cexp = 1.7 * ppm_to_mgL, texp = 240)
+
+bz_long <- bind_rows(
+  transform(hi, exposure = "10 ppm"),
+  transform(lo, exposure = "1.7 ppm")
+) |>
+  select(time, exposure, Blood = Cc, `Exhaled air` = Cexh, `Urine phenol` = Cphu) |>
+  pivot_longer(c("Blood", "Exhaled air", "Urine phenol"),
+    names_to = "matrix", values_to = "conc"
+  )
+
+ggplot(bz_long, aes(time / 60, conc, colour = exposure)) +
+  geom_line() +
+  facet_wrap(~matrix, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Concentration (mg/L)", colour = "Exposure") +
+  theme_bw()
+```
+
+The peak venous-blood benzene at 10 ppm occurs at the end of exposure (4 h) and
+the exhaled-air benzene tracks `Cart/Pba`, one blood/air partition below
+arterial blood -- the expected shape for an inhalation exposure.
+
+# Figure replication: exposure-metabolism linearity (Figure 7) and fraction metabolized (Figure 8)
+
+Bois 1996's central finding is that benzene metabolism is **linear** over the
+studied range: the amount metabolized scales in direct proportion to exposure,
+so the *fraction* metabolized is constant. We reproduce this by equilibrating
+the typical individual (73 kg) under continuous exposure for 3 weeks (the paper
+verified equilibrium is reached) and computing, over the final day, the amount
+metabolized in the bone marrow and the total fraction metabolized.
+
+```{r fig7-linearity}
+d3w <- 21 * 24 * 60
+grid <- seq(0, d3w, by = 60)
+ppm_levels <- c(0.001, 0.01, 0.1, 1, 10)
+
+last_day <- function(ppm) {
+  s <- sim_bz(bz_tv, grid, wt = 73, cexp = ppm * ppm_to_mgL, texp = 1e12)
+  a <- s[nrow(s), ]
+  b <- s[s$time == d3w - 1440, ]
+  data.frame(
+    ppm = ppm,
+    bm_mg_day = a$AmetBM - b$AmetBM,
+    total_mg_day = (a$AmetL + a$AmetBM) - (b$AmetL + b$AmetBM),
+    inhaled_mg_day = a$Ainh - b$Ainh
+  )
+}
+
+lin <- do.call(rbind, lapply(ppm_levels, last_day))
+lin$fraction_pct <- 100 * lin$total_mg_day / lin$inhaled_mg_day
+lin
+
+ggplot(lin, aes(ppm, bm_mg_day)) +
+  geom_line() +
+  geom_point() +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(
+    x = "Exposure concentration (ppm)",
+    y = "Bone-marrow metabolism (mg/day)"
+  ) +
+  theme_bw()
+```
+
+The log-log slope of bone-marrow metabolism versus exposure is 1 (a straight
+line through the origin on linear axes), and the fraction metabolized is
+constant across four orders of magnitude of exposure -- exactly the paper's
+Figure 7 result. At 1 ppm the bone-marrow amount is within the paper's stated
+2-40 mg/day range.
+
+A population cohort (body weight sampled lognormally, geometric mean 73 kg,
+geometric SD 1.5, plus the Table 2 between-subject variability) gives the
+distribution of the total fraction metabolized at a low exposure, reproducing
+Figure 8.
+
+```{r fig8-fraction}
+rxode2::rxSetSeed(1996)
+nsub <- 150L
+set.seed(1996)
+wt_cohort <- round(stats::rlnorm(nsub, log(73), log(1.5)), 1)
+
+# Equilibrate each subject under continuous 0.001 ppm; between-subject
+# variability is retained (full model, not zeroRe).
+coh_obs <- do.call(rbind, lapply(seq_len(nsub), function(i) {
+  data.frame(
+    id = i, time = c(d3w - 1440, d3w), amt = NA_real_, evid = 0L,
+    cmt = NA_character_, dvid = 1L, WT = wt_cohort[i]
+  )
+}))
+coh <- as.data.frame(rxode2::rxSolve(
+  bz, coh_obs,
+  params = c(CEXP = 0.001 * ppm_to_mgL, TEXP = 1e12),
+  atol = 1e-12, rtol = 1e-10, maxsteps = 1e6
+))
+
+frac <- coh |>
+  group_by(id) |>
+  summarise(
+    frac_pct = 100 * (diff(AmetL + AmetBM)) / diff(Ainh), .groups = "drop"
+  )
+
+quantile(frac$frac_pct, c(0.05, 0.5, 0.95))
+
+ggplot(frac, aes(frac_pct)) +
+  geom_histogram(bins = 25, fill = "grey70", colour = "white") +
+  labs(x = "Fraction benzene metabolized per day (%)", y = "Subjects") +
+  theme_bw()
+```
+
+# Mechanistic validation
+
+Because the model has no administered dose and its endpoints are an inhaled-air
+forcing's downstream concentrations, non-compartmental (NCA) analysis is not the
+relevant check (the paper reports no NCA parameters). The validations below
+instead target the quantitative results the paper does report.
+
+```{r validation-table}
+# 1. Fraction metabolized at 1 ppm (typical individual).
+f1 <- last_day(1)
+frac_typ <- 100 * f1$total_mg_day / f1$inhaled_mg_day
+
+# 2. Linearity: fraction identical across exposure (range over 0.001-10 ppm).
+frac_range <- diff(range(lin$fraction_pct))
+
+# 3. Baseline urinary phenol with no exposure (endogenous steady state).
+base <- sim_bz(bz_tv, c(0, 600), wt = 73, cexp = 0, texp = 0)
+phenol_base <- tail(base$Cphu, 1)
+
+val <- data.frame(
+  Quantity = c(
+    "Fraction metabolized (typical, 1 ppm)",
+    "Bone-marrow metabolism at 1 ppm",
+    "Fraction metabolized range over 0.001-10 ppm",
+    "Population 5th-95th pct fraction metabolized",
+    "Baseline urinary phenol (no exposure)"
+  ),
+  Simulated = c(
+    sprintf("%.1f%%", frac_typ),
+    sprintf("%.1f mg/day", f1$bm_mg_day),
+    sprintf("%.2f pct points", frac_range),
+    sprintf("%.0f-%.0f%%", quantile(frac$frac_pct, 0.05), quantile(frac$frac_pct, 0.95)),
+    sprintf("%.1f mg/L", phenol_base)
+  ),
+  Paper = c(
+    "~52% (90% CI 47-67%)",
+    "2-40 mg/day (geomean ~10)",
+    "0 (linear, exposure-independent)",
+    "47-67%",
+    "~6 (range 1-40)"
+  )
+)
+knitr::kable(val)
+```
+
+```{r validation-assertions}
+stopifnot(
+  # Fraction metabolized sits inside the paper's 90% CI (47-67%).
+  frac_typ > 47, frac_typ < 67,
+  # Metabolism is linear: the fraction barely moves across 4 orders of
+  # magnitude of exposure (the paper's central claim).
+  frac_range < 1,
+  # Bone-marrow metabolism at 1 ppm is within the stated 2-40 mg/day.
+  f1$bm_mg_day > 2, f1$bm_mg_day < 40,
+  # Endogenous baseline urinary phenol is within the reported 1-40 mg/L.
+  phenol_base > 1, phenol_base < 40,
+  # The population central fraction metabolized reproduces the paper's ~52%.
+  abs(median(frac$frac_pct) - 52) < 8
+)
+```
+
+# Assumptions and deviations
+
+* **Parameters are scaling coefficients, not physiologic values.** The 24
+  estimated parameters are body-weight scaling coefficients (Table 1 "scaling
+  function" column). The file encodes those scaling functions in `model()`:
+  lean body mass `LM = WT*(1 - scvf)`, organ volumes as fractions of `LM` (fat
+  as a fraction of `WT`), the poorly perfused volume by difference so organ
+  masses plus a 17%-of-LM skeleton sum to `WT`, allometric
+  `Vmax,liver = scvmaxl*LM^0.7`, and `Km = Vmax / (Vmax/Km)` using the Table 2
+  first-order-rate coefficients.
+* **Typical values are posterior population geometric means (Table 2,
+  `exp(mu)`).** Between-subject variability is carried as lognormal IIV with
+  variance `log(exp(Sigma))^2` from the Table 2 population-SD column. The
+  authors note only three young white male subjects were studied, so the
+  population spread is narrow and would widen in a broader population.
+* **Vmax and Km are weakly identified; their ratio is the meaningful
+  quantity.** Because metabolism is linear over the studied range, the paper
+  reports that only the `Vmax/Km` scaling coefficients retain meaning (the
+  first-order metabolic rate). The file parameterises the liver and bone-marrow
+  first-order rates `rkml`, `rkmbm` directly and recovers `Km = Vmax/rate`.
+* **Inhalation enters as a concentration forcing.** `CEXP` is the time-constant
+  chamber air concentration while `t < TEXP`; there is no dosing compartment.
+  The vignette overrides `CEXP`/`TEXP` per scenario. The pulmonary exchange is
+  the instantaneous-equilibrium (steady-state lung) form
+  `Cart = (Qc*Cven + Qalv*Cinh)/(Qc + Qalv/Pba)`.
+* **Phenol submodel lumps one metabolite pool.** The liver and bone-marrow
+  metabolite pools are combined into a single pool `Amet` (both are excreted at
+  the common rate `Ke`); this is algebraically equivalent to two separate pools
+  for the urinary-phenol output. The pool starts at its endogenous steady state
+  `Kf/Ke`. With the posterior means the baseline urinary phenol is ~4.4 mg/L,
+  slightly below the ~6 mg/L central value the prior was built from but well
+  within the reported 1-40 mg/L range.
+* **The three subjects' individual parameter columns (Table 2) are not packaged
+  separately.** The file ships the population typical values plus IIV; the
+  per-subject posteriors are reproducible by fixing `WT` to 55/73/90 kg.
+* **No digitised observed data.** The chamber concentration data of Pekari et
+  al. were not digitised; the figure-replication chunks show the simulated
+  profiles and the validation targets the reported scalar results (fraction
+  metabolized, linearity, bone-marrow amount, baseline phenol).
