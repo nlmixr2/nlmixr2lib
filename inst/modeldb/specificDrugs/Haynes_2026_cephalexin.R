@@ -1,6 +1,6 @@
 Haynes_2026_cephalexin <- function() {
   description <- "One-compartment oral population PK model for cephalexin pooled from infancy to adulthood (Haynes 2026; 71 subjects aged 9 days to 29 years from four studies in the United States, Canada and New Zealand). First-order absorption with an absorption lag time and linear elimination. Apparent volume (Vd/F) and apparent clearance (CL/F) scale with fat-free mass by estimated power exponents (reference 56 kg FFM); CL/F additionally matures with postmenstrual age through a sigmoid Hill function (TM50 42.96 weeks, Hill coefficient 5.06), and the absorption rate constant is reduced by a fixed scalar exp(-0.81) in infants with postnatal age <= 21 days. Log-normal inter-individual variability on lag time, ka and CL/F (none on Vd/F); combined additive plus proportional residual error."
-  reference <- "Haynes AS, Gonzalez D, Messacar K, Autmizguine J, Gwee A, Everts R, Anderson P. Cephalexin Model-Informed Dosing Recommendations for Severe Infections: A Pooled Pharmacokinetic Analysis From Infancy to Adulthood. Open Forum Infect Dis. 2026:ofag611. doi:10.1093/ofid/ofag611"
+  reference <- "Haynes AS, Gonzalez D, Messacar K, Autmizguine J, Gwee A, Everts R, Anderson P. Cephalexin Model-Informed Dosing Recommendations for Severe Infections: A Pooled Pharmacokinetic Analysis From Infancy to Adulthood. Open Forum Infect Dis. 2026;13(10):ofag611. doi:10.1093/ofid/ofag611"
   vignette <- "Haynes_2026_cephalexin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
