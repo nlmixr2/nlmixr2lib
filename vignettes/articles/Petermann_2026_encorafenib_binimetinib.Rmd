@@ -1,0 +1,330 @@
+---
+title: "Encorafenib and binimetinib (Petermann 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Encorafenib and binimetinib (Petermann 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Petermann 2026 fitted two independent population PK models in MonolixSuite
+2024R1 to therapeutic-drug-monitoring data from real-world patients with BRAF
+V600E/K-mutant melanoma treated with the encorafenib + binimetinib combination.
+Each drug is packaged as its own model; this article covers both.
+
+* Encorafenib citation: `r rxode2::rxode(readModelDb("Petermann_2026_encorafenib"))$reference`
+* Encorafenib description: `r rxode2::rxode(readModelDb("Petermann_2026_encorafenib"))$description`
+* Binimetinib description: `r rxode2::rxode(readModelDb("Petermann_2026_binimetinib"))$description`
+* Article: <https://doi.org/10.1007/s00280-026-04876-y> (open access, PMC13661740)
+
+# Population
+
+The encorafenib model was fitted to 310 concentrations from 66 patients and the
+binimetinib model to 311 concentrations from 69 patients, followed at Cochin
+University Hospital (Paris) and Ambroise Pare University Hospital
+(Boulogne-Billancourt) between 2018 and 2024 (Petermann 2026 Table 1). Median
+age was 62 years (IQR 52-71), median weight about 74 kg, and 32% (encorafenib)
+or 29% (binimetinib) of patients were female. Hepatic function was normal or
+mildly impaired. Encorafenib was given at a median 450 mg once daily (range
+200-600 mg; 81% on 450 mg and 12% on 300 mg); binimetinib at 45 mg (81%) or
+30 mg (19%) twice daily. Every sample was drawn at least 25 days after treatment
+start or a dose change, so all data are at steady state, with a median of three
+single-sample occasions per patient.
+
+The same information is available programmatically via
+`readModelDb("Petermann_2026_encorafenib")()$population` and
+`readModelDb("Petermann_2026_binimetinib")()$population`.
+
+# Source trace
+
+Both models share one structure: a depot with first-order absorption into a
+central compartment, linear elimination from central, and a peripheral
+compartment exchanging with central through Q (Results, 'Population
+pharmacokinetic model'; Methods, 'Base and covariate models'). No covariates
+were retained.
+
+| Parameter | Encorafenib | Binimetinib | Source location |
+|-----------|-------------|-------------|-----------------|
+| `lka` (ka, 1/h, held constant) | log(0.51) | log(0.76) | Results text; Table 2 prints the rounded 0.5 and 0.7 |
+| `lcl` (CL/F, L/h) | log(29) | log(23) | Table 2 |
+| `lvc` (Vc/F, L) | log(39) | log(35) | Table 2 |
+| `lq` (Q/F, L/h) | log(1.7) | log(35) | Table 2 |
+| `lvp` (Vp/F, L) | log(26) | log(106) | Table 2 |
+| `etalcl` (variance) | 0.03189 (18 CV%) | 0.05155 (23 CV%) | Table 2; CV = sqrt(exp(omega^2) - 1) per Table 2 footnote |
+| `etalvc` (variance) | 0.40819 (71 CV%) | not estimated | Table 2 |
+| `etalq` (variance) | 0.61324 (92 CV%) | 1.34088 (168 CV%) | Table 2 |
+| `propSd` | 0.44675 (47 CV%) | 0.43811 (46 CV%) | Table 2; same CV formula per Table 2 footnote |
+| `Cc = 1000 * central / vc` | ng/mL | ng/mL | dose in mg, volume in L, concentrations reported in ng/mL |
+
+# Virtual cohort and simulation
+
+Three arms of 200 virtual patients each reproduce the Monte Carlo scenarios of
+Figure 3: encorafenib 450 mg and 300 mg once daily, and binimetinib 45 mg twice
+daily. Neither model has covariates, so the cohort needs no demographics.
+Dosing runs for 21 days and the last dosing interval is sampled densely.
+Concentrations are the individual predictions without residual error, as for
+the paper's exposure metrics (Methods, 'Model-based bayesian predictions').
+
+```{r cohort}
+rxode2::rxSetSeed(20260317)
+n_per_arm <- 200
+
+arms <- tibble::tribble(
+  ~arm,                     ~drug,         ~dose, ~tau,
+  "Encorafenib 450 mg QD",  "encorafenib", 450,   24,
+  "Encorafenib 300 mg QD",  "encorafenib", 300,   24,
+  "Binimetinib 45 mg BID",  "binimetinib", 45,    12
+)
+n_days <- 21
+
+make_arm <- function(arm_row, n, id_offset) {
+  tau <- arm_row$tau
+  n_doses <- n_days * 24 / tau
+  ss_start <- (n_doses - 1) * tau
+  obs_t <- ss_start + sort(unique(c(seq(0, 4, by = 0.1), seq(4, tau, by = 0.5))))
+  ids <- id_offset + seq_len(n)
+  doses <- tidyr::expand_grid(id = ids, time = (seq_len(n_doses) - 1) * tau) |>
+    dplyr::mutate(evid = 1L, amt = arm_row$dose, cmt = "depot")
+  obs <- tidyr::expand_grid(id = ids, time = obs_t) |>
+    dplyr::mutate(evid = 0L, amt = 0, cmt = "central")
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::mutate(arm = arm_row$arm, ss_start = ss_start, tau = tau) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+events <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  make_arm(arms[i, ], n_per_arm, id_offset = (i - 1L) * n_per_arm)
+}))
+stopifnot(!anyDuplicated(unique(events[events$evid == 0, c("id", "time")])))
+
+mod_enc <- readModelDb("Petermann_2026_encorafenib")
+mod_bin <- readModelDb("Petermann_2026_binimetinib")
+
+solve_arm <- function(mod, ev) {
+  as.data.frame(rxode2::rxSolve(mod, ev, keep = c("arm", "ss_start", "tau"),
+                                returnType = "data.frame"))
+}
+ev_enc <- dplyr::filter(events, grepl("Encorafenib", arm))
+ev_bin <- dplyr::filter(events, grepl("Binimetinib", arm))
+sim <- dplyr::bind_rows(solve_arm(mod_enc, ev_enc), solve_arm(mod_bin, ev_bin)) |>
+  dplyr::mutate(tad = time - ss_start)
+```
+
+# Replicate Figure 3
+
+```{r figure-3, fig.cap = "Steady-state concentration-time profiles over one dosing interval: median and 5th-95th percentile band of 200 simulated patients per arm. Replicates Figure 3 of Petermann 2026."}
+sim |>
+  dplyr::group_by(arm, tad) |>
+  dplyr::summarise(
+    p05 = quantile(Cc, 0.05), p50 = median(Cc), p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tad, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.3) +
+  geom_line() +
+  facet_wrap(~arm, scales = "free") +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = "Concentration (ng/mL)") +
+  theme_bw()
+```
+
+# PKNCA over the steady-state interval
+
+```{r pknca}
+nca_in <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, arm)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, arm)
+
+intervals <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  ss_start <- (n_days * 24 / arms$tau[i] - 1) * arms$tau[i]
+  data.frame(arm = arms$arm[i], start = ss_start, end = ss_start + arms$tau[i],
+             auclast = TRUE, cmax = TRUE, cmin = TRUE, tmax = TRUE)
+}))
+
+conc_obj <- PKNCA::PKNCAconc(nca_in, Cc ~ time | arm + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(arm, id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+stopifnot(nrow(nca_wide) == nrow(arms) * n_per_arm)
+```
+
+## Internal identity: steady-state AUCtau equals Dose / CL
+
+At steady state the AUC over one dosing interval equals `Dose / (CL/F)`
+exactly. Both sides use each subject's own drawn clearance, so the difference
+is trapezoidal error plus any residual approach to steady state, and a tight
+bound is appropriate.
+
+```{r identity}
+indiv <- sim |>
+  dplyr::distinct(id, arm, cl, vc, q, vp) |>
+  dplyr::left_join(arms, by = "arm") |>
+  dplyr::mutate(
+    kel = cl / vc, k12 = q / vc, k21 = q / vp,
+    a = kel + k12 + k21,
+    beta = 0.5 * (a - sqrt(a^2 - 4 * kel * k21)),
+    thalf = log(2) / beta,
+    auc_ref = 1000 * dose / cl
+  )
+ident <- nca_wide |>
+  dplyr::left_join(indiv, by = c("arm", "id")) |>
+  dplyr::mutate(pct = 100 * (auclast - auc_ref) / auc_ref)
+
+ident |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(max_abs_pct = max(abs(pct)), .groups = "drop") |>
+  dplyr::rename("Arm" = arm, "Max absolute % difference" = max_abs_pct) |>
+  knitr::kable(digits = 3, caption = "PKNCA AUCtau vs the analytic Dose / CL.")
+stopifnot(max(abs(ident$pct)) < 1)
+```
+
+## Comparison against Table 3
+
+Table 3 reports the geometric mean of the Bayesian individual exposure metrics
+of the real-world patients at standard dosing (median for Tmax). The simulated
+summaries below use the same statistics; terminal half-life is computed from
+each subject's micro-constants, as the paper does from its individual
+parameters.
+
+```{r compare-table3}
+gmean <- function(x) exp(mean(log(x)))
+sim_summary <- ident |>
+  dplyr::filter(arm %in% c("Encorafenib 450 mg QD", "Binimetinib 45 mg BID")) |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(
+    cmin = gmean(cmin), cmax = gmean(cmax), auclast = gmean(auclast),
+    tmax = median(tmax), half.life = gmean(thalf), .groups = "drop"
+  )
+
+published <- tibble::tribble(
+  ~arm,                    ~cmin, ~cmax, ~auclast, ~tmax, ~half.life,
+  "Encorafenib 450 mg QD", 18.6,  3378,  15785,    1.6,   12.5,
+  "Binimetinib 45 mg BID", 55.0,  367,   2003,     1.1,   7.3
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_summary,
+  reference = published,
+  by = "arm",
+  units = c(cmin = "ng/mL", cmax = "ng/mL", auclast = "ng*h/mL",
+            tmax = "h", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = paste(
+  "Simulated (200 patients per arm) vs Petermann 2026 Table 3 real-life",
+  "population. AUCtau is AUC0-24 for encorafenib and AUC0-12 for binimetinib.",
+  "* differs from the reference by >20%."
+))
+
+auc_chk <- dplyr::inner_join(sim_summary, published, by = "arm",
+                             suffix = c("_sim", "_pub"))
+stopifnot(nrow(auc_chk) == 2)
+auc_pct <- 100 * (auc_chk$auclast_sim - auc_chk$auclast_pub) / auc_chk$auclast_pub
+# AUCtau depends only on dose and CL/F; a mis-transcribed CL or a missing
+# ng/mL scaling moves it by tens of percent or orders of magnitude.
+stopifnot(all(abs(auc_pct) < 10))
+```
+
+All five metrics of both drugs fall within 10% of the published values, with
+no starred rows. AUCtau depends only on dose and CL/F and is asserted above;
+Cmax, Cmin, Tmax and half-life also depend on the absorption and distribution
+phases that the sparse data barely informed (ka was held constant for that
+reason), and the published values are summaries of the real patients' Bayesian
+estimates rather than of a Monte Carlo cohort, so they are shown without an
+assertion.
+
+## Unbound average concentration relative to IC50
+
+Petermann 2026 computed the unbound average steady-state concentration as
+`fu * AUCtau / tau`, with `fu` = 0.1390 (encorafenib) and 0.0280 (binimetinib),
+and compared it with the IC50 values of 2.16 and 15.7 ng/mL (Methods, equation
+for unbound Caverage; Results).
+
+```{r unbound}
+fu <- c(encorafenib = 0.1390, binimetinib = 0.0280)
+ic50 <- c(encorafenib = 2.16, binimetinib = 15.7)
+unbound <- ident |>
+  dplyr::group_by(arm, drug, tau) |>
+  dplyr::summarise(cavg = gmean(auclast / tau), .groups = "drop") |>
+  dplyr::mutate(
+    cavg_u = fu[drug] * cavg,
+    ratio = cavg_u / ic50[drug],
+    published_cavg_u = c(
+      "Encorafenib 450 mg QD" = 89.7, "Encorafenib 300 mg QD" = 59.8,
+      "Binimetinib 45 mg BID" = 4.67
+    )[arm],
+    pct_diff = 100 * (cavg_u - published_cavg_u) / published_cavg_u
+  )
+unbound |>
+  dplyr::select(arm, cavg_u, ratio, published_cavg_u, pct_diff) |>
+  dplyr::rename(
+    "Arm" = arm, "Unbound Caverage (ng/mL)" = cavg_u,
+    "Unbound Caverage / IC50" = ratio,
+    "Published unbound Caverage (ng/mL)" = published_cavg_u,
+    "% difference" = pct_diff
+  ) |>
+  knitr::kable(digits = 2, caption = paste(
+    "Geometric mean unbound Caverage of the simulated cohort. Encorafenib",
+    "references are the Monte Carlo values in Results; the binimetinib reference",
+    "is the value from the real patients' Bayesian estimates (see the deviations",
+    "section for the published Monte Carlo value)."
+  ))
+stopifnot(all(abs(unbound$pct_diff) < 10))
+```
+
+# Assumptions and deviations
+
+- **ka.** The Results text gives ka as 0.51 1/h (encorafenib) and 0.76 1/h
+  (binimetinib); Table 2 prints the rounded values 0.5 and 0.7. The more precise
+  text values are used.
+- **Variance scale.** The Table 2 footnote states that the CV% of both the
+  omegas and the proportional residual error was computed as
+  `CV = sqrt(exp(omega^2) - 1)`. The variances are therefore
+  `log(1 + CV^2)`. The same formula is applied to the residual error, giving
+  `propSd = sqrt(log(1 + CV^2))` = 0.447 (encorafenib) and 0.438 (binimetinib).
+  If instead the reported 47% and 46% were the raw Monolix proportional
+  coefficients, `propSd` would be 0.47 and 0.46, about 5% higher; this changes
+  only simulated observations with residual error, not the individual
+  predictions used throughout this article.
+- **No correlations.** Table 2 reports no covariances between random effects;
+  the IIV is diagonal.
+- **IIV on Vp, and on Vc for binimetinib.** Not estimated in the final models
+  (Table 2 shows '/' for these rows); the corresponding parameters have no
+  random effect.
+- **Binimetinib Monte Carlo unbound Caverage.** The Results report a simulated
+  geometric mean unbound Caverage of 11.4 ng/mL (ratio 0.75) for binimetinib
+  45 mg twice daily. With `fu` = 0.0280 this would need an AUC0-12 near
+  4,900 ng*h/mL, about 2.4 times the value implied by CL/F = 23 L/h
+  (`45 / 23 * 1000` = 1,957 ng*h/mL) and the published real-life AUC0-12 of
+  2,003 ng*h/mL; the real-life unbound Caverage of 4.67 ng/mL in the same
+  paragraph is consistent with the model. The 11.4 ng/mL value cannot be
+  reproduced from the published parameters, so the comparison uses 4.67 ng/mL.
+  For encorafenib, the published Monte Carlo values (89.7 and 59.8 ng/mL, ratios
+  41.5 and 27.7) are reproduced.
+- **Residual error excluded** from every simulated metric, as in the paper's
+  exposure-metric calculations.
+- **Steady state** is approached by 21 days of dosing rather than an analytic
+  steady-state solve; the AUC identity check above confirms the last interval
+  is at steady state.
+- No erratum or correction notice was found for this article in Europe PMC as of
+  2026-11-18; the article's 13 October 2026 change-history note records only its
+  move to open access.
