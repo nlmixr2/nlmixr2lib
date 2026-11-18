@@ -428,6 +428,8 @@ navbar:
         href: articles/Krishna_2011_anacetrapib.html
       - text: "Anakinra (Jung 2023)"
         href: articles/Jung_2023_fractal_kinetics.html
+      - text: "Anakinra (Li 2026)"
+        href: articles/Li_2026_anakinra.html
       - text: "Anakinra (Urien 2013)"
         href: articles/Urien_2013_anakinra.html
       - text: "Andrographolide (Songvut 2026)"
@@ -10901,6 +10903,7 @@ articles:
   - articles/Li_2025_rivaroxaban
   - articles/Li_2025_tetrahydrocannabinol
   - articles/Li_2026_alvespimycin
+  - articles/Li_2026_anakinra
   - articles/Li_2026_epcoritamab
   - articles/Li_2026_etranacogene
   - articles/Li_2026_levonorgestrel
