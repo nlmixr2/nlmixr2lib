@@ -5048,6 +5048,8 @@ navbar:
         href: articles/Lee_2021_meropenem.html
       - text: "Meropenem (Liu 2025)"
         href: articles/Liu_2025_meropenem.html
+      - text: "Meropenem (Liu 2026)"
+        href: articles/Liu_2026_meropenem.html
       - text: "Meropenem (Lu 2016)"
         href: articles/Lu_2016_meropenem.html
       - text: "Meropenem (Onichimowski 2020)"
@@ -10963,6 +10965,7 @@ articles:
   - articles/Liu_2025_selpercatinib
   - articles/Liu_2025_tranexamicAcid
   - articles/Liu_2025_voriconazole
+  - articles/Liu_2026_meropenem
   - articles/Liva_2021_rec2282
   - articles/Livio_2014_tobramycin
   - articles/LlanosPaez_2017_gentamicin

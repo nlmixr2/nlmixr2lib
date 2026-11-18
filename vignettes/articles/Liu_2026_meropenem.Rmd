@@ -1,0 +1,487 @@
+---
+title: "Meropenem and C-reactive protein in febrile neutropenia (Liu 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Meropenem and C-reactive protein in febrile neutropenia (Liu 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Liu_2026_meropenem"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Liu_2026_meropenem"))$description`
+* Article (open access): <https://doi.org/10.1002/bcp.70667>
+
+Liu 2026 fitted continuous-infusion (CI) meropenem steady-state plasma
+concentrations and C-reactive protein (C-RP) concentrations from
+onco-haematological patients with febrile neutropenia in a two-step
+**sequential** Monolix analysis: a one-compartment PK model was estimated first,
+and its population values and random-effect SDs were then held while an
+indirect-response model with full inhibition of C-RP production was fitted. The
+final model is one coupled PK/PD system, so it is packaged as a single `.R` file
+with two outputs, `Cc` (meropenem, mg/L) and `crp` (C-RP, mg/dL).
+
+Three features of the encoding are worth flagging before the numbers:
+
+1. The eGFR effect on clearance is an **uncentered exponential**,
+   `CL = 4.99 x exp(0.009 x eGFR)`, so `exp(lcl) = 4.99 L/h` is the clearance
+   extrapolated to eGFR = 0 (see Assumptions and deviations).
+2. The C-RP production rate **decays with time since the start of therapy**,
+   `kin x exp(-k x t)`. The baseline `R0`, `kin` and `kout` are all estimated,
+   and `R0` (5.82 mg/dL) is far below `kin / kout` (24.5 mg/dL), so C-RP first
+   rises and then falls unless meropenem inhibits production strongly. This is
+   how the model produces both the "response" and the "non-response" patterns.
+3. Because `t` in `exp(-k x t)` is the model time, **time zero must be the start
+   of meropenem therapy** in any dataset used with this model.
+
+# Population
+
+141 adult onco-haematological patients with febrile neutropenia receiving
+TDM-guided CI meropenem at a single Italian centre (Bologna) between January
+2021 and July 2023 (Methods; Table 1). Median (IQR) age 59 (52-64) years, weight
+70 (62-80) kg, 57/141 (40.4%) female, CKD-EPI eGFR 97.0 (80.0-109.0)
+mL/min/1.73 m^2 (range 17.0-195.6). Acute myeloid leukaemia was the most common
+underlying disease (64.5%); 95.0% received concomitant antifungals and 57.4% an
+anti-Gram-positive agent. Therapy began with a 2 g loading dose over 30 min
+followed by 1 g q8h (eGFR >= 60) or 0.5 g q6h (eGFR < 60) by continuous
+infusion, then TDM-adjusted to a Css of 8-16 mg/L; the median maintenance dose
+was 1 g q6h. The model was fitted to 283 meropenem Css values and 1373 C-RP
+concentrations; median baseline C-RP was 9.8 (4.9-17.4) mg/dL.
+
+The same information is available programmatically via
+`rxode2::rxode(readModelDb("Liu_2026_meropenem"))$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Liu_2026_meropenem.R`. The table below
+collects them in one place.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL intercept at eGFR = 0) | 4.99 L/h | Table 2, 'CL (L/h)' |
+| `e_crcl_cl` | 0.009 per mL/min/1.73 m^2 | Table 2, 'beta_eGFR' |
+| `lvc` | 28.5 L (fixed) | Table 2, 'V (L) 28.5', no RSE; Methods ('Volume of distribution was fixed to 28.5 L, based on Contejean et al.') |
+| `lrbase` (R0) | 5.82 mg/dL | Table 2, 'R0 (mg/dL)' |
+| `lkout` | 0.02 1/h | Table 2, 'k out (h-1)' |
+| `lic50` | 41.5 mg/L | Table 2, 'IC 50 (mg/L)' |
+| `lkin` | 0.49 mg/dL/h | Table 2, 'k in (mg/dL*h-1)' |
+| `lkin_exp_kdes` (k) | 0.0037 1/h | Table 2, 'k (h-1)' |
+| `etalcl`, `etalvc`, `etalrbase`, `etalkout`, `etalic50`, `etalkin`, `etalkin_exp_kdes` | omega 0.45, 1.64, 1.25, 0.21, 1.68, 0.47, 1.51 (squared into variances) | Table 2, 'Random effects' |
+| `propSd` | 0.27 | Table 2, 'b1' (proportional, PK) |
+| `addSd_crp`, `propSd_crp` | 0.11 mg/dL, 0.31 | Table 2, 'a2' (constant, PD) and 'b2' (proportional, PD) |
+| One-compartment IV model, zero-order input, first-order elimination | n/a | Methods; Results ('A one-compartment model with zero-order administration and first-order elimination') |
+| `d/dt(crp) <- kin * (1 - Cc / (Cc + ic50)) * exp(-kin_exp_kdes * t) - kout * crp` | n/a | Methods equation |
+| `crp(0) <- rbase` | n/a | Table 2, 'R0, baseline C-RP level' |
+
+# Typical-value checks against the paper's own numbers
+
+## Clearance
+
+The Results quote a median meropenem clearance of 13.34 L/h (the Discussion
+gives 13.87 L/h). The typical clearance at the cohort's median eGFR follows in
+closed form from the transcribed `lcl` and `e_crcl_cl`.
+
+```{r cl-check}
+mod <- readModelDb("Liu_2026_meropenem")
+ui <- rxode2::rxode(mod)
+th <- ui$theta
+
+cl_typ_97 <- exp(th[["lcl"]] + th[["e_crcl_cl"]] * 97)
+cl_check <- tibble(
+  Source = c("Results", "Discussion"),
+  `CL paper (L/h)` = c(13.34, 13.87),
+  `Typical CL at eGFR 97 (L/h)` = cl_typ_97
+) |>
+  mutate(`Difference (%)` = 100 * (`Typical CL at eGFR 97 (L/h)` / `CL paper (L/h)` - 1))
+knitr::kable(cl_check, digits = 2,
+             caption = "Typical clearance at the Table 1 median eGFR versus the median clearance quoted by Liu 2026.")
+# The uncentered exponential lands within about 15% of both quoted medians,
+# which are medians of individual estimates rather than a typical value. A
+# centred covariate (CL = 4.99 L/h at the median eGFR) would miss by ~63%.
+stopifnot(all(abs(cl_check$`Difference (%)`) < 20))
+```
+
+## C-RP turnover without drug
+
+With no meropenem the C-RP equation is linear with a closed-form solution,
+`R(t) = R0 exp(-kout t) + kin / (kout - k) (exp(-k t) - exp(-kout t))`. A
+typical-value solve with no dose must reproduce it; both sides use the same
+parameters, so only numerical error separates them.
+
+```{r crp-closed-form}
+mod_typ <- rxode2::zeroRe(mod)
+ev_nodrug <- rxode2::et(seq(0, 15 * 24, by = 12), cmt = "crp")
+sim_nodrug <- rxode2::rxSolve(mod_typ, ev_nodrug, params = c(CRCL = 97), returnType = "data.frame")
+r0 <- exp(th[["lrbase"]]); kin <- exp(th[["lkin"]])
+kout <- exp(th[["lkout"]]); kdes <- exp(th[["lkin_exp_kdes"]])
+crp_closed <- r0 * exp(-kout * sim_nodrug$time) +
+  kin / (kout - kdes) * (exp(-kdes * sim_nodrug$time) - exp(-kout * sim_nodrug$time))
+stopifnot(max(abs(sim_nodrug$crp / crp_closed - 1)) < 1e-4)
+```
+
+## Steady-state concentration
+
+At steady state of a constant-rate infusion the typical model must give
+`Css = rate / CL`. The table below does this for the three dosages the paper
+simulated (1 g q8h at eGFR 50-89, 1 g q6h at 90-129, 1.5 g q6h at >= 130),
+evaluated at each class mid-point, against the Css/MIC > 4 (Css > 8 mg/L)
+target the dosages were chosen to meet.
+
+```{r css-typical}
+css_tab <- tibble(
+  `eGFR class` = c("50-89", "90-129", ">= 130"),
+  `eGFR used` = c(70, 110, 145),
+  Regimen = c("1 g q8h", "1 g q6h", "1.5 g q6h"),
+  rate = c(1000 / 8, 1000 / 6, 1500 / 6)
+) |>
+  mutate(`Typical CL (L/h)` = exp(th[["lcl"]] + th[["e_crcl_cl"]] * `eGFR used`),
+         `Typical Css (mg/L)` = rate / `Typical CL (L/h)`)
+knitr::kable(select(css_tab, -rate), digits = 2,
+             caption = "Typical steady-state meropenem concentration for the dosages simulated by Liu 2026.")
+stopifnot(all(css_tab$`Typical Css (mg/L)` > 8))
+```
+
+# Virtual cohort
+
+Original observed data are not publicly available. Two virtual cohorts are
+simulated, each with 200 patients per arm.
+
+* **Monte Carlo cohort (Figure 4).** The three dosages of the paper's Monte
+  Carlo simulations, one per eGFR class (1 g q8h at eGFR 50-89, 1 g q6h at
+  90-129, 1.5 g q6h at 130-160), eGFR drawn uniformly within the class.
+* **Clinical cohort (PK check).** eGFR drawn from a normal distribution matching
+  the Table 1 median and IQR (97, 80-109), truncated to the observed range
+  17-195.6, and given either the protocol starting dose (1 g q8h) or the Table 1
+  median maintenance dose (1 g q6h).
+
+Every patient receives the protocol 2 g loading dose over 30 min, then the
+maintenance dose as a constant-rate infusion for 15 days.
+
+```{r cohort}
+# set.seed() seeds R's RNG for the covariate draws below. rxode2's own
+# simulation RNG (the random effects) is seeded with rxSetSeed() but is
+# partitioned per solver thread, so the etas differ between machines; every
+# assertion below is written to hold for any cohort the model can produce.
+set.seed(20260702)
+rxode2::rxSetSeed(20260702)
+
+n_per_arm <- 200L # cap is 200 participants per arm
+sim_days <- 15
+
+arms <- tibble(
+  arm = c("mc_50_89", "mc_90_129", "mc_130", "clin_q8h", "clin_q6h"),
+  cohort = c(rep("Monte Carlo", 3), rep("Clinical", 2)),
+  regimen = c("1 g q8h", "1 g q6h", "1.5 g q6h", "1 g q8h", "1 g q6h"),
+  rate = c(1000 / 8, 1000 / 6, 1500 / 6, 1000 / 8, 1000 / 6),
+  lo = c(50, 90, 130, NA, NA),
+  hi = c(89, 129, 160, NA, NA)
+)
+
+draw_clin_egfr <- function(n) {
+  x <- rnorm(n, 97, (109 - 80) / 1.349)
+  pmin(pmax(x, 17), 195.6)
+}
+
+cohort <- arms |>
+  tidyr::uncount(n_per_arm) |>
+  mutate(id = row_number()) |>
+  group_by(arm) |>
+  mutate(CRCL = if (first(cohort) == "Monte Carlo") runif(n(), first(lo), first(hi)) else draw_clin_egfr(n())) |>
+  ungroup()
+stopifnot(all(count(cohort, arm)$n == n_per_arm))
+
+load_rows <- cohort |>
+  transmute(id, time = 0, evid = 1L, cmt = "central", amt = 2000, rate = 4000)
+maint_rows <- cohort |>
+  transmute(id, time = 0.5, evid = 1L, cmt = "central", amt = rate * sim_days * 24, rate)
+obs_times <- sort(unique(c(seq(0, sim_days * 24, by = 24), seq(9 * 24, 10 * 24, by = 1))))
+# Observation rows sit on the `crp` state; with two endpoints every row still
+# returns the algebraic Cc alongside crp.
+obs_rows <- tidyr::crossing(id = cohort$id, time = obs_times) |>
+  mutate(evid = 0L, cmt = "crp", amt = 0, rate = 0)
+events <- bind_rows(load_rows, maint_rows, obs_rows) |>
+  left_join(select(cohort, id, CRCL), by = "id") |>
+  arrange(id, time, desc(evid))
+```
+
+# Simulation
+
+The C-RP trajectories are the model-predicted individual states (random
+effects on, residual error off), as in the paper's Monte Carlo summaries.
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events, returnType = "data.frame", keep = "CRCL") |>
+  left_join(select(cohort, id, arm, cohort, regimen), by = "id")
+stopifnot("id" %in% names(sim), !anyNA(sim$crp))
+```
+
+## Replicates Figure 4 of Liu 2026
+
+The paper groups patients by the C-RP ratio at Day 4 versus baseline: fast
+response (< 0.4), slow response (0.4-0.8) and non-response (> 0.8, pooled with
+the biphasic pattern). Here each virtual patient of the Monte Carlo cohort is
+classified by its own simulated Day-4 ratio, and the median ratio per day is
+plotted for each pattern.
+
+```{r patterns}
+pattern_levels <- c("fast response", "slow response", "non response")
+crp_ratio <- sim |>
+  filter(cohort == "Monte Carlo", time %% 24 == 0) |>
+  group_by(id) |>
+  mutate(ratio = crp / crp[time == 0], ratio_d4 = ratio[time == 96]) |>
+  ungroup() |>
+  mutate(
+    day = time / 24,
+    pattern = cut(ratio_d4, c(-Inf, 0.4, 0.8, Inf), labels = pattern_levels, right = FALSE)
+  )
+
+pattern_share <- crp_ratio |>
+  filter(day == 0) |>
+  count(pattern) |>
+  mutate(`Simulated (%)` = 100 * n / sum(n),
+         `Liu 2026 (%)` = c(8.5, 15.6, 75.9)[as.integer(pattern)]) |>
+  rename(Pattern = pattern, `Virtual patients` = n)
+knitr::kable(pattern_share, digits = 1,
+             caption = "Share of patients per Day-4 C-RP pattern: simulation versus the individual fits of Liu 2026 (Results; biphasic pooled with non-response).")
+
+ratio_med <- crp_ratio |>
+  group_by(pattern, day) |>
+  summarise(median_ratio = median(ratio), .groups = "drop")
+```
+
+```{r fig4, fig.height = 5}
+ggplot(ratio_med, aes(day, median_ratio, colour = pattern)) +
+  geom_hline(yintercept = 1, linetype = "dotted") +
+  geom_line() +
+  geom_point() +
+  scale_colour_manual(values = c("fast response" = "green3", "slow response" = "orange",
+                                 "non response" = "red")) +
+  scale_x_continuous(breaks = 0:15) +
+  labs(x = "Time (days)", y = "Median C-RP ratio from baseline", colour = "Day-4 pattern",
+       caption = "Replicates Figure 4 of Liu 2026.")
+```
+
+## Comparison with the reported medians
+
+The Day-4 values are the Results text (84.9% and 67.6% reduction, 155%
+increase); the others were read from Figure 4 by the maintainers.
+
+```{r compare-fig4}
+paper_ratio <- tribble(
+  ~pattern,        ~day, ~paper,
+  "fast response",  1,   0.60,
+  "fast response",  4,   0.151,
+  "fast response",  6,   0.08,
+  "slow response",  1,   0.75,
+  "slow response",  4,   0.324,
+  "slow response", 10,   0.10,
+  "non response",   1,   2.31,
+  "non response",   3,   2.89,
+  "non response",   4,   2.55,
+  "non response",   7,   2.00,
+  "non response",  10,   1.46,
+  "non response",  13,   1.08
+)
+paper_ratio |>
+  left_join(mutate(ratio_med, pattern = as.character(pattern)), by = c("pattern", "day")) |>
+  rename(Pattern = pattern, Day = day, `Liu 2026 median ratio` = paper,
+         `Simulated median ratio` = median_ratio) |>
+  knitr::kable(digits = 3,
+               caption = "Median C-RP ratio from baseline: Liu 2026 Figure 4 / Results versus this simulation.")
+```
+
+```{r compare-gate}
+# Qualitative gates on medians of 100+ virtual patients per pattern. A
+# mis-transcribed kin, kout, k or IC50 moves the non-response peak away from
+# Day 2-4 or collapses it below a doubling; a wrong R0 or kin changes the
+# share of responders by far more than the bounds allow.
+nr <- ratio_med |> filter(pattern == "non response")
+peak_day <- nr$day[which.max(nr$median_ratio)]
+stopifnot(
+  peak_day >= 2, peak_day <= 4,
+  max(nr$median_ratio) > 2, max(nr$median_ratio) < 4,
+  nr$median_ratio[nr$day == 15] < max(nr$median_ratio) / 1.5,
+  pattern_share$`Simulated (%)`[pattern_share$Pattern == "non response"] > 50,
+  pattern_share$`Simulated (%)`[pattern_share$Pattern == "non response"] < 90
+)
+```
+
+The non-response curve reproduces the paper's shape: a median C-RP that rises
+two- to three-fold within the first days (simulated peak
+`r sprintf("%.2f", max(nr$median_ratio))` on Day `r peak_day` versus 2.89 on
+Day 3 in Figure 4) and then declines. The simulated decline is slower: the
+paper's median is back at baseline by Day 13-14, while the simulated one is
+`r sprintf("%.2f", nr$median_ratio[nr$day == 15])` at Day 15. The shares of the
+three patterns are close to those of the paper's individual fits.
+
+The fast- and slow-response curves cannot be compared like for like. Figure 4
+shows a slow-response median of 0.324 on Day 4 (Results: 67.6% reduction), which
+lies **below** the 0.4 lower bound of the slow-response class itself, so the
+paper's Monte Carlo patterns cannot have been formed by classifying each
+simulated profile on its own Day-4 ratio, as is done here. The paper does not
+state how its simulated profiles were assigned to the patterns (they may, for
+example, have been simulated from the individual parameters of the patients in
+each observed pattern). Classified on the Day-4 ratio, the simulated slow
+pattern necessarily sits between 0.4 and 0.8 on Day 4.
+
+# C-RP over time (compare Figure 3B)
+
+The clinical cohort's simulated C-RP percentiles are shown for orientation
+against the prediction-corrected VPC of Figure 3B (observed median about
+12 mg/dL over the first three days, falling to about 7 mg/dL by 300 h). The VPC
+is prediction-corrected and pools TDM-adjusted doses and sampling times, so this
+is a visual check only.
+
+```{r crp-percentiles}
+sim |>
+  filter(cohort == "Clinical", time %% 24 == 0) |>
+  group_by(time) |>
+  summarise(p10 = quantile(crp, 0.1), p50 = median(crp), p90 = quantile(crp, 0.9), .groups = "drop") |>
+  ggplot(aes(time)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), alpha = 0.25, fill = "steelblue") +
+  geom_line(aes(y = p50), colour = "steelblue") +
+  labs(x = "Time (hours)", y = "C-RP (mg/dL)",
+       caption = "Simulated 10th, 50th and 90th percentiles; compare Figure 3B of Liu 2026.")
+```
+
+# PKNCA validation
+
+Meropenem is given by continuous infusion, so the useful NCA quantity is the
+average concentration over a day at steady state (216-240 h), which must equal
+`rate / CL`. The NCA runs on the clinical cohort, grouped by regimen.
+
+```{r pknca}
+conc_nca <- sim |>
+  filter(cohort == "Clinical", time >= 216, time <= 240, !is.na(Cc)) |>
+  mutate(treatment = regimen) |>
+  select(id, time, Cc, treatment)
+dose_nca <- cohort |>
+  filter(cohort == "Clinical") |>
+  transmute(id, time = 216, amt = rate * 24, treatment = regimen)
+
+conc_obj <- PKNCA::PKNCAconc(conc_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | treatment + id)
+intervals <- data.frame(start = 216, end = 240, cav = TRUE, cmax = TRUE, cmin = TRUE)
+# Linear trapezoid: at steady state the infusion profile is flat, and the
+# lin-up/log-down rule on near-identical concentrations adds rounding noise.
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals,
+                                          options = list(auc.method = "linear")))
+summary(nca_res)
+
+# Closed-form identity. The large random effect on V (omega 1.64) leaves a few
+# subjects with V of several hundred litres, still short of steady state at
+# 216 h, so the exact one-compartment superposition is used: the 2 g loading
+# infusion (0-0.5 h at 4000 mg/h) decays from 0.5 h, and the maintenance
+# infusion starts at 0.5 h. With e(t) = exp(-k (t - 0.5)), its 216-240 h mean
+# is m = (e(216) - e(240)) / (24 k), and
+#   Cav = 4000 / CL * (1 - exp(-0.5 k)) * m + rate / CL * (1 - m).
+# Same parameters on both sides, so only numerical error separates them.
+nca_cav <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "cav") |>
+  select(id, cav = PPORRES) |>
+  left_join(sim |> filter(time == 240) |> select(id, cl, vc), by = "id") |>
+  left_join(select(cohort, id, rate), by = "id") |>
+  mutate(
+    k = cl / vc,
+    m = (exp(-k * 215.5) - exp(-k * 239.5)) / (24 * k),
+    cav_closed = 4000 / cl * (1 - exp(-0.5 * k)) * m + rate / cl * (1 - m),
+    dev = cav / cav_closed - 1
+  )
+stopifnot(max(abs(nca_cav$dev)) < 1e-3)
+```
+
+The paper's only observed exposure summary is the Table 1 median Css of
+11.4 mg/L (IQR 8.05-16.45), which pools TDM-adjusted maintenance doses with an
+IQR of 1 g q8h to 1 g q6h. The table sets both regimens against it.
+
+```{r nca-compare}
+published_nca <- tibble::tribble(
+  ~treatment, ~cav,
+  "1 g q8h",  11.4,
+  "1 g q6h",  11.4
+)
+cmp_nca <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published_nca,
+  by = "treatment",
+  params = "cav",
+  units = c(cav = "mg/L"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp_nca,
+             caption = "Simulated steady-state Cav versus the Liu 2026 Table 1 median Css. * differs from reference by >20%.")
+
+cav_med <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "cav") |>
+  group_by(treatment) |>
+  summarise(med = median(PPORRES), .groups = "drop")
+# The observed median pools doses between the two regimens, so it should fall
+# between their simulated medians.
+stopifnot(
+  cav_med$med[cav_med$treatment == "1 g q8h"] < 11.4 * 1.1,
+  cav_med$med[cav_med$treatment == "1 g q6h"] > 11.4 * 0.9
+)
+```
+
+The observed median Css lies between the simulated medians of the two
+regimens, as it should for a cohort whose doses span them.
+
+# Assumptions and deviations
+
+* **Form of the eGFR effect.** Table 2 reports `CL = 4.99 L/h` and
+  `beta_eGFR = 0.009` but the paper prints no covariate equation. The model uses
+  the uncentered exponential `CL = 4.99 x exp(0.009 x eGFR)`, which is Monolix's
+  parameterisation of an untransformed continuous covariate and the form this
+  group printed for meropenem in critically ill patients (`Troisi_2024_meropenem`)
+  and for dalbavancin (`Cojutti_2024_dalbavancin`). It gives 11.9 L/h at the
+  median eGFR of 97, against the median individual clearances of 13.34 L/h
+  (Results) and 13.87 L/h (Discussion); a centred effect would give 4.99 L/h.
+* **Combined residual error on C-RP.** Table 2 gives a constant (`a2 = 0.11`)
+  and a proportional (`b2 = 0.31`) term without saying how they combine. The
+  model uses Monolix's default combined form, `sd = a + b x f`
+  (`combined1()`).
+* **Time origin of `exp(-k t)`.** The equation uses the model time `t`; it is
+  taken as time since the first meropenem dose, the time origin of the paper's
+  simulations and figures.
+* **Figure 4 grouping.** As discussed above, the paper's simulated slow-response
+  median lies outside its own class definition on Day 4, so the method used to
+  assign simulated profiles to patterns is not the per-profile Day-4 ratio used
+  here, and is not reported. The Day-4 non-response median is also given as a
+  155% increase (ratio 2.55) in the Results, while Figure 4 shows about 2.75.
+* **Monte Carlo design.** The simulations' eGFR distribution within each class is
+  not reported; eGFR is drawn uniformly, with the open-ended >= 130 class bounded
+  at 160 mL/min/1.73 m^2. The protocol 2 g loading dose is included; with
+  `V = 28.5 L` and `CL` of 9-20 L/h the infusion reaches steady state within
+  hours, so this barely affects C-RP.
+* **Figure 3B units.** The pc-VPC y-axis is labelled 'C-RP Concentrations
+  (mg/L)', but its values (up to about 66) match the observed range of
+  0.15-65.9 mg/dL in the Results and the mg/dL units of Table 1 and Table 2, so
+  the label is taken as a misprint.
+* **Volume.** V is fixed at 28.5 L from Contejean 2020 because CI steady-state
+  data carry no information on it; its random effect (omega 1.64) was
+  nevertheless estimated and is carried as published. It affects only the
+  first hours of the PK profile.
+* **Sequential fit.** The PK parameters were estimated first and held at their
+  population values (and random-effect SDs) while the PD parameters were fitted;
+  the packaged model carries both sets at their reported values.
+* **IC50 precision.** The IC50 estimate (41.5 mg/L) differs markedly from its
+  bootstrap median (79 mg/L; 5th-95th percentile 23.7-405.6), and its random
+  effect is large (omega 1.68). Individual IC50 values span several orders of
+  magnitude.
+* **Not retained covariates.** Type of onco-haematological disease, concomitant
+  antifungals, concomitant anti-Gram-positive agents, treatment duration,
+  weight, BMI and gender were tested and not retained.
+* **Errata.** No erratum or correction was found for this article (Europe PMC,
+  checked 2026-11-18).
