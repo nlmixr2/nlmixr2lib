@@ -6460,6 +6460,8 @@ navbar:
         href: articles/Selig_2022_piperacillin_tazobactam.html
       - text: "Piperacillin qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Piperacillin tazobactam (Dorofaeff 2026)"
+        href: articles/Dorofaeff_2026_piperacillin_tazobactam.html
       - text: "Piperacillin tazobactam (Kong 2025)"
         href: articles/Kong_2025_piperacillin_tazobactam.html
       - text: "Piperacillin tazobactam (Kong 2025b)"
@@ -9990,6 +9992,7 @@ articles:
   - articles/Dorajoo_2019_vancomycin
   - articles/Dorlo_2008_miltefosine
   - articles/Dorlo_2017_miltefosine
+  - articles/Dorofaeff_2026_piperacillin_tazobactam
   - articles/Dowling_2008_naloxone
   - articles/Downes_2020_vancomycin
   - articles/Downes_2022_tobramycin
