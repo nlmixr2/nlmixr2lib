@@ -1,0 +1,523 @@
+---
+title: "Ropeginterferon alfa-2b in essential thrombocythemia (Qin 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ropeginterferon alfa-2b in essential thrombocythemia (Qin 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Qin_2026_ropeginterferon"))$reference`
+* Article (open access): <https://doi.org/10.1002/jcph.70258>
+* Supporting Information (one DOCX): Figures S1-S6, Tables S1-S2 and the three
+  final NONMEM control streams (PK, white blood cell, platelet).
+
+Qin 2026 pools three single-dose phase I studies in healthy volunteers with two
+studies of ropeginterferon alfa-2b (ropeg) in patients with essential
+thrombocythemia (ET) and builds, in sequence, a target-mediated drug
+disposition (TMDD) population PK model, indirect-response models for white
+blood cell (WBC) and platelet counts, two linear regressions of the JAK2 V617F
+allele-burden change on exposure, and a logistic regression of anemia on
+exposure. Each is packaged as its own model, all sharing this article:
+
+| Model | What it predicts |
+|---|---|
+| `Qin_2026_ropeginterferon` | Total serum ropeg concentration (`Cc`), healthy volunteers and ET patients |
+| `Qin_2026_ropeginterferon_wbc` | WBC count (`circ_wbc`) with the PK layer fixed |
+| `Qin_2026_ropeginterferon_plt` | Platelet count (`circ_plt`) with the PK layer fixed |
+| `Qin_2026_ropeginterferon_jak2_month6` | Change in JAK2 V617F allele burden at month 6 or 7 (`djak2v617f`) |
+| `Qin_2026_ropeginterferon_jak2_month12` | Change in JAK2 V617F allele burden at month 12 or 13 (`djak2v617f`) |
+| `Qin_2026_ropeginterferon_anemia` | Probability of an anemia adverse event during treatment (`prob_anemia`) |
+
+The same group's polycythemia vera analysis is packaged separately as the
+`Qin_2025_ropeginterferon` family; the two analyses use different data and
+report different estimates.
+
+```{r load-models}
+mod_pk <- readModelDb("Qin_2026_ropeginterferon")
+mod_wbc <- readModelDb("Qin_2026_ropeginterferon_wbc")
+mod_plt <- readModelDb("Qin_2026_ropeginterferon_plt")
+mod_j6 <- readModelDb("Qin_2026_ropeginterferon_jak2_month6")
+mod_j12 <- readModelDb("Qin_2026_ropeginterferon_jak2_month12")
+mod_anemia <- readModelDb("Qin_2026_ropeginterferon_anemia")
+```
+
+# Population
+
+The PK analysis set is 273 participants (Qin 2026 Table 1): 94 healthy
+volunteers (A09-102, 32 Caucasian men given 24-270 ug; A17-101, 27 Chinese
+adults given 90-270 ug; A17-102, 35 Japanese and Caucasian men given 100-300
+ug) and 179 patients with ET (SURPASS-ET, 91 patients, 94.5% Asian, phase 3
+second-line versus anagrelide; EXCEED-ET, 88 patients in the United States and
+Canada, 77.3% Caucasian). All ET patients received the HIDAT regimen: 250 ug
+subcutaneously at week 0, 350 ug at week 2 and 500 ug every 2 weeks from week
+4, adjusted for tolerability. Pooled median age 45 years (19-84), weight 70.0
+kg (41.5-153), BMI 24.3 kg/m^2 (16.9-49.7); 42.1% female. Baseline platelet
+counts were a median 796 (EXCEED-ET) and 942 (SURPASS-ET) x 10^9/L, WBC counts
+7.47 and 11.6 x 10^9/L, and JAK2 V617F allele burden 0% and 31.7%. The 179 ET
+patients form the PK-PD and exposure-response populations.
+
+```{r population}
+str(rxode2::rxode(mod_pk)$population)
+```
+
+# Source trace
+
+Structure comes from the supplementary control streams; every estimate comes
+from Tables 2-4 (the control streams carry initial estimates).
+
+```{r source-trace, echo = FALSE}
+trace <- tibble::tribble(
+  ~Item, ~Value, ~Source,
+  "PK structure: QE-TMDD, depot -> serum, total target state", "-", "Figure 1a; PK control stream $DES",
+  "CL/F at BMI 24 (L/day)", "0.606", "Table 2",
+  "CL/F BMI power", "1.03", "Table 2; control stream CLBMI = THETA(12)*LOG(BMI/24)",
+  "Vc/F (L), healthy", "1.88", "Table 2",
+  "Vc/F fold-change, ET patients", "2.007", "Table 2; control stream VCET = THETA(19)*ET inside EXP()",
+  "ka (1/day)", "0.123", "Table 2; control stream divides by 24",
+  "Tlag (h)", "0.651", "Table 2",
+  "Rtot,0 / Rtot,SS (ng/mL)", "0.17 / 0.0142", "Table 2",
+  "kint / kdeg (1/h)", "0.12 / 0.579", "Table 2; used unscaled in the hourly control stream",
+  "KD (ng/mL)", "0.0455", "Table 2",
+  "kdec (1/day), ET patients only, from day 0", "0.0203", "Table 2; control stream $DES, TSTART = 0 FIX",
+  "omega (SD) CL, Vc, ka, Rtot0, kint", "0.312, 0.867, 0.34, 1.36, 1.67", "Table 2; kint eta also on Rtot,SS (control stream)",
+  "Residual: proportional SD, additive SD (ng/mL)", "0.209, 0.155", "Table 2",
+  "WBC: kout (1/day), EP, WBC0, Imax, IC50 (ng/mL), gamma", "0.07, 0.147, 7.67, 0.493, 7.09, 0.923", "Table 3; WBC control stream",
+  "WBC0: JAK2 power (reference 13.7%), Asian fold", "0.178, 1.34", "Table 3; control stream WBCJAK2, WBCRACE",
+  "WBC omega block (SD; covariances)", "1.26, 1.3, 0.305, 0.832, 0.702; -0.604, 0.163, 0.0539, 0.376", "Table 3; BLOCK(5) layout from the control stream",
+  "WBC residual: proportional SD, additive SD", "0.162, 1.458e-6 (fixed)", "Table 3; additive from control stream $SIGMA FIX",
+  "PLT: kout (1/day), PLT0, Imax, IC50 (ng/mL), EP, gamma", "0.033, 884, 0.598, 7.02, 0.121, 1.86", "Table 3; platelet control stream",
+  "PLT omega (SD): kout, PLT0, Imax, IC50, EP; cov PLT0-Imax", "0.632, 0.353, 0.589, 1.02, 1.5; 0.0998", "Table 3",
+  "PLT residual: proportional SD, additive SD", "0.116, 0.103", "Table 3",
+  "JAK2 month 6/7: beta0, beta1 (CAV), beta2 (baseline JAK2)", "2.45, -0.127, -0.079", "Table 4; Equation (3)",
+  "JAK2 month 12/13: beta0, beta1, beta2", "1.94, -0.147, -0.103", "Table 4; Equation (3)",
+  "Anemia logit: beta0, beta1 (CAV), beta2 (baseline Hb, g/dL)", "5.20, 0.024, -0.522", "Table 4; Equation (5)"
+)
+knitr::kable(trace)
+```
+
+# Pharmacokinetics
+
+## Steady state at 500 ug every 2 weeks (Table S1)
+
+Supplementary Table S1 reports the simulated steady-state exposure at 500 ug
+every 2 weeks for all 273 participants, by race. The model has no race effect,
+so the three groups differ only through their mix of healthy volunteers and ET
+patients (Table 1: 46 of 114 Caucasian, 45 of 138 Asian and 3 of 21 other
+participants were healthy) and their BMI.
+
+```{r pk-ss-sim}
+tau <- 336
+n_dose <- 21
+race_n <- c(Caucasian = 114, Asian = 138, Other = 21)
+healthy_n <- c(Caucasian = 46, Asian = 45, Other = 3)
+
+set.seed(2026101)
+rxode2::rxSetSeed(2026101)
+cohort_ss <- bind_rows(lapply(names(race_n), function(r) {
+  tibble(
+    race = r,
+    DIS_HEALTHY = rep(c(1, 0), c(healthy_n[[r]], race_n[[r]] - healthy_n[[r]]))
+  )
+})) |>
+  mutate(
+    id = row_number(),
+    BMI = pmin(pmax(exp(rnorm(n(), log(24.3), 0.15)), 16.9), 49.7)
+  )
+
+ss_times <- c(0, seq((n_dose - 1) * tau, n_dose * tau, by = 4))
+ev_ss <- bind_rows(
+  tibble(time = seq(0, (n_dose - 1) * tau, by = tau), amt = 500, evid = 1, cmt = "depot"),
+  tibble(time = ss_times, amt = 0, evid = 0, cmt = "central")
+)
+ev_ss <- tidyr::crossing(cohort_ss, ev_ss) |> arrange(id, time, desc(evid))
+
+sim_ss <- rxode2::rxSolve(mod_pk, ev_ss, keep = c("race", "DIS_HEALTHY")) |>
+  as.data.frame()
+```
+
+```{r pk-ss-nca}
+conc_ss <- sim_ss |>
+  filter(!is.na(Cc)) |>
+  select(id, race, time, Cc)
+dose_ss <- ev_ss |>
+  filter(evid == 1) |>
+  select(id, race, time, amt)
+
+o_conc <- PKNCAconc(conc_ss, Cc ~ time | race + id)
+o_dose <- PKNCAdose(dose_ss, amt ~ time | race + id)
+intervals <- data.frame(
+  start = (n_dose - 1) * tau, end = n_dose * tau,
+  cmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE
+)
+nca_ss <- pk.nca(PKNCAdata(o_conc, o_dose, intervals = intervals))
+
+# Table S1 medians, AUC in h*ng/mL over the 336-h interval.
+ref_s1 <- data.frame(
+  race = c("Caucasian", "Asian", "Other"),
+  auclast = c(16880, 17815, 17860),
+  cav = c(50.238, 53.021, 53.155),
+  cmax = c(69.7265, 73.2195, 73.389),
+  cmin = c(27.257, 26.4175, 31.835)
+)
+cmp_s1 <- ncaComparisonTable(
+  nca_ss, ref_s1,
+  by = "race",
+  units = c(auclast = "h*ng/mL", cav = "ng/mL", cmax = "ng/mL", cmin = "ng/mL")
+)
+knitr::kable(cmp_s1, caption = "Steady-state exposure at 500 ug every 2 weeks: simulated medians versus Qin 2026 Table S1.")
+```
+
+```{r pk-ss-check}
+nca_med <- as.data.frame(nca_ss) |>
+  filter(PPTESTCD %in% c("cav", "cmax", "cmin")) |>
+  group_by(race, PPTESTCD) |>
+  summarise(sim = median(PPORRES), .groups = "drop") |>
+  left_join(
+    tidyr::pivot_longer(ref_s1, -race, names_to = "PPTESTCD", values_to = "ref"),
+    by = c("race", "PPTESTCD")
+  ) |>
+  mutate(pct = 100 * (sim - ref) / ref)
+# Average and peak exposure are set by CL/F, Vc/F and ka and are checked
+# tightly; the trough also depends on the shape of the absorption and on
+# which participants Table S1 included, so it carries a wider envelope.
+stopifnot(
+  all(abs(nca_med$pct[nca_med$PPTESTCD == "cav"]) < 15),
+  all(abs(nca_med$pct[nca_med$PPTESTCD == "cmax"]) < 15),
+  all(abs(nca_med$pct[nca_med$PPTESTCD == "cmin"]) < 40)
+)
+```
+
+Cavg and AUC land within about 6% of Table S1 and Cmax within about 10% in
+every group. The trough is the least well reproduced metric (up to about 25%
+high in the Asian group). Table S1's very wide ranges (Cmin down to 0.03 ng/mL)
+show that the authors simulated each participant from their own post hoc
+estimates, including some far from typical, which a parametric virtual cohort
+reproduces only on average.
+
+The same check tells the two readings of Table 2's "Fold-increase in Vc/F for
+ET patient" apart. The control stream adds `THETA(19)*ET` inside the
+exponential, so the table could print either `THETA(19)` itself or the fold
+change `exp(THETA(19))`:
+
+```{r vc-reading}
+typ_ss <- function(fold) {
+  ev <- rxode2::et(amt = 500, ii = tau, addl = n_dose - 1, cmt = "depot") |>
+    rxode2::et(seq((n_dose - 1) * tau, n_dose * tau, by = 2), cmt = "central")
+  s <- rxode2::rxSolve(
+    rxode2::zeroRe(mod_pk), ev,
+    params = c(e_et_vc = log(fold)),
+    iCov = data.frame(id = 1, BMI = 24, DIS_HEALTHY = 0)
+  )
+  c(cav = mean(s$Cc), cmax = max(s$Cc), cmin = min(s$Cc))
+}
+vc_tab <- rbind(
+  "fold = 2.007 (used)" = typ_ss(2.007),
+  "fold = exp(2.007) = 7.44" = typ_ss(exp(2.007))
+)
+knitr::kable(vc_tab, digits = 1, caption = "Typical ET patient (BMI 24) at steady state, ng/mL.")
+# Table S1 Cmax medians are 70-73 ng/mL; the 7.44-fold reading flattens the
+# profile to a Cmax near 57 ng/mL.
+stopifnot(vc_tab[1, "cmax"] > 62, vc_tab[2, "cmax"] < 60)
+```
+
+## Single doses in healthy volunteers
+
+```{r pk-single, fig.cap = "Typical total serum ropeg after single subcutaneous doses in a healthy volunteer (BMI 24 kg/m^2)."}
+sd_doses <- c(90, 180, 270)
+ev_sd <- bind_rows(lapply(seq_along(sd_doses), function(i) {
+  bind_rows(
+    tibble(id = i, time = 0, amt = sd_doses[i], evid = 1, cmt = "depot"),
+    tibble(id = i, time = seq(0, 672, by = 2), amt = 0, evid = 0, cmt = "central")
+  )
+})) |>
+  mutate(BMI = 24, DIS_HEALTHY = 1, dose = paste(sd_doses[id], "ug"))
+sim_sd <- rxode2::rxSolve(rxode2::zeroRe(mod_pk), ev_sd, keep = "dose") |>
+  as.data.frame()
+ggplot(sim_sd, aes(time, Cc, colour = dose)) +
+  geom_line() +
+  labs(x = "Time after dose (h)", y = "Total serum ropeg (ng/mL)", colour = "Dose") +
+  theme_bw()
+tmax_sd <- sim_sd |>
+  group_by(dose) |>
+  slice_max(Cc, n = 1)
+knitr::kable(
+  tmax_sd |>
+    select(dose, time, Cc) |>
+    rename("Dose" = dose, "Tmax (h)" = time, "Cmax (ng/mL)" = Cc),
+  digits = 2
+)
+# Absorption is slow (ka 0.123/day): the peak falls 3-5 days after the dose.
+stopifnot(all(tmax_sd$time > 72 & tmax_sd$time < 120))
+```
+
+# White blood cell count (Figure 2)
+
+Figure 2 simulates the WBC profile over one year of HIDAT dosing for Asian and
+Caucasian patients at the 10th, 50th and 90th percentiles of baseline JAK2
+V617F allele burden. The 10th- and 50th-percentile panels are identical, which
+under the control stream's rule (a burden of 0 is replaced by the 13.7%
+reference) means both percentiles are 0%; the 90th percentile is not printed and
+is taken here as 55%.
+
+```{r hidat-events}
+hidat_doses <- tibble(
+  time = c(0, 336, seq(672, 672 + 24 * 336, by = 336)),
+  amt = c(250, 350, rep(500, 25))
+)
+make_hidat <- function(cohort, obs_times) {
+  ev <- bind_rows(
+    hidat_doses |> mutate(evid = 1, cmt = "depot"),
+    tibble(time = obs_times, amt = 0, evid = 0, cmt = "central")
+  )
+  tidyr::crossing(cohort, ev) |> arrange(id, time, desc(evid))
+}
+```
+
+```{r wbc-sim}
+n_arm <- 100
+rxode2::rxSetSeed(2026102)
+cohort_wbc <- tidyr::crossing(
+  race = c("Caucasian", "Asian"),
+  jak2_pct = c("JAK2 10th", "JAK2 50th", "JAK2 90th"),
+  rep = seq_len(n_arm)
+) |>
+  mutate(
+    id = row_number(),
+    RACE_ASIAN = as.numeric(race == "Asian"),
+    TUM_JAK2_V617F_VAF = ifelse(jak2_pct == "JAK2 90th", 55, 0),
+    BMI = 24
+  ) |>
+  select(-rep)
+ev_wbc <- make_hidat(cohort_wbc, seq(0, 365 * 24, by = 48))
+sim_wbc <- rxode2::rxSolve(mod_wbc, ev_wbc, keep = c("race", "jak2_pct")) |>
+  as.data.frame()
+sum_wbc <- sim_wbc |>
+  group_by(race, jak2_pct, time) |>
+  summarise(
+    med = median(circ_wbc),
+    lo = quantile(circ_wbc, 0.05),
+    hi = quantile(circ_wbc, 0.95),
+    .groups = "drop"
+  )
+```
+
+```{r fig2, fig.height = 4, fig.cap = "Replicates Figure 2 of Qin 2026: median and 90% prediction interval of WBC count under HIDAT dosing."}
+ggplot(sum_wbc, aes(time / 24, med, colour = race, fill = race)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+  geom_line() +
+  geom_hline(yintercept = 9.5, linetype = "dashed", colour = "red") +
+  facet_wrap(~jak2_pct) +
+  scale_colour_manual(values = c(Asian = "blue", Caucasian = "red")) +
+  scale_fill_manual(values = c(Asian = "blue", Caucasian = "red")) +
+  labs(x = "Time (day)", y = "WBC (10^9/L)", colour = "Race", fill = "Race") +
+  theme_bw()
+```
+
+```{r fig2-check}
+# Medians read from Figure 2 (JAK2 10th/50th panels): Caucasian about 8.0 at
+# day 0 and 3.6 at day 365; Asian about 10.7 and 4.8.
+fig2_ref <- tibble(
+  race = c("Caucasian", "Caucasian", "Asian", "Asian"),
+  day = c(0, 364, 0, 364),
+  ref = c(8.0, 3.6, 10.7, 4.8)
+)
+fig2_cmp <- sum_wbc |>
+  filter(jak2_pct == "JAK2 50th") |>
+  mutate(day = time / 24) |>
+  inner_join(fig2_ref, by = c("race", "day")) |>
+  mutate(pct = 100 * (med - ref) / ref)
+knitr::kable(
+  fig2_cmp |>
+    select(race, day, ref, med, pct) |>
+    rename("Figure 2 (read)" = ref, "Simulated median" = med, "% diff" = pct),
+  digits = 2
+)
+stopifnot(abs(median(fig2_cmp$pct)) < 10, max(abs(fig2_cmp$pct)) < 20)
+```
+
+The Discussion restates the maximal effect on production as "maximally reduce
+kin,W 57%", which is not Imax,W (0.493) but the combined reduction
+1 - (1 - Imax,W)(1 - EPW) = 1 - 0.507 x 0.853 = 0.567. The same identity
+reproduces the platelet figure below.
+
+# Platelet count
+
+```{r plt-sim}
+rxode2::rxSetSeed(2026103)
+cohort_plt <- tibble(id = seq_len(200), BMI = 24)
+ev_plt <- make_hidat(cohort_plt, seq(0, 365 * 24, by = 48))
+sim_plt <- rxode2::rxSolve(mod_plt, ev_plt) |> as.data.frame()
+typ_plt <- rxode2::rxSolve(rxode2::zeroRe(mod_plt), make_hidat(cohort_plt[1, ], seq(0, 365 * 24, by = 48))) |>
+  as.data.frame()
+sum_plt <- sim_plt |>
+  group_by(time) |>
+  summarise(med = median(circ_plt), lo = quantile(circ_plt, 0.05), hi = quantile(circ_plt, 0.95))
+```
+
+```{r plt-fig, fig.cap = "Simulated platelet count under HIDAT dosing: median and 90% prediction interval (200 patients), with the typical-value profile dashed."}
+ggplot(sum_plt, aes(time / 24, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2) +
+  geom_line() +
+  geom_line(data = typ_plt, aes(time / 24, circ_plt), linetype = "dashed") +
+  labs(x = "Time (day)", y = "Platelets (10^9/L)") +
+  theme_bw()
+```
+
+```{r plt-check}
+imax_p <- 0.598
+ep_p <- 0.121
+# Discussion: "maximally reduce kin by 65%".
+stopifnot(abs(100 * (1 - (1 - imax_p) * (1 - ep_p)) - 65) < 1)
+# Typical day-365 platelet count against the closed form
+# PLT0 (1 - EP)(1 - Imax C^g / (IC50^g + C^g)) at the simulated concentration.
+last <- typ_plt[nrow(typ_plt), ]
+c_end <- mean(typ_plt$Cc[typ_plt$time > 365 * 24 - 336])
+closed <- 884 * (1 - ep_p) * (1 - imax_p * c_end^1.86 / (7.02^1.86 + c_end^1.86))
+c(simulated = last$circ_plt, closed_form = closed)
+stopifnot(abs(last$circ_plt / closed - 1) < 0.1)
+```
+
+# JAK2 V617F allele burden (Figure 3c, 3d)
+
+```{r jak2}
+grid_j <- tidyr::crossing(
+  CAV = seq(0, 100, by = 5),
+  TUM_JAK2_V617F_VAF = c(19.55, 31.3, 46.5)
+) |>
+  mutate(id = row_number(), time = 0, evid = 0)
+pred_j <- bind_rows(
+  as.data.frame(rxode2::rxSolve(mod_j6, grid_j, keep = c("CAV", "TUM_JAK2_V617F_VAF"))) |>
+    mutate(landmark = "Month 6 or 7"),
+  as.data.frame(rxode2::rxSolve(mod_j12, grid_j, keep = c("CAV", "TUM_JAK2_V617F_VAF"))) |>
+    mutate(landmark = "Month 12 or 13")
+)
+```
+
+```{r fig3cd, fig.cap = "Replicates Figure 3c-d of Qin 2026: predicted change in JAK2 V617F allele burden at three baseline allele burdens."}
+ggplot(pred_j, aes(CAV, djak2v617f, colour = factor(TUM_JAK2_V617F_VAF))) +
+  geom_line() +
+  facet_wrap(~landmark) +
+  labs(
+    x = "Cavg from the first dose to the landmark (ng/mL)",
+    y = "Change in JAK2 V617F allele burden (percentage points)",
+    colour = "Baseline JAK2 V617F (%)"
+  ) +
+  theme_bw()
+```
+
+```{r jak2-check}
+# Values read from Figure 3c (month 6/7) and 3d (month 12/13) at CAV = 0:
+# about +1 and -1.3 (19.55% and 46.5%), and 0 and -3.
+at0 <- pred_j |>
+  filter(CAV == 0, TUM_JAK2_V617F_VAF %in% c(19.55, 46.5)) |>
+  arrange(landmark, TUM_JAK2_V617F_VAF)
+at0$read <- c(0, -3, 1, -1.3)
+knitr::kable(at0[, c("landmark", "TUM_JAK2_V617F_VAF", "djak2v617f", "read")], digits = 2)
+stopifnot(all(abs(at0$djak2v617f - at0$read) < 0.6))
+```
+
+# Anemia (Figure 3e, 3f)
+
+```{r anemia}
+grid_a <- tidyr::crossing(CAV = seq(0, 150, by = 5), HGB = c(12.75, 13.8, 14.6)) |>
+  mutate(id = row_number(), time = 0, evid = 0)
+pred_a <- as.data.frame(rxode2::rxSolve(mod_anemia, grid_a, keep = c("CAV", "HGB")))
+```
+
+```{r fig3f, fig.cap = "Replicates Figure 3f of Qin 2026: predicted probability of anemia at the quartiles of baseline hemoglobin."}
+ggplot(pred_a, aes(CAV, prob_anemia, colour = factor(HGB))) +
+  geom_line() +
+  labs(x = "Cavg throughout treatment (ng/mL)", y = "Probability of anemia", colour = "Baseline Hb (g/dL)") +
+  theme_bw()
+```
+
+```{r anemia-check}
+# Figure 3f at CAV = 0: about 0.18 (12.75 g/dL) and 0.08 (14.6 g/dL); at
+# CAV = 150, about 0.90 (12.75 g/dL).
+chk_a <- pred_a |>
+  filter((CAV == 0 & HGB %in% c(12.75, 14.6)) | (CAV == 150 & HGB == 12.75))
+chk_a$read <- c(0.18, 0.08, 0.90)
+knitr::kable(chk_a[, c("CAV", "HGB", "prob_anemia", "read")], digits = 3)
+stopifnot(all(abs(chk_a$prob_anemia - chk_a$read) < 0.03))
+
+# Expected incidence in the exposure-safety population. Exposure is drawn
+# around the Figure 3e box-plot medians (about 37 ng/mL) and baseline Hb
+# around the ET-patient medians of Table 1 (13.6-13.9 g/dL); the observed
+# incidence is 52/179 = 29.1% (Table S2).
+set.seed(2026104)
+pop_a <- tibble(
+  id = 1:179, time = 0, evid = 0,
+  CAV = exp(rnorm(179, log(37), 0.35)),
+  HGB = rnorm(179, 13.75, 1.3)
+)
+inc <- mean(as.data.frame(rxode2::rxSolve(mod_anemia, pop_a))$prob_anemia)
+inc
+stopifnot(abs(inc - 0.291) < 0.06)
+```
+
+# Assumptions and deviations
+
+* **Time unit.** The control streams run in hours. Table 2 values for CL/F and
+  ka are per day and the streams divide them by 24; the packaged models keep the
+  Table 2 numbers and apply the same `/24` in `model()`. kint and kdeg are used
+  per hour, as printed in Table 2 and used unscaled in the hourly control
+  stream. kdec is per day and acts on study day; the models apply it to
+  `t / 24`.
+* **Table 3 kout units.** Table 3 labels both kout values "1/h", but the WBC and
+  platelet control streams label THETA(1) "1/day" and divide it by 24. The
+  per-day reading gives white-cell and platelet half-lives of 10 and 21 days and
+  reproduces the Figure 2 time course.
+* **Vc/F fold change and Asian effect.** Table 2's 2.007 and Table 3's 1.34
+  are fold changes, i.e. `exp(THETA)` for terms the control streams add inside
+  the exponential. The Vc reading is confirmed by Table S1 (section above). For
+  WBC0, 1.34 times the JAK2 term (31.7/13.7)^0.178 = 1.16 reproduces the
+  SURPASS-ET (94.5% Asian) to EXCEED-ET (mostly Caucasian, JAK2 median 0%)
+  baseline ratio of 11.6/7.47 = 1.55; a value of exp(1.34) = 3.82 would put the
+  typical Asian count near 34 x 10^9/L.
+* **IIV and residual scale.** Table 2 and Table 3 report omega and sigma as
+  standard deviations and the off-diagonals as covariances; the squares match
+  the control-stream initial variances (for example ka 0.34^2 = 0.116 versus
+  the initial 0.117).
+* **Shared eta on Rtot,SS.** The PK control stream writes
+  `RTOTSS = THETA(6)*EXP(ETA(5))`, the same eta as kint; the model keeps this.
+* **WBC additive residual.** Table 3 prints 0.0000146; the control stream fixes
+  the variance at 2.12565E-12 (SD 1.458e-6). The fixed control-stream value is
+  used. Both are negligible.
+* **JAK2 reference substitution.** The WBC control stream replaces a baseline
+  JAK2 V617F burden of 0 (or missing) with the 13.7% reference, so
+  JAK2-negative patients receive no JAK2 effect; the packaged model does the
+  same.
+* **EP from time zero.** Both PD control streams switch the empirical
+  production reduction EP on at `TIME >= 0`, so it acts from the first record
+  and the untreated steady state of a patient is `WBC0 (1 - EP)` rather than
+  `WBC0`. The packaged models apply it throughout.
+* **PK layer in the PD models.** The PD control streams read individual PK
+  parameters from the PK fit. The packaged PD models carry the PK layer with its
+  Table 2 values and variances fixed and the ET-patient branch hard-coded,
+  since every PD subject is an ET patient. The control streams compute the
+  Rtot decline once per record in `$PK`; the packaged models evaluate it
+  continuously.
+* **Exposure-response residuals.** The JAK2 regressions report no residual SD
+  and the anemia model is a Bernoulli regression; the `fixed(0.001)` residuals
+  are placeholders so the typical prediction can be simulated.
+* **Figure 2 JAK2 percentiles.** The 90th-percentile baseline burden is not
+  reported and is set to 55%; only the 10th/50th panels, which are identical
+  and therefore at 0%, are checked numerically.
+* **Covariates screened but not kept.** The final PK control stream still
+  carries ALT on CL and age, BMI, platelets, hemoglobin and sex on Vc, all
+  fixed to 0; the WBC stream carries BSA, ALP, age and ADA, also fixed to 0.
+  These are not part of the packaged models.
+* **Errata.** No erratum was found for Qin 2026 as of 2026-11-18.
