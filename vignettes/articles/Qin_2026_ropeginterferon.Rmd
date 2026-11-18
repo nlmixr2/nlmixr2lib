@@ -237,15 +237,17 @@ stopifnot(vc_tab[1, "cmax"] > 62, vc_tab[2, "cmax"] < 60)
 
 ```{r pk-single, fig.cap = "Typical total serum ropeg after single subcutaneous doses in a healthy volunteer (BMI 24 kg/m^2)."}
 sd_doses <- c(90, 180, 270)
-ev_sd <- bind_rows(lapply(seq_along(sd_doses), function(i) {
-  bind_rows(
-    tibble(id = i, time = 0, amt = sd_doses[i], evid = 1, cmt = "depot"),
-    tibble(id = i, time = seq(0, 672, by = 2), amt = 0, evid = 0, cmt = "central")
-  )
-})) |>
-  mutate(BMI = 24, DIS_HEALTHY = 1, dose = paste(sd_doses[id], "ug"))
-sim_sd <- rxode2::rxSolve(rxode2::zeroRe(mod_pk), ev_sd, keep = "dose") |>
-  as.data.frame()
+# One typical-value solve per dose: a zero-variability model is solved one
+# subject at a time.
+sim_sd <- bind_rows(lapply(sd_doses, function(d) {
+  ev <- bind_rows(
+    tibble(id = 1, time = 0, amt = d, evid = 1, cmt = "depot"),
+    tibble(id = 1, time = seq(0, 672, by = 2), amt = 0, evid = 0, cmt = "central")
+  ) |>
+    mutate(BMI = 24, DIS_HEALTHY = 1)
+  as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod_pk), ev)) |>
+    mutate(dose = paste(d, "ug"))
+}))
 ggplot(sim_sd, aes(time, Cc, colour = dose)) +
   geom_line() +
   labs(x = "Time after dose (h)", y = "Total serum ropeg (ng/mL)", colour = "Dose") +
@@ -397,7 +399,9 @@ grid_j <- tidyr::crossing(
   CAV = seq(0, 100, by = 5),
   TUM_JAK2_V617F_VAF = c(19.55, 31.3, 46.5)
 ) |>
-  mutate(id = row_number(), time = 0, evid = 0)
+  # The regressions have no random effects, so the grid is solved as one
+  # pseudo-subject with one record per covariate combination.
+  mutate(id = 1, time = row_number(), evid = 0)
 pred_j <- bind_rows(
   as.data.frame(rxode2::rxSolve(mod_j6, grid_j, keep = c("CAV", "TUM_JAK2_V617F_VAF"))) |>
     mutate(landmark = "Month 6 or 7"),
@@ -433,7 +437,7 @@ stopifnot(all(abs(at0$djak2v617f - at0$read) < 0.6))
 
 ```{r anemia}
 grid_a <- tidyr::crossing(CAV = seq(0, 150, by = 5), HGB = c(12.75, 13.8, 14.6)) |>
-  mutate(id = row_number(), time = 0, evid = 0)
+  mutate(id = 1, time = row_number(), evid = 0)
 pred_a <- as.data.frame(rxode2::rxSolve(mod_anemia, grid_a, keep = c("CAV", "HGB")))
 ```
 
@@ -459,7 +463,7 @@ stopifnot(all(abs(chk_a$prob_anemia - chk_a$read) < 0.03))
 # incidence is 52/179 = 29.1% (Table S2).
 set.seed(2026104)
 pop_a <- tibble(
-  id = 1:179, time = 0, evid = 0,
+  id = 1, time = 1:179, evid = 0,
   CAV = exp(rnorm(179, log(37), 0.35)),
   HGB = rnorm(179, 13.75, 1.3)
 )
