@@ -7910,6 +7910,8 @@ navbar:
         href: articles/Miano_2024_tacrolimus.html
       - text: "Tacrolimus (Moes 2016)"
         href: articles/Moes_2016_tacrolimus.html
+      - text: "Tacrolimus (Mohamed 2026)"
+        href: articles/Mohamed_2026_tacrolimus.html
       - text: "Tacrolimus (MohammedAli 2023)"
         href: articles/MohammedAli_2023_tacrolimus.html
       - text: "Tacrolimus (MohammedAli 2025)"
@@ -11137,6 +11139,7 @@ articles:
   - articles/Mohamed_2013_procainamide
   - articles/Mohamed_2016_colistin_meropenem
   - articles/Mohamed_2019_upadacitinib
+  - articles/Mohamed_2026_tacrolimus
   - articles/MohammedAli_2023_tacrolimus
   - articles/MohammedAli_2025_tacrolimus
   - articles/Mohanan_2017_fludarabine
