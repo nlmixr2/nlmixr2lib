@@ -7890,6 +7890,8 @@ navbar:
         href: articles/JacoboCabral_2015_tacrolimus.html
       - text: "Tacrolimus (Ji 2018)"
         href: articles/Ji_2018_tacrolimus.html
+      - text: "Tacrolimus (Jung 2026)"
+        href: articles/Jung_2026_tacrolimus.html
       - text: "Tacrolimus (Kamp 2023)"
         href: articles/Kamp_2023_tacrolimus.html
       - text: "Tacrolimus (Kassir 2014)"
@@ -10568,6 +10570,7 @@ articles:
   - articles/Jung_2023_fractal_kinetics
   - articles/Jung_2024_clopidogrel
   - articles/Jung_2024_vancomycin
+  - articles/Jung_2026_tacrolimus
   - articles/Kado_2020_benzathine_benzylpenicillin_g
   - articles/Kado_2023_benzathine_benzylpenicillin_g
   - articles/Kaikousidis_2023_donepezil_mouse

@@ -1,0 +1,550 @@
+---
+title: "Tacrolimus (Jung 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tacrolimus (Jung 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+ui <- rxode2::rxode(readModelDb("Jung_2026_tacrolimus"))
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article: <https://doi.org/10.3389/fphar.2026.1896778>
+
+Jung 2026 fitted a one-compartment model to routine whole-blood tacrolimus
+troughs in children younger than 36 months during the first 11 days after
+liver transplantation for biliary atresia. The model's distinguishing feature
+is its inter-occasion variability (IOV) on apparent clearance: each of six
+postoperative occasions has its own estimated variance, from a CV of 123.8% on
+postoperative day (POD) 2 down to 10.7% on POD 5-6 and back up to 38.8% on
+POD 9-11. The paper then uses the model for model-informed precision dosing: a
+closed-form steady-state dose for a 10 ng/mL target trough (Equation 6,
+Table 7) and maximum a posteriori (MAP) Bayesian forecasting in four example
+subjects (Table 8). Both are reproduced below.
+
+# Population
+
+92 recipients of a primary living- or deceased-donor liver transplant for
+biliary atresia at Asan Medical Center Children's Hospital (Seoul) between
+January 2010 and May 2023, all younger than 36 months at transplantation
+(Jung 2026 Table 1). Median age 11.7 months (range 3.3-35.5), median weight
+8.95 kg (4.3-14.4), 58.7% female. Subject-level median total bilirubin
+2.30 mg/dL (0.80-10.60) and AST 68 U/L (26-461); individual records reached
+29.0 mg/dL and 8,781 U/L. Oral tacrolimus was started twice daily on POD 1 at
+0.0375 mg/kg per dose and then adjusted by trough monitoring. The analysis
+used 731 whole-blood concentrations (ACMIA immunoassay, LLOQ 1.0 ng/mL)
+collected through POD 11 and grouped into six pharmacokinetic occasions
+(Table 2).
+
+```{r population}
+str(ui$population)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Structure: 1-compartment, first-order absorption and elimination | -- | Methods, Structural model |
+| `lka` (ka, 1/h) | 4.5, held constant | Table 4; Methods (from Wang et al. 2019) |
+| `lcl` (CL/F at TBIL 2 mg/dL, AST 60 U/L, L/h) | 4.85 | Table 4; Equation 9 |
+| `lvc` (V/F at 12 months, L) | 123.9 | Table 4 (Equation 10 rounds to 124) |
+| `e_tbili_cl` | -0.353 | Table 4 ('negative power' 0.353); Equation 9 |
+| `e_ast_cl` | -0.106 | Table 4 ('negative power' 0.106); Equation 9 |
+| `e_age_vc` | 0.16, held constant | Table 4; Equation 10; Supplementary Table S2 (0.156) |
+| CL/F = TV(CL/F) * exp(eta_CL + eta_OCC) | -- | Equation 1 |
+| V/F = TV(V/F) * exp(eta_V) | -- | Equation 2 |
+| `etalcl`, `etalvc` variances | 0.319, 0.258 | Table 5 |
+| `etalcl`-`etalvc` covariance | 0.7 * sqrt(0.319 * 0.258) = 0.2008 | Table 5 (r = 0.7) |
+| `etaiov_cl_1` ... `etaiov_cl_6` | 0.929, 0.114, 0.034, 0.011, 0.044, 0.14 | Table 5 |
+| Occasion definition (OCC 1-6 = POD 2, 3, 4, 5-6, 7-8, 9-11) | -- | Methods, Fixed effect and random effect; Table 2 |
+| Residual W = sqrt(add^2 + prop^2 * IPRED^2) | -- | Equation 3 |
+| `addSd` (ng/mL) | 1.37 | Table 4 |
+| `propSd` (fraction) | 0.206 | Table 4 |
+| Steady-state dose for a target trough | -- | Equation 6 |
+| Superposition / steady-state trough fraction | -- | Supplementary Table S3, Equations ST3-1 to ST3-3 |
+
+# Covariate-based dosing (Table 7)
+
+Table 7 evaluates the final covariate model at the median total bilirubin
+and AST of each occasion and gives the steady-state dose (q12h) that attains a
+10 ng/mL trough by Equation 6. The model is solved below at those covariates,
+first for the typical CL/F and V/F, then at steady state on the paper's
+tabulated doses to read the trough back. Table 7 does not state the age used
+for V/F; the reference age of 12 months is used here, which reproduces every
+tabulated dose to 0.01 mg.
+
+```{r table7}
+table7 <- data.frame(
+  OCC = 1:6,
+  POD = c("2", "3", "4", "5-6", "7-8", "9-11"),
+  tbili_mgdl = c(4.60, 4.35, 3.50, 2.80, 1.80, 1.20),
+  AST = c(188, 112, 77, 72, 54, 45),
+  cl_pub = c(3.21, 3.45, 3.88, 4.23, 5.09, 5.99),
+  dose_pub = c(0.45, 0.49, 0.56, 0.62, 0.78, 0.96)
+)
+
+# Equation 6: dose (mg) giving a steady-state trough ctrough (ng/mL) over tau (h)
+eq6_dose <- function(cl, v, ka = 4.5, tau = 12, ctrough = 10) {
+  k <- cl / v
+  ctrough * (ka - k) / ka /
+    (exp(-k * tau) / (1 - exp(-k * tau)) - exp(-ka * tau) / (1 - exp(-ka * tau))) *
+    v / 1000
+}
+
+mod_typ <- rxode2::zeroRe(ui)
+
+# Steady-state dosing at the published dose; the observation at 12 h is the
+# trough immediately before the next dose.
+ev7 <- table7 |>
+  dplyr::mutate(id = OCC, TBILI = tbili_mgdl * 17.1, AGE = 1) |>
+  dplyr::select(id, OCC, TBILI, AST, AGE, dose_pub) |>
+  dplyr::cross_join(data.frame(rec = c("dose", "obs"))) |>
+  dplyr::mutate(
+    time = ifelse(rec == "dose", 0, 12),
+    amt = ifelse(rec == "dose", dose_pub, 0),
+    evid = ifelse(rec == "dose", 1L, 0L),
+    ss = ifelse(rec == "dose", 1L, 0L),
+    ii = ifelse(rec == "dose", 12, 0),
+    cmt = ifelse(rec == "dose", "depot", "central")
+  ) |>
+  dplyr::select(id, time, amt, evid, ss, ii, cmt, OCC, TBILI, AST, AGE)
+
+sim7 <- rxode2::rxSolve(mod_typ, ev7,
+  returnType = "data.frame",
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12, maxsteps = 1e6
+)
+
+chk7 <- table7 |>
+  dplyr::left_join(
+    sim7 |> dplyr::select(id, cl, vc, Cc) |> dplyr::rename(OCC = id),
+    by = "OCC"
+  ) |>
+  dplyr::mutate(dose_eq6 = eq6_dose(cl, vc))
+
+chk7 |>
+  dplyr::transmute(
+    OCC, POD,
+    `TBIL (mg/dL)` = tbili_mgdl, `AST (U/L)` = AST,
+    `CL/F model (L/h)` = round(cl, 3), `CL/F Table 7` = cl_pub,
+    `Dose Eq. 6 (mg)` = round(dose_eq6, 3), `Dose Table 7` = dose_pub,
+    `Trough at Table 7 dose (ng/mL)` = round(Cc, 2)
+  ) |>
+  knitr::kable(caption = "Replicates Table 7 of Jung 2026.")
+
+stopifnot(
+  # CL/F: Table 7 rounds to 0.01 L/h; the printed 4.85 L/h is itself rounded
+  # (see Assumptions), so allow 0.5%.
+  all(abs(chk7$cl / chk7$cl_pub - 1) < 0.005),
+  # Dose: Table 7 prints two decimals.
+  all(abs(chk7$dose_eq6 - chk7$dose_pub) < 0.006),
+  # The ODE solve at the printed dose returns the 10 ng/mL target trough,
+  # within the two-decimal rounding of the dose (worst case 0.005 / 0.45 = 1.1%).
+  all(abs(chk7$Cc / 10 - 1) < 0.015)
+)
+```
+
+# Bayesian forecasting in four subjects (Table 8)
+
+Table 8 gives, for four subjects, the covariates on POD 2, the
+covariate-based typical CL/F, V/F and dose, the MAP random effects estimated
+from the single POD 2 trough, and the dose recommended for the next occasion
+with the occasion deviation reset to zero. Every derived row is a function of
+the model and the tabulated covariates and random effects, so each is
+recomputed here by solving the packaged model with the published etas
+supplied as individual parameters. Doses are rounded to the nearest 0.05 mg
+as in the paper.
+
+```{r table8}
+table8 <- data.frame(
+  subject = c("T082", "T067", "T054", "T027"),
+  age_months = c(16.5, 24.6, 9.4, 16.2),
+  tbili_mgdl = c(1.9, 1.7, 4.5, 8.2),
+  AST = c(94, 93, 188, 6656),
+  eta_cl = c(0.212, 0.004, -0.413, -0.641),
+  eta_v = c(0.128, 0.003, -0.449, -0.749),
+  kappa1 = c(0.639, 0.007, -0.359, -0.330),
+  cl_typ_pub = c(4.71, 4.91, 3.23, 1.79),
+  v_typ_pub = c(130.4, 139.0, 119.2, 130.0),
+  dose_cov_pub = c(0.70, 0.75, 0.45, 0.25),
+  cl_pod2_pub = c(11.04, 4.96, 1.49, 0.68),
+  v_ind_pub = c(148.2, 139.5, 76.1, 61.5),
+  dev_pub = c(134, 1, -54, -62),
+  cl_next_pub = c(5.82, 4.93, 2.14, 0.94),
+  dose_next_pub = c(0.90, 0.75, 0.30, 0.10),
+  change_pub = c(29, 0, -33, -60),
+  trough_next_pub = c(10.2, 10.3, 9.9, 8.1)
+)
+round_005 <- function(x) round(x / 0.05) * 0.05
+
+# One solve per scenario: typical (all etas 0), POD 2 individual (eta + kappa1
+# on occasion 1), next occasion (eta only, occasion 2 with kappa reset to 0).
+iov_zero <- setNames(as.list(rep(0, 6)), paste0("etaiov_cl_", 1:6))
+solve_tab8 <- function(scenario, occ, dose) {
+  ev <- table8 |>
+    dplyr::mutate(id = dplyr::row_number()) |>
+    dplyr::cross_join(data.frame(rec = c("dose", "obs"))) |>
+    dplyr::mutate(
+      time = ifelse(rec == "dose", 0, 12),
+      amt = ifelse(rec == "dose", dose, 0),
+      evid = ifelse(rec == "dose", 1L, 0L),
+      ss = ifelse(rec == "dose", 1L, 0L),
+      ii = ifelse(rec == "dose", 12, 0),
+      cmt = ifelse(rec == "dose", "depot", "central"),
+      OCC = occ, TBILI = tbili_mgdl * 17.1, AGE = age_months / 12
+    ) |>
+    dplyr::select(id, time, amt, evid, ss, ii, cmt, OCC, TBILI, AST, AGE)
+  prm <- data.frame(id = seq_len(nrow(table8)), iov_zero) |>
+    dplyr::mutate(etalcl = 0, etalvc = 0)
+  if (scenario != "typical") {
+    prm$etalcl <- table8$eta_cl
+    prm$etalvc <- table8$eta_v
+  }
+  if (scenario == "pod2") prm$etaiov_cl_1 <- table8$kappa1
+  rxode2::rxSolve(ui, ev,
+    params = prm, returnType = "data.frame",
+    rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12, maxsteps = 1e6
+  ) |>
+    dplyr::filter(time == 12) |>
+    dplyr::arrange(id)
+}
+
+typ <- solve_tab8("typical", occ = 1, dose = 1)
+pod2 <- solve_tab8("pod2", occ = 1, dose = 1)
+nxt_unit <- solve_tab8("next", occ = 2, dose = 1)
+
+chk8 <- table8 |>
+  dplyr::mutate(
+    cl_typ = typ$cl, v_typ = typ$vc,
+    dose_cov = round_005(eq6_dose(cl_typ, v_typ)),
+    cl_pod2 = pod2$cl, v_ind = pod2$vc,
+    dev = 100 * (cl_pod2 / cl_typ - 1),
+    cl_next = nxt_unit$cl,
+    dose_next = round_005(eq6_dose(cl_next, v_ind)),
+    change = 100 * (dose_next / dose_cov - 1),
+    # Linear model: the steady-state trough scales with dose, so the unit-dose
+    # steady-state solve times the recommended dose is the predicted trough.
+    trough_next = nxt_unit$Cc * dose_next
+  )
+
+chk8 |>
+  dplyr::transmute(
+    Subject = subject,
+    `Typical CL/F (model / paper)` = sprintf("%.2f / %.2f", cl_typ, cl_typ_pub),
+    `Typical V/F` = sprintf("%.1f / %.1f", v_typ, v_typ_pub),
+    `Covariate dose (mg)` = sprintf("%.2f / %.2f", dose_cov, dose_cov_pub),
+    `POD 2 CL/F` = sprintf("%.2f / %.2f", cl_pod2, cl_pod2_pub),
+    `Individual V/F` = sprintf("%.1f / %.1f", v_ind, v_ind_pub),
+    `Deviation (%)` = sprintf("%+.0f / %+.0f", dev, dev_pub),
+    `Next-occasion CL/F` = sprintf("%.2f / %.2f", cl_next, cl_next_pub),
+    `Recommended dose (mg)` = sprintf("%.2f / %.2f", dose_next, dose_next_pub),
+    `Change (%)` = sprintf("%+.0f / %+.0f", change, change_pub),
+    `Predicted trough (ng/mL)` = sprintf("%.1f / %.1f", trough_next, trough_next_pub)
+  ) |>
+  knitr::kable(caption = "Replicates Table 8 of Jung 2026 (model / paper).")
+
+stopifnot(
+  # Two-decimal CL/F rows: the larger of 0.5% and half a rounding unit.
+  all(abs(chk8$cl_typ - chk8$cl_typ_pub) < pmax(0.005 * chk8$cl_typ_pub, 0.0051)),
+  all(abs(chk8$cl_pod2 - chk8$cl_pod2_pub) < pmax(0.005 * chk8$cl_pod2_pub, 0.0051)),
+  all(abs(chk8$cl_next - chk8$cl_next_pub) < pmax(0.005 * chk8$cl_next_pub, 0.0051)),
+  # One-decimal V/F rows. The individual V/F also carries the 3-decimal
+  # rounding of the published eta (up to 0.0005 on the log scale; T067 gives
+  # 139.40 L against a printed 139.5 L).
+  all(abs(chk8$v_typ - chk8$v_typ_pub) < 0.051),
+  all(abs(chk8$v_ind - chk8$v_ind_pub) < 0.051 + 0.0005 * chk8$v_ind_pub),
+  # Doses after rounding to 0.05 mg match exactly.
+  all(abs(chk8$dose_cov - chk8$dose_cov_pub) < 1e-9),
+  all(abs(chk8$dose_next - chk8$dose_next_pub) < 1e-9),
+  all(abs(chk8$change - chk8$change_pub) < 0.51),
+  all(abs(chk8$dev - chk8$dev_pub) < 0.6),
+  all(abs(chk8$trough_next - chk8$trough_next_pub) < 0.051)
+)
+```
+
+The table's "Predicted POD 2 trough under the administered dose" row
+(3.4, 4.1, 3.1, 2.7 ng/mL) depends on each subject's actual dosing times on
+POD 1, which the paper does not give; it is not recomputed here.
+
+# Accumulation on POD 2 (Supplementary Table S3)
+
+Supplementary Table S3 attributes the low POD 2 troughs to incomplete
+accumulation: a median of 46% of the steady-state trough had been attained at
+the first occasion. For a subject with the OCC 1 median covariates of Table 7,
+dosed at 0 and 12 h and sampled at 24 h (two doses on POD 1, the POD 2 morning
+trough), the packaged model gives the same fraction. Later occasions in that
+table are medians over the actual, individually adjusted dosing histories and
+are not reproducible without the data.
+
+```{r accumulation}
+acc_ev <- data.frame(
+  id = 1L,
+  time = c(0, 12, 24),
+  amt = c(1, 1, 0),
+  evid = c(1L, 1L, 0L),
+  cmt = c("depot", "depot", "central"),
+  OCC = 1, TBILI = 4.60 * 17.1, AST = 188, AGE = 1
+)
+acc_ss <- data.frame(
+  id = 1L, time = c(0, 12), amt = c(1, 0), evid = c(1L, 0L),
+  ss = c(1L, 0L), ii = c(12, 0), cmt = c("depot", "central"),
+  OCC = 1, TBILI = 4.60 * 17.1, AST = 188, AGE = 1
+)
+c_pod2 <- rxode2::rxSolve(mod_typ, acc_ev, returnType = "data.frame")$Cc
+c_ss <- rxode2::rxSolve(mod_typ, acc_ss,
+  returnType = "data.frame",
+  ssRtol = 1e-10, ssAtol = 1e-12, maxsteps = 1e6
+)$Cc
+frac_pod2 <- 100 * c_pod2 / c_ss
+frac_pod2
+# Table S3 prints 46% (integer).
+stopifnot(abs(frac_pod2 - 46) < 1)
+```
+
+# Virtual cohort and occasion-wise simulation
+
+A virtual cohort of 200 children is dosed per the institutional protocol,
+0.0375 mg/kg twice daily from the morning of POD 1 (time 0) through POD 11,
+without the trough-guided adjustment the real cohort received. Age is drawn
+log-normally around the cohort median of 11.7 months and truncated to the
+observed 3.3-35.5 months. Body weight, which only sets the mg/kg dose, is the
+WHO median weight-for-age (sexes averaged) scaled by 0.95 so that the cohort
+median lands near the observed 8.95 kg (children with biliary atresia are
+smaller than the WHO reference), with 10% log-normal scatter and truncation
+to 4.3-14.4 kg. Total bilirubin and AST follow the occasion medians of
+Table 7, each subject carrying one log-normal multiplier for each marker
+across all occasions.
+
+Each record's occasion follows its postoperative day, with days running from
+midnight: POD 1 runs from 8 h before the first dose, so the POD 2 morning
+trough at 24 h falls on POD 2 and carries OCC 1.
+
+```{r cohort}
+rxode2::rxSetSeed(2026)
+n_sub <- 200
+
+# WHO Child Growth Standards median weight-for-age (kg), boys and girls
+# averaged, at 0, 3, 6, 12, 18, 24 and 36 months.
+who_age <- c(0, 3, 6, 12, 18, 24, 36)
+who_wt <- c(3.3, 6.1, 7.6, 9.3, 10.6, 11.8, 14.0)
+
+cohort <- data.frame(id = seq_len(n_sub)) |>
+  dplyr::mutate(
+    age_months = pmin(pmax(exp(rnorm(n_sub, log(11.7), 0.6)), 3.3), 35.5),
+    WT = pmin(pmax(
+      0.95 * approx(who_age, who_wt, xout = age_months)$y * exp(rnorm(n_sub, 0, 0.1)),
+      4.3
+    ), 14.4),
+    f_tbili = exp(rnorm(n_sub, 0, 0.5)),
+    f_ast = exp(rnorm(n_sub, 0, 0.6)),
+    dose = 0.0375 * WT
+  )
+
+pod_occ <- c(1, 1, 2, 3, 4, 4, 5, 5, 6, 6, 6) # POD 1..11
+pod_tbili <- table7$tbili_mgdl[pod_occ]
+pod_ast <- table7$AST[pod_occ]
+
+dose_times <- seq(0, 252, by = 12)
+trough_times <- 24 * (2:11 - 1) - 0.01
+obs_times <- sort(unique(c(seq(0, 252, by = 1), trough_times)))
+
+ev_cohort <- dplyr::bind_rows(
+  cohort |>
+    dplyr::cross_join(data.frame(time = dose_times)) |>
+    dplyr::mutate(amt = dose, evid = 1L, cmt = "depot"),
+  cohort |>
+    dplyr::cross_join(data.frame(time = obs_times)) |>
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "central")
+) |>
+  dplyr::mutate(
+    POD = pmin(floor((time + 8) / 24) + 1, 11),
+    OCC = pod_occ[POD],
+    TBILI = pod_tbili[POD] * f_tbili * 17.1,
+    AST = pod_ast[POD] * f_ast,
+    AGE = age_months / 12
+  ) |>
+  dplyr::arrange(id, time, dplyr::desc(evid == 0L)) |>
+  dplyr::select(id, time, amt, evid, cmt, OCC, POD, TBILI, AST, AGE, WT)
+
+sim <- rxode2::rxSolve(ui, ev_cohort,
+  returnType = "data.frame",
+  keep = c("POD", "WT"), maxsteps = 1e6
+)
+
+c(
+  median_wt_kg = median(cohort$WT),
+  median_age_months = median(cohort$age_months),
+  median_dose_mg = median(cohort$dose)
+)
+```
+
+```{r troughs, fig.width = 7, fig.height = 4.5}
+troughs <- sim |>
+  dplyr::filter(abs(time - round(time)) > 1e-6) |>
+  dplyr::mutate(POD = round(time / 24) + 1) |>
+  dplyr::group_by(POD) |>
+  dplyr::summarise(
+    p05 = quantile(Cc, 0.05), p50 = quantile(Cc, 0.50), p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+
+obs_tab2 <- data.frame(
+  POD = 2:11,
+  obs_median = c(4.0, 7.55, 9.2, 9.7, 9.3, 8.9, 8.3, 8.3, 8.8, 8.2)
+)
+
+ggplot(troughs, aes(POD)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.25) +
+  geom_line(aes(y = p50), colour = "steelblue") +
+  geom_point(data = obs_tab2, aes(y = obs_median), colour = "firebrick") +
+  scale_y_log10() +
+  scale_x_continuous(breaks = 2:11) +
+  labs(
+    x = "Postoperative day", y = "Morning trough (ng/mL)",
+    caption = paste(
+      "Band: 5th-95th percentile and median of the simulated individual",
+      "predictions (no residual error) at the protocol dose.",
+      "Red: observed median trough by day (Jung 2026 Table 2), after",
+      "trough-guided dose adjustment."
+    )
+  ) +
+  theme_bw()
+```
+
+The simulated band is not a reproduction of Figure 2: the real cohort's
+doses were adjusted from the first trough on, so only the POD 2 trough
+reflects the protocol dose. That day is checked against the observed median
+(4.0 ng/mL, Table 2) and the paper's own accumulation-aware model prediction
+(4.2 ng/mL, Supplementary Table S3). The protocol dose is a lower bound on what
+was given (the four subjects of Table 8 received 0.04-0.07 mg/kg on POD 1), so
+the simulated median is expected to sit below both. It sits lower still than
+the 3.4 ng/mL a typical subject on the protocol dose would reach, because the
+POD 2 trough depends non-linearly on the elimination rate constant, whose
+log-scale variance on this occasion (IIV of CL/F and V/F together with the
+OCC 1 IOV of 0.929) is large.
+
+```{r pod2-check}
+pod2_med <- troughs$p50[troughs$POD == 2]
+pod2_med
+# Structural check only: a dose, unit or clearance error moves the median
+# several-fold. A 2-fold envelope keeps the bound about five standard errors
+# of a 200-subject median (log-scale SD of the trough near 0.8) away from the
+# simulated value, so it does not depend on the cohort draw.
+stopifnot(pod2_med > 4.0 / 2, pod2_med < 4.2 * 2)
+```
+
+# NCA of the steady-state dosing interval
+
+PKNCA is run on the typical-value steady-state profiles at the Table 7
+doses, one per occasion. The paper reports no NCA; the reference for the
+comparison table is the 10 ng/mL target trough that Table 7's doses were
+derived to attain.
+
+```{r pknca}
+ev_ss <- ev7 |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::bind_rows(
+    ev7 |>
+      dplyr::filter(evid == 0L) |>
+      dplyr::select(-time) |>
+      dplyr::cross_join(data.frame(time = seq(0, 12, by = 0.1)))
+  ) |>
+  dplyr::arrange(id, time, dplyr::desc(evid == 1L))
+
+sim_ss <- rxode2::rxSolve(mod_typ, ev_ss,
+  returnType = "data.frame",
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12, maxsteps = 1e6,
+  keep = "OCC"
+)
+
+conc_df <- sim_ss |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(occasion = paste0("OCC", OCC)) |>
+  dplyr::select(id, occasion, time, Cc)
+dose_df <- ev_ss |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::mutate(occasion = paste0("OCC", OCC)) |>
+  dplyr::select(id, occasion, time, amt)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | occasion + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | occasion + id)
+intervals <- data.frame(
+  start = 0, end = 12,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE
+)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+reference <- data.frame(occasion = paste0("OCC", 1:6), cmin = 10)
+nlmixr2lib::ncaComparisonTable(
+  nca, reference,
+  by = "occasion", params = "cmin",
+  units = c(cmin = "ng/mL")
+) |>
+  knitr::kable(caption = "Steady-state trough at the Table 7 doses against the 10 ng/mL target.")
+
+as.data.frame(nca) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "cmin", "auclast", "cav")) |>
+  dplyr::select(occasion, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::rename(
+    Occasion = occasion, `Cmax (ng/mL)` = cmax, `Tmax (h)` = tmax,
+    `Cmin (ng/mL)` = cmin, `AUC0-12 (ng*h/mL)` = auclast, `Cavg (ng/mL)` = cav
+  ) |>
+  knitr::kable(digits = 2, caption = "Typical-value steady-state NCA by occasion.")
+
+cmin_nca <- as.data.frame(nca) |> dplyr::filter(PPTESTCD == "cmin")
+stopifnot(nrow(cmin_nca) == 6, all(abs(cmin_nca$PPORRES / 10 - 1) < 0.015))
+```
+
+# Assumptions and deviations
+
+* **Occasion of the POD 1 doses.** Tacrolimus starts on POD 1, before the
+  first occasion (POD 2). The paper does not say which occasion its POD 1
+  dosing records carried; they are given OCC = 1 here, so the POD 1
+  clearance is the one the POD 2 trough informs. OCC outside 1-6 gives
+  CL/F without IOV; the model was not fitted beyond POD 11.
+* **Occasion boundaries.** In the virtual cohort a record's occasion follows
+  its calendar postoperative day, switching at midnight. The paper defines
+  occasions by postoperative day without giving the clock time of the switch.
+* **Per-occasion IOV variances.** Each occasion carries its own estimated
+  variance (Table 5); none is shared. The six IOV etas are selected by
+  occasion indicators, so rxode2 reports that they are not mu-referenced.
+  rxode2 has no occasion level for random effects, and the indicator form is
+  how occasion-specific etas are expressed; the warning matters only for the
+  speed of a future estimation run, not for simulation.
+* **V/F of 123.9 L.** Table 4 prints 123.9 L and Equation 10 rounds it to
+  124 L. The typical V/F values of Table 8 reproduce with 123.9 (e.g. 139.0 L
+  at 24.6 months, against 139.1 L with 124), so 123.9 is used.
+* **CL/F of 4.85 L/h is rounded.** The typical CL/F values of Table 7 are
+  consistent with an unrounded estimate near 4.854 L/h (the OCC 1 row needs at
+  least 4.854 to print 3.21, the OCC 5 row at most 4.854 to print 5.09). The
+  printed 4.85 L/h is used; the gates above allow 0.5%.
+* **Covariate units.** The paper models total bilirubin in mg/dL (reference
+  2 mg/dL) and age in months (reference 12 months). The canonical covariate
+  columns are `TBILI` in umol/L and `AGE` in years, so `model()` converts
+  with 1 mg/dL = 17.1 umol/L and 12 months per year.
+* **Signs of the clearance exponents.** Table 4 lists the bilirubin and AST
+  exponents as positive numbers in a 'negative power' model; Equation 9 prints
+  them as -0.353 and -0.106, which is how they are stored.
+* **Combined residual error.** Equation 3 gives
+  W = sqrt(add^2 + prop^2 * IPRED^2), which is the nlmixr2 default
+  combined form with both components as standard deviations.
+* **Virtual cohort.** Age, weight, bilirubin and AST distributions are
+  approximations built from Table 1 and Table 7 summaries (see the cohort
+  section); the real cohort's individual covariate trajectories and dosing
+  histories are not published.
