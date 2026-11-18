@@ -304,6 +304,8 @@ navbar:
         href: articles/Gibbs_2011_amg221.html
       - text: "Amifampridine (Thakkar 2017)"
         href: articles/Thakkar_2017_amifampridine.html
+      - text: "Amikacin (Alabdulkarim 2026)"
+        href: articles/Alabdulkarim_2026_amikacin.html
       - text: "Amikacin (Delattre 2010)"
         href: articles/Delattre_2010_amikacin.html
       - text: "Amikacin (Jin 2020)"
@@ -9394,6 +9396,7 @@ articles:
   - articles/AlSallami_2016_unfractionatedHeparin
   - articles/AlYacoub_2025_naloxone
   - articles/AlZubaydi_2024_gabapentin
+  - articles/Alabdulkarim_2026_amikacin
   - articles/AlfoseaCuadrado_2024_reserpine_rat
   - articles/Alghamdi_2019_cycloserine
   - articles/Ali_2018_amodiaquine

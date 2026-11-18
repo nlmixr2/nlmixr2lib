@@ -1,0 +1,598 @@
+---
+title: "Amikacin (Alabdulkarim 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Amikacin (Alabdulkarim 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Alabdulkarim_2026_amikacin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Alabdulkarim_2026_amikacin"))$description`
+* Article: <https://doi.org/10.1093/jac/dkag354> (open access, PMC13688210)
+
+The model was first developed in 204 neonates, evaluated without re-estimation
+in 205 older children, and then refitted to all 409 patients. This file holds
+the refitted, final model ("Final model" column of Table S5, Table 2). The
+authors published their nlmixr2 code for that model (Supplementary Code S1);
+its estimates agree with Table 2 to the printed precision, so the full-precision
+values from the code are used.
+
+# Population
+
+Retrospective therapeutic drug monitoring data from 409 patients at Great
+Ormond Street Hospital for Children, London (September 2020 to December 2022)
+who received intravenous amikacin for at least 3 days (Methods; Table 1):
+204 neonates (birth to < 1 month), 72 aged 1 month to 2 years, 41 aged 3-6
+years, 52 aged 7-12 years and 40 aged 13-18 years. Median age 0.12 years
+(range 0.003-18), weight 4.73 kg (0.6-143), postmenstrual age 44 weeks
+(24-992), serum creatinine 41 umol/L (7-770); 55.7% male; 14.2% received a
+concomitant glycopeptide. Doses were 5-30 mg/kg (median 15 mg/kg), almost all
+once daily; doses of 20 mg/kg or more were given as 30-min infusions and lower
+doses as about 3-min slow bolus injections. There were 1091 concentrations
+(median 2 per patient), 26.6% below the 0.8 mg/L quantification limit.
+
+The same information is available programmatically via
+`readModelDb("Alabdulkarim_2026_amikacin")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL, 70 kg) | log scale 1.7285 (5.633 L/h) | Code S1 `tcl`; Table 2 'CL (L/h/70 kg)' 5.634 |
+| `lvc` (V1, 70 kg) | log scale 3.3789 (29.34 L) | Code S1 `tv`; Table 2 'V1' 29.34 |
+| `lq` (Q, 70 kg) | log scale 0.0631 (1.065 L/h) | Code S1 `tq`; Table 2 'Q' 1.07 |
+| `lvp` (V2, 70 kg) | log scale 3.4098 (30.26 L) | Code S1 `tvp`; Table 2 'V2' 30.26 |
+| `e_wt_cl_q` | 0.75 (fixed) | Methods Eq. 1; Code S1 `beta.wt.cl` (applied to CL and Q) |
+| `e_wt_vc_vp` | 1 (fixed) | Methods Eq. 1; Code S1 `beta.wt.v` (applied to V1 and V2) |
+| `tmat50` | 47.7 weeks (fixed) | Methods 'Covariate model', Eq. 2 |
+| `hill_mat` | 3.4 (fixed) | Methods 'Covariate model', Eq. 2 |
+| `e_creat_cl` | -0.72449 | Code S1 `beta.cr.cl`; Table 2 'beta Scr (CL)' -0.73 |
+| `cl_pna_famp` | -0.55913 (= hM - 1) | Code S1 `hM` = 0.44087; Table 2 'hM (CL)' 0.44 |
+| `lcl_pna_kdes` | log(0.28392) 1/day | Code S1 `hN`; Table 2 'hN (CL)' 0.28 |
+| `e_conmed_glycopeptide_cl` | -0.20576 | Code S1 `beta.glycopeptide`; Table 2 -0.21 |
+| IIV block on CL, V1, Q, V2 | 4x4 variance-covariance | Code S1 `eta.cl + eta.v + eta.q + eta.vp ~ c(...)`; diagonal CVs match Table S5 'Final model' (49.93, 22.80, 91.40, 32.70%) |
+| `propSd` | 0.2489 | Code S1 `prop.err`; Table 2 24.89% |
+| `addSd` | 1.020 mg/L | Code S1 `add.err`; Table 2 1.020 mg/L |
+| Allometry `(WT/70)^beta` | n/a | Methods Eq. 1; Table 2 equations |
+| PMA maturation `PMA^3.4 / (47.7^3.4 + PMA^3.4)` | n/a | Methods Eq. 2 |
+| Typical creatinine `-2.37330 - 12.91367 ln(PNA_y) + 23.93581 PNA_y^0.5` | n/a | Methods Eq. 3 (Ceriotti 2008) |
+| Creatinine factor `(Scr / TSCR)^beta_Scr` | n/a | Methods Eq. 4 |
+| Postnatal factor `hM + (1 - hM)(1 - exp(-PNA_d hN))` | n/a | Methods Eq. 5; Code S1 `maturation_pna` |
+| Glycopeptide factor `exp(beta * glycopeptide)` | n/a | Code S1 `cl` expression |
+| Two-compartment ODEs | n/a | Code S1 `d/dt(A1)`, `d/dt(A2)` |
+| Combined residual error | n/a | Code S1 `cp ~ prop(prop.err) + add(add.err)` |
+
+A check that the IIV block reproduces the published coefficients of
+variation, computed as `sqrt(exp(omega^2) - 1)`. The code's block matches the
+"Final model" column of Table S5 exactly; Table 2 prints 91.50% rather than
+91.40% for Q (and differs by 0.01 points for CL and V1).
+
+```{r iiv-check}
+mod <- readModelDb("Alabdulkarim_2026_amikacin")
+ui <- rxode2::rxode(mod)
+cv_pct <- 100 * sqrt(exp(diag(ui$omega)) - 1)
+cv_s5 <- c(etalcl = 49.93, etalvc = 22.80, etalq = 91.40, etalvp = 32.70)
+cv_t2 <- c(etalcl = 49.94, etalvc = 22.79, etalq = 91.50, etalvp = 32.70)
+knitr::kable(
+  data.frame(
+    eta = names(cv_s5), model = round(cv_pct[names(cv_s5)], 2),
+    Table_S5 = cv_s5, Table_2 = cv_t2
+  ),
+  row.names = FALSE,
+  caption = "IIV as CV% from the packaged omega block vs. Tables S5 and 2."
+)
+stopifnot(all(abs(cv_pct[names(cv_s5)] - cv_s5) < 0.006))
+```
+
+# Typical patients across the age range
+
+Typical-value profiles (no random effects, no glycopeptide) for a patient with
+the Table 1 median covariates of each age group, receiving 15 mg/kg once daily
+as a 3-min injection for 72 h, the regimen and horizon of the paper's
+simulations. Postnatal age is supplied in months and postmenstrual age in
+weeks.
+
+```{r typical}
+typical <- tibble::tribble(
+  ~group, ~age_y, ~PAGE, ~WT, ~CREAT,
+  "Neonate", 0.01, 39, 2.87, 48,
+  "1 month-2 years", 0.29, 54, 7.7, 24.5,
+  "3-6 years", 4.1, 258, 16.7, 32,
+  "7-12 years", 10, 565, 33.6, 42.5,
+  "13-18 years", 15, 829, 48.5, 56
+) |>
+  mutate(
+    id = seq_len(n()),
+    PNA = age_y * 12,
+    CONMED_GLYCOPEPTIDE = 0L,
+    group = factor(group, levels = group)
+  )
+
+ev_typ <- bind_rows(
+  typical |> tidyr::crossing(time = c(0, 24, 48)) |>
+    mutate(evid = 1L, amt = 15 * WT, rate = amt / 0.05),
+  typical |> tidyr::crossing(time = seq(0, 72, by = 0.1)) |>
+    mutate(evid = 0L, amt = 0, rate = 0)
+) |>
+  mutate(cmt = "central") |>
+  arrange(id, time, desc(evid))
+
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ, keep = "group", returnType = "data.frame")
+
+ggplot(sim_typ, aes(time, Cc, colour = group)) +
+  geom_line() +
+  geom_hline(yintercept = 5, linetype = "dashed") +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Amikacin concentration (mg/L)", colour = NULL,
+    title = "Typical patient by age group, 15 mg/kg q24h",
+    caption = "Dashed line: 5 mg/L trough safety target."
+  )
+```
+
+The typical clearance per kilogram rises steeply over the neonatal period and
+then falls with size, as expected for allometric scaling with renal maturation:
+
+```{r typical-cl}
+sim_typ |>
+  filter(time == 0) |>
+  distinct(group, cl, vc) |>
+  left_join(typical |> select(group, WT), by = "group") |>
+  mutate(cl_per_kg = cl / WT, vc_per_kg = vc / WT) |>
+  dplyr::rename(
+    "Age group" = group, "Weight (kg)" = WT, "CL (L/h)" = cl, "V1 (L)" = vc,
+    "CL (L/h/kg)" = cl_per_kg, "V1 (L/kg)" = vc_per_kg
+  ) |>
+  knitr::kable(digits = 3, caption = "Typical parameters at the Table 1 median covariates.")
+```
+
+# Virtual cohort
+
+The authors simulated 500 patients per age group by resampling their own
+patients, whose covariates are not public. The virtual cohort below
+approximates Table 1 group by group (200 per arm):
+
+* Neonates are split as in Figure 4 into postnatal age 1-7 days and 8-28 days.
+  Gestational age is term (37-42 weeks) for 70% and preterm (24-37 weeks)
+  for 30%, which reproduces the 39-week median postmenstrual age; weight
+  follows a median birth-weight-for-postmenstrual-age curve with 12% CV.
+* Older children have age log-uniform within the group's Table 1 range,
+  postmenstrual age = 40 weeks + postnatal age, and weight from a median
+  weight-for-age curve with 15% CV.
+* Serum creatinine is the Ceriotti age-expected value scaled so that the group
+  median matches Table 1, with 35% log-normal scatter.
+* Glycopeptide use follows the Table 1 percentage of each group.
+
+```{r cohort}
+set.seed(2026)
+n_per_arm <- 200
+
+ceriotti_tscr <- function(age_y) -2.37330 - 12.91367 * log(age_y) + 23.93581 * sqrt(age_y)
+
+wt_for_age <- data.frame(
+  age = c(0.08, 0.25, 0.5, 1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 18),
+  wt = c(4.5, 6, 7.8, 9.6, 12.2, 14.3, 16.3, 18.3, 20.5, 25.6, 32, 40, 50, 58, 64)
+)
+wt_for_pma <- data.frame(pma = c(24, 28, 32, 36, 40, 44), wt = c(0.65, 1.1, 1.7, 2.6, 3.5, 4.6))
+
+groups <- tibble::tribble(
+  ~group, ~age_lo, ~age_hi, ~creat_med, ~age_med, ~p_glyco,
+  "Neonate, PNA <= 7 d", 1 / 365.25, 7 / 365.25, 48, 0.01, 0.118,
+  "Neonate, PNA > 7 d", 8 / 365.25, 28 / 365.25, 48, 0.01, 0.118,
+  "1 month-2 years", 0.08, 2.33, 24.5, 0.29, 0.181,
+  "3-6 years", 3.03, 6.27, 32, 4.1, 0.146,
+  "7-12 years", 7, 12.28, 42.5, 10, 0.135,
+  "13-18 years", 13, 18, 56, 15, 0.20
+)
+
+make_group <- function(g, n) {
+  neonate <- startsWith(g$group, "Neonate")
+  if (neonate) {
+    age_y <- runif(n, g$age_lo, g$age_hi)
+    ga <- ifelse(runif(n) < 0.7, runif(n, 37, 42), runif(n, 24, 37))
+    pma <- ga + age_y * 365.25 / 7
+    wt <- approx(wt_for_pma$pma, wt_for_pma$wt, pma, rule = 2)$y * exp(rnorm(n, 0, 0.12))
+  } else {
+    age_y <- exp(runif(n, log(g$age_lo), log(g$age_hi)))
+    pma <- 40 + age_y * 365.25 / 7
+    wt <- approx(wt_for_age$age, wt_for_age$wt, age_y, rule = 2)$y * exp(rnorm(n, 0, 0.15))
+  }
+  creat_ratio <- g$creat_med / ceriotti_tscr(g$age_med)
+  tibble(
+    group = g$group,
+    PNA = age_y * 12,
+    PAGE = pma,
+    WT = wt,
+    CREAT = ceriotti_tscr(age_y) * creat_ratio * exp(rnorm(n, 0, 0.35)),
+    CONMED_GLYCOPEPTIDE = as.integer(runif(n) < g$p_glyco)
+  )
+}
+
+cohort <- bind_rows(lapply(seq_len(nrow(groups)), function(i) make_group(groups[i, ], n_per_arm)))
+
+cohort |>
+  mutate(group = factor(group, levels = groups$group)) |>
+  group_by(group) |>
+  summarise(
+    `Weight (kg)` = median(WT), `PMA (weeks)` = median(PAGE),
+    `Scr (umol/L)` = median(CREAT), `Glycopeptide (%)` = 100 * mean(CONMED_GLYCOPEPTIDE)
+  ) |>
+  knitr::kable(digits = 1, caption = "Virtual cohort medians by age group.")
+```
+
+# Probability of target attainment (Table S7, Figures 3-6)
+
+The paper's targets are Cmax/MIC >= 10 for efficacy and a trough below 5 mg/L
+for safety, both evaluated over the last dosing interval ending at 72 h
+(Methods 'Simulation and probability of target attainment'). For a
+two-compartment model with intravenous dosing the maximum of that interval is
+at the end of the last infusion and the minimum is at 72 h, so two
+observations per patient suffice. Doses of 20 mg/kg or more are 30-min
+infusions and smaller doses 3-min injections (Methods 'Amikacin dosing and
+sampling'). The PK is linear, so one solve per patient and administration mode
+covers every dose: 10 mg/kg (3-min) is scaled to 5 and 15 mg/kg and 20 mg/kg
+(30-min) to 25, 30 and 35 mg/kg. Concentrations are individual predictions
+without residual error.
+
+```{r pta-sim}
+regimens <- tidyr::expand_grid(group = groups$group, tau = c(24, 12, 8), ref_mgkg = c(10, 20))
+
+make_regimen_events <- function(r, cohort, id_offset) {
+  cg <- cohort[cohort$group == r$group, ]
+  cg$id <- id_offset + seq_len(nrow(cg))
+  dur <- if (r$ref_mgkg >= 20) 0.5 else 0.05
+  t_last <- 72 - r$tau
+  doses <- cg |>
+    tidyr::crossing(time = seq(0, t_last, by = r$tau)) |>
+    mutate(evid = 1L, amt = r$ref_mgkg * WT, rate = amt / dur)
+  obs <- cg |>
+    tidyr::crossing(time = c(t_last + dur, 72)) |>
+    mutate(evid = 0L, amt = 0, rate = 0)
+  bind_rows(doses, obs) |>
+    mutate(cmt = "central", tau = r$tau, ref_mgkg = r$ref_mgkg)
+}
+
+ev_pta <- bind_rows(lapply(seq_len(nrow(regimens)), function(k) {
+  make_regimen_events(regimens[k, ], cohort, id_offset = (k - 1L) * n_per_arm)
+})) |>
+  arrange(id, time, desc(evid))
+stopifnot(!anyDuplicated(unique(ev_pta[, c("id", "time", "evid")])))
+
+sim_pta <- rxode2::rxSolve(
+  mod, ev_pta,
+  keep = c("group", "tau", "ref_mgkg"), returnType = "data.frame"
+)
+
+exposure_ref <- sim_pta |>
+  group_by(id, group, tau, ref_mgkg) |>
+  summarise(cmax = max(Cc), cmin = Cc[which.max(time)], .groups = "drop")
+
+dose_map <- tibble::tribble(
+  ~ref_mgkg, ~mgkg,
+  10, 5, 10, 10, 10, 15,
+  20, 20, 20, 25, 20, 30, 20, 35
+)
+exposure <- exposure_ref |>
+  inner_join(dose_map, by = "ref_mgkg", relationship = "many-to-many") |>
+  mutate(cmax = cmax * mgkg / ref_mgkg, cmin = cmin * mgkg / ref_mgkg)
+```
+
+## Table S7
+
+```{r table-s7}
+published_s7 <- tibble::tribble(
+  ~group, ~tau, ~mgkg, ~eff_mic2, ~eff_mic4, ~safety,
+  "Neonate, PNA <= 7 d", 24, 10, 90.2, 5.8, 66,
+  "Neonate, PNA <= 7 d", 24, 15, 99.8, 57, 55.6,
+  "Neonate, PNA <= 7 d", 24, 20, 100, 87.8, 38.8,
+  "Neonate, PNA <= 7 d", 12, 10, 99, 29.4, 23,
+  "Neonate, PNA <= 7 d", 12, 15, 100, 83, 13,
+  "Neonate, PNA <= 7 d", 12, 20, 100, 95.2, 10.2,
+  "Neonate, PNA <= 7 d", 8, 10, 99.4, 52.4, 9,
+  "Neonate, PNA <= 7 d", 8, 15, 100, 91.6, 4.4,
+  "Neonate, PNA <= 7 d", 8, 20, 100, 98.2, 2,
+  "Neonate, PNA > 7 d", 24, 10, 89.4, 4.4, 81.6,
+  "Neonate, PNA > 7 d", 24, 15, 100, 47.8, 70.8,
+  "Neonate, PNA > 7 d", 24, 20, 100, 80, 61.2,
+  "Neonate, PNA > 7 d", 12, 10, 93.6, 15.8, 48.6,
+  "Neonate, PNA > 7 d", 12, 15, 100, 66.8, 36.2,
+  "Neonate, PNA > 7 d", 12, 20, 100, 87.2, 28.6,
+  "Neonate, PNA > 7 d", 8, 10, 97.2, 32, 26.4,
+  "Neonate, PNA > 7 d", 8, 15, 100, 78.8, 18.6,
+  "Neonate, PNA > 7 d", 8, 20, 100, 92.6, 13.6,
+  "1 month-2 years", 24, 10, 84, 2.8, 88,
+  "1 month-2 years", 24, 15, 100, 37.8, 86,
+  "1 month-2 years", 24, 20, 100, 70.4, 79.4,
+  "1 month-2 years", 12, 10, 89.2, 11.2, 66.8,
+  "1 month-2 years", 12, 15, 99.8, 54.6, 54.6,
+  "1 month-2 years", 12, 20, 99.8, 81, 43.8,
+  "1 month-2 years", 8, 10, 93, 20.6, 42.8,
+  "1 month-2 years", 8, 15, 100, 69.4, 34,
+  "1 month-2 years", 8, 20, 100, 88, 28.4,
+  "3-6 years", 24, 10, 80.8, 0.6, 98.2,
+  "3-6 years", 24, 15, 100, 37.6, 94.8,
+  "3-6 years", 24, 20, 100, 69.6, 90.4,
+  "3-6 years", 12, 10, 89.2, 5.8, 79.6,
+  "3-6 years", 12, 15, 100, 51.6, 65,
+  "3-6 years", 12, 20, 100, 78.6, 57.2,
+  "3-6 years", 8, 10, 95.2, 15.4, 52.4,
+  "3-6 years", 8, 15, 100, 64.6, 39.6,
+  "3-6 years", 8, 20, 100, 87.6, 26,
+  "7-12 years", 24, 10, 82.2, 1.2, 99,
+  "7-12 years", 24, 15, 99.8, 36.4, 95.8,
+  "7-12 years", 24, 20, 100, 73, 88.2,
+  "7-12 years", 12, 10, 89.8, 3.2, 77.4,
+  "7-12 years", 12, 15, 99.8, 47.6, 64.6,
+  "7-12 years", 12, 20, 100, 82.2, 52.2,
+  "7-12 years", 8, 10, 94.4, 14.2, 51.4,
+  "7-12 years", 8, 15, 100, 66.4, 35.2,
+  "7-12 years", 8, 20, 100, 88.2, 24.4,
+  "13-18 years", 24, 10, 84.2, 1.6, 96.6,
+  "13-18 years", 24, 15, 99.2, 37, 92,
+  "13-18 years", 24, 20, 100, 74.2, 90.6,
+  "13-18 years", 12, 10, 90.4, 6.2, 73.2,
+  "13-18 years", 12, 15, 100, 50, 61,
+  "13-18 years", 12, 20, 100, 82.2, 54.6,
+  "13-18 years", 8, 10, 95, 14.8, 48.2,
+  "13-18 years", 8, 15, 100, 66.6, 36.2,
+  "13-18 years", 8, 20, 100, 88, 24.6
+)
+
+simulated_s7 <- exposure |>
+  filter(mgkg %in% c(10, 15, 20)) |>
+  group_by(group, tau, mgkg) |>
+  summarise(
+    eff_mic2 = 100 * mean(cmax / 2 >= 10),
+    eff_mic4 = 100 * mean(cmax / 4 >= 10),
+    safety = 100 * mean(cmin < 5),
+    .groups = "drop"
+  )
+
+cmp_s7 <- published_s7 |>
+  pivot_longer(c(eff_mic2, eff_mic4, safety), names_to = "endpoint", values_to = "published") |>
+  inner_join(
+    simulated_s7 |> pivot_longer(c(eff_mic2, eff_mic4, safety), names_to = "endpoint", values_to = "simulated"),
+    by = c("group", "tau", "mgkg", "endpoint")
+  ) |>
+  mutate(diff = simulated - published)
+stopifnot(nrow(cmp_s7) == 3 * nrow(published_s7))
+
+cmp_s7 |>
+  mutate(cell = sprintf("%.1f / %.1f", simulated, published)) |>
+  select(group, tau, mgkg, endpoint, cell) |>
+  pivot_wider(names_from = endpoint, values_from = cell) |>
+  dplyr::rename(
+    "Age group" = group, "Interval (h)" = tau, "Dose (mg/kg)" = mgkg,
+    "Efficacy PTA, MIC 2 (sim / pub %)" = eff_mic2,
+    "Efficacy PTA, MIC 4 (sim / pub %)" = eff_mic4,
+    "Safety PTA (sim / pub %)" = safety
+  ) |>
+  knitr::kable(caption = "Simulated vs. published (Table S7) probability of target attainment.")
+```
+
+```{r table-s7-summary}
+cmp_s7 |>
+  group_by(endpoint) |>
+  summarise(
+    median_abs_diff = median(abs(diff)),
+    p90_abs_diff = unname(quantile(abs(diff), 0.9)),
+    max_abs_diff = max(abs(diff)),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 1, caption = "Absolute differences, simulated minus published, in percentage points.")
+
+# A mis-transcribed clearance, volume or covariate exponent moves whole
+# columns of Table S7 by tens of percentage points; the virtual cohort only
+# approximates the authors' resampled patients and each cell carries about
+# 3.5 points of Monte Carlo error at 200 patients, so the gate is on the
+# centre and on a robust upper quantile of the 162 cell differences.
+stopifnot(
+  median(abs(cmp_s7$diff)) < 5,
+  quantile(abs(cmp_s7$diff), 0.9) < 15
+)
+```
+
+## Figures 4-6: PTA across MIC by regimen
+
+```{r figures-4-6, fig.height = 8, fig.width = 8}
+mic_grid <- 2^seq(-3, 4)
+pta_curves <- exposure |>
+  filter(mgkg %in% c(10, 15, 20)) |>
+  tidyr::crossing(mic = mic_grid) |>
+  group_by(group, tau, mgkg, mic) |>
+  summarise(pta = 100 * mean(cmax / mic >= 10), .groups = "drop") |>
+  mutate(
+    group = factor(group, levels = groups$group),
+    interval = factor(paste0("q", tau, "h"), levels = c("q24h", "q12h", "q8h"))
+  )
+
+ggplot(pta_curves, aes(mic, pta, colour = interval)) +
+  geom_line() +
+  geom_point(size = 0.8) +
+  geom_hline(yintercept = 90, linetype = "dashed") +
+  scale_x_log10(breaks = mic_grid, labels = format(mic_grid)) +
+  facet_grid(group ~ paste(mgkg, "mg/kg")) +
+  labs(
+    x = "MIC (mg/L)", y = "Efficacy PTA, Cmax/MIC >= 10 (%)", colour = NULL,
+    caption = "Replicates the efficacy panels of Figures 4-6 of Alabdulkarim 2026."
+  )
+```
+
+```{r figures-4-6-safety}
+exposure |>
+  filter(mgkg %in% c(10, 15, 20)) |>
+  group_by(group, tau, mgkg) |>
+  summarise(pta = 100 * mean(cmin < 5), .groups = "drop") |>
+  mutate(
+    group = factor(group, levels = groups$group),
+    interval = factor(paste0("q", tau, "h"), levels = c("q24h", "q12h", "q8h"))
+  ) |>
+  ggplot(aes(factor(mgkg), pta, fill = interval)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~group) +
+  labs(
+    x = "Dose (mg/kg)", y = "Safety PTA, trough < 5 mg/L (%)", fill = NULL,
+    caption = "Replicates the safety panels of Figures 4-6 of Alabdulkarim 2026."
+  )
+```
+
+## Figure 3: once-daily dose comparison
+
+```{r figure-3, fig.height = 6, fig.width = 8}
+sim1 <- exposure |>
+  filter(tau == 24) |>
+  tidyr::crossing(mic = mic_grid) |>
+  group_by(group, mgkg, mic) |>
+  summarise(efficacy = 100 * mean(cmax / mic >= 10), safety = 100 * mean(cmin < 5), .groups = "drop") |>
+  mutate(group = factor(group, levels = groups$group))
+
+ggplot(sim1, aes(mic, efficacy, colour = factor(mgkg))) +
+  geom_line() +
+  geom_hline(yintercept = 90, linetype = "dashed") +
+  scale_x_log10(breaks = mic_grid, labels = format(mic_grid)) +
+  facet_wrap(~group) +
+  labs(
+    x = "MIC (mg/L)", y = "Efficacy PTA (%)", colour = "Dose (mg/kg)",
+    caption = "Replicates the efficacy panels of Figure 3 (SIM1, q24h) of Alabdulkarim 2026."
+  )
+
+sim1 |>
+  distinct(group, mgkg, safety) |>
+  arrange(group, mgkg) |>
+  pivot_wider(names_from = mgkg, values_from = safety, names_prefix = "mg/kg ") |>
+  dplyr::rename("Age group" = group) |>
+  knitr::kable(digits = 1, caption = "Safety PTA (%) for once-daily dosing, Figure 3 (SIM1).")
+```
+
+The paper's text states that 15-20 mg/kg once daily achieved more than 95% PTA
+at an MIC of 2 mg/L in every age group (Results 'Probability of target
+attainment'):
+
+```{r claim-15-20}
+claim <- simulated_s7 |> filter(tau == 24, mgkg %in% c(15, 20))
+knitr::kable(claim, digits = 1, caption = "Once-daily 15-20 mg/kg, efficacy PTA at MIC 2 mg/L.")
+stopifnot(all(claim$eff_mic2 > 90))
+```
+
+# PKNCA validation
+
+The paper reports no non-compartmental results. As a self-consistency check,
+the virtual cohort (100 patients per age group, with between-subject
+variability) receives 15 mg/kg once daily as 3-min injections for 72 h with a
+rich sampling grid, and PKNCA computes the first-dose and last-interval
+exposure.
+
+```{r pknca-sim}
+nca_cohort <- cohort |>
+  group_by(group) |>
+  slice_head(n = 100) |>
+  ungroup() |>
+  mutate(id = row_number())
+
+ev_nca <- bind_rows(
+  nca_cohort |> tidyr::crossing(time = c(0, 24, 48)) |>
+    mutate(evid = 1L, amt = 15 * WT, rate = amt / 0.05),
+  nca_cohort |> tidyr::crossing(time = sort(unique(c(seq(0, 72, by = 1), 48 + c(0.05, 0.25, 0.5))))) |>
+    mutate(evid = 0L, amt = 0, rate = 0)
+) |>
+  mutate(cmt = "central") |>
+  arrange(id, time, desc(evid))
+
+sim_nca <- rxode2::rxSolve(mod, ev_nca, keep = "group", returnType = "data.frame") |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, group)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | group + id)
+dose_obj <- PKNCA::PKNCAdose(
+  ev_nca |> filter(evid == 1) |> select(id, time, amt, group),
+  amt ~ time | group + id
+)
+# Cmin only over the last interval: over the first dose it is the pre-dose zero.
+intervals <- data.frame(
+  start = c(0, 48), end = c(24, 72),
+  cmax = TRUE, cmin = c(FALSE, TRUE), auclast = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_tab <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "cmin", "auclast")) |>
+  group_by(group, start, end, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  mutate(group = factor(group, levels = groups$group)) |>
+  arrange(group, start)
+
+nca_tab |>
+  mutate(interval = paste0(start, "-", end, " h")) |>
+  select(group, interval, cmax, cmin, auclast) |>
+  dplyr::rename(
+    "Age group" = group, "Interval" = interval, "Cmax (mg/L)" = cmax,
+    "Cmin (mg/L)" = cmin, "AUC (mg*h/L)" = auclast
+  ) |>
+  knitr::kable(digits = 1, caption = "Median PKNCA results, 15 mg/kg q24h (Cmin over the last interval only).")
+
+# A 15 mg/kg dose into a central volume of about 0.42 L/kg gives a peak near
+# 36 mg/L in every age group; a units or volume error would move it several-fold.
+peak_last <- nca_tab |> filter(start == 48)
+stopifnot(all(peak_last$cmax > 20), all(peak_last$cmax < 60))
+```
+
+# Assumptions and deviations
+
+- **Final model only.** The paper reports two parameter sets: the model
+  developed in neonates (evaluated externally in older children) and the same
+  model refitted to all 409 patients. Only the refitted model, which the
+  authors present as their final, unified model, is packaged.
+- **Values from the authors' code.** All estimates are taken at full precision
+  from Supplementary Code S1, which the authors describe as the code of the
+  final model fitted to the combined dataset. They match Table 2 except for a
+  rounding difference: the creatinine exponent is -0.72449 in the code and is
+  printed as -0.73 in Tables 2 and S5.
+  The between-subject CVs implied by the code's omega block match Table S5
+  (49.93, 22.80, 91.40 and 32.70%); Table 2 prints 91.50% for Q, 0.1 points
+  higher, and 0.01-point differences for CL and V1.
+- **Glycopeptide effect.** The Table 2 and Table S2 equations write the effect
+  as `(glycopeptides)^beta`, which cannot be evaluated for a 0/1 indicator. The
+  code uses `exp(beta * glycopeptide)` inside the clearance exponent, which is
+  what was fitted and is used here (clearance 18.6% lower with a glycopeptide).
+  The paper does not list the glycopeptides involved.
+- **Postnatal maturation reparameterised.** Eq. 5,
+  `hM + (1 - hM)(1 - exp(-PNA hN))`, is algebraically identical to
+  `1 + (hM - 1) exp(-hN PNA)`; it is stored as `cl_pna_famp = hM - 1` and
+  `lcl_pna_kdes = log(hN)` so that it uses the library's established names for
+  a birth effect that decays over postnatal age. Predictions are unchanged.
+- **Typical creatinine computed inside the model.** The Ceriotti polynomial
+  (Eq. 3) is evaluated from postnatal age in years, recovered from the
+  canonical postnatal age in months; postnatal age in days for Eq. 5 uses
+  30.4375 days per month. The polynomial contains `ln(age)`, so postnatal age
+  must be greater than zero. The paper does not state whether the polynomial
+  was capped at older ages; it is applied as printed up to 18 years.
+- **Postmenstrual age in weeks.** The model takes `PAGE` in weeks, the unit of
+  the Rhodin constants, rather than the library's default of months.
+- **Virtual cohort.** The authors resampled their own patients for the
+  simulations; the cohort here is synthetic and matched to the Table 1 medians
+  as described above. The neonatal postnatal-age strata (1-7 and 8-28 days),
+  the 70/30 term/preterm split and the growth curves are the maintainers'
+  assumptions. The Table S7 differences reflect these approximations and Monte
+  Carlo error (about 3.5 percentage points per cell).
+- **PTA details not stated in the paper.** Whether the authors' simulated
+  concentrations included residual error is not stated; individual predictions
+  without residual error are used. The 3-min injection is simulated as a
+  0.05-h infusion.
+- **Below-quantification data.** The M3 method used in estimation has no
+  counterpart in simulation.
+- **Errata.** No correction notice for this article was found in Europe PMC as
+  of 2026-11-18.
