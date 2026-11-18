@@ -1698,6 +1698,8 @@ navbar:
         href: articles/Marier_2011_cenicriviroc.html
       - text: "Cephalexin (Haynes 2025)"
         href: articles/Haynes_2025_cephalexin.html
+      - text: "Cephalexin (Haynes 2026)"
+        href: articles/Haynes_2026_cephalexin.html
       - text: "Cephalexin rat (Padoin 1998)"
         href: articles/Padoin_1998_cephalexin_rat.html
       - text: "Cephalothin (Kuroda 2023)"
@@ -10332,6 +10334,7 @@ articles:
   - articles/Hayashi_2007_omalizumab
   - articles/Hayato_2022_lecanemab
   - articles/Haynes_2025_cephalexin
+  - articles/Haynes_2026_cephalexin
   - articles/Hazendonk_2016_factor_viii
   - articles/He_2012_lamotrigine
   - articles/He_2020_phosphocreatine
