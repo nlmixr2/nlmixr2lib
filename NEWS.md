@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Vicente 2026 subcutaneous infliximab ([doi:10.3390/pharmaceutics18091162](https://doi.org/10.3390/pharmaceutics18091162)) -- Spanish real-world adults with inflammatory bowel disease, anti-TNF-naive or switched from IV infliximab.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

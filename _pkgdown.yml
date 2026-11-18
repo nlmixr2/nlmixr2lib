@@ -4072,6 +4072,8 @@ navbar:
         href: articles/Song_2025_infliximab.html
       - text: "Infliximab (Ternant 2021)"
         href: articles/Ternant_2021_infliximab.html
+      - text: "Infliximab (Vicente 2026)"
+        href: articles/Vicente_2026_infliximab.html
       - text: "Infliximab (Zhao 2026)"
         href: articles/Zhao_2026_infliximab.html
       - text: "Infliximab (Zhu 2024)"
@@ -12030,6 +12032,7 @@ articles:
   - articles/Vezina_2014_valganciclovir
   - articles/Viberg_2006_cefuroxime
   - articles/Viberg_2012_AZD6088_rat
+  - articles/Vicente_2026_infliximab
   - articles/Vinnard_2017_isoniazid
   - articles/Vinnard_2017_rifampicin
   - articles/Visscher_2025_parathyroidHormone
