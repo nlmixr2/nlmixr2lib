@@ -3148,6 +3148,8 @@ navbar:
         href: articles/Chakravartula_2024_fentanyl_pediatric_respiratory_depression.html
       - text: "Fentanyl pk pediatric (Chakravartula 2024)"
         href: articles/Chakravartula_2024_fentanyl_pediatric_respiratory_depression.html
+      - text: "Fentanyl rat (Obert 2026)"
+        href: articles/Obert_2026_fentanyl_rat.html
       - text: "Fepixnebart (James 2025)"
         href: articles/James_2025_fepixnebart.html
       - text: "FerricCarboxymaltose rat (Cao 2025)"
@@ -11264,6 +11266,7 @@ articles:
   - articles/Nyangwa_2026_pretomanid
   - articles/OBrien_2017_ramucirumab
   - articles/OHanlon_2024_milrinone
+  - articles/Obert_2026_fentanyl_rat
   - articles/ObrinkHansen_2015_piperacillin
   - articles/Obura_2025_benzylpenicillin
   - articles/Odongo_2015_sulfadoxinePyrimethamine

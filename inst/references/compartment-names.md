@@ -7406,6 +7406,15 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Gu_2023_buprenorphine.R` (founding example; doi:10.3389/fphar.2023.1089862 -- two-compartment norbuprenorphine formed from the whole buprenorphine clearance with Fm fixed to 1 and multiplied by 1.98 in the 16 mg dose group).
 - **Notes:** Follows the `norcloz` / `norfluox` / `noroxycod` construction (`nor` + truncated parent stem). Distinct from the buprenorphine glucuronides, which would take their own suffixes.
 
+### norfentanyl (**canonical norfentanyl suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Norfentanyl, the pharmacologically inactive N-dealkylated metabolite of fentanyl and its major metabolic product, formed by CYP3A4 in humans and by the CYP3A1/2 and CYP3A9/18 orthologs in rats. Used on `central_norfentanyl`, `lvmax_norfentanyl` / `lkm_norfentanyl` (saturable formation), `lcl_norfentanyl` / `lvc_norfentanyl`, `Cc_norfentanyl` and `propSd_norfentanyl`.
+- **Source aliases:**
+  - `Nor`, `NFent` -- the subscript and model description of Obert 2026 (`CLNor`, `VNor`, Table 3; control-stream header 'FENT 2compCL to NFent 1compCL MM').
+  - `METABOLITE` / `NCL` / `V3` -- the compartment and parameter names of the Obert 2026 control stream (Supplemental Material 1).
+- **Example models:** `Obert_2026_fentanyl_rat.R` (founding example; doi:10.1016/j.dmd.2026.100390 -- one-compartment norfentanyl formed by Michaelis-Menten kinetics from the fentanyl central concentration in Sprague-Dawley rats).
+- **Notes:** Spelled out rather than truncated (`norfent`), following the spelled-out form for new canonicals; the older `norcloz` / `norfluox` / `noroxycod` / `norbup` suffixes are truncated parent stems.
+
 ### dnef (**canonical desmethyl-nefopam suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Desmethyl-nefopam (nor-nefopam), N-demethyl metabolite of nefopam formed by CYP3A4-mediated N-demethylation. Followed in plasma alongside the parent in joint parent + metabolite popPK models of postoperative nefopam analgesia. Used as the metabolite suffix on `central_dnef` compartments, `lcl_dnef` / `lvc_dnef` / `lcl_form_dnef` parameters, and `addSd_dnef` / `propSd_dnef` residual SDs.

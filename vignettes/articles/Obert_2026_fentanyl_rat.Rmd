@@ -1,0 +1,542 @@
+---
+title: "Fentanyl and norfentanyl in rats (Obert 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fentanyl and norfentanyl in rats (Obert 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Obert_2026_fentanyl_rat"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Obert_2026_fentanyl_rat"))$description`
+* Article: <https://doi.org/10.1016/j.dmd.2026.100390> (open access,
+  PMC13670244). The population PK control stream is Supplemental Material 1
+  of the article.
+
+Obert et al. gave Sprague-Dawley rats an overdose-level intravenous fentanyl
+bolus (100 ug/kg) twice a week for five weeks and measured fentanyl and
+norfentanyl in arterial plasma after the 1st, 5th and 10th injections. They
+analysed the data three ways: noncompartmental analysis, a NONMEM population
+PK model, and a PK-Sim PBPK model. This article packages the population PK
+model. The PBPK model is a platform (PK-Sim) model whose tissue
+partitioning, permeability and enzyme-abundance machinery is not published in
+a form that can be re-expressed as ODEs, so it is not included.
+
+# Population
+
+The model was fitted to 19 adult Sprague-Dawley rats (9 female, 10 male),
+giving data from 7 animals of each sex at every sampled injection (Results,
+Study population). At baseline the females were older (13.4 vs 8.9 weeks) and
+lighter (286 vs 343 g) than the males; animals weighed 280-380 g on arrival.
+Each rat received 100 ug/kg fentanyl as a tail-vein bolus twice weekly with at
+least 72 h between injections, for 10 injections. Arterial blood was drawn 3,
+15, 30, 60, 180 and 360 min after the 1st, 5th and 10th injections (the 11th
+for 4 animals). Weight and age were tested in the stepwise covariate search
+and not retained; sex and injection number were retained.
+
+The same information is available programmatically via
+`readModelDb("Obert_2026_fentanyl_rat")()$population`.
+
+# Source trace
+
+Every value comes from Table 3 of the article (final estimates); the model
+structure comes from the NONMEM control stream (Supplemental Material 1) and
+the model schematic (Supplemental Figure 1).
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CLFent) | log(774 mL/h) | Table 3 |
+| `lvc` (VFent,Central) | log(275 mL) | Table 3 |
+| `lq` (QFent) | log(232 mL/h) | Table 3 |
+| `lvp` (VFent,Peripheral) | log(326 mL) | Table 3 |
+| `lkm_norfentanyl` (Km) | log(2.89 ng/mL) | Table 3 |
+| `lvmax_norfentanyl` (Vmax) | log(78.8 ng/h) | Table 3 (units: see below) |
+| `lcl_norfentanyl` (CLNor) | log(23.6 mL/h) | Table 3 |
+| `lvc_norfentanyl` (VNor) | log(10.4 mL) | Table 3 |
+| `e_sexf_cl` | -0.158 | Table 3 'CLFent:Sex'; `CLSEX` block of the control stream |
+| `e_cycle10_cl` | -0.0796 | Table 3 'CLFent:Injection'; `CLINJ` block |
+| `e_sexf_vmax_norfentanyl` | -0.764 | Table 3 'Vmax:Sex'; `VMAXSEX` block |
+| `e_sexf_cl_norfentanyl` | -0.445 | Table 3 'CLNor:Sex'; `NCLSEX` block |
+| `etalcl` | 0.00843 | Table 3 omega2 CL,Fent |
+| `etalvmax_norfentanyl` | 0.0716 | Table 3 omega2 Vmax |
+| `etalcl_norfentanyl` | 0.0602 | Table 3 omega2 CL,Nor |
+| `propSd` | sqrt(0.112) = 0.335 | Table 3 'Prop. error, fentanyl' ($SIGMA variance) |
+| `propSd_norfentanyl` | sqrt(0.261) = 0.511 | Table 3 'Prop. error, norfentanyl' ($SIGMA variance) |
+| `d/dt(central)`, `d/dt(peripheral1)` | n/a | `$DES` DADT(1), DADT(2); Supplemental Figure 1 |
+| `d/dt(central_norfentanyl)` | n/a | `$DES` DADT(3) = VMAX*C1/(KM+C1) - NCL/V3*A(3) |
+| `Cc_norfentanyl` scaling 232.3/336.5 | n/a | `$PK` S3 = V3*(336.5/232.3) |
+| Covariate forms `(1 + theta * indicator)` | n/a | `$PK` CLSEX, CLINJ, VMAXSEX, NCLSEX blocks |
+
+## Notes on the structure
+
+* **Norfentanyl formation does not deplete fentanyl.** In the control stream
+  the fentanyl central compartment loses drug only through CLFent and Q; the
+  Michaelis-Menten formation term appears only in the norfentanyl equation.
+  The packaged model keeps that form. The formation rate never exceeds Vmax
+  (78.8 ng/h), against a fentanyl clearance flux of ~77 000 ng/h at the first
+  sample, so the omission is numerically negligible.
+* **Vmax is an amount rate.** Table 3 prints the unit of Vmax as "ng/mL per
+  h", but the control stream adds `VMAX*C1/(KM+C1)` directly to `DADT(3)`,
+  whose state `A(3)` is an amount (the code itself computes
+  `C3 = A(3)/V3`). Vmax is therefore in ng/h, in fentanyl-mass equivalents
+  because the dose is entered as fentanyl ng.
+* **Molecular-weight conversion.** The norfentanyl compartment is carried in
+  fentanyl-mass equivalents and the control stream reports it through the
+  scale `S3 = V3*(336.5/232.3)`, so the modelled norfentanyl concentration is
+  `central_norfentanyl / vc_norfentanyl * 232.3 / 336.5` ng/mL.
+* **Sex coding.** The control stream applies `(1 + THETA)` when `SEX = 0`.
+  The text states that clearance, Vmax and norfentanyl clearance are lower in
+  females, so `SEX = 0` is female and the canonical `SEXF = 1 - SEX` carries
+  the coefficients unchanged.
+* **Injection number** is the canonical dose-number counter `CYCLE`
+  (1 = first injection). The model applies the clearance effect when
+  `CYCLE >= 10`, reproducing the control stream's dichotomy (injection 10
+  versus injections 1 and 5; the 4 animals sampled at the 11th injection are
+  treated as the 10th).
+
+# Virtual cohort
+
+The cohort has 100 female and 100 male rats, each receiving the full
+10-injection course: injections on a Monday/Thursday schedule (72 h and 96 h
+intervals alternating), so the 10th injection falls on day 31 as in the
+article. The dose is 100 ug/kg = 1e5 ng per kg of current body weight.
+
+```{r cohort}
+set.seed(2026)
+rxode2::rxSetSeed(2026)
+
+n_per_sex <- 100
+dose_times <- c(0, 72, 168, 240, 336, 408, 504, 576, 672, 744)
+sampled_inj <- c(1, 5, 10)
+# Nominal sampling times (h): 3, 15, 30, 60, 180, 360 min, plus a dense grid
+# for the prediction-interval plot.
+# Times are built from whole minutes so that the nominal samples can be
+# matched exactly after the solve.
+nominal_min <- c(3, 15, 30, 60, 180, 360)
+nominal <- nominal_min / 60
+obs_grid <- sort(unique(c(0, nominal_min, seq(6, 360, by = 6)))) / 60
+
+rats <- tibble(
+  id = seq_len(2 * n_per_sex),
+  SEXF = rep(c(1L, 0L), each = n_per_sex),
+  sex = ifelse(SEXF == 1L, "Female", "Male"),
+  # baseline weight (kg) around the reported sex means (286 g, 343 g)
+  wt1 = ifelse(SEXF == 1L, 0.286, 0.343) * exp(rnorm(2 * n_per_sex, 0, 0.06)),
+  # weight at the 10th injection, so that the mean over the course equals
+  # the PBPK individuals' mean weight over all injection days (Table 1:
+  # 328 g female, 374 g male)
+  wt10 = wt1 * ifelse(SEXF == 1L, 2 * 0.328 / 0.286 - 1, 2 * 0.374 / 0.343 - 1)
+)
+
+doses <- rats |>
+  tidyr::crossing(CYCLE = 1:10) |>
+  mutate(
+    time = dose_times[CYCLE],
+    WT = wt1 + (wt10 - wt1) * (CYCLE - 1) / 9,
+    amt = 1e5 * WT,
+    evid = 1L,
+    cmt = "central",
+    dvid = NA_integer_
+  )
+
+obs <- rats |>
+  tidyr::crossing(CYCLE = sampled_inj, tad = obs_grid) |>
+  mutate(
+    time = dose_times[CYCLE] + tad,
+    amt = 0,
+    evid = 0L,
+    cmt = "central",
+    dvid = 1L
+  )
+
+events <- bind_rows(doses, obs) |>
+  mutate(injection = paste("Injection", CYCLE)) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, evid, amt, cmt, dvid, SEXF, CYCLE, sex, injection)
+
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Obert_2026_fentanyl_rat")
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep = c("sex", "injection", "CYCLE"),
+  useLinCmt = FALSE
+) |>
+  as.data.frame() |>
+  filter(CYCLE %in% sampled_inj) |>
+  mutate(
+    tad_min = round((time - dose_times[CYCLE]) * 60),
+    tad = tad_min / 60
+  ) |>
+  filter(tad_min >= 0, tad_min <= 360)
+```
+
+`Cc` and `Cc_norfentanyl` are individual predictions. Where a comparison is to
+observed data (means, SDs and percentiles of plasma concentrations), the
+proportional residual error is added explicitly with the packaged SDs:
+
+```{r residual}
+pars <- rxode2::rxode(mod)$theta
+sim <- sim |>
+  mutate(
+    Cfent_obs = Cc * (1 + pars[["propSd"]] * rnorm(n())),
+    Cnor_obs = Cc_norfentanyl * (1 + pars[["propSd_norfentanyl"]] * rnorm(n()))
+  )
+```
+
+# Replicate published figures
+
+## Figure 1: mean (SD) concentration-time profiles
+
+```{r figure-1, fig.width = 8, fig.height = 6}
+fig1 <- sim |>
+  filter(tad %in% nominal) |>
+  select(sex, injection, tad, Fentanyl = Cfent_obs, Norfentanyl = Cnor_obs) |>
+  pivot_longer(c(Fentanyl, Norfentanyl), names_to = "analyte", values_to = "conc") |>
+  group_by(analyte, sex, injection, tad) |>
+  summarise(mean = mean(conc), sd = sd(conc), .groups = "drop")
+
+ggplot(fig1, aes(tad, mean, colour = sex, shape = injection)) +
+  geom_point(position = position_dodge(width = 0.15)) +
+  geom_errorbar(
+    aes(ymin = pmax(mean - sd, 1e-3), ymax = mean + sd),
+    width = 0,
+    position = position_dodge(width = 0.15)
+  ) +
+  geom_line(aes(group = interaction(sex, injection)), alpha = 0.4) +
+  facet_wrap(~analyte, scales = "free_y") +
+  scale_y_log10() +
+  scale_colour_manual(values = c(Female = "firebrick", Male = "steelblue")) +
+  labs(
+    x = "Time after injection (h)",
+    y = "Plasma concentration (ng/mL)",
+    caption = "Replicates Figure 1 of Obert 2026 (mean and SD at the nominal sampling times)."
+  )
+```
+
+As in the article, the fentanyl profiles of the two sexes overlap, while
+norfentanyl is about 3-fold lower in females. The model has no sex or weight
+effect on the fentanyl volumes, so the females' smaller absolute dose gives
+them a slightly lower simulated early fentanyl concentration, whereas the
+observed female means were slightly higher (see the NCA comparison below).
+
+## Supplemental Figure 2c: visual predictive check
+
+```{r figure-s2c, fig.width = 8, fig.height = 4}
+vpc <- sim |>
+  filter(tad > 0) |>
+  select(tad, Fentanyl = Cfent_obs, Norfentanyl = Cnor_obs) |>
+  pivot_longer(-tad, names_to = "analyte", values_to = "conc") |>
+  group_by(analyte, tad) |>
+  summarise(
+    p05 = quantile(conc, 0.05),
+    p50 = quantile(conc, 0.50),
+    p95 = quantile(conc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(vpc, aes(tad)) +
+  geom_ribbon(aes(ymin = pmax(p05, 1e-3), ymax = p95), alpha = 0.25, fill = "slateblue") +
+  geom_line(aes(y = p50), colour = "darkred", linewidth = 1) +
+  facet_wrap(~analyte) +
+  scale_y_log10() +
+  labs(
+    x = "Time after injection (h)",
+    y = "Concentration (ng/mL)",
+    caption = "Simulated 5th-95th percentile band and median; compare Supplemental Figure 2c of Obert 2026."
+  )
+```
+
+The simulated 5th-95th percentile band spans about 47-170 ng/mL fentanyl at
+3 min and 0.17-0.86 ng/mL at 6 h, against observations of about 40-240 and
+0.25-0.75 ng/mL in Supplemental Figure 2c. The norfentanyl 95th percentile
+(about 3 ng/mL at 1-1.5 h) matches the highest observations. The lower
+percentiles are pulled far below the lowest observations because the
+proportional residual SD of 0.51 sends the lower tail towards zero, and the
+band pools both sexes; the article's own fentanyl VPC shows the same widening
+of the simulated lower band at late times.
+
+# Residual-error scale
+
+Table 3 lists the residual errors as 0.112 and 0.261. These are the
+`$SIGMA` estimates of `Y = F*(1 + ERR)`, which NONMEM holds as variances, so
+the proportional SDs are `sqrt(0.112) = 0.335` and `sqrt(0.261) = 0.511`. The
+data confirm the variance reading. The fentanyl volumes carry no IIV, so the
+spread of the first (3-min) fentanyl concentration within a sex is almost
+entirely residual error: the article's within-sex CV of fentanyl Cmax is
+25-35% (Supplemental Table 1), which the SD reading (11%) cannot produce.
+
+```{r residual-check}
+cv_cmax <- sim |>
+  filter(tad_min == 3) |>
+  group_by(sex, injection) |>
+  summarise(cv = sd(Cfent_obs) / mean(Cfent_obs), .groups = "drop")
+knitr::kable(
+  cv_cmax |> rename(Sex = sex, Injection = injection, "CV of 3-min fentanyl" = cv),
+  digits = 2,
+  caption = "Simulated CV of the 3-min fentanyl concentration (published Cmax CV 25.1-35.1%)."
+)
+
+stopifnot(
+  # Variance reading gives ~0.33, the SD reading ~0.11 -- a mis-read SIGMA
+  # lands far outside this band.
+  abs(median(cv_cmax$cv) - 0.33) < 0.08
+)
+```
+
+# PKNCA validation
+
+The article's noncompartmental analysis (Phoenix WinNonlin, linear trapezoid)
+used the six nominal samples per injection. The same sampling is applied to
+the individual predictions here, with each injection's 6-h profile analysed
+on its own time-after-dose axis. Fentanyl Cmax is taken over the samples
+(3 min onwards); the fentanyl time-zero row is the post-bolus concentration
+`dose / Vc`, which anchors AUC the way Phoenix's back-extrapolated C0 does.
+Norfentanyl peaks at about 1 h, so its terminal half-life is regressed on the
+1-, 3- and 6-h samples.
+
+```{r pknca}
+nca_conc <- sim |>
+  filter(tad %in% c(0, nominal)) |>
+  select(id, sex, injection, tad, Cc, Cc_norfentanyl) |>
+  mutate(group = paste(sex, injection, sep = ", "))
+
+nca_dose <- events |>
+  filter(evid == 1, CYCLE %in% sampled_inj) |>
+  transmute(id, sex, injection, tad = 0, amt, group = paste(sex, injection, sep = ", "))
+
+# A profile whose norfentanyl peak falls on the 3-h sample has only two
+# points for the terminal regression; its half-life and AUCinf are left
+# missing (counted below) rather than reported as a warning per rat.
+muffle_too_few_points <- function(w) {
+  if (grepl("Too few points for half-life", conditionMessage(w))) {
+    invokeRestart("muffleWarning")
+  }
+}
+
+run_nca <- function(conc_col, intervals, route) {
+  conc <- nca_conc |>
+    filter(!is.na(.data[[conc_col]])) |>
+    rename(conc = all_of(conc_col))
+  conc_obj <- PKNCA::PKNCAconc(conc, conc ~ tad | group + id)
+  dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ tad | group + id, route = route)
+  withCallingHandlers(
+    PKNCA::pk.nca(PKNCA::PKNCAdata(
+      conc_obj,
+      dose_obj,
+      intervals = intervals,
+      # Norfentanyl peaks at the 1-h sample, leaving only the 3-h and 6-h
+      # samples after it; the article reports a half-life for every group,
+      # so the peak sample is allowed into the terminal regression.
+      options = list(allow.tmax.in.half.life = TRUE)
+    )),
+    warning = muffle_too_few_points
+  )
+}
+
+nca_fent <- run_nca(
+  "Cc",
+  data.frame(
+    start = c(0.05, 0),
+    end = c(6, Inf),
+    cmax = c(TRUE, FALSE),
+    aucinf.obs = c(FALSE, TRUE),
+    half.life = c(FALSE, TRUE)
+  ),
+  route = "intravascular"
+)
+nca_nor <- run_nca(
+  "Cc_norfentanyl",
+  data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE, half.life = TRUE),
+  route = "extravascular"
+)
+n_no_hl <- as.data.frame(nca_nor) |>
+  filter(PPTESTCD == "half.life", is.na(PPORRES)) |>
+  nrow()
+```
+
+In `r n_no_hl` of the 600 simulated norfentanyl profiles the peak falls on
+the 3-h sample, too late for a three-point terminal regression; those
+profiles are left out of the norfentanyl half-life and AUCinf means.
+
+## Comparison against published NCA
+
+Supplemental Table 1 reports arithmetic means by sex and injection, so the
+simulated per-rat values are summarised by their mean before comparison.
+
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~analyte, ~group, ~cmax, ~aucinf.obs, ~half.life,
+  "Fentanyl", "Female, Injection 1", 132, 57.7, 1.17,
+  "Fentanyl", "Male, Injection 1", 108, 53.5, 1.03,
+  "Fentanyl", "Female, Injection 5", 107, 48.0, 1.21,
+  "Fentanyl", "Male, Injection 5", 116, 58.4, 1.08,
+  "Fentanyl", "Female, Injection 10", 140, 62.3, 1.18,
+  "Fentanyl", "Male, Injection 10", 115, 60.7, 1.11,
+  "Norfentanyl", "Female, Injection 1", 0.812, 3.48, 2.52,
+  "Norfentanyl", "Male, Injection 1", 2.46, 7.90, 1.90,
+  "Norfentanyl", "Female, Injection 5", 0.833, 4.21, 2.79,
+  "Norfentanyl", "Male, Injection 5", 2.27, 7.95, 2.11,
+  "Norfentanyl", "Female, Injection 10", 0.800, 3.62, 2.63,
+  "Norfentanyl", "Male, Injection 10", 2.67, 10.6, 2.33
+)
+
+# One value per rat and parameter: fentanyl Cmax from the 3-min-onwards
+# interval, AUCinf and half-life from the 0-Inf interval. Selecting by
+# interval drops the companion parameters PKNCA adds to each interval.
+nca_values <- function(res, analyte, cmax_start) {
+  as.data.frame(res) |>
+    filter(
+      (PPTESTCD == "cmax" & start == cmax_start) |
+        (PPTESTCD %in% c("aucinf.obs", "half.life") & is.infinite(end))
+    ) |>
+    transmute(analyte = analyte, group, id, PPTESTCD, PPORRES)
+}
+nca_ind <- bind_rows(
+  nca_values(nca_fent, "Fentanyl", 0.05),
+  nca_values(nca_nor, "Norfentanyl", 0)
+)
+
+simulated <- nca_ind |>
+  group_by(analyte, group, PPTESTCD) |>
+  summarise(PPORRES = mean(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = simulated |> mutate(group = paste(analyte, group, sep = ": ")) |> select(-analyte),
+  reference = published |> mutate(group = paste(analyte, group, sep = ": ")) |> select(-analyte),
+  by = "group",
+  params = c("cmax", "aucinf.obs", "half.life"),
+  units = c(cmax = "ng/mL", aucinf.obs = "ng*h/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Mean simulated NCA vs Supplemental Table 1 of Obert 2026 (arithmetic means, 7 rats per sex and injection). * marks rows differing by >20%."
+)
+```
+
+```{r nca-gate}
+ratio <- simulated |>
+  tidyr::pivot_longer(c(cmax, aucinf.obs, half.life), names_to = "param", values_to = "sim") |>
+  inner_join(
+    published |>
+      tidyr::pivot_longer(c(cmax, aucinf.obs, half.life), names_to = "param", values_to = "pub"),
+    by = c("analyte", "group", "param")
+  ) |>
+  mutate(ratio = sim / pub)
+
+knitr::kable(
+  ratio |>
+    group_by(analyte, param) |>
+    summarise(median_ratio = median(ratio), .groups = "drop") |>
+    rename(Analyte = analyte, "NCA parameter" = param, "Median simulated / published" = median_ratio),
+  digits = 2
+)
+
+med_ratio <- function(a, p) median(ratio$ratio[ratio$analyte == a & ratio$param == p])
+# Female / male ratio of the group means, simulated and published
+sex_ratio <- ratio |>
+  filter(analyte == "Norfentanyl", param %in% c("cmax", "aucinf.obs")) |>
+  mutate(sex = sub(",.*", "", group)) |>
+  group_by(param, sex) |>
+  summarise(sim = mean(sim), pub = mean(pub), .groups = "drop") |>
+  group_by(param) |>
+  summarise(
+    sim = sim[sex == "Female"] / sim[sex == "Male"],
+    pub = pub[sex == "Female"] / pub[sex == "Male"]
+  )
+knitr::kable(
+  sex_ratio |> rename("NCA parameter" = param, "Female / male, simulated" = sim, "Female / male, published" = pub),
+  digits = 2,
+  caption = "Norfentanyl sex difference."
+)
+
+stopifnot(
+  # Half-lives follow from the disposition parameters (CL, Vc, Q, Vp; and
+  # formation-rate-limited norfentanyl elimination); a mis-transcribed
+  # volume or clearance moves them by tens of percent.
+  abs(med_ratio("Fentanyl", "half.life") - 1) < 0.15,
+  abs(med_ratio("Norfentanyl", "half.life") - 1) < 0.2,
+  abs(med_ratio("Fentanyl", "aucinf.obs") - 1) < 0.2,
+  # The female / male norfentanyl ratio (published 0.43 for AUC, 0.33 for
+  # Cmax) is the paper's headline result and is set by the sex effects on
+  # Vmax and CLNor.
+  all(abs(sex_ratio$sim - sex_ratio$pub) < 0.1),
+  # Norfentanyl AUC runs about 20% under the published NCA (see below);
+  # dropping the molecular-weight factor would put it at about 1.2, and
+  # inverting it at about 0.4.
+  med_ratio("Norfentanyl", "aucinf.obs") > 0.65,
+  med_ratio("Norfentanyl", "aucinf.obs") < 1.05
+)
+```
+
+Fentanyl half-life and AUC, norfentanyl half-life, and the 2- to 3-fold
+lower norfentanyl exposure in females all reproduce Supplemental Table 1.
+Norfentanyl AUC is about 20% and norfentanyl Cmax about 30% below the
+published means in both sexes; see the Assumptions and deviations section.
+
+# Assumptions and deviations
+
+* **PBPK model not packaged.** The article's PK-Sim PBPK model relies on the
+  platform's tissue-partitioning, permeability and enzyme-abundance
+  calculations, which are not published in a form that can be re-expressed
+  as ODEs. Only the NONMEM population model is packaged.
+* **Body weight and dose.** Weight is not a model covariate, but it sets the
+  100 ug/kg dose. Baseline weights are drawn around the reported sex means
+  (286 g female, 343 g male) and grow linearly over the course so that the
+  mean weight across injections matches the PBPK individuals' mean weights
+  (Table 1: 328 g female, 374 g male). Individual weights were not published.
+* **Dosing schedule.** The article states twice-weekly injections at least
+  72 h apart; a Monday/Thursday pattern (alternating 72-h and 96-h intervals)
+  is assumed. With a fentanyl half-life near 1 h and norfentanyl near 2 h,
+  nothing carries over between injections, so the exact pattern does not
+  affect the results.
+* **Fentanyl AUC and Cmax.** The model gives fentanyl AUCinf = dose / CL
+  exactly (about 44 ng*h/mL for a 343-g male at the first injection), while
+  the noncompartmental AUCs in Supplemental Table 1 are 48-62 ng*h/mL, which
+  imply a clearance about 20% below the population estimate of 774 mL/h. The
+  simulated NCA on the same six samples recovers part of the gap (median
+  simulated / published AUC about 0.9), because the linear trapezoid
+  overestimates the area under the steep post-bolus decline. Simulated
+  fentanyl Cmax at 3 min agrees for males but is lower than the published
+  female means (132-140 ng/mL at injections 1 and 10), which exceed the male
+  means despite the females' smaller dose; the model has no sex or weight
+  effect on the fentanyl volumes and carries no IIV on them. No parameter was
+  adjusted.
+* **Norfentanyl exposure about 20-30% under the published NCA.** With the
+  control stream's molecular-weight scale (`S3 = V3*(336.5/232.3)`) the
+  simulated norfentanyl AUC is about 20% and Cmax about 30% below Supplemental
+  Table 1 and Figure 1, similarly in both sexes, so the sex difference is
+  reproduced. Leaving the scale out would raise every norfentanyl
+  concentration by 336.5/232.3 = 1.45, which brings Cmax into agreement in
+  both sexes but puts AUC about 15-25% above the published values, so the
+  NCA does not clearly favour either reading. The control stream, which
+  states the scale explicitly, is followed as published. The article notes some indication
+  of instability in the bootstrap, whose 95% intervals for Vmax (10-148),
+  CLNor (4-43 mL/h) and VNor (3-18 mL) are wide.
+* **Norfentanyl formation does not deplete fentanyl**, and Vmax is an amount
+  rate in fentanyl-mass equivalents, both as in the control stream (see
+  Notes on the structure).
+* **Final estimates.** Values are the final estimates of Table 3. The
+  `$THETA` / `$OMEGA` values in Supplemental Material 1 differ slightly
+  (for example CL 785, CLINJ10 -0.0928) and are initial estimates of the
+  final run.
