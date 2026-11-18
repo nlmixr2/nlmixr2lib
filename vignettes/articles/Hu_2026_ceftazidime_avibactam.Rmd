@@ -1,0 +1,527 @@
+---
+title: "Ceftazidime-avibactam with and without renal replacement therapy (Hu 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ceftazidime-avibactam with and without renal replacement therapy (Hu 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Hu 2026 fitted four separate one-compartment population PK models: one per
+analyte of the fixed-ratio (4:1) combination ceftazidime-avibactam, and one per
+stratum -- critically ill adults receiving continuous renal replacement therapy
+(RRT) and those who were not. Each has its own objective function value (Table 2
+note), so the extraction is four model files sharing this one vignette.
+
+```{r models}
+uiCazNon <- rxode2::rxode(readModelDb("Hu_2026_ceftazidime_nonrrt"))
+uiAviNon <- rxode2::rxode(readModelDb("Hu_2026_avibactam_nonrrt"))
+uiCazRrt <- rxode2::rxode(readModelDb("Hu_2026_ceftazidime_rrt"))
+uiAviRrt <- rxode2::rxode(readModelDb("Hu_2026_avibactam_rrt"))
+```
+
+* Citation: `r uiCazNon$reference`
+* Ceftazidime, no RRT: `r uiCazNon$description`
+* Avibactam, no RRT: `r uiAviNon$description`
+* Ceftazidime, RRT: `r uiCazRrt$description`
+* Avibactam, RRT: `r uiAviRrt$description`
+* Article: <https://doi.org/10.2147/DDDT.S632562>
+
+A nominal "2.5 g" dose of ceftazidime-avibactam delivers 2000 mg of ceftazidime
+and 500 mg of avibactam; the paper writes regimens as `2000/500 mg`. Every
+infusion below lasts 2 hours, as in the study and in all of the paper's
+simulations.
+
+# Population
+
+Thirty-three critically ill adults with culture-confirmed carbapenem-resistant
+organism infection were enrolled prospectively at one ICU in Hangzhou, China,
+between June 2021 and January 2024 (Hu 2026 Table 1). Eighteen received
+continuous RRT (CVVHDF in 14, CVVH in 4) and contributed 120 plasma samples;
+fifteen did not and contributed 91. The non-RRT patients had a median
+Cockcroft-Gault creatinine clearance of 100.48 mL/min: 2 with augmented renal
+clearance (> 130 mL/min), 9 between 81 and 130 mL/min and 4 between 31 and 50
+mL/min. The cohort was 79% male with a median age of 70 years and median weight
+of 60 kg. Thirty of 33 patients received 2000/500 mg every 8 hours. Arterial
+samples were drawn at 0, 1, 2, 4, 6 and 8 hours after the first and a
+steady-state infusion.
+
+```{r population}
+lapply(
+  list(RRT = uiCazRrt, "No RRT" = uiCazNon),
+  function(u) unlist(u$population[c("n_subjects", "n_observations", "age_median", "weight_median", "sex_female_pct")])
+) |>
+  as.data.frame() |>
+  tibble::rownames_to_column("Field") |>
+  knitr::kable()
+```
+
+# Source trace
+
+Every value is also traced by an in-file comment in the four model files.
+
+| Model | Parameter | Value | Source location |
+|---|---|---|---|
+| CAZ, RRT | `lcl` / `lvc` | 2.03 L/h / 17 L | Table 2, RRT CLPOP / VPOP |
+| CAZ, RRT | `etalcl` / `etalvc` | 0.134 / 0.0645 (variance) | Table 2, RRT IIV CL / IIV V |
+| CAZ, RRT | `propSd` | sqrt(0.0799) | Table 2, RRT RV (proportional) |
+| AVI, RRT | `lcl` / `lvc` | 1.77 L/h / 14 L | Table 2, RRT CLPOP / VPOP |
+| AVI, RRT | `etalcl` / `etalvc` | 0.196 / 0.0814 (variance) | Table 2, RRT IIV CL / IIV V |
+| AVI, RRT | `propSd` | sqrt(0.0857) | Table 2, RRT RV (proportional) |
+| CAZ, no RRT | `lcl` / `lvc` | 3.36 L/h / 20.5 L | Table 2, non-RRT CLPOP / VPOP |
+| CAZ, no RRT | `e_crcl_cl` | 0.792 | Table 2, non-RRT alpha; Results covariate equation |
+| CAZ, no RRT | `etalcl` / `etalvc` | 0.0415 / 0.368 (variance) | Table 2, non-RRT IIV CL / IIV V |
+| CAZ, no RRT | `propSd` | sqrt(0.0559) | Table 2, non-RRT RV (proportional) |
+| AVI, no RRT | `lcl` / `lvc` | 4.27 L/h / 16 L | Table 2, non-RRT CLPOP / VPOP |
+| AVI, no RRT | `e_crcl_cl` | 0.906 | Table 2, non-RRT alpha; Results covariate equation |
+| AVI, no RRT | `etalcl` / `etalvc` | 0.0223 / 0.293 (variance) | Table 2, non-RRT IIV CL / IIV V |
+| AVI, no RRT | `propSd` | sqrt(0.0909) | Table 2, non-RRT RV (proportional) |
+| No RRT | `cl <- exp(lcl + etalcl) * (CRCL / 100.45)^e_crcl_cl` | n/a | Results: CL = CLPOP x (CrCL/100.45)^alpha |
+| All | One compartment, first-order elimination | n/a | Results, PPK analysis (lower AIC than two compartments) |
+| All | `Pij = Ppop x exp(eta)` | n/a | Methods Eq. 1 |
+| All | `Cc ~ prop(propSd)` | n/a | Methods Eq. 3; Table 2 'RV (proportional)' |
+| Simulation | Free fractions 0.85 (CAZ), 0.92 (AVI) | n/a | Methods, Monte Carlo Simulation |
+| Simulation | PK/PD targets, joint PTA as a product | n/a | Methods, Monte Carlo Simulation |
+| Simulation | MIC distributions (CRKP, CRPA) | n/a | Supplementary Table 7 |
+
+# Structural verification
+
+At the reference creatinine clearance of 100.45 mL/min the non-RRT models must
+return the printed typical values, and a typical-value steady-state solve must
+reproduce the closed-form area under the curve of a linear one-compartment
+model (`AUC over one interval = Dose / CL`).
+
+```{r structural}
+TAU <- 8
+typicalSs <- function(ui, dose, crcl = 100.45) {
+  ev <- rxode2::et(amt = dose, dur = 2, ii = TAU, addl = 29, cmt = "central") |>
+    rxode2::et(seq(232, 240, by = 0.01)) |>
+    as.data.frame() |>
+    mutate(CRCL = crcl)
+  s <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(ui), ev))
+  aucTrap <- sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2)
+  tibble::tibble(cl = s$cl[1], vc = s$vc[1], aucTrap = aucTrap, aucExact = dose / s$cl[1])
+}
+
+chk <- bind_rows(
+  "CAZ, RRT" = typicalSs(uiCazRrt, 2000),
+  "AVI, RRT" = typicalSs(uiAviRrt, 500),
+  "CAZ, no RRT" = typicalSs(uiCazNon, 2000),
+  "AVI, no RRT" = typicalSs(uiAviNon, 500),
+  .id = "Model"
+) |>
+  mutate(published_cl = c(2.03, 1.77, 3.36, 4.27), published_v = c(17, 14, 20.5, 16))
+
+# Deterministic solve against its own closed form: tight bounds are correct here.
+stopifnot(
+  all(abs(chk$cl - chk$published_cl) < 1e-8),
+  all(abs(chk$vc - chk$published_v) < 1e-8),
+  all(abs(chk$aucTrap / chk$aucExact - 1) < 1e-3)
+)
+
+chk |>
+  dplyr::rename("CL (L/h)" = cl, "V (L)" = vc, "AUC0-8 trapezoid" = aucTrap, "Dose/CL" = aucExact) |>
+  select(-published_cl, -published_v) |>
+  knitr::kable(digits = 3)
+```
+
+# Virtual cohort and simulation
+
+Two arms of 200 virtual patients each receive 2000/500 mg every 8 hours as a
+2-hour infusion for four days, matching the regimen of 30 of the 33 study
+patients. The RRT models carry no covariates. For the non-RRT arm, creatinine
+clearance is drawn to mirror the 13 non-RRT patients behind Table 3: 2 with
+augmented clearance (uniform 131-160 mL/min, the paper's simulated ARC band),
+9 at 81-130 mL/min and 2 at 31-50 mL/min. Table 1 lists 4 patients at 31-50
+mL/min, but 2 non-RRT patients received the reduced 1000/250 mg q8h regimen
+(the labelled dose for creatinine clearance 31-50 mL/min) and are excluded
+from Table 3; the paper does not say which stratum they came from, and placing
+them in the 31-50 mL/min stratum is an assumption.
+
+```{r cohort}
+rxode2::rxSetSeed(20260)
+N_ARM <- 200L
+stratum <- sample(c("ARC", "normal", "moderate"), N_ARM, replace = TRUE, prob = c(2, 9, 2) / 13)
+crclNon <- ifelse(stratum == "ARC", runif(N_ARM, 131, 160),
+  ifelse(stratum == "normal", runif(N_ARM, 81, 130), runif(N_ARM, 31, 50))
+)
+
+doseTimes <- seq(0, 88, by = TAU)
+obsTimes <- sort(unique(c(seq(0, 96, by = 0.25))))
+
+cohortEvents <- function(dose, crcl) {
+  n <- length(crcl)
+  d <- data.frame(
+    id = rep(seq_len(n), each = length(doseTimes)), time = rep(doseTimes, n),
+    amt = dose, evid = 1L, dur = 2, cmt = "central", CRCL = rep(crcl, each = length(doseTimes))
+  )
+  o <- data.frame(
+    id = rep(seq_len(n), each = length(obsTimes)), time = rep(obsTimes, n),
+    amt = NA_real_, evid = 0L, dur = NA_real_, cmt = "central", CRCL = rep(crcl, each = length(obsTimes))
+  )
+  r <- rbind(d, o)
+  r[order(r$id, r$time, -r$evid), ]
+}
+
+runArm <- function(ui, dose, crcl, label) {
+  as.data.frame(rxode2::rxSolve(ui, cohortEvents(dose, crcl), keep = "CRCL")) |>
+    mutate(treatment = label)
+}
+
+sim <- bind_rows(
+  runArm(uiCazRrt, 2000, rep(70, N_ARM), "CAZ, RRT"),
+  runArm(uiAviRrt, 500, rep(70, N_ARM), "AVI, RRT"),
+  runArm(uiCazNon, 2000, crclNon, "CAZ, no RRT"),
+  runArm(uiAviNon, 500, crclNon, "AVI, no RRT")
+)
+stopifnot(length(unique(sim$treatment)) == 4L)
+```
+
+```{r profile, fig.width = 7, fig.height = 4.5}
+sim |>
+  filter(time <= 8 | time >= 72) |>
+  mutate(occasion = ifelse(time <= 8, "First dose (0-8 h)", "Steady state (72-80 h, 3 doses shown)")) |>
+  group_by(treatment, occasion, time) |>
+  summarise(med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  facet_grid(treatment ~ occasion, scales = "free") +
+  labs(x = "Time (h)", y = "Total plasma concentration (mg/L)",
+       caption = "Median and 90% prediction interval (individual predictions), 2000/500 mg q8h, 2-h infusion.")
+```
+
+# PKNCA validation
+
+Steady-state NCA over the 24 hours from 72 to 96 h (three doses) for Cmax and
+AUC0-24, and over the last dosing interval for the terminal half-life, grouped by
+analyte and stratum.
+
+```{r pknca}
+concNca <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+doseNca <- bind_rows(lapply(unique(sim$treatment), function(tr) {
+  data.frame(id = rep(seq_len(N_ARM), each = length(doseTimes)), time = rep(doseTimes, N_ARM),
+             amt = if (startsWith(tr, "CAZ")) 2000 else 500, treatment = tr)
+}))
+
+concObj <- PKNCA::PKNCAconc(concNca, Cc ~ time | treatment + id, concu = "mg/L", timeu = "h")
+doseObj <- PKNCA::PKNCAdose(doseNca, amt ~ time | treatment + id, doseu = "mg")
+intervals <- data.frame(
+  start = c(72, 88), end = c(96, 96),
+  cmax = c(TRUE, FALSE), auclast = c(TRUE, FALSE), half.life = c(FALSE, TRUE)
+)
+ncaRes <- PKNCA::pk.nca(PKNCA::PKNCAdata(concObj, doseObj, intervals = intervals))
+ncaLong <- as.data.frame(ncaRes$result) |>
+  filter(PPTESTCD %in% c("cmax", "auclast", "half.life"))
+stopifnot(nrow(ncaLong) > 0)
+```
+
+Hu 2026 Table 3 reports the **mean** of each parameter in the 30 patients on
+2000/500 mg q8h, so the simulated cohort is summarised by its mean as well
+before comparison.
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~treatment,     ~cmax,  ~half.life, ~auclast,
+  "CAZ, RRT",     194.80, 5.86,       3036.33,
+  "CAZ, no RRT",  131.34, 4.81,       1982.33,
+  "AVI, RRT",      57.76, 5.76,        914.11,
+  "AVI, no RRT",   35.41, 3.06,        411.12
+)
+simMean <- ncaLong |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(PPORRES = mean(PPORRES, na.rm = TRUE), .groups = "drop")
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = simMean, reference = published, by = "treatment",
+  units = c(cmax = "mg/L", auclast = "mg*h/L", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated steady-state means against Hu 2026 Table 3 (AUC is AUC0-24). * differs by > 20%.")
+```
+
+```{r nca-gate}
+pct <- simMean |>
+  inner_join(pivot_longer(published, -treatment, names_to = "PPTESTCD", values_to = "pub"),
+             by = c("treatment", "PPTESTCD")) |>
+  mutate(pct = 100 * (PPORRES / pub - 1))
+stopifnot(nrow(pct) == 12L)
+# Cohort means of 200 subjects; a wrong clearance, volume or dose split moves
+# Cmax and AUC by tens of percent. Half-life is gated separately because its
+# mean is pulled up by the log-normal tail of V (see text).
+exposure <- pct |> filter(PPTESTCD != "half.life")
+halfLife <- pct |> filter(PPTESTCD == "half.life")
+stopifnot(
+  median(abs(exposure$pct)) < 12,
+  max(abs(exposure$pct)) < 25,
+  all(halfLife$pct > -15),
+  all(halfLife$pct < 60)
+)
+```
+
+Cmax and AUC0-24 agree with Table 3 in all four arms. The simulated mean
+half-life is longer than the published mean for both analytes in the non-RRT
+stratum, by about a third for ceftazidime. That stratum carries a large
+variance on volume (0.368 for ceftazidime, 0.293 for avibactam), and the mean
+of a log-normal half-life is dominated by its upper tail, whereas Table 3
+summarises the 13 patients' empirical Bayes estimates, which shrink towards the
+typical value when individual data are sparse. The simulated *median*
+half-life for non-RRT ceftazidime (about 4.3 h) is close to the published mean
+(4.81 h), and the same shrinkage shows in the mean volume below.
+
+Table 3 also reports mean individual clearance and volume:
+
+```{r clv-compare}
+sim |>
+  distinct(treatment, id, cl, vc) |>
+  group_by(treatment) |>
+  summarise(CL_sim = mean(cl), V_sim = mean(vc), .groups = "drop") |>
+  left_join(tibble::tribble(
+    ~treatment, ~CL_pub, ~V_pub,
+    "CAZ, RRT", 2.21, 16.96, "CAZ, no RRT", 3.42, 23.77,
+    "AVI, RRT", 1.95, 14.02, "AVI, no RRT", 4.34, 17.96
+  ), by = "treatment") |>
+  dplyr::rename("Mean CL, simulated (L/h)" = CL_sim, "Mean V, simulated (L)" = V_sim,
+                "Mean CL, Table 3 (L/h)" = CL_pub, "Mean V, Table 3 (L)" = V_pub) |>
+  knitr::kable(digits = 2)
+```
+
+# Replicating the Monte Carlo target-attainment analysis
+
+The paper's main results are joint probabilities of target attainment (PTA) at
+an MIC of 8 mg/L (Supplementary Table 8, Results text) and pathogen-specific
+cumulative fractions of response (CFR) over the BRICS 2019-2021 MIC
+distributions (Supplementary Tables 7 and 9). The simulation rules, from Methods:
+
+* Steady state, 2-hour infusions; free fractions 0.85 (ceftazidime) and 0.92
+  (avibactam).
+* Target 1: ceftazidime 100% *f*T > MIC and avibactam 100% *f*T > 1 mg/L.
+* Target 2: ceftazidime 50% *f*T > 4 x MIC and avibactam 50% *f*T > 1 mg/L.
+* Joint PTA is the **product** of the component PTAs (no cross-component
+  correlation); CFR weights joint PTA over the MIC distribution.
+* Non-RRT strata are creatinine-clearance bands; a uniform draw within each
+  band is used here because the paper does not state the within-band
+  distribution.
+
+PTA is computed from individual predictions without residual error.
+
+```{r pta-setup}
+LEADIN <- 480 # h; a multiple of 6, 8 and 12 and > 10 half-lives for nearly every simulated subject
+N_PTA <- 200L
+mics <- c(0.06, 0.125, 0.25, 0.5, 1, 2, 4, 8, 16, 32, 64) # '>32' binned at 64
+micWeights <- list(
+  CRKP = c(2, 61, 32, 65, 175, 232, 173, 133, 5, 48, 29),
+  CRPA = c(0, 0, 0, 5, 20, 76, 102, 49, 18, 23, 3)
+)
+stopifnot(sum(micWeights$CRKP) == 955, sum(micWeights$CRPA) == 296)
+
+ptaEvents <- function(dose, tau, crcl) {
+  n <- length(crcl)
+  dt <- seq(0, LEADIN, by = tau)
+  ot <- LEADIN + seq(0, tau, length.out = 121L)
+  d <- data.frame(id = rep(seq_len(n), each = length(dt)), time = rep(dt, n), amt = dose,
+                  evid = 1L, dur = 2, cmt = "central", CRCL = rep(crcl, each = length(dt)))
+  o <- data.frame(id = rep(seq_len(n), each = length(ot)), time = rep(ot, n), amt = NA_real_,
+                  evid = 0L, dur = NA_real_, cmt = "central", CRCL = rep(crcl, each = length(ot)))
+  r <- rbind(d, o)
+  r[order(r$id, r$time, -r$evid), ]
+}
+
+freeProfiles <- function(ui, dose, tau, crcl, fu) {
+  s <- as.data.frame(rxode2::rxSolve(ui, ptaEvents(dose, tau, crcl)))
+  s <- s[!is.na(s$Cc), ]
+  split(fu * s$Cc, s$id)
+}
+
+# Joint PTA (%) by MIC for one stratum x regimen, for both targets.
+jointPta <- function(stratum, lo, hi, cazMg, tau) {
+  rrt <- stratum == "RRT"
+  crcl <- if (rrt) rep(70, N_PTA) else runif(N_PTA, lo, hi)
+  fc <- freeProfiles(if (rrt) uiCazRrt else uiCazNon, cazMg, tau, crcl, 0.85)
+  fa <- freeProfiles(if (rrt) uiAviRrt else uiAviNon, cazMg / 4, tau, crcl, 0.92)
+  avi1 <- mean(vapply(fa, function(x) min(x) > 1, logical(1)))
+  avi2 <- mean(vapply(fa, function(x) mean(x > 1) >= 0.5, logical(1)))
+  caz1 <- vapply(mics, function(m) mean(vapply(fc, function(x) min(x) > m, logical(1))), 1)
+  caz2 <- vapply(mics, function(m) mean(vapply(fc, function(x) mean(x > 4 * m) >= 0.5, logical(1))), 1)
+  list(T1 = 100 * caz1 * avi1, T2 = 100 * caz2 * avi2)
+}
+```
+
+```{r pta-run}
+combos <- tibble::tribble(
+  ~stratum,  ~lo, ~hi, ~cazMg, ~tau,
+  "131-160", 131, 160, 2000,   6,
+  "131-160", 131, 160, 2000,   8,
+  "81-130",   81, 130, 2000,   8,
+  "81-130",   81, 130, 1000,   6,
+  "51-80",    51,  80, 1000,   6,
+  "51-80",    51,  80, 2000,   8,
+  "31-50",    31,  50, 1000,   8,
+  "31-50",    31,  50, 1000,   6,
+  "16-30",    16,  30,  500,   8,
+  "16-30",    16,  30, 1000,   8,
+  "6-15",      6,  15,  500,  12,
+  "6-15",      6,  15,  500,   8,
+  "RRT",      NA,  NA, 2000,  12,
+  "RRT",      NA,  NA, 2000,   8,
+  "RRT",      NA,  NA, 1000,   8,
+  "RRT",      NA,  NA, 1000,  12
+) |>
+  mutate(regimen = sprintf("%d/%d mg q%dh", cazMg, cazMg / 4, tau))
+
+curves <- lapply(seq_len(nrow(combos)), function(i) {
+  with(combos[i, ], jointPta(stratum, lo, hi, cazMg, tau))
+})
+names(curves) <- paste(combos$stratum, combos$regimen)
+
+simValue <- function(stratum, regimen, metric, target) {
+  cur <- curves[[paste(stratum, regimen)]][[target]]
+  if (metric == "PTA at MIC 8") cur[mics == 8] else sum(micWeights[[metric]] * cur) / sum(micWeights[[metric]])
+}
+```
+
+```{r pta-compare}
+# Supplementary Table 8 (PTA at MIC 8 mg/L), Results text, and Supplementary
+# Table 9 (CFR), transcribed.
+published <- tibble::tribble(
+  ~stratum,  ~regimen,             ~metric,         ~T1,   ~T2,   ~source,
+  "131-160", "2000/500 mg q6h",    "PTA at MIC 8",  92.7,  94.1,  "Supp. Table 8",
+  "81-130",  "2000/500 mg q8h",    "PTA at MIC 8",  88.8,  93.0,  "Supp. Table 8",
+  "51-80",   "1000/250 mg q6h",    "PTA at MIC 8",  96.5,  97.3,  "Supp. Table 8",
+  "31-50",   "1000/250 mg q8h",    "PTA at MIC 8",  98.2,  98.4,  "Supp. Table 8",
+  "16-30",   "500/125 mg q8h",     "PTA at MIC 8",  99.0,  94.5,  "Supp. Table 8",
+  "6-15",    "500/125 mg q12h",    "PTA at MIC 8",  99.3,  99.0,  "Supp. Table 8",
+  "RRT",     "2000/500 mg q12h",   "PTA at MIC 8",  93.5,  92.6,  "Supp. Table 8",
+  "131-160", "2000/500 mg q8h",    "PTA at MIC 8",  77.1,  NA,    "Results text",
+  "81-130",  "1000/250 mg q6h",    "PTA at MIC 8",  93.99, NA,    "Results text",
+  "131-160", "2000/500 mg q6h",    "CRKP",          90.70, 89.85, "Supp. Table 9",
+  "131-160", "2000/500 mg q6h",    "CRPA",          90.80, 84.75, "Supp. Table 9",
+  "81-130",  "2000/500 mg q8h",    "CRKP",          88.01, 89.77, "Supp. Table 9",
+  "81-130",  "2000/500 mg q8h",    "CRPA",          87.31, 84.49, "Supp. Table 9",
+  "51-80",   "1000/250 mg q6h",    "CRKP",          93.47, 90.85, "Supp. Table 9",
+  "51-80",   "2000/500 mg q8h",    "CRPA",          95.48, 89.68, "Supp. Table 9",
+  "51-80",   "2000/500 mg q8h",    "CRKP",          94.86, NA,    "Results text",
+  "31-50",   "1000/250 mg q8h",    "CRKP",          95.15, 91.13, "Supp. Table 9",
+  "31-50",   "1000/250 mg q6h",    "CRPA",          99.13, 90.34, "Supp. Table 9",
+  "16-30",   "500/125 mg q8h",     "CRKP",          95.67, 90.74, "Supp. Table 9",
+  "16-30",   "1000/250 mg q8h",    "CRPA",          99.44, 92.21, "Supp. Table 9",
+  "6-15",    "500/125 mg q12h",    "CRKP",          97.00, 91.59, "Supp. Table 9",
+  "6-15",    "500/125 mg q8h",     "CRPA",          99.80, 91.80, "Supp. Table 9",
+  "RRT",     "2000/500 mg q12h",   "CRKP",          91.67, 90.63, "Supp. Table 9",
+  "RRT",     "2000/500 mg q8h",    "CRPA",          98.20, 91.36, "Supp. Table 9"
+) |>
+  pivot_longer(c(T1, T2), names_to = "target", values_to = "pub") |>
+  filter(!is.na(pub))
+
+ptaCmp <- published |>
+  rowwise() |>
+  mutate(sim = simValue(stratum, regimen, metric, target)) |>
+  ungroup() |>
+  mutate(diff = sim - pub)
+
+stopifnot(nrow(ptaCmp) == 45L, !anyNA(ptaCmp$sim))
+
+ptaCmp |>
+  transmute(
+    "CrCL band (mL/min)" = stratum, Regimen = regimen, Metric = metric,
+    Target = target, Source = source,
+    "Published (%)" = pub, "Simulated (%)" = round(sim, 1), "Difference (pp)" = round(diff, 1)
+  ) |>
+  knitr::kable(caption = "Joint PTA at MIC 8 mg/L and CFR from the packaged models against Hu 2026. Target 1: CAZ 100% fT > MIC with AVI 100% fT > 1 mg/L; Target 2: CAZ 50% fT > 4 x MIC with AVI 50% fT > 1 mg/L.")
+```
+
+```{r pta-gate}
+# PTA is a proportion of N_PTA = 200 subjects (Monte Carlo SE about 2
+# percentage points near 90%), and the cohort drawn differs across rxode2
+# builds, so the gate is on the centre and a robust quantile.
+stopifnot(
+  median(abs(ptaCmp$diff)) < 5,
+  as.numeric(quantile(abs(ptaCmp$diff), 0.9)) < 12
+)
+
+# Qualitative statements from the Results text about the RRT stratum:
+# 1000/250 mg q12h is the only regimen below 90% under Target 1, and
+# 1000/250 mg q12h fails Target 2 at MIC 8 mg/L.
+rrt12 <- curves[["RRT 1000/250 mg q12h"]]
+stopifnot(rrt12$T1[mics == 8] < 90, rrt12$T2[mics == 8] < 80)
+```
+
+```{r pta-figure, fig.width = 7, fig.height = 3.6}
+bind_rows(lapply(c("RRT 2000/500 mg q8h", "RRT 2000/500 mg q12h", "RRT 1000/250 mg q8h", "RRT 1000/250 mg q12h"),
+  function(nm) {
+    tibble::tibble(regimen = sub("RRT ", "", nm), mic = mics,
+                   "Target 1" = curves[[nm]]$T1, "Target 2" = curves[[nm]]$T2)
+  })) |>
+  filter(mic <= 32) |>
+  pivot_longer(c("Target 1", "Target 2"), names_to = "target", values_to = "pta") |>
+  ggplot(aes(mic, pta, colour = regimen)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 90, linetype = 2) +
+  scale_x_continuous(trans = "log2", breaks = c(0.125, 0.5, 2, 8, 32)) +
+  facet_wrap(~target) +
+  labs(x = "MIC (mg/L)", y = "Joint PTA (%)", colour = NULL,
+       caption = "Replicates Figure 3 of Hu 2026 for four of the RRT regimens.")
+```
+
+The simulated values track the published ones closely across both metrics and
+all strata. The largest differences are in the two highest-clearance non-RRT
+bands under Target 1, which is decided entirely by the trough and therefore by
+the tail of the clearance and volume distribution: there the packaged models
+give somewhat lower PTA than the paper (for example 2000/500 mg q8h at 131-160
+mL/min), while giving somewhat higher PTA under Target 2. The within-band
+creatinine-clearance distribution and the number of simulated subjects the
+authors used are not reported and plausibly account for differences of this
+size.
+
+Two alternative readings of Table 2 were tested against these same targets
+while the models were assembled, and both were rejected. Reading the IIV
+entries as standard deviations instead of variances pushes nearly every PTA to
+100% and contradicts the Results statement that 1000/250 mg q12h fails Target 1
+during RRT. Adding residual error to the simulated concentrations drops the
+Target 1 PTAs by 20-30 percentage points below the published values, so the
+paper's simulations used individual predictions.
+
+# Assumptions and deviations
+
+* **IIV and residual entries are variances.** Table 2 lists `IIV CL`, `IIV V` and
+  `RV (proportional)` without saying whether they are variances or standard
+  deviations. Methods Eq. 1 and 3 define them as variances (omega^2 and
+  sigma^2), the square roots match the spread of the individual CL and V in
+  Table 3 (for example sqrt(0.368) = 61% against a 62% CV for the non-RRT
+  ceftazidime volume), the observed-versus-individual-prediction scatter in
+  Figure 1 is consistent with a proportional SD near 28% rather than 8%, and
+  the PTA replication above rejects the standard-deviation reading. The model
+  files therefore use the IIV entries as variances and `propSd = sqrt(RV)`.
+* **Reference creatinine clearance.** The covariate equation in the Results
+  prints 100.45 mL/min; the Table 1 median of the non-RRT group is 100.48. The
+  equation value is used.
+* **Creatinine clearance** is Cockcroft-Gault in raw mL/min (Table 1 note); the
+  body-weight convention inside the equation is not stated.
+* **RRT models.** These describe total clearance during continuous RRT (CVVH or
+  CVVHDF, effluent and duration as in Supplementary Tables 1-2) with no
+  covariates and no on/off switching; they do not apply to intermittent
+  haemodialysis or to periods off the circuit. Some RRT patients had residual
+  urine output that was not quantified.
+* **Simulation details not reported.** The within-band creatinine-clearance
+  distribution of the non-RRT strata is not stated (uniform used here), nor is
+  the creatinine-clearance mix behind Table 3 (drawn here as 2:9:2 across the
+  augmented, 81-130 and 31-50 mL/min strata, on the assumption that the two
+  non-RRT patients given 1000/250 mg q8h were in the 31-50 mL/min stratum). The '>32 mg/L' MIC bin is placed at 64 mg/L for the CFR; it
+  contributes essentially nothing to attainment.
+* **Occasion variability** was not estimated by the authors even though
+  first-dose and steady-state data were fitted jointly (Discussion).

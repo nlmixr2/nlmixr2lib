@@ -732,8 +732,12 @@ navbar:
         href: articles/Li_2019_ceftazidime_avibactam.html
       - text: "Avibactam (Zhou 2016)"
         href: articles/Zhou_2016_ceftazidime_avibactam.html
+      - text: "Avibactam nonrrt (Hu 2026)"
+        href: articles/Hu_2026_ceftazidime_avibactam.html
       - text: "Avibactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Avibactam rrt (Hu 2026)"
+        href: articles/Hu_2026_ceftazidime_avibactam.html
       - text: "Axatilimab (Yang 2024)"
         href: articles/Yang_2024_axatilimab.html
       - text: "Axatilimab aesi grade3 (Yang 2025)"
@@ -1616,8 +1620,12 @@ navbar:
         href: articles/Kroemer_2024_ceftazidime_avibactam_fosfomycin.html
       - text: "Ceftazidime avibactam icu (Zazo 2024)"
         href: articles/Zazo_2024_ceftazidime_avibactam.html
+      - text: "Ceftazidime nonrrt (Hu 2026)"
+        href: articles/Hu_2026_ceftazidime_avibactam.html
       - text: "Ceftazidime qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Ceftazidime rrt (Hu 2026)"
+        href: articles/Hu_2026_ceftazidime_avibactam.html
       - text: "Ceftiofur dog (Wang 2019)"
         href: articles/Wang_2019_ceftiofur_dog.html
       - text: "Ceftiofur pkpd balf (Mi 2022)"
@@ -10415,6 +10423,7 @@ articles:
   - articles/Hu_2024_nivolumab_ipilimumab_pediatric
   - articles/Hu_2025_tepotinib
   - articles/Hu_2025_vatiquinone
+  - articles/Hu_2026_ceftazidime_avibactam
   - articles/Hu_2026_clesrovimab
   - articles/Hu_2026_pemetrexed_osimertinib_mouse_qsp
   - articles/Hu_2026_utreloxastat
