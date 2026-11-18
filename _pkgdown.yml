@@ -1252,6 +1252,8 @@ navbar:
         href: articles/Nguyen_2019_cabozantinib.html
       - text: "Cabozantinib (Tan 2024)"
         href: articles/Tan_2024_cabozantinib.html
+      - text: "Cabozantinib (Williams 2026)"
+        href: articles/Williams_2026_cabozantinib.html
       - text: "Cabozantinib dose modification (Lacy 2018)"
         href: articles/Lacy_2018_cabozantinib_exposure_response.html
       - text: "Cabozantinib liver dysfunction (Nguyen 2019)"
@@ -12176,6 +12178,7 @@ articles:
   - articles/Willemze_2008_ciclosporin
   - articles/Williams_2012_valproic_acid_pediatric
   - articles/Williams_2016_rituximab_biosimilar
+  - articles/Williams_2026_cabozantinib
   - articles/Williamson_2026_tazobactam
   - articles/Willmann_2018a_rivaroxaban
   - articles/Willmann_2018b_rivaroxaban
