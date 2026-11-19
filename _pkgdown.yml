@@ -8360,6 +8360,10 @@ navbar:
         href: articles/Jorga_2000_tolcapone.html
       - text: "Tolcapone nonfluctuators (Jorga 2000)"
         href: articles/Jorga_2000_tolcapone.html
+      - text: "Toluenediamine human (Luu 1998)"
+        href: articles/Luu_1998_toluenediamine.html
+      - text: "Toluenediamine rat (Luu 1998)"
+        href: articles/Luu_1998_toluenediamine.html
       - text: "Tolvaptan (Lanke 2019)"
         href: articles/Lanke_2019_tolvaptan.html
       - text: "Tominersen (Yamamoto 2023)"
@@ -10996,6 +11000,7 @@ articles:
   - articles/Luo_2021_daratumumab
   - articles/Luo_2023_tigecycline
   - articles/Luo_2024_CES1_cirrhosis
+  - articles/Luu_1998_toluenediamine
   - articles/Luu_2001_d4_siloxane
   - articles/Luu_2017_nusinersen
   - articles/Luu_2022_antiVegf
