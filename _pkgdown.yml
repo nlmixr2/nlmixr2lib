@@ -8062,6 +8062,8 @@ navbar:
         href: articles/Leding_2026_tbaj587.html
       - text: "Tbm mortality (Panjasawatwong 2020)"
         href: articles/Panjasawatwong_2020_antituberculosis_tbm.html
+      - text: "Tcdd (Thomaseth 1998)"
+        href: articles/Thomaseth_1998_tcdd.html
       - text: "Tcdd pbpk (Liu 2022)"
         href: articles/Liu_2022_dioxin_mixture_pbpk.html
       - text: "Tce perc mc pbpk (Dobrev 2002)"
@@ -11907,6 +11909,7 @@ articles:
   - articles/Themans_2019_meropenem
   - articles/Themans_2020_hydroxychloroquine
   - articles/Thiel_2018_cox2_pge2_painrelief
+  - articles/Thomaseth_1998_tcdd
   - articles/Thomson_1989_lisinopril
   - articles/Thomson_2003_gentamicin
   - articles/Thorsted_2016_somatropin_human
