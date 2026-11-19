@@ -1362,6 +1362,27 @@ A continuous-time Markov model (CTMM) of a categorical status written as ODEs ca
 - **Example models:** `vanderWalt_2025_avelumab.R`.
 - **Notes:** A categorical OUTPUT. The covariate `ADA_POS` is the same quantity used as an input column; an ADA titer or concentration endpoint is continuous and needs its own name.
 
+### s_gametocyteneg (**canonical CTMM state: probability of being an infected but gametocyte-negative patient**)
+- **Type:** compartment
+- **Role:** Probability that a treated malaria patient is still infected but has no detectable circulating gametocytes yet (gametocytes not yet released from sequestration), in a two-state model of gametocyte carriage; dimensionless, `s_gametocyteneg + s_gametocytepos` falls from 1 as positive patients clear gametocytes (clearance is an absorbing exit, not a return to this state).
+- **Source aliases:** `E` -- Bousema 2010 Figure 1 ('gametocyte-negative infected individuals').
+- **Example models:** `Bousema_2010_malaria_gametocyte_prevalence_kenya.R`, `Bousema_2010_malaria_gametocyte_prevalence_tanzania.R`.
+- **Notes:** Initialised as `1 - GAMETOCYTE_POS_BASE`; leaves at rate `f` (1 / mean time to positivity) into `s_gametocytepos`.
+
+### s_gametocytepos (**canonical CTMM state: probability of being gametocyte-positive**)
+- **Type:** compartment
+- **Role:** Probability that a treated malaria patient carries detectable circulating gametocytes, in a two-state model of gametocyte carriage; dimensionless.
+- **Source aliases:** `I` -- Bousema 2010 Figure 1 ('gametocyte-positive individuals'); `I(t)` is the expected prevalence.
+- **Example models:** `Bousema_2010_malaria_gametocyte_prevalence_kenya.R`, `Bousema_2010_malaria_gametocyte_prevalence_tanzania.R`.
+- **Notes:** Initialised as `GAMETOCYTE_POS_BASE`; gains `f * s_gametocyteneg` and loses `r * s_gametocytepos` (1 / r = mean duration of gametocyte carriage). Distinct from the covariate `GAMETOCYTE_POS_BASE` (an OBSERVED enrolment status) and from the output `gametocyte_status`.
+
+### gametocyte_status (**canonical binary gametocyte-carriage status output**)
+- **Type:** compartment
+- **Role:** Observed gametocyte carriage as a binary rxode2 endpoint, `gametocyte_status ~ c(p0_gametocyte)`: category 1 = gametocyte-negative, 2 = gametocyte-positive; the likelihood is Bernoulli on the model probability of positivity.
+- **Source aliases:** Pfs25 QT-NASBA gametocyte prevalence data (Bousema 2010, binomial outcome).
+- **Example models:** `Bousema_2010_malaria_gametocyte_prevalence_kenya.R`, `Bousema_2010_malaria_gametocyte_prevalence_tanzania.R`.
+- **Notes:** A categorical OUTPUT, built like `ada_status`. A dataset coding positivity as 1 / negativity as 0 must add 1 before fitting. A gametocyte DENSITY endpoint is continuous and is `gametocyte_density`.
+
 ---
 
 ## Body-weight PD output
@@ -2527,6 +2548,13 @@ Outputs of empirical steady-state dose-concentration models, in which the depend
 Each entry below is a paper-mechanistic PD endpoint registered as a canonical compartment / output-state name so single-output PD models that use them pass the relaxed `Cc` rule.
 
 One family in this section is validated by shape rather than by enumeration -- see `prob_<endpoint>` immediately below. Its per-endpoint entries are retained as documentation of what each endpoint means, but `checkModelConventions()` no longer requires an entry to exist before accepting the name.
+
+### gametocyte_density (**canonical circulating Plasmodium gametocyte density output**)
+- **Type:** compartment
+- **Role:** Density of circulating mature Plasmodium falciparum gametocytes in peripheral blood (gametocytes/uL), the observed output of a gametocyte-dynamics model; fitted on the log scale (`gametocyte_density ~ lnorm(expSd)`).
+- **Source aliases:** `G` / `G(t)` -- Bousema 2010 density-model equations ('expected gametocyte density in circulation'); Pfs25 QT-NASBA gametocyte density.
+- **Example models:** `Bousema_2010_malaria_gametocyte_density_kenya.R`, `Bousema_2010_malaria_gametocyte_density_tanzania.R` (equal to the circulating-gametocyte state, released from a sequestered pool and decaying at 1 / mean circulation time).
+- **Notes:** Linear scale; the log transform lives in the residual model. Distinct from asexual parasitaemia (the `PARA` covariate and models such as `Hietala_2010_artemether_parasitemia.R`) and from the binary carriage output `gametocyte_status`.
 
 ### tol (**canonical tolerance-to-laryngoscopy binary observation**)
 - **Type:** compartment
