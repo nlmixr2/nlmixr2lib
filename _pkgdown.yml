@@ -7152,6 +7152,8 @@ navbar:
         href: articles/Lindauer_2025_risperidone.html
       - text: "Risperidone panss subscales (PillaReddy 2013)"
         href: articles/PillaReddy_2013_panss_subscales.html
+      - text: "Risperidone rat (Kozielska 2012)"
+        href: articles/Kozielska_2012_risperidone_rat.html
       - text: "Risperidone rat pbpk (Yamamoto 2017)"
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Risperidone rykindo (Wang 2024)"
@@ -10733,6 +10735,7 @@ articles:
   - articles/Kovalenko_2021_dupilumab
   - articles/Kovalenko_2025_alirocumab
   - articles/Kovar_2020_buprenorphine
+  - articles/Kozielska_2012_risperidone_rat
   - articles/Kratochwil_2021_petesicatib
   - articles/Krause_2017_selexipag
   - articles/Krause_2023_daridorexant
