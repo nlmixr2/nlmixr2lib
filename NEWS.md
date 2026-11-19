@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Stepniewska 2009 artesunate and amodiaquine (desethylamodiaquine, dihydroartemisinin and total artemisinin activity) ([doi:10.1186/1475-2875-8-200](https://doi.org/10.1186/1475-2875-8-200)) -- children aged 6 months to 5 years with uncomplicated falciparum malaria in Burkina Faso.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

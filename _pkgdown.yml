@@ -364,6 +364,8 @@ navbar:
         href: articles/Ding_2024_antimalarials_pregnancy.html
       - text: "Amodiaquine (Ding 2026)"
         href: articles/Ding_2026_artemether_lumefantrine_amodiaquine.html
+      - text: "Amodiaquine (Stepniewska 2009)"
+        href: articles/Stepniewska_2009_artesunate_amodiaquine.html
       - text: "Amoxicillin (Baklouti 2026)"
         href: articles/Baklouti_2026_amoxicillin.html
       - text: "Amoxicillin (Carral 2023)"
@@ -574,8 +576,12 @@ navbar:
         href: articles/Simpson_2006_artesunate.html
       - text: "Artesunate (Simpson 2013)"
         href: articles/Simpson_2013_artesunate.html
+      - text: "Artesunate (Stepniewska 2009)"
+        href: articles/Stepniewska_2009_artesunate_amodiaquine.html
       - text: "Artesunate (Tan 2009)"
         href: articles/Tan_2009_artesunate.html
+      - text: "Artesunate activity (Stepniewska 2009)"
+        href: articles/Stepniewska_2009_artesunate_amodiaquine.html
       - text: "Artesunate hamster pbpk (Kang 2023)"
         href: articles/Kang_2023_pyronaridine_artesunate_hamster_pbpk.html
       - text: "ArylsulfataseA (Troy 2020)"
@@ -11771,6 +11777,7 @@ articles:
   - articles/Stein_2019_Tisagenlecleucel
   - articles/Stemkens_2024_clofazimine
   - articles/Sten_2023_galnacSirna
+  - articles/Stepniewska_2009_artesunate_amodiaquine
   - articles/Stevens_2012_remoxipride
   - articles/Stillemans_2021_darunavir
   - articles/Stillemans_2021b_darunavir
