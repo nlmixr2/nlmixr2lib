@@ -448,6 +448,10 @@ navbar:
         href: articles/Kletting_2015_antiCD66_pbpk.html
       - text: "AntiCD66 pbpk model2 (Kletting 2015)"
         href: articles/Kletting_2015_antiCD66_pbpk.html
+      - text: "AntiOxLDL cyno free (Kamath 2012)"
+        href: articles/Kamath_2012_antiOxLDL.html
+      - text: "AntiOxLDL cyno total (Kamath 2012)"
+        href: articles/Kamath_2012_antiOxLDL.html
       - text: "AntiSarsCov2IgG (Huygens 2024)"
         href: articles/Huygens_2024_antiSarsCov2IgG.html
       - text: "Antipcsk9 qsp (Sokolov 2019)"
@@ -10577,6 +10581,7 @@ articles:
   - articles/Kamal_2014_oseltamivir
   - articles/Kamal_2015_oseltamivir
   - articles/Kamal_2017_oseltamivir
+  - articles/Kamath_2012_antiOxLDL
   - articles/Kamp_2023_tacrolimus
   - articles/KandadiMuralidharan_2022_aducanumab
   - articles/Kandala_2022_covid19Vaccine
