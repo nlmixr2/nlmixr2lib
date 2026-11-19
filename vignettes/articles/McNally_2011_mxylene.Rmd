@@ -1,0 +1,476 @@
+---
+title: "m-Xylene PBPK (McNally 2011)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{m-Xylene PBPK (McNally 2011)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+ui <- rxode2::rxode(nlmixr2lib::readModelDb("McNally_2011_mxylene_pbpk"))
+cat("* Citation: ", ui$reference, "\n", sep = "")
+cat("* Article: <https://doi.org/10.3389/fphar.2011.00031>\n")
+```
+
+* Description: `r ui$description`
+
+McNally, Cotton and Loizou (2011) propose a two-step global sensitivity
+analysis (SA) workflow for PBPK models -- Morris screening followed by the
+extended Fourier amplitude sensitivity test (eFAST), presented as a "Lowry
+plot" -- and demonstrate it on a human PBPK model for inhaled m-xylene with
+a bladder compartment for its urinary metabolite 3-methylhippuric acid (MHA).
+The model is printed in full: parameter point values and SA ranges in
+Table 1, the MHA equations in Methods, and the acslX CSL listing in the
+Appendix. This article packages that model; the SA itself is a method applied
+to the model and is illustrated only qualitatively below.
+
+## Structure
+
+* **Parent m-xylene.** Four flow-limited tissue compartments -- liver,
+  adipose, rapidly perfused and slowly perfused tissue (Figure 1). Arterial
+  blood is algebraic: the lung is at steady state, so
+  `CA = (QC * CV + QP * CI) / (QC + QP / Pba)`, with `CI` the inhaled air
+  concentration (ppm converted to mg/L through the ideal-gas molar volume
+  24450 mL/mol) and `CV` the flow-weighted mixed venous return.
+* **Metabolism.** Saturable Michaelis-Menten oxidation in the liver on the
+  hepatic venous concentration. The in vivo Vmax is the in vitro microsomal
+  rate (pmol/min/mg protein) scaled by the microsomal protein yield (MPY,
+  mg/g liver) and the liver mass.
+* **MHA.** Every mole of m-xylene metabolised becomes a mole of MHA in blood
+  (`MRLi * MW_MHA / MW_xyl`), which moves first-order (`K1`) into the bladder.
+  The bladder fills with urine at a constant rate `Rurine` and is emptied at
+  each void; the urinary MHA concentration is expressed in mmol/mol
+  creatinine through a fixed urinary creatinine concentration `CRE`.
+* **Voiding** is not part of the ODE system: it is an event-table record
+  (`evid = 5`, `amt = 0`) that resets the bladder MHA amount (`a_mha_bladder`)
+  and urine volume (`urine_vol`) to zero, exactly as the CSL `DISCRETE
+  urination` block does. `Curine` observed at a void time, just before the
+  reset, is the concentration of the voided urine.
+
+# Population
+
+```{r population, echo = FALSE}
+pop <- ui$population
+knitr::kable(
+  data.frame(Field = names(pop), Value = vapply(pop, function(x) paste(format(x), collapse = ", "), character(1))),
+  row.names = FALSE
+)
+```
+
+The model is a single 75 kg reference adult (Table 1 point values). The
+volunteer study used to illustrate it (groups of four volunteers exposed for
+4 h on two occasions to a target 40 ppm m-xylene vapour in the Health and
+Safety Laboratory controlled-atmosphere facility) is not reported further in
+this paper. Figure 2 shows two of those volunteers.
+
+# Source trace
+
+| Quantity | Model name | Value | Source |
+|---|---|---|---|
+| m-xylene molecular mass | `mw` | 106.17 g/mol | Table 1, MWxyl |
+| MHA molecular mass | `mw_mha` | 193.2 g/mol | Table 1, MWMHA |
+| ppm to mg/L molar volume | `molar_vol` | 24450 mL/mol | Appendix CSL, `IH` |
+| Body mass | covariate `WT` | 75 kg | Table 1, BW |
+| Cardiac output | `qc_per_kg` | 12 L/h/kg^0.75 | Table 1, QCC |
+| Respiratory rate | `qp_per_kg` | 12 L/h/kg^0.75 | Table 1, QPC |
+| Allometric exponent | `e_wt_flow` | 0.75 | Table 1 units; CSL `CAE`, `RAE` |
+| Fractional flows rpd / spd / fat / liver | `fq_*` | 0.48 / 0.22 / 0.05 / 0.25 | Table 1, QrpdC, QspdC, QfaC, QliC |
+| Fractional masses rpd / spd / fat / liver | `fv_*` | 0.09 / 0.604 / 0.19 / 0.0257 | Table 1, VrpdC, VspdC, VfaC, VliC |
+| Blood:air PC | `pc_blood_air` | 19 | Table 1, Pba |
+| Tissue:air PCs rpd / spd / fat / liver | `pc_*_air` | 117 / 53 / 1874 / 279 | Table 1, Prpda, Pspda, Pfaa, Plia |
+| Michaelis constant | `km_umol` | 11.8 umol/L | Table 1, KM (unit see Errata); CSL `Km2E1 = 1.253` mg/L |
+| In vitro Vmax | `vmax_invitro` | 895 pmol/min/mg | Table 1, Vmax |
+| Microsomal protein yield | `mppgl` | 32 mg/g | Table 1, MPY |
+| MHA blood-to-urine rate | `kurine_mha` | 10 1/h | Table 1, K1 |
+| Urine production rate | `urprod` | 0.07 L/h | Table 1, Rurine |
+| Urinary creatinine | `c_creat_urine` | 12.5 mmol/L | Table 1, CRE |
+| Exposure | `conc_air_ppm`, `inhale_start`, `inhale_time` | 40 ppm, 0 h, 4 h | Methods 'The data'; CSL `CIppm`, `tinhon01`, `tinhoff01` |
+| Flow and mass re-parameterisation | `model()` | sum-normalised fractions | Methods 'Parameter ranges' (Gelman et al. 1996); CSL `qcci`, `vti` |
+| Gas exchange, venous return, tissue ODEs | `model()` | -- | CSL `DERIVATIVE` block |
+| MHA blood and bladder ODEs, `Curine` | `model()` | -- | Methods equations; CSL `RAMHAB`, `RAMHAU`, `CUrine` |
+| In vitro-in vivo Vmax scaling | `model()` | -- | Methods; CSL `Vmax2E1` |
+
+# Simulation helper
+
+The CSL listing voids at 4, 6, 8, 10, 12 and 14 h after the start of exposure
+(`urinationTime`); the same schedule is used here. A reset record sits a
+numerical epsilon after each void so that the observation at the void time
+reads the bladder before it is emptied.
+
+```{r sim-helper}
+mod <- ui
+voids <- c(4, 6, 8, 10, 12, 14)
+
+make_events <- function(ids, tmax = 32, dt = 0.05, voids_h = voids, wt = 75) {
+  grid <- sort(unique(c(seq(0, tmax, by = dt), voids_h)))
+  obs <- expand.grid(time = grid, id = ids) |>
+    mutate(evid = 0L, cmt = "a_liver", amt = NA_real_)
+  resets <- expand.grid(
+    time = voids_h + 1e-6, id = ids,
+    cmt = c("a_mha_bladder", "urine_vol"), stringsAsFactors = FALSE
+  ) |>
+    mutate(evid = 5L, amt = 0)
+  bind_rows(obs, resets) |>
+    arrange(id, time, desc(evid == 0L)) |>
+    mutate(WT = wt) |>
+    select(id, time, evid, cmt, amt, WT)
+}
+
+simulate <- function(params = NULL, ...) {
+  ev <- make_events(ids = 1L, ...)
+  out <- as.data.frame(rxode2::rxSolve(mod, ev, params = params, returnType = "data.frame"))
+  if (is.null(out$id)) out$id <- 1L
+  out
+}
+
+base <- simulate()
+```
+
+# Mass balance
+
+Everything inhaled and not exhaled must be in a tissue or already
+metabolised. This is a closed-form identity of the ODE system, so the bound
+is tight.
+
+```{r mass-balance}
+last <- tail(base, 1)
+absorbed <- last$a_inhaled - last$a_exhaled
+in_body <- with(last, a_rapidly_perfused + a_slowly_perfused + a_fat + a_liver + a_metabolized)
+mha_formed <- last$a_metabolized * 193.2 / 106.17
+mha_accounted <- last$a_mha_blood + sum(base$a_mha_bladder[base$time %in% voids]) + last$a_mha_bladder
+data.frame(
+  quantity = c("m-xylene absorbed (mg)", "m-xylene in body + metabolised (mg)",
+               "MHA formed (mg)", "MHA in blood + voided + bladder (mg)"),
+  value = signif(c(absorbed, in_body, mha_formed, mha_accounted), 6)
+) |> knitr::kable()
+stopifnot(abs(absorbed / in_body - 1) < 1e-5)
+stopifnot(abs(mha_accounted / mha_formed - 1) < 1e-4)
+```
+
+# Replicating Figure 2
+
+Figure 2 overlays model predictions "using mean point values" on two
+volunteers' venous blood m-xylene (panel A) and urinary MHA (panel B). The
+model line and the observations below were digitised by the maintainers from
+the published figure by eye (panel A to about 0.05 umol/L, panel B to about
+5 mmol/mol creatinine).
+
+```{r fig2-digitised}
+fig2a_line <- tibble::tribble(
+  ~time, ~cv,
+  1, 3.25, 2, 3.45, 3, 3.65, 4, 3.88, 5, 0.87, 6, 0.73, 8, 0.59,
+  10, 0.47, 15, 0.30, 20, 0.21, 23, 0.18, 32, 0.12
+)
+fig2a_obs <- tibble::tribble(
+  ~time, ~cv, ~volunteer,
+  1, 2.90, "A", 2, 3.40, "A", 3, 3.10, "A", 4, 2.71, "A", 4.33, 1.20, "A",
+  4.67, 0.80, "A", 5, 0.70, "A", 6, 0.60, "A", 7, 0.49, "A", 8, 0.40, "A",
+  1, 2.22, "B", 2, 3.48, "B", 3, 3.81, "B", 4, 3.73, "B", 4.33, 1.95, "B",
+  4.67, 1.30, "B", 5, 1.00, "B", 6, 0.71, "B", 7, 0.45, "B", 8, 0.28, "B",
+  23, 0.08, "B"
+)
+# Solid step line (the paper's own model prediction), value held from each
+# void until the next one, read from the step heights of Figure 2B.
+fig2b_line <- tibble::tribble(
+  ~void, ~curine,
+  4, 200, 6, 125, 8, 62, 10, 38, 12, 22, 14, 14
+)
+fig2b_obs <- tibble::tribble(
+  ~time, ~curine, ~volunteer,
+  4, 300, "A", 6, 213, "A", 8, 78, "A", 10, 45, "A", 12, 33, "A",
+  24, 12, "A", 31, 2, "A",
+  4, 210, "B", 6, 185, "B", 10, 38, "B", 12, 22, "B", 14, 22, "B"
+)
+```
+
+```{r figure-2a, fig.cap = "Replicates Figure 2A of McNally 2011: venous blood m-xylene during and after a 4-h, 40 ppm exposure. Line: packaged model; dashed line: published model line (digitised); points: published volunteer data (digitised)."}
+ggplot() +
+  geom_line(data = base, aes(time, Cc_umol)) +
+  geom_line(data = fig2a_line, aes(time, cv), linetype = "dashed", colour = "grey40") +
+  geom_point(data = fig2a_obs, aes(time, cv, shape = volunteer)) +
+  labs(x = "Time (h)", y = "CV (umol/L)", shape = "Volunteer") +
+  theme_bw()
+```
+
+```{r figure-2b, fig.cap = "Replicates Figure 2B of McNally 2011: MHA in voided urine. Steps: packaged model, each void's concentration held until the next void as in the CSL listing; dashed: published model line (digitised); points: published volunteer data (digitised)."}
+voided <- base |>
+  filter(time %in% voids) |>
+  select(void = time, Curine)
+steps <- bind_rows(voided, tibble(void = 32, Curine = tail(voided$Curine, 1)))
+ggplot() +
+  geom_step(data = steps, aes(void, Curine)) +
+  geom_step(
+    data = bind_rows(fig2b_line, tibble(void = 32, curine = 12)),
+    aes(void, curine), linetype = "dashed", colour = "grey40"
+  ) +
+  geom_point(data = fig2b_obs, aes(time, curine, shape = volunteer)) +
+  labs(x = "Time (h)", y = "Curine (mmol/mol creatinine)", shape = "Volunteer") +
+  theme_bw()
+```
+
+```{r figure-2-compare}
+cmp_b <- voided |>
+  inner_join(fig2b_line, by = "void") |>
+  mutate(pct_diff = 100 * (Curine - curine) / curine)
+cmp_a <- base |>
+  filter(abs(time - round(time)) < 1e-9) |>
+  select(time, Cc_umol) |>
+  inner_join(fig2a_line, by = "time") |>
+  mutate(pct_diff = 100 * (Cc_umol - cv) / cv)
+cmp_b |>
+  dplyr::rename("Void (h)" = void, "Model Curine" = Curine,
+                "Published line" = curine, "Difference (%)" = pct_diff) |>
+  knitr::kable(digits = 1)
+cmp_a |>
+  dplyr::rename("Time (h)" = time, "Model CV (umol/L)" = Cc_umol,
+                "Published line" = cv, "Difference (%)" = pct_diff) |>
+  knitr::kable(digits = 2)
+```
+
+Urinary MHA (panel B) tracks the paper's own step line within about 20% at
+every void, with the largest gap at the first void -- consistent with
+reading the step heights off the figure by eye. Venous blood m-xylene
+(panel A) peaks at 3.2 umol/L at the end of exposure against about 3.9 on the
+published solid line, roughly 19% low, and the observed end-of-exposure
+values (2.7 and 3.7 umol/L) bracket it. The published line also rises faster
+in the first hour and decays more slowly after 10 h than the packaged model.
+The maintainers re-coded the CSL listing's own 25-parameter variant (lung,
+kidney and brain added, alveolar ventilation fixed at 350 L/h, the listing's
+individual constants) as a check: it peaks at 3.2 umol/L at 4 h and falls to
+0.03 umol/L by 23 h, the same as the packaged model. The published panel A
+solid line therefore cannot be regenerated from the paper's own tables or
+code, so no assertion ties the model to it; the packaged model is not tuned
+to it (see Errata).
+
+```{r figure-2-assert, echo = FALSE}
+# Deterministic typical-value solve, so the bounds are on numerical agreement
+# with a by-eye digitisation of the figure, not on sampling noise. The
+# envelope is deliberately loose: the reference is the step height read off
+# Figure 2B, not a reported number. No assertion ties the model to the
+# unreproducible panel-A solid line (see Errata).
+stopifnot(nrow(cmp_b) == 6L)
+stopifnot(max(abs(cmp_b$pct_diff)) < 25)
+# Monotone decline and a first void in the right band -- structural features
+# that a mis-transcribed metabolism or bladder constant would break.
+stopifnot(all(diff(voided$Curine) < 0))
+stopifnot(voided$Curine[1] > 180, voided$Curine[1] < 270)
+peak <- max(base$Cc_umol)
+stopifnot(peak > 2.9, peak < 3.4)
+stopifnot(abs(base$time[which.max(base$Cc_umol)] - 4) < 0.06)
+# The two volunteers' end-of-exposure venous values bracket the model peak.
+stopifnot(peak > 2.71, peak < 3.73)
+```
+
+# Exposure concentration (Figure 5 scenarios)
+
+Figure 5 repeats the analysis at 40, 200 and 500 ppm. The dose dependence
+comes from hepatic saturation: below KM the venous concentration scales
+almost linearly with exposure, above it disproportionately.
+
+```{r exposure-levels}
+levels_ppm <- c(40, 200, 500)
+by_level <- bind_rows(lapply(levels_ppm, function(ppm) {
+  simulate(params = c(conc_air_ppm = ppm)) |> mutate(ppm = ppm)
+}))
+km_mgl <- 11.8 * 106.17 / 1000
+summary_level <- by_level |>
+  group_by(ppm) |>
+  summarise(
+    cv_peak_umol = max(Cc_umol),
+    hepatic_venous_peak_over_km = max(Cliver / (279 / 19)) / km_mgl,
+    metabolised_mg = max(a_metabolized),
+    .groups = "drop"
+  ) |>
+  mutate(cv_peak_per_ppm = cv_peak_umol / ppm)
+summary_level |>
+  dplyr::rename("Exposure (ppm)" = ppm, "Peak CV (umol/L)" = cv_peak_umol,
+                "Peak hepatic venous conc. / KM" = hepatic_venous_peak_over_km,
+                "Metabolised by 32 h (mg)" = metabolised_mg,
+                "Peak CV per ppm" = cv_peak_per_ppm) |>
+  knitr::kable(digits = 3)
+stopifnot(all(diff(summary_level$cv_peak_per_ppm) > 0))
+```
+
+```{r exposure-plot, fig.cap = "Venous blood m-xylene at the three exposure concentrations of Figure 5 (log scale)."}
+ggplot(by_level, aes(time, Cc_umol, colour = factor(ppm))) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "CV (umol/L)", colour = "ppm") +
+  theme_bw()
+```
+# Parameter ranking over the Table 1 ranges
+
+The eFAST analysis in the paper took about 13 hours per output. As a cheap,
+qualitative check that the packaged model responds to the parameters the
+paper found important, each Table 1 parameter is moved one at a time to the
+ends of its Table 1 range and the resulting change in two outputs is
+recorded: the venous blood peak (the CV dose metric) and the first-void
+urinary MHA (the Curine dose metric). One-at-a-time swings are not
+variance-based indices, so this only checks that the influential parameters
+are influential here too, not the exact ranking. The respiratory dead space
+`DS` is not part of the model (see Errata).
+
+```{r oat}
+ranges <- tibble::tribble(
+  ~parameter, ~name, ~low, ~high,
+  "BW", "WT", 49, 92,
+  "QCC", "qc_per_kg", 10, 20,
+  "KM", "km_umol", 9.1, 14.6,
+  "Vmax", "vmax_invitro", 761, 1028,
+  "MPY", "mppgl", 18, 75,
+  "QPC", "qp_per_kg", 10, 20,
+  "Pba", "pc_blood_air", 12, 26,
+  "Pfaa", "pc_fat_air", 1400, 2200,
+  "Plia", "pc_liver_air", 150, 350,
+  "QspdC", "fq_slowly_perfused", 0.2, 0.35,
+  "VfaC", "fv_fat", 0.07, 0.28,
+  "VliC", "fv_liver", 0.02, 0.031,
+  "Rurine", "urprod", 0.06, 0.115,
+  "CRE", "c_creat_urine", 7, 15,
+  "K1", "kurine_mha", 2, 18
+)
+
+metrics <- function(params) {
+  s <- simulate(params = params)
+  c(cv_peak = max(s$Cc_umol),
+    curine_first = s$Curine[s$time == voids[1]][1])
+}
+baseline <- metrics(NULL)
+
+oat <- bind_rows(lapply(seq_len(nrow(ranges)), function(i) {
+  lo <- metrics(setNames(ranges$low[i], ranges$name[i]))
+  hi <- metrics(setNames(ranges$high[i], ranges$name[i]))
+  tibble(
+    parameter = ranges$parameter[i],
+    cv_peak_swing_pct = 100 * (hi["cv_peak"] - lo["cv_peak"]) / baseline["cv_peak"],
+    curine_swing_pct = 100 * (hi["curine_first"] - lo["curine_first"]) / baseline["curine_first"]
+  )
+}))
+
+oat |>
+  arrange(desc(abs(cv_peak_swing_pct))) |>
+  dplyr::rename("Parameter" = parameter,
+                "CV peak swing (%)" = cv_peak_swing_pct,
+                "Curine swing (%)" = curine_swing_pct) |>
+  knitr::kable(digits = 1)
+```
+
+The parameters that move the venous blood peak most -- the blood:air
+partition coefficient `Pba`, ventilation `QPC`, cardiac output `QCC` and the
+metabolic parameters `KM` / `Vmax` / `MPY` -- are the ones the paper's Morris
+and eFAST analyses rank at the top for CV (Table 2, Figure 4A,B). The urinary
+MHA metric is dominated by the urine-production rate `Rurine` and urinary
+creatinine `CRE`, exactly as the paper reports for Curine (Figure 4C,D). The
+ordering within those groups differs because a one-at-a-time swing is not an
+eFAST index, but the influential set matches.
+
+```{r oat-assert, echo = FALSE}
+top_cv <- oat |> arrange(desc(abs(cv_peak_swing_pct))) |> head(6) |> dplyr::pull(parameter)
+stopifnot(all(c("Pba", "QPC") %in% top_cv))
+top_cu <- oat |> arrange(desc(abs(curine_swing_pct))) |> head(3) |> dplyr::pull(parameter)
+stopifnot(all(c("Rurine", "CRE") %in% top_cu))
+```
+
+# NCA characterisation of the venous blood profile
+
+The paper reports a sensitivity analysis, not a non-compartmental PK table,
+so there are no published Cmax / AUC values to compare against. PKNCA is used
+here to characterise the simulated venous blood m-xylene profile and to lock
+the shape (a sharp end-of-exposure peak followed by multi-phase decay) against
+regression. A time-zero record is added defensively so the AUC starts at the
+first measurement.
+
+```{r pknca}
+nca_conc <- base |>
+  filter(!is.na(Cc)) |>
+  mutate(treatment = "40 ppm, 4 h") |>
+  select(id, time, Cc, treatment)
+if (!any(nca_conc$time == 0)) {
+  nca_conc <- bind_rows(
+    transmute(filter(nca_conc, time == min(time)), id, time = 0, Cc = 0, treatment),
+    nca_conc
+  )
+}
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | id / treatment)
+intervals <- data.frame(
+  start = 0, end = max(nca_conc$time),
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, half.life = TRUE
+)
+res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, intervals = intervals))
+nca_tab <- as.data.frame(res)
+
+nca_tab |>
+  select(PPTESTCD, PPORRES) |>
+  mutate(PPORRES = signif(PPORRES, 4)) |>
+  dplyr::rename("NCA parameter" = PPTESTCD, "Value (mg/L units)" = PPORRES) |>
+  knitr::kable()
+
+cmax <- nca_tab$PPORRES[nca_tab$PPTESTCD == "cmax"]
+tmax <- nca_tab$PPORRES[nca_tab$PPTESTCD == "tmax"]
+stopifnot(abs(tmax - 4) < 0.06)
+stopifnot(abs(cmax - max(base$Cc)) < 1e-6)
+```
+
+The NCA peak falls at 4 h -- the end of the exposure window -- as expected for
+an inhalation profile with no post-exposure input, and the half-life reflects
+the slow terminal release from adipose tissue (fat:blood partition
+coefficient about 100).
+
+# Assumptions and deviations / Errata
+
+* **Respiratory dead space `DS` (Table 1, 0.3) is not in the model.** The CSL
+  listing computes `QPa = QP * (1 - DS)` but the gas-exchange equation uses
+  the undiminished ventilation `QPMC` (fixed at 350 L/h in the listing), and
+  the alveolar-ventilation term never enters the arterial equation reduced by
+  `DS`. The paper's own sensitivity results confirm `DS` is inert: its
+  main-effect index is 9.18e-07 (Appendix Lowry-plot data) and it ranks last
+  for both outputs (Table 2). The packaged model therefore applies ventilation
+  without the dead-space reduction, matching the listing's behaviour.
+
+* **KM units.** Table 1 prints the Michaelis constant as "11.8 mMol L-1",
+  but the CSL listing carries it as `Km2E1 = 1.253` mg/L, which is
+  11.8 umol/L x 106.17 g/mol / 1000. The value is therefore micromolar, not
+  millimolar; the Table 1 unit label is a typo. The model stores
+  `km_umol = 11.8` umol/L and converts to mg/L internally, reproducing the
+  listing's 1.253 mg/L.
+
+* **Table 1 point values vs the CSL listing.** The packaged model uses the
+  Table 1 point values throughout (BW 75 kg, Pba 19, four tissues). The
+  Appendix CSL listing is a later 25-parameter variant with lung, kidney and
+  brain added, a different body mass (79 kg), blood:air PC (15.1), adipose
+  and slowly-perfused fractions, and alveolar ventilation fixed at 350 L/h.
+  Both forms give the same venous peak (about 3.2 umol/L at 4 h) and the same
+  terminal level; the four-tissue Table 1 form is packaged because Table 1 is
+  the parameter set the paper tabulates with its SA ranges.
+
+* **Figure 2A published line.** The solid model line in Figure 2A peaks near
+  3.9 umol/L and decays more slowly than either the packaged model or the
+  CSL listing's own 25-parameter variant reproduces (both about 3.2 umol/L
+  and faster terminal decay). The published line cannot be regenerated from
+  the paper's tables or its Appendix code. The packaged model is deliberately
+  **not** tuned to it; its venous peak is bracketed by the two volunteers'
+  observed end-of-exposure values (2.7 and 3.7 umol/L).
+
+* **No IIV, no residual error.** This is a deterministic typical-value PBPK
+  model evaluated with mean point values, as in the paper. The sensitivity
+  analysis treats the Table 1 ranges as uniform input distributions for a
+  variance decomposition; those ranges are recorded in `covariateData`
+  (for body weight) and in the source trace above, not as random effects.
+
+* **K1 provenance.** The blood-to-urine rate constant K1 = 10 /h is a Table 1
+  value the authors estimated externally (from digitised Engstrom et al. 1978
+  post-exposure urinary-excretion data), then used as a fixed constant here.

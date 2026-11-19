@@ -5490,6 +5490,8 @@ navbar:
         href: articles/Taddio_2018_hepatobiliary_transport_pet_pbpk.html
       - text: "Mu receptor binding (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
+      - text: "Mxylene pbpk (McNally 2011)"
+        href: articles/McNally_2011_mxylene.html
       - text: "MycophenolateMofetil (Tsyplakova 2025)"
         href: articles/Tsyplakova_2025_mycophenolate.html
       - text: "MycophenolateMofetil sheep (Leber 2023)"
@@ -11072,6 +11074,7 @@ articles:
   - articles/McKnite_2026_midazolam_crrt
   - articles/McLachlan_1996_fluconazole
   - articles/McLaughlin_2024_tld_1
+  - articles/McNally_2011_mxylene
   - articles/Mead_2023_colistin_chicken
   - articles/MedellinGaribay_2015_gentamicin
   - articles/Meenks_2023_flucloxacillin
