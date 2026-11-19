@@ -6702,6 +6702,8 @@ navbar:
         href: articles/Khwarg_2024_proguanil.html
       - text: "Propofol (Bertin 2026)"
         href: articles/Bertin_2026_propofol.html
+      - text: "Propofol (Bienert 2010)"
+        href: articles/Bienert_2010_propofol_circadian.html
       - text: "Propofol (Chi 2018)"
         href: articles/Chi_2018_propofol.html
       - text: "Propofol (Diepstraten 2013)"
@@ -9552,6 +9554,7 @@ articles:
   - articles/Bienczak_2016_efavirenz
   - articles/Bienczak_2016_nevirapine
   - articles/Bienczak_2025_ligelizumab
+  - articles/Bienert_2010_propofol_circadian
   - articles/Bienert_2025_sufentanil
   - articles/Bihorel_2017_LY2510924
   - articles/Bihorel_2021_BMS986166

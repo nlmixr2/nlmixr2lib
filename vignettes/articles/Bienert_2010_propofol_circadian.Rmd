@@ -1,0 +1,435 @@
+---
+title: "Propofol PK/PD and circadian rhythms in ICU patients (Bienert 2010)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Propofol PK/PD and circadian rhythms in ICU patients (Bienert 2010)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Bienert et al. (2010) sedated ICU patients with a constant propofol infusion
+for several days and asked whether the light-dark cycle changes propofol
+pharmacokinetics, its effect on the Bispectral Index (BIS), or the routinely
+monitored vital signs. The paper contributes three independently fitted
+models, each packaged as its own file:
+
+| Model file | What it describes |
+|---|---|
+| `Bienert_2010_propofol` | Two-compartment propofol PK with systolic blood pressure on clearance, and a direct-effect Emax model for BIS |
+| `Bienert_2010_heartRate` | 24-hour cosine rhythm in heart rate |
+| `Bienert_2010_bodyTemperature` | 24-hour cosine rhythm in body temperature |
+
+No circadian term was retained for propofol clearance or EC50 (objective
+function drops of 4.9 and 13.5, below the 13.8 threshold for two degrees of
+freedom at P < 0.001), nor for systolic or diastolic blood pressure or blood
+oxygen saturation.
+
+* Citation: `r rxode2::rxode(readModelDb("Bienert_2010_propofol"))$reference`
+* Article: <https://doi.org/10.1007/s10928-010-9161-5> (open access,
+  [PMC2889282](https://pmc.ncbi.nlm.nih.gov/articles/PMC2889282/))
+
+No erratum or correction notice was found for this article (checked
+2026-11-19).
+
+# Population
+
+Eleven adult ICU patients (8 male, 3 female; age 63 +/- 11 years, 53-85;
+weight 72.6 +/- 22.8 kg, 50-95) were sedated with propofol for more than 24 h
+(Table 1). Patient 3 had no blood samples and was excluded, so ten patients
+contributed data to every model. Patients with neuromuscular blockade, head
+trauma or neurological disorders that could alter the EEG were excluded, and
+no vasopressors were given. After a 1.5 mg/kg initial dose the maintenance
+infusion was constant at 0.7-0.9 mg/kg/h (one patient needed rate changes).
+Arterial plasma propofol, BIS, blood pressure, heart rate, oxygen saturation
+and body temperature were recorded every hour during the second and third
+day of infusion, and propofol was also sampled 3-240 min after the infusion
+stopped. The mean steady-state propofol concentration was 0.48 +/- 0.21 mg/L.
+
+The same information is available programmatically, for example
+`readModelDb("Bienert_2010_propofol")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Two-compartment PK, `d/dt(central)`, `d/dt(peripheral1)` | n/a | Eq. 1 (ADVAN3 TRANS4) |
+| `lcl` (CL at SBP = 135 mmHg) | 2.65 L/min | Table 2, 'PK model with covariate'; Abstract |
+| `e_sbp_cl` | 0.00714 per mmHg, `CL = 2.65 * (1 - 0.00714 * (SBP - 135))` | Table 2; Results; Abstract |
+| `lvc` | 27.7 L | Table 2 |
+| `lq` (CLD) | 2.73 L/min | Table 2 |
+| `lvp` (VT) | 801 L | Table 2 |
+| `etalcl` | 0.486^2 (CV 48.6%) | Table 2; Results 'IIV of clearance equaled 48.6%' |
+| `propSd` | 0.418 | Table 2 |
+| BIS model `BIS = BIS0 - Emax * Cp / (EC50 + Cp)` | n/a | Eq. 2 |
+| `le0` (BIS0) | 100, fixed | Methods |
+| `limax` (Emax) | 100, fixed | Methods; Table 3 |
+| `lec50` | 1.98 mg/L | Table 3; Abstract |
+| `etalec50` | 0.451^2 (CV 45.1%) | Table 3; Results |
+| `propSd_BIS` | 0.191 | Table 3 (row printed as 'sigma prop,Cp2') |
+| Cosine rhythm `P = theta * (1 + A * cos(2 pi / 24 * (t - S + T))) * exp(eta)` | n/a | Eq. 7 |
+| Heart rate `lrbase` (mesor) | 90.5 beats/min | Table 4, 'Basic model with rhythm' |
+| Heart rate `rbase_circ_famp` | 0.048 | Table 4; Results '4.8% of the messor' |
+| Heart rate `ltacro` (acrophase) | 14 h | Table 4; Results 'maximum at 02:00 p.m.' |
+| Heart rate `etalrbase` | 0.147^2 (CV 14.7%) | Table 4 |
+| Heart rate `propSd` | 0.119 | Table 4 |
+| Temperature `lrbase` (mesor) | 37 degC | Table 4 |
+| Temperature `rbase_circ_famp` | 0.00326 | Table 4; Results '0.32% of the mesor' |
+| Temperature `ltacro` (acrophase) | 21.4 h | Table 4; Results '21.4 h (21:24 p.m.)' |
+| Temperature `etalrbase` | 0.00823^2 (CV 0.823%) | Table 4 |
+| Temperature `propSd` | 0.00966 | Table 4 (with-rhythm column) |
+
+# Propofol PK and BIS
+
+## Virtual cohort
+
+Each virtual patient receives the 1.5 mg/kg initial dose and a constant
+infusion drawn uniformly from 0.7-0.9 mg/kg/h for 72 h, followed by the
+paper's post-infusion sampling times. Weight and systolic blood pressure are
+drawn from the Table 1 means and SDs, clipped to the observed ranges.
+Systolic blood pressure is held constant within a patient (see Assumptions).
+
+```{r pk-cohort}
+set.seed(2010)
+rxode2::rxSetSeed(2010)
+
+n_pk <- 200
+t_inf <- 72 * 60 # infusion length (min)
+post <- c(3, 5, 10, 15, 30, 60, 120, 180, 240)
+
+pk_subj <- tibble(
+  id = seq_len(n_pk),
+  WT = pmin(pmax(rnorm(n_pk, 72.6, 22.8), 50), 95),
+  SBP = pmin(pmax(rnorm(n_pk, 135, 19.4), 85), 191),
+  rate_mgkgh = runif(n_pk, 0.7, 0.9)
+)
+
+pk_dose <- bind_rows(
+  pk_subj |> mutate(time = 0, amt = 1.5 * WT, rate = 0, evid = 1),
+  pk_subj |>
+    mutate(
+      time = 0, rate = rate_mgkgh * WT / 60,
+      amt = rate * t_inf, evid = 1
+    )
+)
+pk_obs <- tidyr::crossing(
+  pk_subj,
+  time = c(seq(0, t_inf, by = 60), t_inf + post)
+) |>
+  mutate(amt = 0, rate = 0, evid = 0)
+
+pk_events <- bind_rows(pk_dose, pk_obs) |>
+  # Two declared endpoints (Cc, BIS): observation rows name the ODE state
+  # and carry dvid = 1 so rxode2 returns every endpoint column.
+  mutate(
+    cmt = "central", dvid = ifelse(evid == 0, 1L, NA_integer_),
+    treatment = "0.7-0.9 mg/kg/h"
+  ) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, amt, rate, evid, cmt, dvid, WT, SBP, treatment)
+```
+
+## Simulation
+
+```{r pk-sim}
+mod_pk <- readModelDb("Bienert_2010_propofol")
+sim_pk <- rxode2::rxSolve(mod_pk, events = pk_events, keep = "treatment") |>
+  as.data.frame()
+# Typical patient: 72.6 kg, 0.8 mg/kg/h, SBP at the 135 mmHg centring value.
+typ_rate <- 0.8 * 72.6 / 60
+typ_events <- bind_rows(
+  tibble(time = 0, amt = 1.5 * 72.6, rate = 0, evid = 1),
+  tibble(time = 0, amt = typ_rate * t_inf, rate = typ_rate, evid = 1),
+  tibble(time = c(seq(0, t_inf, by = 60), t_inf + post), amt = 0, rate = 0, evid = 0)
+) |>
+  mutate(
+    id = 1, cmt = "central", SBP = 135,
+    dvid = ifelse(evid == 0, 1L, NA_integer_)
+  ) |>
+  arrange(time, desc(evid))
+sim_pk_typ <- rxode2::rxSolve(rxode2::zeroRe(mod_pk), events = typ_events) |>
+  as.data.frame()
+```
+
+## Concentration and BIS over time
+
+```{r figure-1-2, fig.width = 7, fig.height = 6}
+# Compare with Figures 1 and 2 of Bienert 2010: hourly concentrations and
+# BIS through the second and third day of infusion and after it stops.
+pk_long <- sim_pk |>
+  filter(time >= 24 * 60) |>
+  select(id, time, Cc, BIS) |>
+  pivot_longer(c(Cc, BIS), names_to = "output") |>
+  group_by(output, time) |>
+  summarise(
+    Q05 = quantile(value, 0.05), Q50 = median(value), Q95 = quantile(value, 0.95),
+    .groups = "drop"
+  )
+typ_long <- sim_pk_typ |>
+  filter(time >= 24 * 60) |>
+  select(time, Cc, BIS) |>
+  pivot_longer(c(Cc, BIS), names_to = "output")
+
+ggplot(pk_long, aes(time / 60)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line(aes(y = Q50)) +
+  geom_line(data = typ_long, aes(y = value), linetype = "dashed", colour = "blue") +
+  facet_wrap(~output, ncol = 1, scales = "free_y") +
+  labs(
+    x = "Time since start of infusion (h)", y = NULL,
+    caption = paste0(
+      "Median and 90% interval of 200 virtual patients; dashed: typical\n",
+      "patient (72.6 kg, 0.8 mg/kg/h, SBP 135 mmHg). Compare Figures 1-2."
+    )
+  )
+```
+
+## PKNCA: average concentration over the study period
+
+The paper reports the mean steady-state concentration during the second and
+third day of infusion, 0.48 +/- 0.21 mg/L. PKNCA's `cav` over 24-72 h is the
+simulated counterpart.
+
+```{r pknca}
+sim_nca <- sim_pk |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, treatment, time)
+
+dose_df <- pk_events |>
+  filter(evid == 1, rate > 0) |>
+  mutate(dur = t_inf) |>
+  select(id, time, amt, dur, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(
+  dose_df, amt ~ time | treatment + id,
+  route = "intravascular", duration = "dur"
+)
+intervals <- data.frame(
+  start = 24 * 60, end = 72 * 60,
+  cav = TRUE, cmax = TRUE, cmin = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+cav <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "cav") |>
+  pull(PPORRES)
+
+tibble(
+  `NCA parameter` = "Cav, 24-72 h (mg/L)",
+  Simulated = sprintf("%.2f +/- %.2f", mean(cav), sd(cav)),
+  Published = "0.48 +/- 0.21",
+  `Difference of means (%)` = round(100 * (mean(cav) - 0.48) / 0.48, 1)
+) |>
+  knitr::kable(caption = "Simulated vs published steady-state propofol concentration (mean +/- SD).")
+```
+
+The simulated mean sits about 15-20% below the published 0.48 mg/L. With a
+typical clearance of 2.65 L/min and a typical 72.6 kg patient at 0.8 mg/kg/h
+(0.97 mg/min), the typical steady state is 0.97 / 2.65 = 0.37 mg/L, and the
+48.6% IIV on clearance lifts the cohort mean to about 0.41 mg/L. The
+observed mean also includes the extra boluses individual patients received
+and one patient's rate changes, neither of which the paper tabulates, so a
+small shortfall is expected; the model is not adjusted for it.
+
+```{r pk-checks}
+# Structural: a mis-transcribed clearance or a unit slip (L/min vs L/h)
+# moves the mean by 50% or a factor of 60.
+stopifnot(abs(mean(cav) - 0.48) / 0.48 < 0.30)
+
+# Deterministic typical-patient steady state, infusion rate / CL, and the
+# corresponding BIS from Eq. 2.
+css_typ <- sim_pk_typ$Cc[sim_pk_typ$time == t_inf]
+stopifnot(abs(css_typ - (0.8 * 72.6 / 60) / 2.65) / css_typ < 0.01)
+bis_typ <- sim_pk_typ$BIS[sim_pk_typ$time == t_inf]
+stopifnot(abs(bis_typ - (100 - 100 * css_typ / (1.98 + css_typ))) < 1e-6)
+```
+
+The typical patient settles at `r round(css_typ, 3)` mg/L with BIS
+`r round(bis_typ, 1)`, within the 80-95 band in which most of the observed
+BIS values of Figure 2 lie.
+
+## Systolic blood pressure on clearance
+
+```{r sbp-effect}
+tibble(SBP = c(85, 110, 135, 160, 191)) |>
+  mutate(
+    `CL (L/min)` = round(2.65 * (1 - 0.00714 * (SBP - 135)), 2),
+    `Typical Css at 0.97 mg/min (mg/L)` = round(0.968 / `CL (L/min)`, 2)
+  ) |>
+  rename(`SBP (mmHg)` = SBP) |>
+  knitr::kable(caption = "Typical clearance across the observed SBP range (Table 1: 85-191 mmHg).")
+```
+
+# Circadian rhythms in heart rate and body temperature
+
+Both rhythm models are evaluated at the clock time of each record, which the
+models take as the covariate `TCLOCK`. In Eq. 7 the cosine argument is
+`t - acrophase + T`, with `t` the time since the start of infusion and `T` the
+clock time at the start; `t + T` is therefore the record's clock time. The
+virtual patients start their infusion at 15:00 and are followed hourly over
+the second and third day, as in the study.
+
+```{r rhythm-cohort}
+rxode2::rxSetSeed(2011)
+n_vs <- 200
+start_clock <- 15
+vs_events <- tidyr::crossing(id = seq_len(n_vs), time = seq(24, 72, by = 1)) |>
+  mutate(evid = 0, amt = 0, TCLOCK = (start_clock + time) %% 24)
+
+mod_hr <- readModelDb("Bienert_2010_heartRate")
+mod_temp <- readModelDb("Bienert_2010_bodyTemperature")
+
+sim_hr <- rxode2::rxSolve(mod_hr, events = vs_events) |> as.data.frame()
+sim_temp <- rxode2::rxSolve(mod_temp, events = vs_events) |> as.data.frame()
+
+typ_vs_events <- vs_events |> filter(id == 1)
+typ_hr <- rxode2::rxSolve(rxode2::zeroRe(mod_hr), events = typ_vs_events) |> as.data.frame()
+typ_temp <- rxode2::rxSolve(rxode2::zeroRe(mod_temp), events = typ_vs_events) |> as.data.frame()
+```
+
+```{r figure-3-4, fig.width = 7, fig.height = 6}
+# Compare with Figures 3 and 4: the population-predicted (typical) rhythm
+# over the second and third day, with the dark period 20:00-08:00 shaded.
+dark <- tibble(clock_start = c(20, 44, 68)) |>
+  mutate(
+    xmin = pmax(clock_start - start_clock, 24),
+    xmax = pmin(clock_start - start_clock + 12, 72)
+  ) |>
+  filter(xmax > xmin)
+
+rhythm <- bind_rows(
+  sim_hr |>
+    group_by(time) |>
+    summarise(Q05 = quantile(sim, 0.05), Q95 = quantile(sim, 0.95)) |>
+    left_join(typ_hr |> select(time, typical = hr), by = "time") |>
+    mutate(output = "Heart rate (beats/min)"),
+  sim_temp |>
+    group_by(time) |>
+    summarise(Q05 = quantile(sim, 0.05), Q95 = quantile(sim, 0.95)) |>
+    left_join(typ_temp |> select(time, typical = body_temperature), by = "time") |>
+    mutate(output = "Body temperature (degC)")
+)
+
+ggplot(rhythm, aes(time)) +
+  geom_rect(
+    data = dark, aes(xmin = xmin, xmax = xmax, ymin = -Inf, ymax = Inf),
+    inherit.aes = FALSE, fill = "grey85"
+  ) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line(aes(y = typical), linetype = "dashed") +
+  facet_wrap(~output, ncol = 1, scales = "free_y") +
+  labs(
+    x = "Time since start of infusion (h)", y = NULL,
+    caption = paste0(
+      "Dashed: typical rhythm; band: 90% interval of simulated observations.\n",
+      "Infusion started at 15:00. Compare Figures 3-4."
+    )
+  )
+```
+
+## Checks against the paper
+
+The paper states the peak times, the relative amplitudes and, in the
+Discussion, the absolute temperature amplitude (0.12 degC). These are
+properties of the typical rhythm and are checked exactly.
+
+```{r rhythm-checks}
+peak_clock <- function(d, col) {
+  fine <- tibble(TCLOCK = seq(0, 23.99, by = 0.01))
+  ev <- fine |> mutate(id = 1, time = seq_len(n()), evid = 0, amt = 0)
+  out <- rxode2::rxSolve(rxode2::zeroRe(d), events = ev) |> as.data.frame()
+  list(peak = fine$TCLOCK[which.max(out[[col]])], max = max(out[[col]]), min = min(out[[col]]))
+}
+p_hr <- peak_clock(mod_hr, "hr")
+p_temp <- peak_clock(mod_temp, "body_temperature")
+
+checks <- tibble(
+  Quantity = c(
+    "HR peak clock time (h)", "HR amplitude (% of mesor)",
+    "Temperature peak clock time (h)", "Temperature amplitude (degC)"
+  ),
+  Model = c(
+    p_hr$peak, 100 * (p_hr$max - p_hr$min) / 2 / 90.5,
+    p_temp$peak, (p_temp$max - p_temp$min) / 2
+  ),
+  Paper = c(14, 4.8, 21.4, 0.12)
+)
+knitr::kable(checks, digits = 3)
+stopifnot(
+  abs(p_hr$peak - 14) < 0.02, abs(p_temp$peak - 21.4) < 0.02,
+  abs(checks$Model[2] - 4.8) < 0.01, abs(checks$Model[4] - 0.12) < 0.005
+)
+```
+
+Table 1 gives the spread of all recorded heart rates and temperatures
+(SD 15.7 beats/min and 0.5 degC). The models reproduce that spread from the
+IIV on the mesor, the rhythm and the residual error together, which
+independently supports reading the Table 4 percentages as coefficients of
+variation (see Assumptions).
+
+```{r rhythm-spread}
+spread <- tibble(
+  Variable = c("Heart rate (beats/min)", "Body temperature (degC)"),
+  `Simulated SD` = c(sd(sim_hr$sim), sd(sim_temp$sim)),
+  `Table 1 SD` = c(15.7, 0.5)
+) |>
+  mutate(Ratio = `Simulated SD` / `Table 1 SD`)
+knitr::kable(spread, digits = 2)
+# A variance read as a CV (or the residual read as 0.0966%) moves these
+# ratios by a factor of two or more.
+stopifnot(all(spread$Ratio > 0.7 & spread$Ratio < 1.4))
+```
+
+# Assumptions and deviations
+
+- **IIV scale.** Tables 2-4 print the IIV rows as 'omega^2 (%)' and the
+  Results quote them as percentages ('IIV of clearance equaled 48.6%').
+  They are read as coefficients of variation with CV = sqrt(omega^2), so
+  omega^2 = CV^2. Reading them as variances would give a heart-rate CV of
+  38% and a body-temperature SD above 3 degC, irreconcilable with the Table 1
+  spreads checked above. The alternative log-normal conversion
+  omega^2 = log(1 + CV^2) differs by about 10% for clearance and EC50 and
+  negligibly for the vital signs.
+- **Body-temperature residual error.** Table 4 prints 0.0996 for the basic
+  model and 0.966 for the model with rhythm. The with-rhythm value, 0.966%
+  (about 0.36 degC), is used: the observations in Figure 4 scatter around the
+  individual predictions by several tenths of a degree, and it reproduces the
+  Table 1 SD of 0.5 degC. The basic-model entry is probably a misprint of
+  0.996.
+- **BIS residual-error row label.** Table 3 labels the residual row
+  'sigma prop,Cp2' and its column 'Basic PK model'; both are carried over
+  from Table 2. Eq. 5 defines it as the proportional BIS error.
+- **No Hill coefficient.** The Results call the PD model a sigmoid Emax
+  model, but Eq. 2 and Table 3 have no Hill coefficient; the equation is
+  followed.
+- **PK driving the BIS model.** The paper does not say whether the BIS
+  model was fitted to the basic or the covariate PK model's predictions. The
+  packaged file drives BIS with the final (covariate) PK model.
+- **Time units.** The PK/PD model keeps the paper's units (min, L, L/min,
+  mg/L). The rhythm models use hours and clock time.
+- **Virtual cohort.** Systolic blood pressure was recorded hourly and
+  enters the model as a time-varying covariate; the simulation holds it at a
+  per-patient value drawn from the Table 1 distribution. Extra boluses and
+  rate changes are not simulated. Weight and SBP are drawn from normal
+  distributions with the Table 1 mean and SD, clipped to the observed range.
+- **Excluded covariates.** Weight, age, initial triglycerides, heart rate,
+  diastolic blood pressure, body temperature and oxygen saturation were
+  screened and not retained.
