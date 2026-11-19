@@ -6324,6 +6324,8 @@ navbar:
         href: articles/Luo_2024_CES1_cirrhosis.html
       - text: "PermeabilityLimited pbpk (Gaohua 2023)"
         href: articles/Gaohua_2023_permeabilityLimited_pbpk.html
+      - text: "PersistentOrganicPollutants pbpk (Verner 2008)"
+        href: articles/Verner_2008_persistent_organic_pollutants.html
       - text: "Pertuzumab (Garg 2014)"
         href: articles/Garg_2014_pertuzumab.html
       - text: "Pertuzumab (Wang 2021)"
@@ -12020,6 +12022,7 @@ articles:
   - articles/VelezdeMendizabal_2013_multipleSclerosis
   - articles/Vellinga_2025_remimazolam
   - articles/Venisse_2008_candida_albicans
+  - articles/Verner_2008_persistent_organic_pollutants
   - articles/Verner_2015_pfas_birthweight
   - articles/Verrest_2023_miltefosine_paromomycin
   - articles/Verrest_2024_leishmania

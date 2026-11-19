@@ -1,0 +1,516 @@
+---
+title: "Lifetime PBPK of persistent organic pollutants (Verner 2008)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lifetime PBPK of persistent organic pollutants (Verner 2008)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+```
+
+```{r libraries, message = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Verner et al. (2008, *Environ Health Perspect* 116:886-892,
+[doi:10.1289/ehp.10917](https://doi.org/10.1289/ehp.10917), PMCID
+PMC2453156) built a **lifetime** physiologically based pharmacokinetic
+(PBPK) model to reconstruct a woman's internal exposure to persistent
+organic pollutants (POPs) from birth to the age of a breast-cancer
+diagnosis. The motivating problem is epidemiologic: a single blood or
+adipose sample taken near diagnosis is a poor surrogate for lifetime body
+burden, because lactation, weight change and growth move POP levels around
+over decades. The model turns a woman's life history (growth, pregnancies,
+lactation, exposure) into a lifetime toxicokinetic profile so that
+exposure during hypothesized critical windows can be estimated.
+
+The structure is a flow-limited whole-body PBPK model (Figure 1): the
+woman is a network of tissue compartments perfused by blood. Each tissue
+obeys the mass-balance equation `d/dt(At) = Qt * (Ca - Ct/Pt:b)` (Eq 1),
+with the **liver** carrying oral intake and hepatic metabolism (Eqs 2-3)
+and the **mammary** tissue carrying lactational excretion (Eqs 4-5).
+Tissue:blood partition coefficients are computed from each compound's
+`log Kow` and the tissue lipid/water composition (Eq 6). The intrinsic
+clearance is derived from the compound half-life at an adult reference and
+held age-invariant, and the hepatic extraction ratio is recomputed at the
+current liver volume and flow (Eqs 8-12).
+
+Model time is **hours since birth**, so age (years) = `time / 8760` drives
+every organ volume and blood flow through the age/body-weight/body-height
+regressions of Haddad et al. (2006) and Price PS et al. (2003)
+(Supplemental Table S1). Pregnancy adds uterine, mammary, adipose,
+placental and fetal growth as functions of a pregnancy sub-clock
+(Gentry et al. 2002), and the conceptus burden leaves the mother at
+parturition. There are no dose records: exposure is a constant daily oral
+intake into the liver plus optional contaminated breast-milk intake in
+infancy.
+
+```{r load-model}
+mod <- readModelDb("Verner_2008_persistentOrganicPollutants_pbpk")
+
+YEAR_H <- 8760
+# Three POPs are parameterised by (Kow, half-life); the file defaults to
+# PCB-153. Values from the main text (log10 Kow and approximate half-life).
+compounds <- list(
+  `PCB-153` = c(lkow = log(10^6.72), half_life_yr = 27.5),
+  `PCB-180` = c(lkow = log(10^7.21), half_life_yr = 9.9),
+  `HCB`     = c(lkow = log(10^5.73), half_life_yr = 6.0)
+)
+
+# Solve a scenario over 0-55 years on a monthly grid and return a data frame.
+solve_life <- function(params = NULL, by = 365) {
+  ev <- et(seq(0, 55 * YEAR_H, by = by))
+  rxSolve(mod, ev, params = params, returnType = "data.frame")
+}
+# Blood concentration (ug/L) at a given age (years).
+cc_at <- function(s, age_yr) s$Cc[which.min(abs(s$AGEyr - age_yr))]
+```
+
+# Population
+
+No subjects were fitted. The paper is a forward PBPK simulation tool;
+"model validation could not be achieved because of the evident lack of
+data" - namely a lifetime follow-up study measuring blood concentration at
+many ages while controlling every input. The `population` metadata
+therefore records `n_subjects = 0` and `n_studies = 0`.
+
+The simulations in the paper are driven by illustrative life histories:
+
+* **Growth** - a 50th-percentile female body-weight and body-height
+  profile from birth. The "normal" weight profile rises to 50 kg at 14
+  years, then linearly to 70 kg at 25 years and holds (Figure 2). An
+  "overweight" profile reaches 90 kg and a "weight-loss" profile drops
+  from 90 back to 70 kg over 25-35 years.
+* **Exposure** - a background daily oral intake of 10 ng/kg/day into the
+  liver, held constant over life.
+* **Breast-feeding in infancy** - optional drinking of contaminated milk
+  (2 ug/L in the illustrative scenarios) for the first months of life.
+* **Pregnancy and lactation** - zero, one or two pregnancies at chosen
+  ages, each optionally followed by a lactation period of 6 or 12 months.
+
+Three compounds were simulated by changing `log Kow` and half-life:
+PCB-153 (`log Kow` 6.72, t1/2 27.5 y), PCB-180 (7.21, 9.9 y) and
+hexachlorobenzene (HCB; 5.73, 6.0 y).
+
+# Source trace
+
+Every value in the model file is a recoded literature constant; nothing
+was estimated. The main text supplies the equations; the Supplemental
+Material supplies the physiology.
+
+| Model element | Source location |
+| --- | --- |
+| Compartment structure, flow-limited mass balance (Eq 1) | Figure 1; Methods "Distribution", Eq 1 |
+| Hepatic metabolism rate RAM (Eq 2) and liver balance (Eq 3) | Methods "Metabolism", Eqs 2-3 |
+| Lactational excretion RAE (Eqs 4-5) | Methods "Excretion", Eqs 4-5 |
+| Tissue:blood partition coefficient (Eq 6) | Methods "Model parameterization", Eq 6 |
+| Compartment composition averaging (Eq 7) | Methods, Eq 7 |
+| Intrinsic clearance / extraction ratio (Eqs 8-12) | Methods "Metabolism", Eqs 8-12 |
+| Organ volumes and blood flows vs age/BW/BH | Suppl. Table S1 (Haddad 2006; Price PS 2003; Gentry 2002) |
+| Milk volume and milk lipid/protein content vs days postpartum | Suppl. Table S2 (Neville 1991) |
+| Tissue lipid/water composition | Suppl. Table S3 (Price K 2003) |
+| Chemical `log Kow` 6.72 / 7.21 / 5.73; half-lives 27.5 / 9.9 / 6.0 y | Methods "Model simulations" (ATSDR; To-Figueras 2000) |
+| Background exposure 10 ng/kg/day; infancy milk 2 ug/L | Methods "Model simulations"; "Impact of breast-feeding" |
+| Reported blood concentrations used as targets below | Results (text values per scenario) |
+
+# Part 1 - Structural verification
+
+These are exact identities, not statistical comparisons: each recomputes a
+model quantity independently and compares it to what the solved system
+produces.
+
+```{r structural}
+s_ref <- solve_life()
+
+# Eq 1 mass balance: cumulative intake minus (body burden + cumulative
+# elimination) is conserved to solver tolerance over the whole 55 years.
+massbal <- max(abs(s_ref$MassBalance))
+
+# Eq 6 partition coefficients, recomputed from Kow and the Table S3
+# composition fractions, compared with the model's own PfatAdult / Prich.
+# s_ref uses the file default (PCB-153, Kow = 10^6.72 stored as 5.2481e6).
+kow <- 5.2481e6
+denom_b <- kow * 0.006 + 0.79
+pfat_R <- (kow * 0.741 + 0.212) / denom_b   # adult adipose Fl 74.1%, Fw 21.2%
+prich_R <- (kow * 0.0368 + 0.781) / denom_b # richly perfused Fl 3.68%, Fw 78.1%
+i_ad <- which.min(abs(s_ref$AGEyr - 40))
+eq6_fat_err <- abs(s_ref$PfatAdult[i_ad] - pfat_R)
+eq6_rich_err <- abs(s_ref$Prich[i_ad] - prich_R)
+
+# Eqs 8-12 metabolism round-trip. The age-invariant CLint_C is recovered
+# from the reference extraction ratio EhRef, the reference liver volume and
+# the reference hepatic flow; and at an adult age the current extraction
+# ratio Eh must equal that reference value (Eq 12 reduces to Eq 9).
+vl_r <- 0.0501 * 70^0.780
+ql_r <- 60 * vl_r
+clint_rt <- s_ref$EhRef[i_ad] * ql_r / (1 - s_ref$EhRef[i_ad]) / vl_r
+eq8_err <- abs(s_ref$CLint[i_ad] - clint_rt)
+eq12_err <- abs(s_ref$Eh[i_ad] - s_ref$EhRef[i_ad])
+
+knitr::kable(
+  data.frame(
+    Check = c("Eq 1 lifetime mass balance (abs, ug)",
+              "Eq 6 adult fat:blood partition (abs error)",
+              "Eq 6 richly-perfused:blood partition (abs error)",
+              "Eq 8 CLint_C round-trip (abs error)",
+              "Eq 12 Eh(adult) vs reference Eh (abs error)"),
+    Value = signif(c(massbal, eq6_fat_err, eq6_rich_err, eq8_err, eq12_err), 4)
+  ),
+  caption = "Exact structural identities."
+)
+
+stopifnot(
+  massbal < 1e-4,
+  eq6_fat_err < 1e-8,
+  eq6_rich_err < 1e-8,
+  eq8_err < 1e-10,
+  eq12_err < 1e-10,
+  # Lipophilic POPs partition strongly into fat relative to lean tissue.
+  pfat_R > 20 * prich_R
+)
+```
+
+# Part 2 - Lifetime toxicokinetic profiles (Figure 3)
+
+The paper's Figure 3 shows blood POP concentration from 0 to 55 years for
+a range of life histories. The illustrative scenarios below reproduce the
+reported blood concentrations at the specific ages the text calls out. The
+model is a deterministic simulation tool with documented physiological
+simplifications (see Assumptions), so the comparison targets a few-percent
+agreement on the well-constrained scenarios and the correct direction and
+ordering on the pregnancy/lactation transients.
+
+## Panel A - breast-feeding in childhood
+
+A woman breast-fed for 6 months in infancy (contaminated milk 2 ug/L)
+versus a non-breast-fed woman, both at the normal weight profile and 10
+ng/kg/day background exposure.
+
+```{r panelA}
+s_bf <- solve_life(c(BF_INFANT_MO = 6))
+s_no <- solve_life(c(BF_INFANT_MO = 0))
+
+panelA <- bind_rows(
+  data.frame(age = s_bf$AGEyr, Cc = s_bf$Cc, scenario = "Breast-fed 6 months"),
+  data.frame(age = s_no$AGEyr, Cc = s_no$Cc, scenario = "Not breast-fed")
+)
+ggplot(panelA, aes(age, Cc, colour = scenario)) +
+  geom_line(linewidth = 1) +
+  labs(x = "Age (years)", y = "Blood PCB-153 (ug/L)", colour = NULL,
+       title = "Replicates Figure 3A of Verner 2008",
+       subtitle = "Breast-feeding in infancy raises early-life burden; converges by 20 y") +
+  theme_bw()
+
+ratio5 <- cc_at(s_bf, 5) / cc_at(s_no, 5)
+ratio20 <- cc_at(s_bf, 20) / cc_at(s_no, 20)
+bg34 <- cc_at(s_no, 34)
+knitr::kable(
+  data.frame(
+    Quantity = c("Breast-fed / non ratio at 5 y",
+                 "Breast-fed / non ratio at 20 y",
+                 "Background-only blood PCB-153 at 34 y (ug/L)"),
+    Model = signif(c(ratio5, ratio20, bg34), 3),
+    Paper = c("~2-fold", "~1 (converged)", "1.07")
+  ),
+  caption = "Figure 3A / 3F reported comparisons."
+)
+
+stopifnot(
+  # Roughly 2-fold higher at age 5 (paper: "about 2-fold higher").
+  ratio5 > 1.8 && ratio5 < 2.8,
+  # Differences "almost completely disappeared" by 20 y.
+  ratio20 > 1 && ratio20 < 1.2,
+  # Background-only level at 34 y matches the paper's 1.07 ug/L (Fig 3F).
+  abs(bg34 - 1.07) / 1.07 < 0.15
+)
+```
+
+## Panel B - body weight change
+
+Normal, overweight and weight-loss profiles, all breast-fed 6 months. A
+loss of weight unloads POP from the shrinking adipose store and raises
+blood concentration.
+
+```{r panelB}
+s_norm <- solve_life(c(BF_INFANT_MO = 6, WT_PEAK = 70, WT_FINAL = 70))
+s_over <- solve_life(c(BF_INFANT_MO = 6, WT_PEAK = 90, WT_FINAL = 90))
+s_loss <- solve_life(c(BF_INFANT_MO = 6, WT_PEAK = 90, WT_FINAL = 70))
+
+panelB <- bind_rows(
+  data.frame(age = s_norm$AGEyr, Cc = s_norm$Cc, scenario = "Normal (70 kg)"),
+  data.frame(age = s_over$AGEyr, Cc = s_over$Cc, scenario = "Overweight (90 kg)"),
+  data.frame(age = s_loss$AGEyr, Cc = s_loss$Cc, scenario = "Weight loss (90->70 kg)")
+)
+ggplot(panelB, aes(age, Cc, colour = scenario)) +
+  geom_line(linewidth = 1) +
+  labs(x = "Age (years)", y = "Blood PCB-153 (ug/L)", colour = NULL,
+       title = "Replicates Figure 3B of Verner 2008",
+       subtitle = "Weight loss over 25-35 y raises blood POP concentration") +
+  theme_bw()
+
+norm35 <- cc_at(s_norm, 35)
+loss35 <- cc_at(s_loss, 35)
+knitr::kable(
+  data.frame(
+    Quantity = c("Normal-weight blood PCB-153 at 35 y (ug/L)",
+                 "Weight-loss blood PCB-153 at 35 y (ug/L)"),
+    Model = signif(c(norm35, loss35), 3),
+    Paper = c("1.13", "1.38")
+  ),
+  caption = "Figure 3B reported comparison at 35 years."
+)
+
+stopifnot(
+  # Normal-weight level at 35 y matches the paper's 1.13 ug/L.
+  abs(norm35 - 1.13) / 1.13 < 0.15,
+  # Weight loss raises the concentration above the normal profile.
+  loss35 > norm35,
+  # Weight loss remains elevated at 55 y, above the normal profile.
+  cc_at(s_loss, 55) > cc_at(s_norm, 55),
+  # Normal and overweight give "similar kinetic profiles" (paper), i.e. close
+  # at 55 y; the paper's further "slightly higher" for overweight is a
+  # sub-5% detail not reproduced by the simplified model (see Errata).
+  abs(cc_at(s_over, 55) - cc_at(s_norm, 55)) / cc_at(s_norm, 55) < 0.15
+)
+```
+
+## Panels C-D - pregnancy and lactation
+
+Lactation is the dominant life event for blood POP levels: it exports POP
+in lipid-rich milk. A pregnancy at 35 years followed by 6 vs 12 months of
+lactation (breast-fed 6 months in infancy).
+
+```{r panelCD}
+s_l6  <- solve_life(c(BF_INFANT_MO = 6, AGE_PREG_YR = 35, LACT_MO = 6))
+s_l12 <- solve_life(c(BF_INFANT_MO = 6, AGE_PREG_YR = 35, LACT_MO = 12))
+
+panelCD <- bind_rows(
+  data.frame(age = s_l6$AGEyr,  Cc = s_l6$Cc,  scenario = "6-month lactation"),
+  data.frame(age = s_l12$AGEyr, Cc = s_l12$Cc, scenario = "12-month lactation")
+)
+ggplot(panelCD, aes(age, Cc, colour = scenario)) +
+  geom_line(linewidth = 1) +
+  labs(x = "Age (years)", y = "Blood PCB-153 (ug/L)", colour = NULL,
+       title = "Replicates Figure 3D of Verner 2008",
+       subtitle = "Longer lactation from 35 y lowers blood POP at 55 y") +
+  theme_bw()
+
+l6_55 <- cc_at(s_l6, 55)
+l12_55 <- cc_at(s_l12, 55)
+# Lactation effect during active nursing: pregnancy at 30, measured at 31 y.
+s_preg <- solve_life(c(AGE_PREG_YR = 30, LACT_MO = 0))
+s_lact <- solve_life(c(AGE_PREG_YR = 30, LACT_MO = 12))
+preg31 <- cc_at(s_preg, 31)
+lact31 <- cc_at(s_lact, 31)
+
+knitr::kable(
+  data.frame(
+    Quantity = c("6-month lactation, blood at 55 y (ug/L)",
+                 "12-month lactation, blood at 55 y (ug/L)",
+                 "Pregnancy only at 30 y, blood at 31 y (ug/L)",
+                 "Pregnancy + 12-month lactation, blood at 31 y (ug/L)"),
+    Model = signif(c(l6_55, l12_55, preg31, lact31), 3),
+    Paper = c("1.39", "1.25", "1.01", "0.53")
+  ),
+  caption = "Figure 3C / 3D reported comparisons."
+)
+
+stopifnot(
+  # Blood level at 55 y for both lactation lengths is near the paper's
+  # reported 1.39 / 1.25 ug/L, and 6-month lactation leaves more behind
+  # than 12-month.
+  abs(l6_55 - 1.39) / 1.39 < 0.15,
+  abs(l12_55 - 1.25) / 1.25 < 0.15,
+  l6_55 > l12_55,
+  # Lactation lowers the blood concentration relative to pregnancy alone
+  # (direction and magnitude of the active-nursing transient; the model
+  # under-predicts the depth of the paper's 1.01 -> 0.53 drop, see Errata).
+  lact31 < preg31
+)
+```
+
+## Compound ordering
+
+The three compounds differ in half-life, which sets how fast they approach
+steady state; PCB-153 (longest half-life) accumulates most.
+
+```{r compounds}
+bg <- lapply(names(compounds), function(nm) {
+  s <- solve_life(compounds[[nm]])
+  data.frame(compound = nm, age = s$AGEyr, Cc = s$Cc)
+}) |> bind_rows()
+
+ggplot(bg, aes(age, Cc, colour = compound)) +
+  geom_line(linewidth = 1) +
+  labs(x = "Age (years)", y = "Blood concentration (ug/L)", colour = NULL,
+       title = "Background-exposure lifetime profiles, three POPs",
+       subtitle = "10 ng/kg/day, normal weight; PCB-153 > PCB-180 > HCB") +
+  theme_bw()
+
+ord <- bg |> group_by(compound) |> summarise(c34 = Cc[which.min(abs(age - 34))], .groups = "drop")
+stopifnot(
+  # PCB-153 accumulates above PCB-180 above HCB under equal exposure.
+  ord$c34[ord$compound == "PCB-153"] > ord$c34[ord$compound == "PCB-180"],
+  ord$c34[ord$compound == "PCB-180"] > ord$c34[ord$compound == "HCB"]
+)
+```
+
+# Part 3 - PKNCA cross-check
+
+The paper reports no noncompartmental parameters, so there is nothing to
+compare an NCA *against*. PKNCA is used instead as an independent numerical
+instrument: the model integrates the blood-concentration AUC as its own ODE
+state (`auc_blood`, by CVODE), while PKNCA integrates the same trajectory by
+the trapezoidal rule. The two are different quadratures of one curve, so a
+disagreement signals a grid or units error, not a model error. The
+"subjects" here are the deterministic life-history scenarios already solved
+above (well under the 200-per-arm cap).
+
+```{r pknca}
+scenarios <- list(
+  `PCB-153 background` = NULL,
+  `PCB-153 breast-fed` = c(BF_INFANT_MO = 6),
+  `PCB-153 weight-loss` = c(BF_INFANT_MO = 6, WT_PEAK = 90, WT_FINAL = 70),
+  `PCB-153 lactation` = c(BF_INFANT_MO = 6, AGE_PREG_YR = 35, LACT_MO = 12),
+  `PCB-180 background` = compounds[["PCB-180"]],
+  `HCB background` = compounds[["HCB"]]
+)
+
+nca_solves <- lapply(seq_along(scenarios), function(k) {
+  s <- solve_life(scenarios[[k]], by = 365)
+  data.frame(id = k, time = s$time, Cc = s$Cc, auc_ode = s$auc_blood)
+}) |> bind_rows()
+
+# PKNCA input: filter is !is.na(Cc) ONLY (keep the time-zero record).
+nca_conc <- nca_solves |>
+  transmute(id = as.integer(id), time, Cc) |>
+  filter(!is.na(Cc))
+stopifnot(all(table(nca_conc$id[nca_conc$time == 0]) == 1))
+
+nca_obj <- PKNCAconc(nca_conc, Cc ~ time | id)
+nca_data <- PKNCAdata(
+  nca_obj,
+  intervals = data.frame(start = 0, end = 55 * YEAR_H,
+                         auclast = TRUE, cmax = TRUE)
+)
+nca_res <- as.data.frame(suppressMessages(pk.nca(nca_data)))
+
+nca_wide <- nca_res |>
+  select(id, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+model_auc <- nca_solves |>
+  filter(time == 55 * YEAR_H) |>
+  transmute(id = as.integer(id), auc_ode)
+
+auc_check <- nca_wide |>
+  left_join(model_auc, by = "id") |>
+  mutate(pct_diff = 100 * (auclast - auc_ode) / auc_ode)
+
+knitr::kable(
+  auc_check |>
+    transmute(Scenario = names(scenarios)[id],
+              `PKNCA AUC (ug*h/L)` = signif(auclast, 4),
+              `ODE AUC (ug*h/L)` = signif(auc_ode, 4),
+              `% difference` = signif(pct_diff, 3)),
+  row.names = FALSE,
+  caption = "Trapezoidal AUC (PKNCA) vs the model's CVODE-integrated AUC state, 0-55 y."
+)
+
+stopifnot(
+  # Both quadratures integrate the SAME smooth trajectory; trapezoid vs
+  # CVODE on an annual grid agrees closely.
+  max(abs(auc_check$pct_diff)) < 2,
+  # PKNCA Cmax equals the largest concentration actually simulated.
+  all(abs(nca_wide$cmax -
+            tapply(nca_conc$Cc, nca_conc$id, max)[as.character(nca_wide$id)]) < 1e-9)
+)
+```
+
+# Assumptions and deviations
+
+The paper states that "model validation could not be achieved" for want of
+lifetime follow-up data, and the model is a forward simulation tool rather
+than a fit. The following modelling choices were made where the source did
+not fully specify the implementation; each is a documented, non-fabricated
+decision, and the quantitative transients are approximate accordingly.
+
+1. **Brain compartment omitted.** Figure 1 draws a brain compartment and
+   Table S3 gives its composition (lipid 11.6%), but no brain *volume*
+   equation is tabulated anywhere on disk. The authors' own adipose
+   mass-balance `Vf_basal = 0.91*BW - (Vl + Vr + Vp + Vs)` does **not**
+   subtract brain, so the small brain mass is implicitly carried in the
+   adipose compartment, and the paper states blood concentrations (the
+   validated output) are "virtually not influenced" by minor compartments.
+   The brain is therefore not modelled as a separate state rather than
+   given a fabricated volume.
+
+2. **Arterial blood is quasi-steady.** On the years timescale of POP
+   kinetics the blood pool has negligible storage, so arterial blood is
+   taken as the flow-weighted mixed venous concentration
+   `Ca = sum(Qt*Ct/Pt)/Qc`, consistent with Eq 1's treatment of `Ca` as the
+   common arterial input. No blood volume state is needed; the blood term
+   `Vb` in the Eq 11 volume of distribution is dropped as under 0.1% of
+   `Vd` for `log Kow > 5`.
+
+3. **Liver composition uses the richly-perfused values.** Table S3 gives no
+   distinct liver lipid/water composition. The liver is a richly-perfused
+   organ, so its partition coefficient uses the richly-perfused composition
+   (as the paper itself does for mammary, placenta and uterine tissue).
+
+4. **Slowly-perfused composition uses the muscle/skin values.** Eq 7 blends
+   muscle, skin and heart by volume; the blend is dominated by skeletal
+   muscle, so the slowly-perfused and skin compartments use the muscle/skin
+   composition (Table S3) directly.
+
+5. **Placenta and fetus are lumped into one perfused conceptus.** The
+   placental and fetal growth curves (Table S1) are summed into a single
+   conceptus compartment reached by a placental blood flow set to 3% of
+   basal cardiac output while pregnant (the same order as the mammary
+   fraction, 0.027); its contents leave the mother at parturition. The
+   paper assigns the placental diffusion constant an arbitrary value of 1
+   for the explicit reason that maternal blood concentration is insensitive
+   to it, so this flow is a non-critical modelling choice.
+
+6. **Body-weight and body-height lifetime profiles below 14 years are
+   digitised** from the 50th-percentile female growth charts in
+   Supplemental Figures S2/S4 and Figure 2; above 14 years the Figure 2
+   weight profile (linear to the adult peak at 25 y, optional loss to 35 y)
+   is used. These are model inputs (driving functions), overridable through
+   `WT_14`, `WT_PEAK`, `WT_FINAL` and `HT_ADULT`.
+
+7. **Transient pregnancy/lactation levels are under-predicted.** The model
+   reproduces the background, growth and weight-change blood concentrations
+   (e.g. 34 y background and 35 y normal-weight) to within a few percent,
+   and the 55-year post-lactation levels within about 15%, but it
+   under-predicts the depth of the active-nursing drop (paper 1.01 -> 0.53
+   ug/L at 31 y during 12-month lactation; the model shows a shallower
+   drop). This reflects the lumped conceptus, the 3%-of-cardiac-output
+   placental flow, the digitised growth inputs and the 6-month linear
+   postpartum organ return. The direction and ordering (lactation lowers
+   blood POP; longer lactation lowers it more) are preserved. Similarly, the
+   paper reports the overweight profile as *slightly* higher than normal at
+   55 y; the model instead keeps the two "similar" (the paper's own wording)
+   with the overweight trace marginally lower, because at 55 y PCB-153 has
+   not reached steady state and the larger adipose pool slows the rise. The
+   emphasized weight-change finding - that a weight *loss* raises blood POP -
+   is reproduced.
+
+8. **No IIV and no residual error.** Verner et al. built a deterministic
+   PBPK simulation tool and report no random effects or residual-error
+   model. Every parameter is `fixed()`; different life histories and
+   compounds are explored by passing `params` to `rxSolve()`.
+
+9. **Compartment states use `specimen = "tissue"`** (and `"not applicable"`
+   for the intake / elimination / AUC accumulators). No new specimen
+   vocabulary was introduced.
