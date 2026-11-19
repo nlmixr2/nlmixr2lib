@@ -1832,6 +1832,8 @@ navbar:
         href: articles/Mimram_2022_clindamycin.html
       - text: "Clindamycin (Muller 2010)"
         href: articles/Muller_2010_clindamycin.html
+      - text: "Clindamycin (NaBangchang 2007)"
+        href: articles/NaBangchang_2007_fosmidomycin_clindamycin.html
       - text: "Clindamycin (Pfaffendorf 2026)"
         href: articles/Pfaffendorf_2026_fosmidomycin_clindamycin.html
       - text: "Clindamycin (Smith 2017)"
@@ -3366,6 +3368,10 @@ navbar:
         href: articles/Isla_2024_fosfomycinCalcium.html
       - text: "Fosmidomycin (Pfaffendorf 2026)"
         href: articles/Pfaffendorf_2026_fosmidomycin_clindamycin.html
+      - text: "Fosmidomycin combination (NaBangchang 2007)"
+        href: articles/NaBangchang_2007_fosmidomycin_clindamycin.html
+      - text: "Fosmidomycin monotherapy (NaBangchang 2007)"
+        href: articles/NaBangchang_2007_fosmidomycin_clindamycin.html
       - text: "Fospropofol (Gibiansky 2005)"
         href: articles/Gibiansky_2005_fospropofol.html
       - text: "Fremanezumab (FiedlerKelly 2019)"
@@ -11195,6 +11201,7 @@ articles:
   - articles/NA_NA_tte_gompertz_ev2
   - articles/NA_NA_tte_loglogistic
   - articles/NA_NA_tte_lognormal
+  - articles/NaBangchang_2007_fosmidomycin_clindamycin
   - articles/Na_2024_tovecimig
   - articles/Na_2025_hosu53
   - articles/Nader_2017_adalimumab
