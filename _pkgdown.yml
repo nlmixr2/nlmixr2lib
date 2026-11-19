@@ -2250,6 +2250,12 @@ navbar:
         href: articles/TerHeine_2014_tamoxifen.html
       - text: "Dextromethorphan pbpk (Grzegorzewski 2022)"
         href: articles/Grzegorzewski_2022_dextromethorphan_pbpk.html
+      - text: "Dfp human pbpk (Gearhart 1994)"
+        href: articles/Gearhart_1994_dfp.html
+      - text: "Dfp mouse pbpk (Gearhart 1994)"
+        href: articles/Gearhart_1994_dfp.html
+      - text: "Dfp rat pbpk (Gearhart 1994)"
+        href: articles/Gearhart_1994_dfp.html
       - text: "Dha ring early (Cao 2017)"
         href: articles/Cao_2017_dha_artemisinin_stress_model.html
       - text: "Dha ring mid (Cao 2017)"
@@ -10189,6 +10195,7 @@ articles:
   - articles/Gastonguay_2005_efaproxiral
   - articles/Gatti_1996_dapsone
   - articles/Ge_2020_metoclopramide
+  - articles/Gearhart_1994_dfp
   - articles/Gebhard_2023_leukemia_maintenance_therapy
   - articles/Gebreyesus_2024_cefazolin
   - articles/Geers_2022_clozapine
