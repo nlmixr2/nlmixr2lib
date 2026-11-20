@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhao 2026 subcutaneous and intravenous nivolumab, Stage 1 pooled and Stage 2 CheckMate 67T popPK models ([doi:10.1002/cpt.70481](https://doi.org/10.1002/cpt.70481)) -- adults with advanced solid tumours (pooled) and previously treated advanced or metastatic clear-cell renal cell carcinoma (CheckMate 67T).
+- Add Dahan 2026 naloxone reversal-versus-withdrawal utility model ([doi:10.3389/fphar.2026.1944044](https://doi.org/10.3389/fphar.2026.1944044)) -- in silico opioid-tolerant adults in fentanyl overdose treated with intravenous naloxone.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

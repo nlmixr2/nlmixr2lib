@@ -5868,6 +5868,8 @@ navbar:
         href: articles/Laffont_2024_nalmefene.html
       - text: "Naloxone (AlYacoub 2025)"
         href: articles/AlYacoub_2025_naloxone.html
+      - text: "Naloxone (Dahan 2026)"
+        href: articles/Dahan_2026_naloxone.html
       - text: "Naloxone (Dowling 2008)"
         href: articles/Dowling_2008_naloxone.html
       - text: "Naloxone (Gu 2023)"
@@ -10359,6 +10361,7 @@ articles:
   - articles/DAgate_2024_aciclovir
   - articles/Dabour_2026_doxorubicin
   - articles/Dadkhah_2022_busulfan
+  - articles/Dahan_2026_naloxone
   - articles/Damle_2021_dalteparin
   - articles/Damnjanovic_2023_pediatric_antiepileptics
   - articles/Danielak_2017_clopidogrel

@@ -1,0 +1,510 @@
+---
+title: "Naloxone reversal versus precipitated withdrawal (Dahan 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Naloxone reversal versus precipitated withdrawal (Dahan 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Robust crossing finder: the naloxone concentration at which `y` first
+# crosses `level`, interpolated on log-concentration. Returns NA if the curve
+# never crosses, and tolerates repeated/flat values (approx() errors on those).
+crossing <- function(x, y, level) {
+  o <- order(x)
+  x <- x[o]
+  y <- y[o]
+  below <- y < level
+  idx <- which(below[-length(below)] != below[-1])
+  if (length(idx) == 0) {
+    return(NA_real_)
+  }
+  i <- idx[1]
+  w <- (level - y[i]) / (y[i + 1] - y[i])
+  exp(log(x[i]) + w * (log(x[i + 1]) - log(x[i])))
+}
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Dahan_2026_naloxone"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Dahan_2026_naloxone"))$description`
+* Article: [Front Pharmacol 2026;17:1944044](https://doi.org/10.3389/fphar.2026.1944044)
+
+This is a mechanistic PK/PD *simulation* model, not a data-fitted population PK
+model. It couples an established ventilatory PK/PD model of fentanyl-induced
+respiratory depression (Boom 2013) with a novel mechanistic model of
+naloxone-precipitated opioid withdrawal, and expresses the trade-off between the
+two as a utility function. Because the output axis is a steady-state naloxone
+concentration rather than a time course, there is no NCA target to validate
+against; instead the vignette reproduces the paper's Figures 2-4 and the
+analytic crossover relationship of Equation 8.
+
+# Population
+
+No new human data were collected. The model is a Monte-Carlo simulation over
+virtual opioid-tolerant adults with an opioid use disorder (OUD) experiencing a
+fentanyl overdose that is treated with intravenous naloxone (Dahan 2026,
+Methods). Each scenario in the paper drew 40,000 virtual subjects; only the
+fentanyl potency C50 varies between subjects (log-normal, variance 0.31), while
+all other parameters are held at their typical values because inter-individual
+variability could not be estimated from the available data. Parameter values are
+literature-sourced (Table 1): the ventilatory model from Boom 2013, the
+OUD-specific C50 from Algera 2020, the naloxone inhibition constant from
+Moss 2020 / Stolbach 2023, the naloxone effect-site rate constant from
+van Lemmen 2025b, and the naloxone volume and elimination rate constant from the
+FDA 2022 review. The withdrawal threshold *w* was calibrated against
+emergency-department (Yugar 2023) and prospective naloxone (van Lemmen 2025b,
+2026) dose-withdrawal data.
+
+The metadata is available programmatically via
+`readModelDb("Dahan_2026_naloxone")()$population`.
+
+# Model structure
+
+For a typical subject the fentanyl effect-site concentration `ce_fent` is held
+fixed at the value giving the chosen overdose severity `R0` (Equation 4
+rearranged, Figure 1):
+
+$$C_E = \frac{R_0}{1-R_0}\,C_{50}.$$
+
+Naloxone is dosed into a one-compartment disposition model (`central`) with a
+hysteresis effect compartment (`effect`). The naloxone effect-site concentration
+competitively lowers the effective fentanyl concentration at the receptor
+(Equation 1):
+
+$$C_{EF} = \frac{C_E}{1 + C_{NALE}/K_i}.$$
+
+`CEF` then drives both the inhibitory sigmoid-Emax ventilation model
+(Equations 2-3) and the normalized mu-opioid receptor activation
+`R = CEF / (CEF + C50)` (Equation 5). Model-defined respiratory reversal is
+`R < 0.5`; precipitated withdrawal is `R < (1 - w) * R0` (Equation 6). The
+per-subject `utility` is `reversal - k * withdrawal`; the population utility
+(Equation 7) is the cohort mean.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lvc` (Vd)           | 128 L | Table 1, naloxone Vd (FDA 2022) |
+| `lkel` (ke)          | 0.0077 min-1 | Table 1, naloxone ke (FDA 2022) |
+| `lke0` (ke0N)        | 0.087 min-1 | Table 1, naloxone ke0 (van Lemmen 2025b) |
+| `lkd` (Ki)           | 1.5 ng/mL | Table 1, naloxone Ki (Moss 2020; Stolbach 2023); Equation 1 |
+| `le0` (EMAX)         | 19.9 L/min | Table 1, EMAX (Boom 2013); Equation 2 |
+| `lec50` (C50)        | 4.08 ng/mL | Methods text (Table 1 rounds to 4.1; Algera 2020) |
+| `hill` (gamma)       | 1 | Table 1, gamma (Boom 2013); Equation 3 |
+| `rbase` (R0)         | 0.9 | Table 1 range 0-0.97; Figures 3-4 reference value |
+| `wd_thres` (w)       | 0.30 | Abstract and Table 1 (95% CI 0.16-0.40); Equation 6 |
+| `wd_weight` (k)      | 1 | Table 1 range 0.25-4; Equation 7 reference value |
+| `etalec50` (omega2)  | 0.31 | Table 1, omega2(C50), log-domain (Boom 2013) |
+| `d/dt(central)`      | n/a | One-compartment naloxone disposition |
+| `d/dt(effect)`       | n/a | Effect-compartment hysteresis, Figure 1 (ke0N) |
+| `ceff_fent`, `ract`  | n/a | Equations 1, 5 |
+| `reversal`, `withdrawal`, `utility` | n/a | Equations 6-7, Figure 1 |
+
+# Virtual cohort and simulation helper
+
+Original observed data are not publicly available. Each scenario uses a virtual
+cohort of **200 subjects** whose only varying parameter is the fentanyl potency
+C50, drawn on a deterministic log-normal quantile grid (variance 0.31) so the
+figures are reproducible on any machine regardless of solver-thread count.
+
+A steady-state naloxone effect-site concentration is imposed on each subject with
+a bolus-plus-infusion pair into the `central` compartment: the loading bolus
+sets the initial plasma concentration and the matched zero-order infusion holds
+it, so after equilibration the effect-site concentration equals the target
+`C_NALE`.
+
+```{r helper}
+mod <- readModelDb("Dahan_2026_naloxone")
+VC <- 128        # L, naloxone Vd
+KEL <- 0.0077    # 1/min, naloxone ke
+
+n_sub <- 200L
+# Deterministic C50 IIV: log-normal quantiles, variance 0.31 (Table 1).
+eta_grid <- qnorm((seq_len(n_sub) - 0.5) / n_sub) * sqrt(0.31)
+
+# Steady-state naloxone effect-site concentration grid (ng/mL), 0.1-300 (Methods).
+nale_grid <- 10^seq(-1, log10(300), length.out = 45)
+
+# Build events + params for a data frame of scenarios (columns R0, w, k).
+simulate_scenarios <- function(scenarios) {
+  grid <- tidyr::expand_grid(scenarios, nale = nale_grid)
+  grid$scen <- seq_len(nrow(grid))
+  long <- tidyr::expand_grid(grid, sid = seq_len(n_sub))
+  long$id <- seq_len(nrow(long))
+
+  # mg giving the target steady-state plasma (hence effect-site) concentration.
+  # A loading bolus sets the plasma level and a matched zero-order infusion
+  # holds it: with rate = amt_css * KEL the central amount stays at amt_css, so
+  # Cc = 1000 * amt_css / VC = nale throughout. The effect site equilibrates in
+  # ~5 half-lives of ke0 (t1/2 ~ 8 min); the readout at 500 min is deep inside
+  # the infusion window (extended to 1200 min) so it never coincides with the
+  # infusion-end discontinuity.
+  amt_css <- long$nale * VC / 1000           # ng/mL -> mg in 128 L
+  t_obs <- 500
+  events <- dplyr::bind_rows(
+    data.frame(id = long$id, time = 0, evid = 1, amt = amt_css,
+               rate = 0, cmt = "central"),
+    data.frame(id = long$id, time = 0, evid = 1,
+               amt = amt_css * KEL * 1200, rate = amt_css * KEL,
+               cmt = "central"),
+    data.frame(id = long$id, time = t_obs, evid = 0, amt = 0,
+               rate = 0, cmt = "central")
+  ) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+
+  params <- data.frame(
+    id = long$id, etalec50 = eta_grid[long$sid],
+    rbase = long$R0, wd_thres = long$w, wd_weight = long$k
+  )
+
+  sim <- rxode2::rxSolve(mod, events, params = params, returnType = "data.frame")
+  # Keep the equilibrated readout record per subject.
+  sim <- sim[sim$time == t_obs, ]
+  sim$scen <- long$scen[match(sim$id, long$id)]
+  dplyr::left_join(
+    dplyr::as_tibble(sim),
+    dplyr::select(grid, scen, R0, w, k, nale),
+    by = "scen"
+  ) |>
+    dplyr::group_by(R0, w, k, nale) |>
+    dplyr::summarise(
+      ventilation = mean(vent),
+      receptor_activation = mean(ract),
+      p_reversal = mean(reversal),
+      p_withdrawal = mean(withdrawal),
+      utility = mean(utility),
+      .groups = "drop"
+    )
+}
+```
+
+# Figure 2a - ventilation versus fentanyl effect-site concentration
+
+With no naloxone present, the effective fentanyl concentration equals the
+effect-site concentration, so sweeping the overdose severity `R0` sweeps the
+fentanyl concentration `C_E = R0/(1-R0) * C50`. Plotting the typical-subject
+ventilation against `C_E` reproduces the inhibitory sigmoid, which crosses 50 %
+of baseline (9.95 L/min) at `C_E = C50 = 4.08` ng/mL.
+
+```{r figure-2a}
+# The model has no residual error, so zero only the omega (C50 IIV).
+mod_typ <- rxode2::zeroRe(mod, which = "omega")
+r0_sweep <- seq(0.01, 0.985, length.out = 120)
+ce_sweep <- r0_sweep / (1 - r0_sweep) * 4.08
+fig2a <- data.frame(id = seq_along(r0_sweep), time = 0, evid = 0,
+                    amt = 0, cmt = "central")
+f2a <- rxode2::rxSolve(
+  mod_typ, fig2a,
+  params = data.frame(id = seq_along(r0_sweep), rbase = r0_sweep),
+  returnType = "data.frame"
+)
+f2a$CE <- ce_sweep
+
+ggplot(f2a, aes(CE, vent)) +
+  geom_line(linewidth = 1) +
+  geom_hline(yintercept = 19.9 / 2, linetype = "dotted") +
+  geom_vline(xintercept = 4.08, linetype = "dotted") +
+  scale_x_log10() +
+  labs(x = "Fentanyl effect-site concentration (ng/mL)",
+       y = "Minute ventilation (L/min)",
+       title = "Figure 2a - fentanyl concentration vs minute ventilation",
+       caption = "Replicates Figure 2a of Dahan 2026.")
+
+# The sigmoid must cross 50% of baseline at C_E = C50.
+ce50 <- crossing(f2a$CE, -f2a$vent, -19.9 / 2)
+stopifnot(abs(ce50 - 4.08) < 0.1)
+```
+
+# Figure 2b - receptor activation and withdrawal probability versus naloxone
+
+Higher baseline receptor activation `R0` shifts the withdrawal-probability
+curves to the right (Figure 2b): a more severe overdose needs a higher naloxone
+concentration to reach the same withdrawal probability.
+
+```{r figure-2b}
+fig2b <- simulate_scenarios(data.frame(R0 = c(0.7, 0.9, 0.95), w = 0.3, k = 1))
+fig2b <- fig2b |>
+  mutate(R0lab = paste0("R0 = ", R0))
+
+ggplot(fig2b, aes(nale)) +
+  geom_line(aes(y = p_withdrawal, colour = R0lab), linewidth = 1) +
+  geom_line(aes(y = receptor_activation, colour = R0lab),
+            linewidth = 1, linetype = "dashed") +
+  scale_x_log10() +
+  labs(x = "Naloxone effect-site concentration (ng/mL)",
+       y = "Withdrawal probability (solid) / receptor activation (dashed)",
+       colour = NULL,
+       title = "Figure 2b - withdrawal probability and receptor activation",
+       caption = "Replicates Figure 2b of Dahan 2026 (w = 0.3).") +
+  theme(legend.position = "bottom")
+
+# Withdrawal P50 shifts monotonically right with overdose severity.
+p50 <- fig2b |>
+  group_by(R0) |>
+  summarise(c50 = crossing(nale, p_withdrawal, 0.5), .groups = "drop")
+stopifnot(all(is.finite(p50$c50)), all(diff(p50$c50) > 0))
+```
+
+# Figure 3 - reversal, withdrawal and utility
+
+Figure 3a shows the probability of respiratory reversal, the probability of
+withdrawal, and their difference (the utility) at the reference overdose
+severity `R0 = 0.9`, withdrawal threshold `w = 0.5`, and weight `k = 1`. Both
+probabilities rise with naloxone concentration; their difference is positive
+over a limited window and peaks near +0.2 (Dahan 2026 Results).
+
+```{r figure-3a}
+fig3a <- simulate_scenarios(data.frame(R0 = 0.9, w = 0.5, k = 1))
+
+fig3a |>
+  select(nale, p_reversal, p_withdrawal, utility) |>
+  pivot_longer(-nale) |>
+  ggplot(aes(nale, value, colour = name)) +
+  geom_line(linewidth = 1) +
+  geom_hline(yintercept = 0, linewidth = 0.3) +
+  scale_x_log10() +
+  labs(x = "Naloxone effect-site concentration (ng/mL)", y = "Probability / utility",
+       colour = NULL,
+       title = "Figure 3a - reversal, withdrawal and utility (w = 0.5, R0 = 0.9)",
+       caption = "Replicates Figure 3a of Dahan 2026.") +
+  theme(legend.position = "bottom")
+
+# Peak utility near +0.2 (paper reports a positive peak of +0.2 at w = 0.5).
+stopifnot(abs(max(fig3a$utility) - 0.2) < 0.08)
+```
+
+Figure 3b sweeps the withdrawal threshold. At `w = 0.3` the utility is negative
+across roughly 10-30 ng/mL; at `w = 0.5` and `w = 0.7` it has positive peaks of
+about +0.2 and +0.7 (Dahan 2026 Results). The Results text puts the negative
+region at 10-30 ng/mL; the published Figure 3b, like the simulation below,
+shows the `w = 0.3` utility clearly below zero from about 3 to 60 ng/mL with
+its trough of about -0.42 near 10 ng/mL, so the text describes the core of the
+dip rather than its full extent.
+
+```{r figure-3b}
+fig3b <- simulate_scenarios(data.frame(R0 = 0.9, w = c(0.3, 0.5, 0.7), k = 1))
+
+ggplot(fig3b, aes(nale, utility, colour = factor(w))) +
+  geom_line(linewidth = 1) +
+  geom_hline(yintercept = 0, linewidth = 0.3) +
+  scale_x_log10() +
+  labs(x = "Naloxone effect-site concentration (ng/mL)", y = "Utility",
+       colour = "w",
+       title = "Figure 3b - utility by withdrawal threshold (R0 = 0.9)",
+       caption = "Replicates Figure 3b of Dahan 2026.")
+
+peaks <- fig3b |>
+  group_by(w) |>
+  summarise(peak = utility[which.max(abs(utility))], .groups = "drop")
+# Figure 3b extremes: trough about -0.42 at w = 0.3, peaks about +0.18 and
+# +0.68 at w = 0.5 and 0.7. The C50 cohort is a fixed quantile grid, so the
+# 0.05 tolerance covers only the coarse concentration grid.
+stopifnot(
+  abs(peaks$peak[peaks$w == 0.3] - (-0.42)) < 0.05,
+  abs(peaks$peak[peaks$w == 0.5] - 0.18) < 0.05,
+  abs(peaks$peak[peaks$w == 0.7] - 0.68) < 0.05
+)
+```
+
+Figure 3c contrasts the opioid-tolerant subject (`w = 0.5`) with an
+opioid-naive subject, for whom the probability of withdrawal is zero by
+definition (Dahan 2026 Methods), so the utility reduces to the probability of
+respiratory reversal.
+
+```{r figure-3c}
+fig3c <- bind_rows(
+  fig3a |> transmute(nale, utility, group = "Individual with OUD, w = 0.5"),
+  fig3a |> transmute(nale, utility = p_reversal,
+                     group = "Opioid-naive individual, P(withdrawal) = 0")
+)
+
+ggplot(fig3c, aes(nale, utility, colour = group)) +
+  geom_line(linewidth = 1) +
+  geom_hline(yintercept = 0, linewidth = 0.3) +
+  scale_x_log10() +
+  labs(x = "Naloxone effect-site concentration (ng/mL)", y = "Utility",
+       colour = NULL,
+       title = "Figure 3c - opioid-tolerant versus opioid-naive (R0 = 0.9)",
+       caption = "Replicates Figure 3c of Dahan 2026.") +
+  theme(legend.position = "bottom")
+```
+
+# Figure 4 - influence of the withdrawal weight k
+
+Increasing the weight `k` places greater numerical emphasis on avoiding
+withdrawal without changing the probability of withdrawal itself; `k < 1`
+prioritizes respiratory reversal.
+
+```{r figure-4}
+fig4 <- simulate_scenarios(data.frame(R0 = 0.9, w = 0.5, k = c(0.25, 0.5, 1, 2, 4)))
+
+ggplot(fig4, aes(nale, utility, colour = factor(k))) +
+  geom_line(linewidth = 1) +
+  geom_hline(yintercept = 0, linewidth = 0.3) +
+  scale_x_log10() +
+  labs(x = "Naloxone effect-site concentration (ng/mL)", y = "Utility",
+       colour = "k",
+       title = "Figure 4 - utility by withdrawal weight (w = 0.5, R0 = 0.9)",
+       caption = "Replicates Figure 4 of Dahan 2026.")
+
+# At 300 ng/mL every virtual subject is both reversed and in withdrawal, so the
+# plateau utility is exactly 1 - k (Figure 4: 0.75 at k = 0.25, 0.50 at
+# k = 0.5, 0 at k = 1). The C50 cohort is a fixed quantile grid, so this holds
+# exactly on every machine.
+hi <- fig4 |>
+  group_by(k) |>
+  summarise(u_hi = utility[which.max(nale)], .groups = "drop") |>
+  arrange(k)
+stopifnot(all(abs(hi$u_hi - (1 - hi$k)) < 1e-8))
+```
+
+# Figure 5 - withdrawal versus intravenous naloxone dose
+
+The withdrawal threshold was calibrated to `w = 0.30` against the proportion of
+subjects with precipitated withdrawal after intravenous naloxone in an
+emergency-department cohort (Yugar 2023) and in prospective studies in daily
+opioid users (van Lemmen 2025b, 2026), with fitted baseline receptor
+activations of about 0.90 and 0.96 (Dahan 2026 Discussion). Here the full
+time course is simulated: a naloxone bolus enters `central`, reaches the effect
+site with `ke0N`, and a subject counts as in withdrawal if Equation 6 is met at
+any time in the next 4 h.
+
+```{r figure-5}
+dose_grid <- 10^seq(log10(0.02), log10(15), length.out = 40)
+fig5_grid <- tidyr::expand_grid(R0 = c(0.90, 0.96), dose = dose_grid,
+                                sid = seq_len(n_sub))
+fig5_grid$id <- seq_len(nrow(fig5_grid))
+
+fig5_ev <- dplyr::bind_rows(
+  data.frame(id = fig5_grid$id, time = 0, evid = 1, amt = fig5_grid$dose,
+             cmt = "central"),
+  tidyr::expand_grid(id = fig5_grid$id, time = seq(1, 240, by = 1)) |>
+    dplyr::mutate(evid = 0, amt = 0, cmt = "central")
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+fig5_sim <- rxode2::rxSolve(
+  mod, fig5_ev,
+  params = data.frame(id = fig5_grid$id, etalec50 = eta_grid[fig5_grid$sid],
+                      rbase = fig5_grid$R0, wd_thres = 0.3),
+  returnType = "data.frame"
+)
+
+fig5 <- fig5_sim |>
+  group_by(id) |>
+  summarise(any_withdrawal = max(withdrawal), .groups = "drop") |>
+  left_join(fig5_grid, by = "id") |>
+  group_by(R0, dose) |>
+  summarise(p_withdrawal = mean(any_withdrawal), .groups = "drop")
+
+# Mean +/- 95% CI digitized from Figure 5 by the maintainers (the 7 mg Yugar
+# point is drawn without a CI in the figure).
+fig5_obs <- data.frame(
+  source = c(rep("Yugar 2023", 3), rep("van Lemmen 2025b, 2026", 2)),
+  dose = c(0.063, 0.9, 7, 2, 5),
+  pct = c(12.5, 39, 100, 50, 80),
+  lo = c(7, 29, NA, 26, 28.5),
+  hi = c(20, 49.5, NA, 74, 100)
+)
+
+ggplot() +
+  geom_line(data = fig5, aes(dose, 100 * p_withdrawal,
+                             linetype = paste0("R0 = ", R0)), linewidth = 1) +
+  geom_errorbar(data = fig5_obs, aes(dose, ymin = lo, ymax = hi), width = 0.05,
+                na.rm = TRUE) +
+  geom_point(data = fig5_obs, aes(dose, pct, shape = source), size = 2.5) +
+  scale_x_log10() +
+  labs(x = "Intravenous naloxone dose (mg)",
+       y = "Precipitated withdrawal (% of subjects)",
+       linetype = NULL, shape = NULL,
+       title = "Figure 5 - withdrawal versus naloxone dose (w = 0.3)",
+       caption = "Replicates Figure 5 of Dahan 2026.") +
+  theme(legend.position = "bottom")
+
+# The published curves reach 50% withdrawal at about 1.1 mg (R0 = 0.90, solid)
+# and about 2.7 mg (R0 = 0.96, dashed), read from Figure 5.
+ed50 <- fig5 |>
+  group_by(R0) |>
+  summarise(ed50 = crossing(dose, p_withdrawal, 0.5), .groups = "drop")
+knitr::kable(ed50, digits = 2,
+             caption = "Simulated naloxone dose giving 50% withdrawal (mg).")
+stopifnot(
+  abs(ed50$ed50[ed50$R0 == 0.90] / 1.1 - 1) < 0.15,
+  abs(ed50$ed50[ed50$R0 == 0.96] / 2.7 - 1) < 0.15
+)
+```
+
+# Equation 8 - the utility crossover threshold w\*
+
+The paper gives the withdrawal threshold at which the utility changes sign as
+`w* = 1 - 0.5/R0` (Equation 8), with reported crossovers of 0.38 at `R0 = 0.8`,
+0.44 at `R0 = 0.9`, and 0.47 at `R0 = 0.95`. Sweeping `w` at each severity and
+finding where the peak utility crosses zero reproduces these values.
+
+```{r equation-8}
+w_sweep <- seq(0.30, 0.52, by = 0.01)
+cross <- lapply(c(0.8, 0.9, 0.95), function(R0) {
+  s <- simulate_scenarios(data.frame(R0 = R0, w = w_sweep, k = 1))
+  peak <- s |>
+    group_by(w) |>
+    summarise(peak = utility[which.max(abs(utility))], .groups = "drop") |>
+    arrange(w)
+  w_star <- crossing(peak$w, peak$peak, 0)
+  data.frame(R0 = R0, w_star_sim = w_star, w_star_eq8 = 1 - 0.5 / R0)
+}) |>
+  bind_rows()
+
+knitr::kable(cross, digits = 3,
+             caption = "Simulated utility crossover w* vs Equation 8.")
+
+# Equation 8 is an exact analytic identity (0.5 = (1 - w*) * R0). The
+# Monte-Carlo crossover reproduces it to within ~0.02-0.03: near the crossover
+# the peak utility is ~0, so the zero-crossing is sensitive to the finite
+# (200-subject) cohort and the discrete concentration/threshold grids, biasing
+# w* slightly low. A mis-transcribed C50, R0 relationship or withdrawal
+# equation would move w* by far more than this tolerance. The crossover must
+# also increase monotonically with overdose severity (Equation 8).
+stopifnot(
+  all(is.finite(cross$w_star_sim)),
+  all(diff(cross$w_star_sim) > 0),
+  all(abs(cross$w_star_sim - cross$w_star_eq8) < 0.03)
+)
+```
+
+# Assumptions and deviations
+
+- The paper simulated 40,000 subjects per scenario; for a fast, reproducible
+  vignette the maintainers use 200 subjects per scenario on a deterministic
+  log-normal C50 quantile grid (variance 0.31). Only C50 varies between
+  subjects, matching the paper; all other parameters are fixed at typical
+  values, so 200 subjects resolve the population probabilities to within a
+  few percent.
+- The C50 typical value is taken as 4.08 ng/mL from the Methods text and
+  Figure 1; Table 1 rounds it to 4.1 ng/mL. The two differ by 0.5 %.
+- The fentanyl effect-site concentration is held constant for each subject at
+  the value giving the chosen overdose severity `R0` (Equation 4 rearranged);
+  the model does not carry a fentanyl PK compartment, consistent with the
+  paper's steady-state formulation.
+- Overdose severity `R0`, withdrawal threshold `w`, and withdrawal weight `k`
+  are shipped as fixed parameters at the paper's reference values
+  (`R0 = 0.9`, `w = 0.3`, `k = 1`) and overridden per scenario in the figures
+  above via `rxSolve(params = ...)`, matching the ranges in Table 1.
+- The paper does not state how an intravenous naloxone dose was mapped to the
+  withdrawal outcome in the Figure 5 calibration. The maintainers simulate a
+  bolus through the model's own naloxone kinetics and count a subject as in
+  withdrawal if Equation 6 is met at any time in the following 4 h, with the
+  fitted overdose severities of about 0.90 and 0.96 (Discussion). This
+  reproduces the 50% withdrawal doses of both published curves to within 15%.
+  The literature data points in the Figure 5 plot are digitized by the
+  maintainers from the published figure and are shown for orientation only.
+- As of 2026-11-17 no correction notice is listed for this article.
