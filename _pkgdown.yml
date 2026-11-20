@@ -2570,6 +2570,10 @@ navbar:
         href: articles/Khera_2024_dyp688.html
       - text: "Dyp688 mouse tgi (Khera 2024)"
         href: articles/Khera_2024_dyp688.html
+      - text: "E2110 direct rat (Nakatani 2013)"
+        href: articles/Nakatani_2013_E2110_rat.html
+      - text: "E2110 rat (Nakatani 2013)"
+        href: articles/Nakatani_2013_E2110_rat.html
       - text: "E7820 human (Keizer 2011)"
         href: articles/Keizer_2011_E7820.html
       - text: "E7820 mouse (Keizer 2011)"
@@ -11206,6 +11210,7 @@ articles:
   - articles/Nakamura_2024_linagliptin_pbpk
   - articles/Nakao_2019_afatinib
   - articles/Nakashima_2015_valproic_acid_seizure_control
+  - articles/Nakatani_2013_E2110_rat
   - articles/Nanga_2019_tacrolimus_metaanalysis
   - articles/Narwal_2013_sifalimumab
   - articles/NassarSheikhRashid_2024_adalimumab
