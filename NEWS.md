@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Goeyvaerts 2026 canagliflozin popPK and HbA1c PK/PD ([doi:10.1002/bcp.70644](https://doi.org/10.1002/bcp.70644)) -- paediatric patients aged 10-17 years with type 2 diabetes.
+- Add Liu 2026 meropenem and C-reactive protein PK/PD ([doi:10.1002/bcp.70667](https://doi.org/10.1002/bcp.70667)) -- adult onco-haematological patients with febrile neutropenia on continuous infusion.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
