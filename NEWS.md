@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Komenkul 2026 tacrolimus ([doi:10.1002/psp4.70339](https://doi.org/10.1002/psp4.70339)) -- Thai adult liver transplant recipients, with combined recipient/donor CYP3A5 genotype and fluconazole/prednisolone co-medication.
+- Add Tong 2026 amikacin, gentamicin and tobramycin ([doi:10.1002/jcph.70231](https://doi.org/10.1002/jcph.70231)) -- neonates, children and adults in routine US hospital care (one unified aminoglycoside model).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

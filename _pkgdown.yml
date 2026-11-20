@@ -334,6 +334,8 @@ navbar:
         href: articles/Tod_1998_amikacin.html
       - text: "Amikacin (vanderVeer 2025)"
         href: articles/vanderVeer_2025_amikacin.html
+      - text: "Amikacin gentamicin tobramycin (Tong 2026)"
+        href: articles/Tong_2026_amikacin_gentamicin_tobramycin.html
       - text: "Aminocaproic acid (Stricker 2015)"
         href: articles/Stricker_2015_aminocaproic_acid.html
       - text: "AminocaproicAcid (Stricker 2013)"
@@ -12306,6 +12308,7 @@ articles:
   - articles/Togawa_2016_bilastine
   - articles/Tohi_2023_nivolumab
   - articles/Tomita_2022_imeglimin
+  - articles/Tong_2026_amikacin_gentamicin_tobramycin
   - articles/Tong_2026_vancomycin
   - articles/Tornoe_2006_HPG_axis
   - articles/Tortorici_2017_a1pi
