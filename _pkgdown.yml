@@ -9270,6 +9270,8 @@ navbar:
         href: articles/Sten_2023_galnacSirna.html
       - text: "VwfFviii humateP (Bauer 2023)"
         href: articles/Bauer_2023_vonWillebrandFactor.html
+      - text: "Warfarin (Krause 2026)"
+        href: articles/Krause_2026_warfarin.html
       - text: "Warfarin (RodriguezFernandez 2024)"
         href: articles/RodriguezFernandez_2024_warfarin.html
       - text: "Warfarin (Savic 2010)"
@@ -10936,6 +10938,7 @@ articles:
   - articles/Kratochwil_2021_petesicatib
   - articles/Krause_2017_selexipag
   - articles/Krause_2023_daridorexant
+  - articles/Krause_2026_warfarin
   - articles/KreeftmeijerVegter_2015_levamisole
   - articles/Krekels_2015_paracetamol
   - articles/Kretsos_2014_olokizumab

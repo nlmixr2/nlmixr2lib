@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wong 2026 ginisortamab ([doi:10.1002/bcp.70567](https://doi.org/10.1002/bcp.70567)) -- adults with advanced solid tumours (anti-gremlin-1 antibody; PK/PD with serum gremlin-1 suppression).
+- Add Krause 2026 warfarin ([doi:10.1007/s10928-026-10053-8](https://doi.org/10.1007/s10928-026-10053-8)) -- adults after a single oral dose (O'Reilly dataset), with allometric weight scaling used for pediatric exposure matching.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
