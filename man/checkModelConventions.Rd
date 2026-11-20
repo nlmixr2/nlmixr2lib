@@ -33,8 +33,10 @@ compartment names; the observation variable (`Cc`); a syntactic
 dosing-vs-concentration unit cross-check; that every dose-history call
 naming a compartment (`tad(cmt)`, `podo(cmt)`, `tafd(cmt)`, ...) names one
 the model is dosed into (its `dosing` metadata, or else `depot` and/or
-`central`); and that no model() statement is a bare expression (an
-operator-led continuation line that R parses as a statement of its own).
+`central`); that every ODE state can leave zero, through an input term in
+its `d/dt()`, a non-zero initial condition, or a dose; and that no model()
+statement is a bare expression (an operator-led continuation line that R
+parses as a statement of its own).
 }
 \details{
 When any issue of severity `"error"` or `"warning"` is found, a `warning()`

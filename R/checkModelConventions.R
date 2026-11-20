@@ -12,8 +12,10 @@
 #' dosing-vs-concentration unit cross-check; that every dose-history call
 #' naming a compartment (`tad(cmt)`, `podo(cmt)`, `tafd(cmt)`, ...) names one
 #' the model is dosed into (its `dosing` metadata, or else `depot` and/or
-#' `central`); and that no model() statement is a bare expression (an
-#' operator-led continuation line that R parses as a statement of its own).
+#' `central`); that every ODE state can leave zero, through an input term in
+#' its `d/dt()`, a non-zero initial condition, or a dose; and that no model()
+#' statement is a bare expression (an operator-led continuation line that R
+#' parses as a statement of its own).
 #'
 #' When any issue of severity `"error"` or `"warning"` is found, a `warning()`
 #' is emitted whose message directs the user to call this function for the
@@ -81,7 +83,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkHandWrittenInverseLogit(ui, conv),
     .checkCentralConcentrationName(ui, conv),
     .checkBareStatements(ui, conv),
-    .checkDoseTimingCompartments(ui, conv)
+    .checkDoseTimingCompartments(ui, conv),
+    .checkDeadStates(ui, conv)
   )
   issues <- do.call(rbind, checks)
   if (is.null(issues) || nrow(issues) == 0) {
@@ -2889,6 +2892,232 @@ checkModelConventions <- function(model, verbose = TRUE) {
           "\", ...)`, first if it is the usual route); buildModelDb() records ",
           "it and the solve probe doses the first entry. Otherwise the ",
           "function is NA for every subject and any derivative using it is NaN."
+        )
+      )
+    )
+  }
+  issues
+}
+
+# A state that can never leave zero ----------------------------------------
+#
+# A state with no input term in its d/dt(), no initial condition and no dose
+# stays at 0 in every simulation. Usually it is a dose route missing from the
+# `dosing` metadata, such as a second depot or a stomach. Such a state reads no
+# dose history, so .checkDoseTimingCompartments() cannot see it.
+
+# The signed additive terms of an expression, the decomposition rxode2's
+# internal .collectAddTerms() makes, as a list of expressions. Signs are
+# dropped: only which terms exist matters here.
+.additiveTerms <- function(e) {
+  if (is.call(e) && is.name(e[[1]])) {
+    op <- as.character(e[[1]])
+    if (op %in% c("+", "-") && length(e) == 3L) {
+      return(c(.additiveTerms(e[[2]]), .additiveTerms(e[[3]])))
+    }
+    if (op %in% c("+", "-", "(") && length(e) == 2L) {
+      return(.additiveTerms(e[[2]]))
+    }
+  }
+  list(e)
+}
+
+# Functions that are 0 at 0, so `f(x)` vanishes with `x`. `exp()`, `cos()` and
+# the like are not, and leave the term an input.
+.zeroAtZeroFunctions <- c(
+  "sqrt",
+  "abs",
+  "sin",
+  "tan",
+  "sinh",
+  "tanh",
+  "asin",
+  "atan",
+  "asinh",
+  "atanh",
+  "log1p",
+  "expm1"
+)
+
+# A number written literally, with or without a leading minus (`-1` parses as
+# a call); NA for anything else.
+.signedLiteral <- function(x) {
+  if (is.numeric(x) && length(x) == 1L) {
+    return(as.numeric(x))
+  }
+  if (is.call(x) && identical(x[[1]], as.name("-")) && length(x) == 2L && is.numeric(x[[2]]) && length(x[[2]]) == 1L) {
+    return(-as.numeric(x[[2]]))
+  }
+  NA_real_
+}
+
+# How many levels of algebraic assignment .hasStateFactor() follows from a
+# variable to its definition (`cc2 <- ka * aux; d/dt(aux) <- -cc2`).
+.aliasDepth <- 5L
+
+# Does the term vanish whenever `state` is 0, because `state` is one of its
+# multiplicative factors (or the numerator's), the base of a power, or the
+# argument of a function that is 0 at 0? `-ka * depot`,
+# `vmax * depot / (km + depot)`, `depot^2` and `sqrt(depot)` do; `ka * other`,
+# `k * (other - depot)` and `exp(depot)` do not. A variable assigned once is
+# followed to its definition through `aliases`, a named list of expressions.
+.hasStateFactor <- function(term, state, aliases = list(), depth = 0L) {
+  if (is.name(term)) {
+    nm <- as.character(term)
+    if (identical(nm, state)) {
+      return(TRUE)
+    }
+    if (depth < .aliasDepth && nm %in% names(aliases)) {
+      return(.hasStateFactor(aliases[[nm]], state, aliases, depth + 1L))
+    }
+    return(FALSE)
+  }
+  if (!is.call(term) || !is.name(term[[1]])) {
+    return(FALSE)
+  }
+  op <- as.character(term[[1]])
+  if (op == "*" && length(term) == 3L) {
+    return(.hasStateFactor(term[[2]], state, aliases, depth) || .hasStateFactor(term[[3]], state, aliases, depth))
+  }
+  if (op == "/" && length(term) == 3L) {
+    return(.hasStateFactor(term[[2]], state, aliases, depth))
+  }
+  if (op %in% c("-", "(") && length(term) == 2L) {
+    return(.hasStateFactor(term[[2]], state, aliases, depth))
+  }
+  if (op == "^" && length(term) == 3L) {
+    # 0^p is 0 only for p > 0; a literal exponent at or below 0 is not.
+    expo <- .signedLiteral(term[[3]])
+    return(!(!is.na(expo) && expo <= 0) && .hasStateFactor(term[[2]], state, aliases, depth))
+  }
+  if (op %in% .zeroAtZeroFunctions && length(term) == 2L) {
+    return(.hasStateFactor(term[[2]], state, aliases, depth))
+  }
+  FALSE
+}
+
+# A term that can be non-zero while `state` is 0: an inflow, a production or
+# an exogenous input. A literal 0 is not one.
+.isInputTerm <- function(term, state, aliases = list()) {
+  !.hasStateFactor(term, state, aliases) && !(is.numeric(term) && length(term) == 1L && term == 0)
+}
+
+# `d/dt(state)`, which parses as `/`(d, dt(state)).
+.isDdtLhs <- function(lhs) {
+  is.call(lhs) &&
+    identical(lhs[[1]], as.name("/")) &&
+    length(lhs) == 3L &&
+    identical(lhs[[2]], as.name("d")) &&
+    is.call(lhs[[3]]) &&
+    identical(lhs[[3]][[1]], as.name("dt")) &&
+    is.name(lhs[[3]][[2]])
+}
+
+# `state(0)`, the left-hand side of an initial condition.
+.isInitialLhs <- function(lhs) {
+  is.call(lhs) && is.name(lhs[[1]]) && length(lhs) == 2L && is.numeric(lhs[[2]]) && identical(as.numeric(lhs[[2]]), 0)
+}
+
+# From a statement list, at any depth (an ODE may be defined in each branch of
+# an if/else):
+# - rhs: the right-hand sides of every `d/dt(state)` assignment, keyed by state;
+# - init: the states given a non-zero initial condition `state(0) <- ...`;
+#   `state(0) <- 0` changes nothing and is not counted;
+# - alg / algCount: algebraic assignments `x <- ...` (or `=` or `~`) and how
+#   many times each name is assigned.
+.odeDefinitions <- function(e, acc = list(rhs = list(), init = character(0), alg = list(), algCount = integer(0))) {
+  if (!is.call(e)) {
+    return(acc)
+  }
+  isAssign <- is.name(e[[1]]) && as.character(e[[1]]) %in% c("<-", "=", "~") && length(e) == 3L
+  if (isAssign && is.name(e[[2]])) {
+    nm <- as.character(e[[2]])
+    acc$alg[[nm]] <- e[[3]]
+    acc$algCount[[nm]] <- if (is.na(acc$algCount[nm])) 1L else acc$algCount[[nm]] + 1L
+    return(acc)
+  }
+  if (isAssign && .isDdtLhs(e[[2]])) {
+    st <- as.character(e[[2]][[3]][[2]])
+    acc$rhs[[st]] <- c(acc$rhs[[st]], list(e[[3]]))
+    return(acc)
+  }
+  if (isAssign && .isInitialLhs(e[[2]])) {
+    if (!identical(.signedLiteral(e[[3]]), 0)) {
+      acc$init <- c(acc$init, as.character(e[[2]][[1]]))
+    }
+    return(acc)
+  }
+  # `e[[i]]` is tested in place: bound to a variable, an empty argument such
+  # as the one in `x[, 1]` errors when the variable is read.
+  for (i in seq_along(e)[-1L]) {
+    if (is.call(e[[i]])) acc <- .odeDefinitions(e[[i]], acc)
+  }
+  acc
+}
+
+# Every ODE state needs a way to become non-zero: an input term in its
+# d/dt(), an initial condition, or a dose. One with none of the three stays
+# at 0 in every simulation.
+.checkDeadStates <- function(ui, conv) {
+  issues <- .emptyIssues()
+  # The equations rxode2 compiles, not ui$lstExpr: rxode2's parser joins a
+  # continuation line that starts with an operator to the equation above it,
+  # but R ends the statement at the line break, so ui$lstExpr can hold a
+  # truncated d/dt(). The text is parsed inside braces because rxode2 writes
+  # `}` and `else` on separate lines, which R accepts only within a block.
+  norm <- tryCatch(rxode2::rxModelVars(ui)$model[["normModel"]], error = function(e) e)
+  if (!inherits(norm, "error") && (!is.character(norm) || length(norm) != 1L || !nzchar(trimws(norm)))) {
+    norm <- simpleError("rxode2 returned no compiled equations")
+  }
+  exprs <- if (inherits(norm, "error")) {
+    norm
+  } else {
+    tryCatch(as.list(parse(text = paste0("{\n", norm, "\n}"))[[1]])[-1], error = function(e) e)
+  }
+  if (inherits(exprs, "error")) {
+    return(.issue(
+      "dead_state",
+      "error",
+      NA_character_,
+      paste0("The model could not be read to check for dead states: ", conditionMessage(exprs)),
+      "Check that the model parses with rxode2::rxode2()."
+    ))
+  }
+  defs <- list(rhs = list(), init = character(0), alg = list(), algCount = integer(0))
+  for (e in exprs) {
+    defs <- .odeDefinitions(e, defs)
+  }
+  # Only a variable assigned exactly once has a definition to follow.
+  aliases <- defs$alg[names(defs$algCount)[defs$algCount == 1L]]
+  dosing <- trimws(unlist(strsplit(as.character(.modelDosingCmts(ui)), ",", fixed = TRUE)))
+  for (st in names(defs$rhs)) {
+    if (st %in% dosing || st %in% defs$init) {
+      next
+    }
+    terms <- unlist(lapply(defs$rhs[[st]], .additiveTerms), recursive = FALSE)
+    if (any(vapply(terms, .isInputTerm, logical(1), state = st, aliases = aliases))) {
+      next
+    }
+    issues <- rbind(
+      issues,
+      .issue(
+        "dead_state",
+        "warning",
+        st,
+        sprintf(
+          paste(
+            "State '%s' can never leave 0: every term of its d/dt() vanishes when it is 0,",
+            "it has no non-zero initial condition, and it is not a dosing compartment."
+          ),
+          st
+        ),
+        paste0(
+          "If the paper doses into '",
+          st,
+          "', add it to the `dosing` metadata. If it starts non-zero, give it ",
+          "an initial condition `",
+          st,
+          "(0) <- ...`. Otherwise it is unused and can be removed."
         )
       )
     )

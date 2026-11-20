@@ -3178,3 +3178,101 @@ test_that("the expression walkers handle an empty argument such as x[, 1]", {
   expect_identical(nlmixr2lib:::.stripParens(quote((x[, 1]))), quote(x[, 1]))
   expect_identical(nlmixr2lib:::.stripParens(quote(f((a), x[, 1]))), quote(f(a, x[, 1])))
 })
+
+# Dead states ---------------------------------------------------------------
+#
+# An ODE state with no input term, no initial condition and no `dosing` entry
+# stays at 0 in every simulation. The fixture models are in
+# helper-deadStateModels.R.
+
+.dsCategory <- function(model) {
+  res <- suppressWarnings(checkModelConventions(model, verbose = FALSE))
+  res[res$category == "dead_state", , drop = FALSE]
+}
+
+test_that(".additiveTerms and .hasStateFactor split and classify d/dt() terms", {
+  terms <- nlmixr2lib:::.additiveTerms(quote(-ka * depot + kin * (1 + e) - (k * (a - depot))))
+  expect_identical(terms, list(quote(-ka * depot), quote(kin * (1 + e)), quote(k * (a - depot))))
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(-ka * depot), "depot"))
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(vmax * depot / (km + depot)), "depot"))
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(depot), "depot"))
+  # The state inside a difference is not a factor: other - depot can be
+  # non-zero when depot is 0.
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(k * (other - depot)), "depot"))
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(km / depot), "depot"))
+  expect_false(nlmixr2lib:::.isInputTerm(quote(-ka * depot), "depot"))
+  expect_false(nlmixr2lib:::.isInputTerm(0, "depot"))
+  expect_true(nlmixr2lib:::.isInputTerm(quote(ka * other), "depot"))
+})
+
+test_that("an undeclared second depot of a split dose is a dead state", {
+  hit <- .dsCategory(.dsSplitDoseModel)
+  expect_identical(hit$name, "depot2")
+  expect_identical(hit$severity, "warning")
+  expect_identical(
+    hit$message,
+    paste0(
+      "State 'depot2' can never leave 0: every term of its d/dt() vanishes ",
+      "when it is 0, it has no non-zero initial condition, and it is not a dosing compartment."
+    )
+  )
+  expect_identical(nrow(.dsCategory(.dsSplitDoseDeclaredModel)), 0L)
+})
+
+test_that("an initial condition, an inflow or a production term keeps a state alive", {
+  expect_identical(nrow(.dsCategory(.dsAliveModel)), 0L)
+})
+
+test_that("an operator-led continuation line counts, as rxode2 compiles it", {
+  # R parses `+ q / vc * central` as its own statement; rxode2 joins it to
+  # d/dt(peripheral1), which is then fed.
+  expect_identical(nrow(.dsCategory(.dsContinuationModel)), 0L)
+})
+
+test_that("a constant state that is never dosed is dead", {
+  hit <- .dsCategory(.dsConstantZeroModel)
+  expect_identical(hit$name, "c2")
+})
+
+test_that("powers, zero-at-zero functions, aliases and a zero start do not feed a state", {
+  hit <- .dsCategory(.dsFactorFormsModel)
+  expect_identical(sort(hit$name), c("aux_alias", "aux_pow", "aux_sqrt", "aux_zero"))
+})
+
+test_that(".hasStateFactor() reads powers, zero-at-zero functions and aliases", {
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(-ka * aux^2), "aux"))
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(aux^gam), "aux"))
+  # 0^0 is 1 and 0^-1 is infinite: not factors.
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(aux^0), "aux"))
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(aux^-1), "aux"))
+  for (fn in c("sqrt", "abs", "sin", "tan", "sinh", "tanh", "asin", "atan", "asinh", "atanh", "log1p", "expm1")) {
+    expect_true(nlmixr2lib:::.hasStateFactor(call(fn, quote(k * aux)), "aux"), info = fn)
+  }
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(exp(aux)), "aux"))
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(cos(aux)), "aux"))
+  aliases <- list(cc2 = quote(ka * aux), cc3 = quote(2 * cc2), other = quote(ka * b))
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(-cc2), "aux", aliases))
+  expect_true(nlmixr2lib:::.hasStateFactor(quote(cc3), "aux", aliases))
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(other), "aux", aliases))
+  # Without the alias table the variable is an input.
+  expect_false(nlmixr2lib:::.hasStateFactor(quote(-cc2), "aux"))
+})
+
+test_that("a model with no compiled equations is reported by the dead-state check", {
+  ui <- new.env()
+  local_mocked_bindings(rxModelVars = function(...) list(model = c(normModel = "")), .package = "rxode2")
+  hit <- nlmixr2lib:::.checkDeadStates(ui, NULL)
+  expect_identical(hit$severity, "error")
+  expect_identical(
+    hit$message,
+    "The model could not be read to check for dead states: rxode2 returned no compiled equations"
+  )
+})
+
+test_that("a model that cannot be read is reported by the dead-state check", {
+  hit <- nlmixr2lib:::.checkDeadStates(new.env(), NULL)
+  expect_identical(nrow(hit), 1L)
+  expect_identical(hit$category, "dead_state")
+  expect_identical(hit$severity, "error")
+  expect_true(startsWith(hit$message, "The model could not be read to check for dead states: "))
+})
