@@ -1,0 +1,688 @@
+---
+title: "Belantamab mafodotin M-protein and ocular-grade simulation framework (Carreno 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Belantamab mafodotin M-protein and ocular-grade simulation framework (Carreno 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Carreno_2026_belantamab_kva"))$reference`
+* Article: <https://doi.org/10.1002/psp4.70276> (open access)
+* Supplement: Methods S1, Tables S1-S12, Figures S1-S6; File S1 (example
+  simulation dataset) and File S2 (the authors' mrgsolve simulation code).
+
+Carreno 2026 builds a simulation framework for belantamab mafodotin, an
+anti-BCMA antibody-drug conjugate, given with bortezomib + dexamethasone (BVd),
+pomalidomide + dexamethasone (BPd) or lenalidomide + dexamethasone (BRd) in
+relapsed/refractory multiple myeloma. The framework (Figure 1A) joins three
+separately estimated models, all driven by the belantamab mafodotin
+concentration from the Papathanasiou 2025 population PK model:
+
+1. a serum **M-protein tumor growth inhibition model** fitted to BVd data
+   (DREAMM-6 Arm B and DREAMM-7), packaged as
+   `Carreno_2026_belantamab_mprotein_bvd`;
+2. the same structure re-estimated on BPd data (DREAMM-8), packaged as
+   `Carreno_2026_belantamab_mprotein_bpd`;
+3. a **continuous-time Markov model (CTMM)** of ophthalmic exam finding (OEF)
+   grades on the Keratopathy and Visual Acuity (KVA) scale, fitted to
+   monotherapy and combination data from five studies, packaged as
+   `Carreno_2026_belantamab_kva`.
+
+Each model file carries its own copy of the PK driver, so each can be solved on
+its own. The framework's dose holds, dose reductions, schedule extensions and
+dropouts are simulation rules, not model equations; they are reproduced below
+as an R harness around the packaged models.
+
+```{r models}
+mod_bvd <- readModelDb("Carreno_2026_belantamab_mprotein_bvd")
+mod_bpd <- readModelDb("Carreno_2026_belantamab_mprotein_bpd")
+mod_kva <- readModelDb("Carreno_2026_belantamab_kva")
+```
+
+# Population
+
+| | BVd M-protein model | BPd M-protein model | KVA model |
+|---|---|---|---|
+| Studies | DREAMM-6 Arm B, DREAMM-7 | DREAMM-8 | DREAMM-2, -3, -6, -7, -8 |
+| Patients (observations) | 260 (4829) | 103 (1173) | 959 (15,374) |
+| Female | 45% | 34% | 42% |
+| Age, median (range), years | 65 (32-86) | 67 (40-82) | 66 (32-89) |
+| Weight, median (range), kg | 74.7 (43.7-133) | 77.5 (46.0-117) | 75.2 (37.0-170) |
+| Albumin, median, g/L | 40.0 | 41.0 | 40.0 |
+| sBCMA, median (range), ug/L | 40.2 (2.20-729) | 40.0 (0.975-741) | 49.7 (0.975-2026) |
+| IgG, median (range), g/L | 20.3 (1.05-81.5) | 18.0 (0.800-96.3) | 13.6 (0.350-106) |
+| M-protein, median (range), g/L | 19.0 (5.00-85.0) | 17.5 (5.30-83.7) | not reported |
+
+Source: Carreno 2026 Table 1 and Table S2. M-protein models included patients
+with baseline serum M-protein >= 5 g/L and at least one post-baseline value.
+The KVA model imputed grade 0 when no OEF was present; observed grades were
+0 (17%), 1 (15%), 2 (36%), 3 (30%) and 4 (2%), with grades 3 and 4 combined in
+the model.
+
+# Model structure
+
+**PK driver (all three files).** Two-compartment model with sigmoid
+time-varying clearance,
+CL(t) = CL0 * exp(Imax * t^gamma / (TI50^gamma + t^gamma)), and the
+Papathanasiou 2025 covariates (weight, albumin, sBCMA, IgG, BMI, race,
+combination therapy). The values are those printed in File S2.
+
+**M-protein (BVd and BPd).** From File S2 `$DES`:
+
+dM/dt = KGR * (1 - M/150) * M/(M + A50) * M - KDEATH * (1 - exp(-S * C)) * R * M,
+
+with R = exp(-LAM * t) (resistance), C the central belantamab mafodotin
+concentration (ug/mL) and M(0) the baseline M-protein floored at 5 g/L. In the
+BVd model log KDEATH is shifted by -0.0884 * (log(IgG) - 2.74).
+
+**KVA CTMM.** Four states (grade 0, 1, 2, 3/4) holding occupancy probabilities.
+With Cn = C / 3.357 ug/mL:
+
+* upward rates 0->1, 0->2, 2->3/4: GNu * Cn^GMu; 1->2 adds
+  GNu12 * Cn^GMu12 in DREAMM-6;
+* downward rates i->j: Kij * GNd / (1 + GNd * Cn^GMd), with K20 = K21.
+
+Vd, Rd and Pd modify K10, K21, GNu, GMu and GNd (Table S6, Table S7), and
+baseline sBCMA scales GNu.
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| PK: CL0, V1, Q, V2 | 0.925475 L/day, 4.21296 L, 0.710541 L/day, 6.6294 L | File S2 THETA1-THETA4 |
+| PK: Imax, TI50, gamma | -0.402758, 66.3585 day, 2.86905 | File S2 THETA5-THETA7 |
+| PK covariate exponents/factors | see model files | File S2 THETA8-THETA15, THETA116-THETA121 |
+| PK IIV and residual error | Papathanasiou 2025 Table 2 | not reported in Carreno 2026; carried from `Papathanasiou_2025_belantamab` |
+| BVd: log KGR, log KDEATH, log LAM | -4.7, -3.06, -5.12 | Table S4; File S2 THETA63-THETA65 |
+| BVd: log S (E50), A50 | 0.398 mL/ug (log), 1.07 g/L | Table S4; File S2 THETA69, THETA68 |
+| BVd: IgG on log KDEATH | -0.0884 per log unit, centred on 2.74 | Table S4; File S2 THETA71 |
+| BPd: log KGR, log KDEATH, log LAM | -5.18, -3.23, -5.25 | Table S4 |
+| BPd: log S (E50), A50 | 0.432 (log), 0.996 g/L | Table S4 |
+| Carrying capacity | 150 g/L | File S2 `$DES` |
+| M-protein IIV (BVd; BPd) | KGR/KDEATH/LAM block; E50, A50 0.122 held constant | Table S4 |
+| M-protein residual error (BVd; BPd) | proportional 0.333; 0.414, additive 0.0001 g/L | Table S4; File S2 THETA66-THETA67 |
+| KVA: K10, K21, K32 | 0.02806, 0.009361, 0.03338 1/day | Table S6, Table S7; File S2 THETA18, THETA20, THETA22 |
+| KVA: K01, K12, K23, K02 | 0 | Table S6; File S2 THETA17, THETA19, THETA21, THETA23 |
+| KVA: GNu, GMu, GNd, GMd | 0.02145, 0.1549, 3.908, 0.6998 | Table S6, Table S7; File S2 THETA24-THETA27 |
+| KVA: normalising concentration | 3.357 ug/mL | File S2 `medDRIVR` |
+| KVA: sBCMA on GNu | -0.2003 | Table S6; File S2 THETA28 |
+| KVA: combination on GNu | 1.354 | Table S6 D678_GNu; File S2 THETA32 |
+| KVA: Vd/Pd on K10, GMu, GNd | 0.2517, 1.325, 1.022 | Table S6; File S2 THETA36, THETA40, THETA41 |
+| KVA: Rd on K21, GMu | 0.6236, 3.376 | Table S6; File S2 THETA44, THETA47 |
+| KVA: DREAMM-6 GNu12, GMu12 | 0.07795, 0.3686 | Table S6; File S2 THETA50, THETA51 |
+| KVA IIV: K21, K32, GNu | 1.01, 1.08, 0.584 | Table S6 |
+| Dropout for other reasons | log-normal, DREAMM-7 mean 8.209 / SD 2.656; DREAMM-8 9.296 / 3.643 (log days) | Methods S1, Dropout model |
+
+# Typical-patient predictions
+
+The typical patient below has the Table 1 BVd medians (75 kg, albumin 40 g/L,
+sBCMA 40 ug/L, IgG 20 g/L, baseline M-protein 19 g/L, BMI 27 kg/m^2). Doses
+are 30-minute infusions in mg (mg/kg x weight), as in File S1.
+
+```{r typical-cov}
+typ <- data.frame(
+  WT = 75, ALB = 40, SBCMA = 40, IGG = 20, BMI = 27, MCPROT = 19,
+  RACE_ASIAN = 0, RACE_BLACK = 0, COMBO_BELAMAF = 1,
+  COMBO_BOR_DEX = 0, COMBO_LEN_DEX = 0, COMBO_POM_DEX = 0, STUDY_DREAMM6 = 0
+)
+dose_events <- function(times, mgkg, wt) {
+  data.frame(time = times, evid = 1L, amt = mgkg * wt, dur = 0.5 / 24, cmt = "central")
+}
+```
+
+## M-protein under protocol dosing without modification
+
+DREAMM-7 protocol dosing is 2.5 mg/kg Q3W; DREAMM-8 is 2.5 mg/kg in Cycle 1 and
+1.9 mg/kg Q4W thereafter (Table S1). Without dose holds the typical patient's
+M-protein falls by well over 90% (VGPR) in both regimens.
+
+```{r typical-mprotein}
+t_obs <- seq(0, 2 * 365, by = 3)
+ev_bvd <- bind_rows(
+  dose_events(seq(0, by = 21, length.out = 35), 2.5, 75),
+  data.frame(time = t_obs, evid = 0L, amt = 0, dur = 0, cmt = "mprotein")
+) |>
+  mutate(id = 1L) |>
+  cbind(typ)
+ev_bpd <- bind_rows(
+  dose_events(0, 2.5, 75),
+  dose_events(seq(28, by = 28, length.out = 25), 1.9, 75),
+  data.frame(time = t_obs, evid = 0L, amt = 0, dur = 0, cmt = "mprotein")
+) |>
+  mutate(id = 1L) |>
+  cbind(typ)
+
+typ_mp <- bind_rows(
+  as.data.frame(rxSolve(zeroRe(mod_bvd), ev_bvd, returnType = "data.frame")) |>
+    mutate(model = "BVd model, 2.5 mg/kg Q3W"),
+  as.data.frame(rxSolve(zeroRe(mod_bpd), ev_bpd, returnType = "data.frame")) |>
+    mutate(model = "BPd model, 2.5 then 1.9 mg/kg Q4W")
+)
+
+ggplot(typ_mp, aes(time / 30.4375, mprotein, colour = model)) +
+  geom_line() +
+  scale_y_log10() +
+  geom_hline(yintercept = 0.1 * 19, linetype = 2) +
+  labs(x = "Time (months)", y = "Serum M-protein (g/L)", colour = NULL,
+       caption = "Dashed line: 90% reduction from baseline (VGPR threshold).") +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+```{r typical-mprotein-check}
+red_12m <- typ_mp |>
+  filter(time == 366) |>
+  mutate(reduction = 1 - mprotein / 19)
+red_12m[, c("model", "mprotein", "reduction")]
+stopifnot(all(red_12m$reduction > 0.9))
+```
+
+## KVA grade probabilities by backbone
+
+Carreno 2026 Table S7 lists how the comedication factors move each CTMM
+parameter. The chunk below checks the packaged model against that table at
+`SBCMA = 50` (the reference), then shows the typical grade-probability time
+course under uninterrupted 2.5 mg/kg Q3W dosing.
+
+```{r table-s7}
+backbones <- tibble::tribble(
+  ~backbone,     ~COMBO_BELAMAF, ~COMBO_BOR_DEX, ~COMBO_LEN_DEX, ~COMBO_POM_DEX,
+  "Monotherapy", 0,              0,              0,              0,
+  "Vd",          1,              1,              0,              0,
+  "Rd",          1,              0,              1,              0,
+  "Pd",          1,              0,              0,              1
+)
+ev_s7 <- backbones |>
+  mutate(id = row_number(), time = 1, evid = 0L, amt = 0, cmt = "central", dvid = 1L,
+         WT = 75, ALB = 40, SBCMA = 50, IGG = 15, BMI = 27,
+         RACE_ASIAN = 0, RACE_BLACK = 0, STUDY_DREAMM6 = 0)
+s7 <- rxSolve(mod_kva, ev_s7, omega = NA, sigma = NA, returnType = "data.frame",
+              keep = "backbone")
+s7 <- s7 |>
+  transmute(backbone, K10 = lambda10, K21 = lambda21, K32 = lambda32,
+            GNu = gnu, GMu = gmu_i, GNd = gnd)
+paper_s7 <- tibble::tribble(
+  ~backbone,     ~K10,     ~K21,     ~K32,    ~GNu,    ~GMu,   ~GNd,
+  "Monotherapy", 0.02806,  0.009361, 0.03338, 0.02145, 0.1549, 3.908,
+  "Vd",          0.007061, 0.009361, 0.03338, 0.02905, 0.2052, 3.994,
+  "Rd",          0.02806,  0.005837, 0.03338, 0.02905, 0.5229, 3.908,
+  "Pd",          0.007061, 0.009361, 0.03338, 0.02905, 0.2052, 3.994
+)
+knitr::kable(s7, digits = 5, caption = "Packaged model, reference sBCMA (compare Carreno 2026 Table S7).")
+rel_err <- abs(as.matrix(s7[, -1]) / as.matrix(paper_s7[, -1]) - 1)
+stopifnot(max(rel_err) < 1e-3)
+```
+
+The Table S7 values agree to within rounding of the printed four significant
+figures.
+
+```{r typical-kva}
+ev_kva <- bind_rows(
+  dose_events(seq(0, by = 21, length.out = 18), 2.5, 75),
+  data.frame(time = seq(0, 365, by = 1), evid = 0L, amt = 0, dur = 0,
+             cmt = "central", dvid = 1L)
+)
+kva_typ <- bind_rows(lapply(seq_len(nrow(backbones)), function(i) {
+  ev <- ev_kva |> mutate(id = 1L) |> cbind(typ[, setdiff(names(typ), names(backbones))]) |>
+    cbind(backbones[i, -1])
+  rxSolve(zeroRe(mod_kva), ev, returnType = "data.frame") |>
+    mutate(backbone = backbones$backbone[i])
+}))
+prob_sum <- with(kva_typ, s_kva0 + s_kva1 + s_kva2 + s_kva34)
+stopifnot(max(abs(prob_sum - 1)) < 1e-6)
+
+kva_typ |>
+  select(time, backbone, `Grade 0` = p_kva0, `Grade 1` = p_kva1,
+         `Grade 2` = p_kva2, `Grade 3/4` = p_kva34) |>
+  pivot_longer(starts_with("Grade"), names_to = "grade", values_to = "p") |>
+  ggplot(aes(time / 30.4375, p, fill = grade)) +
+  geom_area() +
+  facet_wrap(~backbone) +
+  labs(x = "Time (months)", y = "Probability", fill = "KVA grade",
+       caption = "Typical patient, 2.5 mg/kg Q3W without dose holds.") +
+  theme_bw()
+```
+
+The four occupancy probabilities sum to 1 throughout (checked above). Without
+dose holds, grade 3/4 becomes the most likely state within a few months.
+
+## Transition rates against concentration
+
+Figure 2 of Carreno 2026 shows that the probability of moving to a higher grade
+rises with concentration, and the probability of moving down falls. The chunk
+below plots the model's instantaneous rates for a typical BVd patient.
+
+```{r rates-conc}
+conc <- c(0, exp(seq(log(0.01), log(40), length.out = 200)))
+pars <- as.list(rxode2::rxode2(mod_kva)$theta)
+cn <- conc / pars$cref_kva
+gnu <- exp(pars$lgnu) * pars$e_combo_gnu * (40 / 50)^pars$e_sbcma_gnu
+gmu <- pars$gmu * pars$e_bor_gmu
+gnd <- exp(pars$lgnd) * pars$e_bor_gnd
+rates <- tibble::tibble(
+  conc = conc,
+  `up (0->1, 1->2, 2->3/4)` = gnu * cn^gmu,
+  `down 1->0` = exp(pars$llambda10) * pars$e_bor_lambda10 * gnd / (1 + gnd * cn^pars$gmd),
+  `down 2->1` = exp(pars$llambda21) * gnd / (1 + gnd * cn^pars$gmd),
+  `down 3/4->2` = exp(pars$llambda32) * gnd / (1 + gnd * cn^pars$gmd)
+)
+rates |>
+  filter(conc > 0) |>
+  pivot_longer(-conc, names_to = "transition", values_to = "rate") |>
+  ggplot(aes(conc, rate, colour = transition)) +
+  geom_line() +
+  scale_x_log10() + scale_y_log10() +
+  labs(x = "Belantamab mafodotin concentration (ug/mL)", y = "Transition rate (1/day)",
+       colour = NULL) +
+  theme_bw()
+```
+
+# Framework simulation
+
+## Harness
+
+The harness follows File S2. Each patient is assessed once per cycle (21 days
+for BVd, 28 days for BPd). At every assessment the KVA grade is drawn from the
+CTMM probabilities and the Markov states are reset to that grade (the code's
+`EVID = 3` reset). A dose is held while the grade is >= 2; once a scheduled dose
+has been missed, dosing resumes at grade <= 1 at the reduced level and
+interval. Belantamab mafodotin amounts in the PK compartments are carried
+across cycles with replacement events (`evid = 5`), which reproduces an
+uninterrupted solve exactly.
+
+The M-protein model does not affect dosing, so it is solved afterwards on each
+patient's realised dosing history. Progression is defined per IMWG as an
+increase of > 25% over the lowest M-protein to date with an absolute increase
+of > 5 g/L. Dropout for other reasons is drawn from the Methods S1 log-normal
+models. Outcomes are counted up to the first of progression, other dropout or
+50 months.
+
+Virtual cohorts of 200 patients take covariates from log-normal distributions
+matched to the Table 1 medians and ranges, and random effects drawn from the
+packaged IIV. All random numbers come from base R with a fixed seed, so the
+cohort is the same on every machine.
+
+```{r harness}
+rlnorm_range <- function(n, med, lo, hi) {
+  pmin(pmax(exp(rnorm(n, log(med), (log(hi) - log(lo)) / 6)), lo), hi)
+}
+
+make_cohort <- function(n, tab) {
+  data.frame(
+    id = seq_len(n),
+    WT = rlnorm_range(n, tab$wt[1], tab$wt[2], tab$wt[3]),
+    ALB = rlnorm_range(n, tab$alb[1], tab$alb[2], tab$alb[3]),
+    SBCMA = rlnorm_range(n, tab$sbcma[1], tab$sbcma[2], tab$sbcma[3]),
+    IGG = rlnorm_range(n, tab$igg[1], tab$igg[2], tab$igg[3]),
+    MCPROT = rlnorm_range(n, tab$mprot[1], tab$mprot[2], tab$mprot[3]),
+    BMI = 27, RACE_ASIAN = 0, RACE_BLACK = 0, COMBO_BELAMAF = 1,
+    COMBO_BOR_DEX = tab$bor, COMBO_LEN_DEX = 0, COMBO_POM_DEX = tab$pom,
+    STUDY_DREAMM6 = 0
+  )
+}
+
+draw_eta <- function(mod, n) {
+  om <- rxode2::rxode2(mod)$omega
+  e <- matrix(rnorm(n * nrow(om)), n) %*% chol(om)
+  colnames(e) <- rownames(om)
+  as.data.frame(e)
+}
+
+kva_cols <- c("id", "WT", "ALB", "SBCMA", "IGG", "BMI", "RACE_ASIAN", "RACE_BLACK",
+              "COMBO_BELAMAF", "COMBO_BOR_DEX", "COMBO_LEN_DEX", "COMBO_POM_DEX",
+              "STUDY_DREAMM6")
+
+# One cycle for every patient: replace the PK amounts carried from the previous
+# cycle, reset the grade probabilities to the grade just drawn, give the
+# cycle's dose, and observe at the start of the next cycle.
+solve_cycle <- function(state, tc, len, amt, eta) {
+  base <- cbind(state[, kva_cols], eta)
+  rep_rows <- function(cmt, val) {
+    mutate(base, time = tc, evid = 5L, cmt = cmt, amt = val, dur = 0, dvid = NA_integer_)
+  }
+  g <- state$grade
+  ev <- bind_rows(
+    rep_rows("central", state$central),
+    rep_rows("peripheral1", state$peripheral1),
+    rep_rows("s_kva0", as.numeric(g == 0)),
+    rep_rows("s_kva1", as.numeric(g == 1)),
+    rep_rows("s_kva2", as.numeric(g == 2)),
+    rep_rows("s_kva34", as.numeric(g == 3)),
+    mutate(base, time = tc, evid = 1L, cmt = "central", amt = amt, dur = 0.5 / 24,
+           dvid = NA_integer_)[amt > 0, ],
+    mutate(base, time = tc + len, evid = 0L, cmt = "central", amt = 0, dur = 0, dvid = 1L)
+  ) |>
+    arrange(id, time, desc(evid == 5L))
+  rxSolve(mod_kva, ev, omega = NA, sigma = NA, returnType = "data.frame")
+}
+
+run_kva_harness <- function(cohort, eta, sched, n_cycles) {
+  n <- nrow(cohort)
+  state <- cohort
+  state$central <- 0
+  state$peripheral1 <- 0
+  state$grade <- 0L
+  tdose <- rep(-Inf, n)
+  reduced <- rep(FALSE, n)
+  grades <- matrix(NA_integer_, n, n_cycles)
+  doses <- matrix(0, n, n_cycles)
+  for (cyc in seq_len(n_cycles)) {
+    tc <- (cyc - 1) * sched$len
+    hold <- state$grade >= sched$hold_grade
+    interval <- ifelse(reduced, sched$int2, sched$int1)
+    due <- (tc - tdose) >= interval - 1e-6
+    give <- due & !hold
+    level <- ifelse(reduced, sched$red_level, sched$level(cyc))
+    amt <- ifelse(give, level * cohort$WT, 0)
+    reduced <- reduced | (due & hold)
+    tdose[give] <- tc
+    doses[, cyc] <- amt
+    grades[, cyc] <- state$grade
+    s <- solve_cycle(state, tc, sched$len, amt, eta)
+    p <- as.matrix(s[, c("p_kva0", "p_kva1", "p_kva2", "p_kva34")])
+    u <- runif(n)
+    state$grade <- pmin(as.integer(rowSums(u > t(apply(p, 1, cumsum)))), 3L)
+    state$central <- s$central
+    state$peripheral1 <- s$peripheral1
+  }
+  list(grades = grades, doses = doses)
+}
+
+solve_mprotein <- function(mod, cohort, eta, doses, len) {
+  n_cyc <- ncol(doses)
+  tc <- (seq_len(n_cyc) - 1) * len
+  cov <- cbind(cohort, eta)
+  dose_ev <- bind_rows(lapply(seq_len(n_cyc), function(cyc) {
+    keep <- doses[, cyc] > 0
+    if (!any(keep)) return(NULL)
+    mutate(cov[keep, , drop = FALSE], time = tc[cyc], amt = doses[keep, cyc])
+  })) |>
+    mutate(evid = 1L, cmt = "central", dur = 0.5 / 24)
+  obs_ev <- cov[rep(seq_len(nrow(cov)), each = n_cyc), ] |>
+    mutate(time = rep(tc, nrow(cov)), evid = 0L, amt = 0, cmt = "mprotein", dur = 0)
+  ev <- bind_rows(dose_ev, obs_ev) |> arrange(id, time, desc(evid))
+  s <- rxSolve(mod, ev, omega = NA, sigma = NA, returnType = "data.frame")
+  matrix(s$mprotein, nrow = nrow(cohort), byrow = TRUE)
+}
+
+summarise_outcomes <- function(mp, grades, len, meanlog, sdlog, months = 50) {
+  n <- nrow(mp)
+  n_cyc <- ncol(mp)
+  tc <- (seq_len(n_cyc) - 1) * len
+  t_end <- months * 30.4375
+  base <- mp[, 1]
+  t_pd <- rep(Inf, n)
+  for (i in seq_len(n)) {
+    nadir <- base[i]
+    for (cyc in 2:n_cyc) {
+      if (mp[i, cyc] > 1.25 * nadir && mp[i, cyc] - nadir > 5) {
+        t_pd[i] <- tc[cyc]
+        break
+      }
+      nadir <- min(nadir, mp[i, cyc])
+    }
+  }
+  t_other <- rlnorm(n, meanlog, sdlog)
+  t_cens <- pmin(t_pd, t_other, t_end)
+  seen <- outer(rep(1, n), tc) <= t_cens
+  red <- 1 - mp / base
+  pfs_time <- t_cens / 30.4375
+  pfs_event <- t_pd <= pmin(t_other, t_end)
+  km <- survival::survfit(survival::Surv(pfs_time, pfs_event) ~ 1)
+  ks <- summary(km, times = c(12, 24), extend = TRUE)$surv
+  list(
+    summary = data.frame(
+      ORR = 100 * mean(rowSums(seen & red >= 0.5) > 0),
+      VGPR = 100 * mean(rowSums(seen & red >= 0.9) > 0),
+      PFS12 = 100 * ks[1],
+      PFS24 = 100 * ks[2],
+      mPFS = unname(summary(km)$table["median"]),
+      G2 = 100 * mean(rowSums(seen & grades >= 2) > 0),
+      G3 = 100 * mean(rowSums(seen & grades >= 3) > 0)
+    ),
+    km = data.frame(time = km$time, surv = km$surv)
+  )
+}
+```
+
+## BVd: DREAMM-7 reference and an extended schedule
+
+Table 2 of Carreno 2026 simulates BVd regimens over 50 months with holds for
+grade >= 2 and restart at grade <= 1. The reference is 2.5 mg/kg Q3W with
+restart at 1.9 mg/kg Q3W; the extended schedule is 2.5 mg/kg Q6W with restart at
+1.9 mg/kg Q6W. Both arms share the same virtual patients.
+
+```{r sim-bvd}
+set.seed(20261113)
+n_pat <- 200
+cohort_bvd <- make_cohort(n_pat, list(
+  wt = c(74.7, 43.7, 133), alb = c(40, 23, 51), sbcma = c(40.2, 2.2, 729),
+  igg = c(20.3, 1.05, 81.5), mprot = c(19, 5, 85), bor = 1, pom = 0
+))
+eta_kva <- draw_eta(mod_kva, n_pat)
+eta_pk <- eta_kva[, c("etalcl", "etalvc", "etalq", "etalvp", "etacl_time_max", "etalcl_t50")]
+mp_names <- c("etalkg", "etalkd", "etallambda", "etalslope", "etala50")
+eta_mp_bvd <- draw_eta(mod_bvd, n_pat)[, mp_names]
+
+n_cyc_bvd <- ceiling(50 * 30.4375 / 21)
+sched_ref <- list(len = 21, int1 = 21, int2 = 21, hold_grade = 2, red_level = 1.9,
+                  level = function(cyc) 2.5)
+sched_q6w <- list(len = 21, int1 = 42, int2 = 42, hold_grade = 2, red_level = 1.9,
+                  level = function(cyc) 2.5)
+
+h_ref <- run_kva_harness(cohort_bvd, eta_kva, sched_ref, n_cyc_bvd)
+h_q6w <- run_kva_harness(cohort_bvd, eta_kva, sched_q6w, n_cyc_bvd)
+mp_ref <- solve_mprotein(mod_bvd, cohort_bvd, cbind(eta_pk, eta_mp_bvd), h_ref$doses, 21)
+mp_q6w <- solve_mprotein(mod_bvd, cohort_bvd, cbind(eta_pk, eta_mp_bvd), h_q6w$doses, 21)
+out_ref <- summarise_outcomes(mp_ref, h_ref$grades, 21, 8.209, 2.656)
+out_q6w <- summarise_outcomes(mp_q6w, h_q6w$grades, 21, 8.209, 2.656)
+```
+
+```{r bvd-table}
+paper_t2 <- data.frame(
+  ORR = c(91.0, 90.0), VGPR = c(61.5, 55.0), PFS12 = c(80.3, 76.3),
+  PFS24 = c(65.7, 59.8), mPFS = c(37.3, 31.1), G2 = c(97.0, 92.5), G3 = c(85.5, 77.5)
+)
+sim_t2 <- bind_rows(out_ref$summary, out_q6w$summary)
+bvd_cmp <- bind_rows(
+  mutate(sim_t2, Source = "Simulated (this vignette)"),
+  mutate(paper_t2, Source = "Carreno 2026 Table 2")
+) |>
+  mutate(Regimen = rep(c("2.5 mg/kg Q3W (reference)", "2.5 mg/kg Q6W"), 2)) |>
+  arrange(Regimen, Source) |>
+  select(Regimen, Source, everything()) |>
+  rename(`ORR (%)` = ORR, `VGPR+ (%)` = VGPR, `PFS 12 mo (%)` = PFS12,
+         `PFS 24 mo (%)` = PFS24, `mPFS (mo)` = mPFS,
+         `Grade >= 2 KVA (%)` = G2, `Grade >= 3 KVA (%)` = G3)
+knitr::kable(bvd_cmp, digits = 1)
+```
+
+```{r bvd-km}
+bind_rows(
+  mutate(out_ref$km, regimen = "2.5 mg/kg Q3W (reference)"),
+  mutate(out_q6w$km, regimen = "2.5 mg/kg Q6W")
+) |>
+  bind_rows(data.frame(time = 0, surv = 1, regimen = c("2.5 mg/kg Q3W (reference)", "2.5 mg/kg Q6W"))) |>
+  arrange(regimen, time) |>
+  ggplot(aes(time, surv, colour = regimen)) +
+  geom_step() +
+  coord_cartesian(xlim = c(0, 50), ylim = c(0, 1)) +
+  labs(x = "Time (months)", y = "Progression-free (progression only)", colour = NULL,
+       caption = "Compare Carreno 2026 Figure 3 (simulated BVd PFS).") +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+## BPd: DREAMM-8 reference
+
+The BPd reference (Table S8) is 2.5 mg/kg in Cycle 1 then 1.9 mg/kg Q4W, held
+for grade >= 2 and restarted at 1.9 mg/kg Q8W.
+
+```{r sim-bpd}
+cohort_bpd <- make_cohort(n_pat, list(
+  wt = c(77.5, 46, 117), alb = c(41, 25, 49), sbcma = c(40, 0.975, 741),
+  igg = c(18, 0.8, 96.3), mprot = c(17.5, 5.3, 83.7), bor = 0, pom = 1
+))
+eta_mp_bpd <- draw_eta(mod_bpd, n_pat)[, mp_names]
+sched_bpd <- list(len = 28, int1 = 28, int2 = 56, hold_grade = 2, red_level = 1.9,
+                  level = function(cyc) ifelse(cyc == 1, 2.5, 1.9))
+n_cyc_bpd <- ceiling(50 * 30.4375 / 28)
+h_bpd <- run_kva_harness(cohort_bpd, eta_kva, sched_bpd, n_cyc_bpd)
+mp_bpd <- solve_mprotein(mod_bpd, cohort_bpd, cbind(eta_pk, eta_mp_bpd), h_bpd$doses, 28)
+out_bpd <- summarise_outcomes(mp_bpd, h_bpd$grades, 28, 9.296, 3.643)
+
+paper_s8 <- data.frame(ORR = 87.4, VGPR = 60.2, PFS12 = 78.1, PFS24 = 66.4,
+                       mPFS = NA_real_, G2 = 95.1, G3 = 78.6)
+bind_rows(
+  mutate(out_bpd$summary, Source = "Simulated (this vignette)"),
+  mutate(paper_s8, Source = "Carreno 2026 Table S8")
+) |>
+  select(Source, everything()) |>
+  rename(`ORR (%)` = ORR, `VGPR+ (%)` = VGPR, `PFS 12 mo (%)` = PFS12,
+         `PFS 24 mo (%)` = PFS24, `mPFS (mo)` = mPFS,
+         `Grade >= 2 KVA (%)` = G2, `Grade >= 3 KVA (%)` = G3) |>
+  knitr::kable(digits = 1, caption = "mPFS was not reached in Table S8 (NA).")
+```
+
+## Agreement with the published framework
+
+```{r framework-check}
+sim_all <- bind_rows(out_ref$summary, out_q6w$summary, out_bpd$summary)
+pub_all <- bind_rows(paper_t2, paper_s8)
+diff_pts <- sim_all[, c("VGPR", "G2", "G3")] - pub_all[, c("VGPR", "G2", "G3")]
+diff_pts
+stopifnot(
+  # A mis-transcribed kill, growth or transition parameter moves these by
+  # tens of percentage points; the cohort is drawn with base R and a fixed seed.
+  all(abs(as.matrix(diff_pts)) < 15),
+  # Extending the BVd schedule must not increase grade >= 3 incidence.
+  out_q6w$summary$G3 <= out_ref$summary$G3 + 5
+)
+```
+
+Across the three regimens the simulated VGPR+ rates and grade >= 2 and >= 3
+KVA incidences fall within
+`r round(max(abs(as.matrix(diff_pts))), 1)` percentage points of the published
+framework. The regimen ordering is preserved: the Q6W schedule gives a shorter
+median PFS (`r round(out_q6w$summary$mPFS, 1)` against
+`r round(out_ref$summary$mPFS, 1)` months; published 31.1 against 37.3) and no
+more grade >= 3 findings than Q3W.
+
+The simulated BVd overall response rate
+(`r round(out_ref$summary$ORR, 1)`% against 91.0%) and the BVd PFS
+landmarks are lower than in Table 2. The likely reason is that Carreno 2026
+simulated the DREAMM-7 patients with their individual post hoc random effects,
+which shrink toward the typical value. This vignette draws from the full
+estimated between-subject variance (omega KGR = 1.65), which gives more
+fast-growing, non-responding patients. The BPd simulation, with smaller
+M-protein variances, lands closer to Table S8.
+
+# PK driver: cycle 1 NCA
+
+The PK driver is used unchanged from Papathanasiou 2025; Carreno 2026 reports
+no PK summaries. For reference, the cycle 1 exposure of a typical patient after
+2.5 mg/kg is computed with PKNCA, for monotherapy and for combination therapy.
+Combination therapy changes only the time-varying part of clearance, so cycle 1
+exposure differs little.
+
+```{r pknca}
+t_nca <- sort(unique(c(seq(0, 21, by = 0.25), 0.5 / 24)))
+nca_in <- bind_rows(lapply(c(0, 1), function(combo) {
+  ev <- bind_rows(
+    dose_events(0, 2.5, 75),
+    data.frame(time = t_nca, evid = 0L, amt = 0, dur = 0, cmt = "mprotein")
+  ) |>
+    mutate(id = 1L) |>
+    cbind(typ |> mutate(COMBO_BELAMAF = combo))
+  rxSolve(zeroRe(mod_bvd), ev, returnType = "data.frame") |>
+    mutate(id = combo + 1L, treatment = ifelse(combo == 1, "Combination", "Monotherapy"))
+}))
+conc_df <- nca_in |> filter(!is.na(Cc)) |> select(id, treatment, time, Cc)
+dose_df <- data.frame(id = 1:2, treatment = c("Monotherapy", "Combination"),
+                      time = 0, amt = 2.5 * 75)
+o_conc <- PKNCAconc(conc_df, Cc ~ time | treatment + id)
+o_dose <- PKNCAdose(dose_df, amt ~ time | treatment + id)
+o_data <- PKNCAdata(o_conc, o_dose,
+                    intervals = data.frame(start = 0, end = 21, cmax = TRUE,
+                                           tmax = TRUE, auclast = TRUE))
+nca_res <- pk.nca(o_data)
+as.data.frame(nca_res) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  rename(Treatment = treatment, `Cmax (ug/mL)` = cmax, `Tmax (day)` = tmax,
+         `AUC0-21 (ug*day/mL)` = auclast) |>
+  knitr::kable(digits = 2)
+```
+
+# Assumptions and deviations
+
+* **Model code outranks the table where they differ.** File S2 is the
+  authors' implementation and is followed for structure:
+  * The kill-term slope S (Table S4 "TVE50", 0.398 mL/ug) is a log-scale
+    THETA in the code (`LNS = THETA69`, `S = exp(LNS + ETAS)`), so
+    S = exp(0.398) = 1.49 mL/ug. The BPd value 0.432 is treated the same way.
+  * The carrying capacity of 150 g/L, the 5 g/L floor on baseline M-protein,
+    the KVA normalising concentration 3.357 ug/mL and the form
+    K * GNd / (1 + GNd * Cn^GMd) of the downward rates are taken from the code.
+    Table S4 and the main text do not print them.
+  * The main text says both M-protein models include "a baseline elimination
+    rate constant that occurs in the absence of belantamab mafodotin". The
+    code has no such term (the kill term is zero without drug), and it is not
+    included here.
+  * Resistance is a state in the code, starting at 1 with d/dt = -LAM * state.
+    It is written here in the identical closed form exp(-LAM * t).
+* **M-protein proportional residual error.** Table S4 heads the row
+  "Residual proportional error variance". The code holds it as a THETA next to
+  the additive-SD THETA, in a combined W = sqrt(PROP^2 * IPRED^2 + ADD^2)
+  form (commented `WBAS` line). The values 0.333 (BVd) and 0.414 (BPd) are
+  therefore used as proportional SDs.
+* **Table S4 covariance labels.** The fourth entry of each M-protein IIV block
+  is labelled a second "Covariance (KGR~KDEATH)". In the NONMEM lower-triangle
+  order the table follows, it is the KGR~LAM covariance, and it is encoded that
+  way. Both blocks are positive definite.
+* **BPd model structure.** File S2 implements the BVd model only. The paper
+  states that the final BVd model was the base model for the BPd model, so the
+  BPd file uses the same equations with the Table S4 BPd values and no IgG
+  effect.
+* **PK random effects and residual error.** Carreno 2026 used individual post
+  hoc PK estimates and does not report the PK IIV or residual error. These
+  values are taken from the Papathanasiou 2025 publication, as packaged in
+  `Papathanasiou_2025_belantamab`. The PK fixed effects use the more precise
+  values printed in File S2 (for example CL 0.925475 L/day against 0.926 in
+  Papathanasiou 2025 Table 2).
+* **Combination indicators in the KVA model.** File S2 applies the "D678"
+  factor on GNu to the DREAMM-6, -7 and -8 studies, which are exactly the
+  combination-therapy patients, so it is keyed to `COMBO_BELAMAF`. The Vd
+  factors on K10, GMu and GNd apply to Vd and also to Pd (the paper set the Pd
+  effects equal to Vd). The DREAMM-6 grade 1 to 2 effect is keyed to
+  `STUDY_DREAMM6` (both arms), following the code's `DREAMM == 6` condition.
+  Several DREAMM-7-only Vd factors (File S2 THETA37-THETA39, THETA42) and all
+  Rd factors other than K21 and GMu equal 1, are absent from Table S6 and are
+  omitted. The Table S6 footnote calls BOR_GMu an effect on the "downward"
+  exponent, but the code and Table S7 apply it to the upward exponent GMu.
+* **Imax on the linear scale.** The maximal log-fold change in clearance,
+  `cl_time_max` (-0.403), is negative and carries an additive random effect
+  (File S2: `IMAX = TVIMAX + ETAIMAX`), so it stays untransformed in `ini()`.
+  The convention check's log-transform suggestion does not apply to it.
+* **Baseline KVA grade.** File S2 starts each patient at the observed baseline
+  grade (`BAS2`). The packaged model starts every patient at grade 0, since
+  baseline keratopathy was present in only 1% of patients (Table S5). To start
+  elsewhere, replace the `s_kva*` states with an `evid = 5` event at time 0.
+* **Framework harness.** The harness is a simplification of the File S2 dosing
+  logic. Once a scheduled dose has been missed, every later dose uses the
+  reduced level and interval. Assessments fall at the start of each cycle
+  rather than 2 hours before the dose. Death is not simulated, so PFS here
+  counts progression only. Virtual covariates are drawn from Table 1 medians
+  and ranges; BMI is fixed at 27 kg/m^2 and race at the non-Asian, non-Black
+  reference, because Table 1 does not report them for these populations.

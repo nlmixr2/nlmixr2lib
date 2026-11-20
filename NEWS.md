@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Xu 2026 vancomycin ([doi:10.1128/aac.01840-25](https://doi.org/10.1128/aac.01840-25)) -- children aged 3 months to 18 years in Australian children's hospitals.
+- Add Carreno 2026 belantamab mafodotin serum M-protein (BVd and BPd) and KVA ocular-grade Markov models ([doi:10.1002/psp4.70276](https://doi.org/10.1002/psp4.70276)) -- adults with relapsed/refractory multiple myeloma.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
