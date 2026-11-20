@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Dorofaeff 2026 piperacillin/tazobactam ([doi:10.1128/aac.00272-26](https://doi.org/10.1128/aac.00272-26)) -- critically ill children aged 1 month to 12 years in a paediatric intensive care unit.
+- Add Luu 1998 2,4-toluenediamine breast-implant PBPK ([doi:10.1289/ehp.98106393](https://doi.org/10.1289/ehp.98106393)) -- female F-344 rats (iv/sc/implant calibration) and a human breast-implant scale-up for a 2,4-TDA cancer-risk assessment.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
