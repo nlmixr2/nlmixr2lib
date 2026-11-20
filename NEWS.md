@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Jovanovic 2026 adalimumab ([doi:10.3390/pharmaceutics18070788](https://doi.org/10.3390/pharmaceutics18070788)) -- adults with Crohn's disease on therapeutic drug monitoring (Serbia).
+- Add Yamada 2026 favipiravir and serum uric acid ([doi:10.3390/ph19071008](https://doi.org/10.3390/ph19071008)) -- Japanese adults treated for COVID-19 or severe fever with thrombocytopenia syndrome.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

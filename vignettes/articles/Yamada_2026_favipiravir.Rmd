@@ -1,0 +1,383 @@
+---
+title: "Favipiravir and serum uric acid (Yamada 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Favipiravir and serum uric acid (Yamada 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", message = FALSE)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Yamada_2026_favipiravir"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Yamada_2026_favipiravir"))$description`
+* Article: <https://doi.org/10.3390/ph19071008> (open access, PMC13416278)
+* Supplement: Figure S1 (goodness of fit) and Figure S2 (model schematic).
+* Upstream metabolite model: Wang et al. 2020,
+  <https://doi.org/10.1016/j.ebiom.2020.103125> (open access, PMC7689521); its
+  Supplementary Appendix 1 deposits the NONMEM control stream of the
+  favipiravir / M1 parent-metabolite model.
+
+Yamada et al. analysed residual routine-care serum samples from 23 Japanese
+patients treated with favipiravir (FPV) for COVID-19 or severe fever with
+thrombocytopenia syndrome (SFTS). FPV follows a one-compartment model with
+first-order absorption; all eliminated FPV is converted to the hydroxylated
+metabolite M1, whose disposition was not measured and is fixed from Wang 2020.
+Serum uric acid (UA) follows a turnover model with zero-order production and
+first-order elimination, and FPV and M1 together inhibit UA elimination:
+
+$$\frac{dUA}{dt} = k_{in} - k_{out}\,(1 - E_{drug})\,UA, \qquad
+k_{in} = UA_{base}\,k_{out}$$
+
+$$E_{drug} = I_{max}\frac{(C_{FPV}/C50_{FPV})^{\gamma_{FPV}} + (C_{M1}/C50_{M1})^{\gamma_{M1}}}
+{1 + (C_{FPV}/C50_{FPV})^{\gamma_{FPV}} + (C_{M1}/C50_{M1})^{\gamma_{M1}}}$$
+
+where the total-concentration potencies are the in-vitro unbound potencies
+divided by the unbound fractions (`C50 = POPC50 / fu`).
+
+# Population
+
+`r readModelDb("Yamada_2026_favipiravir")()$population$n_subjects` patients
+(12 male, 11 female) received oral favipiravir at the University of Toyama
+Hospital (Japan) between April 2020 and July 2025 (Yamada 2026 Table 1): median
+age 69 years (2.5th-97.5th percentile 52-88), median total body weight 68.0 kg
+(40.2-87.9), median serum creatinine 0.9 mg/dL (0.5-1.5) and median
+administration period 13 days (2-14). The regimen was 1800 mg twice daily on day
+1 followed by 800 mg twice daily. The analysis used 92 favipiravir serum
+concentrations (median 47.2 mg/L) and 184 serum uric acid levels; pre-treatment
+uric acid was available for 18 patients (median 4.43 mg/dL).
+
+The same information is available programmatically via
+`readModelDb("Yamada_2026_favipiravir")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` | log(ln 2 / 1.15) 1/h | Table 2 'Tabs' = 1.15 h; Section 4.5 ka = ln 2 / Tabs; Equation 1 |
+| `lcl` (CL_FPV/F at 70 kg) | log(1.31) L/h | Table 2; Equation 1 |
+| `lvc` (Vd_FPV at 70 kg) | log(10.4) L | Table 2; Equation 1 |
+| `lfdepot` | log(1), fixed | Table 2 'F' = 1 FIXED; Section 4.5 |
+| `lcl_m1` | log(16.3), fixed | Table 2 'CLM1' FIXED; Wang 2020 Table 3 |
+| `lvc_m1` | log(6.44), fixed | Table 2 'VdM1' FIXED; Wang 2020 Table 3 |
+| `e_crcl_cl_m1` (TRF) | 0.0095, fixed | Table 2 'TRF'; Equations 6-7 (CLcr_STD = 100 mL/min, Section 4.6) |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1 (fixed) | Section 4.6, Equation 4 (FSIZE, 70 kg) |
+| Cockcroft-Gault `crcl` | n/a | Equation 5 |
+| `lrbase` (UAbase) | log(4.43) mg/dL | Table 2 |
+| `lkout` | log(ln 2 / 17.6) 1/h | Table 2 'T1/2UA' = 17.6 h; Section 4.7 |
+| `limax` | log(1), fixed | Table 2 'Imax' FIXED; Section 4.7 |
+| `lic50`, `fu` | log(126) mg/L, 0.5 (fixed) | Table 2 'C50FPV', 'FUBFPV'; Equation 10 |
+| `lic50_m1`, `fu_m1` | log(52) mg/L, 0.3 (fixed) | Table 2 'C50M1', 'FUBM1'; Equation 10 |
+| `lhill` | log(0.41) | Table 2 'GAMMAFPV' |
+| `lhill_m1` | log(1), fixed | Table 2 'GAMMAM1' FIXED |
+| `etalcl` | 0.483^2 | Table 2 BSV 'CLFPV/F' (footnote: BSV = sqrt(OMEGA)) |
+| `etalcl_m1` | 0.212^2, fixed | Table 2 BSV 'CLM1' FIXED |
+| `etalrbase` | 0.263^2 | Table 2 BSV 'UAbase' |
+| `etalhill` | 0.920^2 | Table 2 BSV 'GAMMAFPV' |
+| `propSd`, `addSd` | 0.445, 0.135 mg/L | Table 2 'RUVPROP_FPV', 'RUVADD_FPV'; Equation 3 |
+| `addSd_m1` | 0.241 mg/L, fixed | Table 2 'RUVADD_M1' FIXED |
+| `addSd_sUA` | 1.3 mg/dL | Table 2 'RUVADD_UA' |
+| FPV to M1 conversion with MW ratio 173.10 / 157.10 | n/a | Section 4.5 (complete conversion); Wang 2020 Appendix 1 `SCAL = MOLM/MOLP` |
+| Uric acid turnover | n/a | Equation 8; Supplementary Figure S2 |
+| Additive Imax drug effect (alpha = 0) | n/a | Equation 9; Section 2.3 |
+
+# Assumptions and deviations
+
+* **Uric acid ODE.** Equation 8 is printed as `dUA/dt = Rin - kout x PDI`,
+  without the UA state in the loss term. The text (Sections 4.7 and 3)
+  describes first-order elimination and the turnover baseline is
+  `Rin = UAbase x kout`, so the loss term is `kout x PDI x UA`.
+* **Molecular-weight scaling of M1 formation.** Yamada 2026 states only that
+  favipiravir is completely converted to M1 "based on a previously published
+  model" (Wang 2020). The control stream that Wang 2020 deposits scales the
+  mass flux into the M1 compartment by `MOLM / MOLP = 173.10 / 157.10`; the
+  packaged model follows that code. Without the scaling, M1 concentrations
+  would be about 9% lower.
+* **Creatinine clearance.** Section 4.6 calls the Cockcroft-Gault estimate
+  "standardized to a TBW of 70 kg", but Equation 5 and the Wang 2020 control
+  stream both use the actual total body weight. The packaged model uses the
+  equation as printed, centred on CLcr_STD = 100 mL/min.
+* **Inherited M1 values.** CL_M1, Vd_M1 and the BSV on CL_M1 (0.212 = sqrt of
+  Wang's 0.0448) match the Wang 2020 final estimates. The fixed TRF = 0.0095
+  equals the Wang 2020 initial estimate in `$THETA`; Wang's final estimate is
+  0.905% per mL/min (0.00905), centred on 98.6 rather than 100 mL/min. The
+  value Yamada 2026 fixed is kept. Wang's 0.241 M1 residual is a variance on
+  log-transformed data; Yamada 2026 lists it as an additive SD in mg/L, and it
+  is packaged that way (M1 was not measured in this study, so it affects only
+  simulated M1 observations).
+* **Variability scale.** Table 2's footnote states that BSV is the square root
+  of the NONMEM OMEGA, so each value is squared to give the variance. The
+  CL_M1 entry (0.212 squared = 0.0449, Wang 2020 omega squared 0.0448)
+  confirms this reading. Parameters listed with BSV "0 FIXED" carry no eta.
+* **Interaction term.** The final model is the additive Imax model (alpha
+  fixed to 0, Section 2.3), so alpha does not appear as a parameter.
+* **Residual error.** Equation 3 is the NONMEM `F x (1 + EPS1) + EPS2` form,
+  which is nlmixr2's default combined error.
+* **Virtual cohort.** Individual covariates are not published. The cohort
+  below draws age, weight and serum creatinine from truncated normal / log-
+  normal distributions matched to the medians and 2.5th-97.5th percentiles of
+  Table 1, with 48% female.
+* The pcVPC and VPC (Figure 2) and the goodness-of-fit plots need the patient
+  data and are not reproduced.
+
+# Deterministic checks
+
+```{r events}
+mod <- readModelDb("Yamada_2026_favipiravir")
+mod_typ <- rxode2::zeroRe(mod)
+
+# 1800 mg twice daily on day 1, then 800 mg twice daily; 10 days of dosing
+# (the Figure 3 scenario) unless `n_days` says otherwise.
+make_events <- function(ids, n_days = 10, obs = seq(0, 504, by = 1)) {
+  dose_times <- seq(0, 24 * n_days - 12, by = 12)
+  doses <- expand.grid(id = ids, time = dose_times) |>
+    mutate(amt = ifelse(time < 24, 1800, 800), evid = 1L, cmt = "depot",
+           dvid = NA_integer_)
+  # Several endpoints are declared, so observation rows sit on an ODE state
+  # and carry dvid = 1; every endpoint column is returned on each row.
+  observations <- expand.grid(id = ids, time = obs) |>
+    mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+  bind_rows(doses, observations) |>
+    arrange(id, time, desc(evid))
+}
+
+typical_cov <- data.frame(id = 1L, WT = 68, AGE = 69, SEXF = 0, CREAT = 0.9)
+ev_typ <- make_events(1L) |> left_join(typical_cov, by = "id")
+sim_typ <- as.data.frame(rxSolve(mod_typ, ev_typ, returnType = "data.frame"))
+```
+
+## Mass balance of the metabolite
+
+With complete conversion, the M1 exposure after a single dose has a closed
+form: `AUC_M1 = (173.10 / 157.10) x Dose / CL_M1`. The typical-value solve must
+match it to solver precision.
+
+```{r mass-balance}
+# n_days = 0.5 gives the single 1800 mg loading dose at time 0.
+ev_single <- make_events(1L, n_days = 0.5, obs = seq(0, 120, by = 0.05)) |>
+  left_join(typical_cov, by = "id")
+sim_single <- as.data.frame(rxSolve(mod_typ, ev_single,
+                                    returnType = "data.frame"))
+auc_m1 <- sum(diff(sim_single$time) *
+                (head(sim_single$Cc_m1, -1) + tail(sim_single$Cc_m1, -1)) / 2)
+crcl_typ <- (140 - 69) * 68 / (72 * 0.9)
+cl_m1_typ <- 16.3 * (68 / 70)^0.75 * (1 + 0.0095 * (crcl_typ - 100))
+auc_m1_closed <- (173.10 / 157.10) * 1800 / cl_m1_typ
+c(simulated = auc_m1, closed_form = auc_m1_closed)
+stopifnot(abs(auc_m1 / auc_m1_closed - 1) < 0.005)
+```
+
+## Uric acid holds at baseline without drug
+
+```{r steady-state}
+ev_nodrug <- ev_typ |> filter(evid == 0L)
+sim_nodrug <- as.data.frame(rxSolve(mod_typ, ev_nodrug,
+                                    returnType = "data.frame"))
+range(sim_nodrug$sUA)
+stopifnot(all(abs(sim_nodrug$sUA - 4.43) < 1e-6))
+```
+
+## Typical-patient time course
+
+```{r typical}
+peak_typ <- sim_typ[which.max(sim_typ$sUA), c("time", "sUA")]
+post_typ <- sim_typ |> filter(time >= 240)
+return_typ <- (post_typ$time[which(post_typ$sUA <= 4.43 * 1.05)[1]] - 240) / 24
+data.frame(
+  quantity = c("Peak uric acid (mg/dL)", "Days to return within 5% of UAbase"),
+  typical_patient = signif(c(peak_typ$sUA, return_typ), 3),
+  paper_median = c(6.93, 4.0)
+) |> knitr::kable()
+```
+
+For the typical patient (68 kg, 69 years, serum creatinine 0.9 mg/dL), uric
+acid rises to a plateau within about 4 days and peaks just before the last dose
+at the paper's median peak level. Because the plateau is nearly flat, the time
+of the maximum is not a stable quantity; the paper's 6.7 days is the maximum of
+a noisy simulated median (Figure 3).
+
+```{r typical-checks}
+stopifnot(
+  abs(peak_typ$sUA / 6.93 - 1) < 0.05,
+  return_typ > 2, return_typ < 6
+)
+```
+
+# Virtual cohort
+
+```{r cohort}
+set.seed(20261008)
+rxode2::rxSetSeed(20261008)
+n_sub <- 200
+
+rtnorm <- function(n, mean, sd, lo, hi) {
+  x <- rnorm(n * 3, mean, sd)
+  x <- x[x >= lo & x <= hi]
+  x[seq_len(n)]
+}
+cohort <- data.frame(
+  id = seq_len(n_sub),
+  AGE = rtnorm(n_sub, 69, 10, 52, 88),
+  WT = rtnorm(n_sub, 68, 12, 40, 88),
+  CREAT = exp(rtnorm(n_sub, log(0.9), 0.3, log(0.5), log(1.5))),
+  SEXF = rbinom(n_sub, 1, 11 / 23)
+)
+summary(cohort[, c("AGE", "WT", "CREAT", "SEXF")])
+```
+
+# Simulation
+
+```{r simulate}
+ev_cohort <- make_events(cohort$id) |> left_join(cohort, by = "id")
+sim <- rxSolve(mod, ev_cohort, returnType = "data.frame") |>
+  as.data.frame() |>
+  select(id, time, Cc, Cc_m1, sUA)
+# Figure 3 is a NONMEM $SIMULATION, so its bands include the additive
+# residual error on uric acid.
+sua_sd <- rxode2::rxode2(mod)$theta[["addSd_sUA"]]
+sim$sUA_obs <- sim$sUA + rnorm(nrow(sim), 0, sua_sd)
+```
+
+## Figure 3: uric acid over 21 days
+
+```{r figure3, fig.width = 7, fig.height = 5}
+bands <- sim |>
+  group_by(time) |>
+  summarise(
+    p10 = quantile(sUA_obs, 0.10), p20 = quantile(sUA_obs, 0.20),
+    p30 = quantile(sUA_obs, 0.30), p40 = quantile(sUA_obs, 0.40),
+    p50 = median(sUA_obs), p50_ipred = median(sUA),
+    p60 = quantile(sUA_obs, 0.60), p70 = quantile(sUA_obs, 0.70),
+    p80 = quantile(sUA_obs, 0.80), p90 = quantile(sUA_obs, 0.90),
+    .groups = "drop"
+  ) |>
+  mutate(day = time / 24)
+
+ggplot(bands, aes(day)) +
+  geom_ribbon(aes(ymin = p10, ymax = p90), fill = "slateblue", alpha = 0.2) +
+  geom_ribbon(aes(ymin = p20, ymax = p80), fill = "slateblue", alpha = 0.2) +
+  geom_ribbon(aes(ymin = p30, ymax = p70), fill = "slateblue", alpha = 0.2) +
+  geom_ribbon(aes(ymin = p40, ymax = p60), fill = "slateblue", alpha = 0.2) +
+  geom_line(aes(y = p50), colour = "black") +
+  geom_line(aes(y = p50_ipred), colour = "firebrick", linetype = "dashed") +
+  scale_x_continuous(breaks = c(0, 3, 7, 10, 14, 21)) +
+  labs(x = "Time after initial dose (days)", y = "Uric acid (mg/dL)",
+       caption = paste("Replicates Figure 3 of Yamada 2026. Bands: 10th-90th",
+                       "percentiles in 10% steps; black: median with",
+                       "residual error; red dashed: median of individual",
+                       "predictions."))
+```
+
+The median plateaus near 7 mg/dL from about day 5 and falls back towards
+baseline after the last dose on day 10, with the same slow tail as the
+published figure (about 4.9 mg/dL at day 14).
+
+The paper's recovery time (4.0 days) is the time for uric acid to come back
+within 5% of baseline (Section 4.9). The median curve of a heterogeneous
+cohort recovers more slowly than a typical subject, because patients with a
+low favipiravir clearance keep inhibiting uric acid elimination for longer
+after the last dose; the published median curve shows the same tail. The
+recovery time is therefore computed per subject, against each subject's own
+baseline, and summarised by its median.
+
+```{r figure3-checks}
+recovery <- sim |>
+  group_by(id) |>
+  summarise(
+    base = sUA[time == 0],
+    peak = max(sUA),
+    return_days = (time[time >= 240 & sUA <= base * 1.05][1] - 240) / 24,
+    .groups = "drop"
+  ) |>
+  # A subject still above baseline at day 21 has not yet returned; count it
+  # as a long recovery rather than dropping it, which would bias the median.
+  mutate(return_days = coalesce(return_days, Inf))
+c(peak_of_median_curve = max(bands$p50_ipred),
+  median_individual_peak = median(recovery$peak),
+  median_return_days = median(recovery$return_days),
+  not_returned_by_day_21 = sum(is.infinite(recovery$return_days)))
+stopifnot(
+  # Centre of the cohort against the paper's median peak (6.93 mg/dL).
+  abs(max(bands$p50_ipred) / 6.93 - 1) < 0.10,
+  # Paper: return to baseline 4.0 days after discontinuation.
+  abs(median(recovery$return_days) - 4.0) < 1.5
+)
+```
+
+## Favipiravir and M1 concentrations
+
+```{r conc-plot, fig.width = 7, fig.height = 4}
+sim |>
+  filter(time <= 288) |>
+  group_by(time) |>
+  summarise(
+    across(c(Cc, Cc_m1), list(
+      lo = ~ quantile(.x, 0.05), med = median, hi = ~ quantile(.x, 0.95)
+    )),
+    .groups = "drop"
+  ) |>
+  tidyr::pivot_longer(-time, names_to = c("analyte", ".value"),
+                      names_pattern = "(Cc|Cc_m1)_(lo|med|hi)") |>
+  mutate(analyte = ifelse(analyte == "Cc", "Favipiravir", "M1")) |>
+  ggplot(aes(time / 24, med, colour = analyte, fill = analyte)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+  geom_line() +
+  labs(x = "Time after initial dose (days)", y = "Concentration (mg/L)",
+       colour = NULL, fill = NULL,
+       caption = "Median and 5th-95th percentiles of the virtual cohort.")
+```
+
+# PKNCA validation
+
+The paper reports no NCA table. It reports a favipiravir elimination half-life
+of 5.46 h calculated from CL_FPV/F and Vd_FPV (Discussion), which is compared
+with the terminal half-life after the last dose on day 10.
+
+```{r pknca}
+conc <- sim |>
+  filter(!is.na(Cc), time <= 300) |>
+  select(id, time, Cc) |>
+  mutate(treatment = "1800/800 mg BID")
+dose_df <- ev_cohort |>
+  filter(evid == 1L) |>
+  select(id, time, amt) |>
+  mutate(treatment = "1800/800 mg BID")
+
+conc_obj <- PKNCAconc(conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = c(0, 228),
+  end = c(12, 300),
+  cmax = c(TRUE, TRUE),
+  tmax = c(TRUE, FALSE),
+  auclast = c(TRUE, FALSE),
+  half.life = c(FALSE, TRUE)
+)
+nca <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+summary(nca)
+```
+
+```{r nca-compare}
+reference <- data.frame(treatment = "1800/800 mg BID", half.life = 5.46)
+cmp <- ncaComparisonTable(
+  nca, reference,
+  by = "treatment", params = "half.life", units = c(half.life = "h")
+)
+knitr::kable(cmp)
+hl <- as.data.frame(nca) |> filter(PPTESTCD == "half.life")
+stopifnot(abs(median(hl$PPORRES) / 5.46 - 1) < 0.15)
+```
+
+The median terminal half-life agrees with the value the authors derived from
+the typical CL_FPV/F and Vd_FPV. At steady state the simulated favipiravir
+concentrations span the range of the observed serum concentrations (median
+47.2 mg/L, Table 1).
