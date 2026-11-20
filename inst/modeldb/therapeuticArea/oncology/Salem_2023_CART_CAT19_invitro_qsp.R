@@ -40,6 +40,7 @@ Salem_2023_CART_CAT19_invitro_qsp <- function() {
     dosing = "cells (tumour cells as amt on tumor; CAR T cells as amt on cart, both at time 0)",
     concentration = "percent cytolysis of the seeded tumour cells (lysis)"
   )
+  dosing <- c("tumor", "cart")
 
   compartmentData <- list(
     cart = list(

@@ -48,6 +48,7 @@ Nishiyama_2019_cimetidine_pbpk <- function() {
   )
   vignette <- "Nishiyama_2019_metformin_cimetidine"
   units <- list(time = "h", dosing = "ug", concentration = "ug/L")
+  dosing <- "intestine"
 
   covariateData <- list()
 

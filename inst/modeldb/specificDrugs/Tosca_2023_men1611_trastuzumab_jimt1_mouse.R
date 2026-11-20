@@ -30,6 +30,7 @@ Tosca_2023_men1611_trastuzumab_jimt1_mouse <- function() {
     dosing = "MEN1611 in mg/kg (depot_men1611); trastuzumab in mg per mouse (depot_trastuzumab IP, central_trastuzumab IV)",
     concentration = "ng/mL"
   )
+  dosing <- c("depot_men1611", "depot_trastuzumab")
 
   covariateData <- list()
 

@@ -167,6 +167,7 @@ Tsuchitani_2024_telmisartan_pbpk <- function() {
   # the 10 mg i.v. arm against AUCinf = 393 nM*h, which requires a dose
   # of 19.45 umol, i.e. 10 mg / 514.1 g/mol.
   units <- list(time = "h", dosing = "umol", concentration = "umol/L")
+  dosing <- c("central", "duodenum_lumen")
 
   # No covariates. Every physiological volume, flow and partition
   # coefficient in Tables S3-S7 is a fixed constant for a single typical

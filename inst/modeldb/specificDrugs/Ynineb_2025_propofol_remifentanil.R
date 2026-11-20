@@ -42,6 +42,7 @@ Ynineb_2025_propofol_remifentanil <- function() {
     dosing = "mg (propofol, cmt central); ug (remifentanil, cmt central_remifentanil)",
     concentration = "mg/L = ug/mL (propofol); ug/L = ng/mL (remifentanil)"
   )
+  dosing <- c("central", "central_remifentanil")
   # Time is minutes because every clearance in the source is in L/min and
   # every rate constant in 1/min (Tables 5 and 8). The propofol input u(t) is
   # in mg/min and V1 in L, so propofol concentrations are mg/L (= ug/mL, the

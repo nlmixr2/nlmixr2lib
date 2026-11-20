@@ -43,6 +43,7 @@ Golzaryan_2025_lu177psmaIT_pbpk <- function() {
   )
   vignette <- "Golzaryan_2025_lu177psmaIT_pbpk"
   units <- list(time = "min", dosing = "nmol", concentration = "nmol/L")
+  dosing <- c("pven_unl", "pven_lab")
 
   paper_specific_compartment_pattern <- "^(pv|pint|rp|pintern|pintra|part|pven|pprp|urine|cleared)_"
 

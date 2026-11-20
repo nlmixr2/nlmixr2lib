@@ -13,6 +13,7 @@ Stevens_2012_remoxipride <- function() {
   )
   vignette <- "Stevens_2012_remoxipride"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L (prolactin)")
+  dosing <- c("depot", "central", "depot_brain")
 
   ddmore_id <- "DDMODEL00000268"
   replicate_of <- NULL

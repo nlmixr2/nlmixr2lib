@@ -13,6 +13,7 @@ Khera_2024_dyp688_mouse_tgi <- function() {
     dosing = "nmol (antibody; one record per ADC species, see description)",
     concentration = "nM for plasma ADC and conjugated payload; mm^3 for tumour volume"
   )
+  dosing <- c("dar2_central", "dar1_central", "dar0_central")
 
   covariateData <- list(
     TUM_VOL = list(

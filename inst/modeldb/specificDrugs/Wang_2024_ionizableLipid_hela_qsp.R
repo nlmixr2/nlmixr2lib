@@ -35,6 +35,7 @@ Wang_2024_ionizableLipid_hela_qsp <- function() {
     dosing = "ng",
     concentration = "fraction of internalised siRNA (dimensionless)"
   )
+  dosing <- c("lnp_rna_ee", "lnp_lipid_ee")
 
   # Every state is a mass (ng) of lipid or siRNA in one intracellular vesicle
   # population, or in the culture medium. These are paper-mechanistic

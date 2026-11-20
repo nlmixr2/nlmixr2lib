@@ -65,6 +65,7 @@ Bosch_2024_glp1ra_bodyweight <- function() {
     dosing = "pmol",
     concentration = "pmol/L"
   )
+  dosing <- c("depot_sema", "depot_lira")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

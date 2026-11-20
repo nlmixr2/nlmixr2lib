@@ -24,6 +24,7 @@ Kir_2025_metoprolol_rat_pbpk <- function() {
     amount = "ug",
     weight = "kg"
   )
+  dosing <- "a_blood"
 
   # Every volume, flow, amount and clearance in this model is normalised PER KG
   # of body weight (mL/kg, mL/min/kg, ug/kg), exactly as the deposited code is

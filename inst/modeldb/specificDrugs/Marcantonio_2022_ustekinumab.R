@@ -26,6 +26,7 @@ Marcantonio_2022_ustekinumab <- function() {
     dosing = "Ustekinumab dose amount into depot (SC) in nmol; MW = 148600 Da so 45 mg = 303.5 nmol.",
     concentration = "Free ustekinumab plasma concentration Cc = Ab_00 / V in nM; V = 5 L."
   )
+  dosing <- c("depot", "Ab_00")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

@@ -3,6 +3,7 @@ Cao_2013_visilizumab <- function() {
   reference <- "Cao Y, Balthasar JP, Jusko WJ. Second-generation minimal physiologically-based pharmacokinetic model for monoclonal antibodies. J Pharmacokinet Pharmacodyn. 2013 Oct;40(5):597-607. doi:10.1007/s10928-013-9332-2. Visilizumab plasma data digitized from Carpenter PA et al. Blood. 2002;99(8):2712-2719 (PMID 11929757)."
   vignette <- "Cao_2013_visilizumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  dosing <- "plasma"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

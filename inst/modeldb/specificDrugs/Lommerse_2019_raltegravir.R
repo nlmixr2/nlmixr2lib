@@ -3,6 +3,7 @@ Lommerse_2019_raltegravir <- function() {
   reference <- "Lommerse J, Clarke D, Kerbusch T, Merdjan H, Witjes H, Teppler H, Mirochnick M, Acosta EP, Wenning L, Nachman S, Chain A. Maternal-Neonatal Raltegravir Population Pharmacokinetics Modeling: Implications for Initial Neonatal Dosing. CPT Pharmacometrics Syst Pharmacol. 2019;8(9):643-653. doi:10.1002/psp4.12443"
   vignette <- "Lommerse_2019_raltegravir"
   units <- list(time = "h", dosing = "mg", concentration = "nM")
+  dosing <- c("depot_mother", "depot_neonate")
 
   paper_specific_compartments <- c(
     "depot_mother",

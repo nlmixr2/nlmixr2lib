@@ -15,6 +15,7 @@ Parhiz_2024_mRNALNP <- function() {
     dosing = "ug",
     concentration = "ug/mL"
   )
+  dosing <- "blood"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

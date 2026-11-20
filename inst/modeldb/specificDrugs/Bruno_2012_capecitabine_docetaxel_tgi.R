@@ -35,6 +35,7 @@ Bruno_2012_capecitabine_docetaxel_tgi <- function() {
     dosing = "mg",
     concentration = "mm (the observed variable is tumor size, the sum of the longest diameters, not a drug concentration)"
   )
+  dosing <- c("depot_kpd_docetaxel", "depot_kpd_capecitabine")
 
   compartmentData <- list(
     depot_kpd_docetaxel = list(

@@ -15,6 +15,7 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
     dosing = "mg/L (initial concentration)",
     concentration = "log10 CFU/mL (observation); mg/L (drug states)"
   )
+  dosing <- c("pen", "cxm", "ery", "mxf", "van")
 
   # No patient covariates: this is an in-vitro semi-mechanistic PD model with
   # static drug exposures. Drug initial concentrations are applied via dosing

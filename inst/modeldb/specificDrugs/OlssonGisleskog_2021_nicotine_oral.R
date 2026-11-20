@@ -26,6 +26,7 @@ OlssonGisleskog_2021_nicotine_oral <- function() {
   )
   vignette <- "OlssonGisleskog_2021_nicotine"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central", "transit1")
 
   compartmentData <- list(
     depot = list(analyte = "nicotine", units = "mg", specimen = "administration site", verified = TRUE),

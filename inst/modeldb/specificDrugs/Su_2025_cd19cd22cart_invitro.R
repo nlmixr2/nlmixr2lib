@@ -54,6 +54,7 @@ Su_2025_cd19cd22cart_invitro <- function() {
     dosing = "cells (tumour and CAR T cells seeded into the well as amt)",
     concentration = "percent (tumour-cell viability relative to control)"
   )
+  dosing <- c("n_tumor", "n_cart")
 
   compartmentData <- list(
     n_tumor = list(analyte = "B-cell ALL tumour cells", units = "cells", specimen = "tissue", verified = TRUE),

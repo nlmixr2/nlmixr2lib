@@ -7,6 +7,7 @@ Zheng_2020_CNTO5048_mouse_mpbpk <- function() {
     dosing = "pmol (convert mg via dose_pmol = dose_mg * 1e9 / 150000; 150 kDa IgG)",
     concentration = "nM"
   )
+  dosing <- c("depot", "plasma")
 
   # The two colon interstitial-fluid segments and their total-TNF pools are
   # paper-anatomical states of this model (Zheng 2020 Figure 3(b)-(d)). They

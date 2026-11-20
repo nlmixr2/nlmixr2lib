@@ -267,6 +267,17 @@ probeUnsupportedModels <- c(
 # None is known.
 knownBrokenModels <- character(0)
 
+# (3) Models a dose does not reach because of a recorded model defect. Only the
+# dead-dose check exempts them; every other check still runs on them, and the
+# dead-dose check fails once one of them responds to a dose again.
+#
+#   Hong_2013_glucose_insulin_MTT
+#     The meal dose never arrives. `absg <- transit(nn, mtt, bio)` is
+#     assigned outside `d/dt(glucose)`, so rxode2 does not tie it to the
+#     glucose dose, and `f(glucose) <- 0` suppresses the bolus itself. Even
+#     the article's 100 g meal leaves Gc at FPG throughout.
+knownDeadDoseModels <- "Hong_2013_glucose_insulin_MTT"
+
 # Solving every model in the registry takes roughly an hour. That is the right
 # cost for a release gate and the wrong cost for an edit-run-edit loop, so the
 # full sweep runs when NLMIXR2LIB_SOLVE_GATE=full and the at-risk subset runs
@@ -442,7 +453,7 @@ test_that("every model in the registry responds to a dose", {
   quarantined <- c(knownLinCmtDropModels, knownLinCmtFormModels)
   notDriven <- c(probeUnsupportedModels, knownBrokenModels)
   deadFail <- union(
-    setdiff(dead, c(quarantined, notDriven)),
+    setdiff(dead, c(quarantined, notDriven, knownDeadDoseModels)),
     setdiff(intersect(deadOde, quarantined), notDriven)
   )
   expect_equal(
@@ -454,6 +465,16 @@ test_that("every model in the registry responds to a dose", {
       ". Try rxSolve(..., useLinCmt = FALSE); if that fixes it the model has ",
       "hit the ODE-to-linCmt conversion defect described at the top of this ",
       "file."
+    )
+  )
+  revived <- setdiff(intersect(knownDeadDoseModels, names_), dead)
+  expect_equal(
+    revived,
+    character(0),
+    info = paste0(
+      "Model(s) in knownDeadDoseModels that a dose now reaches: ",
+      paste(revived, collapse = ", "),
+      ". Remove them from knownDeadDoseModels."
     )
   )
   expect_equal(

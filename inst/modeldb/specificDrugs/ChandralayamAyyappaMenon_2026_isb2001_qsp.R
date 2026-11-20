@@ -32,6 +32,7 @@ ChandralayamAyyappaMenon_2026_isb2001_qsp <- function() {
   # of the same in-vitro potencies in nM (Table 2) and ng/mL (Results, "MABEL
   # dose") and states that derivation explicitly; it is NOT used here.
   units <- list(time = "day", dosing = "nmol", concentration = "nM")
+  dosing <- c("depot", "plasma")
 
   # The five mPBPK compartments use the Cao 2013 mAb mPBPK naming exception
   # (`plasma` / `tight` / `leaky` / `lymph`), `bonemarrow` follows

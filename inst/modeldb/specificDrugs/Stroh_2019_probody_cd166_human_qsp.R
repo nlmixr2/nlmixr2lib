@@ -31,6 +31,7 @@ Stroh_2019_probody_cd166_human_qsp <- function() {
   vignette <- "Stroh_2019_probody_cd166_qsp"
 
   units <- list(time = "s", dosing = "nmol", concentration = "nM")
+  dosing <- "pb_c_c_central"
 
   covariateData <- list()
 

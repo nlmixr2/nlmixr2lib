@@ -3,6 +3,7 @@ Cao_2013_mab7E3 <- function() {
   reference <- "Cao Y, Balthasar JP, Jusko WJ. Second-generation minimal physiologically-based pharmacokinetic model for monoclonal antibodies. J Pharmacokinet Pharmacodyn. 2013 Oct;40(5):597-607. doi:10.1007/s10928-013-9332-2. 7E3 plasma data from Garg A, Balthasar JP. J Pharmacokinet Pharmacodyn. 2007;34(5):687-709 (PMID 17636457)."
   vignette <- "Cao_2013_mab7E3"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  dosing <- "plasma"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

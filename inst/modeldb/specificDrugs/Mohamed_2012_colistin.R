@@ -29,6 +29,7 @@ Mohamed_2012_colistin <- function() {
   )
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- "central_cms"
 
   # The published final model retained no covariates: a stepwise covariate
   # screen (gender, body weight, ideal body weight, age, serum creatinine,

@@ -77,6 +77,7 @@ vandenMaagdenberg_2025_a2ar_tme_qsp <- function() {
       sep = " "
     )
   )
+  dosing <- c("depot_mab", "central_a2ari")
 
   compartmentData <- list(
     depot_mab = list(

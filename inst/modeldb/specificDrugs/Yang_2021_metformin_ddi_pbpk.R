@@ -44,6 +44,7 @@ Yang_2021_metformin_ddi_pbpk <- function() {
   )
   vignette <- "Yang_2021_metformin_ddi_pbpk"
   units <- list(time = "min", dosing = "ug", concentration = "ug/mL")
+  dosing <- c("stomach", "stomach_perpetrator")
 
   # Non-canonical states: the six-segment gut lumen and gut wall, the
   # liver blood/hepatocyte and kidney blood/tubule splits, and every state

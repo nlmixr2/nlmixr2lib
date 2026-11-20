@@ -35,6 +35,14 @@ Kletting_2015_antiCD66_pbpk_model2 <- function() {
   )
   vignette <- "Kletting_2015_antiCD66_pbpk"
   units <- list(time = "min", dosing = "nmol", concentration = "nmol/L")
+  dosing <- c(
+    "ab_fa_plasma_unlab",
+    "ab_fa_plasma_lab",
+    "ab_ha_plasma_lab",
+    "ab_na_plasma_lab",
+    "ab_ha_plasma_unlab",
+    "ab_na_plasma_unlab"
+  )
 
   paper_specific_compartment_pattern <- "^(ab|agbi|agmono|ex|metap|metaex1|metaex2|cleared)_"
 

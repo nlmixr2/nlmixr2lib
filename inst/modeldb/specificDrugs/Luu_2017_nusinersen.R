@@ -7,6 +7,7 @@ Luu_2017_nusinersen <- function() {
     dosing = "mg",
     concentration = "ng/mL"
   )
+  dosing <- "csf"
 
   # cns_tissue is the lumped CNS-tissue compartment that pairs with csf in
   # the CSF subsystem. The paper describes it as "a lumped compartment

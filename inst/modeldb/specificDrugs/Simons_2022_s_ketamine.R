@@ -10,6 +10,7 @@ Simons_2022_s_ketamine <- function() {
   )
   vignette <- "Simons_2022_s_ketamine"
   units <- list(time = "min", dosing = "mg", concentration = "nmol/mL")
+  dosing <- c("depot", "central", "depot2")
 
   covariateData <- list(
     WT = list(

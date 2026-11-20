@@ -33,6 +33,7 @@ Nakamura_2024_linagliptin_rat_pbpk <- function() {
   )
   vignette <- "Nakamura_2024_linagliptin_pbpk"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+  dosing <- "ABlood"
 
   covariateData <- list()
 

@@ -26,6 +26,7 @@ Fiandaca_2025_mRNABiTE_scm <- function() {
     dosing = "ug",
     concentration = "ng/mL"
   )
+  dosing <- c("mrna_plasma", "plasma")
 
   # The mRNA staging chain is phenomenological: the authors introduce the
   # minimum number of liver mRNA states needed to reproduce the observed delay

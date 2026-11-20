@@ -22,6 +22,7 @@ Pan_2019_fentanyl_lumped_a <- function() {
   )
   vignette <- "Pan_2019_fentanyl_lumping"
   units <- list(time = "min", dosing = "ug", concentration = "ug/L")
+  dosing <- c("venous", "lumped1")
 
   compartmentData <- list(
     venous = list(analyte = "fentanyl", units = "ug/L", specimen = "whole blood", verified = TRUE),

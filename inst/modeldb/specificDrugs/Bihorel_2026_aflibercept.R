@@ -3,6 +3,7 @@ Bihorel_2026_aflibercept <- function() {
   reference <- "Bihorel S, Chiu J, Chittenden J, Eissing T, Turner KC, Hochel J, Zimmermann T, He ZW, Davis JD, DiCioccio AT, Harnisch LO. Integrated Population Pharmacokinetic Analysis of Intravitreal Aflibercept Drug Products. CPT Pharmacometrics Syst Pharmacol. 2026. doi:10.1002/psp4.70287. Adapts the IV-only free/bound aflibercept model of Thai et al. (2011); see modellib('Thai_2011_aflibercept')."
   vignette <- "Bihorel_2026_aflibercept"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  dosing <- c("vitreous", "depot")
 
   covariateData <- list(
     WT = list(

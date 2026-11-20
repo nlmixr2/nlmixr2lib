@@ -15,6 +15,7 @@ deJonge_2005_paclitaxel <- function() {
     dosing = "mg",
     concentration = "mg/L"
   )
+  dosing <- c("depot", "cremophor")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

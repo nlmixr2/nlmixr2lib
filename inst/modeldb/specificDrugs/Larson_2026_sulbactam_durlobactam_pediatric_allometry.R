@@ -47,6 +47,7 @@ Larson_2026_sulbactam_durlobactam_pediatric_allometry <- function() {
   )
   vignette <- "Larson_2026_sulbactam_durlobactam_pediatric"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("central", "central_sbt")
 
   # Durlobactam plasma residual variability is stratified by study phase in the
   # adult parent model, so the canonical propSd / addSd used by the error model

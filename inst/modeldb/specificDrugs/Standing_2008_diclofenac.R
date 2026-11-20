@@ -9,6 +9,7 @@ Standing_2008_diclofenac <- function() {
   )
   vignette <- "Standing_2008_diclofenac"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+  dosing <- c("depot1", "depot2")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

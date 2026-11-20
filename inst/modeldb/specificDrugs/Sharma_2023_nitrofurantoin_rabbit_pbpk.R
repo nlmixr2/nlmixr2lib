@@ -22,6 +22,7 @@ Sharma_2023_nitrofurantoin_rabbit_pbpk <- function() {
     amount = "mg",
     weight = "kg"
   )
+  dosing <- c("a_plasma", "a_gut_lumen")
 
   # Every state is an AMOUNT in mg (the MCSim `States` block). Concentrations are
   # derived algebraically in model() as amount / organ volume.

@@ -13,6 +13,7 @@ Khera_2024_dyp688_fcrnmut_mouse <- function() {
     dosing = "nmol (antibody; one record per ADC species, see description)",
     concentration = "nM (antibody concentration; 1000 * nmol / mL)"
   )
+  dosing <- c("dar2_central", "dar1_central", "dar0_central")
 
   compartmentData <- list(
     dar2_central = list(

@@ -13,6 +13,7 @@ Khera_2024_dyp688_mouse_krogh_qsp <- function() {
     dosing = "nmol (antibody; one record per ADC species, see description)",
     concentration = "nM for plasma ADC and for every tumour species (concentration per tumour volume as written in the Krogh equations)"
   )
+  dosing <- c("dar0_central", "dar1_central", "dar2_central")
 
   compartmentData <- list(
     dar2_central = list(

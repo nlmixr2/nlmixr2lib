@@ -29,6 +29,7 @@ Wang_2024_patisiran_human_pbpk <- function() {
   )
   vignette <- "Wang_2024_rnaLipidNanoparticle"
   units <- list(time = "h", dosing = "mg", concentration = "mg/mL")
+  dosing <- "venous_np"
 
   compartmentData <- list(
     venous_np = list(analyte = "DLin-MC3-DMA (in LNP)", units = "mg", specimen = "whole blood", verified = TRUE),
