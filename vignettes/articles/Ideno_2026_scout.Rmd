@@ -1,0 +1,485 @@
+---
+title: "Amikacin and eribulin base models for SCOUT dose-covariate screening (Ideno 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Amikacin and eribulin base models for SCOUT dose-covariate screening (Ideno 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Ideno_2026_amikacin"))$reference`
+* Article: [Ideno 2026, *CPT Pharmacometrics Syst Pharmacol* 15(4):e70235 (open access)](https://doi.org/10.1002/psp4.70235)
+
+Ideno, Kasai and Tanigawara (2026) describe SCOUT (Systematic Covariate
+Observational Uncovering Technique): each subject's empirical Bayes estimates
+from a covariate-free base model are used to solve for the dose that meets a
+therapeutic target, and those individual optimal doses are then plotted against
+patient characteristics to decide which covariates to test formally. The method
+itself is an estimation device (the dose is written as a bioavailability
+parameter `F1 = THETA(1) * EXP(ETA(1))` with a penalised objective function in
+NONMEM), not a pharmacometric model, and is not packaged. The paper applies it
+to a virtual one-compartment drug (Part 1; a simulation toy, not packaged) and
+to two real-drug base models whose estimates are published in the supplement.
+Those two models are packaged here:
+
+* `Ideno_2026_amikacin` -- two-compartment IV model with no covariates, fitted
+  to the public University of Strathclyde amikacin dataset (Part 2; estimates in
+  Data S2).
+* `Ideno_2026_eribulin` -- the Majid 2014 three-compartment eribulin PK model
+  (typical values fixed) driving an effect compartment and a Friberg
+  myelosuppression model with three transit compartments, re-estimated without
+  covariates on pooled Japanese phase 2 and post-marketing data (Part 3;
+  estimates in Data S3, ODE structure in the Data S1 control stream).
+
+# Population
+
+```{r population}
+str(rxode2::rxode(readModelDb("Ideno_2026_amikacin"))$population)
+str(rxode2::rxode(readModelDb("Ideno_2026_eribulin"))$population)
+```
+
+Ideno 2026 does not tabulate demographics for either dataset. The amikacin data
+are the adult therapeutic-drug-monitoring records deposited by Thomson et al.
+(University of Strathclyde, 2021); Figure 3 shows ages of roughly 18-90 years,
+adjusted body weights of 35-93 kg, creatinine clearances of 20-185 mL/min and
+both sexes. The eribulin data pool a Japanese phase 2 study (Aogi 2012) with the
+Japanese post-marketing survey analysed by Kawamura 2018; Figure 4 shows body
+weights of roughly 33-100 kg, baseline neutrophil counts of 1-15 x 10^3/uL,
+albumin 1.3-5.0 g/dL, ALP 110-3000 U/L and bilirubin 0.1-2.0 mg/dL.
+
+# Source trace
+
+| Model / parameter | Value | Source location |
+|---|---|---|
+| amikacin `lcl` | log(3.15) L/h | Data S2 table, CL |
+| amikacin `lvc` | log(19.3) L | Data S2 table, V1 |
+| amikacin `lq` | log(0.692) L/h | Data S2 table, Q |
+| amikacin `lvp` | log(7.65) L | Data S2 table, V2 |
+| amikacin `etalcl`, `etalvc`, `etalvp` | 0.657^2, 0.310^2, 0.807^2 | Data S2 table, Omega-CL/V1/V2 (reported as SDs) |
+| amikacin `propSd`, `addSd` | 0.170, 0.994 mg/L | Data S2 table, RUV prop / add (SDs) |
+| amikacin ODEs | `DADT(1) = -(CL+Q)*CC + Q*CP` | Data S1, Part 2 control stream |
+| eribulin `lcl`, `lvc`, `lq`, `lvp`, `lq2`, `lvp2` | 3.11, 4.06, 2.64, 2.42, 6.60, 121 (fixed) | Majid 2014, as printed in Kawamura 2018 section 2.3 |
+| eribulin `e_wt_cl`, `e_alb_cl`, `e_alp_cl`, `e_tbili_cl` | 0.75, 0.946, -0.209, -0.180 (fixed) | Kawamura 2018 section 2.3 CL equation |
+| eribulin `lke0` | log(0.0203) 1/h | Data S3 table, Keo |
+| eribulin `lkprol` | log(0.0570) 1/h | Data S3 table, Kprol |
+| eribulin `lkout` | log(0.0257) 1/h | Data S3 table, Kout |
+| eribulin `lgamma` | log(0.237) | Data S3 table, Gamma |
+| eribulin `lslope` | log(0.0443) mL/ng | Data S3 table, Slope (L/ug) |
+| eribulin IIV (Keo, Kprol, Kout, Gamma, Slope) | 0.856^2, 0.374^2, 0.481^2, 0.382^2, 0.425^2 | Data S3 table, Omega rows (reported as SDs) |
+| eribulin `propSd` | 0.360 | Data S3 table, RUV prop |
+| eribulin `ktr <- kprol` | -- | Data S1, Part 3: `KTR = KPROL` |
+| eribulin initial conditions | progenitor/transit = BNEU*Kout/Ktr, circulating = BNEU | Data S1, Part 3: `A_0(5..9)` |
+| eribulin neutrophil floor | 0.01 x 10^3/uL | Data S1, Part 3: `IF(NEU.LT.0.01) NEU = 0.01` |
+| eribulin effect compartment | `d/dt(effect) = ke0*(Cc - effect)`, `edrug = slope*effect` | Data S1, Part 3: `DADT(4)`, `EDRUG` |
+
+# Part 2: amikacin
+
+## Closed-form dose check (typical subject)
+
+Ideno 2026 (Methods, Part 2) gives the dose that reaches a target Cmax at the
+end of a short infusion of a two-compartment model:
+
+D = Cmax,target * V1 * Dur / [1/ke - (k21 - r1)/(r1 (r2 - r1)) e^(-r1 Dur) - (k21 - r2)/(r2 (r1 - r2)) e^(-r2 Dur)],
+
+where r1 and r2 are the roots of s^2 - (ke + k12 + k21) s + ke k21 = 0. With the
+typical values and the paper's target (Cmax 60 mg/L after a 30-min infusion),
+the ODE model integrated at that dose must peak at exactly 60 mg/L.
+
+```{r amikacin-closed-form}
+# Etas supplied as data columns with omega = NA (common random numbers across
+# dose levels) make rxode2 warn "multi-subject simulation without omega"; only
+# that warning is muffled.
+solve_fixed_eta <- function(...) {
+  withCallingHandlers(
+    rxode2::rxSolve(...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) invokeRestart("muffleWarning")
+    }
+  )
+}
+
+mod_ami <- readModelDb("Ideno_2026_amikacin")
+th_ami <- rxode2::rxode(mod_ami)$theta
+
+amikacin_dose <- function(cl, vc, q, vp, cmax = 60, dur = 0.5) {
+  ke <- cl / vc
+  k12 <- q / vc
+  k21 <- q / vp
+  b <- ke + k12 + k21
+  disc <- sqrt(b^2 - 4 * ke * k21)
+  r1 <- (b + disc) / 2
+  r2 <- (b - disc) / 2
+  den <- 1 / ke -
+    (k21 - r1) / (r1 * (r2 - r1)) * exp(-r1 * dur) -
+    (k21 - r2) / (r2 * (r1 - r2)) * exp(-r2 * dur)
+  cmax * vc * dur / den
+}
+
+dose_typ <- amikacin_dose(
+  exp(th_ami[["lcl"]]), exp(th_ami[["lvc"]]),
+  exp(th_ami[["lq"]]), exp(th_ami[["lvp"]])
+)
+ev_typ <- rxode2::et(amt = dose_typ, dur = 0.5, cmt = "central") |>
+  rxode2::et(c(0, 0.25, 0.5, 1, 2))
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod_ami), ev_typ, rtol = 1e-10, atol = 1e-12)
+cmax_typ <- sim_typ$Cc[sim_typ$time == 0.5]
+c(dose_mg = dose_typ, Cmax_at_end_of_infusion = cmax_typ)
+# Same parameters on both sides, so the only difference is integration error.
+stopifnot(abs(cmax_typ / 60 - 1) < 1e-6)
+```
+
+The typical subject needs about `r round(dose_typ)` mg, which sits at the centre
+of the 0.6-2.2 g spread of SCOUT-estimated doses in Ideno 2026 Figure 3.
+
+## Virtual cohort: individual optimal doses
+
+Each simulated subject's own CL, V1, Q and V2 give its own closed-form dose;
+re-simulating each subject at that dose confirms the target is met. This is the
+analytic shortcut the paper notes (Discussion) for simple compartment models; it
+reaches the same optimum as the penalised-OFV estimation.
+
+```{r amikacin-cohort}
+set.seed(2026)
+rxode2::rxSetSeed(2026)
+n_ami <- 150
+ev_draw <- rxode2::et(amt = 1000, dur = 0.5, cmt = "central") |>
+  rxode2::et(0.5) |>
+  rxode2::et(id = seq_len(n_ami))
+draw <- rxode2::rxSolve(mod_ami, ev_draw, returnType = "data.frame")
+indiv <- draw |>
+  dplyr::filter(time == 0.5) |>
+  dplyr::distinct(id, cl, vc, q, vp) |>
+  dplyr::mutate(dose = amikacin_dose(cl, vc, q, vp))
+
+ev_opt <- dplyr::bind_rows(
+  data.frame(id = indiv$id, time = 0, amt = indiv$dose, rate = indiv$dose / 0.5, evid = 1, cmt = "central"),
+  data.frame(id = indiv$id, time = 0.5, amt = 0, rate = 0, evid = 0, cmt = "central")
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+# Re-use each subject's parameters by supplying the etas as data columns.
+eta_cols <- draw |>
+  dplyr::filter(time == 0.5) |>
+  dplyr::transmute(id, etalcl = log(cl / exp(th_ami[["lcl"]])),
+                   etalvc = log(vc / exp(th_ami[["lvc"]])),
+                   etalvp = log(vp / exp(th_ami[["lvp"]])))
+ev_opt <- dplyr::left_join(ev_opt, eta_cols, by = "id")
+chk <- solve_fixed_eta(mod_ami, ev_opt, omega = NA, rtol = 1e-10, atol = 1e-12,
+                       returnType = "data.frame") |>
+  dplyr::filter(time == 0.5)
+# Same drawn parameters on both sides of the identity.
+stopifnot(max(abs(chk$Cc / 60 - 1)) < 1e-5)
+summary(indiv$dose)
+```
+
+```{r amikacin-dose-plot, fig.cap = "Individual doses reaching Cmax 60 mg/L after a 30-min infusion, plotted against clearance and central volume (compare the dose spread in Ideno 2026 Figure 3, which plots the same doses against patient characteristics)."}
+indiv |>
+  tidyr::pivot_longer(c(cl, vc), names_to = "parameter", values_to = "value") |>
+  ggplot(aes(value, dose / 1000)) +
+  geom_point(shape = 1) +
+  facet_wrap(~parameter, scales = "free_x",
+             labeller = as_labeller(c(cl = "CL (L/h)", vc = "V1 (L)"))) +
+  labs(x = NULL, y = "Optimal dose (g)") +
+  theme_bw()
+```
+
+```{r amikacin-dose-range}
+# Figure 3 places the cohort's SCOUT doses between ~0.6 and ~2.2 g with most
+# of the mass around 1.0-1.5 g. The centre is set by the typical V1 and CL and
+# does not depend on which subjects land in the tails.
+stopifnot(median(indiv$dose) > 1000, median(indiv$dose) < 1500)
+```
+
+## PKNCA
+
+Ideno 2026 reports no NCA for amikacin; the table below documents the model's
+single-dose exposure for a 1 g, 30-min infusion in the virtual cohort.
+
+```{r amikacin-pknca}
+ev_nca <- rxode2::et(amt = 1000, dur = 0.5, cmt = "central") |>
+  rxode2::et(c(0, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24, 36, 48)) |>
+  rxode2::et(id = seq_len(100))
+sim_nca <- rxode2::rxSolve(mod_ami, ev_nca, returnType = "data.frame") |>
+  dplyr::mutate(treatment = "1 g IV over 30 min")
+stopifnot(all(sim_nca$Cc >= -1e-6 * max(sim_nca$Cc, na.rm = TRUE), na.rm = TRUE))
+conc_ami <- sim_nca |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(Cc = pmax(Cc, 0)) |>
+  dplyr::select(id, time, Cc, treatment)
+dose_ami <- data.frame(id = seq_len(100), time = 0, amt = 1000, treatment = "1 g IV over 30 min")
+nca_ami <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_ami, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_ami, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                         aucinf.obs = TRUE, half.life = TRUE)
+))
+summary(nca_ami)
+```
+
+# Part 3: eribulin
+
+## Steady state without drug
+
+The Data S1 initial conditions (progenitor and transit states at BNEU*Kout/Ktr)
+put the Friberg chain at steady state, so with no dose the neutrophil count must
+stay at baseline.
+
+```{r eribulin-steady-state}
+mod_eri <- readModelDb("Ideno_2026_eribulin")
+cov_typ <- data.frame(WT = 50, ALB = 39, ALP = 300, TBILI = 0.5 * 17.1, NEUT = 3200)
+ev_ss <- rxode2::et(seq(0, 2016, by = 24))
+sim_ss <- rxode2::rxSolve(rxode2::zeroRe(mod_eri), ev_ss, params = cov_typ,
+                          rtol = 1e-10, atol = 1e-12)
+stopifnot(max(abs(sim_ss$ANC / 3200 - 1)) < 1e-6)
+```
+
+## Typical-patient optimal dose
+
+The SCOUT target in Part 3 is the largest dose that keeps the neutrophil count
+at or above 500/uL (no CTCAE grade 4 neutropenia) through four 21-day cycles on
+the approved schedule (days 1 and 8 every 21 days) or through the alternate
+every-other-week (EOW) schedule, evaluated to 2016 h (Figure S3). Because the
+nadir falls monotonically with dose, the penalised-OFV estimate equals the
+dose found by bisection.
+
+```{r eribulin-helpers}
+schedules <- list(
+  "2-week-on, 1-week-off" = c(0, 168, 504, 672, 1008, 1176, 1512, 1680),
+  "EOW" = seq(0, 1680, by = 336)
+)
+bsa_dubois <- function(wt, ht) 0.007184 * wt^0.425 * ht^0.725
+
+eri_events <- function(subj, dose_mgm2, times, obs = seq(0, 2016, by = 4)) {
+  dose_rows <- data.frame(
+    id = rep(subj$id, each = length(times)),
+    time = rep(times, nrow(subj)),
+    amt = rep(dose_mgm2 * subj$BSA, each = length(times)),
+    evid = 1, cmt = "central"
+  )
+  obs_rows <- data.frame(
+    id = rep(subj$id, each = length(obs)),
+    time = rep(obs, nrow(subj)),
+    amt = 0, evid = 0, cmt = "circ"
+  )
+  dplyr::bind_rows(dose_rows, obs_rows) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    dplyr::left_join(dplyr::select(subj, -BSA), by = "id")
+}
+
+eri_nadir <- function(mod, subj, dose_mgm2, times, ...) {
+  sim <- solve_fixed_eta(mod, eri_events(subj, dose_mgm2, times), returnType = "data.frame", ...)
+  if (is.null(sim$id)) sim$id <- subj$id[1]
+  as.numeric(tapply(sim$ANC, sim$id, min))
+}
+
+# Bisection on the log dose scale, run for every subject at once.
+eri_optimal_dose <- function(mod, subj, times, n_iter = 22, ...) {
+  lo <- rep(0.02, nrow(subj))
+  hi <- rep(20, nrow(subj))
+  for (i in seq_len(n_iter)) {
+    mid <- sqrt(lo * hi)
+    ok <- eri_nadir(mod, subj, mid, times, ...) >= 500
+    lo[ok] <- mid[ok]
+    hi[!ok] <- mid[!ok]
+  }
+  sqrt(lo * hi)
+}
+
+subj_typ <- data.frame(id = 1L, cov_typ, BSA = bsa_dubois(50, 155))
+typ_dose <- vapply(schedules, function(tt) eri_optimal_dose(rxode2::zeroRe(mod_eri), subj_typ, tt), numeric(1))
+typ_tab <- data.frame(
+  regimen = names(schedules),
+  typical = typ_dose,
+  paper_mean = c(1.26, 1.97),
+  paper_sd = c(0.59, 1.00)
+)
+typ_tab |>
+  dplyr::mutate(pct_diff = 100 * (typical / paper_mean - 1)) |>
+  dplyr::rename(
+    "Regimen" = regimen,
+    "Typical-patient optimal dose (mg/m^2 free base)" = typical,
+    "Ideno 2026 cohort mean" = paper_mean,
+    "Ideno 2026 cohort SD" = paper_sd,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2, row.names = FALSE)
+# Deterministic (typical values, fixed covariates). A mis-transcribed Slope,
+# Kprol or Kout moves these by far more than 15%.
+stopifnot(abs(typ_dose / c(1.26, 1.97) - 1) < 0.15)
+```
+
+The typical patient (50 kg, 155 cm, albumin 3.9 g/dL, ALP 300 U/L, bilirubin
+0.5 mg/dL, baseline neutrophils 3200/uL) tolerates about the approved
+1.23 mg/m^2 free-base dose on the approved schedule and about 1.6 times more on
+the EOW schedule, matching the cohort means in the Results of Ideno 2026.
+
+## Virtual cohort: individual optimal doses (Figure 4)
+
+```{r eribulin-cohort}
+n_eri <- 100
+set.seed(2026)
+lhs <- function(n, sd) sd * stats::qnorm((sample.int(n) - 0.5) / n)
+om <- rxode2::rxode(mod_eri)$omega
+subj <- data.frame(
+  id = seq_len(n_eri),
+  WT = pmin(pmax(stats::rnorm(n_eri, 52, 9), 33), 100),
+  ALB = pmin(pmax(stats::rnorm(n_eri, 3.8, 0.5), 1.5), 5.0) * 10,
+  ALP = exp(stats::rnorm(n_eri, log(300), 0.6)),
+  TBILI = exp(stats::rnorm(n_eri, log(0.5), 0.4)) * 17.1,
+  NEUT = exp(stats::rnorm(n_eri, log(3200), 0.4))
+)
+subj$BSA <- bsa_dubois(subj$WT, 155)
+for (nm in rownames(om)) subj[[nm]] <- lhs(n_eri, sqrt(om[nm, nm]))
+
+dose_on21 <- eri_optimal_dose(mod_eri, subj, schedules[[1]], omega = NA)
+dose_eow <- eri_optimal_dose(mod_eri, subj, schedules[[2]], omega = NA)
+res <- dplyr::mutate(subj, `2-week-on, 1-week-off` = dose_on21, EOW = dose_eow)
+
+# The supplied etas are used (not resampled): Kprol must equal its closed form.
+chk_eta <- solve_fixed_eta(mod_eri, eri_events(subj, 1, 0, obs = 0), omega = NA,
+                           returnType = "data.frame")
+stopifnot(max(abs(chk_eta$kprol / (0.0570 * exp(subj$etalkprol)) - 1)) < 1e-8)
+
+data.frame(
+  regimen = names(schedules),
+  sim_mean = c(mean(dose_on21), mean(dose_eow)),
+  sim_sd = c(stats::sd(dose_on21), stats::sd(dose_eow)),
+  sim_median = c(stats::median(dose_on21), stats::median(dose_eow)),
+  paper_mean = c(1.26, 1.97),
+  paper_sd = c(0.59, 1.00)
+) |>
+  dplyr::rename(
+    "Regimen" = regimen,
+    "Simulated mean (mg/m^2)" = sim_mean,
+    "Simulated SD" = sim_sd,
+    "Simulated median" = sim_median,
+    "Ideno 2026 mean" = paper_mean,
+    "Ideno 2026 SD" = paper_sd
+  ) |>
+  knitr::kable(digits = 2, row.names = FALSE)
+
+c(
+  median_ratio_eow_to_approved = stats::median(dose_eow / dose_on21),
+  spearman_neut_dose = stats::cor(log(res$NEUT), log(dose_on21), method = "spearman")
+)
+# Centre, not extremes: the EOW schedule allows a larger dose per
+# administration for nearly every subject, and lower baseline neutrophils
+# lower the tolerated dose (Ideno 2026 Results and Figure 4).
+stopifnot(
+  median(dose_eow / dose_on21) > 1.3,
+  stats::cor(log(res$NEUT), log(dose_on21), method = "spearman") > 0.2
+)
+```
+
+```{r eribulin-figure4, fig.cap = "Replicates the layout of Ideno 2026 Figure 4: individual optimal doses against baseline neutrophil count and body weight, for both regimens. Covariates are simulated (see Assumptions), so only the trends, not the individual points, are comparable."}
+res |>
+  dplyr::mutate(`Baseline neutrophils (10^3/uL)` = NEUT / 1000, `Body weight (kg)` = WT) |>
+  tidyr::pivot_longer(c(`2-week-on, 1-week-off`, EOW), names_to = "regimen", values_to = "dose") |>
+  tidyr::pivot_longer(c(`Baseline neutrophils (10^3/uL)`, `Body weight (kg)`),
+                      names_to = "covariate", values_to = "value") |>
+  ggplot(aes(value, dose)) +
+  geom_point(shape = 1) +
+  geom_smooth(method = "loess", formula = y ~ x) +
+  facet_grid(regimen ~ covariate, scales = "free") +
+  labs(x = NULL, y = "Estimated optimal dose (mg/m^2)") +
+  theme_bw()
+```
+
+```{r eribulin-figureS7, fig.cap = "Replicates Ideno 2026 Figure S7A: neutrophil profiles on the approved schedule at each subject's optimal dose; every nadir touches the 500/uL line."}
+sim_opt <- solve_fixed_eta(
+  mod_eri,
+  eri_events(subj, dose_on21, schedules[[1]], obs = seq(0, 2016, by = 8)),
+  omega = NA, returnType = "data.frame"
+)
+nadir_opt <- tapply(sim_opt$ANC, sim_opt$id, min)
+# Bisection resolution is (log(1000)/2^22) on log dose, so every nadir sits
+# within a fraction of a percent of 500/uL (coarser output grid: allow 3%).
+stopifnot(abs(stats::median(nadir_opt) / 500 - 1) < 0.03)
+ggplot(sim_opt, aes(time, ANC / 1000, group = id)) +
+  geom_line(alpha = 0.3) +
+  geom_hline(yintercept = 0.5, linetype = "dotted") +
+  scale_y_log10() +
+  scale_x_continuous(breaks = seq(0, 2016, by = 168)) +
+  labs(x = "Time (h)", y = "Neutrophil count (10^3/uL)") +
+  theme_bw()
+```
+
+## PKNCA
+
+Ideno 2026 reports no NCA for eribulin; the table documents the single-dose
+plasma exposure of the fixed Majid 2014 PK layer for 1.23 mg/m^2 free base in the
+virtual cohort.
+
+```{r eribulin-pknca}
+obs_nca <- c(0, 0.1, 0.25, 0.5, 1, 2, 4, 8, 12, 24, 48, 72, 96, 120, 168)
+ev_nca_eri <- eri_events(subj, 1.23, 0, obs = obs_nca) |>
+  dplyr::mutate(cmt = ifelse(evid == 0, "central", cmt))
+sim_nca_eri <- solve_fixed_eta(mod_eri, ev_nca_eri, omega = NA, returnType = "data.frame") |>
+  dplyr::mutate(treatment = "1.23 mg/m^2 IV")
+conc_eri <- sim_nca_eri |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(Cc = pmax(Cc, 0)) |>
+  dplyr::select(id, time, Cc, treatment)
+dose_eri <- data.frame(id = subj$id, time = 0, amt = 1.23 * subj$BSA, treatment = "1.23 mg/m^2 IV")
+nca_eri <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_eri, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_eri, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE, half.life = TRUE)
+))
+summary(nca_eri)
+```
+
+# Assumptions and deviations
+
+* **What is packaged.** SCOUT is an estimation procedure; its penalised
+  objective function and the dose-as-bioavailability device are not part of the
+  models. The Part 1 virtual drug is a simulation toy and is not packaged. The
+  amikacin and eribulin base models are packaged as fitted.
+* **Eribulin PK layer.** Ideno 2026 states that the Majid 2014
+  three-compartment model was "used for the PK component" and reports estimates
+  for the PD parameters only (Data S3). The PK typical values and covariate
+  equations are therefore taken from Majid 2014 as printed in Kawamura 2018
+  section 2.3 (same research group, same post-marketing data) and held fixed.
+  Majid 2014 PK between-subject variability is not reported in either source on
+  hand, so the PK layer is typical-value only and the eribulin model has no
+  residual-error term on plasma concentration.
+* **Eribulin units.** The control stream doses micrograms of free base and
+  divides by litres, so concentrations are in ng/mL and Slope is in L/ug
+  (= mL/ng). The packaged model takes the dose in mg of free base and scales Cc
+  by 1000 to the same ng/mL. Neutrophil states are in cells/uL (the source uses
+  10^3/uL); the 0.01 x 10^3/uL floor is applied as 10 cells/uL. The proportional
+  residual error is unit-free.
+* **Eribulin administration.** The Part 3 dataset (Figure S3) carries no RATE
+  column, so doses are IV boluses into the central compartment.
+* **IIV.** Data S2 and S3 report the IIV and residual terms as standard
+  deviations; the packaged variances are their squares. No covariances are
+  reported, so the IIV is diagonal.
+* **Amikacin cohort.** The packaged amikacin model has no covariates, so the
+  virtual cohort only samples IIV. The dose-range check compares the cohort
+  median with the spread in Figure 3.
+* **Eribulin virtual cohort.** Ideno 2026 publishes no covariate summary. The
+  covariates are simulated: body weight normal(52, 9) kg truncated to 33-100 kg,
+  albumin normal(3.8, 0.5) g/dL truncated to 1.5-5.0, ALP log-normal (median 300
+  U/L, SD 0.6 on the log scale), bilirubin log-normal (median 0.5 mg/dL, SD 0.4),
+  baseline neutrophils log-normal (median 3200/uL, SD 0.4; Kawamura 2018 Table 1
+  median), and height 155 cm for every subject when computing body surface area
+  (DuBois). The ranges are read from the axes of Figure 4. The etas are drawn as
+  Latin-hypercube quantiles so every marginal is reproduced exactly.
+* **Comparison with the published means.** The paper's 1.26 (0.59) and
+  1.97 (1.00) mg/m^2 are means of doses computed from shrunken empirical Bayes
+  estimates of real patients (eta shrinkage 22-43% in Data S3); the simulated
+  cohort samples the full IIV, so its spread is wider than the paper's, and
+  because the dose distribution is right-skewed its mean is pulled up as well
+  (the simulated median sits close to the paper's mean). The covariate
+  distribution is also simulated, not the paper's. The typical-patient doses are
+  the like-for-like comparison and agree within a few percent.

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Saravanakumar 2026 TAK-500 (anti-CCR2 STING-agonist ADC) and plozalizumab ([doi:10.1111/cts.70522](https://doi.org/10.1111/cts.70522)) -- cynomolgus monkeys and healthy adults, with the TAK-500 first-in-human projection.
+- Add Ideno 2026 amikacin and eribulin SCOUT base models ([doi:10.1002/psp4.70235](https://doi.org/10.1002/psp4.70235)) -- adults on amikacin TDM, and Japanese patients with metastatic breast cancer (eribulin PK/neutropenia).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
