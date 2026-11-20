@@ -1,0 +1,610 @@
+---
+title: "SYHA1805: human and cynomolgus monkey PK (Zhang 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SYHA1805: human and cynomolgus monkey PK (Zhang 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+mod_h <- readModelDb("Zhang_2026_SYHA1805_human")
+mod_m <- readModelDb("Zhang_2026_SYHA1805_monkey")
+ui_h <- rxode2::rxode(mod_h)
+ui_m <- rxode2::rxode(mod_m)
+```
+
+* Citation: `r ui_h$reference`
+* Article: <https://doi.org/10.3390/pharmaceutics18070862>
+* Full text and supplement:
+  <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC13414496/>
+
+SYHA1805 is a non-steroidal farnesoid X receptor (FXR) agonist in development
+for metabolic dysfunction-associated steatohepatitis (MASH). Zhang 2026
+combines in vitro ADME work, rat and cynomolgus monkey pharmacokinetics,
+allometric scaling and Simcyp (version 20) physiologically based
+pharmacokinetic (PBPK) models of rat, monkey and human to choose the
+first-in-human dose. It then checks the human model against a
+single-ascending-dose (SAD) study (CTR20202354) at 30, 60 and 120 mg.
+
+A literature check on 2026-11-15 (Europe PMC search for "SYHA1805") found no
+erratum or correction for the paper.
+
+# What these models are, and what they are not
+
+The three PBPK models use Simcyp's full-PBPK distribution model with
+Rodgers-Rowland ("method 2") tissue:plasma partition coefficients and a
+`Kp` scalar. Simcyp's whole-body mass-balance equations, its organ volumes and
+blood flows, and the resulting tissue `Kp` values are platform outputs that
+the paper does not print, so the platform models themselves cannot be
+rebuilt. What Table 3 does print, per species, is the drug layer: the in vivo
+intravenous clearance input, the predicted steady-state volume `Vss`,
+first-order absorption (`ka`, fraction absorbed `fa`), the blood-to-plasma
+ratio and `fu`.
+
+For the human and the monkey models that is enough for a one-compartment
+reduction with no fitted parameter. Oral bioavailability is the product
+`fa * Fg * Fh`. Elimination is a single in vivo clearance with no gut-wall
+term, so `Fg = 1`; `Fh` follows from the well-stirred liver,
+`Fh = 1 - CL / (Qh * B/P)`, using the hepatic blood flows the paper itself
+uses for allometry (Supplementary Equation S10: 1450 mL/min for a human,
+122.5 mL/min for the monkey) and `B/P = 1.00` (Table 3). The paper's own
+model predictions are the answer key: Figure 4 (human predicted AUC and
+Cmax), Figure 5 (human predicted mean profile and 90% interval) and
+Figure 3D-F (monkey predicted AUC, CL and Cmax). The maintainers digitised
+those figures from the publisher's high-resolution images; the values are
+typed into the chunks below.
+
+```{r f-derivation}
+qh_h <- 1450 * 60 / 1000   # L/h, human hepatic blood flow (Eq. S10)
+qh_m <- 122.5 * 60 / 1000  # L/h, monkey hepatic blood flow (Eq. S10)
+cl_h <- 20.7               # L/h, Table 3 (human column; see Errata)
+cl_m <- 23.46 * 60 / 1000  # L/h, Table 3 (monkey)
+bp <- 1.00                 # Table 3, all species
+
+f_tab <- tibble::tibble(
+  Species = c("Human", "Cynomolgus monkey"),
+  fa = c(1.00, 0.02),
+  Fh = c(1 - cl_h / (qh_h * bp), 1 - cl_m / (qh_m * bp))
+) |>
+  dplyr::mutate(F = fa * Fh)
+
+knitr::kable(f_tab |> dplyr::mutate(dplyr::across(where(is.numeric), \(x) signif(x, 4))),
+             caption = "Oral bioavailability derived from printed values (Fg = 1).")
+
+stopifnot(
+  isTRUE(all.equal(exp(ui_h$theta[["lfdepot"]]), f_tab$F[1], tolerance = 1e-3)),
+  isTRUE(all.equal(exp(ui_m$theta[["lfdepot"]]), f_tab$F[2], tolerance = 1e-3))
+)
+```
+
+## Why the rat model is not reproduced
+
+The rat model has the same drug layer (CL 16.99 mL/min, `Vss` 1.85 L/kg,
+`ka` 0.30 1/h, `fa` 1.00), but its bioavailability cannot be derived from
+printed values. The rat clearance input exceeds the rat hepatic blood flow
+the paper prints (11.8 mL/min, Supplementary Equation S10), which would make
+the hepatic extraction ratio greater than one:
+
+```{r rat-check}
+c(rat_CL_mL_min = 16.99, rat_Qh_mL_min = 11.8, extraction_ratio = 16.99 / 11.8)
+stopifnot(16.99 / 11.8 > 1)
+```
+
+Simcyp must therefore have used its own rat blood flows or an extra
+systemic clearance, neither of which is printed, so the oral rat arm rests on
+an unprinted platform output. The intravenous rat arm alone would be checked
+only against its predicted AUC and clearance (Figure 3A-B), which equal
+`dose / CL` for any model with that clearance and so test nothing about the
+reduction. The rat layer is documented here and not packaged.
+
+# Population
+
+```{r population}
+pop_row <- function(p) {
+  c(p$species, p$n_subjects, p$age_range, p$weight_median,
+    p$sex_female_pct, p$disease_state, p$dose_range)
+}
+pop_tab <- tibble::tibble(
+  Field = c("Species", "Subjects", "Age", "Weight", "% female", "Disease",
+            "Doses"),
+  Human = pop_row(ui_h$population),
+  Monkey = pop_row(ui_m$population)
+)
+knitr::kable(pop_tab, caption = "Populations behind the two reductions.")
+```
+
+The human PBPK simulations used a Simcyp virtual population of 10 trials of
+10 healthy volunteers (n = 100, half female, 20-50 years; section 2.6.2),
+and were compared with the SAD study CTR20202354 in healthy Chinese
+volunteers sampled to 72 h. The monkey model was built and checked on
+24 cynomolgus monkeys (4 groups of 6, 3 per sex) given 1 mg/kg
+intravenously or 10, 30 or 100 mg/kg orally (section 2.3.2, Table 2).
+
+# Source trace
+
+```{r source-trace}
+trace_tab <- tibble::tribble(
+  ~Model,   ~Parameter, ~Value,       ~Source,
+  "human",  "lka",      "0.30 1/h",   "Table 3 'ka (1/h)', Oral (Human)",
+  "human",  "lcl",      "20.7 L/h",   "Table 3 'CLi.v', Oral (Human) 20.70; abstract and section 3.4 '20.7 L/h'; Table S7 monkey-based mean",
+  "human",  "lvc",      "14.7 L",     "Table 3 'Vss' Predicted (0.21 L/kg) x 70 kg (section 3.4 reference weight)",
+  "human",  "lfdepot",  "0.7621",     "fa 1.00 (Table 3) x Fg 1 x Fh = 1 - 20.7 / (87.0 x 1.00); Qh 1450 mL/min (Eq. S10), B/P 1.00 (Table 3)",
+  "human",  "propSd",   "0 (fixed)",  "No residual-error model reported",
+  "monkey", "lka",      "0.30 1/h",   "Table 3 'ka (1/h)', Oral (Monkey)",
+  "monkey", "lcl",      "1.4076 L/h", "Table 3 'CLi.v (mL/min)' 23.46, Monkey; = 8.35 mL/min/kg (Table 2) x 2.81 kg",
+  "monkey", "lvc",      "0.6463 L",   "Table 3 'Vss' Predicted (0.23 L/kg) x 2.81 kg",
+  "monkey", "lfdepot",  "0.01617",    "fa 0.02 (Table 3) x Fg 1 x Fh = 1 - 23.46 / (122.5 x 1.00); Qh 122.5 mL/min (Eq. S10)",
+  "monkey", "propSd",   "0 (fixed)",  "No residual-error model reported"
+)
+knitr::kable(trace_tab, caption = "Source trace for every fixed parameter.")
+```
+
+Both models are the standard one-compartment first-order-absorption system
+(`d/dt(depot) = -ka * depot`, `d/dt(central) = ka * depot - kel * central`,
+`kel = cl / vc`, `f(depot) = F`, `Cc = 1000 * central / vc`) with no
+nonstandard terms. The `1000` converts mg/L to ng/mL.
+
+The 2.81 kg monkey weight is not printed but is implied twice by the paper's
+own numbers, so it is not an assumption of the maintainers:
+
+```{r monkey-weight}
+bw_from_cl <- 23.46 / 8.35  # Table 3 mL/min / Table 2 mL/min/kg
+bw_from_qh <- 122.5 / 43.6  # Eq. S10 mL/min / Table S1 mL/min/kg
+c(bw_from_cl = bw_from_cl, bw_from_qh = bw_from_qh)
+stopifnot(abs(bw_from_cl - 2.81) < 0.01, abs(bw_from_qh - 2.81) < 0.01)
+```
+
+# Virtual cohort
+
+Both models have no random effects, so they are deterministic and one
+subject fully describes each regimen. Human regimens are the SAD doses of
+30, 60 and 120 mg. Monkey regimens are 1 mg/kg intravenous (a bolus into
+`central`) and 10, 30 and 100 mg/kg oral (into `depot`), converted to mg at
+2.81 kg. Observations sit on the `central` ODE state, where `Cc` is returned
+as an algebraic observable.
+
+```{r cohort}
+obs_grid <- sort(unique(c(seq(0, 2, by = 0.01), seq(2, 72, by = 0.05))))
+
+make_events <- function(id, amt, cmt, arm) {
+  dplyr::bind_rows(
+    tibble::tibble(id = id, time = 0, amt = amt, evid = 1L, cmt = cmt,
+                   arm = arm),
+    tibble::tibble(id = id, time = obs_grid, amt = NA_real_, evid = 0L,
+                   cmt = "central", arm = arm)
+  )
+}
+
+bw_m <- 2.81
+ev_h <- dplyr::bind_rows(
+  make_events(1L, 30, "depot", "30 mg"),
+  make_events(2L, 60, "depot", "60 mg"),
+  make_events(3L, 120, "depot", "120 mg")
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+ev_m <- dplyr::bind_rows(
+  make_events(1L, 1 * bw_m, "central", "IV 1 mg/kg"),
+  make_events(2L, 10 * bw_m, "depot", "Oral 10 mg/kg"),
+  make_events(3L, 30 * bw_m, "depot", "Oral 30 mg/kg"),
+  make_events(4L, 100 * bw_m, "depot", "Oral 100 mg/kg")
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+stopifnot(!anyDuplicated(ev_h[, c("id", "time", "evid")]),
+          !anyDuplicated(ev_m[, c("id", "time", "evid")]))
+```
+
+# Simulation
+
+```{r simulate}
+sim_h <- rxode2::rxSolve(mod_h, events = ev_h, keep = "arm",
+                         rtol = 1e-10, atol = 1e-12) |>
+  as.data.frame()
+sim_m <- rxode2::rxSolve(mod_m, events = ev_m, keep = "arm",
+                         rtol = 1e-10, atol = 1e-12) |>
+  as.data.frame()
+stopifnot(all(is.finite(sim_h$Cc)), all(is.finite(sim_m$Cc)),
+          length(unique(sim_h$id)) == 3L, length(unique(sim_m$id)) == 4L)
+```
+
+# Replicate published figures
+
+## Figure 5: human predicted profiles
+
+Figure 5 shows, for each SAD dose, the PBPK model's predicted **mean**
+profile (orange), its 90% interval (purple) and the observed means, on a
+log scale from 1e-20 to 1e5 ng/mL. The table below holds the maintainers'
+digitised values: the predicted mean curve over 0.5-12 h (where it is not
+hidden behind the observed points), and the geometric centre of the 90%
+interval (the midpoint in log space of its 5th and 95th percentile edges) at
+16-47 h.
+
+```{r fig5-digitised}
+fig5_mean <- tibble::tribble(
+  ~arm,     ~time, ~log10_mean,
+  "30 mg",  0.5,   2.15,
+  "30 mg",  1,     2.23,
+  "30 mg",  2,     2.29,
+  "30 mg",  3.5,   2.11,
+  "30 mg",  5.5,   1.89,
+  "30 mg",  8,     1.63,
+  "30 mg",  12,    1.17,
+  "60 mg",  0.5,   2.45,
+  "60 mg",  1,     2.55,
+  "60 mg",  2,     2.55,
+  "60 mg",  3.5,   2.45,
+  "60 mg",  5.5,   2.23,
+  "120 mg", 0.5,   2.75,
+  "120 mg", 1,     2.83,
+  "120 mg", 2,     2.89,
+  "120 mg", 3.5,   2.73,
+  "120 mg", 5.5,   2.51,
+  "120 mg", 8,     2.31,
+  "120 mg", 12,    1.85
+)
+fig5_band <- tibble::tribble(
+  ~arm,     ~time, ~log10_p95, ~log10_p5,
+  "30 mg",  16,    1.16,       -0.40,
+  "30 mg",  24,    0.60,       -1.89,
+  "30 mg",  36,    -0.24,      -4.10,
+  "30 mg",  47,    -1.04,      -6.14,
+  "60 mg",  16,    1.45,       -0.12,
+  "60 mg",  24,    0.88,       -1.57,
+  "60 mg",  36,    0.08,       -3.82,
+  "60 mg",  47,    -0.76,      -5.82,
+  "120 mg", 16,    1.77,       0.20,
+  "120 mg", 24,    1.20,       -1.29,
+  "120 mg", 36,    0.36,       -3.49,
+  "120 mg", 47,    -0.48,      -5.54
+) |>
+  dplyr::mutate(log10_centre = (log10_p95 + log10_p5) / 2)
+
+model_at <- function(sim, a, t) {
+  vapply(seq_along(t), function(i) {
+    sim$Cc[sim$arm == a[i] & abs(sim$time - t[i]) < 1e-8]
+  }, numeric(1))
+}
+
+chk_mean <- fig5_mean |>
+  dplyr::mutate(log10_model = log10(model_at(sim_h, arm, time)),
+                diff = log10_model - log10_mean)
+chk_band <- fig5_band |>
+  dplyr::mutate(log10_model = log10(model_at(sim_h, arm, time)),
+                diff = log10_model - log10_centre)
+
+knitr::kable(chk_mean |> dplyr::mutate(dplyr::across(where(is.numeric), \(x) round(x, 2))) |>
+               dplyr::rename("Time (h)" = time, "Fig 5 mean (log10 ng/mL)" = log10_mean,
+                             "Reduction (log10 ng/mL)" = log10_model,
+                             "Difference (decades)" = diff),
+             caption = "Reduction vs. the digitised Figure 5 predicted mean, 0.5-12 h (gated to 5.5 h).")
+knitr::kable(chk_band |> dplyr::mutate(dplyr::across(where(is.numeric), \(x) round(x, 2))) |>
+               dplyr::rename("Time (h)" = time, "95th pct" = log10_p95, "5th pct" = log10_p5,
+                             "Centre" = log10_centre, "Reduction" = log10_model,
+                             "Difference (decades)" = diff),
+             caption = "Reduction vs. the geometric centre of the digitised Figure 5 90% interval, 16-47 h (log10 ng/mL).")
+
+# Digitising error is about 0.04 decades; 0.15 decades (41%) on the early
+# mean and 0.25 decades on the band centre leave room for that and for the
+# platform's population averaging, while a wrong clearance, volume, ka or F
+# moves these curves by far more.
+# The early-mean check covers absorption and the peak (to 5.5 h). From about
+# 8 h the platform's population mean starts to sit above any single typical
+# profile (see the narrative below), so those rows are shown but not gated.
+early <- chk_mean$time <= 5.5
+stopifnot(sum(early) == 15L,
+          max(abs(chk_mean$diff[early])) < 0.15,
+          max(abs(chk_band$diff)) < 0.25)
+```
+
+```{r figure-5, fig.width = 8, fig.height = 4}
+ggplot(dplyr::filter(sim_h, time <= 48),
+       aes(time, Cc)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(data = fig5_mean, aes(time, 10^log10_mean, colour = "Figure 5 predicted mean"),
+             size = 2) +
+  geom_point(data = fig5_band, aes(time, 10^log10_centre, colour = "Figure 5 90% interval centre"),
+             size = 2) +
+  facet_wrap(~ factor(arm, levels = c("30 mg", "60 mg", "120 mg"))) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Plasma SYHA1805 (ng/mL)", colour = NULL,
+       caption = "Replicates Figure 5 of Zhang 2026 (line: reduction; points: digitised PBPK predictions).") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+The reduction follows the predicted mean to within 0.1 decade (25%) through
+absorption and the peak, to 5.5 h. From about 8 h the mean starts to run
+above it (by 0.05-0.13 decade at 8 h and 0.11-0.19 decade at 12 h), and later
+the platform's **arithmetic mean** curve flattens (to about 0.04 ng/mL at 48 h
+after 30 mg), but its 90% interval widens to five decades: by 47 h the
+5th and 95th percentiles are 1e-6 and 0.1 ng/mL. A mean over subjects whose
+exponential decline rates differ is dominated by the slowest subjects, so the
+flat tail is a property of the averaging, not of a typical subject. The
+reduction is a typical subject, and it runs through the centre of the
+interval at every late time.
+
+## Figure 4: human predicted AUC and Cmax
+
+```{r fig4-digitised}
+fig4 <- tibble::tribble(
+  ~arm,     ~auc_pred, ~cmax_pred, ~auc_obs, ~cmax_obs,
+  "30 mg",  1133,      204,        618,      137,
+  "60 mg",  2259,      409,        1205,     236,
+  "120 mg", 4426,      802,        2163,     466
+)
+knitr::kable(fig4, caption = paste("Digitised Figure 4: predicted (y) and observed (x)",
+                                   "AUC (ng*h/mL) and Cmax (ng/mL) for the SAD doses."))
+```
+
+## Figure 3D-F: monkey predicted AUC and Cmax
+
+Figure 3 labels its axes in ng/mL, but its observed coordinates are the
+nmol/L values of Table 2 (for example the oral 10 mg/kg AUC sits at
+564 against Table 2's AUC0-last of 564 nM*h, and the oral Cmax at 144 against
+143 nM). The predicted values are therefore read in nmol/L too.
+
+```{r fig3-digitised}
+fig3 <- tibble::tribble(
+  ~arm,             ~dose_mgkg, ~auc_pred_nM, ~cmax_pred_nM, ~auc_obs_nM, ~cmax_obs_nM,
+  "IV 1 mg/kg",     1,          3590,         NA,            3600,        NA,
+  "Oral 10 mg/kg",  10,         563,          120,           669,         143,
+  "Oral 30 mg/kg",  30,         1652,         361,           1440,        319,
+  "Oral 100 mg/kg", 100,        6026,         1062,          3640,        633
+)
+knitr::kable(fig3, caption = paste("Digitised Figure 3D/3F predictions with Table 2",
+                                   "observed AUC0-inf and Cmax (nM*h, nM)."))
+```
+
+The first comparison needs no molecular weight. For a linear model the
+dose-normalised ratio of oral to intravenous AUC is the bioavailability, so
+the platform's own predictions imply an `F` that can be set against the one
+derived from the printed `fa`, `CL` and `Qh`:
+
+```{r monkey-f-check}
+auc_iv_per_mgkg <- fig3$auc_pred_nM[1] / fig3$dose_mgkg[1]
+f_chk <- fig3 |>
+  dplyr::filter(dose_mgkg > 1) |>
+  dplyr::mutate(F_implied = auc_pred_nM / dose_mgkg / auc_iv_per_mgkg,
+                F_model = exp(ui_m$theta[["lfdepot"]]),
+                pct = 100 * (F_model / F_implied - 1))
+knitr::kable(f_chk |> dplyr::select(arm, F_implied, F_model, pct) |>
+               dplyr::mutate(dplyr::across(where(is.numeric), \(x) signif(x, 3))) |>
+               dplyr::rename("F implied by Figure 3D" = F_implied, "F in model" = F_model,
+                             "% diff" = pct),
+             caption = "Monkey oral bioavailability: model vs. platform predictions.")
+stopifnot(max(abs(f_chk$pct)) < 10)
+```
+
+Taking `fa = 0.02` alone as the bioavailability would over-predict every oral
+AUC by 24% (1 / 0.808); the hepatic first-pass term closes that gap.
+
+# PKNCA validation
+
+```{r pknca}
+run_nca <- function(sim, ev, route_of) {
+  conc <- sim |>
+    dplyr::filter(!is.na(Cc)) |>
+    dplyr::select(id, time, Cc, arm)
+  dose_df <- ev |>
+    dplyr::filter(evid == 1L) |>
+    dplyr::mutate(route = route_of(cmt)) |>
+    dplyr::select(id, time, amt, arm, route)
+  stopifnot(nrow(conc) > 0, any(conc$time == 0))
+  conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | arm + id,
+                               concu = "ng/mL", timeu = "h")
+  dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id,
+                               doseu = "mg", route = "route")
+  intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                          aucinf.obs = TRUE, half.life = TRUE)
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+  as.data.frame(res) |>
+    dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life"))
+}
+route_of <- function(cmt) ifelse(cmt == "central", "intravascular", "extravascular")
+
+nca_h <- run_nca(sim_h, ev_h, route_of)
+nca_m <- run_nca(sim_m, ev_m, route_of)
+
+knitr::kable(nca_h |> dplyr::mutate(PPORRES = signif(PPORRES, 4)) |>
+               dplyr::select(arm, PPTESTCD, PPORRES, PPORRESU),
+             caption = "PKNCA results, human reduction.")
+knitr::kable(nca_m |> dplyr::mutate(PPORRES = signif(PPORRES, 4)) |>
+               dplyr::select(arm, PPTESTCD, PPORRES, PPORRESU),
+             caption = "PKNCA results, monkey reduction.")
+```
+
+## Closed-form gates
+
+For a linear model `AUCinf = F * dose / CL` exactly, and for a one-compartment
+first-order absorption model `Tmax = log(ka / kel) / (ka - kel)`. These check
+the NCA set-up as much as the models.
+
+```{r closed-form}
+get_nca <- function(nca, a, p) {
+  v <- nca$PPORRES[nca$arm == a & nca$PPTESTCD == p]
+  if (length(v) != 1L) stop("no unique NCA row for ", a, " ", p)
+  v
+}
+th_h <- ui_h$theta
+kel_h <- exp(th_h[["lcl"]]) / exp(th_h[["lvc"]])
+ka_h <- exp(th_h[["lka"]])
+gate <- tibble::tibble(
+  arm = c("30 mg", "60 mg", "120 mg"),
+  dose = c(30, 60, 120)
+) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    auc_nca = get_nca(nca_h, arm, "aucinf.obs"),
+    auc_cf = exp(th_h[["lfdepot"]]) * dose / exp(th_h[["lcl"]]) * 1000,
+    tmax_nca = get_nca(nca_h, arm, "tmax"),
+    tmax_cf = log(ka_h / kel_h) / (ka_h - kel_h)
+  ) |>
+  dplyr::ungroup()
+knitr::kable(gate |> dplyr::mutate(dplyr::across(where(is.numeric), \(x) signif(x, 5))),
+             caption = "Human: NCA vs. closed-form AUC0-inf and Tmax.")
+# AUC: trapezoidal error on the fine grid only. Tmax: the 0.01 h grid.
+stopifnot(max(abs(gate$auc_nca / gate$auc_cf - 1)) < 0.005,
+          max(abs(gate$tmax_nca - gate$tmax_cf)) <= 0.011)
+```
+
+# Comparison against the published NCA
+
+## Human: against the paper's own PBPK predictions
+
+This comparison decides whether the reduction is faithful to the platform
+model. Nothing was tuned to reach these values.
+
+```{r compare-pred-human}
+sim_cmp_h <- nca_h |>
+  dplyr::filter(PPTESTCD %in% c("aucinf.obs", "cmax")) |>
+  dplyr::select(arm, PPTESTCD, PPORRES)
+ref_pred_h <- fig4 |>
+  dplyr::transmute(arm, aucinf.obs = auc_pred, cmax = cmax_pred)
+cmp_h <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_cmp_h, reference = ref_pred_h, by = "arm",
+  units = c(aucinf.obs = "ng*h/mL", cmax = "ng/mL"), tolerance_pct = 20
+)
+knitr::kable(cmp_h, caption = paste("Human reduction vs. the PBPK predictions digitised",
+                                    "from Zhang 2026 Figure 4. * differs by >20%."))
+pct_h <- as.numeric(gsub("[^0-9.eE+-]", "", cmp_h[["% diff"]]))
+stopifnot(sum(is.finite(pct_h)) == 6L, max(abs(pct_h)) < 20)
+```
+
+The predicted AUCs agree to within 3%. Cmax is 7-9% above the platform's
+value: its predicted Cmax is a mean over a virtual population whose
+individual peaks occur at different times, which lowers it relative to the
+peak of a single typical profile (Figure 5's mean curve peaks near
+195 ng/mL after 30 mg, the reduction at 218 ng/mL).
+
+## Human: against the observed SAD data
+
+```{r compare-obs-human}
+ref_obs_h <- fig4 |>
+  dplyr::transmute(arm, aucinf.obs = auc_obs, cmax = cmax_obs)
+cmp_h_obs <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_cmp_h, reference = ref_obs_h, by = "arm",
+  units = c(aucinf.obs = "ng*h/mL", cmax = "ng/mL"), tolerance_pct = 20
+)
+knitr::kable(cmp_h_obs, caption = paste("Human reduction vs. the observed SAD values",
+                                        "digitised from Figure 4. * differs by >20%."))
+```
+
+The reduction over-predicts the observed SAD exposure, by 1.8-2.0-fold on
+AUC and 1.6-1.9-fold on Cmax. The PBPK model does the same (Figure 4: every
+point lies near the 2-fold line), and the paper attributes it to the lumped
+first-order absorption, which does not capture the dissolution- and
+permeability-limited uptake of this poorly soluble P-gp substrate
+(Discussion). The model is packaged as published, not adjusted to the
+clinical data.
+
+## Monkey: against the paper's own PBPK predictions
+
+Converting the model's ng/mL to nmol/L needs the molecular weight, which the
+paper does not print. The maintainers used 583 g/mol, from the protonated
+molecular ion of the LC-MS/MS transition (m/z 584.0 -> 266.2, positive
+electrospray; section 2.3.2). The intravenous row checks the conversion.
+
+```{r compare-pred-monkey}
+mw <- 583
+sim_cmp_m <- nca_m |>
+  dplyr::filter(PPTESTCD %in% c("aucinf.obs", "cmax")) |>
+  dplyr::filter(!(arm == "IV 1 mg/kg" & PPTESTCD == "cmax")) |>
+  dplyr::mutate(PPORRES = PPORRES / mw * 1000) |>
+  dplyr::select(arm, PPTESTCD, PPORRES)
+ref_pred_m <- fig3 |>
+  dplyr::transmute(arm, aucinf.obs = auc_pred_nM, cmax = cmax_pred_nM)
+cmp_m <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_cmp_m, reference = ref_pred_m, by = "arm",
+  units = c(aucinf.obs = "nM*h", cmax = "nM"), tolerance_pct = 20
+)
+knitr::kable(cmp_m, caption = paste("Monkey reduction vs. the PBPK predictions digitised",
+                                    "from Zhang 2026 Figure 3D/3F. * differs by >20%."))
+pct_m <- as.numeric(gsub("[^0-9.eE+-]", "", cmp_m[["% diff"]]))
+stopifnot(sum(is.finite(pct_m)) == 7L, max(abs(pct_m)) < 20)
+```
+
+All AUCs agree to within 9% and the 10 and 30 mg/kg Cmax to within 1%. The
+platform's 100 mg/kg point sits slightly off its own linear trend (its
+dose-normalised AUC is 7% above, and its dose-normalised Cmax 12% below, the
+10 mg/kg values), which a linear reduction cannot follow.
+
+```{r figure-3, fig.width = 7, fig.height = 3.5}
+plot_df <- sim_cmp_m |>
+  dplyr::left_join(
+    tidyr::pivot_longer(ref_pred_m, -arm, names_to = "PPTESTCD", values_to = "pred"),
+    by = c("arm", "PPTESTCD")
+  ) |>
+  dplyr::filter(!is.na(pred)) |>
+  dplyr::mutate(PPTESTCD = dplyr::recode(PPTESTCD, aucinf.obs = "AUC (nM*h)", cmax = "Cmax (nM)"))
+ggplot(plot_df, aes(pred, PPORRES, shape = arm)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  geom_abline(slope = 1, intercept = log10(c(0.8, 1.25)), colour = "grey50") +
+  geom_point(size = 2.5) +
+  scale_x_log10() + scale_y_log10() +
+  facet_wrap(~ PPTESTCD, scales = "free") +
+  labs(x = "PBPK prediction (Figure 3D/3F)", y = "Reduction", shape = NULL,
+       caption = "Replicates Figure 3D and 3F of Zhang 2026 against the reduction (lines: 1, 0.8 and 1.25-fold).") +
+  theme_bw()
+```
+
+# Assumptions and deviations
+
+* **Model class.** Both files are one-compartment reductions of Simcyp
+  full-PBPK models, not the platform models. Organ volumes, blood flows and
+  tissue `Kp` values are Simcyp outputs the paper does not print. The
+  reductions carry the printed clearance and lumped `Vss` and are checked
+  against the platform's own predictions above; no parameter was fitted.
+* **Bioavailability.** `F = fa * Fg * Fh`, with `Fg = 1` because no gut-wall
+  clearance is specified, and `Fh` from the well-stirred liver at the hepatic
+  blood flows of Supplementary Equation S10 with all clearance hepatic (no
+  renal clearance is printed). Simcyp's own internal blood flows may differ
+  slightly from these; the agreement with the platform's predicted AUC
+  (within 3% in human, 9% in monkey) bounds the effect.
+* **Reference weights.** Human: 70 kg, the paper's allometric reference
+  (section 3.4), used to turn `Vss` 0.21 L/kg into 14.7 L (the allometric
+  `Vss,h` in the text is 15.1 L). Monkey: 2.81 kg, implied by the paper's
+  own clearance and blood-flow numbers (shown above).
+* **No variability.** The source reports no inter-individual or residual
+  variance; the Simcyp virtual-population spread is a platform output. Both
+  models are typical-value models with `propSd` fixed at zero, so they cannot
+  reproduce the width of the Figure 5 interval or the tail of its mean curve.
+* **Digitised references.** All comparison values come from the maintainers'
+  digitisation of Figures 3, 4 and 5 (high-resolution publisher images;
+  reading error about 1-2% on the scatter plots and 0.04 decades on
+  Figure 5).
+* **Molecular weight.** 583 g/mol, from the m/z 584.0 [M+H]+ ion, used only
+  to convert monkey concentrations to the nmol/L of Figure 3.
+* **Rat model.** Not packaged; its bioavailability is not derivable from
+  printed values (see above).
+
+## Errata in the source
+
+* **Table 3, human clearance units.** The `CLi.v (mL/min)` row gives 20.70 for
+  the human column. That value is in L/h: the abstract, section 3.4 and
+  Supplementary Table S7 all give 20.7 L/h (20.7 mL/min would be 1.24 L/h,
+  and could not produce the predicted AUC of Figure 4). The rat (16.99) and
+  monkey (23.46) entries are in mL/min as labelled
+  (80.9 mL/min/kg x 0.21 kg and 8.35 mL/min/kg x 2.81 kg).
+* **Figures 4 and 5, dose units.** The legends read 30, 60 and 120 "mg/kg";
+  the SAD doses are 30, 60 and 120 mg (section 3.5: "30 mg was selected as
+  the starting dose"), and only mg doses reproduce the predicted AUC.
+* **Figure 3, concentration units.** Axes read ng/mL, but the observed
+  coordinates match the nmol/L values of Table 2.
+* **Absorption in human vs. monkey.** Table 3 gives `fa` 0.02 for the monkey
+  but 1.00 for the human, although section 3.5 says the absorption parameters
+  were translated from rat to monkey to human. The values are encoded as
+  printed; the paper's Discussion notes that the human model over-predicts
+  exposure.
