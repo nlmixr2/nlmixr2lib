@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Goeyvaerts 2026 mosnodenvir PopPK and DENV-3 viral dynamic models ([doi:10.1002/cpt.70439](https://doi.org/10.1002/cpt.70439)) -- healthy adults, including a dengue controlled human infection study.
+- Add Wen 2026 salbutamol pulmonary minimal PBPK ([doi:10.1007/s40262-026-01664-y](https://doi.org/10.1007/s40262-026-01664-y)) -- healthy adult volunteers given inhaled salbutamol, with bronchosorption, biopsy, BAL and plasma outputs.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
