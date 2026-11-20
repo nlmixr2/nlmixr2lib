@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2026 anakinra ([doi:10.1002/cpt.70491](https://doi.org/10.1002/cpt.70491)) -- extremely preterm neonates (24-28 weeks gestation) in the first 21 days of life.
+- Add Yu 2026 dexamethasone population mPBPK-PD in horses ([doi:10.1007/s10928-026-10062-7](https://doi.org/10.1007/s10928-026-10062-7)) -- healthy adult mares and geldings (IV, IM and intra-articular dosing; plasma and urine DEX, plasma cortisol).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

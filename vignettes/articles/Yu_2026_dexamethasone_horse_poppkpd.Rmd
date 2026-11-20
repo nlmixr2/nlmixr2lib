@@ -1,0 +1,639 @@
+---
+title: "Dexamethasone population mPBPK-PD in horses (Yu 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dexamethasone population mPBPK-PD in horses (Yu 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+PKNCA::PKNCA.options(progress = FALSE)
+```
+
+# Model and source
+
+* Citation: Yu R, Toutain P-L, Ekstrand C, Jusko WJ. Prior-informed population
+  pharmacokinetic-pharmacodynamic modeling of dexamethasone in horses. J
+  Pharmacokinet Pharmacodyn. 2026.
+* Article: <https://doi.org/10.1007/s10928-026-10062-7>
+* Open-access full text: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC13616021/>
+
+Yu 2026 took the minimal physiologically based PK (mPBPK) and circadian
+indirect-response PD model of the same authors' naive-pooled meta-analysis
+(Yu 2026, Pharm Res, packaged as `Yu_2026_dexamethasone_horse_mpbpk` when
+available) and refitted it as a population model to the individual data of
+five studies (32 horses). Estimation used NONMEM FOCEI with informative priors
+from the meta-analysis ("FOCEI-Priors"); the packaged values are that final
+model (Tables 2 and 3). PK was estimated first and the individual PK
+parameters were then fixed for the PD fit.
+
+The packaged model follows the NONMEM control streams in the Supplementary
+Materials:
+
+* **Disposition.** Blood (`a_blood`), liver (`a_liver`), a lumped remainder
+  tissue (`a_remainder`) and a well-stirred bladder (`bladder`). Volumes and
+  flows are per-kg constants times body weight. DEX binds saturably in the
+  liver (`Bmax`, `Kd`); hepatic clearance acts on unbound liver DEX and renal
+  clearance on plasma DEX. Both clearances scale with `(WT/500)^0.75`, and
+  hepatic clearance has a separate value for mares (`SEXF = 1`) and geldings.
+* **Inputs.** Each route and form has its own dosing compartment:
+
+| Dose | `cmt` | Amount to give |
+|------|-------|----------------|
+| IV DEX alcohol | `a_blood` | ug DEX |
+| IV DEX sodium phosphate (bolus or infusion) | `blood_pho` | ug of the prodrug |
+| IV DEX isonicotinate | `blood_iso` | ug of the prodrug |
+| IM DEX alcohol | `depot_im` | ug DEX |
+| IM DEX isonicotinate | `depot_im_iso` | ug of the prodrug |
+| IA DEX sodium phosphate | `joint_pho` | ug of the prodrug |
+
+  The prodrug-to-DEX mass conversion (molecular weights 516.41, 492.54 and
+  392.46) is applied inside the model, so a DEX-equivalent dose (the form in
+  which Table 1 reports doses) is multiplied by the molecular-weight ratio
+  before it is given.
+* **Clock time.** Model time is the clock time in hours after midnight of the
+  first study day: a dose at 8 AM is given at `time = 8`. This places the dose
+  on the circadian cortisol cycle (acrophase 8.99 h, i.e. 9:00 AM).
+* **Outputs.** `Cc` (plasma DEX, ng/mL), `Curine` (urine DEX, ng/mL) and
+  `cortisol` (plasma cortisol, ng/mL).
+* **Study covariates.** `STUDY_EKSTRAND2015 = 1` selects the higher cortisol
+  mesor of the IM study (93 against 47 ng/mL) and `STUDY_TOUTAIN1984 = 1`
+  switches on the post-dose stress surge, which the PD code applies only to
+  that study. Both default to 0 for a new population.
+
+```{r load-model}
+mod <- rxode2::rxode2(readModelDb("Yu_2026_dexamethasone_horse_poppkpd"))
+mod_typ <- rxode2::zeroRe(mod)
+
+# Prodrug mass per unit DEX-equivalent mass (NONMEM $PK MWo / MWd)
+dex_to_pho <- 516.41 / 392.46
+dex_to_iso <- 492.54 / 392.46
+```
+
+```{r helpers}
+covs_default <- list(WT = 500, SEXF = 0, STUDY_TOUTAIN1984 = 0, STUDY_EKSTRAND2015 = 0)
+
+# One subject's event table. `doses` has columns time, cmt, amt and
+# optionally rate. Observation rows sit on the `a_blood` state (dvid 1); the
+# Cc, Curine and cortisol columns all come back on every observation row.
+build_events <- function(id, doses, obs_times, covs) {
+  if (nrow(doses) > 0 && is.null(doses$rate)) {
+    doses$rate <- 0
+  }
+  dose_rows <- data.frame(
+    id = rep(id, nrow(doses)),
+    time = doses$time,
+    evid = rep(1L, nrow(doses)),
+    cmt = doses$cmt,
+    amt = doses$amt,
+    rate = doses$rate,
+    dvid = rep(NA_integer_, nrow(doses))
+  )
+  obs_rows <- data.frame(
+    id = id,
+    time = obs_times,
+    evid = 0L,
+    cmt = "a_blood",
+    amt = 0,
+    rate = 0,
+    dvid = 1L
+  )
+  ev <- dplyr::arrange(rbind(dose_rows, obs_rows), time, dplyr::desc(evid))
+  for (nm in names(covs)) {
+    ev[[nm]] <- covs[[nm]]
+  }
+  ev
+}
+
+sim_typ <- function(doses, obs_times, covs = list(), label = NA_character_) {
+  cv <- utils::modifyList(covs_default, covs)
+  out <- rxode2::rxSolve(mod_typ, build_events(1L, doses, obs_times, cv), returnType = "data.frame")
+  out$label <- label
+  out
+}
+
+no_doses <- data.frame(time = numeric(0), cmt = character(0), amt = numeric(0), rate = numeric(0))
+```
+
+# Population
+
+`r readModelDb("Yu_2026_dexamethasone_horse_poppkpd")()$population$notes`
+Table 1 lists the five studies: Saddlebred and Standardbred horses aged 3-20
+years weighing 430-700 kg; 10 mares and 22 geldings (no intact males).
+
+| Study (Table 1) | Source | Design | Doses (DEX-equivalent) | Data |
+|---|---|---|---|---|
+| 1-1981 | Toutain 1984 | crossover, 1 F / 5 G | IV DEX and IV DEX_ISO 0.05 mg/kg, 7-9 AM | plasma DEX, cortisol, urine DEX |
+| 2-2010 | Ekstrand 2015 | parallel, 6 G | IM DEX_ISO 0.0237 mg/kg, 9 AM | plasma DEX, cortisol (with placebo baseline), urine DEX |
+| 3-2012 | Ekstrand 2016 | crossover, 4 F / 2 G | IV DEX_PHO 0.1, 1, 10 ug/kg + 0.0233, 0.233, 2.33 ug/kg/h for 3 h, 9:30-10:30 AM | plasma DEX, cortisol |
+| 4-2007 | Authie 2010 | crossover, 2 F / 6 G | IV DEX 0.008 mg/kg | plasma and urine DEX |
+| 5-2013 | Ekstrand 2019 | crossover, 3 F / 3 G | IA DEX_PHO 0.01-3 mg, 11-11:30 AM | plasma DEX, cortisol |
+
+The mapping of study numbers to publications follows the study design and dose
+of each reference [8-12] of the paper.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Model structure | mPBPK + IDR I with circadian baseline | Fig. 1; Eqs. 1-14; NONMEM DEXPKC3 / DEXPDC8 |
+| Per-kg physiology `lvblood`, `lvliver`, `lvremainder`, `lqco`, `lqliver`, `lqremainder`, `lqurine` | 70.72, 13.045, 916.28 mL/kg; 3570, 1184.63, 2395.44, 1.24 mL/h/kg | NONMEM `$PK`; Table S1 (550 kg) |
+| `lvbladder` | 4 L | NONMEM `$PK` `Vbc = 4000`; Table S1 |
+| `lclint`, `lclint_female` | 242.8, 297 L/h at 500 kg | Table 2 |
+| `lclr` | 3.430 L/h at 500 kg | Table 2 |
+| `e_wt_cl` | 0.75 (fixed) | Table 2; Results |
+| `lbmax_liver`, `lkd_liver` | 121, 0.387 ng/mL | Table 2 |
+| `lkp_remainder`, `bpr` | 1.04, 0.852 | Table 2 |
+| `lkf_iso`, `lfconv_iso` | 22.8 1/h, 81.2% | Table 2 |
+| `lkf_pho`, `lfconv_pho` | 16.7 1/h, 100% (both fixed) | Table 2 |
+| `lka_im_iso`, `lka_im` | 0.0115, 0.131 1/h | Table 2 |
+| `lkf_ia_pho`, `lka_ia`, `lfia` | 30 (fixed), 4.94 1/h, 100% (fixed) | Table 2 |
+| `etalclint` (on CLh and Kd) | 0.094 | Table 2; NONMEM `$PK` |
+| `propSd`, `propSd_Curine` | 0.45, 5.44 | Table 2; Results ("45%", "544%") |
+| `lic50_cortisol`, `imax_cortisol`, `hill_cortisol` | 0.0412 ng/mL, 1 (fixed), 1.19 | Table 3; Table S3 |
+| `lamp_cortisol` | 17.6 ng/mL | Table 3 |
+| `lrbase_cortisol_ekstrand2015`, `lrbase_cortisol` | 93, 47 ng/mL | Table 3 (Rm1, Rm2) |
+| `tacro_cortisol` | 8 + 0.992 = 8.992 h | Table 3 ("Tp, h after 8 AM"); NONMEM `$DES` |
+| `lkout_cortisol` | 0.246 1/h | Table 3 |
+| `lrmax_stress`, `ltau_stress` | 24.7 ng/mL, 0.34 h (fixed) | Table 3 |
+| `etalrbase_cortisol` | 0.12 | Table 3 |
+| `addSd_cortisol` | 20 ng/mL | Table 3 |
+| Molecular weights | 392.46, 516.41, 492.54 | NONMEM `$PK` |
+
+# Covariate relationship: hepatic clearance (Figure 4)
+
+Hepatic clearance at the body weights that bound Figure 4, from the packaged
+model's own algebra (typical values).
+
+```{r fig4}
+fig4 <- expand.grid(WT = c(300, 500, 800), SEXF = c(1, 0))
+fig4$clint <- vapply(seq_len(nrow(fig4)), function(i) {
+  s <- sim_typ(no_doses, 0, covs = list(WT = fig4$WT[i], SEXF = fig4$SEXF[i]))
+  s$clint[1]
+}, numeric(1))
+fig4$expected <- ifelse(fig4$SEXF == 1, 297, 242.8) * (fig4$WT / 500)^0.75
+fig4 |>
+  dplyr::mutate(Sex = ifelse(SEXF == 1, "mare", "gelding")) |>
+  dplyr::select(Sex, WT, clint, expected) |>
+  dplyr::rename("Body weight (kg)" = WT, "Model CLh (L/h)" = clint, "297 or 242.8 x (WT/500)^0.75" = expected) |>
+  knitr::kable(digits = 1)
+stopifnot(all(abs(fig4$clint / fig4$expected - 1) < 1e-8))
+```
+
+Figure 4's lines run from about 200 to 420 L/h (mares) and 165 to 345 L/h
+(geldings) between 300 and 800 kg, as above. Per kilogram at 500 kg this is
+0.594 L/h/kg in mares and 0.486 L/h/kg in geldings, the values quoted in the
+Results.
+
+# Pharmacokinetics
+
+## Figure 2: plasma DEX
+
+Typical-value profiles for a 500-kg mare and gelding in each panel of Figure 2.
+Doses are converted from the DEX-equivalent amounts of Table 1 to prodrug mass.
+
+```{r pk-scenarios}
+pho_regimen <- function(bolus_ugkg, rate_ugkgh, t0, wt) {
+  data.frame(
+    time = t0,
+    cmt = "blood_pho",
+    amt = c(bolus_ugkg, rate_ugkgh * 3) * wt * dex_to_pho,
+    rate = c(0, rate_ugkgh * wt * dex_to_pho)
+  )
+}
+
+pk_scen <- list(
+  list(panel = "IV 0.05 mg/kg DEX", t0 = 8, end = 4, doses = function(wt) data.frame(time = 8, cmt = "a_blood", amt = 0.05 * 1000 * wt)),
+  list(panel = "IV 0.05 mg/kg DEX_ISO", t0 = 8, end = 11, doses = function(wt) data.frame(time = 8, cmt = "blood_iso", amt = 0.05 * 1000 * wt * dex_to_iso)),
+  list(panel = "IM 0.0237 mg/kg DEX_ISO", t0 = 9, end = 310, doses = function(wt) data.frame(time = 9, cmt = "depot_im_iso", amt = 0.0237 * 1000 * wt * dex_to_iso)),
+  list(panel = "IV 0.1 ug/kg + 0.0233 ug/kg/h DEX_PHO", t0 = 10, end = 9, doses = function(wt) pho_regimen(0.1, 0.0233, 10, wt)),
+  list(panel = "IV 1 ug/kg + 0.233 ug/kg/h DEX_PHO", t0 = 10, end = 18, doses = function(wt) pho_regimen(1, 0.233, 10, wt)),
+  list(panel = "IV 10 ug/kg + 2.33 ug/kg/h DEX_PHO", t0 = 10, end = 24, doses = function(wt) pho_regimen(10, 2.33, 10, wt)),
+  list(panel = "IA 3 mg DEX_PHO", t0 = 11, end = 22, doses = function(wt) data.frame(time = 11, cmt = "joint_pho", amt = 3000 * dex_to_pho)),
+  list(panel = "IA 0.3 mg DEX_PHO", t0 = 11, end = 22, doses = function(wt) data.frame(time = 11, cmt = "joint_pho", amt = 300 * dex_to_pho)),
+  list(panel = "IA 1 mg DEX_PHO", t0 = 11, end = 8, doses = function(wt) data.frame(time = 11, cmt = "joint_pho", amt = 1000 * dex_to_pho)),
+  list(panel = "IV 0.008 mg/kg DEX", t0 = 8, end = 32, doses = function(wt) data.frame(time = 8, cmt = "a_blood", amt = 0.008 * 1000 * wt))
+)
+
+pk_typ <- dplyr::bind_rows(lapply(pk_scen, function(s) {
+  grid <- s$t0 + sort(unique(c(seq(0, 1, by = 0.02), seq(1, s$end, length.out = 200))))
+  dplyr::bind_rows(lapply(c(1, 0), function(sx) {
+    out <- sim_typ(s$doses(500), grid, covs = list(SEXF = sx), label = s$panel)
+    out$tad <- out$time - s$t0
+    out$Sex <- ifelse(sx == 1, "mare", "gelding")
+    out
+  }))
+}))
+pk_typ$label <- factor(pk_typ$label, levels = vapply(pk_scen, `[[`, "", "panel"))
+```
+
+```{r fig2, fig.height = 8}
+ggplot(pk_typ[pk_typ$Cc > 0, ], aes(tad, Cc, colour = Sex)) +
+  geom_line() +
+  scale_y_log10() +
+  scale_colour_manual(values = c(mare = "#d6457a", gelding = "#2f6fd6")) +
+  facet_wrap(~label, scales = "free_x", ncol = 3) +
+  labs(x = "Time after dose (h)", y = "DEX in plasma (ng/mL)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom", strip.text = element_text(size = 7))
+```
+
+Replicates Figure 2 of Yu 2026 (median lines; typical 500-kg horses).
+
+## Figure 3: urine DEX
+
+```{r fig3, fig.height = 3.5}
+urine_typ <- dplyr::filter(
+  pk_typ,
+  label %in% c("IV 0.05 mg/kg DEX_ISO", "IV 0.008 mg/kg DEX", "IM 0.0237 mg/kg DEX_ISO")
+)
+# Figure 3 shows the IV DEX_ISO arm to 75 h and the IM arm to 250 h
+urine_long <- dplyr::bind_rows(
+  sim_typ(data.frame(time = 8, cmt = "blood_iso", amt = 0.05 * 1000 * 500 * dex_to_iso),
+    8 + seq(0, 75, by = 0.25),
+    label = "IV 0.05 mg/kg DEX_ISO"
+  ) |> dplyr::mutate(tad = time - 8),
+  sim_typ(data.frame(time = 9, cmt = "depot_im_iso", amt = 0.0237 * 1000 * 500 * dex_to_iso),
+    9 + seq(0, 250, by = 1),
+    label = "IM 0.0237 mg/kg DEX_ISO"
+  ) |> dplyr::mutate(tad = time - 9),
+  sim_typ(data.frame(time = 8, cmt = "a_blood", amt = 0.008 * 1000 * 500),
+    8 + seq(0, 26, by = 0.1),
+    label = "IV 0.008 mg/kg DEX"
+  ) |> dplyr::mutate(tad = time - 8)
+)
+ggplot(urine_long[urine_long$Curine > 0, ], aes(tad, Curine)) +
+  geom_line(colour = "#2e9e6e") +
+  scale_y_log10() +
+  facet_wrap(~label, scales = "free_x") +
+  labs(x = "Time after dose (h)", y = "DEX in urine (ng/mL)") +
+  theme_bw()
+```
+
+Replicates Figure 3 of Yu 2026 (median lines, geldings). Urine
+concentrations do not depend on sex except through hepatic clearance.
+
+## Checkpoints against the published median lines
+
+The median prediction lines of Figures 2 and 3 were read by eye on their log
+axes at a few landmark times (gelding lines). The deterministic typical-value
+profiles are compared with them below; a reading on a log axis is good to
+roughly a factor of 1.5, so the check is that every model value lies within
+two-fold of the reading.
+
+```{r checkpoints}
+at <- function(df, lab, t, col) {
+  d <- dplyr::filter(df, label == lab, Sex == "gelding" | is.na(Sex))
+  stats::approx(d$tad, d[[col]], xout = t)$y
+}
+urine_long$Sex <- NA_character_
+checkpoints <- data.frame(
+  Figure = c("2", "2", "2", "2", "2", "2", "2", "3", "3", "3", "3"),
+  Profile = c(
+    "IV 0.05 mg/kg DEX", "IV 0.05 mg/kg DEX_ISO", "IM 0.0237 mg/kg DEX_ISO",
+    "IV 0.008 mg/kg DEX", "IV 0.008 mg/kg DEX", "IA 3 mg DEX_PHO",
+    "IV 10 ug/kg + 2.33 ug/kg/h DEX_PHO",
+    "IV 0.05 mg/kg DEX_ISO", "IM 0.0237 mg/kg DEX_ISO", "IV 0.008 mg/kg DEX", "IV 0.008 mg/kg DEX"
+  ),
+  Output = c(rep("Cc", 7), rep("Curine", 4)),
+  tad = c(4, 11, 300, 24, 32, 8, 24, 4, 250, 5, 25),
+  published = c(10, 2, 0.025, 0.06, 0.03, 0.5, 0.1, 55, 0.3, 10, 1.3)
+)
+checkpoints$model <- vapply(seq_len(nrow(checkpoints)), function(i) {
+  src <- if (checkpoints$Output[i] == "Cc") pk_typ else urine_long
+  at(src, checkpoints$Profile[i], checkpoints$tad[i], checkpoints$Output[i])
+}, numeric(1))
+checkpoints$ratio <- checkpoints$model / checkpoints$published
+checkpoints |>
+  dplyr::rename(
+    "Time after dose (h)" = tad,
+    "Published median (by eye, ng/mL)" = published,
+    "Model (ng/mL)" = model,
+    "Model / published" = ratio
+  ) |>
+  knitr::kable(digits = 3)
+stopifnot(all(abs(log(checkpoints$ratio)) < log(2)))
+```
+
+## Variability bands and the shared CLh/Kd random effect
+
+The PK control stream applies the single random effect to both hepatic
+clearance and the liver dissociation constant (`CLh = ... * EXP(ETA(1))`,
+`Kd = TVKd * EXP(ETA(1))`), while Table 2 calls it the BSV in CLh and the PD
+control stream carries it on CLh only. The packaged model follows the PK
+control stream. The plot compares the 5th-95th percentile bands of the two
+readings for the IV 0.008 mg/kg DEX arm (100 virtual geldings each; IIV only).
+
+```{r eta-bands}
+rxode2::rxSetSeed(20261118)
+mod_iiv <- rxode2::zeroRe(mod, which = "sigma")
+mod_clh_only <- mod_iiv |> rxode2::model(kd_liver <- exp(lkd_liver))
+grid_b <- 8 + c(seq(0, 1, by = 0.05), seq(1.25, 32, by = 0.25))
+ev_b <- dplyr::bind_rows(lapply(1:100, function(i) {
+  build_events(i, data.frame(time = 8, cmt = "a_blood", amt = 0.008 * 1000 * 500), grid_b, covs_default)
+}))
+band <- dplyr::bind_rows(
+  as.data.frame(rxode2::rxSolve(mod_iiv, ev_b, returnType = "data.frame")) |>
+    dplyr::mutate(reading = "eta on CLh and Kd (packaged)"),
+  as.data.frame(rxode2::rxSolve(mod_clh_only, ev_b, returnType = "data.frame")) |>
+    dplyr::mutate(reading = "eta on CLh only")
+) |>
+  dplyr::group_by(reading, time) |>
+  dplyr::summarise(
+    lo = quantile(Cc, 0.05), med = median(Cc), hi = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+ggplot(band, aes(time - 8, med, fill = reading, colour = reading)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = "DEX in plasma (ng/mL)", fill = NULL, colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# PKNCA validation
+
+A virtual cohort of 60 horses per arm (body weight uniform over the observed
+430-700 kg, 31% mares as in the pooled data) receives the IV DEX 0.05 mg/kg
+dose of Study 1 or the IM DEX_ISO 0.0237 mg/kg dose of Study 2, with
+between-horse variability and no residual error.
+
+```{r pknca-sim}
+rxode2::rxSetSeed(42)
+n_arm <- 60
+arms <- data.frame(
+  treatment = c("IV DEX 0.05 mg/kg", "IM DEX_ISO 0.0237 mg/kg"),
+  cmt = c("a_blood", "depot_im_iso"),
+  mgkg = c(0.05, 0.0237),
+  conv = c(1, dex_to_iso),
+  t0 = c(8, 9),
+  end = c(72, 480),
+  route = c("intravascular", "extravascular")
+)
+cohort <- data.frame(
+  id = seq_len(2 * n_arm),
+  arm = rep(seq_len(nrow(arms)), each = n_arm),
+  WT = round(stats::runif(2 * n_arm, 430, 700)),
+  SEXF = rep(c(1, 0, 0), length.out = 2 * n_arm)
+)
+ev_nca <- dplyr::bind_rows(lapply(seq_len(nrow(cohort)), function(i) {
+  a <- arms[cohort$arm[i], ]
+  grid <- a$t0 + sort(unique(c(seq(0, 2, by = 0.05), seq(2, 24, by = 0.5), seq(24, a$end, by = 2))))
+  build_events(
+    cohort$id[i],
+    data.frame(time = a$t0, cmt = a$cmt, amt = a$mgkg * 1000 * cohort$WT[i] * a$conv),
+    grid,
+    list(WT = cohort$WT[i], SEXF = cohort$SEXF[i], STUDY_TOUTAIN1984 = 0, STUDY_EKSTRAND2015 = 0)
+  )
+}))
+sim_nca <- as.data.frame(rxode2::rxSolve(mod_iiv, ev_nca, returnType = "data.frame"))
+sim_nca$treatment <- arms$treatment[cohort$arm[match(sim_nca$id, cohort$id)]]
+sim_nca$tad <- sim_nca$time - arms$t0[cohort$arm[match(sim_nca$id, cohort$id)]]
+```
+
+```{r pknca}
+conc_df <- sim_nca |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, tad, Cc, treatment)
+dose_df <- data.frame(
+  id = cohort$id,
+  tad = 0,
+  amt = arms$mgkg[cohort$arm] * 1000 * cohort$WT,
+  treatment = arms$treatment[cohort$arm],
+  route = arms$route[cohort$arm]
+)
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ tad | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ tad | treatment + id, route = "route")
+intervals <- data.frame(
+  start = 0,
+  end = Inf,
+  cmax = TRUE,
+  tmax = TRUE,
+  half.life = TRUE,
+  aucinf.obs = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+knitr::kable(summary(nca_res), caption = "Simulated NCA (median and spread per arm).")
+```
+
+The paper reports no NCA table. It quotes the IM absorption half-life of
+DEX_ISO as 57 h (from `ka,m_ISO`), and because IM DEX_ISO is flip-flop the
+terminal half-life of the simulated IM arm should sit near it.
+
+```{r pknca-compare}
+nca_long <- as.data.frame(nca_res$result)
+sim_hl <- nca_long |>
+  dplyr::filter(PPTESTCD == "half.life", treatment == "IM DEX_ISO 0.0237 mg/kg") |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(PPORRES = median(PPORRES), .groups = "drop")
+cmp <- ncaComparisonTable(
+  sim_hl,
+  data.frame(treatment = "IM DEX_ISO 0.0237 mg/kg", half.life = 57),
+  by = "treatment",
+  units = c(half.life = "h")
+)
+knitr::kable(cmp)
+stopifnot(abs(sim_hl$PPORRES / 57 - 1) < 0.15)
+```
+
+`ln(2) / 0.0115` is 60 h; the Results' 57 h corresponds to a slightly larger
+rate constant than the tabulated estimate. For IV dosing the Results quote an
+"apparent half-life of approximately 67 h" for a terminal phase "extending to
+36 h"; the simulated terminal half-life over 72 h after IV DEX is about 8 h
+(table above). The quoted value cannot describe a phase observed over 36 h and
+is not used as a target.
+
+# Pharmacodynamics
+
+## Circadian baseline
+
+```{r baseline}
+bl <- dplyr::bind_rows(
+  sim_typ(no_doses, seq(0, 24, by = 0.01), label = "Rm2 (default)"),
+  sim_typ(no_doses, seq(0, 24, by = 0.01), covs = list(STUDY_EKSTRAND2015 = 1), label = "Rm1 (Ekstrand 2015)")
+)
+bl_sum <- bl |>
+  dplyr::group_by(label) |>
+  dplyr::summarise(
+    peak = max(cortisol), t_peak = time[which.max(cortisol)],
+    trough = min(cortisol), t_trough = time[which.min(cortisol)],
+    .groups = "drop"
+  )
+knitr::kable(bl_sum, digits = 2)
+stopifnot(
+  abs(bl_sum$peak[bl_sum$label == "Rm2 (default)"] - (47 + 17.6)) < 1e-3,
+  abs(bl_sum$trough[bl_sum$label == "Rm2 (default)"] - (47 - 17.6)) < 1e-3,
+  abs(bl_sum$peak[bl_sum$label == "Rm1 (Ekstrand 2015)"] - (93 + 17.6)) < 1e-3,
+  abs(bl_sum$t_peak[bl_sum$label == "Rm2 (default)"] - 8.99) < 0.02
+)
+```
+
+Without dexamethasone the cortisol state stays on its cosine baseline: the
+mesor plus or minus the amplitude, peaking at 9:00 AM.
+
+## Figure 5: cortisol after dexamethasone
+
+```{r pd-scenarios}
+pd_scen <- list(
+  list(panel = "IV 0.05 mg/kg DEX_ISO", t0 = 8, end = 120, covs = list(STUDY_TOUTAIN1984 = 1), doses = function(wt) data.frame(time = 8, cmt = "blood_iso", amt = 0.05 * 1000 * wt * dex_to_iso)),
+  list(panel = "IV 0.05 mg/kg DEX", t0 = 8, end = 120, covs = list(STUDY_TOUTAIN1984 = 1), doses = function(wt) data.frame(time = 8, cmt = "a_blood", amt = 0.05 * 1000 * wt)),
+  list(panel = "IM 0.0237 mg/kg DEX_ISO", t0 = 9, end = 700, covs = list(STUDY_EKSTRAND2015 = 1), doses = function(wt) data.frame(time = 9, cmt = "depot_im_iso", amt = 0.0237 * 1000 * wt * dex_to_iso)),
+  list(panel = "IV 0.1 ug/kg + 0.0233 ug/kg/h", t0 = 10, end = 48, covs = list(), doses = function(wt) pho_regimen(0.1, 0.0233, 10, wt)),
+  list(panel = "IV 1 ug/kg + 0.233 ug/kg/h", t0 = 10, end = 48, covs = list(), doses = function(wt) pho_regimen(1, 0.233, 10, wt)),
+  list(panel = "IV 10 ug/kg + 2.33 ug/kg/h", t0 = 10, end = 48, covs = list(), doses = function(wt) pho_regimen(10, 2.33, 10, wt)),
+  list(panel = "IA 0.01 mg DEX_PHO", t0 = 11, end = 72, covs = list(), doses = function(wt) data.frame(time = 11, cmt = "joint_pho", amt = 10 * dex_to_pho)),
+  list(panel = "IA 0.03 mg DEX_PHO", t0 = 11, end = 72, covs = list(), doses = function(wt) data.frame(time = 11, cmt = "joint_pho", amt = 30 * dex_to_pho)),
+  list(panel = "IA 0.1 mg DEX_PHO", t0 = 11, end = 72, covs = list(), doses = function(wt) data.frame(time = 11, cmt = "joint_pho", amt = 100 * dex_to_pho)),
+  list(panel = "IA 0.3 mg DEX_PHO", t0 = 11, end = 72, covs = list(), doses = function(wt) data.frame(time = 11, cmt = "joint_pho", amt = 300 * dex_to_pho)),
+  list(panel = "IA 1 mg DEX_PHO", t0 = 11, end = 72, covs = list(), doses = function(wt) data.frame(time = 11, cmt = "joint_pho", amt = 1000 * dex_to_pho)),
+  list(panel = "IA 3 mg DEX_PHO", t0 = 11, end = 72, covs = list(), doses = function(wt) data.frame(time = 11, cmt = "joint_pho", amt = 3000 * dex_to_pho))
+)
+pd_typ <- dplyr::bind_rows(lapply(pd_scen, function(s) {
+  grid <- s$t0 + sort(unique(c(seq(0, 1, by = 0.02), seq(1, s$end, by = if (s$end > 200) 1 else 0.25))))
+  out <- sim_typ(s$doses(500), grid, covs = s$covs, label = s$panel)
+  out$tad <- out$time - s$t0
+  out
+}))
+pd_typ$label <- factor(pd_typ$label, levels = vapply(pd_scen, `[[`, "", "panel"))
+```
+
+```{r fig5, fig.height = 8}
+ggplot(pd_typ, aes(tad, cortisol)) +
+  geom_line(colour = "#2f6fd6") +
+  facet_wrap(~label, scales = "free_x", ncol = 3) +
+  coord_cartesian(ylim = c(0, 200)) +
+  labs(x = "Time after dose (h)", y = "Plasma cortisol (ng/mL)") +
+  theme_bw() +
+  theme(strip.text = element_text(size = 7))
+```
+
+Replicates the layout of Figure 5 of Yu 2026 (typical 500-kg gelding; study
+covariates set for each panel's study).
+
+```{r pd-check}
+pd_at <- function(lab, t) {
+  d <- dplyr::filter(pd_typ, label == lab)
+  stats::approx(d$tad, d$cortisol, xout = t)$y
+}
+ivdex <- dplyr::filter(pd_typ, label == "IV 0.05 mg/kg DEX")
+baseline_at <- function(clock, rm) rm + 17.6 * cos(2 * pi / 24 * (clock - 8.992))
+stopifnot(
+  # Large doses drive cortisol close to zero for several hours (Results)
+  min(ivdex$cortisol) < 5,
+  # ... and it is back on its circadian baseline four days later
+  abs(pd_at("IV 0.05 mg/kg DEX", 96) / baseline_at(8 + 96, 47) - 1) < 0.05,
+  # The lowest IA doses leave cortisol on its baseline
+  abs(pd_at("IA 0.01 mg DEX_PHO", 12) / baseline_at(11 + 12, 47) - 1) < 0.05,
+  # The stress surge raises cortisol above baseline in the first 0.34 h
+  pd_at("IV 0.05 mg/kg DEX", 0.3) > baseline_at(8.3, 47)
+)
+```
+
+### Agreement with the published Figure 5 lines
+
+The PK profiles agree with Figures 2 and 3, but the cortisol suppression
+simulated with the Table 3 parameters lasts longer than the median lines drawn
+in Figure 5. Values read by eye from Figure 5 (gelding lines and observed
+points) against the packaged typical-value model:
+
+```{r fig5-gap}
+gap <- data.frame(
+  Panel = c("IV 0.05 mg/kg DEX", "IV 0.05 mg/kg DEX", "IM 0.0237 mg/kg DEX_ISO", "IA 3 mg DEX_PHO"),
+  tad = c(6, 24, 200, 8),
+  figure_median = c("about 15", "about 52", "about 65", "about 18"),
+  figure_observed = c("0-15", "0-10", "about 60-125", "5-25")
+)
+gap$model <- mapply(pd_at, gap$Panel, gap$tad)
+gap |>
+  dplyr::rename(
+    "Time after dose (h)" = tad,
+    "Figure 5 median line (ng/mL)" = figure_median,
+    "Figure 5 observed (ng/mL)" = figure_observed,
+    "Model (ng/mL)" = model
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+For the IV arms the Figure 5 median falls to about 15 ng/mL at 6 h and is
+back near its circadian peak by 24 h. That shape requires plasma DEX to fall
+below the IC50 (0.041 ng/mL) within about 6 h of a 0.05 mg/kg dose, whereas
+Figure 2 shows about 10 ng/mL at 4 h and Figure 3 shows urinary DEX for days.
+With the Table 3 IC50 and Hill coefficient, the plasma concentrations of
+Figure 2 keep cortisol inhibited by more than 70% for about a day after the IV
+doses. The observed cortisol points of Figure 5 agree with this for the IV
+arms (0-10 ng/mL at 24 h after IV DEX) but not for the IM arm, where they
+recover to 60-125 ng/mL by 200 h while the model (with the 0.08 ng/mL plasma
+DEX that both the model and Figure 2 give at that time) is still about 70%
+inhibited. Raising the IC50 4- to 8-fold would bring the 24-h and IM recovery
+values near the published lines but would not reproduce the 6-h nadir, so no
+single parameter error explains the lines, and the control streams contain
+nothing that would. The packaged model keeps the published estimates; the
+Figure 5 lines are not reproduced, and its cortisol predictions after the IM
+dose should be read as more suppressed than the IM study observed.
+
+# Assumptions and deviations
+
+* **Flow terms follow the NONMEM code, not the printed Eqs. 6-8.** The printed
+  equations put the blood-to-plasma ratio on every flow term (`Qco * Cp * Rb`,
+  `Ql * (Cp * Rb - ...)`); the control streams use plasma concentration
+  without `Rb` (`- Qco * A(3) - CLr * A(3)) / Vp / Rb`, `Q1 * (A(3) - A(4) /
+  Kp1)`). The packaged model follows the code, as did the authors' earlier
+  ADAPT implementation. With it the PK reproduces Figures 2 and 3.
+* **Physiological constants are the per-kg values in the control stream.**
+  The remainder-tissue flow there is 2395.44 mL/h/kg, while Table S1 (1312
+  L/h at 550 kg) and the earlier ADAPT code imply 2385.45 mL/h/kg, and cardiac
+  output is 3570 mL/h/kg rather than the sum of the two organ flows (3580.07).
+  The packaged model uses the control-stream values, which is what was fitted;
+  the 0.3% flow imbalance has no visible effect.
+* **Random effect on CLh and Kd.** See the variability section above. The PK
+  control stream carries `ETA(1)` on both; the packaged model does the same.
+* **Hepatic clearance by sex.** The paper estimates category-specific values
+  (`CLh_female`, `CLh_gelding`). The control stream codes mares as `SEX = 0`
+  and geldings as `SEX = 2`; the packaged model uses `SEXF` and applies the
+  gelding value to every horse with `SEXF = 0`. Intact males were not studied.
+  The Results describe the difference as 17%; the tabulated values differ by a
+  factor of 1.22 (mares higher).
+* **Hill coefficient.** The Results text quotes 1.12; Tables 3 and S3 give 1.19,
+  which is used.
+* **Stress surge only in Study 1.** The Methods describe the surge as following
+  drug dosing, but the PD control stream switches it on only for `STUDY_ID = 1`
+  (`IF (STUDY_ID .EQ. 1 .AND. TAD .LT. Tau)`). The packaged model follows the
+  code with the `STUDY_TOUTAIN1984` indicator and uses time after the most
+  recent dose (`tad()`).
+* **Prodrug doses in prodrug mass.** The control streams convert each prodrug
+  dose with `MWd / MWo`, so the dataset amounts were prodrug masses; Table 1
+  reports DEX-equivalent doses. Simulations here convert Table 1 doses to
+  prodrug mass. The IM DEX_ISO profile then matches Figure 2 out to 300 h.
+* **IM DEX alcohol.** No study in Table 1 gave IM DEX alcohol, so
+  `ka,m_DEX = 0.131 1/h` is informed by the prior; the control stream gives it
+  bioavailability 1 and absorbs it directly into blood. It is kept for
+  completeness.
+* **Cortisol written in deviation form.** Eq. 14 is integrated as the deviation
+  of cortisol from its circadian baseline (`cortisol_dev`, initial value 0);
+  `cortisol = baseline(t) + cortisol_dev` is identical to Eq. 14 started on its
+  baseline (`A_0(7)` in the control stream). The control stream's production
+  rate `Ks` is missing an operator between its cosine and sine terms; Eq. 13
+  shows it is a minus sign.
+* **Clock time.** The control stream shifts the acrophase by each record's
+  clock time at the first observation (`tp - CLOCK_CCT + 8`). The packaged
+  model uses clock time as model time with the acrophase at 8.992 h, which is
+  the same thing.
+* **Residual error.** The tables report the square root of each `$SIGMA`
+  element (the PD additive error 20.08 squared is the control stream's initial
+  403), so `propSd = 0.45`, `propSd_Curine = 5.44` and `addSd_cortisol = 20`
+  are standard deviations, matching the Results ("45%", "544%", "about 20
+  ng/mL").
+* **Study numbering.** Table 1 gives study numbers and years but not the
+  publication of each; the indicators are named after the references whose
+  designs and doses match (Toutain 1984 for Study 1, Ekstrand 2015 for Study
+  2).
+* **Figure 5.** The published cortisol median lines are not reproduced (see
+  above); the values were not tuned.
