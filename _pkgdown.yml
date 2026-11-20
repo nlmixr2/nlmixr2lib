@@ -2134,6 +2134,8 @@ navbar:
         href: articles/vanderWalt_2013_dapagliflozin.html
       - text: "Dapagliflozin mbma (Yao 2023)"
         href: articles/Yao_2023_sglt2_inhibitors.html
+      - text: "Dapagliflozin mpbpk (Mikhailova 2026)"
+        href: articles/Mikhailova_2026_dapagliflozin_mpbpk.html
       - text: "Dapagliflozin pbpk (Nemitz 2026)"
         href: articles/Nemitz_2026_dapagliflozin_pbpk.html
       - text: "Dapivirine pbpk (Kay 2018)"
@@ -11373,6 +11375,7 @@ articles:
   - articles/Michalon_2025_cliramitug
   - articles/Michelet_2025_BI754111_mpbpk
   - articles/Mielke_2025_fluorouracil_pbpk
+  - articles/Mikhailova_2026_dapagliflozin_mpbpk
   - articles/Milakovic_2024_linezolid
   - articles/MilenkovicGrisic_2024_tumor_dynamics
   - articles/Mileva_2021_doxycycline_rabbit
