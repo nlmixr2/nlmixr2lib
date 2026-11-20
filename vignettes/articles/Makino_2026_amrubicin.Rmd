@@ -1,0 +1,445 @@
+---
+title: "Amrubicin and neutropenia (Makino 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Amrubicin and neutropenia (Makino 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Amrubicin is a third-generation anthracycline given to patients with small
+cell lung cancer (SCLC) as a 5-minute intravenous infusion on days 1-3 of a
+3- to 4-week cycle. Its active C-13 alcohol metabolite, amrubicinol, drives
+severe neutropenia, the dose-limiting toxicity. Makino et al. (2026) simplified
+their earlier population PK/PD model of the same 50 patients (Makino 2019) for
+use in a Bayesian forecasting application. They removed the enterohepatic delay
+compartment of amrubicinol and with it the SLC28A3 genotype covariate, then
+re-estimated the parameters.
+
+* PK: amrubicin follows a three-compartment model. Its only elimination is
+  first-order metabolic clearance `CLp` into a one-compartment amrubicinol model
+  with clearance `CLm`. Body surface area (BSA) increases `CLp`, `CLm` and the
+  amrubicinol volume `Vm` through power effects.
+* PD: the Friberg semi-mechanistic myelosuppression model with four maturation
+  transit compartments and a linear amrubicinol effect on proliferation. A
+  feedback `(Circ0 / Circ)^gamma` acts on proliferation and a second feedback
+  `(Circ0 / Circ)^gamma_m` shortens the mean maturation time (MMT) while
+  neutrophils are below baseline. ECOG performance status (PS) 1 shortens MMT.
+
+* Citation: `r rxode2::rxode(readModelDb("Makino_2026_amrubicin"))$reference`
+* Article: <https://doi.org/10.1007/s00280-026-04931-8> (open access)
+* Predecessor model (error structures, covariate centring, PD variability):
+  <https://doi.org/10.1111/cas.14194> (open access)
+
+# Population
+
+All 50 patients received amrubicin monotherapy for lung cancer at the National
+Cancer Center Hospital, Tokyo. They contributed 388 plasma concentrations of
+amrubicin and amrubicinol and 357 absolute neutrophil counts (ANC) from the
+first cycle. Supplementary Table 1 of Makino 2026 (identical to Table 2 of
+Makino 2019):
+
+| Characteristic | Value |
+|---|---|
+| Age, median (range) | 63.5 (39-81) years |
+| Sex, male / female | 42 / 8 |
+| ECOG PS 0 / 1 | 20 / 30 |
+| SCLC / other histology | 42 / 8 |
+| Dose 40 / 35 mg/m^2 (days 1-3) | 46 / 4 |
+| BSA, median (range) | 1.65 (1.21-1.97) m^2 |
+| Body weight, median (range) | 59.2 (34.9-80.3) kg |
+| Baseline ANC, median (range) | 3.7 (1.4-11.9) x 10^3/mm^3 |
+
+The Makino 2026 Results text gives the mean BSA as 1.688 m^2, the value at
+which the BSA effects are centred.
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| Three-compartment amrubicin, one-compartment amrubicinol linked by `CLp` | -- | Makino 2026 Figure 1 |
+| Concentrations in molar units (umol/L) | -- | Makino 2019 Section 2.5; Makino 2026 Figure 2 axes (nmol/mL) |
+| `lcl` (CLp) | 19.1 L/h | Makino 2026 Table 1A |
+| `lvc` (Vp) | 8.3 L | Table 1A |
+| `lq` (CL2), `lvp` (V2) | 10.6 L/h, 31.7 L | Table 1A |
+| `lq2` (CL3), `lvp2` (V3) | 44.0 L/h, 28.1 L | Table 1A |
+| `lcl_amroh` (CLm), `lvc_amroh` (Vm) | 140.3 L/h, 1224.2 L | Table 1A |
+| `e_bsa_cl`, `e_bsa_cl_amroh`, `e_bsa_vc_amroh` | 1.0, 1.9, 1.6 | Table 1A |
+| Power form `(BSA / mean BSA)^theta` | -- | Makino 2019 Section 2.5 |
+| BSA centring value | 1.688 m^2 | Makino 2026 Results (mean BSA) |
+| Friberg chain, 4 transits, `MMT = (n + 1) / Ktr`, `Kprol = Kcirc = Ktr` | -- | Makino 2026 Figure 1; Makino 2019 Section 2.5 |
+| Drug effect `Slope * C_AMROH`, feedbacks on proliferation and MMT | -- | Makino 2026 Figure 1; Makino 2019 Section 2.5 |
+| `lcirc0`, `lmtt`, `lgamma`, `lgamma_mtt`, `lslope` | 3.7, 180.5 h, 0.4, 0.2, 45.9 L/umol | Makino 2026 Table 1B |
+| `e_ecog_ge1_mtt`, form `exp(covPS * PS)` | -0.2 | Table 1B and its equation image |
+| PK IIV (CLp, Vp, CLm, Vm, CL2, V2, CL3, V3) | 19.5, 39.8, 22.1, 25.6, 6.9, 15.5, 35.2, 34.7% CV | Makino 2026 Table 1C |
+| CV to variance, `CV = sqrt(exp(omega^2) - 1)` | -- | Table 1C footnote |
+| PD IIV (Circ0, MMT, Slope) | 14.7, 31.4, 52.4% CV | Makino 2019 Table 1, final model |
+| Proportional PK error; additive error on Box-Cox ANC, factor 0.2 | magnitudes not reported | Makino 2019 Section 2.5; Makino 2026 Figure 2 caption |
+
+# Virtual patients and dosing
+
+Doses are entered in umol of amrubicin. The label dose is expressed as
+amrubicin hydrochloride (519.93 g/mol), so 40 mg/m^2 for a 1.688 m^2 patient is
+`40 * 1.688 / 519.93 * 1000` = 129.9 umol. Concentrations come back in umol/L
+and are converted to ng/mL with 483.47 g/mol (amrubicin) and 485.48 g/mol
+(amrubicinol) for comparison with the published values in ug*h/L.
+
+The model has three endpoints (`Cc`, `Cc_amroh` and `ANC`), so observation rows
+are placed on the `central` state with `dvid = 1`; every endpoint is returned
+as a column.
+
+```{r helpers}
+mw_hcl <- 519.93
+mw_amr <- 483.47
+mw_amroh <- 485.48
+inf_dur <- 5 / 60
+
+make_events <- function(pat, obs_times) {
+  do.call(rbind, lapply(seq_len(nrow(pat)), function(i) {
+    amt <- pat$dose_mgm2[i] * pat$BSA[i] / mw_hcl * 1000
+    rbind(
+      data.frame(
+        id = pat$id[i], time = c(0, 24, 48), amt = amt, rate = amt / inf_dur,
+        evid = 1L, cmt = "central", dvid = NA_integer_
+      ),
+      data.frame(
+        id = pat$id[i], time = obs_times, amt = 0, rate = 0,
+        evid = 0L, cmt = "central", dvid = 1L
+      )
+    )
+  })) |>
+    dplyr::left_join(pat, by = "id") |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+mod <- readModelDb("Makino_2026_amrubicin")
+mod_typ <- rxode2::zeroRe(mod, which = c("omega", "sigma"))
+```
+
+# Typical patient
+
+## Pharmacokinetics on day 1
+
+The typical patient (BSA 1.688 m^2) receives 40 mg/m^2 on days 1-3. The table
+compares the typical day-1 concentrations with the observed medians read by
+the maintainers from the prediction-corrected VPC of Makino 2026 Figure 2. A
+prediction-corrected median tracks the typical prediction; the reading off a
+small log-scale raster is good to roughly 20-30%.
+
+```{r typical-pk}
+pk_times <- sort(unique(c(seq(0, 72, by = 0.05), 0.25 + inf_dur, 2 + inf_dur, 4 + inf_dur, 8 + inf_dur)))
+typ_pat <- data.frame(id = 1:2, dose_mgm2 = 40, BSA = 1.688, ECOG_GE1 = c(0L, 1L))
+ev_typ <- make_events(typ_pat, obs_times = c(pk_times, seq(73, 42 * 24, by = 1)))
+# One solve per typical patient: a multi-subject solve with the random effects
+# removed warns that there is no omega.
+sim_typ <- do.call(rbind, lapply(split(ev_typ, ev_typ$id), function(ev) {
+  rxode2::rxSolve(mod_typ, ev, returnType = "data.frame", atol = 1e-10, rtol = 1e-10) |>
+    as.data.frame() |>
+    dplyr::mutate(id = ev$id[1], ECOG_GE1 = ev$ECOG_GE1[1])
+}))
+
+fig2 <- data.frame(
+  time_after_end = c(0.25, 2, 4, 8),
+  amr_paper = c(2.0, 0.7, 0.4, 0.2),
+  amroh_paper = c(0.030, 0.045, 0.045, 0.045)
+)
+typ_day1 <- sim_typ |>
+  dplyr::filter(id == 1) |>
+  dplyr::mutate(time_after_end = round(time - inf_dur, 4)) |>
+  dplyr::filter(time_after_end %in% fig2$time_after_end) |>
+  dplyr::select(time_after_end, Cc, Cc_amroh) |>
+  dplyr::inner_join(fig2, by = "time_after_end")
+typ_day1 |>
+  dplyr::rename(
+    "Time after end of infusion (h)" = time_after_end,
+    "Amrubicin, model (umol/L)" = Cc,
+    "Amrubicin, Figure 2 (umol/L)" = amr_paper,
+    "Amrubicinol, model (umol/L)" = Cc_amroh,
+    "Amrubicinol, Figure 2 (umol/L)" = amroh_paper
+  ) |>
+  knitr::kable(digits = 3, caption = "Typical day-1 concentrations after 40 mg/m^2 versus observed medians read from Makino 2026 Figure 2.")
+
+stopifnot(
+  # A wrong volume, molar conversion or clearance moves these by a factor of 2 or more.
+  all(abs(log(typ_day1$Cc / typ_day1$amr_paper)) < log(2)),
+  all(abs(log(typ_day1$Cc_amroh / typ_day1$amroh_paper)) < log(2))
+)
+```
+
+```{r typical-pk-plot, fig.cap = "Typical amrubicin and amrubicinol concentrations after 40 mg/m^2 on days 1-3 (BSA 1.688 m^2)."}
+sim_typ |>
+  dplyr::filter(id == 1, time <= 72) |>
+  dplyr::select(time, Amrubicin = Cc, Amrubicinol = Cc_amroh) |>
+  tidyr::pivot_longer(-time, names_to = "analyte", values_to = "conc") |>
+  dplyr::filter(conc > 0) |>
+  ggplot(aes(time, conc, colour = analyte)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Concentration (umol/L)", colour = NULL) +
+  theme_bw()
+```
+
+## Mass balance of amrubicinol
+
+Every amrubicin molecule leaves the central compartment through `CLp` and
+becomes amrubicinol, so the total amrubicinol exposure after the three doses is
+`AUC(0-inf) = total dose / CLm`, independent of `CLp` and the amrubicin
+distribution. A long solve has to reproduce it.
+
+```{r mass-balance}
+mb_pat <- data.frame(id = 1L, dose_mgm2 = 40, BSA = 1.688, ECOG_GE1 = 0L)
+ev_mb <- make_events(mb_pat, obs_times = c(seq(0, 72, by = 0.05), seq(72.5, 400, by = 0.5)))
+sim_mb <- rxode2::rxSolve(mod_typ, ev_mb, returnType = "data.frame", atol = 1e-12, rtol = 1e-12) |>
+  as.data.frame()
+auc_mb <- sum(diff(sim_mb$time) * (head(sim_mb$Cc_amroh, -1) + tail(sim_mb$Cc_amroh, -1)) / 2)
+dose_total <- 3 * 40 * 1.688 / mw_hcl * 1000
+auc_cf <- dose_total / 140.3
+c(simulated = auc_mb, closed_form = auc_cf, ratio = auc_mb / auc_cf)
+# Trapezoid error on this grid is well below 0.1%; a broken formation link or
+# clearance changes the ratio by tens of percent.
+stopifnot(abs(auc_mb / auc_cf - 1) < 0.002)
+```
+
+## Neutrophils
+
+```{r typical-anc-plot, fig.cap = "Typical ANC after 40 mg/m^2 on days 1-3 for ECOG PS 0 and PS 1. Dashed line: grade 4 threshold (0.5 x 10^3/mm^3)."}
+sim_typ |>
+  dplyr::mutate(PS = paste("ECOG PS", ECOG_GE1)) |>
+  ggplot(aes(time / 24, ANC, colour = PS)) +
+  geom_line() +
+  geom_hline(yintercept = 0.5, linetype = "dashed") +
+  labs(x = "Time (days)", y = "ANC (x 10^3/mm^3)", colour = NULL) +
+  theme_bw()
+```
+
+```{r typical-anc}
+typ_anc <- sim_typ |>
+  dplyr::group_by(ECOG_GE1) |>
+  dplyr::summarise(
+    baseline = ANC[time == 0], nadir = min(ANC), day_nadir = time[which.min(ANC)] / 24,
+    .groups = "drop"
+  )
+knitr::kable(typ_anc, digits = 2, caption = "Typical ANC baseline, nadir and day of nadir.")
+# Before dosing the chain sits at its baseline; the shorter MMT at PS 1 brings
+# the nadir earlier and deeper.
+stopifnot(
+  all(abs(typ_anc$baseline - 3.7) < 1e-6),
+  typ_anc$day_nadir[typ_anc$ECOG_GE1 == 1] < typ_anc$day_nadir[typ_anc$ECOG_GE1 == 0]
+)
+```
+
+# Simulated cohort
+
+The cohort mirrors the study: 200 patients at 40 mg/m^2 and, as a second arm,
+50 at 35 mg/m^2. BSA is drawn from a normal distribution with the reported mean
+of 1.688 m^2 and an SD of 0.19 m^2 (a quarter of the 1.21-1.97 m^2 range),
+truncated to that range. 60% have ECOG PS 1. All random effects come from the
+model. The residual errors are held at zero (their magnitudes are not
+published), so the simulated values are individual predictions.
+
+```{r cohort}
+set.seed(20260728)
+n40 <- 200
+n35 <- 50
+draw_bsa <- function(n) {
+  x <- rnorm(n * 3, 1.688, 0.19)
+  x <- x[x >= 1.21 & x <= 1.97]
+  x[seq_len(n)]
+}
+cohort <- data.frame(
+  id = seq_len(n40 + n35),
+  dose_mgm2 = rep(c(40, 35), c(n40, n35)),
+  BSA = draw_bsa(n40 + n35),
+  ECOG_GE1 = rbinom(n40 + n35, 1, 0.6)
+) |>
+  dplyr::mutate(treatment = paste(dose_mgm2, "mg/m2 days 1-3"))
+obs_cohort <- c(seq(0, 72, by = 0.25), seq(78, 42 * 24, by = 6))
+ev_cohort <- make_events(cohort, obs_times = obs_cohort)
+rxode2::rxSetSeed(20260728)
+sim_cohort <- rxode2::rxSolve(mod, ev_cohort, returnType = "data.frame") |>
+  as.data.frame() |>
+  dplyr::left_join(cohort[, c("id", "treatment")], by = "id")
+```
+
+## NCA (PKNCA)
+
+Day-1 amrubicin exposure over 0-24 h and amrubicinol exposure over the 72 h of
+the three-dose course, in ng/mL.
+
+```{r pknca}
+conc_nca <- sim_cohort |>
+  dplyr::filter(!is.na(Cc)) |>
+  # Keep the 72-h course; the time-0 pre-dose record stays in.
+  dplyr::filter(time %in% obs_cohort[obs_cohort <= 72]) |>
+  dplyr::mutate(amr = Cc * mw_amr, amroh = Cc_amroh * mw_amroh) |>
+  dplyr::select(id, treatment, time, amr, amroh)
+dose_nca <- ev_cohort |>
+  dplyr::filter(evid == 1) |>
+  dplyr::mutate(amt_mg = amt * mw_hcl / 1000) |>
+  dplyr::select(id, treatment, time, amt_mg)
+
+nca_one <- function(conc_col, intervals) {
+  conc_obj <- PKNCA::PKNCAconc(
+    conc_nca, stats::as.formula(paste(conc_col, "~ time | treatment + id")),
+    concu = "ng/mL", timeu = "h"
+  )
+  dose_obj <- PKNCA::PKNCAdose(dose_nca, amt_mg ~ time | treatment + id, doseu = "mg")
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+}
+nca_amr <- nca_one("amr", data.frame(start = 0, end = 24, cmax = TRUE, tmax = TRUE, auclast = TRUE))
+nca_amroh <- nca_one("amroh", data.frame(start = 0, end = 72, cmax = TRUE, tmax = TRUE, auclast = TRUE))
+
+summarise_nca <- function(res, analyte) {
+  as.data.frame(res$result) |>
+    dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast")) |>
+    dplyr::group_by(treatment, PPTESTCD) |>
+    dplyr::summarise(median = median(PPORRES), p05 = quantile(PPORRES, 0.05), p95 = quantile(PPORRES, 0.95), .groups = "drop") |>
+    dplyr::mutate(analyte = analyte)
+}
+dplyr::bind_rows(summarise_nca(nca_amr, "Amrubicin (0-24 h)"), summarise_nca(nca_amroh, "Amrubicinol (0-72 h)")) |>
+  dplyr::select(analyte, treatment, PPTESTCD, median, p05, p95) |>
+  dplyr::rename(
+    "Analyte" = analyte, "Arm" = treatment, "Parameter" = PPTESTCD,
+    "Median" = median, "5th percentile" = p05, "95th percentile" = p95
+  ) |>
+  knitr::kable(digits = 2, caption = "Simulated NCA (Cmax in ng/mL, Tmax in h, AUC in ng*h/mL).")
+```
+
+## Comparison with the published amrubicinol exposure
+
+Neither paper tabulates NCA. Makino 2019 (Results, Section 3.4) reports the
+mean amrubicinol AUC(0-72) as 1385.9 ug*h/L in the 29 patients with grade 4
+neutropenia and 1208.5 ug*h/L in the other 21, a cohort mean of 1311 ug*h/L
+(92% of patients at 40 mg/m^2). Makino 2026 reports that removing the
+enterohepatic delay did not meaningfully change amrubicinol AUC(0-72).
+
+```{r nca-compare}
+ref_auc <- data.frame(treatment = "40 mg/m2 days 1-3", auclast = (29 * 1385.9 + 21 * 1208.5) / 50)
+sim_auc40 <- as.data.frame(nca_amroh$result) |>
+  dplyr::filter(treatment == "40 mg/m2 days 1-3", PPTESTCD == "auclast")
+cmp <- ncaComparisonTable(
+  sim_auc40, ref_auc,
+  by = "treatment",
+  units = c(auclast = "ng*h/mL")
+)
+knitr::kable(cmp, caption = "Amrubicinol AUC(0-72) at 40 mg/m^2: simulated cohort versus the Makino 2019 cohort mean.")
+stopifnot(
+  # Centre: a wrong molar conversion, CLm or BSA centring moves this by > 15%.
+  abs(median(sim_auc40$PPORRES) / ref_auc$auclast - 1) < 0.15
+)
+```
+
+## Neutropenia
+
+In Makino 2019, 29 of 50 patients (58%) had grade 4 neutropenia (ANC below
+0.5 x 10^3/mm^3) in the first cycle. Makino 2026 Figure 2 shows the observed
+median ANC reaching its nadir, roughly 0.7 x 10^3/mm^3, around days 12-15.
+
+```{r neutropenia}
+anc_sum <- sim_cohort |>
+  dplyr::group_by(id, treatment) |>
+  dplyr::summarise(nadir = min(ANC), day_nadir = time[which.min(ANC)] / 24, .groups = "drop")
+g4 <- anc_sum |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(
+    n = dplyr::n(),
+    grade4_pct = 100 * mean(nadir < 0.5),
+    median_nadir = median(nadir),
+    median_day_nadir = median(day_nadir),
+    .groups = "drop"
+  )
+g4 |>
+  dplyr::rename(
+    "Arm" = treatment, "N" = n, "Grade 4 neutropenia (%)" = grade4_pct,
+    "Median nadir (x 10^3/mm^3)" = median_nadir, "Median day of nadir" = median_day_nadir
+  ) |>
+  knitr::kable(digits = 2, caption = "Simulated first-cycle neutropenia.")
+g4_40 <- g4[g4$treatment == "40 mg/m2 days 1-3", ]
+stopifnot(
+  # 58% grade 4 in the study; the binomial SD at n = 200 is about 3.5 points and
+  # the PD variability is carried from the predecessor fit, so the band is wide.
+  abs(g4_40$grade4_pct - 58) < 20,
+  g4_40$median_day_nadir > 10, g4_40$median_day_nadir < 17
+)
+```
+
+```{r vpc-plot, fig.height = 7, fig.cap = "Simulated cohort at 40 mg/m^2 (individual predictions): median and 5th-95th percentiles, day 1 PK and first-cycle ANC. Compare Makino 2026 Figure 2."}
+vpc <- sim_cohort |>
+  dplyr::filter(treatment == "40 mg/m2 days 1-3") |>
+  dplyr::select(time, Amrubicin = Cc, Amrubicinol = Cc_amroh, ANC) |>
+  tidyr::pivot_longer(-time, names_to = "output", values_to = "value") |>
+  dplyr::filter((output != "ANC" & time > 0 & time <= 24) | output == "ANC") |>
+  dplyr::mutate(x = ifelse(output == "ANC", time / 24, time)) |>
+  dplyr::group_by(output, x) |>
+  dplyr::summarise(p05 = quantile(value, 0.05), p50 = median(value), p95 = quantile(value, 0.95), .groups = "drop")
+ggplot(vpc, aes(x)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line(aes(y = p50)) +
+  scale_y_log10() +
+  facet_wrap(~output, scales = "free", ncol = 1) +
+  labs(x = "Time (h for PK, days for ANC)", y = "umol/L (PK) or x 10^3/mm^3 (ANC)") +
+  theme_bw()
+```
+
+# Assumptions and deviations
+
+* **Molar units and the dose salt.** Both analytes were modelled in molar
+  concentrations (Makino 2019 Section 2.5; Makino 2026 Figure 2 in nmol/mL, the
+  same as umol/L). `Slope` therefore multiplies the amrubicinol concentration
+  in umol/L. The papers do not state the molecular weight used to convert the
+  dose; the vignette treats the label dose as amrubicin hydrochloride
+  (519.93 g/mol), the form in which the Japanese label expresses it. Using the
+  free base (483.47 g/mol) instead would raise every exposure by 7.5%.
+* **BSA centring.** Makino 2019 centres continuous covariates at the cohort
+  mean; the mean BSA, 1.688 m^2, is the Makino 2026 Results value. The SD it
+  prints (0.522 m^2) cannot be reconciled with the 1.21-1.97 m^2 range, so the
+  virtual cohort uses 0.19 m^2.
+* **Rounded estimates.** Makino 2026 Table 1 prints the covariate exponents,
+  `gamma`, `gamma_m` and the PS effect to one decimal place; they are used as
+  printed.
+* **Second feedback.** Figure 1 shows the feedback `(Circ0 / Circ)^gamma_m`
+  acting on MMT, after Quartino et al. (2014). It is applied to the transit
+  rate out of the progenitor pool and through the four maturation
+  compartments; the proliferation rate `Kprol` and the circulating-cell loss
+  rate `Kcirc` keep the baseline `Ktr` (Figure 1: `Kprol (= Ktr)`,
+  `Kcirc (= Ktr)`). The papers do not write out the differential equations.
+* **PD variability carried from Makino 2019.** Makino 2026 Table 1C lists only
+  the PK variances, although its MMT equation carries `eta_MMT`, and the paper
+  states that the PD structure is unchanged. The PD variances (Circ0 14.7%,
+  MMT 31.4%, Slope 52.4% CV) are the Makino 2019 final-model values from the
+  same 50 patients, converted with the same `sqrt(exp(omega^2) - 1)` formula.
+* **No PK covariances.** Makino 2019 estimated covariances between CLp, V3 and
+  CL3; Makino 2026 reports none, so the 2026 variances are entered as a
+  diagonal matrix.
+* **Residual errors.** The error models (proportional for both analytes;
+  additive on the Box-Cox scale with factor 0.2 for ANC) come from Makino 2019
+  Section 2.5. Neither paper reports their magnitudes, so they are fixed at
+  zero; simulations give individual predictions. Users who need simulated
+  observations must supply residual magnitudes of their own.
+* **PS coding.** The cohort had only PS 0 and PS 1, so PS enters as the 0/1
+  indicator `ECOG_GE1`. The forecasting application accepts PS up to 4, but the
+  model was not fitted to PS >= 2.
+* **Demographics.** The Makino 2026 Results text states 80% male and 65% PS 0,
+  while its Supplementary Table 1 (and Makino 2019 Table 2) give 84% male and
+  40% PS 0. The table values are used.
+* **Linear drug effect.** `1 - Slope * C_AMROH` is used as published. It is
+  negative while amrubicinol exceeds 1 / 45.9 = 0.022 umol/L, which the typical
+  patient does for most of days 1-3, so the progenitor pool shrinks during
+  exposure, as in the original Phoenix model.
+* **Published comparisons.** The Figure 2 values are medians read by the
+  maintainers from a small raster image. The AUC reference comes from the
+  Makino 2019 individual predictions, which included the enterohepatic delay.
+* **Literature check.** No erratum or correction was found for either paper on
+  Europe PMC (checked 2026-11-15).

@@ -7159,6 +7159,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Kunarajah_2017_doxorubicin.R`.
 
+### amroh (**canonical amrubicinol suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Amrubicinol, the active C-13 alcohol metabolite of the anthracycline amrubicin (formed by carbonyl reductase). Used in parent + metabolite popPK/PD models of amrubicin (`central_amroh`, `lcl_amroh`, `lvc_amroh`, `Cc_amroh`, `propSd_amroh`).
+- **Source aliases:** `AMROH` (Makino 2019 / 2026), `m` subscript (`CLm`, `Vm`).
+- **Example models:** `Makino_2026_amrubicin.R`.
+
 ### eddp (**canonical EDDP methadone metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 2-Ethylidene-1,5-dimethyl-3,3-diphenylpyrrolidine (EDDP), the principal (largely inactive) N-demethylation cyclisation metabolite of methadone. Formed stereoselectively by CYP3A, CYP2B6, and CYP2C19 from R- and S-methadone. Used as the metabolite suffix in parent + metabolite simultaneous popPK models of methadone enantiomers (compartments `central_eddp`, parameters `lcl_eddp`, residuals `propSd_eddp`).
