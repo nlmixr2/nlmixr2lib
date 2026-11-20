@@ -5120,6 +5120,8 @@ navbar:
         href: articles/LiricRajlic_2024_mRNA6231.html
       - text: "MTMSATrp mouse (Niloy 2026)"
         href: articles/Niloy_2026_MTMSATrp_mouse.html
+      - text: "MTMSATrp mouse (Niloy 2026b)"
+        href: articles/Niloy_2026b_MTMSATrp_mouse.html
       - text: "Mab human pbpk (Jones 2019)"
         href: articles/Jones_2019_mab_pbpk.html
       - text: "Mab mpbpk human (Muliaditan 2025)"
@@ -11716,6 +11718,7 @@ articles:
   - articles/Nijstad_2022_vincristine
   - articles/Nikanjam_2019_siltuximab
   - articles/Niloy_2026_MTMSATrp_mouse
+  - articles/Niloy_2026b_MTMSATrp_mouse
   - articles/Nishiyama_2019_metformin_cimetidine
   - articles/Niu_2017_veliparib
   - articles/Niu_2020_caspofungin

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cho 2026 alverine and metabolites M1-M3 ([doi:10.1002/psp4.70342](https://doi.org/10.1002/psp4.70342)) -- male ICR mice given IV or oral alverine citrate.
+- Add Niloy 2026 MTMSA-Trp tumor growth inhibition and time-to-event model ([doi:10.1007/s00280-026-04947-0](https://doi.org/10.1007/s00280-026-04947-0)) -- female athymic nude mice bearing TC-32 Ewing sarcoma xenografts.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
