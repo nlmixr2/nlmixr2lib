@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mackova 2026 fluconazole ([doi:10.3390/pharmaceutics18080929](https://doi.org/10.3390/pharmaceutics18080929)) -- hospitalised adults (mostly in intensive care) receiving intravenous fluconazole, with eGFR-based dosing.
+- Add Li 2026 isoniazid 6H / 3HR / 3H2P2 regimen-specific models ([doi:10.3390/pharmaceutics18080937](https://doi.org/10.3390/pharmaceutics18080937)) -- Chinese adults with latent tuberculosis infection on preventive therapy with and without rifampicin or rifapentine.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

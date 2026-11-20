@@ -4350,6 +4350,12 @@ navbar:
         href: articles/Wijk_2024_first_line_tb_drugs.html
       - text: "Isoniazid (Wilkins 2011)"
         href: articles/Wilkins_2011_isoniazid.html
+      - text: "Isoniazid 3h2p2 (Li 2026)"
+        href: articles/Li_2026_isoniazid.html
+      - text: "Isoniazid 3hr (Li 2026)"
+        href: articles/Li_2026_isoniazid.html
+      - text: "Isoniazid 6h (Li 2026)"
+        href: articles/Li_2026_isoniazid.html
       - text: "Isoniazid human fromMouse pbpk (Karakitsios 2024)"
         href: articles/Karakitsios_2024_antitubercular_lung_pbpk.html
       - text: "Isoniazid mouse pbpk (Karakitsios 2024)"
@@ -11221,6 +11227,7 @@ articles:
   - articles/Li_2026_alvespimycin
   - articles/Li_2026_epcoritamab
   - articles/Li_2026_etranacogene
+  - articles/Li_2026_isoniazid
   - articles/Li_2026_levonorgestrel
   - articles/Li_2026_meropenem_vaborbactam
   - articles/Liang_2023_polymyxinB

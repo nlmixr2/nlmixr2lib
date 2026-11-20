@@ -1,0 +1,425 @@
+---
+title: "Isoniazid with and without rifamycin, 6H / 3HR / 3H2P2 (Li 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Isoniazid with and without rifamycin, 6H / 3HR / 3H2P2 (Li 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Li_2026_isoniazid_6h"))$reference`
+* Article: <https://doi.org/10.3390/pharmaceutics18080937> (open access;
+  the supplement contains the authors' Stan / R code and Tables S1-S8)
+
+Li et al. (2026) fitted three **independent** regimen-specific Bayesian
+population PK models for oral isoniazid in adults receiving tuberculosis
+preventive therapy:
+
+| Regimen | Isoniazid | Rifamycin | Model |
+|---------|-----------|-----------|-------|
+| 6H | 300 mg once daily, 6 months | none | `Li_2026_isoniazid_6h` |
+| 3HR | 300 mg once daily, 3 months | rifampicin 450 mg (<50 kg) / 600 mg (>=50 kg) daily | `Li_2026_isoniazid_3hr` |
+| 3H2P2 | 300 mg twice weekly, 3 months | rifapentine 500 mg (<50 kg) / 600 mg (>=50 kg) twice weekly | `Li_2026_isoniazid_3h2p2` |
+
+Each model is a one-compartment model with first-order absorption and
+elimination. Apparent oral clearance depends on NAT2 acetylator phenotype
+(intermediate acetylator reference) and on body weight; apparent volume
+depends on body weight. The weight terms are normalised to each regimen's own
+median weight, because the authors' code centres weight within each
+regimen's dataset. The rifamycin interaction is not a covariate: it is
+carried entirely by the regimen-specific typical values of CL/F, V/F and ka.
+
+```{r descriptions, echo = FALSE, results = "asis"}
+for (nm in c("Li_2026_isoniazid_6h", "Li_2026_isoniazid_3hr", "Li_2026_isoniazid_3h2p2")) {
+  cat("* `", nm, "`: ", rxode2::rxode(readModelDb(nm))$description, "\n", sep = "")
+}
+```
+
+# Population
+
+The 173 participants with latent tuberculosis infection were recruited in
+Sichuan Province, China, between July 2024 and June 2025 in a prospective
+observational study (Methods 2.1). Plasma was sampled after two weeks of
+treatment, predose and 1, 2, 4, 6 and 8 h after a dose. Concentrations below
+the limit of quantification (25-31% of samples) were handled with the M3
+likelihood. Baseline characteristics (Table 1):
+
+| | 6H | 3HR | 3H2P2 |
+|---|---|---|---|
+| Subjects (observations) | 62 (372) | 53 (318) | 58 (348) |
+| Age, years, median (IQR) | 38 (32.3-45.3) | 39 (33.3-45.7) | 38 (32.4-46.5) |
+| Male, n (%) | 31 (50.0) | 25 (47.2) | 25 (43.1) |
+| Weight, kg, median (IQR) | 66.4 (59.0-72.0) | 61.7 (57.8-69.1) | 58.9 (53.9-69.3) |
+| NAT2 slow / intermediate / fast, n | 20 / 18 / 24 | 19 / 21 / 13 | 16 / 23 / 19 |
+| BLQ observations, % | 25.3 | 29.9 | 30.5 |
+
+The same information is available programmatically, e.g.
+`readModelDb("Li_2026_isoniazid_6h")()$population`.
+
+# Source trace
+
+| Equation / parameter | 6H | 3HR | 3H2P2 | Source location |
+|----------------------|----|-----|-------|-----------------|
+| `lka` (ka, 1/h) | log(2.88) | log(2.71) | log(2.88) | Table 2; Results 3.2.1-3.2.3 |
+| `lcl` (CL/F, L/h) | log(21.83) | log(26.32) | log(25.98) | Table 2; Results 3.2.1-3.2.3 |
+| `lvc` (V/F, L) | log(51.03) | log(45.91) | log(50.24) | Table 2; Results 3.2.1-3.2.3 |
+| Reference weight (kg) | 66.4 | 61.7 | 58.9 | Table 1 regimen medians; Supplementary Code `prepare_regimen_data()` |
+| `e_wt_cl` | 0.728 | 0.728 | 0.728 | Table 2 / Results 3.2 ('across regimens') |
+| `e_wt_vc` | 0.999 | 0.999 | 0.999 | Table 2 / Results 3.2 |
+| `e_nat2_slow_cl` | log(0.646) | log(0.646) | log(0.646) | Table 3; Results 3.2.4 (slow vs intermediate, -35.4%) |
+| `e_nat2_rapid_cl` | log(1.484) | log(1.484) | log(1.484) | Table 3; Results 3.2.4 (fast vs intermediate, +48.4%) |
+| `etalcl` | 0.05157 | 0.05157 | 0.05157 | Table 2: 23.00 %CV; omega^2 = log(1 + CV^2) |
+| `etalvc` | 0.006348 | 0.006348 | 0.006348 | Table 2: 7.98 %CV; omega^2 = log(1 + CV^2) |
+| `expSd` | 0.895 | 0.895 | 0.895 | Table 2: proportional error, log-scale SD |
+| `cl = exp(lcl + beta_nat2 + etalcl) * (WT/WTref)^e_wt_cl` | | | | Supplementary Code, Stan `model` block |
+| `vc = exp(lvc + etalvc) * (WT/WTref)^e_wt_vc` | | | | Supplementary Code, Stan `model` block |
+| One-compartment first-order absorption | | | | Results 3.2; Stan function `oral_one_cpt()` |
+| `Cc ~ lnorm(expSd)` | | | | Stan likelihood `log(conc) ~ normal(log(Cpred), sigma)`; Table S1 |
+
+# Replicate Table 4: typical-value exposure by regimen and NAT2
+
+Table 4 reports simulated AUC0-24 and Cmax after one isoniazid dose for each
+regimen and NAT2 phenotype, with body weight held at its typical value and no
+between-subject variability (the exposure-simulation function in the
+Supplementary Code draws posterior parameters but no etas). The authors
+also multiplied the 300 mg dose by a "relative bioavailability factor" of
+1.0 (6H), 0.8 (3HR) and 0.85 (3H2P2) that is **not** part of the fitted
+model (Table S3: "Relative F applied as effective dose = Dose * F_rel, not by
+changing the fitted Stan model"). The same effective doses are used here so
+that the comparison is like for like; see Assumptions and deviations.
+
+```{r table4-sim}
+regimens <- tibble::tribble(
+  ~regimen, ~model, ~wt_ref, ~frel, ~ii,
+  "6H", "Li_2026_isoniazid_6h", 66.4, 1.00, 24,
+  "3HR", "Li_2026_isoniazid_3hr", 61.7, 0.80, 24,
+  "3H2P2", "Li_2026_isoniazid_3h2p2", 58.9, 0.85, 84
+)
+nat2_levels <- tibble::tribble(
+  ~nat2, ~NAT2_SLOW, ~NAT2_RAPID,
+  "Slow", 1, 0,
+  "Intermediate", 0, 0,
+  "Fast", 0, 1
+)
+obs_grid <- seq(0, 24, by = 0.05)
+
+typ_one <- function(reg) {
+  r <- regimens[regimens$regimen == reg, ]
+  ev <- tidyr::crossing(nat2_levels, time = obs_grid) |>
+    mutate(id = match(nat2, nat2_levels$nat2), evid = 0, amt = 0, cmt = "central")
+  doses <- nat2_levels |>
+    mutate(id = seq_len(n()), time = 0, evid = 1, amt = 300 * r$frel, cmt = "depot")
+  ev <- bind_rows(doses, ev) |>
+    mutate(WT = r$wt_ref) |>
+    arrange(id, time, desc(evid))
+  mod <- rxode2::zeroRe(readModelDb(r$model)())
+  # Typical-value solve of three subjects with the random effects removed:
+  # rxode2 notes this ("multi-subject simulation without ... 'omega'"),
+  # which is exactly what is intended here, so only that condition is muffled.
+  sim <- withCallingHandlers(
+    rxode2::rxSolve(mod, events = ev, keep = c("nat2"), returnType = "data.frame"),
+    warning = function(w) {
+      if (grepl("multi-subject simulation without", conditionMessage(w))) {
+        invokeRestart("muffleWarning")
+      }
+    },
+    message = function(m) {
+      if (grepl("omega/sigma items treated as zero", conditionMessage(m))) {
+        invokeRestart("muffleMessage")
+      }
+    }
+  )
+  sim$regimen <- reg
+  list(sim = sim, doses = doses |> mutate(regimen = reg))
+}
+typ <- lapply(regimens$regimen, typ_one)
+sim_typ <- bind_rows(lapply(typ, `[[`, "sim"))
+dose_typ <- bind_rows(lapply(typ, `[[`, "doses"))
+```
+
+```{r table4-pknca}
+sim_nca <- sim_typ |>
+  filter(!is.na(Cc)) |>
+  select(regimen, nat2, id, time, Cc)
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(regimen, nat2, id) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(regimen, nat2, id, time, .keep_all = TRUE) |>
+  arrange(regimen, nat2, id, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | regimen + nat2 + id)
+dose_obj <- PKNCA::PKNCAdose(
+  dose_typ |> select(regimen, nat2, id, time, amt),
+  amt ~ time | regimen + nat2 + id
+)
+intervals <- data.frame(start = 0, end = 24, auclast = TRUE, cmax = TRUE)
+nca_typ <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+published_t4 <- tibble::tribble(
+  ~regimen, ~nat2, ~auclast, ~cmax,
+  "6H", "Slow", 20.85, 4.52,
+  "6H", "Intermediate", 13.29, 4.03,
+  "6H", "Fast", 8.81, 3.64,
+  "3HR", "Slow", 14.10, 3.83,
+  "3HR", "Intermediate", 8.99, 3.39,
+  "3HR", "Fast", 6.20, 3.13,
+  "3H2P2", "Slow", 16.04, 4.13,
+  "3H2P2", "Intermediate", 9.85, 3.50,
+  "3H2P2", "Fast", 6.76, 3.25
+)
+
+cmp_t4 <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_typ,
+  reference = published_t4,
+  by = c("regimen", "nat2"),
+  units = c(auclast = "mg*h/L", cmax = "mg/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp_t4,
+  caption = "Typical-value AUC0-24 and Cmax vs. Table 4 medians (Li 2026). * differs from the reference by >20%."
+)
+```
+
+```{r table4-check}
+nca_wide <- as.data.frame(nca_typ$result) |>
+  select(regimen, nat2, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(published_t4, by = c("regimen", "nat2"), suffix = c("_sim", "_pub")) |>
+  mutate(
+    auc_pct = 100 * (auclast_sim - auclast_pub) / auclast_pub,
+    cmax_pct = 100 * (cmax_sim - cmax_pub) / cmax_pub
+  )
+# Deterministic typical-value solves against posterior-median summaries:
+# the difference comes from posterior parameter uncertainty in Table 4 and
+# from Table 4's rounded NAT2 multipliers (0.65 / 1.5, Table S3), so a
+# 10% band is ample while a mis-transcribed CL/F or dose would break it.
+stopifnot(
+  all(abs(nca_wide$auc_pct) < 10),
+  all(abs(nca_wide$cmax_pct) < 10)
+)
+```
+
+All nine AUC0-24 values reproduce Table 4 within about 5.5% and Cmax within
+about 7.5%. The residual differences come from the summary statistic (Table 4
+reports the median over posterior draws, which include parameter
+uncertainty; the packaged model is the posterior median) and from Table 4's
+rounded NAT2 multipliers of 0.65 and 1.5 (Table S3) against the reported
+effect ratios 0.646 and 1.484 used in the models.
+
+# Replicate Figure 4: visual predictive check by regimen
+
+Figure 4 shows VPCs over the 0-8 h sampling window after two weeks of
+treatment. The virtual cohort below draws 200 participants per regimen with
+log-normal body weight matched to each regimen's median and IQR (Table 1) and
+NAT2 phenotype sampled at each regimen's observed proportions. Doses are the
+nominal 300 mg (no relative-bioavailability factor), once daily for 6H and
+3HR and every 84 h for 3H2P2, with sampling after the last dose of week 2.
+
+```{r cohort}
+set.seed(20260602)
+rxode2::rxSetSeed(20260602)
+n_per_arm <- 200
+
+cohort_spec <- tibble::tribble(
+  ~regimen, ~wt_med, ~wt_q1, ~wt_q3, ~p_slow, ~p_int, ~p_fast, ~n_doses,
+  "6H", 66.4, 59.0, 72.0, 20 / 62, 18 / 62, 24 / 62, 14,
+  "3HR", 61.7, 57.8, 69.1, 19 / 53, 21 / 53, 13 / 53, 14,
+  "3H2P2", 58.9, 53.9, 69.3, 16 / 58, 23 / 58, 19 / 58, 4
+)
+
+make_cohort <- function(reg, id_offset) {
+  s <- cohort_spec[cohort_spec$regimen == reg, ]
+  r <- regimens[regimens$regimen == reg, ]
+  subj <- tibble(
+    id = id_offset + seq_len(n_per_arm),
+    WT = exp(rnorm(n_per_arm, log(s$wt_med), log(s$wt_q3 / s$wt_q1) / (2 * qnorm(0.75)))),
+    nat2 = sample(c("Slow", "Intermediate", "Fast"), n_per_arm,
+      replace = TRUE, prob = c(s$p_slow, s$p_int, s$p_fast)
+    )
+  ) |>
+    left_join(nat2_levels, by = "nat2")
+  last_dose <- (s$n_doses - 1) * r$ii
+  doses <- subj |>
+    tidyr::crossing(dose_no = seq_len(s$n_doses)) |>
+    mutate(time = (dose_no - 1) * r$ii, evid = 1, amt = 300, cmt = "depot") |>
+    select(-dose_no)
+  obs <- subj |>
+    tidyr::crossing(tad = c(seq(0, 8, by = 0.25))) |>
+    mutate(time = last_dose + tad, evid = 0, amt = 0, cmt = "central") |>
+    select(-tad)
+  bind_rows(doses, obs) |>
+    mutate(regimen = reg, tlast = last_dose) |>
+    arrange(id, time, desc(evid))
+}
+offsets <- c("6H" = 0L, "3HR" = 1000L, "3H2P2" = 2000L)
+cohorts <- lapply(regimens$regimen, function(reg) make_cohort(reg, offsets[[reg]]))
+stopifnot(!anyDuplicated(unlist(lapply(cohorts, function(d) unique(d$id)))))
+```
+
+```{r vpc-sim}
+sim_vpc <- bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+  mod <- readModelDb(regimens$model[i])()
+  ev <- cohorts[[i]]
+  out <- rxode2::rxSolve(mod, events = ev, keep = c("regimen", "nat2", "WT", "tlast"), returnType = "data.frame")
+  out
+})) |>
+  mutate(tad = time - tlast, regimen = factor(regimen, levels = regimens$regimen))
+```
+
+```{r figure-4, fig.width = 8, fig.height = 4}
+vpc_sum <- sim_vpc |>
+  group_by(regimen, tad) |>
+  summarise(
+    Q05 = quantile(sim, 0.05), Q50 = quantile(sim, 0.50), Q95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc_sum, aes(tad, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~regimen) +
+  scale_y_log10() +
+  labs(
+    x = "Time after dose (h)", y = "Isoniazid concentration (mg/L)",
+    title = "Simulated 5th / 50th / 95th percentiles (with residual error)",
+    caption = "Replicates the layout of Figure 4A of Li 2026 (no observed data overlaid)."
+  )
+```
+
+The simulated individual Cmax is about 4 mg/L (geometric mean, steady-state
+NCA below) at a median Tmax of 0.75 h, and concentrations fall several-fold
+over the 8 h window, bracketing the observed median of 1.5-1.7 mg/L over all
+sampling times (Table 1). The very wide
+5th-95th percentile band reflects the log-scale residual SD of 0.895, which
+the authors estimated jointly with 25-31% left-censored data.
+
+# Individual clearance by regimen and NAT2 (Table S2)
+
+Table S2 reports the median post-hoc CL/F by regimen and NAT2 phenotype,
+which reflect the observed weight distribution and between-subject
+variability. The simulated individual clearances from the same virtual cohort
+are compared below.
+
+```{r table-s2}
+published_s2 <- tibble::tribble(
+  ~regimen, ~nat2, ~cl_pub,
+  "6H", "Slow", 13.6, "6H", "Intermediate", 21.1, "6H", "Fast", 32.1,
+  "3HR", "Slow", 16.2, "3HR", "Intermediate", 25.3, "3HR", "Fast", 38.4,
+  "3H2P2", "Slow", 15.9, "3H2P2", "Intermediate", 24.9, "3H2P2", "Fast", 37.7
+)
+cl_cmp <- sim_vpc |>
+  distinct(regimen, id, nat2, cl) |>
+  group_by(regimen, nat2) |>
+  summarise(n = n(), cl_sim = median(cl), .groups = "drop") |>
+  mutate(regimen = as.character(regimen)) |>
+  left_join(published_s2, by = c("regimen", "nat2")) |>
+  mutate(pct_diff = 100 * (cl_sim - cl_pub) / cl_pub)
+
+cl_cmp |>
+  mutate(cl_sim = signif(cl_sim, 3), pct_diff = round(pct_diff, 1)) |>
+  rename(
+    "Regimen" = regimen, "NAT2" = nat2, "Simulated n" = n,
+    "Simulated median CL/F (L/h)" = cl_sim, "Table S2 median CL/F (L/h)" = cl_pub,
+    "% diff" = pct_diff
+  ) |>
+  knitr::kable(caption = "Median individual CL/F, simulated cohort vs. Table S2 post-hoc estimates.")
+
+# Each stratum median carries Monte Carlo noise from ~40-90 virtual
+# subjects with 23% CV IIV, so assert on the centre and a robust quantile.
+stopifnot(
+  abs(median(cl_cmp$pct_diff)) < 8,
+  quantile(abs(cl_cmp$pct_diff), 0.9) < 15
+)
+```
+
+# Steady-state NCA of the virtual cohort
+
+```{r pknca-vpc}
+# The observation grid starts at tad = 0 (the trough at the last dose), so
+# every subject already has a time-zero record.
+ss_nca <- sim_vpc |>
+  filter(!is.na(Cc)) |>
+  select(regimen, id, tad, Cc) |>
+  mutate(regimen = as.character(regimen))
+stopifnot(all(tapply(ss_nca$tad, ss_nca$id, min) == 0))
+ss_dose <- ss_nca |> distinct(regimen, id) |> mutate(tad = 0, amt = 300)
+ss_obj <- PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(ss_nca, Cc ~ tad | regimen + id),
+  PKNCA::PKNCAdose(ss_dose, amt ~ tad | regimen + id),
+  intervals = data.frame(start = 0, end = 8, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+)
+ss_res <- PKNCA::pk.nca(ss_obj)
+summary(ss_res)
+```
+
+The paper reports no observed NCA, so this table is descriptive. The 0-8 h
+window matches the study sampling schedule.
+
+# Assumptions and deviations
+
+- **Three independent models, shared reporting.** The authors fitted each
+  regimen independently (Supplementary Code: "No CL/F, V/F, Ka, NAT2 effect,
+  body-weight effect, IIV, or residual-error parameter was shared across
+  regimens"), but the paper prints regimen-specific values only for CL/F,
+  V/F and ka. The weight exponents, NAT2 effects, IIV and residual error are
+  reported once, as subject-number-weighted summaries across the three fits
+  (Methods 2.3; Table 2 "Allometric exponents", "Residual variability",
+  "Inter-individual variability"; Table 3). Those summary values are used in
+  all three models, since the regimen-specific estimates are not published.
+- **Relative-bioavailability factors are not in the models.** Table 4 and
+  Table S2 multiply the 300 mg dose by 0.8 (3HR) and 0.85 (3H2P2). Table S3
+  states that this was applied in the exposure simulations only, not in the
+  fitted model, so the packaged models have no bioavailability term. The
+  Table 4 replication above applies the same factors to the dose to match
+  the published simulation; the Figure 4 VPC and Table S2 comparison use the
+  nominal 300 mg dose, as in the fitted model. Because the rifamycin effect
+  is already carried by the higher regimen-specific CL/F, applying these
+  factors on top double-counts part of the interaction; users simulating
+  rifamycin regimens should decide deliberately whether to apply them.
+- **Reference weight.** The Stan code centres weight as log(WT / median WT)
+  within each regimen's dataset; the per-regimen medians from Table 1 (66.4,
+  61.7 and 58.9 kg) are used as the reference weights. The Table 3
+  "per 10 kg" effects (+11.3% on CL/F, +15.9% on V/F) are consistent with the
+  Table 2 exponents at these reference weights.
+- **NAT2 reference phenotype.** Table 3, Results 3.2.4, the abstract and
+  Table S2 all express the NAT2 effect against the intermediate acetylator
+  (slow 0.646, fast 1.484), and the Stan code sets intermediate as the
+  reference level. Figure 1 is titled "Ratio vs Slow Acetylator" and plots
+  identical ratios of about 1.2 (intermediate) and 1.45 (fast) for all three
+  regimens; these do not agree with Table 3 (which implies 1.55 and 2.30
+  against slow) or with the post-hoc clearances of Table S2. The Table 3
+  values are used.
+- **Ka has no IIV**, matching the Stan code (`KAn = exp(log_KA)`).
+- **Residual error.** The Stan likelihood is `log(conc) ~ normal(log(Cpred),
+  sigma)`, encoded as `lnorm(expSd)`. Concentrations below the LLOQ were
+  handled by the M3 method; the assay LLOQ is not reported, so no BLQ VPC
+  (Figure 4B) is reproduced.
+- **Rifamycin PK models are not packaged.** The paper describes INH and
+  rifampicin / rifapentine models as joint for 3HR and 3H2P2 (Methods 2.2)
+  and shows rifamycin VPCs in Figure S1, but no rifampicin or rifapentine
+  parameter estimates are reported anywhere in the paper or supplement, and
+  the published code fits isoniazid alone. Only the isoniazid models are
+  packaged.
+- **Table S2 exposure columns.** Table S2's AUC0-24 values (e.g. 132 mg*h/L
+  for 6H slow acetylators) are inconsistent with its own CL/F column
+  (300 mg / 13.6 L/h = 22 mg*h/L) and with Table 4; only its CL/F column is
+  used for validation.
+- **Virtual cohort.** Body weight is log-normal with each regimen's median
+  and IQR from Table 1; age and sex are not model covariates. The 3H2P2
+  dosing interval is 84 h, the value used for that regimen in the authors'
+  code (`tau_by_regimen`).
+- No erratum or correction notice was found for this article as of
+  2026-11-16.
