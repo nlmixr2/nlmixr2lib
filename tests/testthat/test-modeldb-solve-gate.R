@@ -80,17 +80,19 @@
 #     following parameter(s) are required for solving: peripheral2,
 #     peripheral1".
 #
-# (4) Time-dependent parameters (27 models). A clearance or absorption rate
+# (4) Time-dependent parameters (30 models). A clearance or absorption rate
 #     that depends on `t`, `time` or `tad()` (time-varying clearance of the
 #     monoclonal antibodies, Desai 2016's Weibull absorption) is held constant
 #     between records by the analytical solution, which only approximates
 #     the ODE: 1.1e-4 to 0.21 apart at tight tolerances.
 #
-# (5) `kel <- cl / vc` with estimated micro-constants (9 models). A
-#     two-compartment model that derives `kel` from cl and vc but estimates
-#     k12 and k21 directly converts to a ONE-compartment solution: the
-#     peripheral compartment is dropped and Cc follows `dose / vc *
-#     exp(-kel * t)` (Valadez 2025 cefepime: Cc 44% off). Writing
+# (5) `kel <- cl / vc` with estimated micro-constants (13 models). A two- or
+#     three-compartment model that derives `kel` from cl and vc but estimates
+#     k12 and k21 (and k13 and k31) directly converts to a ONE-compartment
+#     solution: the peripheral compartments are dropped and Cc follows
+#     `dose / vc * exp(-kel * t)` (Valadez 2025 cefepime: Cc 44% off; the four
+#     three-compartment Qin 2026 models match their ODE solve with k12 and k13
+#     set to 0 to within 5e-3). Writing
 #     `-cl / vc * central` inline, estimating kel directly, or deriving k12
 #     and k21 from q avoids it.
 knownLinCmtDropModels <- c(
@@ -134,16 +136,23 @@ knownLinCmtDropModels <- c(
   "Wang_2025_serplulimab",
   "Yamada_2025_zolbetuximab",
   "Yang_2021_cemiplimab",
+  "Yusuff_2026_voriconazole",
   "Zeng_2026_atezolizumab",
   "Zhang_2019b_nivolumab",
   "Zhao_2025_nivolumab",
   "Zhao_2026_durvalumab",
+  "Zhao_2026_nivolumab_ccrcc",
+  "Zhao_2026_nivolumab_pooled",
   # (5) kel = cl / vc with estimated k12 and k21
   "Carral_2023_levofloxacin",
   "Cleary_2026_methylprednisolone",
   "Ekhart_2008_carboplatin",
   "Mohanan_2017_fludarabine",
   "Nath_2007_melphalan",
+  "Qin_2026_enoxacin",
+  "Qin_2026_erlotinib",
+  "Qin_2026_gefitinib",
+  "Qin_2026_imatinib",
   "Stott_2018_amphotericinB_deoxycholate",
   "Stott_2022_amphotericinB_liposomal",
   "Valadez_2025_cefepime",
