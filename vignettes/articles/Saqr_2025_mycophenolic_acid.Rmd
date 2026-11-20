@@ -100,7 +100,8 @@ med_c1 <- 19.97
 med_c2 <- 13.23
 
 make_events <- function(amt, tau, n_dose, obs_times, ids = 1L) {
-  ev <- rxode2::et(amt = amt, dur = 2, ii = tau, addl = n_dose - 1, cmt = "central") |>
+  # A single dose carries no interdose interval (rxode2 warns on ii with addl = 0).
+  ev <- rxode2::et(amt = amt, dur = 2, ii = if (n_dose > 1) tau else 0, addl = n_dose - 1, cmt = "central") |>
     rxode2::et(obs_times, cmt = "central") |>
     as.data.frame()
   ev$dvid <- ifelse(ev$evid == 0, 1L, NA_integer_)
