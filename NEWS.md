@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yan 2026 mirtazapine ([doi:10.2147/DDDT.S601238](https://doi.org/10.2147/DDDT.S601238)) -- Chinese inpatients with depression, with obesity (BMI >= 28 kg/m^2), paroxetine and fluvoxamine effects on clearance.
+- Add Methven Jeknic 2026 ATTR-CM TTR dissociation and amyloid-formation QSP with acoramidis, tafamidis and vutrisiran, plus its in vitro FPE binding model ([doi:10.1002/psp4.70277](https://doi.org/10.1002/psp4.70277)) -- wild-type and variant ATTR cardiomyopathy cohorts (cohort-mean calibration).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
