@@ -8,11 +8,8 @@ test_that("the naming registers are structurally clean", {
   #
   # If this fails, read the `detail` column: each row names the register, the
   # entry and the line.
-  root <- normalizePath(testthat::test_path("..", ".."), mustWork = FALSE)
-  skip_if(
-    !dir.exists(file.path(root, "inst", "references")),
-    "registers not present (installed package without inst/references)"
-  )
+  root <- .sourceTreeRoot()
+  .skipIfNoSourceTree(file.path(root, "inst", "references"), "registers")
   issues <- checkNamingRegisters(root)
   expect_equal(
     nrow(issues),
@@ -238,9 +235,8 @@ test_that("the covariate register's documented case exceptions are complete", {
   # covariate canonical must be one a reader was told about. Enumerates the
   # register rather than sampling it, so a newly-merged lower-case canonical
   # fails here until it is either renamed or documented.
-  root <- normalizePath(testthat::test_path("..", ".."), mustWork = FALSE)
-  path <- file.path(root, "inst", "references", "covariate-columns.md")
-  skip_if(!file.exists(path), "register not present in an installed package")
+  path <- file.path(.sourceTreeRoot(), "inst", "references", "covariate-columns.md")
+  .skipIfNoSourceTree(path, "covariate register")
 
   exempt <- nlmixr2lib:::.caseExemptions(path)
   expect_true(length(exempt) > 0L)
@@ -266,9 +262,8 @@ test_that("each register's documented type vocabulary matches the types it uses"
   # directions -- the drift that motivates this is a documented list falling
   # behind the file as much as a bad type being added -- which is the same
   # reason `.caseExemptions()` is read from the file in both directions.
-  root <- normalizePath(testthat::test_path("..", ".."), mustWork = FALSE)
-  dir <- file.path(root, "inst", "references")
-  skip_if(!dir.exists(dir), "registers not present in an installed package")
+  dir <- file.path(.sourceTreeRoot(), "inst", "references")
+  .skipIfNoSourceTree(dir, "registers")
 
   registers <- c("covariate-columns.md", "parameter-names.md", "compartment-names.md")
   for (reg in registers) {
