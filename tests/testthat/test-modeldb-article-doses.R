@@ -68,15 +68,10 @@ articleMiscreditedDoses <- data.frame(
   )
 )
 
-# Models whose `vignette` names an article that does not exist. No article
-# solves either of them.
-articleMissingArticles <- data.frame(
-  model = c("Brekkan_2018_pegfilgrastim", "Hansson_2013_sunitinib_os"),
-  reason = c(
-    "the Ibrahim 2019 article lists it, nothing doses it",
-    "the Hansson 2013 myelosuppression and Centanni 2025 articles name it, nothing doses it"
-  )
-)
+# Models whose `vignette` names an article that does not exist, each with the
+# reason. There are none: a model without an article has an NA `vignette` and
+# is listed in models-without-article.csv.
+articleMissingArticles <- data.frame(model = character(0), reason = character(0))
 
 # Dose records whose dose rows the reader cannot tell from their observation
 # rows, so an observation's compartment reads as dosed. Each article doses
