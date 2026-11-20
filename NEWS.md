@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Oliveira 2026 bictegravir, islatravir and emtricitabine subcutaneous implants ([doi:10.3390/pharmaceutics18050522](https://doi.org/10.3390/pharmaceutics18050522)) -- New Zealand White rabbits (IV bolus and one-year implants).
+- Add Yusuff 2026 voriconazole ([doi:10.1128/aac.00098-26](https://doi.org/10.1128/aac.00098-26)) -- critically ill adults on ECMO.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
