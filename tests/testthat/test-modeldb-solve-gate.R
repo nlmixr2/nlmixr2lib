@@ -91,8 +91,9 @@
 #     k12 and k21 (and k13 and k31) directly converts to a ONE-compartment
 #     solution: the peripheral compartments are dropped and Cc follows
 #     `dose / vc * exp(-kel * t)` (Valadez 2025 cefepime: Cc 44% off; the four
-#     three-compartment Qin 2026 models match their ODE solve with k12 and k13
-#     set to 0 to within 5e-3). Writing
+#     Qin 2026 models, erlotinib two-compartment and enoxacin, gefitinib and
+#     imatinib three-compartment, match their ODE solve with the
+#     intercompartmental rate constants set to 0 to within 5e-3). Writing
 #     `-cl / vc * central` inline, estimating kel directly, or deriving k12
 #     and k21 from q avoids it.
 knownLinCmtDropModels <- c(
