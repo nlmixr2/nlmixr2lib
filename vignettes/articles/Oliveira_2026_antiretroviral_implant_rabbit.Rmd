@@ -1,0 +1,568 @@
+---
+title: "Bictegravir, islatravir and emtricitabine implants in rabbits (Oliveira 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Bictegravir, islatravir and emtricitabine implants in rabbits (Oliveira 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r model-load, include = FALSE}
+mod_bic <- readModelDb("Oliveira_2026_bictegravir_rabbit")
+mod_isl <- readModelDb("Oliveira_2026_islatravir_rabbit")
+mod_ftc <- readModelDb("Oliveira_2026_emtricitabine_rabbit")
+ui_bic <- rxode2::rxode(mod_bic)
+ui_isl <- rxode2::rxode(mod_isl)
+ui_ftc <- rxode2::rxode(mod_ftc)
+
+# Typical-value versions. The bictegravir and islatravir models carry
+# zero-variance etas (variances not reported); the naive-pooled emtricitabine
+# model has no etas, so only its residual error is zeroed.
+typ <- list(
+  bictegravir = rxode2::zeroRe(ui_bic),
+  islatravir = rxode2::zeroRe(ui_isl),
+  emtricitabine = rxode2::zeroRe(ui_ftc, which = "sigma")
+)
+```
+
+# Model and source
+
+* Citation: `r ui_bic$reference`
+* Article: <https://doi.org/10.3390/pharmaceutics18050522>
+* Supplement (Figures S1-S7; Table S1, absorption-model estimates; Table S2,
+  absorption-vs-dissolution models):
+  <https://www.mdpi.com/article/10.3390/pharmaceutics18050522/s1>
+
+Oliveira and colleagues developed a biodegradable, reservoir-style
+poly(caprolactone) implant that is placed subcutaneously and releases one of
+three antiretrovirals: bictegravir (BIC), islatravir (ISL) or emtricitabine
+(FTC). The intended use is long-acting HIV treatment for children aged 2 to 5
+years. In New Zealand White rabbits they:
+
+1. fitted a two-compartment macro-constant model (A, alpha, B, beta) to sparse
+   plasma concentrations after a single IV bolus of each drug (Table 3);
+2. used the dose-normalised biexponential as the unit impulse response to
+   deconvolve each implant's subcutaneous absorption rate over one year
+   (Table 4, Figure 4);
+3. fitted dissolution models to the median fraction absorbed over time; the
+   best were a Weibull model for BIC and double-Weibull models for ISL and FTC
+   (Supplementary Table S1);
+4. translated the deconvolved absorption rates into predicted paediatric
+   steady-state concentrations, `Css = k0 / CL`, with published clinical
+   clearances (Tables 1 and 4).
+
+The three drugs were fitted separately, so the package has one model per drug:
+
+* `Oliveira_2026_bictegravir_rabbit`: `r ui_bic$description`
+* `Oliveira_2026_islatravir_rabbit`: `r ui_isl$description`
+* `Oliveira_2026_emtricitabine_rabbit`: `r ui_ftc$description`
+
+Each model has the IV disposition (dose into `central`) and the implant
+absorption (dose into `depot`, and also into `depot2` for the double-Weibull
+drugs). Doses are per kg of body weight because the IV doses were given per kg
+and the paper reports no rabbit body weights.
+
+# Population
+
+Twenty-four New Zealand White rabbits received a single IV bolus into the
+marginal ear vein, 8 per group: BIC 0.75 mg/kg alone, ISL/FTC 5/30 mg/kg, or
+BIC/ISL/FTC 0.75/5/30 mg/kg (Methods, In Vivo Absorption; Supplementary
+Figure S1). Sampling was sparse: two samples per rabbit at 0.5, 1, 3, 6, 12,
+18, 24 or 30 h, giving four observations per group per time. Sixteen rabbits
+therefore informed each drug's IV model. For FTC, five rabbits whose
+observations were all below the limit of quantification were omitted, leaving
+11.
+
+After a 7-week washout the same rabbits received subcutaneous implants placed
+between the scapulae: two BIC implants (BIC-only group), one ISL plus one FTC
+implant, or one of each. Mean loaded masses were 165 mg (BIC), 62 mg (ISL) and
+100 mg (FTC) per implant. Each group had equal numbers of males and females.
+Two rabbits per group were necropsied at 3 and at 6 months. The BIC-only group
+stopped at day 56; the other groups were followed for one year.
+
+```{r population}
+str(ui_isl$population)
+```
+
+# Source trace
+
+| Quantity | Value in the model | Source |
+|---|---|---|
+| Model structure | Two-compartment macro model (A, alpha, B, beta), log-additive error | Results, Plasma PK Profiles; Methods, PK Modeling |
+| BIC A, alpha, B, beta | 1115.6 ng/mL, 0.438 1/h, 102.0 ng/mL, 0.170 1/h | Table 3 (final estimates) |
+| ISL A, B | 5275.9, 6.3 ng/mL | Table 3 (final estimates) |
+| ISL alpha, beta | 0.45, 0.06 1/h | Table 3 (bootstrap estimates; final estimates printed as 0.5 and 0.1, see Assumptions) |
+| FTC A, B | 25,323.5, 810.5 ng/mL | Table 3 (final estimates) |
+| FTC alpha, beta | 0.64, 0.13 1/h | Table 3 (bootstrap estimates; final estimates printed as 0.6 and 0.1, see Assumptions) |
+| Reference IV doses | 0.75 (BIC), 5 (ISL), 30 (FTC) mg/kg | Methods, In Vivo Absorption; Figure S1 |
+| `vc = Dref / (A + B)`, `k21 = (A beta + B alpha) / (A + B)` | derived | Two-compartment identities; same encoding as `Kinsale_2024_islatravir_rat` |
+| IIV | random effects on all four macro parameters for BIC and ISL, variances not reported; FTC naive-pooled | Results, Plasma PK Profiles |
+| BIC implant: Weibull Finf, MDT, b | 1.666046, 39994.39 h, 0.949174 | Table S1 (BIC, Weibull) |
+| ISL implant: double Weibull Finf, F1, MDT1, b1, MDT2, b2 | 0.544194, 0.656434, 2288.246 h, 1.426693, 589.4632 h, 1.400658 | Table S1 (ISL, Double Weibull) |
+| FTC implant: double Weibull Finf, F1, MDT1, b1, MDT2, b2 | 0.613557, 0.432891, 4616.781 h, 2.397683, 1095.531 h, 1.127737 | Table S1 (FTC, Double Weibull) |
+| Weibull (Model 602) and double-Weibull (Model 603) equations | `F = Finf (1 - exp(-(t/MDT)^b))`; `F = Finf (F1 (1 - exp(-(t/MDT1)^b1)) + (1 - F1) (1 - exp(-(t/MDT2)^b2)))` | Methods, Regression Analyses (Phoenix Models 602 and 603); checked against the Results fractions remaining below |
+| Mean loaded implant mass | 165 (BIC), 62 (ISL), 100 (FTC) mg | Methods, In Vivo Absorption |
+| Paediatric clearances | 167 (BIC), 7440 (FTC), 11,294 (ISL) mL/h | Table 1 |
+
+# IV disposition
+
+## Closed-form check
+
+The ODE model must reproduce the paper's biexponential exactly:
+`C(t) = A exp(-alpha t) + B exp(-beta t)` after the reference dose.
+
+```{r iv-sim}
+paper_times <- c(0.5, 1, 3, 6, 12, 18, 24, 30)
+iv_ref <- tibble::tribble(
+  ~drug, ~dref, ~A, ~alpha, ~B, ~beta,
+  "bictegravir", 0.75, 1115.6, 0.438, 102.0, 0.170,
+  "islatravir", 5, 5275.9, 0.45, 6.3, 0.06,
+  "emtricitabine", 30, 25323.5, 0.64, 810.5, 0.13
+)
+
+iv_grid <- sort(unique(c(seq(0, 30, by = 0.25), paper_times)))
+sim_iv <- dplyr::bind_rows(lapply(seq_len(nrow(iv_ref)), function(i) {
+  r <- iv_ref[i, ]
+  ev <- dplyr::bind_rows(
+    data.frame(id = i, time = 0, evid = 1, amt = r$dref, cmt = "central"),
+    data.frame(id = i, time = iv_grid, evid = 0, amt = 0, cmt = "central")
+  )
+  out <- as.data.frame(rxode2::rxSolve(typ[[r$drug]], ev, returnType = "data.frame"))
+  # A single-subject solve returns no id column.
+  out$id <- i
+  out$drug <- r$drug
+  out
+}))
+
+closed <- sim_iv |>
+  dplyr::select(drug, time, Cc) |>
+  dplyr::left_join(iv_ref, by = "drug") |>
+  dplyr::mutate(Cc_closed = A * exp(-alpha * time) + B * exp(-beta * time),
+                rel_err = abs(Cc / Cc_closed - 1))
+closed |>
+  dplyr::group_by(drug) |>
+  dplyr::summarise(max_rel_err = max(rel_err)) |>
+  knitr::kable(digits = 8)
+# Same parameters on both sides: the difference is pure solver error.
+stopifnot(max(closed$rel_err) < 1e-4)
+```
+
+## Figure 3A-C: mean IV profiles
+
+The solid line in Figure 3A-C is the model's population prediction at the
+sampling times. It passes through the printed BIC estimates exactly, for
+example ln C = 2.95 at 12 h. For ISL and FTC the paper prints the final alpha
+and beta to one decimal place only. The maintainers read the line off
+Figure 3 (to about +/- 0.15 ln units) and compared it with two candidates.
+The first uses the printed one-decimal values. The second uses the bootstrap
+medians from the same table (0.45 and 0.06 for ISL; 0.64 and 0.13 for FTC),
+which lie inside the rounding intervals of the printed values. The packaged
+models use the bootstrap medians, together with the final A and B.
+
+```{r fig3-iv}
+fig3_digitised <- tibble::tribble(
+  ~drug, ~time, ~lnC,
+  "bictegravir", 0.5, 6.85, "bictegravir", 1, 6.65, "bictegravir", 3, 5.95,
+  "bictegravir", 6, 4.75, "bictegravir", 12, 2.95, "bictegravir", 18, 1.65,
+  "bictegravir", 24, 0.6, "bictegravir", 30, -0.45,
+  "islatravir", 0.5, 8.4, "islatravir", 1, 8.2, "islatravir", 3, 7.2,
+  "islatravir", 6, 5.9, "islatravir", 12, 3.35, "islatravir", 18, 1.3,
+  "islatravir", 24, 0.4, "islatravir", 30, 0.0,
+  "emtricitabine", 0.5, 9.85, "emtricitabine", 1, 9.55, "emtricitabine", 3, 8.6,
+  "emtricitabine", 6, 6.75, "emtricitabine", 12, 5.2, "emtricitabine", 18, 4.3,
+  "emtricitabine", 24, 3.5, "emtricitabine", 30, 2.7
+)
+
+rounded <- tibble::tribble(
+  ~drug, ~A, ~alpha, ~B, ~beta,
+  "islatravir", 5275.9, 0.5, 6.3, 0.1,
+  "emtricitabine", 25323.5, 0.6, 810.5, 0.1
+)
+rounded_curve <- merge(rounded, data.frame(time = iv_grid)) |>
+  dplyr::mutate(lnC = log(A * exp(-alpha * time) + B * exp(-beta * time)),
+                source = "Table 3 final estimates as printed (1 decimal)")
+
+model_curve <- sim_iv |>
+  dplyr::transmute(drug, time, lnC = log(Cc), source = "Packaged model")
+
+ggplot(dplyr::bind_rows(model_curve, rounded_curve),
+       aes(time, lnC, linetype = source)) +
+  geom_line() +
+  geom_point(data = fig3_digitised, aes(time, lnC), inherit.aes = FALSE,
+             colour = "red") +
+  facet_wrap(~drug, scales = "free_y") +
+  labs(x = "Time (h)", y = "ln plasma concentration (ng/mL)", linetype = NULL,
+       caption = "Red points: Figure 3A-C population-prediction line, read by the maintainers.") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+Replicates Figure 3A-C of Oliveira 2026.
+
+```{r fig3-check}
+fit_check <- fig3_digitised |>
+  dplyr::left_join(model_curve |> dplyr::select(drug, time, lnC_model = lnC),
+                   by = c("drug", "time")) |>
+  dplyr::left_join(rounded_curve |> dplyr::select(drug, time, lnC_rounded = lnC),
+                   by = c("drug", "time")) |>
+  dplyr::mutate(diff_model = lnC_model - lnC, diff_rounded = lnC_rounded - lnC)
+
+fit_check |>
+  dplyr::group_by(drug) |>
+  dplyr::summarise(
+    `max |model - Figure 3|` = max(abs(diff_model)),
+    `max |printed 1-decimal - Figure 3|` = max(abs(diff_rounded))
+  ) |>
+  knitr::kable(digits = 2)
+
+# The packaged models stay within reading error of the published line; the
+# printed one-decimal ISL and FTC rate constants miss it by about 1 ln unit at
+# 30 h. The model and the line share the same parameters, so the remaining
+# difference is reading error from the figure.
+stopifnot(
+  max(abs(fit_check$diff_model)) < 0.3,
+  all(abs(fit_check$diff_rounded[fit_check$time == 30 &
+                                    fit_check$drug != "bictegravir"]) > 0.9)
+)
+```
+
+## PKNCA: IV terminal slope
+
+Table 2 reports the terminal slope (lambda-z) from a sparse NCA of the
+observed IV data over 0-30 h. The model's NCA uses the same sampling times.
+
+```{r iv-nca}
+iv_nca_in <- sim_iv |>
+  dplyr::filter(!is.na(Cc), time %in% c(0, paper_times)) |>
+  dplyr::mutate(treatment = drug) |>
+  dplyr::select(id, time, Cc, treatment)
+
+iv_dose <- iv_ref |>
+  dplyr::transmute(id = seq_len(dplyr::n()), time = 0, amt = dref, treatment = drug)
+
+iv_conc_obj <- PKNCA::PKNCAconc(iv_nca_in, Cc ~ time | treatment + id,
+                                concu = "ng/mL", timeu = "h")
+iv_dose_obj <- PKNCA::PKNCAdose(iv_dose, amt ~ time | treatment + id, doseu = "mg/kg")
+iv_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  iv_conc_obj, iv_dose_obj,
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, lambda.z = TRUE,
+                         half.life = TRUE, aucinf.obs = TRUE)
+))
+
+published_iv <- tibble::tribble(
+  ~treatment, ~lambda.z,
+  "bictegravir", 0.181,
+  "islatravir", 0.216,
+  "emtricitabine", 0.154
+)
+knitr::kable(
+  nlmixr2lib::ncaComparisonTable(
+    simulated = iv_nca,
+    reference = published_iv,
+    by = "treatment",
+    units = c(lambda.z = "1/h"),
+    tolerance_pct = 20
+  ),
+  caption = paste(
+    "Typical-value NCA vs. Oliveira 2026 Table 2 IV bolus lambda-z.",
+    "* differs from reference by >20%."
+  )
+)
+```
+
+BIC and FTC agree within 20%. ISL does not, and the reason is the shape of
+its profile rather than a model error. The ISL beta phase carries only 0.1% of
+the IV curve (B = 6.3 against A = 5275.9 ng/mL) and emerges only over the last
+sampling times. Between 18 and 30 h the model's slope is about 0.11 1/h
+(Figure 3B). PKNCA's best-fit point selection instead takes the steeper
+alpha-dominated points and returns 0.30 1/h. The paper's 0.216 1/h, from an
+NCA of the observed sparse data, lies between the two. Over 0-30 h the
+ISL lambda-z depends on which points are used, so it is not a sharp check.
+
+# Implant absorption
+
+## Fraction of the loaded mass remaining
+
+The Results state the percentage of loaded mass expected to remain in the
+implant at 6 and 12 months: 81 and 65% (BIC), 48 and 45% (ISL), 49 and 36%
+(FTC). The model reproduces these figures from its depot amounts. Each
+implant dose here is the mean loaded mass per kg for an illustrative 4 kg
+rabbit. Fractions do not depend on the weight chosen.
+
+```{r implant-sim}
+implant <- tibble::tribble(
+  ~drug, ~load_mg, ~cmts,
+  "bictegravir", 165, list("depot"),
+  "islatravir", 62, list(c("depot", "depot2")),
+  "emtricitabine", 100, list(c("depot", "depot2"))
+)
+wt_illustrative <- 4 # kg; rabbit body weights are not reported
+day_grid <- sort(unique(c(seq(0, 371, by = 1), 182.5, 365)))
+
+sim_imp <- dplyr::bind_rows(lapply(seq_len(nrow(implant)), function(i) {
+  r <- implant[i, ]
+  dose <- r$load_mg / wt_illustrative
+  ev <- dplyr::bind_rows(
+    data.frame(id = i, time = 0, evid = 1, amt = dose, cmt = unlist(r$cmts)),
+    data.frame(id = i, time = day_grid * 24, evid = 0, amt = 0, cmt = "central")
+  )
+  out <- as.data.frame(rxode2::rxSolve(typ[[r$drug]], ev, returnType = "data.frame"))
+  if (!"depot2" %in% names(out)) out$depot2 <- 0
+  fdep <- exp(typ[[r$drug]]$theta[["lfdepot"]])
+  out |>
+    dplyr::mutate(drug = r$drug, load_mg = r$load_mg, dose = dose,
+                  absorbed_frac = (fdep * dose - depot - depot2) / dose,
+                  day = time / 24)
+}))
+
+remaining <- sim_imp |>
+  dplyr::filter(day %in% c(182.5, 365)) |>
+  dplyr::transmute(drug, month = ifelse(day == 365, 12, 6),
+                   model_pct = 100 * (1 - absorbed_frac)) |>
+  dplyr::left_join(tibble::tribble(
+    ~drug, ~month, ~paper_pct,
+    "bictegravir", 6, 81, "bictegravir", 12, 65,
+    "islatravir", 6, 48, "islatravir", 12, 45,
+    "emtricitabine", 6, 49, "emtricitabine", 12, 36
+  ), by = c("drug", "month"))
+remaining |>
+  dplyr::rename(Drug = drug, Month = month,
+                `Model remaining (%)` = model_pct,
+                `Paper remaining (%)` = paper_pct) |>
+  knitr::kable(digits = 1)
+
+# The Weibull fits and the paper's percentages are the same curves, so the
+# differences are rounding, except FTC at 12 months (see text).
+stopifnot(
+  median(abs(remaining$model_pct - remaining$paper_pct)) < 1,
+  max(abs(remaining$model_pct - remaining$paper_pct)) < 3.5
+)
+```
+
+Five of the six values agree to within 1 percentage point. FTC at 12 months
+differs by about 3 points (38.9 against 36%). That difference comes from the
+published double-Weibull fit itself: Finf = 0.614 caps absorption at 61% of
+the load, so at least 38.6% always remains.
+
+The model's depot release must also equal the analytic Weibull fraction
+absorbed:
+
+```{r weibull-identity}
+weibull_F <- function(drug, t) {
+  p <- typ[[drug]]$theta
+  finf <- exp(p[["lfdepot"]])
+  s1 <- exp(-(exp(p[["lra"]]) * t)^exp(p[["lgam1"]]))
+  if (drug == "bictegravir") {
+    finf * (1 - s1)
+  } else {
+    f1 <- plogis(p[["logitfrel"]])
+    s2 <- exp(-(exp(p[["lra2"]]) * t)^exp(p[["lgam2"]]))
+    finf * (f1 * (1 - s1) + (1 - f1) * (1 - s2))
+  }
+}
+ident <- sim_imp |>
+  dplyr::filter(day > 0) |>
+  dplyr::group_by(drug) |>
+  dplyr::mutate(F_analytic = weibull_F(dplyr::first(drug), time)) |>
+  dplyr::ungroup()
+stopifnot(max(abs(ident$absorbed_frac - ident$F_analytic)) < 1e-4)
+```
+
+## Figure 4: absorption rate and cumulative mass
+
+The model's absorption rate is the loaded mass times `dF/dt`, here for an
+implant with the mean loaded mass. Points are the deconvolved medians of
+Table 4.
+
+```{r fig4}
+rate <- sim_imp |>
+  dplyr::group_by(drug) |>
+  dplyr::arrange(day, .by_group = TRUE) |>
+  dplyr::mutate(
+    cum_mg = absorbed_frac * load_mg,
+    rate_ug_day = 1000 * (cum_mg - dplyr::lag(cum_mg)) / (day - dplyr::lag(day))
+  ) |>
+  dplyr::ungroup() |>
+  dplyr::filter(day >= 1)
+
+table4 <- tibble::tribble(
+  ~drug, ~month, ~rate_ug_day, ~cum_mg, ~css_paper,
+  "bictegravir", 1, 172.5, 5.5, 43.0,
+  "bictegravir", 3, 116.0, 11.8, 28.9,
+  "bictegravir", 6, 97.6, 20.5, 24.4,
+  "bictegravir", 12, 70.9, 37.7, 17.7,
+  "islatravir", 1, 294.8, 11.2, 1.09,
+  "islatravir", 3, 116.0, 23.5, 0.43,
+  "islatravir", 6, 37.4, 31.5, 0.14,
+  "islatravir", 12, 4.7, 34.3, 0.02,
+  "emtricitabine", 1, 420.5, 18.1, 2.4,
+  "emtricitabine", 3, 236.2, 36.8, 1.3,
+  "emtricitabine", 6, 116.6, 50.1, 0.7,
+  "emtricitabine", 12, 24.1, 67.8, 0.1
+) |>
+  dplyr::mutate(day = month * 365 / 12)
+
+ggplot(rate, aes(day, rate_ug_day, colour = drug)) +
+  geom_line() +
+  geom_point(data = table4) +
+  labs(x = "Time after implantation (day)", y = "Absorption rate (ug/day)",
+       colour = NULL) +
+  theme_bw()
+
+ggplot(rate, aes(day, cum_mg, colour = drug)) +
+  geom_line() +
+  geom_point(data = table4) +
+  labs(x = "Time after implantation (day)", y = "Cumulative mass absorbed (mg)",
+       colour = NULL) +
+  theme_bw()
+```
+
+Replicates Figure 4A and 4B of Oliveira 2026 (model lines; Table 4 medians as
+points).
+
+```{r table4-compare}
+rate_at <- rate |>
+  dplyr::select(drug, day, model_rate = rate_ug_day, model_cum = cum_mg)
+cmp4 <- table4 |>
+  dplyr::mutate(day = round(day)) |>
+  dplyr::left_join(rate_at, by = c("drug", "day"))
+cmp4 |>
+  dplyr::select(drug, month, rate_ug_day, model_rate, cum_mg, model_cum) |>
+  dplyr::rename(Drug = drug, Month = month,
+                `Table 4 rate (ug/day)` = rate_ug_day,
+                `Model rate (ug/day)` = model_rate,
+                `Table 4 cumulative (mg)` = cum_mg,
+                `Model cumulative (mg)` = model_cum) |>
+  knitr::kable(digits = 1)
+```
+
+For ISL and FTC the cumulative mass agrees with Table 4 to within about 10%
+over the year, and the rates agree over the first 6 months. At 12 months the
+model rates are lower (ISL 0.7 against 4.7 ug/day; FTC 8 against 24 ug/day).
+The double-Weibull fits level off at Finf, while the deconvolved medians
+still show some absorption. For BIC the model's cumulative mass at 12
+months (about 58 mg) exceeds the Table 4 median (37.7 mg). The model and the
+table rest on different subsets of rabbits. The Weibull curve was fitted to
+the median fraction absorbed of the rabbits followed for the whole year (n = 4
+at 12 months for BIC); the Results' 65% remaining at 12 months comes from that
+same curve. Table 4 is the median over the rabbits present at each time
+(n = 8 at the start), in mg rather than as a fraction of each rabbit's load. The
+model reproduces the fraction curve, which is what the paper fitted; converting
+it back to mg with the mean load of all BIC implants is approximate.
+
+## Plasma concentrations from an implant (Figure 3D-F)
+
+Plasma concentrations from an implant depend on body weight. Rabbit weights
+are not reported, so this illustration uses 4 kg. It should match Figure 3D-F
+in level and shape, not point by point.
+
+```{r fig3-sq}
+ggplot(dplyr::filter(sim_imp, day >= 1), aes(day, Cc)) +
+  geom_line() +
+  scale_y_log10() +
+  facet_wrap(~drug) +
+  labs(x = "Time after implantation (day)", y = "Plasma concentration (ng/mL)",
+       caption = "Typical rabbit of 4 kg (illustrative) with one implant of the mean loaded mass.") +
+  theme_bw()
+```
+
+Compare with Figure 3D-F of Oliveira 2026. Concentrations are about 5-15 ng/mL
+BIC over the year, 1-10 ng/mL ISL falling steeply after about 6 months, and
+2-10 ng/mL FTC declining through the year.
+
+# Paediatric translation (Tables 1 and 4)
+
+The paper predicts paediatric steady-state concentrations as `Css = k0 / CL`.
+Here `k0` is the deconvolved rabbit absorption rate and `CL` is the clinical
+clearance in Table 1. BIC: 30 mg x 0.70 / 126 ug h/mL = 167 mL/h. FTC:
+120 mg x 0.93 / 15 ug h/mL = 7440 mL/h. ISL: adult CL/F = 35,860 mL/h scaled
+by `(15/70)^0.75` = 11,294 mL/h. The table below recomputes the Table 4
+column, first from the Table 4 rates and then from the model rates. The
+model-rate column inherits the differences discussed under Figure 4; in
+particular, the BIC model rates sit above the Table 4 medians.
+
+```{r peds}
+cl_ped <- c(
+  bictegravir = 30 * 0.70 / 126 * 1000,
+  emtricitabine = 120 * 0.93 / 15 * 1000,
+  islatravir = 35860 * (15 / 70)^0.75
+)
+stopifnot(
+  abs(cl_ped[["bictegravir"]] - 167) < 0.5,
+  abs(cl_ped[["emtricitabine"]] - 7440) < 0.5,
+  abs(cl_ped[["islatravir"]] - 11294) < 1
+)
+peds <- cmp4 |>
+  dplyr::mutate(
+    cl_ml_h = cl_ped[drug],
+    css_from_table4 = rate_ug_day * 1000 / 24 / cl_ml_h,
+    css_from_model = model_rate * 1000 / 24 / cl_ml_h
+  )
+peds |>
+  dplyr::select(drug, month, css_paper, css_from_table4, css_from_model) |>
+  dplyr::rename(Drug = drug, Month = month,
+                `Table 4 Css (ng/mL)` = css_paper,
+                `Recomputed from Table 4 rate` = css_from_table4,
+                `From model rate` = css_from_model) |>
+  knitr::kable(digits = 3)
+# The paper's arithmetic is reproduced to its printed rounding.
+stopifnot(all(abs(peds$css_from_table4 - peds$css_paper) <
+                pmax(0.05, 0.02 * peds$css_paper)))
+```
+
+# Assumptions and deviations
+
+* **ISL and FTC rate constants.** Table 3 prints the final alpha and beta for
+  ISL (0.5, 0.1 1/h) and FTC (0.6, 0.1 1/h) to one decimal place. With the
+  final A and B, those values miss the published population-prediction line
+  of Figure 3B-C by about 1 ln unit at 30 h. The bootstrap medians in the same
+  table (ISL 0.45 and 0.06; FTC 0.64 and 0.13) lie inside the rounding
+  intervals and reproduce the line to within reading error. The packaged
+  models use the bootstrap medians for these four rate constants and the
+  final estimates for every other value. BIC is printed to three significant
+  figures and uses the final estimates throughout.
+* **Dosing per kg.** The IV doses were per kg and the paper reports no rabbit
+  body weights, so the models take doses in mg/kg and volumes in L/kg. An
+  implant loaded with M mg in a rabbit of W kg is a dose of M / W mg/kg. The
+  4 kg weight used for the implant plasma illustration is the maintainers'
+  choice; it does not enter any check.
+* **Between-animal variability and residual error.** The BIC and ISL models
+  had random effects on A, alpha, B and beta, but their variances are not
+  reported. The etas on alpha and beta are kept as `fixed(0)`. The etas on A
+  and B have no one-to-one counterpart on `vc` and `k21` and are not carried.
+  The FTC model was naive-pooled and has no etas. The log-additive residual
+  error is encoded as `lnorm(expSd)` with `expSd` fixed to 0 because its
+  magnitude is not reported. Simulations are therefore typical-value only.
+* **Implant input.** The implant absorption is the published Weibull or
+  double-Weibull fit to the *median* fraction absorbed (Table S1). It is a
+  typical-implant description, not an individual-level model, and it is valid
+  over the one year it was fitted to. For BIC, Finf = 1.67 exceeds 1 because
+  the fit spans only the first 35% of release. Extrapolated far beyond a year,
+  the BIC model would absorb more than the loaded mass.
+* **Weibull time origin.** The release hazard of BIC (shape 0.949 < 1) is not
+  finite at the moment of implantation. The time after the implant dose is
+  floored at 1e-6 h, which changes the absorbed amount by a negligible
+  fraction. A cap at a cumulative hazard of 40 stops a shape above 1 from
+  growing without bound after a depot is empty.
+* **Double-Weibull pairing.** Phoenix Model 603 pairs F1 with the first
+  process (MDT1, b1). Pairing F1 with the second process instead would leave
+  53% of the FTC load at 6 months, against the paper's 49%. The pairing used
+  here gives 49.9%.
+* **Not encoded.** Two parts of the paper are not packaged as models. The
+  absorption-vs-dissolution regressions (Table S2, Figure 5) are statistical
+  regressions of in vivo fraction absorbed on in vitro fraction dissolved,
+  and need an in vitro dissolution curve as input. The paediatric `Css`
+  translation is reproduced above as arithmetic. The alternative dissolution
+  models of Table S1 (zero-order, first-order, Higuchi, Makoid-Banakar) were
+  not selected and are not packaged.
+* **Errata.** No erratum or correction was found for this article (checked
+  2026-11-13).
