@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liu 2026 subcutaneous tislelizumab ([doi:10.1111/cts.70649](https://doi.org/10.1111/cts.70649)) -- adults with advanced NSCLC given SC (thigh or abdomen) or IV tislelizumab.
+- Add Amajor 2026 cefepime, whole-blood microsampling and plasma-equivalent models ([doi:10.1128/aac.01736-25](https://doi.org/10.1128/aac.01736-25)) -- critically ill children with multiple organ dysfunction syndrome.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
