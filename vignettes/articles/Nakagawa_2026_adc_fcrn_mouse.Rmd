@@ -1,0 +1,480 @@
+---
+title: "Antibody-drug conjugates in human FcRn transgenic and wild-type mice (Nakagawa 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Antibody-drug conjugates in human FcRn transgenic and wild-type mice (Nakagawa 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 8, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Nakagawa 2026 gave eight FDA-approved antibody-drug conjugates (ADCs) as a
+single intravenous bolus to human FcRn transgenic Tg32 mice and to wild-type
+C57BL/6J mice, measured **total ADC** (anti-payload capture assay) and **total
+antibody** (anti-human IgG sandwich assay) in plasma for 28 days, and fitted a
+two-compartment model to every animal in WinNonlin. The study's purpose is
+translational: the Tg32 total-ADC clearance is then scaled to humans with a
+single-species allometric exponent, and the optimal exponent (1.0) predicts
+human clearance within twofold for seven of the eight ADCs.
+
+None of the ADCs cross-reacts with its mouse target antigen, so every profile
+is target-independent and linear. The authors fitted each ADC, strain and
+analyte separately, so the paper contributes **32** independent model files,
+one per combination, all sharing the same two-compartment structure:
+
+```{r models}
+drugs <- c(
+  "tisotumabVedotin", "loncastuximabTesirine", "sacituzumabGovitecan",
+  "trastuzumabDeruxtecan", "polatuzumabVedotin", "inotuzumabOzogamicin",
+  "trastuzumabEmtansine", "datopotamabDeruxtecan"
+)
+drug_labels <- c(
+  tisotumabVedotin = "Tisotumab vedotin",
+  loncastuximabTesirine = "Loncastuximab tesirine",
+  sacituzumabGovitecan = "Sacituzumab govitecan",
+  trastuzumabDeruxtecan = "Trastuzumab deruxtecan",
+  polatuzumabVedotin = "Polatuzumab vedotin",
+  inotuzumabOzogamicin = "Inotuzumab ozogamicin",
+  trastuzumabEmtansine = "Trastuzumab emtansine",
+  datopotamabDeruxtecan = "Datopotamab deruxtecan"
+)
+grid <- expand.grid(
+  analyte = c("adc", "tab"),
+  strain = c("tg32mouse", "wtmouse"),
+  drug = drugs,
+  stringsAsFactors = FALSE
+)
+grid$model <- sprintf("Nakagawa_2026_%s_%s_%s", grid$drug, grid$strain, grid$analyte)
+# Single IV bolus: 1 mg/kg (1000 ug/kg), except inotuzumab ozogamicin at 0.1 mg/kg.
+grid$dose_ugkg <- ifelse(grid$drug == "inotuzumabOzogamicin", 100, 1000)
+
+# Parse every model and collect its typical values (all 32 share one model()).
+uis <- lapply(grid$model, function(m) rxode2::rxode2(readModelDb(m)))
+names(uis) <- grid$model
+theta <- do.call(rbind, lapply(uis, function(u) {
+  th <- u$theta
+  data.frame(
+    cl = exp(th[["lcl"]]), vc = exp(th[["lvc"]]),
+    q = exp(th[["lq"]]), vp = exp(th[["lvp"]])
+  )
+}))
+grid <- cbind(grid, theta)
+nrow(grid)
+```
+
+* Citation: `r uis[[1]]$reference`
+* Article: [Clin Transl Sci 2026;19:e70692](https://doi.org/10.1111/cts.70692)
+
+Example description (Tg32 total ADC, trastuzumab deruxtecan):
+
+```{r description, echo = FALSE}
+cat(strwrap(uis[["Nakagawa_2026_trastuzumabDeruxtecan_tg32mouse_adc"]]$description, 76), sep = "\n")
+```
+
+# Population
+
+Male human FcRn transgenic Tg32 mice (B6.Cg-Fcgrt Tg(FCGRT)32Dcr/DcrJ, 5 weeks
+old at purchase) and male wild-type C57BL/6J mice (5 or 6 weeks old), both from
+The Jackson Laboratory Japan, n = 3 per ADC and strain (Methods,
+Pharmacokinetic Study). Each mouse received one tail-vein bolus of 1 mg/kg in
+10 mL/kg, except inotuzumab ozogamicin at 0.1 mg/kg. Blood was taken from the
+jugular vein at 5 min, 4 h, 7 h and 1, 3, 7, 14, 21 and 28 days. Body weights
+were not reported; the allometric scaling assumed 20 g for every mouse. The
+ADC panel (Table 2) spans five payloads (MMAE, PBD, SN-38, DXd, calicheamicin,
+DM1), drug-to-antibody ratios from 2.3 to 7.8, and one non-cleavable linker
+(trastuzumab emtansine).
+
+The same information is available programmatically via each model's
+`population` metadata, e.g.
+`readModelDb("Nakagawa_2026_trastuzumabDeruxtecan_tg32mouse_adc")()$population`.
+
+# Source trace
+
+Every model has the same `model()` block: a linear two-compartment model with
+`kel = cl/vc`, `k12 = q/vc`, `k21 = q/vp`, IV bolus into `central`, and
+`Cc = central/vc`. Parameters are normalised to body weight (mL/kg, mL/day/kg),
+so the dose is entered in ug/kg and `Cc` is in ug/mL, the units of Figures 1
+and 2. The values below are read back from the 32 packaged model files; each
+file's in-line comments give the table cell and the mean +/- SD (n = 3).
+
+| Quantity | Source location |
+|----------|-----------------|
+| Two-compartment structure | Methods (Pharmacokinetic Analysis); Results, "Comparative Analysis Between Mice and Human" |
+| `lcl` (CL, mL/day/kg) | Table 3, total ADC and total antibody columns for Tg32 and WT |
+| `lvc` (Vc, mL/kg) | Supplement Table S3 |
+| `lq` (Q, mL/day/kg) | Supplement Table S4 |
+| `lvp` (Vp, mL/kg) | Supplement Table S5 |
+| `propSd` | not reported (individual WinNonlin fits); held at 0 |
+| Dose 1 mg/kg (0.1 mg/kg inotuzumab ozogamicin) | Methods, Pharmacokinetic Study |
+
+```{r param-table}
+grid |>
+  mutate(Drug = drug_labels[drug]) |>
+  select(Drug, strain, analyte, cl, vc, q, vp) |>
+  arrange(strain, analyte) |>
+  dplyr::rename(
+    Strain = strain, Analyte = analyte, "CL (mL/day/kg)" = cl,
+    "Vc (mL/kg)" = vc, "Q (mL/day/kg)" = q, "Vp (mL/kg)" = vp
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+# Simulation
+
+The paper reports no between-animal variability or residual-error model, so
+each model is solved at its typical values. Because the 32 files share one
+`model()` block, the solve below compiles the first model once and supplies
+the other 31 parameter sets as per-subject parameters (one subject per model).
+
+```{r simulate}
+sample_times <- c(5 / 1440, 4 / 24, 7 / 24, 1, 3, 7, 14, 21, 28)
+fine_times <- seq(0, 28, by = 0.1)
+grid$id <- seq_len(nrow(grid))
+
+ev <- bind_rows(lapply(seq_len(nrow(grid)), function(i) {
+  rbind(
+    data.frame(id = i, time = 0, amt = grid$dose_ugkg[i], evid = 1, cmt = "central"),
+    data.frame(
+      id = i, time = sort(unique(c(0, sample_times, fine_times))),
+      amt = 0, evid = 0, cmt = "central"
+    )
+  )
+}))
+params <- grid |>
+  transmute(id, lcl = log(cl), lvc = log(vc), lq = log(q), lvp = log(vp))
+
+# rxode2 warns whenever several subjects are solved without an omega matrix;
+# here each subject is a different model by design, so that warning is muffled.
+sim <- withCallingHandlers(
+  rxode2::rxSolve(
+    uis[[1]], events = ev, params = params,
+    returnType = "data.frame", atol = 1e-10, rtol = 1e-10
+  ),
+  warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+) |>
+  left_join(select(grid, id, drug, strain, analyte, model), by = "id") |>
+  mutate(
+    Drug = factor(drug_labels[drug], levels = drug_labels),
+    Analyte = ifelse(analyte == "adc", "Total ADC", "Total antibody")
+  )
+```
+
+## Figures 1 and 2: plasma concentration-time profiles
+
+Replicates Figure 1 (Tg32) and Figure 2 (wild-type) of Nakagawa 2026: typical
+profiles of total ADC and total antibody after a single IV bolus. The points
+mark the paper's sampling times.
+
+```{r fig1, fig.height = 5}
+plot_strain <- function(st, title) {
+  # Figures 1 and 2 use a 0.001-1000 ug/mL axis; inotuzumab ozogamicin total
+  # ADC falls below its floor late in the profile.
+  d <- dplyr::filter(sim, strain == st, Cc >= 0.001)
+  ggplot(d, aes(time, Cc, linetype = Analyte, colour = Analyte)) +
+    geom_line() +
+    geom_point(data = dplyr::filter(d, time %in% sample_times), size = 1) +
+    facet_wrap(~Drug, nrow = 2) +
+    scale_y_log10(limits = c(0.001, 1000)) +
+    labs(x = "Time (day)", y = "Plasma concentration (ug/mL)", title = title) +
+    theme_bw() +
+    theme(legend.position = "bottom")
+}
+plot_strain("tg32mouse", "Tg32 mice (replicates Figure 1)")
+```
+
+```{r fig2, fig.height = 5}
+plot_strain("wtmouse", "Wild-type C57BL/6J mice (replicates Figure 2)")
+```
+
+# PKNCA validation against Tables S1 and S2
+
+The paper's NCA (Supplement Tables S1 and S2) is the mean of three individual
+analyses on the sampling schedule above. The simulated profiles are passed to
+PKNCA on the same schedule plus the time-zero bolus concentration.
+
+```{r pknca}
+conc <- sim |>
+  dplyr::filter(time %in% c(0, sample_times), !is.na(Cc)) |>
+  select(id, model, drug, strain, analyte, time, Cc)
+dose <- grid |>
+  transmute(id, model, drug, strain, analyte, time = 0, amt = dose_ugkg)
+
+o_conc <- PKNCA::PKNCAconc(conc, Cc ~ time | strain + analyte + drug + id)
+o_dose <- PKNCA::PKNCAdose(
+  dose, amt ~ time | strain + analyte + drug + id,
+  route = "intravascular"
+)
+intervals <- data.frame(
+  start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE,
+  half.life = TRUE, cl.obs = TRUE, vss.obs = TRUE
+)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+```
+
+```{r nca-reference}
+# Supplement Tables S1 (Tg32) and S2 (WT): mean of n = 3 mice.
+ref <- tibble::tribble(
+  ~drug, ~strain, ~analyte, ~cmax, ~aucinf.obs, ~half.life, ~cl.obs, ~vss.obs,
+  "tisotumabVedotin", "tg32mouse", "adc", 25.5, 86.0, 10.8, 11.6, 144.6,
+  "tisotumabVedotin", "tg32mouse", "tab", 23.8, 162.1, 9.5, 6.2, 84.7,
+  "loncastuximabTesirine", "tg32mouse", "adc", 19.2, 109.8, 12.1, 9.2, 157.6,
+  "loncastuximabTesirine", "tg32mouse", "tab", 16.3, 189.2, 16.3, 5.5, 132.2,
+  "sacituzumabGovitecan", "tg32mouse", "adc", 20.9, 35.8, 4.7, 28.1, 175.9,
+  "sacituzumabGovitecan", "tg32mouse", "tab", 21.5, 26.8, 9.0, 37.6, 383.8,
+  "trastuzumabDeruxtecan", "tg32mouse", "adc", 29.1, 117.7, 8.5, 8.5, 98.1,
+  "trastuzumabDeruxtecan", "tg32mouse", "tab", 25.0, 164.9, 6.6, 6.2, 71.3,
+  "polatuzumabVedotin", "tg32mouse", "adc", 22.4, 68.4, 6.3, 14.8, 113.5,
+  "polatuzumabVedotin", "tg32mouse", "tab", 21.5, 120.0, 11.6, 8.8, 133.8,
+  "inotuzumabOzogamicin", "tg32mouse", "adc", 2.5, 3.7, 2.4, 26.9, 85.8,
+  "inotuzumabOzogamicin", "tg32mouse", "tab", 1.9, 8.3, 5.9, 12.6, 112.5,
+  "trastuzumabEmtansine", "tg32mouse", "adc", 33.8, 119.8, 9.8, 8.4, 103.3,
+  "trastuzumabEmtansine", "tg32mouse", "tab", 22.0, 157.3, 16.5, 6.4, 145.2,
+  "datopotamabDeruxtecan", "tg32mouse", "adc", 26.8, 79.0, 8.9, 12.7, 141.3,
+  "datopotamabDeruxtecan", "tg32mouse", "tab", 20.1, 105.2, 12.0, 9.7, 144.2,
+  "tisotumabVedotin", "wtmouse", "adc", 15.5, 56.8, 13.1, 18.6, 266.3,
+  "tisotumabVedotin", "wtmouse", "tab", 21.5, 92.0, 14.4, 10.9, 211.0,
+  "loncastuximabTesirine", "wtmouse", "adc", 22.6, 133.0, 19.4, 7.8, 202.9,
+  "loncastuximabTesirine", "wtmouse", "tab", 17.3, 150.0, 22.1, 6.7, 193.8,
+  "sacituzumabGovitecan", "wtmouse", "adc", 11.5, 70.0, 7.5, 14.4, 158.7,
+  "sacituzumabGovitecan", "wtmouse", "tab", 16.5, 64.5, 13.4, 15.5, 285.2,
+  "trastuzumabDeruxtecan", "wtmouse", "adc", 13.5, 125.2, 18.0, 8.0, 201.7,
+  "trastuzumabDeruxtecan", "wtmouse", "tab", 18.9, 124.3, 16.6, 8.1, 181.8,
+  "polatuzumabVedotin", "wtmouse", "adc", 16.2, 50.8, 11.9, 23.7, 289.6,
+  "polatuzumabVedotin", "wtmouse", "tab", 21.1, 106.6, 19.4, 11.8, 281.3,
+  "inotuzumabOzogamicin", "wtmouse", "adc", 1.6, 2.8, 3.1, 35.9, 146.1,
+  "inotuzumabOzogamicin", "wtmouse", "tab", 2.6, 9.1, 9.2, 11.1, 138.8,
+  "trastuzumabEmtansine", "wtmouse", "adc", 15.9, 81.1, 10.5, 12.5, 183.7,
+  "trastuzumabEmtansine", "wtmouse", "tab", 19.0, 152.7, 17.9, 6.6, 166.5,
+  "datopotamabDeruxtecan", "wtmouse", "adc", 15.0, 94.9, 13.3, 10.7, 189.4,
+  "datopotamabDeruxtecan", "wtmouse", "tab", 18.2, 186.5, 23.8, 5.7, 177.3
+)
+stopifnot(nrow(ref) == 32, nrow(dplyr::semi_join(ref, grid, by = c("drug", "strain", "analyte"))) == 32)
+```
+
+```{r nca-compare}
+cmp <- nlmixr2lib::ncaComparisonTable(
+  nca, ref,
+  by = c("strain", "analyte", "drug"),
+  params = c("cmax", "aucinf.obs", "half.life", "cl.obs", "vss.obs"),
+  units = c(
+    cmax = "ug/mL", aucinf.obs = "ug*day/mL", half.life = "day",
+    cl.obs = "mL/day/kg", vss.obs = "mL/kg"
+  )
+)
+knitr::kable(cmp, digits = 1)
+```
+
+`r attr(cmp, "footnote")`
+
+```{r nca-assert}
+pct <- abs(as.numeric(sub("%.*$", "", cmp[["% diff"]])))
+by_param <- split(pct, cmp[["NCA parameter"]])
+stats_by_param <- vapply(
+  by_param,
+  function(x) c(median = median(x), p90 = unname(quantile(x, 0.9)), max = max(x)),
+  numeric(3)
+)
+round(stats_by_param, 1)
+# The half-life row is the only label starting with "t".
+is_half <- startsWith(colnames(stats_by_param), "t")
+stopifnot(
+  ncol(stats_by_param) == 5, sum(is_half) == 1,
+  # Exposure (AUC, CL, Vss) and the 5-min peak are set directly by the
+  # transcribed CL, Vc and Vp: a mis-transcribed cell moves them by tens of
+  # percent.
+  all(stats_by_param["median", !is_half] < 5),
+  all(stats_by_param["p90", !is_half] < 15),
+  # The terminal half-life depends on which samples each analysis selects.
+  stats_by_param["median", is_half] < 10
+)
+```
+
+The typical-value profiles reproduce the paper's NCA closely. The largest
+differences belong to wild-type polatuzumab vedotin, whose individual CL, Q and
+Vp estimates vary by 60 to 70 percent between the three mice (Table 3, Tables
+S4 and S5): the NCA of the mean animal and the mean of three NCAs then differ
+by Jensen's inequality, not because of a transcription error. Terminal
+half-lives differ most where the paper's 28-day schedule leaves few
+terminal-phase samples (total antibody of loncastuximab tesirine and
+trastuzumab deruxtecan in Tg32 mice).
+
+# Allometric scaling to humans
+
+The paper scales mouse parameters with
+`P_human = P_mouse x (BW_human / BW_mouse)^e`, with `BW_mouse` = 20 g and the
+human body weight taken from each clinical population-PK report (Table 1). Per
+kilogram this is `P_human/kg = P_mouse/kg x (BW_human / 0.02)^(e - 1)`. The
+human body weight is not printed, but it follows exactly from Table 1 (human CL
+in L/day or L/h) and Table 4 (the same CL in mL/day/kg).
+
+```{r allometry}
+human <- tibble::tribble(
+  ~drug, ~cl_h, ~cl_unit, ~vc_h, ~q_h, ~q_unit, ~vp_h, ~cl_h_perkg,
+  "tisotumabVedotin", 1.42, "L/day", 3.1, 4.01, "L/day", 4.47, 18.9,
+  "loncastuximabTesirine", 0.2621, "L/day", 3.86, 1.16, "L/day", 3.53, 3.36,
+  "sacituzumabGovitecan", 0.133, "L/h", 2.77, 0.006, "L/h", 0.908, 45.6,
+  "trastuzumabDeruxtecan", 0.421, "L/day", 2.77, 0.199, "L/day", 5.16, 7.28,
+  "polatuzumabVedotin", 0.0344, "L/h", 3.15, 0.0145, "L/h", 3.98, 11.0,
+  "inotuzumabOzogamicin", 0.113, "L/h", 6.7, 0.0405, "L/h", 5.1, 37.0,
+  "trastuzumabEmtansine", 0.676, "L/day", 3.127, 1.534, "L/day", 0.66, 9.66,
+  "datopotamabDeruxtecan", 0.416, "L/day", 3.02, 0.341, "L/day", 2.84, 6.48
+) |>
+  mutate(
+    to_ml_day = ifelse(cl_unit == "L/h", 24000, 1000),
+    bw_h = cl_h * to_ml_day / cl_h_perkg
+  )
+round(setNames(human$bw_h, drug_labels[human$drug]), 1)
+
+tg32_adc <- grid |>
+  dplyr::filter(strain == "tg32mouse", analyte == "adc") |>
+  left_join(human, by = "drug")
+scale_perkg <- function(p, bw, e) p * (bw / 0.02)^(e - 1)
+# Prediction error as defined in the paper: relative to the observed value for
+# an overprediction and to the predicted value for an underprediction.
+pred_err <- function(pred, obs) ifelse(pred >= obs, (pred - obs) / obs, (pred - obs) / pred) * 100
+```
+
+## Table 4: human CL of total ADC from Tg32 mice
+
+```{r table4}
+exps <- c(0.85, 0.9, 0.95, 1, 1.05, 1.1)
+table4_paper <- rbind(
+  c(3.45, 5.21, 7.86, 11.9, 17.9, 27.0),
+  c(2.67, 4.04, 6.10, 9.23, 13.9, 21.1),
+  c(8.42, 12.7, 19.0, 28.6, 43.0, 64.7),
+  c(2.58, 3.85, 5.74, 8.54, 12.7, 19.0),
+  c(4.34, 6.55, 9.88, 14.9, 22.5, 33.9),
+  c(7.95, 12.0, 18.1, 27.2, 41.0, 61.9),
+  c(2.47, 3.71, 5.58, 8.39, 12.6, 19.0),
+  c(3.83, 5.73, 8.58, 12.8, 19.2, 28.8)
+)
+pred4 <- outer(seq_len(8), exps, function(i, e) scale_perkg(tg32_adc$cl[i], tg32_adc$bw_h[i], e))
+dimnames(pred4) <- list(drug_labels[tg32_adc$drug], paste0("e = ", exps))
+knitr::kable(pred4, digits = 2)
+
+pe4 <- apply(pred4, 2, pred_err, obs = tg32_adc$cl_h_perkg)
+summary4 <- data.frame(
+  exponent = exps,
+  within_2fold = colMeans(abs(pe4) <= 100) * 100,
+  within_3fold = colMeans(abs(pe4) <= 200) * 100,
+  rmse = sqrt(colMeans(sweep(pred4, 1, tg32_adc$cl_h_perkg)^2))
+)
+summary4 |>
+  dplyr::rename(
+    Exponent = exponent, "Within 2-fold (%)" = within_2fold,
+    "Within 3-fold (%)" = within_3fold, "RMSE (mL/day/kg)" = rmse
+  ) |>
+  knitr::kable(digits = 2, row.names = FALSE)
+
+stopifnot(
+  # Every cell of Table 4 is reproduced from the packaged CL (Table 3 rounds to
+  # one decimal, so the e = 1 column differs from the paper by that rounding).
+  max(abs(pred4 / table4_paper - 1)) < 0.02,
+  # Paper: optimal exponent 1.0, 87.5% within twofold, RMSE 8.12.
+  summary4$within_2fold[summary4$exponent == 1] == 87.5,
+  abs(summary4$rmse[summary4$exponent == 1] - 8.12) < 0.1,
+  # Only loncastuximab tesirine falls outside twofold (2.75-fold over).
+  identical(names(which(abs(pe4[, "e = 1"]) > 100)), "Loncastuximab tesirine")
+)
+```
+
+The paper's summary rows (Table 4) are 25.0, 50.0, 62.5, 87.5, 62.5 and 50.0%
+within twofold and RMSE 18.00, 15.68, 12.34, 8.12, 7.66 and 18.07 for exponents
+0.85 to 1.1; the table above recomputes them from the model parameters.
+
+## Figure 3: correlation of total-ADC CL between mice and humans
+
+```{r fig3, fig.height = 4}
+fig3 <- grid |>
+  dplyr::filter(analyte == "adc") |>
+  left_join(select(human, drug, cl_h_perkg), by = "drug") |>
+  mutate(Strain = ifelse(strain == "tg32mouse", "Tg32", "Wild type"))
+r2 <- fig3 |>
+  group_by(Strain) |>
+  summarise(r2 = cor(cl, cl_h_perkg)^2)
+knitr::kable(dplyr::rename(r2, "R-squared" = r2), digits = 3)
+stopifnot(
+  abs(r2$r2[r2$Strain == "Tg32"] - 0.888) < 0.005,
+  abs(r2$r2[r2$Strain == "Wild type"] - 0.308) < 0.005
+)
+ggplot(fig3, aes(cl, cl_h_perkg)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE, linewidth = 0.5) +
+  facet_wrap(~Strain, scales = "free_x") +
+  labs(x = "Mouse total ADC CL (mL/day/kg)", y = "Human CL (mL/day/kg)") +
+  theme_bw()
+```
+
+Replicates Figure 3 of Nakagawa 2026: R-squared 0.888 for Tg32 and 0.308 for
+wild-type mice.
+
+## Projected human two-compartment parameters
+
+The paper also titrated exponents for Vc, Q and Vp (Supplement Tables S6 to
+S8) and reports the values that maximise the twofold accuracy as 1.05 for Vc,
+0.65 to 0.8 for Q and 0.95 for Vp; it notes that these parameters did not
+correlate significantly between mice and humans (Figure S1) and that their use
+for clinical profile prediction needs further work. The table below applies
+those exponents (both ends of the Q range) to the Tg32 total-ADC models and
+sets the result against the human population-PK values of Table 1. It is
+descriptive: no human model is packaged.
+
+```{r human-projection}
+proj <- tg32_adc |>
+  transmute(
+    Drug = drug_labels[drug],
+    "BW (kg)" = bw_h,
+    "CL pred / obs" = scale_perkg(cl, bw_h, 1) * bw_h / 1000 / (cl_h * to_ml_day / 1000),
+    "Vc pred / obs" = scale_perkg(vc, bw_h, 1.05) * bw_h / 1000 / vc_h,
+    "Q pred / obs (e = 0.65)" = scale_perkg(q, bw_h, 0.65) * bw_h / (q_h * to_ml_day),
+    "Q pred / obs (e = 0.8)" = scale_perkg(q, bw_h, 0.8) * bw_h / (q_h * to_ml_day),
+    "Vp pred / obs" = scale_perkg(vp, bw_h, 0.95) * bw_h / 1000 / vp_h
+  )
+knitr::kable(proj, digits = 2)
+```
+
+The human population-PK models behind Table 1 that are also in this library
+are `Gibiansky_2022_tisotumab`, `Sathe_2024_sacituzumab`,
+`Yin_2021_trastuzumabDeruxtecan`, `Lu_2019_polatuzumab`,
+`Garrett_2019_inotuzumab` and `Lu_2014_trastuzumabemtansine`.
+
+# Assumptions and deviations
+
+* **Mean of individual fits.** The paper fitted each mouse separately in
+  WinNonlin and reports the mean +/- SD of the three estimates; there is no
+  population model. The packaged values are those means, with no
+  between-animal variability (the SD of three individual estimates is not an
+  estimate of omega) and the residual error held at zero.
+* **One file per ADC, strain and analyte.** Total ADC and total antibody were
+  fitted independently (for sacituzumab govitecan in Tg32 mice the total-ADC
+  CL is even lower than the total-antibody CL), so they are separate models
+  rather than one coupled deconjugation model. To simulate both analytes for
+  one ADC, dose each model separately.
+* **Per-kilogram units.** Parameters are kept in the paper's body-weight
+  normalised units (mL/kg and mL/day/kg); dose in ug/kg (1 mg/kg = 1000 ug/kg)
+  gives `Cc` in ug/mL. No body-weight covariate is carried, because the paper
+  did not estimate one; the allometric scaling above is a separate,
+  across-species translation step.
+* **Table 4 rounding.** Table 4's exponent-1.0 column prints the Tg32 CL to
+  three significant figures (9.23, 8.54, 8.39) where Table 3 prints one decimal
+  (9.2, 8.5, 8.4); the packaged models use Table 3.
+* **No human model.** The optimal Q exponent is reported only as a range (0.65
+  to 0.8), and the paper presents the Vc, Q and Vp exponents as exploratory, so
+  the human projection is shown above for reference only.
+* **Errata.** No correction to the article was found in Europe PMC
+  (checked 2026-11-16).

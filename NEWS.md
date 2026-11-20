@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Thorsted 2026 depemokimab PK and blood eosinophil PK/PD ([doi:10.1002/jcph.70187](https://doi.org/10.1002/jcph.70187)) -- healthy volunteers and adolescents and adults with asthma or chronic rhinosinusitis with nasal polyps.
+- Add Nakagawa 2026 antibody-drug conjugates (tisotumab vedotin, loncastuximab tesirine, sacituzumab govitecan, trastuzumab deruxtecan, polatuzumab vedotin, inotuzumab ozogamicin, trastuzumab emtansine, datopotamab deruxtecan; total ADC and total antibody) ([doi:10.1111/cts.70692](https://doi.org/10.1111/cts.70692)) -- human FcRn transgenic Tg32 and wild-type C57BL/6J mice.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

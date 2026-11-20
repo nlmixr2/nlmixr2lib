@@ -2196,26 +2196,14 @@ navbar:
         href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Datopotamab (Hong 2025)"
         href: articles/Hong_2025_datopotamab.html
-      - text: "Datopotamab dose interruption (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab dose reduction (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab os (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab ose (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab ose grade2 (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab pfs (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab sae (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab stomatitis (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab stomatitis grade2 (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
-      - text: "Datopotamab teae grade3 (Tang 2026)"
-        href: articles/Tang_2026_datopotamab_exposure_response.html
+      - text: "DatopotamabDeruxtecan tg32mouse adc (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "DatopotamabDeruxtecan tg32mouse tab (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "DatopotamabDeruxtecan wtmouse adc (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "DatopotamabDeruxtecan wtmouse tab (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
       - text: "Daunorubicin (Bogason 2011)"
         href: articles/Bogason_2011_daunorubicin.html
       - text: "Daunorubicin (Varatharajan 2016)"
@@ -4198,6 +4186,14 @@ navbar:
         href: articles/Garrett_2019_inotuzumab.html
       - text: "Inotuzumab (Wu 2024)"
         href: articles/Wu_2024_inotuzumab.html
+      - text: "InotuzumabOzogamicin tg32mouse adc (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "InotuzumabOzogamicin tg32mouse tab (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "InotuzumabOzogamicin wtmouse adc (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "InotuzumabOzogamicin wtmouse tab (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
       - text: "Interferon alfa 2b (Chatelut 1999)"
         href: articles/Chatelut_1999_interferon_alfa_2b.html
       - text: "InterferonAlfa2a (Jeon 2013)"
@@ -4764,6 +4760,14 @@ navbar:
         href: articles/Jensen_2023_lngIus52mg.html
       - text: "Lobaplatin (Cheng 2019)"
         href: articles/Cheng_2019_lobaplatin.html
+      - text: "LoncastuximabTesirine tg32mouse adc (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "LoncastuximabTesirine tg32mouse tab (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "LoncastuximabTesirine wtmouse adc (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "LoncastuximabTesirine wtmouse tab (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
       - text: "LonoctocogAlfa (Bukkems 2023)"
         href: articles/Bukkems_2023_lonoctocogAlfa.html
       - text: "LonoctocogAlfa bleed (Bukkems 2023)"
@@ -6656,6 +6660,14 @@ navbar:
         href: articles/Lu_2019_polatuzumab.html
       - text: "Polatuzumab neuropathy (Lu 2017)"
         href: articles/Lu_2017_polatuzumab_neuropathy.html
+      - text: "PolatuzumabVedotin tg32mouse adc (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "PolatuzumabVedotin tg32mouse tab (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "PolatuzumabVedotin wtmouse adc (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "PolatuzumabVedotin wtmouse tab (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
       - text: "Polymyxin AB3070294 (Cheah 2016)"
         href: articles/Cheah_2016_polymyxin_Abaumannii_dynamics.html
       - text: "Polymyxin ATCC19606 (Cheah 2016)"
@@ -7558,6 +7570,14 @@ navbar:
         href: articles/Sathe_2025b_sacituzumab_exposure_response.html
       - text: "Sacituzumab pfs (Sathe 2025b)"
         href: articles/Sathe_2025b_sacituzumab_exposure_response.html
+      - text: "SacituzumabGovitecan tg32mouse adc (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "SacituzumabGovitecan tg32mouse tab (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "SacituzumabGovitecan wtmouse adc (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "SacituzumabGovitecan wtmouse tab (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
       - text: "Saf189s (Liu 2024)"
         href: articles/Liu_2024_saf189s.html
       - text: "Saf189s dor (Liu 2024)"
@@ -8466,6 +8486,14 @@ navbar:
         href: articles/Liu_2026_tislelizumab.html
       - text: "Tisotumab (Gibiansky 2022)"
         href: articles/Gibiansky_2022_tisotumab.html
+      - text: "TisotumabVedotin tg32mouse adc (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "TisotumabVedotin tg32mouse tab (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "TisotumabVedotin wtmouse adc (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "TisotumabVedotin wtmouse tab (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
       - text: "Tixagevimab (Clegg 2024)"
         href: articles/Clegg_2024_tixagevimab_cilgavimab.html
       - text: "Tixagevimab cilgavimab (Clegg 2024)"
@@ -8638,12 +8666,28 @@ navbar:
         href: articles/Asiimwe_2025_trastuzumab_ADCs_mbma.html
       - text: "TrastuzumabDeruxtecan mouse qsp (Vasalou 2024)"
         href: articles/Vasalou_2024_trastuzumabDeruxtecan.html
+      - text: "TrastuzumabDeruxtecan tg32mouse adc (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "TrastuzumabDeruxtecan tg32mouse tab (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "TrastuzumabDeruxtecan wtmouse adc (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "TrastuzumabDeruxtecan wtmouse tab (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
       - text: "TrastuzumabEmtansine mbma (Asiimwe 2025)"
         href: articles/Asiimwe_2025_trastuzumab_ADCs_mbma.html
       - text: "TrastuzumabEmtansine mechanistic (Bender 2014)"
         href: articles/Bender_2014_trastuzumabEmtansine_mechanistic.html
       - text: "TrastuzumabEmtansine reduced (Bender 2014)"
         href: articles/Bender_2014_trastuzumabEmtansine_reduced.html
+      - text: "TrastuzumabEmtansine tg32mouse adc (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "TrastuzumabEmtansine tg32mouse tab (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "TrastuzumabEmtansine wtmouse adc (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
+      - text: "TrastuzumabEmtansine wtmouse tab (Nakagawa 2026)"
+        href: articles/Nakagawa_2026_adc_fcrn_mouse.html
       - text: "TrastuzumabRezetecan (Gao 2026)"
         href: articles/Gao_2026_trastuzumabRezetecan.html
       - text: "Trastuzumabemtansine (Lu 2014)"
@@ -11417,6 +11461,7 @@ articles:
   - articles/Naik_2013_fasiglifam
   - articles/Naik_2013_peginesatide
   - articles/Naik_2016_vortioxetine
+  - articles/Nakagawa_2026_adc_fcrn_mouse
   - articles/Nakai_2025_tranexamicAcid
   - articles/Nakamura_2024_linagliptin_pbpk
   - articles/Nakao_2019_afatinib
