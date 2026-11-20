@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nakagawa 2026 antibody-drug conjugates (tisotumab vedotin, loncastuximab tesirine, sacituzumab govitecan, trastuzumab deruxtecan, polatuzumab vedotin, inotuzumab ozogamicin, trastuzumab emtansine, datopotamab deruxtecan; total ADC and total antibody) ([doi:10.1111/cts.70692](https://doi.org/10.1111/cts.70692)) -- human FcRn transgenic Tg32 and wild-type C57BL/6J mice.
+- Add Qin 2026 enoxacin, erlotinib, gefitinib and imatinib ([doi:10.1002/psp4.70314](https://doi.org/10.1002/psp4.70314)) -- intravenous disposition layers of GastroPlus acid-reducing-agent interaction PBPK models, healthy adults.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

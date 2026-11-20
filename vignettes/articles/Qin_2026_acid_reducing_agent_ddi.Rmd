@@ -1,0 +1,345 @@
+---
+title: "Enoxacin, erlotinib, gefitinib and imatinib IV disposition (Qin 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Enoxacin, erlotinib, gefitinib and imatinib IV disposition (Qin 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Qin_2026_enoxacin"))$reference`
+* Article: <https://doi.org/10.1002/psp4.70314> (open access, PMC13428028)
+* Models: `Qin_2026_enoxacin`, `Qin_2026_erlotinib`, `Qin_2026_gefitinib`,
+  `Qin_2026_imatinib`
+
+Qin and colleagues built GastroPlus 9.8.2 PBPK models (ACAT absorption plus
+a compartmental disposition model) for 14 weakly basic drugs, used them to
+simulate the loss of oral exposure when an acid-reducing agent (ARA) raises
+gastric pH (Table 1), varied the drug properties one at a time to find the
+eight that drive that loss, generated 4339 virtual drugs from them, and
+trained an XGBoost model that predicts the ARA AUC ratio from 21 drug
+properties (Table 2). The XGBoost model was checked against eight further
+drugs (Table 3) and is offered as a web tool.
+
+## What these models contain
+
+Each of the 14 PBPK models has a systemic layer that is not a whole-body
+PBPK model but a GastroPlus compartmental model: central volume and
+clearance per kg body weight and first-order distribution rate constants,
+printed in the row 'Disposition model parameters' of Supplementary Table
+S1. For four drugs the authors fitted that layer to a published mean
+**intravenous** profile, and Supplementary Table S3 compares the
+simulated intravenous AUC and Cmax with the observed values:
+
+| Model | Structure | Fitted to (Supplementary Table S1) | IV arms checked (Supplementary Tables S2, S3) |
+|---|---|---|---|
+| `Qin_2026_enoxacin` | 3-compartment | Jaehde 1995, 428 mg over 1 h | 428 mg (Jaehde 1995); 200 and 800 mg (Chang 1988), all over 1 h |
+| `Qin_2026_erlotinib` | 2-compartment | Frohna 2006, 25 mg over 0.5 h | 25 mg over 0.5 h (Frohna 2006) |
+| `Qin_2026_gefitinib` | 3-compartment | Swaisland 2005, 50 and 100 mg over 1 h | 50 and 100 mg over 1 h (Swaisland 2005) |
+| `Qin_2026_imatinib` | 3-compartment | Peng 2004, 100 mg over 1 h | 100 mg over 1 h (Peng 2004) |
+
+These four intravenous disposition models are packaged here, with volume
+and clearance proportional to body weight (`WT`, kg) as GastroPlus scales
+per-kg compartmental parameters.
+
+## What is not included
+
+* **The XGBoost model.** It is a gradient-boosted tree ensemble with no
+  equations or published trees; it cannot be written as an rxode2 model.
+* **The oral ACAT layer and the ARA interaction.** The pH-dependent
+  dissolution, precipitation and absorption along the GastroPlus ACAT gut
+  are built into the platform; the paper prints only the drug inputs
+  (solubility by pH, pKa, Peff, particle radius, precipitation time), not
+  the gut physiology or the equations that use them. The ARA effect acts
+  only through this layer, so Table 1 cannot be reproduced without it.
+* **The other ten drugs.** Their disposition rows were either fitted to
+  oral data through the ACAT model, so the clearance is calibrated against
+  a bioavailability the paper does not print and no intravenous check
+  exists, or they were carried over from other publications:
+
+| Drug | Disposition source in Supplementary Table S1 | Note |
+|---|---|---|
+| Axitinib, ceritinib, dipyridamole, indinavir, lapatinib | 'Oral data-fitted estimation (calibrated via bioavailability)' | No intravenous check |
+| Nilotinib | 'Oral data-fitted estimation (calibrated via bioavailability)' | Printed as 'Vc = 0.337 L/5kg', 'CL = 11.530 L/h/kg' |
+| Entrectinib, dacomitinib, dasatinib | Parrott et al., Liu et al., Wang et al. | Earlier publications; dacomitinib CL printed as '045409 L/h/kg' |
+| Propranolol | 'GastroPlus' | The intravenous check fails (see "Propranolol" below) |
+
+# Population
+
+No individual data were fitted. Each model was fitted to a published mean
+profile in healthy volunteers (Supplementary Table S2):
+
+* Enoxacin: Jaehde 1995, 12 subjects, mean age 27.9 years, mean weight
+  76.1 kg. Chang 1988: 8 subjects, mean age 24 years, mean weight 69.5 kg.
+* Erlotinib: Frohna 2006, 20 subjects, mean age 33.7 years; weight not
+  reported.
+* Gefitinib: Swaisland 2005, ages 18 to 65 years; number and weight not
+  reported for the intravenous studies.
+* Imatinib: Peng 2004, 17 subjects aged 40 to 58 years, mean weight
+  73.3 kg.
+
+# Source trace
+
+| Quantity | Enoxacin | Erlotinib | Gefitinib | Imatinib | Source |
+|---|---|---|---|---|---|
+| `lvc` (L/kg) | log(0.249) | log(0.695) | log(1.046) | log(0.247) | Suppl. Table S1 'Vc' |
+| `lcl` (L/h/kg) | log(0.384) | log(0.059) | log(0.792) | log(0.189) | Suppl. Table S1 'CL' |
+| `lk12` (1/h) | log(4.85) | log(0.215) | log(6.237) | log(4.471) | Suppl. Table S1 'k12' |
+| `lk21` (1/h) | log(2.321) | log(0.141) | log(0.547) | log(1.226) | Suppl. Table S1 'k21' |
+| `lk13` (1/h) | log(3.032) | -- | log(0.237) | log(1.706) | Suppl. Table S1 'k13' |
+| `lk31` (1/h) | log(0.500) | -- | log(0.031) | log(0.219) | Suppl. Table S1 'k31' |
+| Structure | 3-cmt | 2-cmt | 3-cmt | 3-cmt | Methods 'ACAT model and compartmental parameters'; number of rate constants in Suppl. Table S1 |
+| Volume and CL per kg | yes | yes | yes | yes | Suppl. Table S1 units (L/kg, L/h/kg) |
+| IV doses, infusion times, weights | see below | | | | Suppl. Table S2 |
+| IV AUC and Cmax (observed, predicted) | see below | | | | Suppl. Table S3 |
+
+The k31 printed for enoxacin is '0.500'. Supplementary Table S3 prints
+the enoxacin AUC and Cmax in ug*h/mL and ug/mL although its header says
+ng; they are converted to ng below.
+
+# Simulation of the intravenous arms
+
+Every intravenous arm of Supplementary Table S3 is simulated with the
+infusion time and mean body weight of Supplementary Table S2. The
+erlotinib and gefitinib studies do not report body weight; for them the
+weight is set to the value at which the model's AUC (dose / CL) equals the
+paper's predicted AUC, so for those three arms the AUC agrees by
+construction and only Cmax is a check. Cmax / AUC does not depend on
+weight, and it is checked separately below.
+
+```{r arms}
+arms <- data.frame(
+  model = c(
+    rep("Qin_2026_enoxacin", 3), "Qin_2026_erlotinib",
+    rep("Qin_2026_gefitinib", 2), "Qin_2026_imatinib"
+  ),
+  drug = c(rep("Enoxacin", 3), "Erlotinib", rep("Gefitinib", 2), "Imatinib"),
+  treatment = c(
+    "Enoxacin 428 mg (Jaehde 1995)", "Enoxacin 200 mg (Chang 1988)",
+    "Enoxacin 800 mg (Chang 1988)", "Erlotinib 25 mg (Frohna 2006)",
+    "Gefitinib 100 mg (Swaisland 2005)", "Gefitinib 50 mg (Swaisland 2005)",
+    "Imatinib 100 mg (Peng 2004)"
+  ),
+  dose = c(428, 200, 800, 25, 100, 50, 100),
+  dur = c(1, 1, 1, 0.5, 1, 1, 1),
+  wt_reported = c(76.1, 69.5, 69.5, NA, NA, NA, 73.3),
+  # Supplementary Table S3, ng*h/mL and ng/mL (enoxacin converted from ug).
+  auc_pred = c(14.62, 7.482, 29.94, 5.6661, 1.6606, 0.91456, 7.203) * 1000,
+  cmax_pred = c(4.06, 2.08, 8.31, 0.45929, 0.21374, 0.1188, 1.1313) * 1000,
+  auc_obs = c(15.15, 6.627, 31.80, 6.1907, 1.7508, 1.1169, 7.3862) * 1000,
+  cmax_obs = c(4.14, 1.81, 6.58, 0.49554, 0.23561, 0.1027, 1.1693) * 1000
+)
+
+cl_per_kg <- c(
+  Qin_2026_enoxacin = 0.384, Qin_2026_erlotinib = 0.059,
+  Qin_2026_gefitinib = 0.792, Qin_2026_imatinib = 0.189
+)
+arms <- arms |>
+  mutate(
+    wt_implied = dose / (auc_pred / 1000) / unname(cl_per_kg[model]),
+    WT = ifelse(is.na(wt_reported), wt_implied, wt_reported)
+  )
+
+arms |>
+  select(treatment, dose, dur, wt_reported, wt_implied) |>
+  dplyr::rename(
+    "IV arm" = treatment, "Dose (mg)" = dose, "Infusion (h)" = dur,
+    "Reported weight (kg)" = wt_reported,
+    "Weight implied by predicted AUC (kg)" = wt_implied
+  ) |>
+  knitr::kable(digits = 1)
+```
+
+Where the weight is reported, the weight implied by the paper's predicted
+AUC matches it within 0.3%, which confirms that the paper simulated each
+arm at the study's mean weight with the per-kg clearance of Table S1.
+
+```{r simulate}
+obs_times <- sort(unique(c(seq(0, 4, by = 0.01), seq(4.25, 48, by = 0.25), seq(49, 480, by = 1))))
+
+simulate_arm <- function(arm) {
+  events <- bind_rows(
+    data.frame(time = 0, amt = arm$dose, rate = arm$dose / arm$dur, evid = 1),
+    data.frame(time = obs_times, amt = 0, rate = 0, evid = 0)
+  ) |>
+    mutate(id = 1L, cmt = "central", WT = arm$WT) |>
+    arrange(time, desc(evid))
+  rxode2::rxSolve(readModelDb(arm$model), events = events, returnType = "data.frame") |>
+    mutate(id = 1L, treatment = arm$treatment, drug = arm$drug, Cc_ng = 1000 * Cc)
+}
+
+sim <- bind_rows(lapply(split(arms, seq_len(nrow(arms))), simulate_arm))
+```
+
+```{r profiles, fig.cap = "Simulated plasma concentrations after each intravenous infusion of Supplementary Table S3, at the study weights above (compare Supplementary Figures S4, S6, S7 and S8 of Qin 2026)."}
+ggplot(filter(sim, time <= 48, Cc_ng > 0), aes(time, Cc_ng, colour = treatment)) +
+  geom_line() +
+  scale_y_log10() +
+  facet_wrap(~drug, scales = "free_y") +
+  labs(x = "Time (h)", y = "Concentration (ng/mL)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(ncol = 2))
+```
+
+# NCA against Supplementary Table S3
+
+```{r nca}
+conc <- sim |>
+  filter(!is.na(Cc_ng)) |>
+  select(treatment, id, time, Cc_ng)
+dose_df <- arms |>
+  transmute(treatment, id = 1L, time = 0, dose, dur)
+conc_obj <- PKNCA::PKNCAconc(conc, Cc_ng ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(
+  dose_df, dose ~ time | treatment + id,
+  route = "intravascular", duration = "dur"
+)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+sim_nca <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "aucinf.obs")) |>
+  select(treatment, PPTESTCD, PPORRES)
+
+ref_nca <- arms |>
+  transmute(treatment, cmax = cmax_pred, aucinf.obs = auc_pred)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  sim_nca, ref_nca,
+  by = "treatment",
+  units = c(cmax = "ng/mL", aucinf.obs = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated NCA against the paper's predicted intravenous values (Supplementary Table S3).")
+```
+
+```{r nca-check}
+chk <- sim_nca |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  inner_join(arms, by = "treatment") |>
+  mutate(
+    auc_diff = 100 * (aucinf.obs - auc_pred) / auc_pred,
+    cmax_diff = 100 * (cmax - cmax_pred) / cmax_pred,
+    ratio_diff = 100 * ((cmax / aucinf.obs) / (cmax_pred / auc_pred) - 1)
+  )
+chk |>
+  select(treatment, auc_diff, cmax_diff, ratio_diff) |>
+  dplyr::rename(
+    "IV arm" = treatment, "AUC0-inf % diff" = auc_diff,
+    "Cmax % diff" = cmax_diff, "Cmax/AUC % diff" = ratio_diff
+  ) |>
+  knitr::kable(digits = 1)
+
+stopifnot(
+  # Deterministic typical-value solves: AUC0-inf of a linear model is
+  # dose / CL, so a mis-transcribed clearance or weight moves it at once.
+  all(abs(chk$auc_diff) < 2),
+  # Cmax at the end of the infusion depends on Vc and the distribution
+  # rate constants; the paper's simulated value is matched within 10%.
+  all(abs(chk$cmax_diff) < 10),
+  # The weight-free check.
+  all(abs(chk$ratio_diff) < 10)
+)
+```
+
+The AUC agrees within 1% for every arm, and Cmax within 2.6 to 7%: above
+the paper's predicted value for enoxacin, gefitinib and imatinib and below
+it for erlotinib. The paper does not say how its Cmax was read (for
+example, on what output time grid). The Cmax/AUC ratio, which does not
+depend on weight, agrees to the same degree, so the differences come from
+the peak itself rather than from the weights used here.
+
+## Against the observed values
+
+For reference, the observed values that the paper compared its
+predictions with (Supplementary Table S3) are tabulated here; the
+differences are the model's own prediction errors, which the paper
+reports as R values (predicted / observed) within 0.82 to 1.26.
+
+```{r observed}
+cmp_obs <- nlmixr2lib::ncaComparisonTable(
+  sim_nca,
+  arms |> transmute(treatment, cmax = cmax_obs, aucinf.obs = auc_obs),
+  by = "treatment",
+  units = c(cmax = "ng/mL", aucinf.obs = "ng*h/mL"),
+  tolerance_pct = 30
+)
+knitr::kable(cmp_obs, caption = "Simulated NCA against the observed intravenous values (Supplementary Table S3).")
+```
+
+# Propranolol
+
+The propranolol disposition row of Supplementary Table S1 (Vc 2.19 L/kg,
+CL 0.752 L/h/kg, k12 0.291 1/h, k21 0.641 1/h, source 'GastroPlus') was not
+packaged because it does not reproduce the paper's own intravenous
+prediction. Solving it with the two-compartment erlotinib model's
+structure for the 2.2 mg infusion over 0.25 h of Cid 1986:
+
+```{r propranolol}
+prop_par <- c(
+  lvc = log(2.19), lcl = log(0.752), lk12 = log(0.291), lk21 = log(0.641)
+)
+prop_events <- bind_rows(
+  data.frame(time = 0, amt = 2.2, rate = 2.2 / 0.25, evid = 1),
+  data.frame(time = c(seq(0, 1, by = 0.005), seq(1.25, 72, by = 0.25)), amt = 0, rate = 0, evid = 0)
+) |>
+  mutate(cmt = "central") |>
+  arrange(time, desc(evid))
+prop <- bind_rows(lapply(c(60, 66), function(w) {
+  rxode2::rxSolve(
+    readModelDb("Qin_2026_erlotinib"),
+    params = prop_par,
+    events = mutate(prop_events, WT = w),
+    returnType = "data.frame"
+  ) |>
+    summarise(
+      weight = w,
+      auc = 1000 * 2.2 / (0.752 * w),
+      cmax = 1000 * max(Cc)
+    )
+}))
+prop |>
+  mutate(auc_pred = 48.74, cmax_pred = 12.23) |>
+  dplyr::rename(
+    "Weight (kg)" = weight, "AUC0-inf (ng*h/mL)" = auc,
+    "Cmax (ng/mL)" = cmax, "Paper AUC" = auc_pred, "Paper Cmax" = cmax_pred
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+At the study's mean weight (66 kg) the AUC is 9% below and the Cmax 15%
+above the paper's predicted values; the weight that matches the AUC
+(60 kg) moves Cmax further away. No weight reproduces both, so the
+printed row is not the one the paper simulated, and its source
+('GastroPlus') names no study to check it against.
+
+# Assumptions and deviations
+
+* **Only the intravenous disposition layer is packaged.** The oral ACAT
+  model, the ARA interaction and the XGBoost model are not (see "What is
+  not included"). Oral doses of these models would need an absorption
+  model and a bioavailability that the paper does not print.
+* **Ten of the fourteen drugs are not packaged**, for the reasons in the
+  table above.
+* **Weights for erlotinib and gefitinib** are not reported in
+  Supplementary Table S2; the simulations here use the weight at which the
+  model reproduces the paper's predicted AUC (74.8, 76.0 and 69.0 kg). The
+  models themselves take any `WT`.
+* **Parameter nature.** The parameters were fitted by the authors to one
+  mean profile per drug, without between-subject or residual variability.
+  The models are deterministic typical-value models.
+* **Units.** Supplementary Table S3 reports the enoxacin AUC and Cmax in
+  ug units under an ng header; the magnitudes (dose / CL at 76.1 kg =
+  14.65 ug*h/mL against 14.62) confirm the ug reading.
+* **Infusions.** The intravenous doses are constant-rate infusions over the
+  durations of Supplementary Table S2.
