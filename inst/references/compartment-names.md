@@ -4946,6 +4946,22 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
   - `HDL` -- Krishna 2011 Eqs. 1, 2 and 8 output variable; casing only.
 - **Example models:** `Krishna_2011_anacetrapib_hdlc.R` (algebraic proportional-Emax output driven by the anacetrapib steady-state trough concentration; no ODE state).
 
+### hdlcfb (**canonical percentage change from baseline in HDL-cholesterol output**)
+- **Type:** compartment
+- **Role:** Percentage change in HDL-cholesterol from the patient's own pre-treatment value, `100 * (HDL(t) - HDL(0)) / HDL(0)`, used as the modelled endpoint of exposure-response models that fit the percent change directly rather than the absolute concentration. **Sign convention: POSITIVE for an HDL-C rise** (the intended effect of CETP inhibitors). Algebraic output in the founding model (no ODE state).
+- **Source aliases:**
+  - HDL -- the left-hand side of Friedrich 2014 Eqs. 1 and 4, defined in the Methods as the percent change from baseline HDL-C.
+- **Example models:** `Friedrich_2014_evacetrapib_hdl.R` (founding example; Emax function of the steady-state evacetrapib AUC plus a placebo term, times the onset `1 - exp(-K * time)`; additive residual 14.2 percentage points).
+- **Notes:** Named under the library-wide `<state>cfb` change-from-baseline convention (see `bcvacfb`); like `crcfb` it is a PERCENT change. Distinct from `hdl`, the absolute HDL-C concentration output (mg/dL); a model of an absolute (mg/dL) change should register a sibling rather than overload this name.
+
+### ldlcfb (**canonical percentage change from baseline in LDL-cholesterol output**)
+- **Type:** compartment
+- **Role:** Percentage change in LDL-cholesterol from the patient's own pre-treatment value, `100 * (LDL(t) - LDL(0)) / LDL(0)`, used as the modelled endpoint of exposure-response models that fit the percent change directly rather than the absolute concentration. **Sign convention: NEGATIVE for an LDL-C reduction** (the intended effect of lipid-lowering therapy). Algebraic output in the founding model (no ODE state).
+- **Source aliases:**
+  - LDL -- the left-hand side of Friedrich 2014 Eqs. 2 and 5, defined in the Methods as the percent change from baseline LDL-C.
+- **Example models:** `Friedrich_2014_evacetrapib_ldl.R` (founding example; steady-state Emax function of the evacetrapib AUC, a covariate-dependent placebo term, a statin effect and an evacetrapib-statin interaction term; additive residual 11.3 percentage points).
+- **Notes:** Named under the library-wide `<state>cfb` change-from-baseline convention (see `bcvacfb`); like `crcfb` it is a PERCENT change. Distinct from `ldl`, the absolute LDL-C concentration output (mg/dL), and from the covariate `LDLC_DELTA` (a comparator-adjusted change used as an input). A model of an absolute (mg/dL) change should register a sibling rather than overload this name.
+
 ### c4 (**canonical serum 7-alpha-hydroxy-4-cholesten-3-one (C4) PD output**)
 - **Type:** compartment
 - **Role:** Serum 7-alpha-hydroxy-4-cholesten-3-one (C4) concentration, the circulating intermediate of hepatic bile-acid synthesis by CYP7A1 and the standard biomarker of that synthesis rate. Carried as an indirect-response turnover state in concentration units (ng/mL).
