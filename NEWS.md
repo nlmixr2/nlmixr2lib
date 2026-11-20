@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Dickinson 2014 nevirapine ([doi:10.1128/AAC.02069-13](https://doi.org/10.1128/AAC.02069-13)) -- HIV-infected adults in Malawi, with CYP2B6 983T>C and 516G>T genotype effects.
+- Add Chiu 2014 trichloroethylene multi-metabolite mouse PBPK ([doi:10.1289/ehp.1307623](https://doi.org/10.1289/ehp.1307623)) -- B6C3F1/J mice given a single oral gavage (oxidative and glutathione-conjugation metabolites).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
