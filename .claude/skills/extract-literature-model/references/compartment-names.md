@@ -25,6 +25,7 @@ Lower case. Snake case only when combining concepts.
 - `complex` — drug–target complex in explicit-binding TMDD models (Mager & Jusko 2001).
 - `total_target` — total (free + bound) target in QSS / MM TMDD approximations where the bound species is not carried as a separate state (Gibiansky et al. 2008).
 - `liver`, `kidney`, `renal_cortex`, `csf`, `isf`, `cumhaz` — semi-physiologic / hazard compartments registered in `R/conventions.R`. Use `liver` / `kidney` (full English names) — never `liv` / `kid`.
+- `vagina`, `cervix`, `rectum` — mucosal-tissue (biopsy) compartments of HIV-PrEP tissue PK models; the anabolite in the same tissue is `<tissue>_<metab>` (`vagina_tfvdp`). Not lumen states (`colon`, `transit<n>`). Founding examples: `Leung_2023_tenofovir.R`, `Leung_2023_emtricitabine.R`.
 - `circ` — terminal circulating-cell compartment in Friberg-style
   myelosuppression chains (Friberg 2002 paclitaxel and derivatives).
   Replaces a paper-naming `central` for circulating neutrophils /

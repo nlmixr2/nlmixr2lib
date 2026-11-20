@@ -1,0 +1,547 @@
+---
+title: "Type 1 diabetes progression (Morales 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Type 1 diabetes progression (Morales 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Morales_2023_type1Diabetes"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Morales_2023_type1Diabetes"))$description`
+* Article: <https://doi.org/10.1002/psp4.12973> (open access; the Monolix
+  project and model files are in Supplementary Materials S2 and S3)
+
+# Population
+
+The model was fitted to 1265 individuals with two or more islet
+autoantibodies, pooled from two natural-history studies: the TrialNet Pathway
+to Prevention study (n = 1006; relatives of people with type 1 diabetes) and
+the TEDDY birth cohort (n = 259; children with HLA-conferred risk). Time zero
+is a *derived baseline*: the earliest visit at which a participant had at
+least two autoantibodies and a complete set of covariates. Participants who
+already met a diabetes criterion at that visit (2-h OGTT glucose
+>= 200 mg/dL, fasting glucose >= 126 mg/dL or HbA1c >= 6.5%) were excluded,
+and follow-up was truncated at 6 years. Mean (SD) age at the derived baseline
+was 12.7 (9.7) years (range 1-56); 56.1% were male; 89.6% were GADA
+positive, 61.9% IA-2A positive, 52.6% IAA positive and 70.9% ZnT8A positive;
+mean (SD) HbA1c was 5.1 (0.3)%, fasting glucose 88.8 (9.2) mg/dL and the
+2-h / fasting glucose ratio 1.3 (0.4) (Morales 2023 Table 1). The 8341
+2-h OGTT glucose (GLU120) observations and the time to clinical diagnosis
+were fitted jointly in Monolix 2021R1 on a random 80% training split
+(n = 1016).
+
+The same information is available programmatically via
+`readModelDb("Morales_2023_type1Diabetes")()$population`.
+
+# Model structure
+
+The longitudinal 2-h OGTT glucose follows a sigmoid Emax function of time
+since the derived baseline (Eq. 1):
+
+$$\mathrm{GLU120}_i(t) = DP_{0,i} + \frac{DP_{\max,i}\, t^{\gamma_i}}{DP_{50,i}^{\gamma_i} + t^{\gamma_i}}$$
+
+and the time to diagnosis follows a Weibull hazard whose scale is shortened
+by the individual predicted GLU120 (Eqs. 2 and 4):
+
+$$T_e' = \exp\left(\ln T_e - \beta_{T_e} \ln\frac{\mathrm{GLU120}_i(t)}{112}\right),\qquad
+h(t) = \frac{p}{T_e'}\left(\frac{t}{T_e'}\right)^{p-1}$$
+
+In the model file the Weibull rate `lam = 1 / Te'` is carried as
+`exp(llam_haz) * (glucose_2h / 112)^e_glucose_2h_haz`, which is the same
+expression. The hazard integrates into the `cumhaz` state, and
+`sur = exp(-cumhaz)` is the probability of remaining free of type 1 diabetes.
+Covariates enter as power functions of the centred continuous covariate, or
+as log-scale shifts for 0/1 indicators (Supplementary Equations S1 and S2).
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Sigmoid Emax GLU120 time course | Eq. 1 | Results, 'Disease progression joint model'; Supplementary S3 `E = A + S` |
+| Weibull hazard modified by GLU120 | Eqs. 2-4 | Results; Supplementary S3 `alpha = exp(log(Te) - beta_Te*log(E/112))` |
+| Covariate forms | Eqs. S1, S2 | Supplementary Material S1 |
+| Covariate centring values (HbA1c 5.10576%, GLU0 88.0112 mg/dL, ratio 1.25818) | -- | Supplementary S2 `[COVARIATE] EQUATION` block |
+| `le0` (DP0) | log(107.31) mg/dL | Table 2 'Typical value of DP0' |
+| `lemax` (DPmax) | log(208.72) mg/dL | Table 2 'Typical value of DPmax' |
+| `lt50` (DP50) | log(6.09) year | Table 2 'Typical value of DP50' |
+| `lhill` (gamma) | log(1.75) | Table 2 'Typical value of gamma' |
+| `e_gada_pos_emax` | -0.73 | Table 2 'beta_DPmax_BSCORE_GADA_1' |
+| `e_hba1c_emax` | 8.92 | Table 2 'beta_DPmax_logtBSCORE_HbA1c' |
+| `e_ia2a_pos_t50` | -0.71 | Table 2 'beta_DP50_BSCORE_IA2A_1' |
+| `e_fpg_e0` | 0.88 | Table 2 'beta_DP0_logtBSCORE_GLU0' |
+| `e_ogtt_glu_ratio_bl_e0` | 0.79 | Table 2 'beta_DP0_logtBSCORE_GLURATIO' |
+| `llam_haz` | log(1 / 91.81) 1/year | Table 2 'Te' = 91.81 years |
+| `lalfa_haz` (p) | log(1.20) | Table 2 'p' |
+| `e_glucose_2h_haz` (beta_Te) | 6.13 | Table 2 'beta_Te' |
+| `etalemax`, `etale0`, `etalhill`, `etalt50` (SD) | 1.69, 0.043, 1.76, 0.72 | Table 2 'BSV' rows (squared to variances in the model file) |
+| Correlations DP0-DPmax, gamma-DPmax, gamma-DP0 | 0.849, 0.728, 0.371 | Supplementary S2 `corr_S0_Emax`, `corr_gamma_Emax`, `corr_gamma_S0` (not in Table 2) |
+| `propSd_glucose_2h` | 0.16 | Table 2 'RV proportional error' |
+
+# Deterministic checks of the model equations
+
+The typical subject (GADA negative, IA-2A negative, every continuous
+covariate at its centring value) is solved without random effects, and the
+packaged outputs are compared with the closed forms of Eqs. 1 and 4 and
+with a numerical integral of the hazard.
+
+```{r deterministic}
+mod <- readModelDb("Morales_2023_type1Diabetes")
+mod_typ <- rxode2::zeroRe(mod)
+
+ref_subject <- data.frame(
+  GADA_POS = 0,
+  IA2A_POS = 0,
+  HBA1C = 5.10576,
+  FPG = 88.0112,
+  OGTT_GLU_RATIO_BL = 1.25818
+)
+tgrid <- seq(0, 6, by = 0.25)
+ev_typ <- data.frame(id = 1, time = tgrid, evid = 0, cmt = "cumhaz") |>
+  cbind(ref_subject)
+typ <- as.data.frame(rxode2::rxSolve(mod_typ, ev_typ))
+
+glu_closed <- function(t) 107.31 + 208.72 * t^1.75 / (6.09^1.75 + t^1.75)
+haz_closed <- function(t) {
+  te_prime <- exp(log(91.81) - 6.13 * log(glu_closed(t) / 112))
+  1.20 / te_prime * (t / te_prime)^(1.20 - 1)
+}
+sur_closed <- vapply(
+  tgrid,
+  function(tt) {
+    if (tt == 0) {
+      return(1)
+    }
+    exp(-stats::integrate(haz_closed, 0, tt, rel.tol = 1e-10)$value)
+  },
+  numeric(1)
+)
+
+det_check <- data.frame(
+  time = tgrid,
+  glucose_2h = typ$glucose_2h,
+  glucose_closed = glu_closed(tgrid),
+  hazard = typ$hazard,
+  hazard_closed = haz_closed(tgrid),
+  sur = typ$sur,
+  sur_closed = sur_closed
+)
+knitr::kable(
+  det_check[det_check$time %in% 0:6, ],
+  digits = c(2, 3, 3, 5, 5, 4, 4),
+  row.names = FALSE
+)
+
+stopifnot(
+  # Eq. 1 and Eq. 4 are algebraic in the model, so they match exactly.
+  max(abs(det_check$glucose_2h - det_check$glucose_closed)) < 1e-8,
+  max(abs(det_check$hazard - det_check$hazard_closed)) < 1e-10,
+  # The cumulative hazard is an ODE state (LSODA, rtol 1e-6); an error in
+  # the hazard form or in Te moves survival at 6 years by > 0.05.
+  max(abs(det_check$sur - det_check$sur_closed)) < 1e-3
+)
+```
+
+## Effect of GLU120 on the Weibull scale (Figure 3)
+
+```{r fig3, fig.cap = "Replicates the smooth of Figure 3 of Morales 2023: the Weibull scale Te' as a function of the 2-h OGTT glucose (Eq. 4). The published figure scatters simulated values around this relation."}
+fig3 <- data.frame(glucose_2h = seq(50, 500, by = 2)) |>
+  mutate(te_prime = 91.81 * (glucose_2h / 112)^(-6.13))
+ggplot(fig3, aes(glucose_2h, te_prime)) +
+  geom_line(colour = "tomato") +
+  coord_cartesian(ylim = c(0, 400)) +
+  labs(x = "GLU120 (mg/dL)", y = "Te' (years)") +
+  theme_bw()
+```
+
+At 112 mg/dL Te' equals Te (91.8 years); at 150 mg/dL it falls to
+`r signif(91.81 * (150 / 112)^-6.13, 3)` years and above 200 mg/dL it is
+under 3 years, the steep fall shown by the smooth in Figure 3.
+
+# Virtual cohort
+
+Covariates are drawn independently from the Table 1 summaries of the full
+analysis cohort: GADA and IA-2A positivity as Bernoulli draws (89.6% and
+61.9%), HbA1c and fasting glucose as normal draws (5.1 (0.3)% and
+88.8 (9.2) mg/dL) and the 2-h / fasting ratio as a normal draw (1.3 (0.4)).
+Draws that the paper's inclusion rules would have excluded (HbA1c >= 6.5%,
+fasting glucose >= 126 mg/dL, implied 2-h glucose >= 200 mg/dL) are
+rejected, as are ratios below 0.5.
+
+```{r cohort}
+draw_cohort <- function(n) {
+  out <- NULL
+  while (is.null(out) || nrow(out) < n) {
+    d <- data.frame(
+      GADA_POS = stats::rbinom(4 * n, 1, 0.896),
+      IA2A_POS = stats::rbinom(4 * n, 1, 0.619),
+      HBA1C = stats::rnorm(4 * n, 5.1, 0.3),
+      FPG = stats::rnorm(4 * n, 88.8, 9.2),
+      OGTT_GLU_RATIO_BL = stats::rnorm(4 * n, 1.3, 0.4)
+    )
+    keep <- d$HBA1C < 6.5 &
+      d$FPG < 126 &
+      d$OGTT_GLU_RATIO_BL > 0.5 &
+      d$FPG * d$OGTT_GLU_RATIO_BL < 200
+    out <- rbind(out, d[keep, ])
+  }
+  out <- out[seq_len(n), ]
+  out$id <- seq_len(n)
+  rownames(out) <- NULL
+  out
+}
+
+set.seed(20230503)
+n_sub <- 200
+cohort <- draw_cohort(n_sub)
+summary(cohort[, c("HBA1C", "FPG", "OGTT_GLU_RATIO_BL")])
+colMeans(cohort[, c("GADA_POS", "IA2A_POS")])
+```
+
+# Visual predictive check (Figure 4)
+
+Each subject is solved on a fine grid to 6 years. A diagnosis time is
+drawn from the individual survival curve (the first time `sur` falls below
+a uniform draw), and 2-h glucose observations, with residual error, are kept
+only at half-yearly visits before diagnosis, because no OGTT is collected
+after a diagnosis. Survival is summarised as the cohort mean of the
+individual survival curves.
+
+```{r vpc-sim}
+rxode2::rxSetSeed(20230503)
+ev_vpc <- merge(cohort, data.frame(time = seq(0, 6, by = 0.05))) |>
+  arrange(id, time) |>
+  mutate(evid = 0, cmt = "cumhaz")
+sim_vpc <- as.data.frame(rxode2::rxSolve(mod, ev_vpc))
+
+u_draw <- data.frame(id = cohort$id, u = stats::runif(n_sub))
+event_time <- sim_vpc |>
+  left_join(u_draw, by = "id") |>
+  group_by(id) |>
+  summarise(
+    t_event = if (any(sur < u)) min(time[sur < u]) else Inf,
+    .groups = "drop"
+  )
+
+visits <- seq(0, 6, by = 0.5)
+obs_vpc <- sim_vpc |>
+  left_join(event_time, by = "id") |>
+  filter(abs(time - round(time * 2) / 2) < 1e-8, time < t_event)
+
+vpc_tab <- obs_vpc |>
+  mutate(time = round(time * 2) / 2) |>
+  group_by(time) |>
+  summarise(
+    n = n(),
+    p05 = stats::quantile(sim, 0.05),
+    p50 = stats::median(sim),
+    p95 = stats::quantile(sim, 0.95),
+    .groups = "drop"
+  )
+knitr::kable(vpc_tab, digits = 1)
+```
+
+```{r fig4a, fig.cap = "Replicates Figure 4a of Morales 2023: simulated 5th, 50th and 95th percentiles of the 2-h OGTT glucose among subjects not yet diagnosed. The published simulated percentiles lie near 72, 117 and 187 mg/dL throughout the 6 years."}
+vpc_tab |>
+  pivot_longer(c(p05, p50, p95), names_to = "percentile", values_to = "glucose") |>
+  ggplot(aes(time, glucose, colour = percentile)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = c(72, 117, 187), linetype = "dashed", colour = "grey50") +
+  scale_colour_manual(values = c(p05 = "steelblue", p50 = "red", p95 = "steelblue")) +
+  labs(
+    x = "Time from derived baseline (years)",
+    y = "GLU120 (mg/dL)",
+    colour = NULL
+  ) +
+  theme_bw()
+```
+
+```{r fig4b}
+surv_sim <- sim_vpc |>
+  group_by(time) |>
+  summarise(sur = mean(sur), .groups = "drop")
+
+# Figure 4b (training data), digitised by the maintainers: the dashed
+# predicted median and the observed Kaplan-Meier curve.
+fig4b_pred <- data.frame(time = c(2, 4, 6), published = c(0.82, 0.64, 0.53))
+fig4b_obs <- data.frame(
+  time = 1:6,
+  observed_km = c(0.93, 0.83, 0.73, 0.67, 0.58, 0.51)
+)
+
+surv_cmp <- fig4b_pred |>
+  left_join(
+    surv_sim |> mutate(time = round(time, 2)),
+    by = "time"
+  ) |>
+  mutate(difference = sur - published)
+surv_cmp |>
+  rename(
+    "Time (years)" = time,
+    "Published predicted median" = published,
+    "Simulated mean survival" = sur,
+    "Difference" = difference
+  ) |>
+  knitr::kable(digits = 3)
+```
+
+```{r fig4b-plot, fig.cap = "Replicates Figure 4b of Morales 2023: proportion free of type 1 diabetes. Line: simulated cohort mean survival; points: digitised published predicted median (triangles) and observed Kaplan-Meier curve (circles)."}
+ggplot(surv_sim, aes(time, sur)) +
+  geom_line() +
+  geom_point(
+    data = fig4b_obs,
+    aes(time, observed_km),
+    shape = 1,
+    size = 2
+  ) +
+  geom_point(
+    data = fig4b_pred,
+    aes(time, published),
+    shape = 2,
+    size = 2,
+    colour = "steelblue"
+  ) +
+  coord_cartesian(ylim = c(0.4, 1)) +
+  labs(
+    x = "Time from derived baseline (years)",
+    y = "Proportion free of type 1 diabetes"
+  ) +
+  theme_bw()
+```
+
+```{r fig4-gate}
+stopifnot(
+  # Survival: the largest difference from the published median was
+  # 0.02-0.064 over five seeds at 1, 2, 4 and 8 solver threads. Doubling
+  # Te or halving beta_Te moves S(6) by more than 0.15.
+  nrow(surv_cmp) == 3,
+  max(abs(surv_cmp$difference)) < 0.10,
+  # Glucose percentiles among undiagnosed subjects (Figure 4a). Over the
+  # same runs the medians across visits of the 5th, 50th and 95th
+  # percentiles were 62-73, 119-132 and 191-213 mg/dL.
+  nrow(vpc_tab) == length(visits),
+  dplyr::between(stats::median(vpc_tab$p50), 100, 150),
+  dplyr::between(stats::median(vpc_tab$p05), 50, 90),
+  dplyr::between(stats::median(vpc_tab$p95), 165, 245)
+)
+```
+
+# Survival by baseline covariate (Figure 5)
+
+Figure 5 of Morales 2023 shows the predicted survival of virtual cohorts in
+which only one baseline characteristic differs. The paper does not describe
+the other covariates of those cohorts; here each scenario takes the virtual
+cohort above and sets the one covariate for every subject. Each scenario is
+solved with the same seed, so the subjects carry the same random effects in
+every scenario and the differences between scenarios come from the covariate
+alone.
+
+```{r fig5-sim}
+scenarios <- list(
+  list(panel = "GADA", var = "GADA_POS", value = 0, label = "Absent"),
+  list(panel = "GADA", var = "GADA_POS", value = 1, label = "Present"),
+  list(panel = "IA-2A", var = "IA2A_POS", value = 0, label = "Absent"),
+  list(panel = "IA-2A", var = "IA2A_POS", value = 1, label = "Present"),
+  list(panel = "HbA1c", var = "HBA1C", value = 4, label = "4"),
+  list(panel = "HbA1c", var = "HBA1C", value = 4.5, label = "4.5"),
+  list(panel = "HbA1c", var = "HBA1C", value = 5.5, label = "5.5"),
+  list(panel = "HbA1c", var = "HBA1C", value = 6.5, label = "6.5")
+)
+fig5_grid <- seq(0, 6, by = 0.1)
+
+run_scenario <- function(sc) {
+  dat <- cohort
+  dat[[sc$var]] <- sc$value
+  ev <- merge(dat, data.frame(time = fig5_grid)) |>
+    arrange(id, time) |>
+    mutate(evid = 0, cmt = "cumhaz")
+  rxode2::rxSetSeed(20230503)
+  as.data.frame(rxode2::rxSolve(mod, ev)) |>
+    group_by(time) |>
+    summarise(sur = mean(sur), .groups = "drop") |>
+    mutate(panel = sc$panel, level = sc$label)
+}
+fig5_sim <- bind_rows(lapply(scenarios, run_scenario))
+
+# The GADA panel again, with IA-2A negative and the continuous covariates
+# at their centring values instead of drawn from the cohort.
+cohort_ref <- cohort |>
+  mutate(
+    IA2A_POS = 0,
+    HBA1C = 5.10576,
+    FPG = 88.0112,
+    OGTT_GLU_RATIO_BL = 1.25818
+  )
+gada_ref <- vapply(
+  0:1,
+  function(g) {
+    ev <- merge(mutate(cohort_ref, GADA_POS = g), data.frame(time = c(0, 6))) |>
+      arrange(id, time) |>
+      mutate(evid = 0, cmt = "cumhaz")
+    rxode2::rxSetSeed(20230503)
+    s <- as.data.frame(rxode2::rxSolve(mod, ev))
+    mean(s$sur[s$time == 6])
+  },
+  numeric(1)
+)
+```
+
+```{r fig5-plot, fig.height = 7, fig.cap = "Replicates Figure 5 of Morales 2023: simulated proportion free of type 1 diabetes by GADA status, IA-2A status and HbA1c at the derived baseline. Crosses mark the digitised 6-year values of the published curves."}
+# Six-year values of the Figure 5 curves, digitised by the maintainers.
+fig5_pub <- data.frame(
+  panel = c("GADA", "GADA", "IA-2A", "IA-2A", "HbA1c", "HbA1c", "HbA1c", "HbA1c"),
+  level = c("Absent", "Present", "Absent", "Present", "4", "4.5", "5.5", "6.5"),
+  published = c(0.55, 0.73, 0.57, 0.45, 0.82, 0.68, 0.36, 0.18)
+)
+ggplot(fig5_sim, aes(time, sur, colour = level)) +
+  geom_line() +
+  geom_point(
+    data = fig5_pub,
+    aes(x = 6, y = published, colour = level),
+    shape = 4,
+    size = 3
+  ) +
+  facet_wrap(~panel, ncol = 1) +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    x = "Time from derived baseline (years)",
+    y = "Proportion free of type 1 diabetes",
+    colour = NULL
+  ) +
+  theme_bw()
+```
+
+```{r fig5-table}
+fig5_cmp <- fig5_sim |>
+  filter(abs(time - 6) < 1e-8) |>
+  select(panel, level, simulated = sur) |>
+  left_join(fig5_pub, by = c("panel", "level")) |>
+  mutate(
+    difference = simulated - published,
+    deviation = panel == "GADA"
+  )
+stopifnot(nrow(fig5_cmp) == nrow(fig5_pub))
+
+fig5_cmp |>
+  rename(
+    "Covariate" = panel,
+    "Level" = level,
+    "Simulated S(6 y)" = simulated,
+    "Published S(6 y)" = published,
+    "Difference" = difference,
+    "Documented deviation" = deviation
+  ) |>
+  knitr::kable(digits = 3)
+
+s6 <- function(p, l) fig5_cmp$simulated[fig5_cmp$panel == p & fig5_cmp$level == l]
+gated <- fig5_cmp[!fig5_cmp$deviation, ]
+stopifnot(
+  # Directions: with common random effects each covariate shifts every
+  # subject's glucose curve, and so every survival curve, the same way.
+  s6("GADA", "Present") > s6("GADA", "Absent"),
+  s6("IA-2A", "Present") < s6("IA-2A", "Absent"),
+  s6("HbA1c", "4") > s6("HbA1c", "4.5"),
+  s6("HbA1c", "4.5") > s6("HbA1c", "5.5"),
+  s6("HbA1c", "5.5") > s6("HbA1c", "6.5"),
+  # Magnitudes for the IA-2A and HbA1c panels. Over five seeds at 1-8
+  # solver threads the absolute differences were at most 0.085 and their
+  # median at most 0.05.
+  nrow(gated) == 6,
+  stats::median(abs(gated$difference)) < 0.10,
+  max(abs(gated$difference)) < 0.18,
+  # GADA panel with reference covariates: still ordered by GADA status.
+  gada_ref[2] > gada_ref[1]
+)
+```
+
+The IA-2A and HbA1c panels are reproduced at six years to within
+`r round(max(abs(gated$difference)), 2)` (see the table). The GADA panel is
+reproduced in direction but not in level: with the other covariates drawn
+from the Table 1 cohort, six-year survival is
+`r round(s6("GADA", "Absent"), 2)` (absent) and
+`r round(s6("GADA", "Present"), 2)` (present), compared with 0.55 and 0.73 in
+Figure 5a. Holding IA-2A negative and the continuous covariates at their
+centring values gives `r round(gada_ref[1], 2)` and
+`r round(gada_ref[2], 2)`, closer to the figure, which suggests that the
+Figure 5a cohort had a lower-risk covariate mix than the full analysis
+cohort. The paper does not describe that cohort, so the panel is listed as a
+deviation and gated on direction only.
+
+# Why there is no NCA
+
+The model has no drug input: it describes the natural history of
+dysglycemia and progression to clinical type 1 diabetes, so there is no
+exposure for PKNCA to summarise. Validation uses the deterministic checks of
+the model equations above and comparison with the published visual
+predictive check and covariate-scenario figures.
+
+# Assumptions and deviations
+
+* **Parameter values: Table 2, with the correlations from the supplement.**
+  The main-text Table 2 ('Final parameter estimates of the joint model') and
+  the `<PARAMETER>` block of the Supplementary S2 Monolix project disagree on
+  every value, and only S2 contains the inter-individual correlations. The
+  model carries the Table 2 fixed effects, SDs and residual error, and the
+  three correlations from S2 (the Table 2 SDs with the S2 correlations give
+  a positive-definite matrix). Both sets give nearly the same typical
+  GLU120 curve. The S2 values, for reference:
+
+  | Parameter | Table 2 (used) | Supplementary S2 |
+  |---|---|---|
+  | DP50 (year) | 6.09 | 7.661 |
+  | DPmax (mg/dL) | 208.72 | 285.44 |
+  | gamma | 1.75 | 2.228 |
+  | DP0 (mg/dL) | 107.31 | 107.85 |
+  | Te (year) | 91.81 | 85.09 |
+  | p | 1.20 | 1.225 |
+  | beta_Te | 6.13 | 6.028 |
+  | GADA on DPmax | -0.73 | -0.676 |
+  | HbA1c on DPmax | 8.92 | 8.859 |
+  | IA-2A on DP50 | -0.71 | -0.724 |
+  | GLU0 on DP0 | 0.88 | 0.866 |
+  | GLU ratio on DP0 | 0.79 | 0.785 |
+  | SD DP50 / DPmax / gamma / DP0 | 0.72 / 1.69 / 1.76 / 0.043 | 0.857 / 1.428 / 1.531 / 0.0476 |
+  | Proportional residual | 0.16 | 0.1643 |
+  | r(DP0, DPmax) / r(gamma, DPmax) / r(gamma, DP0) | not reported | 0.849 / 0.728 / 0.371 |
+
+* **Covariate centring values** are the weighted means printed in the S2
+  `[COVARIATE]` block (HbA1c 5.10576%, GLU0 88.0112 mg/dL, ratio 1.25818),
+  not the Table 1 means; these are the values the final model used.
+* **Branched sigmoid.** The sigmoid fraction is evaluated in the two
+  branches of Supplementary S3 (`(t/DP50)^gamma` below DP50,
+  `(DP50/t)^gamma` above it). The result is identical to Eq. 1, but it
+  avoids `Inf / Inf` for the large individual gamma values that an SD of
+  1.76 on the log scale produces.
+* **Hazard at time zero.** Supplementary S3 sets the hazard to 0 for
+  t < 0.001 year. With p = 1.20 the Weibull hazard is already 0 at t = 0
+  and negligible over that interval, so the guard is not reproduced.
+* **TTE output.** The model provides the cumulative hazard and survival
+  probability as outputs for simulation; no time-to-event likelihood is
+  attached, so a refit of the event data would add one.
+* **Virtual cohort.** The covariates are drawn independently from the
+  Table 1 summaries; the correlations between them (for example between
+  fasting glucose and the 2-h / fasting ratio) are not reported. The
+  simulated survival nonetheless follows the published prediction closely.
+* **Figure values** were digitised by the maintainers from Figures 4b and 5
+  and are accurate to about 0.02.
+* **Covariates screened but not retained** (age, BMI, sex, autoantibody
+  counts and combinations, C-peptide measures, HLA risk, first-degree
+  relative) are not in the model; age, BMI and sex are recorded in
+  `covariatesDataExcluded`.

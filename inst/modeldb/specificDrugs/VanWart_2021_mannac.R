@@ -46,9 +46,11 @@ VanWart_2021_mannac <- function() {
         "Amount of a single administration, not the daily total: a 4 g TID subject carries 4000.",
         "Enters relative bioavailability as the power term (DOSE_MANNAC_MG / 6000)^e_dose_fdepot,",
         "reproducing the control stream line 'IF(DOSEMG.GT.0)F1=1*(DOSEMG/6000)**THETA(11)'",
-        "(Online Resource 6). Rows with DOSE_MANNAC_MG = 0 (observation-only rows) leave F at 1,",
-        "as in the stream; F only acts on dose rows, so set the column to the dose amount on every",
-        "dose row. Studied doses 3, 4, 6 and 10 g."
+        "(Online Resource 6). DOSE_MANNAC_MG = 0 leaves F at 1, as in the stream. rxode2 evaluates",
+        "F for a dose moved by the absorption lag with the covariates in force when it arrives",
+        "(unless rxSolve(addlKeepsCov = TRUE)), so carry the dose amount on every record from a dose",
+        "to the next one, observation rows included; a 0 between a dose and its arrival gives that",
+        "dose F = 1. Studied doses 3, 4, 6 and 10 g."
       ),
       source_name = "DOSEMG"
     ),
