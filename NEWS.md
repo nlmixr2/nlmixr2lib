@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Krippendorff 2012 zalutumumab cell-level PK/PD QSP ([doi:10.1007/s10928-012-9243-7](https://doi.org/10.1007/s10928-012-9243-7)) -- cynomolgus monkeys (EGFR trafficking in normal and tumour cells).
+- Add Kozielska 2012 risperidone and paliperidone D2 / 5-HT2A receptor occupancy ([doi:10.1007/s11095-012-0722-8](https://doi.org/10.1007/s11095-012-0722-8)) -- male Sprague-Dawley and Wistar rats.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
