@@ -1,0 +1,507 @@
+---
+title: "Atogepant monthly migraine days exposure-response (Schlachter 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Atogepant monthly migraine days exposure-response (Schlachter 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Schlachter_2026b_atogepant"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Schlachter_2026b_atogepant"))$description`
+* Article: <https://doi.org/10.1002/psp4.70154> (open access; Data S1 holds the
+  NONMEM control stream)
+
+This is the exposure-response companion of the atogepant population PK model
+`Schlachter_2026_atogepant` (Clin Pharmacokinet 2026), which supplied the
+individual steady-state trough concentrations this model takes as input. The
+two papers share a first author, year and drug, so this one is filed as
+`Schlachter_2026b_atogepant`.
+
+# Population
+
+The analysis pooled 2544 adults with migraine from four randomised,
+placebo-controlled 12-week trials (Schlachter 2026 Table 1): the phase 2b/3
+episodic-migraine (EM) dose-ranging study (N = 795), the phase 3 EM study
+ADVANCE (N = 873), the phase 3 chronic-migraine (CM) study PROGRESS (N = 596)
+and the phase 3 EM study ELEVATE (N = 280), whose patients had all failed two
+to four classes of conventional oral migraine preventive treatments. 1948
+patients (76%) had EM and 596 (23%) CM. Age was 18-74 years (median 41),
+body weight 35.8-226 kg (median 76.2), 88% were female, and 78% White, 12%
+Black and 8% Asian (31% of the CM study). Baseline monthly migraine days (MMD)
+had a median of 9.00 (range 3.23-28.0). Treatment arms were placebo (792),
+atogepant 10 mg QD (306), 30 mg QD (405), 60 mg QD (703), 30 mg BID (251) and
+60 mg BID (87).
+
+The same information is available programmatically:
+
+```{r population}
+str(readModelDb("Schlachter_2026b_atogepant")()$population)
+```
+
+# Model structure
+
+With `C` the individual steady-state atogepant trough concentration (nM) and
+`BSL` the individual baseline MMD (Data S1 `$PRED`):
+
+* combined effect on a shifted-logit scale:
+  `eff = pbo + eta_pbo + cov` in placebo patients and
+  `eff = pbo + (emax + b_emax (BSL - 9) + eta_emax) C / (C + EC50) + cov` in
+  atogepant patients, with `cov` the additive failed-treatment and Asian-race
+  shifts;
+* back-transform to a shift in (-1, 1): `E1 = 2 exp(eff) / (1 + exp(eff)) - 1`;
+* time to half effect: `T50 = theta exp(b_t50 (BSL - 9) + b_fail FAIL)`;
+* prediction: `MMD(t) = BSL (1 - E1 (1 - exp(-t log(2) / T50)))`, with time in
+  months;
+* additive normal residual error with a separate variance for EM and CM.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `ec50` | 0.412 nM | Table 4 'Atogepant Cmin EC50'; Data S1 THETA(1) |
+| `pbo` | 0.852 | Table 4 'Placebo effect'; Data S1 THETA(2) |
+| `lt50` | log(0.407 month) | Table 4 'TEF50 (month)'; Data S1 THETA(3) |
+| `emax` | 0.665 | Table 4 'Atogepant Cmin Emax'; Data S1 THETA(4) |
+| `e_migraine_days_bl_emax` | -0.0166 per day/month | Table 4 'Baseline MMD on atogepant Emax'; Data S1 THETA(5) |
+| `e_migraine_oral_preventive_ir_eff` | -0.410 | Table 4 'Previously failed treatments on combined placebo & atogepant effect'; Data S1 THETA(6) |
+| `e_migraine_days_bl_t50` | log(1.02) per day/month | Table 4 'Baseline MMD on TEF50' (printed as exp(THETA(7))) |
+| `e_migraine_oral_preventive_ir_t50` | log(0.628) | Table 4 'Previously failed treatments on TEF50' (printed as exp(THETA(8))) |
+| `e_race_asian_eff` | -0.326 | Table 4 'Asian race on combined placebo & atogepant effect'; Data S1 THETA(9) |
+| `etapbo` | 0.793 (variance) | Table 4 'IIV on placebo effect' (110 %CV) |
+| `etaemax` | 1.67 (variance) | Table 4 'IIV on atogepant Emax' (208 %CV) |
+| `addSdEpisodic` | sqrt(3.34) days/month | Table 4 'Additive error episodic (days2)' |
+| `addSdChronic` | sqrt(7.98) days/month | Table 4 'Additive error chronic (days2)' |
+| Combined effect, back-transform, time course | n/a | Methods 2.2.1 equations; Data S1 `$PRED` |
+| Placebo-only branch with `ETA(1)` | n/a | Data S1 `IF (TRT .EQ. 0) EFF = LGPEFF + ETA(1) + EFFCOV` |
+| Centring of baseline MMD at 9.00 | n/a | Data S1 `BSL - 9.00`; Table 1 pooled median |
+| Compression of simulated MMD into 0-28 | n/a | Methods 2.2.2 'Normal' |
+
+Two Table 4 rows are printed on the exponentiated scale. For 'Previously
+failed treatments on TEF50' the 95% CI (0.513, 0.768) is symmetric about
+log(0.628) on the log scale, and the Data S1 initial estimates (0.02 and -0.4
+for THETA(7) and THETA(8)) are on the log scale, so both rows are
+`exp(theta)` and are encoded here as `log(1.02)` and `log(0.628)`.
+
+# Closed-form checks
+
+The model is algebraic (no ODEs), so the typical-value prediction can be
+checked against the published equations evaluated by hand with the same
+parameter values. Both sides use identical inputs, so the bound is tight.
+
+```{r closed-form}
+mod <- readModelDb("Schlachter_2026b_atogepant")()
+# Zero the between-subject variances. The residual SDs are ini() thetas, not
+# sigmas, so there is nothing to zero there; `migraine_days` is the
+# prediction without residual error either way.
+mod_typ <- rxode2::zeroRe(mod, "omega")
+
+# A solve with every omega at zero warns that a multi-subject simulation has
+# no omega; that expected warning is muffled and any other still surfaces.
+solve_typical <- function(...) {
+  withCallingHandlers(
+    as.data.frame(rxode2::rxSolve(mod_typ, ..., returnType = "data.frame")),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w))) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+grid <- tidyr::expand_grid(
+  MIGRAINE_DAYS_BL = c(4, 9, 19, 28),
+  CTROUGH = c(0, 4.34, 28.9, 167),
+  MIGRAINE_ORAL_PREVENTIVE_IR = c(0, 1),
+  RACE_ASIAN = c(0, 1),
+  time = c(0, 0.5, 1, 3)
+) |>
+  mutate(
+    PLACEBO = as.integer(CTROUGH == 0),
+    DIS_MIGRAINE_CHRONIC = as.integer(MIGRAINE_DAYS_BL >= 15),
+    id = dplyr::row_number(),
+    evid = 0L,
+    amt = 0
+  )
+
+typ <- solve_typical(events = grid)
+
+hand <- grid |>
+  mutate(
+    bl_c = MIGRAINE_DAYS_BL - 9,
+    eff = 0.852 +
+      (1 - PLACEBO) * (0.665 - 0.0166 * bl_c) * CTROUGH / (CTROUGH + 0.412) -
+      0.410 * MIGRAINE_ORAL_PREVENTIVE_IR - 0.326 * RACE_ASIAN,
+    e1 = 2 * exp(eff) / (1 + exp(eff)) - 1,
+    t50 = 0.407 * 1.02^bl_c * 0.628^MIGRAINE_ORAL_PREVENTIVE_IR,
+    mmd = MIGRAINE_DAYS_BL * (1 - e1 * (1 - exp(-time * log(2) / t50)))
+  )
+
+stopifnot(nrow(typ) == nrow(hand))
+max_abs_diff <- max(abs(typ$migraine_days - hand$mmd))
+max_abs_diff
+stopifnot(max_abs_diff < 1e-8)
+
+# At time 0 the prediction is the individual baseline exactly.
+stopifnot(all(abs(typ$migraine_days[grid$time == 0] -
+  grid$MIGRAINE_DAYS_BL[grid$time == 0]) < 1e-10))
+```
+
+The abstract and Discussion quote a model-based trough EC90 of 3.71 nM. For a
+hyperbolic Emax the EC90 is 9 x EC50:
+
+```{r ec90}
+ec90 <- 9 * 0.412
+ec90
+stopifnot(abs(ec90 - 3.71) < 0.005)
+```
+
+# Replication of Figure S2: MMD at Week 9-12 versus trough concentration
+
+Figure S2 plots the predicted MMD at Week 9-12 against the atogepant trough,
+for the mean EM and the mean CM baseline, with failed treatments and Asian race
+set to "no". The mean EM baseline is the patient-weighted mean of the three EM
+studies in Table 1; the CM mean is the PROGRESS mean.
+
+```{r figS2}
+bsl_em <- (795 * 7.67 + 873 * 7.65 + 280 * 9.14) / 1948
+bsl_cm <- 19.0
+
+conc_grid <- c(0, seq(0.05, 1, by = 0.05), seq(1.5, 100, by = 0.5))
+s2_events <- tidyr::expand_grid(
+  population = c("Episodic migraine", "Chronic migraine"),
+  CTROUGH = conc_grid
+) |>
+  mutate(
+    MIGRAINE_DAYS_BL = ifelse(population == "Episodic migraine", bsl_em, bsl_cm),
+    DIS_MIGRAINE_CHRONIC = as.integer(population == "Chronic migraine"),
+    PLACEBO = 0L,
+    MIGRAINE_ORAL_PREVENTIVE_IR = 0L,
+    RACE_ASIAN = 0L,
+    id = dplyr::row_number(),
+    time = 3,
+    evid = 0L,
+    amt = 0
+  )
+
+s2 <- solve_typical(events = s2_events, keep = c("population", "CTROUGH"))
+
+ggplot(s2, aes(CTROUGH, migraine_days)) +
+  geom_line(linewidth = 1) +
+  geom_vline(xintercept = ec90, linetype = "dashed") +
+  facet_wrap(~ factor(population, c("Episodic migraine", "Chronic migraine")),
+    scales = "free_y"
+  ) +
+  labs(
+    x = "Steady-state atogepant trough concentration (nM)",
+    y = "Monthly migraine days at Week 9-12",
+    caption = "Replicates the median line of Figure S2 of Schlachter 2026; dashed line = EC90."
+  ) +
+  theme_bw()
+```
+
+The published curve was digitised by the maintainers from the 400-dpi
+rendering of the supplement, locating the axis ticks and the line centre by
+pixel colour (reading resolution about 0.02 MMD for EM and 0.07 MMD for CM).
+
+```{r figS2-compare}
+s2_ref <- tibble::tribble(
+  ~population, ~CTROUGH, ~published,
+  "Episodic migraine", 0, 4.69,
+  "Episodic migraine", 50, 2.85,
+  "Chronic migraine", 0, 11.5,
+  "Chronic migraine", 50, 8.47
+)
+
+s2_cmp <- s2_ref |>
+  left_join(s2 |> select(population, CTROUGH, migraine_days),
+    by = c("population", "CTROUGH")
+  ) |>
+  mutate(pct_diff = 100 * (migraine_days - published) / published)
+
+s2_cmp |>
+  mutate(migraine_days = round(migraine_days, 2), pct_diff = round(pct_diff, 1)) |>
+  rename(
+    "Population" = population,
+    "Trough (nM)" = CTROUGH,
+    "Figure S2 (digitised)" = published,
+    "Model, typical value" = migraine_days,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable()
+
+# The two placebo-level points and the EM plateau are gated; the CM plateau is
+# a known deviation (see Assumptions and deviations) and is reported only.
+gated <- s2_cmp |>
+  filter(!(population == "Chronic migraine" & CTROUGH == 50))
+stopifnot(all(abs(gated$pct_diff) < 3))
+```
+
+The curve plateaus within a few nM of zero, as the paper reports: the trough
+of most 10 mg QD patients (Table 2 median 4.34 nM) already exceeds the
+3.71 nM EC90. The placebo-level intercepts and the EM plateau agree with the
+figure to within 1%. The CM plateau is about 5% below the figure; see
+Assumptions and deviations.
+
+# Virtual cohort
+
+Observed data are not public. The cohort below mirrors the arms of Figure 3 of
+the paper, capped at 200 patients per arm. Within each arm:
+
+* the baseline MMD is drawn from a normal distribution with the Table 1 mean
+  and SD of the contributing studies, truncated to the Table 1 range;
+* the trough concentration is drawn from a log-normal distribution whose
+  median and 5th-95th percentile span match Table 2 for that regimen (0 for
+  placebo);
+* in EM placebo and EM 60 mg QD arms, a share of patients equal to the
+  ELEVATE share of that arm in Table 1 are failed-treatment patients, with the
+  ELEVATE baseline distribution;
+* Asian race is drawn at the Table 1 rate of the contributing studies (1.2% for
+  phase 2b/3 + ADVANCE, 1.4% for ELEVATE, 30.5% for PROGRESS).
+
+```{r cohort}
+set.seed(20261120)
+rxode2::rxSetSeed(20261120)
+
+# Table 2: median (5th, 95th percentile) steady-state trough, nM.
+cmin_tab <- tibble::tribble(
+  ~arm, ~med, ~p05, ~p95,
+  "Placebo", 0, 0, 0,
+  "10 mg QD", 4.34, 1.94, 10.2,
+  "30 mg QD", 14.7, 7.32, 34.3,
+  "60 mg QD", 28.9, 10.2, 67.0,
+  "30 mg BID", 72.9, 33.1, 236,
+  "60 mg BID", 167, 69.4, 480
+)
+
+# Table 1 arm sizes; n_fail = ELEVATE patients in that EM arm.
+arms <- tibble::tribble(
+  ~indication, ~arm, ~n_table1, ~n_fail,
+  "Episodic migraine", "Placebo", 178 + 214 + 154, 154,
+  "Episodic migraine", "10 mg QD", 92 + 214, 0,
+  "Episodic migraine", "30 mg QD", 182 + 223, 0,
+  "Episodic migraine", "60 mg QD", 177 + 222 + 126, 126,
+  "Episodic migraine", "30 mg BID", 79, 0,
+  "Episodic migraine", "60 mg BID", 87, 0,
+  "Chronic migraine", "Placebo", 246, 0,
+  "Chronic migraine", "60 mg QD", 178, 0,
+  "Chronic migraine", "30 mg BID", 172, 0
+) |>
+  mutate(n = pmin(n_table1, 200L))
+
+rtnorm <- function(n, mean, sd, lo, hi) {
+  qnorm(runif(n, pnorm(lo, mean, sd), pnorm(hi, mean, sd)), mean, sd)
+}
+
+make_arm <- function(indication, arm, n, n_table1, n_fail, id_offset) {
+  cm <- indication == "Chronic migraine"
+  fail <- rbinom(n, 1, n_fail / n_table1)
+  bsl <- if (cm) {
+    rtnorm(n, 19.0, 4.96, 8, 28)
+  } else {
+    ifelse(fail == 1,
+      rtnorm(n, 9.14, 2.37, 4, 14),
+      rtnorm(n, 7.66, 2.43, 3.23, 16.2)
+    )
+  }
+  asian_p <- if (cm) 182 / 596 else ifelse(fail == 1, 4 / 280, 20 / 1668)
+  ct <- cmin_tab[cmin_tab$arm == arm, ]
+  cmin <- if (ct$med == 0) {
+    rep(0, n)
+  } else {
+    exp(rnorm(n, log(ct$med), (log(ct$p95) - log(ct$p05)) / (2 * qnorm(0.95))))
+  }
+  tibble::tibble(
+    id = id_offset + seq_len(n),
+    indication = indication,
+    arm = arm,
+    MIGRAINE_DAYS_BL = bsl,
+    DIS_MIGRAINE_CHRONIC = as.integer(cm),
+    MIGRAINE_ORAL_PREVENTIVE_IR = fail,
+    RACE_ASIAN = rbinom(n, 1, asian_p),
+    CTROUGH = cmin,
+    PLACEBO = as.integer(arm == "Placebo")
+  )
+}
+
+arm_args <- dplyr::mutate(arms, id_offset = cumsum(c(0L, head(n, -1L))))
+subjects <- dplyr::bind_rows(Map(
+  make_arm,
+  arm_args$indication, arm_args$arm, arm_args$n,
+  arm_args$n_table1, arm_args$n_fail, arm_args$id_offset
+))
+stopifnot(!anyDuplicated(subjects$id), all(table(subjects$id) == 1))
+
+# Observations at baseline and at Weeks 1-4, 5-8 and 9-12 (months 1, 2, 3).
+events <- subjects |>
+  tidyr::crossing(time = 0:3) |>
+  mutate(evid = 0L, amt = 0) |>
+  arrange(id, time)
+
+subjects |>
+  group_by(indication, arm) |>
+  summarise(
+    n = dplyr::n(),
+    `baseline MMD (median)` = round(median(MIGRAINE_DAYS_BL), 2),
+    `trough nM (median)` = round(median(CTROUGH), 1),
+    `failed treatments (%)` = round(100 * mean(MIGRAINE_ORAL_PREVENTIVE_IR)),
+    `Asian (%)` = round(100 * mean(RACE_ASIAN)),
+    .groups = "drop"
+  ) |>
+  knitr::kable()
+```
+
+# Simulation and replication of Figure 3
+
+The simulated observation is compressed as in the paper (Methods 2.2.2): values
+below 0 become 0 and above 28 become 28, and at baseline EM values are held to
+4-14 and CM values to at least 8.
+
+```{r simulate}
+sim <- as.data.frame(rxode2::rxSolve(mod,
+  events = events,
+  keep = c("indication", "arm", "MIGRAINE_DAYS_BL", "DIS_MIGRAINE_CHRONIC"),
+  returnType = "data.frame"
+)) |>
+  mutate(
+    mmd = pmin(pmax(sim, 0), 28),
+    mmd = dplyr::case_when(
+      time == 0 & DIS_MIGRAINE_CHRONIC == 0 ~ pmin(pmax(mmd, 4), 14),
+      time == 0 & DIS_MIGRAINE_CHRONIC == 1 ~ pmax(mmd, 8),
+      TRUE ~ mmd
+    ),
+    cfb = mmd - MIGRAINE_DAYS_BL,
+    arm = factor(arm, cmin_tab$arm),
+    indication = factor(indication, c("Episodic migraine", "Chronic migraine")),
+    visit = factor(time, 0:3, c("Baseline", "Week 1-4", "Week 5-8", "Week 9-12"))
+  )
+
+vpc <- sim |>
+  group_by(indication, arm, visit) |>
+  summarise(
+    p05 = quantile(mmd, 0.05), p50 = median(mmd), p95 = quantile(mmd, 0.95),
+    c05 = quantile(cfb, 0.05), c50 = median(cfb), c95 = quantile(cfb, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(vpc, aes(visit, p50, group = 1)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25, fill = "steelblue") +
+  geom_line(linewidth = 1) +
+  facet_grid(indication ~ arm) +
+  scale_y_continuous(limits = c(0, 28), breaks = seq(0, 28, 7)) +
+  labs(
+    x = NULL, y = "Monthly migraine days",
+    caption = "Replicates Figure 3A of Schlachter 2026 (simulated median and 5th-95th percentiles)."
+  ) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+
+ggplot(vpc, aes(visit, c50, group = 1)) +
+  geom_ribbon(aes(ymin = c05, ymax = c95), alpha = 0.25, fill = "steelblue") +
+  geom_line(linewidth = 1) +
+  facet_grid(indication ~ arm) +
+  labs(
+    x = NULL, y = "Change from baseline in monthly migraine days",
+    caption = "Replicates Figure 3B of Schlachter 2026 (simulated median and 5th-95th percentiles)."
+  ) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+```
+
+The simulated medians follow the shape of the published VPC: most of the
+reduction arrives by Weeks 1-4 (the typical T50 is 0.41 month at 9 baseline
+MMD). In Figure 3A the Week 9-12 medians are roughly 3 MMD in the active EM
+arms against about 4.5-5 on placebo, and roughly 8.5-10 in the active CM arms
+against about 12.5 on placebo. The table below gives the simulated values. The
+EM arms and the active CM arms land in the same range. The CM placebo median
+comes out about one MMD higher than in the figure. This virtual cohort
+reconstructs baseline, race and trough distributions from summary tables, so
+it is not the trial dataset.
+
+```{r week12-table}
+sim |>
+  filter(time == 3) |>
+  group_by(indication, arm) |>
+  summarise(
+    `median MMD` = round(median(mmd), 2),
+    `median change from baseline` = round(median(cfb), 2),
+    .groups = "drop"
+  ) |>
+  rename("Indication" = indication, "Arm" = arm) |>
+  knitr::kable()
+```
+
+# Why no PKNCA section
+
+This is an exposure-response model with no dosing and no concentration time
+course: the atogepant exposure enters as a per-patient steady-state trough
+supplied as data. Non-compartmental analysis does not apply, so validation uses
+the closed-form check, the EC90 identity and the replication of Figures S2 and
+3 above. To drive the model from doses instead, simulate steady-state troughs
+with `modellib("Schlachter_2026_atogepant")` and convert ng/mL to nM with the
+atogepant molar mass of 603.5 g/mol.
+
+# Assumptions and deviations
+
+- **Direction of the failed-treatment effect on T50.** Table 4 prints the
+  failed-treatment effect on TEF50 as 0.628 (95% CI 0.513-0.768), a
+  multiplier below 1, so failed-treatment patients reach half the combined
+  effect sooner; Table S2 (the M3-like sensitivity fit) gives 0.673, also below
+  1. The Discussion and Abstract instead say that these patients have a longer
+  time to half effect. The maintainers encoded the tabulated value (Table 4,
+  Table S2 and the Data S1 code all agree); the baseline-MMD half of the same
+  sentence agrees with the table.
+- **Exponentiated table rows.** 'Baseline MMD on TEF50' (1.02) and
+  'Previously failed treatments on TEF50' (0.628) are read as `exp(theta)`
+  because their confidence intervals are symmetric on the log scale and the
+  Data S1 initial estimates are on the log scale. The 1.02 value is printed to
+  two decimals, so the per-day effect on T50 carries a rounding uncertainty of
+  about +/-0.5% per baseline migraine day.
+- **Compression is post-processing.** The final model was estimated with the
+  compressed normal distribution: a plain normal likelihood with predictions
+  outside 0-28 (and baseline values outside the EM 4-14 and CM >= 8 ranges)
+  set to the boundary. The model file therefore returns the unclamped normal
+  simulation; the clamp is applied in this article.
+- **Figure S2 CM plateau.** The model's typical prediction for a CM patient at
+  19 baseline MMD on a high trough is 8.0 MMD at Week 9-12, while the
+  digitised Figure S2 curve sits at about 8.5. The EM curve and both
+  zero-concentration intercepts agree within 2%, and no reading of the visit
+  time or baseline value reproduces all four points at once. The source does
+  not say how the median line was summarised beyond "the means of the
+  population predicted MMD" over 10,000 parameter-uncertainty draws, which
+  is the likely origin of the gap. The model parameters were not adjusted.
+- **Placebo random effect only in placebo patients.** Following Data S1, the
+  placebo-effect random effect applies only to placebo patients and the Emax
+  random effect only to atogepant patients.
+- **Table 4 %CV column.** Table 4 reports the IIV as `sqrt(exp(omega^2) - 1)`,
+  a log-normal convention, although both random effects are additive on the
+  shifted-logit scale (Data S1 `; ETA(1): add`). The variances 0.793 and 1.67
+  are used as printed.
+- **Residual error.** Table 4 gives the additive residual variances in days^2
+  (3.34 EM, 7.98 CM); the model uses their square roots as standard
+  deviations.
+- **Visit times.** Observations are placed at months 0, 1, 2 and 3 for
+  baseline and Weeks 1-4, 5-8 and 9-12, matching the time axis of Figure 3
+  and the month unit of TEF50.
+- **Confounding of the failed-treatment covariate.** All 280 failed-treatment
+  patients came from ELEVATE and no other study enrolled any (Table 1), so
+  the covariate cannot be separated from a study effect.
+- **Virtual cohort.** Baseline MMD and trough distributions are reconstructed
+  from Table 1 summaries and Table 2 percentiles (normal and log-normal shapes
+  assumed). Trough concentrations are drawn independently of baseline MMD.
+- **Covariates screened and not retained.** Prior preventive migraine
+  medication (removed in backward elimination at p = 0.00223), body weight,
+  sex and age are listed in `covariatesDataExcluded` of the model.
+- **Literature check.** No erratum or correction notice for the paper was found
+  as of 2026-11-20.

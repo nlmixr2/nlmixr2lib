@@ -2883,7 +2883,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Monthly migraine-day count PD output.
 - **Source aliases:** none.
-- **Example models:** `FiedlerKelly_2020_fremanezumab_cm.R` (and its sibling `FiedlerKelly_2020_fremanezumab_em.R`).
+- **Example models:** `FiedlerKelly_2020_fremanezumab_cm.R` (and its sibling `FiedlerKelly_2020_fremanezumab_em.R`), `Schlachter_2026b_atogepant.R` (episodic and chronic migraine in one model; additive normal residual error, simulated values compressed into 0-28 days/month).
 
 ### hae_attacks (**canonical per-4-week hereditary-angioedema attack-count PD output**)
 - **Type:** compartment

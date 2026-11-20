@@ -686,6 +686,8 @@ navbar:
         href: articles/Chan_2025_atezolizumab_sc_nsclc.html
       - text: "Atogepant (Schlachter 2026)"
         href: articles/Schlachter_2026_atogepant.html
+      - text: "Atogepant (Schlachter 2026b)"
+        href: articles/Schlachter_2026b_atogepant.html
       - text: "Atomoxetine (Tobin 2026)"
         href: articles/Tobin_2026_atomoxetine.html
       - text: "Atorvastatin (Kakara 2014)"
@@ -11614,6 +11616,7 @@ articles:
   - articles/Schipani_2013_atazanavir_ritonavir
   - articles/Schipani_2016_rifampicin
   - articles/Schlachter_2026_atogepant
+  - articles/Schlachter_2026b_atogepant
   - articles/Schlender_2016_aging_physiology
   - articles/Schmid_2017_nintedanib
   - articles/Schmidt_2009_oxazolidinones
