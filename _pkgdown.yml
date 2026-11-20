@@ -2468,6 +2468,10 @@ navbar:
         href: articles/Gall_2023_intestinal_epithelium_toxicity.html
       - text: "Doxorubicin human qsp (Sang 2021)"
         href: articles/Sang_2021_doxorubicin_cardiotoxicity.html
+      - text: "Doxorubicin liposomal human qsp (Hendriks 2012)"
+        href: articles/Hendriks_2012_doxorubicin_liposomal.html
+      - text: "Doxorubicin liposomal mouse qsp (Hendriks 2012)"
+        href: articles/Hendriks_2012_doxorubicin_liposomal.html
       - text: "Doxorubicin mouse (Choi 2021)"
         href: articles/Choi_2021_doxorubicin_sorafenib_mouse.html
       - text: "Doxorubicin mouse (Gall 2023)"
