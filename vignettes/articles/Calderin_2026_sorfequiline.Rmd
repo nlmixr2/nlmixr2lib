@@ -1,0 +1,472 @@
+---
+title: "Sorfequiline and M3 (Calderin 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sorfequiline and M3 (Calderin 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Two expected rxode2 notes are muffled, and only these two: the
+# occasion-indexed between-occasion etas cannot be mu-referenced (rxode2 says
+# so each time it builds the model), and typical-value solves of several
+# subjects run without omega on purpose.
+quiet_rx <- function(expr) {
+  withCallingHandlers(expr, warning = function(w) {
+    if (grepl("non-mu referenced|without 'omega'", conditionMessage(w))) {
+      invokeRestart("muffleWarning")
+    }
+  })
+}
+mod <- quiet_rx(rxode2::rxode2(readModelDb("Calderin_2026_sorfequiline")))
+mod_typ <- quiet_rx(rxode2::zeroRe(mod))
+```
+
+# Model and source
+
+* Citation: `r mod$reference`
+* Description: `r mod$description`
+* Article: <https://doi.org/10.1002/psp4.70331> (open access; Supporting
+  Information Section S1 holds the NONMEM control stream of the final model)
+
+Sorfequiline (TBAJ-876) is a diarylquinoline in development for
+tuberculosis. Its major metabolite, M3, is pharmacologically active. The model
+describes both analytes jointly, with a fraction of the absorbed dose (FAM)
+appearing directly as M3 to represent first-pass metabolism in the gut wall.
+
+# Population
+
+The model was fitted to `r mod$population$n_subjects`
+healthy adult volunteers pooled from two phase 1 studies run in the United
+States (Calderin 2026 Table 1): CL-001 (NCT04493671; a single-ascending-dose
+part with 10-800 mg oral suspension fasted plus 100 mg fed, n = 55; a
+multiple-ascending-dose part with 25, 75 or 200 mg once daily for 14 days fed,
+n = 27; and a relative-bioavailability part with a 100 mg tablet fed or fasted
+or 4 x 25 mg tablets fasted, n = 30) and CL-002 (NCT05526911; a
+drug-drug-interaction study with 200 mg once daily then 165 mg suspension fed,
+n = 26). Median age was 35 years (19-55), median weight 77 kg (49-153) and
+median fat-free mass 53 kg (33-82); 52% were female, 57% White and 38% Black
+or African American, and 51% Hispanic or Latino. 4638 samples were analysed;
+4.0% of sorfequiline and 17.0% of M3 concentrations were below the 1 ng/mL
+limit of quantification.
+
+The same information is available programmatically via
+`readModelDb("Calderin_2026_sorfequiline")()$population`.
+
+# Source trace
+
+Every value in `ini()` was checked against both Table 2 and the NONMEM control
+stream of Supporting Information Section S1; the two agree for every
+estimate. In-file comments in
+`inst/modeldb/specificDrugs/Calderin_2026_sorfequiline.R` give the same
+locations.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL/F) | log(4.24) L/h | Table 2 'Clearance, CLP'; $THETA 1 |
+| `lvc` (Vc/F) | log(17.1) L | Table 2 'VC,p'; $THETA 2 |
+| `lq`, `lvp` | log(6.64) L/h, log(214) L | Table 2 'Q1,p', 'V2,p'; $THETA 3-4 |
+| `lq2`, `lvp2` | log(10.4) L/h, log(9180) L | Table 2 'Q2,p', 'V3,p'; $THETA 5-6 |
+| `lka` | log(0.127) 1/h | Table 2 'Ka'; $THETA 7 |
+| `lfdepot` | log(1), fixed | Table 2 'Bioavailability, F' 1 Fixed; $THETA 8 |
+| `lmtt` | log(1.13) h | Table 2 'MTT'; $THETA 9 |
+| `lcl_m3`, `lvc_m3` | log(38.4) L/h, log(3330) L | Table 2 'CLM', 'VC,M'; $THETA 14, 13 |
+| `lq_m3`, `lvp_m3` | log(43.5) L/h, log(6460) L | Table 2 'Q1,M', 'V2,M'; $THETA 16, 15 |
+| `lq2_m3`, `lvp2_m3` | log(192) L/h, log(2870) L | Table 2 'Q2,M', 'V3,M'; $THETA 18, 17 |
+| `logitfm` | logit(0.464) | Table 2 'FAM'; $THETA 23 |
+| `logitfm_fed` | logit(0.157) | Table 2 'FAM in fed individuals'; $THETA 24 |
+| `e_ffm_cl`, `e_ffm_vc` | 0.75, 1 (fixed) | Methods; Table 2 footnote b; `ALLMCL_FFM`, `ALLMV_FFM` |
+| `e_fed_ka` | 0.136 | Table 2 'Food effect on Ka'; $THETA 21 |
+| `e_fed_tablet_mtt` | 1.88 | Table 2 'Food effect on tablet MTT'; $THETA 22 |
+| `e_study_cl002_fdepot` | 0.472 | Table 2 'Change in F in Study CL-002'; $THETA 25 |
+| `e_dose_high_fdepot` | -0.467 | Table 2 'Change in F at doses >= 400 mg'; $THETA 26 |
+| `etalcl + etalcl_m3` | 0.289; 0.147; 0.147 | $OMEGA BLOCK(2); Table 2 BSV 53.8% / 38.3%, correlation 71.3% |
+| `etalogitfm` | 0.429 (logit scale) | $OMEGA 16; Table 2 footnote f |
+| `etaiov_lfdepot_1..3` | 0.282 | $OMEGA 20-22; Table 2 BOV F 53.1% |
+| `etaiov_lka_1..3` | 0.069 | $OMEGA 23-25; Table 2 BOV Ka 26.3% |
+| `etaiov_lmtt_1..3` | 0.236 | $OMEGA 26-28; Table 2 BOV MTT 48.6% |
+| `propSd`, `propSd_m3` | 0.217, 0.165 | Table 2 RUV; $THETA 11, 19 |
+| `addSd`, `addSd_m3` | 0.0002 mg/L (fixed) | Table 2 RUV '2 x 10^-4 Fixed'; $ERROR `THETA(12) + CENS_THR_P * 0.2` |
+| Transit chain, ktr = 3 / MTT | n/a | $MODEL compartments 1-4; $PK `KTR = (NN+1)/MTT`, `NN = THETA(10)` = 2 FIX |
+| Split of ka between parent and M3 | n/a | $PK `K45 = KA*(1-FAM)`, `K48 = KA*FAM`; Figure 1 |
+| Parent clearance forms M3 | n/a | $PK `K58 = CL/V`; Methods 'Complete conversion' |
+| MW correction 643.55 / 657.55 | n/a | Methods; $PK `F1`, $ERROR `CP`, `CM` |
+| Covariate forms | n/a | $PK 'Covariate Implementation' block |
+
+# Replicating Figure 2: summed AUC0-24 over 12 weeks
+
+Figure 2 of the paper shows the summed daily exposure
+AUC0-24,sum = AUC0-24,sorfequiline + AUC0-24,M3 over 12 weeks of once-daily
+tablet dosing with food at 25, 50 and 100 mg, either without a loading phase
+or with two weeks at 2, 3 or 4 times the maintenance dose. The simulated
+individual has the cohort's typical fat-free mass (53 kg). As in the paper,
+the CL-002 bioavailability effect and the high-dose effect are switched off.
+
+```{r fig2-events}
+regimens <- tidyr::expand_grid(
+  maint = c(25, 50, 100),
+  load_factor = c(1, 2, 3, 4)
+) |>
+  mutate(
+    id = seq_len(n()),
+    loading = ifelse(load_factor == 1, "No loading dose",
+                     paste0(load_factor, "x maintenance dose")),
+    regimen = paste0(maint, " mg, ", loading)
+  )
+
+make_events <- function(reg, obs_step = 1) {
+  doses <- reg |>
+    tidyr::crossing(day = 0:83) |>
+    mutate(
+      time = day * 24,
+      amt = ifelse(day < 14, maint * load_factor, maint),
+      evid = 1L, cmt = "depot", dvid = NA_integer_
+    )
+  obs <- reg |>
+    tidyr::crossing(time = seq(0, 84 * 24, by = obs_step)) |>
+    mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+  bind_rows(doses, obs) |>
+    select(id, time, amt, evid, cmt, dvid, maint, load_factor, regimen) |>
+    mutate(FFM = 53, FED = 1, FORM_TABLET = 1, STUDY_CL002 = 0,
+           DOSE_HIGH = 0, OCC = 1) |>
+    arrange(id, time, desc(evid))
+}
+
+events_typ <- make_events(regimens)
+stopifnot(!anyDuplicated(unique(events_typ[, c("id", "time", "evid")])))
+```
+
+```{r fig2-simulate}
+sim_typ <- quiet_rx(rxode2::rxSolve(
+  mod_typ, events_typ,
+  keep = c("maint", "load_factor", "regimen"),
+  returnType = "data.frame"
+)) |>
+  mutate(Csum = Cc + Cc_m3)
+```
+
+The daily AUC0-24 of the summed concentration is computed with PKNCA, one
+interval per dosing day.
+
+```{r fig2-pknca}
+conc_typ <- sim_typ |>
+  filter(!is.na(Csum)) |>
+  select(id, time, Csum, regimen)
+dose_typ <- events_typ |>
+  filter(evid == 1) |>
+  select(id, time, amt, regimen)
+
+intervals_daily <- data.frame(
+  start = (0:83) * 24,
+  end = (1:84) * 24,
+  auclast = TRUE
+)
+nca_typ <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_typ, Csum ~ time | regimen + id),
+  PKNCA::PKNCAdose(dose_typ, amt ~ time | regimen + id),
+  intervals = intervals_daily
+))
+auc_daily <- as.data.frame(nca_typ$result) |>
+  filter(PPTESTCD == "auclast") |>
+  mutate(day = end / 24, week = end / 24 / 7) |>
+  left_join(regimens |> select(regimen, maint, loading), by = "regimen")
+```
+
+```{r fig2-plot, fig.width = 8, fig.height = 4}
+ggplot(auc_daily, aes(week, PPORRES, linetype = loading)) +
+  geom_line() +
+  geom_hline(yintercept = 62.2, linetype = "dashed", colour = "orange") +
+  geom_hline(yintercept = 127.5, linetype = "dashed", colour = "firebrick") +
+  facet_wrap(~ paste(maint, "mg"), nrow = 1) +
+  scale_x_continuous(breaks = seq(0, 12, 2)) +
+  labs(x = "Time (weeks)", y = "AUC0-24,sum (mg*h/L)", linetype = NULL,
+       caption = paste("Replicates Figure 2 of Calderin 2026 (typical individual,",
+                       "FFM 53 kg, tablet with food). Dashed lines: NOAEL 62.2",
+                       "and LOAEL 127.5 mg*h/L.")) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+## Comparison against Figure 2
+
+The published lines were digitised by the maintainers from Figure 2, with the
+vertical axis calibrated on its tick labels (the LOAEL line reads back as
+127.8 against the printed 127.5 mg*h/L). Only points where each line can be
+told apart are used; after the loading phase the 25 mg lines and several of
+the 50 and 100 mg lines overlap. A point at week *w* is compared with the
+AUC0-24 of the dosing day that ends at day round(7*w).
+
+```{r fig2-compare}
+published_fig2 <- tibble::tribble(
+  ~maint, ~load_factor, ~week, ~auc_fig,
+  100, 4, 1.0, 26.2,
+  100, 3, 1.0, 19.8,
+  100, 2, 1.0, 13.1,
+  100, 1, 1.0,  6.7,
+  100, 4, 1.9, 29.7,
+  100, 3, 1.9, 22.3,
+  100, 1, 1.9,  7.4,
+  100, 4, 4.0, 13.8,
+  100, 3, 4.0, 12.2,
+  100, 2, 4.0, 10.6,
+  100, 1, 4.0,  9.0,
+  100, 4, 11.9, 16.3,
+   50, 4, 1.0, 13.3,
+   50, 3, 1.0,  9.7,
+   50, 2, 1.0,  6.7,
+   50, 1, 1.0,  3.2,
+   50, 4, 1.9, 14.7,
+   50, 3, 1.9, 11.0,
+   50, 2, 1.9,  7.4,
+   50, 1, 1.9,  3.7,
+   25, 4, 1.0,  6.4,
+   25, 3, 1.0,  4.8,
+   25, 2, 1.0,  3.2,
+   25, 1, 1.0,  1.6,
+   25, 1, 11.9, 3.4
+) |>
+  mutate(day = round(7 * week))
+
+fig2_cmp <- published_fig2 |>
+  left_join(regimens |> select(maint, load_factor, regimen),
+            by = c("maint", "load_factor")) |>
+  left_join(auc_daily |> select(regimen, day, auc_sim = PPORRES),
+            by = c("regimen", "day")) |>
+  mutate(pct_diff = 100 * (auc_sim - auc_fig) / auc_fig)
+
+fig2_cmp |>
+  select(regimen, week, auc_fig, auc_sim, pct_diff) |>
+  dplyr::rename(
+    "Regimen" = regimen,
+    "Week" = week,
+    "Figure 2 (mg*h/L)" = auc_fig,
+    "Simulated (mg*h/L)" = auc_sim,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 1,
+               caption = "Typical-value AUC0-24,sum against Figure 2 of Calderin 2026.")
+
+# Deterministic typical-value solve against a digitised figure: the residual
+# difference is digitisation error (about 0.5 mg*h/L at this resolution) plus
+# the gap between a typical value and the paper's median of 500 stochastic
+# replicates.
+stopifnot(
+  nrow(fig2_cmp) == nrow(published_fig2),
+  !anyNA(fig2_cmp$auc_sim),
+  abs(median(fig2_cmp$pct_diff)) < 5,
+  all(abs(fig2_cmp$pct_diff) < 15)
+)
+```
+
+All digitised points are reproduced within
+`r round(max(abs(fig2_cmp$pct_diff)), 1)`% (median difference
+`r round(median(fig2_cmp$pct_diff), 1)`%), and the model reproduces the
+paper's conclusion that the typical summed exposure stays well below the
+NOAEL of 62.2 mg*h/L in every regimen.
+
+## Variability band for the 4x loading regimens
+
+Figure 2 also shades the 90% prediction interval of the 4x-loading regimens.
+The chunk below simulates 200 replicates of the typical individual per
+maintenance dose with between-subject and between-occasion variability. All
+doses are assigned to occasion 1, so each replicate carries one draw of the
+occasion effects for the whole course (see Assumptions and deviations).
+
+```{r fig2-band}
+rxode2::rxSetSeed(20261117)
+reg_4x <- regimens |> filter(load_factor == 4)
+events_var <- reg_4x |>
+  select(maint, load_factor, regimen) |>
+  tidyr::crossing(rep = 1:200) |>
+  mutate(id = seq_len(n())) |>
+  select(-rep) |>
+  make_events(obs_step = 2)
+stopifnot(!anyDuplicated(unique(events_var[, c("id", "time", "evid")])))
+
+sim_var <- rxode2::rxSolve(mod, events_var, keep = c("maint", "regimen"),
+                           returnType = "data.frame") |>
+  mutate(Csum = Cc + Cc_m3)
+
+# Daily trapezoidal AUC on the 2-h grid (pure numerical integration of the
+# simulated profile; the PKNCA calculation above is the validation).
+auc_var <- sim_var |>
+  arrange(id, time) |>
+  group_by(id, maint) |>
+  mutate(seg = (time - lag(time)) * (Csum + lag(Csum)) / 2,
+         day = ceiling(time / 24)) |>
+  filter(day >= 1) |>
+  group_by(id, maint, day) |>
+  summarise(auc = sum(seg), .groups = "drop")
+
+band <- auc_var |>
+  group_by(maint, day) |>
+  summarise(lo = quantile(auc, 0.05), med = median(auc),
+            hi = quantile(auc, 0.95), .groups = "drop")
+
+ggplot(band, aes(day / 7)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.3) +
+  geom_line(aes(y = med)) +
+  facet_wrap(~ paste(maint, "mg"), nrow = 1) +
+  labs(x = "Time (weeks)", y = "AUC0-24,sum (mg*h/L)",
+       caption = "4x maintenance loading for 2 weeks: median and 90% interval of 200 replicates.") +
+  theme_bw()
+
+band_wk2 <- band |> filter(day == 13)
+knitr::kable(band_wk2, digits = 1,
+             caption = "Day-13 summed AUC0-24 (mg*h/L), 4x loading regimens.")
+
+# The median of the stochastic replicates should sit near the digitised
+# Figure 2 line (which is itself such a median); the band is wide, so the
+# check is on the centre only.
+med_100 <- band_wk2$med[band_wk2$maint == 100]
+stopifnot(abs(med_100 - 29.7) / 29.7 < 0.25)
+```
+
+The simulated median at the end of loading
+(`r round(med_100, 1)` mg*h/L for 100 mg) agrees with the Figure 2 line, but the
+simulated 90% interval
+(`r round(band_wk2$lo[band_wk2$maint == 100], 1)` to
+`r round(band_wk2$hi[band_wk2$maint == 100], 1)` mg*h/L) is wider than the
+published band, which spans roughly 20 to 50 mg*h/L. Holding one draw of the
+between-occasion effects on F, ka and MTT for the whole course makes the
+53% occasion variability on F behave like between-subject variability; if
+the paper drew a fresh occasion effect for each dose, those effects average
+out over the daily doses and the band narrows. The paper does not state which
+it did, so the band is shown for illustration and is not used as a gate.
+
+# Single-dose profiles: the food effect on first-pass M3
+
+The fraction of the absorbed dose that enters the circulation as M3 falls from
+0.464 fasted to 0.157 fed. A single 100 mg suspension dose illustrates the
+shift in the parent / metabolite balance.
+
+```{r single-dose}
+sd_events <- tibble(id = 1:2, FED = c(0, 1)) |>
+  tidyr::crossing(time = c(0, seq(0.25, 168, by = 0.25))) |>
+  mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L) |>
+  bind_rows(tibble(id = 1:2, FED = c(0, 1), time = 0, amt = 100,
+                   evid = 1L, cmt = "depot", dvid = NA_integer_)) |>
+  mutate(FFM = 53, FORM_TABLET = 0, STUDY_CL002 = 0, DOSE_HIGH = 0, OCC = 1,
+         treatment = ifelse(FED == 1, "100 mg fed", "100 mg fasted")) |>
+  arrange(id, time, desc(evid))
+
+sd_sim <- quiet_rx(rxode2::rxSolve(mod_typ, sd_events,
+                                   keep = c("treatment"),
+                                   returnType = "data.frame"))
+
+sd_sim |>
+  select(time, treatment, Sorfequiline = Cc, M3 = Cc_m3) |>
+  tidyr::pivot_longer(c(Sorfequiline, M3), names_to = "analyte",
+                      values_to = "conc") |>
+  filter(time > 0) |>
+  ggplot(aes(time, conc * 1000, colour = analyte, linetype = treatment)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = "Concentration (ng/mL)",
+       colour = NULL, linetype = NULL,
+       caption = "Typical individual, 100 mg oral suspension.") +
+  theme_bw()
+```
+
+## PKNCA by analyte and food status
+
+```{r single-dose-pknca}
+sd_doses <- sd_events |> filter(evid == 1) |> select(id, time, amt, treatment)
+sd_int <- data.frame(start = 0, end = 168, cmax = TRUE, tmax = TRUE,
+                     auclast = TRUE)
+
+nca_one <- function(conc_col) {
+  conc <- sd_sim |>
+    filter(!is.na(.data[[conc_col]])) |>
+    select(id, time, treatment, conc = all_of(conc_col))
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, conc ~ time | treatment + id),
+    PKNCA::PKNCAdose(sd_doses, amt ~ time | treatment + id),
+    intervals = sd_int
+  ))
+  as.data.frame(res$result) |>
+    select(treatment, PPTESTCD, PPORRES) |>
+    mutate(analyte = conc_col)
+}
+sd_nca <- bind_rows(nca_one("Cc"), nca_one("Cc_m3")) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+sd_nca |>
+  mutate(analyte = ifelse(analyte == "Cc", "Sorfequiline", "M3"),
+         cmax = cmax * 1000) |>
+  dplyr::rename(
+    "Analyte" = analyte,
+    "Treatment" = treatment,
+    "Cmax (ng/mL)" = cmax,
+    "Tmax (h)" = tmax,
+    "AUC0-168 (mg*h/L)" = auclast
+  ) |>
+  knitr::kable(digits = 3, caption = "Typical single-dose NCA (no published NCA to compare).")
+
+# Food moves exposure from M3 towards the parent: the M3 / parent AUC ratio
+# must fall with food, a structural consequence of FAM 0.464 -> 0.157.
+ratio <- sd_nca |>
+  select(treatment, analyte, auclast) |>
+  tidyr::pivot_wider(names_from = analyte, values_from = auclast) |>
+  mutate(ratio = Cc_m3 / Cc)
+stopifnot(ratio$ratio[ratio$treatment == "100 mg fed"] <
+            0.7 * ratio$ratio[ratio$treatment == "100 mg fasted"])
+```
+
+The paper does not report NCA values, so the table above has no published
+comparator. Its purpose is to show the food effect the model encodes: fed
+dosing raises sorfequiline exposure (faster absorption and less first-pass
+loss to M3) and lowers the M3 / sorfequiline exposure ratio.
+
+# Assumptions and deviations
+
+- **Residual-error correlation not encoded.** The paper correlates the
+  sorfequiline and M3 residual errors (rho = 0.786, Table 2, implemented with
+  the NONMEM L2 data item). nlmixr2 residual-error models are independent per
+  endpoint, so the two endpoints here have independent combined additive +
+  proportional errors with the published magnitudes. Typical-value and
+  between-subject predictions are unaffected; simulated observations of the
+  two analytes from the same sample will be less correlated than in the
+  source data.
+- **BLQ handling.** The M7+ method (BLQ imputed as zero with the additive
+  error inflated by the LLOQ) is an estimation device and is not part of the
+  packaged model. The additive error is the `THETA(12) = 0 FIX` plus
+  0.2 x LLOQ = 0.0002 mg/L of the control stream.
+- **Number of transit compartments.** Table 2 lists "NN = 3 Fixed"; the control
+  stream sets `THETA(10) = 2 FIX` and `KTR = (NN+1)/MTT`, with three explicit
+  transit compartments before the absorption compartment. Both describe the
+  same structure: three transfers at ktr = 3 / MTT (depot -> transit1 ->
+  transit2 -> transit3), then ka out of the absorption compartment
+  (`transit3` here). The control stream's form is used.
+- **Units.** The control stream tracks amounts in moles (F1 = BIO / (657.55 x
+  1000)) and converts back to mg/L with each analyte's molecular weight. The
+  packaged model tracks mg and converts parent mass to M3 mass with the factor
+  643.55 / 657.55 at formation; the two are the same model.
+- **Between-occasion variability.** Implemented with three occasion slots
+  selected by `OCC`, exactly as the control stream does; records outside
+  occasions 1-3 receive no BOV. The paper defines an occasion as a dosing event
+  and its subsequent observations but does not say how occasions were numbered
+  in the multiple-dose parts. The control stream also declares a BOV on CL with
+  variance 0 FIX and zero-variance BSV on all other disposition parameters,
+  ka, F and MTT; these are omitted.
+- **Variability band in Figure 2.** The paper simulated 500 replicates of the
+  typical individual; how the BOV was assigned across 84 daily doses is not
+  stated. This vignette assigns all doses to occasion 1 (one BOV draw per
+  replicate), and the resulting 90% band is wider than the published one. The
+  digitised comparison uses the typical-value solve.
+- **High-dose and CL-002 effects.** `DOSE_HIGH` (400 and 800 mg) and
+  `STUDY_CL002` are included as estimated, but the paper did not apply either
+  in its regimen simulations; both are 0 in all simulations here.
+- **Values not from the paper's text or tables.** The Figure 2 comparison
+  points were digitised by the maintainers from Figure 2. Every model
+  parameter comes from Table 2 and the control stream.
+- No erratum or correction notice was found for this article as of 2026-11-17.

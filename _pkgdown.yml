@@ -8054,6 +8054,8 @@ navbar:
         href: articles/Agarwal_2011_sorafenib_transporters.html
       - text: "Sorafenib qsp (Wan 2025)"
         href: articles/Wan_2025_tki_cardiotoxicity.html
+      - text: "Sorfequiline (Calderin 2026)"
+        href: articles/Calderin_2026_sorfequiline.html
       - text: "Sotalol (Yellepeddi 2025)"
         href: articles/Yellepeddi_2025_sotalol.html
       - text: "Sotatercept (AitOudhia 2024)"
@@ -10082,6 +10084,7 @@ articles:
   - articles/Cai_2022_tacrolimus
   - articles/Cai_2025_diamorphine
   - articles/Calderin_2025_pyrazinamide_isoniazid_tbm
+  - articles/Calderin_2026_sorfequiline
   - articles/Caldes_2009_ganciclovir
   - articles/Cammarata_2024_sulbactam_durlobactam
   - articles/Campagne_2019_cyclophosphamide_mouse
