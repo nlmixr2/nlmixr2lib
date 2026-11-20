@@ -7578,10 +7578,10 @@ navbar:
         href: articles/Aruldhas_2021_methadone.html
       - text: "S33138 (Bertrand 2011)"
         href: articles/Bertrand_2011_S33138.html
-      - text: "S65487 microdose pk (Burlot 2026)"
-        href: articles/Burlot_2026_S65487.html
-      - text: "S65487 pkpd (Burlot 2026)"
-        href: articles/Burlot_2026_S65487.html
+      - text: "S531011 human (Yamaguchi 2026)"
+        href: articles/Yamaguchi_2026_s531011.html
+      - text: "S531011 mouse (Yamaguchi 2026)"
+        href: articles/Yamaguchi_2026_s531011.html
       - text: "SAL003 (Peng 2024)"
         href: articles/Peng_2024_SAL003.html
       - text: "SCR430 rat control pbpk (Kim 2022)"
@@ -12640,6 +12640,7 @@ articles:
   - articles/Yamada_2025_zolbetuximab
   - articles/Yamada_2026_favipiravir
   - articles/Yamaguchi_2024_cefiderocol
+  - articles/Yamaguchi_2026_s531011
   - articles/Yamamoto_2017_cns_pbpk_rat
   - articles/Yamamoto_2023_tominersen
   - articles/Yamazaki_2008_crizotinib_mouse
