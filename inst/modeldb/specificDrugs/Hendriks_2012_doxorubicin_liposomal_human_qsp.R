@@ -28,7 +28,9 @@ Hendriks_2012_doxorubicin_liposomal_human_qsp <- function() {
     "Structure and fixed physiological constants follow the authors'",
     "SimBiology model (Supplementary Data, SBML PSP-2012-0011-s02) and its",
     "human parameter and reaction workbook (supplementary Excel file);",
-    "fitted values follow Hendriks 2012 Table 1."
+    "fitted values follow Hendriks 2012 Table 1, except the doxorubicin",
+    "tumor efflux flux, taken from the model code (Table 1 prints it",
+    "ten-fold too high)."
   )
   vignette <- "Hendriks_2012_doxorubicin_liposomal"
 
