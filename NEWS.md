@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sinnollareddy 2026 epcoritamab updated popPK and exposure-response models ([doi:10.1007/s40262-026-01661-1](https://doi.org/10.1007/s40262-026-01661-1)) -- adults with relapsed or refractory B cell non-Hodgkin lymphoma, including follicular lymphoma on the 2-step and 3-step step-up regimens.
+- Add Wu 2026 bosutinib ([doi:10.1007/s40262-026-01672-y](https://doi.org/10.1007/s40262-026-01672-y)) -- children and adolescents (1-17 years) with Philadelphia chromosome-positive chronic myelogenous leukemia.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

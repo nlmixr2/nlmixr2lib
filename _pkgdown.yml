@@ -1100,6 +1100,8 @@ navbar:
         href: articles/Hanley_2017_bortezomib.html
       - text: "Bosentan pbpk (Aoki 2024)"
         href: articles/Aoki_2024_bosentan_pbpk.html
+      - text: "Bosutinib (Wu 2026)"
+        href: articles/Wu_2026_bosutinib.html
       - text: "Bosutinib qsp (Wan 2025)"
         href: articles/Wan_2025_tki_cardiotoxicity.html
       - text: "Brazikumab (Zhang 2023)"
@@ -12689,7 +12691,7 @@ articles:
   - articles/Wu_2025_mavacamten
   - articles/Wu_2025_paracetamol
   - articles/Wu_2025_sitafloxacin
-  - articles/Wu_2026_linezolid
+  - articles/Wu_2026_bosutinib
   - articles/Wurthwein_2013_caspofungin
   - articles/Wurthwein_2021_pegasparaginase
   - articles/Wurthwein_2025_pegasparaginase
