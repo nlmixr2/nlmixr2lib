@@ -7628,12 +7628,16 @@ navbar:
         href: articles/Stein_2018_mAb_nonlinear_PK.html
       - text: "Ropeginterferon (Qin 2025)"
         href: articles/Qin_2025_ropeginterferon.html
+      - text: "Ropeginterferon (Qin 2026)"
+        href: articles/Qin_2026_ropeginterferon.html
       - text: "Ropeginterferon (Zhu 2021)"
         href: articles/Zhu_2021_ropeginterferon.html
       - text: "Ropeginterferon alt increase (Qin 2025)"
         href: articles/Qin_2025_ropeginterferon.html
       - text: "Ropeginterferon anemia (Qin 2025)"
         href: articles/Qin_2025_ropeginterferon.html
+      - text: "Ropeginterferon anemia (Qin 2026)"
+        href: articles/Qin_2026_ropeginterferon.html
       - text: "Ropeginterferon ast increase (Qin 2025)"
         href: articles/Qin_2025_ropeginterferon.html
       - text: "Ropeginterferon chr week24 (Qin 2025)"
@@ -7642,14 +7646,22 @@ navbar:
         href: articles/Qin_2025_ropeginterferon.html
       - text: "Ropeginterferon hct (Qin 2025)"
         href: articles/Qin_2025_ropeginterferon.html
+      - text: "Ropeginterferon jak2 month12 (Qin 2026)"
+        href: articles/Qin_2026_ropeginterferon.html
+      - text: "Ropeginterferon jak2 month6 (Qin 2026)"
+        href: articles/Qin_2026_ropeginterferon.html
       - text: "Ropeginterferon jak2 week24 (Qin 2025)"
         href: articles/Qin_2025_ropeginterferon.html
       - text: "Ropeginterferon jak2 week52 (Qin 2025)"
         href: articles/Qin_2025_ropeginterferon.html
       - text: "Ropeginterferon plt (Qin 2025)"
         href: articles/Qin_2025_ropeginterferon.html
+      - text: "Ropeginterferon plt (Qin 2026)"
+        href: articles/Qin_2026_ropeginterferon.html
       - text: "Ropeginterferon wbc (Qin 2025)"
         href: articles/Qin_2025_ropeginterferon.html
+      - text: "Ropeginterferon wbc (Qin 2026)"
+        href: articles/Qin_2026_ropeginterferon.html
       - text: "Ropinirole (Kaikousidis 2024)"
         href: articles/Kaikousidis_2024_ropinirole.html
       - text: "Ropinirole misspecified (Kaikousidis 2024)"
@@ -11970,7 +11982,7 @@ articles:
   - articles/Qian_2025_tetrahydrocannabinol
   - articles/Qiao_2026_imipenem
   - articles/Qin_2025_ropeginterferon
-  - articles/Qin_2026_acid_reducing_agent_ddi
+  - articles/Qin_2026_ropeginterferon
   - articles/Quartino_2016_trastuzumab
   - articles/Quartino_2019_trastuzumab
   - articles/Quintairos_2021_tacrolimus_mycophenolic_acid

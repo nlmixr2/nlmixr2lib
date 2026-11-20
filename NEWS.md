@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liu 2026 meropenem and C-reactive protein PK/PD ([doi:10.1002/bcp.70667](https://doi.org/10.1002/bcp.70667)) -- adult onco-haematological patients with febrile neutropenia on continuous infusion.
+- Add Qin 2026 ropeginterferon alfa-2b ([doi:10.1002/jcph.70258](https://doi.org/10.1002/jcph.70258)) -- healthy volunteers and patients with essential thrombocythemia; six models (TMDD population PK, white-cell and platelet PK-PD, JAK2 V617F and anemia exposure-response).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
