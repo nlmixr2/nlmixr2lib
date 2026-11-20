@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ismaeil 2026 cariprazine, desmethyl-cariprazine and didesmethyl-cariprazine ([doi:10.1002/jcph.70243](https://doi.org/10.1002/jcph.70243)) -- children (10-12 years) and adolescents (13-17 years) with schizophrenia or bipolar I disorder.
+- Add Hanke 2026 iclepertin popPK and hemoglobin model ([doi:10.3389/fphar.2026.1770980](https://doi.org/10.3389/fphar.2026.1770980)) -- healthy adults and patients with cognitive impairment associated with schizophrenia or Alzheimer's disease.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
