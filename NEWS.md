@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bousema 2010 Plasmodium falciparum gametocyte density and prevalence models after ACT and primaquine ([doi:10.1186/1475-2875-9-136](https://doi.org/10.1186/1475-2875-9-136)) -- Kenyan and Tanzanian children treated for uncomplicated malaria.
+- Add Daud 2011 peginterferon alfa-2b PK/PD (ANC) ([doi:10.1007/s00280-010-1326-9](https://doi.org/10.1007/s00280-010-1326-9)) -- adults with resected high-risk melanoma.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

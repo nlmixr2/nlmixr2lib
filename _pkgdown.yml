@@ -6584,10 +6584,14 @@ navbar:
         href: articles/Hanan_2026_peginterferon_alfa_hbsag_loss.html
       - text: "Peginterferon alfa 2a (Bi 2017)"
         href: articles/Bi_2017_peginterferon_alfa_2a.html
+      - text: "Peginterferon alfa 2b (Daud 2011)"
+        href: articles/Daud_2011_peginterferon_alfa_2b.html
       - text: "Peginterferon alfa 2b (Gupta 2006)"
         href: articles/Gupta_2006_peginterferon_alfa_2b.html
       - text: "Peginterferon alfa 2b (Jian 2025)"
         href: articles/Jian_2025_peginterferon_alfa_2b.html
+      - text: "Peginterferon alfa 2b anc auc (Daud 2011)"
+        href: articles/Daud_2011_peginterferon_alfa_2b.html
       - text: "Peginterferon alfa 2b plt chb (Jian 2026)"
         href: articles/Jian_2026_peginterferon_alfa_2b_myelosuppression.html
       - text: "Peginterferon alfa 2b plt et (Jian 2026)"
@@ -10458,6 +10462,7 @@ articles:
   - articles/Darwish_2026_remlifanserin
   - articles/Daskapan_2019_darunavir
   - articles/Dasti_2025_mrna_vaccines
+  - articles/Daud_2011_peginterferon_alfa_2b
   - articles/Dave_2019_venetoclax
   - articles/Davis_2008_maraviroc
   - articles/DeBonis_2025_il12_qsp
