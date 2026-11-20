@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Jamsen 2011 dihydroartemisinin after oral artesunate ([doi:10.1186/1475-2875-10-181](https://doi.org/10.1186/1475-2875-10-181)) -- non-pregnant adults with uncomplicated falciparum malaria (four competing structural models), with the pregnant-women and adults-and-children design models.
+- Add Stepniewska 2009 artesunate and amodiaquine (desethylamodiaquine, dihydroartemisinin and total artemisinin activity) ([doi:10.1186/1475-2875-8-200](https://doi.org/10.1186/1475-2875-8-200)) -- children aged 6 months to 5 years with uncomplicated falciparum malaria in Burkina Faso.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
