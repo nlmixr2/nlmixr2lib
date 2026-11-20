@@ -1,0 +1,564 @@
+---
+title: "Nivolumab, subcutaneous and intravenous, in renal cell carcinoma (Zhao 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Nivolumab, subcutaneous and intravenous, in renal cell carcinoma (Zhao 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Zhao_2026_nivolumab_ccrcc"))$reference`
+* Article: <https://doi.org/10.1002/cpt.70481> (open access, PMC13599598)
+* Supporting information: Data S1 (Tables S1-S8, Figures S1-S6 and the
+  model-development text with the full model equations).
+
+Nivolumab is a fully human IgG4 monoclonal antibody against PD-1. Its
+subcutaneous formulation is co-formulated with recombinant human
+hyaluronidase PH20 (rHuPH20). The phase III trial CheckMate 67T
+(NCT04810078) compared subcutaneous nivolumab 1200 mg every 4 weeks
+(Q4W) with intravenous nivolumab 3 mg/kg every 2 weeks (Q2W) in patients
+with previously treated advanced or metastatic clear-cell renal cell
+carcinoma (ccRCC). Its co-primary PK endpoints, the time-averaged
+concentration over the first 28 days (`Cavgd28`) and the steady-state
+trough (`Cminss`), were derived from a population PK model rather than
+from noncompartmental analysis.
+
+The paper fits the model in two stages, and both are packaged here:
+
+| Model | Stage | Data | Parameter table |
+|---|---|---|---|
+| `Zhao_2026_nivolumab_pooled` | Stage 1, pre-specified pooled model | historical intravenous nivolumab monotherapy studies plus subcutaneous CheckMate 8KX | Table S4 |
+| `Zhao_2026_nivolumab_ccrcc` | Stage 2, CheckMate 67T model | CheckMate 67T only, with the Stage 1 estimates entering through NONMEM `$PRIOR` | Table S5 |
+
+The Stage 2 model is the one the paper used to derive the individual
+exposures for the non-inferiority test and to bridge to the alternative
+600 mg Q2W and 900 mg Q3W subcutaneous regimens, so most of this article
+uses it. Both models share one structure: two compartments, zero-order
+intravenous infusion into the central compartment, first-order
+absorption from the subcutaneous depot with a logit-scale bioavailability,
+and clearance that declines over time as a sigmoid function of time since
+the first dose.
+
+The paper's third component -- bridging to other solid-tumour indications
+-- re-used earlier indication-specific intravenous popPK models with the
+Stage 2 `ka` and `F` added. Those indication models are not reported in
+the paper and are not reproduced here; the published intravenous base
+model they descend from is available as `Bajaj_2017_nivolumab`.
+
+The pre-specified model of the companion methodology paper is packaged
+separately as `Zhao_2025_nivolumab`. It has the same structure but a
+different set of estimates (and two tumour-type effects on clearance), so
+it is not the Stage 1 model of this paper.
+
+```{r load-models}
+mod_ccrcc <- rxode2::rxode2(readModelDb("Zhao_2026_nivolumab_ccrcc"))
+mod_pooled <- rxode2::rxode2(readModelDb("Zhao_2026_nivolumab_pooled"))
+```
+
+# Population
+
+```{r population, echo = FALSE}
+pop <- mod_ccrcc$population
+data.frame(
+  Characteristic = c(
+    "Patients (s.c. / i.v.)", "Age", "Baseline body weight",
+    "Baseline eGFR", "Baseline albumin", "Female", "ECOG performance status",
+    "Disease", "Dosing"
+  ),
+  Value = c(
+    sprintf("%d (%d / %d)", pop$n_subjects, pop$n_subjects_sc, pop$n_subjects_iv),
+    pop$age_range, pop$weight_range, pop$renal_function, pop$albumin,
+    paste0(pop$sex_female_pct, "%"), pop$ecog_distribution,
+    pop$disease_state, pop$dose_range
+  )
+) |>
+  knitr::kable(caption = "CheckMate 67T Stage 2 analysis population (Zhao 2026 Table 1).")
+```
+
+Race was 85.0% White, 12.5% other, 1.0% American Indian / Alaska Native,
+0.8% Asian and 0.4% Black (Table 1). The Stage 1 dataset pooled 3540
+patients over 20 studies (Table S2); its baseline demographics are not
+reported.
+
+# Source trace
+
+Every Stage 2 value comes from Table S5 and every Stage 1 value from
+Table S4 of Data S1. The equations come from the Data S1 section "Model
+development". The source time unit is hours; `CL`, `Q` and `ka` are
+multiplied by 24 and `T50` divided by 24 so that the packaged models run
+in days.
+
+```{r source-trace, echo = FALSE}
+data.frame(
+  Parameter = c(
+    "lcl", "lvc", "lq", "lvp", "lka", "logitfdepot",
+    "e_wt_cl", "e_crcl_cl", "e_sex_cl", "e_ecog_ge1_cl",
+    "e_wt_vc", "e_sex_vc", "e_sex_fdepot", "e_ecog_ge1_fdepot",
+    "cl_time_max", "lcl_t50", "lcl_time_hill",
+    "etalcl, etalvc (block)", "etalvp", "etacl_time_max",
+    "etalka, etalogitfdepot (block)", "propSd"
+  ),
+  `Stage 2 (ccrcc), Table S5` = c(
+    "CL0_REF 0.0108 L/h", "VC_REF 4.25 L", "Q_REF 0.0312 L/h", "VP_REF 2.67 L",
+    "KA 0.0123 /h", "F1 0.788",
+    "CL_WTB 0.644", "CL_GFR 0.306", "CL_SEX -0.149", "CL_PS 0.122",
+    "VC_WTB 0.525", "VC_SEX -0.228", "F1_SEX 0.942", "F1_PS 1.00 (not estimated)",
+    "CL_EMAX -0.260", "CL_T50 1.41E+03 h", "CL_HILL 3.39",
+    "0.135, 0.0395, 0.0827", "0.211", "0.0572",
+    "0.211, 0.0744, 0.615", "0.157"
+  ),
+  `Stage 1 (pooled), Table S4` = c(
+    "CL 0.0108 L/h", "VC 4.29 L", "Q 0.0312 L/h", "VP 2.73 L",
+    "KA 0.0129 /h", "F1 0.815",
+    "CL_WTB 0.607", "CL_GFR 0.166", "CL_SEX -0.169", "CL_PS 0.169",
+    "VC_WTB 0.621", "VC_SEX -0.136", "F1_SEX 0.895", "F1_PS 1.00 (not estimated)",
+    "CL_EMAX -0.263", "CL_T50 1.53E+03 h", "CL_HILL 3.84",
+    "0.122, 0.0402, 0.0853", "0.212", "0.0537",
+    "0.132, 0.180, 0.807", "0.188"
+  ),
+  check.names = FALSE
+) |>
+  knitr::kable(caption = "Source trace for every ini() parameter.")
+
+data.frame(
+  Element = c(
+    "Two-compartment disposition, i.v. into central, s.c. first-order absorption",
+    "CL0 = CL0_REF (WT/80)^CL_WTB (eGFR/90)^CL_GFR exp(CL_FEMALE) exp(CL_PS)",
+    "CL(t) = CL0 exp(EMAX t^HILL / (T50^HILL + t^HILL)) exp(eta_CL)",
+    "VC = VC_REF (WT/80)^VC_WTB exp(VC_FEMALE) exp(eta_VC); VP = VP_REF exp(eta_VP); Q = Q_REF",
+    "F_TV = F_REF x F_FEMALE; F = expit(logit(F_TV) + eta_F)",
+    "Proportional residual error",
+    "Reference subject 80 kg, eGFR 90 mL/min/1.73 m^2, male, PS 0"
+  ),
+  Source = c(
+    "Discussion; Data S1 'Model development'",
+    "Data S1 CL0_TV equation (albumin term not retained, see below)",
+    "Data S1 CL_i(t) equation",
+    "Data S1 VC_i, Q_i and VP_i equations",
+    "Data S1 F_i and F_TV,i equations",
+    "Data S1 residual-error text; Table S4/S5 theta10",
+    "Table S4 Note, Table S5 Note 1, Figure S1 Note 3"
+  )
+) |>
+  knitr::kable(caption = "Source trace for the model equations.")
+```
+
+# Virtual cohort
+
+The cohort is drawn from the Table 1 marginal distributions of the
+CheckMate 67T analysis population: body weight log-normal with mean 77.7
+and SD 17.3 kg truncated to the observed 35-157 kg, eGFR normal with mean
+63.7 and SD 19.9 mL/min/1.73 m^2 truncated to 20.7-124, 32.4% female and
+60.8% with ECOG performance status of 1 or more. Covariates are drawn
+independently because the joint distribution is not published. The same
+200 subjects are simulated under every regimen with the same random-effect
+seed, so regimen comparisons are paired.
+
+```{r cohort}
+n_sub <- 200L
+
+set.seed(67)
+wt_sdlog <- sqrt(log(1 + (17.3 / 77.7)^2))
+wt_meanlog <- log(77.7) - wt_sdlog^2 / 2
+cohort <- data.frame(
+  id = seq_len(n_sub),
+  WT = pmin(pmax(rlnorm(n_sub, wt_meanlog, wt_sdlog), 35), 157),
+  CRCL = pmin(pmax(rnorm(n_sub, 63.7, 19.9), 20.7), 124),
+  SEXF = rbinom(n_sub, 1, 0.324),
+  ECOG_GE1 = rbinom(n_sub, 1, 0.608)
+)
+summary(cohort[, c("WT", "CRCL")])
+c(female_pct = mean(cohort$SEXF) * 100, ecog_ge1_pct = mean(cohort$ECOG_GE1) * 100)
+```
+
+# Simulation of the CheckMate 67T and bridging regimens
+
+Five regimens, matching Figure 2 and Tables S6 and S8: subcutaneous
+1200 mg Q4W, 900 mg Q3W and 600 mg Q2W into the depot, and intravenous
+3 mg/kg and 10 mg/kg Q2W as 30-minute infusions into the central
+compartment (the CheckMate 67T infusion duration, Table S2). Following
+Data S1, steady state is taken after 336 days of dosing (12 Q4W or 24 Q2W
+doses), so the steady-state interval is the last dosing interval ending
+on day 336.
+
+The observation grid is fine over the first 28 days and the steady-state
+interval, daily in between, and carries points just before each dose time
+(a record exactly on a dose time is read after the dose) and at the end
+of each infusion.
+
+```{r simulate}
+regimens <- tibble::tribble(
+  ~treatment,            ~amt,  ~per_kg, ~tau, ~cmt,      ~dur,
+  "s.c. 1200 mg Q4W",    1200,  FALSE,   28,   "depot",   0,
+  "s.c. 900 mg Q3W",      900,  FALSE,   21,   "depot",   0,
+  "s.c. 600 mg Q2W",      600,  FALSE,   14,   "depot",   0,
+  "i.v. 3 mg/kg Q2W",       3,  TRUE,    14,   "central", 0.5 / 24,
+  "i.v. 10 mg/kg Q2W",     10,  TRUE,    14,   "central", 0.5 / 24
+)
+t_ss_end <- 336
+
+build_events <- function(reg) {
+  dose_times <- seq(0, t_ss_end, by = reg$tau)
+  obs_times <- sort(unique(c(
+    seq(0, 28, by = 0.25),
+    seq(29, 196, by = 1),
+    seq(t_ss_end - 28, t_ss_end, by = 0.25),
+    dose_times[dose_times > 0] - 1e-4,
+    if (reg$dur > 0) dose_times + reg$dur
+  )))
+  obs_times <- obs_times[obs_times <= t_ss_end]
+  amt_i <- if (reg$per_kg) reg$amt * cohort$WT else rep(reg$amt, n_sub)
+  dose <- data.frame(
+    id = rep(cohort$id, each = length(dose_times)),
+    time = rep(dose_times, n_sub),
+    amt = rep(amt_i, each = length(dose_times)),
+    evid = 1L,
+    cmt = reg$cmt
+  )
+  dose$rate <- if (reg$dur > 0) dose$amt / reg$dur else 0
+  obs <- data.frame(
+    id = rep(cohort$id, each = length(obs_times)),
+    time = rep(obs_times, n_sub),
+    amt = 0, evid = 0L, cmt = "central", rate = 0
+  )
+  dplyr::bind_rows(dose, obs) |>
+    dplyr::left_join(cohort, by = "id") |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+simulate_regimen <- function(mod, i) {
+  reg <- regimens[i, ]
+  rxode2::rxSetSeed(2026)
+  rxode2::rxSolve(mod, build_events(reg), returnType = "data.frame", addDosing = FALSE) |>
+    dplyr::select(id, time, Cc) |>
+    dplyr::mutate(treatment = reg$treatment)
+}
+
+sim <- dplyr::bind_rows(lapply(seq_len(nrow(regimens)), \(i) simulate_regimen(mod_ccrcc, i)))
+sim$treatment <- factor(sim$treatment, levels = regimens$treatment)
+nrow(sim)
+```
+
+## Replicating Figure 2: geometric-mean profiles by regimen
+
+```{r figure2, fig.cap = "Replicates Figure 2 of Zhao 2026: predicted geometric-mean nivolumab concentration-time profiles by regimen over the first 28 weeks."}
+gm <- function(x) exp(mean(log(x)))
+
+prof <- sim |>
+  dplyr::filter(time <= 196) |>
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(gmean = gm(pmax(Cc, 1e-6)), .groups = "drop")
+
+ggplot(prof, aes(time / 7, gmean, colour = treatment)) +
+  geom_line(linewidth = 0.6) +
+  labs(
+    x = "Time (week)", y = "Nivolumab concentration (ug/mL)", colour = "Dose"
+  ) +
+  theme_bw()
+```
+
+The figure reproduces the published panel: the 10 mg/kg intravenous
+regimen sits well above every subcutaneous regimen; the three
+subcutaneous regimens converge on the same average concentration with
+fluctuation that grows with the dosing interval; and 3 mg/kg intravenous
+gives the lowest profile with the sharp infusion peaks that make it the
+only regimen with a higher `Cmax1` than 600 mg subcutaneous Q2W.
+
+# PKNCA validation against Tables S6 and S8
+
+Each exposure measure is an NCA interval:
+
+* `Cavg1`, `Cmax1` -- the first dosing interval `[0, tau]`;
+* `Cavgd28` -- `[0, 28]`;
+* `Cavgss`, `Cmaxss` -- the last dosing interval ending on day 336;
+* troughs -- `Cmin1` (end of the first interval), `Cmind28` (day 28),
+  `Cmind84` (day 84, the Table S8 comparison time point for the Q3W
+  regimen) and `Cminss` (day 336) -- the minimum over the last day before
+  that dose time. A trough window must not reach back to a dose time:
+  over `[0, tau]` the minimum is the pre-dose zero, not the trough.
+
+The paper summarises each measure as a geometric mean over subjects, so
+the per-subject PKNCA results are reduced to geometric means before the
+comparison (`ncaComparisonTable()` otherwise reduces by the median).
+
+```{r pknca}
+conc_df <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(treatment = as.character(treatment))
+
+dose_df <- dplyr::bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+  reg <- regimens[i, ]
+  data.frame(
+    id = cohort$id, time = 0, treatment = reg$treatment,
+    dose = if (reg$per_kg) reg$amt * cohort$WT else reg$amt
+  )
+}))
+
+trough_window <- function(trt, label, t_dose) {
+  data.frame(treatment = trt, interval = label, start = t_dose - 1, end = t_dose - 1e-4,
+             cmax = FALSE, cmin = TRUE, cav = FALSE)
+}
+
+intervals <- dplyr::bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+  reg <- regimens[i, ]
+  tau <- reg$tau
+  dplyr::bind_rows(
+    data.frame(treatment = reg$treatment, interval = "first", start = 0, end = tau,
+               cmax = TRUE, cmin = FALSE, cav = TRUE),
+    data.frame(treatment = reg$treatment, interval = "d28", start = 0, end = 28,
+               cmax = FALSE, cmin = FALSE, cav = TRUE),
+    data.frame(treatment = reg$treatment, interval = "ss", start = t_ss_end - tau, end = t_ss_end - 1e-4,
+               cmax = TRUE, cmin = FALSE, cav = TRUE),
+    trough_window(reg$treatment, "trough_1", tau),
+    trough_window(reg$treatment, "trough_d28", 28),
+    trough_window(reg$treatment, "trough_d84", 84),
+    trough_window(reg$treatment, "trough_ss", t_ss_end)
+  )
+}))
+
+measure_map <- tibble::tribble(
+  ~interval,     ~PPTESTCD, ~measure,
+  "first",       "cav",     "Cavg1",
+  "first",       "cmax",    "Cmax1",
+  "trough_1",    "cmin",    "Cmin1",
+  "d28",         "cav",     "Cavgd28",
+  "trough_d28",  "cmin",    "Cmind28",
+  "trough_d84",  "cmin",    "Cmind84",
+  "ss",          "cav",     "Cavgss",
+  "ss",          "cmax",    "Cmaxss",
+  "trough_ss",   "cmin",    "Cminss"
+)
+
+# For Q4W the first dosing interval and the 28-day window coincide, so one
+# PKNCA interval can feed two measures (Cavg1 and Cavgd28): map measures to
+# (treatment, start, end, parameter) and give PKNCA each window only once.
+interval_measures <- intervals |>
+  tidyr::pivot_longer(c(cmax, cmin, cav), names_to = "PPTESTCD", values_to = "requested") |>
+  dplyr::filter(requested) |>
+  dplyr::inner_join(measure_map, by = c("interval", "PPTESTCD")) |>
+  dplyr::select(treatment, start, end, PPTESTCD, measure)
+
+intervals_pknca <- intervals |>
+  dplyr::group_by(treatment, start, end) |>
+  dplyr::summarise(dplyr::across(c(cmax, cmin, cav), any), .groups = "drop") |>
+  as.data.frame()
+
+o_conc <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+o_dose <- PKNCA::PKNCAdose(dose_df, dose ~ time | treatment + id)
+o_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals_pknca))
+
+nca_res <- as.data.frame(o_nca$result) |>
+  dplyr::inner_join(interval_measures,
+                    by = c("treatment", "start", "end", "PPTESTCD"),
+                    relationship = "many-to-many")
+
+sim_gm <- nca_res |>
+  dplyr::group_by(treatment, measure) |>
+  dplyr::summarise(gm = gm(PPORRES), .groups = "drop")
+```
+
+```{r reference}
+# Zhao 2026 Table S6 (s.c. 1200 mg Q4W, s.c. 600 mg Q2W, i.v. 3 and
+# 10 mg/kg Q2W) and Table S8 (s.c. 900 mg Q3W and the day-84 trough);
+# geometric means in ug/mL.
+ref_gm <- tibble::tribble(
+  ~measure,  ~`s.c. 1200 mg Q4W`, ~`s.c. 900 mg Q3W`, ~`s.c. 600 mg Q2W`, ~`i.v. 3 mg/kg Q2W`, ~`i.v. 10 mg/kg Q2W`,
+  "Cavg1",    78.8,  63.9,  45.0,  29.8,  99.3,
+  "Cmax1",    108,   81.3,  54.2,  63.6,  212,
+  "Cmin1",    50.8,  49.0,  41.9,  19.6,  65.5,
+  "Cavgd28",  78.8,  NA,    62.0,  37.7,  126,
+  "Cmind28",  50.8,  NA,    68.1,  31.9,  106,
+  "Cmind84",  94.1,  107,   122,   NA,    NA,
+  "Cavgss",   182,   182,   182,   92.5,  308,
+  "Cmaxss",   230,   214,   199,   138,   461,
+  "Cminss",   126,   141,   157,   71.5,  238
+) |>
+  tidyr::pivot_longer(-measure, names_to = "treatment", values_to = "ref") |>
+  dplyr::filter(!is.na(ref))
+
+cmp <- dplyr::inner_join(ref_gm, sim_gm, by = c("treatment", "measure")) |>
+  dplyr::mutate(
+    pct_diff = (gm - ref) / ref * 100,
+    treatment = factor(treatment, levels = regimens$treatment),
+    measure = factor(measure, levels = measure_map$measure)
+  ) |>
+  dplyr::arrange(treatment, measure)
+
+cmp |>
+  dplyr::mutate(
+    ref = signif(ref, 3), gm = signif(gm, 3),
+    pct_diff = sprintf("%+.1f%s", pct_diff, ifelse(abs(pct_diff) > 20, "*", ""))
+  ) |>
+  dplyr::rename(
+    "Regimen" = treatment,
+    "NCA parameter" = measure,
+    "Published GM (ug/mL)" = ref,
+    "Simulated GM (ug/mL)" = gm,
+    "% diff" = pct_diff
+  ) |>
+  knitr::kable(caption = "Geometric-mean exposures: simulated (200 virtual subjects per regimen) vs. Zhao 2026 Tables S6 and S8. * = more than 20% from the published value.")
+```
+
+```{r assert-exposures}
+stopifnot(
+  # A mis-transcribed clearance, volume, ka, F or unit conversion shifts
+  # every exposure by tens of percent.
+  abs(median(cmp$pct_diff)) < 10,
+  quantile(abs(cmp$pct_diff), 0.9) < 20
+)
+```
+
+Every published geometric mean in Tables S6 and S8 is reproduced to within
+about 10%, with the simulated values running a few percent low across
+all regimens alike. A uniform offset of that size is what a virtual
+cohort drawn from independent marginals (rather than the trial's own
+covariates and empirical Bayes estimates) is expected to give; it leaves
+the regimen and route comparisons, which are ratios, unaffected.
+
+```{r gmr}
+gmr <- sim_gm |>
+  dplyr::filter(measure %in% c("Cavgd28", "Cminss")) |>
+  tidyr::pivot_wider(names_from = treatment, values_from = gm) |>
+  dplyr::transmute(
+    measure,
+    `s.c. 1200 mg Q4W / i.v. 3 mg/kg Q2W` = `s.c. 1200 mg Q4W` / `i.v. 3 mg/kg Q2W`,
+    `s.c. 600 mg Q2W / i.v. 3 mg/kg Q2W` = `s.c. 600 mg Q2W` / `i.v. 3 mg/kg Q2W`
+  )
+gmr |>
+  dplyr::mutate(dplyr::across(-measure, \(x) round(x, 2))) |>
+  dplyr::rename("Exposure" = measure) |>
+  knitr::kable(caption = "Simulated geometric-mean ratios, subcutaneous vs. 3 mg/kg intravenous.")
+```
+
+The paper reports a CheckMate 67T geometric-mean ratio (from the
+individual Bayes estimates) of 2.098 for `Cavgd28` and 1.774 for `Cminss`
+for 1200 mg subcutaneous Q4W vs. 3 mg/kg intravenous Q2W, and simulated
+ratios of 1.64 and 2.20 for 600 mg subcutaneous Q2W (Table S7). Ratios
+from Table S6 itself are 78.8 / 37.7 = 2.09 and 126 / 71.5 = 1.76.
+
+```{r assert-gmr}
+stopifnot(
+  # Route comparison: subcutaneous exposure is roughly double the 3 mg/kg
+  # intravenous exposure for both co-primary endpoints.
+  all(gmr$`s.c. 1200 mg Q4W / i.v. 3 mg/kg Q2W` > 1.4),
+  all(gmr$`s.c. 1200 mg Q4W / i.v. 3 mg/kg Q2W` < 2.8)
+)
+```
+
+# Stage 1 vs. Stage 2
+
+Typical-value profiles (random effects set to zero) for the reference
+subject (80 kg, eGFR 90 mL/min/1.73 m^2, male, PS 0) show how little the
+CheckMate 67T re-estimation moved the pooled model. The Stage 2
+subcutaneous absorption is slightly slower and less complete (`ka` 0.295
+vs. 0.310 /day, `F` 0.788 vs. 0.815) and the eGFR exponent on clearance
+is larger (0.306 vs. 0.166). For the reference subject the two
+intravenous profiles coincide (the disposition estimates differ by at most
+a few percent), so the Stage 1 intravenous line is hidden under the
+Stage 2 one.
+
+```{r stage-compare, fig.cap = "Typical-value profiles of the Stage 1 (pooled) and Stage 2 (CheckMate 67T) models for the reference subject."}
+ref_subject <- data.frame(id = 1L, WT = 80, CRCL = 90, SEXF = 0, ECOG_GE1 = 0)
+
+typical <- function(mod, label, cmt, amt, tau, dur) {
+  ev <- if (dur > 0) {
+    rxode2::et(amt = amt, ii = tau, until = 168 - 1e-6, cmt = cmt, dur = dur)
+  } else {
+    rxode2::et(amt = amt, ii = tau, until = 168 - 1e-6, cmt = cmt)
+  }
+  ev <- rxode2::et(ev, seq(0, 168, by = 0.25), cmt = "central")
+  rxode2::rxSolve(rxode2::zeroRe(mod), ev, ref_subject, returnType = "data.frame") |>
+    dplyr::select(time, Cc) |>
+    dplyr::mutate(model = label)
+}
+
+stage_cmp <- dplyr::bind_rows(
+  typical(mod_pooled, "Stage 1 (pooled): s.c. 1200 mg Q4W", "depot", 1200, 28, 0),
+  typical(mod_ccrcc, "Stage 2 (ccRCC): s.c. 1200 mg Q4W", "depot", 1200, 28, 0),
+  typical(mod_pooled, "Stage 1 (pooled): i.v. 3 mg/kg Q2W", "central", 240, 14, 0.5 / 24),
+  typical(mod_ccrcc, "Stage 2 (ccRCC): i.v. 3 mg/kg Q2W", "central", 240, 14, 0.5 / 24)
+)
+
+ggplot(stage_cmp, aes(time, Cc, colour = model)) +
+  geom_line() +
+  labs(x = "Time (day)", y = "Nivolumab concentration (ug/mL)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(ncol = 2))
+```
+
+# Assumptions and deviations
+
+* **Two models, one paper.** The Stage 1 pooled model (Table S4) and the
+  Stage 2 CheckMate 67T model (Table S5) are separate fits to different
+  datasets and are packaged as separate files. The Stage 2 model is the
+  one the paper's exposures and bridging come from.
+* **Reference body weight 80 kg.** Tables S4 and S5 and Figure S1 define
+  the reference subject at 80 kg; the Data S1 equation legend says
+  "WTB [75 kg]". The table value is used because it is the reference at
+  which the printed estimates are defined, and it matches the control
+  streams of the companion pre-specified model (`Zhao_2025_nivolumab`,
+  `BBWT_R = 80`).
+* **Additive IIV on EMAX.** Data S1 prints
+  `Emax_i = Emax_REF + e^(eta_Emax,i)`. Read literally, a subject at
+  `eta = 0` would have `Emax = -0.260 + 1 = 0.740`, a 2.1-fold *increase*
+  in clearance over time, contradicting the reported decline. The
+  exponent is taken as a typesetting slip for the additive form
+  `Emax_i = Emax_REF + eta_Emax,i`, which is how the same group's control
+  streams code it (`EMAX = AEMAX + ZEMAX`, `Zhao_2025_nivolumab`;
+  `Bajaj_2017_nivolumab` Eq. 3). `cl_time_max` therefore stays on the
+  linear scale (it is signed and carries an additive eta) and the
+  convention check's "should be log-transformed" warning on it is
+  expected.
+* **No IIV on Q; no body-weight effect on Q or VP.** Data S1 lists Q among
+  the parameters with IIV and says Q and VP are "expressed as a function
+  of the WTB", but its printed equations are `Q_i = Q_REF` and
+  `VP_i = VP_REF x e^(eta_VP,i)`, and neither table reports an omega for Q
+  or a weight exponent on Q or VP. The equations and tables are followed.
+  Table S4 Note 2 ("Between-subject variability in Q and VP and the
+  covariance between Q and VP were fixed to the corresponding values as
+  CL0 and VC") conflicts with the estimated `ZVP` in the same table and is
+  not implemented.
+* **Albumin not in the model.** The Data S1 CL0 equation includes a
+  baseline-albumin power term, but the Data S1 list of final-model
+  covariate effects omits it and neither table reports an albumin
+  exponent. Albumin is documented in `covariatesDataExcluded` of the
+  Stage 2 model.
+* **Theta numbering gaps.** Table S4 numbers its fixed effects theta1-10,
+  12-15, 17, 18, 26 and 27, and Table S5 theta1-16, 19 and 20. Table S5's
+  gap (theta17-18) corresponds to the albumin slots of the generic
+  equation; Table S4's gaps are not explained. The Table S4 reference
+  subject lists no tumour type, so the Stage 1 model is taken to have no
+  tumour-type effects (unlike `Zhao_2025_nivolumab`), and only the
+  printed parameters are implemented.
+* **`F1_PS` held at 1.00.** Both tables list a performance-status factor
+  on bioavailability marked as not estimated with value 1.00. It is
+  carried as `e_ecog_ge1_fdepot <- fixed(1)` so the provenance is kept;
+  it has no effect.
+* **Residual error is an SD.** The proportional residual error is reported
+  as theta10 rather than as a sigma, i.e. as the proportional standard
+  deviation (the companion control streams fix `$SIGMA 1` and multiply
+  the prediction by this THETA).
+* **Stage 1 study count.** The main text says Stage 1 pooled 17 historical
+  intravenous studies with CheckMate 8KX; Table S2 lists 19 intravenous
+  studies. The packaged population metadata sums Table S2.
+* **Virtual cohort.** Covariates are drawn independently from the Table 1
+  marginals; the paper used the observed CheckMate 67T covariates and
+  empirical Bayes estimates, so exact agreement with Tables S6 and S8 is
+  not expected.
+* **Indication bridging not reproduced.** Figures 3 and 4 rely on earlier
+  indication-specific intravenous popPK models that the paper does not
+  report.
+* No erratum to the paper was found (searched 2026-11-17).

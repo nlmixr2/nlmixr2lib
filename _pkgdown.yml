@@ -6046,12 +6046,16 @@ navbar:
         href: articles/Zhang_2019b_nivolumab.html
       - text: "Nivolumab (Zhao 2025)"
         href: articles/Zhao_2025_nivolumab.html
+      - text: "Nivolumab ccrcc (Zhao 2026)"
+        href: articles/Zhao_2026_nivolumab.html
       - text: "Nivolumab ipilimumab imae (Du 2024)"
         href: articles/Du_2024_nivolumab_ipilimumab.html
       - text: "Nivolumab ipilimumab orr (Sangro 2023)"
         href: articles/Sangro_2023_nivolumab_ipilimumab_hcc.html
       - text: "Nivolumab ipilimumab os (Sangro 2023)"
         href: articles/Sangro_2023_nivolumab_ipilimumab_hcc.html
+      - text: "Nivolumab pooled (Zhao 2026)"
+        href: articles/Zhao_2026_nivolumab.html
       - text: "Nivolumab qsp (RuizMartinez 2022)"
         href: articles/RuizMartinez_2022_nivolumab_qsp.html
       - text: "Nivolumab qsp (Shchelokov 2023)"
@@ -12965,6 +12969,7 @@ articles:
   - articles/Zhao_2025b_paracetamol_painrelief
   - articles/Zhao_2026_durvalumab
   - articles/Zhao_2026_infliximab
+  - articles/Zhao_2026_nivolumab
   - articles/Zhao_2026_venetoclax
   - articles/Zheng_2012_minipig_mab
   - articles/Zheng_2014_azithromycin

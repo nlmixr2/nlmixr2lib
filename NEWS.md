@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yu 2026 dexamethasone mPBPK with cortisol and glucose PD ([doi:10.1007/s11095-026-04120-5](https://doi.org/10.1007/s11095-026-04120-5)) -- horses (meta-analysis of 12 studies; IV, IM, oral and intra-articular dosing).
+- Add Zhao 2026 subcutaneous and intravenous nivolumab, Stage 1 pooled and Stage 2 CheckMate 67T popPK models ([doi:10.1002/cpt.70481](https://doi.org/10.1002/cpt.70481)) -- adults with advanced solid tumours (pooled) and previously treated advanced or metastatic clear-cell renal cell carcinoma (CheckMate 67T).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
