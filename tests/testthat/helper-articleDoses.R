@@ -20,7 +20,7 @@
 # or built some other way. The result is a lower bound.
 
 # The R code of an article, parsed, with magrittr pipes nested.
-.articleExprs <- function(rmd) {
+.articleDoseExprs <- function(rmd) {
   out <- tempfile(fileext = ".R")
   on.exit(unlink(out))
   # purl() evaluates chunk options, and one that reads an article variable
@@ -29,16 +29,16 @@
     invisible(suppressMessages(knitr::purl(rmd, output = out, quiet = TRUE, documentation = 0L))),
     type = "message"
   )
-  lapply(parse(out, keep.source = FALSE), .unpipe)
+  lapply(parse(out, keep.source = FALSE), .articleDoseUnpipe)
 }
 
 # `lhs %>% f(x)` becomes `f(lhs, x)`; `lhs %>% f` becomes `f(lhs)`.
-.unpipe <- function(e) {
+.articleDoseUnpipe <- function(e) {
   if (!is.call(e)) {
     return(e)
   }
   for (i in seq_along(e)[-1]) {
-    if (is.call(e[[i]])) e[[i]] <- .unpipe(e[[i]])
+    if (is.call(e[[i]])) e[[i]] <- .articleDoseUnpipe(e[[i]])
   }
   if (identical(e[[1]], as.name("%>%")) && length(e) == 3L) {
     rhs <- e[[3]]
@@ -735,7 +735,7 @@
 #'   `record`, the record's code.
 #' @noRd
 articleDoseCmts <- function(rmd, models) {
-  exprs <- .articleExprs(rmd)
+  exprs <- .articleDoseExprs(rmd)
   vars <- list()
   for (e in exprs) {
     vars <- .stringVarsIn(e, vars)
