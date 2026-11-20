@@ -304,6 +304,8 @@ navbar:
         href: articles/Taddio_2018_hepatobiliary_transport_pet_pbpk.html
       - text: "Amatuximab (Gupta 2016)"
         href: articles/Gupta_2016_amatuximab.html
+      - text: "Ambrisentan (Miura 2026)"
+        href: articles/Miura_2026_pulmonary_arterial_hypertension.html
       - text: "Amcenestrant (Cerou 2024)"
         href: articles/Cerou_2024_amcenestrant.html
       - text: "Amcenestrant ameera12 (Cerou 2024)"
@@ -1106,6 +1108,8 @@ navbar:
         href: articles/Kim_2024_borofalan.html
       - text: "Bortezomib (Hanley 2017)"
         href: articles/Hanley_2017_bortezomib.html
+      - text: "Bosentan (Miura 2026)"
+        href: articles/Miura_2026_pulmonary_arterial_hypertension.html
       - text: "Bosentan pbpk (Aoki 2024)"
         href: articles/Aoki_2024_bosentan_pbpk.html
       - text: "Bosutinib (Wu 2026)"
@@ -7992,6 +7996,8 @@ navbar:
         href: articles/Narwal_2013_sifalimumab.html
       - text: "Sifalimumab (Zheng 2016)"
         href: articles/Zheng_2016_sifalimumab.html
+      - text: "Sildenafil (Miura 2026)"
+        href: articles/Miura_2026_pulmonary_arterial_hypertension.html
       - text: "Sildenafil (Rhee 2022)"
         href: articles/Rhee_2022_sildenafil.html
       - text: "Sildenafil dog (Yata 2026)"
@@ -8384,8 +8390,8 @@ navbar:
         href: articles/Sikma_2020_tacrolimus_unbound_plasma.html
       - text: "Tadalafil (FergusonSells 2022)"
         href: articles/FergusonSells_2022_tadalafil.html
-      - text: "Tafamidis qsp (Ulaszek 2026)"
-        href: articles/Ulaszek_2026_tafamidis.html
+      - text: "Tadalafil (Miura 2026)"
+        href: articles/Miura_2026_pulmonary_arterial_hypertension.html
       - text: "Tafenoquine (Charles 2007)"
         href: articles/Charles_2007_tafenoquine.html
       - text: "Tafenoquine (Edstein 2001)"
@@ -11623,6 +11629,7 @@ articles:
   - articles/Minichmayr_2025_nafld_histology
   - articles/Minucci_2024_CART_qsp
   - articles/Mitra_2026_ziftomenib
+  - articles/Miura_2026_pulmonary_arterial_hypertension
   - articles/Miyagi_2011_ugt1a1_ugt1a6_hepatic_ontogeny
   - articles/Miyano_2022_atopicDermatitis_qsp
   - articles/Mizaki_2023_mycophenolic_acid

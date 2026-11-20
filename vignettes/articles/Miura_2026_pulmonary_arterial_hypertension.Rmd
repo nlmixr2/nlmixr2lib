@@ -1,0 +1,530 @@
+---
+title: "Sildenafil, tadalafil, bosentan and ambrisentan in paediatric and adult PAH (Miura 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sildenafil, tadalafil, bosentan and ambrisentan in paediatric and adult PAH (Miura 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Miura et al. (2026) fitted four independent one-compartment population PK
+models with first-order absorption to routine clinical plasma concentrations
+from Japanese paediatric (< 15 years) and adult (>= 15 years) patients with
+pulmonary arterial hypertension (PAH): two phosphodiesterase-5 inhibitors
+(sildenafil, tadalafil) and two endothelin receptor antagonists (bosentan,
+ambrisentan). Each drug is packaged as its own model.
+
+* Citation: `r rxode2::rxode(readModelDb("Miura_2026_sildenafil"))$reference`
+* Article: <https://doi.org/10.1002/bcp.70676>
+
+```{r load-models}
+drugs <- c("sildenafil", "tadalafil", "bosentan", "ambrisentan")
+mods <- setNames(
+  lapply(paste0("Miura_2026_", drugs), function(n) rxode2::rxode(readModelDb(n))),
+  drugs
+)
+for (d in drugs) {
+  cat(sprintf("Miura_2026_%s: %s\n\n", d, mods[[d]]$description))
+}
+```
+
+# Population
+
+The analysis pooled 35 paediatric and 16 adult Japanese patients with PAH
+treated at Hamamatsu University Hospital and Seirei Hamamatsu Hospital. Each
+drug's model was fitted to the patients receiving it (Table 1): sildenafil 24
+patients (15 paediatric / 9 adult, 297 concentrations), tadalafil 31 (20 / 11,
+157), bosentan 16 (7 / 9, 189) and ambrisentan 29 (18 / 11, 177). Paediatric
+median ages were 1.8-5.0 years (range 0.1-14.8) and median body weights
+10.1-16.5 kg; adult median weights were 48.5-52.3 kg. Most patients were female
+(61-69%). Concentrations came from routine clinical sampling, some of it from
+two earlier steady-state studies, and were measured in patients on
+monotherapy or on combinations of a PDE-5 inhibitor and an endothelin receptor
+antagonist.
+
+```{r population}
+pop_tbl <- bind_rows(lapply(drugs, function(d) {
+  p <- mods[[d]]$population
+  tibble(
+    Drug = d,
+    N = p$n_subjects,
+    Concentrations = p$n_observations,
+    `Age (years)` = p$age_range,
+    `Weight median (kg)` = p$weight_median,
+    `Female (%)` = p$sex_female_pct
+  )
+}))
+knitr::kable(pop_tbl)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. The
+table collects them. All structural and covariate values are from Table 2
+(sildenafil, tadalafil) and Table 3 (bosentan, ambrisentan); the covariate
+equations are the footnotes of those tables.
+
+| Drug | Parameter | Value | Source |
+|------|-----------|-------|--------|
+| sildenafil | `lka` | log(4.51), not estimated | Table 2 (literature value, ref 25) |
+| sildenafil | `lcl` | log(60.6) L/h | Table 2 |
+| sildenafil | `lvc` | log(322) L | Table 2 |
+| sildenafil | `e_wt_cl` | 0.537 | Table 2, Effect of BW |
+| sildenafil | `e_conmed_bosentan_cl` | 0.633 | Table 2, Effect of BOS |
+| sildenafil | `etalcl`, `etalvc` | 0.563^2, 0.255^2 | Table 2, IIV 56.3%, 25.5% |
+| sildenafil | `propSd` | 0.585 | Table 2, epsilon 1 58.5% |
+| tadalafil | `lka` | log(0.84), not estimated | Table 2 (literature value, ref 26) |
+| tadalafil | `lcl` | log(1.76) L/h | Table 2 |
+| tadalafil | `lvc` | log(80.6) L | Table 2 |
+| tadalafil | `e_wt_cl` | 0.602 | Table 2, Effect of BW |
+| tadalafil | `e_conmed_spiron_cl` | -0.400 | Table 2, Effect of SPI |
+| tadalafil | `etalcl`, `etalvc` | 0.372^2, 0.676^2 | Table 2, IIV 37.2%, 67.6% |
+| tadalafil | `propSd` | 0.333 | Table 2, epsilon 1 33.3% |
+| bosentan | `lka` | log(2.47) 1/h | Table 3 |
+| bosentan | `lcl` | log(8.85) L/h | Table 3 |
+| bosentan | `lvc` | log(41.0) L | Table 3 |
+| bosentan | `ltlag` | log(0.379) h | Table 3, absorption lag time |
+| bosentan | `e_wt_cl` | 0.472 | Table 3, Effect of BW |
+| bosentan | `e_alt_cl` | -0.203 | Table 3, Effect of ALT |
+| bosentan | `etalcl`, `etalvc` | 0.329^2, 0.297^2 | Table 3, IIV 32.9%, 29.7% |
+| bosentan | `propSd` | 0.590 | Table 3, epsilon 1 59.0% |
+| ambrisentan | `lka` | log(1.03) 1/h | Table 3 |
+| ambrisentan | `lcl` | log(0.594) L/h | Table 3 |
+| ambrisentan | `lvc` | log(12.4) L | Table 3 |
+| ambrisentan | `e_wt_cl` | 0.561 | Table 3, Effect of BW |
+| ambrisentan | `etalcl`, `etalvc` | 0.608^2, 0.392^2 | Table 3, IIV 60.8%, 39.2% |
+| ambrisentan | `propSd` | 0.358 | Table 3, epsilon 1 35.8% |
+| all | weight centring (BWmedian) | 32.3 / 14.2 / 42.2 / 13.4 kg | Table 1 per-drug median body weight |
+| bosentan | ALT centring (ALTmedian) | 16.5 IU/L | Table 1 bosentan median ALT |
+| all | structure | one compartment, first-order absorption, proportional error | Methods; Results |
+
+The CL/F equations, from the Table 2 and Table 3 footnotes, are
+
+- sildenafil: CL/F = 60.6 x (BW/BWmedian)^0.537 x (1 + 0.633)^Bosentan
+- tadalafil: CL/F = 1.76 x (BW/BWmedian)^0.602 x (1 - 0.400)^Spironolactone
+- bosentan: CL/F = 8.85 x (BW/BWmedian)^0.472 x (ALT/ALTmedian)^-0.203
+- ambrisentan: CL/F = 0.594 x (BW/BWmedian)^0.561
+
+For a 0/1 indicator, (1 + 0.633)^Bosentan equals 1 + 0.633 x Bosentan, which is
+how the packaged models write it. Vd/F has no covariates in any of the four
+models (the authors did not search covariates on Vd/F because of its high
+shrinkage).
+
+# Clinical dosage
+
+The paper evaluates each drug at its Japanese clinical dosage (Methods,
+"Definition of clinical dosage"). The daily doses below are the paper's; the
+dosing intervals are the labelled ones (sildenafil three times daily,
+bosentan twice daily, tadalafil and ambrisentan once daily). The average
+steady-state concentration does not depend on the interval.
+
+```{r dosing-rules}
+tau <- c(sildenafil = 8, tadalafil = 24, bosentan = 12, ambrisentan = 24)
+
+daily_dose <- function(drug, age, wt, adult) {
+  switch(drug,
+    sildenafil = ifelse(adult, 60,
+      ifelse(age < 1 | wt < 8, 3 * wt, ifelse(wt >= 20, 60, 30))
+    ),
+    tadalafil = ifelse(adult, 40, 1 * wt),
+    bosentan = ifelse(adult, 250, 4 * wt),
+    ambrisentan = ifelse(adult, 10, ifelse(age >= 8, 5, 0.2 * wt))
+  )
+}
+```
+
+# Typical-value steady-state concentration
+
+The paper computes each patient's steady-state concentration as
+Css = Dose / (CL/F), with CL/F from the patient's Bayesian estimate. With the
+individual estimates unavailable, the closest deterministic check is the
+typical patient at the Table 1 median age and weight of each age group, with no
+interacting comedication and the median ALT (16.5 IU/L). The typical subjects
+are solved to steady state with the ODE model and the average concentration
+over the last dosing interval is taken with PKNCA.
+
+```{r typical-subjects}
+tbl1 <- tribble(
+  ~drug, ~group, ~AGE, ~WT,
+  "sildenafil", "Paediatric", 5.0, 16.5,
+  "sildenafil", "Adult", 47, 48.5,
+  "tadalafil", "Paediatric", 1.9, 10.7,
+  "tadalafil", "Adult", 37.8, 52.3,
+  "bosentan", "Paediatric", 4.8, 12,
+  "bosentan", "Adult", 47, 48.5,
+  "ambrisentan", "Paediatric", 1.8, 10.1,
+  "ambrisentan", "Adult", 44.6, 51.4
+)
+
+# Figure 5 / Results text: median Css (ng/mL) of the Bayesian individual
+# estimates in each group.
+fig5 <- tribble(
+  ~drug, ~group, ~cav,
+  "sildenafil", "Paediatric", 25.4,
+  "sildenafil", "Adult", 34.3,
+  "tadalafil", "Paediatric", 461,
+  "tadalafil", "Adult", 768,
+  "bosentan", "Paediatric", 339,
+  "bosentan", "Adult", 1221,
+  "ambrisentan", "Paediatric", 164,
+  "ambrisentan", "Adult", 298
+)
+
+# Steady state: 28 days of dosing for the short half-life drugs, 56 days for
+# tadalafil and ambrisentan; observations over the final interval only.
+run_days <- c(sildenafil = 28, tadalafil = 56, bosentan = 28, ambrisentan = 56)
+
+build_events <- function(drug, subj, dt) {
+  n_dose <- run_days[[drug]] * 24 / tau[[drug]]
+  t_last <- (n_dose - 1) * tau[[drug]]
+  obs_t <- t_last + seq(0, tau[[drug]], by = dt)
+  bind_rows(lapply(seq_len(nrow(subj)), function(i) {
+    s <- subj[i, ]
+    amt <- s$daily_dose * tau[[drug]] / 24
+    bind_rows(
+      tibble(time = (seq_len(n_dose) - 1) * tau[[drug]], amt = amt, evid = 1L, cmt = "depot"),
+      tibble(time = obs_t, amt = 0, evid = 0L, cmt = "central")
+    ) |>
+      mutate(id = s$id, WT = s$WT, ALT = s$ALT,
+             CONMED_BOSENTAN = s$CONMED_BOSENTAN, CONMED_SPIRON = s$CONMED_SPIRON)
+  })) |>
+    arrange(id, time, desc(evid)) |>
+    mutate(t_last = t_last)
+}
+
+typ <- tbl1 |>
+  mutate(
+    adult = group == "Adult",
+    ALT = 16.5, CONMED_BOSENTAN = 0, CONMED_SPIRON = 0
+  ) |>
+  rowwise() |>
+  mutate(daily_dose = daily_dose(drug, AGE, WT, adult)) |>
+  ungroup()
+
+# One solve per typical subject: a single-subject solve of the zeroRe() model
+# needs no omega and returns no `id` column.
+solve_typical <- function(d, subj) {
+  ev <- build_events(d, subj, dt = 0.05)
+  out <- rxode2::rxSolve(
+    rxode2::zeroRe(mods[[d]]), events = ev,
+    rtol = 1e-10, atol = 1e-12, maxsteps = 1e6,
+    returnType = "data.frame"
+  )
+  stopifnot(is.null(out$id) || all(out$id == subj$id))
+  out |>
+    mutate(
+      drug = d, group = subj$group, id = subj$id,
+      daily_dose = subj$daily_dose, tad = time - unique(ev$t_last)
+    ) |>
+    select(drug, group, id, tad, Cc, cl, daily_dose)
+}
+
+sim_typ <- bind_rows(lapply(drugs, function(d) {
+  subj <- typ |> filter(drug == d) |> mutate(id = row_number())
+  bind_rows(lapply(seq_len(nrow(subj)), function(i) solve_typical(d, subj[i, ])))
+}))
+```
+
+```{r typical-pknca}
+conc_typ <- sim_typ |>
+  filter(!is.na(Cc)) |>
+  mutate(subj = paste(drug, group)) |>
+  select(drug, group, subj, tad, Cc)
+dose_typ <- sim_typ |>
+  distinct(drug, group, daily_dose) |>
+  mutate(subj = paste(drug, group), tad = 0, amt = daily_dose * tau[drug] / 24)
+int_typ <- dose_typ |>
+  transmute(drug, group, subj, start = 0, end = tau[drug], cav = TRUE, cmax = TRUE, tmax = TRUE)
+
+nca_typ <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_typ, Cc ~ tad | drug + group + subj),
+  PKNCA::PKNCAdose(dose_typ, amt ~ tad | drug + group + subj),
+  intervals = as.data.frame(int_typ)
+))
+
+typ_res <- as.data.frame(nca_typ) |>
+  filter(PPTESTCD %in% c("cav", "cmax", "tmax")) |>
+  select(drug, group, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(
+    sim_typ |> distinct(drug, group, daily_dose, cl),
+    by = c("drug", "group")
+  ) |>
+  mutate(css_closed = 1000 * daily_dose / 24 / cl) |>
+  left_join(fig5 |> rename(cav_fig5 = cav), by = c("drug", "group")) |>
+  mutate(pct_vs_fig5 = 100 * (cav / cav_fig5 - 1))
+
+# The ODE steady state reproduces Css = Dose / (CL/F) for every typical
+# subject (same parameters both sides: numerical error only).
+stopifnot(all(abs(typ_res$cav / typ_res$css_closed - 1) < 0.005))
+
+typ_res |>
+  mutate(drug = factor(drug, drugs), group = factor(group, c("Paediatric", "Adult"))) |>
+  arrange(drug, group) |>
+  transmute(
+    Drug = drug, Group = group,
+    `Daily dose (mg)` = signif(daily_dose, 3),
+    `CL/F (L/h)` = signif(cl, 3),
+    `Cmax (ng/mL)` = signif(cmax, 3),
+    `Cavg simulated (ng/mL)` = signif(cav, 3),
+    `Dose/CL (ng/mL)` = signif(css_closed, 3),
+    `Figure 5 median (ng/mL)` = cav_fig5,
+    `% vs Figure 5` = round(pct_vs_fig5)
+  ) |>
+  knitr::kable()
+```
+
+```{r typical-assert}
+# Sildenafil, bosentan and ambrisentan: the typical patient lands within 25%
+# of the published group median in both age groups. These solves are
+# deterministic (no random effects), so the bound is reproducible. Tadalafil
+# is discussed below and is not asserted.
+chk <- typ_res |> filter(drug != "tadalafil")
+stopifnot(all(abs(chk$pct_vs_fig5) < 25))
+```
+
+For sildenafil, bosentan and ambrisentan the typical patient's Css is within
+25% of the published median in both age groups, and for ambrisentan within a
+few percent. For tadalafil the typical patient (no spironolactone) is about 35%
+(paediatric) and 45% (adult) below the published medians. Spironolactone
+lowers tadalafil CL/F by 40%; with it the typical adult Css is about 720 ng/mL,
+close to the published 768 ng/mL, so the gap is consistent with a high share
+of spironolactone users among the patients behind Figure 5 (13 of 31 overall;
+the split by age group is not reported). The paper does not print the
+numerical BWmedian used for centring, and the Table 1 per-drug median is
+assumed (see Assumptions).
+
+```{r typical-profile, fig.cap = "Typical-patient steady-state profiles over one dosing interval at the clinical dosage (no interacting comedication, ALT 16.5 IU/L)."}
+ggplot(sim_typ, aes(tad, Cc, colour = group)) +
+  geom_line() +
+  facet_wrap(~ factor(drug, drugs), scales = "free") +
+  labs(x = "Time after dose (h)", y = "Concentration (ng/mL)", colour = NULL) +
+  theme_bw()
+```
+
+# Virtual cohort and Figure 5
+
+Figure 5 compares the Bayesian steady-state concentrations of the actual
+paediatric and adult patients. The replication below draws 100 virtual
+paediatric and 100 virtual adult patients per drug from the Table 1
+demographics and simulates the clinical dosage to steady state with
+between-subject variability.
+
+```{r cohort}
+rxode2::rxSetSeed(20261118)
+set.seed(20261118)
+
+# CDC 2000 50th-percentile weight-for-age, sexes averaged (cohort construction
+# only, not a model parameter). Used only to order ages by weight.
+cdc_age_yr <- c(c(0, 1, 2, 3, 4, 6, 9, 12, 18, 24) / 12, 3:18)
+cdc_wt_kg <- c(
+  3.4, 4.4, 5.5, 6.3, 7.0, 7.9, 9.0, 9.9, 11.3, 12.5,
+  14.3, 16.3, 18.3, 20.7, 23.2, 26.0, 29.2, 32.7,
+  36.7, 41.3, 46.0, 50.6, 54.6, 58.0, 60.6, 62.6
+)
+age_for_wt <- function(wt) stats::approx(cdc_wt_kg, cdc_age_yr, xout = wt, rule = 2)$y
+
+ranges <- tribble(
+  ~drug, ~ped_age_med, ~ped_age_lo, ~ped_age_hi, ~ped_wt_med, ~ped_wt_lo, ~ped_wt_hi, ~ad_wt_med, ~ad_wt_lo, ~ad_wt_hi, ~p_bos, ~p_spi,
+  "sildenafil", 5.0, 0.4, 14.8, 16.5, 6.5, 54.9, 48.5, 37.4, 58.7, 11 / 24, 0,
+  "tadalafil", 1.9, 0.1, 8.3, 10.7, 5.4, 23.9, 52.3, 32.5, 73.5, 0, 13 / 31,
+  "bosentan", 4.8, 2.2, 9.2, 12, 6.9, 54.9, 48.5, 38.5, 58.7, 0, 0,
+  "ambrisentan", 1.8, 0.4, 8.8, 10.1, 7.1, 21.6, 51.4, 37.4, 62, 0, 0
+)
+
+n_per_group <- 100L
+clamp <- function(x, lo, hi) pmin(pmax(x, lo), hi)
+
+make_cohort <- function(r) {
+  # Children with PAH are light for their age, so paediatric weight is drawn
+  # around the Table 1 paediatric median directly; age follows weight along
+  # the CDC curve, rescaled so the median weight maps to the median age.
+  ped_wt <- clamp(r$ped_wt_med * exp(stats::rnorm(n_per_group, 0, 0.35)), r$ped_wt_lo, r$ped_wt_hi)
+  ped_age <- clamp(
+    r$ped_age_med * age_for_wt(ped_wt) / age_for_wt(r$ped_wt_med),
+    r$ped_age_lo, r$ped_age_hi
+  )
+  ad_wt <- clamp(r$ad_wt_med * exp(stats::rnorm(n_per_group, 0, 0.15)), r$ad_wt_lo, r$ad_wt_hi)
+  tibble(
+    drug = r$drug,
+    group = rep(c("Paediatric", "Adult"), each = n_per_group),
+    adult = group == "Adult",
+    AGE = c(ped_age, stats::runif(n_per_group, 18, 70)),
+    WT = c(ped_wt, ad_wt),
+    ALT = clamp(16.5 * exp(stats::rnorm(2 * n_per_group, 0, 0.4)), 7, 50),
+    CONMED_BOSENTAN = stats::rbinom(2 * n_per_group, 1, r$p_bos),
+    CONMED_SPIRON = stats::rbinom(2 * n_per_group, 1, r$p_spi)
+  ) |>
+    mutate(id = row_number(), daily_dose = daily_dose(r$drug, AGE, WT, adult))
+}
+cohort <- bind_rows(lapply(seq_len(nrow(ranges)), function(i) make_cohort(ranges[i, ])))
+
+cohort |>
+  group_by(drug = factor(drug, drugs), group) |>
+  summarise(
+    `Median WT (kg)` = round(median(WT), 1),
+    `WT range (kg)` = paste(round(range(WT), 1), collapse = "-"),
+    `Median daily dose (mg)` = signif(median(daily_dose), 3),
+    .groups = "drop"
+  ) |>
+  knitr::kable()
+```
+
+```{r cohort-sim}
+sim <- bind_rows(lapply(drugs, function(d) {
+  subj <- cohort |> filter(drug == d)
+  ev <- build_events(d, subj, dt = 0.25)
+  out <- rxode2::rxSolve(mods[[d]], events = ev, maxsteps = 1e6, returnType = "data.frame")
+  out |>
+    mutate(drug = d, tad = time - unique(ev$t_last)) |>
+    left_join(subj |> select(id, group, daily_dose), by = "id") |>
+    select(drug, group, id, tad, Cc, cl, daily_dose)
+}))
+```
+
+The steady-state concentration of each virtual patient, Css = Dose / (CL/F),
+is the quantity Figure 5 plots.
+
+```{r fig5, fig.cap = "Replicates Figure 5 of Miura 2026: steady-state concentration at the clinical dosage in paediatric and adult patients (virtual cohort, 100 per group). Whiskers span the 10th-90th percentiles as in the source figure; crosses mark the published group medians."}
+css <- sim |>
+  distinct(drug, group, id, cl, daily_dose) |>
+  mutate(css = 1000 * daily_dose / 24 / cl)
+
+box_stats <- css |>
+  group_by(drug, group) |>
+  summarise(
+    ymin = quantile(css, 0.1), lower = quantile(css, 0.25), middle = median(css),
+    upper = quantile(css, 0.75), ymax = quantile(css, 0.9), .groups = "drop"
+  )
+
+ggplot(box_stats, aes(x = factor(group, c("Paediatric", "Adult")))) +
+  geom_boxplot(
+    aes(ymin = ymin, lower = lower, middle = middle, upper = upper, ymax = ymax),
+    stat = "identity", fill = "grey85"
+  ) +
+  geom_point(data = fig5, aes(y = cav), shape = 4, size = 3, colour = "firebrick") +
+  facet_wrap(~ factor(drug, drugs), scales = "free_y", nrow = 1) +
+  labs(x = NULL, y = "Css (ng/mL)") +
+  theme_bw()
+```
+
+# PKNCA validation
+
+The simulated steady-state profiles of the virtual cohort are analysed over
+the last dosing interval with PKNCA, grouped by drug and age group. The
+average concentration (`cav`) is compared with the published medians from the
+Figure 5 text.
+
+```{r pknca}
+conc <- sim |>
+  filter(!is.na(Cc)) |>
+  select(drug, group, id, tad, Cc)
+dose <- sim |>
+  distinct(drug, group, id, daily_dose) |>
+  mutate(tad = 0, amt = daily_dose * tau[drug] / 24)
+intervals <- tibble(drug = drugs, start = 0, end = unname(tau[drugs]),
+                    cav = TRUE, cmax = TRUE, tmax = TRUE)
+
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc, Cc ~ tad | drug + group + id),
+  PKNCA::PKNCAdose(dose, amt ~ tad | drug + group + id),
+  intervals = as.data.frame(intervals)
+))
+
+nca_res <- as.data.frame(nca) |>
+  filter(PPTESTCD %in% c("cav", "cmax", "tmax"))
+
+nca_res |>
+  group_by(drug = factor(drug, drugs), group, PPTESTCD) |>
+  summarise(median = signif(median(PPORRES), 3), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  rename(
+    Drug = drug, Group = group,
+    `Median Cmax (ng/mL)` = cmax, `Median Tmax (h)` = tmax, `Median Cavg (ng/mL)` = cav
+  ) |>
+  knitr::kable()
+```
+
+```{r nca-compare}
+reference <- fig5 |>
+  mutate(drug_group = paste(drug, group)) |>
+  select(drug_group, cav)
+simulated <- nca_res |>
+  filter(PPTESTCD == "cav") |>
+  mutate(drug_group = paste(drug, group)) |>
+  select(drug_group, PPTESTCD, PPORRES)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated, reference,
+  by = "drug_group",
+  units = c(cav = "ng/mL")
+)
+knitr::kable(cmp)
+```
+
+The virtual-cohort medians fall within about 30% of the published medians for
+every drug and age group, with ambrisentan closest. Including the Table 1 share
+of spironolactone users lifts the tadalafil medians towards the published
+values compared with the typical patient without it, and including the share of
+bosentan users lowers the sildenafil medians. Lower paediatric than adult
+exposure at the clinical dosage is reproduced clearly for tadalafil, bosentan
+and ambrisentan; the paediatric deficit is largest for bosentan (4 mg/kg/day
+against a flat 250 mg/day with a weight exponent of 0.472). For sildenafil the
+virtual paediatric and adult medians are similar, against a 26% deficit in the
+paper that was itself not statistically significant (p = 0.064). How
+bosentan use, which raises sildenafil CL/F 1.63-fold, was split between the
+paper's children and adults is not reported, and the virtual cohort assigns it
+equally (see Assumptions).
+
+# Assumptions and deviations
+
+- **Weight and ALT centring values.** The covariate equations divide by
+  "BWmedian" and "ALTmedian" without printing the numbers. The per-drug Table 1
+  medians are used (body weight 32.3, 14.2, 42.2 and 13.4 kg; bosentan ALT
+  16.5 IU/L). Table 1 reports patient-level medians; if the authors centred on
+  a dataset-level (per-concentration) median, which would be weighted towards
+  the more densely sampled adults, the typical CL/F values would refer to a
+  heavier patient. The close agreement for ambrisentan, whose adults and
+  children are sampled in similar numbers, supports the Table 1 reading; the
+  tadalafil gap (above) is the case it explains least well.
+- **IIV and residual error scale.** Tables 2 and 3 give IIV and residual error
+  in percent; the footnote attributing the undefined lower confidence bound to
+  the square root of a negative variance shows the percentages are
+  100 x sqrt(omega^2). The variances are therefore (percent / 100)^2, and the
+  proportional residual SD is the percent / 100.
+- **Ka.** IIV on Ka is 0 in both tables, so no eta is attached to Ka. For
+  sildenafil (4.51 1/h) and tadalafil (0.84 1/h) the authors could not estimate
+  Ka and took literature values; these are encoded as `fixed()`. The bosentan
+  lag time has no IIV.
+- **ALT unit.** Table 1 prints ALT and AST in IU/mL, which is not a plausible
+  unit for values of 5-68; IU/L is assumed. ALT enters bosentan CL/F only as a
+  ratio to the cohort median, so the unit does not change the model.
+- **Dosing interval.** The paper gives daily doses only; the intervals used
+  (sildenafil every 8 h, bosentan every 12 h, tadalafil and ambrisentan every
+  24 h) follow the labels and do not affect the average concentration.
+- **Virtual cohort.** Paediatric weights are drawn log-normally (SD 0.35)
+  around the Table 1 paediatric median and clamped to its range; age follows
+  weight along the CDC 2000 weight-for-age curve, rescaled so the median weight
+  maps to the Table 1 median age, and is used only for the age-based dosing
+  rules. Adult weights are drawn around the adult median (SD 0.15). Concomitant
+  bosentan (sildenafil model) and spironolactone (tadalafil model) are assigned
+  at the overall Table 1 frequency in both age groups because the split by age
+  is not reported. ALT for the bosentan cohort is log-normal around 16.5 IU/L,
+  clamped to 7-50.
+- **Figure 5 comparison.** The published concentrations are Bayesian
+  individual estimates for the real patients; the virtual cohort and typical
+  patients can only approximate them.
+- **Errata.** No erratum or correction notice for this article was found as of
+  2026-11-18.

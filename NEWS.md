@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hu 2026 ceftazidime and avibactam ([doi:10.2147/DDDT.S632562](https://doi.org/10.2147/DDDT.S632562)) -- critically ill Chinese adults with carbapenem-resistant Gram-negative infection, with and without continuous renal replacement therapy.
+- Add Miura 2026 sildenafil, tadalafil, bosentan and ambrisentan ([doi:10.1002/bcp.70676](https://doi.org/10.1002/bcp.70676)) -- Japanese paediatric and adult patients with pulmonary arterial hypertension.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
