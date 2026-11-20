@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lee 2026 NP-011 ([doi:10.3390/pharmaceutics18091194](https://doi.org/10.3390/pharmaceutics18091194)) -- mice, rats and monkeys (IV bolus), with simple-allometry and MLP-corrected projections to a 70 kg human compared against Phase I healthy adults.
+- Add Cao 2026 tacrolimus ([doi:10.2147/DDDT.S623781](https://doi.org/10.2147/DDDT.S623781)) -- Chinese adults with membranous nephropathy on routine trough monitoring.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

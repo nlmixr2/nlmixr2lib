@@ -8234,6 +8234,8 @@ navbar:
         href: articles/Brooks_2021_tacrolimus.html
       - text: "Tacrolimus (Cai 2022)"
         href: articles/Cai_2022_tacrolimus.html
+      - text: "Tacrolimus (Cao 2026)"
+        href: articles/Cao_2026_tacrolimus.html
       - text: "Tacrolimus (Chamzas 2024)"
         href: articles/Chamzas_2024_tacrolimus.html
       - text: "Tacrolimus (Chen 2017)"
@@ -10148,6 +10150,7 @@ articles:
   - articles/Cao_2025_busulfan
   - articles/Cao_2025_ferricCarboxymaltose
   - articles/Cao_2026_lecanemab
+  - articles/Cao_2026_tacrolimus
   - articles/Capparelli_2005_cefepime
   - articles/Cardilin_2018_radiation_radiosensitizer_mouse
   - articles/CarlssonPetri_2015_liraglutide
