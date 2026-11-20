@@ -7478,6 +7478,8 @@ navbar:
         href: articles/Tan_2025_cabotegravir_rilpivirine.html
       - text: "Rilpivirine (Thoueille 2024)"
         href: articles/Thoueille_2024_rilpivirine.html
+      - text: "Riluzole (Liu 2026)"
+        href: articles/Liu_2026_riluzole.html
       - text: "Rimegepant (Comisar 2025)"
         href: articles/Comisar_2025_rimegepant.html
       - text: "Riociguat (Michalickova 2020)"
@@ -11496,7 +11498,7 @@ articles:
   - articles/Liu_2025_selpercatinib
   - articles/Liu_2025_tranexamicAcid
   - articles/Liu_2025_voriconazole
-  - articles/Liu_2026_meropenem
+  - articles/Liu_2026_riluzole
   - articles/Liva_2021_rec2282
   - articles/Livio_2014_tobramycin
   - articles/LlanosPaez_2017_gentamicin
