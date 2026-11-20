@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Barbolosi 2017 radioiodine ([doi:10.18632/oncotarget.16637](https://doi.org/10.18632/oncotarget.16637)), with the protocol simulations of Fusella Giuntini 2026 ([doi:10.1038/s41598-026-56267-1](https://doi.org/10.1038/s41598-026-56267-1)) -- patients with lung-metastatic papillary thyroid cancer treated with iodine-131.
+- Add Colin 2026 paediatric type 2 diabetes HbA1c meta-analysis (placebo, linagliptin, empagliflozin, alogliptin, exenatide, sitagliptin, saxagliptin, dapagliflozin) ([doi:10.1002/cpt.70468](https://doi.org/10.1002/cpt.70468)) -- patients aged 10 years and older with type 2 diabetes in EMA paediatric trials.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

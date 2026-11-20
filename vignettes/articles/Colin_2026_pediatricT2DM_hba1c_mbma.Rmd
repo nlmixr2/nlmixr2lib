@@ -1,0 +1,522 @@
+---
+title: "HbA1c in paediatric type 2 diabetes trials (Colin 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{HbA1c in paediatric type 2 diabetes trials (Colin 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Colin, Manolis and Koomen (2026) pooled the individual participant data of
+the paediatric type 2 diabetes trials that supported EU extensions of
+indication for seven antihyperglycaemic drugs, and fitted a longitudinal
+disease-progression model of HbA1c in the tradition of Holford: a baseline
+`S0`, a linear progression `S0 * alpha * t`, and a symptomatic response that
+reaches a fraction `expit(theta + dTRT)` of baseline with a half-life of
+onset. Placebo has `dTRT = 0`; each drug has its own placebo-corrected shift
+`dTRT` on the logit scale. The model was then used for clinical trial
+simulations of sample size.
+
+```{r load-model}
+mod <- suppressWarnings(rxode2::rxode(readModelDb("Colin_2026_pediatricT2DM_hba1c_mbma")))
+```
+
+* Citation: `r mod$reference`
+* Description: `r mod$description`
+* Article: <https://doi.org/10.1002/cpt.70468> (open access; the supplement
+  holds the NONMEM control stream and final estimates as Text S1)
+
+Loading the model prints an rxode2 note that `etalslope` and
+`eta_study_lslope` are not mu-referenced. That is expected: the two etas
+enter the progression rate through a Box-Cox transform, which cannot be
+written as `lslope + eta`.
+
+# Population
+
+Seven products had individual patient listings in the EMA database (Table S1):
+the DPP-4 inhibitors linagliptin, alogliptin, sitagliptin and saxagliptin,
+the SGLT2 inhibitors empagliflozin and dapagliflozin, and the GLP-1 receptor
+agonist exenatide (once weekly). Linagliptin and empagliflozin shared one
+trial, so the data come from six studies. In all, 809 participants (456 on
+active treatment) contributed 3295 HbA1c observations; the final model
+excludes seven influential participants. Participants had a mean (SD) age of
+14.6 (2.16) years, weight of 90.0 (27.2) kg and BMI-for-age z-score of 2.85
+(1.27); 62% were female; the median time since diagnosis was 2.2 years (IQR
+1.0-3.7). Background therapy was metformin (41%), metformin and insulin
+(31%), insulin (10%) or none (18%). Per-study characteristics are in Table 1.
+
+The same information is available programmatically:
+
+```{r population}
+str(mod$population)
+```
+
+# Source trace
+
+All values are the final NONMEM estimates printed in Text S1 of the
+supplement; Table 2 reports the same estimates back-transformed and rounded.
+
+| Parameter / equation | Value | Source location |
+|---|---|---|
+| `lrbase` | 2.01 (7.46 %) | Text S1 TH1; Table 2 beta0 |
+| `e_conmed_insulin_rbase` | 0.108 (1.11-fold) | Text S1 TH6; Table 2 beta1 |
+| `e_t_diag_diab_rbase` | 0.0121 (1.012-fold per year) | Text S1 TH8; Table 2 beta2 |
+| `lslope` | -2.05 (0.129 per year) | Text S1 TH2; Table 2 beta3 |
+| `e_conmed_insulin_slope` | 0.545 (1.72-fold) | Text S1 TH7; Table 2 beta4 |
+| `boxcox_lslope` | -0.315 | Text S1 TH16; Table 2 beta6 |
+| `logitpbo` | -2.61 (0.07) | Text S1 TH3; Table 2 theta |
+| `lthalf_onset` | 3.87 (47.9 day = 6.85 weeks) | Text S1 TH4; Table 2 beta5 |
+| `e_trt_linagliptin_logitpbo` | 0.265 | Text S1 TH9; Table 2 dTRT,1 |
+| `e_trt_empagliflozin_logitpbo` | 1.03 | Text S1 TH10; Table 2 dTRT,2 |
+| `e_trt_alogliptin_logitpbo` | 0.532 | Text S1 TH11; Table 2 dTRT,3 |
+| `e_trt_exenatide_logitpbo` | 1.28 | Text S1 TH12; Table 2 dTRT,4 |
+| `e_trt_sitagliptin_logitpbo` | 0.377 | Text S1 TH13; Table 2 dTRT,5 |
+| `e_trt_saxagliptin_logitpbo` | 0.971 | Text S1 TH14; Table 2 dTRT,6 |
+| `e_trt_dapagliflozin_logitpbo` | 0.954 | Text S1 TH15; Table 2 dTRT,7 |
+| `etalrbase`, `etalslope`, `etalogitpbo` block | 0.0212; 0.0277, 4.18; 0.0333, 1.69, 1.91 | Text S1 OMEGA, ETA1-ETA3 |
+| `eta_study_lrbase`, `eta_study_lslope` block | 4.77e-4; 1.85e-3, 0.0120 | Text S1 OMEGA, ETA4-ETA5 |
+| `expSd` | sqrt(3.42e-3) = 0.0585 | Text S1 SIGMA |
+| Baseline `S0` | `exp(lrbase + eta) * exp(0.108 * INS) * exp(0.0121 * (DIA - 2.5))` | Eq. 3; Text S1 `S0` |
+| Progression rate with Box-Cox eta | `exp(lslope + ((exp(eta))^lambda - 1) / lambda) * exp(0.545 * INS)` | Eqs. 4-5; Text S1 `ALPHA`, `ETA_ALPHA` |
+| Symptomatic response | `S0 * expit(theta + eta + dTRT) * (1 - exp(-log(2) / t1/2 * t))` | Eq. 6; Text S1 `PLACBO`, `DRUG` |
+| HbA1c | `S0 * (1 + alpha * t / 365) - response` | Eq. 1; Text S1 `IPLAC`, `IDRUG` |
+| Residual error | `log(HbA1c) + eps` | Methods; Text S1 `Y = LOG(IPRED) + ERR(1)` |
+
+The control stream codes treatment as one categorical column `TRT` = 0-7.
+The model uses one indicator per drug, `TRT_LINAGLIPTIN` = `TRT` 1 through
+`TRT_DAPAGLIFLOZIN` = `TRT` 7; how that order was established is explained
+under Assumptions and deviations.
+
+# Simulation set-up
+
+The random effects for every check below are drawn in R from the model's own
+OMEGA block with a fixed seed and passed to `rxSolve()` as per-subject
+parameters, together with the fixed effects. This has two benefits: each
+virtual participant is solved under placebo and under active treatment with
+the *same* random effects, so the placebo-corrected effect is estimated
+without between-arm sampling noise; and the cohort is identical on every
+machine, because rxode2 draws no random numbers. Residual error is likewise
+added in R where it is needed.
+
+The paper's trial simulations included between-subject and within-subject
+variability only, so the between-study etas are set to zero here.
+
+```{r helpers}
+trt_cols <- c(
+  "TRT_LINAGLIPTIN", "TRT_EMPAGLIFLOZIN", "TRT_ALOGLIPTIN", "TRT_EXENATIDE",
+  "TRT_SITAGLIPTIN", "TRT_SAXAGLIPTIN", "TRT_DAPAGLIFLOZIN"
+)
+drug_names <- c(
+  "Linagliptin", "Empagliflozin", "Alogliptin", "Exenatide",
+  "Sitagliptin", "Saxagliptin", "Dapagliflozin"
+)
+eta_subj <- c("etalrbase", "etalslope", "etalogitpbo")
+omega_subj <- mod$omega[eta_subj, eta_subj]
+theta <- mod$theta
+sd_resid <- unname(theta["expSd"])
+
+# One virtual cohort. `dur_meanlog` / `dur_sdlog` give a log-normal diabetes
+# duration; a duration of 0 codes 'missing', which the model replaces by the
+# 2.5-year reference.
+make_subjects <- function(n, seed, p_insulin, dur_meanlog, dur_sdlog,
+                          p_dur_missing = 0) {
+  set.seed(seed)
+  eta <- matrix(rnorm(n * 3), n) %*% chol(omega_subj)
+  colnames(eta) <- eta_subj
+  dur <- exp(rnorm(n, dur_meanlog, dur_sdlog))
+  dur[runif(n) < p_dur_missing] <- 0
+  data.frame(
+    id = seq_len(n),
+    CONMED_INSULIN = as.integer(runif(n) < p_insulin),
+    T_DIAG_DIAB = dur,
+    eta,
+    eta_study_lrbase = 0,
+    eta_study_lslope = 0
+  )
+}
+
+# Solve one arm. `drug` is a TRT_ column (NULL = placebo); `dtrt` optionally
+# replaces that drug's estimated logit shift with a scenario value.
+solve_arm <- function(subj, times, drug = NULL, dtrt = NULL) {
+  ev <- tidyr::crossing(
+    subj[, c("id", "CONMED_INSULIN", "T_DIAG_DIAB")],
+    time = times
+  ) |>
+    dplyr::arrange(id, time) |>
+    dplyr::mutate(evid = 0L, amt = 0)
+  for (v in trt_cols) ev[[v]] <- 0L
+  th <- theta
+  if (!is.null(drug)) {
+    ev[[drug]] <- 1L
+    if (!is.null(dtrt)) th[[paste0("e_", tolower(drug), "_logitpbo")]] <- dtrt
+  }
+  params <- cbind(
+    subj[, c("id", eta_subj, "eta_study_lrbase", "eta_study_lslope")],
+    as.data.frame(as.list(th))
+  )
+  # rxode2 warns that a multi-subject solve has no omega; the etas are
+  # supplied explicitly in `params`, which is the intent.
+  sim <- suppressWarnings(
+    rxode2::rxSolve(mod, ev, params = params, returnType = "data.frame")
+  )
+  # A single-subject solve returns no id column.
+  if (!"id" %in% names(sim)) sim$id <- subj$id[1]
+  sim[, c("id", "time", "Hba1c")]
+}
+
+# Change from baseline per subject between the first and last time.
+change_from_baseline <- function(sim) {
+  sim |>
+    dplyr::group_by(id) |>
+    dplyr::summarise(cfb = Hba1c[which.max(time)] - Hba1c[which.min(time)], .groups = "drop") |>
+    dplyr::pull(cfb)
+}
+```
+
+# Typical-value checks
+
+These are deterministic: a typical participant (all etas zero) without
+insulin and with a 2.5-year history, unless stated otherwise.
+
+```{r typical}
+typical <- data.frame(
+  id = 1:4, etalrbase = 0, etalslope = 0, etalogitpbo = 0,
+  eta_study_lrbase = 0, eta_study_lslope = 0
+)
+typ_subj <- function(ins) {
+  dplyr::mutate(typical[1, ], CONMED_INSULIN = ins, T_DIAG_DIAB = 2.5)
+}
+expit <- function(x) 1 / (1 + exp(-x))
+
+s0_noins <- solve_arm(typ_subj(0), 0)$Hba1c
+s0_ins <- solve_arm(typ_subj(1), 0)$Hba1c
+
+# Placebo and drug at a time long enough for the response to be complete
+# (50 half-lives of onset). Progression cancels in the drug-minus-placebo
+# difference, which is the paper's Eq. 7.
+t_long <- 50 * exp(theta[["lthalf_onset"]])
+pbo_long <- solve_arm(typ_subj(0), t_long)$Hba1c
+eq7 <- vapply(trt_cols, function(d) {
+  solve_arm(typ_subj(0), t_long, d)$Hba1c - pbo_long
+}, numeric(1))
+pct_decrease <- 100 * expit(theta[["logitpbo"]] + theta[paste0("e_", tolower(trt_cols), "_logitpbo")])
+
+# Change from baseline at 26 weeks for a hypothetical dTRT = 0.85.
+cfb26 <- function(ins) {
+  s <- solve_arm(typ_subj(ins), c(0, 26 * 7), "TRT_LINAGLIPTIN", dtrt = 0.85)
+  diff(s$Hba1c)
+}
+
+# 95% prediction interval of the yearly fold-increase for a participant not
+# on insulin (Box-Cox eta on the progression rate).
+lam <- theta[["boxcox_lslope"]]
+sd_slope <- sqrt(mod$omega["etalslope", "etalslope"])
+alpha_at <- function(z) {
+  eta <- z * sd_slope
+  exp(theta[["lslope"]] + (exp(lam * eta) - 1) / lam)
+}
+alpha_pi <- 1 + alpha_at(c(-1.96, 1.96))
+
+# 95% prediction interval of the placebo response at a 7.46% baseline.
+sd_pbo <- sqrt(mod$omega["etalogitpbo", "etalogitpbo"])
+pbo_pi <- -7.46 * expit(theta[["logitpbo"]] + c(-1.96, 1.96) * sd_pbo)
+
+typ_tab <- tibble::tribble(
+  ~Quantity, ~Paper, ~Model,
+  "Baseline HbA1c, no insulin (%)", 7.46, s0_noins,
+  "Baseline HbA1c, insulin (%)", 8.31, s0_ins,
+  "Placebo response at 7.46% baseline (%-points)", -0.52, pbo_long - s0_noins - s0_noins * alpha_at(0) * t_long / 365,
+  "Expected decrease from baseline, linagliptin (%)", 9, pct_decrease[[1]],
+  "Expected decrease from baseline, exenatide (%)", 21, pct_decrease[[4]],
+  "Eq. 7 dHbA1c, linagliptin (%-points)", -0.14, eq7[["TRT_LINAGLIPTIN"]],
+  "Eq. 7 dHbA1c, exenatide (%-points)", -1.05, eq7[["TRT_EXENATIDE"]],
+  "26-week change, dTRT 0.85, no insulin (%-points)", -0.53, cfb26(0),
+  "26-week change, dTRT 0.85, insulin (%-points)", -0.21, cfb26(1),
+  "Yearly fold-increase, upper 95% limit", 2.25, alpha_pi[2],
+  "Placebo response 95% PI, largest decrease (%-points)", -3.91, pbo_pi[2]
+) |>
+  dplyr::mutate(Model = signif(Model, 3), `Difference (%)` = round(100 * (Model - Paper) / abs(Paper), 1))
+knitr::kable(typ_tab, caption = "Typical-value quantities quoted in the Results text.")
+
+stopifnot(
+  # Every quoted value is a back-transform of the final estimates, so the
+  # model reproduces each to within the paper's rounding.
+  all(abs(typ_tab$Model - typ_tab$Paper) <= pmax(0.02, 0.025 * abs(typ_tab$Paper)) | grepl("decrease from baseline", typ_tab$Quantity)),
+  all(abs(typ_tab$Model - typ_tab$Paper)[grepl("decrease from baseline", typ_tab$Quantity)] < 0.6),
+  # The paper's 95% PI for the yearly fold-increase starts at 1-fold.
+  abs(alpha_pi[1] - 1) < 0.01
+)
+```
+
+The placebo response is 0.511 %-points with the unrounded estimate
+`expit(-2.61)` = 0.0685; the paper's 0.52 multiplies 7.46 by the rounded 0.07.
+
+The other end of the paper's placebo prediction interval is quoted as
+"-0.3 %-points"; the final estimates give
+`r signif(pbo_pi[1], 2)` %-points (see Assumptions and deviations).
+
+# Placebo-corrected effect and its variability (Table 3)
+
+The paper's trial simulations resampled participants from the pooled data,
+randomised them 1:1 and simulated 26 weeks. Table 3 lists, for each scenario
+value of `dTRT`, the corresponding mean placebo-corrected change from
+baseline (dHbA1c). The cohort below approximates the pooled population: 41%
+on insulin (insulin alone 10% plus metformin and insulin 31%), a log-normal
+diabetes duration with the reported median of 2.2 years and IQR of 1.0-3.7
+years, and the duration missing (so set to the 2.5-year reference) for 32% of
+participants, the share of the pooled data from the sitagliptin and
+dapagliflozin studies, which did not record it (Table 1).
+
+```{r table3}
+n_cts <- 200
+cts_subj <- make_subjects(
+  n_cts,
+  seed = 2026, p_insulin = 0.41,
+  dur_meanlog = log(2.2), dur_sdlog = log(3.7 / 1.0) / (2 * qnorm(0.75)),
+  p_dur_missing = 0.32
+)
+wk26 <- c(0, 26 * 7)
+pbo26 <- solve_arm(cts_subj, wk26)
+cfb_pbo <- change_from_baseline(pbo26)
+
+table3 <- tibble::tibble(
+  dTRT = c(0.40, 0.52, 0.64, 0.74, 0.85, 0.95, 1.04, 1.14),
+  paper = c(-0.30, -0.40, -0.50, -0.60, -0.70, -0.80, -0.90, -1.00)
+)
+table3$model <- vapply(table3$dTRT, function(d) {
+  mean(change_from_baseline(solve_arm(cts_subj, wk26, "TRT_LINAGLIPTIN", dtrt = d)) - cfb_pbo)
+}, numeric(1))
+
+table3 |>
+  dplyr::mutate(model = round(model, 3)) |>
+  dplyr::rename(
+    "dTRT (logit)" = dTRT,
+    "dHbA1c, Table 3 (%-points)" = paper,
+    "dHbA1c, model (%-points)" = model
+  ) |>
+  knitr::kable(caption = "Mean placebo-corrected change from baseline at 26 weeks (Table 3).")
+
+stopifnot(
+  # A transcription error in theta, the onset half-life, the time unit or
+  # the logit structure moves these by tens of percent.
+  abs(median(table3$model - table3$paper)) < 0.05,
+  all(abs(table3$model - table3$paper) < 0.10)
+)
+```
+
+The paper also reports the spread of the change from baseline in the placebo
+arm: a median SD of 1.83 %-points across virtual trials (95% prediction
+interval 1.15-2.49), and 1.30 (0.97-1.62) in an enriched population of
+participants not on insulin with less than 2.2 years of diabetes.
+
+```{r placebo-sd}
+set.seed(26)
+pbo_obs <- pbo26 |>
+  dplyr::mutate(obs = Hba1c * exp(rnorm(dplyr::n(), 0, sd_resid)))
+cfb_obs <- change_from_baseline(dplyr::mutate(pbo_obs, Hba1c = obs))
+
+enrich_subj <- make_subjects(
+  n_cts,
+  seed = 2027, p_insulin = 0,
+  dur_meanlog = log(1.0), dur_sdlog = 0.5
+) |>
+  dplyr::mutate(T_DIAG_DIAB = pmin(T_DIAG_DIAB, 2.19))
+set.seed(27)
+enrich_obs <- solve_arm(enrich_subj, wk26) |>
+  dplyr::mutate(Hba1c = Hba1c * exp(rnorm(dplyr::n(), 0, sd_resid)))
+cfb_enrich <- change_from_baseline(enrich_obs)
+
+sd_tab <- tibble::tribble(
+  ~Population, ~`Paper median SD`, ~`Paper 95% PI`, ~`Model SD`,
+  "Historical trial population", 1.83, "1.15-2.49", sd(cfb_obs),
+  "Enriched (no insulin, < 2.2 years)", 1.30, "0.97-1.62", sd(cfb_enrich)
+) |>
+  dplyr::mutate(`Model SD` = round(`Model SD`, 2))
+knitr::kable(sd_tab, caption = "SD of the 26-week change from baseline in the placebo arm (%-points).")
+
+stopifnot(
+  sd(cfb_obs) > 1.15, sd(cfb_obs) < 2.49,
+  sd(cfb_enrich) > 0.97, sd(cfb_enrich) < 1.62,
+  sd(cfb_enrich) < sd(cfb_obs)
+)
+```
+
+The enriched cohort draws durations from a log-normal centred on 1 year and
+capped just below 2.2 years; the paper resampled the actual participants
+meeting the criteria, whose duration distribution is not reported.
+
+# Placebo-corrected effect by drug (Figure 2)
+
+Figure 2 compares the observed dHbA1c of each trial with the median model
+prediction (black diamonds). The model predictions below use one virtual
+cohort per drug whose insulin use and diabetes duration follow that study's
+row of Table 1, solved at the time of the trial's primary endpoint (Table
+S1). Duration is set to the 2.5-year reference for the sitagliptin and
+dapagliflozin studies, which did not record it. The published medians were
+digitised by the maintainers from Figure 2.
+
+```{r figure2}
+studies <- tibble::tibble(
+  drug = trt_cols,
+  name = drug_names,
+  # Insulin alone + metformin and insulin, Table 1 (%).
+  p_insulin = c(3.2 + 40, 3.2 + 40, 5.3 + 35, 7.4 + 41, 18 + 10, 12 + 37, 17 + 29) / 100,
+  dur_mean = c(2.10, 2.10, 3.38, 2.31, NA, 2.48, NA),
+  dur_sd = c(1.90, 1.90, 1.84, 2.12, NA, 2.14, NA),
+  weeks = c(26, 26, 26, 24, 20, 26, 24),
+  fig2_median = c(-0.25, -0.78, -0.32, -1.05, -0.25, -0.84, -0.72)
+)
+
+fig2 <- lapply(seq_len(nrow(studies)), function(i) {
+  st <- studies[i, ]
+  if (is.na(st$dur_mean)) {
+    meanlog <- log(2.5)
+    sdlog <- 0
+    p_miss <- 1
+  } else {
+    sdlog <- sqrt(log(1 + (st$dur_sd / st$dur_mean)^2))
+    meanlog <- log(st$dur_mean) - sdlog^2 / 2
+    p_miss <- 0
+  }
+  subj <- make_subjects(n_cts, seed = 3000 + i, p_insulin = st$p_insulin,
+                        dur_meanlog = meanlog, dur_sdlog = sdlog,
+                        p_dur_missing = p_miss)
+  tt <- c(0, st$weeks * 7)
+  d <- change_from_baseline(solve_arm(subj, tt, st$drug)) -
+    change_from_baseline(solve_arm(subj, tt))
+  tibble::tibble(name = st$name, model = mean(d), paper = st$fig2_median)
+}) |>
+  dplyr::bind_rows()
+
+fig2 |>
+  dplyr::mutate(model = round(model, 2)) |>
+  dplyr::rename(
+    "Drug" = name,
+    "Model dHbA1c (%-points)" = model,
+    "Figure 2 median prediction (%-points)" = paper
+  ) |>
+  knitr::kable(caption = "Placebo-corrected change from baseline at each trial's primary endpoint.")
+
+fig2 |>
+  tidyr::pivot_longer(c(model, paper), names_to = "source", values_to = "dhba1c") |>
+  dplyr::mutate(
+    source = dplyr::recode(source, model = "This model", paper = "Figure 2 (digitised)"),
+    name = factor(name, levels = rev(c("Alogliptin", "Sitagliptin", "Linagliptin", "Saxagliptin",
+                                       "Exenatide", "Empagliflozin", "Dapagliflozin")))
+  ) |>
+  ggplot(aes(dhba1c, name, shape = source, colour = source)) +
+  geom_vline(xintercept = 0, linetype = "dashed", colour = "red") +
+  geom_point(size = 3) +
+  labs(x = "dHbA1c (%-points)", y = NULL, shape = NULL, colour = NULL,
+       caption = "Replicates the median predictions of Figure 2 of Colin 2026.") +
+  theme_bw()
+
+stopifnot(
+  # Approximate per-study covariates and digitisation limit the agreement;
+  # a mis-assigned drug effect would be off by 0.3-0.9 %-points.
+  median(abs(fig2$model - fig2$paper)) < 0.10,
+  all(abs(fig2$model - fig2$paper) < 0.20)
+)
+```
+
+# HbA1c over time by arm (Figure 1)
+
+Figure 1 is a prediction-corrected visual predictive check by arm. Without
+the trial data the figure below shows the model's 5th, 50th and 95th
+percentiles of HbA1c (with residual error) for each arm of the virtual
+population, which can be compared with the bands of Figure 1: a placebo
+median near 7.5% with 5th and 95th percentiles near 5.5-6% and 10-11%, and
+the active arms drifting down from a similar baseline.
+
+```{r figure1}
+grid <- seq(0, 26 * 7, by = 7)
+arms <- c(list(Placebo = NULL), setNames(as.list(trt_cols), drug_names))
+vpc <- lapply(names(arms), function(a) {
+  set.seed(match(a, names(arms)))
+  solve_arm(cts_subj, grid, arms[[a]]) |>
+    dplyr::mutate(arm = a, Hba1c = Hba1c * exp(rnorm(dplyr::n(), 0, sd_resid)))
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::group_by(arm, time) |>
+  dplyr::summarise(
+    p05 = quantile(Hba1c, 0.05), p50 = median(Hba1c), p95 = quantile(Hba1c, 0.95),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(arm = factor(arm, levels = names(arms)))
+
+ggplot(vpc, aes(time / 7)) +
+  geom_line(aes(y = p50)) +
+  geom_line(aes(y = p05), linetype = "dashed") +
+  geom_line(aes(y = p95), linetype = "dashed") +
+  facet_wrap(~arm, ncol = 4) +
+  labs(x = "Time (weeks)", y = "HbA1c (%)",
+       caption = "Compare with Figure 1 of Colin 2026 (same percentiles, simulated cohort of 200 per arm).") +
+  theme_bw()
+
+pbo_wk21 <- dplyr::filter(vpc, arm == "Placebo", time == 21 * 7)
+stopifnot(
+  pbo_wk21$p50 > 7.0, pbo_wk21$p50 < 8.0,
+  pbo_wk21$p95 > 9.5, pbo_wk21$p95 < 12,
+  pbo_wk21$p05 > 4.5, pbo_wk21$p05 < 6.5
+)
+```
+
+# NCA
+
+Not applicable: the model describes HbA1c, not a drug concentration, and has
+no dose events. The checks above take the place of an NCA comparison.
+
+# Assumptions and deviations
+
+* **Drug order of the treatment effects.** Table 2 and the control stream
+  label the drug effects only as TRT 1-7. The order linagliptin,
+  empagliflozin, alogliptin, exenatide, sitagliptin, saxagliptin,
+  dapagliflozin is the order of Table S1 and of the panels of Figure 1, and
+  it is consistent with every statement in the Results: linagliptin has the
+  smallest effect (9%, TRT 1 = 0.26) and exenatide the largest (21%, TRT 4 =
+  1.28); the 95% CIs that include zero (TRT 1, 3 and 5) belong to linagliptin,
+  alogliptin and sitagliptin; and the control stream marks TRT 2, 4 and 7 as
+  'approved', matching the three drugs with an EU paediatric indication
+  (empagliflozin, exenatide, dapagliflozin). The Table 3 and Figure 2 checks
+  above confirm the assignment.
+* **Response scaled by baseline.** Equations 1 and 6 print the symptomatic
+  response as a fraction subtracted from HbA1c; the control stream multiplies
+  it by `S0` (`DOSEP = -S0*PBO`, `DRUG = -S0*...`), as does Equation 7. The
+  model follows the control stream.
+* **Between-study SD of the progression rate.** Table 2 prints omega5 = 0.35
+  (0.30; 0.39); the variance in the NONMEM output is 0.0120 (SD 0.110, as in
+  the printed correlation matrix). The model uses the NONMEM output, which is
+  what was fitted.
+* **Placebo prediction interval.** The Results quote a 95% prediction
+  interval for the placebo response of -0.3 to -3.91 %-points at a 7.46%
+  baseline. The upper end is reproduced; the final estimates give
+  `r signif(pbo_pi[1], 2)` %-points for the lower end.
+* **Missing diabetes duration.** The Methods state that missing covariates
+  were imputed by the median (2.2 years); the control stream sets the
+  duration to the 2.5-year reference whenever `DIAGNOSIS` is not positive.
+  The model follows the control stream: code a missing duration as 0.
+* **Box-Cox transform.** As in the control stream, the transform is applied
+  to the sum of the subject and study etas on the progression rate.
+* **Nested between-study variability.** rxode2 has no study level, so
+  `eta_study_lrbase` and `eta_study_lslope` are drawn per subject by
+  default. To simulate trials, give every subject of a study the same values
+  (as `params`), or set them to zero as here. Between-study variability was
+  under 20% of the between-subject variability.
+* **Unused parameter.** THETA5 of the control stream ('NOT USED', fixed to 6)
+  does not enter any equation and is omitted.
+* **Times before randomisation.** HbA1c records before time 0 are evaluated
+  at time 0 (no progression or response), as in the control stream.
+* **Virtual cohorts.** Covariate distributions are approximations built from
+  the summary statistics of Table 1 and the Results; the trial data are not
+  public. The paper's trial simulations resampled the pooled participants.
