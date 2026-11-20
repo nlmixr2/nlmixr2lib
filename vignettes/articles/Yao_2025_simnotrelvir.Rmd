@@ -1,0 +1,588 @@
+---
+title: "Simnotrelvir (Yao 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simnotrelvir (Yao 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Models and source
+
+Yao 2025 describes how population PK modelling selected the patient dose of
+simnotrelvir, an oral SARS-CoV-2 3CL protease inhibitor marketed co-packaged
+with ritonavir 100 mg as a pharmacokinetic booster. The paper fits two
+independent NONMEM models, and both are in the library:
+
+* **Model 1** (`Yao_2025_simnotrelvir_healthy`): fitted to the first-in-human
+  phase Ia trial in healthy adults, with and without ritonavir. The authors
+  used it to choose the 750/100 mg twice-daily (BID) patient dose
+  (Supplementary Table S3).
+* **Model 2** (`Yao_2025_simnotrelvir`): the final model, refitted to the
+  ritonavir-boosted data of phase Ia plus the phase Ib and phase II/III
+  patient trials (Supplementary Tables S4-S6).
+
+```{r load-models}
+ui1 <- rxode2::rxode(readModelDb("Yao_2025_simnotrelvir_healthy"))
+ui2 <- rxode2::rxode(readModelDb("Yao_2025_simnotrelvir"))
+```
+
+* Citation: `r ui2$reference`
+* Model 1: `r ui1$description`
+* Model 2: `r ui2$description`
+* Article: <https://doi.org/10.1128/aac.00614-25> (open access; Model 2 and
+  both dose simulations are in the supplementary information)
+
+Both models are two-compartment with first-order absorption after a lag,
+exponential between-subject variability on CL, Vc and Ka, inter-occasion
+variability on Vc between the first-dose and steady-state sampling occasions,
+and combined proportional and additive residual error. Ka falls with the
+simnotrelvir dose (a power function of the dose in mg), and food raises both
+Ka and the relative bioavailability F. Ritonavir enters differently:
+
+* Model 1 multiplies CL by 0.241 with ritonavir, uses a separate dose exponent
+  on Ka, and raises F relative to monotherapy by 1.36 when ritonavir is given
+  with the simnotrelvir dose or by 1.61 when it was given 12 h before.
+* Model 2 has only boosted data, so CL carries no ritonavir term and instead
+  rises with creatinine clearance; F is 1.15-fold higher when ritonavir was
+  given 12 h before the dose than when it is given with it.
+
+# Population
+
+```{r population}
+str(ui1$population)
+str(ui2$population)
+```
+
+Model 1 used 1742 concentrations from 72 healthy Chinese adults in the phase
+Ia trial (NCT05339646): median age 30 years (20-50), median weight 64.4 kg
+(46.1-82.9), 26.4% female, median creatinine clearance 117 mL/min (Table 1).
+24 subjects took simnotrelvir alone (150-3000 mg single dose or 750-1500 mg
+BID) and 60 took it with ritonavir 100 mg (250-1200 mg single dose, 150-750 mg
+BID, and a 750 mg fasted/fed food-effect part); 12 of them contributed to
+both. Model 2 dropped the monotherapy data and added 24 phase Ib and 98 phase
+II/III patients with mild-to-moderate COVID-19, for 182 subjects and 1634
+concentrations: median age 35 years (18-67), median weight 65.0 kg (39.0-115),
+35.7% female, median creatinine clearance 113 mL/min (64.8-230). Only 12
+subjects (in the food-effect part) were dosed fed.
+
+# Source trace
+
+| Model element | Model 1 value (Table 2) | Model 2 value (Table S5) |
+|---|---|---|
+| Structure: 2 compartments, first-order absorption with lag | Results; eResults | eResults |
+| `lcl` (CL, L/h) | 174 (monotherapy) | 22.6 at CRCL 113 mL/min |
+| `e_conmed_rtv_cl` (Ritonavir-CL) | 0.241 | -- |
+| `e_crcl_cl` (CRCL-CL) | -- | 0.39, as `(CRCL/113)^0.39` (footnote a) |
+| `lvc` (V2, L) | 33.7 | 9.48 |
+| `lvp` (V3, L) | 3.84 | 3.92 |
+| `lq` (Q, L/h) | 58.6 | 17.4 |
+| `lka` (Ka, 1/h) | 0.425 | 0.755 |
+| `e_dose_ka*` (DOSE-Ka) | -0.127 alone, -0.138 with ritonavir (footnotes c-e) | -0.229 (footnote b) |
+| `e_fed_ka` (FOOD-Ka) | 1.49 | 1.51 |
+| `lfdepot` (F1) | 1, fixed | 1, fixed |
+| `e_fed_fdepot` (FOOD-F1) | 1.39 | 1.36 |
+| `e_conmed_rtv_fdepot` (Ritonavir-F1, with the dose) | 1.36 (footnote g) | -- |
+| `e_conmed_rtv_pre12h_fdepot` (Ritonavir-F1, 12 h before) | 1.61 (footnote h) | 1.15 |
+| `ltlag` (ALAG, h) | 0.223 | 0.447 |
+| `etalcl`, `etalvc`, `etalka` (IIV, CV%) | 27.1, 83.0, 19.4 | 27.0, 81.6, 16.0 |
+| `etaiov_vc_1`, `etaiov_vc_2` (IOV on V2, CV%) | 69.1 | 117.5 |
+| `propSd` (proportional) | 46.0% | 35.9% |
+| `addSd` (additive, ng/mL) | 1.556 | 1.463 |
+| Concentration scaling | `Cc = 1000 * central / vc` (mg/L to ng/mL) | same |
+
+Variances are `log(1 + CV^2)`, the exact relation for the exponential IIV
+model the supplement's Equation (1) describes.
+
+# Coding the ritonavir-timing covariate
+
+`CONMED_RTV_PRE12H` is set per dose record: 1 when a ritonavir dose was given
+12 h before this simnotrelvir dose, 0 when ritonavir is given with it. With
+both drugs given twice daily from the same first dose, only the first
+simnotrelvir dose has no ritonavir on board from 12 h earlier, so the first
+dose carries 0 and every later dose carries 1. `OCC` is 1 over the first
+dosing interval and 2 over the steady-state interval.
+
+rxode2 evaluates `f(depot)` with the covariate values in force at the dose
+time. When an observation and a dose share a time (here the 12 h trough and
+the second dose), both records must carry the same covariate value, or the
+dose can pick up the observation's value. The helper below therefore codes
+the covariates by time, not by record type.
+
+```{r event-helper}
+dose_times <- seq(0, 108, by = 12) # 10 doses; the last is the steady-state interval
+obs_grid <- sort(unique(c(seq(0, 12, by = 0.25), seq(108, 120, by = 0.25))))
+
+make_events <- function(subjects, per_dose_timing) {
+  dose_rows <- tidyr::expand_grid(id = subjects$id, time = dose_times) |>
+    mutate(evid = 1L, cmt = "depot")
+  obs_rows <- tidyr::expand_grid(id = subjects$id, time = obs_grid) |>
+    mutate(evid = 0L, cmt = "central")
+  bind_rows(dose_rows, obs_rows) |>
+    left_join(subjects, by = "id") |>
+    mutate(
+      amt = ifelse(evid == 1L, dose, 0),
+      DOSE = dose,
+      FED = 0L,
+      CONMED_RTV = 1L,
+      CONMED_RTV_PRE12H = if (per_dose_timing) as.integer(time >= 12) else 0L,
+      OCC = ifelse(time <= 12, 1L, 2L)
+    ) |>
+    arrange(id, time, desc(evid)) |>
+    select(id, time, evid, amt, cmt, DOSE, FED, CONMED_RTV, CONMED_RTV_PRE12H, OCC, CRCL)
+}
+```
+
+A typical-value check that the flag reaches the dose: with every random effect
+at zero, the bioavailability of the second dose is 1.15 in Model 2 and the
+first dose's is 1.
+
+```{r flag-check}
+chk_ev <- make_events(tibble(id = 1L, dose = 750, CRCL = 113), per_dose_timing = TRUE)
+chk <- rxode2::rxSolve(rxode2::zeroRe(ui2), chk_ev, returnType = "data.frame", addDosing = TRUE)
+f_by_dose <- chk |> filter(evid == 1L) |> pull(fdepot)
+f_by_dose
+stopifnot(f_by_dose[1] == 1, all(abs(f_by_dose[-1] - 1.15) < 1e-12))
+```
+
+# Closed-form check of clearance, bioavailability and units
+
+For a single dose the AUC to infinity must equal `1000 * F * dose / CL` in
+ng*h/mL. The table checks this for the typical subject in each model under
+the covariate combinations that change F or CL, with PKNCA computing the AUC
+from the simulated profiles.
+
+```{r closed-form}
+sd_grid <- sort(unique(c(seq(0, 4, by = 0.05), seq(4.25, 48, by = 0.25))))
+scen <- tribble(
+  ~scen, ~model, ~label,                                ~CONMED_RTV, ~CONMED_RTV_PRE12H, ~FED, ~CRCL, ~cl,                 ~f,
+  1L,    1L,     "Model 1: alone, fasted",              0L,          0L,                 0L,   113,   174,                 1,
+  2L,    1L,     "Model 1: ritonavir with dose",        1L,          0L,                 0L,   113,   174 * 0.241,         1.36,
+  3L,    1L,     "Model 1: ritonavir 12 h before",      1L,          1L,                 0L,   113,   174 * 0.241,         1.61,
+  4L,    1L,     "Model 1: ritonavir with dose, fed",   1L,          0L,                 1L,   113,   174 * 0.241,         1.36 * 1.39,
+  5L,    2L,     "Model 2: with dose, CRCL 113",        1L,          0L,                 0L,   113,   22.6,                1,
+  6L,    2L,     "Model 2: 12 h before, CRCL 113",      1L,          1L,                 0L,   113,   22.6,                1.15,
+  7L,    2L,     "Model 2: with dose, CRCL 70, fed",    1L,          0L,                 1L,   70,    22.6 * (70 / 113)^0.39, 1.36
+)
+sd_ev <- tidyr::expand_grid(scen = scen$scen, time = sd_grid) |>
+  mutate(evid = 0L, amt = 0, cmt = "central") |>
+  bind_rows(tibble(scen = scen$scen, time = 0, evid = 1L, amt = 750, cmt = "depot")) |>
+  left_join(scen, by = "scen") |>
+  mutate(id = scen, DOSE = 750, OCC = 1L) |>
+  arrange(id, time, desc(evid))
+ev_cols <- c("id", "time", "evid", "amt", "cmt", "DOSE", "FED", "CONMED_RTV", "CONMED_RTV_PRE12H", "OCC", "CRCL")
+
+sd_sim <- bind_rows(
+  rxode2::rxSolve(rxode2::zeroRe(ui1), sd_ev |> filter(model == 1L) |> select(all_of(ev_cols)),
+                  returnType = "data.frame", addDosing = FALSE),
+  rxode2::rxSolve(rxode2::zeroRe(ui2), sd_ev |> filter(model == 2L) |> select(all_of(ev_cols)),
+                  returnType = "data.frame", addDosing = FALSE)
+) |>
+  left_join(select(scen, id = scen, label), by = "id")
+
+sd_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(filter(sd_sim, !is.na(Cc)), Cc ~ time | label + id),
+  PKNCA::PKNCAdose(sd_ev |> filter(evid == 1L) |> select(label, id, time, amt), amt ~ time | label + id),
+  intervals = data.frame(start = 0, end = Inf, aucinf.obs = TRUE)
+))
+auc_cmp <- as.data.frame(sd_nca$result) |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  left_join(select(scen, label, cl, f), by = "label") |>
+  mutate(auc_closed = 1000 * f * 750 / cl, pct_diff = 100 * (PPORRES / auc_closed - 1))
+auc_cmp |>
+  select(label, PPORRES, auc_closed, pct_diff) |>
+  dplyr::rename(
+    Scenario = label,
+    `AUCinf, PKNCA (ng*h/mL)` = PPORRES,
+    `1000 * F * dose / CL` = auc_closed,
+    `% diff` = pct_diff
+  ) |>
+  knitr::kable(digits = 1)
+# Both sides use the same parameters: only trapezoid and extrapolation error remain.
+stopifnot(nrow(auc_cmp) == 7, all(abs(auc_cmp$pct_diff) < 2))
+```
+
+# Model 1: replicating the dose selection (Supplementary Table S3)
+
+The authors simulated 300, 450, 600 and 750 mg simnotrelvir with ritonavir
+100 mg BID in the fasted state and reported the first-dose and steady-state
+trough concentration (Ctrough) and AUC0-12, and the share of subjects whose
+steady-state Ctrough exceeded the protein-binding-corrected Omicron EC90 of
+274 ng/mL. Each arm here has 200 subjects with between-subject and
+inter-occasion variability; the 12 h concentration is the trough. The 108-120
+h interval (the 10th dose) is steady state, which this model reaches within a
+day.
+
+The authors' table is reproduced when `CONMED_RTV_PRE12H` is 0 on every dose,
+i.e. with the "ritonavir given with the dose" bioavailability factor (1.36)
+throughout. That arm is compared with Table S3 below; a 750 mg arm with the
+per-dose coding (first dose 0, later doses 1) is simulated alongside it to
+show what the 1.61 factor would do at steady state.
+
+```{r m1-sim}
+n_per_arm <- 200
+arms1 <- tibble(
+  arm = 1:5,
+  Regimen = c("300/100 mg BID", "450/100 mg BID", "600/100 mg BID", "750/100 mg BID",
+              "750/100 mg BID, per-dose timing"),
+  dose = c(300, 450, 600, 750, 750),
+  per_dose = c(FALSE, FALSE, FALSE, FALSE, TRUE)
+)
+subj1 <- tibble(arm = rep(arms1$arm, each = n_per_arm)) |>
+  mutate(id = row_number(), CRCL = 117) |>
+  left_join(arms1, by = "arm")
+
+ev1 <- bind_rows(
+  make_events(subj1 |> filter(!per_dose) |> select(id, dose, CRCL), per_dose_timing = FALSE),
+  make_events(subj1 |> filter(per_dose) |> select(id, dose, CRCL), per_dose_timing = TRUE)
+) |>
+  arrange(id, time, desc(evid))
+
+rxode2::rxSetSeed(20251101)
+sim1 <- rxode2::rxSolve(ui1, ev1, returnType = "data.frame", addDosing = FALSE) |>
+  left_join(select(subj1, id, Regimen), by = "id")
+```
+
+```{r nca-helper}
+run_interval_nca <- function(sim, ev, subj) {
+  conc <- bind_rows(
+    sim |> filter(time <= 12) |> mutate(Interval = "First dose", tint = time),
+    sim |> filter(time >= 108) |> mutate(Interval = "Steady state", tint = time - 108)
+  ) |>
+    filter(!is.na(Cc)) |>
+    select(Regimen, Interval, id, tint, Cc)
+  dose <- ev |>
+    filter(evid == 1L, time %in% c(0, 108)) |>
+    left_join(select(subj, id, Regimen), by = "id") |>
+    mutate(Interval = ifelse(time == 0, "First dose", "Steady state"), tint = 0) |>
+    select(Regimen, Interval, id, tint, amt)
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, Cc ~ tint | Regimen + Interval + id),
+    PKNCA::PKNCAdose(dose, amt ~ tint | Regimen + Interval + id),
+    intervals = data.frame(start = 0, end = 12, auclast = TRUE, clast.obs = TRUE)
+  ))
+  as.data.frame(res$result) |>
+    filter(PPTESTCD %in% c("auclast", "clast.obs"))
+}
+nca1 <- run_interval_nca(sim1, ev1, subj1)
+```
+
+`clast.obs` is the concentration at the end of the 0-12 h interval, i.e. the
+trough before the next dose.
+
+```{r m1-compare}
+ref_s3 <- tribble(
+  ~Regimen,          ~Interval,      ~clast.obs, ~auclast,
+  "300/100 mg BID",  "First dose",   240,        8098,
+  "300/100 mg BID",  "Steady state", 284,        9587,
+  "450/100 mg BID",  "First dose",   379,        11934,
+  "450/100 mg BID",  "Steady state", 449,        14129,
+  "600/100 mg BID",  "First dose",   525,        15697,
+  "600/100 mg BID",  "Steady state", 622,        18583,
+  "750/100 mg BID",  "First dose",   672,        19394,
+  "750/100 mg BID",  "Steady state", 795,        22959
+)
+s3_tab <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca1 |> filter(Regimen %in% ref_s3$Regimen),
+  reference = ref_s3,
+  by = c("Regimen", "Interval"),
+  units = c(clast.obs = "ng/mL", auclast = "ng*h/mL")
+)
+knitr::kable(s3_tab, digits = 0,
+             caption = "Medians: Yao 2025 Supplementary Table S3 vs simulation (Model 1, ritonavir-with-dose factor on every dose).")
+cat(attr(s3_tab, "footnote"))
+```
+
+```{r m1-gate}
+s3_pct <- nca1 |>
+  group_by(Regimen, Interval, PPTESTCD) |>
+  summarise(sim = median(PPORRES), .groups = "drop") |>
+  inner_join(
+    ref_s3 |> pivot_longer(c(clast.obs, auclast), names_to = "PPTESTCD", values_to = "ref"),
+    by = c("Regimen", "Interval", "PPTESTCD")
+  ) |>
+  mutate(pct = 100 * (sim / ref - 1))
+stopifnot(nrow(s3_pct) == 16)
+c(median_pct = median(s3_pct$pct), q90_abs_pct = unname(quantile(abs(s3_pct$pct), 0.9)))
+stopifnot(
+  # Centre: a mis-transcribed CL, F or ritonavir factor moves every row by
+  # tens of percent.
+  abs(median(s3_pct$pct)) < 8,
+  # Envelope over the 16 cells, robust to which subjects land in the tails.
+  quantile(abs(s3_pct$pct), 0.9) < 15
+)
+```
+
+The per-dose coding leaves the first dose unchanged but gives the steady-state
+doses the 1.61 factor, so steady-state exposure is about 1.61 / 1.36 = 1.18
+times higher, and further above Table S3:
+
+```{r m1-perdose}
+nca1 |>
+  filter(grepl("^750", Regimen)) |>
+  group_by(Regimen, Interval, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::rename(`Ctrough (ng/mL)` = clast.obs, `AUC0-12 (ng*h/mL)` = auclast) |>
+  knitr::kable(digits = 0, caption = "750/100 mg BID medians under the two codings of the ritonavir-timing flag (Model 1).")
+```
+
+The medians above are taken from the individual predictions (`Cc`). The
+spread of the published troughs, and with it the share of subjects above the
+EC90, is reproduced only when residual error is added, i.e. from the
+simulated observations (`sim`), so the authors' trough percentiles and target
+attainment were evidently computed from simulated observations. Without
+residual error the 10th-90th percentile range of the 750 mg trough is about
+410-1140 ng/mL instead of the published 239-1389 ng/mL, and nearly every
+subject clears the EC90.
+
+```{r trough-helper}
+trough_summary <- function(sim) {
+  sim |>
+    filter(time %in% c(12, 120)) |>
+    mutate(Interval = ifelse(time == 12, "First dose", "Steady state")) |>
+    group_by(Regimen, Interval) |>
+    summarise(
+      p10 = quantile(sim, 0.1), p50 = median(sim), p90 = quantile(sim, 0.9),
+      pta = 100 * mean(sim > 274),
+      .groups = "drop"
+    )
+}
+```
+
+```{r m1-pta}
+ref_s3_trough <- tribble(
+  ~Regimen,          ~Interval,      ~ref_p10, ~ref_p50, ~ref_p90, ~ref_pta,
+  "300/100 mg BID",  "First dose",   83,       240,      526,      42.2,
+  "300/100 mg BID",  "Steady state", 98,       284,      622,      52.3,
+  "450/100 mg BID",  "First dose",   133,      379,      810,      68.3,
+  "450/100 mg BID",  "Steady state", 158,      449,      959,      75.4,
+  "600/100 mg BID",  "First dose",   185,      525,      1099,     81,
+  "600/100 mg BID",  "Steady state", 220,      622,      1302,     85.6,
+  "750/100 mg BID",  "First dose",   239,      672,      1389,     87.2,
+  "750/100 mg BID",  "Steady state", 283,      795,      1645,     90.6
+)
+tr1 <- trough_summary(sim1) |>
+  inner_join(ref_s3_trough, by = c("Regimen", "Interval"))
+tr1 |>
+  transmute(
+    Regimen, Interval,
+    `Table S3 median (P10-P90)` = sprintf("%.0f (%.0f-%.0f)", ref_p50, ref_p10, ref_p90),
+    `Simulated median (P10-P90)` = sprintf("%.0f (%.0f-%.0f)", p50, p10, p90),
+    `Table S3 % > EC90` = ref_pta,
+    `Simulated % > EC90` = pta
+  ) |>
+  knitr::kable(digits = 1, caption = "Trough concentrations with residual error (ng/mL) and target attainment: Yao 2025 Supplementary Table S3 vs simulation (Model 1).")
+```
+
+```{r m1-figure, fig.width = 8, fig.height = 5}
+band <- function(sim) {
+  bind_rows(
+    sim |> filter(time <= 12) |> mutate(Interval = "First dose", tint = time),
+    sim |> filter(time >= 108) |> mutate(Interval = "Steady state", tint = time - 108)
+  ) |>
+    group_by(Regimen, Interval, tint) |>
+    summarise(med = median(Cc), lo = quantile(Cc, 0.1), hi = quantile(Cc, 0.9), .groups = "drop") |>
+    filter(lo > 0) # log axis: drop the pre-lag zeros
+}
+ggplot(band(sim1 |> filter(!grepl("per-dose", Regimen))), aes(tint, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "steelblue", alpha = 0.25) +
+  geom_line(colour = "steelblue4") +
+  geom_hline(yintercept = 274, linetype = "dashed", colour = "darkgreen") +
+  facet_grid(Interval ~ Regimen) +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = "Simnotrelvir (ng/mL)",
+       caption = "Replicates Supplementary Figure S3 of Yao 2025: median and 10th-90th percentile; dashed line is the EC90 274 ng/mL.")
+```
+
+# Model 2: replicating the 750/100 mg simulation (Supplementary Table S6)
+
+Model 2 is simulated for 750/100 mg BID fasted with the per-dose coding (first
+dose 0, later doses 1). The paper does not say which creatinine clearance its
+simulation used; the cohort median of 113 mL/min, the model's reference
+value, is used for every subject.
+
+```{r m2-sim}
+coding2 <- tibble(
+  arm = 1:3,
+  Regimen = c("Per-dose timing", "With dose on every dose", "12 h before on every dose")
+)
+subj2 <- tibble(arm = rep(coding2$arm, each = n_per_arm)) |>
+  mutate(id = row_number(), dose = 750, CRCL = 113) |>
+  left_join(coding2, by = "arm")
+ev2 <- bind_rows(
+  make_events(subj2 |> filter(arm == 1L) |> select(id, dose, CRCL), per_dose_timing = TRUE),
+  make_events(subj2 |> filter(arm == 2L) |> select(id, dose, CRCL), per_dose_timing = FALSE),
+  make_events(subj2 |> filter(arm == 3L) |> select(id, dose, CRCL), per_dose_timing = FALSE) |>
+    mutate(CONMED_RTV_PRE12H = 1L)
+) |>
+  arrange(id, time, desc(evid))
+
+rxode2::rxSetSeed(20251102)
+sim2 <- rxode2::rxSolve(ui2, ev2, returnType = "data.frame", addDosing = FALSE) |>
+  left_join(select(subj2, id, Regimen), by = "id")
+nca2 <- run_interval_nca(sim2, ev2, subj2)
+```
+
+```{r m2-compare}
+ref_s6 <- tribble(
+  ~Regimen,          ~Interval,      ~clast.obs, ~auclast,
+  "Per-dose timing", "First dose",   924,        26362,
+  "Per-dose timing", "Steady state", 1249,       37758
+)
+s6_tab <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca2 |> filter(Regimen == "Per-dose timing"),
+  reference = ref_s6,
+  by = c("Regimen", "Interval"),
+  units = c(clast.obs = "ng/mL", auclast = "ng*h/mL")
+)
+knitr::kable(s6_tab, digits = 0,
+             caption = "Medians: Yao 2025 Supplementary Table S6 (750/100 mg BID) vs simulation (Model 2).")
+cat(attr(s6_tab, "footnote"))
+```
+
+```{r m2-gate}
+s6_pct <- nca2 |>
+  filter(Regimen == "Per-dose timing") |>
+  group_by(Regimen, Interval, PPTESTCD) |>
+  summarise(sim = median(PPORRES), .groups = "drop") |>
+  inner_join(
+    ref_s6 |> pivot_longer(c(clast.obs, auclast), names_to = "PPTESTCD", values_to = "ref"),
+    by = c("Regimen", "Interval", "PPTESTCD")
+  ) |>
+  mutate(pct = 100 * (sim / ref - 1))
+stopifnot(nrow(s6_pct) == 4)
+s6_pct$pct
+# With 200 subjects and IOV of 117% CV on Vc the Monte Carlo error of a
+# median trough is several percent; a wrong F, CL or CRCL term moves these
+# by 15% or more (see the codings compared below).
+stopifnot(abs(median(s6_pct$pct)) < 8, max(abs(s6_pct$pct)) < 15)
+```
+
+Coding the flag the same on every dose cannot reproduce both columns of
+Table S6: with 0 throughout the steady-state exposure is too low, and with 1
+throughout the first-dose exposure is too high, each by about the 15% that
+the factor 1.15 carries.
+
+```{r m2-codings}
+nca2 |>
+  group_by(Regimen, Interval, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::rename(Coding = Regimen, `Ctrough (ng/mL)` = clast.obs, `AUC0-12 (ng*h/mL)` = auclast) |>
+  knitr::kable(digits = 0, caption = "Model 2 medians under three codings of the ritonavir-timing flag; Table S6 gives 924 / 1249 ng/mL and 26362 / 37758 ng*h/mL.")
+```
+
+As for Model 1, the published trough spread and target attainment match the
+simulated observations (with residual error):
+
+```{r m2-pta}
+ref_s6_trough <- tribble(
+  ~Regimen,          ~Interval,      ~ref_p10, ~ref_p50, ~ref_p90, ~ref_pta,
+  "Per-dose timing", "First dose",   424,      924,      1780,     96.5,
+  "Per-dose timing", "Steady state", 556,      1249,     2497,     97.9
+)
+tr2 <- trough_summary(sim2) |>
+  inner_join(ref_s6_trough, by = c("Regimen", "Interval"))
+tr2 |>
+  transmute(
+    Interval,
+    `Table S6 median (P10-P90)` = sprintf("%.0f (%.0f-%.0f)", ref_p50, ref_p10, ref_p90),
+    `Simulated median (P10-P90)` = sprintf("%.0f (%.0f-%.0f)", p50, p10, p90),
+    `Table S6 % > EC90` = ref_pta,
+    `Simulated % > EC90` = pta
+  ) |>
+  knitr::kable(digits = 1, caption = "Trough concentrations with residual error (ng/mL) and target attainment: Yao 2025 Supplementary Table S6 vs simulation (Model 2).")
+```
+
+```{r trough-gate}
+tr_all <- bind_rows(tr1, tr2)
+tr_pct <- tr_all |>
+  transmute(
+    p10 = 100 * (p10 / ref_p10 - 1),
+    p50 = 100 * (p50 / ref_p50 - 1),
+    p90 = 100 * (p90 / ref_p90 - 1)
+  ) |>
+  unlist()
+c(
+  median_abs_pct_percentiles = median(abs(tr_pct)),
+  median_abs_pta_points = median(abs(tr_all$pta - tr_all$ref_pta))
+)
+stopifnot(
+  nrow(tr_all) == 10,
+  # Read off the individual predictions instead (no residual error), the
+  # 750 mg P10 is 40-70% too high and its target attainment about 10 points
+  # too high; with 200 subjects per arm the Monte Carlo error of a single
+  # 10th percentile is about 10-20%.
+  median(abs(tr_pct)) < 15,
+  median(abs(tr_all$pta - tr_all$ref_pta)) < 5
+)
+```
+
+```{r m2-figure, fig.width = 6, fig.height = 4}
+ggplot(band(sim2 |> filter(Regimen == "Per-dose timing")), aes(tint, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "steelblue", alpha = 0.25) +
+  geom_line(colour = "steelblue4") +
+  geom_hline(yintercept = 274, linetype = "dashed", colour = "darkgreen") +
+  facet_wrap(~Interval) +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = "Simnotrelvir (ng/mL)",
+       caption = "Replicates Supplementary Figure S10 of Yao 2025: 750/100 mg BID, median and 10th-90th percentile.")
+```
+
+Supplementary Table S7 reports the Bayesian (post hoc) exposures of the 95
+phase II/III patients rather than a simulation, so it is not a check of the
+typical-subject model: a median predicted AUC of 45310 ng*h/mL and a median
+observed Ctrough of 1522 ng/mL, both higher than the Table S6 simulation the
+authors made with the same model.
+
+# Assumptions and deviations
+
+* **Meaning of the ritonavir-timing flag.** Neither model's report says how
+  "ritonavir 12 h before" was coded in the dataset. It is defined here per
+  dose record (1 when a ritonavir dose was given 12 h before this simnotrelvir
+  dose). For Model 2 this coding (first dose 0, later doses 1) is the only one
+  of the three tried that reproduces both the first-dose and the steady-state
+  columns of Table S6. The authors' Model 1 dose-selection simulation (Table
+  S3) is instead reproduced with 0 on every dose, i.e. with the 1.36
+  "ritonavir with the first simnotrelvir dose" factor at steady state as well;
+  the per-dose coding puts the steady-state exposures about 18% higher than
+  Table S3. Both are shown above.
+* **Direction of the creatinine clearance effect.** The supplementary eResults
+  say "the clearance of simnotrelvir decreased with increased creatinine
+  clearance", but the printed equation `CL = 22.6 * (CRCL/113)^0.39` (Table S5
+  footnote a), the positive estimate with a bootstrap interval of 0.213-0.568,
+  and the Discussion ("a positive correlation was observed between
+  simnotrelvir clearance and creatinine clearance") all give CL increasing with
+  CRCL. The model follows the equation.
+* **Creatinine clearance in the simulations.** The covariate values used in the
+  authors' simulations are not reported. Model 2 is simulated at the cohort
+  median, 113 mL/min, for every subject; Model 1 has no CRCL term (its CRCL
+  effect was removed at backward elimination, Table S2).
+* **Number of subjects in Model 1.** The main text says 60 volunteers, while
+  Table 1 and the supplementary eResults give 72; 60 is the number who took
+  ritonavir. The model metadata uses 72.
+* **Occasions.** Both models estimate inter-occasion variability on V2 between
+  the first and second intensive sampling occasions (supplementary eResults),
+  with one variance shared by both occasions. `OCC = 1` is the first-dose
+  occasion and `OCC = 2` the steady-state occasion; `OCC = 0` switches the
+  occasion term off. The simulations above include it.
+* **Residual error in the published simulations.** The supplement does not
+  say whether its simulated concentrations include residual error. The
+  medians do not depend on it, but the published trough percentiles and
+  target attainment of both models are reproduced only with it, so the
+  trough distributions are compared on the simulated observations (`sim`)
+  and the AUC and median comparisons on the individual predictions (`Cc`).
+* **Cohort size.** The authors repeated their Monte Carlo simulation 100 times;
+  each arm here has 200 subjects, so the medians carry a few percent of Monte
+  Carlo error.
