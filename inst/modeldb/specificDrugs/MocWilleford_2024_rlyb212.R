@@ -158,9 +158,9 @@ MocWilleford_2024_rlyb212 <- function() {
     # Binding rate at the target side (nmol / h):
     #   rate_bind_target = kon [1/(nM*h)] * (central/(vc*mwdrug)) [nM] * (target/vc) [nM] * vc [L]
     #                    = kon * central * target / (vc * mwdrug).
-    d/dt(target)          <- -kdeg * target - kphag * target * swi
-                             - ktc12 * target + ktc21 * target_peripheral
-                             - (kon * central * target / (vc * mwdrug)) + koff * complex
+    d/dt(target)          <- -kdeg * target - kphag * target * swi -
+                             ktc12 * target + ktc21 * target_peripheral -
+                             (kon * central * target / (vc * mwdrug)) + koff * complex
     d/dt(target_peripheral) <-  ktc12 * target - ktc21 * target_peripheral
 
     # ------- Drug-receptor complex ODE (nmol / h) -------

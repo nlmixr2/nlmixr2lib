@@ -28,8 +28,10 @@ documented in `vignettes/create-model-library.Rmd` and the
 file-level metadata (description, reference, units, covariateData);
 parameter names (log-prefix PK params, `eta`-prefix IIV, `propSd`/`addSd`
 residual error); parameter labels; covariates (canonical register, units,
-declared aliases); compartment names; the observation variable (`Cc`); and
-a syntactic dosing-vs-concentration unit cross-check.
+declared aliases); compartment names; the observation variable (`Cc`); a
+syntactic dosing-vs-concentration unit cross-check; and that no model()
+statement is a bare expression (an operator-led continuation line that R
+parses as a statement of its own).
 }
 \details{
 When any issue of severity `"error"` or `"warning"` is found, a `warning()`

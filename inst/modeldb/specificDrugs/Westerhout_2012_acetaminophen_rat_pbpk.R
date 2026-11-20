@@ -300,14 +300,14 @@ Westerhout_2012_acetaminophen_rat_pbpk <- function() {
     # that is recirculated within the study duration (240 min)").
     # =========================================================================
     d/dt(central) <-
-      - k12 * central + k21 * peripheral1
-      - k13 * central + k31 * brain_ecf
-      - k14 * central + k41 * csf_lv
-      - k15 * central + k51 * csf_tfv
-      - k16 * central + k61 * csf_cm
-      + (Q_CSF / V_SAS) * csf_sas
-      - k10 * central
-      + fabs * DOSE
+      - k12 * central + k21 * peripheral1 -
+      k13 * central + k31 * brain_ecf -
+      k14 * central + k41 * csf_lv -
+      k15 * central + k51 * csf_tfv -
+      k16 * central + k61 * csf_cm +
+      (Q_CSF / V_SAS) * csf_sas -
+      k10 * central +
+      fabs * DOSE
 
     # Periphery (Appendix "Periphery:" block).
     d/dt(peripheral1) <- k12 * central - k21 * peripheral1

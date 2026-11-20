@@ -322,15 +322,15 @@ Luo_2024_temocapril_pbpk <- function() {
                             q_ile * eff_wall_ile_temat - q_pv * c_pv_temat
 
     d/dt(liver_temat) <- q_pv * c_pv_temat + q_ha * c_sys_temat + hydrolysis -
-                      q_liver * eff_liver_temat
-                      - cl_int_bile_temat * fu_b_i_temat * eff_liver_temat
+                      q_liver * eff_liver_temat -
+                      cl_int_bile_temat * fu_b_i_temat * eff_liver_temat
 
     d/dt(kidney_temat) <- q_kid * c_sys_temat -
                        (q_kid + fu_b_i_temat * cl_int_k_temat) * eff_kid_temat
 
     d/dt(central_temat) <- q_liver * eff_liver_temat + q_kid * eff_kid_temat -
-                        (q_ha + q_kid) * c_sys_temat - q_gut * c_sys_temat
-                        + k21_temat * peripheral1_temat - k12_temat * central_temat
+                        (q_ha + q_kid) * c_sys_temat - q_gut * c_sys_temat +
+                        k21_temat * peripheral1_temat - k12_temat * central_temat
     d/dt(peripheral1_temat) <- k12_temat * central_temat - k21_temat * peripheral1_temat
 
     # Table 2 also reports an oral bioavailability F = 0.65 for this drug
