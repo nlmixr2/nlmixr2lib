@@ -1220,6 +1220,8 @@ navbar:
         href: articles/Dadkhah_2022_busulfan.html
       - text: "Busulfan (Du 2022)"
         href: articles/Du_2022_busulfan.html
+      - text: "Busulfan (Huang 2026)"
+        href: articles/Huang_2026_busulfan.html
       - text: "Busulfan (Lawson 2022)"
         href: articles/Lawson_2022_busulfan.html
       - text: "Busulfan (LongBoyle 2015)"
@@ -1238,6 +1240,16 @@ navbar:
         href: articles/Yuan_2021_busulfan.html
       - text: "Busulfan (vanHoogdalem 2020)"
         href: articles/vanHoogdalem_2020_busulfan.html
+      - text: "Busulfan efs (Huang 2026)"
+        href: articles/Huang_2026_busulfan.html
+      - text: "Busulfan efs bu3 (Huang 2026)"
+        href: articles/Huang_2026_busulfan.html
+      - text: "Busulfan efs bu4 (Huang 2026)"
+        href: articles/Huang_2026_busulfan.html
+      - text: "Busulfan hc bu3 (Huang 2026)"
+        href: articles/Huang_2026_busulfan.html
+      - text: "Busulfan nrm bu3 (Huang 2026)"
+        href: articles/Huang_2026_busulfan.html
       - text: "Butanediol rat (Fung 2008)"
         href: articles/Fung_2008_butanediol_rat.html
       - text: "C3G (Jeon 2012)"
@@ -10593,6 +10605,7 @@ articles:
   - articles/Huang_2022_tacrolimus
   - articles/Huang_2025_colistinSulfate
   - articles/Huang_2025_dexmedetomidine
+  - articles/Huang_2026_busulfan
   - articles/Huang_2026_tiapride
   - articles/Huber_2024_ivivc_tumor_stasis
   - articles/Huestis_2025_midomafetamine
