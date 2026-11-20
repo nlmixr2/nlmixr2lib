@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zitzmann 2026 bemnifosbuvir + ruzasvir HCV viral kinetics ([doi:10.1002/cpt.70454](https://doi.org/10.1002/cpt.70454)) -- adults with chronic hepatitis C (genotypes 1-4, with or without compensated cirrhosis).
+- Add Sinnollareddy 2026 epcoritamab updated popPK and exposure-response models ([doi:10.1007/s40262-026-01661-1](https://doi.org/10.1007/s40262-026-01661-1)) -- adults with relapsed or refractory B cell non-Hodgkin lymphoma, including follicular lymphoma on the 2-step and 3-step step-up regimens.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

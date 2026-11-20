@@ -1,0 +1,681 @@
+---
+title: "Epcoritamab exposure-response in follicular lymphoma (Sinnollareddy 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Epcoritamab exposure-response in follicular lymphoma (Sinnollareddy 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Sinnollareddy_2026_epcoritamab"))$reference`
+* Article: <https://doi.org/10.1007/s40262-026-01661-1>
+
+Epcoritamab is a subcutaneous CD3xCD20 bispecific IgG1 antibody. Sinnollareddy
+et al. used data from the EPCORE NHL-1 (NCT03625037) and EPCORE NHL-3
+(NCT04542824) trials to support the approved dosing regimen in relapsed or
+refractory follicular lymphoma (R/R FL): a 48 mg full dose given weekly in
+cycles 1-3, every 2 weeks in cycles 4-9 and every 4 weeks from cycle 10, after a
+3-step step-up schedule (0.16/0.8/3 mg) that replaced the earlier 2-step
+schedule (0.16/0.8 mg). The paper contributes two kinds of model:
+
+1. An **updated population PK model** (`Sinnollareddy_2026_epcoritamab`): the
+   two-compartment quasi-steady-state (QSS) TMDD model of Li 2025
+   (`Li_2025_epcoritamab`) re-estimated with expansion and optimization data
+   and extended with body mass index on ka, tumour size on kint and indolent
+   NHL subtype on kint (supplementary Table S2).
+2. **Logistic exposure-response regressions**, each fitted separately: Emax
+   logistic models for objective and complete response (Figure 2), linear
+   logistic models for maintained response during Q2W/Q4W dosing (Figure S4),
+   for key safety events in all B-NHL patients (Figure 3, Figure S5) and in
+   R/R FL (Figure S6), and for cytokine release syndrome (CRS) under the 3-step
+   regimen against Cycle 1 AUC (Figure S8) and per-dose Cmax (Figure S9,
+   Figure 5B). The paper prints none of the regression coefficients; they were
+   digitised by the maintainers from the fitted (red) curves of each panel.
+   Each regression is packaged as its own model,
+   `Sinnollareddy_2026_epcoritamab_<endpoint>`.
+
+# Population
+
+The PK analysis included 466 adults with R/R B cell non-Hodgkin lymphoma on the
+2-step regimen (EPCORE NHL-1 escalation and expansion, EPCORE NHL-3): 186
+(39.9%) with indolent NHL (158 with FL), 223 (47.9%) with large B cell lymphoma
+and 57 (12.2%) with mantle cell lymphoma; 424 received the 48 mg full dose. The
+81 FL patients of the EPCORE NHL-1 optimization cohort received the 3-step
+regimen. Supplementary Table S1 gives the cohort demographics: median age 63-71
+years (range 20-90), median weight 55.5-77.5 kg (range 39-172; the Japanese
+EPCORE NHL-3 cohort is lightest), median BMI 22.4-26.4 kg/m^2 and median tumour
+size (SUMPPD) 20.7-37.9 cm^2. Exposure-efficacy analyses used the 160 FL
+patients of the escalation and expansion cohorts; exposure-safety analyses used
+all 485 B-NHL patients and the FL subset; the 3-step CRS analyses used the 81
+optimization-cohort patients.
+
+```{r population}
+str(rxode2::rxode(readModelDb("Sinnollareddy_2026_epcoritamab"))$population)
+```
+
+# Source trace
+
+## Population PK model
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL/F) | 0.526 L/day | Table S2 |
+| `lq` (Q/F) | 0.527 L/day | Table S2 |
+| `lvc` (Vc/F) | 9.42 L | Table S2 |
+| `lvp` (Vp/F) | 10.7 L | Table S2 |
+| `lka` (ka) | 0.534 1/day | Table S2 |
+| `lrbase_target` (BASE) | 2.37 ug/mL | Table S2 |
+| `lkss` (KSS) | 0.277 ug/mL | Table S2 |
+| `lkint` (kint) | 0.0253 1/day | Table S2 |
+| `propSd`, `addSd` | 0.164, 0.0151 ug/mL | Table S2 |
+| `e_wt_cl`, `e_wt_q`, `e_wt_vc`, `e_wt_vp` | 0.949, 0.75 (fixed), 0.641, 1 (fixed) | Table S2 |
+| `e_age_ka`, `e_bmi_ka` | -0.381, -0.689 | Table S2 |
+| `e_tumsz_kint`, `e_tumtp_inhl_kint` | 0.312, 0.484 | Table S2 |
+| Reference weight / age | 75 kg / 65 years | Li 2025 parent model (supplementary Fig. S1 there) |
+| Reference BMI / SUMPPD | 25 kg/m^2 / 30 cm^2 | not printed; rounded cohort medians (Table S1), see Assumptions |
+| All `eta` variances, `etaRUV` | Li 2025 Table 2 CVs | not reported in the update; carried from Li 2025 |
+| ODEs, QSS free concentration | n/a | Li 2025 supplementary Fig. S1 (structure unchanged, Methods) |
+
+## Exposure-response models
+
+The coefficients below are read from the packaged model files. Each was
+obtained by calibrating the axis ticks of the cited panel, tracing the red
+fitted curve column by column, and fitting the logistic form by least squares
+on the probability scale (root-mean-square residual 0.06-0.4 percentage points
+for the linear logistic panels and 0.6-1.1 for the Emax panels).
+
+```{r er-index}
+er_spec <- tibble::tribble(
+  ~suffix, ~figure, ~endpoint, ~n, ~events, ~p_printed,
+  "orr", "Figure 2A", "Objective response (FL)", 160, 134, "<0.0005",
+  "cr", "Figure 2B", "Complete response (FL)", 160, 101, "<0.0005",
+  "maintained_q2w", "Figure S4", "Maintained/improved response, Q2W (all)", 100, 86, "0.265",
+  "maintained_q2w_nhl1", "Figure S4", "Maintained/improved response, Q2W (NHL-1)", 84, 73, "0.207",
+  "maintained_q4w", "Figure S4", "Maintained/improved response, Q4W (all)", 61, 59, "0.15",
+  "maintained_q4w_nhl1", "Figure S4", "Maintained/improved response, Q4W (NHL-1)", 49, 48, "0.223",
+  "bnhl_teae_grade3", "Figure 3", "Grade >=3 TEAE", 485, 357, "0.097",
+  "bnhl_dose_delay", "Figure 3", "TEAE leading to dose delay", 485, 250, "0.978",
+  "bnhl_discontinuation", "Figure 3", "TEAE leading to discontinuation", 485, 76, "0.7",
+  "bnhl_sae", "Figure 3", "Serious AE", 485, 315, "0.162",
+  "bnhl_neutropenia", "Figure 3", "Any grade neutropenia", 485, 158, "0.003",
+  "bnhl_neutropenia_grade3", "Figure 3", "Grade >=3 neutropenia", 485, 135, "0.006",
+  "bnhl_isr", "Figure 3", "Injection site reaction", 485, 228, "<0.0005",
+  "bnhl_infection", "Figure 3", "Any grade infection", 485, 317, "0.377",
+  "bnhl_infection_grade3", "Figure 3", "Grade >=3 infection", 485, 160, "0.848",
+  "bnhl_crs", "Figure S5", "Any grade CRS", 485, 317, "0.281",
+  "bnhl_icans", "Figure S5", "ICANS", 418, 23, "0.136",
+  "bnhl_crs_grade2", "Figure S5", "Grade >=2 CRS", 485, 133, "0.002",
+  "bnhl_crs_tocilizumab", "Figure S5", "CRS requiring tocilizumab", 485, 118, "0.001",
+  "fl_teae_grade3", "Figure S6", "Grade >=3 TEAE", 160, 112, "0.878",
+  "fl_dose_delay", "Figure S6", "TEAE leading to dose delay", 160, 93, "0.01",
+  "fl_discontinuation", "Figure S6", "TEAE leading to discontinuation", 160, 28, "0.108",
+  "fl_sae", "Figure S6", "Serious AE", 160, 106, "0.086",
+  "fl_neutropenia", "Figure S6", "Any grade neutropenia", 160, 46, "0.248",
+  "fl_neutropenia_grade3", "Figure S6", "Grade >=3 neutropenia", 160, 39, "0.249",
+  "fl_isr", "Figure S6", "Injection site reaction", 160, 95, "0.036",
+  "fl_infection", "Figure S6", "Any grade infection", 160, 121, "0.153",
+  "fl_infection_grade3", "Figure S6", "Grade >=3 infection", 160, 58, "0.075",
+  "fl_crs", "Figure S6", "Any grade CRS", 160, 112, "0.646",
+  "fl_crs_grade2", "Figure S6", "Grade >=2 CRS", 160, 43, "0.007",
+  "fl_crs_tocilizumab", "Figure S6", "CRS requiring tocilizumab", 160, 39, "0.601",
+  "fl_icans", "Figure S6", "ICANS", 148, 8, "0.229",
+  "3step_crs_auc", "Figure S8", "Any grade CRS vs Cycle 1 AUC", 81, 40, "0.124",
+  "3step_crs_grade2_auc", "Figure S8", "Grade >=2 CRS vs Cycle 1 AUC", 81, 8, "0.255",
+  "3step_crs_tocilizumab_auc", "Figure S8", "CRS with tocilizumab vs Cycle 1 AUC", 81, 9, "0.857",
+  "3step_crs_dose1", "Figure S9", "Any grade CRS, dose 1 (0.16 mg)", 79, 8, "0.817",
+  "3step_crs_dose2", "Figure S9", "Any grade CRS, dose 2 (0.8 mg)", 81, 5, "0.57",
+  "3step_crs_dose3", "Figure S9", "Any grade CRS, dose 3 (3 mg)", 81, 12, "0.157",
+  "3step_crs_dose4", "Figure S9", "Any grade CRS, dose 4 (48 mg)", 81, 30, "0.197",
+  "3step_crs_dose5", "Figure S9", "Any grade CRS, dose 5 (48 mg)", 80, 5, "0.012",
+  "3step_crs_grade2_dose1", "Figure 5B", "Grade >=2 CRS, dose 1", 79, 1, "0.539",
+  "3step_crs_grade2_dose3", "Figure 5B", "Grade >=2 CRS, dose 3", 81, 1, "0.599",
+  "3step_crs_grade2_dose4", "Figure 5B", "Grade >=2 CRS, dose 4", 81, 5, "0.037"
+) |>
+  mutate(model = paste0("Sinnollareddy_2026_epcoritamab_", suffix))
+
+# Every packaged exposure-response model is listed above, and vice versa.
+stopifnot(setequal(
+  er_spec$model,
+  grep("^Sinnollareddy_2026_epcoritamab_", nlmixr2lib::modeldb$name, value = TRUE)
+))
+
+er_coef <- lapply(er_spec$model, function(nm) {
+  ui <- rxode2::rxode(readModelDb(nm))
+  est <- setNames(ui$iniDf$est, ui$iniDf$name)
+  tibble(
+    model = nm,
+    output = ui$predDf$var,
+    covariate = names(ui$covariateData),
+    intercept = unname(est["logit_ref"]),
+    slope = unname(est[grep("^e_.*_logit$", names(est))][1]),
+    e0 = unname(est["logite0"]),
+    emax = unname(est["logitemax"]),
+    ec50 = unname(exp(est["lec50"]))
+  )
+}) |>
+  bind_rows()
+er <- left_join(er_spec, er_coef, by = "model")
+
+er |>
+  transmute(
+    Model = suffix, Source = figure, Endpoint = endpoint,
+    Covariate = covariate, Output = output,
+    Coefficients = ifelse(
+      is.na(intercept),
+      sprintf("E0 %.4g, Emax %.4g, EC50 %.4g", e0, emax, ec50),
+      sprintf("intercept %.4g, slope %.4g", intercept, slope)
+    ),
+    `Events / N` = paste(events, n, sep = " / ")
+  ) |>
+  knitr::kable()
+```
+
+`er_prob()` evaluates any of these regressions on a vector of exposures. It
+mirrors the `model()` blocks, which share two templates (linear or Emax logit);
+the chunk after it confirms that representative packaged models solved with
+`rxSolve()` return the same probabilities.
+
+```{r er-prob}
+er_prob <- function(row, x) {
+  if (is.na(row$intercept)) {
+    plogis(row$e0 + (row$emax - row$e0) * x / (row$ec50 + x))
+  } else {
+    plogis(row$intercept + row$slope * x)
+  }
+}
+
+solve_static <- function(model_name, cov_name, x) {
+  ev <- data.frame(id = 1L, time = seq_along(x), amt = 0, evid = 0L)
+  ev[[cov_name]] <- x
+  as.data.frame(rxode2::rxSolve(
+    rxode2::zeroRe(rxode2::rxode(readModelDb(model_name)), which = "sigma"),
+    events = ev, returnType = "data.frame"
+  ))
+}
+
+check_models <- c("orr", "bnhl_isr", "maintained_q4w", "3step_crs_auc", "3step_crs_dose4")
+for (sfx in check_models) {
+  row <- er[er$suffix == sfx, ]
+  x <- seq(0.1, 10, length.out = 25)
+  s <- solve_static(row$model, row$covariate, x)
+  # Same parameters on both sides: only floating-point differences remain.
+  stopifnot(max(abs(s[[row$output]] - er_prob(row, x))) < 1e-8)
+}
+```
+
+# Event-count check of the digitised coefficients
+
+A maximum-likelihood logistic fit with an intercept reproduces the observed
+number of events: the sum of the fitted probabilities over the patients equals
+the event count. Supplementary Table S5 prints the event counts per Cycle 1-3
+Cavg quartile for every safety endpoint (121-122 B-NHL or 40 FL patients per
+quartile). Evaluating each digitised curve at the centre of each quartile
+(read from the black squares of the figures: 0.8, 3.4, 5.5 and 8.9 ug/mL for
+B-NHL; 1.6, 4.1, 5.6 and 8.8 ug/mL for FL) and weighting by the quartile sizes
+recovers the printed totals, which checks the digitised intercepts and slopes
+together. The two Emax panels of Figure 2 are checked the same way against the
+134 responders and 101 complete responders.
+
+```{r score-check}
+table_s5 <- tibble::tribble(
+  ~suffix, ~q1, ~q2, ~q3, ~q4,
+  "bnhl_teae_grade3", 100, 87, 81, 89,
+  "bnhl_sae", 87, 73, 81, 74,
+  "bnhl_discontinuation", 20, 17, 15, 24,
+  "bnhl_dose_delay", 59, 69, 64, 58,
+  "bnhl_neutropenia_grade3", 24, 34, 31, 46,
+  "bnhl_neutropenia", 29, 39, 37, 53,
+  "bnhl_infection_grade3", 41, 41, 37, 41,
+  "bnhl_infection", 73, 80, 82, 82,
+  "bnhl_isr", 38, 52, 64, 74,
+  "bnhl_crs", 74, 81, 81, 81,
+  "bnhl_crs_grade2", 47, 36, 27, 23,
+  "bnhl_crs_tocilizumab", 39, 37, 24, 18,
+  "bnhl_icans", 8, 5, 6, 4,
+  "fl_teae_grade3", 30, 25, 27, 30,
+  "fl_sae", 29, 26, 28, 23,
+  "fl_discontinuation", 5, 6, 7, 10,
+  "fl_dose_delay", 27, 27, 22, 17,
+  "fl_neutropenia_grade3", 7, 10, 11, 11,
+  "fl_neutropenia", 8, 11, 14, 13,
+  "fl_infection_grade3", 19, 13, 14, 12,
+  "fl_infection", 31, 33, 31, 26,
+  "fl_isr", 19, 23, 27, 26,
+  "fl_crs", 27, 31, 27, 27,
+  "fl_crs_grade2", 17, 11, 10, 5,
+  "fl_crs_tocilizumab", 11, 8, 12, 8,
+  "fl_icans", 4, 0, 3, 1
+)
+x_bnhl <- c(0.8, 3.4, 5.5, 8.9)
+x_fl <- c(1.6, 4.1, 5.6, 8.8)
+
+score <- er |>
+  filter(suffix %in% c(table_s5$suffix, "orr", "cr"))
+score$predicted <- vapply(seq_len(nrow(score)), function(i) {
+  row <- score[i, ]
+  x <- if (startsWith(row$suffix, "bnhl")) x_bnhl else x_fl
+  sum(row$n / 4 * er_prob(row, x))
+}, numeric(1))
+score <- mutate(score, pct_diff = 100 * (predicted / events - 1))
+
+score |>
+  transmute(Model = suffix, Endpoint = endpoint, `Printed events` = events,
+            `Predicted events` = round(predicted, 1),
+            `Difference (%)` = round(pct_diff, 1)) |>
+  knitr::kable()
+
+# Common-event endpoints land within a few percent; the rarest (ICANS, 8 and
+# 23 events) carry a larger discretisation error from the quartile centres.
+stopifnot(
+  abs(median(score$pct_diff)) < 2,
+  all(abs(score$pct_diff[score$events >= 25]) < 5)
+)
+```
+
+# Virtual cohort
+
+The observed data are not public. Two FL cohorts of 150 patients each are
+drawn to resemble the EPCORE NHL-1 expansion and optimization cohorts
+(supplementary Table S1): age around a median of 64 years (range 20-90),
+weight around a median of 75 kg (39-172), height-derived BMI (median about 26
+kg/m^2), log-normal SUMPPD around 30 cm^2 (1.5-330) and `TUMTP_INHL = 1`. One
+cohort receives the 2-step regimen (0.16/0.8 mg, then 48 mg) and the other the
+3-step regimen (0.16/0.8/3 mg, then 48 mg); both then follow 48 mg QW to the
+end of cycle 3, Q2W in cycles 4-9 and Q4W from cycle 10 (28-day cycles).
+
+```{r cohort}
+set.seed(20260101)
+rxode2::rxSetSeed(20260101)
+n_arm <- 150
+
+draw_cov <- function(n, id0) {
+  wt <- pmin(pmax(exp(rnorm(n, log(75), 0.2)), 39), 172)
+  ht <- pmin(pmax(rnorm(n, 1.70, 0.09), 1.45), 1.98)
+  tibble(
+    id = id0 + seq_len(n),
+    AGE = pmin(pmax(round(rnorm(n, 64, 11)), 20), 90),
+    WT = wt,
+    BMI = wt / ht^2,
+    TUMSZ = pmin(pmax(exp(rnorm(n, log(30), 0.9)), 1.5), 330),
+    TUMTP_INHL = 1L
+  )
+}
+
+later <- c(seq(84, 238, by = 14), seq(252, 420, by = 28))
+regimens <- list(
+  `2-step` = tibble(time = c(0, 7, seq(14, 77, by = 7), later),
+                    amt = c(0.16, 0.8, rep(48, 10), rep(48, length(later)))),
+  `3-step` = tibble(time = c(0, 7, 14, seq(21, 77, by = 7), later),
+                    amt = c(0.16, 0.8, 3, rep(48, 9), rep(48, length(later))))
+)
+obs_times <- sort(unique(c(seq(0, 84, by = 0.25), seq(85, 448, by = 1))))
+
+make_events <- function(cov, doses, regimen) {
+  dose_rows <- tidyr::crossing(cov, doses) |> mutate(evid = 1L, cmt = "depot")
+  obs_rows <- tidyr::crossing(cov, tibble(time = obs_times)) |>
+    mutate(evid = 0L, amt = 0, cmt = "central")
+  bind_rows(dose_rows, obs_rows) |>
+    mutate(regimen = regimen) |>
+    arrange(id, time, desc(evid))
+}
+
+cohort <- bind_rows(draw_cov(n_arm, 0L), draw_cov(n_arm, n_arm))
+events <- bind_rows(
+  make_events(cohort[seq_len(n_arm), ], regimens[["2-step"]], "2-step"),
+  make_events(cohort[n_arm + seq_len(n_arm), ], regimens[["3-step"]], "3-step")
+)
+summary(cohort[, c("AGE", "WT", "BMI", "TUMSZ")])
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Sinnollareddy_2026_epcoritamab")
+sim <- rxode2::rxSolve(mod, events = events, keep = "regimen",
+                       returnType = "data.frame")
+```
+
+## Individual PK parameters
+
+Table S3 summarises the empirical-Bayes individual parameters of the FL
+patients by regimen as geometric means. The simulated individual parameters
+below use the carried-forward Li 2025 random-effect variances. CL/F, Vc/F and
+ka, whose geometric means are governed by the typical values and the weight,
+age and BMI effects, agree closely. The remaining parameters differ in the
+direction expected from empirical-Bayes estimates of poorly informed random
+effects (shrinkage and skew), and kint additionally depends on the unprinted
+SUMPPD reference (see Assumptions).
+
+```{r ind-params}
+ind <- sim |>
+  filter(time == 0) |>
+  distinct(id, regimen, cl, q, vc, vp, ka, rbase_target, kss, kint) |>
+  group_by(regimen) |>
+  summarise(across(c(cl, q, vc, vp, ka, rbase_target, kss, kint),
+                   ~ exp(mean(log(.x)))), .groups = "drop")
+
+table_s3 <- tibble(
+  parameter = c("cl", "q", "vc", "vp", "ka", "rbase_target", "kss", "kint"),
+  `2-step` = c(0.531, 0.565, 9.1, 14, 0.521, 2.98, 0.256, 0.0161),
+  `3-step` = c(0.49, 0.599, 8.98, 9.69, 0.545, 2.44, 0.335, 0.0153)
+)
+ind_long <- ind |>
+  pivot_longer(-regimen, names_to = "parameter", values_to = "simulated") |>
+  left_join(pivot_longer(table_s3, -parameter, names_to = "regimen",
+                         values_to = "published"),
+            by = c("regimen", "parameter")) |>
+  mutate(`Difference (%)` = round(100 * (simulated / published - 1), 1))
+knitr::kable(ind_long, digits = 4)
+
+stopifnot(all(abs(ind_long$`Difference (%)`[ind_long$parameter %in% c("cl", "vc", "ka")]) < 15))
+```
+
+## Figure 4A: predicted concentrations, 2-step versus 3-step
+
+```{r figure-4a, fig.width = 7, fig.height = 4.5}
+# Replicates Figure 4A of Sinnollareddy 2026: median and 90% prediction
+# interval of the predicted epcoritamab concentration for the two regimens.
+fig4a <- sim |>
+  # Log axis: drop the pre-dose zero concentrations at the first record.
+  filter(time >= 0.25) |>
+  group_by(regimen, time) |>
+  summarise(Q05 = quantile(Cc, 0.05), Q50 = median(Cc),
+            Q95 = quantile(Cc, 0.95), .groups = "drop")
+ggplot(fig4a, aes(time / 7, Q50, colour = regimen, fill = regimen)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.2, colour = NA) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time (weeks)", y = "Epcoritamab concentration (ug/mL)",
+       colour = NULL, fill = NULL,
+       title = "Replicates Figure 4A of Sinnollareddy 2026") +
+  theme_bw()
+```
+
+The 3-step regimen lowers the trough after the intermediate dose and the
+concentrations converge once the 48 mg doses accumulate, as in Figure 4A
+(median peak about 10 ug/mL at week 12, median Q4W trough about 1-1.5 ug/mL).
+
+# PKNCA: exposure metrics used by the exposure-response models
+
+All exposure metrics used as regressors are computed per subject with PKNCA:
+the Cycle 1-3 average concentration (AUC over days 0-84 divided by 84 days),
+the Cycle 1 AUC of the 3-step regimen (days 0-35, through the Cycle 2 Day 1
+interval), the Cmax of each Cycle 1 dosing interval of the 3-step regimen, and
+the steady-state troughs at the end of the Q2W (day 238-252) and Q4W (day
+420-448) periods.
+
+```{r pknca}
+conc <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, regimen)
+doses <- events |>
+  filter(evid == 1) |>
+  select(id, time, amt, regimen)
+
+conc_obj <- PKNCAconc(conc, Cc ~ time | regimen + id)
+dose_obj <- PKNCAdose(doses, amt ~ time | regimen + id)
+intervals <- bind_rows(
+  data.frame(start = 0, end = 84, auclast = TRUE, cmax = TRUE),
+  data.frame(start = 0, end = 35, auclast = TRUE),
+  data.frame(start = c(0, 7, 14, 21, 28), end = c(7, 14, 21, 28, 35), cmax = TRUE),
+  data.frame(start = c(238, 420), end = c(252, 448), cmin = TRUE)
+) |>
+  # PKNCA needs FALSE, not NA, for the parameters an interval does not request.
+  mutate(across(c(auclast, cmax, cmin), ~ dplyr::coalesce(.x, FALSE)))
+nca <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_res <- as.data.frame(nca$result)
+
+metrics <- nca_res |>
+  mutate(metric = case_when(
+    PPTESTCD == "auclast" & end == 84 ~ "CAV",
+    PPTESTCD == "auclast" & end == 35 ~ "AUC_EPCORITAMAB",
+    PPTESTCD == "cmax" & end == 7 ~ "CMAX_D1",
+    PPTESTCD == "cmax" & end == 14 ~ "CMAX_D2",
+    PPTESTCD == "cmax" & end == 21 ~ "CMAX_D3",
+    PPTESTCD == "cmax" & end == 28 ~ "CMAX_D4",
+    PPTESTCD == "cmax" & end == 35 ~ "CMAX_D5",
+    PPTESTCD == "cmin" & end == 252 ~ "CTROUGH_Q2W",
+    PPTESTCD == "cmin" & end == 448 ~ "CTROUGH_Q4W",
+    TRUE ~ NA_character_
+  )) |>
+  filter(!is.na(metric)) |>
+  mutate(value = ifelse(metric == "CAV", PPORRES / 84, PPORRES)) |>
+  select(id, regimen, metric, value) |>
+  pivot_wider(names_from = metric, values_from = value)
+
+summary_tab <- metrics |>
+  pivot_longer(-c(id, regimen), names_to = "metric") |>
+  filter(!is.na(value)) |>
+  group_by(regimen, metric) |>
+  summarise(Q25 = quantile(value, 0.25), Median = median(value),
+            Q75 = quantile(value, 0.75), .groups = "drop")
+knitr::kable(summary_tab, digits = 3)
+```
+
+The simulated exposure distributions are compared with the distributions the
+paper reports for the corresponding regressor: the FL Cycle 1-3 Cavg quartile
+bounds of Table S5 (3.44, 4.95 and 6.92 ug/mL; the lowest quartile also holds
+the 11 patients on full doses below 48 mg, which the 48 mg-only virtual cohort
+lacks), the quartile bounds of the Figure 5B / S9 dose-4 Cmax (about 1.35, 2.2
+and 3.25 ug/mL) and Figure S8 Cycle 1 AUC (about 30, 45 and 56 day*ug/mL),
+both read from the dashed lines of the figures, and the medians of the
+Figure S4 Q2W and Q4W trough box plots (about 4.3 and 1.4 ug/mL, read from the
+figure).
+
+```{r exposure-compare}
+cmp <- tibble::tribble(
+  ~regimen, ~metric, ~published_median, ~source,
+  "2-step", "CAV", 4.95, "Table S5 (FL Q2/Q3 bound)",
+  "3-step", "CMAX_D4", 2.2, "Figure 5B dashed lines",
+  "3-step", "AUC_EPCORITAMAB", 45, "Figure S8 dashed lines",
+  "2-step", "CTROUGH_Q2W", 4.3, "Figure S4 box plot",
+  "2-step", "CTROUGH_Q4W", 1.4, "Figure S4 box plot"
+) |>
+  left_join(summary_tab, by = c("regimen", "metric")) |>
+  mutate(`Difference (%)` = round(100 * (Median / published_median - 1), 1))
+knitr::kable(cmp, digits = 3)
+
+# A mis-transcribed clearance, volume or dose unit moves these medians by tens
+# of percent; the covariate distributions are only approximated, so the
+# envelope is generous.
+stopifnot(all(abs(cmp$`Difference (%)`) < 35))
+```
+
+The 2-step Cycle 1-3 Cavg and the Q2W/Q4W troughs run 7-16% above the
+published values, as expected for a virtual cohort that receives every
+planned 48 mg dose: the source regressors come from actual dosing histories
+with a relative dose intensity of about 90% (Table S6) and include patients on
+lower full doses. The early 3-step metrics (dose-4 Cmax and Cycle 1 AUC) run
+about 20% below the values read from the figure gridlines; these early
+exposures are the most sensitive to the target-mediated terms, including the
+unprinted SUMPPD reference, and to the approximated covariate distributions.
+
+# Exposure-response figures
+
+## Figure 2: objective and complete response in R/R FL
+
+```{r figure-2, fig.width = 7, fig.height = 3.8}
+# Replicates Figure 2A and 2B of Sinnollareddy 2026.
+grid_cav <- seq(0, 13.3, length.out = 200)
+curve_of <- function(sfx, x) {
+  row <- er[er$suffix == sfx, ]
+  tibble(suffix = sfx, endpoint = row$endpoint, x = x, p = er_prob(row, x))
+}
+fig2 <- bind_rows(curve_of("orr", grid_cav), curve_of("cr", grid_cav))
+ggplot(fig2, aes(x, p)) +
+  geom_line(colour = "red") +
+  facet_wrap(~endpoint) +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(x = "Cycle 1-3 Cavg (ug/mL)", y = "Probability",
+       title = "Replicates Figure 2A-B of Sinnollareddy 2026") +
+  theme_bw()
+```
+
+Combining the PK and exposure-response layers, the simulated 48 mg FL cohort
+gives the response probabilities below; the observed rates in the pooled
+exposure-efficacy population, which included 11 patients on lower full doses,
+were 83.8% (objective) and 63.1% (complete).
+
+```{r pk-to-response}
+fl_2step <- filter(metrics, regimen == "2-step")
+tibble(
+  Endpoint = c("Objective response", "Complete response"),
+  `Simulated mean probability (%)` = round(100 * c(
+    mean(er_prob(er[er$suffix == "orr", ], fl_2step$CAV)),
+    mean(er_prob(er[er$suffix == "cr", ], fl_2step$CAV))
+  ), 1),
+  `Observed (%)` = c(83.8, 63.1)
+) |>
+  knitr::kable()
+```
+
+## Figure 3, Figure S5 and Figure S6: exposure-safety
+
+The open squares are the observed quartile fractions of supplementary Table S5,
+plotted at the quartile centres used in the event-count check.
+
+```{r figure-3, fig.width = 8, fig.height = 9}
+# Replicates Figure 3 and supplementary Figures S5 and S6 of Sinnollareddy 2026.
+safety <- er |> filter(grepl("^(bnhl|fl)_", suffix))
+grid_safety <- seq(0, 14.5, length.out = 150)
+curves <- bind_rows(lapply(safety$suffix, curve_of, x = grid_safety)) |>
+  mutate(population = ifelse(startsWith(suffix, "bnhl"), "All B-NHL", "R/R FL"),
+         panel = endpoint)
+obs <- table_s5 |>
+  pivot_longer(q1:q4, names_to = "quartile", values_to = "events_q") |>
+  left_join(select(er, suffix, n, endpoint), by = "suffix") |>
+  mutate(
+    population = ifelse(startsWith(suffix, "bnhl"), "All B-NHL", "R/R FL"),
+    q = as.integer(sub("q", "", quartile)),
+    x = ifelse(population == "All B-NHL", x_bnhl[q], x_fl[q]),
+    p = events_q / (n / 4),
+    panel = endpoint
+  )
+ggplot(curves, aes(x, p, colour = population)) +
+  geom_line() +
+  geom_point(data = obs, shape = 0) +
+  facet_wrap(~panel, ncol = 4) +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(x = "Cycle 1-3 Cavg (ug/mL)", y = "Probability of event", colour = NULL,
+       title = "Replicates Figure 3, S5 and S6 of Sinnollareddy 2026") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+## Figure S4: maintained or improved response during Q2W and Q4W dosing
+
+```{r figure-s4, fig.width = 7, fig.height = 3.8}
+# Replicates supplementary Figure S4 of Sinnollareddy 2026.
+s4 <- bind_rows(
+  curve_of("maintained_q2w", seq(0.7, 9.9, length.out = 100)),
+  curve_of("maintained_q2w_nhl1", seq(0.7, 9.9, length.out = 100)),
+  curve_of("maintained_q4w", seq(0.4, 3.8, length.out = 100)),
+  curve_of("maintained_q4w_nhl1", seq(0.4, 3.8, length.out = 100))
+) |>
+  mutate(period = ifelse(grepl("q2w", suffix), "Q2W (cycles 4-9)", "Q4W (cycles 10+)"),
+         subset = ifelse(grepl("nhl1", suffix), "EPCORE NHL-1", "All patients"))
+ggplot(s4, aes(x, p, colour = subset)) +
+  geom_line() +
+  facet_wrap(~period, scales = "free_x") +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(x = "Steady-state trough (ug/mL)", y = "Probability of improved or maintained",
+       colour = NULL, title = "Replicates Figure S4 of Sinnollareddy 2026") +
+  theme_bw()
+```
+
+## Figure S8, Figure S9 and Figure 5B: CRS under the 3-step regimen
+
+```{r figure-crs, fig.width = 8, fig.height = 6}
+# Replicates supplementary Figures S8 and S9 and Figure 5B of Sinnollareddy 2026.
+x_max <- c(dose1 = 0.0136, dose2 = 0.108, dose3 = 0.305, dose4 = 5.34, dose5 = 10.6)
+crs <- bind_rows(
+  lapply(c("3step_crs_auc", "3step_crs_grade2_auc", "3step_crs_tocilizumab_auc"),
+         curve_of, x = seq(0, 148, length.out = 100)),
+  lapply(names(x_max), function(d) {
+    sfx <- intersect(c(paste0("3step_crs_", d), paste0("3step_crs_grade2_", d)), er$suffix)
+    bind_rows(lapply(sfx, curve_of, x = seq(0, x_max[[d]], length.out = 100)))
+  })
+) |>
+  mutate(
+    grade = case_when(grepl("grade2", suffix) ~ "Grade >=2 CRS",
+                      grepl("tocilizumab", suffix) ~ "CRS with tocilizumab",
+                      TRUE ~ "Any grade CRS"),
+    exposure = ifelse(grepl("auc", suffix), "Cycle 1 AUC (day*ug/mL)",
+                      paste("Cmax,", sub(".*_(dose[0-9])$", "\\1", suffix), "(ug/mL)"))
+  )
+ggplot(crs, aes(x, p, colour = grade)) +
+  geom_line() +
+  facet_wrap(~exposure, scales = "free_x") +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(x = "Exposure", y = "Probability of event", colour = NULL,
+       title = "Replicates Figures S8, S9 and 5B of Sinnollareddy 2026") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# Assumptions and deviations
+
+* **Exposure-response coefficients are digitised.** The paper prints no
+  intercepts, slopes, E0, Emax or EC50. Every coefficient was digitised by the
+  maintainers from the fitted curve of the cited panel (Figures 2, 3 and 5B
+  from the article figures; Figures S4, S5, S6, S8 and S9 from the images
+  embedded in the supplement) and rounded to four significant figures. The
+  event-count check above confirms the digitised curves against the
+  independently printed event counts of Table S5. The printed p-values are not
+  reproducible from the curves alone and are recorded in the model
+  descriptions only.
+* **Regressions with no events are not packaged.** Figure 5B also shows
+  grade >= 2 CRS after dose 2 (0 of 81) and dose 5 (0 of 80); a logistic
+  regression with no events has no finite maximum-likelihood estimate, so these
+  two flat panels have no model. Thrombocytopenia and anaemia (Table S5) and
+  the duration of response, progression-free and overall survival Kaplan-Meier
+  analyses (Figure 2C-E) were not modelled in the paper.
+* **The Emax form of Figure 2 follows main-text Eq. 1** with E0 and Emax on
+  the logit scale. The printed left-hand side, `log p(x) / (1 - p(x))`, is read
+  as the logit `log(p / (1 - p))`.
+* **PK random effects are carried from Li 2025.** The update reports fixed
+  effects and residual error only (Table S2). The between-subject variances,
+  the random effect on the residual-error magnitude and the residual-error
+  structure are taken from the Li 2025 parent model
+  (`Li_2025_epcoritamab`), which the update re-estimated without stated
+  structural changes.
+* **Covariate references.** Weight (75 kg) and age (65 years) references are
+  those of the Li 2025 parent model. The update does not print the references
+  for the two new continuous covariates; BMI is centred at 25 kg/m^2 and
+  SUMPPD at 30 cm^2, rounded values near the cohort medians of Table S1
+  (BMI 25.6-26.4 kg/m^2 in the EPCORE NHL-1 cohorts; SUMPPD 26.4-37.9 cm^2,
+  log-scale median 3.48 = 32.5 cm^2 in the expansion cohort). The BMI choice
+  reproduces the Table S3 geometric-mean ka; the simulated kint is lower than
+  the Table S3 empirical-Bayes geometric mean, which would favour a smaller
+  SUMPPD reference, but empirical-Bayes means of a poorly informed parameter
+  are not a reliable centring target, so the rounded median is kept. At the 48
+  mg full dose the target is saturated and kint has little effect on exposure
+  (main text: the new covariates "had no apparent effect on exposure").
+* **Indolent-NHL effect on kint is a ratio.** Table S2 prints "iNHL subtype
+  effect on kint = 0.484" without the functional form. It is read as a
+  multiplicative ratio (kint x 0.484 for indolent NHL); the alternatives
+  (1 + 0.484, or the reciprocal) give follicular lymphoma kint values two to
+  three times the Table 1 and Table S3 geometric means for any plausible
+  SUMPPD reference.
+* **SUMPPD units** are cm^2, as printed in Table S1, rather than the mm^2
+  suggested for sum-of-products constructs in the covariate register.
+* **Exposure regressors are simulated, not observed.** The source regressors
+  are individual predictions from each patient's actual dosing history,
+  including interruptions and lower full doses; the virtual cohort here
+  receives every planned dose. Cycle 1-3 Cavg is computed over days 0-84.
+* **Placeholder residual error.** The logistic models are Bernoulli; the
+  `addSd_<output> = fixed(0.001)` term exists only because rxode2 needs an
+  observation declaration.
+* No erratum for the article was found in Europe PMC (checked 2026-11-17).
