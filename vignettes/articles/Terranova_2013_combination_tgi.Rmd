@@ -1,0 +1,521 @@
+---
+title: "Two-drug xenograft tumor growth inhibition with an interaction term (Terranova 2013)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Two-drug xenograft tumor growth inhibition with an interaction term (Terranova 2013)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 8, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Terranova_2013_drugC1_gemcitabine_mouse"))$reference`
+* Article: [Cancer Chemother Pharmacol. 2013;72(2):471-482](https://doi.org/10.1007/s00280-013-2208-8) (open access; PMC3718992)
+
+Terranova et al. extended the single-agent Simeoni tumor-growth-inhibition
+(TGI) model to two co-administered anticancer drugs. Each drug moves
+proliferating tumor cells into its own chain of three damaged-cell states, a
+cell can be hit by the second drug at any stage of the first drug's chain (a
+four-by-four grid of states), and one extra parameter, gamma, moves
+proliferating cells directly into the doubly damaged state at a rate
+`gamma * Ca * Cb`. Positive gamma means synergy, negative gamma antagonism and
+zero the purely additive ("zero-interaction") prediction.
+
+The paper applied the model to six xenograft experiments, each analysed
+separately with its own tumor and drug parameters, so each is its own model
+file. The four investigational compounds are coded by the authors (Drug C1, an
+Aurora kinase inhibitor; Drug C2, a polo-like kinase inhibitor; Drug C4 and
+Drug C5, multikinase inhibitors) and have no disclosed INN.
+
+| Model file | Experiment | Cell line | Drug a | Drug b |
+|---|---|---|---|---|
+| `Terranova_2013_drugC1_gemcitabine_mouse` | a | BxPC3 (pancreas) | Drug C1, IV | gemcitabine, IV |
+| `Terranova_2013_drugC1_cisplatin_mouse` | b | A2780 (ovary) | Drug C1, IV | cisplatin, IV |
+| `Terranova_2013_drugC2_irinotecan_mouse` | c | HT29 (colon) | Drug C2, oral | irinotecan, IV |
+| `Terranova_2013_drugC2_fluorouracil_mouse` | d | HT29 (colon) | Drug C2, oral | 5-fluorouracil, IV |
+| `Terranova_2013_drugC4_gemcitabine_mouse` | e | BxPC3 (pancreas) | Drug C4, oral | gemcitabine, IV |
+| `Terranova_2013_drugC5_irinotecan_mouse` | f | HT29 (colon) | Drug C5, IV | irinotecan, IV |
+
+Every file carries the mouse PK models of both drugs with their parameters
+held at the single-agent estimates, because the authors simulated the typical
+concentration profiles and used them as the input to the tumor model.
+
+# Population
+
+All data are preclinical. Experiment a used female CD1 athymic nude-nu mice
+(5 weeks old, 17-35 g); all other experiments used male Balb athymic nude-nu
+mice (5 weeks old, 25-35 g). Fragments of BxPC3, A2780 or HT29 tumors were
+implanted subcutaneously, and mice with a palpable tumor (about
+100-300 mm^3) were randomized to a control arm, two single-agent arms and one
+or two combination arms, usually eight mice per arm (Methods). Tumor weight
+was calculated from caliper measurements as length x width^2 / 2 at unit
+density, and the arm means were fitted. Time zero is tumor implantation; the
+doses (Table 1) start on days 8-10.
+
+The analysis was done in two steps: the seven tumor and single-agent
+parameters (w0, lambda0, lambda1, k1 and k2 of each drug) were estimated on
+the control and single-agent arms, then held at those values while gamma was
+estimated on a combination arm. For experiments a, c and d the first step was
+done earlier, in Rocchetti 2009 (doi:10.1016/j.ejca.2009.09.025), and its
+values are reprinted in Supplementary Table 2.
+
+# Source trace
+
+| Element | Source location | Value |
+|---|---|---|
+| Two-drug grid of states x_ij, growth f_p(w), interaction flux v_11 | Equations 1-3; Figure 1 (right panel) | -- |
+| Simeoni growth f_p(w) = lambda0 x00 / (1 + (lambda0 w / lambda1)^psi)^(1/psi) | Equation 2 definitions; growth model of Simeoni 2004 | psi = 20 (Simeoni 2004; not printed) |
+| PK: V1, K10, K12, K21, K01 of the eight drugs | Supplementary Table 1 | see each model file |
+| lambda0, lambda1, k1A, k2A, k1B, k2B, w0 per experiment | Supplementary Table 2 | see each model file |
+| gamma, arms a1, b1, c1, d1, d2, e1, f1, f2 | Results, 'TGI model identification' | -0.88, 8.0, 3.45, 0.131, 0.157, -0.0455, -2.04, -1.05 |
+| Residual error: weighted least squares, weights 1/y^2 | Methods, 'Data analysis' | magnitude not reported |
+| Dose levels (mg/kg and umol/kg) and schedules | Methods, 'Drug treatments'; Table 1; footnote 2 | see below |
+| Combination indexes SC and AC | Equations 4-7; Results | see the index comparison below |
+
+# Structure
+
+With `Ca` and `Cb` the plasma concentrations (uM) of drug a and drug b,
+`x00` the proliferating cells and `w` the total tumor weight (g):
+
+* `dx00/dt = f_p(w) - (k2a Ca + k2b Cb + gamma Ca Cb) x00`
+* each damaged state `x_ij` (i stages of drug-a damage, j of drug-b damage)
+  receives cells from `x_(i-1)j` at `k2a Ca` (i = 1) or `k1a` (i > 1), and
+  from `x_i(j-1)` at `k2b Cb` (j = 1) or `k1b` (j > 1); `x11` also receives
+  `gamma Ca Cb x00`;
+* each damaged state loses cells at `k2a Ca` (i = 0) or `k1a` (i > 0) plus
+  `k2b Cb` (j = 0) or `k1b` (j > 0); cells leaving the last stage of either
+  chain die.
+
+The PK models are linear one- or two-compartment models written with the
+micro-constants of Supplementary Table 1; doses in umol/kg over V1 in L/kg
+give concentrations in uM, the unit in which k2 (1/(uM day)) and gamma
+(1/(uM^2 day)) are reported.
+
+# Dosing
+
+The schedules below are Table 1 of the paper. Twice-daily doses are 0.5 day
+apart. In experiment f, Drug C5 was given 6 h after irinotecan on the days
+both drugs were due (Methods), so those two Drug C5 doses are at day + 0.25.
+The doses are the umol/kg values the paper prints beside each mg/kg dose.
+
+```{r dosing}
+bidDays <- function(starts, ndays) {
+  sort(unlist(lapply(starts, function(s) c(outer(c(0, 0.5), s + 0:(ndays - 1), "+")))))
+}
+
+doseRows <- function(times, amt, cmt) {
+  data.frame(time = times, amt = amt, cmt = cmt, evid = 1L)
+}
+
+c2Days <- c(10, 11, 12, 14, 15, 16)
+c5Days <- c(9, 10, 11, 12.25, 13, 14, 15, 16.25)
+
+arms <- list(
+  a1 = list(model = "Terranova_2013_drugC1_gemcitabine_mouse", tmax = 35, gamma = NULL,
+            a = doseRows(bidDays(c(10, 14, 18), 3), 29.4, "central_drugc1"),
+            b = doseRows(c(9, 13, 17), 267, "central_gemcitabine")),
+  b1 = list(model = "Terranova_2013_drugC1_cisplatin_mouse", tmax = 35, gamma = NULL,
+            a = doseRows(bidDays(8, 5), 58.7, "central_drugc1"),
+            b = doseRows(13, 26.7, "central_cisplatin")),
+  b2 = list(model = "Terranova_2013_drugC1_cisplatin_mouse", tmax = 35, gamma = NULL,
+            a = doseRows(bidDays(9, 5), 58.7, "central_drugc1"),
+            b = doseRows(8, 26.7, "central_cisplatin")),
+  c1 = list(model = "Terranova_2013_drugC2_irinotecan_mouse", tmax = 70, gamma = NULL,
+            a = doseRows(c2Days, 84.5, "depot_drugc2"),
+            b = doseRows(c(9, 13, 17), 72.9, "central_irinotecan")),
+  c2 = list(model = "Terranova_2013_drugC2_irinotecan_mouse", tmax = 70, gamma = NULL,
+            a = doseRows(c2Days, 113, "depot_drugc2"),
+            b = doseRows(c(9, 13, 17), 72.9, "central_irinotecan")),
+  d1 = list(model = "Terranova_2013_drugC2_fluorouracil_mouse", tmax = 70, gamma = NULL,
+            a = doseRows(c2Days, 84.5, "depot_drugc2"),
+            b = doseRows(c(9, 13, 17), 384, "central_5fu")),
+  d2 = list(model = "Terranova_2013_drugC2_fluorouracil_mouse", tmax = 70, gamma = 0.157,
+            a = doseRows(c2Days, 113, "depot_drugc2"),
+            b = doseRows(c(9, 13, 17), 384, "central_5fu")),
+  e1 = list(model = "Terranova_2013_drugC4_gemcitabine_mouse", tmax = 35, gamma = NULL,
+            a = doseRows(bidDays(c(10, 14, 18), 3), 37.5, "depot_drugc4"),
+            b = doseRows(c(9, 13, 17), 267, "central_gemcitabine")),
+  e2 = list(model = "Terranova_2013_drugC4_gemcitabine_mouse", tmax = 35, gamma = NULL,
+            a = doseRows(bidDays(c(10, 14, 18), 3), 75, "depot_drugc4"),
+            b = doseRows(c(9, 13, 17), 267, "central_gemcitabine")),
+  f1 = list(model = "Terranova_2013_drugC5_irinotecan_mouse", tmax = 56, gamma = NULL,
+            a = doseRows(c5Days, 25.1, "central_drugc5"),
+            b = doseRows(c(8, 12, 16), 72.9, "central_irinotecan")),
+  f2 = list(model = "Terranova_2013_drugC5_irinotecan_mouse", tmax = 56, gamma = -1.05,
+            a = doseRows(c5Days, 50.3, "central_drugc5"),
+            b = doseRows(c(8, 12, 16), 72.9, "central_irinotecan"))
+)
+```
+
+Arms b2, c2 and e2 use the gamma estimated on arms b1, c1 and e1 (the
+paper's prediction test, Figure 6). Arms d2 and f2 were fitted independently
+in the paper, so their own gamma is set with `ini()`.
+
+# Simulation
+
+Each arm is simulated three ways with the typical values: the combination
+(the packaged model), the zero-interaction prediction (gamma = 0; the paper's
+"PTGC", the dashed lines of Figures 2-5) and the untreated control. The
+observation rows sit on `cycling_cells`, the proliferating-cell state; the
+total tumor weight `tumor_size` is returned with them.
+
+```{r simulate}
+armModel <- function(arm) {
+  mod <- rxode2::rxode2(readModelDb(arm$model))
+  if (!is.null(arm$gamma)) mod <- rxode2::ini(mod, synergy = arm$gamma)
+  mod
+}
+
+eventTable <- function(doses, tmax, by) {
+  obs <- data.frame(time = seq(0, tmax, by = by), amt = 0, cmt = "cycling_cells", evid = 0L)
+  ev <- rbind(doses, obs)
+  # Observation rows after doses at the same time, so a bolus is seen at its peak.
+  ev[order(ev$time, -ev$evid), ]
+}
+
+solveArm <- function(name, tmax, by = 0.1) {
+  arm <- arms[[name]]
+  mod <- armModel(arm)
+  doses <- rbind(arm$a, arm$b)
+  curves <- list(
+    combination = rxode2::rxSolve(mod, eventTable(doses, tmax, by)),
+    `zero interaction` = rxode2::rxSolve(rxode2::ini(mod, synergy = 0), eventTable(doses, tmax, by)),
+    control = rxode2::rxSolve(mod, eventTable(doses[0, ], tmax, by))
+  )
+  bind_rows(lapply(names(curves), function(nm) {
+    as.data.frame(curves[[nm]]) |>
+      select(time, tumor_size, starts_with("Cc_")) |>
+      mutate(curve = nm)
+  })) |>
+    mutate(arm = name)
+}
+
+sims <- bind_rows(lapply(names(arms), function(nm) solveArm(nm, arms[[nm]]$tmax)))
+```
+
+# Replicated figures
+
+```{r figures, fig.height = 9}
+figureOf <- c(
+  a1 = "Fig 2 top (a1)", b1 = "Fig 2 bottom (b1)", c1 = "Fig 3 left (c1)",
+  d1 = "Fig 3 middle (d1)", d2 = "Fig 3 right (d2)", e1 = "Fig 4 (e1)",
+  f1 = "Fig 5 top (f1)", f2 = "Fig 5 bottom (f2)", b2 = "Fig 6 left (b2, predicted)",
+  c2 = "Fig 6 middle (c2, predicted)", e2 = "Fig 6 right (e2, predicted)"
+)
+sims |>
+  mutate(panel = factor(figureOf[arm], levels = figureOf)) |>
+  ggplot(aes(time, tumor_size, colour = curve, linetype = curve)) +
+  geom_line() +
+  facet_wrap(~panel, scales = "free", ncol = 3) +
+  scale_colour_manual(values = c(combination = "blue", `zero interaction` = "blue", control = "black")) +
+  scale_linetype_manual(values = c(combination = "solid", `zero interaction` = "dashed", control = "solid")) +
+  coord_cartesian(ylim = c(0, 4.5)) +
+  labs(x = "Time (days)", y = "Tumor weight (g)", colour = NULL, linetype = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+Replicates Figures 2-6 of Terranova 2013 (model curves only; the figures
+also show the observed arm means). Figure 6 shows only the predicted
+combination curve and the control.
+
+## Comparison with the published curves
+
+The maintainers read the plotted model curves off Figures 2-6 at the last
+day of each panel (or at the day noted). The paper's curves come from the
+same equations and parameter values, so any difference beyond reading error
+would point to a transcription or structural error.
+
+```{r curve-check}
+published <- tribble(
+  ~arm, ~time, ~curve, ~read,
+  "a1", 35, "combination", 2.41,
+  "a1", 35, "zero interaction", 1.75,
+  "a1", 35, "control", 3.98,
+  "b1", 35, "combination", 3.55,
+  "b1", 35, "zero interaction", 4.05,
+  "b1", 21, "control", 3.55,
+  "c1", 70, "combination", 0.97,
+  "c1", 70, "zero interaction", 1.52,
+  "c1", 70, "control", 2.88,
+  "d1", 70, "combination", 1.71,
+  "d1", 70, "zero interaction", 1.76,
+  "d1", 70, "control", 2.82,
+  "d2", 70, "combination", 1.47,
+  "d2", 70, "zero interaction", 1.56,
+  "e1", 35, "combination", 2.12,
+  "e1", 35, "zero interaction", 1.87,
+  "f1", 49, "combination", 3.30,
+  "f1", 49, "zero interaction", 2.35,
+  "f2", 56, "combination", 3.85,
+  "f2", 56, "zero interaction", 2.75,
+  "c2", 70, "combination", 0.60,
+  "e2", 35, "combination", 1.20
+)
+
+curveCheck <- published |>
+  left_join(sims |> select(arm, time, curve, tumor_size), by = c("arm", "time", "curve")) |>
+  mutate(pct_diff = 100 * (tumor_size - read) / read)
+
+curveCheck |>
+  mutate(tumor_size = signif(tumor_size, 3), pct_diff = round(pct_diff, 1)) |>
+  rename(
+    Arm = arm, `Day` = time, Curve = curve, `Read from figure (g)` = read,
+    `Simulated (g)` = tumor_size, `Difference (%)` = pct_diff
+  ) |>
+  knitr::kable()
+
+stopifnot(
+  # Every arm uses the published parameters as is, so the simulated curves
+  # follow the figures to within the precision of reading a plotted line.
+  abs(median(curveCheck$pct_diff)) < 5,
+  quantile(abs(curveCheck$pct_diff), 0.9) < 10,
+  all(abs(curveCheck$pct_diff) < 15)
+)
+```
+
+The largest difference is the zero-interaction curve of arm a1 (about 12%),
+whose dashed line lies a little lower in Figure 2 than simulated; the
+combination and control curves of the same panel agree to within 4%.
+
+# Combination indexes
+
+The paper scores each interaction by the time shift it adds. The Time
+Efficacy Index of the combination, `TEIcomb`, is the asymptotic horizontal
+distance between the combination and control growth curves; `TEIadd` is the
+same distance for the zero-interaction curve; and `Delta` is the distance
+between the combination and zero-interaction curves. The synergistic index is
+`SC = 100 Delta / TEIcomb` (Delta > 0) and the antagonistic index
+`AC = 100 (-Delta) / TEIadd` (Delta < 0) (Equations 6-7).
+
+The distances are computed here from long simulations, as the time each
+curve last crosses a weight that all three curves reach in their linear
+growth phase.
+
+```{r indexes}
+crossTime <- function(time, w, level) {
+  i <- max(which(w < level))
+  time[i] + (level - w[i]) * (time[i + 1] - time[i]) / (w[i + 1] - w[i])
+}
+
+indexOf <- function(name) {
+  long <- solveArm(name, tmax = 250, by = 0.25)
+  ends <- long |> group_by(curve) |> filter(time == max(time))
+  level <- 0.9 * min(ends$tumor_size)
+  tau <- sapply(split(long, long$curve), function(d) crossTime(d$time, d$tumor_size, level))
+  delta <- tau[["combination"]] - tau[["zero interaction"]]
+  if (delta >= 0) {
+    c(index = "SC", value = 100 * delta / (tau[["combination"]] - tau[["control"]]))
+  } else {
+    c(index = "AC", value = 100 * (-delta) / (tau[["zero interaction"]] - tau[["control"]]))
+  }
+}
+
+reported <- tribble(
+  ~arm, ~index_paper, ~value_paper, ~note,
+  "a1", "AC", 24, "fitted",
+  "b1", "SC", 14.7, "fitted",
+  "c1", "SC", 29, "fitted",
+  "d1", "SC", 6, "fitted",
+  "d2", "SC", 8, "fitted",
+  "e1", "AC", 10, "fitted",
+  "f1", "AC", 14, "fitted",
+  "f2", "AC", 12, "fitted",
+  "c2", "SC", 32, "predicted from c1",
+  "e2", "AC", 14, "predicted from e1"
+)
+
+indexCheck <- reported |>
+  rowwise() |>
+  mutate(
+    sim = list(indexOf(arm)),
+    index_sim = sim[["index"]],
+    value_sim = as.numeric(sim[["value"]])
+  ) |>
+  ungroup() |>
+  select(-sim)
+
+indexCheck |>
+  mutate(value_sim = round(value_sim, 1)) |>
+  rename(
+    Arm = arm, `Index (paper)` = index_paper, `Paper (%)` = value_paper, Basis = note,
+    `Index (simulated)` = index_sim, `Simulated (%)` = value_sim
+  ) |>
+  knitr::kable()
+
+stopifnot(
+  # The sign of gamma decides which index applies.
+  all(indexCheck$index_sim == indexCheck$index_paper),
+  # The indexes are ratios of horizontal shifts, so they check gamma, both
+  # potencies and both PK models together, independently of the figure reading.
+  median(abs(indexCheck$value_sim - indexCheck$value_paper)) < 1.5,
+  all(abs(indexCheck$value_sim - indexCheck$value_paper) < 5)
+)
+```
+
+The paper also says the SC predicted for arm b2 from the b1 fit is "close to
+zero": cisplatin is given on day 8, before the first Drug C1 dose, and its
+concentration has fallen to near zero by then, so `Ca * Cb` and the
+interaction effect vanish.
+
+```{r b2}
+b2 <- indexOf("b2")
+b2
+stopifnot(b2[["index"]] == "SC", as.numeric(b2[["value"]]) < 1)
+```
+
+# PKNCA
+
+The PK models are the published single-agent fits, held fixed, and the paper
+reports no NCA. PKNCA is therefore used to check the PK layer of the model
+files against closed forms that follow from the Supplementary Table 1
+micro-constants: after one dose of each drug, AUC0-inf must equal
+`dose / (V1 K10)` for every drug (complete absorption is assumed for the
+oral drugs), and Cmax must equal `dose / V1` for the IV bolus drugs. Each
+drug is taken from the first model file that carries it, at the first dose of
+its arm.
+
+```{r pknca}
+pkDrugs <- tribble(
+  ~drug, ~arm, ~which, ~route,
+  "drugc1", "a1", "a", "IV",
+  "gemcitabine", "a1", "b", "IV",
+  "cisplatin", "b1", "b", "IV",
+  "drugc2", "c1", "a", "oral",
+  "irinotecan", "c1", "b", "IV",
+  "5fu", "d1", "b", "IV",
+  "drugc4", "e1", "a", "oral",
+  "drugc5", "f1", "a", "IV"
+)
+
+singleDose <- function(drug, arm, which) {
+  mod <- armModel(arms[[arm]])
+  dose <- arms[[arm]][[which]][1, ]
+  dose$time <- 0
+  # Fine early grid: the fastest elimination half-life (5-FU) is
+  # ln(2) / 151 per day = 0.0046 day.
+  times <- c(seq(0, 1, by = 0.001), seq(1.01, 20, by = 0.01))
+  obs <- data.frame(time = times, amt = 0, cmt = "cycling_cells", evid = 0L)
+  out <- as.data.frame(rxode2::rxSolve(mod, rbind(dose, obs)))
+  th <- setNames(mod$iniDf$est, mod$iniDf$name)
+  data.frame(
+    # pmax(): the solver leaves round-off negatives of order 1e-15 uM once a
+    # fast-eliminated drug has washed out.
+    drug = drug, id = 1L, time = out$time, conc = pmax(out[[paste0("Cc_", drug)]], 0),
+    dose = dose$amt,
+    vc = exp(th[[paste0("lvc_", drug)]]),
+    kel = exp(th[[paste0("lkel_", drug)]])
+  )
+}
+
+pkProfiles <- bind_rows(lapply(seq_len(nrow(pkDrugs)), function(i) {
+  singleDose(pkDrugs$drug[i], pkDrugs$arm[i], pkDrugs$which[i])
+})) |>
+  dplyr::filter(!is.na(conc))
+
+concObj <- PKNCA::PKNCAconc(pkProfiles, conc ~ time | drug / id)
+doseObj <- PKNCA::PKNCAdose(
+  pkProfiles |> dplyr::filter(time == 0) |> select(drug, id, time, dose),
+  dose ~ time | drug + id
+)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE)
+ncaRes <- as.data.frame(PKNCA::pk.nca(PKNCA::PKNCAdata(concObj, doseObj, intervals = intervals)))
+
+pkCheck <- ncaRes |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "aucinf.obs")) |>
+  select(drug, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(pkProfiles |> distinct(drug, dose, vc, kel), by = "drug") |>
+  left_join(pkDrugs |> select(drug, route), by = "drug") |>
+  mutate(
+    auc_closed = dose / (vc * kel),
+    cmax_closed = ifelse(route == "IV", dose / vc, NA_real_)
+  )
+
+pkCheck |>
+  select(drug, route, dose, cmax, cmax_closed, aucinf.obs, auc_closed) |>
+  mutate(across(where(is.numeric), ~ signif(.x, 3))) |>
+  rename(
+    Drug = drug, Route = route, `Dose (umol/kg)` = dose, `Cmax (uM)` = cmax,
+    `dose/V1 (uM)` = cmax_closed, `AUC0-inf (uM*day)` = aucinf.obs,
+    `dose/(V1 K10) (uM*day)` = auc_closed
+  ) |>
+  knitr::kable()
+
+stopifnot(
+  # Both sides use the same fixed parameters, so the only difference is
+  # numerical (solver and log-down trapezoid): a tight bound is correct.
+  all(abs(pkCheck$aucinf.obs / pkCheck$auc_closed - 1) < 0.01),
+  all(abs(pkCheck$cmax / pkCheck$cmax_closed - 1) < 0.01, na.rm = TRUE)
+)
+```
+
+# Experiment c: the printed lambda1
+
+Supplementary Table 2 prints lambda1 = 0.472 g/day for experiment c. The
+control of Figure 3 (left panel) grows linearly at about 0.045 g/day to about
+2.9 g by day 70, which the value 0.0472 reproduces and 0.472 does not.
+Experiment d, in the same HT29 line and with the control curve drawn
+identically in Figure 3, has lambda1 = 0.0459 g/day. The model file carries
+0.0472.
+
+```{r lambda1}
+mod_c <- rxode2::rxode2(readModelDb("Terranova_2013_drugC2_irinotecan_mouse"))
+ctrlEvents <- eventTable(arms$c1$a[0, ], 70, by = 1)
+lam <- bind_rows(
+  as.data.frame(rxode2::rxSolve(mod_c, ctrlEvents)) |> mutate(lambda1 = "0.0472 (used)"),
+  as.data.frame(rxode2::rxSolve(rxode2::ini(mod_c, ltumorLinGrowth = log(0.472)), ctrlEvents)) |>
+    mutate(lambda1 = "0.472 (as printed)")
+)
+lam |>
+  dplyr::filter(time == 70) |>
+  select(lambda1, tumor_size) |>
+  rename(`lambda1 (g/day)` = lambda1, `Control tumor weight at day 70 (g)` = tumor_size) |>
+  knitr::kable(digits = 2)
+```
+
+# Assumptions and deviations
+
+* **psi = 20.** The paper keeps the Simeoni 2004 growth equation without
+  printing its switch constant; psi = 20 is the Simeoni 2004 value, as in the
+  sibling models of the same group (`Tosca_2023_men1611_trastuzumab_*`). With
+  a switch this sharp the curves are insensitive to the exact value.
+* **Cross-drug losses of the damaged states.** Equation 2 as printed gives
+  the damaged state `x_0j` no outflow when drug a hits it (and `x_i0` none
+  for drug b), while its cells still flow into `x_1j`, which would create
+  tumor mass. Figure 1 (right panel) draws these as flows out of the state,
+  so the model files implement them as losses. The two readings differ by
+  less than 0.002 g in tumor weight for arm a1, because these states hold a
+  small share of the tumor.
+* **Unit of gamma.** The Results print gamma in uM^-2 day^-2; the product
+  `gamma Ca Cb x00` is a rate in g/day, so the unit is 1/(uM^2 day).
+* **lambda1 of experiment c** read as 0.0472 g/day instead of the printed
+  0.472 (section above).
+* **Oral bioavailability.** Supplementary Table 1 gives V1 and K01 for the
+  oral drugs (Drug C2 and Drug C4) without a bioavailability; V1 is read as
+  the apparent volume V/F, and the oral doses enter the depot in full.
+* **Negative states under antagonism.** With gamma < 0 the interaction flux
+  runs from the doubly damaged state back to the proliferating cells and can
+  drive `x11` below zero while the total tumor weight stays positive. This is
+  a property of the published model, kept as is.
+* **Second combination arms.** Arms d2 and f2 were fitted independently of
+  d1 and f1; their gamma (0.157 and -1.05) is noted in the model files and
+  set with `ini(synergy = ...)` above. The gamma fitted on arms b2, c2 and e2
+  is not reported (only their SC/AC, 8%, 21% and 9%), so those arms use the
+  gamma of the first arm, as in the paper's prediction test.
+* **Residual error.** The arm means were fitted by weighted least squares
+  with weights 1/y^2, a proportional error whose magnitude is not reported;
+  `propSd` is held at zero. There is no between-animal variability.
+* **Single-agent arms.** The single-agent schedules differ slightly from the
+  combination ones (footnotes 2-3) and are not simulated here, as the figures
+  show only the control, zero-interaction and combination curves.

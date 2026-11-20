@@ -6282,6 +6282,34 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
 - **Example models:** `Tosca_2023_men1611_trastuzumab_kpl4_mouse.R` (founding example) and its six sibling per-xenograft files `Tosca_2023_men1611_trastuzumab_<line>_mouse.R`.
 - **Notes:** Full INN name (lowercase) per the `sunitinib` / `irinotecan` / `osimertinib` / `sorafenib` precedent for whole co-administered agents; the abbreviation `tzb` is not used. Standalone trastuzumab models (`Tosca_2023_trastuzumab_mouse.R`, `Bruno_2005_trastuzumab.R`, ...) keep bare canonical names because trastuzumab is their sole analyte.
 
+### drugc1 (**canonical Terranova 2013 coded compound Drug C1 suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Drug-name suffix for the undisclosed Nerviano Medical Sciences Aurora kinase inhibitor that Terranova 2013 and Rocchetti 2009 call Drug C1, used for its PK cascade and tumor-effect parameters in two-drug tumor-growth-inhibition models (`central_drugc1`, `peripheral1_drugc1`, `lvc_drugc1`, `lkel_drugc1`, `lk12_drugc1`, `lk21_drugc1`, `ldrugSlope_drugc1`, `ldamageTransit_drugc1`, `Cc_drugc1`).
+- **Source aliases:** `Drug C1` -- Terranova 2013 / Rocchetti 2009 notation.
+- **Example models:** `Terranova_2013_drugC1_gemcitabine_mouse.R` (founding example), `Terranova_2013_drugC1_cisplatin_mouse.R`.
+- **Notes:** The source codes the compound and discloses no INN or development code, so the suffix is the source's own code, lowercased. Replace it with the INN if the compound is identified. `drugc2`, `drugc4` and `drugc5` are its siblings from the same paper; the paper has no Drug C3.
+
+### drugc2 (**canonical Terranova 2013 coded compound Drug C2 suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Drug-name suffix for the undisclosed oral polo-like kinase inhibitor that Terranova 2013 and Rocchetti 2009 call Drug C2 (`depot_drugc2`, `central_drugc2`, `peripheral1_drugc2`, `lka_drugc2`, `lvc_drugc2`, `lkel_drugc2`, `lk12_drugc2`, `lk21_drugc2`, `ldrugSlope_drugc2`, `ldamageTransit_drugc2`, `Cc_drugc2`).
+- **Source aliases:** `Drug C2` -- Terranova 2013 / Rocchetti 2009 notation.
+- **Example models:** `Terranova_2013_drugC2_irinotecan_mouse.R` (founding example), `Terranova_2013_drugC2_fluorouracil_mouse.R`.
+- **Notes:** Coded compound with no disclosed INN; see `drugc1`.
+
+### drugc4 (**canonical Terranova 2013 coded compound Drug C4 suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Drug-name suffix for the undisclosed oral multikinase inhibitor that Terranova 2013 calls Drug C4 (`depot_drugc4`, `central_drugc4`, `lka_drugc4`, `lvc_drugc4`, `lkel_drugc4`, `ldrugSlope_drugc4`, `ldamageTransit_drugc4`, `Cc_drugc4`).
+- **Source aliases:** `Drug C4` -- Terranova 2013 notation.
+- **Example models:** `Terranova_2013_drugC4_gemcitabine_mouse.R`.
+- **Notes:** Coded compound with no disclosed INN; see `drugc1`.
+
+### drugc5 (**canonical Terranova 2013 coded compound Drug C5 suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Drug-name suffix for the undisclosed intravenous multikinase inhibitor that Terranova 2013 calls Drug C5 (`central_drugc5`, `peripheral1_drugc5`, `lvc_drugc5`, `lkel_drugc5`, `lk12_drugc5`, `lk21_drugc5`, `ldrugSlope_drugc5`, `ldamageTransit_drugc5`, `Cc_drugc5`).
+- **Source aliases:** `Drug C5` -- Terranova 2013 notation.
+- **Example models:** `Terranova_2013_drugC5_irinotecan_mouse.R`.
+- **Notes:** Coded compound with no disclosed INN; see `drugc1`.
+
 ### amphotericinb (**canonical amphotericin B K-PD drug-name suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Amphotericin B drug-name suffix for combination K-PD compartments and rate constants (`depot_kpd_amphotericinb`, `lkel_amphotericinb`, `kel_amphotericinb`) and for the paired drug-specific linear kill slope (`lslope_amphotericinb`, `slope_amphotericinb`).
