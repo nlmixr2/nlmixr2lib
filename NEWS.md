@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Verner 2008 persistent organic pollutants lifetime PBPK ([doi:10.1289/ehp.10917](https://doi.org/10.1289/ehp.10917)) -- women, 0-55 years (PCB-153, PCB-180, hexachlorobenzene) for breast-cancer exposure assessment.
+- Add Verner 2009 persistent organic pollutants infant PBPK ([doi:10.1289/ehp.0800047](https://doi.org/10.1289/ehp.0800047)) -- infants (birth to 12 months) exposed through placental transfer and breast-feeding.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
