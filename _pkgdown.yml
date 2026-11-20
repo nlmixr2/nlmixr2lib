@@ -8268,6 +8268,8 @@ navbar:
         href: articles/BorsukDeMoor_2018_tigecycline.html
       - text: "Tigecycline (Broeker 2018)"
         href: articles/Broeker_2018_tigecycline.html
+      - text: "Tigecycline (Deshpande 2025)"
+        href: articles/Deshpande_2025_tigecycline.html
       - text: "Tigecycline (Luo 2023)"
         href: articles/Luo_2023_tigecycline.html
       - text: "Tigecycline (Song 2024)"
@@ -9942,6 +9944,7 @@ articles:
   - articles/Desai_2016_isavuconazole
   - articles/Desai_2016_isavuconazole_secure
   - articles/Desai_2024_crisprCas9
+  - articles/Deshpande_2025_tigecycline
   - articles/Desikan_2022_covidVaccine
   - articles/Desmee_2015_PSA_mCRPC
   - articles/Dhondt_2017_cox2inhibitors_cockatiel
