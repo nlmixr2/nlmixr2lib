@@ -3322,6 +3322,8 @@ navbar:
         href: articles/Han_2013_fluconazole.html
       - text: "Fluconazole (Leroux 2018)"
         href: articles/Leroux_2018_fluconazole_micafungin.html
+      - text: "Fluconazole (Mackova 2026)"
+        href: articles/Mackova_2026_fluconazole.html
       - text: "Fluconazole (McLachlan 1996)"
         href: articles/McLachlan_1996_fluconazole.html
       - text: "Fluconazole (Momper 2016)"
@@ -11332,6 +11334,7 @@ articles:
   - articles/Ma_2026_colistinSulfate
   - articles/Machavaram_2013_interleukin6_cyp3a_pbpk
   - articles/Maciel_2024_quinine
+  - articles/Mackova_2026_fluconazole
   - articles/Macpherson_2015_rosuvastatin
   - articles/Mahadevan_2026_polymyxinB_combination_CRKP
   - articles/Mahar_2025_daprodustat

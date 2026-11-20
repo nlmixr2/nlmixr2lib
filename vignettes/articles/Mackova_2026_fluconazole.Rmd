@@ -1,0 +1,535 @@
+---
+title: "Fluconazole (Mackova 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fluconazole (Mackova 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>",
+  fig.width = 7, fig.height = 4.5
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+mod <- rxode2::rxode(readModelDb("Mackova_2026_fluconazole"))
+cat("* Citation: ", mod$reference, "\n\n", sep = "")
+cat("* Description: ", mod$description, "\n\n", sep = "")
+```
+
+* Article: <https://doi.org/10.3390/pharmaceutics18080929> (Pharmaceutics
+  2026;18(8):929, open access, PMC13516392)
+* Supplement: a three-page PDF with Supplementary Figures S1 (eGFR-creatinine vs
+  eGFR-cystatin C against individual clearance), S2 (goodness-of-fit) and S3
+  (visual predictive check). It carries no parameter value that is absent from the
+  main text.
+
+Mackova and colleagues fitted a one-compartment model with linear elimination to
+183 routine therapeutic-drug-monitoring serum concentrations from 116 hospitalised
+adults treated with intravenous fluconazole. Creatinine-based CKD-EPI 2021 eGFR,
+entered as a time-varying regressor, scales clearance; adjusted body weight scales
+the volume of distribution. The paper then simulates three standard regimens
+against an eGFR-based maintenance-dose nomogram with a loading dose.
+
+# Population
+
+```{r population, echo = FALSE, results = "asis"}
+pop <- mod$population
+cat(sprintf("* Species: %s\n", pop$species))
+cat(sprintf("* Subjects / observations: %d patients, %d serum concentrations\n",
+            pop$n_subjects, pop$n_observations))
+cat(sprintf("* Age: median %s, range %s\n", pop$age_median, pop$age_range))
+cat(sprintf("* Total body weight: median %s, range %s; adjusted body weight %s\n",
+            pop$weight_median, pop$weight_range, pop$adjusted_weight))
+cat(sprintf("* Female: %.1f%%\n", pop$sex_female_pct))
+cat(sprintf("* Disease: %s\n", pop$disease_state))
+cat(sprintf("* Renal function: %s\n", pop$renal_function))
+cat(sprintf("* Dosing: %s\n", pop$dose_range))
+cat(sprintf("* Region: %s\n", pop$regions))
+```
+
+Baseline demographics are in Mackova 2026 Table 1 (Results 3.1).
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Structure: one compartment, linear elimination, IV infusion | -- | Results 3.2, first paragraph |
+| `lvc` (Vd at ABW 75 kg) | 41.58 L | Table 2, Vd_pop |
+| `lcl` (CL at eGFR 90 mL/min) | 0.81 L/h | Table 2, CL_pop |
+| `e_abw_vc`, Vd = Vd_pop x (ABW/75)^beta | 2.28 | Table 2, beta_Vd_ABW and the equation row above it |
+| `le_crcl_cl`, CL = CL_pop x (eGFR/90)^beta | log(0.43) | Table 2, beta_CL_eGFR and the equation row above it |
+| `etalvc` | 0.44^2 | Table 2, BSV Vd = 0.44 |
+| `etalcl` | 0.25^2 | Table 2, BSV CL = 0.25 |
+| `etale_crcl_cl` | 1.24^2 | Table 2, BSV beta_CL_eGFR = 1.24 |
+| `propSd` | 0.18 | Table 2, Error model, Proportional |
+| ABW = IBW + 0.4 (TBW - IBW), Devine IBW | -- | Methods 2.2 |
+| eGFR: CKD-EPI 2021 creatinine, time-varying regressor | -- | Methods 2.2, 2.3; Results 3.2 |
+| Typical Vd 41.58 L, CL 0.81 L/h, t1/2 35.6 h | -- | Results 3.2 (checked below) |
+| Nomogram MD = 769.5 (eGFR/90)^0.43 mg/day | -- | Results 3.3; Figure 3 |
+| Loading dose 2.8 x MD; day-10 / day-1 AUC24 887.66 / 318.09 | -- | Results 3.3 |
+| Probability of target attainment | -- | Table 3 |
+| Steady-state AUC24 = 24.35 Cmin + 51.51 | -- | Figure 1 |
+
+# Structural parameters and the typical patient
+
+```{r params}
+th <- setNames(mod$iniDf$est, mod$iniDf$name)
+typ <- c(
+  vc   = unname(exp(th["lvc"])),
+  cl   = unname(exp(th["lcl"])),
+  thalf = unname(log(2) * exp(th["lvc"]) / exp(th["lcl"]))
+)
+round(typ, 2)
+
+# Deterministic: the packaged values reproduce the typical patient quoted in
+# Results 3.2 (Vd 41.58 L, CL 0.81 L/h, t1/2 35.6 h) to the paper's rounding.
+stopifnot(
+  abs(typ[["vc"]] - 41.58) < 0.005,
+  abs(typ[["cl"]] - 0.81) < 0.005,
+  abs(typ[["thalf"]] - 35.6) < 0.05
+)
+```
+
+Typical clearance and volume across the covariate ranges in Table 1:
+
+```{r covariate-ladder}
+tibble(
+  `eGFR (mL/min)` = c(10, 30, 60, 90, 120, 150),
+  `Typical CL (L/h)` = round(typ[["cl"]] * (`eGFR (mL/min)` / 90)^0.43, 3)
+) |> knitr::kable()
+
+tibble(
+  `ABW (kg)` = c(45, 60, 75, 90, 110),
+  `Typical Vd (L)` = round(typ[["vc"]] * (`ABW (kg)` / 75)^th[["e_abw_vc"]], 1)
+) |> knitr::kable()
+```
+
+## Typical-value steady state (PKNCA)
+
+A typical patient (eGFR 90 mL/min, ABW 75 kg) receiving 200 mg every 24 h as a 1-h
+infusion for 20 days must reach `AUC0-24 = dose / CL = 246.9 mg*h/L`.
+
+```{r typical-ss, warning = FALSE}
+ev_typ <- rxode2::et(amt = 200, dur = 1, ii = 24, addl = 19, cmt = "central") |>
+  rxode2::et(seq(0, 480, by = 0.25), cmt = "central") |>
+  as.data.frame() |>
+  mutate(id = 1L, CRCL = 90, ABW = 75, treatment = "200 mg q24h typical")
+
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_typ,
+                           keep = "treatment", rtol = 1e-10, atol = 1e-12) |>
+  as.data.frame()
+
+conc_typ <- sim_typ |>
+  filter(!is.na(Cc)) |>
+  mutate(id = 1L) |>
+  select(id, time, Cc, treatment)
+dose_typ <- ev_typ |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment) |>
+  mutate(duration = 1)
+
+nca_typ <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_typ, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_typ, amt ~ time | treatment + id, route = "intravascular",
+                   duration = "duration"),
+  intervals = data.frame(start = 456, end = 480, auclast = TRUE, cmax = TRUE,
+                         cmin = TRUE, half.life = TRUE)
+))
+typ_res <- as.data.frame(nca_typ$result) |>
+  select(PPTESTCD, PPORRES)
+typ_res
+
+auc_ss <- typ_res$PPORRES[typ_res$PPTESTCD == "auclast"]
+thalf_nca <- typ_res$PPORRES[typ_res$PPTESTCD == "half.life"]
+# Deterministic solve against its own closed form. Residual is the 0.25-h
+# linear-up/log-down trapezoid on the 1-h infusion ramp plus <0.1% of residual
+# accumulation after 20 days (13.5 half-lives); both well under 0.5%.
+stopifnot(
+  abs(auc_ss / (200 / 0.81) - 1) < 0.005,
+  abs(thalf_nca / 35.6 - 1) < 0.01
+)
+```
+
+# The dosing nomogram (Figure 3)
+
+The maintenance dose equation of Results 3.3, `MD = 769.5 x (eGFR/90)^0.43`, is
+exactly `AUC24 x CL_pop x (eGFR/90)^0.43` with an AUC24 target of
+769.5 / 0.81 = 950 mg*h/L, the value printed in the Figure 3 title.
+
+```{r nomogram, fig.cap = "Replicates Figure 3 of Mackova 2026: once-daily fluconazole maintenance dose as a function of eGFR."}
+nomogram_dose <- function(egfr) 769.5 * (egfr / 90)^0.43
+ld_factor <- 2.8
+
+nomo <- tibble(eGFR = seq(10, 150, by = 1), dose = nomogram_dose(eGFR))
+ggplot(nomo, aes(eGFR, dose)) +
+  geom_line(linewidth = 1) +
+  scale_y_continuous(limits = c(0, 1200), breaks = seq(0, 1200, 200)) +
+  scale_x_continuous(breaks = seq(10, 150, 10)) +
+  labs(x = "eGFR (mL/min)", y = "Dose (mg)",
+       title = "Target: steady-state AUC24 of 950 mg*h/L") +
+  theme_bw()
+
+# Implied AUC target, from the model's own typical clearance.
+auc_target <- 769.5 / typ[["cl"]]
+# Curve end-points read off Figure 3 by the maintainers (about 300 mg at
+# eGFR 10 and about 960 mg at eGFR 150). Deterministic arithmetic, so the
+# slack is only the read-off precision.
+stopifnot(
+  abs(auc_target - 950) < 1,
+  abs(nomogram_dose(10) / 300 - 1) < 0.03,
+  abs(nomogram_dose(150) / 960 - 1) < 0.03
+)
+```
+
+# Virtual cohort
+
+The original TDM records are not public, and the paper's Monte Carlo simulations
+resampled its own 116 patients 500 times. This vignette instead draws a 200-subject
+virtual cohort whose eGFR and adjusted-body-weight marginals reproduce Table 1
+exactly at the minimum, quartiles and maximum: each covariate is drawn by pushing a
+uniform variate through a monotone spline of the five reported quantiles. eGFR and
+ABW are drawn independently because the paper reports no correlation between them,
+and eGFR is held constant over each subject's 10 days.
+
+```{r cohort}
+set.seed(20260808)
+n_sub <- 200L
+
+draw_from_quantiles <- function(n, q) {
+  stats::splinefun(c(0, 0.25, 0.5, 0.75, 1), q, method = "hyman")(stats::runif(n))
+}
+
+cohort <- tibble(
+  id   = seq_len(n_sub),
+  CRCL = draw_from_quantiles(n_sub, c(8, 55, 86, 103, 160)),
+  ABW  = draw_from_quantiles(n_sub, c(43, 68, 75, 84, 110))
+)
+
+cohort |>
+  summarise(across(c(CRCL, ABW),
+                   list(min = min, q1 = ~ quantile(.x, 0.25), median = median,
+                        q3 = ~ quantile(.x, 0.75), max = max))) |>
+  pivot_longer(everything()) |>
+  mutate(value = round(value, 1))
+```
+
+# Simulation of the dosing strategies (Figure 2)
+
+Six arms are solved on the same cohort, each with 1-h infusions over 10 days:
+
+* A: 400 mg loading dose, then 200 mg every 24 h (cryptococcosis label regimen)
+* B: 800 mg loading dose, then 400 mg every 24 h (invasive candidiasis label regimen)
+* C: 400 mg every 12 h (off-label high dose)
+* D: eGFR nomogram maintenance dose every 24 h after a 2.8-fold loading dose
+* D0: the nomogram maintenance dose without the loading dose, from which the paper
+  derived the 2.8 multiplier
+* F1: 200 mg every 24 h without a loading dose, the regimen behind Figure 1
+
+The random-number generator is reseeded before each solve, so every arm shares the
+same between-subject random effects (common random numbers) and cross-arm
+comparisons are paired.
+
+```{r arms}
+inf_dur <- 1
+obs_times <- seq(0, 240, by = 1)
+
+make_arm_events <- function(label, dose_times, md_vec, ld_vec) {
+  dosing <- cohort |>
+    mutate(md = md_vec, ld = ld_vec) |>
+    crossing(time = dose_times) |>
+    mutate(amt = if_else(time == 0, ld, md), evid = 1L, cmt = "central",
+           rate = amt / inf_dur)
+  obs <- cohort |>
+    crossing(time = obs_times) |>
+    mutate(amt = NA_real_, evid = 0L, cmt = "central", rate = NA_real_)
+  bind_rows(dosing, obs) |>
+    mutate(arm = label) |>
+    arrange(id, time, desc(evid)) |>
+    select(id, time, amt, evid, cmt, rate, CRCL, ABW, arm) |>
+    as.data.frame()
+}
+
+q24 <- seq(0, 216, by = 24)
+q12 <- seq(0, 228, by = 12)
+md_nomo <- nomogram_dose(cohort$CRCL)
+const <- function(x) rep(x, n_sub)
+
+arm_events <- list(
+  make_arm_events("A: LD 400 + 200 mg q24h", q24, const(200), const(400)),
+  make_arm_events("B: LD 800 + 400 mg q24h", q24, const(400), const(800)),
+  make_arm_events("C: 400 mg q12h",          q12, const(400), const(400)),
+  make_arm_events("D: LD + MD nomogram",     q24, md_nomo, ld_factor * md_nomo),
+  make_arm_events("D0: MD nomogram, no LD",  q24, md_nomo, md_nomo),
+  make_arm_events("F1: 200 mg q24h, no LD",  q24, const(200), const(200))
+)
+stopifnot(vapply(arm_events,
+                 function(e) !anyDuplicated(e[, c("id", "time", "evid")]),
+                 logical(1)))
+```
+
+```{r solve-arms}
+solve_arm <- function(ev, seed = 20260808L) {
+  rxode2::rxSetSeed(seed)
+  set.seed(seed)
+  rxode2::rxSolve(mod, events = ev, keep = "arm") |>
+    as.data.frame()
+}
+sim <- bind_rows(lapply(arm_events, solve_arm))
+
+# Common-random-numbers guard: one clearance per subject across all six arms.
+stopifnot(
+  nrow(distinct(sim, id, cl = signif(cl, 8))) == n_sub,
+  all(sim$Cc >= -1e-6 * max(sim$Cc, na.rm = TRUE), na.rm = TRUE)
+)
+```
+
+```{r figure-2, fig.height = 6, fig.cap = "Replicates Figure 2 of Mackova 2026: simulated fluconazole serum concentrations. Line = median; bands = 5th-27.5th, 27.5th-50th, 50th-72.5th and 72.5th-95th percentiles of the 200-subject virtual cohort."}
+fig2 <- sim |>
+  filter(!is.na(Cc), substr(arm, 1, 2) %in% c("A:", "B:", "C:", "D:")) |>
+  group_by(arm, time) |>
+  summarise(q05 = quantile(Cc, 0.05), q275 = quantile(Cc, 0.275),
+            q50 = median(Cc), q725 = quantile(Cc, 0.725),
+            q95 = quantile(Cc, 0.95), .groups = "drop")
+
+ggplot(fig2, aes(time)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), fill = "steelblue", alpha = 0.3) +
+  geom_ribbon(aes(ymin = q275, ymax = q725), fill = "steelblue", alpha = 0.5) +
+  geom_line(aes(y = q50)) +
+  facet_wrap(~arm, scales = "free_y") +
+  scale_x_continuous(breaks = seq(0, 240, 48)) +
+  labs(x = "Time (h)", y = "Concentration (mg/L)") +
+  theme_bw()
+```
+
+The day-10 median peak (1 h after the last dose) and trough (240 h) are compared with
+values the maintainers read off the median lines of Figure 2.
+
+```{r figure-2-compare}
+fig2_read <- tibble::tribble(
+  ~arm,                       ~what,    ~pub,
+  "A: LD 400 + 200 mg q24h",  "peak",   13.7,
+  "A: LD 400 + 200 mg q24h",  "trough",  8.2,
+  "B: LD 800 + 400 mg q24h",  "peak",   27.3,
+  "B: LD 800 + 400 mg q24h",  "trough", 16.5,
+  "C: 400 mg q12h",           "peak",   47.5,
+  "C: 400 mg q12h",           "trough", 37.0,
+  "D: LD + MD nomogram",      "peak",   49.0,
+  "D: LD + MD nomogram",      "trough", 29.5
+)
+peak_time <- c("A:" = 217, "B:" = 217, "C:" = 229, "D:" = 217)
+fig2_sim <- fig2 |>
+  mutate(key = substr(arm, 1, 2)) |>
+  filter(time == 240 | time == peak_time[key]) |>
+  transmute(arm, what = if_else(time == 240, "trough", "peak"), sim = q50)
+
+fig2_cmp <- left_join(fig2_read, fig2_sim, by = c("arm", "what")) |>
+  mutate(pct_diff = 100 * (sim / pub - 1))
+fig2_cmp |>
+  mutate(across(c(sim, pct_diff), \(x) round(x, 1))) |>
+  rename(Arm = arm, `Day-10 point` = what, `Figure 2 median (mg/L)` = pub,
+         `Simulated median (mg/L)` = sim, `% difference` = pct_diff) |>
+  knitr::kable()
+
+stopifnot(nrow(fig2_cmp) == 8, !anyNA(fig2_cmp$sim))
+```
+
+```{r figure-2-assert}
+# A mis-transcribed Vd, CL or exponent moves every median by tens of percent.
+# The tolerance admits the read-off precision and the different covariate
+# distribution of a 200-subject virtual cohort versus the authors' 116 real
+# patients (whose eGFR also varied over time). Achieved: median 2.4%,
+# max 4.4% (regimen D peak).
+stopifnot(
+  abs(median(fig2_cmp$pct_diff)) < 10,
+  max(abs(fig2_cmp$pct_diff)) < 25
+)
+```
+
+# PKNCA: day-1 and day-10 exposure
+
+```{r cohort-nca, warning = FALSE}
+sim_nca <- sim |>
+  filter(!is.na(Cc), time <= 24 | time >= 216) |>
+  mutate(Cc = pmax(Cc, 0)) |>
+  select(id, time, Cc, arm)
+
+dose_df <- bind_rows(arm_events) |>
+  filter(evid == 1) |>
+  select(id, time, amt, arm) |>
+  mutate(duration = inf_dur)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + id, concu = "mg/L", timeu = "h"),
+  PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id, doseu = "mg",
+                   route = "intravascular", duration = "duration"),
+  intervals = data.frame(start = c(0, 216), end = c(24, 240),
+                         auclast = TRUE, cmax = TRUE, cmin = TRUE)
+))
+
+nca_tbl <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("auclast", "cmax", "cmin")) |>
+  mutate(day = if_else(start == 0, "day1", "day10")) |>
+  select(arm, id, day, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = c(PPTESTCD, day), values_from = PPORRES)
+
+stopifnot(nrow(nca_tbl) == n_sub * length(arm_events), !anyNA(nca_tbl$auclast_day10))
+
+nca_tbl |>
+  group_by(arm) |>
+  summarise(`AUC0-24 day 1` = median(auclast_day1),
+            `AUC216-240 day 10` = median(auclast_day10),
+            `Cmax day 10` = median(cmax_day10),
+            `Cmin day 10` = median(cmin_day10)) |>
+  mutate(across(-arm, \(x) round(x, 1))) |>
+  rename(Arm = arm) |>
+  knitr::kable(caption = "Median simulated NCA parameters (mg*h/L, mg/L).")
+```
+
+## Probability of target attainment (Table 3)
+
+Efficacy is `AUC24 / MIC >= 100` (AUC24 >= 200 mg*h/L at MIC 2 mg/L, >= 400 at
+MIC 4 mg/L); toxicity is AUC24 > 1500 mg*h/L, all on day 10.
+
+```{r table3}
+published_t3 <- tibble::tribble(
+  ~arm,                       ~pta_mic2, ~pta_mic4, ~pta_tox,
+  "A: LD 400 + 200 mg q24h",  75.86,     13.79,     0.86,
+  "B: LD 800 + 400 mg q24h",  98.28,     75.86,     4.31,
+  "C: 400 mg q12h",           99.14,     98.28,     14.66,
+  "D: LD + MD nomogram",      100.00,    97.41,     8.62
+)
+
+t3_sim <- nca_tbl |>
+  group_by(arm) |>
+  summarise(sim_mic2 = 100 * mean(auclast_day10 >= 200),
+            sim_mic4 = 100 * mean(auclast_day10 >= 400),
+            sim_tox  = 100 * mean(auclast_day10 > 1500), .groups = "drop")
+
+t3 <- inner_join(published_t3, t3_sim, by = "arm")
+stopifnot(nrow(t3) == 4)
+
+t3 |>
+  mutate(across(where(is.numeric), \(x) round(x, 1))) |>
+  rename(Regimen = arm,
+         `Published MIC 2 (%)` = pta_mic2, `Simulated MIC 2 (%)` = sim_mic2,
+         `Published MIC 4 (%)` = pta_mic4, `Simulated MIC 4 (%)` = sim_mic4,
+         `Published AUC24 > 1500 (%)` = pta_tox, `Simulated AUC24 > 1500 (%)` = sim_tox) |>
+  knitr::kable(caption = "PTA on day 10: Mackova 2026 Table 3 vs the virtual cohort.")
+```
+
+```{r table3-assert}
+eff_diff <- c(t3$sim_mic2 - t3$pta_mic2, t3$sim_mic4 - t3$pta_mic4)
+tox_diff <- t3$sim_tox - t3$pta_tox
+# Eight efficacy PTAs: achieved max 3.2 points, median 0.4. One binomial SE at
+# 200 subjects is at most 3.5 points (p = 0.5), so 15 points is >4 SE. A
+# mis-transcribed CL, Vd or eGFR exponent moves the PTAs of arms A and B by
+# tens of points. Toxicity PTAs: achieved max 0.9 points; SE at p = 0.15 is
+# 2.5 points, so 8 points is >3 SE. These bounds are a transcription check:
+# the alternative readings of the random effects (additive exponent IIV, or
+# Table 2 BSV read as a variance) shift the PTAs by only 7-10 points, which a
+# 200-subject cohort cannot reliably resolve.
+stopifnot(
+  max(abs(eff_diff)) < 15, abs(median(eff_diff)) < 6,
+  max(abs(tox_diff)) < 8
+)
+```
+
+All twelve probabilities agree with Table 3 to within the Monte Carlo error of a
+200-subject cohort, including the toxicity column, which depends on the far tail
+of the clearance distribution and therefore on both the size and the log-normal
+form of the random effect on the eGFR exponent.
+
+## Loading-dose multiplier
+
+The paper derives the 2.8-fold loading dose from the median AUC24 on day 10
+(887.66 mg*h/L) divided by that on day 1 (318.09 mg*h/L) under the nomogram
+maintenance dose (Results 3.3), here arm D0.
+
+```{r loading-dose}
+d0 <- nca_tbl |> filter(arm == "D0: MD nomogram, no LD")
+ld_cmp <- tibble(
+  quantity = c("Median AUC24 day 1", "Median AUC24 day 10", "Ratio of medians"),
+  published = c(318.09, 887.66, 887.66 / 318.09),
+  simulated = c(median(d0$auclast_day1), median(d0$auclast_day10),
+                median(d0$auclast_day10) / median(d0$auclast_day1))
+) |>
+  mutate(pct_diff = 100 * (simulated / published - 1))
+ld_cmp |>
+  mutate(across(where(is.numeric), \(x) round(x, 2))) |>
+  rename(Quantity = quantity, Published = published, Simulated = simulated,
+         `% difference` = pct_diff) |>
+  knitr::kable()
+
+# Day-1 AUC24 depends on Vd and the dose only, so it pins the volume model;
+# the ratio pins the elimination rate. Tolerances admit the virtual-cohort
+# difference; a mis-transcribed Vd or ABW exponent moves both by >20%.
+# Achieved: day 1 -0.3%, day 10 +4.8%, ratio +5.1%.
+stopifnot(all(abs(ld_cmp$pct_diff) < 15))
+```
+
+## Trough-exposure relationship (Figure 1)
+
+Figure 1 regresses the steady-state (day 10) AUC24 on Cmin after 200 mg every 24 h
+without a loading dose: `AUC24 = 24.35 x Cmin + 51.51`.
+
+```{r figure-1, fig.cap = "Replicates Figure 1 of Mackova 2026: day-10 AUC24 versus trough concentration after 200 mg every 24 h (1-h infusion). Dashed line: the published regression."}
+f1 <- nca_tbl |> filter(arm == "F1: 200 mg q24h, no LD")
+fit <- stats::lm(auclast_day10 ~ cmin_day10, data = f1)
+coef(fit)
+
+ggplot(f1, aes(cmin_day10, auclast_day10)) +
+  geom_point(shape = 1) +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE, colour = "black") +
+  geom_abline(intercept = 51.51, slope = 24.35, linetype = "dashed", colour = "red") +
+  labs(x = "Cmin (mg/L)", y = "AUC24 (mg*h/L)") +
+  theme_bw()
+
+# The slope is set by the elimination rate; a wrong Vd or CL moves it by
+# tens of percent. Achieved slope 24.7 (+1.4%), intercept 58.4.
+stopifnot(abs(coef(fit)[["cmin_day10"]] / 24.35 - 1) < 0.15)
+```
+
+# Assumptions and deviations
+
+* **Random effect on the eGFR exponent.** Table 2 reports a between-subject
+  variability of 1.24 for beta_CL_eGFR. eGFR entered the Monolix model as a
+  time-varying regressor (Methods 2.3), which requires its exponent to be declared
+  as an individual parameter, and Methods states that all model parameters were
+  log-normally distributed. The exponent is therefore encoded as
+  `0.43 x exp(eta)`, eta ~ N(0, 1.24^2). The alternative additive reading,
+  `0.43 + eta`, would make the exponent negative in 36% of patients (clearance
+  rising as renal function falls). In a large steady-state check by the
+  maintainers the additive reading gives 71% for the MIC-2 PTA of regimen A and
+  the log-normal reading 78%, against the published 75.9%; the PTAs alone do not
+  decide between the readings, so the paper's statement on distributions does. The same
+  research group used the same construction for daptomycin
+  (`Subrtova_2026_daptomycin`).
+* **Between-subject variability scale.** Table 2's BSV values (0.44, 0.25, 1.24) are
+  read as Monolix omega, the standard deviation of the random effect on the log
+  scale, and squared for `ini()`.
+* **eGFR units.** The paper labels eGFR as mL/min throughout, although CKD-EPI 2021
+  returns mL/min/1.73 m^2 and the paper quotes its augmented-renal-clearance
+  threshold in those units. Supply the CKD-EPI value as reported.
+* **Nomogram AUC target.** Methods 2.4 states the nomogram was designed for an AUC24
+  of 850 mg*h/L, but the nomogram equation (769.5 / 0.81 = 950) and the Figure 3
+  title both correspond to 950 mg*h/L. This vignette follows the equation.
+* **Virtual cohort.** eGFR and adjusted body weight are drawn independently from
+  their Table 1 quantiles and held constant over time; the paper resampled its own
+  patients, with time-varying eGFR. Only 200 subjects per arm are simulated, so the
+  probabilities of target attainment carry about 3 percentage points of Monte
+  Carlo error.
+* **Figure 2 values** compared above were read off the published figure by the
+  maintainers and carry read-off error of roughly 0.5 mg/L.
+* **No erratum** to the article was found (checked 2026-11-16).

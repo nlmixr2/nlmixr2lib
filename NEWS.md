@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Shahraz 2026 savolitinib popPK and exposure-response ([doi:10.1111/cts.70700](https://doi.org/10.1111/cts.70700)) -- adults with advanced solid tumours, alone or with osimertinib.
+- Add Mackova 2026 fluconazole ([doi:10.3390/pharmaceutics18080929](https://doi.org/10.3390/pharmaceutics18080929)) -- hospitalised adults (mostly in intensive care) receiving intravenous fluconazole, with eGFR-based dosing.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
