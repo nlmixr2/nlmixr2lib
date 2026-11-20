@@ -6026,6 +6026,8 @@ navbar:
         href: articles/Favie_2020_neonatalHypothermia.html
       - text: "Nevirapine (Bienczak 2016)"
         href: articles/Bienczak_2016_nevirapine.html
+      - text: "Nevirapine (Dickinson 2014)"
+        href: articles/Dickinson_2014_nevirapine.html
       - text: "Nevirapine (Schipani 2011)"
         href: articles/Schipani_2011_nevirapine.html
       - text: "Nevirapine (Svensson 2012)"
@@ -10554,6 +10556,7 @@ articles:
   - articles/Dias_2024_quetiapine_rat
   - articles/Dias_2026_vildagliptin
   - articles/Dickinson_2009_atazanavir
+  - articles/Dickinson_2014_nevirapine
   - articles/Dickinson_2021_dolutegravir
   - articles/Dickinson_2026_dolutegravir
   - articles/Diep_2022_eplontersen
