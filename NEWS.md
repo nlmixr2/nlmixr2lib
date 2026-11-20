@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nakatani 2013 E2110 PK and 5-HT1A receptor occupancy ([doi:10.1371/journal.pone.0075040](https://doi.org/10.1371/journal.pone.0075040)) -- male and female Sprague-Dawley rats (PET in medial prefrontal cortex and dorsal raphe nucleus).
+- Add Hourcade-Potelleret 2014 trastuzumab IV and SC ([doi:10.1038/psp.2013.63](https://doi.org/10.1038/psp.2013.63)) -- healthy men and women with HER2-positive early breast cancer.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

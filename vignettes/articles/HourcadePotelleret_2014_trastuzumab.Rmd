@@ -1,0 +1,620 @@
+---
+title: "Trastuzumab (Hourcade-Potelleret 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Trastuzumab (Hourcade-Potelleret 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+```
+
+```{r setup}
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(PKNCA)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("HourcadePotelleret_2014_trastuzumab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("HourcadePotelleret_2014_trastuzumab"))$description`
+* Article (open access): <https://doi.org/10.1038/psp.2013.63>
+
+Hourcade-Potelleret et al. (2014) fitted a population PK model to single-dose
+intravenous (IV) and subcutaneous (SC) trastuzumab data from the phase I/Ib
+trial BP22023 and used it to choose the fixed 600 mg SC dose, given every
+three weeks (Q3W) without a loading dose, that was later tested in the phase
+III HannaH study. The SC formulation contains recombinant human hyaluronidase
+(rHuPH20).
+
+The final model has two compartments, first-order SC absorption with
+bioavailability F1, and parallel linear and Michaelis-Menten elimination from
+the central compartment:
+
+\[
+\frac{d\,depot}{dt} = -k_a\,depot,
+\qquad
+\frac{d\,central}{dt} = k_a\,depot - \frac{CL}{V_2}\,central
+  - \frac{V_m\,C_c}{K_m + C_c} - \frac{Q}{V_2}\,central + \frac{Q}{V_3}\,peripheral_1,
+\]
+
+with \(C_c = central / V_2\), \(CL = 0.187\,(WT/68)^{0.591}\) L/day and
+\(V_2 = 3.43\,(WT/68)^{0.48}\) L. Both weight exponents were held at the
+values of the earlier IV trastuzumab model.
+
+# Population
+
+The model was fitted to 786 serum concentrations from 66 individuals who
+received 70 single doses: 24 healthy male volunteers (6 mg/kg IV, or 6, 8 or
+10 mg/kg SC; 6 per group) and 42 women previously treated for HER2-positive
+early breast cancer (6 mg/kg IV, n = 6; 8 or 12 mg/kg SC, n = 20 each; four
+women received both 6 mg/kg IV and 8 mg/kg SC). Demographics are not tabulated
+in this paper; they were reported with the phase I/Ib trial (Wynne et al., J
+Clin Pharmacol 2013;53:192-201). Results "Pharmacokinetic data set" and
+Methods "Pharmacokinetic data sets".
+
+The same information is available programmatically:
+
+```{r population-meta}
+str(rxode2::rxode(readModelDb("HourcadePotelleret_2014_trastuzumab"))$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source in
+`inst/modeldb/specificDrugs/HourcadePotelleret_2014_trastuzumab.R`. The
+supplementary NONMEM output (control stream and final estimates) gives the
+same numbers as Table 1 at higher precision, and the OMEGA and SIGMA variances
+directly.
+
+| Element | Value | Source location |
+| --- | --- | --- |
+| Structure: 2 compartments, first-order absorption, linear + Michaelis-Menten elimination | ODEs above | Results "PopPK modeling"; supplementary control stream `$DES` |
+| `lcl` | log(0.187 L/day) | Table 1; NONMEM TH1 |
+| `lvc` | log(3.43 L) | Table 1; NONMEM TH2 |
+| `lq` | log(0.24 L/day) | Table 1; NONMEM TH3 |
+| `lvp` | log(1.71 L) | Table 1; NONMEM TH4 |
+| `lfdepot` | log(0.873) | Table 1; NONMEM TH5 |
+| `lka` | log(0.28 /day) | Table 1; NONMEM TH6 |
+| `lvmax` | log(3.49 mg/day) | Table 1; NONMEM TH9 |
+| `lkm` | log(6.12 mg/L) | Table 1; NONMEM TH10 = 6120 ug/L |
+| `e_wt_cl` | 0.591, held constant | Table 1 ('Fix'); control stream `(WT/68)**THETA(7)` |
+| `e_wt_vc` | 0.48, held constant | Table 1 ('Fix'); control stream `(WT/68)**THETA(8)` |
+| `etalcl` | 0.0512 | NONMEM OMEGA(1,1); Table 1 22.6% |
+| `etalvc` | 0.0449 | NONMEM OMEGA(2,2); Table 1 21.2% |
+| `etalfdepot` | 0.0285 | NONMEM OMEGA(4,4); Table 1 16.9% |
+| `etalka` | 0.149 | NONMEM OMEGA(5,5); Table 1 38.6% |
+| `propSd` | 0.2667 | NONMEM SIGMA(1,1) = 0.0711, square root; Table 1 0.26 |
+| Bioavailability on the SC depot only | `f(depot)` | Control stream `F1 = THETA(5)*EXP(ETA(4))` (compartment 1) |
+| Reference weight 68 kg | `WT / 68` | Control stream `CLWT`, `V2WT` definitions |
+
+Two quantities quoted in the Results follow directly from these values and
+are checked here: the absorption half-life of 2.5 days is
+\(\ln 2 / 0.28\), and the statement that the nonlinear pathway is saturated
+above about 50 mg/L reflects \(K_m = 6.12\) mg/L.
+
+```{r derived-checks}
+c(
+  absorption_half_life_day = log(2) / 0.28,
+  mm_fraction_of_vmax_at_50_mg_L = 50 / (6.12 + 50)
+)
+stopifnot(abs(log(2) / 0.28 - 2.5) < 0.05)
+```
+
+# Covariate column naming
+
+| Source column | Canonical column | Notes |
+| --- | --- | --- |
+| `WT` | `WT` (kg) | Body weight; reference 68 kg. |
+
+# Single-dose profiles (phase I/Ib design)
+
+Figure 1 and Figure 2 of the paper show single-dose profiles after 6 mg/kg IV
+and 6 to 12 mg/kg SC. The typical-value profiles below use a 68 kg subject.
+The IV infusion duration in BP22023 is not stated in this paper; 90 minutes
+(the labelled first-dose infusion time) is assumed.
+
+```{r single-dose-typical, fig.cap = "Typical-value trastuzumab profiles after a single 6 mg/kg IV dose or 6, 8, 10 or 12 mg/kg SC (68 kg subject). Compare with Figure 1 of Hourcade-Potelleret 2014."}
+mod <- readModelDb("HourcadePotelleret_2014_trastuzumab")
+mod_typical <- rxode2::zeroRe(mod)
+
+wt_ref <- 68
+single_obs <- sort(unique(c(0, 0.0625, 0.25, 0.5, seq(1, 150, by = 1))))
+single_regimens <- tibble::tribble(
+  ~treatment,         ~mg_per_kg, ~cmt,      ~dur,
+  "IV 6 mg/kg",       6,          "central", 1.5 / 24,
+  "SC 6 mg/kg",       6,          "depot",   0,
+  "SC 8 mg/kg",       8,          "depot",   0,
+  "SC 10 mg/kg",      10,         "depot",   0,
+  "SC 12 mg/kg",      12,         "depot",   0
+)
+
+make_single <- function(i, wt) {
+  r <- single_regimens[i, ]
+  dplyr::bind_rows(
+    data.frame(id = i, time = 0, amt = r$mg_per_kg * wt, dur = r$dur,
+               cmt = r$cmt, evid = 1L),
+    data.frame(id = i, time = single_obs, amt = NA_real_, dur = NA_real_,
+               cmt = "central", evid = 0L)
+  ) |>
+    dplyr::mutate(WT = wt, treatment = r$treatment)
+}
+
+ev_single <- dplyr::bind_rows(lapply(seq_len(nrow(single_regimens)), make_single, wt = wt_ref))
+
+# zeroRe() removes the random effects on purpose; rxode2 warns on every
+# multi-subject solve without omega, so muffle that one warning only.
+sim_single <- withCallingHandlers(
+  rxode2::rxSolve(mod_typical, events = ev_single,
+                  keep = "treatment", returnType = "data.frame"),
+  warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+)
+
+ggplot(sim_single |> dplyr::filter(time > 0),
+       aes(time, Cc, colour = treatment)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "Trastuzumab Cc (mg/L)", colour = NULL,
+       title = "Typical-value single-dose profiles") +
+  theme_bw()
+```
+
+The dose-normalised SC profiles converge at high concentrations and separate
+in the terminal phase, where the Michaelis-Menten pathway is no longer
+saturated (Figure 1b of the paper).
+
+```{r single-dose-dn, fig.cap = "Dose-normalised typical-value SC profiles. Compare with Figure 1b of Hourcade-Potelleret 2014."}
+sim_single |>
+  dplyr::filter(time > 0, grepl("^SC", treatment)) |>
+  dplyr::mutate(
+    dose_mg_per_kg = as.numeric(sub("SC ([0-9]+) mg/kg", "\\1", treatment)),
+    Cc_dn = Cc / dose_mg_per_kg
+  ) |>
+  ggplot(aes(time, Cc_dn, colour = treatment)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "Cc per mg/kg dose (mg/L per mg/kg)",
+       colour = NULL) +
+  theme_bw()
+```
+
+## Visual predictive check
+
+A stochastic simulation of 100 subjects per arm for the 6 mg/kg IV and
+8 mg/kg SC arms, with residual error, mirrors the structure of Figure 2.
+Body weight is drawn from the paper's virtual-population distribution
+(mean 68 kg, SD 11 kg) because the phase I/Ib weights are not given here.
+
+```{r vpc, fig.cap = "Simulated median and 5th-95th percentiles (with residual error) after a single 6 mg/kg IV or 8 mg/kg SC dose. Compare with Figure 2 of Hourcade-Potelleret 2014."}
+rxode2::rxSetSeed(20140102)
+n_vpc <- 100
+vpc_obs <- c(0.0625, 0.125, 0.25, 0.5, 1, 2, 4, 7, 9, 14, 21, 34, 42, 84, 150)
+make_vpc_arm <- function(arm, id_offset) {
+  wt <- pmax(stats::rnorm(n_vpc, 68, 11), 40)
+  ids <- id_offset + seq_len(n_vpc)
+  is_iv <- arm == "IV 6 mg/kg"
+  dplyr::bind_rows(
+    data.frame(id = ids, time = 0,
+               amt = if (is_iv) 6 * wt else 8 * wt,
+               dur = if (is_iv) 1.5 / 24 else 0,
+               cmt = if (is_iv) "central" else "depot", evid = 1L, WT = wt),
+    data.frame(id = rep(ids, each = length(vpc_obs)),
+               time = rep(vpc_obs, n_vpc), amt = NA_real_, dur = NA_real_,
+               cmt = "central", evid = 0L, WT = rep(wt, each = length(vpc_obs)))
+  ) |>
+    dplyr::mutate(treatment = arm)
+}
+set.seed(20140102)
+ev_vpc <- dplyr::bind_rows(
+  make_vpc_arm("IV 6 mg/kg", 0L),
+  make_vpc_arm("SC 8 mg/kg", n_vpc)
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+sim_vpc <- rxode2::rxSolve(mod, events = ev_vpc, keep = "treatment",
+                           returnType = "data.frame")
+
+sim_vpc |>
+  dplyr::filter(!is.na(sim)) |>
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(
+    q05 = quantile(sim, 0.05), q50 = median(sim), q95 = quantile(sim, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.25, fill = "steelblue") +
+  geom_line(colour = "steelblue4", linewidth = 0.8) +
+  facet_wrap(~treatment) +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "Trastuzumab concentration (mg/L)",
+       caption = "Line: median; band: 5th-95th percentile of simulated observations.") +
+  theme_bw()
+```
+
+## PKNCA: single-dose exposure and bioavailability
+
+The paper states that 6 mg/kg IV and SC data in healthy volunteers suggested
+a bioavailability above 80%. With the nonlinear elimination pathway the SC/IV
+AUC ratio is not exactly F1 = 0.873: the slower-rising SC profile spends more
+time at concentrations where the Michaelis-Menten pathway is not saturated, so
+the typical-value ratio comes out a little lower (about 0.81).
+
+```{r pknca-single}
+conc_single <- sim_single |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+dose_single <- ev_single |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+
+nca_single <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_single, Cc ~ time | treatment + id,
+                   concu = "mg/L", timeu = "day"),
+  PKNCA::PKNCAdose(dose_single, amt ~ time | treatment + id, doseu = "mg"),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                         aucinf.obs = TRUE, half.life = TRUE)
+))
+
+nca_single_tbl <- as.data.frame(nca_single$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+nca_single_tbl |>
+  dplyr::rename(
+    "Regimen" = treatment, "Cmax (mg/L)" = cmax, "Tmax (day)" = tmax,
+    "AUC0-inf (mg*day/L)" = aucinf.obs, "t1/2 (day)" = half.life
+  ) |>
+  knitr::kable(digits = 2,
+               caption = "Typical-value single-dose NCA (68 kg subject).")
+
+auc_iv6 <- nca_single_tbl$aucinf.obs[nca_single_tbl$treatment == "IV 6 mg/kg"]
+auc_sc6 <- nca_single_tbl$aucinf.obs[nca_single_tbl$treatment == "SC 6 mg/kg"]
+f_apparent <- auc_sc6 / auc_iv6
+f_apparent
+# Deterministic (typical-value) quantity: the ratio departs from F1 only
+# through the Michaelis-Menten pathway, which removes a slightly larger share
+# of the slower-rising SC dose.
+stopifnot(f_apparent > 0.80, f_apparent < 0.90)
+```
+
+# Dose selection: fixed SC dose versus weight-based IV (Table 2, Figure 3)
+
+The paper simulated the reference IV regimen (8 mg/kg loading dose, then
+6 mg/kg Q3W) and fixed SC doses of 400, 500, 600 and 700 mg Q3W without a
+loading dose, in virtual patients with body weight mean 68 kg and SD 11 kg
+(130 per arm, 100 replicates). Here one replicate of 150 patients per arm is
+simulated over eight cycles. The IV loading dose is infused over 90 minutes
+and maintenance doses over 30 minutes, as in the label.
+
+```{r dose-selection-events}
+rxode2::rxSetSeed(2014)
+set.seed(2014)
+n_arm <- 150
+arms <- c("IV 8/6 mg/kg", "SC 400 mg", "SC 500 mg", "SC 600 mg", "SC 700 mg")
+dose_times <- seq(0, 147, by = 21)
+obs_times <- sort(unique(c(
+  0:147,
+  as.vector(outer(dose_times, c(0.0208, 0.0625, 0.25, 0.5), "+"))
+)))
+
+make_arm <- function(a) {
+  ids <- (a - 1L) * n_arm + seq_len(n_arm)
+  wt <- pmax(stats::rnorm(n_arm, 68, 11), 35)
+  doses <- data.frame(
+    id = rep(ids, each = length(dose_times)),
+    time = rep(dose_times, n_arm),
+    WT = rep(wt, each = length(dose_times)),
+    evid = 1L
+  )
+  if (a == 1L) {
+    doses <- doses |>
+      dplyr::mutate(
+        amt = ifelse(time == 0, 8, 6) * WT,
+        dur = ifelse(time == 0, 1.5, 0.5) / 24,
+        cmt = "central"
+      )
+  } else {
+    doses <- doses |>
+      dplyr::mutate(amt = c(400, 500, 600, 700)[a - 1L], dur = 0, cmt = "depot")
+  }
+  obs <- data.frame(
+    id = rep(ids, each = length(obs_times)),
+    time = rep(obs_times, n_arm),
+    WT = rep(wt, each = length(obs_times)),
+    evid = 0L, amt = NA_real_, dur = NA_real_, cmt = "central"
+  )
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::mutate(treatment = arms[a])
+}
+
+ev_ds <- dplyr::bind_rows(lapply(seq_along(arms), make_arm)) |>
+  dplyr::arrange(id, time, evid)
+
+sim_ds <- rxode2::rxSolve(mod, events = ev_ds, keep = c("treatment", "WT"),
+                          returnType = "data.frame")
+```
+
+The observation at each dose time is solved before that dose is given, so the
+day-21 and day-147 values are the Cycle 1 and predose Cycle 8 troughs.
+
+```{r trough-check}
+iv1 <- sim_ds |> dplyr::filter(id == 1, time %in% c(21, 21.0208))
+iv1[, c("time", "Cc")]
+stopifnot(iv1$Cc[iv1$time == 21] < iv1$Cc[iv1$time == 21.0208] / 2)
+```
+
+## PKNCA by treatment and cycle
+
+AUC0-21 days and Cmax come from PKNCA for Cycle 1 (days 0-21) and Cycle 7
+(days 126-147). Ctrough is the concentration at the end of each interval
+(day 21, and day 147 = predose Cycle 8). It is read directly off the solved
+profile and carried under the PKNCA code `ctrough`, because PKNCA 0.12.1
+returns `NA` for `ctrough` on an interval that does not start at time 0.
+
+```{r pknca-ds}
+conc_ds <- sim_ds |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment, WT)
+dose_ds <- ev_ds |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+
+intervals_ds <- data.frame(
+  start = c(0, 126), end = c(21, 147),
+  auclast = TRUE, cmax = TRUE
+)
+
+nca_ds <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_ds, Cc ~ time | treatment + id,
+                   concu = "mg/L", timeu = "day"),
+  PKNCA::PKNCAdose(dose_ds, amt ~ time | treatment + id, doseu = "mg"),
+  intervals = intervals_ds
+))
+
+trough_ds <- conc_ds |>
+  dplyr::filter(time %in% c(21, 147)) |>
+  dplyr::transmute(
+    id, treatment,
+    cycle = ifelse(time == 21, "Cycle 1", "Cycle 7"),
+    PPTESTCD = "ctrough", PPORRES = Cc
+  )
+stopifnot(nrow(trough_ds) == 2 * n_arm * length(arms))
+
+nca_ds_res <- as.data.frame(nca_ds$result) |>
+  dplyr::mutate(cycle = ifelse(start == 0, "Cycle 1", "Cycle 7")) |>
+  dplyr::select(id, treatment, cycle, PPTESTCD, PPORRES) |>
+  dplyr::bind_rows(trough_ds)
+stopifnot(!anyNA(nca_ds_res$PPORRES))
+
+nca_ds_res |>
+  dplyr::filter(PPTESTCD %in% c("ctrough", "auclast")) |>
+  dplyr::group_by(treatment, cycle, PPTESTCD) |>
+  dplyr::summarise(
+    q05 = quantile(PPORRES, 0.05), median = median(PPORRES),
+    q95 = quantile(PPORRES, 0.95), .groups = "drop"
+  ) |>
+  dplyr::rename("Regimen" = treatment, "Cycle" = cycle, "Parameter" = PPTESTCD,
+                "5th percentile" = q05, "Median" = median,
+                "95th percentile" = q95) |>
+  knitr::kable(digits = 1,
+               caption = "Simulated Ctrough (mg/L) and AUC0-21 days (mg*day/L) by regimen and cycle.")
+```
+
+## Comparison with Table 2
+
+Table 2 of the paper gives the median, over 100 replicates, of the
+per-replicate 5th percentile, median and 95th percentile for the IV reference
+and the 600 mg SC regimen. The simulated medians are compared below.
+
+```{r comparison-table2}
+published <- tibble::tribble(
+  ~treatment,     ~cycle,    ~ctrough, ~auclast,
+  "IV 8/6 mg/kg", "Cycle 1", 34,       1349,
+  "SC 600 mg",    "Cycle 1", 39,       1241,
+  "IV 8/6 mg/kg", "Cycle 7", 46,       1796,
+  "SC 600 mg",    "Cycle 7", 79,       2408
+)
+
+simulated_long <- nca_ds_res |>
+  dplyr::filter(treatment %in% published$treatment,
+                PPTESTCD %in% c("ctrough", "auclast"))
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = simulated_long,
+  reference = published,
+  by = c("treatment", "cycle"),
+  units = c(ctrough = "mg/L", auclast = "mg*day/L"),
+  tolerance_pct = 20
+)
+
+cmp |>
+  dplyr::rename("Regimen" = treatment, "Cycle" = cycle) |>
+  knitr::kable(
+    digits = 1,
+    caption = paste(
+      "Simulated medians versus Hourcade-Potelleret 2014 Table 2 medians.",
+      "* differs from the published median by more than 20%."
+    )
+  )
+
+pct_check <- simulated_long |>
+  dplyr::group_by(treatment, cycle, PPTESTCD) |>
+  dplyr::summarise(sim = median(PPORRES), .groups = "drop") |>
+  dplyr::inner_join(
+    tidyr::pivot_longer(published, c(ctrough, auclast),
+                        names_to = "PPTESTCD", values_to = "ref"),
+    by = c("treatment", "cycle", "PPTESTCD")
+  ) |>
+  dplyr::mutate(pct_diff = 100 * (sim - ref) / ref)
+pct_diff <- pct_check$pct_diff
+stopifnot(
+  length(pct_diff) == 8,
+  # A mis-transcribed clearance, volume, bioavailability or unit moves these
+  # medians by tens of percent; the median of 150 subjects moves a few
+  # percent between cohorts.
+  median(abs(pct_diff)) < 10,
+  all(abs(pct_diff) < 25)
+)
+```
+
+Seven of the eight medians agree within 5%. The exception is the IV Cycle 1
+AUC0-21 days, about 15% above the paper's 1,349 mg\*day/L, while the IV
+Cycle 1 trough and the IV Cycle 7 AUC agree within 4%. The paper does not
+describe how its Cycle 1 AUC was computed (sampling grid or infusion
+handling), and no parameter in Table 1 can raise the Cycle 1 AUC without also
+moving the trough, so the difference is recorded rather than adjusted.
+
+The paper's percentile ranges for the predose Cycle 8 trough (IV 23-84 mg/L,
+SC 38-143 mg/L) are reproduced closely. Its Cycle 1 ranges (IV 27-40 mg/L,
+SC 35-46 mg/L) are narrower than the simulated ones; the reason is not
+stated. With 22.6% IIV on CL, 21.2% on V2, 16.9% on F1 and 38.6% on Ka, a
+Cycle 1 trough coefficient of variation of roughly 25-30% is expected, and the
+observed HannaH Cycle 1 SC troughs (5th-95th percentile 12-66 mg/L) were wider
+still.
+
+## Dose-selection criterion (Figure 3)
+
+600 mg was the lowest SC dose whose Cycle 1 and predose Cycle 8 troughs were
+at least as high as with the IV reference.
+
+```{r figure-3, fig.cap = "Simulated Ctrough at Cycle 1 and predose Cycle 8, and AUC0-21 days at Cycle 1, by regimen. Compare with Figure 3 of Hourcade-Potelleret 2014."}
+fig3 <- nca_ds_res |>
+  dplyr::filter(
+    (PPTESTCD == "ctrough") |
+      (PPTESTCD == "auclast" & cycle == "Cycle 1")
+  ) |>
+  dplyr::mutate(
+    panel = dplyr::case_when(
+      PPTESTCD == "ctrough" & cycle == "Cycle 1" ~ "Ctrough Cycle 1 (mg/L)",
+      PPTESTCD == "ctrough" ~ "Ctrough predose Cycle 8 (mg/L)",
+      TRUE ~ "AUC0-21 days Cycle 1 (mg*day/L)"
+    ),
+    treatment = factor(treatment, levels = arms)
+  )
+
+ggplot(fig3, aes(treatment, PPORRES)) +
+  geom_boxplot(outlier.size = 0.6) +
+  stat_summary(fun = mean, geom = "point", shape = 23, fill = "white") +
+  facet_wrap(~panel, scales = "free_y") +
+  labs(x = NULL, y = NULL) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+trough_med <- nca_ds_res |>
+  dplyr::filter(PPTESTCD == "ctrough") |>
+  dplyr::group_by(treatment, cycle) |>
+  dplyr::summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = cycle, values_from = median)
+trough_med
+
+med <- function(trt, cyc) trough_med[[cyc]][trough_med$treatment == trt]
+# The SC 500 and 600 mg Cycle 1 medians sit about 15% either side of the IV
+# median, several times the cohort-to-cohort noise of a 150-subject median.
+stopifnot(
+  med("SC 600 mg", "Cycle 1") > med("IV 8/6 mg/kg", "Cycle 1"),
+  med("SC 600 mg", "Cycle 7") > med("IV 8/6 mg/kg", "Cycle 7"),
+  med("SC 500 mg", "Cycle 1") < med("IV 8/6 mg/kg", "Cycle 1")
+)
+```
+
+## Heavier patients (> 75 kg)
+
+The paper reports, for virtual patients above 75 kg, median (5th-95th
+percentile) Cycle 1 troughs of 36 (33-39) mg/L SC and 38 (34-44) mg/L IV,
+and predose Cycle 8 troughs of 69 (33-130) mg/L SC and 53 (25-99) mg/L IV.
+The subgroup here is roughly a quarter of each 150-patient arm, so its
+medians are noisier than the full-arm values.
+
+```{r heavy}
+nca_ds_res |>
+  dplyr::filter(PPTESTCD == "ctrough",
+                treatment %in% c("IV 8/6 mg/kg", "SC 600 mg")) |>
+  dplyr::left_join(dplyr::distinct(conc_ds, id, WT), by = "id") |>
+  dplyr::filter(WT > 75) |>
+  dplyr::group_by(treatment, cycle) |>
+  dplyr::summarise(
+    n = dplyr::n(), q05 = quantile(PPORRES, 0.05),
+    median = median(PPORRES), q95 = quantile(PPORRES, 0.95),
+    .groups = "drop"
+  ) |>
+  dplyr::rename("Regimen" = treatment, "Cycle" = cycle,
+                "5th percentile" = q05, "Median" = median,
+                "95th percentile" = q95) |>
+  knitr::kable(digits = 1,
+               caption = "Simulated Ctrough (mg/L) in patients above 75 kg.")
+```
+
+## Retrospective comparison with HannaH (Figure 4)
+
+The paper compared the dose-selection simulations with observed HannaH data
+(Results "Retrospective validation of the pharmacokinetic model"); these
+observed values are quoted for context and are not used in any check.
+
+| Quantity | Regimen | Paper simulation, median (5th-95th) | HannaH observed, median (5th-95th) |
+| --- | --- | --- | --- |
+| Ctrough Cycle 1 (mg/L) | SC 600 mg | 39 (35-46) | 29 (12-66) |
+| Ctrough predose Cycle 8 (mg/L) | IV 8/6 mg/kg | 46 (23-84) | 49 (23-106) |
+| Ctrough predose Cycle 8 (mg/L) | SC 600 mg | 79 (38-143) | 70 (23-150) |
+| AUC0-21 days Cycle 7 (mg*day/L) | IV 8/6 mg/kg | 1,796 (1,202-2,605) | 1,970 (1,320-3,310) |
+| AUC0-21 days Cycle 7 (mg*day/L) | SC 600 mg | 2,408 (1,464-4,007) | 2,260 (1,090-4,010) |
+
+```{r figure-4, fig.cap = "Simulated concentration-time profiles (median and 5th-95th percentile, no residual error) for the IV reference and 600 mg SC regimens over eight cycles. Compare with Figure 4e,f of Hourcade-Potelleret 2014."}
+sim_ds |>
+  dplyr::filter(treatment %in% c("IV 8/6 mg/kg", "SC 600 mg"), time > 0) |>
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(q05 = quantile(Cc, 0.05), q50 = median(Cc),
+                   q95 = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(time, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.25, fill = "steelblue") +
+  geom_line(colour = "steelblue4") +
+  facet_wrap(~treatment) +
+  labs(x = "Time (days)", y = "Trastuzumab Cc (mg/L)") +
+  theme_bw()
+```
+
+# Assumptions and deviations
+
+* **Residual error.** Table 1 prints the proportional residual error as 0.26.
+  The supplementary NONMEM output gives SIGMA = 0.0711, whose square root is
+  0.2667; the more precise value is used.
+* **Fixed-zero random effects omitted.** The control stream declares etas on
+  V3, Vmax and Km with variances fixed to zero; they have no effect and are
+  not carried into the model.
+* **Bioavailability random effect.** As in the control stream, F1 is
+  log-normal (`F1 = 0.873 * exp(eta)`), so a small fraction of simulated
+  individuals have F1 above 1.
+* **Units.** The control stream scales concentrations to ug/L
+  (`S2 = V2/1000`, Km = 6120 ug/L). The packaged model works in mg and L, so
+  concentrations are mg/L and Km is 6.12 mg/L, as in Table 1.
+* **Covariate distribution.** The phase I/Ib demographics are not given in
+  this paper. Simulations draw body weight from Normal(68, 11) kg, the
+  distribution the paper used for its virtual population, truncated below at
+  35 or 40 kg.
+* **IV infusion durations.** 90 minutes for the single phase I/Ib dose and
+  the 8 mg/kg loading dose, 30 minutes for 6 mg/kg maintenance doses (the
+  labelled administration times quoted in the paper's introduction). The
+  phase I/Ib infusion time is not stated in this paper.
+* **Simulation size.** The paper used 130 patients per arm and 100
+  replicates; this vignette uses one replicate of 150 patients per arm.
+* **Errata.** No erratum or correction was found on Europe PMC for
+  doi:10.1038/psp.2013.63 (checked 2026-11-20).
+
+# Reference
+
+* `r rxode2::rxode(readModelDb("HourcadePotelleret_2014_trastuzumab"))$reference`
