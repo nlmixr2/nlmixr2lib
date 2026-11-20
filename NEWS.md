@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Fan 2026 posttransplant cyclophosphamide and donor T-cell QSP ([doi:10.1002/psp4.70252](https://doi.org/10.1002/psp4.70252)) -- MHC-haploidentical hematopoietic cell transplant in mice.
+- Add Liu 2026 subcutaneous tislelizumab ([doi:10.1111/cts.70649](https://doi.org/10.1111/cts.70649)) -- adults with advanced NSCLC given SC (thigh or abdomen) or IV tislelizumab.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

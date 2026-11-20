@@ -1,0 +1,483 @@
+---
+title: "Tislelizumab subcutaneous (Liu 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tislelizumab subcutaneous (Liu 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+```{r setup, message = FALSE}
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Liu_2026_tislelizumab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Liu_2026_tislelizumab"))$description`
+* Article: <https://doi.org/10.1111/cts.70649> (open access; supplementary
+  Tables S1-S2 and Figure S1)
+* Parent intravenous model: `modellib("Budha_2023_tislelizumab")`, Budha et
+  al. (2023) <https://doi.org/10.1002/psp4.12880>
+
+Liu et al. extended the established intravenous population PK model of
+tislelizumab, an anti-PD-1 IgG4 antibody, with two parallel first-order
+subcutaneous absorption depots, one per injection site (abdomen and thigh;
+Figure S1). Every disposition parameter, covariate effect, the disposition
+IIV and the residual error were fixed to the intravenous-model estimates
+(Table 1); only the absorption rate constant, the absolute bioavailability
+and their IIV were estimated, separately per site. No covariate was retained
+on the absorption parameters. The model was then used to simulate 300 mg SC
+every 3 weeks (Q3W) against the approved 200 mg IV Q3W regimen and to select
+thigh administration for phase 3.
+
+# Population
+
+The absorption model was fitted to 922 concentrations from 60 treatment-naive
+adults with locally advanced or metastatic non-small cell lung cancer (ECOG
+PS 0-1) in the phase 1 study BGB-A317-103 (NCT06091943; 15 sites in China and
+Europe). In Part 1 (39 patients) each patient received 300 mg SC thigh,
+300 mg SC abdomen and 200 mg IV in one of six randomized sequences over
+Cycles 1-3 (Table S1), then 200 mg IV Q3W from Cycle 4; in Part 2 (21
+patients) patients received 300 mg SC thigh Q3W throughout. Demographics are
+reported in the primary clinical publication, not in this paper. The
+disposition parameters come from the Budha 2023 pooled analysis (2596
+patients, 12 studies; see the Budha 2023 article).
+
+The same information is available programmatically via
+`readModelDb("Liu_2026_tislelizumab")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. "Fixed"
+means the value was fixed to the intravenous-model estimate in Liu 2026.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lcl`, `lvc`, `lq`, `lvp`, `lq2`, `lvp2` | log(0.153 L/d), log(3.05 L), log(0.74 L/d), log(1.27 L), log(0.092 L/d), log(2.1 L); fixed | Liu 2026 Table 1 |
+| `e_wt_cl`, `e_alb_cl`, `e_tumsz_cl` | 0.565, -0.457, 0.0735; fixed | Liu 2026 Table 1 |
+| `e_ada_cl`, `e_tumtp_gc_cl`, `e_tumtp_chl_cl` | 0.111, 0.069, -0.216; fixed | Liu 2026 Table 1 |
+| `e_wt_vc`, `e_sexf_vc`, `e_age_vc` | 0.397, -0.116, 0.0966; fixed | Liu 2026 Table 1 |
+| Covariate reference values | WT 65 kg, AGE 60 y, ALB 41 g/L, tumor size 63 mm | Budha 2023 Equations 5 and 6 (not restated in Liu 2026) |
+| `lka_abdomen`, `lka_thigh` | log(0.247 1/d), log(0.189 1/d) | Liu 2026 Table 1 |
+| `lfdepot_abdomen`, `lfdepot_thigh` | log(0.731), log(0.866) | Liu 2026 Table 1 |
+| `etalcl`, `etalvc` variances | 0.263^2, 0.167^2; fixed | Liu 2026 Table 1 (omega on SD scale) |
+| CL-Vc covariance | 0.020; fixed | Budha 2023 Table 3 (not printed in Liu 2026) |
+| `etalvp`, `etalvp2` variances | 0.747^2, 0.999^2; fixed | Liu 2026 Table 1 |
+| `etalka_abdomen`, `etalka_thigh` | 0.568^2, 0.382^2 | Liu 2026 Table 1 |
+| `etalfdepot_abdomen`, `etalfdepot_thigh` | 0.264^2, 0.137^2 | Liu 2026 Table 1 |
+| `propSd`, `addSd` | 0.126, 2.09 mg/L; fixed | Liu 2026 Table 1 |
+| Two parallel SC depots into `central`, 3-compartment disposition | n/a | Liu 2026 Figure S1 |
+| Covariate equations on CL and Vc | n/a | Budha 2023 Equations 5 and 6 |
+| Combined additive + proportional residual error | n/a | Budha 2023 Equation 2 |
+
+# Typical-patient profiles and a closed-form check
+
+For the reference patient, a single dose over 21 days, and a long-horizon
+check that the dose-normalised area ratio SC/IV recovers the absolute
+bioavailability (`AUC0-inf = F * dose / CL` for linear kinetics).
+
+```{r typical}
+mod <- readModelDb("Liu_2026_tislelizumab")
+mod_typ <- rxode2::zeroRe(mod)
+
+# zeroRe() removes the random effects on purpose; rxode2 warns on every
+# multi-subject solve without omega, so muffle that one warning only.
+solve_typical <- function(...) {
+  withCallingHandlers(
+    rxode2::rxSolve(...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+ref_cov <- data.frame(
+  WT = 65, AGE = 60, ALB = 41, TUMSZ = 63, SEXF = 0, ADA_POS = 0,
+  TUMTP_GASTRIC = 0, TUMTP_HODGKIN_CLASSICAL = 0
+)
+arms <- tibble::tribble(
+  ~arm,                ~cmt,      ~amt, ~rate,
+  "SC abdomen 300 mg", "depot",   300,  0,
+  "SC thigh 300 mg",   "depot2",  300,  0,
+  "IV 200 mg",         "central", 200,  200 / (1 / 24)
+)
+
+make_single <- function(i, tobs) {
+  a <- arms[i, ]
+  dose <- data.frame(
+    id = i, time = 0, evid = 1, amt = a$amt, rate = a$rate, cmt = a$cmt
+  )
+  obs <- data.frame(
+    id = i, time = tobs, evid = 0, amt = 0, rate = 0, cmt = "central"
+  )
+  cbind(rbind(dose, obs), ref_cov, arm = a$arm)
+}
+tobs_short <- sort(unique(c(seq(0, 21, by = 0.1), 1 / 24)))
+ev_typ <- bind_rows(lapply(seq_len(nrow(arms)), make_single, tobs = tobs_short))
+sim_typ <- solve_typical(mod_typ, events = ev_typ, keep = "arm") |>
+  as.data.frame()
+
+ggplot(sim_typ, aes(time, Cc, colour = arm)) +
+  geom_line(linewidth = 0.8) +
+  labs(
+    x = "Time after dose (day)", y = "Tislelizumab (mg/L)", colour = NULL,
+    title = "Typical reference patient, single dose"
+  ) +
+  theme_bw()
+```
+
+```{r closed-form}
+tobs_long <- c(seq(0, 2, by = 1 / 96), seq(2.05, 3000, by = 0.05))
+ev_long <- bind_rows(lapply(seq_len(nrow(arms)), make_single, tobs = tobs_long))
+sim_long <- solve_typical(
+  mod_typ, events = ev_long, keep = "arm", atol = 1e-10, rtol = 1e-10
+) |>
+  as.data.frame()
+
+auc_long <- sim_long |>
+  group_by(arm) |>
+  arrange(time, .by_group = TRUE) |>
+  summarise(
+    auc = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+    c_last = last(Cc),
+    .groups = "drop"
+  ) |>
+  left_join(arms |> select(arm, amt), by = "arm") |>
+  mutate(
+    expected = c(
+      "SC abdomen 300 mg" = 0.731, "SC thigh 300 mg" = 0.866, "IV 200 mg" = 1
+    )[arm] * amt / 0.153,
+    pct_diff = 100 * (auc - expected) / expected
+  )
+
+auc_long |>
+  dplyr::rename(
+    Arm = arm, `AUC0-3000 d (mg*d/L)` = auc, `F * dose / CL` = expected,
+    `% diff` = pct_diff
+  ) |>
+  select(-c_last, -amt) |>
+  knitr::kable(digits = 2)
+
+# The solve and the closed form share the same parameters, so the only
+# difference is trapezoidal and truncation error.
+stopifnot(all(abs(auc_long$pct_diff) < 0.5), all(auc_long$c_last < 1e-3))
+```
+
+# Virtual cohort
+
+The phase 3 dose-selection simulations assumed first-line gastric-cancer
+patients (BGB-A317-305; Table S2): albumin, body weight, age and baseline
+tumor burden normally distributed and simulated independently, sex and
+treatment-emergent ADA status sampled from the four sex-by-ADA categories.
+The normals are truncated to the Table S2 ranges. The paper simulated 1000
+trials of 100 patients per arm; one cohort of 200 patients per arm is used
+here, with the same 200 covariate sets in each arm.
+
+```{r cohort}
+set.seed(70649)
+rxode2::rxSetSeed(70649)
+n_per_arm <- 200
+
+rtnorm <- function(n, mean, sd, lo, hi) {
+  x <- rnorm(n, mean, sd)
+  bad <- x < lo | x > hi
+  while (any(bad)) {
+    x[bad] <- rnorm(sum(bad), mean, sd)
+    bad <- x < lo | x > hi
+  }
+  x
+}
+
+sex_ada <- sample(1:4, n_per_arm, replace = TRUE)
+covs <- data.frame(
+  pid = seq_len(n_per_arm),
+  ALB = rtnorm(n_per_arm, 40.02, 4.39, 26, 53),
+  WT = rtnorm(n_per_arm, 60.83, 12.99, 32.1, 112.0),
+  AGE = rtnorm(n_per_arm, 58.77, 11.09, 23, 86),
+  TUMSZ = rtnorm(n_per_arm, 60.52, 48.95, 10, 384),
+  SEXF = as.integer(sex_ada %in% c(3, 4)),
+  ADA_POS = as.integer(sex_ada %in% c(2, 4)),
+  TUMTP_GASTRIC = 1L,
+  TUMTP_HODGKIN_CLASSICAL = 0L
+)
+
+dose_times <- seq(0, 84, by = 21)
+tobs <- sort(unique(c(seq(0, 105, by = 0.25), dose_times + 1 / 24)))
+
+make_arm <- function(i) {
+  a <- arms[i, ]
+  ids <- (i - 1L) * n_per_arm + covs$pid
+  dose <- expand.grid(id = ids, time = dose_times) |>
+    mutate(evid = 1, amt = a$amt, rate = a$rate, cmt = a$cmt)
+  obs <- expand.grid(id = ids, time = tobs) |>
+    mutate(evid = 0, amt = 0, rate = 0, cmt = "central")
+  bind_rows(dose, obs) |>
+    mutate(pid = id - (i - 1L) * n_per_arm, arm = a$arm) |>
+    left_join(covs, by = "pid") |>
+    arrange(id, time, desc(evid))
+}
+events <- bind_rows(lapply(seq_len(nrow(arms)), make_arm))
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(
+  mod, events = events, keep = "arm",
+  returnType = "data.frame"
+) |>
+  select(id, time, Cc, arm, fdepot_thigh, fdepot_abdomen)
+sim$arm <- factor(sim$arm, levels = arms$arm)
+```
+
+The exponential IIV on bioavailability is not bounded at one, so some
+simulated patients absorb more than the dose:
+
+```{r f-above-one}
+sim |>
+  distinct(id, arm, fdepot_thigh, fdepot_abdomen) |>
+  filter(arm != "IV 200 mg") |>
+  mutate(f_i = ifelse(arm == "SC thigh 300 mg", fdepot_thigh, fdepot_abdomen)) |>
+  group_by(arm) |>
+  summarise(
+    `median F` = median(f_i), `% of patients with F > 1` = 100 * mean(f_i > 1),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 3)
+```
+
+# Replicate published figures
+
+```{r figure-4, fig.width = 7, fig.height = 4}
+# Replicates Figure 4 of Liu 2026: Cycle 1 and steady-state (Cycle 5)
+# profiles of 300 mg SC Q3W (thigh, abdomen) overlaid on 200 mg IV Q3W.
+fig4 <- sim |>
+  mutate(
+    cycle = case_when(
+      time <= 21 ~ "Cycle 1",
+      time >= 84 ~ "Cycle 5 (steady state)",
+      TRUE ~ NA_character_
+    ),
+    tcyc = ifelse(time >= 84, time - 84, time)
+  ) |>
+  filter(!is.na(cycle)) |>
+  group_by(arm, cycle, tcyc) |>
+  summarise(
+    q05 = quantile(Cc, 0.05), q50 = median(Cc),
+    q95 = quantile(Cc, 0.95), .groups = "drop"
+  )
+
+ggplot(fig4, aes(tcyc, q50, colour = arm, fill = arm)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.15, colour = NA) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~cycle) +
+  labs(
+    x = "Time after dose in the cycle (day)", y = "Tislelizumab (mg/L)",
+    colour = NULL, fill = NULL,
+    caption = paste(
+      "Replicates Figure 4 of Liu 2026. Lines: median; bands: 5th-95th",
+      "percentiles of individual predictions (the paper's bands are",
+      "percentiles of trial geometric means, so they are narrower)."
+    )
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# PKNCA validation
+
+Table 2 of the paper reports, per arm, the geometric mean (GM) of Cycle 1
+Ctrough (Cycle 2 predose, day 21), Cycle 1 AUC0-21, steady-state Ctrough
+(Cycle 5 predose, day 84) and Cycle 5 AUC0-21 (days 84-105). Each cycle is
+re-anchored to start at time 0 for PKNCA. Cycle 1 Ctrough is the
+end-of-interval `ctrough`; the steady-state Ctrough is `cmin` of Cycle 5,
+which is its predose value because concentrations are still accumulating
+(the Cycle 5 predose sample is the lowest of the cycle in every arm).
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  mutate(
+    cycle = case_when(
+      time <= 21 ~ "Cycle 1",
+      time >= 84 ~ "Cycle 5",
+      TRUE ~ NA_character_
+    ),
+    tcyc = round(ifelse(time >= 84, time - 84, time), 6)
+  ) |>
+  filter(!is.na(cycle)) |>
+  select(id, arm, cycle, tcyc, Cc)
+
+dose_nca <- events |>
+  filter(evid == 1, time %in% c(0, 84)) |>
+  mutate(
+    cycle = ifelse(time == 0, "Cycle 1", "Cycle 5"),
+    tcyc = 0
+  ) |>
+  select(id, arm, cycle, tcyc, amt)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ tcyc | arm + cycle + id)
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ tcyc | arm + cycle + id)
+intervals <- data.frame(
+  start = 0, end = 21,
+  cmax = TRUE, auclast = TRUE, ctrough = TRUE, cmin = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_ind <- as.data.frame(nca_res$result) |>
+  filter(
+    PPTESTCD == "auclast" |
+      (PPTESTCD == "ctrough" & cycle == "Cycle 1") |
+      (PPTESTCD == "cmin" & cycle == "Cycle 5")
+  ) |>
+  mutate(PPTESTCD = ifelse(PPTESTCD == "cmin", "ctrough", PPTESTCD))
+stopifnot(!anyNA(nca_ind$PPORRES), all(nca_ind$PPORRES > 0))
+
+sim_gm <- nca_ind |>
+  group_by(arm, cycle, PPTESTCD) |>
+  summarise(PPORRES = exp(mean(log(PPORRES))), .groups = "drop") |>
+  mutate(arm = as.character(arm))
+```
+
+## Comparison against published exposure metrics
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~arm,                ~cycle,    ~ctrough, ~auclast,
+  "SC abdomen 300 mg", "Cycle 1", 19.28,    532.24,
+  "SC thigh 300 mg",   "Cycle 1", 23.86,    603.23,
+  "IV 200 mg",         "Cycle 1", 14.52,    587.58,
+  "SC abdomen 300 mg", "Cycle 5", 42.72,    1226.81,
+  "SC thigh 300 mg",   "Cycle 5", 52.52,    1451.90,
+  "IV 200 mg",         "Cycle 5", 33.08,    1135.77
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_gm,
+  reference = published,
+  by = c("arm", "cycle"),
+  params = c("ctrough", "auclast"),
+  units = c(ctrough = "mg/L", auclast = "mg*d/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Geometric means, simulated (one cohort of 200 per arm) vs Liu 2026",
+    "Table 2 (median of 1000 simulated trials). AUClast is AUC0-21 of the",
+    "cycle. * differs from reference by more than 20%."
+  )
+)
+```
+
+The geometric-mean ratios SC/IV, which drove the dose selection:
+
+```{r gmr}
+gmr_pub <- tibble::tribble(
+  ~arm,                ~cycle,    ~PPTESTCD,  ~published,
+  "SC abdomen 300 mg", "Cycle 1", "ctrough",  1.33,
+  "SC thigh 300 mg",   "Cycle 1", "ctrough",  1.64,
+  "SC abdomen 300 mg", "Cycle 1", "auclast",  0.91,
+  "SC thigh 300 mg",   "Cycle 1", "auclast",  1.03,
+  "SC abdomen 300 mg", "Cycle 5", "ctrough",  1.29,
+  "SC thigh 300 mg",   "Cycle 5", "ctrough",  1.59,
+  "SC abdomen 300 mg", "Cycle 5", "auclast",  1.08,
+  "SC thigh 300 mg",   "Cycle 5", "auclast",  1.28
+)
+gmr <- sim_gm |>
+  filter(arm != "IV 200 mg") |>
+  left_join(
+    sim_gm |> filter(arm == "IV 200 mg") |> select(cycle, PPTESTCD, iv = PPORRES),
+    by = c("cycle", "PPTESTCD")
+  ) |>
+  mutate(simulated = PPORRES / iv) |>
+  select(arm, cycle, PPTESTCD, simulated) |>
+  left_join(gmr_pub, by = c("arm", "cycle", "PPTESTCD"))
+
+gmr |>
+  mutate(PPTESTCD = ifelse(PPTESTCD == "ctrough", "Ctrough", "AUC0-21")) |>
+  dplyr::rename(
+    Arm = arm, Cycle = cycle, Metric = PPTESTCD,
+    `Simulated GMR` = simulated, `Published GMR` = published
+  ) |>
+  knitr::kable(digits = 2)
+
+pct_gm <- sim_gm |>
+  inner_join(
+    published |> pivot_longer(c(ctrough, auclast), names_to = "PPTESTCD", values_to = "ref"),
+    by = c("arm", "cycle", "PPTESTCD")
+  ) |>
+  mutate(pct = 100 * (PPORRES - ref) / ref)
+stopifnot(
+  # A mis-transcribed CL, F, ka or dose moves a geometric mean of 200
+  # patients by tens of percent; Monte Carlo noise is a few percent.
+  abs(median(pct_gm$pct)) < 10,
+  all(abs(pct_gm$pct) < 20),
+  all(abs(gmr$simulated - gmr$published) < 0.15)
+)
+```
+
+Cycle 1 agrees with Table 2 within about 5% in every arm, and the SC/IV
+ratios agree within about 0.1. The Cycle 5 geometric means run 6-14% below
+Table 2 in all three arms alike, IV included, so the shortfall lies in
+accumulation under the fixed disposition model, not in the estimated
+absorption parameters. It is not explained by the trough timing: the Cycle 6
+predose (day 105) trough and the days 105-126 AUC of this model are still
+below the Table 2 values. Nor is it explained by the IIV scale: the Budha
+2023 reading of the disposition variances moves these geometric means by
+less than 4%. The remaining candidates are inputs the paper does not report,
+such as the proportions of the four sex-by-ADA categories (ADA-positive
+status raises CL by 12%) and the parameter-uncertainty draws.
+
+# Assumptions and deviations
+
+- **IIV scale.** Table 1 of Liu 2026 gives omega "on SD scale" in percent, so
+  each variance is (value / 100)^2. The same percentages appear unlabelled in
+  Budha 2023 Table 3, from which `modellib("Budha_2023_tislelizumab")`
+  derived its variances as log(CV^2 + 1); the two readings agree within 4%
+  for CL and Vc but differ for V3 (0.998 here, 0.692 there). This model follows
+  the explicit Liu 2026 label.
+- **CL-Vc covariance.** Liu 2026 fixed the disposition IIV to the intravenous
+  model but does not print the CL-Vc covariance; the Budha 2023 Table 3
+  value 0.020 (log scale) is used.
+- **Covariate reference values** (65 kg, 60 years, 41 g/L, 63 mm) are not
+  restated in Liu 2026; they are the Budha 2023 Equation 5 and 6 values the
+  fixed effects were estimated with. "Baseline tumor burden" in Liu 2026 is
+  the Budha 2023 tumor-size covariate (`TUMSZ`).
+- **Bioavailability IIV** is exponential, the form Budha 2023 Equation 1 uses
+  for every parameter, and the only form under which a percent omega on F is
+  meaningful. Liu 2026 does not say whether individual F was capped at one; no
+  cap is applied, so the model expects about 15% of thigh and 12% of abdomen
+  injections to have F > 1 (the table above shows the realised fraction in
+  this cohort).
+- **Injection-site depots.** Figure S1 draws the abdomen and thigh depots as
+  separate compartments (Depot 1 and Depot 2), so a patient who switches
+  sites between cycles (Table S1) carries both depots at once. They are the
+  parallel depots `depot` (abdomen) and `depot2` (thigh); dose the record into
+  the compartment of the injection site.
+- **Virtual population.** Sex-by-ADA categories are sampled with equal
+  probability (the paper does not give the proportions), and the Table S2
+  normals are truncated to the Table S2 ranges. The paper's simulations also
+  included parameter uncertainty, which is not reproduced; it widens the
+  spread of trial geometric means but leaves their median essentially
+  unchanged.
+- **Comparison metric.** Table 2 reports the median of 1000 trial geometric
+  means (n = 100 per arm); the comparison above uses the geometric mean of
+  one cohort of 200 per arm, computed from individual predictions without
+  residual error.
+- **Specimen.** The paper uses "plasma" and "serum" interchangeably; the
+  compartments record serum, the matrix of the Table 2 trough endpoint.
+- No erratum or correction notice for Liu 2026 was found as of 2026-11-13.
