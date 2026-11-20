@@ -716,6 +716,10 @@ navbar:
         href: articles/Tuffal_2023_avalglucosidase_alfa.html
       - text: "AvalglucosidaseAlfa (Tiraboschi 2023)"
         href: articles/Tiraboschi_2023_avalglucosidaseAlfa.html
+      - text: "AvalglucosidaseAlfa gmfm88 (Rachedi 2025)"
+        href: articles/Rachedi_2025_avalglucosidaseAlfa.html
+      - text: "AvalglucosidaseAlfa qmft (Rachedi 2025)"
+        href: articles/Rachedi_2025_avalglucosidaseAlfa.html
       - text: "Avatrombopag (Liu 2025)"
         href: articles/Liu_2025_avatrombopag.html
       - text: "Avelumab (Masters 2022)"
@@ -11448,6 +11452,7 @@ articles:
   - articles/Quartino_2016_trastuzumab
   - articles/Quartino_2019_trastuzumab
   - articles/Quintairos_2021_tacrolimus_mycophenolic_acid
+  - articles/Rachedi_2025_avalglucosidaseAlfa
   - articles/Ramachandran_2023_tuberculosis_eptb_pbpk
   - articles/Ramakrishnan_2023_amyloid_qsp
   - articles/Rambiritch_2016_glibenclamide
