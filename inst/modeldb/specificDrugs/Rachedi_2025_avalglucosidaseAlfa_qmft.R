@@ -38,15 +38,15 @@ Rachedi_2025_avalglucosidaseAlfa_qmft <- function() {
       notes = "Time-fixed. Selects the population-specific intercept, baseline-covariate effects, medians and asymptote (Rachedi 2025 main-text IOPD equation vs Supplementary LOPD equation).",
       source_name = "population (IOPD / LOPD)"
     ),
-    UHEX4_REL = list(
+    URINARY_HEXOSE_TETRASACCHARIDE_REL = list(
       description = "Relative change from baseline in urinary hexose tetrasaccharide (uHex4), as a fraction (e.g., -0.50 = 50% decrease).",
       units = "fraction",
       type = "continuous",
       reference_category = NULL,
-      notes = "Time-varying per visit. The paper's %dUHex4 divided by 100; the model term -%dUHex4 * 0.01 is therefore -UHEX4_REL. Supplied from observed uHex4 or from the Kaddi 2024 QSP model.",
+      notes = "Time-varying per visit. The paper's %dUHex4 divided by 100; the model term -%dUHex4 * 0.01 is therefore -URINARY_HEXOSE_TETRASACCHARIDE_REL. Supplied from observed uHex4 or from the Kaddi 2024 QSP model.",
       source_name = "%dUHex4"
     ),
-    UHEX4_BASE = list(
+    URINARY_HEXOSE_TETRASACCHARIDE_BASE = list(
       description = "Baseline urinary hexose tetrasaccharide (uHex4).",
       units = "mmol/mol creatinine",
       type = "continuous",
@@ -75,7 +75,7 @@ Rachedi_2025_avalglucosidaseAlfa_qmft <- function() {
       units = "years",
       type = "continuous",
       reference_category = NULL,
-      notes = "Time-fixed; IOPD only (LOPD COMET patients were treatment-naive; supply 0). Linear, centred at 6.5 years (see vignette: the pooled IOPD median is not printed).",
+      notes = "Time-fixed; IOPD only (LOPD COMET patients were treatment-naive; supply 0). Linear, centred at 7 years, a rounded value between the per-arm medians 2.8-8.3 years of Figure S2 (the pooled IOPD median is not printed).",
       source_name = "Duration of previous ALGLU experience in years"
     ),
     SEXF = list(
@@ -139,7 +139,7 @@ Rachedi_2025_avalglucosidaseAlfa_qmft <- function() {
     label("IOPD intercept of the QMFT change (score points)") # Table 3 'Intercept' = 1.51
     e_score_qmft_int_iopd <- -0.03
     label("IOPD effect of baseline QMFT minus median (points per point)") # Table 3 'QMFT score at baseline' = -0.03
-    e_uhex4_base_int_iopd <- -3.34
+    e_urinary_hexose_tetrasaccharide_base_int_iopd <- -3.34
     label("IOPD effect of log baseline uHex4 minus log median (points)") # Table 3 'uHex4 (mmol/mol) at baseline (log)' = -3.34
     e_age_diagnosis_int_iopd <- 1.66
     label("IOPD effect of log age at diagnosis minus log median (points)") # Table 3 'Age at diagnosis in years (log)' = 1.66
@@ -155,7 +155,7 @@ Rachedi_2025_avalglucosidaseAlfa_qmft <- function() {
     label("LOPD intercept of the QMFT change (score points)") # Table S4 'Intercept' = 0.06
     e_score_qmft_int_lopd <- -0.10
     label("LOPD effect of baseline QMFT minus median (points per point)") # Table S4 'QMFT score at baseline' = -0.10
-    e_uhex4_base_int_lopd <- 0.35
+    e_urinary_hexose_tetrasaccharide_base_int_lopd <- 0.35
     label("LOPD effect of log baseline uHex4 minus log median (points)") # Table S4 'uHex4 (mmol/mol) at baseline (log)' = 0.35
     e_age_int_lopd <- -3.78
     label("LOPD effect of log age at first infusion minus log median (points)") # Table S4 'Age at first ... infusion in years (log)' = -3.78
@@ -174,24 +174,24 @@ Rachedi_2025_avalglucosidaseAlfa_qmft <- function() {
     if (DIS_INFANTILE_ONSET_POMPE == 1) {
       shift <- int_iopd +
         e_score_qmft_int_iopd * (SCORE_QMFT - 24) +
-        e_uhex4_base_int_iopd * (log(UHEX4_BASE) - log(53.81)) +
+        e_urinary_hexose_tetrasaccharide_base_int_iopd * (log(URINARY_HEXOSE_TETRASACCHARIDE_BASE) - log(53.81)) +
         e_age_diagnosis_int_iopd * (log(AGE_DIAGNOSIS) - log(0.26)) +
-        e_t_prior_alglucosidase_alfa_int_iopd * (T_PRIOR_ALGLUCOSIDASE_ALFA - 6.5) +
+        e_t_prior_alglucosidase_alfa_int_iopd * (T_PRIOR_ALGLUCOSIDASE_ALFA - 7) +
         e_sexf_int_iopd * SEXF
       qmftmax <- exp(lmax_iopd)
     } else {
       shift <- int_lopd +
         e_score_qmft_int_lopd * (SCORE_QMFT - 41) +
-        e_uhex4_base_int_lopd * (log(UHEX4_BASE) - log(8.03)) +
+        e_urinary_hexose_tetrasaccharide_base_int_lopd * (log(URINARY_HEXOSE_TETRASACCHARIDE_BASE) - log(8.03)) +
         e_age_int_lopd * (log(AGE) - log(47.84)) +
         e_bmi_int_lopd * (log(BMI) - log(26.3)) +
         e_cpk_int_lopd * (log(CPK) - log(550))
       qmftmax <- exp(lmax_lopd)
     }
-    # -%dUHex4 * 0.01 = -UHEX4_REL: positive when uHex4 falls below baseline.
+    # -%dUHex4 * 0.01 = -URINARY_HEXOSE_TETRASACCHARIDE_REL: positive when uHex4 falls below baseline.
     # The printed LOPD equation omits the leading '1 -'; the base-model form
     # stated in Methods is used for both populations.
-    qmftcfb <- shift + qmftmax * (1 - exp(-rate_uhex4 * (-UHEX4_REL)))
+    qmftcfb <- shift + qmftmax * (1 - exp(-rate_uhex4 * (-URINARY_HEXOSE_TETRASACCHARIDE_REL)))
     qmftcfb ~ add(addSd)
   })
 }
