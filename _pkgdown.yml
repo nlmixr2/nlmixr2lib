@@ -7814,6 +7814,8 @@ navbar:
         href: articles/Wang_2021_sunitinib.html
       - text: "Sunitinib svegfr3 os (Hansson 2013)"
         href: articles/Hansson_2013_sunitinib_svegfr3_os.html
+      - text: "Sunitinib vegfr qsp (Zhang 2014)"
+        href: articles/Zhang_2014_sunitinib_vegfr_qsp.html
       - text: "Sutimlimab (Bartko 2018)"
         href: articles/Bartko_2018_sutimlimab.html
       - text: "TAS114 (Araki 2022)"
@@ -12385,6 +12387,7 @@ articles:
   - articles/Zhang_2012_lopinavir_ritonavir
   - articles/Zhang_2012_lopinavir_ritonavir_pedi
   - articles/Zhang_2013_lopinavir_ritonavir
+  - articles/Zhang_2014_sunitinib_vegfr_qsp
   - articles/Zhang_2015_dolutegravir
   - articles/Zhang_2015_methotrexate
   - articles/Zhang_2016_burosumab

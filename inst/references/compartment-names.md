@@ -6128,8 +6128,32 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
 - **Role:** Bevacizumab drug-name suffix for multi-drug combination models in which no single agent is the parent, covering its PK cascade (`central_bevacizumab`, `peripheral1_bevacizumab`), its cumulative-exposure accumulator `auc_central_bevacizumab` and the associated parameters (`lcl_bevacizumab`, `lvc_bevacizumab`, `Cc_bevacizumab`, drug-effect weight `lw_bevacizumab`, resistance rate `lres_bevacizumab`).
 - **Source aliases:**
   - `bev` (deposited Mlxtran code: `cc_bev`, `cl_bev`, `v1_bev`, `k12_bev`, `k21_bev`, `w_bev`, `L_bev`).
-- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (bevacizumab as the anti-VEGF backbone of every regimen: its own two-compartment PK, a tau-delayed copy of that PK driving vascular normalisation, a direct anti-VEGF injury effect and an AUC-driven resistance term).
+- **Example models:** `Schneider_2025_bevacizumab_nsclc_tgi.R` (bevacizumab as the anti-VEGF backbone of every regimen: its own two-compartment PK, a tau-delayed copy of that PK driving vascular normalisation, a direct anti-VEGF injury effect and an AUC-driven resistance term), `Zhang_2014_sunitinib_vegfr_qsp.R` (two-compartment IV PK whose plasma concentration sequesters tumor VEGF; `lkon_bevacizumab`, `lkoff_bevacizumab`).
 - **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `capecitabine` / `docetaxel` / `olaparib` for whole co-administered agents in oncology combination models. A standalone model of this drug keeps the bare canonical names.
+
+### buparlisib (**canonical buparlisib sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Buparlisib (BKM120, oral pan-class-I PI3K inhibitor) drug-name suffix for combination-therapy compartments, parameters and outputs (`depot_buparlisib`, `central_buparlisib`, `peripheral1_buparlisib`, `lka_buparlisib`, `lcl_buparlisib`, `lvc_buparlisib`, `lq_buparlisib`, `lvp_buparlisib`, `lki_buparlisib`, `Cc_buparlisib`).
+- **Source aliases:**
+  - `BKM120` / `BKM-120` / `_b` (Zhang 2014 MATLAB code: `dose_b`, `C1s_b`, `C2s_b`, `cls_b`, `vcs_b`).
+- **Example models:** `Zhang_2014_sunitinib_vegfr_qsp.R` (one of five drugs linked to a VEGFR signaling network; competitive inhibitor of PI3K-catalysed PIP2 phosphorylation).
+- **Notes:** Full INN name (lowercase) rather than the development code, per the `sunitinib` / `bevacizumab` precedent. A standalone buparlisib model keeps the bare canonical names.
+
+### selumetinib (**canonical selumetinib sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Selumetinib (AZD6244, oral MEK1/2 inhibitor) drug-name suffix for combination-therapy compartments, parameters and outputs (`depot_selumetinib`, `central_selumetinib`, `peripheral1_selumetinib`, `lka_selumetinib`, `lcl_selumetinib`, `lvc_selumetinib`, `lq_selumetinib`, `lvp_selumetinib`, `lki_selumetinib`, `Cc_selumetinib`).
+- **Source aliases:**
+  - `AZD6244` / `_m` (Zhang 2014 MATLAB code: `dose_m`, `C1s_m`, `C2s_m`, `cls_m`, `vcs_m`, `kim`).
+- **Example models:** `Zhang_2014_sunitinib_vegfr_qsp.R` (one of five drugs linked to a VEGFR signaling network; non-competitive inhibitor of MEK-catalysed ERK phosphorylation).
+- **Notes:** Full INN name (lowercase). Distinct from the metabolite suffix `ndmsel` (N-desmethyl-selumetinib), which names selumetinib's active metabolite in a parent + metabolite PK model; this suffix names selumetinib itself as a co-administered agent when another drug holds the bare canonical names.
+
+### plcginhibitor (**canonical generic PLC-gamma inhibitor sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Suffix for a hypothetical (unnamed) phospholipase C-gamma inhibitor in a combination model: its one-compartment plasma state `central_plcginhibitor`, elimination rate `lkel_plcginhibitor`, inhibition constant `lki_plcginhibitor` and output `Cc_plcginhibitor`.
+- **Source aliases:**
+  - `PLCg inhibitor` / `Cplc` / `kplc` / `ki2` (Zhang 2014 MATLAB code).
+- **Example models:** `Zhang_2014_sunitinib_vegfr_qsp.R` (concentration state in nM, dosed by setting the plasma concentration directly; competitive inhibitor of PLC-gamma catalysed PIP2 hydrolysis).
+- **Notes:** Spelled out because no INN or development code exists for the agent. A model of a real PLC-gamma inhibitor should use that drug's INN instead.
 
 ### cisplatin (**canonical cisplatin sibling-drug suffix**)
 - **Type:** metabolite-suffix
