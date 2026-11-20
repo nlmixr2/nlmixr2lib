@@ -423,6 +423,12 @@ tibble::tibble(
   knitr::kable(caption = "Therapeutic-target classification of 3 x AUC0-8 (Table 2 of Saqr 2025).")
 ```
 
+The simulated cohort has fewer patients below the target than the 20 observed
+patients of Table 2. That direction follows from the simulated median MPA
+AUC0-8 sitting above the observed median (table above), and the observed
+percentages rest on 20 patients (11 below, 9 within), so this comparison is
+shown without a pass/fail check.
+
 # Dosing regimens and community abundance (Figure 2)
 
 Figure 2 simulated eight IV regimens (1000, 1250, 1500 and 1750 mg every 8 or

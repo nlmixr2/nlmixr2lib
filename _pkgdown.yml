@@ -5518,6 +5518,8 @@ navbar:
         href: articles/Riglet_2020_mycophenolic_acid.html
       - text: "Mycophenolic acid (Rong 2019)"
         href: articles/Maizaud_2025_missed_mycophenolate_doses.html
+      - text: "Mycophenolic acid (Saqr 2025)"
+        href: articles/Saqr_2025_mycophenolic_acid.html
       - text: "Mycophenolic acid (Sheng 2020)"
         href: articles/Sheng_2020_mycophenolic_acid.html
       - text: "Mycophenolic acid (Sherwin 2012)"
@@ -11588,6 +11590,7 @@ articles:
   - articles/SanzCodina_2024_cefiderocol
   - articles/Saporta_2024_afabicin
   - articles/Saporta_2026_meropenem
+  - articles/Saqr_2025_mycophenolic_acid
   - articles/Sarashina_2005_epinastine
   - articles/Sasaki_2022_delamanid
   - articles/Sassen_2017_crisantaspase
