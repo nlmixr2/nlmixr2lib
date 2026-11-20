@@ -2310,6 +2310,8 @@ navbar:
         href: articles/Swierczek_2023_dexamethasone.html
       - text: "Dexamethasone (Szederkenyi 2024)"
         href: articles/Szederkenyi_2024_transdermal_skinonachip.html
+      - text: "Dexamethasone horse mpbpk (Yu 2026)"
+        href: articles/Yu_2026_dexamethasone_horse_mpbpk.html
       - text: "Dexamethasone rabbit (Toffoletto 2023)"
         href: articles/Toffoletto_2023_dexamethasone_rabbit.html
       - text: "Dexamethasone rat (Li 2012)"
@@ -12869,6 +12871,7 @@ articles:
   - articles/Yu_2025_trastuzumab_doxorubicin_cardiotoxicity
   - articles/Yu_2025_vancomycin
   - articles/Yu_2025b_vancomycin
+  - articles/Yu_2026_dexamethasone_horse_mpbpk
   - articles/Yu_2026_lacosamide
   - articles/Yu_2026_tenofovir
   - articles/Yuan_2019_concizumab
