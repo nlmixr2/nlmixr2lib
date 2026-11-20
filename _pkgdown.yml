@@ -5576,6 +5576,12 @@ navbar:
         href: articles/Yamamoto_2017_cns_pbpk_rat.html
       - text: "Morphine6Glucuronide rat pbpk (Hirasawa 2022)"
         href: articles/Hirasawa_2022_leicns_pk31_csf_flow.html
+      - text: "Mosnodenvir (Goeyvaerts 2026)"
+        href: articles/Goeyvaerts_2026_mosnodenvir.html
+      - text: "Mosnodenvir vdm (Goeyvaerts 2026)"
+        href: articles/Goeyvaerts_2026_mosnodenvir.html
+      - text: "Mosnodenvir vdm c1 (Goeyvaerts 2026)"
+        href: articles/Goeyvaerts_2026_mosnodenvir.html
       - text: "Mosunetuzumab (Bender 2024)"
         href: articles/Bender_2024_mosunetuzumab.html
       - text: "Mosunetuzumab cr (Li 2025)"
@@ -10490,6 +10496,7 @@ articles:
   - articles/Glatard_2025_octreotide
   - articles/Glazar_2025_glioma_tgi
   - articles/Goel_2016_Sonidegib
+  - articles/Goeyvaerts_2026_mosnodenvir
   - articles/Goggin_2004_emfilermin
   - articles/Golubovic_2019_sirolimus
   - articles/Golzaryan_2025_lu177psmaIT_pbpk
