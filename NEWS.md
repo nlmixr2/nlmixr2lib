@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Redhi 2026 berzosertib ([doi:10.1002/cpt.70303](https://doi.org/10.1002/cpt.70303)) -- antimalarial PK-PD in *Plasmodium falciparum*-infected humanized mice and a human unbound-plasma dose-prediction model.
+- Add Bae 2026 busulfan ([doi:10.1002/cpt.70337](https://doi.org/10.1002/cpt.70337)) -- Korean pediatric and young adult allogeneic HSCT recipients.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
