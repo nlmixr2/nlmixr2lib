@@ -93,26 +93,10 @@ probeUnsupportedModels <- c(
 )
 
 # (2) Genuinely BROKEN models, quarantined so this gate can go green while the
-# defects are recorded rather than hidden. Both predate the gate, neither has a
-# vignette -- which is precisely why nothing caught them. Do NOT "fix" either by
-# guessing the algebra; both need their source reparameterisation checked.
-#
-#   indirect_1cpt_stim_kin_r0rmaxcrmax
-#     IC50 <- crmax*(rbase*(1+emax)-rmax)/(rmax-rbase) evaluates to -0.9838 at
-#     the shipped ini values (rbase 1.2214, rmax 2.4596, emax 0.5034, crmax
-#     1.9542). A negative IC50 makes Cc + IC50 cross zero as Cc rises, so the
-#     solver hits a singularity: "could not solve the system". The sibling
-#     indirect_1cpt_stim_kout_r0rmaxcrmax uses the mirrored form
-#     crmax*(rmax*(1+emax)-rbase)/(rbase-rmax) and solves, which is what
-#     suggests a sign transposition here rather than a modelling choice.
-#
-#   indirect_prec_1cpt_stim_r0rmaxcrmax
-#     Same negative-EC50 expression, AND line 42 defines kin in terms of
-#     itself: kin <- (kout*(kin+kpout)*rbase)/kpin.
-knownBrokenModels <- c(
-  "indirect_1cpt_stim_kin_r0rmaxcrmax",
-  "indirect_prec_1cpt_stim_r0rmaxcrmax"
-)
+# defects are recorded rather than hidden. Each entry names the model and the
+# defect that stops it solving; remove the entry in the commit that fixes it.
+# None is known.
+knownBrokenModels <- character(0)
 
 # Solving every model in the registry takes roughly an hour. That is the right
 # cost for a release gate and the wrong cost for an edit-run-edit loop, so the

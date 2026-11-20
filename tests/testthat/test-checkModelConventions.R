@@ -159,6 +159,103 @@ test_that("a covariate used but not in covariateData is an error", {
   expect_true(any(cov$severity == "error"))
 })
 
+test_that("a template that reads a symbol it never defines is an error, even when depends lists it", {
+  # `ic50` where the template estimates `ec50`: the defect that `depends` hid
+  # in indirect_1cpt_stim_kin until the template check existed.
+  tmpl <- function() {
+    description <- "A"
+    reference <- "nlmixr2lib template"
+    depends <- c("ic50")
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lvc <- 1; label("b")
+      lkel <- 0; label("c")
+      lec50 <- 0; label("e")
+      propSd <- 0.1; label("d")
+    })
+    model({
+      vc <- exp(lvc)
+      kel <- exp(lkel)
+      ec50 <- exp(lec50)
+      d/dt(central) <- -kel * central
+      Cc <- central / vc
+      effect <- Cc / (Cc + ic50)
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(tmpl, verbose = FALSE))
+  hit <- res[res$category == "template_symbols", ]
+  expect_identical(hit$name, "ic50")
+  expect_identical(hit$severity, "error")
+  expect_identical(
+    hit$message,
+    "Template reads 'ic50', which it never defines: it is not assigned in model(), not a state and not an ini() parameter."
+  )
+
+  # The same model with a literature reference: there `depends` names an input
+  # an upstream model supplies, and the template check does not apply.
+  lit <- function() {
+    description <- "A"
+    reference <- "R"
+    depends <- c("ic50")
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lvc <- 1; label("b")
+      lkel <- 0; label("c")
+      lec50 <- 0; label("e")
+      propSd <- 0.1; label("d")
+    })
+    model({
+      vc <- exp(lvc)
+      kel <- exp(lkel)
+      ec50 <- exp(lec50)
+      d/dt(central) <- -kel * central
+      Cc <- central / vc
+      effect <- Cc / (Cc + ic50)
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(lit, verbose = FALSE))
+  expect_identical(nrow(res[res$category == "template_symbols", ]), 0L)
+
+  res <- suppressWarnings(checkModelConventions("indirect_1cpt_stim_kin", verbose = FALSE))
+  expect_identical(nrow(res[res$category == "template_symbols", ]), 0L)
+})
+
+test_that("no template in the library reads a symbol it never defines", {
+  # Every template, found by its reference line rather than listed by hand,
+  # so a template added later is checked too. The registry does not record
+  # references, and parsing all of it would take minutes, so the files are
+  # scanned as text and only the templates are parsed.
+  skip_on_cran()
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  files <- list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
+  fileLines <- lapply(files, readLines, warn = FALSE)
+  isTemplate <- vapply(
+    fileLines,
+    function(x) any(grepl('^\\s*reference\\s*<-\\s*"nlmixr2lib template"', x)),
+    logical(1)
+  )
+  # A template whose reference line is written another way (single quotes,
+  # `=`, a line break) would fail the pattern and drop out of the loop below
+  # unnoticed, so every file that names the reference must have matched it.
+  mentions <- vapply(fileLines, function(x) any(grepl("nlmixr2lib template", x, fixed = TRUE)), logical(1))
+  expect_identical(basename(files[mentions & !isTemplate]), character(0))
+  templates <- sub("[.]R$", "", basename(files[isTemplate]))
+  # Update this count when a template is added or removed.
+  expect_identical(length(templates), 44L)
+  for (nm in templates) {
+    ui <- suppressMessages(rxode2::as.rxUi(readModelDb(nm)))
+    meta <- as.list(ui$meta)
+    expect_identical(meta$reference, "nlmixr2lib template", label = paste(nm, "reference"))
+    undeclared <- .checkTemplateUndeclaredSymbols(ui, NULL, nm)$name
+    expect_identical(undeclared, character(0), label = paste(nm, "undeclared symbols"))
+    # The check ignores `depends` for a template, so one declared there would
+    # be dead metadata that reads as if it supplied a symbol.
+    expect_null(meta$depends, label = paste(nm, "depends"))
+  }
+})
+
 test_that("an ini() random-effect nesting column counts as a used covariate", {
   # `eta ~ var | OCC` reads OCC from the data without naming it in model(),
   # so ui$covariates omits it; it must still satisfy covariateData.
