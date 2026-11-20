@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Niloy 2026 MTMSA-Trp tumor growth inhibition and time-to-event model ([doi:10.1007/s00280-026-04947-0](https://doi.org/10.1007/s00280-026-04947-0)) -- female athymic nude mice bearing TC-32 Ewing sarcoma xenografts.
+- Add Yao 2026 SIG001 ([doi:10.3389/fphar.2026.1904283](https://doi.org/10.3389/fphar.2026.1904283)) -- cynomolgus monkeys and CD-1 mice, with the allometric human projection.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
