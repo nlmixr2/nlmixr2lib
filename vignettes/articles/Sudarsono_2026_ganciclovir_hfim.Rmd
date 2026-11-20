@@ -1,0 +1,200 @@
+---
+title: "Ganciclovir hollow-fiber infection model (Sudarsono 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ganciclovir hollow-fiber infection model (Sudarsono 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Sudarsono_2026_ganciclovir_hfim"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Sudarsono_2026_ganciclovir_hfim"))$description`
+* Article: [Antimicrob Agents Chemother 2026;70(8):e00381-26](https://doi.org/10.1128/aac.00381-26)
+
+Sudarsono and colleagues built a low-cost hollow-fiber infection model (HFIM)
+for antiviral PK/PD studies of cytomegalovirus (CMV). A hemodialyzer cartridge
+holds CMV-infected MRC-5 human lung fibroblasts in its extra-capillary space,
+connected to a 0.2 L central reservoir. Ganciclovir was infused into the
+reservoir (2 mg over 1 h, i.e. 2 mg/h, every 12 h), and drug-free medium was
+pumped in with matched outflow to waste to mimic clearance and reproduce a
+human-like plasma concentration-time profile. Concentrations sampled from the
+intracapillary space were fitted with a one-compartment model in nlmixr2
+(Table 1). The packaged model reproduces that one-compartment system; the
+descriptive virology (Figures 2 and 5) is not modelled.
+
+# Population
+
+The "population" is the hollow-fiber system itself rather than a set of
+subjects. Two independent experiments provided the ganciclovir concentrations
+used for the one-compartment fit (Figure 3). MRC-5 cells (5.0e7) were inoculated
+into the cartridge together with CMV (the lab-adapted Towne strain at MOI 0.1 or
+the BAC-derived wild-type-like Merlin strain at MOI 0.01) and cultured at
+37 degrees C with 5% CO2. The main circulation loop ran at 30 mL/min to keep the
+cartridge and reservoir concentrations equilibrated, which Figure 4 confirms.
+
+The same information is available programmatically via the model's `population`
+metadata (`readModelDb("Sudarsono_2026_ganciclovir_hfim")()$population`).
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Sudarsono_2026_ganciclovir_hfim.R`. The
+table below collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL)           | 0.033 L/h | Table 1, row 'Clearance (L/h)', estimate 0.033 (0.2 %RSE) |
+| `lvc` (Vc)           | 0.3 L | Table 1, row 'Volume of distribution (L)', estimate 0.3 (2.05 %RSE) |
+| `kel = cl / vc`      | 0.11 1/h | Table 1, row 'Elimination rate constant (h-1)', estimate 0.11 (0.033 / 0.3 = 0.11) |
+| `d/dt(central)`      | n/a | One-compartment model, Methods 'PK analysis'; design Eqs 1-3 |
+| AUC0-12 (validation target) | 42.2 mg*h/L | Table 1, row 'AUC0-12 (mg.h/L)' |
+
+The elimination rate constant is a derived micro-constant (`kel = cl / vc`), not
+an independent parameter: `0.033 / 0.3 = 0.11 1/h`, matching the Table 1
+estimate.
+
+# Virtual cohort
+
+The model carries no between-experiment variability and no residual-error term
+(the paper reports point estimates only), so the simulation is a single
+deterministic typical-value profile. The dosing regimen is the one used in the
+HFIM: ganciclovir 2 mg infused over 1 h every 12 h.
+
+```{r cohort}
+# Single first dose for the NCA comparison (AUC0-12 is a first-interval
+# quantity in the paper). amt = 2 mg infused over dur = 1 h into central.
+dose_single <- rxode2::et(amt = 2, dur = 1, cmt = "central") |>
+  rxode2::et(seq(0, 12, by = 0.05)) |>
+  as.data.frame()
+dose_single$regimen <- "ganciclovir 2 mg"
+
+# Multi-dose profile for the Figure 3 replication: q12h for 3 days (6 doses).
+dose_multi <- rxode2::et(amt = 2, dur = 1, cmt = "central", ii = 12, addl = 5) |>
+  rxode2::et(seq(0, 72, by = 0.1)) |>
+  as.data.frame()
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Sudarsono_2026_ganciclovir_hfim")
+
+sim_single <- rxode2::rxSolve(mod, events = dose_single, keep = "regimen") |>
+  as.data.frame()
+sim_multi <- rxode2::rxSolve(mod, events = dose_multi) |>
+  as.data.frame()
+```
+
+# Replicate published figures
+
+```{r figure-3, fig.width = 6, fig.height = 4}
+# Replicates Figure 3 of Sudarsono 2026: the simulated ganciclovir
+# concentration-time profile (2 mg, 1-h infusion, q12h) over three days.
+ggplot(sim_multi, aes(time, Cc)) +
+  geom_line(colour = "navy", linewidth = 0.8) +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Ganciclovir (mg/L)",
+    title = "Figure 3 - simulated ganciclovir profile in the HFIM",
+    caption = "Replicates the simulated line of Figure 3 of Sudarsono 2026."
+  )
+```
+
+The simulated profile shows the sawtooth of a 1-h infusion every 12 h, peaking
+near 8 mg/L at the end of each infusion and declining toward a ~2 mg/L trough,
+in agreement with the observed data points of Figure 3 and the mean cartridge
+profile of Figure 4B.
+
+# PKNCA validation
+
+The one quantitative exposure metric the paper reports is AUC0-12 = 42.2
+mg*h/L. The block below computes it from the simulated first-dose profile over
+the 0-12 h interval.
+
+```{r pknca}
+sim_nca <- sim_single |>
+  dplyr::mutate(id = 1L) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, regimen)
+
+# Guarantee a time = 0 row (Cc = 0 pre-dose for an infusion start).
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, regimen) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, regimen, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, regimen, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | regimen + id)
+
+dose_df <- dose_single |>
+  dplyr::filter(evid == 1) |>
+  dplyr::mutate(id = 1L) |>
+  dplyr::select(id, time, amt, regimen)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id)
+
+intervals <- data.frame(
+  start = 0, end = 12,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE
+)
+
+nca_data <- PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+nca_res <- PKNCA::pk.nca(nca_data)
+```
+
+## Comparison against published NCA
+
+```{r nca_compare}
+published <- tibble::tribble(
+  ~regimen,            ~auclast,
+  "ganciclovir 2 mg",  42.2
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "regimen",
+  params = "auclast",
+  units = c(auclast = "mg*h/L"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = "Simulated vs. published ganciclovir AUC0-12. * differs from reference by >20%."
+)
+```
+
+The simulated AUC0-12 reproduces the published 42.2 mg*h/L, confirming that the
+packaged one-compartment parameters match the paper's fit.
+
+# Assumptions and deviations
+
+- The paper reports typical-value estimates only (no between-experiment
+  variability, no residual-error structure), so the model carries no random
+  effects; the simulation is deterministic.
+- The fitted volume of distribution (0.3 L) exceeds the nominal reservoir volume
+  (0.2 L) that the pump settings were designed around; the maintainers kept the
+  fitted estimate, which presumably absorbs the cartridge and tubing volumes.
+- `kel` is encoded as the derived micro-constant `cl / vc` (0.11 1/h), matching
+  the Table 1 estimate rather than being estimated independently.
+- Cmax and Tmax are computed for completeness but are not compared against the
+  paper, which tabulated only CL, Vc, Ke and AUC0-12; the design target Cmax of
+  10 mg/L used the input (not fitted) parameters.
+- The CMV replication data (Figures 2 and 5, Figures S1-S2) are descriptive;
+  the authors fitted no pharmacodynamic model, so none is packaged.
+- No correction notice for this article was found as of 2026-11-16.

@@ -3542,6 +3542,8 @@ navbar:
         href: articles/Yang_2023_ganciclovir_model_repository.html
       - text: "Ganciclovir (Zhou 1996)"
         href: articles/Yang_2023_ganciclovir_model_repository.html
+      - text: "Ganciclovir hfim (Sudarsono 2026)"
+        href: articles/Sudarsono_2026_ganciclovir_hfim.html
       - text: "Ganciclovir maturation (Kata 2025)"
         href: articles/Kata_2025_ganciclovir.html
       - text: "Ganitumab (Zhu 2013)"
@@ -12082,6 +12084,7 @@ articles:
   - articles/Su_2025_dual_targeted_cart
   - articles/Subrtova_2026_daptomycin
   - articles/Suda_2008_theophylline
+  - articles/Sudarsono_2026_ganciclovir_hfim
   - articles/Suetsugu_2021_voriconazole
   - articles/Sukeishi_2022_remdesivir
   - articles/Suksai_2026_levodopa

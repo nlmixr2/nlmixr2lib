@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mikhailova 2026 dapagliflozin minimal PBPK ([doi:10.1002/psp4.70307](https://doi.org/10.1002/psp4.70307)) -- healthy adults and adults with type 2 diabetes (aggregate data from 18 published studies).
+- Add Sudarsono 2026 ganciclovir hollow-fiber infection model ([doi:10.1128/aac.00381-26](https://doi.org/10.1128/aac.00381-26)) -- in vitro HFIM reproducing a human-like ganciclovir profile for CMV PK/PD studies.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
