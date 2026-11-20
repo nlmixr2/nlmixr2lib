@@ -1056,6 +1056,8 @@ navbar:
         href: articles/Togawa_2016_bilastine.html
       - text: "Bilastine wheal (Togawa 2016)"
         href: articles/Togawa_2016_bilastine.html
+      - text: "Binimetinib (Petermann 2026)"
+        href: articles/Petermann_2026_encorafenib_binimetinib.html
       - text: "BintrafuspAlfa (Liu 2023)"
         href: articles/Liu_2023_bintrafuspAlfa.html
       - text: "BintrafuspAlfa btc (MilenkovicGrisic 2024)"
@@ -2870,6 +2872,8 @@ navbar:
         href: articles/Luo_2024_CES1_cirrhosis.html
       - text: "Enalapril reference (Faisal 2019)"
         href: articles/Faisal_2019_enalapril.html
+      - text: "Encorafenib (Petermann 2026)"
+        href: articles/Petermann_2026_encorafenib_binimetinib.html
       - text: "Encorafenib (Yang 2026)"
         href: articles/Yang_2026_encorafenib.html
       - text: "Enflicoxib (Cendros 2025)"
@@ -11943,6 +11947,7 @@ articles:
   - articles/Perlstein_2025_risperidone_tv46000
   - articles/Perlstein_2026_olanzapine
   - articles/Perrottet_2009_ganciclovir
+  - articles/Petermann_2026_encorafenib_binimetinib
   - articles/Petkova_2022_doxycycline_chicken
   - articles/Petric_2023_vinpocetine
   - articles/Petrov_2024_romiplostim
