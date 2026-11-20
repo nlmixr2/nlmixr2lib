@@ -80,8 +80,10 @@ Saqr_2025_mycophenolic_acid <- function() {
       reference_category = NULL,
       notes = paste(
         "Fixed allometric scaling, reference 70 kg (Supplementary File 3",
-        "Eq.3): exponent 0.75 on clearances, 1 on volumes and -0.25 on the",
-        "estimated rate constant kicv (K51)."
+        "Eq.3): exponent 0.75 on clearances, 1 on volumes and -0.25 on rate",
+        "constants. The source does not list which rate constants; both the",
+        "estimated kicv (K51) and the fixed gallbladder emptying constant kehc",
+        "(KGG) are scaled here."
       ),
       source_name = "WT"
     ),
@@ -217,7 +219,7 @@ Saqr_2025_mycophenolic_acid <- function() {
     logitfrehc <- qlogis(0.39); label("Fraction of MPAG recirculated to MPA, FrEHC, at median community abundances (logit scale)") # Table 3 'FrEHC' = 0.39; main text Eq.1-2
     lmtime1 <- log(4.35); label("Gallbladder emptying start time after each dose, MTIME(1) (h)") # Table 3 'Gallbladder emptying time (h)' = 4.35
     dge <- fixed(0.5); label("Duration of gallbladder emptying (h)") # Suppl. File 3: MTIME(2) is 30 minutes after MTIME(1); Figure 1a
-    lkehc <- fixed(log(3.71)); label("Gallbladder-to-gut emptying rate constant KGG (1/h)") # Table 3 'K45 (h-1) [fixed]' = 3.71; Figure 1 legend 'KGG ... fixed at 3.71 h-1'
+    lkehc <- fixed(log(3.71)); label("Gallbladder-to-gut emptying rate constant KGG (1/h, 70 kg)") # Table 3 'K45 (h-1) [fixed]' = 3.71; Figure 1 legend 'KGG ... fixed at 3.71 h-1'
     lkicv <- log(0.18); label("Gut MPAG-to-MPA central reactivation rate constant K51 (1/h, 70 kg)") # Table 3 'K51 (h-1)' = 0.18
 
     # Microbiome community effects on logit(FrEHC)
@@ -248,7 +250,9 @@ Saqr_2025_mycophenolic_acid <- function() {
     mw_mpag <- 496.46
     mw_acmpag <- 496.46
 
-    # Fixed allometric scaling to 70 kg (Supplementary File 3 Eq.3)
+    # Fixed allometric scaling to 70 kg (Supplementary File 3 Eq.3). The
+    # source scales "rate constants" by WT^-0.25 without listing them; both
+    # kicv (K51) and kehc (KGG) are scaled.
     wt_cl <- (WT / 70)^0.75
     wt_v <- WT / 70
     wt_k <- (WT / 70)^(-0.25)
@@ -262,7 +266,7 @@ Saqr_2025_mycophenolic_acid <- function() {
     q_acmpag <- exp(lq_acmpag) * wt_cl
     vp_acmpag <- exp(lvp_acmpag) * wt_v
     kicv <- exp(lkicv) * wt_k
-    kehc <- exp(lkehc)
+    kehc <- exp(lkehc) * wt_k
     mtime1 <- exp(lmtime1 + etalmtime1)
 
     # FrEHC on the logit scale with the log-abundance covariate terms

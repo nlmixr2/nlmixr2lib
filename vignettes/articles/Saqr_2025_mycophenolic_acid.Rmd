@@ -78,7 +78,7 @@ The same information is available programmatically via
 | Community medians 19.97% and 13.23% | -- | Supplementary Table S4 |
 | `kbm = FrEHC * kel_mpag / (1 - FrEHC)` (paper KEHC) | -- | Supplementary File 3 Eq.2 |
 | 75% of the biliary flux to the gallbladder, 25% direct to the gut | -- | Supplementary File 3; Figure 1a |
-| Allometry: exponents 0.75 (CL, Q), 1 (V), -0.25 (K51), reference 70 kg | -- | Supplementary File 3 Eq.3 |
+| Allometry: exponents 0.75 (CL, Q), 1 (V), -0.25 (K51 and KGG), reference 70 kg | -- | Supplementary File 3 Eq.3 |
 | Proportional residual error | -- | Supplementary File 3 Eq.5 |
 
 The IIV variances are `log(1 + CV^2)` from the Table 3 CVs (the tabled omega^2
@@ -529,10 +529,15 @@ stopifnot(
   empties and the 75% stored fraction accumulates, which lowers their MPA
   exposure. The paper does not say how this case was handled.
 * **Allometric scaling of rate constants.** Supplementary File 3 scales "rate
-  constants" with exponent -0.25. It is applied to the estimated K51 (`kicv`);
-  the gallbladder emptying rate KGG is a fixed literature value and is not
-  scaled, and the emptying time is not scaled. At the 70 kg reference this has
-  no effect.
+  constants" (plural) with exponent -0.25 but does not list which ones. Both
+  rate constants of the EHC loop are scaled here: the estimated K51 (`kicv`)
+  and the fixed literature gallbladder emptying rate KGG (`kehc`, 3.71 1/h at
+  70 kg). Neither Table 3 nor the Figure 1 legend gives either a per-weight
+  unit, so scaling KGG is a reading of the plural, not something the paper
+  states. The emptying time `mtime1` is a time, not a rate constant, and is not
+  scaled. At the 70 kg reference used by every published simulation the choice
+  has no effect; it changes predictions only for other body weights, such as
+  the virtual cohort below.
 * **Table 4 is a first-dose simulation.** The Table 4 percentage changes are
   reproduced to within 1-2 percentage points by a single 1000 mg dose and not at
   steady state, although Supplementary Figures S11-S13 are titled "at steady
