@@ -305,8 +305,8 @@ test_that("a dosed name that is a state of no registry model is reported", {
 
 test_that("every compartment an article doses is in its model's `dosing`", {
   skip_on_cran()
-  articleDir <- testthat::test_path("..", "..", "vignettes", "articles")
-  skip_if(!dir.exists(articleDir), "vignettes/articles not present (installed package)")
+  articleDir <- file.path(.sourceTreeRoot(), "vignettes", "articles")
+  .skipIfNoSourceTree(articleDir, "vignettes/articles")
   exempt <- rbind(articleStateDoses, articleMiscreditedDoses)
   res <- articleDoseGaps(articleDir, nlmixr2lib::modeldb, exempt, noArticle = articleMissingArticles$model)
   expect_identical(
