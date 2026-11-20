@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kolodkin 2013 cortisol GR-PXR signalling network QSP ([doi:10.1038/ncomms2799](https://doi.org/10.1038/ncomms2799)) -- human hepatocyte, normal physiology and repeated stress episodes.
+- Add Terranova 2013 two-drug tumor growth inhibition ([doi:10.1007/s00280-013-2208-8](https://doi.org/10.1007/s00280-013-2208-8)) -- mice bearing BxPC3, A2780 or HT29 xenografts given four coded kinase inhibitors with gemcitabine, cisplatin, irinotecan or 5-fluorouracil (six models).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

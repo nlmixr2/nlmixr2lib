@@ -2654,6 +2654,18 @@ navbar:
         href: articles/Reif_2013_ethinylestradiol_drospirenone.html
       - text: "DrugA (Zhang 2025)"
         href: articles/Zhang_2025_drugA.html
+      - text: "DrugC1 cisplatin mouse (Terranova 2013)"
+        href: articles/Terranova_2013_combination_tgi.html
+      - text: "DrugC1 gemcitabine mouse (Terranova 2013)"
+        href: articles/Terranova_2013_combination_tgi.html
+      - text: "DrugC2 fluorouracil mouse (Terranova 2013)"
+        href: articles/Terranova_2013_combination_tgi.html
+      - text: "DrugC2 irinotecan mouse (Terranova 2013)"
+        href: articles/Terranova_2013_combination_tgi.html
+      - text: "DrugC4 gemcitabine mouse (Terranova 2013)"
+        href: articles/Terranova_2013_combination_tgi.html
+      - text: "DrugC5 irinotecan mouse (Terranova 2013)"
+        href: articles/Terranova_2013_combination_tgi.html
       - text: "Dsm265 (CherkaouiRbati 2023)"
         href: articles/CherkaouiRbati_2023_dsm265.html
       - text: "Dupilumab (Kovalenko 2016)"
@@ -12542,6 +12554,7 @@ articles:
   - articles/TerHeine_2014_tamoxifen
   - articles/TerHeine_2018_everolimus
   - articles/Ternant_2021_infliximab
+  - articles/Terranova_2013_combination_tgi
   - articles/Terranova_2018_paclitaxel
   - articles/Terranova_2021_berzosertib
   - articles/Terranova_2022_TGD_OS_gastric
