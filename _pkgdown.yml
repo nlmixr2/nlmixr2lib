@@ -8366,6 +8366,8 @@ navbar:
         href: articles/Yu_2026_tacrolimus.html
       - text: "Tacrolimus (Zavrelova 2025)"
         href: articles/Zavrelova_2025_tacrolimus.html
+      - text: "Tacrolimus (Zhang 2026)"
+        href: articles/Zhang_2026_tacrolimus.html
       - text: "Tacrolimus (Zhao 2024)"
         href: articles/Zhao_2024_tacrolimus.html
       - text: "Tacrolimus (Zhou 2025)"
@@ -13002,6 +13004,7 @@ articles:
   - articles/Zhang_2026_SYHA1805
   - articles/Zhang_2026_linezolid
   - articles/Zhang_2026_ribociclib
+  - articles/Zhang_2026_tacrolimus
   - articles/Zhang_2026_tebipenem
   - articles/Zhao_2010_mycophenolic_acid
   - articles/Zhao_2012_abacavir
