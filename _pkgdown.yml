@@ -4628,6 +4628,8 @@ navbar:
         href: articles/Suksai_2026_levodopa.html
       - text: "Levodopa carbidopa (Senek 2018)"
         href: articles/Senek_2018_levodopa_carbidopa.html
+      - text: "Levofloxacin (Bosnak 2026)"
+        href: articles/Bosnak_2026_levofloxacin.html
       - text: "Levofloxacin (Carral 2023)"
         href: articles/Carral_2023_cap_nonadherence.html
       - text: "Levofloxacin (Denti 2018)"
@@ -9868,6 +9870,7 @@ articles:
   - articles/Bosch_2024_cotadutide_qsp
   - articles/Bosch_2024_glp1ra_bodyweight
   - articles/Bosch_2025_glp1ra_hba1c
+  - articles/Bosnak_2026_levofloxacin
   - articles/Bouazza_2010_lamivudine
   - articles/Bouazza_2011_lamivudine
   - articles/Bouazza_2012_clindamycin
