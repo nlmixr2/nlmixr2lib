@@ -41,6 +41,7 @@ indirect_1cpt_stim_kin_CLV <- function() {
     
     Cc <-  central/vc
     
+    effect(0) <- kin/kout
     d/dt(effect) <- kin*(1+emax*Cc/(Cc + ec50)) - kout*effect
     
     

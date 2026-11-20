@@ -38,6 +38,7 @@ indirect_1cpt_inhi_kout <- function() {
     
     Cc <-  central/vc
     
+    effect(0) <- kin/kout
     d/dt(effect) <- kin - kout*(1-Cc/(Cc + ic50))*effect
     
     

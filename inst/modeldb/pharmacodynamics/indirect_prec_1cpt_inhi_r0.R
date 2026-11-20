@@ -50,7 +50,9 @@ indirect_prec_1cpt_inhi_r0 <- function() {
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot-kel*central
+    precursor1(0) <- kpin/(kin + kpout)
     d/dt(precursor1)  <- kpin -(kin + kpout)*(1-imax*Cc/(Cc + ic50))*precursor1
+    effect(0) <- kin*kpin/(kout*(kin + kpout))
     d/dt(effect)   <- kin*(1-imax*Cc/(Cc + ic50))*precursor1-kout*effect
 
     Cc ~ prop(propSd)
