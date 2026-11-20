@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Methven Jeknic 2026 ATTR-CM TTR dissociation and amyloid-formation QSP with acoramidis, tafamidis and vutrisiran, plus its in vitro FPE binding model ([doi:10.1002/psp4.70277](https://doi.org/10.1002/psp4.70277)) -- wild-type and variant ATTR cardiomyopathy cohorts (cohort-mean calibration).
+- Add Chen 2026 vancomycin ([doi:10.3389/fphar.2026.1839423](https://doi.org/10.3389/fphar.2026.1839423)) -- critically ill Chinese children (re-estimation of the Chen 2023 paediatric model on two centres).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
