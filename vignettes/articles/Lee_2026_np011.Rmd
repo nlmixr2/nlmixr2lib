@@ -1,0 +1,663 @@
+---
+title: "NP-011 (Lee 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{NP-011 (Lee 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Lee_2026_np011_human_simple"))$reference`
+* Article: <https://doi.org/10.3390/pharmaceutics18091194> (open access, PMC13610530)
+
+NP-011 is a truncated recombinant human milk fat globule-EGF factor 8 (MFG-E8)
+protein that binds integrin alpha-v-beta-5 and is in development for liver
+fibrosis in metabolic dysfunction-associated steatohepatitis (MASH). Lee 2026
+fitted plasma NP-011 after intravenous (IV) bolus doses separately in mice,
+rats and monkeys, each with a two-compartment model with first-order
+elimination (Table 1), scaled the three parameter sets to a 70 kg human by
+simple allometry (Table 2), and compared the projection with the single
+ascending dose (SAD) part of the Phase I study (Tables 3-4, Figure 3). A
+maximum-lifespan-potential (MLP) corrected projection is reported as a
+supplementary sensitivity analysis. The paper therefore contributes five model
+files:
+
+| Model | Species | Basis |
+|-------|---------|-------|
+| `Lee_2026_np011_mouse` | mouse | population PK fit, Table 1 |
+| `Lee_2026_np011_rat` | rat | population PK fit, Table 1 |
+| `Lee_2026_np011_monkey` | monkey | population PK fit, Table 1 |
+| `Lee_2026_np011_human_simple` | human (projected) | simple allometry, Table 2 and the supplementary NONMEM simulation control stream `SIM_SA.mod` (the paper's primary projection) |
+| `Lee_2026_np011_human_mlp` | human (projected) | MLP-corrected allometry for CL and Q, Supplementary Results |
+
+The animal models are normalised to body weight (CL and Q in L/h/kg, VC and VP
+in L/kg), so their doses are entered in ug/kg. The human projections take
+doses in ug. Concentrations are in ng/mL (ug/L) throughout.
+
+# Population
+
+* **Mice** (120; Table S1): 6-10 weeks, 23.60-38.12 g; 30 males at each of
+  0.0214, 0.0854 and 0.342 mg/kg plus 30 females at 0.0854 mg/kg; single IV
+  bolus; cross-sectional sampling (three mice per time point, one sample per
+  mouse) from 0.083 to 24 h.
+* **Rats** (12): 6-9 weeks, 228.3-368.3 g; 3 males at each of 0.00798,
+  0.0426 and 0.171 mg/kg plus 3 females at 0.0426 mg/kg; serial sampling to
+  24 h.
+* **Monkeys** (12): 6-10 months, 2.55-4.75 kg; 3 males at 0.00534 and at
+  0.0854 mg/kg single dose; 3 males and 3 females at 0.0213 mg/kg once daily
+  for 14 days, sampled intensively on days 1 and 14.
+* **Humans**: no human data entered the models. The SAD part of the Phase I
+  study (NCT05387499) dosed 30 healthy adults (6 per cohort; mean body weight
+  72.81 kg, Table S2) with 0.25, 0.5, 1, 2 or 4 mg IV bolus; these data were
+  used only to evaluate the projection.
+
+Plasma NP-011 was measured by ELISA (clinical LLOQ 15.62 ng/mL). The strain
+or species of the mice, rats and monkeys is not stated. The same information is
+available programmatically, for example
+`readModelDb("Lee_2026_np011_monkey")()$population`.
+
+# Source trace
+
+Structure (all files): two-compartment model, IV bolus into `central`,
+`dA_c/dt = -(CL/VC + Q/VC) A_c + Q/VP A_p`, `dA_p/dt = Q/VC A_c - Q/VP A_p`,
+`C = A_c/VC` (Supplementary Methods); exponential IIV `P_i = P_TV exp(eta_i)`
+with a diagonal OMEGA (Supplementary Methods, Table S6); residual error on the
+natural-log concentration scale (Table S6, `SIM_SA.mod` `$ERROR`), encoded as
+`lnorm(expSd)`.
+
+| Parameter | Mouse | Rat | Monkey | Source location |
+|---|---|---|---|---|
+| `lcl` (CL, L/h/kg) | 0.363 | 0.552 | 0.0904 | Table 1 |
+| `lvc` (VC, L/kg) | 0.071 | 0.0814 | 0.0475 | Table 1 |
+| `lq` (Q, L/h/kg) | 0.0063 | 0.0176 | 0.00342 | Table 1 |
+| `lvp` (VP, L/kg) | 0.0174 | 0.0627 | 0.103 | Table 1 |
+| `etalcl` (omega^2) | 0.0133 | 0.0198 | 0.0022 | Table 1 |
+| `etalvc` (omega^2) | - | - | 0.0371 | Table 1 |
+| `etalvp` (omega^2) | 0.227 | - | - | Table 1 |
+| `expSd` (log-scale SD) | 0.361 | 0.985 | 0.457 | Table 1 'Proportional error' |
+
+| Parameter | Simple allometry | MLP | Source location |
+|---|---|---|---|
+| `lcl` (CL, L/h) | 3.79590 | 2.58 | `SIM_SA.mod` THETA(1) (Table 2: 3.80); Supplementary Results (MLP) |
+| `lvc` (VC, L) | 2.88054 | 2.88054 | `SIM_SA.mod` THETA(2) (Table 2: 2.88); MLP leaves VC unchanged |
+| `lq` (Q, L/h) | 0.25010 | 0.17 | `SIM_SA.mod` THETA(4) (Table 2: 0.25); Supplementary Results (MLP) |
+| `lvp` (VP, L) | 24.60960491 | 24.60960491 | `SIM_SA.mod` THETA(3) (Table 2: 24.61); MLP leaves VP unchanged |
+| `etalcl` (omega^2) | 0.00216 | 0.00216 | `SIM_SA.mod` `$OMEGA` (monkey IIV; Methods 2.3) |
+| `etalvc` (omega^2) | 0.0371 | 0.0371 | `SIM_SA.mod` `$OMEGA` |
+| `expSd` | 0.457 | 0.457 | `SIM_SA.mod` THETA(5) (monkey residual SD) |
+
+All human values are wrapped in `fixed()`: Methods 2.4 states that they were
+obtained by allometry and fixed for simulation, not estimated.
+
+# Animal models
+
+Each species is simulated at its studied doses with 100 virtual animals per
+dose group and sampled at the study schedule of Table S1. The 0.0213 mg/kg
+monkey group receives 14 once-daily doses and is sampled on days 1 and 14.
+
+```{r animal-helpers}
+make_events <- function(doses_ugkg, times, label, first_id, n = 100L, n_doses = 1L) {
+  ids <- first_id + seq_len(n) - 1L
+  dose_times <- 24 * (seq_len(n_doses) - 1L)
+  dose_rows <- expand.grid(id = ids, time = dose_times)
+  dose_rows$evid <- 1L
+  dose_rows$amt <- doses_ugkg
+  obs_rows <- expand.grid(id = ids, time = times)
+  obs_rows$evid <- 0L
+  obs_rows$amt <- 0
+  out <- rbind(dose_rows, obs_rows)
+  out$cmt <- "central"
+  out$treatment <- label
+  out
+}
+
+solve_species <- function(model, events, seed) {
+  rxode2::rxSetSeed(seed)
+  sim <- rxode2::rxSolve(
+    readModelDb(model),
+    events = dplyr::arrange(events, id, time, dplyr::desc(evid)),
+    keep = "treatment",
+    # Tight tolerances: the mouse terminal phase falls to ~1e-10 ng/mL by
+    # 24 h, where default tolerances leave small negative values.
+    atol = 1e-14, rtol = 1e-10
+  )
+  as.data.frame(sim)
+}
+
+rodent_times <- c(0, 0.083, 0.25, 0.5, 1, 2, 4, 6, 8, 24)
+monkey_times <- c(0, 0.083, 0.5, 1, 2, 4, 6, 8, 24)
+# Day-1 trough at 23.99 h so that it precedes the 24-h dose.
+monkey_mad_times <- c(setdiff(monkey_times, 24), 23.99, 312 + monkey_times)
+
+mouse_ev <- dplyr::bind_rows(
+  make_events(21.4, rodent_times, "Mouse 21.4 ug/kg", 1L),
+  make_events(85.4, rodent_times, "Mouse 85.4 ug/kg", 101L),
+  make_events(342, rodent_times, "Mouse 342 ug/kg", 201L)
+)
+rat_ev <- dplyr::bind_rows(
+  make_events(7.98, rodent_times, "Rat 7.98 ug/kg", 1L),
+  make_events(42.6, rodent_times, "Rat 42.6 ug/kg", 101L),
+  make_events(171, rodent_times, "Rat 171 ug/kg", 201L)
+)
+monkey_ev <- dplyr::bind_rows(
+  make_events(5.34, monkey_times, "Monkey 5.34 ug/kg", 1L),
+  make_events(21.3, monkey_mad_times, "Monkey 21.3 ug/kg QD x14", 101L, n_doses = 14L),
+  make_events(85.4, monkey_times, "Monkey 85.4 ug/kg", 201L)
+)
+
+animal_sim <- dplyr::bind_rows(
+  solve_species("Lee_2026_np011_mouse", mouse_ev, 2026L),
+  solve_species("Lee_2026_np011_rat", rat_ev, 2027L),
+  solve_species("Lee_2026_np011_monkey", monkey_ev, 2028L)
+)
+```
+
+```{r animal-vpc, fig.height = 7}
+vpc <- animal_sim |>
+  dplyr::filter(time > 0, time <= 24) |>
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(
+    Q05 = quantile(sim, 0.05),
+    Q50 = quantile(sim, 0.50),
+    Q95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(vpc, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25, fill = "steelblue") +
+  geom_line(colour = "steelblue4") +
+  facet_wrap(~treatment, ncol = 3, scales = "free_y") +
+  scale_y_log10() +
+  labs(
+    x = "Time after IV bolus (h)", y = "Plasma NP-011 (ng/mL)",
+    title = "Simulated median and 90% prediction interval (day 1)",
+    caption = "Compare with the visual predictive checks of Figures S5-S7 of Lee 2026."
+  )
+```
+
+## PKNCA against the observed NCA (Tables S3-S5)
+
+Tables S3-S5 report non-compartmental parameters of the observed data (Phoenix
+WinNonlin, IV bolus, with the initial concentration C0 back-extrapolated). The
+simulated profiles are analysed with PKNCA on the study schedule: the
+concentration at time 0 is the post-bolus concentration (the quantity C0
+back-extrapolation estimates), Cmax is taken from the first post-dose sample
+at 0.083 h, as it was in the observed data, and AUCinf uses the observed
+terminal phase.
+
+```{r animal-nca}
+animal_conc <- animal_sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+animal_dose <- animal_sim |>
+  dplyr::distinct(id, treatment) |>
+  dplyr::left_join(
+    dplyr::bind_rows(mouse_ev, rat_ev, monkey_ev) |>
+      dplyr::filter(evid == 1L) |>
+      dplyr::distinct(treatment, amt),
+    by = "treatment"
+  ) |>
+  dplyr::mutate(time = 0)
+
+single <- setdiff(unique(animal_conc$treatment), "Monkey 21.3 ug/kg QD x14")
+intervals <- dplyr::bind_rows(
+  data.frame(treatment = single, start = 0, end = Inf, aucinf.obs = TRUE),
+  data.frame(treatment = single, start = 0.083, end = 24, cmax = TRUE),
+  data.frame(treatment = "Monkey 21.3 ug/kg QD x14", start = c(0, 312), end = c(23.99, 336), auclast = TRUE),
+  data.frame(treatment = "Monkey 21.3 ug/kg QD x14", start = c(0.083, 312.083), end = c(23.99, 336), cmax = TRUE)
+)
+intervals[is.na(intervals)] <- FALSE
+
+animal_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(animal_conc, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(animal_dose, amt ~ time | treatment + id, route = "intravascular"),
+  intervals = intervals
+))
+
+sim_long <- as.data.frame(animal_nca$result) |>
+  dplyr::mutate(
+    group = dplyr::case_when(
+      treatment == "Monkey 21.3 ug/kg QD x14" & start >= 312 ~ "Monkey 21.3 ug/kg day 14",
+      treatment == "Monkey 21.3 ug/kg QD x14" ~ "Monkey 21.3 ug/kg day 1",
+      TRUE ~ treatment
+    )
+  ) |>
+  dplyr::select(group, PPTESTCD, PPORRES)
+
+# Tables S3-S5, arithmetic means (ug/L = ng/mL; ug*h/L = ng*h/mL). Where a
+# dose group was split by sex, the reference is the mean of the male and
+# female group means (equal group sizes).
+published_nca <- tibble::tribble(
+  ~group, ~cmax, ~aucinf.obs, ~auclast,
+  "Mouse 21.4 ug/kg", 410, 64.7, NA,
+  "Mouse 85.4 ug/kg", (1668 + 1654) / 2, (287 + 195) / 2, NA,
+  "Mouse 342 ug/kg", 9212, 1353, NA,
+  "Rat 7.98 ug/kg", 155, 18.8, NA,
+  "Rat 42.6 ug/kg", (693 + 995) / 2, (63 + 78.9) / 2, NA,
+  "Rat 171 ug/kg", 1449, 271, NA,
+  "Monkey 5.34 ug/kg", 126, 61, NA,
+  "Monkey 21.3 ug/kg day 1", (444 + 408) / 2, NA, (203 + 214) / 2,
+  "Monkey 21.3 ug/kg day 14", (477 + 311) / 2, NA, (253 + 215) / 2,
+  "Monkey 85.4 ug/kg", 2055, 1166, NA
+)
+
+cmp_animal <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_long,
+  reference = published_nca,
+  by = "group",
+  params = c("cmax", "auclast", "aucinf.obs"),
+  units = c(cmax = "ng/mL", auclast = "ng*h/mL", aucinf.obs = "ng*h/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp_animal,
+  caption = paste(
+    "Simulated (median of 100 animals per group) vs. observed NCA means",
+    "(Tables S3-S5). * differs by more than 20%."
+  )
+)
+```
+
+```{r animal-checks}
+auc_ratio <- sim_long |>
+  dplyr::filter(PPTESTCD %in% c("aucinf.obs", "auclast")) |>
+  dplyr::group_by(group, PPTESTCD) |>
+  dplyr::summarise(sim = median(PPORRES), .groups = "drop") |>
+  dplyr::inner_join(
+    published_nca |>
+      tidyr::pivot_longer(c(aucinf.obs, auclast), names_to = "PPTESTCD", values_to = "obs") |>
+      dplyr::filter(!is.na(obs)),
+    by = c("group", "PPTESTCD")
+  ) |>
+  dplyr::mutate(ratio = sim / obs)
+# AUC is set by CL alone; a mis-transcribed CL or a dose-unit slip moves the
+# typical ratio far beyond this band.
+stopifnot(
+  nrow(auc_ratio) == 10L,
+  abs(log(median(auc_ratio$ratio))) < log(1.25)
+)
+```
+
+AUCinf, which is set by CL alone, is within about 25% of the observed mean in
+nine of the ten groups (median simulated-to-observed ratio
+`r signif(median(auc_ratio$ratio), 2)`). The rat model, which the paper notes
+has strong parameter correlations (CL-VC 0.958) and a large residual SD
+(0.985), runs below the lowest-dose AUC (observed 18.8 ng*h/mL against a
+dose/CL of 14.5) and above the highest, because the rat NCA clearance itself
+varies from 0.44 to 0.71 L/h/kg across groups (Table S4) while the model has
+one CL. The mouse 0.342 mg/kg group has the highest dose-normalised AUC of the
+mouse groups (3.96 against 2.3-3.4, Table S3), and the monkey 0.0854 mg/kg
+group the highest of the monkey groups (13.7, Table S5), so a single linear
+CL under-predicts both by 20-30%. In the repeated-dose monkey group the
+simulated day-14 AUC and Cmax equal day 1, in line with the paper's
+observation that day-14 dose-normalised AUC was comparable to day 1.
+
+The Cmax rows differ more, and the difference is in the reference rather than
+the model. The NCA mean Cmax of the rodent groups (for example 410 ng/mL in
+mice and 155 ng/mL in rats at the lowest doses) exceeds the model's own
+time-zero concentration, dose/VC (301 and 98 ng/mL), whereas the observed
+medians at 0.083 h plotted in the paper's visual predictive checks (Figures S5
+and S6, read approximately) are about 200 and 60 ng/mL, close to the simulated
+medians of 195 and 55 ng/mL. The NCA Cmax summarises the observed data
+differently from the profiles the models were fitted to (mouse sampling was
+cross-sectional, three animals per time point), so the Cmax comparison is
+shown for completeness and is not asserted on. The simulated profiles in the
+figure above follow the shapes of Figures S5-S7, including the slow, low
+terminal phase of the monkey profiles.
+
+# Human projection by simple allometry
+
+## Typical values (Table 2, Table 3, Table S10)
+
+For the typical 70 kg adult, AUCinf = dose/CL, Cmax = dose/VC (the IV bolus
+concentration at time 0, which is how `SIM_SA.mod` defines CMAX) and the
+hybrid half-lives follow from Equation 6.
+
+```{r human-typical}
+hybrid_half_lives <- function(cl, vc, q, vp) {
+  k10 <- cl / vc
+  k12 <- q / vc
+  k21 <- q / vp
+  s <- k10 + k12 + k21
+  disc <- sqrt(s^2 - 4 * k10 * k21)
+  c(alpha = log(2) / ((s + disc) / 2), beta = log(2) / ((s - disc) / 2))
+}
+
+typical <- function(model) {
+  p <- rxode2::rxode(readModelDb(model))$theta
+  exp(p[c("lcl", "lvc", "lq", "lvp")])
+}
+tv_sa <- typical("Lee_2026_np011_human_simple")
+doses_ug <- c(250, 500, 1000, 2000, 4000)
+hl_sa <- hybrid_half_lives(tv_sa[["lcl"]], tv_sa[["lvc"]], tv_sa[["lq"]], tv_sa[["lvp"]])
+
+typ_tab <- data.frame(
+  dose_mg = doses_ug / 1000,
+  auc_typ = doses_ug / tv_sa[["lcl"]],
+  auc_s10 = c(65.9, 131.7, 263.4, 526.9, 1053.8),
+  cmax_typ = doses_ug / tv_sa[["lvc"]],
+  cmax_s10 = c(86.8, 173.6, 347.2, 694.3, 1388.6)
+)
+typ_tab |>
+  dplyr::mutate(dplyr::across(c(auc_typ, cmax_typ), \(x) signif(x, 4))) |>
+  dplyr::rename(
+    "Dose (mg)" = dose_mg,
+    "AUCinf = dose/CL (ng*h/mL)" = auc_typ,
+    "Table S10 fixed-effects AUCinf" = auc_s10,
+    "Cmax = dose/VC (ng/mL)" = cmax_typ,
+    "Table S10 fixed-effects Cmax" = cmax_s10
+  ) |>
+  knitr::kable(caption = "Typical-value exposure vs. the fixed-effects simulation of Table S10 Panel C.")
+signif(hl_sa, 4)
+
+# Closed-form identities of the typical parameters: the only differences
+# are the rounding of the printed values.
+stopifnot(
+  all(abs(typ_tab$auc_typ / typ_tab$auc_s10 - 1) < 0.005),
+  all(abs(typ_tab$cmax_typ / typ_tab$cmax_s10 - 1) < 0.005),
+  abs(hl_sa[["alpha"]] / 0.49 - 1) < 0.02,
+  abs(hl_sa[["beta"]] / 72.73 - 1) < 0.01
+)
+```
+
+The typical AUCinf and Cmax match the fixed-effects predictions of Table S10
+Panel C to within the printed rounding, and the typical half-lives (0.49 h and
+72.7 h) match the values given in the Table S10 notes.
+
+## Variability-based simulation (Table 3)
+
+As in the paper, 200 virtual adults per dose group are simulated with the
+monkey IIV on CL and VC. The paper's intervals exclude residual error, so the
+error-free prediction `Cc` is summarised.
+
+```{r human-sim}
+human_times <- sort(unique(c(
+  0, 0.083, 0.25, 0.5, 1, 2, 4, 6, 8, 12, 24, 48,
+  seq(0, 2, by = 0.05), 72, 96, 168, 240, 336, 504
+)))
+human_dose_group <- function(i, n = 200L) {
+  ids <- (i - 1L) * n + seq_len(n)
+  dose_rows <- data.frame(id = ids, time = 0, evid = 1L, amt = doses_ug[i])
+  obs_rows <- expand.grid(id = ids, time = human_times)
+  obs_rows$evid <- 0L
+  obs_rows$amt <- 0
+  out <- rbind(dose_rows, obs_rows)
+  out$cmt <- "central"
+  out$dose_mg <- doses_ug[i] / 1000
+  out
+}
+hum_ev <- dplyr::bind_rows(lapply(seq_along(doses_ug), human_dose_group)) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+rxode2::rxSetSeed(12345)
+hum_sa <- as.data.frame(rxode2::rxSolve(
+  readModelDb("Lee_2026_np011_human_simple"),
+  events = hum_ev, keep = "dose_mg"
+))
+
+hum_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(
+    hum_sa |> dplyr::filter(!is.na(Cc)) |> dplyr::select(id, time, Cc, dose_mg),
+    Cc ~ time | dose_mg + id
+  ),
+  PKNCA::PKNCAdose(
+    hum_ev |> dplyr::filter(evid == 1L) |> dplyr::select(id, time, amt, dose_mg),
+    amt ~ time | dose_mg + id,
+    route = "intravascular"
+  ),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE, half.life = TRUE)
+))
+
+table3 <- data.frame(
+  dose_mg = c(0.25, 0.5, 1, 2, 4),
+  aucinf.obs = c(66, 132, 264, 526, 1053),
+  cmax = c(87, 173, 345, 695, 1391),
+  half.life = c(72.73, 72.74, 72.74, 72.73, 72.73)
+)
+cmp_human <- nlmixr2lib::ncaComparisonTable(
+  simulated = hum_nca,
+  reference = table3,
+  by = "dose_mg",
+  params = c("cmax", "aucinf.obs", "half.life"),
+  units = c(cmax = "ng/mL", aucinf.obs = "ng*h/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp_human, caption = "Simulated (median of 200 per dose) vs. Table 3 medians.")
+```
+
+```{r human-checks}
+hum_res <- as.data.frame(hum_nca$result) |>
+  dplyr::filter(PPTESTCD %in% c("aucinf.obs", "cmax")) |>
+  dplyr::group_by(dose_mg, PPTESTCD) |>
+  dplyr::summarise(
+    med = median(PPORRES),
+    lo = quantile(PPORRES, 0.05),
+    hi = quantile(PPORRES, 0.95),
+    .groups = "drop"
+  ) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = c(med, lo, hi)) |>
+  dplyr::left_join(table3, by = "dose_mg") |>
+  dplyr::mutate(
+    auc_pct = 100 * (med_aucinf.obs / aucinf.obs - 1),
+    cmax_pct = 100 * (med_cmax / cmax - 1)
+  )
+hum_res |>
+  dplyr::transmute(
+    dose_mg,
+    auc_pi = sprintf("%.0f-%.0f", lo_aucinf.obs, hi_aucinf.obs),
+    cmax_pi = sprintf("%.0f-%.0f", lo_cmax, hi_cmax)
+  ) |>
+  dplyr::left_join(
+    data.frame(
+      dose_mg = c(0.25, 0.5, 1, 2, 4),
+      auc_pi_t3 = c("61-71", "122-142", "244-285", "489-569", "976-1139"),
+      cmax_pi_t3 = c("64-118", "126-236", "249-475", "507-949", "1011-1886")
+    ),
+    by = "dose_mg"
+  ) |>
+  dplyr::rename(
+    "Dose (mg)" = dose_mg,
+    "Simulated 90% PI AUCinf" = auc_pi,
+    "Table 3 90% PI AUCinf" = auc_pi_t3,
+    "Simulated 90% PI Cmax" = cmax_pi,
+    "Table 3 90% PI Cmax" = cmax_pi_t3
+  ) |>
+  knitr::kable(caption = "90% prediction intervals (5th-95th percentiles) vs. Table 3.")
+
+# Medians over a random cohort: assert on the centre across the five doses.
+stopifnot(
+  abs(median(hum_res$auc_pct)) < 5,
+  abs(median(hum_res$cmax_pct)) < 5
+)
+```
+
+The simulated medians reproduce Table 3. AUCinf from PKNCA includes the
+extrapolated terminal phase (t1/2,beta about 72.7 h), and its 90% interval is
+narrow because only the small monkey IIV on CL (omega^2 0.00216) enters it;
+the Cmax interval reflects the IIV on VC.
+
+## Comparison with the Phase I SAD data (Figure 3, Table 4)
+
+The supplementary file `aggregate_Figure3_SA_profile.csv` provides the observed
+5th, 50th and 95th percentiles of the Phase I SAD concentrations at each
+nominal time point; they are overlaid on the simulated interval below.
+
+```{r figure3, fig.height = 7}
+# Observed Phase I SAD percentiles, aggregate_Figure3_SA_profile.csv (Lee 2026
+# supplementary file), rows with observations only.
+obs_fig3 <- tibble::tribble(
+  ~dose_mg, ~time, ~n, ~obs_p50, ~obs_p5, ~obs_p95,
+  0.25, 0.083, 6, 50.525, 27.297, 83.49,
+  0.25, 0.25, 6, 36.797, 23.639, 57.792,
+  0.25, 0.5, 5, 22.241, 18.803, 27.221,
+  0.5, 0.083, 6, 113.339, 103.161, 150.966,
+  0.5, 0.25, 6, 88.403, 78.481, 115.679,
+  0.5, 0.5, 6, 55.095, 50.494, 73.72,
+  0.5, 1, 6, 23.151, 19.624, 31.199,
+  1, 0.083, 6, 223.04, 173.83, 256.644,
+  1, 0.25, 6, 176.767, 130.852, 202.178,
+  1, 0.5, 6, 122.742, 80.282, 132.118,
+  1, 1, 6, 58.079, 31.273, 65.423,
+  2, 0.083, 6, 454.094, 389.655, 504.629,
+  2, 0.25, 6, 333.943, 290.012, 373.555,
+  2, 0.5, 6, 197.012, 187.556, 239.004,
+  2, 1, 6, 89.619, 66.276, 103.103,
+  2, 2, 4, 20.142, 17.144, 24.999,
+  4, 0.083, 7, 830.792, 675.691, 894.571,
+  4, 0.25, 5, 613.197, 601.017, 722.802,
+  4, 0.5, 6, 437.424, 366.143, 532.756,
+  4, 1, 6, 175.209, 158.849, 211.502,
+  4, 2, 6, 34.05, 22.535, 46.806
+)
+
+sim_fig3 <- hum_sa |>
+  dplyr::filter(time > 0, time <= 2) |>
+  dplyr::group_by(dose_mg, time) |>
+  dplyr::summarise(
+    p5 = quantile(Cc, 0.05), p50 = median(Cc), p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot() +
+  geom_ribbon(data = sim_fig3, aes(time, ymin = p5, ymax = p95), fill = "#F8766D", alpha = 0.25) +
+  geom_line(data = sim_fig3, aes(time, p50), colour = "#F8766D") +
+  geom_ribbon(data = obs_fig3, aes(time, ymin = obs_p5, ymax = obs_p95), fill = "#7CAE00", alpha = 0.25) +
+  geom_point(data = obs_fig3, aes(time, obs_p50), colour = "#4d7c0f") +
+  facet_wrap(~ paste(dose_mg, "mg"), ncol = 2, scales = "free_y") +
+  scale_y_log10() +
+  labs(
+    x = "Time after IV bolus (h)", y = "Plasma NP-011 (ng/mL)",
+    caption = paste(
+      "Replicates Figure 3 of Lee 2026: red, simulated median and 5th-95th percentile",
+      "(simple allometry); green, observed Phase I median (points) and 5th-95th percentile."
+    )
+  )
+```
+
+```{r table4}
+# Table 4 of Lee 2026: observed Phase I medians and the published P/O ratios.
+table4 <- data.frame(
+  dose_mg = c(0.25, 0.5, 1, 2, 4),
+  obs_auc = c(34, 74, 163, 286, 595),
+  po_auc_paper = c(1.96, 1.78, 1.62, 1.84, 1.77),
+  obs_cmax = c(61, 130, 259, 505, 940),
+  po_cmax_paper = c(1.42, 1.33, 1.33, 1.38, 1.48)
+)
+t4 <- hum_res |>
+  dplyr::select(dose_mg, med_aucinf.obs, med_cmax) |>
+  dplyr::left_join(table4, by = "dose_mg") |>
+  dplyr::mutate(
+    po_auc = med_aucinf.obs / obs_auc,
+    po_cmax = med_cmax / obs_cmax
+  )
+t4 |>
+  dplyr::transmute(
+    dose_mg, obs_auc,
+    po_auc = round(po_auc, 2), po_auc_paper,
+    obs_cmax,
+    po_cmax = round(po_cmax, 2), po_cmax_paper
+  ) |>
+  dplyr::rename(
+    "Dose (mg)" = dose_mg,
+    "Observed AUCinf median" = obs_auc,
+    "P/O AUCinf (simulated)" = po_auc,
+    "P/O AUCinf (Table 4)" = po_auc_paper,
+    "Observed Cmax median" = obs_cmax,
+    "P/O Cmax (simulated)" = po_cmax,
+    "P/O Cmax (Table 4)" = po_cmax_paper
+  ) |>
+  knitr::kable(caption = "Predicted-to-observed ratios, simulated vs. Table 4.")
+
+afe <- function(p, o) 10^mean(log10(p / o))
+c(AFE_AUCinf = afe(t4$med_aucinf.obs, t4$obs_auc), AFE_Cmax = afe(t4$med_cmax, t4$obs_cmax))
+```
+
+The projection over-predicts the observed Phase I exposure as the paper
+reports: AUCinf by about 1.6- to 2.0-fold and Cmax by about 1.3- to 1.5-fold,
+with an average fold error near the published 1.79 (AUCinf) and 1.39 (Cmax).
+The observed Phase I concentrations fall faster than the projection between
+0.5 and 2 h; the paper notes that only 17.1% of the observed concentrations
+lie inside the simulated 5th-95th percentile interval.
+
+# Human projection with the MLP correction
+
+```{r human-mlp}
+tv_mlp <- typical("Lee_2026_np011_human_mlp")
+hl_mlp <- hybrid_half_lives(tv_mlp[["lcl"]], tv_mlp[["lvc"]], tv_mlp[["lq"]], tv_mlp[["lvp"]])
+mlp_tab <- data.frame(
+  dose_mg = doses_ug / 1000,
+  auc_typ = signif(doses_ug / tv_mlp[["lcl"]], 4),
+  auc_s12 = c(97, 194, 389, 775, 1552),
+  cmax_typ = signif(doses_ug / tv_mlp[["lvc"]], 4),
+  cmax_s12 = c(87, 173, 345, 695, 1391)
+)
+mlp_tab |>
+  dplyr::rename(
+    "Dose (mg)" = dose_mg,
+    "AUCinf = dose/CL (ng*h/mL)" = auc_typ,
+    "Table S12 median AUCinf" = auc_s12,
+    "Cmax = dose/VC (ng/mL)" = cmax_typ,
+    "Table S12 median Cmax" = cmax_s12
+  ) |>
+  knitr::kable(caption = "MLP projection, typical values vs. Table S12 medians.")
+signif(hl_mlp, 4)
+
+stopifnot(
+  all(abs(mlp_tab$auc_typ / mlp_tab$auc_s12 - 1) < 0.01),
+  abs(hl_mlp[["alpha"]] / 0.73 - 1) < 0.03,
+  abs(hl_mlp[["beta"]] / 107.3 - 1) < 0.01
+)
+```
+
+The MLP correction lowers CL and Q by the same factor (about 0.68), so
+AUCinf rises by 1.47-fold, Cmax is unchanged, and the terminal half-life
+lengthens to about 107 h, as in Table S12 and the Supplementary Results. With
+Q printed to two significant figures (0.17 L/h) the typical t1/2,beta is
+`r signif(hl_mlp[["beta"]], 4)` h against the published median of 107.3 h.
+
+# Assumptions and deviations
+
+* **Residual error.** The DV was the natural-log concentration and the
+  residual model `Y = log(F) + W * EPS(1)` with `W = sqrt(THETA(5)^2 +
+  THETA(6)^2 / IPRED^2)` (`SIM_SA.mod`); Table 1 calls THETA(5) the
+  "proportional error" and Table S6 "proportional (log scale)". It is encoded
+  as `lnorm(expSd)` with the Table 1 value as the log-scale SD. The additive
+  component THETA(6) was fixed to a negligible value (1e-5 in `SIM_SA.mod`,
+  "Fixed to 0" in Table 1) and is omitted.
+* **Human variability.** The paper assumes the human IIV equals the monkey
+  IIV (Methods 2.3). The human files use the `SIM_SA.mod` OMEGA values
+  (0.00216 on CL, 0.0371 on VC); Table 1 prints the monkey CL value rounded to
+  0.0022, which is what the monkey file carries. The human residual SD (0.457)
+  is the monkey value carried in `SIM_SA.mod`; the paper's prediction
+  intervals exclude it, so the simulations above summarise the error-free
+  `Cc`.
+* **Human structural values.** The simple-allometry file uses the unrounded
+  `SIM_SA.mod` THETAs, which round to Table 2. The MLP file uses CL 2.58 L/h
+  and Q 0.17 L/h as printed in the Supplementary Results (the MLP regression
+  inputs, such as the body weights used for each species, are not reported)
+  and the simple-allometry VC and VP, which the MLP method leaves unchanged.
+* **No weight covariate.** The allometric coefficients and exponents are in
+  Table S10, but the human files encode only the 70 kg prediction that the
+  paper simulated; there is no body-weight term.
+* **Animal dosing units.** The animal fits used body-weight-normalised doses
+  (ug/kg) and parameters (Supplementary Methods), so the animal files take
+  doses in ug/kg and have no weight covariate.
+* **Animal NCA references.** Tables S3-S5 report means of the observed NCA by
+  dose group (and by sex in one group per species); for the sex-split groups
+  the reference is the mean of the two group means. The simulated values are
+  medians. The observed NCA terminal half-lives (0.13-4 h) describe the
+  quantifiable samples only and are not compared: the fitted models have a
+  slow, low-amplitude peripheral phase.
+* **Species details.** The strain of the mice and rats and the monkey species
+  are not stated in the paper.

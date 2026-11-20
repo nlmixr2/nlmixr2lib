@@ -6072,6 +6072,16 @@ navbar:
         href: articles/Li_2024_norvancomycin.html
       - text: "Noscapine (Chen 2024)"
         href: articles/Chen_2024_noscapine.html
+      - text: "Np011 human mlp (Lee 2026)"
+        href: articles/Lee_2026_np011.html
+      - text: "Np011 human simple (Lee 2026)"
+        href: articles/Lee_2026_np011.html
+      - text: "Np011 monkey (Lee 2026)"
+        href: articles/Lee_2026_np011.html
+      - text: "Np011 mouse (Lee 2026)"
+        href: articles/Lee_2026_np011.html
+      - text: "Np011 rat (Lee 2026)"
+        href: articles/Lee_2026_np011.html
       - text: "Nusinersen (Biliouris 2018)"
         href: articles/Biliouris_2018_nusinersen.html
       - text: "Nusinersen (Luu 2017)"
@@ -11310,6 +11320,7 @@ articles:
   - articles/Lee_2025_levofloxacin
   - articles/Lee_2025_nafamostat
   - articles/Lee_2025_piperacillin_tazobactam
+  - articles/Lee_2026_np011
   - articles/Lee_2026_oxacillin
   - articles/Lee_2026_triapine
   - articles/Leeds_2013_tecovirimat
