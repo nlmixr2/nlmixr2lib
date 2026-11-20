@@ -213,7 +213,8 @@ stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
 sim <- rxode2::rxSolve(
   mod_mi, events,
   keep = c("t_del", "t_last", "pp_day"),
-  returnType = "data.frame"
+  returnType = "data.frame",
+  covsInterpolation = "locf"
 )
 stopifnot(!anyNA(sim$Cc), !anyNA(sim$Cinfant))
 
@@ -465,7 +466,7 @@ sens_run <- function(label, pars) {
   ) |>
     dplyr::arrange(time, dplyr::desc(evid)) |>
     dplyr::mutate(id = 1L, PREG = as.integer(time < t_del), OCC = ifelse(time < t_del, 1L, 3L))
-  s <- rxode2::rxSolve(mod_mi_typ, ev, params = pars, returnType = "data.frame")
+  s <- rxode2::rxSolve(mod_mi_typ, ev, params = pars, returnType = "data.frame", covsInterpolation = "locf")
   p <- dplyr::filter(s, time >= t_last) |> dplyr::mutate(t = time - t_last)
   auc_to <- function(e) with(dplyr::filter(p, t <= e), trap(t, Cinfant))
   data.frame(
@@ -658,3 +659,8 @@ stopifnot(abs(median(milk_avg$cavg) / 0.050 - 1) < 0.2)
   below the LLQ is an estimation method and is not part of the model.
 - No erratum or correction notice for this article was found in Europe PMC
   (article record and correction links) as of 2026-09-29.
+- **Covariate interpolation.** Each record carries the `OCC` and `PREG` values
+  in force from that record until the next, so the solves in which they change
+  within a subject state `covsInterpolation = "locf"`, the `rxSolve()` default;
+  solving the same tables with `"nocb"`, NONMEM's rule, moves the median
+  subject's AUC by up to 5.5% (measured on rxode2 5.1.8.9000).

@@ -500,10 +500,11 @@ stopifnot(
   on V2 (0.142 vs 0.153).
 - **Occasions.** The paper defines each dose and its sampling as an occasion.
   The four once-daily doses give occasions 1-4, and one IOV variance per
-  parameter is shared across them (occasions 2-4 are fixed equal to
-  occasion 1). rxode2 has no `| occ` random-effect level, so the occasion
-  etas are selected by indicator variables; rxode2 therefore reports that
-  these etas are not mu-referenced. This has no effect on simulation.
+  parameter is shared across them (occasions 2-4 are fixed equal to occasion
+  1). rxode2's `| occ` random-effect level shares one draw per occasion when
+  no subject has two or more occasions, so the occasion etas are selected by
+  indicator variables; rxode2 therefore reports that these etas are not
+  mu-referenced. This has no effect on simulation.
 - **Absolute eGFR.** The model's renal covariate is the absolute eGFR (L/h
   in the paper), stored in mL/min in the `CRCL` column and converted in
   `model()`. The paper computes a BSA-normalized, capped Schwartz /

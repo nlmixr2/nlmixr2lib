@@ -1,0 +1,165 @@
+"article","class","varying_covariates","source_software","article_covsInterpolation","compared_calls","max_gap_to_previous_record_h","max_median_subject_AUC_change","max_subject_AUC_change","max_pointwise_scaled_change","uses_linCmt"
+"Jonsson_2011_ethambutol","occasion","OCC","NONMEM","default (locf)",1,24,0.431,3.84,0.638,FALSE
+"Riglet_2020_mycophenolic_acid","occasion","CRCL,OCC","unstated","default (locf)",1,696,0.128,0.684,0.746,FALSE
+"Royston_2025_letermovir","occasion","OCC","NONMEM+Monolix","default (locf),nocb",2,NA,0.123,0.447,0.475,FALSE
+"Francis_2020_lumefantrine","occasion","OCC","NONMEM","default (locf)",17,16,0.115,0.234,0.277,FALSE
+"Sawe_2025_levofloxacin","occasion","OCC","NONMEM","default (locf)",5,24,0.0815,11.4,0.674,FALSE
+"Tsirizani_2024_darunavir","occasion","OCC","NONMEM","default (locf)",2,24,0.0719,0.189,0.324,FALSE
+"Tsirizani_2025_ritonavir","occasion","OCC","NONMEM","default (locf)",3,12,0.0691,0.664,0.448,TRUE
+"Kengo_2025_atazanavir_ritonavir_rifampicin","occasion","OCC","no model file matched","default (locf)",6,24,0.0689,0.161,0.293,FALSE
+"Umpierrez_2021_cyclosporine","occasion","OCC","Monolix","default (locf)",1,6,0.0685,0.163,0.0706,FALSE
+"Dickinson_2021_dolutegravir","occasion","OCC,PREG","NONMEM","default (locf)",5,23.9,0.0547,0.161,0.607,FALSE
+"Barnett_2018_rosuvastatin","dose, regimen or exposure input","CP_RIF_UM","NONMEM","default (locf)",1,0.25,0.0544,0.0868,0.417,FALSE
+"Vet_2016_midazolam","occasion","OCC","NONMEM","default (locf)",2,15.5,0.0532,0.121,0.506,FALSE
+"Upton_2025_cycloserine_clofazimine","occasion","OCC","no model file matched","default (locf)",1,24,0.0446,0.146,0.143,FALSE
+"Miano_2024_tacrolimus","physiology / time since event","POD","NONMEM","locf",1,11,0.0423,0.133,0.0779,FALSE
+"Punyawudho_2025_dolutegravir","occasion","OCC","NONMEM","default (locf)",3,24,0.0395,0.411,0.136,FALSE
+"Mockeliunas_2022_linezolid","occasion","OCC","NONMEM","default (locf)",2,24,0.0353,0.088,0.419,FALSE
+"Itohara_2019_tacrolimus","physiology / time since event","POD","NONMEM","default (locf)",6,60,0.0347,0.0363,1.4,FALSE
+"Yeung_2025_indomethacin","physiology / time since event","PNA","unstated","default (locf)",4,4,0.0274,0.0398,0.0328,FALSE
+"Alihodzic_2022_ciprofloxacin","occasion","OCC","NONMEM","default (locf)",3,12,0.0236,0.0885,0.115,FALSE
+"Wallender_2021_piperaquine","occasion","OCC,PAGE,WT","NONMEM","default (locf)",2,56,0.0232,0.0291,11.8,FALSE
+"Kim_2021_YH12852","occasion","OCC","NONMEM","default (locf)",2,24,0.0173,0.15,0.268,FALSE
+"Wu_2023_paracetamol","physiology / time since event","PNA","NONMEM","default (locf)",2,6,0.016,0.0175,0.029,FALSE
+"Chen_2020_ciclosporin","physiology / time since event","POD","unstated","default (locf)",1,12,0.0113,0.0395,0.0342,FALSE
+"Guo_2016_taurocholate_schh","dose, regimen or exposure input","WASH_ACTIVE","Phoenix","locf",2,0.25,0.0112,0.0112,0.947,FALSE
+"Verrest_2023_miltefosine_paromomycin","physiology / time since event","DOSE_MF_CUM_MGKG,NEUT","no model file matched","linear,locf",6,24,0.0107,0.0168,0.0148,FALSE
+"Clegg_2024_nirsevimab","physiology / time since event","PAGE,WT","NONMEM","default (locf)",5,7,0.006,0.00639,0.00375,FALSE
+"Ou_2021_zanubrutinib","occasion","OCC","NONMEM","default (locf)",1,24,0.00528,0.0238,0.0422,FALSE
+"Favie_2020_neonatalHypothermia","physiology / time since event","BODYTEMP,PNA","unstated","linear",1,1,0.00524,0.00979,0.0234,FALSE
+"Voller_2017_phenobarbital","physiology / time since event","PNA","NONMEM","default (locf)",2,12,0.0049,0.0071,1.08,FALSE
+"Li_2026_alvespimycin","occasion","OCC","NONMEM","default (locf)",3,0.5,0.00487,0.0199,0.42,FALSE
+"Storgaard_2026_tetrahydrocannabinol","occasion","OCC","NONMEM","default (locf)",1,0.25,0.0048,0.0177,0.179,FALSE
+"Li_2017_pomalidomide","dose, regimen or exposure input","HDACT,RRT_HEMODIAL_ACTIVE","NONMEM","locf",19,0.1,0.0048,0.0048,0.0203,FALSE
+"Okamoto_2021_vedolizumab","occasion","OCC","NONMEM","default (locf)",1,7,0.00477,0.00912,0.0479,FALSE
+"Rose_2016b_follitropin_delta","dose, regimen or exposure input","INHIBINB","NONMEM","locf",4,4,0.00435,0.00618,0.0495,FALSE
+"Lee_2024_gentamicin","dose, regimen or exposure input","RRT_HEMODIAL_ACTIVE","NONMEM+Monolix","locf",16,1,0.00422,0.00832,0.159,FALSE
+"Bijleveld_2016_gentamicin","physiology / time since event","PNA","NONMEM","default (locf)",1,1,0.00331,0.00381,0.0244,FALSE
+"Hietala_2010_artemether_lumefantrine_malaria","occasion","OCC","no model file matched","default (locf)",2,1,0.00321,0.0046,0.0547,FALSE
+"Hanzel_2022_vedolizumab","occasion","OCC","unstated","default (locf)",2,7,0.00313,0.00973,0.0357,FALSE
+"Bender_2009_pregabalin_rat","dose, regimen or exposure input","SLDM","NONMEM","default (locf)",2,0.5,0.00296,0.0105,0.0112,FALSE
+"Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab","dose, regimen or exposure input","CONMED_ZOLBETUXIMAB","no model file matched","default (locf)",1,12,0.00279,0.0035,0.0212,FALSE
+"Sharma_2016_hydroxyprogesteroneCaproate","occasion","OCC","NONMEM","default (locf)",2,1,0.00257,0.0106,0.0445,FALSE
+"Stanczyk_2022_levonorgestrel_ethinylestradiol","physiology / time since event","CYCLE","no model file matched","default (locf)",2,168,0.00251,0.00316,0.0168,FALSE
+"Jiang_2021_ivosidenib","dose, regimen or exposure input","MULTI_DOSE_PT","unstated","default (locf)",3,24,0.00222,0.00713,0.00309,FALSE
+"Waterhouse_2024_vedolizumab","occasion","OCC","NONMEM","default (locf)",1,7,0.00216,0.00741,0.0304,FALSE
+"Chu_2024_allopurinol","physiology / time since event","CPB_ON,CPB_POST,PNA","NONMEM","default (locf)",1,1,0.00201,0.00318,0.00967,FALSE
+"Dimelow_2024_belimumab","physiology / time since event","ALB,UPCR","no model file matched","default (locf)",1,1,0.00196,0.00549,0.00312,FALSE
+"Muhamad_2025_cholecalciferol_pbpk","physiology / time since event","WT","unstated","default (locf)",3,336,0.00174,0.00511,0.0142,FALSE
+"Wahlby_2004_time_varying_covariates","physiology / time since event","ALB,CRCL,TBILI","no model file matched","default (locf)",2,12,0.00162,0.00382,0.00549,FALSE
+"Aregbe_2012_alvespimycin","occasion","OCC","NONMEM","default (locf)",2,24,0.00152,0.0456,0.698,FALSE
+"Braune_2018_meropenem","dose, regimen or exposure input","RRT_CRRT_ACTIVE","unstated","locf",9,0.2,0.00147,0.00379,0.0599,FALSE
+"Mukap_2025_amoxicillin","occasion","OCC,PAGE,PNA","NONMEM","default (locf)",8,0.25,0.00143,0.00596,0.0728,FALSE
+"Tan_2025_cabotegravir_rilpivirine","occasion","OCC,ROUTE_SC","no model file matched","default (locf)",2,168,0.00141,0.00488,0.445,FALSE
+"Wade_2008_fluconazole","physiology / time since event","PNA","unstated","default (locf)",3,672,0.00126,0.00151,0.00138,FALSE
+"Kang_2026_ticagrelor","dose, regimen or exposure input","ECMO_STATUS,Q_ECMO","NONMEM","locf",1,0.25,0.0012,0.0012,0.0626,FALSE
+"Tate_2018_abemaciclib","occasion","OCC,T_FIRSTDOSE","unstated","default (locf)",5,720,0.00112,0.00519,0.504,FALSE
+"Mohanan_2017_fludarabine","occasion","OCC","Monolix","default (locf)",1,1,0.000864,0.00459,0.0851,TRUE
+"Hu_2026_clesrovimab","physiology / time since event","PNA,WT","unstated","default (locf)",1,7,0.000727,0.00143,0.00318,FALSE
+"Chung_2021_GC1118","occasion","OCC","NONMEM","default (locf)",1,336,0.000715,0.0999,0.786,FALSE
+"Chen_2023_nemonoxacin","occasion","OCC","NONMEM","default (locf)",2,24,0.000715,0.00519,0.0294,FALSE
+"Ding_2026_artemether_lumefantrine_amodiaquine","occasion","OCC","no model file matched","default (locf)",2,0.5,0.000692,0.00172,0.107,FALSE
+"Wurthwein_2025_pegasparaginase","occasion","OCC","NONMEM","default (locf)",8,0.25,0.000643,0.00352,0.0192,FALSE
+"Tanzawa_2022_fluconazole","physiology / time since event","PAGE,WT","Phoenix","default (locf)",1,4,0.000631,0.000755,0.000492,FALSE
+"Huynh_2026_VRC07523LS","physiology / time since event","CYCLE,WT","NONMEM","locf",1,1,0.000554,0.000783,0.000337,FALSE
+"Gupta_2025_erenumab_rat","occasion","OCC","Monolix","default (locf)",2,0.5,0.000513,0.00291,0.245,FALSE
+"Robbie_2012_palivizumab","physiology / time since event","PAGE,WT","unstated","default (locf)",2,4,0.000455,0.00225,0.0015,FALSE
+"BorsukDeMoor_2018_tigecycline","occasion","OCC","NONMEM","default (locf)",1,0.5,0.000438,0.00171,0.0672,FALSE
+"Bijleveld_2017_gentamicin","physiology / time since event","PAGE","NONMEM","default (locf)",1,1,0.000361,0.00041,0.000334,FALSE
+"Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta","occasion","OCC","NONMEM","default (locf)",25,28,0.000304,0.00195,0.0507,FALSE
+"Neroutsos_2022_busulfan","occasion","OCC","NONMEM","default (locf)",1,0.25,0.000297,0.000775,0.00836,FALSE
+"Pfaffendorf_2026_fosmidomycin_clindamycin","occasion","OCC","no model file matched","default (locf)",2,0.25,0.000281,0.00104,0.0133,FALSE
+"vanderVeer_2024_gentamicin","physiology / time since event","PNA","NONMEM","default (locf)",3,1,0.000279,0.000321,0.00169,FALSE
+"vanEijk_2022_paclitaxel","occasion","OCC","unstated","default (locf)",1,0.25,0.000198,0.00289,0.0191,FALSE
+"Kuchimanchi_2024_dostarlimab","dose, regimen or exposure input","CONMED_CHEMO","unstated","default (locf)",1,1,0.000145,0.000156,0.000921,FALSE
+"Roganovic_2026_ciclosporin","occasion","OCC","NONMEM","default (locf)",2,12,0.000136,0.000701,0.00511,FALSE
+"Mukherjee_2018_amlodipine","dose, regimen or exposure input","CONMED_RTV","unstated","default (locf)",1,0.2,0.000128,0.000152,0.00219,FALSE
+"Wurthwein_2021_pegasparaginase","occasion","OCC","NONMEM","default (locf)",3,0.05,9.86e-05,0.000135,0.00121,FALSE
+"Huh_2021_sorafenib","occasion","FORM_SORAFENIB_SYO1644,OCC","NONMEM","default (locf)",2,168,8.08e-05,0.00581,0.0065,FALSE
+"Dadkhah_2022_busulfan","occasion","OCC","NONMEM","default (locf)",1,0.25,7.9e-05,0.000625,0.00392,FALSE
+"Schlachter_2026_atogepant","occasion","OCC","NONMEM","default (locf)",1,24,7.42e-05,0.00194,0.00288,FALSE
+"Edlund_2022_acalabrutinib","occasion","etaiov_fdepot_1,etaiov_mtt_1","NONMEM","default (locf)",1,12,7.25e-05,0.00041,0.203,FALSE
+"Yao_2025_acalabrutinib","occasion","AUC_ACALABRUTINIB,etaiov_fdepot_1,etaiov_mtt_1","NONMEM","default (locf)",7,12,6.51e-05,0.000834,0.026,FALSE
+"Nijstad_2021_clofarabine","occasion","OCC","NONMEM","default (locf)",2,1,5.48e-05,0.000571,0.0523,FALSE
+"Thoueille_2024_rilpivirine","occasion","OCC,ROUTE_ORAL","NONMEM","default (locf)",1,24,4.95e-05,4.95e-05,0.0394,FALSE
+"Zhang_2016_burosumab","dose, regimen or exposure input","DOSE_LOW","unstated","default (locf)",1,3.5,4.22e-05,5.03e-05,0.00521,FALSE
+"Trang_2019_plazomicin","occasion","OCC","NONMEM","default (locf)",9,4.19,3.86e-05,0.000215,0.000162,FALSE
+"Chen_2024_noscapine","occasion","FORM_NOSCAPINE_TEST,OCC","NONMEM","default (locf)",1,216,1.65e-05,0.000117,8.82e-05,FALSE
+"VegasComitre_2021_amoxicillin_dog","occasion","OCC","Phoenix","default (locf)",8,8,5.7e-06,2.7e-05,0.00145,FALSE
+"Vorontsova_2022_misoprostol","occasion","DOSE,OCC","NONMEM","default (locf)",2,0.01,5.36e-06,5.37e-05,0.000604,FALSE
+"Nava_2018_busulfan","occasion","OCC","NONMEM+Phoenix","locf",1,1,5.2e-06,5.97e-05,0.000416,FALSE
+"Lodise_2018_iclaprim","occasion","OCC","NONMEM","default (locf)",2,0.25,3.76e-06,1.55e-05,0.00072,FALSE
+"Siebel_2022_pegasparaginase","occasion","OCC","NONMEM","default (locf)",1,0.001,2.55e-06,1.23e-05,6.22e-05,FALSE
+"Chotsiri_2019_piperaquine","dose, regimen or exposure input","CONMED_DHA","NONMEM","locf",1,24,2.48e-06,1.63e-05,0.0243,FALSE
+"Goggin_2004_emfilermin","occasion","OCC","NONMEM","default (locf)",2,146,1.28e-06,4.77e-06,3.65e-06,FALSE
+"Siebinga_2024_lu177psmaIT","physiology / time since event","CYCLE","NONMEM","default (locf)",2,168,9.12e-07,1.71e-05,0.11,FALSE
+"Kloos_2021_pegasparaginase","occasion","OCC","NONMEM","default (locf)",1,1e-04,6.68e-07,2.55e-06,2.48e-06,FALSE
+"Ndzamba_2025_ethambutol","occasion","OCC,SELFADMIN","NONMEM","default (locf)",1,12,6.02e-07,0.000118,0.0217,FALSE
+"Dong_2024_adefovir","occasion","CONMED_DIGOXIN_METFORMIN_PITAVASTATIN_SITAGLIPTIN,OCC","NONMEM","default (locf)",2,144,4.12e-07,1.57e-05,0.000179,FALSE
+"Augustin_2023_warfarin_qsp","occasion","OCC","unstated","default (locf)",5,2400,2.42e-07,7.29e-07,2.03e+08,FALSE
+"Gracia_2025_cr51edta_tc99mdtpa","occasion","OCC","NONMEM","default (locf)",1,30100,2e-07,9.16e-07,2.51e-06,FALSE
+"Guidi_2019_artesunate_mefloquine","dose, regimen or exposure input","DAY2","no model file matched","default (locf)",4,1,1.88e-07,8.75e-06,0.0109,FALSE
+"Juma_2026_lumefantrine","occasion","OCC","NONMEM","default (locf)",6,0.5,1.88e-07,7.2e-06,0.174,FALSE
+"Rathi_2021_belantamab","occasion","OCC","unstated","default (locf)",1,1,1.16e-07,4.52e-07,0.0372,FALSE
+"Yu_2025b_vancomycin","occasion","OCC","NONMEM+Monolix","default (locf)",1,228,9.98e-08,2.12e-06,4.88e-05,FALSE
+"Zou_2022_pretomanid","occasion","DOSE_PRETOMANID_MG,FORM_PRETOMANID_DT,OCC","unstated","default (locf)",1,72,4.63e-08,1.64e-05,1.81e-05,FALSE
+"vanderLaan_2023_levofloxacin","occasion","FORM_LEVOFLOXACIN_NONDISPERSIBLE,OCC","unstated","default (locf)",1,0.25,2.5e-08,2.38e-07,9.26e-07,FALSE
+"Thakre_2025_venetoclax","dose, regimen or exposure input","CONMED_AZACITIDINE","NONMEM","default (locf)",2,1,1.2e-08,1.29e-08,3.8,FALSE
+"Wattanakul_2020_piperaquine","occasion","OCC","NONMEM","default (locf)",3,624,8.18e-09,2.44e-07,5.99e-05,FALSE
+"Assmus_2026_oxfendazole","occasion","OCC","NONMEM","default (locf)",3,1,7.42e-09,1.03e-06,0.000817,FALSE
+"DeJongh_2025_azd7648_olaparib_xenograft","dose, regimen or exposure input","DOSE_AZD7648_MGKGD","NONMEM","default (locf)",1,6,6.5e-09,2.13e-07,1.23,FALSE
+"Yoo_2025_benzylpenicillin","dose, regimen or exposure input","DOSE_LOW,REGIMEN_CONTINF","NONMEM","default (locf)",1,324,2.86e-09,6.09e-08,2e-09,FALSE
+"Snelder_2019_leuprorelin","dose, regimen or exposure input","CONMED_CYPROTERONE","NONMEM","default (locf)",2,12,2.3e-09,3.84e-07,0.182,FALSE
+"Franck_2021_amoxicillin_mpla_pneumonia","dose, regimen or exposure input","CONMED_MPLA","no model file matched","default (locf)",1,0.25,1.1e-09,3.43e-09,0.027,FALSE
+"Bihorel_2025_evinacumab","dose, regimen or exposure input","APHERESIS_LIPO_ACTIVE","NONMEM","default (locf)",2,0.0208,1.29e-10,1.29e-10,0.159,FALSE
+"Hong_2016_pregabalin","dose, regimen or exposure input","FED","nlmixr","locf",1,0.25,1.15e-14,2.83e-07,3.95e-07,FALSE
+"Laffont_2025_opioid_overdose_reversal_simulation","dose, regimen or exposure input","L_ANT_pM","no model file matched","linear",368,1,NA,NA,12.1,FALSE
+"Paris_2023_nusinersen_qsp","physiology / time since event","HT,WT","unstated","linear",20,7,NA,NA,1,FALSE
+"Sang_2021_doxorubicin_cardiotoxicity","dose, regimen or exposure input","CEFFECT","no model file matched","locf",44,24,NA,NA,1,FALSE
+"Tsamandouras_2024_brepocitinib","dose, regimen or exposure input","CAV","NONMEM","locf",8,14,NA,NA,0.913,FALSE
+"Cao_2026_lecanemab","dose, regimen or exposure input","CSS_LEC","Monolix","locf",3,0.928,NA,NA,0.788,FALSE
+"Zhang_2025_abemaciclib","dose, regimen or exposure input","CP_ABE_NGML,CP_M18_NGML,CP_M2_NGML,CP_M20_NGML","NONMEM","locf",1,0.25,NA,NA,0.777,FALSE
+"Rognas_2025_bitopertin","dose, regimen or exposure input","AUC_BTP","NONMEM","locf",12,2,NA,NA,0.506,FALSE
+"Ashraf_2018_s_ketamine_ticlopidine","physiology / time since event","DOSE_TICLOPIDINE_MG,WT","NONMEM","default (locf)",7,1,0,0,0.176,FALSE
+"Chetty_2014_efalizumab_cd11a_pasi","dose, regimen or exposure input","CP_EFALIZUMAB_UGML","no model file matched","default (locf),linear",3,12,NA,NA,0.164,FALSE
+"GarrazaObaldia_2024_propofol_remifentanil","dose, regimen or exposure input","CP_PROPOFOL_UGML,CP_REMIFENTANIL_NGML","unstated","locf",1,1,NA,NA,0.133,FALSE
+"Yin_2024_erlotinib","dose, regimen or exposure input","TRT_PHASE","unstated","default (locf)",1,5,NA,NA,0.101,FALSE
+"Neant_2023_covid19_news2","dose, regimen or exposure input","TRT_REMDESIVIR","unstated","locf",2,0.1,NA,NA,0.0943,FALSE
+"Qian_2025_tetrahydrocannabinol","dose, regimen or exposure input","CHEART_TETRAHYDROCANNABINOL_UM","unstated","linear",3,0.01,NA,NA,0.0838,FALSE
+"Snelder_2013_cardiovascular_rat","dose, regimen or exposure input","CP_PRAZOSIN_NGML,CP_PROPRANOLOL_NGML","NONMEM","locf",3,0.02,NA,NA,0.0492,FALSE
+"ReigLopez_2020_mbq167","dose, regimen or exposure input","CP_MBQ167_NGML","unstated","linear",17,0.0208,NA,NA,0.0397,FALSE
+"Lommerse_2019_raltegravir","physiology / time since event","PNA,WT","NONMEM","default (locf)",2,3,NA,NA,0.0387,FALSE
+"Hard_2017_aripiprazole_lauroxil","occasion","OCC","NONMEM","default (locf)",2,336,0,0.0072,0.0323,FALSE
+"EudyByrne_2021_buprenorphine","physiology / time since event","PNA","unstated","default (locf)",1,4,NA,NA,0.0192,FALSE
+"Ojara_2023_paclitaxel_nsclc","dose, regimen or exposure input","AUC_PTX","no model file matched","locf",2,168,NA,NA,0.0184,FALSE
+"Wickramasinghe_2025_spatial_cns_pbpk","dose, regimen or exposure input","CP_ABEMACICLIB_UM","no model file matched","linear",2,0.17,NA,NA,0.0145,FALSE
+"Huber_2024_ivivc_tumor_stasis","dose, regimen or exposure input","CEFFECT","no model file matched","linear",11,5e-04,NA,NA,0.000148,FALSE
+"Ganesan_2022_epetraborole","occasion","OCC","NONMEM","default (locf)",1,0.25,0,1.09e-11,1.78e-09,FALSE
+"Ali_2018_amodiaquine","physiology / time since event","CYCLE","NONMEM","default (locf)",2,1,0,0,0,FALSE
+"Boucher_2016_landmark_mbma","dose, regimen or exposure input","DOSE_TPM_MGD","no model file matched","default (locf)",1,NA,NA,NA,0,FALSE
+"Centanni_2024_vincristine","dose, regimen or exposure input","PREV_AE_SCORE","NONMEM","default (locf)",5,1,0,0,0,FALSE
+"Chan_2020_fenebrutinib","dose, regimen or exposure input","PDV","NONMEM","default (locf)",1,28,NA,NA,0,FALSE
+"Chan_2025_atezolizumab_sc_nsclc","dose, regimen or exposure input","AUC_ATEZO,CMAX","no model file matched","default (locf)",6,1,NA,NA,0,FALSE
+"Choi_2016_gcc4401c_rivaroxaban","occasion","OCC","no model file matched","default (locf)",4,0.1,0,0,0,FALSE
+"Ding_2024_antimalarials_pregnancy","occasion","OCC","no model file matched","default (locf)",1,1,0,0,0,FALSE
+"Du_2024_nivolumab_ipilimumab","physiology / time since event","AGE,CAV_IPILIMUMAB,CAV_NIVOLUMAB,ECOG_GE1,LDHR,LINE_1L,PDL1_TUM_MISSING,PDL1_TUM_POS,RACE_ASIAN,RACE_BLACK,RACE_OTHER,SEXF,TUMTP_MEL_ADJUVANT,TUMTP_OTHER,WT","unstated","default (locf)",3,1,NA,NA,0,FALSE
+"Edwina_2023_fosfomycin","dose, regimen or exposure input","URINE_VOL_INTERVAL","NONMEM","default (locf)",1,1e-06,0,0,0,FALSE
+"Goel_2016_Sonidegib","dose, regimen or exposure input","MULTI_DOSE_PT","NONMEM","default (locf)",1,4,0,0,0,FALSE
+"Guo_2022_ciprofloxacin","occasion","OCC","NONMEM","default (locf)",1,24,NA,NA,0,FALSE
+"Hamuro_2017_DMD_6MWT","physiology / time since event","AGE","Phoenix","default (locf)",4,1,NA,NA,0,FALSE
+"Hoglund_2017_piperaquine","occasion","OCC","NONMEM","default (locf)",2,1,0,0,0,FALSE
+"Knebel_2011_pantoprazole","occasion","OCC","NONMEM","default (locf)",2,24,0,0,0,FALSE
+"Knibbe_2009_morphine","physiology / time since event","PNA","NONMEM","default (locf)",1,27.4,0,0,0,FALSE
+"Lanke_2019_tolvaptan","dose, regimen or exposure input","DOSE_TOLVAPTAN_MG","NONMEM","default (locf)",2,16,0,0,0,FALSE
+"Mahomed_2025_CAP256V2LS","occasion","OCC","unstated","default (locf)",1,0.001,0,0,0,FALSE
+"Martial_2021_tacrolimus","dose, regimen or exposure input","SAMPLE_DBS","NONMEM","default (locf)",1,1,0,0,0,FALSE
+"OlssonGisleskog_2021_nicotine","dose, regimen or exposure input","VIRTUAL_DOSE","NONMEM","default (locf)",1,NA,0,0,0,FALSE
+"Park_2023_pregabalin","occasion","OCC","Monolix","default (locf)",1,96,0,0,0,FALSE
+"Stemkens_2024_clofazimine","occasion","DOSE_HIGH,OCC","unstated","default (locf)",3,24,0,0,0,FALSE
+"Tarning_2014_piperaquine","occasion","OCC","NONMEM","default (locf)",2,17,0,0,0,FALSE
+"vanderHeijden_2023_alectinib","occasion","FED,OCC","NONMEM","default (locf)",1,168,0,0,0,FALSE
+"Wang_2020_delamanid","dose, regimen or exposure input","DOSE_DELAMANID_MG","NONMEM","locf",1,1,0,0,0,FALSE
+"Wattanakul_2026_paracetamol","occasion","OCC","NONMEM","default (locf)",4,0.5,0,0,0,FALSE
+"Wu_2024_gfr_maturation","physiology / time since event","BSA,HT,WT","NONMEM","default (locf)",2,3290,NA,NA,0,FALSE
+"Yin_2021_pexidartinib","dose, regimen or exposure input","CAV","unstated","linear",1,168,NA,NA,0,FALSE
+"Zhang_2024_clofazimine","occasion","OCC","Phoenix","default (locf)",2,6,0,0,0,FALSE

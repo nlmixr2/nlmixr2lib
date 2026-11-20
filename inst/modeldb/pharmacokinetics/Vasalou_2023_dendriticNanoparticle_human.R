@@ -7,6 +7,7 @@ Vasalou_2023_dendriticNanoparticle_human <- function() {
     dosing = "mg/kg",
     concentration = "ng/mL"
   )
+  dosing <- "blood_np"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

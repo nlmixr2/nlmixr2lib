@@ -157,6 +157,8 @@ mod <- readModelDb("Deferm_2025_lactation_physiology")
 # a `tv_*` column, which is unaffected by the etas, so a single solve yields
 # both the typical curve and the individual values.
 grid_typ <- rxode2::et(seq(0, 12, by = 0.02))
+# Fixed seed: the draws below feed reported results.
+set.seed(20250203)
 sim_typ <- rxode2::rxSolve(mod, grid_typ, nSub = 1L, returnType = "data.frame")
 
 # Virtual cohort of 200 postpartum women (the per-arm cap for these vignettes).

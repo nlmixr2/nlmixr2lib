@@ -60,6 +60,7 @@ Hardiansyah_2019_CART_upn3_qsp <- function() {
     dosing = "1e9 cells (anti-CD19 CART; input as amt on the carte_pb compartment)",
     concentration = "pg/mL (IL-6, IL-10, IFN-gamma); cell states are counts in units of 1e9 cells"
   )
+  dosing <- "carte_pb"
 
   compartmentData <- list(
     b_pb = list(

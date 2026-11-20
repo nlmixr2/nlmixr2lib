@@ -80,6 +80,7 @@ Asaumi_2019_coproporphyrin_I_rifampicin_pbpk <- function() {
   # in umol/L. CP-I is endogenous (no dose); its states are ng/mL (ng in
   # the biliary and lumen amount states) and Cc is reported in nmol/L.
   units <- list(time = "h", dosing = "umol (rifampicin)", concentration = "nmol/L (Cc, CP-I); umol/L (Cc_rif)")
+  dosing <- c("central_rif", "gut_lumen_rif", "gut_lumen")
 
   covariateData <- list(
     WT = list(

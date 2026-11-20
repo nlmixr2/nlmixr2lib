@@ -223,7 +223,8 @@ Chu_2024_allopurinol <- function() {
     # ESM S3: BOV_CLA = FLAG1*ETA(5) + FLAG2*ETA(6) + FLAG3*ETA(7) and
     # BOV_CLO = FLAG1*ETA(8) + FLAG2*ETA(9) + FLAG3*ETA(10), i.e. one
     # occasion per period with a SHARED variance (NONMEM $OMEGA BLOCK SAME).
-    # rxode2 has no `| occ` level, so the occasions are expanded into three
+    # rxode2's `| occ` level shares one draw per occasion when no subject has
+    # two or more occasions, so the occasions are expanded into three
     # indicator-multiplexed etas each; occasion 1 carries the estimated
     # variance and occasions 2-3 are fixed to the same value.
     # ---------------------------------------------------------------------

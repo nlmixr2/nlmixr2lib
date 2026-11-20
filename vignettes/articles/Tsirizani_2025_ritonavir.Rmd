@@ -324,6 +324,19 @@ way; occasions are therefore assigned by time of day (morning `OCC = 2`, evening
 `OCC = 1`) so each run-in dose gets its correct lag, and the final witnessed
 morning dose is `OCC = 2`.
 
+Each observation carries the occasion of the dose that opened its interval: in
+the twice-daily arm the samples from the evening dose at 12 h onward are
+`OCC = 1`, the same occasion that is in force over every evening half of the
+run-in. This matters because doses are lagged. A sample at the same time as the
+evening dose is sorted after it, and with `addlKeepsCov = FALSE`, the
+`rxSolve()` default, that sample supplies the lagged dose's bioavailability and
+zero-order duration, so an `OCC = 2` sample there would hand the evening dose
+the morning occasion's values. `addlKeepsCov = TRUE` is not a remedy for these
+doses: with `rate = -2` and a lag it takes bioavailability from the record
+*before* the dose unless an observation shares the dose's time, so every run-in
+morning dose would take the evening occasion's bioavailability and vice versa. The `superposition` chunk below
+checks the pairing directly.
+
 ```{r events}
 RUN_IN_DAYS <- 35
 T0          <- RUN_IN_DAYS * 24   # time of the witnessed morning dose
@@ -353,12 +366,16 @@ doses <-
   dplyr::bind_rows(dose_am, dose_pm) |>
   dplyr::mutate(evid = 1L, cmt = "depot", rate = -2)
 
-# Dense observation grid over the final dosing interval, on the ODE state.
+# Dense observation grid over the final dosing interval, on the ODE state. Each
+# sample takes the occasion of the dose that opened its interval, so in the
+# twice-daily arm the samples from T0 + 12 onward are OCC = 1.
 obs <-
   cohort |>
-  dplyr::select(id, dplyr::all_of(covs)) |>
+  dplyr::select(id, dplyr::all_of(covs), pm_mg) |>
   tidyr::crossing(time = T0 + seq(0, 24, by = 0.25)) |>
-  dplyr::mutate(amt = 0, evid = 0L, cmt = "central", rate = 0, OCC = 2L)
+  dplyr::mutate(amt = 0, evid = 0L, cmt = "central", rate = 0,
+                OCC = ifelse(pm_mg > 0 & time >= T0 + 12, 1L, 2L)) |>
+  dplyr::select(-pm_mg)
 
 events <-
   dplyr::bind_rows(doses, obs) |>
@@ -370,24 +387,108 @@ nrow(events)
 
 ```{r simulate}
 rxode2::rxSetSeed(20250926)
-# Solved on rxode2's analytic linCmt() path on purpose. rxode2 integrates ODE
-# models numerically by default, and for this event table the numeric path is
-# defective: the occasion-switched ka changes at the OCC record times while the
-# lag-shifted doses land between them, so liblsoda meets the parameter jump
-# inside a step ("corrector convergence failed"), returns NA for 72 of the 170
-# twice-daily children and mis-integrates the rest by a median 5.6 % against the
-# steady-state AUC identity. The analytic solution is exact for this structure
-# (lag, zero- then first-order input, two compartments) and agrees with the ODE
-# on the once-daily arms, where the ODE does integrate, to a median 6e-8 and a
-# maximum 3e-6 relative.
+# Solved on rxode2's default ODE path. Measured on rxode2 5.1.8.9000
+# (e4cb67f), it matches an exact piecewise solution of this event table (each
+# record's occasion holding until the next record) to 1.5e-6 in the three
+# twice-daily children checked. The analytic linCmt() path on that build does
+# not: in the twice-daily arm, ka changes at a lagged dose's record with no
+# other record since the previous dose, and linCmt() keeps the previous
+# occasion's ka until the dose arrives.
+#  - Against the exact solution, in those three children: linCmt() is off by
+#    up to 32% at single time points and 6% in AUC.
+#  - Between the two paths, over the 170 simulated twice-daily children:
+#    up to 36% at single time points and 5.5% in AUC; the arm medians move
+#    by 0.01%.
+sim_solve <- rxode2::rxSolve(mod, events, addDosing = FALSE,
+                             addlKeepsCov = FALSE, covsInterpolation = "locf")
 sim <-
-  rxode2::rxSolve(mod, events, addDosing = FALSE, useLinCmt = TRUE) |>
+  sim_solve |>
   as.data.frame() |>
   dplyr::mutate(tnca = time - T0) |>
   dplyr::left_join(dplyr::select(cohort, id, arm, band, WT, daily_mg), by = "id")
 
 dplyr::glimpse(dplyr::select(sim, id, arm, band, tnca, Cc, cl, vc, fdepot))
 ```
+
+The model is linear in the doses, so the twice-daily profile must equal the
+morning doses solved alone plus the evening doses solved alone, each on its own
+occasion. That holds only if every dose received its own occasion's
+bioavailability, lag and zero-order duration. The check re-solves the drawn
+parameters of the twice-daily children with the between-occasion variability
+on `ka` set to zero: `ka` acts on whatever is in the depot, so on that one
+parameter the combined solve and the separate solves legitimately differ.
+
+One case `rxSolve()` cannot pair correctly under either setting: an evening lag
+longer than the 12 h dosing interval (the 3.61-fold evening lag times a 62%
+between-occasion variability reaches it in a few percent of children). The
+evening dose then arrives after the next morning dose. `rxode2` does not read
+the dose's zero-order duration from that morning dose record, but it does read
+it from samples inside the lag window: for the evening dose before the observed
+interval, those are the morning samples, so it is absorbed over the morning
+occasion's duration. Its bioavailability, and therefore the AUC, is still its
+own. Those children are counted and checked on the AUC only.
+
+```{r superposition}
+# Trapezoidal AUC over the observed interval; also used for Figure 2 below.
+auc24 <- function(t, c) sum(diff(t) * (utils::head(c, -1) + utils::tail(c, -1)) / 2)
+
+twice_daily <- cohort$id[cohort$pm_mg > 0]
+sup_par <-
+  as.data.frame(sim_solve$params) |>
+  dplyr::filter(id %in% twice_daily) |>
+  dplyr::mutate(etaiov_ka_1 = 0, etaiov_ka_2 = 0)
+mod_typ_sup <- rxode2::zeroRe(mod)
+# Solved on the cohort simulation's own ODE path, so the check covers the
+# event-table and covariate pairing that the simulation uses.
+solve_sup <- function(ev) {
+  rxode2::rxSolve(mod_typ_sup, dplyr::filter(ev, id %in% twice_daily),
+                  params = sup_par, addDosing = FALSE,
+                  addlKeepsCov = FALSE, covsInterpolation = "locf") |>
+    as.data.frame()
+}
+sup_both <- solve_sup(events)
+# Morning doses alone on occasion 2, evening doses alone on occasion 1.
+sup_am <- solve_sup(dplyr::filter(events, evid == 0L | OCC == 2L) |>
+                      dplyr::mutate(OCC = 2L))
+sup_pm <- solve_sup(dplyr::filter(events, evid == 0L | OCC == 1L) |>
+                      dplyr::mutate(OCC = 1L))
+sup_check <-
+  dplyr::mutate(sup_both, Cc_sum = sup_am$Cc + sup_pm$Cc) |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    # The samples from T0 + 12 onward are occasion 1, so `tlag` there is the
+    # evening lag.
+    evening_lag = tlag[time >= T0 + 12][1],
+    max_err     = max(abs(Cc - Cc_sum) / Cc),
+    auc_ratio   = auc24(time, Cc) / auc24(time, Cc_sum),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(long_lag = evening_lag >= 12)
+
+stopifnot(
+  nrow(sup_both) == length(twice_daily) * 97L,
+  # Both sides use the same parameters on the ODE path at its default
+  # tolerances, so the residual is integration error (measured at most
+  # 2.4e-6, median 7e-7); a dose paired with the wrong occasion moves it by
+  # tens of percent.
+  max(sup_check$max_err[!sup_check$long_lag]) < 1e-5,
+  # About 2% of children are expected to have an evening lag over 12 h
+  # (log(12 / 3.54) / 0.62 = 2.0 SD); 10% leaves room for cohort-to-cohort
+  # scatter while catching a lag that is systematically too long.
+  mean(sup_check$long_lag) < 0.1,
+  # Only the input shape differs for them, so the interval AUC agrees up to
+  # the trapezoidal error of the 0.25 h grid on the sharper profile
+  # (measured below 0.4%). These few children are the tail of the lag
+  # distribution, so the check is on their median; a dose paired with the
+  # wrong occasion's bioavailability moves the AUC by tens of percent.
+  !any(sup_check$long_lag) ||
+    stats::median(abs(sup_check$auc_ratio[sup_check$long_lag] - 1)) < 0.02
+)
+```
+
+`r sum(sup_check$long_lag)` of the `r nrow(sup_check)` simulated twice-daily children
+have an evening lag longer than 12 h. Every other child matches the
+superposition to within `r sprintf("%.0e", max(sup_check$max_err[!sup_check$long_lag]))` relative.
 
 # Replicating the published figures
 
@@ -478,11 +579,14 @@ f2_pm <-
   tidyr::crossing(time = seq(12, T0 + 12, by = 24)) |>
   dplyr::mutate(amt = 50, OCC = 1L)
 
+# As in the cohort, each sample takes the occasion of the dose that opened its
+# interval.
 f2_obs <-
   fig2_cases |>
   dplyr::select(id, FFM, CONMED_LOPINAVIR, CONMED_ATAZANAVIR) |>
   tidyr::crossing(time = T0 + seq(0, 24, by = 0.05)) |>
-  dplyr::mutate(amt = 0, evid = 0L, cmt = "central", rate = 0, OCC = 2L)
+  dplyr::mutate(amt = 0, evid = 0L, cmt = "central", rate = 0,
+                OCC = ifelse(CONMED_LOPINAVIR == 1L & time >= T0 + 12, 1L, 2L))
 
 f2_events <-
   dplyr::bind_rows(
@@ -493,8 +597,14 @@ f2_events <-
   as.data.frame()
 
 f2_sim <-
-  # Analytic path for the same reason as the `simulate` chunk.
-  rxode2::rxSolve(mod_typ, f2_events, addDosing = FALSE, useLinCmt = TRUE) |>
+  # The analytic path is exact here. ka is the only occasion-dependent
+  # parameter that acts between records, and with every random effect zeroed
+  # it is the same on both occasions; the lag (3.61-fold on occasion 1 with
+  # lopinavir), duration and bioavailability act at the dose. Measured: with
+  # ka equal on both occasions, linCmt() and the ODE path agree to 2.6e-6
+  # over the simulated cohort (the ODE tolerance).
+  rxode2::rxSolve(mod_typ, f2_events, addDosing = FALSE, useLinCmt = TRUE,
+                  addlKeepsCov = FALSE, covsInterpolation = "locf") |>
   as.data.frame() |>
   dplyr::mutate(tnca = time - T0)
 ```
@@ -504,8 +614,6 @@ trapezoidal rule on the 0.05 h grid, which is dense enough that the numerical
 error is far below the comparison tolerance.
 
 ```{r fig2-auc}
-auc24 <- function(t, c) sum(diff(t) * (utils::head(c, -1) + utils::tail(c, -1)) / 2)
-
 fig2_obs <-
   f2_sim |>
   dplyr::group_by(id) |>
@@ -746,7 +854,9 @@ sparse/dense ratio spans
 Two errors of opposite sign roughly cancel -- linear interpolation across the
 12-24 h gap over-reads a convex declining curve, while the 0-4 h absorption
 phase is under-sampled -- and the lopinavir arm, whose second dose lands at
-12 h, is the only one with a visible (about 5% low) bias. The sparse-grid
+12 h, is the only one with a visible
+(`r sprintf("%.0f%%", 100 * (1 - grid_effect[["Sparse/dense"]][grid_effect$arm == "Lopinavir"]))`
+low) bias. The sparse-grid
 results are carried into the next section anyway, because they are the closest
 match to what Tsirizani 2025 actually had in hand, but nothing below turns on
 the choice of grid.
@@ -1026,20 +1136,66 @@ is deliberately not encoded.
   S1 fixes between-subject variability on Vc, ka, F, Vp and Q, and
   between-occasion variability on CL, to zero. Writing them as `~ fixed(0)`
   would make OMEGA singular; Table 3 lists no such rows either.
-* **Solver path.** Both simulations request rxode2's analytic `linCmt()`
-  solution explicitly. rxode2 integrates ODE models numerically by default,
-  and for this event table the numeric path fails: the
-  occasion-switched `ka` changes at the `OCC` record times while the lag-shifted
-  doses fall between them, so the integrator meets the jump inside a step and
-  returns `NA` for 72 of the 170 twice-daily children. The analytic solution is
-  exact for this model structure and agrees with the numeric solution on the
-  once-daily arms to better than 3e-6 (see the comment in the `simulate` chunk).
+* **Solver path.** The cohort simulation uses rxode2's default numerical ODE
+  solution. Measured on rxode2 5.1.8.9000 (e4cb67f), it agrees with an exact
+  piecewise solution of the event table, in which each record's occasion holds
+  until the next record, to 1.5e-6 in the three twice-daily children checked.
+  The analytic `linCmt()` path on that build does not. In the twice-daily arm
+  `ka` changes at each lagged dose's record, with no other record since the
+  previous dose during the run-in, and `linCmt()` keeps the previous
+  occasion's `ka` until the dose arrives.
+  - Against the exact solution, in those three children, `linCmt()` is off by
+    up to 32% at single time points and 6% in AUC.
+  - Between the two paths, over the 170 simulated twice-daily children, the
+    profiles differ by up to 36% at single time points (54 children by more
+    than 0.1%) and by up to 5.5% in AUC; the arm medians move by 0.01%.
+
+  The superposition check runs on the same ODE path. Figure 2 still uses
+  `linCmt()`: `ka` is the only occasion-dependent parameter that acts between
+  records, it is the same on both occasions in a typical-value solve, and
+  with `ka` equal the two paths agree to 2.6e-6. None of this is a claim that
+  either path reproduces the source's NONMEM ADVAN4 fit.
 * **Occasion assignment during the simulated run-in.** `OCC` both selects the
   BOV eta and identifies the evening dose. Run-in doses are labelled by time of
   day so each gets its correct absorption lag; the steady-state AUC of the final
   interval is unaffected, since absorption lag changes a dose's input shape and
   not the amount absorbed. The witnessed dose is `OCC = 2`, matching the Table 3
   reference condition.
+* **Observation records carry the occasion of the dose that opened their
+  interval, and every simulation states `addlKeepsCov = FALSE`.** Doses are
+  lagged and given with `rate = -2`, and for such a dose `rxSolve()` does not
+  always read the occasion from the dose's own record. The lag is always read
+  from the dose record. The zero-order duration comes from an observation at
+  the same time as the dose or inside the lag window, if there is one, under
+  either setting of `addlKeepsCov`; a dose into another compartment can too,
+  depending on that compartment's own lag. Another dose into the depot, or a
+  record exactly at the arrival time, does not count, and with
+  `nonmem = TRUE` a record at the same time counts only if its row comes
+  after the dose's. The bioavailability comes from an observation at the same
+  time as the dose, if there is one, under either setting (a dose into
+  another compartment can too, depending on its own lag and the setting; with
+  `FALSE`, another dose into the depot at that time too). Otherwise,
+  with `addlKeepsCov = FALSE`, the default, it comes from the dose's own
+  record: a record inside the lag window is ignored, unlike for a bolus dose.
+  With `addlKeepsCov = TRUE` (and with `nonmem = TRUE`) it comes from the
+  record *before* the dose. Neither setting is right for every
+  event table, so the tables are built so that `FALSE` pairs each dose with its
+  own occasion: in the twice-daily arm the samples from the evening dose at
+  12 h onward are `OCC = 1`. If every sample were `OCC = 2`, the evening dose in the observed
+  interval would take the morning occasion's bioavailability, which is not
+  inflated by the 2.14-fold unwitnessed-dose factor; with `TRUE` instead, every
+  run-in dose would take the other dose's occasion. The `superposition` chunk
+  pins the pairing. It also counts the one case neither setting handles: when
+  a child's evening lag is longer than the 12 h dosing interval, the evening
+  dose arrives after the next morning dose, and takes its zero-order duration
+  from the morning samples inside its lag window. Its bioavailability, and so
+  the AUC, stays its own;
+  only the shape of its input changes.
+* **Covariate interpolation.** Each record carries the `OCC` value in force
+  from that record until the next, so every solve in which it changes within a
+  subject states `covsInterpolation = "locf"`, the `rxSolve()` default; solving
+  the cohort's table with `"nocb"`, NONMEM's rule, moves the median subject's
+  AUC by up to 6.9% (measured on rxode2 5.1.8.9000).
 * **Weight is sampled uniformly within each WHO band, and matched across
   arms.** Table 1 reports band counts and a per-arm median weight of 26.0 kg but
   not the within-band distribution, so uniform sampling is the least-assumption

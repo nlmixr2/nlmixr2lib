@@ -27,6 +27,7 @@ Ohara_2014_warfarin_s <- function() {
   paper_specific_compartments <- c("npt")
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Ohara 2014 reports both S-warfarin plasma concentration and NPT in ug/mL,
   # which is numerically identical to the mg/L used here (and used by Shi 2024

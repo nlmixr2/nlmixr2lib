@@ -1,0 +1,624 @@
+---
+title: "Cephalexin (Haynes 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cephalexin (Haynes 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+```{r load-model}
+mod <- readModelDb("Haynes_2026_cephalexin")
+ui <- rxode2::rxode(mod)
+mod_typ <- rxode2::zeroRe(mod)
+```
+
+# Model and source
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article: <https://doi.org/10.1093/ofid/ofag611>
+
+Cephalexin is an oral first-generation cephalosporin used both as initial
+therapy and as oral transition therapy for systemic methicillin-susceptible
+*Staphylococcus aureus* (MSSA) and Enterobacterales infections. Haynes 2026
+pooled four cephalexin PK datasets spanning preterm-born young infants to young
+adults into one population PK model, then used it to compute the probability
+of target attainment (PTA) for free-drug time above the MIC (fT>MIC) targets
+across the age range.
+
+The final model is a one-compartment model with first-order absorption, an
+absorption lag time and linear elimination. All doses were enteral, so volume
+and clearance are apparent (`Vd/F`, `CL/F`). Both scale with fat-free mass
+(FFM) by estimated power exponents around a 56 kg reference; `CL/F` matures
+with postmenstrual age (PMA) through a sigmoid Hill function, and the
+absorption rate constant is lowered by a fixed scalar in infants up to 21 days
+old.
+
+The neonatal study in this pool (Study 1) was also modelled on its own in
+`Haynes_2025_cephalexin`, which uses total body weight and a power function of
+PMA. The two models are separate analyses and both are packaged.
+
+# Population
+
+Seventy-one subjects contributed 360 cephalexin plasma concentrations (Haynes
+2026 Table 1): 33 hospitalized young infants aged 9-56 days at Children's
+Hospital Colorado (Study 1, gestational age at birth 29 3/7 to 40 6/7 weeks),
+15 children aged 0.82-17.8 years with musculoskeletal infections at the same
+hospital (Study 2), 12 children aged 1.2-16.7 years with musculoskeletal
+infections in Montreal sampled at steady state (Study 3), and 11 healthy adults
+aged 18-29 years in New Zealand given a single 1000 mg dose after a meal
+(Study 4). Overall median age was 1.46 years, median body weight 10.95 kg
+(range 2.2-112), median FFM 8.06 kg (range 1.99-77.18), and 39% were female.
+Doses ranged from 8.93 to 51.18 mg/kg (28.5-1500 mg). Twenty-two samples (6%)
+were below the limit of quantification and were handled with the M4
+likelihood.
+
+```{r population}
+str(ui$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. The
+table collects them.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| One compartment, first-order absorption with lag, linear elimination | structure | Results "Final Model"; Supplementary Appendix C |
+| `Tlag = Tlag_pop * exp(eta)` | equation | Supplementary Appendix C |
+| `Ka = Ka_pop * exp(beta_PNA) * exp(eta)` for PNA <= 21 days, else `Ka_pop * exp(eta)` | equation | Supplementary Appendix C |
+| `Vd/F = Vd_pop/F * (FFM/56)^0.92` | equation | Supplementary Appendix C |
+| `CL/F = CL_pop/F * (FFM/56)^0.82 * PMA^5.06 / (42.96^5.06 + PMA^5.06) * exp(eta)` | equation | Supplementary Appendix C |
+| `ltlag` | 0.53 h (RSE 13.16%) | Table 2 'Tlag (h)' |
+| `lka` | 1.59 1/h (RSE 18.2%) | Table 2 'Ka (1/h)' |
+| `e_pnale21d_ka` | -0.81 (RSE 34.23%) | Table 2 'beta age < 21d_Ka' |
+| `lvc` | 22.04 L/56 kg FFM (RSE 7.57%) | Table 2 'Vd/F (L/56 kg)' |
+| `e_ffm_vc` | 0.92 (RSE 2.7%) | Table 2 'beta FFM_V' |
+| `lcl` | 16.6 L/h/56 kg FFM (RSE 4.25%) | Table 2 'CL/F (L/h/56 kg)' |
+| `e_ffm_cl` | 0.82 (RSE 2.82%) | Table 2 'beta FFM_CL' |
+| `lhill_mat` | 5.06 (RSE 15.51%) | Table 2 'Hill coefficient' |
+| `ltmat50` | 42.96 weeks PMA (RSE 2.08%) | Table 2 'TM50 (weeks PMA)' |
+| `etaltlag` | CV 87.13% -> variance 0.56484 | Table 2 'IIV for Tlag (CV%)' |
+| `etalka` | CV 51.87% -> variance 0.23827 | Table 2 'IIV for Ka (CV%)' |
+| `etalcl` | CV 17.25% -> variance 0.029322 | Table 2 'IIV for CL/F (CV%)' |
+| No IIV on Vd/F | fixed to 0 | Results "Final Model"; Appendix C (53.8% shrinkage) |
+| `addSd` | 0.31 mg/L (RSE 18.01%) | Table 2 'Constant (a, mg/L)' |
+| `propSd` | 0.21 (RSE 9.39%) | Table 2 'Proportional (b)' |
+| Protein binding (simulations only) | 10% | Methods "Outcomes" |
+| Gestational age of children and adults | 40 weeks (so PMA = 40 + postnatal weeks) | Supplementary Appendix A |
+
+## Random-effect scale: CV to variance
+
+Table 2 reports the random effects as CV%. For a log-normal parameter Monolix
+reports `CV = sqrt(exp(omega^2) - 1)`, so the variance is `log(1 + CV^2)`. The
+bootstrap medians printed in the same rows (0.77, 0.45, 0.16) are on the omega
+(SD) scale and agree with the converted values, which confirms the reading.
+
+```{r omega-scale}
+cv <- c(Tlag = 0.8713, Ka = 0.5187, `CL/F` = 0.1725)
+om <- ui$omega
+omega_chk <- data.frame(
+  Parameter = names(cv),
+  `Table 2 CV (%)` = 100 * cv,
+  `Model variance` = diag(om)[c("etaltlag", "etalka", "etalcl")],
+  `Model CV (%)` = 100 * sqrt(exp(diag(om)[c("etaltlag", "etalka", "etalcl")]) - 1),
+  `Model omega (SD)` = sqrt(diag(om)[c("etaltlag", "etalka", "etalcl")]),
+  `Bootstrap median omega` = c(0.77, 0.45, 0.16),
+  check.names = FALSE
+)
+knitr::kable(omega_chk, digits = 4, row.names = FALSE)
+
+# Pure arithmetic: the converted variances must return the printed CVs.
+stopifnot(max(abs(omega_chk$`Model CV (%)` - omega_chk$`Table 2 CV (%)`)) < 0.01)
+# The bootstrap medians differ from the point estimates by bootstrap noise only.
+stopifnot(max(abs(omega_chk$`Model omega (SD)` - omega_chk$`Bootstrap median omega`)) < 0.05)
+```
+
+# Covariate model verification
+
+Individual parameters are read back from typical-value solves. Event tables
+carry observation rows on `central` so every subject's covariates are used.
+
+```{r param-helper}
+param_events <- function(d) {
+  bind_rows(
+    d |> mutate(time = 0, amt = 1, evid = 1L, cmt = "depot"),
+    d |>
+      tidyr::crossing(time = c(0, 1)) |>
+      mutate(amt = NA_real_, evid = 0L, cmt = "central")
+  ) |>
+    arrange(id, time, desc(evid)) |>
+    select(id, time, amt, evid, cmt, dplyr::everything())
+}
+# A typical-value model has no omega, so rxode2 warns on every multi-subject
+# solve; that is intended here, so muffle that one warning only.
+muffle_no_omega <- function(w) {
+  if (grepl("multi-subject simulation without", conditionMessage(w), fixed = TRUE)) {
+    invokeRestart("muffleWarning")
+  }
+}
+read_params <- function(d, keep) {
+  withCallingHandlers(
+    rxode2::rxSolve(mod_typ, param_events(d), keep = keep),
+    warning = muffle_no_omega
+  ) |>
+    as.data.frame() |>
+    group_by(id) |>
+    slice(1) |>
+    ungroup()
+}
+```
+
+At 56 kg FFM, an adult PMA (where the Hill term is essentially 1) and a
+postnatal age above 21 days, the model must return the Table 2 typical values.
+The Hill term must be exactly one half at PMA = TM50, and the 21-day cut must
+scale ka by `exp(-0.81)`.
+
+```{r reference-checks}
+ref <- data.frame(
+  id = 1:4,
+  FFM = 56,
+  PAGE = c(40 + 25 * 52.1775, 42.96, 40 + 25 * 52.1775, 40 + 25 * 52.1775),
+  PNA = c(25 * 12, 0.2, 20.5 / 30.4375, 21.5 / 30.4375)
+)
+ref_par <- read_params(ref, keep = c("FFM", "PAGE", "PNA"))
+stopifnot(nrow(ref_par) == 4L, !anyNA(ref_par$cl))
+
+ref_tab <- data.frame(
+  Quantity = c("Tlag (h)", "Ka (1/h)", "Vd/F (L)", "CL/F (L/h)",
+               "Hill term at PMA = TM50", "ka(PNA 20.5 d) / ka(PNA 21.5 d)"),
+  Model = c(ref_par$tlag[1], ref_par$ka[1], ref_par$vc[1], ref_par$cl[1],
+            ref_par$fmat[2], ref_par$ka[3] / ref_par$ka[4]),
+  Expected = c(0.53, 1.59, 22.04, 16.6, 0.5, exp(-0.81))
+)
+ref_tab$`Diff (%)` <- 100 * (ref_tab$Model - ref_tab$Expected) / ref_tab$Expected
+knitr::kable(ref_tab, digits = 5)
+
+# Deterministic. CL/F at a 25-year-old's PMA (1344 weeks) carries a Hill term
+# of 1 - (42.96 / 1344)^5.06 = 1 - 2.7e-8, i.e. 2.7e-6 percent below the
+# Table 2 value; every other row is exact to floating point.
+stopifnot(max(abs(ref_tab$`Diff (%)`)) < 1e-4)
+```
+
+## Clearance maturation (replicates the population curve of Figure S3)
+
+Figure S3 plots individual CL as a percentage of the adult value against PMA,
+with the population Hill curve. The curve below is the packaged model's
+maturation term.
+
+```{r maturation-figure, fig.cap = "Population maturation of cephalexin CL/F with postmenstrual age (replicates the solid line of Haynes 2026 Figure S3). Dashed line: TM50 = 42.96 weeks."}
+mat_grid <- data.frame(id = 1:200, PAGE = exp(seq(log(28), log(300), length.out = 200))) |>
+  mutate(FFM = 56, PNA = 12)
+mat_par <- read_params(mat_grid, keep = c("PAGE"))
+stopifnot(nrow(mat_par) == 200L, all(diff(mat_par$fmat) > 0))
+
+ggplot(mat_par, aes(PAGE, 100 * fmat)) +
+  geom_line(linewidth = 0.8) +
+  geom_vline(xintercept = 42.96, linetype = "dashed") +
+  scale_x_log10() +
+  labs(x = "Postmenstrual age (weeks)", y = "CL/F (% of adult value)") +
+  theme_bw()
+```
+
+# Typical values at each study's median covariates
+
+The Discussion compares the model's clearance with each source study's
+published estimate: Study 1 0.67 L/h, Study 2 11.8 L/h, Study 3 0.263 L/h/kg
+and Study 4 14.8 L/h. Supplementary Table S2 gives the median individual
+estimates by age group. The table below evaluates the **typical** model at each
+study's Table 1 median FFM, age and gestational age. A typical value at the
+median covariates is not the same statistic as the median of the individual
+estimates, so close but not exact agreement is expected.
+
+```{r study-medians}
+studies <- data.frame(
+  id = 1:4,
+  Study = c("1: young infants", "2: CHCO children", "3: Montreal children", "4: young adults"),
+  FFM = c(2.99, 36.46, 21.06, 48.97),
+  WT = c(3.35, 51.8, 25, 75),
+  ga_wk = c(37 + 2 / 7, 40, 40, 40),
+  age_d = c(31.2, 12.22 * 365.25, 7.61 * 365.25, 20.42 * 365.25)
+) |>
+  mutate(PNA = age_d / 30.4375, PAGE = ga_wk + age_d / 7)
+
+st_par <- read_params(studies, keep = c("Study", "FFM", "WT", "PAGE"))
+stopifnot(nrow(st_par) == 4L)
+
+st_tab <- st_par |>
+  transmute(
+    Study,
+    `FFM (kg)` = FFM, `PMA (wk)` = PAGE,
+    `Model CL/F (L/h)` = cl,
+    `Model CL/F per kg (L/h/kg)` = cl / WT,
+    `Model Vd/F (L)` = vc,
+    `Model t1/2 (h)` = log(2) * vc / cl,
+    `Discussion CL` = c("0.67 L/h", "11.8 L/h", "0.263 L/h/kg", "14.8 L/h"),
+    model_cmp = c(cl[1], cl[2], cl[3] / WT[3], cl[4]),
+    published = c(0.67, 11.8, 0.263, 14.8),
+    `Diff (%)` = 100 * (model_cmp - published) / published
+  )
+knitr::kable(st_tab |> select(-model_cmp, -published), digits = 3)
+
+# Deterministic. Realised differences are +3.9%, -1.1%, +13.2% and +0.5%.
+# Study 3's comparison is a per-kg clearance, where the typical value at the
+# median FFM divided by the median weight is a different statistic from the
+# median of individual CL/kg; the other three studies agree within 4%.
+stopifnot(max(abs(st_tab$`Diff (%)`[c(1, 2, 4)])) < 5)
+stopifnot(abs(st_tab$`Diff (%)`[3]) < 20)
+```
+
+The adult (Study 4) typical half-life of about 0.9 h and volume of about 19.5 L
+match the Table S2 18-30 year medians (0.897 h, 19.5 L). The Study 1 typical
+infant (1.48 h, 1.49 L) sits between the Table S2 medians for 7-28 days
+(1.81 h, 1.39 L) and 29 days to < 2 years (1.37 h, 1.69 L), as expected for a
+cohort whose median postnatal age is 31 days.
+
+# Virtual cohorts
+
+The paper simulated 11 age groups of 5000 subjects generated in PK-Sim from
+NHANES and neonatal distributions, which are not published. Two groups are
+reconstructed here at 200 subjects each, the cap for these vignettes:
+
+* **Young adults, 18-30 years.** Sex 50/50; height normal (176 +/- 7.5 cm male,
+  162 +/- 7 cm female); weight log-normal (median 80 kg male, 68 kg female, CV
+  about 20%), approximating NHANES young adults. FFM from the Janmahasatian
+  2005 equation, which Supplementary Appendix A names for adults.
+* **Young infants, 7 to < 60 days.** Gestational age uniform over 30-41 weeks
+  and postnatal age uniform over 7-60 days, the strata of the paper's infant
+  groups. Weight from an approximate 50th-percentile birth weight for
+  gestational age, a 5% early weight loss and 25 g/day growth, with 12% CV.
+  FFM is taken as 0.893 x weight, the ratio of the Study 1 median FFM to median
+  weight in Table 1 (2.99 / 3.35), because the paper's infant FFM equation
+  (O'Hanlon 2023) needs sex-specific maturation constants it does not print.
+
+```{r cohort}
+n_per_arm <- 200L
+
+set.seed(2026001)
+male <- rep(c(1, 0), length.out = n_per_arm)
+ht <- ifelse(male == 1, stats::rnorm(n_per_arm, 176, 7.5), stats::rnorm(n_per_arm, 162, 7))
+wt <- ifelse(male == 1, 80, 68) * stats::rlnorm(n_per_arm, 0, 0.2)
+bmi <- wt / (ht / 100)^2
+adults <- data.frame(
+  grp = "Adults 18-30 y",
+  age_d = stats::runif(n_per_arm, 18, 30) * 365.25,
+  ga_wk = 40, WT = wt,
+  FFM = ifelse(male == 1, 9270 * wt / (6680 + 216 * bmi), 9270 * wt / (8780 + 244 * bmi))
+)
+
+bw_knots <- data.frame(GA = c(30, 32, 34, 36, 38, 40, 41), BW = c(1.4, 1.8, 2.3, 2.8, 3.2, 3.5, 3.6))
+set.seed(2026002)
+ga <- stats::runif(n_per_arm, 30, 41)
+pna_d <- stats::runif(n_per_arm, 7, 60)
+wt_inf <- (stats::approx(bw_knots$GA, bw_knots$BW, xout = ga)$y * 0.95 + 0.025 * (pna_d - 7)) *
+  stats::rlnorm(n_per_arm, 0, 0.12)
+infants <- data.frame(
+  grp = "Infants 7-<60 d",
+  age_d = pna_d, ga_wk = ga, WT = wt_inf, FFM = 0.893 * wt_inf
+)
+
+cohort <- bind_rows(adults, infants) |>
+  mutate(
+    id = dplyr::row_number(),
+    PNA = age_d / 30.4375,
+    PAGE = ga_wk + age_d / 7
+  )
+
+cohort |>
+  group_by(grp) |>
+  summarise(
+    n = n(),
+    `WT (kg)` = sprintf("%.1f (%.1f-%.1f)", median(WT), min(WT), max(WT)),
+    `FFM (kg)` = sprintf("%.1f (%.1f-%.1f)", median(FFM), min(FFM), max(FFM)),
+    `PMA (wk)` = sprintf("%.1f (%.1f-%.1f)", median(PAGE), min(PAGE), max(PAGE)),
+    .groups = "drop"
+  ) |>
+  knitr::kable(caption = "Reconstructed virtual cohorts, median (range).")
+
+stopifnot(nrow(cohort) == 2L * n_per_arm)
+# The adult FFM median should sit near the Study 4 median of 48.97 kg, and the
+# infant FFM inside the Study 1 range of 1.99-4.17 kg at the centre.
+stopifnot(abs(median(cohort$FFM[cohort$grp == "Adults 18-30 y"]) - 49) < 6)
+stopifnot(median(cohort$FFM[cohort$grp == "Infants 7-<60 d"]) > 2,
+          median(cohort$FFM[cohort$grp == "Infants 7-<60 d"]) < 4.2)
+```
+
+# Single-dose simulation and PKNCA
+
+Adults receive 1000 mg (the Study 4 dose and the paper's adult AUC-matching
+reference) and infants 25 mg/kg, with full inter-individual variability.
+
+```{r single-dose-sim}
+rxode2::rxSetSeed(2026101)
+sd_grid <- sort(unique(c(seq(0, 2, by = 0.05), seq(2.25, 8, by = 0.25), seq(9, 16, by = 1))))
+
+cohort_sd <- cohort |> mutate(dose_mg = ifelse(grp == "Adults 18-30 y", 1000, 25 * WT))
+ev_sd <- bind_rows(
+  cohort_sd |> mutate(time = 0, amt = dose_mg, evid = 1L, cmt = "depot"),
+  cohort_sd |>
+    tidyr::crossing(time = sd_grid) |>
+    mutate(amt = NA_real_, evid = 0L, cmt = "central")
+) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, amt, evid, cmt, FFM, PNA, PAGE, grp, dose_mg)
+
+sim_sd <- rxode2::rxSolve(mod, ev_sd, keep = c("grp", "dose_mg")) |>
+  as.data.frame()
+stopifnot(all(is.finite(sim_sd$Cc)), all(sim_sd$Cc >= 0))
+```
+
+```{r single-dose-figure, fig.cap = "Simulated cephalexin plasma concentrations after a single oral dose (adults 1000 mg; infants 25 mg/kg). Line = median, band = 5th-95th percentile."}
+sim_sd |>
+  group_by(grp, time) |>
+  summarise(med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(time, med, ymin = lo, ymax = hi, fill = grp, colour = grp)) +
+  geom_ribbon(alpha = 0.2, colour = NA) +
+  geom_line(linewidth = 0.7) +
+  labs(x = "Time after dose (h)", y = "Cephalexin concentration (mg/L)", colour = NULL, fill = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r pknca}
+nca_in <- sim_sd |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, grp, dose_mg)
+nca_in <- bind_rows(
+  nca_in,
+  nca_in |> distinct(id, grp, dose_mg) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, grp, time, .keep_all = TRUE) |>
+  arrange(id, time)
+dose_in <- nca_in |> distinct(id, grp, dose_mg) |> mutate(time = 0)
+
+nca_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(nca_in, Cc ~ time | grp + id),
+    PKNCA::PKNCAdose(dose_in, dose_mg ~ time | grp + id),
+    intervals = data.frame(
+      start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+      aucinf.obs = TRUE, half.life = TRUE
+    )
+  ),
+  verbose = FALSE
+)
+nca_wide <- as.data.frame(nca_res) |>
+  select(id, grp, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+stopifnot(nrow(nca_wide) == nrow(cohort))
+
+nca_wide |>
+  group_by(grp) |>
+  summarise(
+    `Cmax (mg/L)` = sprintf("%.2f (%.2f-%.2f)", median(cmax), quantile(cmax, 0.05), quantile(cmax, 0.95)),
+    `Tmax (h)` = sprintf("%.2f (%.2f-%.2f)", median(tmax), quantile(tmax, 0.05), quantile(tmax, 0.95)),
+    `AUCinf (mg*h/L)` = sprintf("%.1f (%.1f-%.1f)", median(aucinf.obs, na.rm = TRUE),
+                                quantile(aucinf.obs, 0.05, na.rm = TRUE), quantile(aucinf.obs, 0.95, na.rm = TRUE)),
+    `t1/2 (h)` = sprintf("%.2f (%.2f-%.2f)", median(half.life, na.rm = TRUE),
+                         quantile(half.life, 0.05, na.rm = TRUE), quantile(half.life, 0.95, na.rm = TRUE)),
+    .groups = "drop"
+  ) |>
+  knitr::kable(caption = "Simulated single-dose NCA, median (5th-95th percentile).")
+```
+
+## Comparison with the published adult exposure
+
+The Results "AUC Matching" section reports a median AUC0-inf of 65.9 mg*h/L for
+the paper's virtual young adults after 1000 mg, against 68.1 mg*h/L from the
+Study 4 NCA and 67.46 mg*h/L from the 13 literature values of Table S1. Table
+S2 gives an adult median half-life of 0.897 h.
+
+```{r nca-compare}
+adult_nca <- nca_wide |> filter(grp == "Adults 18-30 y")
+sim_tab <- data.frame(
+  Group = "Adults 18-30 y, 1000 mg",
+  aucinf.obs = median(adult_nca$aucinf.obs, na.rm = TRUE),
+  half.life = median(adult_nca$half.life, na.rm = TRUE)
+)
+ref_tab <- data.frame(Group = "Adults 18-30 y, 1000 mg", aucinf.obs = 65.9, half.life = 0.897)
+nca_cmp <- ncaComparisonTable(
+  simulated = sim_tab,
+  reference = ref_tab,
+  by = "Group",
+  units = c(aucinf.obs = "mg*h/L", half.life = "h"),
+  label_first_column = "NCA parameter"
+)
+knitr::kable(
+  nca_cmp,
+  caption = "Simulated vs published adult exposure (AUC0-inf: Results 'AUC Matching'; t1/2: Table S2 median)."
+)
+attr(nca_cmp, "footnote")
+
+# Centre-of-distribution checks. A wrong clearance, FFM exponent or unit
+# shifts AUC by tens of percent; the reconstructed NHANES cohort moves it by a
+# few percent at most.
+stopifnot(abs(sim_tab$aucinf.obs / 65.9 - 1) < 0.12)
+stopifnot(abs(sim_tab$half.life / 0.897 - 1) < 0.12)
+```
+
+# Probability of target attainment (Supplementary Table S3)
+
+PTA is the fraction of subjects whose free concentration (10% protein binding,
+Methods "Outcomes") exceeds the MIC for at least the target percentage of the
+24-48 h interval after the first dose. The three regimens of Table S3 are
+simulated for both cohorts, with doses capped as in the paper: 25 mg/kg (max
+1000 mg) every 8 h, 25 mg/kg (max 1000 mg) every 6 h and 37.5 mg/kg (max
+1500 mg) every 6 h. Adults therefore receive 1000 mg, 1000 mg and 1500 mg.
+
+```{r pta-sim}
+regimens <- data.frame(
+  regimen = c("25 mg/kg q8h", "25 mg/kg q6h", "37.5 mg/kg q6h"),
+  mgkg = c(25, 25, 37.5), cap = c(1000, 1000, 1500), tau = c(8, 6, 6)
+)
+pta_cohort <- tidyr::crossing(cohort |> select(-id), regimens) |>
+  mutate(id = dplyr::row_number(), amt = pmin(mgkg * WT, cap))
+
+obs_grid <- seq(24, 47.95, by = 0.05)
+ev_pta <- bind_rows(
+  pta_cohort |>
+    group_by(id) |>
+    reframe(time = seq(0, 47.999, by = tau[1]), amt = amt[1]) |>
+    mutate(evid = 1L, cmt = "depot"),
+  pta_cohort |>
+    select(id) |>
+    tidyr::crossing(time = obs_grid) |>
+    mutate(amt = NA_real_, evid = 0L, cmt = "central")
+) |>
+  left_join(pta_cohort |> select(id, FFM, PNA, PAGE, grp, regimen), by = "id") |>
+  arrange(id, time, desc(evid))
+
+rxode2::rxSetSeed(2026201)
+sim_pta <- rxode2::rxSolve(mod, ev_pta, keep = c("grp", "regimen")) |>
+  as.data.frame()
+stopifnot(nrow(sim_pta) == nrow(pta_cohort) * length(obs_grid))
+
+fu <- 0.9
+mics <- c(1, 2, 4, 8, 16)
+ft <- tidyr::crossing(sim_pta |> select(id, grp, regimen, Cc), mic = mics) |>
+  group_by(id, grp, regimen, mic) |>
+  summarise(ftmic = mean(fu * Cc > mic), .groups = "drop")
+targets <- c(0.25, 0.35, 0.40, 0.50, 0.60)
+pta <- tidyr::crossing(ft, target = targets) |>
+  group_by(grp, regimen, mic, target) |>
+  summarise(pta = 100 * mean(ftmic >= target), .groups = "drop")
+```
+
+```{r pta-published}
+# Supplementary Table S3, columns '7-<60 d' and '18-30 yr' (percent).
+pub <- tibble::tribble(
+  ~regimen, ~target, ~mic, ~`Infants 7-<60 d`, ~`Adults 18-30 y`,
+  "25 mg/kg q8h", 0.25, 1, 100, 100, "25 mg/kg q8h", 0.25, 2, 100, 100,
+  "25 mg/kg q8h", 0.25, 4, 100, 100, "25 mg/kg q8h", 0.25, 8, 100, 97,
+  "25 mg/kg q8h", 0.25, 16, 99, 20,
+  "25 mg/kg q8h", 0.35, 1, 100, 100, "25 mg/kg q8h", 0.35, 2, 100, 100,
+  "25 mg/kg q8h", 0.35, 4, 100, 98, "25 mg/kg q8h", 0.35, 8, 100, 56,
+  "25 mg/kg q8h", 0.35, 16, 85, 1,
+  "25 mg/kg q6h", 0.35, 1, 100, 100, "25 mg/kg q6h", 0.35, 2, 100, 100,
+  "25 mg/kg q6h", 0.35, 4, 100, 100, "25 mg/kg q6h", 0.35, 8, 100, 94,
+  "25 mg/kg q6h", 0.35, 16, 99, 18,
+  "25 mg/kg q6h", 0.40, 1, 100, 100, "25 mg/kg q6h", 0.40, 2, 100, 100,
+  "25 mg/kg q6h", 0.40, 4, 100, 100, "25 mg/kg q6h", 0.40, 8, 100, 82,
+  "25 mg/kg q6h", 0.40, 16, 97, 8,
+  "25 mg/kg q6h", 0.50, 1, 100, 100, "25 mg/kg q6h", 0.50, 2, 100, 100,
+  "25 mg/kg q6h", 0.50, 4, 100, 94, "25 mg/kg q6h", 0.50, 8, 100, 45,
+  "25 mg/kg q6h", 0.50, 16, 84, 1,
+  "25 mg/kg q6h", 0.60, 1, 100, 100, "25 mg/kg q6h", 0.60, 2, 100, 97,
+  "25 mg/kg q6h", 0.60, 4, 100, 72, "25 mg/kg q6h", 0.60, 8, 97, 16,
+  "25 mg/kg q6h", 0.60, 16, 65, 0,
+  "37.5 mg/kg q6h", 0.35, 1, 100, 100, "37.5 mg/kg q6h", 0.35, 2, 100, 100,
+  "37.5 mg/kg q6h", 0.35, 4, 100, 100, "37.5 mg/kg q6h", 0.35, 8, 100, 100,
+  "37.5 mg/kg q6h", 0.35, 16, 100, 71,
+  "37.5 mg/kg q6h", 0.40, 1, 100, 100, "37.5 mg/kg q6h", 0.40, 2, 100, 100,
+  "37.5 mg/kg q6h", 0.40, 4, 100, 100, "37.5 mg/kg q6h", 0.40, 8, 100, 98,
+  "37.5 mg/kg q6h", 0.40, 16, 100, 50,
+  "37.5 mg/kg q6h", 0.50, 1, 100, 100, "37.5 mg/kg q6h", 0.50, 2, 100, 100,
+  "37.5 mg/kg q6h", 0.50, 4, 100, 99, "37.5 mg/kg q6h", 0.50, 8, 100, 82,
+  "37.5 mg/kg q6h", 0.50, 16, 98, 17,
+  "37.5 mg/kg q6h", 0.60, 1, 100, 100, "37.5 mg/kg q6h", 0.60, 2, 100, 100,
+  "37.5 mg/kg q6h", 0.60, 4, 100, 91, "37.5 mg/kg q6h", 0.60, 8, 100, 50,
+  "37.5 mg/kg q6h", 0.60, 16, 91, 4
+) |>
+  tidyr::pivot_longer(c(`Infants 7-<60 d`, `Adults 18-30 y`), names_to = "grp", values_to = "pta_pub")
+stopifnot(nrow(pub) == 2L * 50L)
+
+pta_cmp <- pub |>
+  inner_join(pta, by = c("grp", "regimen", "mic", "target")) |>
+  mutate(diff = pta - pta_pub)
+stopifnot(nrow(pta_cmp) == nrow(pub))
+```
+
+```{r pta-figure, fig.width = 8, fig.height = 7, fig.cap = "PTA against MIC. Lines: simulated with the packaged model; points: Supplementary Table S3 (the same regimens and age groups as Figure 2 of Haynes 2026)."}
+ggplot(pta_cmp, aes(mic, pta, colour = factor(100 * target))) +
+  geom_line() +
+  geom_point(aes(y = pta_pub), shape = 1, size = 2) +
+  geom_hline(yintercept = 90, linetype = "dotted", colour = "red") +
+  facet_grid(regimen ~ grp) +
+  scale_x_continuous(trans = "log2", breaks = mics) +
+  labs(x = "MIC (mg/L)", y = "PTA (%)", colour = "fT>MIC target (%)") +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+Adult PTAs track Table S3 to within a few points in every cell. For infants,
+the cells at MIC 16 mg/L with the stricter targets run up to about 15 points
+below Table S3. Those cells sit on the steep part of the PTA curve, where the
+answer depends on the share of the youngest, most preterm infants in the
+cohort; the paper's PK-Sim infant population is not published, so the
+reconstructed cohort's age mix is the most likely source.
+
+```{r pta-table}
+pta_cmp |>
+  filter(mic %in% c(8, 16)) |>
+  arrange(grp, regimen, target, mic) |>
+  transmute(
+    `Age group` = grp, Regimen = regimen,
+    `Target (% fT>MIC)` = 100 * target, `MIC (mg/L)` = mic,
+    `Simulated PTA (%)` = round(pta), `Table S3 PTA (%)` = pta_pub,
+    `Difference (points)` = round(diff)
+  ) |>
+  knitr::kable(caption = "PTA at the discriminating MICs (8 and 16 mg/L).")
+
+pta_summary <- pta_cmp |>
+  group_by(grp) |>
+  summarise(
+    `Median abs diff (points)` = median(abs(diff)),
+    `90th pct abs diff (points)` = quantile(abs(diff), 0.9),
+    `Mean diff (points)` = mean(diff),
+    .groups = "drop"
+  )
+knitr::kable(pta_summary, digits = 1)
+
+# The virtual cohorts are reconstructions, so individual cells near the PTA
+# transition can differ by several points; assert on the centre and a robust
+# envelope, not on the worst cell. A structural error (wrong clearance, volume,
+# protein binding or dose cap) shifts whole columns by tens of points.
+stopifnot(all(pta_summary$`Median abs diff (points)` < 3))
+stopifnot(all(pta_summary$`90th pct abs diff (points)` < 15))
+stopifnot(all(abs(pta_summary$`Mean diff (points)`) < 6))
+```
+
+# Assumptions and deviations
+
+* **Residual error form.** The paper states a "combined" error model fitted in
+  Monolix without giving the formula. It is encoded as Monolix `combined1`
+  (`SD = a + b * f`), the Monolix default combined form. It does not affect any
+  of the PTA or NCA checks above, which use individual predictions.
+* **Random-effect scale.** Table 2 prints CV%; variances are
+  `log(1 + CV^2)`, cross-checked against the bootstrap medians printed on the
+  omega (SD) scale.
+* **Postnatal-age cut.** Table 2 labels the ka effect 'age < 21d' while the
+  Results and Supplementary Appendix C equations write it as PNA <= 21 days.
+  The equation form (<= 21 days) is used. The canonical `PNA` column is in
+  months and converted to days in `model()`.
+* **Postmenstrual age of older subjects.** Gestational age was recorded only
+  in the infant study; the authors assigned 40 weeks to older subjects, so
+  `PAGE` for a child or adult is 40 weeks plus postnatal age. With TM50 = 42.96
+  weeks and a Hill coefficient of 5.06, the maturation term is about 0.98 at
+  one year of age and above 0.999 from about three years.
+* **FFM equation.** Supplementary Appendix A describes two FFM approaches
+  (Al-Sallami/Janmahasatian with total body weight below 3 years, and the
+  O'Hanlon 2023 neonate-to-adult method, capped at 95% of body weight) without
+  saying which fed the final model. The Table 1 infant medians (FFM below body
+  weight) point to the O'Hanlon method. Users must supply FFM directly; this
+  vignette uses Janmahasatian for adults and 0.893 x weight for infants.
+* **Virtual cohorts.** The paper's PK-Sim populations are not published, so
+  the adult and infant cohorts here are reconstructions (see *Virtual
+  cohorts*) at 200 subjects each, against 5000 per group in the paper. Only
+  two of the paper's 11 age groups are reproduced; the paediatric groups
+  between 2 months and 18 years would need a paediatric FFM equation whose
+  constants the paper does not print.
+* **Visual predictive check.** Figure 1 is a VPC against the pooled observed
+  data, which is not public, so it is not reproduced.
+* **Bioavailability.** All parameters are apparent oral values; no `F` is
+  encoded.

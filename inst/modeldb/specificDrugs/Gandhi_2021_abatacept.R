@@ -3,6 +3,7 @@ Gandhi_2021_abatacept <- function() {
   reference <- "Gandhi Y, Passarell JA, Roy A, Murthy B. Model-Based Selection and Recommendation for Subcutaneous Abatacept Dose in Patients With Polyarticular Juvenile Idiopathic Arthritis. J Clin Pharmacol. 2021 May;61(5):688-699. doi:10.1002/jcph.1797"
   vignette <- "Gandhi_2021_abatacept"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

@@ -1,0 +1,515 @@
+---
+title: "5-Fluorouracil (Tan 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{5-Fluorouracil (Tan 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Tan_2026_fluorouracil"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Tan_2026_fluorouracil"))$description`
+* Article: <https://doi.org/10.1007/s40262-026-01645-1> (open access; the
+  Electronic Supplementary Material holds the final NONMEM control stream)
+
+Tan et al. first evaluated six published 5-FU population PK models against a
+pooled Dutch dataset, found that none described it adequately (all
+under-predicted the steady-state concentrations measured in gimeracil-stabilised
+samples), and re-estimated a two-compartment model with Michaelis-Menten
+elimination. Body surface area (BSA) was the only retained covariate, as a power
+function on Vmax with an estimated exponent of 1.14. The final model was then
+used to design limited sampling strategies and to propose BSA-based starting
+doses (Table 3). This article packages the final model (Table 2 and the
+supplementary control stream).
+
+# Population
+
+The model was fitted to 140 adults with gastrointestinal cancer from four
+prospective Dutch cohort studies (CombiGaPP, PERFU, FUUT, FLOT; Table 1):
+median age 63 years (IQR 56-70), 55% male, mean body weight 78.6 kg (SD 16.8),
+mean BSA 1.94 m^2 (SD 0.25). Colorectal (42.1%) and pancreatic (34.3%) cancer
+dominated, followed by gastric / gastro-oesophageal junction cancer (17.9%).
+71.4% were DPYD wild type; the CombiGaPP study enrolled DPYD variant carriers
+on genotype-guided reduced doses. Patients received FOLFOX, FOLFIRI, FOLFIRINOX
+(bolus median 385 mg/m^2 plus a 46-48 h continuous infusion of median
+2340 mg/m^2) or FLOT (24 h continuous infusion, no bolus). In total 435 5-FU
+plasma concentrations (median 2 per patient, range 1-17) were available.
+
+The same information is available programmatically via
+`readModelDb("Tan_2026_fluorouracil")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lvc` (V1) | log(19.7 L) | Table 2 'V1 (L)'; ESM control stream THETA(3) |
+| `lvp` (V2) | log(15 L) | Table 2 'V2 (L)'; ESM THETA(4) |
+| `lq` (Q) | log(52.4 L/h) | Table 2 'Q (L/h)'; ESM THETA(5) |
+| `lvmax` (TVVmax) | log(1900 mg/h) | Table 2 'TVVmax (mg/h)', defined at BSA 1.94 m^2; ESM THETA(6) |
+| `lkm` (KM) | log(8.04 mg/L) | Table 2 'KM (mg/L)'; ESM THETA(7) |
+| `e_bsa_vmax` (EXPO) | 1.14 | Table 2 'EXPO'; ESM THETA(8) |
+| `etalvmax` | 0.10 (variance) | Table 2 'ETA_Vmax' (omega^2); ESM `$OMEGA` |
+| `propSd` | 0.34 | Table 2 'Proportional error (%)' 34%; ESM THETA(1) |
+| `addSd` | 0.0001 mg/L, fixed | ESM THETA(2) '(0.0001) FIX ; additive error' |
+| `vmax = TVVmax * (BSA/1.94)^EXPO * exp(eta)` | n/a | Table 2 Vmax row: `Vmax = TVVmax * (BSA/1.94)^EXPO * exp(ETA_Vmax)`; ESM `$PK` |
+| `d/dt(central)`, `d/dt(peripheral1)` | n/a | ESM `$DES`: `DADT(1) = -C1*VM/(KM + C1) + K21*A(2) - K12*A(1)`, `DADT(2) = K12*A(1) - K21*A(2)` |
+| `d/dt(auc_central) <- Cc` | n/a | ESM `$DES`: `DADT(3) = C1` (AUC compartment) |
+| Residual error | combined | ESM `$ERROR`: `W = SQRT(PROPER**2*IPRED**2 + ADDER**2)` with `$SIGMA 1 FIX` |
+
+# Virtual cohort and regimens
+
+The paper's dose-finding simulations (Table 3, Figure 5) resampled BSA from the
+140 modelling patients. Those data are not public, so BSA is drawn here from a
+normal distribution with the Table 1 mean and SD (1.94 +/- 0.25 m^2), truncated
+to 1.4-2.6 m^2. Doses are given per m^2 and converted to mg with each subject's
+BSA. The four regimens of Table 3 are simulated with 200 subjects each.
+
+```{r cohort}
+set.seed(20260521)
+rxode2::rxSetSeed(20260521)
+
+n_per_arm <- 200
+bolus_dur <- 5 / 60 # 5-min bolus (Figure 1 sampling scheme)
+ci_dur <- 46 # 46-h continuous infusion
+
+regimens <- tibble::tribble(
+  ~regimen, ~bolus_mgm2, ~ci_mgm2,
+  "CI 2400", 0, 2400,
+  "CI 2800", 0, 2800,
+  "Bolus 200 + CI 2400", 200, 2400,
+  "Bolus 400 + CI 2400", 400, 2400
+) |>
+  mutate(regimen = factor(regimen, levels = regimen))
+
+obs_times <- sort(unique(c(
+  0, 0.05, bolus_dur, 0.1, 0.15, 0.2, 0.3, 0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 6,
+  8, 12, 16, 20, 24, 30, 36, 40, 44,
+  bolus_dur + ci_dur + c(0, 0.05, 0.1, 0.25, 0.5, 1, 2, 4, 8, 12)
+)))
+
+make_arm <- function(arm, id_offset) {
+  subj <- tibble(
+    id = id_offset + seq_len(n_per_arm),
+    BSA = pmin(pmax(rnorm(n_per_arm, 1.94, 0.25), 1.4), 2.6),
+    regimen = regimens$regimen[arm]
+  )
+  bolus <- subj |>
+    filter(regimens$bolus_mgm2[arm] > 0) |>
+    mutate(
+      time = 0, evid = 1L, cmt = "central",
+      amt = regimens$bolus_mgm2[arm] * BSA, rate = amt / bolus_dur
+    )
+  # The continuous infusion starts when the bolus ends (Figure 1); without a
+  # bolus it starts at the same clock time so both regimens share one grid.
+  ci <- subj |>
+    mutate(
+      time = bolus_dur, evid = 1L, cmt = "central",
+      amt = regimens$ci_mgm2[arm] * BSA, rate = amt / ci_dur
+    )
+  obs <- tidyr::crossing(subj, time = obs_times) |>
+    mutate(evid = 0L, cmt = "central", amt = 0, rate = 0)
+  bind_rows(bolus, ci, obs) |>
+    arrange(id, time, desc(evid))
+}
+
+events <- bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+  make_arm(i, id_offset = (i - 1L) * n_per_arm)
+}))
+stopifnot(!anyDuplicated(events[events$evid == 0, c("id", "time")]))
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Tan_2026_fluorouracil")
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep = c("regimen", "BSA"),
+  maxsteps = 1e6
+) |>
+  as.data.frame()
+```
+
+## Figure 5: concentration-time profiles
+
+```{r figure-5, fig.width = 8, fig.height = 6}
+sim |>
+  filter(time > 0) |>
+  group_by(regimen, time) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05),
+    Q50 = median(Cc),
+    Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  filter(time <= bolus_dur + ci_dur) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = 0.8, linetype = "dashed") +
+  facet_wrap(~regimen, scales = "free_y") +
+  scale_x_log10() +
+  labs(
+    x = "Time after start of 5-FU administration (h)",
+    y = "5-FU plasma concentration (mg/L)",
+    title = "Median and 90% prediction interval",
+    caption = "Replicates Figure 5 of Tan 2026 (dashed line at 0.8 mg/L as in panels c-d)."
+  )
+```
+
+The bolus regimens peak at the end of the 5-minute bolus and fall within about
+an hour to the infusion plateau; the infusion-only regimens rise to a plateau
+of roughly 0.4-0.6 mg/L within 1-2 h, the shape shown in Figure 5.
+
+## Table 3: median AUC0-inf and target attainment
+
+AUC0-inf is read from the `auc_central` accumulator at the last record, 12 h
+after the end of the infusion, by which time the concentration is negligible
+(the low-concentration elimination rate constant is about
+(Vmax/Km)/V1 = 12 h^-1).
+
+```{r table-3}
+auc_sim <- sim |>
+  group_by(id, regimen) |>
+  slice_max(time, n = 1) |>
+  ungroup() |>
+  transmute(id, regimen, BSA, auc = auc_central)
+
+table3 <- tibble::tribble(
+  ~regimen, ~pub_median, ~pub_p05, ~pub_p95, ~pub_in, ~pub_below, ~pub_above,
+  "CI 2400", 21, 12, 36, 42, 45, 13,
+  "CI 2800", 25, 14, 43, 49, 25, 26,
+  "Bolus 200 + CI 2400", 24, 14, 41, 48, 29, 23,
+  "Bolus 400 + CI 2400", 29, 17, 50, 41, 13, 45
+)
+
+auc_summary <- auc_sim |>
+  group_by(regimen) |>
+  summarise(
+    sim_median = median(auc),
+    sim_p05 = quantile(auc, 0.05),
+    sim_p95 = quantile(auc, 0.95),
+    sim_in = 100 * mean(auc >= 20 & auc <= 30),
+    sim_below = 100 * mean(auc < 20),
+    sim_above = 100 * mean(auc > 30),
+    .groups = "drop"
+  ) |>
+  mutate(regimen = as.character(regimen)) |>
+  left_join(table3, by = "regimen") |>
+  mutate(pct_diff_median = 100 * (sim_median / pub_median - 1))
+
+auc_summary |>
+  transmute(
+    regimen,
+    median = sprintf("%.1f [%.0f-%.0f]", sim_median, sim_p05, sim_p95),
+    published = sprintf("%d [%d-%d]", pub_median, pub_p05, pub_p95),
+    in_target = sprintf("%.0f (%d)", sim_in, pub_in),
+    below = sprintf("%.0f (%d)", sim_below, pub_below),
+    above = sprintf("%.0f (%d)", sim_above, pub_above)
+  ) |>
+  dplyr::rename(
+    "Regimen (mg/m^2)" = regimen,
+    "Simulated AUC0-inf median [5-95%] (mg*h/L)" = median,
+    "Table 3 AUC0-inf median [5-95%] (mg*h/L)" = published,
+    "20-30 mg*h/L, % sim (Table 3)" = in_target,
+    "< 20, % sim (Table 3)" = below,
+    "> 30, % sim (Table 3)" = above
+  ) |>
+  knitr::kable(caption = "Simulated vs. published AUC0-inf (Table 3 of Tan 2026).")
+```
+
+```{r table-3-check}
+# The regimen medians are the structural check: a mis-transcribed Vmax, Km,
+# BSA exponent or dose conversion moves every median by tens of percent. The
+# Monte-Carlo SE of a 200-subject median with ~30% CV is about 3%, and the
+# published medians are rounded to whole mg*h/L (up to +/- 2.5% at 21), so
+# 10% leaves several SEs of headroom on any cohort.
+stopifnot(all(abs(auc_summary$pct_diff_median) < 10))
+```
+
+## Typical-value check over the full dose grid (Table S6)
+
+Because AUC is monotone in the single random effect (eta on Vmax), the
+population median AUC at a given BSA equals the AUC of the subject with
+eta = 0. The typical-value AUC at the median BSA (1.94 m^2) therefore
+approximates the Table S6 medians for every regimen the authors simulated,
+without Monte-Carlo noise.
+
+```{r table-s6}
+s6 <- tibble::tribble(
+  ~bolus_mgm2, ~ci_mgm2, ~pub_median,
+  0, 2100, 17, 0, 2200, 19, 0, 2300, 20, 0, 2400, 21, 0, 2500, 22,
+  0, 2600, 23, 0, 2700, 24, 0, 2800, 25, 0, 2900, 26, 0, 3000, 27,
+  200, 2000, 19, 200, 2200, 22, 200, 2400, 24, 200, 2600, 25, 200, 2800, 27,
+  300, 2000, 23, 300, 2200, 24, 300, 2400, 26, 300, 2600, 28, 300, 2800, 30,
+  400, 2000, 26, 400, 2200, 27, 400, 2400, 29, 400, 2600, 31, 400, 2800, 33
+) |>
+  mutate(id = row_number(), BSA = 1.94)
+
+ev_s6 <- bind_rows(
+  s6 |>
+    filter(bolus_mgm2 > 0) |>
+    transmute(id, BSA, time = 0, evid = 1L, cmt = "central",
+              amt = bolus_mgm2 * BSA, rate = amt / bolus_dur),
+  s6 |>
+    transmute(id, BSA, time = bolus_dur, evid = 1L, cmt = "central",
+              amt = ci_mgm2 * BSA, rate = amt / ci_dur),
+  s6 |>
+    transmute(id, BSA, time = bolus_dur + ci_dur + 12, evid = 0L,
+              cmt = "central", amt = 0, rate = 0)
+) |>
+  arrange(id, time, desc(evid))
+
+mod_typical <- mod |> rxode2::zeroRe()
+
+# zeroRe() removes the random effects on purpose; rxode2 warns on every
+# multi-subject solve without omega, so muffle that one warning only.
+solve_typical <- function(...) {
+  withCallingHandlers(
+    rxode2::rxSolve(...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+typ_s6 <- solve_typical(mod_typical, events = ev_s6, maxsteps = 1e6) |>
+  as.data.frame() |>
+  select(id, auc_typical = auc_central) |>
+  left_join(s6, by = "id") |>
+  mutate(pct_diff = 100 * (auc_typical / pub_median - 1))
+
+typ_s6 |>
+  transmute(
+    regimen = ifelse(bolus_mgm2 > 0,
+                     paste0(bolus_mgm2, " + ", ci_mgm2),
+                     paste0("CI ", ci_mgm2)),
+    auc_typical = round(auc_typical, 1),
+    pub_median,
+    pct_diff = round(pct_diff, 1)
+  ) |>
+  dplyr::rename(
+    "Regimen (mg/m^2)" = regimen,
+    "Typical-value AUC0-inf, BSA 1.94 (mg*h/L)" = auc_typical,
+    "Table S6 median (mg*h/L)" = pub_median,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(caption = "Typical-value AUC0-inf vs. Table S6 population medians.")
+
+# Deterministic: the only slack is the whole-number rounding of Table S6
+# (up to 3% at 17 mg*h/L) and the spread of BSA around 1.94 in the authors'
+# resampled cohort.
+stopifnot(abs(median(typ_s6$pct_diff)) < 5, max(abs(typ_s6$pct_diff)) < 10)
+```
+
+## Steady-state closed form
+
+During the infusion-only regimen the plateau must satisfy the Michaelis-Menten
+mass balance R = Vmax * Css / (Km + Css), i.e. Css = Km * R / (Vmax - R),
+where R is the infusion rate. This checks the elimination term independently
+of the published simulations.
+
+```{r ss-check}
+ev_ss <- tibble(
+  id = 1:3, BSA = c(1.6, 1.94, 2.3)
+) |>
+  mutate(amt = 2400 * BSA, rate = amt / ci_dur)
+ev_ss <- bind_rows(
+  ev_ss |> mutate(time = 0, evid = 1L, cmt = "central"),
+  ev_ss |> mutate(time = 40, evid = 0L, cmt = "central", amt = 0, rate = 0)
+) |>
+  arrange(id, time, desc(evid))
+
+ss <- solve_typical(mod_typical, events = ev_ss, rtol = 1e-10, atol = 1e-12) |>
+  as.data.frame() |>
+  select(id, Cc) |>
+  left_join(ev_ss |> filter(evid == 1) |> select(id, BSA, rate), by = "id") |>
+  mutate(
+    vmax_i = 1900 * (BSA / 1.94)^1.14,
+    css_closed = 8.04 * rate / (vmax_i - rate),
+    rel_err = Cc / css_closed - 1
+  )
+knitr::kable(
+  ss |> select(BSA, Cc, css_closed, rel_err) |>
+    dplyr::rename("Simulated Cc at 40 h (mg/L)" = Cc,
+                  "Closed-form Css (mg/L)" = css_closed,
+                  "Relative error" = rel_err),
+  digits = c(2, 4, 4, 6)
+)
+# Same parameters on both sides; 40 h is > 100 distribution half-lives, so the
+# difference is integration error only (measured ~1e-9).
+stopifnot(all(abs(ss$rel_err) < 1e-4))
+```
+
+## Table S4: median AUC0-inf by BSA stratum
+
+Table S4 reports median AUC0-inf within four BSA strata. The typical-value
+AUC at a representative BSA for each stratum (1.5, 1.7, 1.9 and 2.1 m^2) is
+shown beside it for three regimens.
+
+```{r table-s4}
+s4 <- tibble::tribble(
+  ~bolus_mgm2, ~ci_mgm2, ~BSA, ~pub_median,
+  0, 2400, 1.5, 20.3, 0, 2400, 1.7, 20.9, 0, 2400, 1.9, 21.7, 0, 2400, 2.1, 22.4,
+  200, 2400, 1.5, 24.6, 200, 2400, 1.7, 23.7, 200, 2400, 1.9, 23.5, 200, 2400, 2.1, 23.0,
+  400, 2400, 1.5, 29.4, 400, 2400, 1.7, 28.7, 400, 2400, 1.9, 28.9, 400, 2400, 2.1, 28.7
+) |>
+  mutate(id = row_number())
+
+ev_s4 <- bind_rows(
+  s4 |>
+    filter(bolus_mgm2 > 0) |>
+    transmute(id, BSA, time = 0, evid = 1L, cmt = "central",
+              amt = bolus_mgm2 * BSA, rate = amt / bolus_dur),
+  s4 |>
+    transmute(id, BSA, time = bolus_dur, evid = 1L, cmt = "central",
+              amt = ci_mgm2 * BSA, rate = amt / ci_dur),
+  s4 |>
+    transmute(id, BSA, time = bolus_dur + ci_dur + 12, evid = 0L,
+              cmt = "central", amt = 0, rate = 0)
+) |>
+  arrange(id, time, desc(evid))
+
+typ_s4 <- solve_typical(mod_typical, events = ev_s4, maxsteps = 1e6) |>
+  as.data.frame() |>
+  select(id, auc_typical = auc_central) |>
+  left_join(s4, by = "id")
+
+typ_s4 |>
+  transmute(
+    regimen = ifelse(bolus_mgm2 > 0,
+                     paste0(bolus_mgm2, " + ", ci_mgm2),
+                     paste0("CI ", ci_mgm2)),
+    BSA,
+    auc_typical = round(auc_typical, 1),
+    pub_median
+  ) |>
+  dplyr::rename(
+    "Regimen (mg/m^2)" = regimen,
+    "BSA (m^2)" = BSA,
+    "Typical-value AUC0-inf (mg*h/L)" = auc_typical,
+    "Table S4 median (mg*h/L)" = pub_median
+  ) |>
+  knitr::kable(caption = "Typical-value AUC0-inf by BSA vs. Table S4 of Tan 2026.")
+```
+
+For the bolus regimens the model and Table S4 agree in level and trend. For the
+infusion-only regimen the levels agree (about 20-22 mg*h/L) but Table S4 shows
+AUC rising with BSA while the model, as published in Table 2 and the control
+stream, gives a slight fall (see Assumptions and deviations). This row set is
+shown for transparency and is not used as a pass/fail gate.
+
+# PKNCA validation
+
+PKNCA computes Cmax and AUC0-inf for each simulated subject. The 5-FU
+concentrations after the end of the infusion fall by many orders of magnitude
+within hours, so the numerically-zero tail is dropped before the half-life fit.
+
+```{r pknca}
+stopifnot(all(sim$Cc >= -1e-6 * max(sim$Cc), na.rm = TRUE))
+sim_nca <- sim |>
+  filter(!is.na(Cc)) |>
+  mutate(Cc = pmax(Cc, 0)) |>
+  group_by(id) |>
+  filter(time <= time[which.max(Cc)] | Cc >= 1e-4 * max(Cc)) |>
+  ungroup() |>
+  select(id, time, Cc, regimen)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | regimen + id)
+dose_df <- events |>
+  filter(evid == 1) |>
+  group_by(id, regimen) |>
+  summarise(time = 0, amt = sum(amt), .groups = "drop")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id)
+
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, aucinf.obs = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+published_nca <- table3 |>
+  transmute(regimen, aucinf.obs = pub_median)
+
+nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published_nca,
+  by = "regimen",
+  params = "aucinf.obs",
+  units = c(aucinf.obs = "mg*h/L"),
+  tolerance_pct = 20
+) |>
+  knitr::kable(caption = "PKNCA AUC0-inf (median) vs. Table 3 of Tan 2026. * differs by >20%.")
+```
+
+```{r pknca-vs-accumulator}
+# The trapezoidal PKNCA AUC and the model's integrated AUC must agree; the
+# residual is the trapezoid error on the coarse sampling grid around the bolus
+# peak (largest for the 400 mg/m^2 bolus).
+pk_auc <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  select(id, regimen, aucinf = PPORRES) |>
+  left_join(auc_sim |> select(id, auc), by = "id") |>
+  mutate(pct = 100 * (aucinf / auc - 1))
+stopifnot(abs(median(pk_auc$pct)) < 5, quantile(abs(pk_auc$pct), 0.9) < 10)
+```
+
+All four regimen medians agree with Table 3 within the rounding of the
+published values, and the target-attainment fractions follow the same pattern:
+the standard 400 + 2400 mg/m^2 regimen puts close to half of the population
+above 30 mg*h/L, while infusion-only 2400 mg/m^2 leaves close to half below
+20 mg*h/L.
+
+# Assumptions and deviations
+
+- **BSA distribution.** The authors resampled BSA from their 140 patients; the
+  individual data are not public, so BSA is drawn from a normal distribution
+  with the Table 1 mean and SD (1.94 +/- 0.25 m^2), truncated to 1.4-2.6 m^2.
+  The BSA formula (DuBois, Mosteller, ...) is not stated in the paper.
+- **Bolus duration and infusion start.** The paper does not state the bolus
+  duration used in the dose-finding simulations. A 5-minute bolus is assumed
+  from the Figure 1 sampling scheme (bolus from 0 to 5 min) and the
+  'end of bolus' sampling times of 0.08-0.1 h in Table S5; the 46-h continuous
+  infusion starts when the bolus ends.
+- **Additive residual error.** Table 2 reports only the proportional error
+  (34%). The control stream also carries an additive error fixed at
+  0.0001 mg/L, combined with the proportional term as
+  sqrt(prop^2 * IPRED^2 + add^2); it is kept, fixed, so the residual model
+  matches the fitted one. It is negligible against the 50 ng/mL lower limit of
+  the assays.
+- **AUC compartment.** The authors added an AUC compartment (`DADT(3) = C1`)
+  to their control stream to obtain the reference AUC0-inf; it is carried as
+  the `auc_central` state.
+- **Covariates not retained.** Total body weight, sex, DPYD gene activity
+  score, age, creatinine and eGFR were explored (stepwise covariate modelling)
+  but only BSA was retained, so no other covariate enters the model. Inter-
+  occasion variability on Vmax (12%) and study-, centre- and assay-specific
+  effects were tested and not retained; IIV on V1 was dropped for >50%
+  shrinkage.
+- **Table S4 by BSA stratum.** For the infusion-only rows, Table S4 shows the
+  median AUC0-inf rising with BSA (e.g. 20.3 to 22.4 mg*h/L at
+  2400 mg/m^2), whereas for the bolus rows it falls with BSA. With the
+  per-m^2 dose scaled linearly with BSA and Vmax scaled by BSA^1.14, the
+  published model predicts a slight fall with BSA for both regimens (the
+  steady-state concentration is Km * R / (Vmax - R), and R / Vmax falls as
+  BSA^-0.14). The packaged model follows Table 2 and the control stream; the
+  infusion-only stratum-level Table S4 values are therefore shown but not used
+  as a validation target. The pooled medians (Table 3, Table S6) and the bolus
+  rows of Table S4 are reproduced.
+- No erratum or correction notice was found for this article (Europe PMC,
+  checked 2026-11-14).

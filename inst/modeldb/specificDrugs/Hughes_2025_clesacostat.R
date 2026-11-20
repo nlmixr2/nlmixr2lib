@@ -12,6 +12,7 @@ Hughes_2025_clesacostat <- function() {
   vignette <- "Hughes_2025_ervogastat_clesacostat"
   paper_specific_residual_sds <- c("propSdMax", "propSdMin")
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

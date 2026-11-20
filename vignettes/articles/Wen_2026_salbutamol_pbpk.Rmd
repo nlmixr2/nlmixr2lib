@@ -1,0 +1,508 @@
+---
+title: "Salbutamol pulmonary minimal PBPK (Wen 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Salbutamol pulmonary minimal PBPK (Wen 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r readModelDb("Wen_2026_salbutamol_pbpk")()$reference`
+* Description: `r readModelDb("Wen_2026_salbutamol_pbpk")()$description`
+* Article: <https://doi.org/10.1007/s40262-026-01664-y> (open access; PMC13461897)
+* Supplement: electronic supplementary material 1 of the article (Table S1
+  lung physiology and the NONMEM control stream of the lung model)
+
+Wen et al. built a population minimal PBPK model of orally inhaled salbutamol
+from one clinical study in which every volunteer was sampled with three lung
+techniques: bronchosorption (bronchial epithelial lining fluid, ELF), bronchial
+mucosal biopsy, and bronchoalveolar lavage (BAL, ELF averaged over the whole
+lung), alongside plasma. The model was then used for stochastic
+simulation-estimation of lung sampling designs. Only the fitted PK model is
+packaged here; the simulation-estimation study (Figures 3 and 6) re-estimates
+the model on simulated data and has no further model to extract.
+
+The same authors' earlier rat model of salbutamol, on which the lung
+structure of this model is based, is available as
+`Wen_2025_salbutamol_rat_pbpk`.
+
+# Population
+
+Thirteen healthy, non-smoking adults aged 18-50 years with normal lung function
+(inhalation cohort of ClinicalTrials.gov NCT03524066) each inhaled a single
+200 ug dose of commercial salbutamol through a spacer. Each had two bronchoscopy
+sessions (1 and 6 h, 2 and 9 h, 3 and 12 h, or 4 and 18 h after the dose), with
+two bronchosorption samples, one BAL and two biopsies per session, and plasma
+samples at 0.25, 0.5, 1, 2, 4, 8, 12 and 24 h. In total 101 plasma and 100 lung
+samples (32 bronchosorption, 32 biopsy, 36 BAL) were analysed. Wen 2026 does not
+restate weight or sex distribution; the model has no covariates.
+
+```{r population}
+str(readModelDb("Wen_2026_salbutamol_pbpk")()$population)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lcl` (CL) | 32.8 L/h | Table 3 |
+| `lvc` (V) | 211 L | Table 3 |
+| `lka_oral` (ka) | 2.01 1/h | Table 3 |
+| `lkdiss` (kdiss) | 1000 1/h, fixed | Table 3; Methods (Eq 2 text) |
+| `logitfdepot_lung` (F1) | logit(0.5) = 0, fixed | Table 3 |
+| `lfdepot_oral` (F2) | 0.418, fixed | Table 3 |
+| `fdep_bronchial`, `fdep_bronchiolar` | 0.0992, 0.226 (alveolar = remainder), fixed | NONMEM code `FBB`, `FBR` (supplement); Results text 9.90 / 22.6 / 67.5 % |
+| `lbp`, `lfuelf`, `lfu` | 0.96, 0.74, 0.65, fixed | Table 3 |
+| `lkpulung` (Kp,u,lung) | 11.0 | Table 3 |
+| `lpeff` (Peff) | 0.543 | Table 3 |
+| `etalcl` | 0.193^2 | Table 3, 'CV% Clearance' 19.3 |
+| `etalogitfdepot_lung` | 1.285^2 | Table 3, 'CV% LogitF1' 128.5 |
+| `expSd`, `expSd_Cbr`, `expSd_Cbr_tissue`, `expSd_Celf` | 0.188, 1.09, 0.848, 1.46 | Table 3 (plasma, bronchosorption, biopsy, BAL) |
+| ELF / epithelium / interstitium volumes and ELF surface areas | per region | Table S1 and NONMEM code |
+| Epithelium surface areas | 317.61, 2896.77, 700000 cm2 | NONMEM code (`SBB_EPI`, `SBar_EPI`, `SAV_EPI`) |
+| Regional blood flows | 1.05, 8.07, 312 L/h | Table S1 and NONMEM code (`QBB`, `Qbar`, `QAV = 5.2 L/min`) |
+| `d/dt(elf_*)` | Eq 2 | Methods; NONMEM code `DADT(5)`, `DADT(8)`, `DADT(11)` |
+| `d/dt(epi_*)` | Eq 3 | Methods; NONMEM code `DADT(6)`, `DADT(9)`, `DADT(12)` |
+| `d/dt(sub_*)` | Eqs 4-5 | Methods; NONMEM code `DADT(7)`, `DADT(10)`, `DADT(13)` |
+| `d/dt(central)` | one-compartment, oral + three lung inputs | Methods; NONMEM code `DADT(14)` |
+| Dose split `f()` | `F1 x f_region` to each lung depot, `F2 x (1 - F1)` to the gut | Eq 1; NONMEM code `F1`-`F4` |
+| `Cbr`, `Cbr_tissue`, `Celf` | bronchial ELF; bronchial ELF + epithelium + interstitium; mean ELF of all regions | Methods (Population-Based PBPK Modelling, last paragraph); NONMEM `$ERROR` |
+| Residual model | additive on log-transformed data | Methods (Data Description and Data Handling); NONMEM `$ERROR` |
+
+# Dosing
+
+The model has four dosing compartments, one per deposition site, exactly as
+the authors' data set. One inhalation of `dose` ug is therefore four dose
+records of `dose` ug each; each depot keeps its own fraction through `f()`.
+
+```{r events}
+mod <- readModelDb("Wen_2026_salbutamol_pbpk")
+ui <- rxode2::rxode2(mod)
+
+dose_cmts <- c(
+  "depot_lung_bronchial", "depot_lung_bronchiolar",
+  "depot_lung_alveolar", "depot_oral"
+)
+
+make_events <- function(n, obs_times, dose = 200, id_offset = 0L) {
+  ids <- id_offset + seq_len(n)
+  doses <- tidyr::expand_grid(id = ids, cmt = dose_cmts) |>
+    dplyr::mutate(time = 0, amt = dose, evid = 1L, dvid = NA_integer_)
+  obs <- tidyr::expand_grid(id = ids, time = obs_times) |>
+    dplyr::mutate(cmt = "central", amt = 0, evid = 0L, dvid = 1L)
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    as.data.frame()
+}
+```
+
+Observation rows sit on the `central` state with `dvid = 1`; the model declares
+four endpoints, and the solve returns every endpoint column (`Cc`, `Cbr`,
+`Cbr_tissue`, `Celf`) on every row.
+
+# Typical-subject profiles
+
+```{r typical}
+obs_grid <- sort(unique(c(seq(0, 2, by = 0.05), seq(2.25, 24, by = 0.25))))
+ev_typ <- make_events(1, obs_grid)
+typ <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(ui), ev_typ))
+
+typ |>
+  dplyr::select(time, Cc, Cbr, Cbr_tissue, Celf) |>
+  tidyr::pivot_longer(-time, names_to = "output", values_to = "conc") |>
+  dplyr::filter(time > 0) |>
+  dplyr::mutate(output = factor(
+    output,
+    levels = c("Cbr", "Cbr_tissue", "Celf", "Cc"),
+    labels = c("Bronchosorption", "Biopsy", "BAL (ELF)", "Plasma")
+  )) |>
+  ggplot(aes(time, conc)) +
+  geom_line() +
+  facet_wrap(~output, nrow = 1) +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Salbutamol (ug/L)",
+    title = "Typical subject, 200 ug inhaled"
+  )
+```
+
+# Replicate Figure 2: visual predictive check
+
+Figure 2 of Wen 2026 shows the observations with the model-predicted median
+(lung panels) and 5th / 50th / 95th percentiles (plasma). The simulation below
+uses 200 virtual subjects and adds each technique's residual error on the log
+scale, as a VPC does.
+
+```{r figure-2}
+rxode2::rxSetSeed(20260110)
+set.seed(20260110)
+
+vpc_times <- c(0.25, 0.5, 1, 2, 3, 4, 6, 8, 9, 12, 18, 24)
+ev_vpc <- make_events(200, vpc_times)
+sim_vpc <- as.data.frame(rxode2::rxSolve(ui, ev_vpc))
+
+theta <- setNames(ui$iniDf$est, ui$iniDf$name)
+add_ruv <- function(x, sd) x * exp(stats::rnorm(length(x), 0, sd))
+
+vpc_long <- sim_vpc |>
+  dplyr::mutate(
+    Bronchosorption = add_ruv(Cbr, theta[["expSd_Cbr"]]),
+    Biopsy = add_ruv(Cbr_tissue, theta[["expSd_Cbr_tissue"]]),
+    BAL = add_ruv(Celf, theta[["expSd_Celf"]]),
+    Plasma = add_ruv(Cc, theta[["expSd"]])
+  ) |>
+  dplyr::select(id, time, Bronchosorption, Biopsy, BAL, Plasma) |>
+  tidyr::pivot_longer(-c(id, time), names_to = "technique", values_to = "conc") |>
+  dplyr::mutate(technique = factor(
+    technique,
+    levels = c("Bronchosorption", "Biopsy", "BAL", "Plasma")
+  ))
+
+vpc_long |>
+  dplyr::group_by(technique, time) |>
+  dplyr::summarise(
+    Q05 = stats::quantile(conc, 0.05),
+    Q50 = stats::median(conc),
+    Q95 = stats::quantile(conc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25, fill = "steelblue") +
+  geom_line(linetype = "dashed", linewidth = 0.8) +
+  facet_wrap(~technique, nrow = 1) +
+  scale_y_log10() +
+  coord_cartesian(ylim = c(0.01, 1000)) +
+  labs(
+    x = "Time (h)", y = "Salbutamol (ug/L)",
+    title = "Simulated 5th, 50th and 95th percentiles",
+    caption = "Replicates the prediction intervals of Figure 2 of Wen 2026."
+  )
+```
+
+The simulated medians follow the dashed medians of Figure 2: bronchosorption
+falls from a few hundred ug/L at 1 h to about 0.07 ug/L at 18 h, biopsy from
+about 40 to 2 ug/L between 1 and 9 h, and plasma peaks near 0.5 ug/L and falls
+to a few hundredths of a ug/L at 24 h.
+
+# Replicate Figures 4 and 5: drugs of different permeability
+
+Wen 2026 simulated hypothetical compounds with `Peff` 10-fold higher, 10-fold
+lower and 100-fold lower than salbutamol, keeping every other parameter at its
+final estimate and including the residual errors. Figure 4 shows the three lung
+matrices and Figure 5 the ratio of the BAL-derived ELF concentration to the
+plasma concentration. The paper used 1000 subjects per scenario; 200 are used
+here.
+
+```{r permeability-sim}
+peff_scen <- tibble::tibble(
+  scenario = c("High permeability", "Salbutamol", "Low permeability", "Very low permeability"),
+  peff_mult = c(10, 1, 0.1, 0.01)
+)
+ep_times <- c(0.25, 0.5, 1, 2, 4, 8, 12, 24)
+fig4_times <- sort(unique(c(ep_times, seq(0.5, 24, by = 0.5))))
+
+rxode2::rxSetSeed(20260111)
+set.seed(20260111)
+sim_perm <- dplyr::bind_rows(lapply(seq_len(nrow(peff_scen)), function(i) {
+  ui_i <- rxode2::ini(ui, lpeff = log(0.543 * peff_scen$peff_mult[i]))
+  out <- as.data.frame(rxode2::rxSolve(ui_i, make_events(200, fig4_times)))
+  out$scenario <- peff_scen$scenario[i]
+  out
+})) |>
+  dplyr::mutate(
+    scenario = factor(scenario, levels = peff_scen$scenario),
+    Bronchosorption = add_ruv(Cbr, theta[["expSd_Cbr"]]),
+    Biopsy = add_ruv(Cbr_tissue, theta[["expSd_Cbr_tissue"]]),
+    BAL = add_ruv(Celf, theta[["expSd_Celf"]]),
+    Plasma = add_ruv(Cc, theta[["expSd"]]),
+    ep_ratio = BAL / Plasma
+  )
+```
+
+```{r figure-4, fig.height = 7}
+sim_perm |>
+  dplyr::select(id, time, scenario, Bronchosorption, Biopsy, BAL) |>
+  tidyr::pivot_longer(c(Bronchosorption, Biopsy, BAL), names_to = "technique", values_to = "conc") |>
+  dplyr::mutate(technique = factor(technique, levels = c("Bronchosorption", "Biopsy", "BAL"))) |>
+  dplyr::group_by(scenario, technique, time) |>
+  dplyr::summarise(
+    Q25 = stats::quantile(conc, 0.25),
+    Q50 = stats::median(conc),
+    Q75 = stats::quantile(conc, 0.75),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_line(colour = "red3") +
+  geom_line(aes(y = Q25), colour = "red3", linetype = "dashed") +
+  geom_line(aes(y = Q75), colour = "red3", linetype = "dashed") +
+  facet_grid(scenario ~ technique) +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Drug concentration (ug/L)",
+    caption = "Replicates the median and interquartile range of Figure 4 of Wen 2026."
+  )
+```
+
+```{r figure-5}
+ep_sum <- sim_perm |>
+  dplyr::filter(time %in% ep_times) |>
+  dplyr::group_by(scenario, time) |>
+  dplyr::summarise(
+    Q25 = stats::quantile(ep_ratio, 0.25),
+    Q50 = stats::median(ep_ratio),
+    Q75 = stats::quantile(ep_ratio, 0.75),
+    .groups = "drop"
+  )
+
+# Population medians of the ELF-to-plasma ratio read by eye by the maintainers
+# from the solid red lines of Figure 5 (log axis, so each value is good to
+# roughly a factor of 1.5).
+fig5 <- tibble::tribble(
+  ~scenario, ~time, ~published,
+  "High permeability", 0.25, 30,
+  "High permeability", 1, 1.2,
+  "High permeability", 4, 1.0,
+  "High permeability", 8, 0.95,
+  "High permeability", 12, 1.0,
+  "High permeability", 24, 0.95,
+  "Salbutamol", 0.25, 500,
+  "Salbutamol", 1, 80,
+  "Salbutamol", 2, 30,
+  "Salbutamol", 4, 7,
+  "Salbutamol", 8, 1.4,
+  "Salbutamol", 12, 1.05,
+  "Salbutamol", 24, 1.0,
+  "Low permeability", 0.25, 7000,
+  "Low permeability", 1, 800,
+  "Low permeability", 2, 650,
+  "Low permeability", 4, 420,
+  "Low permeability", 8, 270,
+  "Low permeability", 12, 290,
+  "Low permeability", 24, 330,
+  "Very low permeability", 0.25, 23000,
+  "Very low permeability", 1, 11000,
+  "Very low permeability", 2, 9500,
+  "Very low permeability", 4, 4500,
+  "Very low permeability", 8, 2700,
+  "Very low permeability", 12, 3500,
+  "Very low permeability", 24, 8000
+) |>
+  dplyr::mutate(scenario = factor(scenario, levels = peff_scen$scenario))
+
+ggplot(ep_sum, aes(time, Q50)) +
+  geom_line(colour = "red3") +
+  geom_line(aes(y = Q25), colour = "red3", linetype = "dashed") +
+  geom_line(aes(y = Q75), colour = "red3", linetype = "dashed") +
+  geom_point(data = fig5, aes(y = published), shape = 4, size = 2.5) +
+  facet_wrap(~scenario, scales = "free_y") +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "BAL-derived ELF-to-plasma ratio",
+    caption = paste(
+      "Lines: simulated median and interquartile range.",
+      "Crosses: medians read from Figure 5 of Wen 2026."
+    )
+  )
+
+ep_cmp <- dplyr::inner_join(ep_sum, fig5, by = c("scenario", "time")) |>
+  dplyr::mutate(fold = Q50 / published)
+
+ep_cmp |>
+  dplyr::group_by(scenario) |>
+  dplyr::summarise(
+    `Median fold (simulated / Figure 5)` = signif(stats::median(fold), 3),
+    `Smallest fold` = signif(min(fold), 3),
+    `Largest fold` = signif(max(fold), 3),
+    .groups = "drop"
+  ) |>
+  dplyr::rename(Scenario = scenario) |>
+  knitr::kable(caption = "Simulated vs. Figure 5 median ELF-to-plasma ratios.")
+```
+
+The ratio is a demanding check of the lung structure, because it spans four
+orders of magnitude across the permeability scenarios and depends on `Peff`,
+`Kp,u,lung`, the unbound fractions and the regional volumes and surface areas
+all at once. A mis-scaled permeability (for example a factor-1000 error in the
+area or permeability units) would shift whole curves by orders of magnitude.
+
+```{r figure-5-check}
+stopifnot(
+  # Centre of each scenario's curve within a factor of 2 of the published one.
+  all(abs(log(tapply(ep_cmp$fold, ep_cmp$scenario, stats::median))) < log(2)),
+  # Salbutamol's ratio settles near 1 after 8 h, as stated in the Results.
+  all(abs(log(ep_sum$Q50[ep_sum$scenario == "Salbutamol" & ep_sum$time >= 12])) < log(1.5))
+)
+```
+
+# PKNCA validation
+
+Wen 2026 reports no NCA. Because no drug is eliminated from the lung, every
+deposited microgram eventually reaches plasma, so the plasma AUC from zero to
+infinity has a closed form for each subject:
+`AUC = dose x (F1 + F2 x (1 - F1)) / CL`. PKNCA on the simulated plasma
+profiles is compared against that closed form, subject by subject and at the
+typical-value level.
+
+```{r pknca}
+nca_times <- sort(unique(c(0, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 10, 12, 16, 24, 36, 48, 72)))
+rxode2::rxSetSeed(20260112)
+sim_nca_raw <- as.data.frame(rxode2::rxSolve(ui, make_events(200, nca_times)))
+sim_nca_raw$treatment <- "200 ug inhaled"
+
+sim_nca <- sim_nca_raw |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+dose_df <- sim_nca |>
+  dplyr::distinct(id, treatment) |>
+  dplyr::mutate(time = 0, amt = 200)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+indiv <- sim_nca_raw |>
+  dplyr::distinct(id, cl, fdepot_lung) |>
+  dplyr::mutate(auc_closed = 200 * (fdepot_lung + 0.418 * (1 - fdepot_lung)) / cl)
+auc_chk <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD == "aucinf.obs") |>
+  dplyr::select(id, aucinf = PPORRES) |>
+  dplyr::inner_join(indiv, by = "id") |>
+  dplyr::mutate(pct_diff = 100 * (aucinf / auc_closed - 1))
+
+summary(auc_chk$pct_diff)
+```
+
+```{r pknca-check}
+# Same drawn parameters on both sides, so the difference is trapezoidal and
+# extrapolation error only.
+stopifnot(
+  abs(stats::median(auc_chk$pct_diff)) < 2,
+  stats::quantile(abs(auc_chk$pct_diff), 0.9) < 5
+)
+```
+
+## Comparison against typical values
+
+The reference values are the typical subject's closed-form plasma AUC
+(`200 x (0.5 + 0.418 x 0.5) / 32.8`) and the one-compartment elimination
+half-life (`log(2) x 211 / 32.8`); Wen 2026 itself tabulates neither.
+
+```{r nca-compare}
+typical_ref <- data.frame(
+  treatment = "200 ug inhaled",
+  aucinf.obs = 200 * (0.5 + 0.418 * 0.5) / 32.8,
+  half.life = log(2) * 211 / 32.8
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = typical_ref,
+  by = "treatment",
+  units = c(aucinf.obs = "ug*h/L", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Simulated (median of 200 subjects) vs. typical-value closed forms. * differs by >20%."
+)
+```
+
+The simulated median AUC sits close to the typical value because the
+inter-individual variability on the logit lung fraction is nearly symmetric
+around F1 = 0.5. The terminal half-life is that of plasma elimination: drug
+leaves the lung much faster than it is cleared from plasma.
+
+# Dissolution rate: paper versus supplement code
+
+Table 3 and the Methods fix `kdiss` at 1000 1/h; the NONMEM control stream in
+the supplement fixes the corresponding constant (`KA2`) at 31.6 1/h, the lung
+absorption rate of the earlier salbutamol meta-analysis model
+(`Courlet_2022_salbutamol_mbma`). The packaged model follows Table 3. Both
+values make dissolution complete within minutes, so the choice barely matters
+at the sampled times:
+
+```{r kdiss}
+typ_slow <- as.data.frame(rxode2::rxSolve(
+  rxode2::zeroRe(rxode2::ini(ui, lkdiss = log(31.6))),
+  ev_typ
+))
+kdiss_diff <- data.frame(
+  time = typ$time,
+  Cbr = 100 * (typ_slow$Cbr / typ$Cbr - 1),
+  Cc = 100 * (typ_slow$Cc / typ$Cc - 1)
+) |>
+  dplyr::filter(time >= 0.5)
+signif(sapply(kdiss_diff[, c("Cbr", "Cc")], function(x) max(abs(x))), 3)
+stopifnot(max(abs(kdiss_diff$Cbr)) < 5, max(abs(kdiss_diff$Cc)) < 5)
+```
+
+The largest difference from 0.5 h onwards is a few percent, against residual
+errors of 19-146 % on the log scale.
+
+# Assumptions and deviations
+
+- **Two-step fit packaged as one model.** The authors estimated the systemic
+  parameters from plasma alone, then fixed them and supplied each subject's
+  post hoc `CL` and lung fraction `F1` as data to the lung step (the supplement
+  code reads `CL` and `Fr` from `$INPUT`). The packaged model carries the
+  first step's inter-individual variability on `CL` and logit `F1` instead, so
+  that it simulates new subjects.
+- **IIV scale.** Table 3 reports both random effects as 'CV%', but a CV is
+  undefined for an eta on the logit scale, so the column is read as
+  100 x sqrt(omega^2) and the variances are 0.193^2 and 1.285^2. The plasma
+  residual SD reads the same way: the supplement's initial `$SIGMA` of 0.0352
+  for plasma is 18.8 % as a square root, matching Table 3.
+- **Residual error.** Concentrations were log-transformed and fitted with an
+  additive error, encoded as `lnorm()` with Table 3's percentages as SDs on
+  the log scale. The vignette's stochastic figures add this error by hand
+  because the four endpoints share one observation row.
+- **Differences between the paper and the authors' published code.**
+  - Table S1 prints the epithelium surface areas as 1.74, 4.25 and
+    3.58 cm2, the same numbers as the epithelium volumes in mL two rows
+    above. The NONMEM code uses 317.61, 2896.77 and 700000 cm2; the code's
+    values are used.
+  - `kdiss` is 1000 1/h in Table 3 and 31.6 1/h in the code; Table 3 is used
+    (see the section above, which shows the difference is negligible).
+  - The code's `$THETA` records hold initial estimates (`Kp,u,lung` 11.16,
+    `Peff` 0.563, V 212 L, oral ka 2.03 1/h, the last two fixed from an
+    earlier run). The final estimates of Table 3 are used.
+  - The code sets the bronchial deposition fraction to 0.0992, which the
+    Results round to 9.90 %; the code's value is used. The alveolar fraction is
+    the remainder, 0.6748 (67.5 % in the text).
+- **Permeability units.** In the code each diffusion flux is
+  `Peff x area x concentration` with the area in m2, the volume in L and no
+  further unit factor, so the fitted `Peff` is numerically in L/h per m2
+  (10^-3 m/h), although Table 3 labels it m/h. The model follows the code's
+  arithmetic, which is what the estimate belongs to; the reproduction of the
+  four permeability scenarios of Figure 5 above depends on it. In those units
+  the estimate corresponds to 5.4 x 10^-4 m/h, close to the 4.2 x 10^-4 m/h
+  the same authors estimated in rats (Wen 2025), rather than 1000-fold higher
+  as the Discussion states.
+- **Spacer loss** was not modelled by the authors; the nominal 200 ug dose
+  enters the four depots.
+- **Figure 5 medians** were read by eye by the maintainers from the published
+  figure and are good to about a factor of 1.5 on its log axis.
+- No erratum or correction notice was found for Wen 2026 on Europe PMC as of
+  2026-11-16.

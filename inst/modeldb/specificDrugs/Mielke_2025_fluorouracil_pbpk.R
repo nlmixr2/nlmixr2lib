@@ -29,6 +29,7 @@ Mielke_2025_fluorouracil_pbpk <- function() {
   )
   vignette <- "Mielke_2025_fluorouracil_pbpk"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- "infusion_rate"
 
   # Lumped muscle/skin, red marrow and skeleton have no registered amount-state
   # name; infusion_rate is the authors' rate-holder state; the two auc_* states

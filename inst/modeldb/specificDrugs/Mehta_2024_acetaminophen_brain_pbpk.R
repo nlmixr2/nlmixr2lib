@@ -31,6 +31,7 @@ Mehta_2024_acetaminophen_brain_pbpk <- function() {
     dosing = "mg",
     concentration = "mg/L"
   )
+  dosing <- "venous"
 
   compartmentData <- list(
     venous = list(analyte = "acetaminophen", units = "mg", specimen = "whole blood", verified = TRUE),

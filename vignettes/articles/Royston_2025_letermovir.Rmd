@@ -685,14 +685,16 @@ stopifnot(sd_pooled > 0.58, abs(sd_pooled - sqrt(0.58^2 + 0.62^2)) < 0.1)
   means adding further `etaiov_cl_<n>` entries. All occasions share the single
   published IOV variance, so the cap affects only how many distinct occasions
   can be simulated, never the variance itself.
-* **The IOV etas are not mu-referenced.** rxode2 has no `| occ` IOV level, so
-  the occasion effect is carried as a sum of indicator-weighted etas
+* **The IOV etas are not mu-referenced.** rxode2's `| occ` IOV level shares
+  one draw per occasion when no subject has two or more occasions, so the
+  occasion effect is carried as a sum of indicator-weighted etas
   (`oc1 * etaiov_cl_1 + ...`) rather than as a single term added directly to
-  `lcl`. Every solve therefore emits `some etas defaulted to non-mu
-  referenced` for `etaiov_cl_1`..`etaiov_cl_8`. The warning is expected and
-  does not affect simulation, which is what this vignette does and what the
-  library ships the model for; it means only that a future *estimation* run
-  would not get nlmixr2's mu-referencing speed-ups on the IOV terms.
+  `lcl`. Every solve therefore emits
+  `some etas defaulted to non-mu referenced` for
+  `etaiov_cl_1`..`etaiov_cl_8`. The warning is expected and does not affect
+  simulation, which is what this vignette does and what the library ships the
+  model for; it means only that a future *estimation* run would not get
+  nlmixr2's mu-referencing speed-ups on the IOV terms.
 * **Screened covariates are documented, not implemented.** Royston 2025 reports
   univariable associations between CL/F and body weight, age, serum albumin,
   vomiting, acute GvHD, prednisone and posaconazole use, but tabulates no

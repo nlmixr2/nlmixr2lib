@@ -1,0 +1,440 @@
+---
+title: "Riluzole (Liu 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Riluzole (Liu 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Liu_2026_riluzole"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Liu_2026_riluzole"))$description`
+* Article: <https://doi.org/10.3389/fphar.2026.1890355> (open access, PMC13661369)
+
+Liu and colleagues built a population pharmacokinetic model of oral
+riluzole from a bioequivalence study in healthy Chinese volunteers, then
+used it to compare six remedial regimens for a dose of the usual 50 mg
+twice-daily schedule that is taken late or missed. The model has two
+compartments, first-order absorption after a lag time and linear
+elimination. Body weight, normalised to 75 kg, is the only covariate and
+acts on the apparent peripheral volume (Equation 1). Between-subject
+variability is estimated on CL/F, Vc/F and Ka; the residual error is
+combined proportional and additive.
+
+# Population
+
+The data come from a two-period crossover bioequivalence study of two
+riluzole 50 mg tablets given fasting (Yu F et al. 2025). The 72 healthy
+adults (65 men, 7 women) were 18-50 years old (median 27) and weighed
+45.9-80.1 kg (median 63.3 kg; Supplementary Table S1). Each subject gave
+42 plasma samples, 3,024 in all. Concentrations below the 0.700 ng/mL
+limit of quantification were set to 0.35 ng/mL and kept. The model was
+fitted in NONMEM 7.6.0 with FOCE-I.
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Structure | 2-compartment, first-order absorption with lag, linear elimination | Results 'PPK model development for riluzole' paragraph 1 |
+| `ltlag` | log(0.157) h | Table 1 'ALAG' |
+| `lka` | log(5.25) 1/h | Table 1 'Ka' |
+| `lcl` | log(67) L/h | Table 1 'CL/F' |
+| `lvc` | log(242) L | Table 1 'Vc/F' |
+| `lq` | log(33.1) L/h | Table 1 'Q/F' |
+| `lvp` | log(376) L at 75 kg | Table 1 'Vp/F'; Equation 1 |
+| `e_wt_vp` | 0.993 | Table 1 'theta BW on Vp'; Equation 1 |
+| Weight reference | 75 kg | Methods 'Body weight was normalized to 75 kg'; Equation 1 |
+| `etalcl` | variance 0.141 | Table 1 'omega CL' (variance scale: see Assumptions) |
+| `etalvc` | variance 0.218 | Table 1 'omega Vc' |
+| `etalka` | variance 0.994 | Table 1 'omega Ka' |
+| `propSd` | sqrt(0.127) = 0.3564 | Table 1 'Proportional' (variance) |
+| `addSd` | sqrt(0.0631) = 0.2512 ng/mL | Table 1 'Additive' (variance) |
+| Simulation design (remedial regimens) | 50 mg every 12 h at steady state, regimens A-F | Methods 'Optimal remedial scheme evaluation'; Figure 4 legend |
+
+# Virtual cohort
+
+Body weights are drawn from a normal distribution matching Supplementary
+Table S1 (mean 63.9 kg, SD about 8.4 kg, truncated to the observed
+45.9-80.1 kg range). Random effects are drawn with R's own random-number
+generator so that the cohort is the same on every machine.
+
+```{r cohort}
+mod <- readModelDb("Liu_2026_riluzole")
+ui <- rxode2::rxode(mod)
+om <- ui$omega
+
+n_sub <- 200
+set.seed(20261118)
+wt <- rnorm(n_sub * 3, mean = 63.9, sd = 8.4)
+wt <- wt[wt >= 45.9 & wt <= 80.1][seq_len(n_sub)]
+stopifnot(length(wt) == n_sub, all(!is.na(wt)))
+
+cohort <- data.frame(
+  id = seq_len(n_sub),
+  WT = wt,
+  etalcl = rnorm(n_sub, 0, sqrt(om["etalcl", "etalcl"])),
+  etalvc = rnorm(n_sub, 0, sqrt(om["etalvc", "etalvc"])),
+  etalka = rnorm(n_sub, 0, sqrt(om["etalka", "etalka"]))
+)
+summary(cohort$WT)
+```
+
+# Single 50 mg dose (Figure 2)
+
+The bioequivalence study gave single 50 mg doses and sampled to 48 h. The
+simulation below includes between-subject and residual variability, as a
+visual predictive check does.
+
+```{r sim-single}
+sd_times <- sort(unique(c(0, seq(0.25, 4, by = 0.25), seq(4.5, 12, by = 0.5), 13:48)))
+ev_single <- bind_rows(
+  data.frame(id = cohort$id, time = 0, amt = 50, evid = 1, cmt = "depot"),
+  tidyr::expand_grid(id = cohort$id, time = sd_times) |>
+    mutate(amt = 0, evid = 0, cmt = "central")
+) |>
+  left_join(cohort, by = "id") |>
+  arrange(id, time, desc(evid))
+
+# The random effects are supplied per subject as data columns, so the
+# model's own variances are set to zero for the solve. rxode2 then warns
+# that a multi-subject solve has no omega, which is intended here; only
+# that warning is muffled.
+mod_fixed_re <- rxode2::zeroRe(mod)
+solve_given_etas <- function(...) {
+  withCallingHandlers(
+    rxode2::rxSolve(mod_fixed_re, ..., returnType = "data.frame"),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+sim_single <- solve_given_etas(ev_single) |>
+  mutate(treatment = "50 mg single dose")
+
+# Residual error added explicitly to the individual predictions so that the
+# random-effect draws above stay under R's RNG.
+prop_sd <- ui$theta[["propSd"]]
+add_sd <- ui$theta[["addSd"]]
+set.seed(20261119)
+sim_single <- sim_single |>
+  mutate(
+    sd_tot = sqrt((prop_sd * Cc)^2 + add_sd^2),
+    dv = Cc + rnorm(n(), 0, sd_tot)
+  )
+
+vpc <- sim_single |>
+  group_by(time) |>
+  summarise(
+    p05 = quantile(dv, 0.05), p50 = median(dv), p95 = quantile(dv, 0.95),
+    .groups = "drop"
+  )
+```
+
+```{r fig2, fig.cap = "Replicates Figure 2 of Liu 2026: simulated 5th, 50th and 95th percentiles after a single 50 mg dose (lines), with the observed percentiles read from Figure 2 at the peak and at 4 h (points)."}
+fig2_obs <- data.frame(
+  time = c(0.75, 0.75, 0.75, 4, 4, 4),
+  conc = c(445, 140, 30, 140, 56, 20),
+  pct = rep(c("95th", "50th", "5th"), 2)
+)
+ggplot(vpc, aes(time)) +
+  geom_line(aes(y = p50), colour = "firebrick") +
+  geom_line(aes(y = p05), colour = "firebrick", linetype = "dashed") +
+  geom_line(aes(y = p95), colour = "firebrick", linetype = "dashed") +
+  geom_point(data = fig2_obs, aes(time, conc), shape = 8, colour = "black") +
+  labs(x = "Time (h)", y = "Riluzole (ng/mL)") +
+  theme_bw()
+```
+
+The observed percentiles in Figure 2 are read off the plot: median peak
+about 140 ng/mL near 0.75 h, 95th percentile about 445 ng/mL, and median
+about 55 ng/mL at 4 h. The typical-value prediction for a 63.3 kg subject
+(the cohort median weight) is compared with them as well as the medians of
+the simulated cohort:
+
+```{r fig2-check}
+ev_typ <- data.frame(
+  id = 1L, time = c(0, 0.75, 4), amt = c(50, 0, 0), evid = c(1, 0, 0),
+  cmt = c("depot", "central", "central"), WT = 63.3
+)
+typ <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ, returnType = "data.frame")
+typ_peak <- typ$Cc[typ$time == 0.75]
+typ_4h <- typ$Cc[typ$time == 4]
+p50_peak <- max(vpc$p50)
+p50_4h <- vpc$p50[vpc$time == 4]
+stopifnot(length(p50_4h) == 1L, length(typ_4h) == 1L, length(typ_peak) == 1L)
+data.frame(
+  Quantity = c("Median peak (ng/mL)", "Concentration at 4 h (ng/mL)"),
+  "Typical value" = round(c(typ_peak, typ_4h), 1),
+  "Cohort median" = round(c(p50_peak, p50_4h), 1),
+  "Figure 2 observed median (read off)" = c(140, 55),
+  check.names = FALSE
+) |>
+  knitr::kable()
+stopifnot(
+  # Deterministic typical-value predictions against the observed medians;
+  # a mis-transcribed CL/F, Vc/F, Q/F or Vp/F moves them by far more than
+  # the reading error of the figure.
+  abs(typ_peak / 140 - 1) < 0.25,
+  abs(typ_4h / 55 - 1) < 0.15,
+  # Median of the simulated cohort at the peak.
+  abs(p50_peak / 140 - 1) < 0.25
+)
+```
+
+The cohort median at 4 h sits somewhat below the typical value: with 200
+subjects its sampling error is about 10%, and a 2,000-subject cohort
+gives about 51 ng/mL.
+
+## NCA (PKNCA)
+
+The paper quotes a half-life of 11.4 h for riluzole in these healthy
+subjects (Discussion, citing the bioequivalence study). NCA of the
+individual predictions (no residual error) gives:
+
+```{r nca}
+conc <- sim_single |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+dose <- data.frame(id = cohort$id, time = 0, amt = 50, treatment = "50 mg single dose")
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+sim_nca <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  select(treatment, id, PPTESTCD, PPORRES)
+
+sim_nca |>
+  group_by(PPTESTCD) |>
+  summarise(median = signif(median(PPORRES, na.rm = TRUE), 3), .groups = "drop") |>
+  knitr::kable()
+
+ref_nca <- data.frame(treatment = "50 mg single dose", half.life = 11.4)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  sim_nca |> filter(PPTESTCD == "half.life"),
+  ref_nca,
+  by = "treatment",
+  units = c(half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = attr(cmp, "footnote"))
+
+hl_med <- median(sim_nca$PPORRES[sim_nca$PPTESTCD == "half.life"], na.rm = TRUE)
+auc_med <- median(sim_nca$PPORRES[sim_nca$PPTESTCD == "aucinf.obs"], na.rm = TRUE)
+stopifnot(
+  abs(hl_med / 11.4 - 1) < 0.2,
+  # Linear model: the median AUC0-inf is Dose / (median CL/F) = 50 mg / 67 L/h.
+  abs(auc_med / (50000 / 67) - 1) < 0.15
+)
+```
+
+The median simulated half-life is about 12 h, against the 11.4 h quoted;
+the typical-value terminal half-life of the two-compartment model is
+12.7 h.
+
+# Remedial regimens for a dose taken 1 h late (Figure 4)
+
+The authors simulated 50 mg every 12 h to steady state, with the dose due
+at 12 h taken late or missed. Their simulations kept between-subject
+variability on CL/F and Vc/F and the weight effect on Vp/F, but left out
+variability on Ka and the residual error (Methods 'Optimal remedial scheme
+evaluation'). The reference range runs from the 5th percentile of the
+steady-state trough to the 95th percentile of the steady-state
+concentration 1 h after a dose. Here twenty doses at 12-h intervals bring
+the cohort to steady state, and plotted time 0 is the last regular dose
+before the late one.
+
+```{r regimens}
+t0 <- 240
+base_doses <- seq(0, t0, by = 12)
+delay <- 1
+regimens <- list(
+  Adherent = data.frame(time = c(12, 24, 36, 48), amt = 50),
+  A = data.frame(time = c(24, 36, 48), amt = 50),
+  B = data.frame(time = c(12 + delay, 24, 36, 48), amt = 50),
+  C = data.frame(time = c(12 + delay, 24, 36, 48), amt = c(25, 50, 50, 50)),
+  D = data.frame(time = c(12 + delay, 24, 36, 48), amt = c(50, 25, 50, 50)),
+  E = data.frame(time = c(12 + delay, 36, 48), amt = c(75, 50, 50)),
+  F = data.frame(time = c(24, 36, 48), amt = c(75, 50, 50))
+)
+obs_t <- seq(0, 60, by = 0.25)
+
+cohort_ss <- cohort |> mutate(etalka = 0)
+ev_reg <- bind_rows(lapply(names(regimens), function(r) {
+  d <- bind_rows(
+    data.frame(time = base_doses, amt = 50),
+    regimens[[r]] |> mutate(time = time + t0)
+  )
+  bind_rows(
+    tidyr::expand_grid(id = cohort_ss$id, d) |> mutate(evid = 1, cmt = "depot"),
+    tidyr::expand_grid(id = cohort_ss$id, time = obs_t + t0) |>
+      mutate(amt = 0, evid = 0, cmt = "central")
+  ) |>
+    mutate(regimen = r)
+}))
+reg_names <- names(regimens)
+ev_reg <- ev_reg |>
+  mutate(id = id + n_sub * (match(regimen, reg_names) - 1)) |>
+  left_join(
+    bind_rows(lapply(seq_along(reg_names), function(k) {
+      cohort_ss |> mutate(id = id + n_sub * (k - 1))
+    })),
+    by = "id"
+  ) |>
+  arrange(id, time, desc(evid))
+
+sim_reg <- solve_given_etas(ev_reg, keep = "regimen") |>
+  mutate(ptime = time - t0)
+
+adh <- sim_reg |> filter(regimen == "Adherent")
+upper <- unname(quantile(adh$Cc[adh$ptime == 1], 0.95))
+lower <- unname(quantile(adh$Cc[adh$ptime == 0], 0.05))
+c(lower = lower, upper = upper)
+```
+
+```{r fig4, fig.height = 7, fig.cap = "Replicates Figure 4 of Liu 2026: median (line) and 5th-95th percentile band of riluzole concentration for remedial regimens A-F when the dose due at 12 h is taken 1 h late; dashed lines mark the reference range."}
+band <- sim_reg |>
+  filter(regimen != "Adherent") |>
+  group_by(regimen, ptime) |>
+  summarise(
+    p05 = quantile(Cc, 0.05), p50 = median(Cc), p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+ggplot(band, aes(ptime)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "pink", alpha = 0.7) +
+  geom_line(aes(y = p50), colour = "firebrick") +
+  geom_hline(yintercept = c(lower, upper), linetype = "dashed") +
+  facet_wrap(~regimen, ncol = 2) +
+  scale_x_continuous(breaks = seq(0, 60, 12)) +
+  labs(x = "Time (h)", y = "Riluzole (ng/mL)") +
+  theme_bw()
+```
+
+Read off Figure 4, the paper's reference range is about 4.5 to 290 ng/mL
+and the steady-state median peak is about 176 ng/mL.
+
+```{r fig4-check}
+med_peak_ss <- median(adh$Cc[adh$ptime == 1])
+data.frame(
+  Quantity = c(
+    "Upper bound: 95th pct at 1 h (ng/mL)",
+    "Lower bound: 5th pct trough (ng/mL)",
+    "Median at 1 h (ng/mL)"
+  ),
+  Simulated = round(c(upper, lower, med_peak_ss), 1),
+  "Figure 4 (read off)" = c(290, 4.5, 176),
+  check.names = FALSE
+) |>
+  knitr::kable()
+stopifnot(
+  # The width of the band is set by the omega scale: reading Table 1's
+  # omegas as standard deviations instead of variances puts the 95th
+  # percentile at about 217 ng/mL.
+  abs(upper / 290 - 1) < 0.15,
+  abs(med_peak_ss / 176 - 1) < 0.1,
+  lower < 15
+)
+```
+
+Supplementary Table S4 gives the share of the 48 h after the late dose
+spent outside the reference range. The paper does not say exactly how it
+was counted; its values are multiples of 1/48, which fits an hourly count
+of when the 95th percentile is above the upper bound (a) or the 5th
+percentile is below the lower bound (b). Counted that way:
+
+```{r table-s4}
+hourly <- band |>
+  filter(ptime >= 12, ptime < 60, ptime == round(ptime)) |>
+  group_by(regimen) |>
+  summarise(
+    above_pct = round(100 * mean(p95 > upper), 2),
+    below_pct = round(100 * mean(p05 < lower), 2),
+    .groups = "drop"
+  ) |>
+  mutate(total_pct = above_pct + below_pct)
+# Supplementary Table S4, 1-h row; regimens A and F do not depend on the
+# delay and are printed once for all rows.
+s4 <- data.frame(
+  regimen = c("A", "B", "C", "D", "E", "F"),
+  paper_above = c(0, 6.25, 0, 0, 2.08, 2.08),
+  paper_below = c(37.5, 2.08, 16.67, 14.58, 27.08, 25)
+)
+hourly |>
+  left_join(s4, by = "regimen") |>
+  dplyr::rename(
+    Regimen = regimen,
+    "Above (%)" = above_pct, "Below (%)" = below_pct, "Total (%)" = total_pct,
+    "Table S4 above (%)" = paper_above, "Table S4 below (%)" = paper_below
+  ) |>
+  knitr::kable()
+```
+
+The hourly count reproduces Supplementary Table S4 for regimens A, B, C
+and F exactly and differs by one hour for D and E, which supports both the
+reading of the method and the variance scale of the random effects. A
+count of one hour moves with the cohort, so the table is not asserted
+cell by cell; the check below asserts the paper's conclusion for this
+scenario, that taking the late dose at once (regimen B) keeps the cohort
+closest to the reference range, and that skipping it (regimen A) is
+worst.
+
+```{r table-s4-check}
+tot <- setNames(hourly$total_pct, hourly$regimen)
+stopifnot(
+  all(c("A", "B", "C", "D", "E", "F") %in% names(tot)),
+  # Regimen B is best and A is worst, each by more than 4 percentage points
+  # (2 h of the 48 h), twice the one-hour shifts seen against Table S4.
+  tot[["B"]] + 4 < min(tot[c("C", "D", "E", "F")]),
+  tot[["A"]] > max(tot[c("B", "C", "D", "E", "F")]) + 4
+)
+```
+
+# Assumptions and deviations
+
+* **Omega and sigma are variances.** Table 1 labels the random effects
+  'omega CL', 'omega Vc' and 'omega Ka' and prints the residual rows
+  without a scale. The base model in Supplementary Table S3 prints the
+  same IIV terms as omega-squared with almost identical values (0.142,
+  0.214, 0.989), and its proportional error as 35.5 %CV, which is
+  sqrt(0.127). With the variance reading the model reproduces the
+  reference range of Figure 4 and the hourly counts of Supplementary
+  Table S4 (see above); the standard-deviation reading gives a band about
+  half as wide.
+* **Additive residual error.** Table 1 gives the additive term as 0.0631
+  with unit ng/mL. Because the other rows of the table are NONMEM
+  variances, it is read as a variance (SD 0.2512 ng/mL). Read as an SD
+  instead, it would be 0.0631 ng/mL. The difference matters only near the
+  0.7 ng/mL limit of quantification and does not affect any simulation in
+  the paper, which left residual error out.
+* **Combined error form.** The paper does not print its error equation;
+  the model uses nlmixr2's default combined proportional-plus-additive
+  form (variances add), which is the usual NONMEM coding.
+* **Formulation.** The data pool two tablet formulations; the paper
+  reports no formulation effect and the model has none.
+* **Body weights of the remedial-regimen simulations.** The paper says
+  the simulations included the weight effect on Vp/F but not which
+  weights; the cohort here is drawn to match Supplementary Table S1.
+* **Covariates screened but not retained.** Sex (on Vp/F) and age (on
+  CL/F and Vc/F) were tested (Supplementary Table S2) and are recorded in
+  `covariatesDataExcluded`.
+* **Population.** The model was fitted to single doses in healthy
+  volunteers; the authors apply it to patients with ALS at steady state
+  without external validation.
+* **No erratum** was found (Europe PMC and Crossref, checked 2026-11-18).

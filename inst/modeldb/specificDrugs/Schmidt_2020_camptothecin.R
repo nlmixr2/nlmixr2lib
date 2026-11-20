@@ -26,6 +26,7 @@ Schmidt_2020_camptothecin <- function() {
   )
   vignette <- "Schmidt_2020_camptothecin"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- "central_np"
 
   covariateData <- list(
     WT = list(

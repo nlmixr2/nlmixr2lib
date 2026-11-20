@@ -1,0 +1,484 @@
+---
+title: "Bosutinib (Wu 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Bosutinib (Wu 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Wu_2026_bosutinib"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Wu_2026_bosutinib"))$description`
+* Article: <https://doi.org/10.1007/s40262-026-01672-y> (open access; the
+  NONMEM control stream of the final model is Supplementary Table 4)
+
+# Population
+
+The model was fitted to 235 plasma bosutinib concentrations from 26 children
+and adolescents with resistant or intolerant chronic-phase Philadelphia
+chromosome-positive chronic myelogenous leukemia in the phase I dose-finding
+part of the ITCC-054/COG AAML1921 trial (NCT04258943). Patients received oral
+bosutinib once daily at 300 mg/m^2 (max 500 mg; n = 6), 350 mg/m^2 (max 600 mg;
+n = 11) or 400 mg/m^2 (max 600 mg; n = 9) in 28-day cycles. Median age was 11.5
+years (range 1-17; 1 infant, 12 children, 13 adolescents), median weight 44.8 kg
+(12.0-115), median body surface area 1.32 m^2 (0.530-2.38); 15 were male and 11
+female (Table 3 of the paper).
+
+The same information is available programmatically:
+
+```{r population}
+str(readModelDb("Wu_2026_bosutinib")()$population)
+```
+
+The structure is the adult bosutinib model of Garrett 2023 (two compartments,
+first-order absorption with a lag time), with the adult covariates removed
+(Asian race, creatinine clearance, age) and fixed-exponent allometric weight
+scaling added. Adult priors were used through the NONMEM `$PRIOR NWPRI`
+subroutine: informative on Q, V3 and ka, uninformative on the rest. Because the
+pediatric data are oral only, bioavailability was fixed to the adult estimate
+of 33.1%, so CL, V2, Q and V3 are systemic (not apparent) parameters.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lcl` (CL at 70 kg) | 74.9 L/h | Table 4 |
+| `lvc` (V2 at 70 kg) | 1110 L | Table 4 |
+| `lq` (Q at 70 kg) | 37.4 L/h | Table 4 |
+| `lvp` (V3 at 70 kg) | 1960 L | Table 4 |
+| `lka` | 0.366 1/h | Table 4 |
+| `ltlag` | 0.467 h | Table 4 |
+| `lfdepot` | 0.331 (fixed) | Table 4; Supplementary Table 4 `THETA(9) 0.331 FIX` |
+| `e_wt_cl`, `e_wt_q` | 0.75 (fixed) | Methods; Supplementary Table 4 `(BWT/70)**0.75` |
+| `e_wt_vc`, `e_wt_vp` | 1 (fixed) | Methods; Supplementary Table 4 `(BWT/70)**1` |
+| `etalcl`, `etalvc`, covariance | 0.312^2, 0.269^2, 0.0696 | Table 4 (IIV 31.2% and 26.9% CV; covariance 0.0696) |
+| `etalq`, `etalvp`, covariance | 0.4, 0.4, 0.1 (fixed) | Table 4 (63.2% FIX, covariance 0.1 FIX); Supplementary Table 4 `$OMEGA BLOCK(2) FIX` |
+| `etalka` | 0.917^2 | Table 4 (IIV 91.7% CV) |
+| `etaiov_cl_1..3` | 0.471^2 | Table 4 (IOV 47.1% CV); Supplementary Table 4 `$OMEGA BLOCK(1)` + two `SAME` |
+| `propSd` | sqrt(0.0961) = 0.31 | Table 4 (proportional error, untransformed variance 0.0961) |
+| Occasion indicators `oc1`, `oc2`, `oc3` | OCC = 1, 2, >= 3 | Supplementary Table 4 `FLAG1..FLAG3` |
+| `cl <- exp(lcl + etalcl + iov_cl) * (WT/70)^0.75` etc. | n/a | Supplementary Table 4 `$PK` (`MU_1`..`MU_5`) |
+| Two-compartment ODEs with depot | n/a | Supplementary Table 4 `ADVAN4 TRANS4`; Figure 1 |
+| `f(depot)`, `alag(depot)` | n/a | Supplementary Table 4 `F1`, `ALAG1` |
+| `Cc <- central / vc * 1000` | n/a | Supplementary Table 4 `S2 = V2` (dose in ug, DV in ng/mL) |
+| `Cc ~ prop(propSd)` | n/a | Supplementary Table 4 `$ERROR Y = F*(1+EPS(1))` |
+
+Table 4 reports the between-subject and between-occasion variability as %CV
+equal to 100 times the square root of the variance: the fixed Q and V3
+variances of 0.4 in the control stream are printed as 63.2% (= 100 * sqrt(0.4)).
+The variances above are therefore (CV / 100)^2. The `$OMEGA` values printed in
+the control stream (0.0966, 0.0706, 0.0706, 0.864, 0.2215) are the run's
+initial estimates and agree with these to within 2-5%.
+
+# Typical-value checks
+
+The paper reports, for the 70-kg typical individual, an initial half-life of
+6.38 h and a terminal half-life of 58.2 h (Results). These follow in closed form
+from CL, V2, Q and V3, so they check the transcription of the four disposition
+parameters.
+
+```{r half-lives}
+mod <- readModelDb("Wu_2026_bosutinib")
+p <- rxode2::rxode(mod)$theta
+cl <- exp(p[["lcl"]])
+vc <- exp(p[["lvc"]])
+q <- exp(p[["lq"]])
+vp <- exp(p[["lvp"]])
+k10 <- cl / vc
+k12 <- q / vc
+k21 <- q / vp
+s <- k10 + k12 + k21
+r <- sqrt(s^2 - 4 * k21 * k10)
+half_lives <- data.frame(
+  phase = c("initial (alpha)", "terminal (beta)"),
+  model_h = log(2) / c((s + r) / 2, (s - r) / 2),
+  paper_h = c(6.38, 58.2)
+) |>
+  mutate(pct_diff = 100 * (model_h - paper_h) / paper_h)
+knitr::kable(half_lives, digits = 2)
+# The paper's half-lives were computed from its unrounded estimates; the
+# 3-significant-figure parameters in Table 4 reproduce them to rounding.
+stopifnot(all(abs(half_lives$pct_diff) < 1.5))
+```
+
+# Virtual cohort
+
+The paper simulated 5000 newly diagnosed (ND) and 5000 resistant/intolerant
+(R/I) children aged 1 to < 18 years with age, weight and height drawn from the
+NHANES August 2021-August 2023 survey, each dosed by the BSA bands of Table 2
+for 28 days. NHANES microdata are not redistributed here; the cohort below uses
+approximate sex-averaged CDC median weight- and height-for-age with lognormal
+spread (weight CV about 20%, height CV about 4%), and is capped at 200 subjects
+per arm. Body surface area is from the Mosteller formula, and the BSA is rounded
+to the nearest 0.1 m^2 to pick the Table 2 band (bands below 0.3 m^2 use the
+0.3 m^2 dose; 1.7 m^2 and above use the top band).
+
+```{r cohort}
+set.seed(20261117)
+rxode2::rxSetSeed(20261117)
+
+# Approximate CDC 2000 sex-averaged medians (maintainers' approximation).
+growth <- data.frame(
+  age = 1:18,
+  wt = c(10, 12.5, 14.3, 16.3, 18.4, 20.7, 23, 25.6, 28.6, 32, 36, 40.5, 45.5, 50.5, 55, 59, 62, 64),
+  ht = c(75, 87, 95, 102, 109, 115, 122, 128, 133, 138, 144, 150, 157, 163, 167, 170, 172, 173)
+)
+
+# Table 2: daily BSA-banded recommended phase II doses (mg).
+bands <- data.frame(
+  bsa_band = seq(0.3, 1.7, by = 0.1),
+  dose_nd = c(100, 125, 150, 175, 200, 250, 275, 300, 325, 350, 400, 425, 450, 475, 500),
+  dose_ri = c(125, 150, 200, 250, 275, 325, 350, 400, 450, 475, 525, 550, 600, 600, 600)
+)
+
+draw_children <- function(n, age_min, age_max) {
+  age <- runif(n, age_min, age_max)
+  wt <- approx(growth$age, growth$wt, xout = age, rule = 2)$y * exp(rnorm(n, 0, 0.2))
+  ht <- approx(growth$age, growth$ht, xout = age, rule = 2)$y * exp(rnorm(n, 0, 0.04))
+  bsa <- sqrt(wt * ht / 3600)
+  # Integer band index (1 = 0.3 m^2 ... 15 = 1.7 m^2) avoids matching on
+  # floating-point BSA values.
+  idx <- pmin(pmax(round(bsa * 10) - 2L, 1L), nrow(bands))
+  data.frame(AGE = age, WT = wt, BSA = bsa, bsa_band = bands$bsa_band[idx],
+             dose_nd = bands$dose_nd[idx], dose_ri = bands$dose_ri[idx])
+}
+
+n_arm <- 200
+arms <- bind_rows(
+  draw_children(n_arm, 1, 18) |> mutate(arm = "ND, RP2D (1-17 y)", dose = dose_nd),
+  draw_children(n_arm, 1, 18) |> mutate(arm = "R/I, RP2D (1-17 y)", dose = dose_ri),
+  draw_children(n_arm, 15, 18) |> mutate(arm = "ND, adult 400 mg (15-17 y)", dose = 400),
+  draw_children(n_arm, 15, 18) |> mutate(arm = "R/I, adult 500 mg (15-17 y)", dose = 500),
+  draw_children(n_arm, 15, 18) |> mutate(arm = "ND, RP2D (15-17 y)", dose = dose_nd),
+  draw_children(n_arm, 15, 18) |> mutate(arm = "R/I, RP2D (15-17 y)", dose = dose_ri)
+) |>
+  mutate(id = row_number(), OCC = 1L)
+stopifnot(!anyNA(arms$dose))
+
+# Once-daily dosing for 28 days; dense sampling over the day-14 and day-28
+# dosing intervals (hours 312-336 and 648-672).
+obs_times <- c(seq(312, 336, by = 0.5), seq(648, 672, by = 0.5))
+dose_rows <- arms |>
+  transmute(id, time = 0, amt = dose, evid = 1L, ii = 24, addl = 27L, cmt = "depot")
+obs_rows <- arms |>
+  select(id) |>
+  tidyr::crossing(time = obs_times) |>
+  mutate(amt = 0, evid = 0L, ii = 0, addl = 0L, cmt = "central")
+events <- bind_rows(dose_rows, obs_rows) |>
+  left_join(arms |> select(id, WT, OCC, arm, AGE), by = "id") |>
+  arrange(id, time, desc(evid))
+stopifnot(!anyDuplicated(arms$id))
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events = events, keep = c("arm", "AGE")) |>
+  as.data.frame()
+```
+
+# PKNCA: steady-state exposure on days 14 and 28
+
+Each dosing interval is re-anchored to start at 0 so PKNCA reads the trough at
+the end of the 24-h interval.
+
+```{r pknca}
+nca_exposure <- function(sim) {
+  nca_in <- sim |>
+    filter(!is.na(Cc)) |>
+    mutate(day = ifelse(time <= 336, "Day 14", "Day 28"),
+           tad = ifelse(day == "Day 14", time - 312, time - 648)) |>
+    select(id, arm, day, tad, Cc)
+  conc_obj <- PKNCA::PKNCAconc(nca_in, Cc ~ tad | arm + day + id)
+  dose_df <- nca_in |> distinct(id, arm, day) |>
+    left_join(arms |> select(id, dose), by = "id") |>
+    mutate(tad = 0)
+  dose_obj <- PKNCA::PKNCAdose(dose_df, dose ~ tad | arm + day + id)
+  intervals <- data.frame(start = 0, end = 24, auclast = TRUE, cmax = TRUE,
+                          tmax = TRUE, ctrough = TRUE)
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+}
+nca_wide <- function(nca) {
+  out <- as.data.frame(nca$result) |>
+    filter(PPTESTCD %in% c("auclast", "ctrough", "cmax", "tmax")) |>
+    select(id, arm, day, PPTESTCD, PPORRES) |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+    left_join(arms |> select(id, AGE), by = "id")
+  stopifnot(!anyNA(out$auclast), !anyNA(out$ctrough))
+  out
+}
+
+nca <- nca_exposure(sim)
+exposure <- nca_wide(nca)
+```
+
+## Comparison with Table 5 (BSA-banded RP2D, 1-17 years)
+
+AUC is in 10^3 h*ng/mL and the trough in ng/mL, both as median [IQR].
+
+```{r table-5}
+fmt <- function(x, digits) {
+  q <- quantile(x, c(0.25, 0.5, 0.75))
+  sprintf("%s [%s-%s]", signif(q[2], digits), signif(q[1], digits), signif(q[3], digits))
+}
+table5_paper <- data.frame(
+  arm = rep(c("ND, RP2D (1-17 y)", "R/I, RP2D (1-17 y)"), each = 2),
+  day = rep(c("Day 14", "Day 28"), 2),
+  auc_paper = c(2.42, 2.41, 3.17, 3.17),
+  auc_iqr_paper = c("1.72-3.29", "1.71-3.28", "2.22-4.34", "2.22-4.38"),
+  ctrough_paper = c(56.4, 55.9, 72.8, 74.9),
+  ctrough_iqr_paper = c("32.9-87.6", "32.7-87.5", "43.7-114", "43.3-116")
+)
+table5_sim <- exposure |>
+  filter(arm %in% table5_paper$arm) |>
+  group_by(arm, day) |>
+  summarise(
+    auc_sim = median(auclast) / 1000,
+    auc_sim_txt = fmt(auclast / 1000, 3),
+    ctrough_sim = median(ctrough),
+    ctrough_sim_txt = fmt(ctrough, 3),
+    .groups = "drop"
+  )
+table5 <- left_join(table5_paper, table5_sim, by = c("arm", "day")) |>
+  mutate(
+    auc_pct = 100 * (auc_sim - auc_paper) / auc_paper,
+    ctrough_pct = 100 * (ctrough_sim - ctrough_paper) / ctrough_paper
+  )
+table5 |>
+  transmute(
+    Arm = arm, Day = day,
+    `AUCtau paper` = paste0(auc_paper, " [", auc_iqr_paper, "]"),
+    `AUCtau simulated` = auc_sim_txt,
+    `AUC % diff` = round(auc_pct, 1),
+    `Ctrough paper` = paste0(ctrough_paper, " [", ctrough_iqr_paper, "]"),
+    `Ctrough simulated` = ctrough_sim_txt,
+    `Ctrough % diff` = round(ctrough_pct, 1)
+  ) |>
+  knitr::kable()
+
+# Centre of the distribution only: the cohort demographics approximate NHANES
+# and the tails depend on which subjects are drawn. A mis-transcribed CL, F or
+# dose unit moves every median by tens of percent; the pooled centre catches
+# that, and the per-arm bound leaves room for the Monte Carlo error of a
+# 200-subject median (about 5%).
+stopifnot(
+  abs(median(table5$auc_pct)) < 15,
+  abs(median(table5$ctrough_pct)) < 15,
+  all(abs(table5$auc_pct) < 30),
+  all(abs(table5$ctrough_pct) < 30)
+)
+```
+
+The same comparison through `ncaComparisonTable()` (day 28, AUC in h*ng/mL):
+
+```{r nca-comparison}
+reference <- data.frame(
+  arm = c("ND, RP2D (1-17 y)", "R/I, RP2D (1-17 y)"),
+  auclast = c(2410, 3170),
+  ctrough = c(55.9, 74.9)
+)
+sim_long <- as.data.frame(nca$result) |>
+  filter(day == "Day 28", arm %in% reference$arm,
+         PPTESTCD %in% c("auclast", "ctrough")) |>
+  select(arm, PPTESTCD, PPORRES)
+cmp <- ncaComparisonTable(
+  sim_long, reference, by = "arm",
+  units = c(auclast = "h*ng/mL", ctrough = "ng/mL")
+)
+knitr::kable(cmp)
+```
+
+## Comparison with Table 6 (adolescents 15-17 years)
+
+```{r table-6}
+table6_paper <- data.frame(
+  arm = c("ND, adult 400 mg (15-17 y)", "R/I, adult 500 mg (15-17 y)",
+          "ND, RP2D (15-17 y)", "R/I, RP2D (15-17 y)"),
+  auc_paper = c(1.74, 2.20, 2.14, 2.63),
+  ctrough_paper = c(44.7, 55.3, 54.6, 66.2)
+)
+table6 <- exposure |>
+  filter(day == "Day 28", arm %in% table6_paper$arm) |>
+  group_by(arm) |>
+  summarise(auc_sim = median(auclast) / 1000, ctrough_sim = median(ctrough),
+            .groups = "drop") |>
+  right_join(table6_paper, by = "arm") |>
+  mutate(
+    auc_pct = 100 * (auc_sim - auc_paper) / auc_paper,
+    ctrough_pct = 100 * (ctrough_sim - ctrough_paper) / ctrough_paper
+  )
+table6 |>
+  transmute(
+    Arm = arm,
+    `AUCtau paper (10^3 h*ng/mL)` = auc_paper,
+    `AUCtau simulated` = signif(auc_sim, 3),
+    `AUC % diff` = round(auc_pct, 1),
+    `Ctrough paper (ng/mL)` = ctrough_paper,
+    `Ctrough simulated` = signif(ctrough_sim, 3),
+    `Ctrough % diff` = round(ctrough_pct, 1)
+  ) |>
+  knitr::kable()
+stopifnot(
+  abs(median(table6$auc_pct)) < 15,
+  abs(median(table6$ctrough_pct)) < 15,
+  all(abs(table6$auc_pct) < 30),
+  all(abs(table6$ctrough_pct) < 30)
+)
+# The paper's adult-dose / RP2D contrast within each indication: the RP2D
+# raises adolescent exposure by 23% (ND) and 20% (R/I).
+ratio <- with(table6, c(
+  ND = auc_sim[arm == "ND, RP2D (15-17 y)"] / auc_sim[arm == "ND, adult 400 mg (15-17 y)"],
+  RI = auc_sim[arm == "R/I, RP2D (15-17 y)"] / auc_sim[arm == "R/I, adult 500 mg (15-17 y)"]
+))
+ratio
+stopifnot(all(ratio > 1))
+```
+
+## Inter-occasion variability in the simulation
+
+The paper does not say whether its simulations drew the inter-occasion CL
+variability. Re-solving the two 1-17-year RP2D arms with `OCC = 0` (no IOV term)
+shows its effect on the spread: the log-scale interquartile width of the day-28
+AUC is compared with the paper's (ln(3.28/1.71) = 0.65 for ND and
+ln(4.38/2.22) = 0.68 for R/I).
+
+```{r iov}
+ids_main <- arms$id[arms$arm %in% c("ND, RP2D (1-17 y)", "R/I, RP2D (1-17 y)")]
+sim_noiov <- rxode2::rxSolve(
+  mod,
+  events = events |> filter(id %in% ids_main) |> mutate(OCC = 0L),
+  keep = c("arm", "AGE")
+) |>
+  as.data.frame()
+exposure_noiov <- nca_wide(nca_exposure(sim_noiov))
+iqr_width <- function(x) log(quantile(x, 0.75) / quantile(x, 0.25))
+bind_rows(
+  exposure |> filter(id %in% ids_main) |> mutate(iov = "IOV drawn (OCC = 1)"),
+  exposure_noiov |> mutate(iov = "No IOV (OCC = 0)")
+) |>
+  filter(day == "Day 28") |>
+  group_by(arm, iov) |>
+  summarise(median_auc = signif(median(auclast) / 1000, 3),
+            log_iqr_width = round(iqr_width(auclast), 2), .groups = "drop") |>
+  mutate(paper_log_iqr_width = ifelse(grepl("^ND", arm), 0.65, 0.68)) |>
+  knitr::kable()
+```
+
+The paper's interquartile widths (also about 0.67 for the adolescent arms of
+Table 6) fall between the two cases, nearer the IOV-drawn simulation. The IOV
+term changes the spread, not the median.
+
+## Age-group trend (Supplementary Table 5)
+
+Supplementary Table 5 shows the day-28 AUC falling with age under the RP2D
+(ND: 2.63, 2.52, 2.39, 2.18; R/I: 3.58, 3.48, 3.21, 2.66 x 10^3 h*ng/mL for ages
+1-5, 5-9, 9-13 and 13-18 years), because BSA-based dosing scales with roughly
+weight^0.67 while clearance scales with weight^0.75 relative to 70 kg.
+
+```{r supp-table-5}
+supp5 <- exposure |>
+  filter(day == "Day 28", arm %in% c("ND, RP2D (1-17 y)", "R/I, RP2D (1-17 y)")) |>
+  mutate(age_group = cut(AGE, c(1, 5, 9, 13, 18), include.lowest = TRUE,
+                         labels = c("1-5", "5-9", "9-13", "13-18"))) |>
+  group_by(arm, age_group) |>
+  summarise(n = n(), auc_sim = signif(median(auclast) / 1000, 3),
+            ctrough_sim = signif(median(ctrough), 3), .groups = "drop") |>
+  mutate(auc_paper = c(2.63, 2.52, 2.39, 2.18, 3.58, 3.48, 3.21, 2.66),
+         ctrough_paper = c(56.6, 55.0, 57.8, 54.0, 76.2, 81.2, 80.4, 65.6))
+knitr::kable(supp5)
+```
+
+# Replicate published figures
+
+```{r figure-5, fig.cap = "Simulated day-14 and day-28 AUCtau,ss and Ctrough under the BSA-banded RP2D, with the adult target ranges (+/-20%) shaded. Replicates Figure 5 of Wu 2026."}
+targets <- data.frame(
+  arm = c("ND, RP2D (1-17 y)", "R/I, RP2D (1-17 y)"),
+  auc_lo = c(1.82, 2.52), auc_hi = c(2.72, 3.78),
+  ct_lo = c(54.4, 72.8), ct_hi = c(81.6, 109)
+)
+fig5 <- exposure |>
+  filter(arm %in% targets$arm) |>
+  mutate(`AUCtau,ss (10^3 h*ng/mL)` = auclast / 1000, `Ctrough (ng/mL)` = ctrough) |>
+  select(arm, day, `AUCtau,ss (10^3 h*ng/mL)`, `Ctrough (ng/mL)`) |>
+  pivot_longer(-c(arm, day), names_to = "metric")
+target_long <- bind_rows(
+  targets |> transmute(arm, metric = "AUCtau,ss (10^3 h*ng/mL)", lo = auc_lo, hi = auc_hi),
+  targets |> transmute(arm, metric = "Ctrough (ng/mL)", lo = ct_lo, hi = ct_hi)
+)
+ggplot(fig5, aes(day, value)) +
+  geom_rect(data = target_long, aes(xmin = -Inf, xmax = Inf, ymin = lo, ymax = hi),
+            inherit.aes = FALSE, fill = "lightblue", alpha = 0.5) +
+  geom_boxplot(outlier.size = 0.5) +
+  facet_grid(metric ~ arm, scales = "free_y") +
+  labs(x = NULL, y = NULL)
+```
+
+```{r figure-6, fig.cap = "Day-28 AUCtau,ss and Ctrough in adolescents (15-17 years) on the approved adult dose versus the BSA-banded RP2D. Replicates the pediatric arms of Figure 6 of Wu 2026 (the adult arms need the Garrett 2023 adult model, which is not in this package)."}
+exposure |>
+  filter(day == "Day 28", grepl("15-17", arm)) |>
+  mutate(indication = ifelse(grepl("^ND", arm), "ND", "R/I"),
+         regimen = ifelse(grepl("adult", arm), "Adult dose", "RP2D"),
+         `AUCtau,ss (10^3 h*ng/mL)` = auclast / 1000, `Ctrough (ng/mL)` = ctrough) |>
+  select(indication, regimen, `AUCtau,ss (10^3 h*ng/mL)`, `Ctrough (ng/mL)`) |>
+  pivot_longer(-c(indication, regimen), names_to = "metric") |>
+  ggplot(aes(regimen, value)) +
+  geom_boxplot(outlier.size = 0.5) +
+  facet_grid(metric ~ indication, scales = "free_y") +
+  labs(x = NULL, y = NULL)
+```
+
+```{r profiles, fig.cap = "Day-28 steady-state concentration-time profiles (median and 5th-95th percentiles) under the BSA-banded RP2D."}
+sim |>
+  filter(arm %in% targets$arm, time >= 648) |>
+  group_by(arm, tad = time - 648) |>
+  summarise(med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95),
+            .groups = "drop") |>
+  ggplot(aes(tad, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~arm) +
+  labs(x = "Time after dose on day 28 (h)", y = "Bosutinib Cc (ng/mL)")
+```
+
+# Assumptions and deviations
+
+- **Virtual cohort.** The paper drew age, weight and height from NHANES
+  2021-2023; that dataset is not redistributed here, so weight and height come
+  from approximate CDC median growth curves with lognormal spread chosen by the
+  maintainers. Ages are uniform over each age range. The exposures above are
+  compared on medians only, which are less sensitive to these choices than the
+  tails.
+- **BSA bands.** Table 2 lists doses at BSA steps of 0.1 m^2 without stating
+  how an intermediate BSA is assigned; BSA is rounded to the nearest 0.1 m^2
+  here.
+- **Inter-occasion variability.** Every simulated subject is given `OCC = 1`,
+  so the occasion-1 IOV eta adds to the between-subject CL variability over the
+  whole 28 days. The paper does not say how IOV was handled in its simulations.
+  Pass `OCC = 0` to simulate without the IOV term.
+- **A `non-mu referenced` warning is expected on model load.** The occasion
+  indicators (`oc1 * etaiov_cl_1 + ...`) place the IOV etas outside a
+  mu-referenced position, so rxode2 warns "some etas defaulted to non-mu
+  referenced". This affects estimation efficiency, not simulation, and is
+  shared by every IOV model in the library that uses occasion indicators.
+- **Removed adult covariates.** The final control stream keeps the adult age
+  effect on V2 and creatinine-clearance effect on CL with their exponents fixed
+  to 0, and drops the Asian-race effects; these are listed under
+  `covariatesDataExcluded` and have no effect in the model.
+- **Zero-variance random effects.** The ETAs on the lag time and on F1 are
+  `0 FIX` in the control stream and are omitted.
+- **Adult comparator.** The adult arms of Table 6 and Figure 6 come from the
+  Garrett 2023 adult model and are not reproduced.
+- **Errata.** No erratum or correction was found in a literature search on
+  2026-11-17.

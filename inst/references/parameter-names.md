@@ -124,7 +124,7 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Role:** Log of a unitless multiplier that sets the absorption rate constant relative to each subject's own elimination rate constant, `ka <- karatio * kel` with `kel <- cl / vc`. Used when the source fits ka as a multiple of kel, typically with a lower bound of 1 (`lkaratio` bound at 0 on the log scale) so that absorption is constrained to be faster than elimination and flip-flop kinetics are excluded. The bare counterpart inside `model` is `karatio`.
 - **Source aliases:**
   - `THETA(1)` labelled `;KA` -- Silvola 2025 Data S1 / S2 control streams (`TVKA = THETA(1)*KE`, `$THETA (1, 7.67)`). The papers' tables then print the derived product as 'KA (h-1)', not this ratio.
-- **Example models:** `Silvola_2025_gabapentin_mpr.R` (founding example; ratio 7.828 back-solved from Table 2 KA 0.43 h-1, CL/F 15.6 L/h, V2/F 284 L), `Silvola_2025_gabapentin_milkcmt.R` (ratio 9.904).
+- **Example models:** `Silvola_2025_gabapentin_mpr.R` (founding example; ratio 7.828 back-solved from Table 2 KA 0.43 h-1, CL/F 15.6 L/h, V2/F 284 L), `Silvola_2025_gabapentin_milkcmt.R` (ratio 9.904), `Thakre_2026_glecaprevir.R` (ratio 3.65, printed directly as the 'Absorption factor' in Thakre 2026 Table 2), `Thakre_2026_pibrentasvir.R` (ratio 2.47, Table 3).
 - **Notes:** Not an alias of `lka`. With between-subject variability on `cl` and `vc`, the individual ka inherits each subject's kel, so the simulated absorption-phase spread differs from a free `lka` with the same typical value even though the typical-value profile is identical. When a source reports only the derived ka, back-solve the ratio as `ka / (cl / vc)` at the typical values and say so in the source-trace comment. Named `karatio` rather than `kakel` so that the name states the quantity is dimensionless without relying on concatenation to mean a quotient (maintainers' ruling 2026-09-11).
 
 ### lcl (**canonical log-transformed total clearance**)
@@ -346,7 +346,7 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Role:** Clearance in force after the breakpoint of a piecewise-constant time-varying clearance (volume / time). Paired with `ltclchange`; the pre-breakpoint arm is the plain `lcl`.
 - **Source aliases:**
   - `CL>TCLchange` -- Park 2025.
-- **Example models:** `Park_2025_efineptakin_alfa.R`.
+- **Example models:** `Park_2025_efineptakin_alfa.R`, `Yusuff_2026_voriconazole.R` (late arm of a SMOOTH logistic transition `cl_early + (cl_late - cl_early) / (1 + exp(-0.1 * (t - cl_t50)))`, with the early arm on `lcl` and the midpoint on `lcl_t50`, as the `ltclchange` Notes direct for a smooth sigmoid).
 - **Notes:** Only the LATE arm carries a suffix, because the early arm is an ordinary clearance already covered by `lcl`. Covariates may act on the two arms independently -- in the founding example sex acts on `lcl` only and the late arm is sex-independent.
 
 ### ltclchange2 (**canonical log-transformed second clearance-step breakpoint time**)
@@ -1313,7 +1313,7 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 form. Log form `lcl_t50`. Units are the model's time unit.
 - **Source aliases:**
   - `cl_hill_t50` / `lcl_hill_t50` -- prior name (pre-2026-08-31 rename).
-- **Example models:** `Kuchimanchi_2024_dostarlimab.R`, `Masters_2022_avelumab.R`.
+- **Example models:** `Kuchimanchi_2024_dostarlimab.R`, `Masters_2022_avelumab.R`, `Yusuff_2026_voriconazole.R` (midpoint of a logistic-in-time transition between the absolute arms `lcl` and `lcl_late`, slope fixed at 0.1 1/h, rather than a Hill half-time; read the model body for the form).
 - **Notes:** Named without a `time` infix because `t50` already denotes a time; see
 [[cl_time_max]] for the rename rationale.
 

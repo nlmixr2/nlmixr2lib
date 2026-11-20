@@ -554,10 +554,10 @@ stopifnot(
 - **Per-dose BOV in the exposure simulation.** Each dose receives a fresh F1
   and MTT draw by changing `etaiov_*_1` at every dose on `OCC = 1`. Users
   simulating the four analysis occasions should instead supply `OCC` 1-4.
-  Because rxode2 has no `| OCC` random-effect level, the occasion etas are
-  expanded with indicators; rxode2 therefore warns that these etas are not
-  mu-referenced, which only affects the speed of a future estimation run,
-  not simulation.
+  Because rxode2's `| OCC` level shares one draw per occasion when no
+  subject has two or more occasions, the occasion etas are expanded with
+  indicators; rxode2 therefore warns that these etas are not mu-referenced,
+  which only affects the speed of a future estimation run, not simulation.
 - **Residual error.** The rich and sparse residual SDs are selected by
   `SAMPLE_INTENSIVE`. Below-LLOQ handling (M3) is an estimation feature and
   is not part of the model.

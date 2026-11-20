@@ -34,6 +34,7 @@ Kong_2020_vonoprazan_human_pbpk <- function() {
   )
   vignette <- "Kong_2020_vonoprazan_pbpk"
   units <- list(time = "min", dosing = "mg", concentration = "ng/mL")
+  dosing <- "stomach"
 
   paper_specific_compartments <- c(
     "ev_stomach",

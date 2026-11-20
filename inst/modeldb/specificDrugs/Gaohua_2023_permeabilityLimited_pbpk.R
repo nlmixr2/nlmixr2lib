@@ -38,6 +38,7 @@ Gaohua_2023_permeabilityLimited_pbpk <- function() {
   )
   vignette <- "Gaohua_2023_permeabilityLimited_pbpk"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "venous_plasma")
 
   # No covariates: the paper simulates a single 70 kg reference adult and
   # varies only drug-specific fold multipliers.

@@ -28,6 +28,7 @@ Dong_2015_snx2112_rat_pbpk <- function() {
     dosing = "umol",
     concentration = "umol/L"
   )
+  dosing <- "plasma"
 
   # Every ODE state is an AMOUNT of SNX-2112 in umol; model() divides by the
   # Table 1 volume to obtain the concentration in uM.

@@ -16,3 +16,4 @@
 ^post_merge_advance\.sh$
 ^air\.toml$
 ^\.git-blame-ignore-revs$
+^design$

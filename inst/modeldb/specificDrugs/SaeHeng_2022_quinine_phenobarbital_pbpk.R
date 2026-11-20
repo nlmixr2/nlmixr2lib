@@ -105,6 +105,7 @@ SaeHeng_2022_quinine_phenobarbital_pbpk <- function() {
     dosing = "mg (quinine base and phenobarbital, i.v.)",
     concentration = "mg/L (Cc quinine plasma, Cc_pb phenobarbital plasma)"
   )
+  dosing <- c("depot_iv_pb", "depot_iv")
 
   covariateData <- list(
     AGE = list(

@@ -52,6 +52,7 @@ Zhang_2025_epoetinAlfa_erythroferrone_cia_rat <- function() {
     hemoglobin = "g/dL",
     red_blood_cells = "1e12 cells/L"
   )
+  dosing <- c("central_carb", "central")
 
   # Two groups of paper-specific states. (a) The three erythroferrone states
   # are paper-mechanistic decompositions of the measured circulating ERFE

@@ -1,0 +1,729 @@
+---
+title: "Liposomal and conventional doxorubicin delivery to tumors (Hendriks 2012)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Liposomal and conventional doxorubicin delivery to tumors (Hendriks 2012)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Hendriks BS, Reynolds JG, Klinz SG, et al. Multiscale kinetic
+  modeling of liposomal doxorubicin delivery quantifies the role of tumor and
+  drug-specific parameters in local delivery to tumors. CPT Pharmacometrics
+  Syst Pharmacol. 2012;1(11):e15.
+* Article: <https://doi.org/10.1038/psp.2012.16> (open access,
+  PMC3600732)
+* Packaged models:
+  * `Hendriks_2012_doxorubicin_liposomal_mouse_qsp` -- the mouse model the
+    paper trained on literature PK and tumor-deposition data.
+  * `Hendriks_2012_doxorubicin_liposomal_human_qsp` -- the human scale-up.
+
+```{r load-models}
+mod_mouse <- rxode2::rxode2(readModelDb("Hendriks_2012_doxorubicin_liposomal_mouse_qsp"))
+mod_human <- rxode2::rxode2(readModelDb("Hendriks_2012_doxorubicin_liposomal_human_qsp"))
+```
+
+Hendriks 2012 built a multiscale model of how conventional doxorubicin and
+pegylated liposomal doxorubicin (PLD) reach the DNA of tumor cells. The
+whole-body layer is deliberately minimal: free doxorubicin follows a
+two-compartment PK model, PLD a one-compartment model, and the two share the
+blood volume as their central compartment so that doxorubicin released from
+liposomes joins the free-drug pool. A perfused, well-mixed tumor is attached
+to the blood by blood flow; inside it, drug and liposomes cross the capillary
+wall by a transvascular flux per unit capillary surface area, liposomes are
+taken into tumor cells by fluid-phase uptake and release their doxorubicin,
+and free doxorubicin enters the cells through a modified Eytan-Kuchel
+membrane model (partition into the outer leaflet, flippase transport to the
+inner leaflet, release into the cytosol, reversible DNA binding). The paper
+uses the area under the DNA-bound doxorubicin curve as its delivery metric.
+
+The authors published the complete SimBiology model as SBML (one file for
+mouse, one for human) together with a parameter and reaction workbook for
+each. Those files contain a heart sub-model built exactly like the tumor
+sub-model (from the authors' companion cardiac work); it is part of the
+published model and is included in both packaged models, since its blood
+flow returns drug to the circulation.
+
+# Population
+
+The mouse model was trained on group-mean literature data rather than on
+individual animals: plasma PK of free doxorubicin (0.5-20 mg/kg IV) and of
+~100 nm pegylated liposomes (3-20 mg/kg doxorubicin basis), and tumor
+deposition time courses in subcutaneous xenografts (HepG2, Li-7, BT-474, 4T1,
+NCI-N87 for doxorubicin; BT-474, NCI-N87, KB, A375, B16F10, HepG2, Li-7, 4T1
+and M190-FR for liposomes), all normalised to percent injected dose
+(Figure 3a-f). The cellular parameters `kf_ol` and `kflippase_out` are the
+medians of fits to doxorubicin uptake time courses in 21 cancer cell lines
+(Figure 2).
+
+The human model scales the mouse model to a 70 kg, 1.8 m^2 adult with a
+20 g tumor. Free-doxorubicin PK was re-fitted to pooled clinical PK data
+(Figure 3g), liposome elimination to the 111In-PLD data of Harrington et
+al. (Figure 3h), the doxorubicin tumor-to-capillary flux to the Kaposi
+sarcoma tumor data of Northfelt et al., and the doxorubicin
+capillary-to-tumor flux was fixed from DCE-MRI Ktrans values. All cellular,
+release and liposome transport parameters were carried from the mouse
+model; the liposome tumor influx was estimated per patient (Figure 3l).
+
+Both models are deterministic typical-value models with no between-subject
+variability and no residual error.
+
+# Units and dosing
+
+Time is in minutes. States are amounts in nmol of doxorubicin; the liposome
+(`*_lipo`) and empty-lipid (`*_lipid`) states are in doxorubicin-equivalent
+nmol, so a PLD dose is entered as the nmol of doxorubicin it contains
+(20,000 doxorubicin molecules per liposome). Free doxorubicin is dosed into
+`central`, PLD into `central_lipo`. Concentrations are nM; tumor and heart
+readouts are in ug doxorubicin per g tissue.
+
+```{r dose-helpers}
+mw_dox <- 580 # g/mol, as in the published model code
+nmol_from_mg <- function(mg) mg / 1e3 / mw_dox * 1e9
+mouse_dose <- function(mg_per_kg, wt = 0.02) nmol_from_mg(mg_per_kg * wt)
+human_dose <- function(mg_per_m2, bsa = 1.8) nmol_from_mg(mg_per_m2 * bsa)
+mouse_dose(3)
+human_dose(40)
+```
+
+The mouse model code gives the dose as an instantaneous bolus into blood;
+the human model code infuses it over 60 minutes. The simulations below
+follow the same conventions.
+
+# Source trace
+
+Structure (all equations follow the reaction list of the published SBML
+model and workbook; rates are amount per minute):
+
+| Element | Source |
+|---|---|
+| Two-compartment free doxorubicin PK in blood volume (`kel`, `k12`, `k21`) | Methods 'Combined PK model'; Figure 1a; SBML reactions rxn6, rxn7 |
+| One-compartment liposome PK sharing the central compartment (`kel_lipo`) | Methods 'Combined PK model'; SBML rxn2 |
+| Optional liposome peripheral compartment (human, `k12_lipo = 0`) | Human SBML / workbook; Methods 'Human scale-up' |
+| Release of 20,000 doxorubicin per liposome in blood/capillary, interstitium and cells (`krel_plasma`, `krel_tissue`, `krel_cell`) | Methods; SBML rxn38-rxn44 |
+| Empty lipid tracked and cleared like intact liposomes | SBML lipid reactions |
+| Tumor and heart: blood flow in, flow minus lymph out, lymph from interstitium | Methods 'Tumor deposition model'; SBML rxn25-rxn33 (tumor), rxn12-rxn20 (heart) |
+| Transvascular flux = tvf x capillary surface area density x tissue weight x concentration | Methods; SBML rxn27, rxn32 |
+| Capillary surface area and vascular fraction from MVD and a radius distribution | SBML initial assignments `capillarysurfacearea_tumor`, `tumor_frxnvascularvol` |
+| Interstitial / cellular split of the non-vascular volume | SBML `tumor_frxninterstitialvol`, `tumor_frxncellvol` |
+| Fluid-phase liposome uptake `ke_fluidphase x Ncells x C_int` | Methods; SBML |
+| Exocytosis of internalised liposomes and lipid (`kdeg_lipo`) | Workbook; SBML |
+| Membrane partition, flippase and cytosol exchange | Methods 'Doxorubicin cellular transport model'; Figure 1b; SBML |
+| DNA binding with `kf = kr_DNA / Kd_DNA`; free sites depleted from `Nnuc x 0.18 / NA` per cell | Methods; Table 1; SBML rxn4 and initial assignment of `DNA` |
+| Doxorubicin degradation in heart interstitium (`kdeg_dox`) | Workbook; SBML |
+| Readouts (`Cc`, `tumor_total_dox`, `tumor_dna_dox`, ...) | SBML repeated assignments |
+
+Parameter values (Table 1 reports lengths in cm; the model works in dm, so
+1 cm/min = 0.1 dm/min):
+
+| Parameter | Mouse | Human | Source |
+|---|---|---|---|
+| `kel`, `k12`, `k21` (1/min) | 0.36, 0.74, 0.0055 | 0.0820, 0.0475, 0.00125 | Table 1 (Fit) |
+| `kel_lipo` (1/min) | 0.001141 | 1.67e-4 | Table 1 (Fit); human workbook 1.689e-4 |
+| `krel_plasma`, `krel_tissue`, `krel_cell` (1/min) | 5.465e-5, 1.77e-4, 9.6e-4 | same | Methods; Table 1 |
+| `ke_fluidphase` (L/min/cell) | 4e-14 | same | Table 1 |
+| `kdeg_lipo` (1/min) | 0.0042 | same | Workbooks |
+| `tvf_in_tumor_dox` (dm/min) | 2.96e-5 | 3.63e-4 | Table 1 (mouse Fit; human Ktrans) |
+| `tvf_out_tumor_dox` (dm/min) | 1.1771e-4 | 8.45e-5 | Table 1 (mouse); human workbook and SBML (see Errata) |
+| `tvf_in_tumor_lipo`, `tvf_out_tumor_lipo` (dm/min) | 2.64e-7, 7.14e-7 | same | Table 1 |
+| `kf_ol` (dm/min), `kflippase_in`, `kflippase_out` (1/min) | 3.3e-6, 1, 0.37 | same | Table 1 |
+| Partition coefficient, leaflet volume fractions | 40,000; 5e-5; 5e-5 | same | Table 1 |
+| `Kd_DNA` (nM), `kr_DNA` (1/min) | 1000, 1200 | same | Table 1 |
+| Nucleotides per cell, sites per nucleotide | 4.58e7, 0.18 | same | Table 1 |
+| Blood volume (L) | 0.0012 | 4.85 | Table 1 (0.06 L/kg x 0.02 kg); human workbook |
+| Tumor weight (kg), `Qtumor` (L/min/kg), `Ltumor` | 8.6e-5, 0.21186, 0 | 0.02, 0.0282, 0 | Table 1; workbooks |
+| MVD (1/mm^2), capillary radii (3, 5, 7, 23 um) and fractions (0.1, 0.6, 0.2, 0.1) | 250 | same | Table 1; workbooks |
+| Cell fraction of non-vascular tumor volume, tumor cell radius | 0.412, 8.5 um | same | Table 1; workbooks |
+| Heart weight (kg), `Qheart`, `Lheart` (L/min/kg) | 1.33e-4, 2.105, 7.5e-5 | 0.33, 0.727, 7.5e-5 | Workbooks |
+| Heart MVD, capillary radius, cell fraction, myocyte radius | 1650, 2.2 um, 0.849, 15.6 um | same | Workbooks |
+| Heart `tvf` (dox in, dox out, lipo in, lipo out; dm/min) | 6.229e-5, 3.571e-5, 2.65e-8, 0 | 3.63e-4, 2.086e-4, 2.65e-8, 0 | Workbooks |
+| `kdeg_dox` (1/min), residual blood fraction | 0.014, 0.5 | same | Workbooks |
+
+# Mouse: tumor compartments after 3 mg/kg (Supplementary Figure S2B)
+
+```{r mouse-sim}
+tgrid <- c(0, 1, 5, 10, 30, seq(60, 168 * 60, by = 60))
+solve_one <- function(mod, cmt, amt, dur = 0, params = NULL, times = tgrid) {
+  ev <- rxode2::et(amt = amt, cmt = cmt, dur = dur) |>
+    rxode2::et(times, cmt = "central")
+  out <- rxode2::rxSolve(mod, ev, params = params, atol = 1e-10, rtol = 1e-8)
+  out <- as.data.frame(out)
+  out$h <- out$time / 60
+  out
+}
+m_conv <- solve_one(mod_mouse, "central", mouse_dose(3))
+m_lipo <- solve_one(mod_mouse, "central_lipo", mouse_dose(3))
+# Conventional arm repeated with the published model code's tumor influx
+# flux (6.23e-5 dm/min) instead of Table 1 (2.96e-5 dm/min); see Errata.
+m_conv_code <- solve_one(mod_mouse, "central", mouse_dose(3), params = c(tvf_in_tumor_dox = 6.23e-5))
+```
+
+```{r mouse-s2b, fig.height = 6}
+tumor_long <- function(d, label) {
+  d |>
+    dplyr::transmute(
+      h,
+      `Capillary doxorubicin` = c_cap_tumor_dox,
+      `Interstitium doxorubicin` = c_int_tumor_dox,
+      `Cell doxorubicin, free` = c_cell_tumor_free,
+      `Cell doxorubicin, DNA-bound` = c_cell_tumor_bound,
+      `Capillary liposomes (dox eq.)` = c_cap_tumor_lipo,
+      `Interstitium liposomes (dox eq.)` = c_int_tumor_lipo
+    ) |>
+    tidyr::pivot_longer(-h, names_to = "space", values_to = "conc") |>
+    dplyr::mutate(arm = label)
+}
+s2b <- dplyr::bind_rows(
+  tumor_long(m_conv, "Conventional (Table 1 tvf_in_dox)"),
+  tumor_long(m_conv_code, "Conventional (model-code tvf_in_dox)"),
+  tumor_long(m_lipo, "Liposomal")
+) |>
+  dplyr::filter(!(arm != "Liposomal" & grepl("liposomes", space)), h > 0)
+ggplot(s2b, aes(h, conc, colour = arm)) +
+  geom_line() +
+  facet_wrap(~space, scales = "free_y", ncol = 2) +
+  coord_cartesian(xlim = c(0, 168)) +
+  scale_x_continuous(breaks = seq(0, 168, 24)) +
+  labs(x = "Time (h)", y = "Concentration (nM doxorubicin)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+Replicates Supplementary Figure S2B of Hendriks 2012 (mouse, 3 mg/kg
+conventional doxorubicin or PLD). The values below were read off that
+figure by the maintainers.
+
+```{r mouse-s2b-table}
+at_h <- function(d, col, h) d[[col]][which.min(abs(d$h - h))]
+peak <- function(d, col) max(d[[col]])
+peak_h <- function(d, col) d$h[which.max(d[[col]])]
+# First time after the peak at which a curve falls below `level`; NA when
+# the curve never reaches that level.
+cross_down_h <- function(d, col, level) {
+  if (max(d[[col]]) < level) {
+    return(NA_real_)
+  }
+  i <- which(d$h > d$h[which.max(d[[col]])] & d[[col]] < level)[1]
+  d$h[i]
+}
+s2b_check <- data.frame(
+  Readout = c(
+    "Conventional: interstitium dox at 1 h (nM)",
+    "Conventional: cell free dox falls below 1000 nM (h)",
+    "Conventional: cell free dox at 24 h (nM)",
+    "Liposomal: capillary liposomes at 48 h (nM dox eq.)",
+    "Liposomal: capillary liposomes at 72 h (nM dox eq.)",
+    "Liposomal: interstitium liposome peak (nM dox eq.)",
+    "Liposomal: cell free dox peak (nM)",
+    "Liposomal: cell DNA-bound dox peak (nM)"
+  ),
+  `Figure S2B` = c(140, 8.5, 270, 2800, 600, 2550, 740, 960),
+  `Table 1 values` = c(
+    at_h(m_conv, "c_int_tumor_dox", 1),
+    cross_down_h(m_conv, "c_cell_tumor_free", 1000),
+    at_h(m_conv, "c_cell_tumor_free", 24),
+    at_h(m_lipo, "c_cap_tumor_lipo", 48),
+    at_h(m_lipo, "c_cap_tumor_lipo", 72),
+    peak(m_lipo, "c_int_tumor_lipo"),
+    peak(m_lipo, "c_cell_tumor_free"),
+    peak(m_lipo, "c_cell_tumor_bound")
+  ),
+  `Model-code tvf_in_dox` = c(
+    at_h(m_conv_code, "c_int_tumor_dox", 1),
+    cross_down_h(m_conv_code, "c_cell_tumor_free", 1000),
+    at_h(m_conv_code, "c_cell_tumor_free", 24),
+    NA, NA, NA, NA, NA
+  ),
+  check.names = FALSE
+)
+knitr::kable(s2b_check, digits = 1)
+```
+
+The capillary liposome curve, which is set by the liposome PK alone,
+reproduces the figure. The conventional-doxorubicin panels reproduce the
+figure when the tumor influx flux is the one written in the published model
+code (6.23e-5 dm/min, described there as a Ktrans-based value) rather than
+the Table 1 estimate (2.96e-4 cm/min = 2.96e-5 dm/min); with the Table 1
+value the tumor interstitium and cell concentrations are about half as high
+and the free cell concentration never reaches 1000 nM (NA in the table).
+The packaged mouse model uses the Table 1 value, which is also the nominal
+point plotted in Figure 5a (see Errata). The liposomal tumor panels are not
+reproduced exactly: the simulated interstitial liposome concentration peaks
+earlier (about 12 h against about 19 h) and higher (3300 against 2550 nM),
+and the cell concentrations are about 1.7-fold higher than in the figure.
+No single published parameter explains the difference, and the packaged
+values were not adjusted.
+
+```{r mouse-s2b-checks}
+stopifnot(
+  # Liposome PK in blood/capillary: set by kel_lipo + krel_plasma.
+  abs(at_h(m_lipo, "c_cap_tumor_lipo", 48) / 2800 - 1) < 0.25,
+  # Conventional arm with the model-code influx flux reproduces S2B.
+  abs(at_h(m_conv_code, "c_int_tumor_dox", 1) / 140 - 1) < 0.25,
+  abs(at_h(m_conv_code, "c_cell_tumor_free", 24) / 270 - 1) < 0.25,
+  # Liposomal arm: same order of magnitude as S2B (see text above).
+  peak(m_lipo, "c_cell_tumor_bound") > 500,
+  peak(m_lipo, "c_cell_tumor_bound") < 2500
+)
+```
+
+# Mouse: plasma and tumor percent injected dose (Figure 3a, b, d, e)
+
+```{r mouse-pid, fig.height = 6}
+pid <- function(d, dose_nmol) {
+  dose_ug <- dose_nmol * mw_dox / 1e3
+  d |>
+    dplyr::transmute(
+      h,
+      `Plasma total doxorubicin (%ID/mL)` = 100 * Cc / 1e3 / dose_nmol,
+      `Tumor total doxorubicin (%ID/g)` = 100 * tumor_total_dox / dose_ug,
+      `Tumor total liposome label (%ID/g)` = 100 * tumor_total_lipid / dose_ug
+    )
+}
+fig3 <- dplyr::bind_rows(
+  pid(m_conv, mouse_dose(3)) |> dplyr::mutate(arm = "Conventional doxorubicin"),
+  pid(m_lipo, mouse_dose(3)) |> dplyr::mutate(arm = "PLD")
+) |>
+  tidyr::pivot_longer(-c(h, arm), names_to = "readout", values_to = "value") |>
+  dplyr::filter(!(arm == "Conventional doxorubicin" & grepl("liposome", readout)), h > 0)
+ggplot(fig3, aes(h, value, colour = arm)) +
+  geom_line() +
+  facet_wrap(~readout, scales = "free_y", ncol = 1) +
+  scale_y_log10() +
+  scale_x_continuous(breaks = seq(0, 168, 24)) +
+  labs(x = "Time (h)", y = NULL, colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+Typical-value curves corresponding to the mean fits of Figure 3a, b (plasma)
+and 3d, e (tumor). At time zero the plasma holds 100% of the dose in the
+1.2 mL blood volume (83 %ID/mL), as in Figure 3a, b. The simulated PLD tumor
+deposition peaks at about 7 %ID/g near 22 h, against about 4.6 %ID/g near
+36 h for the mean fit drawn in Figure 3e, in line with the faster and higher
+liposome deposition seen against Supplementary Figure S2B.
+
+# Human: tumor compartments after 40 mg/m^2 (Supplementary Figure S2C)
+
+```{r human-sim}
+h_conv <- solve_one(mod_human, "central", human_dose(40), dur = 60)
+h_lipo <- solve_one(mod_human, "central_lipo", human_dose(40), dur = 60)
+# Table 1 prints the human doxorubicin efflux flux as 8.45E-03 cm/min
+# (8.45e-4 dm/min); the published model code uses 8.45e-5 dm/min.
+h_lipo_t1 <- solve_one(mod_human, "central_lipo", human_dose(40), dur = 60, params = c(tvf_out_tumor_dox = 8.45e-4))
+h_conv_t1 <- solve_one(mod_human, "central", human_dose(40), dur = 60, params = c(tvf_out_tumor_dox = 8.45e-4))
+```
+
+```{r human-s2c, fig.height = 6}
+s2c <- dplyr::bind_rows(
+  tumor_long(h_conv, "Conventional"),
+  tumor_long(h_lipo, "Liposomal")
+) |>
+  dplyr::filter(!(arm == "Conventional" & grepl("liposomes", space)), h > 0)
+ggplot(s2c, aes(h, conc, colour = arm)) +
+  geom_line() +
+  facet_wrap(~space, scales = "free_y", ncol = 2) +
+  scale_x_continuous(breaks = seq(0, 168, 24)) +
+  labs(x = "Time (h)", y = "Concentration (nM doxorubicin)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+Replicates Supplementary Figure S2C of Hendriks 2012 (human, 40 mg/m^2 of
+conventional doxorubicin or PLD as a 60-minute infusion). Figure values were
+read off the figure by the maintainers.
+
+```{r human-s2c-table}
+s2c_check <- data.frame(
+  Readout = c(
+    "Conventional: capillary dox at end of infusion (nM)",
+    "Conventional: interstitium dox at 2 h (nM)",
+    "Conventional: cell free dox peak (nM)",
+    "Conventional: cell DNA-bound dox peak (nM)",
+    "Liposomal: capillary liposomes at 1 h (nM dox eq.)",
+    "Liposomal: capillary liposomes at 168 h (nM dox eq.)",
+    "Liposomal: interstitium dox peak (nM)",
+    "Liposomal: cell free dox peak (nM)",
+    "Liposomal: cell DNA-bound dox peak (nM)"
+  ),
+  `Figure S2C` = c(730, 640, 6600, 3400, 25500, 2700, 370, 4200, 2850),
+  `Packaged model` = c(
+    at_h(h_conv, "c_cap_tumor_dox", 1),
+    at_h(h_conv, "c_int_tumor_dox", 2),
+    peak(h_conv, "c_cell_tumor_free"),
+    peak(h_conv, "c_cell_tumor_bound"),
+    at_h(h_lipo, "c_cap_tumor_lipo", 1),
+    at_h(h_lipo, "c_cap_tumor_lipo", 168),
+    peak(h_lipo, "c_int_tumor_dox"),
+    peak(h_lipo, "c_cell_tumor_free"),
+    peak(h_lipo, "c_cell_tumor_bound")
+  ),
+  `Table 1 tvf_out_dox` = c(
+    at_h(h_conv_t1, "c_cap_tumor_dox", 1),
+    at_h(h_conv_t1, "c_int_tumor_dox", 2),
+    peak(h_conv_t1, "c_cell_tumor_free"),
+    peak(h_conv_t1, "c_cell_tumor_bound"),
+    at_h(h_lipo_t1, "c_cap_tumor_lipo", 1),
+    at_h(h_lipo_t1, "c_cap_tumor_lipo", 168),
+    peak(h_lipo_t1, "c_int_tumor_dox"),
+    peak(h_lipo_t1, "c_cell_tumor_free"),
+    peak(h_lipo_t1, "c_cell_tumor_bound")
+  ),
+  check.names = FALSE
+)
+s2c_check$`% diff (packaged)` <- 100 * (s2c_check$`Packaged model` / s2c_check$`Figure S2C` - 1)
+knitr::kable(s2c_check, digits = 1)
+```
+
+Every panel of Supplementary Figure S2C is reproduced to within the reading
+precision of the figure by the packaged human model. With the
+Table 1 value of `tvf_out_dox` the interstitial and cellular doxorubicin
+levels drop roughly ten-fold below the figure, which is why the packaged
+model uses the model-code value (Errata).
+
+```{r human-s2c-checks}
+stopifnot(
+  abs(s2c_check$`% diff (packaged)`) < 15
+)
+```
+
+# Human: PLD plasma PK (Figure 3h)
+
+```{r human-pld-pk}
+h_lipo_long <- solve_one(
+  mod_human, "central_lipo", human_dose(40), dur = 60,
+  times = c(0, 60, seq(360, 240 * 60, by = 360))
+)
+pld_pid <- data.frame(h = h_lipo_long$h, pid = 100 * h_lipo_long$Cc_lipid_total / 1e3 / human_dose(40))
+ggplot(dplyr::filter(pld_pid, h > 0), aes(h, pid)) +
+  geom_line() +
+  scale_y_log10() +
+  scale_x_continuous(breaks = seq(0, 240, 24)) +
+  labs(x = "Time (h)", y = "Plasma liposome label (%ID/mL)") +
+  theme_bw()
+```
+
+Replicates the shape of Figure 3h (111In-PLD plasma PK, Harrington et al.):
+the plasma liposome label starts near 0.02 %ID/mL (one dose in 4.85 L of
+blood) and falls mono-exponentially with a half-life of about 2.9 days.
+
+```{r human-pld-pk-check}
+stopifnot(
+  abs(at_h(pld_pid, "pid", 1) / 0.02 - 1) < 0.1
+)
+```
+
+# Half-lives with PKNCA
+
+The paper states that the PLD plasma half-life is about 10 h in the mouse
+against 2-3 days in humans. PKNCA half-lives of the simulated plasma total
+doxorubicin (`Cc`, free plus liposome-encapsulated) check this statement.
+(Its other PK statement, that doxorubicin elimination is about four-fold
+slower in humans than in mice, is a direct property of the Table 1 rate
+constants: `kel` 0.36 against 0.082 1/min.)
+
+```{r pknca}
+nca_in <- dplyr::bind_rows(
+  m_conv |> dplyr::mutate(treatment = "Mouse, free doxorubicin 3 mg/kg"),
+  m_lipo |> dplyr::mutate(treatment = "Mouse, PLD 3 mg/kg"),
+  h_conv |> dplyr::mutate(treatment = "Human, free doxorubicin 40 mg/m2"),
+  h_lipo |> dplyr::mutate(treatment = "Human, PLD 40 mg/m2")
+) |>
+  dplyr::select(treatment, time, Cc) |>
+  dplyr::mutate(id = 1L, time_h = time / 60) |>
+  dplyr::filter(!is.na(Cc))
+dose_df <- data.frame(
+  treatment = unique(nca_in$treatment),
+  id = 1L,
+  time_h = 0,
+  dose = c(mouse_dose(3), mouse_dose(3), human_dose(40), human_dose(40))
+)
+conc_obj <- PKNCA::PKNCAconc(nca_in, Cc ~ time_h | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, dose ~ time_h | treatment + id)
+intervals <- data.frame(
+  start = 0, end = 168, cmax = TRUE, tmax = TRUE, half.life = TRUE, auclast = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tbl <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "half.life", "auclast")) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::rename(
+    Treatment = treatment,
+    `Cmax (nM)` = cmax,
+    `Terminal t1/2 (h)` = half.life,
+    `AUC0-168 h (nM x h)` = auclast
+  )
+knitr::kable(nca_tbl, digits = 2)
+```
+
+```{r nca-comparison}
+reference <- data.frame(
+  treatment = c("Mouse, PLD 3 mg/kg", "Human, PLD 40 mg/m2"),
+  half.life = c(10, 2.5 * 24)
+)
+cmp <- ncaComparisonTable(
+  nca_res,
+  reference,
+  by = "treatment",
+  params = "half.life",
+  units = c(half.life = "h")
+)
+knitr::kable(cmp)
+```
+
+The reference PLD half-lives are the paper's narrative values (Results,
+'Human scale-up': "2-3 days vs. 10 h"); the human reference is the middle of
+the 2-3 day range. The simulated human PLD half-life (about 51 h over the
+first week) sits inside that range; the simulated mouse PLD half-life
+(about 10 h) matches the mouse value.
+
+```{r nca-checks}
+hl <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD == "half.life")
+hl_of <- function(x) hl$PPORRES[hl$treatment == x]
+stopifnot(
+  hl_of("Mouse, PLD 3 mg/kg") > 8, hl_of("Mouse, PLD 3 mg/kg") < 12,
+  hl_of("Human, PLD 40 mg/m2") > 48, hl_of("Human, PLD 40 mg/m2") < 72
+)
+```
+
+# Relative delivery of PLD vs conventional doxorubicin (Figure 5)
+
+Figure 5 compares the area under the DNA-bound doxorubicin curve after PLD
+with that after conventional doxorubicin across a grid of tumor influx
+fluxes for free drug (`tvf_in_dox`) and liposomes (`tvf_in_lipo`). In the
+mouse, 3 mg/kg of each was given and the AUC taken over one week; in humans,
+60 mg/m^2 of doxorubicin every 3 weeks was compared with 50 mg/m^2 of PLD
+every 4 weeks over 3 weeks (one dose of each). The grid below is coarser
+than the published contour plot.
+
+```{r fig5-grid}
+grid_ratio <- function(mod, dose_conv, dose_lipo, dur, t_end_min, tvf_dox_cm, tvf_lipo_cm) {
+  g <- expand.grid(tvf_dox_cm = tvf_dox_cm, tvf_lipo_cm = tvf_lipo_cm)
+  g$id <- seq_len(nrow(g))
+  pars <- data.frame(
+    id = g$id,
+    tvf_in_tumor_dox = g$tvf_dox_cm / 10,
+    tvf_in_tumor_lipo = g$tvf_lipo_cm / 10
+  )
+  times <- seq(0, t_end_min, by = 30)
+  auc <- function(cmt, amt) {
+    ev <- rxode2::et(amt = amt, cmt = cmt, dur = dur) |>
+      rxode2::et(times, cmt = "central") |>
+      rxode2::et(id = g$id)
+    out <- as.data.frame(rxode2::rxSolve(mod, ev, params = pars, atol = 1e-10, rtol = 1e-8))
+    nca_conc <- PKNCA::PKNCAconc(
+      dplyr::select(out, id, time, tumor_dna_dox),
+      tumor_dna_dox ~ time | id
+    )
+    nca_int <- data.frame(start = 0, end = t_end_min, auclast = TRUE)
+    res <- PKNCA::pk.nca(PKNCA::PKNCAdata(nca_conc, intervals = nca_int))
+    as.data.frame(res$result) |>
+      dplyr::filter(PPTESTCD == "auclast") |>
+      dplyr::select(id, PPORRES)
+  }
+  a_conv <- auc("central", dose_conv)
+  a_lipo <- auc("central_lipo", dose_lipo)
+  g |>
+    dplyr::left_join(dplyr::rename(a_conv, auc_conv = PPORRES), by = "id") |>
+    dplyr::left_join(dplyr::rename(a_lipo, auc_lipo = PPORRES), by = "id") |>
+    dplyr::mutate(log10_ratio = log10(auc_lipo / auc_conv))
+}
+tvf_dox_axis <- 10^seq(-4, -2, by = 0.5)
+tvf_lipo_axis <- 10^seq(-7, -4.5, by = 0.5)
+fig5_mouse <- grid_ratio(
+  mod_mouse, mouse_dose(3), mouse_dose(3), dur = 0, t_end_min = 7 * 1440,
+  tvf_dox_cm = c(tvf_dox_axis, 2.96e-4), tvf_lipo_cm = c(tvf_lipo_axis, 2.64e-6)
+)
+fig5_human <- grid_ratio(
+  mod_human, human_dose(60), human_dose(50), dur = 60, t_end_min = 21 * 1440,
+  tvf_dox_cm = c(tvf_dox_axis, 3.63e-3), tvf_lipo_cm = c(tvf_lipo_axis, 2.64e-6)
+)
+```
+
+```{r fig5-plot, fig.height = 4}
+fig5 <- dplyr::bind_rows(
+  dplyr::mutate(fig5_mouse, species = "Mouse, 3 mg/kg each"),
+  dplyr::mutate(fig5_human, species = "Human, 60 mg/m2 dox vs 50 mg/m2 PLD")
+)
+ggplot(
+  dplyr::filter(fig5, tvf_dox_cm %in% tvf_dox_axis, tvf_lipo_cm %in% tvf_lipo_axis),
+  aes(tvf_dox_cm, tvf_lipo_cm, fill = log10_ratio)
+) +
+  geom_tile() +
+  geom_text(aes(label = sprintf("%.1f", log10_ratio)), size = 2.5) +
+  scale_x_log10() +
+  scale_y_log10() +
+  scale_fill_gradient2(low = "blue", mid = "grey85", high = "red", midpoint = 0) +
+  facet_wrap(~species) +
+  labs(
+    x = "tvf_in_dox (cm/min)", y = "tvf_in_lipo (cm/min)",
+    fill = "log10(AUC PLD /\nAUC dox)"
+  ) +
+  theme_bw()
+```
+
+Replicates Figure 5a, b of Hendriks 2012 on a coarse grid. As in the paper,
+liposomal delivery wins most clearly at high liposome and low free-drug
+permeability (upper left), the advantage falls as free-drug permeability
+rises, and at low liposome permeability conventional doxorubicin delivers
+more drug to DNA. At the nominal parameter values (Table 1), PLD delivers
+about six-fold more doxorubicin to tumor DNA than conventional doxorubicin
+in the mouse (log10 ratio 0.76, in the red region of Figure 5a) but only
+about 2.5-fold more in humans (0.40, in the yellow band of Figure 5b), the
+paper's central contrast between the species.
+
+```{r fig5-nominal}
+nominal <- dplyr::bind_rows(
+  fig5_mouse |>
+    dplyr::filter(tvf_dox_cm == 2.96e-4, tvf_lipo_cm == 2.64e-6) |>
+    dplyr::mutate(species = "Mouse"),
+  fig5_human |>
+    dplyr::filter(tvf_dox_cm == 3.63e-3, tvf_lipo_cm == 2.64e-6) |>
+    dplyr::mutate(species = "Human")
+)
+knitr::kable(
+  nominal |>
+    dplyr::select(species, tvf_dox_cm, tvf_lipo_cm, log10_ratio) |>
+    dplyr::mutate(
+      tvf_dox_cm = formatC(tvf_dox_cm, format = "e", digits = 2),
+      tvf_lipo_cm = formatC(tvf_lipo_cm, format = "e", digits = 2)
+    ) |>
+    dplyr::rename(
+      Species = species,
+      `tvf_in_dox (cm/min)` = tvf_dox_cm,
+      `tvf_in_lipo (cm/min)` = tvf_lipo_cm,
+      `log10(AUC PLD / AUC dox)` = log10_ratio
+    ),
+  digits = 2
+)
+stopifnot(
+  # Mouse nominal point lies in the red region of Figure 5a (0.5 to 1.25).
+  nominal$log10_ratio[nominal$species == "Mouse"] > 0.5,
+  nominal$log10_ratio[nominal$species == "Mouse"] < 1.25,
+  # Human nominal point lies in the yellow / grey band of Figure 5b.
+  nominal$log10_ratio[nominal$species == "Human"] > -0.25,
+  nominal$log10_ratio[nominal$species == "Human"] < 0.75
+)
+```
+
+# Liposome release rate (Figure 6c)
+
+Figure 6c varies the three liposome release rates together (0.01-100 times
+nominal) after 40 mg/m^2 PLD in the human model and shows that delivery to
+DNA is greatest near the nominal release rates: too slow and the liposomes
+are cleared before releasing their drug, too fast and PLD behaves like free
+drug.
+
+```{r fig6c}
+mult <- 10^seq(-2, 2, by = 0.5)
+rel <- lapply(mult, function(k) {
+  d <- solve_one(
+    mod_human, "central_lipo", human_dose(40), dur = 60,
+    params = c(krel_plasma = 5.465e-5 * k, krel_tissue = 1.77e-4 * k, krel_cell = 9.6e-4 * k),
+    times = seq(0, 21 * 1440, by = 60)
+  )
+  data.frame(multiplier = k, time = d$time, tumor_dna_dox = d$tumor_dna_dox)
+}) |>
+  dplyr::bind_rows()
+rel_auc <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(rel, tumor_dna_dox ~ time | multiplier),
+  intervals = data.frame(start = 0, end = 21 * 1440, auclast = TRUE)
+))
+rel_tbl <- as.data.frame(rel_auc$result) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(multiplier, auc = PPORRES)
+ggplot(rel_tbl, aes(multiplier, auc)) +
+  geom_line() +
+  geom_point() +
+  scale_x_log10() +
+  labs(
+    x = "Release-rate multiplier (krel_plasma, krel_tumor, krel_cell)",
+    y = "AUC DNA-bound doxorubicin (ug/g x min)"
+  ) +
+  theme_bw()
+best <- rel_tbl$multiplier[which.max(rel_tbl$auc)]
+best
+stopifnot(best >= 0.1, best <= 10)
+```
+
+Replicates the conclusion of Figure 6c: on this grid DNA-bound exposure is
+greatest at the nominal PLD release rates (multiplier 1).
+
+# Assumptions and deviations
+
+* **Mouse `tvf_in_dox`.** Table 1 gives the fitted mouse value
+  2.96E-04 cm/min, which is also the nominal value plotted in Figure 5a. The
+  published model code and its workbook instead carry 6.23e-5 dm/min
+  (6.23E-04 cm/min), labelled there as a Ktrans-based value, and
+  Supplementary Figure S2B was evidently generated with it (its
+  conventional-doxorubicin panels are reproduced with that value above).
+  The packaged mouse model uses the Table 1 estimate; use
+  `ini(tvf_in_tumor_dox = 6.23e-5)` to reproduce Supplementary Figure S2B.
+* **Human `tvf_out_dox`.** Table 1 prints 8.45E-03 cm/min, whereas both the
+  human SBML model and the human workbook give 8.45e-5 dm/min
+  (8.45E-04 cm/min; "average of 10, 20 and 40 mg/m2 fits" to Northfelt et
+  al.). Every other length-based value in Table 1 is the code value times
+  ten, and only the code value reproduces Supplementary Figure S2C (the
+  Table 1 value lowers tumor doxorubicin about ten-fold), so Table 1 is
+  taken to carry a factor-of-ten conversion slip and the packaged model uses
+  8.45e-5 dm/min.
+* **Human liposome PK.** The human SBML file carries a two-compartment
+  liposome model (`k12_lipo = 0.0018`, `k21_lipo = 0.00341`,
+  `kel_lipo = 5.4e-4` 1/min), apparently the Northfelt-data variant the
+  Methods mention. Table 1, the human workbook (`k12_lipo = 0`,
+  `kel_lipo = 1.689e-4`) and Supplementary Figure S2C all use the
+  one-compartment model, which the packaged model follows with Table 1's
+  `kel_lipo = 1.67e-4` 1/min. The peripheral liposome compartment is kept
+  but switched off (`k12_lipo = 0`); setting `k12_lipo = 0.0018` and
+  `kel_lipo = 5.4e-4` reproduces the SBML variant.
+* **Human `tvf_in_lipo`.** The human model carries the mouse value
+  (2.64E-06 cm/min), as Table 1 and the model code do. The paper estimated
+  this flux per patient (Figure 3l, Figure 5b squares), and Figure 5b draws
+  the free-drug estimates at about 1.2E-06 cm/min; the value should be
+  varied for patient- or tumor-specific simulations.
+* **Tumor geometry.** Table 1 lists a 5 um capillary radius and a fractional
+  vascular volume of 0.070. The model code computes the capillary surface
+  area from a radius distribution (3, 5, 7 um with fractions 0.1, 0.6, 0.2;
+  effective radius 4.7 um) and the vascular fraction from that distribution
+  plus 23 um arterioles (0.062); the packaged models follow the code. The
+  Table 1 'cell to interstitium ratio' of 0.412 is used, as in the code, as
+  the cellular fraction of the non-vascular volume.
+* **Heart sub-model.** The heart compartments, their parameters and
+  `kdeg_dox` come only from the published model code and workbooks (the
+  companion cardiac work); the paper text does not describe them. They are
+  kept because the published model includes them and their blood flow
+  returns drug to the circulation.
+* **P-glycoprotein efflux.** The model code contains a Michaelis-Menten
+  P-gp efflux reaction with `Pgp_Vmax = 0`; the paper states that P-gp was
+  not represented. The inactive reaction is omitted.
+* **Unused model-code quantities.** The liposome projected area, the
+  intercapillary radii and the reverse membrane rate constants `kr_ol`,
+  `kr_il` are defined in the code but never used in a rate law; they are
+  omitted.
+* **Dose units.** Doses are in nmol of doxorubicin (PLD: nmol of
+  encapsulated doxorubicin); mg/kg and mg/m^2 doses are converted with the
+  code's molecular weight of 580 g/mol and a 0.02 kg mouse or 1.8 m^2
+  patient.
+* **In vitro cellular-uptake model.** The paper also applied the cellular
+  sub-model on its own to doxorubicin uptake in 21 cell lines (Figure 2).
+  Only histograms of the per-cell-line estimates are reported and the
+  incubation geometry (cells per well, medium volume) is not, so that
+  application is not packaged separately; its median parameters are the
+  cellular parameters of both models.
+* **Figure 3 representative fits.** Figure 3j and 3k show single-patient
+  fits with patient-specific `tvf_out_dox` or `tvf_in_lipo`; these are not
+  reproducible from the typical values and are not replicated.

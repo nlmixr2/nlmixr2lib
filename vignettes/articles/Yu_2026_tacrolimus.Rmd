@@ -1,0 +1,408 @@
+---
+title: "Tacrolimus early after kidney transplantation (Yu 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tacrolimus early after kidney transplantation (Yu 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5,
+  dpi = 96
+)
+```
+
+```{r libraries, message = FALSE, warning = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(ggplot2)
+```
+
+Yu and colleagues compared mechanism-informed machine-learning models (a gated
+recurrent unit network and XGBoost) against a Bayesian population
+pharmacokinetic (PopPK) model for forecasting tacrolimus trough concentrations
+in the first 7 days after kidney transplantation. The machine-learning models
+predict a per-patient composite exposure parameter and elimination rate from
+the patient's history; they have no fixed parametric form and are not
+population PK models, so they are not distributed here.
+
+The PopPK comparator is a population model in its own right, and it is the one
+distributed as `Yu_2026_tacrolimus`. It keeps the two-compartment structure of
+the Francke 2025 model (`modellib("Francke_2025_tacrolimus")`), with every
+absorption and disposition parameter fixed to the Francke estimates, and
+re-estimates only the apparent oral clearance CL/F on the Michigan cohort. The
+genotype covariates of the parent model were removed because genotype was
+unavailable, and a new CL/F covariate model (race, body weight, age and
+haematocrit) was built by stepwise selection (Supplementary Table S2). The
+parameter estimates are in Supplementary Table S3.
+
+* Citation: Yu H, Qin Z, Smith LS, Park JM, Zhu H-J. Mechanism-informed
+  machine learning for individualized tacrolimus dose adjustment in the early
+  post-kidney transplant period. *Br J Clin Pharmacol*. 2026;92(6):1730-1743.
+  [doi:10.1002/bcp.70448](https://doi.org/10.1002/bcp.70448)
+
+# Population
+
+The model was fitted to 4311 whole-blood trough concentrations (LC-MS/MS,
+LLOQ 1.0 ng/mL) from 1624 adult kidney transplant recipients treated at the
+University of Michigan Hospital between 2001 and 2025 (Table 1). Mean age was
+51.9 years (SD 13.8), 37.3% were female, 66.1% Caucasian, 23.7% African
+American and 10.2% Other. Mean weight was 87.4 kg (SD 21.1) and mean
+haematocrit 27.9% (SD 4.3). All recipients took twice-daily oral
+immediate-release tacrolimus, started within 24 h of transplantation at
+0.075 mg/kg every 12 h and then adjusted by trough-guided therapeutic drug
+monitoring; the administered daily dose averaged 11.8 mg/day (SD 3.6) and the
+observed trough 9.7 ng/mL (SD 4.0). Most patients (60.3%) contributed only two
+troughs in the 7-day window (Supplementary Figure S2).
+
+```{r population}
+mod <- readModelDb("Yu_2026_tacrolimus")
+str(mod()$meta$population, give.attr = FALSE, max.level = 1)
+```
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| Structure: 2-compartment, first-order absorption, lag time | -- | Methods, Population pharmacokinetic modelling (Francke 2025 structure) |
+| `ltlag` | 0.375 h (held at the Francke 2025 value) | Supplementary Table S3, Tlag_pop |
+| `lka` | 6.59 1/h (held at the Francke 2025 value) | Supplementary Table S3, ka_pop |
+| `lcl` | 24.3 L/h | Supplementary Table S3, CL_pop |
+| `lvc` | 705 L (held at the Francke 2025 value) | Supplementary Table S3, V1_pop |
+| `lq` | 8.54 L/h (held at the Francke 2025 value) | Supplementary Table S3, Q_pop |
+| `lvp` | 7670 L (held at the Francke 2025 value) | Supplementary Table S3, V2_pop |
+| `e_age_cl` | -0.307 | Supplementary Table S3, Age (years) |
+| `e_wt_cl` | 0.692 | Supplementary Table S3, Weight (kg) |
+| `e_race_black_cl` | 0.401 | Supplementary Table S3, Race (AA) |
+| `e_hct_cl` | -0.394 | Supplementary Table S3, Hematocrit (%) |
+| `etalcl` | 0.514^2 = 0.2642 | Supplementary Table S3, omega_CL (SD; CV 54.9%) |
+| `propSd` | 0.281 | Supplementary Table S3, b (proportional error) |
+| Covariate centring: 87.4 kg, 51.9 years, 27.9% | -- | Table 1 study-cohort means (not printed for the model; see Assumptions) |
+| CL/F = CL_pop x exp(0.401 x AA) x (WT/87.4)^0.692 x (AGE/51.9)^-0.307 x (HCT/27.9)^-0.394 x exp(eta) | -- | Monolix covariate model on the log-normal CL/F; Supplementary Tables S2-S3 |
+| Proportional residual error | -- | Methods, Population pharmacokinetic modelling |
+
+The printed CV of 54.9% for omega_CL matches `sqrt(exp(0.514^2) - 1)`,
+which confirms that 0.514 is the SD of a log-normal random effect (the exact
+value is 54.99%, so Monolix's 54.9 is truncated rather than rounded; reading
+0.514 as a variance would give a CV of 82%):
+
+```{r omega-check}
+omega_sd <- 0.514
+cv_pct <- 100 * sqrt(exp(omega_sd^2) - 1)
+round(cv_pct, 2)
+stopifnot(abs(cv_pct - 54.9) < 0.15)
+```
+
+# Virtual cohort
+
+200 virtual recipients with covariates drawn to match the Table 1 means and
+SDs, truncated to plausible adult ranges. Race is drawn as African American
+with probability 0.237 (Table 1).
+
+```{r cohort}
+set.seed(2026)
+n_sub <- 200
+cohort <- tibble::tibble(
+  id = seq_len(n_sub),
+  AGE = pmin(pmax(rnorm(n_sub, 51.9, 13.8), 18), 80),
+  WT = pmin(pmax(rnorm(n_sub, 87.4, 21.1), 45), 160),
+  HCT = pmin(pmax(rnorm(n_sub, 27.9, 4.3), 18), 42),
+  RACE_BLACK = rbinom(n_sub, 1, 0.237)
+) |>
+  dplyr::mutate(
+    race = ifelse(RACE_BLACK == 1, "African American", "Caucasian or Other"),
+    # Michigan starting dose: 0.075 mg/kg every 12 h, rounded to 0.5 mg.
+    dose = round(0.075 * WT * 2) / 2
+  )
+
+cohort |>
+  dplyr::summarise(
+    `Age (years)` = sprintf("%.1f (%.1f)", mean(AGE), sd(AGE)),
+    `Weight (kg)` = sprintf("%.1f (%.1f)", mean(WT), sd(WT)),
+    `Haematocrit (%)` = sprintf("%.1f (%.1f)", mean(HCT), sd(HCT)),
+    `African American (%)` = sprintf("%.1f", 100 * mean(RACE_BLACK)),
+    `Dose per 12 h (mg)` = sprintf("%.1f (%.1f)", mean(dose), sd(dose))
+  ) |>
+  knitr::kable(caption = "Virtual cohort, mean (SD).")
+```
+
+# Simulation
+
+Each recipient receives the Michigan starting regimen for 7 days (14 doses at
+0, 12, ..., 156 h). The simulation holds the starting dose constant; the real
+cohort's doses were adjusted by therapeutic drug monitoring after the first
+troughs, so the later simulated troughs show where the starting dose alone
+would have taken each patient. Observations are on the `central` state; the
+model returns `Cc` at each of them.
+
+```{r simulate}
+obs_times <- sort(unique(c(seq(0, 168, by = 1), seq(0, 12, by = 0.25), seq(144, 156, by = 0.25))))
+
+dose_rows <- cohort |>
+  dplyr::select(id, dose) |>
+  tidyr::crossing(time = seq(0, 156, by = 12)) |>
+  dplyr::transmute(id, time, amt = dose, evid = 1L, cmt = "depot")
+
+obs_rows <- cohort |>
+  dplyr::select(id) |>
+  tidyr::crossing(time = obs_times) |>
+  dplyr::mutate(amt = 0, evid = 0L, cmt = "central")
+
+events <- dplyr::bind_rows(obs_rows, dose_rows) |>
+  dplyr::left_join(dplyr::select(cohort, id, AGE, WT, HCT, RACE_BLACK), by = "id") |>
+  # Observation before dose at a shared time, so a pre-dose row is a trough.
+  dplyr::arrange(id, time, evid)
+
+rxode2::rxSetSeed(2026)
+sim <- rxode2::rxSolve(mod, events, returnType = "data.frame", keep = "RACE_BLACK") |>
+  dplyr::mutate(race = ifelse(RACE_BLACK == 1, "African American", "Caucasian or Other"))
+```
+
+## Typical-value profile
+
+The reference recipient (87.4 kg, 51.9 years, haematocrit 27.9%, not African
+American) receiving 6.5 mg every 12 h.
+
+```{r typical}
+mod_typ <- rxode2::zeroRe(mod)
+ev_typ <- rxode2::et(amt = 6.5, ii = 12, addl = 13, cmt = "depot") |>
+  rxode2::et(seq(0, 168, by = 0.25), cmt = "central")
+typ <- rxode2::rxSolve(
+  mod_typ, ev_typ,
+  params = c(WT = 87.4, AGE = 51.9, HCT = 27.9, RACE_BLACK = 0),
+  returnType = "data.frame"
+)
+
+ggplot(typ, aes(time, Cc)) +
+  geom_line(colour = "steelblue4") +
+  geom_hline(yintercept = c(8, 12), linetype = "dashed", colour = "grey40") +
+  scale_x_continuous(breaks = seq(0, 168, 24)) +
+  labs(
+    x = "Time after first dose (h)", y = "Tacrolimus whole-blood concentration (ng/mL)",
+    caption = "Dashed lines: the 8-12 ng/mL target range used in Yu 2026."
+  ) +
+  theme_bw()
+```
+
+The fixed 7670 L peripheral volume with Q/F = 8.54 L/h gives a peripheral
+filling time of the order of `V2/Q` = 900 h, so trough concentrations are
+still rising at the end of the first week under a constant dose.
+
+# Replicate published figures
+
+## Trough concentrations over the first week
+
+Supplementary Figure S3 shows the observed troughs against time since the
+first dose; they scatter between about 2 and 25 ng/mL with a regression line
+near 10 ng/mL throughout the week. The simulated troughs (with residual error
+added) under the constant starting dose are shown below with the observed
+mean +/- SD of Table 1 (9.7 +/- 4.0 ng/mL) as a band.
+
+```{r troughs-figure}
+troughs <- sim |>
+  dplyr::filter(time %in% seq(12, 168, by = 12)) |>
+  dplyr::select(id, time, Cc, sim, race)
+
+trough_summary <- troughs |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    p05 = quantile(sim, 0.05), p50 = median(sim), p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(trough_summary, aes(time)) +
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = 9.7 - 4.0, ymax = 9.7 + 4.0, alpha = 0.15, fill = "darkorange") +
+  geom_hline(yintercept = 9.7, colour = "darkorange", linetype = "dashed") +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.3, fill = "steelblue") +
+  geom_line(aes(y = p50), colour = "steelblue4") +
+  geom_point(aes(y = p50), colour = "steelblue4") +
+  scale_x_continuous(breaks = seq(0, 168, 24)) +
+  labs(
+    x = "Time after first dose (h)", y = "Trough concentration (ng/mL)",
+    caption = paste(
+      "Blue: simulated median and 90% interval (constant starting dose, residual error included).",
+      "Orange: observed mean +/- SD of all troughs (Table 1).",
+      sep = "\n"
+    )
+  ) +
+  theme_bw()
+```
+
+Most observed troughs fall between 24 and 72 h (Supplementary Table S1: 2942
+of 4311). Restricting the simulated troughs to that window:
+
+```{r trough-check}
+early <- troughs |> dplyr::filter(time >= 24, time <= 72)
+early_summary <- early |>
+  dplyr::summarise(
+    `Mean (ng/mL)` = mean(sim), `SD (ng/mL)` = sd(sim), `Median (ng/mL)` = median(sim),
+    `In 8-12 ng/mL (%)` = 100 * mean(sim >= 8 & sim <= 12)
+  )
+knitr::kable(early_summary, digits = 1, caption = "Simulated troughs at 24-72 h under the starting dose.")
+
+stopifnot(
+  # Structural: a mis-transcribed CL/F, a unit error or a wrong centring
+  # value of the order of the cohort spread moves the whole distribution
+  # far outside this window around the observed 9.7 ng/mL.
+  abs(median(early$sim) / 9.7 - 1) < 0.3
+)
+```
+
+The simulated median in the 24-72 h window is close to the observed mean
+trough. The comparison is approximate, not exact: the observed doses were
+adjusted by therapeutic drug monitoring (mean 11.8 mg/day, against about
+13 mg/day for the starting dose in this cohort), and the observed troughs
+pool all times in the first week.
+
+## Covariate effects on CL/F
+
+Typical CL/F across the covariate ranges of the cohort, each covariate varied
+alone with the others at the reference values. The model's own `cl` output is
+checked against the closed-form covariate equation.
+
+```{r covariate-effects}
+grid <- dplyr::bind_rows(
+  tibble::tibble(covariate = "Weight (kg)", value = seq(50, 140, by = 10), WT = value, AGE = 51.9, HCT = 27.9, RACE_BLACK = 0),
+  tibble::tibble(covariate = "Age (years)", value = seq(20, 80, by = 10), WT = 87.4, AGE = value, HCT = 27.9, RACE_BLACK = 0),
+  tibble::tibble(covariate = "Haematocrit (%)", value = seq(18, 42, by = 4), WT = 87.4, AGE = 51.9, HCT = value, RACE_BLACK = 0),
+  tibble::tibble(covariate = "African American", value = c(0, 1), WT = 87.4, AGE = 51.9, HCT = 27.9, RACE_BLACK = value)
+) |>
+  dplyr::mutate(id = dplyr::row_number())
+
+ev_grid <- grid |>
+  dplyr::transmute(id, time = 0, amt = 0, evid = 0L, cmt = "central", WT, AGE, HCT, RACE_BLACK)
+# Each id is a covariate setting, solved at the typical value; rxode2 warns
+# that a multi-subject solve has no omega, which is intended here.
+cl_grid <- withCallingHandlers(
+  rxode2::rxSolve(mod_typ, ev_grid, returnType = "data.frame"),
+  warning = function(w) {
+    if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+      invokeRestart("muffleWarning")
+    }
+  }
+) |>
+  dplyr::select(id, cl) |>
+  dplyr::left_join(grid, by = "id") |>
+  dplyr::mutate(
+    cl_closed = 24.3 * exp(0.401 * RACE_BLACK) * (WT / 87.4)^0.692 * (AGE / 51.9)^-0.307 * (HCT / 27.9)^-0.394
+  )
+
+# Same parameters on both sides: the difference is pure arithmetic.
+stopifnot(all(abs(cl_grid$cl / cl_grid$cl_closed - 1) < 1e-8))
+
+ggplot(cl_grid, aes(value, cl)) +
+  geom_line(colour = "steelblue4") +
+  geom_point(colour = "steelblue4") +
+  facet_wrap(~covariate, scales = "free_x") +
+  labs(x = NULL, y = "Typical CL/F (L/h)") +
+  theme_bw()
+```
+
+African American recipients have a typical CL/F of
+`r round(24.3 * exp(0.401), 1)` L/h, `r round(exp(0.401), 2)`-fold that of
+the reference recipient.
+
+# PKNCA validation
+
+Non-compartmental analysis of the first (0-12 h) and the last (144-156 h)
+dosing interval of the simulation, by race group. Both intervals start with a
+pre-dose observation (the first at time zero), so no defensive time-zero row
+is needed. The predicted concentration `Cc` (no residual error) is used. The
+day-1 Cmin is the zero concentration before the first dose; the day-7 Cmin is
+the trough. The lower day-7 exposure of African American recipients reflects
+their 1.49-fold higher CL/F at the same weight-based dose.
+
+```{r pknca}
+conc_df <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, race)
+
+dose_df <- dose_rows |>
+  dplyr::left_join(dplyr::select(cohort, id, race), by = "id") |>
+  dplyr::select(id, time, amt, race)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | race + id, concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | race + id, doseu = "mg")
+
+intervals <- data.frame(
+  start = c(0, 144), end = c(12, 156),
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE
+)
+
+res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tbl <- as.data.frame(res$result)
+
+nca_tbl |>
+  dplyr::group_by(race, start, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::mutate(interval = ifelse(start == 0, "Day 1 (0-12 h)", "Day 7 (144-156 h)")) |>
+  dplyr::select(race, interval, cmax, tmax, cmin, auclast) |>
+  dplyr::arrange(interval, race) |>
+  dplyr::rename(
+    "Race" = race,
+    "Interval" = interval,
+    "Cmax (ng/mL)" = cmax,
+    "Tmax (h)" = tmax,
+    "Cmin (ng/mL)" = cmin,
+    "AUC0-12 (ng*h/mL)" = auclast
+  ) |>
+  knitr::kable(digits = 2, caption = "Median NCA parameters under the constant starting dose.")
+```
+
+# Comparison against published values
+
+Yu 2026 reports no non-compartmental parameters, so there is no published NCA
+table to compare against. The available published quantities are the observed
+trough summary (Table 1), compared in the trough section above, and the
+internal model-selection results (Supplementary Table S2), which cannot be
+reproduced without the patient data. The paper's predictive-performance
+metrics for this model (Table 2: internal MSE 9.27 ng^2/mL^2, R^2 0.450;
+external MSE 8.96 ng^2/mL^2, R^2 0.211) come from sequential Bayesian
+forecasting on individual patient histories and likewise need the patient
+data.
+
+# Assumptions and deviations
+
+* **Covariate centring values.** Supplementary Table S3 prints the four
+  covariate coefficients but not the reference values the continuous
+  covariates were centred on. The coefficients are those of log-transformed
+  covariates on the log-normal CL/F (a linear-per-kg reading would make the
+  weight effect `exp(0.692 x 20)` per 20 kg, which is impossible), and Monolix
+  centres a transformed covariate on a cohort summary value. The maintainers
+  used the study-cohort means of Table 1: 87.4 kg, 51.9 years and 27.9%. If the
+  authors centred on the medians instead, the typical CL/F at a given
+  covariate set would differ by a few percent; the comparison with the
+  observed troughs above does not resolve that difference.
+* **Race reference group.** Race was recorded as Caucasian, African American
+  or Other, but Table S3 prints only an African American coefficient. The
+  Other group is therefore pooled with Caucasian as the reference
+  (`RACE_BLACK = 0`).
+* **Haematocrit over time.** The Methods describe haematocrit as a
+  time-varying laboratory value matched to each dose and trough. The paper
+  does not say whether the Monolix fit used it time-varying or per patient;
+  the model accepts either.
+* **Parameters held at the Francke 2025 values.** Lag time, ka, V1/F, Q/F and
+  V2/F were not estimated in this analysis; they are encoded with `fixed()`.
+  They match the Francke 2025 Table 2 estimates distributed in
+  `Francke_2025_tacrolimus`.
+* **Machine-learning models not included.** The GRU and XGBoost models
+  estimate a per-patient composite parameter `alpha` (about F/Vd) and an
+  elimination rate from each patient's history (Equation 2) and have no
+  population parameters to distribute.
+* **Virtual cohort.** Covariates are drawn independently from normal
+  distributions with the Table 1 means and SDs; the paper does not give
+  covariate correlations or ranges.
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```

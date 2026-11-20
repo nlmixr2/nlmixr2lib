@@ -8,11 +8,8 @@ test_that("the naming registers are structurally clean", {
   #
   # If this fails, read the `detail` column: each row names the register, the
   # entry and the line.
-  root <- normalizePath(testthat::test_path("..", ".."), mustWork = FALSE)
-  skip_if(
-    !dir.exists(file.path(root, "inst", "references")),
-    "registers not present (installed package without inst/references)"
-  )
+  root <- .sourceTreeRoot()
+  .skipIfNoSourceTree(file.path(root, "inst", "references"), "registers")
   issues <- checkNamingRegisters(root)
   expect_equal(
     nrow(issues),
@@ -69,7 +66,12 @@ test_that("checkNamingRegisters detects each defect class it claims to", {
       "- **Example models:** `Real_2020_drug.R`.",
       "",
       "### deprecated_one (**DEPRECATED -- superseded by `real_token`**)",
-      "- **Notes:** tombstone; no examples, no use and no Type is correct here."
+      "- **Notes:** tombstone; no examples, no use and no Type is correct here.",
+      "",
+      "### notes_cite (**cites a missing file outside Example models**)",
+      "- **Type:** binary",
+      "- **Example models:** `Real_2020_drug.R`.",
+      "- **Notes:** distinct from the indicator used in `Ghost_1996_digoxin.R`."
     ),
     file.path(tmp, "inst", "references", "covariate-columns.md")
   )
@@ -82,10 +84,21 @@ test_that("checkNamingRegisters detects each defect class it claims to", {
     "no-example-model",
     "broken-xref",
     "no-type",
-    "unknown-type"
+    "unknown-type",
+    "orphan-model-citation"
   )) {
     expect_true(chk %in% issues$check, info = chk)
   }
+  # A model file named outside an `Example models:` line, here in Notes, is a
+  # citation, reported with its entry, line and file.
+  cite <- issues[issues$check == "orphan-model-citation", ]
+  expect_equal(cite$name, "notes_cite")
+  expect_equal(cite$line, 41L)
+  expect_equal(cite$detail, "cites absent file(s): Ghost_1996_digoxin.R")
+  # A dangling `Example models:` citation is reported once, by
+  # orphan-example-model, not again by the whole-file scan.
+  expect_equal(issues$name[issues$check == "orphan-example-model"], "orphan_cite")
+  expect_false("orphan_cite" %in% cite$name)
   # A missing `Type:` is the quietest defect of the set -- it drops the entry
   # out of the canonical list checkModelConventions() builds while every other
   # register check stays green -- so pin which entry each fires on.
@@ -138,7 +151,11 @@ test_that("checkNamingRegisters does not flag legitimate register patterns", {
       "# `###` is also used for policy notes and patterns; neither is a canonical.",
       "### ROUTE_* family -- section-header policy",
       "",
-      "### `<tissue>_slab<n>` (**a pattern, not a canonical**)"
+      "### `<tissue>_slab<n>` (**a pattern, not a canonical**)",
+      "",
+      "# Not model-file citations: a suffix fragment, an elision, a package",
+      "# source cited with its directory, and an unbackticked prose mention.",
+      "Siblings end in `_cm.R`, see `..._eucast.R`, `R/conventions.R`, and C.E.R.A."
     ),
     file.path(tmp, "inst", "references", "compartment-names.md")
   )
@@ -218,9 +235,8 @@ test_that("the covariate register's documented case exceptions are complete", {
   # covariate canonical must be one a reader was told about. Enumerates the
   # register rather than sampling it, so a newly-merged lower-case canonical
   # fails here until it is either renamed or documented.
-  root <- normalizePath(testthat::test_path("..", ".."), mustWork = FALSE)
-  path <- file.path(root, "inst", "references", "covariate-columns.md")
-  skip_if(!file.exists(path), "register not present in an installed package")
+  path <- file.path(.sourceTreeRoot(), "inst", "references", "covariate-columns.md")
+  .skipIfNoSourceTree(path, "covariate register")
 
   exempt <- nlmixr2lib:::.caseExemptions(path)
   expect_true(length(exempt) > 0L)
@@ -246,9 +262,8 @@ test_that("each register's documented type vocabulary matches the types it uses"
   # directions -- the drift that motivates this is a documented list falling
   # behind the file as much as a bad type being added -- which is the same
   # reason `.caseExemptions()` is read from the file in both directions.
-  root <- normalizePath(testthat::test_path("..", ".."), mustWork = FALSE)
-  dir <- file.path(root, "inst", "references")
-  skip_if(!dir.exists(dir), "registers not present in an installed package")
+  dir <- file.path(.sourceTreeRoot(), "inst", "references")
+  .skipIfNoSourceTree(dir, "registers")
 
   registers <- c("covariate-columns.md", "parameter-names.md", "compartment-names.md")
   for (reg in registers) {

@@ -29,6 +29,7 @@ Ooi_2023_bevurogant <- function() {
   )
   vignette <- "Ooi_2023_bevurogant"
   units <- list(time = "h", dosing = "mg", concentration = "nmol/L")
+  dosing <- c("depot", "central", "central_iv")
 
   paper_specific_compartments <- c("central_iv", "peripheral1_iv")
   paper_specific_etas <- c("etaRUV")

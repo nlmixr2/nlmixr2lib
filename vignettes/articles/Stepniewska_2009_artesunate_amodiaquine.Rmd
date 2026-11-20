@@ -1,0 +1,599 @@
+---
+title: "Artesunate + amodiaquine in African children (Stepniewska 2009)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Artesunate + amodiaquine in African children (Stepniewska 2009)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Stepniewska_2009_artesunate"))$reference`
+* Article: <https://doi.org/10.1186/1475-2875-8-200>
+* Open-access full text: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3224946/>
+
+Stepniewska 2009 compared a then-new fixed-dose combination (FDC) of
+artesunate (AS) and amodiaquine (AQ) with the same two drugs given as separate
+("loose") tablets, in children aged 6 months to 5 years with uncomplicated
+*Plasmodium falciparum* malaria in Burkina Faso. Both regimens were given once
+daily for three days. The paper fits three independent population PK models,
+each packaged here as its own model file:
+
+| Model file | Analyte | Structure |
+|---|---|---|
+| `Stepniewska_2009_amodiaquine` | desethylamodiaquine (DeAQ) after AQ dosing | 2-compartment, first-order appearance (ka fixed) |
+| `Stepniewska_2009_artesunate` | dihydroartemisinin (DHA) after AS dosing | 1-compartment, first-order absorption |
+| `Stepniewska_2009_artesunate_activity` | total anti-malarial activity (AS + DHA, molar sum in DHA equivalents) | 1-compartment, first-order absorption |
+
+Amodiaquine itself was "usually low or not detectable" and was not modelled;
+artesunate on its own was not modelled either, but enters the total-activity
+model. All three models were fitted in S-PLUS 6.0 following the approach of
+Simpson 2006 (`modellib("Simpson_2006_artesunate")`), with clearances and
+volumes expressed per kilogram of body weight.
+
+# Population
+
+140 children were randomised (64 female, 76 male; median age 32 months, range
+7-59 months). The first 70 formed the artesunate PK group and the next 70 the
+amodiaquine PK group, 35 per arm in each (Table 1). Seven children who vomited
+within an hour of dosing were excluded (four AS, three AQ), as were two AQ-group
+children with detectable AQ before the first dose.
+
+```{r population}
+pop_tbl <- function(name) {
+  p <- rxode2::rxode(readModelDb(name))$population
+  tibble::tibble(
+    Model = name,
+    Field = names(p),
+    Value = vapply(p, function(x) paste(x, collapse = "; "), character(1))
+  )
+}
+dplyr::bind_rows(
+  pop_tbl("Stepniewska_2009_amodiaquine"),
+  pop_tbl("Stepniewska_2009_artesunate")
+) |>
+  dplyr::filter(Field %in% c("n_subjects", "n_subjects_pk", "age_range", "weight_range", "sex_female_pct", "dose_range", "sampling")) |>
+  knitr::kable(caption = "Population metadata (Stepniewska 2009 Table 1 and Methods).")
+```
+
+Sampling was sparse. The AS group gave a pre-dose sample and one sample at
+0.5, 1, 2 or 4 h (randomised) after the first and the third dose. The AQ group
+gave a pre-dose sample, a sample 4 h after the third dose, one on Day 7 or 14 and
+one on Day 21 or 28.
+
+# Source trace
+
+| Quantity | Model file | Value | Source |
+|---|---|---|---|
+| Two-compartment DeAQ model, first-order absorption and elimination, log-scale homoscedastic error | amodiaquine | structure | Results, 'Desethylamodiaquine' |
+| Ka | amodiaquine | 0.13 /h (fixed) | Table 3; Methods (from Hietala 2007) |
+| CL/F | amodiaquine | 0.610 L/kg/h | Table 3 |
+| Q/F | amodiaquine | 0.680 L/kg/h | Table 3 |
+| Vc/F | amodiaquine | 35.4 L/kg | Table 3 |
+| Vp/F | amodiaquine | 87.9 L/kg | Table 3 |
+| IIV CL/F | amodiaquine | 22.7% (variance 0.227^2) | Table 3; Methods (CV = square root of variance) |
+| sigma (log scale) | amodiaquine | 0.457 | Table 3 |
+| One-compartment model, V/F random effect, additive error, dosing-period effect on CL/F, age effect on V/F | artesunate, artesunate_activity | structure | Methods 'Pharmacokinetic analysis'; Results 'Artesunate and DHA' |
+| Complete molar conversion of AS dose (MW 384.4) to DHA (MW 284.9) | artesunate, artesunate_activity | dose handling | Methods |
+| Ka | artesunate | 4.271 /h | Table 4 DHA |
+| CL/F (first dose) | artesunate | 0.636 L/kg/h | Table 4 DHA |
+| Increase in CL/F, 3rd dose period | artesunate | 0.760 L/kg/h (additive) | Table 4 DHA |
+| V/F | artesunate | 2.285 L/kg | Table 4 DHA |
+| Effect of age on V/F | artesunate | 0.063 L/kg per month | Table 4 DHA |
+| IIV V/F | artesunate | 47% (variance 0.47^2) | Table 4 DHA |
+| sigma | artesunate | 340 ng/mL | Table 4 DHA |
+| Ka | artesunate_activity | 4.744 /h | Table 4 Anti-malarial Activity |
+| CL/F (first dose) | artesunate_activity | 0.616 L/kg/h | Table 4 Anti-malarial Activity |
+| Increase in CL/F, 3rd dose period | artesunate_activity | 0.662 L/kg/h (additive) | Table 4 Anti-malarial Activity |
+| V/F | artesunate_activity | 2.134 L/kg | Table 4 Anti-malarial Activity |
+| Effect of age on V/F | artesunate_activity | 0.063 L/kg per month | Table 4 Anti-malarial Activity |
+| IIV V/F | artesunate_activity | 48% (variance 0.48^2) | Table 4 Anti-malarial Activity |
+| sigma | artesunate_activity | 353 ng/mL DHA equivalents | Table 4 Anti-malarial Activity |
+
+```{r load-models}
+mod_aq <- readModelDb("Stepniewska_2009_amodiaquine")
+mod_dha <- readModelDb("Stepniewska_2009_artesunate")
+mod_act <- readModelDb("Stepniewska_2009_artesunate_activity")
+ui_aq <- rxode2::rxode(mod_aq)
+ui_dha <- rxode2::rxode(mod_dha)
+ui_act <- rxode2::rxode(mod_act)
+```
+
+# Check 1: typical values reproduce the published identities
+
+The paper prints neither the covariate equations nor the centring of the age
+effect, but it does print derived quantities that pin them down: typical
+half-lives (Table 3 and Table 4) and AUCs, computed in the paper as
+dose / CL/F for a 3.7 mg/kg artesunate dose and a 34 mg/kg total amodiaquine
+dose (Results). The checks below solve the packaged models with the random
+effects zeroed for a 32-month-old, 12-kg child, so both sides use the same
+parameters and the tolerance only has to absorb the paper's rounding.
+
+```{r typical}
+typ_child <- data.frame(WT = 12, AGE = 32 / 12)
+
+typ_1cmt <- function(ui) {
+  ev <- dplyr::bind_rows(
+    data.frame(id = 1L, time = c(0, 24, 48), amt = 3.7 * 12, evid = 1L, cmt = "depot"),
+    data.frame(id = 1L, time = seq(0, 72, by = 0.05), amt = NA_real_, evid = 0L, cmt = "central")
+  ) |>
+    dplyr::arrange(time, dplyr::desc(evid)) |>
+    dplyr::mutate(MULTI_DOSE = as.integer(time >= 24), WT = 12, AGE = 32 / 12)
+  rxode2::rxSolve(rxode2::zeroRe(ui), events = ev, returnType = "data.frame")
+}
+s_dha <- typ_1cmt(ui_dha)
+s_act <- typ_1cmt(ui_act)
+
+# AUC by trapezoid over each 24-h interval: the drug is gone well before the
+# next dose (half-lives of 1-2.5 h), so this is the single-dose AUC0-inf.
+auc_int <- function(s, from, to) {
+  x <- s[s$time >= from & s$time <= to, ]
+  sum(diff(x$time) * (head(x$Cc, -1) + tail(x$Cc, -1)) / 2) / 1000
+}
+thalf <- function(s, t0) log(2) / s$kel[s$time == t0 + 1][1]
+
+s_aq <- rxode2::rxSolve(
+  rxode2::zeroRe(ui_aq),
+  events = rxode2::et(time = 0, amt = 1, cmt = "depot") |> rxode2::et(1, cmt = "central"),
+  params = typ_child, returnType = "data.frame"
+)
+k10 <- s_aq$kel[1]
+k12 <- s_aq$k12[1]
+k21 <- s_aq$k21[1]
+beta <- ((k10 + k12 + k21) - sqrt((k10 + k12 + k21)^2 - 4 * k10 * k21)) / 2
+thalf_aq_days <- log(2) / beta / 24
+cl_aq_kg <- s_aq$cl[1] / 12
+
+claims <- tibble::tribble(
+  ~Claim, ~Source, ~Published, ~Packaged, ~Pass,
+  # The published 9.0 days is the median of individual posterior predictions
+  # (range 7.3-11.6), not the typical value, so it carries posterior shrinkage
+  # as well as rounding.
+  "DeAQ terminal half-life (days)", "Table 3 (median prediction)", "9.0", sprintf("%.2f", thalf_aq_days),
+  abs(thalf_aq_days - 9.0) < 0.2,
+  "DeAQ AUC for 34 mg/kg (ug*h/mL)", "Results", "57.76 / 54.75 by arm", sprintf("%.2f", 34 / cl_aq_kg),
+  34 / cl_aq_kg > 54.75 * 0.98 && 34 / cl_aq_kg < 57.76 * 1.02,
+  "DHA half-life, dose 1 (h)", "Table 4", "2.5", sprintf("%.2f", thalf(s_dha, 0)),
+  abs(thalf(s_dha, 0) - 2.5) < 0.05,
+  "DHA half-life, dose 3 (h)", "Table 4", "1.1", sprintf("%.2f", thalf(s_dha, 48)),
+  abs(thalf(s_dha, 48) - 1.1) < 0.05,
+  "DHA AUC, dose 1 (ug*h/mL)", "Results", "4.29", sprintf("%.2f", auc_int(s_dha, 0, 24)),
+  abs(auc_int(s_dha, 0, 24) / 4.29 - 1) < 0.02,
+  "DHA AUC, dose 3 (ug*h/mL)", "Results", "1.96", sprintf("%.2f", auc_int(s_dha, 48, 72)),
+  abs(auc_int(s_dha, 48, 72) / 1.96 - 1) < 0.02,
+  "Activity half-life, dose 1 (h)", "Table 4", "2.4", sprintf("%.2f", thalf(s_act, 0)),
+  abs(thalf(s_act, 0) - 2.4) < 0.05,
+  "Activity half-life, dose 3 (h)", "Table 4", "1.2", sprintf("%.2f", thalf(s_act, 48)),
+  abs(thalf(s_act, 48) - 1.2) < 0.05,
+  "Activity AUC, dose 1 (ug*h/mL)", "Results", "4.43", sprintf("%.2f", auc_int(s_act, 0, 24)),
+  abs(auc_int(s_act, 0, 24) / 4.43 - 1) < 0.02,
+  "Activity AUC, dose 3 (ug*h/mL)", "Results", "2.14", sprintf("%.2f", auc_int(s_act, 48, 72)),
+  abs(auc_int(s_act, 48, 72) / 2.14 - 1) < 0.02
+)
+knitr::kable(claims, caption = "Published typical-value claims against the packaged models.")
+stopifnot(all(claims$Pass))
+```
+
+Two structural readings rest on these numbers:
+
+* **The dosing-period effect on CL/F is additive.** 0.636 + 0.760 = 1.396
+  L/kg/h gives the third-dose AUC (2.742 / 1.396 = 1.96) and half-life (1.1 h)
+  exactly. A proportional reading (0.636 x 1.760) would give 2.45 ug*h/mL and
+  1.4 h.
+* **The dose was converted to DHA on a molar basis.** 3.7 mg/kg of artesunate
+  is 3.7 x 284.9 / 384.4 = 2.742 mg/kg of DHA, and 2.742 / 0.636 = 4.31, against
+  the published 4.29. Without the conversion the AUC would be 5.82.
+
+# Check 2: the age effect reproduces the published half-life range
+
+Table 4 prints the 90% range of the predicted DHA half-life as 0.8-4.5 h after
+the first dose and 0.4-2.0 h after the third. Clearance has no random effect,
+so this spread comes entirely from V/F, i.e. from the age effect and the 47%
+IIV. The packaged form, V/F = 2.285 + 0.063 x (age in months - 32), spans
+0.71-4.0 L/kg over the 7-59-month age range on its own, which already
+reproduces the published range; an exponential form per month would span
+27-fold and a per-year form would leave almost no age effect at all.
+
+```{r age-range}
+ages <- seq(7, 59, by = 1)
+vkg <- 2.285 + 0.063 * (ages - 32)
+tibble::tibble(
+  `Dose period` = c("Dose 1", "Dose 3"),
+  `Published 90% range (h)` = c("0.8-4.5", "0.4-2.0"),
+  `Age effect alone, 7-59 months (h)` = c(
+    sprintf("%.2f-%.2f", min(log(2) * vkg / 0.636), max(log(2) * vkg / 0.636)),
+    sprintf("%.2f-%.2f", min(log(2) * vkg / 1.396), max(log(2) * vkg / 1.396))
+  )
+) |>
+  knitr::kable(caption = "DHA half-life spread from the age term alone.")
+```
+
+The individual predictions behind the published range are posterior
+estimates from at most two samples per child, so they are shrunk towards the
+typical value; the full population simulation below, which carries the whole
+IIV, is correspondingly wider.
+
+# Virtual cohort
+
+Each model gets 150 children per arm. Age is drawn uniformly over the
+published 7-59-month range; weight is the WHO median weight-for-age scaled by
+0.92 to match the Table 1 medians (12-14 kg) with 10% log-normal scatter,
+truncated to the published 6-31 kg range. Doses follow the age bands of the
+trial: the FDC tablet held 25 mg AS / 67.5 mg AQ (one tablet below 12 months,
+two from 12 months), and the loose regimen used 50 mg AS and 153 mg AQ tablets
+(half a tablet of each below 12 months, one from 12 months).
+
+```{r cohort}
+# rxSetSeed() fixes rxode2's stream for a given thread count only; set.seed()
+# fixes R's RNG for the covariate draws. Neither makes the cohort identical
+# across machines, so every assertion below is on centres and robust quantiles.
+rxode2::rxSetSeed(20090820)
+set.seed(20090820)
+
+who_age <- c(6, 12, 24, 36, 48, 60)
+who_wt <- c(7.6, 9.3, 11.8, 13.9, 15.8, 17.9)
+n_arm <- 150L
+
+make_children <- function(arm, offset) {
+  age_mo <- stats::runif(n_arm, 7, 59)
+  wt <- 0.92 * stats::approx(who_age, who_wt, xout = age_mo)$y * exp(stats::rnorm(n_arm, 0, 0.1))
+  wt <- pmin(pmax(wt, 6), 31)
+  young <- age_mo < 12
+  # Both regimens give 25 mg AS below 12 months and 50 mg from 12 months; AQ
+  # differs (FDC 67.5 / 135 mg, loose 76.5 / 153 mg).
+  as_dose <- ifelse(young, 25, 50)
+  aq_dose <- if (arm == "FDC") ifelse(young, 67.5, 135) else ifelse(young, 76.5, 153)
+  tibble::tibble(
+    id = offset + seq_len(n_arm),
+    arm = arm,
+    AGE = age_mo / 12,
+    WT = wt,
+    as_mg = as_dose,
+    aq_mg = aq_dose
+  )
+}
+kids <- dplyr::bind_rows(make_children("FDC", 0L), make_children("Loose", 1000L))
+
+kids |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(
+    N = dplyr::n(),
+    `Median age (months)` = stats::median(AGE * 12),
+    `Median WT (kg)` = stats::median(WT),
+    `Median AS (mg/kg/day)` = stats::median(as_mg / WT),
+    `Median AQ (mg/kg/day)` = stats::median(aq_mg / WT),
+    .groups = "drop"
+  ) |>
+  dplyr::rename("Arm" = arm) |>
+  knitr::kable(digits = 1, caption = "Virtual cohort (compare Table 1; target doses 4 mg/kg/day AS, 10 mg/kg/day AQ).")
+```
+
+# Simulation: DHA and total anti-malarial activity
+
+`MULTI_DOSE` switches from 0 to 1 at the second dose. The paper sampled only
+after doses 1 and 3, so the clearance during the second dosing interval is not
+identified by the data; the model gives it the later-dose value.
+
+```{r sim-dha}
+dose_times <- c(0, 24, 48)
+obs_1cmt <- sort(unique(c(seq(0, 6, by = 0.25), seq(7, 24, by = 1), 48 + seq(0, 6, by = 0.25), 48 + seq(7, 24, by = 1))))
+
+ev_as <- dplyr::bind_rows(
+  tidyr::crossing(kids, time = dose_times) |>
+    dplyr::mutate(amt = as_mg, evid = 1L, cmt = "depot"),
+  tidyr::crossing(kids, time = obs_1cmt) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central")
+) |>
+  dplyr::mutate(MULTI_DOSE = as.integer(time >= 24)) |>
+  dplyr::select(id, time, amt, evid, cmt, arm, WT, AGE, MULTI_DOSE) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+sim_dha <- rxode2::rxSolve(mod_dha, events = ev_as, keep = "arm", returnType = "data.frame")
+sim_act <- rxode2::rxSolve(mod_act, events = ev_as, keep = "arm", returnType = "data.frame")
+stopifnot(!anyNA(sim_dha$Cc), !anyNA(sim_act$Cc))
+```
+
+```{r vpc-dha, fig.cap = "Simulated DHA and total-activity concentrations after the first and third dose (median and 5th-95th percentile by arm). Compare the observed DHA concentrations of Figure 3 (mostly 100-3,600 ng/mL within 4 h)."}
+vpc_1cmt <- dplyr::bind_rows(
+  sim_dha |> dplyr::mutate(analyte = "DHA"),
+  sim_act |> dplyr::mutate(analyte = "Total activity (DHA eq)")
+) |>
+  dplyr::filter((time > 0 & time <= 6) | (time > 48 & time <= 54)) |>
+  dplyr::mutate(
+    period = ifelse(time < 24, "First dose", "Third dose"),
+    tad = ifelse(time < 24, time, time - 48)
+  ) |>
+  dplyr::group_by(analyte, arm, period, tad) |>
+  dplyr::summarise(
+    Q05 = stats::quantile(Cc, 0.05), Q50 = stats::median(Cc), Q95 = stats::quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(vpc_1cmt, aes(tad, Q50, colour = arm, fill = arm)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.15, colour = NA) +
+  geom_line() +
+  facet_grid(analyte ~ period) +
+  labs(x = "Time after dose (h)", y = "Concentration (ng/mL)", colour = "Arm", fill = "Arm") +
+  theme_bw()
+```
+
+# Simulation: desethylamodiaquine
+
+```{r sim-aq}
+obs_aq <- sort(unique(c(seq(0, 72, by = 1), seq(78, 672, by = 6), seq(696, 1344, by = 24))))
+ev_aq <- dplyr::bind_rows(
+  tidyr::crossing(kids, time = dose_times) |>
+    dplyr::mutate(amt = aq_mg, evid = 1L, cmt = "depot"),
+  tidyr::crossing(kids, time = obs_aq) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central")
+) |>
+  dplyr::select(id, time, amt, evid, cmt, arm, WT) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+sim_aq <- rxode2::rxSolve(mod_aq, events = ev_aq, keep = "arm", returnType = "data.frame")
+stopifnot(!anyNA(sim_aq$Cc))
+```
+
+```{r vpc-aq, fig.cap = "Replicates Figure 5 of Stepniewska 2009: predicted DeAQ concentrations over the first 14 days by arm (median and 5th-95th percentile)."}
+sim_aq |>
+  dplyr::filter(time > 0, time <= 336) |>
+  dplyr::group_by(arm, time) |>
+  dplyr::summarise(
+    Q05 = stats::quantile(Cc, 0.05), Q50 = stats::median(Cc), Q95 = stats::quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time / 24, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~arm) +
+  labs(x = "Time (days)", y = "DeAQ concentration (ng/mL)") +
+  theme_bw()
+```
+
+The simulated profiles peak at roughly 300-600 ng/mL a few hours after the third
+dose and fall below 100 ng/mL by Day 7, as in Figure 5.
+
+## DeAQ concentrations against Table 2
+
+Table 2 reports the median measured DeAQ concentration at each sampling visit.
+The simulated median at the same nominal times is shown beside it. The
+measured medians come from 10-32 children per cell and include children who
+carried DeAQ from an earlier amodiaquine course (pre-dose median 8-9 ng/mL),
+which the model does not represent.
+
+```{r table2}
+table2 <- tibble::tribble(
+  ~visit, ~time, ~Loose, ~FDC,
+  "4 h after dose 3", 52, 396.6, 347.1,
+  "Day 7", 168, 73.9, 91.5,
+  "Day 14", 336, 48.8, 41.0,
+  "Day 21", 504, 29.0, 17.7,
+  "Day 28", 672, 17.7, 17.4
+) |>
+  tidyr::pivot_longer(c(Loose, FDC), names_to = "arm", values_to = "observed")
+
+cmp_t2 <- sim_aq |>
+  dplyr::filter(time %in% table2$time) |>
+  dplyr::group_by(arm, time) |>
+  dplyr::summarise(simulated = stats::median(Cc), .groups = "drop") |>
+  dplyr::inner_join(table2, by = c("arm", "time")) |>
+  dplyr::mutate(ratio = simulated / observed)
+
+cmp_t2 |>
+  dplyr::select(visit, arm, observed, simulated, ratio) |>
+  dplyr::rename(
+    "Visit" = visit, "Arm" = arm, "Table 2 median (ng/mL)" = observed,
+    "Simulated median (ng/mL)" = simulated, "Simulated / observed" = ratio
+  ) |>
+  knitr::kable(digits = 2, caption = "Median DeAQ concentration by visit and arm.")
+
+# Structural: a mis-transcribed clearance or volume shifts every visit by tens
+# of percent. Envelope on the median ratio only, not on any single cell.
+stopifnot(nrow(cmp_t2) == 10L, abs(log(stats::median(cmp_t2$ratio))) < log(1.3))
+```
+
+# PKNCA validation
+
+The paper reports exposure as AUC = dose / CL/F from the posterior clearances:
+for DeAQ, normalised to a total amodiaquine dose of 34 mg/kg and also for the
+dose actually received; for DHA and total activity, normalised to a 3.7 mg/kg
+artesunate dose after the first and the third dose. The PKNCA runs below
+reproduce those scenarios: the normalised ones with every child dosed at exactly
+the reference mg/kg, the actual-dose one with the cohort above. The AUCs are
+printed in ng*h/mL by the paper but are numerically in ug*h/mL (see
+Assumptions); they are compared here in ug*h/mL.
+
+```{r pknca-aq}
+nca_aq <- function(events) {
+  sim <- rxode2::rxSolve(mod_aq, events = events, keep = "arm", returnType = "data.frame")
+  conc <- sim |>
+    dplyr::filter(!is.na(Cc)) |>
+    dplyr::select(id, arm, time, Cc)
+  conc <- dplyr::bind_rows(conc, conc |> dplyr::distinct(id, arm) |> dplyr::mutate(time = 0, Cc = 0)) |>
+    dplyr::distinct(id, arm, time, .keep_all = TRUE) |>
+    dplyr::arrange(id, time)
+  dose <- events |>
+    dplyr::filter(evid == 1L) |>
+    dplyr::select(id, arm, time, amt)
+  intervals <- data.frame(start = 0, end = Inf, aucinf.obs = TRUE, half.life = TRUE)
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, Cc ~ time | arm + id),
+    PKNCA::PKNCAdose(dose, amt ~ time | arm + id),
+    intervals = intervals
+  ))
+  as.data.frame(res) |>
+    dplyr::filter(PPTESTCD %in% c("aucinf.obs", "half.life")) |>
+    dplyr::mutate(PPORRES = ifelse(PPTESTCD == "aucinf.obs", PPORRES / 1000, PPORRES / 24))
+}
+
+ev_aq_norm <- ev_aq |> dplyr::mutate(amt = ifelse(evid == 1L, 34 / 3 * WT, amt))
+nca_aq_norm <- nca_aq(ev_aq_norm) |> dplyr::mutate(scenario = "34 mg/kg (normalised)")
+nca_aq_act <- nca_aq(ev_aq) |> dplyr::mutate(scenario = "Actual dose")
+
+ref_aq <- tibble::tribble(
+  ~scenario, ~arm, ~aucinf.obs, ~half.life,
+  "34 mg/kg (normalised)", "Loose", 57.76, 9.0,
+  "34 mg/kg (normalised)", "FDC", 54.75, 9.0,
+  "Actual dose", "Loose", 62.5, 9.0,
+  "Actual dose", "FDC", 48.7, 9.0
+)
+cmp_aq <- nlmixr2lib::ncaComparisonTable(
+  simulated = dplyr::bind_rows(nca_aq_norm, nca_aq_act),
+  reference = ref_aq,
+  by = c("scenario", "arm"),
+  units = c(aucinf.obs = "ug*h/mL", half.life = "day")
+)
+knitr::kable(cmp_aq, caption = "DeAQ: simulated median AUC0-inf and terminal half-life against Stepniewska 2009 (Results, Table 3). * differs by >20%.")
+```
+
+```{r pknca-aq-gate}
+med_auc_norm <- stats::median(nca_aq_norm$PPORRES[nca_aq_norm$PPTESTCD == "aucinf.obs"])
+med_thalf <- stats::median(nca_aq_norm$PPORRES[nca_aq_norm$PPTESTCD == "half.life"], na.rm = TRUE)
+# 34 / 0.61 = 55.7 for the typical child; the published arm medians bracket it.
+stopifnot(abs(med_auc_norm / 55.7 - 1) < 0.08, abs(med_thalf / 9.0 - 1) < 0.15)
+```
+
+The normalised AUC and the terminal half-life agree with the published values
+in both arms. The actual-dose AUCs also agree: the label age bands give the
+loose arm about 9% more amodiaquine per kilogram than the FDC arm in the virtual
+cohort, in line with the "approximately 10% higher" dose the paper reports for
+the loose arm. Because CL/F carries the only random effect and is the same
+distribution in both arms, the arm-to-arm difference in the normalised scenario
+is sampling noise between two sets of 150 children.
+
+```{r pknca-dha}
+nca_1cmt <- function(mod, analyte) {
+  ev <- ev_as |> dplyr::mutate(amt = ifelse(evid == 1L, 3.7 * WT, amt))
+  sim <- rxode2::rxSolve(mod, events = ev, keep = "arm", returnType = "data.frame")
+  conc <- sim |>
+    dplyr::filter(!is.na(Cc)) |>
+    dplyr::select(id, arm, time, Cc)
+  conc <- dplyr::bind_rows(conc, conc |> dplyr::distinct(id, arm) |> dplyr::mutate(time = 0, Cc = 0)) |>
+    dplyr::distinct(id, arm, time, .keep_all = TRUE) |>
+    dplyr::arrange(id, time)
+  dose <- ev |>
+    dplyr::filter(evid == 1L) |>
+    dplyr::select(id, arm, time, amt)
+  intervals <- data.frame(
+    start = c(0, 48), end = c(24, 72),
+    cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+  )
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, Cc ~ time | arm + id),
+    PKNCA::PKNCAdose(dose, amt ~ time | arm + id),
+    intervals = intervals
+  ))
+  as.data.frame(res) |>
+    dplyr::filter(PPTESTCD %in% c("aucinf.obs", "half.life", "cmax", "tmax")) |>
+    dplyr::mutate(
+      analyte = analyte,
+      period = ifelse(start == 0, "Dose 1", "Dose 3"),
+      PPORRES = ifelse(PPTESTCD == "aucinf.obs", PPORRES / 1000, PPORRES)
+    )
+}
+nca_dha <- dplyr::bind_rows(
+  nca_1cmt(mod_dha, "DHA"),
+  nca_1cmt(mod_act, "Total activity")
+)
+
+ref_1cmt <- tibble::tribble(
+  ~analyte, ~period, ~aucinf.obs, ~half.life,
+  "DHA", "Dose 1", 4.29, 2.5,
+  "DHA", "Dose 3", 1.96, 1.1,
+  "Total activity", "Dose 1", 4.43, 2.4,
+  "Total activity", "Dose 3", 2.14, 1.2
+)
+cmp_1cmt <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_dha |> dplyr::filter(PPTESTCD %in% c("aucinf.obs", "half.life")),
+  reference = ref_1cmt,
+  by = c("analyte", "period"),
+  units = c(aucinf.obs = "ug*h/mL", half.life = "h")
+)
+knitr::kable(cmp_1cmt, caption = "DHA and total activity after a 3.7 mg/kg artesunate dose: simulated median AUC0-inf and half-life against Stepniewska 2009 (Results, Table 4). * differs by >20%.")
+```
+
+```{r pknca-dha-gate}
+gate_1cmt <- nca_dha |>
+  dplyr::filter(PPTESTCD %in% c("aucinf.obs", "half.life")) |>
+  dplyr::group_by(analyte, period, PPTESTCD) |>
+  dplyr::summarise(sim = stats::median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  dplyr::inner_join(
+    ref_1cmt |> tidyr::pivot_longer(c(aucinf.obs, half.life), names_to = "PPTESTCD", values_to = "ref"),
+    by = c("analyte", "period", "PPTESTCD")
+  )
+stopifnot(nrow(gate_1cmt) == 8L)
+# CL/F has no random effect, so AUC is the same for every child up to the
+# integration; the half-life medians carry the V/F spread.
+stopifnot(
+  all(abs(gate_1cmt$sim[gate_1cmt$PPTESTCD == "aucinf.obs"] / gate_1cmt$ref[gate_1cmt$PPTESTCD == "aucinf.obs"] - 1) < 0.03),
+  all(abs(gate_1cmt$sim[gate_1cmt$PPTESTCD == "half.life"] / gate_1cmt$ref[gate_1cmt$PPTESTCD == "half.life"] - 1) < 0.15)
+)
+```
+
+```{r pknca-dha-cmax}
+nca_dha |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax")) |>
+  dplyr::group_by(analyte, period, PPTESTCD) |>
+  dplyr::summarise(
+    median = stats::median(PPORRES), p05 = stats::quantile(PPORRES, 0.05), p95 = stats::quantile(PPORRES, 0.95),
+    .groups = "drop"
+  ) |>
+  dplyr::rename("Analyte" = analyte, "Dose period" = period, "Parameter" = PPTESTCD, "Median" = median, "5th pct" = p05, "95th pct" = p95) |>
+  knitr::kable(digits = 2, caption = "Simulated Cmax (ng/mL) and Tmax (h) after a 3.7 mg/kg artesunate dose. The paper reports no NCA Cmax; Figure 3 shows observed DHA up to about 3,600 ng/mL after dose 1 and 2,700 ng/mL after dose 3.")
+```
+
+# Assumptions and deviations
+
+- **Age effect on V/F.** Table 4 gives "Effect of Age on V/F" = 0.063 without an
+  equation, units or centring value. The packaged form is additive on the
+  per-kilogram V/F, per month of age (the unit the paper uses throughout),
+  centred at the median age of the randomised cohort (32 months):
+  V/F = 2.285 + 0.063 x (age - 32). It matches the published typical half-lives
+  (Check 1), which require V/F at the typical child to equal the tabulated
+  value, and the published half-life range (Check 2). It also follows the
+  additive per-kilogram covariate convention of Simpson 2006, which the paper
+  cites for its method. The same form is used for the total-activity model.
+  The model takes `AGE` in years, as elsewhere in the library, and converts it
+  to months internally.
+- **Dosing-period effect on CL/F.** Additive on the per-kilogram CL/F, as
+  confirmed by the third-dose AUCs and half-lives (Check 1). The paper's
+  covariate was 0 for samples after dose 1 and 1 for samples after dose 3; the
+  library's `MULTI_DOSE` indicator is used, and the second dosing interval,
+  which was not sampled, takes the later-dose value.
+- **AUC units.** The Results print the AUCs in "ng/mL.h", but the values equal
+  dose (mg/kg) / CL/F (L/kg/h), which is in mg*h/L, i.e. ug*h/mL. They are
+  compared in ug*h/mL here.
+- **DeAQ dose is the amodiaquine base dose without molar correction.** The
+  normalised AUC (34 mg/kg / 0.61 L/kg/h = 55.7 ug*h/mL against published arm
+  medians of 57.76 and 54.75) shows no amodiaquine-to-DeAQ molecular-weight
+  conversion was applied, so CL/F and V/F are in amodiaquine-dose terms.
+- **Pre-treatment DeAQ is not modelled.** 28 children had DeAQ but no AQ before
+  the first dose. The paper modelled those levels as first-order elimination of
+  an earlier dose subtracted from the study profile; that component has no
+  published parameters and is not part of the packaged model.
+- **IIV and residual SDs.** The paper defines the reported CV% as the square root
+  of the variance estimate, so the variances are the squared CVs. The DeAQ sigma
+  is on the natural-log scale (`lnorm`); the DHA and total-activity sigmas are
+  additive in ng/mL.
+- **Covariates screened but not retained** (temperature, respiratory rate, sex,
+  log parasitaemia, gametocytaemia, formulation; and age for DeAQ) are listed
+  in each model's `covariatesDataExcluded`.
+- **Cohort construction.** Age is uniform over the published range, and weight
+  is a scaled WHO median weight-for-age with 10% scatter, because the paper
+  gives only medians and ranges. Doses follow the label age bands. The cohort
+  characterises the model; it does not reproduce the estimation data set.
+- **No erratum** or correction is indexed for this article in Europe PMC
+  (checked 2026-11-19).
+- **No parameter was tuned.** Every `ini()` value is the published Table 3 or
+  Table 4 value.

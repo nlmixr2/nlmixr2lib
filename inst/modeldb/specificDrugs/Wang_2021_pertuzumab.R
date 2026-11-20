@@ -11,6 +11,7 @@ Wang_2021_pertuzumab <- function() {
   )
   vignette <- "Wang_2021_pertuzumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

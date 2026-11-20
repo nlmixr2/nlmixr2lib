@@ -1,0 +1,241 @@
+---
+title: "TCE multi-metabolite mouse PBPK (Chiu 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{TCE multi-metabolite mouse PBPK (Chiu 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+ui <- rxode2::rxode(nlmixr2lib::readModelDb("Chiu_2014_tce_mouse_pbpk"))
+cat("* Citation: ", ui$reference, "\n", sep = "")
+cat("* Article: <https://doi.org/10.1289/ehp.1307623>\n")
+```
+
+* Description: `r ui$description`
+
+Chiu and colleagues extended an existing whole-body physiologically based
+pharmacokinetic (PBPK) model of trichloroethylene (TCE) and its metabolites to a
+panel of genetically diverse mouse strains, in order to quantify the toxicokinetic
+population variability that matters for human risk assessment. The structural
+model is a modification of the Hack et al. (2006) / Evans et al. (2009) TCE PBPK
+model: it adds one-compartment submodels for the glutathione-conjugation
+metabolites S-(1,2-dichlorovinyl)glutathione (DCVG) and
+S-(1,2-dichlorovinyl)-L-cysteine (DCVC), a two-compartment submodel for
+dichloroacetic acid (DCA), and a revised DCA production route. The authors fit
+the model with a hierarchical Bayesian population approach (eight MCMC chains to
+160,000 iterations) estimating both parameter uncertainty and interstrain
+variability.
+
+This vignette implements the model for the single route the mouse data use --
+an oral gavage of 2,100 mg/kg TCE in corn oil -- and for the B6C3F1/J *index*
+strain against which all interstrain scaling is referenced. It is a deterministic
+typical-value replication: the parameters are the posterior medians of the
+population means (Supplemental Table S6), and every interstrain scaling parameter
+`lnIS*` is held at 0 (its B6C3F1/J reference value).
+
+## Structure
+
+TCE is absorbed from a stomach and duodenum compartment into seven flow-limited
+tissues (rapidly perfused, slowly perfused, fat, gut, liver, kidney, blood).
+Arterial blood is the steady-state lung equation
+
+$$C_{Art} = \frac{Q_C\,C_{Ven}}{Q_C + Q_P/P_B},$$
+
+so volatile first-pass pulmonary elimination is captured without carrying a
+respiratory-tract compartment (the inhalation, closed-chamber and intravenous
+machinery of the full MCSim model is inactive for oral gavage and is omitted).
+Hepatic TCE is split by saturable CYP oxidation into trichloroacetic acid (TCA),
+trichloroethanol (TCOH) and a direct-DCA branch, and by a saturable
+glutathione-conjugation branch into DCVG; renal glutathione conjugation adds a
+parallel kidney source. TCOH feeds a two-tissue submodel with onward oxidation to
+TCA and glucuronidation to trichloroethanol-glucuronide (TCOG, with biliary
+recirculation); TCA is a protein-binding three-tissue submodel; DCA is a
+two-compartment submodel; DCVG converts to DCVC.
+
+Every ODE state is a paper-mechanistic amount (mg, except the DCVG amount in
+mmol), so there is no canonical `central` compartment; the dose is an oral gavage
+into `AStom`.
+
+## Source trace
+
+Model structure and ODEs are transcribed from the authors' published MCSim code
+(Supplemental Material -- PBPK Model Code). Parameter provenance:
+
+| Model element | Source |
+| --- | --- |
+| Physiologic baselines (flows, volumes, blood:plasma fraction) | Supplemental Table S3 / MCSim `Species == 3` (mouse) branch |
+| TCE partition coefficients (blood:air, tissue:blood) | Supplemental Table S3 / MCSim `Species == 3` branch (scaling fixed) |
+| Cardiac output, ventilation-perfusion (`lnQCC`, `lnVPRC`) | Supplemental Table S6 posterior medians |
+| Hepatic oxidation `VMax`, `KM` (`lnVMaxC`, `lnKMC`) | Supplemental Table S6; derived B6C3F1/J medians main-text Table 2 |
+| Oxidation splits (`lnFracOtherC`, `lnFracTCAC`) | Supplemental Table S6 posterior medians |
+| Hepatic GSH conjugation (`lnVMaxDCVGC`, `lnClDCVGC`) | Supplemental Table S6; derived medians Table 2 |
+| TCOH / TCA / TCOG / DCA / DCVG / DCVC rate constants | Supplemental Table S6 posterior medians |
+| Effective distribution volumes (`lnPeffDCVG/DCVC/DCA`) | Supplemental Table S6 posterior medians (Table S3 note x) |
+| Renal GSH conjugation, free-TCA tissue partitions | Supplemental Table S3 / MCSim defaults (fixed, not estimated) |
+| Oral gavage 2,100 mg/kg; B6C3F1/J Table 2 total dose 76.4 mg | Materials and Methods; main-text Table 2 |
+
+Every `ini()` entry carries an in-file comment pointing to the specific table,
+posterior-median value and baseline it derives from.
+
+# Virtual subject
+
+The B6C3F1/J index strain, dosed by oral gavage at 2,100 mg/kg. The default body
+weight of 0.0364 kg reproduces the 76.4 mg total dose reported in Table 2
+(`76.4 / 2100 = 0.0364`).
+
+```{r cohort}
+mod <- nlmixr2lib::readModelDb("Chiu_2014_tce_mouse_pbpk")
+
+BW <- 0.0364 # kg; reproduces the Table 2 total dose of 76.4 mg at 2100 mg/kg
+dose_mg <- 2100 * BW
+
+ev <- rxode2::et(amt = dose_mg, cmt = "AStom")
+ev <- rxode2::et(ev, seq(0, 24, by = 0.1))
+ev$WT <- BW
+```
+
+# Simulation
+
+Deterministic typical-value solve (`zeroRe()`; the model carries no random
+effects).
+
+```{r simulate}
+sim <- rxode2::rxSolve(rxode2::zeroRe(mod), ev, returnType = "data.frame")
+```
+
+# Replicate Figure 4 -- B6C3F1/J serum metabolites
+
+Figure 4 of Chiu et al. (2014) plots the four measured metabolites "in blood
+(mmol/L)" for the B6C3F1/J strain (data from Kim et al. 2009b). The data points
+below were digitised by the maintainers from that figure (approximate).
+
+```{r fig4-data}
+fig4 <- dplyr::tribble(
+  ~metab, ~time, ~conc,
+  "TCA", 0.5, 0.14, "TCA", 6, 0.37, "TCA", 8, 0.36, "TCA", 12, 0.33,
+  "DCA", 0.5, 0.90e-4, "DCA", 2, 1.05e-4, "DCA", 6, 0.90e-4, "DCA", 8, 0.95e-4, "DCA", 12, 0.75e-4,
+  "DCVG", 0.5, 3.3e-5, "DCVG", 2, 3.8e-5, "DCVG", 8, 0.3e-5, "DCVG", 24, 0.05e-5,
+  "DCVC", 0.5, 0.3e-6, "DCVC", 2, 2.4e-6, "DCVC", 6, 0.85e-6, "DCVC", 8, 2.0e-6,
+  "DCVC", 12, 0.5e-6, "DCVC", 24, 0.2e-6
+)
+
+pred <- sim |>
+  dplyr::transmute(
+    time,
+    TCA = Cc_tca, DCA = Cc_dca, DCVG = Cc_dcvg, DCVC = Cc_dcvc
+  ) |>
+  tidyr::pivot_longer(-time, names_to = "metab", values_to = "conc")
+
+lvl <- c("TCA", "DCA", "DCVG", "DCVC")
+pred$metab <- factor(pred$metab, levels = lvl)
+fig4$metab <- factor(fig4$metab, levels = lvl)
+```
+
+```{r fig4-plot, fig.height = 5.5}
+ggplot2::ggplot(pred, ggplot2::aes(time, conc)) +
+  ggplot2::geom_line(colour = "steelblue", linewidth = 0.8) +
+  ggplot2::geom_point(data = fig4, colour = "black", size = 1.8) +
+  ggplot2::facet_wrap(~metab, scales = "free_y") +
+  ggplot2::labs(
+    x = "Time (h)", y = "Concentration in blood (mmol/L)",
+    title = "B6C3F1/J typical-value prediction (line) vs digitised Figure 4 data (points)"
+  ) +
+  ggplot2::theme_bw()
+```
+
+The oxidative metabolites TCA and DCA track the published data closely. The
+glutathione-conjugation metabolites DCVG and DCVC are reproduced in shape (an
+early DCVG rise that clears by ~8 h; a DCVC peak at 2-3 h) but the typical-value
+curve runs roughly 2-fold (DCVG) to 5-fold (DCVC) above the digitised points.
+This is expected rather than an error: those parameters are very poorly
+identified (the Table 2 posterior for the GSH `Km` spans 0.003 to 9.8 x 10^4
+mg/L), so the median of each strongly-correlated *derived* quantity does not
+equal the quantity evaluated at the median *scaling* parameters. The cumulative
+metabolism check below -- the paper's headline quantitative output -- confirms
+the parameterisation is correct.
+
+# Validation against Table 2 -- cumulative metabolism
+
+PKNCA is not meaningful here: the metabolites are formed, not dosed, so there is
+no administered-dose AUC to normalise. The mechanistic validation instead compares
+the model's cumulative metabolism dose-metrics (the published code's `AMetOX`,
+`AMetGSH`, `TotTCAProd`, `TotDCAProd` outputs) against the B6C3F1/J posterior
+medians and 95% credible intervals in main-text Table 2.
+
+```{r table2}
+ev2 <- rxode2::et(amt = dose_mg, cmt = "AStom")
+ev2 <- rxode2::et(ev2, seq(0, 72, by = 0.5)) # integrate to near-complete metabolism
+ev2$WT <- BW
+end <- rxode2::rxSolve(rxode2::zeroRe(mod), ev2, returnType = "data.frame")
+end <- end[nrow(end), ]
+
+tca_mol <- end$AMetTCAprod / 163.5
+dca_mol <- end$AMetDCAprod / 129.0
+
+tab <- dplyr::tribble(
+  ~`Metabolism metric`, ~Model, ~`Reported median (95% CI)`,
+  "TCE oxidized (mg)", round(end$AMetOx, 1), "16 (5.5, 60)",
+  "TCE conjugated with GSH (mg)", round(end$AMetGSH, 3), "0.05 (0.03, 0.5)",
+  "TCA produced (mg)", round(end$AMetTCAprod, 2), "3.4 (1.4, 15)",
+  "DCA produced (mg)", round(end$AMetDCAprod, 3), "0.3 (0.02, 3.7)",
+  "Oxidation/GSH ratio (mg/mg)", round(end$AMetOx / end$AMetGSH), "290 (41, 1070)",
+  "TCA/DCA ratio (mol/mol)", round(tca_mol / dca_mol, 1), "10 (0.9, 130)"
+)
+knitr::kable(tab)
+```
+
+All six metrics fall within the reported 95% credible intervals. The point
+estimates sit above the posterior medians (again the median-composition effect),
+but well inside the intervals, confirming that the extracted structure and
+parameters reproduce the paper's quantitative findings: oxidation dominates
+glutathione conjugation by roughly 300-fold, and TCA production exceeds DCA by
+about an order of magnitude.
+
+# Assumptions and deviations
+
+* **Index strain, typical value.** This file implements the B6C3F1/J *index*
+  strain (interstrain scaling `lnIS* = 0`) at the posterior medians of the
+  population means (Supplemental Table S6). The paper's hierarchical Bayesian
+  model also estimated parameter uncertainty and interstrain variability (Tables
+  S4-S6, with posterior CVs per parameter); those uncertainty and random-effects
+  layers are documented but not carried as a simulation layer here, so there is
+  no IIV and no residual error. The measurement-error variances were not reported
+  as usable point estimates.
+* **Oral gavage only.** The full MCSim model supports inhalation (open and closed
+  chamber), intravenous, intra-arterial, portal-vein and drinking-water routes,
+  plus direct TCA and TCOH dosing. Only the oral-gavage route used by the mouse
+  data is implemented. The respiratory-tract and lung-oxidation compartments are
+  omitted because they are inactive without inhalation; volatile pulmonary
+  elimination is still captured through the steady-state arterial-blood equation.
+* **Fixed (non-estimated) parameters.** Renal glutathione-conjugation parameters
+  (`VMaxKidDCVG`, `KMKidDCVG`, `FracKidDCVC`) were fixed in the paper (they do not
+  appear in Tables S4/S6) and are kept at their coded mouse defaults. The TCE
+  partition coefficients and the free-TCA and TCOH/TCOG tissue partitions have
+  their scaling parameters fixed (Table S3 notes k-r, t, v, w), so they equal the
+  coded mouse baselines.
+* **DCVG / DCVC magnitude.** As discussed above, the typical-value curves for
+  DCVG and DCVC run 2- to 5-fold above the digitised Figure 4 points because
+  those parameters are poorly identified (credible intervals spanning 3-5 orders
+  of magnitude). Parameters were *not* tuned to the figure; the cumulative-metabolism
+  check against Table 2 is the quantitative validation of record.
+* **Body weight.** The default 0.0364 kg is back-calculated from the Table 2
+  total dose (76.4 mg at 2,100 mg/kg); individual animal weights were not
+  tabulated. Set `WT` and the gavage `amt` (`2100 * WT`) together to re-scale.
+* **Blood vs serum.** The data are serum (= plasma) concentrations; Figure 4
+  plots them "in blood", so the TCA output is the plasma concentration times the
+  blood:plasma ratio `TCAPlas`, and all four outputs are in mmol/L to match the
+  figure axes.
+```

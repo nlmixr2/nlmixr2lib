@@ -30,6 +30,7 @@ Grzeskowiak_2023_sugammadex_rocuronium <- function() {
     dosing = "umol",
     concentration = "umol/L"
   )
+  dosing <- c("central_roc", "central")
 
   compartmentData <- list(
     central = list(analyte = "sugammadex", units = "umol", specimen = "plasma", verified = TRUE),

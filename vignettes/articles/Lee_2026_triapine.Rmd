@@ -1,0 +1,538 @@
+---
+title: "Triapine and methemoglobin (Lee 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Triapine and methemoglobin (Lee 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Lee_2026_triapine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Lee_2026_triapine"))$description`
+* Article: <https://doi.org/10.1007/s00280-026-04898-6> (open access, PMC13190473)
+* Supplement: Electronic supplementary material 1 of the article (Figures S1-S3,
+  Tables S1-S2, and the Pumas code of the PK model (Methods S1) and the PD model
+  (Methods S2)).
+
+Triapine (3-aminopyridine-2-carboxaldehyde thiosemicarbazone) is an oral and
+intravenous ribonucleotide reductase inhibitor developed as a radiosensitizer.
+Its dose-limiting toxicity is methemoglobinemia. Lee et al. fitted a sequential
+population PK/PD model in Pumas: a two-compartment PK model with a
+two-transit-compartment Erlang absorption chain, then an effect-compartment
+sigmoid Emax model of blood methemoglobin (mHb, % of total hemoglobin) driven by
+the individual PK predictions. The packaged model joins the two layers in one
+`rxode2` model with two endpoints, `Cc` (plasma triapine, ug/L) and `methb`
+(mHb, %).
+
+# Population
+
+The model was developed from 36 adults in two phase I trials (Table 1 of the
+paper). NCT02595879 (NCI 9892, n = 20) enrolled women with locally advanced
+cervical (18) or vaginal (2) cancer on chemoradiation; each received 50 mg
+triapine as a 2-h IV infusion on day 1 and oral triapine 100 mg (n = 16) or
+150 mg (n = 4) once daily, 5 days a week. NCT04234568 (NCI 10388, n = 16)
+enrolled patients with gastroenteropancreatic neuroendocrine tumours receiving
+Lu-177 dotatate with oral triapine 100 mg (n = 3) or 150 mg (n = 13) once daily
+on days 1-14. Twenty-four of the 36 patients were female; age ranged 23-74 years
+and weight 41.8-138.4 kg. Six patients (all in NCI 9892) were active smokers.
+The PK data were 573 quantifiable plasma concentrations (LLOQ 3 ug/L); the PD
+data were 252 mHb observations from 33 patients.
+
+The same information is available programmatically via
+`readModelDb("Lee_2026_triapine")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Structure: depot -> transit1 -> transit2 -> central (all at `ktr`), central <-> peripheral1, elimination from central | n/a | Results 'Population pharmacokinetic modeling', Figure 1, Methods S1 `@dynamics` |
+| Oral bioavailability on the depot; IV doses into central | n/a | Methods S1 `@dosecontrol` (`bioav = (; Depot = _bioav)`) |
+| `lktr` | log(3.11) 1/h | Table 2 Ktr |
+| `lcl` | log(51.8) L/h | Table 2 CL (70 kg) |
+| `lvc` | log(67.9) L | Table 2 Vc (70 kg) |
+| `lq` | log(12.6) L/h | Table 2 Q (70 kg) |
+| `lvp` | log(65.5) L | Table 2 Vp (70 kg) |
+| `logitfdepot` | logit(0.76) | Table 2 F; logit-normal F, Methods 'Estimation methods' equation |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1 (fixed) | Methods 'Covariate PK Model' allometric equation; Methods S1 `wtcl`, `wtv` |
+| `e_smoke_cl` | 0.38 | Table 2 Effect_smoker; Results smoking equation `P = Ppop * (1 + beta * smoking status)` |
+| `d/dt(effect) <- ke0 * (Cc - effect)` | n/a | Methods ke0 equation; Methods S2 `Ceff'` |
+| `methb <- e0 * (1 + emax * effect^hill / (ec50^hill + effect^hill))` | n/a | Methods effect equation; Methods S2 `@vars` |
+| `lke0` | log(0.36) 1/h | Table 2 ke0 |
+| `le0` | log(0.95) % | Table 2 Ebase |
+| `lemax` | log(100) (fixed) | Table 2 'Emax (fixed)'; Results PD paragraph |
+| `lec50` | log(2535) ug/L | Table 2 EC50; Results PD paragraph (2535 ug/L) |
+| `lhill` | log(1.63) | Table 2 Hill |
+| `etalktr`, `etalcl`, `etalvc` | 0.2049, 0.0797, 0.0481 | Table 2 BSV 47.8, 28.8, 22.2 %CV; `omega^2 = log(1 + CV^2)` (Methods %CV formula) |
+| `etalogitfdepot` | 2.283 | Table 2 BSV F 29.5 %CV, Methods delta-method formula, Methods S1 SD encoding (see Assumptions) |
+| `etale0`, `etalec50` | 0.1137, 0.2891 | Table 2 BSV Ebase 34.7 %CV, EC50 57.9 %CV |
+| `addSd`, `propSd` | 3.94 ug/L, 0.332 | Table 2 PK additive and proportional residual error |
+| `addSd_methb`, `propSd_methb` | 0.13 %, 0.273 | Table 2 PD additive and proportional residual error |
+| Combined error with summed variances (`combined2`) | n/a | Methods S1/S2 `Normal(f, sqrt(f^2 * sigma2_prop + sigma2_add))` |
+
+# Typical-value checks
+
+```{r typical}
+mod <- readModelDb("Lee_2026_triapine")
+mod_typ <- rxode2::zeroRe(mod)
+
+# Observation rows on the central state with dvid = 1: the model declares two
+# endpoints (Cc and methb), and both come back as columns on every row.
+obs_rows <- function(ids, times) {
+  expand.grid(id = ids, time = times) |>
+    mutate(amt = 0, rate = 0, evid = 0L, cmt = "central", dvid = 1L)
+}
+dose_rows <- function(ids, amt, route, time = 0) {
+  data.frame(id = ids, time = time, amt = amt, evid = 1L, dvid = NA_integer_) |>
+    mutate(
+      cmt = if (route == "iv") "central" else "depot",
+      # 2-h IV infusion (Methods); oral doses are boluses into the depot
+      rate = if (route == "iv") amt / 2 else 0
+    )
+}
+
+grid <- sort(unique(c(seq(0, 8, by = 0.05), seq(8.5, 48, by = 0.5))))
+ev_typ <- bind_rows(
+  dose_rows(1, 50, "iv"), obs_rows(1, grid),
+  dose_rows(2, 100, "po"), obs_rows(2, grid)
+) |>
+  mutate(WT = 70, SMOKE = 0) |>
+  arrange(id, time, desc(evid))
+
+# One subject per solve: a typical-value (zeroRe) solve of several subjects
+# at once warns that it has no omega.
+typ <- bind_rows(lapply(split(ev_typ, ev_typ$id), function(d) {
+  rxode2::rxSolve(mod_typ, d, returnType = "data.frame", useLinCmt = FALSE) |>
+    mutate(id = d$id[1])
+}))
+
+typ_summary <- typ |>
+  group_by(id) |>
+  summarise(
+    tmax_Cc = time[which.max(Cc)],
+    cmax_Cc = max(Cc),
+    tmax_methb = time[which.max(methb)],
+    max_methb = max(methb),
+    methb_t0 = methb[time == 0],
+    .groups = "drop"
+  ) |>
+  mutate(route = c("50 mg IV (2-h infusion)", "100 mg oral")[id])
+knitr::kable(typ_summary |> select(route, everything(), -id), digits = 2)
+
+# Closed-form exposure of a typical 70 kg nonsmoker: AUC0-inf = F * dose / CL.
+auc_closed <- c(iv = 1000 * 50 / 51.8, po = 1000 * 0.76 * 100 / 51.8)
+auc_trap <- typ |>
+  group_by(id) |>
+  summarise(
+    auc = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2) +
+      Cc[n()] / (log(Cc[n() - 1] / Cc[n()]) / diff(tail(time, 2))),
+    .groups = "drop"
+  )
+auc_check <- data.frame(
+  route = c("IV 50 mg", "oral 100 mg"),
+  auc_simulated = auc_trap$auc,
+  auc_closed_form = unname(auc_closed)
+) |>
+  mutate(pct_diff = 100 * (auc_simulated / auc_closed_form - 1))
+knitr::kable(auc_check, digits = 2)
+
+stopifnot(
+  # The solve and its own closed form share every parameter, so the only
+  # difference is integration / trapezoid error on a 0.05-h grid.
+  all(abs(auc_check$pct_diff) < 1),
+  # Baseline mHb before any drug is Ebase.
+  all(abs(typ_summary$methb_t0 - 0.95) < 1e-6),
+  # Figure S2: oral Cc peaks near 1.5 h and mHb near 3 h (counterclockwise hysteresis).
+  typ_summary$tmax_Cc[2] >= 0.75, typ_summary$tmax_Cc[2] <= 2,
+  typ_summary$tmax_methb[2] >= 2, typ_summary$tmax_methb[2] <= 4.5
+)
+```
+
+For a typical 70 kg nonsmoker the model gives an oral 100 mg Cmax near
+`r round(typ_summary$cmax_Cc[2])` ug/L at `r typ_summary$tmax_Cc[2]` h and a
+methemoglobin peak of `r round(typ_summary$max_methb[2], 2)`% at
+`r typ_summary$tmax_methb[2]` h, the delay that Figure S2 of the paper shows as a
+counterclockwise hysteresis loop (median triapine peak at 1.5 h, median mHb peak
+at 3 h).
+
+```{r hysteresis, fig.cap = "Typical-value triapine concentration and methemoglobin after 100 mg oral (70 kg nonsmoker). Compare with Figure S2 of Lee 2026."}
+typ |>
+  filter(id == 2, time <= 12) |>
+  ggplot(aes(Cc, methb)) +
+  geom_path() +
+  geom_point(data = function(d) filter(d, time %in% c(0.5, 1, 1.5, 2, 3, 4, 6, 8))) +
+  geom_text(
+    data = function(d) filter(d, time %in% c(1, 1.5, 3, 6)),
+    aes(label = paste0(time, " h")), nudge_y = 0.07, size = 3
+  ) +
+  labs(x = "Triapine Cc (ug/L)", y = "Methemoglobin (%)",
+       title = "Concentration-effect hysteresis (typical subject)")
+```
+
+# Virtual cohort and NCA against Table S2
+
+Table S2 of the paper reports the observed non-compartmental Cmax and
+AUC0-inf (geometric means) per route, dose and smoking status. The virtual
+cohort below has 200 subjects in each of the six route x dose x smoking cells.
+Weights are drawn from a normal distribution with the NCI 9892 mean and SD
+(77.4 +/- 14.1 kg), truncated to the pooled observed range (41.8-138.4 kg).
+
+```{r cohort}
+rxode2::rxSetSeed(20260520)
+set.seed(20260520)
+
+arms <- expand.grid(
+  regimen = c("Inf 50mg", "PO 100mg", "PO 150mg"),
+  smoking = c("Nonsmoker", "Smoker"),
+  stringsAsFactors = FALSE
+)
+n_per_arm <- 200
+nca_grid <- c(0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 3, 3.5, 4,
+              5, 6, 8, 10, 12, 16, 20, 24)
+
+make_arm <- function(i) {
+  ids <- (i - 1) * n_per_arm + seq_len(n_per_arm)
+  route <- if (arms$regimen[i] == "Inf 50mg") "iv" else "po"
+  amt <- c("Inf 50mg" = 50, "PO 100mg" = 100, "PO 150mg" = 150)[[arms$regimen[i]]]
+  wt <- pmin(pmax(rnorm(n_per_arm, 77.4, 14.1), 41.8), 138.4)
+  bind_rows(dose_rows(ids, amt, route), obs_rows(ids, nca_grid)) |>
+    left_join(data.frame(id = ids, WT = wt), by = "id") |>
+    mutate(
+      SMOKE = as.integer(arms$smoking[i] == "Smoker"),
+      treatment = paste(arms$regimen[i], arms$smoking[i], sep = " | ")
+    )
+}
+events <- bind_rows(lapply(seq_len(nrow(arms)), make_arm)) |>
+  arrange(id, time, desc(evid))
+stopifnot(length(unique(events$id)) == nrow(arms) * n_per_arm)
+
+sim <- rxode2::rxSolve(mod, events, keep = "treatment",
+                       returnType = "data.frame", useLinCmt = FALSE)
+```
+
+```{r vpc-cohort, fig.cap = "Simulated triapine Cc (median and 90% prediction interval, without residual error) by regimen and smoking status."}
+sim |>
+  filter(time > 0) |>
+  group_by(treatment, time) |>
+  summarise(q05 = quantile(Cc, 0.05), q50 = median(Cc), q95 = quantile(Cc, 0.95),
+            .groups = "drop") |>
+  ggplot(aes(time, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = 3, linetype = "dotted") +
+  facet_wrap(~treatment, ncol = 3) +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = "Triapine Cc (ug/L)",
+       caption = "Dotted line: LLOQ 3 ug/L.")
+```
+
+```{r pknca}
+sim_nca <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, treatment, time)
+
+dose_df <- events |>
+  filter(evid == 1) |>
+  mutate(duration = ifelse(rate > 0, amt / rate, 0)) |>
+  select(id, time, amt, duration, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, duration = "duration")
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+```{r nca-compare}
+# Table S2: observed geometric means (ug/L, ug*h/L)
+published <- tibble::tribble(
+  ~treatment,              ~cmax, ~aucinf.obs,
+  "Inf 50mg | Smoker",      262,   656,
+  "Inf 50mg | Nonsmoker",   324,   903,
+  "PO 100mg | Smoker",      286,   742,
+  "PO 100mg | Nonsmoker",   544,  1321,
+  "PO 150mg | Smoker",      252,  1067,
+  "PO 150mg | Nonsmoker",   620,  1765
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "treatment",
+  units = c(cmax = "ug/L", aucinf.obs = "ug*h/L", tmax = "h", half.life = "h"),
+  tolerance_pct = 20
+)
+cmp |>
+  dplyr::rename("Regimen | smoking" = treatment) |>
+  knitr::kable(caption = paste(
+    "Simulated (median) vs. observed (Table S2 geometric mean) NCA.",
+    "* differs from the observed value by more than 20%."
+  ))
+```
+
+```{r nca-assert}
+sim_auc <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  group_by(treatment) |>
+  summarise(sim = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  inner_join(published |> select(treatment, obs = aucinf.obs), by = "treatment") |>
+  mutate(pct_diff = 100 * (sim / obs - 1))
+nonsmk <- filter(sim_auc, grepl("Nonsmoker", treatment))
+stopifnot(
+  # Nonsmoker arms (14-15 subjects each in Table S2): a mis-transcribed CL,
+  # F or unit moves every arm by tens of percent.
+  abs(median(nonsmk$pct_diff)) < 20,
+  max(abs(nonsmk$pct_diff)) < 35
+)
+```
+
+The nonsmoker arms, which hold 14-15 observed subjects each, agree with Table
+S2 for AUC0-inf within about 15% and for Cmax within about 20%. The smoker arms
+hold only 2-6 observed subjects each. The model's smoking effect (38% higher CL)
+lowers the simulated AUC0-inf by about 28% relative to nonsmokers, whereas the
+observed oral smoker geometric means are about 40-45% lower (Discussion), so the
+simulated oral smoker AUC0-inf is about 30% above the observed values. The
+smoking effect acts on CL only, so the model cannot reproduce the observed
+halving of oral Cmax in smokers, notably in the two-subject 150 mg cell. The IV
+smoker arm, where bioavailability plays no part, agrees within 5%.
+
+# Replicate Figure 5a: single-dose dosing strategy
+
+Figure 5a simulates a single oral dose of 100 mg in nonsmokers and 125 mg in
+smokers, weights 40-100 kg, and reports the fraction of subjects with Cmax above
+the 200 ug/L target and with peak mHb below the 10% threshold.
+
+```{r fig5a-sim}
+rxode2::rxSetSeed(5)
+set.seed(5)
+n5 <- 200
+grid5 <- c(seq(0, 6, by = 0.25), seq(7, 24, by = 1))
+make_fig5 <- function(ids, amt, smoke, label) {
+  bind_rows(dose_rows(ids, amt, "po"), obs_rows(ids, grid5)) |>
+    left_join(data.frame(id = ids, WT = runif(length(ids), 40, 100)), by = "id") |>
+    mutate(SMOKE = smoke, arm = label)
+}
+ev5 <- bind_rows(
+  make_fig5(seq_len(n5), 100, 0, "Nonsmoker (100 mg)"),
+  make_fig5(n5 + seq_len(n5), 125, 1, "Smoker (125 mg)")
+) |>
+  arrange(id, time, desc(evid))
+sim5 <- rxode2::rxSolve(mod, ev5, keep = "arm", returnType = "data.frame", useLinCmt = FALSE)
+```
+
+```{r fig5a, fig.height = 6, fig.cap = "Replicates Figure 5a of Lee 2026: median and 95% prediction interval (without residual error) of triapine Cc and methemoglobin after a single oral dose. Dashed lines: 200 ug/L target and 10% mHb threshold."}
+sim5 |>
+  filter(time > 0) |>
+  select(arm, time, Cc, methb) |>
+  pivot_longer(c(Cc, methb), names_to = "endpoint") |>
+  group_by(arm, endpoint, time) |>
+  summarise(q025 = quantile(value, 0.025), q50 = median(value),
+            q975 = quantile(value, 0.975), .groups = "drop") |>
+  mutate(endpoint = ifelse(endpoint == "Cc", "Triapine Cc (ug/L)", "Methemoglobin (%)")) |>
+  ggplot(aes(time, q50)) +
+  geom_ribbon(aes(ymin = q025, ymax = q975), fill = "lightblue", alpha = 0.6) +
+  geom_line(colour = "blue") +
+  geom_hline(
+    data = data.frame(endpoint = c("Triapine Cc (ug/L)", "Methemoglobin (%)"),
+                      y = c(200, 10)),
+    aes(yintercept = y), linetype = "dashed"
+  ) +
+  facet_grid(endpoint ~ arm, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = NULL)
+```
+
+```{r fig5a-table}
+pct5 <- sim5 |>
+  group_by(arm, id) |>
+  summarise(cmax = max(Cc), mhb_max = max(methb), .groups = "drop") |>
+  group_by(arm) |>
+  summarise(
+    sim_cmax_above_200 = 100 * mean(cmax > 200),
+    sim_mhb_below_10 = 100 * mean(mhb_max < 10),
+    .groups = "drop"
+  ) |>
+  mutate(
+    paper_cmax_above_200 = c(90.9, 93.9),
+    paper_mhb_below_10 = c(92.4, 91.4)
+  ) |>
+  select(arm, sim_cmax_above_200, paper_cmax_above_200, sim_mhb_below_10, paper_mhb_below_10)
+pct5 |>
+  dplyr::rename(
+    "Arm" = arm,
+    "Cmax > 200 ug/L, simulated (%)" = sim_cmax_above_200,
+    "Cmax > 200 ug/L, paper (%)" = paper_cmax_above_200,
+    "Peak mHb < 10%, simulated (%)" = sim_mhb_below_10,
+    "Peak mHb < 10%, paper (%)" = paper_mhb_below_10
+  ) |>
+  knitr::kable(digits = 1, caption = "Target attainment, simulated (200 per arm) vs. Results text of Lee 2026.")
+
+stopifnot(
+  # 200 subjects per arm gives a Monte Carlo SE near 2 percentage points at
+  # p = 0.9; a wrong F, CL, EC50 or Hill moves these by far more than 10.
+  all(abs(pct5$sim_cmax_above_200 - pct5$paper_cmax_above_200) < 10),
+  all(abs(pct5$sim_mhb_below_10 - pct5$paper_mhb_below_10) < 10)
+)
+```
+
+# Replicate Figure 5b: between-occasion variability on bioavailability
+
+Figure 5b simulates 100 mg oral triapine once daily for 28 days and adds an
+"artificial" between-occasion variability (BOV, 0-60%) on bioavailability on top
+of the BSV. The packaged model has no BOV, so it is added here as a
+per-dose logit-scale shift `bovF`, by piping a replacement `fdepot` line into the
+model. The BOV percentage is converted to a logit-scale SD with the same delta
+method the paper uses for the F %CV, SD = BOV / (1 - Fpop). Exceedance is counted
+on the predicted mHb with the PD residual error added, per dosing interval (a
+"dose") and per subject (any interval).
+
+```{r fig5b}
+mod_bov <- mod |> rxode2::model(fdepot <- expit(logitfdepot + etalogitfdepot + bovF))
+rxode2::rxSetSeed(28)
+set.seed(28)
+n_bov <- 200
+dose_times <- 24 * (0:27)
+obs_after <- c(1, 2, 3, 4, 6, 8, 12)
+bov_levels <- c(0, 20, 40, 60)
+
+bov_events <- function(level, offset) {
+  ids <- offset + seq_len(n_bov)
+  occ <- expand.grid(id = ids, occ = seq_along(dose_times)) |>
+    mutate(bovF = rnorm(n(), 0, (level / 100) / (1 - 0.76)))
+  doses <- expand.grid(id = ids, occ = seq_along(dose_times)) |>
+    mutate(time = dose_times[occ], amt = 100, rate = 0, evid = 1L,
+           cmt = "depot", dvid = NA_integer_)
+  obs <- expand.grid(id = ids, occ = seq_along(dose_times), dt = obs_after) |>
+    mutate(time = dose_times[occ] + dt, amt = 0, rate = 0, evid = 0L,
+           cmt = "central", dvid = 1L) |>
+    select(-dt)
+  bind_rows(doses, obs) |>
+    left_join(occ, by = c("id", "occ")) |>
+    left_join(data.frame(id = ids, WT = runif(n_bov, 40, 100)), by = "id") |>
+    mutate(SMOKE = 0, bov = level) |>
+    arrange(id, time, desc(evid))
+}
+ev_bov <- bind_rows(lapply(seq_along(bov_levels), function(i) {
+  bov_events(bov_levels[i], (i - 1) * n_bov)
+}))
+sim_bov <- rxode2::rxSolve(mod_bov, ev_bov, keep = c("bov", "occ"),
+                           returnType = "data.frame", useLinCmt = FALSE)
+
+ini_df <- rxode2::rxode(mod)$iniDf
+add_methb <- ini_df$est[ini_df$name == "addSd_methb"]
+prop_methb <- ini_df$est[ini_df$name == "propSd_methb"]
+sim_bov <- sim_bov |>
+  mutate(methb_obs = methb + rnorm(n()) * sqrt(add_methb^2 + (prop_methb * methb)^2))
+
+by_dose <- sim_bov |>
+  group_by(bov, id, occ) |>
+  summarise(exceed = any(methb_obs > 10), exceed_pred = any(methb > 10), .groups = "drop")
+fig5b <- by_dose |>
+  group_by(bov) |>
+  summarise(
+    dose_pct = 100 * mean(exceed),
+    subject_pct = 100 * mean(tapply(exceed, id, any)),
+    dose_pct_no_ruv = 100 * mean(exceed_pred),
+    subject_pct_no_ruv = 100 * mean(tapply(exceed_pred, id, any)),
+    .groups = "drop"
+  ) |>
+  mutate(paper_dose_pct = c(4.6, 5.6, 5.9, 6.2), paper_subject_pct = c(10.3, 10.9, 12.6, 13.7))
+
+fig5b |>
+  dplyr::rename(
+    "BOV (%)" = bov,
+    "Doses > 10% mHb, simulated" = dose_pct,
+    "Doses, paper" = paper_dose_pct,
+    "Subjects > 10% mHb, simulated" = subject_pct,
+    "Subjects, paper" = paper_subject_pct,
+    "Doses, no residual error" = dose_pct_no_ruv,
+    "Subjects, no residual error" = subject_pct_no_ruv
+  ) |>
+  knitr::kable(digits = 1, caption = "Replicates Figure 5b of Lee 2026 (200 simulated nonsmokers per BOV level; percentages).")
+
+stopifnot(
+  # Dose-level exceedance stays in the single digits at every BOV level, as in
+  # the paper; the subject-level fraction depends on draws in the tails, so it
+  # is reported, not asserted.
+  all(fig5b$dose_pct < 15)
+)
+```
+
+Without residual error and without BOV, every dose of a subject gives the
+same peak, so the dose- and subject-level fractions coincide (about 5-6%,
+close to the paper's dose-level 4.6%). The paper's subject-level 10.3% at 0%
+BOV is about twice its dose-level value, which implies per-dose randomness in
+its exceedance count, most likely residual error; with the PD residual error
+added here, both fractions are a few points above the paper's. In both
+versions the subject-level fraction rises with BOV while the dose-level
+fraction changes little, the pattern Figure 5b reports. The paper does not
+state the weight distribution, smoking status or sampling times of this
+simulation, and with 200 subjects per level the subject-level percentages
+carry a Monte Carlo SE of about 2-3 percentage points.
+
+# Assumptions and deviations
+
+- **Variance of the logit-normal bioavailability.** Table 2 gives only the %CV
+  of F (29.5%), computed with the delta method `(1 - Fpop) * sqrt(omega^2)`
+  (Methods), which gives `omega^2 = (0.295 / 0.24)^2 = 1.511`. The Methods
+  equation writes `etaF ~ Normal(logit(Fpop), omega^2)`, but the authors' Pumas
+  code (Methods S1) passes that parameter, `Omega2_bio`, as the second argument
+  of `Normal()`, which in Julia is the standard deviation (the other random
+  effects in the same code are written `Normal(0, sqrt(Omega2))`). The code is
+  what was fitted, so the packaged model uses a logit-scale SD of 1.511
+  (`etalogitfdepot ~ 2.283`). Reading the equation literally instead
+  (`etalogitfdepot ~ 1.511`) gives 92-94% of subjects above the Cmax target in
+  the Figure 5a check instead of 88-90%, slightly closer to the 90.9% / 93.9%
+  the paper reports; users who prefer that reading can set
+  `ini(etalogitfdepot = 1.511)`.
+- **PD random effects follow Table 2, not Methods S2.** The PD code in
+  Methods S2 fixes EC50 at 900 and estimates Emax with a random effect, while
+  Table 2 and the Results text report the final PD model with Emax fixed at
+  100, EC50 estimated (2535 ug/L) and BSV on Ebase and EC50. The supplied code
+  is an earlier iteration of the PD model; the packaged model follows the final
+  estimates in Table 2.
+- **Transit rate constant.** The Results text says Ktr "was estimated to be
+  1.0/h", but Table 2 reports 3.11 1/h (bootstrap 95% CI 2.63-3.72) and Table
+  S1 3.16 / 2.94 1/h; the Table 2 value is used.
+- **Units printed in Table 2.** EC50 is printed with unit mg/L but the Results
+  text gives 2535 ug/L, the unit of the plasma concentrations (LLOQ 3 ug/L);
+  ug/L is used. The PD additive residual error is printed in ug/L but applies to
+  mHb in %; it is 0.13 percentage points.
+- **Emax is a fold increase over baseline.** In the paper's effect equation
+  `E = Ebase * (1 + Emax * Ceff^h / (EC50^h + Ceff^h))`, Emax = 100 multiplies
+  Ebase, so the model's ceiling is 0.95 x 101 = 96% methemoglobin; Table 2
+  lists its unit as %.
+- **Sequential fit.** The paper fitted PD to the individual PK predictions;
+  the packaged model simulates PK and PD jointly. No covariance between PK and
+  PD random effects was reported, and none is assumed.
+- **Residual error.** Both endpoints use the combined error with summed
+  variances (`combined2()`), matching the Pumas `Normal(f, sqrt(f^2 *
+  sigma2_prop + sigma2_add))`. Table 2 reports the SDs (the Laplace variances
+  in Table S1, 14.8 ug^2/L^2 and 0.10, are the squares of values near 3.9 ug/L
+  and 0.32).
+- **Smoking indicator.** `SMOKE` = 1 for an active smoker, 0 otherwise, as in
+  the paper's binary smoking-status covariate; former smokers were not
+  distinguished.
+- **Virtual cohorts.** Weights for the NCA cohort are drawn from a truncated
+  normal (77.4 +/- 14.1 kg, 41.8-138.4 kg); the Figure 5 cohorts use a uniform
+  40-100 kg distribution, matching the range the paper states. Figure 5b
+  subjects are nonsmokers.
+- No erratum or correction notice for this article was found as of
+  2026-11-13.

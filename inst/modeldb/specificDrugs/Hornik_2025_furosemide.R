@@ -3,6 +3,7 @@ Hornik_2025_furosemide <- function() {
   reference <- "Hornik CP, Foote HP, Kendig E, Mohr J. An Adult Population Pharmacokinetic Model to Simulate Subcutaneous Administration of a Fixed Dose of Furosemide in Adolescents with Heart Failure and Volume Overload. Clin Pharmacokinet. 2025;64:899-908. doi:10.1007/s40262-025-01515-2"
   vignette <- "Hornik_2025_furosemide"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "furosemide", units = "mg", specimen = "administration site", verified = TRUE),

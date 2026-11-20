@@ -42,6 +42,7 @@ Wang_2024_evorpacept_qsp <- function() {
     dosing = "nmol",
     concentration = "nmol/L"
   )
+  dosing <- c("q_V_C_aCD47", "q_V_C_aPDL1")
 
   covariateData <- list()
 

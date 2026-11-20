@@ -35,6 +35,7 @@ Zhu_2021_ethanol_pbpk <- function() {
   )
   vignette <- "Zhu_2021_ethanol"
   units <- list(time = "min", dosing = "mmol", concentration = "mmol/L")
+  dosing <- "stomach"
 
   # Organ tissue states and the acetaldehyde (`_acald`) mirror of each have
   # no canonical name in the register (a_pancreas, a_stomach, the lumen

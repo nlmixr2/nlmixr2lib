@@ -10,6 +10,7 @@ Knebel_2011_pantoprazole <- function() {
   )
   vignette <- "Knebel_2011_pantoprazole"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix.
@@ -359,8 +360,9 @@ Knebel_2011_pantoprazole <- function() {
     # ===== Inter-occasion variability on granule F1 (Knebel 2011 equation 6) =====
     # F1_spheroid = THETA8 * exp(eta_OCC1 + eta_OCC2) with two occasions
     # (first dose vs all others) sharing one variance. Expanded into two
-    # occasion-multiplexed etas because rxode2 cannot simulate the
-    # `eta ~ var | OCC` form; the second is fixed to the first's variance,
+    # occasion-multiplexed etas, since the `eta ~ var | OCC` form shares one
+    # draw per occasion when no subject has two or more occasions; the second
+    # is fixed to the first's variance,
     # which is what NONMEM `$OMEGA BLOCK(1) SAME` encodes.
     etaiov_fdepot_1 ~ 0.321         # Knebel 2011 Table IV: OMEGA4.4 F1 IOV-spheroid = 0.321 (%SE 27, CV% 56.7, 95% CI 0.142-0.519)
     etaiov_fdepot_2 ~ fixed(0.321)  # SAME-equivalent: equal to the occasion-1 IOV variance

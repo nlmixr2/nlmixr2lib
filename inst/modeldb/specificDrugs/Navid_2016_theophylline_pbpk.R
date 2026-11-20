@@ -73,6 +73,7 @@ Navid_2016_theophylline_pbpk <- function() {
     dosing = "mg",
     concentration = "mg/L"
   )
+  dosing <- c("stomach_thp", "stomach_caf", "stomach_cip")
 
   covariateData <- list(
     SEXF = list(

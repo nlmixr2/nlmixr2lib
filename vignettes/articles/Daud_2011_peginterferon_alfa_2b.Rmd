@@ -1,0 +1,402 @@
+---
+title: "Peginterferon alfa-2b and neutrophils in melanoma (Daud 2011)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Peginterferon alfa-2b and neutrophils in melanoma (Daud 2011)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Daud 2011 contributes two models:
+
+* `Daud_2011_peginterferon_alfa_2b` -- the integrated PK/PD model: a
+  one-compartment PK model for subcutaneous peginterferon alfa-2b driving an
+  indirect-response model of the absolute neutrophil count (ANC).
+* `Daud_2011_peginterferon_alfa_2b_anc_auc` -- the static inhibitory Imax
+  model relating steady-state weekly AUCtau to the ANC change, fitted to
+  dose-group means pooled with a solid-tumour study.
+
+* Citation: `r rxode2::rxode(readModelDb("Daud_2011_peginterferon_alfa_2b"))$reference`
+* Description (PK/PD): `r rxode2::rxode(readModelDb("Daud_2011_peginterferon_alfa_2b"))$description`
+* Description (AUC Imax): `r rxode2::rxode(readModelDb("Daud_2011_peginterferon_alfa_2b_anc_auc"))$description`
+* Article: <https://doi.org/10.1007/s00280-010-1326-9> (open access:
+  <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3043235/>)
+
+The parameter values and the PD equations are in the article's electronic
+supplementary material (supplementary Methods, supplementary Table 1).
+
+# Population
+
+Thirty-two adults with completely resected AJCC stage IIB-IIIC melanoma were
+enrolled in a phase II, open-label, single-arm PK study at four sites
+(NCT00457418). They received peginterferon alfa-2b 6 ug/kg SC once weekly for
+8 weeks (induction) and then 3 ug/kg once weekly (maintenance); the first 12
+weeks formed the PK phase. Age was 20-77 years (median 50), weight 46-137 kg
+(median 82), 31% were female and 97% White (Daud 2011 Table 1). The
+noncompartmental analysis (Table 3) used the 20 patients who received full
+doses and gave every PK sample; the compartmental PK parameters are geometric
+means over 32 individual fits and the ANC PD parameters over 31.
+
+The Imax exposure-response model additionally pooled dose-group means from 34
+patients with advanced solid tumours treated with 0.75-7.5 ug/kg/week
+(Bukowski 2002), six of whom had melanoma.
+
+```{r population}
+str(readModelDb("Daud_2011_peginterferon_alfa_2b")()$population)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| One-compartment PK, first-order absorption and elimination, no lag | -- | Supplementary Methods, Scheme 1 |
+| `lka` (K01) | log(0.161) 1/h | Supplementary Table 1 (CV 83%) |
+| `lkel` (K10) | log(0.0137) 1/h | Supplementary Table 1 (CV 35%) |
+| `lvc` (V/F) | log(1.08) L/kg | Supplementary Table 1 (CV 38%) |
+| V/F scaled linearly by `WT` | exponent 1 | per-kg reporting of V/F and per-kg dosing (Methods, Treatment) |
+| dR/dt = Kin [1 - Cp/(Cp + IC50)] - Kout R | -- | Supplementary Table 1, ANC equation; Supplementary Methods, Scheme 2 |
+| `lkin` (Kin) | log(57.9) per day | Supplementary Table 1, ANC PK/PD (CV 145%) |
+| `lkout` (Kout) | log(0.526) 1/day | Supplementary Table 1, ANC PK/PD (CV 150%) |
+| `lic50` (IC50) | log(453) pg/mL | Supplementary Table 1, ANC PK/PD (CV 84%) |
+| `eta*` variances | log(1 + CV^2) | Supplementary Table 1 %CV columns |
+| `propSd`, `addSd_ANC` | fixed(0) | not reported |
+| E = E0 - (E0 - Imax) AUC / (IC50 + AUC) | -- | Supplementary Methods (printed form differs; see Assumptions) and Fig. 2 |
+| `lrbase` (E0) | log(98.7) % | Supplementary Table 1, Imax model |
+| `limax` (Imax) | log(33.3) % | Supplementary Table 1, Imax model |
+| `lauc50` (IC50 on AUCtau) | log(80900) pg*h/mL | Supplementary Table 1, Imax model |
+
+# Dosing regimen
+
+The protocol regimen is 6 ug/kg weekly for 8 doses and then 3 ug/kg weekly.
+Because both the dose and V/F scale with body weight, the typical
+concentration and ANC profiles do not depend on weight.
+
+```{r regimen}
+mod <- readModelDb("Daud_2011_peginterferon_alfa_2b")
+tau <- 168
+
+make_events <- function(id, wt, maint_dose, obs_times) {
+  dose_times <- (0:11) * tau
+  dose_ugkg <- c(rep(6, 8), rep(maint_dose, 4))
+  doses <- data.frame(
+    id = id, time = dose_times, amt = dose_ugkg * wt, evid = 1L,
+    cmt = "depot", WT = wt
+  )
+  doses <- doses[doses$amt > 0, ]
+  # The model declares two endpoints (Cc and ANC); observation rows name the
+  # ODE state and carry dvid so rxode2 maps them onto the endpoint slots.
+  obs <- data.frame(
+    id = id, time = obs_times, amt = 0, evid = 0L, cmt = "central", dvid = 1L,
+    WT = wt
+  )
+  dplyr::bind_rows(doses, obs) |> dplyr::arrange(id, time, dplyr::desc(evid))
+}
+```
+
+# PK: typical profile (Figure 1)
+
+```{r fig1, fig.width = 7, fig.height = 4}
+mod_typ <- rxode2::zeroRe(mod)
+ev_typ <- make_events(1L, 82, 3, seq(0, 12 * tau, by = 1))
+sim_typ <- as.data.frame(rxode2::rxSolve(mod_typ, ev_typ))
+
+# Published means (Table 3 and Results text): Cmax at 24 h post-dose in
+# weeks 1, 8 and 12, and predose troughs in weeks 8, 10, 11 and 12.
+obs_pub <- data.frame(
+  time = c(24, 7 * tau + 24, 11 * tau + 24, 7 * tau, 9 * tau, 10 * tau, 11 * tau),
+  conc = c(3980, 5070, 2620, 1300, 684, 526, 626),
+  what = c(rep("Cmax (Table 3)", 3), rep("Trough (Table 3 / text)", 4))
+)
+
+ggplot(sim_typ, aes(time / tau + 1, Cc)) +
+  geom_line() +
+  geom_point(data = obs_pub, aes(time / tau + 1, conc, shape = what)) +
+  scale_shape_manual(values = c(1, 2)) +
+  labs(
+    x = "Time (week)", y = "Serum peginterferon alfa-2b (pg/mL)", shape = NULL,
+    caption = "Replicates Figure 1 of Daud 2011 (typical-value curve with published mean values)."
+  ) +
+  theme_bw()
+```
+
+# PK: noncompartmental comparison (Table 3)
+
+A virtual cohort of 200 patients (weights drawn from the Table 1 mean and SD,
+truncated to the observed range) is simulated with the reported
+between-patient variability and sampled at the study's nominal times (predose,
+24, 48, 96 and 168 h in weeks 1, 8 and 12). NCA follows the paper: AUC over
+the 168 h interval, Cmax, Cavg, Cmin and Tmax.
+
+```{r cohort}
+rxode2::rxSetSeed(20110301)
+n_sub <- 200
+wt <- pmin(pmax(rnorm(n_sub, 84, 21), 46), 137)
+week_start <- c(`1` = 0, `8` = 7 * tau, `12` = 11 * tau)
+obs_times <- sort(unique(as.vector(outer(c(0, 24, 48, 96, 168), week_start, "+"))))
+ev_pop <- dplyr::bind_rows(lapply(seq_len(n_sub), function(i) {
+  make_events(i, wt[i], 3, obs_times)
+}))
+sim_pop <- as.data.frame(rxode2::rxSolve(mod, ev_pop, returnType = "data.frame"))
+```
+
+```{r nca}
+conc_df <- sim_pop |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc) |>
+  dplyr::cross_join(data.frame(week = names(week_start), start = week_start)) |>
+  dplyr::filter(time >= start, time <= start + tau) |>
+  dplyr::mutate(tad = time - start, treatment = paste("Week", week)) |>
+  dplyr::select(id, treatment, tad, Cc)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ tad | treatment + id)
+dose_df <- conc_df |>
+  dplyr::distinct(id, treatment) |>
+  dplyr::mutate(
+    tad = 0,
+    dose = ifelse(treatment == "Week 12", 3, 6)
+  )
+dose_obj <- PKNCA::PKNCAdose(dose_df, dose ~ tad | treatment + id)
+intervals <- data.frame(
+  start = 0, end = tau, auclast = TRUE, cmax = TRUE, cav = TRUE,
+  cmin = TRUE, tmax = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tbl <- as.data.frame(nca_res)
+
+# Table 3 reports arithmetic means (median for Tmax), so summarise the same way.
+sim_sum <- nca_tbl |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cmax", "cav", "cmin", "tmax")) |>
+  # Table 3 gives no week-1 trough (the predose sample is before any dose).
+  dplyr::filter(!(PPTESTCD == "cmin" & treatment == "Week 1")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(
+    PPORRES = ifelse(PPTESTCD[1] == "tmax", median(PPORRES), mean(PPORRES)),
+    .groups = "drop"
+  )
+
+ref <- data.frame(
+  treatment = c("Week 1", "Week 8", "Week 12"),
+  auclast = c(324000, 462000, 235000),
+  cmax = c(3980, 5070, 2620),
+  cav = c(1930, 2750, 1400),
+  cmin = c(NA, 1300, 626),
+  tmax = c(24, 24, 24)
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  sim_sum, ref,
+  by = "treatment",
+  units = c(auclast = "pg*h/mL", cmax = "pg/mL", cav = "pg/mL", cmin = "pg/mL", tmax = "h")
+)
+knitr::kable(cmp, caption = "Simulated vs Daud 2011 Table 3 (AUC0-tau labelled AUClast; 168 h interval).")
+```
+
+`r paste(attr(cmp, "footnote"), collapse = " ")`
+
+```{r nca-check}
+pct <- suppressWarnings(as.numeric(sub("%", "", sub("\\*$", "", cmp[["% diff"]]))))
+is_trough <- grepl("^Cmin", cmp[["NCA parameter"]])
+stopifnot(
+  # Guard against a vacuous check if the table format changes.
+  sum(!is.na(pct)) == 14,
+  # AUC, Cmax and Cavg: a wrong unit, V/F or kel would move these by
+  # multiples; the cohort means sit within 15% of Table 3.
+  all(abs(pct[!is_trough]) < 25, na.rm = TRUE),
+  # Troughs run about 20% low (see text); bound the structural error only.
+  all(abs(pct[is_trough]) < 40, na.rm = TRUE)
+)
+```
+
+The model reproduces the published AUC, Cmax and Cavg to within about 15%;
+the simulated troughs are about 20% below the published means, which have the
+largest between-patient CV in Table 3 (43-56%). Two other features of Table 3
+are not reproduced exactly and are not expected to be: the PK parameters are
+geometric means of individual fits while Table 3 is an arithmetic mean over a
+20-patient subset, and the reported accumulation factor
+R = 1.69 (the mean of individual week 8 / week 1 AUC ratios) is larger than
+both the ratio of the mean AUCs (462,000 / 324,000 = 1.43) and the
+accumulation implied by a 43-51 h half-life with weekly dosing (about 1.1).
+The simulated mean ratio is shown below for reference.
+
+```{r accumulation}
+acc <- nca_tbl |>
+  dplyr::filter(PPTESTCD == "auclast", treatment %in% c("Week 1", "Week 8")) |>
+  dplyr::select(id, treatment, PPORRES) |>
+  tidyr::pivot_wider(names_from = treatment, values_from = PPORRES) |>
+  dplyr::mutate(R = `Week 8` / `Week 1`)
+data.frame(
+  quantity = c("Mean individual R (simulated)", "R published (Table 3)",
+               "Typical-value accumulation 1/(1 - exp(-kel * tau))"),
+  value = c(mean(acc$R), 1.69, 1 / (1 - exp(-0.0137 * tau)))
+) |>
+  knitr::kable(digits = 2)
+```
+
+# ANC: indirect response with dose modification (Figure 3a)
+
+Figure 3a simulates the median ANC with 6 ug/kg/week for weeks 1-8 and then
+3, 2, 1 or 0 ug/kg/week, or continued 6 ug/kg/week, for weeks 9-12. The
+figure's x-axis labels the first dose as week 1.
+
+```{r fig3a, fig.width = 7, fig.height = 4}
+scen <- c(6, 3, 2, 1, 0)
+sim_anc <- dplyr::bind_rows(lapply(seq_along(scen), function(i) {
+  ev <- make_events(i, 82, scen[i], seq(0, 12 * tau, by = 2))
+  out <- as.data.frame(rxode2::rxSolve(mod_typ, ev))
+  out$maintenance <- paste(scen[i], "ug/kg")
+  out
+}))
+sim_anc$maintenance <- factor(sim_anc$maintenance, levels = paste(scen, "ug/kg"))
+
+ggplot(sim_anc, aes(time / tau + 1, ANC, linetype = maintenance)) +
+  geom_line() +
+  labs(
+    x = "Time (week)", y = "ANC (% of baseline)", linetype = "Weeks 9-12 dose",
+    caption = "Replicates Figure 3a of Daud 2011 (typical values)."
+  ) +
+  theme_bw()
+```
+
+The paper reports that continued 6 ug/kg/week keeps the ANC at about 33% of
+baseline (the level of weeks 2-8), and that reducing the weeks 9-12 dose to
+3, 2 or 1 ug/kg/week increases the ANC by 13, 22 and 38%. The comparison is
+made at the end of the simulated period (Figure 3a week 13).
+
+```{r anc-check}
+plateau <- sim_anc |>
+  dplyr::filter(maintenance == "6 ug/kg", time >= tau, time <= 8 * tau) |>
+  dplyr::summarise(mean = mean(ANC), min = min(ANC), max = max(ANC))
+end_anc <- sim_anc |>
+  dplyr::filter(time == 12 * tau) |>
+  dplyr::select(maintenance, ANC)
+ref_6 <- end_anc$ANC[end_anc$maintenance == "6 ug/kg"]
+end_anc <- end_anc |>
+  dplyr::mutate(
+    increase_vs_6 = ANC - ref_6,
+    published_increase = c(NA, 13, 22, 38, NA)
+  )
+knitr::kable(plateau, digits = 1, caption = "Simulated ANC (% of baseline), weeks 2-8 at 6 ug/kg/week.")
+knitr::kable(end_anc, digits = 1, caption = "ANC at Figure 3a week 13 by weeks 9-12 dose.")
+
+stopifnot(
+  # Deterministic typical-value solve.
+  plateau$mean > 20, plateau$mean < 33,
+  # The ANC rises monotonically as the maintenance dose falls.
+  all(diff(end_anc$ANC) > 0),
+  # Increases within 8 points of the published 13 / 22 / 38%.
+  all(abs(end_anc$increase_vs_6[2:4] - c(13, 22, 38)) < 8)
+)
+```
+
+During induction the simulated ANC oscillates between
+`r round(plateau$min, 1)`% and `r round(plateau$max, 1)`% of baseline (mean
+`r round(plateau$mean, 1)`%), as the published curve does between about 20%
+and 33%; the "33% of baseline" quoted in the Results is the upper end of that
+range and the level of the observed medians. The dose-reduction increases
+follow the published 13, 22 and 38% but run 4-6 points higher, and the
+reduced-dose and 0 ug/kg arms sit about 10% above Figure 3a, because the
+model starts and recovers at R(0) = Kin/Kout =
+57.9 / 0.526 = 110% of baseline, the ratio of the tabulated geometric means,
+whereas the published curve starts at 100% and the 0 ug/kg arm returns to
+about 99%. The figure was therefore drawn with a Kin/Kout close to 100,
+which the tabulated geometric means do not give; the model keeps the
+tabulated values.
+
+# ANC: steady-state AUC Imax model (Figure 2)
+
+```{r fig2, fig.width = 7, fig.height = 4}
+mod_auc <- readModelDb("Daud_2011_peginterferon_alfa_2b_anc_auc")
+auc_grid <- data.frame(
+  id = 1L, time = seq(0, 700000, by = 5000), evid = 0L,
+  AUC_PEGINTERFERON_ALFA_2B = seq(0, 700000, by = 5000)
+)
+auc_grid$time <- seq_len(nrow(auc_grid))
+sim_auc <- as.data.frame(rxode2::rxSolve(mod_auc, auc_grid))
+sim_auc$AUC <- auc_grid$AUC_PEGINTERFERON_ALFA_2B
+
+# Dose-group means read approximately from Daud 2011 Fig. 2 by the maintainers
+# (validation only; no parameter is derived from them).
+fig2 <- data.frame(
+  AUC = c(47000, 106000, 233000, 242000, 397000, 461000, 479000, 616000),
+  ANC = c(76.5, 60.3, 48.6, 51.4, 49.7, 38.5, 40.2, 43.0),
+  group = c("Solid tumour", "Solid tumour", "Melanoma", "Solid tumour",
+            "Solid tumour", "Melanoma", "Solid tumour", "Solid tumour")
+)
+printed_form <- function(auc) 98.7 - 33.3 * auc / (80900 + auc)
+
+ggplot(sim_auc, aes(AUC, ANC)) +
+  geom_line() +
+  geom_line(aes(y = printed_form(AUC)), linetype = "dashed", colour = "grey50") +
+  geom_point(data = fig2, aes(shape = group)) +
+  scale_shape_manual(values = c(1, 16)) +
+  coord_cartesian(ylim = c(0, 120)) +
+  labs(
+    x = "Mean AUCtau (pg*h/mL)", y = "ANC (% of baseline)", shape = NULL,
+    caption = paste(
+      "Replicates Figure 2 of Daud 2011. Solid: packaged model;",
+      "dashed: the equation as printed in the supplementary Methods."
+    )
+  ) +
+  theme_bw()
+```
+
+```{r fig2-check}
+pred_pkg <- 98.7 - (98.7 - 33.3) * fig2$AUC / (80900 + fig2$AUC)
+rmse <- c(
+  packaged = sqrt(mean((pred_pkg - fig2$ANC)^2)),
+  printed = sqrt(mean((printed_form(fig2$AUC) - fig2$ANC)^2))
+)
+knitr::kable(data.frame(form = names(rmse), rmse = rmse), digits = 1,
+             caption = "RMS deviation from the Fig. 2 dose-group means (percentage points).", row.names = FALSE)
+stopifnot(rmse[["packaged"]] < 6, rmse[["printed"]] > 3 * rmse[["packaged"]])
+```
+
+# Assumptions and deviations
+
+* **Imax model form.** The supplementary Methods print the inhibitory model as
+  E = E0 - Imax C / (IC50 + C). With the tabulated E0 = 98.7%, Imax = 33.3%
+  and IC50 = 80,900 pg*h/mL that form cannot fall below 65% of baseline, yet
+  the model-fit curve and the dose-group means in Figure 2 level off near
+  40%. The form E = E0 - (E0 - Imax) AUC / (IC50 + AUC), in which Imax is the
+  response at saturating exposure, reproduces Figure 2 with the same three
+  values (table above), and agrees with the Results statement that ANC stays
+  at about 33% of baseline at full dose. The packaged model uses that form.
+* **Between-patient variability.** The parameters are geometric means of
+  individual WinNonlin fits (a two-stage approach), and the %CV columns of
+  supplementary Table 1 describe the spread of the individual estimates. They
+  are encoded as log-normal IIV, omega^2 = log(1 + CV^2). Their covariance was
+  not reported, so the etas are independent. For Kin and Kout this matters:
+  each patient's ANC was expressed relative to their own baseline, so their
+  individual Kin and Kout must have been strongly correlated, and independent
+  etas give simulated individual baselines (Kin/Kout) far more variable than
+  in the data. Use typical values, or the PK variability alone, for
+  population simulations of the ANC.
+* **Baseline.** R(0) is the pre-dose steady state Kin/Kout, the convention of
+  the indirect-response model; with the tabulated geometric means this is
+  110% rather than 100% of baseline (see the Figure 3a section).
+* **Residual error.** Not reported for any model; fixed to zero.
+* **Weight.** V/F was reported per kilogram and the dose given per kilogram;
+  the model scales V/F linearly with body weight and takes the total dose in
+  ug, so CL/F is also proportional to weight. Weight was not tested as a
+  covariate in the paper.
+* **ALT model not packaged.** The paper also fitted an indirect stimulatory
+  model of ALT (dR/dt = Kin [1 + Smax Cp^g / (SC50^g + Cp^g)] - Kout R).
+  Only the Hill coefficient (13.5) is reported; Kin, Kout, Smax and SC50 are
+  not given anywhere in the article or its supplements, and the authors state
+  that the fit was poor and should be treated with caution. It is therefore
+  not included.
+* **Assay.** The immunoassay measures pegylated and free interferon together;
+  concentrations are reported as peginterferon alfa-2b.
+* **Literature check.** No erratum or correction was found for this article
+  (Europe PMC, checked 2026-11-19).

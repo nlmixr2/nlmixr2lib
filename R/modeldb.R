@@ -283,6 +283,7 @@ addDirToModelDb <- function(dir, modeldb = data.frame()) {
 #' @export
 addFileToModelDb <- function(dir, file, modeldb) {
   res <- .modeldbFileRow(dir = dir, file = file)
+  .modeldbNotesSummary(res$notes)
   if (!is.null(res$errors)) {
     .conventionErrorsAdd(res$row$name, res$errors)
   }
@@ -319,13 +320,28 @@ addFileToModelDb <- function(dir, file, modeldb) {
 
   # Convention check. Error-severity issues are accumulated and abort
   # `buildModelDb()` once every model has been visited, so one run reports
-  # every offending model instead of one per rebuild.
+  # every offending model instead of one per rebuild. An error raised by the
+  # checker itself is not "no issues": it propagates with the model named, so
+  # the caller records the file as a failure and the model is not cached as
+  # checked.
+  # The package source tree the model file is in holds the articles the
+  # nesting_assertion rule reads; it comes from the file's path, so a build run
+  # from an installed copy of the package still reads the tree it builds.
+  attr(mod, "nlmixr2libPackageDir") <- .packageDirOfModelFile(fileName)
   issues <- tryCatch(
     suppressWarnings(checkModelConventions(mod, verbose = FALSE)),
-    error = function(e) NULL
+    error = function(e) {
+      stop(
+        sprintf("checkModelConventions() raised an error for %s: %s", modelName, conditionMessage(e)),
+        call. = FALSE
+      )
+    }
   )
   errors <- NULL
-  if (!is.null(issues) && nrow(issues) > 0) {
+  # Rules that could not run for this model (info severity); the build session
+  # reports them, since a worker's messages are not seen.
+  notes <- as.character(unique(issues$message[issues$category == "nesting_assertion" & issues$severity == "info"]))
+  if (nrow(issues) > 0) {
     n_err <- sum(issues$severity == "error")
     n_warn <- sum(issues$severity == "warning")
     if (n_err > 0) {
@@ -354,23 +370,8 @@ addFileToModelDb <- function(dir, file, modeldb) {
   }
 
   # Finding dosing
-  dosing <- NULL
-  dosing_meta <- mod$meta$dosing
-  if (!is.null(dosing_meta)) {
-    dosing <- paste(dosing_meta, collapse = ",")
-  } else {
-    if ("depot" %in% mod$props$cmt) {
-      dosing <- c(dosing, "depot")
-    }
-    if ("central" %in% mod$props$cmt) {
-      dosing <- c(dosing, "central")
-    }
-    if (!is.null(dosing)) {
-      dosing <- paste(dosing, collapse = ",")
-    } else {
-      dosing <- NA_character_
-    }
-  }
+  dosing <- .modelDosingCmts(mod)
+  dosing <- if (is.null(dosing)) NA_character_ else paste(dosing, collapse = ",")
 
   # Finding depends
   depends <- NULL
@@ -424,9 +425,107 @@ addFileToModelDb <- function(dir, file, modeldb) {
       category = .parseModelCategory(fileName),
       filename = fileName
     )
-  list(row = ret, errors = errors)
+  # The nesting_assertion rule reads the model's article, which the model file's
+  # hash does not cover, so such a model is parsed on every build.
+  list(row = ret, errors = errors, volatile = nrow(.nestedEtaRows(mod)) > 0L, notes = notes)
 }
 ## nocov end
+
+# The compartments a model is dosed into: its `dosing` metadata when it
+# declares one, otherwise whichever of `depot` and `central` it has, in that
+# order. A `central` that `depot` feeds is where an oral dose arrives, not a
+# route, so it is left out of the fallback unless the model gives it a dose
+# property or reads its dose history (.centralIsDosed()). NULL when the model
+# declares nothing and has neither. A declared `dosing <- character(0)` (a
+# model driven by a covariate rather than doses) is returned as-is, so the
+# registry records it as "" rather than NA.
+.modelDosingCmts <- function(ui) {
+  declared <- ui$meta$dosing
+  if (!is.null(declared)) {
+    return(declared)
+  }
+  fallback <- intersect(c("depot", "central"), ui$props$cmt)
+  if (identical(fallback, c("depot", "central")) && .depotFeedsCentral(ui) && !.centralIsDosed(ui)) {
+    fallback <- "depot"
+  }
+  if (length(fallback)) fallback else NULL
+}
+
+# Does an amount in `depot` reach `central` through the ODEs: is there a chain
+# of states from depot to central, each the factor of an inflow term in the
+# next one's d/dt() (`ka * depot` in d/dt(central), or through a transit
+# chain)? An inflow is an input term with a positive sign (.isInflowTerm()),
+# so `- ka * depot` in d/dt(central) is not one. A linCmt() solution's depot
+# always feeds its central. FALSE when the equations cannot be read, which
+# keeps central in the fallback.
+.depotFeedsCentral <- function(ui) {
+  if (isTRUE(ui$props$linCmt)) {
+    return(TRUE)
+  }
+  defs <- .compiledOdeDefinitions(ui)
+  if (inherits(defs, "error")) {
+    return(FALSE)
+  }
+  reached <- "depot"
+  frontier <- "depot"
+  while (length(frontier)) {
+    fed <- character(0)
+    for (st in setdiff(names(defs$rhs), reached)) {
+      terms <- unlist(lapply(defs$rhs[[st]], .signedAdditiveTerms, aliases = defs$aliases), recursive = FALSE)
+      inflows <- terms[vapply(terms, .isInflowTerm, logical(1), state = st, aliases = defs$aliases)]
+      if (.anyTermHasFactor(lapply(inflows, `[[`, "term"), frontier, defs$aliases)) fed <- c(fed, st)
+    }
+    if ("central" %in% fed) {
+      return(TRUE)
+    }
+    reached <- c(reached, fed)
+    frontier <- fed
+  }
+  FALSE
+}
+
+# A signed term from .signedAdditiveTerms() that adds to `state`: positive,
+# and an input term (.isInputTerm()), one that can be non-zero while `state`
+# is 0.
+.isInflowTerm <- function(signed, state, aliases) {
+  signed$sign > 0L && .isInputTerm(signed$term, state, aliases)
+}
+
+# Does any of `terms` have one of `states` as a factor (.hasStateFactor())?
+.anyTermHasFactor <- function(terms, states, aliases) {
+  for (s in states) {
+    if (any(vapply(terms, .hasStateFactor, logical(1), state = s, aliases = aliases))) {
+      return(TRUE)
+    }
+  }
+  FALSE
+}
+
+# The dose properties a model can set on a compartment in model():
+# bioavailability, lag time, infusion duration and rate. rxode2 reports
+# `F()` as "f" and `lag()` as "alag" in props$cmtProp; every spelling is
+# matched, whichever one it reports.
+.doseProperties <- c("f", "F", "lag", "alag", "dur", "rate")
+
+# Is `central` a dose route of its own: does the model set a dose property on
+# it (.doseProperties; not its initial condition), or read its dose history
+# (`tad(central)` and the like)? TRUE when the model block cannot be read,
+# which keeps central in the fallback.
+.centralIsDosed <- function(ui) {
+  cp <- ui$props$cmtProp
+  if (!is.null(cp) && any(cp$Compartment == "central" & cp$Property %in% .doseProperties)) {
+    return(TRUE)
+  }
+  exprs <- tryCatch(ui$lstExpr, error = function(e) e)
+  if (inherits(exprs, "error")) {
+    return(TRUE)
+  }
+  calls <- list()
+  for (e in exprs) {
+    calls <- .doseTimingCalls(e, calls)
+  }
+  "central" %in% vapply(calls, `[[`, character(1), "cmt")
+}
 
 # Walk a modeldb directory and return rows + updated cache entries. Reuses a
 # cached row when the file's md5 matches the cached hash; otherwise re-parses
@@ -488,6 +587,7 @@ addFileToModelDb <- function(dir, file, modeldb) {
       acc = acc,
       chunkSize = chunkSize
     )
+    .modeldbNotesSummary(unlist(lapply(results, function(res) res$notes), use.names = FALSE))
     for (j in seq_along(missIdx)) {
       res <- results[[j]]
       if (!is.null(res$failure)) {
@@ -514,20 +614,36 @@ addFileToModelDb <- function(dir, file, modeldb) {
   list(modeldb = modeldb, entries = acc$entries)
 }
 
+# One line per distinct reason a convention rule did not run, with the number of
+# models it applies to. Built from the notes of every model in the build session,
+# because a worker process's messages are lost, so a build in which a rule never
+# ran says so instead of passing silently.
+.modeldbNotesSummary <- function(notes) {
+  if (length(notes) == 0L) {
+    return(invisible(NULL))
+  }
+  counts <- table(notes)
+  for (reason in names(counts)) {
+    message("nesting_assertion ", reason, " (", counts[[reason]], " model(s))")
+  }
+  invisible(NULL)
+}
+
 # Result for one parsed file: its cache key and hash, and either the row (with
 # any error-severity convention issues) or `failure`, the message of the R
 # error that stopped it loading.
-.modeldbFileResult <- function(file, hash, row = NULL, errors = NULL, failure = NULL) {
-  list(file = file, hash = hash, row = row, errors = errors, failure = failure)
+.modeldbFileResult <- function(file, hash, row = NULL, errors = NULL, failure = NULL, volatile = FALSE, notes = character()) {
+  list(file = file, hash = hash, row = row, errors = errors, failure = failure, volatile = volatile, notes = notes)
 }
 
 # Keep the cache in step with one result: a clean model is (re)cached, and a
-# model with an error loses any entry it had, so it is re-checked next build.
+# model with an error, or whose verdict depends on a file other than the model
+# file (`volatile`), loses any entry it had, so it is re-checked next build.
 .modeldbAccRecord <- function(acc, res) {
   if (is.null(acc)) {
     return(invisible(NULL))
   }
-  if (is.null(res$failure) && is.null(res$errors)) {
+  if (is.null(res$failure) && is.null(res$errors) && !isTRUE(res$volatile)) {
     acc$entries[[res$file]] <- list(hash = res$hash, row = res$row)
   } else {
     acc$entries[[res$file]] <- NULL
@@ -547,7 +663,14 @@ addFileToModelDb <- function(dir, file, modeldb) {
         .modeldbFileResult(files[i], hashes[i], failure = conditionMessage(loaded))
       } else {
         rownames(loaded$row) <- NULL
-        .modeldbFileResult(files[i], hashes[i], row = loaded$row, errors = loaded$errors)
+        .modeldbFileResult(
+          files[i],
+          hashes[i],
+          row = loaded$row,
+          errors = loaded$errors,
+          volatile = loaded$volatile,
+          notes = loaded$notes
+        )
       }
     .modeldbAccRecord(acc, out[[i]])
   }

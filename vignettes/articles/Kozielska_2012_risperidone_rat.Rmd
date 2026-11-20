@@ -1,0 +1,587 @@
+---
+title: "Risperidone and paliperidone D2 / 5-HT2A receptor occupancy in rats (Kozielska 2012)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Risperidone and paliperidone D2 / 5-HT2A receptor occupancy in rats (Kozielska 2012)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Kozielska_2012_risperidone_rat"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Kozielska_2012_risperidone_rat"))$description`
+* Article: <https://doi.org/10.1007/s11095-012-0722-8> (open access, PMC3369128)
+
+The model extends the hybrid physiology-based olanzapine model of Johnson 2011
+(packaged as `Johnson_2011_olanzapine_rat`) to risperidone (RIS) and its active
+metabolite paliperidone (PALI). Three additions distinguish it: metabolite
+formation (including first-pass conversion after an intraperitoneal dose),
+linear active efflux at the blood-brain barrier, and a second receptor pool
+(5-HT2A in frontal cortex) beside the striatal D2 receptors. Both drugs compete
+for both receptors with shared binding constants, and the measured occupancy is
+the sum of the occupancy by the two drugs.
+
+# Population
+
+Data came from twelve single-dose studies in male Sprague-Dawley or Wistar
+rats contributed by Janssen, Merck Sharp and Dohme, and Pfizer (Table I; 282
+rats summed over the study rows). Risperidone was given IV, IP or SC at
+0.01-40 mg/kg; paliperidone was given SC at 0.16-10 mg/kg in two studies.
+Mostly one animal contributed one time point, because brain sampling is
+terminal. Observations were plasma RIS and PALI; total brain,
+brain-minus-striatum, brain-minus-frontal-cortex, striatum and cortex
+concentrations; D2 occupancy in striatum ([3H]raclopride) and 5-HT2A occupancy
+in frontal cortex ([3H]M100907), measured in vivo or ex vivo. No body weights
+were available, so all parameters are per kg.
+
+The same information is available programmatically via
+`readModelDb("Kozielska_2012_risperidone_rat")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lfip` (FIP-RIS) | 0.412 | Table II |
+| `lfdepot` (FSC, both drugs) | 0.816 | Table II; Methods, Plasma PK Model (same SC F for RIS and PALI) |
+| `lfpm_9oh` (FrFPM) | 0.268 | Table II |
+| `lka`, `lka_9oh` (KaSC-RIS, KaSC-PALI) | 2.84, 1.31 1/h | Table II |
+| `ld1`, `ld1_9oh` (DRSC-RIS, DRSC-PALI) | 0.161, 0.162 h | Table II |
+| `lvc`, `lvp`, `lq` (RIS) | 1.29 L/kg, 0.169 L/kg, 0.0882 L/h/kg | Table II |
+| `lcl_nonmet` (CLRIS), `lcl_met` (CLmet) | 1.62, 0.775 L/h/kg | Table II |
+| `lvc_9oh`, `lcl_9oh`, `lvp_9oh`, `lq_9oh` (PALI) | 1.27 L/kg, 1.06 L/h/kg, 0.251 L/kg, 0.269 L/h/kg | Table II |
+| IIV on FIP, KaSC-RIS, KaSC-PALI, DRSC-RIS, CLRIS, CLPALI | 80.6, 46.4, 34.4, 91.2, 30.5, 16.2 %CV | Table II |
+| `expSd`, `expSd_9oh` (plasma RIS, PALI) | 0.233, 0.186 | Table II |
+| `lcl_bev` (CLbev, shared) | 2.13 L/h/kg | Table III |
+| `lcl_efflux`, `lcl_efflux_9oh` | 9.97, 47.0 L/h/kg | Table III |
+| `lkd_d2`, `lkoff_d2`, `lbmax_d2` | 0.463 nM, 0.671 1/h, 245 nM | Table III |
+| `lkd_5ht2a`, `lkoff_5ht2a`, `lbmax_5ht2a` | 0.219 nM, 0.525 1/h, 46.5 nM | Table III |
+| `kon_d2`, `kon_5ht2a` (derived, koff / Kd) | 1.45, 2.40 1/nM/h | Table III footnote b |
+| `expSd_Cbrain`, `expSd_Cbrain_9oh` | 0.362, 0.424 | Table III |
+| `addSd_D2RO`, `addSd_RO_5HT2A` | 17.7, 18.2 percentage points | Table III |
+| `lvbv`, `lvbev`, `lvstr` (fixed) | 0.00024, 0.00656, 0.0002 L/kg | Methods, PK-PD Modeling |
+| `lvcor` (fixed) | 0.0035 L/kg | Methods, PK-PD Modeling |
+| `lcl_bv` (fixed, cerebral blood flow) | 0.312 L/h/kg | Methods, PK-PD Modeling |
+| `lcl_str` (fixed) | 500 L/h/kg | Methods, PK-PD Modeling |
+| `lcl_cor` (fixed) | 500 L/h/kg | Assumed equal to CLstr (see Assumptions) |
+| `fu_plasma`, `fu_brain`, `fu_plasma_9oh`, `fu_brain_9oh` (fixed) | 0.0798, 0.0699, 0.129, 0.0755 | Methods, PK-PD Modeling |
+| Plasma ODEs (depot, central, peripheral, both drugs) | -- | Appendix, plasma equations; Fig. 1 |
+| Brain ODEs (vascular, extravascular, striatum free / bound, cortex free / bound, both drugs) | -- | Appendix, brain equations; Fig. 2 |
+| Bound concentration `CB = 1000 * A / V / MW` (nM) | -- | Appendix |
+| Receptor occupancy `(CB_RIS + CB_PALI) / Bmax` | -- | Appendix; Fig. 2b |
+
+# Using the model
+
+An IP risperidone dose is split between the risperidone and the paliperidone
+central compartments, so it is entered as two dose records of the same amount
+with `ROUTE_IP = 1`, one into `central` and one into `central_9oh`. An IV dose
+goes to `central` with `ROUTE_IP = 0`. SC doses go to `depot` (risperidone) or
+`depot_9oh` (paliperidone) with `rate = -2`, which makes the model's zero-order
+duration apply before the first-order absorption.
+
+The model declares six endpoints (`Cc`, `Cc_9oh`, `Cbrain`, `Cbrain_9oh`,
+`D2RO`, `RO_5HT2A`), so observation rows carry `dvid = 1` and every endpoint
+column is returned at every observation time. The other brain matrices the
+paper measured are returned as output columns: `Cbrain_exstr` (brain without
+striatum, the D2 studies), `Cbrain_excor` (brain without frontal cortex, the
+5-HT2A studies), `Cstriatum`, `Ccortex`, `Cstriatum_9oh` and `Ccortex_9oh`.
+Concentrations are in mg/L (multiply by 1000 for the ng/mL of the paper's
+figures); occupancies are fractions.
+
+```{r helpers}
+mod <- readModelDb("Kozielska_2012_risperidone_rat")
+
+# One rat (or one cohort of n rats) given a single risperidone dose by the
+# named route, observed at `times`.
+make_events <- function(dose, route, times, n = 1L, id_offset = 0L) {
+  ids <- id_offset + seq_len(n)
+  dose_cmt <- switch(route,
+    IP = c("central", "central_9oh"),
+    IV = "central",
+    SC = "depot"
+  )
+  doses <- expand.grid(id = ids, cmt = dose_cmt, stringsAsFactors = FALSE)
+  doses$time <- 0
+  doses$amt <- dose
+  doses$evid <- 1L
+  doses$rate <- if (route == "SC") -2 else 0
+  doses$dvid <- NA_integer_
+  obs <- expand.grid(id = ids, time = times)
+  obs$cmt <- "central"
+  obs$amt <- 0
+  obs$evid <- 0L
+  obs$rate <- 0
+  obs$dvid <- 1L
+  ev <- dplyr::bind_rows(doses, obs)
+  ev$ROUTE_IP <- as.integer(route == "IP")
+  ev$dose <- dose
+  ev$route <- route
+  dplyr::arrange(ev, id, time, dplyr::desc(evid))
+}
+
+solve_typical <- function(m, ev) {
+  rxode2::rxSolve(m, ev,
+    omega = NA, sigma = NA, keep = c("dose", "route"),
+    returnType = "data.frame"
+  )
+}
+```
+
+# Predictive check (Figure 4)
+
+Figure 4 of the paper is a predictive check after IP risperidone: panels a-c at
+1 mg/kg (plasma, brain without striatum, D2 occupancy) and d-f at 0.1 mg/kg
+(plasma, brain without frontal cortex, 5-HT2A occupancy). The simulation below
+draws 200 rats per dose with the model's between-animal variability and adds
+the residual error of each endpoint (log-scale for concentrations, additive for
+occupancy; the brain residual SD applies to every brain matrix).
+
+```{r fig4-sim}
+rxode2::rxSetSeed(20120322)
+set.seed(20120322)
+times_fig4 <- c(0.1, seq(0.25, 2, by = 0.25))
+ev_fig4 <- dplyr::bind_rows(
+  make_events(1, "IP", times_fig4, n = 200, id_offset = 0L),
+  make_events(0.1, "IP", times_fig4, n = 200, id_offset = 200L)
+)
+sim_fig4 <- rxode2::rxSolve(mod, ev_fig4,
+  keep = c("dose", "route"),
+  returnType = "data.frame"
+)
+th <- rxode2::rxode(mod)$theta
+n_obs <- nrow(sim_fig4)
+sim_fig4 <- sim_fig4 |>
+  dplyr::mutate(
+    plasma = 1000 * Cc * exp(rnorm(n_obs, 0, th[["expSd"]])),
+    brain = 1000 * ifelse(dose == 1, Cbrain_exstr, Cbrain_excor) *
+      exp(rnorm(n_obs, 0, th[["expSd_Cbrain"]])),
+    RO = 100 * ifelse(dose == 1,
+      D2RO + rnorm(n_obs, 0, th[["addSd_D2RO"]]),
+      RO_5HT2A + rnorm(n_obs, 0, th[["addSd_RO_5HT2A"]])
+    )
+  )
+
+fig4 <- sim_fig4 |>
+  tidyr::pivot_longer(c(plasma, brain, RO), names_to = "output") |>
+  dplyr::mutate(
+    panel = dplyr::case_when(
+      dose == 1 & output == "plasma" ~ "a: plasma RIS (ng/mL), 1 mg/kg",
+      dose == 1 & output == "brain" ~ "b: brain RIS without striatum (ng/mL), 1 mg/kg",
+      dose == 1 & output == "RO" ~ "c: D2 occupancy (%), 1 mg/kg",
+      output == "plasma" ~ "d: plasma RIS (ng/mL), 0.1 mg/kg",
+      output == "brain" ~ "e: brain RIS without cortex (ng/mL), 0.1 mg/kg",
+      TRUE ~ "f: 5-HT2A occupancy (%), 0.1 mg/kg"
+    )
+  ) |>
+  dplyr::group_by(panel, time) |>
+  dplyr::summarise(
+    q05 = quantile(value, 0.05), q50 = median(value), q95 = quantile(value, 0.95),
+    .groups = "drop"
+  )
+```
+
+```{r fig4-plot, fig.height = 6}
+ggplot(fig4, aes(time, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), fill = "grey80") +
+  geom_line(colour = "grey40") +
+  facet_wrap(~panel, scales = "free_y", ncol = 3) +
+  labs(
+    x = "Time (h)", y = NULL,
+    caption = "Replicates Figure 4 of Kozielska 2012: median and 90% prediction interval, 200 rats per dose."
+  )
+```
+
+The simulated medians follow the grey simulated-median lines of Figure 4:
+plasma risperidone near 150 ng/mL at 0.25 h after 1 mg/kg and near 14 ng/mL
+after 0.1 mg/kg, brain-without-striatum risperidone near 40 ng/mL at 0.25 h,
+D2 occupancy about 75-90% over 0.25-2 h after 1 mg/kg, and 5-HT2A occupancy
+rising from about 35% at 0.25 h to a peak near 1 h after 0.1 mg/kg. The 5-HT2A
+median at 1 h (about 55%) sits somewhat above the Figure 4f line (about 48%);
+the paper notes that its own model under-predicts the later 5-HT2A data. The
+prediction intervals are wide, as in the paper, because the residual errors
+are large.
+
+```{r fig4-check}
+med_at <- function(p, t) fig4$q50[fig4$panel == p & abs(fig4$time - t) < 1e-8]
+fig4_check <- data.frame(
+  quantity = c(
+    "Plasma RIS at 0.25 h, 1 mg/kg (ng/mL)",
+    "Brain RIS without striatum at 0.25 h, 1 mg/kg (ng/mL)",
+    "D2 occupancy at 1 h, 1 mg/kg (%)",
+    "Plasma RIS at 0.25 h, 0.1 mg/kg (ng/mL)",
+    "5-HT2A occupancy at 1 h, 0.1 mg/kg (%)"
+  ),
+  figure_4 = c(150, 40, 87, 14, 48),
+  simulated = c(
+    med_at("a: plasma RIS (ng/mL), 1 mg/kg", 0.25),
+    med_at("b: brain RIS without striatum (ng/mL), 1 mg/kg", 0.25),
+    med_at("c: D2 occupancy (%), 1 mg/kg", 1),
+    med_at("d: plasma RIS (ng/mL), 0.1 mg/kg", 0.25),
+    med_at("f: 5-HT2A occupancy (%), 0.1 mg/kg", 1)
+  )
+)
+fig4_check$pct_diff <- 100 * (fig4_check$simulated / fig4_check$figure_4 - 1)
+knitr::kable(fig4_check, digits = 1,
+  caption = "Simulated medians against the simulated-median lines read from Figure 4.")
+# The Figure 4 values are read by eye from the grey median lines. The bound
+# covers that reading error and the Monte-Carlo error of a 200-rat median
+# (the medians of independent cohorts differ by a few percent); a wrong
+# volume, clearance, Bmax or unit conversion moves these by a factor.
+stopifnot(all(abs(fig4_check$pct_diff) < 35))
+```
+
+# Brain-to-plasma ratios (Figure 6)
+
+The paper's central finding is that the risperidone brain-to-plasma ratio is
+high at low plasma concentrations and levels off at about 0.25 as the
+concentration rises, and that only the model with 5-HT2A binding reproduces
+this. The ratio is computed below from typical-value predictions for the
+doses, routes and sampling times of Table I.
+
+```{r fig6-design}
+design <- dplyr::bind_rows(
+  # Total brain (studies 3b and 4)
+  expand.grid(dose = 5, route = "SC", time = c(0.25, 0.5, 1, 2, 4, 8), matrix = "a: total brain"),
+  expand.grid(dose = c(0.3, 3), route = "IP", time = c(0.25, 0.5, 1, 1.5, 2, 4, 7), matrix = "a: total brain"),
+  # Brain without striatum (D2 studies 5-7)
+  expand.grid(dose = 1, route = "IP", time = c(0.25, 0.5, 1, 1.5, 2), matrix = "b: brain without striatum"),
+  expand.grid(dose = c(0.01, 0.03, 0.1, 0.3, 1, 3), route = "IP", time = 1, matrix = "b: brain without striatum"),
+  expand.grid(dose = c(0.16, 10), route = "SC", time = c(0.5, 1, 2, 4, 8, 24), matrix = "b: brain without striatum"),
+  # Brain without frontal cortex (5-HT2A studies 9-10)
+  expand.grid(dose = c(0.01, 0.03, 0.1, 0.3, 1), route = "IP", time = 1, matrix = "c: brain without cortex"),
+  expand.grid(dose = 0.1, route = "IP", time = c(0.25, 0.5, 1, 1.5, 2), matrix = "c: brain without cortex")
+)
+design$route <- as.character(design$route)
+design <- dplyr::distinct(design)
+regimens <- dplyr::distinct(design, dose, route)
+
+ratio_sim <- function(m) {
+  ev <- dplyr::bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+    make_events(regimens$dose[i], regimens$route[i],
+      times = sort(unique(design$time)), id_offset = i - 1L
+    )
+  }))
+  solve_typical(m, ev) |>
+    dplyr::select(dose, route, time, Cc, Cbrain, Cbrain_exstr, Cbrain_excor) |>
+    dplyr::inner_join(design, by = c("dose", "route", "time")) |>
+    dplyr::mutate(
+      brain = dplyr::case_when(
+        matrix == "a: total brain" ~ Cbrain,
+        matrix == "b: brain without striatum" ~ Cbrain_exstr,
+        TRUE ~ Cbrain_excor
+      ),
+      plasma_ngml = 1000 * Cc,
+      ratio = brain / Cc
+    ) |>
+    # Figure 6 shows only points with plasma above about 0.5 ng/mL.
+    dplyr::filter(plasma_ngml > 0.5)
+}
+
+r_final <- ratio_sim(mod)
+```
+
+```{r fig6-abc}
+ggplot(r_final, aes(plasma_ngml, ratio)) +
+  geom_point(colour = "grey40") +
+  scale_x_log10() +
+  facet_wrap(~matrix, scales = "free") +
+  labs(
+    x = "Plasma risperidone (ng/mL)", y = "Brain-to-plasma ratio",
+    caption = "Replicates the final-model (grey) points of Figure 6a-c of Kozielska 2012."
+  )
+```
+
+The paper's sensitivity simulations (Figure 6d-f) are reproduced on the total
+brain: no active efflux (both CLefflux set to zero), kon and koff of both
+receptors ten times higher (Kd unchanged), and koff of both receptors ten
+times higher (Kd ten times higher).
+
+```{r fig6-def}
+th <- rxode2::rxode(mod)$theta
+mod_ui <- rxode2::rxode(mod)
+mod_noefflux <- mod_ui |>
+  rxode2::ini(lcl_efflux = log(1e-12), lcl_efflux_9oh = log(1e-12))
+mod_fastbinding <- mod_ui |>
+  rxode2::ini(
+    lkoff_d2 = th[["lkoff_d2"]] + log(10),
+    lkoff_5ht2a = th[["lkoff_5ht2a"]] + log(10)
+  )
+mod_highkd <- mod_ui |>
+  rxode2::ini(
+    lkoff_d2 = th[["lkoff_d2"]] + log(10),
+    lkoff_5ht2a = th[["lkoff_5ht2a"]] + log(10),
+    lkd_d2 = th[["lkd_d2"]] + log(10),
+    lkd_5ht2a = th[["lkd_5ht2a"]] + log(10)
+  )
+# kon = koff / Kd: raising koff alone with Kd fixed raises kon tenfold
+# (`mod_fastbinding`); raising both koff and Kd keeps kon and raises Kd
+# tenfold (`mod_highkd`).
+scen <- dplyr::bind_rows(
+  r_final |> dplyr::mutate(model = "final"),
+  ratio_sim(mod_noefflux) |> dplyr::mutate(model = "d: no efflux"),
+  ratio_sim(mod_fastbinding) |> dplyr::mutate(model = "e: kon and koff x10"),
+  ratio_sim(mod_highkd) |> dplyr::mutate(model = "f: koff x10")
+) |>
+  dplyr::filter(matrix == "a: total brain")
+
+scen_plot <- dplyr::bind_rows(lapply(c("d: no efflux", "e: kon and koff x10", "f: koff x10"), function(p) {
+  dplyr::filter(scen, model %in% c("final", p)) |>
+    dplyr::mutate(panel = p, line = ifelse(model == "final", "final model", "scenario"))
+}))
+ggplot(scen_plot, aes(plasma_ngml, ratio, colour = line)) +
+  geom_point() +
+  scale_x_log10() +
+  scale_colour_manual(values = c("final model" = "grey60", scenario = "black")) +
+  facet_wrap(~panel, scales = "free_y") +
+  labs(
+    x = "Plasma risperidone (ng/mL)", y = "Total brain-to-plasma ratio", colour = NULL,
+    caption = "Replicates Figure 6d-f of Kozielska 2012."
+  )
+```
+
+The final model reproduces the shape of Figure 6a-c: ratios level off near
+0.25 at high plasma concentrations in all three brain matrices and rise as the
+concentration falls. For total brain the rise matches Figure 6a (about 1.2-2
+at 1-4 ng/mL). For brain without striatum and brain without cortex the rise is
+about half of the paper's: about 1.0-1.2 at 0.6-1 ng/mL, where the grey
+final-model points of Figure 6b-c reach about 2.4-2.8. This is discussed under
+Assumptions and deviations.
+
+Removing efflux raises the high-concentration plateau about fivefold, to about
+1.1-1.3, and keeps the shape (Figure 6d); faster binding with unchanged
+affinity lowers the ratios only at the lowest concentrations (Figure 6e); and a
+tenfold higher Kd flattens the curve (Figure 6f).
+
+```{r fig6-check}
+lo <- function(d) median(d$ratio[d$plasma_ngml < 3])
+hi <- function(d) median(d$ratio[d$plasma_ngml > 50])
+by_model <- split(scen, scen$model)
+fig6_check <- data.frame(
+  model = names(by_model),
+  ratio_low_conc = vapply(by_model, lo, numeric(1)),
+  ratio_high_conc = vapply(by_model, hi, numeric(1))
+)
+knitr::kable(fig6_check, digits = 2, row.names = FALSE,
+  caption = "Median total brain-to-plasma ratio below 3 ng/mL and above 50 ng/mL plasma.")
+stopifnot(
+  # Figure 6a: high-concentration plateau about 0.25-0.3, low-concentration
+  # ratios several-fold higher.
+  fig6_check$ratio_high_conc[fig6_check$model == "final"] > 0.15,
+  fig6_check$ratio_high_conc[fig6_check$model == "final"] < 0.4,
+  fig6_check$ratio_low_conc[fig6_check$model == "final"] >
+    3 * fig6_check$ratio_high_conc[fig6_check$model == "final"],
+  # Figure 6d: no efflux raises the plateau above 1.
+  fig6_check$ratio_high_conc[fig6_check$model == "d: no efflux"] > 1,
+  # Figure 6f: a tenfold higher Kd removes most of the low-concentration rise.
+  fig6_check$ratio_low_conc[fig6_check$model == "f: koff x10"] <
+    0.5 * fig6_check$ratio_low_conc[fig6_check$model == "final"]
+)
+```
+
+# Closed-form checks
+
+At steady state with the receptors saturated, the unbound brain-to-plasma
+partition coefficient is set by the BBB clearances alone,
+`Kp,uu = CLbev / (CLbev + CLefflux)`. A long constant-rate infusion of
+risperidone into plasma at a high concentration checks that the brain
+equations carry the unbound fractions and the efflux term the way the Appendix
+writes them. The same derived constants reproduce the Table III `kon` values
+and the efflux-to-passive clearance ratios the paper reports from its
+likelihood profiles (4.57-4.87 for risperidone, 21.1-22.2 for paliperidone).
+
+```{r closed-form}
+ev_inf <- data.frame(
+  id = 1L, time = c(0, 0, 72), amt = c(2000, 0, 0), rate = c(2000 / 72, 0, 0),
+  evid = c(1L, 0L, 0L), cmt = "central", dvid = c(NA, 1L, 1L), ROUTE_IP = 0L
+)
+ss <- rxode2::rxSolve(mod, ev_inf,
+  omega = NA, sigma = NA, rtol = 1e-10, atol = 1e-12,
+  returnType = "data.frame"
+)
+ss_end <- ss[ss$time == 72, ]
+kpuu_sim <- th[["fu_brain"]] * ss_end$Cbev / (th[["fu_plasma"]] * ss_end$Cc)
+kpuu_sim_9oh <- th[["fu_brain_9oh"]] * ss_end$Cbev_9oh / (th[["fu_plasma_9oh"]] * ss_end$Cc_9oh)
+p <- exp(th)
+kpuu <- p[["lcl_bev"]] / (p[["lcl_bev"]] + p[["lcl_efflux"]])
+kpuu_9oh <- p[["lcl_bev"]] / (p[["lcl_bev"]] + p[["lcl_efflux_9oh"]])
+cf <- data.frame(
+  quantity = c(
+    "Kp,uu risperidone", "Kp,uu paliperidone",
+    "kon D2 (1/nM/h)", "kon 5-HT2A (1/nM/h)",
+    "CLefflux-RIS / CLbev", "CLefflux-PALI / CLbev",
+    "D2 occupancy at saturation", "5-HT2A occupancy at saturation"
+  ),
+  expected = c(
+    kpuu, kpuu_9oh, 1.45, 2.40, 9.97 / 2.13, 47.0 / 2.13, 1, 1
+  ),
+  model = c(
+    kpuu_sim, kpuu_sim_9oh,
+    p[["lkoff_d2"]] / p[["lkd_d2"]], p[["lkoff_5ht2a"]] / p[["lkd_5ht2a"]],
+    p[["lcl_efflux"]] / p[["lcl_bev"]], p[["lcl_efflux_9oh"]] / p[["lcl_bev"]],
+    ss_end$D2RO, ss_end$RO_5HT2A
+  )
+)
+knitr::kable(cf, digits = 4)
+stopifnot(
+  # Same parameters on both sides: the steady state reproduces the closed form
+  # to the solver tolerance (measured ~1e-7).
+  abs(kpuu_sim / kpuu - 1) < 1e-4,
+  abs(kpuu_sim_9oh / kpuu_9oh - 1) < 1e-4,
+  # Table III rounds kon to three significant figures.
+  abs(cf$model[3] / 1.45 - 1) < 0.005,
+  abs(cf$model[4] / 2.40 - 1) < 0.005,
+  # Likelihood-profile ranges quoted in Results, Model Evaluation.
+  cf$model[5] > 4.57, cf$model[5] < 4.87,
+  cf$model[6] > 21.1, cf$model[6] < 22.2,
+  ss_end$D2RO > 0.99, ss_end$D2RO <= 1, ss_end$RO_5HT2A > 0.99, ss_end$RO_5HT2A <= 1
+)
+```
+
+# PKNCA validation
+
+The paper reports no NCA. The plasma AUCs follow in closed form from the
+typical-value clearances: risperidone `AUC = F * Dose / (CLRIS + CLmet)`, and
+paliperidone formed from it
+`AUC = F * Dose * CLmet / (CLRIS + CLmet) / CLPALI` (plus, after an IP dose,
+the first-pass fraction `FIP * FrFPM * Dose / CLPALI`). PKNCA is run on the
+typical-value profiles of three risperidone regimens from Table I.
+
+```{r pknca}
+nca_times <- c(0, 0.05, 0.1, 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 6, 8, 12, 16, 24, 36, 48)
+regs <- data.frame(
+  treatment = c("IV 2.5 mg/kg", "SC 5 mg/kg", "IP 3 mg/kg"),
+  dose = c(2.5, 5, 3), route = c("IV", "SC", "IP")
+)
+ev_nca <- dplyr::bind_rows(lapply(seq_len(nrow(regs)), function(i) {
+  make_events(regs$dose[i], regs$route[i], nca_times, id_offset = i - 1L) |>
+    dplyr::mutate(treatment = regs$treatment[i])
+}))
+sim_nca <- rxode2::rxSolve(mod, ev_nca,
+  omega = NA, sigma = NA, keep = "treatment",
+  rtol = 1e-10, atol = 1e-12, returnType = "data.frame"
+)
+
+conc <- sim_nca |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, treatment, risperidone = Cc, paliperidone = Cc_9oh) |>
+  tidyr::pivot_longer(c(risperidone, paliperidone), names_to = "analyte", values_to = "Cc")
+stopifnot(all(conc$Cc >= -1e-6 * max(conc$Cc)))
+conc$Cc <- pmax(conc$Cc, 0)
+
+dose_df <- ev_nca |>
+  dplyr::filter(evid == 1, cmt %in% c("central", "depot")) |>
+  dplyr::select(id, time, treatment, amt)
+
+o_conc <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id / analyte)
+o_dose <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = Inf, aucinf.obs = TRUE, cmax = TRUE)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+nca_res <- as.data.frame(nca$result) |>
+  dplyr::filter(PPTESTCD %in% c("aucinf.obs", "cmax"))
+
+f_route <- c("IV 2.5 mg/kg" = 1, "SC 5 mg/kg" = p[["lfdepot"]], "IP 3 mg/kg" = p[["lfip"]])
+cl_tot <- p[["lcl_nonmet"]] + p[["lcl_met"]]
+fm <- p[["lcl_met"]] / cl_tot
+reference <- regs |>
+  dplyr::mutate(
+    f = f_route[treatment],
+    f_ris = ifelse(route == "IP", f * (1 - p[["lfpm_9oh"]]), f),
+    f_fpm = ifelse(route == "IP", f * p[["lfpm_9oh"]], 0),
+    risperidone = f_ris * dose / cl_tot,
+    paliperidone = (f_ris * dose * fm + f_fpm * dose) / p[["lcl_9oh"]]
+  ) |>
+  dplyr::select(treatment, risperidone, paliperidone) |>
+  tidyr::pivot_longer(c(risperidone, paliperidone), names_to = "analyte", values_to = "aucinf.obs")
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res |> dplyr::filter(PPTESTCD == "aucinf.obs"),
+  reference = reference,
+  by = c("treatment", "analyte"),
+  units = c(aucinf.obs = "mg*h/L"),
+  tolerance_pct = 2
+)
+knitr::kable(cmp, caption = "PKNCA AUC0-inf against the closed-form typical-value AUC. * marks rows differing by more than 2%.")
+cmp_num <- nca_res |>
+  dplyr::filter(PPTESTCD == "aucinf.obs") |>
+  dplyr::inner_join(reference, by = c("treatment", "analyte"))
+# Trapezoidal AUC on an 18-point grid against the exact integral: the
+# difference is the trapezoid and extrapolation error, well under 2%.
+stopifnot(all(abs(cmp_num$PPORRES / cmp_num$aucinf.obs - 1) < 0.02))
+```
+
+```{r cmax-table}
+nca_res |>
+  dplyr::filter(PPTESTCD == "cmax") |>
+  dplyr::mutate(Cmax_ngml = 1000 * PPORRES) |>
+  dplyr::select(treatment, analyte, Cmax_ngml) |>
+  tidyr::pivot_wider(names_from = analyte, values_from = Cmax_ngml) |>
+  dplyr::rename(
+    "Regimen" = treatment,
+    "Risperidone Cmax (ng/mL)" = risperidone,
+    "Paliperidone Cmax (ng/mL)" = paliperidone
+  ) |>
+  knitr::kable(digits = 1, caption = "Typical-value plasma Cmax by regimen.")
+```
+
+# Assumptions and deviations
+
+* **Brain concentration.** The Appendix gives the ODEs but not how a measured
+  brain concentration maps onto them. The model takes the brain homogenate
+  concentration as the total amount in the sampled brain compartments
+  (vascular, extravascular, striatum free and bound, cortex free and bound)
+  divided by their total volume. Brain without striatum drops the two
+  striatum compartments, and brain without frontal cortex drops the two cortex
+  compartments. This reading reproduces the Figure 4 medians, the Figure 6a
+  ratios, and the high-concentration plateau of about 0.25 in every brain
+  matrix. It keeps the 5-HT2A-bound drug in the brain-without-striatum
+  concentrations, which the Results require (raising koff for 5-HT2A alone
+  flattens exactly those ratios). At the lowest plasma concentrations
+  (below about 2 ng/mL) its brain-without-striatum and brain-without-cortex
+  ratios are about half of the grey points in Figure 6b-c. Dividing by the
+  vascular plus extravascular volume alone (treating the 0.00656 L/kg
+  "total extra-vascular" volume as containing the striatum and cortex)
+  roughly doubles the low-concentration ratios but lifts the plateau to
+  0.4-0.6, against about 0.25 in the paper, so it fits worse overall. No
+  parameter was adjusted to close the gap.
+* **Cortex transfer clearance.** CLcor is not given; the paper states only
+  that fast equilibration was assumed "as for striatum". It is fixed to the
+  striatum value, 500 L/h/kg.
+* **Molecular weights.** The bound-concentration formula needs molecular
+  weights that the paper does not print: 410.49 g/mol for risperidone
+  (C23H27FN4O2) and 426.49 g/mol for paliperidone (C23H27FN4O3). The
+  Appendix's factor `1000 / MW` is written for amounts in ug; the packaged
+  model keeps amounts in mg and uses `1e6 / MW`, which gives the same nM.
+* **Metabolite mass.** As in the Appendix, the formation term
+  `CLmet * C_RIS` moves risperidone mass into paliperidone without a
+  molecular-weight correction (paliperidone is 4% heavier).
+* **IP first-pass split.** Figure 1 states that a fraction of the absorbed IP
+  dose reaches risperidone central and a fraction (FrFPM) paliperidone
+  central. The model applies FIP to the whole dose and splits it as
+  `FIP * (1 - FrFPM)` and `FIP * FrFPM`.
+* **IIV scale.** Table II reports IIV as %CV without giving the conversion.
+  The variances use `omega^2 = (CV/100)^2`, the convention the same group
+  states in the predecessor olanzapine paper (Johnson 2011). The brain PK-PD
+  parameters have no IIV, as in the paper.
+* **Residual error.** Plasma and brain concentrations were fitted
+  log-transformed, so the tabulated "proportional" errors are log-scale SDs and
+  are encoded with `lnorm()`. The occupancy errors are additive in percentage
+  points in Table III and are divided by 100 because the model returns
+  occupancy as a fraction. The paper applies one brain residual SD per drug to
+  every brain matrix; rxode2 cannot share one error parameter between
+  endpoints, so only total brain (`Cbrain`, `Cbrain_9oh`) carries an error
+  model and the other matrices are output columns.
+* **No paliperidone IV data.** The paper had no IV paliperidone data. A dose
+  into `central_9oh` with `ROUTE_IP = 0` is treated as IV with F = 1, which the
+  data did not inform.
+* **In vivo and ex vivo occupancy** share binding constants, as in the final
+  model.

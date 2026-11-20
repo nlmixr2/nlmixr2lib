@@ -674,8 +674,9 @@ knitr::kable(
 - **Inter-occasion variability is expanded into two occasion-indexed etas.**
   Equation 6 writes `F1_spheroid = theta8 * exp(eta_OCC1 + eta_OCC2)`, the
   NONMEM idiom where exactly one eta is active per occasion and both share one
-  variance. rxode2 cannot simulate the `eta ~ var | OCC` form, so the model uses
-  the `oc1`/`oc2` multiplexed expansion (as in `Chen_2023_nemonoxacin` and
+  variance. The `eta ~ var | OCC` form shares one draw per occasion when no
+  subject has two or more occasions, so the model uses the `oc1`/`oc2`
+  multiplexed expansion (as in `Chen_2023_nemonoxacin` and
   `Jonsson_2011_ethambutol`), with the second variance fixed to the first. This
   emits a benign `some etas defaulted to non-mu referenced` warning at load; it
   affects estimation only, not simulation.

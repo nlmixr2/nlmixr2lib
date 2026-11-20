@@ -36,6 +36,7 @@ Adeojo_2024_levonorgestrel <- function() {
   )
   vignette <- "Adeojo_2024_levonorgestrel"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "levonorgestrel", units = "mg", specimen = "administration site", verified = TRUE),

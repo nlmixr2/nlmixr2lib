@@ -3,6 +3,7 @@ Arrieta_2021_isavuconazole <- function() {
   reference <- "Arrieta AC, Neely M, Day JC, Rheingold SR, Sue PK, Muller WJ, Danziger-Isakov LA, Chu J, Yildirim I, McComsey GA, Frangoul HA, Chen TK, Statler VA, Steinbach WJ, Yin DE, Hamed K, Jones ME, Lademacher C, Desai A, Micklus K, Phillips DL, Kovanda LL, Walsh TJ. Safety, Tolerability, and Population Pharmacokinetics of Intravenous and Oral Isavuconazonium Sulfate in Pediatric Patients. Antimicrobial Agents and Chemotherapy. 2021;65(8):e00290-21. doi:10.1128/AAC.00290-21"
   vignette <- "Arrieta_2021_isavuconazole"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "isavuconazole", units = "mg", specimen = "administration site", verified = TRUE),

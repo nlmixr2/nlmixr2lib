@@ -1,0 +1,617 @@
+---
+title: "ATTR-CM stabilisers and knockdown: TTR dissociation and amyloid formation (Methven Jeknic 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ATTR-CM stabilisers and knockdown: TTR dissociation and amyloid formation (Methven Jeknic 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Transthyretin amyloid cardiomyopathy (ATTR-CM) arises when circulating
+transthyretin (TTR) tetramers dissociate into monomers that misfold and deposit
+as amyloid. Methven Jeknic et al. built a mass-action systems model of that
+pathway to compare the approved treatment modalities on one footing: the
+tetramer stabilisers acoramidis and tafamidis, and the TTR-production knockdown
+agent vutrisiran. The model's disease readout is *monomer efflux*, the rate at
+which unfolded monomers form amyloid; its running integral is the amyloid
+formed, and comparisons are made relative to untreated wild-type ATTR-CM
+(ATTRwt).
+
+The paper contributes two models, both built in Python and both written out in
+the supplement:
+
+* `MethvenJeknic_2026_attrcm_fpe_invitro` -- the fluorescent probe exclusion
+  (FPE) assay model used to estimate how strongly each stabiliser binds TTR and
+  albumin in human serum (Supplemental Equations 1-7).
+* `MethvenJeknic_2026_attrcm_qsp` -- the physiological model of TTR production,
+  dissociation, unfolding, clearance and amyloid formation, with the
+  stabilisers and vutrisiran (Supplemental Equations 8-16).
+
+```{r model-meta}
+fpe_mod <- rxode2::rxode(readModelDb("MethvenJeknic_2026_attrcm_fpe_invitro"))
+qsp_mod <- rxode2::rxode(readModelDb("MethvenJeknic_2026_attrcm_qsp"))
+```
+
+* Citation: `r qsp_mod$reference`
+* Physiological model: `r qsp_mod$description`
+* FPE model: `r fpe_mod$description`
+* Article: <https://doi.org/10.1002/psp4.70277> (open access, PMC13244665)
+* Authors' code: <https://github.com/BridgeBioAnalytics/ttr-mechanistic-model>
+
+# Population
+
+Neither model is fitted to individual patients. The FPE model was fitted to
+published serum FPE time courses (Miller et al. 2018) together with plasma
+protein binding data and isothermal-calorimetry binding constants (Table S3).
+The physiological model was calibrated to cohort-mean serum TTR in ATTRwt,
+variant ATTR-CM (ATTRv) and protective p.Thr139Met cohorts, TTR turnover and
+half-life, the thermodynamics of tetramer dissociation and monomer unfolding,
+and the changes in serum TTR seen with acoramidis (ATTRibute-CM), tafamidis
+(ATTR-ACT) and vutrisiran (HELIOS-B) (Table S4). The ATTRv parameter set uses
+the biophysics of p.Val142Ile, the majority variant in those trials.
+
+Stabilisers are held at a constant total serum concentration: acoramidis at its
+10 uM trough and tafamidis at its 26 uM peak, so the comparison favours
+tafamidis on exposure.
+
+```{r population}
+str(qsp_mod$population)
+str(fpe_mod$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. The tables
+below collect them.
+
+## Physiological model (`MethvenJeknic_2026_attrcm_qsp`)
+
+| Parameter | Value | Source |
+|---|---|---|
+| `lkin_tet` (kP) | 5.849e-8 M/h | Table S6 |
+| `lkout_tet` (kLT) | 1.075e-2 1/h | Table S6 |
+| `lkout_mon` (kLM) | 1.3005 1/h | Table S6 |
+| `lkat_attrwt` / `_attrv` / `_t139m` (kaT) | 2.791e19 / 8.912e15 / 1.101e26 1/M^3/h | Table S6 |
+| `lkdt_attrwt` / `_attrv` / `_t139m` (kdT) | 2.080e-3 / 8.196e-3 / 4.520e-4 1/h | Table S6 |
+| `lku` (ku) | 8.567e-2 1/h (all genotypes) | Table S6 |
+| `lkf_attrwt` / `_attrv` / `_t139m` (kf) | 50.971 / 303.746 / 945.83 1/h | Table S6 |
+| `ky` (kY) | 3.6e3 1/h, assumed | Table S6 |
+| `kon_ttr` (kaD1 = kaD2) | 3.6e10 1/M/h, assumed | Table S6 |
+| `kon_alb` (kaDA) | 3.6e7 1/M/h, assumed | Table S6 |
+| `lkoff1_*` (kdD1) | acoramidis 1.050e3, tafamidis 4.3305e2 1/h | Table S6 |
+| `lkoff2_*` (kdD2) | acoramidis 8.319e3, tafamidis 6.205e3 1/h | Table S6 |
+| `lkoff_alb_*` (kdDA) | acoramidis 9.004e3, tafamidis 1.098e2 1/h | Table S6 |
+| `lkdtd1` / `lkdtd2` (kdT:D, kdT:D2) | 5.671e-9 / 2.817e-10 1/h | Table S6 |
+| `tet0_attrwt` / `_attrv` / `_t139m` | 4.21 / 3.09 / 5.04 uM | Table S2 footnote d |
+| `mon0`, `alb0` | 0.0411 uM, 2600 uM sites | Table S2 |
+| `smax_heliosb`, `s0_heliosb`, `lksil_heliosb` | 0.79688, 0.57114, 0.17898 1/month | refit of the authors' deposited HELIOS-B data (see Assumptions) |
+| `tsil_heliosb` | 1.5 month | Results ("first time point measured was 6 weeks"); deposited data |
+| `smax_heliosa`, `s0_heliosa`, `lksil_heliosa`, `tsil_heliosa` | 0.85088, 0.63285, 0.18291 1/month, 0.75 month | refit of the authors' deposited HELIOS-A data |
+| `mw_ttr` | 55000 g/mol | authors' code (mg/dL conversion) |
+| ODEs | -- | Supplemental Equations 8-16 |
+
+## FPE model (`MethvenJeknic_2026_attrcm_fpe_invitro`)
+
+| Parameter | Value | Source |
+|---|---|---|
+| `kon_ttr`, `kon_alb` | 3.6e10, 3.6e7 1/M/h, assumed | Table S5 |
+| `lkd1_acoramidis`, `lkd2_acoramidis`, `lkd_alb_acoramidis` | 6.00 nM, 190 nM, 250 uM | Table 1 |
+| `lkd1_tafamidis`, `lkd2_tafamidis`, `lkd_alb_tafamidis` | 4.33 nM, 248 nM, 3.05 uM | Table 1 |
+| `lki` (ki) | 1.926e5 1/M/h | Table S5 |
+| `s_fl`, `b_fl` | 1.0589, 0 (assumed) | Table S5 |
+| `tet0`, `alb0`, `probe0` | 4.9 uM, 2548 uM sites, 3.6 uM | Table S1 |
+| ODEs and readout F(t) | -- | Supplemental Equations 1-7 |
+
+# FPE assay model
+
+In the FPE assay a covalent stilbene probe and a stabiliser are added together
+to human serum. The probe fluoresces once it has reacted with a TTR tetramer
+whose thyroxine pockets are both empty, so the more strongly a drug occupies
+TTR, the slower fluorescence rises. Albumin competes with TTR for the drug. The
+model's dissociation constants are those of Table 1.
+
+The reference points below are the human-serum FPE data of Miller et al. 2018
+(Figure 4) as digitised by the authors and deposited with their code; for each
+condition the time point nearest 1, 3 and 6 hours is shown.
+
+```{r fpe-reference}
+fpe_ref <- data.frame(
+  drug = c(
+    rep("acoramidis", 15),
+    rep("tafamidis", 21)
+  ),
+  conc_uM = c(
+    rep(c(0, 1.25, 2.5, 5, 10), each = 3),
+    rep(c(0, 1.25, 2.5, 5, 10, 20, 40), each = 3)
+  ),
+  time = c(
+    1.003, 2.992, 5.984, 1.004, 2.989, 5.989, 1.004, 3, 5.989, 1.014, 3, 6,
+    0.993, 2.989, 5.989,
+    0.989, 2.989, 6, 0.989, 3, 6, 1, 3, 6, 1, 3, 6, 1, 2.989, 6, 1, 3, 6,
+    0.989, 3, 6
+  ),
+  fluor_obs = c(
+    0.534, 0.866, 1.004, 0.364, 0.685, 0.848, 0.268, 0.55, 0.719, 0.113,
+    0.271, 0.405, 0.006, 0.021, 0.025,
+    0.533, 0.872, 0.994, 0.426, 0.768, 0.908, 0.371, 0.705, 0.87, 0.282,
+    0.624, 0.81, 0.201, 0.503, 0.72, 0.121, 0.353, 0.582, 0.077, 0.226, 0.401
+  )
+)
+```
+
+```{r fpe-simulate}
+fpe_conditions <- distinct(fpe_ref, drug, conc_uM) |>
+  mutate(id = row_number())
+
+fpe_grid <- seq(0, 6, by = 0.1)
+fpe_obs <- fpe_conditions |>
+  tidyr::crossing(time = fpe_grid) |>
+  mutate(evid = 0, amt = 0, cmt = "probe")
+fpe_dose <- fpe_conditions |>
+  filter(conc_uM > 0) |>
+  mutate(time = 0, evid = 1, amt = conc_uM * 1000, cmt = "central")
+fpe_events <- bind_rows(fpe_dose, fpe_obs) |>
+  mutate(
+    TRT_ACORAMIDIS = as.numeric(drug == "acoramidis"),
+    TRT_TAFAMIDIS = as.numeric(drug == "tafamidis")
+  ) |>
+  arrange(id, time, desc(evid))
+
+fpe_sim <- rxSolve(
+  fpe_mod,
+  events = fpe_events,
+  keep = c("drug", "conc_uM"),
+  atol = 1e-10,
+  rtol = 1e-8,
+  returnType = "data.frame"
+)
+```
+
+```{r fpe-figure, fig.height = 4}
+ggplot(fpe_sim, aes(time, fluor, colour = factor(conc_uM))) +
+  geom_line() +
+  geom_point(data = fpe_ref, aes(time, fluor_obs, colour = factor(conc_uM))) +
+  facet_wrap(~drug) +
+  labs(
+    x = "Time (h)",
+    y = "Fraction of total fluorescence",
+    colour = "Stabiliser (uM)",
+    title = "FPE assay in human serum",
+    caption = "Replicates Figure S2 of Methven Jeknic 2026 (points: Miller 2018 data)."
+  ) +
+  theme_bw()
+```
+
+```{r fpe-check}
+fpe_pred <- fpe_ref |>
+  mutate(
+    TRT_ACORAMIDIS = as.numeric(drug == "acoramidis"),
+    TRT_TAFAMIDIS = as.numeric(drug == "tafamidis")
+  ) |>
+  left_join(fpe_conditions, by = c("drug", "conc_uM"))
+fpe_pred_events <- bind_rows(
+  filter(fpe_conditions, conc_uM > 0) |>
+    mutate(time = 0, evid = 1, amt = conc_uM * 1000, cmt = "central"),
+  mutate(fpe_pred, evid = 0, amt = 0, cmt = "probe")
+) |>
+  mutate(
+    TRT_ACORAMIDIS = as.numeric(drug == "acoramidis"),
+    TRT_TAFAMIDIS = as.numeric(drug == "tafamidis")
+  ) |>
+  arrange(id, time, desc(evid))
+fpe_at_obs <- rxSolve(
+  fpe_mod,
+  events = fpe_pred_events,
+  keep = c("drug", "conc_uM"),
+  atol = 1e-10,
+  rtol = 1e-8,
+  returnType = "data.frame"
+) |>
+  select(id, time, fluor)
+fpe_cmp <- fpe_pred |>
+  left_join(fpe_at_obs, by = c("id", "time")) |>
+  mutate(diff = fluor - fluor_obs)
+
+fpe_cmp |>
+  group_by(drug) |>
+  summarise(
+    n = n(),
+    median_abs_diff = median(abs(diff)),
+    max_abs_diff = max(abs(diff)),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 3)
+
+stopifnot(
+  nrow(fpe_cmp) == 36,
+  !anyNA(fpe_cmp$diff),
+  # Wrong Kd units, a missing factor 2 on the first-site off-rate or an
+  # albumin site count of 1 instead of 4 shifts these curves by 0.2-0.5.
+  median(abs(fpe_cmp$diff)) < 0.05,
+  max(abs(fpe_cmp$diff)) < 0.12
+)
+```
+
+The fit is close for acoramidis and for tafamidis at 20-40 uM, and runs a few
+points of fluorescence high for tafamidis at 1.25-10 uM. The paper weighted the
+DMSO control and near-physiological concentrations more heavily (Supplemental
+Methods 1.2.3) and combined the curves with protein-binding targets, so an
+exact match to every curve is not expected.
+
+# Physiological model
+
+## Simulation set-up
+
+Each scenario starts from the Table S2 initial state (the genotype's measured
+serum tetramer, 41.1 nM monomer, 2600 uM albumin sites) and runs for 30 months
+(a month is 30 days, as in the authors' code). The stabiliser is a single bolus
+into `central` at time 0, which fixes the total drug concentration for the whole
+run because the model releases bound drug when a complex is cleared.
+Vutrisiran starts at time 0.
+
+```{r qsp-scenarios}
+scenarios <- tidyr::crossing(
+  drug = c("none", "acoramidis", "tafamidis", "vutrisiran"),
+  genotype = c("ATTRwt", "ATTRv", "p.Thr139Met")
+) |>
+  mutate(
+    id = row_number(),
+    conc_uM = case_when(drug == "acoramidis" ~ 10, drug == "tafamidis" ~ 26, TRUE ~ 0),
+    SNP_TTR_RS76992529 = as.numeric(genotype == "ATTRv"),
+    SNP_TTR_RS28933981 = as.numeric(genotype == "p.Thr139Met"),
+    TRT_ACORAMIDIS = as.numeric(drug == "acoramidis"),
+    TRT_TAFAMIDIS = as.numeric(drug == "tafamidis"),
+    TRT_VUTRISIRAN = as.numeric(drug == "vutrisiran"),
+    STUDY_HELIOS_A = 0
+  )
+
+month_h <- 720
+obs_times <- sort(unique(c(seq(0, 30 * month_h, by = 24), 3 * month_h)))
+
+qsp_events_for <- function(sc) {
+  obs <- tidyr::crossing(sc, time = obs_times) |>
+    mutate(evid = 0, amt = 0, cmt = "ttr_tetramer")
+  dose <- sc |>
+    filter(conc_uM > 0) |>
+    mutate(time = 0, evid = 1, amt = conc_uM * 1000, cmt = "central")
+  bind_rows(dose, obs) |>
+    arrange(id, time, desc(evid))
+}
+
+qsp_sim <- rxSolve(
+  qsp_mod,
+  events = qsp_events_for(scenarios),
+  keep = c("drug", "genotype", "conc_uM"),
+  atol = 1e-10,
+  rtol = 1e-8,
+  maxsteps = 1e6,
+  returnType = "data.frame"
+) |>
+  mutate(month = time / month_h)
+```
+
+## Mass balance
+
+The stabiliser pool is closed: free drug, drug on tetramer (one per singly and
+two per doubly bound tetramer) and drug on albumin must add up to the dose at
+every time.
+
+```{r mass-balance}
+drug_balance <- qsp_sim |>
+  filter(conc_uM > 0) |>
+  mutate(rel_err = abs(drug_total - conc_uM * 1000) / (conc_uM * 1000))
+max(drug_balance$rel_err)
+stopifnot(max(drug_balance$rel_err) < 1e-5)
+```
+
+## Serum TTR over time (Figure 5a)
+
+The HELIOS-B points are the authors' digitised serum TTR reductions, converted
+to mg/dL against the untreated ATTRwt starting value as in their code.
+
+```{r fig5a}
+helios_b <- data.frame(
+  month = c(1.5, 3, 6, 9, 12, 15, 18, 21, 22.5, 24, 27, 30),
+  silencing = c(
+    0.6527, 0.625, 0.7037, 0.7754, 0.787, 0.787, 0.799, 0.792, 0.792,
+    0.775, 0.78, 0.801
+  )
+)
+ttr_wt_start <- qsp_sim |>
+  filter(drug == "none", genotype == "ATTRwt", time == 0) |>
+  pull(ttr)
+helios_b$ttr <- (1 - helios_b$silencing) * ttr_wt_start
+
+qsp_sim |>
+  filter(drug != "tafamidis", genotype != "p.Thr139Met") |>
+  ggplot(aes(month, ttr, colour = drug, linetype = genotype)) +
+  geom_line() +
+  geom_point(data = helios_b, aes(month, ttr), inherit.aes = FALSE, colour = "#e7004c") +
+  scale_colour_manual(values = c(none = "grey40", acoramidis = "#4b0082", vutrisiran = "#e7004c")) +
+  labs(
+    x = "Time (months)",
+    y = "Serum TTR (mg/dL)",
+    colour = NULL,
+    linetype = NULL,
+    caption = "Replicates Figure 5a of Methven Jeknic 2026 (points: HELIOS-B)."
+  ) +
+  theme_bw()
+```
+
+## End-of-simulation metrics (Figures 3b and 4)
+
+The metrics follow the authors' definitions: fractions of tetramer and of drug
+bound at month 30; the share of TTR (in tetramer equivalents) that leaves as
+monomer through clearance rather than intact or as amyloid; the change in
+total serum tetramer against the same genotype untreated; and the amyloid
+formed by month 30 (the monomer-efflux AUC).
+
+```{r metrics}
+end30 <- qsp_sim |>
+  filter(time == max(time))
+untreated <- end30 |>
+  filter(drug == "none") |>
+  select(genotype, ttr_untreated = ttr, amyloid_untreated = amyloid)
+amyloid_wt_untreated <- untreated$amyloid_untreated[untreated$genotype == "ATTRwt"]
+
+metrics <- end30 |>
+  left_join(untreated, by = "genotype") |>
+  transmute(
+    drug, genotype,
+    ttr_mg_dl = ttr,
+    tetramer_bound_pct = 100 * frac_tet_bound,
+    drug_on_tetramer_pct = 100 * frac_drug_tet,
+    drug_on_albumin_pct = 100 * frac_drug_alb,
+    monomer_clearance_pct = 100 * frac_mon_clear,
+    ttr_increase_pct = 100 * (ttr / ttr_untreated - 1),
+    efflux_reduction_pct = 100 * (1 - amyloid / amyloid_untreated),
+    efflux_vs_untreated_wt = amyloid / amyloid_wt_untreated
+  )
+
+metrics |>
+  arrange(genotype, drug) |>
+  knitr::kable(digits = 1)
+```
+
+```{r fig4a, fig.height = 3.5}
+metrics |>
+  filter(drug %in% c("acoramidis", "tafamidis"), genotype == "ATTRwt") |>
+  select(drug, tetramer_bound_pct, drug_on_tetramer_pct, drug_on_albumin_pct, monomer_clearance_pct) |>
+  pivot_longer(-drug, names_to = "metric", values_to = "pct") |>
+  ggplot(aes(metric, pct / 100, fill = drug)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c(acoramidis = "#4b0082", tafamidis = "#1f77b4")) +
+  labs(
+    x = NULL,
+    y = "Fraction",
+    fill = NULL,
+    caption = "Replicates Figure 4a of Methven Jeknic 2026 (ATTRwt, month 30)."
+  ) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+```
+
+## Vutrisiran and the monomer-efflux time course (Figures 5b and 5c)
+
+```{r fig5bc}
+efflux_norm <- qsp_sim |>
+  filter(drug %in% c("none", "acoramidis", "vutrisiran"), genotype != "p.Thr139Met") |>
+  mutate(efflux_norm = amyloid / amyloid_wt_untreated)
+
+efflux_norm |>
+  filter(month <= 3) |>
+  ggplot(aes(month, efflux_norm, colour = drug, linetype = genotype)) +
+  geom_line() +
+  scale_colour_manual(values = c(none = "grey40", acoramidis = "#4b0082", vutrisiran = "#e7004c")) +
+  labs(
+    x = "Time (months)",
+    y = "Normalized monomer efflux",
+    colour = NULL,
+    linetype = NULL,
+    caption = "Replicates Figure 5c of Methven Jeknic 2026."
+  ) +
+  theme_bw()
+
+month3 <- qsp_sim |>
+  filter(time == 3 * month_h) |>
+  select(drug, genotype, amyloid) |>
+  left_join(
+    qsp_sim |>
+      filter(time == 3 * month_h, drug == "none") |>
+      select(genotype, amyloid_untreated = amyloid),
+    by = "genotype"
+  ) |>
+  mutate(efflux_reduction_month3_pct = 100 * (1 - amyloid / amyloid_untreated))
+```
+
+## Comparison with the published values
+
+Every percentage below is quoted in the Results text; the efflux ratios are read
+from the Figure 5b bars. The model is deterministic, so the only difference
+from the published values is the paper's rounding to whole percentages.
+
+```{r compare}
+pick <- function(d, dr, ge, col) d[[col]][d$drug == dr & d$genotype == ge]
+comparison <- tribble(
+  ~quantity, ~source, ~published, ~model,
+  "Tetramers bound, acoramidis, ATTRwt (%)", "Results; Fig 4a", 96, pick(metrics, "acoramidis", "ATTRwt", "tetramer_bound_pct"),
+  "Tetramers bound, tafamidis, ATTRwt (%)", "Results; Fig 4a", 82, pick(metrics, "tafamidis", "ATTRwt", "tetramer_bound_pct"),
+  "Drug on albumin, acoramidis (%)", "Results; Fig 4a", 27, pick(metrics, "acoramidis", "ATTRwt", "drug_on_albumin_pct"),
+  "Drug on albumin, tafamidis (%)", "Results; Fig 4a", 82, pick(metrics, "tafamidis", "ATTRwt", "drug_on_albumin_pct"),
+  "Monomer share of clearance, ATTRwt (%)", "Results; Fig 3b", 15, pick(metrics, "none", "ATTRwt", "monomer_clearance_pct"),
+  "Monomer share of clearance, ATTRv (%)", "Results; Fig 3b", 41, pick(metrics, "none", "ATTRv", "monomer_clearance_pct"),
+  "Monomer share of clearance, p.Thr139Met (%)", "Results; Fig 3b", 1, pick(metrics, "none", "p.Thr139Met", "monomer_clearance_pct"),
+  "TTR increase, acoramidis, ATTRwt (%)", "Results; Fig 4b", 19, pick(metrics, "acoramidis", "ATTRwt", "ttr_increase_pct"),
+  "TTR increase, tafamidis, ATTRwt (%)", "Results; Fig 4b", 15, pick(metrics, "tafamidis", "ATTRwt", "ttr_increase_pct"),
+  "TTR increase, acoramidis, ATTRv (%)", "Results; Fig 4b", 72, pick(metrics, "acoramidis", "ATTRv", "ttr_increase_pct"),
+  "TTR increase, tafamidis, ATTRv (%)", "Results; Fig 4b", 55, pick(metrics, "tafamidis", "ATTRv", "ttr_increase_pct"),
+  "Efflux reduction, acoramidis, ATTRwt (%)", "Results; Fig 4c", 96, pick(metrics, "acoramidis", "ATTRwt", "efflux_reduction_pct"),
+  "Efflux reduction, acoramidis, ATTRv (%)", "Results; Fig 4c", 94, pick(metrics, "acoramidis", "ATTRv", "efflux_reduction_pct"),
+  "Efflux reduction, tafamidis, ATTRwt (%)", "Results; Fig 4c", 79, pick(metrics, "tafamidis", "ATTRwt", "efflux_reduction_pct"),
+  "Efflux reduction, tafamidis, ATTRv (%)", "Results; Fig 4c", 72, pick(metrics, "tafamidis", "ATTRv", "efflux_reduction_pct"),
+  "Efflux reduction, vutrisiran, ATTRwt, month 30 (%)", "Results; Fig 5b", 75, pick(metrics, "vutrisiran", "ATTRwt", "efflux_reduction_pct"),
+  "Efflux reduction, vutrisiran, ATTRv, month 30 (%)", "Results; Fig 5b", 75, pick(metrics, "vutrisiran", "ATTRv", "efflux_reduction_pct"),
+  "Efflux reduction, vutrisiran, ATTRwt, month 3 (%)", "Results; Fig 5c", 61, pick(month3, "vutrisiran", "ATTRwt", "efflux_reduction_month3_pct"),
+  "Efflux reduction, acoramidis, ATTRwt, month 3 (%)", "Results; Fig 5c", 96, pick(month3, "acoramidis", "ATTRwt", "efflux_reduction_month3_pct"),
+  "Untreated ATTRv efflux / ATTRwt (ratio)", "Fig 5b bar", 2.5, pick(metrics, "none", "ATTRv", "efflux_vs_untreated_wt"),
+  "Vutrisiran ATTRwt efflux / untreated ATTRwt (ratio)", "Fig 5b bar", 0.25, pick(metrics, "vutrisiran", "ATTRwt", "efflux_vs_untreated_wt"),
+  "Vutrisiran ATTRv efflux / untreated ATTRwt (ratio)", "Fig 5b bar", 0.62, pick(metrics, "vutrisiran", "ATTRv", "efflux_vs_untreated_wt")
+) |>
+  mutate(difference = model - published)
+
+comparison |>
+  dplyr::rename(
+    Quantity = quantity,
+    Source = source,
+    Published = published,
+    Model = model,
+    Difference = difference
+  ) |>
+  knitr::kable(digits = 2)
+
+pct_rows <- grepl("(%)", comparison$quantity, fixed = TRUE)
+stopifnot(
+  # Published percentages are whole numbers; a mis-transcribed rate constant
+  # moves these by several points.
+  all(abs(comparison$difference[pct_rows]) <= 1.5),
+  # Figure 5b ratios are read off a bar chart.
+  all(abs(comparison$difference[!pct_rows]) <= 0.05)
+)
+```
+
+## Sensitivity cases
+
+The paper repeats the stabiliser comparison with acoramidis at 8 uM (Figure S7)
+and tafamidis at 35 uM (Figure S8), and the vutrisiran comparison with the
+HELIOS-A knockdown (Figure S12). Acoramidis keeps the larger reduction in
+monomer efflux in every case.
+
+```{r sensitivity}
+sens <- tibble::tibble(
+  case = c("acoramidis 8 uM", "tafamidis 35 uM", "vutrisiran (HELIOS-A)"),
+  drug = c("acoramidis", "tafamidis", "vutrisiran"),
+  conc_uM = c(8, 35, 0),
+  STUDY_HELIOS_A = c(0, 0, 1)
+) |>
+  tidyr::crossing(genotype = c("ATTRwt", "ATTRv")) |>
+  mutate(
+    id = row_number(),
+    SNP_TTR_RS76992529 = as.numeric(genotype == "ATTRv"),
+    SNP_TTR_RS28933981 = 0,
+    TRT_ACORAMIDIS = as.numeric(drug == "acoramidis"),
+    TRT_TAFAMIDIS = as.numeric(drug == "tafamidis"),
+    TRT_VUTRISIRAN = as.numeric(drug == "vutrisiran")
+  )
+
+sens_end <- rxSolve(
+  qsp_mod,
+  events = qsp_events_for(sens),
+  keep = c("case", "genotype"),
+  atol = 1e-10,
+  rtol = 1e-8,
+  maxsteps = 1e6,
+  returnType = "data.frame"
+) |>
+  filter(time == max(time)) |>
+  left_join(untreated, by = "genotype") |>
+  transmute(
+    case, genotype,
+    tetramer_bound_pct = 100 * frac_tet_bound,
+    ttr_increase_pct = 100 * (ttr / ttr_untreated - 1),
+    efflux_reduction_pct = 100 * (1 - amyloid / amyloid_untreated)
+  )
+knitr::kable(sens_end, digits = 1)
+
+base_red <- metrics |>
+  filter(drug %in% c("acoramidis", "tafamidis", "vutrisiran"), genotype != "p.Thr139Met") |>
+  select(drug, genotype, efflux_reduction_pct)
+stopifnot(
+  # Figure S7: acoramidis at 8 uM still beats tafamidis at 26 uM.
+  all(
+    sens_end$efflux_reduction_pct[sens_end$case == "acoramidis 8 uM"] >
+      base_red$efflux_reduction_pct[base_red$drug == "tafamidis"][match(
+        sens_end$genotype[sens_end$case == "acoramidis 8 uM"],
+        base_red$genotype[base_red$drug == "tafamidis"]
+      )] + 5
+  ),
+  # Figure S8: tafamidis at 35 uM still trails acoramidis at 10 uM.
+  all(
+    sens_end$efflux_reduction_pct[sens_end$case == "tafamidis 35 uM"] <
+      base_red$efflux_reduction_pct[base_red$drug == "acoramidis"][match(
+        sens_end$genotype[sens_end$case == "tafamidis 35 uM"],
+        base_red$genotype[base_red$drug == "acoramidis"]
+      )] - 5
+  )
+)
+```
+
+# NCA
+
+PKNCA is not used. Neither model has drug pharmacokinetics: the stabilisers are
+held at a constant total concentration and vutrisiran acts through an empirical
+knockdown trajectory, so there is no concentration-time profile to summarise.
+The checks above replace it: agreement of the FPE model with the assay data, a
+closed drug mass balance, and reproduction of every quantitative result the
+paper reports for the physiological model.
+
+# Assumptions and deviations
+
+* **Authors' code followed for implementation details.** The supplement and the
+  authors' code deposit (<https://github.com/BridgeBioAnalytics/ttr-mechanistic-model>,
+  commit 6686acd) agree on the physiological equations and on every Table S6
+  value to the printed precision. The code was followed for the initial state
+  (Table S2 values; the model is not started at steady state, so the first
+  days include a short transient in monomer and tetramer), for the release of
+  bound stabiliser when a stabiliser-bound tetramer is cleared, and for the
+  mg/dL conversion (TTR tetramer 55 kDa).
+* **Vutrisiran silencing parameters are a refit.** The paper describes, but does
+  not print, the single-exponential fits to the HELIOS-B and HELIOS-A serum TTR
+  reductions. The maintainers refitted the authors' deposited digitised data
+  with the code's model form, `s(t) = smax - (smax - s0) * exp(-ksil * t)` for
+  t > 0, with two optimisers that agreed to five significant figures. As in the
+  code, the silencing before the first post-dose visit is held at its value at
+  that visit (6 weeks for HELIOS-B), modelling the maximal early effect. The
+  constant 83% knockdown of the vutrisiran label (a fitting target in Table S4)
+  can be reproduced by setting `smax_heliosb = s0_heliosb = 0.83` with `ini()`.
+* **Stabiliser association rate.** Table S6 lists kaD,1 and kaD,2 separately
+  for each drug, all 3.6e10 1/M/h (assumed); the model carries one
+  `kon_ttr`. Albumin association is likewise one `kon_alb`.
+* **Typographical errors in the supplement.** Table S6 gives kdT:D and kdT:D2
+  the unit 1/(M h); they multiply a concentration in a first-order term and are
+  1/h, as in the code. Supplemental Equation 2 omits the factor 2 on the
+  kdD,2 [T:D2] term that Equations 3 and 7 carry; the model includes it, as
+  the code and the physiological Equation 9 do, so drug is conserved. The FPE
+  equations print no equation for the free probe; the model depletes it by the
+  covalent reaction, as the code does.
+* **Table S5 vs Table 1 (FPE model).** For acoramidis, the Table S5 off-rates
+  (kdD,1 457.6, kdD,2 4859, kdD,A 7820 1/h) do not match the Table 1
+  dissociation constants under the model's binding convention (they imply
+  6.36 nM, 270 nM and 217 uM). Table 1, the code and the 37 C off-rates of
+  Table S6 (after the stated 2.43-fold van 't Hoff correction) all agree, so
+  the FPE model uses the Table 1 constants and derives the off-rates as
+  kdD1 = 2 kaD Kd1, kdD2 = kaD Kd2 / 2, kdDA = kaDA Kd,A. The probe rate ki and
+  readout slope s are taken from Table S5 (1.926e5 1/M/h, 1.0589); the code
+  carries 1.9235e5 and 1.0585.
+* **"Nearly twice" vs 2.5.** The abstract and Discussion say untreated ATTRv
+  incurs nearly twice the monomer efflux of ATTRwt; the model, the code and
+  the Figure 5b bar all give 2.5.
+* **Genotype indicators.** The ATTRv parameter set is selected by
+  `SNP_TTR_RS76992529` (p.Val142Ile) because the paper parameterises its ATTRv
+  cohort on that variant; it also carries cohort-mean ATTRv serum TTR, so it
+  represents the ATTRv trial population rather than strictly V142I carriers.
+* **No variability.** The paper calibrates to cohort means and reports no
+  between-subject variability or residual error; its parameter-sampling
+  sensitivity analyses (log-normal multipliers with sigma 0.25 on every
+  parameter) are not part of the model.

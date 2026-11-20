@@ -33,6 +33,7 @@ Gaohua_2012_pregnancy_pbpk_metoprolol <- function() {
   )
   vignette <- "Gaohua_2012_pregnancy_pbpk"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "venous")
 
   paper_specific_compartments <- c("preg")
 

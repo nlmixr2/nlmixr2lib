@@ -31,6 +31,7 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
   )
   vignette <- "Cammarata_2024_sulbactam_durlobactam"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("central", "central_sbt")
 
   # Durlobactam plasma residual variability is stratified by study phase
   # (Phase 1 / 2 / 3), so the canonical propSd / addSd used by the error model

@@ -29,6 +29,7 @@ Itohara_2019_tacrolimus_pbpk <- function() {
   )
   vignette <- "Itohara_2019_tacrolimus"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

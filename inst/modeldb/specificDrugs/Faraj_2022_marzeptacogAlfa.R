@@ -23,6 +23,7 @@ Faraj_2022_marzeptacogAlfa <- function() {
   )
   vignette <- "Faraj_2022_marzeptacogAlfa"
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   # Dose records: subcutaneous doses go to `depot` with rate = -2 so that
   # rxode2 applies the modelled zero-order duration dur(depot); intravenous

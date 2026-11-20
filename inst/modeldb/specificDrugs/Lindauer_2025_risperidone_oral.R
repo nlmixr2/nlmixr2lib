@@ -64,8 +64,15 @@ Lindauer_2025_risperidone_oral <- function() {
       notes = paste(
         "Appendix S2 reports IOV on F1 (46.5% CV), D1 (158% CV) and KA",
         "(108% CV). The vignette starts a new occasion at each once-daily",
-        "dose (OCC = dose number). Supply an integer per record; a",
-        "single-occasion simulation can set OCC = 1 throughout."
+        "dose (OCC = dose number). Supply an integer per record.",
+        "rxode2 draws the occasion effects per subject and occasion only",
+        "when at least one subject has two or more OCC levels. If every",
+        "subject has exactly one level, all subjects on a level share one",
+        "draw; if the whole event table has a single level, rxSolve()",
+        "fails with 'parameter(s) are required for solving: THETA[1]'",
+        "(also with zeroRe()). For a one-occasion simulation add one",
+        "evid = 2 record (no dose, no observation) that gives one subject",
+        "a second OCC level."
       ),
       source_name = "OCC"
     )

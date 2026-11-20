@@ -1,0 +1,535 @@
+---
+title: "Zalutumumab cell-level PK/PD in cynomolgus monkeys (Krippendorff 2012)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Zalutumumab cell-level PK/PD in cynomolgus monkeys (Krippendorff 2012)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Krippendorff_2012_zalutumumab_cyno"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Krippendorff_2012_zalutumumab_cyno"))$description`
+* Article: <https://doi.org/10.1007/s10928-012-9243-7> (open access, PMC3333800)
+
+Krippendorff, Oyarzun and Huisinga replaced the Michaelis-Menten target term
+of the cynomolgus-monkey zalutumumab PK model of Lammerts van Bueren et al.
+(2006) with a cell-level model of EGF receptor (EGFR) trafficking. Each
+target-expressing cell carries free surface receptor `R`, internalised free
+receptor `Ri`, EGF-bound (activated) receptor `RL` and antibody-bound receptor
+`RC`. The cell-level binding fluxes are scaled to the whole body by the number
+of relevant cells `Ncell`, which is computed (not fitted) so that the cells'
+total binding capacity equals the PK model's `Bmax,PK` (Eq. 17). No parameter
+was estimated: the PK backbone is inherited (Table 1), the receptor rate
+constants are in vitro fibroblast values (Table 2) and the antibody
+affinities come from the literature (Table 4).
+
+The packaged model is the extended system of Eqs. 30-40: normal cells plus a
+tumour-cell population numbering 1% of the normal cells. Setting
+`frac_tumor = 0` removes the tumour cells' effect on the PK and recovers the
+single-cell-type model of Eqs. 19-24 (used for Figs. 3 and 4); the tumour
+states then still respond to the interstitial concentration but no longer
+feed back on it.
+
+# Population
+
+The PK data are from cynomolgus monkeys given single intravenous doses of 2,
+20 and 40 mg/kg zalutumumab (Lammerts van Bueren et al. 2006; Fig. 3a data
+courtesy of Genmab; the number of animals is not reported in this paper).
+All amounts and volumes in the model are per kg body weight, so no body
+weight covariate is needed. The receptor-system rate constants were measured
+in human fibroblasts; for monkeys the paper multiplies the recycling rate
+constant `krecyRi` by 4 and the free-receptor internalisation rate constant
+`kdegR` by 1/4 (Table 2 footnote). The tumour cells are a hypothetical in
+silico population exposed to the same interstitial concentration as normal
+cells.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `d/dt(central)` | Eq. 30 | Plasma: `Vpla dCpla/dt = -qpi Cpla + qip Cint - CLlin Cpla` |
+| `d/dt(isf)` | Eqs. 31-32 | Interstitial: transfer plus `N (koffC SFunit RC - konC SFunit R Cint)` for normal and tumour cells |
+| `d/dt(target_*)`, `d/dt(target_int_*)`, `d/dt(complex_egf_*)`, `d/dt(complex_*)` | Eqs. 33-40 | Receptor trafficking per normal (N) and tumour (T) cell |
+| Initial conditions | Methods | Pre-treatment steady state of `R`, `Ri`, `RL`; `RC(0) = 0`; bolus into plasma |
+| `n_normal` | Eq. 17 | `Ncell = kdegRC Bmax,PK / (ksynR SFunit)` |
+| `sf_unit` | after Eq. 11 | `SFunit = 1e9 / Navo` |
+| `rl_pct_*`, `sat_*` | Eqs. 25-26 | Residual receptor activity `RL/RL*` and saturation `RC/(R+RL+RC)` |
+| `lvc` | 70 mL/kg | Table 1, `V pla` |
+| `lvisf` | 35 mL/kg | Table 1, `V int` |
+| `lk12`, `lk21` | 0.043 1/h each | Table 1, `k pi`, `k ip`; `qpi = Vpla kpi`, `qip = Vint kip` |
+| `lkel` | 0.0055 1/h | Table 1, `kel`; `CLlin = Vpla kel` |
+| `bmax_pk` | 2 mg/kg | Table 1, `B max,PK` |
+| `kon_egf` | 7.2e-2 1/(nM min) | Table 2, `konL` |
+| `koff_egf` | 0.34 1/min | Table 2, `koffL` |
+| `kint_target` | 0.03 1/min | Table 2, `kdegR` |
+| `kint_egf` | 0.03 1/min | Table 2, `kdegRL` |
+| `ksyn_target` | 130 receptors/min per cell | Table 2, `kR,N` |
+| `krecy_target` | 5.8e-2 1/min | Table 2, `krecyRi` |
+| `kdeg_target_int` | 2.2e-3 1/min | Table 2, `kdegRi` |
+| `kint` | 0.005 1/h | Table 2, `kdegRC` |
+| `mw` | 148000 g/mol | Table 2, `MWmAbs` |
+| `f_recy_cyno`, `f_kint_cyno` | 4, 1/4 | Table 2 footnote |
+| `egf` | 2.36e-3 nM | Text after Eq. 6 |
+| `navo` | 6.02e23 1/mol | Text after Eq. 11 |
+| `kon` | `= konL` | Table 2, `konC = konL` |
+| `kd_invitro` | 7 nM | Table 4, zalutumumab 7e-9 M |
+| `sfiviv` | 2.1 | Results, "Evaluation against in vivo data"; equals `KM,cell / KM,PK`, so in vivo `KD = KD(in vitro) / 2.1` (Eq. 18 orientation; see Assumptions and deviations) |
+| `frac_tumor` | 0.01 | Text before the Methods: tumour cells 1% of normal cells |
+| `fold_ksyn_tumor` | 10 | Fig. 5 caption: 10-fold increased receptor expression |
+| `f_kint_drug` | 1 (5 and 10 in Fig. 4b-d) | Results, "Downregulation"; `Ncell` keeps the zalutumumab value |
+| `fold_kint_tumor` | 1 (0.1 for the decreased-internalisation tumour) | Fig. 5 caption |
+
+# Helpers
+
+```{r helpers}
+mod <- readModelDb("Krippendorff_2012_zalutumumab_cyno")
+mod_obj <- rxode2::rxode2(mod)
+
+# Typical parameter vector, from which scenario overrides are built.
+theta <- mod_obj$theta
+
+obs_h <- sort(unique(c(seq(0, 24, by = 1), seq(24, 24 * 120, by = 6))))
+
+solve_dose <- function(dose_mgkg, ..., times = obs_h) {
+  pars <- theta
+  over <- c(...)
+  pars[names(over)] <- over
+  ev <- rxode2::et(amt = dose_mgkg, cmt = "central", time = 0) |>
+    rxode2::et(times)
+  rxode2::rxSolve(mod_obj, events = ev, params = pars, returnType = "data.frame",
+                  atol = 1e-10, rtol = 1e-8, maxsteps = 1e6) |>
+    dplyr::mutate(dose = dose_mgkg)
+}
+```
+
+# Pre-treatment steady state
+
+Without drug, every receptor state must hold at the analytic steady state used
+for the initial conditions, and the tumour cells with 10-fold increased
+synthesis carry exactly 10 times the receptor of normal cells.
+
+```{r steady-state}
+ss <- solve_dose(0, times = seq(0, 24 * 60, by = 24))
+drift <- ss |>
+  dplyr::summarise(
+    target = max(abs(target_normal / target_normal[1] - 1)),
+    target_int = max(abs(target_int_normal / target_int_normal[1] - 1)),
+    complex_egf = max(abs(complex_egf_normal / complex_egf_normal[1] - 1)),
+    tumor = max(abs(target_tumor / target_tumor[1] - 1))
+  )
+knitr::kable(signif(drift, 3), caption = "Maximum relative drift over 60 days with no dose.")
+stopifnot(all(unlist(drift) < 1e-6))
+stopifnot(abs(ss$target_tumor[1] / ss$target_normal[1] - 10) < 1e-8)
+c(R_star = ss$target_normal[1], Ri_star = ss$target_int_normal[1],
+  RL_star = ss$complex_egf_normal[1])
+```
+
+# Derived quantities reported in the paper
+
+The paper reports two computed quantities: the number of relevant cells
+`Ncell = 5.2e9` (Eq. 17) and the in vitro-in vivo scaling factor
+`SFiviv = 2.1`. Both are reproduced from the Table 1 and Table 2 values.
+
+```{r derived}
+th <- as.list(theta)
+sf_unit <- 1e9 / th$navo
+ksyn_h <- th$ksyn_target * 60
+bmax_nmol <- th$bmax_pk / th$mw * 1e6
+n_cell <- th$kint * bmax_nmol / (ksyn_h * sf_unit)
+
+# Eq. 15 with the monkey rate constants (per min), in vitro KD = 7 nM
+kdegR <- th$kint_target * th$f_kint_cyno
+krecy <- th$krecy_target * th$f_recy_cyno
+kdegRC_min <- th$kint / 60
+koffC_min <- th$kd_invitro * th$kon_egf
+drug_part <- (kdegRC_min + koffC_min) / (kdegRC_min * th$kon_egf)
+system_part <- th$kdeg_target_int * kdegR / (th$kdeg_target_int + krecy) +
+  th$egf * th$kon_egf * th$kint_egf / (th$koff_egf + th$kint_egf)
+km_cell <- drug_part * system_part # nM
+km_pk <- 0.5e-3 / th$mw * 1e9 # Table 1: KM,PK = 0.5e-3 mg/mL, in nM
+
+tibble::tibble(
+  Quantity = c("Ncell (cells/kg)", "KM,cell (nM)", "KM,PK (nM)", "KM,cell / KM,PK"),
+  Reproduced = signif(c(n_cell, km_cell, km_pk, km_cell / km_pk), 3),
+  Paper = c("5.2e9", "", "", "SFiviv = 2.1")
+) |>
+  knitr::kable()
+stopifnot(abs(n_cell / 5.2e9 - 1) < 0.01)
+stopifnot(abs(km_cell / km_pk - 2.1) < 0.01)
+```
+
+`Ncell` matches when `Bmax,PK` is read as an amount (2 mg/kg, as Eqs. 2-3 and
+17 require), not the "mg/h/kg" printed in Table 1. The reported `SFiviv = 2.1`
+equals `KM,cell / KM,PK`, the reciprocal of Eq. 18 as printed
+(`KM,PK = SFiviv KM,cell` would give 0.48); see Assumptions and deviations.
+
+# Figure 3a: plasma concentrations
+
+The dashed lines are the Lammerts van Bueren Michaelis-Menten model of
+Eqs. 1-3 with the Table 1 values (coded inline here for comparison only); the
+solid lines are the packaged cell-level model with normal cells only
+(`frac_tumor = 0`, the Fig. 3 configuration).
+
+```{r figure-3a}
+mm_mod <- rxode2::rxode2({
+  vpla <- 70
+  vint <- 35
+  q_pi <- vpla * 0.043
+  q_ip <- vint * 0.043
+  cl_lin <- vpla * 0.0055
+  kb <- 0.069
+  bmax <- 2
+  km <- 0.5e-3
+  c_int <- isf / vint
+  d/dt(central) <- -q_pi * central / vpla + q_ip * c_int - cl_lin * central / vpla
+  d/dt(isf) <- q_pi * central / vpla - q_ip * c_int - kb * (bmax * c_int / (km + c_int) - bound)
+  d/dt(bound) <- kb * (bmax * c_int / (km + c_int) - bound) - 0.0055 * bound
+  Cc <- 1000 * central / vpla
+})
+mm_bound0 <- 0 # Methods: no drug-receptor complex before dosing
+sim_mm <- dplyr::bind_rows(lapply(c(2, 20, 40), function(d) {
+  ev <- rxode2::et(amt = d, cmt = "central") |> rxode2::et(obs_h)
+  rxode2::rxSolve(mm_mod, ev, inits = c(bound = mm_bound0), returnType = "data.frame") |>
+    dplyr::mutate(dose = d, model = "Michaelis-Menten (Eqs. 1-3)")
+}))
+
+sim_n <- dplyr::bind_rows(lapply(c(2, 20, 40), function(d) solve_dose(d, frac_tumor = 0))) |>
+  dplyr::mutate(model = "Cell-level (Eqs. 19-24)")
+
+dplyr::bind_rows(sim_n, sim_mm) |>
+  dplyr::filter(dplyr::between(time, 1, 24 * 35), Cc >= 0.05) |>
+  ggplot(aes(time / 24, Cc, colour = factor(dose), linetype = model)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "Plasma zalutumumab (ug/mL)", colour = "Dose (mg/kg)",
+       linetype = NULL, caption = "Replicates Figure 3a of Krippendorff 2012.") +
+  theme(legend.position = "bottom", legend.box = "vertical")
+```
+
+```{r figure-3a-check}
+cmp_pk <- dplyr::inner_join(
+  sim_n |> dplyr::select(dose, time, Cc_cell = Cc),
+  sim_mm |> dplyr::select(dose, time, Cc_mm = Cc),
+  by = c("dose", "time")
+) |>
+  dplyr::filter(dplyr::between(time, 1, 24 * 21)) |>
+  dplyr::group_by(dose) |>
+  dplyr::summarise(
+    `Median |cell/MM - 1| (%), days 0-21` = round(100 * median(abs(Cc_cell / Cc_mm - 1)), 1),
+    .groups = "drop"
+  )
+knitr::kable(cmp_pk)
+# The two structures differ only in the target term. At 20 and 40 mg/kg the
+# target is saturated and both reduce to the same linear PK; at 2 mg/kg they
+# agree because the scaled KD makes the cell model's KM equal KM,PK. Reading
+# the reported 2.1 the other way round puts the 2 mg/kg curves over 300% apart.
+stopifnot(all(cmp_pk[[2]][cmp_pk$dose >= 20] < 3), cmp_pk[[2]][cmp_pk$dose == 2] < 15)
+```
+
+# Figure 3b and Table 3: receptor activation and saturation
+
+```{r figure-3b}
+sim_n |>
+  dplyr::filter(dose %in% c(2, 20)) |>
+  dplyr::select(time, dose, `Residual EGFR activation (%)` = rl_pct_normal,
+                `Receptor saturation (%)` = sat_normal) |>
+  dplyr::mutate(`Receptor saturation (%)` = 100 * `Receptor saturation (%)`) |>
+  tidyr::pivot_longer(-c(time, dose)) |>
+  dplyr::filter(time <= 24 * 60) |>
+  ggplot(aes(time / 24, value, linetype = factor(dose))) +
+  geom_line() +
+  facet_wrap(~name) +
+  labs(x = "Time (days)", y = "%", linetype = "Dose (mg/kg)",
+       caption = "Replicates Figure 3b (main panel and inset) of Krippendorff 2012.")
+```
+
+```{r table-3}
+tab3 <- sim_n |>
+  dplyr::group_by(dose) |>
+  dplyr::summarise(
+    max_sat = 100 * max(sat_normal),
+    min_rl = min(rl_pct_normal),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(paper = c("Max. 60% saturated", "100% saturated", "100% saturated"))
+tab3 |>
+  dplyr::mutate(max_sat = round(max_sat, 1), min_rl = round(min_rl, 1)) |>
+  dplyr::rename("Dose (mg/kg)" = dose, "Max saturation (%)" = max_sat,
+                "Min residual activation (%)" = min_rl, "Paper, Table 3" = paper) |>
+  knitr::kable()
+stopifnot(
+  abs(tab3$max_sat[tab3$dose == 2] - 60) < 7,
+  all(tab3$max_sat[tab3$dose >= 20] > 98)
+)
+
+# Text: 20 mg/kg "almost completely inhibited receptor activation for a period
+# of about 20 days", recovery starting between days 20 and 25.
+rl20 <- sim_n |> dplyr::filter(dose == 20)
+stopifnot(
+  max(rl20$rl_pct_normal[rl20$time >= 24 & rl20$time <= 24 * 20]) < 10,
+  rl20$rl_pct_normal[rl20$time == 24 * 30] > 25
+)
+```
+
+Table 3 and the 20 mg/kg time course are reproduced: peak saturation at
+2 mg/kg is 65% (Table 3: "Max. 60%"), and 20 mg/kg holds activated receptors
+near zero for about 20 days. The text says 2 mg/kg "reduces the number of
+active receptors by about 35%"; the model's nadir is 35% *of* baseline (a 65%
+reduction), mirroring the saturation, so the sentence most likely means
+"reduces to about 35%". See Assumptions and deviations.
+
+# Figure 4: affinity, downregulation and the effect plateau
+
+Different affinities are realised through `koffC` with `konC` fixed
+(Results, "Affinity and dose"); each in vitro `KD` is divided by `SFiviv = 2.1`.
+
+```{r figure-4a}
+mabs <- tibble::tribble(
+  ~mab,          ~kd_nM,
+  "Panitumumab", 0.05,
+  "Cetuximab",   0.4,
+  "IMC-11F8",    0.3,
+  "Nimotuzumab", 1,
+  "Zalutumumab", 7
+)
+sim_mabs <- dplyr::bind_rows(lapply(seq_len(nrow(mabs)), function(i) {
+  dplyr::bind_rows(lapply(c(2, 20), function(d) {
+    solve_dose(d, frac_tumor = 0, kd_invitro = mabs$kd_nM[i]) |>
+      dplyr::mutate(mab = mabs$mab[i])
+  }))
+}))
+sim_mabs |>
+  dplyr::filter(time <= 24 * 60) |>
+  ggplot(aes(time / 24, rl_pct_normal, colour = mab, linetype = factor(dose))) +
+  geom_line() +
+  labs(x = "Time (days)", y = "Active receptors (% of pre-treatment)",
+       colour = NULL, linetype = "Dose (mg/kg)",
+       caption = "Replicates Figure 4a of Krippendorff 2012.")
+```
+
+The three measures of Eqs. 27-28 and the duration of inhibition (time from
+dosing until the activated receptors recover to 75% of baseline) are computed
+over a 120-day horizon.
+
+```{r inhibition-measures}
+measures <- function(sim, rl_col = "rl_pct_normal") {
+  rl <- sim[[rl_col]] / 100
+  t <- sim$time
+  integral <- sum(diff(t) * ((1 - rl[-1]) + (1 - rl[-length(rl)])) / 2) # receptor-fraction x h
+  i_min <- which.min(rl)
+  rec <- which(rl[i_min:length(rl)] >= 0.75)[1]
+  duration <- if (min(rl) >= 0.75) 0 else t[i_min + rec - 1]
+  c(integral_d = integral / 24, peak = 1 - min(rl), duration_d = duration / 24)
+}
+
+grid <- tidyr::expand_grid(kd_nM = 10^seq(-2, 2, by = 0.5), f_int = c(1, 5, 10), dose = c(2, 20))
+fig4 <- dplyr::bind_rows(lapply(seq_len(nrow(grid)), function(i) {
+  g <- grid[i, ]
+  s <- solve_dose(g$dose, frac_tumor = 0, kd_invitro = g$kd_nM, f_kint_drug = g$f_int)
+  dplyr::bind_cols(g, tibble::as_tibble(as.list(measures(s))))
+}))
+fig4 |>
+  tidyr::pivot_longer(c(integral_d, peak, duration_d)) |>
+  ggplot(aes(kd_nM / theta[["sfiviv"]], value, colour = factor(f_int), linetype = factor(dose))) +
+  annotate("rect", xmin = 0.05 / 2.1, xmax = 7 / 2.1, ymin = -Inf, ymax = Inf, alpha = 0.15) +
+  geom_line() +
+  scale_x_log10() +
+  facet_wrap(~name, scales = "free_y",
+             labeller = as_labeller(c(integral_d = "Integral (days)", peak = "Peak (fraction)",
+                                      duration_d = "Duration (days)"))) +
+  labs(x = "In vivo KD (nM)", y = NULL, colour = "kdegRC multiplier", linetype = "Dose (mg/kg)",
+       caption = "Replicates Figure 4b-d of Krippendorff 2012; shaded: the five antibodies.")
+```
+
+```{r figure-4-check}
+plateau <- dplyr::bind_rows(lapply(seq_len(nrow(mabs)), function(i) {
+  s <- sim_mabs |> dplyr::filter(mab == mabs$mab[i], dose == 20)
+  tibble::tibble(mab = mabs$mab[i], tibble::as_tibble(as.list(measures(s))))
+}))
+knitr::kable(plateau |> dplyr::mutate(dplyr::across(-mab, ~ signif(.x, 3))),
+             caption = "Inhibition measures at 20 mg/kg for the five antibodies.")
+# Effect plateau: a 140-fold affinity range changes the 20 mg/kg integral of
+# inhibition by only a few percent.
+stopifnot(diff(range(plateau$integral_d)) / max(plateau$integral_d) < 0.1)
+
+# Downregulation (Results): negligible for high-affinity antibodies, a gain
+# for lower-affinity ones.
+hi_aff <- fig4 |>
+  dplyr::filter(kd_nM <= 1) |>
+  dplyr::group_by(kd_nM, dose) |>
+  dplyr::summarise(spread = diff(range(integral_d)) / max(integral_d), .groups = "drop")
+lo_aff <- fig4 |> dplyr::filter(kd_nM == 100, dose == 20)
+stopifnot(
+  nrow(hi_aff) == 10,
+  all(hi_aff$spread < 0.02),
+  lo_aff$integral_d[lo_aff$f_int == 10] > 1.05 * lo_aff$integral_d[lo_aff$f_int == 1]
+)
+```
+
+# Figure 5: normal versus tumour cells
+
+Two tumour-cell types with comparable 10-fold elevated EGFR (`R*` is 10.0-
+and 9.9-fold the normal value): increased
+receptor synthesis (`fold_ksyn_tumor = 10`, the model default) or 10-fold
+decreased internalisation of free and EGF-bound receptor
+(`fold_ksyn_tumor = 1`, `fold_kint_tumor = 0.1`). Tumour cells number 1% of
+normal cells.
+
+```{r figure-5a}
+scen <- list(
+  "Increased synthesis" = c(fold_ksyn_tumor = 10, fold_kint_tumor = 1),
+  "Decreased internalisation" = c(fold_ksyn_tumor = 1, fold_kint_tumor = 0.1)
+)
+sim_t <- dplyr::bind_rows(lapply(names(scen), function(nm) {
+  dplyr::bind_rows(lapply(c(2, 20), function(d) {
+    do.call(solve_dose, c(list(dose_mgkg = d), as.list(scen[[nm]]))) |>
+      dplyr::mutate(tumor = nm)
+  }))
+}))
+dplyr::bind_rows(
+  sim_t |> dplyr::filter(tumor == "Increased synthesis") |>
+    dplyr::transmute(time, dose, cell = "Normal", rl = rl_pct_normal),
+  sim_t |> dplyr::transmute(time, dose, cell = paste("Tumour:", tumor), rl = rl_pct_tumor)
+) |>
+  dplyr::filter(time <= 24 * 80) |>
+  ggplot(aes(time / 24, rl, colour = cell, linetype = factor(dose))) +
+  geom_line() +
+  labs(x = "Time (days)", y = "Active receptors (% of pre-treatment)",
+       colour = NULL, linetype = "Dose (mg/kg)",
+       caption = "Replicates Figure 5a of Krippendorff 2012.") +
+  theme(legend.position = "bottom", legend.box = "vertical")
+```
+
+```{r figure-5b}
+spec <- sim_t |>
+  dplyr::group_by(tumor, dose) |>
+  dplyr::group_modify(function(s, key) {
+    mt <- measures(s, "rl_pct_tumor")
+    mn <- measures(s, "rl_pct_normal")
+    tibble::tibble(S_E = mt[["integral_d"]] / mn[["integral_d"]],
+                   S_p = mt[["peak"]] / mn[["peak"]],
+                   S_d = mt[["duration_d"]] / mn[["duration_d"]],
+                   E_tumor = mt[["integral_d"]], dur_tumor = mt[["duration_d"]])
+  }) |>
+  dplyr::ungroup()
+knitr::kable(spec |> dplyr::mutate(dplyr::across(where(is.numeric), ~ signif(.x, 3))),
+             caption = "Antibody specificity (Eq. 29), tumour/normal. Compare Figure 5b.")
+
+# A duration of NA means the activated receptors had not recovered to 75% of
+# baseline by day 120.
+dec <- spec |> dplyr::filter(tumor == "Decreased internalisation")
+inc <- spec |> dplyr::filter(tumor == "Increased synthesis")
+stopifnot(
+  # Paper: decreased internalisation gives stronger inhibition than normal
+  # cells, with a higher integral and a longer duration than increased
+  # synthesis.
+  all(dec$S_E > 1.5),
+  all(dec$E_tumor > inc$E_tumor),
+  all(dplyr::coalesce(dec$dur_tumor, Inf) > inc$dur_tumor),
+  # Eqs. 37-40 are linear in the receptor states for a given Cint(t), so a
+  # 10-fold synthesis rate scales every tumour state 10-fold and leaves the
+  # relative response identical to normal cells.
+  all(abs(inc$S_E - 1) < 1e-4),
+  all(abs(inc$S_p - 1) < 1e-4)
+)
+```
+
+# PKNCA: plasma exposure
+
+The paper reports no NCA, so this block characterises the simulated plasma
+profiles (normal cells only, Fig. 3 configuration) for reference; there is no
+published comparison.
+
+```{r pknca}
+sim_nca <- sim_n |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(id = dose, treatment = paste(dose, "mg/kg")) |>
+  dplyr::select(id, time, Cc, treatment)
+dose_df <- sim_nca |>
+  dplyr::distinct(id, treatment) |>
+  dplyr::mutate(time = 0, amt = as.numeric(sub(" mg/kg", "", treatment)))
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, route = "intravascular")
+intervals <- data.frame(start = 0, end = 24 * 120, cmax = TRUE, auclast = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tab <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "auclast", "half.life")) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+nca_tab |>
+  dplyr::mutate(dplyr::across(-treatment, ~ signif(.x, 3))) |>
+  dplyr::rename("Dose" = treatment, "Cmax (ug/mL)" = cmax,
+                "AUC0-120d (h*ug/mL)" = auclast, "Terminal t1/2 (h)" = half.life) |>
+  knitr::kable()
+# Dose-normalised exposure rises with dose (target-mediated disposition).
+auc <- setNames(nca_tab$auclast, nca_tab$treatment)
+stopifnot(auc[["20 mg/kg"]] / 20 > 1.5 * auc[["2 mg/kg"]] / 2)
+```
+
+# Assumptions and deviations
+
+- **`SFiviv` orientation.** Eq. 18 defines `KM,PK = SFiviv KM,cell` and the
+  affinity section prints `KD(in vivo) = SFiviv KD(in vitro)`; the two agree
+  with each other. The Table 1 and Table 2 values, however, give
+  `KM,cell = 7.08 nM` and `KM,PK = 3.38 nM`, so the reported number
+  `SFiviv = 2.1` is `KM,cell / KM,PK`, the reciprocal of Eq. 18's factor
+  (0.48). The maintainers follow the equations: zalutumumab's in vivo
+  `KD = 7 / 2.1 = 3.33 nM`, which makes the cell model's KM equal the
+  `KM,PK` of the inherited PK model. The model file stores the printed 2.1
+  and divides by it. The evidence: with this choice the 2 mg/kg plasma
+  profile agrees with the Michaelis-Menten model within about 10% (the paper
+  reports good agreement at all three doses), and the 2 mg/kg nadir of
+  activated receptors is 35% of baseline, matching the text's "about 35%".
+  Multiplying by 2.1 instead (`KD = 14.7 nM`) puts the 2 mg/kg plasma curves
+  more than 300% apart. The cost is a 2 mg/kg peak saturation of 65% against
+  Table 3's "Max. 60%".
+- **2 mg/kg receptor reduction.** The Results text says the 2 mg/kg dose
+  "reduces the number of active receptors by about 35%". The model's nadir
+  is 35% of baseline, a 65% reduction that mirrors the 65% peak saturation;
+  the sentence is read as "reduces to about 35%". The Fig. 3b image in the
+  open-access record is too low-resolution to read the nadir.
+- **Tumour specificity for increased synthesis.** The paper states that for
+  both tumour alterations the inhibitory effect is stronger in tumour than in
+  normal cells. For the increased-synthesis tumour this cannot hold under
+  Eqs. 37-40 as printed: the receptor equations are linear in the receptor
+  states for a given interstitial concentration, so a 10-fold synthesis rate
+  scales every state 10-fold and the relative response equals that of normal
+  cells (specificity exactly 1). The decreased-internalisation tumour does
+  show the paper's stronger and longer inhibition. No parameter was changed;
+  the Fig. 5 image is too low-resolution to compare in detail.
+- **`Bmax,PK` units.** Table 1 prints "mg/h/kg"; Eqs. 2-3 use `Bmax,PK` as an
+  amount and Eq. 17 reproduces the reported `Ncell = 5.2e9` only with
+  2 mg/kg, so the value is used as an amount per kg.
+- **Typographical errors in the equations.** Eq. 11 prints `koffC RD` for
+  `koffC RC`; Eq. 35 prints `d R_LN/dt` for `d RL_N/dt`. The Fig. 4 caption
+  refers to Table 3 for the affinities, which are in Table 4.
+- **`CLlin`.** Table 1 gives `CLlin = Vpla kel`, using the rate constant that
+  Table 1 describes as "elimination of EGFR by internalisation and
+  degradation" (0.0055 1/h). This is encoded as printed.
+- **Tumour scenarios.** The model default is the increased-synthesis tumour
+  (`fold_ksyn_tumor = 10`). The decreased-internalisation tumour applies the
+  10-fold reduction to both `kdegR` and `kdegRL` (Fig. 5 caption, "free and
+  bound receptor") after the monkey adjustment of `kdegR`; `kdegRC`,
+  recycling and degradation are unchanged. Neither choice is spelled out
+  further in the paper.
+- **Ligand.** The EGF concentration `L` is held constant (no ODE is given for
+  it), as in the paper.
+- **Units.** The receptor rate constants are kept in the per-minute units of
+  Table 2 and converted to per hour inside `model()`; `kdegRC` and the PK
+  parameters are already per hour.
+- **Figure 3a observed data** are not reproduced (courtesy data, not
+  published); the comparison is against the paper's Michaelis-Menten model.
+- **Erratum check.** No correction notice was found in Europe PMC as of
+  2026-11-19.

@@ -3,6 +3,7 @@ Sadouki_2025_meropenem_gentamicin_ciprofloxacin <- function() {
   reference <- "Sadouki Z, Wey EQ, Read L, Bayliss M, Noel A, Balakrishnan I, McHugh TD, Kloprogge F. Pharmacodynamic interactions among meropenem ciprofloxacin and gentamicin in an in-vitro model. Sci Rep. 2025 Nov 24;15:45244. doi:10.1038/s41598-025-29354-y."
   vignette <- "Sadouki_2025_meropenem_gentamicin_ciprofloxacin"
   units <- list(time = "h", dosing = "mg/L", concentration = "mg/L")
+  dosing <- "mer"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

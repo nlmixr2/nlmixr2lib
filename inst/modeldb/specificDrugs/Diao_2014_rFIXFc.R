@@ -1,5 +1,5 @@
 Diao_2014_rFIXFc <- function() {
-  description <- "Three-compartment population PK model for recombinant factor IX Fc fusion protein (rFIXFc, eftrenonacog alfa) in patients with severe to moderate haemophilia B aged 12-77 years (Diao 2014). Disposition is described by linear three-compartment kinetics with intravenous input and first-order elimination from the central compartment; body weight is the only retained covariate, scaling CL and V1 with estimated power exponents (not the canonical 0.75 / 1) and a reference weight of 73 kg."
+  description <- "Three-compartment population PK model for recombinant factor IX Fc fusion protein (rFIXFc, eftrenonacog alfa) in patients with severe to moderate haemophilia B aged 12-77 years (Diao 2014). Disposition is described by linear three-compartment kinetics with intravenous input and first-order elimination from the central compartment; body weight is the only retained covariate, scaling CL and V1 with estimated power exponents (not the canonical 0.75 / 1) and a reference weight of 73 kg. Between-occasion variability on CL and V1 (two occasions, the baseline and week-26 repeat profiles, selected by OCC) is included."
   reference <- "Diao L, Li S, Ludden T, Gobburu J, Nestorov I, Jiang H. Population pharmacokinetic modelling of recombinant factor IX Fc fusion protein (rFIXFc) in patients with haemophilia B. Clin Pharmacokinet. 2014;53(5):467-477. doi:10.1007/s40262-013-0129-7"
   vignette <- "Diao_2014_rFIXFc"
   units <- list(time = "h", dosing = "IU", concentration = "IU/dL")
@@ -21,6 +21,27 @@ Diao_2014_rFIXFc <- function() {
       reference_category = NULL,
       notes = "Reference weight 73 kg (Diao 2014 Table 3, typical 73 kg patient). Body-weight power exponents were estimated (not fixed): 0.436 on CL and 0.396 on V1 (Diao 2014 Table 3 and Discussion p. 475). The paper found BW to be the only statistically significant covariate; its impact was limited (IIV on CL and V1 dropped by only 3.4 and 2.5 percentage points after including BW). BW does not enter Q2, V2, Q3, or V3 in the final model.",
       source_name = "BW"
+    ),
+    OCC = list(
+      description = "Occasion index (1-2): baseline or repeat pharmacokinetic profile, for between-occasion variability on CL and V1",
+      units = "(count)",
+      type = "categorical",
+      reference_category = NULL,
+      notes = paste(
+        "Diao 2014 Section 3.2 (p. 472): the baseline profile at week 1 is occasion 1",
+        "and the repeat profile at week 26 is occasion 2; 21 patients of the Arm 1",
+        "sequential PK subgroup have an occasion 2 against 135 with an occasion 1",
+        "(p. 473). Decomposed inside model() into the binary flags oc1 and oc2 that",
+        "select one of two BOV etas on each of log-CL and log-V1. rxode2's `| OCC`",
+        "level shares one draw per occasion when no subject has two or more",
+        "occasions, so the occasions are expanded into indicator-multiplexed etas;",
+        "occasion 1 carries the estimated variance and occasion 2 is fixed to the",
+        "same value. Records with OCC beyond 2 carry no BOV, and OCC is required in",
+        "every event table, also for zeroRe() runs; a single-profile simulation",
+        "passes OCC = 1.",
+        sep = " "
+      ),
+      source_name = "occasion"
     )
   )
 
@@ -80,6 +101,18 @@ Diao_2014_rFIXFc <- function() {
     etalvp  ~ 0.213444                        # Diao 2014 Table 3: IIV V2 = 46.2%; omega^2 = 0.462^2
     etalvp2 ~ 0.142129                        # Diao 2014 Table 3: IIV V3 = 37.7%; omega^2 = 0.377^2
 
+    # Inter-occasion variability on CL and V1 (Diao 2014 Table 3, p. 474; the
+    # footnote gives IOV as sqrt(variance) * 100, the same convention as the IIV
+    # above, so omega^2 = CV^2). One variance is shared by the two occasions
+    # (baseline and week-26 repeat profiles). rxode2's `| OCC` level shares one
+    # draw per occasion when no subject has two or more occasions, so each
+    # occasion is an indicator-multiplexed eta (see the OCC covariate); occasion
+    # 2 is fixed to occasion 1.
+    etaiov_cl_1 ~ 0.151^2         # Diao 2014 Table 3: IOV on CL = 15.1%
+    etaiov_cl_2 ~ fixed(0.151^2)  # same variance as occasion 1
+    etaiov_vc_1 ~ 0.174^2         # Diao 2014 Table 3: IOV on V1 = 17.4%
+    etaiov_vc_2 ~ fixed(0.174^2)  # same variance as occasion 1
+
     # Residual error - combined additive + proportional (Diao 2014 Table 3).
     propSd <- 0.106; label("Proportional residual error (fraction)")                             # Diao 2014 Table 3: proportional residual error = 10.6%
     addSd  <- 0.24;  label("Additive residual error on FIX activity (IU/dL)")                    # Diao 2014 Table 3: additive residual error = 0.24 IU/dL
@@ -90,8 +123,15 @@ Diao_2014_rFIXFc <- function() {
     # model); Q2, V2, Q3, V3 are not BW-scaled. Allometric exponents on CL and
     # V1 were estimated (e_wt_cl = 0.436, e_wt_vc = 0.396) - markedly lower
     # than the canonical 0.75 / 1, per the paper's Discussion.
-    cl  <- exp(lcl  + etalcl)  * (WT / 73)^e_wt_cl
-    vc  <- exp(lvc  + etalvc)  * (WT / 73)^e_wt_vc
+    # Occasion flags: one BOV eta applies per record. A single-profile
+    # simulation passes OCC = 1.
+    oc1 <- (OCC == 1)
+    oc2 <- (OCC == 2)
+    iov_cl <- oc1 * etaiov_cl_1 + oc2 * etaiov_cl_2
+    iov_vc <- oc1 * etaiov_vc_1 + oc2 * etaiov_vc_2
+
+    cl  <- exp(lcl  + etalcl + iov_cl)  * (WT / 73)^e_wt_cl
+    vc  <- exp(lvc  + etalvc + iov_vc)  * (WT / 73)^e_wt_vc
     q   <- exp(lq   + etalq)
     vp  <- exp(lvp  + etalvp)
     q2  <- exp(lq2)

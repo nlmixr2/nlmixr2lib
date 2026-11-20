@@ -41,6 +41,7 @@ Sang_2021_doxorubicin_rat_qsp <- function() {
     dosing = "ug (per-animal doxorubicin amount; a mg/kg dose is multiplied by body weight in kg and by 1000)",
     concentration = "ug/mL (plasma Cc and heart-tissue Cheart; the heart AUC driving the PD is in ug*h/mL)"
   )
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     LVEDV_BL = list(

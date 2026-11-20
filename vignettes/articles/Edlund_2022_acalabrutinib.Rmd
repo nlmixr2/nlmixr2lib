@@ -532,10 +532,11 @@ changes for ACP-5862 only for the PPI effect.
 - **Occasions.** The analysis used three rich-sampling occasions and lumped
   all sparse samples into one further occasion (Results 3.1, Figure S2; BOV
   shrinkage is the mean of four occasions). The model encodes these as `OCC`
-  1-4 with one shared variance per parameter. Because rxode2 has no `| OCC`
-  random-effect level, the occasion etas are expanded with indicators; rxode2
-  therefore warns that these etas are not mu-referenced, which only affects
-  the speed of a future estimation run, not simulation.
+  1-4 with one shared variance per parameter. Because rxode2's `| OCC` level
+  shares one draw per occasion when no subject has two or more occasions, the
+  occasion etas are expanded with indicators; rxode2 therefore warns that
+  these etas are not mu-referenced, which only affects the speed of a future
+  estimation run, not simulation.
 - **Per-dose BOV in the exposure simulation.** To match the paper's
   procedure, each dose here receives a fresh F1 and MTT draw by changing
   `etaiov_*_1` at every dose on `OCC = 1`. Users simulating the four

@@ -1,5 +1,5 @@
 Yoshida_2024_fazpilodemab <- function() {
-  description <- "Population PK + longitudinal gastrointestinal-adverse-event (GIAE) discrete-time Markov + treatment-discontinuation logistic model for the anti-FGFR/KLB bispecific antibody fazpilodemab (BFKB8488A) in adults with type 2 diabetes mellitus or non-alcoholic fatty liver disease (Yoshida 2024). The PK structure is a 2-compartment disposition with parallel direct (ka) plus transit-mediated (ka2 via the depot2 absorption compartment, transit rate ktr) subcutaneous absorption; linear plus Michaelis-Menten elimination acting on free drug; target-mediated quasi-steady-state binding to a constant target concentration rmax; and a sigmoidal time-onset ADA-mediated clearance arm cl_ada that activates when ADA_POS = 1. The DTMM transition probabilities (grade 0 / grade 1 / grade 2-3) and the treatment-discontinuation probability are emitted as algebraic outputs conditional on the time-varying PREV_AE_SCORE covariate (the previous-day GIAE grade); the actual Markov-chain stochastic simulation is performed downstream in R using these probabilities (matching the mrgsolve plus Rcpp framework of the source paper supplement S2.3)."
+  description <- "Population PK + longitudinal gastrointestinal-adverse-event (GIAE) discrete-time Markov + treatment-discontinuation logistic model for the anti-FGFR/KLB bispecific antibody fazpilodemab (BFKB8488A) in adults with type 2 diabetes mellitus or non-alcoholic fatty liver disease (Yoshida 2024). The PK structure is a 2-compartment disposition with parallel direct (ka) plus transit-mediated (ka2 via the depot2 absorption compartment, transit rate ktr) subcutaneous absorption; linear plus Michaelis-Menten elimination acting on free drug; target-mediated quasi-steady-state binding to a constant target concentration rmax; and a sigmoidal time-onset ADA-mediated clearance arm cl_ada that activates when ADA_POS = 1. The DTMM transition probabilities (grade 0 / grade 1 / grade 2-3) and the treatment-discontinuation probability are emitted as algebraic outputs conditional on the time-varying PREV_AE_SCORE covariate (the previous-day GIAE grade); the actual Markov-chain stochastic simulation is performed downstream in R using these probabilities (matching the mrgsolve plus Rcpp framework of the source paper supplement S2.3). Inter-occasion variability on F1 (a fresh draw per dose, seven doses, selected by OCC = dose number) is included."
   reference <- "Yoshida K, Poon V, Dash A, Kunder R, Chinn L, Kagedal M. Simulation-based evaluation of personalized dosing approaches for anti-FGFR/KLB bispecific antibody fazpilodemab. CPT Pharmacometrics Syst Pharmacol. 2024;13(4):544-550. doi:10.1002/psp4.13111"
   vignette <- "Yoshida_2024_fazpilodemab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
@@ -36,6 +36,32 @@ Yoshida_2024_fazpilodemab <- function() {
         sep = " "
       ),
       source_name = "PDV"
+    ),
+    OCC = list(
+      description = "Dose number (1-7), the occasion for inter-occasion variability on bioavailability F1",
+      units = "(count)",
+      type = "categorical",
+      reference_category = NULL,
+      notes = paste(
+        "Supplement S2.3.1 (mrgsolve): `[OMEGA] @name IOV @labels IOV1` = 0.0341 enters",
+        "as `F1 = TVF1*exp(ETA_F1 + IOV)`, and the supplement's code comment says one",
+        "IOV is enough 'because simulation is re-run at every dosing in R script', so",
+        "an occasion is one dose and each dose draws its own F1. The main text only",
+        "says the trial simulations consider BSV and interoccasion variability in PKs.",
+        "Decomposed inside model() into the binary flags oc1..oc7 that select one of",
+        "seven BOV etas on log-F1; f(depot) is evaluated on each dose record, so the",
+        "OCC of a dose record (the dose number) is the occasion of that dose.",
+        "rxode2's `| OCC` level shares one draw per occasion when no subject has two",
+        "or more occasions, so the occasions are expanded into indicator-multiplexed",
+        "etas; occasion 1 carries the estimated variance and occasions 2-7 are fixed",
+        "to the same value. Seven occasions cover a q2w regimen over 84 days (doses",
+        "on days 0, 14, ..., 84); a longer simulation needs more slots (add",
+        "etaiov_fdepot_8, ... and the matching flags). Records with OCC beyond 7",
+        "carry no IOV, and OCC is required in every event table, also for zeroRe()",
+        "runs; a single-dose simulation passes OCC = 1.",
+        sep = " "
+      ),
+      source_name = "occasion"
     )
   )
 
@@ -113,12 +139,27 @@ Yoshida_2024_fazpilodemab <- function() {
     # All variances on the exponential / log scale (omega^2) from the mrgsolve
     # [OMEGA] @name IIV block of Supplement S2.3.1.
     etalcl       ~ 0.0174    # S2.3.1 E_CL       = 0.0174 (omega^2 on log CL)
-    etalfdepot   ~ 0.0952    # S2.3.1 E_F1       = 0.0952 (omega^2 on log F1; note IOV on F1 of 0.0341 not implemented -- see vignette Errata)
+    etalfdepot   ~ 0.0952    # S2.3.1 E_F1       = 0.0952 (omega^2 on log F1)
     etalvc       ~ 0.286     # S2.3.1 E_V2       = 0.286
     etalka2      ~ 0.297     # S2.3.1 E_KA2      = 0.297
     etalcl_ada   ~ 5.21      # S2.3.1 E_CLADAMAX = 5.21 (very high; reflects bimodal ADA-response distribution)
     etalt50_ada  ~ 0.155     # S2.3.1 E_T50ADA   = 0.155
     etalslp_ae   ~ 1.85      # S2.3.1 E_SLP      = 1.85 (omega^2 on log slope of drug effect on AE)
+
+    # ---------- Inter-occasion variability on F1 ----------
+    # Supplement S2.3.1 [OMEGA] @name IOV: 0.0341 (omega^2 on log F1), redrawn at
+    # every dosing. rxode2's `| OCC` level shares one draw per occasion when no
+    # subject has two or more occasions, so each dose is an indicator-multiplexed
+    # eta (see the OCC covariate); occasions 2-7 are fixed to occasion 1. Seven
+    # occasions cover a q2w regimen over 84 days; a longer simulation needs more
+    # slots.
+    etaiov_fdepot_1 ~ 0.0341         # S2.3.1 IOV1 = 0.0341
+    etaiov_fdepot_2 ~ fixed(0.0341)  # same variance as occasion 1
+    etaiov_fdepot_3 ~ fixed(0.0341)  # same variance as occasion 1
+    etaiov_fdepot_4 ~ fixed(0.0341)  # same variance as occasion 1
+    etaiov_fdepot_5 ~ fixed(0.0341)  # same variance as occasion 1
+    etaiov_fdepot_6 ~ fixed(0.0341)  # same variance as occasion 1
+    etaiov_fdepot_7 ~ fixed(0.0341)  # same variance as occasion 1
 
     # ---------- Residual error ----------
     # mrgsolve [SIGMA] EPSP = 0.0437 PROPORTIONAL ERROR (variance). The
@@ -139,7 +180,19 @@ Yoshida_2024_fazpilodemab <- function() {
     km      <- exp(lkm)
     rmax    <- exp(lrmax)
     kss     <- exp(lkss)
-    fdepot  <- exp(lfdepot + etalfdepot)
+    # Occasion flags: the dose number of the record selects one BOV eta on F1.
+    # A single-dose simulation passes OCC = 1.
+    oc1 <- (OCC == 1)
+    oc2 <- (OCC == 2)
+    oc3 <- (OCC == 3)
+    oc4 <- (OCC == 4)
+    oc5 <- (OCC == 5)
+    oc6 <- (OCC == 6)
+    oc7 <- (OCC == 7)
+    iov_fdepot <- oc1 * etaiov_fdepot_1 + oc2 * etaiov_fdepot_2 + oc3 * etaiov_fdepot_3 +
+      oc4 * etaiov_fdepot_4 + oc5 * etaiov_fdepot_5 + oc6 * etaiov_fdepot_6 +
+      oc7 * etaiov_fdepot_7
+    fdepot  <- exp(lfdepot + etalfdepot + iov_fdepot)
 
     # ---------- ADA-mediated clearance (sigmoidal time-onset) ----------
     cl_ada_max <- exp(lcl_ada  + etalcl_ada)

@@ -234,8 +234,9 @@ Gosselin_2015_motesanib <- function() {
         "vignette's Assumptions and deviations section. Decomposed inside",
         "model() into the binary indicators oc1 / oc2, following the",
         "occasion-indicator expansion used by Jonsson_2011_ethambutol.R and",
-        "Chen_2023_nemonoxacin.R, because rxode2 cannot simulate the",
-        "'eta ~ var | occ' multi-level IOV syntax."
+        "Chen_2023_nemonoxacin.R, so the draws are per subject and occasion",
+        "whatever the nesting shape of the data ('eta ~ var | occ' shares one",
+        "draw per occasion when no subject has two or more occasions)."
       ),
       source_name = "OCC"
     )
@@ -460,9 +461,10 @@ Gosselin_2015_motesanib <- function() {
     # -----------------------------------------------------------------------
     # Inter-occasion variability, two occasions (week 1 versus the remaining
     # weeks). Written as the occasion-indicator expansion rather than the
-    # `eta ~ var | OCC` multi-level syntax because rxode2 parses that syntax
-    # but cannot SIMULATE from it (it emits an unbound THETA), and every
-    # model in the library must solve. The expansion is also the more literal
+    # `eta ~ var | OCC` multi-level syntax, which emits an unbound THETA when
+    # the data hold a single occasion and shares one draw per occasion when no
+    # subject has two or more; every model in the library must solve for any
+    # data shape. The expansion is also the more literal
     # translation of a NONMEM $PK IOV block: the first occasion's variance is
     # the estimated one and each further occasion repeats it, exactly as
     # $OMEGA BLOCK(1) SAME does. Founding precedents in this library:

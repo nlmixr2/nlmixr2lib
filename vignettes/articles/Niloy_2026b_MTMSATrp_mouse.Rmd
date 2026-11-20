@@ -1,0 +1,498 @@
+---
+title: "MTMSA-Trp tumor growth inhibition and time-to-event (Niloy 2026b)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{MTMSA-Trp tumor growth inhibition and time-to-event (Niloy 2026b)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Niloy_2026b_MTMSATrp_mouse"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Niloy_2026b_MTMSATrp_mouse"))$description`
+* Article: <https://doi.org/10.1007/s00280-026-04947-0> (open access)
+
+Niloy et al. (2026) link drug exposure, tumor growth and survival for
+MTMSA-Trp, a mithramycin analogue in preclinical development for Ewing
+sarcoma, in a two-stage framework:
+
+1. A **Simeoni tumor growth inhibition (TGI) model** (Eq. 1, Figure 1):
+   exponential growth at rate `lambda0` that switches smoothly
+   (exponent 20) to linear growth at rate `lambda1`, minus a direct kill
+   term `k * Cp(t) * TV(t)`. `Cp` is the plasma concentration of the
+   typical mouse from the group's one-compartment PK model with a
+   dose-power effect on clearance (`modellib("Niloy_2026_MTMSATrp_mouse")`).
+2. A **log-logistic time-to-event (TTE) model** (Eq. 2-3) for the
+   model-derived time at which the predicted tumor volume reaches
+   1500 mm^3. Its scale `Te` depends on the mouse's own `lambda0` and
+   `lambda1` (each normalized by its median) and on the regimen average
+   plasma concentration `Cavg`; the shape is 4.
+
+Both stages are packaged in one model. The tumor volume is the state
+`tumor_size` (observed with combined additive + proportional error);
+`sur`, `cumhaz` and `hazard` are the TTE outputs, evaluated in closed
+form at each output time.
+
+# Population
+
+The TGI model was fitted to 1377 tumor volumes from 104 female athymic
+nude mice bearing subcutaneous TC-32 Ewing sarcoma xenografts: three
+efficacy experiments pooled with historical vehicle controls, followed
+for up to 100 days. Initial tumor volumes were 37-251 mm^3. MTMSA-Trp
+was given as an IV bolus:
+
+* Experiment 1: 0.3, 0.6 or 0.9 mg/kg once daily for 5 days (Q1dx5).
+* Experiment 2: 2.40 mg/kg every 3 days for 6 doses (Q3dx6).
+* Experiment 3: 2.40 mg/kg Q3dx6 and 2.85 mg/kg twice weekly for 6 doses
+  (BIWx6).
+
+The TTE dataset (Table S1) holds 62 mice of experiments 1-3: 54 events
+and 8 right-censored (complete responders, plus one vehicle mouse whose
+tumor did not grow).
+
+# Source trace
+
+| Quantity | Value | Source |
+|---|---|---|
+| Structural TGI equation | Simeoni growth with switch exponent 20, linear kill `k * Cp * TV` | Eq. 1; Figure 1 |
+| `TV(0)` | observed initial tumor volume (regressor, `TUM_VOL`) | Results, TGI modeling |
+| `lambda0` (`ltumorExpGrowth`) | 0.0063 1/h, omega 0.85 | Table 1 |
+| `lambda1` (`ltumorLinGrowth`) | 5.93 mm^3/h, omega 0.73 | Table 1 |
+| `k` (`ldrugSlope`) | 0.000024 mL/ng/h, omega 0.87 | Table 1 |
+| Additive / proportional residual error | a = 11.22 mm^3, b = 0.22 | Table 1 |
+| Log-logistic hazard | `h(t) = (s/Te)(t/Te)^(s-1) / (1 + (t/Te)^s)` | Eq. 2 |
+| Covariate model on `Te` | `Te,pop * exp(b_l0 (l0/med - 1)) * exp(b_l1 (l1/med - 1)) * exp(b_Cavg Cavg/med) * exp(eta)` | Eq. 3 |
+| `Te,pop` (`llambda`) | 703.17 h, omega 0.043 | Table 2 |
+| `s` (`lgamma`) | 4, not estimated | Table 2; Table S6 note |
+| `beta_lambda0` (`e_tumorExpGrowth_lambda`) | -0.75 | Table 2 |
+| `beta_lambda1` (`e_tumorLinGrowth_lambda`) | -0.46 | Table 2 |
+| `beta_Cavg` (`e_cav_lambda`) | 0.63 | Table 2 |
+| PK: CL at 3 mg/kg, V, dose exponent | 39.18 mL/h/kg, 53.06 mL/kg, -0.30 | Niloy 2026 PK preprint Table 1 (reference [19] of the TGI-TTE paper) |
+| `Cavg` | regimen NCA of the simulated typical PK profile | Methods, TTE modeling |
+| Medians used to normalize `lambda0`, `lambda1`, `Cavg` | not printed; see Assumptions | -- |
+
+# Regimens and regimen average concentration
+
+`Cavg` is the average concentration over a dosing interval. With the
+typical PK and a dose-dependent clearance, it is
+`Dose / (CL(Dose) * tau)`, which is exact because MTMSA-Trp is cleared
+within hours (half-life under 1 h) and nothing accumulates between doses.
+
+```{r regimens}
+cl_typ <- function(dose) 39.18 * (dose / 3)^-0.30 # mL/h/kg
+cav_closed <- function(dose, tau) dose / (cl_typ(dose) * tau) * 1e6 # ng/mL
+
+regimens <- tibble::tribble(
+  ~treatment,          ~dose, ~tau, ~n_doses, ~n_tte,
+  "Vehicle",           0,     24,   0L,       13L,
+  "0.3 mg/kg Q1dx5",   0.3,   24,   5L,       9L,
+  "0.6 mg/kg Q1dx5",   0.6,   24,   5L,       10L,
+  "0.9 mg/kg Q1dx5",   0.9,   24,   5L,       15L,
+  "2.4 mg/kg Q3dx6",   2.4,   72,   6L,       8L,
+  "2.85 mg/kg BIWx6",  2.85,  84,   6L,       7L
+) |>
+  mutate(
+    CAV = ifelse(dose > 0, cav_closed(dose, tau), 0),
+    treatment = factor(treatment, levels = treatment)
+  )
+
+knitr::kable(
+  regimens |>
+    rename(
+      "Regimen" = treatment, "Dose (mg/kg)" = dose, "Interval (h)" = tau,
+      "Doses" = n_doses, "Mice in TTE dataset (Table S1)" = n_tte,
+      "Cavg (ng/mL)" = CAV
+    ),
+  digits = c(0, 2, 0, 0, 0, 1)
+)
+```
+
+The median `Cavg` over the 62 mice of the TTE dataset falls on the
+0.6 mg/kg Q1dx5 regimen, which holds the 31st and 32nd mice when they
+are ranked by `Cavg`. The model uses that value, 393.7 ng/mL.
+
+```{r cav-median}
+cav_per_mouse <- rep(regimens$CAV, regimens$n_tte)
+med_cav <- median(cav_per_mouse)
+med_cav
+stopifnot(abs(med_cav - 393.7) < 0.05)
+```
+
+## PKNCA check of Cavg
+
+The paper computed `Cavg` by noncompartmental analysis of the simulated
+profiles. Repeating that with PKNCA on the packaged PK layer recovers the
+closed form.
+
+```{r pknca}
+mod <- readModelDb("Niloy_2026b_MTMSATrp_mouse")
+mod_typ <- rxode2::zeroRe(mod)
+
+# Typical-value solves of several subjects: rxode2 warns that there is no
+# omega to sample from, which is the intent here. Only that warning is
+# muffled.
+solve_typical <- function(events, ...) {
+  withCallingHandlers(
+    rxode2::rxSolve(mod_typ, events, ..., returnType = "data.frame"),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+
+treated <- regimens |> filter(dose > 0)
+pk_events <- lapply(seq_len(nrow(treated)), function(i) {
+  r <- treated[i, ]
+  grid <- sort(unique(c(seq(0, 2, by = 0.02), seq(2, r$tau, by = 0.25))))
+  dplyr::bind_rows(
+    data.frame(time = 0, evid = 1L, amt = r$dose, cmt = "central"),
+    data.frame(time = grid, evid = 0L, amt = 0, cmt = "central")
+  ) |>
+    mutate(id = i, COHDOSE = r$dose, CAV = r$CAV, TUM_VOL = 100,
+           treatment = as.character(r$treatment))
+}) |>
+  dplyr::bind_rows()
+
+pk_sim <- solve_typical(pk_events, keep = "treatment")
+
+conc_df <- pk_sim |>
+  dplyr::select(id, time, Cc, treatment) |>
+  filter(!is.na(Cc))
+dose_df <- pk_events |>
+  filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id,
+                             concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
+                             doseu = "mg/kg")
+intervals <- data.frame(
+  treatment = as.character(treated$treatment),
+  start = 0, end = treated$tau,
+  cmax = TRUE, auclast = TRUE, cav = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+
+cav_check <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "cav") |>
+  dplyr::select(treatment, cav_pknca = PPORRES) |>
+  left_join(treated |> mutate(treatment = as.character(treatment)) |>
+              dplyr::select(treatment, cav_closed = CAV),
+            by = "treatment") |>
+  mutate(pct_diff = 100 * (cav_pknca - cav_closed) / cav_closed)
+
+knitr::kable(
+  cav_check |>
+    rename("Regimen" = treatment, "Cavg, PKNCA (ng/mL)" = cav_pknca,
+           "Cavg, closed form (ng/mL)" = cav_closed,
+           "Difference (%)" = pct_diff),
+  digits = 2
+)
+
+# Same parameters on both sides: only trapezoid error remains.
+stopifnot(all(abs(cav_check$pct_diff) < 1))
+```
+
+# Virtual cohort
+
+Each regimen gets 150 virtual mice. The paper reports only the range of
+initial tumor volumes (37-251 mm^3), so `TUM_VOL` is drawn log-normally
+around 100 mm^3 and truncated to that range. Tumor volumes are followed
+to 2400 h (100 days), the follow-up of the experiments.
+
+```{r cohort}
+rxode2::rxSetSeed(20261025)
+set.seed(20261025)
+n_per_arm <- 150L
+t_end <- 2400
+
+make_arm <- function(i) {
+  r <- regimens[i, ]
+  ids <- (i - 1L) * n_per_arm + seq_len(n_per_arm)
+  obs <- expand.grid(id = ids, time = seq(0, t_end, by = 6))
+  obs$evid <- 0L
+  obs$amt <- 0
+  obs$cmt <- "tumor_size"
+  doses <- NULL
+  if (r$n_doses > 0) {
+    doses <- expand.grid(id = ids, time = (seq_len(r$n_doses) - 1) * r$tau)
+    doses$evid <- 1L
+    doses$amt <- r$dose
+    doses$cmt <- "central"
+  }
+  tv0 <- data.frame(
+    id = ids,
+    TUM_VOL = pmin(pmax(exp(rnorm(n_per_arm, log(100), 0.4)), 37), 251)
+  )
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    mutate(COHDOSE = r$dose, CAV = r$CAV,
+           treatment = as.character(r$treatment)) |>
+    left_join(tv0, by = "id")
+}
+events <- dplyr::bind_rows(lapply(seq_len(nrow(regimens)), make_arm))
+
+sim <- rxode2::rxSolve(mod, events, keep = "treatment",
+                       returnType = "data.frame") |>
+  mutate(treatment = factor(treatment, levels = levels(regimens$treatment)))
+```
+
+# Tumor growth (Figure 3)
+
+Median and 90% prediction interval of the simulated tumor volume
+(`tumor_size`, without residual error) per regimen.
+
+```{r fig3, fig.width = 8, fig.height = 5}
+vpc_tv <- sim |>
+  group_by(treatment, time) |>
+  summarise(
+    q05 = quantile(tumor_size, 0.05), q50 = median(tumor_size),
+    q95 = quantile(tumor_size, 0.95), .groups = "drop"
+  )
+ggplot(vpc_tv, aes(time, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), fill = "steelblue", alpha = 0.25) +
+  geom_line(colour = "steelblue4") +
+  geom_hline(yintercept = 1500, linetype = "dashed") +
+  facet_wrap(~treatment) +
+  coord_cartesian(ylim = c(0, 2500)) +
+  labs(x = "Time (h)", y = "Tumor volume (mm^3)",
+       caption = paste("Replicates the shape of Figure 3 of Niloy 2026",
+                       "(individual fits); dashed line = 1500 mm^3 endpoint."))
+```
+
+Vehicle tumors grow from about 100 mm^3 to the 1500 mm^3 endpoint in
+about three weeks, the once-daily regimens delay regrowth in a
+dose-ordered way, and the two high-dose regimens hold the tumor near
+zero for weeks before some regrow, as in Figure 3.
+
+```{r tgi-typical}
+typ_tv <- solve_typical(
+  events |> filter(id %in% ((seq_len(nrow(regimens)) - 1L) * n_per_arm + 1L)) |>
+    mutate(TUM_VOL = 100),
+  keep = "treatment"
+)
+typ_summary <- typ_tv |>
+  group_by(treatment) |>
+  summarise(
+    tv_240 = tumor_size[time == 240],
+    t_1500 = suppressWarnings(min(time[tumor_size >= 1500])),
+    .groups = "drop"
+  ) |>
+  mutate(treatment = factor(treatment, levels = levels(regimens$treatment))) |>
+  arrange(treatment)
+knitr::kable(
+  typ_summary |>
+    rename("Regimen" = treatment, "Typical TV at 240 h (mm^3)" = tv_240,
+           "Typical time to 1500 mm^3 (h)" = t_1500),
+  digits = 1
+)
+
+# Deterministic ordering of the typical mouse: more drug, later endpoint.
+stopifnot(
+  !is.unsorted(typ_summary$t_1500[1:4]),
+  typ_summary$tv_240[typ_summary$treatment == "Vehicle"] > 300,
+  all(typ_summary$tv_240[5:6] < 20)
+)
+```
+
+# Time-to-event layer
+
+## Closed-form checks
+
+For the typical mouse (median `lambda0`, `lambda1`), `Te` is
+`703.17 * exp(0.63 * Cavg / 393.7)`, and the log-logistic survival is
+exactly 0.5 at `t = Te`. The cumulative hazard and hazard returned by the
+model must agree with `-log(S)` and with its time derivative.
+
+```{r tte-closed-form}
+te_typ <- 703.17 * exp(0.63 * regimens$CAV / 393.7)
+tte_events <- lapply(seq_len(nrow(regimens)), function(i) {
+  r <- regimens[i, ]
+  data.frame(id = i, time = sort(c(seq(0, 3000, by = 50), te_typ[i])),
+             evid = 0L, amt = 0, cmt = "tumor_size",
+             COHDOSE = r$dose, CAV = r$CAV, TUM_VOL = 100,
+             treatment = as.character(r$treatment))
+}) |>
+  dplyr::bind_rows()
+tte_typ <- solve_typical(tte_events, keep = "treatment")
+
+at_te <- tte_typ |>
+  group_by(id) |>
+  filter(abs(time - te_typ[id]) < 1e-6) |>
+  ungroup()
+stopifnot(
+  nrow(at_te) == nrow(regimens),
+  all(abs(at_te$lambda - te_typ) < 1e-6 * te_typ),
+  all(abs(at_te$sur - 0.5) < 1e-10)
+)
+
+pos <- tte_typ |> filter(time > 0)
+stopifnot(all(abs(pos$cumhaz + log(pos$sur)) < 1e-10))
+
+# hazard = d(cumhaz)/dt by a central difference at t = 600 h
+h_num <- function(te, t, dt = 1e-3) {
+  ch <- function(x) log(1 + (x / te)^4)
+  (ch(t + dt) - ch(t - dt)) / (2 * dt)
+}
+h_600 <- tte_typ |> filter(time == 600)
+stopifnot(all(abs(h_600$hazard - h_num(h_600$lambda, 600)) <
+                1e-6 * h_600$hazard))
+
+knitr::kable(
+  data.frame(Regimen = regimens$treatment, "Cavg (ng/mL)" = regimens$CAV,
+             "Typical Te (h)" = te_typ, check.names = FALSE),
+  digits = 1
+)
+```
+
+## Survival by regimen (Figure 4b)
+
+The paper's event is the TGI-predicted time for the tumor to reach
+1500 mm^3, censored when it is not reached during follow-up. Two
+quantities are compared per regimen:
+
+* the survival curve of those **TGI-derived event times** in the virtual
+  cohort (censored at 2400 h), which is the endpoint the TTE model was
+  fitted to; and
+* the **TTE-model** population survival, the mean over the same virtual
+  mice of `sur(t) = 1 / (1 + (t / Te_i)^4)`, with each `Te_i` driven by
+  that mouse's own `lambda0`, `lambda1` and the regimen `Cavg`.
+
+```{r fig4b, fig.width = 8, fig.height = 5}
+event_times <- sim |>
+  group_by(treatment, id) |>
+  summarise(t_event = suppressWarnings(min(time[tumor_size >= 1500])),
+            .groups = "drop")
+
+surv_grid <- seq(0, t_end, by = 24)
+tgi_surv <- event_times |>
+  group_by(treatment) |>
+  reframe(time = surv_grid,
+          surv = vapply(surv_grid, function(t) mean(t_event > t), numeric(1)))
+
+tte_surv <- sim |>
+  filter(time %in% surv_grid) |>
+  group_by(treatment, time) |>
+  summarise(surv = mean(sur), .groups = "drop")
+
+ggplot() +
+  geom_step(data = tgi_surv, aes(time, surv, colour = "TGI-derived event times")) +
+  geom_line(data = tte_surv, aes(time, surv, colour = "TTE model"),
+            linetype = "dashed") +
+  facet_wrap(~treatment) +
+  scale_colour_manual(values = c("TGI-derived event times" = "black",
+                                 "TTE model" = "steelblue")) +
+  labs(x = "Time (h)", y = "Probability of survival", colour = NULL,
+       caption = "Replicates Figure 4b of Niloy 2026 (final TTE model by regimen).") +
+  theme(legend.position = "bottom")
+```
+
+Median event times per regimen. The observed medians are read by eye
+from the Kaplan-Meier curves of Figure 4b and are approximate; the
+virtual cohort draws `lambda0` and `lambda1` from the whole TGI
+population (including the historical controls), not from the mice of
+each experiment, so agreement within a few hundred hours is what can be
+expected.
+
+```{r medians}
+median_surv <- function(time, surv) {
+  i <- which(surv <= 0.5)[1]
+  if (is.na(i)) NA_real_ else time[i]
+}
+fig4b_obs <- c(700, 550, 800, 1450, 1900, 1500)
+
+med_tab <- tgi_surv |>
+  group_by(treatment) |>
+  summarise(tgi_median = median_surv(time, surv), .groups = "drop") |>
+  left_join(tte_surv |>
+              group_by(treatment) |>
+              summarise(tte_median = median_surv(time, surv), .groups = "drop"),
+            by = "treatment") |>
+  arrange(treatment) |>
+  mutate(fig4b_observed = fig4b_obs)
+
+knitr::kable(
+  med_tab |>
+    rename("Regimen" = treatment,
+           "Median, TGI-derived event times (h)" = tgi_median,
+           "Median, TTE model (h)" = tte_median,
+           "Median, Figure 4b observed (approx., h)" = fig4b_observed),
+  digits = 0
+)
+
+# Centre check: a mis-transcribed growth rate, kill rate or TTE scale
+# moves every regimen by a large factor. The vehicle and 0.6 mg/kg arms,
+# which have the most events in Table S1, are compared with their observed
+# medians; the bound leaves room for cohort-to-cohort variation of the
+# simulated median.
+ratio_vehicle <- med_tab$tte_median[1] / fig4b_obs[1]
+ratio_06 <- med_tab$tte_median[3] / fig4b_obs[3]
+stopifnot(
+  abs(log(ratio_vehicle)) < log(1.75),
+  abs(log(ratio_06)) < log(1.75)
+)
+```
+
+# Assumptions and deviations
+
+* **Normalizing medians.** Eq. 3 normalizes `lambda0`, `lambda1` and
+  `Cavg` by their medians, which the paper does not print. The medians of
+  `lambda0` and `lambda1` are the medians of the post hoc estimates of
+  the 62 TTE mice; the model uses the Table 1 typical values (0.0063 1/h
+  and 5.93 mm^3/h) instead. Because Table S4 shows that the experiment
+  mice grew more slowly than the historical controls that also inform the
+  typical values, the true medians are probably somewhat lower, which
+  would shorten the predicted `Te` of a mouse with a given growth rate.
+  The median `Cavg` (393.7 ng/mL) is reconstructed from the PK model and
+  the Table S1 group sizes, taking the median over mice as Monolix does
+  for covariate centering.
+* **Form of the Cavg term.** Eq. 3 prints `exp(beta_Cavg * Cavg / median
+  Cavg)` without the `- 1` used for the growth rates; it is coded as
+  printed, so `Te,pop` = 703.17 h is the scale at zero exposure
+  (vehicle). The vehicle arm's simulated median (about 550 h) is close to
+  the observed Figure 4b median (about 700 h), which supports this
+  reading.
+* **Cavg definition.** "Regimen-specific average concentration" is taken
+  as the average over a dosing interval, `Dose / (CL(Dose) * tau)`.
+  Because there is no accumulation, this equals the average over the
+  whole dosing period. An average over the full 100-day follow-up instead
+  would multiply the 2.4 and 2.85 mg/kg exposures by 4-7 and push almost
+  every treated `Te` beyond follow-up, contradicting the events in
+  Table S1.
+* **PK layer.** The TGI paper simulated the typical PK profile of each
+  regimen from the group's earlier PK model (reference [19]); its values
+  (CL 39.18 mL/h/kg at 3 mg/kg, V 53.06 mL/kg, dose exponent -0.30) are
+  taken from that preprint and held constant, with no PK variability, as
+  in the paper. Vehicle mice carry `COHDOSE = 0`, and the model then uses
+  the 3 mg/kg reference so that the unused clearance stays finite.
+* **Residual error form.** Table 1 reports an additive `a` and a
+  proportional `b` without saying how they combine. The model uses
+  `combined1()` (standard deviation `a + b * f`), the Monolix default
+  combined error model.
+* **No IIV correlations** are reported; the three TGI random effects are
+  independent.
+* **Initial tumor volumes.** Only the range (37-251 mm^3) is reported;
+  the virtual cohort's log-normal distribution around 100 mm^3 is an
+  assumption, and it matters for the timing of the endpoint.
+* **Censoring.** The paper censored animals that did not reach
+  1500 mm^3 because their tumors had regressed completely. The TGI model
+  has no eradication state, so a simulated tumor driven very low regrows
+  later; the virtual cohort is censored at the 2400 h end of follow-up.
+* The TTE stage describes a **model-derived** endpoint. As the paper
+  stresses, its covariate effects follow from how the endpoint was
+  defined and are not independent evidence that growth rates or exposure
+  predict survival.

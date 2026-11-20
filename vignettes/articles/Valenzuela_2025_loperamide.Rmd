@@ -419,12 +419,13 @@ the early peak further (Results, Population PK Model).
   which matches a log-scale SD near 0.17 and not one near 0.42 (the square
   root of 0.177). They are encoded as proportional SDs, the linear-scale
   equivalent of log-scale additive error.
-- **Inter-occasion variability.** rxode2 has no occasion level, so the IOV on
-  the lag time and on D1 is expanded into two indicator-selected etas per
-  parameter (`OCC = 1, 2` for the two loperamide periods) that share one
-  variance. Because the occasion effect enters as an indicator-weighted sum,
-  rxode2 warns that these etas are not mu-referenced; this affects only the
-  speed of a future estimation run, not simulation.
+- **Inter-occasion variability.** rxode2's `| occ` level shares one draw per
+  occasion when no subject has two or more occasions, so the IOV on the lag
+  time and on D1 is expanded into two indicator-selected etas per parameter
+  (`OCC = 1, 2` for the two loperamide periods) that share one variance.
+  Because the occasion effect enters as an indicator-weighted sum, rxode2
+  warns that these etas are not mu-referenced; this affects only the speed of
+  a future estimation run, not simulation.
 - **Slope variability of the loperamide model.** Table 2 prints the variance
   of the slope random effect as 0.00001 with no RSE; it is encoded as fixed.
 - **M1 dose.** The M1 PK model treats the metabolite "as if dosed

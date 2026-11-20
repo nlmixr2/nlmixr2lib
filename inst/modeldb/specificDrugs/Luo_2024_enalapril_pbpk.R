@@ -28,6 +28,7 @@ Luo_2024_enalapril_pbpk <- function() {
   )
   vignette <- "Luo_2024_CES1_cirrhosis"
   units <- list(time = "min", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("stomach", "central")
 
   # Segment-resolved gut-WALL states. The gut LUMEN segments use the
   # canonical stomach / duodenum / jejunum / ileum names; the tissue (wall)
@@ -323,8 +324,8 @@ Luo_2024_enalapril_pbpk <- function() {
                        (q_kid + fu_b_i_enaat * cl_int_k_enaat) * eff_kid_enaat
 
     d/dt(central_enaat) <- q_liver * eff_liver_enaat + q_kid * eff_kid_enaat -
-                        (q_ha + q_kid) * c_sys_enaat - q_gut * c_sys_enaat
-                        + k21_enaat * peripheral1_enaat - k12_enaat * central_enaat
+                        (q_ha + q_kid) * c_sys_enaat - q_gut * c_sys_enaat +
+                        k21_enaat * peripheral1_enaat - k12_enaat * central_enaat
     d/dt(peripheral1_enaat) <- k12_enaat * central_enaat - k21_enaat * peripheral1_enaat
 
     # ============================================================

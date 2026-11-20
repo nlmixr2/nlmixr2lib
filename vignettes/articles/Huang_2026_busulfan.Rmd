@@ -1,0 +1,654 @@
+---
+title: "Busulfan exposure and event-free survival in children (Huang 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Busulfan exposure and event-free survival in children (Huang 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r meta}
+mod <- readModelDb("Huang_2026_busulfan")
+cat(rxode2::rxode(mod)$reference)
+```
+
+* Article: <https://doi.org/10.2147/DDDT.S593835> (open access, PMC13401924)
+* Supplementary material (Equations S1-S6, Tables S1-S6): the Word file
+  linked from the article page.
+
+Huang 2026 pooled 457 Chinese children from five transplant centres who
+received intravenous busulfan four times daily for 3 days (Bu3) or 4 days
+(Bu4) before allogeneic haematopoietic stem cell transplantation (HSCT). A
+one-compartment population PK model gave each child's busulfan exposure: the
+first-dose AUC (dose / individual CL) and the cumulative AUC over the course
+(cAUC). The authors then related those exposures to event-free survival (EFS)
+and to transplant complications with restricted cubic splines and Cox
+proportional-hazards models.
+
+The paper contributes six model files, all documented here:
+
+| File | Content | Source |
+|---|---|---|
+| `Huang_2026_busulfan` | Final popPK model | Table 1; Supplementary Equations S1-S6 |
+| `Huang_2026_busulfan_efs` | EFS, all patients, first-dose AUC < 4.5 mg*h/L | Table S2a |
+| `Huang_2026_busulfan_efs_bu3` | EFS, Bu3, cAUC < 54 mg*h/L | Table S2b |
+| `Huang_2026_busulfan_efs_bu4` | EFS, Bu4, cAUC < 70 or > 90 mg*h/L | Table S2c |
+| `Huang_2026_busulfan_nrm_bu3` | Nonrelapse mortality, Bu3, cAUC < 54 mg*h/L plus age band | Table S6 |
+| `Huang_2026_busulfan_hc_bu3` | Grade 3-4 hemorrhagic cystitis, Bu3, cAUC < 54 mg*h/L | Table S4b |
+
+The popPK model scales clearance and volume on a parameter-specific normal
+fat mass (NFM), with separately estimated fat fractions for CL and V and
+theory-based exponents of 3/4 and 1. A sigmoid maturation function of
+postmenstrual age (PMA) acts on CL, children with slow GSTA1 metabolism clear
+13.5% less, and CL carries between-occasion variability.
+
+# Population
+
+The PK model was fitted to 2,103 concentrations from 457 children (Results;
+Table 1). Two children with less than 3 months of follow-up were left out of
+the outcome analyses, leaving 455 (Table 2): median age 7.5 years (range
+0.5-17.0), median weight 24.5 kg (5.0-96.5), 36.7% female, and 73.9% with a
+malignant disease. 326 received the Bu3 regimen (median 8.6 years, 27.0 kg)
+and 129 the Bu4 regimen (median 4.5 years, 17.0 kg). Busulfan was given at
+0.8-1.2 mg/kg per dose (actual or adjusted body weight) as a 2 h infusion
+every 6 h with no dose adjustment. Samples were taken 2, 4 and 6 h after the
+start of the first infusion, with extra samples at 0.5, 1 and 2.5 h in some
+children and repeat sampling around the fifth dose in others.
+
+```{r population-metadata}
+str(mod()$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. The
+table collects them, together with the equations in `model()`.
+
+| Element | Value | Source |
+|---|---|---|
+| `lcl` (CL_STD) | log(10.8 L/h) | Table 1 |
+| `lvc` (V_STD) | log(46.4 L) | Table 1 |
+| `ffat_cl` (Ffat_CL) | 1.08 | Table 1 |
+| `ffat_v` (Ffat_V) | 0.653 | Table 1 |
+| `e_nfm_cl` | 0.75, fixed | Supplementary Equation S3 |
+| `e_nfm_vc` | 1, fixed | Supplementary Equation S4 |
+| `tm50_mat` (TM50) | 41.6 weeks | Table 1 |
+| `hill_mat` (HILL) | 3.42 | Table 1 |
+| `e_gsta1_slow_cl` (FGSTA1_CL) | 0.865 | Table 1; Results "13.5% lower" |
+| `etalcl` (BSV_CL) | 0.336^2 | Table 1; Results "33.6%" |
+| `etalvc` (BSV_V) | 0.252^2 | Table 1; Results "25.2%" |
+| `etaiov_cl_1..4` (BOV_CL) | 0.112^2 | Table 1; Results "11.2%" |
+| `propSd` (RUV_PROP) | 0.178 | Table 1 |
+| `addSd` (RUV_ADD) | 0.0312 mg/L | Table 1 |
+| FFM = WHSmax x HT^2 x WT / (WHS50 x HT^2 + WT) | | Supplementary Equation S1 |
+| NFM = FFM + Ffat x (WT - FFM) | | Supplementary Equation S2 |
+| CL = CL_STD x (NFM / NFM_STD)^0.75 | | Supplementary Equation S3 |
+| V = V_STD x NFM / NFM_STD | | Supplementary Equation S4 |
+| Categorical covariate: P = P_STD x FCat | | Supplementary Equation S6 |
+| Standard subject: 70 kg, 176 cm male, FFM_STD = 56.1 kg | | Table 1 footnote |
+| Fmat = 1 / (1 + (PMA / TM50)^-HILL) | | Results (TM50, HILL); see Assumptions |
+| `efs`: HR 1.63, AUC first < 4.5 mg*h/L | | Table S2a |
+| `efs_bu3`: HR 1.73, cAUC3 days < 54 mg*h/L | | Table S2b |
+| `efs_bu4`: HR 2.94 (< 70) and 3.22 (> 90) vs 70-90 mg*h/L | | Table S2c |
+| `nrm_bu3`: HR 2.48 (cAUC3 days < 54); age 3-6, 6-12, > 12 vs 0-3 years: 0.39, 0.16, 0.40 | | Table S6 |
+| `hc_bu3`: HR 0.38, cAUC3 days < 54 mg*h/L | | Table S4b |
+
+The PK model takes `FFM` as a data column. The helper below implements
+Supplementary Equation S1, which is how the paper computed it (height in
+metres).
+
+```{r ffm-helper}
+ffm_janmahasatian <- function(WT, HT_cm, SEXF) {
+  ht2 <- (HT_cm / 100)^2
+  ifelse(
+    SEXF == 1,
+    37.99 * ht2 * WT / (35.98 * ht2 + WT),
+    42.92 * ht2 * WT / (30.93 * ht2 + WT)
+  )
+}
+# The standard subject: a 70 kg, 176 cm male has FFM 56.1 kg (Table 1 footnote).
+ffm_std <- ffm_janmahasatian(70, 176, 0)
+ffm_std
+stopifnot(abs(ffm_std - 56.1) < 0.05)
+```
+
+# Closed-form checks
+
+With all random effects at zero, the standard adult (70 kg, FFM 56.1 kg,
+30 years old, born at term, rapid GSTA1 metabolizer) must return the Table 1
+typical values; a slow metabolizer must have 0.865 times that clearance.
+
+```{r closed-form}
+typ <- rxode2::zeroRe(mod)
+std_adult <- data.frame(
+  id = rep(1:2, each = 2), time = rep(c(0, 1), 2), evid = rep(c(1, 0), 2),
+  amt = rep(c(1, 0), 2), cmt = "central",
+  WT = 70, FFM = 56.1, AGE = 30, GA = 40, GSTA1_RM = rep(c(1, 0), each = 2), OCC = 1
+)
+# One solve per subject: a multi-subject solve of a model with no omega warns.
+s_std <- lapply(split(std_adult, std_adult$id), function(d) {
+  s <- rxode2::rxSolve(typ, d, returnType = "data.frame")
+  cbind(id = d$id[1], s[nrow(s), c("cl", "vc", "fmat")])
+}) |>
+  bind_rows()
+s_std |> select(id, cl, vc, fmat)
+stopifnot(
+  abs(s_std$fmat[1] - 1) < 1e-4,
+  abs(s_std$cl[1] - 10.8 * s_std$fmat[1]) < 1e-6,
+  abs(s_std$vc[1] - 46.4) < 1e-6,
+  abs(s_std$cl[2] / s_std$cl[1] - 0.865) < 1e-9
+)
+```
+
+Clearance reaches half its adult value at a PMA of 41.6 weeks. With a Hill
+coefficient of 3.42, the youngest children in the cohort (0.5 years, about
+66 weeks PMA) are already at about 83% of the adult value.
+
+```{r maturation, fig.cap = "Maturation fraction of busulfan clearance against postmenstrual age (TM50 = 41.6 weeks, Hill = 3.42, Table 1). The dashed line marks 66 weeks, the PMA of a 0.5-year-old born at term, the youngest age in the cohort."}
+pma <- seq(20, 400, by = 1)
+fmat <- 1 / (1 + (pma / 41.6)^(-3.42))
+ggplot(data.frame(pma, fmat), aes(pma, fmat)) +
+  geom_line() +
+  geom_vline(xintercept = 0.5 * 52 + 40, linetype = "dashed") +
+  labs(x = "Postmenstrual age (weeks)", y = "Fraction of adult CL")
+```
+
+The standard NFM differs between CL and V, because the fat fraction does.
+With Ffat_CL = 1.08 the clearance NFM is close to total body weight, while
+V scales on FFM plus 65% of the fat mass.
+
+```{r nfm-std}
+c(
+  nfm_std_cl = 56.1 + 1.08 * (70 - 56.1),
+  nfm_std_v = 56.1 + 0.653 * (70 - 56.1)
+)
+```
+
+# Virtual cohort
+
+Two arms of 200 children mirror the Bu3 and Bu4 cohorts of Table 2. Ages are
+drawn by the Table 2 age-band proportions, uniform within each band, and
+truncated to 0.5-17 years. Height follows an approximate median
+height-for-age curve and weight a body-mass index of about 16 kg/m^2, which
+reproduces the median weights of Table 2. Sex follows Table 2. The paper does
+not report how many children were rapid GSTA1 metabolizers, so 75% are
+assumed to be (see Assumptions). All children were born at term.
+
+Doses follow the weight bands of the EU busulfan label for children
+(1.0 mg/kg below 9 kg, 1.2 mg/kg for 9-16 kg, 1.1 mg/kg for 16-23 kg,
+0.95 mg/kg for 23-34 kg and 0.8 mg/kg above 34 kg). This spans the paper's
+0.8-1.2 mg/kg range, but the paper does not state which dosing scheme each
+centre used.
+
+```{r cohort}
+set.seed(2026)
+rxode2::rxSetSeed(2026)
+n_arm <- 200
+
+height_for_age <- function(age) {
+  approx(
+    x = c(0.5, 1, 2, 3, 4, 5, 6, 8, 10, 12, 14, 16, 17),
+    y = c(67, 76, 87, 96, 103, 110, 116, 128, 138, 149, 163, 170, 172),
+    xout = age, rule = 2
+  )$y
+}
+draw_age <- function(n, p_band) {
+  band <- sample(1:4, n, replace = TRUE, prob = p_band)
+  lo <- c(0.5, 3, 6, 12)[band]
+  hi <- c(3, 6, 12, 17)[band]
+  runif(n, lo, hi)
+}
+dose_mgkg <- function(WT) {
+  cut(WT, c(0, 9, 16, 23, 34, Inf), right = FALSE, labels = FALSE) |>
+    (\(i) c(1.0, 1.2, 1.1, 0.95, 0.8)[i])()
+}
+
+make_arm <- function(regimen, p_band, pct_female, id0) {
+  tibble(
+    id = id0 + seq_len(n_arm),
+    regimen = regimen,
+    AGE = draw_age(n_arm, p_band),
+    SEXF = rbinom(n_arm, 1, pct_female / 100),
+    GSTA1_RM = rbinom(n_arm, 1, 0.75),
+    GA = 40
+  )
+}
+cohort <- bind_rows(
+  make_arm("Bu3", c(10.12, 22.39, 45.40, 22.09), 38.65, 0),
+  make_arm("Bu4", c(39.53, 18.60, 29.46, 12.40), 31.78, n_arm)
+) |>
+  mutate(
+    HT = height_for_age(AGE) * exp(rnorm(n(), 0, 0.04)),
+    WT = 16 * (HT / 100)^2 * exp(rnorm(n(), 0, 0.12)),
+    FFM = ffm_janmahasatian(WT, HT, SEXF),
+    dose = dose_mgkg(WT) * WT,
+    n_days = ifelse(regimen == "Bu3", 3, 4)
+  )
+
+cohort |>
+  group_by(regimen) |>
+  summarise(
+    `Median age (y)` = median(AGE),
+    `Median weight (kg)` = median(WT),
+    `Weight range (kg)` = paste(round(range(WT), 1), collapse = "-"),
+    `Female (%)` = 100 * mean(SEXF),
+    `Median dose (mg/kg)` = median(dose / WT)
+  ) |>
+  knitr::kable(digits = 1, caption = "Virtual cohort (compare Table 2: Bu3 median 8.6 y and 27.0 kg; Bu4 median 4.5 y and 17.0 kg).")
+```
+
+# Simulation
+
+Each child receives a 2 h infusion every 6 h for 3 or 4 days. The occasion
+(`OCC`) is the conditioning day. Concentrations are recorded every 15 min
+from the first dose to 48 h after the last dose, so the AUC over the whole
+course can be extrapolated to infinity.
+
+```{r simulate}
+doses <- cohort |>
+  group_by(id) |>
+  reframe(time = seq(0, by = 6, length.out = 4 * n_days)) |>
+  left_join(cohort, by = "id") |>
+  mutate(evid = 1, amt = dose, dur = 2)
+obs <- cohort |>
+  group_by(id) |>
+  reframe(time = seq(0, 24 * n_days + 48, by = 0.25)) |>
+  left_join(cohort, by = "id") |>
+  mutate(evid = 0, amt = 0, dur = 0)
+ev <- bind_rows(doses, obs) |>
+  mutate(cmt = "central", OCC = pmin(floor(time / 24) + 1, 4)) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, evid, amt, dur, cmt, WT, FFM, AGE, GA, GSTA1_RM, OCC) |>
+  as.data.frame()
+
+sim <- rxode2::rxSolve(mod, ev, returnType = "data.frame") |>
+  select(id, time, Cc, sim, cl, OCC) |>
+  left_join(cohort |> select(id, regimen), by = "id")
+```
+
+```{r vpc, fig.cap = "Simulated busulfan concentrations over the first dosing interval (median and 5th-95th percentiles, with residual error), by regimen. The paper sampled at 2, 4 and 6 h after the start of the first infusion; compare the prediction-corrected VPC in Figure 2 of Huang 2026."}
+sim |>
+  filter(time <= 6) |>
+  group_by(regimen, time) |>
+  summarise(
+    p05 = quantile(sim, 0.05), p50 = median(sim), p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, p50)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~regimen) +
+  labs(x = "Time after start of first infusion (h)", y = "Busulfan (mg/L)")
+```
+
+# PKNCA validation
+
+The paper's exposures are the first-dose AUC (first dose / individual CL) and
+the cumulative AUC (all doses / individual CL). For a linear model these are
+the AUC from zero to infinity after a single first dose and after the whole
+course. The course AUC comes from the multiple-dose simulation above. The
+first-dose AUC needs a separate single-dose simulation of the same children,
+sampled to 48 h.
+
+```{r first-dose}
+ev1 <- bind_rows(
+  cohort |> mutate(time = 0, evid = 1, amt = dose, dur = 2),
+  cohort |> tidyr::crossing(t = seq(0, 48, by = 0.25)) |>
+    mutate(time = t, evid = 0, amt = 0, dur = 0) |>
+    select(-t)
+) |>
+  mutate(cmt = "central", OCC = 1) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, evid, amt, dur, cmt, WT, FFM, AGE, GA, GSTA1_RM, OCC) |>
+  as.data.frame()
+sim1 <- rxode2::rxSolve(mod, ev1, returnType = "data.frame") |>
+  select(id, time, Cc, cl) |>
+  left_join(cohort |> select(id, regimen), by = "id")
+```
+
+```{r pknca}
+nca_run <- function(conc, dose_df, end) {
+  conc_obj <- PKNCA::PKNCAconc(
+    conc |> filter(!is.na(Cc)) |> select(id, regimen, time, Cc),
+    Cc ~ time | regimen + id
+  )
+  dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id)
+  intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE)
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+}
+dose_first <- cohort |> transmute(id, regimen, time = 0, amt = dose)
+nca_first <- nca_run(sim1, dose_first)
+# Only the first dose is passed to PKNCA so that the single 0-Inf interval
+# integrates the whole multiple-dose profile.
+nca_course <- nca_run(sim, dose_first)
+
+auc_tbl <- bind_rows(
+  as.data.frame(nca_first$result) |> mutate(metric = "first"),
+  as.data.frame(nca_course$result) |> mutate(metric = "course")
+) |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  select(id, regimen, metric, PPORRES) |>
+  pivot_wider(names_from = metric, values_from = PPORRES)
+
+# Cross-check against the paper's definition, dose / individual CL.
+cl_tbl <- sim1 |>
+  filter(time == 1) |>
+  select(id, cl1 = cl) |>
+  left_join(cohort |> select(id, dose), by = "id")
+auc_tbl <- auc_tbl |>
+  left_join(cl_tbl, by = "id") |>
+  left_join(cohort |> select(id, WT), by = "id") |>
+  mutate(first_closed = dose / cl1, mgkg = dose / WT)
+stopifnot(max(abs(auc_tbl$first / auc_tbl$first_closed - 1)) < 0.01)
+```
+
+The PKNCA first-dose AUC matches dose / CL to within 1% for every child, as it
+must for a linear model sampled to 48 h.
+
+The table compares the simulated medians with the Results.
+
+```{r nca-compare}
+sim_long <- bind_rows(
+  auc_tbl |> transmute(id, exposure = "First dose, all patients", PPTESTCD = "aucinf.obs", PPORRES = first),
+  auc_tbl |> transmute(id, exposure = paste0("Whole course (cAUC), ", regimen), PPTESTCD = "aucinf.obs", PPORRES = course)
+)
+ref <- data.frame(
+  exposure = c("First dose, all patients", "Whole course (cAUC), Bu3", "Whole course (cAUC), Bu4"),
+  aucinf.obs = c(4.5, 54.2, 70.5)
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_long[, c("exposure", "PPTESTCD", "PPORRES")],
+  reference = ref,
+  by = "exposure",
+  units = c(aucinf.obs = "mg*h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Median simulated busulfan exposure against the Results (first-dose AUC median 4.5 mg*h/L in all patients; cAUC median 54.2 mg*h/L for Bu3 and 70.5 mg*h/L for Bu4).")
+```
+
+Under this dosing the simulated medians sit about 15-25% above the paper's. The likely reason is the
+assumed dosing rather than the model. The EU label bands give these children
+a median of 0.95 mg/kg (Bu3) and 1.1 mg/kg (Bu4). At the lead centre, though,
+112 of 128 children in the earlier `Du_2022_busulfan` cohort received
+0.8 mg/kg. The paper reports only the 0.8-1.2 mg/kg range, so the real dose
+mix lies somewhere between "0.8 mg/kg for everyone" and the EU bands.
+
+Because the model is linear, each child's AUC at 0.8 mg/kg follows exactly by
+rescaling. The check below asks whether each published median falls between
+the two dosing scenarios, with 10% slack at each end for the approximate body
+sizes. A clearance mis-scaled by 20% or more would move both scenarios past
+the published value.
+
+```{r dose-bracket}
+bracket <- auc_tbl |>
+  mutate(first_08 = first * 0.8 / mgkg, course_08 = course * 0.8 / mgkg)
+bracket_tbl <- tibble(
+  Exposure = c("First-dose AUC, all patients", "cAUC, Bu3", "cAUC, Bu4"),
+  Published = c(4.5, 54.2, 70.5),
+  dose_08 = c(
+    median(bracket$first_08),
+    median(bracket$course_08[bracket$regimen == "Bu3"]),
+    median(bracket$course_08[bracket$regimen == "Bu4"])
+  ),
+  dose_eu = c(
+    median(bracket$first),
+    median(bracket$course[bracket$regimen == "Bu3"]),
+    median(bracket$course[bracket$regimen == "Bu4"])
+  )
+)
+bracket_tbl |>
+  rename(
+    "Published median (mg*h/L)" = Published,
+    "Simulated, 0.8 mg/kg for all" = dose_08,
+    "Simulated, EU label bands" = dose_eu
+  ) |>
+  knitr::kable(digits = 1, caption = "Median busulfan AUC under the two dosing scenarios against the Results.")
+stopifnot(
+  all(bracket_tbl$Published >= 0.9 * pmin(bracket_tbl$dose_08, bracket_tbl$dose_eu)),
+  all(bracket_tbl$Published <= 1.1 * pmax(bracket_tbl$dose_08, bracket_tbl$dose_eu))
+)
+```
+
+The paper's AUCs are empirical-Bayes estimates for real children. The full
+ranges in the Results (first-dose AUC 1.8-10.5, Bu3 cAUC 26.5-119.0, Bu4 cAUC
+30.2-109.9 mg*h/L) can be set against the simulated 2.5th-97.5th percentiles
+under the EU-band dosing:
+
+```{r auc-range}
+auc_tbl |>
+  pivot_longer(c(first, course), names_to = "metric") |>
+  mutate(group = ifelse(metric == "first", "All patients, first dose", paste(regimen, "cAUC"))) |>
+  group_by(group) |>
+  summarise(
+    p2.5 = quantile(value, 0.025), median = median(value), p97.5 = quantile(value, 0.975),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 1, caption = "Simulated busulfan AUC (mg*h/L), 2.5th, 50th and 97.5th percentiles.")
+```
+
+# Exposure-response models
+
+## The published hazard ratios are reproduced exactly
+
+The five Cox models are algebraic and deterministic, so their output can be
+checked against the printed hazard ratios to the printed precision. Each
+evaluation uses one subject with one observation row per covariate value.
+
+```{r hr-eval}
+er_eval <- function(name, covs) {
+  ev <- data.frame(id = 1L, time = seq_len(nrow(covs)), amt = 0, evid = 0L) |>
+    bind_cols(covs)
+  s <- as.data.frame(rxode2::rxSolve(readModelDb(name), events = ev, returnType = "data.frame"))
+  stopifnot(nrow(s) == nrow(covs))
+  s$hr
+}
+
+hr_efs <- er_eval("Huang_2026_busulfan_efs", data.frame(AUC_BUSULFAN_FIRST = c(5, 4.5, 4.49)))
+hr_efs_bu3 <- er_eval("Huang_2026_busulfan_efs_bu3", data.frame(AUC_BUSULFAN_COURSE = c(60, 54, 53.9)))
+hr_efs_bu4 <- er_eval("Huang_2026_busulfan_efs_bu4", data.frame(AUC_BUSULFAN_COURSE = c(80, 70, 90, 69.9, 90.1)))
+hr_nrm <- er_eval(
+  "Huang_2026_busulfan_nrm_bu3",
+  data.frame(AUC_BUSULFAN_COURSE = c(60, 50, 60, 60, 60), AGE = c(2, 2, 4, 8, 14))
+)
+hr_hc <- er_eval("Huang_2026_busulfan_hc_bu3", data.frame(AUC_BUSULFAN_COURSE = c(60, 50)))
+
+hr_check <- tibble(
+  Model = c(
+    "efs", "efs", "efs_bu3", "efs_bu3", "efs_bu4", "efs_bu4", "efs_bu4", "efs_bu4",
+    "nrm_bu3", "nrm_bu3", "nrm_bu3", "nrm_bu3", "hc_bu3"
+  ),
+  Contrast = c(
+    "AUC first = 4.5 (reference edge)", "AUC first < 4.5",
+    "cAUC = 54 (reference edge)", "cAUC < 54",
+    "cAUC = 70 (reference edge)", "cAUC = 90 (reference edge)", "cAUC < 70", "cAUC > 90",
+    "cAUC < 54, age 0-3", "cAUC >= 54, age 3-6", "cAUC >= 54, age 6-12", "cAUC >= 54, age > 12",
+    "cAUC < 54"
+  ),
+  Published = c(1, 1.63, 1, 1.73, 1, 1, 2.94, 3.22, 2.48, 0.39, 0.16, 0.40, 0.38),
+  Model_hr = c(
+    hr_efs[2], hr_efs[3], hr_efs_bu3[2], hr_efs_bu3[3],
+    hr_efs_bu4[2], hr_efs_bu4[3], hr_efs_bu4[4], hr_efs_bu4[5],
+    hr_nrm[2], hr_nrm[3], hr_nrm[4], hr_nrm[5], hr_hc[2]
+  )
+)
+hr_check |>
+  rename("Model HR" = Model_hr, "Published HR" = Published) |>
+  knitr::kable(digits = 3, caption = "Hazard ratios from the packaged models against Tables S2a, S2b, S2c, S6 and S4b (multivariate columns).")
+# Same parameters on both sides, so the agreement is exact.
+stopifnot(
+  all(abs(hr_check$Model_hr - hr_check$Published) < 1e-9),
+  hr_efs[1] == 1, hr_efs_bu3[1] == 1, hr_efs_bu4[1] == 1, hr_nrm[1] == 1, hr_hc[1] == 1
+)
+```
+
+## Exposure groups in the simulated cohort
+
+The cut points split the paper's cohorts into groups of known size (Tables
+S2a-S2c). Feeding the simulated exposures through the same cut points checks
+the PK model and the assumed dosing together: a mis-scaled clearance would
+shift every group share.
+
+```{r groups}
+group_shares <- function(d, first_col, course_col) {
+  d <- d |> mutate(f = .data[[first_col]], c = .data[[course_col]])
+  bind_rows(
+    d |> transmute(Analysis = "All, AUC first", Group = ifelse(f < 4.5, "< 4.5", ">= 4.5")),
+    d |> filter(regimen == "Bu3") |>
+      transmute(Analysis = "Bu3, cAUC", Group = ifelse(c < 54, "< 54", ">= 54")),
+    d |> filter(regimen == "Bu4") |>
+      transmute(
+        Analysis = "Bu4, cAUC",
+        Group = case_when(c < 70 ~ "< 70", c > 90 ~ "> 90", TRUE ~ "70-90")
+      )
+  ) |>
+    count(Analysis, Group) |>
+    group_by(Analysis) |>
+    mutate(pct = 100 * n / sum(n)) |>
+    ungroup() |>
+    select(-n)
+}
+grp_pub <- tibble(
+  Analysis = c("All, AUC first", "All, AUC first", "Bu3, cAUC", "Bu3, cAUC", "Bu4, cAUC", "Bu4, cAUC", "Bu4, cAUC"),
+  Group = c(">= 4.5", "< 4.5", ">= 54", "< 54", "70-90", "< 70", "> 90"),
+  pub_pct = c(50.77, 49.23, 50.92, 49.08, 34.88, 46.51, 18.60)
+)
+grp <- grp_pub |>
+  left_join(group_shares(bracket, "first_08", "course_08") |> rename(pct_08 = pct), by = c("Analysis", "Group")) |>
+  left_join(group_shares(bracket, "first", "course") |> rename(pct_eu = pct), by = c("Analysis", "Group")) |>
+  mutate(pct_08 = coalesce(pct_08, 0), pct_eu = coalesce(pct_eu, 0))
+grp |>
+  rename(
+    "Published (%)" = pub_pct,
+    "Simulated, 0.8 mg/kg for all (%)" = pct_08,
+    "Simulated, EU label bands (%)" = pct_eu
+  ) |>
+  knitr::kable(digits = 1, caption = "Share of patients in each exposure group: Tables S2a-S2c against the simulated cohort under the two dosing scenarios.")
+# For the two dichotomies, the published below-cut share should fall between
+# the two dosing scenarios, with 10 percentage points of slack.
+below <- grp |> filter(Group %in% c("< 4.5", "< 54"))
+stopifnot(
+  all(below$pub_pct >= pmin(below$pct_08, below$pct_eu) - 10),
+  all(below$pub_pct <= pmax(below$pct_08, below$pct_eu) + 10)
+)
+```
+
+## Relative hazard across the simulated cohort
+
+Because the baseline hazards are not reported, the models return hazards
+relative to each analysis' reference group. Applied to the simulated cohort,
+they give each child's EFS hazard multiplier.
+
+```{r hr-cohort, fig.cap = "Relative EFS hazard against simulated busulfan exposure: first-dose AUC for all patients (Table S2a) and cumulative AUC by regimen (Tables S2b and S2c). Dashed lines mark the cut points."}
+hr_all <- er_eval("Huang_2026_busulfan_efs", data.frame(AUC_BUSULFAN_FIRST = auc_tbl$first))
+bu3 <- auc_tbl |> filter(regimen == "Bu3")
+bu4 <- auc_tbl |> filter(regimen == "Bu4")
+hr_plot <- bind_rows(
+  tibble(panel = "All patients: first-dose AUC", auc = auc_tbl$first, hr = hr_all),
+  tibble(
+    panel = "Bu3: cAUC", auc = bu3$course,
+    hr = er_eval("Huang_2026_busulfan_efs_bu3", data.frame(AUC_BUSULFAN_COURSE = bu3$course))
+  ),
+  tibble(
+    panel = "Bu4: cAUC", auc = bu4$course,
+    hr = er_eval("Huang_2026_busulfan_efs_bu4", data.frame(AUC_BUSULFAN_COURSE = bu4$course))
+  )
+)
+cuts <- tibble(
+  panel = c("All patients: first-dose AUC", "Bu3: cAUC", "Bu4: cAUC", "Bu4: cAUC"),
+  x = c(4.5, 54, 70, 90)
+)
+ggplot(hr_plot, aes(auc, hr)) +
+  geom_point(alpha = 0.4) +
+  geom_vline(data = cuts, aes(xintercept = x), linetype = "dashed") +
+  facet_wrap(~panel, scales = "free_x") +
+  labs(x = "Busulfan AUC (mg*h/L)", y = "Relative hazard of an EFS event")
+```
+
+## Published Kaplan-Meier estimates
+
+The 2-year EFS rates by exposure group (Figure 4 and Results) are listed for
+reference. They are **published values, not model predictions**: the Cox
+models carry no baseline hazard, so they cannot produce absolute survival.
+
+| Analysis | Group | 2-year EFS (95% CI) |
+|---|---|---|
+| All patients | AUC first >= 4.5 mg*h/L | 84.6% |
+| All patients | AUC first < 4.5 mg*h/L | 76.4% |
+| Bu3 | cAUC >= 54 mg*h/L | 86.4% (80.11-90.86) |
+| Bu3 | cAUC < 54 mg*h/L | 77.7% (70.36-83.49) |
+| Bu4 | cAUC 70-90 mg*h/L | 88.9% (75.34-95.22) |
+| Bu4 | cAUC < 70 mg*h/L | 71.0% (57.57-80.93) |
+| Bu4 | cAUC > 90 mg*h/L | 66.1% (43.42-81.44) |
+
+# Assumptions and deviations
+
+* **Reference NFM.** Supplementary Equations S3 and S4 divide NFM by
+  NFM_STD, which the paper does not print. It is read as the NFM of the
+  stated standard subject (70 kg, 176 cm male, FFM_STD 56.1 kg) with each
+  parameter's own fat fraction: 71.1 kg for CL and 65.2 kg for V. This makes
+  CL_STD and V_STD the values for that standard subject, as the Table 1
+  footnote says, and matches the same group's earlier busulfan model
+  (`Du_2022_busulfan`). The supplement's sentence giving 56.1 kg as the
+  "standard fat mass" is read as FFM_STD, the value the Table 1 footnote
+  gives for the same subject.
+* **Maturation function and PMA.** The paper reports TM50 and HILL but does
+  not print the maturation equation or how PMA was derived. The standard
+  sigmoid Fmat = 1 / (1 + (PMA / TM50)^-HILL) is used, as in
+  `Du_2022_busulfan`, with PMA (weeks) = AGE x 52 + GA. Gestational age was
+  not reported; use 40 weeks when unknown. In this age range (0.5-17 years)
+  a few weeks of GA barely change Fmat.
+* **GSTA1 coding.** The paper splits GSTA1 diplotypes into rapid and slow
+  (intermediate plus poor) metabolizers following Ben Hassine 2021. This is
+  the register's `GSTA1_RM` (1 = rapid). The paper's reference group is
+  rapid, so CL is multiplied by 0.865 when `GSTA1_RM = 0`; the coefficient is
+  not inverted. The share of rapid metabolizers is not reported. The virtual
+  cohort assumes 75%, near the share of the *A/*A diplotype in a cohort from
+  the same centre (Yuan 2021).
+* **Variability scale.** BSV_CL 0.336, BSV_V 0.252 and BOV_CL 0.112
+  (Results: 33.6%, 25.2%, 11.2%) are read as the SD of eta, as in
+  `Du_2022_busulfan`. Reading them as CVs (omega^2 = log(CV^2 + 1)) would
+  lower the variances by 3-5%.
+* **Occasions.** The paper reports BOV on CL but does not define an
+  occasion. Sampling was around the first and fifth doses, so the model
+  takes the conditioning day as the occasion (`OCC` 1-4). Records with `OCC`
+  outside 1-4 have no BOV. rxode2 has no NONMEM-style occasion level, so the
+  four occasion etas are selected by indicators, which rxode2 cannot
+  mu-reference; it warns "some etas defaulted to non-mu referenced" on every
+  solve. The warning affects only estimation speed-ups, not simulation.
+* **Residual error.** The paper gives a proportional (17.8%) and an additive
+  (0.0312 mg/L) term without the combination rule; the nlmixr2 default
+  `add() + prop()` (variances add) is used.
+* **Dosing in the virtual cohort.** The paper reports only the
+  0.8-1.2 mg/kg range. The simulation uses the EU label weight bands, and a
+  second scenario rescales every child to 0.8 mg/kg, the dose most children
+  at the lead centre received in `Du_2022_busulfan`. The published exposure
+  medians and group shares are checked to lie between the two scenarios. The
+  dosing assumption affects the simulated AUCs but not the model.
+* **Exposure-response models.** The Cox models are semiparametric, so no
+  baseline hazard exists to extract; the files return relative hazards only.
+  The cut points (4.5, 54, 70 and 90 mg*h/L) were read off restricted cubic
+  splines rather than estimated, and are encoded as fixed. For the 4-day
+  regimen the reference window is taken as 70 <= cAUC <= 90 mg*h/L. In the
+  NRM model, ages on a band edge are put in the higher band (3 and 6 years),
+  except 12 years, which stays in 6-12. The Cox models for aGVHD, oral
+  mucositis and grade 2-4 hemorrhagic cystitis (Tables S3a-S3b, S4a, S4c,
+  S5a-S5b) contain no busulfan exposure term and are not encoded. The
+  restricted cubic spline curves of Figure 3 are shown only as figures, with
+  no coefficients, and are not encoded either.
+* **Overlap with earlier models.** The cohort includes patients from the
+  single-centre studies behind `Du_2022_busulfan` and `Yuan_2021_busulfan`.
+  The present model is a separate, larger fit and does not replace them.
+* **Errata.** No erratum or correction for this article was found (checked
+  2026-11-14).

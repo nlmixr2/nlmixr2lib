@@ -1,0 +1,639 @@
+---
+title: "Iclepertin PK and hemoglobin (Hanke 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Iclepertin PK and hemoglobin (Hanke 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+PKNCA::PKNCA.options(progress = FALSE)
+```
+
+# Model and source
+
+```{r models}
+mod_pk <- rxode2::rxode(readModelDb("Hanke_2026_iclepertin"))
+mod_pd <- rxode2::rxode(readModelDb("Hanke_2026_iclepertin_hemoglobin"))
+```
+
+* Citation: `r mod_pd$reference`
+* Article: <https://doi.org/10.3389/fphar.2026.1770980>
+* Supplementary Material (population PK parameter table S2, steady-state
+  exposure table S3 and the NONMEM control stream of the hemoglobin model):
+  <https://www.frontiersin.org/articles/10.3389/fphar.2026.1770980/full#supplementary-material>
+
+Hanke 2026 assessed the anemia risk of long-term treatment with iclepertin
+(BI 425809), a glycine transporter 1 (GlyT1) inhibitor developed for cognitive
+impairment associated with schizophrenia (CIAS). GlyT1 inhibition limits the
+glycine available to erythroid precursors for heme synthesis, so the drug
+lowers the hemoglobin content of newly formed red blood cells. The analysis was
+sequential, and the paper contributes two models:
+
+* `Hanke_2026_iclepertin` -- the population PK model (Supplementary Table S2):
+
+  > `r mod_pk$description`
+
+* `Hanke_2026_iclepertin_hemoglobin` -- the semi-mechanistic hemoglobin model
+  (Table 2 and the control stream), driven by the individual steady-state AUC
+  that the PK model provides:
+
+  > `r mod_pd$description`
+
+# Population
+
+**PK model.** Nine studies, 1031 subjects (placebo excluded): seven Phase I
+studies in healthy volunteers (single and multiple rising dose, proof of
+mechanism, Japanese and Chinese single rising dose, an itraconazole
+interaction study, absolute bioavailability and human ADME; 0.5-150 mg) and two
+12-week Phase II studies at 2-25 mg once daily in CIAS (n = 325) and
+Alzheimer's disease (n = 477) patients (Supplementary Table S1). The paper does
+not tabulate demographics for the PK dataset.
+
+**Hemoglobin model.** Three studies with long-term hematology, 1116 subjects
+after excluding ten outliers (Table 1, Supplementary Table S6): a 14-day
+proof-of-mechanism study in 25 healthy volunteers (5-50 mg) and the two 12-week
+Phase II studies (placebo and 2-25 mg) in 492 CIAS and 599 Alzheimer's disease
+patients. MCH and RBC were fitted simultaneously (12328 observations).
+Continuous covariates were normalised to age 59 years, BMI 26.8 kg/m^2 and ALT
+18 U/L. Phase III CONNEX-1/-2/-3 data (821 CIAS patients on 10 mg for 26 weeks)
+served as external validation.
+
+```{r population}
+pop_table <- function(pop) {
+  tibble::tibble(
+    Field = names(pop),
+    Value = vapply(pop, function(x) paste(as.character(x), collapse = "; "), character(1))
+  )
+}
+knitr::kable(pop_table(mod_pk$population), caption = "PK model population metadata.")
+knitr::kable(pop_table(mod_pd$population), caption = "Hemoglobin model population metadata.")
+```
+
+# Source trace
+
+## PK model (`Hanke_2026_iclepertin`)
+
+| Parameter | Value | Source location |
+|---|---|---|
+| `lka` | log(0.383) 1/h | Supplementary Table S2, KA |
+| `lcl` | log(3.98) L/h | Table S2, CL/F |
+| `lvc` | log(120) L | Table S2, V2/F |
+| `lq` | log(6.99) L/h | Table S2, Q/F |
+| `lvp` | log(86.2) L | Table S2, V3/F |
+| `ltlag` | log(0.233) h | Table S2, ALAG |
+| `lfdepot` | log(1), fixed | reference level implied by the dose-level F1 factors in Table S2 |
+| `e_wt_cl`, `e_wt_vc` | 0.164, 0.864 | Table S2, CL WT, V2 WT |
+| `e_wt_q`, `e_wt_vp` | 0.75, 1.00 (fixed) | Table S2, Q WT, V3 WT ("Fixed") |
+| `e_age_cl` | -1.64 | Table S2, CL AGE |
+| `e_race_black_cl`, `e_race_asian_cl`, `e_race_other_cl` | 1.35, 1.00, 0.963 | Table S2, CL BLACK / ASIAN / OTHER |
+| `e_smoke_cl` | 1.02 | Table S2, CL SMOKE |
+| `e_fed_ka`, `e_fed_fdepot` | 1.68, 1.15 | Table S2, KA FED, F FED |
+| `e_dis_healthy_ka` | 2.31 | Table S2, KA DIAG |
+| `e_dose_10mg_fdepot`, `e_dose_25mg_fdepot` | 0.931, 0.823 | Table S2, F1-10mg, F1-25mg |
+| `etalcl + etalvc + etalka` | 0.242; -0.0371, 0.118; -0.171, 0.227, 1.03 | Table S2 variances and covariances |
+| `propSd` | sqrt(0.0919) = 0.30315 | Table S2, sigma^2 PROP (30.3% CV) |
+| Structure | two compartments, lagged first-order absorption | Table S2 parameter set |
+
+## Hemoglobin model (`Hanke_2026_iclepertin_hemoglobin`)
+
+| Parameter / equation | Value | Source location |
+|---|---|---|
+| `lmtt_rbc` | log(126) day, fixed | Table 2; control stream THETA(1) 126 FIX |
+| `lkin_mch` | log(0.244) pg/cell/day | Table 2 |
+| `lkin_rbc` | log(0.0351) 10^12/L/day | Table 2 |
+| `lemax` | log(0.552) | Table 2 |
+| `lauc50` | log(43500) nmol*h/L | Table 2 |
+| `fb` | -1.41 | Table 2 |
+| `e_age_kin_mch`, `e_bmi_kin_mch`, `e_race_black_kin_mch` | 0.0235, -0.0583, 0.948 | Table 2; control stream THETA(15), (12), (10) |
+| `e_sexm_kin_rbc`, `e_age_kin_rbc`, `e_bmi_kin_rbc`, `e_race_asian_kin_rbc`, `e_alt_kin_rbc` | 1.07, -0.0592, 0.0451, 0.970, 0.0169 | Table 2; control stream THETA(7), (11), (13), (14), (16) |
+| `etalkin_mch`, `etalkin_rbc`, `etalauc50`, `etafb` | log(1 + CV^2) of 5.76, 7.49, 83.0, 79.7 % | Table 2 (CV% footnote) |
+| `addSd_MCH`, `addSd_RBC` | 0.522 pg, 0.159 10^12/L | Table 2; control stream THETA(8), THETA(9) with $SIGMA 1 FIX |
+| `ktr = 4 / lifespan` | n/a | Results "Final model"; control stream $PK |
+| `d/dt(mch1) = Kin_MCH (1 - Emax AUC / (AUC50 + AUC)) - ktr mch1` | n/a | Results equation; control stream DADT(1) |
+| `d/dt(erythrocytes1) = Kin_RBC_0 (HB / HB_0)^Feedbk - ktr erythrocytes1` | n/a | Results equation; control stream DADT(5) |
+| transit chains, steady-state initial conditions, `HB_0` | n/a | control stream $PK (A_0) and $DES |
+| `thb` = sum of MCH_i x RBC_i | n/a | Figure 1 |
+
+# Simulation helpers
+
+```{r helpers}
+# Iclepertin molecular weight (C20H18F6N2O5S), used only to convert the PK
+# model's ng/mL output to the nmol/L and nmol*h/L units of the paper. The paper
+# does not print it.
+mw_iclepertin <- 512.4
+
+# Hemoglobin event frame: observations only (no dosing compartment); iclepertin
+# acts through the AUC_ICLEPERTIN covariate, which switches off 48 h after the
+# last dose (Results "Final model"). All endpoints are algebraic sums of the
+# states, so observation rows carry dvid = 1 with cmt = NA and every output is
+# returned on every row.
+pd_events <- function(cov, auc, t_off = 366, times = seq(0, 540, by = 5)) {
+  times <- sort(unique(c(times, t_off)))
+  tidyr::crossing(cov, time = times) |>
+    dplyr::left_join(auc, by = "id") |>
+    dplyr::mutate(
+      AUC_ICLEPERTIN = ifelse(time < t_off, auc_on, 0),
+      evid = 0L,
+      cmt = NA_character_,
+      dvid = 1L
+    ) |>
+    dplyr::select(-auc_on) |>
+    dplyr::arrange(id, time) |>
+    as.data.frame()
+}
+
+pd_solve <- function(model, events, keep = NULL) {
+  rxode2::rxSolve(
+    model, events = events, keep = keep,
+    covsInterpolation = "locf", returnType = "data.frame"
+  )
+}
+
+ref_patient <- function(id = 1L, SEXF = 0L) {
+  # Reference patient of Figure 2: White, 38 years, BMI 29.1 kg/m^2, ALT 21 U/L.
+  tibble::tibble(
+    id = id, SEXF = SEXF, AGE = 38, BMI = 29.1, ALT = 21,
+    RACE_BLACK = 0L, RACE_ASIAN = 0L
+  )
+}
+
+# Typical-value solve: every eta supplied as a zero column with omega = NA,
+# which is deterministic for any number of subjects.
+pd_solve_typ <- function(events) {
+  events[c("etalkin_mch", "etalkin_rbc", "etalauc50", "etafb")] <- 0
+  rxode2::rxSolve(
+    mod_pd, events = events, omega = NA, sigma = NA,
+    covsInterpolation = "locf", returnType = "data.frame"
+  )
+}
+```
+
+# Population PK model
+
+## Typical steady-state profile
+
+```{r pk-typical}
+pk_cohort <- function(n, dose, id_offset = 0L) {
+  tibble::tibble(
+    id = id_offset + seq_len(n),
+    dose_grp = paste(dose, "mg"),
+    DOSE = dose,
+    AGE = pmin(pmax(rnorm(n, 38, 9), 18), 55),
+    WT = exp(rnorm(n, log(85), 0.18)),
+    RACE_BLACK = rbinom(n, 1, 0.2),
+    RACE_ASIAN = 0L,
+    RACE_OTHER = 0L,
+    SMOKE = rbinom(n, 1, 0.5),
+    FED = 0L,
+    DIS_HEALTHY = 0L
+  )
+}
+
+pk_events <- function(cohort) {
+  # 14 once-daily doses; dense sampling over the last 24 h interval
+  # (steady state: the terminal half-life is 33-47 h).
+  doses <- cohort |>
+    tidyr::crossing(time = seq(0, 13 * 24, by = 24)) |>
+    dplyr::mutate(amt = DOSE, evid = 1L, cmt = "depot")
+  obs <- cohort |>
+    tidyr::crossing(time = 13 * 24 + c(seq(0, 4, by = 0.25), seq(5, 24, by = 1))) |>
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "central")
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    as.data.frame()
+}
+
+typ <- pk_events(tibble::tibble(
+  id = 1L, dose_grp = "10 mg", DOSE = 10, AGE = 38, WT = 85, RACE_BLACK = 0L,
+  RACE_ASIAN = 0L, RACE_OTHER = 0L, SMOKE = 0L, FED = 0L, DIS_HEALTHY = 0L
+))
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod_pk), events = typ, returnType = "data.frame")
+
+ggplot(sim_typ, aes(time - 13 * 24, Cc * 1000 / mw_iclepertin)) +
+  geom_line() +
+  labs(
+    x = "Time after the 14th daily dose (h)", y = "Iclepertin (nmol/L)",
+    title = "Typical 10 mg once-daily steady-state profile",
+    caption = "Fasted CIAS patient, 38 years, 85 kg, White, non-smoker."
+  )
+```
+
+## Steady-state exposure in a virtual Phase II CIAS cohort (Table S3)
+
+Supplementary Table S3 gives the geometric mean steady-state AUC, Cmax and
+trough for the Phase II CIAS population at each dose. The paper does not report
+the demographics of that population beyond the Figure 2 reference patient
+(38 years, BMI 29.1 kg/m^2), so the cohort below is an approximation: 200
+patients per dose, age normal around 38 years (18-55), weight log-normal around
+85 kg, 20% Black, half smokers, all fasted.
+
+```{r pk-cohort}
+set.seed(20261770)
+rxode2::rxSetSeed(20261770)
+cohort_pk <- dplyr::bind_rows(
+  pk_cohort(200, 2, id_offset = 0L),
+  pk_cohort(200, 5, id_offset = 200L),
+  pk_cohort(200, 10, id_offset = 400L),
+  pk_cohort(200, 25, id_offset = 600L)
+)
+ev_pk <- pk_events(cohort_pk)
+stopifnot(!anyDuplicated(unique(ev_pk[, c("id", "time", "evid")])))
+
+sim_pk <- rxode2::rxSolve(mod_pk, events = ev_pk, keep = "dose_grp", returnType = "data.frame")
+```
+
+```{r pk-nca}
+t_start <- 13 * 24
+conc_nca <- sim_pk |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::transmute(id, dose_grp, time, Cc = Cc * 1000 / mw_iclepertin)
+dose_nca <- ev_pk |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, dose_grp, time, amt)
+
+intervals <- data.frame(
+  start = t_start, end = t_start + 24,
+  auclast = TRUE, cmax = TRUE, cmin = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_nca, Cc ~ time | dose_grp + id),
+  PKNCA::PKNCAdose(dose_nca, amt ~ time | dose_grp + id),
+  intervals = intervals
+))
+
+# Supplementary Table S3: geometric means (CV%) for the Phase II CIAS population.
+published_s3 <- tibble::tribble(
+  ~dose_grp, ~auclast, ~cmax, ~cmin,
+  "2 mg",    929,      50.1,  29.2,
+  "5 mg",    2090,     113,   65.1,
+  "10 mg",   4020,     222,   121,
+  "25 mg",   8390,     462,   255
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published_s3,
+  by = "dose_grp",
+  units = c(auclast = "nmol*h/L", cmax = "nmol/L", cmin = "nmol/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Simulated (median) vs. published (geometric mean) steady-state exposure, Supplementary Table S3. * differs by more than 20%."
+)
+```
+
+```{r pk-gate}
+# Closed-form steady-state AUC (F * dose / CL) at the cohort's median
+# covariates, independent of the random draw. A mis-transcribed CL, F or unit
+# moves this by tens of percent.
+auc_closed <- function(dose, f) {
+  cl <- 3.98 * (85 / 70)^0.164 * (38 / 40)^-1.64
+  f * dose / cl * 1e6 / mw_iclepertin
+}
+closed <- c(
+  "2 mg" = auc_closed(2, 1), "5 mg" = auc_closed(5, 1),
+  "10 mg" = auc_closed(10, 0.931), "25 mg" = auc_closed(25, 0.823)
+)
+pct_closed <- 100 * (closed - published_s3$auclast) / published_s3$auclast
+round(pct_closed, 1)
+stopifnot(all(abs(pct_closed) < 15))
+```
+
+The closed-form typical AUCs lie within about 10% of Table S3 at every dose.
+This depends on the assumed reference age of 40 years (see Assumptions and
+deviations). With an exponent of -1.64, each 10% shift of the reference age
+moves the typical clearance by about 17%. Only the AUC and trough are
+interpretable here. The simulated Cmax also depends on the assumed fasted state
+(`FED` raises KA 1.68-fold) and on the direction of the diagnosis effect on
+KA.
+
+# Hemoglobin model
+
+## Homeostasis without drug
+
+```{r pd-homeostasis}
+ev0 <- pd_events(ref_patient(), tibble::tibble(id = 1L, auc_on = 0))
+s0 <- pd_solve_typ(ev0)
+drift <- max(abs(s0$thb - s0$thb[1])) / s0$thb[1]
+c(baseline_hb = s0$thb[1], baseline_mch = s0$MCH[1], baseline_rbc = s0$RBC[1], max_rel_drift = drift)
+stopifnot(drift < 1e-6)
+```
+
+The typical male reference patient has a baseline MCH of
+`r round(s0$MCH[1], 2)` pg, RBC of `r round(s0$RBC[1], 2)` x 10^12/L and
+hemoglobin of `r round(s0$thb[1], 1)` g/L.
+
+## Reference-patient decreases (Results "Model-based simulations")
+
+The paper reports relative decreases of 2.0% at 10 mg (typical AUC 4020
+nmol*h/L) and 7.6% at a fivefold higher exposure, equal to 2.9 / 11.3 g/L for
+the male and 2.7 / 10.5 g/L for the female reference patient.
+
+```{r pd-reference}
+ref_cov <- dplyr::bind_rows(ref_patient(1L, 0L), ref_patient(2L, 0L), ref_patient(3L, 1L), ref_patient(4L, 1L))
+ref_auc <- tibble::tibble(id = 1:4, auc_on = c(4020, 5 * 4020, 4020, 5 * 4020))
+s_ref <- pd_solve_typ(pd_events(ref_cov, ref_auc))
+
+ref_tab <- s_ref |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    base = thb[time == 0][1],
+    day365 = thb[time == 365][1],
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    sex = c("male", "male", "female", "female"),
+    exposure = c("10 mg", "5-fold", "10 mg", "5-fold"),
+    pct = 100 * (base - day365) / base,
+    abs = base - day365,
+    pct_paper = c(2.0, 7.6, 2.0, 7.6),
+    abs_paper = c(2.9, 11.3, 2.7, 10.5)
+  )
+ref_tab |>
+  dplyr::select(sex, exposure, base, day365, pct, pct_paper, abs, abs_paper) |>
+  dplyr::rename(
+    "Sex" = sex, "Exposure" = exposure, "Baseline Hb (g/L)" = base,
+    "Day-365 Hb (g/L)" = day365, "Decrease (%)" = pct, "Paper (%)" = pct_paper,
+    "Decrease (g/L)" = abs, "Paper (g/L)" = abs_paper
+  ) |>
+  knitr::kable(digits = 2, caption = "Typical reference-patient hemoglobin decreases after 365 days.")
+
+# Same parameters, closed-form steady state: (HB/HB0)^(1 - Feedbk) = 1 - INH.
+inh <- function(auc) 0.552 * auc / (43500 + auc)
+ss_pct <- 100 * (1 - (1 - inh(c(4020, 20100)))^(1 / (1 + 1.41)))
+round(ss_pct, 2)
+stopifnot(
+  all(abs(ref_tab$pct - ref_tab$pct_paper) < 0.15),
+  all(abs(ref_tab$abs - ref_tab$abs_paper) < 0.15),
+  all(abs(ref_tab$pct - rep(ss_pct, 2)) < 0.05)
+)
+```
+
+The day-365 hemoglobin reproduces both the percentages and the absolute
+decreases to within the paper's rounding. The female fivefold value is 10.6 g/L
+against the printed 10.5.
+
+## Covariate effects on baseline (Discussion)
+
+The Discussion states that Black and Asian race lower hemoglobin by 5.2% and
+3.0%. Both effects act on baseline production, so at baseline they equal the
+Kin factors (0.948 on MCH, 0.970 on RBC).
+
+```{r pd-race}
+race_cov <- dplyr::bind_rows(
+  ref_patient(1L),
+  ref_patient(2L) |> dplyr::mutate(RACE_BLACK = 1L),
+  ref_patient(3L) |> dplyr::mutate(RACE_ASIAN = 1L)
+)
+s_race <- pd_solve_typ(pd_events(race_cov, tibble::tibble(id = 1:3, auc_on = 0), times = 0))
+race_pct <- 100 * (1 - s_race$thb[s_race$time == 0][2:3] / s_race$thb[s_race$time == 0][1])
+round(race_pct, 2)
+stopifnot(abs(race_pct[1] - 5.2) < 0.1, abs(race_pct[2] - 3.0) < 0.1)
+```
+
+## Maximum effect (Discussion "Model parameter estimates")
+
+At an exposure far above AUC50 the inhibition approaches Emax = 0.552. The
+paper reports that the maximum predicted hemoglobin decrease "approached ~25%".
+
+```{r pd-emax}
+auc_grid <- c(4020, 20100, 43500, 1e5, 1e6)
+tibble::tibble(
+  `AUC (nmol*h/L)` = auc_grid,
+  `Inhibition of Kin_MCH` = inh(auc_grid),
+  `Steady-state Hb decrease (%)` = 100 * (1 - (1 - inh(auc_grid))^(1 / 2.41))
+) |>
+  knitr::kable(digits = 3)
+```
+
+## Replication of Figure 3
+
+Figure 3 shows 365 days at 10 mg daily or fivefold exposure, then 175 days off
+treatment, by sex. The paper resampled 1000 Phase III patients per sex, whose
+covariates are not published. The virtual cohort below uses 200 patients per
+sex and scenario. Individual AUC is log-normal around the Table S3 geometric mean
+(4020 nmol*h/L, 64.5% CV), multiplied by 5 in the high-exposure arm. Age is
+normal around 37 years (18-55), BMI log-normal around 29.1 kg/m^2, ALT
+log-normal around 21 U/L, and the cohort is 75% White, 20% Black and 5% Asian.
+
+```{r fig3-sim}
+set.seed(20261771)
+rxode2::rxSetSeed(20261771)
+make_pd_cohort <- function(n, sexf, scenario, mult, id_offset) {
+  sd_auc <- sqrt(log(1 + 0.645^2))
+  race <- sample(c("W", "B", "A"), n, replace = TRUE, prob = c(0.75, 0.2, 0.05))
+  cov <- tibble::tibble(
+    id = id_offset + seq_len(n),
+    sex = ifelse(sexf == 1, "Female", "Male"),
+    scenario = scenario,
+    SEXF = sexf,
+    AGE = pmin(pmax(rnorm(n, 37, 10), 18), 55),
+    BMI = exp(rnorm(n, log(29.1), 0.18)),
+    ALT = exp(rnorm(n, log(21), 0.45)),
+    RACE_BLACK = as.integer(race == "B"),
+    RACE_ASIAN = as.integer(race == "A")
+  )
+  auc <- tibble::tibble(id = cov$id, auc_on = mult * exp(rnorm(n, log(4020), sd_auc)))
+  pd_events(cov, auc, times = seq(0, 540, by = 10))
+}
+ev_fig3 <- dplyr::bind_rows(
+  make_pd_cohort(200, 0, "10 mg daily", 1, 0L),
+  make_pd_cohort(200, 1, "10 mg daily", 1, 200L),
+  make_pd_cohort(200, 0, "Fivefold higher exposure", 5, 400L),
+  make_pd_cohort(200, 1, "Fivefold higher exposure", 5, 600L)
+)
+stopifnot(!anyDuplicated(unique(ev_fig3[, c("id", "time", "evid")])))
+sim_fig3 <- pd_solve(mod_pd, ev_fig3, keep = c("sex", "scenario"))
+
+q_fig3 <- sim_fig3 |>
+  dplyr::group_by(sex, scenario, time) |>
+  dplyr::summarise(
+    Q025 = quantile(thb, 0.025), Q50 = median(thb), Q975 = quantile(thb, 0.975),
+    .groups = "drop"
+  )
+
+ggplot(q_fig3, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q025, ymax = Q975), fill = "grey80") +
+  geom_line() +
+  geom_line(aes(y = Q025), linetype = "dashed") +
+  geom_line(aes(y = Q975), linetype = "dashed") +
+  geom_hline(yintercept = 100, linetype = "dashed", colour = "grey50") +
+  facet_grid(scenario ~ factor(sex, levels = c("Male", "Female"))) +
+  scale_x_continuous(breaks = seq(0, 540, by = 90)) +
+  coord_cartesian(ylim = c(90, 190)) +
+  labs(
+    x = "Time (days)", y = "Hemoglobin (g/L)",
+    title = "Hemoglobin at 10 mg daily or fivefold higher exposure",
+    caption = "Replicates Figure 3 of Hanke 2026 (median and 2.5th-97.5th percentiles; treatment stops at day 364)."
+  )
+```
+
+```{r fig3-check}
+fig3_tab <- q_fig3 |>
+  dplyr::filter(time %in% c(0, 360, 540)) |>
+  dplyr::arrange(scenario, sex, time)
+knitr::kable(fig3_tab, digits = 1, caption = "Simulated hemoglobin percentiles (g/L).")
+
+below100 <- sim_fig3 |>
+  dplyr::filter(time == 360) |>
+  dplyr::group_by(scenario, sex) |>
+  dplyr::summarise(pct_below_100 = 100 * mean(thb < 100), .groups = "drop")
+knitr::kable(below100, digits = 1, caption = "Virtual patients below 100 g/L on day 360.")
+
+med <- function(sc, sx, t) q_fig3$Q50[q_fig3$scenario == sc & q_fig3$sex == sx & q_fig3$time == t]
+drop_pct <- c(
+  male_10 = 100 * (1 - med("10 mg daily", "Male", 360) / med("10 mg daily", "Male", 0)),
+  male_5x = 100 * (1 - med("Fivefold higher exposure", "Male", 360) / med("Fivefold higher exposure", "Male", 0))
+)
+round(drop_pct, 2)
+stopifnot(
+  # Baseline medians sit near the typical values (148 male, 138 female g/L);
+  # Figure 3 shows about 150 and 138.
+  abs(med("10 mg daily", "Male", 0) - 148) < 5,
+  abs(med("10 mg daily", "Female", 0) - 138) < 5,
+  # The median drop tracks the typical-value 2% / 7.6%; IIV on AUC50 and the
+  # feedback widens it only slightly.
+  abs(drop_pct[["male_10"]] - 2) < 1.5,
+  abs(drop_pct[["male_5x"]] - 7.6) < 2.5,
+  # Recovery: back to within 1% of baseline 175 days after stopping.
+  abs(med("Fivefold higher exposure", "Male", 540) / med("Fivefold higher exposure", "Male", 0) - 1) < 0.01
+)
+```
+
+As in Figure 3, the new steady state is reached after about 120-140 days, and
+recovery after stopping is as slow as the decline. At 10 mg daily no virtual
+patient falls below 100 g/L. The paper reports that more than 97.5% of patients
+stay above 100 g/L even at fivefold exposure, and its Figure 3 places the
+female 2.5th percentile just above the threshold (about 101 g/L). In this
+cohort the high-exposure female 2.5th percentile is a few g/L lower (about 96
+g/L, with about 4-5% below 100 g/L). This is a lower tail of a cohort whose
+covariates are assumed: the paper resampled the unpublished Phase III
+demographics, which were less variable than the Phase II data (Discussion). The
+fraction below 100 g/L is therefore reported and not asserted. The medians and
+the typical-value decreases match.
+
+## Subgroups (Figures 4 and 5)
+
+Figures 4 and 5 vary race and age for male and female patients at 10 mg daily.
+The typical values below show the same ordering: female, Black and older
+patients start lower, and every subgroup loses about 2% over a year.
+
+```{r fig45}
+grid <- tidyr::crossing(
+  SEXF = c(0L, 1L), race = c("White", "Black", "Asian"), AGE = c(20, 38, 65, 90)
+) |>
+  dplyr::mutate(
+    id = dplyr::row_number(), BMI = 29.1, ALT = 21,
+    RACE_BLACK = as.integer(race == "Black"), RACE_ASIAN = as.integer(race == "Asian")
+  )
+s_grid <- pd_solve_typ(
+  pd_events(grid |> dplyr::select(-race), tibble::tibble(id = grid$id, auc_on = 4020), times = c(0, 365))
+)
+grid_tab <- s_grid |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(base = thb[time == 0][1], day365 = thb[time == 365][1], .groups = "drop") |>
+  dplyr::left_join(grid, by = "id") |>
+  dplyr::mutate(sex = ifelse(SEXF == 1, "female", "male"), pct = 100 * (base - day365) / base) |>
+  dplyr::select(sex, race, AGE, base, day365, pct)
+grid_tab |>
+  dplyr::rename("Sex" = sex, "Race" = race, "Age (y)" = AGE, "Baseline Hb (g/L)" = base, "Day-365 Hb (g/L)" = day365, "Decrease (%)" = pct) |>
+  knitr::kable(digits = 1, caption = "Typical hemoglobin at 10 mg daily (BMI 29.1, ALT 21).")
+stopifnot(all(abs(grid_tab$pct - 1.96) < 0.1))
+```
+
+The decrease is the same 1.96% in every subgroup. This follows from the model
+structure: covariates enter only through the production rates, and the
+steady-state relative change depends only on Emax, AUC50 and the feedback
+exponent.
+
+## Linking the PK and hemoglobin models
+
+The PK model supplies `AUC_ICLEPERTIN` as `fdepot * dose / cl`. The paper used
+individual empirical Bayes estimates. For a typical fasted CIAS patient (38
+years, 85 kg, White) at 10 mg once daily, the value converted to nmol*h/L is:
+
+```{r link}
+cl_typ <- 3.98 * (85 / 70)^0.164 * (38 / 40)^-1.64
+auc_link <- 0.931 * 10 / cl_typ * 1e6 / mw_iclepertin
+auc_link
+s_link <- pd_solve_typ(pd_events(ref_patient(), tibble::tibble(id = 1L, auc_on = auc_link), times = c(0, 365)))
+100 * (1 - s_link$thb[s_link$time == 365] / s_link$thb[s_link$time == 0])
+```
+
+# Assumptions and deviations
+
+## PK model reporting gaps
+
+* **Reference weight.** Supplementary Table S2 gives power exponents for body
+  weight but not the reference weight; 70 kg is assumed.
+* **Age effect.** Table S2 reports "Effect of age on CL" = -1.64 without the
+  functional form or the reference age. A normalised power model
+  `(AGE / 40)^-1.64` is assumed. This is the form the paper states for its
+  continuous PD covariates, and an exponential-linear form with this coefficient
+  would be implausible. 40 years was taken as a round adult reference. With it,
+  the closed-form typical AUCs agree with Table S3 to within about 10% for a
+  38-year-old patient. The reference age is not a published value, and
+  steady-state AUC predictions scale with it: each 10% change in the reference
+  age moves CL/F by about 17%.
+* **Diagnosis effect on KA.** Table S2 lists "Effect of diagnosis on KA" = 2.31
+  without the coding. The factor is applied to patients with a diagnosis (CIAS
+  or Alzheimer's disease) relative to healthy volunteers, via `DIS_HEALTHY`.
+  This affects only the absorption rate (Cmax and Tmax), not the steady-state AUC
+  that drives the hemoglobin model.
+* **Dose-level bioavailability.** Table S2 gives relative bioavailabilities for
+  10 mg (0.931) and 25 mg (0.823) doses. Doses below 10 mg are taken as the
+  reference (F = 1). Doses of 50 mg and above (Phase I only) are assigned the
+  25 mg value, and intermediate doses take the band below them.
+* **Race categories.** White is the reference; Black, Asian and Other carry the
+  Table S2 factors (Asian = 1.00 was estimated, so it is kept).
+* **Concentration units.** The model reports ng/mL (dose in mg). The paper's
+  tables are in nmol/L and nmol*h/L. This vignette converts with the iclepertin
+  molecular weight of 512.4 g/mol (C20H18F6N2O5S), which the paper does not
+  print.
+
+## Hemoglobin model
+
+* **Residual error.** The control stream annotates THETA(8) and THETA(9) as
+  "(pg/cell)^2" and "(10^12/L)^2", and a commented-out `$SIGMA` line converts
+  0.522 to an SD of 0.722. However, the fitted error model is
+  `Y = IPRED + W * EPS(1)` with `W = THETA(8)` (or THETA(9)) and `$SIGMA 1 FIX`.
+  That makes the THETAs standard deviations, matching the "(pg/cell)" and
+  "(10^12/L)" units of Table 2. The packaged model uses 0.522 pg and
+  0.159 x 10^12/L as additive SDs, following the code.
+* **Fixed-zero random effects.** The control stream carries `$OMEGA 0 FIX` on
+  the RBC lifespan and on Emax. These etas are omitted.
+* **Control stream comment labels.** The `$THETA` comments label THETA(12) as
+  "BMI on KinMCH" and THETA(11) as "AGE on KinRBC", consistent with `$PK` and
+  Table 2. The packaged model follows `$PK`.
+* **Total hemoglobin output.** In the control stream each MCH compartment holds
+  one quarter of the cell's hemoglobin content (the observed MCH is their sum),
+  so the `$DES` sum of MCH_i x RBC_i is one quarter of total hemoglobin; only its
+  ratio to baseline enters the feedback. The `thb` output multiplies it by four,
+  giving Figure 1's total hemoglobin with MCH_i as the per-cell content. At
+  steady state this equals MCH x RBC, the definition of observed hemoglobin in
+  the Supplementary Material.
+* **Exposure time course.** `AUC_ICLEPERTIN` is a step covariate: the
+  individual AUCtau,ss from the first dose, zero 48 h after the last dose
+  (Results "Final model"). The user encodes this time course; the simulations
+  here use last-observation-carried-forward interpolation.
+* **Validation against Phase III (Figure 6).** This needs the unpublished
+  individual CONNEX data and is not reproduced.
+
+## Virtual cohorts
+
+The Phase II CIAS and Phase III demographics are not published beyond the
+reference patient (male, White, 38 years, BMI 29.1 kg/m^2, ALT 21 U/L). The
+distributions of age, weight, BMI, ALT, race, smoking and food status used
+above are assumptions. They affect the spread of the virtual cohorts, not the
+typical-value checks. No correction notice for the article was found as of
+2026-11-14.

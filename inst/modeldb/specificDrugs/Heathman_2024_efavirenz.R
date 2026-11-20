@@ -425,12 +425,12 @@ Heathman_2024_efavirenz <- function() {
     #    distribution is parameterised by Q-EFV and Vp-EFV.
     # -----------------------------------------------------------------------
     d/dt(depot)       <- -ka * depot
-    d/dt(central)     <-  ka * depot
-                          - (cl_2b6 * enzyme_2b6
+    d/dt(central)     <-  ka * depot -
+                          (cl_2b6 * enzyme_2b6
                              + cl_2a6 * enzyme_2a6
-                             + cl_ugt) / vc * central
-                          - q / vc * central
-                          + q / vp * peripheral1
+                             + cl_ugt) / vc * central -
+                          q / vc * central +
+                          q / vp * peripheral1
     d/dt(peripheral1) <-  q / vc * central - q / vp * peripheral1
 
     # Sequential zero+first-order absorption: dose enters depot uniformly
@@ -443,24 +443,24 @@ Heathman_2024_efavirenz <- function() {
     #    plus UGT (constant). Vc-8OH = Vc-EFV per the paper.
     # -----------------------------------------------------------------------
     Cc_8oh <- central_8oh / vc_8oh
-    d/dt(central_8oh)     <-  cl_2b6 * enzyme_2b6 / vc * central
-                              - (cl_2b6_8oh * enzyme_2b6 + cl_ugt_8oh) / vc_8oh * central_8oh
-                              - q_8oh / vc_8oh * central_8oh
-                              + q_8oh / vp_8oh * peripheral1_8oh
-    d/dt(peripheral1_8oh) <-  q_8oh / vc_8oh * central_8oh
-                              - q_8oh / vp_8oh * peripheral1_8oh
+    d/dt(central_8oh)     <-  cl_2b6 * enzyme_2b6 / vc * central -
+                              (cl_2b6_8oh * enzyme_2b6 + cl_ugt_8oh) / vc_8oh * central_8oh -
+                              q_8oh / vc_8oh * central_8oh +
+                              q_8oh / vp_8oh * peripheral1_8oh
+    d/dt(peripheral1_8oh) <-  q_8oh / vc_8oh * central_8oh -
+                              q_8oh / vp_8oh * peripheral1_8oh
 
     # -----------------------------------------------------------------------
     # 6. 7-OH EFV ODE system. Formation flux from EFV via CYP2A6 (scaled by
     #    enzyme_2a6); single lumped CL-7OH (constant in time).
     # -----------------------------------------------------------------------
     Cc_7oh <- central_7oh / vc_7oh
-    d/dt(central_7oh)     <-  cl_2a6 * enzyme_2a6 / vc * central
-                              - cl_7oh / vc_7oh * central_7oh
-                              - q_7oh / vc_7oh * central_7oh
-                              + q_7oh / vp_7oh * peripheral1_7oh
-    d/dt(peripheral1_7oh) <-  q_7oh / vc_7oh * central_7oh
-                              - q_7oh / vp_7oh * peripheral1_7oh
+    d/dt(central_7oh)     <-  cl_2a6 * enzyme_2a6 / vc * central -
+                              cl_7oh / vc_7oh * central_7oh -
+                              q_7oh / vc_7oh * central_7oh +
+                              q_7oh / vp_7oh * peripheral1_7oh
+    d/dt(peripheral1_7oh) <-  q_7oh / vc_7oh * central_7oh -
+                              q_7oh / vp_7oh * peripheral1_7oh
 
     # -----------------------------------------------------------------------
     # 7. Enzyme turnover ODEs (Heathman 2024 Figure 1 ODE box).

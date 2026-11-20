@@ -680,6 +680,38 @@ ggplot(fig5, aes(x = time / 24, y = median, colour = state)) +
   theme(legend.position = "top")
 ```
 
+The exponential IIV on `Ffast` (`frac`) has no upper bound, so the model splits
+the TAF-to-TFV conversion with `frac_capped = min(frac, 1)`. Every virtual
+woman's two conversion fractions, `Ffast` and `1 - Ffast`, must lie in [0, 1],
+and the count of women at the cap must be consistent with the exact lognormal
+tail probability `P(Ffast > 1) = pnorm(log(0.278) / sqrt(0.1881587))`:
+
+```{r frac-bound}
+frac_tab <- cohort |>
+  dplyr::distinct(.data$state, .data$Prodrug, .data$sim.id, .data$frac, .data$frac_capped)
+expected_at_cap <- pnorm(
+  modSemi$theta[["lfrac"]] / sqrt(modSemi$omega["etalfrac", "etalfrac"])
+)
+n_at_cap <- sum(frac_tab$frac_capped == 1)
+data.frame(
+  n = nrow(frac_tab),
+  n_at_cap = n_at_cap,
+  pct_at_cap = 100 * n_at_cap / nrow(frac_tab),
+  pct_expected = 100 * expected_at_cap
+)
+stopifnot(
+  nrow(frac_tab) == 8L * NPER_ARM,
+  !anyNA(frac_tab$frac_capped),
+  all(frac_tab$frac_capped >= 0), all(frac_tab$frac_capped <= 1),
+  all(1 - frac_tab$frac_capped >= 0),
+  # The cap binds exactly where the lognormal draw reaches 1.
+  identical(frac_tab$frac_capped == 1, frac_tab$frac >= 1),
+  # The count at the cap is binomial; require that neither tail is vanishingly small.
+  pbinom(n_at_cap, nrow(frac_tab), expected_at_cap) > 1e-6,
+  pbinom(n_at_cap - 1L, nrow(frac_tab), expected_at_cap, lower.tail = FALSE) > 1e-6
+)
+```
+
 ## DBS TFV-dp over 12 weeks (Fig. 6)
 
 ```{r fig6, fig.cap = "Replicates Figure 6 of Yu 2026: typical DBS TFV-dp accumulation over 12 weeks of daily TDF 300 mg, by pregnancy state."}
@@ -838,6 +870,16 @@ from the published material.
 
 ## Other assumptions
 
+* **`Ffast` is capped at 1.** Table 2 reports the between-subject variability of
+  `Ffast` as a %CV of the exponential model `P = TVP * exp(eta)` (Methods 2.4.1),
+  which has no upper bound, and the paper gives `Ffast` no other bound. Uncapped,
+  0.16% of women (about 1 in 630) lie above `Ffast = 1`, where the transit
+  compartment is fed a negative flux. The model therefore uses `min(Ffast, 1)`:
+  `P(Ffast > 1) = 0.158%` of women sit at the cap (the `frac-bound` chunk
+  reports the realised count), and the SD of `Ffast` falls from 0.1390 (the
+  lognormal) to 0.1376, 1.0% lower, with the mean 0.07% lower. The simulated
+  `Ffast` distribution therefore differs slightly from the fitted lognormal.
+  Typical-subject results, including every identity check above, are unaffected.
 * **Trimester boundaries.** Yu 2026 reports trimester indicator variables but
   never prints the gestational-age cut-offs behind them. All three model files
   derive `TRI2` / `TRI3` from the canonical `EGA` covariate using the standard

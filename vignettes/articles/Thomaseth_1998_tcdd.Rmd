@@ -1,0 +1,293 @@
+---
+title: "TCDD minimal physiologic toxicokinetics (Thomaseth 1998)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{TCDD minimal physiologic toxicokinetics (Thomaseth 1998)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Thomaseth_1998_tcdd"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Thomaseth_1998_tcdd"))$description`
+* Article: [Environ Health Perspect 1998;106(Suppl 2):743-753](https://doi.org/10.1289/ehp.98106743)
+
+This is a *minimal physiologic toxicokinetic* (MPTK) model: a single whole-body
+2,3,7,8-tetrachlorodibenzo-p-dioxin (TCDD) burden compartment whose distribution
+volume is the body's total lipid mass. TCDD is eliminated by hepatic degradation
+at a rate proportional to the fraction of body lipid held in the liver, so the
+apparent elimination half-life is a function of body composition and changes as
+the subject's body-mass index (BMI) changes with age. The model has no classical
+dose events; it is run forward from an assumed serum level under a constant daily
+intake.
+
+# Population
+
+Kinetic parameters -- the hepatic elimination rate `kf` and the background daily
+intake `input` -- were estimated from repeated serum-dioxin measurements in
+Operation Ranch Hand (RH) Vietnam veterans: 277 exposed veterans with three
+samples (1982/1987/1992), plus additional RH and unexposed reference-group
+observations (Table 1 of the source). The occupational-exposure parameter was
+then estimated by linear regression on a subcohort of 253 male National Institute
+for Occupational Safety and Health (NIOSH) chemical-plant workers who each had a
+single serum-TCDD measurement (Table 2); the full NIOSH cohort is 5172 male
+workers at 12 US plants. All subjects were adult males.
+
+The population metadata are available programmatically via
+`readModelDb("Thomaseth_1998_tcdd")()$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Thomaseth_1998_tcdd.R`. The table collects
+them in one place. The lead on-disk source is a page-image scan of the article;
+values are cited to their tables/figures within it.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `tkf` (kf)           | 0.02199 /day | Table 4, "NCME and log transformation" row (95% CI 0.020-0.024) |
+| `input` (background) | 0.1251 pg/kg/day | Table 4, same row (95% CI 0.071-0.179); NIOSH scenario re-fit to 0.293 (Table 6) |
+| `exposure` (occupational) | 0 (default) | Table 6 NIOSH estimate 232.7 pg/kg/day (95% CI 192-273); off by default |
+| `alphaBMI`           | -3.755e-3 kg/m^2/year^2 | Figure 3 text (+/- 0.9e-3 SE) |
+| `betaBMI`            | 0.26907 kg/m^2/year | Figure 3 text (+/- 0.04 SE) |
+| `kadipose1`, `kadipose0` | 0.01264, 0.13305 | page 746, v_adipose = 1000*(0.01264*BMI - 0.13305); Knapik 1983 |
+| `fliverlean`         | 0.0311 | page 745, liver = 3.11% of lean body mass (ICRP) |
+| `flipadipose`, `flipliver`, `flipother` | 0.8, 0.069, 0.022 | page 745, lipid fractions of adipose / liver / other |
+| `ladj0`              | 7 ppt | page 745/749, initial serum level fixed to 7 ppt |
+| `etakf` (BSV on kf)  | 2.9e-5 (variance) | Table 4 footnote, additive on kf (Eq 18) |
+| `propSd`             | 0.259 | Table 4 footnote, sigma2_eps = 0.0671 on log scale; sqrt = 0.259 (25.9% CV) |
+| `d/dt(tcdd)`         | n/a | Equation 1 |
+| `tcdd(0)`            | n/a | Equation 2 |
+| `ladj = tcdd/TLV`    | n/a | Equation 3 |
+
+## Dimensional analysis
+
+Mechanistic models mix per-kg volumes, amounts and fractional rates, so each ODE
+term is checked for unit consistency.
+
+| Term | Units multiply out to |
+|------|-----------------------|
+| `kf * (lvliver/tlv) * tcdd` | (1/day) * (g/kg / g/kg) * pg = pg/day |
+| `(input + exposure) * bw`   | (pg/kg/day) * kg = pg/day |
+| `d/dt(tcdd)`                | pg/day |
+| `TLV = tlv * bw`            | (g/kg) * kg = g |
+| `ladj = tcdd / TLV`         | pg / g = ppt |
+| `tcdd(0) = ladj0 * tlv0 * bw0` | (pg/g) * (g/kg) * kg = pg |
+
+Every term is consistent. The liver-to-total lipid ratio `lvliver/tlv` is
+dimensionless, so the hepatic elimination rate depends on body composition but
+not on absolute body size; body weight enters only through the intake term.
+
+# Validation
+
+Because the model has no dose-concentration-time profile to integrate,
+non-compartmental analysis (PKNCA) is not the right validation target. The
+published results that pin the translation are the apparent elimination
+half-lives at fixed body weights (Table 7), the lipid distribution across
+compartments (Table 3), and the serum decay curves of Figure 6.
+
+```{r mod}
+mod <- rxode2::zeroRe(readModelDb("Thomaseth_1998_tcdd"))
+```
+
+## Apparent half-life vs. body weight (Table 7)
+
+With a constant body weight and no intake, the burden decays mono-exponentially
+at rate `kf * lvliver/tlv`. The implied half-life is read back from a
+log-linear fit and compared against the paper's own Table 7 ("Thomaseth and
+Salvan, this study") column, computed at a body height of 170 cm.
+
+```{r halflife}
+apparent_halflife <- function(bw_kg, ht_cm = 170) {
+  bmi <- bw_kg / (ht_cm / 100)^2
+  ev <- rxode2::et(seq(0, 20 * 365.25, length.out = 400))
+  s <- rxode2::rxSolve(
+    mod, ev,
+    # constant body weight (no BMI drift) and no intake -> pure decay
+    params = c(alphaBMI = 0, betaBMI = 0, input = 0, exposure = 0,
+               BMI = bmi, HT = ht_cm, AGE_BASE = 40)
+  )
+  idx <- (nrow(s) %/% 2):nrow(s)
+  slope <- coef(lm(log(s$ladj[idx]) ~ s$time[idx]))[2]
+  (log(2) / -slope) / 365.25
+}
+
+halflife_tab <- tibble::tibble(
+  bw_kg = c(70, 80, 90),
+  simulated = vapply(bw_kg, apparent_halflife, numeric(1)),
+  published = c(7.68, 9.85, 12.3) # Table 7, Thomaseth & Salvan column
+)
+halflife_tab |>
+  dplyr::mutate(pct_diff = 100 * (simulated - published) / published) |>
+  dplyr::rename(
+    "Body weight (kg)" = bw_kg,
+    "Simulated t1/2 (yr)" = simulated,
+    "Published t1/2 (yr)" = published,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2, caption = "Apparent TCDD half-life by body weight (height 170 cm).")
+
+# Deterministic structural check: the solve reproduces the published half-lives
+# essentially exactly (difference is numerical, not stochastic), so a tight
+# bound is appropriate here.
+stopifnot(all(abs(halflife_tab$simulated - halflife_tab$published) < 0.1))
+```
+
+## Lipid distribution across compartments (Table 3)
+
+The fraction of total body lipid held in adipose, liver and other tissue at
+body weight 70 kg / height 170 cm is compared against Table 3.
+
+```{r lipiddist}
+lipid_fractions <- function(bw_kg, ht_cm = 170) {
+  bmi <- bw_kg / (ht_cm / 100)^2
+  vadipose <- 1000 * (0.01264 * bmi - 0.13305)
+  vliver <- 0.0311 * (1000 - vadipose)
+  vother <- 1000 - vadipose - vliver
+  lv <- c(adipose = 0.8 * vadipose, liver = 0.069 * vliver, other = 0.022 * vother)
+  100 * lv / sum(lv)
+}
+dist70 <- lipid_fractions(70)
+tibble::tibble(
+  Compartment = c("Adipose", "Liver", "Other"),
+  Simulated = unname(dist70),
+  Published = c(87.7, 1.1, 11.2) # Table 3, 70 kg / 170 cm
+) |>
+  knitr::kable(digits = 1, caption = "Percent of total body lipid by compartment (70 kg, 170 cm).")
+
+stopifnot(max(abs(dist70 - c(87.7, 1.1, 11.2))) < 0.15)
+```
+
+## Serum TCDD decay with changing body weight (Figure 6)
+
+Figure 6 shows TCDD serum decay (intake off) from an initial level, for a
+subject whose body weight stays constant or changes linearly over 20 years. A
+linear body-weight change is produced here by a linear BMI drift
+(`alphaBMI = 0`, `betaBMI` = the required slope).
+
+```{r figure-6}
+decay_scenario <- function(bw0, bw_final, ht_cm = 170, years = 20, ladj_start = 100) {
+  bmi0 <- bw0 / (ht_cm / 100)^2
+  bmi_final <- bw_final / (ht_cm / 100)^2
+  beta <- (bmi_final - bmi0) / years # linear BMI drift (kg/m^2/year)
+  ev <- rxode2::et(seq(0, years * 365.25, length.out = 200))
+  s <- rxode2::rxSolve(
+    mod, ev,
+    params = c(alphaBMI = 0, betaBMI = beta, input = 0, exposure = 0,
+               ladj0 = ladj_start, BMI = bmi0, HT = ht_cm, AGE_BASE = 40)
+  )
+  dplyr::tibble(year = s$time / 365.25, ladj = s$ladj,
+                scenario = sprintf("%d -> %d kg", bw0, bw_final))
+}
+
+fig6 <- dplyr::bind_rows(
+  decay_scenario(70, 70), decay_scenario(70, 60), decay_scenario(70, 80),
+  decay_scenario(90, 90), decay_scenario(90, 60), decay_scenario(90, 100)
+) |>
+  dplyr::mutate(panel = ifelse(grepl("^70", scenario), "A: initial 70 kg", "B: initial 90 kg"))
+
+ggplot(fig6, aes(year, ladj, colour = scenario)) +
+  geom_line() +
+  facet_wrap(~panel) +
+  labs(x = "Years", y = "Serum TCDD (ppt, lipid-adjusted)",
+       colour = "Body weight",
+       title = "Figure 6 - serum TCDD decay under changing body weight",
+       caption = "Replicates Figure 6 of Thomaseth & Salvan 1998 (intake off).") +
+  theme(legend.position = "bottom")
+```
+
+The constant-weight curves have the Table 7 half-lives; weight change that
+*raises* body fat lengthens the apparent half-life (larger lipid distribution
+volume), reproducing the qualitative behaviour discussed on page 751.
+
+## Background and occupational intake
+
+The model is driven forward by a constant daily intake proportional to body
+weight. With background intake only (`input = 0.1251`, `exposure = 0`) the serum
+level relaxes toward a low steady state; adding the fitted NIOSH occupational
+intake (`exposure = 232.7`, with background re-fit to `input = 0.293`) drives it
+far higher. A small cohort illustrates the between-subject spread from the
+additive variability on `kf`.
+
+```{r intake}
+set.seed(1998)
+n <- 100 # <= 200 per arm
+cohort <- data.frame(
+  id = seq_len(n),
+  BMI = rnorm(n, 24.6, 3.1), # NIOSH at hire (Table 2)
+  HT = 170,
+  AGE_BASE = rnorm(n, 28.5, 7.6) # NIOSH at hire (Table 2)
+)
+ev <- rxode2::et(seq(0, 30 * 365.25, length.out = 120)) |>
+  rxode2::et(id = seq_len(n))
+ev <- merge(as.data.frame(ev), cohort, by = "id")
+
+sim_bkg <- rxode2::rxSolve(
+  readModelDb("Thomaseth_1998_tcdd"), ev,
+  params = c(input = 0.1251, exposure = 0)
+)
+sim_occ <- rxode2::rxSolve(
+  readModelDb("Thomaseth_1998_tcdd"), ev,
+  params = c(input = 0.293, exposure = 232.7)
+)
+
+summ <- function(s, lab) {
+  as.data.frame(s) |>
+    dplyr::group_by(time) |>
+    dplyr::summarise(med = median(ladj), lo = quantile(ladj, 0.1),
+                     hi = quantile(ladj, 0.9), .groups = "drop") |>
+    dplyr::mutate(scenario = lab, year = time / 365.25)
+}
+dplyr::bind_rows(summ(sim_bkg, "background only"),
+                 summ(sim_occ, "NIOSH occupational")) |>
+  ggplot(aes(year, med, colour = scenario, fill = scenario)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Years", y = "Serum TCDD (ppt, lipid-adjusted)",
+       title = "Background vs. occupational TCDD intake",
+       caption = "Median with 10th-90th percentile band (n = 100).") +
+  theme(legend.position = "bottom")
+```
+
+The background-only steady state sits near the ~7 ppt level the authors assumed
+for unexposed subjects, while continuous occupational intake accumulates to the
+hundreds-of-ppt range reported for exposed NIOSH workers.
+
+# Assumptions and deviations
+
+- The lead on-disk source is a page-image scan of the 1998 article; the
+  machine-readable full text was abstract-only. Every parameter was transcribed
+  from the scanned tables and figure text (cited in the source-trace table) and
+  cross-checked against the abstract, which quotes `kf = 0.022 /day` and
+  `input = 0.1251 pg/kg/day`.
+- Between-subject variability on `kf` is modelled as **additive** normal
+  (`kf(i) = kf + e_kf`, Equation 18), not log-normal, reproducing the paper.
+  With the published variance (SD ~0.0054, ~24% of `kf`) a sampled `kf` is
+  positive well beyond the plausible range; the model does not enforce
+  positivity, matching the source.
+- The residual error is additive on the log-transformed concentration
+  (Equation 19, `sigma2_eps = 0.0671`), encoded as proportional error
+  (`propSd = sqrt(0.0671) = 0.259`) in linear space.
+- `exposure` (occupational intake) defaults to 0 so the shipped model is a
+  background individual. The fitted NIOSH occupational value (232.7 pg/kg/day,
+  Table 6) and its paired background (0.293 pg/kg/day, re-fit to hold a 7 ppt
+  baseline) are supplied as a scenario above. Intake is treated as constant;
+  a time-limited work history can be reproduced by solving the exposed and
+  unexposed periods piecewise.
+- The population BMI age-drift sub-model (Equations 20-21) is the authors'
+  NIOSH-subcohort fit; it is switched off (`alphaBMI = betaBMI = 0`) for the
+  constant-body-weight checks that reproduce Table 3 and Table 7.
+- Body height is held constant over the adult follow-up, the explicit
+  simplifying assumption of the reformulated model (page 746).
+- No correction notice for this article was found as of 2026-11-18.
+```

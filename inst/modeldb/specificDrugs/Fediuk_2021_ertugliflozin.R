@@ -22,6 +22,7 @@ Fediuk_2021_ertugliflozin <- function() {
   )
   vignette <- "Fediuk_2021_ertugliflozin"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "ertugliflozin", units = "mg", specimen = "administration site", verified = TRUE),

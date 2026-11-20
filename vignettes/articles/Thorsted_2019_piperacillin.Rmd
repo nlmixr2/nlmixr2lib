@@ -369,11 +369,12 @@ ggplot(pi_df, aes(tad, med)) +
 
 * **IOV encoding.** The paper's only random effect on a structural parameter is
   inter-occasion (between-febrile-episode) variability on CL, with no IIV in
-  the final model. rxode2 cannot simulate the `eta ~ var | occ` syntax, so the
-  model multiplexes four per-occasion etas through the canonical `OCC` column
-  (children contributed 1-4 episodes), with occasions 2-4 fixed to the
-  occasion-1 variance. Because there is no IIV, simulating each episode as a
-  separate subject with `OCC = 1` (as done above) is statistically equivalent.
+  the final model. The `eta ~ var | occ` syntax shares one draw per occasion
+  when no subject has two or more occasions, so the model multiplexes four
+  per-occasion etas through the canonical `OCC` column (children contributed
+  1-4 episodes), with occasions 2-4 fixed to the occasion-1 variance. Because
+  there is no IIV, simulating each episode as a separate subject with `OCC = 1`
+  (as done above) is statistically equivalent.
 * **CV to variance.** Table 2 reports the IOV as 16.6% CV; it was converted to
   a log-scale variance with `log(1 + CV^2)`. The proportional residual CV of
   33.2% is used directly as `propSd`.

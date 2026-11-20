@@ -114,15 +114,15 @@ mod_vumc <- readModelDb("Yeung_2025_indomethacin_vumc")
 
 rxode2::rxSetSeed(20251)
 sim_cmh <- rxSolve(mod_cmh, ev_cmh, returnType = "data.frame",
-                   keep = c("site", "dose_course"))
+                   keep = c("site", "dose_course"), covsInterpolation = "locf")
 sim_vumc <- rxSolve(mod_vumc, ev_vumc, returnType = "data.frame",
-                    keep = c("site", "dose_course"))
+                    keep = c("site", "dose_course"), covsInterpolation = "locf")
 sim_pk <- bind_rows(sim_cmh, sim_vumc)
 
 typ_cmh <- rxSolve(rxode2::zeroRe(mod_cmh), filter(ev_cmh, id == 1),
-                   returnType = "data.frame", keep = "site")
+                   returnType = "data.frame", keep = "site", covsInterpolation = "locf")
 typ_vumc <- rxSolve(rxode2::zeroRe(mod_vumc), filter(ev_vumc, id == 1001),
-                    returnType = "data.frame", keep = "site")
+                    returnType = "data.frame", keep = "site", covsInterpolation = "locf")
 typ_pk <- bind_rows(typ_cmh, typ_vumc)
 ```
 
@@ -410,3 +410,8 @@ as.data.frame(nca_res) |>
   (Krzyzanski 2023), not from either CYP2C9-reduced model here.
 * **Simulation cohorts** use each site's median weight and postnatal age at
   first dose, nominal doses and plasma sampling.
+* **Covariate interpolation.** Each record carries the `PNA` value in force from
+  that record until the next, so the solves in which it changes within a subject
+  state `covsInterpolation = "locf"`, the `rxSolve()` default; solving the same
+  tables with `"nocb"`, NONMEM's rule, moves the median subject's AUC by up to
+  2.7% (measured on rxode2 5.1.8.9000).

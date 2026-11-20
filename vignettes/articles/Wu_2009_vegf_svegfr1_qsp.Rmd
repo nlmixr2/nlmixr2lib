@@ -1,0 +1,572 @@
+---
+title: "VEGF and soluble VEGFR1 whole-body distribution (Wu 2009)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{VEGF and soluble VEGFR1 whole-body distribution (Wu 2009)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, include = FALSE}
+mod <- rxode2::rxode(readModelDb("Wu_2009_vegf_svegfr1_qsp"))
+```
+
+* Citation: `r mod$reference`
+* Article: <https://doi.org/10.1371/journal.pone.0005108> (open access,
+  PMC2663039). All 61 ODEs are printed in Methods section 2 (Eqs. 7-39); the
+  parameter values are in Tables 1-11, with the unit conversions in the table
+  footnotes.
+
+Wu 2009 is a quantitative systems pharmacology (QSP) model of the endogenous
+vascular endothelial growth factor (VEGF) system in a healthy 70 kg human. The
+body is split into three compartments: a calf compartment (unilateral
+gastrocnemius and soleus), a "normal" compartment holding the rest of the
+body's tissue, and blood. In each tissue, myocytes secrete VEGF121 and
+VEGF165 (1:10), endothelial cells secrete soluble VEGF receptor-1 (sVEGFR1,
+also called sFlt-1), and both bind heparan-sulfate sites in the interstitial
+matrix and the abluminal endothelial receptors VEGFR1, VEGFR2 and
+neuropilin-1 (NRP1). Free VEGF, free sVEGFR1 and their complexes leave the
+interstitium by lymph flow and move in both directions across the capillary
+wall; in blood they are cleared first order.
+
+There is no drug. The model asks whether sVEGFR1, acting only as a
+diffusible VEGF trap, lowers VEGF signalling, and how sensitive plasma VEGF
+and sVEGFR1, used clinically as biomarkers, are to physiological changes in
+lymph flow and permeability. Nothing is estimated from individual data: the
+geometry, kinetics, transport rates and receptor densities come from the
+literature, and only the four secretion rates were calibrated so that plasma
+free VEGF is 1.5 pM and plasma free sVEGFR1 is 100 pM.
+
+**Units.** The states are concentrations per cm^3 of whole tissue or whole
+blood, in pM (the paper's mol/cm^3 multiplied by 10^15). The outputs
+(`vegf_free_plasma`, `svegfr1_free_plasma`, `vegf_free_is_norm`, ...) divide
+by the available fluid fraction (`kav_*`), so they are concentrations in
+plasma or available interstitial fluid, as the paper reports them. Time is in
+seconds, as in the paper.
+
+# Population
+
+```{r population, echo = FALSE}
+pop <- mod$population
+tibble::tibble(Field = names(pop), Value = vapply(pop, paste, character(1), collapse = " ")) |>
+  knitr::kable()
+```
+
+The "patient" is a single typical healthy adult: a 70 kg man with 65 kg of
+non-blood tissue (treated as skeletal muscle at 1.06 g/cm^3) and 5 L of blood,
+60% of it plasma (Methods section 3.1).
+
+# Source trace
+
+| Model element | Source |
+|---|---|
+| Tissue matrix-site states `ecm`, `ebm`, `pbm` and their VEGF165 / sVEGFR1 complexes | Eqs. 7-15 |
+| Surface receptor states `r1`, `r2`, `n1` and their 11 complexes | Eqs. 16-29 |
+| Insertion of free receptors `kint * [R_total]` | Methods section 2.1ii ("sR = kint [Rtotal]") |
+| Interstitial free VEGF121, VEGF165, sVEGFR1 and VEGF-sVEGFR1 complexes | Eqs. 30-34 |
+| Blood states (free VEGF121, VEGF165, sVEGFR1 and the two complexes) | Eqs. 35-39 |
+| Conversion to fluid concentrations, `[X]_IS = [X]_j / KAV_j`, `[X]_pl = [X]_B / KAV_B` | Eqs. 1-6 |
+| Compartment volumes, available fluid fractions, ESAV | Table 1; Methods section 3.1 |
+| Binding, coupling and internalization rate constants (in vivo values) | Table 3 and its footnote |
+| Matrix binding-site densities | Table 7 |
+| Receptor densities (10,000 per endothelial cell) | Table 8 |
+| Vascular permeability and plasma clearance | Table 4 |
+| Surface-area recruitment factors | Table 5 |
+| Lymph flow (supine awake control, and the other activity levels) | Table 6; Figure 9A footer |
+| Secretion rates | Table 11 and its footnote; Results section 1.1 |
+| Endothelial surface area per compartment, `S_jB = ESAV_j * U_j` | Methods section 2.1iii definition of S_jB; Table 1 |
+| Calibration targets (plasma free VEGF 1.5 pM, sVEGFR1 100 pM) | Tables 9-10 |
+| Steady-state distributions used for validation | Results section 1.2; Figures 9A, 10 |
+| Diurnal lymph-flow simulation | Results section 6.3; Figure 9C |
+
+# Approach to the healthy steady state
+
+The paper solves the ODEs "as an initial value problem to steady state"
+without giving the starting point. The packaged model starts with every
+receptor and matrix site free and no ligand anywhere. VEGF settles within
+hours; sVEGFR1, whose plasma half-life is about 38 h and which is 97%
+matrix-bound in tissue, takes about three months; calf interstitial sVEGFR1
+is the slowest output.
+
+```{r equilibrate}
+day <- 86400
+eq_times <- sort(c(0, 10^seq(1, log10(120 * day), length.out = 120), 90 * day))
+ss <- rxSolve(mod, et(eq_times), returnType = "data.frame")
+
+ss |>
+  select(time, vegf_free_plasma, svegfr1_free_plasma, vegf_free_is_norm, vegf_free_is_calf,
+         svegfr1_free_is_norm, svegfr1_free_is_calf) |>
+  pivot_longer(-time) |>
+  filter(time > 0) |>
+  ggplot(aes(time / day, value, colour = name)) +
+  geom_line() +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(x = "Time (days, log scale)", y = "Free concentration (pM)", colour = NULL,
+       title = "Approach to the healthy control steady state")
+```
+
+```{r steady-state-check}
+ctrl <- ss[nrow(ss), ]
+at90 <- ss[ss$time == 90 * day, ]
+outs <- c("vegf_free_plasma", "svegfr1_free_plasma", "vegf_free_is_norm",
+          "vegf_free_is_calf", "svegfr1_free_is_norm", "svegfr1_free_is_calf")
+# Change between day 90 and day 120: the system is at steady state by day 90.
+drift <- abs(unlist(at90[outs]) / unlist(ctrl[outs]) - 1)
+stopifnot(max(drift) < 1e-3)
+
+paper <- tibble::tribble(
+  ~output, ~quantity, ~paper,
+  "vegf_free_plasma", "Plasma free VEGF (pM)", 1.5,
+  "svegfr1_free_plasma", "Plasma free sVEGFR1 (pM)", 100,
+  "vegf_free_is_norm", "Interstitial free VEGF, rest of body (pM)", 10,
+  "vegf_free_is_calf", "Interstitial free VEGF, calf (pM)", 10,
+  "svegfr1_free_is_norm", "Interstitial free sVEGFR1, rest of body (pM)", 36,
+  "svegfr1_free_is_calf", "Interstitial free sVEGFR1, calf (pM)", 36
+)
+ss_tab <- paper |>
+  mutate(model = unlist(ctrl[output]), pct_diff = 100 * (model / paper - 1))
+ss_tab |>
+  select(-output) |>
+  rename("Quantity" = quantity, "Wu 2009 (Tables 9-10)" = paper, "Model" = model,
+         "% difference" = pct_diff) |>
+  knitr::kable(digits = 2)
+# Deterministic model; the paper's targets are themselves rounded (10 pM, 36 pM).
+stopifnot(all(abs(ss_tab$pct_diff) < 5))
+```
+
+## Molecular distribution at the healthy control
+
+Results section 1.2 lists how VEGF, sVEGFR1, the receptors and the matrix
+sites are partitioned at the control steady state. The model reproduces every
+percentage to within rounding.
+
+```{r distribution}
+frac <- function(x, j, num, den) {
+  sum(unlist(x[paste0(num, "_", j)])) / sum(unlist(x[paste0(den, "_", j)]))
+}
+r1_all <- c("r1", "v121_r1", "v165_r1", "r1_n1", "v121_r1_n1")
+r2_all <- c("r2", "v121_r2", "v165_r2", "r2_v165_n1")
+n1_all <- c("n1", "v121_n1", "v165_n1", "r1_n1", "sr1_n1", "v121_r1_n1", "v121_sr1_n1", "r2_v165_n1")
+v121_all <- c("v121", "v121_sr1", "v121_r1", "v121_r2", "v121_n1", "v121_r1_n1", "v121_sr1_n1")
+v165_all <- c("v165", "v165_sr1", "v165_r1", "v165_r2", "v165_n1", "r2_v165_n1",
+              "v165_ecm", "v165_ebm", "v165_pbm")
+sr1_all <- c("sr1", "v121_sr1", "v165_sr1", "sr1_n1", "v121_sr1_n1", "sr1_ecm", "sr1_ebm", "sr1_pbm")
+
+dist_tab <- tibble::tribble(
+  ~quantity, ~j, ~num, ~den, ~paper,
+  "VEGFR1 free", "norm", "r1", r1_all, 26,
+  "VEGFR1 NRP1-coupled, unligated", "norm", "r1_n1", r1_all, 66,
+  "VEGFR1 VEGF-ligated", "norm", c("v121_r1", "v165_r1", "v121_r1_n1"), r1_all, 8,
+  "VEGFR2 free", "norm", "r2", r2_all, 80,
+  "VEGFR2 VEGF-ligated", "norm", c("v121_r2", "v165_r2", "r2_v165_n1"), r2_all, 20,
+  "NRP1 free", "norm", "n1", n1_all, 16,
+  "NRP1 coupled to VEGFR1 (unligated)", "norm", "r1_n1", n1_all, 66,
+  "NRP1 in signalling complexes", "norm", c("v121_r1_n1", "r2_v165_n1"), n1_all, 18,
+  "VEGF121 free, rest of body", "norm", "v121", v121_all, 0.9,
+  "VEGF121 sVEGFR1-bound, rest of body", "norm", "v121_sr1", v121_all, 0.8,
+  "VEGF121 receptor-bound, rest of body", "norm",
+  c("v121_r1", "v121_r2", "v121_n1", "v121_r1_n1", "v121_sr1_n1"), v121_all, 98.3,
+  "VEGF165 free, rest of body", "norm", "v165", v165_all, 0.6,
+  "VEGF165 receptor-bound, rest of body", "norm",
+  c("v165_r1", "v165_r2", "v165_n1", "r2_v165_n1"), v165_all, 63.0,
+  "VEGF165 matrix-bound, rest of body", "norm", c("v165_ecm", "v165_ebm", "v165_pbm"), v165_all, 35.8,
+  "VEGF121 free, calf", "calf", "v121", v121_all, 4.8,
+  "VEGF121 sVEGFR1-bound, calf", "calf", "v121_sr1", v121_all, 5.0,
+  "VEGF121 receptor-bound, calf", "calf",
+  c("v121_r1", "v121_r2", "v121_n1", "v121_r1_n1", "v121_sr1_n1"), v121_all, 90.2,
+  "VEGF165 free, calf", "calf", "v165", v165_all, 1.4,
+  "VEGF165 receptor-bound, calf", "calf",
+  c("v165_r1", "v165_r2", "v165_n1", "r2_v165_n1"), v165_all, 24.7,
+  "VEGF165 matrix-bound, calf", "calf", c("v165_ecm", "v165_ebm", "v165_pbm"), v165_all, 72.4,
+  "sVEGFR1 free, rest of body", "norm", "sr1", sr1_all, 1.6,
+  "sVEGFR1 matrix-bound, rest of body", "norm", c("sr1_ecm", "sr1_ebm", "sr1_pbm"), sr1_all, 97.4,
+  "sVEGFR1 free, calf", "calf", "sr1", sr1_all, 1.9,
+  "sVEGFR1 matrix-bound, calf", "calf", c("sr1_ecm", "sr1_ebm", "sr1_pbm"), sr1_all, 97.4
+)
+dist_tab$model <- 100 * mapply(frac, j = dist_tab$j, num = dist_tab$num, den = dist_tab$den,
+                               MoreArgs = list(x = ctrl))
+
+plasma_vegf_tot <- with(ctrl, v121_blood + v165_blood + v121_sr1_blood + v165_sr1_blood)
+plasma_sr1_tot <- with(ctrl, sr1_blood + v121_sr1_blood + v165_sr1_blood)
+plasma_tab <- tibble::tibble(
+  quantity = c("Plasma VEGF free (of total VEGF)", "Plasma sVEGFR1 free (of total sVEGFR1)"),
+  paper = c(23, 95),
+  model = 100 * c(with(ctrl, v121_blood + v165_blood) / plasma_vegf_tot,
+                  ctrl$sr1_blood / plasma_sr1_tot)
+)
+dist_all <- bind_rows(select(dist_tab, quantity, paper, model), plasma_tab) |>
+  mutate(diff = model - paper)
+dist_all |>
+  rename("Quantity (% of total)" = quantity, "Wu 2009 (Results 1.2)" = paper, "Model" = model,
+         "Difference (points)" = diff) |>
+  knitr::kable(digits = 1)
+# The paper rounds to whole percentages for the receptors and to 0.1% for the
+# ligand pools.
+stopifnot(all(abs(dist_all$diff) < 1))
+```
+
+The isoform ratios are also reproduced: free VEGF121:VEGF165 is
+1:`r round(ctrl$v165_blood / ctrl$v121_blood, 1)` in plasma (paper 1:10.8)
+and 1:`r round(ctrl$v165_norm / ctrl$v121_norm, 1)` in the interstitium
+(paper 1:10.6).
+
+## Mass balance
+
+At steady state, everything secreted must leave either by internalization
+of a receptor complex or by clearance from plasma. Lymph flow and vascular
+permeability only move mass between compartments, so this checks that the
+transport terms were written with consistent volumes.
+
+```{r mass-balance}
+th <- mod$theta
+vols <- c(norm = th[["vol_norm"]], calf = th[["vol_calf"]])
+internalized <- function(species) {
+  sum(vapply(names(vols), function(j) {
+    th[["kint_bound"]] * vols[[j]] * sum(unlist(ctrl[paste0(species, "_", j)]))
+  }, numeric(1)))
+}
+vegf_in <- sum(vapply(names(vols), function(j) {
+  (th[[paste0("ksyn_v121_", j)]] + th[[paste0("ksyn_v165_", j)]]) * vols[[j]]
+}, numeric(1)))
+vegf_out <- internalized(c("v121_r1", "v121_r2", "v121_n1", "v165_r1", "v165_r2", "v165_n1",
+                           "v121_r1_n1", "v121_sr1_n1", "r2_v165_n1")) +
+  th[["vol_blood"]] * (th[["kcl_v"]] * (ctrl$v121_blood + ctrl$v165_blood) +
+                         th[["kcl_v_sr1"]] * (ctrl$v121_sr1_blood + ctrl$v165_sr1_blood))
+sr1_in <- sum(vapply(names(vols), function(j) th[[paste0("ksyn_sr1_", j)]] * vols[[j]], numeric(1)))
+sr1_out <- internalized(c("sr1_n1", "v121_sr1_n1")) +
+  th[["vol_blood"]] * (th[["kcl_sr1"]] * ctrl$sr1_blood +
+                         th[["kcl_v_sr1"]] * (ctrl$v121_sr1_blood + ctrl$v165_sr1_blood))
+mb <- tibble::tibble(
+  Species = c("VEGF", "sVEGFR1"),
+  "Secretion (fmol/s)" = c(vegf_in, sr1_in),
+  "Internalization + clearance (fmol/s)" = c(vegf_out, sr1_out)
+)
+knitr::kable(mb, digits = 4)
+stopifnot(abs(vegf_out / vegf_in - 1) < 1e-3, abs(sr1_out / sr1_in - 1) < 1e-3)
+```
+
+Of the `r round(vegf_in, 1)` fmol/s of VEGF secreted,
+`r round(100 * th[["vol_blood"]] * th[["kcl_v"]] * (ctrl$v121_blood + ctrl$v165_blood) / vegf_in, 2)`%
+is cleared from plasma as free VEGF; almost all of the rest is internalized
+in the tissue where it was secreted, the point the paper's flow diagram
+(Figure 4) makes.
+
+# Secretion-rate calibration (Figures 2 and 3)
+
+Results section 1.1 describes how the secretion rates were chosen. Without
+sVEGFR1, total VEGF secretion of (0.264, 0.154) molecules/MD/s from
+(rest of body, calf) gives plasma VEGF 1.5 pM and interstitial VEGF 15 pM.
+Adding sVEGFR1 at those VEGF rates raises plasma VEGF to 2.1 pM, so VEGF
+secretion was lowered to (0.1925, 0.1155) molecules/MD/s, which gives plasma
+VEGF 1 pM without sVEGFR1. The conversions to pM/s use the Table 11 footnote
+factors (4.82 and 4.96 x 10^-17 mol/cm^3/s per molecule/MD/s).
+
+```{r secretion}
+q_pms <- function(total_norm, total_calf) {
+  c(ksyn_v121_norm = total_norm / 11 * 4.82e-17 * 1e15,
+    ksyn_v165_norm = 10 * total_norm / 11 * 4.82e-17 * 1e15,
+    ksyn_v121_calf = total_calf / 11 * 4.96e-17 * 1e15,
+    ksyn_v165_calf = 10 * total_calf / 11 * 4.96e-17 * 1e15)
+}
+sec_par <- as.data.frame(rbind(
+  c(id = 1, q_pms(0.1925, 0.1155), ksyn_sr1_norm = 0, ksyn_sr1_calf = 0),
+  c(id = 2, q_pms(0.264, 0.154), ksyn_sr1_norm = 0, ksyn_sr1_calf = 0),
+  c(id = 3, q_pms(0.264, 0.154), ksyn_sr1_norm = th[["ksyn_sr1_norm"]],
+    ksyn_sr1_calf = th[["ksyn_sr1_calf"]])
+))
+sec <- rxSolve(mod, et(c(0, 120 * day)) |> et(id = 1:3), params = sec_par,
+               returnType = "data.frame") |>
+  filter(time == 120 * day)
+sec_tab <- tibble::tibble(
+  Scenario = c("Calibrated VEGF secretion, no sVEGFR1",
+               "Initial VEGF secretion, no sVEGFR1",
+               "Initial VEGF secretion, control sVEGFR1 secretion"),
+  "Plasma VEGF, paper (pM)" = c(1, 1.5, 2.1),
+  "Plasma VEGF, model (pM)" = sec$vegf_free_plasma,
+  "Interstitial VEGF rest of body, model (pM)" = sec$vegf_free_is_norm,
+  "Interstitial VEGF calf, model (pM)" = sec$vegf_free_is_calf,
+  "Plasma sVEGFR1, model (pM)" = sec$svegfr1_free_plasma
+)
+knitr::kable(sec_tab, digits = 2)
+stopifnot(
+  abs(sec$vegf_free_plasma[1] / 1 - 1) < 0.05,
+  abs(sec$vegf_free_plasma[2] / 1.5 - 1) < 0.05,
+  abs(sec$vegf_free_is_norm[2] / 15 - 1) < 0.05,
+  abs(sec$vegf_free_plasma[3] / 2.1 - 1) < 0.1
+)
+```
+
+The third row is `r round(sec$vegf_free_plasma[3], 2)` pM rather than
+2.1 pM because the paper adjusted sVEGFR1 secretion to give 100 pM plasma
+sVEGFR1 at the higher VEGF secretion, while this scenario keeps the final
+control sVEGFR1 secretion (plasma sVEGFR1
+`r round(sec$svegfr1_free_plasma[3])` pM). The comparison shows the paper's
+counter-intuitive result: adding sVEGFR1 raises plasma VEGF while leaving
+interstitial VEGF almost unchanged.
+
+# Steady-state sensitivity to lymph flow and plasma clearance (Figures 9A and 10)
+
+Figure 9A varies the lymph flow rate of both tissues over the activity
+levels in Table 6, and Figure 10 scales the plasma clearance of all three
+soluble species 0.1-fold and 10-fold. Each scenario is solved to steady state
+(120 days).
+
+```{r sensitivity}
+scen <- tibble::tribble(
+  ~scenario, ~klymph_norm, ~klymph_calf, ~kcl_fold, ~paper_vegf_free_pct, ~paper_sr1_free_pct,
+  "Low", 0.014, 0.00026, 1, 35, 97,
+  "Night", 0.028, 0.0005, 1, 33, 97,
+  "Control", 0.14, 0.0026, 1, 23, 95,
+  "Steady exercise", 0.28, 0.0051, 1, 18, 94,
+  "Calf peak exercise", 0.28, 0.013, 1, 18, 94,
+  "Peak exercise", 0.7, 0.013, 1, 13, 91,
+  "High", 1.4, 0.026, 1, 10, 86,
+  "kCL x 0.1", 0.14, 0.0026, 0.1, 21, 81,
+  "kCL x 10", 0.14, 0.0026, 10, 21, 98
+) |>
+  mutate(id = row_number())
+sens_par <- scen |>
+  transmute(id, klymph_norm, klymph_calf,
+            kcl_v = th[["kcl_v"]] * kcl_fold,
+            kcl_sr1 = th[["kcl_sr1"]] * kcl_fold,
+            kcl_v_sr1 = th[["kcl_v_sr1"]] * kcl_fold)
+sens <- rxSolve(mod, et(c(0, 120 * day)) |> et(id = scen$id), params = as.data.frame(sens_par),
+                returnType = "data.frame") |>
+  filter(time == 120 * day) |>
+  mutate(
+    vegf_free_pct = 100 * (v121_blood + v165_blood) /
+      (v121_blood + v165_blood + v121_sr1_blood + v165_sr1_blood),
+    sr1_free_pct = 100 * sr1_blood / (sr1_blood + v121_sr1_blood + v165_sr1_blood)
+  ) |>
+  left_join(scen, by = "id")
+
+sens |>
+  select(scenario, vegf_free_plasma, vegf_free_pct, paper_vegf_free_pct,
+         svegfr1_free_plasma, sr1_free_pct, paper_sr1_free_pct,
+         svegfr1_free_is_norm, svegfr1_free_is_calf) |>
+  rename("Scenario" = scenario,
+         "Plasma VEGF (pM)" = vegf_free_plasma,
+         "VEGF free, % (model)" = vegf_free_pct,
+         "VEGF free, % (paper)" = paper_vegf_free_pct,
+         "Plasma sVEGFR1 (pM)" = svegfr1_free_plasma,
+         "sVEGFR1 free, % (model)" = sr1_free_pct,
+         "sVEGFR1 free, % (paper)" = paper_sr1_free_pct,
+         "IS sVEGFR1 rest of body (pM)" = svegfr1_free_is_norm,
+         "IS sVEGFR1 calf (pM)" = svegfr1_free_is_calf) |>
+  knitr::kable(digits = 1)
+
+# The paper's figure labels are whole percentages.
+stopifnot(
+  all(abs(sens$vegf_free_pct - sens$paper_vegf_free_pct) < 1.5),
+  all(abs(sens$sr1_free_pct - sens$paper_sr1_free_pct) < 1.5)
+)
+```
+
+Results section 6.2 states that over the physiological lymph-flow range
+(night to whole-body peak exercise) plasma sVEGFR1 and VEGF "could vary up to
+164 pM and 2.4 pM respectively".
+
+```{r kl-range}
+phys <- sens |> filter(scenario %in% c("Night", "Peak exercise"))
+range_sr1 <- diff(phys$svegfr1_free_plasma)
+range_vegf <- diff(phys$vegf_free_plasma)
+c(sVEGFR1_range_pM = range_sr1, VEGF_range_pM = range_vegf)
+stopifnot(abs(range_sr1 / 164 - 1) < 0.03, abs(range_vegf / 2.4 - 1) < 0.03)
+```
+
+```{r sensitivity-plot, fig.height = 5}
+sens |>
+  mutate(scenario = factor(scenario, levels = scen$scenario)) |>
+  select(scenario, vegf_free_plasma, vegf_free_is_norm, vegf_free_is_calf,
+         svegfr1_free_plasma, svegfr1_free_is_norm, svegfr1_free_is_calf) |>
+  pivot_longer(-scenario) |>
+  mutate(
+    molecule = ifelse(grepl("^vegf", name), "Free VEGF", "Free sVEGFR1"),
+    where = case_when(
+      grepl("plasma", name) ~ "Plasma",
+      grepl("norm", name) ~ "Rest-of-body interstitium",
+      TRUE ~ "Calf interstitium"
+    )
+  ) |>
+  ggplot(aes(scenario, value, colour = where, shape = where)) +
+  geom_point(size = 2.5) +
+  facet_wrap(~molecule, ncol = 1, scales = "free_y") +
+  labs(x = NULL, y = "Concentration (pM)", colour = NULL, shape = NULL,
+       title = "Steady-state sensitivity to lymph flow and plasma clearance",
+       caption = "Replicates Figures 9A and 10 of Wu 2009.") +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1), legend.position = "bottom")
+```
+
+As the paper reports, lymph flow and plasma clearance move the plasma
+concentrations of both markers several-fold, while interstitial free VEGF,
+and with it VEGF receptor occupancy, barely changes.
+
+# Diurnal lymph flow (Figure 9C)
+
+Figure 9C follows a week of daily cycles: 15 h awake followed by 9 h asleep
+(night lymph flow). Days 1, 2 and 4 are bed-rest days (awake lymph flow at the
+control rate); days 3, 5 and 6 are active days, which start with a peak in lymph
+flow at the peak-exercise rate and settle to the steady-exercise rate; day 7
+raises lymph flow only in the calf. The paper does not state how long the
+early-exercise peak lasts; this simulation uses 1 h, matching the
+"peak ... at 1 h post-onset of exercise" in Methods section 3.3ii.
+
+Lymph flow is passed as time-varying data columns (`klymph_norm`,
+`klymph_calf`). The 120-day equilibration at control runs in the same solve,
+so the week starts from the healthy steady state.
+
+```{r diurnal}
+teq <- 120 * day
+hr <- seq(0, 168, by = 0.1)
+day_type <- c("bed", "bed", "active", "bed", "active", "active", "calf")[pmin(floor(hr / 24) + 1, 7)]
+hod <- hr %% 24
+awake <- hod < 15
+peak <- hod < 1
+klym_norm <- ifelse(!awake, 0.028, ifelse(day_type == "active", ifelse(peak, 0.7, 0.28), 0.14))
+klym_calf <- ifelse(!awake, 0.0005,
+                    ifelse(day_type %in% c("active", "calf"), ifelse(peak, 0.013, 0.0051), 0.0026))
+eq_grid <- c(0, 10^seq(0, log10(teq), length.out = 40))
+eq_grid <- eq_grid[eq_grid < teq]
+ev_week <- bind_rows(
+  data.frame(id = 1, time = eq_grid, evid = 0, cmt = "sr1_blood",
+             klymph_norm = 0.14, klymph_calf = 0.0026),
+  data.frame(id = 1, time = teq + hr * 3600, evid = 0, cmt = "sr1_blood",
+             klymph_norm = klym_norm, klymph_calf = klym_calf)
+)
+week <- rxSolve(mod, ev_week, returnType = "data.frame", covsInterpolation = "locf") |>
+  mutate(hr = time / 3600 - teq / 3600) |>
+  filter(hr >= 0)
+```
+
+```{r diurnal-plot, fig.height = 5}
+week |>
+  select(hr, "Free sVEGFR1, plasma" = svegfr1_free_plasma,
+         "sVEGFR1-VEGF, plasma" = vegf_svegfr1_plasma,
+         "Free VEGF, plasma" = vegf_free_plasma,
+         "Free sVEGFR1, rest-of-body IS" = svegfr1_free_is_norm,
+         "Free sVEGFR1, calf IS" = svegfr1_free_is_calf) |>
+  pivot_longer(-hr) |>
+  ggplot(aes(hr, value, colour = name)) +
+  geom_line() +
+  facet_wrap(~ grepl("VEGF, plasma|sVEGFR1-VEGF", name), ncol = 1, scales = "free_y",
+             labeller = as_labeller(c(`FALSE` = "sVEGFR1 (pM)", `TRUE` = "VEGF and complex (pM)"))) +
+  scale_x_continuous(breaks = seq(0, 168, by = 24)) +
+  labs(x = "Time (h)", y = NULL, colour = NULL,
+       title = "Bed-rest days 1, 2, 4; active days 3, 5, 6; calf-only activity day 7",
+       caption = "Replicates Figure 9C of Wu 2009.") +
+  theme(legend.position = "bottom") +
+  guides(colour = guide_legend(ncol = 2))
+```
+
+```{r diurnal-check}
+base_sr1 <- week$svegfr1_free_plasma[1]
+base_vegf <- week$vegf_free_plasma[1]
+win <- function(lo, hi) week$hr >= lo - 1e-6 & week$hr <= hi + 1e-6
+at <- function(h) which.min(abs(week$hr - h))
+dyn <- tibble::tribble(
+  ~quantity, ~paper,
+  "Plasma sVEGFR1 rise during the first active day (pM)", 42,
+  "Plasma sVEGFR1 rise during the second consecutive active day (pM)", 44,
+  "Plasma sVEGFR1 change after sleep following a bed-rest day (pM)", -32,
+  "Plasma sVEGFR1 change after sleep following an active day (pM)", -16,
+  "Range of plasma sVEGFR1 over the week (pM)", 76,
+  "Range of interstitial sVEGFR1, rest of body (pM)", 2.5,
+  "Plasma VEGF rise during the first active day (pM)", 1.1,
+  "Plasma VEGF rise during the second consecutive active day (pM)", 1.0,
+  "Range of plasma VEGF over the week (pM)", 1.65,
+  "Range of interstitial VEGF, calf (pM)", 0.2
+)
+dyn$model <- c(
+  max(week$svegfr1_free_plasma[win(48, 63)]) - base_sr1,
+  max(week$svegfr1_free_plasma[win(120, 135)]) - base_sr1,
+  week$svegfr1_free_plasma[at(24)] - base_sr1,
+  week$svegfr1_free_plasma[at(72)] - base_sr1,
+  diff(range(week$svegfr1_free_plasma)),
+  diff(range(week$svegfr1_free_is_norm)),
+  max(week$vegf_free_plasma[win(48, 63)]) - base_vegf,
+  max(week$vegf_free_plasma[win(120, 135)]) - base_vegf,
+  diff(range(week$vegf_free_plasma)),
+  diff(range(week$vegf_free_is_calf))
+)
+dyn |>
+  rename("Quantity (Results 6.3)" = quantity, "Wu 2009" = paper, "Model" = model) |>
+  knitr::kable(digits = 2)
+# sVEGFR1 responds over hours and does not depend on the unstated shape of the
+# exercise peak; these are compared tightly.
+stopifnot(all(abs(dyn$model[1:5] / dyn$paper[1:5] - 1) < 0.1),
+          abs(dyn$model[6] / dyn$paper[6] - 1) < 0.15)
+```
+
+The sVEGFR1 response matches the paper closely: activity raises plasma
+sVEGFR1 by about 43 pM over 15 h, and one night's sleep brings it below
+control. The VEGF peaks are higher than the paper's (about 1.5 pM rather than
+1.1 pM above control). Plasma VEGF settles within minutes, so its peak
+follows the peak lymph flow, whose duration and shape the paper does not give.
+The plateau during steady exercise
+(`r round(week$vegf_free_plasma[at(62)] - base_vegf, 2)` pM above control)
+and the night-time fall are as described.
+
+# Assumptions and deviations
+
+* **Table 11 misprint (calf VEGF165 secretion).** Table 11 prints the calf
+  VEGF165 secretion rate as 2.73 x 10^-18 mol/cm^3/s. Three other statements
+  in the paper give 5.21 x 10^-18: 0.105 molecules/MD/s times the Table 11
+  footnote factor 4.96 x 10^-17; the 1:10 VEGF121:VEGF165 ratio applied to the
+  calf VEGF121 rate (5.21 x 10^-19); and the total calf VEGF secretion of
+  5.7 x 10^-18 mol/cm^3/s in Results section 1.1. The model uses 5.21 x 10^-18.
+  With it, calf interstitial VEGF is 10.4 pM, in line with the paper's
+  "10 pM" in both tissues; the printed value would roughly halve it.
+* **Endothelial surface area `S_jB`.** The paper defines `S_jB` as the total
+  abluminal endothelial surface area of tissue j but gives no number. The
+  model uses `ESAV_j * U_j` from Table 1 (4.41 x 10^6 cm^2 for the rest of the
+  body, 3.82 x 10^4 cm^2 for the calf). The reproduction of the calibration
+  targets, which depend directly on vascular permeability, supports this
+  reading.
+* **Initial conditions.** Not stated in the paper. The model starts with all
+  receptors and matrix sites free and no ligand. The receptor and matrix-site
+  totals are conserved, so the steady state does not depend on this choice.
+  The `x(0)` assignments in the model take precedence over `inits`, so to
+  start a perturbation from the healthy steady state, keep an equilibration
+  period of at least 90 days in the same solve, as done above.
+* **Available fluid fractions.** The model uses the rounded 3% and 11% of
+  Table 1, the values behind every in vivo rate constant in Table 3.
+* **Internalization and insertion.** The paper sets one internalization rate
+  for free receptors and one for complexes (both 2.8 x 10^-4 1/s) and inserts
+  free receptors at `kint * [R_total]`. The model keeps the two rates
+  separate (`kint_free`, `kint_bound`); total receptor density is conserved
+  only while they are equal.
+* **VEGF121-NRP1 binding** is off in the base case (`kon` and `koff` = 0,
+  Table 3), so the `v121_n1_*` states stay at zero. The paper's sensitivity
+  analysis switches it on by setting `kon_v121_n1_*` and `koff_v121_n1`.
+* **Matrix-site densities.** The caption of Figure 7 gives the control
+  densities as "[ECM] = 20 uM; [BM] = 0.75 uM", the reverse of Table 7
+  (ECM 0.75 uM, basement membranes 20 uM). The model follows Table 7, whose
+  per-tissue values (e.g. 2.15 x 10^-11 mol/cm^3 for the rest-of-body ECM
+  = 0.75 uM x 2.87 x 10^-5) agree with its own conversion footnote.
+* **Blood binding.** Table 3 also lists blood-phase rate constants for
+  sVEGFR1 binding to matrix sites and NRP1, but the blood equations (Eqs.
+  35-39) contain no matrix sites or receptors, so only the blood VEGF-sVEGFR1
+  association is used.
+* **Plasma clearance scenarios (Figure 10).** The paper says only that kCL was
+  varied 0.1- and 10-fold; the vignette scales the clearance of free VEGF,
+  free sVEGFR1 and the complex together.
+* **Diurnal schedule (Figure 9C).** The bed-rest, active and calf-only days
+  follow the figure, with the activity-level lymph flows of Table 6 and Figure
+  9A. The 1 h duration of the early-exercise lymph-flow peak is an assumption,
+  and it affects only the height of the plasma VEGF peaks.
+* **No IIV or residual error.** The paper describes one typical healthy
+  subject; the model is deterministic.
+* **Errata.** No erratum to the article was found (PLOS ONE article page and
+  PubMed, checked 2026-11-19).

@@ -1,0 +1,498 @@
+---
+title: "Nipocalimab in pregnancy (Zhou 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Nipocalimab in pregnancy (Zhou 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Zhou_2026_nipocalimab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Zhou_2026_nipocalimab"))$description`
+* Article: <https://doi.org/10.1002/jcph.70259> (open access; PMC13565270)
+* Supplement: Supplemental Methods (model equations 1-5 and both parameter
+  tables) accompanying the article.
+
+Nipocalimab is an anti-FcRn monoclonal antibody. Zhou 2026 updated a
+nipocalimab PK/FcRn-occupancy/IgG model, first developed in healthy volunteers,
+with data from 14 pregnancies in the Phase 2 UNITY study of early-onset severe
+hemolytic disease of the fetus and newborn (HDFN), adding time-varying body
+weight (gestational weight gain) on clearance and central volume. The model
+was then used to choose the Phase 3 dose (45 mg/kg IV weekly, dosed on current
+body weight).
+
+The model has three linked parts:
+
+1. **PK and FcRn binding** -- a two-compartment model in which nipocalimab in
+   serum binds FcRn at quasi-steady state (QSS); the drug-FcRn complex is
+   internalised at `kint`, and the bindable FcRn pool turns over with
+   synthesis `ksyn` and degradation `kdeg` (Supplement Equations 1-3).
+2. **FcRn occupancy** -- percent unoccupied FcRn is free FcRn (including the
+   fraction `1 - FR_R` that nipocalimab cannot reach) relative to the
+   baseline total `R_total,0` (Equation 2).
+3. **Total IgG** -- an indirect-response model in which FcRn-mediated
+   recycling (`krec_IgG`) is scaled by the fraction of free bindable FcRn,
+   so blocking FcRn raises the net IgG degradation rate (Equations 4-5).
+
+# Population
+
+The PK/FcRn-occupancy data set had 128 participants (114 healthy volunteers
+and 14 pregnancies from 13 UNITY participants) with 1513 PK and 1209 FcRn
+occupancy observations; the IgG data set had 144 participants (130 healthy
+volunteers and the same 14 pregnancies) with 2110 observations (Zhou 2026
+Table 1). Median age was 35 years (range 18-64), median body weight 70.5 kg
+(50.3-110 kg), 66% were female, and the race distribution was 73.6% White,
+18.8% Asian, 4.2% Black and 3.5% other; 36.8% were positive for antibodies to
+nipocalimab. Healthy volunteers received single IV doses of 0.3-60 mg/kg (or
+300 / 1200 mg) or 15 / 30 mg/kg IV weekly for four doses. In UNITY, pregnant
+participants received 30 or 45 mg/kg IV weekly from gestational week 14 to 35,
+dosed on baseline body weight or (in the last group) on current body weight
+measured every 2 weeks.
+
+The same information is available programmatically via
+`readModelDb("Zhou_2026_nipocalimab")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. "PK
+table" is the Supplement table "Parameter estimates for the final nipocalimab
+HDFN PK model"; "IgG table" is "Parameter estimates for the final nipocalimab
+HDFN PK-IgG model".
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL, 75 kg) | log(0.687 L/day) | PK table |
+| `lvc` (Vc, 75 kg) | log(3.36 L) | PK table |
+| `lq` (Q) | log(0.238 L/day) | PK table |
+| `lvp` (Vp) | log(0.548 L) | PK table |
+| `lFcRn0` (R_total,0) | log(135 nmol/L) | PK table |
+| `lkss` (k_ss) | log(43.9 nmol/L) | PK table (footnote b: 6.23 ug/mL) |
+| `lkint` (k_int) | log(65.6 1/day) | PK table |
+| `lkdeg` (k_deg) | log(1.3 1/day), fixed | PK table ('FIX') |
+| `FRmax` (FR_R) | 0.948 | PK table |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1 (fixed) | PK table; Equation 3 |
+| `lIgG0` (IgG baseline) | log(75.2 umol/L) | IgG table (footnote b: 11.3 g/L) |
+| `lkdeg_IgG` | log(0.218 1/day) | IgG table |
+| `lIgK` | log(4.90) | IgG table |
+| IIV CL, Vc, R_total,0 | 20.6, 14.9, 21.3 %CV | PK table |
+| IIV IgG baseline, k_deg_IgG | 22.7, 30.0 %CV | IgG table |
+| `addSdELISA`, `addSdECLIA` | 0.424, 0.0306 nmol/L | PK table (ADD1 old assay, ADD2 new assay) |
+| `propSd` | 0.141 | PK table (PROP RUV IV PK 14.1%) |
+| `addSd_pctUnoccupiedFcRn`, `propSd_pctUnoccupiedFcRn` | 4.95 points, 0.241 | PK table (ADD / PROP RUV RO) |
+| `addSd_IgG_obs`, `propSd_IgG_obs` | 4.13 umol/L, 0.079 | IgG table |
+| Molecular weight | 142,000 g/mol | PK table footnote b |
+| `d/dt(central)`, `d/dt(peripheral1)`, `d/dt(total_target)` | n/a | Supplement Equation 1 |
+| QSS free concentration, complex, `R_total(0)`, % unoccupied | n/a | Supplement Equation 2 |
+| `cl`, `vc` weight scaling | n/a | Supplement Equation 3 |
+| `d/dt(total_igg)`, `ksyn_IgG` | n/a | Supplement Equation 4 |
+| `krec_IgG = kdeg_IgG * IgK / (1 + IgK)` | n/a | Supplement Equation 5 |
+
+# Virtual cohort
+
+The observed data are not public. Following the paper's simulation methods,
+baseline body weight is drawn from a normal distribution with mean 66 kg and
+SD 15 kg (truncated to 40-150 kg here). Body weight then increases linearly
+through pregnancy by 0.59 kg/week, the slope of the "Adjusted from Hutcheon et
+al. 2013" line in Supplemental Figure S2 (69 kg at gestational week 14 to
+82 kg at week 36, digitised by the maintainers). Time zero is gestational
+week 14; 22 weekly IV doses are given from week 14 to week 35 (day 147), and
+follow-up continues to gestational week 40 (day 182). All simulated
+pregnant participants use the electrochemiluminescence assay (`ELISA = 0`),
+as in UNITY.
+
+```{r cohort}
+set.seed(2026)
+rxode2::rxSetSeed(2026)
+
+n_per_arm <- 200
+gain_kg_per_day <- (82 - 69) / (36 - 14) / 7
+dose_times <- (0:21) * 7
+end_time <- 182
+peak_offset <- 45 / 60 / 24 # Cmax sampled 45 min after the infusion (Methods)
+
+bw_draw <- function(n) pmin(pmax(rnorm(n, 66, 15), 40), 150)
+
+# One regimen as a data frame of dose and observation rows. `basis` is
+# "current" (dose on current weight) or "baseline" (dose on week-14 weight).
+make_cohort <- function(n, mgkg, basis, regimen, obs_times, id_offset = 0L) {
+  bw <- bw_draw(n)
+  ids <- id_offset + seq_len(n)
+  doses <- tidyr::expand_grid(i = seq_len(n), time = dose_times) |>
+    mutate(
+      id = ids[i],
+      WT = bw[i] + gain_kg_per_day * time,
+      amt = mgkg * (if (basis == "current") WT else bw[i]),
+      evid = 1L,
+      dvid = NA_integer_
+    )
+  obs <- tidyr::expand_grid(i = seq_len(n), time = obs_times) |>
+    mutate(
+      id = ids[i],
+      WT = bw[i] + gain_kg_per_day * time,
+      amt = 0,
+      evid = 0L,
+      dvid = 1L
+    )
+  bind_rows(doses, obs) |>
+    mutate(cmt = "central", ELISA = 0, regimen = regimen) |>
+    select(id, time, evid, amt, cmt, dvid, WT, ELISA, regimen) |>
+    arrange(id, time, desc(evid))
+}
+
+obs_fig2 <- sort(unique(c(
+  seq(0, end_time, by = 1),
+  dose_times[-1] - 0.001, # pre-dose troughs
+  dose_times + peak_offset # 45-minute post-dose peaks
+)))
+
+events_fig2 <- bind_rows(
+  make_cohort(n_per_arm, 30, "baseline", "30 mg/kg on baseline weight", obs_fig2, 0L),
+  make_cohort(n_per_arm, 45, "current", "45 mg/kg on current weight", obs_fig2, 1000L)
+)
+stopifnot(!anyDuplicated(unique(events_fig2[, c("id", "time", "evid")])))
+
+# Each dose is the nominal mg/kg times the weight it is based on: current
+# weight in one regimen, the week-14 weight in the other.
+dose_check <- events_fig2 |>
+  filter(evid == 1) |>
+  group_by(regimen, id) |>
+  summarise(
+    on_current = max(abs(amt / WT - amt[1] / WT[1])),
+    on_baseline = max(abs(amt - amt[1])),
+    .groups = "drop"
+  )
+stopifnot(
+  all(dose_check$on_current[dose_check$regimen == "45 mg/kg on current weight"] < 1e-8),
+  all(dose_check$on_baseline[dose_check$regimen == "30 mg/kg on baseline weight"] < 1e-8),
+  # first doses differ between participants (one per sampled body weight)
+  length(unique(events_fig2$amt[events_fig2$evid == 1 & events_fig2$time == 0])) > 300
+)
+```
+
+# Simulation
+
+Observation rows use the `central` state plus `dvid = 1`: the model declares
+three endpoints (`Cc`, `pctUnoccupiedFcRn`, `IgG_obs`), and every endpoint is
+returned as a column on every observation row.
+
+```{r simulate}
+mod <- readModelDb("Zhou_2026_nipocalimab")
+stopifnot(identical(
+  rxode2::rxode(mod)$state,
+  c("central", "peripheral1", "total_target", "total_igg")
+))
+
+sim_fig2 <- rxode2::rxSolve(
+  mod,
+  events = events_fig2,
+  keep = c("regimen", "WT"),
+  returnType = "data.frame"
+) |>
+  group_by(id) |>
+  mutate(igg_cfb = 100 * (IgG_obs / first(IgG_obs) - 1)) |>
+  ungroup() |>
+  mutate(ga_week = 14 + time / 7)
+```
+
+# Replicate Figure 2
+
+Panel (a): serum nipocalimab concentration on a log scale with the 1-10 ug/mL
+band the paper shades as the concentrations corresponding to full FcRn
+occupancy. The 45-minute post-dose peaks and pre-dose troughs are included in
+the sampling grid.
+
+```{r figure-2a}
+# Replicates Figure 2a of Zhou 2026: median and 90% prediction interval.
+sim_fig2 |>
+  group_by(regimen, ga_week) |>
+  summarise(
+    q05 = quantile(Cc, 0.05), q50 = median(Cc), q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  mutate(across(c(q05, q50, q95), \(x) pmax(x, 0.01))) |>
+  ggplot(aes(ga_week, q50, colour = regimen, fill = regimen)) +
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = 1, ymax = 10,
+           fill = "khaki", alpha = 0.4) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.2, colour = NA) +
+  geom_line() +
+  geom_vline(xintercept = 35, linetype = "dashed") +
+  scale_y_log10() +
+  coord_cartesian(ylim = c(0.01, 3000)) +
+  labs(
+    x = "Gestational age (weeks)", y = "Nipocalimab concentration (ug/mL)",
+    colour = NULL, fill = NULL,
+    caption = "Replicates Figure 2a of Zhou 2026 (values below 0.01 ug/mL drawn at 0.01)."
+  ) +
+  theme(legend.position = "top")
+```
+
+Panels (b) and (c): percent unoccupied FcRn and percent change from baseline
+in total serum IgG, on a daily grid.
+
+```{r figure-2bc, fig.height = 6}
+# Replicates Figures 2b and 2c of Zhou 2026: median and 90% prediction interval.
+sim_fig2 |>
+  filter(time == round(time)) |>
+  select(regimen, ga_week, pctUnoccupiedFcRn, igg_cfb) |>
+  pivot_longer(c(pctUnoccupiedFcRn, igg_cfb), names_to = "endpoint") |>
+  group_by(regimen, ga_week, endpoint) |>
+  summarise(
+    q05 = quantile(value, 0.05),
+    q50 = median(value),
+    q95 = quantile(value, 0.95),
+    .groups = "drop"
+  ) |>
+  mutate(endpoint = factor(
+    endpoint,
+    levels = c("pctUnoccupiedFcRn", "igg_cfb"),
+    labels = c("FcRn unoccupied receptor (%)", "Serum IgG change from baseline (%)")
+  )) |>
+  ggplot(aes(ga_week, q50, colour = regimen, fill = regimen)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.2, colour = NA) +
+  geom_line() +
+  geom_vline(xintercept = 35, linetype = "dashed") +
+  facet_wrap(~endpoint, ncol = 1, scales = "free_y") +
+  labs(
+    x = "Gestational age (weeks)", y = NULL, colour = NULL, fill = NULL,
+    caption = "Replicates Figures 2b and 2c of Zhou 2026."
+  ) +
+  theme(legend.position = "top")
+```
+
+The paper reports a sustained 80-85% reduction of maternal IgG during
+treatment, full FcRn blockade at weekly troughs, elimination of nipocalimab
+within 1-2 weeks of the last dose, and IgG recovery toward baseline within
+about 5 weeks of the last dose.
+
+```{r figure-2-checks}
+on_treatment <- sim_fig2 |>
+  filter(time >= 35, time <= 147) |>
+  group_by(regimen, id) |>
+  summarise(
+    igg_cfb = mean(igg_cfb),
+    unocc = max(pctUnoccupiedFcRn[time %in% (dose_times[-1] - 0.001)]),
+    .groups = "drop"
+  ) |>
+  group_by(regimen) |>
+  summarise(
+    median_igg_cfb = median(igg_cfb),
+    median_max_trough_unoccupied = median(unocc),
+    .groups = "drop"
+  )
+knitr::kable(on_treatment, digits = 1,
+             caption = "Gestational weeks 19-35: median IgG change from baseline and median worst-trough percent unoccupied FcRn.")
+
+stopifnot(
+  # Paper: 80-85% IgG reduction during treatment with both regimens.
+  all(on_treatment$median_igg_cfb < -75 & on_treatment$median_igg_cfb > -90),
+  # Paper Figure 2b: about 5% unoccupied FcRn (the unreachable 1 - FR_R) at
+  # weekly troughs for the 45 mg/kg current-weight regimen.
+  on_treatment$median_max_trough_unoccupied[
+    on_treatment$regimen == "45 mg/kg on current weight"] < 10
+)
+```
+
+# Replicate Table 2: dosing delays
+
+Table 2 of Zhou 2026 gives the simulated percentage of pregnant participants
+with full FcRn occupancy for 15, 30, 45 and 60 mg/kg weekly (dosed on current
+weight) when a dose is delayed by 0-3 days. The paper does not state the exact
+criterion; here full occupancy is taken as a trough concentration at or above
+the 10 ug/mL FcRn blockade threshold quoted in the Results, evaluated when the
+dose after gestational week 35 is delayed by 0, 1, 2 or 3 days (the end of
+treatment, when weight gain is largest).
+
+```{r table-2}
+delay_obs <- 147 + 7 + 0:3
+events_tab2 <- bind_rows(lapply(seq_along(c(15, 30, 45, 60)), function(k) {
+  mgkg <- c(15, 30, 45, 60)[k]
+  make_cohort(n_per_arm, mgkg, "current", paste(mgkg, "mg/kg"), delay_obs,
+              id_offset = 2000L + (k - 1L) * 1000L)
+}))
+stopifnot(!anyDuplicated(unique(events_tab2[, c("id", "time", "evid")])))
+
+sim_tab2 <- rxode2::rxSolve(
+  mod, events = events_tab2, keep = "regimen", returnType = "data.frame"
+)
+
+published_tab2 <- tibble::tribble(
+  ~regimen, ~delay, ~published,
+  "15 mg/kg", 0, 47,    "15 mg/kg", 1, 24.4, "15 mg/kg", 2, 11.3, "15 mg/kg", 3, 4.7,
+  "30 mg/kg", 0, 99.1,  "30 mg/kg", 1, 96.3, "30 mg/kg", 2, 86.1, "30 mg/kg", 3, 71,
+  "45 mg/kg", 0, 99.9,  "45 mg/kg", 1, 99.8, "45 mg/kg", 2, 98.4, "45 mg/kg", 3, 95.5,
+  "60 mg/kg", 0, 100,   "60 mg/kg", 1, 99.9, "60 mg/kg", 2, 99.8, "60 mg/kg", 3, 98.8
+)
+
+tab2 <- sim_tab2 |>
+  mutate(delay = time - 154) |>
+  group_by(regimen, delay) |>
+  summarise(simulated = 100 * mean(Cc >= 10), .groups = "drop") |>
+  left_join(published_tab2, by = c("regimen", "delay"))
+
+tab2 |>
+  dplyr::rename(
+    "Regimen (weekly IV)" = regimen,
+    "Dosing delay (days)" = delay,
+    "Simulated % with trough >= 10 ug/mL" = simulated,
+    "Zhou 2026 Table 2 (%)" = published
+  ) |>
+  knitr::kable(digits = 1, caption = "Replicates Table 2 of Zhou 2026.")
+
+sim_pct <- function(r, d) tab2$simulated[tab2$regimen == r & tab2$delay == d]
+stopifnot(
+  # 45 mg/kg keeps nearly everyone covered without a delay (paper 99.9%).
+  sim_pct("45 mg/kg", 0) > 95,
+  # A 3-day delay at 45 mg/kg still covers most participants (paper 95.5%).
+  sim_pct("45 mg/kg", 3) > 80,
+  # 15 mg/kg loses coverage in most participants after a 3-day delay
+  # (paper 4.7%).
+  sim_pct("15 mg/kg", 3) < 20
+)
+```
+
+The simulated percentages follow the paper's pattern: coverage falls quickly
+with each day of delay below 45 mg/kg, while 45 and 60 mg/kg stay above 90%
+after a 3-day delay; at 45 and 60 mg/kg the simulated and published values
+agree within a few points. At the lower doses the simulated coverage is
+lower than the paper's (by about 6-10 points at 30 mg/kg with a delay and
+by up to about 15 points at 15 mg/kg without one). These regimens sit on the
+steep part of the TMDD curve, where coverage is very sensitive to choices
+the paper does not report: the exact occupancy criterion, the dosing
+interval at which the delay was applied, and the per-individual spread of
+gestational weight gain. With 200 participants per regimen the Monte Carlo
+standard error is also about 3.5 percentage points near 50%.
+
+# PKNCA validation
+
+The paper reports no NCA table. Supplemental Figure S3 (reprinted from the
+UNITY publication) shows the observed median serum concentrations by regimen;
+the maintainers read the week-35 post-infusion peak and the week-34 pre-dose
+trough from that figure for the two regimens simulated above (approximate,
++/- about 25 ug/mL given the figure's resolution; n = 3 and 4 participants).
+The simulation gives doses as IV bolus, so `cmax` is the concentration at the
+start of the final dosing interval and slightly overstates a sample taken
+45 minutes after an infusion.
+
+```{r pknca}
+sim_nca <- sim_fig2 |>
+  filter(!is.na(Cc), time >= 140, time < 154) |>
+  select(id, time, Cc, regimen)
+
+dose_nca <- events_fig2 |>
+  filter(evid == 1, time >= 140) |>
+  select(id, time, amt, regimen)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | regimen + id)
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | regimen + id)
+intervals <- data.frame(
+  start = c(140, 147),
+  end = c(147, 154),
+  cmax = c(FALSE, TRUE),
+  cmin = c(TRUE, FALSE),
+  auclast = c(FALSE, TRUE)
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+published_nca <- tibble::tribble(
+  ~regimen, ~cmax, ~cmin,
+  "30 mg/kg on baseline weight", 655, 25,
+  "45 mg/kg on current weight", 1110, 220
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published_nca,
+  by = "regimen",
+  params = c("cmax", "cmin"),
+  units = c(cmax = "ug/mL", cmin = "ug/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Simulated median (weeks 34-35) vs. observed median read from Supplemental Figure S3. * differs from the observed value by >20%."
+)
+
+sim_trough <- sim_fig2 |>
+  filter(time == 147 - 0.001) |>
+  group_by(regimen) |>
+  summarise(trough = median(Cc), .groups = "drop")
+stopifnot(
+  # Structural check against the observed week-34 trough in the
+  # current-weight group (~220 ug/mL): a mis-scaled CL, Vc or dose moves
+  # this by far more than 50%.
+  abs(log(sim_trough$trough[sim_trough$regimen == "45 mg/kg on current weight"] / 220)) < log(1.5)
+)
+```
+
+```{r trough-30}
+trough_30 <- sim_fig2 |>
+  filter(time == 147 - 0.001, regimen == "30 mg/kg on baseline weight") |>
+  pull(Cc)
+```
+
+The 45 mg/kg current-weight regimen reproduces the observed peak and trough
+within about 20%. In the 30 mg/kg baseline-weight group the simulated median
+week-34 trough (`r signif(median(trough_30), 2)` ug/mL) is about three times
+the observed median read from Figure S3 (about 25 ug/mL, n = 3); the
+simulated 5th percentile is `r signif(quantile(trough_30, 0.05), 2)` ug/mL and
+`r round(100 * mean(trough_30 < 10), 1)`% of simulated participants fall below
+10 ug/mL. Troughs at this dose sit on the steep, target-mediated part of the
+concentration curve, where a small difference in effective mg/kg moves the
+trough several-fold, and the observed median comes from three participants
+read off a figure near its axis. The paper's Results likewise state that
+simulations of this regimen put troughs below the 10 ug/mL threshold with
+gestational weight gain, and Figure 2a of the paper shows observed troughs of
+roughly 20-60 ug/mL in this group late in pregnancy.
+
+# Assumptions and deviations
+
+- **Free-FcRn fraction driving IgG recycling.** Supplement Equation 4 defines
+  `F_free` as free FcRn at time t over the free FcRn "that can bind to
+  nipocalimab and IgG" at time 0. The model uses free *bindable* FcRn,
+  `(R_total - RC) / (R_total,0 * FR_R)`, which reaches 0 at full blockade --
+  the condition under which Equation 5 states the minimal IgG fraction is
+  `1 / (1 + IgK)`. The observed percent unoccupied FcRn instead includes the
+  unbindable fraction `1 - FR_R` (Equation 2) and floors near 5%.
+- **FcRn synthesis rate.** `Ksyn` is described only as "determined by kdeg and
+  R_total at baseline". It is set to `kdeg * R_total,0 * FR_R`, which holds
+  the bindable pool at its Equation 2 initial value `R_total(0)` before
+  dosing.
+- **Occupancy endpoint.** The residual-error rows are labelled "RO" in the
+  supplement; they are applied to percent unoccupied FcRn, the quantity
+  plotted in Figure 2b. A 24.1% proportional error is plausible for a
+  quantity near 5% but not for an occupancy near 95%.
+- **Observed concentration.** `Cc` is the total (free + FcRn-bound)
+  nipocalimab concentration, the C_total of Equation 1, and the model is
+  dosed in mg with concentrations in ug/mL. FcRn parameters stay in nmol/L
+  as estimated and are converted with the 142,000 g/mol molecular weight
+  given in the supplement; the additive PK residual SDs (reported in nmol/L)
+  are converted the same way inside `model()`.
+- **Assay.** The ELISA ("old assay") additive residual applies to three
+  healthy-volunteer studies; the electrochemiluminescence assay ("new
+  assay") applies to UNITY and NCT04848558. Simulations of pregnancy use
+  `ELISA = 0`.
+- **IIV.** The supplement reports IIV as %CV; variances were computed as
+  `log(CV^2 + 1)`. No correlations between random effects were reported.
+- **Infusion duration.** Not reported; doses are simulated as IV bolus.
+- **Weight gain.** Linear 0.59 kg/week for every participant, from the
+  Hutcheon-based line in Supplemental Figure S2; the paper's simulation drew
+  weight gain from a distribution whose spread is not reported. The UNITY
+  protocol re-weighed participants every 2 weeks; the simulation uses
+  current weight at each dose.
+- **Exposure-response.** The exploratory exposure-response analysis
+  (Figure 3, Table S1) reports tertile rates only, with no fitted model, and
+  is not part of this model.
+- No erratum or correction notice for this article was found as of
+  2026-11-17.

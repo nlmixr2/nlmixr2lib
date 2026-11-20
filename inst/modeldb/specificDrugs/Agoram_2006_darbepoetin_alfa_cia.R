@@ -21,6 +21,7 @@ Agoram_2006_darbepoetin_alfa_cia <- function() {
   )
   vignette <- "Agoram_2006_darbepoetin_alfa_cia"
   units <- list(time = "day", dosing = "ug", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "darbepoetin alfa", units = "ug", specimen = "administration site", verified = TRUE),

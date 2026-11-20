@@ -34,6 +34,7 @@ Biliouris_2018_nusinersen <- function() {
     dosing = "mg",
     concentration = "ng/mL"
   )
+  dosing <- "csf"
 
   paper_specific_compartments <- c(
     "spinal_cord_cervical",

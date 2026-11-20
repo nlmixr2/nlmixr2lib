@@ -1,0 +1,525 @@
+---
+title: "Dapagliflozin minimal PBPK (Mikhailova 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dapagliflozin minimal PBPK (Mikhailova 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Mikhailova_2026_dapagliflozin_mpbpk"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Mikhailova_2026_dapagliflozin_mpbpk"))$description`
+* Article: <https://doi.org/10.1002/psp4.70307> (open access; Data S1 gives
+  the model equations, Table S6 of the supporting tables gives the Torsten
+  posterior summary used here)
+* Renal-chain constants: Sokolov et al. 2023,
+  <https://doi.org/10.1002/psp4.12956>, Supplementary Table S1
+
+Mikhailova 2026 is a methods paper: it proposes a Bayesian workflow for
+minimal PBPK (mPBPK) models and demonstrates it on dapagliflozin. Priors were
+built from ten published dapagliflozin population PK models, and posteriors
+were sampled with three tools (NIMBLE, MCSim and Stan/Torsten) under three
+prior specifications. The authors carry the extended inverse-variance weighted
+prior forward to every downstream analysis, and validate with the Torsten
+posterior. The packaged model therefore uses the Torsten posterior medians
+under that prior (Table S6). The NIMBLE and MCSim medians (Tables S4 and S5)
+differ from them by less than 1% for every parameter except `ka` (2%).
+
+# Population
+
+The calibration and validation data are aggregate study-arm mean
+concentration-time profiles. They were digitised from 18 publications found by
+a PRISMA systematic search: 38 study arms, 578 participants, oral doses of 1,
+2.5, 5, 10, 20, 25, 50 and 100 mg given as single doses or once daily. The
+participants were healthy volunteers and adults with type 2 diabetes on
+dapagliflozin monotherapy. Paediatric studies and populations with further
+chronic conditions were excluded. The 9 parallel-design studies were used for
+calibration. The 9 crossover studies were held out for external validation of
+the plasma model, and urinary recovery reported by 5 studies validated the
+renal chain. The paper does not report the age, weight, sex or race
+distribution of the pooled studies. No individual data were available, so the
+model has no between-subject variability.
+
+```{r population}
+str(readModelDb("Mikhailova_2026_dapagliflozin_mpbpk")()$population)
+```
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lktr` (ktr) | log(11.38) 1/h | Table S6, Torsten median |
+| `lka` (ka) | log(9.99) 1/h | Table S6, Torsten median |
+| `lcl` (Cl) | log(17.59) L/h | Table S6, Torsten median |
+| `lvc` (Vd) | log(77.52) L | Table S6, Torsten median |
+| `lq` (Q) | log(8.40) L/h | Table S6, Torsten median |
+| `lvp` (Vp) | log(143.25) L | Table S6, Torsten median |
+| `expSd` (sigma) | 0.41 | Table S6, Torsten median; "exponential additive" error, Methods |
+| `fu` (Fupd) | 0.086, fixed | Sokolov 2023 Table S1 FUPD; "fixed based on previously published values" (Results, Model Validation) |
+| `v_pct` (Vs12) | 0.045 L, fixed | Sokolov 2023 Table S1 VS12 |
+| `v_pst` (Vs3) | 0.019 L, fixed | Sokolov 2023 Table S1 VS3 |
+| `v_bladder` (Vbladder) | 0.2 L, fixed | Sokolov 2023 Table S1 |
+| `q_pct` (Qlumen) | 2.7 L/h, fixed | Sokolov 2023 Table S1 |
+| `q_pst` (Qbladder) | 0.72 L/h, fixed | Sokolov 2023 Table S1 |
+| `q_urine` (Qurine) | 0.055 L/h, fixed | Sokolov 2023 Table S1 |
+| `CRCL` (GFR) | covariate; 111.6 mL/min/1.73 m^2 for healthy volunteers | Results, Model Validation (6.696 L/h/1.73 m^2) |
+| `d/dt(transit1..6)` | n/a | Data S1, dTr1/dt to dTr6/dt; Figure 2 |
+| `d/dt(central)`, `d/dt(peripheral1)` | n/a | Data S1, dAc/dt and dAp/dt |
+| `d/dt(pct)`, `d/dt(pst)`, `d/dt(bladder)`, `d/dt(urine)` | n/a | Data S1, dAs12/dt to dAurine/dt; Figure 2 |
+| `Cc ~ lnorm(expSd)` | n/a | Methods, Structural and Statistical Model Selection |
+
+# Typical-value simulations
+
+The model has no random effects. `zeroRe(which = "sigma")` removes the
+residual error so that `Cc` is the typical-value prediction.
+
+```{r model}
+mod <- readModelDb("Mikhailova_2026_dapagliflozin_mpbpk")
+mod_typ <- rxode2::zeroRe(mod, which = "sigma")
+
+# Healthy-volunteer GFR used by the paper: 6.696 L/h = 111.6 mL/min/1.73 m^2.
+gfr_hv <- 6.696 * 1000 / 60
+
+obs_grid <- sort(unique(c(seq(0, 4, by = 0.02), seq(4.25, 24, by = 0.25), seq(25, 96, by = 1))))
+
+single_dose_events <- function(dose, id, grid = obs_grid, crcl = gfr_hv) {
+  dplyr::bind_rows(
+    data.frame(id = id, time = 0, evid = 1, amt = dose, cmt = "transit1"),
+    data.frame(id = id, time = grid, evid = 0, amt = 0, cmt = "central")
+  ) |>
+    dplyr::mutate(CRCL = crcl, dose = dose) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+doses <- c(1, 2.5, 5, 10, 20, 25, 50, 100)
+ev_sd <- dplyr::bind_rows(lapply(seq_along(doses), function(i) single_dose_events(doses[i], i)))
+sim_sd <- rxode2::rxSolve(mod_typ, events = ev_sd, keep = "dose", rtol = 1e-10, atol = 1e-12) |>
+  as.data.frame() |>
+  dplyr::mutate(dose_lab = factor(paste(dose, "mg"), levels = paste(doses, "mg")))
+```
+
+## Figure 4A: single doses
+
+```{r figure-4a, fig.width = 8, fig.height = 4.5}
+ggplot(dplyr::filter(sim_sd, time <= 48), aes(time, Cc)) +
+  geom_line(colour = "goldenrod3") +
+  facet_wrap(~dose_lab, scales = "free_y", nrow = 2) +
+  scale_x_log10() +
+  labs(
+    x = "Time since first dose (h)", y = "Dapagliflozin concentration (ng/mL)",
+    caption = "Replicates the typical-value curves of Figure 4A of Mikhailova 2026."
+  )
+```
+
+## Figure 4B: once-daily dosing
+
+```{r figure-4b, fig.width = 8, fig.height = 4.5}
+md_doses <- c(2.5, 5, 10, 20, 25, 50, 100)
+ev_md <- dplyr::bind_rows(lapply(seq_along(md_doses), function(i) {
+  dplyr::bind_rows(
+    data.frame(id = i, time = 24 * (0:6), evid = 1, amt = md_doses[i], cmt = "transit1"),
+    data.frame(id = i, time = 144 + obs_grid[obs_grid <= 72], evid = 0, amt = 0, cmt = "central")
+  ) |>
+    dplyr::mutate(CRCL = gfr_hv, dose = md_doses[i])
+})) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+sim_md <- rxode2::rxSolve(mod_typ, events = ev_md, keep = "dose") |>
+  as.data.frame() |>
+  dplyr::mutate(
+    tad = time - 144,
+    dose_lab = factor(paste(dose, "mg"), levels = paste(md_doses, "mg"))
+  )
+
+ggplot(dplyr::filter(sim_md, tad > 0), aes(tad, Cc)) +
+  geom_line(colour = "goldenrod3") +
+  facet_wrap(~dose_lab, scales = "free_y", nrow = 2) +
+  scale_x_log10() +
+  labs(
+    x = "Time since last (seventh daily) dose (h)", y = "Dapagliflozin concentration (ng/mL)",
+    caption = "Replicates the typical-value curves of Figure 4B of Mikhailova 2026."
+  )
+```
+
+## The transit chain and the published prediction band
+
+Data S1 prints the fifth transit equation as `dTr5/dt = -ka Tr5 + ktr Tr4`
+while `dTr6/dt = -ka Tr6 + ktr Tr5`. Read literally, drug leaves `Tr5` at rate
+`ka` but arrives in `Tr6` at rate `ktr`, so the chain would create mass and
+scale the absorbed dose by `ktr / ka`. Figure 2 shows `ktr` between all
+transit compartments and `ka` only from the sixth into plasma. The `dTr6/dt`
+input term is consistent with that, and that mass-conserving chain is what is
+packaged.
+
+The published Figure 4 can tell the two readings apart. The maintainers
+digitised the Torsten 95% prediction band at its peak (about 1 h) in three
+panels of Figure 4A. Its relative width comes from posterior parameter
+uncertainty. Under the printed form, that width would be dominated by the
+uncertainty in `ka`, because exposure scales with `ktr / ka`. Below, 300
+parameter sets are drawn from independent normal approximations to the Table
+S6 posteriors (mean and SD; the paper does not report posterior
+correlations). The peak band is then solved under both readings.
+
+```{r band-check}
+# Maintainers' digitisation of Figure 4A, Torsten 95% band at the peak.
+published_band <- data.frame(
+  dose = c(1, 5, 10),
+  lo = c(10.8, 53.6, 112),
+  hi = c(12.8, 62.5, 129)
+)
+
+set.seed(20261116)
+n_draw <- 300
+draws <- data.frame(
+  ktr = rnorm(n_draw, 11.38, 0.54),
+  ka = pmax(rnorm(n_draw, 10.05, 1.89), 3),
+  cl = rnorm(n_draw, 17.60, 0.46),
+  vc = rnorm(n_draw, 77.57, 3.51),
+  q = rnorm(n_draw, 8.41, 0.61),
+  vp = rnorm(n_draw, 143.46, 7.81)
+)
+draw_params <- with(draws, data.frame(
+  id = seq_len(n_draw),
+  lktr = log(ktr), lka = log(ka), lcl = log(cl), lvc = log(vc), lq = log(q), lvp = log(vp)
+))
+
+# The printed (non-mass-conserving) fifth transit equation, for comparison.
+mod_printed <- mod_typ |>
+  rxode2::model(d/dt(transit5) <- ktr * transit4 - ka * transit5)
+
+peak_band <- function(m, dose) {
+  ev <- dplyr::bind_rows(lapply(seq_len(n_draw), function(i) {
+    single_dose_events(dose, i, grid = seq(0, 3, by = 0.02))
+  }))
+  s <- rxode2::rxSolve(m, events = ev, params = draw_params) |> as.data.frame()
+  cmax <- tapply(s$Cc, s$id, max)
+  stats::quantile(cmax, c(0.025, 0.5, 0.975))
+}
+
+band_tab <- dplyr::bind_rows(lapply(published_band$dose, function(d) {
+  pk <- peak_band(mod_typ, d)
+  pr <- peak_band(mod_printed, d)
+  data.frame(
+    dose = d,
+    packaged_lo = pk[[1]], packaged_med = pk[[2]], packaged_hi = pk[[3]],
+    printed_lo = pr[[1]], printed_med = pr[[2]], printed_hi = pr[[3]]
+  )
+})) |>
+  dplyr::left_join(published_band, by = "dose") |>
+  dplyr::mutate(
+    published_width = hi / lo,
+    packaged_width = packaged_hi / packaged_lo,
+    printed_width = printed_hi / printed_lo,
+    # mean of a lognormal prediction = median * exp(sigma^2 / 2)
+    packaged_mean_lo = packaged_lo * exp(0.41^2 / 2),
+    packaged_mean_hi = packaged_hi * exp(0.41^2 / 2)
+  )
+
+band_tab |>
+  dplyr::transmute(
+    dose,
+    published = sprintf("%.1f-%.1f", lo, hi),
+    packaged = sprintf("%.1f-%.1f", packaged_lo, packaged_hi),
+    `packaged x exp(sigma^2/2)` = sprintf("%.1f-%.1f", packaged_mean_lo, packaged_mean_hi),
+    printed = sprintf("%.1f-%.1f", printed_lo, printed_hi),
+    `published hi/lo` = round(published_width, 2),
+    `packaged hi/lo` = round(packaged_width, 2),
+    `printed hi/lo` = round(printed_width, 2)
+  ) |>
+  dplyr::rename("Dose (mg)" = dose) |>
+  knitr::kable(caption = "Cmax 95% band (ng/mL) at the Figure 4A peak: published (digitised), packaged model, and the printed fifth-transit equation.")
+
+stopifnot(
+  # The packaged chain reproduces the published relative band width (hi/lo
+  # within 10%); the printed form spreads hi/lo to about 2.3 against ~1.17.
+  all(abs(band_tab$packaged_width / band_tab$published_width - 1) < 0.10),
+  all(band_tab$printed_width / band_tab$published_width > 1.5)
+)
+```
+
+The packaged chain reproduces the relative width of the published band (upper
+to lower edge about 1.15, against 1.15-1.19 published). The printed form
+spreads the band to a ratio of about 2.3, because `ktr / ka` varies with the
+`ka` draw. That rules out the printed form as the model behind
+Figure 4.
+
+The published band is about 9% higher than the packaged median band, and it
+matches the packaged band multiplied by `exp(sigma^2 / 2) = 1.088`: the ratio
+of the mean to the median of a lognormal prediction with `sigma = 0.41`. So
+the Torsten curves in Figure 4 appear to show the mean of the lognormal
+posterior predictive, although the caption says "median". The packaged
+typical-value prediction `Cc` is the median. The Monolix typical-value curves
+in the same figure run close to the packaged curve, as expected, since Monolix
+estimated nearly the same `Cl`, `Vd`, `Q` and `Vp` (Figure 3).
+
+```{r band-mean-check}
+stopifnot(
+  # Mean-adjusted packaged band against the digitised band: within 6% at both
+  # edges (digitisation resolution is ~0.2-2 ng/mL across the three panels).
+  all(abs(band_tab$packaged_mean_lo / band_tab$lo - 1) < 0.06),
+  all(abs(band_tab$packaged_mean_hi / band_tab$hi - 1) < 0.06)
+)
+```
+
+# Urinary recovery (Figure 5B)
+
+The renal chain draws the filtered unbound load `fu * GFR * Cc` from plasma
+without depleting it, and passes it through the S1/S2 and S3 tubule segments
+and the bladder into urine. Because the chain is linear and draws nothing from
+plasma, the cumulative urinary recovery after a single dose tends to
+`fu * GFR / Cl` (times 100 for a percentage) for any dose. This closed form
+checks the chain's wiring and the CRCL-to-L/h conversion.
+
+```{r urine-closed-form}
+ev_ur <- dplyr::bind_rows(
+  single_dose_events(10, 1, grid = c(24, 48, 96, 500), crcl = gfr_hv),
+  single_dose_events(10, 2, grid = c(24, 48, 96, 500), crcl = 80),
+  single_dose_events(10, 3, grid = c(24, 48, 96, 500), crcl = 130)
+)
+sim_ur <- rxode2::rxSolve(mod_typ, events = ev_ur, keep = "CRCL", rtol = 1e-10, atol = 1e-12) |>
+  as.data.frame() |>
+  dplyr::mutate(ur_pct = 100 * urine / 10)
+
+ur_inf_closed <- function(crcl) 100 * 0.086 * (crcl * 60 / 1000) / 17.59
+ur_end <- dplyr::filter(sim_ur, time == 500)
+stopifnot(
+  nrow(ur_end) == 3,
+  max(abs(ur_end$ur_pct / ur_inf_closed(ur_end$CRCL) - 1)) < 1e-5
+)
+
+sim_ur |>
+  dplyr::select(CRCL, time, ur_pct) |>
+  tidyr::pivot_wider(names_from = time, values_from = ur_pct, names_prefix = "t") |>
+  dplyr::mutate(closed_form_inf = ur_inf_closed(CRCL)) |>
+  dplyr::rename(
+    "GFR (mL/min/1.73 m^2)" = CRCL,
+    "UR 0-24 h (%)" = t24,
+    "UR 0-48 h (%)" = t48,
+    "UR 0-96 h (%)" = t96,
+    "UR 0-500 h (%)" = t500,
+    "fu*GFR/Cl (%)" = closed_form_inf
+  ) |>
+  knitr::kable(digits = 2, caption = "Simulated cumulative urinary recovery after a single 10 mg dose.")
+```
+
+Mikhailova 2026 reports predicted urinary recovery of 2.2-4.2% after single
+doses and 2.7-4.4% at steady state, against observed ranges of 0.8-4.0% and
+1.3-3.0% respectively. At the healthy-volunteer GFR, the packaged model gives
+2.6% over 0-24 h and 3.3% in total. That sits inside the reported predicted
+range, so the inherited renal constants reproduce the paper's renal
+predictions.
+
+```{r urine-gate}
+ur24_hv <- sim_ur$ur_pct[sim_ur$CRCL == gfr_hv & sim_ur$time == 24]
+stopifnot(length(ur24_hv) == 1, ur24_hv > 2.2, ur24_hv < 4.4)
+```
+
+# Local sensitivity analysis (Figure 5C)
+
+Figure 5C varies each parameter by plus or minus 20% around the posterior
+medians. The responses are urinary recovery at 24 h (UR), AUC and Cmax after a
+single dose. The paper's reference GFR is the healthy-volunteer value. The
+paper does not state the dose or the AUC window, so a 10 mg dose and AUC over
+0-24 h are used here. UR is exactly proportional to `fu` and to GFR, which the
+assertion below checks.
+
+```{r sensitivity, fig.width = 8, fig.height = 4}
+sens_params <- c("fu", "CRCL", "lcl", "lvc", "lvp", "lq", "lktr", "lka", "v_bladder", "q_urine")
+base_par <- rxode2::rxode(mod_typ)$theta
+
+sens_run <- function(par, factor) {
+  ev <- single_dose_events(10, 1, grid = sort(unique(c(seq(0, 4, by = 0.01), seq(4.1, 24, by = 0.1)))))
+  p <- as.list(base_par)
+  if (par == "CRCL") {
+    ev$CRCL <- gfr_hv * factor
+  } else if (startsWith(par, "l")) {
+    p[[par]] <- p[[par]] + log(factor)
+  } else {
+    p[[par]] <- p[[par]] * factor
+  }
+  s <- rxode2::rxSolve(mod_typ, events = ev, params = unlist(p), rtol = 1e-10, atol = 1e-12) |>
+    as.data.frame()
+  auc <- sum(diff(s$time) * (head(s$Cc, -1) + tail(s$Cc, -1)) / 2)
+  data.frame(
+    UR = 100 * s$urine[s$time == 24] / 10,
+    AUC = auc,
+    CMAX = max(s$Cc)
+  )
+}
+
+ref <- sens_run("fu", 1)
+sens <- dplyr::bind_rows(lapply(sens_params, function(par) {
+  dplyr::bind_rows(lapply(c(0.8, 1.2), function(f) {
+    r <- sens_run(par, f)
+    data.frame(
+      parameter = par, change = sprintf("%+d%%", round(100 * (f - 1))),
+      UR = 100 * (r$UR / ref$UR - 1),
+      AUC = 100 * (r$AUC / ref$AUC - 1),
+      CMAX = 100 * (r$CMAX / ref$CMAX - 1)
+    )
+  }))
+}))
+
+swing <- sens |>
+  dplyr::group_by(parameter) |>
+  dplyr::summarise(dplyr::across(c(UR, AUC, CMAX), ~ max(abs(.x))), .groups = "drop")
+top <- function(output, n) swing$parameter[order(-swing[[output]])][seq_len(n)]
+
+stopifnot(
+  abs(sens$UR[sens$parameter == "fu" & sens$change == "+20%"] - 20) < 1e-3,
+  abs(sens$UR[sens$parameter == "CRCL" & sens$change == "-20%"] + 20) < 1e-3,
+  # Figure 5C ranking: fu and GFR, then Cl, for UR; Cl for AUC; Vd for Cmax.
+  setequal(top("UR", 2), c("fu", "CRCL")),
+  top("UR", 3)[3] == "lcl",
+  top("AUC", 1) == "lcl",
+  top("CMAX", 1) == "lvc"
+)
+
+sens |>
+  tidyr::pivot_longer(c(UR, AUC, CMAX), names_to = "output", values_to = "pct") |>
+  ggplot(aes(pct, parameter, fill = change)) +
+  geom_col(position = "identity", alpha = 0.8) +
+  facet_wrap(~output) +
+  labs(
+    x = "Change from reference (%)", y = NULL, fill = "Parameter change",
+    caption = "Replicates Figure 5C of Mikhailova 2026 (10 mg single dose, AUC 0-24 h)."
+  )
+```
+
+The ranking matches Figure 5C. `fu` and GFR shift UR by exactly 20%, and Cl is
+the next largest influence on UR. Cl dominates AUC, and the central volume Vd
+dominates Cmax. The renal flows and volumes have almost no effect at 24 h.
+
+# PKNCA validation
+
+The paper reports no NCA table. For a linear model, AUC from 0 to infinity
+after an oral dose equals `Dose / Cl` (here an apparent clearance, since the
+model has no bioavailability term). The check below compares PKNCA's AUCinf
+on the typical-value single-dose profiles with that closed form. It also
+reports Cmax, Tmax and terminal half-life by dose.
+
+```{r pknca}
+sim_long <- rxode2::rxSolve(
+  mod_typ,
+  events = dplyr::bind_rows(lapply(seq_along(doses), function(i) {
+    single_dose_events(doses[i], i, grid = sort(unique(c(obs_grid, seq(100, 240, by = 4)))))
+  })),
+  keep = "dose", rtol = 1e-10, atol = 1e-12
+) |>
+  as.data.frame()
+
+sim_nca <- sim_long |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(treatment = paste(dose, "mg")) |>
+  dplyr::select(id, time, Cc, treatment)
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+dose_df <- data.frame(id = seq_along(doses), time = 0, amt = doses, treatment = paste(doses, "mg"))
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_tab <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::mutate(
+    dose = as.numeric(sub(" mg", "", treatment)),
+    # mg / (L/h) = mg*h/L = 1000 ng*h/mL
+    auc_closed = 1000 * dose / 17.59
+  ) |>
+  dplyr::arrange(dose)
+
+stopifnot(
+  nrow(nca_tab) == length(doses),
+  max(abs(nca_tab$aucinf.obs / nca_tab$auc_closed - 1)) < 0.01
+)
+
+nca_tab |>
+  dplyr::select(treatment, cmax, tmax, aucinf.obs, auc_closed, half.life) |>
+  dplyr::rename(
+    "Dose" = treatment,
+    "Cmax (ng/mL)" = cmax,
+    "Tmax (h)" = tmax,
+    "AUCinf (ng*h/mL)" = aucinf.obs,
+    "Dose/Cl (ng*h/mL)" = auc_closed,
+    "t1/2 (h)" = half.life
+  ) |>
+  knitr::kable(digits = 2, caption = "PKNCA on typical-value single-dose profiles.")
+```
+
+The predicted Cmax rises in proportion to dose, at about 10.6 ng/mL per mg, with
+Tmax near 1 h, matching the peak timing of Figure 4. PKNCA's AUCinf agrees with
+`Dose / Cl` to within 1%.
+
+# Assumptions and deviations
+
+- **Fifth transit equation.** Data S1 prints `dTr5/dt = -ka Tr5 + ktr Tr4`,
+  which does not conserve mass against `dTr6/dt = -ka Tr6 + ktr Tr5`. The
+  packaged model uses `ktr` out of `Tr5`, as Figure 2 and the `dTr6/dt` input
+  term show. The band-width check above shows that the published Figure 4
+  band matches this form and not the printed one. The Data S1 symbol list
+  also says "Tr1-Tr5" although there are six transit compartments; Figure 2
+  shows six.
+- **Figure 4 mean versus median.** The published Torsten curves sit about 9%
+  above the packaged typical-value curve, and their band matches the packaged
+  band times `exp(sigma^2 / 2)`, the lognormal mean-to-median ratio. The
+  packaged `Cc` is the median (typical-value) prediction; no parameter was
+  adjusted.
+- **Renal-chain constants.** Mikhailova 2026 states that all renal-model
+  parameters other than GFR were "fixed based on previously published
+  values". Its citation for that sentence (reference 11) points to an
+  unrelated semaglutide trial. The renal filtration model is adopted from
+  Sokolov et al. 2023 (the paper's reference 18), and that paper's Table S1
+  supplies every value: FUPD 0.086, VS12 0.045 L, VS3 0.019 L, Vbladder
+  0.2 L, Qlumen 2.7 L/h, Qbladder 0.72 L/h and Qurine 0.055 L/h. These match
+  the earlier Sokolov 2020 SGLT model (`Sokolov_2020_sglt_qsp`), except that
+  that model's code carries VS3 = 0.01944 L. The urinary-recovery check above
+  reproduces the paper's predicted range with these values.
+- **Satellite renal chain.** As printed in Data S1, the filtered load
+  `Fupd * GFR * Ac / Vd` is not subtracted from the central compartment. `Cl`
+  is the total apparent clearance, and the renal chain only predicts urinary
+  amounts. This is reproduced as published.
+- **GFR units.** The paper gives the healthy-volunteer default once as
+  "6.696 L/h/1.73" and once as "6.696 mL/min/1.73". Only the L/h reading is
+  physiological (111.6 mL/min/1.73 m^2); the ODE uses GFR in L/h. The model
+  takes GFR through the canonical `CRCL` column in mL/min/1.73 m^2 and
+  converts it with `CRCL * 60 / 1000`. The BSA-normalised value is used as
+  the absolute filtration rate, as in the Sokolov renal model. For studies
+  that reported only creatinine clearance, the paper used GFR = 0.9 x CrCl.
+- **Apparent parameters.** The model has no bioavailability term; dose enters
+  the first transit compartment directly. `Cl`, `Vd`, `Q` and `Vp` are
+  therefore apparent oral parameters (`Cl/F` and so on).
+- **No between-subject variability.** The paper fitted aggregate means and
+  estimated no IIV. Only the residual error `expSd` is carried. Posterior SDs
+  (Table S6) describe parameter uncertainty, not between-subject variability,
+  and appear only in the band check above.
+- **Posterior correlations.** The band check draws parameters independently
+  because posterior correlations are not reported. The comparison uses only
+  the relative band width, which is dominated by the `Vd` and `ka` marginals.
+- **Sensitivity analysis settings.** The dose and AUC window used for Figure
+  5C are not stated; 10 mg and 0-24 h were assumed. Only the qualitative
+  ranking is compared.
+- **Errata.** No correction notice was found for Mikhailova 2026 as of
+  2026-11-16.

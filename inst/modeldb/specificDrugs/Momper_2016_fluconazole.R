@@ -3,6 +3,7 @@ Momper_2016_fluconazole <- function() {
   reference <- "Momper JD, Capparelli EV, Wade KC, Kantak A, Dhanireddy R, Cummings JJ, Nedrelow JH, Hudak ML, Mundakel GT, Natarajan G, Gao J, Laughon M, Smith PB, Benjamin DK Jr; Fluconazole Prophylaxis Study Team. Population pharmacokinetics of fluconazole in premature infants with birth weights less than 750 grams. Antimicrob Agents Chemother. 2016;60(9):5539-5545. doi:10.1128/AAC.00963-16"
   vignette <- "Momper_2016_fluconazole"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

@@ -275,6 +275,100 @@ test_that("the build checks a model under its own name, so its specific-scope co
   expect_identical(scope$model[scope$name == "CTROUGH"], "Fixture_2026_ctrough")
 })
 
+# A checker that raises an error for the model named in `.modeldbSpy$throwFor`
+# and otherwise runs the real one.
+.throwingCheckModelConventions <- function(model, verbose = TRUE) {
+  if (identical(model$modelName, .modeldbSpy$throwFor)) {
+    stop("boom: the checker hit something it cannot read", call. = FALSE)
+  }
+  .modeldbSpy$checkModelConventions(model, verbose = verbose)
+}
+
+test_that("an error raised by the convention checker is not read as a clean model", {
+  skip_on_cran()
+  dir <- withr::local_tempdir("modeldb-fixture")
+  .writeModelFixtures(dir, list("Fixture_2026_clean.R" = .renamedTemplate("Fixture_2026_clean")))
+  .modeldbSpy$checkModelConventions <- nlmixr2lib::checkModelConventions
+  .modeldbSpy$throwFor <- "Fixture_2026_clean"
+  testthat::local_mocked_bindings(checkModelConventions = .throwingCheckModelConventions, .package = "nlmixr2lib")
+
+  err <- tryCatch(
+    suppressMessages(suppressPackageStartupMessages(nlmixr2lib:::.modeldbFileRow(dir, "Fixture_2026_clean.R"))),
+    error = identity
+  )
+  expect_s3_class(err, "error")
+  expect_identical(
+    conditionMessage(err),
+    "checkModelConventions() raised an error for Fixture_2026_clean: boom: the checker hit something it cannot read"
+  )
+})
+
+test_that("a model whose convention check raises an error is recorded as a failure and left out of the cache", {
+  skip_on_cran()
+  dir <- withr::local_tempdir("modeldb-fixture")
+  .writeModelFixtures(
+    dir,
+    list(
+      "Fixture_2026_a.R" = .renamedTemplate("Fixture_2026_a"),
+      "Fixture_2026_b.R" = .renamedTemplate("Fixture_2026_b")
+    )
+  )
+  .modeldbSpy$checkModelConventions <- nlmixr2lib::checkModelConventions
+  .modeldbSpy$throwFor <- "Fixture_2026_a"
+  testthat::local_mocked_bindings(checkModelConventions = .throwingCheckModelConventions, .package = "nlmixr2lib")
+  nlmixr2lib:::.conventionErrorsReset()
+  withr::defer(nlmixr2lib:::.conventionErrorsReset())
+  acc <- new.env(parent = emptyenv())
+
+  err <- tryCatch(
+    {
+      suppressMessages(nlmixr2lib:::.addDirToModelDbCached(dir, list(), acc = acc))
+      suppressMessages(nlmixr2lib:::.conventionErrorsStopIfAny())
+    },
+    error = identity
+  )
+  expect_s3_class(err, "error")
+  expect_match(conditionMessage(err), "buildModelDb(): 1 model file(s) could not be loaded.", fixed = TRUE)
+  expect_match(
+    conditionMessage(err),
+    paste0(
+      file.path(dir, "Fixture_2026_a.R"),
+      ": checkModelConventions() raised an error for Fixture_2026_a: boom"
+    ),
+    fixed = TRUE
+  )
+  # The model that checked cleanly is cached; the one whose check failed is not.
+  expect_identical(names(acc$entries), "Fixture_2026_b.R")
+})
+
+test_that("a build whose convention checker raises an error stops and caches no row for that model", {
+  skip_on_cran()
+  pkg <- withr::local_tempdir("modeldb-pkg")
+  .fixturePackage(
+    pkg,
+    files = list(
+      "Fixture_2026_a.R" = .renamedTemplate("Fixture_2026_a"),
+      "Fixture_2026_b.R" = .renamedTemplate("Fixture_2026_b")
+    )
+  )
+  withr::local_dir(pkg)
+  withr::defer(nlmixr2lib:::.conventionErrorsReset())
+  .modeldbSpy$checkModelConventions <- nlmixr2lib::checkModelConventions
+  .modeldbSpy$throwFor <- "Fixture_2026_b"
+  testthat::local_mocked_bindings(checkModelConventions = .throwingCheckModelConventions, .package = "nlmixr2lib")
+
+  err <- tryCatch(suppressMessages(nlmixr2lib:::buildModelDb(workers = 1L)), error = identity)
+  expect_s3_class(err, "error")
+  expect_match(
+    conditionMessage(err),
+    "Fixture_2026_b.R: checkModelConventions() raised an error for Fixture_2026_b: boom",
+    fixed = TRUE
+  )
+  # Nothing is published, and the next build re-checks the model whose check failed.
+  expect_false(file.exists(file.path(pkg, "data", "modeldb.rda")))
+  expect_identical(names(readRDS(file.path(pkg, "data-raw", "modeldb-cache.rds"))$entries), "Fixture_2026_a.R")
+})
+
 test_that("a parallel build gives the same rows, cache and errors as a serial one", {
   skip_on_cran()
   skip_if_not_installed("callr")
@@ -455,4 +549,82 @@ test_that("a worker count must be one positive whole number", {
   # The option is validated the same way, before the build touches any file.
   withr::local_options(nlmixr2lib.buildModelDb.workers = 0)
   expect_error(nlmixr2lib:::buildModelDb(), "nlmixr2lib.buildModelDb.workers", fixed = TRUE)
+})
+
+test_that(".modelDosingCmts reads `dosing` metadata, else falls back to depot and central", {
+  # Declared metadata is returned as written, even when it names neither
+  # depot nor central.
+  expect_identical(.dtDosingCmts(.dtStomachDosedModel), "stomach")
+  expect_identical(.dtDosingCmts(.dtTwoDepotModel), c("depot", "depot2"))
+  # A declared empty vector stays empty, so the registry records "" (nothing
+  # is dosed) rather than NA (nothing was said).
+  expect_identical(.dtDosingCmts(.dtEmptyDosingModel), character(0))
+  # Without metadata: depot before central, and only the ones that exist.
+  expect_identical(.dtDosingCmts(.dtStomachModel), "central")
+  expect_null(.dtDosingCmts(.dtNoFallbackModel))
+})
+
+test_that("the fallback leaves out a central that depot feeds, unless central is a route", {
+  # depot feeds central directly, through a transit compartment, or inside a
+  # linCmt() solution: central is where the oral dose arrives.
+  expect_identical(.dtDosingCmts(.dtFallbackDepotModel), "depot")
+  expect_identical(.dtDosingCmts(.dtTransitFallbackModel), "depot")
+  expect_identical(.dtDosingCmts(.dtLinCmtDepotModel), "depot")
+  # central with a dose property of its own, or whose dose history the model
+  # reads, is a route.
+  expect_identical(.dtDosingCmts(.dtInfusedCentralModel), c("depot", "central"))
+  expect_identical(.dtDosingCmts(.dtCentralTimingModel), c("depot", "central"))
+  # depot that does not reach central leaves central the only way in.
+  expect_identical(.dtDosingCmts(.dtSeparateDepotModel), c("depot", "central"))
+  # Nor does a depot that appears in d/dt(central) only in a term that
+  # removes from it.
+  expect_identical(.dtDosingCmts(.dtLossOnlyModel), c("depot", "central"))
+})
+
+test_that("every dose property and dose-history read on central makes it a route", {
+  # The base fixture alone, and with the same statements on depot: depot.
+  expect_identical(nlmixr2lib:::.modelDosingCmts(.dtFallbackVariant("tchk <- 1")), "depot")
+  for (prop in nlmixr2lib:::.doseProperties) {
+    expect_identical(
+      nlmixr2lib:::.modelDosingCmts(.dtFallbackVariant(paste0(prop, "(central) <- 0.5"))),
+      c("depot", "central"),
+      info = prop
+    )
+    expect_identical(
+      nlmixr2lib:::.modelDosingCmts(.dtFallbackVariant(paste0(prop, "(depot) <- 0.5"))),
+      "depot",
+      info = prop
+    )
+  }
+  for (fn in nlmixr2lib:::.doseTimingFunctions) {
+    expect_identical(
+      nlmixr2lib:::.modelDosingCmts(.dtFallbackVariant(paste0("tchk <- ", fn, "(central)"))),
+      c("depot", "central"),
+      info = fn
+    )
+    expect_identical(
+      nlmixr2lib:::.modelDosingCmts(.dtFallbackVariant(paste0("tchk <- ", fn, "(depot)"))),
+      "depot",
+      info = fn
+    )
+  }
+})
+
+test_that("a feed through a variable is followed only when the variable is assigned once", {
+  expect_identical(.dtDosingCmts(.dtAliasFeedModel), "depot")
+  # Assigned in each branch of an if/else, the variable is not followed, and
+  # central stays in the fallback.
+  expect_identical(.dtDosingCmts(.dtIfElseAliasFeedModel), c("depot", "central"))
+  # A d/dt(central) assigned in each branch is read in both.
+  expect_identical(.dtDosingCmts(.dtIfElseFeedModel), "depot")
+})
+
+test_that("an unreadable model keeps central in the fallback", {
+  ui <- new.env()
+  ui$props <- list(linCmt = FALSE, cmtProp = NULL)
+  makeActiveBinding("lstExpr", .dtUnreadableModelBlock, ui)
+  # No compiled equations: depot cannot be shown to reach central.
+  expect_false(nlmixr2lib:::.depotFeedsCentral(ui))
+  # No model() block: central's dose history cannot be ruled out.
+  expect_true(nlmixr2lib:::.centralIsDosed(ui))
 })

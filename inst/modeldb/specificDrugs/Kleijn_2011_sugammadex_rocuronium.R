@@ -45,6 +45,7 @@ Kleijn_2011_sugammadex_rocuronium <- function() {
     dosing = "umol",
     concentration = "umol/L"
   )
+  dosing <- c("central_roc", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

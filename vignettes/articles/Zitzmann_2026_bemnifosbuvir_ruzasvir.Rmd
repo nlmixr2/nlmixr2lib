@@ -1,0 +1,470 @@
+---
+title: "Bemnifosbuvir + ruzasvir HCV viral kinetics (Zitzmann 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Bemnifosbuvir + ruzasvir HCV viral kinetics (Zitzmann 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Zitzmann_2026_bemnifosbuvir_ruzasvir"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Zitzmann_2026_bemnifosbuvir_ruzasvir"))$description`
+* Article: <https://doi.org/10.1002/cpt.70454> (open access; PMC13541962)
+
+Zitzmann et al. fitted a multiscale HCV viral-kinetic model to the HCV RNA
+and ALT data of 215 treatment-adherent patients who took bemnifosbuvir (an
+NS5B nucleotide polymerase inhibitor) 550 mg plus ruzasvir (an NS5A
+inhibitor) 180 mg once daily for 8 weeks. There is no pharmacokinetic layer:
+the combination is assumed to act with constant effectiveness from the start
+of treatment, after a short pharmacological delay.
+
+# Population
+
+The analysis set is the per-protocol, treatment-adherent subset (215 of 275
+enrolled) of the phase 2 single-arm trial NCT05904470 (Table 1 of the paper):
+mean age 51 years (range 20-85), 46.5% male, 72.6% White and 20.5% Asian.
+Genotype 1 accounted for 70.2% of patients, genotype 3 for 27.0%, genotypes 2
+and 4 for 1.9% and 0.9%. Fibrosis stages were F0 22.8%, F1 27.9%, F2 23.7%,
+F3 9.8% and compensated cirrhosis (F4) 15.8%. The HCV RNA assay had a lower
+limit of quantification (LLOQ) of 15 IU/mL. SVR12 was 97.7% (210/215).
+
+# Model structure
+
+The multiscale model (S1_Text eq 1) tracks target cells, infected cells by
+infection age, intracellular positive-strand HCV RNA within an infected cell,
+and free virus. Assuming no new infections during treatment, the plasma viral
+load has the analytic solution (S1_Text eq 2)
+
+$$V(t) = V_0\left[C_1 e^{-c(t-\tau)} + C_2 e^{-(B+\delta)(t-\tau)} + C_3 e^{-(\gamma+\delta)(t-\tau)}\right], \quad t > \tau,$$
+
+with $B = \rho(1-\varepsilon_s) + \kappa\mu$, $A_R = \alpha_R(1-\varepsilon_\alpha)$,
+$N = \rho(\alpha_R+\delta)/[\delta(\rho+\mu+\delta)]$ and the coefficients
+$C_1$, $C_2$, $C_3$ given in S1_Text. The three coefficients sum to 1, so
+$V = V_0$ until the delay $\tau$ has elapsed. Serum ALT follows S1_Text eq 4,
+
+$$A(t) = A_N\left(1 - \frac{A_0 - A_N}{A_N(c_A-\delta)}\left(\delta e^{-c_A t} - c_A e^{-\delta t}\right)\right), \quad A_N = s / c_A.$$
+
+The packaged model evaluates both solutions directly; it has no ODE states.
+Time is in days since the first dose. The outputs are `log10_viral_load`
+(log10 IU/mL, as fitted) and `lnalt` (natural log of ALT in U/L; the paper
+fitted log10 ALT, and the two differ only by the factor ln 10).
+
+In the final model (B24) the drug blocks intracellular RNA production
+($\varepsilon_\alpha$) and virion assembly/secretion ($\varepsilon_s$), and
+multiplies the intracellular RNA degradation rate by $\kappa$; the
+replication-complex decay $\gamma$ is fixed to 0. Compensated cirrhosis
+(`DIS_CIRRHOSIS = 1`, fibrosis F4) shifts $\varepsilon_\alpha$ and
+$\varepsilon_s$.
+
+# Source trace
+
+| Quantity | Value in model | Source |
+|---|---|---|
+| Viral-load solution $V(t)$, $C_1$-$C_3$, $N$, $A_R$, $B$ | `vl`, `c1_vl`, `c2_vl`, `c3_vl`, `n_ss`, `a_r`, `b_rna` | S1_Text eq 2 and the definitions below it |
+| ALT solution $A(t)$, $A_N = s/c_A$ | `alt`, `alt_n` | S1_Text eq 4 |
+| Phase durations $D_1$, $D_2$ (checked below) | computed in this article | S1_Text, after eq 2 |
+| $V_0$ | `lrbase` = log(10^6.48) IU/mL | Table 3 (6.48 log10 IU/mL, RSE 0.79%) |
+| $\delta$ | `ldelta` = log(0.269) /day | Table 2, model B24 (0.269); Table 3 rounds to 0.27 |
+| $c$ | `lc` = log(19.62) /day | Table 3 |
+| $\tau_v$ | `ltau` = log(1.8/24) day | Table 3 (1.8 h) |
+| $\alpha_R$ | `lalpha_r` = log(40), fixed | Table 3; Methods |
+| $\rho$ | `lrho` = log(8.18) /day, fixed | Table 3; Methods |
+| $\mu$ | `lmu` = log(1) /day, fixed | Table 3; Methods |
+| $\varepsilon_\alpha$ F0-F3 / F4 | `logiteps_alpha` = logit(0.9859); `e_dis_cirrhosis_eps_alpha` = logit(0.9935) - logit(0.9859) | Table 3; Table 2 B24; Table S5 B24 |
+| $\varepsilon_s$ F0-F3 / F4 | `logiteps_s` = logit(0.9978); `e_dis_cirrhosis_eps_s` = logit(0.9904) - logit(0.9978) | Table 3; Table 2 B24; Table S5 B24 |
+| $\kappa$ | `lkappa` = log(1.705) | Table S5 B24 (1.705); Table 3 rounds to 1.70 |
+| $\gamma$ | `gamma_rc` = 0, fixed | Table 3; S1_Text (B24 fixes $\gamma$ = 0) |
+| $s$ | `lkin_alt` = log(5.23) U/L/day | Table 3 |
+| $c_A$ | `lkout_alt` = log(0.30) /day | Table 3 |
+| $A_0$ | `lrbase_alt` = log(31.57) U/L | Table 3 |
+| Between-subject variances | all `fixed(0)` | not reported (see Assumptions) |
+| Residual SDs (log10 HCV RNA, log ALT) | `fixed(0)` | not reported (see Assumptions) |
+| Individual parameters of the 215 patients | `data/Zitzmann_2026_individual_parameters.csv` | S2_Text individual-parameter table |
+
+# Typical-value trajectories
+
+```{r typical}
+mod <- readModelDb("Zitzmann_2026_bemnifosbuvir_ruzasvir")
+
+times <- sort(unique(c(seq(0, 2, by = 1 / 48), seq(2, 56, by = 0.25))))
+ev_typ <- tidyr::crossing(
+  id = 1:2,
+  time = times
+) |>
+  mutate(evid = 0, DIS_CIRRHOSIS = id - 1L)
+
+sim_typ <- rxode2::rxSolve(
+  mod,
+  events = ev_typ,
+  omega = NA,
+  sigma = NA,
+  returnType = "data.frame"
+) |>
+  mutate(group = ifelse(id == 1, "F0-F3", "F4 (compensated cirrhosis)"))
+```
+
+```{r fig2-vl, fig.cap = "Typical HCV RNA decline over the 8-week treatment, by fibrosis group. Compare with Figure 2a,c,d of Zitzmann 2026. Dotted lines: LLOQ (15 IU/mL) and the cure boundary (6.67e-4 IU/mL)."}
+ggplot(sim_typ, aes(time, log10_viral_load, colour = group)) +
+  geom_line(linewidth = 0.8) +
+  geom_hline(yintercept = log10(c(15, 6.67e-4)), linetype = "dotted") +
+  labs(
+    x = "Time since start of treatment (day)",
+    y = "HCV RNA (log10 IU/mL)",
+    colour = NULL
+  ) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r fig2-early, fig.cap = "First two days of treatment: the delay of about 2 h, the rapid first phase (virion clearance) and the start of the second phase. Compare with Figure 2a of Zitzmann 2026."}
+ggplot(filter(sim_typ, time <= 2), aes(time * 24, log10_viral_load, colour = group)) +
+  geom_line(linewidth = 0.8) +
+  labs(x = "Time since start of treatment (h)", y = "HCV RNA (log10 IU/mL)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r fig2-alt, fig.cap = "Typical ALT trajectory. Compare with Figure 2b of Zitzmann 2026. ALT falls from A0 = 31.6 U/L towards the uninfected level s/c_A = 17.4 U/L."}
+ggplot(filter(sim_typ, id == 1), aes(time, exp(lnalt))) +
+  geom_line(linewidth = 0.8) +
+  geom_hline(yintercept = 5.23 / 0.30, linetype = "dotted") +
+  labs(x = "Time since start of treatment (day)", y = "ALT (U/L)") +
+  theme_bw()
+```
+
+## Phase structure against the Results text
+
+The Results section reports the phase rates and durations of the triphasic
+decline. They follow from the typical parameters through the S1_Text
+formulas $D_1 = \ln(C_1/C_2)/(c - B - \delta)$ and
+$D_2 = \ln(C_2/C_3)/(B + \gamma)$.
+
+```{r phases}
+phase <- sim_typ |>
+  group_by(group) |>
+  slice(1) |>
+  ungroup() |>
+  mutate(
+    second_phase_rate = kappa * mu + delta,
+    D1_h = log(c1_vl / c2_vl) / (c - (b_rna + delta)) * 24,
+    D2_h = log(c2_vl / c3_vl) / (b_rna + gamma) * 24
+  )
+
+# log10 decline attributed to each phase: the phase's exponential rate times
+# its duration (first phase c, second phase B + delta)
+phase <- phase |>
+  mutate(
+    drop1_log10 = c * D1_h / 24 / log(10),
+    drop2_log10 = (b_rna + delta) * D2_h / 24 / log(10)
+  )
+
+phase_cmp <- tibble::tibble(
+  Quantity = c(
+    "Second-phase rate kappa*mu + delta (/day)",
+    "First-phase duration D1, F0-F3 (h)", "First-phase duration D1, F4 (h)",
+    "Second-phase duration D2, F0-F3 (h)", "Second-phase duration D2, F4 (h)",
+    "First-phase decline, F0-F3 (log10)", "First-phase decline, F4 (log10)",
+    "Second-phase decline, F0-F3 (log10)", "Second-phase decline, F4 (log10)"
+  ),
+  Packaged = c(
+    phase$second_phase_rate[1],
+    phase$D1_h, phase$D2_h,
+    phase$drop1_log10, phase$drop2_log10
+  ),
+  Published = c(1.97, 8.4, 6.5, 36, 46, 3, 2.3, 1.3, 1.6)
+) |>
+  mutate(`Difference (%)` = 100 * (Packaged - Published) / Published)
+
+phase_cmp |>
+  mutate(Packaged = signif(Packaged, 3), `Difference (%)` = round(`Difference (%)`, 1)) |>
+  knitr::kable()
+
+stopifnot(abs(phase_cmp$`Difference (%)`) < 10)
+```
+
+The second-phase rate and the phase durations agree with the Results text to
+within the rounding of the printed parameters (the largest duration gap,
+about 4% for the F4 first phase, comes from carrying the rounded Table 3
+values). The per-phase declines are the phase's exponential rate times its
+duration ($c D_1$ and $(B + \delta) D_2$, in log10 units), which reproduces
+the paper's "3 log" vs "2.3 log" first-phase and "1.3" vs "1.6 log"
+second-phase figures; the F4 second phase (1.72 vs 1.6 log10) is the widest
+gap. The total drop from $V_0$ by the end of the first phase is smaller than
+$c D_1$, because the second exponential already contributes during the first
+phase.
+
+# Replaying the 215 patients
+
+The paper's time-to-undetectable analysis (Figure 4) simulated each patient
+with their own estimated parameters. S2_Text tabulates those individual
+estimates for all 215 patients; they are shipped with this article as
+`data/Zitzmann_2026_individual_parameters.csv`. Because each patient's
+$\varepsilon_\alpha$ and $\varepsilon_s$ already include the cirrhosis
+effect, they enter the model through its population parameters with
+`DIS_CIRRHOSIS = 0`.
+
+```{r replay}
+ind <- read.csv(file.path("data", "Zitzmann_2026_individual_parameters.csv"))
+stopifnot(
+  nrow(ind) == 215,
+  sum(ind$fibrosis == "F4") == 34, # Table 1
+  sum(ind$genotype == 1) == 151,
+  sum(ind$genotype == 3) == 58
+)
+ind <- ind |>
+  mutate(
+    id = seq_len(n()),
+    fib_group = ifelse(fibrosis == "F4", "F4", "F0-F3")
+  )
+
+params_ind <- ind |>
+  transmute(
+    id,
+    lrbase = log(10^log10V0),
+    ldelta = log(delta),
+    lc = log(c),
+    ltau = log(tau),
+    logiteps_alpha = qlogis(eps_alpha),
+    logiteps_s = qlogis(eps_s),
+    lkappa = log(kappa),
+    lkin_alt = log(s),
+    lkout_alt = log(cA),
+    lrbase_alt = log(A0)
+  )
+
+ev_ind <- tidyr::crossing(id = ind$id, time = seq(0, 84, by = 0.05)) |>
+  mutate(evid = 0, DIS_CIRRHOSIS = 0L)
+
+sim_ind <- rxode2::rxSolve(
+  mod,
+  params = params_ind,
+  events = ev_ind,
+  omega = NA,
+  sigma = NA,
+  returnType = "data.frame"
+) |>
+  left_join(select(ind, id, genotype, fib_group), by = "id")
+
+# Each patient's solution starts at their own V0
+stopifnot(max(abs(sim_ind$log10_viral_load[sim_ind$time == 0] - ind$log10V0)) < 1e-8)
+```
+
+## Early decline
+
+```{r early}
+early <- sim_ind |>
+  filter(round(time, 6) %in% c(0.25, 0.5, 1)) |>
+  left_join(select(ind, id, log10V0), by = "id") |>
+  group_by(time) |>
+  summarise(mean_decline = mean(log10V0 - log10_viral_load), .groups = "drop") |>
+  mutate(
+    hours = time * 24,
+    published = c(1.4, 2.9, 3.3)
+  )
+early |>
+  select(`Time (h)` = hours, `Mean decline, packaged (log10)` = mean_decline,
+    `Mean decline, published (log10)` = published) |>
+  knitr::kable(digits = 2)
+stopifnot(abs(early$mean_decline - early$published) < 0.3)
+```
+
+The paper reports mean reductions of 1.4, 2.9 and 3.3 log10 at 6, 12 and
+24 h (Results); the replay gives the values above.
+
+## Time to undetectable HCV RNA and to the cure boundary
+
+```{r tte}
+first_crossing <- function(time, y, threshold) {
+  i <- which(y <= threshold)[1]
+  if (is.na(i)) Inf else time[i]
+}
+
+tte <- sim_ind |>
+  group_by(id, genotype, fib_group) |>
+  summarise(
+    t_lloq = first_crossing(time, log10_viral_load, log10(15)),
+    t_cure = first_crossing(time, log10_viral_load, log10(6.67e-4)),
+    .groups = "drop"
+  )
+
+summ <- function(d, label) {
+  tibble::tibble(
+    Group = label,
+    n = nrow(d),
+    t_lloq = median(d$t_lloq),
+    t_cure_wk = median(d$t_cure) / 7
+  )
+}
+tte_tab <- bind_rows(
+  summ(tte, "All"),
+  summ(filter(tte, genotype == 1), "GT 1"),
+  summ(filter(tte, genotype == 3), "GT 3"),
+  summ(filter(tte, fib_group == "F0-F3"), "F0-F3"),
+  summ(filter(tte, fib_group == "F4"), "F4")
+) |>
+  mutate(
+    t_lloq_pub = c(11.4, 13.0, 8.6, 11.0, 15.6),
+    t_cure_pub = c(6.6, 7.0, 5.6, 6.5, 6.9),
+    lloq_diff = 100 * (t_lloq - t_lloq_pub) / t_lloq_pub,
+    cure_diff = 100 * (t_cure_wk - t_cure_pub) / t_cure_pub
+  )
+
+tte_tab |>
+  transmute(
+    Group, n,
+    `Median days to LLOQ, packaged` = t_lloq,
+    `Median days to LLOQ, published` = t_lloq_pub,
+    `Difference (%)` = lloq_diff,
+    `Median weeks to cure boundary, packaged` = t_cure_wk,
+    `Median weeks to cure boundary, published` = t_cure_pub,
+    `Difference (%) ` = cure_diff
+  ) |>
+  knitr::kable(digits = c(0, 0, 2, 1, 1, 2, 1, 1))
+
+stopifnot(
+  abs(tte_tab$lloq_diff) < 5,
+  abs(tte_tab$cure_diff) < 12
+)
+```
+
+The medians of the time to the LLOQ match the published Figure 4 values to
+within 1%. The time to the cure boundary (6.67e-4 IU/mL) agrees overall and
+for the F0-F3 group; for GT 1 and F4 the replay is 0.35-0.6 weeks later than
+the text. The cure boundary sits more than nine log10 below baseline, so it
+depends on each patient's slow third phase ($\delta$), and the S2_Text table
+prints $\delta$ to three decimals; the gap is in that tail, not in the model
+structure, which the LLOQ times confirm.
+
+```{r fig4, fig.cap = "Percentage of patients with HCV RNA at or below the LLOQ (15 IU/mL), by genotype and by fibrosis group, from the replay of the 215 patients. Compare with Figure 4b,c of Zitzmann 2026."}
+km <- bind_rows(
+  tte |> filter(genotype %in% c(1, 3)) |> mutate(panel = "Genotype", strata = paste("GT", genotype)),
+  tte |> mutate(panel = "Fibrosis group", strata = fib_group)
+) |>
+  tidyr::crossing(day = seq(0, 56, by = 0.25)) |>
+  group_by(panel, strata, day) |>
+  summarise(pct = 100 * mean(t_lloq <= day), .groups = "drop")
+
+ggplot(km, aes(day, pct, colour = strata)) +
+  geom_step(linewidth = 0.8) +
+  facet_wrap(~panel) +
+  labs(x = "Time since start of treatment (day)", y = "Patients <= LLOQ (%)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+## Virologic response rates
+
+```{r response}
+resp <- tibble::tibble(
+  Measure = c(
+    "vRVR (<= LLOQ by day 7), all", "vRVR, GT 3",
+    "RVR (<= LLOQ by week 4), all", "RVR, F4",
+    "<= LLOQ by week 6, all"
+  ),
+  Packaged = c(
+    sum(tte$t_lloq <= 7),
+    sum(tte$t_lloq[tte$genotype == 3] <= 7),
+    sum(tte$t_lloq <= 28),
+    sum(tte$t_lloq[tte$fib_group == "F4"] <= 28),
+    sum(tte$t_lloq <= 42)
+  ),
+  Denominator = c(215, 58, 215, 34, 215),
+  Published = c(57, 22, 205, 28, 214)
+)
+knitr::kable(resp)
+stopifnot(all(abs(resp$Packaged - resp$Published) <= 2))
+```
+
+The replay reproduces the paper's response counts: vRVR 57/215 (26.5%) and
+22/58 in GT 3, RVR 205/215 (95.3%) and 28/34 in F4, and all patients but one
+(a patient with cirrhosis) at or below the LLOQ by week 6.
+
+## Viral decline relative to baseline by subgroup
+
+```{r fig2-subgroups, fig.cap = "Median (line) and 10th-90th percentile band of the change in log10 HCV RNA from baseline over the replayed patients, by fibrosis group and by genotype. Compare with Figure 2d,e of Zitzmann 2026."}
+rel <- sim_ind |>
+  filter(time <= 56, abs(time / 0.5 - round(time / 0.5)) < 1e-6) |>
+  left_join(select(ind, id, log10V0), by = "id") |>
+  mutate(dlog = log10_viral_load - log10V0)
+
+rel_band <- bind_rows(
+  rel |> mutate(panel = "Fibrosis group", strata = fib_group),
+  rel |> filter(genotype %in% c(1, 3)) |> mutate(panel = "Genotype", strata = paste("GT", genotype))
+) |>
+  group_by(panel, strata, time) |>
+  summarise(
+    med = median(dlog),
+    lo = quantile(dlog, 0.1),
+    hi = quantile(dlog, 0.9),
+    .groups = "drop"
+  )
+
+ggplot(rel_band, aes(time, med, colour = strata, fill = strata)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~panel) +
+  labs(x = "Time since start of treatment (day)", y = "Change in HCV RNA (log10)", colour = NULL, fill = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# Why there is no NCA
+
+The model has no pharmacokinetic component: the drug effect is a constant
+effectiveness switched on after the delay $\tau$. Noncompartmental analysis
+of drug concentrations therefore does not apply, and the paper reports no NCA
+parameters. Validation instead rests on the closed-form phase structure, the
+early decline, and the patient-level replay of the published time-to-event
+and response results above.
+
+# Assumptions and deviations
+
+* **Between-subject variability and residual error are not reported.** The
+  paper gives the fixed effects (Table 3) but no random-effect variances or
+  residual-error SDs. The S2_Text individual estimates differ between patients
+  on all ten estimated parameters, so the model carries an eta on each, fixed
+  to 0, and fixes both additive residual SDs to 0. Stochastic simulation from
+  the packaged model is therefore typical-value only; the subgroup
+  variability shown above comes from the published individual estimates.
+* **Parameter transforms.** The paper does not state the Monolix
+  distributions. The model uses logit-normal $\varepsilon_\alpha$ and
+  $\varepsilon_s$ (both constrained to (0, 1) in the paper) with the
+  cirrhosis effect as a shift on the logit scale, which is how Monolix
+  applies a categorical covariate to a logit-normal parameter, and
+  log-normal distributions elsewhere. $\kappa$ is constrained to be at least 1
+  in the paper; the log-normal form here does not enforce that bound, which
+  matters only if variability is added. With all etas fixed to 0 the
+  transforms do not change any simulation.
+* **Rounded values.** Where the paper prints a parameter at two precisions,
+  the more precise one is used: $\delta$ = 0.269 /day (Table 2, B24; Table 3
+  gives 0.27) and $\kappa$ = 1.705 (Table S5; Table 3 gives 1.70). The
+  pharmacological delay is 1.8 h (Table 3), carried as 0.075 day.
+* **ALT unit and scale.** Table 3 prints the unit of $s$ as IU/L; in S1_Text
+  eq 3 it is a production rate, so it is carried in U/L/day. The paper fitted
+  log10 ALT; the packaged output `lnalt` is the natural log, which differs by
+  the constant factor ln 10. The ALT solution (S1_Text eq 4) has no delay
+  term, and none is added.
+* **Time origin and scope.** Time 0 is the first dose and the drug effect is
+  constant afterwards. The analytic solution describes the on-treatment
+  decline only; it does not model the end of treatment, viral rebound or
+  relapse, and it assumes no new infections during treatment.
+* **Covariate scope.** Compensated cirrhosis (F4 vs F0-F3) on
+  $\varepsilon_\alpha$ and $\varepsilon_s$ is the only covariate in the final
+  model. Genotype (GT 1-4), individual fibrosis stages (F0-F4) and the
+  F0-F2 vs F3-F4 grouping were screened (Tables S2-S7) but not retained.
+* **Replay inputs.** The individual parameters were transcribed from the
+  S2_Text table, which prints them to 2-4 significant figures, and the time
+  grid of the replay is 0.05 day (1.2 h), so crossing times are resolved to
+  that grid.

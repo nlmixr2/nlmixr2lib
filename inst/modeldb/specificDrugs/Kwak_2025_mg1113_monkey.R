@@ -6,6 +6,7 @@ Kwak_2025_mg1113_monkey <- function() {
   paper_specific_compartments <- c("stfpi", "mtfpi", "astfpi", "amtfpi")
 
   units <- list(time = "day", dosing = "nmol", concentration = "nM")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. The four TFPI-species states are carried by the paper

@@ -28,8 +28,17 @@ documented in `vignettes/create-model-library.Rmd` and the
 file-level metadata (description, reference, units, covariateData);
 parameter names (log-prefix PK params, `eta`-prefix IIV, `propSd`/`addSd`
 residual error); parameter labels; covariates (canonical register, units,
-declared aliases); compartment names; the observation variable (`Cc`); and
-a syntactic dosing-vs-concentration unit cross-check.
+declared aliases); in a template, any symbol read but never defined;
+compartment names; the observation variable (`Cc`); a syntactic
+dosing-vs-concentration unit cross-check; that every dose-history call
+naming a compartment (`tad(cmt)`, `podo(cmt)`, `tafd(cmt)`, ...) names one
+the model is dosed into (its `dosing` metadata, or else `depot` and/or
+`central`); that every ODE state can leave zero, through an input term in
+its `d/dt()`, a non-zero initial condition, or a dose; that no model()
+statement is a bare expression (an operator-led continuation line that R
+parses as a statement of its own); and, in a source tree, that the article
+of a model with a below-subject `eta ~ variance | G` eta calls the internal
+`assertDrawsPerLevel()` on its simulation (category `nesting_assertion`).
 }
 \details{
 When any issue of severity `"error"` or `"warning"` is found, a `warning()`

@@ -34,6 +34,7 @@ Tse_2020_tofacitinib <- function() {
   )
   vignette <- "Tse_2020_tofacitinib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(

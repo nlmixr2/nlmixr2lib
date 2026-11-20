@@ -14,6 +14,7 @@ Xia_2024_warfarin <- function() {
   paper_specific_compartments <- c("coag_s1", "coag_s2", "coag_s3", "coag_l1", "coag_l2", "coag_l3")
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- "depot_kpd"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

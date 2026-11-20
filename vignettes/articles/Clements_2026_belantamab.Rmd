@@ -1,0 +1,558 @@
+---
+title: "Belantamab mafodotin, soluble BCMA and M-protein (Clements 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Belantamab mafodotin, soluble BCMA and M-protein (Clements 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Clements_2026_belantamab"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Clements_2026_belantamab"))$description`
+* Article: <https://doi.org/10.1002/psp4.70337> (open access)
+* Supplement (Tables S1-S4, Figures S1-S6 and the NONMEM control stream):
+  Supporting Information of the same article.
+
+Clements 2026 fits one simultaneous model to four analytes measured in
+patients with relapsed/refractory multiple myeloma who received the anti-BCMA
+antibody-drug conjugate (ADC) belantamab mafodotin as monotherapy: total
+belantamab mafodotin, free soluble BCMA (sBCMA), belantamab mafodotin-sBCMA
+complex, and serum M-protein. It merges the earlier population PK model
+(`modellib("Rathi_2021_belantamab")`) and M-protein model
+(`modellib("Collins_2023_belantamab_mprotein")`) and then simplifies the
+result with local and global sensitivity analyses.
+
+# Population
+
+The analysis dataset (Clements 2026 Table 1) holds 510 patients from four
+studies: DREAMM-1 (n = 45; 0.03-3.4 mg/kg every 3 weeks), DREAMM-2 (n = 216;
+2.5 or 3.4 mg/kg every 3 weeks), DREAMM-3 (n = 215; 2.5 mg/kg every 3 weeks)
+and the DREAMM-5 monotherapy arm (n = 34; 2.5 mg/kg every 3 weeks). Median
+(range) age was 66 (34-89) years and baseline weight 74.7 (37-142) kg; 45.9%
+were female, 80.4% White, 8.0% Black and 11.4% Asian. Baseline medians were
+sBCMA 72.9 ng/mL (2.08-2030), M-protein 18.0 g/L (0.7-102) and albumin
+38.0 g/L. Patients needed a quantifiable baseline serum M-protein above
+0.5 g/L. The dataset held 4586 total-ADC, 4624 free-sBCMA, 3422
+complex-sBCMA and 3228 M-protein observations.
+
+The same information is available programmatically via
+`readModelDb("Clements_2026_belantamab")()$population`.
+
+# Model structure
+
+The published NONMEM control stream (Supporting Information) is the model that
+was fitted, and the packaged model follows it line by line. With $C_T$ the
+total and $C_F$ the free belantamab mafodotin concentration, $S_T$ the total
+sBCMA concentration (all nM), $R$ the sBCMA reservoir and $M$ the serum
+M-protein (g/L):
+
+* Quasi-equilibrium binding:
+  $C_F = \tfrac12\left[(C_T - S_T - K_D) + \sqrt{(C_T - S_T - K_D)^2 + 4 K_D C_T}\right]$,
+  complex $= S_T C_F / (K_D + C_F)$.
+* Total drug: elimination $K_{EL} C_F V_C + K_{INT} \cdot \text{complex} \cdot V_C$
+  with $K_{INT} = K_{EL} = CL/V_C$, so total-drug clearance is linear; total
+  drug (free + bound) distributes to the peripheral compartment.
+* $dS_T/dt = K_{DIFF} R - (K_{INT} - K_{DEG}) \cdot \text{complex} - K_{DEG} S_T$.
+* $dM/dt = K_{GR} (1 - M/150) M - K_{DEATH} C_F M$.
+* $dR/dt = K_{SYN} M / M_{BL} - K_{DIFF} R$, with $K_{SYN} = K_{DEG} \cdot \text{sBCMA}_{BL} / 6$.
+* $S_T(0) = R(0) = \text{sBCMA}_{BL}/6$ (nM) and $M(0) = M_{BL}$.
+
+The dose is supplied in mg. The ADC state is held in mg and converted to nM
+with the control-stream molecular weight of 152.1 kDa; sBCMA is converted from
+ng/mL with 6 kDa. Free and complexed sBCMA observations carry the paper's
+assay-dilution correction (dilution factor 20 for free, 10 for complexed
+sBCMA), and every output has the control-stream lower floor applied before the
+log transform.
+
+| Model name | Paper name | Meaning |
+|---|---|---|
+| `central`, `peripheral1` | ADCc, ADCp | Total belantamab mafodotin (mg) |
+| `total_target` | SBCMAt | Total sBCMA in the central compartment (nM) |
+| `precursor1` | SBCMAr | sBCMA reservoir (nM) |
+| `mprotein` | MPROT | Serum M-protein (g/L) |
+| `kkill` | KDEATH | M-protein kill rate per unit free drug |
+| `p` | KGR | M-protein growth rate |
+| `kpout` | KDIFF | Diffusion out of the sBCMA reservoir |
+| `Cc` | CP1C | Total belantamab mafodotin (nM) |
+| `sbcma_free`, `sbcma_complex` | CP3FC, CP3CC | Free and complexed sBCMA as measured (nM) |
+| `mprotein_obs` | CPM | M-protein as measured (g/L) |
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lcl` (CLADC) | 0.7 L/day | Table 2 |
+| `lvc` (VC) | 4.81 L | Table 2 |
+| `lq` (QADC) | 0.771 L/day | Table 2 |
+| `lvp` (VP) | 12.7 L | Table 2 |
+| `lkdeg` (KDEG) | 0.671 1/day | Table 2 |
+| `lkd` (KD) | 1.11 nM | Table 2 |
+| `lkkill` (KDEATH) | 0.00019 1/(nM*day) | Table 2 |
+| `lp` (KGR) | 0.00319 1/day | Table 2 |
+| `lkpout` (KDIFF) | 4.45 1/day | Table 2 |
+| `e_alb_cl` | -0.879 | Table 2; reference 38 g/L from control stream |
+| `e_sbcma_cl` | 0.258 | Table 2; reference 72.85 ng/mL from control stream |
+| `e_sexf_cl` | -0.126 | Table 2; form (1 + theta) from control stream |
+| `e_wt_cl` | 0.488 | Table 2; reference 74.65 kg from control stream |
+| `e_sbcma_kkill` | 0.318 | Table 2 |
+| `e_sexf_vc` | -0.136 | Table 2 |
+| `e_wt_vc` | 0.506 | Table 2 |
+| `e_dis_emd_kkill` | -0.684 | Table 2 |
+| `etalcl`, `etalvc`, `etalvp`, `etalkkill`, `etalp` | 0.152, 0.063, 1.038, 1.028, 2.385 | Table 2 BSV CV% 40.5, 25.5, 135, 134, 314, as log(1 + CV^2) |
+| `etalq`, `etalkdeg`, `etalkd`, `etalkpout` | 0.0225 (fixed) | Control stream `$OMEGA` (FIX) |
+| `expSd_sbcma_free`, `expSd_sbcma_complex`, `expSd`, `expSd_mprotein_obs` | sqrt of 0.424, 0.609, 0.131, 0.108 | Table 2 residual variances (additive on log scale) |
+| Binding, ODEs, initial conditions | -- | Control stream `$PK` / `$DES`; Figure 2; Figure S3 |
+| Molecular weights 152.1 and 6 kDa | -- | Control stream `MWADC`, `MWSBCMA` |
+| Carrying capacity 150 g/L | -- | Control stream `DADT(4)`; Figure 2 |
+| Dilution correction, output floors | -- | Control stream `$ERROR` |
+
+# Structural checks
+
+The checks below use the typical male reference patient (74.65 kg, albumin
+38 g/L, sBCMA 72.85 ng/mL, M-protein 18 g/L, no extramedullary disease) and
+compare the solve with quantities that follow exactly from the equations.
+
+```{r typical-solve}
+mod <- readModelDb("Clements_2026_belantamab")
+mod_typ <- rxode2::zeroRe(mod)
+
+ref_cov <- data.frame(WT = 74.65, ALB = 38, SBCMA = 72.85, SEXF = 0, DIS_EMD = 0, MCPROT = 18)
+mw_adc <- 152.1
+inf_dur <- 0.5 / 24
+
+make_events <- function(dose, times, ii = 0, addl = 0, n = 1, cov = ref_cov) {
+  ev <- rxode2::et(amt = dose, dur = inf_dur, cmt = "central", ii = ii, addl = addl) |>
+    rxode2::et(times) |>
+    rxode2::et(id = seq_len(n)) |>
+    as.data.frame()
+  # Multi-endpoint model: observation rows carry a dvid instead of a state name.
+  ev$cmt[ev$evid == 0] <- NA_character_
+  ev$dvid <- 1L
+  cov$id <- seq_len(nrow(cov))
+  dplyr::left_join(ev, cov, by = "id")
+}
+
+typ_times <- sort(unique(c(0, inf_dur, seq(0.05, 1, by = 0.05), seq(1, 150, by = 0.5))))
+sim_typ <- rxode2::rxSolve(
+  mod_typ, make_events(200, typ_times),
+  returnType = "data.frame", atol = 1e-12, rtol = 1e-10
+)
+```
+
+**Quasi-equilibrium binding.** Free drug, free sBCMA and complex must satisfy
+$K_D = C_F \cdot S_F / \text{complex}$ and the mass balances
+$S_F + \text{complex} = S_T$ at every time point. These are identities of the
+same solve, so the tolerance is numerical.
+
+```{r check-binding}
+chk_bind <- sim_typ |>
+  filter(time > 0) |>
+  mutate(
+    kd_implied = cf_obs * sbcma_free_true / sbcma_cplx_true,
+    mass_err = (sbcma_free_true + sbcma_cplx_true) / total_target - 1
+  )
+stopifnot(
+  max(abs(chk_bind$kd_implied / 1.11 - 1)) < 1e-6,
+  max(abs(chk_bind$mass_err)) < 1e-10
+)
+```
+
+**Total drug is linear.** Because $K_{INT} = K_{EL}$, total belantamab
+mafodotin follows an ordinary linear two-compartment model whatever the sBCMA
+level. The solve is compared with the closed-form two-compartment infusion
+solution.
+
+```{r check-linear}
+twocmt_infusion <- function(t, dose, tinf, cl, v1, q, v2) {
+  k10 <- cl / v1; k12 <- q / v1; k21 <- q / v2
+  s <- k10 + k12 + k21
+  l1 <- (s + sqrt(s^2 - 4 * k10 * k21)) / 2
+  l2 <- (s - sqrt(s^2 - 4 * k10 * k21)) / 2
+  a1 <- (l1 - k21) / (l1 - l2) / v1
+  a2 <- (k21 - l2) / (l1 - l2) / v1
+  rate <- dose / tinf
+  term <- function(a, l) {
+    ifelse(
+      t <= tinf,
+      rate * a / l * (1 - exp(-l * t)),
+      rate * a / l * (1 - exp(-l * tinf)) * exp(-l * (t - tinf))
+    )
+  }
+  term(a1, l1) + term(a2, l2)
+}
+chk_lin <- sim_typ |>
+  filter(time > 0) |>
+  mutate(closed = twocmt_infusion(time, 200, inf_dur, 0.7, 4.81, 0.771, 12.7) * 1000 / mw_adc)
+stopifnot(max(abs(chk_lin$ctot / chk_lin$closed - 1)) < 1e-5)
+```
+
+**Drug-free sBCMA transient.** The reservoir starts at the baseline sBCMA
+concentration rather than at its drug-free steady state
+$K_{SYN}/K_{DIFF} = (K_{DEG}/K_{DIFF}) \cdot \text{sBCMA}_{BL}$ (Methods,
+"Model Finalization"; control stream `A_0(5)`). Without drug the reservoir
+therefore empties into the central pool during the first days, and total
+sBCMA rises before returning to baseline. With M-protein held at baseline the
+excess is
+$x(t) = \frac{K_{DIFF} y_0}{K_{DEG} - K_{DIFF}} (e^{-K_{DIFF} t} - e^{-K_{DEG} t})$
+with $y_0 = S_0 (1 - K_{DEG}/K_{DIFF})$. M-protein grows by under 2% over the
+first five days, so the comparison uses a 2% tolerance.
+
+```{r check-transient}
+ev_nodrug <- make_events(0, seq(0, 5, by = 0.1))
+sim_nodrug <- rxode2::rxSolve(mod_typ, ev_nodrug, returnType = "data.frame")
+s0 <- 72.85 / 6
+y0 <- s0 * (1 - 0.671 / 4.45)
+chk_tr <- sim_nodrug |>
+  mutate(analytic = s0 + 4.45 * y0 / (0.671 - 4.45) * (exp(-4.45 * time) - exp(-0.671 * time)))
+stopifnot(max(abs(chk_tr$total_target / chk_tr$analytic - 1)) < 0.02)
+max(chk_tr$total_target) / s0
+```
+
+Free sBCMA in a drug-free patient therefore peaks at about
+`r round(max(chk_tr$total_target) / s0, 2)` times its baseline value
+`r round(chk_tr$time[which.max(chk_tr$total_target)], 1)` days after time zero.
+This is a property of the published model, not a physiological claim, and in
+practice the first dose is given at time zero.
+
+# Virtual cohort
+
+Clements 2026 simulated from a covariate population built by multivariate
+imputation from the analysis dataset, which is not published. The cohort below
+is drawn independently for each covariate to match the Table 1 medians and
+ranges: log-normal weight, sBCMA and M-protein, normal albumin, 45.9% female
+and 10% with extramedullary disease (the prevalence is not reported).
+
+```{r cohort}
+set.seed(20261)
+n_sub <- 200
+cohort <- data.frame(
+  WT = pmin(pmax(rlnorm(n_sub, log(74.7), 0.2), 37), 142),
+  ALB = pmin(pmax(rnorm(n_sub, 38, 5), 19), 52.3),
+  SBCMA = pmin(pmax(rlnorm(n_sub, log(72.9), 1.1), 2.08), 2030),
+  SEXF = rbinom(n_sub, 1, 0.459),
+  DIS_EMD = rbinom(n_sub, 1, 0.10),
+  MCPROT = pmin(pmax(rlnorm(n_sub, log(18), 0.8), 0.7), 102)
+)
+summary(cohort)
+```
+
+# Figure 5: dose and schedule simulations
+
+Figure 5 of Clements 2026 shows median profiles over 28 days for 30, 100, 200
+and 300 mg every 2 weeks (Q2W) or every 4 weeks (Q4W). Each regimen is solved
+for the same 200 patients with the same random-effect draws (the seed is reset
+before every solve), so differences between regimens are due to dose alone.
+
+```{r fig5-sim}
+fig5_times <- sort(unique(c(seq(0, 28, by = 0.25), 1 / 24, 14 + 1 / 24)))
+regimens <- expand.grid(dose = c(30, 100, 200, 300), freq = c("Q2W", "Q4W"), stringsAsFactors = FALSE)
+fig5 <- lapply(seq_len(nrow(regimens)), function(i) {
+  r <- regimens[i, ]
+  ev <- make_events(r$dose, fig5_times, ii = if (r$freq == "Q2W") 14 else 0,
+                    addl = if (r$freq == "Q2W") 1 else 0, n = n_sub, cov = cohort)
+  rxode2::rxSetSeed(2026)
+  s <- rxode2::rxSolve(mod, ev, returnType = "data.frame")
+  s$dose <- r$dose
+  s$freq <- r$freq
+  s
+}) |> bind_rows()
+
+fig5_med <- fig5 |>
+  mutate(
+    total_ngml = ctot * mw_adc,
+    free_adc_nM = cfree,
+    pct_unbound = 100 * cfree / pmax(ctot, 1e-12),
+    free_sbcma_ngml = sbcma_free_true * 6,
+    cplx_sbcma_ngml = sbcma_cplx_true * 6,
+    mprot_ratio = mprotein / MCPROT
+  ) |>
+  group_by(dose, freq, time) |>
+  summarise(across(c(total_ngml, free_adc_nM, pct_unbound, free_sbcma_ngml, cplx_sbcma_ngml, mprotein, mprot_ratio), median),
+            .groups = "drop")
+```
+
+```{r fig5-plot, fig.width = 8, fig.height = 9}
+fig5_med |>
+  select(dose, freq, time,
+         `Total ADC (ng/mL)` = total_ngml, `Free ADC (nM)` = free_adc_nM,
+         `Percent unbound ADC (%)` = pct_unbound, `Free sBCMA (ng/mL)` = free_sbcma_ngml,
+         `Complexed sBCMA (ng/mL)` = cplx_sbcma_ngml, `M-protein (g/L)` = mprotein) |>
+  pivot_longer(-c(dose, freq, time)) |>
+  filter(value > 0) |>
+  ggplot(aes(time, value, colour = factor(dose), linetype = freq)) +
+  geom_line() +
+  scale_y_log10() +
+  facet_wrap(~name, scales = "free_y", ncol = 2) +
+  labs(x = "Time (days)", y = "Median", colour = "Dose (mg)", linetype = "Schedule",
+       caption = "Replicates Figure 5 of Clements 2026.") +
+  theme_bw()
+```
+
+```{r fig5-table}
+fig5_med |>
+  filter(time %in% c(1, 7, 14, 28)) |>
+  select(dose, freq, time, total_ngml, pct_unbound, free_sbcma_ngml, cplx_sbcma_ngml, mprot_ratio) |>
+  mutate(across(c(total_ngml, pct_unbound, free_sbcma_ngml, cplx_sbcma_ngml), ~ signif(.x, 3)),
+         mprot_ratio = round(mprot_ratio, 3)) |>
+  rename(`Dose (mg)` = dose, Schedule = freq, `Day` = time,
+         `Total ADC (ng/mL)` = total_ngml, `Unbound (%)` = pct_unbound,
+         `Free sBCMA (ng/mL)` = free_sbcma_ngml, `Complexed sBCMA (ng/mL)` = cplx_sbcma_ngml,
+         `M-protein / baseline` = mprot_ratio) |>
+  knitr::kable()
+```
+
+The simulations reproduce the dose ordering the paper reports: higher doses
+give lower free sBCMA, higher complexed sBCMA and lower M-protein after the
+first dose, and Q2W dosing lowers M-protein further than Q4W by day 28. The
+checks below hold patient by patient because each regimen reuses the same
+patients and random effects.
+
+```{r fig5-checks}
+day1 <- fig5_med |> filter(freq == "Q2W", time == 1) |> arrange(dose)
+day28_q2w <- fig5_med |> filter(freq == "Q2W", time == 28) |> arrange(dose)
+day28 <- fig5_med |> filter(time == 28) |>
+  select(dose, freq, mprot_ratio) |>
+  pivot_wider(names_from = freq, values_from = mprot_ratio)
+# Complexed sBCMA saturates above 100 mg (200 and 300 mg differ by under 1%),
+# so only the 30 mg versus 300 mg contrast is asserted for it.
+stopifnot(
+  all(diff(day1$free_sbcma_ngml) < 0),
+  day1$cplx_sbcma_ngml[day1$dose == 300] > 1.2 * day1$cplx_sbcma_ngml[day1$dose == 30],
+  all(diff(day28_q2w$mprot_ratio) < 0),
+  all(day28$Q2W <= day28$Q4W)
+)
+```
+
+The absolute levels in Figure 5 do not match the model's parameters, and the
+differences cannot be removed without changing parameter values, which this
+package does not do. Read from the published panels by eye: the free sBCMA
+baseline is about 25 ng/mL, whereas the Table 1 median sBCMA, which sets the
+model's baseline, is 72.9 ng/mL; the "Free ADC (ng/mL)" panel peaks near
+200 at 200 mg, which matches free drug in nM rather than ng/mL; and median
+M-protein falls by about 40% within a week at 200 mg, against
+`r round(100 * (1 - fig5_med$mprot_ratio[fig5_med$dose == 200 & fig5_med$freq == "Q2W" & fig5_med$time == 7]))`%
+here.
+The free-ADC panel shows that at least one Figure 5 axis label is wrong. The
+packaged parameters are the Table 2 estimates, the structure follows the
+published control stream line by line, and the simulations below are
+broadly consistent with the paper's prediction-corrected VPC (Figure 3). The
+remaining differences are therefore taken to come from the Figure 5
+simulation set-up, which the paper does not describe in enough detail to
+reproduce.
+
+# Figure 3: VPC-style simulation at the approved regimen
+
+Figure 3 of Clements 2026 is a prediction-corrected VPC across all four
+studies, whose patients mostly received 2.5 mg/kg every 3 weeks. The cohort
+below receives 2.5 mg/kg every 3 weeks for about 10 months.
+
+```{r fig3-sim}
+fig3_times <- sort(unique(c(0, 1 / 24, seq(1, 300, by = 1))))
+ev3 <- make_events(1, fig3_times, ii = 21, addl = 14, n = n_sub, cov = cohort)
+ev3$amt[ev3$evid == 1] <- 2.5 * ev3$WT[ev3$evid == 1]
+ev3$treatment <- "2.5 mg/kg Q3W"
+rxode2::rxSetSeed(2026)
+fig3 <- rxode2::rxSolve(mod, ev3, returnType = "data.frame", keep = "treatment")
+if (!"id" %in% names(fig3)) fig3$id <- 1L
+
+fig3_pct <- fig3 |>
+  select(id, time, `Total ADC (nM)` = Cc, `Free sBCMA (nM)` = sbcma_free,
+         `Complexed sBCMA (nM)` = sbcma_complex, `M-protein (g/L)` = mprotein_obs) |>
+  pivot_longer(-c(id, time)) |>
+  group_by(name, time) |>
+  summarise(p05 = quantile(value, 0.05), p50 = median(value), p95 = quantile(value, 0.95), .groups = "drop")
+```
+
+```{r fig3-plot, fig.width = 8, fig.height = 6}
+ggplot(fig3_pct, aes(time)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.2) +
+  geom_line(aes(y = p50)) +
+  scale_y_log10() +
+  facet_wrap(~name, scales = "free_y") +
+  labs(x = "Time (days)", y = "Median and 90% interval (no residual error)",
+       caption = "Compare with Figure 3 of Clements 2026 (prediction-corrected VPC).") +
+  theme_bw()
+```
+
+```{r fig3-table}
+fig3_tab <- fig3_pct |>
+  filter(time %in% c(1 / 24, 20, 100, 200, 300))
+fig3_tab |>
+  mutate(time = round(time, 2), across(c(p05, p50, p95), ~ signif(.x, 3))) |>
+  rename(Analyte = name, Day = time, `5th pct` = p05, Median = p50, `95th pct` = p95) |>
+  knitr::kable()
+med_at <- function(analyte, day) {
+  signif(fig3_tab$p50[fig3_tab$name == analyte & abs(fig3_tab$time - day) < 1e-6], 2)
+}
+```
+
+The simulated median M-protein falls from
+`r med_at("M-protein (g/L)", 20)` g/L at day 20 to
+`r med_at("M-protein (g/L)", 100)` g/L at day 100 and
+`r med_at("M-protein (g/L)", 300)` g/L at day 300. Figure 3D, read by eye,
+shows medians of about 10-12 g/L at day 100 and about 5 g/L at day 300. The
+paper's VPC follows each patient's actual dosing and, in its later bins, only
+the patients still on study, who are enriched for responders, while this
+simulation keeps every patient on uninterrupted treatment; a slower fall in
+the median here is the expected direction. The median total ADC at the end of
+the first infusion is `r med_at("Total ADC (nM)", 1 / 24)` nM, against
+roughly 10^2.5 nM for the first peak in Figure 3C. Troughs are not compared:
+in a prediction-corrected VPC the trough bins mix samples taken at different
+times after the dose. The comparison is visual.
+
+# Figure 4: M-protein reduction at nadir
+
+Figure 4 compares the proportions of patients reaching each maximum M-protein
+reduction with the model predictions for each study. Its predictions use each
+study's actual dosing and follow-up, which are not published; the table below
+uses six months (nine cycles) of 2.5 mg/kg every 3 weeks.
+
+```{r fig4}
+nadir <- fig3 |>
+  filter(time <= 182) |>
+  group_by(id) |>
+  summarise(red = 1 - min(mprotein) / first(MCPROT)) |>
+  mutate(category = cut(red, c(-Inf, 0.25, 0.5, 0.9, Inf), right = FALSE,
+                        labels = c(">=0-<25% (or increase)", ">=25-<50%", ">=50-<90%", ">=90%")))
+nadir_tab <- as.data.frame(table(nadir$category))
+names(nadir_tab) <- c("category", "n")
+nadir_tab |>
+  mutate(
+    simulated = round(100 * n / sum(n), 1),
+    paper_dreamm2 = c(44, 24, 23, 9),
+    paper_dreamm3 = c(41, 24, 23, 12)
+  ) |>
+  select(-n) |>
+  rename(`Maximum decrease` = category, `Simulated (%)` = simulated,
+         `DREAMM-2 model median (%)` = paper_dreamm2, `DREAMM-3 model median (%)` = paper_dreamm3) |>
+  knitr::kable()
+```
+
+The paper's predicted percentages were read from Figure 4 by eye. Like the
+paper, the simulation puts the largest share of patients below a 25%
+reduction, but it predicts more patients with a reduction of 90% or more and
+fewer between 25% and 50% than the paper's per-study predictions. The paper's
+predictions use the doses each patient actually received; dose delays and
+reductions were frequent with belantamab mafodotin, and patients stopped
+treatment at progression, whereas this simulation gives every patient nine
+uninterrupted full doses. With the large between-subject variability on the
+M-protein growth rate (CV 314%) and kill rate (CV 134%), uninterrupted dosing
+lets the most sensitive patients reach very deep reductions. The comparison is
+indicative only.
+
+# PKNCA: total belantamab mafodotin
+
+The paper reports no NCA. Two PKNCA analyses check the total-drug PK.
+
+**First-dose exposure at 2.5 mg/kg every 3 weeks** in the virtual cohort:
+
+```{r pknca-cohort}
+conc_first <- fig3 |>
+  filter(time <= 21) |>
+  transmute(id, time, Cc = ctot, treatment) |>
+  filter(!is.na(Cc))
+dose_first <- ev3 |>
+  filter(evid == 1, time == 0) |>
+  transmute(id, time, amt, treatment = "2.5 mg/kg Q3W")
+o_conc <- PKNCAconc(conc_first, Cc ~ time | treatment + id)
+o_dose <- PKNCAdose(dose_first, amt ~ time | treatment + id)
+o_data <- PKNCAdata(o_conc, o_dose,
+                    intervals = data.frame(start = 0, end = 21, cmax = TRUE, tmax = TRUE, auclast = TRUE))
+o_nca <- pk.nca(o_data)
+summary(o_nca)
+```
+
+**Single doses in the typical patient.** Total drug is linear, so
+$AUC_{0-\infty}$ must equal dose / CL (converted to nM*day) at every dose,
+and the terminal half-life must equal $\ln 2 / \lambda_2$ of the
+two-compartment model.
+
+```{r pknca-typical}
+doses_sd <- c(30, 100, 200, 300)
+sd_times <- sort(unique(c(0, inf_dur, seq(0.25, 2, by = 0.25), seq(3, 400, by = 1))))
+sim_sd <- lapply(doses_sd, function(d) {
+  s <- rxode2::rxSolve(mod_typ, make_events(d, sd_times), returnType = "data.frame",
+                       atol = 1e-12, rtol = 1e-10)
+  if (!"id" %in% names(s)) s$id <- 1L
+  s$dose <- d
+  s
+}) |> bind_rows()
+
+conc_sd <- sim_sd |>
+  transmute(id = 1L, time, Cc = ctot, treatment = paste(dose, "mg")) |>
+  filter(!is.na(Cc))
+dose_sd <- data.frame(id = 1L, time = 0, amt = doses_sd, treatment = paste(doses_sd, "mg"))
+sd_nca <- pk.nca(PKNCAdata(
+  PKNCAconc(conc_sd, Cc ~ time | treatment + id),
+  PKNCAdose(dose_sd, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE, half.life = TRUE)
+))
+sd_res <- as.data.frame(sd_nca) |>
+  filter(PPTESTCD %in% c("cmax", "aucinf.obs", "half.life")) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  mutate(dose = as.numeric(sub(" mg", "", treatment)),
+         auc_expected = dose / 0.7 * 1000 / mw_adc)
+
+k10 <- 0.7 / 4.81; k12 <- 0.771 / 4.81; k21 <- 0.771 / 12.7
+s_sum <- k10 + k12 + k21
+lambda2 <- (s_sum - sqrt(s_sum^2 - 4 * k10 * k21)) / 2
+sd_res |>
+  mutate(t_half_expected = log(2) / lambda2) |>
+  select(Dose = treatment, `Cmax (nM)` = cmax, `AUC0-inf (nM*day)` = aucinf.obs,
+         `Dose/CL (nM*day)` = auc_expected, `t1/2 (day)` = half.life,
+         `ln2/lambda2 (day)` = t_half_expected) |>
+  knitr::kable(digits = 2)
+stopifnot(
+  max(abs(sd_res$aucinf.obs / sd_res$auc_expected - 1)) < 0.01,
+  max(abs(sd_res$half.life / (log(2) / lambda2) - 1)) < 0.01
+)
+```
+
+# Assumptions and deviations
+
+* **Dose units.** The control stream defines `MWADC = 152.1` and mixes the
+  central drug concentration with sBCMA (nM) and KD (nM) in one expression,
+  and Figure 3C reports total ADC in nM, so the fitted dataset carried the
+  dose in nmol. The packaged model takes the dose in mg and converts with the
+  same molecular weight.
+* **Reservoir initial condition.** The reservoir starts at baseline sBCMA, as
+  the Methods and the control stream state, rather than at its steady state;
+  see the drug-free transient check above.
+* **Fixed random effects.** The control stream carries random effects on QA,
+  KDEG, KD and KDIFF with variances fixed to 0.0225. Table 2 lists only the
+  estimated variances; the fixed ones are included here as `fixed(0.0225)`.
+  Use `rxode2::zeroRe()` for typical-value simulation.
+* **Control-stream values.** The `$THETA` values in the published control
+  stream are initial estimates (for example VP 29.1 L, the value before the
+  final model change); every packaged estimate comes from Table 2. The
+  beta-2-microglobulin effect on CL is fixed to zero in the control stream and
+  is left out.
+* **KD units.** Table 2 gives KD in "nM/L" and the control-stream comment says
+  "uM"; nM is the unit consistent with the dataset and the sBCMA conversion.
+* **Text versus Table 2.** The Results text gives RSEs of 46.6% (sBCMA on
+  CLADC) and 37.8% (sex on CLADC) and BSV RSEs of at least 55.9%, which differ
+  from Table 2 (13.5%, 32.1%, 38.1% and 7.82%). Only the point estimates are
+  used here, and those are the Table 2 values.
+* **Figure 5.** The published medians are not reproduced quantitatively (see
+  the Figure 5 section); the dose ordering is.
+* **Figures 3 and 4.** These depend on each patient's actual dosing and
+  follow-up, which are not published. The simulations here use uninterrupted
+  2.5 mg/kg every 3 weeks, so the comparisons are visual only.
+* **Virtual cohort.** Covariates are sampled independently from distributions
+  matched to the Table 1 medians and ranges; the prevalence of extramedullary
+  disease (10%) is assumed.
+* **Erratum search.** No erratum or correction was found for Clements 2026 as
+  of 2026-11-18.

@@ -1,0 +1,483 @@
+---
+title: "Voriconazole during ECMO (Yusuff 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Voriconazole during ECMO (Yusuff 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+suppressPackageStartupMessages({
+  library(nlmixr2lib)
+  library(PKNCA)
+  library(rxode2)
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+})
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Yusuff_2026_voriconazole"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("Yusuff_2026_voriconazole"))$description`
+* Article (open access): <https://doi.org/10.1128/aac.00098-26>
+
+Yusuff 2026 describes intravenous voriconazole in adults on extracorporeal
+membrane oxygenation (ECMO) with a one-compartment model whose total clearance
+changes with time since the first dose. Two parallel pathways add up:
+
+* an **intrinsic clearance** that rises logistically from an early level
+  `CL1` = 6.22 L/h to a late level `CL2` = 22.26 L/h, with midpoint
+  `Tswitch` = 88 h and a slope fixed at 0.1 1/h (equation 1), and
+* an **apparent sequestration clearance** into the ECMO circuit that starts at
+  `CLseq0` = 17.68 L/h and decays with a half-life of 4.17 h (equation 2).
+
+CYP2C19 intermediate and poor metabolizers (IM/PM) have a 36% lower late
+clearance (`exp(-0.44)` = 0.644). The volume (144.79 L) scales linearly with
+body weight relative to 70 kg, as written in the authors' Monolix code in the
+supplement.
+
+# Population
+
+Thirty-one adults on ECMO at University Hospitals Leicester (UK) contributed
+131 plasma samples between August 2021 and May 2025 (Yusuff 2026 Results,
+Table 1). Mean age was 39.9 years (range 19-58), mean weight 86.8 kg (range
+49-134), and 54.8% were female. Most patients were on venovenous ECMO
+(93.5%), mainly for influenza (64.5%) or COVID-19 (19.4%) pneumonitis.
+Corticosteroids were given to 87.2% and a proton pump inhibitor to all
+patients. CYP2C19 phenotypes were 12 normal, 12 intermediate, 5 rapid, 1 poor
+and 1 ultrarapid metabolizer, so 13 of 31 (42%) were in the IM/PM group that
+carries the genotype effect.
+
+The same information is available programmatically via
+`readModelDb("Yusuff_2026_voriconazole")$population`.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| One-compartment structure, `pkmodel(V, Cl)` | -- | Supplement, Monolix model code |
+| Intrinsic clearance, logistic in time | `CL1 + (CL2 - CL1) / (1 + exp(-k (t - Tswitch)))` | Equation 1; supplement code |
+| Logistic slope `k` | 0.1 1/h (fixed) | Results text below equation 3; supplement code |
+| Sequestration clearance | `CLseq0 * exp(-ln(2) / T1/2,seq * t)` | Equation 2; supplement code |
+| Total clearance | `CLintr + CLseq` | Equation 3; supplement code |
+| Weight scaling of V | `V * (WT / 70)` | Supplement code only |
+| `lvc` | V = 144.79 L | Table 2 |
+| `lcl` | CL1 = 6.22 L/h | Table 2 |
+| `lcl_late` | CL2 = 22.26 L/h | Table 2 |
+| `lcl_t50` | Tswitch = 87.96 h | Table 2 |
+| `lcl_exp_component` | CLseq0 = 17.68 L/h | Table 2 |
+| `lcl_exp_kdes` | log(2) / 4.17 h | Table 2 (T1/2,seq = 4.17 h) |
+| `e_cyp2c19impm_cl_late` | -0.44 (log scale) | Table 2; Results text ('36% lower CL2') |
+| `etalvc` | 27.6% CV | Table 2 |
+| `etalcl` | 77.0% CV | Table 2 |
+| `etalcl_late` | 86.7% CV | Table 2 |
+| `etalcl_t50` | 81.9% CV | Table 2 |
+| `addSd` | 0.091 mg/L | Table 2 |
+| `propSd` | 0.12 | Table 2 |
+
+IIV variances are `log(1 + CV^2)`, inverting the Table 2 footnote
+`CV = sqrt(exp(omega^2) - 1)`.
+
+```{r model}
+mod <- rxode2::rxode2(readModelDb("Yusuff_2026_voriconazole"))
+eta_names <- c("etalvc", "etalcl", "etalcl_late", "etalcl_t50")
+
+# Solve with the random effects supplied in `params`. rxode2 then draws no
+# etas and warns that the simulation runs "without 'omega'"; that warning is
+# expected here and is the only one muffled.
+solve_fixed_eta <- function(...) {
+  withCallingHandlers(
+    rxSolve(...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+```
+
+# Clearance over time
+
+The typical-value clearance trajectory reproduces the Results text: at the
+first dose the sequestration pathway roughly quadruples the early intrinsic
+clearance, it is gone within a day, and the intrinsic clearance then rises to
+22.3 L/h in normal metabolizers (14.3 L/h in IM/PM) over 3-5 days.
+
+```{r cl-trajectory}
+grid <- c(0, seq(0.5, 240, by = 0.5))
+cl_events <- bind_rows(
+  tibble(id = 1L, CYP2C19_IM = 0L),
+  tibble(id = 2L, CYP2C19_IM = 1L)
+) |>
+  tidyr::crossing(time = grid) |>
+  mutate(evid = 0L, amt = 0, cmt = "central", WT = 70, CYP2C19_PM = 0L) |>
+  arrange(id, time)
+# Typical values: every eta set to zero for both subjects.
+eta_zero <- data.frame(id = 1:2, matrix(0, 2, 4, dimnames = list(NULL, eta_names)))
+cl_sim <- as.data.frame(solve_fixed_eta(mod, cl_events, params = eta_zero, keep = "CYP2C19_IM")) |>
+  mutate(genotype = ifelse(CYP2C19_IM == 1, "IM/PM", "NM/RM/UM"))
+
+# Same-parameter closed form: the model's cl must equal equations 1-3 exactly.
+cl_formula <- function(t, impm) {
+  cl2 <- 22.26 * exp(-0.44 * impm)
+  6.22 + (cl2 - 6.22) / (1 + exp(-0.1 * (t - 87.96))) +
+    17.68 * exp(-log(2) / 4.17 * t)
+}
+stopifnot(
+  max(abs(cl_sim$cl - cl_formula(cl_sim$time, cl_sim$CYP2C19_IM))) < 1e-8
+)
+
+cl_sim |>
+  filter(time %in% c(0, 12, 24, 48, 88, 168, 240)) |>
+  select(genotype, time, cl_intr, cl_seq, cl) |>
+  dplyr::rename(
+    "Genotype" = genotype, "Time (h)" = time, "CL intrinsic (L/h)" = cl_intr,
+    "CL sequestration (L/h)" = cl_seq, "CL total (L/h)" = cl
+  ) |>
+  knitr::kable(digits = 2, caption = "Typical-value clearance components over time (WT = 70 kg).")
+```
+
+```{r cl-plot, fig.cap = "Typical-value total clearance over time by CYP2C19 group (equations 1-3 of Yusuff 2026)."}
+ggplot(cl_sim, aes(time, cl, colour = genotype)) +
+  geom_line(linewidth = 1) +
+  scale_x_continuous(breaks = seq(0, 240, 24)) +
+  labs(x = "Time since first dose (h)", y = "Total clearance (L/h)", colour = NULL) +
+  theme_bw()
+```
+
+# Virtual cohort
+
+Doses are weight-based, so the cohort needs a weight distribution. Yusuff 2026
+reports mean 86.8 kg and range 49-134 kg but no SD; weights are drawn from a
+normal distribution with mean 86.8 kg and SD 20 kg truncated to the observed
+range. Because both the dose and the volume scale with weight, concentrations
+are only weakly sensitive to this choice (clearance is not weight-scaled).
+
+```{r cohort}
+# rxSetSeed() seeds rxode2's own draws (IIV); set.seed() seeds the R draws
+# of weight and genotype below.
+rxode2::rxSetSeed(20261113)
+set.seed(20261113)
+n_per_group <- 200
+draw_wt <- function(n) {
+  w <- rnorm(4 * n, 86.8, 20)
+  w <- w[w >= 49 & w <= 134]
+  w[seq_len(n)]
+}
+
+# Interindividual random effects drawn once per virtual patient, so that the
+# same patients can be given every regimen (the omega matrix is diagonal).
+omega_sd <- sqrt(diag(mod$omega))[eta_names]
+draw_eta <- function(ids) {
+  eta <- vapply(omega_sd, function(sd) rnorm(length(ids), 0, sd), numeric(length(ids)))
+  data.frame(id = ids, eta)
+}
+
+# Doses (mg/kg) at 0, 12, 24, ... h; the regimen switches at dose 11 (120 h)
+# for regimens 2 and 3 (two loading doses + eight maintenance doses).
+regimen_mgkg <- function(regimen, n_doses = 21) {
+  dose_no <- seq_len(n_doses)
+  switch(regimen,
+    "Regimen 1" = ifelse(dose_no <= 2, 6, 4),
+    "Regimen 2" = ifelse(dose_no <= 2, 6, ifelse(dose_no <= 10, 4, 6)),
+    "Regimen 3" = ifelse(dose_no <= 2, 8, ifelse(dose_no <= 10, 6, 8))
+  )
+}
+
+make_events <- function(subjects, regimen, obs_times) {
+  mgkg <- regimen_mgkg(regimen)
+  dose_times <- (seq_along(mgkg) - 1) * 12
+  doses <- subjects |>
+    tidyr::crossing(dose_no = seq_along(mgkg)) |>
+    mutate(
+      time = dose_times[dose_no], amt = mgkg[dose_no] * WT,
+      rate = amt / 2, evid = 1L, cmt = "central"
+    ) |>
+    select(-dose_no)
+  obs <- subjects |>
+    tidyr::crossing(time = obs_times) |>
+    mutate(amt = 0, rate = 0, evid = 0L, cmt = "central")
+  bind_rows(doses, obs) |>
+    mutate(regimen = regimen) |>
+    arrange(id, time, desc(evid))
+}
+```
+
+Infusions run over 2 h, the upper end of the 1.5-2 h used in the study.
+
+# Replication of Figure 2
+
+Figure 2 of Yusuff 2026 shows the median and 90% prediction interval of
+concentrations under standard dosing (6 mg/kg q12h x 2, then 4 mg/kg q12h),
+split into normal/rapid/ultrarapid ("wild-type") and IM/PM patients.
+
+```{r fig2-sim}
+subjects_fig2 <- tibble(
+  id = seq_len(2 * n_per_group),
+  WT = draw_wt(2 * n_per_group),
+  CYP2C19_IM = rep(c(0L, 1L), each = n_per_group),
+  CYP2C19_PM = 0L
+)
+ev_fig2 <- make_events(subjects_fig2, "Regimen 1", seq(0, 240, by = 0.5))
+sim_fig2 <- as.data.frame(rxSolve(mod, ev_fig2, keep = c("CYP2C19_IM", "WT"))) |>
+  mutate(genotype = ifelse(CYP2C19_IM == 1, "IM/PM", "Wild-type (NM/RM/UM)"))
+```
+
+```{r fig2-plot, fig.cap = "Replicates Figure 2 of Yusuff 2026: median and 90% prediction interval of voriconazole concentrations under standard dosing, by CYP2C19 group (200 virtual patients per group). Dashed lines mark the 2-5.5 mg/L therapeutic range."}
+fig2_summ <- sim_fig2 |>
+  group_by(genotype, time) |>
+  summarise(
+    p05 = quantile(Cc, 0.05), p50 = median(Cc), p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+ggplot(fig2_summ, aes(time, p50, colour = genotype, fill = genotype)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25, colour = NA) +
+  geom_line(linewidth = 1) +
+  geom_hline(yintercept = c(2, 5.5), linetype = "dashed", colour = "red") +
+  scale_x_continuous(breaks = seq(0, 240, 24)) +
+  labs(x = "Time (hours)", y = "Voriconazole concentration (mg/L)", colour = NULL, fill = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+The simulated medians follow the published ones: a first peak near 2.5 mg/L,
+the highest troughs around 36-48 h, then a decline as intrinsic clearance
+rises, with the wild-type median trough falling below 2 mg/L by about day 4
+while the IM/PM median stays higher. Read off the published figure, the late
+IM/PM median trough is about 1.1-1.5 mg/L, somewhat below the simulated
+value (about 1.9 mg/L); the wild-type median and both 90% intervals agree
+closely.
+
+# Replication of Figure 3 (probability of target attainment)
+
+Figure 3 of Yusuff 2026 classifies simulated concentrations at 48, 168 and
+240 h as sub-therapeutic (< 2 mg/L), on-target (2-5.5 mg/L) or
+supra-therapeutic (> 5.5 mg/L) for three regimens. The virtual patients here
+mix the genotype groups in the study proportion (13 of 31 IM/PM), and the
+same 200 patients (same weights, genotypes and random effects) receive each
+regimen, so regimens 1 and 2 are identical until the switch at 120 h. The
+classification uses the individual predictions `Cc`, without residual error.
+
+```{r fig3-sim}
+subjects_pta <- tibble(
+  id = seq_len(n_per_group),
+  WT = draw_wt(n_per_group),
+  CYP2C19_IM = as.integer(runif(n_per_group) < 13 / 31),
+  CYP2C19_PM = 0L
+)
+eta_pta <- draw_eta(subjects_pta$id)
+pta_times <- c(48, 168, 240)
+sim_pta <- lapply(c("Regimen 1", "Regimen 2", "Regimen 3"), function(r) {
+  ev <- make_events(subjects_pta, r, pta_times)
+  as.data.frame(solve_fixed_eta(mod, ev, params = eta_pta, keep = "regimen"))
+}) |>
+  bind_rows()
+
+pta <- sim_pta |>
+  mutate(category = cut(Cc, c(-Inf, 2, 5.5, Inf),
+    labels = c("Sub-therapeutic", "On-target", "Supra-therapeutic"),
+    right = FALSE
+  )) |>
+  count(regimen, time, category, .drop = FALSE) |>
+  group_by(regimen, time) |>
+  mutate(pct = 100 * n / sum(n)) |>
+  ungroup()
+
+published_pta <- tribble(
+  ~regimen, ~time, ~category, ~published,
+  "Regimen 1", 48, "Sub-therapeutic", 43.9,
+  "Regimen 1", 48, "On-target", 47.6,
+  "Regimen 1", 48, "Supra-therapeutic", 8.5,
+  "Regimen 1", 168, "Sub-therapeutic", 75.8,
+  "Regimen 1", 168, "On-target", 19.0,
+  "Regimen 1", 168, "Supra-therapeutic", 5.2,
+  "Regimen 1", 240, "Sub-therapeutic", 82.9,
+  "Regimen 1", 240, "On-target", 13.7,
+  "Regimen 1", 240, "Supra-therapeutic", 100 - 82.9 - 13.7,
+  "Regimen 2", 48, "Sub-therapeutic", 43.9,
+  "Regimen 2", 48, "On-target", 47.6,
+  "Regimen 2", 48, "Supra-therapeutic", 8.5,
+  "Regimen 2", 168, "Sub-therapeutic", 64.1,
+  "Regimen 2", 168, "On-target", 26.3,
+  "Regimen 2", 168, "Supra-therapeutic", 9.6,
+  "Regimen 2", 240, "Sub-therapeutic", 71.0,
+  "Regimen 2", 240, "On-target", 22.0,
+  "Regimen 2", 240, "Supra-therapeutic", 7.0,
+  "Regimen 3", 48, "Sub-therapeutic", 30.0,
+  "Regimen 3", 48, "On-target", 48.4,
+  "Regimen 3", 48, "Supra-therapeutic", 21.6,
+  "Regimen 3", 168, "Sub-therapeutic", 57.1,
+  "Regimen 3", 168, "On-target", 27.7,
+  "Regimen 3", 168, "Supra-therapeutic", 15.2,
+  "Regimen 3", 240, "Sub-therapeutic", 63.9,
+  "Regimen 3", 240, "On-target", 24.7,
+  "Regimen 3", 240, "Supra-therapeutic", 11.4
+)
+
+pta_cmp <- pta |>
+  mutate(category = as.character(category)) |>
+  inner_join(published_pta, by = c("regimen", "time", "category")) |>
+  mutate(diff = pct - published)
+stopifnot(nrow(pta_cmp) == 27L)
+
+pta_cmp |>
+  select(regimen, time, category, pct, published, diff) |>
+  dplyr::rename(
+    "Regimen" = regimen, "Time (h)" = time, "Category" = category,
+    "Simulated (%)" = pct, "Yusuff 2026 Fig. 3 (%)" = published,
+    "Difference (points)" = diff
+  ) |>
+  knitr::kable(digits = 1, caption = "Target attainment: simulation (200 virtual patients per regimen) vs Figure 3 of Yusuff 2026 (1,000 virtual patients). The 240 h supra-therapeutic value for regimen 1 is unlabelled in the figure and is taken as the remainder.")
+```
+
+The simulation puts about 10 percentage points fewer patients in
+the sub-therapeutic band than Figure 3 does, in every regimen and at every
+time, while the ordering across times and regimens is the same. Classifying
+the simulated observations with residual error instead of `Cc` does not close
+the gap. Possible causes are the weight distribution, the genotype mix and the
+infusion duration used in the published simulations, none of which is
+reported; no parameter has been adjusted to close it.
+
+```{r fig3-plot, fig.cap = "Replicates Figure 3 of Yusuff 2026: proportion of virtual patients below, within and above the 2-5.5 mg/L range at 48, 168 and 240 h."}
+ggplot(pta, aes(factor(time), pct, fill = category)) +
+  geom_col() +
+  facet_wrap(~regimen) +
+  scale_fill_manual(values = c("Sub-therapeutic" = "#3B75AF", "On-target" = "#519E3E", "Supra-therapeutic" = "#C53A32")) +
+  labs(x = "Timepoint (h)", y = "Proportion of patients (%)", fill = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r fig3-check}
+# Same patients, same doses until 120 h: regimens 1 and 2 must give identical
+# concentrations at 48 h (residual error excluded).
+c48 <- function(r) sim_pta$Cc[sim_pta$regimen == r & sim_pta$time == 48]
+stopifnot(isTRUE(all.equal(c48("Regimen 1"), c48("Regimen 2"))))
+
+# Centre-of-distribution checks. The simulation sits about 10 points from
+# Figure 3 in the sub-therapeutic band (see text); a mis-transcribed clearance
+# or volume moves these proportions by far more than that.
+stopifnot(
+  median(abs(pta_cmp$diff)) < 15,
+  # The paper's headline: attainment worsens from 48 h to 240 h under
+  # standard dosing, and the escalated regimens lessen but do not prevent it.
+  with(pta_cmp, pct[regimen == "Regimen 1" & time == 240 & category == "Sub-therapeutic"] >
+    pct[regimen == "Regimen 1" & time == 48 & category == "Sub-therapeutic"] + 20)
+)
+```
+
+# PKNCA validation
+
+Yusuff 2026 reports no non-compartmental parameters, so there is no published
+NCA table to compare against. The NCA below summarises exposure in the first
+dosing interval (0-12 h) and in a late interval (216-228 h) for the standard
+regimen, by CYP2C19 group. By 216 h the intrinsic clearance has
+reached its late level, so the ratio of the IM/PM to the wild-type median AUC
+over that interval should be close to `1 / exp(-0.44)` = 1.55, the inverse of
+the genotype effect on the late clearance.
+
+```{r pknca}
+conc_df <- sim_fig2 |>
+  select(id, time, Cc, genotype) |>
+  filter(!is.na(Cc))
+dose_df <- ev_fig2 |>
+  filter(evid == 1) |>
+  left_join(distinct(sim_fig2, id, genotype), by = "id") |>
+  select(id, time, amt, genotype)
+
+conc_obj <- PKNCAconc(conc_df, Cc ~ time | genotype + id)
+dose_obj <- PKNCAdose(dose_df, amt ~ time | genotype + id)
+intervals <- data.frame(
+  start = c(0, 216), end = c(12, 228),
+  cmax = TRUE, cmin = TRUE, auclast = TRUE
+)
+nca_res <- pk.nca(PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_summ <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "cmin", "auclast")) |>
+  group_by(genotype, start, end, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+
+# Late-phase exposure is higher in IM/PM, whose late clearance is 36% lower.
+# Medians of 200 subjects per group; the ratio moves by far more than this
+# window if the genotype effect is dropped or its sign is flipped.
+late_auc_ratio <-
+  nca_summ$auclast[nca_summ$start == 216 & nca_summ$genotype == "IM/PM"] /
+    nca_summ$auclast[nca_summ$start == 216 & nca_summ$genotype == "Wild-type (NM/RM/UM)"]
+stopifnot(late_auc_ratio > 1.2, late_auc_ratio < 2.2)
+late_auc_ratio
+
+nca_summ |>
+  mutate(interval = paste0(start, "-", end, " h")) |>
+  select(genotype, interval, cmax, cmin, auclast) |>
+  dplyr::rename(
+    "CYP2C19 group" = genotype, "Interval" = interval, "Cmax (mg/L)" = cmax,
+    "Cmin (mg/L)" = cmin, "AUC0-12 (mg*h/L)" = auclast
+  ) |>
+  knitr::kable(digits = 2, caption = "Median NCA by CYP2C19 group, standard dosing (6 mg/kg q12h x 2 then 4 mg/kg q12h).")
+```
+
+The first interval follows a 6 mg/kg dose and the late interval a 4 mg/kg
+dose. In the wild-type group the late AUC is about the same as the first-dose
+AUC despite the smaller dose and the accumulation of nine earlier doses, which
+reflects the roughly fourfold rise in intrinsic clearance.
+
+# Simulated troughs vs the observed troughs
+
+The observed trough means in Yusuff 2026 Results were 3.1 mg/L (days 1-5),
+2.5 mg/L (days 6-10) and 2.1 mg/L (days 11-14). These come from patients with
+individualised doses and sampling and are a plausibility check only.
+
+```{r troughs}
+trough_df <- sim_fig2 |>
+  filter(time %in% seq(12, 240, by = 12)) |>
+  mutate(window = cut(time, c(0, 120, 240), labels = c("Days 1-5", "Days 6-10"))) |>
+  group_by(window) |>
+  summarise(sim_mean = mean(sim), sim_median = median(sim), .groups = "drop") |>
+  mutate(observed_mean = c(3.1, 2.5))
+
+trough_df |>
+  dplyr::rename(
+    "Window" = window, "Simulated mean trough (mg/L)" = sim_mean,
+    "Simulated median trough (mg/L)" = sim_median,
+    "Observed mean trough (mg/L)" = observed_mean
+  ) |>
+  knitr::kable(digits = 2, caption = "Simulated troughs (standard dosing, both genotype groups pooled 1:1) vs observed trough means.")
+```
+
+# Assumptions and deviations
+
+* **Weight scaling of V.** The main text and Table 2 do not mention body
+  weight, but the authors' Monolix code in the supplement scales the volume as
+  `V * (WT/70)`. The packaged model follows the code, so Table 2's V of
+  144.79 L applies to a 70 kg patient.
+* **Time origin.** `t` in equations 1-2 is time since the first voriconazole
+  dose. Most patients (25/31) started voriconazole within 24 h of ECMO
+  cannulation; the model has no separate ECMO-start time.
+* **Logistic slope.** `k` = 0.1 1/h is a fixed constant written as a literal
+  in the authors' code; it appears as the literal `0.1` in `model()` rather
+  than as an `ini()` parameter.
+* **Genotype covariate.** The single IM/PM effect is coded as
+  `CYP2C19_IM + CYP2C19_PM` (mutually exclusive indicators). The reference
+  group pools normal, rapid and ultrarapid metabolizers, matching the
+  "wild-type" group of Figures 2 and S5. The paper classes `*2/*17` as IM.
+* **Residual error.** Table 2 reports an additive SD and a proportional
+  coefficient without naming the Monolix error model; the default Monolix
+  `combined1` form (`a + b*f`) is used.
+* **Dosing in simulations.** Infusions last 2 h (the study used 1.5-2 h).
+  Doses use total body weight; the study used adjusted body weight for obese
+  patients, but height is not reported, so this adjustment is not reproduced.
+* **Weight distribution.** No SD is reported; a normal distribution with SD
+  20 kg truncated to 49-134 kg is assumed.
+* **Cohort size.** 200 virtual patients per group or regimen, compared with
+  1,000 in the paper.
+* **Target attainment.** The simulated sub-therapeutic fractions run about
+  10 percentage points below Figure 3 throughout (see above); the cause is not
+  identifiable from the published information.
+* **Errata.** No erratum or correction was found in Europe PMC for this article (checked 2026-11-13).

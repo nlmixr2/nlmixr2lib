@@ -1,0 +1,479 @@
+---
+title: "Alverine and metabolites in mice (Cho 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Alverine and metabolites in mice (Cho 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Cho_2026_alverine_mouse"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Cho_2026_alverine_mouse"))$description`
+* Article: <https://doi.org/10.1002/psp4.70342> (open access; Supporting
+  Information File S1 holds the authors' Monolix `mlxtran` code for the final
+  model, Table S1 the parameter definitions)
+
+Alverine is an antispasmodic that is extensively metabolised. Cho 2026 fitted
+one model jointly to plasma alverine and three metabolites -- 4-hydroxy
+alverine (M1), its glucuronide (M2) and N-desethyl alverine (M3) -- after an
+intravenous (IV) or oral (PO) dose to mice. The defining feature is that an
+oral dose does not only reach the parent: a fixed fraction (`fp` = 0.04, the
+NCA bioavailability) enters the parent central compartment, and the rest
+enters M1 (`fm1` = 0.92) and M3 (`fm3` = 0.0399) through separate first-order
+"apparent presystemic" pathways. That structure (Step 3 of the paper's model
+development, Table 2) lowered the OFV by 138 points relative to a model in
+which metabolites form only from systemic parent.
+
+# Population
+
+Ten male ICR mice, 8-9 weeks old and 35-42 g, fasted for 8 hours before
+dosing. Five received 5 mg/kg alverine citrate as an IV tail-vein bolus
+(10.56 umol/kg) and five received 75 mg/kg by oral gavage (158.37 umol/kg).
+Serial plasma samples were taken at 0.083 (IV) or 0.25 (PO), 0.5, 1, 2, 4, 6,
+8, 12 and 24 h and assayed by LC-MS/MS; concentrations below the lower limit
+of quantification were excluded (Methods, In Vivo Pharmacokinetic Study Design
+and LC-MS/MS Analysis). The same information is available programmatically via
+`readModelDb("Cho_2026_alverine_mouse")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. The
+table collects them, together with the equations of the `model()` block.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL) | 0.512 L/h | Table 3, section 1 |
+| `lvc` (Vp1) | 0.443 L | Table 3, section 1 |
+| `lvp` (Vp2) | 0.29 L | Table 3, section 1 |
+| `lq` (Q) | 0.372 L/h | Table 3, section 1 |
+| `lkel_other` (kp) | 0.0249 1/h | Table 3, section 2 |
+| `lkmet_m1` (km1) | 0.582 1/h | Table 3, section 2 |
+| `lka` (ka) | 6.9 1/h, fixed | Table 3, section 3; Methods, Parameter Estimation |
+| `lka_m1` (ka,m1) | 2.183 1/h | Table 3, section 3 |
+| `lka_m3` (ka,m3) | 823.25 1/h | Table 3, section 3 |
+| `lfdepot` (fp) | 0.04, fixed | Table 3, section 3; Methods, Parameter Estimation |
+| `lfdepot_m3` (fm3) | 0.0399 | Table 3, section 3 |
+| `lvc_m1` (Vm1) | 47.905 L | Table 3, section 4 |
+| `lkel_m1` (km1e) | 1.79e-8 1/h | Table 3, section 4 |
+| `lkmet_m2` (km2) | 1.064 1/h | Table 3, section 4 (km1,total 1.064 minus km1e) |
+| `lvc_m2` (Vm2) | 8.1e-5 L | Table 3, section 5 |
+| `lkel_m2` (km2,total) | 1874.08 1/h | Table 3, section 5 |
+| `lvc_m3` (Vm3) | 2.287 L | Table 3, section 6 |
+| `lkel_m3` (km3,total) | 1.683 1/h | Table 3, section 6 |
+| `propSd`, `addSd`, `propSd_m1`, `propSd_m2`, `propSd_m3` | 0, fixed | Methods, Parameter Estimation (forms only; no values reported) |
+| `kel = cl / vc` (kp,total) | 1.156 1/h | Equation 3; File S1 `k_p_total = CL / Vp1` |
+| `kmet_m3 = kel - kel_other - kmet_m1` | 0.549 1/h | Equation 4.2; File S1 `k_m3 = k_p_total - k_p - k_m1` |
+| `fdepot_m1 = 1 - fdepot - fdepot_m3` | 0.9201 | Equation 1; File S1 `f_m1 = (1 - f_p) - f_m3` |
+| `k12 = q / vc`, `k21 = q / vp` | -- | Equation 2 |
+| `d/dt(depot)`, `d/dt(central)`, `d/dt(peripheral1)` | -- | Equations 6-8 |
+| `d/dt(depot_m1)`, `d/dt(central_m1)`, `d/dt(central_m2)` | -- | Equations 9-11 |
+| `d/dt(depot_m3)`, `d/dt(central_m3)` | -- | Equations 12-13 |
+| `Cc`, `Cc_m1`, `Cc_m2`, `Cc_m3` | -- | Equation 14 |
+
+# Dose and concentration basis
+
+The model works in umol of alverine for doses and umol/L for every analyte
+(Methods, Data Preparation). The dose in the fitted dataset is the amount
+**per animal**: with the per-kilogram dose the predicted initial IV parent
+concentration would be 10.56 / 0.443 = 24 umol/L, against an observed
+0.9 umol/L at 5 minutes (Figure 2a), whereas the per-animal amount for a
+38.5 g mouse (the midpoint of the 35-42 g range; individual weights are not
+reported) gives 0.92 umol/L. All simulations below therefore dose
+`umol/kg x body weight`.
+
+Table 1 (NCA) is on a different molar basis from Figure 2 and from the model.
+Its alverine IV AUClast, 0.566 umol h/L, is 1.68-fold lower than the
+0.95 umol h/L quoted for the same quantity in the Results text, and the
+same factor separates the Table 1 alverine Cmax after PO dosing (0.242 umol/L)
+from Figure 2a (about 0.4 umol/L). The factor is analyte-specific -- about
+1.6 for M1, 1.0 for M2 and 1.8 for M3 -- and matches the ratio of the
+alverine citrate molecular weight (473.56 g/mol) to each analyte's own
+molecular weight, so Table 1 appears to have converted every analyte with
+the citrate salt's weight. The molecular weights below are computed from the
+molecular formulas, which agree with the paper's [M+H]+ precursor ions
+(282.2, 298.2, 474.2 and 254.2). The comparison against Table 1 below
+rescales it to each analyte's own molecular weight; the paper does not state
+this conversion, so it is the maintainers' reading.
+
+```{r mw}
+mw <- tibble::tribble(
+  ~analyte, ~formula,     ~mw,
+  "Parent", "C20H27N",    281.44,
+  "M1",     "C20H27NO",   297.44,
+  "M2",     "C26H35NO7",  473.56,
+  "M3",     "C18H23N",    253.39
+) |>
+  dplyr::mutate(
+    table1_factor = 473.56 / mw,
+    # LLOQs (ng/mL) from the LC-MS/MS Analysis section
+    lloq_ngml = c(0.5, 0.5, 0.75, 0.5),
+    lloq_umol = lloq_ngml / mw
+  )
+knitr::kable(
+  mw |>
+    dplyr::rename(
+      Analyte = analyte,
+      Formula = formula,
+      `MW (g/mol)` = mw,
+      `Table 1 rescaling factor` = table1_factor,
+      `LLOQ (ng/mL)` = lloq_ngml,
+      `LLOQ (umol/L)` = lloq_umol
+    ),
+  digits = 4
+)
+```
+
+# Virtual cohort
+
+The model carries no inter-individual variability (none is reported), so each
+route is simulated for a typical mouse. Body weight only sets the per-animal
+dose; the band in the figures spans the 35-42 g range of the study.
+
+```{r cohort}
+mod <- readModelDb("Cho_2026_alverine_mouse")
+dose_per_kg <- c(IV = 10.56, PO = 158.37) # umol/kg (Methods)
+bw_kg <- c(low = 0.035, mid = 0.0385, high = 0.042)
+fine_times <- sort(unique(c(seq(0, 2, by = 0.01), seq(2, 24, by = 0.05))))
+
+make_events <- function(route, bw, id, times) {
+  amt <- dose_per_kg[[route]] * bw
+  dose_cmt <- if (route == "IV") "central" else c("depot", "depot_m1", "depot_m3")
+  doses <- data.frame(
+    id = id, time = 0, amt = amt, evid = 1L, cmt = dose_cmt
+  )
+  # Observations sit on the parent central state; every Cc* output is returned
+  # on each row. dvid = 1 tells the four-endpoint model which endpoint the row
+  # belongs to, so rxode2 does not reject the named compartment.
+  obs <- data.frame(
+    id = id, time = times, amt = 0, evid = 0L, cmt = "central", dvid = 1L
+  )
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::mutate(route = route, bw = bw)
+}
+
+grid <- expand.grid(route = c("IV", "PO"), bw = names(bw_kg), stringsAsFactors = FALSE)
+events_fine <- dplyr::bind_rows(lapply(seq_len(nrow(grid)), function(i) {
+  make_events(grid$route[i], bw_kg[[grid$bw[i]]], id = i, times = fine_times) |>
+    dplyr::mutate(bw_group = grid$bw[i])
+}))
+stopifnot(!anyDuplicated(events_fine[events_fine$evid == 0, c("id", "time")]))
+
+# The model has no between-animal variability, so rxode2 notes that a
+# multi-subject solve has no omega. That is expected here; muffle exactly that
+# message and let any other warning through.
+muffle_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+    invokeRestart("muffleWarning")
+  }
+}
+solve_typical <- function(...) {
+  withCallingHandlers(rxode2::rxSolve(...), warning = muffle_no_omega) |>
+    as.data.frame()
+}
+```
+
+# Simulation
+
+```{r simulate}
+sim_fine <- solve_typical(
+  mod, events_fine,
+  keep = c("route", "bw_group"),
+  atol = 1e-12, rtol = 1e-10
+)
+
+long_fine <- sim_fine |>
+  dplyr::select(id, time, route, bw_group, Cc, Cc_m1, Cc_m2, Cc_m3) |>
+  tidyr::pivot_longer(
+    c(Cc, Cc_m1, Cc_m2, Cc_m3),
+    names_to = "output", values_to = "conc"
+  ) |>
+  dplyr::mutate(
+    analyte = dplyr::recode(output, Cc = "Parent", Cc_m1 = "M1", Cc_m2 = "M2", Cc_m3 = "M3")
+  )
+```
+
+The derived constants come out as the code defines them:
+
+```{r derived}
+derived <- sim_fine |>
+  dplyr::filter(route == "PO", bw_group == "mid") |>
+  dplyr::slice(1) |>
+  dplyr::select(kel, kmet_m3, fdepot_m1)
+knitr::kable(derived, digits = 4)
+stopifnot(
+  abs(derived$kel - 0.512 / 0.443) < 1e-6,
+  abs(derived$kmet_m3 - (0.512 / 0.443 - 0.0249 - 0.582)) < 1e-6,
+  abs(derived$fdepot_m1 - (1 - 0.04 - 0.0399)) < 1e-9
+)
+```
+
+A deterministic check that the parent disposition is wired correctly: the
+integral of the typical IV parent profile must equal Dose / CL, because the
+parent leaves the body only from the central compartment.
+
+```{r auc-closed-form}
+iv_mid <- sim_fine |>
+  dplyr::filter(route == "IV", bw_group == "mid") |>
+  dplyr::arrange(time)
+auc_trap <- sum(diff(iv_mid$time) * (head(iv_mid$Cc, -1) + tail(iv_mid$Cc, -1)) / 2)
+auc_exact <- dose_per_kg[["IV"]] * bw_kg[["mid"]] / 0.512
+c(trapezoid_0_24h = auc_trap, dose_over_cl = auc_exact)
+stopifnot(abs(auc_trap / auc_exact - 1) < 0.005)
+```
+
+# Replicate published figures
+
+Figure 2 of Cho 2026 shows the mean observed concentrations by route. The
+points below were read from Figure 2 by eye by the maintainers (log axis, so
+they are approximate, roughly +/-10%) and are drawn against the typical
+predictions; the band spans a 35-42 g mouse.
+
+```{r fig2-data}
+fig2 <- tibble::tribble(
+  ~analyte, ~route, ~time, ~conc,
+  "Parent", "IV", 0.083, 0.9,   "Parent", "IV", 0.5, 0.5,    "Parent", "IV", 1, 0.26,
+  "Parent", "IV", 2, 0.12,      "Parent", "IV", 4, 0.032,    "Parent", "IV", 6, 0.010,
+  "Parent", "IV", 8, 0.0046,
+  "Parent", "PO", 0.25, 0.4,    "Parent", "PO", 0.5, 0.27,   "Parent", "PO", 1, 0.18,
+  "Parent", "PO", 2, 0.095,     "Parent", "PO", 4, 0.031,    "Parent", "PO", 6, 0.0098,
+  "Parent", "PO", 8, 0.0039,
+  "M1", "IV", 0.5, 0.0021,      "M1", "IV", 1, 0.0023,
+  "M1", "PO", 0.25, 0.022,      "M1", "PO", 0.5, 0.029,      "M1", "PO", 1, 0.031,
+  "M1", "PO", 2, 0.023,         "M1", "PO", 4, 0.012,        "M1", "PO", 6, 0.004,
+  "M2", "IV", 0.083, 0.33,      "M2", "IV", 0.5, 0.40,       "M2", "IV", 1, 0.27,
+  "M2", "IV", 2, 0.125,         "M2", "IV", 4, 0.09,         "M2", "IV", 6, 0.033,
+  "M2", "IV", 8, 0.011,         "M2", "IV", 12, 0.0028,
+  "M2", "PO", 0.25, 18,         "M2", "PO", 0.5, 19,         "M2", "PO", 1, 18,
+  "M2", "PO", 2, 9.5,           "M2", "PO", 4, 3.2,          "M2", "PO", 6, 0.8,
+  "M2", "PO", 8, 0.42,          "M2", "PO", 12, 0.08,
+  "M3", "IV", 0.083, 0.0026,    "M3", "IV", 0.5, 0.0037,     "M3", "IV", 1, 0.0036,
+  "M3", "IV", 2, 0.0028,
+  "M3", "PO", 0.25, 0.33,       "M3", "PO", 0.5, 0.26,       "M3", "PO", 1, 0.17,
+  "M3", "PO", 2, 0.055,         "M3", "PO", 4, 0.010,        "M3", "PO", 6, 0.0042
+)
+```
+
+```{r fig2, fig.width = 8, fig.height = 7, fig.cap = "Replicates Figure 2 of Cho 2026. Lines: typical prediction for a 38.5 g mouse; band: 35-42 g; points: observed means read from Figure 2."}
+band <- long_fine |>
+  dplyr::filter(time > 0, time <= 12) |>
+  dplyr::group_by(analyte, route, time) |>
+  dplyr::summarise(lo = min(conc), hi = max(conc), .groups = "drop")
+mid <- long_fine |>
+  dplyr::filter(bw_group == "mid", time > 0, time <= 12)
+analyte_levels <- c("Parent", "M1", "M2", "M3")
+band$analyte <- factor(band$analyte, analyte_levels)
+mid$analyte <- factor(mid$analyte, analyte_levels)
+fig2$analyte <- factor(fig2$analyte, analyte_levels)
+
+ggplot(mid, aes(time, conc, colour = route, fill = route)) +
+  geom_ribbon(
+    data = band, aes(time, ymin = lo, ymax = hi, fill = route),
+    inherit.aes = FALSE, alpha = 0.2
+  ) +
+  geom_line() +
+  geom_point(data = fig2, aes(time, conc, shape = route), size = 2) +
+  facet_wrap(~analyte, scales = "free_y") +
+  scale_y_log10() +
+  coord_cartesian(xlim = c(0, 12)) +
+  labs(
+    x = "Time (h)", y = "Concentration (umol/L)", colour = "Route", fill = "Route",
+    shape = "Route"
+  ) +
+  theme_bw()
+```
+
+The parent is reproduced closely by both routes, and so are M2 after IV dosing
+and the M1 and M2 peaks after PO dosing; after PO dosing the predicted M1 and
+M2 decline faster than the observed means beyond about 2 hours. M3 is not reproduced: the
+typical prediction is about 4-fold below the observed PO means and several
+fold above the observed IV means (see the deviations section below).
+
+Figure 4 (prediction-corrected VPCs) cannot be replicated, because the paper
+does not report the between-animal variability or residual-error magnitudes
+that generated its prediction intervals.
+
+# PKNCA validation
+
+The NCA mirrors the paper's design (the route is carried as `treatment`, because PKNCA reserves `route`): each route is sampled at its protocol
+times, concentrations below the LLOQ are dropped, and the time-zero sample is
+the model value (the IV bolus concentration for the parent, zero otherwise).
+
+```{r pknca}
+protocol <- list(
+  IV = c(0, 0.083, 0.5, 1, 2, 4, 6, 8, 12, 24),
+  PO = c(0, 0.25, 0.5, 1, 2, 4, 6, 8, 12, 24)
+)
+events_nca <- dplyr::bind_rows(
+  make_events("IV", bw_kg[["mid"]], id = 1L, times = protocol$IV),
+  make_events("PO", bw_kg[["mid"]], id = 2L, times = protocol$PO)
+)
+sim_nca <- solve_typical(
+  mod, events_nca,
+  keep = "route", atol = 1e-12, rtol = 1e-10
+) |>
+  dplyr::select(id, time, route, Cc, Cc_m1, Cc_m2, Cc_m3) |>
+  tidyr::pivot_longer(c(Cc, Cc_m1, Cc_m2, Cc_m3), names_to = "output", values_to = "Cc") |>
+  dplyr::mutate(
+    analyte = dplyr::recode(output, Cc = "Parent", Cc_m1 = "M1", Cc_m2 = "M2", Cc_m3 = "M3")
+  ) |>
+  dplyr::left_join(dplyr::select(mw, analyte, lloq_umol), by = "analyte") |>
+  # Post-dose samples below the LLOQ become NA (excluded, as in the paper);
+  # the time-zero sample is always kept.
+  dplyr::mutate(Cc = ifelse(time > 0 & Cc < lloq_umol, NA_real_, Cc)) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, treatment = route, analyte, Cc)
+
+# Analytes with fewer than three quantifiable post-dose samples cannot support
+# NCA (the typical IV M1 profile never reaches the M1 LLOQ).
+nca_groups <- sim_nca |>
+  dplyr::group_by(treatment, analyte) |>
+  dplyr::filter(sum(time > 0) >= 3) |>
+  dplyr::ungroup()
+
+conc_obj <- PKNCA::PKNCAconc(nca_groups, Cc ~ time | treatment + analyte + id)
+dose_df <- nca_groups |>
+  dplyr::distinct(id, treatment, analyte) |>
+  dplyr::mutate(time = 0, amt = unname(dose_per_kg[treatment]) * bw_kg[["mid"]])
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + analyte + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against published NCA
+
+Table 1 values are rescaled to each analyte's own molecular weight (factor in
+the table above). Parent IV Cmax and Tmax are not reported in Table 1.
+
+```{r nca-compare}
+table1 <- tibble::tribble(
+  ~treatment, ~analyte, ~tmax, ~cmax,  ~auclast, ~aucinf.obs, ~half.life,
+  "IV",   "Parent", NA,    NA,     0.5660,   0.5712,      1.2991,
+  "PO",   "Parent", 0.25,  0.2416, 0.3473,   0.3517,      1.2590,
+  "IV",   "M1",     0.90,  0.0015, 0.0010,   NA,          NA,
+  "PO",   "M1",     0.90,  0.0203, 0.0664,   0.0726,      1.6244,
+  "IV",   "M2",     0.4166, 0.4097, 0.9457,  0.9525,      1.6881,
+  "PO",   "M2",     0.55,  21.3109, 51.5202, 51.6949,     1.8535,
+  "IV",   "M3",     0.70,  0.0021, 0.0036,   NA,          NA,
+  "PO",   "M3",     0.25,  0.1866, 0.2295,   0.2325,      0.9011
+)
+reference <- table1 |>
+  tidyr::pivot_longer(c(tmax, cmax, auclast, aucinf.obs, half.life),
+                      names_to = "PPTESTCD", values_to = "PPORRES") |>
+  dplyr::filter(!is.na(PPORRES)) |>
+  dplyr::left_join(dplyr::select(mw, analyte, table1_factor), by = "analyte") |>
+  dplyr::mutate(
+    PPORRES = ifelse(PPTESTCD %in% c("cmax", "auclast", "aucinf.obs"),
+                     PPORRES * table1_factor, PPORRES)
+  ) |>
+  dplyr::select(treatment, analyte, PPTESTCD, PPORRES)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = reference,
+  by = c("treatment", "analyte"),
+  units = c(cmax = "umol/L", auclast = "umol*h/L", aucinf.obs = "umol*h/L",
+            tmax = "h", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Typical-value NCA vs. Cho 2026 Table 1 (exposures rescaled to each analyte's molecular weight). * differs by >20%."
+)
+```
+
+```{r nca-assert}
+sim_auc <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(treatment, analyte, sim = PPORRES)
+ref_auc <- reference |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(treatment, analyte, ref = PPORRES)
+auc_chk <- dplyr::inner_join(sim_auc, ref_auc, by = c("treatment", "analyte")) |>
+  dplyr::mutate(pct_diff = 100 * (sim - ref) / ref)
+pct <- function(r, a) {
+  v <- auc_chk$pct_diff[auc_chk$treatment == r & auc_chk$analyte == a]
+  if (length(v) != 1L) stop("no unique AUClast row for ", r, " ", a)
+  v
+}
+# Deterministic model: these bounds sit just outside the agreement achieved
+# and pin the parent disposition and the M1 -> M2 route.
+stopifnot(
+  abs(pct("IV", "Parent")) < 25,
+  abs(pct("PO", "Parent")) < 25,
+  abs(pct("PO", "M1")) < 25,
+  abs(pct("IV", "M2")) < 60,
+  abs(pct("PO", "M2")) < 40
+)
+```
+
+The parent AUClast is 16% (IV) and 22% (PO) below the rescaled Table 1
+values, consistent with the typical prediction lying slightly under the early
+observed means in Figure 2a, while the parent half-life matches within 3%.
+M1 exposure after PO dosing matches (AUClast within 1%), but its peak is
+1.8-fold higher and its half-life about half the observed value. M2 is
+over-predicted after IV and under-predicted after PO dosing (AUClast +39% and
+-29%), with a shorter predicted half-life after PO dosing; the paper's own
+pcVPC likewise reports an early M2 under-prediction. M3 misses badly in both
+directions and is discussed below; it is not asserted. The typical IV M1
+profile stays below the M1 LLOQ, so it has no NCA row, while Table 1 reports
+an IV M1 AUClast from the observed animals.
+
+# Assumptions and deviations
+
+* **Table 3 `km3` is not consistent with the model equations.** Equation 4.2
+  and File S1 define `km3 = kp,total - kp - km1` = 1.156 - 0.0249 - 0.582 =
+  0.549 1/h, but Table 3 prints km3 = 1.131, which equals `kp,total - kp`
+  alone. The model follows the equation and the published code, so
+  `kmet_m3` = 0.549 1/h. The choice does not affect the parent profile, which
+  depends only on CL, Vp1, Q and Vp2; with 1.131 the IV M3 over-prediction
+  would roughly double.
+* **M3 is not reproduced by the typical values.** The typical PO M3 profile
+  is about 4-fold below the observed means of Figure 2d and the IV profile
+  several-fold above them; neither km3 reading fixes both routes. The IV and
+  PO groups are different animals, `fm3` and `ka,m3` are informed only by PO
+  data, and Vm3 and ka,m3 carry RSEs of 55% and 8800%, so between-animal
+  random effects are the likely source of the route-specific agreement the
+  paper reports. Those variances are not published, and the values here are
+  not adjusted.
+* **No IIV or residual error.** The paper states that IIV was included
+  "where supported by the data" and names the residual-error forms (combined
+  additive + proportional for the parent, proportional for each metabolite),
+  but reports none of the magnitudes. The residual-error parameters are
+  encoded as `fixed(0)` with those forms, and no etas are declared, because
+  the paper does not say which parameters carried them.
+* **Per-animal dosing.** The fitted dose is the per-animal amount in umol of
+  alverine (see "Dose and concentration basis"). Individual body weights are
+  not reported; 38.5 g, the midpoint of the 35-42 g range, is used for the
+  typical simulations.
+* **Table 1 molar basis.** Table 1 exposures are rescaled by
+  473.56 / MW(analyte) before comparison; the evidence for this reading is
+  given in "Dose and concentration basis".
+* **Parameters with no RSE.** Q, kp and ka,m1 are printed without an RSE or a
+  fixed marker. The paper names only `fp` and `ka` as fixed, so the other
+  three are encoded as estimated values.
+* **`km2` from the printed derived value.** The authors estimate km1,total
+  (1.064 1/h) and km1e (1.79e-8 1/h) and derive km2 as their difference.
+  The model takes km2 = 1.064 1/h from Table 3 directly with `kel_m1` =
+  km1e, so the total loss from M1 is 1.064 + 1.79e-8 1/h instead of 1.064;
+  the difference is below the printed precision.
+* **Oral dose split.** Monolix gives one oral administration to three
+  `oral()` macros with fractions `p`. In rxode2 the same amount is dosed into
+  `depot`, `depot_m1` and `depot_m3`, and `f()` applies `fp`, `fm1` and
+  `fm3`.
+* **Errata.** A Europe PMC search on 2026-11-17 found no erratum or
+  correction for this article.

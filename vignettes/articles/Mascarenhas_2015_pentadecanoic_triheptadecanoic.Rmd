@@ -718,12 +718,13 @@ stopifnot(all(diff(ha_peaks[2:4]) < 0), ha_peaks[1] < ha_peaks[2])
   under continuous turnover, so a constant offset is also the physiologically
   sensible reading.
 * **Between-occasion variability is encoded as an occasion-indicator
-  expansion.** rxode2 parses the `eta ~ var | occ` multi-level syntax but
-  cannot simulate from it, so each analyte's MTT and bioavailability IOV is
-  written as four per-occasion etas multiplexed by `oc1..oc4`, with occasions
-  2-4 fixed to the occasion-1 magnitude (the NONMEM `$OMEGA BLOCK(1) SAME`
-  idiom). This emits a benign "some etas defaulted to non-mu referenced"
-  warning at parse time, which affects estimation only, not simulation.
+  expansion.** The `eta ~ var | occ` multi-level syntax shares one draw per
+  occasion when no subject has two or more occasions, so each analyte's MTT
+  and bioavailability IOV is written as four per-occasion etas multiplexed by
+  `oc1..oc4`, with occasions 2-4 fixed to the occasion-1 magnitude (the
+  NONMEM `$OMEGA BLOCK(1) SAME` idiom). This emits a benign "some etas
+  defaulted to non-mu referenced" warning at parse time, which affects
+  estimation only, not simulation.
 * **Age is documented but not implemented.** The paper screened a power age
   effect on CL/F for both analytes post hoc and did not retain it: the exponent
   confidence intervals span zero and adding the terms produced no drop in

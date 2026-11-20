@@ -274,6 +274,8 @@ ev_spread <- data.frame(
   cmt = NA_character_, AGE = 55.53, SEXF = 0, VISCERAL_ABDOMINAL_FAT = 141.8,
   BODYFAT_PCT = 32.39, FPG = 91.34, INS_BL = 26.98, INS = 26.98
 )
+# Fixed seed: the draws below feed reported results.
+set.seed(20100126)
 per_subject <- as.data.frame(rxode2::rxSolve(mod, ev_spread)) |>
   dplyr::distinct(id, sg, vd, si, p2)
 spread <- data.frame(

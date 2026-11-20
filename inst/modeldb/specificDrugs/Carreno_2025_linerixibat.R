@@ -14,6 +14,7 @@ Carreno_2025_linerixibat <- function() {
     concentration = "ng/mL",
     outcome = "GSRS Question 11 diarrhea-bother score (ordinal, 1-7)"
   )
+  dosing <- "depot_kpd"
 
   covariateData <- list()
 

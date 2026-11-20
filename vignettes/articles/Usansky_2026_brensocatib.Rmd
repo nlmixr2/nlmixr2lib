@@ -1,0 +1,576 @@
+---
+title: "Brensocatib (Usansky 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Brensocatib (Usansky 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# Two rxode2 messages are expected here and only these are muffled. The
+# between-occasion etas enter ka and F as an indicator-weighted sum, so rxode2
+# reports them as 'non-mu referenced' whenever the model is parsed (this only
+# affects estimation speed-ups). Typical-value solves of several subjects with
+# zeroRe() report a simulation 'without omega'.
+muffle_expected <- function(w) {
+  msg <- conditionMessage(w)
+  if (grepl("non-mu referenced", msg, fixed = TRUE) ||
+      grepl("without 'omega'", msg, fixed = TRUE)) {
+    invokeRestart("muffleWarning")
+  }
+}
+mod <- withCallingHandlers(
+  rxode2::rxode2(readModelDb("Usansky_2026_brensocatib")),
+  warning = muffle_expected
+)
+```
+
+# Model and source
+
+* Citation: `r mod$reference`
+* Description: `r mod$description`
+* Article: <https://doi.org/10.1002/psp4.70340> (open access; the NONMEM
+  control stream of the final model is Data S1 of the supplement)
+
+Brensocatib is an oral, reversible inhibitor of dipeptidyl peptidase 1 (DPP1)
+developed for non-cystic fibrosis bronchiectasis. Usansky 2026 pooled 11
+clinical trials to support the 10 and 25 mg once-daily doses in adults and in
+adolescents aged 12 years and older.
+
+# Population
+
+The analysis data set held 11,643 plasma concentrations from 1098
+participants: 291 healthy volunteers, 783 patients with non-cystic fibrosis
+bronchiectasis (31 of them adolescents aged 12 to < 18 years) and 24 patients
+with cystic fibrosis (Usansky 2026 Table 1). It came from eight phase 1 trials
+(single doses 5-120 mg, including food-effect, hepatic- and renal-impairment and
+drug-interaction studies), two phase 2 trials (NCT05090904 and WILLOW) and the
+phase 3 ASPEN trial (NCT04594369, 10 or 25 mg once daily). Mean age was 51
+years and mean weight 69.2 kg; 55.4% were female, 71.8% White, 11.6% Asian and
+6.0% Black.
+
+The same information is available programmatically via
+`readModelDb("Usansky_2026_brensocatib")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source in
+`inst/modeldb/specificDrugs/Usansky_2026_brensocatib.R`; the table collects
+them.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL/F, 70 kg) | 3.25 L/h | Table 2 |
+| `lvc` (Vc/F, 70 kg, 49 y) | 78.8 L | Table 2 |
+| `lq` (Q/F, 70 kg) | 5.97 L/h | Table 2 |
+| `lvp` (Vp/F, 70 kg) | 50.4 L | Table 2 |
+| `lka_fasted`, `lka_fed` | 7.61, 5.8 1/h | Table 2 |
+| `e_form_solution_ka` | 0.809 | Table 2 |
+| `e0_dose_fdepot`, `emax_dose_fdepot` | 0.29, 0.346 | Table 2 (E0, Emax) |
+| `ed50_dose_fdepot`, `hill_dose_fdepot` | 21.6 mg, 1.54 | Table 2 (EC50, H) |
+| `e_wt_cl_q`, `e_wt_vc_vp` | 0.75, 1 (fixed) | Methods; Table 2 footnote a |
+| `e_age_vc` | 0.314 | Table 2 |
+| `e_sexf_cl`, `e_race_black_cl`, `e_race_asian_cl` | -0.0957, 0.492, 0.229 | Table 2 |
+| `e_hepimp_cl` | 0.187 (fixed) | Table 2 footnote b; Data S1 THETA(17) FIX |
+| `e_conmed_rifampicin_cl` | 0.383 (fixed) | Table 2 footnote c; Data S1 THETA(12) FIX |
+| `e_conmed_clarithromycin_cl`, `_fdepot` | -0.0779, 0.388 (fixed) | Table 2 footnote d; Data S1 THETA(13), THETA(14) FIX |
+| `e_conmed_verapamil_cl`, `_fdepot` | 0.212, 0.657 (fixed) | Table 2 footnote e; Data S1 THETA(15), THETA(16) FIX |
+| `etalcl`, `etalvc`, `etalvp`, `etalka`, `etalfdepot` | 0.121, 0.0492, 0.0233, 0.164, 0.0132 | Data S1 `$OMEGA` (see Assumptions) |
+| `etaiov_ka_1/_2`, `etaiov_fdepot_1/_2` | 0.184, 0.0354 | Data S1 `$OMEGA` (SAME for occasion 2) |
+| `propSdPhase1/2/3` | 0.156, 0.253, 0.345 | Data S1 `$SIGMA` variances 0.0244, 0.064, 0.119 (square roots) |
+| `addSdPhase1/2/3` | 0.303, 0.638, 0.657 ng/mL | Data S1 `$SIGMA` variances 0.0919, 0.407, 0.431 (square roots) |
+| ka, CL/F, Vc/F, Q/F, Vp/F, relF equations | n/a | Results equations; Data S1 `$PK` |
+| depot -> 3 transits -> central, all at ka | n/a | Results; Figure S2; Data S1 `$DES` |
+| Phase-specific additive + proportional error | n/a | Data S1 `$ERROR` |
+
+# Reference-subject and extreme-scenario exposures
+
+The forest-plot reference subject is a healthy 49-year-old White male of 70 kg,
+fasted, without hepatic impairment or interacting comedication, taking 25 mg
+once daily (Usansky 2026 Results). The paper gives his steady-state AUC24 as
+3723 ng h/mL and Cmax as 246 ng/mL, and gives the two highest-exposure
+scenarios, a 12-year-old 30 kg female taking verapamil or clarithromycin. These
+are geometric means of 1000 simulated subjects; with log-normal random effects
+the geometric mean of AUC equals the typical-value AUC, so the typical-value
+model is the right comparator.
+
+The steady-state helpers below dose once daily for 21 days (more than 10
+half-lives) and observe the final 24-hour interval.
+
+```{r helpers}
+tau <- 24
+n_days <- 21
+t_ss <- (n_days - 1) * tau
+
+make_ss_events <- function(subjects, dose, obs_step = 0.1) {
+  obs_times <- seq(t_ss, t_ss + tau, by = obs_step)
+  doses <- tidyr::expand_grid(subjects, time = seq(0, t_ss, by = tau)) |>
+    dplyr::mutate(amt = dose, evid = 1L, cmt = "depot")
+  obs <- tidyr::expand_grid(subjects, time = obs_times) |>
+    dplyr::mutate(amt = 0, evid = 0L, cmt = "central")
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::mutate(DOSE = dose) |>
+    dplyr::select(id, time, amt, evid, cmt, dplyr::everything()) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+ss_nca <- function(sim, events, group) {
+  conc <- sim |>
+    dplyr::filter(!is.na(Cc)) |>
+    dplyr::select(id, time, Cc, dplyr::all_of(group))
+  dose <- events |>
+    dplyr::filter(evid == 1) |>
+    dplyr::select(id, time, amt, dplyr::all_of(group))
+  fml_c <- stats::as.formula(paste("Cc ~ time |", group, "+ id"))
+  fml_d <- stats::as.formula(paste("amt ~ time |", group, "+ id"))
+  intervals <- data.frame(
+    start = t_ss, end = t_ss + tau,
+    auclast = TRUE, cmax = TRUE, tmax = TRUE, cmin = TRUE
+  )
+  PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, fml_c),
+    PKNCA::PKNCAdose(dose, fml_d),
+    intervals = intervals
+  ))
+}
+
+reference_covariates <- tibble::tibble(
+  WT = 70, AGE = 49, SEXF = 0, RACE_BLACK = 0, RACE_ASIAN = 0, HEPIMP = 0,
+  FED = 0, FORM_SOLUTION = 0, CONMED_RIFAMPICIN = 0,
+  CONMED_CLARITHROMYCIN = 0, CONMED_VERAPAMIL = 0,
+  STUDY_PHASE2 = 0, STUDY_PHASE3 = 0, OCC = 1
+)
+```
+
+The scenario table follows the rows of Usansky 2026 Figures 3 and 4. "Adolescent"
+is 12 years and "elderly" 85 years; the low and high body weights are 30 and
+155 kg (the figure labels).
+
+```{r scenarios}
+scenario <- function(label, ...) {
+  dplyr::mutate(reference_covariates, scenario = label, ...)
+}
+scenarios <- dplyr::bind_rows(
+  scenario("Reference"),
+  scenario("Fed", FED = 1),
+  scenario("High body weight: 155 kg", WT = 155),
+  scenario("Low body weight: 30 kg", WT = 30),
+  scenario("Received rif", CONMED_RIFAMPICIN = 1),
+  scenario("Received clari", CONMED_CLARITHROMYCIN = 1),
+  scenario("Received verap", CONMED_VERAPAMIL = 1),
+  scenario("Female", SEXF = 1),
+  scenario("Female: 155 kg", SEXF = 1, WT = 155),
+  scenario("Female: 30 kg", SEXF = 1, WT = 30),
+  scenario("Black", RACE_BLACK = 1),
+  scenario("Asian", RACE_ASIAN = 1),
+  scenario("Hepatic impairment", HEPIMP = 1),
+  scenario("Elderly: 85 years old", AGE = 85),
+  scenario("Adolescent: 12 years old", AGE = 12),
+  scenario("Elderly female: 85 years old", AGE = 85, SEXF = 1),
+  scenario("Adolescent female: 12 years old", AGE = 12, SEXF = 1),
+  scenario("Black male: 155 kg, rif, hepatically impaired",
+           RACE_BLACK = 1, WT = 155, CONMED_RIFAMPICIN = 1, HEPIMP = 1),
+  scenario("Asian male: 155 kg, rif, hepatically impaired",
+           RACE_ASIAN = 1, WT = 155, CONMED_RIFAMPICIN = 1, HEPIMP = 1),
+  scenario("Black male: 85 y, 155 kg, nonfasting, rif, hepatically impaired",
+           RACE_BLACK = 1, AGE = 85, WT = 155, FED = 1,
+           CONMED_RIFAMPICIN = 1, HEPIMP = 1),
+  scenario("Asian male: 85 y, 155 kg, nonfasting, rif, hepatically impaired",
+           RACE_ASIAN = 1, AGE = 85, WT = 155, FED = 1,
+           CONMED_RIFAMPICIN = 1, HEPIMP = 1),
+  scenario("Female: 30 kg, clari", SEXF = 1, WT = 30, CONMED_CLARITHROMYCIN = 1),
+  scenario("Female: 30 kg, verap", SEXF = 1, WT = 30, CONMED_VERAPAMIL = 1),
+  scenario("Female: 12 y, 30 kg, verap", SEXF = 1, AGE = 12, WT = 30,
+           CONMED_VERAPAMIL = 1),
+  scenario("Female: 12 y, 30 kg, clari", SEXF = 1, AGE = 12, WT = 30,
+           CONMED_CLARITHROMYCIN = 1)
+) |>
+  dplyr::mutate(id = dplyr::row_number())
+
+# The residual-error SDs are thetas, so only the omegas need zeroing.
+mod_typical <- withCallingHandlers(
+  rxode2::zeroRe(mod, which = "omega"),
+  warning = muffle_expected
+)
+
+ev_typ <- make_ss_events(scenarios, dose = 25)
+sim_typ <- withCallingHandlers(
+  rxode2::rxSolve(
+    mod_typical, events = ev_typ, keep = "scenario",
+    atol = 1e-10, rtol = 1e-10
+  ),
+  warning = muffle_expected
+) |>
+  as.data.frame()
+
+nca_typ <- ss_nca(sim_typ, ev_typ, "scenario")
+typ <- as.data.frame(nca_typ) |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cmax")) |>
+  dplyr::select(scenario, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+# The model's own closed form at steady state: AUCtau = F * dose / CL.
+closed_form <- sim_typ |>
+  dplyr::filter(time == t_ss) |>
+  dplyr::distinct(scenario, fdepot, cl) |>
+  dplyr::mutate(auc_closed = 1000 * fdepot * 25 / cl)
+typ <- dplyr::left_join(typ, closed_form, by = "scenario")
+
+# Same parameters on both sides, so only trapezoid and solver error remain.
+stopifnot(all(abs(typ$auclast / typ$auc_closed - 1) < 0.01))
+```
+
+```{r reference-check}
+published_points <- tibble::tribble(
+  ~scenario,                    ~auc_pub, ~cmax_pub,
+  "Reference",                      3723,       246,
+  "Female: 12 y, 30 kg, verap",    10630,      1003,
+  "Female: 12 y, 30 kg, clari",    11700,       954
+)
+point_check <- typ |>
+  dplyr::inner_join(published_points, by = "scenario") |>
+  dplyr::mutate(
+    auc_pct = 100 * (auclast / auc_pub - 1),
+    cmax_pct = 100 * (cmax / cmax_pub - 1)
+  )
+
+point_check |>
+  dplyr::select(scenario, auclast, auc_pub, auc_pct, cmax, cmax_pub, cmax_pct) |>
+  dplyr::rename(
+    "Scenario (25 mg once daily)" = scenario,
+    "AUC24 model (ng h/mL)" = auclast,
+    "AUC24 paper" = auc_pub,
+    "AUC24 diff (%)" = auc_pct,
+    "Cmax model (ng/mL)" = cmax,
+    "Cmax paper" = cmax_pub,
+    "Cmax diff (%)" = cmax_pct
+  ) |>
+  knitr::kable(digits = 1, caption = "Typical-value steady-state exposure against the values stated in the Usansky 2026 Results.")
+
+# AUC is set by F, dose and CL alone, so a transcription error in any of them
+# moves it by tens of percent. Cmax also carries the paper's simulated
+# between-subject spread (its geometric mean is not exactly the typical value).
+stopifnot(
+  all(abs(point_check$auc_pct) < 5),
+  all(abs(point_check$cmax_pct) < 15)
+)
+```
+
+# Replicate Figures 3 and 4 (forest plots)
+
+Figures 3 and 4 show, for each covariate scenario, the distribution of the
+percent change in steady-state AUC24 and Cmax relative to the reference
+subject. The medians below were digitised by the maintainers from the
+published figures (read to about 5 percentage points). With log-normal random
+effects the median change equals the typical-value change, which the model
+gives directly.
+
+```{r forest}
+digitised <- tibble::tribble(
+  ~scenario,                                                              ~auc_fig, ~cmax_fig,
+  "Fed",                                                                         0,         0,
+  "High body weight: 155 kg",                                                  -46,       -50,
+  "Low body weight: 30 kg",                                                     88,       105,
+  "Received rif",                                                              -28,       -18,
+  "Received clari",                                                             50,        45,
+  "Received verap",                                                             37,        48,
+  "Female",                                                                     10,         5,
+  "Female: 155 kg",                                                            -40,       -45,
+  "Female: 30 kg",                                                             110,       118,
+  "Black",                                                                     -34,       -22,
+  "Asian",                                                                     -20,       -12,
+  "Hepatic impairment",                                                        -17,       -10,
+  "Elderly: 85 years old",                                                       0,        -5,
+  "Adolescent: 12 years old",                                                    0,        22,
+  "Elderly female: 85 years old",                                               10,         0,
+  "Adolescent female: 12 years old",                                            10,        30,
+  "Black male: 155 kg, rif, hepatically impaired",                             -77,       -70,
+  "Asian male: 155 kg, rif, hepatically impaired",                             -72,       -65,
+  "Black male: 85 y, 155 kg, nonfasting, rif, hepatically impaired",           -62,       -52,
+  "Asian male: 85 y, 155 kg, nonfasting, rif, hepatically impaired",           -55,       -50,
+  "Female: 30 kg, clari",                                                      205,       217,
+  "Female: 30 kg, verap",                                                      183,       225,
+  "Female: 12 y, 30 kg, verap",                                                183,       302,
+  "Female: 12 y, 30 kg, clari",                                                205,       285
+)
+
+ref <- dplyr::filter(typ, scenario == "Reference")
+forest <- typ |>
+  dplyr::filter(scenario != "Reference") |>
+  dplyr::mutate(
+    auc_model = 100 * (auclast / ref$auclast - 1),
+    cmax_model = 100 * (cmax / ref$cmax - 1)
+  ) |>
+  dplyr::inner_join(digitised, by = "scenario") |>
+  dplyr::mutate(scenario = factor(scenario, levels = rev(digitised$scenario)))
+stopifnot(nrow(forest) == nrow(digitised))
+
+forest |>
+  dplyr::select(scenario, auc_fig, auc_model, cmax_fig, cmax_model) |>
+  tidyr::pivot_longer(-scenario, names_to = c("metric", "source"),
+                      names_sep = "_") |>
+  dplyr::mutate(
+    metric = ifelse(metric == "auc", "AUC24 (Figure 3)", "Cmax (Figure 4)"),
+    source = ifelse(source == "fig", "Published median (digitised)",
+                    "Packaged model, typical value")
+  ) |>
+  ggplot(aes(value, scenario, shape = source, colour = source)) +
+  geom_vline(xintercept = 0, linetype = "dashed") +
+  geom_point(size = 2) +
+  facet_wrap(~metric, scales = "free_x") +
+  labs(x = "Change relative to the reference subject (%)", y = NULL,
+       shape = NULL, colour = NULL,
+       caption = "Replicates the medians of Figures 3 and 4 of Usansky 2026.") +
+  theme(legend.position = "bottom")
+```
+
+```{r forest-check}
+forest_check <- forest |>
+  dplyr::mutate(auc_diff = auc_model - auc_fig, cmax_diff = cmax_model - cmax_fig)
+
+forest_check |>
+  dplyr::arrange(dplyr::desc(scenario)) |>
+  dplyr::select(scenario, auc_fig, auc_model, cmax_fig, cmax_model) |>
+  dplyr::rename(
+    "Scenario" = scenario,
+    "AUC24 change, Figure 3 (%)" = auc_fig,
+    "AUC24 change, model (%)" = auc_model,
+    "Cmax change, Figure 4 (%)" = cmax_fig,
+    "Cmax change, model (%)" = cmax_model
+  ) |>
+  knitr::kable(digits = 0, caption = "Percent change in steady-state exposure from the reference subject.")
+
+# The two 85-year-old 'nonfasting' rows are a known deviation (see
+# Assumptions and deviations): steady-state AUC does not depend on age or food
+# in the published equations, yet the figure places these rows about 15 points
+# above the matching rows without age and food.
+aligned <- forest_check |>
+  dplyr::filter(!grepl("nonfasting", scenario))
+stopifnot(
+  abs(median(aligned$auc_diff)) < 5,
+  max(abs(aligned$auc_diff)) < 15,
+  abs(median(aligned$cmax_diff)) < 10
+)
+```
+
+# Replicate Table 3 (ASPEN steady-state exposure)
+
+Table 3 gives the steady-state exposure of the ASPEN participants, derived from
+their individual model parameters. The virtual ASPEN cohort below takes its
+covariates from the adult and adolescent columns of Table 1: log-normal body
+weight (adults 69.8 kg, CV 22.2%; adolescents 50.4 kg, CV 24.8%), age (adults
+normal with mean 52.9 and SD 19.5 years truncated to 18-85; adolescents uniform
+12-17 years), the tabulated sex and race fractions, the phase 3 tablet taken
+fasted, no interacting comedication, and the phase 3 residual-error stratum.
+
+```{r aspen-cohort}
+set.seed(20261117)
+rxode2::rxSetSeed(20261117)
+
+make_aspen <- function(n, adolescent, dose, id_offset) {
+  if (adolescent) {
+    wt <- exp(rnorm(n, log(50.4) - 0.5 * log(1 + 0.248^2), sqrt(log(1 + 0.248^2))))
+    age <- runif(n, 12, 17.99)
+    p_female <- 0.419
+    p_black <- 0
+    p_asian <- 0.0323
+  } else {
+    wt <- exp(rnorm(n, log(69.8) - 0.5 * log(1 + 0.222^2), sqrt(log(1 + 0.222^2))))
+    age <- pmin(pmax(rnorm(n, 52.9, 19.5), 18), 85)
+    p_female <- 0.558
+    p_black <- 0.062
+    p_asian <- 0.118
+  }
+  race <- sample(c("black", "asian", "other"), n, replace = TRUE,
+                 prob = c(p_black, p_asian, 1 - p_black - p_asian))
+  subjects <- tibble::tibble(
+    id = id_offset + seq_len(n),
+    group = paste(if (adolescent) "Adolescents" else "Adults", paste0(dose, " mg")),
+    WT = wt, AGE = age, SEXF = rbinom(n, 1, p_female),
+    RACE_BLACK = as.integer(race == "black"),
+    RACE_ASIAN = as.integer(race == "asian"),
+    HEPIMP = 0, FED = 0, FORM_SOLUTION = 0, CONMED_RIFAMPICIN = 0,
+    CONMED_CLARITHROMYCIN = 0, CONMED_VERAPAMIL = 0,
+    STUDY_PHASE2 = 0, STUDY_PHASE3 = 1, OCC = 1
+  )
+  make_ss_events(subjects, dose = dose, obs_step = 0.25)
+}
+
+ev_aspen <- dplyr::bind_rows(
+  make_aspen(200, FALSE, 10, 0L),
+  make_aspen(200, FALSE, 25, 200L),
+  make_aspen(100, TRUE, 10, 400L),
+  make_aspen(100, TRUE, 25, 500L)
+)
+stopifnot(!anyDuplicated(unique(ev_aspen[, c("id", "time", "evid")])))
+
+sim_aspen <- withCallingHandlers(
+  rxode2::rxSolve(mod, events = ev_aspen, keep = "group"),
+  warning = muffle_expected
+) |>
+  as.data.frame()
+```
+
+```{r aspen-profiles}
+sim_aspen |>
+  dplyr::mutate(tad = time - t_ss) |>
+  dplyr::group_by(group, tad) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tad, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~group) +
+  labs(x = "Time after the dose at steady state (h)",
+       y = "Brensocatib plasma concentration (ng/mL)",
+       caption = "Median and 90% interval of the model-predicted steady-state profile (no residual error).")
+```
+
+```{r aspen-nca}
+nca_aspen <- ss_nca(sim_aspen, ev_aspen, "group")
+
+geo_mean <- function(x) exp(mean(log(x)))
+sim_gm <- as.data.frame(nca_aspen) |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cmax", "tmax", "cmin")) |>
+  dplyr::group_by(group, PPTESTCD) |>
+  dplyr::summarise(value = geo_mean(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = value)
+
+table3 <- tibble::tribble(
+  ~group,               ~auclast, ~cmax, ~tmax, ~cmin,
+  "Adults 10 mg",           1360,  85.4,  1.19,  40.0,
+  "Adults 25 mg",           4060,   259,  1.20,   119,
+  "Adolescents 10 mg",      1620,   123, 0.994,  42.9,
+  "Adolescents 25 mg",      5650,   419,  1.39,   148
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_gm,
+  reference = table3,
+  by = "group",
+  units = c(auclast = "ng*h/mL", cmax = "ng/mL", tmax = "h", cmin = "ng/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = "Simulated vs. Usansky 2026 Table 3 steady-state geometric means. * differs by >20%.")
+```
+
+The individual parameters behind Table 3 can be compared the same way.
+
+```{r aspen-params}
+param_gm <- sim_aspen |>
+  dplyr::filter(time == t_ss) |>
+  dplyr::group_by(group) |>
+  dplyr::summarise(
+    cl_model = geo_mean(cl),
+    vss_model = geo_mean(vc + vp),
+    .groups = "drop"
+  ) |>
+  dplyr::inner_join(
+    tibble::tribble(
+      ~group,              ~cl_pub, ~vss_pub,
+      "Adults 10 mg",         2.81,      126,
+      "Adults 25 mg",         3.02,      131,
+      "Adolescents 10 mg",    2.36,     83.6,
+      "Adolescents 25 mg",    2.07,     71.3
+    ),
+    by = "group"
+  )
+
+param_gm |>
+  dplyr::select(group, cl_model, cl_pub, vss_model, vss_pub) |>
+  dplyr::rename(
+    "Group" = group,
+    "CL/F model (L/h)" = cl_model,
+    "CL/F Table 3" = cl_pub,
+    "Vss/F model (L)" = vss_model,
+    "Vss/F Table 3" = vss_pub
+  ) |>
+  knitr::kable(digits = 2, caption = "Geometric-mean individual CL/F and Vss/F against Usansky 2026 Table 3.")
+
+aspen_ratio <- sim_gm |>
+  dplyr::inner_join(table3, by = "group", suffix = c("_sim", "_pub")) |>
+  dplyr::mutate(
+    auc = auclast_sim / auclast_pub,
+    cmax = cmax_sim / cmax_pub,
+    adult = grepl("Adults", group)
+  )
+# Adults: 288-307 ASPEN patients per arm, so the published geometric means are
+# precise and a structural error (CL, F, dose or units) would move AUC by tens
+# of percent. Adolescents (15-16 per arm) are reported in the table above
+# without a gate. The cohort-covariate mismatch puts AUC about 7-14% low
+# (see below; realised AUC ratios 0.86 and 0.93, Cmax 0.90 and 0.97, the
+# same at 2 and 16 threads), so the bound leaves room for the per-thread
+# cohort draw while a mis-transcribed CL, F, dose or unit still breaks it.
+adults <- dplyr::filter(aspen_ratio, adult)
+stopifnot(
+  all(abs(adults$auc - 1) < 0.25),
+  all(abs(adults$cmax - 1) < 0.25)
+)
+```
+
+The virtual cohort reproduces Cmax and Tmax closely and sits about 7-14% below
+the published AUC24 and Cmin, with a geometric-mean CL/F 5-10% above the
+published one. CL/F in the model depends on weight, sex and race, so the gap
+reflects the difference between the pooled Table 1 covariates used here and the
+actual ASPEN participants (for example a larger female fraction would lower
+CL/F); the reference-subject check above, which needs no cohort assumptions,
+agrees to within 2%. The adolescent 25 mg Tmax is starred against a published
+value from 16 patients with a 57.6% geometric CV.
+
+# Assumptions and deviations
+
+- **Variability values.** Usansky 2026 reports only the fixed effects of the
+  final model (Table 2). The between-subject, between-occasion and residual
+  variances are taken from the `$OMEGA` and `$SIGMA` records of the final
+  control stream published as Data S1. In that file the non-fixed `$THETA`
+  records are starting values from a closely preceding run (for example CL/F
+  3.18 against the final 3.25 L/h, Vc/F 81.7 against 78.8 L, and the age
+  exponent 0.371 against 0.314), so the variances are very probably also
+  starting values that differ by a few percent from the final estimates. They
+  are the authors' own values and the closest available; the maintainers chose
+  them over removing the variability. IIV on Q/F is fixed to zero in the
+  control stream and is omitted.
+- **Hepatic impairment.** The printed CL/F equation writes the hepatic factor
+  as 1.187^HI with HI the "Child-Pugh classification number", which would
+  compound the effect by grade. The control stream applies one factor of
+  (1 + 0.187) to any impairment (`IF(CPCLASSN.NE.0)`), the estimate came from a
+  single study with 6 participants per grade, and Table 2 lists one
+  coefficient; the control stream form is used, through the binary `HEPIMP`.
+- **Comedications.** The source codes rifampicin, clarithromycin and verapamil
+  as levels of one categorical column, so at most one of the three
+  `CONMED_*` indicators should be 1 at a time. Their effects were fixed from
+  dedicated interaction studies, as were the hepatic-impairment effect.
+- **Occasions.** The control stream carries between-occasion variability on ka
+  and relative bioavailability for occasions 1 and 2 with a shared variance;
+  the paper does not define an occasion. Records with any other `OCC` carry no
+  between-occasion deviation. The simulations here put every record in
+  occasion 1. Because the occasion terms enter as an indicator-weighted sum,
+  rxode2 reports those etas as non-mu-referenced; this affects only
+  estimation speed-ups, not simulation.
+- **Forest-plot rows with age 85 and fed dosing.** In the published equations
+  steady-state AUC24 depends only on dose, bioavailability and CL/F, so adding
+  age 85 and a fed dose to the 155 kg / rifampicin / hepatic-impairment rows
+  cannot change it. Figure 3 nevertheless places those two rows about 15
+  percentage points above the matching rows without age and food, while every
+  other row agrees with the model to within the digitising error. The reason is
+  not stated; the two rows are shown but excluded from the forest-plot check.
+- **Figure medians.** Figure 3 and 4 medians were digitised by the maintainers
+  from the published images, to about 5 percentage points.
+- **ASPEN virtual cohort.** Table 1 gives covariates for adults pooled across
+  all 11 trials rather than for ASPEN alone; those are used. Age is assumed
+  normal (truncated 18-85) in adults and uniform in adolescents, and every
+  dose is taken fasted as the phase 3 tablet. Table 3 is derived from the
+  individual parameter estimates of the observed patients, so it reflects the
+  ASPEN covariate mix exactly, which the virtual cohort only approximates.
+- **No erratum** was found for Usansky 2026 as of 2026-11-17.

@@ -3,6 +3,7 @@ Yang_2023_diclazuril_chicken_pbpk <- function() {
   reference <- "Yang F, Zhang M, Jin Y-G, Chen J-C, Duan M-H, Liu Y, Li Z-E, Li X-P, Yang F. Development and Application of a Physiologically Based Pharmacokinetic Model for Diclazuril in Broiler Chickens. Animals (Basel). 2023;13(9):1512. doi:10.3390/ani13091512"
   vignette <- "Yang_2023_diclazuril"
   units <- list(time = "h", dosing = "ug", concentration = "ug/L")
+  dosing <- "a_gut"
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

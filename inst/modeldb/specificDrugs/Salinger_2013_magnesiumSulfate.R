@@ -3,6 +3,7 @@ Salinger_2013_magnesiumSulfate <- function() {
   reference <- "Salinger DH, Mundle S, Regi A, Bracken H, Winikoff B, Vicini P, Easterling T. Magnesium sulphate for prevention of eclampsia: are intramuscular and intravenous regimens equivalent? A population pharmacokinetic study. BJOG 2013;120:894-900. doi:10.1111/1471-0528.12222"
   vignette <- "Salinger_2013_magnesiumSulfate"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

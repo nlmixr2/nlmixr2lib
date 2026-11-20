@@ -35,6 +35,7 @@ vanRongen_2015_midazolam_circadian <- function() {
   )
   vignette <- "vanRongen_2015_midazolam_circadian"
   units <- list(time = "min", dosing = "mg", concentration = "ug/L")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     TCLOCK = list(
@@ -280,8 +281,9 @@ vanRongen_2015_midazolam_circadian <- function() {
     # ---- Inter-occasion variability on bioavailability ----
     # Table 2 'Interoccasion variability' block reports a single magnitude for
     # bioavailability across the six administration occasions. Expanded into
-    # six occasion-multiplexed slots because rxode2 cannot simulate the
-    # `eta ~ var | OCC` form; occasions 2-6 are held at occasion 1's variance,
+    # six occasion-multiplexed slots because the `eta ~ var | OCC` form shares
+    # one draw per occasion when no subject has two or more occasions;
+    # occasions 2-6 are held at occasion 1's variance,
     # which is what NONMEM `$OMEGA BLOCK(1) SAME` encodes.
     etaiov_fdepot_1 ~ log(1 + 0.148^2)        # Table 2 interoccasion variability, row 'F (%)' = 14.8 (RSE 10.5); bootstrap 14.5 (11.5-17.9)
     etaiov_fdepot_2 ~ fixed(log(1 + 0.148^2)) # SAME-equivalent: equal to the occasion-1 IOV variance

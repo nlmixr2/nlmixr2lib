@@ -1,0 +1,507 @@
+---
+title: "Depemokimab blood eosinophil models (Zecchin 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Depemokimab blood eosinophil models (Zecchin 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Zecchin et al. (2026) describe how depemokimab, an ultra-long-acting anti-IL-5
+monoclonal antibody, went from its first-time-in-human (FTiH) Phase I trial
+straight to Phase III. Two blood eosinophil count (BEC) models carry the
+argument, and both are packaged here:
+
+1. `Zecchin_2026_depemokimab_dose_time` -- the Bayesian nonlinear mixed-effects
+   dose-time response model fitted to the Phase I BEC data (Table 1). It is
+   algebraic: BEC is a function of dose, time after a single dose and baseline
+   BEC, with no PK. It selected the severe-asthma Phase III dose.
+2. `Zecchin_2026_depemokimab` -- the mepolizumab population PK/PD meta-analysis
+   model (an indirect-response model with inhibition of eosinophil
+   production) re-estimated for depemokimab (Table 2). It selected the
+   CRSwNP, EGPA and HES Phase III doses.
+
+* Citation (dose-time model): `r rxode2::rxode(readModelDb("Zecchin_2026_depemokimab_dose_time"))$reference`
+* Citation (PK/PD model): `r rxode2::rxode(readModelDb("Zecchin_2026_depemokimab"))$reference`
+* Article: <https://doi.org/10.1002/cpt.70183>
+* PK-layer source: <https://doi.org/10.1002/jcph.70187>
+
+# Population
+
+The dose-time model was fitted to 622 BEC measurements from 48 adults with
+mild-to-moderate asthma (BEC >= 200 cells/uL at screening, low-to-moderate
+inhaled corticosteroid) who received a single subcutaneous depemokimab dose of
+2, 10, 30, 100 or 300 mg or placebo in the FTiH trial (Study 205722). Only the
+293 observations from Day 57 onward were used for estimation; the 47 Day 29
+observations were held out for validation (Zecchin 2026 Results). Zecchin 2026
+does not tabulate the cohort's demographics; the same 48 patients are
+described in Thorsted 2026 Table 3: age 44.0 (SD 11.2) years, weight 82.9
+(SD 11.6) kg, baseline BEC 366 (SD 147) cells/uL.
+
+The PK/PD model's structure and all but four of its parameters come from the
+mepolizumab population PK/PD meta-analysis (29,575 BEC measurements from 2516
+participants in 16 studies, including 205 CRSwNP, 135 EGPA and 192 HES
+patients). IC50, the two between-patient variances and the residual SD were
+re-estimated on 675 BEC measurements from the same 48 FTiH patients.
+
+# Source trace
+
+| Item | Value | Source |
+|---|---|---|
+| Dose-time model equation (active and placebo arms) | see model file | Zecchin 2026 Table 1, 'Model' row |
+| E0, E1, E2, E3 | -0.2601, -0.6583, 0.5128, 0.5084 | Table 1 (posterior means) |
+| Emax | -2.6047 | Table 1 |
+| LNED50 (Day 182) | 2.9513 log mg (ED50 19.13 mg) | Table 1 |
+| KE | 0.0207 /day (T1/2 33.5 days) | Table 1 |
+| Hill slope (SLP) | 1.2358 | Table 1 |
+| F (2 mg dose) | 2.3730 | Table 1 |
+| Random-effect covariance (b1, b2, b3) | S2B rows | Table 1 |
+| Residual variance (EPS, log scale) | 0.0804 (SD 0.2836) | Table 1 |
+| Units of LNEOS / LNBASE | GI/L | Figure 1 y-axis |
+| Indirect-response equation | `deos/dt = KOUT*(KRO*(1+(Imax-1)*C^GAMA/(C^GAMA+IC50^GAMA)) - eos)` | Zecchin 2026 Methods equation |
+| KRO | exp(-1.73) = 0.177 GI/L | Table 2 (fixed, mepolizumab) |
+| KOUT | 24*exp(-4.35) = 0.310 /day | Table 2 (fixed) |
+| IC50 | exp(-2.34) = 0.0960 ug/mL | Table 2 (estimated) |
+| Imax | exp(-1.77) = 0.170 | Table 2 (fixed) |
+| GAMA | 1.61 | Table 2 (fixed); Supplementary Methods |
+| BEOS1 on KRO, BEOS2 on Imax | 0.563, -0.380 (on log(BEOS/0.26)) | Table 2 (fixed) |
+| SA, CRSwNP, EGPA, HES on KRO | 0.438, 0.132, 0.208, 1.27 | Table 2 (fixed) |
+| Study 200622 multiplier on KRO | 0.5 | Table 2 (fixed) |
+| BPV KRO, BPV Imax | 0.0853, 0.294 | Table 2 |
+| Residual SD (log scale) | 0.350 | Table 2 |
+| One-compartment PK, first-order absorption | structure | Zecchin 2026 Methods |
+| CL/F, V/F, ka, Frel (FTiH asthma population) | 0.1063 L/day, 6.29 L, 0.345 /day, 0.827 | Thorsted 2026 Table S3 |
+
+# Part 1 -- Bayesian dose-time response model
+
+```{r mod1}
+mod_dt <- readModelDb("Zecchin_2026_depemokimab_dose_time")
+ui_dt <- rxode2::rxode(mod_dt)
+ini_dt <- ui_dt$theta
+```
+
+## Derived quantities
+
+Table 1 reports two derived quantities, ED50 = exp(LNED50) and the half-life
+of the ED50 drift, log(2)/KE. Both follow from the packaged values.
+
+```{r mod1-derived}
+derived <- data.frame(
+  Quantity = c("ED50 at Day 182 (mg)", "T1/2 of the ED50 drift (days)"),
+  Packaged = c(exp(ini_dt[["led50"]]), log(2) / ini_dt[["ked50"]]),
+  Published = c(19.1308, 33.4854)
+)
+knitr::kable(derived, digits = 3, caption = "Derived quantities vs Zecchin 2026 Table 1.")
+stopifnot(
+  abs(derived$Packaged[1] / derived$Published[1] - 1) < 0.001,
+  abs(derived$Packaged[2] / derived$Published[2] - 1) < 0.001
+)
+```
+
+## Virtual cohort
+
+Each arm of the FTiH trial is represented by 200 virtual patients (the trial
+itself had about 8 per arm). Baseline BEC is log-normal with the Thorsted 2026
+Table 3 mean (366 cells/uL) and SD (147 cells/uL) of the same 48 patients.
+
+```{r mod1-cohort}
+set.seed(20261)
+rxode2::rxSetSeed(20261)
+doses <- c(0, 2, 10, 30, 100, 300)
+days <- c(28, 56, 84, 126, 168, 182, 224, 252, 280)
+n_per_arm <- 200
+sdlog_eos <- sqrt(log(1 + (147 / 366)^2))
+cohort <- data.frame(
+  id = seq_len(n_per_arm * length(doses)),
+  DOSE_DEPEMOKIMAB_MG = rep(doses, each = n_per_arm),
+  EOS = exp(rnorm(n_per_arm * length(doses), log(366) - sdlog_eos^2 / 2, sdlog_eos))
+)
+ev_dt <- cohort |>
+  tidyr::crossing(time = days) |>
+  dplyr::mutate(evid = 0, amt = 0) |>
+  dplyr::arrange(id, time)
+sim_dt <- rxode2::rxSolve(mod_dt, ev_dt, keep = c("DOSE_DEPEMOKIMAB_MG", "EOS")) |>
+  as.data.frame()
+```
+
+## Replicate Figure 1
+
+Figure 1 shows absolute BEC against dose for each scheduled day, with the
+observed mean (black) and the model median (coloured). The black points below
+were read from the published figure by the maintainers and are approximate.
+
+```{r mod1-fig1, fig.width = 8, fig.height = 7}
+fig1_obs <- tibble::tribble(
+  ~time, ~dose, ~bec,
+  28, 0, 0.35, 28, 2, 0.065, 28, 10, 0.065, 28, 30, 0.055, 28, 100, 0.065, 28, 300, 0.06,
+  56, 0, 0.37, 56, 2, 0.065, 56, 10, 0.045, 56, 30, 0.042, 56, 100, 0.048, 56, 300, 0.06,
+  84, 0, 0.36, 84, 2, 0.11, 84, 10, 0.055, 84, 30, 0.048, 84, 100, 0.058, 84, 300, 0.058,
+  126, 0, 0.38, 126, 2, 0.16, 126, 10, 0.10, 126, 30, 0.062, 126, 100, 0.055, 126, 300, 0.06,
+  168, 0, 0.37, 168, 2, 0.22, 168, 10, 0.19, 168, 30, 0.11, 168, 100, 0.05, 168, 300, 0.07,
+  182, 0, 0.38, 182, 2, 0.25, 182, 10, 0.22, 182, 30, 0.12, 182, 100, 0.07, 182, 300, 0.06
+)
+sim_sum <- sim_dt |>
+  dplyr::group_by(time, DOSE_DEPEMOKIMAB_MG) |>
+  dplyr::summarise(
+    median = median(blood_eosinophils),
+    lo = quantile(blood_eosinophils, 0.025),
+    hi = quantile(blood_eosinophils, 0.975),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(dose_f = factor(DOSE_DEPEMOKIMAB_MG, levels = doses, labels = c("Placebo", doses[-1])))
+fig1_obs$dose_f <- factor(fig1_obs$dose, levels = doses, labels = c("Placebo", doses[-1]))
+ggplot(sim_sum, aes(dose_f, median, group = 1)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "steelblue", alpha = 0.25) +
+  geom_line(colour = "steelblue") +
+  geom_point(data = fig1_obs, aes(dose_f, bec), inherit.aes = FALSE) +
+  facet_wrap(~time, labeller = label_both) +
+  scale_y_log10() +
+  labs(
+    x = "Dose (mg)", y = "Absolute BEC (GI/L)",
+    caption = "Replicates Figure 1 of Zecchin 2026: median and 95% interval of individual predictions; points read from the figure."
+  )
+```
+
+The simulated medians track the observed dose-response at every day. The
+placebo arm sits about 20% below the observed placebo means (0.30 vs about
+0.37 GI/L), which with about 8 placebo patients is within the trial's own
+scatter.
+
+```{r mod1-fig1-check}
+fig1_cmp <- fig1_obs |>
+  dplyr::filter(dose > 0) |>
+  dplyr::inner_join(
+    sim_sum |> dplyr::select(time, dose = DOSE_DEPEMOKIMAB_MG, median),
+    by = c("time", "dose")
+  ) |>
+  dplyr::mutate(log_ratio = log(median / bec))
+stopifnot(
+  # Active arms, Days 28-182: the centre of the simulated medians matches the
+  # observed means read from Figure 1 within about 25%.
+  abs(median(fig1_cmp$log_ratio)) < log(1.25),
+  quantile(abs(fig1_cmp$log_ratio), 0.9) < log(2)
+)
+```
+
+## Dose for severe asthma (QDM pharmacology matching)
+
+Zecchin 2026 compared the model's predicted Day 182 reduction from placebo
+with the 78% (MUSCA, minimum value) and 84% (MENSA, target value) reductions
+seen with mepolizumab 100 mg. The published go / no-go probabilities (Figure 2)
+need the full MCMC posterior and the resampled trial ratios, which are not
+available, so only the typical-value reduction is shown here. Because the
+baseline slopes E2 and E3 are almost equal, the reduction is nearly
+independent of baseline BEC.
+
+```{r mod1-qdm}
+qdm_doses <- c(10, 20, 30, 45, 60, 80, 100, 150, 200, 300)
+ev_qdm <- data.frame(
+  id = seq_along(c(0, qdm_doses)),
+  DOSE_DEPEMOKIMAB_MG = c(0, qdm_doses),
+  EOS = 366, time = 182, evid = 0, amt = 0
+)
+qdm <- rxode2::rxSolve(rxode2::zeroRe(mod_dt), ev_qdm, keep = "DOSE_DEPEMOKIMAB_MG") |>
+  as.data.frame()
+pbo <- qdm$blood_eosinophils[qdm$DOSE_DEPEMOKIMAB_MG == 0]
+qdm_tab <- qdm |>
+  dplyr::filter(DOSE_DEPEMOKIMAB_MG > 0) |>
+  dplyr::mutate(reduction_pct = 100 * (1 - blood_eosinophils / pbo)) |>
+  dplyr::select(DOSE_DEPEMOKIMAB_MG, reduction_pct)
+qdm_tab |>
+  dplyr::rename("Single dose (mg)" = DOSE_DEPEMOKIMAB_MG, "Typical Day 182 reduction vs placebo (%)" = reduction_pct) |>
+  knitr::kable(digits = 1)
+red100 <- qdm_tab$reduction_pct[qdm_tab$DOSE_DEPEMOKIMAB_MG == 100]
+red60 <- qdm_tab$reduction_pct[qdm_tab$DOSE_DEPEMOKIMAB_MG == 60]
+stopifnot(red100 > 78, red100 < 84, abs(red60 - 78) < 3)
+```
+
+The typical reduction reaches the MUSCA minimum value of 78% at about 60 mg,
+the dose above which Zecchin 2026 classified every regimen as "go", and the
+chosen 100 mg dose gives about 81%, between the MUSCA and MENSA values.
+
+# Part 2 -- PK/PD indirect-response model
+
+```{r mod2}
+mod_pd <- readModelDb("Zecchin_2026_depemokimab")
+```
+
+## PK layer and PKNCA check
+
+Zecchin 2026 re-estimated a one-compartment, first-order-absorption PK model
+on the FTiH data but does not print the estimates. The packaged model
+therefore carries the published Thorsted 2026 depemokimab population PK model
+(Table S3), evaluated for its "FTIH Asthma study population" and the Thorsted
+reference covariates. Thorsted 2026 Table 2 reports the individual-predicted
+exposure of the 9 FTiH patients for 100 mg every 26 weeks, which PKNCA can
+check directly.
+
+```{r mod2-pk}
+regimens <- c(100, 200, 300)
+pk_grid <- sort(unique(c(seq(0, 364, by = 1), 182 + seq(0, 21, by = 0.25))))
+ev_pk <- lapply(seq_along(regimens), function(i) {
+  rxode2::et(amt = regimens[[i]], ii = 182, addl = 1, cmt = "depot") |>
+    rxode2::et(pk_grid) |>
+    as.data.frame() |>
+    dplyr::mutate(id = i, treatment = paste(regimens[[i]], "mg Q26W"))
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::mutate(
+    EOS = 366, DIS_SEVERE_ASTHMA = 0, DIS_CHRONIC_RHINOSINUSITIS_NASAL_POLYPS = 0,
+    DIS_EOSINOPHILIC_GRANULOMATOSIS_POLYANGIITIS = 0, DIS_HYPEREOSINOPHILIC_SYNDROME = 0,
+    STUDY_200622 = 0
+  )
+sim_pk <- rxode2::rxSolve(rxode2::zeroRe(mod_pd), ev_pk, keep = "treatment") |>
+  as.data.frame()
+
+ggplot(dplyr::filter(sim_pk, time > 0), aes(time / 7, Cc, colour = treatment)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Week", y = "Depemokimab (ug/mL)", colour = NULL)
+
+conc <- sim_pk |>
+  dplyr::filter(!is.na(Cc), time >= 182) |>
+  dplyr::select(id, treatment, time, Cc)
+# The second dose (Day 182) is generated by addl inside rxode2, so it is not
+# a row of the event table; give PKNCA the dose of the analysed interval.
+dose_df <- data.frame(
+  id = seq_along(regimens), treatment = paste(regimens, "mg Q26W"),
+  time = 182, amt = regimens
+)
+o_conc <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id)
+o_dose <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 182, end = 364,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, clast.obs = TRUE, half.life = TRUE
+)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+
+published_pk <- data.frame(
+  treatment = "100 mg Q26W",
+  cmax = 12.29, tmax = 8.41, auclast = 778.8, clast.obs = 0.606, half.life = 39.4
+)
+knitr::kable(
+  nlmixr2lib::ncaComparisonTable(
+    simulated = nca, reference = published_pk, by = "treatment",
+    units = c(cmax = "ug/mL", tmax = "day", auclast = "ug*day/mL", clast.obs = "ug/mL", half.life = "day")
+  ),
+  caption = paste(
+    "Second dosing interval (Weeks 26-52), typical FTiH-population PK vs Thorsted 2026 Table 2",
+    "(FTIH Asthma study, geometric means of individual predictions; Ctrough Week 52 compared with clast).",
+    "* marks a difference above 20%."
+  )
+)
+```
+
+The typical values sit within about 10% of the FTiH geometric means. The
+residual gap (typical clearance 0.106 L/day vs the FTiH individual geometric
+mean 0.113 L/day) reflects the FTiH patients' weight (82.9 kg) and age (44
+years) being away from the Thorsted reference subject (76 kg, 50 years),
+which the packaged layer does not adjust for.
+
+```{r mod2-pk-check}
+nca_100 <- as.data.frame(nca$result) |>
+  dplyr::filter(treatment == "100 mg Q26W", PPTESTCD %in% names(published_pk)[-1])
+pk_cmp <- nca_100 |>
+  dplyr::mutate(ref = unlist(published_pk[PPTESTCD]), pct = 100 * (PPORRES / ref - 1))
+stopifnot(nrow(pk_cmp) == 5, all(abs(pk_cmp$pct) < 20))
+```
+
+## Replicate Figure 4
+
+Figure 4 shows the predicted BEC at Week 52 after depemokimab 100, 200 or
+300 mg every 26 weeks in CRSwNP (baseline 0.39 GI/L), EGPA (0.177 and
+1 GI/L) and HES (1.46 GI/L). The typical-value predictions reproduce the
+published geometric means only with two choices that the paper does not state
+but that the figure pins down:
+
+* **HES uses the Study 200622 multiplier** on KRO. GSK Study 200622 is the HES
+  reference trial the panel is compared with. Without the multiplier the HES
+  BEC is about twice the published value.
+* **CRSwNP also carries the severe-asthma effect** on KRO (comorbid asthma).
+  Without it the CRSwNP BEC is about 35% below the published value; with it
+  the three CRSwNP points match to within 2%.
+
+```{r mod2-fig4}
+scen <- tibble::tribble(
+  ~panel, ~EOS, ~SA, ~CRS, ~EGPA, ~HES, ~ST,
+  "CRSwNP, 0.39 GI/L", 390, 1, 1, 0, 0, 0,
+  "EGPA, 0.177 GI/L", 177, 0, 0, 1, 0, 0,
+  "EGPA, 1 GI/L", 1000, 0, 0, 1, 0, 0,
+  "HES, 1.46 GI/L", 1460, 0, 0, 0, 1, 1
+) |>
+  tidyr::crossing(dose = regimens) |>
+  dplyr::mutate(scenario = dplyr::row_number())
+
+n_per_scen <- 200
+ev_fig4 <- lapply(seq_len(nrow(scen)), function(i) {
+  rxode2::et(amt = scen$dose[[i]], ii = 182, addl = 1, cmt = "depot") |>
+    rxode2::et(c(0, 364)) |>
+    as.data.frame() |>
+    dplyr::mutate(scenario = i)
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::left_join(scen, by = "scenario") |>
+  dplyr::rename(
+    DIS_SEVERE_ASTHMA = SA, DIS_CHRONIC_RHINOSINUSITIS_NASAL_POLYPS = CRS,
+    DIS_EOSINOPHILIC_GRANULOMATOSIS_POLYANGIITIS = EGPA,
+    DIS_HYPEREOSINOPHILIC_SYNDROME = HES, STUDY_200622 = ST
+  )
+ev_fig4_typ <- dplyr::mutate(ev_fig4, id = scenario)
+typ <- rxode2::rxSolve(rxode2::zeroRe(mod_pd), ev_fig4_typ, keep = c("panel", "dose")) |>
+  as.data.frame() |>
+  dplyr::filter(time == 364) |>
+  dplyr::select(panel, dose, typical = blood_eosinophils)
+
+ev_fig4_sto <- lapply(seq_len(n_per_scen), function(k) {
+  dplyr::mutate(ev_fig4, id = (scenario - 1) * n_per_scen + k)
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::arrange(id, time)
+rxode2::rxSetSeed(20262)
+sto <- rxode2::rxSolve(mod_pd, ev_fig4_sto, keep = c("panel", "dose")) |>
+  as.data.frame() |>
+  dplyr::filter(time == 364) |>
+  dplyr::group_by(panel, dose) |>
+  dplyr::summarise(
+    geomean = exp(mean(log(blood_eosinophils))),
+    lo = quantile(blood_eosinophils, 0.025),
+    hi = quantile(blood_eosinophils, 0.975),
+    .groups = "drop"
+  )
+
+# Geometric means read from Zecchin 2026 Figure 4 by the maintainers.
+fig4_pub <- tibble::tribble(
+  ~panel, ~dose, ~published,
+  "CRSwNP, 0.39 GI/L", 100, 0.070, "CRSwNP, 0.39 GI/L", 200, 0.063, "CRSwNP, 0.39 GI/L", 300, 0.059,
+  "EGPA, 0.177 GI/L", 100, 0.040, "EGPA, 0.177 GI/L", 200, 0.037, "EGPA, 0.177 GI/L", 300, 0.036,
+  "EGPA, 1 GI/L", 100, 0.065, "EGPA, 1 GI/L", 200, 0.053, "EGPA, 1 GI/L", 300, 0.051,
+  "HES, 1.46 GI/L", 100, 0.107, "HES, 1.46 GI/L", 200, 0.083, "HES, 1.46 GI/L", 300, 0.079
+)
+fig4 <- typ |>
+  dplyr::left_join(sto, by = c("panel", "dose")) |>
+  dplyr::left_join(fig4_pub, by = c("panel", "dose")) |>
+  dplyr::mutate(pct_diff = 100 * (typical / published - 1))
+
+ggplot(fig4, aes(factor(dose), geomean, colour = factor(dose))) +
+  geom_pointrange(aes(ymin = lo, ymax = hi)) +
+  geom_point(aes(y = published), shape = 4, size = 3, colour = "black") +
+  facet_wrap(~panel, nrow = 1) +
+  scale_y_log10() +
+  labs(
+    x = "Depemokimab dose (mg Q26W)", y = "BEC at Week 52 (GI/L)", colour = NULL,
+    caption = "Replicates Figure 4 of Zecchin 2026: simulated geometric mean (95% interval); x = published geometric mean."
+  )
+
+fig4 |>
+  dplyr::select(panel, dose, typical, geomean, published, pct_diff) |>
+  dplyr::rename(
+    "Scenario" = panel, "Dose (mg Q26W)" = dose, "Typical (GI/L)" = typical,
+    "Simulated geometric mean (GI/L)" = geomean, "Figure 4 (GI/L)" = published,
+    "Typical vs Figure 4 (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 3)
+
+stopifnot(
+  # Typical values against the published geometric means; points read from
+  # the figure carry about 5% reading error.
+  abs(median(fig4$pct_diff)) < 5,
+  max(abs(fig4$pct_diff)) < 10
+)
+```
+
+The text of Zecchin 2026 gives the same results as reductions from baseline:
+82% for CRSwNP at 100 mg, at least 79% for EGPA and 94% for HES at 200 mg.
+
+```{r mod2-reduction}
+red <- fig4 |>
+  dplyr::mutate(base = c(0.39, 0.177, 1, 1.46)[match(panel, unique(scen$panel))]) |>
+  dplyr::mutate(reduction_pct = 100 * (1 - typical / base)) |>
+  dplyr::filter(
+    (panel == "CRSwNP, 0.39 GI/L" & dose == 100) |
+      (panel %in% c("EGPA, 0.177 GI/L", "HES, 1.46 GI/L") & dose == 200)
+  ) |>
+  dplyr::mutate(published_pct = c(82, 79, 94))
+red |>
+  dplyr::select(panel, dose, reduction_pct, published_pct) |>
+  dplyr::rename(
+    "Scenario" = panel, "Dose (mg Q26W)" = dose,
+    "Simulated reduction from baseline (%)" = reduction_pct, "Published (%)" = published_pct
+  ) |>
+  knitr::kable(digits = 1)
+stopifnot(all(abs(red$reduction_pct - red$published_pct) < 2))
+```
+
+## Trough concentration relative to IC50
+
+Zecchin 2026 states that 100 and 200 mg every 26 weeks give trough
+concentrations about 5 and 10 times the IC50. The packaged PK layer gives
+higher multiples:
+
+```{r mod2-trough}
+ic50 <- exp(rxode2::rxode(mod_pd)$theta[["lic50"]])
+trough <- sim_pk |>
+  dplyr::filter(time == 364) |>
+  dplyr::mutate(ratio = Cc / ic50) |>
+  dplyr::select(treatment, Cc, ratio)
+trough |>
+  dplyr::rename("Regimen" = treatment, "Week 52 trough (ug/mL)" = Cc, "Trough / IC50" = ratio) |>
+  knitr::kable(digits = 2)
+```
+
+The Week 52 trough after 100 mg (`r signif(trough$Cc[1], 3)` ug/mL) is close to
+the Thorsted 2026 FTiH geometric mean (0.606 ug/mL), giving about 7 times the
+IC50 rather than 5. The Zecchin 2026 PK estimates themselves are not
+published, so the stated multiples cannot be checked directly; Figure 4, which
+depends on the same concentrations through a steep part of the inhibition
+curve, is reproduced to within a few percent.
+
+# Assumptions and deviations
+
+* **PK layer from a different publication.** Zecchin 2026 does not report its
+  depemokimab PK estimates. The packaged PK/PD model uses the Thorsted 2026
+  depemokimab population PK model (same sponsor, fitted to the FTiH study plus
+  two healthy-volunteer and four Phase III studies), evaluated for its "FTIH
+  Asthma study population" (fractional effects on CL/F +15.5%, Frel -17.3%,
+  ka +62.7%) at the reference covariates (76 kg, 50 years, non-Asian,
+  albumin 45 g/L, eGFR 94 mL/min/1.73 m2, upper-arm injection). The body
+  weight, age, albumin, eGFR, race, injection-site, 2 mg dose and PK IIV terms
+  of Thorsted 2026 are not carried. The IC50 was estimated by Zecchin 2026
+  jointly with their own PK, so the PK layer here is an approximation; it
+  reproduces Figure 4 to within a few percent.
+* **Fixed parameters.** Table 2 shades the mepolizumab-derived rows in grey;
+  these (KRO, KOUT, Imax, GAMA and all covariate effects) are `fixed()`.
+  IC50, the two between-patient variances and the residual SD are estimated.
+* **Reference disease population.** The reference category of the KRO disease
+  effects (all indicators 0) is not stated; it is the remaining meta-analysis
+  population (healthy participants, mild-to-moderate asthma including the
+  FTiH cohort, and eosinophilic oesophagitis).
+* **Figure 4 scenarios.** The CRSwNP panel is reproduced with the
+  severe-asthma indicator also switched on, and the HES panel with the Study
+  200622 multiplier; see "Replicate Figure 4".
+* **Point estimates of the Bayesian model.** The dose-time model uses the
+  posterior means of Table 1, the column the paper's own derived quantities
+  (ED50 = 19.13 mg, T1/2 = 33.5 days) are computed from. E3 has a skewed
+  posterior (mean 0.5084, median 0.3425).
+* **2 mg dose potency.** F is applied only when the dose equals 2 mg, as the
+  Table 1 footnote states ("relative bioavailability of 2 mg dose").
+* **Single dose only.** The dose-time model's time variable is days after a
+  single dose; it does not describe repeated dosing.
+* **Units.** LNEOS and LNBASE are on the GI/L (10^9 cells/L) scale, read from
+  the Figure 1 axis; the covariate column `EOS` is in cells/uL and is divided
+  by 1000 (dose-time model) or by 260 (BEOS/0.26 GI/L, PK/PD model).
+* **Not reproduced.** Figure 2 (QDM probabilities) needs the MCMC posterior
+  and the resampled MUSCA / MENSA ratios; Figure 3 (Phase IIb trial
+  simulations) uses a separate negative-binomial exacerbation model whose
+  parameters are not reported.

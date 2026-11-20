@@ -31,6 +31,7 @@ Yamamoto_2023_tominersen <- function() {
     dosing = "mg",
     concentration = "ng/mL"
   )
+  dosing <- "csf"
 
   # The two peripheral CSF compartments are named for CNS tissue rather than
   # peripheral1 / peripheral2 because those two canonical names are already

@@ -9,6 +9,7 @@ Wang_2024_risperidone_rykindo <- function() {
   )
   vignette <- "Wang_2024_risperidone_lai_switching"
   units <- list(time = "day", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central", "depot2")
 
   covariateData <- list(
     SEXF = list(

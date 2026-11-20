@@ -17,7 +17,7 @@ Park_2025_efineptakin_alfa <- function() {
   # `dosing = depot,central` -- true of `depot`, but silently 1 short (it misses
   # `depot2`) and wrong about `central`, which is never dosed here. Both depots
   # receive the full amount; the f() values do the splitting.
-  dosing <- c("depot", "depot2")
+  dosing <- c("depot", "depot2", "central")
   units <- list(
     time = "h",
     dosing = "mg",

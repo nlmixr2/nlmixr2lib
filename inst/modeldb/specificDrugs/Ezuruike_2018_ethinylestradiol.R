@@ -47,6 +47,7 @@ Ezuruike_2018_ethinylestradiol <- function() {
   )
   vignette <- "Ezuruike_2018_ethinylestradiol"
   units <- list(time = "h", dosing = "ug", concentration = "pg/mL")
+  dosing <- c("depot", "central")
 
   # What each ODE state holds, in what amount units, in what biological
   # matrix. Verified against Ezuruike 2018 Methods "PBPK model

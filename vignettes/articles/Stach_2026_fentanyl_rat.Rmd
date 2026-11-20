@@ -1,0 +1,399 @@
+---
+title: "Fentanyl in rats with fixed-volume hemorrhagic shock (Stach 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fentanyl in rats with fixed-volume hemorrhagic shock (Stach 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Stach 2026 compared the pharmacokinetics of intravenous fentanyl in
+anaesthetised male Wistar rats with and without acute fixed-volume hemorrhagic
+shock (HS), in which 30% of the estimated blood volume is withdrawn before
+dosing. Each group of six rats received 10 ug/kg fentanyl as a 5-min
+intravenous infusion, and arterial plasma fentanyl and norfentanyl were
+measured by LC-ESI-MS/MS over 60 min.
+
+Fentanyl profiles were analysed in Phoenix WinNonlin 8.2 both by
+non-compartmental analysis (Table 2) and by fitting a two-compartment model with
+zero-order input and first-order elimination to **each rat individually**
+(Table 3). The two groups were fitted separately with the same structure, so
+the paper contributes two model files that differ only in their parameter
+values:
+
+```{r models}
+stach_models <- c(
+  "Stach_2026_fentanyl_rat_control", # normovolaemic controls
+  "Stach_2026_fentanyl_rat_hemorrhagicShock" # 30% blood-volume withdrawal
+)
+mod_ctl <- rxode2::rxode(readModelDb(stach_models[1]))
+mod_hs <- rxode2::rxode(readModelDb(stach_models[2]))
+```
+
+* Citation: `r mod_ctl$reference`
+* Article: [Eur J Drug Metab Pharmacokinet 2026;51:637-647](https://doi.org/10.1007/s13318-026-01023-z)
+
+```{r description}
+for (m in list(mod_ctl, mod_hs)) {
+  cat(strwrap(m$description, 76), sep = "\n")
+  cat("\n")
+}
+```
+
+Because the paper reports only the group mean (or median) of the individual
+estimates, both files are **typical-value models**: there is no between-animal
+variability, and the proportional residual SD implied by the 1/Yhat^2
+weighting is fixed at zero. Norfentanyl was characterised only by
+non-compartmental analysis (Table 4) and is not modelled.
+
+# Population
+
+```{r population}
+pop <- dplyr::bind_rows(lapply(list(Control = mod_ctl, HS = mod_hs), function(m) {
+  p <- m$population
+  data.frame(
+    Species = p$species, N = p$n_subjects, Age = p$age_range,
+    `Body weight` = p$weight_range, Dose = p$dose_range,
+    check.names = FALSE
+  )
+}), .id = "Group")
+knitr::kable(pop, caption = "Study population (Stach 2026 Methods and Results).")
+```
+
+Twelve male Wistar rats aged 18-20 weeks were randomised to a control group or
+a fixed-volume HS group (n = 6 each). Both groups were anaesthetised with
+isoflurane and catheterised in the jugular vein and femoral artery; in the HS
+group 30% of the estimated blood volume (EBV, mL = 0.06 x body weight in g +
+0.77) was then withdrawn through the arterial catheter within 15 min, with no
+fluid resuscitation. Body weight did not differ between groups (441.3 +/- 26.4
+g control, 471.8 +/- 41.1 g HS). At the end of the 60-min study HS animals had
+lower albumin (27.8 vs 33.7 g/L) and higher creatinine (61.4 vs 27.1 umol/L)
+than controls (Table 1).
+
+# Source trace
+
+| Element | Control | HS | Source |
+|---|---|---|---|
+| Structure: 2 compartments, zero-order 5-min input, first-order elimination from central | -- | -- | Methods, Pharmacokinetic Analysis |
+| Residual weighting 1/Yhat^2 (proportional), SD not reported -> `propSd` fixed at 0 | 0 | 0 | Results, Compartmental Pharmacokinetics |
+| `lcl`: CL (L/h/kg), divided by 60 for the per-minute time base | log(5.9/60) | log(2.6/60) | Table 3, CL |
+| `lvc`: Vc (L/kg) | log(0.9) | log(0.6) | Table 3, Vc |
+| `lvp`: Vp (L/kg) | log(3.5) | log(3.5) | Table 3, Vp |
+| `lq`: Q (L/min/kg), back-solved from median t1/2beta | log(0.1587) | log(0.1700) | Table 3, t1/2beta (44.1 / 78.1 min) |
+| Dose 10 ug/kg = 10,000 ng/kg over 5 min | -- | -- | Methods, Experimental Design |
+| Concentration = central / Vc; ng/kg / (L/kg) = pg/mL | -- | -- | Units of Tables 2-3 |
+
+## The intercompartmental clearance
+
+Stach 2026 estimated k12 and k21 but Table 3 does not print them. With CL, Vc
+and Vp taken from Table 3, the two-compartment system has one free parameter
+left, Q. The packaged value of Q makes the beta (elimination) half-life equal
+the Table 3 median t1/2beta. The chunk below re-derives it from the table and
+checks the implied distribution half-life against the independently reported
+t1/2alpha.
+
+```{r q-backsolve}
+two_cmt_half_lives <- function(cl, vc, vp, q) {
+  k10 <- cl / vc
+  k12 <- q / vc
+  k21 <- q / vp
+  s <- k10 + k12 + k21
+  d <- sqrt(s^2 - 4 * k10 * k21)
+  c(alpha = log(2) / ((s + d) / 2), beta = log(2) / ((s - d) / 2))
+}
+solve_q <- function(cl, vc, vp, target, which) {
+  stats::uniroot(
+    function(q) two_cmt_half_lives(cl, vc, vp, q)[[which]] - target,
+    c(1e-4, 10),
+    tol = 1e-10
+  )$root
+}
+
+table3 <- data.frame(
+  group = c("Control", "HS"),
+  cl = c(5.9, 2.6) / 60, # L/min/kg
+  vc = c(0.9, 0.6),
+  vp = c(3.5, 3.5),
+  k10 = c(0.12, 0.10), # Table 3 mean K10 (1/min)
+  thalf_alpha = c(1.9, 2.4), # Table 3 mean t1/2alpha (min)
+  thalf_beta = c(44.1, 78.1) # Table 3 median t1/2beta (min)
+)
+packaged_q <- c(
+  Control = exp(mod_ctl$theta[["lq"]]),
+  HS = exp(mod_hs$theta[["lq"]])
+)
+
+q_check <- table3 |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    q_from_beta = solve_q(cl, vc, vp, thalf_beta, "beta"),
+    q_from_alpha = solve_q(cl, vc, vp, thalf_alpha, "alpha"),
+    implied_alpha = two_cmt_half_lives(cl, vc, vp, q_from_beta)[["alpha"]],
+    beta_if_alpha_anchor = two_cmt_half_lives(cl, vc, vp, q_from_alpha)[["beta"]],
+    k10_from_cl_vc = cl / vc
+  ) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(q_packaged = packaged_q[group])
+
+# The packaged Q is the beta-anchored root rounded to 4 significant figures.
+stopifnot(all(abs(q_check$q_packaged / q_check$q_from_beta - 1) < 5e-4))
+
+q_check |>
+  dplyr::select(
+    group, q_packaged, q_from_beta, implied_alpha, thalf_alpha,
+    q_from_alpha, beta_if_alpha_anchor, thalf_beta, k10_from_cl_vc, k10
+  ) |>
+  dplyr::mutate(dplyr::across(where(is.numeric), \(x) signif(x, 4))) |>
+  dplyr::rename(
+    Group = group,
+    "Q packaged (L/min/kg)" = q_packaged,
+    "Q from t1/2beta" = q_from_beta,
+    "Implied t1/2alpha (min)" = implied_alpha,
+    "Table 3 t1/2alpha (min)" = thalf_alpha,
+    "Q from t1/2alpha" = q_from_alpha,
+    "t1/2beta if alpha-anchored (min)" = beta_if_alpha_anchor,
+    "Table 3 t1/2beta (min)" = thalf_beta,
+    "CL/Vc (1/min)" = k10_from_cl_vc,
+    "Table 3 K10 (1/min)" = k10
+  ) |>
+  knitr::kable(caption = "Back-solving Q from Table 3, and the cross-checks it allows.")
+```
+
+The beta-anchored Q gives a distribution half-life of 2.2 min (control) and
+1.75 min (HS), both inside one SD of the reported 1.9 +/- 0.7 and 2.4 +/- 0.9
+min. Anchoring on t1/2alpha instead would give Q = 0.195 and 0.115 L/min/kg
+and a t1/2beta 6% shorter (control) or 8% longer (HS) than reported. The
+elimination half-life was chosen as the anchor because the prolonged
+elimination is the paper's main finding and is reported as a median, which is
+not distorted by the skewed individual estimates.
+
+The Table 3 K10 means (0.12 and 0.10 per min) differ from CL/Vc computed from
+the Table 3 CL and Vc means (0.109 and 0.072 per min), because the mean of
+individual ratios is not the ratio of the means. CL, Vc and Vp were packaged
+because CL is the parameter the paper's conclusions rest on and Vc + Vp
+reproduces the reported Vss exactly (4.4 and 4.1 L/kg).
+
+# Virtual cohort
+
+Every parameter is expressed per kg and the dose was weight-normalised
+(10 ug/kg), so a single typical rat per group, dosed with 10,000 ng/kg,
+represents the whole group; no covariates are needed. The models carry no
+between-animal variability, so a stochastic cohort would add nothing.
+
+# Simulation
+
+```{r simulate}
+dose_ng_per_kg <- 10000 # 10 ug/kg
+t_inf <- 5 # min
+
+obs_times <- sort(unique(c(seq(0, 60, by = 0.5), seq(61, 900, by = 1))))
+ev <- rxode2::et(amt = dose_ng_per_kg, dur = t_inf, cmt = "central") |>
+  rxode2::et(obs_times, cmt = "central")
+
+sim <- dplyr::bind_rows(
+  as.data.frame(rxode2::rxSolve(mod_ctl, ev)) |> dplyr::mutate(group = "Control"),
+  as.data.frame(rxode2::rxSolve(mod_hs, ev)) |> dplyr::mutate(group = "HS")
+) |>
+  dplyr::select(group, time, Cc)
+```
+
+## Figure 1A: fentanyl plasma concentrations
+
+```{r fig1a, fig.cap = "Replicates Figure 1A of Stach 2026. Lines: typical-value simulations. Points: group means read approximately from the published figure by the maintainers (log axis, so roughly +/-10%)."}
+fig1a_means <- data.frame(
+  group = rep(c("Control", "HS"), each = 8),
+  time = rep(c(5, 10, 15, 20, 30, 40, 50, 60), 2),
+  Cc = c(
+    6000, 1800, 1230, 930, 870, 650, 480, 520,
+    13000, 2950, 1950, 1480, 1100, 990, 860, 1000
+  )
+)
+
+ggplot(dplyr::filter(sim, time != 0, time <= 60), aes(time, Cc, colour = group)) +
+  geom_line() +
+  geom_point(data = fig1a_means, size = 2) +
+  scale_y_log10(limits = c(100, 1e5)) +
+  labs(x = "Time (min)", y = "Fentanyl plasma concentration (pg/mL)", colour = NULL) +
+  theme_bw()
+```
+
+The typical-value curves follow the published means from 10 min onwards. At the
+end of the infusion (5 min) the HS model sits below the published mean of about
+13,000 pg/mL; the HS group had the most variable peak concentrations (Table 2
+median 13,060, interquartile range 7,785-13,820 pg/mL), and a typical-value
+model built from the mean Vc cannot reproduce the mean of a skewed set of
+individual peaks.
+
+# PKNCA validation
+
+```{r pknca}
+nca_input <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(id = 1L)
+stopifnot(all(tapply(nca_input$time, nca_input$group, min) == 0))
+
+conc_obj <- PKNCA::PKNCAconc(nca_input, Cc ~ time | group + id)
+dose_obj <- PKNCA::PKNCAdose(
+  data.frame(
+    group = c("Control", "HS"), id = 1L, time = 0,
+    amt = dose_ng_per_kg, duration = t_inf
+  ),
+  amt ~ time | group + id,
+  duration = "duration",
+  route = "intravascular"
+)
+intervals <- data.frame(
+  start = c(0, 5), end = c(Inf, 60),
+  cmax = c(TRUE, FALSE), aucinf.obs = c(TRUE, FALSE),
+  half.life = c(TRUE, FALSE), cl.obs = c(TRUE, FALSE),
+  auclast = c(FALSE, TRUE)
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against published values
+
+Reference values are the Table 3 compartmental summaries (Cmax and t1/2beta as
+medians, AUC0-inf and CL as means) and the Table 2 non-compartmental AUC0-t.
+CL is converted to L/min/kg.
+
+The Table 2 "AUC0-t" does not include the infusion period. The linear
+trapezoidal area under the Figure 1A group means reproduces it only when the
+area starts at the first sample (5 min), not at the start of the infusion:
+
+```{r auct-identity}
+trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+fig1a_means |>
+  dplyr::group_by(group) |>
+  dplyr::summarise(
+    auc_5_60 = trap(time, Cc),
+    auc_0_60 = trap(c(0, time), c(0, Cc))
+  ) |>
+  dplyr::mutate(table2_auc0t = c(59675, 102163)) |>
+  dplyr::mutate(dplyr::across(where(is.numeric), \(x) signif(x, 3))) |>
+  dplyr::rename(
+    Group = group,
+    "Figure 1A means, 5-60 min" = auc_5_60,
+    "Figure 1A means, 0-60 min" = auc_0_60,
+    "Table 2 AUC0-t" = table2_auc0t
+  ) |>
+  knitr::kable(caption = "Trapezoidal AUC (min pg/mL) of the approximate Figure 1A means.")
+```
+
+The simulated counterpart is therefore the area from 5 to 60 min (auclast over
+the 5-60 min interval below).
+
+```{r nca-compare}
+published_nca <- tibble::tribble(
+  ~group,    ~PPTESTCD,    ~PPORRES,
+  "Control", "cmax",          4589,      # Table 3, median
+  "Control", "aucinf.obs",  104357,      # Table 3, mean
+  "Control", "half.life",     44.1,      # Table 3, median t1/2beta
+  "Control", "cl.obs",       5.9 / 60,   # Table 3, mean CL
+  "Control", "auclast",      59675,      # Table 2, mean AUC0-t
+  "HS",      "cmax",         10091,      # Table 3, median
+  "HS",      "aucinf.obs",  242210,      # Table 3, mean
+  "HS",      "half.life",     78.1,      # Table 3, median t1/2beta
+  "HS",      "cl.obs",       2.6 / 60,   # Table 3, mean CL
+  "HS",      "auclast",     102163       # Table 2, mean AUC0-t
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published_nca,
+  by = "group",
+  params = c("cmax", "auclast", "aucinf.obs", "half.life", "cl.obs"),
+  units = c(
+    cmax = "pg/mL", auclast = "min pg/mL", aucinf.obs = "min pg/mL",
+    half.life = "min", cl.obs = "L/min/kg"
+  ),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, caption = paste(
+  "Simulated typical-value NCA versus Stach 2026 Tables 2 and 3.",
+  "* marks a difference above 20%. AUClast is the area from 5 to 60 min, compared",
+  "with the Table 2 AUC0-t (see above)."
+))
+```
+
+```{r nca-assert}
+sim_wide <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("aucinf.obs", "half.life", "cl.obs")) |>
+  dplyr::select(group, PPTESTCD, sim = PPORRES) |>
+  dplyr::inner_join(published_nca, by = c("group", "PPTESTCD")) |>
+  dplyr::mutate(pct = 100 * (sim / PPORRES - 1))
+# Deterministic typical-value solves. CL and AUC0-inf are a direct read of the
+# packaged CL (AUC = Dose / CL), so they sit within a few percent of the
+# Table 3 means; the terminal half-life reproduces the median t1/2beta that Q
+# was anchored on.
+stopifnot(
+  nrow(sim_wide) == 6,
+  all(abs(sim_wide$pct[sim_wide$PPTESTCD == "cl.obs"]) < 10),
+  all(abs(sim_wide$pct[sim_wide$PPTESTCD == "aucinf.obs"]) < 10),
+  all(abs(sim_wide$pct[sim_wide$PPTESTCD == "half.life"]) < 5)
+)
+```
+
+The model reproduces the exposure-driving parameters of both groups:
+AUC0-inf = Dose/CL lies 3-5% below the Table 3 means (a typical animal is
+expected to sit slightly below the mean of individual AUCs, which are
+right-skewed), and the terminal half-life matches the reported medians by
+construction. The area over the sampled window (5-60 min), which depends on all
+four parameters and was not used to build the model, lies 8% (control) and 13%
+(HS) below the observed non-compartmental AUC0-t.
+
+Cmax is the one parameter that differs by more than 20% in the control group.
+Cmax in a 5-min infusion depends almost entirely on Vc and on the fast
+distribution phase, and Vc is the least precisely known parameter in Table 3
+(SD 0.4 L/kg on means of 0.9 and 0.6 L/kg). The typical-value peak (computed
+from the mean Vc) is therefore not expected to equal the median of the six
+individual peaks; the control-group simulation (about 6,100 pg/mL) does agree
+with the mean of about 6,000 pg/mL in Figure 1A.
+
+# Assumptions and deviations
+
+* **Two-stage summaries packaged as typical values.** Table 3 reports the mean
+  (or median) of six individual WinNonlin fits per group. CL, Vc and Vp are
+  the group means; no between-animal variability is encoded because the
+  standard deviations of individual estimates include estimation error and are
+  not population variance estimates.
+* **Q back-solved.** The intercompartmental rate constants k12 and k21 were
+  estimated but not reported. Q was solved so the beta half-life equals the
+  Table 3 median t1/2beta (see the back-solve table above); the alternative
+  alpha-anchored values are shown there for comparison.
+* **K10 not used.** The Table 3 mean K10 is inconsistent with CL/Vc from the
+  table means (0.12 vs 0.109 per min control, 0.10 vs 0.072 per min HS);
+  CL and Vc were retained.
+* **Time base.** The models run in minutes. Table 3 reports CL in L/h/kg; it
+  was divided by 60. Time zero is the start of the 5-min infusion, matching
+  the paper's non-compartmental Vss formula `CL x (MRT - Tinf/2)` and the
+  first sample at 5 min.
+* **Residual error.** The 1/Yhat^2 weighting implies a proportional error model;
+  its magnitude was not reported, so `propSd` is fixed at 0.
+* **Group as two files.** HS is not a covariate in the paper; the two groups
+  were fitted separately with the same structure, so each is its own model
+  file.
+* **Not modelled.** Norfentanyl (non-compartmental only, Table 4; metabolic
+  conversion ratio 0.197 control vs 0.117 HS) and the plasma biochemistry
+  (Table 1).
+* **Table 2 AUC0-t starts at 5 min.** Its values match the trapezoidal area of
+  the Figure 1A means from the first sample (5 min) to 60 min and are about 20%
+  (control) and 25% (HS) below the area from the start of the infusion, so they
+  are compared with a simulated AUC over 5-60 min. The Table 2 AUC0-inf, CL and
+  t1/2lambdaz, which build on that area, were not used as comparison targets.
+* **Figure points.** The Figure 1A means plotted above were read from the
+  published figure by eye and are approximate; they are used for display and
+  for the AUC0-t check, not for any assertion.
+* **Errata.** No erratum or correction was found in Europe PMC for this
+  article as of 2026-11-17.

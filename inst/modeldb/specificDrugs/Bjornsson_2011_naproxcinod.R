@@ -47,6 +47,7 @@ Bjornsson_2011_naproxcinod <- function() {
     ),
     concentration = "umol/L (both total and unbound naproxen)"
   )
+  dosing <- c("depot_naproxen", "depot_naproxcinod")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

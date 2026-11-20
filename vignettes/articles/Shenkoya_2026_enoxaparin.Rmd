@@ -1,0 +1,439 @@
+---
+title: "Enoxaparin in burn patients (Shenkoya 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Enoxaparin in burn patients (Shenkoya 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Shenkoya B, Yellepeddi V, Prazak AMB, Gopalakrishnan M. A
+  real-world data-driven approach to optimizing enoxaparin dosing in burn
+  patients. Br J Clin Pharmacol. 2026;92(4):1126-1136.
+* Article: <https://doi.org/10.1002/bcp.70347>
+
+Shenkoya 2026 fitted a one-compartment, first-order absorption population PK
+model to anti-factor Xa (anti-Xa) activity measured during routine
+enoxaparin thromboprophylaxis (every 12 h, subcutaneous) in burn patients.
+Body weight is a power covariate on apparent clearance (CL/F) and apparent
+volume (Vc/F); the percentage of total body surface area burned (TBSA) is a
+second power covariate on Vc/F. Between-subject variability (BSV) on CL/F and
+Vc/F is almost perfectly correlated, between-occasion variability (BOV) sits
+on CL/F, and the residual error is proportional. The paper then used the
+model to compare the hospital's equation-based starting dose (EQ) with a flat
+model-based dose (M1) and a loading-plus-maintenance regimen (M2).
+
+```{r load-model}
+mod <- readModelDb("Shenkoya_2026_enoxaparin")
+```
+
+# Population
+
+Shenkoya 2026 Table 1 describes 408 patients from the University of Utah
+Burn Center (July 2014 - January 2023):
+
+* Age median 45 years (range 1-89); 386 adults and 22 children (<18 years),
+  one of them under 6 years.
+* Weight median 86 kg (11-208).
+* TBSA median 13% (0.25-91): <10% in 40%, 10-20% in 32%, >20% in 27%.
+* 71% male; 9% with inhalational injury.
+* Serum creatinine median 0.76 mg/dL; Cockcroft-Gault GFR median 141 mL/min
+  (40-250, capped at 250).
+* 15 517 doses (6-120 mg every 12 h) and 1288 anti-Xa samples, drawn at a
+  median of 4.13 h after the dose. 84 samples (6%) below the 0.1 IU/mL limit
+  of quantification were excluded.
+
+The starting dose followed the Lin equation, Dose (mg) = 22.8 + 3.3 x
+TBSA/10 + 1.89 x WT/10, rounded to the nearest 10 mg (Methods Eq. 1). The
+same information is stored in the `population` element of the model file.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Structure: one compartment, first-order absorption and elimination | -- | Results, Population PK analysis; Abstract |
+| `lka` (ka) | 1.10 1/h | Table 2 'Kapop' |
+| `lcl` (CL/F at 87 kg) | 1.56 L/h | Table 2 'CLpop' |
+| `lvc` (Vc/F at 87 kg, 19% TBSA) | 22.1 L | Table 2 'Vcpop' |
+| `e_wt_cl` | 0.670 | Table 2 'theta WT_CL' |
+| `e_wt_vc` | 1.07 | Table 2 'theta WT_Vc' |
+| `e_bsa_affected_pct_vc` | 0.473 | Table 2 'theta TBSA_Vc' |
+| `etalcl` | CV 15.1% | Table 2 'eta CL' |
+| `etalvc` | CV 32.9% | Table 2 'eta Vc' |
+| CL-Vc correlation | 0.99 | Results text ('strong positive correlation (.99)'); Table 2 prints 1.00 |
+| `etaiov_cl_1..4` | CV 20.1%, one variance shared by four occasions | Table 2 'kappa CL'; Methods Eq. 7; Discussion (occasion bins) |
+| `propSd` | 0.287 | Table 2 'Proportional %' |
+| CL/F equation | CLpop x exp(etaCL + kappaCL) x (WT/87)^thetaWT_CL | Table 2 |
+| Vc/F equation | Vcpop x exp(etaVc) x (WT/87)^thetaWT_Vc x (TBSA/19)^thetaTBSA_Vc | Table 2 |
+| Occasions | <10, 10-19, 20-39, >=40 doses | Discussion |
+| Residual error: Normal with variance Cpred^2 sigma_prop^2 (+ additive, not retained) | -- | Methods Eq. 4; Results ('proportional residual error') |
+| Final covariate set | WT on CL/F and Vc/F, TBSA on Vc/F | Table 2; Table S2 model 23 |
+
+# Typical-value check
+
+The typical-value parameters at the reference covariates (87 kg, 19% TBSA)
+must equal Table 2, and the solved profile must match the one-compartment
+closed form. Both are deterministic, so the bounds are tight.
+
+```{r typical-check}
+mod_typ <- rxode2::zeroRe(mod)
+ev_ref <- rxode2::et(amt = 4000, cmt = "depot") |>
+  rxode2::et(seq(0, 12, by = 0.25), cmt = "central") |>
+  as.data.frame() |>
+  mutate(WT = 87, BSA_AFFECTED_PCT = 19, OCC = 1L)
+typ <- rxode2::rxSolve(mod_typ, ev_ref, returnType = "data.frame")
+ka <- 1.10
+cl <- 1.56
+vc <- 22.1
+ke <- cl / vc
+closed <- 4000 / (vc * 1000) * ka / (ka - ke) * (exp(-ke * typ$time) - exp(-ka * typ$time))
+stopifnot(
+  abs(typ$cl[1] / cl - 1) < 1e-8,
+  abs(typ$vc[1] / vc - 1) < 1e-8,
+  max(abs(typ$Cc - closed)) < 1e-5
+)
+data.frame(time_h = c(2, 4, 6, 12)) |>
+  mutate(Cc_IU_mL = signif(typ$Cc[match(time_h, typ$time)], 3)) |>
+  knitr::kable(caption = "Typical anti-Xa activity after a single 40 mg (4000 IU) dose at 87 kg and 19% TBSA.")
+```
+
+# Virtual cohort
+
+The paper simulated from the post hoc parameter estimates of its own 408
+patients; those data are not available, so the cohort below is drawn from
+the population distribution of the model. Subjects are generated in each of
+the nine TBSA x weight categories of Table 3 (60 per category), with weight
+and TBSA uniform within each category. The same 540 subjects receive each of
+the three regimens, as in the paper.
+
+```{r cohort}
+rxode2::rxSetSeed(2026)
+set.seed(2026)
+n_per_cat <- 60
+tbsa_lim <- list("<10%" = c(1, 10), "10-20%" = c(10, 20), ">20%" = c(20, 45))
+wt_lim <- list("<75 kg" = c(50, 75), "75-100 kg" = c(75, 100), ">100 kg" = c(100, 140))
+
+# Shenkoya 2026 Table 3: M1 flat dose and M2 loading dose (mg) by category;
+# the M2 maintenance dose equals the M1 dose.
+dose_tab <- tibble::tribble(
+  ~cat_tbsa, ~cat_wt, ~M1, ~M2_load,
+  "<10%", "<75 kg", 30, 30,
+  "<10%", "75-100 kg", 40, 40,
+  "<10%", ">100 kg", 50, 50,
+  "10-20%", "<75 kg", 40, 50,
+  "10-20%", "75-100 kg", 50, 60,
+  "10-20%", ">100 kg", 60, 80,
+  ">20%", "<75 kg", 50, 70,
+  ">20%", "75-100 kg", 60, 90,
+  ">20%", ">100 kg", 70, 120
+)
+
+subjects <- dose_tab |>
+  slice(rep(seq_len(n()), each = n_per_cat)) |>
+  mutate(
+    sid = row_number(),
+    WT = runif(n(), vapply(wt_lim[cat_wt], `[`, 1, 1), vapply(wt_lim[cat_wt], `[`, 1, 2)),
+    BSA_AFFECTED_PCT = runif(
+      n(), vapply(tbsa_lim[cat_tbsa], `[`, 1, 1), vapply(tbsa_lim[cat_tbsa], `[`, 1, 2)
+    ),
+    # Methods Eq. 1, rounded to the nearest 10 mg.
+    EQ = round((22.8 + 3.3 * BSA_AFFECTED_PCT / 10 + 1.89 * WT / 10) / 10) * 10
+  )
+
+subjects |>
+  mutate(cat_tbsa = factor(cat_tbsa, names(tbsa_lim)), cat_wt = factor(cat_wt, names(wt_lim))) |>
+  group_by(cat_tbsa, cat_wt) |>
+  summarise(EQ_median_mg = median(EQ), M1_mg = first(M1), M2_mg = paste0(first(M2_load), "/", first(M1)), .groups = "drop") |>
+  rename(TBSA = cat_tbsa, Weight = cat_wt, "EQ (median)" = EQ_median_mg, M1 = M1_mg, "M2 (load/maint)" = M2_mg) |>
+  knitr::kable(caption = "Simulated cohort doses; compare with Shenkoya 2026 Table 3.")
+```
+
+# Simulation
+
+Three doses every 12 h (enoxaparin 1 mg = 100 IU anti-Xa). All three doses
+fall in the first occasion (fewer than 10 doses), so `OCC = 1`.
+
+```{r simulate}
+regimen_doses <- function(s, regimen) {
+  switch(regimen,
+    EQ = rep(s$EQ, 3),
+    M1 = rep(s$M1, 3),
+    M2 = c(s$M2_load, s$M1, s$M1)
+  )
+}
+make_events <- function(regimen, id_offset) {
+  obs_times <- sort(unique(c(seq(0, 36, by = 0.5), 4, 16, 28)))
+  bind_rows(lapply(seq_len(nrow(subjects)), function(k) {
+    s <- subjects[k, ]
+    bind_rows(
+      tibble(time = c(0, 12, 24), amt = regimen_doses(s, regimen) * 100, evid = 1L, cmt = "depot"),
+      tibble(time = obs_times, amt = 0, evid = 0L, cmt = "central")
+    ) |>
+      mutate(
+        id = id_offset + k, WT = s$WT, BSA_AFFECTED_PCT = s$BSA_AFFECTED_PCT, OCC = 1L,
+        regimen = regimen, cat_tbsa = s$cat_tbsa, cat_wt = s$cat_wt
+      )
+  }))
+}
+events <- bind_rows(
+  make_events("EQ", 0L),
+  make_events("M1", 1000L),
+  make_events("M2", 2000L)
+) |>
+  arrange(id, time, desc(evid))
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+
+sim <- rxode2::rxSolve(mod, events, keep = c("regimen", "cat_tbsa", "cat_wt"), returnType = "data.frame") |>
+  mutate(
+    regimen = factor(regimen, c("EQ", "M1", "M2")),
+    cat_tbsa = factor(cat_tbsa, names(tbsa_lim)),
+    cat_wt = factor(cat_wt, names(wt_lim))
+  )
+```
+
+# Replicate published figures
+
+## Figure 4: anti-Xa profiles over the first three doses
+
+```{r fig4, fig.height = 4}
+sim |>
+  group_by(regimen, time) |>
+  summarise(mean = mean(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(time, mean)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = c(0.2, 0.4), linetype = "dashed", colour = "red") +
+  facet_wrap(~regimen) +
+  scale_x_continuous(breaks = seq(0, 36, 12)) +
+  labs(x = "Time (h)", y = "Anti-Xa (IU/mL)", caption = "Mean and 5th-95th percentiles. Replicates Figure 4 of Shenkoya 2026.")
+```
+
+## Figure 5 and Table 3: target attainment by dose
+
+Target attainment is read 4 h after each dose (the clinical sampling time).
+The median time within 0.2-0.4 IU/mL during each 12-h interval is the
+paper's second metric.
+
+```{r attainment}
+attain <- sim |>
+  filter(time %in% c(4, 16, 28)) |>
+  mutate(dose = paste0("D", match(time, c(4, 16, 28))), within = Cc >= 0.2 & Cc <= 0.4)
+
+tir <- sim |>
+  filter(time < 36) |>
+  mutate(dose = paste0("D", floor(time / 12) + 1)) |>
+  group_by(regimen, dose, id) |>
+  summarise(hours_in_target = 0.5 * sum(Cc >= 0.2 & Cc <= 0.4), .groups = "drop") |>
+  group_by(regimen, dose) |>
+  summarise(median_h = median(hours_in_target), .groups = "drop")
+
+overall <- attain |>
+  group_by(regimen, dose) |>
+  summarise(p_within = mean(within), p_below = mean(Cc < 0.2), p_above = mean(Cc > 0.4), .groups = "drop") |>
+  left_join(tir, by = c("regimen", "dose"))
+overall |>
+  mutate(across(starts_with("p_"), ~ round(100 * .x))) |>
+  rename(Regimen = regimen, Dose = dose, "% within" = p_within, "% below" = p_below, "% above" = p_above, "Median h in target" = median_h) |>
+  knitr::kable(caption = "Simulated target attainment, all categories pooled.")
+```
+
+```{r fig5}
+attain |>
+  group_by(regimen, dose) |>
+  summarise(p = mean(within), .groups = "drop") |>
+  ggplot(aes(dose, 100 * p, fill = regimen)) +
+  geom_col(position = "dodge") +
+  labs(x = "Dose", y = "% within 0.2-0.4 IU/mL", fill = "Regimen", caption = "Replicates Figure 5 of Shenkoya 2026.")
+```
+
+```{r by-category}
+by_cat <- attain |>
+  filter(dose == "D1") |>
+  group_by(cat_tbsa, cat_wt, regimen) |>
+  summarise(p = round(100 * mean(within)), .groups = "drop") |>
+  pivot_wider(names_from = regimen, values_from = p)
+by_cat |>
+  rename(TBSA = cat_tbsa, Weight = cat_wt, "EQ %" = EQ, "M1 %" = M1, "M2 %" = M2) |>
+  knitr::kable(caption = "Percent within target 4 h after the first dose, by Table 3 category (cf. Shenkoya 2026 Figure S3).")
+```
+
+The paper reports two sets of first-dose numbers for patients over 100 kg
+with 10-20% TBSA: 5% (EQ), 19% (M1) and 95% (M2) in the Results, and 24%,
+48% and 76% in the Discussion. The simulation above reproduces the ordering
+EQ < M1 < M2 and the steep fall of EQ attainment with weight and TBSA.
+
+```{r attainment-checks}
+d1 <- overall |> filter(dose == "D1")
+p_d1 <- setNames(d1$p_within, as.character(d1$regimen))
+heavy_big <- attain |>
+  filter(dose == "D1", cat_tbsa == ">20%", cat_wt == ">100 kg") |>
+  group_by(regimen) |>
+  summarise(p = mean(within))
+stopifnot(
+  # Results: fewer than 50% within target after the first EQ or M1 dose.
+  # (M1 bound carries a few points of Monte Carlo tolerance.)
+  p_d1[["EQ"]] < 0.5, p_d1[["M1"]] < 0.55,
+  # M2 (loading dose) clearly improves first-dose attainment over EQ.
+  p_d1[["M2"]] - p_d1[["EQ"]] > 0.15,
+  # EQ underdoses the heaviest, most extensively burned patients.
+  heavy_big$p[heavy_big$regimen == "EQ"] < 0.3,
+  heavy_big$p[heavy_big$regimen == "M2"] > heavy_big$p[heavy_big$regimen == "EQ"] + 0.3
+)
+```
+
+## Typical-value first-dose concentrations by category
+
+With between-subject variability removed, the first-dose 4-h concentration
+at the centre of each category shows the dosing logic of Table 3: EQ leaves
+the larger burns and heavier patients below 0.2 IU/mL, while the M2 loading
+dose lifts them into range.
+
+```{r typical-by-category}
+centres <- dose_tab |>
+  mutate(
+    WT = vapply(wt_lim[cat_wt], mean, 1),
+    BSA_AFFECTED_PCT = vapply(tbsa_lim[cat_tbsa], mean, 1),
+    EQ = round((22.8 + 3.3 * BSA_AFFECTED_PCT / 10 + 1.89 * WT / 10) / 10) * 10
+  )
+typ_ev <- bind_rows(lapply(seq_len(nrow(centres)), function(k) {
+  s <- centres[k, ]
+  bind_rows(lapply(c("EQ", "M2"), function(r) {
+    d <- if (r == "EQ") s$EQ else s$M2_load
+    tibble(
+      id = k * 10 + match(r, c("EQ", "M2")), time = c(0, 4), amt = c(d * 100, 0), evid = c(1L, 0L),
+      cmt = c("depot", "central"), WT = s$WT, BSA_AFFECTED_PCT = s$BSA_AFFECTED_PCT, OCC = 1L,
+      regimen = r, cat_tbsa = s$cat_tbsa, cat_wt = s$cat_wt
+    )
+  }))
+}))
+typ_cat <- rxode2::rxSolve(mod_typ, typ_ev, keep = c("regimen", "cat_tbsa", "cat_wt"), returnType = "data.frame") |>
+  filter(time == 4) |>
+  select(cat_tbsa, cat_wt, regimen, Cc) |>
+  mutate(Cc = signif(Cc, 2)) |>
+  pivot_wider(names_from = regimen, values_from = Cc)
+typ_cat |>
+  rename(TBSA = cat_tbsa, Weight = cat_wt, "EQ Cc (IU/mL)" = EQ, "M2 Cc (IU/mL)" = M2) |>
+  knitr::kable(caption = "Typical anti-Xa 4 h after the first dose at the category centre.")
+stopifnot(all(typ_cat$M2 >= 0.15 & typ_cat$M2 <= 0.4))
+```
+
+# Long-term dosing and between-occasion variability
+
+The occasion index advances with the number of doses received (doses 1-9,
+10-19, 20-39, 40 onward). The 4-h anti-Xa over 25 days of 40 mg every 12 h
+shows the occasion-to-occasion shifts in clearance.
+
+```{r occ-demo}
+rxode2::rxSetSeed(7)
+n_long <- 50
+dose_n <- 1:50
+occ_of <- function(k) findInterval(k, c(1, 10, 20, 40))
+long_ev <- bind_rows(lapply(seq_len(n_long), function(i) {
+  bind_rows(
+    tibble(time = (dose_n - 1) * 12, amt = 4000, evid = 1L, cmt = "depot", OCC = occ_of(dose_n)),
+    tibble(time = (dose_n - 1) * 12 + 4, amt = 0, evid = 0L, cmt = "central", OCC = occ_of(dose_n))
+  ) |>
+    mutate(id = i, WT = 86, BSA_AFFECTED_PCT = 13)
+})) |>
+  arrange(id, time, desc(evid))
+long_sim <- rxode2::rxSolve(mod, long_ev, keep = "OCC", returnType = "data.frame")
+stopifnot(setequal(unique(long_sim$OCC), 1:4))
+long_sim |>
+  group_by(time) |>
+  summarise(med = median(Cc), lo = quantile(Cc, 0.1), hi = quantile(Cc, 0.9), .groups = "drop") |>
+  ggplot(aes(time / 24, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = c(0.2, 0.4), linetype = "dashed", colour = "red") +
+  labs(x = "Time (days)", y = "Anti-Xa 4 h post dose (IU/mL)", caption = "Median and 10th-90th percentiles; 86 kg, 13% TBSA, 40 mg every 12 h.")
+```
+
+# PKNCA validation
+
+Non-compartmental analysis of the third dosing interval (24-36 h) by
+regimen. Shenkoya 2026 reports no NCA parameters, so there is no published
+table to compare against. The paper relied on samples drawn about 4 h after
+the dose, "close to the anticipated peak"; the check is that the simulated
+peak is early (Tmax about 2-2.5 h with ka = 1.10 1/h) and broad, so that the
+4-h concentration stays close to Cmax.
+
+```{r pknca}
+conc_df <- sim |>
+  filter(!is.na(Cc), time >= 24, time <= 36) |>
+  select(id, time, Cc, regimen)
+dose_df <- events |>
+  filter(evid == 1, time == 24) |>
+  select(id, time, amt, regimen)
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | regimen + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id)
+intervals <- data.frame(start = 24, end = 36, cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_sum <- as.data.frame(nca$result) |>
+  group_by(regimen, PPTESTCD) |>
+  summarise(median = signif(median(PPORRES), 3), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median)
+nca_sum |>
+  rename(Regimen = regimen, "Cmax (IU/mL)" = cmax, "Tmax (h after 24 h)" = tmax, "Cmin (IU/mL)" = cmin, "AUC24-36 (IU*h/mL)" = auclast) |>
+  knitr::kable(caption = "Median NCA parameters over the third dosing interval.")
+nca_wide <- as.data.frame(nca$result) |>
+  select(id, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(sim |> filter(time == 28) |> select(id, c4 = Cc), by = "id")
+stopifnot(
+  median(nca_wide$tmax) >= 1.5, median(nca_wide$tmax) <= 4,
+  median(nca_wide$c4 / nca_wide$cmax) > 0.9
+)
+```
+
+# Assumptions and deviations
+
+* **CL-Vc correlation.** Table 2 prints the correlation of the CL/F and
+  Vc/F random effects as 1.00, which gives a singular variance matrix that
+  cannot be sampled. The Results text gives it as .99, and that value is
+  used.
+* **Variability scale.** The paper reports BSV and BOV as CV% without a
+  conversion formula. The log-normal relation omega^2 = log(1 + CV^2) is used
+  for all three. The Table 2 bootstrap interval for the Vc/F CV (17.0-23.4%)
+  does not contain the point estimate (32.9%); the point estimate is used.
+* **Occasion definition.** The Discussion groups occasions into four bins by
+  doses received (<10, 10-19, 20-39, >=40). They are encoded as `OCC` 1-4
+  on dose number; an observation takes the occasion of the preceding dose.
+  The four occasions share one BOV variance.
+* **Dose units.** Dosing is in anti-Xa IU (enoxaparin 1 mg = 100 IU), and
+  concentrations are in IU/mL, matching the other enoxaparin models in the
+  package. The paper's doses are in mg; multiply by 100.
+* **Ka.** Table 2 and the Abstract give ka = 1.10 1/h; the Discussion quotes
+  1.05 1/h. The table value is used.
+* **Covariate references.** The Table 2 equations normalise weight to 87 kg
+  and TBSA to 19%, not to the Table 1 medians (86 kg, 13%). The model uses
+  the equation values.
+* **Simulation cohort.** The paper simulated the dosing regimens from the
+  post hoc estimates of its 408 patients, which carry eta-shrinkage of 33%
+  (BSV) and 65% (BOV). This vignette samples the full population
+  distribution, so its attainment percentages are less concentrated: EQ
+  first-dose attainment (under 50%) and the ordering EQ < M1 < M2 match the
+  paper, while the M2 first-dose percentages (about 55-80% by category) are
+  lower than the paper's ">75%", and EQ third-dose attainment (about 76%)
+  is lower than the paper's simulated 86%. Weight and
+  TBSA are drawn uniformly within each Table 3 category (weight 50-140 kg,
+  TBSA 1-45%); the within-category distributions of the original cohort
+  are not reported. Target attainment is read 4 h after each dose; the
+  paper does not state the exact read-out time used for Ptarget.
+* **Inconsistent first-dose numbers.** For patients over 100 kg with
+  10-20% TBSA, the Results give 5% / 19% / 95% (EQ / M1 / M2) and the
+  Discussion 24% / 48% / 76%. Neither is used as a numeric gate.
+* **Non-mu-referenced etas.** rxode2 warns that the BOV etas are not
+  mu-referenced because they enter through occasion indicators. This only
+  affects estimation speed-ups, not simulation.

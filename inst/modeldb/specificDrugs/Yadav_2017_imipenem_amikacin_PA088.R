@@ -3,6 +3,7 @@ Yadav_2017_imipenem_amikacin_PA088 <- function() {
   reference <- "Yadav R, Bulitta JB, Nation RL, Landersdorfer CB. Optimization of synergistic combination regimens against carbapenem- and aminoglycoside-resistant clinical Pseudomonas aeruginosa isolates via mechanism-based pharmacokinetic/pharmacodynamic modeling. Antimicrob Agents Chemother. 2017 Jan;61(1):e01011-16. doi:10.1128/AAC.01011-16. Model differential equations (Eqs 1-5) are in the main paper Methods; parameter estimates for FADDI-PA088 with amikacin are Table 3 (footnote b). Supplemental Text S1 (not available when this model was built) contains diagnostic plots only."
   vignette <- "Yadav_2017_imipenem_aminoglycoside_pseudomonas"
   units <- list(time = "h", dosing = "mg/L", concentration = "mg/L")
+  dosing <- c("cipm", "cags")
 
   paper_specific_compartments <- c("cipm", "cags", "csig")
 

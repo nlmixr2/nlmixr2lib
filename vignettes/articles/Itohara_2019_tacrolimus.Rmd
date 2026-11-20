@@ -145,7 +145,7 @@ stopifnot(!anyDuplicated(ev_typ[ev_typ$evid == 0, c("id", "time")]))
 # The model has no random effects, so rxode2's "multi-subject simulation
 # without 'omega'" note below is expected: the subjects differ only in
 # covariates.
-sim_typ <- rxode2::rxSolve(mod, events = ev_typ, keep = "geno", returnType = "data.frame")
+sim_typ <- rxode2::rxSolve(mod, events = ev_typ, keep = "geno", returnType = "data.frame", covsInterpolation = "locf")
 stopifnot(all(is.finite(sim_typ$Cc)))
 ```
 
@@ -169,7 +169,7 @@ cl_pod <- function(pod) {
   ev <- protocol_events(1, 60, 0, 1, 0, pod * 24)
   ev <- ev[ev$evid == 0, ]
   ev <- dplyr::bind_rows(ev, dplyr::mutate(ev, id = 2, CYP3A5_EXPR_DONOR = 0))
-  s <- rxode2::rxSolve(mod, events = ev, returnType = "data.frame")
+  s <- rxode2::rxSolve(mod, events = ev, returnType = "data.frame", covsInterpolation = "locf")
   stats::setNames(s$cl, c("L*1", "L*3"))
 }
 cl0 <- cl_pod(0)
@@ -309,7 +309,8 @@ ev_coh <- dplyr::bind_rows(lapply(seq_len(nrow(cohort)), function(i) {
   ) |>
     dplyr::mutate(geno = cohort$geno[i])
 }))
-sim_coh <- rxode2::rxSolve(mod, events = ev_coh, keep = c("geno", "WT"), returnType = "data.frame")
+sim_coh <- rxode2::rxSolve(mod, events = ev_coh, keep = c("geno", "WT"), returnType = "data.frame",
+  covsInterpolation = "locf")
 
 cd <- sim_coh |>
   dplyr::mutate(
@@ -385,7 +386,7 @@ load_rate <- function(ld, ir) {
   ) |>
     one_subject(ld = ld, ir = ir) |>
     dplyr::mutate(POD = time / 24)
-  c12 <- rxode2::rxSolve(mod, events = ev, returnType = "data.frame")$Cc
+  c12 <- rxode2::rxSolve(mod, events = ev, returnType = "data.frame", covsInterpolation = "locf")$Cc
   15 / c12
 }
 # Maintenance: CL at POD 0.5 x 15 ng/mL, per kg.
@@ -393,7 +394,7 @@ maint_rate <- function(ld, ir) {
   ev <- data.frame(time = 12, amt = 0, rate = 0, evid = 0L, cmt = "central") |>
     one_subject(ld = ld, ir = ir) |>
     dplyr::mutate(POD = 0.5)
-  rxode2::rxSolve(mod, events = ev, returnType = "data.frame")$cl * 15 / 60
+  rxode2::rxSolve(mod, events = ev, returnType = "data.frame", covsInterpolation = "locf")$cl * 15 / 60
 }
 # Oral: steady-state trough at POD 3 (30 days of q12h dosing, POD frozen).
 trough_pod3 <- function(dose_mgkgday, ld, ir) {
@@ -404,7 +405,7 @@ trough_pod3 <- function(dose_mgkgday, ld, ir) {
   ) |>
     one_subject(ld = ld, ir = ir) |>
     dplyr::mutate(POD = 3)
-  s <- rxode2::rxSolve(mod, events = ev, returnType = "data.frame")
+  s <- rxode2::rxSolve(mod, events = ev, returnType = "data.frame", covsInterpolation = "locf")
   s$Cc[nrow(s)]
 }
 oral_dose <- function(ld, ir) {
@@ -591,3 +592,8 @@ stopifnot(nrow(cl_last) == 4L, all(abs(cl_last$PPORRES / cl_last$CLF_model - 1) 
   rates are not reproduced (model about 25% higher; see the Table 1 section).
 - **Errata.** EuropePMC lists no correction notice for this article
   (PMID 31087501) as of 2026-10-16.
+- **Covariate interpolation.** Each record carries the `POD` value in force from
+  that record until the next, so the solves in which it changes within a subject
+  state `covsInterpolation = "locf"`, the `rxSolve()` default; solving the same
+  tables with `"nocb"`, NONMEM's rule, moves the median subject's AUC by up to
+  3.5% (measured on rxode2 5.1.8.9000).

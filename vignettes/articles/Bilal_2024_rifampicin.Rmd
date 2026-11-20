@@ -471,10 +471,11 @@ sex_reading |>
   wide.
 * **Inter-occasion variability.** The two crossover periods are the two
   occasions (`OCC` 1 and 2), with one variance per parameter shared
-  across occasions. rxode2 has no occasion level for random effects, so
-  the occasion etas are multiplexed by indicator. rxode2 therefore warns
-  that these etas are not mu-referenced. That affects only the speed of a
-  future estimation run, not simulation.
+  across occasions. rxode2's `| OCC` level shares one draw per occasion
+  when no subject has two or more occasions, so the occasion etas are
+  multiplexed by indicator. rxode2 therefore warns that these etas are
+  not mu-referenced. That affects only the speed of a future estimation
+  run, not simulation.
 * **Residual error.** The Monolix `combined1` model (SD = a + b x f) is
   encoded with `combined1()`, not as the root-sum-of-squares combined
   model.

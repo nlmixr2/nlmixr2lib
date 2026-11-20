@@ -1,6 +1,6 @@
 Klunder_2017_upadacitinib <- function() {
   description <- "Two-compartment population PK model with first-order absorption and an absorption lag time for oral upadacitinib (ABT-494), a selective JAK1 inhibitor, in healthy adults and adults with rheumatoid arthritis (Klunder 2017, pooled phase I + phase IIb analysis). Statistically significant covariates retained in the final model: population (RA vs healthy) on CL/F, sex on CL/F and Vc/F, baseline creatinine clearance on CL/F (raw Cockcroft-Gault, not BSA-normalized), and total body weight on Vc/F. ISV is reported separately for healthy subjects and RA patients on CL/F and Vc/F, and is encoded here as paired healthy / RA structural means with cohort-specific log-normal random effects gated by DIS_HEALTHY."
-  reference <- "Klunder B, Mohamed M-EF, Othman AA. Population pharmacokinetics of upadacitinib in healthy subjects and subjects with rheumatoid arthritis: analyses of phase I and II clinical trials. Clin Pharmacokinet. 2018;57(8):977-988. doi:10.1007/s40262-017-0605-6"
+  reference <- "Klunder B, Mohamed M-EF, Othman AA. Population pharmacokinetics of upadacitinib in healthy subjects and subjects with rheumatoid arthritis: analyses of phase I and II clinical trials. Clin Pharmacokinet. 2018;57(8):977-988. doi:10.1007/s40262-017-0605-6. Epub 2017 Oct 26."
   vignette <- "Klunder_2017_upadacitinib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
@@ -64,7 +64,7 @@ Klunder_2017_upadacitinib <- function() {
     renal_function = "Mild and moderate renal impairment (CrCL 41-241 mL/min) included; subjects with eGFR < 40 mL/min/1.73 m^2 excluded by protocol.",
     n_observations = "6,399 quantifiable plasma concentrations. ~4% of post-baseline samples were below the LLOQ; intra-dose BLQ values and the first post-last-dose BLQ were imputed at LLOQ/2 and subsequent BLQ values were censored. ~0.9% of records were excluded as outliers consistent with inaccurate dosing records.",
     co_medication = "Concomitant CYP3A inhibitors (moderate/weak), CYP3A inducers, CYP2D6 inhibitors, and pH-modifying medications were tested as covariates but none were retained. Strong CYP3A inhibitors and inducers were prohibited in studies 4 and 5.",
-    notes = "Clinical-trial registry identifiers: NCT01741493, NCT02066389, NCT01960855. NONMEM 7.3 with FOCEI for the structural / covariate model and SAEM + importance sampling for the final model incorporating box-cox-transformed IOV on ALAG1 in phase II visits."
+    notes = "Clinical-trial registry identifiers: NCT01741493, NCT02066389, NCT01960855. NONMEM 7.3 with FOCEI for the structural / covariate model and SAEM + importance sampling for the final model incorporating box-cox-transformed IOV on ALAG1 in phase II visits. That IOV (omega^2 0.08, skewness parameter 8, Table 3; recording error of dose and sample times at six phase II PK visits) is not encoded: the paper does not define how the transformed eta enters ALAG1; see the vignette."
   )
 
   ini({

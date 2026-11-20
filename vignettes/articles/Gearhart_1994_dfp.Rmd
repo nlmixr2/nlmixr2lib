@@ -1,0 +1,330 @@
+---
+title: "Diisopropylfluorophosphate PBPK and acetylcholinesterase inhibition (Gearhart 1994)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Diisopropylfluorophosphate PBPK and acetylcholinesterase inhibition (Gearhart 1994)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5
+)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Gearhart_1994_dfp_mouse_pbpk"))$reference`
+* Article: [Environ Health Perspect 1994;102(Suppl 11):51-60](https://doi.org/10.1289/ehp.94102s1151)
+
+Gearhart et al. 1994 developed a physiologically based pharmacokinetic (PBPK)
+model for diisopropylfluorophosphate (DFP, an organophosphate ester and a
+cholinesterase-inhibitor tool compound) coupled to a mechanistic model of
+acetylcholinesterase (AChE) inhibition, for organophosphate risk assessment.
+The same structure was parameterised for three species; this package ships one
+model file per species:
+
+```{r models}
+mouse <- readModelDb("Gearhart_1994_dfp_mouse_pbpk")
+rat <- readModelDb("Gearhart_1994_dfp_rat_pbpk")
+human <- readModelDb("Gearhart_1994_dfp_human_pbpk")
+mUi <- rxode2::rxode2(mouse)
+rUi <- rxode2::rxode2(rat)
+hUi <- rxode2::rxode2(human)
+```
+
+# Model structure and population
+
+DFP disposition is a flow-limited whole-body PBPK: brain, liver, kidney and
+richly perfused tissue are flow-limited with saturable A-esterase (DFPase)
+hydrolysis (Michaelis-Menten); fat, slowly perfused tissue and diaphragm are
+flow-limited storage; venous and arterial blood are explicit compartments that
+also hydrolyse DFP, because blood A-esterase strongly limits the amount of DFP
+reaching target tissue (Discussion). The lung is an algebraic steady-state gas
+exchanger coupling cardiac output and alveolar ventilation through the blood:air
+partition, so inhalation can enter as an air concentration while iv and sc/im
+doses enter as dose records (Appendix II; Figure 1).
+
+AChE in brain and in blood is tracked as a free/inhibited/aged pool (Figure 2):
+free (active) enzyme is irreversibly inhibited by local DFP at a bimolecular
+rate; inhibited enzyme either regenerates to the active form or ages to a
+permanently inactive form; and the free pool turns over by zero-order synthesis
+balanced against first-order degradation. The readout is enzyme activity as a
+fraction of the pre-exposure control. The model is deterministic: the
+publication reports no between-subject variability and no residual error.
+
+The three parameterisations cover (Table 4):
+
+```{r population}
+mouse()$population$species
+rat()$population$species
+human()$population$species
+```
+
+The in vitro DFP tissue:blood partition coefficients, A-esterase hydrolysis
+Vmax/Km and the AChE bimolecular inhibition rate were measured in male
+Fischer-344 rat tissue homogenates; mouse and human Vmax values were scaled from
+the rat by body weight^0.7 and the rat Km used directly (Methods; Tables 1, 5).
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its table in the
+source. The full text of this paper is distributed as scanned page images, so
+the tabulated values were read directly from Tables 1, 3, 4 and 5 of the
+scanned article. Representative entries (mouse file):
+
+| Equation / parameter | Value (mouse) | Source location |
+|----------------------|---------------|-----------------|
+| Blood:air partition `pc_blood_air` | 12.57 | Table 5, DFP blood-air |
+| Fat:blood partition `pc_fat` | 17.6 | Table 5, DFP fat-blood |
+| Venous-blood DFPase `vmax_venous` / `km_venous` | 79.38 mg/h / 198.7 mg/L | Table 1, Venous blood, mouse |
+| Liver DFPase `vmax_liver` / `km_liver` | 256.58 mg/h / 237.36 mg/L | Table 1, Liver, mouse |
+| AChE inhibition `ki` | 14.16 1/uM/h | Table 1 / Table 3, AChE |
+| AChE regeneration `kreg` | 0.016 1/h | Table 3, Enzyme regeneration |
+| AChE aging `kage` | 0.297 1/h (mouse) | Table 3, Enzyme aging |
+| AChE degradation brain `kdeg_brain` | 0.010 1/h | Table 3, Enzyme degradation, Brain |
+| AChE degradation plasma `kdeg_plasma` | 0.060 1/h (mouse) | Table 3, Enzyme degradation, Plasma |
+| Cardiac output `qc` | 1.04 L/h (mouse) | Table 4, Cardiac output |
+| DFP mass-balance ODE (tissue) | n/a | Appendix II, `VT dCT/dt = QT(CAB - CT/PT)` |
+| DFP hydrolysis term | n/a | Appendix II, `Vmax*CV/(Km+CV)` |
+| AChE inhibited-pool ODE | n/a | Appendix II / Figure 2 |
+
+## Units (dimensional check)
+
+Amounts are in mg, concentrations mg/L, volumes L, flows L/h, time h; enzyme
+pools are dimensionless fractions of baseline activity. The MM hydrolysis term
+`Vmax [mg/h] * cv [mg/L] / (Km [mg/L] + cv [mg/L])` has units mg/h, matching
+`d/dt(amount) [mg/h]`. The enzyme-driving concentration is converted to uM for
+the bimolecular rate: `dfp_uM = C [mg/L] * 1000 / mw [g/mol]`, so
+`ki [1/uM/h] * dfp_uM [uM] * free [-]` has units 1/h, matching
+`d/dt(free) [1/h]`. DFP molecular weight is 184.15 g/mol (Appendix I uses
+184 mg/mmole).
+
+# Mouse: DFP pharmacokinetics (replicates Figure 3)
+
+Martin (1974) injected male mice with 1 mg DFP/kg iv (tail vein) and measured
+free DFP in plasma and brain. The dose enters the venous blood compartment.
+
+```{r mouse-pk}
+bw_mouse <- mUi$theta[["bw"]]
+dose_mouse <- 1 * bw_mouse # 1 mg/kg iv
+
+ev_pk <- rxode2::et(amt = dose_mouse, cmt = "a_venous", time = 0) |>
+  rxode2::et(c(seq(0, 0.5, length.out = 300), seq(0.6, 30, length.out = 200)))
+pk <- as.data.frame(rxode2::rxSolve(mUi, ev_pk, atol = 1e-10, rtol = 1e-10))
+
+pk_long <- pk |>
+  dplyr::transmute(time_min = time * 60, Plasma = Cc, Brain = Cbrain) |>
+  tidyr::pivot_longer(c(Plasma, Brain), names_to = "matrix", values_to = "dfp")
+
+ggplot(dplyr::filter(pk_long, time_min <= 3), aes(time_min, dfp, colour = matrix)) +
+  geom_line(linewidth = 0.8) +
+  labs(
+    x = "Time (minutes)", y = "DFP (mg/L)", colour = NULL,
+    title = "Mouse DFP after 1 mg/kg iv (first 3 min)",
+    caption = "Replicates Figure 3a,b of Gearhart 1994 (plasma and brain DFP)."
+  )
+```
+
+Free DFP disappears from plasma within about a minute (Figure 3a) and brain DFP
+peaks below 2 mg/L and falls over the next few minutes (Figure 3b,d), driven by
+the very high blood and tissue A-esterase activity:
+
+```{r mouse-pk-features}
+peak_brain <- max(pk$Cbrain)
+t_detect_plasma <- pk$time[pk$Cc > 0.1][length(pk$time[pk$Cc > 0.1])] * 60
+peak_brain
+t_detect_plasma
+# Brain DFP peak is a small-molar quantity (Figure 3b shows a peak below ~2 mg/L)
+stopifnot(peak_brain > 0.2, peak_brain < 2.5)
+# Plasma DFP has largely disappeared within a couple of minutes (Figure 3a)
+stopifnot(t_detect_plasma < 2)
+```
+
+# Mouse: AChE inhibition (replicates Figures 4 and 5)
+
+The same 1 mg/kg iv dose is followed out to 7 days to track plasma and brain
+AChE activity. Gearhart report the nadir of AChE within about 1 min in plasma
+and about 5 min in brain, and that brain AChE 7 days after a single injection
+had recovered only to about 80% of control (Figure 5c), while plasma recovered
+toward 100% within about 3.75 days.
+
+```{r mouse-ache}
+ev_pd <- rxode2::et(amt = dose_mouse, cmt = "a_venous", time = 0) |>
+  rxode2::et(c(seq(0, 1, length.out = 200), seq(1.5, 192, length.out = 400)))
+pd <- as.data.frame(rxode2::rxSolve(mUi, ev_pd, atol = 1e-9, rtol = 1e-9))
+
+ache_long <- pd |>
+  dplyr::transmute(time_h = time, Plasma = ache_plasma, Brain = ache_brain) |>
+  tidyr::pivot_longer(c(Plasma, Brain), names_to = "matrix", values_to = "activity")
+
+ggplot(ache_long, aes(time_h, activity, colour = matrix)) +
+  geom_line(linewidth = 0.8) +
+  geom_hline(yintercept = 1, linetype = "dashed", colour = "grey60") +
+  labs(
+    x = "Time (hours)", y = "AChE activity (fraction of control)", colour = NULL,
+    title = "Mouse AChE after 1 mg/kg iv DFP",
+    caption = "Replicates Figures 4 (plasma) and 5 (brain) of Gearhart 1994."
+  )
+```
+
+```{r mouse-ache-features}
+nadir_plasma <- min(pd$ache_plasma)
+nadir_brain <- min(pd$ache_brain)
+brain_7d <- approx(pd$time, pd$ache_brain, 168)$y
+plasma_90h <- approx(pd$time, pd$ache_plasma, 90)$y
+round(c(nadir_plasma = nadir_plasma, nadir_brain = nadir_brain,
+        brain_7d = brain_7d, plasma_90h = plasma_90h), 3)
+
+# Both enzymes are strongly inhibited at the nadir (Figures 4a, 5a show nadirs
+# well below half of control).
+stopifnot(nadir_plasma < 0.3, nadir_brain < 0.45)
+# Brain AChE recovers slowly; at 7 days it is still well below control but has
+# recovered substantially (Gearhart: ~80% of control at 7 days, Figure 5c).
+stopifnot(brain_7d > 0.65, brain_7d < 0.95)
+# Plasma AChE recovers faster than brain (Gearhart: ~100% within ~3.75 days).
+stopifnot(plasma_90h > brain_7d)
+```
+
+# Mass balance
+
+The model conserves DFP mass: the administered dose equals the amount still in
+the body plus the cumulative amount hydrolysed by A-esterase plus the cumulative
+amount exhaled.
+
+```{r mass-balance}
+comps <- c(
+  "depot", "a_venous", "a_arterial", "a_brain", "a_liver", "a_kidney",
+  "a_rich", "a_fat", "a_slow", "a_diaphragm"
+)
+end <- pd[nrow(pd), ]
+recovered <- sum(as.numeric(end[comps])) + end$a_hydrolyzed + end$a_exhaled
+rel_err <- (recovered - dose_mouse) / dose_mouse
+round(c(dose = dose_mouse, recovered = recovered, rel_err = rel_err), 8)
+stopifnot(abs(rel_err) < 1e-4)
+```
+
+# Baseline hold
+
+With no dose, all AChE pools sit at the pre-exposure baseline (activity = 1)
+indefinitely: zero-order synthesis exactly balances first-order degradation.
+
+```{r baseline}
+ev0 <- rxode2::et(amt = 0, cmt = "a_venous", time = 0) |>
+  rxode2::et(seq(0, 240, length.out = 200))
+s0 <- as.data.frame(rxode2::rxSolve(mUi, ev0))
+range(s0$ache_brain)
+range(s0$ache_plasma)
+stopifnot(all(abs(s0$ache_brain - 1) < 1e-6), all(abs(s0$ache_plasma - 1) < 1e-6))
+```
+
+# Rat: repeated subcutaneous dosing (Figures 6 and 7)
+
+Traina & Serpietri (1984) and Michalek et al. (1982) gave male Wistar rats DFP
+sc every second day for 22 days (first dose 1.1 mg/kg, then 0.7 mg/kg) and
+followed plasma and brain AChE. The sc absorption rate was visually optimised by
+the authors but not tabulated, so a placeholder first-order rate is used here
+(see Assumptions); the simulation reproduces the qualitative pattern - a rapid
+fall during dosing to a sustained low plateau, then recovery after dosing stops.
+
+```{r rat-repeat}
+bw_rat <- rUi$theta[["bw"]]
+ev_rat <- rxode2::et(amt = 1.1 * bw_rat, cmt = "depot", time = 0)
+for (d in seq(2, 22, by = 2)) {
+  ev_rat <- rxode2::et(ev_rat, amt = 0.7 * bw_rat, cmt = "depot", time = d * 24)
+}
+ev_rat <- rxode2::et(ev_rat, seq(0, 40 * 24, length.out = 1500))
+rt <- as.data.frame(rxode2::rxSolve(rUi, ev_rat, atol = 1e-9, rtol = 1e-9))
+
+rt |>
+  dplyr::transmute(day = time / 24, Plasma = ache_plasma, Brain = ache_brain) |>
+  tidyr::pivot_longer(c(Plasma, Brain), names_to = "matrix", values_to = "activity") |>
+  ggplot(aes(day, activity, colour = matrix)) +
+  geom_line(linewidth = 0.7) +
+  geom_vline(xintercept = 22, linetype = "dotted", colour = "grey60") +
+  labs(
+    x = "Time (days)", y = "AChE activity (fraction of control)", colour = NULL,
+    title = "Rat AChE during and after 22 days of repeated sc DFP",
+    caption = "Replicates Figures 6 (plasma) and 7 (brain) of Gearhart 1994."
+  )
+```
+
+```{r rat-features}
+# During dosing both enzymes are driven to a sustained low plateau; after
+# dosing stops (day 22) they recover toward control.
+nadir_rat_brain <- min(rt$ache_brain)
+end_rat_brain <- approx(rt$time, rt$ache_brain, 40 * 24)$y
+round(c(nadir_rat_brain = nadir_rat_brain, end_rat_brain = end_rat_brain), 3)
+stopifnot(nadir_rat_brain < 0.6, end_rat_brain > nadir_rat_brain + 0.3)
+```
+
+# Human: dose-response at 24 h (Figure 8)
+
+Grob et al. (1947) gave volunteers a single im injection of DFP (33 ug/kg, and
+acute doses from 10 to 54 ug/kg) and measured red-blood-cell AChE. The model's
+blood AChE output is compared against RBC-AChE (plasma butyrylcholinesterase,
+also shown in Figure 8, is not modelled - see Assumptions). As for the rat, the
+im absorption rate is a placeholder, so the comparison here is the dose-ordering
+of maximal inhibition rather than the exact timing.
+
+```{r human-dr}
+bw_human <- hUi$theta[["bw"]]
+doses_ugkg <- c(10, 33, 54)
+hr <- lapply(doses_ugkg, function(d) {
+  ev <- rxode2::et(amt = d / 1000 * bw_human, cmt = "depot", time = 0) |>
+    rxode2::et(seq(0, 48, length.out = 600))
+  s <- as.data.frame(rxode2::rxSolve(hUi, ev, atol = 1e-9, rtol = 1e-9))
+  data.frame(dose_ugkg = d, nadir_rbc_ache = min(s$ache_plasma))
+})
+hr <- do.call(rbind, hr)
+hr |>
+  dplyr::rename("DFP dose (ug/kg)" = dose_ugkg, "RBC-AChE nadir (fraction of control)" = nadir_rbc_ache) |>
+  knitr::kable(digits = 3, caption = "Human RBC-AChE maximal inhibition by im DFP dose (Figure 8).")
+
+# Higher doses give deeper RBC-AChE inhibition (lower nadir).
+stopifnot(all(diff(hr$nadir_rbc_ache) < 0))
+```
+
+# Assumptions and deviations
+
+- **Full text is scanned page images.** The article's model parameters are
+  distributed as scanned page images rather than machine-readable text; the
+  maintainers read every value directly from Tables 1, 3, 4 and 5 and recorded
+  the table location in each `ini()` comment.
+- **sc/im absorption rate not reported.** The rate of DFP absorption after sc
+  (rat) and im (human) injection was described as visually optimised and
+  particularly influential on the initial fall in AChE, but no numeric value is
+  tabulated. A placeholder first-order rate (`ka = 1 /h`, `lka = 0`) is carried
+  so the extravascular route is functional; it is clearly labelled NOT REPORTED
+  in each file. The rat and human figure reproductions therefore validate the
+  magnitude and dose-ordering of inhibition, not the exact nadir timing (which
+  this rate governs). The mouse validation uses iv dosing and does not depend on
+  it.
+- **Butyrylcholinesterase (BChE) and carboxylesterase (CaE) not modelled.** The
+  paper also tracks plasma BChE (Figure 8) and CaE as DFP targets, with
+  bimolecular rate constants in Table 1, but Table 3's synthesis, degradation,
+  regeneration and aging constants are given only for AChE. BChE/CaE turnover is
+  therefore not reproducible from the tables and these enzymes are omitted; only
+  AChE (brain and blood) is modelled.
+- **Covalent DFP-esterase sink on DFP mass balance omitted.** Appendix II writes
+  a bimolecular DFP-esterase binding term in the DFP mass balance, but the
+  Discussion states the low molar concentration of the esterases makes this sink
+  negligible for DFP kinetics. It is omitted from the DFP ODEs (the enzyme pools
+  are still driven by local DFP), so DFP mass balance closes on hydrolysis plus
+  exhalation.
+- **Lung as a steady-state gas exchanger.** No lung:blood partition coefficient
+  is reported, so the lung is encoded as the standard algebraic steady-state
+  gas-exchange relationship (blood:air partition only) rather than as a
+  distribution compartment; for the injection scenarios validated here this
+  contributes only a small pulmonary exhalation loss.
+- **Deterministic.** The publication reports no IIV and no residual error; the
+  models carry none.
+- **Correction notices.** No erratum or correction notice for this article was
+  found as of 2026-11-18.
+```

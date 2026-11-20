@@ -38,6 +38,7 @@ Wang_2019_oral1cmt_base <- function() {
   )
   vignette <- "Wang_2019_missing_dosing_history"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. The drug is hypothetical, so it has no analyte name.

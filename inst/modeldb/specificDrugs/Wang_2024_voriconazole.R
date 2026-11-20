@@ -3,6 +3,7 @@ Wang_2024_voriconazole <- function() {
   reference <- "Wang Y, Ye Q, Li P, Huang L, Qi Z, Chen W, Zhan Q, Wang C. Renal Replacement Therapy as a New Indicator of Voriconazole Clearance in a Population Pharmacokinetic Analysis of Critically Ill Patients. Pharmaceuticals (Basel). 2024;17(6):665. doi:10.3390/ph17060665"
   vignette <- "Wang_2024_voriconazole"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Wang 2024 Section 4.2 (voriconazole

@@ -1,5 +1,5 @@
 Standing_2008_diclofenac <- function() {
-  description <- "One-compartment population PK model for oral diclofenac suspension in children and adult volunteers (Standing 2008): two parallel transit-absorption arms (Savic 2007 analytical input form) feeding two depot compartments that each absorb into a single central disposition compartment with linear elimination. Allometric weight scaling on clearance and volume to a 70 kg reference. Captures the double-peak absorption profile common to immediate-release diclofenac. Separate proportional residual error for paediatric and adult cohorts. Source paper additionally fits between-occasion variability (BOV) on CL/F (20%) and Vd/F (93%) -- BOV is not implemented in this nlmixr2 model file because it requires an OCC column in the user dataset; users who want BOV can add an etalcl_bov / etalvc_bov occasion-level random effect themselves."
+  description <- "One-compartment population PK model for oral diclofenac suspension in children and adult volunteers (Standing 2008): two parallel transit-absorption arms (Savic 2007 analytical input form) feeding two depot compartments that each absorb into a single central disposition compartment with linear elimination. Allometric weight scaling on clearance and volume to a 70 kg reference. Captures the double-peak absorption profile common to immediate-release diclofenac. Separate proportional residual error for paediatric and adult cohorts. Between-occasion variability (BOV) on CL/F (20%) and Vd/F (93%), two occasions (admissions) selected by OCC, is included."
   reference <- paste(
     "Standing JF, Howard RF, Johnson A, Savage I, Wong ICK.",
     "Population pharmacokinetics of oral diclofenac for acute pain in children.",
@@ -9,6 +9,7 @@ Standing_2008_diclofenac <- function() {
   )
   vignette <- "Standing_2008_diclofenac"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+  dosing <- c("depot1", "depot2")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
@@ -35,6 +36,32 @@ Standing_2008_diclofenac <- function() {
       reference_category = 0,
       notes = "Used only to switch proportional residual error between cohorts. Standing 2008 estimated separate residual error for the two datasets because the two cohorts were analysed with different bioanalytical methods (HPLC/MS with ketoprofen internal standard on paediatric serum vs naproxen internal standard on adult plasma; assay LLOQs 10.1 ng/mL vs 10 ng/mL). Paper Methods page 848 'Pharmacokinetic model building'.",
       source_name = "CHILD"
+    ),
+    OCC = list(
+      description = "Occasion index (1-2): one hospital admission, for between-occasion variability on CL/F and Vd/F",
+      units = "(count)",
+      type = "categorical",
+      reference_category = NULL,
+      notes = paste(
+        "Standing 2008 Methods (p. 847): a child re-admitted for surgery during the",
+        "recruitment phase was eligible to enter the study on a second occasion;",
+        "Results (p. 849): seven patients were re-admitted and re-entered on a second",
+        "occasion (74 children recruited, 70 sampled; 558 concentrations from 100",
+        "subjects). The 30 adult volunteers took a single dose in a bioequivalence",
+        "study, so an occasion is one admission and there are at most two, with only 7",
+        "children having a second. Between-occasion variability was added to the",
+        "clearance and volume terms (Methods, p. 848); Table 2 (p. 851) gives 20% (RSE",
+        "89.6%) on CL/F and 93% (RSE 280%) on Vd/F, both poorly estimated.",
+        "Decomposed inside model() into the binary flags oc1 and oc2 that select one of",
+        "two BOV etas on each of log-CL and log-V. rxode2's `| OCC` level shares one",
+        "draw per occasion when no subject has two or more occasions, so the occasions",
+        "are expanded into indicator-multiplexed etas; occasion 1 carries the estimated",
+        "variance and occasion 2 is fixed to the same value. Records with OCC beyond 2",
+        "carry no BOV, and OCC is required in every event table, also for zeroRe()",
+        "runs; a single-admission simulation passes OCC = 1.",
+        sep = " "
+      ),
+      source_name = "occasion"
     )
   )
 
@@ -51,7 +78,7 @@ Standing_2008_diclofenac <- function() {
     disease_state = "Paediatric day-surgery patients (dermatology, general, plastic surgery) plus healthy adult volunteers",
     dose_range = "Single oral dose: 1 mg/kg diclofenac sodium suspension (paediatric, rounded to nearest 5 mg); 50 mg diclofenac sodium suspension (adult); formulation 50 mg/5 mL Rosemont Pharmaceuticals oral suspension",
     regions = "United Kingdom (Great Ormond Street Hospital, London) and Ireland (Shandon Clinic, Cork; adult bioequivalence cohort)",
-    notes = "Pooled analysis of 558 serum/plasma diclofenac concentrations: 206 from 70 paediatric patients (sparse, 3 samples per dose) plus 352 from 30 adult volunteers (rich, 14 samples per dose). Demographics per Standing 2008 Table 1. Paediatric concentrations are serum, adult concentrations are plasma. NONMEM v6 FOCEI with interaction. Mass units expressed as nanomoles (MW diclofenac sodium = 318.13 g/mol for dose, MW diclofenac free acid = 296.15 g/mol for measured concentration)."
+    notes = "Pooled analysis of 558 serum/plasma diclofenac concentrations: 206 from 70 paediatric patients (sparse, 3 samples per dose) plus 352 from 30 adult volunteers (rich, 14 samples per dose). Demographics per Standing 2008 Table 1. Paediatric concentrations are serum, adult concentrations are plasma. NONMEM v6 FOCEI with interaction. Mass units expressed as nanomoles (MW diclofenac sodium = 318.13 g/mol for dose, MW diclofenac free acid = 296.15 g/mol for measured concentration). Simulation limit: a dose record given later than about 600 h after time zero returns NA concentrations for part of the population with no error (the transit-chain input fails to solve; 36 of 400 children for a dose at 800 h, 89 at 1000 h, 339 at 2000 h, observed 1 h later), whatever the solver or tolerance; start the clock at the first dose (a dose at 0 h solves for every child at any later observation time). Arm-1 bioavailability: the paper bounds the combined bioavailability at 100% (F2 = 1 - F1) but gives no form for the individual F1 (Table 2: IIV 24% CV), so the model keeps the lognormal F1 = exp(lfdepot + etalfdepot) as fdepot and doses fdepot_capped = min(fdepot, 1); about 6.6% of children sit at F1 = 1, so the effective IIV on F1 is slightly below 24%."
   )
 
   ini({
@@ -64,7 +91,8 @@ Standing_2008_diclofenac <- function() {
     # into central. Paper Table 2 row order.
     lmtt1 <- log(0.68);  label("Arm-1 mean transit time (h)")            # Table 2: MTT1 = 0.68 h (RSE 11.8%)
     ln1   <- log(1.03);  label("Arm-1 number of transit compartments (unitless)") # Table 2: N1 = 1.03 (RSE 28.6%); estimated as a continuous quantity via the gamma-density analytical input
-    # F1 = 0.70 = fraction of dose routed via arm 1 (= fdepot here).
+    # F1 = 0.70 = fraction of dose routed via arm 1 (typical fdepot; dosed as
+    # fdepot_capped = min(fdepot, 1)).
     # F2 = 1 - F1 = 0.30 is held to the F1 + F2 = 1 constraint per
     # Methods page 848 ('Bioavailability ... with limits forcing the
     # combined bioavailability to equal 100%'); F2 is therefore not a
@@ -106,6 +134,18 @@ Standing_2008_diclofenac <- function() {
     etalvc     ~ log(1 + 0.54^2)  # Table 2 IIV(Vd/F)   = 54%  CV
     etalcl     ~ 0.0654   # Table 2 IIV(CL/F)   = 26%  CV; log(1 + 0.26^2) = log(1.0676) = 0.0654
 
+    # Between-occasion variability (Table 2, p. 851; added to clearance and
+    # volume, Methods p. 848), on the same log(1 + CV^2) convention as the IIV
+    # above. One variance is shared by the two occasions (admissions). rxode2's
+    # `| OCC` level shares one draw per occasion when no subject has two or more
+    # occasions, so each occasion is an indicator-multiplexed eta (see the OCC
+    # covariate); occasion 2 is fixed to occasion 1. Both terms are poorly
+    # estimated (RSE 89.6% and 280%) and only 7 children had a second admission.
+    etaiov_cl_1 ~ log(1 + 0.20^2)         # Table 2 BOV(CL/F) = 20% CV (RSE 89.6%)
+    etaiov_cl_2 ~ fixed(log(1 + 0.20^2))  # same variance as occasion 1
+    etaiov_vc_1 ~ log(1 + 0.93^2)         # Table 2 BOV(Vd/F) = 93% CV (RSE 280%)
+    etaiov_vc_2 ~ fixed(log(1 + 0.93^2))  # same variance as occasion 1
+
     # Residual proportional error stratified by cohort (Methods page 848:
     # 'estimation of residual variability was undertaken separately for
     # the two groups' due to different assay methods).
@@ -125,24 +165,34 @@ Standing_2008_diclofenac <- function() {
     # 70 kg per Methods page 848).
     mtt1   <- exp(lmtt1   + etalmtt1)
     n1     <- exp(ln1     + etaln1)
-    fdepot <- exp(lfdepot + etalfdepot)
+    # Lognormal individual F1 (mu-referenced) and the fraction actually dosed,
+    # capped at 1 so that F2 = 1 - F1 stays non-negative: the paper bounds the
+    # combined bioavailability at 100% and gives no form for the individual F1.
+    fdepot        <- exp(lfdepot + etalfdepot)
+    fdepot_capped <- min(fdepot, 1)
     ka1    <- exp(lka1    + etalka1)
     mtt2   <- exp(lmtt2   + etalmtt2)
     n2     <- exp(ln2     + etaln2)
     ka2    <- exp(lka2    + etalka2)
-    vc     <- exp(lvc     + etalvc) * (WT / 70)^e_wt_vc
-    cl     <- exp(lcl     + etalcl) * (WT / 70)^e_wt_cl
+    # Occasion flags: one BOV eta applies per record. A single-admission
+    # simulation passes OCC = 1.
+    oc1 <- (OCC == 1)
+    oc2 <- (OCC == 2)
+    iov_vc <- oc1 * etaiov_vc_1 + oc2 * etaiov_vc_2
+    iov_cl <- oc1 * etaiov_cl_1 + oc2 * etaiov_cl_2
+    vc     <- exp(lvc     + etalvc + iov_vc) * (WT / 70)^e_wt_vc
+    cl     <- exp(lcl     + etalcl + iov_cl) * (WT / 70)^e_wt_cl
 
     kel <- cl / vc
 
     # Dual-arm Savic transit absorption (paper Figure 2 schematic):
     # arm 1 (transit chain into depot1, ka1 -> central, fraction
-    # F1 = fdepot) and arm 2 (transit chain into depot2, ka2 ->
+    # F1 = fdepot_capped) and arm 2 (transit chain into depot2, ka2 ->
     # central, fraction F2 = 1 - F1). The user dataset must include
     # two dose events per administration -- one targeting depot1 and
     # one targeting depot2 with the SAME AMT -- so each transit()
-    # call sees its own podo() / tad() context. The fdepot and
-    # 1 - fdepot fractions enter via the bio argument of transit() so
+    # call sees its own podo() / tad() context. The fdepot_capped and
+    # 1 - fdepot_capped fractions enter via the bio argument of transit() so
     # the cumulative gamma-kernel input into depot1 is F1 * AMT and
     # into depot2 is F2 * AMT (sum = AMT, the F1 + F2 = 1 constraint
     # of Methods page 848). f(depot1) = f(depot2) = 0 suppress the
@@ -151,8 +201,8 @@ Standing_2008_diclofenac <- function() {
     # Lee_2015_sumatriptan.R for the dual-arm dosing pattern this
     # model inherits). See vignette for the canonical event-table
     # construction.
-    d/dt(depot1)  <- transit(n1, mtt1, fdepot)     - ka1 * depot1
-    d/dt(depot2)  <- transit(n2, mtt2, 1 - fdepot) - ka2 * depot2
+    d/dt(depot1)  <- transit(n1, mtt1, fdepot_capped)     - ka1 * depot1
+    d/dt(depot2)  <- transit(n2, mtt2, 1 - fdepot_capped) - ka2 * depot2
     d/dt(central) <- ka1 * depot1 + ka2 * depot2 - kel * central
 
     f(depot1) <- 0  # suppress bolus deposition; transit() carries F1 * AMT

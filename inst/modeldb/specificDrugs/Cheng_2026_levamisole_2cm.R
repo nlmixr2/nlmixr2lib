@@ -26,6 +26,7 @@ Cheng_2026_levamisole_2cm <- function() {
     concentration = "mg/L",
     weight = "kg"
   )
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Levamisole plasma concentrations were the only measured

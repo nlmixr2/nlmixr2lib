@@ -30,6 +30,7 @@ Li_2025_tetrahydrocannabinol <- function() {
   # therefore 1:1 by mass, dose is in mg and volumes in L, so amount /
   # volume is mg/L and the * 1000 in model() reports ng/mL.
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   # No covariate was tested: the data were study-level mean profiles, so
   # no individual covariates were available.

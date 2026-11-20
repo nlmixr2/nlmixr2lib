@@ -209,6 +209,8 @@ mod <- readModelDb("Riccobene_2016_ceftaroline")
 
 # useLinCmt = FALSE: rxode2's automatic ODE -> linCmt() conversion corrupts the
 # dvid -> cmt mapping for multi-output models of this shape.
+# Fixed seed: the draws below feed reported results.
+rxode2::rxSetSeed(2016)
 sim <- rxode2::rxSolve(
   mod,
   events = events,

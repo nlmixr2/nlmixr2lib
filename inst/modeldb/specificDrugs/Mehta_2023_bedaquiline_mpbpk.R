@@ -28,6 +28,7 @@ Mehta_2023_bedaquiline_mpbpk <- function() {
     concentration = "ng/mL",
     weight = "kg"
   )
+  dosing <- c("depot1", "depot2")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

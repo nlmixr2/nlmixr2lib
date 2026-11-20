@@ -35,6 +35,7 @@ Dhondt_2017_celecoxib_cockatiel_oral_cf <- function() {
     dosing = "ug",
     concentration = "ng/mL"
   )
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "celecoxib", units = "ug", specimen = "administration site", verified = TRUE),

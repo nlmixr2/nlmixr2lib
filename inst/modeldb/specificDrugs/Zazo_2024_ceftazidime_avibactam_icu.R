@@ -3,6 +3,7 @@ Zazo_2024_ceftazidime_avibactam_icu <- function() {
   reference <- "Zazo H, Aguazul Y, Lanao JM. Dosing Evaluation of Ceftazidime-Avibactam in Intensive Care Unit Patients Based on Pharmacokinetic/Pharmacodynamic (PK/PD) Modeling and Simulation. Antibiotics (Basel). 2024;13(9):861. doi:10.3390/antibiotics13090861. Structural equations: Section 4.2, Eqs 3-9. PK parameters: Table 5, 'ICU Patient Population' columns (derived by the authors from refs 17-19: Stein 2019, Merdjan 2017, Welage 1984). Bacterial growth/kill parameters: Table 6 (adapted from Sy SKB et al. J Antimicrob Chemother 2018;73:1295-1304)."
   vignette <- "Zazo_2024_ceftazidime_avibactam"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("central_caz", "central_avi")
 
   # Ceftazidime and avibactam are co-administered drugs; neither is a
   # metabolite of the other, so neither maps onto the registered

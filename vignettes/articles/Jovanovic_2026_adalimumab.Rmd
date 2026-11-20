@@ -1,0 +1,423 @@
+---
+title: "Adalimumab (Jovanovic 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Adalimumab (Jovanovic 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Jovanovic M, Topic Vucenovic V, Roganovic M, Pavlovic G, Kralj D,
+  Markovic S, Svorcan P, Vucicevic K. Unlocking the Potential of Population
+  Pharmacokinetic Models of Adalimumab in Patients with Crohn's Disease.
+  *Pharmaceutics* 2026;18(7):788.
+* Article: <https://doi.org/10.3390/pharmaceutics18070788>
+* PubMed: <https://pubmed.ncbi.nlm.nih.gov/42514869/>
+
+The paper has two parts. It first externally evaluates eight published
+adalimumab population PK models (Berends 2018, Vande Casteele 2019,
+Sanchez-Hernandez 2020, Ternant 2015, Wright 2024, Spencer 2024, de Klaver
+2023 and Marquez-Megias 2023; Table 1 and Table 3) against a Serbian
+Crohn's disease therapeutic-drug-monitoring cohort. Those models are the
+cited authors' and are not packaged here (Marquez-Megias 2023 already is, as
+`MarquezMegias_2023_adalimumab`). It then develops a new model on the same
+cohort, which is the model packaged here.
+
+The new model is one-compartment with first-order subcutaneous absorption
+and linear elimination, parameterised in apparent clearance (CL/F) and
+apparent volume (V/F), with a combined additive and proportional residual
+error. Because the dataset holds trough concentrations only, it was
+estimated with NONMEM `$PRIOR NWPRI` informative priors taken from the
+best-performing evaluated model, Ternant 2015: priors on V/F, the IIV of
+V/F and the anti-drug-antibody (ADA) effect, with `ka` fixed at the Ternant
+value of 0.15 1/day and CL/F and its IIV estimated without priors. Stepwise
+covariate modelling then added C-reactive protein (CRP, log-linear) and the
+dosing interval (weekly vs otherwise) on CL/F (Results 3.5):
+
+$$
+CL/F = 0.334 \cdot (1 + 6.9 \cdot ADA) \cdot (1 + 0.075 \cdot \ln CRP) \cdot (1 + 0.218 \cdot REGIMEN)
+$$
+
+# Population
+
+The model was developed on 195 adults with Crohn's disease treated with
+subcutaneous adalimumab (Humira 40 mg pre-filled pen) at the University
+Medical Center 'Zvezdara', Belgrade, Serbia, who had therapeutic drug
+monitoring in induction or maintenance (Table 2). Mean age was 38.05 years
+(SD 11.83, range 17-67), 50.8% were female, and mean body weight was 69.44
+kg (SD 13.47, range 38-105). Mean CRP was 8.46 mg/L (SD 13.47, range
+0.00-72.70). 60.5% were on azathioprine and 33.8% had prior anti-TNF-alpha
+therapy. The 942 trough concentrations (median time after dose 6.75 or
+13.75 days, i.e. weekly or every-other-week troughs) included 15 below the
+limit of quantification and 70 reported only as above 12 mg/L; the mean of
+the remaining 857 was 9.58 mg/L (SD 5.69), 9.57 mg/L (SD 5.70) in
+maintenance. ADA were measured on 294 occasions and were positive in 9
+patients (Results 3.2).
+
+The same metadata is available programmatically via
+`readModelDb("Jovanovic_2026_adalimumab")$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` | log(0.15 1/day), fixed | Table 4 'Ka (day-1)'; Results 3.5 (Ternant 2015 value) |
+| `lcl` | log(0.334 L/day) | Table 4 'CL/F (L/day)', Final model; Equation (6) |
+| `lvc` | log(13.5 L) | Table 4 'V/F (L)', Final model |
+| `e_ada_cl` | 6.90 | Table 4 'ADA on CL/F', Final model; Equation (6) |
+| `e_crp_cl` | 0.075 | Table 4 'ln(CRP) on CL/F', Final model; Equation (6) |
+| `e_regi_qw_cl` | 0.218 | Table 4 'Dosing regimen on CL/F', Final model; Equation (6); Results 3.5 |
+| `etalcl` | 0.333^2 = 0.1109 | Table 4 'IIVCL (%)' = 33.3, Final model |
+| `etalvc` | 0.538^2 = 0.2894 | Table 4 'IIVV (%)' = 53.8, Final model |
+| `addSd` | 2.71 mg/L | Table 4 'Additive residual error (mg/L)', Final model |
+| `propSd` | 0.337 | Table 4 'Proportional residual error', Final model |
+| CL/F covariate model | `0.334 * (1 + 6.9*ADA) * (1 + 0.075*ln(CRP)) * (1 + 0.218*REGIMEN)` | Equation (6) |
+| Structure | one compartment, first-order absorption and elimination | Results 3.5; Abstract |
+| Residual error | combined additive + proportional | Results 3.5; Table 4 |
+
+# Typical-value check against the closed form
+
+With every random effect zeroed, the steady-state trough of a
+one-compartment first-order-absorption model has a closed form. The check
+uses the same parameters on both sides, so the only difference is
+integration error and the bound is tight.
+
+```{r closed-form}
+mod <- readModelDb("Jovanovic_2026_adalimumab")
+mod_typ <- rxode2::zeroRe(mod)
+
+ka <- 0.15
+vc <- 13.5
+cl <- 0.334 # ADA-negative, every-other-week, CRP = 1 mg/L
+kel <- cl / vc
+tau <- 14
+dose <- 40
+
+ss_trough <- dose * ka / (vc * (ka - kel)) *
+  (exp(-kel * tau) / (1 - exp(-kel * tau)) -
+    exp(-ka * tau) / (1 - exp(-ka * tau)))
+
+# 60 doses span about 30 elimination half-lives, so the last trough is at
+# steady state to well below the tolerance used here.
+n_dose <- 60L
+ev_typ <- rxode2::et(amt = dose, ii = tau, addl = n_dose - 1L, cmt = "depot") |>
+  rxode2::et(time = n_dose * tau, cmt = "central") |>
+  as.data.frame() |>
+  mutate(ADA_POS = 0L, CRP = 1, REGI_QW = 0L)
+
+sim_typ <- rxode2::rxSolve(mod_typ, events = ev_typ, rtol = 1e-10, atol = 1e-12)
+cc_end <- sim_typ$Cc[sim_typ$time == n_dose * tau]
+c(closed_form = ss_trough, simulated = cc_end)
+stopifnot(abs(cc_end / ss_trough - 1) < 1e-6)
+```
+
+The typical steady-state trough on 40 mg every other week is
+`r signif(ss_trough, 3)` mg/L at CRP = 1 mg/L, and the elimination
+half-life is `r signif(log(2) / kel, 3)` days.
+
+# Covariate effects on CL/F
+
+Figure S1 of the paper plots the individual CL/F estimates against
+ln(CRP). The typical-value line below is the Equation (6) relationship for
+an ADA-negative patient on every-other-week dosing, over the ln(CRP) range
+shown in Figure S1 (about -4.6 to 5).
+
+```{r crp-effect}
+crp_grid <- tibble(lncrp = seq(-4.6, 5, by = 0.1)) |>
+  mutate(
+    CRP = exp(lncrp),
+    `Every other week, ADA absent` = 0.334 * (1 + 0.075 * lncrp),
+    `Weekly, ADA absent` = 0.334 * (1 + 0.075 * lncrp) * 1.218
+  ) |>
+  tidyr::pivot_longer(-c(lncrp, CRP), names_to = "group", values_to = "cl")
+
+ggplot(crp_grid, aes(lncrp, cl, linetype = group)) +
+  geom_line() +
+  labs(
+    x = "ln(CRP) (CRP in mg/L)", y = "Typical CL/F (L/day)", linetype = NULL,
+    title = "Typical adalimumab CL/F against ln(CRP)",
+    caption = "Compare with the trend line of Figure S1 of Jovanovic 2026."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+```{r cov-table}
+tibble(
+  Patient = c(
+    "CRP 1 mg/L, ADA absent, every other week (reference)",
+    "CRP 8.46 mg/L (cohort mean), ADA absent, every other week",
+    "CRP 72.7 mg/L (cohort maximum), ADA absent, every other week",
+    "CRP 1 mg/L, ADA absent, weekly",
+    "CRP 1 mg/L, ADA present, every other week"
+  ),
+  cl = 0.334 * c(1, 1 + 0.075 * log(8.46), 1 + 0.075 * log(72.7), 1.218, 7.9)
+) |>
+  mutate(ratio = cl / 0.334) |>
+  dplyr::rename("Typical CL/F (L/day)" = cl, "Ratio to reference" = ratio) |>
+  knitr::kable(digits = 3)
+```
+
+# Virtual cohort
+
+Two arms of 150 virtual patients each receive the standard induction
+(160 mg at week 0, 80 mg at week 2) and then 40 mg from week 4, either every
+other week or weekly. CRP is drawn from a log-normal distribution matched to
+the Table 2 mean (8.46 mg/L) and SD (13.47 mg/L) and truncated to the
+reported range, with the lower bound set at 0.01 mg/L because the model
+is undefined at zero. ADA status is positive with probability 9/195, the
+fraction of patients with any positive ADA result. Both covariates are held
+constant within a patient.
+
+```{r cohort}
+rxode2::rxSetSeed(20260788)
+set.seed(20260788)
+
+n_per_arm <- 150L
+crp_cv <- 13.47 / 8.46
+crp_sdlog <- sqrt(log(1 + crp_cv^2))
+crp_meanlog <- log(8.46) - crp_sdlog^2 / 2
+
+cohort <- tibble(
+  id = seq_len(2L * n_per_arm),
+  treatment = rep(c("40 mg every other week", "40 mg weekly"), each = n_per_arm),
+  REGI_QW = rep(c(0L, 1L), each = n_per_arm),
+  CRP = pmin(pmax(rlnorm(2L * n_per_arm, crp_meanlog, crp_sdlog), 0.01), 72.7),
+  ADA_POS = as.integer(runif(2L * n_per_arm) < 9 / 195)
+)
+
+cohort |>
+  group_by(treatment) |>
+  summarise(
+    n = n(),
+    crp_mean = mean(CRP),
+    crp_median = median(CRP),
+    ada_pos = sum(ADA_POS),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+```{r events}
+week <- 7
+end_time <- 52 * week
+dose_tbl <- bind_rows(
+  tibble(treatment = "40 mg every other week", time = c(0, 2 * week, seq(4 * week, end_time - 2 * week, by = 2 * week))),
+  tibble(treatment = "40 mg weekly", time = c(0, 2 * week, seq(4 * week, end_time - week, by = week)))
+) |>
+  mutate(amt = case_when(time == 0 ~ 160, time == 2 * week ~ 80, TRUE ~ 40))
+
+obs_times <- seq(0, end_time, by = 1)
+
+dose_rows <- cohort |>
+  inner_join(dose_tbl, by = "treatment", relationship = "many-to-many") |>
+  mutate(evid = 1L, cmt = "depot")
+obs_rows <- cohort |>
+  tidyr::crossing(time = obs_times) |>
+  mutate(evid = 0L, amt = 0, cmt = "central")
+
+events <- bind_rows(dose_rows, obs_rows) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep = c("treatment", "CRP", "ADA_POS", "REGI_QW")
+) |>
+  as.data.frame()
+```
+
+```{r profile, fig.height = 4.5}
+sim |>
+  group_by(treatment, time) |>
+  summarise(
+    q05 = quantile(Cc, 0.05),
+    q50 = median(Cc),
+    q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time / week, q50)) +
+  geom_ribbon(aes(ymin = q05, ymax = q95), alpha = 0.2) +
+  geom_line() +
+  geom_hline(yintercept = 12, linetype = "dashed") +
+  facet_wrap(~treatment) +
+  labs(
+    x = "Time (weeks)", y = "Adalimumab Cc (mg/L)",
+    title = "Simulated adalimumab concentrations (median and 5th-95th percentile)",
+    caption = "Model prediction without residual error. Dashed line: 12 mg/L, the upper reporting limit of the source assay."
+  )
+```
+
+# Steady-state troughs against the observed cohort
+
+The paper reports no concentration-time profile or NCA, only the summary of
+the observed troughs. The simulated maintenance troughs (the concentration
+just before each dose from week 24 onward, model prediction without
+residual error) are summarised below beside the observed values. The
+observed mean excludes the 70 samples reported only as above 12 mg/L and so
+understates the true mean; it also pools patients on both intervals and on
+optimised doses, so it is context, not a target.
+
+```{r troughs}
+trough_tbl <- dose_tbl |>
+  filter(time >= 24 * week) |>
+  select(treatment, time)
+
+troughs <- sim |>
+  inner_join(trough_tbl, by = c("treatment", "time"))
+
+trough_summary <- troughs |>
+  group_by(treatment) |>
+  summarise(
+    mean = mean(Cc),
+    sd = sd(Cc),
+    median = median(Cc),
+    pct_above_12 = 100 * mean(Cc > 12),
+    .groups = "drop"
+  )
+
+trough_summary |>
+  dplyr::rename(
+    "Arm" = treatment,
+    "Mean trough (mg/L)" = mean,
+    "SD (mg/L)" = sd,
+    "Median trough (mg/L)" = median,
+    "% above 12 mg/L" = pct_above_12
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+Observed (Results 3.2): mean 9.57 mg/L (SD 5.70) over the maintenance
+measurements, with 7.4% of all samples above 12 mg/L and unquantified. The
+observed pooled mean lies between the two simulated arms, as expected for a
+cohort in which most patients were on every-other-week dosing and the rest
+had been intensified. The weekly arm's trough is higher despite its 21.8%
+higher CL/F, because its dosing rate is twice as high.
+
+```{r trough-check}
+eow <- trough_summary$median[trough_summary$treatment == "40 mg every other week"]
+# Structural: a mis-transcribed CL/F, V/F or dose unit moves the median by tens
+# of percent; the band is wide because the observed summary is censored and
+# pools regimens.
+stopifnot(eow > 4, eow < 15)
+```
+
+# PKNCA steady-state exposure
+
+```{r pknca}
+tau_tbl <- tibble(
+  treatment = c("40 mg every other week", "40 mg weekly"),
+  start = c(end_time - 2 * week, end_time - week),
+  end = end_time
+)
+
+conc_df <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+
+dose_df <- events |>
+  filter(evid == 1) |>
+  select(id, time, amt, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+intervals <- tau_tbl |>
+  mutate(cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE) |>
+  as.data.frame()
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+summary(nca_res)
+```
+
+At steady state the dosing-interval AUC equals the dose divided by CL/F, so
+each patient's PKNCA Cav should equal 40 / (CL/F x tau) with that patient's
+own CL/F. Patients with a long half-life (a large V/F draw) are not fully at
+steady state by week 52 and the trapezoid rule adds a little error, so the
+check is on the median and the 90th percentile rather than on every patient.
+
+```{r pknca-check}
+cl_ind <- sim |>
+  filter(time == end_time) |>
+  select(id, cl)
+
+cav_chk <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "cav") |>
+  select(id, treatment, cav = PPORRES) |>
+  left_join(tau_tbl, by = "treatment") |>
+  left_join(cl_ind, by = "id") |>
+  mutate(
+    cav_expected = 40 / (cl * (end - start)),
+    pct_diff = 100 * (cav / cav_expected - 1)
+  )
+
+cav_chk |>
+  group_by(treatment) |>
+  summarise(
+    median_pct_diff = median(pct_diff),
+    p90_abs_pct_diff = quantile(abs(pct_diff), 0.9),
+    .groups = "drop"
+  ) |>
+  knitr::kable(digits = 2)
+
+stopifnot(
+  abs(median(cav_chk$pct_diff)) < 5,
+  quantile(abs(cav_chk$pct_diff), 0.9) < 15
+)
+```
+
+# Assumptions and deviations
+
+* **Inter-individual variability scale.** Table 4 reports IIV as a
+  percentage (33.3% on CL/F, 53.8% on V/F) for exponential random effects.
+  It is read on the standard-deviation scale, omega = CV/100, so the
+  variances are 0.333^2 and 0.538^2. The alternative
+  omega^2 = log(1 + CV^2) gives 0.105 and 0.253, about 5% and 13% lower.
+* **CRP at zero.** The log-linear term `1 + 0.075 * ln(CRP)` is undefined
+  at CRP = 0 and the paper does not say how zero values were handled. Table
+  2 reports a minimum of 0.00 mg/L, while the lowest ln(CRP) in Figure S1 is
+  about -4.6, i.e. about 0.01 mg/L, which suggests zero values were floored
+  near there. The model applies the published form as is; users must supply
+  CRP > 0, and the virtual cohort here floors CRP at 0.01 mg/L.
+* **CRP is not centred.** Equation (6) applies ln(CRP) without a reference
+  value, so the typical CL/F of 0.334 L/day is for CRP = 1 mg/L. At the
+  cohort mean CRP of 8.46 mg/L the typical CL/F is 16% higher.
+* **Figure S1 axis unit.** Figure S1's y-axis is labelled 'CL (L/h)', but
+  its values (about 0.3) match CL/F in L/day; L/day (Table 4) is used.
+* **Dosing-interval covariate.** `REGI_QW` = 1 for weekly administration,
+  matching the screened covariate 'dosing interval (one week or otherwise)'
+  (Methods 2.4) and the Results statement that CL/F was 21.8% higher on
+  weekly than on every-other-week dosing. The authors regard the effect as a
+  marker of treatment intensification driven by disease activity rather
+  than a causal effect of the interval (Discussion), so the model should not
+  be used to predict the clearance change when one patient is switched to
+  weekly dosing.
+* **Time-varying covariates.** ADA status and CRP were recorded per
+  monitoring occasion in the source and may be supplied as time-varying
+  columns. The virtual cohort here holds them constant within a patient.
+* **Censoring.** The source fit handled 15 below-limit samples with the M5
+  method and 70 samples reported as above 12 mg/L as right-censored (M3).
+  Those are estimation devices and are not part of the simulation model.
+* **Base model.** Table 4 also lists a base model (no CRP or regimen
+  effect; CL/F 0.376 L/day). Only the final model is packaged.
+* **Evaluated literature models.** The eight models of Table 1 were
+  re-implemented by the authors for external evaluation only and are not
+  packaged from this paper; their primary publications are the right
+  sources for them.
+* No erratum was found for this article (PubMed and Europe PMC,
+  checked 2026-11-15).

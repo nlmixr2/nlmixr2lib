@@ -1,0 +1,601 @@
+---
+title: "Garenoxacin population PK and clinical-cure exposure-response (Tanigawara 2012)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Garenoxacin population PK and clinical-cure exposure-response (Tanigawara 2012)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Tanigawara 2012 describes how the Japanese clinical dose of the
+des-F(6)-quinolone garenoxacin (400 mg orally once daily) was chosen at the end
+of phase II from an interim population PK model plus Monte Carlo simulation,
+and then confirmed with phase III PK/PD data. The paper contributes four model
+files, all documented in this one article:
+
+| Model file | What it is |
+|---|---|
+| `Tanigawara_2012_garenoxacin` | Final phase I-III one-compartment popPK model (NONMEM VI FOCE-I) |
+| `Tanigawara_2012_garenoxacin_interim` | Interim end-of-phase-II popPK "Model 2" (NONMEM V FO), used for the Monte Carlo dose selection |
+| `Tanigawara_2012_garenoxacin_cure` | Phase III logistic regression of clinical cure on log10(fAUC0-24/MIC) |
+| `Tanigawara_2012_garenoxacin_cure_cart` | The same data with fAUC0-24/MIC dichotomised at the CART split of 28 h |
+
+* Citation: `r rxode2::rxode(readModelDb("Tanigawara_2012_garenoxacin"))$reference`
+* Article: <https://doi.org/10.1007/s00228-011-1095-3> (open access, PMC3249185)
+
+The electronic supplement holds only the goodness-of-fit plots of the final
+model (Supplementary Fig. 1). A EuropePMC search on 2026-11-19 found no
+erratum or correction.
+
+```{r models}
+mod_final <- readModelDb("Tanigawara_2012_garenoxacin")
+mod_interim <- readModelDb("Tanigawara_2012_garenoxacin_interim")
+mod_cure <- readModelDb("Tanigawara_2012_garenoxacin_cure")
+mod_cart <- readModelDb("Tanigawara_2012_garenoxacin_cure_cart")
+ui_final <- rxode2::rxode(mod_final)
+ui_interim <- rxode2::rxode(mod_interim)
+```
+
+# Population
+
+The PK data come from five Japanese studies (Tanigawara 2012 Tables 1-2): three
+phase I studies in 49 healthy volunteers (100-600 mg single doses, 200 or 400
+mg once daily for 7-14 days, and a fed/fasted 400 mg study; 1,321 samples), a
+phase II study in 55 patients with community-acquired pneumonia (CAP) or
+secondary infection of chronic respiratory disease (SICRD) given 200 or 400 mg
+once daily for 7-14 days (75 samples), and a phase III study in 133 patients
+with mild or moderate SICRD given 400 mg once daily for 10 days (346 samples).
+
+* Interim model (phases I-II): 104 subjects, 77 men, age 40.0 +/- 20.4 years
+  (20-74), weight 58.5 +/- 10.4 kg (34-83), Cockcroft-Gault CLCR 102.4 +/- 29.7
+  mL/min (34.4-178.7).
+* Final model (phases I-III): 237 subjects, 164 men; the phase III patients
+  were older (66.3 +/- 14.8 years, 19-94), lighter (52.7 +/- 13.0 kg, 33-120)
+  and had lower renal function (CLCR 71.1 +/- 29.4 mL/min, 19.3-199.2).
+* Exposure-response: the 66 phase III patients with an isolated causative
+  organism and MIC; 58 were cured (87.9%).
+
+```{r population}
+str(ui_final$population[c("n_subjects", "n_studies", "age_range", "weight_range", "sex_female_pct")])
+```
+
+# Source trace
+
+| Model / parameter | Value | Source location |
+|---|---|---|
+| Structure: one compartment, first-order absorption (ADVAN2 TRANS2) | -- | Methods, "Structural model development" |
+| Residual error `C = Cpred x (1 + eps)` | -- | Eq. 1 |
+| IIV `P_j = P x exp(eta_j)` | -- | Eq. 2 |
+| Final `lcl` (theta1) | 64.3 mL/min | Table 4, end of phase III |
+| Final `e_crcl_cl` (theta2), centred at 85 mL/min | 0.213 | Table 4; centring in Tables 3-4 |
+| Final `e_wt_cl` (theta3), centred at 55 kg | 0.276 mL/min per kg | Table 4 |
+| Final `lvc` (theta4) | 53.9 L | Table 4 |
+| Final `e_wt_vc` (theta5), (WT/55) power | 0.739 | Table 4 |
+| Final `e_sex_vc` (theta6), GEN = 1 male | 6.98 L | Table 4; GEN coding Table 3 footnote a |
+| Final `lka` | 2.14 1/h | Table 4 |
+| Final omega CL/F, V/F, covariance | 0.0403, 0.0249, 0.0292 | Table 4 |
+| Final omega ka | 0.411 | Table 4 |
+| Final `propSd` = sqrt(sigma^2) | sqrt(0.105) = 0.324 | Table 4 (CV 32.4%) |
+| Interim `lcl` (theta1) | 66.7 mL/min | Table 4, end of phase II |
+| Interim `e_crcl_cl` (theta2), centred at 102 mL/min | 0.167 | Table 4 (see Assumptions for the Table 3 centring of 85) |
+| Interim `lvc` | 61.8 L | Table 4 |
+| Interim `lka` | 4.72 1/h | Table 4 |
+| Interim omega CL/F, V/F, covariance | 0.0424, 0.0443, 0.0330 | Table 4 |
+| Interim omega ka | 2.63 | Table 4 |
+| Interim `propSd` = sqrt(sigma^2) | sqrt(0.0645) = 0.254 | Table 4 (CV 25.4%) |
+| Cure `logit_ref`, `e_log10faucmic_success` | -0.4565, 1.0865 | Table 6, continuous model; log10 per footnote a |
+| CART `logit_ref`, `e_faucmic28_success` | -0.4055, 2.8214 | Table 6, categorical model |
+| CART split `faucmic_split` | 28 h | Table 6 footnote b; Results |
+| `fu` (both cure models) | 0.25 | Discussion: serum protein binding 75% |
+| mL/min to L/h conversion | x 60 / 1000 | unit conversion |
+
+# Typical-value checks against Figure 2 and the Results text
+
+Figure 2 and the Results report exposure at 400 mg once daily from the
+population-mean parameters of the final model, "varying one covariate within
+the particular range while all other covariates were kept at their mean
+value". The pooled means are CLCR 85 mL/min and weight 55 kg (the centring
+values of the model), and 164 of 237 subjects were men, so the "mean" sex
+indicator is SEXF = 73/237.
+
+```{r typical-scenarios}
+sexf_mean <- 73 / 237
+scen <- tibble::tribble(
+  ~scenario,            ~CRCL, ~WT,
+  "Mean covariates",       85,  55,
+  "CLCR 20 mL/min",        20,  55,
+  "CLCR 49 mL/min",        49,  55,
+  "CLCR 50 mL/min",        50,  55,
+  "CLCR 79 mL/min",        79,  55,
+  "CLCR 80 mL/min",        80,  55,
+  "CLCR 110 mL/min",      110,  55,
+  "WT 60 kg",              85,  60,
+  "WT 100 kg",             85, 100
+) |>
+  mutate(id = seq_len(n()), SEXF = sexf_mean, treatment = scenario)
+
+ss_dose <- scen |>
+  mutate(time = 0, amt = 400, ii = 24, ss = 1L, evid = 1L, cmt = "depot")
+ss_obs <- scen |>
+  tidyr::crossing(time = seq(0, 24, by = 0.05)) |>
+  mutate(amt = 0, ii = 0, ss = 0L, evid = 0L, cmt = "central")
+ss_events <- bind_rows(ss_dose, ss_obs) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, amt, ii, ss, evid, cmt, CRCL, WT, SEXF)
+
+sim_tv <- rxode2::rxSolve(
+  rxode2::zeroRe(ui_final), events = ss_events,
+  rtol = 1e-10, atol = 1e-12, ssRtol = 1e-10, ssAtol = 1e-12,
+  maxsteps = 1e6, returnType = "data.frame"
+) |>
+  left_join(select(scen, id, treatment), by = "id")
+
+tv <- sim_tv |>
+  group_by(treatment) |>
+  summarise(cl_Lh = first(cl), AUC_closed = 400 / first(cl), Cmax = max(Cc), .groups = "drop")
+knitr::kable(tv, digits = 2)
+```
+
+The Results text gives the AUC0-24 at the band limits (normal CLCR 80-110
+mL/min: 96-105; mild impairment 50-79 mL/min: 105-117; moderate impairment
+20-49 mL/min: 117-132 ug*h/mL), the population mean (104 ug*h/mL, Figure 2;
+104 ug*h/mL also in the Discussion) and the population-mean Cmax (7.75 ug/mL,
+Figure 2). The closed-form steady-state AUC = dose / CL is exact for this
+linear model.
+
+```{r typical-checks}
+published <- tibble::tribble(
+  ~treatment,          ~metric, ~published,
+  "Mean covariates",   "AUC",   104,
+  "Mean covariates",   "Cmax",  7.75,
+  "CLCR 20 mL/min",    "AUC",   132,
+  "CLCR 49 mL/min",    "AUC",   117,
+  "CLCR 50 mL/min",    "AUC",   117,
+  "CLCR 79 mL/min",    "AUC",   105,
+  "CLCR 80 mL/min",    "AUC",   105,
+  "CLCR 110 mL/min",   "AUC",   96
+)
+tv_long <- tv |>
+  select(treatment, AUC = AUC_closed, Cmax) |>
+  tidyr::pivot_longer(-treatment, names_to = "metric", values_to = "model")
+tv_check <- inner_join(published, tv_long, by = c("treatment", "metric")) |>
+  mutate(pct_diff = 100 * (model - published) / published)
+stopifnot(nrow(tv_check) == nrow(published))
+tv_check |>
+  dplyr::rename(Scenario = treatment, Metric = metric, Published = published,
+                Model = model, "% diff" = pct_diff) |>
+  knitr::kable(digits = 2)
+
+# Deterministic typical-value quantities against values the paper prints to
+# 2-3 significant figures; a transcription error in any theta moves these by
+# more than the rounding of the printed value.
+stopifnot(all(abs(tv_check$pct_diff) < 1.5))
+
+# 'In a comparison by body weight between a 100-kg patient and 60-kg patient,
+# the AUC0-24 and Cmax decreased by 0.86-fold'
+auc_ratio <- tv$AUC_closed[tv$treatment == "WT 100 kg"] / tv$AUC_closed[tv$treatment == "WT 60 kg"]
+auc_ratio
+stopifnot(abs(auc_ratio - 0.86) < 0.01)
+```
+
+The AUC ratio for 100 kg against 60 kg reproduces the reported 0.86-fold. The
+corresponding Cmax ratio is
+`r round(tv$Cmax[tv$treatment == "WT 100 kg"] / tv$Cmax[tv$treatment == "WT 60 kg"], 2)`,
+because the larger V/F of heavier patients lowers Cmax more than AUC; the paper
+quotes a single 0.86-fold figure for both.
+
+## PKNCA on the typical-value steady-state profiles
+
+```{r pknca-typical}
+conc_tv <- sim_tv |>
+  filter(!is.na(Cc)) |>
+  select(id, treatment, time, Cc)
+dose_tv <- scen |> transmute(id, treatment, time = 0, amt = 400)
+
+nca_tv <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_tv, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_tv, amt ~ time | treatment + id),
+  intervals = data.frame(start = 0, end = 24, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+))
+
+ref_tv <- data.frame(
+  treatment = c("Mean covariates", "Mean covariates", "CLCR 20 mL/min",
+                "CLCR 49 mL/min", "CLCR 79 mL/min", "CLCR 110 mL/min"),
+  PPTESTCD = c("cmax", "auclast", "auclast", "auclast", "auclast", "auclast"),
+  PPORRES = c(7.75, 104, 132, 117, 105, 96)
+)
+tbl_tv <- nlmixr2lib::ncaComparisonTable(
+  nca_tv, ref_tv, by = "treatment",
+  units = c(cmax = "ug/mL", auclast = "ug*h/mL")
+)
+knitr::kable(tbl_tv, caption = "Typical-value steady-state NCA at 400 mg once daily (final model) against Figure 2 and the Results text.")
+```
+
+# Simulated phase III cohort (final model)
+
+A virtual cohort shaped like the 133 phase III patients (Table 2: weight 52.7
++/- 13.0 kg, 33-120; CLCR 71.1 +/- 29.4 mL/min, 19.3-199.2; 87 of 133 men)
+receives 400 mg once daily for 10 days. Weight and CLCR are drawn from
+log-normal distributions with the published means and SDs, truncated to the
+observed ranges, independently of each other (the paper gives no joint
+distribution).
+
+```{r cohort-helpers}
+# Log-normal draws with a given arithmetic mean and SD, truncated to [lo, hi].
+rlnorm_trunc <- function(n, mean, sd, lo, hi) {
+  s2 <- log(1 + (sd / mean)^2)
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- rlnorm(4 * n, log(mean) - s2 / 2, sqrt(s2))
+    out <- c(out, x[x >= lo & x <= hi])
+  }
+  out[seq_len(n)]
+}
+```
+
+```{r cohort-sim}
+set.seed(2012)
+n_sub <- 200
+cohort <- tibble::tibble(
+  id = seq_len(n_sub),
+  WT = rlnorm_trunc(n_sub, 52.7, 13.0, 33, 120),
+  CRCL = rlnorm_trunc(n_sub, 71.1, 29.4, 19.3, 199.2),
+  SEXF = rbinom(n_sub, 1, 46 / 133),
+  treatment = "400 mg QD"
+)
+
+dose_times <- seq(0, 216, by = 24)
+obs_times <- sort(unique(c(seq(0, 240, by = 1), 216 + seq(0, 24, by = 0.25))))
+ev_p3 <- bind_rows(
+  cohort |> tidyr::crossing(time = dose_times) |>
+    mutate(amt = 400, evid = 1L, cmt = "depot"),
+  cohort |> tidyr::crossing(time = obs_times) |>
+    mutate(amt = 0, evid = 0L, cmt = "central")
+) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, amt, evid, cmt, WT, CRCL, SEXF)
+
+rxode2::rxSetSeed(2012)
+sim_p3 <- rxode2::rxSolve(mod_final, events = ev_p3, returnType = "data.frame") |>
+  left_join(select(cohort, id, treatment), by = "id")
+```
+
+```{r vpc-day10, fig.cap = "Simulated 400 mg once-daily profile on day 10 in a phase III-like cohort (5th, 50th, 95th percentiles of the individual predictions). Compare with the right-hand panel of Figure 1 of Tanigawara 2012, whose simulated median peaks near 7.5 ug/mL about 2 h after the dose and falls to about 2 ug/mL at 24 h."}
+vpc <- sim_p3 |>
+  filter(time >= 216) |>
+  mutate(tad = time - 216) |>
+  group_by(tad) |>
+  summarise(
+    p05 = quantile(Cc, 0.05), p50 = median(Cc), p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc, aes(tad)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line(aes(y = p50)) +
+  scale_x_continuous(breaks = seq(0, 24, 6)) +
+  labs(x = "Time after dose on day 10 (h)", y = "Garenoxacin plasma concentration (ug/mL)")
+```
+
+## PKNCA on the simulated cohort (day 10)
+
+Figure 6 of Tanigawara 2012 shows box plots of the individual AUC0-24 and Cmax
+of the 133 phase III patients, split by adverse-event status. The medians read
+from the figure are about 113 and 115 ug*h/mL (AUC0-24) and about 8.4 and 8.8
+ug/mL (Cmax); the reference values below are the midpoints, 114 ug*h/mL and
+8.6 ug/mL.
+
+```{r pknca-p3}
+conc_p3 <- sim_p3 |>
+  filter(!is.na(Cc), time >= 216) |>
+  select(id, treatment, time, Cc)
+dose_p3 <- cohort |>
+  tidyr::crossing(time = dose_times) |>
+  transmute(id, treatment, time, amt = 400)
+
+nca_p3 <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_p3, Cc ~ time | treatment + id),
+  PKNCA::PKNCAdose(dose_p3, amt ~ time | treatment + id),
+  intervals = data.frame(start = 216, end = 240, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+))
+ref_p3 <- data.frame(treatment = "400 mg QD", cmax = 8.6, auclast = 114)
+tbl_p3 <- nlmixr2lib::ncaComparisonTable(
+  nca_p3, ref_p3, by = "treatment",
+  units = c(cmax = "ug/mL", auclast = "ug*h/mL")
+)
+knitr::kable(tbl_p3, caption = "Simulated day-10 NCA (median of 200 subjects) against the Figure 6 phase III medians (digitised).")
+
+res_p3 <- as.data.frame(nca_p3$result)
+med_auc <- median(res_p3$PPORRES[res_p3$PPTESTCD == "auclast"])
+med_cmax <- median(res_p3$PPORRES[res_p3$PPTESTCD == "cmax"])
+# Cohort medians: a mis-transcribed clearance, volume or unit conversion moves
+# them by tens of percent; covariate sampling and digitisation stay well
+# inside 15%.
+stopifnot(abs(med_auc / 114 - 1) < 0.15, abs(med_cmax / 8.6 - 1) < 0.15)
+```
+
+# Interim model: trough above the MPC (Figure 4)
+
+The end-of-phase-II Monte Carlo simulations used Model 2 with CLCR "randomly
+re-sampled from real CLCR values (34.4-133.2 ml/min, n = 55)" of the phase II
+patients, whose CLCR was 84.6 +/- 24.8 mL/min. The individual values are not
+published, so here the 55-patient distribution is represented by 200 evenly
+spaced quantiles of a normal distribution with that mean and SD, truncated to
+the published range. The target is a trough above the mutant prevention
+concentration of 1 ug/mL.
+
+The published curve is very steep (day 1: about 0% at 200 mg, 23% at 250 mg,
+81.4% at 300 mg and 100% from 350 mg), which matches a simulation in which only
+CLCR varies and every other parameter is at its typical value. The chunk
+below reproduces that (typical values, `zeroRe()`), and also shows the same
+calculation with the between-subject variability of Model 2 switched on.
+
+```{r fig4-setup}
+p_grid <- (seq_len(200) - 0.5) / 200
+a <- pnorm((34.4 - 84.6) / 24.8)
+b <- pnorm((133.2 - 84.6) / 24.8)
+crcl_grid <- 84.6 + 24.8 * qnorm(a + (b - a) * p_grid)
+
+doses_fig4 <- c(100, 200, 250, 300, 350, 400, 600)
+trough_times <- c(Day1 = 24, Day5 = 120, Day10 = 240) - 1e-4
+
+subj4 <- tidyr::expand_grid(dose = doses_fig4, CRCL = crcl_grid) |>
+  mutate(id = seq_len(n()))
+ev4 <- bind_rows(
+  subj4 |> tidyr::crossing(time = seq(0, 216, by = 24)) |>
+    mutate(amt = dose, evid = 1L, cmt = "depot"),
+  subj4 |> tidyr::crossing(time = unname(trough_times)) |>
+    mutate(amt = 0, evid = 0L, cmt = "central")
+) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, amt, evid, cmt, CRCL)
+
+trough_prob <- function(sim, subj) {
+  sim |>
+    left_join(select(subj, id, dose), by = "id") |>
+    mutate(day = names(trough_times)[match(round(time, 3), round(unname(trough_times), 3))]) |>
+    group_by(dose, day) |>
+    summarise(pct_above = 100 * mean(Cc > 1), .groups = "drop")
+}
+
+sim4_tv <- rxode2::rxSolve(rxode2::zeroRe(ui_interim), events = ev4,
+                           returnType = "data.frame")
+fig4_tv <- trough_prob(sim4_tv, subj4)
+
+# Same calculation with the Table 3 centring of 85 mL/min instead of 102:
+# (CRCL - 85) equals ((CRCL + 17) - 102), so shifting the covariate by +17
+# evaluates the alternative reading without editing the model.
+sim4_85 <- rxode2::rxSolve(rxode2::zeroRe(ui_interim),
+                           events = mutate(ev4, CRCL = CRCL + 17),
+                           returnType = "data.frame")
+fig4_85 <- trough_prob(sim4_85, subj4)
+```
+
+```{r fig4-iiv}
+rxode2::rxSetSeed(4)
+sim4_iiv <- rxode2::rxSolve(mod_interim, events = ev4, returnType = "data.frame")
+fig4_iiv <- trough_prob(sim4_iiv, subj4)
+```
+
+```{r fig4-plot, fig.cap = "Replicates Figure 4 of Tanigawara 2012: probability that the garenoxacin trough exceeds the 1 ug/mL MPC on days 1, 5 and 10 (interim Model 2). Solid: typical values with only CLCR varying (the published construction); dashed: with the Model 2 between-subject variability."}
+fig4 <- bind_rows(
+  mutate(fig4_tv, sim = "Typical values, CLCR varying"),
+  mutate(fig4_iiv, sim = "With between-subject variability")
+)
+ggplot(fig4, aes(dose, pct_above, colour = day, linetype = sim)) +
+  geom_line() +
+  geom_point() +
+  labs(x = "Dose (mg)", y = "Probability of trough above MPC (%)",
+       colour = NULL, linetype = NULL)
+```
+
+```{r fig4-check}
+fig4_pub <- tibble::tribble(
+  ~dose, ~day,    ~published,
+  200,   "Day1",  0,
+  250,   "Day1",  23.5,
+  300,   "Day1",  81.4,
+  350,   "Day1",  100,
+  200,   "Day5",  38,
+  250,   "Day5",  91,
+  300,   "Day5",  100
+)
+fig4_cmp <- fig4_pub |>
+  left_join(rename(fig4_tv, centred_102 = pct_above), by = c("dose", "day")) |>
+  left_join(rename(fig4_85, centred_85 = pct_above), by = c("dose", "day")) |>
+  left_join(rename(fig4_iiv, with_iiv = pct_above), by = c("dose", "day"))
+stopifnot(nrow(fig4_cmp) == nrow(fig4_pub), !anyNA(fig4_cmp))
+fig4_cmp |>
+  dplyr::rename(
+    "Dose (mg)" = dose, Day = day,
+    "Published (%)" = published,
+    "Typical, CLCR - 102 (%)" = centred_102,
+    "Typical, CLCR - 85 (%)" = centred_85,
+    "With IIV, CLCR - 102 (%)" = with_iiv
+  ) |>
+  knitr::kable(digits = 1, caption = "Figure 4 (digitised; 81.4% at 300 mg on day 1 is quoted in the Results).")
+
+# Deterministic (quantile grid, typical values): no Monte Carlo noise.
+stopifnot(all(abs(fig4_cmp$centred_102 - fig4_cmp$published) < 10))
+```
+
+With CLCR centred at 102 mL/min (Table 4) the typical-value construction
+reproduces every digitised point of Figure 4 to within about 7 percentage
+points
+(`r round(fig4_tv$pct_above[fig4_tv$dose == 300 & fig4_tv$day == "Day1"], 1)`%
+against the quoted 81.4% at 300 mg on day 1; the residual gap reflects the
+quantile-grid stand-in for the 55 real CLCR values). Centring at 85 mL/min
+(the Model 2 row of Table 3) gives
+`r round(fig4_85$pct_above[fig4_85$dose == 300 & fig4_85$day == "Day1"], 1)`%
+at that point and misses the 250 mg and day-5 200 mg points by 18-25
+percentage points, so the packaged interim model uses 102. With the Model 2
+between-subject variability the curve is much flatter than the published one,
+which is consistent with a simulation that held every parameter except CLCR
+at its typical value.
+
+# Interim model: fAUC0-24/MIC target attainment (Figure 3)
+
+Figure 3 gives the probability that fAUC0-24/MIC exceeds 30 h at steady state
+for 10,000 simulated AUC and MIC pairs per pathogen. The full MIC
+distributions of the 1994-1997 Japanese isolates are not published (Table 2
+gives only MIC90 and range), so Figure 3 and the Monte Carlo columns of
+Table 7 cannot be regenerated. The chunk below instead shows the attainment
+for fixed MICs, using the steady-state AUC0-24 = dose / CL/F of the interim
+model over the same CLCR grid and fu = 0.25.
+
+```{r fig3}
+fu <- 0.25
+cl_grid <- (66.7 + 0.167 * (crcl_grid - 102)) * 60 / 1000
+pta <- tidyr::expand_grid(dose = c(100, 200, 400, 600, 800),
+                          MIC = c(0.05, 0.1, 0.39, 0.78, 3.13)) |>
+  rowwise() |>
+  mutate(pta = 100 * mean(fu * dose / cl_grid / MIC > 30)) |>
+  ungroup()
+pta |>
+  tidyr::pivot_wider(names_from = MIC, values_from = pta, names_prefix = "MIC ") |>
+  dplyr::rename("Dose (mg)" = dose) |>
+  knitr::kable(digits = 0, caption = "Typical-value attainment (%) of fAUC0-24/MIC > 30 h by fixed MIC (ug/mL).")
+
+# 'With a dose of >= 100 mg, the probability of 100% attainment could be
+# expected for MSSA, ..., H. influenzae, and M. catarrhalis' -- MIC90 values
+# of 0.0125-0.10 ug/mL (Table 2).
+stopifnot(pta$pta[pta$dose == 100 & pta$MIC == 0.1] == 100)
+```
+
+The closed form here uses the model's own typical CL/F; the cross-check below
+confirms it equals the `cl` the interim model computes.
+
+```{r fig3-crosscheck}
+cl_model <- sim4_tv |>
+  select(id, cl) |>
+  left_join(select(subj4, id, CRCL), by = "id") |>
+  distinct(CRCL, cl)
+stopifnot(max(abs(cl_model$cl / ((66.7 + 0.167 * (cl_model$CRCL - 102)) * 0.06) - 1)) < 1e-8)
+```
+
+# Clinical-cure exposure-response (Figure 5, Tables 5-6)
+
+Both cure models are static: the total steady-state AUC0-24 and the patient's
+MIC are supplied as covariate columns, one row per evaluation.
+
+```{r er-helper}
+er_eval <- function(model, cov) {
+  ev <- cov |> mutate(id = 1L, time = seq_len(n()), amt = 0, evid = 0L)
+  s <- as.data.frame(rxode2::rxSolve(model, events = ev, returnType = "data.frame"))
+  stopifnot(nrow(s) == nrow(cov))
+  s$prob_clinical_success
+}
+```
+
+Figure 5 plots the continuous logistic fit against fAUC0-24/MIC on a log axis.
+With MIC = 1 ug/mL the unbound ratio is 0.25 x AUC, so the covariate grid
+below spans fAUC0-24/MIC from 1 to 1000 h.
+
+```{r fig5, fig.cap = "Replicates the fitted curve of Figure 5 of Tanigawara 2012: probability of clinical cure against fAUC0-24/MIC (continuous logistic model), with the CART-split model as a step."}
+ratio_grid <- 10^seq(0, 3, length.out = 121)
+cov_grid <- data.frame(AUC_GARENOXACIN = ratio_grid / 0.25, MIC = 1)
+er_curve <- tibble::tibble(
+  faucmic = ratio_grid,
+  continuous = er_eval(mod_cure, cov_grid),
+  cart = er_eval(mod_cart, cov_grid)
+)
+er_curve |>
+  tidyr::pivot_longer(-faucmic, names_to = "model", values_to = "p") |>
+  ggplot(aes(faucmic, 100 * p, linetype = model)) +
+  geom_line() +
+  geom_vline(xintercept = 28, linetype = "dotted") +
+  scale_x_log10() +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(x = "fAUC0-24/MIC (h)", y = "Probability of clinical cure (%)", linetype = NULL)
+```
+
+```{r er-checks}
+pts <- data.frame(AUC_GARENOXACIN = c(1, 28, 1000) / 0.25, MIC = 1)
+p_cont <- er_eval(mod_cure, pts)
+round(100 * p_cont, 1)
+# Figure 5 curve read at 1, 28 (the CART circle) and 1000 h: about 39, 75 and
+# 94%. The curve is deterministic, so the tolerance only covers digitisation.
+stopifnot(all(abs(100 * p_cont - c(39, 75, 94)) < 2))
+
+p_cart <- er_eval(mod_cart, data.frame(AUC_GARENOXACIN = c(20, 200) / 0.25, MIC = 1))
+round(100 * p_cart, 1)
+# Table 5: 2/5 cured at or below the split, 56/61 above it.
+stopifnot(abs(p_cart - c(2 / 5, 56 / 61)) < 5e-4)
+```
+
+## Cure probability in the simulated phase III cohort
+
+Combining the two layers as the paper did (final-model AUC0-24 with each
+patient's MIC) shows how cure probability depends on the pathogen's
+susceptibility at 400 mg once daily. The individual AUC is taken as dose /
+CL/F, the exact steady-state AUC0-24 of the simulated subject.
+
+```{r cohort-cure}
+auc_ind <- sim_p3 |> distinct(id, cl) |> mutate(AUC_GARENOXACIN = 400 / cl)
+mics <- c(0.06, 0.25, 1, 4, 32)
+cure_tab <- lapply(mics, function(m) {
+  p <- er_eval(mod_cure, data.frame(AUC_GARENOXACIN = auc_ind$AUC_GARENOXACIN, MIC = m))
+  data.frame(MIC = m, median_p = median(p),
+             pct_target = 100 * mean(0.25 * auc_ind$AUC_GARENOXACIN / m > 30))
+}) |> bind_rows()
+cure_tab |>
+  dplyr::rename("MIC (ug/mL)" = MIC, "Median P(cure)" = median_p,
+                "fAUC0-24/MIC > 30 h (%)" = pct_target) |>
+  knitr::kable(digits = 3)
+```
+
+Most phase III isolates had an MIC at or below 0.06 ug/mL (Table 2), where the
+predicted cure probability is above 90%, consistent with the 87.9% observed
+cure rate in the 66-patient PK/PD set. *P. aeruginosa* (MIC up to 32 ug/mL)
+falls well below the 30 h target, matching the 2 of 5 cures in Table 7.
+
+# Assumptions and deviations
+
+* **Interim CLCR centring.** Table 3 prints Model 2 as
+  `CL/F = theta1 + theta2 x (CLCR - 85)` while Table 4 prints
+  `(CLCR - 102)`. Methods Eq. 3 defines the centring value as the arithmetic
+  mean of the covariate in the population, which was 102.4 mL/min in the
+  phase I/II data set (Table 2) and 85 mL/min only in the pooled phase I-III
+  set. The Figure 4 reproduction above also matches only with 102. The
+  interim model therefore uses 102; Table 3's 85 is read as carried over from
+  the final model.
+* **Units.** CL/F intercepts and slopes are kept in the published mL/min and
+  converted to L/h inside `model()`.
+* **Sex coding.** The paper's GEN (1 = male) is encoded as `1 - SEXF`; the
+  male additive V/F shift keeps its published sign.
+* **CLCR.** Raw Cockcroft-Gault creatinine clearance in mL/min (not
+  BSA-normalised), supplied in the canonical `CRCL` column.
+* **IIV structure.** CL/F and V/F etas are correlated as reported; the ka eta
+  is independent (Table 4 reports no covariance for it).
+* **Unbound fraction.** fu = 0.25 comes from the Discussion (75% serum protein
+  binding, cited from Van Wart et al.); the Methods do not restate it. It
+  reproduces the paper's statement that AUC0-24/MIC 125 h is about fAUC0-24/MIC
+  30 h, and the Table 7 Monte Carlo medians are of the size this fu implies.
+* **AUC0-24 in the cure models.** The paper computed each patient's AUC0-24
+  from the final population PK model (empirical Bayes); the models take it as
+  a covariate column (`AUC_GARENOXACIN`, total concentration) so any source can
+  be used. In this article it is dose / individual CL/F.
+* **Residual error of the cure models.** The logistic regressions have a
+  Bernoulli likelihood with no residual; a fixed placeholder additive SD of
+  0.001 on the probability satisfies rxode2's need for an observation
+  declaration.
+* **Figure 3 and Table 7 Monte Carlo.** Not regenerated, because the pathogen
+  MIC distributions are reported only as MIC90 and range.
+* **Virtual cohorts.** Weight and CLCR are drawn independently from truncated
+  log-normal distributions with the Table 2 means and SDs; the paper reports no
+  joint distribution. For Figure 4 the 55 phase II CLCR values are
+  represented by quantiles of a truncated normal distribution with the
+  reported mean and SD.
+* **Figure 6 reference values** are digitised medians, so the phase III NCA
+  comparison is approximate.
