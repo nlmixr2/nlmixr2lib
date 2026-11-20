@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Gulati 2014 brown snake venom and fibrinogen (reduced coagulation QSP) ([doi:10.1038/psp.2013.67](https://doi.org/10.1038/psp.2013.67)) -- Australian patients with brown snake envenoming and venom-induced consumption coagulopathy.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.

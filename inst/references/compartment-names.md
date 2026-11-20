@@ -4117,8 +4117,8 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Role:** Aggregate state produced by *proper lumping* of a linear ODE system (Dokoumetzidis and Aarons; lumped rate matrix `K_hat = M K M+`, where `M` is a 0/1 lumping matrix with one row per lumped state and `M+` its Moore-Penrose pseudo-inverse). Each lumped state pools several states of the original system (typically the perfused tissues of a whole-body PBPK model) into one, and its value is `M y`, the **sum** of the pooled original states. Numbered members `lumped1`, `lumped2`, ... are accepted via `compartmentRegex`; the bare `lumped` is for a model with a single lumped state. States of the original system that the lumping leaves unpooled keep their own canonical names (`venous`, `arterial`, ...), so only genuine aggregates take this name.
 - **Source aliases:**
   - `L1`, `L2`, `L3` -- lumped states in `Pan_2019_fentanyl_lumped_a.R` / `Pan_2019_fentanyl_lumped_b.R` (Pan and Duffull 2019, Figure 4 and Supplementary Material 1 Sections 2-3).
-- **Example models:** `Pan_2019_fentanyl_lumped_a.R` (founding example), `Pan_2019_fentanyl_lumped_b.R`.
-- **Notes:** The mechanistic role is fixed but the membership is model-specific, as for `sstr`: record the original states pooled into each `lumped<n>` in the model file's `description`, since that membership is not recoverable from the name. Number the members to follow the source figure's own labels where it has them. Distinct from `other` / `res_tis`, which are rest-of-body remainder tissues of an unlumped PBPK model rather than the output of a lumping transform.
+- **Example models:** `Pan_2019_fentanyl_lumped_a.R` (founding example), `Pan_2019_fentanyl_lumped_b.R`, `Gulati_2014_brownSnakeVenom.R` (nonlinear case: 58 states of the 62-state coagulation network pooled into one; see the Notes).
+- **Notes:** The mechanistic role is fixed but the membership is model-specific, as for `sstr`: record the original states pooled into each `lumped<n>` in the model file's `description`, since that membership is not recoverable from the name. Number the members to follow the source figure's own labels where it has them. Distinct from `other` / `res_tis`, which are rest-of-body remainder tissues of an unlumped PBPK model rather than the output of a lumping transform. For a NONLINEAR system the lumping formula gives the lumped initial condition but no lumped parameters, so the authors may write the lumped state's ODE by hand: in `Gulati_2014_brownSnakeVenom.R` the state is assumed dominated by prothrombin, and its fitted ODE uses the prothrombin production and loss rates and the prothrombin initial concentration (1394.4 nmol/L, Eq 5) rather than the `M y` sum of the pooled states (7900 nmol/L, Table 1).
 
 ### lung (**canonical bare lung compartment**)
 - **Type:** compartment
@@ -8873,7 +8873,7 @@ Four-compound whole-body PBPK models of the CYP1A2 methylxanthine network carry 
 
 ## Coagulation-cascade species (thrombin generation)
 
-States for reduced coagulation-cascade models of thrombin generation, such as the calibrated automated thrombogram fitted by Ruiz 2025, and for the larger systems-biology cascades those models simplify. All three hold molar concentrations (nM) in the assay plasma. Distinct from the clotting-time outputs `PT` / `INR` / `aPTT` / `ECT` / `TT` / `dTT` and from the activity output `PCA`, which are laboratory read-outs rather than protein species.
+States for reduced coagulation-cascade models of thrombin generation, such as the calibrated automated thrombogram fitted by Ruiz 2025, and for the larger systems-biology cascades those models simplify. All hold molar concentrations (nM) in plasma (assay plasma for an in vitro thrombogram). Distinct from the clotting-time outputs `PT` / `INR` / `aPTT` / `ECT` / `TT` / `dTT` and from the activity output `PCA`, which are laboratory read-outs rather than protein species.
 
 ### tissue_factor (**canonical tissue factor concentration state**)
 - **Type:** compartment
@@ -8897,8 +8897,17 @@ States for reduced coagulation-cascade models of thrombin generation, such as th
 - **Source aliases:**
   - `FIIa` -- Ruiz 2025 Figure 2 and Table 2.
   - `IIa` -- common shorthand in the coagulation literature.
-- **Example models:** `Ruiz_2025_thrombin_generation.R` (single output; produced by a direct TF pathway with thrombin positive feedback and a transit-delayed pathway, removed first order).
+- **Example models:** `Ruiz_2025_thrombin_generation.R` (single output; produced by a direct TF pathway with thrombin positive feedback and a transit-delayed pathway, removed first order)); `Gulati_2014_brownSnakeVenom.R` (in vivo; produced from the `lumped` procoagulant pool by a saturable venom-driven term, Gulati 2014 Eq 4, and removed first order).
 - **Notes:** Lowercase, following the biomarker-state convention, because it is a protein concentration rather than a clotting-time read-out. Summary indices of the thrombin-generation curve (lag time, peak height, time to peak, endogenous thrombin potential) are derived from this state and are not separate compartments.
+
+### fibrinogen (**canonical fibrinogen (factor I) concentration state**)
+- **Type:** compartment
+- **Role:** Fibrinogen (coagulation factor I), the soluble plasma protein that thrombin converts to fibrin. In a consumption-coagulopathy model it is a turnover pool with zero-order hepatic production, first-order loss, and a thrombin-driven conversion term that depletes it; its concentration is the clinical read-out of the coagulopathy.
+- **Source aliases:**
+  - `Fg`, `C(3)`, `C3L` -- Gulati 2014 Eq 3 and Table 2.
+  - `fibrinogen` -- the 62-state original model (Supplementary original_model.m state 14) and the Wajima 2009 network carried by `Augustin_2023_warfarin_qsp.R`.
+- **Example models:** `Gulati_2014_brownSnakeVenom.R` (founding example; state in nmol/L, observed as `Cfibrinogen` in g/L through a 340 kDa molecular weight), `Augustin_2023_warfarin_qsp.R` (one of the 51 Wajima 2009 network states).
+- **Notes:** Holds the molar concentration (nmol/L); a model whose data are in g/L converts to the observation inside `model()` rather than changing the state's units, and names the observation `Cfibrinogen`. Distinct from `fibrin` (the insoluble polymer product) and from fibrin(ogen) degradation products. Distinct from a fibrinogen-concentrate replacement product modelled as an exogenous drug in `central` (`Bellon_2020_fibrinogen.R`), where the dosed protein is the drug rather than an endogenous cascade species.
 
 ## Myasthenia-gravis quantitative score
 
