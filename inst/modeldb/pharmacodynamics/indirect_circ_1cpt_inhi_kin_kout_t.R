@@ -1,6 +1,5 @@
 indirect_circ_1cpt_inhi_kin_kout_t <- function() {
   description <- "One compartment indirect response model with inhibition of kin and circadian kout_t."
-  depends <- c("vc")
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -15,9 +14,10 @@ indirect_circ_1cpt_inhi_kin_kout_t <- function() {
 
   ini({
     lka  <- 0.45 ; label("Absorption rate (Ka)")
+    lvc  <- 3.45 ; label("Central volume of distribution (Vc)")
     lkel <- 0.534; label("elimination rate (1/d)")
     lrm  <- 0.62; label ("Mean Baseline for drug response (mesor)(Rm)")
-    lra  <- 0.62; label ("Amplitude of drug response (Ra)")
+    lra  <- log(0.46); label ("Amplitude of drug response (Ra)")
     ltacro  <- 0.62; label ("peak time (Acrophase) (Tz)")
     lic50 <- 0.67; label("Drug concentration producing 50% of maximum inhibition at effect site (ic50)")
     limax <- 0.56; label("Maximum inhibitory factor attributed to drug (imax)")
@@ -26,6 +26,7 @@ indirect_circ_1cpt_inhi_kin_kout_t <- function() {
     propSd <- 0.5 ; label("Proportional residual error (fraction)")
   })
   model({
+    vc  <- exp(lvc)
     ka  <- exp(lka)
     kel <- exp(lkel)
     rm <- exp(lrm)
@@ -36,7 +37,7 @@ indirect_circ_1cpt_inhi_kin_kout_t <- function() {
     kin  <- exp(lkin)
     fdepot   <- exp(lfdepot)
     
-    kout_t <- kin + 0.2616*ra*sin(0.2616*(t-tacro))/(rm+ra*cos(0.2616*(t-tacro)))
+    kout_t <- (kin + 0.2616*ra*sin(0.2616*(t-tacro)))/(rm+ra*cos(0.2616*(t-tacro)))
     Cc <-  central/vc
     
     
@@ -44,7 +45,7 @@ indirect_circ_1cpt_inhi_kin_kout_t <- function() {
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot -kel*central
-    d/dt(effect) <- kin - kout_t*(1-imax*Cc/(Cc + ic50))*effect
+    d/dt(effect) <- kin*(1-imax*Cc/(Cc + ic50)) - kout_t*effect
     
     Cc ~ prop(propSd)
   })

@@ -1,4 +1,4 @@
-indirect_0cpt_transitEx <- function() {
+PK_2cmt_transit_mm_des <- function() {
   description <- "Two-compartment PK model with a ten-compartment transit absorption chain and Michaelis-Menten elimination, using differential equations"
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")

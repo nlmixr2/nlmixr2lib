@@ -1,6 +1,5 @@
 indirect_1cpt_stim_kin_CLV <- function() {
   description <- "One compartment indirect response model with stimulation of kin."
-  depends <- c("ic50")
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -42,7 +41,7 @@ indirect_1cpt_stim_kin_CLV <- function() {
     
     Cc <-  central/vc
     
-    d/dt(effect) <- kin*(1+emax*Cc/(Cc + ic50)) - kout*effect
+    d/dt(effect) <- kin*(1+emax*Cc/(Cc + ec50)) - kout*effect
     
     
     Cc ~ prop(propSd)

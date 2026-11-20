@@ -274,6 +274,52 @@
 
 - `checkModelConventions()` reports an error for a `model()` statement that is a bare expression. That is almost always a continuation line that starts with an operator: rxode2 joins it to the equation above, but R parses it as its own statement, so `ui$lstExpr`, and anything that edits a model through it, sees a truncated equation. Fourteen shipped models had such lines; the operators are moved to the line ends, and rxode2's compiled model is unchanged for each.
 
+- `indirect_0cpt_transitEx` is renamed `PK_2cmt_transit_mm_des` and moves to
+  the pharmacokinetics models. It is a two-compartment PK model with a
+  ten-compartment transit absorption chain and Michaelis-Menten elimination,
+  with no indirect response, so neither its old name nor its pharmacodynamics
+  category described it; its description now does. nlmixr2lib has no aliases
+  for renamed models, so `readModelDb("indirect_0cpt_transitEx")` and
+  `modellib("indirect_0cpt_transitEx")` now fail with "'name' not in
+  database". **Breaking for code** that loads the model by its old name. The
+  model itself is unchanged.
+
+- `Lallemand_2023_benzylpenicillin_horse`: the four observation-block
+  indicators are renamed to spell out the drug, and are registered with the
+  model's five `STUDY_*` cohort indicators, clearing its nine
+  unregistered-covariate warnings. `FORM_BP_NA_IM` is now
+  `FORM_BENZYLPENICILLIN_SODIUM_IM`, `FORM_BP_PROC` is
+  `FORM_BENZYLPENICILLIN_PROCAINE`, `FORM_BP_DUPLO` is
+  `FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE` and `FORM_BP_PENETH` is
+  `FORM_BENZYLPENICILLIN_PENETHAMATE`. **Breaking for data sets** that use the
+  old column names. No equation or value changed.
+
+- Fix the equations of six circadian indirect-response templates
+  (`indirect_circ_1cpt_*`). **Breaking for simulations** from them, which
+  change.
+  - In the four `*_kout_t` templates, a missing pair of parentheses in the
+    circadian loss rate meant the drug-free response did not follow its
+    circadian baseline. It now does, to solver tolerance.
+  - `indirect_circ_1cpt_inhi_kin_kout_t` inhibited the loss rate. It now
+    inhibits production, as its name says.
+  - The four stimulation templates used an `ic50` they do not define (they
+    estimate `ec50`), and `indirect_circ_1cpt_stim_kout_kout_t` also used
+    undefined `kin_t` and `kout`. None of them could be solved without
+    supplying those names, which their `depends` listed. They now use their
+    own parameters.
+  - Their default amplitude `lra` is now `log(0.46)`, a quarter of the
+    mesor. It equalled the mesor, so the baseline touched zero once a day,
+    where a `*_kout_t` template's loss rate divides by zero.
+
+- Twelve templates read a name they never defined, listed it in `depends`,
+  and could not be solved as shipped. Each now defines it.
+  - Seven circadian templates and `indirect_1cpt_stim_kout` used `vc` without
+    estimating it. They now estimate `lvc`, with the value their siblings use.
+  - `indirect_1cpt_stim_kin` and `indirect_1cpt_stim_kin_CLV` read `ic50`
+    where they estimate `ec50`.
+  - `tgi_sat_logistic` and `tgi_sat_genLogistic` grow at a first-order rate
+    `kge` but estimated an unused zero-order rate `lkgl`. The parameter is now
+    `lkge`, with the same value. **Breaking for code** that sets `lkgl`.
 - `checkNamingRegisters()` now also reports a model file cited anywhere in a
   register, such as a `Notes:` or `Source aliases:` line, that does not exist
   (check `orphan-model-citation`). Before, only `Example models:` lines were
@@ -289,21 +335,11 @@
   that every model either has an article or is listed, with a reason, as a
   generic template or as awaiting one.
 
-- `Lallemand_2023_benzylpenicillin_horse`: the four observation-block
-  indicators are renamed to spell out the drug, and are registered with the
-  model's five `STUDY_*` cohort indicators, clearing its nine
-  unregistered-covariate warnings. Data sets must use the new column names:
-  `FORM_BP_NA_IM` is now `FORM_BENZYLPENICILLIN_SODIUM_IM`, `FORM_BP_PROC` is
-  `FORM_BENZYLPENICILLIN_PROCAINE`, `FORM_BP_DUPLO` is
-  `FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE` and `FORM_BP_PENETH` is
-  `FORM_BENZYLPENICILLIN_PENETHAMATE`. No equation or value changed.
-
-- Correct the descriptions of eleven `indirect_*` templates; the models
-  themselves are unchanged. `indirect_0cpt_transitEx` now mentions its
-  ten-compartment transit absorption chain. Two circadian `*_kout_t` models
-  said `kin_t`, and the two stimulation `indirect_prec_1cpt_stim_*` models said
-  inhibition. `indirect_prec_1cpt_stim_r0rmaxcrmax` now says that its PK
-  is parameterized with clearance and volume and its response with R0, Rmax
+- Correct the descriptions of eleven `indirect_*` templates. Two circadian
+  `*_kout_t` models said `kin_t`, and the two stimulation
+  `indirect_prec_1cpt_stim_*` models said inhibition. Both
+  `indirect_prec_1cpt_*_r0rmaxcrmax` templates now say that their PK is
+  parameterized with clearance and volume and their response with R0, Rmax
   and CRmax. A "cosntants" typo is fixed in five descriptions.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.

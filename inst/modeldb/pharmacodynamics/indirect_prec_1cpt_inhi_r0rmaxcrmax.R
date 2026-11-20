@@ -1,5 +1,5 @@
 indirect_prec_1cpt_inhi_r0rmaxcrmax <- function() {
-  description <- "One compartment precursor-dependent indirect response model with inhibition of drug response (effect)."
+  description <- "One compartment precursor-dependent indirect response model with inhibition of drug response (effect). PK parameterized with clearance and volume; response parameterized with R0, Rmax and CRmax."
   depends <- c("kin", "crmax")
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")

@@ -1,6 +1,5 @@
 indirect_circ_1cpt_stim_kout_kin_t <- function() {
   description <- "One compartment indirect response model with stimulation of kout and circadian kin_t. Parameterized using rate constants."
-  depends <- c("vc", "ic50")
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -15,9 +14,10 @@ indirect_circ_1cpt_stim_kout_kin_t <- function() {
 
   ini({
     lka  <- 0.45 ; label("Absorption rate (Ka)")
+    lvc  <- 3.45 ; label("Central volume of distribution (Vc)")
     lkel <- 0.534; label("elimination rate (1/d)")
     lrm  <- 0.62; label ("Mean Baseline for drug response (mesor)(Rm)")
-    lra  <- 0.62; label ("Amplitude of drug response (Ra)")
+    lra  <- log(0.46); label ("Amplitude of drug response (Ra)")
     ltacro  <- 0.62; label ("peak time (Acrophase) (Tz)")
     lec50 <- 0.67; label("Drug concentration producing 50% of maximum stimulation at effect site (ec50)")
     lemax <- 0.85; label("Maximum effect attributed to drug (emax)")
@@ -26,6 +26,7 @@ indirect_circ_1cpt_stim_kout_kin_t <- function() {
     propSd <- 0.5 ; label("Proportional residual error (fraction)")
   })
   model({
+    vc  <- exp(lvc)
     ka  <- exp(lka)
     kel <- exp(lkel)
     rm <- exp(lrm)
@@ -42,7 +43,7 @@ indirect_circ_1cpt_stim_kout_kin_t <- function() {
     d/dt(depot)      <- -ka*depot
     f(depot)         <- fdepot
     d/dt(central)    <- ka*depot -kel*central
-    d/dt(effect) <- kin_t - kout*(1+emax*Cc/(Cc + ic50))*effect
+    d/dt(effect) <- kin_t - kout*(1+emax*Cc/(Cc + ec50))*effect
     
     Cc ~ prop(propSd)
   })

@@ -1,6 +1,5 @@
 tgi_sat_logistic <- function() {
   description <- "One compartment TGI model with with exponential tumor growth that decelerates linearly, with saturation."
-  depends <- c("kge")
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -19,7 +18,7 @@ tgi_sat_logistic <- function() {
     lka <- 0.45 ; label("Absorption rate (1/time_unit)")
     lcl <- 1 ; label("Clearance (CL)")
     lvc  <- 3.45 ; label("Central volume of distribution (V)")
-    lkgl <- 0.7; label("Zero-order linear growth rate (tumor size/time_unit)")
+    lkge <- 0.7; label("First-order exponential growth rate (1/time_unit)")
     propSd <- 0.5 ; label("PK proportional residual error (fraction)")
     propSd_tumor_size <- 0.5 ; label("Tumor size proportional residual error (fraction)")
     addSd_tumor_size <- 30 ; label("Tumor size additive residual error (tumor volume)")
@@ -30,7 +29,7 @@ tgi_sat_logistic <- function() {
     ka <- exp(lka)
     cl <- exp(lcl)
     vc  <- exp(lvc)
-    kgl <- exp(lkgl)
+    kge <- exp(lkge)
     
     kel <- cl / vc
     tumor_size(0) <- rbase
