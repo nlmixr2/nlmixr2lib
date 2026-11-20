@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gaurav 2026 favezelimab PK and ORR exposure-response ([doi:10.1111/cts.70658](https://doi.org/10.1111/cts.70658)) -- adults with advanced solid tumors or PD-L1-positive metastatic colorectal cancer.
+- Add Tachet 2026 ruxolitinib popPK and exposure-toxicity ([doi:10.1002/cpt.70367](https://doi.org/10.1002/cpt.70367)) -- adults with myeloproliferative neoplasms, graft-versus-host disease and other haematologic disorders in routine care.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
