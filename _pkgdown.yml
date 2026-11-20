@@ -5194,6 +5194,8 @@ navbar:
         href: articles/Le_2025_meropenem.html
       - text: "Meropenem (Lee 2021)"
         href: articles/Lee_2021_meropenem.html
+      - text: "Meropenem (Li 2026)"
+        href: articles/Li_2026_meropenem_vaborbactam.html
       - text: "Meropenem (Liu 2025)"
         href: articles/Liu_2025_meropenem.html
       - text: "Meropenem (Lu 2016)"
@@ -8892,6 +8894,8 @@ navbar:
         href: articles/ParraGuillen_2025_v937.html
       - text: "VRC07523LS (Huynh 2026)"
         href: articles/Huynh_2026_VRC07523LS.html
+      - text: "Vaborbactam (Li 2026)"
+        href: articles/Li_2026_meropenem_vaborbactam.html
       - text: "Vaborbactam (Trang 2021)"
         href: articles/Trang_2021_meropenem_vaborbactam.html
       - text: "Valbenazine (Nguyen 2025)"
@@ -11202,6 +11206,7 @@ articles:
   - articles/Li_2026_epcoritamab
   - articles/Li_2026_etranacogene
   - articles/Li_2026_levonorgestrel
+  - articles/Li_2026_meropenem_vaborbactam
   - articles/Liang_2023_polymyxinB
   - articles/Liang_2024_lenalidomide
   - articles/Liang_2024_osimertinib

@@ -1,0 +1,510 @@
+---
+title: "Meropenem and vaborbactam in healthy Chinese adults (Li 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Meropenem and vaborbactam in healthy Chinese adults (Li 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Li_2026_meropenem"))$reference`
+* Meropenem description: `r rxode2::rxode(readModelDb("Li_2026_meropenem"))$description`
+* Vaborbactam description: `r rxode2::rxode(readModelDb("Li_2026_vaborbactam"))$description`
+* Article: <https://doi.org/10.3389/fphar.2026.1887991>
+* Supplement: Supplementary Material of the article (Figures S1-S7, Tables
+  S1-S7)
+
+Li 2026 ran a single-centre phase 1 study of the 1:1 meropenem-vaborbactam
+fixed-dose combination in healthy Chinese adults and fitted one population PK
+model per drug in NONMEM. Both final models are two-compartment models with
+zero-order input and linear elimination, and both split total clearance into a
+non-renal arm held constant and a renal arm that rises with renal function
+along a sigmoidal Hill curve:
+
+$$
+\mathrm{CL} = \left(\mathrm{CL_{NR}} + \mathrm{CL_{RE}}\,
+\frac{\mathrm{RF}^{\mathrm{HILL}}}{\mathrm{CR_{50}}^{\mathrm{HILL}} + \mathrm{RF}^{\mathrm{HILL}}}\right)
+e^{\eta_{\mathrm{CL}}}
+$$
+
+where `RF` is time-varying creatinine clearance (CRCL) for meropenem and
+time-varying estimated glomerular filtration rate (eGFR) for vaborbactam, both
+in mL/min. Body weight is the only other retained covariate: it scales the
+meropenem peripheral volume as `(WT/65.6)^1.07` and the vaborbactam central
+volume as `(WT/65.6)^1.51`. The two drugs were modelled independently, so the
+paper contributes two model files, `Li_2026_meropenem` and
+`Li_2026_vaborbactam`, documented together here.
+
+Both files take their renal-function covariate in the canonical `CRCL` column,
+but they are not the same quantity: the meropenem model reads creatinine
+clearance and the vaborbactam model reads eGFR. When simulating both drugs for
+the same subject, supply each model its own value.
+
+# Population
+
+Twenty healthy Chinese adults (10 men, 10 women) were randomised 1:1 to
+meropenem-vaborbactam 1 g/1 g or 2 g/2 g, given as 3-h intravenous infusions:
+a single dose on day 1, every 8 h on days 2-4, and a single final dose on
+day 5 (Methods, 'Study designs'). Age ranged from 26 to 43 years (median 33),
+body weight from 50.0 to 73.2 kg (median 65.6) and BMI from 20.2 to
+26.7 kg/m^2 (Table 2). All participants had eGFR of at least 90 mL/min at
+screening. The population PK models were fitted to 570 meropenem and 588
+vaborbactam plasma concentrations (Results, 'Population PK').
+
+The same information is available programmatically via
+`readModelDb("Li_2026_meropenem")()$population` and
+`readModelDb("Li_2026_vaborbactam")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. The
+table below collects them.
+
+| Equation / parameter | Meropenem | Vaborbactam | Source location |
+|---|---|---|---|
+| `lcl_nonren` (CLNR, L/h, held constant) | log(3.94) | log(0.164) | Tables 5 and 6, 'CLNR' |
+| `lcl_renal_max` (CLRE, L/h) | log(10.9) | log(10.8) | Tables 5 and 6, 'Maximal renal clearance, CLRE' |
+| `lcrcl50` (CR50, mL/min) | log(75.5) | log(73.3) | Tables 5 and 6, 'CR50' |
+| `lhill` (HILL) | log(3.51) | log(3.26) | Tables 5 and 6, 'HILL' |
+| `lvc` (L) | log(7.60) | log(10.3) | Tables 5 and 6, 'V C' |
+| `lq` (L/h) | log(6.60) | log(1.64) | Tables 5 and 6, 'Q' |
+| `lvp` (L) | log(4.77) | log(2.53) | Tables 5 and 6, 'V P' |
+| `e_wt_vp` | 1.07 | -- | Table 5, 'Effect of body weight on V P' |
+| `e_wt_vc` | -- | 1.51 | Table 6, 'Effect of body weight on V C' |
+| `etalcl` (omega^2) | 0.0065718 (8.12 %CV) | 0.013138 (11.5 %CV) | Tables 5 and 6, 'Interindividual variation of CL' |
+| `etalvp` (omega^2) | 0.0055794 (7.48 %CV) | -- | Table 5, 'Interindividual variation of V P' |
+| `etalvc` (omega^2) | -- | 0.0058657 (7.67 %CV) | Table 6, 'Interindividual variation of V C' |
+| `propSd` | 0.108 | 0.131 | Tables 5 and 6, 'Proportional residual error' |
+| `addSd` (mg/L) | 0.0955 | 0.0689 | Tables 5 and 6, 'Additive residual error' |
+| Renal clearance Hill equation | -- | -- | Results, 'Population PK', CLR equations |
+| `CL = (CLNR + CLR) * exp(eta)` | -- | -- | Results, 'Population PK', CL equations (bracketed sum) |
+| Weight reference 65.6 kg | -- | -- | Results, Vp / Vc equations; Table 2 median |
+| Two-compartment, zero-order input | -- | -- | Methods, 'Population PK analysis'; Supplementary Figure S3 |
+
+# Virtual cohort
+
+The observed data are not public. The cohort below draws body weight from the
+Table 2 summary (mean 63.75 kg, SD 7.28, clamped to the 50.0-73.2 kg range).
+The paper does not tabulate the renal-function covariates; supplement Tables S5
+and S6 give medians of the below- and above-median subgroups, from which the
+maintainers took creatinine clearance as log-normal with median 105 mL/min
+(clamped to 85-170) and eGFR as log-normal with median 118 mL/min (clamped to
+98-204). The study had 10 participants per dose group; 100 per group are
+simulated here so the summary statistics are stable.
+
+```{r cohort}
+set.seed(20260807)
+rxode2::rxSetSeed(20260807)
+
+n_per_arm <- 100L
+
+# Paper sampling times after the start of each profiled infusion (Table 1).
+sample_times <- c(0, 1.5, 3, 3 + 10 / 60, 3 + 20 / 60, 3.5, 3.75, 4, 5, 6, 7, 8, 12, 24)
+# Day 1 single dose, every 8 h on days 2-4, final dose on day 5.
+dose_times <- c(0, 24 + 8 * (0:8), 96)
+
+make_subjects <- function(n, dose_mg, id_offset) {
+  tibble(
+    id = id_offset + seq_len(n),
+    treatment = paste0(dose_mg / 1000, " g/", dose_mg / 1000, " g"),
+    dose_mg = dose_mg,
+    WT = pmin(pmax(rnorm(n, 63.75, 7.28), 50.0), 73.2),
+    crcl_cg = pmin(pmax(rlnorm(n, log(105), 0.15), 85), 170),
+    egfr = pmin(pmax(rlnorm(n, log(118), 0.15), 98), 204)
+  )
+}
+
+make_events <- function(subjects, dose_times, obs_times, tinf = 3) {
+  doses <- tidyr::crossing(subjects, time = dose_times) |>
+    mutate(evid = 1L, amt = dose_mg, rate = dose_mg / tinf)
+  obs <- tidyr::crossing(subjects, time = obs_times) |>
+    mutate(evid = 0L, amt = NA_real_, rate = NA_real_)
+  bind_rows(doses, obs) |>
+    mutate(cmt = "central") |>
+    arrange(id, time, desc(evid))
+}
+
+subjects <- bind_rows(
+  make_subjects(n_per_arm, 1000, id_offset = 0L),
+  make_subjects(n_per_arm, 2000, id_offset = n_per_arm)
+)
+stopifnot(!anyDuplicated(subjects$id))
+
+events <- make_events(subjects, dose_times, c(sample_times, 96 + sample_times))
+```
+
+# Simulation
+
+```{r simulate}
+mod_mero <- readModelDb("Li_2026_meropenem")
+mod_vab <- readModelDb("Li_2026_vaborbactam")
+
+sim_mero <- rxode2::rxSolve(
+  mod_mero,
+  events = events |> mutate(CRCL = crcl_cg),
+  keep = c("treatment", "dose_mg"),
+  returnType = "data.frame"
+) |>
+  mutate(drug = "Meropenem")
+
+sim_vab <- rxode2::rxSolve(
+  mod_vab,
+  events = events |> mutate(CRCL = egfr),
+  keep = c("treatment", "dose_mg"),
+  returnType = "data.frame"
+) |>
+  mutate(drug = "Vaborbactam")
+
+sim <- bind_rows(sim_mero, sim_vab) |>
+  mutate(
+    period = ifelse(time < 96, "Day 1 (single dose)", "Day 5 (last dose)"),
+    tad = ifelse(time < 96, time, time - 96)
+  )
+```
+
+# Replicate published figures
+
+## Figure 1: mean concentration-time profiles
+
+```{r figure-1, fig.width = 8, fig.height = 6}
+sim |>
+  group_by(drug, period, treatment, tad) |>
+  summarise(mean = mean(Cc), sd = sd(Cc), .groups = "drop") |>
+  ggplot(aes(tad, mean, colour = treatment)) +
+  geom_errorbar(aes(ymin = mean, ymax = mean + sd), width = 0.3) +
+  geom_line() +
+  geom_point() +
+  facet_grid(period ~ drug, scales = "free_y") +
+  scale_x_continuous(breaks = seq(0, 24, 4)) +
+  labs(
+    x = "Time after start of infusion (h)",
+    y = "Plasma concentration (mg/L)",
+    colour = "Dose",
+    title = "Mean (+SD) plasma concentration-time profiles",
+    caption = "Replicates Figure 1 of Li 2026 (day 1 single dose; day 5 after every-8-h dosing)."
+  )
+```
+
+# PKNCA validation
+
+The NCA follows the paper's Table 1 sampling schedule. Concentrations below the
+assay's 0.05 mg/L lower limit of quantification are set to zero, which PKNCA
+treats as below the limit (Bioanalytical assay section). Day-5 times are
+re-expressed relative to the day-5 dose.
+
+```{r pknca}
+lloq <- 0.05
+
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  mutate(Cc = ifelse(Cc < lloq, 0, Cc)) |>
+  select(id, drug, treatment, period, time = tad, Cc)
+
+dose_nca <- subjects |>
+  select(id, treatment, amt = dose_mg) |>
+  tidyr::crossing(
+    drug = c("Meropenem", "Vaborbactam"),
+    period = c("Day 1 (single dose)", "Day 5 (last dose)")
+  ) |>
+  mutate(time = 0, dur = 3)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | drug + treatment + period + id)
+dose_obj <- PKNCA::PKNCAdose(
+  dose_nca,
+  amt ~ time | drug + treatment + period + id,
+  route = "intravascular",
+  duration = "dur"
+)
+
+intervals <- data.frame(
+  start = c(0, 0),
+  end = c(24, 8),
+  cmax = c(TRUE, FALSE),
+  aucinf.obs = c(TRUE, FALSE),
+  half.life = c(TRUE, FALSE),
+  cl.obs = c(TRUE, FALSE),
+  auclast = c(FALSE, TRUE)
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against published NCA
+
+Table 4 of Li 2026 reports arithmetic means; the simulated column is the median
+across virtual subjects. `AUClast` (0-8 h) is the paper's `AUC0-tau`; the
+`CL/F` row is dose / AUC0-inf, which for this intravenous dose is the paper's
+total clearance `CLt` (F = 1). The day-5
+clearance is the paper's `CLss`, which is not compared because the steady-state
+clearance definition differs from the single-dose `CL = dose / AUC0-inf`.
+
+```{r nca_compare}
+# Li 2026 Table 4 (means). Day-5 AUC0-inf and CL are not reported.
+published <- tibble::tribble(
+  ~drug, ~period, ~treatment, ~cmax, ~auclast, ~aucinf.obs, ~half.life, ~cl.obs,
+  "Meropenem", "Day 1 (single dose)", "1 g/1 g", 28.9, 83.4, 84.5, 1.16, 12.2,
+  "Meropenem", "Day 1 (single dose)", "2 g/2 g", 56.8, 168, 170, 1.20, 12.0,
+  "Meropenem", "Day 5 (last dose)", "1 g/1 g", 24.5, 69.4, NA, 1.16, NA,
+  "Meropenem", "Day 5 (last dose)", "2 g/2 g", 50.4, 140, NA, 1.35, NA,
+  "Vaborbactam", "Day 1 (single dose)", "1 g/1 g", 38.8, 120, 123, 1.52, 8.30,
+  "Vaborbactam", "Day 1 (single dose)", "2 g/2 g", 77.7, 240, 246, 1.45, 8.39,
+  "Vaborbactam", "Day 5 (last dose)", "1 g/1 g", 32.0, 97.1, NA, 1.80, NA,
+  "Vaborbactam", "Day 5 (last dose)", "2 g/2 g", 68.6, 200, NA, 2.54, NA
+) |>
+  tidyr::pivot_longer(cmax:cl.obs, names_to = "PPTESTCD", values_to = "PPORRES") |>
+  dplyr::filter(!is.na(PPORRES))
+
+sim_nca_res <- as.data.frame(nca_res$result) |>
+  dplyr::filter(!(PPTESTCD == "auclast" & end != 8))
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_nca_res,
+  reference = published,
+  by = c("drug", "period", "treatment"),
+  units = c(
+    cmax = "mg/L", auclast = "h*mg/L", aucinf.obs = "h*mg/L",
+    half.life = "h", cl.obs = "L/h"
+  ),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = "Simulated (median) vs. published (mean) NCA. AUC0-last is over 0-8 h (the paper's AUC0-tau). * differs from reference by >20%."
+)
+```
+
+```{r nca_check}
+# Structural check: exposure (Cmax, AUC) and day-1 clearance for both drugs
+# and both doses. A mis-transcribed clearance, volume or dose unit moves these
+# by tens of percent. The group medians of 100 subjects per arm sit within
+# about 17% of the paper's means (day-1 low, day-5 high; see below), and the
+# centre of all 24 comparisons within about 5%.
+pct <- function(sim, ref) 100 * (sim - ref) / ref
+chk <- as.data.frame(nca_res$result) |>
+  dplyr::filter(
+    (PPTESTCD %in% c("cmax", "aucinf.obs", "cl.obs") & end == 24) |
+      (PPTESTCD == "auclast" & end == 8)
+  ) |>
+  group_by(drug, period, treatment, PPTESTCD) |>
+  summarise(sim = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  inner_join(published, by = c("drug", "period", "treatment", "PPTESTCD")) |>
+  mutate(pct_diff = pct(sim, PPORRES))
+stopifnot(
+  nrow(chk) == 24L,
+  abs(median(chk$pct_diff)) < 10,
+  max(abs(chk$pct_diff)) < 30
+)
+```
+
+Two systematic differences are visible and are properties of the published
+model, not of the transcription:
+
+- **Day 1 versus day 5.** The paper's own NCA shows clearance about 20% higher
+  on day 5 than on day 1 (Table 4, meropenem CLt 12.2 vs 14.7 L/h; vaborbactam
+  8.30 vs 10.4 L/h), so its day-5 Cmax and AUC0-tau sit below the day-1 values.
+  The final models have no time dependence beyond the renal-function covariate,
+  which was stable in these healthy participants, so the simulation lands
+  between the two days: day-1 exposure about 10-15% below the paper and day-5
+  exposure about 5-12% above it.
+- **Terminal half-life.** The two-compartment models give a meropenem terminal
+  half-life of about 0.95-1.0 h, against 1.16-1.35 h from the paper's
+  individual NCA fits, and a vaborbactam half-life of about 1.4 h, against
+  1.45-1.80 h (and 2.54 h for 2 g/2 g on day 5, a value fitted through the 24-h
+  sample near the 0.05 mg/L quantification limit). The half-life rows are
+  shown but are not part of the check above.
+
+# PK/PD target attainment
+
+Li 2026 used the final models for Monte Carlo target-attainment analyses with
+free fractions of 0.98 for meropenem and 0.67 for vaborbactam (Methods, 'PK/PD
+analysis'). The paper states it simulated with the typical values and the
+interindividual variability, so the cohort below holds the covariates at the
+cohort medians (65.6 kg; CRCL 105 mL/min; eGFR 118 mL/min) and samples only the
+random effects. Each regimen is given every 8 h to steady state, and
+`%fT>MIC` is read over the final dosing interval.
+
+```{r pta}
+fu <- c(Meropenem = 0.98, Vaborbactam = 0.67)
+regimens <- tibble::tribble(
+  ~regimen, ~dose_mg, ~tinf,
+  "1 g/1 g, 3-h infusion", 1000, 3,
+  "2 g/2 g, 3-h infusion", 2000, 3,
+  "2 g/2 g, 4-h infusion", 2000, 4
+)
+n_pta <- 200L
+grid <- seq(112, 120, by = 0.02)
+
+pta_events <- bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+  subj <- tibble(
+    id = (i - 1L) * n_pta + seq_len(n_pta),
+    regimen = regimens$regimen[i],
+    dose_mg = regimens$dose_mg[i],
+    WT = 65.6, crcl_cg = 105, egfr = 118
+  )
+  make_events(subj, dose_times = seq(0, 112, by = 8), obs_times = grid, tinf = regimens$tinf[i])
+}))
+
+pta_mero <- rxode2::rxSolve(
+  mod_mero,
+  events = pta_events |> mutate(CRCL = crcl_cg),
+  keep = c("regimen"), returnType = "data.frame"
+)
+pta_vab <- rxode2::rxSolve(
+  mod_vab,
+  events = pta_events |> mutate(CRCL = egfr) |> dplyr::filter(!grepl("4-h", regimen)),
+  keep = c("regimen", "dose_mg"), returnType = "data.frame"
+)
+
+mics <- 2^(-2:6)
+ft_mic <- tidyr::crossing(pta_mero |> select(id, regimen, time, Cc), mic = mics) |>
+  group_by(regimen, id, mic) |>
+  summarise(ft = mean(fu[["Meropenem"]] * Cc > mic), .groups = "drop")
+
+pta_mero_tbl <- tidyr::crossing(ft_mic, target = c(0.30, 0.35, 0.40, 0.45, 0.50)) |>
+  group_by(regimen, target, mic) |>
+  summarise(pta = mean(ft >= target), .groups = "drop")
+```
+
+## Figures 2 and 3: meropenem probability of target attainment
+
+```{r figure-2-3, fig.width = 8, fig.height = 4}
+pta_mero_tbl |>
+  mutate(target = paste0(100 * target, "% fT>MIC")) |>
+  ggplot(aes(mic, 100 * pta, colour = target)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 90, linetype = "dashed") +
+  facet_wrap(~regimen) +
+  scale_x_continuous(trans = "log2", breaks = mics) +
+  labs(
+    x = "MIC (mg/L)", y = "PTA (%)", colour = "Target",
+    caption = "Replicates Figure 2 (3-h infusions) and Figure 3 (45% target, 3-h vs 4-h) of Li 2026."
+  )
+```
+
+The paper reports, for the 45% fT>MIC target, a PTA of 100% up to MIC 4 mg/L
+(1 g/1 g) and 8 mg/L (2 g/2 g), falling to 83.1% one dilution higher, and
+extension of the 2 g/2 g infusion to 4 h raising the 90% threshold from 8 to
+16 mg/L (Results, 'PK/PD analysis'). The PTA at the single transitional MIC
+depends on exactly how the paper sampled covariates, which it does not state;
+the simulation places each transition at the same MIC as the paper, and the
+check below uses the MICs either side of each transition.
+
+```{r pta_check}
+pta_at <- function(reg, tgt, m) {
+  pta_mero_tbl$pta[pta_mero_tbl$regimen == reg &
+    abs(pta_mero_tbl$target - tgt) < 1e-9 & pta_mero_tbl$mic == m]
+}
+pta_mero_tbl |>
+  dplyr::filter(abs(target - 0.45) < 1e-9, mic %in% c(4, 8, 16, 32)) |>
+  tidyr::pivot_wider(names_from = mic, values_from = pta, names_prefix = "MIC ") |>
+  knitr::kable(digits = 3, caption = "Simulated meropenem PTA at the 45% fT>MIC target.")
+
+stopifnot(
+  pta_at("1 g/1 g, 3-h infusion", 0.45, 4) > 0.95,
+  pta_at("1 g/1 g, 3-h infusion", 0.45, 16) < 0.10,
+  pta_at("2 g/2 g, 3-h infusion", 0.45, 8) > 0.95,
+  pta_at("2 g/2 g, 3-h infusion", 0.45, 32) < 0.10,
+  pta_at("2 g/2 g, 4-h infusion", 0.45, 16) > 0.80,
+  pta_at("2 g/2 g, 3-h infusion", 0.30, 16) > 0.95
+)
+```
+
+## Supplementary Figure S7: vaborbactam fAUC0-24/MIC
+
+At steady state the AUC over 24 h equals three times the dose divided by the
+individual clearance, so `fAUC0-24/MIC` follows directly from each subject's
+clearance.
+
+```{r figure-s7, fig.width = 6, fig.height = 4}
+vab_auc <- pta_vab |>
+  distinct(id, regimen, dose_mg, cl) |>
+  mutate(fauc24 = fu[["Vaborbactam"]] * 3 * dose_mg / cl)
+
+pta_vab_tbl <- tidyr::crossing(vab_auc, mic = mics, target = c(24, 38)) |>
+  group_by(regimen, target, mic) |>
+  summarise(pta = mean(fauc24 / mic >= target), .groups = "drop")
+
+pta_vab_tbl |>
+  mutate(target = paste0("fAUC0-24/MIC = ", target)) |>
+  ggplot(aes(mic, 100 * pta, colour = regimen)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 90, linetype = "dashed") +
+  facet_wrap(~target) +
+  scale_x_continuous(trans = "log2", breaks = mics) +
+  labs(
+    x = "MIC (mg/L)", y = "PTA (%)", colour = "Regimen",
+    caption = "Replicates Supplementary Figure S7 of Li 2026."
+  )
+```
+
+The paper reports PTA of at least 90% up to MIC 8 mg/L (1 g/1 g) and 16 mg/L
+(2 g/2 g) at the target of 24, and up to 4 mg/L and 8 mg/L at the target of 38.
+At the target of 24 those MICs sit close to the transition: the typical
+subject's fAUC0-24/MIC is about 28, only 15% above the target, so with the
+11.5% CV on clearance the simulated PTA there is close to 90% and its exact
+value depends on the renal function assumed for the simulated subjects, which
+the paper does not state. Those two points are checked against a lower bound
+of 75%; the clear-cut points either side are checked tightly.
+
+```{r vab_check}
+vpta <- function(reg, tgt, m) {
+  pta_vab_tbl$pta[pta_vab_tbl$regimen == reg & pta_vab_tbl$target == tgt & pta_vab_tbl$mic == m]
+}
+stopifnot(
+  vpta("1 g/1 g, 3-h infusion", 24, 8) > 0.75,
+  vpta("1 g/1 g, 3-h infusion", 24, 16) < 0.10,
+  vpta("2 g/2 g, 3-h infusion", 24, 16) > 0.75,
+  vpta("2 g/2 g, 3-h infusion", 24, 32) < 0.10,
+  vpta("1 g/1 g, 3-h infusion", 38, 4) > 0.90,
+  vpta("2 g/2 g, 3-h infusion", 38, 8) > 0.90
+)
+```
+
+# Assumptions and deviations
+
+- **Estimating equations for the renal-function covariates are not stated.**
+  The paper names creatinine clearance (meropenem) and eGFR (vaborbactam), both
+  in mL/min, without saying which equation produced either value or whether
+  eGFR was BSA-normalised. Both files carry the value in the canonical `CRCL`
+  column in raw mL/min as the paper labels it.
+- **Renal-function distribution of the virtual cohort.** The paper reports no
+  summary of CRCL or eGFR. Supplement Tables S5 and S6 give the medians and
+  ranges of the below- and above-median subgroups; supplement Table S5 has one
+  more data column than header and repeats the weight-row label over the
+  creatinine-clearance columns, so the maintainers read the 100.3 (84.9-104.9)
+  and 113.6 (106.5-169.4) mL/min cells as the creatinine-clearance subgroups.
+  The log-normal draws above are built from these.
+- **Interindividual variability.** Tables 5 and 6 report the variability as a
+  percentage; it is read as a coefficient of variation and converted with
+  `omega^2 = log(CV^2 + 1)`. At these magnitudes (8-12 %CV) the alternative
+  reading `CV = sqrt(omega^2)` differs by less than 0.5%.
+- **Eta on total clearance.** The typeset CL equation brackets `CLNR + CLR`
+  before the exponential, so the eta applies to total clearance, not to the
+  renal arm alone (which a plain-text reading without the brackets would
+  suggest).
+- **Residual error.** The proportional (%) and additive (mg/L) entries are read
+  as standard deviations, as their units indicate.
+- **Non-renal clearance held constant.** Both tables list CLNR as fixed without
+  saying where the value came from; it is encoded with `fixed()`.
+- **Open-ring metabolite.** The paper measured the meropenem open-ring
+  metabolite in plasma and urine but reports only NCA for it (supplement Table
+  S4); there is no population model for it to extract.
+- **Target-attainment covariates.** The paper does not state the covariate
+  values used in its Monte Carlo simulations; the maintainers held them at the
+  cohort medians.
+- No correction notice was found for this article as of 2026-11-16.
