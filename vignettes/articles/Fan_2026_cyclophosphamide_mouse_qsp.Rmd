@@ -1,0 +1,565 @@
+---
+title: "Posttransplant cyclophosphamide and donor T cells (Fan 2026, mouse QSP)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Posttransplant cyclophosphamide and donor T cells (Fan 2026, mouse QSP)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Fan HH, McCune JS, Kanakry CG, Mager DE. Hybrid Systems Modeling of
+  Donor T-Cell Responses and Graft-Versus-Host-Disease After Posttransplantation
+  Cyclophosphamide Administration. CPT Pharmacometrics Syst Pharmacol.
+  2026;15(4):e70252. doi:10.1002/psp4.70252.
+* Article (open access): <https://doi.org/10.1002/psp4.70252>
+* PK layer: Campagne O, et al. J Pharm Pharm Sci. 2019;22(1):612-629
+  (doi:10.18433/jpps30608), packaged separately as
+  `Campagne_2019_cyclophosphamide_mouse`.
+
+Posttransplantation cyclophosphamide (PTCy) prevents graft-versus-host disease
+(GVHD) after HLA-haploidentical hematopoietic cell transplant (HCT). Fan 2026
+built a hybrid systems model of a murine MHC-haploidentical HCT
+(B6C3F1 -> B6D2F1) in which recipients received vehicle or PTCy 5, 10, 25, 50
+or 100 mg/kg/day intraperitoneally on days 3 and 4. The packaged model is the
+mechanistic part of that hybrid:
+
+1. **PK** of cyclophosphamide (CY), 4-hydroxycyclophosphamide (4HCY) and
+   carboxyethylphosphoramide mustard (CEPM): the Campagne 2019 mouse model
+   (central, peripheral and brain extracellular-fluid compartments for each
+   compound), run with its typical values (Methods S1, Table S2). Doses are
+   in umol/kg; outputs `Cc`, `Cc_4ohctx`, `Cc_cepm` are in umol/L.
+2. **Drug effect**: a sigmoid Emax function of central 4HCY feeds four
+   signal-transduction transit compartments; the last one (`transit4`, M4 in
+   the paper, 1/day) is a first-order removal rate applied to every T cell
+   (Eqs. 2-4).
+3. **Donor T-cell kinetics** of cytotoxic CD8+ (`tc_`), helper CD4+Foxp3-
+   (`th_`) and regulatory CD4+CD25+Foxp3+ (`treg_`) cells recirculating between
+   blood and spleen, lymph node, liver, intestine and lung (the Ganusov-Tomura
+   recirculation model), with density-dependent proliferation, death in blood,
+   a delayed sigmoid thymic output and saturable homing capacity in spleen,
+   lymph node and liver (Eqs. 5-11). Spleen, lymph node and intestine
+   residence is gamma-distributed through two sub-compartments.
+
+The outputs are the measured quantities: blood concentrations in cells/uL
+(`tc_blood_conc`, `th_blood_conc`, `treg_blood_conc`; Eq. 12 divides the blood
+amount by the blood volume 77 uL/g x body weight) and the amounts in spleen
+(`spleen_*`), lymph node (`lnode_*`) and liver (`*_liver`) in cells.
+
+The paper's third layer, a scikit-learn neural network mapping the simulated
+exposure and T-cell amounts to the GVHD clinical score, is **not** included:
+its trained weights were not published (see Assumptions and deviations).
+
+```{r load-model}
+mod <- readModelDb("Fan_2026_cyclophosphamide_mouse_qsp")
+mod_ui <- rxode2::rxode2(mod)
+```
+
+# Population
+
+The model was calibrated on the Wachsmuth 2019 preclinical data set: lethally
+irradiated B6D2F1 recipients given 10 x 10^6 T-cell-depleted bone marrow cells
+and 40 x 10^6 splenocytes from B6C3F1 donors on day 0, then vehicle or PTCy on
+days 3 and 4 (Figure 1). Donor T-cell subsets were counted by flow cytometry in
+blood, peripheral lymph nodes, spleen and liver on days 7, 21 and 200; each
+mouse contributed one time point, so the parameters were estimated by a
+naive-pooled fit with a proportional residual error. Cyclophosphamide and
+metabolite concentrations were not measured. The model has no between-animal
+variability, so every simulation below is a single typical mouse per arm.
+
+# Source trace
+
+| Model element | Value | Source |
+|---|---|---|
+| PK ODEs (CY, 4HCY, CEPM; central, peripheral, ECF) | -- | Methods S1, Eqs. S1-S9; authors' code `CYMice.massbal` |
+| CL, Vc, Q, Vp, CLin, CLef, Vecf, Fu of each compound | Table S2 values | Table S2 |
+| Molar mass of CY (dose conversion, vignette only) | 0.261086 mg/umol | Eq. 1 (0.261); authors' notebook |
+| Dose 9-min zero-order input into central | -- | Eq. 1 |
+| Emax, EC50, gamma, tau | 350 /day, 85 umol/L, 4, 0.4 day | Table 1 (calibrated) |
+| Transit chain M1-M4 | -- | Eqs. 3-4 |
+| Migration m12, m13, m14, m15, m51, m16, m61 | 5.4, 0.7, 8.61, 5.5, 0.1, 23.64, 1.7 /h | Table 1 (Ganusov and Tomura) |
+| Migration m21, m31, m41 | 0.531, 0.883, 0.237 /h | Table 1 (estimated); notebook precision |
+| Death dc, dh, dreg | 0.018, 0.023, 0.014 /day | Table 1 |
+| Proliferation rc, rh, rreg; hc, hh | 1 /day; 3.0e4, 2.4e4 cells | Table 1 (den Braber) |
+| hreg | 4.3e3 cells | Table 1 (estimated); notebook precision |
+| lambda_b, lambda_r | 28.7 day, 20 | Table 1 |
+| lambda0,c = lambda0,h; lambda0,reg | 4.65e9; 6.87e7 cells/day | Table 1 (estimated); Table S1 (v) |
+| Capacities x2*0, x3*0, x4*0 | Table 1 values | Table 1; notebook precision |
+| Capacity exponent | 6 | Eq. 11 and text |
+| T-cell ODEs | -- | Eqs. 5-9; authors' code `AlloHCT.massbal` |
+| Thymic output lambda(t) | -- | Eq. 10 |
+| Homing inhibition I(t) | -- | Eq. 11 |
+| Blood volume 77 uL/g x W(t) | -- | Eq. 12 |
+| Body weight W(t) per dose cohort | spline coefficients | Methods S2; Data S2; authors' code `AlloHCT.bwt` |
+| Initial donor T cells in blood | 40e6 x 0.343; CD4:CD8 = 0.598; Treg:CD4 = 0.004 | Study Data (40e6 splenocytes); authors' notebook |
+| Proportional residual error xi | 0.821 | Table 1; Eq. 14 |
+
+# Body weight (replicates Figure S2)
+
+Body weight enters only through the blood volume. The paper describes each dose
+cohort's measured weight course with a piecewise polynomial in days after
+transplant (Methods S2). The function below transcribes the authors' code
+(the coefficients are those of Data S2 at full precision); it returns grams.
+
+```{r body-weight}
+poly_eval <- function(x, coef) {
+  # coef = c(a_n, ..., a_1, a_0), highest power first as in the authors' code
+  n <- length(coef) - 1
+  out <- 0
+  for (k in seq_along(coef)) out <- out + coef[k] * x^(n - k + 1)
+  out
+}
+# Each segment: polynomial coefficients (highest power first) whose constant
+# term is fixed so the curve passes through the anchor weight at the segment's
+# left boundary, exactly as in the authors' code.
+seg_anchor <- function(x, anchor_t, anchor_w, coef_no_const) {
+  const <- anchor_w - poly_eval(anchor_t, c(coef_no_const, 0))
+  poly_eval(x, c(coef_no_const, const))
+}
+bw_mouse <- function(t, dose) {
+  if (dose == 0) {
+    return(poly_eval(t, c(0.00011362506735482164, -0.00826056901856251, 0.19185179148275394, -1.6063315340649584, 19.117606066318015)))
+  }
+  if (dose == 5) {
+    return(dplyr::case_when(
+      t <= 15 ~ poly_eval(t, c(0.061125979247648336, -1.1027353126822668, 19.67747326742453)),
+      t <= 40 ~ seg_anchor(t, 15, 16.889788907911406, c(0.01624986014465811, -0.9693092542109911)),
+      t <= 80 ~ seg_anchor(t, 40, 15.000615251541532, c(0.004868793656665482, -0.5727178165930265)),
+      TRUE ~ seg_anchor(t, 80, 15.462112139814788, c(5.969032333630331e-5, -0.016889608040012938, 1.3088495493688046))
+    ))
+  }
+  if (dose == 10) {
+    return(dplyr::case_when(
+      t <= 15 ~ poly_eval(t, c(0.07336, -1.1759, 18.9032)),
+      t <= 48 ~ seg_anchor(t, 15, 17.7716, c(0.0048, -0.3348)),
+      t <= 72 ~ seg_anchor(t, 48, 16.76, c(0, 0.0042, -0.479)),
+      TRUE ~ seg_anchor(t, 72, 17.41, c(-1.486e-6, 0.00059, -0.0447))
+    ))
+  }
+  if (dose == 25) {
+    return(dplyr::case_when(
+      t <= 15 ~ poly_eval(t, c(0.06853947299288776, -0.9254518309015851, 18.184305097213898)),
+      t <= 50 ~ seg_anchor(t, 15, 19.723909057089866, c(0.004463157875784329, -0.3054190192384727)),
+      t <= 85 ~ seg_anchor(t, 50, 19.18792755115267, c(0.007225692711694881, -0.9698172953804558)),
+      TRUE ~ seg_anchor(t, 85, 19.385720275595027, c(-3.7676703012067405e-6, 0.001796149396493317, -0.2516649870739913))
+    ))
+  }
+  if (dose == 50) {
+    return(dplyr::case_when(
+      t <= 15 ~ poly_eval(t, c(0.0514, -0.7894, 18.4162)),
+      t <= 48 ~ seg_anchor(t, 15, 18.1294, c(0.0055, -0.3613)),
+      t <= 90 ~ seg_anchor(t, 48, 17.57, c(1.1744e-5, -0.002858, 0.2551, -9.9656)),
+      t <= 117 ~ seg_anchor(t, 90, 17.92, c(4.531e-5, -0.019098, 3.0106, -210.3305)),
+      TRUE ~ seg_anchor(t, 117, 17.95, c(3.3992e-7, -0.0002232, 0.05455, -5.8599))
+    ))
+  }
+  if (dose == 100) {
+    return(dplyr::case_when(
+      t <= 20 ~ poly_eval(t, c(0.02865474565453785, -0.5616023455819161, 18.895127739361776)),
+      t <= 50 ~ seg_anchor(t, 20, 19.12497908953859, c(0.0033794229763421946, -0.17974428539962584)),
+      t <= 130 ~ seg_anchor(t, 50, 20.829438777868425, c(2.3299255973114522e-5, -0.005164356482746972, 0.2240792152083612)),
+      TRUE ~ seg_anchor(t, 130, 12.665101019274214, c(-8.111948823347032e-5, 0.04119905641085836, -6.779076502276648))
+    ))
+  }
+  stop("dose must be one of 0, 5, 10, 25, 50, 100 mg/kg/day")
+}
+
+bw_grid <- tidyr::expand_grid(dose = c(0, 5, 10, 25, 50, 100), time = seq(0, 200, by = 0.5)) |>
+  filter(!(dose == 0 & time > 35), !(dose == 5 & time > 100)) |>
+  rowwise() |>
+  mutate(weight_g = bw_mouse(time, dose)) |>
+  ungroup()
+
+ggplot(bw_grid, aes(time, weight_g)) +
+  geom_line(colour = "steelblue") +
+  facet_wrap(~ paste(dose, "mg/kg/day"), ncol = 3) +
+  labs(x = "Time after transplant (day)", y = "Body weight (g)",
+       caption = "Replicates Figure S2 of Fan 2026 (spline curves only).")
+```
+
+# Dosing input: nominal and as fitted
+
+Equation 1 of the paper describes each PTCy dose as a 9-min zero-order input
+starting at day 3 and day 4. In the authors' code the input rate is switched on
+when a point of the 0.025-day solution grid falls inside the 9-min window, and
+that rate is then applied over the whole preceding 0.025-day step. The dose that
+reached the model was therefore 4 times the nominal dose, delivered over
+2.975-3.000 and 3.975-4.000 days, at the nominal infusion rate. Figure S1
+shows exactly this: the CY peak after 100 mg/kg is about 560 umol/L and the
+4HCY peak about 190 umol/L, which a 9-min infusion of 100 mg/kg cannot produce
+(it gives a 4HCY peak of about 30 umol/L). The drug-effect parameters (Emax,
+EC50, gamma, tau) were calibrated to the day-7 T-cell counts under that input.
+
+The packaged model carries the paper's equations and Table 1 values unchanged.
+To reproduce the published figures, this vignette gives the "as fitted" input;
+the nominal 9-min input is shown afterwards for contrast. With the nominal input
+the calibrated effect of PTCy on day-7 T cells almost disappears.
+
+```{r dosing-helpers}
+mw_cy <- 0.261086 # mg/umol, authors' code (Eq. 1 prints 0.261)
+
+ptcy_doses <- function(dose_mgkg, input = c("as_fitted", "nominal")) {
+  input <- match.arg(input)
+  if (dose_mgkg == 0) {
+    return(NULL)
+  }
+  amt <- dose_mgkg / mw_cy
+  if (input == "as_fitted") {
+    data.frame(time = c(2.975, 3.975), amt = 4 * amt, dur = 0.025)
+  } else {
+    data.frame(time = c(3, 4), amt = amt, dur = 9 / 60 / 24)
+  }
+}
+
+build_events <- function(dose_mgkg, obs_times, input = "as_fitted") {
+  dd <- ptcy_doses(dose_mgkg, input)
+  obs <- data.frame(id = 1L, time = obs_times, evid = 0L, amt = 0, dur = NA_real_,
+                    cmt = "central", dvid = 1L)
+  if (!is.null(dd)) {
+    dos <- data.frame(id = 1L, time = dd$time, evid = 1L, amt = dd$amt, dur = dd$dur,
+                      cmt = "central", dvid = NA_integer_)
+    obs <- rbind(dos, obs)
+  }
+  obs <- obs[order(obs$time, -obs$evid), ]
+  # Body weight in kg, time-varying, from the dose cohort's spline
+  obs$WT <- bw_mouse(obs$time, dose_mgkg) / 1000
+  obs
+}
+
+solve_arm <- function(dose_mgkg, obs_times, input = "as_fitted") {
+  ev <- build_events(dose_mgkg, obs_times, input)
+  out <- rxode2::rxSolve(mod_ui, ev, returnType = "data.frame",
+                         atol = 1e-10, rtol = 1e-10, maxsteps = 1e6)
+  out$dose <- dose_mgkg
+  out$input <- input
+  out
+}
+```
+
+# Simulated plasma PK (replicates Figure S1)
+
+```{r pk-sim}
+pk_times <- sort(unique(c(seq(2.5, 5, by = 0.0025), 3, 4)))
+pk <- bind_rows(lapply(c(5, 25, 100), solve_arm, obs_times = pk_times))
+
+pk_long <- pk |>
+  select(time, dose, CY = Cc, `4HCY` = Cc_4ohctx, CEPM = Cc_cepm) |>
+  pivot_longer(c(CY, `4HCY`, CEPM), names_to = "analyte", values_to = "conc") |>
+  mutate(analyte = factor(analyte, c("CY", "4HCY", "CEPM")))
+
+ggplot(mutate(pk_long, conc = ifelse(conc < 1e-6, NA_real_, conc)), aes(time, conc, colour = factor(dose))) +
+  geom_line(na.rm = TRUE) +
+  scale_y_log10(limits = c(1e-6, 1e4)) +
+  facet_wrap(~analyte) +
+  labs(x = "Time after transplant (day)", y = "Plasma concentration (umol/L)",
+       colour = "PTCy (mg/kg/day)",
+       caption = "Replicates Figure S1 of Fan 2026 (as-fitted dosing input).")
+
+pk_peaks <- pk |>
+  group_by(dose) |>
+  summarise(CY = max(Cc), `4HCY` = max(Cc_4ohctx), CEPM = max(Cc_cepm), .groups = "drop")
+knitr::kable(pk_peaks, digits = 1,
+             caption = "Simulated peak plasma concentrations (umol/L), as-fitted input.")
+```
+
+The authors' code gives peaks of 28.1, 140 and 562 umol/L for CY and 9.52,
+47.6 and 190 umol/L for 4HCY after 5, 25 and 100 mg/kg (values obtained by the
+maintainers by running the deposited code).
+
+```{r pk-check}
+stopifnot(
+  abs(pk_peaks$CY[pk_peaks$dose == 100] / 562 - 1) < 0.02,
+  abs(pk_peaks$`4HCY`[pk_peaks$dose == 100] / 190 - 1) < 0.02,
+  abs(pk_peaks$`4HCY`[pk_peaks$dose == 5] / 9.52 - 1) < 0.02
+)
+```
+
+# Donor T-cell kinetics (replicates Figure 3)
+
+```{r tcell-sim}
+t_times <- sort(unique(c(seq(0, 23, by = 0.05), 7, 21)))
+arms <- c(0, 5, 25, 100)
+tsim <- bind_rows(lapply(arms, solve_arm, obs_times = t_times))
+
+panel_map <- tibble::tribble(
+  ~column, ~subset, ~tissue,
+  "tc_blood_conc", "Tc", "Blood (cells/uL)",
+  "th_blood_conc", "Th", "Blood (cells/uL)",
+  "treg_blood_conc", "Treg", "Blood (cells/uL)",
+  "spleen_tc", "Tc", "Spleen (cells)",
+  "spleen_th", "Th", "Spleen (cells)",
+  "spleen_treg", "Treg", "Spleen (cells)",
+  "lnode_tc", "Tc", "Lymph node (cells)",
+  "lnode_th", "Th", "Lymph node (cells)",
+  "lnode_treg", "Treg", "Lymph node (cells)",
+  "tc_liver", "Tc", "Liver (cells)",
+  "th_liver", "Th", "Liver (cells)",
+  "treg_liver", "Treg", "Liver (cells)"
+)
+
+tlong <- tsim |>
+  select(time, dose, all_of(panel_map$column)) |>
+  pivot_longer(all_of(panel_map$column), names_to = "column", values_to = "value") |>
+  left_join(panel_map, by = "column") |>
+  mutate(tissue = factor(tissue, unique(panel_map$tissue)))
+```
+
+```{r fig3, fig.height = 9}
+# The infused cells leave blood for the tissues within hours of day 0; the
+# plot starts at day 0.1, as the paper's figure effectively does.
+ggplot(filter(tlong, time >= 0.1), aes(time, value, colour = factor(dose), linetype = factor(dose))) +
+  geom_line() +
+  scale_y_log10() +
+  facet_grid(tissue ~ subset, scales = "free_y") +
+  labs(x = "Time after transplant (day)", y = "Donor T cells",
+       colour = "PTCy (mg/kg/day)", linetype = "PTCy (mg/kg/day)",
+       caption = "Replicates the model curves of Figure 3 of Fan 2026 (as-fitted dosing input; from day 0.1).")
+```
+
+The curves reproduce Figure 3: a dose-dependent nadir around day 6-7 that
+reaches about 0.1 cells/uL for blood Tc after 100 mg/kg, and convergence of all
+arms towards the vehicle curve by day 21 as thymic output starts.
+
+# Comparison with the authors' code
+
+The maintainers ran the deposited Python code (`HSCT.py` and its notebook,
+Data S1) for every dose cohort and recorded the outputs at the observation days.
+The table compares those values with this model.
+
+```{r reference-values}
+ref_cols <- c("tc_blood_conc", "th_blood_conc", "treg_blood_conc",
+              "spleen_tc", "spleen_th", "spleen_treg",
+              "lnode_tc", "lnode_th", "lnode_treg",
+              "tc_liver", "th_liver", "treg_liver")
+ref_vals <- matrix(c(
+  0, 7, 46.746, 28.74, 0.46773, 1.079e+06, 6.6459e+05, 10986, 85563, 52753, 869.29, 1.9025e+06, 1.1762e+06, 19409,
+  0, 21, 237.35, 203.03, 4.3013, 3.1836e+06, 4.4551e+06, 62979, 4.2803e+05, 3.7146e+05, 8091.1, 4.2064e+06, 3.0255e+06, 77227,
+  5, 7, 45.919, 28.232, 0.45958, 1.0772e+06, 6.635e+05, 10971, 85422, 52667, 868.07, 1.8995e+06, 1.1743e+06, 19381,
+  5, 21, 253.58, 216.95, 4.5962, 3.1832e+06, 4.4539e+06, 62974, 4.2785e+05, 3.7135e+05, 8088.8, 4.206e+06, 3.0253e+06, 77222,
+  5, 200, 1.561e+06, 1.5556e+06, 23110, 1.4965e+07, 2.9675e+07, 2.9181e+05, 3.1115e+06, 5.0013e+06, 2.9563e+05, 1.9002e+07, 1.3754e+07, 3.3852e+05,
+  10, 7, 46.946, 28.873, 0.47173, 1.0509e+06, 6.4744e+05, 10746, 83343, 51402, 850.04, 1.8553e+06, 1.1466e+06, 18981,
+  10, 21, 218.66, 187.49, 3.9738, 3.1771e+06, 4.4365e+06, 62895, 4.2515e+05, 3.6963e+05, 8055.3, 4.1994e+06, 3.0224e+06, 77151,
+  10, 200, 3.8839e+06, 3.8706e+06, 57501, 1.4965e+07, 2.9675e+07, 2.9181e+05, 3.1115e+06, 5.0013e+06, 2.9563e+05, 1.9002e+07, 1.3754e+07, 3.3852e+05,
+  25, 7, 18.622, 11.55, 0.21454, 4.4202e+05, 2.7454e+05, 5182.2, 35225, 21896, 406.59, 7.8038e+05, 4.8422e+05, 9140.8,
+  25, 21, 164.18, 149.64, 3.1614, 3.0148e+06, 4.0111e+06, 60637, 3.5965e+05, 3.2996e+05, 7172, 4.0294e+06, 2.952e+06, 75120,
+  25, 200, 3.7774e+06, 3.7645e+06, 55925, 1.4965e+07, 2.9675e+07, 2.9181e+05, 3.1115e+06, 5.0013e+06, 2.9563e+05, 1.9002e+07, 1.3754e+07, 3.3852e+05,
+  50, 7, 0.576, 0.3686, 0.0058336, 14169, 9056.8, 141.77, 1105.9, 706.23, 11.033, 24398, 15675, 254.84,
+  50, 21, 155.28, 150.09, 2.7659, 2.8557e+06, 3.6628e+06, 55479, 3.0817e+05, 2.9993e+05, 5664.8, 3.8696e+06, 2.8917e+06, 70761,
+  50, 200, 4.2946e+06, 4.2799e+06, 63580, 1.4965e+07, 2.9675e+07, 2.9181e+05, 3.1115e+06, 5.0013e+06, 2.9563e+05, 1.9002e+07, 1.3754e+07, 3.3852e+05,
+  100, 7, 0.14136, 0.088641, 0.0010349, 3639.9, 2277.5, 26.454, 284.32, 177.95, 2.0671, 6240.6, 3917.6, 46.202,
+  100, 21, 138.24, 134.05, 2.3541, 2.8451e+06, 3.64e+06, 54089, 3.0518e+05, 2.9803e+05, 5354.1, 3.8592e+06, 2.8876e+06, 69653,
+  100, 200, 4.2511e+06, 4.2365e+06, 62936, 1.4965e+07, 2.9675e+07, 2.9181e+05, 3.1115e+06, 5.0013e+06, 2.9563e+05, 1.9002e+07, 1.3754e+07, 3.3852e+05
+), ncol = 14, byrow = TRUE)
+colnames(ref_vals) <- c("dose", "time", ref_cols)
+ref <- as.data.frame(ref_vals) |>
+  pivot_longer(all_of(ref_cols), names_to = "column", values_to = "reference")
+```
+
+```{r compare-reference}
+check_times <- function(dose) if (dose == 0) c(7, 21) else c(7, 21, 200)
+cmp_sim <- bind_rows(lapply(c(0, 5, 10, 25, 50, 100), function(d) {
+  solve_arm(d, obs_times = check_times(d))
+}))
+cmp <- cmp_sim |>
+  select(dose, time, all_of(ref_cols)) |>
+  pivot_longer(all_of(ref_cols), names_to = "column", values_to = "packaged") |>
+  inner_join(ref, by = c("dose", "time", "column")) |>
+  mutate(ratio = packaged / reference)
+
+cmp_summary <- cmp |>
+  mutate(group = case_when(
+    dose == 0 ~ "vehicle, days 7 and 21",
+    time == 200 ~ "PTCy, day 200",
+    time == 21 ~ "PTCy, day 21",
+    dose <= 10 ~ "PTCy 5-10 mg/kg, day 7",
+    TRUE ~ "PTCy 25-100 mg/kg, day 7"
+  )) |>
+  group_by(group) |>
+  summarise(n = n(), min_ratio = min(ratio), median_ratio = median(ratio),
+            max_ratio = max(ratio), .groups = "drop")
+cmp_summary |>
+  dplyr::rename("Comparison" = group, "Outputs" = n, "Min ratio" = min_ratio,
+                "Median ratio" = median_ratio, "Max ratio" = max_ratio) |>
+  knitr::kable(digits = 3,
+               caption = "Packaged model / authors' code, by group (12 outputs per arm and day).")
+
+cmp |>
+  filter(time == 7, dose >= 25) |>
+  select(dose, column, reference, packaged, ratio) |>
+  dplyr::rename("PTCy (mg/kg/day)" = dose, "Output" = column, "Authors' code" = reference,
+                "Packaged model" = packaged, "Ratio" = ratio) |>
+  knitr::kable(digits = 3, caption = "Day 7 after PTCy 25-100 mg/kg.")
+```
+
+The vehicle arm and day 200 agree to better than 1%, which confirms the
+structure, the parameter values, the initial conditions and the body-weight
+handling. Day-7 values after 5-10 mg/kg agree within 2% and day-21 values
+within about 6%. After 25-100 mg/kg the day-7 values differ by 0.6- to 2.7-fold
+(25 mg/kg about 1.4-fold, 50 mg/kg 2.2- to 2.7-fold, 100 mg/kg about 0.6-fold;
+the deepest nadirs make these the most sensitive values): the authors' code solves the T-cell
+model in 0.025-day steps with the 4HCY concentration held at its end-of-step
+value, so during the step that ends at the infusion stop the drug effect runs at
+the peak concentration for the whole step. The packaged model couples the PK
+and the T-cell layers continuously.
+
+```{r compare-check}
+stopifnot(
+  all(abs(cmp$ratio[cmp$dose == 0] - 1) < 0.01),
+  all(abs(cmp$ratio[cmp$time == 200] - 1) < 0.01),
+  all(abs(cmp$ratio[cmp$time == 21] - 1) < 0.10),
+  all(abs(cmp$ratio[cmp$time == 7 & cmp$dose %in% c(5, 10)] - 1) < 0.02),
+  # The two couplings differ most where the depletion is deepest; the bound is
+  # the measured spread (0.60-2.66), not a tuning target.
+  all(abs(log(cmp$ratio[cmp$time == 7])) < log(3))
+)
+```
+
+## Nominal 9-min input
+
+```{r nominal-input}
+nominal <- bind_rows(lapply(c(25, 100), function(d) {
+  bind_rows(solve_arm(d, obs_times = 7, input = "as_fitted"),
+            solve_arm(d, obs_times = 7, input = "nominal"))
+})) |>
+  select(dose, input, tc_blood_conc, th_blood_conc, treg_blood_conc, spleen_tc, tc_liver) |>
+  pivot_longer(-c(dose, input), names_to = "output", values_to = "value") |>
+  pivot_wider(names_from = input, values_from = value) |>
+  mutate(fold = nominal / as_fitted)
+
+nominal |>
+  dplyr::rename("PTCy (mg/kg/day)" = dose, "Output" = output, "As fitted" = as_fitted,
+                "Nominal 9-min input" = nominal, "Nominal / as fitted" = fold) |>
+  knitr::kable(digits = 3, caption = "Day-7 T cells under the two dosing inputs.")
+```
+
+With the nominal input the 100 mg/kg arm loses most of its day-7 depletion
+(about 140-fold more T cells in every tissue than with the as-fitted input; the 25 mg/kg arm has about 1.7-fold more), because the 4HCY peak
+is about 30 instead of 190 umol/L and stays below the calibrated EC50 of
+85 umol/L. Users who simulate other PTCy doses or schedules should know that
+the calibrated drug-effect parameters belong to the as-fitted input.
+
+# PKNCA check of the PK layer
+
+The terminal half-life of CY after a single nominal 100 mg/kg input is computed
+with PKNCA and compared with the value the paper quotes for CY in mice
+(0.19 +/- 0.01 h; Table S1, assumption iv, citing Ramirez 2019). The PK layer
+is linear, so the half-life does not depend on the input.
+
+```{r pknca}
+nca_times <- sort(unique(c(seq(3, 3.5, by = 1 / 24 / 60 * 2))))
+nca_sim <- bind_rows(lapply(c(25, 100), function(d) {
+  ev <- build_events(d, obs_times = nca_times, input = "nominal")
+  ev <- ev[!(ev$evid == 1 & ev$time > 3.5), ]
+  out <- rxode2::rxSolve(mod_ui, ev, returnType = "data.frame",
+                         atol = 1e-10, rtol = 1e-10, maxsteps = 1e6)
+  out$treatment <- paste0(d, " mg/kg")
+  out$id <- 1L
+  out
+}))
+
+conc_df <- nca_sim |>
+  filter(!is.na(Cc)) |>
+  mutate(time_h = (time - 3) * 24) |>
+  select(id, treatment, time_h, Cc)
+dose_df <- data.frame(id = 1L, treatment = c("25 mg/kg", "100 mg/kg"), time_h = 0,
+                      amt = c(25, 100) / mw_cy)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time_h | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time_h | treatment + id)
+intervals <- data.frame(start = 0, end = 12, cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tab <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+nca_tab |>
+  dplyr::rename("Treatment" = treatment, "Cmax (umol/L)" = cmax, "Tmax (h)" = tmax,
+                "AUC0-inf (umol*h/L)" = aucinf.obs, "t1/2 (h)" = half.life) |>
+  knitr::kable(digits = 3, caption = "PKNCA of plasma CY after one nominal 9-min input.")
+```
+
+```{r pknca-compare}
+sim_nca <- as.data.frame(nca_res) |>
+  filter(treatment == "100 mg/kg", PPTESTCD == "half.life") |>
+  transmute(PPTESTCD, PPORRES)
+nlmixr2lib::ncaComparisonTable(
+  simulated = sim_nca,
+  reference = data.frame(half.life = 0.19),
+  units = c(half.life = "h")
+) |>
+  knitr::kable(caption = "CY terminal half-life: packaged model vs the value quoted by Fan 2026.")
+```
+
+The simulated terminal half-life (0.26 h) is 34% longer than the 0.19 h the
+paper quotes. That value comes from a different study (Ramirez 2019) and was
+used in the paper only to justify assuming no drug effect after day 4 (Table S1,
+assumption iv); it is not a parameter of the model. The PK layer reproduces the
+Campagne 2019 parameters exactly, as the clearance check below shows, so the
+difference is between the two source studies, not an error in the translation.
+
+The dose-normalised AUC is the same for both doses, as the linear PK layer
+requires, and equals the dose divided by CL (Table S2).
+
+```{r pknca-linearity}
+auc_norm <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "aucinf.obs") |>
+  mutate(dose_umol = ifelse(treatment == "100 mg/kg", 100, 25) / mw_cy,
+         cl_est = dose_umol / PPORRES)
+stopifnot(all(abs(auc_norm$cl_est / 4.4 - 1) < 0.02))
+```
+
+# Assumptions and deviations
+
+* **Dosing input.** The paper (Eq. 1) describes a 9-min zero-order input, but
+  the parameters were calibrated with the authors' code, whose time stepping
+  delivered 4 times the nominal dose over the 0.025-day step before each nominal
+  dose time (see "Dosing input"). The packaged model keeps the paper's equations
+  and values; the published figures are reproduced here with the as-fitted
+  input, and the nominal input is shown for contrast. The model itself does not
+  encode either input: the event table does.
+* **PK-to-T-cell coupling.** The authors' code solved the PK first and drove
+  the T-cell model with the 4HCY concentration held constant over each
+  0.025-day step at its end-of-step value. The packaged model couples the layers
+  continuously, as the paper's equations do. This changes the day-7 values after
+  25-100 mg/kg by 0.6- to 2.7-fold, changes day 21 by at most about 6%, and has
+  no effect in the vehicle arm or by day 200.
+* **Values from the authors' code.** Table 1 rounds the estimated parameters to
+  three significant figures; the model carries the full-precision values from
+  the authors' notebook (m21, m31, m41, hreg, lambda0, capacities). The initial
+  donor T cells in blood (34.3% of the 40 x 10^6 infused splenocytes, CD4:CD8
+  ratio 0.598, 0.4% Treg among CD4+ cells) and the exact molar mass of CY
+  (0.261086 mg/umol) appear only in the notebook.
+* **Blood volume needs body weight.** `WT` (kg) is a time-varying covariate
+  used only for the blood concentration outputs. The vignette supplies each
+  cohort's fitted weight spline (Methods S2, Data S2). Tissue outputs do not
+  depend on it.
+* **Time origin.** The thymic-output function uses the time since transplant,
+  so simulations must start at day 0 = donor-graft infusion.
+* **One residual error, twelve parameters.** The paper estimated a single
+  proportional error xi = 0.821 for all T-cell outputs. rxode2 needs a separate
+  error parameter per endpoint, so each of the twelve outputs carries
+  `propSd_<output> = 0.821`; re-estimating the model would treat them as
+  independent unless they are tied.
+* **Neural-network GVHD layer not included.** The GVHD score was predicted by a
+  three-layer scikit-learn MLP (final model: 15 hidden ReLU nodes, inputs dose,
+  body weight, time, previous observed score, blood and liver Treg). Its weights
+  and biases were not published, so it cannot be reproduced.
+* **Fixed versus estimated.** Parameters taken from the literature, calibrated
+  by hand or set from the maximum observation are wrapped in `fixed()`; the
+  eight estimated by Nelder-Mead (m21, m31, m41, hreg, lambda_b, lambda0,c,
+  lambda0,reg, xi) are not. There is no between-animal variability.
+* **CY half-life.** The PKNCA half-life is compared with the 0.19 h value the
+  paper quotes from a different study (Ramirez 2019); the PK layer itself is the
+  Campagne 2019 model, so an exact match is not expected.
