@@ -88,8 +88,17 @@ knownLinCmtDropModels <- character(0)
 # observable rather than an ODE state, and none of .probeEventForms builds an
 # observation table rxode2 accepts for that shape. The model itself is sound:
 # its vignette renders clean. Remove this entry when the probe learns the form.
+#
+# Kim_2024_islatravir: the probe's covariate derivation pairs an oral tablet
+# amount with the implant route. DOSE_ISLATRAVIR_MG takes 0.1 (the first
+# `DOSE_ISLATRAVIR_MG - c` constant in model(), from `is_0p1`) while ROUTE_ORAL
+# takes its reference category 0 (implant). The model sets kimpl and
+# kce_implant to NA for an implant load outside its five studied loads (48, 52,
+# 54, 56, 62 mg), so every ODE state is NaN. That is the model refusing an
+# unsupported regimen, as designed. Its vignette solves the studied regimens.
 probeUnsupportedModels <- c(
-  "Retlich_2015_linagliptin"
+  "Retlich_2015_linagliptin",
+  "Kim_2024_islatravir"
 )
 
 # (2) Genuinely BROKEN models, quarantined so this gate can go green while the
@@ -182,18 +191,19 @@ knownBrokenModels <- character(0)
   res
 }
 
-# Probe results keyed by model name, computed once per set of names. An
+# Probe results keyed by model name, each model probed at most once however
+# many tests ask for it: the tests below cover overlapping sets of models. An
 # environment rather than a variable so the memo survives across test_that()
 # blocks without superassignment.
 .gateCache <- new.env(parent = emptyenv())
+.gateCache$res <- list()
 .gateProbe <- function(names_) {
-  key <- paste(names_, collapse = "\r")
-  if (!identical(.gateCache$key, key)) {
-    blocks <- split(names_, ceiling(seq_along(names_) / .probeBlockSize))
-    .gateCache$res <- do.call(c, unname(lapply(blocks, .probeInChild)))
-    .gateCache$key <- key
+  todo <- setdiff(names_, names(.gateCache$res))
+  if (length(todo)) {
+    blocks <- split(todo, ceiling(seq_along(todo) / .probeBlockSize))
+    .gateCache$res <- c(.gateCache$res, do.call(c, unname(lapply(blocks, .probeInChild))))
   }
-  .gateCache$res
+  .gateCache$res[names_]
 }
 
 test_that("every model in the registry responds to a dose", {
@@ -268,6 +278,186 @@ test_that("every model in the registry responds to a dose", {
       "to drive it -- work out which, then add it to knownBrokenModels or to ",
       "probeUnsupportedModels accordingly. Do not put a broken model in ",
       "probeUnsupportedModels: that claims the model is fine."
+    )
+  )
+})
+
+test_that("the non-finite check reads ODE states only, not timing outputs", {
+  ui <- rxode2::rxUiDecompress(rxode2::as.rxUi(.dtStomachDosedModel))
+  solved <- data.frame(
+    time = c(0, 1),
+    stomach = c(1, NaN),
+    central = c(0, Inf),
+    Cc = c(0, NA),
+    tad = c(NA, 1)
+  )
+  expect_identical(probeNonFiniteStates(ui, solved), c("stomach", "central"))
+  solved$stomach <- c(1, 0.5)
+  solved$central <- c(0, 1)
+  # `Cc` and `tad` are still NA, and are not states.
+  expect_identical(probeNonFiniteStates(ui, solved), character(0))
+  # A state missing from the output (a linCmt() conversion drops them) is not
+  # looked for.
+  expect_identical(probeNonFiniteStates(ui, solved[, c("time", "Cc")]), character(0))
+})
+
+test_that("the probe doses each declared compartment whose dose history the model reads", {
+  # .dtTwoDepotModel reads tad(depot), tad0(depot2) and tafd(depot3).
+  ui <- rxode2::rxUiDecompress(rxode2::as.rxUi(.dtTwoDepotModel))
+  db <- data.frame(name = "m", dosing = "depot,depot2")
+  expect_identical(probeDoseCmts("m", db, ui), c("depot", "depot2"))
+  # An undeclared compartment is never dosed, so a wrong `dosing` still leaves
+  # its dose-history reads NA.
+  db$dosing <- "depot"
+  expect_identical(probeDoseCmts("m", db, ui), "depot")
+  # The first declared compartment is always dosed, read or not.
+  db$dosing <- "central,depot2"
+  expect_identical(probeDoseCmts("m", db, ui), c("central", "depot2"))
+  db$dosing <- NA_character_
+  expect_identical(probeDoseCmts("m", db, ui), NA_character_)
+})
+
+test_that("the probe event table holds one dose record per dosed compartment", {
+  ui <- rxode2::rxUiDecompress(rxode2::as.rxUi(.dtTwoDepotModel))
+  ev <- as.data.frame(probeEvents(ui, c("depot", "depot2"), 100, c(0, 1)))
+  doses <- ev[ev$evid == 1L, ]
+  expect_identical(doses$cmt, c("depot", "depot2"))
+  expect_equal(doses$amt, c(100, 100))
+  expect_equal(doses$time, c(0, 0))
+})
+
+# A single-compartment probe event table, written independently of
+# probeEvents(): one dose record into `doseCmt`, then the observations in the
+# requested form. probeEvents() must build exactly this table when it is given
+# one compartment.
+.singleCmtEvents <- function(ui, doseCmt, amt, times, form = "cmt") {
+  ev <- rxode2::et(amt = amt, cmt = doseCmt)
+  eps <- ui$predDf$cond
+  if (length(eps) > 1L && !identical(form, "plain")) {
+    if (identical(form, "dvid")) {
+      for (i in seq_along(eps)) {
+        ev <- rxode2::et(ev, times, dvid = i)
+      }
+    } else {
+      for (ep in eps) {
+        ev <- rxode2::et(ev, times, cmt = ep)
+      }
+    }
+  } else {
+    ev <- rxode2::et(ev, times)
+  }
+  ev
+}
+
+test_that("the probe is unchanged for a model reading only its first dosing compartment", {
+  # Most of the registry: a second dosing compartment is declared (or none),
+  # and every dose-history read names the first one. The probe doses just that
+  # compartment, with the single-compartment event table, in every form.
+  cases <- list(
+    # tad(depot), with central declared but not read.
+    list(model = .dtFallbackDepotModel, dosing = "depot,central", first = "depot"),
+    # podo(stomach) and tad(stomach), stomach the only dosing compartment.
+    list(model = .dtStomachDosedModel, dosing = "stomach", first = "stomach"),
+    # Bare podo() and tad() name no compartment, so nothing is added.
+    list(model = .dtBareTimingModel, dosing = "central,stomach", first = "central")
+  )
+  times <- c(0, 1, 2)
+  for (cs in cases) {
+    ui <- rxode2::rxUiDecompress(rxode2::as.rxUi(cs$model))
+    db <- data.frame(name = "m", dosing = cs$dosing)
+    expect_identical(probeDoseCmts("m", db, ui), cs$first)
+    for (form in .probeEventForms) {
+      expect_identical(
+        as.data.frame(probeEvents(ui, probeDoseCmts("m", db, ui), 100, times, form)),
+        as.data.frame(.singleCmtEvents(ui, cs$first, 100, times, form)),
+        info = paste(cs$first, form)
+      )
+    }
+  }
+})
+
+test_that("the probe stops when it cannot read a model() block for its dose-history reads", {
+  # Reading nothing would quietly dose only the first compartment.
+  ui <- new.env()
+  ui$lstExpr <- NULL
+  db <- data.frame(name = "m", dosing = "depot,depot2")
+  expect_error(probeDoseCmts("m", db, ui), "cannot read the model\\(\\) block of m")
+})
+
+test_that("a model file without a model() block stops the dose-history screen", {
+  path <- withr::local_tempfile(fileext = ".R")
+  writeLines("notTheFileName <- function() 1", path)
+  expect_error(.probeReadsDoseHistory(path), "no model\\(\\) block in ")
+})
+
+test_that("doseTimingCandidates() finds the models that read a compartment's dose history", {
+  skip_on_cran()
+  cand <- doseTimingCandidates()
+  # A floor rather than an exact count, so a newly added model that reads a
+  # compartment's dose history does not fail this test.
+  expect_gte(length(cand), 126L)
+  # podo(stomach) and tad(stomach)
+  expect_true("Bulitta_2009_cefuroxime_axetil" %in% cand)
+  # tafd(bact_susceptible), the bacterial inoculum
+  expect_true("Thorsted_2023_neutrophil_mouse" %in% cand)
+  # Bare first-order absorption: no dose-history call at all
+  expect_false("PK_1cmt_des" %in% cand)
+})
+
+test_that("a dosed probe solve leaves every ODE state finite", {
+  # A state goes NaN when a derivative does, and the usual cause in this
+  # registry is a dose-history function -- `tad(cmt)`, `podo(cmt)`,
+  # `tafd(cmt)` -- reading a compartment the probe never doses. The probe
+  # doses the registry's first `dosing` compartment and any other declared one
+  # whose dose history the model reads (probeDoseCmts()), so a model whose
+  # `dosing` metadata leaves out the compartment its timing reads (or that has
+  # none, and gets the depot/central fallback) solves with NaN states. The solve does not
+  # error: every state is NA from the first step after the dose. The first test
+  # above passes such a model, because `doseEffect` ignores NA and the time-0
+  # row still shows the dose.
+  #
+  # Timing outputs themselves (`tad()`, a time since inoculation) are NA until
+  # their first event by design, so only `d/dt()` states are checked; see
+  # probeNonFiniteStates().
+  #
+  # On the default path this covers the linCmt-risk screen plus every model
+  # that reads a named compartment's dose history (doseTimingCandidates()),
+  # which is the class this check exists for; under `full`, every model.
+  skip_on_cran()
+  skip_if_not_installed("rxode2")
+
+  db <- nlmixr2lib::modeldb
+  dtc <- doseTimingCandidates()
+  # The dose-history models are what this test exists for; checking only that
+  # the scope is non-empty would pass on the linCmt screen alone.
+  expect_gte(length(intersect(db$name, dtc)), 126L)
+  names_ <- if (.solveGateScope() == "full") {
+    db$name
+  } else {
+    intersect(db$name, union(linCmtRiskCandidates(), dtc))
+  }
+
+  res <- .gateProbe(names_)
+  exempt <- c(probeUnsupportedModels, knownBrokenModels)
+  nonFinite <- character(0)
+  for (n in setdiff(names_, exempt)) {
+    states <- unique(c(res[[n]]$lin$nonFiniteStates, res[[n]]$ode$nonFiniteStates))
+    if (length(states)) {
+      nonFinite <- c(nonFinite, sprintf("%s (%s)", n, paste(states, collapse = ", ")))
+    }
+  }
+
+  expect_equal(
+    nonFinite,
+    character(0),
+    info = paste0(
+      "Model(s) whose dosed probe solve leaves an ODE state NaN or infinite: ",
+      paste(nonFinite, collapse = "; "),
+      ". Check that every compartment the model's tad()/podo()/tafd()/... ",
+      "calls name is in its `dosing` metadata (checkModelConventions() ",
+      "reports this as dose_timing_compartment), and that the first entry is ",
+      "the usual route. If the model is genuinely broken, add it to ",
+      "knownBrokenModels with the evidence."
     )
   )
 })

@@ -3007,3 +3007,154 @@ test_that("the operator at the end of the line above passes, and compiles the sa
   norm <- function(m) rxode2::rxModelVars(suppressMessages(nlmixr2est::nlmixr(m)))$model[["normModel"]]
   expect_identical(norm(.bsContinuationModel), norm(.bsJoinedModel))
 })
+
+# Dose-history compartments -------------------------------------------------
+#
+# `tad(cmt)`, `podo(cmt)` and their siblings read the doses given into `cmt`.
+# When the registry's dosing compartments leave `cmt` out, nothing doses it,
+# the function is NA for every subject and every derivative that uses it is
+# NaN. The fixture models are in helper-doseTimingModels.R.
+
+.dtCategory <- function(model) {
+  res <- suppressWarnings(checkModelConventions(model, verbose = FALSE))
+  res[res$category == "dose_timing_compartment", , drop = FALSE]
+}
+
+test_that("every dose-history function takes a compartment in the installed rxode2", {
+  # The list is rxode2's syntax table, not something rxode2 exports. Parsing
+  # each one with a compartment argument fails as soon as rxode2 drops or
+  # renames one, and the dosenum() control shows the parser does refuse a
+  # compartment where the function takes none. The parser's message for that
+  # refusal depends on what it parsed before in the session, as in the test
+  # below.
+  for (fn in nlmixr2lib:::.doseTimingFunctions) {
+    mv <- tryCatch(
+      suppressMessages(rxode2::rxModelVars(paste0("d/dt(depot) <- -depot; x <- ", fn, "(depot)"))),
+      error = function(e) e
+    )
+    expect_false(inherits(mv, "error"), info = fn)
+  }
+  expect_error(
+    suppressMessages(utils::capture.output(
+      rxode2::rxModelVars("d/dt(depot) <- -depot; x <- dosenum(depot)")
+    )),
+    "syntax error|string segment too long"
+  )
+})
+
+test_that(".doseTimingCalls collects named-compartment calls at any depth", {
+  e <- quote({
+    a <- podo(stomach) * exp(-k * tad(stomach))
+    if (tafd("depot2") > 1) b <- tad() else b <- tlast0(central)
+    x[, 1] <- dosenum()
+  })
+  hits <- nlmixr2lib:::.doseTimingCalls(e)
+  expect_equal(
+    vapply(hits, paste, character(1), collapse = ":"),
+    c("podo:stomach", "tad:stomach", "tafd:depot2", "tlast0:central")
+  )
+  expect_equal(nlmixr2lib:::.doseTimingCalls(quote(tad())), list())
+  expect_equal(nlmixr2lib:::.doseTimingCalls(quote(central)), list())
+})
+
+test_that(".doseTimingCalls skips an empty first argument and a namespaced call", {
+  expect_equal(nlmixr2lib:::.doseTimingCalls(quote(tad(, depot))), list())
+  expect_equal(nlmixr2lib:::.doseTimingCalls(quote(rxode2::tad(depot))), list())
+  # rxode2 rejects all three spellings in a model, so a model-level fixture
+  # cannot carry them; the walker is pinned on bare expressions above. The
+  # parser's message depends on what it parsed before in the session:
+  # "syntax error" on its own, "string segment too long in rc_dup_str" after
+  # some earlier parses. Either way the model is refused.
+  for (code in c("x <- rxode2::tad(depot)", "x <- tad(\"depot\")")) {
+    expect_error(
+      suppressMessages(utils::capture.output(rxode2::rxModelVars(paste0("d/dt(depot) <- -depot; ", code)))),
+      "syntax error|string segment too long",
+      info = code
+    )
+  }
+  expect_error(
+    suppressMessages(utils::capture.output(rxode2::rxModelVars("d/dt(depot) <- -depot; x <- tad(, depot)")))
+  )
+})
+
+test_that("a model() block that cannot be read is reported, not passed", {
+  ui <- new.env()
+  makeActiveBinding("lstExpr", function() stop("unparseable"), ui)
+  hit <- nlmixr2lib:::.checkDoseTimingCompartments(ui, NULL)
+  expect_identical(nrow(hit), 1L)
+  expect_identical(hit$category, "dose_timing_compartment")
+  expect_identical(hit$severity, "error")
+  expect_identical(
+    hit$message,
+    "The model() block could not be read to check dose-history compartments: unparseable"
+  )
+})
+
+test_that("a timing read inside an if/else is checked like any other", {
+  hit <- .dtCategory(.dtIfElseModel)
+  expect_identical(hit$name, "stomach")
+  expect_identical(
+    hit$message,
+    paste0(
+      "`tad(stomach)` reads the doses given into 'stomach', which is not a ",
+      "dosing compartment (`dosing` declares: depot)."
+    )
+  )
+})
+
+test_that("variables named tad or dose are not dose-history reads", {
+  expect_identical(nrow(.dtCategory(.dtShadowNamesModel)), 0L)
+})
+
+test_that("a timing read of an undosed compartment is an error (fallback case)", {
+  hit <- .dtCategory(.dtStomachModel)
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$severity, "error")
+  expect_equal(hit$name, "stomach")
+  expect_equal(
+    hit$message,
+    paste0(
+      "`podo(stomach)`, `tad(stomach)` read the doses given into 'stomach', ",
+      "which is not a dosing compartment (no `dosing` metadata, so the ",
+      "depot/central fallback gives: central)."
+    )
+  )
+  expect_true(grepl("dosing <- c(\"stomach\"", hit$suggestion, fixed = TRUE))
+})
+
+test_that("declaring the read compartment in `dosing` clears the error", {
+  expect_equal(nrow(.dtCategory(.dtStomachDosedModel)), 0L)
+})
+
+test_that("a timing read of depot is covered by the depot/central fallback", {
+  ui <- suppressMessages(nlmixr2est::nlmixr(.dtFallbackDepotModel))
+  expect_null(ui$meta$dosing)
+  expect_equal(nrow(.dtCategory(.dtFallbackDepotModel)), 0L)
+})
+
+test_that("bare tad() and podo() name no compartment and are not flagged", {
+  expect_equal(nrow(.dtCategory(.dtBareTimingModel)), 0L)
+})
+
+test_that("with several dosing compartments only the undeclared one is flagged", {
+  hit <- .dtCategory(.dtTwoDepotModel)
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$name, "depot3")
+  expect_equal(
+    hit$message,
+    paste0(
+      "`tafd(depot3)` reads the doses given into 'depot3', which is not a ",
+      "dosing compartment (`dosing` declares: depot, depot2)."
+    )
+  )
+})
+
+test_that("the message says when `dosing` is empty or there is no fallback", {
+  hit <- .dtCategory(.dtEmptyDosingModel)
+  expect_equal(hit$name, "stomach")
+  expect_true(grepl("(`dosing` is declared empty)", hit$message, fixed = TRUE))
+
+  hit2 <- .dtCategory(.dtNoFallbackModel)
+  expect_equal(hit2$name, "stomach")
+  expect_true(grepl("no depot or central compartment to fall back to", hit2$message, fixed = TRUE))
+})
