@@ -20,7 +20,7 @@ tgi_sat_genVonBertalanffy <- function() {
     lvc  <- 3.45 ; label("Central volume of distribution (V)")
     lkg <- 0.7; label("Tumor growth (birth) rate (1/time_unit)")
     lkdeath <- 0.7; label("Tumor cell-death rate (1/time_unit)")
-    lgamma <- 0.95; label("proliferative cells as a fraction of the full tumor volume (gamma)")
+    lgamma <- log(0.95); label("proliferative cells as a fraction of the full tumor volume (gamma)")
     propSd <- 0.5 ; label("PK proportional residual error (fraction)")
     propSd_tumor_size <- 0.5 ; label("Tumor size proportional residual error (fraction)")
     addSd_tumor_size <- 30 ; label("Tumor size additive residual error (tumor volume)")
