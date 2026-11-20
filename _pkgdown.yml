@@ -8858,6 +8858,8 @@ navbar:
         href: articles/Li_2021_vancomycin_renal_function.html
       - text: "Vancomycin carreno (Tong 2026)"
         href: articles/Tong_2026_vancomycin.html
+      - text: "Vancomycin colin (McCarthy 2026)"
+        href: articles/McCarthy_2026_vancomycin.html
       - text: "Vancomycin full (Downes 2023)"
         href: articles/Downes_2023_vancomycin.html
       - text: "Vancomycin goti (Tong 2026)"
@@ -8868,6 +8870,8 @@ navbar:
         href: articles/Tong_2026_vancomycin.html
       - text: "Vancomycin invitro (Olivo 2025)"
         href: articles/Olivo_2025_vancomycin.html
+      - text: "Vancomycin moffett (McCarthy 2026)"
+        href: articles/McCarthy_2026_vancomycin.html
       - text: "Vancomycin mouse (Maskawa 2025)"
         href: articles/Maskawa_2025_vancomycin_mouse.html
       - text: "Vancomycin mouse firstorder (Maskawa 2025)"
@@ -8880,6 +8884,8 @@ navbar:
         href: articles/Hughes_2024_vancomycin.html
       - text: "Vancomycin schwartz (Downes 2023)"
         href: articles/Downes_2023_vancomycin.html
+      - text: "Vancomycin shimamoto (McCarthy 2026)"
+        href: articles/McCarthy_2026_vancomycin.html
       - text: "Vancomycin thomson (Tong 2026)"
         href: articles/Tong_2026_vancomycin.html
       - text: "Vandetanib qsp (Wan 2025)"
@@ -11078,6 +11084,7 @@ articles:
   - articles/Mazzocco_2015_temozolomide
   - articles/McBride_2025_radamts13_qsp
   - articles/McCann_2025_midazolam
+  - articles/McCarthy_2026_vancomycin
   - articles/McKnite_2026_midazolam_crrt
   - articles/McLachlan_1996_fluconazole
   - articles/McLaughlin_2024_tld_1
