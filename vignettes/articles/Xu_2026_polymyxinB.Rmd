@@ -1,0 +1,419 @@
+---
+title: "Polymyxin B in critically ill patients (Xu 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Polymyxin B in critically ill patients (Xu 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Xu_2026_polymyxinB"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Xu_2026_polymyxinB"))$description`
+* Article: [Front Pharmacol 2026;17:1859709](https://doi.org/10.3389/fphar.2026.1859709)
+
+Xu et al. fitted a two-compartment population PK model to 92 routine
+therapeutic drug monitoring concentrations of polymyxin B from 20 intensive
+care patients (Table 3). No covariate was retained. The paper then used the
+model to simulate two sets of 2,000 dense steady-state profiles (100 mg twice
+daily, infused at 100 mg/h, sampled every 0.5 h over one 12-h interval),
+filtered them, and used the results to compare maximum a posteriori Bayesian
+estimation with XGBoost for predicting AUC0-12h from limited samples. The
+summaries of those simulated profiles (Supplementary Tables 1 and 4) are the
+validation targets of this article.
+
+# Population
+
+The analysis included 20 adults (17 male, 3 female; median age 53.5 years,
+range 27-90) in the intensive care unit of the Third Xiangya Hospital of
+Central South University, Changsha, China, treated with intravenous polymyxin
+B between October 2019 and December 2020 (Table 2). Body weight was 40-120 kg
+(median 64) and height 155-175 cm. Creatinine clearance ranged from 20.07 to
+422.44 mL/min (median 47.38); 7 patients (35%) received continuous renal
+replacement therapy. Doses were 50-200 mg twice daily (median 100 mg) at
+33.33-200 mg/h (median 100 mg/h), chosen by the physician.
+
+The same information is available programmatically via
+`readModelDb("Xu_2026_polymyxinB")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL) | log(3.05 L/h) | Table 3, CL |
+| `lvc` (V1) | log(40.3 L) | Table 3, V1 |
+| `lvp` (V2) | log(7.52 L) | Table 3, V2 |
+| `lq` (Q) | log(29.7 L/h) | Table 3, Q |
+| `etalcl` | 0.291 (variance) | Table 3, 'IIV on CL (%)' = 29.1; omega^2 reading from Methods (Scenario 1) and the check below |
+| `etalvc` | 0.333 (variance) | Table 3, 'IIV on V1 (%)' = 33.3; same reading |
+| no IIV on V2 and Q | -- | Results: IIV on CL and V1 only |
+| `propSd` | 0.192 | Table 3, proportional error 19.2% |
+| `addSd` | 0.06 mg/L | Table 3, additive error 0.06 mg/L |
+| two-compartment ODE, IV infusion into `central` | n/a | Results, 'Development and evaluation of the initial PopPK model'; Methods ('intravenous PMB') |
+| combined additive + proportional error | n/a | Results ('mixed additive-proportional error model') |
+| covariates | none | Results: none retained from 22 screened |
+
+# Reading of the IIV column
+
+Table 3 prints the inter-individual variability as 'IIV on CL (%)' = 29.1
+and 'IIV on V1 (%)' = 33.3. A percentage in that place is usually a
+coefficient of variation, which would mean omega^2 = log(1 + 0.291^2) = 0.081
+for CL. The paper itself uses another convention: Supplementary Table 2 lists
+'IIV on CL (%)' = 16.1 and 'IIV on V1 (%)' = 31.9 for the model refitted to
+the simulated data, and the Methods (Scenario 1) state the same estimates as
+'between-subject variances (omega2) for CL and V1 ... 0.161 and 0.319'. So
+the column holds omega^2 x 100.
+
+The simulated data settle it. At steady state AUC0-12h = dose / CL, so its
+distribution follows from CL alone. The paper removed simulated subjects with
+AUC0-12h outside the 5th-95th percentile, so the range of the retained AUCs
+is the 5th-95th percentile of the full simulation. Supplementary Table 4
+gives that range as estimated by the most accurate methods (Bayesian
+estimation from C6 or from C0 and C1, R^2 0.998 and 1.000 against the true
+AUC).
+
+```{r iiv-reading}
+dose <- 100
+cl_pop <- 3.05
+auc_q <- function(omega2) dose / cl_pop * exp(qnorm(c(0.05, 0.5, 0.95)) * sqrt(omega2))
+iiv_cmp <- tibble::tibble(
+  source = c(
+    "Model: omega^2 = 0.291 (packaged)",
+    "Alternative: CV 29.1%, omega^2 = 0.081",
+    "Supplementary Table 4, MAP-BE from C6",
+    "Supplementary Table 4, MAP-BE from C0 and C1"
+  ),
+  p05 = c(auc_q(0.291)[1], auc_q(log(1 + 0.291^2))[1], 11.83, 13.87),
+  p50 = c(auc_q(0.291)[2], auc_q(log(1 + 0.291^2))[2], 33.02, 33.32),
+  p95 = c(auc_q(0.291)[3], auc_q(log(1 + 0.291^2))[3], 79.22, 79.53)
+)
+iiv_cmp |>
+  dplyr::rename(
+    "Source" = source,
+    "AUC0-12h 5th pct / min (mg*h/L)" = p05,
+    "Median (mg*h/L)" = p50,
+    "AUC0-12h 95th pct / max (mg*h/L)" = p95
+  ) |>
+  knitr::kable(digits = 1)
+
+# Closed form, no simulation. The variance reading lands inside 15% of the
+# published retained range at both ends; the CV reading misses the upper end
+# by about a third.
+pub_hi <- mean(c(79.22, 79.53))
+pub_lo <- mean(c(11.83, 13.87))
+stopifnot(
+  abs(auc_q(0.291)[3] / pub_hi - 1) < 0.05,
+  abs(auc_q(0.291)[1] / pub_lo - 1) < 0.15,
+  auc_q(log(1 + 0.291^2))[3] / pub_hi < 0.7
+)
+```
+
+# Virtual cohort
+
+The paper simulated 2,000 subjects with NONMEM. Here 200 virtual patients
+receive the paper's regimen, 100 mg every 12 h infused at 100 mg/h, for 50
+days (100 doses), and the last interval (1188-1200 h) is sampled every 0.5 h as
+in the paper. Fifty days is needed for the slowest-clearing virtual patients
+(CL near 0.7 L/h, terminal half-life about 100 h) to reach steady state; after
+20 days their AUC0-12h is still 4% short of dose / CL. Because the model has no covariates, a virtual patient is just
+a pair of random effects. They are drawn with base R as a Latin hypercube
+(one draw per 1/200 probability stratum) and passed to the model as data with
+the model's own random effects switched off, so every number below is the
+same on every machine and every rxode2 build. Residual error is left out: the
+paper's simulation used a near-zero error (additive 0.01 mg/L, proportional
+1%).
+
+```{r cohort}
+mod <- readModelDb("Xu_2026_polymyxinB")
+ui <- rxode2::rxode(mod)
+omega <- ui$omega
+
+n_sub <- 200L
+set.seed(2026)
+lhs_eta <- function(n, variance) {
+  qnorm((sample.int(n) - 0.5) / n) * sqrt(variance)
+}
+etas <- data.frame(
+  id = seq_len(n_sub),
+  etalcl = lhs_eta(n_sub, omega["etalcl", "etalcl"]),
+  etalvc = lhs_eta(n_sub, omega["etalvc", "etalvc"]),
+  regimen = "100 mg q12h"
+)
+
+tau <- 12
+n_dose <- 100L
+t_last <- (n_dose - 1L) * tau
+doses <- tibble::tibble(
+  time = seq(0, t_last, by = tau), amt = dose, rate = 100, evid = 1L
+)
+obs <- tibble::tibble(
+  time = t_last + seq(0, tau, by = 0.5), amt = NA_real_, rate = NA_real_, evid = 0L
+)
+events <- tidyr::expand_grid(etas, dplyr::bind_rows(doses, obs)) |>
+  dplyr::mutate(cmt = "central") |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+stopifnot(dplyr::n_distinct(events$id) == n_sub)
+```
+
+# Simulation
+
+```{r simulate}
+solve_fixed_eta <- function(model, ev, ...) {
+  withCallingHandlers(
+    rxode2::rxSolve(model, events = ev, omega = NA, returnType = "data.frame", ...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w))) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+sim <- solve_fixed_eta(rxode2::zeroRe(mod), events, keep = "regimen") |>
+  dplyr::mutate(tad = time - t_last)
+
+# The random effects came from the data: clearance must equal
+# exp(lcl + etalcl) for each subject.
+cl_check <- sim |>
+  dplyr::distinct(id, cl) |>
+  dplyr::left_join(etas, by = "id")
+stopifnot(
+  dplyr::n_distinct(round(cl_check$cl, 8)) == n_sub,
+  max(abs(cl_check$cl / (cl_pop * exp(cl_check$etalcl)) - 1)) < 1e-10
+)
+```
+
+# PKNCA: steady-state exposure
+
+```{r pknca}
+conc <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, regimen, tad, Cc)
+dose_df <- etas |>
+  dplyr::transmute(id, regimen, tad = 0, amt = dose, duration = 1)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc, Cc ~ tad | regimen + id),
+  PKNCA::PKNCAdose(dose_df, amt ~ tad | regimen + id,
+    route = "intravascular", duration = "duration"
+  ),
+  intervals = data.frame(
+    start = 0, end = tau, auclast = TRUE, cmax = TRUE, cmin = TRUE, tmax = TRUE
+  )
+))
+nca_df <- as.data.frame(nca)
+
+# At steady state AUC over one interval equals dose / CL. PKNCA's
+# linear-up/log-down trapezoid on the paper's 0.5-h grid is checked against it.
+auc_vs_exact <- nca_df |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::left_join(cl_check |> dplyr::select(id, cl), by = "id") |>
+  dplyr::mutate(rel = PPORRES / (dose / cl) - 1)
+c(median_rel_pct = 100 * median(auc_vs_exact$rel), max_abs_rel_pct = 100 * max(abs(auc_vs_exact$rel)))
+# Deterministic cohort. Measured largest error 0.23%, on the infusion peak.
+stopifnot(nrow(auc_vs_exact) == n_sub, max(abs(auc_vs_exact$rel)) < 0.005)
+```
+
+The paper does not report an NCA of patient data. Its simulated steady-state
+profiles are summarised as median concentrations at each sampling time
+(Supplementary Table 1; the 1-h value is the end of infusion, i.e. Cmax, and
+the 0-h value the trough) and by the estimated AUC0-12h (Supplementary Table
+4; Bayesian estimation from C0 and C1, R^2 = 1.00 against the true AUC). The
+paper's medians are taken after removing subjects with AUC0-12h outside the
+5th-95th percentile, which leaves the median unchanged.
+
+```{r nca-compare}
+reference <- data.frame(
+  regimen = "100 mg q12h",
+  cmax = 4.01, # Supplementary Table 1, 1 h, modeling dataset
+  cmin = 1.86, # Supplementary Table 1, 0 h
+  auclast = 33.32 # Supplementary Table 4, MAP-BE from C0 and C1
+)
+nlmixr2lib::ncaComparisonTable(
+  simulated = nca,
+  reference = reference,
+  by = "regimen",
+  params = c("cmax", "cmin", "auclast"),
+  units = c(cmax = "mg/L", cmin = "mg/L", auclast = "mg*h/L"),
+  label_first_column = "NCA parameter"
+)
+```
+
+# Replicate Supplementary Table 1: steady-state concentrations
+
+Supplementary Table 1 summarises the retained simulated profiles at each
+nominal time (median and range). The same AUC0-12h filter is applied here.
+
+```{r supp-table-1}
+auc_keep <- auc_vs_exact |>
+  dplyr::filter(
+    PPORRES >= quantile(PPORRES, 0.05),
+    PPORRES <= quantile(PPORRES, 0.95)
+  ) |>
+  dplyr::pull(id)
+
+published_t1 <- tibble::tribble(
+  ~tad, ~pub_median, ~pub_min, ~pub_max,
+  0, 1.86, 0.14, 5.78,
+  0.5, 3.02, 1.25, 7.21,
+  1, 4.01, 1.59, 9.27,
+  2, 3.62, 1.50, 8.20,
+  3, 3.37, 1.41, 7.58,
+  4, 3.12, 1.33, 7.27,
+  6, 2.71, 0.91, 6.52,
+  8, 2.38, 0.47, 6.15,
+  10, 2.09, 0.26, 5.98,
+  12, 1.86, 0.15, 5.79
+)
+t1 <- sim |>
+  dplyr::filter(id %in% auc_keep, tad %in% published_t1$tad) |>
+  dplyr::group_by(tad) |>
+  dplyr::summarise(
+    sim_median = median(Cc), sim_min = min(Cc), sim_max = max(Cc),
+    .groups = "drop"
+  ) |>
+  dplyr::inner_join(published_t1, by = "tad") |>
+  dplyr::mutate(pct_diff = 100 * (sim_median / pub_median - 1))
+stopifnot(nrow(t1) == nrow(published_t1))
+
+t1 |>
+  dplyr::mutate(
+    sim_range = sprintf("%.2f-%.2f", sim_min, sim_max),
+    pub_range = sprintf("%.2f-%.2f", pub_min, pub_max)
+  ) |>
+  dplyr::select(tad, sim_median, pub_median, pct_diff, sim_range, pub_range) |>
+  dplyr::rename(
+    "Time after dose (h)" = tad,
+    "Median, simulated (mg/L)" = sim_median,
+    "Median, Supp. Table 1 (mg/L)" = pub_median,
+    "Difference (%)" = pct_diff,
+    "Range, simulated" = sim_range,
+    "Range, Supp. Table 1" = pub_range
+  ) |>
+  knitr::kable(digits = 2)
+
+# Deterministic cohort (base-R Latin hypercube passed as data), so the
+# medians do not move between machines; the largest difference is at the
+# troughs.
+c(median_abs_pct = median(abs(t1$pct_diff)), max_abs_pct = max(abs(t1$pct_diff)))
+stopifnot(
+  median(abs(t1$pct_diff)) < 5,
+  max(abs(t1$pct_diff)) < 10
+)
+```
+
+The simulated ranges come from `r length(auc_keep)` retained subjects against
+the paper's 1,579, so they are expected to be somewhat narrower. Re-solving
+the same cohort with the CV reading of the IIV column (each random effect
+rescaled to omega^2 = log(1 + CV^2)) shows the concentration-scale
+counterpart of the AUC check above:
+
+```{r cv-reading}
+cv_scale <- c(
+  etalcl = sqrt(log(1 + 0.291^2) / 0.291),
+  etalvc = sqrt(log(1 + 0.333^2) / 0.333)
+)
+events_cv <- events |>
+  dplyr::mutate(
+    etalcl = etalcl * cv_scale[["etalcl"]],
+    etalvc = etalvc * cv_scale[["etalvc"]]
+  )
+sim_cv <- solve_fixed_eta(rxode2::zeroRe(mod), events_cv) |>
+  dplyr::mutate(tad = time - t_last)
+auc_cv <- sim_cv |>
+  dplyr::distinct(id, cl) |>
+  dplyr::mutate(auc = dose / cl)
+keep_cv <- auc_cv$id[auc_cv$auc >= quantile(auc_cv$auc, 0.05) &
+  auc_cv$auc <= quantile(auc_cv$auc, 0.95)]
+trough_range <- function(s, keep) range(s$Cc[s$id %in% keep & s$tad == 0])
+trough_cmp <- rbind(
+  "omega^2 reading (packaged)" = trough_range(sim, auc_keep),
+  "CV reading" = trough_range(sim_cv, keep_cv),
+  "Supplementary Table 1" = c(0.14, 5.78)
+)
+colnames(trough_cmp) <- c("Lowest trough (mg/L)", "Highest trough (mg/L)")
+knitr::kable(trough_cmp, digits = 2)
+```
+
+```{r profile-plot, fig.width = 6, fig.height = 4}
+sim |>
+  dplyr::filter(id %in% auc_keep) |>
+  dplyr::group_by(tad) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tad, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  geom_point(data = published_t1, aes(tad, pub_median), colour = "red") +
+  labs(
+    x = "Time after start of infusion at steady state (h)",
+    y = "Polymyxin B Cc (mg/L)",
+    caption = paste(
+      "Line and band: simulated median and 5th-95th percentiles (no residual error).",
+      "Red points: Supplementary Table 1 medians of Xu 2026.",
+      sep = "\n"
+    )
+  )
+```
+
+# Exposure against the dosing target
+
+The paper's online dosing tool aims at AUCss,0-24h of 50-100 mg*h/L. For the
+simulated 100 mg twice-daily regimen (all 200 subjects, before the AUC
+filter):
+
+```{r target}
+auc24 <- 2 * auc_vs_exact$PPORRES
+c(
+  below_50_pct = 100 * mean(auc24 < 50),
+  in_50_100_pct = 100 * mean(auc24 >= 50 & auc24 <= 100),
+  above_100_pct = 100 * mean(auc24 > 100)
+)
+```
+
+# Assumptions and deviations
+
+- **IIV column read as omega^2 x 100.** Table 3 prints 'IIV on CL (%)' and
+  'IIV on V1 (%)'. The Methods restate the same column of Supplementary Table
+  2 as variances, and the AUC and concentration ranges of the paper's own
+  simulated data agree with the variance reading and not with a coefficient
+  of variation (see above). The model therefore uses omega^2 = 0.291 (CL) and
+  0.333 (V1), i.e. about 58% and 62% CV.
+- **Residual error as standard deviations.** Table 3 gives the proportional
+  error as 19.2% and the additive error as 0.06 mg/L. The Methods write the
+  residual model of the refitted model as
+  sigma = sqrt(0.01^2 + (0.01 * Cpred)^2) for the Supplementary Table 2 values
+  1% and 0.01 mg/L, so both rows are standard deviations; they are encoded as
+  `propSd = 0.192` and `addSd = 0.06` in a combined (additive variance plus
+  proportional variance) error model.
+- **Analyte.** Polymyxin B1 and B2 were both assayed. The paper reports a
+  single polymyxin B (PMB) concentration without stating how the components
+  were combined; the model describes that single concentration, in mg/L.
+- **Models fitted to simulated data are not packaged.** The paper also fitted
+  a two-compartment model to the dense simulated profiles (Supplementary
+  Table 2: CL 3.04 L/h, V1 40.6 L, V2 7.41 L, Q 28.8 L/h, omega^2 0.161 and
+  0.319) and four one-compartment models to sparse subsets of them
+  (Supplementary Table 5). They describe the simulated data set used to train
+  the Bayesian estimators, not a patient population, and are not separate
+  models of polymyxin B; only the Table 3 patient model is packaged. The
+  XGBoost models (Supplementary Tables 3 and 6) are not pharmacometric models.
+- **Simulation scale and noise.** The paper simulated 2,000 subjects with
+  1% random noise on the sampling times and a near-zero residual error, then
+  applied four filters. This article uses 200 subjects, nominal times, no
+  residual error and only the AUC0-12h 5th-95th percentile filter, which is
+  the one that shapes the distribution; the other three removed 245 of 2,000
+  subjects for trough timing or negative values, which depend on the
+  time noise and residual error.
+- No erratum or correction notice for this article was found (Europe PMC
+  search, 2026-11-14).
