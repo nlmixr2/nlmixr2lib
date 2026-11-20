@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sahasrabudhe 2026 ceftibuten + avibactam tomilopil, final and simulation models ([doi:10.1002/jcph.70263](https://doi.org/10.1002/jcph.70263)) -- healthy adults given oral ceftibuten with the avibactam prodrug.
+- Add Komenkul 2026 tacrolimus ([doi:10.1002/psp4.70339](https://doi.org/10.1002/psp4.70339)) -- Thai adult liver transplant recipients, with combined recipient/donor CYP3A5 genotype and fluconazole/prednisolone co-medication.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

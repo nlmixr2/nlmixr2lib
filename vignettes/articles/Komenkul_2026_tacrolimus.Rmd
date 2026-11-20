@@ -1,0 +1,497 @@
+---
+title: "Tacrolimus in liver transplantation (Komenkul 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tacrolimus in liver transplantation (Komenkul 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+options(cli.progress_show_after = Inf)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-load}
+ui <- rxode2::rxode(readModelDb("Komenkul_2026_tacrolimus"))
+mod_typ <- rxode2::zeroRe(ui)
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article: <https://doi.org/10.1002/psp4.70339>
+
+# Population
+
+Komenkul 2026 pooled 1989 whole-blood tacrolimus concentrations from 114 Thai
+adult primary liver transplant recipients at King Chulalongkorn Memorial
+Hospital, Bangkok, during the first 6 months after transplantation: 97
+patients from a retrospective therapeutic-drug-monitoring cohort (troughs,
+2014-2023) and 17 from a prospective cohort with steady-state intensive
+sampling at 0, 0.5, 1, 2, 4, 6 and 8 h (2023-2024). Table 1: 71 men and 43
+women, median age 57 years (18-75), median weight 61.4 kg (34.6-102.0),
+median hemoglobin 10.9 g/dL (5.7-16.7) and median daily tacrolimus dose 4 mg
+(1-13). The combined recipient/donor CYP3A5 genotype (expressor Ex =
+`*1/*1` or `*1/*3`; non-expressor Nex = `*3/*3`) was Ex/Ex 31, Ex/Nex 35,
+Nex/Ex 27 and Nex/Nex 21. All patients took oral immediate-release
+tacrolimus (Prograf) twice daily with mycophenolate and prednisolone, plus
+fluconazole antifungal prophylaxis early after transplantation; by
+concentration record, 59% were on fluconazole and 88% on prednisolone.
+
+```{r population}
+str(ui$population, max.level = 1)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source in
+`inst/modeldb/specificDrugs/Komenkul_2026_tacrolimus.R`. Collected here:
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Two-compartment, first-order absorption, linear elimination | -- | Results 'Population Pharmacokinetic Model Development'; Table 2 model M3; Supplement 'Code for Final model' |
+| `lka` (ka) | 0.95 1/h | Table 3 'Ka' |
+| `lcl` (CL/F, reference subject) | 23.61 L/h | Table 3 'CL/F'; final-model equation |
+| `lvc` (Vc/F) | 81.88 L | Table 3 'Vc/F' |
+| `lq` (Q/F) | 36.99 L/h | Table 3 'Q/F' |
+| `lvp` (Vp/F) | 367.71 L | Table 3 'Vp/F' |
+| `e_dose_tac_cl`, `(DOSE_TAC_MGD / 4)^e` | 0.22 | Table 3 'Daily dose'; final-model equation |
+| `e_hgb_cl`, `(HGB / 11)^e` | -0.15 | Table 3 'Hemoglobin'; final-model equation |
+| `e_conmed_fluconazole_cl`, `1 + e * FLU` | -0.33 | Table 3 'Fluconazole'; final-model equation |
+| `e_conmed_prednisolone_cl`, `1 + e * PSL` | 0.08 | Table 3 'Prednisolone'; final-model equation |
+| `e_cyp3a5_exnex_cl` (recipient Ex, donor Nex) | -0.15 | Table 3 'Expressors/non-expressors'; equation COMB = 0.85 |
+| `e_cyp3a5_nexex_cl` (recipient Nex, donor Ex) | -0.16 | Table 3 'Non-expressors/expressors'; equation COMB = 0.84 |
+| `e_cyp3a5_nexnex_cl` (both Nex) | -0.24 | Table 3 'Non-expressors/non-expressors'; equation COMB = 0.76 |
+| `etalcl`, `etalvc` variances | 0.07, 0.24 | Table 3 'IIV CL/F', 'IIV Vc/F' |
+| `etalcl`-`etalvc` covariance | 0.12254 | Table 3 'Corr CL-Vc, %' = 94.54 |
+| `etalvp` variance | 1.22 | Table 3 'IIV Vp/F' |
+| No IIV on ka and Q/F | -- | Table 3 'IIV Ka' / 'IIV Q/F' = 'Fixed'; final-model code has no eta on Ka or Cl2 |
+| `propSd` | 0.2776 | Table 3 'Proportional residual error (%)' = 27.76 |
+
+# Typical clearance against the published equation
+
+The paper's final model is
+
+CL/F = 23.61 x (DD/4)^0.22 x (HB/11)^-0.15 x (1 - 0.33 FLU) x (1 + 0.08 PSL) x COMB,
+
+with COMB = 1, 0.85, 0.84 and 0.76 for Ex/Ex, Ex/Nex, Nex/Ex and Nex/Nex. The
+model's typical CL/F is compared with that equation over every genotype x
+fluconazole x prednisolone combination at three dose and hemoglobin levels.
+Both sides use the same parameters, so the bound is tight.
+
+```{r cl-check}
+genotypes <- tibble::tribble(
+  ~geno, ~CYP3A5_EXPR, ~CYP3A5_EXPR_DONOR, ~comb,
+  "Ex/Ex", 1, 1, 1.00,
+  "Ex/Nex", 1, 0, 0.85,
+  "Nex/Ex", 0, 1, 0.84,
+  "Nex/Nex", 0, 0, 0.76
+)
+grid <- tidyr::expand_grid(
+  genotypes,
+  CONMED_FLUCONAZOLE = 0:1,
+  CONMED_PREDNISOLONE = 0:1,
+  DOSE_TAC_MGD = c(2, 4, 10),
+  HGB = c(7, 11, 15)
+) |>
+  mutate(id = row_number())
+
+ev_cl <- grid |>
+  mutate(time = 0, evid = 0, amt = 0, cmt = "central") |>
+  select(id, time, evid, amt, cmt, CYP3A5_EXPR, CYP3A5_EXPR_DONOR,
+         CONMED_FLUCONAZOLE, CONMED_PREDNISOLONE, DOSE_TAC_MGD, HGB)
+# Typical-value model with zeroed random effects: rxode2 warns that a
+# multi-subject solve has no omega, which is intended here.
+cl_sim <- suppressWarnings(rxode2::rxSolve(mod_typ, ev_cl, returnType = "data.frame"))
+
+cl_chk <- grid |>
+  mutate(
+    cl_paper = 23.61 * (DOSE_TAC_MGD / 4)^0.22 * (HGB / 11)^-0.15 *
+      (1 - 0.33 * CONMED_FLUCONAZOLE) * (1 + 0.08 * CONMED_PREDNISOLONE) * comb
+  ) |>
+  left_join(cl_sim |> select(id, cl), by = "id") |>
+  mutate(rel_err = cl / cl_paper - 1)
+
+stopifnot(nrow(cl_chk) == 144, !anyNA(cl_chk$rel_err), max(abs(cl_chk$rel_err)) < 1e-8)
+
+cl_chk |>
+  filter(DOSE_TAC_MGD == 4, HGB == 11) |>
+  select(geno, CONMED_FLUCONAZOLE, CONMED_PREDNISOLONE, cl, cl_paper) |>
+  dplyr::rename(
+    "Recipient/donor" = geno,
+    "Fluconazole" = CONMED_FLUCONAZOLE,
+    "Prednisolone" = CONMED_PREDNISOLONE,
+    "Model CL/F (L/h)" = cl,
+    "Equation CL/F (L/h)" = cl_paper
+  ) |>
+  knitr::kable(digits = 2, caption = "Typical CL/F at 4 mg/day and hemoglobin 11 g/dL.")
+```
+
+# Virtual cohort
+
+The simulations below give each subject a hemoglobin drawn from a log-normal
+distribution matched to Table 1 (median 10.9 g/dL, interquartile range
+9.5-12.5) and truncated to the observed range 5.7-16.7 g/dL. The paper does not
+state the hemoglobin distribution its simulations used. `DOSE_TAC_MGD` is
+always twice the twice-daily `amt`, so the dose covariate tracks the regimen.
+
+```{r cohort-helpers}
+draw_hgb <- function(n) {
+  pmin(pmax(exp(rnorm(n, log(10.9), log(12.5 / 9.5) / 1.349)), 5.7), 16.7)
+}
+
+# Steady-state (ss = 1) twice-daily dosing with observations through one
+# dosing interval; the trough is the 12 h value. Intermediate observation
+# times keep the solver off a single-point output grid.
+ss_events <- function(cov, obs_times = seq(0, 12, by = 2)) {
+  dose <- cov |>
+    mutate(time = 0, evid = 1L, amt = DOSE_TAC_MGD / 2, ii = 12, ss = 1L, cmt = "depot")
+  obs <- cov[rep(seq_len(nrow(cov)), each = length(obs_times)), ] |>
+    mutate(time = rep(obs_times, nrow(cov)), evid = 0L, amt = 0, ii = 0, ss = 0L, cmt = "central")
+  bind_rows(dose, obs) |> arrange(id, time, desc(evid))
+}
+```
+
+# Replicate Figure 2: troughs by genotype and co-medication
+
+Figure 2 of Komenkul 2026 shows simulated steady-state troughs after a fixed
+4 mg/day (2 mg every 12 h) for the four genotype groups under four
+co-medication scenarios. Here 200 subjects are simulated per genotype x
+scenario arm.
+
+```{r fig2-sim}
+n_arm <- 200
+scenarios <- tibble::tribble(
+  ~scenario, ~CONMED_FLUCONAZOLE, ~CONMED_PREDNISOLONE,
+  "(A) no FLU, no PSL", 0, 0,
+  "(B) no FLU, PSL", 0, 1,
+  "(C) FLU, no PSL", 1, 0,
+  "(D) FLU + PSL", 1, 1
+)
+set.seed(20260903)
+cov_fig2 <- tidyr::expand_grid(scenarios, genotypes |> select(-comb)) |>
+  slice(rep(seq_len(n()), each = n_arm)) |>
+  mutate(id = row_number(), DOSE_TAC_MGD = 4, HGB = draw_hgb(n()))
+stopifnot(max(table(cov_fig2$scenario, cov_fig2$geno)) <= 200)
+
+rxode2::rxSetSeed(20260903)
+sim_fig2 <- rxode2::rxSolve(
+  ui, ss_events(cov_fig2),
+  returnType = "data.frame", keep = c("scenario", "geno"), maxsteps = 500000L
+)
+trough_fig2 <- sim_fig2 |> filter(time == 12)
+stopifnot(nrow(trough_fig2) == nrow(cov_fig2), !anyNA(trough_fig2$Cc))
+```
+
+```{r fig2-plot, fig.width = 8, fig.height = 6}
+trough_fig2 |>
+  mutate(geno = factor(geno, levels = genotypes$geno)) |>
+  ggplot(aes(geno, Cc, colour = geno)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_hline(yintercept = c(5, 8, 12), linetype = "dashed") +
+  facet_wrap(~scenario) +
+  coord_cartesian(ylim = c(0, 20)) +
+  labs(
+    x = "CYP3A5 recipient/donor", y = "Steady-state trough (ng/mL)", colour = NULL,
+    caption = "Replicates Figure 2 of Komenkul 2026 (4 mg/day, 2 mg every 12 h)."
+  ) +
+  theme_bw()
+```
+
+The medians of Figure 2 were read from the published figure by the
+maintainers. The ratio of each genotype's median to the Ex/Ex median isolates
+the genotype effect from anything that moves all four boxes together.
+
+```{r fig2-compare}
+fig2_pub <- tibble::tribble(
+  ~scenario, ~geno, ~median_pub,
+  "(A) no FLU, no PSL", "Ex/Ex", 3.2,
+  "(A) no FLU, no PSL", "Ex/Nex", 4.0,
+  "(A) no FLU, no PSL", "Nex/Ex", 4.1,
+  "(A) no FLU, no PSL", "Nex/Nex", 4.8,
+  "(C) FLU, no PSL", "Ex/Ex", 5.6,
+  "(C) FLU, no PSL", "Ex/Nex", 6.9,
+  "(C) FLU, no PSL", "Nex/Ex", 7.0,
+  "(C) FLU, no PSL", "Nex/Nex", 7.9
+)
+fig2_cmp <- trough_fig2 |>
+  group_by(scenario, geno) |>
+  summarise(median_sim = median(Cc), .groups = "drop") |>
+  inner_join(fig2_pub, by = c("scenario", "geno")) |>
+  group_by(scenario) |>
+  mutate(
+    ratio_sim = median_sim / median_sim[geno == "Ex/Ex"],
+    ratio_pub = median_pub / median_pub[geno == "Ex/Ex"]
+  ) |>
+  ungroup() |>
+  mutate(pct_diff = 100 * (median_sim / median_pub - 1))
+
+fig2_cmp |>
+  dplyr::rename(
+    "Scenario" = scenario, "Recipient/donor" = geno,
+    "Simulated median (ng/mL)" = median_sim, "Figure 2 median (ng/mL)" = median_pub,
+    "Simulated ratio to Ex/Ex" = ratio_sim, "Figure 2 ratio to Ex/Ex" = ratio_pub,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2)
+
+# Fluconazole contrast: per-genotype ratio of the scenario (C) median to the
+# scenario (A) median, simulated and as read from Figure 2.
+flu_ratio <- fig2_cmp |>
+  mutate(arm = ifelse(grepl("^\\(C\\)", scenario), "flu", "none")) |>
+  select(geno, arm, median_sim, median_pub) |>
+  tidyr::pivot_wider(names_from = arm, values_from = c(median_sim, median_pub)) |>
+  mutate(rel = (median_sim_flu / median_sim_none) / (median_pub_flu / median_pub_none))
+
+stopifnot(
+  # Genotype gradient (set by COMB): centre of the six non-reference ratios.
+  abs(median(fig2_cmp$ratio_sim[fig2_cmp$geno != "Ex/Ex"] /
+               fig2_cmp$ratio_pub[fig2_cmp$geno != "Ex/Ex"]) - 1) < 0.08,
+  # Fluconazole contrast (set by e_conmed_fluconazole_cl), centre over genotypes.
+  abs(median(flu_ratio$rel) - 1) < 0.08,
+  # Level: the simulated medians sit above Figure 2 (see Assumptions and
+  # deviations); this envelope documents that offset.
+  abs(median(fig2_cmp$pct_diff)) < 35
+)
+```
+
+The genotype and fluconazole contrasts reproduce Figure 2. The absolute trough
+level does not: the simulated medians are about `r round(median(fig2_cmp$pct_diff))`%
+above the medians read from Figure 2 in every box. See Assumptions and
+deviations.
+
+# Replicate Table S2: fluconazole effect on CL/F and trough
+
+Table S2 compares the simulated CL/F and trough with and without fluconazole
+at 4 mg/day; the Results text places it in the absence of prednisolone. The
+genotype mix here follows Table 1.
+
+```{r tableS2}
+set.seed(20260904)
+geno_idx <- sample(seq_len(4), 2 * n_arm, replace = TRUE, prob = c(31, 35, 27, 21))
+cov_s2 <- tibble::tibble(
+  id = seq_len(2 * n_arm),
+  CONMED_FLUCONAZOLE = rep(0:1, each = n_arm),
+  CONMED_PREDNISOLONE = 0,
+  CYP3A5_EXPR = genotypes$CYP3A5_EXPR[geno_idx],
+  CYP3A5_EXPR_DONOR = genotypes$CYP3A5_EXPR_DONOR[geno_idx],
+  DOSE_TAC_MGD = 4,
+  HGB = draw_hgb(2 * n_arm),
+  treatment = ifelse(CONMED_FLUCONAZOLE == 1, "Fluconazole", "No fluconazole")
+)
+rxode2::rxSetSeed(20260904)
+sim_s2 <- rxode2::rxSolve(
+  ui, ss_events(cov_s2, obs_times = c(0, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 10, 12)),
+  returnType = "data.frame", keep = "treatment", maxsteps = 500000L
+)
+stopifnot(!anyNA(sim_s2$Cc))
+
+s2 <- sim_s2 |>
+  filter(time == 12) |>
+  group_by(treatment) |>
+  summarise(
+    cl_mean = mean(cl), cl_sd = sd(cl),
+    ctrough_mean = mean(Cc), ctrough_sd = sd(Cc),
+    .groups = "drop"
+  ) |>
+  left_join(
+    tibble::tibble(
+      treatment = c("No fluconazole", "Fluconazole"),
+      cl_pub = c(22.95, 15.37), ctrough_pub = c(4.01, 6.73)
+    ),
+    by = "treatment"
+  )
+s2 |>
+  dplyr::rename(
+    "Group" = treatment,
+    "Simulated CL/F mean (L/h)" = cl_mean, "Simulated CL/F SD" = cl_sd,
+    "Table S2 CL/F mean (L/h)" = cl_pub,
+    "Simulated trough mean (ng/mL)" = ctrough_mean, "Simulated trough SD" = ctrough_sd,
+    "Table S2 trough mean (ng/mL)" = ctrough_pub
+  ) |>
+  knitr::kable(digits = 2)
+
+stopifnot(
+  # CL/F level: structural; a mis-transcribed intercept or covariate moves it
+  # by far more than this.
+  all(abs(s2$cl_mean / s2$cl_pub - 1) < 0.15),
+  # Fluconazole contrast on CL/F (published 15.37 / 22.95 = 0.670).
+  abs((s2$cl_mean[s2$treatment == "Fluconazole"] /
+         s2$cl_mean[s2$treatment == "No fluconazole"]) / (15.37 / 22.95) - 1) < 0.08
+)
+```
+
+# NCA of the steady-state dosing interval
+
+The paper reports no NCA. PKNCA is run over the steady-state 0-12 h interval
+of the Table S2 cohort; at steady state AUCtau equals the dose divided by
+CL/F, which checks the solved profile against each subject's own clearance.
+
+```{r pknca}
+conc_s2 <- sim_s2 |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+dose_s2 <- cov_s2 |>
+  transmute(id, time = 0, amt = DOSE_TAC_MGD / 2, treatment)
+
+conc_obj <- PKNCA::PKNCAconc(conc_s2, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_s2, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = 12,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+summary(nca_res)
+
+auc_chk <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, auc_nca = PPORRES) |>
+  left_join(
+    sim_s2 |> filter(time == 12) |> select(id, cl),
+    by = "id"
+  ) |>
+  mutate(auc_closed = 1000 * 2 / cl, pct_diff = 100 * (auc_nca / auc_closed - 1))
+
+stopifnot(
+  nrow(auc_chk) == nrow(cov_s2),
+  # Linear-up/log-down trapezoids on a 0.5-2 h grid against the exact
+  # dose / CL: the error comes from the absorption peak only.
+  abs(median(auc_chk$pct_diff)) < 5,
+  quantile(abs(auc_chk$pct_diff), 0.9) < 10
+)
+```
+
+# Dosing recommendations (Table 4 / Table S3)
+
+Table 4 recommends starting doses for patients on prednisolone-based triple
+therapy with normal-to-high hemoglobin, and Table S3 gives the probability of
+a 5-12 ng/mL steady-state trough (PTA) for each stratum. The table below
+simulates the hemoglobin 8-12 g/dL strata of Table S3 (prednisolone yes) at
+both ends of each recommended dose range, with hemoglobin uniform over
+8-12 g/dL. PTA is computed on the model-predicted trough without residual
+error.
+
+```{r pta}
+pta_strata <- tibble::tribble(
+  ~flu, ~geno, ~dose_lo, ~dose_hi, ~pta_lo, ~pta_hi,
+  0, "Ex/Ex", 6.5, 7.5, 70.5, 74.3,
+  0, "Ex/Nex", 4.5, 6.0, 71.8, 74.9,
+  0, "Nex/Ex", 3.5, 5.0, 72.1, 77.0,
+  0, "Nex/Nex", 3.0, 4.0, 73.0, 80.8,
+  1, "Ex/Ex", 2.5, 4.0, 72.3, 81.5,
+  1, "Ex/Nex", 2.0, 2.5, 70.7, 80.9,
+  1, "Nex/Ex", 2.0, 2.5, 75.1, 83.6,
+  1, "Nex/Nex", 2.0, 2.0, 79.9, 82.2
+) |>
+  left_join(genotypes |> select(-comb), by = "geno")
+
+pta_arms <- pta_strata |>
+  tidyr::pivot_longer(c(dose_lo, dose_hi), values_to = "dose_q12h") |>
+  distinct(flu, geno, dose_q12h, .keep_all = TRUE) |>
+  select(-name)
+
+set.seed(20260905)
+cov_pta <- pta_arms |>
+  slice(rep(seq_len(n()), each = n_arm)) |>
+  mutate(
+    id = row_number(),
+    CONMED_FLUCONAZOLE = flu,
+    CONMED_PREDNISOLONE = 1,
+    DOSE_TAC_MGD = 2 * dose_q12h,
+    HGB = runif(n(), 8, 12)
+  )
+rxode2::rxSetSeed(20260905)
+sim_pta <- rxode2::rxSolve(
+  ui, ss_events(cov_pta),
+  returnType = "data.frame", keep = c("flu", "geno", "dose_q12h"), maxsteps = 500000L
+)
+stopifnot(!anyNA(sim_pta$Cc))
+
+pta_tab <- sim_pta |>
+  filter(time == 12) |>
+  group_by(flu, geno, dose_q12h) |>
+  summarise(pta_sim = 100 * mean(Cc >= 5 & Cc <= 12), .groups = "drop") |>
+  left_join(pta_strata |> select(flu, geno, pta_lo, pta_hi), by = c("flu", "geno")) |>
+  mutate(published = paste0(pta_lo, "-", pta_hi))
+
+pta_tab |>
+  mutate(flu = ifelse(flu == 1, "Yes", "No")) |>
+  select(flu, geno, dose_q12h, pta_sim, published) |>
+  dplyr::rename(
+    "Fluconazole" = flu, "Recipient/donor" = geno, "Dose every 12 h (mg)" = dose_q12h,
+    "Simulated PTA 5-12 ng/mL (%)" = pta_sim, "Table S3 PTA range (%)" = published
+  ) |>
+  knitr::kable(digits = 1)
+
+stopifnot(abs(median(pta_tab$pta_sim) - median((pta_tab$pta_lo + pta_tab$pta_hi) / 2)) < 10)
+```
+
+# Steady-state profile of the reference subject
+
+```{r typical-profile, fig.width = 6, fig.height = 4}
+cov_typ <- tibble::tibble(
+  id = 1L, CYP3A5_EXPR = 1, CYP3A5_EXPR_DONOR = 1, CONMED_FLUCONAZOLE = c(0, 1),
+  CONMED_PREDNISOLONE = 0, DOSE_TAC_MGD = 4, HGB = 11
+) |>
+  mutate(id = row_number(), label = ifelse(CONMED_FLUCONAZOLE == 1, "Fluconazole", "No fluconazole"))
+typ <- suppressWarnings(rxode2::rxSolve(
+  mod_typ, ss_events(cov_typ, obs_times = seq(0, 12, by = 0.25)),
+  returnType = "data.frame", keep = "label"
+))
+ggplot(typ, aes(time, Cc, colour = label)) +
+  geom_line() +
+  geom_hline(yintercept = c(5, 12), linetype = "dashed") +
+  labs(
+    x = "Time after dose (h)", y = "Whole-blood tacrolimus (ng/mL)", colour = NULL,
+    caption = "Typical Ex/Ex recipient, 2 mg every 12 h at steady state, hemoglobin 11 g/dL."
+  ) +
+  theme_bw()
+```
+
+# Assumptions and deviations
+
+* **IIV values are variances.** Table 3 prints 'IIV CL/F 0.07', 'IIV Vc/F 0.24'
+  and 'IIV Vp/F 1.22' without a unit; Phoenix NLME reports omega estimates as
+  variances of the exponential random effects, and the bootstrap intervals
+  (for example 0.55-2.80 around 1.22) fit that reading. The CL/F-Vc/F
+  covariance is reconstructed from the printed 94.54% correlation.
+* **No IIV on ka and Q/F.** Table 3 lists both as 'Fixed' with no value; the
+  authors' final-model code has no random effect on either, so none is
+  included.
+* **Final estimates from Table 3, not the supplement code.** The final-model
+  code in Supplement 1 carries initial values that differ from Table 3 (for
+  example `tvV = 87.79`, `tvV2 = 423.54`, `tvCl2 = 36.14`, hemoglobin exponent
+  -0.22, genotype effects -0.13/-0.15/-0.23). Table 3 and the printed
+  final-model equation agree with each other and are used. The code fixes the
+  structure: proportional error `C * (1 + CEps)`, daily dose normalised as
+  `DD/4000` (dataset in micrograms, equal to the paper's 4 mg/day), and
+  hemoglobin normalised by 11 g/dL.
+* **Hemoglobin reference.** The equation and code normalise by 11 g/dL, while
+  Table 1 gives a median of 10.9 g/dL; 11 is used.
+* **Combined genotype input.** The paper's four-level COMB covariate is
+  rebuilt from two binary columns, recipient `CYP3A5_EXPR` and donor
+  `CYP3A5_EXPR_DONOR`, following the register convention for donor/recipient
+  genotypes.
+* **Absolute trough level versus Figure 2.** Every simulated median trough is
+  about 10-30% above the medians read from Figure 2, and the Table S2 trough
+  means show the same gap, while CL/F means agree with Table S2 to within
+  about 7% and the genotype and fluconazole contrasts reproduce. The paper does
+  not report the hemoglobin distribution, the number of doses simulated or
+  whether residual error was added. Replacing Table 3 with the supplement code
+  values or removing the Vp/F variability does not close the gap. A
+  pre-steady-state trough (about the sixth dose) would match the figure's
+  level, but the paper says the simulations were at steady state, so the
+  model is left as published. The PTA of the recommended doses still falls
+  close to the Table S3 ranges.
+* **Hemoglobin distribution in the simulations** is assumed log-normal around
+  the Table 1 median and interquartile range; the Table S3 strata use a
+  uniform draw within each stated range.
+* No erratum was found in Europe PMC as of 2026-11-17.
