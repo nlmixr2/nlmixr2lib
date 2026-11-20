@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yang 2026 di(2-ethylhexyl) adipate (DEHA) and metabolite MEHA whole-body PBPK ([doi:10.3390/pharmaceutics18081001](https://doi.org/10.3390/pharmaceutics18081001)) -- Sprague-Dawley rats, intravenous and oral, with circulatory-topology multi-tissue metabolism and lymphatic absorption.
+- Add Jeong 2026 sirolimus ([doi:10.1002/bcp.70595](https://doi.org/10.1002/bcp.70595)) -- Korean children and adolescents (1 month to 18 years) with vascular anomalies.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

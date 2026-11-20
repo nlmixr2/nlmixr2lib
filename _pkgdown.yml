@@ -7882,6 +7882,8 @@ navbar:
         href: articles/Fan_2024_sirolimus.html
       - text: "Sirolimus (Golubovic 2019)"
         href: articles/Golubovic_2019_sirolimus.html
+      - text: "Sirolimus (Jeong 2026)"
+        href: articles/Jeong_2026_sirolimus.html
       - text: "Sirolimus (Jiao 2009)"
         href: articles/Jiao_2009_sirolimus.html
       - text: "Sirolimus (Mao 2024)"
@@ -10836,6 +10838,7 @@ articles:
   - articles/Jeong_2023_rabeprazole
   - articles/Jeong_2024_levocetirizine
   - articles/Jeong_2025_imc002
+  - articles/Jeong_2026_sirolimus
   - articles/Jermain_2020_ivermectin_pbpk
   - articles/Ji_2017_vancomycin
   - articles/Ji_2018_tacrolimus
