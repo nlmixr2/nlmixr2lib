@@ -1,0 +1,785 @@
+---
+title: "Cortisol GR-PXR signalling network QSP (Kolodkin 2013)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cortisol GR-PXR signalling network QSP (Kolodkin 2013)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+mod <- readModelDb("Kolodkin_2013_cortisol_qsp")
+ui <- rxode2::rxode(mod)
+```
+
+* Citation: `r ui$reference`
+* Article: <https://doi.org/10.1038/ncomms2799>
+* Supplementary information (Tables S1-S10): <https://www.nature.com/articles/ncomms2799#Sec15>
+* Authors' SBML deposit: [BioModels BIOMD0000000576](https://www.ebi.ac.uk/biomodels/BIOMD0000000576)
+
+`r ui$description`
+
+This is an endogenous gene-regulatory network: cortisol is made inside the
+model, the outputs are mRNA and protein concentrations, and there are no
+concentration-time data for a drug, so PKNCA is not the right validation
+target. The vignette instead checks steady states and conserved moieties, then
+replicates the paper's simulated figures and the numbers its Results quote.
+
+All simulations are deterministic (the model has no random effects), so the
+checks against the paper's own model outputs can be tight.
+
+```{r solver}
+# One solver setting for every solve below. The network spans rate constants
+# from 1e-6 to 1e6 per minute, so it is stiff; these tolerances keep the
+# reported numbers stable to well below the precision the paper quotes.
+solve <- function(m, events, params = NULL, inits = NULL) {
+  rxode2::rxSolve(
+    m,
+    events = events, params = params, inits = inits,
+    atol = 1e-10, rtol = 1e-8, maxsteps = 1e6,
+    returnType = "data.frame"
+  )
+}
+states <- ui$state
+
+# Run the network to steady state (2e6 min, about 4 years, long past the
+# slowest time constant) and return the final state vector.
+steady_state <- function(params = NULL, inits = NULL) {
+  s <- solve(ui, rxode2::et(c(0, 2e6)), params = params, inits = inits)
+  unlist(s[nrow(s), states])
+}
+
+# Trapezoidal area under a simulated curve.
+trap <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+```
+
+# Population
+
+There is no study population in the pharmacometric sense. The network
+represents a healthy human hepatocyte. It was calibrated against primary human
+hepatocytes (a gift of GlaxoSmithKline) exposed for 48 h, with daily dosing,
+to vehicle or 0.1-50000 nM cortisol or dexamethasone; GR, PXR, CYP3A4 and TAT
+transcripts were measured by TaqMan qPCR, and CYP3A4 protein and activity were
+also measured for cortisol (Methods; Figure 1b-c; Supplementary Figure S2).
+Rate constants come from the literature where available. The remaining mRNA
+and protein synthesis rates and the dissociation constants of liganded
+receptors from their response elements were hand-fitted to those data within
+biologically realistic bounds (Supplementary Table S1 footnotes). No
+estimation uncertainty is reported.
+
+```{r population}
+str(ui$population)
+```
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/endogenous/Kolodkin_2013_cortisol_qsp.R`. The tables
+below collect them in one place.
+
+## Equations
+
+| Model element | Source | Content |
+|---|---|---|
+| `v1`-`v44` rate laws | Supplementary Table S1 / S5, column "Reactions" | Mass-action synthesis, degradation and binding; competitive Michaelis-Menten CYP3A4 metabolism (`v19`, `v32`) |
+| `v_l2_bind`, `v_l2_deg`, `v_l2_cypgene`, `v_l2_cyp_mrna` | Table S5 rows `V_L2_PXR_binding`, `V_L2_PXR_deg`, `V_CYPmRNA_PXR_L2_binding`, `V_CYPmRNA_synt_PXR_L2` | Second ligand pool L2 |
+| `v_transport`, `v_dist`, `v_cbg`, `v_alb` | Table S1 / S5 rows `V_cortisolTransport`, `V_cort_distribution`, `V_cort_CBG`, `V_cort_albumin` | Blood cortisol: membrane exchange, input of added cortisol, CBG and albumin binding |
+| Competitive denominators of `v19` and `v32` | BIOMD0000000576 function `LigandDegrOld` | Cortisol, L2 and dexamethasone compete for CYP3A4 |
+| `d/dt(...)` for all 36 states | Supplementary Table S6, corrected as in Errata | Balance equations |
+| `vratio_blood` scaling of `v_transport` in `d/dt(cort_blood)` | BIOMD0000000576 compartment sizes (`blood` = 5, `default` = 1) | Blood volume five times the cell volume |
+| `d/dt(dex_out) <- 0` | BIOMD0000000576 species `DEXout` (`constant = TRUE`) | Medium dexamethasone held constant |
+| Initial conditions | Supplementary Table S8 | See Errata for the values the deposit differs on |
+| `gr_total`, `pxr_total` | BIOMD0000000576 assignment rules `GRprotein`, `PXRprotein` | Total receptor protein, as plotted |
+
+## Parameters
+
+| Parameter(s) | Value | Source |
+|---|---|---|
+| `ktx_cyp`, `kdeg_cyp_mrna`, `ktl_cyp` | 0.00321, 0.04, 2.5 /min | Table S1/S5 v1-v3 |
+| `kdeg_cyp` | 0.0015 /min | BIOMD0000000576 re4 (Table S1/S5 v4 prints 0.0005; Errata) |
+| `ktx_pxr`, `kdeg_pxr_mrna`, `ktl_pxr`, `kdeg_pxr` | 5.52e-5, 0.006, 10, 0.003 /min | Table S1/S5 v5-v8 |
+| `ktx_gr`, `kdeg_gr_mrna`, `ktl_gr`, `kdeg_gr` | 3.2e-6, 0.003, 19.98, 0.001 /min | Table S1/S5 v9-v12 |
+| `ktx_tat`, `kdeg_tat_mrna`, `ktl_tat`, `kdeg_tat` | 0.000855, 0.064, 0.5, 0.012 /min | Table S1/S5 v13, v14, v43, v44 |
+| `kon_gr_cort`, `koff_gr_cort`, `kdeg_gr_cort` | 60 /(nM min), 600 /min, 0.001 /min | Table S1/S5 v15, v16 |
+| `kon_pxr_cort`, `koff_pxr_cort`, `kdeg_pxr_cort` | 60 /(nM min), 6e5 /min, 0.0015 /min | Table S1/S5 v17, v18 |
+| `kon_pxr_l2`, `koff_pxr_l2`, `kdeg_pxr_l2` | 60 /(nM min), 6e5 /min, 0.0015 /min | Table S5 L2 rows |
+| `kon_gr_dex`, `koff_gr_dex`, `kdeg_gr_dex` | 60 /(nM min), 60 /min, 0.001 /min | Table S1/S5 v28, v29 |
+| `kon_pxr_dex`, `koff_pxr_dex`, `kdeg_pxr_dex` | 60 /(nM min), 6e4 /min, 0.0015 /min | Table S1/S5 v30, v31 |
+| `kon_cypgene`, `koff_cypgene`, `ktx_cyp_act` | 60 /(nM min), 1 /min, 0.05 /min | Table S1/S5 v20, v21, v33, v34 and the L2 rows |
+| `kon_pxrgene`, `koff_pxrgene`, `ktx_pxr_act` | 60 /(nM min), 200 /min, 1.1e-4 /min | Table S1/S5 v22, v23, v35, v36 |
+| `kon_grgene`, `koff_grgene`, `ktx_gr_act` | 60 /(nM min), 60 /min, 1.2e-6 /min | Table S1/S5 v24, v25, v37, v38 |
+| `kon_tatgene`, `koff_tatgene`, `ktx_tat_act` | 60 /(nM min), 300 /min, 0.005 /min | Table S1/S5 v26, v27, v39, v40 |
+| `kcat_cort`, `km_cort` | 0.083 /min, 15000 nM | Table S1/S5 v19 (Errata on the printed arithmetic) |
+| `km_l2` | 15000 nM | BIOMD0000000576 re19 / re32 `Kms2` |
+| `kcat_dex`, `km_dex` | 0.00425 /min, 23000 nM | Table S1/S5 v32 |
+| `cortisone` | 24 nM | BIOMD0000000576 species `Cortisone` (Table S4/S8 print 23; Errata) |
+| `kf_cort_syn`, `kb_cort_syn` | 0.016, 0.016 /min | Table S1/S5 v42 |
+| `kin_cort`, `kout_cort`, `kdist_cort` | 1000, 1000, 1000 /min | Table S1/S5 `V_cortisolTransport`, `V_cort_distribution` |
+| `kon_cbg`, `koff_cbg` | 60 /(nM min), 270 /min | Table S1/S5 `V_cort_CBG` |
+| `kon_alb`, `koff_alb` | 60 /(nM min), 9e5 /min | Table S1/S5 `V_cort_albumin` |
+| `vratio_blood` | 5 | BIOMD0000000576 compartment `blood` |
+| `kin_dex`, `kout_dex` | 100, 100 /min | Table S1/S5 v41 |
+| `bl_ligand2` | 100 nM | Table S8 `Ligand2(0)`; Results |
+
+Every gene-binding association constant is 60 nM^-1^ min^-1^ in the tables
+(one shared parameter in the deposit). The model file splits it per target
+gene -- `kon_cypgene`, `kon_pxrgene`, `kon_grgene`, `kon_tatgene` -- so that a
+single regulatory arm can be switched off. That is how the paper's "stubborn"
+network variants are reproduced below:
+
+* **GR stubborn** (GR feedback on its own gene disabled): `kon_grgene = 0`.
+* **PXR stubborn** (GR feed-forward on the PXR gene disabled): `kon_pxrgene = 0`.
+
+The paper does not say how the two loops were disabled. Blocking the
+liganded-GR binding to the target gene is the reading used here, and it
+reproduces Figure 2 (below).
+
+# Steady states and conserved moieties
+
+The published simulations start from a steady state, not from the Table S8
+values (Table S8 is not a steady state). Two different steady states are used:
+
+* **Hepatocyte (Figures 1-3).** Cultured cells without cortisol, set here as
+  `cortisone = 0` with cortisol-bound species set to zero. The Results give
+  the baseline CYP3A4 protein before cortisol is added as 111 nM for the
+  cortisol-only model and 1,628 nM with the L2 pool.
+* **In vivo (Figures 4-5).** Cortisol is made from the cortisone reservoir and
+  equilibrates with blood, where it binds CBG and albumin. Supplementary
+  Figure S3 gives the baseline free blood cortisol as 15 nM.
+
+```{r steady-states}
+no_cort <- c(cort = 0, gr_cort = 0, pxr_cort = 0)
+ss_hep_l1 <- steady_state(c(cortisone = 0, bl_ligand2 = 0), c(no_cort, ligand2 = 0))
+ss_hep_l2 <- steady_state(c(cortisone = 0), no_cort)
+ss_vivo <- steady_state()
+
+baseline <- tibble(
+  check = c(
+    "CYP3A4 protein, hepatocyte, cortisol only (nM)",
+    "CYP3A4 protein, hepatocyte, with L2 (nM)",
+    "Free blood cortisol, in vivo (nM)"
+  ),
+  paper = c(111, 1628, 15),
+  model = c(ss_hep_l1[["cyp_prot"]], ss_hep_l2[["cyp_prot"]], ss_vivo[["cort_blood"]])
+) |>
+  mutate(pct_diff = 100 * (model - paper) / paper)
+knitr::kable(baseline, digits = c(0, 0, 2, 1))
+```
+
+```{r steady-state-checks}
+# The model reproduces the two CYP3A4 baselines the Results quote to the
+# printed precision. The 15 nM free cortisol is a rounded figure quoted in a
+# Supplementary figure caption, hence the wider band. A wrong CYP3A4
+# degradation constant (Table S1 prints 0.0005 /min) gives 333 and 4885 nM.
+stopifnot(
+  abs(baseline$pct_diff[1]) < 0.5,
+  abs(baseline$pct_diff[2]) < 0.5,
+  abs(baseline$pct_diff[3]) < 5
+)
+```
+
+The model's own conserved moieties (Supplementary Tables S3 and S7, plus the
+blood binding proteins and the L2 pool, which is bound but never metabolised)
+must stay constant during any perturbation. They are checked over the daily
+stress scenario simulated for Figure 4.
+
+```{r conservation}
+conserved <- function(d) {
+  d |>
+    transmute(
+      time,
+      gr_gene_total = gr_gene + grgene_grcort + grgene_grdex,
+      pxr_gene_total = pxr_gene + pxrgene_grcort + pxrgene_grdex,
+      cyp_gene_total = cyp_gene + cypgene_pxrcort + cypgene_pxrl2 + cypgene_pxrdex,
+      tat_gene_total = tat_gene + tatgene_grcort + tatgene_grdex,
+      cbg_total = cbg + cbg_cort,
+      alb_total = alb + alb_cort,
+      l2_total = ligand2 + pxr_l2 + cypgene_pxrl2
+    )
+}
+```
+
+# Figure 1b -- cortisol concentration response in hepatocytes
+
+Figure 1b exposes hepatocytes to 0.1-50000 nM cortisol for 48 h. Here the
+intracellular cortisol is held at each concentration (the cortisol ODE is
+replaced by `d/dt(cort) <- 0`), starting from the cortisol-free steady state
+of the cortisol-only model. The Results state that "all the predicted changes
+were half complete at cortisol concentrations of ~10 nM, equivalent to the Kd
+for its binding to GR".
+
+```{r clamp}
+clamped <- ui |> rxode2::model(d/dt(cort) <- 0)
+```
+
+```{r figure-1b}
+conc <- c(0.1, 1, 3, 10, 30, 100, 1000, 10000, 50000)
+fig1b <- lapply(conc, function(cc) {
+  init <- ss_hep_l1
+  init[["cort"]] <- cc
+  s <- solve(clamped, rxode2::et(c(0, 48 * 60)), params = c(bl_ligand2 = 0), inits = init)
+  s[nrow(s), c("gr_mrna", "pxr_mrna", "cyp_mrna", "tat_mrna")] |> mutate(cortisol = cc)
+}) |>
+  bind_rows() |>
+  pivot_longer(-cortisol, names_to = "transcript", values_to = "level") |>
+  left_join(
+    tibble(
+      transcript = c("gr_mrna", "pxr_mrna", "cyp_mrna", "tat_mrna"),
+      vehicle = ss_hep_l1[c("gr_mrna", "pxr_mrna", "cyp_mrna", "tat_mrna")]
+    ),
+    by = "transcript"
+  ) |>
+  mutate(fold = level / vehicle)
+
+ggplot(fig1b, aes(cortisol, fold)) +
+  geom_line() +
+  geom_point() +
+  scale_x_log10() +
+  facet_wrap(~transcript, scales = "free_y") +
+  labs(
+    x = "Cortisol (nM)", y = "Fold change vs vehicle at 48 h",
+    caption = "Replicates the simulated (closed) symbols of Figure 1b of Kolodkin 2013."
+  )
+```
+
+The concentration giving half of the 0.1-to-100 nM change (the GR-driven
+range, before PXR occupancy starts to matter above 1 uM) is interpolated on
+the log scale:
+
+```{r figure-1b-ec50}
+half_point <- function(x, y) {
+  target <- y[1] + (y[length(y)] - y[1]) / 2
+  i <- which(diff(sign(y - target)) != 0)[1]
+  10^(log10(x[i]) + (target - y[i]) / (y[i + 1] - y[i]) * (log10(x[i + 1]) - log10(x[i])))
+}
+ec50 <- fig1b |>
+  filter(cortisol <= 100) |>
+  group_by(transcript) |>
+  summarise(half_change_nM = half_point(cortisol, fold), .groups = "drop")
+knitr::kable(ec50, digits = 1)
+```
+
+The model's half-change concentrations are 1-4 nM rather than 10 nM. The
+simulated (closed) symbols of Figure 1b behave the same way: they already sit
+well above vehicle at 1 nM for TAT and CYP3A4, ahead of the fitted curves
+through the experimental data, so "~10 nM" is best read as the order of
+magnitude set by the GR Kd. The transcript levels themselves match the
+simulated symbols read off Figure 1b:
+
+```{r figure-1b-levels}
+level_at <- function(tr, cc) fig1b$level[fig1b$transcript == tr & fig1b$cortisol == cc]
+fig1b_levels <- tribble(
+  ~transcript, ~condition, ~figure_1b_nM,
+  "gr_mrna", "vehicle", 0.00085,
+  "gr_mrna", "50000 nM", 0.0004,
+  "pxr_mrna", "vehicle", 0.0075,
+  "pxr_mrna", "50000 nM", 0.015,
+  "cyp_mrna", "50000 nM", 1.0,
+  "tat_mrna", "vehicle", 0.011,
+  "tat_mrna", "50000 nM", 0.045
+) |>
+  rowwise() |>
+  mutate(model_nM = if (condition == "vehicle") ss_hep_l1[[transcript]] else level_at(transcript, 50000)) |>
+  ungroup() |>
+  mutate(pct_diff = 100 * (model_nM - figure_1b_nM) / figure_1b_nM)
+knitr::kable(fig1b_levels, digits = c(0, 0, 5, 5, 0))
+```
+
+```{r figure-1b-checks}
+# Figure 1b is on a log axis, so values read off it carry roughly 20%
+# reading error; 25% still fails if a synthesis or degradation constant is
+# off by the factor of two or more that a transcription slip produces.
+stopifnot(all(abs(fig1b_levels$pct_diff) < 25))
+# Half-changes fall in the GR-Kd decade, not at the 10 uM PXR Kd.
+stopifnot(all(ec50$half_change_nM > 0.5 & ec50$half_change_nM < 15))
+```
+
+# Figure 2 -- GR feedback and feed-forward, cortisol-only model
+
+Intracellular cortisol is clamped at 10 nM for 3000 min from the cortisol-free
+hepatocyte steady state, for the wild-type network and the two stubborn
+variants.
+
+```{r figure-2-sim}
+variants <- list(
+  "Wild type" = NULL,
+  "GR stubborn" = c(kon_grgene = 0),
+  "PXR stubborn" = c(kon_pxrgene = 0)
+)
+run_clamp <- function(ss, l2) {
+  init <- ss
+  init[["cort"]] <- 10
+  lapply(names(variants), function(v) {
+    solve(clamped, rxode2::et(seq(0, 3000, by = 10)),
+      params = c(bl_ligand2 = l2, variants[[v]]), inits = init
+    ) |>
+      mutate(variant = v)
+  }) |>
+    bind_rows()
+}
+fig2 <- run_clamp(ss_hep_l1, 0)
+```
+
+```{r figure-2-plot, fig.height = 6}
+plot_clamp <- function(d, title) {
+  d |>
+    select(time, variant, GR = gr_total, PXR = pxr_total, CYP3A4 = cyp_prot, TAT = tat_prot) |>
+    pivot_longer(c(GR, PXR, CYP3A4, TAT), names_to = "protein", values_to = "nM") |>
+    ggplot(aes(time, nM, linetype = variant)) +
+    geom_line() +
+    facet_wrap(~protein, scales = "free_y") +
+    labs(x = "Time (min)", y = "Protein (nM)", linetype = NULL, title = title)
+}
+plot_clamp(fig2, "Cortisol clamped at 10 nM, cortisol-only model") +
+  labs(caption = "Replicates the protein panels of Figure 2 of Kolodkin 2013.")
+```
+
+The Results and Figure 2 give these numbers:
+
+```{r figure-2-table}
+end_of <- function(d, v) d |> filter(variant == v, time == max(time))
+wt2 <- end_of(fig2, "Wild type")
+pxs2 <- end_of(fig2, "PXR stubborn")
+grs2 <- end_of(fig2, "GR stubborn")
+cyp_auc <- function(d, v, base) {
+  x <- d |> filter(variant == v)
+  trap(x$time, x$cyp_prot - base)
+}
+auc2 <- sapply(names(variants), cyp_auc, d = fig2, base = ss_hep_l1[["cyp_prot"]])
+gr_bound <- wt2$gr_cort / (wt2$gr_cort + wt2$gr_prot)
+
+fig2_tab <- tibble(
+  quantity = c(
+    "GR occupancy by cortisol at 10 nM",
+    "Rise in total PXR protein from the feed-forward (nM)",
+    "Rise in PXRL from the feed-forward (nM)",
+    "CYP3A4 AUC increase lost in PXR stubborn (%)",
+    "Total GR at 3000 min, wild type (nM)",
+    "Total GR at 3000 min, GR stubborn (nM)",
+    "CYP3A4 at 3000 min, wild type (nM)",
+    "CYP3A4 at 3000 min, PXR stubborn (nM)"
+  ),
+  paper = c(
+    "50%", "17", "< 0.02", "~15",
+    "~10.5 (Figure 2a)", "~19.5 (Figure 2a)", "~1250 (Figure 2b)", "~1075 (Figure 2b)"
+  ),
+  model = c(
+    100 * gr_bound,
+    max(fig2$pxr_total[fig2$variant == "Wild type"]) - ss_hep_l1[["pxr_prot"]],
+    wt2$pxr_cort - pxs2$pxr_cort,
+    100 * (1 - auc2[["PXR stubborn"]] / auc2[["Wild type"]]),
+    wt2$gr_total, grs2$gr_total, wt2$cyp_prot, pxs2$cyp_prot
+  )
+)
+knitr::kable(fig2_tab, digits = 3)
+```
+
+```{r figure-2-checks}
+# Exact consequences of the binding constants (deterministic):
+stopifnot(abs(gr_bound - 0.5) < 0.005)
+# Quoted figures, banded to the precision the paper prints them at:
+stopifnot(
+  abs(fig2_tab$model[2] - 17) < 2,
+  fig2_tab$model[3] < 0.02,
+  fig2_tab$model[4] > 10 && fig2_tab$model[4] < 20,
+  abs(wt2$cyp_prot - 1250) < 60,
+  abs(pxs2$cyp_prot - 1075) < 60
+)
+```
+
+# Figure 3 -- integration of a second PXR ligand pool
+
+The same clamp with the 100 nM L2 pool (the default model). The Results state
+that the GR feed-forward is now "responsible for ~80% of the increase in
+CYP3A4 AUC observed upon cortisol challenge" and that together the two effects
+"increase the total activated PXR pool (PXRL+PXRL2) by over 10-fold compared
+with PXRL alone".
+
+```{r figure-3, fig.height = 6}
+fig3 <- run_clamp(ss_hep_l2, 100)
+plot_clamp(fig3, "Cortisol clamped at 10 nM, with the 100 nM L2 pool") +
+  labs(caption = "Replicates the protein panels of Figure 3 of Kolodkin 2013.")
+
+auc3 <- sapply(names(variants), cyp_auc, d = fig3, base = ss_hep_l2[["cyp_prot"]])
+wt3 <- end_of(fig3, "Wild type")
+fig3_tab <- tibble(
+  quantity = c(
+    "Share of the CYP3A4 AUC increase due to the feed-forward (%)",
+    "PXRL + PXRL2 relative to PXRL alone (fold)"
+  ),
+  paper = c("~80", "> 10"),
+  model = c(
+    100 * (1 - auc3[["PXR stubborn"]] / auc3[["Wild type"]]),
+    wt3$pxr_active / wt2$pxr_cort
+  )
+)
+knitr::kable(fig3_tab, digits = 1)
+```
+
+```{r figure-3-checks}
+stopifnot(
+  fig3_tab$model[1] > 70 && fig3_tab$model[1] < 90,
+  fig3_tab$model[2] > 10
+)
+```
+
+# Figure 4 -- repeated stress episodes
+
+From the in vivo steady state, a stress episode adds about 130 nM cortisol to
+the blood (Supplementary Table S4, `CortAdded`), given here as a dose into
+`cort_added`. Figure 4's caption says each spike doubles free blood cortisol;
+the first check confirms that. Episodes are given once per week, day or hour
+for 21 days.
+
+```{r figure-4-sim}
+horizon <- 21 * 1440
+stress <- function(interval, grid = 5) {
+  rxode2::et(amt = 130, cmt = "cort_added", ii = interval, addl = floor((horizon - 1) / interval)) |>
+    rxode2::et(seq(0, horizon, by = grid))
+}
+single <- solve(ui, rxode2::et(amt = 130, cmt = "cort_added") |> rxode2::et(seq(0, 600, by = 1)),
+  inits = ss_vivo
+)
+spike_ratio <- max(single$cort_blood) / ss_vivo[["cort_blood"]]
+
+freq <- c("1 per week" = 7 * 1440, "1 per day" = 1440, "1 per hour" = 60)
+fig4 <- lapply(names(freq), function(f) {
+  solve(ui, stress(freq[[f]]), inits = ss_vivo) |> mutate(frequency = f)
+}) |>
+  bind_rows() |>
+  mutate(frequency = factor(frequency, levels = names(freq)))
+```
+
+```{r figure-4-checks-spike}
+# Free blood cortisol doubles at each spike: a structural check on the blood
+# sub-model (CBG and albumin binding, the 5:1 blood:cell volume ratio and the
+# 130 nM spike size together).
+stopifnot(abs(spike_ratio - 2) < 0.1)
+
+# Conserved moieties hold through the daily scenario.
+cons <- conserved(fig4 |> filter(frequency == "1 per day"))
+drift <- sapply(cons[-1], function(x) diff(range(x)) / mean(x))
+stopifnot(all(drift < 1e-6))
+```
+
+Free blood cortisol peaks at `r signif(spike_ratio, 3)` times its baseline
+after a single episode.
+
+```{r figure-4-plot, fig.height = 7}
+fig4 |>
+  filter(time <= 14 * 1440) |>
+  select(time, frequency,
+    GR = gr_total, PXR = pxr_total, CYP3A4 = cyp_prot, TAT = tat_prot,
+    `Blood cortisol` = cort_blood
+  ) |>
+  pivot_longer(-c(time, frequency), names_to = "species", values_to = "nM") |>
+  ggplot(aes(time / 1440, nM, colour = frequency)) +
+  geom_line(linewidth = 0.4) +
+  facet_wrap(~species, scales = "free_y", ncol = 2) +
+  labs(
+    x = "Time (days)", y = "Concentration (nM)", colour = NULL,
+    caption = "Replicates Figure 4a of Kolodkin 2013 (plotted to 14 days, as published)."
+  )
+```
+
+The steady levels read off Figure 4a are reproduced:
+
+```{r figure-4-levels}
+plateau <- function(f, v) {
+  fig4 |>
+    filter(frequency == f, time >= 10 * 1440, time <= 14 * 1440) |>
+    pull(.data[[v]]) |>
+    max()
+}
+# The time-zero row is the in vivo steady state, with the derived totals.
+base4 <- fig4 |> filter(frequency == "1 per week", time == 0)
+fig4_levels <- tibble(
+  quantity = c(
+    "Baseline GR (nM)", "Baseline PXR (nM)", "Baseline CYP3A4 (nM)", "Baseline TAT (nM)",
+    "Hourly: blood cortisol peak (nM)", "Hourly: CYP3A4 (nM)", "Hourly: TAT (nM)",
+    "Daily: blood cortisol peak (nM)"
+  ),
+  figure_4a = c(10.07, 41.8, 1673, 1.59, 445, 1718, 1.82, 45),
+  model = c(
+    base4$gr_total, base4$pxr_total, base4$cyp_prot, base4$tat_prot,
+    plateau("1 per hour", "cort_blood"), plateau("1 per hour", "cyp_prot"),
+    plateau("1 per hour", "tat_prot"), plateau("1 per day", "cort_blood")
+  )
+) |>
+  mutate(pct_diff = 100 * (model - figure_4a) / figure_4a)
+knitr::kable(fig4_levels, digits = c(0, 2, 2, 1))
+```
+
+```{r figure-4-levels-checks}
+# Values read by eye off Figure 4a; 5% covers the reading error.
+stopifnot(all(abs(fig4_levels$pct_diff) < 5))
+```
+
+The Results also summarise Figure 4 as fold changes between scenarios. The
+paper does not state the AUC window or whether the baseline was subtracted.
+Here the increase above the pre-stress baseline is used, over the 21 days:
+
+```{r figure-4-ratios}
+summarise_species <- function(v) {
+  b <- ss_vivo[[v]]
+  fig4 |>
+    group_by(frequency) |>
+    summarise(auc = trap(time, .data[[v]] - b), cmax = max(.data[[v]]) - b, .groups = "drop") |>
+    mutate(species = v)
+}
+ratios <- bind_rows(lapply(c("cort_blood", "tat_prot", "cyp_prot"), summarise_species)) |>
+  group_by(species) |>
+  mutate(
+    auc_fold = auc / auc[frequency == "1 per week"],
+    cmax_fold = cmax / cmax[frequency == "1 per week"]
+  ) |>
+  ungroup() |>
+  filter(frequency != "1 per week")
+
+paper_ratios <- tribble(
+  ~species, ~frequency, ~paper_auc_fold, ~paper_cmax_fold,
+  "cort_blood", "1 per day", 5, 2.9,
+  "tat_prot", "1 per day", 3.6, 1.6,
+  "cort_blood", "1 per hour", 89, 31.4,
+  "tat_prot", "1 per hour", 7, 2.4,
+  "cyp_prot", "1 per hour", 12.8, 9.2
+)
+fig4_ratios <- paper_ratios |>
+  left_join(ratios |> mutate(frequency = as.character(frequency)), by = c("species", "frequency")) |>
+  select(species, frequency, paper_auc_fold, auc_fold, paper_cmax_fold, cmax_fold)
+knitr::kable(fig4_ratios, digits = 2)
+```
+
+The peak-increase ratios match within 20%, except the daily cortisol peak
+(1.97 against 2.9; Assumptions below). The AUC ratios are consistently 1.3-1.8
+times the paper's; that is a difference in how the metric was computed, not in
+the trajectories, which match Figure 4a above.
+
+```{r figure-4-ratio-checks}
+# Ordering is a model property independent of the AUC definition: more
+# frequent stress gives more exposure and more response.
+stopifnot(
+  all(fig4_ratios$auc_fold > 1),
+  with(fig4_ratios, auc_fold[species == "cort_blood" & frequency == "1 per hour"] >
+    auc_fold[species == "cort_blood" & frequency == "1 per day"])
+)
+```
+
+## Figure 4b -- regulatory signals buffer the TAT response
+
+```{r figure-4b}
+fig4b <- bind_rows(
+  fig4 |> filter(frequency == "1 per day") |> mutate(variant = "Wild type"),
+  solve(ui, stress(1440), params = c(kon_grgene = 0, kon_pxrgene = 0), inits = ss_vivo) |>
+    mutate(variant = "GR/PXR stubborn")
+)
+fig4b |>
+  filter(time <= 14 * 1440) |>
+  select(time, variant, TAT = tat_prot, `Blood cortisol` = cort_blood) |>
+  pivot_longer(-c(time, variant), names_to = "species", values_to = "nM") |>
+  ggplot(aes(time / 1440, nM, colour = variant)) +
+  geom_line(linewidth = 0.4) +
+  facet_wrap(~species, scales = "free_y") +
+  labs(
+    x = "Time (days)", y = "Concentration (nM)", colour = NULL,
+    caption = "Replicates Figure 4b of Kolodkin 2013."
+  )
+
+tat_b <- fig4b |>
+  group_by(variant) |>
+  summarise(auc = trap(time, tat_prot), cmax = max(tat_prot), .groups = "drop")
+stubborn_fold <- c(
+  auc = tat_b$auc[tat_b$variant == "GR/PXR stubborn"] / tat_b$auc[tat_b$variant == "Wild type"],
+  cmax = tat_b$cmax[tat_b$variant == "GR/PXR stubborn"] / tat_b$cmax[tat_b$variant == "Wild type"]
+)
+stubborn_fold
+```
+
+The paper reports 1.3-fold increases in both TAT AUC and Cmax for the GR/PXR
+stubborn variant; the model gives `r round(stubborn_fold[["auc"]], 2)` and
+`r round(stubborn_fold[["cmax"]], 2)`.
+
+```{r figure-4b-checks}
+stopifnot(all(abs(stubborn_fold - 1.3) < 0.15))
+```
+
+# Figure 5 -- weekends and vacations
+
+Daily stress for 21 days, five days on and two off, or five days on, nine off
+and five on.
+
+```{r figure-5, fig.height = 7}
+schedules <- list(
+  "Continuous" = 0:20,
+  "Weekend break" = c(0:4, 7:11, 14:18),
+  "9-day vacation" = c(0:4, 14:18)
+)
+fig5 <- lapply(names(schedules), function(s) {
+  ev <- rxode2::et(amt = 130, cmt = "cort_added", time = schedules[[s]] * 1440) |>
+    rxode2::et(seq(0, horizon, by = 5))
+  solve(ui, ev, inits = ss_vivo) |> mutate(schedule = s)
+}) |>
+  bind_rows() |>
+  mutate(schedule = factor(schedule, levels = names(schedules)))
+
+fig5 |>
+  select(time, schedule,
+    GR = gr_total, PXR = pxr_total, CYP3A4 = cyp_prot, TAT = tat_prot,
+    `Blood cortisol` = cort_blood
+  ) |>
+  pivot_longer(-c(time, schedule), names_to = "species", values_to = "nM") |>
+  ggplot(aes(time / 1440, nM, colour = schedule)) +
+  geom_line(linewidth = 0.4) +
+  facet_wrap(~species, scales = "free_y", ncol = 2) +
+  labs(
+    x = "Time (days)", y = "Concentration (nM)", colour = NULL,
+    caption = "Replicates Figure 5 of Kolodkin 2013."
+  )
+```
+
+The Results quantify how far each protein recovers over the first weekend:
+"TAT protein levels were predicted to reach 82% of their baseline value, while
+PXR and CYP3A4 reached 75% and 77%, respectively. In contrast, GR protein
+levels were predicted to only reach 45%". Read as the fraction of the
+stress-induced excursion recovered between its extreme in week 1 and the start
+of day 8:
+
+```{r figure-5-recovery}
+wk <- fig5 |> filter(schedule == "Weekend break", time <= 7 * 1440)
+recovery <- function(v, direction) {
+  b <- base4[[v]]
+  ext <- if (direction > 0) max(wk[[v]]) else min(wk[[v]])
+  end <- wk[[v]][wk$time == 7 * 1440]
+  100 * (ext - end) / (ext - b)
+}
+fig5_tab <- tibble(
+  protein = c("TAT", "PXR", "CYP3A4", "GR"),
+  paper_pct = c(82, 75, 77, 45),
+  model_pct = c(
+    recovery("tat_prot", 1), recovery("pxr_total", 1),
+    recovery("cyp_prot", 1), recovery("gr_total", -1)
+  )
+)
+knitr::kable(fig5_tab, digits = 0)
+```
+
+```{r figure-5-checks}
+# TAT, PXR and CYP3A4 recover by about three quarters and GR the least, as the
+# paper describes. The GR value differs from the quoted 45% (Assumptions).
+stopifnot(
+  all(abs(fig5_tab$model_pct[1:3] - fig5_tab$paper_pct[1:3]) < 8),
+  fig5_tab$model_pct[4] == min(fig5_tab$model_pct)
+)
+```
+
+# Dexamethasone branch (Supplementary Figure S2)
+
+Supplementary Figure S2 repeats the hepatocyte experiment with dexamethasone,
+a synthetic glucocorticoid with a ten-fold higher GR affinity than cortisol
+(Kd about 1 nM) that is also a PXR ligand. A dose into `dex_out` sets a
+constant medium concentration. The paper gives the simulated points only as a
+figure, so this is a qualitative check that the branch behaves as described:
+TAT and CYP3A4 transcripts rise and GR transcript falls with concentration.
+
+```{r dex}
+dex_conc <- c(0.1, 1, 10, 100, 1000, 10000)
+dex <- lapply(dex_conc, function(dc) {
+  ev <- rxode2::et(amt = dc, cmt = "dex_out") |> rxode2::et(c(0, 48 * 60))
+  s <- solve(ui, ev, params = c(cortisone = 0, bl_ligand2 = 0), inits = c(ss_hep_l1))
+  s[nrow(s), c("gr_mrna", "pxr_mrna", "cyp_mrna", "tat_mrna")] |> mutate(dexamethasone = dc)
+}) |>
+  bind_rows()
+knitr::kable(dex, digits = 5)
+```
+
+```{r dex-checks}
+# Monotone to within solver noise (the top concentrations saturate GR, so
+# neighbouring values agree to many digits), with a clear overall change.
+tol <- 1e-9
+stopifnot(
+  all(diff(dex$tat_mrna) > -tol), dex$tat_mrna[6] > 2 * dex$tat_mrna[1],
+  all(diff(dex$cyp_mrna) > -tol), dex$cyp_mrna[6] > 2 * dex$cyp_mrna[1],
+  all(diff(dex$gr_mrna) < tol), dex$gr_mrna[6] < dex$gr_mrna[1]
+)
+```
+
+# Assumptions and deviations
+
+## Errata -- values where the supplementary tables and the SBML deposit differ
+
+The authors deposited the model in BioModels (BIOMD0000000576, submitted by
+the second author). Where it and the supplementary tables disagree, the
+deposit is followed when it reproduces a number the paper itself prints:
+
+* **CYP3A4 protein degradation, `kdeg_cyp`.** Table S1 and S5 print
+  k4 = 0.0005 min^-1^; the deposit uses 0.0015 min^-1^. With 0.0015 the
+  cortisol-free CYP3A4 baseline is 111.0 nM (cortisol only) and 1628.3 nM
+  (with L2), against the Results' "1,628 nM versus 111 nM". With 0.0005 they
+  are 333 and 4885 nM.
+* **Cortisone reservoir, `cortisone`.** Tables S4 and S8 print 23 nM; the
+  deposit uses 24 nM, which gives the 15 nM free blood cortisol quoted in the
+  Supplementary Figure S3 caption (23 nM gives 14.6 nM; both round to 15, so
+  this one is decided by the deposit alone).
+* **Blood volume.** The supplementary balance equations do not show a volume
+  for blood; the deposit makes blood five times the cell volume
+  (`vratio_blood = 5`). Without it a 130 nM spike does not double free blood
+  cortisol as the Figure 4 caption states.
+* **CYP3A4 turnover for cortisol.** Table S1 writes kcat = VmC / 1200 nM with
+  VmC = 10 min^-1^ but prints kcat = 0.083, which is 100 / 1200. The printed
+  kcat (also the deposit's value) is used. The dexamethasone row is
+  consistent (5.1 / 1200 = 0.00425).
+* **L2 competition for CYP3A4.** Table S1 omits the L2 term of the cortisol
+  metabolism rate because L2 is zero in that model; the deposit carries it
+  with an inhibition constant of 15000 nM, used here.
+* **Balance equations.** Table S2 / S6 have four transcription errors, all
+  corrected to the deposit: `dGRprotein/dt` lists `-v12` twice; `dCYPmRNA/dt`
+  adds the L2 gene-binding flux instead of the L2 transcription flux;
+  `dPXRproteinLigand2CYPgene/dt` subtracts the transcription flux; and
+  `dCYPgene/dt` omits the L2 binding flux. As printed they would create
+  CYP3A4 gene copies and violate the conserved moiety of Table S7.
+* **Initial conditions.** Table S8 is used. The deposit differs on TAT mRNA
+  (0.1 vs 0.4 nM), Cortisone, and has small non-zero starting values for the
+  PXR-L2 complexes. Neither set is a steady state (TAT protein 0.462 nM
+  matches the cortisol-free steady state, TAT mRNA does not), and every
+  published simulation starts from a steady state, so the choice does not
+  affect any result above.
+* **Medium dexamethasone.** Table S2 gives `dDEXout/dt = -v41`, so uptake
+  depletes the medium; the deposit makes `DEXout` a constant boundary
+  species. The deposit's form is used because culture medium is far larger
+  than the cells and the cells were re-dosed daily.
+
+## Other assumptions
+
+* **Stubborn variants.** The paper does not say how each regulatory signal
+  was disabled. Setting the liganded-GR association with the target gene to
+  zero reproduces the Figure 2 levels for both variants.
+* **Hepatocyte baseline.** The paper does not state the pre-exposure state of
+  Figures 1-3. The cortisol-free steady state is used because it reproduces
+  the quoted CYP3A4 baselines exactly and the Table S8 TAT protein value.
+* **Figure 1b protocol.** The paper does not say how the 48 h hepatocyte
+  exposure was simulated. Holding intracellular cortisol at the nominal
+  concentration reproduces the plotted simulated transcript levels; the
+  half-change concentrations (1-4 nM) are below the "~10 nM" of the Results
+  text, as the plotted simulated points also are.
+* **Figure 4 summary ratios.** The fold changes quoted in the Results are not
+  reproduced exactly, while the trajectories are. The AUC window and baseline
+  handling are not given; the daily-versus-weekly cortisol Cmax ratio of 2.9
+  in the paper is also hard to reconcile with Figure 4a, where daily peaks
+  are about 45 nM against a single-spike peak of about 30 nM.
+* **Figure 5 GR recovery.** The model gives a weekend recovery of about 58%
+  for GR against the quoted 45%. The other three proteins agree within a few
+  points. The exact time point and definition used in the paper are not
+  stated.
+* **No variability.** The model is deterministic; the paper reports no
+  between-subject variability or residual error.

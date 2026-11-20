@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hendriks 2012 liposomal and conventional doxorubicin multiscale QSP ([doi:10.1038/psp.2012.16](https://doi.org/10.1038/psp.2012.16)) -- tumor-bearing mice (xenografts) and the human scale-up to patients with solid tumors.
+- Add Kolodkin 2013 cortisol GR-PXR signalling network QSP ([doi:10.1038/ncomms2799](https://doi.org/10.1038/ncomms2799)) -- human hepatocyte, normal physiology and repeated stress episodes.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
