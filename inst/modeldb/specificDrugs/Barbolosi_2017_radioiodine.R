@@ -26,6 +26,7 @@ Barbolosi_2017_radioiodine <- function() {
     "https://github.com/MarieFG49/CTD_SIMU_RAI)."
   )
   vignette <- "Barbolosi_2017_radioiodine"
+  dosing <- c("activity")
   units <- list(time = "month", dosing = "GBq", concentration = "ng/mL")
 
   # The effective-activity state is the paper's delayed-effect abstraction of

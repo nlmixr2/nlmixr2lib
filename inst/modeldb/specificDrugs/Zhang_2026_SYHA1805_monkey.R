@@ -34,6 +34,7 @@ Zhang_2026_SYHA1805_monkey <- function() {
     sep = " "
   )
   vignette <- "Zhang_2026_SYHA1805"
+  dosing <- c("depot", "central")
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # What each ODE state holds. Zhang 2026 section 2.6.1 and Table 3: the

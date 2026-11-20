@@ -2,6 +2,7 @@ HourcadePotelleret_2014_trastuzumab <- function() {
   description <- "Two-compartment population PK model with first-order subcutaneous absorption and parallel linear and Michaelis-Menten elimination from the central compartment for intravenous and subcutaneous (rHuPH20 co-formulated) trastuzumab in healthy male volunteers and women with HER2-positive early breast cancer (Hourcade-Potelleret 2014)"
   reference <- "Hourcade-Potelleret F, Lemenuel-Diot A, McIntyre C, Brewster M, Lum B, Bittner B. Use of a population pharmacokinetic approach for the clinical development of a fixed-dose subcutaneous formulation of trastuzumab. CPT Pharmacometrics Syst Pharmacol. 2014;3(1):e87. doi:10.1038/psp.2013.63"
   vignette <- "HourcadePotelleret_2014_trastuzumab"
+  dosing <- c("depot", "central")
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(

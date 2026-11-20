@@ -2,6 +2,7 @@ Zhao_2026_nivolumab_ccrcc <- function() {
   description <- "Two-compartment population PK model for subcutaneous and intravenous nivolumab (anti-PD-1 IgG4) in previously treated advanced or metastatic clear-cell renal cell carcinoma (CheckMate 67T), with first-order subcutaneous absorption, logit-scale bioavailability and time-varying clearance (sigmoid Emax); the Stage 2 model, estimated with NONMEM $PRIOR on the Stage 1 pooled model, from which the CheckMate 67T co-primary PK endpoints were derived (Zhao 2026)"
   reference <- "Zhao Y, Hu Z, Gibson E, Zhu L, Vezina H, Kondic AG. Model-based clinical pharmacology profiling of subcutaneous nivolumab in renal cell carcinoma: bridging to alternative dosing regimens and indications. Clin Pharmacol Ther. 2026. doi:10.1002/cpt.70481"
   vignette <- "Zhao_2026_nivolumab"
+  dosing <- c("depot", "central")
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   # The paper describes a two-compartment model with zero-order intravenous

@@ -49,8 +49,9 @@ Kim_2026_lenacapavir <- function() {
 
   # Oral tablets dose depot_oral. Every injection is TWO dose records of the
   # full injected amount, one to depot (direct release) and one to transit1
-  # (indirect release); f() splits the amount between them.
-  dosing <- c("depot_oral", "depot", "transit1")
+  # (indirect release); f() splits the amount between them. The article's
+  # concentration-grid boluses dose central.
+  dosing <- c("depot_oral", "depot", "transit1", "central")
 
   paper_specific_compartments <- c(
     "tcell_uninfected",

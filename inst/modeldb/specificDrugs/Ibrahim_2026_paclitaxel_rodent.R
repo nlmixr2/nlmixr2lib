@@ -31,6 +31,7 @@ Ibrahim_2026_paclitaxel_rodent <- function() {
     sep = " "
   )
   vignette <- "Ibrahim_2026_paclitaxel_rodent"
+  dosing <- c("central", "crel_central")
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(

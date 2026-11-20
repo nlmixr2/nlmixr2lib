@@ -38,6 +38,7 @@ Chiu_2014_tce_mouse_pbpk <- function() {
     sep = " "
   )
   vignette <- "Chiu_2014_tce_mouse_pbpk"
+  dosing <- c("AStom")
 
   units <- list(
     time = "h",

@@ -34,6 +34,7 @@ Gearhart_1994_dfp_mouse_pbpk <- function() {
     sep = " "
   )
   vignette <- "Gearhart_1994_dfp"
+  dosing <- c("depot", "a_venous")
 
   # Paper-mechanistic PBPK tissue and AChE-pool states that are not in the
   # canonical compartment register (Appendix II). `a_rich` is the richly

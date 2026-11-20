@@ -29,6 +29,7 @@ Kolodkin_2013_cortisol_qsp <- function() {
     sep = " "
   )
   vignette <- "Kolodkin_2013_cortisol_qsp"
+  dosing <- c("cort_added", "dex_out")
 
   # Every state is a species of the published reaction network (gene,
   # mRNA, protein, ligand-receptor or receptor-gene complex, plasma binding
