@@ -1,0 +1,484 @@
+---
+title: "Doxorubicin GDF15 and NT-proBNP cardiotoxicity biomarkers (Dabour 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Doxorubicin GDF15 and NT-proBNP cardiotoxicity biomarkers (Dabour 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Dabour_2026_doxorubicin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Dabour_2026_doxorubicin"))$description`
+* Article: <https://doi.org/10.1111/cts.70595> (open access)
+* Upstream doxorubicin PK and NT-proBNP model: Liang et al. 2016,
+  <https://doi.org/10.1111/bcp.12989>
+
+Dabour 2026 extended the authors' earlier doxorubicin PK / NT-proBNP model
+(Liang 2016) with a model for growth differentiation factor 15 (GDF15). The
+doxorubicin and doxorubicinol PK and the NT-proBNP layer were translated into
+Monolix "without changes in PK model structure and population parameters"
+(Dabour 2026, Methods), and the GDF15 layer was then estimated sequentially
+with the individual PK parameters as regressors. The authors simulated all four
+outputs together, so the packaged model carries the whole integrated system:
+
+* doxorubicin: three-compartment disposition, short IV infusion;
+* doxorubicinol: one compartment, formed from the doxorubicin central
+  compartment; Liang 2016 estimated its clearance and volume divided by the
+  unidentified fraction metabolized (`CL/fm`, `V/fm`);
+* NT-proBNP: indirect response with five transit compartments, production
+  stimulated linearly by the doxorubicin concentration (Liang 2016);
+* GDF15: indirect response with four transit compartments, production
+  stimulated by an Emax function of the doxorubicin concentration, baseline
+  dependent on cumulative doxorubicin dose and BMI (Dabour 2026).
+
+```{r model}
+mod <- readModelDb("Dabour_2026_doxorubicin")
+mod_ui <- rxode2::rxode2(mod)
+```
+
+# Population
+
+Seventeen women aged 28-58 years (median 45) with stage I-III breast cancer
+receiving adjuvant doxorubicin 60 mg/m^2 plus cyclophosphamide 600 mg/m^2
+every 14 days for four cycles, enrolled in a randomized crossover study of
+enalapril co-administration (Blaes 2015). Each woman contributed two
+consecutive cycles, at different points of her regimen: 1, 4, 16 and 13
+subject-cycles were sampled at cycles 1, 2, 3 and 4 (cumulative doxorubicin
+60, 120, 180 and 240 mg/m^2). Median weight 65.3 kg (54.5-140.4), BMI 25.3
+kg/m^2 (21.5-53.0), BSA 1.71 m^2 (1.60-2.50) (Dabour 2026 Table 1). Samples
+were taken before and 0.5, 1, 2, 3, 4, 24 and 48 h after the end of the
+doxorubicin infusion; 271 GDF15 concentrations were modelled.
+
+```{r population}
+str(mod()$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. The
+doxorubicin, doxorubicinol and NT-proBNP values are the Liang 2016 final
+estimates, which Dabour 2026 held fixed; they are wrapped in `fixed()`.
+
+| Parameter | Value | Source |
+|---|---|---|
+| `lcl` (CL, L/h) | 54.2 | Liang 2016 Table 2 |
+| `lvc` (Vc, L) | 16.9 | Liang 2016 Table 2 |
+| `lq` (Q2, L/h) | 66.1 | Liang 2016 Table 2 |
+| `lvp` (V2, L) | 1650 | Liang 2016 Table 2 |
+| `lq2` (Q3, L/h) | 23.4 | Liang 2016 Table 2 |
+| `lvp2` (V3, L) | 61.8 | Liang 2016 Table 2 |
+| `lcle_doxol` (CL_doxol/fm, L/h) | 106 | Liang 2016 Table 2 |
+| `lvc_doxol` (V_doxol/fm, L) | 1880 | Liang 2016 Table 2 |
+| `lkin_ntprobnp` (kin0, pg/mL/h) | 110 | Liang 2016 Table 3 |
+| `lkout_ntprobnp` (kout, 1/h) | 1.66 (fixed in source) | Liang 2016 Table 3 |
+| `lslope_ntprobnp` (beta, L/mg) | 115 | Liang 2016 Table 3, Equation 3 |
+| `lmtt_ntprobnp` (MTT, h) | 34.7 | Liang 2016 Table 3, Equation 2 (`ktr = 5 / MTT`) |
+| `lktr_gdf15` (Ktr, 1/h) | 0.851 | Dabour 2026 Table 2 |
+| `lrbase_gdf15` (R0, pg/mL) | 744.866 | Dabour 2026 Table 2 |
+| `lkout_gdf15` (Kout, 1/h) | 1.012 | Dabour 2026 Table 2 |
+| `lemax_gdf15` (Emax) | 16.837 | Dabour 2026 Table 2 |
+| `lec50_gdf15` (EC50, ug/mL) | 0.0385 | Dabour 2026 Table 2 |
+| `e_dose_doxorubicin_cum_mgm2_rbase_gdf15` | 0.352 | Dabour 2026 Table 2 (beta1), Equation 4 |
+| `e_bmi_rbase_gdf15` | 0.956 | Dabour 2026 Table 2 (beta2), Equation 4 |
+| IIV CL, Vc, Q2, V2 | 8.33, 10.5, 15.4, 26.7 %CV | Liang 2016 Table 2 |
+| IIV CL/fm, V/fm (doxorubicinol) | 18.5, 37.3 %CV | Liang 2016 Table 2 |
+| IOV CL; CL/fm, V/fm | 3.86; 11.9, 9.39 %CV | Liang 2016 Table 2 |
+| IIV kin0, beta, MTT; IOV kin0 | 48.5, 73.9, 38.8; 27.8 %CV | Liang 2016 Table 3 |
+| IIV R0; IOV R0 | 31.72; 11.04 %CV | Dabour 2026 Table 2 |
+| IIV Kout, EC50; correlation | 48.86, 59.79 %CV; -0.821 | Dabour 2026 Table 2 |
+| Doxorubicin RUV | 8.73% proportional + 0.60 ng/mL additive | Liang 2016 Table 2 |
+| Doxorubicinol RUV | 14.9% proportional | Liang 2016 Table 2 |
+| NT-proBNP RUV | 23.8% proportional | Liang 2016 Table 3 |
+| GDF15 RUV | 0.156 proportional | Dabour 2026 Table 2 |
+| GDF15 ODEs and steady-state initial conditions | -- | Dabour 2026 Equations 1-2, Figure 1C |
+| GDF15 baseline covariate model | -- | Dabour 2026 Equation 4 |
+| NT-proBNP ODEs, `kin = kin0 * (1 + beta * Cdox)` | -- | Liang 2016 Equations 1-3, Figure 1B |
+| Doxorubicinol formation from the doxorubicin central compartment | -- | Liang 2016 Figure 1A; Dabour 2026 Figure 1A |
+
+Variances are `omega^2 = log(CV^2 + 1)`, the inverse of the CV formula both
+papers print under their parameter tables. The covariance of the Kout and
+EC50 etas is `-0.821 * sqrt(0.2141 * 0.3056) = -0.2100`.
+
+# Typical-patient profiles
+
+Typical-value simulation of one 60 mg/m^2 dose (15-minute infusion) in a
+patient with BSA 1.71 m^2 and BMI 25.3 kg/m^2 at each cycle of the regimen.
+This mirrors the deterministic EBE simulation of Dabour 2026 (Figure S4),
+which reported a median GDF15 Tmax of 8.8 h (range 7.9-9.5 h) and an
+NT-proBNP Tmax of 34.8 h (13.2-49.8 h) after the end of the infusion.
+
+```{r typical}
+tinf <- 0.25
+bsa_typ <- 1.71
+obs_times <- c(seq(0, 5, by = 0.05), seq(5.1, 120, by = 0.1)) + tinf
+
+typ_events <- bind_rows(lapply(1:4, function(cyc) {
+  bind_rows(
+    data.frame(
+      id = cyc, time = 0, evid = 1L, amt = 60 * bsa_typ,
+      rate = 60 * bsa_typ / tinf, cmt = "central", dvid = NA_integer_
+    ),
+    data.frame(
+      id = cyc, time = obs_times, evid = 0L, amt = 0, rate = 0,
+      cmt = "central", dvid = 1L
+    )
+  ) |>
+    mutate(OCC = 1L, BMI = 25.3, DOSE_DOXORUBICIN_CUM_MGM2 = 60 * cyc)
+}))
+
+typ <- rxSolve(rxode2::zeroRe(mod_ui), typ_events, returnType = "data.frame") |>
+  mutate(
+    cycle = factor(id, labels = paste0("Cycle ", 1:4, " (", 60 * (1:4), " mg/m^2)")),
+    tpi = time - tinf
+  )
+
+tmax_typ <- typ |>
+  group_by(cycle) |>
+  summarise(
+    gdf15_base = first(gdf15),
+    gdf15_max = max(gdf15),
+    tmax_gdf15 = tpi[which.max(gdf15)],
+    ntprobnp_max = max(ntprobnp),
+    tmax_ntprobnp = tpi[which.max(ntprobnp)],
+    .groups = "drop"
+  )
+knitr::kable(tmax_typ, digits = 1)
+```
+
+```{r typical-check}
+# The typical-value Tmax must fall inside the range of the 17 patients'
+# EBE-simulated Tmax (Dabour 2026 Results); both sides are deterministic.
+stopifnot(
+  all(tmax_typ$tmax_gdf15 >= 7.9 & tmax_typ$tmax_gdf15 <= 9.5),
+  all(tmax_typ$tmax_ntprobnp >= 13.2 & tmax_typ$tmax_ntprobnp <= 49.8)
+)
+```
+
+```{r typical-plot, fig.cap = "Typical GDF15 and NT-proBNP profiles after one doxorubicin dose at each cycle; compare Dabour 2026 Figure S4."}
+typ |>
+  select(tpi, cycle, `GDF15 (pg/mL)` = gdf15, `NT-proBNP (pg/mL)` = ntprobnp) |>
+  pivot_longer(-c(tpi, cycle)) |>
+  ggplot(aes(tpi, value, colour = cycle)) +
+  geom_line() +
+  facet_wrap(~name, scales = "free_y") +
+  labs(x = "Time after end of infusion (h)", y = NULL, colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+# Virtual crossover cohort
+
+A virtual cohort reproduces the study design: each subject receives two
+consecutive cycles 14 days apart, starting at cycle 1, 2 or 3 in the 1 : 3 : 13
+proportions of the enrolled patients (Liang 2016 Results). The study's BSA and
+BMI distributions are right-skewed (BSA median 1.71 m^2, interquartile range
+1.70-1.99, range 1.60-2.50; BMI median 25.3 kg/m^2, interquartile range
+23.5-28.1, range 21.5-53.0; Dabour 2026 Table 1 and Table S1), so each is drawn
+from the piecewise-linear quantile function through those five published
+points. The occasion indicator and the
+cumulative dose switch to the second cycle 24 h before its dose, after the
+first cycle's response has resolved, so the second baseline is at its new
+steady state when the dose is given.
+
+```{r cohort}
+rxode2::rxSetSeed(20260513)
+set.seed(20260513)
+n_sub <- 150
+first_cycle <- sample(1:3, n_sub, replace = TRUE, prob = c(1, 3, 13) / 17)
+subj <- data.frame(
+  id = seq_len(n_sub),
+  first_cycle = first_cycle,
+  BSA = approx(c(0, 0.25, 0.5, 0.75, 1), c(1.60, 1.70, 1.71, 1.99, 2.50), xout = runif(n_sub))$y,
+  BMI = approx(c(0, 0.25, 0.5, 0.75, 1), c(21.5, 23.5, 25.3, 28.1, 53.0), xout = runif(n_sub))$y
+)
+
+t_switch <- 312
+t_second <- 336
+cycle_obs <- c(0, seq(0.5, 4, by = 0.5), seq(5, 48, by = 1)) + tinf
+
+cohort_events <- bind_rows(
+  subj |> mutate(time = 0, evid = 1L),
+  subj |> mutate(time = t_second, evid = 1L),
+  tidyr::crossing(subj, time = c(0, cycle_obs, t_switch, t_second + c(0, cycle_obs))) |>
+    mutate(evid = 0L)
+) |>
+  mutate(
+    amt = ifelse(evid == 1L, 60 * BSA, 0),
+    rate = ifelse(evid == 1L, 60 * BSA / tinf, 0),
+    cmt = "central",
+    dvid = ifelse(evid == 0L, 1L, NA_integer_),
+    OCC = ifelse(time < t_switch, 1L, 2L),
+    DOSE_DOXORUBICIN_CUM_MGM2 = 60 * (first_cycle + OCC - 1L)
+  ) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, evid, amt, rate, cmt, dvid, OCC, BMI, DOSE_DOXORUBICIN_CUM_MGM2)
+
+cohort <- rxSolve(mod_ui, cohort_events, returnType = "data.frame",
+  keep = c("OCC", "DOSE_DOXORUBICIN_CUM_MGM2"))
+
+cohort <- cohort |>
+  filter(time != t_switch) |>
+  mutate(
+    tpi = ifelse(OCC == 1L, time - tinf, time - t_second - tinf),
+    dose_group = ifelse(DOSE_DOXORUBICIN_CUM_MGM2 <= 120, "60-120 mg/m^2", "180-240 mg/m^2")
+  )
+```
+
+The plot below summarises the simulated GDF15 profiles over the first 48 h of
+each cycle by cumulative-dose group, with the 5th, 50th and 95th percentiles
+of individual predictions plus proportional residual error, for comparison
+with the pcVPC of Dabour 2026 Figure 4B (observed medians of roughly
+5000-6000 pg/mL at 24-48 h in the 180-240 mg/m^2 group).
+
+```{r vpc, fig.cap = "Simulated GDF15 by cumulative doxorubicin dose group (median and 90% interval); compare Dabour 2026 Figures 3B and 4B."}
+gdf15_sd <- 0.156
+vpc_dat <- cohort |>
+  filter(tpi >= 0) |>
+  mutate(gdf15_obs = gdf15 * (1 + gdf15_sd * rnorm(n()))) |>
+  group_by(dose_group, tpi) |>
+  summarise(
+    p05 = quantile(gdf15_obs, 0.05),
+    p50 = median(gdf15_obs),
+    p95 = quantile(gdf15_obs, 0.95),
+    .groups = "drop"
+  ) |>
+  mutate(dose_group = factor(dose_group, levels = c("60-120 mg/m^2", "180-240 mg/m^2")))
+
+ggplot(vpc_dat, aes(tpi)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.3) +
+  geom_line(aes(y = p50), colour = "steelblue4") +
+  scale_y_log10() +
+  facet_wrap(~dose_group) +
+  labs(x = "Time after end of infusion (h)", y = "GDF15 (pg/mL)") +
+  theme_bw()
+```
+
+```{r vpc-check}
+gdf15_24h <- vpc_dat |>
+  filter(abs(tpi - 24) < 1e-6)
+knitr::kable(gdf15_24h, digits = 0, caption = "Simulated GDF15 percentiles 24 h after infusion (pg/mL).")
+# Centre-of-distribution check: a mis-scaled Emax, EC50 or baseline moves the
+# 24-h median by far more than the band below, which brackets the observed
+# median of about 6000 pg/mL in Dabour 2026 Figure 4B.
+stopifnot(
+  with(gdf15_24h, p50[dose_group == "180-240 mg/m^2"] > 4000),
+  with(gdf15_24h, p50[dose_group == "180-240 mg/m^2"] < 9000)
+)
+```
+
+# NCA of doxorubicin and doxorubicinol
+
+The parent study reported non-compartmental doxorubicin and doxorubicinol
+exposure (Dabour 2026 Supporting Information, section 3): mean AUC0-inf of
+1167.7 and 1185.6 h*ng/mL for doxorubicin and 1056.3 and 1040.0 h*ng/mL for
+doxorubicinol, without and with enalapril. The first cycle of each virtual
+subject is sampled at the study times (before the infusion and 0.5, 1, 2, 3, 4,
+24 and 48 h after it ends) and analysed the same way.
+
+```{r nca}
+nca_times <- c(0, c(0.5, 1, 2, 3, 4, 24, 48) + tinf)
+pk_conc <- cohort |>
+  filter(OCC == 1L, time %in% nca_times) |>
+  mutate(treatment = "DOX 60 mg/m^2") |>
+  select(id, time, treatment, Cc, Cc_doxol) |>
+  filter(!is.na(Cc))
+pk_dose <- cohort_events |>
+  filter(evid == 1L, time == 0) |>
+  mutate(treatment = "DOX 60 mg/m^2") |>
+  select(id, time, treatment, amt)
+
+nca_one <- function(conc_col) {
+  conc <- pk_conc |>
+    select(id, time, treatment, conc = all_of(conc_col))
+  o_conc <- PKNCAconc(conc, conc ~ time | treatment + id)
+  o_dose <- PKNCAdose(pk_dose, amt ~ time | treatment + id)
+  intervals <- data.frame(start = 0, end = Inf, aucinf.obs = TRUE, cmax = TRUE, half.life = TRUE)
+  pk.nca(PKNCAdata(o_conc, o_dose, intervals = intervals))
+}
+nca_dox <- nca_one("Cc")
+nca_doxol <- nca_one("Cc_doxol")
+
+mean_auc <- function(res, analyte) {
+  as.data.frame(res) |>
+    filter(PPTESTCD == "aucinf.obs") |>
+    group_by(treatment, PPTESTCD) |>
+    summarise(PPORRES = mean(PPORRES, na.rm = TRUE), .groups = "drop") |>
+    mutate(treatment = analyte)
+}
+sim_auc <- bind_rows(
+  mean_auc(nca_dox, "Doxorubicin"),
+  mean_auc(nca_doxol, "Doxorubicinol")
+)
+ref_auc <- data.frame(
+  treatment = c("Doxorubicin", "Doxorubicinol"),
+  aucinf.obs = c(1167.7, 1056.3)
+)
+nca_tbl <- ncaComparisonTable(
+  sim_auc, ref_auc,
+  by = "treatment",
+  units = c(aucinf.obs = "h*ng/mL")
+)
+nca_tbl |>
+  rename("Analyte" = treatment) |>
+  knitr::kable(caption = "Mean AUC0-inf: simulated cycle 1 vs the parent study (without enalapril).")
+```
+
+Doxorubicin exposure agrees closely. The simulated doxorubicinol AUC is about
+15% below the parent study's mean. The model cannot exceed `dose / (CL/fm)`
+(about 970 h*ng/mL for a 60 mg/m^2 dose at BSA 1.71 m^2), so the gap is a
+property of the Liang 2016 metabolite model rather than of the simulation:
+Liang 2016 reports that doxorubicinol concentrations above 25 ng/mL were
+under-predicted (their Figure 2C) and that neither an extra metabolite
+compartment nor a log transformation removed the bias. The published
+parameters are kept as printed.
+
+```{r nca-summary}
+as.data.frame(nca_dox) |>
+  filter(PPTESTCD %in% c("cmax", "half.life")) |>
+  group_by(PPTESTCD) |>
+  summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  knitr::kable(digits = 2, caption = "Simulated doxorubicin Cmax (ng/mL, at the first sample 0.5 h after infusion) and terminal half-life (h, from samples to 48 h).")
+```
+
+# Day-14 GDF15 risk stratification
+
+Dabour 2026 simulated 1000 virtual patients at cumulative doses of 60, 120,
+180 and 240 mg/m^2 and classified the Day-14 GDF15 concentration (the last
+day before the next cycle) as low (< 1200 pg/mL), moderate (1200-1800 pg/mL)
+or high (> 1800 pg/mL) cardiovascular risk: 64.7%, 26.6% and 8.7% overall
+(Figure 6B). Height and weight were drawn from a truncated bivariate normal
+fitted to the study data, whose mean and covariance the paper does not
+print. Here they are reconstructed from the virtual-cohort medians and
+interquartile ranges in Table S1 (height 165.1 cm, 159.0-170.7; weight 69.27
+kg, 62.28-76.12), with a height-weight correlation of 0.59 chosen so that the
+derived BMI interquartile range matches Table S1 (23.33-27.44 kg/m^2).
+Simulation is 200 patients per dose arm, with between-subject and
+inter-occasion variability and no residual error.
+
+```{r pta}
+rxode2::rxSetSeed(20260514)
+set.seed(20260514)
+n_arm <- 200
+arms <- c(60, 120, 180, 240)
+ht_mu <- 165.1
+wt_mu <- 69.27
+ht_sd <- (170.7 - 159.0) / 1.349
+wt_sd <- (76.12 - 62.28) / 1.349
+rho_hw <- 0.59
+z1 <- rnorm(n_arm * length(arms))
+z2 <- rho_hw * z1 + sqrt(1 - rho_hw^2) * rnorm(n_arm * length(arms))
+pta_subj <- data.frame(
+  id = seq_len(n_arm * length(arms)),
+  DOSE_DOXORUBICIN_CUM_MGM2 = rep(arms, each = n_arm),
+  height = ht_mu + ht_sd * z1,
+  weight = wt_mu + wt_sd * z2
+) |>
+  mutate(
+    BMI = weight / (height / 100)^2,
+    BSA = 0.007184 * weight^0.425 * height^0.725
+  )
+
+pta_events <- bind_rows(
+  pta_subj |> mutate(time = 0, evid = 1L, amt = 60 * BSA, rate = 60 * BSA / tinf, dvid = NA_integer_),
+  pta_subj |> mutate(time = 14 * 24 + tinf, evid = 0L, amt = 0, rate = 0, dvid = 1L)
+) |>
+  mutate(cmt = "central", OCC = 1L) |>
+  arrange(id, time) |>
+  select(id, time, evid, amt, rate, cmt, dvid, OCC, BMI, DOSE_DOXORUBICIN_CUM_MGM2)
+
+pta <- rxSolve(mod_ui, pta_events, returnType = "data.frame",
+  keep = "DOSE_DOXORUBICIN_CUM_MGM2") |>
+  mutate(
+    risk = cut(gdf15, c(-Inf, 1200, 1800, Inf),
+      labels = c("Low", "Moderate", "High"), right = FALSE)
+  )
+
+risk_overall <- pta |>
+  count(risk) |>
+  mutate(simulated_pct = 100 * n / sum(n), published_pct = c(64.7, 26.6, 8.7))
+knitr::kable(risk_overall, digits = 1, caption = "Day-14 GDF15 risk categories, all dose arms (published: Dabour 2026 Figure 6B).")
+
+pta |>
+  count(risk, DOSE_DOXORUBICIN_CUM_MGM2) |>
+  group_by(risk) |>
+  mutate(pct_of_category = 100 * n / sum(n)) |>
+  ungroup() |>
+  select(risk, DOSE_DOXORUBICIN_CUM_MGM2, pct_of_category) |>
+  pivot_wider(names_from = DOSE_DOXORUBICIN_CUM_MGM2, values_from = pct_of_category) |>
+  knitr::kable(digits = 1, caption = "Share of each risk category by cumulative dose (mg/m^2), percent; Dabour 2026 Figure 6B reports 34.6% of the low-risk group at 60 mg/m^2 and 48.3% of the high-risk group at 240 mg/m^2.")
+```
+
+```{r pta-check}
+# Category fractions are centre-of-distribution statistics of 800 subjects
+# (Monte Carlo SE about 1-2 points); the bands catch a mis-scaled covariate
+# exponent or baseline without depending on which subjects land in the tails.
+stopifnot(
+  with(risk_overall, simulated_pct[risk == "Low"] > 50),
+  with(risk_overall, simulated_pct[risk == "High"] < 16)
+)
+```
+
+```{r pta-plot, fig.cap = "Simulated Day-14 GDF15 by cumulative doxorubicin dose with the 1200 and 1800 pg/mL risk thresholds; compare Dabour 2026 Figure 6A."}
+ggplot(pta, aes(factor(DOSE_DOXORUBICIN_CUM_MGM2), gdf15)) +
+  geom_jitter(width = 0.2, alpha = 0.3, colour = "steelblue") +
+  geom_hline(yintercept = c(1200, 1800), linetype = "dashed") +
+  labs(x = "Cumulative dose (mg/m^2)", y = "GDF15 at Day 14 post infusion (pg/mL)") +
+  theme_bw()
+```
+
+# Assumptions and deviations
+
+* **Integrated model in one file.** The doxorubicin, doxorubicinol and
+  NT-proBNP layers are Liang 2016's final estimates, which Dabour 2026
+  carried unchanged and simulated together with the new GDF15 layer. They are
+  encoded as `fixed()` because Dabour 2026 did not re-estimate them.
+* **NT-proBNP units.** Liang 2016 Table 3 labels the production rate in
+  ng/mL/h, but the NT-proBNP data (Liang 2016 Figure 3C) are in pg/mL and
+  `kin0 / kout = 110 / 1.66 = 66` matches the observed baseline only in pg/mL.
+  The model uses pg/mL/h. The Liang 2016 Results text quotes a typical
+  `kin0` of 97.4; the table value 110 is used.
+* **Units of the drug effects.** Both biomarker effects use the doxorubicin
+  concentration in mg/L (= ug/mL), the unit of the GDF15 EC50 (0.0385 ug/mL).
+  Liang 2016 prints the NT-proBNP slope as 115 L/ug; with the concentration in
+  mg/L this slope reproduces the roughly four-fold NT-proBNP rise at 24-48 h
+  seen in Liang 2016 Figure 3C, whereas a per-ug/L slope would predict a rise
+  of several hundred-fold, so the slope is read as L/mg.
+* **Doxorubicinol formation.** The fraction metabolized is not identifiable;
+  the doxorubicinol state holds the amount divided by `fm`, fed by the whole
+  doxorubicin clearance and eliminated at `(CL/fm) / (V/fm)`, so the
+  concentration equals that of the published reparameterization.
+* **Residual error forms.** Liang 2016 used NONMEM with a combined additive
+  plus proportional doxorubicin error; the nlmixr2 `add() + prop()` form
+  (variances summed) is assumed.
+* **Inter-occasion variability.** rxode2 has no occasion level, so each IOV
+  term is expanded into two etas selected by `OCC` (the two study cycles). The
+  occasion etas are not mu-referenced, and rxode2 warns about that on every
+  solve; this has no effect on simulation.
+* **Covariate column.** The cumulative doxorubicin dose through the current
+  cycle is carried in the `DOSE_DOXORUBICIN_CUM_MGM2` column. It includes the
+  current cycle (60 mg/m^2 at cycle 1), unlike `PRIOR_ANTHRACYCLINE_DOSE`.
+* **Infusion duration.** Simulations use the study's intended 15-minute
+  infusion (Liang 2016); Dabour 2026 does not state the duration it simulated.
+* **Risk-stratification cohort.** The truncated bivariate normal of height and
+  weight is not printed; the reconstruction above matches the Table S1
+  medians and interquartile ranges but not necessarily its tails or
+  truncation limits. Whether the published Day-14 simulation included the
+  inter-occasion variability of R0 is not stated; it is included here. The
+  arms are equal in size, as Figure 6A suggests.
+* **Doxorubicin AUC.** The model's dose / CL is about 1890 h*ng/mL for a
+  60 mg/m^2 dose at BSA 1.71 m^2; an NCA truncated at 48 h with extrapolation
+  from the late samples recovers a smaller value, which is how the study's NCA
+  was done. The comparison above applies the same sampling to the simulation.
+* No errata were found for either paper (checked 2026-11-13).
