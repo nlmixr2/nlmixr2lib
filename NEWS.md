@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Thomaseth 1998 TCDD minimal physiologic toxicokinetic model ([doi:10.1289/ehp.98106743](https://doi.org/10.1289/ehp.98106743)) -- adult male Operation Ranch Hand veterans and NIOSH chemical-plant workers.
+- Add Gearhart 1994 diisopropylfluorophosphate (DFP) PBPK with acetylcholinesterase inhibition ([doi:10.1289/ehp.94102s1151](https://doi.org/10.1289/ehp.94102s1151)) -- mouse, rat and human organophosphate risk-assessment model.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
