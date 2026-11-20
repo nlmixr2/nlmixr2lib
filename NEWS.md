@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sudarsono 2026 ganciclovir hollow-fiber infection model ([doi:10.1128/aac.00381-26](https://doi.org/10.1128/aac.00381-26)) -- in vitro HFIM reproducing a human-like ganciclovir profile for CMV PK/PD studies.
+- Add Hosoi 2026 levofloxacin, garenoxacin and lascufloxacin plasma and epithelial lining fluid PK/PD ([doi:10.1128/aac.00375-26](https://doi.org/10.1128/aac.00375-26)) -- neutropenic mice with *Streptococcus pneumoniae* lung infection.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

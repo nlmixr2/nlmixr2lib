@@ -3556,6 +3556,10 @@ navbar:
         href: articles/Garcia_2025_garadacimab.html
       - text: "Garenoxacin (VanWart 2004)"
         href: articles/VanWart_2004_garenoxacin.html
+      - text: "Garenoxacin elf mouse (Hosoi 2026)"
+        href: articles/Hosoi_2026_fluoroquinolones_elf_mouse.html
+      - text: "Garenoxacin plasma mouse (Hosoi 2026)"
+        href: articles/Hosoi_2026_fluoroquinolones_elf_mouse.html
       - text: "Gatifloxacin (Smythe 2013)"
         href: articles/Smythe_2013_gatifloxacin.html
       - text: "Gcc4401c (Choi 2016)"
@@ -4482,6 +4486,10 @@ navbar:
         href: articles/Sakurai_2007_lansoprazole.html
       - text: "Lapatinib qsp (Wan 2025)"
         href: articles/Wan_2025_tki_cardiotoxicity.html
+      - text: "Lascufloxacin elf mouse (Hosoi 2026)"
+        href: articles/Hosoi_2026_fluoroquinolones_elf_mouse.html
+      - text: "Lascufloxacin plasma mouse (Hosoi 2026)"
+        href: articles/Hosoi_2026_fluoroquinolones_elf_mouse.html
       - text: "Latamoxef (Wang 2022)"
         href: articles/Wang_2022_latamoxef.html
       - text: "Latamoxef r (Wang 2022)"
@@ -4636,6 +4644,10 @@ navbar:
         href: articles/Tao_2026_levofloxacin.html
       - text: "Levofloxacin (vanderLaan 2023)"
         href: articles/vanderLaan_2023_levofloxacin.html
+      - text: "Levofloxacin elf mouse (Hosoi 2026)"
+        href: articles/Hosoi_2026_fluoroquinolones_elf_mouse.html
+      - text: "Levofloxacin plasma mouse (Hosoi 2026)"
+        href: articles/Hosoi_2026_fluoroquinolones_elf_mouse.html
       - text: "Levofloxacin rat (Hurtado 2014)"
         href: articles/Hurtado_2014_levofloxacin_rat.html
       - text: "Levonorgestrel (Adeojo 2024)"
@@ -10664,6 +10676,7 @@ articles:
   - articles/Hornik_2019_methylprednisolone
   - articles/Hornik_2025_furosemide
   - articles/Hosey_2022_t2dm_growth
+  - articles/Hosoi_2026_fluoroquinolones_elf_mouse
   - articles/Hosseini_2024_flt3lfc
   - articles/Howden_2025_antisecretory_mbma
   - articles/Hu_2014_bapineuzumab

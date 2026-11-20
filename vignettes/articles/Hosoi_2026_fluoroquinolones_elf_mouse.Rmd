@@ -1,0 +1,514 @@
+---
+title: "Levofloxacin, garenoxacin and lascufloxacin plasma and ELF PK/PD in mice (Hosoi 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Levofloxacin, garenoxacin and lascufloxacin plasma and ELF PK/PD in mice (Hosoi 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Hosoi_2026_levofloxacin_plasma_mouse"))$reference`
+* Article: [Antimicrob Agents Chemother 2026;70(8):e0037526](https://doi.org/10.1128/aac.00375-26)
+* Supplemental Material (Figures S1-S6, Tables S1-S6): <https://doi.org/10.1128/aac.00375-26>
+
+Hosoi and colleagues compared three fluoroquinolones with very different
+penetration into the pulmonary epithelial lining fluid (ELF) under identical
+conditions in a neutropenic murine *Streptococcus pneumoniae* lung infection
+model. For each drug they fitted a one-compartment model with first-order
+subcutaneous absorption to the plasma concentrations and, separately, to the
+ELF concentrations, and related the 24 h change in lung bacterial burden to
+plasma- and ELF-based PK/PD indices with a sigmoid inhibitory Imax model.
+AUC/MIC was the index most strongly correlated with the antibacterial effect in
+both matrices.
+
+The paper contributes six models, one per drug and matrix, because the plasma
+and ELF data were fitted separately and each has its own Imax fit:
+
+| Drug | Plasma model | ELF model |
+|---|---|---|
+| Levofloxacin (LVFX) | `Hosoi_2026_levofloxacin_plasma_mouse` | `Hosoi_2026_levofloxacin_elf_mouse` |
+| Garenoxacin (GRNX) | `Hosoi_2026_garenoxacin_plasma_mouse` | `Hosoi_2026_garenoxacin_elf_mouse` |
+| Lascufloxacin (LSFX) | `Hosoi_2026_lascufloxacin_plasma_mouse` | `Hosoi_2026_lascufloxacin_elf_mouse` |
+
+Each model carries the PK, the MIC of the study strain, a 24 h AUC accumulator
+(`fauc_0_24` of free plasma drug, or `auc_elf_0_24` of total ELF drug), the
+index (`fauc_mic` or `auc_mic`) and the Imax output `dlog10cfu`, the change in
+lung burden in log10 CFU/lung over the 24 h treatment window.
+
+# Population
+
+Female ddY mice (5 weeks old on arrival, used after one week of acclimation)
+were rendered neutropenic with cyclophosphamide (150 mg/kg IP on day -4 and
+100 mg/kg on day -1) and inoculated intratracheally with about 1e7 CFU of
+*S. pneumoniae* ATCC 49619 (Materials and Methods, 'Animals'). The MICs were
+0.512 mg/L for levofloxacin and 0.032 mg/L for garenoxacin and lascufloxacin
+(Results). For PK, single subcutaneous doses (LVFX 50, 100 and 200 mg/kg;
+GRNX 30, 60 and 120 mg/kg; LSFX 10, 20 and 30 mg/kg) were given and three mice
+per time point were sampled destructively at 5-300 min; ELF concentrations
+were derived from bronchoalveolar lavage by the urea dilution method. For PD,
+various subcutaneous regimens were given from 2 to 26 h after infection and the
+lungs were harvested at 26 h. The same information is available
+programmatically, e.g.
+`readModelDb("Hosoi_2026_garenoxacin_elf_mouse")()$population`.
+
+# Source trace
+
+Every value in the six `ini()` blocks carries an in-file comment with its
+source location. Summary:
+
+| Element | Source |
+|---|---|
+| One-compartment model, first-order absorption, plasma and ELF fitted separately | Materials and Methods, 'Pharmacokinetic analysis' |
+| `lka`, `lcl`, `lvc` (plasma) and `lka`, `lcl_elf`, `lv_elf` (ELF) | Tables S1 (LVFX), S2 (GRNX), S3 (LSFX), 'Mean' rows |
+| `fu` = 1 - %PB/100 (0.845, 0.114, 0.354) | Results, 'Plasma and ELF pharmacokinetics' |
+| `mic` (0.512, 0.032, 0.032 mg/L) | Results, 'MIC' |
+| ELF concentration by urea dilution | Materials and Methods, equation 2 |
+| Imax equation `E = E0 - Imax * X^gamma / (X^gamma + IC50^gamma)` | Materials and Methods, equation 3 |
+| `e0`, `limax`, `lic50`, `lhill` (AUC/MIC column) | Tables S4 (LVFX), S5 (GRNX), S6 (LSFX) |
+| Stasis, 1-log10 and 2-log10 kill targets | Tables 2-4 |
+| Human ELF penetration ratios and adjusted targets | Table 5 |
+
+# Simulation
+
+Typical single-dose profiles at the paper's PK doses. The models have no
+between-animal variability, so one subject per dose is enough. Observation rows
+sit on the drug-holding state (`central` or `elf`).
+
+```{r models}
+drugs <- tibble::tribble(
+  ~drug,           ~abbr,  ~doses,
+  "levofloxacin",  "LVFX", c(50, 100, 200),
+  "garenoxacin",   "GRNX", c(30, 60, 120),
+  "lascufloxacin", "LSFX", c(10, 20, 30)
+)
+model_name <- function(drug, matrix) paste0("Hosoi_2026_", drug, "_", matrix, "_mouse")
+obs_state <- c(plasma = "central", elf = "elf")
+
+make_events <- function(doses, matrix, times) {
+  bind_rows(lapply(seq_along(doses), function(i) {
+    bind_rows(
+      data.frame(id = i, time = 0, amt = doses[i], evid = 1L, cmt = "depot"),
+      data.frame(id = i, time = times, amt = 0, evid = 0L, cmt = obs_state[[matrix]])
+    )
+  })) |>
+    arrange(id, time, desc(evid))
+}
+
+solve_model <- function(drug, matrix, doses, times) {
+  ui <- rxode2::rxode(readModelDb(model_name(drug, matrix)))
+  # The models carry no between-animal variability, so rxode2 warns that a
+  # multi-subject solve has no omega; that is intended, and only that warning
+  # is muffled.
+  s <- withCallingHandlers(
+    as.data.frame(rxode2::rxSolve(ui, events = make_events(doses, matrix, times))),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+  conc <- if (matrix == "plasma") s$Cc else s$Celf
+  index <- if (matrix == "plasma") s$fauc_mic else s$auc_mic
+  data.frame(
+    drug = drug, matrix = matrix, id = s$id, dose = doses[s$id], time = s$time,
+    conc = conc, free = if (matrix == "plasma") s$Cu else s$Celf,
+    index = index, dlog10cfu = s$dlog10cfu
+  )
+}
+
+grid <- sort(unique(c(seq(0, 1, by = 1 / 60), seq(1, 24, by = 0.1))))
+sim <- bind_rows(lapply(seq_len(nrow(drugs)), function(i) {
+  bind_rows(lapply(c("plasma", "elf"), function(m) {
+    solve_model(drugs$drug[i], m, drugs$doses[[i]], grid)
+  }))
+})) |>
+  mutate(treatment = paste(drug, matrix, dose, "mg/kg"))
+
+stopifnot(!anyNA(sim$conc), all(sim$conc >= 0))
+```
+
+```{r profiles, fig.height = 6}
+sim |>
+  filter(time <= 5) |>
+  mutate(matrix = ifelse(matrix == "plasma", "Plasma (total)", "ELF")) |>
+  ggplot(aes(time, conc, colour = factor(dose))) +
+  geom_line() +
+  facet_grid(matrix ~ drug, scales = "free_y") +
+  scale_y_log10() +
+  labs(
+    x = "Time after subcutaneous dose (h)", y = "Concentration (mg/L)",
+    colour = "Dose (mg/kg)",
+    caption = "Typical single-dose profiles over the 5-300 min sampling window of the PK study."
+  )
+```
+
+The paper shows the fits only as observed-versus-predicted and
+residual plots (Figures S1-S6), so there is no concentration-time figure to
+overlay.
+
+# PKNCA validation
+
+The paper reports no NCA values. PKNCA is run on the simulated single-dose
+profiles, and its AUC0-inf and half-life are checked against the closed forms
+of the one-compartment model, Dose / CL and ln(2) * V / CL (the absorption rate
+constant exceeds the elimination rate constant in every fit, so the terminal
+phase is elimination).
+
+```{r pknca}
+conc_df <- sim |>
+  filter(!is.na(conc)) |>
+  select(treatment, id, time, conc)
+dose_df <- sim |>
+  distinct(treatment, id, dose) |>
+  mutate(time = 0)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, conc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, dose ~ time | treatment + id)
+intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_wide <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  select(treatment, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+params <- bind_rows(lapply(seq_len(nrow(drugs)), function(i) {
+  bind_rows(lapply(c("plasma", "elf"), function(m) {
+    ini_df <- rxode2::rxode(readModelDb(model_name(drugs$drug[i], m)))$iniDf
+    v <- setNames(exp(ini_df$est), ini_df$name)
+    cl <- if (m == "plasma") v[["lcl"]] else v[["lcl_elf"]]
+    vd <- if (m == "plasma") v[["lvc"]] else v[["lv_elf"]]
+    data.frame(
+      treatment = paste(drugs$drug[i], m, drugs$doses[[i]], "mg/kg"),
+      auc_cf = drugs$doses[[i]] / cl, thalf_cf = log(2) * vd / cl
+    )
+  }))
+}))
+
+nca_check <- left_join(nca_wide, params, by = "treatment")
+nca_check |>
+  rename(
+    Treatment = treatment, "Cmax (mg/L)" = cmax, "Tmax (h)" = tmax,
+    "AUC0-inf (mg.h/L)" = aucinf.obs, "t1/2 (h)" = half.life,
+    "Dose/CL (mg.h/L)" = auc_cf, "ln2 V/CL (h)" = thalf_cf
+  ) |>
+  knitr::kable(digits = 2, caption = "PKNCA on the simulated single-dose profiles against the one-compartment closed forms.")
+
+stopifnot(
+  # Same drawn parameters on both sides: the gap is numerical (trapezoids on a
+  # 1-6 min grid plus a log-linear extrapolation), so a tight bound is correct.
+  all(abs(nca_check$aucinf.obs / nca_check$auc_cf - 1) < 0.02),
+  all(abs(nca_check$half.life / nca_check$thalf_cf - 1) < 0.02)
+)
+```
+
+# ELF penetration in the mouse
+
+The model AUC ratio ELF / free plasma is a property of the PK alone. Because
+the indices of the PD regimens were computed from these models, the same ratio
+reappears in the Imax fits: for garenoxacin and lascufloxacin the ELF fit is
+the plasma fit with the index rescaled (Imax, E0 and gamma agree to two
+decimals, Tables S5 and S6), so the ELF IC50 divided by the plasma IC50 must
+equal the model penetration ratio. This is a check on the PK and the PD
+transcription together.
+
+```{r penetration}
+auc24 <- sim |>
+  filter(abs(time - 24) < 1e-8) |>
+  mutate(auc = index * ifelse(drug == "levofloxacin", 0.512, 0.032)) |>
+  select(drug, matrix, dose, auc) |>
+  pivot_wider(names_from = matrix, values_from = auc) |>
+  group_by(drug) |>
+  summarise(model_ratio = mean(elf / plasma), .groups = "drop")
+
+ic50 <- tibble::tribble(
+  ~drug,           ~ic50_plasma, ~ic50_elf, ~imax_plasma, ~imax_elf,
+  "levofloxacin",  58.59,        125.08,    5.61,         6.82,
+  "garenoxacin",   22.91,        351.50,    4.05,         4.05,
+  "lascufloxacin", 18.47,        165.57,    3.27,         3.27
+) |>
+  mutate(ic50_ratio = ic50_elf / ic50_plasma)
+
+pen <- left_join(auc24, ic50, by = "drug") |>
+  mutate(pct_diff = 100 * (model_ratio / ic50_ratio - 1))
+pen |>
+  select(drug, model_ratio, ic50_ratio, pct_diff) |>
+  rename(
+    Drug = drug, "Model AUC_ELF / fAUC_plasma" = model_ratio,
+    "IC50 ELF / IC50 plasma (Tables S4-S6)" = ic50_ratio, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2, caption = "Murine ELF penetration: PK models against the Imax fits.")
+
+stopifnot(
+  # Deterministic. Lascufloxacin agrees to 0.2% and garenoxacin to 3%;
+  # levofloxacin's two Imax fits do not share Imax or gamma, so its plasma and
+  # ELF indices were not a pure rescaling and agree only to about 6%.
+  abs(pen$pct_diff[pen$drug == "lascufloxacin"]) < 1,
+  abs(pen$pct_diff[pen$drug == "garenoxacin"]) < 5,
+  abs(pen$pct_diff[pen$drug == "levofloxacin"]) < 10
+)
+```
+
+The ordering matches the paper's account: levofloxacin barely concentrates in
+mouse ELF (about 2-fold over free plasma), lascufloxacin about 9-fold and
+garenoxacin about 15-fold, largely because garenoxacin is 88.6% bound in mouse
+plasma.
+
+# Replicate published figures and targets
+
+A sweep of single subcutaneous doses through each model gives the index and the
+24 h `dlog10cfu` read at t = 24 h, which traces the fitted curve of panels A
+(plasma fAUC/MIC) and D (ELF AUC/MIC) of Figures 1-3.
+
+```{r sweep}
+sweep_doses <- exp(seq(log(0.1), log(2000), length.out = 200))
+sweep <- bind_rows(lapply(seq_len(nrow(drugs)), function(i) {
+  bind_rows(lapply(c("plasma", "elf"), function(m) {
+    solve_model(drugs$drug[i], m, sweep_doses, c(0, 24))
+  }))
+})) |>
+  filter(time == 24)
+```
+
+```{r fig-curves, fig.height = 5.5}
+xmax <- tibble::tribble(
+  ~drug,           ~matrix,  ~xmax,
+  "levofloxacin",  "plasma", 100,
+  "levofloxacin",  "elf",    200,
+  "garenoxacin",   "plasma", 120,
+  "garenoxacin",   "elf",    2000,
+  "lascufloxacin", "plasma", 400,
+  "lascufloxacin", "elf",    3000
+)
+sweep |>
+  left_join(xmax, by = c("drug", "matrix")) |>
+  filter(index <= xmax) |>
+  mutate(matrix = ifelse(matrix == "plasma", "Plasma fAUC/MIC", "ELF AUC/MIC")) |>
+  ggplot(aes(index, dlog10cfu)) +
+  geom_line() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_wrap(matrix ~ drug, scales = "free_x") +
+  labs(
+    x = "AUC/MIC over 24 h", y = "Change in log10 CFU/lung",
+    caption = "Replicates the fitted curves of Figures 1A/1D, 2A/2D and 3A/3D of Hosoi 2026."
+  )
+```
+
+Interpolating the sweep at a change of 0, -1 and -2 log10 CFU/lung gives the
+exposure targets, compared below with Tables 2-4.
+
+```{r targets}
+published_targets <- tibble::tribble(
+  ~drug,           ~matrix,  ~endpoint,     ~published,
+  "levofloxacin",  "plasma", "stasis",       13.1,
+  "levofloxacin",  "plasma", "1-log10 kill", 30.6,
+  "levofloxacin",  "plasma", "2-log10 kill", 53.0,
+  "levofloxacin",  "elf",    "stasis",       19.5,
+  "levofloxacin",  "elf",    "1-log10 kill", 48.6,
+  "levofloxacin",  "elf",    "2-log10 kill", 88.6,
+  "garenoxacin",   "plasma", "stasis",       13.8,
+  "garenoxacin",   "plasma", "1-log10 kill", 22.8,
+  "garenoxacin",   "plasma", "2-log10 kill", 37.5,
+  "garenoxacin",   "elf",    "stasis",       215.7,
+  "garenoxacin",   "elf",    "1-log10 kill", 351.8,
+  "garenoxacin",   "elf",    "2-log10 kill", 573.9,
+  "lascufloxacin", "plasma", "stasis",       10.0,
+  "lascufloxacin", "plasma", "1-log10 kill", 16.5,
+  "lascufloxacin", "plasma", "2-log10 kill", 22.8,
+  "lascufloxacin", "elf",    "stasis",       90.1,
+  "lascufloxacin", "elf",    "1-log10 kill", 147.7,
+  "lascufloxacin", "elf",    "2-log10 kill", 204.0
+)
+effect_level <- c("stasis" = 0, "1-log10 kill" = -1, "2-log10 kill" = -2)
+
+targets <- published_targets |>
+  rowwise() |>
+  mutate(simulated = {
+    s <- sweep[sweep$drug == drug & sweep$matrix == matrix, ]
+    s <- s[order(s$dlog10cfu), ]
+    exp(approx(s$dlog10cfu, log(s$index), xout = effect_level[[endpoint]])$y)
+  }) |>
+  ungroup() |>
+  mutate(pct_diff = 100 * (simulated / published - 1))
+
+targets |>
+  rename(
+    Drug = drug, Matrix = matrix, Endpoint = endpoint,
+    "Published (Tables 2-4)" = published, "Simulated" = simulated, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 1, caption = "AUC/MIC targets for stasis, 1-log10 and 2-log10 kill.")
+
+stopifnot(
+  # The Imax curve is evaluated through the full PK solve; the residual gap is
+  # the rounding of the printed Imax parameters and targets (at most 0.7%).
+  all(abs(targets$pct_diff) < 2)
+)
+```
+
+## Translation to human plasma targets (Table 5)
+
+The paper divides the murine ELF AUC/MIC target by the human ELF penetration
+ratio AUC_ELF / fAUC_plasma reported in the literature (1.16, 5.38 and 61.7 for
+LVFX, GRNX and LSFX) to obtain a human fAUC_plasma/MIC target.
+
+```{r table5}
+human_ratio <- c(levofloxacin = 1.16, garenoxacin = 5.38, lascufloxacin = 61.7)
+table5 <- tibble::tribble(
+  ~drug,           ~endpoint,      ~published,
+  "levofloxacin",  "1-log10 kill", 41.9,
+  "levofloxacin",  "2-log10 kill", 76.4,
+  "garenoxacin",   "1-log10 kill", 65.4,
+  "garenoxacin",   "2-log10 kill", 106.7,
+  "lascufloxacin", "1-log10 kill", 2.39,
+  "lascufloxacin", "2-log10 kill", 3.31
+) |>
+  left_join(
+    targets |> filter(matrix == "elf") |> select(drug, endpoint, simulated),
+    by = c("drug", "endpoint")
+  ) |>
+  mutate(adjusted = simulated / human_ratio[drug], pct_diff = 100 * (adjusted / published - 1))
+
+table5 |>
+  select(drug, endpoint, published, adjusted, pct_diff) |>
+  rename(
+    Drug = drug, Endpoint = endpoint, "Published adjusted target (Table 5)" = published,
+    "From the ELF model" = adjusted, "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2, caption = "Human fAUC_plasma/MIC targets predicted from the murine ELF models.")
+
+stopifnot(all(abs(table5$pct_diff) < 2))
+```
+
+# Transcription check of all eighteen Imax fits
+
+The paper fitted three indices in each matrix (Tables S4-S6) and tabulated the
+resulting targets (Tables 2-4). Only the AUC/MIC fits are packaged, but every
+fit is checked here in closed form: equation 3 evaluated at the printed target
+should give 0, -1 and -2 log10 CFU/lung.
+
+```{r all-fits}
+fits <- tibble::tribble(
+  ~drug, ~matrix, ~index, ~imax, ~ic50, ~e0, ~gamma, ~stasis, ~kill1, ~kill2,
+  "LVFX", "plasma", "fAUC/MIC",  5.61,  58.59, 0.61,  1.41,  13.1,  30.6,  53.0,
+  "LVFX", "plasma", "fT>MIC",    3.93,  18.43, 0.80,  2.33,  10.2,  17.1,  27.1,
+  "LVFX", "plasma", "fCmax/MIC", 3.12,   9.18, 0.43,  3.21,   5.2,   8.7,  13.6,
+  "LVFX", "ELF",    "AUC/MIC",   6.82, 125.08, 0.76,  1.12,  19.5,  48.6,  88.6,
+  "LVFX", "ELF",    "T>MIC",    17.73, 313.04, 0.60,  1.23,  20.5,  47.9,  74.9,
+  "LVFX", "ELF",    "Cmax/MIC",  3.11,  55.71, 0.40,  3.63,   3.4,   5.4,   8.0,
+  "GRNX", "plasma", "fAUC/MIC",  4.05,  22.91, 1.02,  2.17,  13.8,  22.8,  37.5,
+  "GRNX", "plasma", "fT>MIC",    4.00,  35.50, 0.86,  2.25,  20.0,  33.4,  53.4,
+  "GRNX", "plasma", "fCmax/MIC", 4.07,   2.37, 0.99,  1.58,   1.2,   2.3,  28.9,
+  "GRNX", "ELF",    "AUC/MIC",   4.05, 351.50, 1.03,  2.21, 215.7, 351.8, 573.9,
+  "GRNX", "ELF",    "T>MIC",     3.29,  53.53, 1.22, 10.00,  50.8,  57.6,  78.7,
+  "GRNX", "ELF",    "Cmax/MIC",  4.04,  55.75, 0.97,  1.41,  24.7,  53.9, 114.8,
+  "LSFX", "plasma", "fAUC/MIC",  3.27,  18.47, 0.27,  3.93,  10.0,  16.5,  22.8,
+  "LSFX", "plasma", "fT>MIC",    3.21,  21.70, 0.26,  5.09,  13.5,  19.9,  25.8,
+  "LSFX", "plasma", "fCmax/MIC", 4.14,   3.77, 0.66,  1.09,   0.8,   2.6,   6.5,
+  "LSFX", "ELF",    "AUC/MIC",   3.27, 165.57, 0.27,  3.94,  90.1, 147.7, 204.0,
+  "LSFX", "ELF",    "T>MIC",     8.71, 128.02, 0.78,  1.02,  13.1,  33.6,  60.8,
+  "LSFX", "ELF",    "Cmax/MIC",  4.15,  40.60, 0.67,  1.08,   8.8,  28.1,  70.1
+)
+imax_effect <- function(x, e0, imax, ic50, gamma) e0 - imax * x^gamma / (x^gamma + ic50^gamma)
+
+fit_check <- fits |>
+  mutate(
+    "E at stasis" = imax_effect(stasis, e0, imax, ic50, gamma),
+    "E at 1-log" = imax_effect(kill1, e0, imax, ic50, gamma),
+    "E at 2-log" = imax_effect(kill2, e0, imax, ic50, gamma)
+  )
+fit_check |>
+  select(drug, matrix, index, starts_with("E at")) |>
+  rename(Drug = drug, Matrix = matrix, Index = index) |>
+  knitr::kable(digits = 2, caption = "Equation 3 with the Tables S4-S6 parameters, evaluated at the Tables 2-4 targets (expected 0, -1, -2).")
+
+consistent <- !(fits$drug == "LVFX" & fits$index == "Cmax/MIC") &
+  !(fits$drug == "GRNX" & fits$index == "fCmax/MIC")
+stopifnot(
+  all(abs(fit_check$`E at stasis`[consistent]) < 0.06),
+  all(abs(fit_check$`E at 1-log`[consistent] + 1) < 0.06),
+  all(abs(fit_check$`E at 2-log`[consistent] + 2) < 0.06)
+)
+```
+
+Sixteen of the eighteen fits reproduce their targets to within 0.05 log10
+CFU/lung. The two that do not are discussed under Errata; neither is part of a
+packaged model.
+
+# Assumptions and deviations
+
+- **Mean of the per-dose fits.** The paper fitted each dose level separately
+  and tabulates the three fits with their mean (Tables S1-S3). The packaged
+  models use the mean, which is also the parameter set behind the paper's
+  PK/PD indices: the lascufloxacin and garenoxacin ELF and plasma Imax fits
+  differ only by an index scale factor that equals the mean-parameter AUC ratio
+  (see "ELF penetration in the mouse"). The per-dose estimates are recorded on
+  each `ini()` line. They vary more than two-fold for some parameters (for
+  example levofloxacin plasma ka 7.10, 3.54 and 1.80 1/h), so the mean is a
+  summary rather than a dose-independent fit.
+- **Spread of the per-dose fits.** The 'SD' rows of Tables S1-S3 reproduce the
+  population standard deviation of the three per-dose values for levofloxacin
+  and lascufloxacin but not for garenoxacin (Table S2 prints 3.72 L/kg for
+  plasma Vd, against 9.65 L/kg computed from 42.88, 19.48 and 28.34). The SD
+  rows are not used by the models.
+- **24 h index window.** The PK/PD indices are taken over the 24 h treatment
+  window (doses from 2 to 26 h after infection, lungs harvested at 26 h), so
+  the accumulators integrate from the first dose (t = 0) to t = 24 h and
+  `dlog10cfu` is the paper's endpoint only when read at t = 24 h. Before that
+  it reflects the exposure accumulated so far. The paper does not say whether
+  the index of a late dose was AUC0-24 or AUC0-inf; for these short half-lives
+  (0.8-3.7 h) the difference is small.
+- **Free plasma, total ELF.** The plasma models predict total concentrations
+  (`Cc`), and `Cu = fu * Cc` drives `fauc_0_24`, as the paper's index is
+  fAUC/MIC. The ELF index is AUC/MIC of the urea-corrected ELF concentration
+  with no unbound-fraction correction, as in the paper.
+- **Separate plasma and ELF models.** The ELF data were fitted on their own
+  ("PK analyses of the plasma and ELF concentrations were conducted
+  separately"), so the ELF models have their own absorption rate constant
+  draining the subcutaneous depot straight into `elf`, with no link to plasma.
+  Simulate plasma and ELF with separate model instances.
+- **Apparent volumes and clearances.** Subcutaneous bioavailability was not
+  estimated, so every volume and clearance is apparent (V/F, CL/F).
+- **Dose basis.** Garenoxacin was supplied as the mesilate hydrate and
+  lascufloxacin as the hydrochloride; the paper does not say whether the mg/kg
+  doses refer to the salt or the free base. The models take the dose as
+  printed.
+- **No variability.** The fits are naive-pooled least squares with no
+  between-animal variability or residual error model reported, so the models
+  carry no etas and a proportional residual SD held at zero. The Imax fits
+  report only R^2, so `dlog10cfu` is a typical-value algebraic output with no
+  residual error.
+- **No baseline burden.** The paper reports only the change in lung burden,
+  not the 2 h control count, so the models predict the change (`dlog10cfu`)
+  rather than an absolute log10 CFU/lung.
+- **Only the AUC/MIC fits are packaged.** fT>MIC and fCmax/MIC Imax fits were
+  also reported (Tables S4-S6); AUC/MIC was the index most strongly correlated
+  with the effect in both matrices, and the T>MIC and Cmax/MIC fits are
+  reproduced in closed form above.
+
+# Errata
+
+- **Garenoxacin plasma fCmax/MIC, 2-log10 kill (Table 3).** The printed target
+  is 28.9, but the Table S5 fit (Imax 4.07, IC50 2.37, E0 0.99, gamma 1.58)
+  reaches -2 log10 CFU/lung at fCmax/MIC = 4.5 and gives -3.0 at 28.9. The
+  stasis and 1-log10 targets of the same fit (1.2 and 2.3) reproduce. Figure 2C
+  plots this curve flattening near -3 well before 15, consistent with a
+  2-log10 target near 4.5; 28.9 appears to be a misprint.
+- **Levofloxacin ELF Cmax/MIC IC50 (Table S4).** The printed IC50 is 55.71, but
+  with it the curve stays at +0.40 log10 CFU/lung at every Table 2 target. An
+  IC50 of 5.571 reproduces the Table 2 targets (3.4, 5.4 and 8.0) to within
+  about 3%, and Figure 1F shows the curve reaching its plateau by a Cmax/MIC of
+  about 10, so the decimal point appears to be misplaced.
+- Neither discrepancy affects a packaged model. No correction notice for the
+  paper was found in a EuropePMC search on 2026-11-16.
