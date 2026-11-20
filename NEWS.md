@@ -326,7 +326,7 @@
 - 24 more models now declare every compartment they are dosed into, because the model reads `podo()`, `tad()`, `tafd()`, `tlast()` or `tad0()` of a compartment the registry's `dosing` column left out: the bacterial inoculum in `Thorsted_2023_neutrophil_mouse` and the eleven `Deroche_2023_*` time-kill models, the meal in `Back_2018_fenofibrate`, the formulation depots of `Lallemand_2023_benzylpenicillin_horse`, `Othman_2007_carvedilol`, `Wang_2020_delamanid` and `vanEijk_2022_paclitaxel`, the split product doses of the five `OlssonGisleskog_2021_nicotine_*` products, the `entrapped` infusion of `Rietveld_2025_docetaxel` and the attack `trigger` of `Sexton_2024_lanadelumab_qsp`. Only the `dosing` metadata changes.
 - Add Pouzin 2023 tusamitamab ravtansine CYP3A4/1A2/2B6 downregulation IVIVE-PK ([doi:10.1002/cpt.3102](https://doi.org/10.1002/cpt.3102)) -- adults with advanced CEACAM5-expressing solid tumors (typical-value simulation from in vitro constants).
 
-- Add Spinosa 2026 generalized bispecific-antibody minimal PBPK-PD models for BITS7201A, mosunetuzumab, a tumor-targeted bispecific and a bivalent comparator ([doi:10.1002/psp4.70167](https://doi.org/10.1002/psp4.70167)) -- healthy volunteers, cynomolgus monkeys, and simulated patients with solid tumors.
+- Add Liu 2026 venetoclax popPK and overall-response exposure-response ([doi:10.2147/DDDT.S563629](https://doi.org/10.2147/DDDT.S563629)) -- adult Chinese patients with hematological malignancies, mostly acute myeloid leukemia.
 
 - Add Iwaki 2021 guselkumab PPPASI PK/PD ([doi:10.1002/jcph.1953](https://doi.org/10.1002/jcph.1953)) -- Japanese adults with palmoplantar pustulosis.
 
