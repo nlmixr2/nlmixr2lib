@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Terranova 2013 two-drug tumor growth inhibition ([doi:10.1007/s00280-013-2208-8](https://doi.org/10.1007/s00280-013-2208-8)) -- mice bearing BxPC3, A2780 or HT29 xenografts given four coded kinase inhibitors with gemcitabine, cisplatin, irinotecan or 5-fluorouracil (six models).
+- Add Nakatani 2013 E2110 PK and 5-HT1A receptor occupancy ([doi:10.1371/journal.pone.0075040](https://doi.org/10.1371/journal.pone.0075040)) -- male and female Sprague-Dawley rats (PET in medial prefrontal cortex and dorsal raphe nucleus).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

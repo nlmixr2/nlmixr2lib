@@ -1,0 +1,470 @@
+---
+title: "E2110 5-HT1A receptor occupancy in rats (Nakatani 2013)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{E2110 5-HT1A receptor occupancy in rats (Nakatani 2013)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Nakatani_2013_E2110_rat"))$reference`
+* Article: <https://doi.org/10.1371/journal.pone.0075040>
+* Models:
+  * `Nakatani_2013_E2110_rat` -- `r rxode2::rxode(readModelDb("Nakatani_2013_E2110_rat"))$description`
+  * `Nakatani_2013_E2110_direct_rat` -- `r rxode2::rxode(readModelDb("Nakatani_2013_E2110_direct_rat"))$description`
+
+E2110 is an investigational serotonin 1A (5-HT1A) receptor antagonist from
+Eisai that was developed for overactive bladder. Nakatani 2013 measured its
+occupancy of central 5-HT1A receptors in Sprague-Dawley rats with
+[11C]WAY-100635 PET, in the medial prefrontal cortex (MPFC, postsynaptic
+receptors) and the dorsal raphe nucleus (DRN, presynaptic autoreceptors), and
+related it to plasma concentration in two analyses:
+
+1. **Dose-occupancy (direct) analysis.** Four male rats per dose were scanned
+   4 h after 0.3, 1, 3 and 10 mg/kg orally, and RO was fitted against the
+   plasma concentration at the scan with a hyperbolic Emax model, Emax held at
+   100% (Equations 3-4, Figure 5, Table 1 "Dose-response study"). This is
+   `Nakatani_2013_E2110_direct_rat`.
+2. **Time-course (effect-compartment) analysis.** A two-compartment model with
+   first-order absorption was fitted to the mean plasma profile after 1 mg/kg,
+   and linked through an effect compartment (Equation 5) to RO measured 2, 4,
+   6 and 8 h after the same dose (Figures 2 and 7, Table 1 "Time-course
+   study"). The PK model was fitted separately to male and female rats
+   (Figure 6), and the male PD parameters were combined with the female PK to
+   simulate female DRN occupancy at 0.03, 0.1 and 0.3 mg/kg (Figure 8). This
+   is `Nakatani_2013_E2110_rat`.
+
+Both files share the same two-compartment PK model, so a dose can drive either
+occupancy model.
+
+## Where the PK parameters come from
+
+The paper prints the PD parameters (the EC50s in Table 1 and the Results, the
+equilibration half-life in the Discussion) but **no PK parameter values**:
+Table 2 gives only non-compartmental summaries. Figure 6 does, however, draw
+the authors' fitted two-compartment curves for each sex. The maintainers
+digitised those drawn lines from the publisher's full-resolution figure and
+fitted the same model to them by least squares:
+
+* The male line is made of straight segments joining model predictions at
+  0.1, 0.25, 0.4, 0.5, 0.75 and every hour from 1 to 10 h (on the log axis),
+  so the fit compared like with like. Over 1,437 traced points the residual
+  RMSE was 0.0016 log10 units (about 0.4%), i.e. the recovered parameters
+  reproduce the drawn line to within its width. `ka` is well determined (a
+  profile over `ka` doubles the RMSE outside 2.0-2.6 1/h).
+* The female (dotted) line was fitted the same way over 756 points, RMSE
+  0.0015 log10 units. Its CL/F and terminal phase are well determined, but
+  `ka`, V1/F, Q/F and V2/F trade off along a ridge (any `ka` between about 1.2
+  and 1.8 1/h fits equally well). The least-squares optimum is used; the
+  concentration-time curve, which is what the model is for, is the same
+  anywhere on the ridge.
+
+Three independent checks confirm the read-back:
+
+* The terminal half-lives of the recovered curves are 1.51 h (male) and 2.65 h
+  (female), against 1.5 and 2.6 h in Table 2.
+* Fitting the drawn RO curves of Figure 7A on top of the recovered male PK, with
+  EC50 *and* ke0 left free, returns EC50 = 2.86 ng/mL (MPFC) and 3.61 ng/mL
+  (DRN), matching the printed 2.87 and 3.6 ng/mL, with a single
+  ke0 = 0.509 1/h in both regions (half-life 1.36 h; the Discussion reports
+  1.4 h). A PK curve that was wrong in shape or level could not return the
+  printed EC50s.
+* The female PK combined with the male DRN parameters reproduces the
+  simulated female curves of Figure 8 within one RO percentage point (below).
+
+The packaged model uses the **printed** equilibration half-life of 1.4 h
+(ke0 = ln 2 / 1.4 = 0.495 1/h), not the digitised 1.36 h.
+
+# Population
+
+Male and female Sprague-Dawley rats from Japan SLC and Charles River Japan
+(Methods, "Animals"). The PK study used 4 rats per sex (1 mg/kg orally,
+plasma at 0.25-8 h). PET studies used male rats (4 per dose level in the
+dose-occupancy study, 4 per time point in the time-course study), each
+scanned at baseline and after dosing at least a week apart, under isoflurane
+anaesthesia; a pilot study scanned 3 female rats 4 h after 0.1 mg/kg. Body
+weights and ages are not reported. The plasma unbound fraction was 6%,
+independent of concentration. Doses are per kg and clearances and volumes are
+per kg, so no body weight is needed to simulate.
+
+The same information is available programmatically via
+`readModelDb("Nakatani_2013_E2110_rat")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Two-compartment PK, first-order absorption | -- | Methods "Time-course study"; Figure 2 |
+| `lka`, `lvc`, `lcl`, `lq`, `lvp` (male) | 2.352 1/h, 9.628 L/kg, 15.16 L/h/kg, 5.305 L/h/kg, 7.742 L/kg | Read back from the Figure 6 male fitted line (not printed) |
+| `e_sexf_*` (female) | ka 1.344 1/h, V1/F 3.339 L/kg, CL/F 1.830 L/h/kg, Q/F 2.161 L/h/kg, V2/F 2.537 L/kg | Read back from the Figure 6 female fitted line (not printed) |
+| Effect compartment `dCe/dt = ke0 (Cp - Ce)` | -- | Equation 5; Figure 2 |
+| `lke0` | log(ln 2 / 1.4) | Discussion: CNS equilibration half-life 1.4 h |
+| `RO = Emax Ce / (EC50 + Ce)` | -- | Equations 3-4 ("sigmoid Emax model (Equation 4)", i.e. Hill coefficient 1) |
+| `lemax` | log(100), held constant | Results "5-HT1A RO Studies": Emax fixed at 100% |
+| `lec50_mpfc` (time course) | log(2.87) ng/mL | Table 1 (5.85 nM); Results "PK/PD modeling and simulation" |
+| `lec50_drn` (time course) | log(3.6) ng/mL | Table 1 (7.38 nM); Results "PK/PD modeling and simulation" |
+| `lec50_mpfc` (direct model) | log(3.68) ng/mL | Table 1 (7.51 nM); Results "5-HT1A RO Studies" |
+| `lec50_drn` (direct model) | log(2.64) ng/mL | Table 1 (5.40 nM); Results "5-HT1A RO Studies" |
+| Residual error | 0 | Not reported (mean-data fits in SCIENTIST 2.01) |
+
+# Simulation
+
+The model has no between-subject variability, so each arm is one typical rat.
+Observation rows sit on the `central` state with `dvid = 1`: the model has
+three endpoints (`Cc`, `RO_MPFC`, `RO_DRN`) and rxode2 then returns all three
+columns on every row.
+
+```{r sim-helpers}
+mod <- readModelDb("Nakatani_2013_E2110_rat")
+mod_direct <- readModelDb("Nakatani_2013_E2110_direct_rat")
+
+make_events <- function(arms, times) {
+  arms <- arms |> select(id, amt, SEXF)
+  bind_rows(
+    arms |> mutate(time = 0, evid = 1L, cmt = "depot", dvid = NA_integer_),
+    tidyr::crossing(arms, time = times) |>
+      mutate(amt = 0, evid = 0L, cmt = "central", dvid = 1L)
+  ) |>
+    arrange(id, time, desc(evid))
+}
+# A typical-value model has no omega; rxode2 warns about that on every
+# multi-subject solve, which is expected here.
+quiet_no_omega <- function(w) {
+  if (grepl("without 'omega'", conditionMessage(w))) {
+    invokeRestart("muffleWarning")
+  }
+}
+solve_arms <- function(model, arms, times) {
+  withCallingHandlers(
+    rxode2::rxSolve(model, events = make_events(arms, times),
+                    returnType = "data.frame", atol = 1e-10, rtol = 1e-10),
+    warning = quiet_no_omega
+  ) |>
+    left_join(arms |> select(-amt, -SEXF), by = "id")
+}
+times <- sort(unique(c(seq(0, 10, by = 0.025), 0.25, 0.5, 1:8)))
+```
+
+## Plasma PK (Figure 6)
+
+```{r figure-6, fig.width = 6, fig.height = 4}
+pk_arms <- tibble::tibble(id = 1:2, amt = 1, SEXF = c(0, 1),
+                          sex = c("Male", "Female"))
+sim_pk <- solve_arms(mod, pk_arms, times)
+
+# Values read off the drawn fitted lines of Figure 6 at model nodes that no
+# marker hides.
+fig6 <- tibble::tribble(
+  ~sex,     ~time, ~Cc_fig,
+  "Male",    0.75,  35.7,
+  "Male",    3,      4.44,
+  "Male",    5,      1.57,
+  "Male",    7,      0.622,
+  "Male",    9,      0.248,
+  "Female",  0.75, 121,
+  "Female",  3,     70.0,
+  "Female",  5,     39.3,
+  "Female",  7,     23.0,
+  "Female",  9,     13.8
+)
+
+# Time 0 (no drug) has no place on a log axis.
+ggplot(sim_pk |> mutate(Cc = na_if(Cc, 0)), aes(time, Cc, linetype = sex)) +
+  geom_line(na.rm = TRUE) +
+  geom_point(data = fig6, aes(time, Cc_fig, shape = sex), size = 2) +
+  scale_y_log10(limits = c(0.1, 1000)) +
+  scale_shape_manual(values = c(Male = 16, Female = 1)) +
+  labs(x = "Time (h)", y = "E2110 plasma concentration (ng/mL)",
+       linetype = NULL, shape = NULL,
+       caption = paste("Replicates Figure 6 of Nakatani 2013 (1 mg/kg orally).",
+                       "Points: the paper's drawn fitted lines at model nodes."))
+
+chk6 <- fig6 |>
+  left_join(sim_pk |> select(sex, time, Cc), by = c("sex", "time")) |>
+  mutate(pct_diff = 100 * (Cc / Cc_fig - 1))
+knitr::kable(chk6, digits = c(0, 2, 3, 3, 1),
+             caption = "Packaged model vs the Figure 6 fitted lines.")
+# The parameters were recovered from these same lines, so agreement is a
+# transcription check and must be tight.
+stopifnot(all(abs(chk6$pct_diff) < 3))
+```
+
+## Receptor occupancy time course in male rats (Figure 7)
+
+```{r figure-7a, fig.width = 6, fig.height = 4}
+male <- sim_pk |> filter(sex == "Male")
+
+fig7 <- tibble::tribble(
+  ~time, ~MPFC, ~DRN,
+  1,     82.4,  78.8,
+  1.5,   84.2,  80.9,
+  3,     79.8,  76.0,
+  5,     66.5,  61.2,
+  7,     48.1,  42.5,
+  9,     29.6,  24.9
+) |>
+  pivot_longer(-time, names_to = "region", values_to = "RO_fig")
+
+ro_male <- male |>
+  select(time, MPFC = RO_MPFC, DRN = RO_DRN) |>
+  pivot_longer(-time, names_to = "region", values_to = "RO")
+
+ggplot(ro_male, aes(time, RO, linetype = region)) +
+  geom_line() +
+  geom_point(data = fig7, aes(time, RO_fig, shape = region), size = 2) +
+  scale_shape_manual(values = c(MPFC = 16, DRN = 5)) +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(x = "Time (h)", y = "5-HT1A receptor occupancy (%)",
+       linetype = NULL, shape = NULL,
+       caption = paste("Replicates Figure 7A of Nakatani 2013 (male rats,",
+                       "1 mg/kg orally). Points: the paper's drawn model curves."))
+
+chk7 <- fig7 |>
+  left_join(ro_male, by = c("time", "region")) |>
+  mutate(diff = RO - RO_fig)
+knitr::kable(chk7, digits = 1,
+             caption = "Packaged model vs the Figure 7A model curves (RO, %).")
+# Differences come from the 1.4 h printed equilibration half-life versus the
+# 1.36 h that reproduces the drawn curves exactly.
+stopifnot(all(abs(chk7$diff) < 1.5))
+```
+
+```{r figure-7b, fig.width = 6, fig.height = 4}
+ggplot(ro_male |> left_join(male |> select(time, Cc), by = "time"),
+       aes(Cc, RO, linetype = region)) +
+  geom_path() +
+  labs(x = "E2110 plasma concentration (ng/mL)",
+       y = "5-HT1A receptor occupancy (%)", linetype = NULL,
+       caption = paste("Replicates Figure 7B of Nakatani 2013: counter-clockwise",
+                       "hysteresis from the effect-compartment delay."))
+```
+
+## Female DRN occupancy (Figure 8)
+
+The authors combined the female PK fit with the male DRN parameters to
+simulate female occupancy at the doses used in the bladder-function studies,
+and checked it against a pilot PET scan (3 female rats, 0.1 mg/kg, 4 h).
+
+```{r figure-8, fig.width = 6, fig.height = 4}
+f_arms <- tibble::tibble(id = 1:3, amt = c(0.03, 0.1, 0.3), SEXF = 1,
+                         dose = factor(c("0.03 mg/kg", "0.1 mg/kg", "0.3 mg/kg")))
+sim_f <- solve_arms(mod, f_arms, times) |> filter(time <= 8)
+
+fig8 <- tibble::tribble(
+  ~time, ~`0.03 mg/kg`, ~`0.1 mg/kg`, ~`0.3 mg/kg`,
+  2,     36.4,          65.8,         85.1,
+  3,     38.1,          67.2,         86.0,
+  5,     32.7,          61.9,         83.0,
+  6,     29.0,          57.6,         80.3,
+  7.5,   22.8,          49.6,         74.8
+) |>
+  pivot_longer(-time, names_to = "dose", values_to = "RO_fig")
+
+ggplot(sim_f, aes(time, RO_DRN, linetype = dose)) +
+  geom_line() +
+  geom_point(data = fig8, aes(time, RO_fig), size = 1.5) +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(x = "Time (h)", y = "DRN 5-HT1A receptor occupancy (%)",
+       linetype = NULL,
+       caption = paste("Replicates Figure 8 of Nakatani 2013 (female rats).",
+                       "Points: the paper's simulated curves."))
+
+chk8 <- fig8 |>
+  left_join(sim_f |> mutate(dose = as.character(dose)) |>
+              select(dose, time, RO_DRN), by = c("dose", "time")) |>
+  mutate(diff = RO_DRN - RO_fig)
+knitr::kable(chk8, digits = 1,
+             caption = "Packaged model vs the Figure 8 simulated curves (RO, %).")
+stopifnot(all(abs(chk8$diff) < 1.5))
+```
+
+The female pilot PET scan at 4 h after 0.1 mg/kg measured about 68% DRN
+occupancy (Figure 8, mean of 3 rats); the model gives
+`r round(sim_f$RO_DRN[sim_f$dose == "0.1 mg/kg" & sim_f$time == 4], 1)`%.
+
+## Occupancy and efficacy in the bladder models
+
+The paper set the occupancy predicted in female rats during the
+micturition-monitoring windows against the minimum effective doses in two
+models of pollakiuria: 0.1 mg/kg at 1-2 h after dosing (8-OH-DPAT model) and
+0.3 mg/kg at 0.5-1 h (superior colliculus lesion model), concluding that at
+least about 60% occupancy is needed.
+
+```{r efficacy-window}
+windows <- tibble::tribble(
+  ~model,                        ~dose,        ~start, ~end,
+  "8-OH-DPAT infusion",          "0.1 mg/kg",  1,      2,
+  "Superior colliculus lesion",  "0.3 mg/kg",  0.5,    1
+)
+windows |>
+  rowwise() |>
+  mutate(
+    min_RO = min(sim_f$RO_DRN[sim_f$dose == dose & sim_f$time >= start & sim_f$time <= end]),
+    max_RO = max(sim_f$RO_DRN[sim_f$dose == dose & sim_f$time >= start & sim_f$time <= end])
+  ) |>
+  ungroup() |>
+  dplyr::rename("Bladder model" = model, "Minimum effective dose" = dose,
+                "Window start (h)" = start, "Window end (h)" = end,
+                "Min DRN RO (%)" = min_RO, "Max DRN RO (%)" = max_RO) |>
+  knitr::kable(digits = 1)
+```
+
+## Direct model (Figure 5)
+
+The direct model relates occupancy to plasma concentration without delay. Its
+EC50s (3.68 ng/mL MPFC, 2.64 ng/mL DRN) are close to the effect-compartment
+values (2.87 and 3.6 ng/mL), which the paper takes as evidence that the
+hysteresis is minor.
+
+```{r figure-5, fig.width = 6, fig.height = 4}
+cp_grid <- tibble::tibble(Cc = 10^seq(-1, 2.5, length.out = 200))
+curves <- bind_rows(
+  cp_grid |> mutate(region = "MPFC", model = "Direct (dose-occupancy study)",
+                    RO = 100 * Cc / (3.68 + Cc)),
+  cp_grid |> mutate(region = "DRN", model = "Direct (dose-occupancy study)",
+                    RO = 100 * Cc / (2.64 + Cc)),
+  cp_grid |> mutate(region = "MPFC", model = "Effect compartment (time course)",
+                    RO = 100 * Cc / (2.87 + Cc)),
+  cp_grid |> mutate(region = "DRN", model = "Effect compartment (time course)",
+                    RO = 100 * Cc / (3.6 + Cc))
+)
+
+d_arms <- tibble::tibble(id = 1:4, amt = c(0.3, 1, 3, 10), SEXF = 0,
+                         dose_mgkg = c(0.3, 1, 3, 10))
+sim_d <- solve_arms(mod_direct, d_arms, c(0, 4)) |> filter(time == 4)
+
+ggplot(curves, aes(Cc, RO, linetype = model)) +
+  geom_line() +
+  geom_point(data = sim_d |> select(Cc, MPFC = RO_MPFC, DRN = RO_DRN) |>
+               pivot_longer(-Cc, names_to = "region", values_to = "RO"),
+             aes(Cc, RO), inherit.aes = FALSE) +
+  facet_wrap(~region) +
+  scale_x_log10() +
+  labs(x = "E2110 plasma (or effect-site) concentration (ng/mL)",
+       y = "5-HT1A receptor occupancy (%)", linetype = NULL,
+       caption = paste("Replicates the Emax curves of Figure 5 of Nakatani 2013.",
+                       "Points: the direct model 4 h after 0.3, 1, 3 and 10 mg/kg."))
+
+# The direct model at the plasma concentration it was fitted against must be
+# the closed-form Emax.
+stopifnot(all(abs(sim_d$RO_MPFC - 100 * sim_d$Cc / (3.68 + sim_d$Cc)) < 1e-6))
+```
+
+Driven by the PK model, the direct model predicts 4-h plasma concentrations
+of `r paste(signif(sim_d$Cc, 2), collapse = ", ")` ng/mL and MPFC occupancy of
+`r paste(round(sim_d$RO_MPFC), collapse = ", ")`% after 0.3, 1, 3 and
+10 mg/kg. The PET rats of Figure 5 had higher plasma concentrations at the
+scan: read from the figure, roughly 1-2, 5-17, 20-60 and 70-350 ng/mL for
+the four dose levels, so about twice the PK-study prediction at 0.3 and
+1 mg/kg and increasingly more than dose-proportional at 3 and 10 mg/kg, where
+the observed occupancy was essentially complete. The PK model was fitted to
+the 1 mg/kg PK study only and assumes linear kinetics; it should not be used
+to predict occupancy at doses above 1 mg/kg, and the direct model is best
+driven by measured plasma concentrations.
+
+# PKNCA validation
+
+Table 2 of the paper reports non-compartmental parameters of the observed mean
+profiles after 1 mg/kg (0-8 h). The simulation below applies PKNCA to the
+model profile over the same window.
+
+```{r pknca}
+nca_conc <- sim_pk |>
+  filter(time <= 8, !is.na(Cc)) |>
+  select(id, sex, time, Cc)
+nca_dose <- pk_arms |> mutate(time = 0) |> select(id, sex, time, amt)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | sex + id,
+                             concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | sex + id, doseu = "mg/kg")
+intervals <- data.frame(start = 0, end = 8, cmax = TRUE, tmax = TRUE,
+                        auclast = TRUE, half.life = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+```
+
+```{r nca-compare}
+# Table 2 prints Cmax in 'ug/mL' and AUC in 'ug*hr/mL'; Figure 6 shows the
+# same profiles in ng/mL (male Cmax about 48 ng/mL), so the table's units are
+# taken as ng/mL and ng*h/mL.
+published <- tibble::tribble(
+  ~sex,     ~cmax, ~tmax, ~auclast, ~half.life,
+  "Male",    48.1,  0.5,   71.8,     1.5,
+  "Female", 125.7,  1,    487.9,     2.6
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  nca_res, published, by = "sex",
+  params = c("cmax", "tmax", "auclast", "half.life"),
+  units = c(cmax = "ng/mL", tmax = "h", auclast = "ng*h/mL", half.life = "h")
+)
+knitr::kable(cmp, caption = "Simulated (model) vs Table 2 (observed mean profile) NCA.")
+```
+
+The reference values are NCA of the *observed* mean data, whereas the
+simulation is the fitted curve, so the comparison measures the authors' fit
+rather than the transcription. The half-lives agree. The male Cmax and
+AUC0-8 are below the observed values because the fitted line passes under the
+observed peak (Figure 6: 48.1 ng/mL observed at 0.5 h, about 41 ng/mL on the
+line), and the model's Tmax falls between the 0.25 and 0.5 h sampling times.
+
+# Assumptions and deviations
+
+* **PK parameters read back from a figure.** The paper prints no PK
+  parameters. They were recovered by digitising the authors' drawn fitted
+  lines in Figure 6 and fitting the same two-compartment model to them (RMSE
+  0.0016 and 0.0015 log10 units). The female `ka`, V1/F, Q/F and V2/F are not
+  individually identifiable from the line (they trade off along a ridge); the
+  curve they produce is. All PK parameters are apparent oral values, because
+  intravenous data and bioavailability are not available.
+* **Equilibration rate constant.** The packaged ke0 uses the printed
+  half-life of 1.4 h. The Figure 7A curves are reproduced exactly by 1.36 h,
+  which rounds to 1.4 h; the difference is at most about one RO percentage
+  point. The paper reports one equilibration half-life, and the drawn curves
+  show the two regions share it.
+* **Hill coefficient.** Methods call the time-course model a "sigmoid Emax
+  model" but refer to Equation 4, which has no Hill coefficient; a Hill
+  coefficient of 1 reproduces the drawn curves of Figure 7A with the printed
+  EC50s, so none is included.
+* **Emax.** Held at 100% in both models; the Results state it for the direct
+  model, and the free fit of the Figure 7A curves at Emax = 100% recovers the
+  printed time-course EC50s.
+* **Separate PK fits by sex.** The authors fitted each sex separately; the
+  female set is encoded as log-scale offsets selected by `SEXF`. The PD
+  parameters were estimated in male rats only and are applied unchanged to
+  females, as in Figure 8.
+* **Direct model driven by the PK model.** The paper fitted the direct model
+  to RO against measured plasma concentrations at the scan. To make it
+  simulatable from a dose, `Nakatani_2013_E2110_direct_rat` carries the same
+  PK model as the time-course file. The PET rats of the dose-occupancy study
+  had higher 4-h plasma concentrations than this PK model predicts (about
+  twofold at 0.3-1 mg/kg and more at 3-10 mg/kg, Figure 5), so dose-driven
+  predictions under-estimate their occupancy.
+* **Dose range of the PK model.** The PK model comes from a single 1 mg/kg
+  dose and is linear; the paper gives no evidence on dose proportionality
+  beyond Figure 5, which suggests exposure rises more than proportionally
+  above 1 mg/kg. The female simulations of Figure 8 (0.03-0.3 mg/kg) are
+  below the fitted dose and are reproduced as the authors made them.
+* **No variability.** All fits were to mean data with SCIENTIST; no
+  between-animal variability or residual error was reported, so the residual
+  terms are set to zero.
+* **Table 2 units.** Table 2 prints Cmax in ug/mL and AUC in ug*hr/mL, which
+  are inconsistent with Figure 6 by a factor of 1000; ng/mL and ng*h/mL are
+  used. Its title also mentions spontaneously hypertensive rats (SHRs), for
+  which no column is given.
+* **Unbound and brain concentrations.** The EC50s are total plasma (or
+  plasma-equivalent effect-site) concentrations. The paper converts them to
+  unbound values with the 6% unbound fraction (MPFC 0.22, DRN 0.16 ng/mL for
+  the direct model) and discusses a further tenfold P-glycoprotein efflux at
+  the blood-brain barrier; neither conversion enters the model.
