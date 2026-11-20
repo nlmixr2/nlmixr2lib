@@ -1330,6 +1330,10 @@ navbar:
         href: articles/Szederkenyi_2024_transdermal_skinonachip.html
       - text: "Caffeine vaseline96h (Szederkenyi 2024)"
         href: articles/Szederkenyi_2024_transdermal_skinonachip.html
+      - text: "CalaspargasePegol human tgi (Hoeben 2026)"
+        href: articles/Hoeben_2026_calaspargasePegol.html
+      - text: "CalaspargasePegol mouse tgi (Hoeben 2026)"
+        href: articles/Hoeben_2026_calaspargasePegol.html
       - text: "CalcitriolQuantumDot earlyIBC mouse pbpk (Forder 2019)"
         href: articles/Forder_2019_calcitriolQuantumDots.html
       - text: "CalcitriolQuantumDot healthy mouse pbpk (Forder 2019)"
@@ -10807,6 +10811,7 @@ articles:
   - articles/Ho_2025_betalactam_pbp78_CRAB
   - articles/Hodiamont_2017_gentamicin
   - articles/Hodson_2023_radiotherapy_antipdl1_olaparib_azd0156_mouse
+  - articles/Hoeben_2026_calaspargasePegol
   - articles/Hoefman_2021_asp8232
   - articles/Hoglund_2012_piperaquine
   - articles/Hoglund_2015_artemether_lumefantrine
