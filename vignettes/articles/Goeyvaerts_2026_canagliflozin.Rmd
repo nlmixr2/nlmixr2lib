@@ -1,0 +1,511 @@
+---
+title: "Canagliflozin (Goeyvaerts 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Canagliflozin (Goeyvaerts 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Goeyvaerts_2026_canagliflozin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Goeyvaerts_2026_canagliflozin"))$description`
+* Article: <https://doi.org/10.1002/bcp.70644> (open access, with Supporting
+  information)
+
+The paper extrapolates two adult canagliflozin models to paediatric patients
+aged 10-17 years with type 2 diabetes mellitus (T2DM): the adult population PK
+model (Hoeben 2016) and the adult HbA1c PK/PD model (de Winter 2017). The PK
+model was updated by removing the adult covariates that did not extrapolate
+(age, eGFR, BMI) and re-estimating only the residual error; the PK/PD model was
+fitted sequentially on the individual PK parameters, with the baseline HbA1c,
+the placebo effect and the residual error re-estimated and covariates for
+background insulin and randomised arm added. Both stages are packaged in one
+model file so that a canagliflozin dose drives the HbA1c response directly.
+
+# Population
+
+The PK analysis used 330 canagliflozin concentrations from 90 paediatric
+patients: 17 from an open-label phase 1 study (100 or 300 mg once daily for 14
+days, intensive sampling on day 14) and 73 from the canagliflozin arm of a
+randomised placebo-controlled phase 3 study (100 mg once daily, 12 patients
+uptitrated to 300 mg at week 13; trough samples at weeks 12, 26 and 52). Median
+age was 15 years (10-17), median body weight 79.5 kg (44.8-170), 67.8% were
+female, and the cohort was 33.3% Asian, 22.2% White Hispanic, 20.0% Black and
+16.7% White non-Hispanic (Table 1). The PK/PD analysis used 702 HbA1c values
+from 160 phase 3 patients (73 canagliflozin, 87 placebo); 40% were on background
+insulin with or without metformin (Table S1).
+
+The same information is available programmatically via
+`readModelDb("Goeyvaerts_2026_canagliflozin")()$population`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source. They are
+collected here for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lvc_male` (Vc/F, males, 75.8 kg) | log(99.3) L, fixed | Table 2 |
+| `lvc_female` (Vc/F, females, 75.8 kg) | log(82.6) L, fixed | Table 2 |
+| `lkel` (ke at 100 mg/day) | log(0.145) 1/h, fixed | Table 2 |
+| `lka` | log(3.68) 1/h, fixed | Table 2 |
+| `lk12` (k23, central to peripheral) | log(0.101) 1/h, fixed | Table 2 |
+| `lk21` (k32, peripheral to central) | log(0.0856) 1/h, fixed | Table 2 |
+| `ltlag_nonencap` / `ltlag_overencap` | log(0.147) / log(0.262) h, fixed | Table 2 |
+| `ld1` (zero-order input duration) | log(0.604) h, fixed | Table 2 |
+| `e_wt_vc` | 0.583, fixed; reference 75.8 kg | Table 2 and footnote b |
+| `e_dose_cana_mgd_kel` | -0.0631, fixed; reference 100 mg | Table 2 and footnote c |
+| `etalvc`, `etalkel`, `etalka`, `etalk21`, `etaltlag` | 14.6, 23.1, 188, 36.2, 93.6 CV%, fixed | Table 2 (omega^2 = log(1 + CV^2)) |
+| `expSdPhase1` / `expSdPhase3` | 0.227 / 1.14 | Table 2 |
+| `lrbase_ins_pbo`, `lrbase_ins_cana`, `lrbase_noins_pbo`, `lrbase_noins_cana` | log(8.50), log(7.82), log(7.91), log(7.22) % | Table 4 |
+| `lkout` | log(log(2)/28.2) 1/day, fixed | Table 4 and footnote a |
+| `pbo_ins` / `pbo_noins` (Efp) | 0.171 / -0.238 % | Table 4 |
+| `emax` | -0.738 %, fixed | Table 4 |
+| `lec50` | 4.12 log ng/mL, fixed (EC50 61.6 ng/mL) | Table 4 and footnote b |
+| `etalrbase` / `etapbo` | variance 0.011 (lognormal) / 0.369 (normal), fixed | Table 4; Methods |
+| `expSd_Hba1c` | 0.0773 | Table 4 |
+| Two-compartment PK in rate constants, lag then zero-order input into the depot, first-order absorption | n/a | Methods 'popPK and PK/PD models' |
+| Additive residual error on log-transformed concentrations, separate rich / sparse variances | n/a | Methods 'popPK and PK/PD models' |
+| `d/dt(Hba1c) = Ef + kin - kout * Hba1c` | n/a | Supplement Equation 1 |
+| `Ef = kout * (Efc + Efp) * (H(0) - 5) / (8 - 5)` | n/a | Supplement Equation 2 |
+| `Efc = Emax * C / (C + EC50)` | n/a | Supplement Equation 3 |
+
+# Virtual cohort
+
+The individual data are not public. The cohort below approximates the
+paediatric population: body weight is drawn log-normally around the Table 1
+median of 79.5 kg and truncated to the observed 44.8-170 kg range, the same
+for both sexes because the paper does not report weight by sex. As in the
+paper's Table S2, exposures are summarised separately for males and females, so
+each regimen gets 100 males and 100 females (200 per regimen). All patients take
+overencapsulated tablets, the formulation used in the paediatric studies.
+
+```{r cohort}
+set.seed(20261118)
+rxode2::rxSetSeed(20261118)
+
+regimens <- tibble::tribble(
+  ~regimen,     ~dose, ~tau, ~tdd,
+  "100 mg QD",  100,   24,   100,
+  "50 mg BID",  50,    12,   100,
+  "300 mg QD",  300,   24,   300,
+  "150 mg BID", 150,   12,   300
+)
+
+n_per_sex <- 100L
+draw_weight <- function(n) {
+  wt <- exp(rnorm(n, log(79.5), 0.30))
+  pmin(pmax(wt, 44.8), 170)
+}
+pk_subjects <- tibble(
+  sub = seq_len(2L * n_per_sex),
+  SEXF = rep(c(0L, 1L), each = n_per_sex),
+  WT = draw_weight(2L * n_per_sex)
+)
+
+make_pk_events <- function(reg, id_offset) {
+  subj <- pk_subjects |>
+    mutate(
+      id = id_offset + sub,
+      regimen = reg$regimen,
+      DOSE_CANA_MGD = reg$tdd,
+      FORM_CANAGLIFLOZIN_OVERENCAP = 1L,
+      STUDY_PHASE3 = 0L,
+      CONMED_INSULIN = 0L,
+      TRT_CANAGLIFLOZIN = 1L
+    )
+  dose_times <- seq(0, 168 - reg$tau, by = reg$tau)
+  obs_times <- seq(144, 168, by = 0.25)
+  # The model has two endpoints (Cc, then Hba1c); dvid = 1 points the
+  # concentration observations at the Cc endpoint.
+  doses <- tidyr::crossing(subj, time = dose_times) |>
+    mutate(evid = 1L, amt = reg$dose, rate = -2, cmt = "depot", dvid = NA_integer_)
+  obs <- tidyr::crossing(subj, time = obs_times) |>
+    mutate(evid = 0L, amt = 0, rate = 0, cmt = NA_character_, dvid = 1L)
+  bind_rows(doses, obs) |> arrange(id, time, desc(evid))
+}
+
+pk_events <- bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+  make_pk_events(regimens[i, ], id_offset = (i - 1L) * 1000L)
+}))
+stopifnot(!anyDuplicated(unique(pk_events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+Seven days of dosing reach steady state (the terminal half-life is about half a
+day). Exposure is summarised from the individual predictions, which include the
+inter-individual variability; see the deviations section for the residual
+error.
+
+```{r simulate-pk}
+mod <- readModelDb("Goeyvaerts_2026_canagliflozin")
+sim_pk <- rxode2::rxSolve(
+  mod,
+  events = pk_events,
+  keep = c("regimen", "SEXF"),
+  returnType = "data.frame"
+) |>
+  mutate(
+    sex = ifelse(SEXF == 1, "Female", "Male"),
+    regimen = factor(regimen, levels = regimens$regimen)
+  )
+```
+
+## Steady-state profiles (Figure S7)
+
+```{r figure-s7}
+sim_pk |>
+  group_by(regimen, time) |>
+  summarise(
+    Q10 = quantile(Cc, 0.10),
+    Q50 = median(Cc),
+    Q90 = quantile(Cc, 0.90),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time - 144, Q50)) +
+  geom_ribbon(aes(ymin = Q10, ymax = Q90), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~regimen) +
+  labs(
+    x = "Time after the first day-7 dose (h)",
+    y = "Canagliflozin (ng/mL)",
+    title = "Steady-state canagliflozin profiles, paediatric T2DM",
+    caption = "Median and 10th-90th percentiles. Replicates the paediatric panels of Figure S7 of Goeyvaerts 2026."
+  )
+```
+
+# PKNCA validation
+
+Steady-state AUC24h and Cmax are computed over the last 24 h of the 7-day
+regimen (two 12-h dosing intervals for BID, so AUC24h covers the whole daily
+dose, as in the paper).
+
+Two versions are computed: from the individual predictions `Cc`, and from the
+same profiles with the phase 1 residual error (log-scale SD 0.227) applied to
+every 0.25-h sample (`sim`), because the paper's simulated profiles included
+residual error.
+
+```{r pknca}
+dose_df <- pk_events |>
+  filter(evid == 1) |>
+  mutate(treatment = paste(regimen, ifelse(SEXF == 1, "Female", "Male"), sep = " | ")) |>
+  select(id, time, amt, treatment)
+intervals <- data.frame(start = 144, end = 168, cmax = TRUE, auclast = TRUE)
+
+run_nca <- function(conc_df, dose_df) {
+  conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+  dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+}
+
+sim_nca <- sim_pk |>
+  filter(!is.na(Cc)) |>
+  mutate(treatment = paste(regimen, sex, sep = " | ")) |>
+  select(id, time, Cc, sim, treatment)
+
+nca_res <- run_nca(select(sim_nca, -sim), dose_df)
+nca_res_ruv <- run_nca(sim_nca |> mutate(Cc = sim) |> select(-sim), dose_df)
+
+cmax_ruv <- as.data.frame(nca_res_ruv$result) |>
+  filter(PPTESTCD == "cmax") |>
+  group_by(treatment) |>
+  summarise(cmax_ruv = mean(PPORRES), .groups = "drop")
+
+nca_ind <- as.data.frame(nca_res$result) |>
+  select(treatment, id, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  separate(treatment, into = c("regimen", "sex"), sep = " \\| ", remove = FALSE) |>
+  mutate(regimen = factor(regimen, levels = regimens$regimen))
+```
+
+## Simulated exposure by regimen and sex (Figure 2)
+
+```{r figure-2}
+nca_ind |>
+  pivot_longer(c(auclast, cmax), names_to = "metric", values_to = "value") |>
+  mutate(metric = recode(metric, auclast = "AUC24h,ss (h*ng/mL)", cmax = "Cmax,ss (ng/mL)")) |>
+  ggplot(aes(regimen, value, fill = sex)) +
+  geom_boxplot(outlier.size = 0.5) +
+  facet_wrap(~metric, scales = "free_y") +
+  labs(
+    x = NULL, y = NULL, fill = NULL,
+    caption = "Paediatric panels of Figure 2 of Goeyvaerts 2026."
+  )
+```
+
+## Comparison against published simulated exposure (Table S2)
+
+Table S2 reports the mean of the simulated steady-state AUC24h and Cmax per
+regimen and sex, so the simulated values are summarised by their mean as well.
+
+```{r nca-compare}
+published_s2 <- tibble::tribble(
+  ~treatment,            ~auclast, ~cmax,
+  "100 mg QD | Male",    6682,     1052,
+  "100 mg QD | Female",  8872,     1399,
+  "50 mg BID | Male",    6655,     695,
+  "50 mg BID | Female",  8866,     922,
+  "300 mg QD | Male",    21472,    3237,
+  "300 mg QD | Female",  28509,    4306,
+  "150 mg BID | Male",   21382,    2171,
+  "150 mg BID | Female", 28487,    2882
+)
+
+sim_mean <- nca_ind |>
+  group_by(treatment) |>
+  summarise(auclast = mean(auclast), cmax = mean(cmax), .groups = "drop")
+
+# Rows labelled 'with residual error' compare the Cmax of the noisy profiles
+# against the same published value.
+sim_cmp <- bind_rows(
+  sim_mean,
+  cmax_ruv |>
+    transmute(treatment = paste(treatment, "| with residual error"), cmax = cmax_ruv)
+)
+ref_cmp <- bind_rows(
+  published_s2,
+  published_s2 |>
+    transmute(treatment = paste(treatment, "| with residual error"), cmax)
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_cmp,
+  reference = ref_cmp,
+  by = "treatment",
+  units = c(auclast = "h*ng/mL", cmax = "ng/mL"),
+  tolerance_pct = 20
+)
+# The residual-error rows carry Cmax only.
+cmp <- cmp[!(grepl("with residual error", cmp$treatment) & !grepl("^Cmax", cmp[[1]])), ]
+knitr::kable(
+  cmp,
+  row.names = FALSE,
+  caption = "Mean simulated steady-state AUC24h (AUC over the last 24 h) and Cmax versus Goeyvaerts 2026 Table S2 (paediatric). * differs by >20%."
+)
+
+chk_pk <- sim_mean |>
+  inner_join(published_s2, by = "treatment", suffix = c("_sim", "_pub")) |>
+  mutate(auc_pct = 100 * (auclast_sim / auclast_pub - 1))
+stopifnot(
+  # A mis-transcribed volume, rate constant, dose effect or unit factor moves
+  # every mean AUC by far more than this; the residual difference is weight
+  # sampling and Monte-Carlo error of 100 subjects per cell.
+  abs(median(chk_pk$auc_pct)) < 10,
+  quantile(abs(chk_pk$auc_pct), 0.9) < 20
+)
+```
+
+AUC24h agrees with Table S2 in every cell. The Cmax of the individual
+predictions is about 20-30% below Table S2, while the Cmax of the profiles with
+residual error is close to it. The typical male of 80 kg already has a
+steady-state Cmax of about 890 ng/mL at 100 mg QD, against a published mean of
+1052 ng/mL, so the gap is not a cohort effect: Table S2 most likely reports the
+maximum of simulated profiles that carry residual error, which raises the mean
+maximum and compresses the QD-to-BID ratio (about 1.5 in Table S2 against about
+1.6-1.7 for the predictions). The size of that inflation depends on the
+simulated sampling times, which the paper does not give, so Cmax is reported
+here but not used as a pass/fail check.
+
+The individual steady-state AUC24h estimated by the authors for the observed
+paediatric patients (Table 3) is of the same size: mean 6574 (males) and 8397
+(females) h*ng/mL at 100 mg QD, 22 480 and 29 930 h*ng/mL at 300 mg QD.
+
+# HbA1c
+
+## Analytic steady state of the turnover equations
+
+With a constant canagliflozin concentration `C`, Supplement Equations 1-3 give
+the steady state `H_ss = H(0) + (Efc + Efp) * (H(0) - 5) / 3`. A placebo subject
+(no drug) without background insulin, on the canagliflozin-arm baseline,
+should therefore settle at `7.22 - 0.238 * (7.22 - 5) / 3 = 7.044` %.
+
+```{r analytic}
+mod_typ <- mod |> rxode2::zeroRe()
+ev_ss <- data.frame(
+  id = 1L, time = c(0, 24 * 7 * 52), evid = 0L, amt = 0, cmt = "Hba1c",
+  WT = 75.8, SEXF = 0L, DOSE_CANA_MGD = 0, FORM_CANAGLIFLOZIN_OVERENCAP = 1L,
+  STUDY_PHASE3 = 0L, CONMED_INSULIN = 0L, TRT_CANAGLIFLOZIN = 1L
+)
+ss <- rxode2::rxSolve(mod_typ, events = ev_ss, returnType = "data.frame",
+                      atol = 1e-10, rtol = 1e-10)
+h_ss_expected <- 7.22 - 0.238 * (7.22 - 5) / 3
+stopifnot(abs(ss$Hba1c[1] - 7.22) < 1e-6, abs(ss$Hba1c[2] - h_ss_expected) < 1e-4)
+c(simulated = ss$Hba1c[2], analytic = h_ss_expected)
+```
+
+## Simulated HbA1c over 26 weeks (Figure 4, Table S3)
+
+The paper simulated HbA1c for the four regimens using covariates sampled
+jointly from the PK/PD data set, which pools the canagliflozin and placebo
+arms; the randomised arm enters only through the baseline HbA1c. The cohort
+below draws the arm (73/160 canagliflozin), background insulin within arm
+(27/73 and 37/87, Table S1), sex (68.1% female) and weight, and gives every
+subject the simulated canagliflozin regimen. Its expected typical baseline is
+`(27 * 7.82 + 46 * 7.22 + 37 * 8.50 + 50 * 7.91) / 160 = 7.83` %, the mean at
+week 0 of Figure 4A, which supports this reading of the paper's covariate
+sampling.
+
+```{r cohort-pd}
+n_pd <- 200L
+trt <- rbinom(n_pd, 1, 73 / 160)
+pd_subjects <- tibble(
+  sub = seq_len(n_pd),
+  TRT_CANAGLIFLOZIN = trt,
+  CONMED_INSULIN = rbinom(n_pd, 1, ifelse(trt == 1, 27 / 73, 37 / 87)),
+  SEXF = rbinom(n_pd, 1, 109 / 160),
+  WT = draw_weight(n_pd)
+)
+
+make_pd_events <- function(reg, id_offset) {
+  subj <- pd_subjects |>
+    mutate(
+      id = id_offset + sub,
+      regimen = reg$regimen,
+      DOSE_CANA_MGD = reg$tdd,
+      FORM_CANAGLIFLOZIN_OVERENCAP = 1L,
+      STUDY_PHASE3 = 1L
+    )
+  end_h <- 26 * 7 * 24
+  doses <- tidyr::crossing(subj, time = seq(0, end_h - reg$tau, by = reg$tau)) |>
+    mutate(evid = 1L, amt = reg$dose, rate = -2, cmt = "depot")
+  obs <- tidyr::crossing(subj, time = seq(0, end_h, by = 2 * 7 * 24)) |>
+    mutate(evid = 0L, amt = 0, rate = 0, cmt = "Hba1c")
+  bind_rows(doses, obs) |> arrange(id, time, desc(evid))
+}
+
+pd_events <- bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+  make_pd_events(regimens[i, ], id_offset = (i - 1L) * 1000L)
+}))
+stopifnot(!anyDuplicated(unique(pd_events[, c("id", "time", "evid")])))
+```
+
+```{r simulate-pd}
+sim_pd <- rxode2::rxSolve(
+  mod,
+  events = pd_events,
+  keep = c("regimen"),
+  returnType = "data.frame"
+) |>
+  filter(time %% (2 * 7 * 24) == 0) |>
+  group_by(id) |>
+  mutate(cfb = Hba1c - Hba1c[time == 0]) |>
+  ungroup() |>
+  mutate(
+    week = time / (7 * 24),
+    regimen = factor(regimen, levels = regimens$regimen),
+    tdd = ifelse(regimen %in% c("100 mg QD", "50 mg BID"), "Total daily dose 100 mg", "Total daily dose 300 mg")
+  )
+```
+
+```{r figure-4}
+sim_pd |>
+  pivot_longer(c(Hba1c, cfb), names_to = "metric", values_to = "value") |>
+  mutate(metric = recode(metric, Hba1c = "HbA1c (%)", cfb = "Change from baseline HbA1c (%)")) |>
+  group_by(tdd, regimen, metric, week) |>
+  summarise(m = mean(value), s = sd(value), .groups = "drop") |>
+  ggplot(aes(week, m, colour = regimen)) +
+  geom_errorbar(aes(ymin = m - s, ymax = m + s), width = 0.4,
+                position = position_dodge(width = 0.6)) +
+  geom_point(position = position_dodge(width = 0.6)) +
+  geom_line(position = position_dodge(width = 0.6)) +
+  facet_grid(metric ~ tdd, scales = "free_y") +
+  labs(
+    x = "Time (weeks)", y = NULL, colour = NULL,
+    caption = "Mean +/- SD of individual predictions. Replicates Figure 4 of Goeyvaerts 2026."
+  )
+```
+
+```{r table-s3}
+published_s3 <- tibble::tribble(
+  ~regimen,     ~hba1c_pub, ~cfb_pub,
+  "100 mg QD",  7.23,       -0.597,
+  "50 mg BID",  7.21,       -0.621,
+  "300 mg QD",  7.14,       -0.693,
+  "150 mg BID", 7.13,       -0.704
+)
+wk26 <- sim_pd |>
+  filter(week == 26) |>
+  group_by(regimen) |>
+  summarise(
+    hba1c_sim = mean(Hba1c), hba1c_sd = sd(Hba1c),
+    cfb_sim = mean(cfb), cfb_sd = sd(cfb),
+    .groups = "drop"
+  ) |>
+  mutate(regimen = as.character(regimen)) |>
+  inner_join(published_s3, by = "regimen")
+
+wk26 |>
+  mutate(across(where(is.numeric), \(x) signif(x, 3))) |>
+  rename(
+    "Regimen" = regimen,
+    "HbA1c wk 26, simulated mean (%)" = hba1c_sim,
+    "HbA1c SD" = hba1c_sd,
+    "HbA1c wk 26, Table S3 (%)" = hba1c_pub,
+    "Change from baseline, simulated mean (%)" = cfb_sim,
+    "Change SD" = cfb_sd,
+    "Change from baseline, Table S3 (%)" = cfb_pub
+  ) |>
+  knitr::kable(caption = "Week-26 HbA1c and change from baseline versus Goeyvaerts 2026 Table S3.")
+
+stopifnot(
+  # Each mean is over 200 subjects; Monte-Carlo SE is about 0.07 for HbA1c and
+  # 0.045 for the change from baseline. A wrong Emax, EC50, half-life or the
+  # (H(0) - 5)/3 scaling moves the change by 0.2-0.7 percentage points.
+  all(abs(wk26$cfb_sim - wk26$cfb_pub) < 0.2),
+  all(abs(wk26$hba1c_sim - wk26$hba1c_pub) < 0.35)
+)
+```
+
+# Assumptions and deviations
+
+- **Weight and sex.** Body weight is drawn log-normally (median 79.5 kg,
+  log-SD 0.30, truncated to 44.8-170 kg) for both sexes; the paper samples
+  observed covariate vectors, which are not public, and does not report weight
+  by sex.
+- **Residual error in the exposure and HbA1c summaries.** The paper says its
+  simulated profiles included residual error but does not say which of the two
+  PK residual SDs, nor the simulated sampling times. AUC24h is compared on the
+  individual predictions (residual error barely changes a mean AUC). For Cmax,
+  the individual predictions fall 20-30% below Table S2 while profiles with the
+  phase 1 residual SD (0.227) on a 0.25-h grid land within 8% of it; the
+  sparse-data SD of 1.14 would give far larger Cmax spreads than the roughly
+  33% CV of Table S2. Cmax is therefore shown both ways and not used as a
+  pass/fail check. The HbA1c summaries use individual predictions: the spread
+  of Figure 4A at week 0 matches the baseline variability without the HbA1c
+  residual error.
+- **One file for both stages.** The authors fitted the popPK and the PK/PD
+  model sequentially (the PK/PD fit used the individual PK estimates). Both are
+  packaged as a single model so that a dose drives HbA1c; the PK stage is
+  unchanged when only `Cc` is of interest.
+- **Baseline HbA1c strata.** Table 4 reports one baseline per combination of
+  background insulin and randomised arm. They are encoded as four parameters
+  selected by `CONMED_INSULIN` and `TRT_CANAGLIFLOZIN` rather than as a
+  reference plus covariate effects, so that the printed values are reproduced
+  exactly. The arm term captures a baseline imbalance between the randomised
+  groups, not a drug effect.
+- **Placebo subjects and the dose covariate.** The total-daily-dose effect on ke
+  is a power of `DOSE_CANA_MGD / 100`; for a subject who receives no
+  canagliflozin (`DOSE_CANA_MGD = 0`) the model uses the 100 mg reference so
+  that ke stays finite. This has no effect on any prediction because no drug is
+  present.
+- **Residual-error strata.** `STUDY_PHASE3` selects the log-scale residual SD
+  for the canagliflozin concentration (0 = phase 1 rich data, 1 = the sparse
+  'Phase 2 and 3' stratum of Table 2). The paediatric sparse data came from the
+  phase 3 study only.
+- **Placebo effect onset.** Supplement Equation 2 applies the placebo effect Efp
+  from the start of treatment; the model does the same (t = 0 is the first
+  dose).
+- No erratum or correction notice was found for the article as of 2026-11-18.

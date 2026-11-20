@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Miura 2026 sildenafil, tadalafil, bosentan and ambrisentan ([doi:10.1002/bcp.70676](https://doi.org/10.1002/bcp.70676)) -- Japanese paediatric and adult patients with pulmonary arterial hypertension.
+- Add Goeyvaerts 2026 canagliflozin popPK and HbA1c PK/PD ([doi:10.1002/bcp.70644](https://doi.org/10.1002/bcp.70644)) -- paediatric patients aged 10-17 years with type 2 diabetes.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
