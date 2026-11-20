@@ -3043,7 +3043,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) of an overall response (partial response or better) when the response adjudication route is not fixed by the source: the published trial-level ORR pooled across many trials in a model-based meta-analysis, each trial reporting its own primary assessment (investigator, independent review committee or both); a static landmark exposure-response logistic model whose paper reports a single response adjudication without a central-versus-investigator split; or one whose paper does not say whether response was adjudicated by independent central review or by the investigator.
 - **Source aliases:** `ORR` -- Shah 2026 (IMWG overall response rate of each published trial arm); `Pr(OR)`, `ORR` (Du 2025).
-- **Example models:** `Shah_2026_rrmm_orr_mbma.R` (MBMA study-arm-level ORR across 21 relapsed/refractory multiple-myeloma regimens from 192 trials; a regimen-specific logit effect plus a background-corticosteroid shift and an Emax function of the percentage of second-line patients; the output is the STUDY-ARM response rate, not an individual patient's probability), `Yang_2025_axatilimab_orr.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the single-dose AUC from time 0 to infinity, `AUC_AXATILIMAB_SD`, for overall response of cGVHD by Cycle 7 Day 1), `Du_2025_repotrectinib_orr_ros1.R`, `Du_2025_repotrectinib_orr_ntrk.R` (logistic regressions on log Cavg56 in ROS1-positive NSCLC and NTRK-positive solid tumours from TRIDENT-1; the paper defines the endpoint as a confirmed complete or partial response without naming the assessor), `Gaurav_2026_favezelimab_orr.R` (favezelimab plus pembrolizumab in gastric cancer from the P001 randomised dose-finding cohort; linear logit in the average AUC per 21-day interval, `AUC_FAVEZELIMAB`, centred on a digitised 1.54e7 ng*h/mL; the assessor is not stated).
+- **Example models:** `Shah_2026_rrmm_orr_mbma.R` (MBMA study-arm-level ORR across 21 relapsed/refractory multiple-myeloma regimens from 192 trials; a regimen-specific logit effect plus a background-corticosteroid shift and an Emax function of the percentage of second-line patients; the output is the STUDY-ARM response rate, not an individual patient's probability), `Yang_2025_axatilimab_orr.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the single-dose AUC from time 0 to infinity, `AUC_AXATILIMAB_SD`, for overall response of cGVHD by Cycle 7 Day 1), `Du_2025_repotrectinib_orr_ros1.R`, `Du_2025_repotrectinib_orr_ntrk.R` (logistic regressions on log Cavg56 in ROS1-positive NSCLC and NTRK-positive solid tumours from TRIDENT-1; the paper defines the endpoint as a confirmed complete or partial response without naming the assessor); `Shahraz_2026_savolitinib_orr_allcomers.R`, `Shahraz_2026_savolitinib_orr_highmet.R`, `Shahraz_2026_savolitinib_orr_lowmet.R`, `Shahraz_2026_savolitinib_orr_highmet_2l.R` (savolitinib plus osimertinib in four SAVANNAH MET-biomarker subgroups; logistic in the natural log of Cmin,ss, digitised from Shahraz 2026 Figure 3; the paper does not name the response assessor for this analysis)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Use `prob_orr_central` or `prob_orr_investigator` whenever the source fits one adjudication route, or separate models to the two adjudications; this unqualified name is only for sources that pool routes or do not state them, so that a reader is not told an adjudication the data do not have and an unstated assessor is not guessed. The response criteria (IMWG for myeloma, RECIST for solid tumours, Lugano for lymphoma) and, for a landmark model, the landmark assessment are part of the endpoint and belong in the model's `description`. See `prob_orr_central` for the shared conventions of the landmark logistic models (placeholder additive residual, Bernoulli source likelihood).
 
 ### prob_anemia (**canonical severe-anemia probability output**)
@@ -3155,21 +3155,21 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient requires a **dose interruption** (temporary hold) because of a treatment-emergent adverse event, in a static landmark exposure-safety logistic model. A tolerability rather than a toxicity endpoint: it measures whether the prescribed regimen could be maintained.
 - **Source aliases:** none.
-- **Example models:** `Fukae_2024_valemetostat_dose_interruption.R` (Bayesian logistic exposure-safety model; reference-patient probability 0.514).
+- **Example models:** `Fukae_2024_valemetostat_dose_interruption.R` (Bayesian logistic exposure-safety model; reference-patient probability 0.514); `Shahraz_2026_savolitinib_safety_auc.R` and `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss, Shahraz 2026 Figures S13a-b; related TEAEs)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Paired with `prob_dose_reduction`; interruption is the more frequent and less severe of the two dose-modification endpoints, so the pair is usually modelled and reported together.
 
 ### prob_dose_reduction (**canonical dose-reduction probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient requires a **permanent dose reduction** because of a treatment-emergent adverse event, in a static landmark exposure-safety logistic model. Interpreted as the point at which a clinician judges the risk of the assigned dose to be unwarranted, which makes it the natural upper-bound criterion in a benefit-risk / region-of-practical-equivalence exposure analysis.
 - **Source aliases:** none.
-- **Example models:** `Fukae_2024_valemetostat_dose_reduction.R` (Bayesian logistic exposure-safety model; reference-patient probability 0.0774, and the endpoint the founding paper used to set the upper limit of its target exposure range), `Li_2025_patritumabDeruxtecan_dose_reduction.R` (patritumab deruxtecan; the CUMULATIVE probability of a first AE leading to dose reduction by time t, from a discrete-time per-cycle logit hazard driven by the cycle-varying DXd Cmax -- not a static landmark probability).
+- **Example models:** `Fukae_2024_valemetostat_dose_reduction.R` (Bayesian logistic exposure-safety model; reference-patient probability 0.0774, and the endpoint the founding paper used to set the upper limit of its target exposure range), `Li_2025_patritumabDeruxtecan_dose_reduction.R` (patritumab deruxtecan; the CUMULATIVE probability of a first AE leading to dose reduction by time t, from a discrete-time per-cycle logit hazard driven by the cycle-varying DXd Cmax -- not a static landmark probability); `Shahraz_2026_savolitinib_safety_auc.R` and `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss, Shahraz 2026 Figures S12a-b; related TEAEs)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Paired with `prob_dose_interruption`. The founding paper's rationale for singling this endpoint out is worth carrying forward: maintaining the initial dose after an adverse event plausibly represents acceptance of a warranted risk, so the probability of *reduction* is the sharper tolerability criterion.
 
 ### prob_treatment_discontinuation (**canonical adverse-event-driven treatment-discontinuation probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient permanently discontinues treatment because of an adverse event. In the founding model it is the CUMULATIVE probability of the first such event by time t, 1 - exp(-cumhaz), from a discrete-time per-cycle logit hazard.
 - **Source aliases:** `AEDC` -- Li 2025 Figure 3 abbreviation ('adverse events leading to discontinuation').
-- **Example models:** `Li_2025_patritumabDeruxtecan_discontinuation.R` (founding example; patritumab deruxtecan; per-cycle hazard log-linear in the cycle-varying DXd Cavg, back-solved from population-simulated 6-month rates per regimen).
+- **Example models:** `Li_2025_patritumabDeruxtecan_discontinuation.R` (founding example; patritumab deruxtecan; per-cycle hazard log-linear in the cycle-varying DXd Cavg, back-solved from population-simulated 6-month rates per regimen); `Shahraz_2026_savolitinib_safety_auc.R` and `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss, Shahraz 2026 Figures S14a-b; a static landmark probability, not a cumulative hazard; the Cmax,ss regression is digitised on the natural-log scale)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Paired with `prob_dose_reduction`: the two are the tolerability endpoints of a dose-selection analysis, reduction being a recoverable and discontinuation a terminal response to toxicity. Distinct from `prob_dropout`, the state-occupancy probability of a multistate model in which dropout may have any cause.
 
 ### prob_hypercholesterolemia (**canonical severe-hypercholesterolemia probability output**)
@@ -3204,14 +3204,14 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences a treatment-related adverse event of increased ALANINE AMINOTRANSFERASE, as an investigator-reported adverse-event term, in a static landmark exposure-safety logistic model.
 - **Source aliases:** `ALT increase`, `increased alanine aminotransferase`, `ALT elevation`.
-- **Example models:** `Qin_2025_ropeginterferon_alt_increase.R` (founding example; binomial logistic exposure-safety regression on the dose-titration-phase average ropeginterferon alfa-2b concentration, odds ratio 1.123 per ng/mL).
+- **Example models:** `Qin_2025_ropeginterferon_alt_increase.R` (founding example; binomial logistic exposure-safety regression on the dose-titration-phase average ropeginterferon alfa-2b concentration, odds ratio 1.123 per ng/mL); `Shahraz_2026_savolitinib_safety_auc.R` and `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss, Shahraz 2026 Figures S21a-b; grade >= 1, causally related)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Paired with `prob_ast_increase`; keep the two distinct rather than pooling them into a single transaminase canonical, because papers routinely fit them as separate endpoints with different intercepts and slopes -- in the founding paper the AST slope is steeper and the AST intercept lower, so the two fitted curves cross. **The CTCAE severity threshold is NOT part of the name** and must be recorded in the model's `description`; the founding model pools all grades, of which only one event reached grade 3. Distinct from the covariate `ALT`, which carries a measured baseline aminotransferase activity in U/L as a model input rather than a predicted event probability.
 
 ### prob_ast_increase (**canonical aspartate-aminotransferase-increase probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences a treatment-related adverse event of increased ASPARTATE AMINOTRANSFERASE, as an investigator-reported adverse-event term, in a static landmark exposure-safety logistic model.
 - **Source aliases:** `AST increase`, `increased aspartate aminotransferase`, `AST elevation`.
-- **Example models:** `Qin_2025_ropeginterferon_ast_increase.R` (founding example; binomial logistic exposure-safety regression on the dose-titration-phase average ropeginterferon alfa-2b concentration, odds ratio 1.154 per ng/mL).
+- **Example models:** `Qin_2025_ropeginterferon_ast_increase.R` (founding example; binomial logistic exposure-safety regression on the dose-titration-phase average ropeginterferon alfa-2b concentration, odds ratio 1.154 per ng/mL); `Shahraz_2026_savolitinib_safety_auc.R` and `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss, Shahraz 2026 Figures S23a-b; grade >= 1, causally related)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. See `prob_alt_increase` for the shared conventions and for why the transaminase pair is kept as two canonicals rather than one. Distinct from the covariate `AST`, which carries a measured baseline aminotransferase activity in U/L as a model input.
 
 
@@ -3505,7 +3505,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a subject experiences any treatment-emergent adverse event judged drug-related by the investigator, of any system organ class and any severity, at any point during a study. A per-subject binary outcome modelled by logistic regression on drug exposure.
 - **Source aliases:** none.
-- **Example models:** `Assmus_2022_emodepside_teae_drug_related.R` (oral emodepside; `logit(p) = -2.38 + 0.0064 * CMAX`, S7 Table -- founding example); `Yang_2025_axatilimab_teae_drug_related.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the individual steady-state AUC over a 4-week cycle, `AUC_AXATILIMAB_SS`)).
+- **Example models:** `Assmus_2022_emodepside_teae_drug_related.R` (oral emodepside; `logit(p) = -2.38 + 0.0064 * CMAX`, S7 Table -- founding example); `Yang_2025_axatilimab_teae_drug_related.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the individual steady-state AUC over a 4-week cycle, `AUC_AXATILIMAB_SS`)); `Shahraz_2026_savolitinib_safety_auc.R` and `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss, Shahraz 2026 Figures 5a-b; linear logits back-solved from the probabilities printed in the Results)
 - **Notes:** A probability output in `[0, 1]`. Composite over every system organ class, so it contains `prob_teae_interest`, `prob_eye_disorder` and `prob_nervous_system_disorder`. Distinct from `prob_teae_grade3` (any severe TEAE regardless of causality) and `prob_adr`.
 
 ### prob_nausea (**canonical nausea adverse-event probability output**)
@@ -3584,7 +3584,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient reports diarrhea as a treatment-emergent adverse event, in a static landmark exposure-safety logistic model.
 - **Source aliases:** none.
-- **Example models:** `Sun_2025_maribavir_diarrhea.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.06 per 10 ug*h/mL; reference-patient probability 0.047 at zero exposure); `Gall_2023_fluorouracil_mouse.R`, `Gall_2023_fluorouracil_human.R`, `Gall_2023_doxorubicin_mouse.R`, `Gall_2023_doxorubicin_human.R` (a TIME-VARYING mechanistic usage: a logistic function of fractional villus-cell loss computed from the epithelial ODE states, `prob_diarrhea = 1 - 1/(1 + exp(-(beta_0 + beta_1 * loss/(loss + Loss50))))`, giving a diarrhea-risk trajectory over the course of injury and recovery rather than a single landmark probability); `Sathe_2025b_sacituzumab_diarrhea.R` (grade >= 1 threshold of a nonproportional-odds model of the worst diarrhea grade after sacituzumab govitecan, odds ratio 1.45 per ug/mL of intact-conjugate average concentration; the intercept is digitised from the published curve); the six `Pin_2026_<drug>_human.R` models (any grade, as 1 - P(grade 0) of a cumulative-logit model of a Hill term of the time-varying villus injury of a human crypt-villus epithelium model).
+- **Example models:** `Sun_2025_maribavir_diarrhea.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.06 per 10 ug*h/mL; reference-patient probability 0.047 at zero exposure); `Gall_2023_fluorouracil_mouse.R`, `Gall_2023_fluorouracil_human.R`, `Gall_2023_doxorubicin_mouse.R`, `Gall_2023_doxorubicin_human.R` (a TIME-VARYING mechanistic usage: a logistic function of fractional villus-cell loss computed from the epithelial ODE states, `prob_diarrhea = 1 - 1/(1 + exp(-(beta_0 + beta_1 * loss/(loss + Loss50))))`, giving a diarrhea-risk trajectory over the course of injury and recovery rather than a single landmark probability); `Sathe_2025b_sacituzumab_diarrhea.R` (grade >= 1 threshold of a nonproportional-odds model of the worst diarrhea grade after sacituzumab govitecan, odds ratio 1.45 per ug/mL of intact-conjugate average concentration; the intercept is digitised from the published curve); `Shahraz_2026_savolitinib_safety_auc.R` and `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss, Shahraz 2026 Figures S30a-b; grade >= 1, causally related)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Registered on first sighting as a well-formed member of the explicitly extensible adverse-event-term family, not as a new modelling concept. In the founding `Sun_2025` example the endpoint is an INVESTIGATOR-REPORTED adverse-event term with no severity threshold, so it sits at a higher event rate than a laboratory-defined or CTCAE-graded endpoint for the same toxicity and is subsumed by (not a competing risk against) a composite such as `prob_teae_grade3` or `prob_sae`. Completes the gastrointestinal-tolerability trio with `prob_nausea` and `prob_vomiting`. The same canonical also covers the mechanistic time-varying form (Gall 2023), where the probability is an instantaneous function of a modelled epithelial-injury state rather than a static exposure metric; it is still a probability in `[0, 1]`, not a cell count or a modelled gut-transit / stool-frequency ODE state.
 
 ### prob_neutropenia (**canonical neutropenia adverse-event probability output**)
@@ -3680,8 +3680,92 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient reports pyrexia (fever) as a treatment-emergent adverse event, in a static landmark exposure-safety logistic model.
 - **Source aliases:** none.
-- **Example models:** `Sun_2025_maribavir_pyrexia.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.05 per 10 ug*h/mL; reference-patient probability 0.037 at zero exposure)
+- **Example models:** `Sun_2025_maribavir_pyrexia.R` (frequentist binomial logistic exposure-safety model on the maribavir AUC on the DAY OF THE EVENT, odds ratio 1.05 per 10 ug*h/mL; reference-patient probability 0.037 at zero exposure); `Shahraz_2026_savolitinib_safety_auc.R` and `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss, Shahraz 2026 Figures S19a-b; grade >= 1 pyrexia as an adverse event of special interest)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Registered on first sighting as a well-formed member of the explicitly extensible adverse-event-term family, not as a new modelling concept. The endpoint is an INVESTIGATOR-REPORTED adverse-event term with no severity threshold, so it sits at a higher event rate than a laboratory-defined or CTCAE-graded endpoint for the same toxicity and is subsumed by (not a competing risk against) a composite such as `prob_teae_grade3` or `prob_sae`. In transplant and infectious-disease cohorts pyrexia is frequently a manifestation of the underlying infection rather than of drug toxicity, so an exposure-pyrexia association should not be read as a drug effect without a confounding analysis.
+
+### prob_teae_drug_related_grade3 (**canonical grade >= 3 drug-related adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences any CTCAE grade >= 3 treatment-emergent adverse event judged causally related to the study drug, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Shahraz_2026_savolitinib_safety_auc.R`, `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; linear logits back-solved from the probabilities printed in the Results at the median and 5th / 95th percentile exposures of each regimen)
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Grade-threshold sibling of `prob_teae_drug_related`. Distinct from `prob_teae_grade3` (all causality) and from the study-level `prob_trae_grade34` (grades 3-4 only, meta-regression).
+
+### prob_hepatotoxicity (**canonical any-grade hepatotoxicity adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences grade >= 1 hepatotoxicity, a sponsor-defined grouped adverse event of special interest, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Shahraz_2026_savolitinib_safety_auc.R`, `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss with the coefficients printed under Shahraz 2026 Figures S15-S31)
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. A grouped AESI term, not a single laboratory value: broader than `prob_alt_increase`, `prob_ast_increase` or `prob_bilirubin_increase`, and distinct from `prob_liver_enzyme_increase` (grouped enzyme elevations only).
+
+### prob_hepatotoxicity_grade3 (**canonical grade >= 3 hepatotoxicity adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences grade >= 3 hepatotoxicity (the grouped AESI of `prob_hepatotoxicity`) in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Shahraz_2026_savolitinib_safety_auc.R`, `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss with the coefficients printed under Shahraz 2026 Figures S15-S31)
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Grade-threshold sibling of `prob_hepatotoxicity`.
+
+### prob_hypersensitivity (**canonical any-grade hypersensitivity adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences grade >= 1 hypersensitivity, a sponsor-defined grouped adverse event of special interest, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Shahraz_2026_savolitinib_safety_auc.R`, `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss with the coefficients printed under Shahraz 2026 Figures S15-S31)
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Distinct from `prob_irr` (infusion-related reactions of an intravenous drug); the founding drug is oral.
+
+### prob_hypersensitivity_grade3 (**canonical grade >= 3 hypersensitivity adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences grade >= 3 hypersensitivity (the grouped AESI of `prob_hypersensitivity`) in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Shahraz_2026_savolitinib_safety_auc.R`, `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss with the coefficients printed under Shahraz 2026 Figures S15-S31)
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Grade-threshold sibling of `prob_hypersensitivity`.
+
+### prob_pyrexia_grade3 (**canonical grade >= 3 pyrexia adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences grade >= 3 pyrexia in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Shahraz_2026_savolitinib_safety_auc.R` (savolitinib; Figure S20a. The Cmax,ss counterpart, Figure S20b, is not available: the published supplement reprints Figure S17b in its place)
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Grade-threshold sibling of `prob_pyrexia`.
+
+### prob_alp_increase (**canonical alkaline phosphatase elevation adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences an adverse event of increased ALKALINE PHOSPHATASE, here grade >= 1 and causally related to the drug, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Shahraz_2026_savolitinib_safety_auc.R`, `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss with the coefficients printed under Shahraz 2026 Figures S15-S31)
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Sibling of `prob_alt_increase` and `prob_ast_increase`.
+
+### prob_bilirubin_increase (**canonical total bilirubin elevation adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences an adverse event of increased TOTAL BILIRUBIN, here grade >= 1 and causally related to the drug, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Shahraz_2026_savolitinib_safety_auc.R`, `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss with the coefficients printed under Shahraz 2026 Figures S15-S31)
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Sibling of `prob_alt_increase`, `prob_ast_increase` and `prob_alp_increase`.
+
+### prob_edema (**canonical any-grade oedema adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences grade >= 1 oedema (peripheral or generalised; here causally related to the drug), in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Shahraz_2026_savolitinib_safety_auc.R`, `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss with the coefficients printed under Shahraz 2026 Figures S15-S31)
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. US spelling, as `prob_periorbital_edema`; this is the broader any-site oedema term, which for a MET inhibitor is mostly peripheral oedema.
+
+### prob_edema_grade3 (**canonical grade >= 3 oedema adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences grade >= 3 oedema (the term of `prob_edema`) in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Shahraz_2026_savolitinib_safety_auc.R`, `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss with the coefficients printed under Shahraz 2026 Figures S15-S31)
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Grade-threshold sibling of `prob_edema`.
+
+### prob_hypoalbuminemia (**canonical hypoalbuminaemia adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences grade >= 1 hypoalbuminaemia (here causally related to the drug) as an adverse event, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Shahraz_2026_savolitinib_safety_auc.R`, `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss with the coefficients printed under Shahraz 2026 Figures S15-S31)
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. US spelling. An adverse-event term, not the serum albumin covariate `ALB`.
+
+### prob_venous_thromboembolism (**canonical venous thromboembolism adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences grade >= 1 venous thromboembolism (deep-vein thrombosis or pulmonary embolism; here causally related to the drug) as an adverse event, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Shahraz_2026_savolitinib_safety_auc.R`, `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss with the coefficients printed under Shahraz 2026 Figures S15-S31)
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Spelled out rather than abbreviated (`vte`).
 
 ### prob_headache (**canonical headache adverse-event probability output**)
 - **Type:** compartment
@@ -3932,7 +4016,7 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences, within a defined early treatment window, a treatment-emergent adverse event severe enough to force a DOSE MODIFICATION -- study-drug withdrawal, discontinuation, or dose reduction -- in a static landmark exposure-safety logistic model. The endpoint is defined by the clinical ACTION taken, not by a CTCAE grade or by a preferred term, and it pools every adverse-event type into a single event.
 - **Source aliases:** none. Source papers describe it as "TEAE leading to study drug withdrawal or dose reduction" or "dose reduction or discontinuation".
-- **Example models:** `Tamai_2017_lenvatinib_teae_dosemod.R` (founding example; frequentist logistic regression in 45 subjects with advanced hepatocellular carcinoma Child-Pugh class A, window = cycle 1 of 4 weeks, `logit = -4.71 + 1.82 * AUC_LEN / 1000` with lenvatinib steady-state 24 h AUC entering linearly and uncentred, and no covariate retained); `Yang_2025_axatilimab_teae_dosemod.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the individual steady-state AUC over a 4-week cycle, `AUC_AXATILIMAB_SS`); the action set includes dose interruptions as well as discontinuations and reductions, over the whole treatment period).
+- **Example models:** `Tamai_2017_lenvatinib_teae_dosemod.R` (founding example; frequentist logistic regression in 45 subjects with advanced hepatocellular carcinoma Child-Pugh class A, window = cycle 1 of 4 weeks, `logit = -4.71 + 1.82 * AUC_LEN / 1000` with lenvatinib steady-state 24 h AUC entering linearly and uncentred, and no covariate retained); `Yang_2025_axatilimab_teae_dosemod.R` (axatilimab in chronic graft-versus-host disease; binomial logistic regression on the individual steady-state AUC over a 4-week cycle, `AUC_AXATILIMAB_SS`); the action set includes dose interruptions as well as discontinuations and reductions, over the whole treatment period); `Shahraz_2026_savolitinib_safety_auc.R` and `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss, Shahraz 2026 Figures S11a-b; any related TEAE leading to dose modification at any time on treatment, no early window)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. **Record the window and the action set per model** -- they are the whole definition. The action-defined endpoint is a different construct from the severity-defined `prob_teae_grade3`: it is driven by what the treating physician did, so it is sensitive to the trial's dose-modification guidance and to how much headroom the starting dose leaves, and a drug studied at its maximum tolerated dose will show a high rate of it regardless of grade distribution. That sensitivity is the point rather than a defect -- in the founding paper the endpoint exists precisely to choose a STARTING DOSE, 74% of the phase 2 cohort having required reduction from 12 mg to 8 mg. Exposure for this endpoint must be frozen at the starting dose: because the modelled event IS the first dose change, an exposure column that tracks the current dose would be contaminated by the outcome. Do not treat it as a competing risk against grade-based or preferred-term endpoints, which it overlaps.
 
 ### prob_cpk_increase_grade3 (**canonical grade >= 3 creatine-phosphokinase-increase probability output**)
@@ -3946,14 +4030,14 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences a grade >= 3 adverse event of increased ASPARTATE AMINOTRANSFERASE under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
 - **Source aliases:** none.
-- **Example models:** `Gupta_2022_brigatinib_ast_grade3.R` (`logit = -3.178 + 0.004452 * AUC_BRIG_EVT`, observed 5/123).
+- **Example models:** `Gupta_2022_brigatinib_ast_grade3.R` (`logit = -3.178 + 0.004452 * AUC_BRIG_EVT`, observed 5/123); `Shahraz_2026_savolitinib_safety_auc.R` and `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss, Shahraz 2026 Figures S24a-b; causally related rather than all causality)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. The severity-qualified sibling of `prob_ast_increase` (treatment-related, any grade) and of `prob_ast_increase_grade2`; the thresholds are cumulative on one ordinal scale, so the grade 3 endpoint is a subset of the grade 2 endpoint and the two must not be treated as competing risks.
 
 ### prob_alt_increase_grade3 (**canonical grade >= 3 alanine-aminotransferase-increase probability output**)
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences a grade >= 3 adverse event of increased ALANINE AMINOTRANSFERASE under CTCAE v4.03, all causality, in a static landmark exposure-safety logistic model.
 - **Source aliases:** none.
-- **Example models:** `Gupta_2022_brigatinib_alt_grade3.R` (`logit = -3.234 + 0.01397 * AUC_BRIG_EVT`, observed 6/123).
+- **Example models:** `Gupta_2022_brigatinib_alt_grade3.R` (`logit = -3.234 + 0.01397 * AUC_BRIG_EVT`, observed 6/123); `Shahraz_2026_savolitinib_safety_auc.R` and `Shahraz_2026_savolitinib_safety_cmax.R` (savolitinib; binomial logistic regressions on AUC24,ss and on Cmax,ss, Shahraz 2026 Figures S22a-b; causally related rather than all causality)
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape; the `_grade2` / `_grade3` suffix means grade 2 / grade 3 OR WORSE, as for `prob_hyperglycemia_grade2`. The severity-qualified sibling of `prob_alt_increase` (treatment-related, any grade) and of `prob_alt_increase_grade2`; cumulative thresholds on one ordinal scale, not competing risks.
 
 ### prob_amylase_increase_grade3 (**canonical grade >= 3 amylase-increase probability output**)

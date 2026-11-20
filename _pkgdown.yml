@@ -7680,6 +7680,20 @@ navbar:
         href: articles/Ma_2020_sarilumab_anc.html
       - text: "Sarilumab das28crp (Ma 2020)"
         href: articles/Ma_2020_sarilumab_das28crp.html
+      - text: "Savolitinib (Shahraz 2026)"
+        href: articles/Shahraz_2026_savolitinib.html
+      - text: "Savolitinib orr allcomers (Shahraz 2026)"
+        href: articles/Shahraz_2026_savolitinib.html
+      - text: "Savolitinib orr highmet (Shahraz 2026)"
+        href: articles/Shahraz_2026_savolitinib.html
+      - text: "Savolitinib orr highmet 2l (Shahraz 2026)"
+        href: articles/Shahraz_2026_savolitinib.html
+      - text: "Savolitinib orr lowmet (Shahraz 2026)"
+        href: articles/Shahraz_2026_savolitinib.html
+      - text: "Savolitinib safety auc (Shahraz 2026)"
+        href: articles/Shahraz_2026_savolitinib.html
+      - text: "Savolitinib safety cmax (Shahraz 2026)"
+        href: articles/Shahraz_2026_savolitinib.html
       - text: "Saxagliptin rat (Wang 2024)"
         href: articles/Wang_2024_saxagliptin_dpp4_rat.html
       - text: "SchisandrinA cyp3a (He 2021)"
@@ -11967,6 +11981,7 @@ articles:
   - articles/Shah_2025_clarithromycin
   - articles/Shah_2026_rrmm_mbma
   - articles/Shahraz_2024_falbikitug
+  - articles/Shahraz_2026_savolitinib
   - articles/Shao_2023_bedaquiline
   - articles/Sharma_2016_hydroxyprogesteroneCaproate
   - articles/Sharma_2018_SHetA2
