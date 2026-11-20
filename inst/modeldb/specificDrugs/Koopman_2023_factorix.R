@@ -1,5 +1,5 @@
 Koopman_2023_factorix <- function() {
-  description <- "Two-compartment population PK model for recombinant factor IX-Fc fusion concentrate (rFIX-Fc, eftrenonacog alfa) in haemophilia B patients aged 2-71 years (Koopman 2023)"
+  description <- "Two-compartment population PK model for recombinant factor IX-Fc fusion concentrate (rFIX-Fc, eftrenonacog alfa) in haemophilia B patients aged 2-71 years (Koopman 2023). Inter-occasion variability on CL (nine occasions, selected by OCC) is included."
   reference <- paste(
     "Koopman SF, Goedhart TMHJ, Bukkems LH, Mulders TM, Leebeek FWG,",
     "Fijnvandraat K, Coppens M, Mathias M, Collins PW, Tait RC, Bagot CN,",
@@ -36,6 +36,26 @@ Koopman_2023_factorix <- function() {
       reference_category = NULL,
       notes = "Linear-deviation effect on CL centered at 15.8 years (median age of the development cohort). Effect form: CL multiplied by (1 - 0.0047 * (AGE - 15.8)) (Koopman 2023 equations on p. 226).",
       source_name = "AGE"
+    ),
+    OCC = list(
+      description = "Occasion index (1-9): one PK-profiling visit, for inter-occasion variability on CL",
+      units = "(count)",
+      type = "categorical",
+      reference_category = NULL,
+      notes = paste(
+        "Koopman 2023 Methods 2.4 (p. 222): the initial visit with PK profiling is",
+        "the first occasion and later occasions are visits with a PK assessment;",
+        "Results 3.1 (p. 223): a median of 2 occasions per individual, range 1-9.",
+        "Decomposed inside model() into the binary flags oc1..oc9 that select one of",
+        "nine BOV etas on log-CL. rxode2's `| OCC` level shares one draw per",
+        "occasion when no subject has two or more occasions, so the occasions are",
+        "expanded into indicator-multiplexed etas; occasion 1 carries the estimated",
+        "variance and occasions 2-9 are fixed to the same value. Records with OCC",
+        "beyond 9 carry no IOV, and OCC is required in every event table, also for",
+        "zeroRe() runs; a single-profile simulation passes OCC = 1.",
+        sep = " "
+      ),
+      source_name = "occasion"
     )
   )
 
@@ -85,6 +105,23 @@ Koopman_2023_factorix <- function() {
     # Independent IIV on V2: omega^2 = 0.412^2 = 0.16974
     etalvp ~ 0.16974                                        # Koopman 2023 Table 2: IIV V2 = 41.2%
 
+    # Inter-occasion variability on CL (Koopman 2023 Table 2, p. 226; the footnote
+    # gives IIV and IOV as sqrt(variance) * 100%, so omega^2 = CV^2). One variance
+    # is shared by the nine occasions of the paper's range (1-9 per individual).
+    # rxode2's `| OCC` level shares one draw per occasion when no subject has two
+    # or more occasions, so each occasion is an indicator-multiplexed eta (see the
+    # OCC covariate); occasions 2-9 are fixed to occasion 1. IOV on V1 was not
+    # estimated.
+    etaiov_cl_1 ~ 0.198^2          # Koopman 2023 Table 2: IOV on CL = 19.8% (RSE 22%)
+    etaiov_cl_2 ~ fixed(0.198^2)   # same variance as occasion 1
+    etaiov_cl_3 ~ fixed(0.198^2)   # same variance as occasion 1
+    etaiov_cl_4 ~ fixed(0.198^2)   # same variance as occasion 1
+    etaiov_cl_5 ~ fixed(0.198^2)   # same variance as occasion 1
+    etaiov_cl_6 ~ fixed(0.198^2)   # same variance as occasion 1
+    etaiov_cl_7 ~ fixed(0.198^2)   # same variance as occasion 1
+    etaiov_cl_8 ~ fixed(0.198^2)   # same variance as occasion 1
+    etaiov_cl_9 ~ fixed(0.198^2)   # same variance as occasion 1
+
     # Residual error: combined additive + proportional (Koopman 2023 Table 2)
     propSd <- 0.163; label("Proportional residual error (fraction)")        # Koopman 2023 Table 2: proportional error = 16.3%
     addSd  <- 1.04;  label("Additive residual error (IU/dL)")               # Koopman 2023 Table 2: additive error = 1.04 IU/dL
@@ -97,11 +134,22 @@ Koopman_2023_factorix <- function() {
     # Individual PK parameters with allometric weight scaling (reference 73 kg).
     # Allometric exponents fixed at theoretical values: 0.75 for CL/Q, 1.00 for V1/V2
     # (Koopman 2023 Table 2 and equations on p. 226). The paper fits IIV on CL, V1
-    # and V2 only (no IIV on Q). Inter-occasion variability on CL was reported
-    # (19.8%) but is omitted here because the static library model has no occasion
-    # variable; it is documented in the vignette's Assumptions and deviations
-    # section.
-    cl <- exp(lcl + etalcl) * (WT / 73)^0.75 * age_cl
+    # and V2 only (no IIV on Q); inter-occasion variability is on CL only. The
+    # occasion flags select one BOV eta per record; a single-profile simulation
+    # passes OCC = 1.
+    oc1 <- (OCC == 1)
+    oc2 <- (OCC == 2)
+    oc3 <- (OCC == 3)
+    oc4 <- (OCC == 4)
+    oc5 <- (OCC == 5)
+    oc6 <- (OCC == 6)
+    oc7 <- (OCC == 7)
+    oc8 <- (OCC == 8)
+    oc9 <- (OCC == 9)
+    iov_cl <- oc1 * etaiov_cl_1 + oc2 * etaiov_cl_2 + oc3 * etaiov_cl_3 +
+      oc4 * etaiov_cl_4 + oc5 * etaiov_cl_5 + oc6 * etaiov_cl_6 +
+      oc7 * etaiov_cl_7 + oc8 * etaiov_cl_8 + oc9 * etaiov_cl_9
+    cl <- exp(lcl + etalcl + iov_cl) * (WT / 73)^0.75 * age_cl
     vc <- exp(lvc + etalvc) * (WT / 73)^1.00
     q  <- exp(lq)           * (WT / 73)^0.75
     vp <- exp(lvp + etalvp) * (WT / 73)^1.00
