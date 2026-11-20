@@ -288,6 +288,8 @@ navbar:
         href: articles/Wright_2016_allopurinol.html
       - text: "Alprazolam (Klein 2026)"
         href: articles/Klein_2026_alprazolam.html
+      - text: "Alverine mouse (Cho 2026)"
+        href: articles/Cho_2026_alverine_mouse.html
       - text: "Alvespimycin (Aregbe 2012)"
         href: articles/Aregbe_2012_alvespimycin.html
       - text: "Alvespimycin nep11 (Li 2026)"
@@ -10242,6 +10244,7 @@ articles:
   - articles/Chigutsa_2025_tirzepatide
   - articles/Chirehwa_2017_pyrazinamide
   - articles/Chiriac_2024_dalbavancin
+  - articles/Cho_2026_alverine_mouse
   - articles/Choe_2012_busulfan
   - articles/Choi_2011_remifentanil
   - articles/Choi_2016_gcc4401c_rivaroxaban

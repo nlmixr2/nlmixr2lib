@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhou 2026 nipocalimab PK/FcRn occupancy/IgG ([doi:10.1002/jcph.70259](https://doi.org/10.1002/jcph.70259)) -- healthy adults and pregnant participants at risk of severe hemolytic disease of the fetus and newborn.
+- Add Cho 2026 alverine and metabolites M1-M3 ([doi:10.1002/psp4.70342](https://doi.org/10.1002/psp4.70342)) -- male ICR mice given IV or oral alverine citrate.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
