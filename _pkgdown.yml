@@ -2426,8 +2426,20 @@ navbar:
         href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Dihydroartemisinin (Chotsiri 2017)"
         href: articles/Chotsiri_2017_dihydroartemisinin_piperaquine.html
+      - text: "Dihydroartemisinin (Jamsen 2011)"
+        href: articles/Jamsen_2011_dihydroartemisinin.html
       - text: "Dihydroartemisinin (Tarning 2012)"
         href: articles/Tarning_2012_dihydroartemisinin_piperaquine.html
+      - text: "Dihydroartemisinin children (Jamsen 2011)"
+        href: articles/Jamsen_2011_dihydroartemisinin.html
+      - text: "Dihydroartemisinin dost (Jamsen 2011)"
+        href: articles/Jamsen_2011_dihydroartemisinin.html
+      - text: "Dihydroartemisinin dost nolag (Jamsen 2011)"
+        href: articles/Jamsen_2011_dihydroartemisinin.html
+      - text: "Dihydroartemisinin nolag (Jamsen 2011)"
+        href: articles/Jamsen_2011_dihydroartemisinin.html
+      - text: "Dihydroartemisinin pregnant (Jamsen 2011)"
+        href: articles/Jamsen_2011_dihydroartemisinin.html
       - text: "Dihydroxyflavone mouse (Lim 2024)"
         href: articles/Lim_2024_dihydroxyflavone_mouse.html
       - text: "Dilmapimod (Yang 2016)"
@@ -11047,6 +11059,7 @@ articles:
   - articles/Jaiswal_2025_dordaviprone
   - articles/James_2025_fepixnebart
   - articles/Jamois_2025_tocilizumab
+  - articles/Jamsen_2011_dihydroartemisinin
   - articles/Jang_2019_cefprozil
   - articles/Jang_2021_oxcarbazepine
   - articles/Jang_2023_zaltoprofen

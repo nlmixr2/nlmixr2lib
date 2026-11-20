@@ -2,7 +2,7 @@
 
 # development version
 
-- Add McNally 2011 m-xylene PBPK ([doi:10.3389/fphar.2011.00031](https://doi.org/10.3389/fphar.2011.00031)) -- healthy adults with inhalation exposure and urinary 3-methylhippuric acid.
+- Add Jamsen 2011 dihydroartemisinin after oral artesunate ([doi:10.1186/1475-2875-10-181](https://doi.org/10.1186/1475-2875-10-181)) -- non-pregnant adults with uncomplicated falciparum malaria (four competing structural models), with the pregnant-women and adults-and-children design models.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

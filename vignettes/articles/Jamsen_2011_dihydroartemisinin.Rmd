@@ -1,0 +1,450 @@
+---
+title: "Dihydroartemisinin after oral artesunate (Jamsen 2011)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dihydroartemisinin after oral artesunate (Jamsen 2011)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Jamsen_2011_dihydroartemisinin"))$reference`
+* Article: <https://doi.org/10.1186/1475-2875-10-181> (open access; Additional
+  file 1 holds the model equations and the paediatric scaling)
+
+Jamsen et al. derived optimal blood-sampling designs for population PK
+studies of dihydroartemisinin (DHA), the active metabolite of oral artesunate
+(AS). To do so they fitted four competing one-compartment structural models
+to intensively sampled DHA data from 32 non-pregnant adults, took a model for
+pregnant women from McGready 2006, and extrapolated the adult model to
+children by allometry and maturation. The paper ships as six model files that
+share this article:
+
+| Model file | Structure | Population |
+|---|---|---|
+| `Jamsen_2011_dihydroartemisinin` | Bateman (first-order absorption) with lag time; best fit, simulation model | non-pregnant adults |
+| `Jamsen_2011_dihydroartemisinin_nolag` | Bateman without lag time | non-pregnant adults |
+| `Jamsen_2011_dihydroartemisinin_dost` | Dost (ka = kel = k) with lag time | non-pregnant adults |
+| `Jamsen_2011_dihydroartemisinin_dost_nolag` | Dost without lag time | non-pregnant adults |
+| `Jamsen_2011_dihydroartemisinin_pregnant` | Bateman with lag time (McGready 2006 values) | pregnant women |
+| `Jamsen_2011_dihydroartemisinin_children` | Bateman with lag time, allometry + CL/F maturation | infants, children and adults |
+
+All six assume that artesunate is completely converted to DHA (Methods). The
+model files take the dose in **mg of artesunate** and convert it to DHA mass
+by the molecular-weight ratio 284.35 / 384.42 through `f(depot)`; see
+"Assumptions and deviations" for why.
+
+# Population
+
+The adult models were fitted to 32 non-pregnant adults with uncomplicated
+*Plasmodium falciparum* malaria treated with 4 mg/kg oral artesunate at
+field clinics on the Thai-Burmese border (Wang Pha) and in western Cambodia
+(Pailin), each contributing 6-12 venous samples over the first 12 h. They are
+an intensively sampled subset of the Dondorp 2009 (N Engl J Med) artemisinin
+resistance study; the median weight was 51 kg (Additional file 1). Age, sex
+and other demographics are reported in Dondorp 2009, not in this paper.
+
+The pregnant-women model reproduces the population PK study of McGready
+2006 (Eur J Clin Pharmacol) from the Thai-Burmese border; Jamsen 2011
+multiplied its weight-normalised CL/F and V/F by the 50 kg median weight. The
+adults-and-children model is not a fit to paediatric data: it extrapolates
+the adult model to a hypothetical design population of four age groups
+(<2, 2-10, 11-20 and >20 years).
+
+```{r population}
+readModelDb("Jamsen_2011_dihydroartemisinin")()$population
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source. Table 1 of
+the paper prints between-subject variances as %CV (= 100 x sqrt(variance))
+and covariances as correlation coefficients, so the model files use
+variance = (CV/100)^2 and covariance = r x SD1 x SD2.
+
+| Model / parameter | Value | Source location |
+|---|---|---|
+| Bateman + lag: ka, CL/F, V/F | 0.82 /h, 47.5 L/h, 32.1 L | Table 1, non-pregnant adults, lag-time included |
+| Bateman + lag: tlag | 0.21 h (fixed) | Table 1 |
+| Bateman + lag: BSV ka, CL/F, V/F, tlag | 26.7, 29.4, 81.9, 10.0 %CV | Table 1 |
+| Bateman + lag: correlations CL/F-V/F, ka-tlag | 0.58, 0.19 | Table 1 |
+| Bateman + lag: proportional sigma | 0.41 | Table 1 |
+| Bateman no lag: ka, CL/F, V/F | 0.89 /h, 48.8 L/h, 44.4 L | Table 1, lag-time not included |
+| Bateman no lag: BSV ka, CL/F, V/F; r(CL/F, V/F); sigma | 11.4, 26.8, 64.7 %CV; 0.75; 0.55 | Table 1 |
+| Dost + lag: k, V/F, tlag | 0.99 /h, 46.3 L, 0.21 h (fixed) | Table 1, Dost model |
+| Dost + lag: BSV k, V/F, tlag; r(k, V/F); sigma | 22.0, 48.2, 11.4 %CV; -0.79; 0.47 | Table 1 |
+| Dost no lag: k, V/F | 0.95 /h, 51.3 L | Table 1 |
+| Dost no lag: BSV k, V/F; r(k, V/F); sigma | 20.8, 42.2 %CV; -0.81; 0.57 | Table 1 |
+| Pregnant: ka, CL/F, V/F, tlag | 1.19 /h, 88.5 L/h, 232 L, 0.42 h | Table 1, pregnant women (from McGready 2006; per-kg values x 50 kg) |
+| Pregnant: BSV CL/F | 47.0 %CV | Table 1 |
+| Pregnant: BSV ka, sigma | 26.7 %CV, 0.41 (non-pregnant values) | Results, paragraph after Table 1 |
+| Pregnant: BSV V/F | variance 1 | Results and Table 2 footnote ('reduced to 1') |
+| Children: allometric exponents 0.75 (CL/F) and 1 (V/F), reference 51 kg | fixed | Additional file 1, CL/F and V/F equations |
+| Children: CL/F at birth = CL/Fpop / 3.1; kmat = 0.082 /month | fixed | Additional file 1 |
+| Bateman equation | n/a | Additional file 1, 'The Bateman model' |
+| Dost equation | n/a | Additional file 1, 'The Dost model' |
+
+# Typical-value check against the closed-form equations
+
+Additional file 1 gives both structural models in closed form. Solving the
+packaged ODE models at their typical values must reproduce those equations;
+the two sides use the same parameters, so the difference is pure integrator
+error and a tight bound is the right test.
+
+```{r closed-form}
+mw_ratio <- 284.35 / 384.42
+dose_as <- 4 * 51 # 4 mg/kg artesunate for the 51 kg median non-pregnant adult
+tgrid <- seq(0, 12, by = 0.05)
+
+bateman <- function(t, dose, ka, cl, v, tlag) {
+  tt <- pmax(t - tlag, 0)
+  1000 * dose * ka / (v * ka - cl) * (exp(-cl / v * tt) - exp(-ka * tt))
+}
+dost <- function(t, dose, k, v, tlag) {
+  tt <- pmax(t - tlag, 0)
+  1000 * dose / v * k * tt * exp(-k * tt)
+}
+
+typical_solve <- function(name, dose, label) {
+  mod <- rxode2::zeroRe(readModelDb(name))
+  ev <- rxode2::et(amt = dose, cmt = "depot") |> rxode2::et(tgrid)
+  as.data.frame(rxode2::rxSolve(mod, ev, rtol = 1e-10, atol = 1e-12)) |>
+    dplyr::transmute(time, Cc, model = label)
+}
+
+typ <- dplyr::bind_rows(
+  typical_solve("Jamsen_2011_dihydroartemisinin", dose_as, "Bateman, lag"),
+  typical_solve("Jamsen_2011_dihydroartemisinin_nolag", dose_as, "Bateman, no lag"),
+  typical_solve("Jamsen_2011_dihydroartemisinin_dost", dose_as, "Dost, lag"),
+  typical_solve("Jamsen_2011_dihydroartemisinin_dost_nolag", dose_as, "Dost, no lag")
+)
+
+d_dha <- dose_as * mw_ratio
+closed <- dplyr::bind_rows(
+  data.frame(time = tgrid, model = "Bateman, lag", ref = bateman(tgrid, d_dha, 0.82, 47.5, 32.1, 0.21)),
+  data.frame(time = tgrid, model = "Bateman, no lag", ref = bateman(tgrid, d_dha, 0.89, 48.8, 44.4, 0)),
+  data.frame(time = tgrid, model = "Dost, lag", ref = dost(tgrid, d_dha, 0.99, 46.3, 0.21)),
+  data.frame(time = tgrid, model = "Dost, no lag", ref = dost(tgrid, d_dha, 0.95, 51.3, 0))
+)
+
+chk <- dplyr::inner_join(typ, closed, by = c("model", "time")) |>
+  dplyr::filter(ref > 1)
+chk |>
+  dplyr::group_by(model) |>
+  dplyr::summarise(max_rel_err = max(abs(Cc / ref - 1)), .groups = "drop") |>
+  knitr::kable(digits = 10, caption = "Packaged ODE vs Additional file 1 closed form (typical values).")
+# Measured below 1e-10 at rtol = 1e-10; the bound leaves >3 orders of headroom.
+stopifnot(max(abs(chk$Cc / chk$ref - 1)) < 1e-6)
+```
+
+# Replicate Figure 1 (left panel): population profiles in non-pregnant adults
+
+Figure 1 (left) overlays the four population profiles on the observed data;
+all four peak near 1200 ng/mL around 1 h and are nearly indistinguishable.
+
+```{r fig1-left}
+ggplot(typ, aes(time, Cc, linetype = model)) +
+  geom_line() +
+  labs(
+    x = "Time (h)", y = "DHA concentration (ng/mL)", linetype = NULL,
+    title = "Typical DHA profiles after 4 mg/kg oral artesunate (51 kg)",
+    caption = "Replicates Figure 1 (left) of Jamsen 2011."
+  ) +
+  theme_bw()
+```
+
+```{r fig1-peaks}
+peaks <- typ |>
+  dplyr::group_by(model) |>
+  dplyr::summarise(Cmax = max(Cc), Tmax = time[which.max(Cc)], .groups = "drop")
+knitr::kable(peaks, digits = 2, caption = "Typical-value peak of each adult model.")
+# Figure S1 (Additional file 1, non-pregnant adults panel) and Figure 1 (left)
+# show the population peak at about 1200-1250 ng/mL near 1.1 h, digitised by
+# the maintainers. Without the AS -> DHA molecular-weight conversion the
+# Bateman-with-lag peak would be ~1690 ng/mL.
+stopifnot(
+  abs(peaks$Cmax[peaks$model == "Bateman, lag"] / 1225 - 1) < 0.1,
+  all(abs(peaks$Cmax / 1225 - 1) < 0.15)
+)
+```
+
+# Replicate Figure 1 (right panel): pregnant women
+
+```{r fig1-right}
+typ_preg <- typical_solve("Jamsen_2011_dihydroartemisinin_pregnant", 4 * 50, "Pregnant women")
+ggplot(typ_preg, aes(time, Cc)) +
+  geom_line() +
+  coord_cartesian(ylim = c(0, 5000)) +
+  labs(
+    x = "Time (h)", y = "DHA concentration (ng/mL)",
+    title = "Typical DHA profile in pregnant women (4 mg/kg, 50 kg)",
+    caption = "Replicates Figure 1 (right) of Jamsen 2011, plotted on the same axis."
+  ) +
+  theme_bw()
+
+preg_peak <- max(typ_preg$Cc)
+preg_tmax <- typ_preg$time[which.max(typ_preg$Cc)]
+c(Cmax = preg_peak, Tmax = preg_tmax)
+# Figure S1 (pregnant women panel), digitised by the maintainers: peak about
+# 370 ng/mL at about 1.8 h.
+stopifnot(abs(preg_peak / 370 - 1) < 0.1, abs(preg_tmax - 1.8) < 0.3)
+```
+
+# Adults and children: Figure S2 and the middle panel of Figure S1
+
+The paediatric model scales CL/F and V/F by weight relative to 51 kg and
+lets CL/F mature exponentially with age from 1/3.1 of its size-scaled adult
+value at birth. The age/weight pairs Jamsen used came from a linear model
+fitted to Simpson 2006 data that the paper does not print; the pairs below are
+illustrative choices by the maintainers, one per design age group.
+
+```{r children-params}
+mod_ch <- readModelDb("Jamsen_2011_dihydroartemisinin_children")
+kids <- data.frame(
+  group = c("<2 y", "2-10 y", "11-20 y", ">20 y"),
+  AGE = c(1, 6, 15, 30),
+  WT = c(9, 18, 40, 51)
+)
+kids$cl_typ <- 47.5 * (kids$WT / 51)^0.75 *
+  (1 + (1 / 3.1 - 1) * exp(-0.082 * kids$AGE * 12))
+kids$vc_typ <- 32.1 * kids$WT / 51
+kids |>
+  dplyr::rename(
+    "Age group" = group, "Age (y)" = AGE, "Weight (kg)" = WT,
+    "Typical CL/F (L/h)" = cl_typ, "Typical V/F (L)" = vc_typ
+  ) |>
+  knitr::kable(digits = 2)
+```
+
+```{r children-maturation}
+mat <- data.frame(age_y = seq(0, 5, by = 0.05))
+mat$fmat <- 1 + (1 / 3.1 - 1) * exp(-0.082 * mat$age_y * 12)
+ggplot(mat, aes(age_y, fmat)) +
+  geom_line() +
+  labs(
+    x = "Age (years)", y = "CL/F as a fraction of the size-scaled adult value",
+    title = "Maturation of DHA oral clearance (Additional file 1)"
+  ) +
+  theme_bw()
+```
+
+```{r children-profiles}
+# One typical-value solve per age group: a multi-subject solve of a zeroRe()
+# model warns that it has no omega.
+mod_ch_typ <- rxode2::zeroRe(mod_ch)
+sim_kids <- do.call(rbind, lapply(seq_len(nrow(kids)), function(i) {
+  ev <- as.data.frame(rxode2::et(amt = 4 * kids$WT[i], cmt = "depot") |> rxode2::et(tgrid))
+  ev$AGE <- kids$AGE[i]
+  ev$WT <- kids$WT[i]
+  s <- as.data.frame(rxode2::rxSolve(mod_ch_typ, ev, rtol = 1e-10, atol = 1e-12))
+  s$group <- kids$group[i]
+  s
+}))
+sim_kids$group <- factor(sim_kids$group, levels = kids$group)
+ggplot(sim_kids, aes(time, Cc, linetype = group)) +
+  geom_line() +
+  labs(
+    x = "Time (h)", y = "DHA concentration (ng/mL)", linetype = "Age group",
+    title = "Typical DHA profiles after 4 mg/kg oral artesunate",
+    caption = "Compare Figure S1 (middle panel) of Jamsen 2011 Additional file 1."
+  ) +
+  theme_bw()
+
+# At the adult reference (30 y, 51 kg) the paediatric model must reduce to the
+# adult Bateman-with-lag model: maturation is complete and the weight ratio is 1.
+adult_ref <- sim_kids |> dplyr::filter(group == ">20 y")
+ref_adult <- typ |> dplyr::filter(model == "Bateman, lag")
+stopifnot(max(abs(adult_ref$Cc - ref_adult$Cc)) < 1e-6 * max(ref_adult$Cc))
+
+# Figure S1 (middle panel): every age group peaks between about 1000 and
+# 1250 ng/mL, digitised by the maintainers.
+kid_peaks <- sim_kids |>
+  dplyr::group_by(group) |>
+  dplyr::summarise(Cmax = max(Cc), .groups = "drop")
+kid_peaks
+stopifnot(all(kid_peaks$Cmax > 900), all(kid_peaks$Cmax < 1400))
+```
+
+# Virtual cohort and VPC
+
+Jamsen simulated adult weights from the Dondorp 2009 data, which the paper does
+not tabulate. The cohorts below draw weights log-normally around the median
+(51 kg for non-pregnant adults, 50 kg for pregnant women) with a 15% CV, an
+assumption of the maintainers; doses are 4 mg/kg of artesunate.
+
+```{r cohort}
+set.seed(20110701)
+rxode2::rxSetSeed(20110701)
+n_per_arm <- 200
+obs_times <- c(seq(0, 1, by = 0.1), seq(1.25, 4, by = 0.25), seq(4.5, 12, by = 0.5))
+
+make_cohort <- function(n, wt_median, id_offset) {
+  wt <- wt_median * exp(rnorm(n, 0, 0.15))
+  do.call(rbind, lapply(seq_len(n), function(i) {
+    data.frame(
+      id = id_offset + i,
+      time = c(0, obs_times),
+      evid = c(1L, rep(0L, length(obs_times))),
+      amt = c(4 * wt[i], rep(0, length(obs_times))),
+      cmt = "depot",
+      WT = wt[i]
+    )
+  }))
+}
+
+arms <- c(
+  "Bateman, lag" = "Jamsen_2011_dihydroartemisinin",
+  "Bateman, no lag" = "Jamsen_2011_dihydroartemisinin_nolag",
+  "Dost, lag" = "Jamsen_2011_dihydroartemisinin_dost",
+  "Dost, no lag" = "Jamsen_2011_dihydroartemisinin_dost_nolag",
+  "Pregnant women" = "Jamsen_2011_dihydroartemisinin_pregnant"
+)
+
+sim_list <- list()
+dose_list <- list()
+for (k in seq_along(arms)) {
+  wt_med <- if (names(arms)[k] == "Pregnant women") 50 else 51
+  ev <- make_cohort(n_per_arm, wt_med, id_offset = (k - 1L) * n_per_arm)
+  s <- as.data.frame(rxode2::rxSolve(readModelDb(arms[[k]]), ev, keep = "WT"))
+  s$treatment <- names(arms)[k]
+  sim_list[[k]] <- s
+  d <- ev[ev$evid == 1, c("id", "time", "amt")]
+  d$treatment <- names(arms)[k]
+  dose_list[[k]] <- d
+}
+sim <- dplyr::bind_rows(sim_list)
+doses <- dplyr::bind_rows(dose_list)
+stopifnot(!anyDuplicated(doses$id))
+```
+
+```{r vpc, fig.height = 6}
+vpc <- sim |>
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(
+    p05 = quantile(Cc, 0.05), p50 = quantile(Cc, 0.5), p95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc, aes(time)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.25) +
+  geom_line(aes(y = p50)) +
+  facet_wrap(~treatment, ncol = 3) +
+  labs(
+    x = "Time (h)", y = "DHA concentration (ng/mL)",
+    title = "Simulated DHA: median and 90% prediction interval",
+    caption = "Compare the observed data in Figure 1 (left) of Jamsen 2011 (n = 32)."
+  ) +
+  theme_bw()
+```
+
+# PKNCA
+
+The paper reports no NCA, so the check below compares the simulated
+exposure with what the model structure implies: for a one-compartment model
+the median AUC0-inf should match the typical dose x (284.35/384.42) / CL/F,
+and the median Cmax should sit near the typical-value peak.
+
+```{r pknca}
+# LSODA can undershoot zero by about atol in the tail; assert it is noise,
+# floor it, and drop the numerically-zero tail after the peak.
+stopifnot(all(sim$Cc >= -1e-6 * max(sim$Cc, na.rm = TRUE), na.rm = TRUE))
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(Cc = pmax(Cc, 0)) |>
+  dplyr::select(id, time, Cc, treatment) |>
+  dplyr::group_by(treatment, id) |>
+  dplyr::filter(time <= time[which.max(Cc)] | Cc >= 1e-6 * max(Cc)) |>
+  dplyr::ungroup()
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(treatment, id, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+dose_obj <- PKNCA::PKNCAdose(doses, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tab <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+nca_tab |>
+  dplyr::select(treatment, cmax, tmax, aucinf.obs, half.life) |>
+  dplyr::rename(
+    "Model" = treatment, "Cmax (ng/mL)" = cmax, "Tmax (h)" = tmax,
+    "AUC0-inf (ng*h/mL)" = aucinf.obs, "t1/2 (h)" = half.life
+  ) |>
+  knitr::kable(digits = 2, caption = "Median simulated NCA, 4 mg/kg oral artesunate (n = 200 per model).")
+```
+
+```{r pknca-check}
+cl_typ <- c(
+  "Bateman, lag" = 47.5, "Bateman, no lag" = 48.8,
+  "Dost, lag" = 0.99 * 46.3, "Dost, no lag" = 0.95 * 51.3,
+  "Pregnant women" = 88.5
+)
+wt_typ <- c(rep(51, 4), 50)
+auc_expected <- 1000 * 4 * wt_typ * mw_ratio / cl_typ
+auc_chk <- nca_tab |>
+  dplyr::mutate(expected = auc_expected[treatment], ratio = aucinf.obs / expected)
+knitr::kable(auc_chk |> dplyr::select(treatment, aucinf.obs, expected, ratio), digits = 3)
+# Structural: the median of a log-normal product is the product of medians.
+# CL/F BSV is 27-47 %CV, so with 200 subjects the median carries ~3-4%
+# Monte-Carlo error; 12% is >3 SE yet a 26% molecular-weight slip or a wrong
+# CL would fail it.
+stopifnot(all(abs(auc_chk$ratio - 1) < 0.12))
+```
+
+# Assumptions and deviations
+
+* **Dose units.** The paper writes the dose as D_i without saying whether it
+  is artesunate mass or DHA-equivalent mass. With the artesunate dose (4 mg/kg
+  x 51 kg = 204 mg) the Bateman-with-lag typical peak would be ~1690 ng/mL and
+  the pregnant-women peak ~500 ng/mL, against ~1225 and ~370 ng/mL in Figure 1
+  and Figure S1. Converting the artesunate dose to DHA by the molecular-weight
+  ratio (284.35 / 384.42 = 0.740) reproduces both figures, consistent with the
+  stated assumption of complete conversion. The model files therefore take the
+  artesunate dose in mg and apply the ratio through `f(depot)`; `f(depot)` is a
+  stoichiometric factor here, not a bioavailability (F is already inside CL/F
+  and V/F).
+* **Competing models.** All four adult structures are shipped because the
+  authors carried all four into the design (Table 1, Figure 1). The
+  Bateman-with-lag model gave the best fit and is the one they simulated from.
+* **Pregnant women.** The structural values are McGready 2006's, copied from
+  Table 1 of this paper rather than from the primary article. The BSV of ka
+  and the residual SD are the non-pregnant adult values, as the authors did.
+  The BSV of V/F is the variance of 1 the authors used for design and
+  simulation; McGready 2006 reported 154 %CV (variance 2.37), and the authors
+  also tried 0.67 and 2.37 as competing values (Table 2 footnote). Table 1
+  reports no BSV of tlag and no correlations for this population, so the model
+  has neither; the paper says the BSV of tlag was fixed "to the value it was
+  simulated at" in the estimation step without giving that value. CL/F and
+  V/F are fixed at a 50 kg woman, as in Table 1, rather than scaled by weight.
+* **Children.** The paediatric model is the authors' a-priori extrapolation,
+  not a fit. Additional file 1 states the maturation in age in months; the
+  model uses the canonical `AGE` in years and converts. The authors also
+  scaled the Bateman model without lag time for this design (Figure S2); that
+  variant is not shipped separately, but the same scaling applies to
+  `Jamsen_2011_dihydroartemisinin_nolag`. The age/weight pairs above are
+  illustrative; the authors' linear age-weight model is not printed.
+* **Residual error.** Additional file 1 mentions an additive component added
+  only for the optimal-design calculation, with no value given; the fitted
+  models are purely proportional, as shipped.
+* **Weights in the VPC cohorts** are assumed log-normal (15% CV) around the
+  reported medians.
