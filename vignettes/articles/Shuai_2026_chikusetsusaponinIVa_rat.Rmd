@@ -1,0 +1,379 @@
+---
+title: "Chikusetsusaponin IVa in MI/RI rats (Shuai 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Chikusetsusaponin IVa in MI/RI rats (Shuai 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Shuai_2026_chikusetsusaponinIVa_rat"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Shuai_2026_chikusetsusaponinIVa_rat"))$description`
+* Article: <https://doi.org/10.3390/ph19050749> (open access; supplementary
+  Tables S6-S8 at <https://www.mdpi.com/article/10.3390/ph19050749/s1>)
+
+Chikusetsusaponin IVa (CS-IVa) is an oleanane-type triterpenoid saponin from
+*Panax japonicus* (C42H66O14, MW 795.0 g/mol). Shuai 2026 compared its
+non-compartmental PK in normal and myocardial ischemia/reperfusion-injured
+(MI/RI) rats and then re-evaluated twelve candidate compartmental models for
+the MI/RI group in Phoenix WinNonlin (Supplementary Table S6). The selected
+model is a one-compartment model with first-order absorption, no lag time and
+unweighted least squares. The paper then linked this model to an empirical
+effect compartment to describe the delay between plasma CS-IVa and the
+CK-MB-derived response, choosing ke0 = 0.001 1/min from a sensitivity grid
+(Table S8).
+
+# Population
+
+Male specific-pathogen-free Sprague-Dawley rats weighing 200 +/- 20 g
+(Section 4.2). MI/RI was induced by 30 min ligation of the left anterior
+descending coronary artery followed by reperfusion, and CS-IVa 15 mg/kg was
+given intraperitoneally (10 mL/kg, DMSO <= 1% in saline) at the onset of
+reperfusion. The MI/RI-15 mg/kg PK group had n = 8 rats sampled over
+0-1440 min (Section 4.5). Normal rats at 7.5, 15 and 30 mg/kg (n = 8 each)
+were analysed by NCA only and have no compartmental model.
+
+The compartmental fit used the group-mean profile, not individual data:
+WinNonlin's AIC = n ln(SSR) + 2p reproduces the Table S6 value of -18.2736
+only with n = 13 observations and p = 3 parameters, and the SBC
+(-16.5788) then follows exactly. The model therefore has no between-animal
+variability.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| Structure: 1-compartment, first-order absorption, no lag | -- | Section 2.4; Table S6 model 1 |
+| `lka` (K01) | 0.01518 1/min | Table S7, full-data row |
+| `lcl` (CL/F) | 0.03589 L/min/kg | Table S7, full-data row |
+| `lvc` (V/F) | 5.4017 L/kg | Table S7, full-data row |
+| `lke0` (ke0, fixed) | 0.001 1/min | Section 2.5; Table S8; Figure 6C |
+| Effect compartment `d/dt(effect) = ke0 (Cc - effect)` | -- | Section 2.5 and Supplementary S7 (classical effect compartment) |
+| Residual error: additive (unweighted least squares) | -- | Table S6 model 1, weighting 'Unweighted' |
+| `addSd` | 0.1243 mg/L | Derived: sqrt(SSR / (n - p)) = sqrt(0.154555 / 10) with SSR from Table S6 and n = 13 from its AIC |
+| Dose and route | 15 mg/kg IP | Section 4.2, 4.5 |
+| Model-predicted Cmax, Tmax, AUC (check values) | 1.4597 mg/L, 96.81 min, 417.99 min*mg/L | Table S7, full-data row |
+| Observed mean profile | 13 points, 5-1440 min | Figure 5A (digitised by the maintainers) |
+| NCA in MI/RI rats (comparison) | Cmax 1.52 mg/L, Tmax 54.38 min, AUC0-t 706.22, AUC0-inf 717.20 min*mg/L, t1/2 238.66 min | Table 2 |
+
+# Typical-value simulation
+
+```{r model}
+mod <- readModelDb("Shuai_2026_chikusetsusaponinIVa_rat")
+ui <- rxode2::rxode(mod)
+th <- ui$theta
+ka <- exp(th[["lka"]])
+cl <- exp(th[["lcl"]])
+vc <- exp(th[["lvc"]])
+kel <- cl / vc
+dose <- 15 # mg/kg
+
+# Paper's sampling grid, read from Figure 5A, plus a fine grid for plotting
+t_paper <- c(5, 10, 15, 30, 45, 60, 90, 120, 180, 240, 360, 720, 1440)
+t_fine <- sort(unique(c(seq(0, 1440, by = 2), t_paper)))
+
+ev <- rxode2::et(amt = dose, cmt = "depot") |>
+  rxode2::et(t_fine, cmt = "central")
+sim <- rxode2::rxSolve(
+  mod, ev,
+  returnType = "data.frame", rtol = 1e-10, atol = 1e-12
+)
+sim <- sim[sim$time %in% t_fine, ]
+```
+
+## Solver identity against the closed form
+
+The one-compartment first-order-absorption solution is known in closed form,
+so the ODE solve must reproduce it to integrator precision.
+
+```{r closed_form}
+closed_form <- function(t) {
+  dose * ka / (vc * (ka - kel)) * (exp(-kel * t) - exp(-ka * t))
+}
+cf <- closed_form(sim$time)
+rel_err <- abs(sim$Cc - cf)[sim$time > 0] / max(cf)
+# Measured ~1e-10 relative to Cmax with rtol 1e-10 / atol 1e-12.
+stopifnot(max(rel_err) < 1e-7)
+max(rel_err)
+```
+
+## Model-predicted exposure against Supplementary Table S7
+
+Table S7 reports, for the full data set and for each of the eight
+leave-one-rat-out refits, the parameter estimates together with the
+model-predicted Cmax, Tmax and AUC. Solving the packaged model with each row's
+parameters must reproduce that row's secondary parameters, which checks the
+structure, the units and the transcription of all 27 parameter values at once.
+
+```{r table_s7}
+s7 <- tibble::tribble(
+  ~dataset,     ~V,     ~K01,    ~CL,     ~AUC,   ~Cmax,  ~Tmax,
+  "Full data",  5.4017, 0.01518, 0.03589, 417.99, 1.4597, 96.81,
+  "Without R1", 5.1002, 0.01532, 0.03479, 431.11, 1.5364, 95.18,
+  "Without R2", 5.9297, 0.01717, 0.03586, 418.35, 1.4343, 93.84,
+  "Without R3", 6.1685, 0.01645, 0.03531, 424.77, 1.3843, 98.42,
+  "Without R4", 5.2081, 0.01323, 0.03643, 411.75, 1.4088, 102.23,
+  "Without R5", 5.3837, 0.01601, 0.03588, 418.02, 1.4912, 93.78,
+  "Without R6", 5.6574, 0.01653, 0.03584, 418.49, 1.4611, 94.05,
+  "Without R7", 5.0520, 0.01377, 0.03653, 410.64, 1.4566, 98.49,
+  "Without R8", 4.7495, 0.01336, 0.03605, 416.05, 1.5012, 97.97
+)
+
+t_dense <- seq(0, 1440, by = 0.01)
+ev_dense <- rxode2::et(amt = dose, cmt = "depot") |>
+  rxode2::et(t_dense, cmt = "central")
+
+s7_check <- lapply(seq_len(nrow(s7)), function(i) {
+  r <- s7[i, ]
+  s <- rxode2::rxSolve(
+    mod, ev_dense,
+    params = c(lka = log(r$K01), lcl = log(r$CL), lvc = log(r$V)),
+    returnType = "data.frame", rtol = 1e-10, atol = 1e-12
+  )
+  data.frame(
+    dataset = r$dataset,
+    Cmax_paper = r$Cmax,
+    Cmax_model = max(s$Cc),
+    Tmax_paper = r$Tmax,
+    Tmax_model = s$time[which.max(s$Cc)],
+    AUC_paper = r$AUC,
+    # AUC0-inf of a linear model is Dose / (CL/F)
+    AUC_model = dose / r$CL
+  )
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::mutate(
+    Cmax_pct = 100 * (Cmax_model / Cmax_paper - 1),
+    Tmax_pct = 100 * (Tmax_model / Tmax_paper - 1),
+    AUC_pct = 100 * (AUC_model / AUC_paper - 1)
+  )
+
+s7_check |>
+  dplyr::mutate(
+    dplyr::across(c(Cmax_model, Tmax_model, AUC_model), ~ signif(.x, 5)),
+    dplyr::across(c(Cmax_pct, Tmax_pct, AUC_pct), ~ round(.x, 3))
+  ) |>
+  dplyr::rename(
+    "Data set" = dataset,
+    "Cmax paper (mg/L)" = Cmax_paper, "Cmax model (mg/L)" = Cmax_model,
+    "Tmax paper (min)" = Tmax_paper, "Tmax model (min)" = Tmax_model,
+    "AUC paper (min*mg/L)" = AUC_paper, "AUC model (min*mg/L)" = AUC_model,
+    "Cmax % diff" = Cmax_pct, "Tmax % diff" = Tmax_pct, "AUC % diff" = AUC_pct
+  ) |>
+  knitr::kable()
+
+# Deterministic: every row agrees to the rounding of the printed parameters
+# (largest deviation measured 0.02%); a mis-typed digit moves a row by
+# percent.
+stopifnot(
+  nrow(s7_check) == 9L,
+  max(abs(s7_check$Cmax_pct)) < 0.1,
+  max(abs(s7_check$Tmax_pct)) < 0.1,
+  max(abs(s7_check$AUC_pct)) < 0.1
+)
+```
+
+## Replicating Figure 5A
+
+The observed mean concentrations below were digitised by the maintainers from
+Figure 5A. Their sum of squared residuals against the packaged model is
+compared with the SSR printed for model 1 in Table S6 (0.154555).
+
+```{r figure5a}
+fig5a_obs <- data.frame(
+  time = t_paper,
+  Cc = c(0.25, 0.51, 0.62, 0.91, 1.02, 1.47, 1.24, 1.50, 1.19, 0.98, 0.30, 0.09, 0.04)
+)
+pred_at_obs <- sim$Cc[match(fig5a_obs$time, sim$time)]
+ssr_digitised <- sum((fig5a_obs$Cc - pred_at_obs)^2)
+ssr_digitised
+# Digitising error in 13 points is the only source of difference.
+stopifnot(abs(ssr_digitised / 0.154555 - 1) < 0.10)
+
+ggplot(sim, aes(time, Cc)) +
+  geom_line(colour = "blue", linewidth = 0.8) +
+  geom_point(data = fig5a_obs, colour = "red", shape = 1, size = 2.5) +
+  labs(
+    x = "Time (min)", y = "CS-IVa plasma concentration (mg/L)",
+    caption = "Replicates Figure 5A of Shuai 2026 (MI/RI rats, 15 mg/kg IP)."
+  ) +
+  theme_bw()
+```
+
+## Residual-error band
+
+The model has no between-animal variability, so the only stochastic element
+is the additive residual error derived from the Table S6 SSR. The band below
+shows 200 replicate mean profiles.
+
+```{r vpc}
+rxode2::rxSetSeed(20260513)
+ev_vpc <- rxode2::et(amt = dose, cmt = "depot") |>
+  rxode2::et(t_paper, cmt = "central")
+vpc <- rxode2::rxSolve(mod, ev_vpc, nStud = 200, returnType = "data.frame")
+vpc_sum <- vpc[vpc$time > 0, ] |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    p05 = quantile(sim, 0.05), p50 = quantile(sim, 0.5), p95 = quantile(sim, 0.95),
+    .groups = "drop"
+  )
+ggplot(vpc_sum, aes(time)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), fill = "steelblue", alpha = 0.3) +
+  geom_line(aes(y = p50), colour = "steelblue") +
+  geom_point(data = fig5a_obs, aes(y = Cc), colour = "red", shape = 1, size = 2.5) +
+  labs(
+    x = "Time (min)", y = "CS-IVa plasma concentration (mg/L)",
+    caption = "5th-95th percentile of 200 replicate profiles; red: Figure 5A means."
+  ) +
+  theme_bw()
+```
+
+# PKNCA validation
+
+The model profile is sampled on the paper's 13-point schedule (plus the
+pre-dose sample) and analysed with PKNCA, then compared with the MI/RI-15 mg/kg
+column of Table 2.
+
+```{r pknca}
+conc <- sim[sim$time %in% c(0, t_paper), ] |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(id = 1L, treatment = "MI/RI 15 mg/kg") |>
+  dplyr::select(id, treatment, time, Cc)
+stopifnot(any(conc$time == 0))
+doses <- data.frame(id = 1L, treatment = "MI/RI 15 mg/kg", time = 0, amt = dose)
+
+o_conc <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id)
+o_dose <- PKNCA::PKNCAdose(doses, amt ~ time | treatment + id)
+intervals <- data.frame(
+  start = 0, end = 1440,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+
+published <- data.frame(
+  treatment = "MI/RI 15 mg/kg",
+  cmax = 1.52, tmax = 54.38, auclast = 706.22, aucinf.obs = 717.20,
+  half.life = 238.66
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca,
+  reference = published,
+  by = "treatment",
+  units = c(
+    cmax = "mg/L", tmax = "min", auclast = "min*mg/L",
+    aucinf.obs = "min*mg/L", half.life = "min"
+  ),
+  tolerance_pct = 20
+)
+knitr::kable(cmp)
+```
+
+```{r nca_footnote, results = "asis"}
+fn <- attr(cmp, "footnote")
+if (!is.null(fn)) cat(fn)
+```
+
+Only Cmax agrees with Table 2. The other differences come from the source, not
+from the transcription:
+
+* **The fitted profile is not the Table 2 profile.** AUC is linear in the
+  data, so the mean of the individual AUC0-t values in Table 2 (706.22
+  min*mg/L) must equal the trapezoidal AUC of the mean profile on the same
+  grid. The digitised Figure 5A means, to which the model was fitted, give a
+  much smaller value (below), and the Figure 6A means differ from both.
+* **The terminal phase.** The observed mean at 1440 min (about 0.04 mg/L)
+  sits far above the model (below 0.001 mg/L), so the NCA half-life
+  (238.66 min) and AUC0-inf reflect a slow tail or secondary rise that the
+  one-compartment fit does not carry; the model's half-life is ln(2)/kel.
+* **Tmax.** Table 2 reports the mean of individual Tmax values (54.38 min).
+  The model's continuous-time Tmax is the Table S7 value (96.81 min); on the
+  sampling grid PKNCA reports the nearest sampled time, 90 min.
+
+```{r source_consistency}
+fig5a_auc <- PKNCA::pk.calc.auc.last(
+  conc = c(0, fig5a_obs$Cc), time = c(0, fig5a_obs$time)
+)
+data.frame(
+  quantity = c(
+    "Trapezoidal AUC0-1440 of digitised Figure 5A means",
+    "Model AUC0-inf, Dose / (CL/F)",
+    "Table 2 AUC0-t, MI/RI 15 mg/kg",
+    "Model half-life ln(2) / kel (min)",
+    "Table 2 half-life (min)"
+  ),
+  value = signif(c(fig5a_auc, dose / cl, 706.22, log(2) / kel, 238.66), 4)
+) |>
+  knitr::kable()
+# The fitted data and Table 2 disagree by more than a third, which is why the
+# AUC comparison above is not used as a gate.
+stopifnot(fig5a_auc < 0.75 * 706.22)
+```
+
+# Exploratory effect compartment
+
+Shuai 2026 attached an effect compartment to this PK model to describe the
+counterclockwise hysteresis between plasma CS-IVa and the CK-MB-derived
+response (Figure 6B), selecting ke0 = 0.001 1/min (equilibration half-life
+693 min) as the best-fitting converged value of the grid in Table S8. The
+paper does not report the function or the parameters linking the effect-site
+concentration to the response, so the packaged model outputs the effect-site
+concentration `Ce` only.
+
+```{r effect}
+ggplot(sim, aes(time)) +
+  geom_line(aes(y = Cc, colour = "Plasma (Cc)")) +
+  geom_line(aes(y = Ce, colour = "Effect site (Ce), ke0 = 0.001 1/min")) +
+  labs(x = "Time (min)", y = "CS-IVa (mg/L)", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+
+ce_peak_time <- sim$time[which.max(sim$Ce)]
+c(ce_peak_time = ce_peak_time, ce_max = max(sim$Ce))
+# The effect site lags plasma: its peak follows the plasma Tmax by hours.
+stopifnot(ce_peak_time > 3 * sim$time[which.max(sim$Cc)])
+```
+
+The effect-site profile does not match the x-axis of Figure 6C, which shows
+`Ce` rising monotonically to about 0.04 mg/L at 1440 min. With ke0 = 0.001
+1/min and the Table S7 parameters, `Ce` peaks near
+`r round(max(sim$Ce), 2)` mg/L at about `r ce_peak_time` min and has fallen
+to `r signif(sim$Ce[sim$time == 1440], 2)` mg/L by 1440 min. The Table S8
+footnote states that small `Ce` values in the Phoenix screenshots were read
+"according to the scientific notation implied by the corresponding plot
+scale", so the Figure 6C axis cannot be taken at face value; the PK input used
+for Figure 6C is also not stated. This difference is not resolved.
+
+# Assumptions and deviations
+
+* **No between-animal variability.** The model was fitted to the 13-point
+  group-mean profile (n = 13 is implied by the Table S6 AIC and SBC), so it has
+  no IIV.
+* **Residual error derived, not printed.** Unweighted least squares is an
+  additive error model; its SD, 0.1243 mg/L, was computed as
+  sqrt(SSR / (n - p)) from the Table S6 SSR (0.154555), n = 13 and p = 3.
+* **Units.** Doses are per kilogram (mg/kg) and volumes and clearances per
+  kilogram (L/kg, L/min/kg), as in the paper; the `central` and `depot` states
+  hold mg/kg.
+* **Effect compartment only.** ke0 was chosen from a grid and is encoded as
+  fixed. The PD function linking `Ce` to the CK-MB response, its parameters,
+  the integrated PK/PD fit in Supplementary Figure S3 and the GAT, LSTM and
+  MLP predictors were not reported numerically and are not included.
+* **Normal rats.** Only NCA was reported for normal rats (Table 2); there is
+  no compartmental model for them.
+* **Source inconsistency.** The mean profile in Figure 5A, the profile in
+  Figure 6A and the Table 2 AUC values are mutually inconsistent (see the
+  PKNCA section). The packaged model reproduces the parameters and the
+  model-predicted quantities that the paper reports (Table S7).
+* **Errata.** No correction notice was found in Europe PMC on 2026-11-13.
