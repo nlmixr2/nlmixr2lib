@@ -14486,7 +14486,7 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - `DIUR` -- used in `Stocker_2012_oxypurinol.R` (Stocker 2012 dataset column; pools thiazide + loop + spironolactone; n = 72 of 155 gouty patients).
   - `diuretic` -- used in `Wright_2016_allopurinol.R` and `Wright_2013_allopurinol.R` (Wright narrative term; pools thiazide + loop diuretics only, excludes spironolactone / amiloride; n = 44 of 133 gouty patients in Wright 2016).
 - **Example models:** `Kleiber_2017_clonidine.R` (any-class; multiplicative effect on CL: `diur_cl = 0.659^CONMED_DIURETIC`; per Table 3 / Table 4 CL is reduced by 34.1% when any diuretic is active), `Stocker_2012_oxypurinol.R` (thiazide + loop + potassium-sparing; multiplicative linear-deviation effect on apparent CL/Fm: `cl *= (1 + (-0.294) * CONMED_DIURETIC)`, i.e. -29.4% apparent oxypurinol clearance; Stocker 2012 Table 3 theta7), `Wright_2016_allopurinol.R` (thiazide + loop only, no potassium-sparing; multiplicative power-form effect on both CL/F_oxy and baseline urate U0: `cl *= 0.740^CONMED_DIURETIC` (-26%) and `rbase *= 1.14^CONMED_DIURETIC` (+14%); Wright 2016 Table 3 thetadiuretic and thetaE0_diuretic), `Wright_2013_allopurinol.R` (fractional effect 0.61 on renal CL_oxy via `e_conmed_diuretic_cl_oxy_renal^CONMED_DIURETIC`; Wright 2013 Table 2).
-- **Notes:** Composite indicator with paper-specific class membership. Users simulating across models that share this column but differ in class membership MUST populate it according to each paper's own definition -- Wright 2016 deliberately excludes potassium-sparing diuretics because they tend to be uricosuric (lower serum urate) and therefore have an opposite-direction PD effect from the anti-uricosuric thiazide / loop agents, whereas Stocker 2012 and Kleiber 2017 pool them in. Distinct from `CONMED_SPIRON` (spironolactone-only per-drug indicator, used in `Yukawa_1996_digoxin.R`), a member of the `CONMED_<INN>` family; the two canonicals coexist when a paper distinguishes specific drugs. When a paper requires class-resolved encoding (separate thiazide / loop / K-sparing indicators), register sibling canonicals (e.g. `CONMED_THIAZIDE`, `CONMED_LOOP_DIUR`) rather than overloading this one. `CONMED_DIUR` is retired: do not reintroduce it.
+- **Notes:** Composite indicator with paper-specific class membership. Users simulating across models that share this column but differ in class membership MUST populate it according to each paper's own definition -- Wright 2016 deliberately excludes potassium-sparing diuretics because they tend to be uricosuric (lower serum urate) and therefore have an opposite-direction PD effect from the anti-uricosuric thiazide / loop agents, whereas Stocker 2012 and Kleiber 2017 pool them in. Distinct from `CONMED_SPIRON` (spironolactone-only per-drug indicator, used in `Zhou_2010_digoxin.R` among others), a member of the `CONMED_<INN>` family; the two canonicals coexist when a paper distinguishes specific drugs. When a paper requires class-resolved encoding (separate thiazide / loop / K-sparing indicators), register sibling canonicals (e.g. `CONMED_THIAZIDE`, `CONMED_LOOP_DIUR`) rather than overloading this one. `CONMED_DIUR` is retired: do not reintroduce it.
 
 ### CONMED_FUROSEMIDE (**canonical for concomitant furosemide (loop diuretic) coadministration indicator**)
 - **Description:** 1 = subject is coadministered furosemide during the study window (or, for per-time-point datasets, at the current time), 0 = no concomitant furosemide. Screened in popPK analyses of renally cleared substrates and of electrolytes, because loop-diuretic inhibition of the Na-K-2Cl cotransporter in the thick ascending limb both contracts plasma volume and abolishes the lumen-positive potential that drives paracellular magnesium and calcium reabsorption. In observational obstetric and critical-care cohorts the indicator is frequently a **marker of the disease state that prompted the prescription** (volume overload, oliguria, declining renal function) rather than of a direct drug interaction, and its estimated effect will then have the sign of the underlying disease rather than of the diuretic's own pharmacology; state which interpretation the source paper supports in `covariateData[[CONMED_FUROSEMIDE]]$notes`.
@@ -20648,6 +20648,61 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Wu_2022_fentanyl.R` (selects the residual-error magnitudes only: additive 0.0297 ug/L and proportional 0.361 for DINO against 0.246 ug/L and 0.23 for the Helsinki dataset), `Wu_2023_paracetamol.R` (selects the plasma residual-error magnitudes only, against the reference Flint et al. single-dose dataset: log-scale SDs for paracetamol and its three metabolites, plus the additive SD2 terms on sulfate and the oxidative metabolites that apply to the Flint dataset alone; source column `ASY`, same orientation).
 - **Notes:** The indicator identifies the study, not the assay: in `Wu_2022_fentanyl.R` the two datasets also differ in bioanalysis (DINO LC-MS/MS vs Helsinki radioimmunoassay), sampling route and BLOQ handling, and the paper attributes the residual split to the dataset. Use `RIA_ASSAY` / `IMMUNOASSAY` instead when a paper attributes a residual split specifically to the analytical method. The DINO cohort also underlies `Voller_2019_midazolam.R`, which retains no study term.
 
+### STUDY_SWEDEN_IV (**canonical for the Swedish intravenous benzylpenicillin horse cohort indicator**)
+- **Description:** 1 = record from one of the 4 Swedish horses given a single intravenous dose of sodium benzylpenicillin (Olsen 2018 dataset), with no intramuscular administration; 0 = any other cohort pooled in the same meta-analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other cohorts; in the founding model the French cohort, `Nationcode = 0`, is the reference when all `STUDY_*` indicators are 0).
+- **Source aliases:**
+  - `Nationcode` ('source of dataset', level 1) -- Lallemand 2023 Supplementary Data 2 Phoenix model; `STUDY_SWEDEN_IV = as.integer(Nationcode == 1)`.
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (log-linear effect -0.683 on plasma clearance, frozen from the IV-only analysis, Table 4; CL 243 vs 481 mL/kg/h in French horses).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family; the id is the national cohort because the source codes its datasets by country and route. A separate level from `STUDY_SWEDEN_IM`: Lallemand 2023 Section 2.2 gives no reason to assume the two Swedish cohorts share a clearance. Mutually exclusive with `STUDY_SWEDEN_IM`, `STUDY_USA1`, `STUDY_USA2` and `STUDY_JAPAN`.
+
+### STUDY_SWEDEN_IM (**canonical for the Swedish intramuscular benzylpenicillin horse cohort indicator**)
+- **Description:** 1 = record from one of the 8 Swedish horses in the 2x2 crossover of intramuscular procaine benzylpenicillin against intramuscular sodium benzylpenicillin (Olsen 2013 dataset), with no intravenous dose; 0 = any other cohort pooled in the same meta-analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other cohorts; in the founding model the French cohort, `Nationcode = 0`).
+- **Source aliases:**
+  - `Nationcode` ('source of dataset', level 11) -- Lallemand 2023 Supplementary Data 2 Phoenix model; `STUDY_SWEDEN_IM = as.integer(Nationcode == 11)`.
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (log-linear effect -0.315 on plasma clearance, estimated in the full model, CL 351 mL/kg/h; +0.039 on the log procaine absorption rate constant; a multiplicative factor exp(-0.0018) on the logit procaine bioavailability).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. See `STUDY_SWEDEN_IV` for why the Swedish IV and IM cohorts are separate levels. Mutually exclusive with the other four Lallemand 2023 `STUDY_*` indicators.
+
+### STUDY_USA1 (**canonical for the USA1 benzylpenicillin horse cohort indicator**)
+- **Description:** 1 = record from one of the 7 USA1 horses (Younkin 2019 dataset) given two intravenous doses of potassium benzylpenicillin 6 h apart followed by one intramuscular dose of procaine benzylpenicillin (Norocillin); 0 = any other cohort pooled in the same meta-analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other cohorts; in the founding model the French cohort, `Nationcode = 0`).
+- **Source aliases:**
+  - `Nationcode` ('source of dataset', level 2) -- Lallemand 2023 Supplementary Data 2 Phoenix model; `STUDY_USA1 = as.integer(Nationcode == 2)`.
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (log-linear effect -0.126 on plasma clearance, frozen from the IV-only analysis, CL 424 mL/kg/h; -2.37 on the log procaine absorption rate constant, MAT 230 h; a multiplicative factor exp(0.052) on the logit procaine bioavailability).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Only three samples were taken after the intramuscular dose, ending 12 h after it, so Lallemand 2023 Discussion advises caution with the very slow absorption estimate. Mutually exclusive with the other four Lallemand 2023 `STUDY_*` indicators.
+
+### STUDY_USA2 (**canonical for the USA2 benzylpenicillin horse cohort indicator**)
+- **Description:** 1 = record from one of the 6 USA2 horses (Wilson 2022 dataset) given a single intravenous dose of potassium benzylpenicillin together with gentamicin 6.6 mg/kg; 0 = any other cohort pooled in the same meta-analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other cohorts; in the founding model the French cohort, `Nationcode = 0`).
+- **Source aliases:**
+  - `Nationcode` ('source of dataset', level 4) -- Lallemand 2023 Supplementary Data 2 Phoenix model; `STUDY_USA2 = as.integer(Nationcode == 4)`.
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (log-linear effect -0.136 on plasma clearance, frozen from the IV-only analysis; CL 420 mL/kg/h).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Intravenous data only. Mutually exclusive with the other four Lallemand 2023 `STUDY_*` indicators.
+
+### STUDY_JAPAN (**canonical for the Japanese benzylpenicillin horse cohort indicator**)
+- **Description:** 1 = record from one of the 6 Japanese horses given a single intramuscular dose of procaine benzylpenicillin, with no intravenous dose; 0 = any other cohort pooled in the same meta-analysis. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other cohorts; in the founding model the French cohort, `Nationcode = 0`).
+- **Source aliases:**
+  - `Nationcode` ('source of dataset', level 3) -- Lallemand 2023 Supplementary Data 2 Phoenix model; `STUDY_JAPAN = as.integer(Nationcode == 3)`.
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (log-linear effect -0.157 on plasma clearance, estimated in the full model, CL 411 mL/kg/h; -0.0043 on the log procaine absorption rate constant; a multiplicative factor exp(0.423) on the logit procaine bioavailability).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. A single-cohort study label, not a geographic covariate: use a `REGION_*` canonical when a paper's covariate is the country contrast itself. Mutually exclusive with the other four Lallemand 2023 `STUDY_*` indicators.
+
 ### REGI_BID (**canonical for twice-daily dosing-regimen indicator**)
 - **Description:** 1 = subject's dosing regimen is BID (twice daily), 0 = QD (once daily) or other non-BID regimen. Per-subject (regimen-fixed) categorical indicator for population analyses that pool QD and BID arms and test regimen as a covariate.
 - **Units:** (binary)
@@ -21697,6 +21752,50 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** treatment group `SYO-1644` vs `Nexavar` -- Huh 2021 Table 2 row 'Relative bioavailability (SYO-1644 to Nexavar)'.
 - **Example models:** `Huh_2021_sorafenib.R` (founding example; multiplicative relative bioavailability on the transit-chain input, `fdepot <- exp(e_form_syo1644_fdepot * FORM_SORAFENIB_SYO1644)` with `exp(e_form_syo1644_fdepot) = 1.62`).
 - **Notes:** Auto-approved member of the `FORM_<drug>_<formulation>` canonical family. Named for the product code rather than a generic `_NANO` token because the effect estimate is specific to this product; a different sorafenib nanoformulation would need its own indicator. In the founding study each subject took the same assigned formulation in both periods, so the indicator is constant within a subject there, but nothing in the model requires that.
+
+### FORM_BENZYLPENICILLIN_SODIUM_IM (**canonical for the intramuscular sodium benzylpenicillin solution observation-block indicator**)
+- **Description:** 1 = the observation follows intramuscular sodium benzylpenicillin (Geepenil); 0 = it follows intravenous sodium or potassium benzylpenicillin or another of the intramuscular products. Per-observation-record indicator: a horse in a crossover carries 1 on its sodium-benzylpenicillin occasion and 0 on its other occasion.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (intravenous soluble sodium or potassium benzylpenicillin, the reference observation block).
+- **Source aliases:**
+  - observation block `CObsPeniNa` -- Lallemand 2023 Supplementary Data 2 Phoenix model.
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (selects the additive residual SD of this block, 0.163 ug/mL, Supplementary Table S7 row stdev1; the proportional CV is shared by all blocks).
+- **Notes:** Member of the auto-approved `FORM_<drug>_<formulation>` family. Mutually exclusive with `FORM_BENZYLPENICILLIN_PROCAINE`, `FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE` and `FORM_BENZYLPENICILLIN_PENETHAMATE`; when all four are 0 the record is an intravenous observation.
+
+### FORM_BENZYLPENICILLIN_PROCAINE (**canonical for the single-ingredient intramuscular procaine benzylpenicillin observation-block indicator**)
+- **Description:** 1 = the observation follows intramuscular procaine benzylpenicillin from a single-ingredient product (Depocilline, Penovet, Norocillin or the Japanese 'KS' product); 0 = it follows intravenous benzylpenicillin or another of the intramuscular products. Per-observation-record indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (intravenous soluble sodium or potassium benzylpenicillin, the reference observation block).
+- **Source aliases:**
+  - observation block `CObsPROC` -- Lallemand 2023 Supplementary Data 2 Phoenix model.
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (selects the additive residual SD of this block, 0.00458 ug/mL, Supplementary Table S7 row stdev3).
+- **Notes:** Member of the auto-approved `FORM_<drug>_<formulation>` family. Does not cover the procaine benzylpenicillin in the Duplocilline combination, which is its own block (`FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE`). Mutually exclusive with the other three `FORM_BENZYLPENICILLIN_*` indicators.
+
+### FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE (**canonical for the Duplocilline procaine plus benzathine benzylpenicillin observation-block indicator**)
+- **Description:** 1 = the observation follows intramuscular Duplocilline, a fixed combination of procaine and benzathine benzylpenicillin; 0 = it follows intravenous benzylpenicillin or another of the intramuscular products. Per-observation-record indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (intravenous soluble sodium or potassium benzylpenicillin, the reference observation block).
+- **Source aliases:**
+  - observation block `CObsBenza` -- Lallemand 2023 Supplementary Data 2 Phoenix model.
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (selects the additive residual SD of this block, 0.00654 ug/mL, Supplementary Table S7 row stdev2; the measured concentration is the benzylpenicillin released from both components).
+- **Notes:** Member of the auto-approved `FORM_<drug>_<formulation>` family. Mutually exclusive with the other three `FORM_BENZYLPENICILLIN_*` indicators.
+
+### FORM_BENZYLPENICILLIN_PENETHAMATE (**canonical for the intramuscular penethamate hydriodide observation-block indicator**)
+- **Description:** 1 = the observation follows intramuscular penethamate hydriodide (Penetavet), a benzylpenicillin prodrug; 0 = it follows intravenous benzylpenicillin or another of the intramuscular products. Per-observation-record indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (intravenous soluble sodium or potassium benzylpenicillin, the reference observation block).
+- **Source aliases:**
+  - observation block `CObsPenethamate` -- Lallemand 2023 Supplementary Data 2 Phoenix model.
+- **Example models:** `Lallemand_2023_benzylpenicillin_horse.R` (selects the additive residual SD of this block, 0.00807 ug/mL, Supplementary Table S7 row stdev4; the measured concentration is the benzylpenicillin released from all three injection sites).
+- **Notes:** Member of the auto-approved `FORM_<drug>_<formulation>` family. Mutually exclusive with the other three `FORM_BENZYLPENICILLIN_*` indicators.
 
 ### RIA_ASSAY (**canonical for radioimmunoassay vs LC-MS/MS bioanalytical method indicator**)
 - **Description:** 1 = radioimmunoassay; 0 = LC-MS/MS.

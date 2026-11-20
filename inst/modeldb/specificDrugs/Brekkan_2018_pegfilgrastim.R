@@ -5,7 +5,6 @@ Brekkan_2018_pegfilgrastim <- function() {
     "A Population Pharmacokinetic-Pharmacodynamic Model of Pegfilgrastim.",
     "AAPS J 20(5):91. doi:10.1208/s12248-018-0249-y."
   )
-  vignette <- "Brekkan_2018_pegfilgrastim"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL", ANC = "10^9 cells/L")
 
   # Covariates were evaluated using a full random effects model (FREM)
@@ -151,12 +150,11 @@ Brekkan_2018_pegfilgrastim <- function() {
     # variance-covariance block for PK (with off-diagonal correlations
     # tabulated in Table III) and a 3x3 Omega block for (EC50,
     # Emax,mat, Emax,prol); PK off-diagonal correlations are NOT
-    # captured here for simplicity (see vignette Assumptions and
-    # deviations). IIV on Vmax was reported as "unsupported" by the
-    # data and is excluded.
+    # captured here for simplicity. IIV on Vmax was reported as
+    # "unsupported" by the data and is excluded.
     # Inter-occasion variability (IOV) on Ka, R1, Frel and T1/2 is also
     # reported in Table I but is NOT separated from IIV in this library
-    # implementation; see vignette Assumptions and deviations.
+    # implementation.
     # -----------------------------------------------------------------
     etalka     ~ 0.05336 ; label("IIV variance on lka")        # Brekkan 2018 Table I (IIV Ka SD 0.231; var = 0.231^2)
     etalvc     ~ 0.28196 ; label("IIV variance on lvc")        # Brekkan 2018 Table I (IIV Vc SD 0.531; var = 0.531^2)

@@ -274,6 +274,38 @@
 
 - `checkModelConventions()` reports an error for a `model()` statement that is a bare expression. That is almost always a continuation line that starts with an operator: rxode2 joins it to the equation above, but R parses it as its own statement, so `ui$lstExpr`, and anything that edits a model through it, sees a truncated equation. Fourteen shipped models had such lines; the operators are moved to the line ends, and rxode2's compiled model is unchanged for each.
 
+- `checkNamingRegisters()` now also reports a model file cited anywhere in a
+  register, such as a `Notes:` or `Source aliases:` line, that does not exist
+  (check `orphan-model-citation`). Before, only `Example models:` lines were
+  read. The one such citation, `Yukawa_1996_digoxin.R` in the
+  `CONMED_DIURETIC` notes, is corrected to `Zhou_2010_digoxin.R`.
+
+- Restore the `Hansson_2013_sunitinib_os` article, which had been deleted on
+  the mistaken belief that the model was renamed; the rename was of the
+  companion e84 OS model, now `Hansson_2013_sunitinib_svegfr3_os`.
+  `Brekkan_2018_pegfilgrastim` no longer names an article that was never
+  written, so the "Specific drug models" menu no longer links to a missing
+  page. A test now checks that every article link on the site resolves, and
+  that every model either has an article or is listed, with a reason, as a
+  generic template or as awaiting one.
+
+- `Lallemand_2023_benzylpenicillin_horse`: the four observation-block
+  indicators are renamed to spell out the drug, and are registered with the
+  model's five `STUDY_*` cohort indicators, clearing its nine
+  unregistered-covariate warnings. Data sets must use the new column names:
+  `FORM_BP_NA_IM` is now `FORM_BENZYLPENICILLIN_SODIUM_IM`, `FORM_BP_PROC` is
+  `FORM_BENZYLPENICILLIN_PROCAINE`, `FORM_BP_DUPLO` is
+  `FORM_BENZYLPENICILLIN_PROCAINE_BENZATHINE` and `FORM_BP_PENETH` is
+  `FORM_BENZYLPENICILLIN_PENETHAMATE`. No equation or value changed.
+
+- Correct the descriptions of eleven `indirect_*` templates; the models
+  themselves are unchanged. `indirect_0cpt_transitEx` now mentions its
+  ten-compartment transit absorption chain. Two circadian `*_kout_t` models
+  said `kin_t`, and the two stimulation `indirect_prec_1cpt_stim_*` models said
+  inhibition. `indirect_prec_1cpt_stim_r0rmaxcrmax` now says that its PK
+  is parameterized with clearance and volume and its response with R0, Rmax
+  and CRmax. A "cosntants" typo is fixed in five descriptions.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.
@@ -2289,14 +2321,6 @@
 - Add Bihorel 2017 LY2510924 ([doi:10.1002/psp4.12221](https://doi.org/10.1002/psp4.12221)) -- adults with advanced or metastatic cancer, including renal cell carcinoma and small cell lung carcinoma.
 
 - Add Yang 2017 buagafuran ([doi:10.3389/fphar.2017.00683](https://doi.org/10.3389/fphar.2017.00683)) -- male Wistar rats in the elevated plus-maze.
-
-- Cite the published corrigendum to Patel 2017 selumetinib
-  ([doi:10.1002/psp4.12254](https://doi.org/10.1002/psp4.12254)) in
-  `Patel_2017_selumetinib` and its vignette. The corrigendum corrects the
-  Table 2 unit for `theta1` and `theta9` from `nmol/hr` to `hr`, confirming
-  the hours interpretation the model already encoded; no parameter value
-  changes. The open-access archived copy of the parent article is the
-  uncorrected version, so the citation is the only record of the fix.
 
 - Add Chan 2017 idiopathic pulmonary fibrosis %predicted FVC model-based meta-analysis ([doi:10.1002/psp4.12227](https://doi.org/10.1002/psp4.12227)) -- 4,919 adults with idiopathic pulmonary fibrosis across 43 arms in 20 trials; 15 treatment regimens including pirfenidone and nintedanib.
 
@@ -4795,12 +4819,6 @@
 - Add Dias 2024 quetiapine ([doi:10.1002/psp4.13107](https://doi.org/10.1002/psp4.13107)) - naive and schizophrenia phenotyped Wistar rats.
 
 - Add Zazo 2024 ceftazidime-avibactam ([doi:10.3390/antibiotics13090861](https://doi.org/10.3390/antibiotics13090861)) — simulated non-ICU and ICU adults with renal impairment (two population-specific models).
-
-- Canonical unit spellings. The machine-readable `units` block wrote the same
-  time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
-  -- so a consumer parsing `units$time` could not canonicalise it without
-  carrying its own spelling table. Same for `"minute"`/`"min"` and
-  `"microgram"`/`"ug"`.
 
 - Add Willemin 2024 interleukin-6 / CYP PBPK ([doi:10.1002/psp4.13144](https://doi.org/10.1002/psp4.13144)) - patients with relapsed/refractory multiple myeloma experiencing cytokine release syndrome after teclistamab.
 

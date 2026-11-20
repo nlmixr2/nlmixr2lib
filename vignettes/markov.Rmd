@@ -122,3 +122,10 @@ createMarkovTransitionMatrix(colPrev = dSim$previous, colCur = dSim$current)
 ```
 
 or summarized in any other useful way.
+
+# A published example
+
+[Sleep architecture Markov chain (Bizzotto 2011)](https://nlmixr2.github.io/nlmixr2lib/articles/Bizzotto_2011_The_AAPS_Journal.html)
+simulates a published Markov chain of sleep stages. That model is a
+discrete-time multinomial logit with no drug PK and no ODE system, so it is not
+in the model library; the article implements it in plain R.
