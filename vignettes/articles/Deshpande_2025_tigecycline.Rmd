@@ -178,14 +178,13 @@ over a dosing interval must equal `F_sys * Dose / cl` (inhaled) or `Dose / cl`
 numerical only.
 
 ```{r typical}
-typ_ev <- bind_rows(
-  make_arm(arms[arms$treatment == "inhaled 40 mg", ], n = 1L),
-  make_arm(arms[arms$treatment == "IV 200 mg", ], n = 1L)
-)
-typ_one <- rxode2::rxSolve(
-  rxode2::zeroRe(mod), typ_ev,
-  keep = c("treatment"), returnType = "data.frame"
-)
+# One single-subject solve per arm: the typical subject needs no cohort.
+typ_one <- bind_rows(lapply(c("inhaled 40 mg", "IV 200 mg"), function(trt) {
+  rxode2::rxSolve(
+    rxode2::zeroRe(mod), make_arm(arms[arms$treatment == trt, ], n = 1L),
+    keep = c("treatment"), returnType = "data.frame"
+  )
+}))
 auc_trap <- function(t, c) sum(diff(t) * (head(c, -1) + tail(c, -1)) / 2)
 f_sys <- 1.002 * 0.0007 / 0.0068
 typ_check <- typ_one |>
