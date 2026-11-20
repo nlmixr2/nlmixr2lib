@@ -1,0 +1,562 @@
+---
+title: "Anakinra (Li 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Anakinra (Li 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Li_2026_anakinra"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Li_2026_anakinra"))$description`
+* Article: <https://doi.org/10.1002/cpt.70491> (open access; the
+  supporting information holds the NONMEM control stream of the final model)
+* Trial protocol: Green EA et al., Front Immunol 2022;13:1022104,
+  <https://doi.org/10.3389/fimmu.2022.1022104>
+
+# Population
+
+Li 2026 analysed 25 extremely preterm neonates (born 24 weeks 0 days to
+27 weeks 6 days gestation; median gestational age 26.3 weeks) from the
+Anakinra Pilot Phase I/IIa trial (NCT05280340) at Monash Children's Hospital,
+Melbourne (19 neonates) and Starship Children's Hospital, Auckland (6). All
+received intravenous anakinra from birth for 21 days: stage 1, 1.0 mg/kg every
+48 h (n = 9); stage 2, 0.8 mg/kg every 24 h (n = 16). Baseline body weight was
+0.90 kg (median; range 0.54-1.30) and changed little over therapy
+(0.53-1.60 kg); 60% were female (Table 1). 178 samples (4-8 per neonate)
+were measured with an AlphaLISA immunoassay that does not separate anakinra
+from endogenous IL-1 receptor antagonist (IL-1Ra), so every measured
+concentration is the sum of the two; the observed baseline endogenous IL-1Ra
+was 8,755 pg/mL (median; 295-87,100).
+
+The same information is available programmatically via
+`readModelDb("Li_2026_anakinra")()$population`.
+
+# Source trace
+
+The final estimates are in Table 2 and Eq. 6-7; the supplement's NONMEM
+control stream carries the same values in `$THETA` and the variances behind
+Table 2's IIV and residual standard deviations in `$OMEGA` / `$SIGMA`.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL, mature, 70 kg) | log(3.97 L/h) | Table 2 'CL'; Eq. 6; ctl THETA(1) |
+| `lvc` (V, 70 kg) | log(28.9 L) | Table 2 'V'; Eq. 7; ctl THETA(2) |
+| `lbl_il1ra` (endogenous baseline) | log(0.00664 mg/L) = 6,640 pg/mL | Table 2 'BSL'; ctl THETA(3); `IPRED = F + BSL` |
+| `e_wt_cl`, `e_wt_vc` | 0.75, 1 (fixed) | Table 2; Methods (theory-based allometry) |
+| `cl_pna_famp` | -0.554 (= -FCL) | Table 2 'FCL' 0.55; Eq. 6; ctl THETA(4) 0.554 |
+| `lcl_pna_kdes` | log(ln 2 / 1.80 day) | Table 2 'PNAT50'; Eq. 3 and 6; ctl THETA(5) |
+| `limax`, `lic50` | log(1), log(0.04 mg/L) (fixed) | Eq. 5 (assumed, from literature) |
+| `etalcl` | 0.0798 | ctl `$OMEGA`; Table 2 'IIV CL' 0.28 = sqrt(0.0798) |
+| `etalbl_il1ra` | 0.898 | ctl `$OMEGA`; Table 2 'IIV BSL' 0.95 = sqrt(0.898) |
+| IIV on V | omitted | ctl `$OMEGA 0 FIX`; Results (not identifiable) |
+| `propSd` | 0.765 | ctl `$SIGMA` 0.585 (variance); Table 2 'Proportional error' 0.77 |
+| CL = CL70 (WT/70)^0.75 (1 - FCL exp(-ln2 PNA/PNAT50)) | n/a | Eq. 3 and 6; ctl `FPNA_CL`, `TVCL` |
+| V = V70 (WT/70) | n/a | Eq. 7; ctl `TVV` |
+| Cc = A/V + BSL, proportional error | n/a | Methods; ctl `$ERROR` |
+| inhibition = Imax C / (IC50 + C) | n/a | Eq. 5 |
+
+# Typical-value checks
+
+The abstract and Results quote typical values for a 0.9 kg neonate and the
+fraction of mature clearance at birth and by day 10. These do not depend on
+any random draw, so they are checked tightly.
+
+```{r typical}
+mod <- readModelDb("Li_2026_anakinra")
+days_per_month <- 30.4375
+
+typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod),
+  events = data.frame(
+    id = 1, time = c(0, 1, 2), evid = 0, cmt = "central",
+    WT = 0.9, PNA = c(0, 10, 1000) / days_per_month
+  ),
+  returnType = "data.frame"
+)
+typ_tab <- data.frame(
+  quantity = c(
+    "CL at birth / mature CL", "CL at PNA day 10 / mature CL",
+    "Mature CL, 0.9 kg (L/h)", "V, 0.9 kg (L)",
+    "Inhibition from the endogenous baseline alone"
+  ),
+  paper = c(0.446, 1.00, 0.15, 0.37, 0.15),
+  model = c(
+    typ$cl[1] / typ$cl[3], typ$cl[2] / typ$cl[3], typ$cl[3], typ$vc[1],
+    typ$inhib[1]
+  )
+)
+knitr::kable(
+  typ_tab |> dplyr::rename("Quantity" = quantity, "Li 2026" = paper, "Model" = model),
+  digits = 3,
+  caption = paste(
+    "Typical values. Paper values: Results ('44.6%'), Results and abstract",
+    "('~100% by day 10', '0.15 L/h/0.9 kg', '0.37 .../0.9 kg') and the t = 0",
+    "inhibition read from Figure 3b/3d."
+  )
+)
+stopifnot(
+  abs(typ$cl[1] / typ$cl[3] - 0.446) < 0.001,
+  typ$cl[2] / typ$cl[3] > 0.98,
+  abs(typ$cl[3] - 0.15) < 0.005,
+  abs(typ$vc[1] - 0.37) < 0.005,
+  abs(typ$inhib[1] - 0.142) < 0.002
+)
+```
+
+# Virtual cohort
+
+The authors simulated 1,000 neonates per regimen with demographics resampled
+from the trial. Here 200 neonates per regimen have body weight drawn from a
+log-normal distribution around the trial median (0.9 kg, about 25% CV),
+truncated to the observed baseline range 0.54-1.30 kg and held constant, as
+Table 1 shows little change in weight over therapy. Dosing starts at birth
+(PNA 0), as in the authors' simulations.
+
+Postnatal age advances in whole days (day of life: 0 throughout the first 24 h,
+1 throughout the next, and so on). This is how the trial dataset records PNA
+(Table 1: 'Postnatal age (days) 0-20'), and it is the encoding that
+reproduces the authors' Figure 4; the sensitivity section below shows what a
+continuously advancing PNA changes.
+
+```{r cohort}
+inf_dur <- 5 / 60 # short infusion; the duration is not reported
+
+regimen_doses <- function(regimen) {
+  q12 <- data.frame(time = seq(0, 498, by = 12))
+  q12$day <- q12$time %/% 24
+  switch(
+    regimen,
+    "Stage 1" = data.frame(time = seq(0, 480, by = 48), mgkg = 1.0),
+    "Stage 2" = data.frame(time = seq(0, 480, by = 24), mgkg = 0.8),
+    "R1" = q12 |>
+      mutate(mgkg = case_when(day <= 1 ~ 0.4, day == 2 ~ 0.6, day <= 5 ~ 1.2, TRUE ~ 1.8)),
+    "R2" = q12 |>
+      mutate(mgkg = case_when(day == 0 ~ 0.6, day == 1 ~ 0.8, day <= 3 ~ 1.0, TRUE ~ 1.3)),
+    "R3" = q12 |>
+      mutate(mgkg = case_when(day == 0 ~ 0.6, day == 1 ~ 0.8, day <= 3 ~ 1.0, TRUE ~ 1.15)),
+    "0.8 mg/kg q24h" = data.frame(time = seq(0, 72, by = 24), mgkg = 0.8),
+    "0.4 mg/kg q12h" = data.frame(time = seq(0, 84, by = 12), mgkg = 0.4)
+  ) |>
+    dplyr::select(time, mgkg)
+}
+
+draw_weights <- function(n) {
+  wt <- numeric(0)
+  while (length(wt) < n) {
+    w <- exp(rnorm(n, log(0.9), 0.25))
+    wt <- c(wt, w[w >= 0.54 & w <= 1.30])
+  }
+  wt[seq_len(n)]
+}
+
+# One record per hour plus the end of every infusion. PNA is the day of life
+# by default; pna_continuous = TRUE advances it with every record instead.
+make_cohort <- function(n, regimen, id_offset, t_end = 504, pna_continuous = FALSE,
+                        wt = draw_weights(n)) {
+  doses <- regimen_doses(regimen)
+  subj <- data.frame(id = id_offset + seq_len(n), WT = wt)
+  obs_t <- sort(unique(c(seq(0, t_end, by = 1), doses$time + inf_dur)))
+  dose_rows <- merge(subj, doses) |>
+    mutate(evid = 1L, amt = mgkg * WT, dur = inf_dur) |>
+    select(-mgkg)
+  obs_rows <- merge(subj, data.frame(time = obs_t)) |>
+    mutate(evid = 0L, amt = NA_real_, dur = NA_real_)
+  pna_days <- function(time) if (pna_continuous) time / 24 else floor(time / 24)
+  bind_rows(dose_rows, obs_rows) |>
+    mutate(
+      regimen = regimen,
+      cmt = "central",
+      PNA = pna_days(time) / days_per_month
+    ) |>
+    arrange(id, time, desc(evid))
+}
+
+set.seed(2026)
+n_arm <- 200L
+# The same body weights in every regimen, so differences between regimens
+# come from the dosing and not from which neonates each arm happened to draw.
+cohort_wt <- draw_weights(n_arm)
+regimens <- c("Stage 1", "Stage 2", "R1", "R2", "R3")
+events <- bind_rows(lapply(seq_along(regimens), function(i) {
+  make_cohort(n_arm, regimens[i], id_offset = (i - 1L) * n_arm, wt = cohort_wt)
+}))
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+PNA and weight are carried on every record, each holding from that record
+onward (`covsInterpolation = "locf"`).
+
+```{r simulate}
+rxode2::rxSetSeed(2026)
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep = c("regimen", "WT"),
+  covsInterpolation = "locf",
+  returnType = "data.frame"
+) |>
+  # Late in a 48 h dosing gap the solved concentration wanders around zero
+  # at the 1e-8 mg/L level; a negative value there breaks PKNCA's log-down AUC.
+  mutate(C_anakinra = pmax(central / vc, 0))
+```
+
+`Cc` is the model's prediction of what the assay measures (anakinra plus
+endogenous IL-1Ra); `C_anakinra` removes the endogenous baseline and is used
+for the exposure (AUC) calculations below. The baseline adds about
+0.16 mg*h/L per day, about 1% of the target exposure.
+
+# Replicate published figures
+
+## Figure 3: concentration and inhibition over the first 96 h
+
+```{r figure-3}
+events_f3 <- bind_rows(
+  make_cohort(200L, "0.8 mg/kg q24h", id_offset = 0L, t_end = 96),
+  make_cohort(200L, "0.4 mg/kg q12h", id_offset = 200L, t_end = 96)
+)
+stopifnot(!anyDuplicated(unique(events_f3[, c("id", "time", "evid")])))
+sim_f3 <- rxode2::rxSolve(
+  mod,
+  events = events_f3,
+  keep = "regimen",
+  covsInterpolation = "locf",
+  returnType = "data.frame"
+)
+
+f3 <- sim_f3 |>
+  select(regimen, time, Cc, inhib) |>
+  pivot_longer(c(Cc, inhib), names_to = "output", values_to = "value") |>
+  group_by(regimen, output, time) |>
+  summarise(
+    lo = quantile(value, 0.025),
+    med = median(value),
+    hi = quantile(value, 0.975),
+    .groups = "drop"
+  ) |>
+  mutate(output = ifelse(output == "Cc", "Concentration (mg/L)", "Inhibition (fraction)"))
+
+ref_lines <- data.frame(
+  output = c("Concentration (mg/L)", "Inhibition (fraction)"),
+  y = c(0.04, 0.5)
+)
+ggplot(f3, aes(time, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  geom_hline(data = ref_lines, aes(yintercept = y), linetype = "dashed", colour = "darkred") +
+  facet_grid(output ~ regimen, scales = "free_y") +
+  scale_x_continuous(breaks = seq(0, 96, by = 24)) +
+  labs(
+    x = "Time (h)", y = NULL,
+    caption = "Replicates Figure 3 of Li 2026: median and 95% prediction interval."
+  )
+```
+
+The figure's medians, read by eye, are compared below: the concentration one
+hour after the first 0.8 mg/kg dose, and the trough inhibition before the
+second, third and fourth doses.
+
+```{r figure-3-check}
+f3_check <- sim_f3 |>
+  filter(
+    (regimen == "0.8 mg/kg q24h" & time %in% c(1, 24, 48, 72)) |
+      (regimen == "0.4 mg/kg q12h" & time %in% c(48, 60, 84))
+  ) |>
+  group_by(regimen, time) |>
+  summarise(Cc = median(Cc), inhib = median(inhib), .groups = "drop") |>
+  mutate(
+    output = ifelse(time == 1, "Cc", "inhib"),
+    simulated = ifelse(output == "Cc", Cc, inhib)
+  ) |>
+  left_join(
+    tibble::tribble(
+      ~regimen, ~time, ~figure3,
+      "0.8 mg/kg q24h", 1, 1.63,
+      "0.8 mg/kg q24h", 24, 0.46,
+      "0.8 mg/kg q24h", 48, 0.27,
+      "0.8 mg/kg q24h", 72, 0.21,
+      "0.4 mg/kg q12h", 48, 0.59,
+      "0.4 mg/kg q12h", 60, 0.49,
+      "0.4 mg/kg q12h", 84, 0.41
+    ),
+    by = c("regimen", "time")
+  ) |>
+  select(regimen, time, output, figure3, simulated)
+knitr::kable(
+  f3_check |>
+    dplyr::rename(
+      "Regimen" = regimen, "Time (h)" = time, "Output" = output,
+      "Figure 3 median" = figure3, "Simulated median" = simulated
+    ),
+  digits = 2,
+  caption = "Figure 3 medians (Cc in mg/L at 1 h; inhibition fraction just before a dose)."
+)
+stopifnot(
+  abs(f3_check$simulated[f3_check$output == "Cc"] / 1.63 - 1) < 0.1,
+  all(abs(f3_check$simulated[f3_check$output == "inhib"] -
+    f3_check$figure3[f3_check$output == "inhib"]) < 0.1)
+)
+```
+
+# PKNCA validation
+
+The paper's exposure metric is the AUC over each postnatal day (AUC0-24h,
+Figures 2 and 4). PKNCA computes it per day and regimen from the anakinra-only
+concentration. For the every-48-hour stage 1 regimen the AUC is computed over
+each 48 h dosing interval and halved: the stage 1 boxes in Figure 2 appear only
+on even days and sit at about half the AUC that a 1.0 mg/kg dose produces in a
+day, so they are read as the average daily AUC.
+
+```{r pknca}
+nca_in <- sim |>
+  filter(!is.na(C_anakinra)) |>
+  select(id, regimen, time, C_anakinra)
+dose_df <- events |>
+  filter(evid == 1) |>
+  select(id, regimen, time, amt)
+
+conc_obj <- PKNCA::PKNCAconc(nca_in, C_anakinra ~ time | regimen + id)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id)
+
+intervals <- bind_rows(
+  merge(
+    data.frame(regimen = c("Stage 2", "R1", "R2", "R3")),
+    data.frame(start = (0:20) * 24, end = (1:21) * 24)
+  ),
+  data.frame(regimen = "Stage 1", start = seq(0, 480, by = 48)) |>
+    mutate(end = pmin(start + 48, 504))
+) |>
+  mutate(auclast = TRUE)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+auc_day <- as.data.frame(nca_res) |>
+  filter(PPTESTCD == "auclast") |>
+  mutate(
+    day = start / 24,
+    auc24 = ifelse(regimen == "Stage 1", PPORRES * 24 / (end - start), PPORRES)
+  )
+```
+
+## Figure 4: exposure under the proposed regimens
+
+```{r figure-4, fig.width = 8, fig.height = 4}
+auc_day |>
+  filter(regimen %in% c("R1", "R2", "R3")) |>
+  ggplot(aes(factor(day), auc24)) +
+  geom_boxplot(outlier.shape = NA, coef = 1e6) +
+  geom_hline(yintercept = 9.6, linetype = "dashed", colour = "darkred") +
+  geom_hline(yintercept = 30, linetype = "dashed", colour = "navy") +
+  facet_wrap(~regimen) +
+  scale_x_discrete(breaks = c(0, 5, 10, 15, 20)) +
+  labs(
+    x = "Postnatal age (days)", y = "AUC0-24h (mg*h/L)",
+    caption = paste(
+      "Replicates Figure 4 of Li 2026; whiskers span the full range.",
+      "Dashed lines: target 9.6 and safety limit 30 mg*h/L."
+    )
+  )
+```
+
+## Figure 2: exposure under the trial regimens
+
+```{r figure-2}
+auc_day |>
+  filter(regimen %in% c("Stage 1", "Stage 2")) |>
+  ggplot(aes(factor(day), auc24, fill = regimen)) +
+  geom_boxplot(outlier.shape = NA, coef = 1e6) +
+  geom_hline(yintercept = 9.6, linetype = "dashed", colour = "darkred") +
+  scale_x_discrete(breaks = seq(0, 20, by = 2)) +
+  labs(
+    x = "Postnatal age (days)", y = "AUC0-24h (mg*h/L)", fill = NULL,
+    caption = paste(
+      "Compare Figure 2 of Li 2026 (post hoc exposures of the trial",
+      "neonates); here a virtual cohort dosed from birth."
+    )
+  )
+```
+
+## Comparison against the published exposures
+
+Figure 4 medians were read by eye by the maintainers (about +/- 0.5
+mg*h/L); the stage 2 values are the Results text (9.8 mg*h/L on the day
+of birth, a plateau near 4.5 mg*h/L from day 10) and Figure 2.
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~regimen, ~day, ~auclast,
+  "R1", 0, 10.5, "R1", 1, 7.5, "R1", 2, 9.5, "R1", 3, 17.0,
+  "R1", 4, 16.0, "R1", 5, 15.3, "R1", 6, 22.2, "R1", 20, 21.0,
+  "R2", 0, 15.8, "R2", 1, 15.0, "R2", 2, 15.8, "R2", 3, 14.2,
+  "R2", 4, 17.3, "R2", 5, 16.6, "R2", 6, 16.1, "R2", 20, 15.3,
+  "R3", 0, 15.8, "R3", 1, 15.0, "R3", 2, 15.8, "R3", 3, 14.2,
+  "R3", 4, 15.3, "R3", 5, 14.7, "R3", 6, 14.3, "R3", 20, 13.5,
+  "Stage 2", 0, 9.8, "Stage 2", 10, 4.5, "Stage 2", 20, 4.3
+) |>
+  mutate(group = paste0(regimen, ", day ", day))
+
+sim_cmp <- auc_day |>
+  inner_join(published |> select(regimen, day, group), by = c("regimen", "day")) |>
+  transmute(group, PPTESTCD = "auclast", PPORRES = auc24)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_cmp,
+  reference = published |> select(group, auclast),
+  by = "group",
+  units = c(auclast = "mg*h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = "Median AUC0-24h by postnatal day. * differs from the published value by >20%."
+)
+
+fig4_pct <- auc_day |>
+  filter(regimen %in% c("R1", "R2", "R3")) |>
+  group_by(regimen, day) |>
+  summarise(sim = median(auc24), .groups = "drop") |>
+  inner_join(published, by = c("regimen", "day")) |>
+  mutate(pct_diff = 100 * (sim - auclast) / auclast)
+stopifnot(
+  # Each regimen's medians move together across days, offset by the IIV draw
+  # of its 200 neonates (about +-3% per arm); a mis-transcribed CL, FCL or
+  # PNAT50 shifts whole profiles or the first days by 10% or more.
+  abs(median(fig4_pct$pct_diff)) < 8,
+  quantile(abs(fig4_pct$pct_diff), 0.9) < 15
+)
+```
+
+The proposed regimens (R1-R3) agree with Figure 4 to within a few percent from
+postnatal day 1 onward, including days 1-3, where the change in clearance is
+fastest. On the day of birth all three run about 7% below the figure; how the
+authors' simulation advanced postnatal age within the first day is not
+reported, and the day-0 AUC is the one most sensitive to it (see the
+sensitivity section). The stage 2 virtual cohort runs 10-15% above the Results
+values: the trial neonates started anakinra within the first 24 h of life
+rather than at birth, and Figure 2 summarises their individual post hoc
+estimates rather than a simulated population.
+
+## Target attainment
+
+Li 2026 reports that about 95% of neonates reached the 9.6 mg*h/L target
+under R2, with 4% above the 30 mg*h/L safety limit, and that R3 cut the
+excess-exposure risk ten-fold for a 5% loss of target attainment. The
+fraction of neonate-days meeting each bound is shown for reference; the paper
+does not state whether its percentages are per day or over the whole course,
+so they are not used as a pass/fail check.
+
+```{r attainment}
+auc_day |>
+  filter(regimen %in% c("R1", "R2", "R3")) |>
+  group_by(regimen) |>
+  summarise(
+    target = mean(auc24 >= 9.6),
+    above_safety = mean(auc24 > 30),
+    .groups = "drop"
+  ) |>
+  dplyr::rename(
+    "Regimen" = regimen, "Neonate-days AUC >= 9.6" = target,
+    "Neonate-days AUC > 30" = above_safety
+  ) |>
+  knitr::kable(digits = 3, caption = "Fraction of simulated neonate-days by exposure bound.")
+```
+
+## Sensitivity: continuously advancing postnatal age
+
+Clearance changes fastest in the first days of life, so the AUC there depends
+on how PNA is fed to the model. The typical neonate (0.9 kg) under R2 is
+solved with PNA as the day of life and with PNA advancing every hour.
+
+```{r pna-sensitivity}
+mod_typical <- rxode2::zeroRe(mod)
+typ_events <- bind_rows(
+  make_cohort(1L, "R2", id_offset = 0L, wt = 0.9) |>
+    mutate(pna_encoding = "day of life"),
+  make_cohort(1L, "R2", id_offset = 0L, wt = 0.9, pna_continuous = TRUE) |>
+    mutate(pna_encoding = "continuous")
+)
+# One single-subject solve per encoding (the typical neonate in each).
+typ_sim <- bind_rows(lapply(split(typ_events, typ_events$pna_encoding), function(ev) {
+  rxode2::rxSolve(
+    mod_typical,
+    events = ev,
+    covsInterpolation = "locf",
+    returnType = "data.frame"
+  ) |>
+    # A single-subject solve returns no id column.
+    mutate(id = 1L, pna_encoding = ev$pna_encoding[1], C_anakinra = pmax(central / vc, 0))
+}))
+typ_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(
+    typ_sim |> select(id, pna_encoding, time, C_anakinra),
+    C_anakinra ~ time | pna_encoding + id
+  ),
+  PKNCA::PKNCAdose(
+    typ_events |> filter(evid == 1) |> select(id, pna_encoding, time, amt),
+    amt ~ time | pna_encoding + id
+  ),
+  intervals = data.frame(start = (0:6) * 24, end = (1:7) * 24, auclast = TRUE)
+))
+as.data.frame(typ_nca) |>
+  filter(PPTESTCD == "auclast") |>
+  transmute(day = start / 24, pna_encoding, PPORRES) |>
+  pivot_wider(names_from = pna_encoding, values_from = PPORRES) |>
+  mutate(pct_change = 100 * (continuous - `day of life`) / `day of life`) |>
+  dplyr::rename(
+    "Postnatal day" = day, "AUC, PNA as day of life" = `day of life`,
+    "AUC, PNA continuous" = continuous, "Change (%)" = pct_change
+  ) |>
+  knitr::kable(digits = 1, caption = "Typical-neonate AUC0-24h (mg*h/L) under R2.")
+```
+
+# Assumptions and deviations
+
+- **Postnatal age as day of life.** The model takes PNA in months (the
+  register's unit) and converts to days internally. The paper's dataset
+  records PNA in whole days, and its simulated exposures (Figure 4) are
+  reproduced when PNA is held at the day of life over each day; a
+  continuously advancing PNA gives lower exposures over the first days of
+  life, as the sensitivity table shows. Users simulating new regimens should
+  decide which encoding fits their purpose.
+- **Fractional maturation written as a signed amplitude.** The paper's
+  `1 - FCL exp(-ln2 PNA / PNAT50)` is encoded as
+  `1 + cl_pna_famp exp(-cl_pna_kdes PNA)` with `cl_pna_famp = -FCL` and
+  `cl_pna_kdes = ln2 / PNAT50`, the library's form for a postnatal-age
+  effect. The two are identical.
+- **Final estimates from the control stream.** The supplement's NONMEM
+  control stream holds the final estimates (its `$THETA` values equal Table 2
+  and Eq. 6), so the variances there are used directly: Table 2's IIV and
+  proportional-error entries are their square roots, to the printed rounding.
+- **IIV on V omitted.** The control stream fixes it to 0 (Table S1 model 3;
+  not identifiable), so the model carries no `etalvc`.
+- **Units.** The baseline is reported in pg/mL; the model works in mg and
+  mg/L, so 6,640 pg/mL is entered as 0.00664 mg/L. `Cc` includes the
+  endogenous baseline, as the assay does; the AUC calculations here subtract
+  it.
+- **Inhibition model.** Eq. 5 is an assumed direct-effect model (Imax = 1,
+  IC50 = 0.04 mg/L, from the literature), not one fitted to neonatal data.
+  The paper says it is driven by the concentration predicted by the final
+  model; the t = 0 inhibition of about 0.15 in Figure 3b and 3d is what the
+  endogenous baseline alone gives, so `inhib` uses `Cc` including the
+  baseline.
+- **Infusion duration.** Not reported. Doses are given as 5-minute infusions;
+  Figure 3a's median one hour after a 0.8 mg/kg dose (1.63 mg/L) matches a
+  short infusion.
+- **Virtual cohort.** Body weight drawn log-normally around the trial median
+  and held constant, the same weights in every regimen; dosing from birth;
+  200 neonates per regimen (the authors used 1,000).
+- No correction notice for Li 2026 was found as of 2026-11-18.
