@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sayadi 2026 dalbavancin ([doi:10.1128/aac.00665-26](https://doi.org/10.1128/aac.00665-26)) -- adults with Gram-positive infections on routine therapeutic drug monitoring, mostly elderly with osteoarticular infection or endocarditis.
+- Add van Dyk 2026 ritonavir-boosted atazanavir ([doi:10.1128/aac.00592-26](https://doi.org/10.1128/aac.00592-26)) -- African children and adolescents with HIV on subsequent-line therapy, with simulated rifampicin co-treatment.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
