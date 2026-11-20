@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2026 tacrolimus ([doi:10.2147/DDDT.S620915](https://doi.org/10.2147/DDDT.S620915)) -- Chinese adults with connective tissue disease-associated interstitial lung disease.
+- Add Jung 2026 tacrolimus ([doi:10.3389/fphar.2026.1896778](https://doi.org/10.3389/fphar.2026.1896778)) -- pediatric liver transplant recipients younger than 36 months, immediate postoperative period.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
