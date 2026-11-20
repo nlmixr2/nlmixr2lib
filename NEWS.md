@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Amajor 2026 cefepime, whole-blood microsampling and plasma-equivalent models ([doi:10.1128/aac.01736-25](https://doi.org/10.1128/aac.01736-25)) -- critically ill children with multiple organ dysfunction syndrome.
+- Add Briquet 2026 meropenem ([doi:10.1128/aac.00372-26](https://doi.org/10.1128/aac.00372-26)) -- unbound meropenem in non-critically ill adults on conventional and daytime-only (OPAT) schedules.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
