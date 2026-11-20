@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tachet 2026 ruxolitinib popPK and exposure-toxicity ([doi:10.1002/cpt.70367](https://doi.org/10.1002/cpt.70367)) -- adults with myeloproliferative neoplasms, graft-versus-host disease and other haematologic disorders in routine care.
+- Add Redhi 2026 berzosertib ([doi:10.1002/cpt.70303](https://doi.org/10.1002/cpt.70303)) -- antimalarial PK-PD in *Plasmodium falciparum*-infected humanized mice and a human unbound-plasma dose-prediction model.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

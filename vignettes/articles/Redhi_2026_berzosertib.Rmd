@@ -1,0 +1,389 @@
+---
+title: "Berzosertib repurposed for malaria (Redhi 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Berzosertib repurposed for malaria (Redhi 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Redhi 2026 explored repurposing the anticancer ATR-kinase inhibitor berzosertib
+(VE-822 / VX-970 / M6620) as an antimalarial. They built a sequential
+pharmacokinetic-pharmacodynamic (PK-PD) model in *Plasmodium falciparum*-infected
+humanized mice and then predicted an efficacious human dose by combining a human
+population PK model (derived from a PK-Sim PBPK model) with the mouse-derived
+unbound-plasma PD parameters. Two model files are packaged:
+
+1. `Redhi_2026_berzosertib_mouse` -- one-compartment whole-blood PK (first-order
+   absorption and linear elimination) driving a direct-effect parasitemia model
+   (exponential growth minus a sigmoidal kill), fitted to NSG mice.
+2. `Redhi_2026_berzosertib_human` -- two-compartment unbound-plasma PK after 1-h
+   IV infusion, with allometric weight scaling, driving the same parasitemia
+   model with the unbound-plasma EC50, used for the human dose prediction.
+
+* Citation: `r rxode2::rxode(readModelDb("Redhi_2026_berzosertib_mouse"))$reference`
+* Article: <https://doi.org/10.1002/cpt.70303>
+
+```{r load-models}
+mod_mouse <- readModelDb("Redhi_2026_berzosertib_mouse")
+mod_human <- readModelDb("Redhi_2026_berzosertib_human")
+```
+
+# Population
+
+```{r population}
+str(readModelDb("Redhi_2026_berzosertib_mouse")()$population)
+str(readModelDb("Redhi_2026_berzosertib_human")()$population)
+```
+
+# Source trace
+
+| Parameter / equation | Value | Source location |
+|---|---|---|
+| Mouse PK ODEs | n/a | Equations 1a-1c |
+| Mouse `lka` | 0.44 /h | Table S4 (ka) |
+| Mouse `lcl` | 0.25 L/h | Table S4 (Cl blood) |
+| Mouse `lvc` | 1.39 L | Table S4 (V d,blood) |
+| Mouse `lkgrow` | 0.038 /h | Table 1 (K growth) |
+| Mouse `lemax` (K kill) | 0.058 /h | Table 1 (K kill) |
+| Mouse `lec50` | 13.24 ng/mL | Table 1 (whole blood EC50,blood) |
+| Mouse `lhill` | 7 (fixed) | Table 1 (H); scan in Table S5 |
+| Mouse `lrbase_parasites` | 0.6 % (fixed) | Not reported; Figure 1a day-3 group means |
+| Mouse IIV CL, Vc | 0.21, 0.34 (omega) | Table S4 |
+| Mouse IIV Kgrow, Kkill, EC50 | 0.1, 0.012, 0.62 (omega) | Table 1 |
+| Mouse `propSd`, `propSd_parasites` | 0.42, 0.3 | Table S4, Table 1 |
+| Mouse fu, B:P | 0.09, 2.06 | Table S1 |
+| Human PK ODEs | n/a | Supplement Eqs 4a-4b |
+| Human `lcl`, `lvc`, `lq`, `lvp` | 10.7, 26.3, 29.03, 167.3 (per kg) | Table S6 |
+| Human allometric exponents | 0.75 (CL, Q), 1 (Vc, Vp) | Supplement S1 1.12 |
+| Human `lec50` | 0.58 ng/mL | Table 1 (unbound plasma EC50) |
+| Human `lrbase_parasites` | 1 % | Methods (initial parasitemia 1%) |
+| Human IIV CL, Vc, Q, Vp | 0.25, 0.11, 0.28, 0.42 (omega) | Table S6 |
+| Human `propSd` | 0.2 | Table S6 |
+
+## Closed-form check: the minimum parasiticidal concentration (Eq. 3)
+
+The MPC is the EC90, defined (Eq. 3) as `MPC = EC50 * (90 / (100 - 90))^(1/H)`.
+Both models expose it as the derived variable `mpc`, and it reproduces the
+Table 1 values exactly.
+
+```{r mpc-check}
+mpc_mouse <- 13.24 * 9^(1 / 7) # whole blood
+mpc_human <- 0.58 * 9^(1 / 7) # unbound plasma
+c(mouse = mpc_mouse, human = mpc_human)
+# Table 1: whole-blood MPC = 18.12 ng/mL; unbound-plasma MPC = 0.79 ng/mL.
+stopifnot(abs(mpc_mouse - 18.12) < 0.05, abs(mpc_human - 0.79) < 0.01)
+```
+
+The unbound values follow from the whole-blood values via the mouse blood-to-plasma
+ratio (2.06) and fraction unbound (0.09): `13.24 * 0.09 / 2.06 = 0.578` and
+`18.12 * 0.09 / 2.06 = 0.792`, matching the Table 1 unbound EC50 (0.58) and
+MPC (0.79).
+
+```{r unbound-check}
+stopifnot(
+  abs(13.24 * 0.09 / 2.06 - 0.58) < 0.01,
+  abs(18.12 * 0.09 / 2.06 - 0.79) < 0.01
+)
+```
+
+# Mouse whole-blood PK
+
+The dose-escalation study gave 0.5-20 mg/kg once daily; the mouse weighed
+25-35 g. The simulation below uses 0.03 kg. Table S3 reports the single-dose
+non-compartmental Cmax and AUC0-24 at each dose level.
+
+```{r mouse-pk-sim}
+mod_mouse_typ <- rxode2::zeroRe(mod_mouse)
+wt_mouse <- 0.03
+
+doses_mgkg <- c(0.5, 5, 7.5, 10, 15, 20)
+obs_times <- sort(unique(c(seq(0, 24, by = 0.1))))
+
+make_mouse_pk <- function(i) {
+  d <- doses_mgkg[i]
+  tag <- paste0(d, " mg/kg")
+  dose <- tibble::tibble(id = i, time = 0, amt = d * wt_mouse, evid = 1, cmt = "depot")
+  obs <- tibble::tibble(id = i, time = obs_times, amt = 0, evid = 0, cmt = "parasites")
+  dplyr::bind_rows(dose, obs) |>
+    dplyr::arrange(time, dplyr::desc(evid)) |>
+    dplyr::mutate(arm = tag)
+}
+ev_mouse <- dplyr::bind_rows(lapply(seq_along(doses_mgkg), make_mouse_pk))
+sim_mouse_pk <- rxode2::rxSolve(mod_mouse_typ, events = ev_mouse, keep = "arm") |>
+  as.data.frame()
+```
+
+```{r mouse-pknca}
+conc_mouse <- sim_mouse_pk |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, arm)
+dose_mouse <- ev_mouse |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, arm)
+
+nca_mouse <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_mouse, Cc ~ time | arm + id),
+  PKNCA::PKNCAdose(dose_mouse, amt ~ time | arm + id, route = "extravascular"),
+  intervals = data.frame(start = 0, end = 24, cmax = TRUE, auclast = TRUE)
+))
+
+published_mouse <- tibble::tribble(
+  ~arm,        ~cmax, ~auclast,
+  "0.5 mg/kg",     20,       99,
+  "5 mg/kg",       61,      684,
+  "7.5 mg/kg",     95,      776,
+  "10 mg/kg",     123,     1213,
+  "15 mg/kg",     157,     1901,
+  "20 mg/kg",     311,     3019
+)
+
+cmp_mouse <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_mouse,
+  reference = published_mouse,
+  by = "arm",
+  units = c(cmax = "ng/mL", auclast = "h*ng/mL"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp_mouse, caption = "Typical mouse (30 g) single-dose Cmax and AUC0-24 vs. Table S3. * differs by >20%.")
+```
+
+The model's structural PK (linear, dose-proportional) reproduces the Table S3
+central dose levels closely; the lowest (0.5 mg/kg) and highest (20 mg/kg)
+levels sit further off, as the Table S3 Cmax is not perfectly dose-proportional
+there (the paper itself notes the 20 mg/kg exposure is disproportionately high).
+
+```{r mouse-pknca-check}
+nca_df <- as.data.frame(nca_mouse)
+auc10 <- nca_df$PPORRES[nca_df$arm == "10 mg/kg" & nca_df$PPTESTCD == "auclast"]
+# Deterministic typical-value solve at the central 10 mg/kg level.
+stopifnot(abs(auc10 / 1213 - 1) < 0.1)
+```
+
+# Human unbound-plasma PK and the dose prediction
+
+The human model is parameterized on unbound plasma concentration. Table 3 of the
+paper reports the unbound-plasma Cmax and AUC0-inf for the candidate antimalarial
+regimens and the clinical MTD.
+
+```{r human-sim}
+mod_human_typ <- rxode2::zeroRe(mod_human)
+wt_human <- 72.4
+
+# Figure 4 shows four regimens over three parasite lifecycles (156 h): a single
+# 440 mg infusion, and the 145 q48h, 75 q24h and 35 q12h courses.
+regimens <- tibble::tribble(
+  ~regimen,         ~dose, ~ii, ~addl,
+  "440 mg single",    440,  24,     0,
+  "145 mg q48h x3",   145,  48,     2,
+  "75 mg q24h x6",     75,  24,     5,
+  "35 mg q12h x12",    35,  12,    11
+)
+
+obs_h <- sort(unique(c(seq(0, 160, by = 0.25))))
+
+make_human <- function(i, dat) {
+  r <- dat[i, ]
+  dose <- tibble::tibble(
+    id = i, time = seq(0, by = r$ii, length.out = r$addl + 1),
+    amt = r$dose, evid = 1, cmt = "central", dur = 1, WT = wt_human
+  )
+  obs <- tibble::tibble(id = i, time = obs_h, amt = 0, evid = 0, cmt = "parasites",
+                        dur = NA_real_, WT = wt_human)
+  dplyr::bind_rows(dose, obs) |>
+    dplyr::arrange(time, dplyr::desc(evid)) |>
+    dplyr::mutate(regimen = r$regimen)
+}
+ev_human <- dplyr::bind_rows(lapply(seq_len(nrow(regimens)), make_human, dat = regimens))
+sim_human <- rxode2::rxSolve(mod_human_typ, events = ev_human, keep = "regimen") |>
+  as.data.frame()
+```
+
+```{r human-pknca}
+# Table 3 reports the per-dose Cmax and the cumulative AUC0-inf of ONE course.
+# Because the model is linear, the course AUC0-inf is the single-dose AUC0-inf
+# times the number of doses (6 for the 440 mg twice-weekly cycle, 6 for 75 mg
+# daily, 12 for 35 mg 12-hourly) -- exactly how the paper computes it (e.g. a
+# single 75 mg dose integrates to about 104 ng.h/mL and 6 x 104 = 624). NCA is
+# therefore run on one infusion per dose level with a long terminal grid, and
+# the AUC is scaled by the dose count.
+dose_levels <- tibble::tribble(
+  ~regimen,               ~dose, ~ndose,
+  "440 mg MTD (1 cycle)",   440,      6,
+  "75 mg q24h x6",           75,      6,
+  "35 mg q12h x12",          35,     12
+)
+obs_sd <- sort(unique(c(seq(0, 24, by = 0.1), seq(25, 6000, by = 5))))
+make_sd <- function(i) {
+  r <- dose_levels[i, ]
+  dplyr::bind_rows(
+    tibble::tibble(id = i, time = 0, amt = r$dose, evid = 1, cmt = "central",
+                   dur = 1, WT = wt_human),
+    tibble::tibble(id = i, time = obs_sd, amt = 0, evid = 0, cmt = "parasites",
+                   dur = NA_real_, WT = wt_human)
+  ) |>
+    dplyr::arrange(time, dplyr::desc(evid)) |>
+    dplyr::mutate(regimen = r$regimen)
+}
+ev_sd <- dplyr::bind_rows(lapply(seq_len(nrow(dose_levels)), make_sd))
+sim_sd <- rxode2::rxSolve(mod_human_typ, events = ev_sd, keep = "regimen") |>
+  as.data.frame()
+
+nca_sd <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(dplyr::filter(sim_sd, !is.na(Cc)) |> dplyr::select(id, time, Cc, regimen),
+                   Cc ~ time | regimen + id),
+  PKNCA::PKNCAdose(dplyr::filter(ev_sd, evid == 1) |> dplyr::select(id, time, amt, regimen),
+                   amt ~ time | regimen + id, route = "intravascular"),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, aucinf.obs = TRUE)
+))
+
+nca_hdf <- as.data.frame(nca_sd) |>
+  dplyr::left_join(dose_levels, by = "regimen")
+simulated_h <- nca_hdf |>
+  dplyr::mutate(value = ifelse(PPTESTCD == "aucinf.obs", PPORRES * ndose, PPORRES)) |>
+  dplyr::select(regimen, PPTESTCD, value) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = value)
+
+published_h <- tibble::tribble(
+  ~regimen,               ~cmax, ~aucinf.obs,
+  "440 mg MTD (1 cycle)",   116,        3571,
+  "75 mg q24h x6",           22,         624,
+  "35 mg q12h x12",          11,         567
+)
+
+cmp_h <- published_h |>
+  dplyr::rename(cmax_ref = cmax, auc_ref = aucinf.obs) |>
+  dplyr::left_join(simulated_h, by = "regimen") |>
+  dplyr::transmute(
+    Regimen = regimen,
+    `Cmax ref (ng/mL)` = cmax_ref,
+    `Cmax sim (ng/mL)` = round(cmax, 1),
+    `Cmax % diff` = sprintf("%+.1f%%", 100 * (cmax / cmax_ref - 1)),
+    `AUC0-inf ref (h*ng/mL)` = auc_ref,
+    `AUC0-inf sim (h*ng/mL)` = round(aucinf.obs, 0),
+    `AUC % diff` = sprintf("%+.1f%%", 100 * (aucinf.obs / auc_ref - 1))
+  )
+knitr::kable(cmp_h, caption = "Typical-subject unbound-plasma per-dose Cmax and one-course AUC0-inf (single-dose AUC x dose count) vs. Table 3.")
+```
+
+```{r human-pknca-check}
+sim_vals <- function(reg, what) simulated_h[[what]][simulated_h$regimen == reg]
+# 75 mg q24h x6 is the paper's proposed efficacious antimalarial regimen.
+stopifnot(
+  abs(sim_vals("75 mg q24h x6", "cmax") / 22 - 1) < 0.1,
+  abs(sim_vals("75 mg q24h x6", "aucinf.obs") / 624 - 1) < 0.1,
+  abs(sim_vals("440 mg MTD (1 cycle)", "aucinf.obs") / 3571 - 1) < 0.1
+)
+```
+
+The proposed efficacious regimen 75 mg q24h x6 reproduces the Table 3
+unbound-plasma Cmax (22 ng/mL) and AUC0-inf (624 ng.h/mL). All simulated unbound
+Cmax values sit well below the whole-blood MPC-equivalent exposure of the MTD,
+reproducing the paper's central finding that the antimalarial exposure is several
+fold below the clinical safety margin.
+
+# Human exposure-response (Figure 4) and a known source inconsistency
+
+Figure 4 shows the unbound plasma concentration (Cc) and the parasitemia (P) for
+each regimen over three parasite lifecycles (156 h), starting from 1%
+parasitemia. The packaged model reproduces the concentration panels exactly (the
+Cc values above), but the parasitemia panel exposes an internal inconsistency in
+the published PD parameters.
+
+```{r human-cc, fig.height = 4}
+sim_human |>
+  dplyr::filter(!is.na(Cc), time <= 156) |>
+  ggplot(aes(time, Cc, colour = regimen)) +
+  geom_line() +
+  geom_hline(yintercept = 0.79, linetype = "dashed", colour = "grey50") +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Unbound plasma Cc (ng/mL)",
+    caption = "Replicates Figure 4a of Redhi 2026 (typical subject); dashed line = unbound MPC 0.79 ng/mL."
+  )
+```
+
+```{r human-pd}
+sim_human |>
+  dplyr::filter(!is.na(parasites), time <= 156) |>
+  ggplot(aes(time, parasites, colour = regimen)) +
+  geom_line() +
+  geom_hline(yintercept = 0.01, linetype = "dashed", colour = "grey50") +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Parasitemia P (%)",
+    caption = "Replicates Figure 4b of Redhi 2026 (typical subject); dashed line = 0.01% limit of detection."
+  )
+```
+
+With the parasite growth rate `Kgrowth = 0.038 /h` and kill rate
+`Kkill = 0.058 /h` fixed from Table 1, the maximal net rate of parasite decline
+(when the sigmoidal effect saturates at 1) is `0.058 - 0.038 = 0.020 /h`. Over
+the 156-h treatment window this clears at most `1% * exp(-0.020 * 156) = 0.045%`,
+so the typical subject does not reach the 0.01% limit of detection. The paper's
+own Figure 4b, however, shows the 75 mg q24h and 35 mg q12h regimens reaching
+0.01% at about 140 h, which implies a net decline of roughly
+`log(100) / 140 = 0.033 /h` -- about 60% faster than the published rate
+constants support.
+
+```{r pd-inconsistency}
+net_rate <- 0.058 - 0.038 # /h, from Table 1
+minP_typ <- min(sim_human$parasites[sim_human$regimen == "75 mg q24h x6"], na.rm = TRUE)
+c(net_rate = net_rate, predicted_floor = 1 * exp(-net_rate * 156), minP_typ = minP_typ)
+# The verbatim model is internally self-consistent: the simulated nadir matches
+# the analytic floor set by the net growth-kill balance. This asserts the
+# packaged parameters are carried as published, and brackets the ~0.03-0.04%
+# nadir that is the known deviation from the paper's figure.
+stopifnot(
+  abs(net_rate - 0.020) < 1e-9,
+  minP_typ > 0.02, minP_typ < 0.06
+)
+```
+
+This is carried as a documented source inconsistency, not a transcription error:
+the PK layer (Cc, Cmax, AUC, MPC) reproduces the paper exactly, so the packaged
+model is sound for exposure prediction and for the exposure-vs-MPC comparison
+that drives the paper's dose selection. Only the absolute parasite-clearance
+*time* is faster in the paper's figure than its tabulated rate constants permit.
+Nothing was tuned to close the gap.
+
+# Assumptions and deviations
+
+* **Mouse initial parasitemia (`lrbase_parasites` = 0.6%).** The PK-PD fit
+  seeded each mouse at its own observed day-3 parasitemia, which is not
+  tabulated. 0.6% is the day-3 group mean read from Figure 1a (all groups lie
+  between 0.50% and 0.75%). It is `fixed()` and affects only the absolute
+  parasitemia trajectory, not the PK or the rate constants.
+* **Mouse dosing in mg.** Doses are reported in mg/kg; the model takes mg, so a
+  user multiplies the mg/kg dose by the body weight (kg) to get the amount. The
+  vignette uses 0.03 kg.
+* **Human allometric scaling.** Table S6 reports the unbound PK parameters per kg
+  of body weight; the model restores the absolute parameter with the fixed
+  exponents (0.75 on CL and Q, 1 on Vc and Vp) centred on the 72.4 kg mean of
+  the 20 simulated subjects. Age and sex were tested and not retained.
+* **Human PK provenance.** The human parameters were estimated from
+  concentration-time profiles simulated by the authors' PK-Sim PBPK model, not
+  from measured clinical PK. The PBPK model itself was optimized and verified
+  against total-plasma clinical data (Table 2) and is not re-implemented here;
+  the packaged model is the downstream population PK model of the unbound plasma
+  (Table S6).
+* **PD parameter inconsistency.** See the previous section: the published growth
+  and kill rate constants imply a slower parasite clearance than the paper's
+  Figure 4 shows. Carried verbatim with a numeric assertion bracketing the
+  deviation.
+* **No recrudescence.** The paper notes that parasite recrudescence was not
+  included in the PK-PD model; the packaged model likewise has no dormant or
+  recrudescent pool.
+```
