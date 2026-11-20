@@ -1,0 +1,420 @@
+---
+title: "Paclitaxel and serum neurofilament light chain in rodents (Ibrahim 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Paclitaxel and serum neurofilament light chain in rodents (Ibrahim 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7.5, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Ibrahim_2026_paclitaxel_rodent"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Ibrahim_2026_paclitaxel_rodent"))$description`
+* Article: <https://doi.org/10.1007/s11095-026-04053-z> (open access, PMC13179264)
+
+Ibrahim 2026 built a semi-mechanistic PK-PD model in four sequential steps:
+a plasma PK model for Cremophor EL (CrEL)-formulated paclitaxel, a PK model of
+each paclitaxel-induced peripheral neurotoxicity (PIPN) site (dorsal root
+ganglia, DRG; peripheral nerve, PN, represented by sciatic nerve; brain), a
+simultaneous fit of all PIPN sites, and finally a neurofilament light chain
+(NfL) model in which the tubulin-bound paclitaxel in the PIPN sites drives NfL
+leakage into CSF and serum. The final NONMEM control stream (Supplement 1) runs
+all four layers together, and the packaged model reproduces it as one file.
+
+Paclitaxel is dosed into `central` (mg) and the CrEL vehicle into
+`crel_central` (mL), both intravenously. Outputs are total paclitaxel in plasma
+(`Cc`), DRG (`Cdrg`), nerve (`Cpn`) and brain (`Cbrain`), all in ng/mL (tissue
+density 1 g/mL), and NfL in serum (`Cnfl_serum`), CSF (`Cnfl_csf`), brain
+(`Cnfl_brain`) and DRG + nerve (`Cnfl_pns`) in pg/mL.
+
+# Population
+
+The paclitaxel PK layers were fitted to six data sources (Table I): four
+laboratories with individual data in Wistar Hanover and Sprague-Dawley rats and
+CD1 mice (57 animals; single IV doses of 2.6 mg/kg, a 5 mg/kg 4-h infusion,
+5 mg/kg weekly for 2 or 4 weeks, and 5, 10 or 15 mg/kg three times in week 1
+and four times in week 2) plus digitized mean profiles from Nakamura 2016
+(Sprague-Dawley rats, 7.5 mg/kg single or weekly for 6 weeks) and Wozniak 2017
+(BALB/c mice, 30 mg/kg single or every 2 days x 3 for 2 weeks). The NfL layer
+was fitted to a de novo longitudinal study in male Sprague-Dawley rats (8-12
+weeks old) given a single 10 mg/kg IV bolus of CrEL-paclitaxel (N = 7) or
+saline, and was externally validated against single-time-point sNfL from
+sources 2-4. Parameters are referenced to a 0.300 kg rat and scaled
+allometrically by body weight; mice differ from rats only by body weight and a
+fixed 0.4 g brain weight (`SPECIES_MOUSE = 1`). No between-animal variability
+was estimated (all `$OMEGA` fixed to 0), so the packaged model is a
+typical-value model with log-scale residual error.
+
+# Source trace
+
+| Element | Value | Source |
+|---|---|---|
+| CL, V1, Q, V2 of paclitaxel not bound to CrEL (0.300 kg) | 1.07323 L/h, 0.558984 L, 16.8238 L/h, 7.49171 L | Table III; Supplement 1 `$THETA` 1-4 |
+| Saturable transport Tmax, Kmt | 0.547305 mg/h, 0.100924 ug/L | Table III; Eq. 4; `$THETA` 5-6 |
+| CrEL V1, V2, V3, Q2, Q3 (70 kg, FIX) | 4.54, 1.32, 3.53 L; 1.17, 0.479 L/h | Table III (Henningsson 2005) |
+| CrEL Vmax (0.300 kg), Km (FIX) | 0.175047 mL/h; 2.57 mL/L | Table III; `$THETA` 8; Supplement 1 `KMC` |
+| Bslope,CrEL (FIX) | 4.46 | Table III; Eq. 5 |
+| fu (FIX), fCrEL | 0.069; 0.525151 | Table III; Eq. 6; `$THETA` 12 |
+| Kp,uu and Kp,uu,cell, DRG / PN / brain (FIX) | 4.25 / 4.48 / 0.032; 1.45 / 0.55 / 11.2 | Table III; Eqs. 1-2 |
+| CLout DRG / PN / brain | 0.57698 / 772.494 / 23.6918 uL/h | Table III; `$THETA` 9, 13, 16 |
+| Brain second compartment Q, V | 6.46732 uL/h, 3.22582 mL | Table III; `$THETA` 17-18 |
+| Bmax,initial DRG / PN / brain | 0.286703 / 0.144341 / 0.025915 mg/L | Table III; Eq. 3; `$THETA` 10, 14, 19 |
+| Kd DRG = PN; Kd brain (FIX) | 0.352706 ug/L; 4.208 ug/L | Table III; `$THETA` 11; `KD_BRN` |
+| Bmax increase DRG and brain: MAX, AUC50, h | 14.9417, 97.9133 mg*h/L, 2.75525 | Table III; Eq. 7; `$THETA` 20-22 |
+| Bmax increase nerve: SLP_PN | 0.0193666 L/(mg*h) | Table III; Eq. 8; `$THETA` 26 |
+| Tissue weights at 0.300 kg; ECF / ICF fractions (FIX) | DRG 40 mg, PN 2781 mg, brain 1.8 g (rat) or 0.4 g (mouse); 0.2/0.8, 0.5/0.5, 0.2/0.8 mL/g | Table III; Supplement 1 `$PK` |
+| NfL baselines serum, CSF | 17.6446, 222.501 pg/mL | Table IV; `$THETA` 27-28 |
+| NfL baselines brain, DRG + PN (FIX) | 0.43e6, 538.74e6 pg/mL | Table IV |
+| NfL leakage slope (brain = DRG + PN) | 0.029005e9 pg/(h*mg bound) | Table IV and footnote; Eqs. 9-12; `$THETA` 32 |
+| kout,serum (70 kg, exponent -0.25), V_serum, V_csf (FIX) | 10.1 1/day, 5 mL, 0.25 mL | Table IV |
+| Baseline steady state kin,csf, kout,csf | amounts, see Assumptions | Eqs. 13-14; Supplement 1 `KOUT_CSF`, `KIN_CSF` |
+| Residual SDs (log scale): plasma, DRG, PN, brain, sNfL, CSF NfL | 0.357, 0.493, 0.691, 0.417, 0.466, 0.371 | Tables III-IV; `$THETA` 7, 24, 23, 25, 34, 35 |
+| Allometric exponents and reference weights | 0.75 (clearances), 1 (volumes, tissue weights), -0.25 (NfL kout); 0.300 kg rat, 70 kg human | Methods; Supplement 1 `$PK` |
+
+# Simulation helpers
+
+The vehicle dose is not stated in the paper. Paclitaxel Fresenius Kabi
+(6 mg/mL, the product used in the NfL study) contains about 527 mg
+(about 0.5 mL) of CrEL per mL, so the CrEL dose is taken as 1/12 mL per mg of
+paclitaxel (see Assumptions and deviations).
+
+```{r helpers}
+mod <- readModelDb("Ibrahim_2026_paclitaxel_rodent")
+mod_typ <- rxode2::zeroRe(mod, which = "sigma") # the model has no etas
+
+crel_per_mg <- 1 / 12 # mL CrEL per mg paclitaxel (0.5 mL CrEL per 6 mg/mL vial mL)
+
+make_events <- function(dose_mgkg, dose_times, obs_times, wt = 0.3, mouse = 0,
+                        id = 1L, dur = 0, crel_ratio = crel_per_mg) {
+  amt <- dose_mgkg * wt
+  rate_ptx <- if (dur > 0) amt / dur else 0
+  rate_crel <- if (dur > 0) amt * crel_ratio / dur else 0
+  doses <- dplyr::bind_rows(
+    data.frame(time = dose_times, amt = amt, rate = rate_ptx, cmt = "central"),
+    data.frame(time = dose_times, amt = amt * crel_ratio, rate = rate_crel, cmt = "crel_central")
+  )
+  doses$evid <- 1L
+  obs <- data.frame(time = obs_times, evid = 0L, dvid = 1L)
+  # Doses before observations at the same time, so a time-zero observation
+  # returns the post-dose concentration.
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(time, dplyr::desc(evid)) |>
+    dplyr::mutate(id = id, WT = wt, SPECIES_MOUSE = mouse) |>
+    dplyr::relocate(id, time, amt, rate, evid, cmt, dvid)
+}
+
+solve_typ <- function(events) {
+  rxode2::rxSolve(mod_typ, events, returnType = "data.frame", useLinCmt = FALSE,
+                  keep = c("WT", "SPECIES_MOUSE"))
+}
+
+grid_10d <- sort(unique(c(0, seq(0.01, 1, by = 0.01), seq(1.25, 24, by = 0.25), seq(25, 240, by = 1))))
+```
+
+# Baseline NfL steady state
+
+Without paclitaxel, serum and CSF NfL must stay at the Table IV baselines
+(Eqs. 13-14).
+
+```{r baseline}
+ev_ctl <- make_events(0, dose_times = 0, obs_times = c(0, 24, 120, 240))
+sim_ctl <- solve_typ(ev_ctl)
+knitr::kable(sim_ctl |> dplyr::select(time, Cnfl_serum, Cnfl_csf, Cnfl_brain, Cnfl_pns),
+             digits = 2, caption = "Saline control (typical rat, 0.300 kg).")
+stopifnot(
+  all(abs(sim_ctl$Cnfl_serum / 17.6446 - 1) < 1e-6),
+  all(abs(sim_ctl$Cnfl_csf / 222.501 - 1) < 1e-6)
+)
+```
+
+# Paclitaxel in plasma and PIPN sites
+
+## Single dose (Figure 4A)
+
+```{r fig4a}
+doses <- c(5, 10, 15)
+sim_sd <- dplyr::bind_rows(lapply(seq_along(doses), function(i) {
+  solve_typ(make_events(doses[i], 0, grid_10d, id = i)) |>
+    dplyr::mutate(dose = paste(doses[i], "mg/kg"))
+}))
+
+long_ptx <- function(d) {
+  d |>
+    dplyr::select(dose, time, Plasma = Cc, `Dorsal root ganglia` = Cdrg,
+                  `Peripheral nerves` = Cpn, Brain = Cbrain) |>
+    tidyr::pivot_longer(-c(dose, time), names_to = "site", values_to = "conc")
+}
+
+ggplot(long_ptx(sim_sd) |> dplyr::filter(time > 0), aes(time / 24, conc, colour = site)) +
+  geom_line() +
+  facet_wrap(~dose) +
+  scale_y_log10(limits = c(0.1, NA)) +
+  labs(x = "Time (days)", y = "Total PTX conc (ng/mL)", colour = NULL,
+       caption = "Replicates Figure 4A of Ibrahim 2026 (typical rat, 0.300 kg).") +
+  theme(legend.position = "bottom")
+```
+
+```{r fig4a-check}
+day10 <- sim_sd |> dplyr::filter(time == 240, dose == "10 mg/kg")
+knitr::kable(day10 |> dplyr::select(time, Cc, Cdrg, Cpn, Cbrain), digits = 2,
+             caption = "Typical total paclitaxel 10 days after 10 mg/kg (ng/mL).")
+stopifnot(
+  # Figure 4A at day 10: DRG > nerve > brain > plasma
+  day10$Cdrg > day10$Cpn, day10$Cpn > day10$Cbrain, day10$Cbrain > day10$Cc
+)
+```
+
+At day 10 the simulated DRG (about 55 ng/mL), nerve (about 9 ng/mL) and plasma
+(about 0.2 ng/mL) concentrations match the medians of Figure 4A; brain is
+about 6 ng/mL against roughly 2-3 ng/mL in the figure (see Assumptions and
+deviations for the dependence on the vehicle dose).
+
+## Repeated dosing (Figure 4B)
+
+Three doses in week 1 and four in week 2, on days 0, 2, 5, 7, 9, 12 and 14
+(read from the dashed dosing lines of Figure 4B).
+
+```{r fig4b}
+sard_days <- c(0, 2, 5, 7, 9, 12, 14)
+grid_30d <- sort(unique(c(0, sard_days * 24 + 0.05, seq(0.25, 720, by = 0.5))))
+sim_md <- dplyr::bind_rows(lapply(seq_along(doses), function(i) {
+  solve_typ(make_events(doses[i], sard_days * 24, grid_30d, id = i)) |>
+    dplyr::mutate(dose = paste(doses[i], "mg/kg"))
+}))
+
+ggplot(long_ptx(sim_md) |> dplyr::filter(time > 0), aes(time / 24, conc, colour = site)) +
+  geom_line() +
+  geom_vline(xintercept = sard_days, linetype = "dashed", colour = "grey60") +
+  facet_wrap(~dose) +
+  scale_y_log10(limits = c(0.1, NA)) +
+  labs(x = "Time (days)", y = "Total PTX conc (ng/mL)", colour = NULL,
+       caption = "Replicates Figure 4B of Ibrahim 2026.") +
+  theme(legend.position = "bottom")
+```
+
+After repeated dosing the brain concentration overtakes the nerve concentration
+a few days after the last dose, as described in the Results.
+
+## Paclitaxel amounts by sub-compartment (Figure 4C)
+
+```{r fig4c}
+amt_sd <- sim_sd |>
+  dplyr::filter(dose == "10 mg/kg", time > 0) |>
+  dplyr::transmute(
+    time,
+    `DRG|Unbound extracellular` = ecf_drg, `DRG|Unbound intracellular` = cu_icf_drg * vicf_drg,
+    `DRG|Bound intracellular` = bound_drg, `DRG|Total` = tot_drg,
+    `Peripheral nerves|Unbound extracellular` = ecf_pn, `Peripheral nerves|Unbound intracellular` = cu_icf_pn * vicf_pn,
+    `Peripheral nerves|Bound intracellular` = bound_pn, `Peripheral nerves|Total` = tot_pn,
+    `Brain|Unbound extracellular` = brain_ecf, `Brain|Unbound intracellular` = cu_icf_brain * vicf_brain,
+    `Brain|Bound intracellular` = bound_brain, `Brain|Total` = tot_brain
+  ) |>
+  tidyr::pivot_longer(-time, names_to = "key", values_to = "amount_mg") |>
+  tidyr::separate(key, into = c("site", "pool"), sep = "\\|")
+
+ggplot(amt_sd, aes(time / 24, amount_mg * 1e9, colour = pool)) +
+  geom_line() +
+  facet_wrap(~site) +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "PTX amount (pg)", colour = NULL,
+       caption = "Replicates Figure 4C of Ibrahim 2026 (10 mg/kg single dose).") +
+  theme(legend.position = "bottom")
+```
+
+# NfL kinetics
+
+## Single 10 mg/kg dose against the observed data (Figure 1A-B, Table S1)
+
+```{r nfl-obs}
+sim10 <- sim_sd |> dplyr::filter(dose == "10 mg/kg")
+nfl_at <- function(t) sim10[sim10$time == t, ]
+obs_tab <- data.frame(
+  Matrix = c("Serum", "Serum", "Serum", "CSF", "CSF"),
+  `Time (h)` = c(0, 72, 240, 72, 240),
+  Observed = c("17.6 +/- 7.4 (mean +/- SD)", "335.7 +/- 123.9", "69.3 +/- 28.6",
+               "702-783 (range)", "774 (N = 1)"),
+  Simulated = c(nfl_at(0)$Cnfl_serum, nfl_at(72)$Cnfl_serum, nfl_at(240)$Cnfl_serum,
+                nfl_at(72)$Cnfl_csf, nfl_at(240)$Cnfl_csf),
+  check.names = FALSE
+)
+knitr::kable(obs_tab, digits = 1,
+             caption = "NfL (pg/mL) after 10 mg/kg CrEL-paclitaxel. Observed values: Results text and Table S1.")
+stopifnot(
+  # Results: sNfL at 24 h was more than 60-fold above baseline
+  nfl_at(24)$Cnfl_serum > 40 * 17.6446,
+  # 72 h serum and CSF inside +/- 50% of the observed centre
+  abs(nfl_at(72)$Cnfl_serum / 335.7 - 1) < 0.5,
+  abs(nfl_at(72)$Cnfl_csf / 742.5 - 1) < 0.5
+)
+```
+
+The typical sNfL rises more than 60-fold above baseline in the first day and is
+close to the observed mean at 72 h, and CSF NfL at 72 h is near the observed
+range. At 240 h the simulated sNfL is about twice the observed mean; the
+vehicle-dose sensitivity below shows how much of that depends on the assumed
+CrEL dose.
+
+## NfL in serum, CSF, nerves and brain (Figure 1D)
+
+```{r fig1d}
+nfl_long <- sim_sd |>
+  dplyr::filter(time > 0) |>
+  dplyr::select(dose, time, Serum = Cnfl_serum, CSF = Cnfl_csf,
+                `Peripheral nerves` = Cnfl_pns, Brain = Cnfl_brain) |>
+  tidyr::pivot_longer(-c(dose, time), names_to = "site", values_to = "nfl")
+ggplot(nfl_long, aes(time / 24, nfl, colour = site)) +
+  geom_line() +
+  facet_wrap(~dose) +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "NfL (pg/mL)", colour = NULL,
+       caption = "Replicates Figure 1D of Ibrahim 2026 (single dose, typical rat).") +
+  theme(legend.position = "bottom")
+```
+
+## External-validation regimen (Figure 1C)
+
+```{r fig1c}
+ggplot(sim_md |> dplyr::filter(time > 0), aes(time / 24, Cnfl_serum)) +
+  geom_line() +
+  facet_wrap(~dose) +
+  scale_y_log10() +
+  labs(x = "Time (days)", y = "Serum NfL (pg/mL)",
+       caption = "Compare Figure 1C of Ibrahim 2026 (source 4 regimen, typical rat).")
+```
+
+The paper reports that the model underpredicts the day-20 sNfL observed after
+15 mg/kg on this schedule (Figure 1C), which the authors attribute to
+mechanisms beyond tubulin binding.
+
+# Mouse
+
+The same model predicts mouse PK through body weight and the fixed mouse brain
+weight; the NfL layer was fitted to rats only.
+
+```{r mouse}
+sim_mouse <- solve_typ(make_events(30, 0, c(0, 1, 6, 24, 72, 168), wt = 0.025, mouse = 1))
+knitr::kable(sim_mouse |> dplyr::select(time, Cc, Cdrg, Cpn, Cbrain), digits = 2,
+             caption = "Typical 25 g mouse after 30 mg/kg IV (compare the Wozniak 2017 panels of Figure S1).")
+```
+
+Plasma at 6 and 24 h is close to the digitized Wozniak 2017 points of Figure
+S1A (roughly 200-300 and 2-5 ng/mL). The sciatic-nerve values at 3 and 7 days
+are near the observed points of Figure S1B (roughly 100 and 70 ng/g) but above
+the paper's fitted line there, which again points to the vehicle dose (next
+section).
+
+# Sensitivity to the assumed CrEL dose
+
+```{r crel-sensitivity}
+ratios <- c(`1/48` = 1 / 48, `1/24` = 1 / 24, `1/12 (used)` = 1 / 12)
+sens <- dplyr::bind_rows(lapply(names(ratios), function(nm) {
+  rat <- solve_typ(make_events(10, 0, c(72, 240), crel_ratio = ratios[[nm]]))
+  mouse <- solve_typ(make_events(30, 0, 168, wt = 0.025, mouse = 1, crel_ratio = ratios[[nm]]))
+  data.frame(
+    ratio = nm,
+    snfl72 = rat$Cnfl_serum[rat$time == 72],
+    snfl240 = rat$Cnfl_serum[rat$time == 240],
+    brain240 = rat$Cbrain[rat$time == 240],
+    drg240 = rat$Cdrg[rat$time == 240],
+    mouse_pn168 = mouse$Cpn
+  )
+}))
+sens |>
+  dplyr::rename(
+    `CrEL (mL per mg paclitaxel)` = ratio, `Rat sNfL 72 h (pg/mL)` = snfl72,
+    `Rat sNfL 240 h (pg/mL)` = snfl240, `Rat brain PTX 240 h (ng/mL)` = brain240,
+    `Rat DRG PTX 240 h (ng/mL)` = drg240, `Mouse nerve PTX 168 h (ng/g)` = mouse_pn168
+  ) |>
+  knitr::kable(digits = 1, caption = "Typical rat (10 mg/kg) and mouse (30 mg/kg) outputs by assumed vehicle dose.")
+```
+
+Lower vehicle doses bring the 240 h sNfL and the brain paclitaxel closer to the
+observed mean and to Figure 4A but pull the 72 h sNfL below its observed mean
+(335.7 pg/mL); the data do not single out one ratio. The formulation-based value is kept rather than
+choosing a ratio to fit a figure.
+
+# PKNCA validation
+
+The paper does not report NCA results, so plasma NCA is checked against the
+model's own cumulative AUC state (`auc_central`, which drives the tubulin
+binding capacity), a closed-form check of the same simulated profile.
+
+```{r pknca}
+conc_df <- sim_sd |>
+  dplyr::filter(!is.na(Cc)) |>
+  # each single-subject solve drops its id column, so re-key by dose
+  dplyr::mutate(treatment = dose, id = match(dose, paste(doses, "mg/kg"))) |>
+  dplyr::select(id, treatment, time, Cc)
+dose_df <- data.frame(id = 1:3, treatment = paste(doses, "mg/kg"), time = 0,
+                      dose = doses * 0.3)
+
+o_conc <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id)
+o_dose <- PKNCA::PKNCAdose(dose_df, dose ~ time | treatment + id, route = "intravascular")
+intervals <- data.frame(start = 0, end = 240, cmax = TRUE, auclast = TRUE, half.life = TRUE)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals))
+nca_wide <- as.data.frame(nca) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+auc_state <- sim_sd |>
+  dplyr::filter(time == 240) |>
+  dplyr::transmute(treatment = dose, auc_model = auc_central * 1000)
+nca_cmp <- dplyr::left_join(nca_wide, auc_state, by = "treatment") |>
+  dplyr::mutate(pct_diff = 100 * (auclast / auc_model - 1))
+nca_cmp |>
+  dplyr::select(treatment, cmax, auclast, auc_model, pct_diff, half.life) |>
+  dplyr::rename(
+    Dose = treatment, `Cmax (ng/mL)` = cmax, `AUC0-240 PKNCA (ng*h/mL)` = auclast,
+    `AUC0-240 model state (ng*h/mL)` = auc_model, `Difference (%)` = pct_diff,
+    `t1/2 (h)` = half.life
+  ) |>
+  knitr::kable(digits = 2, caption = "Plasma NCA (typical rat, single dose).")
+stopifnot(all(abs(nca_cmp$pct_diff) < 3))
+```
+
+# Assumptions and deviations
+
+* **CrEL vehicle dose.** The model needs the CrEL dose (mL) as a separate input
+  into `crel_central`, but the paper does not state it. The simulations here
+  use 1/12 mL CrEL per mg paclitaxel, from the composition of the 6 mg/mL
+  paclitaxel concentrate (about 527 mg, about 0.5 mL, of CrEL per mL); diluting
+  the concentrate with saline does not change the ratio. Several outputs are
+  sensitive to this choice because total plasma paclitaxel, the cumulative AUC
+  driving tubulin binding, and the CrEL-bound fraction crossing the barriers
+  all scale with CrEL; the sensitivity table above quantifies the effect. The
+  Figure 4 simulations used the dosing solution of source 4, whose composition
+  is not reported. A user simulating a different formulation should supply its
+  own CrEL dose.
+* **Equations 13-14 in amounts.** The printed Eq. 14 sets
+  `kout,csf = kout,serum x NfL_baseline,serum / NfL_baseline,csf` with
+  concentrations; the published control stream uses the baseline amounts
+  (concentration x 5 mL serum and x 0.25 mL CSF), which is what keeps serum at
+  its baseline. The packaged model follows the control stream.
+* **Units taken from the control stream.** Table III lists Km_CrEL in mL/h; the
+  control stream gives `KMC = 2.57 ;mL/L`, which is dimensionally consistent
+  with the Vmax / (Km + C) clearance, and is used here. Kmt and Kd are entered
+  in ug/L and converted to mg/L inside the model as in the control stream.
+* **No between-animal variability.** All `$OMEGA` entries of the final control
+  stream are fixed to 0; the model is typical-value only. The residual errors
+  are additive on log-transformed data, encoded as `lnorm()`; the control
+  stream adds 1e-6 inside the log, which is omitted.
+* **Unused parameters.** `$THETA` 15, 31, 33 (fixed placeholders) and 36 (brain
+  NfL residual error; the brain NfL records are ignored in `$DATA`) do not
+  enter the model and are not carried.
+* **Repeated-dose schedule.** The days of the three-times-weekly then
+  four-times-weekly schedule (0, 2, 5, 7, 9, 12, 14) are read from the dashed
+  dosing lines of Figure 4B; the paper does not list them.
+* **Figure replication is typical-value only.** The published Figure 1D and
+  Figure 4 show medians of simulations with parameter uncertainty (SIR); the
+  curves here are typical-value predictions without uncertainty.

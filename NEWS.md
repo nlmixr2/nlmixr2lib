@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Dabour 2026 doxorubicin GDF15 / NT-proBNP PK/PD ([doi:10.1111/cts.70595](https://doi.org/10.1111/cts.70595)) -- women with stage I-III breast cancer receiving adjuvant doxorubicin.
+- Add Ibrahim 2026 paclitaxel and serum neurofilament light chain PK-PD ([doi:10.1007/s11095-026-04053-z](https://doi.org/10.1007/s11095-026-04053-z)) -- rats and mice given Cremophor EL-formulated paclitaxel (plasma, dorsal root ganglia, nerve, brain, CSF and serum NfL).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
