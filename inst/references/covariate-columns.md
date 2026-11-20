@@ -8584,6 +8584,17 @@ Relative abundance of one bacterial genus in a stool sample, as the percentage o
 - **Example models:** `Hughes_2025_ervogastat_clesacostat_liverfat.R` (hyperbolic Emax on the latent liver-fat variable, Emax 2.32 with EC50 389 ng/mL; as an on/off switch, `CAV_CLESACOSTAT > 0`, it also reduces the ervogastat treatment effect by 73.5%; values from `modellib('Hughes_2025_clesacostat')`).
 - **Notes:** Member of the self-extending `CAV_<full INN>` family; see `CAV_ERVOGASTAT`.
 
+### AUC_DATODXD (**canonical for Cycle-1 intact datopotamab deruxtecan plasma AUC over the day 0 to day 21 dosing interval**)
+- **Description:** Per-subject, time-fixed model-predicted area under the plasma concentration-time curve of INTACT datopotamab deruxtecan (Dato-DXd, the antibody-drug conjugate, not the released DXd payload) from day 0 to day 21 after the first dose (Cycle 1), used as the exposure regressor in exposure-response analyses. Derived from the individual empirical-Bayes parameters of the Hong 2025 population PK model (`Hong_2025_datopotamab.R`), not observed. The 21-day window is the Q3W dosing interval; do not substitute a steady-state AUC or a payload AUC.
+- **Units:** `ug*day/mL`. Document per-model via `covariateData[[AUC_DATODXD]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- a continuous exposure regressor entering linearly and **uncentred** in the founding models, so their intercepts are the values at `AUC_DATODXD = 0`. Reference distribution (Tang 2026, TROPION-Breast01, 6 mg/kg Q3W, N = 352): median 650, 5th percentile 467, 95th percentile 864 ug*day/mL; pooled 0.27-10 mg/kg safety set medians near 440, 650 and 910 ug*day/mL at 4, 6 and 8 mg/kg (Tang 2026 Figure 2C).
+- **Source aliases:**
+  - `Dato-DXd AUC1`, `AUC1` -- printed name in Tang 2026 (Results equations, Table S4).
+- **Example models:** `Tang_2026_datopotamab_os.R` (Cox relative hazard for overall survival, log-hazard -0.0031 per ug*day/mL), `Tang_2026_datopotamab_dose_interruption.R`, `Tang_2026_datopotamab_dose_reduction.R`, `Tang_2026_datopotamab_stomatitis_grade2.R` (logistic, log-odds 0.002195, 0.002585 and 0.00288 per ug*day/mL).
+- **Notes:** Follows the `AUC_<DRUG>` family (`AUC_ATEZO`, `AUC_LUSP`, ...). Sibling Tang 2026 models that select an average concentration instead (intact Dato-DXd in ug/mL, or the DXd payload in ng/mL) use the generic [[CAV]] column; check the per-model units before supplying it, because the two analytes differ by roughly four orders of magnitude.
+
 ## Count / Markov-feedback PD covariates
 
 These columns are specific to count / Markov / time-to-event PD models that
@@ -17763,6 +17774,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `Li_2025_patritumabDeruxtecan_orr.R` (patritumab deruxtecan exposure-efficacy in EGFR-mutated NSCLC; the reference patient had prior chemotherapy, and no prior chemotherapy shifts the objective-response logit by `logit(0.54) - logit(0.30)` from the Figure 2 typical-value forest plot; only 16 of 446 patients were chemotherapy-naive).
 - **Notes:** Narrower than `PRIOR_SYSTEMIC` and `PRIOR_ANTICANCER`: in the founding cohort every patient had received a prior EGFR tyrosine kinase inhibitor (systemic therapy), so only cytotoxic chemotherapy distinguished them. Broader than the single-class siblings `PRIOR_PLATIN` and `PRIOR_TAXANE`. Ratified by the maintainers on 2026-11-06 with the Li 2025 patritumab deruxtecan extraction.
 
+### CONMED_OSIMERTINIB (**canonical for concomitant osimertinib coadministration indicator**)
+- **Description:** 1 = osimertinib coadministered with the modelled drug, 0 = the modelled drug without osimertinib (monotherapy, or with placebo).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no osimertinib).
+- **Source aliases:**
+  - `COMB` -- Shahraz 2026 (savolitinib monotherapy = 0, savolitinib plus osimertinib 80 mg once daily = 1; Data S1 equation for CL/F, Figure 2 label `W_Osimertinib`).
+- **Example models:** `Shahraz_2026_savolitinib.R` (multiplicative `1 + 0.119 * CONMED_OSIMERTINIB` on savolitinib CL/F, i.e. 11.9% higher apparent clearance with osimertinib; subject-level, 590 of 998 patients).
+- **Notes:** Auto-approved member of the `CONMED_<INN>` family. Osimertinib here is a combination-therapy partner (both drugs dosed continuously), not a single perpetrator dose; record per model whether the indicator is subject-level or time-varying. Distinct from `AUC_OSIMERTINIB` (the osimertinib exposure itself).
+
 ## Disease / treatment history
 
 **`TRTPH_<phase>` -- canonical family for protocol-defined treatment-phase / treatment-block indicators.** Mutually exclusive binary indicators identifying which named phase (block, course, element) of a multi-phase treatment protocol a record falls in. Time-varying per record. Intended for regimens whose protocol is divided into named blocks that differ materially in concomitant therapy, intensity, or physiological state -- most commonly pediatric and adult oncology protocols (ALL, AML, lymphoma), but the concept generalises to any multi-block regimen. Source papers normally report this as a single multi-level categorical covariate ("treatment phase", "protocol element", "treatment block") with one row per level in the parameter table; decompose it into one `TRTPH_<phase>` binary per non-reference level, following the register's decomposed-binary convention for multi-level categoricals (`ICU_ADM_*`, `RACE_*`, `TUMTP_*`). The protocol's induction (or first) phase is the reference category and is encoded as all indicators 0, so no `TRTPH_` column is registered for it.
@@ -25348,6 +25370,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `drug = 'vutrisiran_heliosb'` / `'vutrisiran_heliosa'` -- Methven Jeknic 2026 code deposit.
 - **Example models:** `MethvenJeknic_2026_attrcm_qsp.R` (multiplies TTR tetramer production by 1 minus a time-varying silencing fraction fitted to the HELIOS-B or, with `STUDY_HELIOS_A = 1`, HELIOS-A serum TTR reductions; about 80% at steady state).
 - **Notes:** Specific scope. Member of the `TRT_<INN>` family. The founding model has no vutrisiran PK: the indicator switches on an empirical knockdown trajectory, so model time must be time since the first vutrisiran dose.
+
+### STUDY_VIRTUAL (**canonical for the VirTUAL pediatric atazanavir/r opportunistic PK study indicator**)
+- **Description:** 1 = subject enrolled in the VirTUAL consortium's observational, opportunistic pharmacokinetic study of ritonavir-boosted atazanavir in South African and Ugandan children and adolescents with HIV (NCT03923231); 0 = subject from the CHAPAS-4 trial (ISRCTN22964075). Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (CHAPAS-4).
+- **Source aliases:** study (van Dyk 2026 Table 1 'VirTUAL' column; Table 2 footnote e).
+- **Example models:** `vanDyk_2026_atazanavir.R` (selects only the fixed additive residual error, 20% of each laboratory's LLOQ: 0.021 mg/L for CHAPAS-4 at Radboud University Medical Center versus 0.006 mg/L for VirTUAL at the University of Cape Town; no study effect on structural parameters or proportional error was found).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` canonical family. Because it acts only on the residual-error model, it has no effect on typical-value or individual-prediction simulations.
 
 ## Occasion / period (IOV)
 
