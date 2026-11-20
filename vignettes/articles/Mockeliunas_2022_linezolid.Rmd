@@ -305,7 +305,8 @@ stopifnot(all(tapply(events$regimen, events$id, function(x) length(unique(x))) =
 sim <- rxode2::rxSolve(
   mod, events = events,
   keep = c("regimen", "WT", "SEXF", "HIV_POS"),
-  maxsteps = 1e6
+  maxsteps = 1e6,
+  covsInterpolation = "locf"
 ) |> as.data.frame()
 stopifnot(!anyNA(sim$Cc))
 # Numerical undershoot at a trough is bounded relative to the peak.
@@ -549,3 +550,8 @@ stopifnot(
   reproduced, because the MIC distribution is not reported.
 - **Errata.** No correction notice for this article was found on Europe PMC as
   of 2026-09-30.
+- **Covariate interpolation.** Each record carries the `OCC` value in force from
+  that record until the next, so the solves in which it changes within a subject
+  state `covsInterpolation = "locf"`, the `rxSolve()` default; solving the same
+  tables with `"nocb"`, NONMEM's rule, moves the median subject's AUC by up to
+  3.5% (measured on rxode2 5.1.8.9000).

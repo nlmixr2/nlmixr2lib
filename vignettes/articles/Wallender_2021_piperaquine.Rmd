@@ -226,7 +226,8 @@ sim_pk <- rxode2::rxSolve(
   ui[["Wallender_2021_piperaquine"]],
   events = events_pk,
   keep = "arm",
-  returnType = "data.frame"
+  returnType = "data.frame",
+  covsInterpolation = "locf"
 ) |>
   as_sim_df() |>
   filter(!is.na(Cc))
@@ -304,7 +305,8 @@ stopifnot(!anyDuplicated(unique(events_6a[, c("id", "time", "evid")])))
 
 sim_6a <- rxode2::rxSolve(
   ui[["Wallender_2021_piperaquine"]],
-  events = events_6a, keep = "arm", returnType = "data.frame"
+  events = events_6a, keep = "arm", returnType = "data.frame",
+  covsInterpolation = "locf"
 ) |>
   as_sim_df() |>
   filter(!is.na(Cc)) |>
@@ -825,3 +827,9 @@ stopifnot(max(mass_balance$rel_diff) < 0.02)
 * **No model for the resistance analysis.** The *pfmdr1* / *pfcrt*
   logistic-regression sub-model reports no coefficients, only a null result, so
   no model file exists for it.
+
+* **Covariate interpolation.** Each record carries the `OCC`, `PAGE` and `WT`
+  values in force from that record until the next, so the solves in which they
+  change within a subject state `covsInterpolation = "locf"`, the `rxSolve()`
+  default; solving the same tables with `"nocb"`, NONMEM's rule, moves the
+  median subject's AUC by up to 2.3% (measured on rxode2 5.1.8.9000).

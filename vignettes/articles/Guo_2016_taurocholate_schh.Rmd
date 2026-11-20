@@ -603,3 +603,8 @@ knitr::kable(afe_cmp, caption = "Average fold error (eq. 11) versus Table 4 of G
   to "the mean of best-fit parameter estimates from three SCHH datasets", and a
   mean-of-parameters simulation is not the mean of three simulations, so the two
   need not agree.
+- **Covariate interpolation.** Each record carries the `WASH_ACTIVE` value in
+  force from that record until the next, so the solves in which it changes
+  within a subject state `covsInterpolation = "locf"`, the `rxSolve()` default;
+  solving the same tables with `"nocb"`, NONMEM's rule, moves the median
+  subject's AUC by up to 1.1% (measured on rxode2 5.1.8.9000).

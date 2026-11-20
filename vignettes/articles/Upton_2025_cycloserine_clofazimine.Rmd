@@ -266,7 +266,8 @@ events_cyc <- dplyr::bind_rows(
 
 sim_cyc <- rxode2::rxSolve(
   mod_cyc, events = events_cyc,
-  keep = c("treatment"), useLinCmt = FALSE
+  keep = c("treatment"), useLinCmt = FALSE,
+  covsInterpolation = "locf"
 ) |>
   as.data.frame()
 
@@ -607,3 +608,8 @@ equilibration half-life of 55 h.
 * **Concentrations are total drug.** The pseudo-partition coefficients relate
   total CSF to total plasma concentrations, with no protein-binding
   correction.
+* **Covariate interpolation.** Each record carries the `OCC` value in force from
+  that record until the next, so the solves in which it changes within a subject
+  state `covsInterpolation = "locf"`, the `rxSolve()` default; solving the same
+  tables with `"nocb"`, NONMEM's rule, moves the median subject's AUC by up to
+  4.5% (measured on rxode2 5.1.8.9000).

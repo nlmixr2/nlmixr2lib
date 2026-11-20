@@ -311,7 +311,7 @@ fig3_events <- bind_rows(
   })) |> mutate(panel = "B: Table III regimen")
 )
 
-fig3_sim <- rxode2::rxSolve(mod_tv, fig3_events, keep = c("bw", "pna0", "panel")) |>
+fig3_sim <- rxode2::rxSolve(mod_tv, fig3_events, keep = c("bw", "pna0", "panel"), covsInterpolation = "locf") |>
   as.data.frame()
 
 fig3_long <- fig3_sim |>
@@ -388,7 +388,7 @@ cohort_events <- bind_rows(lapply(seq_len(nrow(cohort)), function(i) {
   left_join(cohort |> dplyr::select(id, band), by = "id")
 stopifnot(!anyDuplicated(cohort_events[cohort_events$evid == 0L, c("id", "time")]))
 
-sim <- rxode2::rxSolve(mod, cohort_events, keep = c("band", "bw")) |>
+sim <- rxode2::rxSolve(mod, cohort_events, keep = c("band", "bw"), covsInterpolation = "locf") |>
   as.data.frame()
 ```
 
@@ -528,3 +528,8 @@ with an `evid = 5`, `amt = 0` record on each urine state.
   printed shares is 5.4%.
 * No erratum or correction notice for this article was found (Europe PMC
   search on the DOI and title, checked 2026-10-27).
+* **Covariate interpolation.** Each record carries the `PNA` value in force from
+  that record until the next, so the solves in which it changes within a subject
+  state `covsInterpolation = "locf"`, the `rxSolve()` default; solving the same
+  tables with `"nocb"`, NONMEM's rule, moves the median subject's AUC by up to
+  1.6% (measured on rxode2 5.1.8.9000).

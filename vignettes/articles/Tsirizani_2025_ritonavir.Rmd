@@ -400,7 +400,7 @@ rxode2::rxSetSeed(20250926)
 #    up to 36% at single time points and 5.5% in AUC; the arm medians move
 #    by 0.01%.
 sim_solve <- rxode2::rxSolve(mod, events, addDosing = FALSE,
-                             addlKeepsCov = FALSE)
+                             addlKeepsCov = FALSE, covsInterpolation = "locf")
 sim <-
   sim_solve |>
   as.data.frame() |>
@@ -443,7 +443,7 @@ mod_typ_sup <- rxode2::zeroRe(mod)
 solve_sup <- function(ev) {
   rxode2::rxSolve(mod_typ_sup, dplyr::filter(ev, id %in% twice_daily),
                   params = sup_par, addDosing = FALSE,
-                  addlKeepsCov = FALSE) |>
+                  addlKeepsCov = FALSE, covsInterpolation = "locf") |>
     as.data.frame()
 }
 sup_both <- solve_sup(events)
@@ -604,7 +604,7 @@ f2_sim <-
   # ka equal on both occasions, linCmt() and the ODE path agree to 2.6e-6
   # over the simulated cohort (the ODE tolerance).
   rxode2::rxSolve(mod_typ, f2_events, addDosing = FALSE, useLinCmt = TRUE,
-                  addlKeepsCov = FALSE) |>
+                  addlKeepsCov = FALSE, covsInterpolation = "locf") |>
   as.data.frame() |>
   dplyr::mutate(tnca = time - T0)
 ```
@@ -1191,6 +1191,11 @@ is deliberately not encoded.
   from the morning samples inside its lag window. Its bioavailability, and so
   the AUC, stays its own;
   only the shape of its input changes.
+* **Covariate interpolation.** Each record carries the `OCC` value in force
+  from that record until the next, so every solve in which it changes within a
+  subject states `covsInterpolation = "locf"`, the `rxSolve()` default; solving
+  the cohort's table with `"nocb"`, NONMEM's rule, moves the median subject's
+  AUC by up to 6.9% (measured on rxode2 5.1.8.9000).
 * **Weight is sampled uniformly within each WHO band, and matched across
   arms.** Table 1 reports band counts and a per-arm median weight of 26.0 kg but
   not the within-band distribution, so uniform sampling is the least-assumption

@@ -163,7 +163,8 @@ sim <- rxode2::rxSolve(
   mod,
   events = events,
   keep = c("treatment", "OCC", "CRCL"),
-  returnType = "data.frame"
+  returnType = "data.frame",
+  covsInterpolation = "locf"
 ) |>
   mutate(tad = time - obs_start[OCC]) |>
   # keep the sampled interval only (rxSolve also returns the evid = 2 rows)
@@ -426,3 +427,8 @@ stopifnot(
   not enter the model.
 - No erratum or correction notice for this article was found on the
   publisher's page or in Europe PMC as of 2026-09-28.
+- **Covariate interpolation.** Each record carries the `OCC` value in force from
+  that record until the next, so the solves in which it changes within a subject
+  state `covsInterpolation = "locf"`, the `rxSolve()` default; solving the same
+  tables with `"nocb"`, NONMEM's rule, moves the median subject's AUC by up to
+  6.9% (measured on rxode2 5.1.8.9000).
