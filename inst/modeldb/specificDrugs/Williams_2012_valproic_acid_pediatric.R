@@ -3,6 +3,7 @@ Williams_2012_valproic_acid_pediatric <- function() {
   reference <- "Williams JH, Jayaraman B, Swoboda KJ, Barrett JS. Population pharmacokinetics of valproic acid in pediatric patients with epilepsy: considerations for dosing spinal muscular atrophy patients. J Clin Pharmacol. 2012;52(11):1676-1688. doi:10.1177/0091270011428138. PMID 22167565."
   vignette <- "Williams_2012_valproic_acid_pediatric"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

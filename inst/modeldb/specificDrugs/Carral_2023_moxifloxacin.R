@@ -11,6 +11,7 @@ Carral_2023_moxifloxacin <- function() {
   )
   vignette <- "Carral_2023_cap_nonadherence"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     LBM = list(

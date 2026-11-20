@@ -2906,20 +2906,64 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # `dosing` metadata, such as a second depot or a stomach. Such a state reads no
 # dose history, so .checkDoseTimingCompartments() cannot see it.
 
-# The signed additive terms of an expression, the decomposition rxode2's
-# internal .collectAddTerms() makes, as a list of expressions. Signs are
-# dropped: only which terms exist matters here.
-.additiveTerms <- function(e) {
+# The additive terms of an expression, the decomposition rxode2's internal
+# .collectAddTerms() makes, each with its sign: a list of
+# list(term = , sign = ), sign 1 or -1. The sign follows binary and unary
+# minus down the sum, then the term's own factors (.factorSign()), so
+# `x - ka * depot` and `x + -ka * depot` both give `ka * depot` (or
+# `-ka * depot`) the sign -1.
+.signedAdditiveTerms <- function(e, sign = 1L, aliases = list()) {
   if (is.call(e) && is.name(e[[1]])) {
     op <- as.character(e[[1]])
     if (op %in% c("+", "-") && length(e) == 3L) {
-      return(c(.additiveTerms(e[[2]]), .additiveTerms(e[[3]])))
+      return(c(
+        .signedAdditiveTerms(e[[2]], sign, aliases),
+        .signedAdditiveTerms(e[[3]], if (op == "-") -sign else sign, aliases)
+      ))
     }
     if (op %in% c("+", "-", "(") && length(e) == 2L) {
-      return(.additiveTerms(e[[2]]))
+      return(.signedAdditiveTerms(e[[2]], if (op == "-") -sign else sign, aliases))
     }
   }
-  list(e)
+  list(list(term = e, sign = sign * .factorSign(e, aliases)))
+}
+
+# The additive terms of an expression as a list of expressions, without
+# their signs: the dead-state check needs only which terms exist.
+.additiveTerms <- function(e) {
+  lapply(.signedAdditiveTerms(e), `[[`, "term")
+}
+
+# The sign a term's factors give it: -1 when an odd number of them is
+# negated (a unary minus or a negative literal, through `*`, `/`, `(` and a
+# variable assigned once, followed through `aliases` as .hasStateFactor()
+# does), else 1. A factor whose sign the expression does not show, such as a
+# parameter or a sum, counts as positive.
+.factorSign <- function(term, aliases = list(), depth = 0L) {
+  if (is.numeric(term) && length(term) == 1L) {
+    return(if (!is.na(term) && term < 0) -1L else 1L)
+  }
+  if (is.name(term)) {
+    nm <- as.character(term)
+    if (depth < .aliasDepth && nm %in% names(aliases)) {
+      return(.factorSign(aliases[[nm]], aliases, depth + 1L))
+    }
+    return(1L)
+  }
+  if (!is.call(term) || !is.name(term[[1]])) {
+    return(1L)
+  }
+  op <- as.character(term[[1]])
+  if (op %in% c("*", "/") && length(term) == 3L) {
+    return(.factorSign(term[[2]], aliases, depth) * .factorSign(term[[3]], aliases, depth))
+  }
+  if (op == "-" && length(term) == 2L) {
+    return(-.factorSign(term[[2]], aliases, depth))
+  }
+  if (op %in% c("+", "(") && length(term) == 2L) {
+    return(.factorSign(term[[2]], aliases, depth))
+  }
+  1L
 }
 
 # Functions that are 0 at 0, so `f(x)` vanishes with `x`. `exp()`, `cos()` and
@@ -3058,13 +3102,15 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # Every ODE state needs a way to become non-zero: an input term in its
 # d/dt(), an initial condition, or a dose. One with none of the three stays
 # at 0 in every simulation.
-.checkDeadStates <- function(ui, conv) {
-  issues <- .emptyIssues()
-  # The equations rxode2 compiles, not ui$lstExpr: rxode2's parser joins a
-  # continuation line that starts with an operator to the equation above it,
-  # but R ends the statement at the line break, so ui$lstExpr can hold a
-  # truncated d/dt(). The text is parsed inside braces because rxode2 writes
-  # `}` and `else` on separate lines, which R accepts only within a block.
+# The .odeDefinitions() of the equations rxode2 compiles, plus `aliases`, the
+# algebraic definitions a term can be followed through (only a variable
+# assigned exactly once has one). An error condition when the model cannot be
+# read. The compiled equations, not ui$lstExpr: rxode2's parser joins a
+# continuation line that starts with an operator to the equation above it,
+# but R ends the statement at the line break, so ui$lstExpr can hold a
+# truncated d/dt(). The text is parsed inside braces because rxode2 writes
+# `}` and `else` on separate lines, which R accepts only within a block.
+.compiledOdeDefinitions <- function(ui) {
   norm <- tryCatch(rxode2::rxModelVars(ui)$model[["normModel"]], error = function(e) e)
   if (!inherits(norm, "error") && (!is.character(norm) || length(norm) != 1L || !nzchar(trimws(norm)))) {
     norm <- simpleError("rxode2 returned no compiled equations")
@@ -3075,20 +3121,29 @@ checkModelConventions <- function(model, verbose = TRUE) {
     tryCatch(as.list(parse(text = paste0("{\n", norm, "\n}"))[[1]])[-1], error = function(e) e)
   }
   if (inherits(exprs, "error")) {
-    return(.issue(
-      "dead_state",
-      "error",
-      NA_character_,
-      paste0("The model could not be read to check for dead states: ", conditionMessage(exprs)),
-      "Check that the model parses with rxode2::rxode2()."
-    ))
+    return(exprs)
   }
   defs <- list(rhs = list(), init = character(0), alg = list(), algCount = integer(0))
   for (e in exprs) {
     defs <- .odeDefinitions(e, defs)
   }
-  # Only a variable assigned exactly once has a definition to follow.
-  aliases <- defs$alg[names(defs$algCount)[defs$algCount == 1L]]
+  defs$aliases <- defs$alg[names(defs$algCount)[defs$algCount == 1L]]
+  defs
+}
+
+.checkDeadStates <- function(ui, conv) {
+  issues <- .emptyIssues()
+  defs <- .compiledOdeDefinitions(ui)
+  if (inherits(defs, "error")) {
+    return(.issue(
+      "dead_state",
+      "error",
+      NA_character_,
+      paste0("The model could not be read to check for dead states: ", conditionMessage(defs)),
+      "Check that the model parses with rxode2::rxode2()."
+    ))
+  }
+  aliases <- defs$aliases
   dosing <- trimws(unlist(strsplit(as.character(.modelDosingCmts(ui)), ",", fixed = TRUE)))
   for (st in names(defs$rhs)) {
     if (st %in% dosing || st %in% defs$init) {

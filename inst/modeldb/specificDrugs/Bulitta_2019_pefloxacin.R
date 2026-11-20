@@ -9,6 +9,7 @@ Bulitta_2019_pefloxacin <- function() {
   )
   vignette <- "Bulitta_2019_pefloxacin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "pefloxacin", units = "mg", specimen = "administration site", verified = TRUE),

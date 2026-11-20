@@ -3,6 +3,7 @@ Yan_2022_inebilizumab <- function() {
   reference <- "Yan L, Kimko H, Wang B, Cimbora D, Katz E, Rees WA. Population Pharmacokinetic Modeling of Inebilizumab in Subjects with Neuromyelitis Optica Spectrum Disorders, Systemic Sclerosis, or Relapsing Multiple Sclerosis. Clin Pharmacokinet. 2022;61(3):387-400. doi:10.1007/s40262-021-01071-5"
   vignette <- "Yan_2022_inebilizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

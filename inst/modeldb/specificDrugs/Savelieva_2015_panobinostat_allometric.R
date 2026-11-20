@@ -3,6 +3,7 @@ Savelieva_2015_panobinostat_allometric <- function() {
   reference <- "Savelieva M, Woo MM, Schran H, Mu S, Nedelman J, Capdeville R. Population pharmacokinetics of intravenous and oral panobinostat in patients with hematologic and solid tumors. Eur J Clin Pharmacol. 2015;71(6):663-672. doi:10.1007/s00228-015-1846-7. Parameter estimates from Supplementary Table S3b; model code from Supplementary Table S3a."
   vignette <- "Savelieva_2015_panobinostat"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "panobinostat", units = "mg", specimen = "administration site", verified = TRUE),

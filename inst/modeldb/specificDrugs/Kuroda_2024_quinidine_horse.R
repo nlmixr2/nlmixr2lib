@@ -50,6 +50,7 @@ Kuroda_2024_quinidine_horse <- function() {
     dosing = "mg",
     concentration = "ug/mL"
   )
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Kuroda 2024 section 2.5, which names

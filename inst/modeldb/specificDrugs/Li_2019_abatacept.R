@@ -3,6 +3,7 @@ Li_2019_abatacept <- function() {
   reference <- "Li X, Roy A, Murthy B. Population Pharmacokinetics and Exposure-Response Relationship of Intravenous and Subcutaneous Abatacept in Patients With Rheumatoid Arthritis. J Clin Pharmacol. 2019 Feb;59(2):245-257. doi:10.1002/jcph.1308"
   vignette <- "Li_2019_abatacept"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

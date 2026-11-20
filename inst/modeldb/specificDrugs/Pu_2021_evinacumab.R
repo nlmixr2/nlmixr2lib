@@ -5,6 +5,7 @@ Pu_2021_evinacumab <- function() {
   paper_specific_compartments <- c("LDL")
 
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the

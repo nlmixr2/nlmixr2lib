@@ -3,6 +3,7 @@ Weiss_2023_niclosamide_sheep <- function() {
   reference <- "Weiss A, Bischof RJ, Landersdorfer CB, Nguyen TH, Davies A, Ibrahim J, Wynne P, Wright P, Ditzinger G, Montgomery AB, Meeusen E, McIntosh MP, Sommer MOA. Single-dose pharmacokinetics and lung function of nebulized niclosamide ethanolamine in sheep. Pharm Res. 2023;40(8):1915-1925. doi:10.1007/s11095-023-03559-0"
   vignette <- "Weiss_2023_niclosamide_sheep"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list()
 

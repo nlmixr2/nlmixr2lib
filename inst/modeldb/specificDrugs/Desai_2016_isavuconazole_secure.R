@@ -3,6 +3,7 @@ Desai_2016_isavuconazole_secure <- function() {
   reference <- "Desai A, Kovanda L, Kowalski D, Lu Q, Townsend R, Bonate PL. Population Pharmacokinetics of Isavuconazole from Phase 1 and Phase 3 (SECURE) Trials in Adults and Target Attainment in Patients with Invasive Infections Due to Aspergillus and Other Filamentous Fungi. Antimicrobial Agents and Chemotherapy. 2016;60(9):5483-5491. doi:10.1128/AAC.02819-15"
   vignette <- "Desai_2016_isavuconazole_secure"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. A(1) / A(2) / A(3) of the Desai 2016 equation system on

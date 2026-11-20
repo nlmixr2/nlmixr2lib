@@ -3,6 +3,7 @@ Song_2025_infliximab <- function() {
   reference <- "Song JH, Hong SN, Kim MG, Kim M, Kim SK, Kim ER, Chang DK, Kim YH. Population pharmacokinetic model for the use of intravenous or subcutaneous infliximab in patients with inflammatory bowel disease: real-world data from a prospective cohort study. Gut Liver. 2025;19(3):376-387. doi:10.5009/gnl240503"
   vignette <- "Song_2025_infliximab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Verified against Song 2025 Methods section 6 (two

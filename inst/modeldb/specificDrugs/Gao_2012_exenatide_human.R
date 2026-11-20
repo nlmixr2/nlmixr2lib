@@ -41,6 +41,7 @@ Gao_2012_exenatide_human <- function() {
     dosing = "pmol",
     concentration = "pmol/L (pM); the paper converted all doses to moles using a molecular weight of 4186.6 g/mol for exendin-4"
   )
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     WT = list(

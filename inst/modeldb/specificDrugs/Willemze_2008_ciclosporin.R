@@ -3,6 +3,7 @@ Willemze_2008_ciclosporin <- function() {
   reference <- "Willemze AJ, Cremers SC, Schoemaker RC, Lankester AC, den Hartigh J, Burggraaf J, Vossen JM. Ciclosporin kinetics in children after stem cell transplantation. Br J Clin Pharmacol. 2008;66(4):539-545. doi:10.1111/j.1365-2125.2008.03217.x"
   vignette <- "Willemze_2008_ciclosporin"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

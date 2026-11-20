@@ -3,6 +3,7 @@ Zhao_2025_nivolumab <- function() {
   reference <- "Zhao Y, Vezina H, Hu Z, Kondic A, Zhu L, Roy A. Model-informed drug development of subcutaneous nivolumab: comparison of pharmacokinetic analysis methodologies using clinical trial simulation. CPT Pharmacometrics Syst Pharmacol. 2025;14(12):2107-2117. doi:10.1002/psp4.70120"
   vignette <- "Zhao_2025_nivolumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. verified = TRUE because the source control streams

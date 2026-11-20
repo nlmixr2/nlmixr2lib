@@ -40,6 +40,7 @@ Leegwater_2025_sulfamethoxazole <- function() {
   )
   vignette <- "Leegwater_2025_cotrimoxazole"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     CRCL = list(

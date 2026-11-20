@@ -560,7 +560,71 @@ test_that(".modelDosingCmts reads `dosing` metadata, else falls back to depot an
   # is dosed) rather than NA (nothing was said).
   expect_identical(.dtDosingCmts(.dtEmptyDosingModel), character(0))
   # Without metadata: depot before central, and only the ones that exist.
-  expect_identical(.dtDosingCmts(.dtFallbackDepotModel), c("depot", "central"))
   expect_identical(.dtDosingCmts(.dtStomachModel), "central")
   expect_null(.dtDosingCmts(.dtNoFallbackModel))
+})
+
+test_that("the fallback leaves out a central that depot feeds, unless central is a route", {
+  # depot feeds central directly, through a transit compartment, or inside a
+  # linCmt() solution: central is where the oral dose arrives.
+  expect_identical(.dtDosingCmts(.dtFallbackDepotModel), "depot")
+  expect_identical(.dtDosingCmts(.dtTransitFallbackModel), "depot")
+  expect_identical(.dtDosingCmts(.dtLinCmtDepotModel), "depot")
+  # central with a dose property of its own, or whose dose history the model
+  # reads, is a route.
+  expect_identical(.dtDosingCmts(.dtInfusedCentralModel), c("depot", "central"))
+  expect_identical(.dtDosingCmts(.dtCentralTimingModel), c("depot", "central"))
+  # depot that does not reach central leaves central the only way in.
+  expect_identical(.dtDosingCmts(.dtSeparateDepotModel), c("depot", "central"))
+  # Nor does a depot that appears in d/dt(central) only in a term that
+  # removes from it.
+  expect_identical(.dtDosingCmts(.dtLossOnlyModel), c("depot", "central"))
+})
+
+test_that("every dose property and dose-history read on central makes it a route", {
+  # The base fixture alone, and with the same statements on depot: depot.
+  expect_identical(nlmixr2lib:::.modelDosingCmts(.dtFallbackVariant("tchk <- 1")), "depot")
+  for (prop in nlmixr2lib:::.doseProperties) {
+    expect_identical(
+      nlmixr2lib:::.modelDosingCmts(.dtFallbackVariant(paste0(prop, "(central) <- 0.5"))),
+      c("depot", "central"),
+      info = prop
+    )
+    expect_identical(
+      nlmixr2lib:::.modelDosingCmts(.dtFallbackVariant(paste0(prop, "(depot) <- 0.5"))),
+      "depot",
+      info = prop
+    )
+  }
+  for (fn in nlmixr2lib:::.doseTimingFunctions) {
+    expect_identical(
+      nlmixr2lib:::.modelDosingCmts(.dtFallbackVariant(paste0("tchk <- ", fn, "(central)"))),
+      c("depot", "central"),
+      info = fn
+    )
+    expect_identical(
+      nlmixr2lib:::.modelDosingCmts(.dtFallbackVariant(paste0("tchk <- ", fn, "(depot)"))),
+      "depot",
+      info = fn
+    )
+  }
+})
+
+test_that("a feed through a variable is followed only when the variable is assigned once", {
+  expect_identical(.dtDosingCmts(.dtAliasFeedModel), "depot")
+  # Assigned in each branch of an if/else, the variable is not followed, and
+  # central stays in the fallback.
+  expect_identical(.dtDosingCmts(.dtIfElseAliasFeedModel), c("depot", "central"))
+  # A d/dt(central) assigned in each branch is read in both.
+  expect_identical(.dtDosingCmts(.dtIfElseFeedModel), "depot")
+})
+
+test_that("an unreadable model keeps central in the fallback", {
+  ui <- new.env()
+  ui$props <- list(linCmt = FALSE, cmtProp = NULL)
+  makeActiveBinding("lstExpr", .dtUnreadableModelBlock, ui)
+  # No compiled equations: depot cannot be shown to reach central.
+  expect_false(nlmixr2lib:::.depotFeedsCentral(ui))
+  # No model() block: central's dose history cannot be ruled out.
+  expect_true(nlmixr2lib:::.centralIsDosed(ui))
 })

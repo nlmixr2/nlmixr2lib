@@ -3,6 +3,7 @@ Otani_2025_mirikizumab <- function() {
   reference <- "Otani Y, Chua L, Komocsar WJ, Larkin A, Johns J, Zhang XC. Mirikizumab pharmacokinetics and exposure-response in pediatric patients with moderate-to-severe ulcerative colitis. CPT Pharmacometrics Syst Pharmacol. 2025;14(3):474-485. doi:10.1002/psp4.13286"
   vignette <- "Otani_2025_mirikizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "mirikizumab", units = "mg", specimen = "administration site", verified = TRUE),

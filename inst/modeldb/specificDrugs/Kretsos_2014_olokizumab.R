@@ -3,6 +3,7 @@ Kretsos_2014_olokizumab <- function() {
   reference <- "Kretsos K, Jullion A, Zamacona M, Harari O, Shaw S, Boulanger B, Oliver R. Model-Based Optimal Design and Execution of the First-Inpatient Trial of the Anti-IL-6, Olokizumab. CPT Pharmacometrics Syst Pharmacol. 2014;3:e119. doi:10.1038/psp.2014.17"
   vignette <- "Kretsos_2014_olokizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
   # Notes on units: Table 1 reports CL in L/day, V1/V2 in L, ka in 1/day; doses in
   # the trial were mg/kg but the Final NONMEM fit uses absolute mg doses (Interim 1
   # was on a per-kg basis; Interim 2 and Final are absolute). Plasma OKZ and CRP

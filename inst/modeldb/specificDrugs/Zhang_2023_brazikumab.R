@@ -3,6 +3,7 @@ Zhang_2023_brazikumab <- function() {
   reference <- "Zhang N, Chan ML, Li J, Brohawn PZ, Sun B, Vainshtein I, Roskos LK, Faggioni R, Savic RM. Combining pharmacometric models with predictive and prognostic biomarkers for precision therapy in Crohn's disease: A case study of brazikumab. CPT Pharmacometrics Syst Pharmacol. 2023;12(12):1945-1959. doi:10.1002/psp4.13044"
   vignette <- "Zhang_2023_brazikumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

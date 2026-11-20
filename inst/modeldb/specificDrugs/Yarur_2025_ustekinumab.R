@@ -26,6 +26,7 @@ Yarur_2025_ustekinumab <- function() {
   )
   vignette <- "Yarur_2025_ustekinumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     ALB = list(

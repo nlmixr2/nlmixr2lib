@@ -3,6 +3,7 @@ Jeong_2021_methotrexate_nanoemulsion_rat <- function() {
   reference <- "Jeong S-H, Jang J-H, Lee Y-B. Pharmacokinetic Comparison between Methotrexate-Loaded Nanoparticles and Nanoemulsions as Hard- and Soft-Type Nanoformulations: A Population Pharmacokinetic Modeling Approach. Pharmaceutics. 2021;13(7):1050. doi:10.3390/pharmaceutics13071050"
   vignette <- "Jeong_2021_methotrexate_nanoformulations"
   units <- list(time = "h", dosing = "mg/kg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "methotrexate", units = "mg/kg", specimen = "administration site", verified = TRUE),

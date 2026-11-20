@@ -35,6 +35,7 @@ Dhondt_2017_meloxicam_cockatiel_oral <- function() {
     dosing = "ug",
     concentration = "ng/mL"
   )
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "meloxicam", units = "ug", specimen = "administration site", verified = TRUE),

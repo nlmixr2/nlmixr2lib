@@ -11,6 +11,7 @@ Wu_2025_belimumab <- function() {
   vignette <- "Wu_2025_belimumab"
   paper_specific_etas <- c("etaRUV")
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "belimumab", units = "mg", specimen = "administration site", verified = TRUE),

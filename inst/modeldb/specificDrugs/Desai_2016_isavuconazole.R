@@ -3,6 +3,7 @@ Desai_2016_isavuconazole <- function() {
   reference <- "Desai A, Schmitt-Hoffmann A-H, Mujais S, Townsend R. Population Pharmacokinetics of Isavuconazole in Subjects with Mild or Moderate Hepatic Impairment. Antimicrobial Agents and Chemotherapy. 2016;60(5):3025-3031. doi:10.1128/AAC.02942-15"
   vignette <- "Desai_2016_isavuconazole"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

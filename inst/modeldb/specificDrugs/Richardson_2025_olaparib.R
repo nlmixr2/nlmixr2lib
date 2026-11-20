@@ -34,6 +34,7 @@ Richardson_2025_olaparib <- function() {
   )
   vignette <- "Richardson_2025_automated_popPK"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "olaparib", units = "mg", specimen = "administration site", verified = TRUE),

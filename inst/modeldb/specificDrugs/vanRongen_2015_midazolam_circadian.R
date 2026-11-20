@@ -35,6 +35,7 @@ vanRongen_2015_midazolam_circadian <- function() {
   )
   vignette <- "vanRongen_2015_midazolam_circadian"
   units <- list(time = "min", dosing = "mg", concentration = "ug/L")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     TCLOCK = list(

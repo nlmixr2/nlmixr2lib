@@ -3,6 +3,7 @@ SchaedeliStark_2024_balovaptan <- function() {
   reference <- "Schaedeli Stark F, Chavanne C, Derks M, Jolling K, Lagraauw HM, Lindbom L, Prins K, Silber Baumann HE. A population pharmacokinetics model of balovaptan to support dose selection in adult and pediatric populations. J Pharmacokinet Pharmacodyn. 2024;51(3):227-242. doi:10.1007/s10928-023-09898-0"
   vignette <- "SchaedeliStark_2024_balovaptan"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   # `propSd_early` / `propSd_late` / `propSd_exp_kdes` are the three parameters
   # of the paper's time-varying proportional RUV (Table 2 footnote):

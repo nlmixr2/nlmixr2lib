@@ -8,6 +8,7 @@ Ahmed_2015_topiramate <- function() {
     dosing = "mg",
     concentration = "mg/L (TPM plasma); words per three 60-second trials (COWA)"
   )
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

@@ -2,6 +2,7 @@ PK_2cmt_transit_mm_des <- function() {
   description <- "Two-compartment PK model with a ten-compartment transit absorption chain and Michaelis-Menten elimination, using differential equations"
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
+  dosing <- c("depot", "central")
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. analyte/specimen proposed by a local model from the
   # model description; units derived from the units block. verified = FALSE

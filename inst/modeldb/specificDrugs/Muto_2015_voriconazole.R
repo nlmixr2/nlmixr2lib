@@ -3,6 +3,7 @@ Muto_2015_voriconazole <- function() {
   reference <- "Muto C, Shoji S, Tomono Y, Liu P. Population pharmacokinetic analysis of voriconazole from a pharmacokinetic study with immunocompromised Japanese pediatric subjects. Antimicrob Agents Chemother. 2015;59(6):3216-3223. doi:10.1128/AAC.04993-14"
   vignette <- "Muto_2015_voriconazole"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has

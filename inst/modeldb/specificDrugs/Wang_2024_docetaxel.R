@@ -43,6 +43,7 @@ Wang_2024_docetaxel <- function() {
   )
 
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list(
     ROUTE_IV = list(

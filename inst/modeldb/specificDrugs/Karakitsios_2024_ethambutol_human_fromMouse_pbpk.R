@@ -25,6 +25,7 @@ Karakitsios_2024_ethambutol_human_fromMouse_pbpk <- function() {
   )
   vignette <- "Karakitsios_2024_antitubercular_lung_pbpk"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "ethambutol", units = "mg", specimen = "administration site", verified = TRUE),

@@ -3,6 +3,7 @@ Jiang_2022_voriconazole <- function() {
   reference <- "Jiang Z, Wei Y, Huang W, Li B, Zhou S, Liao L, Li T, Liang T, Yu X, Li X, Zhou C, Cao C, Liu T. Population pharmacokinetics of voriconazole and initial dosage optimization in patients with talaromycosis. Front Pharmacol. 2022;13:982981. doi:10.3389/fphar.2022.982981"
   vignette <- "Jiang_2022_voriconazole"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+  dosing <- c("depot", "central")
 
   compartmentData <- list(
     depot = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = TRUE),

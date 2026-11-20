@@ -30,6 +30,7 @@ SanchezDengra_2021_carbamazepine_rat_pbpk_hcmec <- function() {
   vignette <- "SanchezDengra_2021_neuro_pbpk_rat"
 
   units <- list(time = "s", dosing = "ng", concentration = "ng/mL")
+  dosing <- c("depot", "central")
 
   covariateData <- list()
 

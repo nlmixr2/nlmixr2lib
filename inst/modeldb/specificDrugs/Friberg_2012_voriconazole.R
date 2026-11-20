@@ -12,6 +12,7 @@ Friberg_2012_voriconazole <- function() {
   )
   paper_specific_residual_sds <- c("expSdStdy1", "expSdStdy2", "expSdStdy34", "expSdStdy5Iv", "expSdStdy5Oral")
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+  dosing <- c("depot", "central")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Derived mechanically; verified = FALSE means it has
