@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2026 isoniazid 6H / 3HR / 3H2P2 regimen-specific models ([doi:10.3390/pharmaceutics18080937](https://doi.org/10.3390/pharmaceutics18080937)) -- Chinese adults with latent tuberculosis infection on preventive therapy with and without rifampicin or rifapentine.
+- Add Yang 2026 di(2-ethylhexyl) adipate (DEHA) and metabolite MEHA whole-body PBPK ([doi:10.3390/pharmaceutics18081001](https://doi.org/10.3390/pharmaceutics18081001)) -- Sprague-Dawley rats, intravenous and oral, with circulatory-topology multi-tissue metabolism and lymphatic absorption.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

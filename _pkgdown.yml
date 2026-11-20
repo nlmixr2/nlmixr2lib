@@ -2230,6 +2230,8 @@ navbar:
         href: articles/Bellanti_2015_deferoxamine.html
       - text: "Degarelix (Tornoe 2006)"
         href: articles/Tornoe_2006_HPG_axis.html
+      - text: "Deha rat pbpk (Yang 2026)"
+        href: articles/Yang_2026_deha.html
       - text: "Delafloxacin (Lv 2024)"
         href: articles/Lv_2024_delafloxacin.html
       - text: "Delamanid (Sasaki 2022)"
@@ -12656,6 +12658,7 @@ articles:
   - articles/Yang_2025b_iruplinalkib
   - articles/Yang_2026_APTM
   - articles/Yang_2026_copd_fev1
+  - articles/Yang_2026_deha
   - articles/Yang_2026_encorafenib
   - articles/Yang_2026_lurasidone
   - articles/Yang_2026_pixavir
