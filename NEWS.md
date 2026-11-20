@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Carreno 2026 belantamab mafodotin serum M-protein (BVd and BPd) and KVA ocular-grade Markov models ([doi:10.1002/psp4.70276](https://doi.org/10.1002/psp4.70276)) -- adults with relapsed/refractory multiple myeloma.
+- Add Yan 2026 mirtazapine ([doi:10.2147/DDDT.S601238](https://doi.org/10.2147/DDDT.S601238)) -- Chinese inpatients with depression, with obesity (BMI >= 28 kg/m^2), paroxetine and fluvoxamine effects on clearance.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
