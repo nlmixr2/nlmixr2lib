@@ -272,12 +272,12 @@ Saqr_2025_mycophenolic_acid <- function() {
     # FrEHC on the logit scale with the log-abundance covariate terms
     # centred at the cohort medians 19.97% and 13.23% (main text Eq.1-4;
     # Supplementary Table S4).
-    logit_frehc <- logitfrehc + etalogitfrehc +
+    logitfrehc_ind <- logitfrehc + etalogitfrehc +
       e_stool_community_bacteroides_uniformis_pct_frehc *
         log(STOOL_COMMUNITY_BACTEROIDES_UNIFORMIS_PCT / 19.97) +
       e_stool_community_bacteroides_vulgatus_pct_frehc *
         log(STOOL_COMMUNITY_BACTEROIDES_VULGATUS_PCT / 13.23)
-    frehc <- expit(logit_frehc)
+    frehc <- expit(logitfrehc_ind)
 
     # Micro-constants (Figure 1a). The MPAG -> bile rate KEHC (Suppl. File 3
     # Eq.2) is `kbm` here: FrEHC = kbm / (kbm + kel_mpag).
