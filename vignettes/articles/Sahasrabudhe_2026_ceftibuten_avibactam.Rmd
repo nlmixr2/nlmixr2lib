@@ -1,0 +1,632 @@
+---
+title: "Ceftibuten + avibactam tomilopil oral combination (Sahasrabudhe 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ceftibuten + avibactam tomilopil oral combination (Sahasrabudhe 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Sahasrabudhe 2026 reports three Phase 1 studies of oral ceftibuten given with
+avibactam tomilopil, an oral prodrug of the beta-lactamase inhibitor
+avibactam, and a joint population PK model of plasma cis-ceftibuten and
+avibactam fitted to all three. The paper gives two versions of the joint
+model, and both are packaged:
+
+* `Sahasrabudhe_2026_ceftibuten_avibactam`, the **final model**
+  (Supplemental Table S12).
+* `Sahasrabudhe_2026_ceftibuten_avibactam_crcl`, the **simulation model**
+  (Supplemental Table S15). The authors used it for the joint probability of
+  target attainment (jPTA) simulations that selected the Phase 3 regimen. It
+  replaces the power effect of BSA-normalised creatinine clearance with a
+  linear effect of absolute creatinine clearance (slopes fixed from published
+  renal-impairment studies) and drops several covariates (Table S13).
+
+* Citation: `r rxode2::rxode(readModelDb("Sahasrabudhe_2026_ceftibuten_avibactam"))$reference`
+* Article: <https://doi.org/10.1002/jcph.70263> (open access, with Supplemental Appendix)
+
+Both models share one structure. Ceftibuten (the unsuffixed parent) has a
+depot, five transit compartments and one disposition compartment. Avibactam
+(suffix `_avi`) has a depot, three transit compartments and two disposition
+compartments. Within each drug every transit step uses the same rate
+constant `ktr`. Avibactam tomilopil doses go into `depot_avi` in **mg of
+prodrug**. The model multiplies them by the molecular-weight ratio 0.674 to
+give avibactam equivalents (see Assumptions). Both models return total plasma
+concentrations in mg/L: `Cc` for cis-ceftibuten and `Cc_avi` for avibactam.
+
+# Population
+
+The analysis set was 71 healthy adults (57 men, 14 women) from three
+single-centre studies in Australia and Belgium (Table 1, Table 2):
+
+* **C4691002**: single ascending doses of avibactam tomilopil oral suspension
+  (300, 900, 1350 mg), fed with a regular meal, given alone.
+* **C4691001**: Part 1 gave single doses of ceftibuten 400-1600 mg with or
+  without avibactam tomilopil 900-1350 mg as separate capsules (regular meal).
+  Part 2 gave ceftibuten 400 or 800 mg with avibactam tomilopil 900 or 1350 mg
+  every 8 h for 7 days, fed, except Day 7, which was fasted.
+* **C4691003**: single doses comparing separate capsules (ceftibuten 400 mg +
+  avibactam tomilopil 1125 mg, fasted) with a fixed-dose tablet (ceftibuten
+  402 mg + avibactam tomilopil 1200 mg) fasted and after a high-fat meal.
+
+Median age 32 years (range 18-59), median body weight 76.6 kg (50.1-101),
+median creatinine clearance 124 mL/min (58.5-179) and median BSA-normalised
+creatinine clearance 109 mL/min/1.73 m^2 (68.3-160). The cohort was 62% White,
+22.5% Asian, 5.6% Black and 7% other race (2.8% not reported). There were 1467
+cis-ceftibuten and 1707 avibactam plasma observations.
+
+```{r population}
+str(readModelDb("Sahasrabudhe_2026_ceftibuten_avibactam")()$population[c("n_subjects", "n_studies", "age_range", "weight_range", "sex_female_pct")])
+```
+
+# Source trace
+
+Every `ini()` value also carries an in-file comment that names its table row.
+
+| Equation / parameter | Final model (Table S12) | Simulation model (Table S15) |
+|---|---|---|
+| `lcl` (ceftibuten CL/F, L/h) | log(4.24) | log(4.4) |
+| `lvc` (ceftibuten Vc/F, L) | log(17.9) | log(19.4) |
+| `lktr` (ceftibuten ktr, 1/h) | log(2.55) | log(3.02) |
+| `e_crcl_cl` | 0.272, power on nCrCL/112 | 0.00794 per mL/min, linear on CrCL - 112, fixed |
+| `e_fasted_ktr` | 1.62 | 0.65 |
+| `e_fasted_fdepot` | -0.187 | removed |
+| `e_mono_fdepot` (ceftibuten alone) | 0.343 | removed |
+| `e_dose_fdepot` | -0.211, power on dose/400 | -0.126, step for dose > 800 mg |
+| `e_highfat_ktr` | 1.02 | removed |
+| `e_highfat_fdepot` | -0.255 | removed |
+| `lcl_avi` (avibactam CL/F, L/h) | log(21.1) | log(20.8) |
+| `lvc_avi` (avibactam Vc/F, L) | log(73.2) | log(76.6) |
+| `lq_avi` (avibactam Q/F, L/h) | log(0.34) | log(0.356) |
+| `lvp_avi` (avibactam Vp/F, L) | log(12.1) | log(12.4) |
+| `lktr_avi` (avibactam ktr, 1/h) | log(1.65) | log(1.83) |
+| `e_crcl_cl_avi` | 0.316, power on nCrCL/112 | 0.00931 per mL/min, linear, fixed |
+| `e_fasted_ktr_avi` | 2.32 | 1.51 |
+| `e_fasted_fdepot_avi` | -0.556 | -0.523 |
+| `e_susp_ktr_avi` | 2.37 | 2.02 |
+| `e_susp_fdepot_avi` | 0.384 | 0.317 |
+| `e_mono_cl_avi` (avibactam tomilopil alone) | 0.272 | 0.237 |
+| `e_dose_fdepot_avi` | 0.184, power on dose/1350 | removed |
+| `e_highfat_ktr_avi` | 0.555 | removed |
+| `e_highfat_fdepot_avi` | not in model | 0.192 |
+| `e_fasted_cl_avi` | -0.423 | -0.439 |
+| `e_wt_cl_q`, `e_wt_vc_vp` | 0.75, 1 (fixed), WT/70 | same |
+| IIV CL, Vc of both drugs (4 x 4 block) | 19.7, 21.8, 19.2, 29.3 %CV + 6 covariances | 27, 27.4, 21.5, 26.2 %CV + 6 covariances |
+| IIV ktr (ceftibuten, avibactam) | 34.7, 38 %CV | 41.8, 37.8 %CV |
+| `expSd`, `expSd_avi` (log-scale residual SD) | 0.463, 0.42 | 0.484, 0.422 |
+| Transit chains (5 for ceftibuten, 3 for avibactam) | Results, 'Final Population Pharmacokinetic Model' | same |
+| Allometry, nCrCL and dose forms | Methods; Table S12 footnote | Table S15 footnote |
+| Covariate shift form `1 + theta x indicator` | Figure S4 (top) forest-plot ratios | Figure S4 (bottom) |
+| Prodrug-to-avibactam mass ratio 0.674 | back-calculated from Table S11 | same |
+
+All covariate shifts are relative to the reference condition: both drugs
+given together as capsules or tablet with a regular meal (Table S12
+footnote). `fasted` is `1 - FED`. "Ceftibuten alone" is
+`1 - CONMED_AVIBACTAMTOMILOPIL` and "avibactam tomilopil alone" is
+`1 - CONMED_CEFTIBUTEN`. The forest plots in Figure S4 fix the functional
+forms. For example, the final model's ceftibuten "single agent" ratio of 1.34
+equals 1 + 0.343, its "CTB 200 mg" ratio of 1.16 equals (200/400)^-0.211, and
+the simulation model's CrCL 150 / 60 mL/min ratios of 1.30 / 0.59 for
+ceftibuten equal 1 + 0.00794 x (150 - 112) and 1 + 0.00794 x (60 - 112).
+
+# Virtual cohort and helpers
+
+Body weight and BSA-normalised creatinine clearance are drawn from normal
+distributions with the analysis-set means and SDs of Table 2, truncated to
+the observed ranges. Each Phase 1 arm has 100 virtual subjects.
+
+```{r helpers}
+rxode2::rxSetSeed(20260901)
+set.seed(20260901)
+
+rtrunc_norm <- function(n, mean, sd, lo, hi) {
+  x <- stats::rnorm(n, mean, sd)
+  bad <- x < lo | x > hi
+  while (any(bad)) {
+    x[bad] <- stats::rnorm(sum(bad), mean, sd)
+    bad <- x < lo | x > hi
+  }
+  x
+}
+
+# One arm: per-subject covariates, ceftibuten doses into depot, avibactam
+# tomilopil (mg prodrug) into depot_avi, observations on the ceftibuten
+# central state. The model declares two endpoints (Cc, Cc_avi), so
+# observation rows carry dvid = 1 alongside the ODE-state cmt; rxode2 then
+# returns both endpoint columns on every observation row.
+make_arm <- function(n, arm_id, ctb, avp, fed = 1, highfat = 0, susp = 0,
+                     n_dose = 1, tau = 8, obs_times, crcl = NULL, wt = NULL,
+                     id_offset = 0L) {
+  ids <- id_offset + seq_len(n)
+  cov <- tibble(
+    id = ids,
+    arm_id = arm_id,
+    WT = if (is.null(wt)) rtrunc_norm(n, 76.4, 12.5, 50.1, 101) else wt,
+    CRCL = if (is.null(crcl)) rtrunc_norm(n, 111, 17.3, 68.3, 160) else crcl,
+    FED = fed,
+    FED_HIGHFAT = highfat,
+    FORM_AVIBACTAMTOMILOPIL_SUSP = susp,
+    CONMED_CEFTIBUTEN = as.integer(ctb > 0),
+    CONMED_AVIBACTAMTOMILOPIL = as.integer(avp > 0),
+    # A drug that is not given still needs a finite dose covariate for its
+    # bioavailability expression; the nominal reference dose is used.
+    DOSE_CEFTIBUTEN_MG = if (ctb > 0) ctb else 400,
+    DOSE_AVIBACTAMTOMILOPIL_MG = if (avp > 0) avp else 1350
+  )
+  dose_t <- (seq_len(n_dose) - 1) * tau
+  doses <- bind_rows(
+    if (ctb > 0) tidyr::expand_grid(id = ids, time = dose_t) |> mutate(amt = ctb, cmt = "depot"),
+    if (avp > 0) tidyr::expand_grid(id = ids, time = dose_t) |> mutate(amt = avp, cmt = "depot_avi")
+  ) |>
+    mutate(evid = 1L, dvid = NA_integer_)
+  obs <- tidyr::expand_grid(id = ids, time = obs_times) |>
+    mutate(amt = NA_real_, cmt = "central", evid = 0L, dvid = 1L)
+  bind_rows(doses, obs) |>
+    left_join(cov, by = "id") |>
+    arrange(id, time, desc(evid))
+}
+
+mod_final <- readModelDb("Sahasrabudhe_2026_ceftibuten_avibactam")
+mod_sim <- readModelDb("Sahasrabudhe_2026_ceftibuten_avibactam_crcl")
+```
+
+# Single-dose Phase 1 arms (final model)
+
+```{r single-dose-arms}
+arms <- tibble::tribble(
+  ~arm_id, ~arm, ~ctb, ~avp, ~fed, ~highfat, ~susp,
+  1L, "C4691002 AVP 300 mg susp", 0, 300, 1, 0, 1,
+  2L, "C4691002 AVP 900 mg susp", 0, 900, 1, 0, 1,
+  3L, "C4691002 AVP 1350 mg susp", 0, 1350, 1, 0, 1,
+  4L, "C4691001 CTB 400 + AVP 900", 400, 900, 1, 0, 0,
+  5L, "C4691001 CTB 800 + AVP 1350", 800, 1350, 1, 0, 0,
+  6L, "C4691001 CTB 800 alone", 800, 0, 1, 0, 0,
+  7L, "C4691001 CTB 1200 + AVP 1350", 1200, 1350, 1, 0, 0,
+  8L, "C4691001 CTB 1600 alone", 1600, 0, 1, 0, 0,
+  9L, "C4691003 capsule fasted", 400, 1125, 0, 0, 0,
+  10L, "C4691003 tablet fasted", 402, 1200, 0, 0, 0,
+  11L, "C4691003 tablet high-fat fed", 402, 1200, 1, 1, 0
+)
+
+obs_sd <- c(seq(0, 8, by = 0.25), seq(9, 24, by = 1), seq(26, 48, by = 2))
+n_per_arm <- 100L
+ev_sd <- bind_rows(lapply(seq_len(nrow(arms)), function(i) {
+  a <- arms[i, ]
+  make_arm(n_per_arm, a$arm_id, a$ctb, a$avp, a$fed, a$highfat, a$susp,
+           obs_times = obs_sd, id_offset = (i - 1L) * n_per_arm)
+}))
+stopifnot(!anyDuplicated(ev_sd[ev_sd$evid == 1, c("id", "time", "cmt")]))
+
+sim_sd <- rxode2::rxSolve(mod_final, events = ev_sd, keep = "arm_id") |>
+  as.data.frame() |>
+  select(id, time, arm_id, Cc, Cc_avi) |>
+  left_join(arms |> select(arm_id, arm, ctb, avp), by = "arm_id")
+```
+
+## Figure 1: median concentration-time profiles
+
+```{r figure-1, fig.height = 6}
+# Replicates the layout of Figure 1 of Sahasrabudhe 2026 (median plasma
+# avibactam, panels a, b, d; median cis-ceftibuten, panels e, g).
+prof <- bind_rows(
+  sim_sd |> filter(avp > 0) |> transmute(arm, time, analyte = "Avibactam", conc = Cc_avi),
+  sim_sd |> filter(ctb > 0) |> transmute(arm, time, analyte = "cis-Ceftibuten", conc = Cc)
+) |>
+  filter(time <= 24) |>
+  group_by(analyte, arm, time) |>
+  summarise(median = median(conc), .groups = "drop")
+
+ggplot(prof, aes(time, median, colour = arm)) +
+  geom_line() +
+  facet_wrap(~analyte, scales = "free_y", ncol = 1) +
+  labs(x = "Time after dose (h)", y = "Median plasma concentration (mg/L)",
+       colour = NULL,
+       caption = "Simulated with the final model; compare with Figure 1 of Sahasrabudhe 2026.") +
+  theme_bw() +
+  theme(legend.position = "right", legend.text = element_text(size = 7))
+```
+
+## PKNCA and comparison with Tables 3 and 4
+
+```{r pknca-single}
+run_nca <- function(conc_df, dose_df) {
+  conc_df <- bind_rows(
+    conc_df,
+    conc_df |> distinct(id, arm) |> mutate(time = 0, conc = 0)
+  ) |>
+    distinct(id, arm, time, .keep_all = TRUE) |>
+    arrange(id, arm, time)
+  conc_obj <- PKNCA::PKNCAconc(conc_df, conc ~ time | arm + id)
+  dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id)
+  intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                          aucinf.obs = TRUE, half.life = TRUE)
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+}
+
+dose_rows <- ev_sd |>
+  filter(evid == 1) |>
+  left_join(arms |> select(arm_id, arm), by = "arm_id")
+
+nca_ctb <- run_nca(
+  sim_sd |> filter(ctb > 0, !is.na(Cc)) |> transmute(id, arm, time, conc = Cc),
+  dose_rows |> filter(cmt == "depot") |> select(id, arm, time, amt)
+)
+nca_avi <- run_nca(
+  sim_sd |> filter(avp > 0, !is.na(Cc_avi)) |> transmute(id, arm, time, conc = Cc_avi),
+  dose_rows |> filter(cmt == "depot_avi") |> select(id, arm, time, amt)
+)
+```
+
+Published values are geometric means, except median Tmax and arithmetic-mean
+half-life. They are converted from ng/mL to mg/L. `ncaComparisonTable()`
+summarises the simulated cohort by its median.
+
+```{r nca-compare-ctb}
+pub_ctb <- tibble::tribble(
+  ~arm, ~cmax, ~tmax, ~aucinf.obs, ~half.life,
+  "C4691001 CTB 400 + AVP 900", 18.17, 3.21, 94.73, 3.073,
+  "C4691001 CTB 800 + AVP 1350", 25.47, 4.03, 155.8, 2.708,
+  "C4691001 CTB 800 alone", 30.51, 3.50, 173.2, 2.908,
+  "C4691001 CTB 1200 + AVP 1350", 27.12, 5.05, 184.9, 3.138,
+  "C4691001 CTB 1600 alone", 44.99, 4.01, 321.9, 3.180,
+  "C4691003 capsule fasted", 15.37, 2.54, 77.02, 2.783,
+  "C4691003 tablet fasted", 13.12, 2.50, 73.64, 2.780,
+  "C4691003 tablet high-fat fed", 12.44, 3.00, 76.30, 2.903
+)
+cmp_ctb <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_ctb, reference = pub_ctb, by = "arm",
+  units = c(cmax = "mg/L", tmax = "h", aucinf.obs = "mg*h/L", half.life = "h"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp_ctb, caption = "cis-Ceftibuten: simulated (final model) vs Table 4. * differs by >20%.")
+```
+
+```{r nca-compare-avi}
+pub_avi <- tibble::tribble(
+  ~arm, ~cmax, ~tmax, ~aucinf.obs, ~half.life,
+  "C4691002 AVP 300 mg susp", 2.740, 1.79, 8.250, 1.50,
+  "C4691002 AVP 900 mg susp", 8.363, 2.75, 34.557, 2.69,
+  "C4691002 AVP 1350 mg susp", 10.26, 2.25, 44.32, 2.33,
+  "C4691001 CTB 400 + AVP 900", 3.856, 4.01, 22.05, 4.0,
+  "C4691001 CTB 800 + AVP 1350", 5.955, 3.50, 38.06, 5.3,
+  "C4691001 CTB 1200 + AVP 1350", 6.714, 4.50, 38.09, 3.6,
+  "C4691003 capsule fasted", 4.834, 3.00, 29.68, 5.7,
+  "C4691003 tablet fasted", 4.217, 2.50, 32.33, 5.7,
+  "C4691003 tablet high-fat fed", 9.472, 3.98, 49.15, 2.3
+)
+# Half-life is left out of this table; see the note below it.
+cmp_avi <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_avi, reference = pub_avi, by = "arm",
+  params = c("cmax", "tmax", "aucinf.obs"),
+  units = c(cmax = "mg/L", tmax = "h", aucinf.obs = "mg*h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp_avi, caption = "Avibactam: simulated (final model) vs Table 3. * differs by >20%.")
+
+# Disposition half-lives of the typical (70 kg, nCrCL 112) avibactam
+# two-compartment system, fed, with ceftibuten.
+k10 <- 21.1 / 73.2
+k12 <- 0.34 / 73.2
+k21 <- 0.34 / 12.1
+ab <- k10 + k12 + k21
+lambda <- (ab + c(1, -1) * sqrt(ab^2 - 4 * k10 * k21)) / 2
+avi_half_lives <- log(2) / lambda
+avi_half_lives
+```
+```
+
+```{r nca-checks}
+auc_pct <- function(nca, pub) {
+  as.data.frame(nca$result) |>
+    filter(PPTESTCD == "aucinf.obs") |>
+    group_by(arm) |>
+    summarise(sim = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+    inner_join(pub |> select(arm, ref = aucinf.obs), by = "arm") |>
+    mutate(pct = 100 * (sim - ref) / ref)
+}
+auc_ctb <- auc_pct(nca_ctb, pub_ctb)
+auc_avi <- auc_pct(nca_avi, pub_avi)
+knitr::kable(bind_rows(auc_ctb |> mutate(analyte = "cis-ceftibuten"),
+                       auc_avi |> mutate(analyte = "avibactam")) |>
+               mutate(across(c(sim, ref, pct), \(x) signif(x, 3))) |>
+               rename("Analyte" = analyte, "Arm" = arm, "Simulated median AUCinf (mg*h/L)" = sim,
+                      "Published geometric mean (mg*h/L)" = ref, "% difference" = pct),
+             caption = "AUCinf across all single-dose arms.")
+
+stopifnot(
+  # Structural: a mis-transcribed clearance, dose scaling or molecular-weight
+  # ratio moves every arm by tens of percent.
+  abs(median(auc_ctb$pct)) < 15,
+  abs(median(auc_avi$pct)) < 15,
+  # Envelope: the cohort medians of every arm stay within 35% of the
+  # published geometric means.
+  all(abs(auc_ctb$pct) < 35),
+  all(abs(auc_avi$pct) < 35)
+)
+```
+
+The final model tracks the published exposures in most arms. The visible
+misses are structural, not a transcription problem:
+
+* **Ceftibuten 1200 and 1600 mg.** The power dose effect on bioavailability
+  (exponent -0.211) does not fully capture how sharply exposure flattens
+  above 800 mg (Results: "less than dose proportional for ceftibuten doses of
+  800 mg and higher"). The simulation model later replaced it with a step
+  above 800 mg.
+* **Avibactam after a high-fat meal (tablet fed).** The final model has no
+  high-fat-meal effect on avibactam bioavailability, because the joint fit
+  dropped it (Table S1, step S5). So the high-fat arm is predicted from the
+  regular-meal reference and under-predicts the observed 49 mg*h/L. The
+  simulation model adds the effect back (+19.2%).
+* **Avibactam terminal half-life.** The published peripheral compartment is
+  small and slowly exchanging (Q/F 0.34 L/h, Vp/F 12.1 L). The typical
+  avibactam profile therefore has a dominant phase with a half-life of
+  `r signif(avi_half_lives[1], 2)` h and a low-amplitude slow phase with a
+  half-life of `r signif(avi_half_lives[2], 2)` h. Over a 48-h simulated
+  profile, PKNCA fits the slow phase and returns terminal half-lives of
+  about 12-25 h. The published NCA half-lives (1.5-5.7 h, from sampling
+  windows of 12-72 h) describe the dominant phase. The comparison is
+  therefore not like-for-like, and avibactam half-life is left out of the
+  table.
+* **Time to peak.** The simulated median Tmax is earlier than observed in
+  the fasted and suspension arms (1.25-1.5 h vs 1.8-3 h). These arms carry
+  the large fasted and suspension multipliers on `ktr` (x 3.3 to x 3.4 for
+  avibactam, x 2.6 for ceftibuten fasted). Exposure (AUC) in the same arms
+  matches within 20%.
+
+## Multiple dosing, Day 6 (fed)
+
+Study C4691001 Part 2 cohorts 1-3 received doses every 8 h. Day 6 starts at
+120 h, which is the 16th dose. The comparison uses Tables S8 and S10.
+
+```{r multiple-dose}
+md_arms <- tibble::tribble(
+  ~arm_id, ~arm, ~ctb, ~avp,
+  21L, "CTB 400 + AVP 1350 q8h", 400, 1350,
+  22L, "CTB 800 + AVP 1350 q8h", 800, 1350,
+  23L, "CTB 400 + AVP 900 q8h", 400, 900
+)
+obs_md <- seq(120, 128, by = 0.25)
+ev_md <- bind_rows(lapply(seq_len(nrow(md_arms)), function(i) {
+  a <- md_arms[i, ]
+  make_arm(n_per_arm, a$arm_id, a$ctb, a$avp, n_dose = 16, tau = 8,
+           obs_times = obs_md, id_offset = 5000L + (i - 1L) * n_per_arm)
+}))
+sim_md <- rxode2::rxSolve(mod_final, events = ev_md, keep = "arm_id") |>
+  as.data.frame() |>
+  select(id, time, arm_id, Cc, Cc_avi) |>
+  left_join(md_arms |> select(arm_id, arm), by = "arm_id")
+
+md_dose <- ev_md |> filter(evid == 1) |> left_join(md_arms |> select(arm_id, arm), by = "arm_id")
+nca_ss <- function(conc_df, dose_df) {
+  conc_obj <- PKNCA::PKNCAconc(conc_df, conc ~ time | arm + id)
+  dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id)
+  intervals <- data.frame(start = 120, end = 128, cmax = TRUE, auclast = TRUE)
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+}
+nca_md_ctb <- nca_ss(sim_md |> transmute(id, arm, time, conc = Cc),
+                     md_dose |> filter(cmt == "depot") |> select(id, arm, time, amt))
+nca_md_avi <- nca_ss(sim_md |> transmute(id, arm, time, conc = Cc_avi),
+                     md_dose |> filter(cmt == "depot_avi") |> select(id, arm, time, amt))
+
+pub_md_ctb <- tibble::tribble(
+  ~arm, ~cmax, ~auclast,
+  "CTB 400 + AVP 1350 q8h", 22.63, 104.2,
+  "CTB 800 + AVP 1350 q8h", 45.64, 224.3,
+  "CTB 400 + AVP 900 q8h", 20.68, 93.59
+)
+pub_md_avi <- tibble::tribble(
+  ~arm, ~cmax, ~auclast,
+  "CTB 400 + AVP 1350 q8h", 7.940, 39.57,
+  "CTB 800 + AVP 1350 q8h", 8.676, 45.13,
+  "CTB 400 + AVP 900 q8h", 6.159, 29.92
+)
+knitr::kable(nlmixr2lib::ncaComparisonTable(
+  simulated = nca_md_ctb, reference = pub_md_ctb, by = "arm",
+  units = c(cmax = "mg/L", auclast = "mg*h/L"), tolerance_pct = 20
+), caption = "cis-Ceftibuten Day 6 (AUC over the 120-128 h interval) vs Table S10. * differs by >20%.")
+knitr::kable(nlmixr2lib::ncaComparisonTable(
+  simulated = nca_md_avi, reference = pub_md_avi, by = "arm",
+  units = c(cmax = "mg/L", auclast = "mg*h/L"), tolerance_pct = 20
+), caption = "Avibactam Day 6 (AUC over the 120-128 h interval) vs Table S8. * differs by >20%.")
+```
+
+Avibactam steady-state exposure matches Table S8 within 20% for AUC. The
+simulated ceftibuten Day 6 exposure is lower than observed, most of all for
+800 mg q8h. The observed ceftibuten accumulation ratios on Day 6 (1.38-1.98,
+Table S10) are larger than a 3-h half-life with 8-h dosing allows (about
+1.1). The paper notes that the regular-meal effect in C4691001 could not be
+resolved "owing to confounding from accumulation". The final model was
+fitted to these data as published, and no parameter is adjusted here.
+
+# Simulation model: renal function and jPTA
+
+## Clearance across creatinine clearance
+
+```{r crcl-cl}
+crcl_grid <- c(15, 30, 50, 80, 112, 150)
+typ_sim <- rxode2::zeroRe(mod_sim)
+# One single-subject solve per CrCL value: a typical-value (zero-omega)
+# solve of several subjects at once makes rxode2 warn.
+sim_typ <- bind_rows(lapply(seq_along(crcl_grid), function(i) {
+  ev <- make_arm(1L, i, 400, 1200, obs_times = seq(0, 24, by = 0.1),
+                 crcl = crcl_grid[i], wt = 70)
+  rxode2::rxSolve(typ_sim, events = ev) |>
+    as.data.frame() |>
+    mutate(arm_id = i)
+}))
+auc_trap <- function(t, c) sum(diff(t) * (head(c, -1) + tail(c, -1)) / 2)
+cl_tab <- sim_typ |>
+  group_by(arm_id) |>
+  summarise(auc24_ctb = auc_trap(time, Cc), auc24_avi = auc_trap(time, Cc_avi), .groups = "drop") |>
+  mutate(CrCL = crcl_grid[arm_id],
+         cl_ctb = 4.4 * (1 + 0.00794 * (CrCL - 112)),
+         cl_avi = 20.8 * (1 + 0.00931 * (CrCL - 112)))
+knitr::kable(cl_tab |> select(CrCL, cl_ctb, cl_avi, auc24_ctb, auc24_avi) |>
+               mutate(across(-CrCL, \(x) signif(x, 3))) |>
+               rename("CrCL (mL/min)" = CrCL, "Ceftibuten CL/F (L/h)" = cl_ctb,
+                      "Avibactam CL/F (L/h)" = cl_avi,
+                      "Ceftibuten AUC0-24, single dose (mg*h/L)" = auc24_ctb,
+                      "Avibactam AUC0-24, single dose (mg*h/L)" = auc24_avi),
+             caption = "Typical 70 kg patient, single ceftibuten 400 mg + avibactam tomilopil 1200 mg, fed.")
+```
+
+The linear CrCL term makes avibactam CL/F fall toward zero as CrCL
+approaches about 4.6 mL/min. Below that it would turn negative. The model is
+therefore not meant for end-stage renal disease.
+
+## Figure 2 / Table S16: joint probability of target attainment
+
+The authors drew covariates for 1000 virtual patients with complicated
+urinary tract infection from an earlier aztreonam-avibactam population PK
+data set that is not published. Here, as an assumed stand-in, each regimen
+has 200 virtual patients. Body weight is normal (mean 75 kg, SD 15,
+truncated to 45-130 kg). Creatinine clearance is log-normal (median
+80 mL/min, CV 45%, truncated to 15-200 mL/min). Each patient receives
+ceftibuten 400 mg + avibactam tomilopil q8h, fed, for 10 days. On Day 10:
+
+free cis-ceftibuten (unbound fraction 0.61) must exceed the MIC for a set
+fraction of the day, and free avibactam (unbound fraction 0.92) must reach a
+set AUC0-24. The Methods give target ranges ("50% to >99% fT > MIC" and
+"50-100 ug h/mL fAUC0-24,ss") but not the pair used for Table S16. Two pairs
+bracket that range:
+
+* **lower**: fT>MIC >= 50% and fAUC0-24 >= 50 mg*h/L;
+* **upper**: fT>MIC > 99% and fAUC0-24 >= 100 mg*h/L.
+
+Because the cohort and the exact targets are assumptions, the table is
+illustrative, not a reproduction of Table S16.
+
+```{r jpta}
+n_pta <- 200L
+make_pta <- function(avp, arm_id, id_offset) {
+  wt <- rtrunc_norm(n_pta, 75, 15, 45, 130)
+  crcl <- pmin(pmax(exp(stats::rnorm(n_pta, log(80), 0.43)), 15), 200)
+  make_arm(n_pta, arm_id, 400, avp, n_dose = 30, tau = 8,
+           obs_times = seq(216, 240, by = 0.1), crcl = crcl, wt = wt,
+           id_offset = id_offset)
+}
+pta_arms <- tibble(arm_id = 31:32, avp = c(800, 1200))
+ev_pta <- bind_rows(lapply(seq_len(nrow(pta_arms)), function(i) {
+  make_pta(pta_arms$avp[i], pta_arms$arm_id[i], 10000L + (i - 1L) * n_pta)
+}))
+sim_pta <- rxode2::rxSolve(mod_sim, events = ev_pta, keep = "arm_id") |>
+  as.data.frame() |>
+  select(id, time, arm_id, Cc, Cc_avi)
+
+mics <- c(0.12, 0.25, 0.5, 1, 2, 4)
+pta_subj <- sim_pta |>
+  group_by(arm_id, id) |>
+  summarise(fauc_avi = auc_trap(time, 0.92 * Cc_avi),
+            fctb = list(0.61 * Cc), .groups = "drop")
+pta <- tidyr::expand_grid(pta_subj, MIC = mics) |>
+  mutate(ft_mic = vapply(seq_along(fctb), function(i) mean(fctb[[i]] > MIC[i]), numeric(1)),
+         joint_lower = ft_mic >= 0.5 & fauc_avi >= 50,
+         joint_upper = ft_mic > 0.99 & fauc_avi >= 100) |>
+  group_by(arm_id, MIC) |>
+  summarise(jpta_lower = 100 * mean(joint_lower),
+            jpta_upper = 100 * mean(joint_upper), .groups = "drop") |>
+  left_join(pta_arms, by = "arm_id") |>
+  mutate(regimen = paste0("CTB 400 mg + AVP ", avp, " mg q8h"))
+
+table_s16 <- tibble(
+  MIC = rep(mics, 2),
+  avp = rep(c(800, 1200), each = 6),
+  published = c(95.0, 95.0, 95.0, 95.0, 91.8, 67.6, 99.6, 99.6, 99.5, 99.2, 93.3, 67.6)
+)
+knitr::kable(pta |> left_join(table_s16, by = c("MIC", "avp")) |>
+               select(regimen, MIC, jpta_lower, jpta_upper, published) |>
+               mutate(across(c(jpta_lower, jpta_upper), \(x) round(x, 1))) |>
+               rename("Regimen" = regimen, "MIC (mg/L)" = MIC,
+                      "Simulated jPTA, lower targets (%)" = jpta_lower,
+                      "Simulated jPTA, upper targets (%)" = jpta_upper,
+                      "Table S16, fed (%)" = published),
+             caption = "jPTA from the simulation model under an assumed cUTI covariate distribution.")
+
+pta |>
+  pivot_longer(c(jpta_lower, jpta_upper), names_to = "targets", values_to = "jpta",
+               names_prefix = "jpta_") |>
+  ggplot(aes(factor(MIC), jpta, colour = regimen, linetype = targets,
+             group = interaction(regimen, targets))) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 90, linetype = 2) +
+  labs(x = "Ceftibuten MIC (mg/L)", y = "jPTA (%)", colour = NULL, linetype = "Targets",
+       caption = "Compare with Figure 2 of Sahasrabudhe 2026 (fed, ceftibuten 400 mg + avibactam tomilopil 1200 mg q8h).") +
+  theme_bw()
+```
+
+With the lower targets, the jPTA plateau at low MIC (about 92% for
+800 mg and 97-98% for 1200 mg avibactam tomilopil in the cohort rendered
+here) is close to the published 95% and 99.6%. It stays above 90% at 4 mg/L,
+however, where Table S16 drops to 67.6%. With the upper targets, the
+avibactam fAUC0-24 >= 100 mg*h/L requirement caps jPTA (about 50% and 75%)
+at every MIC, and the ceftibuten target matters only at 4 mg/L. Neither
+bracket reproduces both the high plateau and the steep drop at 4 mg/L.
+That pattern fits the low avibactam target combined with a stricter
+ceftibuten time-above-MIC target, but the paper does not state the pair, and
+its cUTI covariate set is not available either. The higher avibactam
+tomilopil dose raises jPTA through the avibactam exposure target, as in
+Table S16.
+
+# Assumptions and deviations
+
+* **Two models.** The final model (Table S12) and the simulation model
+  (Table S15) are packaged as separate files. The paper reports the
+  simulation model as the primary basis for dose selection, not as a
+  sensitivity analysis.
+* **Prodrug dose conversion.** The paper scales "avibactam tomilopil dose
+  ... to the equivalent avibactam dose, using molecular weight fraction" but
+  does not print the fraction. The maintainers back-calculated it from Table
+  S11, whose fraction-excreted column divides the amount excreted by the
+  avibactam-equivalent dose: 92.0 mg / 0.455 / 300 mg = 0.674, 273.5 / 0.451
+  / 900 = 0.674 and 510.8 / 0.561 / 1350 = 0.674. The hydroxypivalic-acid
+  columns give a consistent, separate ratio (7.2 mg / 0.080 / 300 mg =
+  0.30 for every dose). The model applies 0.674 in `f(depot_avi)`. Doses are
+  entered in mg of prodrug, and the `DOSE_AVIBACTAMTOMILOPIL_MG` covariate is
+  also prodrug mass, matching the paper's reference dose of 1350 mg.
+* **Transit chain.** "A depot compartment and five transit compartments
+  linked with a Ktr" (three for avibactam) is coded as depot -> transit1 ...
+  transitN -> central, with every step at the single estimated `ktr`. No
+  separate absorption rate constant is reported.
+* **IIV scale.** Table S12 and Table S15 print the IIV diagonals as CV%. They
+  are taken as sqrt(omega^2) x 100, so omega^2 = (CV/100)^2, with the printed
+  covariances used as they are. With this reading the Table S15 covariances
+  reproduce the correlations printed in Table S14 (for example 0.0582 /
+  (0.270 x 0.274) = 0.787 against 0.788). Residual CV% values are taken as
+  log-scale SDs in the same way (0.123 / (0.484 x 0.422) = 0.60 against the
+  printed residual correlation of 0.601).
+* **Correlated residual error omitted.** NONMEM estimated a covariance
+  between the cis-ceftibuten and avibactam log-residuals (0.117 in the final
+  model, 0.123 in the simulation model). nlmixr2 residual-error models cannot
+  correlate two endpoints, so each endpoint keeps its own `lnorm()` SD. This
+  affects only the joint spread of simulated observations, not individual
+  predictions.
+* **Linear CrCL form.** The Table S15 footnote writes the effect as
+  "(CrCL-112)*theta". It is coded as `CL x (1 + theta x (CrCL - 112))`, the form
+  that reproduces the Figure S4 (bottom) ratios. CrCL here is absolute
+  Cockcroft-Gault creatinine clearance in mL/min. The final model instead
+  uses BSA-normalised CrCL in mL/min/1.73 m^2. Both models centre at
+  112 mL/min, as printed, although Table 2 gives medians of 124 (absolute) and
+  109 (normalised).
+* **Unused-drug covariates.** For an arm that does not give one of the drugs,
+  that drug's dose covariate is set to its reference dose (400 mg ceftibuten,
+  1350 mg avibactam tomilopil). This keeps the bioavailability expression
+  finite and has no effect because no amount enters that depot.
+* **Virtual cohorts.** Phase 1 covariates are normal draws matching the
+  Table 2 means and SDs. The jPTA cohort is an assumption (see above),
+  because the cUTI covariate set the authors used is not published.
+* **Errata.** No correction notice was found for this article as of
+  2026-11-17.
