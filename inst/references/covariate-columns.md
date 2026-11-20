@@ -17603,6 +17603,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
 - **Example models:** `vanderWalt_2025_avelumab.R` (linear multiplier `1 + 4.38 * ADA_POS_BASE` on the ADA-negative to ADA-positive transition rate constant lambda01 of a two-state continuous-time Markov ADA model; also sets the chain's initial state, `s_adapos(0) = ADA_POS_BASE`).
 - **Notes:** Follows the `<X>_BASE` pattern for a time-fixed baseline paired with a time-varying column of the same quantity (`WT_BASE` / `WT`, `CRCL_BASE`): `ADA_POS` is the time-varying (or ever-positive) status, `ADA_POS_BASE` the value in the pre-dose sample only. Do not use `ADA_POS_BASE` for "ever ADA-positive during treatment"; that is `ADA_POS` with its time frame documented per model.
 
+### GAMETOCYTE_POS_BASE (**canonical for Plasmodium gametocyte-positive status at enrolment**)
+- **Description:** 1 = Plasmodium falciparum gametocytes detected in the enrolment (day 0, pre-treatment) blood sample, 0 = not detected. Fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (gametocyte-negative at enrolment).
+- **Source aliases:**
+  - `I0` (prevalence of gametocytes at day 0) -- Bousema 2010 prevalence-model equations; detection by Pfs25 QT-NASBA (sensitivity 0.02-0.1 gametocytes/uL).
+- **Example models:** `Bousema_2010_malaria_gametocyte_prevalence_kenya.R`, `Bousema_2010_malaria_gametocyte_prevalence_tanzania.R` (sets the initial state of the two-state gametocyte-carriage chain, `s_gametocytepos(0) = GAMETOCYTE_POS_BASE`).
+- **Notes:** Follows the `<X>_POS_BASE` pattern of `ADA_POS_BASE` for a baseline status that initialises a continuous-time Markov chain. Record the detection method per model: microscopy detects far fewer carriers than molecular assays (Bousema 2010 Methods: 19-26% by microscopy vs 85-92% by QT-NASBA at enrolment). Supplying a cohort proportion in place of a 0/1 value turns the chain into the expected prevalence of that cohort.
+
 ### ADA_POSOLD (**canonical for ADA-positive in older-assay study indicator**)
 - **Description:** 1 = subject is anti-drug-antibody-positive in a study that used the older lower-sensitivity, lower-drug-tolerance ADA assay; 0 = otherwise.
 - **Units:** (binary)
@@ -24909,6 +24920,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `treatment/placebo indicator` -- Mehta 2025 Supplement S2 run 3; the Results describe it as differentiating 'participants who received the drug under the study and those who received placebo for 24 weeks'.
 - **Example models:** `Mehta_2025_burosumab_fracture.R` (gates an additional log-linear time effect on the fracture plus pseudofracture count; founding example).
 - **Notes:** Specific scope. Follows the `TRT_<INN>` convention (see `TRT_BENRALIZUMAB`). In UX023-CL303 the placebo arm crossed over to burosumab at week 24; Mehta 2025 does not state the post-crossover coding, and the static randomised-arm reading was adopted by the maintainers, so that post-crossover burosumab benefit in the placebo arm enters through `CAV_PHOS` only.
+
+### TRT_ARTEMISININ (**canonical for artemisinin-based combination therapy (ACT) treatment-arm indicator**)
+- **Description:** Binary treatment-arm indicator: 1 = the patient received an artemisinin-based combination therapy (an artemisinin derivative such as artesunate or artemether plus a partner antimalarial), 0 = the patient received a non-artemisinin comparator regimen. A static patient-level property of the treatment arm.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-artemisinin regimen; in the founding models sulfadoxine-pyrimethamine + amodiaquine).
+- **Source aliases:**
+  - `ACT` vs `non-ACT` treatment group -- Bousema 2010 Methods and Table 1 (ACT = sulfadoxine-pyrimethamine + artesunate or artemether-lumefantrine, pooled because both had an indistinguishable effect on gametocyte carriage).
+- **Example models:** `Bousema_2010_malaria_gametocyte_density_kenya.R` (selects the arm-specific gametocyte circulation time, day-3 circulating density and day-3 sequestered pool), `Bousema_2010_malaria_gametocyte_prevalence_kenya.R` (selects the arm-specific mean duration of gametocyte carriage).
+- **Notes:** Specific scope. A drug-CLASS member of the `TRT_<...>` arm-indicator family, like `TRT_CORTICOSTEROID` and `TRT_ANTIPD1`: the ACT arm pools two different artemisinin derivatives (artesunate, artemether), so no single `TRT_<INN>` names it. Use `TRT_<INN>` (e.g. `TRT_ARTESUNATE`) instead when a model distinguishes the individual derivative.
+
+### TRT_PRIMAQUINE (**canonical for primaquine treatment-arm indicator**)
+- **Description:** Binary randomised-arm indicator: 1 = the patient was randomised to receive primaquine on top of the backbone antimalarial regimen, 0 = the backbone regimen alone. A static patient-level property of the randomisation.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (backbone regimen without primaquine).
+- **Source aliases:**
+  - `ACT-PQ` vs `ACT` treatment group -- Bousema 2010 Methods (sulfadoxine-pyrimethamine + artesunate, with or without a single 0.75 mg/kg primaquine dose on the third treatment day).
+- **Example models:** `Bousema_2010_malaria_gametocyte_density_tanzania.R` (selects the arm-specific gametocyte circulation time and day-3 circulating density), `Bousema_2010_malaria_gametocyte_prevalence_tanzania.R` (selects the arm-specific mean duration of gametocyte carriage).
+- **Notes:** Specific scope. Follows the `TRT_<INN>` convention (see `TRT_BENRALIZUMAB`). Distinct from `CONMED_<INN>`: here primaquine is the randomised intervention whose effect is estimated, not a background co-medication.
 
 ### TRT_ABATACEPT, TRT_BARICITINIB, TRT_BELIMUMAB, TRT_GUSELKUMAB, TRT_INEBILIZUMAB, TRT_NINTEDANIB, TRT_RITUXIMAB, TRT_TOCILIZUMAB, TRT_TOFACITINIB (**canonical for per-drug MBMA treatment-arm indicators of targeted therapies**)
 - **Description:** Binary study-arm treatment indicators: 1 = the trial arm received the named drug, 0 = it received the comparator (standard of care / placebo) or a different drug. A property of the published trial arm in a model-based meta-analysis (MBMA), not of an individual patient. Drug classes: abatacept (CTLA-4-Ig fusion protein, T-cell co-stimulation blocker), baricitinib (JAK1/JAK2 inhibitor), belimumab (anti-BAFF antibody), guselkumab (anti-IL-23 p19 antibody), inebilizumab (anti-CD19 B-cell-depleting antibody), nintedanib (tyrosine-kinase inhibitor, antifibrotic), rituximab (anti-CD20 B-cell-depleting antibody), tocilizumab (anti-IL-6 receptor antibody), tofacitinib (JAK1/JAK3 inhibitor).

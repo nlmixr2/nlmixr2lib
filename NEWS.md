@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wu 2009 VEGF and soluble VEGFR1 whole-body QSP model ([doi:10.1371/journal.pone.0005108](https://doi.org/10.1371/journal.pone.0005108)) -- typical healthy adult (endogenous VEGF system; no drug).
+- Add Bousema 2010 Plasmodium falciparum gametocyte density and prevalence models after ACT and primaquine ([doi:10.1186/1475-2875-9-136](https://doi.org/10.1186/1475-2875-9-136)) -- Kenyan and Tanzanian children treated for uncomplicated malaria.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
