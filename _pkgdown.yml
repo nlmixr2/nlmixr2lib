@@ -4060,6 +4060,8 @@ navbar:
         href: articles/Patel_2022_imipenem_relebactam.html
       - text: "Imipenem (Por 2021)"
         href: articles/Por_2021_imipenem.html
+      - text: "Imipenem (Qiao 2026)"
+        href: articles/Qiao_2026_imipenem.html
       - text: "Imipenem (Truong 2025)"
         href: articles/Zhang_2025_imipenem_model_review.html
       - text: "Imipenem (Wang 2024)"
@@ -11786,6 +11788,7 @@ articles:
   - articles/Qi_2019_vestronidaseAlfa
   - articles/Qi_2024_vosoritide
   - articles/Qian_2025_tetrahydrocannabinol
+  - articles/Qiao_2026_imipenem
   - articles/Qin_2025_ropeginterferon
   - articles/Qin_2026_acid_reducing_agent_ddi
   - articles/Quartino_2016_trastuzumab
