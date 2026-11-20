@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Makino 2026 amrubicin PK/PD with neutropenia ([doi:10.1007/s00280-026-04931-8](https://doi.org/10.1007/s00280-026-04931-8)) -- Japanese adults with small cell lung cancer.
+- Add Jovanovic 2026 adalimumab ([doi:10.3390/pharmaceutics18070788](https://doi.org/10.3390/pharmaceutics18070788)) -- adults with Crohn's disease on therapeutic drug monitoring (Serbia).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

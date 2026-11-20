@@ -156,6 +156,8 @@ navbar:
         href: articles/Dari_2023_ad26cov2s.html
       - text: "Adalimumab (Drweesh 2026)"
         href: articles/Drweesh_2026_adalimumab.html
+      - text: "Adalimumab (Jovanovic 2026)"
+        href: articles/Jovanovic_2026_adalimumab.html
       - text: "Adalimumab (Ling 2024)"
         href: articles/Ling_2024_tnfi_biosimilars.html
       - text: "Adalimumab (Marcantonio 2022)"
@@ -10753,6 +10755,7 @@ articles:
   - articles/Jonsson_2015_edoxaban
   - articles/Jonsson_2016_tanezumab
   - articles/Jorga_2000_tolcapone
+  - articles/Jovanovic_2026_adalimumab
   - articles/Jullien_2005_abacavir
   - articles/Jullien_2006_lopinavir
   - articles/Juma_2026_lumefantrine
