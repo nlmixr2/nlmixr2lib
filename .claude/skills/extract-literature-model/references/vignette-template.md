@@ -275,6 +275,11 @@ tune parameters to match.
 - <Any simplification, e.g., "Time-varying weight held constant at the baseline
   z-score over the follow-up window."
 - <Any parameter the paper did not publish, and what was used instead.>
+- **Differences between the paper and the authors' published code** -- one
+  entry per difference, naming both forms and saying the code's is used, e.g.
+  "The text scales pinocytosis by each tissue's endosomal volume; the authors'
+  ADAPT code (ESM 1), with which the estimates were made, uses the whole-body
+  endosomal volume for every tissue. The code's form is used."
 - **Non-paper-derived parameter values** — call out any value that came from a
   source other than the paper's text or tables, and say where it did come
   from. Examples:
