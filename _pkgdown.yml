@@ -9238,6 +9238,8 @@ navbar:
         href: articles/Stockmann_2015_vancomycin.html
       - text: "Vancomycin (Takada 2025)"
         href: articles/Takada_2025_vancomycin.html
+      - text: "Vancomycin (Tanaka 2026)"
+        href: articles/Tanaka_2026_vancomycin.html
       - text: "Vancomycin (Tsai 2024)"
         href: articles/Tsai_2024_vancomycin.html
       - text: "Vancomycin (Tseng 2026)"
@@ -12361,6 +12363,7 @@ articles:
   - articles/Tan_2025_piperacillin
   - articles/Tan_2026_fluorouracil
   - articles/Tanaka_2012_phenytoin
+  - articles/Tanaka_2026_vancomycin
   - articles/Taneja_2019_glpg1690
   - articles/Tang_2019_amoxicillin
   - articles/Tang_2023_polymyxinB
