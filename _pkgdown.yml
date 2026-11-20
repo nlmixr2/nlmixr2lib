@@ -9680,6 +9680,8 @@ navbar:
         href: articles/Izat_2025_aldehyde_oxidase_substrates.html
       - text: "Zaltoprofen (Jang 2023)"
         href: articles/Jang_2023_zaltoprofen.html
+      - text: "Zalutumumab cyno (Krippendorff 2012)"
+        href: articles/Krippendorff_2012_zalutumumab_cyno.html
       - text: "Zanamivir (Zuo 2020)"
         href: articles/Zuo_2020_zanamivir.html
       - text: "Zanubrutinib (Ou 2021)"
@@ -11330,6 +11332,7 @@ articles:
   - articles/KreeftmeijerVegter_2015_levamisole
   - articles/Krekels_2015_paracetamol
   - articles/Kretsos_2014_olokizumab
+  - articles/Krippendorff_2012_zalutumumab_cyno
   - articles/Krishna_2011_anacetrapib
   - articles/Krishnatry_2021_molibresib
   - articles/Kroemer_2024_ceftazidime_avibactam_fosfomycin
