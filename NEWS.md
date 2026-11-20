@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lebedeva 2012 ErbB2/3 signalling network QSP with pertuzumab ([doi:10.1016/j.ejps.2011.10.026](https://doi.org/10.1016/j.ejps.2011.10.026)) -- in vitro, PE04 ovarian carcinoma cell line stimulated with heregulin-beta.
+- Add Kamath 2012 anti-oxidized-LDL IgG1, free and total ([doi:10.1371/journal.pone.0045116](https://doi.org/10.1371/journal.pone.0045116)) -- healthy cynomolgus monkeys.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
