@@ -319,13 +319,21 @@ addFileToModelDb <- function(dir, file, modeldb) {
 
   # Convention check. Error-severity issues are accumulated and abort
   # `buildModelDb()` once every model has been visited, so one run reports
-  # every offending model instead of one per rebuild.
+  # every offending model instead of one per rebuild. An error raised by the
+  # checker itself is not "no issues": it propagates with the model named, so
+  # the caller records the file as a failure and the model is not cached as
+  # checked.
   issues <- tryCatch(
     suppressWarnings(checkModelConventions(mod, verbose = FALSE)),
-    error = function(e) NULL
+    error = function(e) {
+      stop(
+        sprintf("checkModelConventions() raised an error for %s: %s", modelName, conditionMessage(e)),
+        call. = FALSE
+      )
+    }
   )
   errors <- NULL
-  if (!is.null(issues) && nrow(issues) > 0) {
+  if (nrow(issues) > 0) {
     n_err <- sum(issues$severity == "error")
     n_warn <- sum(issues$severity == "warning")
     if (n_err > 0) {

@@ -270,6 +270,8 @@
 
 - Add Chiu 2014 trichloroethylene multi-metabolite mouse PBPK ([doi:10.1289/ehp.1307623](https://doi.org/10.1289/ehp.1307623)) -- B6C3F1/J mice given a single oral gavage (oxidative and glutathione-conjugation metabolites).
 
+- `buildModelDb()` stops when `checkModelConventions()` itself raises an error for a model. The error used to be read as "no convention issues", so a model the checker could not examine was cached and published as if it had passed. The build now lists the file with `checkModelConventions() raised an error for <model>: <message>` among the files that could not be loaded, and does not cache the model.
+
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
 - Add Zhu 2026 ciprofol PK/PD ([doi:10.3389/fphar.2026.1764590](https://doi.org/10.3389/fphar.2026.1764590)) -- elderly (>= 65 years) Chinese surgical patients under general anaesthesia.
