@@ -140,7 +140,8 @@ Juma_2026_lumefantrine <- function() {
         "1 to 2 at 36 h. Decomposed inside model() into binary indicators oc1",
         "and oc2 that multiplex the inter-occasion etas on ka and on relative",
         "bioavailability, exactly as a NONMEM $PK block would",
-        "(rxode2 parses but cannot simulate the eta ~ var | occ syntax).",
+        "(the eta ~ var | occ syntax shares one draw per occasion when no",
+        "subject has two or more occasions).",
         "Any OCC value other than 1 or 2 sets both indicators to zero and so",
         "removes the inter-occasion random effects entirely; that is the",
         "convenient way to simulate an IOV-free typical profile.",
@@ -341,9 +342,10 @@ Juma_2026_lumefantrine <- function() {
     # Inter-occasion variability across the two pooled dose occasions
     # (Methods 2.10). One eta per occasion, all occasions sharing a single
     # variance -- the NONMEM '$OMEGA BLOCK(1) SAME' idiom -- so the second
-    # occasion's variance is fixed to the first. rxode2 parses but cannot
-    # simulate the native 'eta ~ var | occ' multi-level syntax, so the
-    # occasion-indicator expansion in model() is used instead.
+    # occasion's variance is fixed to the first. The native 'eta ~ var | occ'
+    # multi-level syntax shares one draw per occasion when no subject has two
+    # or more occasions, so the occasion-indicator expansion in model() is used
+    # instead.
     etaiov_ka_1 ~ 0.7830336       # Juma 2026 Table 2: Ka (IOV) = 109% CV (RSE 11.6%; SIR median 111, 95% CI 85.0-135; shrinkage 60.4%)
     etaiov_ka_2 ~ fix(0.7830336)  # same variance as occasion 1 by construction ('$OMEGA BLOCK(1) SAME')
 
@@ -363,8 +365,8 @@ Juma_2026_lumefantrine <- function() {
   model({
     # Occasion indicators for the two pooled dose occasions (Methods 2.10:
     # doses 1-3 and doses 4-6). This expansion is what a NONMEM $PK block
-    # writes out, and it is required because rxode2 cannot simulate the
-    # native multi-level IOV syntax.
+    # writes out; the native multi-level IOV syntax shares one draw per
+    # occasion when no subject has two or more occasions.
     oc1 <- (OCC == 1)
     oc2 <- (OCC == 2)
     iov_ka     <- oc1 * etaiov_ka_1     + oc2 * etaiov_ka_2

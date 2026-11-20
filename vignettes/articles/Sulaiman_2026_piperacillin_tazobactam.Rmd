@@ -828,14 +828,15 @@ every 6 h as a continuous infusion specifically for creatinine clearances of
   "the population median value", while Table 1 reports the cohort median as
   70 mL/min (mean 75, SD 40). The implemented value 71 is used. The 1 mL/min
   difference changes a typical clearance by 1.2%.
-* **Between-occasion variability encoding.** rxode2 parses but cannot simulate
-  the multi-level `eta ~ var | occ` syntax, so the two occasions are expanded
-  into explicit indicator-selected eta slots (`etaiov_*_1`, `etaiov_*_2`) with
-  the second occasion's variance `fixed()` to the first. This is the same
-  shared-magnitude structure NONMEM writes as `$OMEGA BLOCK(1) SAME`, and it
-  reproduces the single per-parameter magnitude Table 2 reports. Loading the
-  model emits a `some etas defaulted to non-mu referenced` warning; that is the
-  accepted cost of the idiom and affects estimation only, not simulation.
+* **Between-occasion variability encoding.** The multi-level `eta ~ var | occ`
+  syntax shares one draw per occasion when no subject has two or more
+  occasions, so the two occasions are expanded into explicit indicator-selected
+  eta slots (`etaiov_*_1`, `etaiov_*_2`) with the second occasion's variance
+  `fixed()` to the first. This is the same shared-magnitude structure NONMEM
+  writes as `$OMEGA BLOCK(1) SAME`, and it reproduces the single per-parameter
+  magnitude Table 2 reports. Loading the model emits a
+  `some etas defaulted to non-mu referenced` warning; that is the accepted cost
+  of the idiom and affects estimation only, not simulation.
 * **Supplementary material was not available when this model was built.**
   Tables S2, S6, S7, S8, S9 and Texts
   S1, S3, S4, S5 are referenced by the paper but were not retrievable

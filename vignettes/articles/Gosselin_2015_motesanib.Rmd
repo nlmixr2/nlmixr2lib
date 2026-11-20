@@ -746,14 +746,14 @@ stopifnot(
   downstream user who needs more occasions can extend the `etaiov_cl_*` slots
   using the same expansion.
 * **IOV is written as an occasion-indicator expansion, not as `eta ~ var | OCC`.**
-  rxode2 parses the multi-level IOV syntax but cannot simulate from it (it
-  emits an unbound `THETA`), and every model in this library must solve. The
-  expansion carries the estimated variance on occasion 1 and repeats it as a
-  fixed value on occasion 2, which is the literal translation of a NONMEM
-  `$OMEGA BLOCK(1) SAME`. It produces an expected "some etas defaulted to
-  non-mu referenced" warning at model-build time; that warning affects
-  estimation only, not simulation, and is shared with the existing library
-  models that use the same idiom.
+  The multi-level IOV syntax emits an unbound `THETA` when the data hold a single
+  occasion and shares one draw per occasion when no subject has two or more, and
+  every model in this library must solve for any data shape. The expansion carries
+  the estimated variance on occasion 1 and repeats it as a fixed value on occasion
+  2, which is the literal translation of a NONMEM `$OMEGA BLOCK(1) SAME`. It
+  produces an expected "some etas defaulted to non-mu referenced" warning at
+  model-build time; that warning affects estimation only, not simulation, and is
+  shared with the existing library models that use the same idiom.
 * **The M4 CL-V correlation is not encoded.** Gosselin 2015 Results describes
   the retained M4 model as "a 1-compartment model with a correlation between
   CLM4/FM4 and VM4/FM4", but neither Table 3 nor the supplement prints the

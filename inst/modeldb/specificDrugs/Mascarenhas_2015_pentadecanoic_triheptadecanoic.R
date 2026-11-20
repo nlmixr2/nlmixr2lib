@@ -229,8 +229,9 @@ Mascarenhas_2015_pentadecanoic_triheptadecanoic <- function() {
     # bioavailability, for each analyte. Encoded as the
     # occasion-indicator expansion (one eta per occasion, occasions
     # 2-4 fixed to the occasion-1 magnitude to represent NONMEM
-    # $OMEGA BLOCK(1) SAME), because rxode2 parses but cannot SIMULATE
-    # the `eta ~ var | occ` multi-level syntax. Up to 4 occasions
+    # $OMEGA BLOCK(1) SAME), because the `eta ~ var | occ` multi-level syntax
+    # shares one draw per occasion when no subject has two or more occasions.
+    # Up to 4 occasions
     # (Timing of Enzymes Protocol).
     #
     # Each variance below is confirmed by the printed BOV percentage:

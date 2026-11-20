@@ -13,9 +13,11 @@
 #' naming a compartment (`tad(cmt)`, `podo(cmt)`, `tafd(cmt)`, ...) names one
 #' the model is dosed into (its `dosing` metadata, or else `depot` and/or
 #' `central`); that every ODE state can leave zero, through an input term in
-#' its `d/dt()`, a non-zero initial condition, or a dose; and that no model()
+#' its `d/dt()`, a non-zero initial condition, or a dose; that no model()
 #' statement is a bare expression (an operator-led continuation line that R
-#' parses as a statement of its own).
+#' parses as a statement of its own); and, in a source tree, that the article
+#' of a model with a below-subject `eta ~ variance | G` eta calls the internal
+#' `assertDrawsPerLevel()` on its simulation (category `nesting_assertion`).
 #'
 #' When any issue of severity `"error"` or `"warning"` is found, a `warning()`
 #' is emitted whose message directs the user to call this function for the
@@ -57,11 +59,16 @@ checkModelConventions <- function(model, verbose = TRUE) {
   invisible(issues)
 }
 
-.checkOneModel <- function(model, verbose) {
+# `packageDir` is the source directory of the package whose inst/modeldb holds
+# the model, when the caller knows it; otherwise .resolveModel() finds it.
+.checkOneModel <- function(model, verbose, packageDir = NULL) {
   resolved <- .resolveModel(model)
   ui <- resolved$ui
   model_name <- resolved$name
   conv <- .nlmixr2libConventions()
+  if (is.null(packageDir)) {
+    packageDir <- resolved$packageDir
+  }
 
   checks <- list(
     .checkFileMetadata(ui, conv),
@@ -84,7 +91,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkCentralConcentrationName(ui, conv),
     .checkBareStatements(ui, conv),
     .checkDoseTimingCompartments(ui, conv),
-    .checkDeadStates(ui, conv)
+    .checkDeadStates(ui, conv),
+    .checkNestingAssertion(ui, model_name, packageDir)
   )
   issues <- do.call(rbind, checks)
   if (is.null(issues) || nrow(issues) == 0) {
@@ -106,7 +114,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
     checkmate::assertCharacter(model, len = 1, any.missing = FALSE, min.chars = 1)
     fun <- readModelDb(model)
     ui <- nlmixr2est::nlmixr(fun)
-    return(list(ui = ui, name = model))
+    return(list(ui = ui, name = model, packageDir = .packageDirOfModelFile(.modelDbFile(model))))
   }
   if (inherits(model, "rxUi")) {
     # `ui$modelName` is a single character string, or NULL for an anonymous
@@ -115,7 +123,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
     if (is.null(nm)) {
       nm <- "<rxUi>"
     }
-    return(list(ui = model, name = nm))
+    # buildModelDb() tags the ui with the source tree its file is in.
+    return(list(ui = model, name = nm, packageDir = attr(model, "nlmixr2libPackageDir", exact = TRUE)))
   }
   if (is.function(model)) {
     ui <- nlmixr2est::nlmixr(model)
@@ -1712,16 +1721,9 @@ checkModelConventions <- function(model, verbose = TRUE) {
 .reservedDataItems <- "DV"
 
 # Data columns that ini() uses as random-effect nesting levels
-# (`eta ~ var | OCC`). In rxode2's iniDf an eta row carries its level in
-# `condition` ("id" for between-subject etas); residual-error rows also use
-# `condition`, for the endpoint name, so only eta rows are read.
+# (`eta ~ var | OCC`); see .nestedEtaRows().
 .etaNestingColumns <- function(ui) {
-  iniDf <- ui$iniDf
-  if (is.null(iniDf) || !all(c("neta1", "condition") %in% names(iniDf))) {
-    return(character())
-  }
-  lev <- iniDf$condition[!is.na(iniDf$neta1)]
-  unique(setdiff(lev[!is.na(lev)], "id"))
+  unique(.nestedEtaRows(ui)$group)
 }
 
 # Issue #481: a clearance that depends on time must say so in its parameter
@@ -3174,6 +3176,248 @@ checkModelConventions <- function(model, verbose = TRUE) {
           st,
           "(0) <- ...`. Otherwise it is unused and can be removed."
         )
+      )
+    )
+  }
+  issues
+}
+
+# Nested random effects (`eta ~ variance | G`).
+#
+# rxode2 draws such an eta per subject and level of G only when some subject has
+# two or more levels. With one level per subject, G is read as a level ABOVE the
+# subject and every subject on a level shares one draw, without an error or a
+# warning (see assertDrawsPerLevel()). A model whose G is an occasion or a
+# catheter therefore needs its article to assert the draws on its own simulation:
+# the rule finds the article through the model's `vignette` field and requires a
+# call of assertDrawsPerLevel() whose literal `eta` and `by` arguments cover the
+# model's eta and group. The call runs when the article renders; the rule checks
+# that it is there. What the rule does not see: which simulation the call is
+# given (one call covers every model of the article that has the same eta and
+# group, as the ElKhateeb variants share one article that simulates only the
+# base model with random effects), and a call that never runs (inside a function
+# the article does not call, or under `if (FALSE)`).
+#
+# The rule applies to a model that lives in the `inst/modeldb` of a package
+# source tree, and reads the articles of that tree (`vignettes/articles`). A
+# model given as a function, or found in an installed package, belongs to no
+# source tree and is not checked; a source tree without `vignettes/articles`
+# skips the rule with a message.
+#
+# (model, G) pairs where G is a level above the subject on purpose, so that one
+# draw per level is the model; each with the evidence for it. Anything not
+# listed is below-subject.
+.nestingAboveSubjectGroups <- data.frame(
+  model = c("Qi_2024_vosoritide", "Rosenborg_2025_salmeterol"),
+  group = c("SIDN", "SIDN"),
+  evidence = c(
+    paste(
+      "Qi 2024 Sect. 3.2: SIDN is the study identity number; StudyCL and StudyV",
+      "are an additional hierarchical level of effect above the subject"
+    ),
+    "Rosenborg 2025: SIDN maps to the STUD column, studies 1 to 3, one study per subject"
+  ),
+  stringsAsFactors = FALSE
+)
+
+# The `eta ~ variance | G` etas of a model, one row per (eta, G). Residual-error
+# rows also carry a `condition` (the endpoint), so only eta rows are read, and
+# only the diagonal of a correlated block.
+.nestedEtaRows <- function(ui) {
+  empty <- data.frame(eta = character(), group = character(), stringsAsFactors = FALSE)
+  iniDf <- ui$iniDf
+  if (is.null(iniDf) || !all(c("name", "neta1", "neta2", "condition") %in% names(iniDf))) {
+    return(empty)
+  }
+  keep <- !is.na(iniDf$neta1) & !is.na(iniDf$neta2) & iniDf$neta1 == iniDf$neta2
+  keep <- keep & !is.na(iniDf$condition) & iniDf$condition != "id"
+  if (!any(keep)) {
+    return(empty)
+  }
+  data.frame(eta = iniDf$name[keep], group = iniDf$condition[keep], stringsAsFactors = FALSE)
+}
+
+# The source directory of the package whose `inst/modeldb` holds the model file
+# `file`, or NULL when the file is not in one (a model of the user's own, or one
+# of an installed package, where `inst/` is flattened into the package root).
+.packageDirOfModelFile <- function(file) {
+  if (is.null(file) || length(file) != 1L || is.na(file) || !nzchar(file)) {
+    return(NULL)
+  }
+  path <- normalizePath(file, winslash = "/", mustWork = FALSE)
+  if (!grepl("/inst/modeldb/", path, fixed = TRUE)) {
+    return(NULL)
+  }
+  dir <- sub("^(.*)/inst/modeldb/.*$", "\\1", path)
+  if (file.exists(file.path(dir, "DESCRIPTION"))) dir else NULL
+}
+
+# The directory of the internal articles of the package source tree `packageDir`,
+# or NULL when it has none.
+.nestingArticleDir <- function(packageDir) {
+  dir <- file.path(packageDir, "vignettes", "articles")
+  if (dir.exists(dir)) dir else NULL
+}
+
+# The strings of a literal character vector (`"a"`, `c("a", "b")`), or NULL.
+.literalStrings <- function(e) {
+  if (is.character(e) && length(e) > 0L && !anyNA(e)) {
+    return(e)
+  }
+  if (is.call(e) && identical(e[[1L]], as.name("c")) && length(e) > 1L) {
+    parts <- lapply(as.list(e)[-1L], .literalStrings)
+    if (all(lengths(parts) > 0L)) {
+      return(unlist(parts, use.names = FALSE))
+    }
+  }
+  NULL
+}
+
+# Every assertDrawsPerLevel() call in the running chunks of an article, with its
+# `eta` and `by` where both are literal (NULL otherwise).
+.articleDrawCalls <- function(chunks) {
+  acc <- new.env(parent = emptyenv())
+  acc$calls <- list()
+  for (ch in chunks) {
+    .walkCalls(ch, function(e) {
+      if (!identical(.calledName(e), "assertDrawsPerLevel")) {
+        return(invisible(NULL))
+      }
+      matched <- tryCatch(match.call(assertDrawsPerLevel, e), error = function(err) NULL)
+      eta <- if (is.null(matched)) NULL else .literalStrings(matched$eta)
+      by <- if (is.null(matched)) NULL else .literalStrings(matched$by)
+      if (length(by) != 1L) {
+        by <- NULL
+      }
+      acc$calls[[length(acc$calls) + 1L]] <- list(eta = eta, by = by, call = paste(deparse(e), collapse = " "))
+    })
+  }
+  acc$calls
+}
+
+# Why a nested eta has no assertion, or NULL when its article has one and reads
+# in full.
+.nestingProblem <- function(eta, group, calls, unreadable) {
+  covered <- any(vapply(
+    calls,
+    function(cl) !is.null(cl$eta) && !is.null(cl$by) && identical(cl$by, group) && eta %in% cl$eta,
+    logical(1L)
+  ))
+  broken <- if (length(unreadable) > 0L) {
+    paste(sprintf("the chunk at line %d %s", unreadable, names(unreadable)), collapse = "; ")
+  }
+  if (covered) {
+    return(if (!is.null(broken)) paste0(broken, ", so the article cannot be read in full"))
+  }
+  nonliteral <- sum(vapply(calls, function(cl) is.null(cl$eta) || is.null(cl$by), logical(1L)))
+  missing <- if (length(calls) == 0L) {
+    "the article has no assertDrawsPerLevel() call"
+  } else {
+    sprintf(
+      "no assertDrawsPerLevel() call in the article has `eta` containing \"%s\" and `by = \"%s\"`%s",
+      eta,
+      group,
+      if (nonliteral > 0L) {
+        sprintf(" (%d call(s) have an `eta` or `by` that is not a string literal)", nonliteral)
+      } else {
+        ""
+      }
+    )
+  }
+  paste(c(missing, broken), collapse = "; ")
+}
+
+# An `info` issue for each below-subject eta of a model whose article the rule
+# could not read, so that the caller (buildModelDb() in particular, whose
+# workers cannot message the build session) can say that the rule did not run.
+.nestingNotChecked <- function(nested, reason) {
+  do.call(
+    rbind,
+    lapply(nested$eta, function(eta) .issue("nesting_assertion", "info", eta, paste("not checked:", reason)))
+  )
+}
+
+.checkNestingAssertion <- function(ui, model_name, packageDir = NULL) {
+  issues <- .emptyIssues()
+  nested <- .nestedEtaRows(ui)
+  if (nrow(nested) == 0L) {
+    return(issues)
+  }
+  above <- .nestingAboveSubjectGroups
+  nested <- nested[!(paste(model_name, nested$group) %in% paste(above$model, above$group)), , drop = FALSE]
+  if (nrow(nested) == 0L) {
+    return(issues)
+  }
+  if (is.null(packageDir)) {
+    return(.nestingNotChecked(
+      nested,
+      "the model is not in the inst/modeldb of a package source tree, so the article that asserts its draws cannot be found"
+    ))
+  }
+  articleDir <- .nestingArticleDir(packageDir)
+  if (is.null(articleDir)) {
+    return(.nestingNotChecked(
+      nested,
+      paste0(packageDir, " has no vignettes/articles, so the article that asserts the draws cannot be read")
+    ))
+  }
+  vignette <- ui$meta$vignette
+  has_vignette <- is.character(vignette) && length(vignette) == 1L && !is.na(vignette) && nzchar(vignette)
+  article <- NA_character_
+  if (has_vignette) {
+    candidates <- file.path(c(articleDir, dirname(articleDir)), paste0(vignette, ".Rmd"))
+    article <- candidates[file.exists(candidates)][1L]
+  }
+  suggestion <- paste(
+    "In the model's article, call",
+    "`nlmixr2lib:::assertDrawsPerLevel(sim, eta = \"<eta>\", by = \"<G>\")` on the",
+    "simulation, with `eta` and `by` as string literals. rxode2 shares one draw per",
+    "level, without a message, when no subject has two or more levels of <G>."
+  )
+  problem <- NULL
+  calls <- list()
+  unreadable <- integer()
+  if (is.na(article)) {
+    problem <- if (!has_vignette) {
+      "the model has no `vignette` field, so no article asserts the draws"
+    } else {
+      sprintf(
+        "the article `%s.Rmd` named by the model's `vignette` field is not in vignettes/articles or vignettes",
+        vignette
+      )
+    }
+  } else {
+    parsed <- tryCatch(.articleExprs(article), error = function(e) NULL)
+    if (is.null(parsed)) {
+      problem <- sprintf("the article `%s` could not be read", basename(article))
+    } else {
+      calls <- .articleDrawCalls(parsed$chunks)
+      unreadable <- parsed$unreadable
+    }
+  }
+  for (i in seq_len(nrow(nested))) {
+    why <- if (!is.null(problem)) {
+      problem
+    } else {
+      .nestingProblem(nested$eta[[i]], nested$group[[i]], calls, unreadable)
+    }
+    if (is.null(why)) {
+      next
+    }
+    issues <- rbind(
+      issues,
+      .issue(
+        "nesting_assertion",
+        "error",
+        nested$eta[[i]],
+        sprintf(
+          "`%s ~ ... | %s` is drawn per level of %s: %s.",
+          nested$eta[[i]],
+          nested$group[[i]],
+          nested$group[[i]],
+          why
+        ),
+        suggestion
       )
     )
   }
