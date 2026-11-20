@@ -1,0 +1,696 @@
+---
+title: "ErbB2/3 signalling network with pertuzumab (Lebedeva 2012)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ErbB2/3 signalling network with pertuzumab (Lebedeva 2012)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>",
+  fig.width = 7, fig.height = 4.5, dpi = 96
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+model_name <- "Lebedeva_2012_ErbB23signaling_qsp"
+mod_fun <- readModelDb(model_name)
+mod <- rxode2::rxode2(mod_fun)
+meta <- mod_fun()
+```
+
+* Citation: `r meta$reference`
+* Article: <https://doi.org/10.1016/j.ejps.2011.10.026>
+  (open access: <https://pmc.ncbi.nlm.nih.gov/articles/PMC3398788/>)
+* Supplementary material (Additional Files 1-4: model schemes, ODE system and
+  species list; Table S2 of nominal parameter values; GSA supplement; SBML
+  file of the model) is linked from the article page.
+
+Lebedeva et al. developed a global sensitivity analysis (GSA) procedure for
+signalling-network models and demonstrated it on their kinetic model of
+heregulin-beta (HRG) induced ErbB2/ErbB3 signalling in the PE04 ovarian
+carcinoma cell line, a modification of the Faratian 2009 model. The model
+covers HRG binding to ErbB3, ErbB2/ErbB3 heterodimerisation and
+transphosphorylation, the Shc / Grb2-Sos / Ras / Raf / MEK / ERK cascade, PI3K
+activation and the PIP2/PIP3 cycle, the PTEN catalytic and phosphorylation
+cycles, two-step Akt phosphorylation by PDK1, PP2A as the shared phosphatase of
+phospho-MEK and phospho-Akt, inhibition of active Raf by ppAkt, and two-step
+binding of the anti-ErbB2 antibody pertuzumab (2C4). The paper's key readout is
+the area under the 60-minute time course of phosphorylated Akt, normalised by
+its theoretical maximum, in the absence (`S_pAkt`) and presence
+(`S_pAktPer`) of pertuzumab.
+
+```{r structure}
+data.frame(
+  quantity = c("ODE states", "reaction rates", "ini() parameters"),
+  n = c(length(mod$state), 56L, length(mod$theta))
+) |>
+  knitr::kable()
+```
+
+The 54 ODE states are the 53 species of the authors' SBML file plus
+`auc_pakt`, the running integral of pAkt. The paper reports "54 ODEs and 91
+parameters": the 91 are the 89 entries of Supplementary Table S2 plus the two
+fixed external concentrations (HRG and pertuzumab), which enter here as doses.
+
+# Population
+
+```{r population}
+str(meta$population)
+```
+
+The model describes one cell line in culture, not a population of subjects. It
+was calibrated to western-blot time courses of pErbB3, pAkt and pErk in PE04
+cells stimulated with 1 nM heregulin-beta, with and without 100 nM pertuzumab
+(Faratian 2009 data; Additional File 1, Fig. S6). The model is deterministic:
+the paper reports no between-cell variability and no residual-error model.
+
+# Source trace
+
+| Model element | Source |
+|---|---|
+| Species, reactions and rate laws | SBML file (Additional File 4), cross-checked against the system of ODEs S1.1-S1.54 and rate equations V1-V58 of Additional File 1 |
+| Species names and abbreviations | Additional File 1, Supplementary Table S1 |
+| All 89 nominal parameter values (13 total protein concentrations, 76 kinetic constants) | Supplementary Table S2 (Additional File 2), column 'Nominal parameter value' |
+| `k_9`, `k57`, `Kd_57`, `k58`, `Kd_58`, `bpV`, `LY` | SBML file parameters (not in Table S2; inactive because `bpV = LY = 0`) |
+| Resting PTEN / pPTEN split | SBML initial concentrations (4.5644 / 25.4356 nM), reproduced in `model()` as the steady state of reactions V35/V36 at total PTEN |
+| HRG dose 3000 (model units) | SBML initial concentration of HRG; corresponds to 1 nM HRG in the medium (Methods, Cell culture) |
+| Pertuzumab dose 300000 (model units) | 100 nM pertuzumab in the medium (Methods, Cell culture) on the same medium-to-cytoplasm scale as HRG; the curated BioModels entry BIOMD0000000424 of the predecessor model (Faratian 2009) gives Per = 300000 |
+| pAkt definition | Methods S.1.4: (pAkt-PIP3 + ppAkt-PIP3 + pAkt-PIP3-PP2A + ppAkt-PIP3-PP2A) / Akt_tot |
+| `S_pAkt,n` = integral of pAkt over 0-T divided by T, T = 60 min | Methods S.3.1 |
+| Parameter ranges for the GSA (uniform between Min and Max) | Table S2 columns 'Min' / 'Max'; uniform linear sampling per Additional File 3, Fig. S7 |
+
+Reaction-rate mapping (Additional File 1 numbering V1-V58; SBML ids R1-R44):
+
+```{r reaction-map}
+rx <- tibble::tribble(
+  ~paper, ~sbml, ~reaction,
+  "V1", "R1", "ErbB3 + HRG <-> E3H",
+  "V2", "R2", "E3H + ErbB2 <-> E23H",
+  "V3", "R3", "E23H <-> pE23H (transphosphorylation)",
+  "V4", "R4", "pE23H -> E23H (dephosphorylation, Michaelis-Menten)",
+  "V5-V10", "R5-R10", "Shc binding, phosphorylation, Grb2-Sos (GS) recruitment and release; pShc dephosphorylation",
+  "V11-V12", "R11-R12", "Ras activation by pShc-GS; Ras deactivation",
+  "V13-V14", "R13-R14", "Raf activation by Ras-GTP; Raf* deactivation by ppAkt-PIP3 and by E_raf",
+  "V15-V22", "R15-R18_3", "MEK double phosphorylation by Raf*; pMEK / ppMEK dephosphorylation by PP2A",
+  "V23-V26", "R19-R22", "ERK double phosphorylation by ppMEK; pERK / ppERK dephosphorylation",
+  "V27-V30", "R23-R26", "PI3K recruitment to pE23H, activation, release; PI3K* inactivation",
+  "V31, V55, V56", "R27_1, R41, R42", "PIP2 phosphorylation to PIP3 by PI3K*",
+  "V32-V34", "R28_1-R28_3", "PTEN catalytic cycle (PIP3 -> PIP2)",
+  "V35-V36", "R28_4-R28_5", "PTEN phosphorylation / pPTEN dephosphorylation (Michaelis-Menten)",
+  "V39-V40, V44", "R29, R30, R32", "Akt binding to PIP3; two-step phosphorylation by PDK1",
+  "V41-V43, V45-V47", "R31_1-R31_3, R33_1-R33_3", "pAkt / ppAkt dephosphorylation by PP2A",
+  "V48", "R34", "pE23H degradation",
+  "V49-V50", "R35-R36", "Pertuzumab binding to ErbB2: loose then tight complex",
+  "V51-V54", "R37-R40", "Final ErbB3-HRG and ErbB2/3 complex forms",
+  "V57-V58", "R43-R44", "PTEN / PI3K binding with bpV(pic) / LY294002 (inactive)"
+)
+rx |>
+  rename("Additional File 1" = paper, "SBML" = sbml, "Reaction" = reaction) |>
+  knitr::kable()
+```
+
+Parameters, with labels and units from the model file (all values are
+Supplementary Table S2 unless the table above says otherwise):
+
+```{r param-table}
+ini_df <- mod$iniDf
+ini_df |>
+  transmute(
+    parameter = name,
+    value = ifelse(grepl("^lk", name), signif(exp(est), 4), signif(est, 4)),
+    scale = ifelse(grepl("^lk", name), "log (value shown back-transformed)", "linear"),
+    fixed = fix,
+    label = label
+  ) |>
+  rename(
+    "Parameter" = parameter, "Value" = value, "Scale" = scale,
+    "Fixed" = fixed, "Description (units)" = label
+  ) |>
+  knitr::kable()
+```
+
+## Dimensional analysis
+
+Time is in seconds and every concentration in nM. Each rate is in nM/s:
+
+| Rate-law form | Parameter units | Example |
+|---|---|---|
+| `k * (A * B - Kd * AB)` | `k` 1/(nM*s), `Kd` nM | V1, V2, V5, V7, V27, V31, V32, V39, V45, V49 |
+| `k * (A - Ke * B)` | `k` 1/s, `Ke` unitless | V3, V54; V28 with `k_28` |
+| `k * A - k_r * B` | both 1/s | V6, V50 |
+| `k * A` | 1/s | V17, V18, V21, V22, V30, V33, V34, V42, V43, V46-V48, V51, V53, V55, V56 |
+| `V * S / (K + S)` | `V` nM/s, `K` nM | V4, V10, V12, V24, V26, V35, V36, V40, V44 |
+| `k * E * S / (K + S)` | `k` 1/s, `K` nM | V11, V13, V15, V19, V23, V25 |
+| `k * A * B - Kd * AB` (SBML form) | `k` 1/(nM*s), `Kd` 1/s | V16, V41 (see Assumptions and deviations) |
+
+# Simulation of the calibration experiment
+
+HRG (1 nM in the medium, 3000 in model units) is added at time zero, alone or
+together with pertuzumab (100 nM in the medium, 300000 in model units). The
+experiments added pertuzumab 15 minutes before HRG; the effect of that
+pre-incubation on the model is shown further below.
+
+```{r sim-baseline}
+obs_times <- c(seq(0, 120, by = 2), seq(130, 3600, by = 10))
+ev_hrg <- et(amt = 3000, cmt = "hrg", time = 0) |>
+  et(obs_times, cmt = "akt")
+ev_per <- et(amt = 300000, cmt = "per", time = 0) |>
+  et(amt = 3000, cmt = "hrg", time = 0) |>
+  et(obs_times, cmt = "akt")
+
+sim_hrg <- rxSolve(mod, ev_hrg, returnType = "data.frame") |>
+  mutate(condition = "HRG")
+sim_per <- rxSolve(mod, ev_per, returnType = "data.frame") |>
+  mutate(condition = "HRG + pertuzumab")
+sim <- bind_rows(sim_hrg, sim_per)
+```
+
+Additional File 1 Fig. S6 shows the calibration: total pErbB3, total pAkt and
+total pErk, each normalised to its maximum without pertuzumab. The same
+normalisation of the packaged model:
+
+```{r fig-s6, fig.cap = "Model time courses corresponding to Additional File 1 Fig. S6 of Lebedeva 2012 (lines only; the figure's western-blot data are not reproduced). Each readout is normalised to its maximum in the absence of pertuzumab."}
+norm <- sim |>
+  select(time, condition, tE3P, pAkt, tERKP) |>
+  pivot_longer(c(tE3P, pAkt, tERKP), names_to = "readout", values_to = "value") |>
+  group_by(readout) |>
+  mutate(value = value / max(value[condition == "HRG"])) |>
+  ungroup() |>
+  mutate(readout = factor(
+    readout,
+    levels = c("tE3P", "pAkt", "tERKP"),
+    labels = c("A: total pErbB3", "B: total pAkt", "C: total pErk")
+  ))
+ggplot(norm, aes(time / 60, value, colour = condition)) +
+  geom_line() +
+  facet_wrap(~readout) +
+  scale_colour_manual(values = c("HRG" = "black", "HRG + pertuzumab" = "blue")) +
+  labs(x = "Time (min)", y = "Normalised to maximum without pertuzumab", colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r s-pakt}
+s_pakt <- sim |>
+  filter(time == 3600) |>
+  transmute(condition, S_pAkt_n = auc_pakt / 3600)
+knitr::kable(s_pakt, digits = 4)
+stopifnot(
+  # Pertuzumab must lower the integrated pAkt signal: the drug sequesters
+  # ErbB2 and is the paper's reference inhibitor. A sign error in V49/V50 or
+  # a dose in the wrong state would leave the two equal or invert them.
+  s_pakt$S_pAkt_n[s_pakt$condition == "HRG + pertuzumab"] <
+    0.6 * s_pakt$S_pAkt_n[s_pakt$condition == "HRG"],
+  # Methods S.1.5: parameter sets with S_pAkt,n below 0.01 were excluded as
+  # implausible, so the nominal set must clear that bar.
+  s_pakt$S_pAkt_n[s_pakt$condition == "HRG"] > 0.01
+)
+```
+
+# Mechanistic checks
+
+## Resting steady state and the PTEN initial split
+
+Before HRG is added every reaction is at rest. The free PTEN / pPTEN split is
+computed in `model()` from total PTEN as the steady state of V35/V36; at the
+Table S2 values it must reproduce the SBML initial concentrations.
+
+```{r rest}
+ev_rest <- et(c(0, 600, 1800, 3600), cmt = "akt")
+rest <- rxSolve(mod, ev_rest, returnType = "data.frame", atol = 1e-12, rtol = 1e-12)
+state_cols <- setdiff(mod$state, "auc_pakt")
+drift <- max(abs(as.matrix(rest[, state_cols]) -
+  matrix(unlist(rest[1, state_cols]), nrow(rest), length(state_cols), byrow = TRUE)))
+knitr::kable(data.frame(
+  quantity = c("PTEN at t = 0 (nM)", "pPTEN at t = 0 (nM)", "max |state drift| over 60 min without HRG (nM)"),
+  model = c(rest$pten[1], rest$ptenp[1], drift),
+  SBML = c(4.56440422583731, 25.4355957741627, 0)
+), digits = 8)
+stopifnot(
+  abs(rest$pten[1] - 4.56440422583731) < 1e-6,
+  abs(rest$ptenp[1] - 25.4355957741627) < 1e-6,
+  drift < 1e-6
+)
+```
+
+## Mass conservation
+
+Each intracellular protein and the phosphoinositol pool is conserved: every
+reaction moves material between forms of the same protein. (The receptors and
+HRG are not conserved, because V48 degrades the phosphorylated dimer.)
+
+```{r conservation}
+ev_cons <- et(amt = 300000, cmt = "per", time = 0) |>
+  et(amt = 3000, cmt = "hrg", time = 0) |>
+  et(c(0, 10, 60, 300, 1200, 3600), cmt = "akt")
+cons <- rxSolve(mod, ev_cons, returnType = "data.frame", atol = 1e-12, rtol = 1e-12) |>
+  transmute(
+    time,
+    Shc = shc + e23hp_shc + e23hp_shcp + e23hp_shgs + shgs + shcp,
+    GS = gs + e23hp_shgs + shgs,
+    Ras = rasgdp + rasgtp,
+    Raf = raf + rafa,
+    MEK = mek + mekp + mekpp + mekp_pp2a + mek_pp2a + mekpp_pp2a,
+    ERK = erk + erkp + erkpp,
+    PP2A = pp2a + mekp_pp2a + mek_pp2a + mekpp_pp2a + akt_pi_p_pp2a +
+      akt_pi_pp_pp2a + akt_pip3_pp2a,
+    PI3K = pi3k + e23hp_pi3k + e23hp_pi3ka + pi3ka + pi3ka_pi + pi3ka_pip3 + pi3k_ly,
+    PI = pi2 + pi3ka_pi + pi3ka_pip3 + pip3 + pten_pip3 + pten_pi + akt_pip3 +
+      akt_pi_p + akt_pi_pp + akt_pi_p_pp2a + akt_pi_pp_pp2a + akt_pip3_pp2a,
+    Akt = akt + akt_pip3 + akt_pi_p + akt_pi_pp + akt_pi_p_pp2a +
+      akt_pi_pp_pp2a + akt_pip3_pp2a,
+    PTEN = pten + ptenp + pten_pip3 + pten_pi + pten_bpv
+  )
+expected <- c(
+  Shc = 100, GS = 100, Ras = 120, Raf = 50, MEK = 10, ERK = 10, PP2A = 15,
+  PI3K = 200, PI = 300, Akt = 50, PTEN = 30
+)
+rel_err <- sapply(names(expected), function(p) max(abs(cons[[p]] / expected[[p]] - 1)))
+knitr::kable(data.frame(total = names(expected), table_s2 = expected, max_rel_error = rel_err),
+  row.names = FALSE, digits = 12
+)
+stopifnot(max(rel_err) < 1e-6)
+```
+
+# Local sensitivity analysis (replicates Figure 6)
+
+The paper's local sensitivity coefficient for parameter `P` is
+`C = [S(P + dP) - S(P - dP)] / S(P) / (2 dP / P)` with `dP = 1%` of `P`
+(Methods, Local sensitivity analysis), computed for the 89 Table S2 parameters
+in the absence and presence of pertuzumab.
+
+```{r lsa-setup}
+theta <- mod$theta
+log_pars <- grep("^lk", names(theta), value = TRUE)
+# The 89 Table S2 parameters; the inhibitor-reaction constants carried from
+# the SBML file are not part of the analysis.
+gsa_pars <- setdiff(names(theta), c("k_9", "k57", "Kd_57", "k58", "Kd_58", "bpV", "LY"))
+# Paper (Table S2 / Fig. 3 / Fig. 6) name of each ini() parameter.
+paper_name <- function(x) sub("_tot$", "", sub("^lk", "k", x))
+
+# Set a parameter to a LINEAR value whichever scale it is stored on.
+set_linear <- function(df, par, value) {
+  if (par %in% log_pars) df[[par]] <- log(value) else df[[par]] <- value
+  df
+}
+linear_value <- function(par) if (par %in% log_pars) exp(theta[[par]]) else theta[[par]]
+
+# S_pAkt,n for every row of a parameter data frame, without or with
+# pertuzumab added at time zero.
+solve_s <- function(pars, with_per, tol = 1e-10) {
+  ev <- et(amt = 3000, cmt = "hrg", time = 0)
+  if (with_per) ev <- et(amt = 300000, cmt = "per", time = 0) |> et(amt = 3000, cmt = "hrg", time = 0)
+  ev <- et(ev, c(0, 3600), cmt = "akt")
+  pars$id <- seq_len(nrow(pars))
+  s <- rxSolve(mod, ev,
+    params = pars, returnType = "data.frame",
+    atol = tol, rtol = tol, maxsteps = 1e6
+  )
+  if (!"id" %in% names(s)) s$id <- s$sim.id
+  s <- s[s$time == 3600, ]
+  s$auc_pakt[match(pars$id, s$id)] / 3600
+}
+```
+
+```{r lsa}
+nominal <- as.data.frame(as.list(theta))
+perturbed <- function(f) {
+  bind_rows(lapply(gsa_pars, function(p) set_linear(nominal, p, linear_value(p) * f)))
+}
+lsa_pars <- bind_rows(nominal, perturbed(1.01), perturbed(0.99))
+lsa_coef <- function(with_per) {
+  s <- solve_s(lsa_pars, with_per)
+  n <- length(gsa_pars)
+  (s[1 + seq_len(n)] - s[1 + n + seq_len(n)]) / s[1] / 0.02
+}
+lsa <- tibble(
+  par = paper_name(gsa_pars),
+  noPer = lsa_coef(FALSE),
+  Per = lsa_coef(TRUE)
+)
+```
+
+Figure 6 shows the 39 most sensitive parameters as colour bins 0.5 wide on a
+-3 to 3 scale. The maintainers digitised the bin of each cell from the
+published colour scale; `fig_upper` is the upper edge of the bin.
+
+```{r fig6-digitised}
+fig6 <- tibble::tribble(
+  ~par, ~noPer_upper, ~Per_upper,
+  "PI", 3.0, 2.0, "k31", 2.0, 1.5, "E3", 1.5, 1.5, "PI3K", 1.5, 1.0,
+  "k28", 1.5, 1.0, "Akt", 1.0, 1.5, "k27", 1.0, 1.0, "E2", 0.5, 1.0,
+  "V40", 0.5, 1.5, "V35", 0.5, 2.5, "k55", 0.5, 0.5, "Kd_32", 0.5, 1.0,
+  "k3", 0.5, 0.5, "K_35", 0.5, 0.5, "k47", 0.5, 0.5, "K4", 0.5, 0.5,
+  "MEK", 0.5, 0.5, "k16", 0.5, 0.5, "k_50", 0.0, 0.5, "k50", 0.0, 0.0,
+  "Kd_49", 0.0, 1.0, "Kd_5", 0.0, 0.5, "k16_cat", 0.0, 0.0, "k32", 0.0, 0.0,
+  "k41", 0.0, 0.0, "Kd_2", 0.0, -0.5, "V4", 0.0, 0.0, "Ke_3", 0.0, 0.0,
+  "K35", 0.0, -0.5, "K_d31", 0.0, 0.0, "Kd_39", 0.0, -0.5, "K40", 0.0, -0.5,
+  "V_35", 0.0, -2.0, "k42", 0.0, -1.0, "PP2A", 0.0, -1.0, "k33", -0.5, -0.5,
+  "k34", -1.0, -0.5, "V30", -1.5, -1.0, "PTEN", -2.0, -1.0
+)
+bin_dist <- function(x, upper) pmax(0, upper - 0.5 - x, x - upper)
+lsa_cmp <- fig6 |>
+  left_join(lsa, by = "par") |>
+  mutate(
+    noPer_bin = sprintf("[%.1f, %.1f]", noPer_upper - 0.5, noPer_upper),
+    Per_bin = sprintf("[%.1f, %.1f]", Per_upper - 0.5, Per_upper),
+    noPer_dist = bin_dist(noPer, noPer_upper),
+    Per_dist = bin_dist(Per, Per_upper)
+  )
+lsa_cmp |>
+  transmute(par, noPer_bin, noPer = round(noPer, 2), Per_bin, Per = round(Per, 2)) |>
+  rename(
+    "Parameter" = par,
+    "Fig. 6 bin, no pertuzumab" = noPer_bin, "Model, no pertuzumab" = noPer,
+    "Fig. 6 bin, pertuzumab" = Per_bin, "Model, pertuzumab" = Per
+  ) |>
+  knitr::kable()
+```
+
+```{r lsa-summary}
+knitr::kable(data.frame(
+  condition = c("no pertuzumab", "pertuzumab"),
+  in_published_bin = c(sum(lsa_cmp$noPer_dist == 0), sum(lsa_cmp$Per_dist == 0)),
+  within_one_bin = c(sum(lsa_cmp$noPer_dist <= 0.5), sum(lsa_cmp$Per_dist <= 0.5)),
+  of = nrow(lsa_cmp)
+))
+rank_desc <- function(x, nm) match(nm, lsa$par[order(-x)])
+stopifnot(
+  # Results: "in the absence of pertuzumab, LSA indicated highest
+  # sensitivity for the total amount of phosphoinositol (PI) and PTEN".
+  rank_desc(lsa$noPer, "PI") == 1,
+  rank_desc(-lsa$noPer, "PTEN") == 1,
+  # Results: with pertuzumab "LSA predicted the most sensitivity for the
+  # parameters of PTEN-phospho-PTEN turnover (V35 and V_35), while the
+  # sensitivity to total PTEN and PI3K dropped".
+  all(sort(rank_desc(abs(lsa$Per), c("V35", "V_35"))) == c(1, 2)),
+  abs(lsa$Per[lsa$par == "PTEN"]) < abs(lsa$noPer[lsa$par == "PTEN"]),
+  abs(lsa$Per[lsa$par == "PI3K"]) < abs(lsa$noPer[lsa$par == "PI3K"])
+)
+```
+
+Every statement the Results make about the local analysis holds for the
+packaged model: without pertuzumab the integrated pAkt is most sensitive to
+total PI (positive) and total PTEN (negative), with ErbB3 among the key
+parameters and high sensitivity to k28, k31, k34 and total PI3K; with
+pertuzumab the PTEN phosphorylation cycle (V35, V_35) dominates and the
+sensitivity to total PTEN and PI3K drops. The bin-by-bin agreement is weaker
+without pertuzumab: Figure 6 shows near-zero coefficients for V40, V35,
+V_35, k42, K40, Kd_39 and PP2A, where the packaged model gives coefficients
+between -1.3 and 1.3. With pertuzumab, V35, V_35, k42, K40 and Kd_39 fall in
+their published bins and V40 sits on its bin edge; PP2A (model -0.3, Figure 6
+between -1.5 and -1) and total Akt do not. The global analysis below
+reproduces Figure 3 for these parameters. The maintainers verified that the packaged model reproduces
+every species trajectory of the authors' SBML file (relative difference below
+1e-7), so the gap is not a transcription error. The conditions behind the
+published local analysis without pertuzumab could not be identified from the
+paper.
+
+# Global sensitivity analysis (replicates Figure 3)
+
+The paper samples 120,000 Sobol points uniformly within the Table S2 bounds
+(Additional File 3, Fig. S7 shows uniform, linear-scale marginals), discards
+sets with `S_pAkt,n < 0.01`, and computes partial rank correlation
+coefficients (PRCC) between each parameter and `S_pAkt,n` or `S_pAktPer,n`. A
+reduced version with 3000 pseudo-random points keeps the render time short;
+the PRCC standard error at this size is about 0.03.
+
+```{r gsa}
+bounds <- tibble::tribble(
+  ~par, ~min, ~max,
+  "E3_tot", 10, 1000, "E2_tot", 10, 1000, "Shc_tot", 10, 1000,
+  "GS_tot", 10, 1000, "RasGDP_tot", 10, 1000, "Raf_tot", 10, 1000,
+  "MEK_tot", 1.01, 1000, "PP2A_tot", 1, 1000, "ERK_tot", 1.01, 1000,
+  "PI3K_tot", 10, 1000, "PI_tot", 10, 1000, "Akt_tot", 10, 1000,
+  "PTEN_tot", 1, 500, "k1", 0.0005, 0.05, "Kd_1", 60, 6000,
+  "k2", 1, 100, "Kd_2", 1, 100, "k3", 0.1, 10, "Ke_3", 0.01, 1,
+  "V4", 1, 100, "K4", 5, 500, "k5", 0.006, 0.6, "Kd_5", 0.1, 10,
+  "k6", 1.2, 120, "k_6", 0.3, 30, "k7", 3.61, 360, "Kd_7", 0.9, 90,
+  "k8", 1.2, 120, "Kd_8", 0.01, 1, "k9", 3.5, 350, "V10", 0.00101, 1,
+  "K10", 34.1, 3400, "k11", 0.6, 60, "K11", 0.018, 1.8, "V12", 0.3, 30,
+  "K12", 0.01, 1, "lk13", 0.1, 10, "K13", 1, 100, "k14", 0.0613, 60,
+  "K14", 5, 500, "k14_1", 0.0601, 6, "K14_1", 5, 500, "E_raf", 0.7, 70,
+  "k15", 0.21, 21, "K15", 0.1, 10, "k16", 0.00602, 6, "Kd_16", 0.1, 1,
+  "k16_cat", 0.501, 50, "k18", 0.501, 6, "k22", 0.501, 6, "k23", 0.12, 12,
+  "K23", 1, 100, "V24", 1, 20, "K24", 1, 100, "k27", 0.3, 30,
+  "Kd_27", 0.1, 10, "k28", 10, 1000, "k29", 1000, 20000,
+  "k_28", 0.00112, 10, "k_29", 0.00112, 100, "V30", 100, 5000,
+  "lk31", 0.003, 0.3, "K_d31", 10, 1000, "k32", 1000, 10000,
+  "Kd_32", 0.001, 0.1, "k33", 1.5, 150, "k34", 0.36, 36, "V35", 15, 1500,
+  "K35", 0.2, 20, "V_35", 15, 1500, "K_35", 0.201, 20, "k39", 100, 50000,
+  "Kd_39", 2.02, 2000, "V40", 10, 20000, "K40", 0.01, 1, "k41", 0.3, 30,
+  "Kd_41", 0.01, 1, "k42", 4.5, 450, "k43", 3, 300, "k47", 0.03, 30,
+  "k48", 0.0001, 0.01, "k49", 0.0003, 0.03, "Kd_49", 1000, 50000,
+  "k50", 0.06, 6, "k_50", 0.0012, 0.12, "k51", 0.001, 0.1,
+  "k53", 0.001, 0.1, "k55", 3, 300, "k56", 3, 300
+)
+stopifnot(setequal(bounds$par, gsa_pars))
+
+n_gsa <- 3000
+set.seed(20120716)
+draws <- sapply(seq_len(nrow(bounds)), function(i) runif(n_gsa, bounds$min[i], bounds$max[i]))
+colnames(draws) <- bounds$par
+gsa_pars_df <- nominal[rep(1, n_gsa), ]
+for (p in bounds$par) gsa_pars_df <- set_linear(gsa_pars_df, p, draws[, p])
+s_no <- solve_s(gsa_pars_df, FALSE, tol = 1e-8)
+s_per <- solve_s(gsa_pars_df, TRUE, tol = 1e-8)
+keep <- !is.na(s_no) & !is.na(s_per) & s_no >= 0.01
+
+# PRCC: correlation of the residuals of the rank-transformed parameter and
+# output, each regressed on the ranks of all other parameters.
+prcc <- function(x, y) {
+  rx <- apply(x, 2, rank)
+  ry <- rank(y)
+  vapply(seq_len(ncol(rx)), function(j) {
+    q <- qr(cbind(1, rx[, -j]))
+    cor(qr.resid(q, rx[, j]), qr.resid(q, ry))
+  }, numeric(1))
+}
+gsa <- tibble(
+  par = paper_name(bounds$par),
+  noPer = prcc(draws[keep, ], s_no[keep]),
+  Per = prcc(draws[keep, ], s_per[keep])
+)
+c(sampled = n_gsa, retained = sum(keep))
+```
+
+The maintainers digitised the PRCC of each Figure 3 cell from the published
+colour scale (-0.5 to 0.5; about +/- 0.03).
+
+```{r fig3-digitised}
+fig3 <- tibble::tribble(
+  ~par, ~noPer_pub, ~Per_pub,
+  "PI", 0.34, 0.24, "V40", 0.30, 0.24, "PI3K", 0.19, 0.19, "k31", 0.10, 0.19,
+  "V35", 0.10, 0.19, "k28", 0.14, 0.09, "k55", 0.09, 0.09, "E2", 0.09, 0.30,
+  "E3", 0.09, 0.30, "k29", 0.09, 0.04, "Kd_32", 0.09, 0.10, "k11", 0.09, 0.09,
+  "MEK", 0.09, 0.09, "Shc", 0.04, 0.09, "k27", 0.05, 0.19, "K4", 0.04, 0.09,
+  "k_50", 0.04, 0.19, "k3", 0.04, 0.10, "k50", 0.04, -0.26, "Kd_1", 0.04, -0.06,
+  "Kd_49", -0.04, 0.30, "Kd_2", -0.04, -0.26, "Ke_3", -0.04, -0.19,
+  "k16_cat", -0.04, -0.04, "V12", -0.06, -0.06, "k41", -0.06, -0.06,
+  "K_d31", -0.06, -0.06, "k9", -0.06, -0.06, "K35", -0.11, -0.11,
+  "k33", -0.11, -0.19, "Kd_39", -0.11, -0.20, "K40", -0.11, -0.20,
+  "k34", -0.11, -0.06, "V30", -0.19, -0.26, "Akt", -0.20, -0.11,
+  "V_35", -0.20, -0.35, "PP2A", -0.26, -0.20, "k42", -0.26, -0.26,
+  "PTEN", -0.35, -0.26
+)
+gsa_cmp <- fig3 |> left_join(gsa, by = "par")
+gsa_cmp |>
+  transmute(
+    par,
+    noPer_pub, noPer = round(noPer, 2),
+    Per_pub, Per = round(Per, 2)
+  ) |>
+  rename(
+    "Parameter" = par,
+    "Fig. 3, no pertuzumab" = noPer_pub, "Model, no pertuzumab" = noPer,
+    "Fig. 3, pertuzumab" = Per_pub, "Model, pertuzumab" = Per
+  ) |>
+  knitr::kable()
+```
+
+```{r fig3-plot, fig.height = 7, fig.cap = "Replicates Figure 3 of Lebedeva 2012: PRCC of the integrated pAkt readout with each parameter, without and with pertuzumab. Points: packaged model (3000 samples); crosses: digitised Figure 3 (120,000 samples)."}
+gsa_cmp |>
+  pivot_longer(c(noPer_pub, Per_pub, noPer, Per), names_to = "key", values_to = "prcc") |>
+  mutate(
+    source = ifelse(grepl("_pub$", key), "Figure 3", "packaged model"),
+    condition = ifelse(grepl("^noPer", key), "no pertuzumab", "pertuzumab"),
+    par = factor(par, levels = rev(fig3$par))
+  ) |>
+  ggplot(aes(prcc, par, shape = source, colour = source)) +
+  geom_vline(xintercept = 0, colour = "grey60") +
+  geom_point() +
+  scale_shape_manual(values = c("Figure 3" = 4, "packaged model" = 16)) +
+  facet_wrap(~condition) +
+  labs(x = "PRCC with S_pAkt,n", y = NULL, shape = NULL, colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+```{r gsa-checks}
+d_no <- gsa_cmp$noPer - gsa_cmp$noPer_pub
+d_per <- gsa_cmp$Per - gsa_cmp$Per_pub
+strong_no <- abs(gsa_cmp$noPer_pub) >= 0.15
+strong_per <- abs(gsa_cmp$Per_pub) >= 0.15
+knitr::kable(data.frame(
+  condition = c("no pertuzumab", "pertuzumab"),
+  median_abs_diff = c(median(abs(d_no)), median(abs(d_per))),
+  q90_abs_diff = c(quantile(abs(d_no), 0.9), quantile(abs(d_per), 0.9)),
+  correlation = c(cor(gsa_cmp$noPer, gsa_cmp$noPer_pub), cor(gsa_cmp$Per, gsa_cmp$Per_pub)),
+  strong_with_same_sign = c(
+    sprintf("%d of %d", sum(sign(gsa_cmp$noPer[strong_no]) == sign(gsa_cmp$noPer_pub[strong_no])), sum(strong_no)),
+    sprintf("%d of %d", sum(sign(gsa_cmp$Per[strong_per]) == sign(gsa_cmp$Per_pub[strong_per])), sum(strong_per))
+  )
+), digits = 3)
+top_pos <- function(x, k) gsa$par[order(-x)][seq_len(k)]
+stopifnot(
+  # Envelope over the 39 published parameters: robust to which parameters
+  # land in the tails of a 3000-point sample (PRCC SE about 0.03).
+  median(abs(d_no)) < 0.06, median(abs(d_per)) < 0.06,
+  quantile(abs(d_no), 0.9) < 0.12, quantile(abs(d_per), 0.9) < 0.12,
+  # Every parameter with |PRCC| >= 0.15 in Figure 3 has the same sign here.
+  all(sign(gsa_cmp$noPer[strong_no]) == sign(gsa_cmp$noPer_pub[strong_no])),
+  all(sign(gsa_cmp$Per[strong_per]) == sign(gsa_cmp$Per_pub[strong_per])),
+  # Results: highest positive PRCC without the drug for PI and V40.
+  all(c("PI", "V40") %in% top_pos(gsa$noPer, 3)),
+  # Results: with pertuzumab, total ErbB2 and ErbB3 carry the highest
+  # sensitivity (Figure 3: 0.30 each, up from 0.09). Asserted on magnitude
+  # and on the gain over the no-drug PRCC rather than on rank: E2, E3, Kd_49
+  # and k_50 lie within a few standard errors of each other, so their order
+  # is sampling noise.
+  all(gsa$Per[gsa$par %in% c("E2", "E3")] > 0.12),
+  all(gsa$Per[gsa$par %in% c("E2", "E3")] - gsa$noPer[gsa$par %in% c("E2", "E3")] > 0.08)
+)
+```
+
+The reduced global analysis reproduces Figure 3. Without pertuzumab, PI, V40
+and PI3K are the strongest positive controls of integrated pAkt, and PTEN,
+k42, V_35, V30 and Akt the strongest negative ones. With pertuzumab, total
+ErbB2 and ErbB3 and the pertuzumab binding constants (Kd_49 and k_50
+positive, k50 negative) gain sensitivity, as the Results describe. The largest
+differences from Figure 3 are k28 (model 0.04, Figure 3 0.14) and total PP2A
+(model -0.15 and -0.11, Figure 3 -0.26 and -0.20); both keep their sign.
+
+# Code-versus-paper differences and pertuzumab timing
+
+The Assumptions section lists three places where the SBML file and Additional
+File 1 differ. None of them changes the integrated pAkt materially at the
+nominal parameters. Neither does adding pertuzumab 15 minutes before HRG, as
+in the experiments, rather than at the same time:
+
+```{r variants}
+s_with <- function(m, ev, tol = 1e-10) {
+  s <- rxSolve(m, ev, returnType = "data.frame", atol = tol, rtol = tol)
+  s$auc_pakt[s$time == max(s$time)] / 3600
+}
+ev_no <- et(amt = 3000, cmt = "hrg", time = 0) |> et(3600, cmt = "akt")
+ev_yes <- et(amt = 300000, cmt = "per", time = 0) |>
+  et(amt = 3000, cmt = "hrg", time = 0) |>
+  et(3600, cmt = "akt")
+# Pre-incubation: pertuzumab at -900 s, HRG at 0, integral taken from 0.
+ev_pre <- et(amt = 300000, cmt = "per", time = 0) |>
+  et(amt = 3000, cmt = "hrg", time = 900) |>
+  et(c(900, 4500), cmt = "akt")
+s_pre <- rxSolve(mod, ev_pre, returnType = "data.frame", atol = 1e-10, rtol = 1e-10)
+s_pre <- diff(s_pre$auc_pakt[s_pre$time %in% c(900, 4500)]) / 3600
+
+mod_sbml_k28 <- mod |> ini(k_28 = 0, k_29 = 0)
+mod_paper_eq <- mod |> model({
+  v16 <- k16 * mekp * pp2a
+  v41 <- k41 * (akt_pi_p * pp2a - Kd_41 * akt_pi_p_pp2a)
+  v28 <- k28 * e23hp_pi3k - k_28 * e23hp_pi3ka
+})
+variants <- tibble(
+  variant = c(
+    "packaged model",
+    "k_28 = k_29 = 0 (SBML file values)",
+    "V16, V28, V41 as printed in Additional File 1",
+    "pertuzumab added 15 min before HRG"
+  ),
+  S_pAkt_n = c(s_with(mod, ev_no), s_with(mod_sbml_k28, ev_no), s_with(mod_paper_eq, ev_no), NA),
+  S_pAktPer_n = c(s_with(mod, ev_yes), s_with(mod_sbml_k28, ev_yes), s_with(mod_paper_eq, ev_yes), s_pre)
+)
+knitr::kable(variants, digits = 4)
+# Relative change of each rate-law / parameter variant against the packaged
+# model, column by column.
+rel <- abs(sweep(as.matrix(variants[2:3, 2:3]), 2, unlist(variants[1, 2:3]), "/") - 1)
+stopifnot(max(rel) < 0.02)
+```
+
+# Assumptions and deviations
+
+- **Source of the structure.** The rate laws follow the authors' SBML file
+  (Additional File 4); the equations printed in Additional File 1 were
+  checked against it reaction by reaction. They differ in three places, and
+  the SBML form is used:
+  - V16 (pMEK + PP2A binding): Additional File 1 prints the irreversible
+    `k16 * [pMEK] * [PP2A]`; the SBML file has
+    `k16 * MEKP * PP2A - Kd_16 * MEKP_PP2A`.
+  - V41 (pAkt-PIP3 + PP2A binding): Additional File 1 prints
+    `k41 * ([pAkt-PIP3] * [PP2A] - Kd_41 * [pAkt-PIP3-PP2A])`; the SBML file
+    has `k41 * Akt_PI_P * PP2A - Kd_41 * Akt_PI_P_PP2A`. In the SBML forms of
+    V16 and V41, `Kd_16` and `Kd_41` therefore act as dissociation rate
+    constants (1/s), while in V20 and V45 the same parameters are
+    dissociation constants (nM).
+  - V28 (PI3K activation on the receptor): Additional File 1 prints
+    `k28 * [pE23H-PI3K] - k_28 * [pE23H-PI3K*]`; the SBML file has
+    `k28 * (E23HP_PI3K - k_28 * E23HP_PI3Ka)`, so `k_28` is unitless.
+
+  At the nominal parameters the three together change `S_pAkt,n` and
+  `S_pAktPer,n` by less than 1% (table above).
+- **`k_28` and `k_29`.** Supplementary Table S2 gives 0.01 for both; the SBML
+  file sets both to 0. The Table S2 values, which are the paper's calibrated
+  values, are used. The difference is negligible (table above).
+- **`k_9`.** The SBML rate law for V9 carries a reverse term `k_9` set to 0;
+  `k_9` is not among the Table S2 parameters, so it is held at 0.
+- **Inhibitor reactions V57/V58.** The SBML file carries the PTEN-bpV(pic) and
+  PI3K-LY294002 binding reactions of the predecessor model with both inhibitor
+  concentrations at 0. They are kept, with `k57`, `Kd_57`, `k58` and `Kd_58`
+  from the SBML file, and are inactive unless `bpV` or `LY` is set. The paper
+  ran no model simulation with LY294002 or UCN-01 (Figures 4 and 5 are
+  experimental), so no model-unit concentration for them is published.
+- **HRG and pertuzumab concentrations.** Methods give 1 nM HRG and 100 nM
+  pertuzumab in the medium, and state that the GSA held both "at their values
+  used in the experiments". The SBML file gives HRG = 3000 in model units, a
+  factor of 3000 for referencing medium concentrations to the cytoplasmic
+  volume, and sets pertuzumab to 0. Pertuzumab = 300000 applies the same
+  factor to 100 nM; the curated BioModels entry of the predecessor model
+  (BIOMD0000000424, Faratian 2009) gives the same value for its
+  pertuzumab simulations.
+- **Pertuzumab timing.** In the experiments pertuzumab was added 15 minutes
+  before HRG; the paper does not say whether its simulations did the same.
+  Here both are added at time zero, as in the SBML file. A 15-minute
+  pre-incubation lowers `S_pAktPer,n` by about 3% (table above).
+- **Resting PTEN split.** The SBML file hard-codes free PTEN = 4.5644 nM and
+  pPTEN = 25.4356 nM, the steady state of V35/V36 at total PTEN = 30 nM. The
+  model computes this split from `PTEN_tot`, `V35`, `K35`, `V_35` and `K_35`,
+  so a changed total PTEN (as in the GSA) starts from its own resting state.
+- **Fixed versus estimated.** The paper reports the Table S2 values as the
+  parameters "identified in one of the best fittings" and does not say which
+  were held at literature values during the fit; all 89 are left unfixed.
+  The paper reports no uncertainty, between-cell variability or residual error;
+  the model is deterministic.
+- **Parameter names.** Names follow Table S2 and the labels of Figures 3 and 6.
+  Total protein concentrations carry a `_tot` suffix, and `k13` and `k31` are
+  stored on the log scale (`lk13`, `lk31`) because those two names coincide
+  with the package's canonical PK micro-constants. State names are the
+  lower-cased SBML species ids; the SBML pair `E2_Per` / `E2Per` (loose and
+  tight pertuzumab-ErbB2 complexes) is renamed `e2_per` / `e2_per_c`.
+- **GSA reproduction.** 3000 pseudo-random uniform points stand in for the
+  paper's 120,000 Sobol points, and PRCC is computed directly rather than with
+  the R package `sensitivity`.
+- **Fig. S6 data.** The calibration data (western blots, normalised) are not
+  tabulated in the paper; the time-course figure above shows model curves
+  only.
+- No erratum or correction notice for this article was found (PubMed and
+  Europe PMC, checked 2026-11-19).

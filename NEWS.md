@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kozielska 2012 risperidone and paliperidone D2 / 5-HT2A receptor occupancy ([doi:10.1007/s11095-012-0722-8](https://doi.org/10.1007/s11095-012-0722-8)) -- male Sprague-Dawley and Wistar rats.
+- Add Lebedeva 2012 ErbB2/3 signalling network QSP with pertuzumab ([doi:10.1016/j.ejps.2011.10.026](https://doi.org/10.1016/j.ejps.2011.10.026)) -- in vitro, PE04 ovarian carcinoma cell line stimulated with heregulin-beta.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
