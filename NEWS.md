@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yusuff 2026 voriconazole ([doi:10.1128/aac.00098-26](https://doi.org/10.1128/aac.00098-26)) -- critically ill adults on ECMO.
+- Add Xu 2026 vancomycin ([doi:10.1128/aac.01840-25](https://doi.org/10.1128/aac.01840-25)) -- children aged 3 months to 18 years in Australian children's hospitals.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

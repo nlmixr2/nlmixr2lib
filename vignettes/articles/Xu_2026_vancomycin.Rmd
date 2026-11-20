@@ -1,0 +1,425 @@
+---
+title: "Vancomycin (Xu 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vancomycin (Xu 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Xu_2026_vancomycin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Xu_2026_vancomycin"))$description`
+* Article: <https://doi.org/10.1128/aac.01840-25>
+
+Xu 2026 developed a vancomycin population PK model from routine therapeutic
+drug monitoring in 626 children aged 3 months to 18 years at The Royal
+Children's Hospital, Melbourne, validated it externally against three other
+Australian children's hospitals, and used Monte Carlo simulation to propose an
+age- and serum-creatinine-stratified dosing table targeting an AUC24-48 of
+400-650 mg*h/L.
+
+The model is a two-compartment model with the "standard" paediatric clearance
+scaling: allometric weight scaling to a 70 kg adult, the Rhodin sigmoid
+renal-maturation function of postmenstrual age (PMA), and a renal-function
+factor built on the deviation of the measured serum creatinine from the value
+expected for the child's age (Ceriotti):
+
+$$CL = TVCL \cdot (WT/70)^{0.75} \cdot \frac{PMA^{3.4}}{PMA^{3.4} + 47.7^{3.4}} \cdot e^{-\theta_{SCR}(SCR - SCR_{std})}$$
+
+$$SCR_{std} = -2.37330 - 12.91367 \ln(age) + 23.93581 \, age^{0.5}$$
+
+with PMA in weeks, age in years and serum creatinine in umol/L.
+
+# Population
+
+```{r population}
+pop <- rxode2::rxode(readModelDb("Xu_2026_vancomycin"))$population
+str(pop[c("n_subjects", "n_concentrations", "age_range", "age_median",
+          "weight_range", "weight_median", "sex_female_pct")])
+```
+
+The development cohort (Table 1) contributed 3,687 concentrations from 626
+children: median age 6.80 years (0.20-18.4), median weight 22.9 kg
+(2.70-115), median PMA 397 weeks (39.4-998), median serum creatinine
+31.0 umol/L (10.0-328), 55.0% male, 27.8% admitted to intensive care. Children
+on ECMO, peritoneal dialysis or renal replacement therapy were excluded.
+External validation used 35 children from Perth, 17 from Sydney Children's
+Hospital and 170 from The Children's Hospital at Westmead.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment pointing to its source in
+`inst/modeldb/specificDrugs/Xu_2026_vancomycin.R`; the table collects them.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Two-compartment IV model, first-order elimination | n/a | Results 'Population pharmacokinetic modeling'; Table S2 final model |
+| `lcl` (CL) | 7.56 L/h/70 kg | Table 2 |
+| `lvc` (V1) | 85.6 L/70 kg | Table 2 |
+| `lq` (Q) | 1.30 L/h/70 kg | Table 2 |
+| `lvp` (V2) | 286 L/70 kg | Table 2 |
+| `e_wt_cl_q` | 0.75 (fixed) | Methods Equation 2; Results; Table 2 footnote equations |
+| `e_wt_vc_vp` | 1 (fixed) | Results; Table 2 footnote equations |
+| Maturation function | n/a | Methods Equation 3; Table 2 footnote |
+| `hill_mat` | 3.4 (fixed) | Table 2 'Hill' (from Rhodin 2009) |
+| `tmat50` | 47.7 weeks (fixed) | Table 2 'TM50' (from Rhodin 2009) |
+| Renal factor `exp(-theta * (SCR - SCRstd))` | n/a | Methods Equation 5; Table 2 footnote |
+| `SCRstd` (Ceriotti) | n/a | Methods Equation 6 |
+| `e_creat_cl` | 0.0188 per umol/L | Table 2 'Effect of creatinine on CL' |
+| `etalcl` | 0.048841 (22.1% CV) | Table 2; CV = sqrt(omega^2) per Table S2 footnote |
+| `etalvc` | 0.108241 (32.9% CV) | Table 2 |
+| `etaiov_cl_*` | 0.034969 (18.7% CV) | Table 2 inter-occasion variability |
+| `propSd` | 0.233 | Table 2; Table S2 'Prop.error' |
+
+# Typical clearance throughout childhood (Figure 2)
+
+Figure 2 plots the typical clearance standardised to 70 kg against PMA. At a
+serum creatinine equal to the age-expected value the renal factor is 1, so the
+standardised clearance is `TVCL` times the maturation function. The solve
+below evaluates the packaged model (not a re-typed formula) for a 70 kg
+subject along a PMA grid, with the creatinine set to the Ceriotti value for
+the matching postnatal age of a term-born child.
+
+```{r fig2}
+mod <- readModelDb("Xu_2026_vancomycin")
+
+ceriotti <- function(age_y) -2.37330 - 12.91367 * log(age_y) + 23.93581 * sqrt(age_y)
+
+pma_grid <- tibble::tibble(PAGE = seq(41, 52.18 * 19, length.out = 120)) |>
+  dplyr::mutate(
+    time = dplyr::row_number() - 1,
+    AGE = (PAGE - 40) / 52.18,
+    WT = 70,
+    CREAT = ceriotti(AGE),
+    OCC = 1L
+  )
+
+# One subject whose covariates change at every (dose-free) observation row, so
+# each row evaluates the clearance equations at one PMA.
+ev_typ <- pma_grid |>
+  dplyr::select(time, AGE, WT, CREAT, OCC, PAGE) |>
+  dplyr::mutate(id = 1L, evid = 0, amt = 0, cmt = "central")
+
+typ <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ, returnType = "data.frame") |>
+  dplyr::select(time, cl, vc, vp) |>
+  dplyr::inner_join(dplyr::select(pma_grid, time, PAGE), by = "time")
+stopifnot(nrow(typ) == nrow(pma_grid))
+
+ggplot(typ, aes(PAGE / 52.18, cl)) +
+  geom_line() +
+  scale_x_log10(breaks = c(0.8, 1, 2, 4, 6, 8, 10, 18)) +
+  coord_cartesian(ylim = c(0, 20)) +
+  labs(x = "PMA (years)", y = "Clearance (L/h/70 kg)",
+       caption = "Replicates the typical-value line of Figure 2 of Xu 2026.")
+```
+
+```{r fig2-checks}
+cl_at <- function(pma_weeks) {
+  stats::approx(typ$PAGE, typ$cl, xout = pma_weeks)$y
+}
+cl_max <- 7.56
+c(at_1y = cl_at(52.18), at_2y = cl_at(2 * 52.18), at_3y = cl_at(3 * 52.18),
+  frac_2y = cl_at(2 * 52.18) / cl_max, frac_3y = cl_at(3 * 52.18) / cl_max)
+
+# Deterministic typical values -- tight bounds are appropriate.
+# Results: 'clearance reached 90% of its maximum value by 2 years PMA and
+# subsequently plateaued after 3 years PMA'. Figure 2's line reads about
+# 4.3 L/h/70 kg at 1 year PMA and about 3 L/h/70 kg at 0.8 years.
+stopifnot(
+  cl_at(2 * 52.18) / cl_max > 0.90,
+  cl_at(3 * 52.18) / cl_max > 0.97,
+  abs(cl_at(52.18) - 4.35) < 0.1,
+  abs(cl_at(0.8 * 52.18) - 2.93) < 0.1,
+  abs(max(typ$cl) - cl_max) < 0.01
+)
+```
+
+The Discussion converts the 70 kg estimates to per-kilogram values: a typical
+clearance of 0.108 L/h/kg and a total volume of distribution (V1 + V2) of
+5.31 L/kg.
+
+```{r per-kg}
+adult <- typ[which.max(typ$PAGE), ]
+per_kg <- c(cl = adult$cl / 70, vss = (adult$vc + adult$vp) / 70)
+round(per_kg, 3)
+stopifnot(abs(per_kg[["cl"]] - 0.108) < 0.0005, abs(per_kg[["vss"]] - 5.31) < 0.005)
+```
+
+The renal factor shrinks clearance by `exp(-0.0188)`, about 1.9%, for every
+1 umol/L that serum creatinine exceeds the age-expected value: about 17% for
+10 umol/L above it.
+
+# Monte Carlo dosing simulation (Table 3 and Table S3)
+
+Table 3 of Xu 2026 compares, for nine age-by-serum-creatinine subgroups, the
+standard 15 mg/kg every 6 h with an optimised per-subgroup mg/kg dose (1-h
+infusions throughout). It reports the probability of attaining an AUC24-48 of
+400-650 mg*h/L (PTA) and the median trough concentration. Table S3 adds a
+25 mg/kg loading dose before the optimised regimen.
+
+The paper drew its 1,000 subjects per subgroup from its own multi-centre
+covariate database, which is not published. The cohort below draws age and
+serum creatinine uniformly within each subgroup's bounds and body weight from
+an approximate sex-averaged median weight-for-age curve with log-normal
+scatter. Postmenstrual age is postnatal age + 40 weeks (term birth). Each
+virtual child receives inter-individual variability and one occasion's
+inter-occasion variability on clearance.
+
+```{r cohort}
+subgroups <- tibble::tribble(
+  ~grp, ~age_lo, ~age_hi, ~scr_lo, ~scr_hi, ~std_pta, ~std_trough, ~opt_dose, ~opt_pta, ~opt_trough, ~ld_pta,
+  "3 mo-1 y, SCR 10-30",  0.25,  1, 10,  30, 10.5,  7.92, 22, 66.1, 11.86, 67.0,
+  "1-4 y, SCR 10-30",     1,     4, 10,  30, 10.8,  7.82, 22, 65.9, 11.72, 63.0,
+  "1-4 y, SCR 30-50",     1,     4, 30,  50, 47.6, 12.07, 19, 79.9, 15.14, 79.5,
+  "4-10 y, SCR 20-40",    4,    10, 20,  40, 28.0,  9.58, 21, 76.6, 13.79, 74.4,
+  "4-10 y, SCR 40-60",    4,    10, 40,  60, 66.5, 14.01, 16, 80.4, 15.56, 80.1,
+  "10-16 y, SCR 30-60",  10,    16, 30,  60, 46.6, 11.96, 19, 71.9, 14.54, 71.1,
+  "10-16 y, SCR 60-80",  10,    16, 60,  80, 72.3, 18.49, 13, 79.2, 16.31, 81.1,
+  "16-18 y, SCR 50-80",  16,    18, 50,  80, 63.4, 14.41, 15, 70.6, 14.82, 72.9,
+  "16-18 y, SCR 80-110", 16,    18, 80, 110, 47.1, 23.27, 10, 66.6, 15.85, 77.6
+)
+
+# Approximate sex-averaged median weight-for-age (kg) for a virtual cohort only.
+wfa <- tibble::tibble(
+  age = c(0.25, 0.5, 1, 2, 4, 6, 8, 10, 12, 14, 16, 18),
+  wt  = c(6.0, 7.6, 9.5, 12.2, 16.3, 20.7, 25.6, 32.0, 40.5, 50.0, 58.0, 63.0)
+)
+
+n_per <- 100
+
+# set.seed() seeds R's RNG for the covariate draw. rxode2's IIV / residual
+# streams are partitioned per solver thread, so the simulated cohort differs
+# between machines; every assertion below holds for any cohort the model can
+# produce.
+set.seed(20261113)
+cohort <- subgroups |>
+  dplyr::select(grp, age_lo, age_hi, scr_lo, scr_hi) |>
+  dplyr::slice(rep(seq_len(dplyr::n()), each = n_per)) |>
+  dplyr::mutate(
+    AGE = stats::runif(dplyr::n(), age_lo, age_hi),
+    CREAT = stats::runif(dplyr::n(), scr_lo, scr_hi),
+    WT = stats::approx(wfa$age, wfa$wt, xout = AGE)$y *
+      exp(stats::rnorm(dplyr::n(), 0, 0.15)),
+    PAGE = 40 + AGE * 52.18,
+    OCC = 1L,
+    subj = dplyr::row_number()
+  )
+
+regimens <- subgroups |>
+  dplyr::select(grp, opt_dose) |>
+  tidyr::crossing(regimen = c("standard", "optimised", "loading")) |>
+  dplyr::mutate(maint = ifelse(regimen == "standard", 15, opt_dose))
+
+subjects <- cohort |>
+  dplyr::inner_join(regimens, by = "grp", relationship = "many-to-many") |>
+  dplyr::mutate(id = dplyr::row_number())
+stopifnot(nrow(subjects) == nrow(subgroups) * n_per * 3)
+
+dose_times <- seq(0, 42, by = 6)
+doses <- subjects |>
+  tidyr::crossing(time = dose_times) |>
+  dplyr::mutate(
+    mgkg = ifelse(regimen == "loading" & time == 0, 25, maint),
+    amt = mgkg * WT,
+    rate = amt / 1,
+    evid = 1L
+  )
+obs <- subjects |>
+  tidyr::crossing(time = seq(0, 48, by = 0.5)) |>
+  dplyr::mutate(amt = 0, rate = 0, evid = 0L)
+
+events <- dplyr::bind_rows(doses, obs) |>
+  dplyr::mutate(cmt = "central") |>
+  dplyr::select(id, time, evid, amt, rate, cmt, AGE, CREAT, WT, PAGE, OCC) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+```
+
+```{r simulate}
+rxode2::rxSetSeed(20261113)
+sim <- rxode2::rxSolve(mod, events, returnType = "data.frame")
+stopifnot(!anyNA(sim$Cc))
+```
+
+## AUC24-48 by PKNCA
+
+```{r pknca}
+# Only `!is.na(Cc)`: the grid starts at time 0, so the time-zero row is kept.
+conc_df <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc) |>
+  dplyr::left_join(dplyr::select(subjects, id, grp, regimen), by = "id")
+
+dose_df <- doses |>
+  dplyr::select(id, time, amt, grp, regimen)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | regimen + grp + id,
+                             concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + grp + id, doseu = "mg")
+
+intervals <- data.frame(start = 24, end = 48, auclast = TRUE, cmin = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca <- as.data.frame(nca_res) |>
+  dplyr::select(id, regimen, grp, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+stopifnot(nrow(nca) == nrow(subjects), !anyNA(nca$auclast))
+```
+
+The trough is taken as the concentration at 48 h, just before the ninth dose.
+
+```{r pta}
+trough48 <- sim |>
+  dplyr::filter(time == 48) |>
+  dplyr::distinct(id, .keep_all = TRUE) |>
+  dplyr::select(id, trough = Cc)
+
+summ <- nca |>
+  dplyr::left_join(trough48, by = "id") |>
+  dplyr::group_by(regimen, grp) |>
+  dplyr::summarise(
+    pta = 100 * mean(auclast >= 400 & auclast <= 650),
+    trough_med = median(trough),
+    auc_med = median(auclast),
+    .groups = "drop"
+  )
+
+pub <- subgroups |>
+  dplyr::select(grp, std_pta, std_trough, opt_pta, opt_trough, ld_pta) |>
+  tidyr::pivot_longer(-grp, names_to = c("regimen", ".value"),
+                      names_pattern = "(std|opt|ld)_(.*)") |>
+  dplyr::mutate(regimen = dplyr::recode(regimen, std = "standard",
+                                        opt = "optimised", ld = "loading"))
+
+cmp <- summ |>
+  dplyr::inner_join(pub, by = c("regimen", "grp"),
+                    suffix = c("_sim", "_pub")) |>
+  dplyr::mutate(
+    regimen = factor(regimen, levels = c("standard", "optimised", "loading")),
+    grp = factor(grp, levels = subgroups$grp)
+  ) |>
+  dplyr::arrange(regimen, grp)
+stopifnot(nrow(cmp) == 27)
+
+cmp |>
+  dplyr::mutate(
+    pta_sim = round(pta_sim, 1),
+    trough_med = round(trough_med, 2),
+    auc_med = round(auc_med)
+  ) |>
+  dplyr::select(regimen, grp, pta_pub, pta_sim, trough, trough_med, auc_med) |>
+  dplyr::rename(
+    Regimen = regimen,
+    Subgroup = grp,
+    "Published PTA (%)" = pta_pub,
+    "Simulated PTA (%)" = pta_sim,
+    "Published median trough (mg/L)" = trough,
+    "Simulated median trough (mg/L)" = trough_med,
+    "Simulated median AUC24-48 (mg*h/L)" = auc_med
+  ) |>
+  knitr::kable(caption = paste(
+    "Probability of AUC24-48 of 400-650 mg*h/L and median trough: Xu 2026",
+    "Table 3 (standard and optimised q6h regimens) and Table S3 (25 mg/kg",
+    "loading dose then the optimised regimen; no trough reported) against",
+    n_per, "virtual children per cell."
+  ))
+```
+
+```{r pta-checks}
+pta_diff <- cmp$pta_sim - cmp$pta_pub
+trough_ratio <- cmp$trough_med / cmp$trough
+trough_ratio <- trough_ratio[!is.na(trough_ratio)]
+c(median_pta_diff = median(pta_diff),
+  p90_abs_pta_diff = unname(stats::quantile(abs(pta_diff), 0.9)),
+  median_trough_ratio = median(trough_ratio),
+  p90_abs_log_trough_ratio = unname(stats::quantile(abs(log(trough_ratio)), 0.9)))
+
+# Cohort-derived, so the checks are on the centre and on a robust quantile, with
+# headroom for Monte Carlo error (about 5 percentage points per cell at 100
+# subjects) and for the cohort being reconstructed rather than the paper's own.
+# A mis-transcribed clearance, a wrong creatinine sign or a wrong weight
+# exponent moves the troughs by tens of percent and fails these at once.
+stopifnot(
+  abs(median(pta_diff)) < 10,
+  stats::quantile(abs(pta_diff), 0.9) < 25,
+  abs(log(median(trough_ratio))) < log(1.15),
+  stats::quantile(abs(log(trough_ratio)), 0.9) < log(1.4)
+)
+```
+
+```{r pta-plot, fig.height = 5}
+cmp |>
+  dplyr::select(regimen, grp, Published = pta_pub, Simulated = pta_sim) |>
+  tidyr::pivot_longer(c(Published, Simulated), names_to = "source", values_to = "PTA") |>
+  ggplot(aes(grp, PTA, fill = source)) +
+  geom_col(position = "dodge") +
+  facet_wrap(~regimen, ncol = 1) +
+  labs(x = NULL, y = "PTA, AUC24-48 400-650 mg*h/L (%)", fill = NULL,
+       caption = "Replicates the PTA columns of Table 3 and Table S3 of Xu 2026.") +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+# Assumptions and deviations
+
+- **Sign of the Ceriotti constant.** Methods Equation 6 writes the
+  age-expected serum creatinine as `-2.37330 - 12.91367 ln(age) + 23.93581
+  age^0.5`; the restated clearance equation under Table 2 prints the constant
+  as `+2.37330`. The model uses Equation 6: it is the equation the Methods
+  define and cite to Ceriotti, and every other published use of the Ceriotti
+  equation checked by the maintainers (including deposited NONMEM code) carries
+  `-2.37330`. The `+` in the Table 2 footnote is read as a typesetting slip.
+  The two forms differ by 4.75 umol/L in the expected creatinine, about 9% in
+  clearance.
+- **Allometric exponents on Q and V2.** Supplemental Table S2 labels the
+  weight exponent on V2 as 0.75 and on Q as 1, the reverse of the Results text
+  ('CL, Q: 0.75; V1, V2: 1.0'), of the Table 2 units (Q in L/h/70 kg, V2 in
+  L/70 kg) and of the Table 2 footnote equations. The model follows the main
+  text and equations.
+- **Number of occasions.** Inter-occasion variability on clearance is defined
+  per treatment episode; the paper does not say how many occasions were
+  modelled. Four occasions are provided (`OCC` 1-4); other values add no
+  inter-occasion term. Occasions 2-4 share the occasion-1 variance, the
+  equivalent of NONMEM `$OMEGA BLOCK(1) SAME`. Because rxode2 has no `| occ`
+  variability level, the occasion etas are selected by indicators and cannot
+  be mu-referenced: rxode2 prints "some etas defaulted to non-mu referenced"
+  on every solve. That affects only the speed of a future estimation run, not
+  simulation.
+- **Age and creatinine outside the Ceriotti range.** The paper applies the
+  Ceriotti expression across 3 months to 18 years without truncation, and the
+  model does the same. `AGE` must be positive (the expression takes its log).
+- **Postmenstrual age.** The paper does not say how PMA was derived when
+  gestational age was unrecorded. The simulations here assume term birth
+  (PMA = 40 weeks + postnatal age).
+- **Virtual cohort.** The covariate database behind the published simulation
+  is not available. Age and serum creatinine are drawn uniformly within each
+  subgroup and weight from an approximate median weight-for-age curve with 15%
+  log-normal scatter, so the cell-by-cell agreement is approximate. The
+  simulation uses 100 children per cell, not the paper's 1,000. Doses are
+  not capped. The paper does not state whether its simulation included
+  inter-occasion variability; here each child carries one occasion's
+  inter-occasion term in addition to inter-individual variability. The trough
+  is the 48 h concentration.
+- **Loading-dose timing.** Table S3 gives a 25 mg/kg loading dose followed
+  by the optimised q6h regimen; the loading dose is placed at time 0 and the
+  first maintenance dose at 6 h.
+- **Development-cohort size.** The Results text reports 627 patients and
+  Table 1 lists 626; the model metadata uses Table 1.
+- **Covariates screened and not retained.** Sex, albumin, urea, ICU admission
+  and central-line status were screened and no further covariate survived
+  stepwise covariate modelling. An alternative maturation function with an
+  O'Hanlon postnatal-age birth-transition factor (Table S2) fitted worse and
+  is not part of the final model.
+- **No published NCA.** Xu 2026 reports no non-compartmental parameters, so
+  the validation compares against the paper's own simulated PTA and trough
+  tables instead.
