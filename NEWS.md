@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ideno 2026 amikacin and eribulin SCOUT base models ([doi:10.1002/psp4.70235](https://doi.org/10.1002/psp4.70235)) -- adults on amikacin TDM, and Japanese patients with metastatic breast cancer (eribulin PK/neutropenia).
+- Add Javidi 2026 psoriasis / psoriatic arthritis bridging MBMA (PASI75, ACR20, ACR50, ACR70; 11 drugs) ([doi:10.1002/psp4.70207](https://doi.org/10.1002/psp4.70207)) -- study arms of randomised trials in plaque psoriasis and psoriatic arthritis.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
