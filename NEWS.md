@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Verner 2009 persistent organic pollutants infant PBPK ([doi:10.1289/ehp.0800047](https://doi.org/10.1289/ehp.0800047)) -- infants (birth to 12 months) exposed through placental transfer and breast-feeding.
+- Add Wu 2009 VEGF and soluble VEGFR1 whole-body QSP model ([doi:10.1371/journal.pone.0005108](https://doi.org/10.1371/journal.pone.0005108)) -- typical healthy adult (endogenous VEGF system; no drug).
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
