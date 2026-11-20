@@ -2395,6 +2395,13 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Example models:** `Bihorel_2021_BMS986166_nalc_sd.R`, `Bihorel_2021_BMS986166_nalc_md.R` (founding examples; ALC0 x (1 - Delta_placebo) x (1 - Imax x Cavg^h / (IC50^h + Cavg^h)) after a single dose and after 28 days of once-daily dosing).
 - **Notes:** A nadir summary, not a lymphocyte-count time course: a longitudinal circulating-lymphocyte state belongs in `circ` (or `circ_<celltype>`) or `lymph`-type turnover models. The maintainers ratified the spelled-out `lymphocyte_count` (2026-10-02) over the laboratory abbreviation `alc`, so the name reads without a lookup; it is still the ABSOLUTE count (10^3 cells/uL), not a percentage of white cells.
 
+### steady_state_lymphocyte_count (**canonical steady-state absolute lymphocyte count**)
+- **Type:** compartment
+- **Role:** Per-subject scalar endpoint: the patient's mean absolute peripheral-blood lymphocyte count once the count has reached steady state on treatment, in 10^9 cells/L. Used as the observation variable of exposure-response models that relate one steady-state exposure metric per subject to the lymphocyte sequestration produced by sphingosine-1-phosphate receptor modulators. One observation per subject and no ODE state.
+- **Source aliases:** `Y_i` / `lymphocyte counts at SS` (Lee 2013 Model 1); `DV` / `mlym` (Lee 2013 supplement SAS code).
+- **Example models:** `Lee_2013_fingolimod_lymphocytes.R` (founding example; `rbase * (1 - f)` with `f` a sigmoid Imax of the steady-state fingolimod-phosphate trough, a constant for interferon beta-1a, and 0 on placebo).
+- **Notes:** Sibling of `nadir_lymphocyte_count`: same analyte and the same spelled-out `lymphocyte_count` stem, but the steady-state MEAN rather than the post-dose minimum, so the two are not interchangeable (the nadir sits below the steady-state mean). A longitudinal circulating-lymphocyte time course still belongs in `circ` (or `circ_<celltype>`). As an observation it is the absolute count, not a percentage of white cells; the matching covariate column, when a later model consumes the count, is `LYMPH_ABS`.
+
 ### calcineurin_pct_above_nadir (**canonical calcineurin activity relative to the within-subject nadir**)
 - **Type:** compartment
 - **Role:** Percentage by which a patient's calcineurin (CN) activity at a given time exceeds that same patient's lowest (nadir) CN activity over the sampled profile, `100 * (I(t) - I_nadir) / I_nadir`, where I is CN activity measured in a cell lysate (e.g. PBMC dephosphorylation of the RIIp peptide, pmol RII/min/mg protein). Zero at the patient's nadir and positive elsewhere; a calcineurin inhibitor drives it DOWN, so higher values mean LESS inhibition. Normalising to the within-subject nadir removes between-patient differences in nadir activity before the PD fit. Used as the observation variable of direct-effect calcineurin-inhibitor concentration-response models.
@@ -2912,6 +2919,13 @@ One family in this section is validated by shape rather than by enumeration -- s
 - **Source aliases:** `Y` (Mehta 2025 Equation 1, 'total fracture and pseudofracture counts').
 - **Example models:** `Mehta_2025_burosumab_fracture.R` (adults with X-linked hypophosphatemia under burosumab; founding example).
 - **Notes:** Member of the per-interval event-count PD-output family (`seizure_count`, `exac_count`, `hae_attacks`, `thrombocytopenia_count`, ...). Pooled fractures and pseudofractures take this name; a model of fractures alone would also use it and say so in its description.
+
+### relapse_count (**canonical confirmed-relapse count PD output**)
+- **Type:** compartment
+- **Role:** Number of confirmed clinical relapses (here of multiple sclerosis) over a patient's time on study, as a count-outcome PD output. The state holds the Poisson mean `lambda = ARR * t` (an annualized relapse rate times years on study -- no ODE); the observation model is `relapse_count ~ pois(lambda)`, with any negative-binomial overdispersion exposed as `ovdp`. A cumulative count over the follow-up window, not a per-visit prevalence.
+- **Source aliases:** `Y_i` / `number of confirmed relapses` (Lee 2013 Model 2); `relnum1` (Lee 2013 supplement SAS code).
+- **Example models:** `Lee_2013_fingolimod_arr.R` (founding example; log ARR a sigmoid Imax function of the steady-state lymphocyte count, `LYMPH_ABS`).
+- **Notes:** Member of the per-interval event-count PD-output family (`seizure_count`, `exac_count`, `fracture_count`, `cel_count`, ...). Distinct from `cel_count` (contrast-enhancing MRI lesions, a radiological count) -- a relapse is a clinical event. The annualized relapse rate itself, `arr`, is the derived model variable a user summarises; the count is what is observed.
 
 ### thrombocytopenia_count (**canonical per-period thrombocytopenia-event-count PD output**)
 - **Type:** compartment
