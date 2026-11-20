@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kamath 2012 anti-oxidized-LDL IgG1, free and total ([doi:10.1371/journal.pone.0045116](https://doi.org/10.1371/journal.pone.0045116)) -- healthy cynomolgus monkeys.
+- Add Hendriks 2012 liposomal and conventional doxorubicin multiscale QSP ([doi:10.1038/psp.2012.16](https://doi.org/10.1038/psp.2012.16)) -- tumor-bearing mice (xenografts) and the human scale-up to patients with solid tumors.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
