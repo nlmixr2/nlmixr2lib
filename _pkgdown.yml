@@ -3718,6 +3718,8 @@ navbar:
         href: articles/Morse_2012_ghb_rbc_invitro.html
       - text: "Ghb rbe4 (Roiko 2012)"
         href: articles/Roiko_2012_ghb_brain_uptake.html
+      - text: "Ginisortamab (Wong 2026)"
+        href: articles/Wong_2026_ginisortamab.html
       - text: "Givosiran (Ayyar 2024)"
         href: articles/Ayyar_2024_givosiran.html
       - text: "Givosiran aip (Sten 2023)"
@@ -12416,6 +12418,7 @@ articles:
   - articles/Wojciechowski_2025_fidanacogeneElaparvovec
   - articles/Wolowich_2025_thc_heart_rate
   - articles/Wong_2025_efanesoctocog
+  - articles/Wong_2026_ginisortamab
   - articles/Wright_2013_allopurinol
   - articles/Wright_2016_allopurinol
   - articles/Wright_2025_colchicine
