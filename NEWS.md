@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Stepniewska 2009 artesunate and amodiaquine (desethylamodiaquine, dihydroartemisinin and total artemisinin activity) ([doi:10.1186/1475-2875-8-200](https://doi.org/10.1186/1475-2875-8-200)) -- children aged 6 months to 5 years with uncomplicated falciparum malaria in Burkina Faso.
+- Add Tanigawara 2012 garenoxacin popPK and clinical-cure exposure-response ([doi:10.1007/s00228-011-1095-3](https://doi.org/10.1007/s00228-011-1095-3)) -- Japanese healthy volunteers and patients with respiratory tract infection.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 

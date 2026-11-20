@@ -3724,12 +3724,16 @@ navbar:
         href: articles/Garcia_2025_garadacimab.html
       - text: "Garadacimab hae attack (Garcia 2025)"
         href: articles/Garcia_2025_garadacimab.html
+      - text: "Garenoxacin (Tanigawara 2012)"
+        href: articles/Tanigawara_2012_garenoxacin.html
       - text: "Garenoxacin (VanWart 2004)"
         href: articles/VanWart_2004_garenoxacin.html
-      - text: "Garenoxacin elf mouse (Hosoi 2026)"
-        href: articles/Hosoi_2026_fluoroquinolones_elf_mouse.html
-      - text: "Garenoxacin plasma mouse (Hosoi 2026)"
-        href: articles/Hosoi_2026_fluoroquinolones_elf_mouse.html
+      - text: "Garenoxacin cure (Tanigawara 2012)"
+        href: articles/Tanigawara_2012_garenoxacin.html
+      - text: "Garenoxacin cure cart (Tanigawara 2012)"
+        href: articles/Tanigawara_2012_garenoxacin.html
+      - text: "Garenoxacin interim (Tanigawara 2012)"
+        href: articles/Tanigawara_2012_garenoxacin.html
       - text: "Gatifloxacin (Smythe 2013)"
         href: articles/Smythe_2013_gatifloxacin.html
       - text: "Gcc4401c (Choi 2016)"
@@ -12499,6 +12503,7 @@ articles:
   - articles/Tang_2023_tenecteplase
   - articles/Tang_2026_tacrolimus
   - articles/Tang_2026_vixarelimab
+  - articles/Tanigawara_2012_garenoxacin
   - articles/Tanzawa_2022_fluconazole
   - articles/Tao_2025_meropenem
   - articles/Tao_2026_levofloxacin
