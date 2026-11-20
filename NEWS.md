@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2026 PF-06804103 PK, peripheral-neuropathy RTTE and tumor-dynamics model ([doi:10.1002/psp4.70261](https://doi.org/10.1002/psp4.70261)) -- adults with HER2-expressing breast or gastric cancer.
+- Add Pin 2026 abemaciclib, ribociclib, poziotinib, lazertinib, mobocertinib and osimertinib intestinal toxicity QSP ([doi:10.1002/psp4.70256](https://doi.org/10.1002/psp4.70256)) -- human small-intestinal organoids and the human small-intestinal epithelium, with diarrhea risk in patients with breast or non-small cell lung cancer.
 
 - Add Dias 2026 vildagliptin ([doi:10.1002/psp4.70165](https://doi.org/10.1002/psp4.70165)) -- healthy and diabetic rats (plasma, muscle and liver microdialysis), with the allometric projection and DPP-4 inhibition in patients with type 2 diabetes.
 
