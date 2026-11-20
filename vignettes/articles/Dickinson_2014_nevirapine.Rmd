@@ -362,7 +362,12 @@ knitr::kable(nca_cmp, caption = "Simulated versus published median steady-state 
 - **Number of occasions.** The paper does not state how many occasions a
   patient could contribute. Three occasion slots are provided (an intensive
   sampling day plus up to two random samples), each with the single estimated
-  IOV variance.
+  IOV variance. rxode2 has no occasion level for random effects, so the
+  occasion effect is a sum of per-occasion etas selected by `OCC`
+  indicators. rxode2 therefore cannot mu-reference those etas and warns
+  "some etas defaulted to non-mu referenced" on each solve; simulation is
+  unaffected, and the only cost would be slower estimation if the model were
+  refitted.
 - **Steady state and autoinduction.** The model describes concentrations
   during maintenance dosing; autoinduction during the lead-in was not
   modelled (adding week 1-3 samples did not improve the fit). The 3 patients
