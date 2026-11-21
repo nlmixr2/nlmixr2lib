@@ -121,6 +121,30 @@ table(indiv$virus_type)
 eta_cols <- c("id", "etalbeta", "etalgamma", "etaldelta", "etalV0")
 ```
 
+The titre falls by up to 11 orders of magnitude by day 8. With rxode2's default
+absolute tolerance (`atol = 1e-8`) the late, sub-detection titres are dominated
+by solver error and can turn slightly negative, which makes `log10_viral_load`
+`NaN`. Every solve below therefore uses tight tolerances.
+
+```{r tolerances}
+atol <- 1e-14
+rtol <- 1e-12
+
+# Solves with every random effect supplied (or zeroed) are deterministic, and
+# rxode2 says so with a "multi-subject simulation without 'omega'" warning;
+# muffle only that message.
+solve_deterministic <- function(...) {
+  withCallingHandlers(
+    rxode2::rxSolve(..., returnType = "data.frame", atol = atol, rtol = rtol),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
+```
+
 ## Daily viral loads
 
 ```{r s9-daily}
@@ -129,11 +153,7 @@ ev_daily <- expand.grid(id = indiv$id, time = 1:8) |>
   left_join(indiv |> select(id, INFLUENZA_B), by = "id") |>
   arrange(id, time)
 
-sim_daily <- rxode2::rxSolve(
-  mod, ev_daily,
-  params = indiv[, eta_cols],
-  returnType = "data.frame"
-)
+sim_daily <- solve_deterministic(mod, ev_daily, params = indiv[, eta_cols])
 
 pub_daily <- indiv |>
   select(id, starts_with("viralload_")) |>
@@ -167,8 +187,8 @@ measured from treatment start (day 1; negative when the peak came before
 treatment), the duration of shedding from day 1 until the titre falls below
 1 TCID50/mL, and the log10 area under the titre curve over that same window.
 The individual curves are solved on a 0.01-day grid and the features computed
-with PKNCA: `cmax` and `tmax` over days 0-16, and `aucint.last` from day 1 to
-the time the titre first falls below 1 TCID50/mL after the peak.
+with PKNCA: `cmax` and `tmax` over days 0-16, and `auclast` over the interval
+from day 1 to the time the titre first falls below 1 TCID50/mL after the peak.
 
 ```{r s9-fine}
 ev_fine <- expand.grid(id = indiv$id, time = seq(0, 16, by = 0.01)) |>
@@ -176,11 +196,7 @@ ev_fine <- expand.grid(id = indiv$id, time = seq(0, 16, by = 0.01)) |>
   left_join(indiv |> select(id, INFLUENZA_B), by = "id") |>
   arrange(id, time)
 
-sim_fine <- rxode2::rxSolve(
-  mod, ev_fine,
-  params = indiv[, eta_cols],
-  returnType = "data.frame"
-) |>
+sim_fine <- solve_deterministic(mod, ev_fine, params = indiv[, eta_cols]) |>
   select(id, time, virus) |>
   left_join(indiv |> select(id, virus_type), by = "id")
 
@@ -196,8 +212,9 @@ intervals <- bind_rows(
   indiv |> transmute(id, virus_type, start = 0, end = 16, cmax = TRUE, tmax = TRUE),
   end_shed |>
     left_join(indiv |> select(id, virus_type), by = "id") |>
-    transmute(id, virus_type, start = 1, end = tend, aucint.last = TRUE)
-)
+    transmute(id, virus_type, start = 1, end = tend, auclast = TRUE)
+) |>
+  mutate(across(c(cmax, tmax, auclast), ~ coalesce(.x, FALSE)))
 
 conc_obj <- PKNCA::PKNCAconc(
   sim_fine |> filter(!is.na(virus)),
@@ -217,7 +234,7 @@ nca_wide <- as.data.frame(nca$result) |>
     d_peak = log10(cmax) - peak_model,
     d_peaktime = (tmax - 1) - peaktime_model,
     d_duration = (tend - 1) - duration_model,
-    d_auc = log10(aucint.last) - auc_model
+    d_auc = log10(auclast) - auc_model
   )
 
 nca_wide |>
@@ -251,7 +268,7 @@ reference <- indiv |>
   summarise(
     cmax = median(10^peak_model),
     tmax = median(peaktime_model + 1),
-    aucint.last = median(10^auc_model),
+    auclast = median(10^auc_model),
     .groups = "drop"
   )
 
@@ -259,9 +276,10 @@ ncaComparisonTable(
   simulated = nca,
   reference = reference,
   by = "virus_type",
-  params = c("cmax", "tmax", "aucint.last"),
-  units = c(cmax = "TCID50/mL", tmax = "day", aucint.last = "TCID50*day/mL")
+  params = c("cmax", "tmax", "auclast"),
+  units = c(cmax = "TCID50/mL", tmax = "day", auclast = "TCID50*day/mL")
 ) |>
+  dplyr::rename("Virus type" = virus_type) |>
   knitr::kable(caption = "Median viral-load features by virus type: packaged model versus S9 Table. Time to peak is from inoculation.")
 ```
 
@@ -271,8 +289,7 @@ ncaComparisonTable(
 typ_ev <- expand.grid(INFLUENZA_B = 0:1, time = seq(0, 12, by = 0.02)) |>
   mutate(id = INFLUENZA_B + 1L, evid = 0L, amt = 0, cmt = "virus") |>
   arrange(id, time)
-typ <- rxode2::rxSolve(rxode2::zeroRe(mod, "omega"), typ_ev,
-                       returnType = "data.frame", keep = "INFLUENZA_B") |>
+typ <- solve_deterministic(rxode2::zeroRe(mod, "omega"), typ_ev, keep = "INFLUENZA_B") |>
   mutate(virus_type = ifelse(INFLUENZA_B == 1, "Influenza B", "Influenza A"))
 
 curves <- sim_fine |>
@@ -380,15 +397,20 @@ rxode2::rxSetSeed(20260221)
 vpc_ev <- expand.grid(id = 1:400, time = seq(0, 12, by = 0.1)) |>
   mutate(INFLUENZA_B = as.integer(id > 200), evid = 0L, amt = 0, cmt = "virus") |>
   arrange(id, time)
-vpc <- rxode2::rxSolve(mod, vpc_ev, returnType = "data.frame", keep = "INFLUENZA_B") |>
+vpc <- rxode2::rxSolve(mod, vpc_ev, returnType = "data.frame", atol = atol,
+                       rtol = rtol, keep = "INFLUENZA_B") |>
   mutate(virus_type = ifelse(INFLUENZA_B == 1, "Influenza B", "Influenza A")) |>
   group_by(virus_type, time) |>
+  # Percentiles on the linear titre (a monotone transform preserves them), then
+  # floored below the plotted range: participants with extreme random effects
+  # reach titres far below any solver tolerance, where log10 is undefined.
   summarise(
-    q05 = quantile(log10_viral_load, 0.05),
-    q50 = median(log10_viral_load),
-    q95 = quantile(log10_viral_load, 0.95),
+    q05 = quantile(virus, 0.05),
+    q50 = median(virus),
+    q95 = quantile(virus, 0.95),
     .groups = "drop"
-  )
+  ) |>
+  mutate(across(c(q05, q50, q95), ~ log10(pmax(.x, 1e-5))))
 
 ggplot() +
   geom_line(data = curves, aes(time, log10(virus), group = id),
