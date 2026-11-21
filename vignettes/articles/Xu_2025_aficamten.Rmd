@@ -106,8 +106,10 @@ demographics (Xu 2025 Table S5).
 tau <- 24  # once-daily dosing interval (h)
 
 # Observation grid over one dosing interval: dense through the absorption
-# phase so Tmax and Cmax are resolved, coarser across the flat tail.
-obs_grid <- sort(unique(c(seq(0, 4, by = 0.05), seq(4, tau, by = 0.5))))
+# phase so Tmax and Cmax are resolved, coarser across the flat tail. The absorption
+# step bounds the trapezoid error of the AUCtau identity below (0.05 h gave up to
+# 0.075% for a fast-absorbing subject; 0.02 h gives under 0.015%).
+obs_grid <- sort(unique(c(seq(0, 4, by = 0.02), seq(4, tau, by = 0.5))))
 
 # Build a steady-state event table from a per-subject covariate frame. The dose
 # record carries `ss = 1` with `ii = tau`, so rxode2 places each subject at

@@ -25,6 +25,10 @@ docs
 .vignette_gate.log
 .vignette_results.jsonl
 data-raw/modeldb-cache.rds
+# buildModelDb() writes the cache through a temporary file in data-raw/; one
+# can be left behind if R is killed mid-write
+data-raw/modeldb-cache-*.rds
+data-raw/modeldb-cache.rds.tmp
 post_merge_advance.sh
 
 # Vignette-gate render artifacts (verify_vignettes_parallel.R)

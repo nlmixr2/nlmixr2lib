@@ -147,9 +147,10 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 ```{r simulate}
 mod <- readModelDb("Chauzy_2022_ceftaroline")
 rxode2::rxSetSeed(20221101)
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim <- rxode2::rxSolve(
   mod, events = events, keep = c("occasion", "CRCL"),
-  returnType = "data.frame", useLinCmt = FALSE
+  returnType = "data.frame", useLinCmt = FALSE, maxsteps = 1e6
 )
 stopifnot(!anyNA(sim$Cc_ceftaroline), !anyNA(sim$Cc_m1))
 ```
@@ -383,8 +384,9 @@ ci <- lapply(seq_along(crcl_grid), function(j) {
 pta_events <- bind_rows(intermittent, ci) |> arrange(id, time, desc(evid))
 stopifnot(!anyDuplicated(unique(pta_events[, c("id", "time", "evid")])))
 
+# steady-state searches for long-half-life subjects exceed the default step budget
 sim_pta <- rxode2::rxSolve(mod, events = pta_events, keep = c("regimen", "CRCL"),
-                           returnType = "data.frame", useLinCmt = FALSE)
+                           returnType = "data.frame", useLinCmt = FALSE, maxsteps = 1e6)
 stopifnot(!anyNA(sim_pta$Cc_ceftaroline))
 
 # Minimum unbound concentration over the steady-state interval (intermittent)

@@ -1,0 +1,471 @@
+---
+title: "Osimertinib intracranial EGFR occupancy QSP (Liang 2024b)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Osimertinib intracranial EGFR occupancy QSP (Liang 2024b)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Liang F, Zhang Y, Xue Q, Zhang X. (2024). Integrated PBPK-EO
+  modeling of osimertinib to predict plasma concentrations and intracranial
+  EGFR engagement in patients with brain metastases. *Sci Rep* 14:12736.
+* Article: <https://doi.org/10.1038/s41598-024-63743-z>
+* PMC record (open access): <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11148161/>
+
+This is a different paper from the same group's lung-tissue analysis,
+`Liang_2024_osimertinib_qsp` (Front Pharmacol 2024, PMC10946252). The present
+paper moves the target-engagement layer into brain tumour (BRT), changes the
+equations and the rate constants, and adds two EGFR variants (wild type and
+C797S). Hence the `2024b` year letter.
+
+```{r load-model}
+mod <- readModelDb("Liang_2024b_osimertinib_qsp")
+mod
+```
+
+# What is extracted, and what is not
+
+| Layer | Content | Extracted? | Why |
+|---|---|---|---|
+| 1 | Whole-body PBPK for osimertinib (PK-Sim 11.2; Rodgers-Rowland partitioning with a Kp scale of 1.5; six CYP intrinsic clearances; ABCB1 / BCRP efflux at the blood-brain barrier; Weibull dissolution) | **No** | A platform model. Its organ physiology, blood flows and permeability calculations are PK-Sim's internal defaults and are not printed. The deposited `.pksim5` project is a software artifact, and its binding block does not match Table 1 (see Assumptions). |
+| 2 | EGFR occupancy (EO) in brain tumour for four EGFR variants, driven by the free osimertinib concentration in BRT | **Yes** | Eqs 3-5 are printed in full, and Table 1 gives every rate constant. |
+
+The osimertinib concentration that drives layer 2 is supplied by the user
+through the canonical time-varying covariate `CEFFECT`. In the paper this is
+`C_OSI,BRT`, "the free OSI concentration in BRT", taken from the interstitial
+sub-compartment of the PK-Sim brain. It is already unbound, so the model does
+not multiply it by a fraction unbound.
+
+# Population
+
+```{r population}
+str(rxode2::rxode(mod)$population)
+```
+
+Liang 2024 is a simulation study. The virtual populations took race, dose,
+subject numbers, age, proportion female, BMI and albumin from the clinical
+studies in Table 2 (four plasma-PK and five intracranial-PK studies of NSCLC
+patients, 4-49 patients each, aged 31-84 years). The dosing-regimen
+simulations used 100 virtual patients with the demographics of Planchard et
+al. (Japanese NSCLC, 75% female, median age 62.5 years). Population differences
+act only in the PBPK layer; the EO parameters are shared by every scenario, so
+population enters this model only through `CEFFECT`.
+
+# Source trace
+
+```{r source-trace, echo = FALSE}
+tribble(
+  ~Quantity, ~`Paper value`, ~`Model value`, ~`Source location`,
+  "kon, wild type", "0.028", "0.028 x 60 = 1.68 /uM/h", "Table 1, 'kon EGFR (uM-1 s-1)' (kinact/Ki)",
+  "kon, L858R + T790M", "1.40", "1.40 x 60 = 84 /uM/h", "Table 1",
+  "kon, L858R", "0.57", "0.57 x 60 = 34.2 /uM/h", "Table 1",
+  "kon, C797S", "0.0026", "0.0026 x 60 = 0.156 /uM/h", "Table 1",
+  "koff", "0.001 /h", "0.001 /h", "Table 1; Methods text after Eq 5",
+  "kdeg", "0.025 /h", "0.025 /h", "Table 1 (half-life 27.5 h)",
+  "EGFR0 (EGFR T0)", "0.299 uM", "0.299 umol/L", "Table 1",
+  "dEO/dt", "Eq 3", "d/dt(complex_*)", "Methods, Eq 3",
+  "dEGFRfree/dt", "Eq 4", "d/dt(target_*)", "Methods, Eq 4",
+  "EGFR occupancy (%)", "Eq 5", "ro_*", "Methods, Eq 5",
+  "Driver C_OSI,BRT", "free conc. in BRT", "CEFFECT (umol/L)", "Methods, text after Eq 5"
+) |>
+  knitr::kable(caption = "Every equation and parameter, with its location in Liang 2024.")
+```
+
+The printed equations, with one free-EGFR / complex pair per variant:
+
+```
+(3)  dEO/dt       = kon * C_OSI,BRT * EGFRfree - koff * EO
+(4)  dEGFRfree/dt = (EGFR0 - EGFRfree) * kdeg - kon * C_OSI,BRT * EGFRfree + koff * EO
+(5)  EGFR occupancy (%) = (EGFR0 - EGFRfree) / EGFR0 * 100
+```
+
+## Units
+
+Each ODE term must be in `umol/L per h`:
+
+* `(rbase - target) * kdeg` = `umol/L * 1/h`. OK
+* `kon * CEFFECT * target` = `1/(umol/L)/h * umol/L * umol/L`. OK
+* `koff * complex` = `1/h * umol/L`. OK
+
+The occupancy is a ratio of two `umol/L` quantities, reported as a percentage.
+The only conversion in the file is `kon` x 60 (see Assumptions, item 1).
+
+## Parameter table: paper against model file
+
+```{r param-table}
+ini_tbl <- as.data.frame(rxode2::rxode(mod)$iniDf)[, c("name", "est", "fix")]
+paper <- c(
+  lkon_wt = log(0.028 * 60),
+  lkon_l858r_t790m = log(1.40 * 60),
+  lkon_l858r = log(0.57 * 60),
+  lkon_c797s = log(0.0026 * 60),
+  lkoff = log(0.001),
+  lkdeg = log(0.025),
+  lrbase = log(0.299)
+)
+ini_tbl |>
+  mutate(
+    `Back-transformed` = signif(exp(est), 4),
+    Matches = ifelse(abs(est - paper[name]) < 1e-12, "yes", "NO")
+  ) |>
+  rename(Parameter = name, `File value (log)` = est, Fixed = fix) |>
+  knitr::kable(caption = "Every ini() value against Table 1. All are fixed literature values.")
+
+stopifnot(
+  setequal(ini_tbl$name, names(paper)),
+  all(abs(ini_tbl$est - paper[ini_tbl$name]) < 1e-12),
+  all(ini_tbl$fix)
+)
+```
+
+# Validation
+
+The model is deterministic, has no dose and no residual error, so NCA does not
+apply. The checks follow the mechanistic pattern: baseline hold, an exact
+closed-form solution, and washout recovery. Each solve uses an observation
+grid on the `target_wt` state; rxode2 returns every state and every `ro_*`
+output at those rows.
+
+```{r helpers}
+variants <- c(
+  ro_wt = "Wild type",
+  ro_l858r_t790m = "L858R + T790M",
+  ro_l858r = "L858R",
+  ro_c797s = "C797S"
+)
+
+# Observation grid with a constant (or piecewise-constant) driver.
+make_events <- function(times, ceffect) {
+  data.frame(
+    id = 1L,
+    time = times,
+    evid = 0L,
+    cmt = "target_wt",
+    CEFFECT = ceffect
+  )
+}
+
+solve_df <- function(model, events, ...) {
+  as.data.frame(rxode2::rxSolve(model, events = events, ...))
+}
+
+to_long <- function(sim) {
+  sim |>
+    select(time, all_of(names(variants))) |>
+    pivot_longer(-time, names_to = "output", values_to = "occupancy") |>
+    mutate(variant = factor(variants[output], levels = variants))
+}
+```
+
+## 1. Baseline hold (zero exposure)
+
+With no drug every free EGFR pool must stay at `EGFR0` and occupancy at 0.
+
+```{r baseline}
+sim0 <- solve_df(mod, make_events(seq(0, 336, by = 24), 0))
+stopifnot(
+  max(abs(sim0$target_wt - 0.299)) < 1e-10,
+  max(abs(sim0$target_c797s - 0.299)) < 1e-10,
+  max(abs(as.matrix(sim0[, names(variants)]))) < 1e-8
+)
+knitr::kable(head(sim0[, c("time", "target_wt", names(variants))], 3), digits = 6)
+```
+
+## 2. Exact solution at a constant concentration
+
+At constant `C`, Eqs 3-4 are a linear system `x' = A x + b` in
+`x = (EGFRfree, EO)` with
+
+```
+A = [ -(kdeg + kon*C)   koff ]      b = [ kdeg * EGFR0 ]
+    [   kon*C          -koff ]          [ 0            ]
+```
+
+so `x(t) = x* + expm(A t) (x0 - x*)` with `x* = -A^-1 b`. The ODE solve must
+match that closed form to integrator precision for every variant.
+
+```{r closed-form}
+closed_form <- function(kon, conc, times, koff = 0.001, kdeg = 0.025, r0 = 0.299) {
+  A <- matrix(c(-(kdeg + kon * conc), kon * conc, koff, -koff), 2, 2)
+  b <- c(kdeg * r0, 0)
+  xstar <- -solve(A, b)
+  e <- eigen(A)
+  coef <- solve(e$vectors, c(r0, 0) - xstar)
+  free <- vapply(times, function(t) {
+    Re(xstar[1] + sum(e$vectors[1, ] * coef * exp(e$values * t)))
+  }, numeric(1))
+  (r0 - free) / r0 * 100
+}
+
+kon_h <- c(
+  ro_wt = 0.028, ro_l858r_t790m = 1.40, ro_l858r = 0.57, ro_c797s = 0.0026
+) * 60
+conc_cf <- 0.0159
+times_cf <- seq(0, 336, by = 2)
+sim_cf <- solve_df(mod, make_events(times_cf, conc_cf), rtol = 1e-10, atol = 1e-12)
+
+cf_err <- vapply(names(kon_h), function(o) {
+  max(abs(sim_cf[[o]] - closed_form(kon_h[[o]], conc_cf, times_cf)))
+}, numeric(1))
+knitr::kable(
+  data.frame(variant = variants[names(cf_err)],
+             max_abs_err_pct_points = formatC(cf_err, format = "e", digits = 2)),
+  row.names = FALSE,
+  caption = "Largest absolute difference (percentage points) between the ODE solve and the closed form, 0-336 h at 15.9 nmol/L."
+)
+# Measured about 1e-7 percentage points at these tolerances.
+stopifnot(all(cf_err < 1e-4))
+```
+
+The closed form also gives the long-run behaviour of the printed system:
+its fixed point is `EGFRfree = EGFR0`, so occupancy as defined by Eq 5 returns to
+zero over a time scale of `1/koff` = 1000 h even under sustained exposure,
+while the complex accumulates. Within the paper's 14-day horizon this decay is
+small (a few percentage points for the two sensitive mutants).
+
+## 3. Washout recovery
+
+Stopping the drug after 14 days lets free EGFR re-synthesise at rate `kdeg`.
+Because the printed Eq 3 gives the complex no degradation, the complex
+accumulated during dosing (several times `EGFR0` after 14 days) keeps releasing
+free EGFR at `koff * EO` after washout. Free EGFR therefore overshoots `EGFR0`
+and settles near the quasi-steady value `EGFR0 + koff * EO / kdeg`, and the
+Eq 5 occupancy turns negative. That is a property of the published equations,
+and the check below confirms the model reproduces it.
+
+```{r washout}
+times_w <- seq(0, 672, by = 4)
+sim_w <- solve_df(
+  mod,
+  make_events(times_w, ifelse(times_w < 336, 0.0159, 0)),
+  rtol = 1e-10, atol = 1e-12
+)
+ro_end <- sim_w$ro_l858r_t790m[sim_w$time == 336]
+ro_24h <- sim_w$ro_l858r_t790m[sim_w$time == 360]
+last <- sim_w[sim_w$time == 672, ]
+quasi_free <- 0.299 + 0.001 * last$complex_l858r_t790m / 0.025
+knitr::kable(
+  data.frame(
+    quantity = c("complex at 336 h (umol/L)", "free EGFR at 672 h (umol/L)",
+                 "EGFR0 + koff*EO/kdeg at 672 h (umol/L)", "occupancy at 672 h (%)"),
+    value = c(sim_w$complex_l858r_t790m[sim_w$time == 336],
+              last$target_l858r_t790m, quasi_free, last$ro_l858r_t790m)
+  ),
+  digits = 4, caption = "L858R + T790M pool after 14 days at 15.9 nmol/L and 14 days of washout."
+)
+stopifnot(
+  ro_24h < ro_end,
+  last$target_l858r_t790m > 0.299,
+  # The complex drifts slowly (1/koff = 1000 h), so the quasi-steady value
+  # holds to about 1%, not exactly.
+  abs(last$target_l858r_t790m / quasi_free - 1) < 0.03
+)
+to_long(sim_w) |>
+  ggplot(aes(time, occupancy, colour = variant)) +
+  geom_line() +
+  geom_vline(xintercept = 336, linetype = 2) +
+  labs(x = "Time (h)", y = "EGFR occupancy (%)", colour = NULL,
+       title = "Constant 15.9 nmol/L for 14 days, then washout")
+```
+
+# Replication of Figure 2B: four EGFR variants over 14 days
+
+Figure 2B shows occupancy in BRT for the four variants over 14 days of 80 mg
+once daily. Its driver is the PBPK model's free BRT concentration, which is not
+reproducible here. Liang 2024 Table 3 brackets that concentration at steady
+state: predicted intracranial Ctrough 10.3-15.9 nmol/L and Cmax 12.7-20.2
+nmol/L across the five brain-metastasis studies. The model is therefore run at
+constant concentrations spanning that range: 10.3 nmol/L (lowest predicted
+trough) and 20.2 nmol/L (highest predicted peak).
+
+```{r fig2b}
+times_b <- seq(0, 336, by = 2)
+brackets <- c(`10.3 nmol/L` = 0.0103, `20.2 nmol/L` = 0.0202)
+sim_b <- bind_rows(lapply(names(brackets), function(nm) {
+  to_long(solve_df(mod, make_events(times_b, brackets[[nm]]))) |>
+    mutate(driver = nm)
+}))
+
+ggplot(sim_b, aes(time, occupancy, colour = variant)) +
+  geom_line() +
+  geom_hline(yintercept = 80, linetype = 3, colour = "red") +
+  facet_wrap(~driver) +
+  labs(x = "Time (h)", y = "EGFR occupancy (%)", colour = NULL,
+       caption = "Replicates Figure 2B of Liang 2024 (driver held constant; see text).")
+```
+
+```{r fig2b-table}
+# Day-14 values read off Figure 2B by the maintainers (trough to peak of the
+# last dosing interval). The Results text gives "approximately 10%" for C797S
+# and above 80% for L858R + T790M and L858R.
+fig2b <- tibble(
+  variant = factor(variants, levels = variants),
+  `Figure 2B, day 14 (%)` = c("46-49", "88-92", "85-89", "8-9")
+)
+day14 <- sim_b |>
+  filter(time == 336) |>
+  select(variant, driver, occupancy) |>
+  pivot_wider(names_from = driver, values_from = occupancy)
+
+day14 |>
+  left_join(fig2b, by = "variant") |>
+  rename(Variant = variant,
+         `Model, 10.3 nmol/L (%)` = `10.3 nmol/L`,
+         `Model, 20.2 nmol/L (%)` = `20.2 nmol/L`) |>
+  knitr::kable(digits = 1, caption = "Occupancy at 336 h.")
+
+lo <- setNames(day14$`10.3 nmol/L`, as.character(day14$variant))
+hi <- setNames(day14$`20.2 nmol/L`, as.character(day14$variant))
+stopifnot(
+  # Paper's efficacy statement: both sensitive mutants above 80% in BRT.
+  lo[["L858R + T790M"]] > 80, lo[["L858R"]] > 80,
+  # Paper's resistance statement: C797S about 10%.
+  hi[["C797S"]] < 15,
+  # Rank order of Figure 2B.
+  all(lo[["L858R + T790M"]] > lo[["L858R"]], lo[["L858R"]] > lo[["Wild type"]],
+      lo[["Wild type"]] > lo[["C797S"]])
+)
+```
+
+The day-14 occupancies agree with Figure 2B semi-quantitatively: the two
+sensitive mutants sit above the 80% efficacy line (the model is 2-10 points
+higher), wild type sits at 34-50% against about 48%, and C797S at 5-9% against
+about 8-10%. What the constant driver cannot reproduce is the slow climb over
+the first week in Figure 2B. That climb follows the accumulation of the PBPK
+brain concentration towards steady state, which is a property of layer 1.
+
+## The printed kon unit
+
+The same simulation with `kon` taken literally as `uM^-1 s^-1` (x3600 into
+hours) shows why the model file reads the Table 1 values as per minute:
+
+```{r printed-unit}
+mod_printed <- mod |>
+  rxode2::ini(
+    lkon_wt = log(0.028 * 3600),
+    lkon_l858r_t790m = log(1.40 * 3600),
+    lkon_l858r = log(0.57 * 3600),
+    lkon_c797s = log(0.0026 * 3600)
+  )
+sim_p <- bind_rows(lapply(names(brackets), function(nm) {
+  to_long(solve_df(mod_printed, make_events(times_b, brackets[[nm]]))) |>
+    mutate(driver = nm)
+}))
+day14_p <- sim_p |>
+  filter(time == 336) |>
+  select(variant, driver, occupancy) |>
+  pivot_wider(names_from = driver, values_from = occupancy)
+day14_p |>
+  left_join(fig2b, by = "variant") |>
+  rename(Variant = variant,
+         `Printed unit, 10.3 nmol/L (%)` = `10.3 nmol/L`,
+         `Printed unit, 20.2 nmol/L (%)` = `20.2 nmol/L`) |>
+  knitr::kable(digits = 1, caption = "Occupancy at 336 h with kon read as printed (per second).")
+
+c797s_printed <- day14_p$`10.3 nmol/L`[day14_p$variant == "C797S"]
+stopifnot(c797s_printed > 50)
+```
+
+Read per second, C797S occupancy at the paper's own lowest intracranial
+concentration is about `r round(c797s_printed)`%, and wild type is near
+saturation. That reverses the paper's central conclusion that low C797S
+occupancy explains on-target resistance, and contradicts Figure 2B.
+
+# Figure 2A: the in-vitro comparison
+
+Figure 2A compares the model with T790M/L858R inhibition measured in NCI
+cells at 100 nmol/L, where the observed inhibition sits at about 80-84% over
+24 h and the paper's simulated curve peaks near 82%. A constant 100 nmol/L
+driver in this model gives near-complete occupancy of the double mutant within
+hours:
+
+```{r fig2a}
+sim_a <- solve_df(mod, make_events(seq(0, 24, by = 0.25), 0.1))
+to_long(sim_a) |>
+  ggplot(aes(time, occupancy, colour = variant)) +
+  geom_line() +
+  labs(x = "Time (h)", y = "EGFR occupancy (%)", colour = NULL,
+       caption = "Constant 100 nmol/L; compare Figure 2A of Liang 2024.")
+knitr::kable(sim_a[sim_a$time %in% c(6, 24), c("time", names(variants))], digits = 1)
+```
+
+Figure 2A is not reproduced under either `kon` reading. The curve the paper
+shows there is driven by a PK profile (dotted line, peak about 115 nmol/L) and
+by binding inside the PBPK model, where target-mediated depletion and the
+intracellular sub-compartment both act; the panel caption does not say which
+concentration drove it. This is recorded as a limitation, not adjusted for.
+
+# Assumptions and deviations
+
+1. **`kon` is read as `uM^-1 min^-1`, not the printed `uM^-1 s^-1`.** This is
+   an inferred unit correction, chosen by the maintainers because the printed
+   unit makes the model contradict the paper's own Figure 2B and its C797S
+   conclusion (see the section above), while the per-minute reading reproduces
+   both. Per-minute is PK-Sim's base unit for a second-order rate constant, so
+   values entered in base units and labelled per second in the table is a
+   plausible mechanism. Supplementary Table S3 also supports a near-saturated
+   double mutant: the sensitivity coefficient of EO trough to `kon` is only
+   -0.1 / 0.07. The numeric values are Table 1's; only the time unit changed.
+   To recover the literal reading, multiply each `kon` by 60, as in the
+   `mod_printed` chunk.
+
+2. **The deposited PK-Sim project was not used as a parameter source.** The
+   `.pksim5` file (supplement 1) holds a single binding process whose constants
+   differ from Table 1 on every value (`koff` 0.001 per minute rather than per
+   hour; `Kd` 0.12 nmol/L, implying `kon` = 8.33 uM^-1 min^-1; target half-life
+   0.6 min rather than 27.5 h). Table 1 is the published statement of the model
+   and is what is encoded.
+
+3. **The PBPK layer is not extracted;** `CEFFECT` stands in for it. Two
+   consequences follow. (a) With an external driver, occupancy is independent
+   of `EGFR0` (Eqs 3-5 are linear in the EGFR states), so Figure 3G-H, where a
+   higher EGFR T0 lowers occupancy, cannot be reproduced; that effect comes
+   from target-mediated depletion of drug inside the PBPK. (b) Figure 2A and
+   the first-week shape of Figure 2B depend on the PBPK driver.
+
+4. **The driver is the interstitial free concentration.** The Methods state
+   that `C_OSI,BRT` is the free concentration in the interstitial
+   sub-compartment of the brain; Supplementary Figure S1 says the occupancy is
+   simulated "within the intracellular compartment". The model follows the
+   Methods. Either way the user supplies the concentration.
+
+5. **Eqs 3-5 are encoded as printed.** The complex has no degradation term, so
+   total EGFR rises above `EGFR0` under exposure (to about nine times
+   `EGFR0` after 14 days at 15.9 nmol/L for the double mutant), the Eq 5
+   occupancy (depletion of free EGFR relative to baseline) relaxes to zero
+   over about `1/koff` = 1000 h of sustained exposure, and after washout free
+   EGFR overshoots `EGFR0` so the occupancy turns negative (Validation,
+   section 3). This is the published structure and was not changed; it
+   matters only for simulations much longer than the paper's 14 days or that
+   stop dosing.
+
+6. **Wild type and C797S are separate single-variant pools.** The paper
+   labels the fourth variant "C797S" without giving its background (clinically
+   it arises on L858R/T790M); it is encoded as its own pool with the Table 1
+   `kon`.
+
+7. **No IIV and no residual error are encoded.** Liang 2024 generated
+   variability by sampling PK-Sim virtual populations in the PBPK layer and
+   fitted no random effects on the EO layer.
+
+8. **Constant-concentration validation.** The Figure 2B comparison holds the
+   driver constant at the Table 3 bounds rather than reconstructing a daily
+   profile, because the within-day brain concentration profile is not
+   published.

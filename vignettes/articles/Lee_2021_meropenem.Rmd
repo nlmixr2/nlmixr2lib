@@ -117,7 +117,8 @@ solve_cohort <- function(cohort, ev_template) {
     dplyr::select(id, CRCL, etalcl, etalvc, etalvp) |>
     tidyr::crossing(ev_template) |>
     dplyr::arrange(id, time, dplyr::desc(evid))
-  s <- rxode2::rxSolve(mod, events = ev, omega = NA, sigma = NA, keep = "CRCL") |>
+  # steady-state searches for long-half-life subjects exceed the default step budget
+  s <- rxode2::rxSolve(mod, events = ev, omega = NA, sigma = NA, keep = "CRCL", maxsteps = 1e6) |>
     as.data.frame()
   # rxSolve omits the id column for a single-subject solve.
   if (!"id" %in% names(s)) s$id <- cohort$id[1]
@@ -241,6 +242,8 @@ sim_nca <- solve_cohort(cohort, dplyr::bind_rows(
 )) |>
   dplyr::left_join(dplyr::select(cohort, id, band), by = "id")
 
+# A subject that fails to solve comes back NA; stop rather than drop it.
+stopifnot(!anyNA(sim_nca$Cc))
 nca_conc <- sim_nca |>
   dplyr::filter(!is.na(Cc)) |>
   dplyr::mutate(treatment = factor(paste("eGFR", band),
