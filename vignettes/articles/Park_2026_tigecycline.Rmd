@@ -96,6 +96,19 @@ typ2 <- rxode2::zeroRe(mod2)
 vol1 <- 2 # mL, Table 2
 vol2 <- 0.2 # mL, Table 3
 kdeg1 <- 0.041 # 1/h, Table 2
+
+# A typical-value model has no omega, so rxode2 warns when it solves more
+# than one subject; that warning is expected here and muffled.
+solve_typical <- function(model, events, ...) {
+  withCallingHandlers(
+    rxode2::rxSolve(model, events, returnType = "data.frame", ...),
+    warning = function(w) {
+      if (grepl("without 'omega'", conditionMessage(w))) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+}
 ```
 
 The main model has two observed outputs: the TGC concentration (`dvid = 1`)
@@ -247,8 +260,7 @@ rxode2::rxSetSeed(2026)
 tk_vpc <- rxode2::rxSolve(mod1, tk_ev, returnType = "data.frame",
                           keep = c("c0", "regimen"))
 tk_typ_ev <- tk_ev |> filter(id %% n_tk == 1L)
-tk_typ <- rxode2::rxSolve(typ1, tk_typ_ev, returnType = "data.frame",
-                          keep = c("c0", "regimen"))
+tk_typ <- solve_typical(typ1, tk_typ_ev, keep = c("c0", "regimen"))
 
 # Plot the structural prediction (no residual error); censor at 1 CFU/mL.
 tk_band <- tk_vpc |>
@@ -329,7 +341,7 @@ criterion the intrinsic MIC (MICint = 0.5 mg/L). Kdeg is a fixed `ini()`
 value, so the static scenario overrides it with a negligible rate.
 
 ```{r static}
-static1 <- typ1 |> rxode2::ini(lkdeg = fixed(log(1e-10)))
+static1 <- typ1 |> rxode2::ini(lkdeg = log(1e-10))
 static_concs <- c(0, 0.25, 0.5, 0.6, 0.7, 3.125, 6.25)
 st_ev <- bind_rows(lapply(seq_along(static_concs), function(i) {
   ci <- static_concs[i]
@@ -342,7 +354,7 @@ st_ev <- bind_rows(lapply(seq_along(static_concs), function(i) {
                              evid = 0L, cmt = "bact", dvid = 2L)) |>
     mutate(conc = ci)
 }))
-st_sim <- rxode2::rxSolve(static1, st_ev, returnType = "data.frame", keep = "conc")
+st_sim <- solve_typical(static1, st_ev, keep = "conc")
 ```
 
 ```{r static_plot, fig.cap = "Replicates Figure 5 of Park 2026: typical-value bacterial counts at static TGC concentrations. Dashed line: the MIC criterion digitised from Figure 5A (about 3.0e6 CFU/mL)."}
@@ -419,9 +431,8 @@ media_ev <- bind_rows(lapply(seq_len(nrow(media_grid)), function(i) {
 rxode2::rxSetSeed(2026)
 media_vpc <- rxode2::rxSolve(mod2, media_ev, returnType = "data.frame",
                              keep = c("MEDIUM_MHB", "conc"))
-media_typ <- rxode2::rxSolve(typ2, filter(media_ev, id %% n_media == 1L),
-                             returnType = "data.frame",
-                             keep = c("MEDIUM_MHB", "conc"))
+media_typ <- solve_typical(typ2, filter(media_ev, id %% n_media == 1L),
+                           keep = c("MEDIUM_MHB", "conc"))
 ```
 
 ```{r media_plot, fig.height = 5, fig.cap = "Replicates Figure 6 of Park 2026: media-model typical value (line), 95% prediction band including residual error (ribbon) and the digitised Figure 6 observations (points) for 7H9 (top) and MHB II (bottom)."}
