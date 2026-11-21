@@ -11781,6 +11781,17 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Ding_2024_ivermectin.R` (multiplies the log10 exponent of beta by `1 - 0.128` and of p by `1 - 0.290`; serotype 3 infections give lower viral loads).
 - **Notes:** Dengue-specific. See [[DENV_SEROTYPE1]].
 
+### INFLUENZA_B (**canonical for infecting influenza virus type B indicator**)
+- **Description:** 1 = the infecting influenza virus is type B, 0 = influenza type A. Time-fixed per subject, set by the challenge strain in an experimental-inoculation study or by laboratory typing in a natural-infection study.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (influenza A). In the founding model the reference strain is A/Texas/91 (H1N1).
+- **Source aliases:**
+  - `genotype` (two-level A/B; `INFLUENZA_B = (genotype == "B")`) -- used in `Fujita_2026_influenza.R` (S8 Table column 'Covariate for genotype B').
+- **Example models:** `Fujita_2026_influenza.R` (additive log-scale shift on all four target-cell-limited parameters: `+1.65` on log(beta), `-0.739` on log(gamma), `-0.595` on log(delta), `+0.959` on log(V(0)); reference strain A/Texas/91 (H1N1), type-B strain B/Yamagata/16/88).
+- **Notes:** Influenza-specific. In a challenge study pooling one type-A and one type-B trial the indicator is collinear with study, so it also absorbs protocol differences (inoculum titre, treatment start); record those in `covariateData[[INFLUENZA_B]]$notes`. An influenza A subtype indicator (H1N1 vs H3N2) is a separate concept; register it as its own entry when a paper first estimates one.
+
 ### DENV_PRIMARY (**canonical for primary dengue infection indicator**)
 - **Description:** 1 = primary (first-ever) dengue virus infection, 0 = secondary infection (a previous infection with a different serotype). Time-fixed per subject. Usually classified from the ratio of dengue-specific IgM to IgG by ELISA in the acute phase.
 - **Units:** (binary)
