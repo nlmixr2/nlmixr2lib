@@ -490,6 +490,35 @@ reference <- post_lik$pinform * dbinom(post_lik$DV, 14, post_lik$xi) +
 stopifnot(isTRUE(all.equal(post_lik$lik_dd, reference, tolerance = 1e-10)))
 ```
 
+A count outside `0..NDAYS` has zero binomial probability, and with fewer than
+four diary days `P(DD <= 3) = 1`. The model clamps the count passed to
+`llikBinom()` so these records evaluate instead of stopping the session.
+
+```{r likelihood-domain-check}
+edge_events <- tibble(
+  id = 1:4,
+  time = 4 * wk,
+  DV = c(-1, 15, 2, 2),
+  NDAYS = c(14, 14, 2, 0),
+  amt = 0,
+  evid = 0L,
+  cmt = "latent_dysphagia_days",
+  STEROID_IR = 0L
+) |>
+  bind_cols(pk_typ[rep(1, 4), ])
+edge <- rxode2::rxSolve(mod_typ, events = edge_events, keep = "DV") |>
+  as.data.frame() |>
+  arrange(id) |>
+  mutate(NDAYS_in = edge_events$NDAYS)
+edge |> select(DV, NDAYS = NDAYS_in, pdf_binom_dd, cdf3_dd)
+stopifnot(
+  edge$pdf_binom_dd[1:2] == 0,
+  isTRUE(all.equal(edge$pdf_binom_dd[3], dbinom(2, 2, edge$xi[3]), tolerance = 1e-12)),
+  edge$pdf_binom_dd[4] == 0,
+  isTRUE(all.equal(edge$cdf3_dd[3:4], c(1, 1), tolerance = 1e-12))
+)
+```
+
 # Drug-effect check
 
 On placebo the drug-effect variable stays at 1, so `drug_eff` is exactly 0.
@@ -591,6 +620,12 @@ QW/Q2W average is half the QW average, as the paper states.
   drug-onset half-lives in weeks. The model stores
   `log(log(2) / (168 * t_half))` per hour, the conversion in the NONMEM code;
   the IIV is on the placebo rate constant, as in `PBOKON = POPPBOKON*EXP(ETA(2))`.
+- **Count domain.** The NONMEM code evaluates `BINOMIALCDF` and the binomial
+  density only on observed counts in `0..NDAYS`. In rxode2 an out-of-range
+  count in `llikBinom()` stops the R session, so the model clamps the count
+  and multiplies by an indicator. The likelihood is unchanged for every
+  in-range record, and a count outside the range gets zero binomial mass.
+  Baseline records still need `NDAYS >= 4`, the enrolment criterion.
 - **Placebo subjects' PK columns.** The NONMEM code sets every PK parameter to
   1 for placebo subjects. Placebo subjects receive no doses, so the values
   are irrelevant as long as they are positive.

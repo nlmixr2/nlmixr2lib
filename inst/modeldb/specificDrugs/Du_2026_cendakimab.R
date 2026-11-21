@@ -86,7 +86,13 @@ Du_2026_cendakimab <- function() {
       units = "h",
       type = "continuous",
       reference_category = NULL,
-      notes = "NONMEM data column 'ALAG1i' (applied as ALAG1 on the depot). Same upstream source and simulation guidance as CL_INDIV.",
+      reference_value = 0,
+      notes = paste(
+        "NONMEM data column 'ALAG1i' (applied as ALAG1 on the depot). Same upstream",
+        "source and simulation guidance as CL_INDIV. The authors' typical lag is",
+        "unpublished; reference_value = 0 (no lag) is the value to use when no",
+        "per-subject estimate is available."
+      ),
       source_name = "ALAG1i"
     ),
     FDEPOT_INDIV = list(
@@ -120,8 +126,10 @@ Du_2026_cendakimab <- function() {
         "NONMEM data column 'NDAYS' ('Period which Dysphagia Days was",
         "evaluated'). The binomial size of the CUB likelihood; nominally 14 but",
         "smaller when diary entries are missing (Du 2026 Methods 'Analysis",
-        "Data'). Set to 14 for simulation."
+        "Data'). Set to 14 for simulation. Baseline records (t <= 0) are",
+        "conditioned on DD >= 4 and need NDAYS >= 4."
       ),
+      reference_value = 14,
       source_name = "NDAYS"
     )
   )
@@ -238,9 +246,15 @@ Du_2026_cendakimab <- function() {
     # Equation 1). Baseline records (t <= 0) are conditioned on the enrolment
     # criterion DD >= 4 (Equations 7-8; Data S1
     # CDFLB = PIP*(1-BINOMIALCDF(3))+((NDAYS-4+1)*(1-PIP))/(NDAYS+1)).
-    pdf_dd <- pinform * exp(llikBinom(DV, NDAYS, xi)) + (1 - pinform) / (NDAYS + 1)
-    cdf3_dd <- exp(llikBinom(0, NDAYS, xi)) + exp(llikBinom(1, NDAYS, xi)) +
-      exp(llikBinom(2, NDAYS, xi)) + exp(llikBinom(3, NDAYS, xi))
+    # A binomial pmf term is zero for a count outside 0..NDAYS. The min()/max()
+    # clamps keep llikBinom() inside its domain: an out-of-domain count makes
+    # rxode2 abort the R session (uncaught C++ domain_error), not return -Inf.
+    pdf_binom_dd <- (DV >= 0) * (DV <= NDAYS) * exp(llikBinom(max(0, min(DV, NDAYS)), NDAYS, xi))
+    pdf_dd <- pinform * pdf_binom_dd + (1 - pinform) / (NDAYS + 1)
+    cdf3_dd <- exp(llikBinom(0, NDAYS, xi)) +
+      (NDAYS >= 1) * exp(llikBinom(min(1, NDAYS), NDAYS, xi)) +
+      (NDAYS >= 2) * exp(llikBinom(min(2, NDAYS), NDAYS, xi)) +
+      (NDAYS >= 3) * exp(llikBinom(min(3, NDAYS), NDAYS, xi))
     if (t <= 0) {
       lik_dd <- pdf_dd / (pinform * (1 - cdf3_dd) + (NDAYS - 3) * (1 - pinform) / (NDAYS + 1))
     } else {
