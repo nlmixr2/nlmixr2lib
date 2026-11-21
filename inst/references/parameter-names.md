@@ -2448,6 +2448,15 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** mixture models.
 
+### logitpinform, pinform (**canonical informative-response weight of a combined uniform-binomial (CUB) likelihood**)
+- **Type:** paper-named-param
+- **Role:** Logit of `pinform`, the mixture weight of a combined uniform-binomial (CUB) count likelihood: with probability `pinform` a bounded count `k` out of `n` follows `Binomial(n, xi)` (the response is informative about the latent probability `xi`), and with probability `1 - pinform` it is uniform on `0..n` (the response carries no information, "uncertainty"). The pmf is `pinform * dbinom(k, n, xi) + (1 - pinform) / (n + 1)`. Bare form inside `model()` is `pinform <- expit(logitpinform)`.
+- **Source aliases:**
+  - `pi` -- the usual CUB symbol; Du 2026 Table 2 'uncertainty parameter pi'.
+  - `PIPT` / `PIP` -- Du 2026 Data S1 (`THETA(9)`, `PIP = EXP(PIPT)/(1+EXP(PIPT))`).
+- **Example models:** `Du_2026_cendakimab.R` (`logitpinform` = 2.568, i.e. `pinform` = 0.929, on the count of dysphagia days in a 14-day diary).
+- **Notes:** Distinct from the generic mixing weights `frac` and `alfm`: those partition *subjects* into latent classes, whereas `pinform` mixes two likelihoods for every *record*. Named for what the weight means (the probability the response is informative) rather than for the CUB symbol `pi`, which collides with the mathematical constant.
+
 ### ksyn (**canonical biomarker synthesis rate**)
 - **Type:** paper-named-param
 - **Role:** Zero-order or first-order synthesis rate constant for an endogenous biomarker turnover state.
@@ -4042,6 +4051,14 @@ between-subject variability, which an arm-level MBMA does not estimate.
   - `LAMBDA`, `SHAPE` -- common NONMEM `$THETA` labels for the same quantity.
 - **Example models:** `Siebinga_2024_lu177psmaIT.R` (`boxcox_lkgrow` = -0.822, RSE 28.3%, the shape of the PSA-growth-rate eta; the authors added it because the kG random effect deviated strongly from log-normal, dOFV -28.7); `Agergaard_2025_tacrolimus.R` (`boxcox_lratio_pbmc_central` = -2.50, RSE 26.7%, the shape of the eta on the PBMC:whole-blood concentration ratio; the negative lambda gives a long lower tail of the ratio).
 - **Notes:** Name the entry after the parameter whose eta is transformed, spelled as that parameter appears in `ini()`, so `boxcox_lkgrow` transforms `etalkgrow`. **Distinct from `lambda_<output>`** -- e.g. `lambda_ca125` in `Wilbaux_2014_ovarianCancer_ca125.R`, which is a Box-Cox transform of the *residual error*, declared through `rxode2::boxCox()` inside the error model and carried in the `paper_specific_residual_sds` metadata field. That mechanism cannot express an eta transform, which is why this separate canonical exists; do not conflate the two.
+
+### logitskew_<param>, logitwidth_<param> (**canonical shape parameters of a logit-transformed interindividual random-effect distribution**)
+- **Type:** paper-named-param
+- **Role:** The two estimated shape parameters of a logit transformation applied to the *interindividual* random effect of `<param>`, used when the eta distribution is skewed and bounded rather than normal. The individual value is `<param>_i = <param> + (expit(logitskew_<param> + eta<param>) - expit(logitskew_<param>)) * logitwidth_<param>`: `logitskew_<param>` (signed, on the logit scale) sets the skewness by choosing where on the logistic curve the typical subject sits, and `logitwidth_<param>` (in the units of `<param>`) sets the width of the bounded range that individual values can span. Both are structural THETAs in `ini`, wrapped in `fixed` only when the paper fixed them; the transform is written out explicitly in `model` because rxode2 cannot attach it to an eta.
+- **Source aliases:**
+  - `LGT1` (skewness), `LGT2` (width) -- Du 2026 Table 2 and Data S1 (`THETA(7)`, `THETA(8)`).
+- **Example models:** `Du_2026_cendakimab.R` (`logitskew_logitrbase` = -2.419, `logitwidth_logitrbase` = 61.24 logit units, on the baseline logit of the daily dysphagia probability).
+- **Notes:** Name the pair after the parameter whose eta is transformed, spelled as that parameter appears in `ini()` (so `logitskew_logitrbase` transforms `etalogitrbase`), as for `boxcox_<param>`. Distinct from `boxcox_<param>`, which is a one-parameter power transform of `exp(eta)`; the logit form is bounded on both sides. The `logit` in the prefix names the transform, not the scale the parameter is reported on.
 
 ### lkd_direct, kd_direct, lkd_delay, kd_delay (**canonical linear drug-effect coefficients on a turnover loss rate**)
 - **Type:** paper-named-param
