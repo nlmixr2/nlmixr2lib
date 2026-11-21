@@ -10105,11 +10105,23 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (non-Wilson subject; the complement group is paper-defined -- in Lindauer 2026 it pools healthy subjects and heterozygous carriers, which are separated by their own indicator).
+- **Reference category:** 0 (non-Wilson subject; the complement group is paper-defined -- in Lindauer 2026 it pools healthy subjects and heterozygous carriers, which are separated by `ATP7B_HET`).
 - **Source aliases:**
   - `isWD` -- Lindauer 2026 NONMEM `$INPUT` column, coded 0 / 0.5 / 1 for healthy / heterozygote / WD; `DIS_WILSON = (isWD == 1)`. Used in `Lindauer_2026_copper.R`.
 - **Example models:** `Lindauer_2026_copper.R` (sets both ATP7B activity factors to the gene-therapy-restored value, 0 if untreated; switches on the WD-only precursor-to-extracellular-liver copper flux; fractional shifts on three hepatic / tissue copper distribution rates).
 - **Notes:** Auto-approved member of the `DIS_<disease>` family. Scope: specific because the complement group is paper-defined.
+
+### ATP7B_HET (**canonical for heterozygous ATP7B carrier indicator**)
+- **Description:** 1 = heterozygous ATP7B carrier (one functional and one loss-of-function ATP7B allele; typically a first-degree relative of a Wilson disease patient), 0 = not a heterozygous carrier (healthy non-carrier or Wilson disease patient). Time-fixed per subject (germline genotype). Carriers are clinically unaffected but have partially reduced ATP7B-dependent copper handling (biliary excretion, ceruloplasmin loading).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (healthy non-carrier when paired with `DIS_WILSON = 0`). Mutually exclusive with `DIS_WILSON`: a Wilson disease patient has `ATP7B_HET = 0`.
+- **Source aliases:**
+  - `isWD == 0.5` -- Lindauer 2026 NONMEM `$INPUT` column coded 0 / 0.5 / 1 for healthy / heterozygote / WD; `ATP7B_HET = (isWD == 0.5)`. Used in `Lindauer_2026_copper.R`.
+  - `isHet` -- Lindauer 2026 campsis simulation model (Data S2).
+- **Example models:** `Lindauer_2026_copper.R` (estimated ATP7B activity factors replace 1 in carriers: 0.369 on ceruloplasmin loading and 0.101 on biliary copper excretion; no Wilson disease distribution shifts).
+- **Notes:** Gene-level carrier flag following the `<GENE>_..._HET` pattern of `CYP2D6_STAR10_HET` and `CYP3A5_STAR1_HET`. It is gene-level rather than allele-level because Wilson disease is caused by hundreds of ATP7B variants and sources classify carriers by family genotyping, not by a specific allele. The homozygous / compound-heterozygous loss-of-function state is `DIS_WILSON`, not an `ATP7B_HOM` flag.
 
 ### DIS_HOFH (**canonical for homozygous familial hypercholesterolemia patient indicator**)
 - **Description:** 1 = patient with homozygous familial hypercholesterolemia (HoFH), 0 = non-HoFH subject (typically healthy volunteer or another reference cohort pooled in the source analysis). Time-fixed per subject.
@@ -13951,6 +13963,17 @@ Serum neutralizing (SN) titre readouts from vaccine model-based meta-analyses th
   - `onZinc` -- Lindauer 2026 NONMEM `$INPUT` column. Used in `Lindauer_2026_copper.R`.
 - **Example models:** `Lindauer_2026_copper.R` (fractional effects `1 + e_zinc_k_abs_liv * CONMED_ZINC` on gut-to-liver copper absorption, -0.8, and `1 + e_zinc_k_pl_tis * CONMED_ZINC` on plasma-to-tissue copper distribution, +1; both fixed from an earlier model version).
 - **Notes:** Auto-approved member of the `CONMED_<INN>` family; the salt is not distinguished because the effect is attributed to elemental zinc. Record the zinc salt and daily elemental dose per model when the source reports them.
+
+### CONMED_COPPER_CHELATOR (**canonical for concomitant copper-chelator therapy indicator**)
+- **Description:** 1 = on copper-chelator therapy (D-penicillamine, trientine, dimercaprol / BAL or another copper chelator), 0 = no copper chelator. Chelators bind non-ceruloplasmin-bound copper and increase its urinary excretion; they are standard first-line and maintenance therapy in Wilson disease. Time-varying allowed.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no copper chelator).
+- **Source aliases:**
+  - `onChelator` -- Lindauer 2026 NONMEM `$INPUT` column. Used in `Lindauer_2026_copper.R`.
+- **Example models:** `Lindauer_2026_copper.R` (fractional effect `1 + e_chelator_k_pl_urine * CONMED_COPPER_CHELATOR` on plasma-to-urine copper excretion, 15.8, a 16.8-fold increase; one pooled effect for penicillamine, trientine and dimercaprol).
+- **Notes:** Class-level `CONMED_` indicator (precedents `CONMED_AZOLE`, `CONMED_DIURETIC`). The per-model `covariateData[[CONMED_COPPER_CHELATOR]]$notes` must list which chelators the source pools. Iron chelators (deferoxamine, deferasirox, deferiprone) are not covered by this indicator.
 
 ### CONMED_AZOLE (**canonical for concomitant azole antifungal therapy (CYP3A4/P-gp inhibitor)**)
 - **Description:** 1 = patient coadministered an azole antifungal (itraconazole, voriconazole, fluconazole, ketoconazole, posaconazole, isavuconazole, or another systemic azole) during the observation interval, 0 = no concomitant azole antifungal. Time-varying per subject because azole exposure starts and stops during the observation period.

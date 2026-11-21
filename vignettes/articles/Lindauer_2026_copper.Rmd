@@ -66,7 +66,8 @@ str(mod()$population)
 
 | Item | Value | Source |
 |------|-------|--------|
-| ODE system (14 states) | `$DES` block | Data S1 section 3 (NONMEM); Data S2 `model.campsis` `[ODE]` |
+| ODE system (14 copper states) | `$DES` block | Data S1 section 3 (NONMEM); Data S2 `model.campsis` `[ODE]` |
+| Gene-therapy state `trt_af` (constant, dosed with the AF) | `d/dt(trt_af) <- 0` | Data S2 `model.campsis` (`TRT` state, `A_TRT`) and script (`Bolus(..., compartment = "TRT")`) |
 | `k_abs_liv`, `k_abs_gutD` | exp(1.79), exp(2.64) /day, fixed | NONMEM THETA(1-2) FIX; Table 1 (6, 14.0) |
 | `k_livPre_out` | 1.13 /day | Table 1 |
 | `E_bill` (`f_bile_out`) | 0.75, fixed | Table 1 (Buckley); biliary split into `k_liv_gutD` / `k_liv_abs` in `$PK` |
@@ -90,13 +91,15 @@ str(mod()$population)
 
 Every simulation below builds a data frame with a dose record, observation
 records on the `plasma_ncc` state (with `dvid = 1`, because the model has six
-endpoints) and the six covariate columns.
+endpoints) and the five covariate columns. VTX-801 gene therapy is not a
+covariate: as in the authors' campsis script, the restored activity factor is
+given as a bolus into the constant state `trt_af`, which is 0 until that dose
+and holds the dosed value afterwards.
 
 ```{r helpers}
-cov_cols <- function(df, wd = 0, het = 0, af = 0, chel = 0, zinc = 0, comet = 0) {
+cov_cols <- function(df, wd = 0, het = 0, chel = 0, zinc = 0, comet = 0) {
   df$DIS_WILSON <- wd
   df$ATP7B_HET <- het
-  df$ATP7B_ACT_RESTORED <- af
   df$CONMED_COPPER_CHELATOR <- chel
   df$CONMED_ZINC <- zinc
   df$STUDY_COMET <- comet
@@ -112,13 +115,27 @@ iv_tracer_events <- function(ids, obs_days) {
   )
   bind_rows(lapply(ids, function(i) mutate(one, id = i)))
 }
+
+# VTX-801: a bolus of the activity factor `af` into `trt_af` at `time`. An
+# untreated patient (af = 0) gets no record, so trt_af stays at 0.
+af_dose <- function(ids, af, time = 0) {
+  if (af == 0) {
+    return(NULL)
+  }
+  data.frame(id = ids, time = time, amt = af, evid = 1L, cmt = "trt_af", dvid = NA_integer_)
+}
+
+# Order each subject's records by time; at a tied time the doses come first.
+sort_events <- function(df) {
+  arrange(df, id, time, desc(evid))
+}
 ```
 
 # Mass balance
 
 Every copper flux leaves one state and enters another, and urine, faeces and
 sweat are cumulative states, so after a single intravenous tracer dose the sum
-over all 14 states must stay at the dose. This checks the transcription of the
+over the 14 copper states must stay at the dose. This checks the transcription of the
 ODE right-hand sides.
 
 ```{r mass-balance}
@@ -212,7 +229,8 @@ distribution differences ("their behavior under treatment remains
 uncertain"), so all WD differences are switched off below with an `ini()`
 override: the three fractional shifts are set to 0 and the WD-only return
 flux from the precursor pool (`k_livPre_liv`) to effectively zero. Each WD
-patient then receives an activity factor AF on ceruloplasmin loading and
+patient then receives an activity factor AF (a bolus into `trt_af` before
+the tracer) on ceruloplasmin loading and
 `AF^2.28` on biliary excretion. Leaving `k_livPre_liv` on lowers the AF = 1
 plasma level at 72 h from 5.5 to 3.7 %ID, which does not match Figure 5A, so
 the figure was evidently simulated without it.
@@ -226,7 +244,9 @@ mod_resp <- mod_ui |>
 af_grid <- seq(0, 1, by = 0.1)
 fig5_days <- c(seq(0.25, 6, by = 0.25), seq(7, 72, by = 1)) / 24
 ev5a <- bind_rows(lapply(seq_along(af_grid), function(i) {
-  cov_cols(iv_tracer_events(i, fig5_days), wd = 1, af = af_grid[i])
+  bind_rows(iv_tracer_events(i, fig5_days), af_dose(i, af_grid[i])) |>
+    sort_events() |>
+    cov_cols(wd = 1)
 }))
 sim5a <- rxSolve(rxode2::zeroRe(mod_resp), ev5a, returnType = "data.frame") |>
   mutate(AF = af_grid[id], pct_id = Cc * 2.8)
@@ -254,7 +274,9 @@ stopifnot(
 n_per_af <- 100
 ev5b <- bind_rows(lapply(seq_along(af_grid), function(i) {
   ids <- (i - 1) * n_per_af + seq_len(n_per_af)
-  cov_cols(iv_tracer_events(ids, c(2, 48) / 24), wd = 1, af = af_grid[i])
+  bind_rows(iv_tracer_events(ids, c(2, 48) / 24), af_dose(ids, af_grid[i])) |>
+    sort_events() |>
+    cov_cols(wd = 1)
 }))
 rxode2::rxSetSeed(20260102)
 sim5b <- rxSolve(mod_resp, ev5b, returnType = "data.frame") |>
@@ -308,11 +330,12 @@ ev_s8 <- bind_rows(lapply(seq_len(nrow(s8_arms)), function(i) {
     data.frame(time = 0, amt = 1.4 * 1500, rate = 1.4, evid = 1L, cmt = "gut_abs", dvid = NA_integer_),
     data.frame(time = s8_obs, amt = 0, rate = 0, evid = 0L, cmt = "plasma_ncc", dvid = 1L)
   ) |>
-    arrange(time) |>
     mutate(id = i)
+  gt <- af_dose(i, a$af, time = 1000)
+  if (!is.null(gt)) gt$rate <- 0
+  ev <- bind_rows(ev, gt) |> sort_events()
   on <- ev$time >= 1000
   ev <- cov_cols(ev, wd = a$wd)
-  ev$ATP7B_ACT_RESTORED <- ifelse(on, a$af, 0)
   ev$CONMED_COPPER_CHELATOR <- ifelse(on, a$chel, 0)
   ev$CONMED_ZINC <- ifelse(on, a$zinc, 0)
   ev
@@ -443,12 +466,15 @@ stopifnot(all(abs(ss$out_per_day - 1.4) < 0.01))
   effects on `k_pl_urine`, `k_livPre_livStore`, `k_livStore_livPre`,
   `k_pl_tis` and `k_pl_tis2` that are all fixed at 0; they are not in Table 1
   or the campsis model and are omitted.
-* **Gene therapy.** VTX-801 is represented by the covariate
-  `ATP7B_ACT_RESTORED`, the restored ceruloplasmin-loading activity in a WD
-  patient; biliary activity follows as `ATP7B_ACT_RESTORED^2.28`, the power
-  function of the campsis model (the exponent reproduces the heterozygote pair:
-  0.369^2.28 = 0.103 vs 0.101). The campsis script supplies the AF as a dose
-  into a constant `TRT` state; a time-varying covariate does the same here.
+* **Gene therapy.** VTX-801 is represented, as in the campsis script, by a
+  constant state `trt_af` (`d/dt(trt_af) <- 0`, the campsis `TRT` state) that
+  receives the activity factor as a bolus at the time of vector injection, so
+  a dose record carries a unitless activity factor rather than an amount of
+  copper. Its value is the restored ceruloplasmin-loading activity in a WD
+  patient; biliary activity follows as `trt_af^2.28`, the power function of
+  the campsis model (the exponent reproduces the heterozygote pair:
+  0.369^2.28 = 0.103 vs 0.101). Only WD patients use it; in healthy subjects
+  and carriers a `trt_af` dose has no effect.
   The mouse dose-response model that links vector dose to AF (Table S2) is not
   part of this model.
 * **Figure 6 changes from baseline are not reproduced.** The baselines of

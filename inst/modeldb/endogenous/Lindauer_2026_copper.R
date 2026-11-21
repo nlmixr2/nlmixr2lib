@@ -8,7 +8,8 @@ Lindauer_2026_copper <- function() {
     "carries the two ATP7B-dependent processes (biliary excretion and",
     "ceruloplasmin loading) as activity factors: 1 in healthy subjects,",
     "estimated in heterozygotes, 0 in untreated WD. The ATP7B gene therapy",
-    "VTX-801 enters as a restored activity factor in WD patients. Chelator and",
+    "VTX-801 enters as a restored activity factor in WD patients, dosed into a",
+    "constant state as in the authors' simulation model. Chelator and",
     "zinc background therapy and a COMET-study faecal-transit shift are",
     "covariates. The fitted model has no IIV; the fixed 15% CV IIV on the rate",
     "constants is the authors' simulation assumption.",
@@ -26,6 +27,11 @@ Lindauer_2026_copper <- function() {
   vignette <- "Lindauer_2026_copper"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Copper doses go into gut_abs (oral / dietary) or plasma_ncc (intravenous
+  # radiocopper). trt_af takes the unitless VTX-801 activity factor (0-1) as a
+  # bolus, not a copper amount.
+  dosing <- c("gut_abs", "plasma_ncc", "trt_af")
+
   # Every state is a copper amount. Radiocopper studies dose a unit (or 100%)
   # tracer dose, so amounts read directly as a fraction (percent) of the
   # injected dose; cold-copper simulations dose mg of dietary copper.
@@ -41,7 +47,8 @@ Lindauer_2026_copper <- function() {
     "tissue_cp",
     "gut_transit",
     "feces",
-    "sweat"
+    "sweat",
+    "trt_af"
   )
 
   compartmentData <- list(
@@ -128,6 +135,12 @@ Lindauer_2026_copper <- function() {
       units = "mg",
       specimen = "not applicable",
       verified = TRUE
+    ),
+    trt_af = list(
+      analyte = "ATP7B activity factor restored by VTX-801 gene therapy",
+      units = "(fraction of normal ATP7B activity)",
+      specimen = "not applicable",
+      verified = TRUE
     )
   )
 
@@ -139,7 +152,7 @@ Lindauer_2026_copper <- function() {
       reference_category = 0,
       notes = paste(
         "1 = Wilson disease patient (NONMEM isWD = 1). Sets both activity",
-        "factors to the restored value ATP7B_ACT_RESTORED (0 if untreated),",
+        "factors from the gene-therapy state trt_af (0 if untreated),",
         "switches on k_livPre_liv, and applies the WD shifts on k_liv_livPre,",
         "k_tis_pl and k_tis2_pl. 0 = healthy subject or heterozygous carrier.",
         "Mutually exclusive with ATP7B_HET."
@@ -159,28 +172,16 @@ Lindauer_2026_copper <- function() {
       ),
       source_name = "isWD == 0.5 (campsis isHet)"
     ),
-    ATP7B_ACT_RESTORED = list(
-      description = "ATP7B activity factor restored by gene therapy (VTX-801) in Wilson disease patients",
-      units = "(fraction of normal ATP7B activity)",
-      type = "continuous",
-      reference_category = NULL,
-      notes = paste(
-        "0 = untreated; 1 = full restoration. Used only when DIS_WILSON = 1:",
-        "ceruloplasmin-loading activity = ATP7B_ACT_RESTORED and biliary",
-        "activity = ATP7B_ACT_RESTORED^e_af_bil (Data S2 campsis model, where",
-        "the value is supplied as a dose into the TRT state). The paper's",
-        "consensus efficacy targets are 0.15 (minimal) and 0.4 (optimal).",
-        "Time-varying: switch it on at the time of vector injection. Not a",
-        "fitted covariate; a simulation input."
-      ),
-      source_name = "A_TRT (campsis)"
-    ),
     CONMED_COPPER_CHELATOR = list(
       description = "Copper-chelator background therapy (penicillamine, trientine or dimercaprol)",
       units = "(binary)",
       type = "binary",
       reference_category = 0,
-      notes = "1 = on chelator: k_pl_urine * (1 + e_chelator_k_pl_urine). Time-varying allowed.",
+      notes = paste(
+        "1 = on penicillamine, trientine or dimercaprol (BAL), pooled as one",
+        "class effect: k_pl_urine * (1 + e_chelator_k_pl_urine). Time-varying",
+        "allowed."
+      ),
       source_name = "onChelator"
     ),
     CONMED_ZINC = list(
@@ -362,9 +363,13 @@ Lindauer_2026_copper <- function() {
     # factors equal to 1; heterozygotes carry the estimated factors; WD patients
     # carry the gene-therapy-restored factor (0 if untreated), with biliary
     # activity tied to ceruloplasmin-loading activity by a power function.
+    # The restored factor is the amount in trt_af, a constant state that starts
+    # at 0 and is set by a bolus of the activity factor at vector injection
+    # (Data S2 model.campsis: TRT state, A_TRT; Bolus(amount = 0.4,
+    # compartment = 'TRT')).
     healthy <- 1 - DIS_WILSON - ATP7B_HET
-    af_wd_cp <- ATP7B_ACT_RESTORED
-    af_wd_bil <- ATP7B_ACT_RESTORED^e_af_bil
+    af_wd_cp <- trt_af
+    af_wd_bil <- trt_af^e_af_bil
     af_cp <- healthy + ATP7B_HET * af_het_cp + DIS_WILSON * af_wd_cp
     af_bil <- healthy + ATP7B_HET * af_het_bil + DIS_WILSON * af_wd_bil
 
@@ -410,6 +415,7 @@ Lindauer_2026_copper <- function() {
     d/dt(feces) <- k_gutd_feces * gut_transit
     d/dt(urine) <- k_pl_urine * plasma_ncc
     d/dt(sweat) <- k_tis_sweat * tissue_ncc
+    d/dt(trt_af) <- 0
 
     # Fitted outputs (amounts in dose units; concentrations in mg/L)
     Cc <- (plasma_ncc + plasma_cp) / vpl
